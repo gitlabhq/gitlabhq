@@ -428,3 +428,23 @@
     padding-right: 0;
   }
 }
+
+.approvals-footer {
+  a.disabled {
+    pointer-events: none;
+    cursor: default;
+  }
+  .approver-avatar {
+    position: relative;
+    display: inline-block;
+    &::before {
+      content:'\2713';
+      color: green;
+      background: white;
+      position: absolute;
+      top: 0;
+      right: 32%;
+    }
+  }
+
+}

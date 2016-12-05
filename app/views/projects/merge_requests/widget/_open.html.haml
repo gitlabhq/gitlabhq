@@ -55,5 +55,4 @@
 
   - if @merge_request.approvals.any?
     %approvals-footer{':approved-by-users' => 'approvals.approvedByUsers', ':approver-names' => 'approvals.approverNames', ':approvals-left' => 'approvals.approvalsLeft', ':user-can-approve' => 'approvals.userCanApprove', ':user-has-approved' => 'approvals.userHasApproved'}
-      = icon('spinner spin', class: 'loading-icon')
 

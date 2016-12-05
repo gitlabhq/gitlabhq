@@ -12,26 +12,36 @@
       },
       username: {
         type: String,
-        required: true
+        required: false,
       },
       displayName: {
         type: String,
-        required: true,
-      },
-      avatarClass: {
-        type: String,
-        default: 'avatar avatar-inline s48',
         required: false,
       },
-      linkClass: {
+      extraAvatarClass: {
         type: String,
-        default: 'author_link has-tooltip',
+        default: '',
         required: false,
+      },
+      extraLinkClass: {
+        type: String,
+        default: '',
+        required: false,
+      },
+      showTooltip: {
+        type: Boolean,
+        required: false,
+        default: false,
       },
       size: {
         type: Number,
         default: 48,
         required: false
+      },
+      nonUser: {
+        type: Boolean,
+        default: false,
+        required: false,
       }
     },
     data() {
@@ -41,16 +51,28 @@
     },
     computed: {
       userProfileUrl() {
-        return `/${this.username}`;
+        return this.nonUser || !this.username ? '' : `/${this.username}`;
       },
       preppedAvatarUrl() {
         return this.avatarUrl || this.noAvatarUrl;
+      },
+      tooltipClass() {
+        return this.showTooltip ? 'has-tooltip' : '';
+      },
+      avatarClass() {
+        return `avatar avatar-inline s${this.size} ${this.extraAvatarClass}`
+      },
+      disabledClass() {
+        return this.nonUser ? 'disabled' : '';
+      },
+      linkClass() {
+        return `author_link ${this.tooltipClass} ${this.extraLinkClass} ${this.disabledClass}`
       }
     },
     template: `
-    <a :href='userProfileUrl' :class='linkClass' :data-original-title='displayName' data-container='body'>
-      <img :class='avatarClass' :src='preppedAvatarUrl' :width='size' :height='size' :alt='displayName'/>
-    </a>
-  `
+      <a :href='userProfileUrl' :class='linkClass' :data-original-title='displayName' data-container='body'>
+        <img :class='avatarClass' :src='preppedAvatarUrl' :width='size' :height='size' :alt='displayName'/>
+      </a>
+    `
   });
 })();
