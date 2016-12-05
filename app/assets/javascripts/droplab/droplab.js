@@ -126,9 +126,6 @@ Object.assign(DropDown.prototype, {
     } else {
       this.list.innerHTML = newChildren.join('');  
     }
-
-    // Show dropdown if there is data
-    data !== [] ? this.show() : this.hide();
   },
 
   show: function() {
