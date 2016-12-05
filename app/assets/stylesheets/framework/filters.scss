@@ -87,7 +87,8 @@
     text-overflow: ellipsis;
     overflow-y: hidden;
 
-    &:hover {
+    &:hover,
+    &:focus {
       background-color: $dropdown-hover-color;
       color: white;
       text-decoration: none;
