@@ -1,11 +1,17 @@
 module Ci
-  class Stage < ActiveRecord::Base
-    include ActiveModel::Model
+  # Currently this is artificial object, constructed dynamically
+  # We should migrate this object to actual database record in the future
+  class Stage
+    include StaticModel
 
     attr_reader :pipeline, :name
 
-    def initialize(pipeline, name: name, status: status = nil)
+    def initialize(pipeline, name: name, status: nil)
       @pipeline, @name, @status = pipeline, name, status
+    end
+
+    def to_param
+      name
     end
 
     def status
@@ -13,11 +19,11 @@ module Ci
     end
 
     def statuses
-      pipeline.statuses.where(stage: stage)
+      @statuses ||= pipeline.statuses.where(stage: stage)
     end
 
     def builds
-      pipeline.builds.where(stage: stage)
+      @builds ||= pipeline.builds.where(stage: stage)
     end
   end
 end
