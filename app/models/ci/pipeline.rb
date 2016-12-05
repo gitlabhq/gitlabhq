@@ -100,32 +100,22 @@ module Ci
       where.not(duration: nil).sum(:duration)
     end
 
-    def stages_query
-      statuses.group('stage').select(:stage)
-        .order('max(stage_idx)')
+    def stages_count
+      statuses.select(:stage).distinct.count
     end
 
     def stages
-      self.stages_query.pluck(:stage)
-    end
-
-    def stages_with_statuses
       status_sql = statuses.latest.where('stage=sg.stage').status_sql
 
-      stages_with_statuses = CommitStatus.from(self.stages_query, :sg).
+      stages_query = statuses.group('stage').select(:stage)
+                       .order('max(stage_idx)')
+
+      stages_with_statuses = CommitStatus.from(stages_query, :sg).
         pluck('sg.stage', status_sql)
 
       stages_with_statuses.map do |stage|
-        OpenStruct.new(
-          name: stage.first,
-          status: stage.last,
-          pipeline: self
-        )
+        Ci::Stage.new(self, stage.first, status: stage.last)
       end
-    end
-
-    def stages_with_latest_statuses
-      statuses.latest.includes(project: :namespace).order(:stage_idx).group_by(&:stage)
     end
 
     def artifacts

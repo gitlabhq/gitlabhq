@@ -1,0 +1,14 @@
+%tr
+  %th{colspan: 10}
+    %strong
+      %a{name: subject.name}
+      %span{class: "ci-status-link ci-status-icon-#{subject.status}"}
+        = ci_icon_for_status(subject.status)
+      - if subject.name
+        &nbsp;
+        = subject.name.titleize
+  = render subject.statuses.latest_ordered, coverage: @project.build_coverage_enabled?, stage: false, ref: false, pipeline_link: false, allow_retry: true
+  = render subject.statuses.retried_ordered, coverage: @project.build_coverage_enabled?, stage: false, ref: false, pipeline_link: false, retried: true
+%tr
+  %td{colspan: 10}
+    &nbsp;

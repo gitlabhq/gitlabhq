@@ -27,16 +27,15 @@
   .row-content-block.build-content.middle-block.pipeline-graph.hidden
     .pipeline-visualization
       %ul.stage-column-list
-        - stages = pipeline.stages_with_latest_statuses
-        - stages.each do |stage, statuses|
+        - pipeline.stages.each do |stage|
           %li.stage-column
             .stage-name
-              %a{name: stage}
-              - if stage
-                = stage.titleize
+              %a{name: stage.name}
+              - if stage.name
+                = stage.name.titleize
             .builds-container
               %ul
-                = render "projects/commit/pipeline_stage", statuses: statuses
+                = render "projects/commit/pipeline_stage", statuses: stage.statuses
 
 
 - if pipeline.yaml_errors.present?
@@ -62,5 +61,4 @@
         - if pipeline.project.build_coverage_enabled?
           %th Coverage
         %th
-    - pipeline.stages.each do |stage|
-      = render 'projects/commit/ci_stage', stage: stage, statuses: pipeline.statuses.relevant.where(stage: stage)
+      = render pipeline.stages

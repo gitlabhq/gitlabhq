@@ -111,7 +111,7 @@
           %span.label.label-primary
             = tag
 
-    - if @build.pipeline.stages.many?
+    - if @build.pipeline.stages_count.many?
       .dropdown.build-dropdown
         .title Stage
         %button.dropdown-menu-toggle{type: 'button', 'data-toggle' => 'dropdown'}
