@@ -27,8 +27,7 @@
       // Prevent duplicate event bindings
       this.disableTaskList();
       this.initMRBtnListeners();
-      this.initMessageWithDescriptionListener();
-      this.initMessageWithoutDescriptionListener();
+      this.initCommitMessageListeners();
       if ($("a.btn-close").length) {
         this.initTaskList();
       }
@@ -110,23 +109,19 @@
     // note so that we can re-use its form here
     };
 
-    MergeRequest.prototype.initMessageWithDescriptionListener = function() {
-      return $('a.with-description-link').on('click', function(e) {
-        e.preventDefault();
+    MergeRequest.prototype.initCommitMessageListeners = function() {
+      var textarea = $('textarea.js-commit-message');
 
-        var textarea = $('textarea.js-commit-message');
+      $('a.with-description-link').on('click', function(e) {
+        e.preventDefault();
 
         textarea.val(textarea.data('messageWithDescription'));
         $('p.with-description-hint').hide();
         $('p.without-description-hint').show();
       });
-    };
 
-    MergeRequest.prototype.initMessageWithoutDescriptionListener = function() {
-      return $('a.without-description-link').on('click', function(e) {
+      $('a.without-description-link').on('click', function(e) {
         e.preventDefault();
-
-        var textarea = $('textarea.js-commit-message');
 
         textarea.val(textarea.data('messageWithoutDescription'));
         $('p.with-description-hint').show();
