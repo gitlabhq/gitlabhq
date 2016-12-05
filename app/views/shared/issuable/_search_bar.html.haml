@@ -17,12 +17,12 @@
           %button.clear-search.hidden{ type: 'button' }
             = icon('times')
           %ul#js-dropdown-hint.dropdown-menu{ 'data-dynamic' => true }
-            %li
+            %li.filter-dropdown
               %button.btn.btn-link
                 %i.fa{ 'class': '{{icon}}'}
-                %span.js-filter-hint
+                %span.dropdown-filter-hint
                   {{hint}}
-                %span.js-filter-tag
+                %span.dropdown-filter-tag
                   {{tag}}
           #js-dropdown-author.dropdown-menu{ 'data-dropdown' => true }
             %ul{ 'data-dynamic' => true }

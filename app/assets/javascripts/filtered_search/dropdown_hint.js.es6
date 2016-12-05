@@ -32,8 +32,8 @@
     }
 
     itemClicked(e) {
-      const token = e.detail.selected.querySelector('.js-filter-hint').innerText.trim();
-      const tag = e.detail.selected.querySelector('.js-filter-tag').innerText.trim();
+      const token = e.detail.selected.querySelector('.dropdown-filter-hint').innerText.trim();
+      const tag = e.detail.selected.querySelector('.dropdown-filter-tag').innerText.trim();
 
       if (tag.length) {
         gl.FilteredSearchManager.addWordToInput(this.getSelectedText(token));
