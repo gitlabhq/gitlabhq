@@ -8,7 +8,7 @@ module Ci
 
     delegate :project, to: :pipeline
 
-    def initialize(pipeline, name: name, status: nil)
+    def initialize(pipeline, name:, status: nil)
       @pipeline, @name, @status = pipeline, name, status
     end
 
@@ -25,11 +25,11 @@ module Ci
     end
 
     def statuses
-      @statuses ||= pipeline.statuses.where(stage: stage)
+      @statuses ||= pipeline.statuses.where(stage: name)
     end
 
     def builds
-      @builds ||= pipeline.builds.where(stage: stage)
+      @builds ||= pipeline.builds.where(stage: name)
     end
   end
 end

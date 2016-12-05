@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::Ci::Status::Stage::Factory do
   let(:pipeline) { create(:ci_pipeline) }
-  let(:stage) { Ci::Stage.new(pipeline, 'test') }
+  let(:stage) { Ci::Stage.new(pipeline, name: 'test') }
 
   subject do
     described_class.new(stage)
@@ -15,7 +15,9 @@ describe Gitlab::Ci::Status::Stage::Factory do
   context 'when stage has a core status' do
     HasStatus::AVAILABLE_STATUSES.each do |core_status|
       context "when core status is #{core_status}" do
-        let(:build) { create(:ci_build, pipeline: pipeline, stage: stage.name, status: core_status) }
+        let!(:build) do
+          create(:ci_build, pipeline: pipeline, stage: 'test', status: core_status)
+        end
 
         it "fabricates a core status #{core_status}" do
           expect(status).to be_a(
