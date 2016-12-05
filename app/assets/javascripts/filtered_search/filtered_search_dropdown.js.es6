@@ -42,7 +42,7 @@
     }
 
     dismissDropdown() {
-      this.input.removeAttribute(DATA_DROPDOWN_TRIGGER);
+      this.input.setAttribute(DATA_DROPDOWN_TRIGGER, '');
       droplab.setConfig(this.getFilterConfig());
       droplab.setData(this.hookId, []);
       this.unbindEvents();
