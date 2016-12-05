@@ -5,7 +5,7 @@ class Repository
 
   attr_accessor :path_with_namespace, :project
 
-  class CommitError < StandardError; end
+  CommitError = Class.new(StandardError)
 
   # Methods that cache data from the Git repository.
   #
@@ -62,10 +62,6 @@ class Repository
     return nil unless path_with_namespace
 
     @raw_repository ||= Gitlab::Git::Repository.new(path_to_repo)
-  end
-
-  def update_autocrlf_option
-    raw_repository.autocrlf = :input if raw_repository.autocrlf != :input
   end
 
   # Return absolute path to repository
@@ -172,54 +168,39 @@ class Repository
     tags.find { |tag| tag.name == name }
   end
 
-  def add_branch(user, branch_name, target)
-    oldrev = Gitlab::Git::BLANK_SHA
-    ref    = Gitlab::Git::BRANCH_REF_PREFIX + branch_name
-    target = commit(target).try(:id)
+  def add_branch(user, branch_name, ref)
+    newrev = commit(ref).try(:sha)
 
-    return false unless target
+    return false unless newrev
 
-    GitHooksService.new.execute(user, path_to_repo, oldrev, target, ref) do
-      update_ref!(ref, target, oldrev)
-    end
+    GitOperationService.new(user, self).add_branch(branch_name, newrev)
 
     after_create_branch
     find_branch(branch_name)
   end
 
   def add_tag(user, tag_name, target, message = nil)
-    oldrev = Gitlab::Git::BLANK_SHA
-    ref    = Gitlab::Git::TAG_REF_PREFIX + tag_name
-    target = commit(target).try(:id)
-
-    return false unless target
-
+    newrev = commit(target).try(:id)
     options = { message: message, tagger: user_to_committer(user) } if message
 
-    GitHooksService.new.execute(user, path_to_repo, oldrev, target, ref) do |service|
-      raw_tag = rugged.tags.create(tag_name, target, options)
-      service.newrev = raw_tag.target_id
-    end
+    return false unless newrev
+
+    GitOperationService.new(user, self).add_tag(tag_name, newrev, options)
 
     find_tag(tag_name)
   end
 
   def rm_branch(user, branch_name)
     before_remove_branch
-
     branch = find_branch(branch_name)
-    oldrev = branch.try(:dereferenced_target).try(:id)
-    newrev = Gitlab::Git::BLANK_SHA
-    ref    = Gitlab::Git::BRANCH_REF_PREFIX + branch_name
 
-    GitHooksService.new.execute(user, path_to_repo, oldrev, newrev, ref) do
-      update_ref!(ref, newrev, oldrev)
-    end
+    GitOperationService.new(user, self).rm_branch(branch)
 
     after_remove_branch
     true
   end
 
+  # TODO: why we don't pass user here?
   def rm_tag(tag_name)
     before_remove_tag
 
@@ -243,21 +224,6 @@ class Repository
     rugged.references.exist?(ref)
   rescue Rugged::ReferenceError
     false
-  end
-
-  def update_ref!(name, newrev, oldrev)
-    # We use 'git update-ref' because libgit2/rugged currently does not
-    # offer 'compare and swap' ref updates. Without compare-and-swap we can
-    # (and have!) accidentally reset the ref to an earlier state, clobbering
-    # commits. See also https://github.com/libgit2/libgit2/issues/1534.
-    command = %W(#{Gitlab.config.git.bin_path} update-ref --stdin -z)
-    _, status = Gitlab::Popen.popen(command, path_to_repo) do |stdin|
-      stdin.write("update #{name}\x00#{newrev}\x00#{oldrev}\x00")
-    end
-
-    return if status.zero?
-
-    raise CommitError.new("Could not update branch #{name.sub('refs/heads/', '')}. Please refresh and try again.")
   end
 
   # Makes sure a commit is kept around when Git garbage collection runs.
@@ -783,8 +749,7 @@ class Repository
     user, path, message, branch,
     author_email: nil, author_name: nil,
     source_branch: nil, source_project: project)
-    update_branch_with_hooks(
-      user,
+    GitOperationService.new(user, self).with_branch(
       branch,
       source_branch: source_branch,
       source_project: source_project) do |ref|
@@ -808,8 +773,7 @@ class Repository
     user, path, content, message, branch, update,
     author_email: nil, author_name: nil,
     source_branch: nil, source_project: project)
-    update_branch_with_hooks(
-      user,
+    GitOperationService.new(user, self).with_branch(
       branch,
       source_branch: source_branch,
       source_project: source_project) do |ref|
@@ -839,8 +803,7 @@ class Repository
     branch:, previous_path:, message:,
     author_email: nil, author_name: nil,
     source_branch: nil, source_project: project)
-    update_branch_with_hooks(
-      user,
+    GitOperationService.new(user, self).with_branch(
       branch,
       source_branch: source_branch,
       source_project: source_project) do |ref|
@@ -874,8 +837,7 @@ class Repository
     user, path, message, branch,
     author_email: nil, author_name: nil,
     source_branch: nil, source_project: project)
-    update_branch_with_hooks(
-      user,
+    GitOperationService.new(user, self).with_branch(
       branch,
       source_branch: source_branch,
       source_project: source_project) do |ref|
@@ -902,8 +864,7 @@ class Repository
     user:, branch:, message:, actions:,
     author_email: nil, author_name: nil,
     source_branch: nil, source_project: project)
-    update_branch_with_hooks(
-      user,
+    GitOperationService.new(user, self).with_branch(
       branch,
       source_branch: source_branch,
       source_project: source_project) do |ref|
@@ -964,7 +925,7 @@ class Repository
   end
 
   def user_to_committer(user)
-    Gitlab::Git::committer_hash(email: user.email, name: user.name)
+    Gitlab::Git.committer_hash(email: user.email, name: user.name)
   end
 
   def can_be_merged?(source_sha, target_branch)
@@ -988,7 +949,8 @@ class Repository
     merge_index = rugged.merge_commits(our_commit, their_commit)
     return false if merge_index.conflicts?
 
-    update_branch_with_hooks(user, merge_request.target_branch) do
+    GitOperationService.new(user, self).with_branch(
+      merge_request.target_branch) do
       actual_options = options.merge(
         parents: [our_commit, their_commit],
         tree: merge_index.write_tree(rugged),
@@ -1005,8 +967,7 @@ class Repository
 
     return false unless revert_tree_id
 
-    update_branch_with_hooks(
-      user,
+    GitOperationService.new(user, self).with_branch(
       base_branch,
       source_commit: commit) do
 
@@ -1027,8 +988,7 @@ class Repository
 
     return false unless cherry_pick_tree_id
 
-    update_branch_with_hooks(
-      user,
+    GitOperationService.new(user, self).with_branch(
       base_branch,
       source_commit: commit) do
 
@@ -1048,8 +1008,8 @@ class Repository
     end
   end
 
-  def resolve_conflicts(user, branch, params)
-    update_branch_with_hooks(user, branch) do
+  def resolve_conflicts(user, branch_name, params)
+    GitOperationService.new(user, self).with_branch(branch_name) do
       committer = user_to_committer(user)
 
       Rugged::Commit.create(rugged, params.merge(author: committer, committer: committer))
@@ -1140,51 +1100,6 @@ class Repository
     fetch_ref(path_to_repo, ref, ref_path)
   end
 
-  # Whenever `source_branch` or `source_commit` is passed, if `branch`
-  # doesn't exist, it would be created from `source_branch` or
-  # `source_commit`. Should only pass one of them, not both.
-  # If `source_project` is passed, and the branch doesn't exist,
-  # it would try to find the source from it instead of current repository.
-  def update_branch_with_hooks(
-    current_user, branch,
-    source_branch: nil, source_commit: nil, source_project: project)
-    update_autocrlf_option
-
-    target_branch, new_branch_added =
-      raw_ensure_branch(
-        branch,
-        source_branch: source_branch,
-        source_commit: source_commit,
-        source_project: source_project
-      )
-
-    ref = Gitlab::Git::BRANCH_REF_PREFIX + branch
-    was_empty = empty?
-
-    # Make commit
-    newrev = yield(ref)
-
-    unless newrev
-      raise CommitError.new('Failed to create commit')
-    end
-
-    if rugged.lookup(newrev).parent_ids.empty? || target_branch.nil?
-      oldrev = Gitlab::Git::BLANK_SHA
-    else
-      oldrev = rugged.merge_base(newrev, target_branch.dereferenced_target.sha)
-    end
-
-    GitHooksService.new.execute(current_user, path_to_repo, oldrev, newrev, ref) do
-      update_ref!(ref, newrev, oldrev)
-
-      # If repo was empty expire cache
-      after_create if was_empty
-      after_create_branch if was_empty || new_branch_added
-    end
-
-    newrev
-  end
-
   def ls_files(ref)
     actual_ref = ref || root_ref
     raw_repository.ls_files(actual_ref)
@@ -1265,48 +1180,5 @@ class Repository
 
   def repository_event(event, tags = {})
     Gitlab::Metrics.add_event(event, { path: path_with_namespace }.merge(tags))
-  end
-
-  def raw_ensure_branch(
-    branch_name, source_commit: nil, source_branch: nil, source_project: nil)
-    old_branch = find_branch(branch_name)
-
-    if source_commit && source_branch
-      raise ArgumentError,
-        'Should only pass either :source_branch or :source_commit, not both'
-    end
-
-    if old_branch
-      [old_branch, false]
-    elsif project != source_project
-      unless source_branch
-        raise ArgumentError,
-          'Should also pass :source_branch if' +
-          ' :source_project is different from current project'
-      end
-
-      fetch_ref(
-        source_project.repository.path_to_repo,
-        "#{Gitlab::Git::BRANCH_REF_PREFIX}#{source_branch}",
-        "#{Gitlab::Git::BRANCH_REF_PREFIX}#{branch_name}"
-      )
-
-      [find_branch(branch_name), true]
-    elsif source_commit || source_branch
-      oldrev = Gitlab::Git::BLANK_SHA
-      ref    = Gitlab::Git::BRANCH_REF_PREFIX + branch_name
-      target = (source_commit || commit(source_branch)).try(:sha)
-
-      unless target
-        raise CommitError.new(
-          "Cannot find branch #{branch_name} nor #{source_commit.try(:sha) || source_branch}")
-      end
-
-      update_ref!(ref, target, oldrev)
-
-      [find_branch(branch_name), true]
-    else
-      [nil, true] # Empty branch
-    end
   end
 end
