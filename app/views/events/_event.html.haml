@@ -3,14 +3,13 @@
     .event-item-timestamp
       #{time_ago_with_tooltip(event.created_at)}
 
-    = cache [event, current_application_settings, "v2.2"] do
-      = author_avatar(event, size: 40)
+    = author_avatar(event, size: 40)
 
-      - if event.created_project?
-        = render "events/event/created_project", event: event
-      - elsif event.push?
-        = render "events/event/push", event: event
-      - elsif event.commented?
-        = render "events/event/note", event: event
-      - else
-        = render "events/event/common", event: event
+    - if event.created_project?
+      = render "events/event/created_project", event: event
+    - elsif event.push?
+      = render "events/event/push", event: event
+    - elsif event.commented?
+      = render "events/event/note", event: event
+    - else
+      = render "events/event/common", event: event

@@ -8,6 +8,8 @@ module ProtectedBranchAccess
                             scope: :protected_branch,
                             unless: Proc.new { |access_level| access_level.user_id? || access_level.group_id? },
                             conditions: -> { where(user_id: nil, group_id: nil) }
+    belongs_to :protected_branch
+    delegate :project, to: :protected_branch
 
     scope :master, -> { where(access_level: Gitlab::Access::MASTER) }
     scope :developer, -> { where(access_level: Gitlab::Access::DEVELOPER) }
@@ -28,5 +30,11 @@ module ProtectedBranchAccess
     return self.group.name if self.group.present?
 
     self.class.human_access_levels[self.access_level]
+  end
+
+  def check_access(user)
+    return true if user.is_admin?
+
+    project.team.max_member_access(user.id) >= access_level
   end
 end

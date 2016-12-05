@@ -64,7 +64,7 @@ module MergeRequests
         if merge_request.source_branch == @branch_name || force_push?
           merge_request.reload_diff
         else
-          mr_commit_ids = merge_request.commits.map(&:id)
+          mr_commit_ids = merge_request.commits_sha
           push_commit_ids = @commits.map(&:id)
           matches = mr_commit_ids & push_commit_ids
           merge_request.reload_diff if matches.any?
@@ -138,7 +138,7 @@ module MergeRequests
       return unless @commits.present?
 
       merge_requests_for_source_branch.each do |merge_request|
-        mr_commit_ids = Set.new(merge_request.commits.map(&:id))
+        mr_commit_ids = Set.new(merge_request.commits_sha)
 
         new_commits, existing_commits = @commits.partition do |commit|
           mr_commit_ids.include?(commit.id)

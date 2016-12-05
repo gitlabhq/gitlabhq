@@ -203,7 +203,7 @@ module Ci
                                    .reorder(iid: :asc)
 
       merge_requests.find do |merge_request|
-        merge_request.commits.any? { |ci| ci.id == pipeline.sha }
+        merge_request.commits_sha.include?(pipeline.sha)
       end
     end
 

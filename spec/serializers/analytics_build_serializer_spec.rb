@@ -10,10 +10,6 @@ describe AnalyticsBuildSerializer do
   let(:resource) { create(:ci_build) }
 
   context 'when there is a single object provided' do
-    it 'it generates payload for single object' do
-      expect(json).to be_an_instance_of Hash
-    end
-
     it 'contains important elements of analyticsBuild' do
       expect(json)
         .to include(:name, :branch, :short_sha, :date, :total_time, :url, :author)

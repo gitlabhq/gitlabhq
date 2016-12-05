@@ -98,7 +98,7 @@ label {
     }
   }
 
-  @media(max-width: $screen-sm-min) {
+  @media(max-width: $screen-xs-max) {
     padding: 0 $gl-padding;
 
     .control-label,

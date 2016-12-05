@@ -302,4 +302,21 @@ eos
       expect(commit.uri_type('this/path/doesnt/exist')).to be_nil
     end
   end
+
+  describe '.from_hash' do
+    let(:new_commit) { described_class.from_hash(commit.to_hash, project) }
+
+    it 'returns a Commit' do
+      expect(new_commit).to be_an_instance_of(described_class)
+    end
+
+    it 'wraps a Gitlab::Git::Commit' do
+      expect(new_commit.raw).to be_an_instance_of(Gitlab::Git::Commit)
+    end
+
+    it 'stores the correct commit fields' do
+      expect(new_commit.id).to eq(commit.id)
+      expect(new_commit.message).to eq(commit.message)
+    end
+  end
 end

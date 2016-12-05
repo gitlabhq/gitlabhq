@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe NotificationService, services: true do
+  include EmailHelpers
+
   let(:notification) { NotificationService.new }
 
   around(:each) do |example|

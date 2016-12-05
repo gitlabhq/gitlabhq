@@ -6,7 +6,7 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
   before_action :authorize_read_cycle_analytics!
 
   def show
-    @cycle_analytics = ::CycleAnalytics.new(@project, from: start_date(cycle_analytics_params))
+    @cycle_analytics = ::CycleAnalytics.new(@project, current_user, from: start_date(cycle_analytics_params))
 
     stats_values, cycle_analytics_json = generate_cycle_analytics_data
 

@@ -201,7 +201,7 @@ feature 'Diff notes resolve', feature: true, js: true do
           expect(first('.line-resolve-btn')['data-original-title']).to eq("Resolved by #{user.name}")
         end
 
-        expect(page).not_to have_content('Last updated')
+        expect(page).to have_content('Last updated')
 
         page.within '.line-resolve-all-container' do
           expect(page).to have_content('0/1 discussion resolved')

@@ -80,6 +80,7 @@
     },
     mounted () {
       const options = gl.issueBoards.getBoardSortableDefaultOptions({
+        scroll: document.querySelectorAll('.boards-list')[0],
         group: 'issues',
         sort: false,
         disabled: this.disabled,
@@ -88,13 +89,13 @@
           const card = this.$refs.issue[e.oldIndex];
 
           card.showDetail = false;
-          Store.moving.issue = card.issue;
           Store.moving.list = card.list;
+          Store.moving.issue = Store.moving.list.findIssue(+e.item.dataset.issueId);
 
           gl.issueBoards.onStart();
         },
         onAdd: (e) => {
-          gl.issueBoards.BoardsStore.moveIssueToList(Store.moving.list, this.list, Store.moving.issue);
+          gl.issueBoards.BoardsStore.moveIssueToList(Store.moving.list, this.list, Store.moving.issue, e.newIndex);
 
           this.$nextTick(() => {
             e.item.remove();

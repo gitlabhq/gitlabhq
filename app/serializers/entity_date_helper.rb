@@ -2,6 +2,8 @@ module EntityDateHelper
   include ActionView::Helpers::DateHelper
 
   def interval_in_words(diff)
+    return 'Not started' unless diff
+
     "#{distance_of_time_in_words(Time.now, diff)} ago"
   end
 

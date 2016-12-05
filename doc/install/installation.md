@@ -175,7 +175,7 @@ We recommend using a PostgreSQL database. For MySQL check the
     ```bash
     sudo -u postgres psql -d template1 -c "CREATE USER git CREATEDB;"
     ```
-    
+
 1. Create the `pg_trgm` extension (required for GitLab 8.6+):
 
     ```bash
@@ -399,15 +399,13 @@ GitLab Shell is an SSH access and repository management software developed speci
 
 ### Install gitlab-workhorse
 
-GitLab-Workhorse uses [GNU Make](https://www.gnu.org/software/make/).
-If you are not using Linux you may have to run `gmake` instead of
-`make` below.
+GitLab-Workhorse uses [GNU Make](https://www.gnu.org/software/make/). The
+following command-line will install GitLab-Workhorse in `/home/git/gitlab-workhorse`
+which is the recommended location.
 
-    cd /home/git
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-workhorse.git
-    cd gitlab-workhorse
-    sudo -u git -H git checkout v1.0.0
-    sudo -u git -H make
+    cd /home/git/gitlab
+
+    sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse]" RAILS_ENV=production
 
 ### Initialize Database and Activate Advanced Features
 

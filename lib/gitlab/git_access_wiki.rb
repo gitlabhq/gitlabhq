@@ -1,5 +1,13 @@
 module Gitlab
   class GitAccessWiki < GitAccess
+    def guest_can_downlod_code?
+      Guest.can?(:download_wiki_code, project)
+    end
+
+    def user_can_download_code?
+      authentication_abilities.include?(:download_code) && user_access.can_do_action?(:download_wiki_code)
+    end
+
     def change_access_check(change)
       if Gitlab::Geo.enabled? && Gitlab::Geo.secondary?
         build_status_object(false, "You can't push code to a secondary GitLab Geo node.")

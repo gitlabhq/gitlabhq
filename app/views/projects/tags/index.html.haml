@@ -10,15 +10,16 @@
     .nav-controls
       = form_tag(filter_tags_path, method: :get) do
         = search_field_tag :search, params[:search], { placeholder: 'Filter by tag name', id: 'tag-search', class: 'form-control search-text-input input-short', spellcheck: false }
+
       .dropdown.inline
-        %button.dropdown-toggle.btn{ type: 'button', data: { toggle: 'dropdown'} }
+        %button.dropdown-toggle{ type: 'button', data: { toggle: 'dropdown'} }
           %span.light
-            = @sort.humanize
-          = icon('caret-down')
+            = projects_sort_options_hash[@sort]
+          = icon('chevron-down')
         %ul.dropdown-menu.dropdown-menu-align-right
           %li
-            = link_to filter_tags_path(sort: nil) do
-              Name
+            = link_to filter_tags_path(sort: sort_value_name) do
+              = sort_title_name
             = link_to filter_tags_path(sort: sort_value_recently_updated) do
               = sort_title_recently_updated
             = link_to filter_tags_path(sort: sort_value_oldest_updated) do

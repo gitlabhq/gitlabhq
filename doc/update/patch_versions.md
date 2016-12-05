@@ -45,10 +45,9 @@ sudo -u git -H git checkout v`cat /home/git/gitlab/GITLAB_SHELL_VERSION` -b v`ca
 ### 4. Update gitlab-workhorse to the corresponding version
 
 ```bash
-cd /home/git/gitlab-workhorse
-sudo -u git -H git fetch
-sudo -u git -H git checkout v`cat /home/git/gitlab/GITLAB_WORKHORSE_VERSION` -b v`cat /home/git/gitlab/GITLAB_WORKHORSE_VERSION`
-sudo -u git -H make
+cd /home/git/gitlab
+
+sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse]" RAILS_ENV=production
 ```
 
 ### 5. Install libs, migrations, etc.

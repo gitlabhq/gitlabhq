@@ -16,14 +16,12 @@
 #     label_name: string
 #     sort: string
 #
-require_relative 'projects_finder'
-
 class IssuableFinder
   NONE = '0'
 
   attr_accessor :current_user, :params
 
-  def initialize(current_user, params)
+  def initialize(current_user, params = {})
     @current_user = current_user
     @params = params
   end
@@ -42,6 +40,14 @@ class IssuableFinder
     items = by_weight(items)
     items = by_due_date(items)
     sort(items)
+  end
+
+  def find(*params)
+    execute.find(*params)
+  end
+
+  def find_by(*params)
+    execute.find_by(*params)
   end
 
   # We often get counts for each state by running a query per state, and

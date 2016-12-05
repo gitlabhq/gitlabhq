@@ -4,7 +4,7 @@ describe AutocompleteController do
   let!(:project) { create(:project) }
   let!(:user) { create(:user) }
 
-  context 'users and members' do
+  context 'GET users' do
     let!(:user2) { create(:user) }
     let!(:non_member) { create(:user) }
 
@@ -172,6 +172,15 @@ describe AutocompleteController do
         it { expect(body).to be_kind_of(Array) }
         it { expect(body.size).to eq 0 }
       end
+
+      describe 'GET #users with todo filter' do
+        it 'gives an array of users' do
+          get :users, todo_filter: true
+
+          expect(response.status).to eq 200
+          expect(body).to be_kind_of(Array)
+        end
+      end
     end
 
     context 'author of issuable included' do
@@ -208,7 +217,7 @@ describe AutocompleteController do
     end
   end
 
-  context 'projects' do
+  context 'GET projects' do
     let(:authorized_project) { create(:project) }
     let(:authorized_search_project) { create(:project, name: 'rugged') }
 

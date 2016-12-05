@@ -593,6 +593,7 @@ Parameters:
 | `name` | string | yes | The name of the new project |
 | `path` | string | no | Custom repository name for new project. By default generated based on name |
 | `namespace_id` | integer | no | Namespace for the new project (defaults to the current user's namespace) |
+| `default_branch` | string | no | `master` by default |
 | `description` | string | no | Short project description |
 | `issues_enabled` | boolean | no | Enable issues for this project |
 | `merge_requests_enabled` | boolean | no | Enable merge requests for this project |
@@ -605,11 +606,12 @@ Parameters:
 | `visibility_level` | integer | no | See [project visibility level](#project-visibility-level) |
 | `import_url` | string | no | URL to import repository from |
 | `public_builds` | boolean | no | If `true`, builds can be viewed by non-project-members |
-| `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `only_allow_merge_if_build_succeeds` | boolean | no | Set whether merge requests can only be merged with successful builds |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
+| `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
+| `approvals_before_merge` | integer | no | How many approvers should approve merge request by default |
 
 ### Create project for user
 
@@ -626,8 +628,8 @@ Parameters:
 | `user_id` | integer | yes | The user ID of the project owner |
 | `name` | string | yes | The name of the new project |
 | `path` | string | no | Custom repository name for new project. By default generated based on name |
-| `default_branch` | string | no | `master` by default |
 | `namespace_id` | integer | no | Namespace for the new project (defaults to the current user's namespace) |
+| `default_branch` | string | no | `master` by default |
 | `description` | string | no | Short project description |
 | `issues_enabled` | boolean | no | Enable issues for this project |
 | `merge_requests_enabled` | boolean | no | Enable merge requests for this project |
@@ -640,15 +642,16 @@ Parameters:
 | `visibility_level` | integer | no | See [project visibility level](#project-visibility-level) |
 | `import_url` | string | no | URL to import repository from |
 | `public_builds` | boolean | no | If `true`, builds can be viewed by non-project-members |
-| `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `only_allow_merge_if_build_succeeds` | boolean | no | Set whether merge requests can only be merged with successful builds |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
+| `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
+| `approvals_before_merge` | integer | no | How many approvers should approve merge request by default |
 
 ### Edit project
 
-Updates an existing project
+Updates an existing project.
 
 ```
 PUT /projects/:id
@@ -674,14 +677,12 @@ Parameters:
 | `visibility_level` | integer | no | See [project visibility level](#project-visibility-level) |
 | `import_url` | string | no | URL to import repository from |
 | `public_builds` | boolean | no | If `true`, builds can be viewed by non-project-members |
-| `repository_storage` | string | no | Change the storage shard for the repository. Available only to admins |
 | `only_allow_merge_if_build_succeeds` | boolean | no | Set whether merge requests can only be merged with successful builds |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
-
-On success, method returns 200 with the updated project. If parameters are
-invalid, 400 is returned.
+| `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
+| `approvals_before_merge` | integer | no | How many approvers should approve merge request by default |
 
 ### Fork project
 
@@ -700,8 +701,7 @@ Parameters:
 
 ### Star a project
 
-Stars a given project. Returns status code `201` and the project on success and
-`304` if the project is already starred.
+Stars a given project. Returns status code `304` if the project is already starred.
 
 ```
 POST /projects/:id/star
@@ -771,8 +771,7 @@ Example response:
 
 ### Unstar a project
 
-Unstars a given project. Returns status code `200` and the project on success
-and `304` if the project is not starred.
+Unstars a given project. Returns status code `304` if the project is not starred.
 
 ```
 DELETE /projects/:id/star
@@ -842,10 +841,6 @@ Example response:
 
 Archives the project if the user is either admin or the project owner of this project. This action is
 idempotent, thus archiving an already archived project will not change the project.
-
-Status code 201 with the project as body is given when successful, in case the user doesn't
-have the proper access rights, code 403 is returned. Status 404 is returned if the project
-doesn't exist, or is hidden to the user.
 
 ```
 POST /projects/:id/archive
@@ -931,10 +926,6 @@ Example response:
 
 Unarchives the project if the user is either admin or the project owner of this project. This action is
 idempotent, thus unarchiving an non-archived project will not change the project.
-
-Status code 201 with the project as body is given when successful, in case the user doesn't
-have the proper access rights, code 403 is returned. Status 404 is returned if the project
-doesn't exist, or is hidden to the user.
 
 ```
 POST /projects/:id/unarchive

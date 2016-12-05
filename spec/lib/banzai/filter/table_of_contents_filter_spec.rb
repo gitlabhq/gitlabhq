@@ -22,7 +22,7 @@ describe Banzai::Filter::TableOfContentsFilter, lib: true do
       html = header(i, "Header #{i}")
       doc = filter(html)
 
-      expect(doc.css("h#{i} a").first.attr('id')).to eq "header-#{i}"
+      expect(doc.css("h#{i} a").first.attr('id')).to eq "user-content-header-#{i}"
     end
   end
 
@@ -32,7 +32,12 @@ describe Banzai::Filter::TableOfContentsFilter, lib: true do
       expect(doc.css('h1 a').first.attr('class')).to eq 'anchor'
     end
 
-    it 'links to the id' do
+    it 'has a namespaced id' do
+      doc = filter(header(1, 'Header'))
+      expect(doc.css('h1 a').first.attr('id')).to eq 'user-content-header'
+    end
+
+    it 'links to the non-namespaced id' do
       doc = filter(header(1, 'Header'))
       expect(doc.css('h1 a').first.attr('href')).to eq '#header'
     end
@@ -40,29 +45,29 @@ describe Banzai::Filter::TableOfContentsFilter, lib: true do
     describe 'generated IDs' do
       it 'translates spaces to dashes' do
         doc = filter(header(1, 'This header has spaces in it'))
-        expect(doc.css('h1 a').first.attr('id')).to eq 'this-header-has-spaces-in-it'
+        expect(doc.css('h1 a').first.attr('href')).to eq '#this-header-has-spaces-in-it'
       end
 
       it 'squeezes multiple spaces and dashes' do
         doc = filter(header(1, 'This---header     is poorly-formatted'))
-        expect(doc.css('h1 a').first.attr('id')).to eq 'this-header-is-poorly-formatted'
+        expect(doc.css('h1 a').first.attr('href')).to eq '#this-header-is-poorly-formatted'
       end
 
       it 'removes punctuation' do
         doc = filter(header(1, "This, header! is, filled. with @ punctuation?"))
-        expect(doc.css('h1 a').first.attr('id')).to eq 'this-header-is-filled-with-punctuation'
+        expect(doc.css('h1 a').first.attr('href')).to eq '#this-header-is-filled-with-punctuation'
       end
 
       it 'appends a unique number to duplicates' do
         doc = filter(header(1, 'One') + header(2, 'One'))
 
-        expect(doc.css('h1 a').first.attr('id')).to eq 'one'
-        expect(doc.css('h2 a').first.attr('id')).to eq 'one-1'
+        expect(doc.css('h1 a').first.attr('href')).to eq '#one'
+        expect(doc.css('h2 a').first.attr('href')).to eq '#one-1'
       end
 
       it 'supports Unicode' do
         doc = filter(header(1, '한글'))
-        expect(doc.css('h1 a').first.attr('id')).to eq '한글'
+        expect(doc.css('h1 a').first.attr('id')).to eq 'user-content-한글'
         expect(doc.css('h1 a').first.attr('href')).to eq '#한글'
       end
     end

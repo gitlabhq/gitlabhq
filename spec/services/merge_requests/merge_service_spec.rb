@@ -91,7 +91,7 @@ describe MergeRequests::MergeService, services: true do
           commit = double('commit', safe_message: "Fixes #{jira_issue.to_reference}")
           allow(merge_request).to receive(:commits).and_return([commit])
 
-          expect_any_instance_of(JiraService).to receive(:close_issue).with(merge_request, an_instance_of(JIRA::Resource::Issue)).once
+          expect_any_instance_of(JiraService).to receive(:close_issue).with(merge_request, jira_issue).once
 
           service.execute(merge_request)
         end

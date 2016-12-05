@@ -132,7 +132,7 @@
     display: none;
   }
 
-  .btn-clipboard {
+  .btn-clipboard:hover {
     color: $gl-gray;
   }
 }
@@ -235,6 +235,10 @@
       padding-bottom: 10px;
       color: $sidebar-collapsed-icon-color;
 
+      &:hover {
+        color: $gl-gray;
+      }
+
       span {
         display: block;
         margin-top: 0;
@@ -244,15 +248,17 @@
         display: none;
       }
 
+      .avatar:hover {
+        border-color: #999;
+      }
+
       .btn-clipboard {
         border: none;
+        color: #999;
 
         &:hover {
           background: transparent;
-        }
-
-        i {
-          color: $sidebar-collapsed-icon-color;
+          color: $gl-gray;
         }
       }
     }
