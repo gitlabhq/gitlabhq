@@ -42,6 +42,10 @@
         type: Boolean,
         default: false,
         required: false,
+      },
+      tooltipContainer: {
+        type: String,
+        required: false,
       }
     },
     data() {
@@ -50,6 +54,9 @@
       };
     },
     computed: {
+      avatarElemId() {
+        return `${this.username}-avatar-link`;
+      },
       userProfileUrl() {
         return this.nonUser || !this.username ? '' : `/${this.username}`;
       },
@@ -67,12 +74,17 @@
       },
       linkClass() {
         return `author_link ${this.tooltipClass} ${this.extraLinkClass} ${this.disabledClass}`
+      },
+      tooltipContainerAttr() {
+        return this.tooltipContainer || `#${this.avatarElemId}`;
       }
     },
     template: `
-      <a :href='userProfileUrl' :class='linkClass' :data-original-title='displayName' data-container='body'>
-        <img :class='avatarClass' :src='preppedAvatarUrl' :width='size' :height='size' :alt='displayName'/>
-      </a>
+      <span :id='avatarElemId'>
+        <a :href='userProfileUrl' :class='linkClass' :data-original-title='displayName' :data-container='tooltipContainerAttr'>
+          <img :class='avatarClass' :src='preppedAvatarUrl' :width='size' :height='size' :alt='displayName'/>
+        </a>
+      </span>
     `
   });
 })();
