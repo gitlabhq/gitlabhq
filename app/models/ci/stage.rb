@@ -6,6 +6,8 @@ module Ci
 
     attr_reader :pipeline, :name
 
+    delegate :project, to: :pipeline
+
     def initialize(pipeline, name: name, status: nil)
       @pipeline, @name, @status = pipeline, name, status
     end
