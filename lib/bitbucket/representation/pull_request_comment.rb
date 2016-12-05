@@ -14,7 +14,7 @@ module Bitbucket
       end
 
       def new_pos
-        inline.fetch('to', nil) || 1
+        inline.fetch('to', nil) || old_pos || 1
       end
 
       def parent_id
