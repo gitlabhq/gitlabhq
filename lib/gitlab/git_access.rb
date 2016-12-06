@@ -51,7 +51,7 @@ module Gitlab
                  deploy_key.has_access_to?(project)
                elsif user
                  user_can_download_code? || build_can_download_code?
-               end || guest_can_downlod_code?
+               end || guest_can_download_code?
 
       unless passed
         message = if deploy_key
@@ -79,7 +79,7 @@ module Gitlab
       check_change_access!(changes)
     end
 
-    def guest_can_downlod_code?
+    def guest_can_download_code?
       Guest.can?(:download_code, project)
     end
 

@@ -1,6 +1,6 @@
 module Gitlab
   class GitAccessWiki < GitAccess
-    def guest_can_downlod_code?
+    def guest_can_download_code?
       Guest.can?(:download_wiki_code, project)
     end
 
