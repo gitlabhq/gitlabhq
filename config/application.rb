@@ -45,7 +45,7 @@ module Gitlab
     #
     # Parameters filtered:
     # - Password (:password, :password_confirmation)
-    # - Private tokens (:private_token)
+    # - Private tokens (:private_token, :authentication_token)
     # - Two-factor tokens (:otp_attempt)
     # - Repo/Project Import URLs (:import_url)
     # - Build variables (:variables)
@@ -55,6 +55,7 @@ module Gitlab
     # - Sentry DSN (:sentry_dsn)
     # - Deploy keys (:key)
     config.filter_parameters += %i(
+      authentication_token
       certificate
       encrypted_key
       hook
