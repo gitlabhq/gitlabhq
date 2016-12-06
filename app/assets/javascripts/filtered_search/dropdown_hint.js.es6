@@ -42,6 +42,18 @@
       super.renderContent();
       droplab.setData(this.hookId, dropdownData);
     }
+
+    filterMethod(item, query) {
+      const { value } = gl.FilteredSearchTokenizer.getLastTokenObject(query);
+
+      if (value === '') {
+        item.droplab_hidden = false;
+      } else {
+        item.droplab_hidden = item['hint'].indexOf(value) === -1;
+      }
+
+      return item;
+    }
   }
 
   global.DropdownHint = DropdownHint;
