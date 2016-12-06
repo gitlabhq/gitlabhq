@@ -24,6 +24,14 @@
       super.renderContent();
       droplab.setData(this.hookId, 'milestones.json');
     }
+
+    filterMethod(item, query) {
+      const { value } = gl.FilteredSearchTokenizer.getLastTokenObject(query);
+      const valueWithoutPrefix = value.slice(1);
+
+      item.droplab_hidden = item['title'].indexOf(valueWithoutPrefix) === -1;
+      return item;
+    }
   }
 
   global.DropdownMilestone = DropdownMilestone;
