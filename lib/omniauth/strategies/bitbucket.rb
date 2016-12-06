@@ -16,7 +16,7 @@ module OmniAuth
       end
 
       uid do
-        raw['username']
+        raw_info['username']
       end
 
       info do
