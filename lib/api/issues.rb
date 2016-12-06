@@ -28,14 +28,6 @@ module API
 
         new_params
       end
-
-      def merge_request_for_resolving_discussions
-        return unless merge_request_iid = params[:merge_request_for_resolving_discussions]
-
-        @merge_request_for_resolving_discussions ||= MergeRequestsFinder.new(current_user, project_id: user_project.id).
-                                                       execute.
-                                                       find_by(iid: merge_request_iid)
-      end
     end
 
     resource :issues do
@@ -179,7 +171,12 @@ module API
         attrs = attributes_for_keys(keys)
 
         attrs[:labels] = params[:labels] if params[:labels]
-        attrs[:merge_request_for_resolving_discussions] = merge_request_for_resolving_discussions if params[:merge_request_for_resolving_discussions]
+
+        if merge_request_iid = params[:merge_request_for_resolving_discussions]
+          attrs[:merge_request_for_resolving_discussions] = MergeRequestsFinder.new(current_user, project_id: user_project.id).
+            execute.
+            find_by(iid: merge_request_iid)
+        end
 
         # Convert and filter out invalid confidential flags
         attrs['confidential'] = to_boolean(attrs['confidential'])
