@@ -19,6 +19,14 @@
       super.renderContent();
       droplab.setData(this.hookId, '/autocomplete/users.json?search=&per_page=20&active=true&project_id=2&group_id=&skip_ldap=&todo_filter=&todo_state_filter=&current_user=true&push_code_to_protected_branches=&author_id=&skip_users=');
     }
+
+    filterMethod(item, query) {
+      const { value } = gl.FilteredSearchTokenizer.getLastTokenObject(query);
+      const valueWithoutPrefix = value.slice(1);
+
+      item.droplab_hidden = item['username'].indexOf(valueWithoutPrefix) === -1;
+      return item;
+    }
   }
 
   global.DropdownAuthor = DropdownAuthor;

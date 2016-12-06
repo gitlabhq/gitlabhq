@@ -29,6 +29,55 @@
       }
     }
 
+    static getLastTokenObject(input) {
+      const token = FilteredSearchTokenizer.getLastToken(input);
+      const colonIndex = token.indexOf(':');
+
+      const key = colonIndex !== -1 ? token.slice(0, colonIndex) : '';
+      const value = colonIndex !== -1 ? token.slice(colonIndex) : token;
+
+      return {
+        key,
+        value,
+      }
+    }
+
+    static getLastToken(input) {
+      let completeToken = false;
+      let completeQuotation = true;
+      let lastQuotation = '';
+      let i = input.length;
+
+      const doubleQuote = '"';
+      const singleQuote = '\'';
+      while(!completeToken && i >= 0) {
+        const isDoubleQuote = input[i] === doubleQuote;
+        const isSingleQuote = input[i] === singleQuote;
+
+        // If the second quotation is found
+        if ((lastQuotation === doubleQuote && input[i] === doubleQuote) ||
+          (lastQuotation === singleQuote && input[i] === singleQuote)) {
+          completeQuotation = true;
+        }
+
+        // Save the first quotation
+        if ((input[i] === doubleQuote && lastQuotation === '') ||
+          (input[i] === singleQuote && lastQuotation === '')) {
+          lastQuotation = input[i];
+          completeQuotation = false;
+        }
+
+        if (completeQuotation && input[i] === ' ') {
+          completeToken = true;
+        } else {
+          i--;
+        }
+      }
+
+      // Adjust by 1 because of empty space
+      return input.slice(i + 1);
+    }
+
     static processTokens(input) {
       let tokens = [];
       let searchToken = '';
