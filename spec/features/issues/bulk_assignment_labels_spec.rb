@@ -294,7 +294,7 @@ feature 'Issues > Labels bulk assignment', feature: true do
     end
 
     # Special case https://gitlab.com/gitlab-org/gitlab-ce/issues/24877
-    context 'unmarking common label', focus: true do
+    context 'unmarking common label' do
       before do
         issue1.labels << bug
         issue1.labels << feature
