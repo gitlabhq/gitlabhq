@@ -1,6 +1,5 @@
 class ProtectedBranch::PushAccessLevel < ActiveRecord::Base
   include ProtectedBranchAccess
-  include ProtectedBranchAccessEe
 
   validates :access_level, presence: true, inclusion: { in: [Gitlab::Access::MASTER,
                                                              Gitlab::Access::DEVELOPER,
