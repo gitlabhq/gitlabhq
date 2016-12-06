@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'mime/types'
 
-describe API::API, api: true  do
+describe API::Branches, api: true  do
   include ApiHelpers
 
   let(:user) { create(:user) }

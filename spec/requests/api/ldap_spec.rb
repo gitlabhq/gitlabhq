@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe API::API do
+describe API::Ldap do
   include ApiHelpers
   include LdapHelpers
 

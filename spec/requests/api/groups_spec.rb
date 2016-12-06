@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe API::API, api: true  do
+describe API::Groups, api: true  do
   include ApiHelpers
 
   let(:user1) { create(:user, can_create_group: false) }

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe API::API, 'ProjectHooks', api: true do
+describe API::ProjectHooks, 'ProjectHooks', api: true do
   include ApiHelpers
   let(:user) { create(:user) }
   let(:user3) { create(:user) }
