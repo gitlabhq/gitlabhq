@@ -56,17 +56,13 @@
       - else
         #js-build-scroll.scroll-controls
           .scroll-step
-            = link_to '#up-build-trace', id: 'scroll-top', class: 'btn', title: 'Scroll to top' do
-              %i.fa.fa-long-arrow-up
-              %span.scroll-step-label Scroll to top
-            = link_to '#down-build-trace', id: 'scroll-bottom', class: 'btn', title: 'Scroll to bottom' do
-              %i.fa.fa-long-arrow-down
-              %span.scroll-step-label Scroll to bottom
+            %a{ href: '#up-build-trace', id: 'scroll-top', class: 'scroll-link scroll-top', title: 'Scroll to top'}
+            %a{ href: '#down-build-trace', id: 'scroll-bottom', class: 'scroll-link scroll-bottom', title: 'Scroll to bottom'}
           - if @build.active?
             .autoscroll-container
-              %span.status-message#autoscroll-status{:data => {:state => 'enabled'}, :title => 'Autoscroll active'}
-                %i.fa.fa-toggle-on
+              %span.status-message#autoscroll-status{:data => {:state => 'enabled'}}
                 %label Autoscroll active
+                %i.status-icon
         #up-build-trace
         %pre.build-trace#build-trace
           %code.bash.js-build-output
