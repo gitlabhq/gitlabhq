@@ -682,33 +682,48 @@ describe Repository, models: true do
     end
   end
 
-  xdescribe '#update_branch_with_hooks' do
+  describe '#update_branch_with_hooks' do
     let(:old_rev) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' } # git rev-parse feature
     let(:new_rev) { 'a74ae73c1ccde9b974a70e82b901588071dc142a' } # commit whose parent is old_rev
 
     context 'when pre hooks were successful' do
       before do
-        expect_any_instance_of(GitHooksService).to receive(:execute).
-          with(user, repository.path_to_repo, old_rev, new_rev, 'refs/heads/feature').
-          and_yield.and_return(true)
+        service = GitHooksService.new
+        expect(GitHooksService).to receive(:new).and_return(service)
+        expect(service).to receive(:execute).
+          with(
+            user,
+            repository.path_to_repo,
+            old_rev,
+            old_rev,
+            'refs/heads/feature').
+          and_yield(service).and_return(true)
       end
 
       it 'runs without errors' do
         expect do
-          repository.update_branch_with_hooks(user, 'feature') { new_rev }
+          GitOperationService.new(user, repository).with_branch('feature') do
+            new_rev
+          end
         end.not_to raise_error
       end
 
       it 'ensures the autocrlf Git option is set to :input' do
-        expect(repository).to receive(:update_autocrlf_option)
+        service = GitOperationService.new(user, repository)
 
-        repository.update_branch_with_hooks(user, 'feature') { new_rev }
+        expect(service).to receive(:update_autocrlf_option)
+
+        service.with_branch('feature') { new_rev }
       end
 
       context "when the branch wasn't empty" do
         it 'updates the head' do
           expect(repository.find_branch('feature').dereferenced_target.id).to eq(old_rev)
-          repository.update_branch_with_hooks(user, 'feature') { new_rev }
+
+          GitOperationService.new(user, repository).with_branch('feature') do
+            new_rev
+          end
+
           expect(repository.find_branch('feature').dereferenced_target.id).to eq(new_rev)
         end
       end
@@ -727,7 +742,11 @@ describe Repository, models: true do
         branch = 'feature-ff-target'
         repository.add_branch(user, branch, old_rev)
 
-        expect { repository.update_branch_with_hooks(user, branch) { new_rev } }.not_to raise_error
+        expect do
+          GitOperationService.new(user, repository).with_branch(branch) do
+            new_rev
+          end
+        end.not_to raise_error
       end
     end
 
@@ -742,7 +761,9 @@ describe Repository, models: true do
         # Updating 'master' to new_rev would lose the commits on 'master' that
         # are not contained in new_rev. This should not be allowed.
         expect do
-          repository.update_branch_with_hooks(user, branch) { new_rev }
+          GitOperationService.new(user, repository).with_branch(branch) do
+            new_rev
+          end
         end.to raise_error(Repository::CommitError)
       end
     end
@@ -752,7 +773,9 @@ describe Repository, models: true do
         allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([false, ''])
 
         expect do
-          repository.update_branch_with_hooks(user, 'feature') { new_rev }
+          GitOperationService.new(user, repository).with_branch('feature') do
+            new_rev
+          end
         end.to raise_error(GitHooksService::PreReceiveError)
       end
     end
@@ -770,7 +793,10 @@ describe Repository, models: true do
         expect(repository).to     receive(:expire_branches_cache)
         expect(repository).to     receive(:expire_has_visible_content_cache)
 
-        repository.update_branch_with_hooks(user, 'new-feature') { new_rev }
+        GitOperationService.new(user, repository).
+          with_branch('new-feature') do
+            new_rev
+          end
       end
     end
 

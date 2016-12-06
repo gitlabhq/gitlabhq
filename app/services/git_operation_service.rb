@@ -102,9 +102,20 @@ GitOperationService = Struct.new(:user, :repository) do
         raise Repository::CommitError.new('Failed to create commit')
       end
 
-      service.newrev = nextrev
+      branch =
+        repository.find_branch(ref[Gitlab::Git::BRANCH_REF_PREFIX.size..-1])
 
-      update_ref!(ref, nextrev, newrev)
+      prevrev = if branch &&
+                   !repository.rugged.lookup(nextrev).parent_ids.empty?
+                  repository.rugged.merge_base(
+                    nextrev, branch.dereferenced_target.sha)
+                else
+                  newrev
+                end
+
+      update_ref!(ref, nextrev, prevrev)
+
+      service.newrev = nextrev
 
       # If repo was empty expire cache
       repository.after_create if was_empty
