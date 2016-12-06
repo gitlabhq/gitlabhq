@@ -82,9 +82,6 @@ Example response:
 
 Creates a new label for the given repository with the given name and color.
 
-It returns 200 if the label was successfully created, 400 for wrong parameters
-and 409 if the label already exists.
-
 ```
 POST /projects/:id/labels
 ```
@@ -121,10 +118,6 @@ Example response:
 
 Deletes a label with a given name.
 
-It returns 200 if the label was successfully deleted, 400 for wrong parameters
-and 404 if the label does not exist.
-In case of an error, an additional error message is returned.
-
 ```
 DELETE /projects/:id/labels
 ```
@@ -158,10 +151,6 @@ Example response:
 
 Updates an existing label with new name or new color. At least one parameter
 is required, to update the label.
-
-It returns 200 if the label was successfully deleted, 400 for wrong parameters
-and 404 if the label does not exist.
-In case of an error, an additional error message is returned.
 
 ```
 PUT /projects/:id/labels
@@ -199,11 +188,9 @@ Example response:
 
 ## Subscribe to a label
 
-Subscribes the authenticated user to a label to receive notifications. If the
-operation is successful, status code `201` together with the updated label is
-returned. If the user is already subscribed to the label, the status code `304`
-is returned. If the project or label is not found, status code `404` is
-returned.
+Subscribes the authenticated user to a label to receive notifications. 
+If the user is already subscribed to the label, the status code `304`
+is returned.
 
 ```
 POST /projects/:id/labels/:label_id/subscription
@@ -237,10 +224,8 @@ Example response:
 ## Unsubscribe from a label
 
 Unsubscribes the authenticated user from a label to not receive notifications
-from it. If the operation is successful, status code `200` together with the
-updated label is returned. If the user is not subscribed to the label, the
-status code `304` is returned. If the project or label is not found, status code
-`404` is returned.
+from it. If the user is not subscribed to the label, the
+status code `304` is returned.
 
 ```
 DELETE /projects/:id/labels/:label_id/subscription

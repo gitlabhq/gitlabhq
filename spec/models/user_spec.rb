@@ -575,6 +575,23 @@ describe User, models: true do
         end
       end
     end
+
+    describe '#require_ssh_key?' do
+      protocol_and_expectation = {
+        'http' => false,
+        'ssh' => true,
+        '' => true,
+      }
+
+      protocol_and_expectation.each do |protocol, expected|
+        it "has correct require_ssh_key?" do
+          stub_application_setting(enabled_git_access_protocol: protocol)
+          user = build(:user)
+
+          expect(user.require_ssh_key?).to eq(expected)
+        end
+      end
+    end
   end
 
   describe '.find_by_any_email' do
@@ -749,6 +766,17 @@ describe User, models: true do
       expect(User.by_login(username)).to eq user
       expect(User.by_login(nil)).to be_nil
       expect(User.by_login('')).to be_nil
+    end
+  end
+
+  describe '.find_by_username' do
+    it 'returns nil if not found' do
+      expect(described_class.find_by_username('JohnDoe')).to be_nil
+    end
+
+    it 'is case-insensitive' do
+      user = create(:user, username: 'JohnDoe')
+      expect(described_class.find_by_username('JOHNDOE')).to eq user
     end
   end
 
@@ -1336,6 +1364,33 @@ describe User, models: true do
       projects = user.projects_with_reporter_access_limited_to(project2.id)
 
       expect(projects).to be_empty
+    end
+  end
+
+  describe '#refresh_authorized_projects', redis: true do
+    let(:project1) { create(:empty_project) }
+    let(:project2) { create(:empty_project) }
+    let(:user) { create(:user) }
+
+    before do
+      project1.team << [user, :reporter]
+      project2.team << [user, :guest]
+
+      user.project_authorizations.delete_all
+      user.refresh_authorized_projects
+    end
+
+    it 'refreshes the list of authorized projects' do
+      expect(user.project_authorizations.count).to eq(2)
+    end
+
+    it 'sets the authorized_projects_populated column' do
+      expect(user.authorized_projects_populated).to eq(true)
+    end
+
+    it 'stores the correct access levels' do
+      expect(user.project_authorizations.where(access_level: Gitlab::Access::GUEST).exists?).to eq(true)
+      expect(user.project_authorizations.where(access_level: Gitlab::Access::REPORTER).exists?).to eq(true)
     end
   end
 end

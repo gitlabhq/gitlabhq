@@ -79,6 +79,10 @@ module Gitlab
       check_change_access!(changes)
     end
 
+    def guest_can_downlod_code?
+      Guest.can?(:download_code, project)
+    end
+
     def user_can_download_code?
       authentication_abilities.include?(:download_code) && user_access.can_do_action?(:download_code)
     end

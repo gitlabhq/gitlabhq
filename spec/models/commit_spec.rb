@@ -34,24 +34,30 @@ describe Commit, models: true do
   end
 
   describe '#to_reference' do
+    let(:project) { create(:project, path: 'sample-project') }
+    let(:commit)  { project.commit }
+
     it 'returns a String reference to the object' do
       expect(commit.to_reference).to eq commit.id
     end
 
     it 'supports a cross-project reference' do
-      cross = double('project')
-      expect(commit.to_reference(cross)).to eq "#{project.to_reference}@#{commit.id}"
+      another_project = build(:project, name: 'another-project', namespace: project.namespace)
+      expect(commit.to_reference(another_project)).to eq "sample-project@#{commit.id}"
     end
   end
 
   describe '#reference_link_text' do
+    let(:project) { create(:project, path: 'sample-project') }
+    let(:commit)  { project.commit }
+
     it 'returns a String reference to the object' do
       expect(commit.reference_link_text).to eq commit.short_id
     end
 
     it 'supports a cross-project reference' do
-      cross = double('project')
-      expect(commit.reference_link_text(cross)).to eq "#{project.to_reference}@#{commit.short_id}"
+      another_project = build(:project, name: 'another-project', namespace: project.namespace)
+      expect(commit.reference_link_text(another_project)).to eq "sample-project@#{commit.short_id}"
     end
   end
 
@@ -300,6 +306,23 @@ eos
 
     it "returns nil if the path doesn't exists" do
       expect(commit.uri_type('this/path/doesnt/exist')).to be_nil
+    end
+  end
+
+  describe '.from_hash' do
+    let(:new_commit) { described_class.from_hash(commit.to_hash, project) }
+
+    it 'returns a Commit' do
+      expect(new_commit).to be_an_instance_of(described_class)
+    end
+
+    it 'wraps a Gitlab::Git::Commit' do
+      expect(new_commit.raw).to be_an_instance_of(Gitlab::Git::Commit)
+    end
+
+    it 'stores the correct commit fields' do
+      expect(new_commit.id).to eq(commit.id)
+      expect(new_commit.message).to eq(commit.message)
     end
   end
 end

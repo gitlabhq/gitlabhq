@@ -141,8 +141,12 @@ module API
         options[:project].repository.commit(repo_branch.dereferenced_target)
       end
 
+      expose :merged do |repo_branch, options|
+        options[:project].repository.merged_to_root_ref?(repo_branch.name)
+      end
+
       expose :protected do |repo_branch, options|
-        options[:project].protected_branch? repo_branch.name
+        options[:project].protected_branch?(repo_branch.name)
       end
 
       expose :developers_can_push do |repo_branch, options|
@@ -170,6 +174,7 @@ module API
 
     class RepoCommit < Grape::Entity
       expose :id, :short_id, :title, :author_name, :author_email, :created_at
+      expose :committer_name, :committer_email
       expose :safe_message, as: :message
     end
 
@@ -210,6 +215,7 @@ module API
 
     class Milestone < ProjectEntity
       expose :due_date
+      expose :start_date
     end
 
     class Issue < ProjectEntity
@@ -606,6 +612,7 @@ module API
       expose :user, with: Entities::UserBasic
       expose :created_at, :updated_at, :started_at, :finished_at, :committed_at
       expose :duration
+      expose :coverage
     end
 
     class EnvironmentBasic < Grape::Entity

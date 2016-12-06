@@ -88,16 +88,46 @@ describe 'projects/builds/show', :view do
         create(:ci_build, :running, environment: 'staging', pipeline: pipeline)
       end
 
-      let!(:environment) do
-        create(:environment, name: 'staging', project: project)
+      context 'when environment exists' do
+        let!(:environment) do
+          create(:environment, name: 'staging', project: project)
+        end
+
+        it 'shows deployment message' do
+          expected_text = 'This build is creating a deployment to staging'
+          render
+
+          expect(rendered).to have_css(
+            '.environment-information', text: expected_text)
+        end
+
+        context 'when it has deployment' do
+          let!(:deployment) do
+            create(:deployment, environment: environment)
+          end
+
+          it 'shows that deployment will be overwritten' do
+            expected_text = 'This build is creating a deployment to staging'
+            render
+
+            expect(rendered).to have_css(
+              '.environment-information', text: expected_text)
+            expect(rendered).to have_css(
+              '.environment-information', text: 'latest deployment')
+          end
+        end
       end
 
-      it 'shows deployment message' do
-        expected_text = 'This build is creating a deployment to staging'
-        render
+      context 'when environment does not exist' do
+        it 'shows deployment message' do
+          expected_text = 'This build is creating a deployment to staging'
+          render
 
-        expect(rendered).to have_css(
-          '.environment-information', text: expected_text)
+          expect(rendered).to have_css(
+            '.environment-information', text: expected_text)
+          expect(rendered).not_to have_css(
+            '.environment-information', text: 'latest deployment')
+        end
       end
     end
 
@@ -134,6 +164,8 @@ describe 'projects/builds/show', :view do
 
         expect(rendered).to have_css(
           '.environment-information', text: expected_text)
+        expect(rendered).not_to have_css(
+          '.environment-information', text: 'latest deployment')
       end
     end
   end

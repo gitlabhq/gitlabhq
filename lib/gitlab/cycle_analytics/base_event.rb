@@ -16,7 +16,7 @@ module Gitlab
 
         event_result.map do |event|
           serialize(event) if has_permission?(event['id'])
-        end
+        end.compact
       end
 
       def custom_query(_base_query); end

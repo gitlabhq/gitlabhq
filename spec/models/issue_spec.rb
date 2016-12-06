@@ -43,14 +43,16 @@ describe Issue, models: true do
   end
 
   describe '#to_reference' do
+    let(:project) { build(:empty_project, name: 'sample-project') }
+    let(:issue) { build(:issue, iid: 1, project: project) }
+
     it 'returns a String reference to the object' do
-      expect(subject.to_reference).to eq "##{subject.iid}"
+      expect(issue.to_reference).to eq "#1"
     end
 
     it 'supports a cross-project reference' do
-      cross = double('project')
-      expect(subject.to_reference(cross)).
-        to eq "#{subject.project.to_reference}##{subject.iid}"
+      another_project = build(:project, name: 'another-project', namespace: project.namespace)
+      expect(issue.to_reference(another_project)).to eq "sample-project#1"
     end
   end
 
@@ -331,7 +333,7 @@ describe Issue, models: true do
     end
 
     context 'with a user' do
-      let(:user) { build(:user) }
+      let(:user) { create(:user) }
       let(:issue) { build(:issue) }
 
       it 'returns true when the issue is readable' do

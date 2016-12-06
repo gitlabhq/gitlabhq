@@ -3,9 +3,9 @@
  */
 
 @-webkit-keyframes targe3-note {
-  from { background: #fffff0; }
-  50% { background: #ffffd3; }
-  to { background: #fffff0; }
+  from { background: $note-targe3-outside; }
+  50% { background: $note-targe3-inside; }
+  to { background: $note-targe3-outside; }
 }
 
 ul.notes {
@@ -43,11 +43,24 @@ ul.notes {
     }
 
     .system-note-message {
-      text-transform: lowercase;
+      display: inline-block;
+
+      &::first-letter {
+        text-transform: lowercase;
+      }
 
       a {
         color: $gl-link-color;
         text-decoration: none;
+      }
+
+      p {
+        display: inline-block;
+        margin: 0;
+
+        &::first-letter {
+          text-transform: lowercase;
+        }
       }
     }
 
@@ -62,6 +75,13 @@ ul.notes {
         display: none;
         padding: 10px 0 0;
         cursor: pointer;
+        position: relative;
+        z-index: 2;
+
+        &:hover {
+          color: $gl-link-color;
+          text-decoration: underline;
+        }
       }
 
       .note-text {
@@ -70,14 +90,14 @@ ul.notes {
         }
 
         &.system-note-commit-list {
-          max-height: 63px;
+          max-height: 70px;
           overflow: hidden;
           display: block;
 
           ul {
-            margin: 3px 0 3px 15px !important;
+            margin: 3px 0 3px 16px !important;
 
-            li {
+            .gfm-commit {
               font-family: $monospace_font;
               font-size: 12px;
             }
@@ -87,14 +107,24 @@ ul.notes {
             display: none;
           }
 
+          p:last-child {
+            a {
+              color: $gl-text-color;
+
+              &:hover {
+                color: $gl-link-color;
+              }
+            }
+          }
+
           &::after {
             content: '';
             width: 100%;
-            height: 20px;
+            height: 67px;
             position: absolute;
             left: 0;
-            bottom: 50px;
-            background: linear-gradient(rgba($gray-light, .3) 0, $white-light);
+            bottom: 0;
+            background: linear-gradient(rgba($gray-light, 0.1) -100px, $white-light 100%);
           }
 
           &.hide-shade {
@@ -142,6 +172,10 @@ ul.notes {
       &.timeline-entry {
         padding: 14px 10px;
       }
+
+      .system-note {
+        padding: 0;
+      }
     }
 
     &.is-editting {
@@ -188,11 +222,6 @@ ul.notes {
       padding-bottom: 3px;
       padding-right: 20px;
 
-      p {
-        display: inline;
-        margin: 0;
-      }
-
       @media (min-width: $screen-sm-min) {
         padding-right: 0;
       }
@@ -224,7 +253,7 @@ ul.notes {
 }
 
 .page-sidebar-pinned.right-sidebar-expanded {
-  @media (max-width: $screen-lg-min) {
+  @media (max-width: $screen-md-max) {
     .note-header {
       .note-headline-light {
         display: block;
@@ -276,7 +305,7 @@ ul.notes {
     &.notes_line2 {
       text-align: center;
       padding: 10px 0;
-      border-left: 1px solid #ddd !important;
+      border-left: 1px solid $note-line2-border !important;
     }
 
     &.notes_content {
@@ -442,7 +471,7 @@ ul.notes {
   .add-diff-note {
     margin-top: -4px;
     border-radius: 40px;
-    background: #fff;
+    background: $white-light;
     padding: 4px;
     font-size: 16px;
     color: $gl-link-color;
@@ -455,7 +484,7 @@ ul.notes {
 
     &:hover {
       background: $gl-info;
-      color: #fff;
+      color: $white-light;
       @include show-add-diff-note;
     }
   }

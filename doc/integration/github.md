@@ -48,6 +48,21 @@ GitHub will generate an application ID and secret key for you to use.
 
     For omnibus package:
 
+    For GitHub.com:
+    
+    ```ruby
+      gitlab_rails['omniauth_providers'] = [
+        {
+          "name" => "github",
+          "app_id" => "YOUR_APP_ID",
+          "app_secret" => "YOUR_APP_SECRET",
+          "args" => { "scope" => "user:email" }
+        }
+      ]
+    ```
+    
+    For GitHub Enterprise:
+    
     ```ruby
       gitlab_rails['omniauth_providers'] = [
         {
@@ -86,7 +101,7 @@ GitHub will generate an application ID and secret key for you to use.
 
 1.  Change 'YOUR_APP_SECRET' to the client secret from the GitHub application page  from step 7.
 
-1.  Save the configuration file.
+1.  Save the configuration file and run `sudo gitlab-ctl reconfigure`.
 
 1.  Restart GitLab for the changes to take effect.
 

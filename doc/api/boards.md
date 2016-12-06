@@ -148,10 +148,6 @@ Example response:
 
 Creates a new Issue Board list.
 
-If the operation is successful, a status code of `200` and the newly-created
-list is returned. If an error occurs, an error number and a message explaining
-the reason is returned.
-
 ```
 POST /projects/:id/boards/:board_id/lists
 ```
@@ -183,10 +179,6 @@ Example response:
 ## Edit board list
 
 Updates an existing Issue Board list. This call is used to change list position.
-
-If the operation is successful, a code of `200` and the updated board list is
-returned. If an error occurs, an error number and a message explaining the
-reason is returned.
 
 ```
 PUT /projects/:id/boards/:board_id/lists/:list_id
@@ -220,8 +212,6 @@ Example response:
 ## Delete a board list
 
 Only for admins and project owners. Soft deletes the board list in question.
-If the operation is successful, a status code `200` is returned. In case you cannot
-destroy this board list, or it is not present, code `404` is given.
 
 ```
 DELETE /projects/:id/boards/:board_id/lists/:list_id

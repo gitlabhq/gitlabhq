@@ -31,7 +31,7 @@
       .last-commit {
         @include str-truncated(506px);
 
-        @media (min-width: $screen-sm-max) and (max-width: $screen-md-max) {
+        @media (min-width: $screen-md-min) and (max-width: $screen-md-max) {
           @include str-truncated(450px);
         }
 

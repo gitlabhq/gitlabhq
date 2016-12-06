@@ -37,5 +37,5 @@
           = preserve(markdown(commit.description, pipeline: :single_line, author: commit.author))
 
       = commit_author_link(commit, avatar: false, size: 24)
-      authored
+      committed
       #{time_ago_with_tooltip(commit.committed_date)}

@@ -28,10 +28,10 @@ describe('Actions Component', () => {
     });
 
     expect(
-      component.$el.querySelectorAll('.dropdown-menu li').length
+      component.$el.querySelectorAll('.dropdown-menu li').length,
     ).toEqual(actionsMock.length);
     expect(
-      component.$el.querySelector('.dropdown-menu li a').getAttribute('href')
+      component.$el.querySelector('.dropdown-menu li a').getAttribute('href'),
     ).toEqual(actionsMock[0].play_path);
   });
 });

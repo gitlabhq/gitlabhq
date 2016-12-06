@@ -270,12 +270,16 @@ which can be avoided if a different driver is used, for example `overlay`.
 
 ## Using the GitLab Container Registry
 
-> **Note:**
-This feature requires GitLab 8.8 and GitLab Runner 1.2.
+> **Notes:**
+- This feature requires GitLab 8.8 and GitLab Runner 1.2.
+- Starting from GitLab 8.12, if you have 2FA enabled in your account, you need
+  to pass a personal access token instead of your password in order to login to
+  GitLab's Container Registry.
 
-Once you've built a Docker image, you can push it up to the built-in [GitLab Container Registry](../../user/project/container_registry.md). For example, if you're using
-docker-in-docker on your runners, this is how your `.gitlab-ci.yml` could look:
-
+Once you've built a Docker image, you can push it up to the built-in
+[GitLab Container Registry](../../user/project/container_registry.md). For example,
+if you're using docker-in-docker on your runners, this is how your `.gitlab-ci.yml`
+could look like:
 
 ```yaml
  build:
@@ -354,10 +358,20 @@ deploy:
 ```
 
 Some things you should be aware of when using the Container Registry:
-* You must log in to the container registry before running commands. Putting this in `before_script` will run it before each build job.
-* Using `docker build --pull` makes sure that Docker fetches any changes to base images before building just in case your cache is stale. It takes slightly longer, but means you don’t get stuck without security patches to base images.
-* Doing an explicit `docker pull` before each `docker run` makes sure to fetch the latest image that was just built. This is especially important if you are using multiple runners that cache images locally. Using the git SHA in your image tag makes this less necessary since each build will be unique and you shouldn't ever have a stale image, but it's still possible if you re-build a given commit after a dependency has changed.
-* You don't want to build directly to `latest` in case there are multiple builds happening simultaneously.
+
+- You must log in to the container registry before running commands. Putting
+  this in `before_script` will run it before each build job.
+- Using `docker build --pull` makes sure that Docker fetches any changes to base
+  images before building just in case your cache is stale. It takes slightly
+  longer, but means you don’t get stuck without security patches to base images.
+- Doing an explicit `docker pull` before each `docker run` makes sure to fetch
+  the latest image that was just built. This is especially important if you are
+  using multiple runners that cache images locally. Using the git SHA in your
+  image tag makes this less necessary since each build will be unique and you
+  shouldn't ever have a stale image, but it's still possible if you re-build a
+  given commit after a dependency has changed.
+- You don't want to build directly to `latest` in case there are multiple builds
+  happening simultaneously.
 
 [docker-in-docker]: https://blog.docker.com/2013/09/docker-can-now-run-within-docker/
 [docker-cap]: https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities

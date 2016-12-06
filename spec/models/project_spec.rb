@@ -243,6 +243,13 @@ describe Project, models: true do
     it { is_expected.to respond_to(:path_with_namespace) }
   end
 
+  describe 'delegation' do
+    it { is_expected.to delegate_method(:add_guest).to(:team) }
+    it { is_expected.to delegate_method(:add_reporter).to(:team) }
+    it { is_expected.to delegate_method(:add_developer).to(:team) }
+    it { is_expected.to delegate_method(:add_master).to(:team) }
+  end
+
   describe '#name_with_namespace' do
     let(:project) { build_stubbed(:empty_project) }
 
@@ -251,10 +258,70 @@ describe Project, models: true do
   end
 
   describe '#to_reference' do
-    let(:project) { create(:empty_project) }
+    let(:owner) { create(:user, name: 'Gitlab') }
+    let(:namespace) { create(:namespace, path: 'sample-namespace', owner: owner) }
+    let(:project) { create(:empty_project, path: 'sample-project', namespace: namespace) }
 
-    it 'returns a String reference to the object' do
-      expect(project.to_reference).to eq project.path_with_namespace
+    context 'when nil argument' do
+      it 'returns nil' do
+        expect(project.to_reference).to be_nil
+      end
+    end
+
+    context 'when same project argument' do
+      it 'returns nil' do
+        expect(project.to_reference(project)).to be_nil
+      end
+    end
+
+    context 'when cross namespace project argument' do
+      let(:another_namespace_project) { create(:empty_project, name: 'another-project') }
+
+      it 'returns complete path to the project' do
+        expect(project.to_reference(another_namespace_project)).to eq 'sample-namespace/sample-project'
+      end
+    end
+
+    context 'when same namespace / cross-project argument' do
+      let(:another_project) { create(:empty_project, namespace: namespace) }
+
+      it 'returns complete path to the project' do
+        expect(project.to_reference(another_project)).to eq 'sample-project'
+      end
+    end
+  end
+
+  describe '#to_human_reference' do
+    let(:owner) { create(:user, name: 'Gitlab') }
+    let(:namespace) { create(:namespace, name: 'Sample namespace', owner: owner) }
+    let(:project) { create(:empty_project, name: 'Sample project', namespace: namespace) }
+
+    context 'when nil argument' do
+      it 'returns nil' do
+        expect(project.to_human_reference).to be_nil
+      end
+    end
+
+    context 'when same project argument' do
+      it 'returns nil' do
+        expect(project.to_human_reference(project)).to be_nil
+      end
+    end
+
+    context 'when cross namespace project argument' do
+      let(:another_namespace_project) { create(:empty_project, name: 'another-project') }
+
+      it 'returns complete name with namespace of the project' do
+        expect(project.to_human_reference(another_namespace_project)).to eq 'Gitlab / Sample project'
+      end
+    end
+
+    context 'when same namespace / cross-project argument' do
+      let(:another_project) { create(:empty_project, namespace: namespace) }
+
+      it 'returns name of the project' do
+        expect(project.to_human_reference(another_project)).to eq 'Sample project'
+      end
     end
   end
 
@@ -354,10 +421,15 @@ describe Project, models: true do
   describe '#get_issue' do
     let(:project) { create(:empty_project) }
     let!(:issue)  { create(:issue, project: project) }
+    let(:user)    { create(:user) }
+
+    before do
+      project.team << [user, :developer]
+    end
 
     context 'with default issues tracker' do
       it 'returns an issue' do
-        expect(project.get_issue(issue.iid)).to eq issue
+        expect(project.get_issue(issue.iid, user)).to eq issue
       end
 
       it 'returns count of open issues' do
@@ -365,7 +437,12 @@ describe Project, models: true do
       end
 
       it 'returns nil when no issue found' do
-        expect(project.get_issue(999)).to be_nil
+        expect(project.get_issue(999, user)).to be_nil
+      end
+
+      it "returns nil when user doesn't have access" do
+        user = create(:user)
+        expect(project.get_issue(issue.iid, user)).to eq nil
       end
     end
 
@@ -375,7 +452,7 @@ describe Project, models: true do
       end
 
       it 'returns an ExternalIssue' do
-        issue = project.get_issue('FOO-1234')
+        issue = project.get_issue('FOO-1234', user)
         expect(issue).to be_kind_of(ExternalIssue)
         expect(issue.iid).to eq 'FOO-1234'
         expect(issue.project).to eq project
@@ -1497,57 +1574,6 @@ describe Project, models: true do
 
         expect(projects).to contain_exactly(project1, project2)
       end
-    end
-  end
-
-  describe 'authorized_for_user' do
-    let(:group) { create(:group) }
-    let(:developer) { create(:user) }
-    let(:master) { create(:user) }
-    let(:personal_project) { create(:project, namespace: developer.namespace) }
-    let(:group_project) { create(:project, namespace: group) }
-    let(:members_project) { create(:project) }
-    let(:shared_project) { create(:project) }
-
-    before do
-      group.add_master(master)
-      group.add_developer(developer)
-
-      members_project.team << [developer, :developer]
-      members_project.team << [master, :master]
-
-      create(:project_group_link, project: shared_project, group: group, group_access: Gitlab::Access::DEVELOPER)
-    end
-
-    it 'returns false for no user' do
-      expect(personal_project.authorized_for_user?(nil)).to be(false)
-    end
-
-    it 'returns true for personal projects of the user' do
-      expect(personal_project.authorized_for_user?(developer)).to be(true)
-    end
-
-    it 'returns true for projects of groups the user is a member of' do
-      expect(group_project.authorized_for_user?(developer)).to be(true)
-    end
-
-    it 'returns true for projects for which the user is a member of' do
-      expect(members_project.authorized_for_user?(developer)).to be(true)
-    end
-
-    it 'returns true for projects shared on a group the user is a member of' do
-      expect(shared_project.authorized_for_user?(developer)).to be(true)
-    end
-
-    it 'checks for the correct minimum level access' do
-      expect(group_project.authorized_for_user?(developer, Gitlab::Access::MASTER)).to be(false)
-      expect(group_project.authorized_for_user?(master, Gitlab::Access::MASTER)).to be(true)
-      expect(members_project.authorized_for_user?(developer, Gitlab::Access::MASTER)).to be(false)
-      expect(members_project.authorized_for_user?(master, Gitlab::Access::MASTER)).to be(true)
-      expect(shared_project.authorized_for_user?(developer, Gitlab::Access::MASTER)).to be(false)
-      expect(shared_project.authorized_for_user?(master, Gitlab::Access::MASTER)).to be(false)
-      expect(shared_project.authorized_for_user?(developer, Gitlab::Access::DEVELOPER)).to be(true)
-      expect(shared_project.authorized_for_user?(master, Gitlab::Access::DEVELOPER)).to be(true)
     end
   end
 

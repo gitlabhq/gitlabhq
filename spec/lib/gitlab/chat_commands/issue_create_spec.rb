@@ -32,6 +32,15 @@ describe Gitlab::ChatCommands::IssueCreate, service: true do
         expect(Issue.last.description).to eq(description)
       end
     end
+
+    context "with more newlines between the title and the description" do
+      let(:description) { "Surfin bird" }
+      let(:regex_match) { described_class.match("issue create bird is the word\n\n#{description}\n") }
+
+      it 'creates the issue' do
+        expect { subject }.to change { project.issues.count }.by(1)
+      end
+    end
   end
 
   describe '.match' do
@@ -47,6 +56,13 @@ describe Gitlab::ChatCommands::IssueCreate, service: true do
 
       expect(match[:title]).to eq('my title')
       expect(match[:description]).to eq('description')
+    end
+
+    it 'matches the alias new' do
+      match = described_class.match("issue new my title")
+
+      expect(match).not_to be_nil
+      expect(match[:title]).to eq('my title')
     end
   end
 end

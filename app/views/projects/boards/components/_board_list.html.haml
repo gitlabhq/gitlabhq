@@ -35,7 +35,7 @@
       ":issue" => "issue",
       ":issue-link-base" => "issueLinkBase",
       ":disabled" => "disabled",
-      "key" => "id" }
+      ":key" => "issue.id" }
     %li.board-list-count.text-center{ "v-if" => "showCount" }
       = icon("spinner spin", "v-show" => "list.loadingMore" )
       %span{ "v-if" => "list.issues.length === list.issuesSize" }

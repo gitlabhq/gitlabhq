@@ -2,7 +2,9 @@ module EntityDateHelper
   include ActionView::Helpers::DateHelper
 
   def interval_in_words(diff)
-    "#{distance_of_time_in_words(diff.to_f)} ago"
+    return 'Not started' unless diff
+
+    "#{distance_of_time_in_words(Time.now, diff)} ago"
   end
 
   # Converts seconds into a hash such as:

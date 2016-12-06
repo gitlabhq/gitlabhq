@@ -1,6 +1,7 @@
 module API
-  # Users API
   class Users < Grape::API
+    include PaginationParams
+
     before { authenticate! }
 
     resource :users, requirements: { uid: /[0-9]*/, id: /[0-9]*/ } do
@@ -33,6 +34,7 @@ module API
         optional :active, type: Boolean, default: false, desc: 'Filters only active users'
         optional :external, type: Boolean, default: false, desc: 'Filters only external users'
         optional :blocked, type: Boolean, default: false, desc: 'Filters only blocked users'
+        use :pagination
       end
       get do
         unless can?(current_user, :read_users_list, nil)
@@ -140,7 +142,8 @@ module API
             User.where(username: params[:username]).
                 where.not(id: user.id).count > 0
 
-        identity_attrs = params.slice(:provider, :extern_uid)
+        user_params = declared_params(include_missing: false)
+        identity_attrs = user_params.slice(:provider, :extern_uid)
 
         if identity_attrs.any?
           identity = user.identities.find_by(provider: identity_attrs[:provider])
@@ -154,10 +157,10 @@ module API
         end
 
         # Delete already handled parameters
-        params.delete(:extern_uid)
-        params.delete(:provider)
+        user_params.delete(:extern_uid)
+        user_params.delete(:provider)
 
-        if user.update_attributes(declared_params(include_missing: false))
+        if user.update_attributes(user_params)
           present user, with: Entities::UserFull
         else
           render_validation_error!(user)
@@ -329,6 +332,7 @@ module API
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
+        use :pagination
       end
       get ':id/events' do
         user = User.find_by(id: params[:id])

@@ -24,7 +24,7 @@
       .accept_merge_request {
         &.ci-pending,
         &.ci-running {
-          @include btn-orange;
+          @include btn-blue;
         }
 
         &.ci-skipped,
@@ -62,6 +62,7 @@
 
   .ci_widget {
     border-bottom: 1px solid $well-inner-border;
+    color: $gl-gray;
 
     svg {
       margin-right: 4px;
@@ -70,47 +71,11 @@
       overflow: visible;
     }
 
-    &.ci-success {
-      color: $gl-success;
-
-      a.environment,
-      a.pipeline {
-        color: inherit;
-      }
-    }
-
     &.ci-success_with_warnings {
-      color: $gl-success;
 
       i {
         color: $gl-warning;
       }
-    }
-
-    &.ci-skipped {
-      background-color: #eee;
-      color: #888;
-    }
-
-    &.ci-pending {
-      color: $gl-warning;
-    }
-
-    &.ci-running {
-      color: $blue-normal;
-    }
-
-    &.ci-failed,
-    &.ci-error {
-      color: $gl-danger;
-    }
-
-    &.ci-canceled {
-      color: $gl-gray;
-    }
-
-    a.monospace {
-      color: inherit;
     }
   }
 
@@ -121,7 +86,7 @@
   }
 
   .normal {
-    color: #5c5d5e;
+    color: $gl-text-color-dark;
   }
 
   .js-deployment-link {
@@ -151,7 +116,7 @@
 
     @media (max-width: $screen-xs-max) {
       h4 {
-        font-size: 15px;
+        font-size: 14px;
       }
 
       p {
@@ -162,6 +127,11 @@
       .btn-group,
       .accept-action {
         margin-bottom: 4px;
+      }
+
+      .btn-grouped {
+        float: none;
+        margin-right: 0;
       }
 
       .accept-action {
@@ -178,7 +148,7 @@
   }
 
   .mr-widget-footer {
-    border-top: 1px solid #eee;
+    border-top: 1px solid $gray-darker;
   }
 
   .ci-coverage {

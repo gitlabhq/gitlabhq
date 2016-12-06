@@ -54,6 +54,9 @@
       mouseDown () {
         this.showDetail = true;
       },
+      mouseMove() {
+        this.showDetail = false;
+      },
       showIssue (e) {
         const targetTagName = e.target.tagName.toLowerCase();
 

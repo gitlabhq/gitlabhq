@@ -1,5 +1,7 @@
 module API
   class BroadcastMessages < Grape::API
+    include PaginationParams
+
     before { authenticate! }
     before { authenticated_as_admin! }
 
@@ -15,8 +17,7 @@ module API
         success Entities::BroadcastMessage
       end
       params do
-        optional :page,     type: Integer, desc: 'Current page number'
-        optional :per_page, type: Integer, desc: 'Number of messages per page'
+        use :pagination
       end
       get do
         messages = BroadcastMessage.all

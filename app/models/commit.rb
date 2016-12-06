@@ -48,6 +48,10 @@ class Commit
         max_lines: DIFF_HARD_LIMIT_LINES,
       }
     end
+
+    def from_hash(hash, project)
+      new(Gitlab::Git::Commit.new(hash), project)
+    end
   end
 
   attr_accessor :raw
@@ -88,19 +92,11 @@ class Commit
   end
 
   def to_reference(from_project = nil)
-    if cross_project_reference?(from_project)
-      project.to_reference + self.class.reference_prefix + self.id
-    else
-      self.id
-    end
+    commit_reference(from_project, id)
   end
 
   def reference_link_text(from_project = nil)
-    if cross_project_reference?(from_project)
-      project.to_reference + self.class.reference_prefix + self.short_id
-    else
-      self.short_id
-    end
+    commit_reference(from_project, short_id)
   end
 
   def diff_line_count
@@ -324,6 +320,16 @@ class Commit
   end
 
   private
+
+  def commit_reference(from_project, referable_commit_id)
+    reference = project.to_reference(from_project)
+
+    if reference.present?
+      "#{reference}#{self.class.reference_prefix}#{referable_commit_id}"
+    else
+      referable_commit_id
+    end
+  end
 
   def find_author_by_any_email
     User.find_by_any_email(author_email.downcase)

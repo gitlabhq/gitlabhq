@@ -1,12 +1,13 @@
 class CycleAnalytics
   class Summary
-    def initialize(project, from:)
+    def initialize(project, current_user, from:)
       @project = project
+      @current_user = current_user
       @from = from
     end
 
     def new_issues
-      @project.issues.created_after(@from).count
+      IssuesFinder.new(@current_user, project_id: @project.id).execute.created_after(@from).count
     end
 
     def commits

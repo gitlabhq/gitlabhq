@@ -1,6 +1,10 @@
 module API
-  # Projects API
   class ProjectHooks < Grape::API
+    include PaginationParams
+
+    before { authenticate! }
+    before { authorize_admin_project }
+
     helpers do
       params :project_hook_properties do
         requires :url, type: String, desc: "The URL to send the request to"
@@ -17,15 +21,15 @@ module API
       end
     end
 
-    before { authenticate! }
-    before { authorize_admin_project }
-
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
     resource :projects do
       desc 'Get project hooks' do
         success Entities::ProjectHook
+      end
+      params do
+        use :pagination
       end
       get ":id/hooks" do
         hooks = paginate user_project.hooks

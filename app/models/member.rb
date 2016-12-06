@@ -63,6 +63,7 @@ class Member < ActiveRecord::Base
   after_create :send_request, if: :request?, unless: :importing?
   after_create :create_notification_setting, unless: [:pending?, :importing?]
   after_create :post_create_hook, unless: [:pending?, :importing?]
+  after_create :refresh_member_authorized_projects, if: :importing?
   after_update :post_update_hook, unless: [:pending?, :importing?]
   after_destroy :post_destroy_hook, unless: :pending?
 
@@ -246,7 +247,7 @@ class Member < ActiveRecord::Base
   end
 
   def post_update_hook
-    # override in subclass
+    UserProjectAccessChangedService.new(user.id).execute if access_level_changed?
   end
 
   def post_destroy_hook

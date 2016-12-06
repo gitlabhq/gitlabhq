@@ -1,5 +1,7 @@
 module API
   class AccessRequests < Grape::API
+    include PaginationParams
+
     before { authenticate! }
 
     helpers ::API::Helpers::MembersHelpers
@@ -12,6 +14,9 @@ module API
         desc "Gets a list of access requests for a #{source_type}." do
           detail 'This feature was introduced in GitLab 8.11.'
           success Entities::AccessRequester
+        end
+        params do
+          use :pagination
         end
         get ":id/access_requests" do
           source = find_source(source_type, params[:id])

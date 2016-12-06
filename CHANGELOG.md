@@ -2,8 +2,182 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 8.14.3 (2016-12-02)
+
+- Pass commit data to ProcessCommitWorker to reduce Git overhead. !7744
+- Speed up issuable dashboards.
+- Don't change relative URLs to absolute URLs in the Help page.
+- Fixes "ActionView::Template::Error: undefined method `text?` for nil:NilClass" on MR pages.
+- Fix branch validation for GitHub PR where repo/fork was renamed/deleted.
+- Validate state param when filtering issuables.
+
+## 8.14.2 (2016-12-01)
+
+- Remove caching of events data. !6578
+- Rephrase some system notes to be compatible with new system note style. !7692
+- Pass tag SHA to post-receive hook when tag is created via UI. !7700
+- Prevent error when submitting a merge request and pipeline is not defined. !7707
+- Fixes system note style in commit discussion. !7721
+- Use a Redis lease for updating authorized projects. !7733
+- Refactor JiraService by moving code out of JiraService#execute method. !7756
+- Update GitLab Workhorse to v1.0.1. !7759
+- Fix pipelines info being hidden in merge request widget. !7808
+- Fixed commit timeago not rendering after initial page.
+- Fix for error thrown in cycle analytics events if build has not started.
+- Fixed issue boards issue sorting when dragging issue into list.
+- Allow access to the wiki with git when repository feature disabled.
+- Fixed timeago not rendering when resolving a discussion.
+- Update Sidekiq-cron to fix compatibility issues with Sidekiq 4.2.1.
+- Timeout creating and viewing merge request for binary file.
+- Gracefully recover from Redis connection failures in Sidekiq initializer.
+
+## 8.14.1 (2016-11-28)
+
+- Fix deselecting calendar days on contribution graph. !6453 (ClemMakesApps)
+- Update grape entity to 0.6.0. !7491
+- If Build running change accept merge request when build succeeds button from orange to blue. !7577
+- Changed import sources buttons to checkboxes. !7598 (Luke "Jared" Bennett)
+- Last minute CI Style tweaks for 8.14. !7643
+- Fix exceptions when loading build trace. !7658
+- Fix wrong template rendered when CI/CD settings aren't update successfully. !7665
+- fixes last_deployment call environment is nil. !7671
+- Sort builds by name within pipeline graph. !7681
+- Correctly determine mergeability of MR with no discussions.
+- Sidekiq stats in the admin area will now show correctly on different platforms. (blackst0ne)
+- Fixed issue boards dragging card removing random issues.
+- Fix information disclosure in `Projects::BlobController#update`.
+- Fix missing access checks on issue lookup using IssuableFinder.
+- Replace issue access checks with use of IssuableFinder.
+- Non members cannot create labels through the API.
+- Fix cycle analytics plan stage when commits are missing.
+
 ## 8.14.0 (2016-11-22)
 
+- Use separate email-token for incoming email and revert back the inactive feature. !5914
+- API: allow recursive tree request. !6088 (Rebeca Mendez)
+- Replace jQuery.timeago with timeago.js. !6274 (ClemMakesApps)
+- Add CI notifications. Who triggered a pipeline would receive an email after the pipeline is succeeded or failed. Users could also update notification settings accordingly. !6342
+- Add button to delete all merged branches. !6449 (Toon Claes)
+- Finer-grained Git gargage collection. !6588
+- Introduce better credential and error checking to `rake gitlab:ldap:check`. !6601
+- Centralize LDAP config/filter logic. !6606
+- Make system notes less intrusive. !6755
+- Process commits using a dedicated Sidekiq worker. !6802
+- Show random messages when the To Do list is empty. !6818 (Josep Llaneras)
+- Precalculate user's authorized projects in database. !6839
+- Fix record not found error on NewNoteWorker processing. !6863 (Oswaldo Ferreira)
+- Show avatars in mention dropdown. !6865
+- Fix expanding a collapsed diff when converting a symlink to a regular file. !6953
+- Defer saving project services to the database if there are no user changes. !6958
+- Omniauth auto link LDAP user falls back to find by DN when user cannot be found by UID. !7002
+- Display "folders" for environments. !7015
+- Make it possible to trigger builds from webhooks. !7022 (Dmitry Poray)
+- Fix showing pipeline status for a given commit from correct branch. !7034
+- Add link to build pipeline within individual build pages. !7082
+- Add api endpoint `/groups/owned`. !7103 (Borja Aparicio)
+- Add query param to filter users by external & blocked type. !7109 (Yatish Mehta)
+- Issues atom feed url reflect filters on dashboard. !7114 (Lucas Deschamps)
+- Add setting to only allow merge requests to be merged when all discussions are resolved. !7125 (Rodolfo Arruda)
+- Remove an extra leading space from diff paste data. !7133 (Hiroyuki Sato)
+- Fix trace patching feature - update the updated_at value. !7146
+- Fix 404 on network page when entering non-existent git revision. !7172 (Hiroyuki Sato)
+- Rewrite git blame spinach feature tests to rspec feature tests. !7197 (Lisanne Fellinger)
+- Add api endpoint for creating a pipeline. !7209 (Ido Leibovich)
+- Allow users to subscribe to group labels. !7215
+- Reduce API calls needed when importing issues and pull requests from GitHub. !7241 (Andrew Smith (EspadaV8))
+- Only skip group when it's actually a group in the "Share with group" select. !7262
+- Introduce round-robin project creation to spread load over multiple shards. !7266
+- Ensure merge request's "remove branch" accessors return booleans. !7267
+- Fix no "Register" tab if ldap auth is enabled (#24038). !7274 (Luc Didry)
+- Expose label IDs in API. !7275 (Rares Sfirlogea)
+- Fix invalid filename validation on eslint. !7281
+- API: Ability to retrieve version information. !7286 (Robert Schilling)
+- Added ability to throttle Sidekiq Jobs. !7292
+- Set default Sidekiq retries to 3. !7294
+- Fix double event and ajax request call on MR page. !7298 (YarNayar)
+- Unify anchor link format for MR diff files. !7298 (YarNayar)
+- Require projects before creating milestone. !7301 (gfyoung)
+- Fix error when using invalid branch name when creating a new pipeline. !7324
+- Return 400 when creating a system hook fails. !7350 (Robert Schilling)
+- Auto-close environment when branch is deleted. !7355
+- Rework cache invalidation so only changed data is refreshed. !7360
+- Navigation bar issuables counters reflects dashboard issuables counters. !7368 (Lucas Deschamps)
+- Fix cache for commit status in commits list to respect branches. !7372
+- fixes 500 error on project show when user is not logged in and project is still empty. !7376
+- Removed gray button styling from todo buttons in sidebars. !7387
+- Fix project records with invalid visibility_level values. !7391
+- Use 'Forking in progress' title when appropriate. !7394 (Philip Karpiak)
+- Fix error links in help index page. !7396 (Fu Xu)
+- Add support for reply-by-email when the email only contains HTML. !7397
+- [Fix] Extra divider issue in dropdown. !7398
+- Project download buttons always show. !7405 (Philip Karpiak)
+- Give search-input correct padding-right value. !7407 (Philip Karpiak)
+- Remove additional padding on right-aligned items in MR widget. !7411 (Didem Acet)
+- Fix issue causing Labels not to appear in sidebar on MR page. !7416 (Alex Sanford)
+- Allow mail_room idle_timeout option to be configurable. !7423
+- Fix misaligned buttons on admin builds page. !7424 (Didem Acet)
+- Disable "Request Access" functionality by default for new projects and groups. !7425
+- fix shibboleth misconfigurations resulting in authentication bypass. !7428
+- Added Mattermost slash command. !7438
+- Allow to connect Chat account with GitLab. !7450
+- Make New Group form respect default visibility application setting. !7454 (Jacopo Beschi @jacopo-beschi)
+- Fix Error 500 when creating a merge request that contains an image that was deleted and added. !7457
+- Fix labels API by adding missing current_user parameter. !7458 (Francesco Coda Zabetta)
+- Changed restricted visibility admin buttons to checkboxes. !7463
+- Send credentials (currently for registry only) with build data to GitLab Runner. !7474
+- Fix POST /internal/allowed to cope with gitlab-shell v4.0.0 project paths. !7480
+- Adds es6-promise Polyfill. !7482
+- Added colored labels to related MR list. !7486 (Didem Acet)
+- Use setter for key instead AR callback. !7488 (Semyon Pupkov)
+- Limit labels returned for a specific project as an administrator. !7496
+- Change slack notification comment link. !7498 (Herbert Kagumba)
+- Allow registering users whose username contains dots. !7500 (Timothy Andrew)
+- Fix race condition during group deletion and remove stale records present due to this bug. !7528 (Timothy Andrew)
+- Check all namespaces on validation of new username. !7537
+- Pass correct tag target to post-receive hook when creating tag via UI. !7556
+- Add help message for configuring Mattermost slash commands. !7558
+- Fix typo in Build page JavaScript. !7563 (winniehell)
+- Make job script a required configuration entry. !7566
+- Fix errors happening when source branch of merge request is removed and then restored. !7568
+- Fix a wrong "The build for this merge request failed" message. !7579
+- Fix Margins look weird in Project page with pinned sidebar in project stats bar. !7580
+- Fix regression causing bad error message to appear on Merge Request form. !7599 (Alex Sanford)
+- Fix activity page endless scroll on large viewports. !7608
+- Fix 404 on some group pages when name contains dot. !7614
+- Do not create a new TODO when failed build is allowed to fail. !7618
+- Add deployment command to ChatOps. !7619
+- Fix 500 error when group name ends with git. !7630
+- Fix undefined error in CI linter. !7650
+- Show events per stage on Cycle Analytics page. !23449
+- Add JIRA remotelinks and prevent duplicated closing messages.
+- Fixed issue boards counter border when unauthorized.
+- Add placeholder for the example text for custom hex color on label creation popup. (Luis Alonso Chavez Armendariz)
+- Add an index for project_id in project_import_data to improve performance.
+- Fix broken commits search.
+- Assignee dropdown now searches author of issue or merge request.
+- Clicking "force remove source branch" label now toggles the checkbox again.
+- More aggressively preload on merge request and issue index pages.
+- Fix broken link to observatory cli on Frontend Dev Guide. (Sam Rose)
+- Fixing the issue of the project fork url giving 500 when not signed instead of being redirected to sign in page. (Cagdas Gerede)
+- Fix: Guest sees some repository details and gets 404.
+- Add logging for rack attack events to production.log.
+- Add environment info to builds page.
+- Allow commit note to be visible if repo is visible.
+- Bump omniauth-gitlab to 1.0.2 to fix incompatibility with omniauth-oauth2.
+- Redesign pipelines page.
+- Faster search inside Project.
+- Search for a filename in a project.
+- Allow sorting groups in the API.
+- Fix: Todos Filter Shows All Users.
+- Use the Gitlab Workhorse HTTP header in the admin dashboard. (Chris Wright)
+- Fixed multiple requests sent when opening dropdowns.
+- Added permissions per stage to cycle analytics endpoint.
+- Fix project Visibility Level selector not using default values.
+- Add events per stage to cycle analytics.
+- Allow to test JIRA service settings without having a repository.
+- Fix JIRA references for project snippets.
+- Allow enabling and disabling commit and MR events for JIRA.
+- simplify url generation. (Jarka Kadlecova)
 - Show correct environment log in admin/logs (@duk3luk3 !7191)
 - Fix Milestone dropdown not stay selected for `Upcoming` and `No Milestone` option !7117
 - Diff collapse won't shift when collapsing.
@@ -76,6 +250,20 @@ entry.
 - Updated commit SHA styling on the branches page.
 - Fix "Without projects" filter. !6611 (Ben Bodenmiller)
 - Fix 404 when visit /projects page
+
+## 8.13.8 (2016-12-02)
+
+- Pass tag SHA to post-receive hook when tag is created via UI. !7700
+- Validate state param when filtering issuables.
+
+## 8.13.7 (2016-11-28)
+
+- fixes 500 error on project show when user is not logged in and project is still empty. !7376
+- Update grape entity to 0.6.0. !7491
+- Fix information disclosure in `Projects::BlobController#update`.
+- Fix missing access checks on issue lookup using IssuableFinder.
+- Replace issue access checks with use of IssuableFinder.
+- Non members cannot create labels through the API.
 
 ## 8.13.6 (2016-11-17)
 

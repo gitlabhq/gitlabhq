@@ -174,7 +174,7 @@ module GitlabMarkdownHelper
   # Returns a String
   def cross_project_reference(project, entity)
     if entity.respond_to?(:to_reference)
-      "#{project.to_reference}#{entity.to_reference}"
+      entity.to_reference(project)
     else
       ''
     end

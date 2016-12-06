@@ -6,9 +6,11 @@ class HelpController < ApplicationController
   def index
     @help_index = File.read(Rails.root.join('doc', 'README.md'))
 
-    # Prefix Markdown links with `help/` unless they already have been
-    # See http://rubular.com/r/ie2MlpdUMq
-    @help_index.gsub!(/(\]\()(\/?help\/)?([^\)\(]+\))/, '\1/help/\3')
+    # Prefix Markdown links with `help/` unless they are external links
+    # See http://rubular.com/r/X3baHTbPO2
+    @help_index.gsub!(%r{(?<delim>\]\()(?!.+://)(?!/)(?<link>[^\)\(]+\))}) do
+      "#{$~[:delim]}#{Gitlab.config.gitlab.relative_url_root}/help/#{$~[:link]}"
+    end
   end
 
   def show

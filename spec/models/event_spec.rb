@@ -260,6 +260,24 @@ describe Event, models: true do
     end
   end
 
+  describe '#authored_by?' do
+    let(:event) { build(:event) }
+
+    it 'returns true when the event author and user are the same' do
+      expect(event.authored_by?(event.author)).to eq(true)
+    end
+
+    it 'returns false when passing nil as an argument' do
+      expect(event.authored_by?(nil)).to eq(false)
+    end
+
+    it 'returns false when the given user is not the author of the event' do
+      user = double(:user, id: -1)
+
+      expect(event.authored_by?(user)).to eq(false)
+    end
+  end
+
   def create_event(project, user, attrs = {})
     data = {
       before: Gitlab::Git::BLANK_SHA,

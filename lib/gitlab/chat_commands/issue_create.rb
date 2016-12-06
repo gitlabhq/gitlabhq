@@ -2,11 +2,13 @@ module Gitlab
   module ChatCommands
     class IssueCreate < IssueCommand
       def self.match(text)
-        /\Aissue\s+create\s+(?<title>[^\n]*)\n*(?<description>.*)\z/.match(text)
+        # we can not match \n with the dot by passing the m modifier as than 
+        # the title and description are not seperated
+        /\Aissue\s+(new|create)\s+(?<title>[^\n]*)\n*(?<description>(.|\n)*)/.match(text)
       end
 
       def self.help_message
-        'issue create <title>\n<description>'
+        'issue new <title>\n<description>'
       end
 
       def self.allowed?(project, user)
@@ -15,7 +17,7 @@ module Gitlab
 
       def execute(match)
         title = match[:title]
-        description = match[:description]
+        description = match[:description].to_s.rstrip
 
         Issues::CreateService.new(project, current_user, title: title, description: description).execute
       end
