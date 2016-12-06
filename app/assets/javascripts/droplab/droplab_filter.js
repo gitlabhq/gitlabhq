@@ -10,13 +10,22 @@ droplab.plugin(function init(DropLab) {
     var matches = [];
     // will only work on dynamically set data 
     // and if a config text property is set
-    if(!data || !config.hasOwnProperty('text')){
+    if(!data || (!config.hasOwnProperty('text') && !config.hasOwnProperty('filter'))){
       return;
     }
-    matches = data.map(function(o){
+
+    var filterFunction = function(o){
       // cheap string search
       o.droplab_hidden = o[config.text].toLowerCase().indexOf(value) === -1;
       return o;
+    };
+
+    if (config.hasOwnProperty('filter') && config.filter !== undefined) {
+      filterFunction = config.filter;
+    }
+
+    matches = data.map(function(o) {
+      return filterFunction(o, value);
     });
     list.render(matches);
   }

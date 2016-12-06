@@ -50,12 +50,17 @@
 
     getFilterConfig(filterKeyword) {
       const config = {};
-      const filterConfig = {
-        text: filterKeyword,
-      };
+      const filterConfig = {};
 
-      config[this.hookId] = filterKeyword ? filterConfig : {};
+      if (filterKeyword) {
+        filterConfig.text = filterKeyword;
+      }
 
+      if (this.filterMethod) {
+        filterConfig.filter = this.filterMethod;
+      }
+
+      config[this.hookId] = filterConfig;
       return config;
     }
 
