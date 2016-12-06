@@ -154,7 +154,6 @@
 
         const dropdownOffset = gl.text.getTextWidth(filteredSearch.value) + filterIconPadding;
 
-        this.dismissCurrentDropdown();
         this.currentDropdown = 'hint';
 
         if (!dropdownHint) {
@@ -162,12 +161,6 @@
         }
         dropdownHint.setOffset(dropdownOffset);
         dropdownHint.render();
-      }
-    }
-
-    dismissCurrentDropdown() {
-      if (this.currentDropdown === 'hint') {
-        dropdownHint.destroy();
       }
     }
 
