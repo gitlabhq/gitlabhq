@@ -104,6 +104,10 @@ module Ci
       statuses.select(:stage).distinct.count
     end
 
+    def stages_name
+      statuses.order(:stage_idx).distinct.pluck(:stage)
+    end
+
     def stages
       status_sql = statuses.latest.where('stage=sg.stage').status_sql
 

@@ -142,6 +142,10 @@ describe Ci::Pipeline, models: true do
       expect(pipeline.stages_count).to eq(3)
     end
 
+    it 'returns a valid names of stages' do
+      expect(pipeline.stages_name).to eq(['build', 'test', 'deploy'])
+    end
+
     context 'stages with statuses' do
       let(:statuses) do
         subject.map do |stage|

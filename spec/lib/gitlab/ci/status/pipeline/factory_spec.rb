@@ -21,7 +21,7 @@ describe Gitlab::Ci::Status::Pipeline::Factory do
             Gitlab::Ci::Status.const_get(core_status.capitalize))
         end
 
-        it 'extends core status with common pipeline methods' do
+        it 'extends core status with common stage methods' do
           expect(status).to have_details
           expect(status).not_to have_action
           expect(status.details_path)
@@ -45,7 +45,7 @@ describe Gitlab::Ci::Status::Pipeline::Factory do
         .to be_a Gitlab::Ci::Status::Pipeline::SuccessWithWarnings
     end
 
-    it 'extends core status with common pipeline methods' do
+    it 'extends core status with common stage methods' do
       expect(status).to have_details
     end
   end

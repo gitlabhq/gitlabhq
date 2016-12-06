@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Status::Stage::Common do
-  let(:pipeline) { create(:ci_pipeline) }
-  let(:stage) { Ci::Stage.new(pipeline, name: 'test') }
+  let(:pipeline) { create(:ci_empty_pipeline) }
+  let(:stage) { build(:ci_stage, pipeline: pipeline, name: 'test') }
 
   subject do
     Class.new(Gitlab::Ci::Status::Core)
