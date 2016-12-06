@@ -97,7 +97,12 @@
 
       const { lastToken } = gl.FilteredSearchTokenizer.processTokens(filteredSearchValue);
       if (lastToken.hasOwnProperty('key')) {
-        document.querySelector('.filtered-search').value = filteredSearchValue.slice(0, -1 * (lastToken.value.length));
+        console.log(lastToken);
+        // Spaces inside the token means that the token value will be escaped by quotes
+        const hasQuotes = lastToken.value.indexOf(' ') !== -1;
+
+        const lengthToRemove = hasQuotes ? lastToken.value.length + 2 : lastToken.value.length;
+        document.querySelector('.filtered-search').value = filteredSearchValue.slice(0, -1 * (lengthToRemove));
       }
 
       document.querySelector('.filtered-search').value += hasExistingValue && addSpace ? ` ${word}` : word;
