@@ -42,9 +42,23 @@
     - else
       .commit-icon-svg.hidden
         = custom_icon("icon_commit")
+      .canceled-icon-svg.hidden
+        = custom_icon("icon_status_canceled")
+      .running-icon-svg.hidden
+        = custom_icon("icon_status_running")
+      .skipped-icon-svg.hidden
+        = custom_icon("icon_status_skipped")
+      .created-icon-svg.hidden
+        = custom_icon("icon_status_created")
+      .pending-icon-svg.hidden
+        = custom_icon("icon_status_pending")
+      .success-icon-svg.hidden
+        = custom_icon("icon_status_success")
+      .failed-icon-svg.hidden
+        = custom_icon("icon_status_failed")
+      .warning-icon-svg.hidden
+        = custom_icon("icon_status_warning")
       .vue-pipelines-index
 
-= page_specific_javascript_tag('vue_icons/index.js')
 = page_specific_javascript_tag('vue_pagination/index.js')
-= page_specific_javascript_tag('vue_pipelines_status/index.js')
 = page_specific_javascript_tag('vue_pipelines_index/index.js')

@@ -3,16 +3,6 @@
 
 ((gl) => {
   gl.VueStage = Vue.extend({
-    components: {
-      'running-icon': gl.VueRunningIcon,
-      'pending-icon': gl.VuePendingIcon,
-      'failed-icon': gl.VueFailedIcon,
-      'success-icon': gl.VueSuccessIcon,
-      'created-icon': gl.VueCreatedIcon,
-      'canceled-icon': gl.VueCanceledIcon,
-      'warning-icon': gl.VueWarningIcon,
-      'skipped-icon': gl.VueSkippedIcon,
-    },
     props: ['stage'],
     computed: {
       buildStatus() {
@@ -21,21 +11,20 @@
       tooltip() {
         return `has-tooltip ci-status-icon-${this.stage.status}`;
       },
+      svg() {
+        return document
+          .querySelector(
+            `.${this.stage.status}-icon-svg.hidden`,
+          ).innerHTML;
+      },
     },
     template: `
       <a
         :class='tooltip'
         :title='buildStatus'
         :href='stage.url'
+        v-html='svg'
       >
-        <running-icon v-if='stage.status === "running"'></running-icon>
-        <success-icon v-if='stage.status === "success"'></success-icon>
-        <failed-icon v-if='stage.status === "failed"'></failed-icon>
-        <pending-icon v-if='stage.status === "pending"'></pending-icon>
-        <created-icon v-if='stage.status === "created"'></created-icon>
-        <canceled-icon v-if='stage.status === "canceled"'></canceled-icon>
-        <warning-icon v-if='stage.status === "warning"'></warning-icon>
-        <skipped-icon v-if='stage.status === "skipped"'></skipped-icon>
       </a>
     `,
   });
