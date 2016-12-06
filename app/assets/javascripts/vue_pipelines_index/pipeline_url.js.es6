@@ -3,9 +3,6 @@
 
 ((gl) => {
   gl.VuePipelineUrl = Vue.extend({
-    components: {
-      'vue-running-icon': gl.VueRunningIcon,
-    },
     props: [
       'pipeline',
     ],
@@ -56,7 +53,7 @@
           yaml invalid
         </span>
         <span
-        v-if='pipeline.flags.stuck === true'
+          v-if='pipeline.flags.stuck === true'
           class="label label-warning"
         >
           stuck
