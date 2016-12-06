@@ -106,8 +106,9 @@
       );
     };
 
-    gl.utils.getPagePath = function() {
-      return $('body').data('page').split(':')[0];
+    gl.utils.getPagePath = function(index) {
+      index = index || 0;
+      return $('body').data('page').split(':')[index];
     };
 
     gl.utils.parseUrl = function (url) {

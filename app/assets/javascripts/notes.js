@@ -52,6 +52,12 @@
       this.setupMainTargetNoteForm();
       this.initTaskList();
       this.collapseLongCommitList();
+
+      // We are in the Merge Requests page so we need another edit form for Changes tab
+      if (gl.utils.getPagePath(1) === 'merge_requests') {
+        $('.note-edit-form').clone()
+          .addClass('mr-discussion-edit-form').insertAfter('.note-edit-form');
+      }
     }
 
     Notes.prototype.addBinding = function() {
@@ -518,9 +524,9 @@
       e.preventDefault();
 
       var $target = $(e.target);
-      var $editForm = $('.note-edit-form');
+      var $editForm = $(this.getEditFormSelector($target));
       var $note = $target.closest('.note');
-      var $currentlyEditing = $('.note.is-editting');
+      var $currentlyEditing = $('.note.is-editting:visible');
 
       if ($currentlyEditing.length) {
         var isEditAllowed = this.checkContentToAllowEditing($currentlyEditing);
@@ -545,20 +551,32 @@
 
     Notes.prototype.cancelEdit = function(e) {
       e.preventDefault();
-      var note = $(e.target).closest('.note');
+      var $target = $(e.target);
+      var note = $target.closest('.note');
       note.find('.js-edit-warning').hide();
       note.find('.js-md-write-button').trigger('click');
-      this.revertNoteEditForm();
+      this.revertNoteEditForm($target);
       return this.removeNoteEditForm(note);
     };
 
-    Notes.prototype.revertNoteEditForm = function() {
-      var $editForm = $('.note-edit-form');
+    Notes.prototype.revertNoteEditForm = function($target) {
+      $target = $target || $('.note.is-editting:visible');
+      var selector = this.getEditFormSelector($target);
+      var $editForm = $(selector);
 
       $editForm.insertBefore('.notes-form');
       $editForm.find('.js-comment-button').enable();
-    }
+    };
 
+    Notes.prototype.getEditFormSelector = function($el) {
+      var selector = '.note-edit-form:not(.mr-discussion-edit-form)';
+
+      if ($el.parents('#diffs').length) {
+        selector = '.note-edit-form.mr-discussion-edit-form';
+      }
+
+      return selector;
+    };
 
     Notes.prototype.removeNoteEditForm = function(note) {
       var form = note.find(".current-note-edit-form");
@@ -866,7 +884,8 @@
     };
 
     Notes.prototype.putEditFormInPlace = function($el) {
-      var $editForm = $('.note-edit-form');
+
+      var $editForm = $(this.getEditFormSelector($el));
       var $note = $el.closest('.note');
 
       $editForm.insertAfter($note.find('.note-text'));
@@ -886,8 +905,9 @@
     }
 
     Notes.prototype.updateTaskList = function(e) {
-      var $list = $(e.target).closest('.js-task-list-container');
-      var $editForm = $('.note-edit-form');
+      var $target = $(e.target);
+      var $list = $target.closest('.js-task-list-container');
+      var $editForm = $(this.getEditFormSelector($target));
       var $note = $list.closest('.note');
 
       this.putEditFormInPlace($list);
