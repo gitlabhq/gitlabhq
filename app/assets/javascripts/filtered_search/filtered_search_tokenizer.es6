@@ -40,18 +40,21 @@
       let lastQuotation = '';
       let incompleteToken = false;
 
+      // Iterate through each word (broken up by spaces)
       inputs.forEach((i) => {
         if (incompleteToken) {
+          // Continue previous token as it had an escaped
+          // quote in the beginning
           const prevToken = tokens.last();
           prevToken.value += ` ${i}`;
 
-          // Remove last quotation
+          // Remove last quotation from the value
           const lastQuotationRegex = new RegExp(lastQuotation, 'g');
           prevToken.value = prevToken.value.replace(lastQuotationRegex, '');
           tokens[tokens.length - 1] = prevToken;
 
           // Check to see if this quotation completes the token value
-          if (i.indexOf(lastQuotation)) {
+          if (i.indexOf(lastQuotation) !== -1) {
             lastToken = tokens.last();
             incompleteToken = !incompleteToken;
           }
