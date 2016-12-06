@@ -21,7 +21,7 @@
         milestone_title: gl.utils.getParameterValues('milestone_title')[0],
         label_name: gl.utils.getParameterValues('label_name[]'),
         search: '',
-        per_page: 20
+        per_page: 20,
       };
     },
     addList (listObj) {

@@ -88,17 +88,7 @@ $(() => {
 
               if (list) {
                 // If list already exists, update the data
-                list.title = board.title;
-
-                if (board.position !== null) {
-                  list.position = board.position;
-                }
-
-                if (list.label) {
-                  list.label.description = board.label.description;
-                  list.label.color = board.label.color;
-                  list.label.textColor = board.label.text_color;
-                }
+                list.setData(board);
               } else {
                 // If list doesn't exist, create a new list
                 Store.addList(board);

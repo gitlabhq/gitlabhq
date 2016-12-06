@@ -3,7 +3,6 @@ class List {
   constructor (obj) {
     this.id = obj.id;
     this._uid = this.guid();
-    this.title = obj.title;
     this.type = obj.list_type;
     this.preset = ['backlog', 'done', 'blank'].indexOf(this.type) > -1;
     this.filters = gl.issueBoards.BoardsStore.state.filters;
@@ -22,6 +21,19 @@ class List {
       lazyStart: true,
     });
 
+    this.setData(obj);
+
+    if (this.type !== 'blank' && this.id) {
+      this.getIssues()
+        .then(() => {
+          this._interval.start();
+        });
+    }
+  }
+
+  setData(obj) {
+    this.title = obj.title;
+
     if (this.type === 'done') {
       this.position = Infinity;
     } else if (this.type === 'backlog') {
@@ -32,13 +44,6 @@ class List {
 
     if (obj.label) {
       this.label = new ListLabel(obj.label);
-    }
-
-    if (this.type !== 'blank' && this.id) {
-      this.getIssues()
-        .then(() => {
-          this._interval.start();
-        });
     }
   }
 
