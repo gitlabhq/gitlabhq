@@ -3,10 +3,6 @@
 
 ((global) => {
   const dropdownData = [{
-    icon: 'fa-search',
-    hint: 'Keep typing and press Enter',
-    tag: '',
-  },{
     icon: 'fa-pencil',
     hint: 'author:',
     tag: '&lt;author&gt;'

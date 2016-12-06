@@ -16,14 +16,21 @@
           = icon('filter')
           %button.clear-search.hidden{ type: 'button' }
             = icon('times')
-          %ul#js-dropdown-hint.dropdown-menu.hint-dropdown{ 'data-dynamic' => true }
-            %li.filter-dropdown-item
-              %button.btn.btn-link
-                %i.fa{ 'class': '{{icon}}'}
-                %span.js-filter-hint
-                  {{hint}}
-                %span.js-filter-tag.dropdown-light-content
-                  {{tag}}
+          #js-dropdown-hint.dropdown-menu.hint-dropdown
+            %ul
+              %li.filter-dropdown-item{ 'data-value': 'none' }
+                %button.btn.btn-link
+                  = icon('search')
+                  %span
+                    Keep typing and press Enter
+            %ul.filter-dropdown{ 'data-dynamic' => true }
+              %li.filter-dropdown-item
+                %button.btn.btn-link
+                  %i.fa{ 'class': '{{icon}}'}
+                  %span.js-filter-hint
+                    {{hint}}
+                  %span.js-filter-tag.dropdown-light-content
+                    {{tag}}
           #js-dropdown-author.dropdown-menu{ 'data-dropdown' => true }
             %ul.filter-dropdown{ 'data-dynamic' => true }
               %li.filter-dropdown-item
