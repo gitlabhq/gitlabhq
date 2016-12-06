@@ -12,7 +12,8 @@
       const dataValueSet = this.setDataValueIfSelected(e.detail.selected);
 
       if (!dataValueSet) {
-        const milestoneName = `%${e.detail.selected.querySelector('.btn-link').innerText.trim()}`;
+        const milestoneTitle = e.detail.selected.querySelector('.btn-link').innerText.trim();
+        const milestoneName = `%${this.getEscapedText(milestoneTitle)}`;
         gl.FilteredSearchManager.addWordToInput(this.getSelectedText(milestoneName));
       }
 

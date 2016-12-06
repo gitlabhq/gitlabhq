@@ -18,6 +18,24 @@
       this.dropdown.removeEventListener('click.dl', this.itemClicked.bind(this));
     }
 
+    getEscapedText(text) {
+      let escapedText = text;
+
+      // Encapsulate value with quotes if it has spaces
+      if (text.indexOf(' ') !== -1) {
+        if (text.indexOf('"') !== -1) {
+          // Use single quotes if value contains double quotes
+          escapedText = `'${text}'`;
+        } else {
+          // Known side effect: values's with both single and double quotes
+          // won't escape properly
+          escapedText = `"${text}"`;
+        }
+      }
+
+      return escapedText;
+    }
+
     getSelectedText(selectedToken) {
       // TODO: Get last word from FilteredSearchTokenizer
       const lastWord = this.input.value.split(' ').last();
