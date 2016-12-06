@@ -692,6 +692,32 @@ describe API::Issues, api: true  do
       ])
     end
 
+    context 'resolving issues in a merge request' do
+      let(:discussion) { Discussion.for_diff_notes([create(:diff_note_on_merge_request)]).first }
+      let(:merge_request) { discussion.noteable }
+      let(:project) { merge_request.source_project }
+      before do
+        project.team << [user, :master]
+        post api("/projects/#{project.id}/issues", user),
+             title: 'New Issue',
+             merge_request_for_resolving_discussions: merge_request.iid
+      end
+
+      it 'creates a new project issue' do
+        expect(response).to have_http_status(:created)
+      end
+
+      it 'resolves the discussions in a merge request' do
+        discussion.first_note.reload
+
+        expect(discussion.resolved?).to be(true)
+      end
+
+      it 'assigns a description to the issue mentioning the merge request' do
+        expect(json_response['description']).to include(merge_request.to_reference)
+      end
+    end
+
     context 'with due date' do
       it 'creates a new project issue' do
         due_date = 2.weeks.from_now.strftime('%Y-%m-%d')
