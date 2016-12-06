@@ -78,6 +78,20 @@ class Groups::GroupMembersController < Groups::ApplicationController
     end
   end
 
+  def override
+    @group_member = @group.group_members.find(params[:id])
+
+    return render_403 unless can?(current_user, :override_group_member, @group_member)
+
+    if @group_member.update_attributes(override_params)
+      log_audit_event(@group_member, action: :override)
+
+      respond_to do |format|
+        format.js { head :ok }
+      end
+    end
+  end
+
   protected
 
   def member_params
