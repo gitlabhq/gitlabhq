@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe Gitlab::ImportExport::MembersMapper, services: true do
   describe 'map members' do
-    let(:user) { create(:user) }
+    let(:user) { create(:user, authorized_projects_populated: true) }
     let(:project) { create(:project, :public, name: 'searchable_project') }
-    let(:user2) { create(:user) }
+    let(:user2) { create(:user, authorized_projects_populated: true) }
     let(:exported_user_id) { 99 }
     let(:exported_members) do
       [{
@@ -66,6 +66,13 @@ describe Gitlab::ImportExport::MembersMapper, services: true do
       members_mapper.map
 
       expect(ProjectMember.find_by_invite_email('invite@test.com')).not_to be_nil
+    end
+
+    it 'authorizes the users to the project' do
+      members_mapper.map
+
+      expect(user.authorized_project?(project)).to be true
+      expect(user2.authorized_project?(project)).to be true
     end
   end
 end
