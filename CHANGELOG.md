@@ -2,6 +2,15 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 8.14.3 (2016-12-02)
+
+- Pass commit data to ProcessCommitWorker to reduce Git overhead. !7744
+- Speed up issuable dashboards.
+- Don't change relative URLs to absolute URLs in the Help page.
+- Fixes "ActionView::Template::Error: undefined method `text?` for nil:NilClass" on MR pages.
+- Fix branch validation for GitHub PR where repo/fork was renamed/deleted.
+- Validate state param when filtering issuables.
+
 ## 8.14.2 (2016-12-01)
 
 - Remove caching of events data. !6578
@@ -241,6 +250,11 @@ entry.
 - Updated commit SHA styling on the branches page.
 - Fix "Without projects" filter. !6611 (Ben Bodenmiller)
 - Fix 404 when visit /projects page
+
+## 8.13.8 (2016-12-02)
+
+- Pass tag SHA to post-receive hook when tag is created via UI. !7700
+- Validate state param when filtering issuables.
 
 ## 8.13.7 (2016-11-28)
 
