@@ -23,6 +23,8 @@ module CiStatusHelper
     case status
     when 'success'
       'passed'
+    when 'success_with_warnings'
+      'passed with warnings'
     else
       status
     end
@@ -41,6 +43,8 @@ module CiStatusHelper
         case status
         when 'success'
           'icon_status_success'
+        when 'success_with_warnings'
+          'icon_status_warning'
         when 'failed'
           'icon_status_failed'
         when 'pending'
