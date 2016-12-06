@@ -1,4 +1,4 @@
-class MattermostService < ChatService
+class MattermostNotificationService < ChatNotificationService
   def title
     'Mattermost notifications'
   end
@@ -8,7 +8,7 @@ class MattermostService < ChatService
   end
 
   def to_param
-    'mattermost'
+    'mattermost_notification'
   end
 
   def help
@@ -28,7 +28,7 @@ class MattermostService < ChatService
 
   def default_fields
     [
-      { type: 'text', name: 'webhook',   placeholder: 'http://mattermost_host/hooks/...' },
+      { type: 'text', name: 'webhook', placeholder: 'http://mattermost_host/hooks/...' },
       { type: 'text', name: 'username', placeholder: 'username' },
       { type: 'checkbox', name: 'notify_only_broken_builds' },
       { type: 'checkbox', name: 'notify_only_broken_pipelines' },

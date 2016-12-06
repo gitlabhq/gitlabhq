@@ -221,8 +221,8 @@ class Service < ActiveRecord::Base
       pivotaltracker
       pushover
       redmine
-      mattermost
-      slack
+      mattermost_notification
+      slack_notification
       teamcity
     ]
   end
