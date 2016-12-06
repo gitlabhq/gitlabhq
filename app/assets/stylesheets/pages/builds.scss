@@ -22,26 +22,44 @@
       margin: 0 0 0 auto;
     }
 
-    .btn.sticky,
+    .scroll-link.sticky,
     .autoscroll-container {
       right: 25px;
       z-index: 1;
     }
 
-    .btn {
+    .scroll-link {
       display: block;
       margin-bottom: 10px;
-      color: $white-light;
-      border-color: $white-light;
-      background-color: rgba($ci-output-bg, .5);
+      width: 16px;
+      height: 33px;
+
+      &.scroll-top {
+        background-image: image-url('scroll_up');
+
+        &:hover {
+          background-image: image-url('scroll_up_hover_active');
+        }
+      }
+
+      &.scroll-bottom {
+        background-image: image-url('scroll_down');
+
+        &:hover {
+          background-image: image-url('scroll_down_hover_active');
+        }
+      }
 
       &.sticky {
         position: fixed;
-      }
 
-      &:hover{
-        color: $ci-output-bg;
-        background-color: $white-light;
+        &.scroll-top {
+          top: 110px;
+        }
+
+        &.scroll-bottom {
+          bottom: -2px;
+        }
       }
     }
 
@@ -49,33 +67,41 @@
       position: absolute;
 
       .status-message {
+        display: inline-block;
         color: $white-light;
 
+        i {
+          display: inline-block;
+          width: 16px;
+          height: 33px;
+          background-image: image-url('scroll_down_hover_active');
+        }
+
         label {
-          margin-left: 5px;
+          float: left;
+          opacity: 0;
+          margin-right: 10px;
           font-weight: normal;
+          line-height: 1.8;
+          transition: opacity 1s ease-out;
+        }
+
+        &:hover label {
+          opacity: 1;
         }
       }
     }
 
-    #scroll-top.btn.sticky {
-      top: 110px;
-    }
-
-    #scroll-bottom.btn.sticky {
-      bottom: -2px;
-    }
-
     &.sidebar-expanded {
 
-      .btn.sticky,
+      .scroll-link.sticky,
       .autoscroll-container {
         right: #{$gutter_width + ($gl-padding * 2)};
       }
     }
 
     @media (max-width: $screen-sm-max) {
-      .btn {
+      .scroll-link {
         padding: 6px 13px;
       }
 
@@ -321,8 +347,6 @@
   right: 0;
   margin-top: -17px;
 }
-
-
 
 @media (min-width: $screen-md-min) {
   .sub-nav.build {
