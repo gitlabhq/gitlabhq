@@ -1,17 +1,7 @@
-class MattermostSlashCommandsService < Service
+class MattermostSlashCommandsService < ChatService
   include TriggersHelper
 
   prop_accessor :token
-
-  def valid_token?(token)
-    self.respond_to?(:token) &&
-      self.token.present? &&
-      ActiveSupport::SecurityUtils.variable_size_secure_compare(token, self.token)
-  end
-
-  def supported_events
-    []
-  end
 
   def can_test?
     false
