@@ -35,7 +35,10 @@ class GroupPolicy < BasePolicy
     end
 
     # EE-only
-    # cannot! :admin_group_member if @subject.ldap_synced?
+    if @subject.ldap_synced?
+      cannot! :admin_group_member
+      can! :override_group_member if owner
+    end
   end
 
   def can_read_group?

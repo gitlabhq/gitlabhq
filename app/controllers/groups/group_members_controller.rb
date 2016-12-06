@@ -2,7 +2,8 @@ class Groups::GroupMembersController < Groups::ApplicationController
   include MembershipActions
 
   # Authorize
-  before_action :authorize_admin_group_member!, except: [:index, :leave, :request_access]
+  before_action :authorize_admin_group_member!, except: [:index, :leave, :request_access, :update, :override]
+  before_action :authorize_update_group_member!, only: [:update, :override]
 
   def index
     @project = @group.projects.find(params[:project_id]) if params[:project_id]
@@ -94,8 +95,18 @@ class Groups::GroupMembersController < Groups::ApplicationController
 
   protected
 
+  def authorize_update_group_member!
+    unless can?(current_user, :admin_group_member, group) || can?(current_user, :override_group_member, group)
+      return render_403
+    end
+  end
+
   def member_params
-    params.require(:group_member).permit(:access_level, :user_id, :expires_at, :override)
+    params.require(:group_member).permit(:access_level, :user_id, :expires_at)
+  end
+
+  def override_params
+    params.require(:group_member).permit(:override)
   end
 
   # MembershipActions concern

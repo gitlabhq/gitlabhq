@@ -3,9 +3,10 @@
 - user = local_assigns.fetch(:user, member.user)
 - source = member.source
 - can_admin_member = can?(current_user, action_member_permission(:update, member), member)
+- can_override_member = can?(current_user, action_member_permission(:override, member), member)
 - update_url = member.type == 'GroupMember' ? group_group_member_path(@group, member) : namespace_project_project_member_path(@project.namespace, @project, member)
 
-%li.member{ class: [dom_class(member), ("is-overriden" if member.override && can_admin_member)], id: dom_id(member) }
+%li.member{ class: [dom_class(member), ("is-overriden" if member.override)], id: dom_id(member) }
   %span.list-item-name
     - if user
       = image_tag avatar_icon(user, 40), class: "avatar s40", alt: ''
@@ -35,7 +36,7 @@
           %span{ class: ('text-warning' if member.expires_soon?) }
             Expires in #{distance_of_time_in_words_to_now(member.expires_at)}
 
-      - if member.ldap?
+      - if can_override_member
         %span.label.label-info.pull-right.visible-xs-block
           LDAP
 
@@ -50,7 +51,7 @@
         = time_ago_with_tooltip(member.created_at)
   - if show_roles
     .controls.member-controls
-      - if member.ldap?
+      - if can_override_member
         %span.label.label-info.members-ldap.hidden-xs
           LDAP
       - if show_controls && (member.respond_to?(:group) && @group) || (member.respond_to?(:project) && @project)
@@ -73,7 +74,7 @@
                         = link_to role, "javascript:void(0)",
                           class: ("is-active" if member.access_level == role_id),
                           data: { id: role_id }
-                    - if member.ldap?
+                    - if can_override_member
                       %li.divider
                       %li
                         = link_to "Revert to LDAP group sync settings", "javascript:void(0)",
@@ -95,7 +96,7 @@
                     class: 'btn btn-success prepend-left-10',
                     title: 'Grant access'
 
-        - if can?(current_user, action_member_permission(:destroy, member), member) && !member.ldap?
+        - if can?(current_user, action_member_permission(:destroy, member), member)
           - if current_user == user
             = link_to icon('sign-out', text: 'Leave'), polymorphic_path([:leave, member.source, :members]),
                       method: :delete,
@@ -111,7 +112,7 @@
               %span.visible-xs-block
                 Delete
               = icon('trash', class: 'hidden-xs')
-        - elsif member.ldap? && can_admin_member
+        - if can_override_member
           %button.btn.btn-default.btn-ldap-override.js-ldap-permissions{ type: "button",
             "aria-label" => "Edit permissions",
             data: { name: user.name, id: dom_id(member) } }
@@ -120,7 +121,7 @@
             = icon("pencil", class: "hidden-xs hidden-sm")
       - else
         %span.member-access-text= member.human_access
-- if member.ldap? && can_admin_member
+- if can_override_member
   %li.alert.alert-member-ldap{ style: "display: none;" }
     %p
       = user.name
