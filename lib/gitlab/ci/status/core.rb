@@ -30,7 +30,7 @@ module Gitlab
         # phasing legacy satuses out.
         #
         def to_s
-          self.class.name.demodulize.downcase
+          self.class.name.demodulize.downcase.underscore
         end
 
         def has_details?

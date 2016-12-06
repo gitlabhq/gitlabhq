@@ -17,6 +17,10 @@ module Gitlab
             'icon_status_warning'
           end
 
+          def to_s
+            'success_with_warnings'
+          end
+
           def self.matches?(pipeline)
             pipeline.success? && pipeline.has_warnings?
           end

@@ -2,7 +2,6 @@
   .header-main-content
     = ci_status_with_icon(@pipeline.detailed_status)
     %strong Pipeline ##{@commit.pipelines.last.id}
-    #{ci_label_for_status(@pipeline.detailed_status)},
     triggered #{time_ago_with_tooltip(@commit.authored_date)} by
     = author_avatar(@commit, size: 24)
     = commit_author_link(@commit)
