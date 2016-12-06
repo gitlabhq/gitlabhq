@@ -9,21 +9,8 @@
     }
 
     addListeners() {
-      const ldapPermissionsChangeBtns = document.querySelectorAll('.js-ldap-permissions');
-      const changeBtnLength = ldapPermissionsChangeBtns.length;
-      const ldapOverrideBtns = document.querySelectorAll('.js-ldap-override');
-      const overrideBtnLength = ldapOverrideBtns.length;
-
-      for (let i = 0; i < changeBtnLength; i += 1) {
-        const btn = ldapPermissionsChangeBtns[i];
-        btn.addEventListener('click', this.showLDAPPermissionsWarning.bind(this));
-      }
-
-      for (let i = 0; i < overrideBtnLength; i += 1) {
-        const btn = ldapOverrideBtns[i];
-        btn.addEventListener('click', this.toggleMemberAccessToggle.bind(this));
-      }
-
+      $('.js-ldap-permissions').off('click').on('click', this.showLDAPPermissionsWarning.bind(this));
+      $('.js-ldap-override').off('click').on('click', this.toggleMemberAccessToggle.bind(this));
       $('.project_member, .group_member').off('ajax:success').on('ajax:success', this.removeRow);
       $('.js-member-update-control').off('change').on('change', this.formSubmit);
       $('.js-edit-member-form').off('ajax:success').on('ajax:success', this.formSuccess);
@@ -39,7 +26,11 @@
           isSelectable(selected, $el) {
             const $link = $($el);
 
-            return $link.data('revert') || !$link.hasClass('is-active');
+            if ($link.data('revert')) {
+              return false;
+            }
+
+            return !$link.hasClass('is-active');
           },
           fieldName: $btn.data('field-name'),
           id(selected, $el) {
@@ -56,13 +47,11 @@
             const $link = $($el);
 
             if ($link.data('revert')) {
-              const memberListItem = this.getMemberListItem($link.get(0));
-              const toggle = memberListItem.querySelectorAll('.dropdown-menu-toggle')[0];
-              const dateInput = memberListItem.querySelectorAll('.js-access-expiration-date')[0];
+              const { $memberListItem, $toggle, $dateInput } = this.getMemberListItems($link);
 
-              toggle.disabled = true;
-              dateInput.disabled = true;
-              this.overrideLdap(memberListItem, $link.data('endpoint'), false);
+              $toggle.attr('disabled', true);
+              $dateInput.attr('disabled', true);
+              this.overrideLdap($memberListItem, $link.data('endpoint'), false);
             } else {
               $btn.closest('form').trigger('submit.rails');
             }
@@ -92,40 +81,36 @@
     }
 
     showLDAPPermissionsWarning(e) {
-      const btn = e.currentTarget;
-      const memberListItem = this.getMemberListItem(btn);
-      const ldapPermissionsElement = memberListItem.nextElementSibling;
+      const $btn = $(e.currentTarget);
+      const { $memberListItem } = this.getMemberListItems($btn);
+      const $ldapPermissionsElement = $memberListItem.next();
 
-      if (ldapPermissionsElement.style.display === 'none') {
-        ldapPermissionsElement.style.display = 'block';
-      } else {
-        ldapPermissionsElement.style.display = 'none';
-      }
+      $ldapPermissionsElement.toggle();
     }
 
-    getMemberListItem(btn) {
-      return document.getElementById(btn.dataset.id);
+    getMemberListItems(btn) {
+      const $memberListItem = $(`#${btn.data('id')}`);
+
+      return {
+        $memberListItem,
+        $toggle: $memberListItem.find('.dropdown-menu-toggle'),
+        $dateInput: $memberListItem.find('.js-access-expiration-date'),
+      };
     }
 
     toggleMemberAccessToggle(e) {
-      const btn = e.currentTarget;
-      const memberListItem = this.getMemberListItem(btn);
-      const toggle = memberListItem.querySelectorAll('.dropdown-menu-toggle')[0];
-      const dateInput = memberListItem.querySelectorAll('.js-access-expiration-date')[0];
+      const $btn = $(e.currentTarget);
+      const { $memberListItem, $toggle, $dateInput } = this.getMemberListItems($btn);
 
       this.showLDAPPermissionsWarning(e);
-      toggle.removeAttribute('disabled');
-      dateInput.removeAttribute('disabled');
+      $toggle.removeAttr('disabled');
+      $dateInput.removeAttr('disabled');
 
-      this.overrideLdap(memberListItem, btn.dataset.endpoint, true);
+      this.overrideLdap($memberListItem, $btn.data('endpoint'), true);
     }
 
-    overrideLdap(memberListitem, endpoint, override) {
-      if (override) {
-        memberListitem.classList.add('is-overriden');
-      } else {
-        memberListitem.classList.remove('is-overriden');
-      }
+    overrideLdap($memberListitem, endpoint, override) {
+      $memberListitem.toggleClass('is-overriden', override);
 
       return $.ajax({
         url: endpoint,
