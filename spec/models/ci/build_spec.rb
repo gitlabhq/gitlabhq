@@ -251,12 +251,13 @@ describe Ci::Build, :models do
   end
 
   describe '#update_coverage' do
-    it 'grants coverage_regex method is called inside of it' do
-      build.coverage_regex = '\(\d+.\d+\%\) covered'
-      allow(build).to receive(:trace) { 'Coverage 1033 / 1051 LOC (98.29%) covered' }
-      allow(build).to receive(:coverage_regex).and_call_original
-      expect(build).to receive(:update_attributes).with(coverage: 98.29) { true }
-      expect(build.update_coverage).to be true
+    context "regarding coverage_regex's value," do
+      it "saves the correct extracted coverage value" do
+        build.coverage_regex = '\(\d+.\d+\%\) covered'
+        allow(build).to receive(:trace) { 'Coverage 1033 / 1051 LOC (98.29%) covered' }
+        expect(build).to receive(:update_attributes).with(coverage: 98.29) { true }
+        expect(build.update_coverage).to be true
+      end
     end
   end
 

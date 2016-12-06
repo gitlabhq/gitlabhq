@@ -20,7 +20,7 @@ module Ci
             it { is_expected.to include(coverage_regex: '\(\d+\.\d+\) covered') }
           end
 
-          context 'but \'rspec\' job also has coverage set' do
+          context "but 'rspec' job also has coverage set" do
             before do
               config_base[:rspec][:coverage] = '/Code coverage: \d+\.\d+/'
             end
