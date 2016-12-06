@@ -23,7 +23,9 @@ describe Gitlab::Ci::Status::Pipeline::Factory do
 
         it 'extends core status with common pipeline methods' do
           expect(status).to have_details
-          expect(status.details_path).to include "pipelines/#{pipeline.id}"
+          expect(status).not_to have_action
+          expect(status.details_path)
+            .to include "pipelines/#{pipeline.id}"
         end
       end
     end
