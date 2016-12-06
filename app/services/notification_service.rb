@@ -162,6 +162,10 @@ class NotificationService
     approve_mr_email(merge_request, merge_request.target_project, current_user)
   end
 
+  def unapprove_mr(merge_request, current_user)
+    warn 'TODO: send unapproval email'
+  end
+
   def resolve_all_discussions(merge_request, current_user)
     recipients = build_recipients(merge_request, merge_request.target_project, current_user, action: "resolve_all_discussions")
 
