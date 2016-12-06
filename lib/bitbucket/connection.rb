@@ -45,7 +45,7 @@ module Bitbucket
       @expires_at    = response.expires_at
       @expires_in    = response.expires_in
       @refresh_token = response.refresh_token
-      @connection = nil
+      @connection    = nil
     end
 
     private
