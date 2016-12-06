@@ -40,7 +40,7 @@ feature 'Create New Merge Request', feature: true, js: true do
 
       visit new_namespace_project_merge_request_path(project.namespace, project, merge_request: { target_project_id: private_project.id })
 
-      expect(page).not_to have_content private_project.to_reference
+      expect(page).not_to have_content private_project.path_with_namespace
     end
   end
 

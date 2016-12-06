@@ -144,9 +144,10 @@ class Label < ActiveRecord::Base
   #
   # Examples:
   #
-  #   Label.first.to_reference                     # => "~1"
-  #   Label.first.to_reference(format: :name)      # => "~\"bug\""
-  #   Label.first.to_reference(project1, project2) # => "gitlab-org/gitlab-ce~1"
+  #   Label.first.to_reference                                     # => "~1"
+  #   Label.first.to_reference(format: :name)                      # => "~\"bug\""
+  #   Label.first.to_reference(project, same_namespace_project)    # => "gitlab-ce~1"
+  #   Label.first.to_reference(project, another_namespace_project) # => "gitlab-org/gitlab-ce~1"
   #
   # Returns a String
   #
@@ -154,8 +155,8 @@ class Label < ActiveRecord::Base
     format_reference = label_format_reference(format)
     reference = "#{self.class.reference_prefix}#{format_reference}"
 
-    if cross_project_reference?(source_project, target_project)
-      source_project.to_reference + reference
+    if source_project
+      "#{source_project.to_reference(target_project)}#{reference}"
     else
       reference
     end
@@ -168,10 +169,6 @@ class Label < ActiveRecord::Base
   end
 
   private
-
-  def cross_project_reference?(source_project, target_project)
-    source_project && target_project && source_project != target_project
-  end
 
   def issues_count(user, params = {})
     params.merge!(subject_foreign_key => subject.id, label_name: title, scope: 'all')

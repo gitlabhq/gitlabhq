@@ -67,11 +67,11 @@ class Snippet < ActiveRecord::Base
   def to_reference(from_project = nil)
     reference = "#{self.class.reference_prefix}#{id}"
 
-    if cross_project_reference?(from_project)
-      reference = project.to_reference + reference
+    if project.present?
+      "#{project.to_reference(from_project)}#{reference}"
+    else
+      reference
     end
-
-    reference
   end
 
   def self.content_types

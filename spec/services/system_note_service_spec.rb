@@ -530,7 +530,7 @@ describe SystemNoteService, services: true do
       end
 
       it 'mentions referenced project' do
-        expect(subject.note).to include new_project.to_reference
+        expect(subject.note).to include new_project.path_with_namespace
       end
     end
 

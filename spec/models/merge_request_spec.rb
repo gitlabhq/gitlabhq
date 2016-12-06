@@ -142,13 +142,16 @@ describe MergeRequest, models: true do
   end
 
   describe '#to_reference' do
+    let(:project) { build(:empty_project, name: 'sample-project') }
+    let(:merge_request) { build(:merge_request, target_project: project, iid: 1) }
+
     it 'returns a String reference to the object' do
-      expect(subject.to_reference).to eq "!#{subject.iid}"
+      expect(merge_request.to_reference).to eq "!1"
     end
 
     it 'supports a cross-project reference' do
-      cross = double('project')
-      expect(subject.to_reference(cross)).to eq "#{subject.source_project.to_reference}!#{subject.iid}"
+      another_project = build(:project, name: 'another-project', namespace: project.namespace)
+      expect(merge_request.to_reference(another_project)).to eq "sample-project!1"
     end
   end
 
