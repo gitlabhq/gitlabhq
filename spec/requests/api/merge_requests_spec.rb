@@ -789,8 +789,6 @@ describe API::MergeRequests, api: true  do
         expect(usernames.size).to be 1
         expect(json_response['user_has_approved']).to be false
         expect(json_response['user_can_approve']).to be true
-        binding.pry
-        true
       end
     end
   end
