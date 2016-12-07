@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161202152035) do
+ActiveRecord::Schema.define(version: 20161206153754) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -744,11 +744,11 @@ ActiveRecord::Schema.define(version: 20161202152035) do
 
   add_index "namespaces", ["created_at"], name: "index_namespaces_on_created_at", using: :btree
   add_index "namespaces", ["deleted_at"], name: "index_namespaces_on_deleted_at", using: :btree
-  add_index "namespaces", ["name"], name: "index_namespaces_on_name", unique: true, using: :btree
+  add_index "namespaces", ["name", "parent_id"], name: "index_namespaces_on_name_and_parent_id", unique: true, using: :btree
   add_index "namespaces", ["name"], name: "index_namespaces_on_name_trigram", using: :gin, opclasses: {"name"=>"gin_trgm_ops"}
   add_index "namespaces", ["owner_id"], name: "index_namespaces_on_owner_id", using: :btree
   add_index "namespaces", ["parent_id", "id"], name: "index_namespaces_on_parent_id_and_id", unique: true, using: :btree
-  add_index "namespaces", ["path"], name: "index_namespaces_on_path", unique: true, using: :btree
+  add_index "namespaces", ["path"], name: "index_namespaces_on_path", using: :btree
   add_index "namespaces", ["path"], name: "index_namespaces_on_path_trigram", using: :gin, opclasses: {"path"=>"gin_trgm_ops"}
   add_index "namespaces", ["type"], name: "index_namespaces_on_type", using: :btree
 
