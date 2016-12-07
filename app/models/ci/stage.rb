@@ -9,7 +9,9 @@ module Ci
     delegate :project, to: :pipeline
 
     def initialize(pipeline, name:, status: nil)
-      @pipeline, @name, @status = pipeline, name, status
+      @pipeline = pipeline
+      @name = name
+      @status = status
     end
 
     def to_param

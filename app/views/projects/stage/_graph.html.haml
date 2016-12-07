@@ -1,12 +1,13 @@
+- stage = local_assigns.fetch(:stage)
+- statuses = stage.statuses.latest
+- status_groups = statuses.sort_by(&:name).group_by(&:group_name)
 %li.stage-column
   .stage-name
-    %a{ name: subject.name }
-    - if subject.name
-      = subject.name.titleize
+    %a{ name: stage.name }
+    - if stage.name
+      = stage.name.titleize
   .builds-container
     %ul
-      - statuses = subject.statuses.latest
-      - status_groups = statuses.sort_by(&:name).group_by(&:group_name)
       - status_groups.each do |group_name, grouped_statuses|
         - if grouped_statuses.one?
           - status = grouped_statuses.first

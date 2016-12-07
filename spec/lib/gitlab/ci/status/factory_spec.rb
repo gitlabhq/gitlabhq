@@ -1,15 +1,11 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Status::Factory do
-  let(:object) { double(status: :created) }
-
   subject do
     described_class.new(object)
   end
 
-  let(:status) do
-    subject.fabricate!
-  end
+  let(:status) { subject.fabricate! }
 
   context 'when object has a core status' do
     HasStatus::AVAILABLE_STATUSES.each do |core_status|

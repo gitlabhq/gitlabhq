@@ -1,4 +1,4 @@
+- pipeline = local_assigns.fetch(:pipeline)
 .pipeline-visualization
   %ul.stage-column-list
-    - subject.stages.each do |stage|
-      = render "projects/stage/graph", subject: stage
+    = render partial: "projects/stage/graph", collection: pipeline.stages, as: :stage

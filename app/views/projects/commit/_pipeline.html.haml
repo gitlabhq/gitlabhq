@@ -25,7 +25,7 @@
           = time_interval_in_words pipeline.duration
 
   .row-content-block.build-content.middle-block.pipeline-graph.hidden
-    = render "projects/pipelines/graph", subject: pipeline
+    = render "projects/pipelines/graph", subject: pipeline, as: :pipeline
 
 - if pipeline.yaml_errors.present?
   .bs-callout.bs-callout-danger
@@ -50,5 +50,4 @@
         - if pipeline.project.build_coverage_enabled?
           %th Coverage
         %th
-    - pipeline.stages.each do |stage|
-      = render "projects/stage/stage", subject: stage
+    = render partial: "projects/stage/stage", collection: pipeline.stages, as: :stage
