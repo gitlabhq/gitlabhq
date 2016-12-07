@@ -10,13 +10,13 @@
       cssClasses() {
         const cssObject = {};
         cssObject['ci-status'] = true;
-        cssObject[`ci-${this.pipeline.details.status}`] = true;
+        cssObject[`ci-${this.pipeline.details.status.text}`] = true;
         return cssObject;
       },
       svg() {
         return document
           .querySelector(
-            `.${this.pipeline.details.status}-icon-svg.hidden`,
+            `.${this.pipeline.details.status.text}-icon-svg.hidden`,
           ).innerHTML;
       },
     },
@@ -25,7 +25,7 @@
         <a :href='pipeline.url'>
           <span :class='cssClasses'>
             <span v-html='svg'></span>
-            <span>&nbsp;{{pipeline.details.status}}</span>
+            <span>&nbsp;{{pipeline.details.status.text}}</span>
           </span>
         </a>
       </td>
