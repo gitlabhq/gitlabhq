@@ -749,22 +749,32 @@ class Repository
     user, path, message, branch,
     author_email: nil, author_name: nil,
     source_branch: nil, source_project: project)
-    GitOperationService.new(user, self).with_branch(
-      branch,
-      source_branch: source_branch,
-      source_project: source_project) do |ref|
-      options = {
-        commit: {
-          branch: ref,
-          message: message,
-          update_ref: false
-        }
-      }
+    if branch_exists?(branch)
+      # tree_entry is private
+      entry = raw_repository.send(:tree_entry, commit(branch), path)
 
-      options.merge!(get_committer_and_author(user, email: author_email, name: author_name))
-
-      raw_repository.mkdir(path, options)
+      if entry
+        if entry[:type] == :blob
+          raise Gitlab::Git::Repository::InvalidBlobName.new(
+            "Directory already exists as a file")
+        else
+          raise Gitlab::Git::Repository::InvalidBlobName.new(
+            "Directory already exists")
+        end
+      end
     end
+
+    commit_file(
+      user,
+      "#{Gitlab::Git::PathHelper.normalize_path(path)}/.gitkeep",
+      '',
+      message,
+      branch,
+      false,
+      author_email: author_email,
+      author_name: author_name,
+      source_branch: source_branch,
+      source_project: source_project)
   end
   # rubocop:enable Metrics/ParameterLists
 
