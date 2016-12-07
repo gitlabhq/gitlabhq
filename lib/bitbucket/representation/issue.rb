@@ -7,6 +7,10 @@ module Bitbucket
         raw['id']
       end
 
+      def kind
+        raw['kind']
+      end
+
       def author
         raw.dig('reporter', 'username') || 'Anonymous'
       end

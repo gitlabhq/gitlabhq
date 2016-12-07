@@ -1,12 +1,18 @@
 module Gitlab
   module BitbucketImport
     class Importer
+      LABELS = [{ title: 'bug', color: '#FF0000'},
+                { title: 'enhancement', color: '#428BCA'},
+                { title: 'proposal', color: '#69D100'},
+                { title: 'task', color: '#7F8C8D'}].freeze
+
       attr_reader :project, :client
 
       def initialize(project)
         @project = project
         @client = Bitbucket::Client.new(project.import_data.credentials)
         @formatter = Gitlab::ImportFormatter.new
+        @labels = {}
       end
 
       def execute
@@ -34,9 +40,13 @@ module Gitlab
       def import_issues
         return unless repo.issues_enabled?
 
+        create_labels
+
         client.issues(repo).each do |issue|
           description = @formatter.author_line(issue.author)
           description += issue.description
+
+          label_name = issue.kind
 
           issue = project.issues.create(
             iid: issue.iid,
@@ -47,6 +57,8 @@ module Gitlab
             created_at: issue.created_at,
             updated_at: issue.updated_at
           )
+
+          assign_label(issue, label_name)
 
           if issue.persisted?
             client.issue_comments(repo, issue.iid).each do |comment|
@@ -72,6 +84,16 @@ module Gitlab
         end
       rescue ActiveRecord::RecordInvalid => e
         Rails.logger.error("Bitbucket importer ERROR in #{project.path_with_namespace}: Couldn't import record properly #{e.message}")
+      end
+
+      def create_labels
+        LABELS.each do |label|
+          @labels[label[:title]] = project.labels.create!(label)
+        end
+      end
+
+      def assign_label(issue, label_name)
+        issue.labels << @labels[label_name]
       end
 
       def import_pull_requests
