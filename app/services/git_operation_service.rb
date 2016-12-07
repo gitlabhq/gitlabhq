@@ -25,20 +25,14 @@ GitOperationService = Struct.new(:user, :repository) do
     end
   end
 
-  # Whenever `source_branch` or `source_commit` is passed, if `branch`
-  # doesn't exist, it would be created from `source_branch` or
-  # `source_commit`. Should only pass one of them, not both.
+  # Whenever `source_branch` is passed, if `branch` doesn't exist,
+  # it would be created from `source_branch`.
   # If `source_project` is passed, and the branch doesn't exist,
   # it would try to find the source from it instead of current repository.
   def with_branch(
     branch_name,
     source_branch: nil,
-    source_commit: nil,
     source_project: repository.project)
-
-    if source_commit && source_branch
-      raise ArgumentError, 'Should pass only :source_branch or :source_commit'
-    end
 
     ref = Gitlab::Git::BRANCH_REF_PREFIX + branch_name
     oldrev = Gitlab::Git::BLANK_SHA
@@ -62,13 +56,13 @@ GitOperationService = Struct.new(:user, :repository) do
           " #{source_project.path_with_namespace}")
       end
 
-    elsif source_commit || source_branch
-      newrev = (source_commit || repository.commit(source_branch)).try(:sha)
+    elsif source_branch
+      newrev = repository.commit(source_branch).try(:sha)
 
       unless newrev
         raise Repository::CommitError.new(
           "Cannot find branch #{branch_name} nor" \
-          " #{source_commit.try(:sha) || source_branch} from" \
+          " #{source_branch} from" \
           " #{repository.project.path_with_namespace}")
       end
 

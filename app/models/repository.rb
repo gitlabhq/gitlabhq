@@ -962,14 +962,16 @@ class Repository
     end
   end
 
-  def revert(user, commit, base_branch, revert_tree_id = nil)
+  def revert(
+    user, commit, base_branch, revert_tree_id = nil,
+    source_branch: nil, source_project: project)
     revert_tree_id ||= check_revert_content(commit, base_branch)
 
     return false unless revert_tree_id
 
     GitOperationService.new(user, self).with_branch(
       base_branch,
-      source_commit: commit) do
+      source_branch: source_branch, source_project: source_project) do
 
       source_sha = find_branch(base_branch).dereferenced_target.sha
       committer = user_to_committer(user)
@@ -983,14 +985,16 @@ class Repository
     end
   end
 
-  def cherry_pick(user, commit, base_branch, cherry_pick_tree_id = nil)
+  def cherry_pick(
+    user, commit, base_branch, cherry_pick_tree_id = nil,
+    source_branch: nil, source_project: project)
     cherry_pick_tree_id ||= check_cherry_pick_content(commit, base_branch)
 
     return false unless cherry_pick_tree_id
 
     GitOperationService.new(user, self).with_branch(
       base_branch,
-      source_commit: commit) do
+      source_branch: source_branch, source_project: source_project) do
 
       source_sha = find_branch(base_branch).dereferenced_target.sha
       committer = user_to_committer(user)

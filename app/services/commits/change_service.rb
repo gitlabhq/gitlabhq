@@ -31,7 +31,14 @@ module Commits
       if tree_id
         validate_target_branch(into) if @create_merge_request
 
-        repository.public_send(action, current_user, @commit, into, tree_id)
+        repository.public_send(
+          action,
+          current_user,
+          @commit,
+          into,
+          tree_id,
+          source_branch: @target_branch)
+
         success
       else
         error_msg = "Sorry, we cannot #{action.to_s.dasherize} this #{@commit.change_type_title} automatically.
