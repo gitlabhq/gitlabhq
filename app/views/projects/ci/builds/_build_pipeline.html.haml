@@ -1,9 +1,31 @@
 - is_playable = subject.playable? && can?(current_user, :update_build, @project)
+- can_cancel = subject.active? && can?(current_user, :update_build, @project)
+- can_retry = subject.retryable? && can?(current_user, :update_build, @project)
+- can_stop = subject.complete? && subject.stops_environment? && can?(current_user, :update_build, @project)
+
 - if can?(current_user, :read_build, @project)
   = link_to namespace_project_build_path(subject.project.namespace, subject.project, subject), data: { toggle: 'tooltip', title: "#{subject.name} - #{subject.status}", container: '.pipeline-graph', placement: 'bottom' } do
     %span{class: "ci-status-icon ci-status-icon-#{subject.status}"}
       = ci_icon_for_status(subject.status)
     .ci-status-text= subject.name
+
+  - if is_playable
+    = link_to play_namespace_project_build_path(subject.project.namespace, subject.project, subject, return_to: request.original_url), method: :post, title: "#{subject.name} - Play", class: 'ci-action-icon-container' do
+      %i.ci-action-icon-wrapper
+        = icon('play', class: 'ci-play-icon')
+  - elsif can_cancel
+    = link_to cancel_namespace_project_build_path(subject.project.namespace, subject.project, subject, return_to: request.original_url), method: :post, title: "#{subject.name} - Cancel", class: 'ci-action-icon-container' do
+      %i.ci-action-icon-wrapper
+        = icon('ban')
+  - elsif can_retry
+    = link_to retry_namespace_project_build_path(subject.project.namespace, subject.project, subject, return_to: request.original_url), method: :post, title: "#{subject.name} - Retry", class: 'ci-action-icon-container' do
+      %i.ci-action-icon-wrapper
+        = icon('refresh')
+  - elsif can_stop
+    = link_to play_namespace_project_build_path(subject.project.namespace, subject.project, subject, return_to: request.original_url), method: :post, title: "#{subject.name} - Stop", class: 'ci-action-icon-container' do
+      %i.ci-action-icon-wrapper
+        = icon('stop')
+
 - else
   %span{class: "ci-status-icon ci-status-icon-#{subject.status}"}
     = ci_icon_for_status(subject.status)

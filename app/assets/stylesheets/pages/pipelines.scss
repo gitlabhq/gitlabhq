@@ -463,19 +463,6 @@
     width: 186px;
     margin-bottom: 10px;
 
-    &.playable {
-      svg {
-        height: 13px;
-        width: 20px;
-        position: relative;
-        top: 1px;
-
-        path {
-          fill: $layout-link-gray;
-        }
-      }
-    }
-
     &:hover {
       background-color: $stage-hover-bg;
       border: 1px solid $stage-hover-border;
@@ -607,15 +594,15 @@
     &:hover {
       color: $gl-text-color;
 
-      .dropdown-counter-bagde {
+      .dropdown-counter-badge {
         color: $gl-text-color;
       }
     }
   }
 
-  .dropdown-counter-bagde {
+  .dropdown-counter-badge {
     float: right;
-    color: $stage-bagde-text;
+    color: $stage-badge-text;
     font-weight: 100;
     font-size: 13px;
     margin-top: 1px;
@@ -630,27 +617,49 @@
     top: -11px;
     box-shadow: 0 1px 5px $black-transparent;
 
+    a {
+      display: inline-block;
+
+      &:hover {
+        background-color: $stage-hover-bg;
+      }
+    }
+
     ul {
       max-height: 245px;
       overflow: auto;
 
       li {
-        padding-top: 1px;
-        padding-bottom: 1px;
+        padding-top: 2px;
+        margin: 0 5px;
       }
 
       li:first-child {
-        padding-top: 9px;
+        padding-top: 6px;
       }
 
       li:last-child {
-        padding-bottom: 9px;
+        padding-bottom: 6px;
       }
     }
 
-    a {
+    .dropdown-build {
       color: $gl-text-color-light;
-      padding: 7px 8px 8px;
+
+      a {
+        padding: 7px 8px 8px;
+      }
+
+      a.ci-action-icon-container {
+        padding: 0;
+        font-size: 11px;
+        float: right;
+        margin-top: 5px;
+
+        i {
+          font-size: 11px;
+        }
+      }
 
       &:hover {
         background-color: $stage-hover-bg;
@@ -662,6 +671,37 @@
     .ci-status-icon svg {
       height: 18px;
       width: 18px;
+    }
+  }
+}
+
+// Action Icons
+.ci-action-icon-container {
+  padding: 0;
+
+  .ci-action-icon-wrapper {
+    display: inline-block;
+    float: right;
+
+    i {
+      color: $stage-badge-text;
+      border-radius: 100%;
+      border: 1px solid $stage-badge-text;
+      text-align: center;
+      display: table-cell;
+      vertical-align: middle;
+      padding: 5px;
+      font-size: 13px;
+
+      &:hover {
+        color: $gl-text-color;
+        background-color: $stage-hover-bg;
+        border: 1px solid $gl-text-color;
+      }
+    }
+
+    .ci-play-icon {
+      padding: 5px 4px 5px 7px;
     }
   }
 }

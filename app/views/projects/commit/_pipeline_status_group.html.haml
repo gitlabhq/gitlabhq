@@ -9,5 +9,5 @@
   .arrow
   %ul
     - subject.each do |status|
-      %li
+      %li.dropdown-build
         = render "projects/#{status.to_partial_path}_pipeline", subject: status
