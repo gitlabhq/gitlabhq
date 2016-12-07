@@ -766,7 +766,7 @@ class Repository
 
     commit_file(
       user,
-      "#{Gitlab::Git::PathHelper.normalize_path(path)}/.gitkeep",
+      "#{path}/.gitkeep",
       '',
       message,
       branch,
@@ -871,12 +871,14 @@ class Repository
                 end
 
       actions.each do |action|
+        path = Gitlab::Git::PathHelper.normalize_path(action[:file_path]).to_s
+
         case action[:action]
         when :create, :update, :move
           mode =
             case action[:action]
             when :update
-              index.get(action[:file_path])[:mode]
+              index.get(path)[:mode]
             when :move
               index.get(action[:previous_path])[:mode]
             end
@@ -887,9 +889,9 @@ class Repository
           content = action[:encoding] == 'base64' ? Base64.decode64(action[:content]) : action[:content]
           oid = rugged.write(content, :blob)
 
-          index.add(path: action[:file_path], oid: oid, mode: mode)
+          index.add(path: path, oid: oid, mode: mode)
         when :delete
-          index.remove(action[:file_path])
+          index.remove(path)
         end
       end
 
