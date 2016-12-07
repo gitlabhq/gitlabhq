@@ -973,7 +973,8 @@ class Repository
       base_branch,
       source_branch: source_branch, source_project: source_project) do
 
-      source_sha = find_branch(base_branch).dereferenced_target.sha
+      source_sha = source_project.repository.find_source_sha(
+                     source_branch || base_branch)
       committer = user_to_committer(user)
 
       Rugged::Commit.create(rugged,
@@ -996,7 +997,8 @@ class Repository
       base_branch,
       source_branch: source_branch, source_project: source_project) do
 
-      source_sha = find_branch(base_branch).dereferenced_target.sha
+      source_sha = source_project.repository.find_source_sha(
+                     source_branch || base_branch)
       committer = user_to_committer(user)
 
       Rugged::Commit.create(rugged,
@@ -1159,6 +1161,16 @@ class Repository
       head.blobs.find do |file|
         Gitlab::FileDetector.type_of(file.name) == type
       end
+    end
+  end
+
+  protected
+
+  def find_source_sha(branch_name)
+    if branch_exists?(branch_name)
+      find_branch(branch_name).dereferenced_target.sha
+    else
+      Gitlab::Git::BLANK_SHA
     end
   end
 

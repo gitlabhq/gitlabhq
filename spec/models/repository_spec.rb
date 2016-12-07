@@ -695,7 +695,7 @@ describe Repository, models: true do
             user,
             repository.path_to_repo,
             old_rev,
-            old_rev,
+            new_rev,
             'refs/heads/feature').
           and_yield(service).and_return(true)
       end

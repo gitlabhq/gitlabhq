@@ -34,43 +34,10 @@ GitOperationService = Struct.new(:user, :repository) do
     source_branch: nil,
     source_project: repository.project)
 
-    ref = Gitlab::Git::BRANCH_REF_PREFIX + branch_name
-    oldrev = Gitlab::Git::BLANK_SHA
+    check_with_branch_arguments!(branch_name, source_branch, source_project)
 
-    if repository.branch_exists?(branch_name)
-      oldrev = newrev = repository.commit(branch_name).sha
-
-    elsif repository.project != source_project
-      unless source_branch
-        raise ArgumentError,
-          'Should also pass :source_branch if' +
-          ' :source_project is different from current project'
-      end
-
-      newrev = source_project.repository.commit(source_branch).try(:sha)
-
-      unless newrev
-        raise Repository::CommitError.new(
-          "Cannot find branch #{branch_name} nor" \
-          " #{source_branch} from" \
-          " #{source_project.path_with_namespace}")
-      end
-
-    elsif source_branch
-      newrev = repository.commit(source_branch).try(:sha)
-
-      unless newrev
-        raise Repository::CommitError.new(
-          "Cannot find branch #{branch_name} nor" \
-          " #{source_branch} from" \
-          " #{repository.project.path_with_namespace}")
-      end
-
-    else # we want an orphan empty branch
-      newrev = Gitlab::Git::BLANK_SHA
-    end
-
-    commit_with_hooks(ref, oldrev, newrev) do
+    update_branch_with_hooks(
+      branch_name, source_branch, source_project) do |ref|
       if repository.project != source_project
         repository.fetch_ref(
           source_project.repository.path_to_repo,
@@ -85,39 +52,37 @@ GitOperationService = Struct.new(:user, :repository) do
 
   private
 
-  def commit_with_hooks(ref, oldrev, newrev)
-    with_hooks_and_update_ref(ref, oldrev, newrev) do |service|
-      was_empty = repository.empty?
+  def update_branch_with_hooks(branch_name, source_branch, source_project)
+    update_autocrlf_option
 
-      # Make commit
-      nextrev = yield(ref)
+    ref = Gitlab::Git::BRANCH_REF_PREFIX + branch_name
+    oldrev = Gitlab::Git::BLANK_SHA
+    was_empty = repository.empty?
 
-      unless nextrev
-        raise Repository::CommitError.new('Failed to create commit')
-      end
+    # Make commit
+    newrev = yield(ref)
 
-      branch =
-        repository.find_branch(ref[Gitlab::Git::BRANCH_REF_PREFIX.size..-1])
+    unless newrev
+      raise Repository::CommitError.new('Failed to create commit')
+    end
 
-      prevrev = if branch &&
-                   !repository.rugged.lookup(nextrev).parent_ids.empty?
-                  repository.rugged.merge_base(
-                    nextrev, branch.dereferenced_target.sha)
-                else
-                  newrev
-                end
+    branch = repository.find_branch(branch_name)
+    oldrev = if repository.rugged.lookup(newrev).parent_ids.empty? ||
+                branch.nil?
+               Gitlab::Git::BLANK_SHA
+             else
+               repository.rugged.merge_base(
+                 newrev, branch.dereferenced_target.sha)
+             end
 
-      update_ref!(ref, nextrev, prevrev)
-
-      service.newrev = nextrev
-
+    with_hooks_and_update_ref(ref, oldrev, newrev) do
       # If repo was empty expire cache
       repository.after_create if was_empty
       repository.after_create_branch if was_empty ||
                                         oldrev == Gitlab::Git::BLANK_SHA
-
-      nextrev
     end
+
+    newrev
   end
 
   def with_hooks_and_update_ref(ref, oldrev, newrev)
@@ -129,8 +94,6 @@ GitOperationService = Struct.new(:user, :repository) do
   end
 
   def with_hooks(ref, oldrev, newrev)
-    update_autocrlf_option
-
     result = nil
 
     GitHooksService.new.execute(
@@ -168,6 +131,32 @@ GitOperationService = Struct.new(:user, :repository) do
   def update_autocrlf_option
     if repository.raw_repository.autocrlf != :input
       repository.raw_repository.autocrlf = :input
+    end
+  end
+
+  def check_with_branch_arguments!(branch_name, source_branch, source_project)
+    return if repository.branch_exists?(branch_name)
+
+    if repository.project != source_project
+      unless source_branch
+        raise ArgumentError,
+          'Should also pass :source_branch if' +
+          ' :source_project is different from current project'
+      end
+
+      unless source_project.repository.commit(source_branch).try(:sha)
+        raise Repository::CommitError.new(
+          "Cannot find branch #{branch_name} nor" \
+          " #{source_branch} from" \
+          " #{source_project.path_with_namespace}")
+      end
+    elsif source_branch
+      unless repository.commit(source_branch).try(:sha)
+        raise Repository::CommitError.new(
+          "Cannot find branch #{branch_name} nor" \
+          " #{source_branch} from" \
+          " #{repository.project.path_with_namespace}")
+      end
     end
   end
 end
