@@ -5,13 +5,9 @@ describe Namespace, models: true do
 
   it { is_expected.to have_many :projects }
   it { is_expected.to validate_presence_of :name }
-  it { is_expected.to validate_uniqueness_of(:name) }
+  it { is_expected.to validate_uniqueness_of(:name).scoped_to(:parent_id) }
   it { is_expected.to validate_presence_of :path }
-  it { is_expected.to validate_uniqueness_of(:path) }
   it { is_expected.to validate_presence_of :owner }
-
-  describe "Mass assignment" do
-  end
 
   describe "Respond to" do
     it { is_expected.to respond_to(:human_name) }

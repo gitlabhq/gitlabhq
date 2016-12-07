@@ -19,14 +19,13 @@ class Namespace < ActiveRecord::Base
     length: { within: 0..255 },
     namespace_name: true,
     presence: true,
-    uniqueness: true
+    uniqueness: { scope: :parent_id }
 
   validates :description, length: { within: 0..255 }
   validates :path,
     length: { within: 1..255 },
     namespace: true,
-    presence: true,
-    uniqueness: { case_sensitive: false }
+    presence: true
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
 
