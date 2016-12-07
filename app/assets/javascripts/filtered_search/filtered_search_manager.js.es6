@@ -108,18 +108,22 @@
       document.querySelector('.filtered-search').value += hasExistingValue && addSpace ? ` ${word}` : word;
     }
 
-    loadDropdown(dropdownName = '') {
+    loadDropdown(dropdownName = '', hideDropdown) {
       dropdownName = dropdownName.toLowerCase();
 
       const filterIconPadding = 27;
       const match = gl.FilteredSearchTokenKeys.get().filter(value => value.key === dropdownName)[0];
       const filteredSearch = document.querySelector('.filtered-search');
 
+      if (!this.font) {
+        this.font = window.getComputedStyle(filteredSearch).font;
+      }
+
       if (match && this.currentDropdown !== match.key) {
         console.log(`🦄 load ${match.key} dropdown`);
 
         const dynamicDropdownPadding = 12;
-        const dropdownOffset = gl.text.getTextWidth(filteredSearch.value) + filterIconPadding + dynamicDropdownPadding;
+        const dropdownOffset = gl.text.getTextWidth(filteredSearch.value, this.font) + filterIconPadding + dynamicDropdownPadding;
 
         this.dismissCurrentDropdown();
         this.currentDropdown = match.key;
@@ -157,8 +161,9 @@
       } else if (!match && this.currentDropdown !== 'hint') {
         console.log('🦄 load hint dropdown');
 
-        const dropdownOffset = gl.text.getTextWidth(filteredSearch.value) + filterIconPadding;
-
+        const dropdownOffset = gl.text.getTextWidth(filteredSearch.value, this.font) + filterIconPadding;
+        console.log(dropdownOffset)
+        this.dismissCurrentDropdown();
         this.currentDropdown = 'hint';
 
         if (!dropdownHint) {
