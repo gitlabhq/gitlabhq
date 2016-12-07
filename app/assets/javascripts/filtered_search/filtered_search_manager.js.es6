@@ -1,13 +1,5 @@
 /* eslint-disable no-param-reassign */
 ((global) => {
-  function clearSearch(e) {
-    e.stopPropagation();
-    e.preventDefault();
-
-    document.querySelector('.filtered-search').value = '';
-    document.querySelector('.clear-search').classList.add('hidden');
-  }
-
   function toggleClearSearchButton(e) {
     const clearSearchButton = document.querySelector('.clear-search');
 
@@ -170,7 +162,13 @@
           dropdownHint = new gl.DropdownHint(document.querySelector('#js-dropdown-hint'), filteredSearch, this.currentDropdown);
         }
         dropdownHint.setOffset(dropdownOffset);
-        dropdownHint.render();
+        dropdownHint.render(hideDropdown);
+      }
+    }
+
+    dismissCurrentDropdown() {
+      if (this.currentDropdown === 'hint') {
+        dropdownHint.destroy();
       }
     }
 
@@ -198,7 +196,17 @@
       filteredSearchInput.addEventListener('input', this.setDropdown.bind(this));
       filteredSearchInput.addEventListener('input', toggleClearSearchButton);
       filteredSearchInput.addEventListener('keydown', this.checkForEnter.bind(this));
-      document.querySelector('.clear-search').addEventListener('click', clearSearch);
+      document.querySelector('.clear-search').addEventListener('click', this.clearSearch.bind(this));
+    }
+
+    clearSearch(e) {
+      e.stopPropagation();
+      e.preventDefault();
+
+      document.querySelector('.filtered-search').value = '';
+      document.querySelector('.clear-search').classList.add('hidden');
+      dropdownHint.resetFilters();
+      this.loadDropdown('hint', true);
     }
 
     checkDropdownToken(e) {
@@ -208,7 +216,6 @@
       // Check for dropdown token
       if (lastToken[lastToken.length - 1] === ':') {
         const token = lastToken.slice(0, -1);
-
       }
     }
 
