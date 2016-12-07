@@ -1,9 +1,9 @@
 /* eslint-disable */
 //= require jquery
 //= require vue
-//= require issuable/time_tracking/time_tracking_bundle
+//= require issuable/time_tracking/components/time_tracker
 
-function initComponent(opts = {}) {
+function initTimeTrackingComponent(opts = {}) {
   fixture.set(`
     <div>
       <div id="mock-container"></div>
@@ -17,8 +17,8 @@ function initComponent(opts = {}) {
     timeSpentHuman: opts.timeSpentHuman || '1h 23m',
     docsUrl: '/help/workflow/time_tracking.md',
   };
-
-  this.timeTracker = new gl.IssuableTimeTracker({
+  const TimeTrackingComponent = Vue.component('issuable-time-tracker');
+  this.timeTracker = new TimeTrackingComponent({
     el: '#mock-container',
     data: this.initialData,
   });
@@ -28,7 +28,7 @@ function initComponent(opts = {}) {
   describe('Issuable Time Tracker', function() {
     describe('Initialization', function() {
       beforeEach(function() {
-        initComponent.apply(this);
+        initTimeTrackingComponent.apply(this);
       });
 
       it('should return something defined', function() {
@@ -47,7 +47,7 @@ function initComponent(opts = {}) {
       describe('Panes', function() {
         describe('Comparison pane', function() {
           beforeEach(function() {
-            initComponent.apply(this);
+            initTimeTrackingComponent.apply(this);
           });
 
           it('should show the "Comparison" pane when timeEstimate and time_spent are truthy', function(done) {
@@ -99,7 +99,7 @@ function initComponent(opts = {}) {
 
         describe("Estimate only pane", function() {
           beforeEach(function() {
-            initComponent.apply(this, { timeEstimate: 10000, timeSpent: '0', timeEstimateHuman: '2h 46m', timeSpentHuman: '0' });
+            initTimeTrackingComponent.apply(this, { timeEstimate: 10000, timeSpent: '0', timeEstimateHuman: '2h 46m', timeSpentHuman: '0' });
           });
 
           it('should only show the "Estimate only" pane when timeEstimate is truthy and time_spent is falsey', function() {
@@ -123,7 +123,7 @@ function initComponent(opts = {}) {
 
         describe('Spent only pane', function() {
           beforeEach(function() {
-            initComponent.apply(this, { timeEstimate: 0, timeSpent: 5000 });
+            initTimeTrackingComponent.apply(this, { timeEstimate: 0, timeSpent: 5000 });
           });
           // Look for the value
           it('should only show the "Spent only" pane  when timeEstimate is falsey and time_spent is truthy', function() {
@@ -147,7 +147,7 @@ function initComponent(opts = {}) {
 
         describe('No time tracking pane', function() {
           beforeEach(function() {
-            initComponent.apply(this, { timeEstimate: 0, timeSpent: 0, timeEstimateHuman: 0, timeSpentHuman: 0 });
+            initTimeTrackingComponent.apply(this, { timeEstimate: 0, timeSpent: 0, timeEstimateHuman: 0, timeSpentHuman: 0 });
           });
 
           it('should only show the "No time tracking" pane when both timeEstimate and time_spent are falsey', function() {
@@ -165,7 +165,7 @@ function initComponent(opts = {}) {
 
         describe("Help pane", function() {
           beforeEach(function() {
-            initComponent.apply(this, { timeEstimate: 0, timeSpent: 0 });
+            initTimeTrackingComponent.apply(this, { timeEstimate: 0, timeSpent: 0 });
           });
 
           it('should not show the "Help" pane by default', function() {
