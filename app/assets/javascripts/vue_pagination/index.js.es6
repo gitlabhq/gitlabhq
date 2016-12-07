@@ -2,7 +2,6 @@
 /* eslint-disable no-param-reassign, no-plusplus */
 
 ((gl) => {
-  const PAGINATION_SIZE = 30;
   const PAGINATION_UI_BUTTON_LIMIT = 4;
   const SPREAD = '...';
   const PREV = 'Prev';
@@ -13,24 +12,26 @@
   gl.VueGlPagination = Vue.extend({
     props: [
       'changepage',
-      'count',
-      'pagenum',
+      'pageInfo',
     ],
     computed: {
-      last() {
-        return Math.ceil(+this.count / PAGINATION_SIZE);
+      prev() {
+        return this.pageInfo.previousPage;
+      },
+      next() {
+        return this.pageInfo.nextPage;
       },
       getItems() {
-        const total = +this.last;
-        const page = +this.pagenum;
+        const total = this.pageInfo.totalPages;
+        const page = this.pageInfo.page;
         const items = [];
 
-        if (page > 1) items.push({ title: FIRST, where: 1 });
+        if (page > 1) items.push({ title: FIRST });
 
         if (page > 1) {
-          items.push({ title: PREV, where: page - 1 });
+          items.push({ title: PREV });
         } else {
-          items.push({ title: PREV, where: page - 1, disabled: true });
+          items.push({ title: PREV, disabled: true });
         }
 
         if (page > 6) items.push({ title: SPREAD, separator: true });
@@ -40,7 +41,7 @@
 
         for (let i = start; i <= end; i++) {
           const isActive = i === page;
-          items.push({ title: i, active: isActive, where: i });
+          items.push({ title: i, active: isActive });
         }
 
         if (total - page > PAGINATION_UI_BUTTON_LIMIT) {
@@ -48,12 +49,12 @@
         }
 
         if (page === total) {
-          items.push({ title: NEXT, where: page + 1, disabled: true });
+          items.push({ title: NEXT, disabled: true });
         } else if (total - page >= 1) {
-          items.push({ title: NEXT, where: page + 1 });
+          items.push({ title: NEXT });
         }
 
-        if (total - page >= 1) items.push({ title: LAST, where: total });
+        if (total - page >= 1) items.push({ title: LAST });
 
         return items;
       },
@@ -69,7 +70,7 @@
             }'
           >
             <span
-              @click="changepage($event, item.where)"
+              @click="changepage($event)"
             >
               {{item.title}}
             </span>

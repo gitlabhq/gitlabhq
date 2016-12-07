@@ -35,8 +35,8 @@
         pipelines: [],
         timeLoopInterval: '',
         intervalId: '',
-        pagenum: 1,
         apiScope: 'all',
+        pageInfo: {},
         count: {
           all: 0,
           running_or_pending: 0,
@@ -64,13 +64,14 @@
       );
     },
     methods: {
-      changepage(e, last) {
+      changepage(e) {
         const text = e.target.innerText;
+        const { totalPages, nextPage, previousPage } = this.pageInfo;
         if (text === SPREAD) return;
         if (/^-?[\d.]+(?:e-?\d+)?$/.test(text)) this.pagenum = +text;
-        if (text === LAST) this.pagenum = last;
-        if (text === NEXT) this.pagenum = +this.pagenum + 1;
-        if (text === PREV) this.pagenum = +this.pagenum - 1;
+        if (text === LAST) this.pagenum = totalPages;
+        if (text === NEXT) this.pagenum = nextPage;
+        if (text === PREV) this.pagenum = previousPage;
         if (text === FIRST) this.pagenum = 1;
 
         window.history.pushState({}, null, `?p=${this.pagenum}`);
@@ -141,10 +142,11 @@
           <i class="fa fa-spinner fa-spin"></i>
         </div>
         <gl-pagination
-          v-if='count.all > 30'
+          v-if='pageInfo.total > 30'
           :pagenum='pagenum'
           :changepage='changepage'
           :count='count.all'
+          :pageInfo='pageInfo'
         >
         </gl-pagination>
       </div>

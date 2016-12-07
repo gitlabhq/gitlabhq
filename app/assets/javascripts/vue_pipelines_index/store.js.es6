@@ -2,6 +2,17 @@
 /* eslint-disable no-param-reassign, no-underscore-dangle */
 
 ((gl) => {
+  const pageValues = (headers) => {
+    const values = {};
+    values.perPage = +headers['X-Per-Page'];
+    values.page = +headers['X-Page'];
+    values.total = +headers['X-Total'];
+    values.totalPages = +headers['X-Total-Pages'];
+    values.nextPage = +headers['X-Next-Page'];
+    values.previousPage = +headers['X-Prev-Page'];
+    return values;
+  };
+
   gl.PipelineStore = class {
     fetchDataLoop(Vue, pageNum, url, apiScope) {
       const updatePipelineNums = (count) => {
@@ -14,9 +25,13 @@
       const goFetch = () =>
         this.$http.get(`${url}?scope=${apiScope}&page=${pageNum}`)
           .then((response) => {
+            const pageInfo = pageValues(response.headers);
+            Vue.set(this, 'pageInfo', pageInfo);
+
             const res = JSON.parse(response.body);
             Vue.set(this, 'pipelines', res.pipelines);
             Vue.set(this, 'count', res.count);
+
             updatePipelineNums(this.count);
             this.pageRequest = false;
           }, () => new Flash(
