@@ -32,7 +32,7 @@ module Gitlab
       end
 
       def import_issues
-        return unless repo.has_issues?
+        return unless repo.issues_enabled?
 
         client.issues(repo).each do |issue|
           description = @formatter.author_line(issue.author)

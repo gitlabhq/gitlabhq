@@ -18,7 +18,7 @@ module Bitbucket
       end
 
       def parent_id
-        raw.fetch('parent', {}).fetch('id', nil)
+        raw.dig('parent', 'id')
       end
 
       def inline?

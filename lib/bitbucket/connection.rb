@@ -5,8 +5,8 @@ module Bitbucket
     DEFAULT_QUERY       = {}
 
     def initialize(options = {})
-      @api_version = options.fetch(:api_version, DEFAULT_API_VERSION)
-      @base_uri    = options.fetch(:base_uri, DEFAULT_BASE_URI)
+      @api_version   = options.fetch(:api_version, DEFAULT_API_VERSION)
+      @base_uri      = options.fetch(:base_uri, DEFAULT_BASE_URI)
       @default_query = options.fetch(:query, DEFAULT_QUERY)
 
       @token         = options[:token]
@@ -23,7 +23,7 @@ module Bitbucket
       @connection ||= OAuth2::AccessToken.new(client, @token, refresh_token: @refresh_token, expires_at: @expires_at, expires_in: @expires_in)
     end
 
-    def query(params = {})
+    def set_default_query_parameters(params = {})
       @default_query.merge!(params)
     end
 
@@ -63,7 +63,7 @@ module Bitbucket
     end
 
     def provider
-      Gitlab.config.omniauth.providers.find { |provider| provider.name == 'bitbucket' }
+      Gitlab::OAuth::Provider.config_for('bitbucket')
     end
 
     def options

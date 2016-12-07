@@ -8,7 +8,7 @@ module Bitbucket
       @url = url
       @page = nil
 
-      connection.query(pagelen: PAGE_LENGTH, sort: :created_on)
+      connection.set_default_query_parameters(pagelen: PAGE_LENGTH, sort: :created_on)
     end
 
     def next

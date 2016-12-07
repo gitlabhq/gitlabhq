@@ -8,7 +8,7 @@ module Bitbucket
       end
 
       def author
-        reporter.fetch('username', 'Anonymous')
+        raw.dig('reporter', 'username') || 'Anonymous'
       end
 
       def description
@@ -39,10 +39,6 @@ module Bitbucket
 
       def closed?
         CLOSED_STATUS.include?(raw['state'])
-      end
-
-      def reporter
-        raw.fetch('reporter', {})
       end
     end
   end

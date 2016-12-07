@@ -23,7 +23,9 @@ module Bitbucket
         url = raw['links']['clone'].find { |link| link['name'] == 'https' }.fetch('href')
 
         if token.present?
-          url.sub(/^[^\@]*/, "https://x-token-auth:#{token}")
+          clone_url = URI::parse(url)
+          clone_url.user = "x-token-auth:#{token}"
+          clone_url.to_s
         else
           url
         end
@@ -37,7 +39,7 @@ module Bitbucket
         raw['full_name']
       end
 
-      def has_issues?
+      def issues_enabled?
         raw['has_issues']
       end
 

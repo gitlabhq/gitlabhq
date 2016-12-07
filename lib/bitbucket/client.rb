@@ -5,40 +5,39 @@ module Bitbucket
     end
 
     def issues(repo)
-      relative_path = "/repositories/#{repo}/issues"
-      paginator = Paginator.new(connection, relative_path, :issue)
+      path = "/repositories/#{repo}/issues"
+      paginator = Paginator.new(connection, path, :issue)
 
       Collection.new(paginator)
     end
 
-    def issue_comments(repo, number)
-      relative_path = "/repositories/#{repo}/issues/#{number}/comments"
-      paginator = Paginator.new(connection, relative_path, :url)
+    def issue_comments(repo, issue_id)
+      path = "/repositories/#{repo}/issues/#{issue_id}/comments"
+      paginator = Paginator.new(connection, path, :url)
 
       Collection.new(paginator).map do |comment_url|
-        parsed_response = connection.get(comment_url.to_s)
-        Representation::Comment.new(parsed_response)
+        Representation::Comment.new(connection.get(comment_url.to_s))
       end
     end
 
     def pull_requests(repo)
-      relative_path = "/repositories/#{repo}/pullrequests?state=ALL"
-      paginator = Paginator.new(connection, relative_path, :pull_request)
+      path = "/repositories/#{repo}/pullrequests?state=ALL"
+      paginator = Paginator.new(connection, path, :pull_request)
 
       Collection.new(paginator)
     end
 
     def pull_request_comments(repo, pull_request)
-      relative_path = "/repositories/#{repo}/pullrequests/#{pull_request}/comments"
-      paginator = Paginator.new(connection, relative_path, :pull_request_comment)
+      path = "/repositories/#{repo}/pullrequests/#{pull_request}/comments"
+      paginator = Paginator.new(connection, path, :pull_request_comment)
 
       Collection.new(paginator)
     end
 
     def pull_request_diff(repo, pull_request)
-      relative_path = "/repositories/#{repo}/pullrequests/#{pull_request}/diff"
+      path = "/repositories/#{repo}/pullrequests/#{pull_request}/diff"
 
-      connection.get(relative_path)
+      connection.get(path)
     end
 
     def repo(name)
@@ -47,8 +46,8 @@ module Bitbucket
     end
 
     def repos
-      relative_path = "/repositories/#{user.username}"
-      paginator = Paginator.new(connection, relative_path, :repo)
+      path = "/repositories/#{user.username}"
+      paginator = Paginator.new(connection, path, :repo)
 
       Collection.new(paginator)
     end
