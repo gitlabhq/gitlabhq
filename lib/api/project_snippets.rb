@@ -1,6 +1,7 @@
 module API
-  # Projects API
   class ProjectSnippets < Grape::API
+    include PaginationParams
+
     before { authenticate! }
 
     params do
@@ -23,6 +24,9 @@ module API
 
       desc 'Get all project snippets' do
         success Entities::ProjectSnippet
+      end
+      params do
+        use :pagination
       end
       get ":id/snippets" do
         present paginate(snippets_for_current_user), with: Entities::ProjectSnippet

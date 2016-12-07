@@ -1,5 +1,7 @@
 module API
   class MergeRequests < Grape::API
+    include PaginationParams
+
     DEPRECATION_MESSAGE = 'This endpoint is deprecated and will be removed in GitLab 9.0.'.freeze
 
     before { authenticate! }
@@ -43,6 +45,7 @@ module API
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
                         desc: 'Return merge requests sorted in `asc` or `desc` order.'
         optional :iid, type: Array[Integer], desc: 'The IID of the merge requests'
+        use :pagination
       end
       get ":id/merge_requests" do
         authorize! :read_merge_request, user_project
@@ -219,6 +222,9 @@ module API
           detail 'Duplicate. DEPRECATED and WILL BE REMOVED in 9.0'
           success Entities::MRNote
         end
+        params do
+          use :pagination
+        end
         get "#{path}/comments" do
           merge_request = user_project.merge_requests.find(params[:merge_request_id])
 
@@ -255,6 +261,9 @@ module API
 
         desc 'List issues that will be closed on merge' do
           success Entities::MRNote
+        end
+        params do
+          use :pagination
         end
         get "#{path}/closes_issues" do
           merge_request = user_project.merge_requests.find(params[:merge_request_id])

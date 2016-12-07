@@ -1,5 +1,7 @@
 module API
   class Triggers < Grape::API
+    include PaginationParams
+
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
@@ -41,6 +43,9 @@ module API
 
       desc 'Get triggers list' do
         success Entities::Trigger
+      end
+      params do
+        use :pagination
       end
       get ':id/triggers' do
         authenticate!
