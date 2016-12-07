@@ -13,11 +13,9 @@ module Bitbucket
 
     def issue_comments(repo, issue_id)
       path = "/repositories/#{repo}/issues/#{issue_id}/comments"
-      paginator = Paginator.new(connection, path, :url)
+      paginator = Paginator.new(connection, path, :comment)
 
-      Collection.new(paginator).map do |comment_url|
-        Representation::Comment.new(connection.get(comment_url.to_s))
-      end
+      Collection.new(paginator)
     end
 
     def pull_requests(repo)

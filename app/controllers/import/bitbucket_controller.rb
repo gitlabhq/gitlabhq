@@ -62,7 +62,7 @@ class Import::BitbucketController < Import::BaseController
   end
 
   def provider
-    Gitlab.config.omniauth.providers.find { |provider| provider.name == 'bitbucket' }
+    Gitlab::OAuth::Provider.config_for('bitbucket')
   end
 
   def options

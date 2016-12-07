@@ -26,12 +26,12 @@ module Bitbucket
       page.nil? || page.next?
     end
 
-    def page_url
+    def next_url
       page.nil? ? url : page.next
     end
 
     def fetch_next_page
-      parsed_response = connection.get(page_url)
+      parsed_response = connection.get(next_url)
       Page.new(parsed_response, type)
     end
   end

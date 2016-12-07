@@ -18,14 +18,12 @@ module Bitbucket
     private
 
     def parse_attrs(raw)
-      attrs = %w(size page pagelen next previous)
-      attrs.map { |attr| { attr.to_sym => raw[attr] } }.reduce(&:merge)
+      raw.slice(*%w(size page pagelen next previous)).symbolize_keys
     end
 
     def parse_values(raw, bitbucket_rep_class)
       return [] unless raw['values'] && raw['values'].is_a?(Array)
-
-      raw['values'].map { |hash| bitbucket_rep_class.new(hash) }
+      bitbucket_rep_class.decorate(raw['values'])
     end
 
     def representation_class(type)

@@ -50,6 +50,13 @@ module Gitlab
 
           if issue.persisted?
             client.issue_comments(repo, issue.iid).each do |comment|
+              # The note can be blank for issue service messages like "Chenged title: ..."
+              # We would like to import those comments as well but there is no any
+              # specific parameter that would allow to process them, it's just an empty comment.
+              # To prevent our importer from just crashing or from creating useless empty comments
+              # we do this check.
+              next unless comment.note.present?
+
               note = @formatter.author_line(comment.author)
               note += comment.note
 
