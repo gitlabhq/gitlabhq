@@ -974,7 +974,7 @@ class Repository
       source_branch: source_branch, source_project: source_project) do
 
       source_sha = source_project.repository.find_source_sha(
-                     source_branch || base_branch)
+        source_branch || base_branch)
       committer = user_to_committer(user)
 
       Rugged::Commit.create(rugged,
@@ -998,7 +998,7 @@ class Repository
       source_branch: source_branch, source_project: source_project) do
 
       source_sha = source_project.repository.find_source_sha(
-                     source_branch || base_branch)
+        source_branch || base_branch)
       committer = user_to_committer(user)
 
       Rugged::Commit.create(rugged,
