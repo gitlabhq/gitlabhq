@@ -212,7 +212,8 @@ require('./window')(function(w){
         var self = this;
         window.addEventListener('click', function(e){
           var thisTag = e.target;
-          if(thisTag.tagName === 'LI' || thisTag.tagName === 'A'){
+          if(thisTag.tagName === 'LI' || thisTag.tagName === 'A'
+             || thisTag.tagName === 'BUTTON'){
             // climb up the tree to find the UL
             thisTag = utils.closest(thisTag, 'UL');
           }
@@ -556,7 +557,7 @@ var camelize = function(str) {
 };
 
 var closest = function(thisTag, stopTag) {
-  while(thisTag.tagName !== stopTag && thisTag.tagName !== 'HTML'){
+  while(thisTag !== null && thisTag.tagName !== stopTag && thisTag.tagName !== 'HTML'){
     thisTag = thisTag.parentNode;
   }
   return thisTag;
