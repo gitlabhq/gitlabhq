@@ -7,6 +7,7 @@ module Routable
     has_one :route, as: :source, autosave: true, dependent: :destroy
 
     validates_associated :route
+    validates :route, presence: true
 
     before_validation :update_route_path, if: :full_path_changed?
   end

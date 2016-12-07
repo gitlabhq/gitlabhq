@@ -3,6 +3,10 @@ require 'spec_helper'
 describe Group, 'Routable' do
   let!(:group) { create(:group) }
 
+  describe 'Validations' do
+    it { is_expected.to validate_presence_of(:route) }
+  end
+
   describe 'Associations' do
     it { is_expected.to have_one(:route).dependent(:destroy) }
   end
