@@ -6,7 +6,6 @@
 .nav-block
   .controls.hidden-xs
     = link_to new_snippet_path, class: "btn btn-new", title: "New snippet" do
-      = icon('plus')
       New snippet
 
   .nav-links.snippet-scope-menu
@@ -36,7 +35,6 @@
 
     .visible-xs
       = link_to new_snippet_path, class: "btn btn-new btn-block", title: "New snippet" do
-        = icon('plus')
         New snippet
 
 = render 'snippets/snippets'
