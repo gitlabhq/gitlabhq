@@ -11,7 +11,7 @@ module Bitbucket
       connection.set_default_query_parameters(pagelen: PAGE_LENGTH, sort: :created_on)
     end
 
-    def next
+    def items
       raise StopIteration unless has_next_page?
 
       @page = fetch_next_page

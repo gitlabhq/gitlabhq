@@ -3,7 +3,7 @@ module Bitbucket
     def initialize(paginator)
       super() do |yielder|
         loop do
-          paginator.next.each { |item| yielder << item }
+          paginator.items.each { |item| yielder << item }
         end
       end
 

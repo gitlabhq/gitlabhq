@@ -50,7 +50,7 @@ module Gitlab
 
           if issue.persisted?
             client.issue_comments(repo, issue.iid).each do |comment|
-              # The note can be blank for issue service messages like "Chenged title: ..."
+              # The note can be blank for issue service messages like "Changed title: ..."
               # We would like to import those comments as well but there is no any
               # specific parameter that would allow to process them, it's just an empty comment.
               # To prevent our importer from just crashing or from creating useless empty comments
@@ -70,8 +70,8 @@ module Gitlab
             end
           end
         end
-      rescue ActiveRecord::RecordInvalid
-        nil
+      rescue ActiveRecord::RecordInvalid => e
+        Rails.logger.error("Bitbucket importer ERROR in #{project.path_with_namespace}: Couldn't import record properly #{e.message}")
       end
 
       def import_pull_requests

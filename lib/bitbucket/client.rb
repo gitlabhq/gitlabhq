@@ -6,35 +6,26 @@ module Bitbucket
 
     def issues(repo)
       path = "/repositories/#{repo}/issues"
-      paginator = Paginator.new(connection, path, :issue)
-
-      Collection.new(paginator)
+      get_collection(path, :issue)
     end
 
     def issue_comments(repo, issue_id)
       path = "/repositories/#{repo}/issues/#{issue_id}/comments"
-      paginator = Paginator.new(connection, path, :comment)
-
-      Collection.new(paginator)
+      get_collection(path, :comment)
     end
 
     def pull_requests(repo)
       path = "/repositories/#{repo}/pullrequests?state=ALL"
-      paginator = Paginator.new(connection, path, :pull_request)
-
-      Collection.new(paginator)
+      get_collection(path, :pull_request)
     end
 
     def pull_request_comments(repo, pull_request)
       path = "/repositories/#{repo}/pullrequests/#{pull_request}/comments"
-      paginator = Paginator.new(connection, path, :pull_request_comment)
-
-      Collection.new(paginator)
+      get_collection(path, :pull_request_comment)
     end
 
     def pull_request_diff(repo, pull_request)
       path = "/repositories/#{repo}/pullrequests/#{pull_request}/diff"
-
       connection.get(path)
     end
 
@@ -45,9 +36,7 @@ module Bitbucket
 
     def repos
       path = "/repositories/#{user.username}"
-      paginator = Paginator.new(connection, path, :repo)
-
-      Collection.new(paginator)
+      get_collection(path, :repo)
     end
 
     def user
@@ -60,5 +49,10 @@ module Bitbucket
     private
 
     attr_reader :connection
+
+    def get_collection(path, type)
+      paginator = Paginator.new(connection, path, type)
+      Collection.new(paginator)
+    end
   end
 end
