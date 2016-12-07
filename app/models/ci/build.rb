@@ -275,8 +275,10 @@ module Ci
     end
 
     def update_coverage
-      return unless project
-      return unless regex = self.coverage_regex
+      regex = coverage_regex.to_s[1...-1]
+
+      return if regex.blank?
+
       coverage = extract_coverage(trace, regex)
 
       if coverage.is_a? Numeric
@@ -522,7 +524,9 @@ module Ci
     end
 
     def coverage_regex
-      super || project.build_coverage_regex
+      super ||
+        project.try(:build_coverage_regex).presence &&
+        "/#{project.try(:build_coverage_regex)}/"
     end
 
     def when

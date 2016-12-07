@@ -11,14 +11,6 @@ module Gitlab
           validations do
             validates :config, regexp: true
           end
-
-          def value
-            if @config.first == '/' && @config.last == '/'
-              @config[1...-1]
-            else
-              @config
-            end
-          end
         end
       end
     end

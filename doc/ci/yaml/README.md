@@ -286,9 +286,10 @@ build outputs. Setting this up globally will make all the jobs to use this
 setting for output filtering and extracting the coverage information from your
 builds.
 
-Regular expressions are used by default. So using surrounding `/` is optional,
-given it'll always be read as a regular expression. Don't forget to escape
-special characters whenever you want to match them literally.
+Regular expressions are the only valid kind of value expected here. So, using
+surrounding `/` is mandatory in order to consistently and explicitly represent
+a regular expression string. You must escape special characters if you want to
+match them literally.
 
 A simple example:
 ```yaml
