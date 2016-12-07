@@ -47,9 +47,9 @@
         <div>
           <h4> Requires {{ approvalsRequiredStringified }} (from {{ approverNamesStringified }})</h4>
           <div v-if='showApproveButton' class='append-bottom-10'>
-            <button 
-              @click='approveMergeRequest' 
-              class='btn btn-primary approve-btn'> 
+            <button
+              @click='approveMergeRequest'
+              class='btn btn-primary approve-btn'>
               Approve Merge Request
             </button>
           </div>

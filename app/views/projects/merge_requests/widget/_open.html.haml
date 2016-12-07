@@ -54,5 +54,5 @@
         = mr_assign_issues_link
 
   - if @merge_request.approvals.any?
-    %approvals-footer{':approved-by-users' => 'approvals.approvedByUsers', ':approver-names' => 'approvals.approverNames', ':approvals-left' => 'approvals.approvalsLeft', ':user-can-approve' => 'approvals.userCanApprove', ':user-has-approved' => 'approvals.userHasApproved'}
+    %approvals-footer{':approved-by-users' => 'approvals.approvedByUsers', ':approver-names' => 'approvals.approverNames', ':approvals-left' => 'approvals.approvalsLeft', ':user-can-approve' => 'approvals.userCanApprove', ':user-has-approved' => 'approvals.userHasApproved', 'pending-avatar-svg' => custom_icon('icon_dotted_circle'), 'checkmark-svg' => custom_icon('icon_checkmark') }
 

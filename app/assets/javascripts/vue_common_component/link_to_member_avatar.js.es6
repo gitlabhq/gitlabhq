@@ -35,7 +35,7 @@
       },
       size: {
         type: Number,
-        default: 48,
+        default: 32,
         required: false
       },
       nonUser: {
@@ -46,16 +46,27 @@
       tooltipContainer: {
         type: String,
         required: false,
+      },
+      avatarHtml: {
+        type: String,
+        required: false,
       }
     },
     data() {
       return {
-        noAvatarUrl: '/assets/no_avatar.png'
+        noAvatarUrl: '/assets/no_avatar.png',
+        defaultAvatarClass: 'avatar avatar-inline',
       };
     },
     computed: {
+      avatarSizeClass() {
+        return `s${this.size}`;
+      },
+      avatarHtmlClass() {
+        return `${this.avatarSizeClass} ${this.defaultAvatarClass}`;
+      },
       avatarElemId() {
-        return `${this.username}-avatar-link`;
+        return this.username ? `${this.username}-avatar-link` : 'non-user-avatar-link';
       },
       userProfileUrl() {
         return this.nonUser || !this.username ? '' : `/${this.username}`;
@@ -67,7 +78,7 @@
         return this.showTooltip ? 'has-tooltip' : '';
       },
       avatarClass() {
-        return `avatar avatar-inline s${this.size} ${this.extraAvatarClass}`
+        return `${this.defaultAvatarClass} ${this.avatarSizeClass} ${this.extraAvatarClass}`;
       },
       disabledClass() {
         return this.nonUser ? 'disabled' : '';
@@ -77,14 +88,20 @@
       },
       tooltipContainerAttr() {
         return this.tooltipContainer || `#${this.avatarElemId}`;
-      }
+      },
+    },
+    methods: {
+      pixelizeValue(size) {
+        return size + 'px';
+      },
     },
     template: `
-      <span :id='avatarElemId'>
+      <div class='link-to-member-avatar' :id='avatarElemId'>
         <a :href='userProfileUrl' :class='linkClass' :data-original-title='displayName' :data-container='tooltipContainerAttr'>
+          <svg v-if='avatarHtml' v-html='avatarHtml' :class='avatarHtmlClass' :width='size' :height='size' :alt='displayName'></svg>
           <img :class='avatarClass' :src='preppedAvatarUrl' :width='size' :height='size' :alt='displayName'/>
         </a>
-      </span>
+      </div>
     `
   });
 })();

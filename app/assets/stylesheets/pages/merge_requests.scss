@@ -430,21 +430,47 @@
 }
 
 .approvals-footer {
+  display: flex;
   a.disabled {
     pointer-events: none;
     cursor: default;
   }
+
+  > span {
+    align-self: center;
+  }
+
+  .hide-asset {
+    img {
+      display: none;
+    }
+    svg {
+      margin-bottom: -7px; // makes up for border removed
+      border: none;
+    }
+  }
+  .avatar {
+    margin-bottom: -2px;
+    margin-right: 3px;
+  }
+
+  .unapprove-btn-wrap {
+    cursor: pointer;
+    border-left: 1px solid $gl-gray-light;
+    padding-left: 15px;
+    margin-left: 10px;
+  }
+
   .approver-avatar {
     position: relative;
     display: inline-block;
-    &::before {
-      content:'\2713';
-      color: green;
-      background: white;
-      position: absolute;
-      top: 0;
-      right: 32%;
+
+    svg.avatar {
+      position:absolute;
+      top: 12%;
+      right: 4%;
+      height: 45%;
+      width: 45%;
     }
   }
-
 }
