@@ -4,26 +4,11 @@
 ((gl) => {
   gl.PipelineStore = class {
     fetchDataLoop(Vue, pageNum, url, apiScope) {
-      const setVueResources = () => { Vue.activeResources = 1; };
-      const resetVueResources = () => { Vue.activeResources = 0; };
-      const addToVueResources = () => { Vue.activeResources += 1; };
-      const subtractFromVueResources = () => { Vue.activeResources -= 1; };
-
-      resetVueResources();
-
       const updatePipelineNums = (count) => {
         const { all } = count;
         const running = count.running_or_pending;
         document.querySelector('.js-totalbuilds-count').innerHTML = all;
         document.querySelector('.js-running-count').innerHTML = running;
-      };
-
-      const resourceChecker = () => {
-        if (Vue.activeResources === 0) {
-          setVueResources();
-        } else {
-          addToVueResources();
-        }
       };
 
       const goFetch = () =>
@@ -34,12 +19,10 @@
             Vue.set(this, 'count', res.count);
             updatePipelineNums(this.count);
             this.pageRequest = false;
-            subtractFromVueResources();
           }, () => new Flash(
             'Something went wrong on our end.',
           ));
 
-      resourceChecker();
       goFetch();
 
       const startTimeLoops = () => {
