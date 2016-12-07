@@ -271,4 +271,11 @@ describe Group, models: true do
       expect(group.web_url).to include("groups/#{group.name}")
     end
   end
+
+  describe 'nested group' do
+    subject { create(:group, :nested) }
+
+    it { is_expected.to be_valid }
+    it { expect(subject.parent).to be_kind_of(Group) }
+  end
 end
