@@ -8,7 +8,7 @@ class SnippetsFinder
     when :by_user then
       by_user(current_user, params[:user], params[:scope])
     when :by_project
-      by_project(current_user, params[:project])
+      by_project(current_user, params[:project], params[:scope])
     end
   end
 
@@ -47,14 +47,30 @@ class SnippetsFinder
     end
   end
 
-  def by_project(current_user, project)
+  def by_project(current_user, project, scope)
     snippets = project.snippets.fresh
 
     if current_user
       if project.team.member?(current_user) || current_user.admin?
-        snippets
+        case scope
+        when 'are_internal' then
+          snippets.are_internal
+        when 'are_private' then
+          snippets.are_private
+        when 'are_public' then
+          snippets.are_public
+        else
+          snippets
+        end
       else
-        snippets.public_and_internal
+        case scope
+        when 'are_internal' then
+          snippets.are_internal
+        when 'are_public' then
+          snippets.are_public
+        else
+          snippets.public_and_internal
+        end
       end
     else
       snippets.are_public

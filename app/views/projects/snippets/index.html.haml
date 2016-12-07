@@ -1,5 +1,32 @@
 - page_title "Snippets"
 
+- if current_user
+  .nav-links.snippet-scope-menu
+    %li{ class: ("active" unless params[:scope]) }
+      = link_to namespace_project_snippets_path(@project.namespace, @project) do
+        All
+        %span.badge
+          = @project.snippets.count
+
+    - if @project.team.member?(current_user) || current_user.admin?
+      %li{ class: ("active" if params[:scope] == "are_private") }
+        = link_to namespace_project_snippets_path(@project.namespace, @project, scope: 'are_private') do
+          Private
+          %span.badge
+            = @project.snippets.are_private.count
+
+    %li{ class: ("active" if params[:scope] == "are_internal") }
+      = link_to namespace_project_snippets_path(@project.namespace, @project, scope: 'are_internal') do
+        Internal
+        %span.badge
+          = @project.snippets.are_internal.count
+
+    %li{ class: ("active" if params[:scope] == "are_public") }
+      = link_to namespace_project_snippets_path(@project.namespace, @project, scope: 'are_public') do
+        Public
+        %span.badge
+          = @project.snippets.are_public.count
+
 .sub-header-block
   - if can?(current_user, :create_project_snippet, @project)
     = link_to new_namespace_project_snippet_path(@project.namespace, @project), class: "btn btn-new btn-wide-on-sm pull-right", title: "New snippet" do
