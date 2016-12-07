@@ -799,9 +799,9 @@ class Repository
       author_name: author_name,
       source_branch: source_branch,
       source_project: source_project,
-      actions: [{action: :create,
-                 file_path: path,
-                 content: content}])
+      actions: [{ action: :create,
+                  file_path: path,
+                  content: content }])
   end
   # rubocop:enable Metrics/ParameterLists
 
@@ -825,10 +825,10 @@ class Repository
       author_name: author_name,
       source_branch: source_branch,
       source_project: source_project,
-      actions: [{action: action,
-                 file_path: path,
-                 content: content,
-                 previous_path: previous_path}])
+      actions: [{ action: action,
+                  file_path: path,
+                  content: content,
+                  previous_path: previous_path }])
   end
   # rubocop:enable Metrics/ParameterLists
 
@@ -845,8 +845,8 @@ class Repository
       author_name: author_name,
       source_branch: source_branch,
       source_project: source_project,
-      actions: [{action: :delete,
-                 file_path: path}])
+      actions: [{ action: :delete,
+                  file_path: path }])
   end
   # rubocop:enable Metrics/ParameterLists
 
