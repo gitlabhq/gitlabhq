@@ -12,8 +12,8 @@
       $('.js-ldap-permissions').off('click').on('click', this.showLDAPPermissionsWarning.bind(this));
       $('.js-ldap-override').off('click').on('click', this.toggleMemberAccessToggle.bind(this));
       $('.project_member, .group_member').off('ajax:success').on('ajax:success', this.removeRow);
-      $('.js-member-update-control').off('change').on('change', this.formSubmit);
-      $('.js-edit-member-form').off('ajax:success').on('ajax:success', this.formSuccess);
+      $('.js-member-update-control').off('change').on('change', this.formSubmit.bind(this));
+      $('.js-edit-member-form').off('ajax:success').on('ajax:success', this.formSuccess.bind(this));
       gl.utils.disableButtonIfEmptyField('#user_ids', 'input[name=commit]', 'change');
     }
 
@@ -45,15 +45,15 @@
           },
           clicked: (selected, $el) => {
             const $link = $($el);
+            const { $memberListItem, $toggle, $dateInput } = this.getMemberListItems($link);
 
-            if ($link.data('revert')) {
-              const { $memberListItem, $toggle, $dateInput } = this.getMemberListItems($link);
+            $toggle.attr('disabled', true);
+            $dateInput.attr('disabled', true);
 
-              $toggle.attr('disabled', true);
-              $dateInput.attr('disabled', true);
-              this.overrideLdap($memberListItem, $link.data('endpoint'), false);
-            } else {
+            if (!$link.data('revert')) {
               $btn.closest('form').trigger('submit.rails');
+            } else {
+              this.overrideLdap($memberListItem, $link.data('endpoint'), false);
             }
           },
         });
@@ -71,13 +71,21 @@
       }
     }
 
-    formSubmit() {
-      $(this).closest('form').trigger('submit.rails').end()
-        .disable();
+    formSubmit(e) {
+      const $this = $(e.currentTarget);
+      const { $toggle, $dateInput } = this.getMemberListItems($this);
+
+      $this.closest('form').trigger('submit.rails');
+
+      $toggle.attr('disabled', true);
+      $dateInput.attr('disabled', true);
     }
 
-    formSuccess() {
-      $(this).find('.js-member-update-control').enable();
+    formSuccess(e) {
+      const { $toggle, $dateInput } = this.getMemberListItems($(e.currentTarget).closest('.member'));
+
+      $toggle.removeAttr('disabled');
+      $dateInput.removeAttr('disabled');
     }
 
     showLDAPPermissionsWarning(e) {
@@ -88,8 +96,8 @@
       $ldapPermissionsElement.toggle();
     }
 
-    getMemberListItems(btn) {
-      const $memberListItem = $(`#${btn.data('id')}`);
+    getMemberListItems($el) {
+      const $memberListItem = $el.is('.member') ? $el : $(`#${$el.data('el-id')}`);
 
       return {
         $memberListItem,
@@ -110,8 +118,6 @@
     }
 
     overrideLdap($memberListitem, endpoint, override) {
-      $memberListitem.toggleClass('is-overriden', override);
-
       return $.ajax({
         url: endpoint,
         type: 'PATCH',
@@ -120,6 +126,8 @@
             override,
           },
         },
+      }).then(() => {
+        $memberListitem.toggleClass('is-overriden', override);
       });
     }
   }

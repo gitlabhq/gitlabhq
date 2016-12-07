@@ -73,14 +73,14 @@
                       %li
                         = link_to role, "javascript:void(0)",
                           class: ("is-active" if member.access_level == role_id),
-                          data: { id: role_id }
+                          data: { id: role_id, el_id: dom_id(member) }
                     - if can_override_member
                       %li.divider
                       %li
                         = link_to "Revert to LDAP group sync settings", "javascript:void(0)",
-                          data: { revert: "true", endpoint: override_group_group_member_path(@group, member), id: dom_id(member) }
+                          data: { revert: "true", endpoint: override_group_group_member_path(@group, member), el_id: dom_id(member) }
             .prepend-left-5.clearable-input.member-form-control
-              = f.text_field :expires_at, class: 'form-control js-access-expiration-date js-member-update-control', placeholder: 'Expiration date', id: "member_expires_at_#{member.id}", disabled: !can_admin_member
+              = f.text_field :expires_at, class: 'form-control js-access-expiration-date js-member-update-control', placeholder: 'Expiration date', id: "member_expires_at_#{member.id}", disabled: !can_admin_member, data: { el_id: dom_id(member) }
               %i.clear-icon.js-clear-input
         - else
           %span.member-access-text= member.human_access
@@ -115,7 +115,7 @@
         - if can_override_member
           %button.btn.btn-default.btn-ldap-override.js-ldap-permissions{ type: "button",
             "aria-label" => "Edit permissions",
-            data: { name: user.name, id: dom_id(member) } }
+            data: { name: user.name, el_id: dom_id(member) } }
             %span.visible-xs-block.visible-sm-block
               Edit permissions
             = icon("pencil", class: "hidden-xs hidden-sm")
@@ -129,7 +129,7 @@
     .controls
       %button.btn.btn-warning.js-ldap-override{ type: "button",
         "aria-label" => "Change LDAP member permissions",
-        data: { id: dom_id(member), endpoint: override_group_group_member_path(@group, member) } }
+        data: { el_id: dom_id(member), endpoint: override_group_group_member_path(@group, member) } }
         Change permissions
       %button.btn.btn-default.js-ldap-permissions{ type: "button",
         "aria-label" => "Close permissions override",
