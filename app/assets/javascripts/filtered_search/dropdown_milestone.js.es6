@@ -27,9 +27,14 @@
 
     filterMethod(item, query) {
       const { value } = gl.FilteredSearchTokenizer.getLastTokenObject(query);
-      const valueWithoutPrefix = value.slice(1);
+      const valueWithoutColon = value.slice(1).toLowerCase();
+      const valueWithoutPrefix = valueWithoutColon.slice(1);
 
-      item.droplab_hidden = item['title'].indexOf(valueWithoutPrefix) === -1;
+      const title = item.title.toLowerCase();
+
+      const noTitleMatch = title.indexOf(valueWithoutPrefix) === -1 && title.indexOf(valueWithoutColon) === -1;
+
+      item.droplab_hidden = noTitleMatch;
       return item;
     }
   }

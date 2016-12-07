@@ -22,9 +22,16 @@
 
     filterMethod(item, query) {
       const { value } = gl.FilteredSearchTokenizer.getLastTokenObject(query);
-      const valueWithoutPrefix = value.slice(1);
+      const valueWithoutColon = value.slice(1).toLowerCase();
+      const valueWithoutPrefix = valueWithoutColon.slice(1);
 
-      item.droplab_hidden = item['username'].indexOf(valueWithoutPrefix) === -1;
+      const username = item.username.toLowerCase();
+      const name = item.name.toLowerCase();
+
+      const noUsernameMatch = username.indexOf(valueWithoutPrefix) === -1 && username.indexOf(valueWithoutColon) === -1;
+      const noNameMatch = name.indexOf(valueWithoutColon) === -1;
+
+      item.droplab_hidden = noUsernameMatch && noNameMatch;
       return item;
     }
   }
