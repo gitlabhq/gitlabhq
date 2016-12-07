@@ -12,7 +12,7 @@ class PipelineEntity < Grape::Entity
   end
 
   expose :details do
-    expose :status
+    expose :detailed_status, as: :status, using: StatusEntity
     expose :duration
     expose :finished_at
     expose :stages_with_statuses, as: :stages, using: PipelineStageEntity
