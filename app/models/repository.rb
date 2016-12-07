@@ -773,27 +773,17 @@ class Repository
     user, path, content, message, branch, update,
     author_email: nil, author_name: nil,
     source_branch: nil, source_project: project)
-    GitOperationService.new(user, self).with_branch(
-      branch,
+    multi_action(
+      user: user,
+      branch: branch,
+      message: message,
+      author_email: author_email,
+      author_name: author_name,
       source_branch: source_branch,
-      source_project: source_project) do |ref|
-      options = {
-        commit: {
-          branch: ref,
-          message: message,
-          update_ref: false
-        },
-        file: {
-          content: content,
-          path: path,
-          update: update
-        }
-      }
-
-      options.merge!(get_committer_and_author(user, email: author_email, name: author_name))
-
-      Gitlab::Git::Blob.commit(raw_repository, options)
-    end
+      source_project: source_project,
+      actions: [{action: :create,
+                 file_path: path,
+                 content: content}])
   end
   # rubocop:enable Metrics/ParameterLists
 
@@ -803,32 +793,24 @@ class Repository
     branch:, previous_path:, message:,
     author_email: nil, author_name: nil,
     source_branch: nil, source_project: project)
-    GitOperationService.new(user, self).with_branch(
-      branch,
+    action = if previous_path && previous_path != path
+               :move
+             else
+               :update
+             end
+
+    multi_action(
+      user: user,
+      branch: branch,
+      message: message,
+      author_email: author_email,
+      author_name: author_name,
       source_branch: source_branch,
-      source_project: source_project) do |ref|
-      options = {
-        commit: {
-          branch: ref,
-          message: message,
-          update_ref: false
-        },
-        file: {
-          content: content,
-          path: path,
-          update: true
-        }
-      }
-
-      options.merge!(get_committer_and_author(user, email: author_email, name: author_name))
-
-      if previous_path && previous_path != path
-        options[:file][:previous_path] = previous_path
-        Gitlab::Git::Blob.rename(raw_repository, options)
-      else
-        Gitlab::Git::Blob.commit(raw_repository, options)
-      end
-    end
+      source_project: source_project,
+      actions: [{action: action,
+                 file_path: path,
+                 content: content,
+                 previous_path: previous_path}])
   end
   # rubocop:enable Metrics/ParameterLists
 
@@ -837,25 +819,16 @@ class Repository
     user, path, message, branch,
     author_email: nil, author_name: nil,
     source_branch: nil, source_project: project)
-    GitOperationService.new(user, self).with_branch(
-      branch,
+    multi_action(
+      user: user,
+      branch: branch,
+      message: message,
+      author_email: author_email,
+      author_name: author_name,
       source_branch: source_branch,
-      source_project: source_project) do |ref|
-      options = {
-        commit: {
-          branch: ref,
-          message: message,
-          update_ref: false
-        },
-        file: {
-          path: path
-        }
-      }
-
-      options.merge!(get_committer_and_author(user, email: author_email, name: author_name))
-
-      Gitlab::Git::Blob.remove(raw_repository, options)
-    end
+      source_project: source_project,
+      actions: [{action: :delete,
+                 file_path: path}])
   end
   # rubocop:enable Metrics/ParameterLists
 
