@@ -6,6 +6,9 @@ describe "Dashboard Issues Feed", feature: true  do
     let!(:project1) { create(:project) }
     let!(:project2) { create(:project) }
 
+    it_behaves_like 'public email is not shown in events feed'
+    it_behaves_like 'uri tag includes user page URL'
+    
     before do
       project1.team << [user, :master]
       project2.team << [user, :master]

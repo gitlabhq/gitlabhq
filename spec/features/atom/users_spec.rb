@@ -4,6 +4,9 @@ describe "User Feed", feature: true  do
   describe "GET /" do
     let!(:user) { create(:user) }
 
+    it_behaves_like 'public email is not shown in events feed'
+    it_behaves_like 'uri tag includes user page URL'
+
     context 'user atom feed via private token' do
       it "renders user atom feed" do
         visit user_path(user, :atom, private_token: user.private_token)

@@ -6,6 +6,9 @@ describe 'Issues Feed', feature: true  do
     let!(:group)    { create(:group) }
     let!(:project)  { create(:project) }
     let!(:issue)    { create(:issue, author: user, project: project) }
+    
+    it_behaves_like 'public email is not shown in events feed'
+    it_behaves_like 'uri tag includes user page URL'
 
     before do
       project.team << [user, :developer]
