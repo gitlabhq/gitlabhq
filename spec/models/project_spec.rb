@@ -131,14 +131,18 @@ describe Project, models: true do
 
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_uniqueness_of(:name).scoped_to(:namespace_id) }
-    it { is_expected.to validate_length_of(:name).is_within(0..255) }
+    it { is_expected.to validate_length_of(:name).is_at_most(255) }
 
     it { is_expected.to validate_presence_of(:path) }
     it { is_expected.to validate_uniqueness_of(:path).scoped_to(:namespace_id) }
-    it { is_expected.to validate_length_of(:path).is_within(0..255) }
-    it { is_expected.to validate_length_of(:description).is_within(0..2000) }
+    it { is_expected.to validate_length_of(:path).is_at_most(255) }
+
+    it { is_expected.to validate_length_of(:description).is_at_most(2000) }
+
     it { is_expected.to validate_presence_of(:creator) }
+
     it { is_expected.to validate_presence_of(:namespace) }
+
     it { is_expected.to validate_presence_of(:repository_storage) }
 
     it 'does not allow new projects beyond user limits' do

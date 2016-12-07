@@ -13,9 +13,9 @@ describe Environment, models: true do
 
   it { is_expected.to validate_presence_of(:name) }
   it { is_expected.to validate_uniqueness_of(:name).scoped_to(:project_id) }
-  it { is_expected.to validate_length_of(:name).is_within(0..255) }
+  it { is_expected.to validate_length_of(:name).is_at_most(255) }
 
-  it { is_expected.to validate_length_of(:external_url).is_within(0..255) }
+  it { is_expected.to validate_length_of(:external_url).is_at_most(255) }
 
   # To circumvent a not null violation of the name column:
   # https://github.com/thoughtbot/shoulda-matchers/issues/336

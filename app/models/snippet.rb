@@ -27,9 +27,9 @@ class Snippet < ActiveRecord::Base
   delegate :name, :email, to: :author, prefix: true, allow_nil: true
 
   validates :author, presence: true
-  validates :title, presence: true, length: { within: 0..255 }
+  validates :title, presence: true, length: { maximum: 255 }
   validates :file_name,
-    length: { within: 0..255 },
+    length: { maximum: 255 },
     format: { with: Gitlab::Regex.file_name_regex,
               message: Gitlab::Regex.file_name_regex_message }
 
@@ -92,6 +92,10 @@ class Snippet < ActiveRecord::Base
 
   def size
     0
+  end
+
+  def file_name
+    super.to_s
   end
 
   # alias for compatibility with blobs and highlighting

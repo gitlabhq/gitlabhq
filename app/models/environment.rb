@@ -9,7 +9,7 @@ class Environment < ActiveRecord::Base
   validates :name,
             presence: true,
             uniqueness: { scope: :project_id },
-            length: { within: 0..255 },
+            length: { maximum: 255 },
             format: { with: Gitlab::Regex.environment_name_regex,
                       message: Gitlab::Regex.environment_name_regex_message }
 

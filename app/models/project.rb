@@ -172,13 +172,13 @@ class Project < ActiveRecord::Base
   validates :description, length: { maximum: 2000 }, allow_blank: true
   validates :name,
     presence: true,
-    length: { within: 0..255 },
+    length: { maximum: 255 },
     format: { with: Gitlab::Regex.project_name_regex,
               message: Gitlab::Regex.project_name_regex_message }
   validates :path,
     presence: true,
     project_path: true,
-    length: { within: 0..255 },
+    length: { maximum: 255 },
     format: { with: Gitlab::Regex.project_path_regex,
               message: Gitlab::Regex.project_path_regex_message }
   validates :namespace, presence: true

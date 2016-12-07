@@ -12,17 +12,17 @@ class Namespace < ActiveRecord::Base
 
   validates :owner, presence: true, unless: ->(n) { n.type == "Group" }
   validates :name,
-    length: { within: 0..255 },
-    namespace_name: true,
     presence: true,
-    uniqueness: true
+    uniqueness: true,
+    length: { maximum: 255 },
+    namespace_name: true
 
-  validates :description, length: { within: 0..255 }
+  validates :description, length: { maximum: 255 }
   validates :path,
-    length: { within: 1..255 },
-    namespace: true,
     presence: true,
-    uniqueness: { case_sensitive: false }
+    uniqueness: { case_sensitive: false },
+    length: { maximum: 255 },
+    namespace: true
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
 
