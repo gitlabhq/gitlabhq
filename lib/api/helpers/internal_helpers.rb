@@ -59,6 +59,14 @@ module API
 
         ::Users::ActivityService.new(actor, 'Git SSH').execute if commands.include?(params[:action])
       end
+
+      def parse_allowed_environment_variables
+        return if params[:env].blank?
+
+        JSON.parse(params[:env])
+
+      rescue JSON::ParserError
+      end
     end
   end
 end
