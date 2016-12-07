@@ -15,14 +15,12 @@
       },
       svg() {
         return document
-          .querySelector(
-            `.${this.pipeline.details.status.text}-icon-svg.hidden`,
-          ).innerHTML;
+          .querySelector(`.${this.pipeline.details.status.icon}`).innerHTML;
       },
     },
     template: `
       <td class="commit-link">
-        <a :href='pipeline.url'>
+        <a :href='pipeline.details.status.details_path'>
           <span :class='cssClasses'>
             <span v-html='svg'></span>
             <span>&nbsp;{{pipeline.details.status.text}}</span>

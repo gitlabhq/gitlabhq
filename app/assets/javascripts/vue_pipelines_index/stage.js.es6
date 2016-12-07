@@ -14,7 +14,7 @@
       svg() {
         return document
           .querySelector(
-            `.${this.stage.status}-icon-svg.hidden`,
+            `.icon_status_${this.stage.status}`,
           ).innerHTML;
       },
     },
