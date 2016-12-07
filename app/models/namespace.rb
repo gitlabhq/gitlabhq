@@ -161,6 +161,20 @@ class Namespace < ActiveRecord::Base
     end
   end
 
+  def parents
+    @parents ||=
+      begin
+        parents = []
+
+        if parent
+          parents << parent
+          parents += parent.parents
+        end
+
+        parents
+      end
+  end
+
   private
 
   def repository_storage_paths

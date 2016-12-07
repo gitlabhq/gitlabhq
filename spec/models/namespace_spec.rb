@@ -121,4 +121,12 @@ describe Namespace, models: true do
     it { expect(group.full_path).to eq(group.path) }
     it { expect(nested_group.full_path).to eq("#{group.path}/#{nested_group.path}") }
   end
+
+  describe '#parents' do
+    let(:group) { create(:group) }
+    let(:nested_group) { create(:group, parent: group) }
+    let(:deep_nested_group) { create(:group, parent: nested_group) }
+
+    it { expect(deep_nested_group.parents).to eq([nested_group, group]) }
+  end
 end
