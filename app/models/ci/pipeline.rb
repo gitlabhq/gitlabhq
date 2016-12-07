@@ -341,6 +341,10 @@ module Ci
         .select { |merge_request| merge_request.head_pipeline.try(:id) == self.id }
     end
 
+    def detailed_status
+      Gitlab::Ci::Status::Pipeline::Factory.new(self).fabricate!
+    end
+
     private
 
     def pipeline_data

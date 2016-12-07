@@ -57,5 +57,12 @@ describe Gitlab::ChatCommands::IssueCreate, service: true do
       expect(match[:title]).to eq('my title')
       expect(match[:description]).to eq('description')
     end
+
+    it 'matches the alias new' do
+      match = described_class.match("issue new my title")
+
+      expect(match).not_to be_nil
+      expect(match[:title]).to eq('my title')
+    end
   end
 end

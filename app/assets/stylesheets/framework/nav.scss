@@ -49,7 +49,7 @@
       padding: $gl-btn-padding;
       padding-bottom: 11px;
       margin-bottom: -1px;
-      font-size: 15px;
+      font-size: 14px;
       line-height: 28px;
       color: $note-toolbar-color;
       border-bottom: 2px solid transparent;
@@ -266,6 +266,16 @@
     .nav-text,
     .nav-controls {
       width: auto;
+    }
+  }
+
+  &.multi-line {
+    .nav-text {
+      line-height: 20px;
+    }
+
+    .nav-controls {
+      padding: 17px 0;
     }
   }
 }

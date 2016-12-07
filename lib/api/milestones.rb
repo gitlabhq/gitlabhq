@@ -1,6 +1,7 @@
 module API
-  # Milestones API
   class Milestones < Grape::API
+    include PaginationParams
+
     before { authenticate! }
 
     helpers do
@@ -30,6 +31,7 @@ module API
         optional :state, type: String, values: %w[active closed all], default: 'all',
                          desc: 'Return "active", "closed", or "all" milestones'
         optional :iid, type: Array[Integer], desc: 'The IID of the milestone'
+        use :pagination
       end
       get ":id/milestones" do
         authorize! :read_milestone, user_project
@@ -103,6 +105,7 @@ module API
       end
       params do
         requires :milestone_id, type: Integer, desc: 'The ID of a project milestone'
+        use :pagination
       end
       get ":id/milestones/:milestone_id/issues" do
         authorize! :read_milestone, user_project

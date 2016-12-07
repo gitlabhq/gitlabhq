@@ -34,11 +34,28 @@ table {
         background-color: $background-color;
         font-weight: normal;
         border-bottom: none;
+
+        &.wide {
+          width: 55%;
+        }
       }
 
       td {
         border-color: $table-border-color;
       }
+    }
+  }
+}
+
+.responsive-table {
+  @media (max-width: $screen-sm-max) {
+    th {
+      width: 100%;
+    }
+
+    td {
+      width: 100%;
+      float: left;
     }
   }
 }

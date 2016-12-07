@@ -177,4 +177,23 @@ describe 'Commits' do
       end
     end
   end
+
+  context 'viewing commits for a branch' do
+    let(:branch_name) { 'master' }
+    let(:user) { create(:user) }
+
+    before do
+      project.team << [user, :master]
+      login_with(user)
+      visit namespace_project_commits_path(project.namespace, project, branch_name)
+    end
+
+    it 'includes the committed_date for each commit' do
+      commits = project.repository.commits(branch_name)
+
+      commits.each do |commit|
+        expect(page).to have_content("committed #{commit.committed_date}")
+      end
+    end
+  end
 end

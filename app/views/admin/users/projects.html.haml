@@ -7,7 +7,7 @@
     %ul.well-list
       - @user.groups.each do |group|
         %li
-          %strong= group.name
+          %strong= link_to group.name, admin_group_path(group)
           &ndash; access to
           #{pluralize(group.projects.count, 'project')}
 

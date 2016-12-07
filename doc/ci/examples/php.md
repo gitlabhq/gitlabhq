@@ -40,7 +40,7 @@ repository with the following content:
 #!/bin/bash
 
 # We need to install dependencies only for Docker
-[[ ! -e /.dockerenv ]] && [[ ! -e /.dockerinit ]] && exit 0
+[[ ! -e /.dockerenv ]] && exit 0
 
 set -xe
 

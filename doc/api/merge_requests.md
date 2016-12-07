@@ -510,7 +510,7 @@ Parameters:
 }
 ```
 
-## Cancel Merge When Build Succeeds
+## Cancel Merge When Pipeline Succeeds
 
 If you don't have permissions to accept this merge request - you'll get a `401`
 

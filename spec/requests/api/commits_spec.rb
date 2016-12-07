@@ -18,11 +18,14 @@ describe API::Commits, api: true  do
       before { project.team << [user2, :reporter] }
 
       it "returns project commits" do
+        commit = project.repository.commit
         get api("/projects/#{project.id}/repository/commits", user)
-        expect(response).to have_http_status(200)
 
+        expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
-        expect(json_response.first['id']).to eq(project.repository.commit.id)
+        expect(json_response.first['id']).to eq(commit.id)
+        expect(json_response.first['committer_name']).to eq(commit.committer_name)
+        expect(json_response.first['committer_email']).to eq(commit.committer_email)
       end
     end
 
@@ -134,6 +137,8 @@ describe API::Commits, api: true  do
 
         expect(response).to have_http_status(201)
         expect(json_response['title']).to eq(message)
+        expect(json_response['committer_name']).to eq(user.name)
+        expect(json_response['committer_email']).to eq(user.email)
       end
 
       it 'returns a 400 bad request if file exists' do

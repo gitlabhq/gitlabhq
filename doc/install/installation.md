@@ -76,7 +76,7 @@ Make sure you have the right version of Git installed
     # Install Git
     sudo apt-get install -y git-core
 
-    # Make sure Git is version 2.7.4 or higher
+    # Make sure Git is version 2.8.4 or higher
     git --version
 
 Is the system packaged Git too old? Remove it and compile from source.
@@ -89,9 +89,9 @@ Is the system packaged Git too old? Remove it and compile from source.
 
     # Download and compile from source
     cd /tmp
-    curl --remote-name --progress https://www.kernel.org/pub/software/scm/git/git-2.7.4.tar.gz
-    echo '7104c4f5d948a75b499a954524cb281fe30c6649d8abe20982936f75ec1f275b  git-2.7.4.tar.gz' | shasum -a256 -c - && tar -xzf git-2.7.4.tar.gz
-    cd git-2.7.4/
+    curl --remote-name --progress https://www.kernel.org/pub/software/scm/git/git-2.8.4.tar.gz
+    echo '626e319f8a24fc0866167ea5f6bf3e2f38f69d6cb2e59e150f13709ca3ebf301  git-2.8.4.tar.gz' | shasum -a256 -c - && tar -xzf git-2.8.4.tar.gz
+    cd git-2.8.4/
     ./configure
     make prefix=/usr/local all
 
@@ -123,9 +123,9 @@ Remove the old Ruby 1.8 if present:
 Download Ruby and compile it:
 
     mkdir /tmp/ruby && cd /tmp/ruby
-    curl --remote-name --progress https://cache.ruby-lang.org/pub/ruby/2.3/ruby-2.3.1.tar.gz
-    echo 'c39b4001f7acb4e334cb60a0f4df72d434bef711  ruby-2.3.1.tar.gz' | shasum -c - && tar xzf ruby-2.3.1.tar.gz
-    cd ruby-2.3.1
+    curl --remote-name --progress https://cache.ruby-lang.org/pub/ruby/2.3/ruby-2.3.3.tar.gz
+    echo 'a8db9ce7f9110320f33b8325200e3ecfbd2b534b ruby-2.3.3.tar.gz' | shasum -c - && tar xzf ruby-2.3.3.tar.gz
+    cd ruby-2.3.3
     ./configure --disable-install-rdoc
     make
     sudo make install

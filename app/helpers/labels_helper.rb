@@ -82,12 +82,6 @@ module LabelsHelper
     span.html_safe
   end
 
-  def render_colored_cross_project_label(label, source_project = nil, tooltip: true)
-    label_suffix = source_project ? source_project.name_with_namespace : label.project.name_with_namespace
-    label_suffix = " <i>in #{escape_once(label_suffix)}</i>"
-    render_colored_label(label, label_suffix, tooltip: tooltip)
-  end
-
   def suggested_colors
     [
       '#0033CC',
@@ -166,6 +160,5 @@ module LabelsHelper
   end
 
   # Required for Banzai::Filter::LabelReferenceFilter
-  module_function :render_colored_label, :render_colored_cross_project_label,
-                  :text_color_for_bg, :escape_once
+  module_function :render_colored_label, :text_color_for_bg, :escape_once
 end

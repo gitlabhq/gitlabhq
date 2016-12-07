@@ -151,23 +151,32 @@ module API
       # Create a new project issue
       #
       # Parameters:
-      #   id (required)           - The ID of a project
-      #   title (required)        - The title of an issue
-      #   description (optional)  - The description of an issue
-      #   assignee_id (optional)  - The ID of a user to assign issue
-      #   milestone_id (optional) - The ID of a milestone to assign issue
-      #   labels (optional)       - The labels of an issue
-      #   created_at (optional)   - Date time string, ISO 8601 formatted
-      #   due_date (optional)     - Date time string in the format YEAR-MONTH-DAY
-      #   confidential (optional) - Boolean parameter if the issue should be confidential
+      #   id (required)                                      - The ID of a project
+      #   title (required)                                   - The title of an issue
+      #   description (optional)                             - The description of an issue
+      #   assignee_id (optional)                             - The ID of a user to assign issue
+      #   milestone_id (optional)                            - The ID of a milestone to assign issue
+      #   labels (optional)                                  - The labels of an issue
+      #   created_at (optional)                              - Date time string, ISO 8601 formatted
+      #   due_date (optional)                                - Date time string in the format YEAR-MONTH-DAY
+      #   confidential (optional)                            - Boolean parameter if the issue should be confidential
+      #   merge_request_for_resolving_discussions (optional) - The IID of a merge request for which to resolve discussions
       # Example Request:
       #   POST /projects/:id/issues
       post ':id/issues' do
         required_attributes! [:title]
 
-        keys = [:title, :description, :assignee_id, :milestone_id, :due_date, :confidential, :labels]
+        keys = [:title, :description, :assignee_id, :milestone_id, :due_date, :confidential, :labels, :merge_request_for_resolving_discussions]
         keys << :created_at if current_user.admin? || user_project.owner == current_user
         attrs = attributes_for_keys(keys)
+
+        attrs[:labels] = params[:labels] if params[:labels]
+
+        if merge_request_iid = params[:merge_request_for_resolving_discussions]
+          attrs[:merge_request_for_resolving_discussions] = MergeRequestsFinder.new(current_user, project_id: user_project.id).
+            execute.
+            find_by(iid: merge_request_iid)
+        end
 
         # Convert and filter out invalid confidential flags
         attrs['confidential'] = to_boolean(attrs['confidential'])
