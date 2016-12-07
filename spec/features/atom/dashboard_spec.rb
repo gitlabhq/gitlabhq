@@ -4,6 +4,9 @@ describe "Dashboard Feed", feature: true  do
   describe "GET /" do
     let!(:user) { create(:user, name: "Jonh") }
 
+    it_behaves_like 'public email is not shown in events feed'
+    it_behaves_like 'uri tag includes user page URL'
+    
     context "projects atom feed via private token" do
       it "renders projects atom feed" do
         visit dashboard_projects_path(:atom, private_token: user.private_token)
