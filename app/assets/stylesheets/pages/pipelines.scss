@@ -647,7 +647,7 @@
       color: $gl-text-color-light;
 
       a {
-        padding: 7px 8px 8px;
+        padding: 6px 8px 7px;
       }
 
       a.ci-action-icon-container {
@@ -692,11 +692,12 @@
       vertical-align: middle;
       padding: 5px;
       font-size: 13px;
+      background: $white-light;
 
       &:hover {
         color: $gl-text-color;
         background-color: $stage-hover-bg;
-        border: 1px solid $gl-text-color;
+        border: 1px solid $stage-hover-bg;
       }
     }
 
