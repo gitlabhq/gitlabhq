@@ -13,7 +13,7 @@
 .tab-content
   #js-tab-pipeline.tab-pane
     .build-content.middle-block
-      = render "projects/pipelines/graph", subject: pipeline, as: :pipeline
+      = render "projects/pipelines/graph", pipeline: pipeline
 
   #js-tab-builds.tab-pane
     - if pipeline.yaml_errors.present?
@@ -39,4 +39,4 @@
             - if pipeline.project.build_coverage_enabled?
               %th Coverage
             %th
-      = render partial: "projects/stage/stage", collection: pipeline.stages, as: :stage
+        = render partial: "projects/stage/stage", collection: pipeline.stages, as: :stage

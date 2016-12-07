@@ -25,7 +25,7 @@
           = time_interval_in_words pipeline.duration
 
   .row-content-block.build-content.middle-block.hidden
-    = render "projects/pipelines/graph", subject: pipeline, as: :pipeline
+    = render "projects/pipelines/graph", pipeline: pipeline
 
 - if pipeline.yaml_errors.present?
   .bs-callout.bs-callout-danger
