@@ -858,9 +858,9 @@ class Repository
     GitOperationService.new(user, self).with_branch(
       branch,
       source_branch: source_branch,
-      source_project: source_project) do |ref|
+      source_project: source_project) do
       index = rugged.index
-      branch_commit = find_branch(ref)
+      branch_commit = find_branch(branch)
 
       parents = if branch_commit
                   last_commit = branch_commit.dereferenced_target
