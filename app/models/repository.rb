@@ -783,6 +783,14 @@ class Repository
     user, path, content, message, branch, update,
     author_email: nil, author_name: nil,
     source_branch: nil, source_project: project)
+    if branch_exists?(branch) && update == false
+      # tree_entry is private
+      if raw_repository.send(:tree_entry, commit(branch), path)
+        raise Gitlab::Git::Repository::InvalidBlobName.new(
+          "Filename already exists; update not allowed")
+      end
+    end
+
     multi_action(
       user: user,
       branch: branch,
