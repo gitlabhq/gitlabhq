@@ -14,16 +14,14 @@ module EnvironmentHelper
     end
   end
 
-  def deployment_link(deployment)
+  def deployment_link(deployment, text)
     return unless deployment
 
-    link_to "##{deployment.iid}", [deployment.project.namespace.becomes(Namespace), deployment.project, deployment.deployable]
-  end
-
-  def last_deployment_link(deployment, link_text)
-    return unless deployment
-
-    link_to link_text, [deployment.project.namespace.becomes(Namespace), deployment.project, deployment.deployable]
+    if text
+      link_to text, [deployment.project.namespace.becomes(Namespace), deployment.project, deployment.deployable]
+    else
+      link_to "##{deployment.iid}", [deployment.project.namespace.becomes(Namespace), deployment.project, deployment.deployable]
+    end
   end
 
   def last_deployment_link_for_environment_build(project, build)

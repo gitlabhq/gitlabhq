@@ -228,8 +228,8 @@ feature 'Builds', :feature do
       end
     end
 
-    context 'When build starts environment' do
-      context 'Build is successfull and has deployment' do
+    context 'when build starts environment' do
+      context 'build is successfull and has deployment' do
         it 'shows a link for the build' do
           environment = create(:environment, project: project)
           pipeline = create(:ci_pipeline, project: project)
@@ -242,7 +242,7 @@ feature 'Builds', :feature do
         end
       end
 
-      context 'Build is complete and not successfull' do
+      context 'build is complete and not successfull' do
         it 'shows a link for the build' do
           environment = create(:environment, project: project)
           pipeline = create(:ci_pipeline, project: project)
@@ -254,7 +254,7 @@ feature 'Builds', :feature do
         end
       end
 
-      context 'Build creates a new deployment' do
+      context 'build creates a new deployment' do
         it 'shows a link to lastest deployment' do
           environment = create(:environment, project: project)
           create(:deployment, environment: environment, sha: project.commit.id)
