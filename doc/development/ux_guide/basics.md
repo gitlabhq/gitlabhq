@@ -5,8 +5,6 @@
 * [Typography](#typography)
 * [Icons](#icons)
 * [Color](#color)
-* [Motion](#motion)
-* [Voice and tone](#voice-and-tone)
 
 ---
 
@@ -61,16 +59,3 @@ GitLab uses Font Awesome icons throughout our interface.
 
 > TODO: Establish a perspective for color in terms of our personality and rationalize with Marketing usage.
 
----
-
-## Motion
-
-Motion is a tool to help convey important relationships, changes or transitions between elements. It should be used sparingly and intentionally, highlighting the right elements at the right moment.
-
-> TODO: Determine a more concrete perspective on motion, create consistent easing/timing curves to follow.
-
----
-
-## Voice and tone
-
-The copy for GitLab is clear and direct. We strike a clear balance between professional and friendly. We can empathesize with users (such as celebrating completing all Todos), and remain respectful of the importance of the work. We are that trusted, friendly coworker that is helpful and understanding.
