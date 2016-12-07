@@ -3,7 +3,7 @@
 (() => {
   const PrettyTime = gl.PrettyTime;
 
-  gl.IssuableTimeTrackingApp.comparisonPane = {
+  Vue.component('time-tracking-comparison-pane', {
     name: 'time-tracking-comparison-pane',
     props: [
       'timeSpent',
@@ -65,5 +65,5 @@
         </div>
       </div>
     `,
-  };
-})(gl.IssuableTimeTrackingApp || (gl.IssuableTimeTrackingApp = {}));
+  });
+})();

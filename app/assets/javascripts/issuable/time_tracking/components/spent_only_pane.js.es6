@@ -1,5 +1,5 @@
 (() => {
-  gl.IssuableTimeTrackingApp.spentOnlyPane = {
+  Vue.component('time-tracking-spent-only-pane', {
     name: 'time-tracking-spent-only-pane',
     props: ['timeSpentHuman'],
     template: `
@@ -8,5 +8,5 @@
         {{ timeSpentHuman }}
       </div>
     `,
-  };
-})(gl.IssuableTimeTrackingApp || (gl.IssuableTimeTrackingApp = {}));
+  });
+})();

@@ -1,5 +1,5 @@
 (() => {
-  gl.IssuableTimeTrackingApp.helpState = {
+  Vue.component('time-tracking-help-state', {
     name: 'time-tracking-help-state',
     props: ['docsUrl'],
     template: `
@@ -19,5 +19,5 @@
         </div>
       </div>
     `,
-  };
-})(gl.IssuableTimeTrackingApp || (gl.IssuableTimeTrackingApp = {}));
+  });
+})();

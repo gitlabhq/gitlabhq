@@ -1,5 +1,5 @@
 (() => {
-  gl.IssuableTimeTrackingApp.estimateOnlyPane = {
+  Vue.component('time-tracking-estimate-only-pane', {
     name: 'time-tracking-estimate-only-pane',
     props: ['timeEstimateHuman'],
     template: `
@@ -8,5 +8,5 @@
         {{ timeEstimateHuman }}
       </div>
     `,
-  };
-})(gl.IssuableTimeTrackingApp || (gl.IssuableTimeTrackingApp = {}));
+  });
+})();

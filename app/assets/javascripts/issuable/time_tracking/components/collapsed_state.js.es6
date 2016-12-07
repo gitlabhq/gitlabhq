@@ -3,7 +3,7 @@
 (() => {
   const PrettyTime = gl.PrettyTime;
 
-  gl.IssuableTimeTrackingApp.collapsedState = {
+  Vue.component('time-tracking-collapsed-state', {
     name: 'time-tracking-collapsed-state',
     props: [
       'showComparisonState',
@@ -38,6 +38,6 @@
         </div>
       </div>
       `,
-  };
-})(gl.IssuableTimeTrackingApp || (gl.IssuableTimeTrackingApp = {}));
+  });
+})();
 
