@@ -314,7 +314,7 @@ feature 'Issues > Labels bulk assignment', feature: true do
           expect(find('.dropdown-menu-labels li', text: 'feature')).to have_css('.is-indeterminate')
 
           click_link 'bug'
-          find('.dropdown-input-field', visible: true).set('wontfix');
+          find('.dropdown-input-field', visible: true).set('wontfix')
           click_link 'wontfix'
         end
 
