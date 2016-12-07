@@ -1176,7 +1176,7 @@ describe Repository, models: true do
   end
 
   describe '#after_create_branch' do
-    it 'flushes the visible content cache' do
+    it 'expires the branch caches' do
       expect(repository).to receive(:expire_branches_cache)
 
       repository.after_create_branch
@@ -1184,7 +1184,7 @@ describe Repository, models: true do
   end
 
   describe '#after_remove_branch' do
-    it 'flushes the visible content cache' do
+    it 'expires the branch caches' do
       expect(repository).to receive(:expire_branches_cache)
 
       repository.after_remove_branch
