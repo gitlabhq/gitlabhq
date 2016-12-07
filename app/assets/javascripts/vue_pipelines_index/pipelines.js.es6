@@ -37,6 +37,7 @@
         intervalId: '',
         apiScope: 'all',
         pageInfo: {},
+        pagenum: 1,
         count: {
           all: 0,
           running_or_pending: 0,
