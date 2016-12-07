@@ -18,6 +18,7 @@ class Projects::PipelinesController < Projects::ApplicationController
          render json: {
            pipelines: PipelineSerializer
              .new(project: @project, user: @current_user)
+             .with_pagination(request, response)
              .represent(@pipelines),
            updated_at: Time.now.utc,
            count: {
