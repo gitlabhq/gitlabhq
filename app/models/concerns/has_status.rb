@@ -26,7 +26,7 @@ module HasStatus
         WHEN (#{builds})=(#{skipped}) THEN 'skipped'
         WHEN (#{builds})=(#{success}) THEN 'success'
         WHEN (#{builds})=(#{created}) THEN 'created'
-        WHEN (#{builds})=(#{success})+(#{skipped}) THEN 'skipped'
+        WHEN (#{builds})=(#{success})+(#{skipped}) THEN 'success'
         WHEN (#{builds})=(#{success})+(#{skipped})+(#{canceled}) THEN 'canceled'
         WHEN (#{builds})=(#{created})+(#{skipped})+(#{pending}) THEN 'pending'
         WHEN (#{running})+(#{pending})+(#{created})>0 THEN 'running'

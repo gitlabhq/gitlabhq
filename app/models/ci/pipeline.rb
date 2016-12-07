@@ -105,7 +105,8 @@ module Ci
     end
 
     def stages_name
-      statuses.order(:stage_idx).distinct.pluck(:stage)
+      statuses.order(:stage_idx).distinct.
+        pluck(:stage, :stage_idx).map(&:first)
     end
 
     def stages
