@@ -13,7 +13,13 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     group = @project.group
 
     if group
-      group_members = group.group_members.where.not(user_id: @project_members.select(:user_id))
+      # We need `.where.not(user_id: nil)` here otherwise when a group has an
+      # invitee, it would make the following query return 0 rows since a NULL
+      # user_id would be present in the subquery
+      # See http://stackoverflow.com/questions/129077/not-in-clause-and-null-values
+      # FIXME: This whole logic should be moved to a finder!
+      non_null_user_ids = @project_members.where.not(user_id: nil).select(:user_id)
+      group_members = group.group_members.where.not(user_id: non_null_user_ids)
       group_members = group_members.non_invite unless can?(current_user, :admin_group, @group)
     end
 
@@ -29,13 +35,12 @@ class Projects::ProjectMembersController < Projects::ApplicationController
       @group_links = @project.project_group_links.where(group_id: @project.invited_groups.search(params[:search]).select(:id))
     end
 
-    members_id = @project_members.pluck(:id)
+    wheres = ["id IN (#{@project_members.select(:id).to_sql})"]
+    wheres << "id IN (#{group_members.select(:id).to_sql})" if group_members
 
-    if group_members
-      members_id << group_members.pluck(:id)
-    end
-
-    @project_members = Member.where(id: members_id.flatten).order(access_level: :desc).page(params[:page])
+    @project_members = Member.
+      where(wheres.join(' OR ')).
+      order(access_level: :desc).page(params[:page])
 
     @requesters = AccessRequestsFinder.new(@project).execute(current_user)
 
