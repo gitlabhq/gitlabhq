@@ -191,4 +191,12 @@ class Group < Namespace
   def refresh_members_authorized_projects
     UserProjectAccessChangedService.new(users.pluck(:id)).execute
   end
+
+  def members_with_parents
+    GroupMember.where(source_id: parents.map(&:id).push(id))
+  end
+
+  def users_with_parents
+    User.where(id: members_with_parents.pluck(:user_id))
+  end
 end
