@@ -71,6 +71,20 @@
       this.unbindEvents();
     }
 
+    show() {
+      const currentHook = this.getCurrentHook();
+      if (currentHook) {
+        currentHook.list.show();
+      }
+    }
+
+    hide() {
+      const currentHook = this.getCurrentHook();
+      if (currentHook) {
+        currentHook.list.hide();
+      }
+    }
+
     dismissDropdown() {
       this.input.focus();
       // Propogate input change to FilteredSearchManager
@@ -104,7 +118,7 @@
       droplab.setConfig(this.getFilterConfig(this.filterKeyword));
     }
 
-    render() {
+    render(hide) {
       this.setAsDropdown();
 
       const firstTimeInitialized = this.getCurrentHook() === undefined;
@@ -114,6 +128,28 @@
       } else if(this.getCurrentHook().list.list.id !== this.listId) {
         droplab.changeHookList(this.hookId, `#${this.listId}`);
         this.renderContent();
+      }
+
+      if (hide) {
+        this.hide();
+      } else {
+        this.show();
+      }
+    }
+
+    resetFilters() {
+      const currentHook = this.getCurrentHook();
+
+      if (currentHook) {
+        const list = currentHook.list;
+
+        if (list.data) {
+          const data = list.data.map((item) => {
+            item.droplab_hidden = false;
+          });
+
+          list.render(data);
+        }
       }
     }
   }
