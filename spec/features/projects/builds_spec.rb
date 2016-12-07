@@ -229,39 +229,36 @@ feature 'Builds', :feature do
     end
 
     context 'when build starts environment' do
-      context 'build is successfull and has deployment' do
-        it 'shows a link for the build' do
-          environment = create(:environment, project: project)
-          pipeline = create(:ci_pipeline, project: project)
-          deployment = create(:deployment)
-          build1 = create(:ci_build, :success, environment: environment.name, deployments: [deployment], pipeline: pipeline)
+      let(:environment) { create(:environment, project: project) }
+      let(:pipeline) { create(:ci_pipeline, project: project) }
 
-          visit namespace_project_build_path(project.namespace, project, build1)
+      context 'build is successfull and has deployment' do
+        let(:deployment) { create(:deployment) }
+        let(:build) { create(:ci_build, :success, environment: environment.name, deployments: [deployment], pipeline: pipeline) }
+
+        it 'shows a link for the build' do
+          visit namespace_project_build_path(project.namespace, project, build)
 
           expect(page).to have_link environment.name
         end
       end
 
       context 'build is complete and not successfull' do
-        it 'shows a link for the build' do
-          environment = create(:environment, project: project)
-          pipeline = create(:ci_pipeline, project: project)
-          build1 = create(:ci_build, :failed, environment: environment.name, pipeline: pipeline)
+        let(:build) { create(:ci_build, :failed, environment: environment.name, pipeline: pipeline) }
 
-          visit namespace_project_build_path(project.namespace, project, build1)
+        it 'shows a link for the build' do
+          visit namespace_project_build_path(project.namespace, project, build)
 
           expect(page).to have_link environment.name
         end
       end
 
       context 'build creates a new deployment' do
-        it 'shows a link to lastest deployment' do
-          environment = create(:environment, project: project)
-          create(:deployment, environment: environment, sha: project.commit.id)
-          pipeline = create(:ci_pipeline, project: project)
-          build1 = create(:ci_build, :success, environment: environment.name, pipeline: pipeline)
+        let!(:deployment) { create(:deployment, environment: environment, sha: project.commit.id) }
+        let(:build) { create(:ci_build, :success, environment: environment.name, pipeline: pipeline) }
 
-          visit namespace_project_build_path(project.namespace, project, build1)
+        it 'shows a link to lastest deployment' do
+          visit namespace_project_build_path(project.namespace, project, build)
 
           expect(page).to have_link('latest deployment')
         end
