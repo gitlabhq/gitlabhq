@@ -20,8 +20,6 @@ module Banzai
           closing
         end
 
-        puts doc
-
         doc
       end
     end
