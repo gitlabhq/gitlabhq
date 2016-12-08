@@ -179,6 +179,7 @@
 
         if ($autoScrollContainer.length) { // Show and Reposition Autoscroll Status Message
           $autoScrollContainer.show().css({ top: $body.outerHeight() - 75 });
+          $autoScrollStatus.find('label').addClass('animate');
         }
       }
 
@@ -188,6 +189,7 @@
 
         if ($autoScrollContainer.length) {
           $autoScrollContainer.hide();
+          $autoScrollStatus.find('label').removeClass('animate');
         }
       }
 
