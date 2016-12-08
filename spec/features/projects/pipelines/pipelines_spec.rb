@@ -117,12 +117,10 @@ describe "Pipelines", feature: true, js: true do
 
       before do
         visit namespace_project_pipelines_path(project.namespace, project)
+        wait_for_vue_resource
       end
 
-      it do
-        wait_for_vue_resource
-        expect(page).to have_link('Manual build')
-      end
+      it { expect(page).to have_selector('.dropdown-toggle.btn.btn-default .icon-play') }
 
       context 'when playing' do
         before do
@@ -130,10 +128,7 @@ describe "Pipelines", feature: true, js: true do
           click_link('Manual build')
         end
 
-        it do
-          wait_for_vue_resource
-          expect(manual.reload).to be_pending
-        end
+        it { expect(manual.reload).to be_pending }
       end
     end
 
@@ -150,6 +145,7 @@ describe "Pipelines", feature: true, js: true do
 
         before do
           visit namespace_project_pipelines_path(project.namespace, project)
+          wait_for_vue_resource
         end
 
         it 'is cancelable' do

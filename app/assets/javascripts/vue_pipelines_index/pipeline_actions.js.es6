@@ -20,8 +20,8 @@
                 v-if='pipeline.details.manual_actions.length > 0'
                 class="dropdown-toggle btn btn-default"
                 data-toggle="dropdown"
-                type="button"
                 title="Manual build"
+                alt="Manual Build"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 11" class="icon-play">
                   <path
