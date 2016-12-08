@@ -91,7 +91,7 @@
               %strong ##{build.id}
 
           %td.status
-            = render "ci/status/icon_with_label", subject: build
+            = render "ci/status/icon_with_description", subject: build
 
           %td.status
             - if project
