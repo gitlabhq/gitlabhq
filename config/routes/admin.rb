@@ -28,9 +28,19 @@ namespace :admin do
 
   resources :applications
 
-  resources :groups, constraints: { id: /[^\/]+/ } do
-    member do
+  resources :groups, only: [:index, :new, :create]
+
+  scope(path: 'groups/*id',
+        controller: :groups,
+        constraints: { id: Gitlab::Regex.namespace_route_regex }) do
+
+    scope(as: :group) do
       put :members_update
+      get :edit, action: :edit
+      get '/', action: :show
+      patch '/', action: :update
+      put '/', action: :update
+      delete '/', action: :destroy
     end
   end
 
