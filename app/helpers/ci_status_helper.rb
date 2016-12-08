@@ -25,54 +25,32 @@ module CiStatusHelper
     status.humanize
   end
 
-  def ci_icon_for_status(status, graph: nil)
+  def ci_icon_for_status(status)
     if detailed_status?(status)
       return custom_icon(status.icon)
     end
 
-    if graph
-      icon_name =
-        case status
-        when 'success'
-          'icon_graph_job_success'
-        when 'success_with_warnings'
-          'icon_graph_job_warning'
-        when 'failed'
-          'icon_graph_job_failed'
-        when 'pending'
-          'icon_graph_job_pending'
-        when 'running'
-          'icon_graph_job_running'
-        when 'created'
-          'icon_graph_job_created'
-        when 'skipped'
-          'icon_graph_job_skipped'
-        else
-          'icon_graph_job_canceled'
-        end
-    else
-      icon_name =
-        case status
-        when 'success'
-          'icon_status_success'
-        when 'success_with_warnings'
-          'icon_status_warning'
-        when 'failed'
-          'icon_status_failed'
-        when 'pending'
-          'icon_status_pending'
-        when 'running'
-          'icon_status_running'
-        when 'play'
-          'icon_play'
-        when 'created'
-          'icon_status_created'
-        when 'skipped'
-          'icon_status_skipped'
-        else
-          'icon_status_canceled'
-        end
-    end
+    icon_name =
+      case status
+      when 'success'
+        'icon_status_success'
+      when 'success_with_warnings'
+        'icon_status_warning'
+      when 'failed'
+        'icon_status_failed'
+      when 'pending'
+        'icon_status_pending'
+      when 'running'
+        'icon_status_running'
+      when 'play'
+        'icon_play'
+      when 'created'
+        'icon_status_created'
+      when 'skipped'
+        'icon_status_skipped'
+      else
+        'icon_status_canceled'
+      end
 
     custom_icon(icon_name)
   end

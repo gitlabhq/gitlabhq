@@ -1,4 +1,4 @@
-= render "ci/status/icon_with_name", subject: subject
+= render "ci/status/icon_with_name", subject: subject, graph: true
 
 - detailed_status = subject.detailed_status(current_user)
 - if detailed_status.has_action?
