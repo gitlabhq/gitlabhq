@@ -336,8 +336,8 @@ module Ci
         .select { |merge_request| merge_request.head_pipeline.try(:id) == self.id }
     end
 
-    def detailed_status
-      Gitlab::Ci::Status::Pipeline::Factory.new(self).fabricate!
+    def detailed_status(current_user)
+      Gitlab::Ci::Status::Pipeline::Factory.new(self, current_user).fabricate!
     end
 
     private

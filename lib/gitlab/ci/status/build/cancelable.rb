@@ -1,7 +1,7 @@
 module Gitlab
   module Ci
     module Status
-      module Status
+      module Build
         class Cancelable < SimpleDelegator
           include Status::Extended
 

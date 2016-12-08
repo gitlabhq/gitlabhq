@@ -1,8 +1,8 @@
 module Gitlab
   module Ci
     module Status
-      module Status
-        class Play < SimpleDelegator
+      module Build
+        class Stop < SimpleDelegator
           include Status::Extended
 
           def text
