@@ -8,12 +8,6 @@
     .btn-ldap-override {
       display: none!important;
     }
-
-    .form-horizontal {
-      @media (min-width: $screen-sm-min) {
-        margin-right: 45px;
-      }
-    }
   }
 
   .list-item-name {

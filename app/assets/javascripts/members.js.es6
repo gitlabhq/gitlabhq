@@ -110,10 +110,13 @@
       const $btn = $(e.currentTarget);
       const { $memberListItem, $toggle, $dateInput } = this.getMemberListItems($btn);
 
+      $btn.attr('disabled', true).disable();
+
       this.overrideLdap($memberListItem, $btn.data('endpoint'), true).then(() => {
         this.showLDAPPermissionsWarning(e);
         $toggle.removeAttr('disabled');
         $dateInput.removeAttr('disabled');
+        $btn.removeAttr('disabled').enable();
       });
     }
 
