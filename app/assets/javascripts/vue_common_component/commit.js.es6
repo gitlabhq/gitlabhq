@@ -68,6 +68,11 @@
         required: false,
         default: () => ({}),
       },
+
+      commitIconSvg: {
+        type: String,
+        required: false,
+      },
     },
 
     computed: {
@@ -110,24 +115,6 @@
       },
     },
 
-    /**
-     * In order to reuse the svg instead of copy and paste in this template
-     * we need to render it outside this component using =custom_icon partial.
-     * Make sure it has this structure:
-     * .commit-icon-svg.hidden
-     *   svg
-     *
-     * TODO: Find a better way to include SVG
-     */
-    mounted() {
-      const commitIconContainer = this.$el.querySelector('.commit-icon-container');
-      const commitIcon = document.querySelector('.commit-icon-svg.hidden svg');
-
-      if (commitIconContainer && commitIcon) {
-        commitIconContainer.appendChild(commitIcon.cloneNode(true));
-      }
-    },
-
     template: `
       <div class="branch-commit">
 
@@ -142,7 +129,7 @@
           {{commit_ref.name}}
         </a>
 
-        <div class="icon-container commit-icon commit-icon-container"></div>
+        <div v-html="commitIconSvg" class="commit-icon"></div>
 
         <a class="commit-id monospace"
           :href="commit_url">

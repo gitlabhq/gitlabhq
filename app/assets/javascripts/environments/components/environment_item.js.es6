@@ -465,7 +465,8 @@
               :commit_url="commitUrl"
               :short_sha="commitShortSha"
               :title="commitTitle"
-              :author="commitAuthor">
+              :author="commitAuthor"
+              :commit-icon-svg="commitIconSvg">
             </commit-component>
           </div>
           <p v-if="!isFolder && !hasLastDeploymentKey" class="commit-title">
