@@ -4,10 +4,9 @@ module CreatesCommit
   def create_commit(service, success_path:, failure_path:, failure_view: nil, success_notice: nil)
     set_commit_variables
 
-    source_branch = @ref if @ref && @repository.branch_exists?(@ref)
     commit_params = @commit_params.merge(
       source_project: @project,
-      source_branch: source_branch,
+      source_branch: @ref,
       target_branch: @target_branch
     )
 
