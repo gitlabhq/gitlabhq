@@ -49,16 +49,11 @@ class Projects::IssuesController < Projects::ApplicationController
     build_params = issue_params.merge(merge_request_for_resolving_discussions: merge_request_for_resolving_discussions)
     @issue = @noteable = Issues::BuildService.new(project, current_user, build_params).execute
 
-<<<<<<< HEAD
-    @issue = @noteable = @project.issues.new(issue_params)
-
     # Set Issue description based on project template
     if @project.issues_template.present?
       @issue.description = @project.issues_template
     end
 
-=======
->>>>>>> 50a784482e997cc039015e24b37d3f8a01a9cd3e
     respond_with(@issue)
   end
 

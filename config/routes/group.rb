@@ -23,7 +23,6 @@ scope(path: 'groups/*group_id',
   resource :avatar, only: [:destroy]
   resources :milestones, constraints: { id: /[^\/]+/ }, only: [:index, :show, :update, :new, :create]
 
-<<<<<<< HEAD
   ## EE-specific
   resource :notification_setting, only: [:update]
   resources :audit_events, only: [:index]
@@ -37,10 +36,7 @@ scope(path: 'groups/*group_id',
   end
   ## EE-specific
 
-  resources :labels, except: [:show], constraints: { id: /\d+/ } do
-=======
   resources :labels, except: [:show] do
->>>>>>> 50a784482e997cc039015e24b37d3f8a01a9cd3e
     post :toggle_subscription, on: :member
   end
 end

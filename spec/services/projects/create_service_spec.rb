@@ -125,28 +125,22 @@ describe Projects::CreateService, '#execute', services: true do
     end
   end
 
-<<<<<<< HEAD
-    context "git hook sample" do
-      before do
-        @push_rule_sample = create :push_rule_sample
-      end
-
-      it "creates git hook from sample" do
-        push_rule = create_project(@user, @opts).push_rule
-        [:force_push_regex, :deny_delete_tag, :delete_branch_regex, :commit_message_regex].each do |attr_name|
-          expect(push_rule.send(attr_name)).to eq @push_rule_sample.send(attr_name)
-        end
-      end
+  context "git hook sample" do
+    before do
+      @push_rule_sample = create :push_rule_sample
     end
 
-    context 'repository creation' do
-      it 'synchronously creates the repository' do
-        expect_any_instance_of(Project).to receive(:create_repository)
-=======
+    it "creates git hook from sample" do
+      push_rule = create_project(@user, @opts).push_rule
+      [:force_push_regex, :deny_delete_tag, :delete_branch_regex, :commit_message_regex].each do |attr_name|
+        expect(push_rule.send(attr_name)).to eq @push_rule_sample.send(attr_name)
+      end
+    end
+  end
+
   context 'repository creation' do
     it 'synchronously creates the repository' do
       expect_any_instance_of(Project).to receive(:create_repository)
->>>>>>> 50a784482e997cc039015e24b37d3f8a01a9cd3e
 
       project = create_project(user, opts)
       expect(project).to be_valid

@@ -720,7 +720,6 @@ describe SystemNoteService, services: true do
     end
   end
 
-<<<<<<< HEAD
   describe '.approve_mr' do
     let(:noteable)    { create(:merge_request, source_project: project) }
     subject { described_class.approve_mr(noteable, author) }
@@ -796,7 +795,9 @@ describe SystemNoteService, services: true do
     def spend_time!(seconds)
       noteable.spend_time(seconds, author)
       noteable.save!
-=======
+    end
+  end
+
   describe '.discussion_continued_in_issue' do
     let(:discussion) { Discussion.for_diff_notes([create(:diff_note_on_merge_request)]).first }
     let(:merge_request) { discussion.noteable }
@@ -822,7 +823,6 @@ describe SystemNoteService, services: true do
       note = SystemNoteService.discussion_continued_in_issue(discussion, project, user, issue)
 
       expect(note.note).to include(issue.to_reference)
->>>>>>> 50a784482e997cc039015e24b37d3f8a01a9cd3e
     end
   end
 end

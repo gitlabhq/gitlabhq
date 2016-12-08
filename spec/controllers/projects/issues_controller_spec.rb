@@ -296,7 +296,6 @@ describe Projects::IssuesController do
   end
 
   describe 'POST #create' do
-<<<<<<< HEAD
     def post_new_issue(attrs = {})
       sign_in(user)
       project = create(:empty_project, :public)
@@ -309,7 +308,8 @@ describe Projects::IssuesController do
       }
 
       project.issues.first
-=======
+    end
+
     context 'resolving discussions in MergeRequest' do
       let(:discussion) { Discussion.for_diff_notes([create(:diff_note_on_merge_request)]).first }
       let(:merge_request) { discussion.noteable }
@@ -344,7 +344,6 @@ describe Projects::IssuesController do
 
         expect(discussion.resolved?).to eq(true)
       end
->>>>>>> 50a784482e997cc039015e24b37d3f8a01a9cd3e
     end
 
     context 'Akismet is enabled' do

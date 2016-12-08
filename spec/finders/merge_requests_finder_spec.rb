@@ -33,17 +33,16 @@ describe MergeRequestsFinder do
       expect(merge_requests.size).to eq(1)
     end
 
-<<<<<<< HEAD
     it 'ignores sorting by weight' do
       params = { project_id: project1.id, scope: 'authored', state: 'opened', weight: Issue::WEIGHT_ANY }
       merge_requests = MergeRequestsFinder.new(user, params).execute
       expect(merge_requests.size).to eq(1)
-=======
+    end
+
     it 'filters by non_archived' do
       params = { non_archived: true }
       merge_requests = MergeRequestsFinder.new(user, params).execute
       expect(merge_requests.size).to eq(3)
->>>>>>> 50a784482e997cc039015e24b37d3f8a01a9cd3e
     end
   end
 end
