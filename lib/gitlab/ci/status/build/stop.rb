@@ -26,7 +26,11 @@ module Gitlab
           end
 
           def action_icon
-            :play
+            'stop'
+          end
+
+          def action_title
+            'Stop'
           end
 
           def action_path
