@@ -14,7 +14,7 @@
           return $(select).select2({
             placeholder: "Search for a group",
             multiple: $(select).hasClass('multiselect'),
-            minimumInputLength: 1,
+            minimumInputLength: 0,
             query: function(query) {
               var options = { all_available: all_available, skip_groups: skip_groups };
               return Api.groups(query.term, options, function(groups) {
@@ -57,9 +57,10 @@
       if (group.avatar_url) {
         avatar = group.avatar_url;
       } else {
-        avatar = gon.default_avatar_url;
+        avatar = gon.default_group_avatar;
       }
-      return "<div class='group-result'> <div class='group-name'>" + group.name + "</div> <div class='group-path'>" + group.path + "</div> </div>";
+
+      return "<li class='group-row " + (!group.description ? 'no-description' : void 0) + "'> <div class='stats'><span><i class='fa fa-bookmark'></i>" + group.project_count + "</span><span><i class='fa fa-users'></i>" + group.user_count + "</span><span class='visibility-icon has-tooltip' data-container='body' data-placement='left'><i class='fa fa-globe'></i></span></div><div class='avatar-container s40'><img class='avatar s40 hidden-xs' src='" + avatar + "'></div><div class='title'>" + group.name + "</div><div class='description'> <p dir='auto'>" + group.description + "</p></div></li>";
     };
 
     GroupsSelect.prototype.formatSelection = function(group) {
