@@ -178,6 +178,9 @@ gem 'asana', '~> 0.4.0'
 # FogBugz integration
 gem 'ruby-fogbugz', '~> 0.2.1'
 
+# Kubernetes integration
+gem 'kubeclient', '~> 2.2.0'
+
 # d3
 gem 'd3_rails', '~> 3.5.0'
 
