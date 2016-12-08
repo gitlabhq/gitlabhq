@@ -21,9 +21,9 @@
 
   .snippet-info
     #{snippet.to_reference} &middot;
-    authored #{time_ago_with_tooltip(snippet.created_at, placement: 'bottom')} by
+    authored #{time_ago_with_tooltip(snippet.created_at, placement: 'bottom', html_class: 'snippet-created-ago')} by
     = link_to user_snippets_path(snippet.author) do
       = snippet.author_name
 
     .pull-right.snippet-updated-at
-      %span updated #{time_ago_with_tooltip(snippet.updated_at, placement: 'bottom', html_class: 'snippet_update_ago')}
+      %span updated #{time_ago_with_tooltip(snippet.updated_at, placement: 'bottom')}
