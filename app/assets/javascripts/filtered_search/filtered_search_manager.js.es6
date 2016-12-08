@@ -81,6 +81,25 @@
       this.bindEvents();
       loadSearchParamsFromURL();
       this.setDropdown();
+
+      document.addEventListener('page:change', this.cleanup);
+    }
+
+    cleanup() {
+      console.log('cleanup')
+
+      if (this.droplab) {
+        this.droplab.destroy();
+        this.droplab = null;
+      }
+
+      dropdownHint = null;
+      dropdownAuthor = null;
+      dropdownAssignee = null;
+      dropdownMilestone = null;
+      dropdownLabel = null;
+
+      document.removeEventListener('page:change', this.cleanup);
     }
 
     static addWordToInput(word, addSpace) {
