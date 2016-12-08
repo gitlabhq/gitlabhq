@@ -23,9 +23,19 @@ describe Banzai::Filter::InlineMathFilter, lib: true do
     expect(doc.to_s).to eq 'test $<code class="code math">2+2</code>$ test'
   end
 
-  it 'ignores cases with missing dolar sign' do
+  it 'ignores cases with missing dolar sign at the end' do
     doc = filter("test $<code>2+2</code> test")
     expect(doc.to_s).to eq 'test $<code>2+2</code> test'
+  end
+
+  it 'ignores cases with missing dolar sign at the beginning' do
+    doc = filter("test <code>2+2</code>$ test")
+    expect(doc.to_s).to eq 'test <code>2+2</code>$ test'
+  end
+
+  it 'ignores dollar signs if it is not adjacent' do
+    doc = filter("$test <code>2+2</code>$ test")
+    expect(doc.to_s).to eq '$test <code>2+2</code>$ test'
   end
 
 end
