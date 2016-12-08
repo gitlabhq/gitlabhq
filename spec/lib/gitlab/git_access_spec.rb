@@ -209,7 +209,13 @@ describe Gitlab::GitAccess, lib: true do
         stub_git_hooks
         project.repository.add_branch(user, unprotected_branch, 'feature')
         target_branch = project.repository.lookup('feature')
-        source_branch = project.repository.commit_file(user, FFaker::InternetSE.login_user_name, FFaker::HipsterIpsum.paragraph, FFaker::HipsterIpsum.sentence, unprotected_branch, false)
+        source_branch = project.repository.commit_file(
+          user,
+          FFaker::InternetSE.login_user_name,
+          FFaker::HipsterIpsum.paragraph,
+          message: FFaker::HipsterIpsum.sentence,
+          branch_name: unprotected_branch,
+          update: false)
         rugged = project.repository.rugged
         author = { email: "email@example.com", time: Time.now, name: "Example Git User" }
 

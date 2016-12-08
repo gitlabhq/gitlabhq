@@ -91,8 +91,40 @@ FactoryGirl.define do
   factory :project, parent: :empty_project do
     path { 'gitlabhq' }
 
-    after :create do |project|
+    transient do
+      create_template nil
+    end
+
+    after :create do |project, evaluator|
       TestEnv.copy_repo(project)
+
+      if evaluator.create_template
+        args = evaluator.create_template
+
+        project.add_user(args[:user], args[:access])
+
+        project.repository.commit_file(
+          args[:user],
+          ".gitlab/#{args[:path]}/bug.md",
+          'something valid',
+          message: 'test 3',
+          branch_name: 'master',
+          update: false)
+        project.repository.commit_file(
+          args[:user],
+          ".gitlab/#{args[:path]}/template_test.md",
+          'template_test',
+          message: 'test 1',
+          branch_name: 'master',
+          update: false)
+        project.repository.commit_file(
+          args[:user],
+          ".gitlab/#{args[:path]}/feature_proposal.md",
+          'feature_proposal',
+          message: 'test 2',
+          branch_name: 'master',
+          update: false)
+      end
     end
   end
 

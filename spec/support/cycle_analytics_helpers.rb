@@ -35,7 +35,13 @@ module CycleAnalyticsHelpers
       project.repository.add_branch(user, source_branch, 'master')
     end
 
-    sha = project.repository.commit_file(user, random_git_name, "content", "commit message", source_branch, false)
+    sha = project.repository.commit_file(
+      user,
+      random_git_name,
+      'content',
+      message: 'commit message',
+      branch_name: source_branch,
+      update: false)
     project.repository.commit(sha)
 
     opts = {

@@ -14,7 +14,8 @@ describe Projects::TemplatesController do
 
   before do
     project.add_user(user, Gitlab::Access::MASTER)
-    project.repository.commit_file(user, file_path_1, "something valid", "test 3", "master", false)
+    project.repository.commit_file(user, file_path_1, 'something valid',
+      message: 'test 3', branch_name: 'master', update: false)
   end
 
   describe '#show' do
