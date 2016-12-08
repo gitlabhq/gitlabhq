@@ -10,7 +10,7 @@ module Gitlab
           end
 
           def action_icon
-            'remove'
+            'ban'
           end
 
           def action_path
@@ -21,6 +21,10 @@ module Gitlab
 
           def action_method
             :post
+          end
+
+          def action_title
+            'Cancel'
           end
 
           def self.matches?(build, user)

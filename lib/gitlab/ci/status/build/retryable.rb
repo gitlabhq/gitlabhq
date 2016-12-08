@@ -10,7 +10,11 @@ module Gitlab
           end
 
           def action_icon
-            'repeat'
+            'refresh'
+          end
+
+          def action_title
+            'Retry'
           end
 
           def action_path
