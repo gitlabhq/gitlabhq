@@ -1,11 +1,15 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Status::Stage::Factory do
+  let(:user) { create(:user) }
   let(:pipeline) { create(:ci_empty_pipeline) }
-  let(:stage) { build(:ci_stage, pipeline: pipeline, name: 'test') }
+
+  let(:stage) do
+    build(:ci_stage, pipeline: pipeline, name: 'test')
+  end
 
   subject do
-    described_class.new(stage)
+    described_class.new(stage, user)
   end
 
   let(:status) do

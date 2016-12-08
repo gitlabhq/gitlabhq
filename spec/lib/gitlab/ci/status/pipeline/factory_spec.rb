@@ -1,8 +1,10 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Status::Pipeline::Factory do
+  let(:user) { create(:user) }
+
   subject do
-    described_class.new(pipeline)
+    described_class.new(pipeline, user)
   end
 
   let(:status) do
