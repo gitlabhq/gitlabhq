@@ -60,7 +60,7 @@
             %a{ href: '#down-build-trace', id: 'scroll-bottom', class: 'scroll-link scroll-bottom', title: 'Scroll to bottom'}
           - if @build.active?
             .autoscroll-container
-              %span.status-message#autoscroll-status{:data => {:state => 'enabled'}}
+              %span.status-message#autoscroll-status{:data => {:state => 'disabled'}}
                 %label Autoscroll active
                 %i.status-icon
         #up-build-trace
