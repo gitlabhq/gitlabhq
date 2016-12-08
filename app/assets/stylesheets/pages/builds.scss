@@ -1,3 +1,8 @@
+@keyframes fade-out-status {
+  0%, 50% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
 .build-page {
   pre.trace {
     background: $builds-trace-bg;
@@ -84,6 +89,10 @@
           font-weight: normal;
           line-height: 1.8;
           transition: opacity 1s ease-out;
+
+          &.animate {
+            animation: fade-out-status 2s ease;
+          }
         }
 
         &:hover label {
@@ -97,21 +106,6 @@
       .scroll-link.sticky,
       .autoscroll-container {
         right: #{$gutter_width + ($gl-padding * 2)};
-      }
-    }
-
-    @media (max-width: $screen-sm-max) {
-      .scroll-link {
-        padding: 6px 13px;
-      }
-
-      i.fa {
-        margin-right: 0;
-      }
-
-      .scroll-step-label,
-      .status-message label {
-        display: none;
       }
     }
   }
