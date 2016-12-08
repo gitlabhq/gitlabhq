@@ -1,5 +1,10 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 8.13.9 (2016-12-08)
+
+- Reenables /user API request to return private-token if user is admin and request is made with sudo. !7615
+- Replace MR access checks with use of MergeRequestsFinder.
+
 ## 8.13.8 (2016-12-02)
 
 - Pass tag SHA to post-receive hook when tag is created via UI. !7700
