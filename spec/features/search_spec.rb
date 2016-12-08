@@ -211,4 +211,19 @@ describe "Search", feature: true  do
       end
     end
   end
+
+  describe 'search for commits' do
+    before do
+      visit search_path(project_id: project.id)
+    end
+
+    it 'shows multiple matching commits' do
+      fill_in 'search', with: 'See merge request'
+
+      click_button 'Search'
+      click_link 'Commits'
+
+      expect(page).to have_selector('.commit-row-description', count: 9)
+    end
+  end
 end

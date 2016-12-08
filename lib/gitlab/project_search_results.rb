@@ -114,7 +114,25 @@ module Gitlab
     end
 
     def commits
-      @commits ||= project.repository.find_commits_by_message(query)
+      @commits ||= find_commits(query)
+    end
+
+    def find_commits(query)
+      return [] unless Ability.allowed?(@current_user, :download_code, @project)
+
+      commits = find_commits_by_message(query)
+      commit_by_sha = find_commit_by_sha(query)
+      commits << commit_by_sha if commit_by_sha && !commits.include?(commit_by_sha)
+      commits
+    end
+
+    def find_commits_by_message(query)
+      project.repository.find_commits_by_message(query)
+    end
+
+    def find_commit_by_sha(query)
+      key = query.strip
+      project.repository.commit(key) if Commit.valid_hash?(key)
     end
 
     def project_ids_relation
