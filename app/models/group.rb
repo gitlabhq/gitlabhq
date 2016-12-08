@@ -207,4 +207,12 @@ class Group < Namespace
   def users_with_parents
     User.where(id: members_with_parents.select(:user_id))
   end
+
+  def user_count
+    users.count
+  end
+
+  def project_count
+    projects.count
+  end
 end

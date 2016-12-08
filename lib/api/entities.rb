@@ -137,7 +137,6 @@ module API
       expose :avatar_url
       expose :web_url
       expose :request_access_enabled
-
       expose :statistics, if: :statistics do
         with_options format_with: -> (value) { value.to_i } do
           expose :storage_size
@@ -146,6 +145,8 @@ module API
           expose :build_artifacts_size
         end
       end
+      expose :user_count
+      expose :project_count
     end
 
     class GroupDetail < Group
