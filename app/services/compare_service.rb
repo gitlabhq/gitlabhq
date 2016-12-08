@@ -19,7 +19,8 @@ class CompareService
     if target_project == source_project
       compare(source_sha, target_project, target_branch, straight)
     else
-      target_project.repository.with_tmp_ref(source_project, source_branch) do
+      target_project.repository.with_tmp_ref(
+        source_project.repository, source_branch) do
         compare(source_sha, target_project, target_branch, straight)
       end
     end
