@@ -223,7 +223,7 @@ describe Environment, models: true do
       "foo-"                      => "foo" + SUFFIX,
     }.each do |name, matcher|
       it "returns a slug matching #{matcher}, given #{name}" do
-        slug = described_class.new(name: name).generate_clean_name
+        slug = described_class.new(name: name).generate_slug
 
         expect(slug).to match(/\A#{matcher}\z/)
       end
