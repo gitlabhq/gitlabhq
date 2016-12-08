@@ -19,13 +19,21 @@
     data() {
       return {
         showHelp: false,
-        timeSpent: this.time_spent,
-        timeEstimate: this.time_estimate,
-        timeEstimateHuman: this.human_time_estimate,
-        timeSpentHuman: this.human_time_spent,
       };
     },
     computed: {
+      timeSpent() {
+        return this.time_spent;
+      },
+      timeEstimate() {
+        return this.time_estimate;
+      },
+      timeEstimateHuman() {
+        return this.human_time_estimate;
+      },
+      timeSpentHuman() {
+        return this.human_time_spent;
+      },
       hasTimeSpent() {
         return !!this.timeSpent;
       },
@@ -56,12 +64,12 @@
     template: `
       <div class='time_tracker time-tracking-component-wrap' v-cloak>
         <time-tracking-collapsed-state
-          :showComparisonState='showComparisonState'
-          :showHelpState='showHelpState'
-          :showSpentOnlyState='showSpentOnlyState'
-          :showEstimateOnlyState='showEstimateOnlyState'
-          :timeSpentHuman='timeSpentHuman'
-          :timeEstimateHuman='timeEstimateHuman'
+          :show-comparison-state='showComparisonState'
+          :show-help-state='showHelpState'
+          :show-spent-only-state='showSpentOnlyState'
+          :show-estimate-only-state='showEstimateOnlyState'
+          :time-spent-human='timeSpentHuman'
+          :time-estimate-human='timeEstimateHuman'
           :stopwatch-svg='stopwatchSvg'>
         </time-tracking-collapsed-state>
         <div class='title hide-collapsed'>
@@ -80,21 +88,21 @@
         <div class='time-tracking-content hide-collapsed'>
           <time-tracking-estimate-only-pane
             v-if='showEstimateOnlyState'
-            :timeEstimateHuman='timeEstimateHuman'>
+            :time-estimate-human='timeEstimateHuman'>
           </time-tracking-estimate-only-pane>
           <time-tracking-spent-only-pane
             v-if='showSpentOnlyState'
-            :timeSpentHuman='timeSpentHuman'>
+            :time-spent-human='timeSpentHuman'>
           </time-tracking-spent-only-pane>
           <time-tracking-no-tracking-pane
             v-if='showNoTimeTrackingState'>
           </time-tracking-no-tracking-pane>
           <time-tracking-comparison-pane
             v-if='showComparisonState'
-            :timeEstimate='timeEstimate'
-            :timeSpent='timeSpent'
-            :timeSpentHuman='timeSpentHuman'
-            :timeEstimateHuman='timeEstimateHuman'>
+            :time-estimate='timeEstimate'
+            :time-spent='timeSpent'
+            :time-spent-human='timeSpentHuman'
+            :time-estimate-human='timeEstimateHuman'>
           </time-tracking-comparison-pane>
           <transition name='help-state-toggle'>
             <time-tracking-help-state

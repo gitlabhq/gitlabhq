@@ -1,8 +1,6 @@
 //= require lib/utils/pretty_time
 
 (() => {
-  const PrettyTime = gl.PrettyTime;
-
   Vue.component('time-tracking-collapsed-state', {
     name: 'time-tracking-collapsed-state',
     props: [
@@ -16,7 +14,7 @@
     ],
     methods: {
       abbreviateTime(timeStr) {
-        return PrettyTime.abbreviateTime(timeStr);
+        return gl.PrettyTime.abbreviateTime(timeStr);
       },
     },
     template: `
