@@ -1,6 +1,6 @@
 .content-block.build-header
   .header-content
-    = render "ci/status/icon_with_label", subject: build
+    = render "ci/status/icon_with_description", subject: build
     Build
     %strong ##{@build.id}
     in pipeline

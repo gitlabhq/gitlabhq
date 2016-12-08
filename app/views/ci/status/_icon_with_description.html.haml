@@ -1,6 +1,7 @@
 - detailed_status = subject.detailed_status(current_user)
 - details_path = detailed_status.details_path if detailed_status.has_details?
 - klass = "ci-status ci-#{detailed_status}"
+
 - if details_path
   = link_to details_path, class: klass do
     = custom_icon(detailed_status.icon)

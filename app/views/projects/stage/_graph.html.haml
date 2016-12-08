@@ -14,9 +14,9 @@
           %li.build{ class: ("playable" if is_playable) }
             .curve
             .build-content
-              = render "projects/#{status.to_partial_path}_pipeline", subject: status
+              = render 'ci/status/icon_with_name_and_action', subject: status
         - else
           %li.build
             .curve
             .dropdown.inline.build-content
-              = render "projects/stage/in_stage_group", name: group_name, subject: grouped_statuses
+              = render 'projects/stage/in_stage_group', name: group_name, subject: grouped_statuses
