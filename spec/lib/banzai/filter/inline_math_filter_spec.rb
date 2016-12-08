@@ -4,8 +4,9 @@ describe Banzai::Filter::InlineMathFilter, lib: true do
   include FilterSpecHelper
 
   it 'leaves regular inline code unchanged' do
-    doc = filter("<code>2+2</code>")
-    expect(doc.to_s).to eq "<code>2+2</code>"
+    input = "<code>2+2</code>"
+    doc = filter(input)
+    expect(doc.to_s).to eq input
   end
 
   it 'removes surrounding dollar signs and adds class' do
@@ -24,18 +25,21 @@ describe Banzai::Filter::InlineMathFilter, lib: true do
   end
 
   it 'ignores cases with missing dolar sign at the end' do
-    doc = filter("test $<code>2+2</code> test")
-    expect(doc.to_s).to eq 'test $<code>2+2</code> test'
+    input = "test $<code>2+2</code> test"
+    doc = filter(input)
+    expect(doc.to_s).to eq input
   end
 
   it 'ignores cases with missing dolar sign at the beginning' do
-    doc = filter("test <code>2+2</code>$ test")
-    expect(doc.to_s).to eq 'test <code>2+2</code>$ test'
+    input = "test <code>2+2</code>$ test"
+    doc = filter(input)
+    expect(doc.to_s).to eq input
   end
 
   it 'ignores dollar signs if it is not adjacent' do
-    doc = filter("$test <code>2+2</code>$ test")
-    expect(doc.to_s).to eq '$test <code>2+2</code>$ test'
+    input = '<p>We check strictly $<code>2+2</code> and  <code>2+2</code>$ </p>'
+    doc = filter(input)
+    expect(doc.to_s).to eq input
   end
 
 end
