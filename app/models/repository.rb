@@ -746,12 +746,13 @@ class Repository
 
   # rubocop:disable Metrics/ParameterLists
   def commit_dir(
-    user, path, message, branch,
+    user, path,
+    message:, branch_name:,
     author_email: nil, author_name: nil,
-    source_branch: nil, source_project: project)
-    if branch_exists?(branch)
+    source_branch_name: nil, source_project: project)
+    if branch_exists?(branch_name)
       # tree_entry is private
-      entry = raw_repository.send(:tree_entry, commit(branch), path)
+      entry = raw_repository.send(:tree_entry, commit(branch_name), path)
 
       if entry
         if entry[:type] == :blob
@@ -768,24 +769,25 @@ class Repository
       user,
       "#{path}/.gitkeep",
       '',
-      message,
-      branch,
-      false,
+      message: message,
+      branch_name: branch_name,
+      update: false,
       author_email: author_email,
       author_name: author_name,
-      source_branch: source_branch,
+      source_branch_name: source_branch_name,
       source_project: source_project)
   end
   # rubocop:enable Metrics/ParameterLists
 
   # rubocop:disable Metrics/ParameterLists
   def commit_file(
-    user, path, content, message, branch, update,
+    user, path, content,
+    message:, branch_name:, update: true,
     author_email: nil, author_name: nil,
-    source_branch: nil, source_project: project)
-    if branch_exists?(branch) && update == false
+    source_branch_name: nil, source_project: project)
+    if branch_exists?(branch_name) && update == false
       # tree_entry is private
-      if raw_repository.send(:tree_entry, commit(branch), path)
+      if raw_repository.send(:tree_entry, commit(branch_name), path)
         raise Gitlab::Git::Repository::InvalidBlobName.new(
           "Filename already exists; update not allowed")
       end
@@ -793,11 +795,11 @@ class Repository
 
     multi_action(
       user: user,
-      branch: branch,
       message: message,
+      branch_name: branch_name,
       author_email: author_email,
       author_name: author_name,
-      source_branch: source_branch,
+      source_branch_name: source_branch_name,
       source_project: source_project,
       actions: [{ action: :create,
                   file_path: path,
@@ -808,9 +810,9 @@ class Repository
   # rubocop:disable Metrics/ParameterLists
   def update_file(
     user, path, content,
-    branch:, previous_path:, message:,
+    message:, branch_name:, previous_path:,
     author_email: nil, author_name: nil,
-    source_branch: nil, source_project: project)
+    source_branch_name: nil, source_project: project)
     action = if previous_path && previous_path != path
                :move
              else
@@ -819,11 +821,11 @@ class Repository
 
     multi_action(
       user: user,
-      branch: branch,
       message: message,
+      branch_name: branch_name,
       author_email: author_email,
       author_name: author_name,
-      source_branch: source_branch,
+      source_branch_name: source_branch_name,
       source_project: source_project,
       actions: [{ action: action,
                   file_path: path,
@@ -834,16 +836,17 @@ class Repository
 
   # rubocop:disable Metrics/ParameterLists
   def remove_file(
-    user, path, message, branch,
+    user, path,
+    message:, branch_name:,
     author_email: nil, author_name: nil,
-    source_branch: nil, source_project: project)
+    source_branch_name: nil, source_project: project)
     multi_action(
       user: user,
-      branch: branch,
       message: message,
+      branch_name: branch_name,
       author_email: author_email,
       author_name: author_name,
-      source_branch: source_branch,
+      source_branch_name: source_branch_name,
       source_project: source_project,
       actions: [{ action: :delete,
                   file_path: path }])
@@ -852,16 +855,16 @@ class Repository
 
   # rubocop:disable Metrics/ParameterLists
   def multi_action(
-    user:, branch:, message:, actions:,
+    user:, branch_name:, message:, actions:,
     author_email: nil, author_name: nil,
-    source_branch: nil, source_project: project)
+    source_branch_name: nil, source_project: project)
     GitOperationService.new(user, self).with_branch(
-      branch,
-      source_branch: source_branch,
+      branch_name,
+      source_branch_name: source_branch_name,
       source_project: source_project) do
       index = rugged.index
       branch_commit = source_project.repository.find_branch(
-        source_branch || branch)
+        source_branch_name || branch_name)
 
       parents = if branch_commit
                   last_commit = branch_commit.dereferenced_target
@@ -960,18 +963,19 @@ class Repository
   end
 
   def revert(
-    user, commit, base_branch, revert_tree_id = nil,
-    source_branch: nil, source_project: project)
-    revert_tree_id ||= check_revert_content(commit, base_branch)
+    user, commit, branch_name, revert_tree_id = nil,
+    source_branch_name: nil, source_project: project)
+    revert_tree_id ||= check_revert_content(commit, branch_name)
 
     return false unless revert_tree_id
 
     GitOperationService.new(user, self).with_branch(
-      base_branch,
-      source_branch: source_branch, source_project: source_project) do
+      branch_name,
+      source_branch_name: source_branch_name,
+      source_project: source_project) do
 
       source_sha = source_project.repository.find_source_sha(
-        source_branch || base_branch)
+        source_branch_name || branch_name)
       committer = user_to_committer(user)
 
       Rugged::Commit.create(rugged,
@@ -984,18 +988,19 @@ class Repository
   end
 
   def cherry_pick(
-    user, commit, base_branch, cherry_pick_tree_id = nil,
-    source_branch: nil, source_project: project)
-    cherry_pick_tree_id ||= check_cherry_pick_content(commit, base_branch)
+    user, commit, branch_name, cherry_pick_tree_id = nil,
+    source_branch_name: nil, source_project: project)
+    cherry_pick_tree_id ||= check_cherry_pick_content(commit, branch_name)
 
     return false unless cherry_pick_tree_id
 
     GitOperationService.new(user, self).with_branch(
-      base_branch,
-      source_branch: source_branch, source_project: source_project) do
+      branch_name,
+      source_branch_name: source_branch_name,
+      source_project: source_project) do
 
       source_sha = source_project.repository.find_source_sha(
-        source_branch || base_branch)
+        source_branch_name || branch_name)
       committer = user_to_committer(user)
 
       Rugged::Commit.create(rugged,
@@ -1019,8 +1024,8 @@ class Repository
     end
   end
 
-  def check_revert_content(commit, base_branch)
-    source_sha = find_branch(base_branch).dereferenced_target.sha
+  def check_revert_content(commit, branch_name)
+    source_sha = find_branch(branch_name).dereferenced_target.sha
     args       = [commit.id, source_sha]
     args << { mainline: 1 } if commit.merge_commit?
 
@@ -1033,8 +1038,8 @@ class Repository
     tree_id
   end
 
-  def check_cherry_pick_content(commit, base_branch)
-    source_sha = find_branch(base_branch).dereferenced_target.sha
+  def check_cherry_pick_content(commit, branch_name)
+    source_sha = find_branch(branch_name).dereferenced_target.sha
     args       = [commit.id, source_sha]
     args << 1 if commit.merge_commit?
 

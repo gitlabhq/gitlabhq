@@ -5,12 +5,12 @@ module Files
         current_user,
         @file_path,
         @file_content,
-        @commit_message,
-        @target_branch,
-        false,
+        message: @commit_message,
+        branch_name: @target_branch,
+        update: false,
         author_email: @author_email,
         author_name: @author_name,
-        source_branch: @source_branch)
+        source_branch_name: @source_branch)
     end
 
     def validate

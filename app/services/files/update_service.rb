@@ -4,13 +4,13 @@ module Files
 
     def commit
       repository.update_file(current_user, @file_path, @file_content,
-                             branch: @target_branch,
-                             previous_path: @previous_path,
                              message: @commit_message,
+                             branch_name: @target_branch,
+                             previous_path: @previous_path,
                              author_email: @author_email,
                              author_name: @author_name,
                              source_project: @source_project,
-                             source_branch: @source_branch)
+                             source_branch_name: @source_branch)
     end
 
     private

@@ -249,7 +249,8 @@ describe Repository, models: true do
   describe "#commit_dir" do
     it "commits a change that creates a new directory" do
       expect do
-        repository.commit_dir(user, 'newdir', 'Create newdir', 'master')
+        repository.commit_dir(user, 'newdir',
+          message: 'Create newdir', branch_name: 'master')
       end.to change { repository.commits('master').count }.by(1)
 
       newdir = repository.tree('master', 'newdir')
@@ -259,7 +260,10 @@ describe Repository, models: true do
     context "when an author is specified" do
       it "uses the given email/name to set the commit's author" do
         expect do
-          repository.commit_dir(user, "newdir", "Add newdir", 'master', author_email: author_email, author_name: author_name)
+          repository.commit_dir(user, 'newdir',
+            message: 'Add newdir',
+            branch_name: 'master',
+            author_email: author_email, author_name: author_name)
         end.to change { repository.commits('master').count }.by(1)
 
         last_commit = repository.commit
@@ -274,8 +278,9 @@ describe Repository, models: true do
     it 'commits change to a file successfully' do
       expect do
         repository.commit_file(user, 'CHANGELOG', 'Changelog!',
-                              'Updates file content',
-                              'master', true)
+                               message: 'Updates file content',
+                               branch_name: 'master',
+                               update: true)
       end.to change { repository.commits('master').count }.by(1)
 
       blob = repository.blob_at('master', 'CHANGELOG')
@@ -286,8 +291,12 @@ describe Repository, models: true do
     context "when an author is specified" do
       it "uses the given email/name to set the commit's author" do
         expect do
-          repository.commit_file(user, "README", 'README!', 'Add README',
-                                'master', true, author_email: author_email, author_name: author_name)
+          repository.commit_file(user, 'README', 'README!',
+                                 message: 'Add README',
+                                 branch_name: 'master',
+                                 update: true,
+                                 author_email: author_email,
+                                 author_name: author_name)
         end.to change { repository.commits('master').count }.by(1)
 
         last_commit = repository.commit
@@ -302,7 +311,7 @@ describe Repository, models: true do
     it 'updates filename successfully' do
       expect do
         repository.update_file(user, 'NEWLICENSE', 'Copyright!',
-                                     branch: 'master',
+                                     branch_name: 'master',
                                      previous_path: 'LICENSE',
                                      message: 'Changes filename')
       end.to change { repository.commits('master').count }.by(1)
@@ -315,15 +324,16 @@ describe Repository, models: true do
 
     context "when an author is specified" do
       it "uses the given email/name to set the commit's author" do
-        repository.commit_file(user, "README", 'README!', 'Add README', 'master', true)
+        repository.commit_file(user, 'README', 'README!',
+          message: 'Add README', branch_name: 'master', update: true)
 
         expect do
-          repository.update_file(user, 'README', "Updated README!",
-                                branch: 'master',
-                                previous_path: 'README',
-                                message: 'Update README',
-                                author_email: author_email,
-                                author_name: author_name)
+          repository.update_file(user, 'README', 'Updated README!',
+                                 branch_name: 'master',
+                                 previous_path: 'README',
+                                 message: 'Update README',
+                                 author_email: author_email,
+                                 author_name: author_name)
         end.to change { repository.commits('master').count }.by(1)
 
         last_commit = repository.commit
@@ -336,10 +346,12 @@ describe Repository, models: true do
 
   describe "#remove_file" do
     it 'removes file successfully' do
-      repository.commit_file(user, "README", 'README!', 'Add README', 'master', true)
+      repository.commit_file(user, 'README', 'README!',
+        message: 'Add README', branch_name: 'master', update: true)
 
       expect do
-        repository.remove_file(user, "README", "Remove README", 'master')
+        repository.remove_file(user, 'README',
+          message: 'Remove README', branch_name: 'master')
       end.to change { repository.commits('master').count }.by(1)
 
       expect(repository.blob_at('master', 'README')).to be_nil
@@ -347,10 +359,13 @@ describe Repository, models: true do
 
     context "when an author is specified" do
       it "uses the given email/name to set the commit's author" do
-        repository.commit_file(user, "README", 'README!', 'Add README', 'master', true)
+        repository.commit_file(user, 'README', 'README!',
+          message: 'Add README', branch_name: 'master', update: true)
 
         expect do
-          repository.remove_file(user, "README", "Remove README", 'master', author_email: author_email, author_name: author_name)
+          repository.remove_file(user, 'README',
+            message: 'Remove README', branch_name: 'master',
+            author_email: author_email, author_name: author_name)
         end.to change { repository.commits('master').count }.by(1)
 
         last_commit = repository.commit
@@ -498,11 +513,14 @@ describe Repository, models: true do
 
   describe "#license_blob", caching: true do
     before do
-      repository.remove_file(user, 'LICENSE', 'Remove LICENSE', 'master')
+      repository.remove_file(
+        user, 'LICENSE', message: 'Remove LICENSE', branch_name: 'master')
     end
 
     it 'handles when HEAD points to non-existent ref' do
-      repository.commit_file(user, 'LICENSE', 'Copyright!', 'Add LICENSE', 'master', false)
+      repository.commit_file(
+        user, 'LICENSE', 'Copyright!',
+        message: 'Add LICENSE', branch_name: 'master', update: false)
 
       allow(repository).to receive(:file_on_head).
         and_raise(Rugged::ReferenceError)
@@ -511,21 +529,27 @@ describe Repository, models: true do
     end
 
     it 'looks in the root_ref only' do
-      repository.remove_file(user, 'LICENSE', 'Remove LICENSE', 'markdown')
-      repository.commit_file(user, 'LICENSE', Licensee::License.new('mit').content, 'Add LICENSE', 'markdown', false)
+      repository.remove_file(user, 'LICENSE',
+        message: 'Remove LICENSE', branch_name: 'markdown')
+      repository.commit_file(user, 'LICENSE',
+        Licensee::License.new('mit').content,
+        message: 'Add LICENSE', branch_name: 'markdown', update: false)
 
       expect(repository.license_blob).to be_nil
     end
 
     it 'detects license file with no recognizable open-source license content' do
-      repository.commit_file(user, 'LICENSE', 'Copyright!', 'Add LICENSE', 'master', false)
+      repository.commit_file(user, 'LICENSE', 'Copyright!',
+        message: 'Add LICENSE', branch_name: 'master', update: false)
 
       expect(repository.license_blob.name).to eq('LICENSE')
     end
 
     %w[LICENSE LICENCE LiCensE LICENSE.md LICENSE.foo COPYING COPYING.md].each do |filename|
       it "detects '#{filename}'" do
-        repository.commit_file(user, filename, Licensee::License.new('mit').content, "Add #{filename}", 'master', false)
+        repository.commit_file(user, filename,
+          Licensee::License.new('mit').content,
+          message: "Add #{filename}", branch_name: 'master', update: false)
 
         expect(repository.license_blob.name).to eq(filename)
       end
@@ -534,7 +558,8 @@ describe Repository, models: true do
 
   describe '#license_key', caching: true do
     before do
-      repository.remove_file(user, 'LICENSE', 'Remove LICENSE', 'master')
+      repository.remove_file(user, 'LICENSE',
+        message: 'Remove LICENSE', branch_name: 'master')
     end
 
     it 'returns nil when no license is detected' do
@@ -548,13 +573,16 @@ describe Repository, models: true do
     end
 
     it 'detects license file with no recognizable open-source license content' do
-      repository.commit_file(user, 'LICENSE', 'Copyright!', 'Add LICENSE', 'master', false)
+      repository.commit_file(user, 'LICENSE', 'Copyright!',
+        message: 'Add LICENSE', branch_name: 'master', update: false)
 
       expect(repository.license_key).to be_nil
     end
 
     it 'returns the license key' do
-      repository.commit_file(user, 'LICENSE', Licensee::License.new('mit').content, 'Add LICENSE', 'master', false)
+      repository.commit_file(user, 'LICENSE',
+        Licensee::License.new('mit').content,
+        message: 'Add LICENSE', branch_name: 'master', update: false)
 
       expect(repository.license_key).to eq('mit')
     end
@@ -815,7 +843,9 @@ describe Repository, models: true do
         expect(empty_repository).to receive(:expire_has_visible_content_cache)
 
         empty_repository.commit_file(user, 'CHANGELOG', 'Changelog!',
-                                     'Updates file content', 'master', false)
+                                     message: 'Updates file content',
+                                     branch_name: 'master',
+                                     update: false)
       end
     end
   end

@@ -25,23 +25,23 @@ GitOperationService = Struct.new(:user, :repository) do
     end
   end
 
-  # Whenever `source_branch` is passed, if `branch` doesn't exist,
-  # it would be created from `source_branch`.
+  # Whenever `source_branch_name` is passed, if `branch_name` doesn't exist,
+  # it would be created from `source_branch_name`.
   # If `source_project` is passed, and the branch doesn't exist,
   # it would try to find the source from it instead of current repository.
   def with_branch(
     branch_name,
-    source_branch: nil,
+    source_branch_name: nil,
     source_project: repository.project)
 
-    check_with_branch_arguments!(branch_name, source_branch, source_project)
+    check_with_branch_arguments!(
+      branch_name, source_branch_name, source_project)
 
-    update_branch_with_hooks(
-      branch_name, source_branch, source_project) do |ref|
+    update_branch_with_hooks(branch_name) do |ref|
       if repository.project != source_project
         repository.fetch_ref(
           source_project.repository.path_to_repo,
-          "#{Gitlab::Git::BRANCH_REF_PREFIX}#{source_branch}",
+          "#{Gitlab::Git::BRANCH_REF_PREFIX}#{source_branch_name}",
           "#{Gitlab::Git::BRANCH_REF_PREFIX}#{branch_name}"
         )
       end
@@ -52,7 +52,7 @@ GitOperationService = Struct.new(:user, :repository) do
 
   private
 
-  def update_branch_with_hooks(branch_name, source_branch, source_project)
+  def update_branch_with_hooks(branch_name)
     update_autocrlf_option
 
     ref = Gitlab::Git::BRANCH_REF_PREFIX + branch_name
