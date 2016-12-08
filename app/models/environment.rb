@@ -50,6 +50,13 @@ class Environment < ActiveRecord::Base
     state :stopped
   end
 
+  def predefined_variables
+    [
+      { key: 'CI_ENVIRONMENT_NAME', value: name, public: true },
+      { key: 'CI_ENVIRONMENT_SLUG', value: slug, public: true },
+    ]
+  end
+
   def recently_updated_on_branch?(ref)
     ref.to_s == last_deployment.try(:ref)
   end

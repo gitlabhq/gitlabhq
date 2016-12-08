@@ -87,6 +87,26 @@ describe Ci::Build, models: true do
     end
   end
 
+  describe '#persisted_environment' do
+    before do
+      @environment = create(:environment, project: project, name: "foo-#{project.default_branch}")
+    end
+
+    subject { build.persisted_environment }
+
+    context 'referenced literally' do
+      let(:build) { create(:ci_build, pipeline: pipeline, environment: "foo-#{project.default_branch}") }
+
+      it { is_expected.to eq(@environment) }
+    end
+
+    context 'referenced with a variable' do
+      let(:build) { create(:ci_build, pipeline: pipeline, environment: "foo-$CI_BUILD_REF_NAME") }
+
+      it { is_expected.to eq(@environment) }
+    end
+  end
+
   describe '#trace' do
     it { expect(build.trace).to be_nil }
 
@@ -326,6 +346,22 @@ describe Ci::Build, models: true do
       end
 
       it { user_variables.each { |v| is_expected.to include(v) } }
+    end
+
+    context 'when build has an environment' do
+      before do
+        build.update(environment: 'production')
+        create(:environment, project: build.project, name: 'production', slug: 'prod-slug')
+      end
+
+      let(:environment_variables) do
+        [
+          { key: 'CI_ENVIRONMENT_NAME', value: 'production', public: true },
+          { key: 'CI_ENVIRONMENT_SLUG', value: 'prod-slug',  public: true }
+        ]
+      end
+
+      it { environment_variables.each { |v| is_expected.to include(v) } }
     end
 
     context 'when build started manually' do
