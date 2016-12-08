@@ -2,27 +2,19 @@ module Gitlab
   module Ci
     module Status
       module Status
-        class Play < SimpleDelegator
+        class Retryable < SimpleDelegator
           extend Status::Extended
-
-          def text
-            'play'
-          end
-
-          def label
-            'play'
-          end
 
           def has_action?(current_user)
             can?(current_user, :update_build, subject)
           end
 
           def action_icon
-            'play'
+            'repeat'
           end
 
           def action_path
-            play_namespace_project_build_path(subject.project.namespace, subject.project, subject)
+            retry_namespace_project_build_path(subject.project.namespace, subject.project, subject)
           end
 
           def action_method
@@ -30,7 +22,7 @@ module Gitlab
           end
 
           def self.matches?(build)
-            build.playable? && !build.stops_environment?
+            build.retryable?
           end
         end
       end
