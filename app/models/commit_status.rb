@@ -131,4 +131,8 @@ class CommitStatus < ActiveRecord::Base
   def has_trace?
     false
   end
+
+  def detailed_status
+    Gitlab::Ci::Status::Factory.new(self).fabricate!
+  end
 end
