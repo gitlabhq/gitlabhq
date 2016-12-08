@@ -132,7 +132,7 @@ class CommitStatus < ActiveRecord::Base
     false
   end
 
-  def detailed_status
-    Gitlab::Ci::Status::Factory.new(self).fabricate!
+  def detailed_status(current_user)
+    Gitlab::Ci::Status::Factory.new(self, current_user).fabricate!
   end
 end
