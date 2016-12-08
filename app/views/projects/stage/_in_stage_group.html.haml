@@ -10,4 +10,4 @@
   %ul
     - subject.each do |status|
       %li.dropdown-build
-        = render "projects/#{status.to_partial_path}_pipeline", subject: status
+        = render 'ci/status/icon_with_name_and_action', subject: status

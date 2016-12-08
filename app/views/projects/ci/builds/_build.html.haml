@@ -9,7 +9,7 @@
 
 %tr.build.commit{class: ('retried' if retried)}
   %td.status
-    = render "ci/status/icon_with_label", subject: build
+    = render "ci/status/icon_with_description", subject: build
 
   %td.branch-commit
     - if can?(current_user, :read_build, build)
