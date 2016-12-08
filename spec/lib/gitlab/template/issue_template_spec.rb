@@ -10,9 +10,7 @@ describe Gitlab::Template::IssueTemplate do
       create_template: {
         user: user,
         access: Gitlab::Access::MASTER,
-        path: 'issue_templates'
-      }
-    )
+        path: 'issue_templates' })
   end
 
   describe '.all' do

@@ -10,9 +10,7 @@ describe Gitlab::Template::MergeRequestTemplate do
       create_template: {
         user: user,
         access: Gitlab::Access::MASTER,
-        path: 'merge_request_templates'
-      }
-    )
+        path: 'merge_request_templates' })
   end
 
   describe '.all' do
