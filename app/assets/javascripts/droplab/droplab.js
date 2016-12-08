@@ -53,6 +53,7 @@ Object.assign(DropDown.prototype, {
     this.list.addEventListener('click', function(e) {
       // climb up the tree to find the LI
       var selected = utils.closest(e.target, 'LI');
+
       if(selected) {
         e.preventDefault();
         self.hide();
@@ -158,17 +159,22 @@ require('./window')(function(w){
       this.ready = false;
       this.hooks = [];
       this.queuedData = [];
-      this.plugins = [];
       this.config = {};
+      this.loadWrapper;
       if(typeof hook !== 'undefined'){
         this.addHook(hook);
       }
-      this.addEvents();
     };
 
+
     Object.assign(DropLab.prototype, {
-      plugin: function (plugin) {
-        this.plugins.push(plugin)
+      load: function() {
+        this.loadWrapper();
+      },
+
+      loadWrapper: function(){
+        var dropdownTriggers = [].slice.apply(document.querySelectorAll('['+DATA_TRIGGER+']'));
+        this.addHooks(dropdownTriggers).init();
       },
 
       addData: function () {
@@ -179,6 +185,14 @@ require('./window')(function(w){
       setData: function() {
         var args = [].slice.apply(arguments);
         this.applyArgs(args, '_setData');
+      },
+
+      destroy: function() {
+        this.hooks.forEach(function(h){
+          h.destroy();
+        });
+        this.hooks = [];
+        this.removeEvents();
       },
 
       applyArgs: function(args, methodName) {
@@ -210,7 +224,7 @@ require('./window')(function(w){
 
       addEvents: function() {
         var self = this;
-        window.addEventListener('click', function(e){
+        this.windowClickedWrapper = function(e){
           var thisTag = e.target;
           if(thisTag.tagName === 'LI' || thisTag.tagName === 'A'
              || thisTag.tagName === 'BUTTON'){
@@ -222,10 +236,16 @@ require('./window')(function(w){
           self.hooks.forEach(function(hook) {
             hook.list.hide();
           });
-        });
+        }.bind(this);
+        w.addEventListener('click', this.windowClickedWrapper);
       },
 
-      changeHookList: function(trigger, list) {
+      removeEvents: function(){
+        w.removeEventListener('click', this.windowClickedWrapper);
+        w.removeEventListener('load', this.loadWrapper);
+      },
+
+      changeHookList: function(trigger, list, plugins, config) {
         trigger = document.querySelector('[data-id="'+trigger+'"]');
         list = document.querySelector(list);
         this.hooks.every(function(hook, i) {
@@ -234,19 +254,16 @@ require('./window')(function(w){
             hook.list.list.innerHTML = hook.list.initialState;
             hook.list.hide();
 
-            hook.trigger.removeEventListener('mousedown', hook.events.mousedown);
-            hook.trigger.removeEventListener('input', hook.events.input);
-            hook.trigger.removeEventListener('keyup', hook.events.keyup);
-            hook.trigger.removeEventListener('keydown', hook.events.keydown);
+            hook.destroy();
             this.hooks.splice(i, 1);
-            this.addHook(trigger, list);
+            this.addHook(trigger, list, plugins, config);
             return false;
           }
           return true
         }.bind(this));
       },
 
-      addHook: function(hook, list) {
+      addHook: function(hook, list, plugins, config) {
         if(!(hook instanceof HTMLElement) && typeof hook === 'string'){
           hook = document.querySelector(hook);
         }
@@ -256,17 +273,17 @@ require('./window')(function(w){
         
         if(hook) {
           if(hook.tagName === 'A' || hook.tagName === 'BUTTON') {
-            this.hooks.push(new HookButton(hook, list));
+            this.hooks.push(new HookButton(hook, list, plugins, config));
           } else if(hook.tagName === 'INPUT') {
-            this.hooks.push(new HookInput(hook, list));
+            this.hooks.push(new HookInput(hook, list, plugins, config));
           }
         }
         return this;
       },
 
-      addHooks: function(hooks) {
+      addHooks: function(hooks, plugins, config) {
         hooks.forEach(function(hook) {
-          this.addHook(hook, null);
+          this.addHook(hook, null, plugins, config);
         }.bind(this));
         return this;
       },
@@ -276,9 +293,7 @@ require('./window')(function(w){
       },
 
       init: function () {
-        this.plugins.forEach(function(plugin) {
-          plugin(DropLab);
-        })
+        this.addEvents();
         var readyEvent = new CustomEvent('ready.dl', {
           detail: {
             dropdown: this,
@@ -301,15 +316,18 @@ require('./window')(function(w){
 },{"./constants":1,"./custom_event_polyfill":2,"./hook_button":6,"./hook_input":7,"./utils":10,"./window":11}],5:[function(require,module,exports){
 var DropDown = require('./dropdown');
 
-var Hook = function(trigger, list){
+var Hook = function(trigger, list, plugins, config){
   this.trigger = trigger;
   this.list = new DropDown(list);
   this.type = 'Hook';
   this.event = 'click';
+  this.plugins = plugins || [];
+  this.config = config || {};
   this.id = trigger.dataset.id;
 };
 
 Object.assign(Hook.prototype, {
+
   addEvents: function(){},
 
   constructor: Hook,
@@ -321,30 +339,60 @@ module.exports = Hook;
 var CustomEvent = require('./custom_event_polyfill');
 var Hook = require('./hook');
 
-var HookButton = function(trigger, list) {
-  Hook.call(this, trigger, list);
+var HookButton = function(trigger, list, plugins, config) {
+  Hook.call(this, trigger, list, plugins, config);
   this.type = 'button';
   this.event = 'click';
   this.addEvents();
+  this.addPlugins();
 };
 
 HookButton.prototype = Object.create(Hook.prototype);
 
 Object.assign(HookButton.prototype, {
-  addEvents: function(){
-    var self = this;
-    this.trigger.addEventListener('click', function(e){
-      var buttonEvent = new CustomEvent('click.dl', {
-        detail: {
-          hook: self,
-        },
-        bubbles: true,
-        cancelable: true
-      });
-      self.list.show();
-      e.target.dispatchEvent(buttonEvent);
+  addPlugins: function() {
+    this.plugins.forEach(function(plugin) {
+      plugin.init(this);
     });
   },
+
+  clicked: function(e){
+    var buttonEvent = new CustomEvent('click.dl', {
+      detail: {
+        hook: this,
+      },
+      bubbles: true,
+      cancelable: true
+    });
+    this.list.show();
+    e.target.dispatchEvent(buttonEvent);
+  },
+
+  addEvents: function(){
+    this.clickedWrapper = this.clicked.bind(this);
+    this.trigger.addEventListener('click', this.clickedWrapper);
+  },
+
+  removeEvents: function(){
+    this.trigger.removeEventListener('click', this.clickedWrapper);
+  },
+
+  restoreInitialState: function() {
+    this.list.list.innerHTML = this.list.initialState;
+  },
+
+  removePlugins: function() {
+    this.plugins.forEach(function(plugin) {
+      plugin.destroy();
+    });
+  },
+
+  destroy: function() {
+    this.restoreInitialState();
+    this.removeEvents();
+    this.removePlugins();
+  },
+
 
   constructor: HookButton,
 });
@@ -356,18 +404,26 @@ module.exports = HookButton;
 var CustomEvent = require('./custom_event_polyfill');
 var Hook = require('./hook');
 
-var HookInput = function(trigger, list) {
-  Hook.call(this, trigger, list);
+var HookInput = function(trigger, list, plugins, config) {
+  Hook.call(this, trigger, list, plugins, config);
   this.type = 'input';
   this.event = 'input';
+  this.addPlugins();
   this.addEvents();
 };
 
 Object.assign(HookInput.prototype, {
+  addPlugins: function() {
+    var self = this;
+    this.plugins.forEach(function(plugin) {
+      plugin.init(self);
+    });
+  },
+
   addEvents: function(){
     var self = this;
 
-    function mousedown(e) {
+    this.mousedown = function mousedown(e) {
       var mouseEvent = new CustomEvent('mousedown.dl', {
         detail: {
           hook: self,
@@ -379,7 +435,7 @@ Object.assign(HookInput.prototype, {
       e.target.dispatchEvent(mouseEvent);
     }
 
-    function input(e) {
+    this.input = function input(e) {
       var inputEvent = new CustomEvent('input.dl', {
         detail: {
           hook: self,
@@ -392,11 +448,11 @@ Object.assign(HookInput.prototype, {
       self.list.show();
     }
 
-    function keyup(e) {
+    this.keyup = function keyup(e) {
       keyEvent(e, 'keyup.dl');
     }
 
-    function keydown(e) {
+    this.keydown = function keydown(e) {
       keyEvent(e, 'keydown.dl');
     }
 
@@ -416,15 +472,38 @@ Object.assign(HookInput.prototype, {
     }
 
     this.events = this.events || {};
-    this.events.mousedown = mousedown;
-    this.events.input = input;
-    this.events.keyup = keyup;
-    this.events.keydown = keydown;
-    this.trigger.addEventListener('mousedown', mousedown);
-    this.trigger.addEventListener('input', input);
-    this.trigger.addEventListener('keyup', keyup);
-    this.trigger.addEventListener('keydown', keydown);
+    this.events.mousedown = this.mousedown;
+    this.events.input = this.input;
+    this.events.keyup = this.keyup;
+    this.events.keydown = this.keydown;
+    this.trigger.addEventListener('mousedown', this.mousedown);
+    this.trigger.addEventListener('input', this.input);
+    this.trigger.addEventListener('keyup', this.keyup);
+    this.trigger.addEventListener('keydown', this.keydown);
   },
+
+  removeEvents: function(){
+    this.trigger.removeEventListener('mousedown', this.mousedown);
+    this.trigger.removeEventListener('input', this.input);
+    this.trigger.removeEventListener('keyup', this.keyup);
+    this.trigger.removeEventListener('keydown', this.keydown);
+  },
+
+  restoreInitialState: function() {
+    this.list.list.innerHTML = this.list.initialState;
+  },
+
+  removePlugins: function() {
+    this.plugins.forEach(function(plugin) {
+      plugin.destroy();
+    });
+  },
+
+  destroy: function() {
+    this.restoreInitialState();
+    this.removeEvents();
+    this.removePlugins();
+  }
 });
 
 module.exports = HookInput;
@@ -433,21 +512,14 @@ module.exports = HookInput;
 var DropLab = require('./droplab')();
 var DATA_TRIGGER = require('./constants').DATA_TRIGGER;
 var keyboard = require('./keyboard')();
-
 var setup = function() {
-  var droplab = DropLab();
-  require('./window')(function(w) {
-    w.addEventListener('load', function() {
-      var dropdownTriggers = [].slice.apply(document.querySelectorAll('['+DATA_TRIGGER+']'));
-      droplab.addHooks(dropdownTriggers).init();
-    });
-  });
-  return droplab;
+  window.DropLab = DropLab;
 };
+
 
 module.exports = setup();
 
-},{"./constants":1,"./droplab":4,"./keyboard":9,"./window":11}],9:[function(require,module,exports){
+},{"./constants":1,"./droplab":4,"./keyboard":9}],9:[function(require,module,exports){
 require('./window')(function(w){
   module.exports = function(){
     var currentKey;
@@ -557,7 +629,7 @@ var camelize = function(str) {
 };
 
 var closest = function(thisTag, stopTag) {
-  while(thisTag !== null && thisTag.tagName !== stopTag && thisTag.tagName !== 'HTML'){
+  while(thisTag.tagName !== stopTag && thisTag.tagName !== 'HTML'){
     thisTag = thisTag.parentNode;
   }
   return thisTag;

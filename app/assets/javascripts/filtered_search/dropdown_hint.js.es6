@@ -21,10 +21,9 @@
   }];
 
   class DropdownHint extends gl.FilteredSearchDropdown {
-    constructor(dropdown, input, filterKeyword) {
-      super(dropdown, input);
+    constructor(droplab, dropdown, input) {
+      super(droplab, dropdown, input);
       this.listId = 'js-dropdown-hint';
-      this.filterKeyword = filterKeyword;
     }
 
     itemClicked(e) {
@@ -39,8 +38,13 @@
     }
 
     renderContent() {
-      super.renderContent();
-      droplab.setData(this.hookId, dropdownData);
+      this.droplab.changeHookList(this.hookId, '#js-dropdown-hint', [droplabFilter], {
+        droplabFilter: {
+          template: 'hint',
+          filterFunction: this.filterMethod,
+        }
+      });
+      this.droplab.setData(this.hookId, dropdownData);
     }
 
     filterMethod(item, query) {
@@ -53,6 +57,14 @@
       }
 
       return item;
+    }
+
+    configure() {
+      this.droplab.addHook(this.input, this.dropdown, [droplabFilter], {
+        droplabFilter: {
+          template: 'hint',
+        }
+      }).init();
     }
   }
 
