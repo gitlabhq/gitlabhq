@@ -5,9 +5,13 @@ module Gitlab
       #
       class Core
         include Gitlab::Routing.url_helpers
+        include Ability::Allowable
 
-        def initialize(subject)
+        attr_reader :subject, :user
+
+        def initialize(subject, user)
           @subject = subject
+          @user = user
         end
 
         def icon
@@ -16,10 +20,6 @@ module Gitlab
 
         def label
           raise NotImplementedError
-        end
-
-        def title
-          "#{@subject.class.name.demodulize}: #{label}"
         end
 
         # Deprecation warning: this method is here because we need to maintain
@@ -33,7 +33,7 @@ module Gitlab
           self.class.name.demodulize.downcase.underscore
         end
 
-        def has_details?(_user = nil)
+        def has_details?
           false
         end
 
@@ -41,7 +41,7 @@ module Gitlab
           raise NotImplementedError
         end
 
-        def has_action?(_user = nil)
+        def has_action?
           false
         end
 

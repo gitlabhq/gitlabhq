@@ -3,14 +3,14 @@ module Gitlab
     module Status
       module Pipeline
         module Common
-          def has_details?(current_user)
-            can?(current_user, :read_pipeline, subject)
+          def has_details?
+            can?(user, :read_pipeline, subject)
           end
 
           def details_path
-            namespace_project_pipeline_path(@subject.project.namespace,
-                                            @subject.project,
-                                            @subject)
+            namespace_project_pipeline_path(subject.project.namespace,
+                                            subject.project,
+                                            subject)
           end
 
           def has_action?

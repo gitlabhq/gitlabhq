@@ -3,14 +3,13 @@ module Gitlab
     module Status
       module Build
         class Factory < Status::Factory
-          private
-
-          def extended_statuses
-            [Stop, Play, Cancelable, Retryable]
+          def self.extended_statuses
+            [Status::Build::Stop, Status::Build::Play,
+             Status::Build::Cancelable, Status::Build::Retryable]
           end
 
-          def core_status
-            super.extend(Status::Build::Common)
+          def self.common_helpers
+            Status::Build::Common
           end
         end
       end
