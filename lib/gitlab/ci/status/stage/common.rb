@@ -3,8 +3,8 @@ module Gitlab
     module Status
       module Stage
         module Common
-          def has_details?
-            true
+          def has_details?(current_user)
+            can?(current_user, :read_pipeline, subject)
           end
 
           def details_path

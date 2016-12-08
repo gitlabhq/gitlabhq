@@ -33,7 +33,7 @@ module Gitlab
           self.class.name.demodulize.downcase.underscore
         end
 
-        def has_details?
+        def has_details?(_user = nil)
           false
         end
 
