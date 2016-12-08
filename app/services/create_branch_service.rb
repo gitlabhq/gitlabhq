@@ -1,8 +1,9 @@
 class CreateBranchService < BaseService
   def execute(branch_name, ref)
-    failure = validate_new_branch(branch_name)
+    result = ValidateNewBranchService.new(project, current_user).
+      execute(branch_name)
 
-    return failure if failure
+    return result if result[:status] == :error
 
     new_branch = repository.add_branch(current_user, branch_name, ref)
 
@@ -17,14 +18,5 @@ class CreateBranchService < BaseService
 
   def success(branch)
     super().merge(branch: branch)
-  end
-
-  private
-
-  def validate_new_branch(branch_name)
-    result = ValidateNewBranchService.new(project, current_user).
-      execute(branch_name)
-
-    error(result[:message]) if result[:status] == :error
   end
 end
