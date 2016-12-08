@@ -178,6 +178,39 @@
   .bash {
     display: block;
   }
+
+  .typing_loader{
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      animation: typing 1s linear infinite;
+      position: relative;
+      margin-bottom: 12px;
+      margin-left: 2px;
+  }
+
+  @keyframes typing{
+    0%{
+        background-color: rgba(255,255,255, 1);
+        box-shadow: 12px 0px 0px 0px rgba(255,255,255,0.2),
+                    24px 0px 0px 0px rgba(255,255,255,0.2);
+    }
+    25%{
+        background-color: rgba(255,255,255, 0.4);
+        box-shadow: 12px 0px 0px 0px rgba(255,255,255,2),
+                    24px 0px 0px 0px rgba(255,255,255,0.2);
+    }
+    75%{
+        background-color: rgba(255,255,255, 0.4);
+        box-shadow: 12px 0px 0px 0px rgba(255,255,255,0.2),
+                    24px 0px 0px 0px rgba(255,255,255,1);
+    }
+    100%{
+        background-color: rgba(255,255,255, 1);
+        box-shadow: 12px 0px 0px 0px rgba(255,255,255,0.2),
+                    24px 0px 0px 0px rgba(255,255,255,0.2);
+    }
+  }
 }
 
 .right-sidebar.build-sidebar {
