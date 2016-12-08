@@ -58,6 +58,16 @@
         required: false,
         default: false,
       },
+
+      commitIconSvg: {
+        type: String,
+        required: false,
+      },
+
+      playIconSvg: {
+        type: String,
+        required: false,
+      },
     },
 
     data() {
@@ -476,6 +486,7 @@
             <div v-if="hasManualActions && canCreateDeployment"
               class="inline js-manual-actions-container">
               <actions-component
+                :play-icon-svg="playIconSvg"
                 :actions="manualActions">
               </actions-component>
             </div>
