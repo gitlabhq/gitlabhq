@@ -10,14 +10,6 @@
     mounted() {
       $(`#${this.id}`).appendTo('body').modal({ modal: true, show: false });
     },
-    filters: {
-      emptyRepo: (value) => {
-        if (!value) {
-          return '<clone url for primary repository>';
-        }
-        return value;
-      },
-    },
     template: `
       <div class="modal in" tabindex="-1" :id="id">
           <div class="modal-dialog">
@@ -33,7 +25,7 @@
                       
                       <p><strong>Step 2.</strong> Go to the new directory and define <strong>primary node's</strong> repository URL as the <strong>push</strong> remote:</p>
                       <slot name="clipboard-2"></slot>
-                      <pre class="dark" id="geo-info-2">git remote set-url --push origin {{cloneUrlPrimary | emptyRepo}}</pre> 
+                      <pre class="dark" id="geo-info-2">git remote set-url --push origin {{cloneUrlPrimary || '&lt;clone url for primary repository&gt;'}}</pre> 
                       <p><strong>Done.</strong> You can now commit and push code as you normally do, but with increased speed.</p>
                   </div>
               </div>
@@ -46,7 +38,7 @@
     const geoClone = document.getElementById('geo-clone');
     if (geoClone) {
       gl.GeoCloneDialog = new Vue({
-        el: '#geo-clone',
+        el: geoClone,
         data: Object.assign({}, geoClone.dataset),
       });
     }
