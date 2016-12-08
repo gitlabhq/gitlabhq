@@ -2,7 +2,7 @@ module Gitlab
   module Ci
     module Status
       class Factory
-        def initialize(subject, user = nil)
+        def initialize(subject, user)
           @subject = subject
           @user = user
         end
@@ -32,7 +32,7 @@ module Gitlab
         def core_status
           Gitlab::Ci::Status
             .const_get(simple_status.capitalize)
-            .new(@subject)
+            .new(@subject, @user)
             .extend(self.class.common_helpers)
         end
 

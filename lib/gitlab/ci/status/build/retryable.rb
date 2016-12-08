@@ -3,10 +3,10 @@ module Gitlab
     module Status
       module Status
         class Retryable < SimpleDelegator
-          extend Status::Extended
+          include Status::Extended
 
-          def has_action?(current_user)
-            can?(current_user, :update_build, subject)
+          def has_action?
+            can?(user, :update_build, subject)
           end
 
           def action_icon
@@ -14,14 +14,16 @@ module Gitlab
           end
 
           def action_path
-            retry_namespace_project_build_path(subject.project.namespace, subject.project, subject)
+            retry_namespace_project_build_path(subject.project.namespace,
+                                               subject.project,
+                                               subject)
           end
 
           def action_method
             :post
           end
 
-          def self.matches?(build)
+          def self.matches?(build, user)
             build.retryable?
           end
         end
