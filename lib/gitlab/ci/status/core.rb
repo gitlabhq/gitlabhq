@@ -5,6 +5,7 @@ module Gitlab
       #
       class Core
         include Gitlab::Routing.url_helpers
+        include Ability::Allowable
 
         attr_reader :subject, :user
 

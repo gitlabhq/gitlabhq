@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::Ci::Status::Pipeline::Factory do
   let(:user) { create(:user) }
+  let(:project) { pipeline.project }
 
   subject do
     described_class.new(pipeline, user)
@@ -9,6 +10,10 @@ describe Gitlab::Ci::Status::Pipeline::Factory do
 
   let(:status) do
     subject.fabricate!
+  end
+
+  before do
+    project.team << [user, :developer]
   end
 
   context 'when pipeline has a core status' do

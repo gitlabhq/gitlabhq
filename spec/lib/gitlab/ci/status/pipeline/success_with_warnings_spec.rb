@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::Ci::Status::Pipeline::SuccessWithWarnings do
   subject do
-    described_class.new(double('status'), double('user'))
+    described_class.new(double('status'))
   end
 
   describe '#test' do
@@ -29,13 +29,13 @@ describe Gitlab::Ci::Status::Pipeline::SuccessWithWarnings do
         end
 
         it 'is a correct match' do
-          expect(described_class.matches?(pipeline)).to eq true
+          expect(described_class.matches?(pipeline, double)).to eq true
         end
       end
 
       context 'when pipeline does not have warnings' do
         it 'does not match' do
-          expect(described_class.matches?(pipeline)).to eq false
+          expect(described_class.matches?(pipeline, double)).to eq false
         end
       end
     end
@@ -51,13 +51,13 @@ describe Gitlab::Ci::Status::Pipeline::SuccessWithWarnings do
         end
 
         it 'does not match' do
-          expect(described_class.matches?(pipeline)).to eq false
+          expect(described_class.matches?(pipeline, double)).to eq false
         end
       end
 
       context 'when pipeline does not have warnings' do
         it 'does not match' do
-          expect(described_class.matches?(pipeline)).to eq false
+          expect(described_class.matches?(pipeline, double)).to eq false
         end
       end
     end

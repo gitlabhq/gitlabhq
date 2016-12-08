@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::Ci::Status::Extended do
   subject do
-    Class.new.extend(described_class)
+    Class.new.include(described_class)
   end
 
   it 'requires subclass to implement matcher' do
