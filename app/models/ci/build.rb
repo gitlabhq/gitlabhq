@@ -100,6 +100,10 @@ module Ci
       end
     end
 
+    def detailed_status
+      Gitlab::Ci::Status::Build::Factory.new(self).fabricate!
+    end
+
     def manual?
       self.when == 'manual'
     end
@@ -121,6 +125,10 @@ module Ci
         # Otherwise we need to create a duplicate
         Ci::Build.retry(self, current_user)
       end
+    end
+
+    def cancelable?
+      active?
     end
 
     def retryable?

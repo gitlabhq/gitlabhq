@@ -1,0 +1,10 @@
+- details_path = subject.details_path if subject.has_details?(current_user)
+- klass = "ci-status ci-#{subject.status}"
+- if details_path
+  = link_to details_path, class: klass do
+    = custom_icon(status.icon)
+    = status.text
+- else
+  %span{ class: klass }
+    = custom_icon(status.icon)
+    = status.text

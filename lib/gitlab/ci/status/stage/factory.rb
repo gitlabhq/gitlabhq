@@ -1,16 +1,12 @@
 module Gitlab
   module Ci
     module Status
-      module Pipeline
+      module Stage
         class Factory < Status::Factory
           private
 
-          def extended_statuses
-            [Pipeline::SuccessWithWarnings]
-          end
-
           def core_status
-            super.extend(Status::Pipeline::Common)
+            super.extend(Status::Stage::Common)
           end
         end
       end

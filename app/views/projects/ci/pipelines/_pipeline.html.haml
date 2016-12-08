@@ -1,13 +1,10 @@
 - status = pipeline.status
-- detailed_status = pipeline.detailed_status
 - show_commit = local_assigns.fetch(:show_commit, true)
 - show_branch = local_assigns.fetch(:show_branch, true)
 
 %tr.commit
   %td.commit-link
-    = link_to namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline.id), class: "ci-status ci-#{detailed_status}" do
-      = ci_icon_for_status(detailed_status)
-      = ci_text_for_status(detailed_status)
+    = render "ci/status/icon_with_label", subject: pipeline
 
   %td
     = link_to namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline.id) do
@@ -43,15 +40,13 @@
       - else
         Cant find HEAD commit for this branch
 
-  - stages_status = pipeline.statuses.latest.stages_status
   %td.stage-cell
-    - stages.each do |stage|
-      - status = stages_status[stage]
-      - tooltip = "#{stage.titleize}: #{status || 'not found'}"
-      - if status
+    - pipeline.stages.each do |stage|
+      - if stage.status
+        - tooltip = "#{stage.name.titleize}: #{stage.status || 'not found'}"
         .stage-container
-          = link_to namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline.id, anchor: stage), class: "has-tooltip ci-status-icon-#{status}", title: tooltip do
-            = ci_icon_for_status(status)
+          = link_to namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline.id, anchor: stage.name), class: "has-tooltip ci-status-icon-#{stage.status}", title: tooltip do
+            = ci_icon_for_status(stage.status)
 
   %td
     - if pipeline.duration
