@@ -6,7 +6,7 @@ module Gitlab
           private
 
           def extended_statuses
-            [Stop, Play]
+            [Stop, Play, Cancelable, Retryable]
           end
 
           def core_status
