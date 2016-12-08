@@ -12,7 +12,7 @@ describe('External URL Component', () => {
     const component = new window.gl.environmentsList.ExternalUrlComponent({
       el: document.querySelector('.test-dom-element'),
       propsData: {
-        external_url: externalURL,
+        externalUrl: externalURL,
       },
     });
 

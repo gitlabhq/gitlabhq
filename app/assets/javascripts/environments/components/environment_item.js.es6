@@ -461,9 +461,9 @@
           <div v-if="!isFolder && hasLastDeploymentKey" class="js-commit-component">
             <commit-component
               :tag="commitTag"
-              :commit_ref="commitRef"
-              :commit_url="commitUrl"
-              :short_sha="commitShortSha"
+              :commit-ref="commitRef"
+              :commit-url="commitUrl"
+              :short-sha="commitShortSha"
               :title="commitTitle"
               :author="commitAuthor"
               :commit-icon-svg="commitIconSvg">
@@ -495,22 +495,22 @@
             <div v-if="model.external_url && canReadEnvironment"
               class="inline js-external-url-container">
               <external-url-component
-                :external_url="model.external_url">
-              </external_url-component>
+                :external-url="model.external_url">
+              </external-url-component>
             </div>
 
             <div v-if="isStoppable && canCreateDeployment"
               class="inline js-stop-component-container">
               <stop-component
-                :stop_url="model.stop_path">
+                :stop-url="model.stop_path">
               </stop-component>
             </div>
 
             <div v-if="canRetry && canCreateDeployment"
               class="inline js-rollback-component-container">
               <rollback-component
-                :is_last_deployment="isLastDeployment"
-                :retry_url="retryUrl">
+                :is-last-deployment="isLastDeployment"
+                :retry-url="retryUrl">
                 </rollback-component>
             </div>
           </div>

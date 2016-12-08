@@ -13,7 +13,7 @@ describe('Stop Component', () => {
     component = new window.gl.environmentsList.StopComponent({
       el: document.querySelector('.test-dom-element'),
       propsData: {
-        stop_url: stopURL,
+        stopUrl: stopURL,
       },
     });
   });

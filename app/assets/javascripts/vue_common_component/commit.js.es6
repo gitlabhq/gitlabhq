@@ -23,7 +23,7 @@
        * name
        * ref_url
        */
-      commit_ref: {
+      commitRef: {
         type: Object,
         required: false,
         default: () => ({}),
@@ -32,7 +32,7 @@
       /**
        * Used to link to the commit sha.
        */
-      commit_url: {
+      commitUrl: {
         type: String,
         required: false,
         default: '',
@@ -41,7 +41,7 @@
       /**
        * Used to show the commit short_sha that links to the commit url.
        */
-      short_sha: {
+      shortSha: {
         type: String,
         required: false,
         default: '',
@@ -85,7 +85,7 @@
        * @returns {Boolean}
        */
       hasCommitRef() {
-        return this.commit_ref && this.commit_ref.name && this.commit_ref.ref_url;
+        return this.commitRef && this.commitRef.name && this.commitRef.ref_url;
       },
 
       /**
@@ -125,15 +125,15 @@
 
         <a v-if="hasCommitRef"
           class="monospace branch-name"
-          :href="commit_ref.ref_url">
-          {{commit_ref.name}}
+          :href="commitRef.ref_url">
+          {{commitRef.name}}
         </a>
 
         <div v-html="commitIconSvg" class="commit-icon"></div>
 
         <a class="commit-id monospace"
-          :href="commit_url">
-          {{short_sha}}
+          :href="commitUrl">
+          {{shortSha}}
         </a>
 
         <p class="commit-title">
@@ -149,7 +149,7 @@
             </a>
 
             <a class="commit-row-message"
-              :href="commit_url">
+              :href="commitUrl">
               {{title}}
             </a>
           </span>

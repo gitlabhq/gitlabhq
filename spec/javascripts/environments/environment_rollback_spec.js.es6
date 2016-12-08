@@ -13,8 +13,8 @@ describe('Rollback Component', () => {
     const component = new window.gl.environmentsList.RollbackComponent({
       el: document.querySelector('.test-dom-element'),
       propsData: {
-        retry_url: retryURL,
-        is_last_deployment: true,
+        retryUrl: retryURL,
+        isLastDeployment: true,
       },
     });
 
@@ -25,8 +25,8 @@ describe('Rollback Component', () => {
     const component = new window.gl.environmentsList.RollbackComponent({
       el: document.querySelector('.test-dom-element'),
       propsData: {
-        retry_url: retryURL,
-        is_last_deployment: true,
+        retryUrl: retryURL,
+        isLastDeployment: true,
       },
     });
 
@@ -38,8 +38,8 @@ describe('Rollback Component', () => {
     const component = new window.gl.environmentsList.RollbackComponent({
       el: document.querySelector('.test-dom-element'),
       propsData: {
-        retry_url: retryURL,
-        is_last_deployment: false,
+        retryUrl: retryURL,
+        isLastDeployment: false,
       },
     });
 
