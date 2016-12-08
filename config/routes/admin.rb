@@ -60,14 +60,13 @@ namespace :admin do
   resource :system_info, controller: 'system_info', only: [:show]
   resources :requests_profiles, only: [:index, :show], param: :name, constraints: { name: /.+\.html/ }
 
-  resources :namespaces, path: '/projects', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only: [] do
-    root to: 'projects#index', as: :projects
+  resources :projects, only: [:index]
 
+  scope(path: 'projects/*namespace_id', as: :namespace) do
     resources(:projects,
               path: '/',
-              constraints: { id: /[a-zA-Z.0-9_\-]+/ },
-              only: [:index, :show]) do
-      root to: 'projects#show'
+              constraints: { id: Gitlab::Regex.project_route_regex },
+              only: [:show]) do
 
       member do
         put :transfer

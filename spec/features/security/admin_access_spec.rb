@@ -4,7 +4,7 @@ describe "Admin::Projects", feature: true  do
   include AccessMatchers
 
   describe "GET /admin/projects" do
-    subject { admin_namespaces_projects_path }
+    subject { admin_projects_path }
 
     it { is_expected.to be_allowed_for :admin }
     it { is_expected.to be_denied_for :user }
