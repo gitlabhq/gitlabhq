@@ -139,8 +139,7 @@
       $scrollBottomBtn.show().addClass('sticky');
 
       if ($autoScrollContainer.length) {
-        $scrollBottomBtn.hide();
-        $autoScrollContainer.show().css({ bottom: 50 });
+        $autoScrollContainer.hide();
       }
     }
 
