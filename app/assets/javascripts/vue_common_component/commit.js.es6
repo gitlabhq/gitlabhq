@@ -129,7 +129,7 @@
           {{commitRef.name}}
         </a>
 
-        <div v-html="commitIconSvg" class="commit-icon"></div>
+        <div v-html="commitIconSvg" class="commit-icon js-commit-icon"></div>
 
         <a class="commit-id monospace"
           :href="commitUrl">

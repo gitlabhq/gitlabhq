@@ -23,8 +23,8 @@
       <div class="inline">
         <div class="dropdown">
           <a class="dropdown-new btn btn-default" data-toggle="dropdown">
-            <span v-html='playIconSvg'></span>
-            <i class="fa fa-caret-down"></i>
+            <span class="js-dropdown-play-icon-container" v-html='playIconSvg'></span>
+            <i class"=fa fa-caret-down"></i>
           </a>
 
           <ul class="dropdown-menu dropdown-menu-align-right">
@@ -33,7 +33,9 @@
                 data-method="post"
                 rel="nofollow"
                 class="js-manual-action-link">
-                <span v-html='playIconSvg'></span>
+
+                <span class="js-action-play-icon-container" v-html='playIconSvg'></span>
+
                 <span>
                   {{action.name}}
                 </span>
