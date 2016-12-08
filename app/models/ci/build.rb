@@ -127,6 +127,10 @@ module Ci
       end
     end
 
+    def cancelable?
+      active?
+    end
+
     def retryable?
       project.builds_enabled? && commands.present? && complete?
     end
