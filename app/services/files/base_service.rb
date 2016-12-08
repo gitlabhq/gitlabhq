@@ -5,7 +5,7 @@ module Files
     def execute
       @source_project = params[:source_project] || @project
       @source_branch = params[:source_branch]
-      @target_branch  = params[:target_branch]
+      @target_branch = params[:target_branch]
 
       @commit_message = params[:commit_message]
       @file_path      = params[:file_path]
@@ -59,12 +59,12 @@ module Files
       end
 
       unless project.empty_repo?
-        unless @source_project.repository.branch_names.include?(@source_branch)
+        unless @source_project.repository.branch_exists?(@source_branch)
           raise_error('You can only create or edit files when you are on a branch')
         end
 
         if different_branch?
-          if repository.branch_names.include?(@target_branch)
+          if repository.branch_exists?(@target_branch)
             raise_error('Branch with such name already exists. You need to switch to this branch in order to make changes')
           end
         end
