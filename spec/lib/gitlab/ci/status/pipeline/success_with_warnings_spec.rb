@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::Ci::Status::Pipeline::SuccessWithWarnings do
   subject do
-    described_class.new(double('status'))
+    described_class.new(double('status'), double('user'))
   end
 
   describe '#test' do
