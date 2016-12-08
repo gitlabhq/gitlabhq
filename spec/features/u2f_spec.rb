@@ -163,8 +163,7 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', feature: 
         click_on "Sign in via U2F device"
         expect(page.body).to match('We heard back from your U2F device')
         click_on "Authenticate via U2F Device"
-
-        expect(page.body).to match('Signed in successfully')
+        expect(page.body).to match('href="/users/sign_out"')
       end
     end
 
@@ -178,7 +177,7 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', feature: 
         expect(page.body).to match('We heard back from your U2F device')
         click_on "Authenticate via U2F Device"
 
-        expect(page.body).to match('Signed in successfully')
+        expect(page.body).to match('href="/users/sign_out"')
       end
     end
 
@@ -234,7 +233,7 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', feature: 
           expect(page.body).to match('We heard back from your U2F device')
           click_on "Authenticate via U2F Device"
 
-          expect(page.body).to match('Signed in successfully')
+          expect(page.body).to match('href="/users/sign_out"')
         end
       end
     end
@@ -275,7 +274,7 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', feature: 
           expect(page.body).to match('We heard back from your U2F device')
           click_on "Authenticate via U2F Device"
 
-          expect(page.body).to match('Signed in successfully')
+          expect(page.body).to match('href="/users/sign_out"')
 
           logout
         end
