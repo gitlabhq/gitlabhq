@@ -100,6 +100,10 @@ module Ci
       end
     end
 
+    def detailed_status
+      Gitlab::Ci::Status::Build::Factory.new(self).fabricate!
+    end
+
     def manual?
       self.when == 'manual'
     end

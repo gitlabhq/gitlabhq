@@ -34,15 +34,15 @@ module Gitlab
         end
 
         def has_details?
-          raise NotImplementedError
+          false
         end
 
         def details_path
           raise NotImplementedError
         end
 
-        def has_action?
-          raise NotImplementedError
+        def has_action?(_user = nil)
+          false
         end
 
         def action_icon
@@ -50,6 +50,10 @@ module Gitlab
         end
 
         def action_path
+          raise NotImplementedError
+        end
+
+        def action_method
           raise NotImplementedError
         end
       end
