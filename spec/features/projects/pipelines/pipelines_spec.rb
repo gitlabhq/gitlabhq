@@ -25,22 +25,7 @@ describe "Pipelines", feature: true, js: true do
       )
     end
 
-    [:pipelines].each do |scope|
-      context "displaying #{scope}" do
-        let(:project) { create(:project) }
-
-        before do
-          visit namespace_project_pipelines_path(project.namespace, project)
-        end
-
-        it do
-          wait_for_vue_resource
-          expect(page).to have_content(pipeline.short_sha)
-        end
-      end
-    end
-
-    [:running, :branches].each do |scope|
+    [:all, :running, :branches].each do |scope|
       context "displaying #{scope}" do
         let(:project) { create(:project) }
 
@@ -51,7 +36,10 @@ describe "Pipelines", feature: true, js: true do
           )
         end
 
-        it { expect(page).to have_content(pipeline.short_sha) }
+        it do
+          wait_for_vue_resource
+          expect(page).to have_content(pipeline.short_sha)
+        end
       end
     end
 

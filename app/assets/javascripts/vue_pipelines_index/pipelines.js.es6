@@ -66,6 +66,8 @@
     },
     methods: {
       changepage(e) {
+        const scope = getParameterByName('scope');
+        if (scope) this.apiScope = scope;
         const text = e.target.innerText;
         const { totalPages, nextPage, previousPage } = this.pageInfo;
         if (text === SPREAD) return;
@@ -74,14 +76,21 @@
         if (text === NEXT) this.pagenum = nextPage;
         if (text === PREV) this.pagenum = previousPage;
         if (text === FIRST) this.pagenum = 1;
-
-        window.history.pushState({}, null, `?p=${this.pagenum}`);
+        window.history.pushState({}, null, `?scope=${this.apiScope}&p=${this.pagenum}`);
         clearInterval(this.timeLoopInterval);
         this.pageRequest = true;
-        this.store.fetchDataLoop.call(this, Vue, this.pagenum, this.scope);
+        this.store.fetchDataLoop.call(this, Vue, this.pagenum, this.scope, this.apiScope);
       },
       author(pipeline) {
         const { commit } = pipeline;
+        if (!commit) {
+          return ({
+            avatar_url: '',
+            web_url: '',
+            username: '',
+          });
+        }
+
         const author = commit.author;
         if (author) return author;
 
@@ -105,6 +114,21 @@
       addTimeInterval(id, start) {
         this.allTimeIntervals.push({ id, start });
       },
+      commitTitle(pipeline) {
+        const { commit } = pipeline;
+        if (commit) return commit.title;
+        return '';
+      },
+      commitSha(pipeline) {
+        const { commit } = pipeline;
+        if (commit) return commit.short_id;
+        return '';
+      },
+      commitUrl(pipeline) {
+        const { commit } = pipeline;
+        if (commit) return commit.commit_url;
+        return '';
+      },
     },
     template: `
       <div>
@@ -122,10 +146,10 @@
                   <commit
                     :author='author(pipeline)'
                     :tag="pipeline.ref['tag?']"
-                    :title='pipeline.commit.title'
+                    :title='commitTitle(pipeline)'
                     :commit_ref='ref(pipeline)'
-                    :short_sha='pipeline.commit.short_id'
-                    :commit_url='pipeline.commit.commit_url'
+                    :short_sha='commitSha(pipeline)'
+                    :commit_url='commitUrl(pipeline)'
                   >
                   </commit>
                 </td>
@@ -143,7 +167,7 @@
           <i class="fa fa-spinner fa-spin"></i>
         </div>
         <gl-pagination
-          v-if='pageInfo.total > 30'
+          v-if='pageInfo.total > pageInfo.perPage'
           :pagenum='pagenum'
           :changepage='changepage'
           :count='count.all'
