@@ -11,8 +11,8 @@
   > li {
     padding: 10px 15px;
     min-height: 20px;
-    border-bottom: 1px solid #eee;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid $list-border-light;
+    border-bottom: 1px solid $list-border;
 
     &::after {
       content: " ";
@@ -21,7 +21,7 @@
     }
 
     &.disabled {
-      color: #888;
+      color: $list-text-disabled-color;
     }
 
     &.unstyled {
@@ -31,9 +31,9 @@
     }
 
     &.warning-row {
-      background-color: #fcf8e3;
-      border-color: #faebcc;
-      color: #8a6d3b;
+      background-color: $list-warning-row-bg;
+      border-color: $list-warning-row-border;
+      color: $list-warning-row-color;
     }
 
     &.smoke { background-color: $background-color; }
@@ -106,13 +106,13 @@ ul.task-list {
   }
 }
 
+// Generic content list
 ul.content-list {
   @include basic-list;
-
   margin: 0;
   padding: 0;
 
-  > li {
+  li {
     border-color: $table-border-color;
     font-size: $list-font-size;
     color: $list-text-color;
@@ -190,6 +190,41 @@ ul.content-list {
       margin: 1px 0;
       min-height: 52px;
     }
+  }
+}
+
+// Content list using flexbox
+.flex-list {
+  .flex-row {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    white-space: nowrap;
+  }
+
+  .row-main-content {
+    flex: 1 1 auto;
+    overflow: hidden;
+    padding-right: 8px;
+  }
+
+  .row-title {
+    font-weight: 600;
+  }
+
+  .row-second-line {
+    display: block;
+  }
+
+  .dropdown {
+    .btn-block {
+      margin-bottom: 0;
+      line-height: inherit;
+    }
+  }
+
+  .label-default {
+    color: $btn-transparent-color;
   }
 }
 

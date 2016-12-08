@@ -46,7 +46,10 @@ class Projects::IssuesController < Projects::ApplicationController
     params[:issue] ||= ActionController::Parameters.new(
       assignee_id: ""
     )
+    build_params = issue_params.merge(merge_request_for_resolving_discussions: merge_request_for_resolving_discussions)
+    @issue = @noteable = Issues::BuildService.new(project, current_user, build_params).execute
 
+<<<<<<< HEAD
     @issue = @noteable = @project.issues.new(issue_params)
 
     # Set Issue description based on project template
@@ -54,6 +57,8 @@ class Projects::IssuesController < Projects::ApplicationController
       @issue.description = @project.issues_template
     end
 
+=======
+>>>>>>> 50a784482e997cc039015e24b37d3f8a01a9cd3e
     respond_with(@issue)
   end
 
@@ -81,7 +86,9 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def create
-    @issue = Issues::CreateService.new(project, current_user, issue_params.merge(request: request)).execute
+    extra_params = { request: request,
+                     merge_request_for_resolving_discussions: merge_request_for_resolving_discussions }
+    @issue = Issues::CreateService.new(project, current_user, issue_params.merge(extra_params)).execute
 
     respond_to do |format|
       format.html do
@@ -174,6 +181,14 @@ class Projects::IssuesController < Projects::ApplicationController
   alias_method :issuable, :issue
   alias_method :awardable, :issue
   alias_method :spammable, :issue
+
+  def merge_request_for_resolving_discussions
+    return unless merge_request_iid = params[:merge_request_for_resolving_discussions]
+
+    @merge_request_for_resolving_discussions ||= MergeRequestsFinder.new(current_user, project_id: project.id).
+                                                   execute.
+                                                   find_by(iid: merge_request_iid)
+  end
 
   def authorize_read_issue!
     return render_404 unless can?(current_user, :read_issue, @issue)

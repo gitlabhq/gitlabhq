@@ -413,6 +413,7 @@ module ProjectsHelper
       "success"
     end
   end
+<<<<<<< HEAD
 
   def membership_locked?
     if @project.group && @project.group.membership_lock
@@ -436,6 +437,9 @@ module ProjectsHelper
     namespace_project_new_blob_path(@project.namespace, @project, tree_join(ref), file_name: 'LICENSE')
   end
 
+=======
+  
+>>>>>>> 50a784482e997cc039015e24b37d3f8a01a9cd3e
   def readme_cache_key
     sha = @project.commit.try(:sha) || 'nil'
     [@project.path_with_namespace, sha, "readme"].join('-')

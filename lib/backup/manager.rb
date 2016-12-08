@@ -82,16 +82,17 @@ module Backup
         removed = 0
 
         Dir.chdir(Gitlab.config.backup.path) do
-          file_list = Dir.glob('*_gitlab_backup.tar')
-          file_list.map! do |path_string|
-            if path_string =~ /(\d+)(?:_\d{4}_\d{2}_\d{2})?_gitlab_backup\.tar/
-              { timestamp: $1.to_i, path: path_string }
-            end
-          end
-          file_list.sort.each do |file|
-            if Time.at(file[:timestamp]) < (Time.now - keep_time)
-              if Kernel.system(*%W(rm #{file[:path]}))
+          Dir.glob('*_gitlab_backup.tar').each do |file|
+            next unless file =~ /(\d+)(?:_\d{4}_\d{2}_\d{2})?_gitlab_backup\.tar/
+
+            timestamp = $1.to_i
+
+            if Time.at(timestamp) < (Time.now - keep_time)
+              begin
+                FileUtils.rm(file)
                 removed += 1
+              rescue => e
+                $progress.puts "Deleting #{file} failed: #{e.message}".color(:red)
               end
             end
           end

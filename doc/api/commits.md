@@ -29,6 +29,8 @@ Example response:
     "title": "Replace sanitize with escape once",
     "author_name": "Dmitriy Zaporozhets",
     "author_email": "dzaporozhets@sphereconsultinginc.com",
+    "committer_name": "Administrator",
+    "committer_email": "admin@example.com",
     "created_at": "2012-09-20T11:50:22+03:00",
     "message": "Replace sanitize with escape once",
     "allow_failure": false
@@ -39,6 +41,8 @@ Example response:
     "title": "Sanitize for network graph",
     "author_name": "randx",
     "author_email": "dmitriy.zaporozhets@gmail.com",
+    "committer_name": "Dmitriy",
+    "committer_email": "dmitriy.zaporozhets@gmail.com",
     "created_at": "2012-09-20T09:06:12+03:00",
     "message": "Sanitize for network graph",
     "allow_failure": false
@@ -115,6 +119,8 @@ Example response:
   "title": "some commit message",
   "author_name": "Dmitriy Zaporozhets",
   "author_email": "dzaporozhets@sphereconsultinginc.com",
+  "committer_name": "Dmitriy Zaporozhets",
+  "committer_email": "dzaporozhets@sphereconsultinginc.com",
   "created_at": "2016-09-20T09:26:24.000-07:00",
   "message": "some commit message",
   "parent_ids": [
@@ -159,6 +165,8 @@ Example response:
   "title": "Sanitize for network graph",
   "author_name": "randx",
   "author_email": "dmitriy.zaporozhets@gmail.com",
+  "committer_name": "Dmitriy",
+  "committer_email": "dmitriy.zaporozhets@gmail.com",
   "created_at": "2012-09-20T09:06:12+03:00",
   "message": "Sanitize for network graph",
   "committed_date": "2012-09-20T09:06:12+03:00",

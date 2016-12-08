@@ -163,11 +163,7 @@ class Issue < ActiveRecord::Base
   def to_reference(from_project = nil)
     reference = "#{self.class.reference_prefix}#{iid}"
 
-    if cross_project_reference?(from_project)
-      reference = project.to_reference + reference
-    end
-
-    reference
+    "#{project.to_reference(from_project)}#{reference}"
   end
 
   def referenced_merge_requests(current_user = nil)

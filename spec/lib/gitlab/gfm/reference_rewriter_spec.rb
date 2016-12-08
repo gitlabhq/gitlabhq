@@ -64,7 +64,7 @@ describe Gitlab::Gfm::ReferenceRewriter do
 
         context 'description with project labels' do
           let!(:label) { create(:label, id: 123, name: 'test', project: old_project) }
-          let(:project_ref) { old_project.to_reference }
+          let(:project_ref) { old_project.to_reference(new_project) }
 
           context 'label referenced by id' do
             let(:text) { '#1 and ~123' }
@@ -80,7 +80,7 @@ describe Gitlab::Gfm::ReferenceRewriter do
         context 'description with group labels' do
           let(:old_group) { create(:group) }
           let!(:group_label) { create(:group_label, id: 321, name: 'group label', group: old_group) }
-          let(:project_ref) { old_project.to_reference }
+          let(:project_ref) { old_project.to_reference(new_project) }
 
           before do
             old_project.update(namespace: old_group)

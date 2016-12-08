@@ -5,9 +5,7 @@ class Projects::DiscussionsController < Projects::ApplicationController
   before_action :authorize_resolve_discussion!
 
   def resolve
-    discussion.resolve!(current_user)
-
-    MergeRequests::ResolvedDiscussionNotificationService.new(project, current_user).execute(merge_request)
+    Discussions::ResolveService.new(project, current_user, merge_request: merge_request).execute(discussion)
 
     render json: {
       resolved_by: discussion.resolved_by.try(:name),

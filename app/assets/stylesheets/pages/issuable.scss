@@ -233,7 +233,11 @@
       width: 100%;
       text-align: center;
       padding-bottom: 10px;
+<<<<<<< HEAD
       color: $sidebar-collapsed-icon-color;
+=======
+      color: $issuable-sidebar-color;
+>>>>>>> 50a784482e997cc039015e24b37d3f8a01a9cd3e
 
       &:hover {
         color: $gl-gray;
@@ -249,12 +253,12 @@
       }
 
       .avatar:hover {
-        border-color: #999;
+        border-color: $issuable-avatar-hover-border;
       }
 
       .btn-clipboard {
         border: none;
-        color: #999;
+        color: $issuable-clipboard-color;
 
         &:hover {
           background: transparent;

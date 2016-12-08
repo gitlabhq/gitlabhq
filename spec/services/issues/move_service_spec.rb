@@ -189,7 +189,7 @@ describe Issues::MoveService, services: true do
 
           it 'rewrites references using a cross reference to old project' do
             expect(new_note.note)
-              .to eq "Note with reference to merge request #{old_project.to_reference}!1"
+              .to eq "Note with reference to merge request #{old_project.to_reference(new_project)}!1"
           end
         end
 
@@ -217,7 +217,7 @@ describe Issues::MoveService, services: true do
 
           it 'rewrites referenced issues creating cross project reference' do
             expect(new_issue.description)
-              .to eq "Some description #{old_project.to_reference}#{another_issue.to_reference}"
+              .to eq "Some description #{another_issue.to_reference(new_project)}"
           end
         end
 

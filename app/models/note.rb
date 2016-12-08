@@ -101,7 +101,7 @@ class Note < ActiveRecord::Base
     end
 
     def discussions
-      Discussion.for_notes(all)
+      Discussion.for_notes(fresh)
     end
 
     def grouped_diff_discussions

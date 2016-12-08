@@ -183,11 +183,7 @@ class MergeRequest < ActiveRecord::Base
   def to_reference(from_project = nil)
     reference = "#{self.class.reference_prefix}#{iid}"
 
-    if cross_project_reference?(from_project)
-      reference = project.to_reference + reference
-    end
-
-    reference
+    "#{project.to_reference(from_project)}#{reference}"
   end
 
   def first_commit
@@ -501,6 +497,14 @@ class MergeRequest < ActiveRecord::Base
 
   def diff_discussions
     @diff_discussions ||= self.notes.diff_notes.discussions
+  end
+
+  def resolvable_discussions
+    @resolvable_discussions ||= diff_discussions.select(&:to_be_resolved?)
+  end
+
+  def discussions_can_be_resolved_by?(user)
+    resolvable_discussions.all? { |discussion| discussion.can_resolve?(user) }
   end
 
   def find_diff_discussion(discussion_id)

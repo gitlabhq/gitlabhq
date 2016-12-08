@@ -7,7 +7,7 @@
 #   current_user - which user use
 #   params:
 #     scope: 'created-by-me' or 'assigned-to-me' or 'all'
-#     state: 'open' or 'closed' or 'all'
+#     state: 'opened' or 'closed' or 'all'
 #     group_id: integer
 #     project_id: integer
 #     milestone_title: string
@@ -15,6 +15,7 @@
 #     search: string
 #     label_name: string
 #     sort: string
+#     non_archived: boolean
 #
 class IssuableFinder
   NONE = '0'
@@ -39,6 +40,7 @@ class IssuableFinder
     items = by_label(items)
     items = by_weight(items)
     items = by_due_date(items)
+    items = by_non_archived(items)
     sort(items)
   end
 
@@ -208,10 +210,13 @@ class IssuableFinder
   end
 
   def by_state(items)
-    params[:state] ||= 'all'
-
-    if items.respond_to?(params[:state])
-      items.public_send(params[:state])
+    case params[:state].to_s
+    when 'closed'
+      items.closed
+    when 'merged'
+      items.respond_to?(:merged) ? items.merged : items.closed
+    when 'opened'
+      items.opened
     else
       items
     end
@@ -377,6 +382,10 @@ class IssuableFinder
     else
       []
     end
+  end
+
+  def by_non_archived(items)
+    params[:non_archived].present? ? items.non_archived : items
   end
 
   def current_user_related?

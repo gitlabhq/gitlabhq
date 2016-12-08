@@ -526,6 +526,7 @@ Parameters:
 }
 ```
 
+<<<<<<< HEAD
 ## Merge Request Approvals
 
 >**Note:** This API endpoint is only available on 8.9 EE and above.
@@ -629,6 +630,9 @@ POST /projects/:id/merge_requests/:merge_request_id/approve
 ```
 
 ## Cancel Merge When Build Succeeds
+=======
+## Cancel Merge When Pipeline Succeeds
+>>>>>>> 50a784482e997cc039015e24b37d3f8a01a9cd3e
 
 If you don't have permissions to accept this merge request - you'll get a `401`
 

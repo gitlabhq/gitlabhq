@@ -8,7 +8,7 @@ header {
 
   &.navbar-empty {
     height: $header-height;
-    background: #fff;
+    background: $white-light;
     border-bottom: 1px solid $btn-gray-hover;
 
     .center-logo {
@@ -71,12 +71,12 @@ header {
         }
 
         .fa-caret-down {
-          font-size: 15px;
+          font-size: 14px;
         }
       }
 
       .navbar-toggle {
-        color: #666;
+        color: $nav-toggle-gray;
         margin: 6px 0;
         border-radius: 0;
         position: absolute;
@@ -156,7 +156,7 @@ header {
       position: relative;
       padding-right: 20px;
       margin: 0;
-      font-size: 19px;
+      font-size: 18px;
       max-width: 385px;
       display: inline-block;
       line-height: $header-height;

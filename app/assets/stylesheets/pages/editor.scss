@@ -14,10 +14,10 @@
   }
 
   .cancel-btn {
-    color: #b94a48;
+    color: $editor-cancel-color;
 
     &:hover {
-      color: #b94a48;
+      color: $editor-cancel-color;
     }
   }
 

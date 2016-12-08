@@ -275,7 +275,7 @@ group :development do
 end
 
 group :development, :test do
-  gem 'byebug', '~> 8.2.1', platform: :mri
+  gem 'pry-byebug', '~> 3.4.1', platform: :mri
   gem 'pry-rails', '~> 0.3.4'
 
   gem 'awesome_print', '~> 1.2.0', require: false
@@ -349,7 +349,7 @@ gem 'ruby-prof', '~> 0.16.2'
 gem 'oauth2', '~> 1.2.0'
 
 # Soft deletion
-gem 'paranoia', '~> 2.0'
+gem 'paranoia', '~> 2.2'
 
 # Health check
 gem 'health_check', '~> 2.2.0'

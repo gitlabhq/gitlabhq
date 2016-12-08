@@ -114,19 +114,16 @@ class Milestone < ActiveRecord::Base
   #
   # Examples:
   #
-  #   Milestone.first.to_reference                # => "%1"
-  #   Milestone.first.to_reference(format: :name) # => "%\"goal\""
-  #   Milestone.first.to_reference(project)       # => "gitlab-org/gitlab-ce%1"
+  #   Milestone.first.to_reference                           # => "%1"
+  #   Milestone.first.to_reference(format: :name)            # => "%\"goal\""
+  #   Milestone.first.to_reference(cross_namespace_project)  # => "gitlab-org/gitlab-ce%1"
+  #   Milestone.first.to_reference(same_namespace_project)   # => "gitlab-ce%1"
   #
   def to_reference(from_project = nil, format: :iid)
     format_reference = milestone_format_reference(format)
     reference = "#{self.class.reference_prefix}#{format_reference}"
 
-    if cross_project_reference?(from_project)
-      project.to_reference + reference
-    else
-      reference
-    end
+    "#{project.to_reference(from_project)}#{reference}"
   end
 
   def reference_link_text(from_project = nil)
