@@ -56,7 +56,7 @@
       // We are in the Merge Requests page so we need another edit form for Changes tab
       if (gl.utils.getPagePath(1) === 'merge_requests') {
         $('.note-edit-form').clone()
-          .addClass('mr-discussion-edit-form').insertAfter('.note-edit-form');
+          .addClass('mr-note-edit-form').insertAfter('.note-edit-form');
       }
     }
 
@@ -569,10 +569,10 @@
     };
 
     Notes.prototype.getEditFormSelector = function($el) {
-      var selector = '.note-edit-form:not(.mr-discussion-edit-form)';
+      var selector = '.note-edit-form:not(.mr-note-edit-form)';
 
       if ($el.parents('#diffs').length) {
-        selector = '.note-edit-form.mr-discussion-edit-form';
+        selector = '.note-edit-form.mr-note-edit-form';
       }
 
       return selector;
