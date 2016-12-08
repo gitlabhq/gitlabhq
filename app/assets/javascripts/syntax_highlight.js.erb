@@ -23,7 +23,8 @@
       var mathNode = $( "<math>Test</math>" );
       mathNode.insertAfter($(this));
 
-      katex.render($(this).text(), mathNode.get(0), { displayMode: false })
+      var display = $(this).hasClass('highlight');
+      katex.render($(this).text(), mathNode.get(0), { displayMode: display })
     })
   };
   var handleMath = function () {
