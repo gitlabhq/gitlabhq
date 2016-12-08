@@ -100,8 +100,8 @@ module Ci
       end
     end
 
-    def detailed_status
-      Gitlab::Ci::Status::Build::Factory.new(self).fabricate!
+    def detailed_status(current_user)
+      Gitlab::Ci::Status::Build::Factory.new(self, current_user).fabricate!
     end
 
     def manual?
@@ -156,7 +156,7 @@ module Ci
     end
 
     def environment_action
-      self.options.fetch(:environment, {}).fetch(:action, 'start')
+      self.options.fetch(:environment, {}).fetch(:action, 'start') if self.options
     end
 
     def outdated_deployment?
