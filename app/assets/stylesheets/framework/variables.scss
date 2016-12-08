@@ -102,7 +102,7 @@ $well-light-text-color: #5b6169;
 /*
  * Text
  */
-$gl-font-size: 15px;
+$gl-font-size: 14px;
 $gl-title-color: #333;
 $gl-text-color: #5c5c5c;
 $gl-text-color-dark: #5c5d5e;
@@ -380,7 +380,7 @@ $ci-skipped-color: #888;
 /*
 * Boards
 */
-$issue-boards-font-size: 15px;
+$issue-boards-font-size: 14px;
 $issue-boards-card-shadow: rgba(186, 186, 186, 0.5);
 
 /*
@@ -426,12 +426,6 @@ $common-gray-light: #bbb;
 $common-gray-dark: #444;
 $common-red: $gl-text-red;
 $common-green: $gl-text-green;
-
-
-/*
-* Dashboard
-*/
-$dashboard-project-access-icon-color: #888;
 
 /*
 * Editor

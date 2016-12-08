@@ -1,5 +1,7 @@
 module API
   class Runners < Grape::API
+    include PaginationParams
+
     before { authenticate! }
 
     resource :runners do
@@ -9,6 +11,7 @@ module API
       params do
         optional :scope, type: String, values: %w[active paused online],
                          desc: 'The scope of specific runners to show'
+        use :pagination
       end
       get do
         runners = filter_runners(current_user.ci_authorized_runners, params[:scope], without: ['specific', 'shared'])
@@ -21,6 +24,7 @@ module API
       params do
         optional :scope, type: String, values: %w[active paused online specific shared],
                          desc: 'The scope of specific runners to show'
+        use :pagination
       end
       get 'all' do
         authenticated_as_admin!
@@ -91,6 +95,7 @@ module API
       params do
         optional :scope, type: String, values: %w[active paused online specific shared],
                          desc: 'The scope of specific runners to show'
+        use :pagination
       end
       get ':id/runners' do
         runners = filter_runners(Ci::Runner.owned_or_shared(user_project.id), params[:scope])

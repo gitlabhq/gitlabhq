@@ -280,6 +280,12 @@
   }
 }
 
+.admin-builds-table {
+  .ci-table td:last-child {
+    min-width: 120px;
+  }
+}
+
 // Pipeline visualization
 
 .toggle-pipeline-btn {

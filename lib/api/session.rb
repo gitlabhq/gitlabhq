@@ -1,7 +1,7 @@
 module API
   class Session < Grape::API
     desc 'Login to get token' do
-      success Entities::UserLogin
+      success Entities::UserWithPrivateToken
     end
     params do
       optional :login, type: String, desc: 'The username'
@@ -14,7 +14,7 @@ module API
 
       return unauthorized! unless user
       return render_api_error!('401 Unauthorized. You have 2FA enabled. Please use a personal access token to access the API', 401) if user.two_factor_enabled?
-      present user, with: Entities::UserLogin
+      present user, with: Entities::UserWithPrivateToken
     end
   end
 end

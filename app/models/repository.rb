@@ -81,11 +81,7 @@ class Repository
   # This method return true if repository contains some content visible in project page.
   #
   def has_visible_content?
-    return @has_visible_content unless @has_visible_content.nil?
-
-    @has_visible_content = cache.fetch(:has_visible_content?) do
-      branch_count > 0
-    end
+    branch_count > 0
   end
 
   def commit(ref = 'HEAD')
@@ -340,12 +336,6 @@ class Repository
     return unless empty?
 
     expire_method_caches(%i(empty?))
-    expire_has_visible_content_cache
-  end
-
-  def expire_has_visible_content_cache
-    cache.expire(:has_visible_content?)
-    @has_visible_content = nil
   end
 
   def lookup_cache
@@ -433,7 +423,6 @@ class Repository
   # Runs code after a new branch has been created.
   def after_create_branch
     expire_branches_cache
-    expire_has_visible_content_cache
 
     repository_event(:push_branch)
   end
@@ -447,7 +436,6 @@ class Repository
 
   # Runs code after an existing branch has been removed.
   def after_remove_branch
-    expire_has_visible_content_cache
     expire_branches_cache
   end
 

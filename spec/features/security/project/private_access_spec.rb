@@ -3,7 +3,7 @@ require 'spec_helper'
 describe "Private Project Access", feature: true  do
   include AccessMatchers
 
-  let(:project) { create(:project, :private) }
+  let(:project) { create(:project, :private, public_builds: false) }
 
   describe "Project should be private" do
     describe '#private?' do
@@ -260,6 +260,18 @@ describe "Private Project Access", feature: true  do
     it { is_expected.to be_denied_for(:user) }
     it { is_expected.to be_denied_for(:external) }
     it { is_expected.to be_denied_for(:visitor) }
+
+    context 'when public builds is enabled' do
+      before do
+        project.update(public_builds: true)
+      end
+
+      it { is_expected.to be_allowed_for(:guest).of(project) }
+    end
+
+    context 'when public buils are disabled' do
+      it { is_expected.to be_denied_for(:guest).of(project) }
+    end
   end
 
   describe "GET /:project_path/pipelines/:id" do
@@ -275,6 +287,18 @@ describe "Private Project Access", feature: true  do
     it { is_expected.to be_denied_for(:user) }
     it { is_expected.to be_denied_for(:external) }
     it { is_expected.to be_denied_for(:visitor) }
+
+    context 'when public builds is enabled' do
+      before do
+        project.update(public_builds: true)
+      end
+
+      it { is_expected.to be_allowed_for(:guest).of(project) }
+    end
+
+    context 'when public buils are disabled' do
+      it { is_expected.to be_denied_for(:guest).of(project) }
+    end
   end
 
   describe "GET /:project_path/builds" do
@@ -289,6 +313,18 @@ describe "Private Project Access", feature: true  do
     it { is_expected.to be_denied_for(:user) }
     it { is_expected.to be_denied_for(:external) }
     it { is_expected.to be_denied_for(:visitor) }
+
+    context 'when public builds is enabled' do
+      before do
+        project.update(public_builds: true)
+      end
+
+      it { is_expected.to be_allowed_for(:guest).of(project) }
+    end
+
+    context 'when public buils are disabled' do
+      it { is_expected.to be_denied_for(:guest).of(project) }
+    end
   end
 
   describe "GET /:project_path/builds/:id" do
@@ -305,6 +341,23 @@ describe "Private Project Access", feature: true  do
     it { is_expected.to be_denied_for(:user) }
     it { is_expected.to be_denied_for(:external) }
     it { is_expected.to be_denied_for(:visitor) }
+
+    context 'when public builds is enabled' do
+      before do
+        project.update(public_builds: true)
+      end
+
+      it { is_expected.to be_allowed_for(:guest).of(project) }
+    end
+
+    context 'when public buils are disabled' do
+      before do
+        project.public_builds = false
+        project.save
+      end
+
+      it { is_expected.to be_denied_for(:guest).of(project) }
+    end
   end
 
   describe "GET /:project_path/environments" do

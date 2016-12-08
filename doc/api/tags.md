@@ -2,7 +2,9 @@
 
 ## List project repository tags
 
-Get a list of repository tags from a project, sorted by name in reverse alphabetical order.
+Get a list of repository tags from a project, sorted by name in reverse
+alphabetical order. This endpoint can be accessed without authentication if the
+repository is publicly accessible.
 
 ```
 GET /projects/:id/repository/tags
@@ -40,7 +42,8 @@ Parameters:
 
 ## Get a single repository tag
 
-Get a specific repository tag determined by its name.
+Get a specific repository tag determined by its name. This endpoint can be
+accessed without authentication if the repository is publicly accessible.
 
 ```
 GET /projects/:id/repository/tags/:tag_name

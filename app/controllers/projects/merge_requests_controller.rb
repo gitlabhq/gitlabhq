@@ -302,9 +302,13 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def cancel_merge_when_build_succeeds
-    return access_denied! unless @merge_request.can_cancel_merge_when_build_succeeds?(current_user)
+    unless @merge_request.can_cancel_merge_when_build_succeeds?(current_user)
+      return access_denied!
+    end
 
-    MergeRequests::MergeWhenBuildSucceedsService.new(@project, current_user).cancel(@merge_request)
+    MergeRequests::MergeWhenPipelineSucceedsService
+      .new(@project, current_user)
+      .cancel(@merge_request)
   end
 
   def merge
@@ -331,8 +335,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       end
 
       if @merge_request.head_pipeline.active?
-        MergeRequests::MergeWhenBuildSucceedsService.new(@project, current_user, merge_params)
-                                                        .execute(@merge_request)
+        MergeRequests::MergeWhenPipelineSucceedsService
+          .new(@project, current_user, merge_params)
+          .execute(@merge_request)
+
         @status = :merge_when_build_succeeds
       elsif @merge_request.head_pipeline.success?
         # This can be triggered when a user clicks the auto merge button while

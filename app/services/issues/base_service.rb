@@ -1,5 +1,13 @@
 module Issues
   class BaseService < ::IssuableBaseService
+    attr_reader :merge_request_for_resolving_discussions
+
+    def initialize(*args)
+      super
+
+      @merge_request_for_resolving_discussions ||= params.delete(:merge_request_for_resolving_discussions)
+    end
+
     def hook_data(issue, action)
       issue_data = issue.to_hook_data(current_user)
       issue_url = Gitlab::UrlBuilder.build(issue)

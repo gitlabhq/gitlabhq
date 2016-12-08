@@ -88,6 +88,10 @@ class Discussion
     @first_note ||= @notes.first
   end
 
+  def first_note_to_resolve
+    @first_note_to_resolve ||= notes.detect(&:to_be_resolved?)
+  end
+
   def last_note
     @last_note ||= @notes.last
   end

@@ -9,6 +9,10 @@
     });
 
     describe('when is initialized', () => {
+      beforeEach(() => {
+        spyOn(window.history, 'replaceState').and.callFake(function () {});
+      });
+
       it('should activate the tab correspondent to the given action', () => {
         const linkedTabs = new window.gl.LinkedTabs({ // eslint-disable-line
           action: 'tab1',
