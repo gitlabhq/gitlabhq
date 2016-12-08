@@ -860,7 +860,8 @@ class Repository
       source_branch: source_branch,
       source_project: source_project) do
       index = rugged.index
-      branch_commit = find_branch(branch)
+      branch_commit = source_project.repository.find_branch(
+        source_branch || branch)
 
       parents = if branch_commit
                   last_commit = branch_commit.dereferenced_target
@@ -872,6 +873,9 @@ class Repository
 
       actions.each do |action|
         path = Gitlab::Git::PathHelper.normalize_path(action[:file_path]).to_s
+
+        raise Gitlab::Git::Repository::InvalidBlobName.new("Invalid path") if
+          path.split('/').include?('..')
 
         case action[:action]
         when :create, :update, :move
