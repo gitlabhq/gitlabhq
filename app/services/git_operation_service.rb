@@ -134,27 +134,28 @@ GitOperationService = Struct.new(:user, :repository) do
     end
   end
 
-  def check_with_branch_arguments!(branch_name, source_branch, source_project)
+  def check_with_branch_arguments!(
+    branch_name, source_branch_name, source_project)
     return if repository.branch_exists?(branch_name)
 
     if repository.project != source_project
-      unless source_branch
+      unless source_branch_name
         raise ArgumentError,
-          'Should also pass :source_branch if' +
+          'Should also pass :source_branch_name if' +
           ' :source_project is different from current project'
       end
 
-      unless source_project.repository.commit(source_branch).try(:sha)
+      unless source_project.repository.commit(source_branch_name).try(:sha)
         raise Repository::CommitError.new(
           "Cannot find branch #{branch_name} nor" \
-          " #{source_branch} from" \
+          " #{source_branch_name} from" \
           " #{source_project.path_with_namespace}")
       end
-    elsif source_branch
-      unless repository.commit(source_branch).try(:sha)
+    elsif source_branch_name
+      unless repository.commit(source_branch_name).try(:sha)
         raise Repository::CommitError.new(
           "Cannot find branch #{branch_name} nor" \
-          " #{source_branch} from" \
+          " #{source_branch_name} from" \
           " #{repository.project.path_with_namespace}")
       end
     end
