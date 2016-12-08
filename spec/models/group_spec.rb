@@ -50,9 +50,8 @@ describe Group, models: true do
 
   describe 'validations' do
     it { is_expected.to validate_presence_of :name }
-    it { is_expected.to validate_uniqueness_of(:name) }
+    it { is_expected.to validate_uniqueness_of(:name).scoped_to(:parent_id) }
     it { is_expected.to validate_presence_of :path }
-    it { is_expected.to validate_uniqueness_of(:path) }
     it { is_expected.not_to validate_presence_of :owner }
   end
 
