@@ -16,28 +16,28 @@ describe "Pipelines", feature: true, js: true do
   describe 'GET /:project/pipelines', feature: true, js: true do
     include WaitForVueResource
 
+    let(:project) { create(:project) }
     let!(:pipeline) do
       create(
         :ci_empty_pipeline,
         project: project,
         ref: 'master',
-        status: 'running'
+        status: 'running',
+        sha: project.commit.id,
       )
     end
 
     [:all, :running, :branches].each do |scope|
       context "displaying #{scope}" do
-        let(:project) { create(:project) }
-
         before do
           visit namespace_project_pipelines_path(
             project.namespace,
             project, scope: scope
           )
+          wait_for_vue_resource
         end
 
         it do
-          wait_for_vue_resource
           expect(page).to have_content(pipeline.short_sha)
         end
       end
@@ -46,6 +46,7 @@ describe "Pipelines", feature: true, js: true do
     context 'anonymous access' do
       before do
         visit namespace_project_pipelines_path(project.namespace, project)
+        wait_for_vue_resource
       end
 
       it { expect(page).to have_http_status(:success) }
@@ -59,17 +60,12 @@ describe "Pipelines", feature: true, js: true do
       before do
         build.run
         visit namespace_project_pipelines_path(project.namespace, project)
+        wait_for_vue_resource
       end
 
-      it do
-        wait_for_vue_resource
-        expect(page).to have_link('Cancel')
-      end
+      it { expect(page).to have_link('Cancel') }
 
-      it do
-        wait_for_vue_resource
-        expect(page).to have_selector('.ci-running')
-      end
+      it { expect(page).to have_selector('.ci-running') }
 
       context 'when canceling' do
         before do
@@ -77,15 +73,9 @@ describe "Pipelines", feature: true, js: true do
           click_link('Cancel')
         end
 
-        it do
-          wait_for_vue_resource
-          expect(page).not_to have_link('Cancel')
-        end
+        it { expect(page).not_to have_link('Cancel') }
 
-        it do
-          wait_for_vue_resource
-          expect(page).to have_selector('.ci-canceled')
-        end
+        it { expect(page).to have_selector('.ci-canceled') }
       end
     end
 
@@ -103,7 +93,10 @@ describe "Pipelines", feature: true, js: true do
       it { expect(page).to have_selector('.ci-failed') }
 
       context 'when retrying' do
-        before { click_link('Retry') }
+        before do
+          wait_for_vue_resource
+          click_link('Retry')
+        end
 
         it { expect(page).not_to have_link('Retry') }
         it { expect(page).to have_selector('.ci-running') }

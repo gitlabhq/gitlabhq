@@ -38,31 +38,17 @@
         apiScope: 'all',
         pageInfo: {},
         pagenum: 1,
-        count: {
-          all: 0,
-          running_or_pending: 0,
-        },
+        count: { all: 0, running_or_pending: 0 },
         pageRequest: false,
       };
     },
-    props: [
-      'scope',
-      'store',
-    ],
+    props: ['scope', 'store'],
     created() {
       const pagenum = getParameterByName('p');
       const scope = getParameterByName('scope');
-
       if (pagenum) this.pagenum = pagenum;
       if (scope) this.apiScope = scope;
-
-      this.store.fetchDataLoop.call(
-        this,
-        Vue,
-        this.pagenum,
-        this.scope,
-        this.apiScope,
-      );
+      this.store.fetchDataLoop.call(this, Vue, this.pagenum, this.scope, this.apiScope);
     },
     methods: {
       changepage(e) {
@@ -82,51 +68,28 @@
         this.store.fetchDataLoop.call(this, Vue, this.pagenum, this.scope, this.apiScope);
       },
       author(pipeline) {
-        const { commit } = pipeline;
-        if (!commit) {
-          return ({
-            avatar_url: '',
-            web_url: '',
-            username: '',
-          });
-        }
-
-        const author = commit.author;
-        if (author) return author;
-
-        const nonUser = {
-          avatar_url: commit.author_gravatar_url,
-          web_url: `mailto:${commit.author_email}`,
-          username: commit.author_name,
-        };
-
-        return nonUser;
+        if (!pipeline.commit) return ({ avatar_url: '', web_url: '', username: '' });
+        if (pipeline.commit.author) return pipeline.commit.author;
+        return ({
+          avatar_url: pipeline.commit.author_gravatar_url,
+          web_url: `mailto:${pipeline.commit.author_email}`,
+          username: pipeline.commit.author_name,
+        });
       },
       ref(pipeline) {
         const { ref } = pipeline;
-        const commitRef = {
-          name: ref.name,
-          tag: ref['tag?'],
-          ref_url: ref.url,
-        };
-        return commitRef;
-      },
-      addTimeInterval(id, start) {
-        this.allTimeIntervals.push({ id, start });
+        return ({ name: ref.name, tag: ref['tag?'], ref_url: ref.url });
       },
       commitTitle(pipeline) {
-        const { commit } = pipeline;
-        if (commit) return commit.title;
+        if (pipeline.commit) return pipeline.commit.title;
         return '';
       },
       commitSha(pipeline) {
-        const { commit } = pipeline;
-        if (commit) return commit.short_id;
+        if (pipeline.commit) return pipeline.commit.short_id;
         return '';
       },
       commitUrl(pipeline) {
-        const { commit } = pipeline;
-        if (commit) return commit.commit_url;
+        if (pipeline.commit) return pipeline.commit.commit_url;
         return '';
       },
     },
@@ -154,10 +117,7 @@
                   </commit>
                 </td>
                 <stages :pipeline='pipeline'></stages>
-                <time-ago
-                  :pipeline='pipeline'
-                >
-                </time-ago>
+                <time-ago :pipeline='pipeline'></time-ago>
                 <pipeline-actions :pipeline='pipeline'></pipeline-actions>
               </tr>
             </tbody>
