@@ -153,85 +153,144 @@ describe API::Helpers, api: true do
       end
     end
 
-    it "changes current user to sudo when admin" do
-      set_env(admin, user.id)
-      expect(current_user).to eq(user)
-      set_param(admin, user.id)
-      expect(current_user).to eq(user)
-      set_env(admin, user.username)
-      expect(current_user).to eq(user)
-      set_param(admin, user.username)
-      expect(current_user).to eq(user)
-    end
+    context 'sudo usage' do
+      context 'with admin' do
+        context 'with header' do
+          context 'with id' do
+            it 'changes current_user to sudo' do
+              set_env(admin, user.id)
 
-    it "throws an error when the current user is not an admin and attempting to sudo" do
-      set_env(user, admin.id)
-      expect { current_user }.to raise_error(Exception)
-      set_param(user, admin.id)
-      expect { current_user }.to raise_error(Exception)
-      set_env(user, admin.username)
-      expect { current_user }.to raise_error(Exception)
-      set_param(user, admin.username)
-      expect { current_user }.to raise_error(Exception)
-    end
+              expect(current_user).to eq(user)
+            end
 
-    it "throws an error when the user cannot be found for a given id" do
-      id = user.id + admin.id
-      expect(user.id).not_to eq(id)
-      expect(admin.id).not_to eq(id)
-      set_env(admin, id)
-      expect { current_user }.to raise_error(Exception)
+            it 'handles sudo to oneself' do
+              set_env(admin, admin.id)
 
-      set_param(admin, id)
-      expect { current_user }.to raise_error(Exception)
-    end
+              expect(current_user).to eq(admin)
+            end
 
-    it "throws an error when the user cannot be found for a given username" do
-      username = "#{user.username}#{admin.username}"
-      expect(user.username).not_to eq(username)
-      expect(admin.username).not_to eq(username)
-      set_env(admin, username)
-      expect { current_user }.to raise_error(Exception)
+            it 'throws an error when user cannot be found' do
+              id = user.id + admin.id
+              expect(user.id).not_to eq(id)
+              expect(admin.id).not_to eq(id)
 
-      set_param(admin, username)
-      expect { current_user }.to raise_error(Exception)
-    end
+              set_env(admin, id)
 
-    it "handles sudo's to oneself" do
-      set_env(admin, admin.id)
-      expect(current_user).to eq(admin)
-      set_param(admin, admin.id)
-      expect(current_user).to eq(admin)
-      set_env(admin, admin.username)
-      expect(current_user).to eq(admin)
-      set_param(admin, admin.username)
-      expect(current_user).to eq(admin)
-    end
+              expect { current_user }.to raise_error(Exception)
+            end
+          end
 
-    it "handles multiple sudo's to oneself" do
-      set_env(admin, user.id)
-      expect(current_user).to eq(user)
-      expect(current_user).to eq(user)
-      set_env(admin, user.username)
-      expect(current_user).to eq(user)
-      expect(current_user).to eq(user)
+          context 'with username' do
+            it 'changes current_user to sudo' do
+              set_env(admin, user.username)
 
-      set_param(admin, user.id)
-      expect(current_user).to eq(user)
-      expect(current_user).to eq(user)
-      set_param(admin, user.username)
-      expect(current_user).to eq(user)
-      expect(current_user).to eq(user)
-    end
+              expect(current_user).to eq(user)
+            end
 
-    it "handles multiple sudo's to oneself using string ids" do
-      set_env(admin, user.id.to_s)
-      expect(current_user).to eq(user)
-      expect(current_user).to eq(user)
+            it 'handles sudo to oneself' do
+              set_env(admin, admin.username)
 
-      set_param(admin, user.id.to_s)
-      expect(current_user).to eq(user)
-      expect(current_user).to eq(user)
+              expect(current_user).to eq(admin)
+            end
+
+            it "throws an error when the user cannot be found for a given username" do
+              username = "#{user.username}#{admin.username}"
+              expect(user.username).not_to eq(username)
+              expect(admin.username).not_to eq(username)
+
+              set_env(admin, username)
+
+              expect { current_user }.to raise_error(Exception)
+            end
+          end
+        end
+
+        context 'with param' do
+          context 'with id' do
+            it 'changes current_user to sudo' do
+              set_param(admin, user.id)
+
+              expect(current_user).to eq(user)
+            end
+
+            it 'handles sudo to oneself' do
+              set_param(admin, admin.id)
+
+              expect(current_user).to eq(admin)
+            end
+
+            it 'handles sudo to oneself using string' do
+              set_env(admin, user.id.to_s)
+
+              expect(current_user).to eq(user)
+            end
+
+            it 'throws an error when user cannot be found' do
+              id = user.id + admin.id
+              expect(user.id).not_to eq(id)
+              expect(admin.id).not_to eq(id)
+
+              set_param(admin, id)
+
+              expect { current_user }.to raise_error(Exception)
+            end
+          end
+
+          context 'with username' do
+            it 'changes current_user to sudo' do
+              set_param(admin, user.username)
+
+              expect(current_user).to eq(user)
+            end
+
+            it 'handles sudo to oneself' do
+              set_param(admin, admin.username)
+
+              expect(current_user).to eq(admin)
+            end
+
+            it "throws an error when the user cannot be found for a given username" do
+              username = "#{user.username}#{admin.username}"
+              expect(user.username).not_to eq(username)
+              expect(admin.username).not_to eq(username)
+
+              set_param(admin, username)
+
+              expect { current_user }.to raise_error(Exception)
+            end
+          end
+        end
+      end
+
+      context 'with regular user' do
+        context 'with env' do
+          it 'changes current_user to sudo when admin and user id' do
+            set_env(user, admin.id)
+
+            expect { current_user }.to raise_error(Exception)
+          end
+
+          it 'changes current_user to sudo when admin and user username' do
+            set_env(user, admin.username)
+
+            expect { current_user }.to raise_error(Exception)
+          end
+        end
+
+        context 'with params' do
+          it 'changes current_user to sudo when admin and user id' do
+            set_param(user, admin.id)
+
+            expect { current_user }.to raise_error(Exception)
+          end
+
+          it 'changes current_user to sudo when admin and user username' do
+            set_param(user, admin.username)
+
+            expect { current_user }.to raise_error(Exception)
+          end
+        end
+      end
     end
   end
 

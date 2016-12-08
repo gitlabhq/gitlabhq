@@ -30,7 +30,7 @@ module API
         end
 
         if current_user.is_admin?
-          present @users, with: Entities::UserFull
+          present @users, with: Entities::UserPublic
         else
           present @users, with: Entities::UserBasic
         end
@@ -46,7 +46,7 @@ module API
         @user = User.find(params[:id])
 
         if current_user && current_user.is_admin?
-          present @user, with: Entities::UserFull
+          present @user, with: Entities::UserPublic
         elsif can?(current_user, :read_user, @user)
           present @user, with: Entities::User
         else
@@ -93,7 +93,7 @@ module API
         end
 
         if user.save
-          present user, with: Entities::UserFull
+          present user, with: Entities::UserPublic
         else
           conflict!('Email has already been taken') if User.
               where(email: user.email).
@@ -156,7 +156,7 @@ module API
         end
 
         if user.update_attributes(attrs)
-          present user, with: Entities::UserFull
+          present user, with: Entities::UserPublic
         else
           render_validation_error!(user)
         end
@@ -354,7 +354,7 @@ module API
       # Example Request:
       #   GET /user
       get do
-        present @current_user, with: Entities::UserFull
+        present @current_user, with: @impersonator ? Entities::UserWithPrivateToken : Entities::UserPublic
       end
 
       # Get currently authenticated user's keys

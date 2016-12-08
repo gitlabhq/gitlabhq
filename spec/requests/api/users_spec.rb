@@ -636,20 +636,75 @@ describe API::API, api: true  do
   end
 
   describe "GET /user" do
-    it "returns current user" do
-      get api("/user", user)
-      expect(response).to have_http_status(200)
-      expect(json_response['email']).to eq(user.email)
-      expect(json_response['is_admin']).to eq(user.is_admin?)
-      expect(json_response['can_create_project']).to eq(user.can_create_project?)
-      expect(json_response['can_create_group']).to eq(user.can_create_group?)
-      expect(json_response['projects_limit']).to eq(user.projects_limit)
-      expect(json_response['private_token']).to be_blank
+    let(:personal_access_token) { create(:personal_access_token, user: user) }
+    let(:private_token) { user.private_token }
+
+    context 'with regular user' do
+      context 'with personal access token' do
+        it 'returns 403 without private token when sudo is defined' do
+          get api("/user?private_token=#{personal_access_token.token}&sudo=#{user.id}")
+
+          expect(response).to have_http_status(403)
+        end
+      end
+
+      context 'with private token' do
+        it 'returns 403 without private token when sudo defined' do
+          get api("/user?private_token=#{private_token}&sudo=#{user.id}")
+
+          expect(response).to have_http_status(403)
+        end
+      end
+
+      it 'returns current user without private token when sudo not defined' do
+        get api("/user", user)
+
+        expect(response).to have_http_status(200)
+        expect(response).to match_response_schema('user/public')
+      end
     end
 
-    it "returns 401 error if user is unauthenticated" do
-      get api("/user")
-      expect(response).to have_http_status(401)
+    context 'with admin' do
+      let(:user) { create(:admin) }
+
+      context 'with personal access token' do
+        it 'returns 403 without private token when sudo defined' do
+          get api("/user?private_token=#{personal_access_token.token}&sudo=#{user.id}")
+
+          expect(response).to have_http_status(403)
+        end
+
+        it 'returns current user without private token when sudo not defined' do
+          get api("/user?private_token=#{personal_access_token.token}")
+
+          expect(response).to have_http_status(200)
+          expect(response).to match_response_schema('user/public')
+        end
+      end
+
+      context 'with private token' do
+        it 'returns current user with private token when sudo defined' do
+          get api("/user?private_token=#{private_token}&sudo=#{user.id}")
+
+          expect(response).to have_http_status(200)
+          expect(response).to match_response_schema('user/login')
+        end
+
+        it 'returns current user without private token when sudo not defined' do
+          get api("/user?private_token=#{private_token}")
+
+          expect(response).to have_http_status(200)
+          expect(response).to match_response_schema('user/public')
+        end
+      end
+    end
+
+    context 'with unauthenticated user' do
+      it "returns 401 error if user is unauthenticated" do
+        get api("/user")
+
+        expect(response).to have_http_status(401)
+      end
     end
   end
 
