@@ -19,6 +19,9 @@
   // Loop over all math elements and render math
   var renderWithKaTeX = function (elements) {
     elements.each(function () {
+      if (!!$(this).attr('rendered')) return;
+
+      $(this).attr('rendered', true);
       $(this).hide();
       var mathNode = $( "<math>Test</math>" );
       mathNode.insertAfter($(this));
