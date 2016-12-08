@@ -738,7 +738,7 @@ describe API::MergeRequests, api: true  do
     before { project.update_attribute(:approvals_before_merge, 2) }
 
     context 'as the author of the merge request' do
-      before { post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/approve", user) }
+      before { post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/approvals", user) }
 
       it 'returns a 401' do
         expect(response).to have_http_status(401)
