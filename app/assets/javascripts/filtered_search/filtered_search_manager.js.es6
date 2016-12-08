@@ -101,11 +101,18 @@
     }
 
     loadDropdown(dropdownName = '', hideDropdown) {
+      let firstLoad = false;
+      const filteredSearch = document.querySelector('.filtered-search');
+
+      if(!this.droplab) {
+        firstLoad = true;
+        this.droplab = new DropLab();
+      }
+
       dropdownName = dropdownName.toLowerCase();
 
       const filterIconPadding = 27;
       const match = gl.FilteredSearchTokenKeys.get().filter(value => value.key === dropdownName)[0];
-      const filteredSearch = document.querySelector('.filtered-search');
 
       if (!this.font) {
         this.font = window.getComputedStyle(filteredSearch).font;
@@ -116,34 +123,38 @@
 
         const dynamicDropdownPadding = 12;
         const dropdownOffset = gl.text.getTextWidth(filteredSearch.value, this.font) + filterIconPadding + dynamicDropdownPadding;
+        const dropdownAuthorElement = document.querySelector('#js-dropdown-author');
+        const dropdownAssigneeElement = document.querySelector('#js-dropdown-assignee');
+        const dropdownMilestoneElement = document.querySelector('#js-dropdown-milestone');
+        const dropdownLabelElemenet = document.querySelector('#js-dropdown-label');
 
         this.dismissCurrentDropdown();
         this.currentDropdown = match.key;
 
         if (match.key === 'author') {
           if (!dropdownAuthor) {
-            dropdownAuthor = new gl.DropdownAuthor(document.querySelector('#js-dropdown-author'), filteredSearch);
+            dropdownAuthor = new gl.DropdownAuthor(this.droplab, dropdownAuthorElement, filteredSearch);
           }
 
           dropdownAuthor.setOffset(dropdownOffset);
           dropdownAuthor.render();
         } else if (match.key === 'assignee') {
           if (!dropdownAssignee) {
-            dropdownAssignee = new gl.DropdownAssignee(document.querySelector('#js-dropdown-assignee'), filteredSearch);
+            dropdownAssignee = new gl.DropdownAssignee(this.droplab, dropdownAssigneeElement, filteredSearch);
           }
 
           dropdownAssignee.setOffset(dropdownOffset);
           dropdownAssignee.render();
         } else if (match.key === 'milestone') {
           if (!dropdownMilestone) {
-            dropdownMilestone = new gl.DropdownMilestone(document.querySelector('#js-dropdown-milestone'), filteredSearch);
+            dropdownMilestone = new gl.DropdownMilestone(this.droplab, dropdownMilestoneElement, filteredSearch);
           }
 
           dropdownMilestone.setOffset(dropdownOffset);
           dropdownMilestone.render();
         } else if (match.key === 'label') {
           if (!dropdownLabel) {
-            dropdownLabel = new gl.DropdownLabel(document.querySelector('#js-dropdown-label'), filteredSearch);
+            dropdownLabel = new gl.DropdownLabel(this.droplab, dropdownLabelElemenet, filteredSearch);
           }
 
           dropdownLabel.setOffset(dropdownOffset);
@@ -154,22 +165,29 @@
         console.log('🦄 load hint dropdown');
 
         const dropdownOffset = gl.text.getTextWidth(filteredSearch.value, this.font) + filterIconPadding;
-        console.log(dropdownOffset)
+        const dropdownHintElement = document.querySelector('#js-dropdown-hint');
+
         this.dismissCurrentDropdown();
         this.currentDropdown = 'hint';
-
         if (!dropdownHint) {
-          dropdownHint = new gl.DropdownHint(document.querySelector('#js-dropdown-hint'), filteredSearch, this.currentDropdown);
+          dropdownHint = new gl.DropdownHint(this.droplab, dropdownHintElement, filteredSearch);
         }
+
+        if (firstLoad) {
+          dropdownHint.configure();
+        }
+
         dropdownHint.setOffset(dropdownOffset);
-        dropdownHint.render(hideDropdown);
+        dropdownHint.render(firstLoad);
       }
     }
 
     dismissCurrentDropdown() {
-      if (this.currentDropdown === 'hint') {
-        dropdownHint.destroy();
-      }
+      // if (this.currentDropdown === 'hint') {
+      //   dropdownHint.hide();
+      // } else if (this.currentDropdown === 'author') {
+      //   // dropdownAuthor.hide();
+      // }
     }
 
     setDropdown() {

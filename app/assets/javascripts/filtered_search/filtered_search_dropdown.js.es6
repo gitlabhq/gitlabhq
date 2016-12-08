@@ -3,7 +3,8 @@
   const DATA_DROPDOWN_TRIGGER = 'data-dropdown-trigger';
 
   class FilteredSearchDropdown {
-    constructor(dropdown, input) {
+    constructor(droplab, dropdown, input) {
+      this.droplab = droplab;
       this.hookId = 'filtered-search';
       this.input = input;
       this.dropdown = dropdown;
@@ -66,23 +67,9 @@
 
     destroy() {
       this.input.setAttribute(DATA_DROPDOWN_TRIGGER, '');
-      droplab.setConfig(this.getFilterConfig());
-      droplab.setData(this.hookId, []);
+      this.droplab.setConfig(this.getFilterConfig());
+      this.droplab.setData(this.hookId, []);
       this.unbindEvents();
-    }
-
-    show() {
-      const currentHook = this.getCurrentHook();
-      if (currentHook) {
-        currentHook.list.show();
-      }
-    }
-
-    hide() {
-      const currentHook = this.getCurrentHook();
-      if (currentHook) {
-        currentHook.list.hide();
-      }
     }
 
     dismissDropdown() {
@@ -111,29 +98,23 @@
     }
 
     getCurrentHook() {
-      return droplab.hooks.filter(h => h.id === this.hookId)[0];
+      return this.droplab.hooks.filter(h => h.id === this.hookId)[0];
     }
 
     renderContent() {
-      droplab.setConfig(this.getFilterConfig(this.filterKeyword));
+      // Overriden by dropdown sub class
     }
 
-    render(hide) {
+    render(forceRenderContent) {
       this.setAsDropdown();
 
       const firstTimeInitialized = this.getCurrentHook() === undefined;
 
-      if (firstTimeInitialized) {
+      if (firstTimeInitialized || forceRenderContent) {
         this.renderContent();
       } else if(this.getCurrentHook().list.list.id !== this.listId) {
-        droplab.changeHookList(this.hookId, `#${this.listId}`);
+        // this.droplab.changeHookList(this.hookId, `#${this.listId}`);
         this.renderContent();
-      }
-
-      if (hide) {
-        this.hide();
-      } else {
-        this.show();
       }
     }
 
@@ -151,6 +132,29 @@
           list.render(data);
         }
       }
+    }
+
+    hide() {
+      const currentHook = this.getCurrentHook();
+      if (currentHook) {
+        currentHook.list.hide();
+      }
+    }
+
+    filterWithSymbol(item, query) {
+      const { value } = gl.FilteredSearchTokenizer.getLastTokenObject(query);
+      const valueWithoutColon = value.slice(1).toLowerCase();
+      const prefix = valueWithoutColon[0];
+      const valueWithoutPrefix = valueWithoutColon.slice(1);
+
+      const title = item.title.toLowerCase();
+
+      // Eg. this.filterSymbol = ~ for labels
+      const matchWithoutPrefix = prefix === this.filterSymbol && title.indexOf(valueWithoutPrefix) !== -1;
+      const match = title.indexOf(valueWithoutColon) !== -1;
+
+      item.droplab_hidden = !match && !matchWithoutPrefix;
+      return item;
     }
   }
 

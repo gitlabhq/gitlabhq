@@ -3,9 +3,10 @@
 
 ((global) => {
   class DropdownLabel extends gl.FilteredSearchDropdown {
-    constructor(dropdown, input) {
-      super(dropdown, input);
+    constructor(droplab, dropdown, input) {
+      super(droplab, dropdown, input);
       this.listId = 'js-dropdown-label';
+      this.filterSymbol = '~';
     }
 
     itemClicked(e) {
@@ -21,20 +22,17 @@
     }
 
     renderContent() {
-      super.renderContent();
-      droplab.setData(this.hookId, 'labels.json');
-    }
-
-    filterMethod(item, query) {
-      const { value } = gl.FilteredSearchTokenizer.getLastTokenObject(query);
-      const valueWithoutColon = value.slice(1).toLowerCase();
-      const valueWithoutPrefix = valueWithoutColon.slice(1);
-
-      const title = item.title.toLowerCase();
-      const noTitleMatch = title.indexOf(valueWithoutPrefix) === -1 && title.indexOf(valueWithoutColon) === -1;
-
-      item.droplab_hidden = noTitleMatch;
-      return item;
+      // TODO: Pass elements instead of querySelectors
+      // TODO: Don't bind filterWithSymbol to (this), just pass the symbol
+      this.droplab.changeHookList(this.hookId, '#js-dropdown-label', [droplabAjax, droplabFilter], {
+        droplabAjax: {
+          endpoint: 'labels.json',
+          method: 'setData',
+        },
+        droplabFilter: {
+          filterFunction: this.filterWithSymbol.bind(this),
+        }
+      });
     }
   }
 
