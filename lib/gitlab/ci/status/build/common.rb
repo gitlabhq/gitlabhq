@@ -13,33 +13,23 @@ module Gitlab
                                          @subject.pipeline)
           end
 
-          def action_type
-            case
-            when @subject.playable? then :playable
-            when @subject.active? then :cancel
-            when @subject.retryable? then :retry
-            end
-          end
-
           def has_action?(current_user)
-            action_type && can?(current_user, :update_build, @subject)
+            (subject.cancelable? || subject.retryable?) &&
+              can?(current_user, :update_build, @subject)
           end
 
           def action_icon
-            case action_type
-            when :playable then 'remove'
-            when :cancel then 'icon_play'
-            when :retry then 'repeat'
+            case
+            when subject.cancelable? then 'icon_play'
+            when subject.retryable? then 'repeat'
             end
           end
 
           def action_path
-            case action_type
-            when :playable
-              play_namespace_project_build_path(subject.project.namespace, subject.project, subject)
-            when :cancel
+            case
+            when subject.cancelable?
               cancel_namespace_project_build_path(subject.project.namespace, subject.project, subject)
-            when :retry
+            when subject.retryable?
               retry_namespace_project_build_path(subject.project.namespace, subject.project, subject)
             end
           end
