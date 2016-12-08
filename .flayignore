@@ -1,2 +1,4 @@
 *.erb
 lib/gitlab/sanitizers/svg/whitelist.rb
+lib/gitlab/diff/position_tracer.rb
+app/services/akismet_service.rb
