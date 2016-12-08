@@ -38,15 +38,14 @@ GitOperationService = Struct.new(:user, :repository) do
       branch_name, source_branch_name, source_project)
 
     update_branch_with_hooks(branch_name) do |ref|
-      if repository.project != source_project
-        repository.fetch_ref(
-          source_project.repository.path_to_repo,
-          "#{Gitlab::Git::BRANCH_REF_PREFIX}#{source_branch_name}",
-          "#{Gitlab::Git::BRANCH_REF_PREFIX}#{branch_name}"
-        )
+      if repository.project == source_project
+        yield(ref)
+      else
+        repository.with_tmp_ref(
+          source_project.repository, source_branch_name) do
+            yield(ref)
+          end
       end
-
-      yield(ref)
     end
   end
 

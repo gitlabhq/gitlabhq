@@ -1099,6 +1099,21 @@ class Repository
     Gitlab::Popen.popen(args, path_to_repo).first.lines.map(&:strip)
   end
 
+  def with_tmp_ref(source_repository, source_branch_name)
+    random_string = SecureRandom.hex
+
+    fetch_ref(
+      source_repository.path_to_repo,
+      "#{Gitlab::Git::BRANCH_REF_PREFIX}#{source_branch_name}",
+      "refs/tmp/#{random_string}/head"
+    )
+
+    yield
+
+  ensure
+    FileUtils.rm_rf("#{path_to_repo}/refs/tmp/#{random_string}")
+  end
+
   def fetch_ref(source_path, source_ref, target_ref)
     args = %W(#{Gitlab.config.git.bin_path} fetch --no-tags -f #{source_path} #{source_ref}:#{target_ref})
     Gitlab::Popen.popen(args, path_to_repo)
