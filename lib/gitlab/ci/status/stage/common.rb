@@ -4,7 +4,7 @@ module Gitlab
       module Stage
         module Common
           def has_details?
-            can?(user, :read_pipeline, subject)
+            can?(user, :read_pipeline, subject.pipeline)
           end
 
           def details_path

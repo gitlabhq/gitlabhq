@@ -2,12 +2,17 @@ require 'spec_helper'
 
 describe Gitlab::Ci::Status::Pipeline::Common do
   let(:user) { create(:user) }
-  let(:pipeline) { create(:ci_pipeline) }
+  let(:project) { create(:empty_project) }
+  let(:pipeline) { create(:ci_pipeline, project: project) }
 
   subject do
     Class.new(Gitlab::Ci::Status::Core)
       .new(pipeline, user)
       .extend(described_class)
+  end
+
+  before do
+    project.team << [user, :developer]
   end
 
   it 'does not have action' do
