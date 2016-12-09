@@ -67,7 +67,7 @@ FactoryGirl.define do
     end
 
     trait :on_project_snippet do
-      noteable { create(:snippet, project: project) }
+      noteable { create(:project_snippet, project: project) }
     end
 
     trait :system do
