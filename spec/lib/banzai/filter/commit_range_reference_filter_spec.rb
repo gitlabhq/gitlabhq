@@ -59,9 +59,7 @@ describe Banzai::Filter::CommitRangeReferenceFilter, lib: true do
     it 'ignores invalid commit IDs' do
       exp = act = "See #{commit1.id.reverse}...#{commit2.id}"
 
-      expect(project).to receive(:valid_repo?).and_return(true)
-      expect(project.repository).to receive(:commit).with(commit1.id.reverse)
-      expect(project.repository).to receive(:commit).with(commit2.id)
+      allow(project.repository).to receive(:commit).with(commit1.id.reverse)
       expect(reference_filter(act).to_html).to eq exp
     end
 
@@ -100,14 +98,9 @@ describe Banzai::Filter::CommitRangeReferenceFilter, lib: true do
     end
   end
 
-  context 'cross-project reference' do
-    let(:namespace) { create(:namespace, name: 'cross-reference') }
-    let(:project2)  { create(:project, :public, namespace: namespace) }
-    let(:reference) { range.to_reference(project) }
-
-    before do
-      range.project = project2
-    end
+  context 'cross-project / cross-namespace complete reference' do
+    let(:project2)  { create(:project, :public) }
+    let(:reference) { "#{project2.path_with_namespace}@#{commit1.id}...#{commit2.id}" }
 
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
@@ -116,24 +109,100 @@ describe Banzai::Filter::CommitRangeReferenceFilter, lib: true do
         to eq urls.namespace_project_compare_url(project2.namespace, project2, range.to_param)
     end
 
-    it 'links with adjacent text' do
+    it 'link has valid text' do
       doc = reference_filter("Fixed (#{reference}.)")
 
-      exp = Regexp.escape("#{project2.to_reference}@#{range.reference_link_text}")
-      expect(doc.to_html).to match(/\(<a.+>#{exp}<\/a>\.\)/)
+      expect(doc.css('a').first.text).
+        to eql("#{project2.path_with_namespace}@#{commit1.short_id}...#{commit2.short_id}")
+    end
+
+    it 'has valid text' do
+      doc = reference_filter("Fixed (#{reference}.)")
+
+      expect(doc.text).to eql("Fixed (#{project2.path_with_namespace}@#{commit1.short_id}...#{commit2.short_id}.)")
     end
 
     it 'ignores invalid commit IDs on the referenced project' do
-      exp = act = "Fixed #{project2.to_reference}@#{commit1.id.reverse}...#{commit2.id}"
+      exp = act = "Fixed #{project2.path_with_namespace}@#{commit1.id.reverse}...#{commit2.id}"
       expect(reference_filter(act).to_html).to eq exp
 
-      exp = act = "Fixed #{project2.to_reference}@#{commit1.id}...#{commit2.id.reverse}"
+      exp = act = "Fixed #{project2.path_with_namespace}@#{commit1.id}...#{commit2.id.reverse}"
+      expect(reference_filter(act).to_html).to eq exp
+    end
+  end
+
+  context 'cross-project / same-namespace complete reference' do
+    let(:namespace)         { create(:namespace) }
+    let(:project)           { create(:project, :public, namespace: namespace) }
+    let(:project2)          { create(:project, :public, path: "same-namespace", namespace: namespace) }
+    let(:reference)         { "#{project2.path}@#{commit1.id}...#{commit2.id}" }
+
+    it 'links to a valid reference' do
+      doc = reference_filter("See #{reference}")
+
+      expect(doc.css('a').first.attr('href')).
+        to eq urls.namespace_project_compare_url(project2.namespace, project2, range.to_param)
+    end
+
+    it 'link has valid text' do
+      doc = reference_filter("Fixed (#{reference}.)")
+
+      expect(doc.css('a').first.text).
+        to eql("#{project2.path}@#{commit1.short_id}...#{commit2.short_id}")
+    end
+
+    it 'has valid text' do
+      doc = reference_filter("Fixed (#{reference}.)")
+
+      expect(doc.text).to eql("Fixed (#{project2.path}@#{commit1.short_id}...#{commit2.short_id}.)")
+    end
+
+    it 'ignores invalid commit IDs on the referenced project' do
+      exp = act = "Fixed #{project2.path}@#{commit1.id.reverse}...#{commit2.id}"
+      expect(reference_filter(act).to_html).to eq exp
+
+      exp = act = "Fixed #{project2.path}@#{commit1.id}...#{commit2.id.reverse}"
+      expect(reference_filter(act).to_html).to eq exp
+    end
+  end
+
+  context 'cross-project shorthand reference' do
+    let(:namespace)         { create(:namespace) }
+    let(:project)           { create(:project, :public, namespace: namespace) }
+    let(:project2)          { create(:project, :public, path: "same-namespace", namespace: namespace) }
+    let(:reference)         { "#{project2.path}@#{commit1.id}...#{commit2.id}" }
+
+    it 'links to a valid reference' do
+      doc = reference_filter("See #{reference}")
+
+      expect(doc.css('a').first.attr('href')).
+        to eq urls.namespace_project_compare_url(project2.namespace, project2, range.to_param)
+    end
+
+    it 'link has valid text' do
+      doc = reference_filter("Fixed (#{reference}.)")
+
+      expect(doc.css('a').first.text).
+        to eql("#{project2.path}@#{commit1.short_id}...#{commit2.short_id}")
+    end
+
+    it 'has valid text' do
+      doc = reference_filter("Fixed (#{reference}.)")
+
+      expect(doc.text).to eql("Fixed (#{project2.path}@#{commit1.short_id}...#{commit2.short_id}.)")
+    end
+
+    it 'ignores invalid commit IDs on the referenced project' do
+      exp = act = "Fixed #{project2.path}@#{commit1.id.reverse}...#{commit2.id}"
+      expect(reference_filter(act).to_html).to eq exp
+
+      exp = act = "Fixed #{project2.path}@#{commit1.id}...#{commit2.id.reverse}"
       expect(reference_filter(act).to_html).to eq exp
     end
   end
 
   context 'cross-project URL reference' do
-    let(:namespace) { create(:namespace, name: 'cross-reference') }
+    let(:namespace) { create(:namespace) }
     let(:project2)  { create(:project, :public, namespace: namespace) }
     let(:range)  { CommitRange.new("#{commit1.id}...master", project) }
     let(:reference) { urls.namespace_project_compare_url(project2.namespace, project2, from: commit1.id, to: 'master') }

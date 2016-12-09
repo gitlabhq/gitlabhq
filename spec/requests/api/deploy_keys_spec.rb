@@ -75,7 +75,6 @@ describe API::DeployKeys, api: true  do
       expect(response).to have_http_status(400)
       expect(json_response['message']['key']).to eq([
         'can\'t be blank',
-        'is too short (minimum is 0 characters)',
         'is invalid'
       ])
     end
@@ -85,8 +84,7 @@ describe API::DeployKeys, api: true  do
 
       expect(response).to have_http_status(400)
       expect(json_response['message']['title']).to eq([
-        'can\'t be blank',
-        'is too short (minimum is 0 characters)'
+        'can\'t be blank'
       ])
     end
 

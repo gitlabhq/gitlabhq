@@ -1,7 +1,6 @@
 module API
   # Git Tags API
   class Tags < Grape::API
-    before { authenticate! }
     before { authorize! :download_code, user_project }
 
     params do

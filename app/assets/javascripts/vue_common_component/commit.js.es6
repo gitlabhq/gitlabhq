@@ -23,7 +23,7 @@
        * name
        * ref_url
        */
-      ref: {
+      commit_ref: {
         type: Object,
         required: false,
         default: () => ({}),
@@ -79,8 +79,8 @@
        *
        * @returns {Boolean}
        */
-      hasRef() {
-        return this.ref && this.ref.name && this.ref.ref_url;
+      hasCommitRef() {
+        return this.commit_ref && this.commit_ref.name && this.commit_ref.ref_url;
       },
 
       /**
@@ -131,15 +131,15 @@
     template: `
       <div class="branch-commit">
 
-        <div v-if="hasRef" class="icon-container">
+        <div v-if="hasCommitRef" class="icon-container">
           <i v-if="tag" class="fa fa-tag"></i>
           <i v-if="!tag" class="fa fa-code-fork"></i>
         </div>
 
-        <a v-if="hasRef"
+        <a v-if="hasCommitRef"
           class="monospace branch-name"
-          :href="ref.ref_url">
-          {{ref.name}}
+          :href="commit_ref.ref_url">
+          {{commit_ref.name}}
         </a>
 
         <div class="icon-container commit-icon commit-icon-container"></div>

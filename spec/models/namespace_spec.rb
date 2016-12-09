@@ -4,11 +4,18 @@ describe Namespace, models: true do
   let!(:namespace) { create(:namespace) }
 
   it { is_expected.to have_many :projects }
-  it { is_expected.to validate_presence_of :name }
+
+  it { is_expected.to validate_presence_of(:name) }
   it { is_expected.to validate_uniqueness_of(:name) }
-  it { is_expected.to validate_presence_of :path }
+  it { is_expected.to validate_length_of(:name).is_at_most(255) }
+
+  it { is_expected.to validate_length_of(:description).is_at_most(255) }
+
+  it { is_expected.to validate_presence_of(:path) }
   it { is_expected.to validate_uniqueness_of(:path) }
-  it { is_expected.to validate_presence_of :owner }
+  it { is_expected.to validate_length_of(:path).is_at_most(255) }
+
+  it { is_expected.to validate_presence_of(:owner) }
 
   describe "Mass assignment" do
   end

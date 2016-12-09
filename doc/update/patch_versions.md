@@ -1,7 +1,10 @@
 # Universal update guide for patch versions
-*Make sure you view this [upgrade guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/update/patch_versions.md) from the `master` branch for the most up to date instructions.*
 
-For example from 7.14.0 to 7.14.3, also see the [semantic versioning specification](http://semver.org/).
+## Select Version to Install
+
+Make sure you view [this update guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/update/patch_versions.md) from the tag (version) of GitLab you would like to install.
+In most cases this should be the highest numbered production tag (without rc in it).
+You can select the tag in the version dropdown in the top left corner of GitLab (below the menu bar).
 
 ### 0. Backup
 

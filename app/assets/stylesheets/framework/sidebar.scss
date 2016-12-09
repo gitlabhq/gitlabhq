@@ -36,7 +36,7 @@
   transition: padding $sidebar-transition-duration;
 
   .container-fluid {
-    background: #fff;
+    background: $white-light;
     padding: 0 $gl-padding;
 
     &.container-blank {

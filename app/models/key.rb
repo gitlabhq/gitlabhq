@@ -8,10 +8,18 @@ class Key < ActiveRecord::Base
 
   before_validation :generate_fingerprint
 
-  validates :title, presence: true, length: { within: 0..255 }
-  validates :key, presence: true, length: { within: 0..5000 }, format: { with: /\A(ssh|ecdsa)-.*\Z/ }
-  validates :key, format: { without: /\n|\r/, message: 'should be a single line' }
-  validates :fingerprint, uniqueness: true, presence: { message: 'cannot be generated' }
+  validates :title,
+    presence: true,
+    length: { maximum: 255 }
+  validates :key,
+    presence: true,
+    length: { maximum: 5000 },
+    format: { with: /\A(ssh|ecdsa)-.*\Z/ }
+  validates :key,
+    format: { without: /\n|\r/, message: 'should be a single line' }
+  validates :fingerprint,
+    uniqueness: true,
+    presence: { message: 'cannot be generated' }
 
   scope :ldap, -> { where(type: 'LDAPKey') }
 

@@ -18,7 +18,7 @@
 
     p {
       font-size: 18px;
-      color: #888;
+      color: $login-brand-holder-color;
     }
 
     h1:first-child {
@@ -174,7 +174,7 @@
   .form-control {
     &:active,
     &:focus {
-      background-color: #fff;
+      background-color: $white-light;
     }
   }
 
@@ -195,7 +195,7 @@
     h2 {
       margin-top: 0;
       font-size: 14px;
-      color: #a00;
+      color: $login-devise-error-color;
     }
   }
 }
@@ -254,4 +254,3 @@
     }
   }
 }
-

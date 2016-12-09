@@ -86,7 +86,7 @@
   }
 
   .normal {
-    color: #5c5d5e;
+    color: $gl-text-color-dark;
   }
 
   .js-deployment-link {
@@ -116,7 +116,7 @@
 
     @media (max-width: $screen-xs-max) {
       h4 {
-        font-size: 15px;
+        font-size: 14px;
       }
 
       p {
@@ -127,6 +127,11 @@
       .btn-group,
       .accept-action {
         margin-bottom: 4px;
+      }
+
+      .btn-grouped {
+        float: none;
+        margin-right: 0;
       }
 
       .accept-action {
@@ -143,7 +148,7 @@
   }
 
   .mr-widget-footer {
-    border-top: 1px solid #eee;
+    border-top: 1px solid $gray-darker;
   }
 
   .ci-coverage {

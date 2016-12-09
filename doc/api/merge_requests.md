@@ -628,7 +628,7 @@ POST /projects/:id/merge_requests/:merge_request_id/approve
 }
 ```
 
-## Cancel Merge When Build Succeeds
+## Cancel Merge When Pipeline Succeeds
 
 If you don't have permissions to accept this merge request - you'll get a `401`
 

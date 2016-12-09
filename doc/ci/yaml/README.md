@@ -406,14 +406,20 @@ except master.
 ### job variables
 
 It is possible to define build variables using a `variables` keyword on a job
-level. It works basically the same way as its global-level equivalent but
-allows you to define job-specific build variables.
+level. It works basically the same way as its [global-level equivalent](#variables)
+but allows you to define job-specific build variables.
 
 When the `variables` keyword is used on a job level, it overrides global YAML
-build variables and predefined variables.
+build variables and predefined variables. To turn off global defined variables
+in your job, define an empty array:
 
-Build variables priority is defined in
-[variables documentation](../variables/README.md).
+```yaml
+job_name:
+  variables: []
+```
+
+Build variables priority is defined in the
+[variables documentation][variables].
 
 ### tags
 

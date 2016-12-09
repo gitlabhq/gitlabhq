@@ -10,8 +10,72 @@
 // preference): plain class selectors, type (element name) selectors, or
 // explicit child selectors.
 
+/*
+* Highlighted Diff Email Syntax Colors
+*/
+$highlighted-highlight-word: #fafe3d;
+$highlighted-hll-bg: #f8f8f8;
+$highlighted-c: #998;
+$highlighted-err: #a61717;
+$highlighted-err-bg: #e3d2d2;
+$highlighted-cm: #998;
+$highlighted-cp: #999;
+$highlighted-c1: #998;
+$highlighted-cs: #999;
+$highlighted-gd: #000;
+$highlighted-gd-bg: #fdd;
+$highlighted-gd-x: #000;
+$highlighted-gd-x-bg: #faa;
+$highlighted-gr: #a00;
+$highlighted-gh: #999;
+$highlighted-gi: #000;
+$highlighted-gi-bg: #dfd;
+$highlighted-gi-x: #000;
+$highlighted-gi-x-bg: #afa;
+$highlighted-go: #888;
+$highlighted-gp: #555;
+$highlighted-gu: #800080;
+$highlighted-gt: #a00;
+$highlighted-kt: #458;
+$highlighted-m: #099;
+$highlighted-s: #d14;
+$highlighted-n: #333;
+$highlighted-na: teal;
+$highlighted-nb: #0086b3;
+$highlighted-nc: #458;
+$highlighted-no: teal;
+$highlighted-ni: purple;
+$highlighted-ne: #900;
+$highlighted-nf: #900;
+$highlighted-nn: #555;
+$highlighted-nt: navy;
+$highlighted-nv: teal;
+$highlighted-w: #bbb;
+$highlighted-mf: #099;
+$highlighted-mh: #099;
+$highlighted-mi: #099;
+$highlighted-mo: #099;
+$highlighted-sb: #d14;
+$highlighted-sc: #d14;
+$highlighted-sd: #d14;
+$highlighted-s2: #d14;
+$highlighted-se: #d14;
+$highlighted-sh: #d14;
+$highlighted-si: #d14;
+$highlighted-sx: #d14;
+$highlighted-sr: #009926;
+$highlighted-s1: #d14;
+$highlighted-ss: #990073;
+$highlighted-bp: #999;
+$highlighted-vc: teal;
+$highlighted-vg: teal;
+$highlighted-vi: teal;
+$highlighted-il: #099;
+$highlighted-gc: #999;
+$highlighted-gc-bg: #eaf2f5;
+
 .code {
-  background-color: #fff;
+  background-color: $white-light;
   font-family: monospace;
   font-size: $code_font_size;
   -premailer-cellpadding: 0;
@@ -75,69 +139,69 @@ pre {
 }
 
 span.highlight_word {
-  background-color: #fafe3d !important;
+  background-color: $highlighted-highlight-word !important;
 }
 
-.hll { background-color: #f8f8f8; }
-.c { color: #998; font-style: italic; }
-.err { color: #a61717; background-color: #e3d2d2; }
+.hll { background-color: $highlighted-hll-bg; }
+.c { color: $highlighted-c; font-style: italic; }
+.err { color: $highlighted-err; background-color: $highlighted-err-bg; }
 .k { font-weight: bold; }
 .o { font-weight: bold; }
-.cm { color: #998; font-style: italic; }
-.cp { color: #999; font-weight: bold; }
-.c1 { color: #998; font-style: italic; }
-.cs { color: #999; font-weight: bold; font-style: italic; }
-.gd { color: #000; background-color: #fdd; }
-.gd .x { color: #000; background-color: #faa; }
+.cm { color: $highlighted-cm; font-style: italic; }
+.cp { color: $highlighted-cp; font-weight: bold; }
+.c1 { color: $highlighted-c1; font-style: italic; }
+.cs { color: $highlighted-cs; font-weight: bold; font-style: italic; }
+.gd { color: $highlighted-gd; background-color: $highlighted-gd-bg; }
+.gd .x { color: $highlighted-gd; background-color: $highlighted-gd-x-bg; }
 .ge { font-style: italic; }
-.gr { color: #a00; }
-.gh { color: #999; }
-.gi { color: #000; background-color: #dfd; }
-.gi .x { color: #000; background-color: #afa; }
-.go { color: #888; }
-.gp { color: #555; }
+.gr { color: $highlighted-gr; }
+.gh { color: $highlighted-gh; }
+.gi { color: $highlighted-gi; background-color: $highlighted-gi-bg; }
+.gi .x { color: $highlighted-gi; background-color: $highlighted-gi-x-bg; }
+.go { color: $highlighted-go; }
+.gp { color: $highlighted-gp; }
 .gs { font-weight: bold; }
-.gu { color: #800080; font-weight: bold; }
-.gt { color: #a00; }
+.gu { color: $highlighted-gu; font-weight: bold; }
+.gt { color: $highlighted-gt; }
 .kc { font-weight: bold; }
 .kd { font-weight: bold; }
 .kn { font-weight: bold; }
 .kp { font-weight: bold; }
 .kr { font-weight: bold; }
-.kt { color: #458; font-weight: bold; }
-.m { color: #099; }
-.s { color: #d14; }
-.n { color: #333; }
-.na { color: teal; }
-.nb { color: #0086b3; }
-.nc { color: #458; font-weight: bold; }
-.no { color: teal; }
-.ni { color: purple; }
-.ne { color: #900; font-weight: bold; }
-.nf { color: #900; font-weight: bold; }
-.nn { color: #555; }
-.nt { color: navy; }
-.nv { color: teal; }
+.kt { color: $highlighted-kt; font-weight: bold; }
+.m { color: $highlighted-m; }
+.s { color: $highlighted-s; }
+.n { color: $highlighted-n; }
+.na { color: $highlighted-na; }
+.nb { color: $highlighted-nb; }
+.nc { color: $highlighted-nc; font-weight: bold; }
+.no { color: $highlighted-no; }
+.ni { color: $highlighted-ni; }
+.ne { color: $highlighted-ne; font-weight: bold; }
+.nf { color: $highlighted-nf; font-weight: bold; }
+.nn { color: $highlighted-nn; }
+.nt { color: $highlighted-nt; }
+.nv { color: $highlighted-nv; }
 .ow { font-weight: bold; }
-.w { color: #bbb; }
-.mf { color: #099; }
-.mh { color: #099; }
-.mi { color: #099; }
-.mo { color: #099; }
-.sb { color: #d14; }
-.sc { color: #d14; }
-.sd { color: #d14; }
-.s2 { color: #d14; }
-.se { color: #d14; }
-.sh { color: #d14; }
-.si { color: #d14; }
-.sx { color: #d14; }
-.sr { color: #009926; }
-.s1 { color: #d14; }
-.ss { color: #990073; }
-.bp { color: #999; }
-.vc { color: teal; }
-.vg { color: teal; }
-.vi { color: teal; }
-.il { color: #099; }
-.gc { color: #999; background-color: #eaf2f5; }
+.w { color: $highlighted-w; }
+.mf { color: $highlighted-mf; }
+.mh { color: $highlighted-mh; }
+.mi { color: $highlighted-mi; }
+.mo { color: $highlighted-mo; }
+.sb { color: $highlighted-sb; }
+.sc { color: $highlighted-sc; }
+.sd { color: $highlighted-sd; }
+.s2 { color: $highlighted-s2; }
+.se { color: $highlighted-se; }
+.sh { color: $highlighted-sh; }
+.si { color: $highlighted-si; }
+.sx { color: $highlighted-sx; }
+.sr { color: $highlighted-sr; }
+.s1 { color: $highlighted-s1; }
+.ss { color: $highlighted-ss; }
+.bp { color: $highlighted-bp; }
+.vc { color: $highlighted-vc; }
+.vg { color: $highlighted-vg; }
+.vi { color: $highlighted-vi; }
+.il { color: $highlighted-il; }
+.gc { color: $highlighted-gc; background-color: $highlighted-gc-bg; }

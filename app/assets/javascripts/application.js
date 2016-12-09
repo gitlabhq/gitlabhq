@@ -57,7 +57,13 @@
 /*= require es6-promise.auto */
 
 (function () {
-  document.addEventListener('page:fetch', gl.utils.cleanupBeforeFetch);
+  document.addEventListener('page:fetch', function () {
+    // Unbind scroll events
+    $(document).off('scroll');
+    // Close any open tooltips
+    $('.has-tooltip, [data-toggle="tooltip"]').tooltip('destroy');
+  });
+
   window.addEventListener('hashchange', gl.utils.handleLocationHash);
   window.addEventListener('load', function onLoad() {
     window.removeEventListener('load', onLoad, false);
@@ -77,7 +83,15 @@
     // Set the default path for all cookies to GitLab's root directory
     Cookies.defaults.path = gon.relative_url_root || '/';
 
-    gl.utils.preventDisabledButtons();
+    // prevent default action for disabled buttons
+    $('.btn').click(function(e) {
+      if ($(this).hasClass('disabled')) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        return false;
+      }
+    });
+
     $('.nav-sidebar').niceScroll({
       cursoropacitymax: '0.4',
       cursorcolor: '#FFF',

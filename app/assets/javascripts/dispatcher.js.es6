@@ -61,7 +61,7 @@
           new ZenMode();
           break;
         case 'projects:compare:show':
-          new Diff();
+          new gl.Diff();
           break;
         case 'projects:issues:new':
         case 'projects:issues:edit':
@@ -75,7 +75,7 @@
           break;
         case 'projects:merge_requests:new':
         case 'projects:merge_requests:edit':
-          new Diff();
+          new gl.Diff();
           shortcut_handler = new ShortcutsNavigation();
           new GLForm($('.merge-request-form'));
           new IssuableForm($('.merge-request-form'));
@@ -92,7 +92,7 @@
           new GLForm($('.release-form'));
           break;
         case 'projects:merge_requests:show':
-          new Diff();
+          new gl.Diff();
           shortcut_handler = new ShortcutsIssuable(true);
           new ZenMode();
           new MergedButtons();
@@ -102,7 +102,7 @@
           new MergedButtons();
           break;
         case "projects:merge_requests:diffs":
-          new Diff();
+          new gl.Diff();
           new ZenMode();
           new MergedButtons();
           break;
@@ -118,7 +118,7 @@
           break;
         case 'projects:commit:show':
           new Commit();
-          new Diff();
+          new gl.Diff();
           new ZenMode();
           shortcut_handler = new ShortcutsNavigation();
           break;

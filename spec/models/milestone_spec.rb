@@ -246,4 +246,18 @@ describe Milestone, models: true do
       end
     end
   end
+
+  describe '#to_reference' do
+    let(:project) { build(:empty_project, name: 'sample-project') }
+    let(:milestone) { build(:milestone, iid: 1, project: project) }
+
+    it 'returns a String reference to the object' do
+      expect(milestone.to_reference).to eq "%1"
+    end
+
+    it 'supports a cross-project reference' do
+      another_project = build(:project, name: 'another-project', namespace: project.namespace)
+      expect(milestone.to_reference(another_project)).to eq "sample-project%1"
+    end
+  end
 end
