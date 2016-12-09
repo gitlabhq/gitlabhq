@@ -1064,18 +1064,18 @@ class Repository
   end
 
   def with_tmp_ref(source_repository, source_branch_name)
-    random_string = SecureRandom.hex
+    tmp_ref = "refs/tmp/#{SecureRandom.hex}/head"
 
     fetch_ref(
       source_repository.path_to_repo,
       "#{Gitlab::Git::BRANCH_REF_PREFIX}#{source_branch_name}",
-      "refs/tmp/#{random_string}/head"
+      tmp_ref
     )
 
     yield
 
   ensure
-    FileUtils.rm_rf("#{path_to_repo}/refs/tmp/#{random_string}")
+    rugged.references.delete(tmp_ref)
   end
 
   def fetch_ref(source_path, source_ref, target_ref)
