@@ -1,29 +1,42 @@
+//= require ../services/approvals_api
+
 (() => {
   let singleton;
 
   class ApprovalsStore {
-    constructor(rootEl) {
+    constructor(rootStore) {
       if (!singleton) {
-        singleton = gl.MergeRequestWidget.ApprovalsStore = this;
-        this.init(rootEl);
+        singleton = gl.ApprovalsStore = this;
+        this.init(rootStore);
       }
       return singleton;
     }
 
-    init(rootEl) {
+    init(rootStore) {
+      this.rootStore = rootStore;
+      this.api = new gl.ApprovalsApi(rootStore.dataset.endpoint);
     }
 
-    assignToData(val) {
+    assignToRootStore(data) {
+      return this.rootStore.assignToData('approvals', data);
     }
 
-    /** TODO: remove after backend integerated */
+    fetch() {
+      return this.api.fetchApprovals({ type: 'GET' })
+        .then((data) => this.rootStore.assignToData(data));
+    }
+
     approve() {
+      return this.api.approveMergeRequest({ type: 'POST' })
+        .then((data) => this.rootStore.assignToData(data));
     }
 
     unapprove() {
+      return this.api.unapproveMergeRequest({ type: 'DELETE' })
+        .then((data) => this.rootStore.assignToData(data));
     }
-
   }
-  gl.MergeRequestWidget.ApprovalsStore = ApprovalsStore;
+
+  gl.ApprovalsStore = ApprovalsStore;
 })();
 

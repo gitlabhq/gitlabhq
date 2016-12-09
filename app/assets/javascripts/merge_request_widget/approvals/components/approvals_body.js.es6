@@ -2,13 +2,8 @@
 //= require ../services/approvals_api
 
 (() => {
-  const app = gl.MergeRequestWidget;
-  const api = app.ApprovalsApi;
-
-  const componentRegistry = app.Components || (app.Components = {});
-
-  componentRegistry.approvalsBody = {
-    name: 'ApprovalsBody',
+  Vue.component('approvals-body', {
+    name: 'approvals-body',
     props: ['approverNames', 'approvalsLeft', 'userCanApprove', 'userHasApproved'],
     data() {
       return {
@@ -34,11 +29,11 @@
     },
     methods: {
       approveMergeRequest() {
-        return api.approveMergeRequest();
+        return gl.ApprovalsStore.approve();
       },
     },
     beforeCreate() {
-      api.fetchApprovals().then(() => {
+      gl.ApprovalsStore.fetch().then(() => {
         this.loading = false;
       });
     },
@@ -57,5 +52,5 @@
         <loading-icon v-if='loading'></loading-icon>
       </div>
     `,
-  };
+  });
 })();

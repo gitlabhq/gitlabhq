@@ -3,32 +3,35 @@
 
 (() => {
   class ApprovalsApi {
-    constructor() {
-      this.resource = gl.ApprovalsResource = new gl.SubbableResource('my/endpoint');
-      this.store = gl.MergeRequestWidget.ApprovalsStore;
+    constructor(endpoint) {
+      gl.ApprovalsApi = this;
+      this.init(endpoint);
+    }
+
+    init(mergeRequestEndpoint) {
+      const approvalsEndpoint = `${mergeRequestEndpoint}/approvals`;
+      this.resource = gl.ApprovalsResource = new gl.SubbableResource(approvalsEndpoint);
     }
 
     fetchApprovals() {
-      return this.resource.get();
+      return this.resource.get().fail((err) => {
+        console.error(`Error fetching approvals. ${err}`);
+      });
     }
 
     approveMergeRequest() {
-      return this.resource.post().then(() => {
-        gl.MergeRequestWidget.ApprovalsStore.approve();
+      return this.resource.post().fail((err) => {
+        console.error(`Error approving merge request. ${err}`);
       });
+
     }
 
     unapproveMergeRequest() {
-      return this.resource.delete().then(() => {
-        gl.MergeRequestWidget.ApprovalsStore.unapprove();
+      return this.resource.delete().fail((err) => {
+        console.error(`Error unapproving merge request. ${err}`);
       });
     }
-
-    updateStore(newState = {}) {
-      this.store = gl.MergeRequestWidget.Store.data.approvals;
-      return Object.assign(this.store, newState);
-    }
-
   }
-  gl.MergeRequestWidget.ApprovalsApi = new ApprovalsApi();
+
+  gl.ApprovalsApi = ApprovalsApi;
 })();

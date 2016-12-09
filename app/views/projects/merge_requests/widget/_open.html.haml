@@ -1,4 +1,7 @@
-#merge-request-widget-app.mr-state-widget{'data-endpoint'=> '/myendpoint/tho'}
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_tag('merge_request_widget/widget_bundle.js')
+
+#merge-request-widget-app.mr-state-widget{ 'data-approvals' => @merge_request.approvals.to_json, 'data-endpoint'=> merge_request_path(@merge_request)}
   = render 'projects/merge_requests/widget/heading'
   .mr-widget-body
     -# After conflicts are resolved, the user is redirected back to the MR page.
@@ -50,6 +53,4 @@
   - if @merge_request.approvals.any?
     %approvals-footer{'pending-avatar-svg' => custom_icon('icon_dotted_circle'), 'checkmark-svg' => custom_icon('icon_checkmark') }
 
-- content_for :page_specific_javascripts do
-  = page_specific_javascript_tag('merge_request_widget/widget_bundle.js')
 

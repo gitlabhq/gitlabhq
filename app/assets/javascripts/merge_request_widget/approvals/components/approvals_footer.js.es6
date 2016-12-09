@@ -1,14 +1,11 @@
-//= require ../services/approvals_api
+//= require ../stores/approvals_store
 //= require vue_common_component/link_to_member_avatar
 //= require vue_common_component/loading_icon
 
 (() => {
-  const app = gl.MergeRequestWidget;
-  const api = gl.MergeRequestWidget.ApprovalsApi;
-  const componentRegistry = app.Components || (app.Components = {});
 
-  componentRegistry.approvalsFooter = {
-    name: 'ApprovalsFooter',
+  Vue.component('approvals-footer', {
+    name: 'approvals-footer',
     props: ['userCanApprove', 'userHasApproved', 'approvedByUsers', 'approvalsLeft', 'pendingAvatarSvg', 'checkmarkSvg'],
     data() {
       return {
@@ -22,15 +19,14 @@
       showUnapproveButton() {
         return this.userCanApprove && this.userHasApproved;
       },
-
     },
     methods: {
       removeApproval() {
-        return api.unapproveMergeRequest();
+        return gl.ApprovalsStore.unapprove();
       },
     },
     beforeCreate() {
-      api.fetchApprovals().then(() => {
+      return gl.ApprovalsStore.fetch().then(() => {
         this.loading = false;
       });
     },
@@ -62,5 +58,5 @@
         <loading-icon v-if='loading'></loading-icon>
       </div>
     `,
-  };
+  });
 })();
