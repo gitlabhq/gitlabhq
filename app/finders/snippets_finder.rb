@@ -51,7 +51,7 @@ class SnippetsFinder
   def by_scope(snippets, scope = nil, include_private = false)
     case scope.to_s
     when 'are_private'
-      include_private ? snippets.are_private : nil
+      include_private ? snippets.are_private : Snippet.none
     when 'are_internal'
       snippets.are_internal
     when 'are_public'
