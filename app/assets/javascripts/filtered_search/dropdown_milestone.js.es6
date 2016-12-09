@@ -26,7 +26,7 @@
         gl.FilteredSearchManager.addWordToInput(this.getSelectedText(milestoneName));
       }
 
-      this.dismissDropdown();
+      this.dismissDropdown(!dataValueSet);
     }
 
     renderContent() {

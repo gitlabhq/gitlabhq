@@ -29,7 +29,7 @@
         gl.FilteredSearchManager.addWordToInput(this.getSelectedText(username));
       }
 
-      this.dismissDropdown();
+      this.dismissDropdown(!dataValueSet);
     }
 
     renderContent() {

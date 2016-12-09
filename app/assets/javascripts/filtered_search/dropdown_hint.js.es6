@@ -34,16 +34,19 @@
 
     itemClicked(e) {
       const selected = e.detail.selected;
-      if (!selected.hasAttribute('data-value')) {
+
+      if (selected.hasAttribute('data-value')) {
+        this.dismissDropdown();
+      } else {
         const token = selected.querySelector('.js-filter-hint').innerText.trim();
         const tag = selected.querySelector('.js-filter-tag').innerText.trim();
 
         if (tag.length) {
           gl.FilteredSearchManager.addWordToInput(this.getSelectedText(token));
         }
+        this.dismissDropdown();
+        this.dispatchInputEvent();
       }
-
-      this.dismissDropdown();
     }
 
     renderContent() {

@@ -77,11 +77,15 @@
     }
 
     dismissDropdown() {
+      this.getCurrentHook().list.hide();
       this.input.focus();
+    }
+
+    dispatchInputEvent() {
       // Propogate input change to FilteredSearchManager
       // so that it can determine which dropdowns to open
       this.input.dispatchEvent(new Event('input'));
-    }  
+    }
 
     render(forceRenderContent) {
       this.setAsDropdown();
@@ -91,7 +95,6 @@
       if (firstTimeInitialized || forceRenderContent) {
         this.renderContent();
       } else if(this.getCurrentHook().list.list.id !== this.listId) {
-        // this.droplab.changeHookList(this.hookId, `#${this.listId}`);
         this.renderContent();
       }
     }
