@@ -67,19 +67,20 @@
     margin: 0 0 0 auto;
   }
 
-  .scroll-link.sticky,
+  .scroll-link,
   .autoscroll-container {
     right: 25px;
     z-index: 1;
   }
 
   .scroll-link {
+    position: fixed;
     display: block;
     margin-bottom: 10px;
-    width: 16px;
-    height: 33px;
 
     &.scroll-top {
+      top: 110px;
+
       .gitlab-icon-scroll-up-hover {
         display: none;
       }
@@ -97,6 +98,8 @@
     }
 
     &.scroll-bottom {
+      bottom: -2px;
+
       .gitlab-icon-scroll-down-hover {
         display: none;
       }
@@ -112,18 +115,6 @@
         }
       }
     }
-
-    &.sticky {
-      position: fixed;
-
-      &.scroll-top {
-        top: 110px;
-      }
-
-      &.scroll-bottom {
-        bottom: -2px;
-      }
-    }
   }
 
   .autoscroll-container {
@@ -132,7 +123,7 @@
 
   &.sidebar-expanded {
 
-    .scroll-link.sticky,
+    .scroll-link,
     .autoscroll-container {
       right: ($gutter_width + ($gl-padding * 2));
     }
