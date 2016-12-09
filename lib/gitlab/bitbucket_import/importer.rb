@@ -1,10 +1,10 @@
 module Gitlab
   module BitbucketImport
     class Importer
-      LABELS = [{ title: 'bug', color: '#FF0000'},
-                { title: 'enhancement', color: '#428BCA'},
-                { title: 'proposal', color: '#69D100'},
-                { title: 'task', color: '#7F8C8D'}].freeze
+      LABELS = [{ title: 'bug', color: '#FF0000' },
+                { title: 'enhancement', color: '#428BCA' },
+                { title: 'proposal', color: '#69D100' },
+                { title: 'task', color: '#7F8C8D' }].freeze
 
       attr_reader :project, :client
 
