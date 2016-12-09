@@ -4,8 +4,7 @@
 %li.stage-column
   .stage-name
     %a{ name: stage.name }
-    - if stage.name
-      = stage.name.titleize
+    = stage.name.titleize
   .builds-container
     %ul
       - status_groups.each do |group_name, grouped_statuses|

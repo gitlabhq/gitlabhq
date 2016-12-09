@@ -4,9 +4,8 @@
       %a{ name: stage.name }
       %span{class: "ci-status-link ci-status-icon-#{stage.status}"}
         = ci_icon_for_status(stage.status)
-      - if stage.name
-        &nbsp;
-        = stage.name.titleize
+      &nbsp;
+      = stage.name.titleize
 = render stage.statuses.latest_ordered, coverage: @project.build_coverage_enabled?, stage: false, ref: false, pipeline_link: false, allow_retry: true
 = render stage.statuses.retried_ordered, coverage: @project.build_coverage_enabled?, stage: false, ref: false, pipeline_link: false, retried: true
 %tr

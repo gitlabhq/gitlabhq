@@ -34,7 +34,7 @@ module Commits
         repository.public_send(action, current_user, @commit, into, tree_id)
         success
       else
-        error_msg = "Sorry, we cannot #{action.to_s.dasherize} this #{@commit.change_type_title} automatically.
+        error_msg = "Sorry, we cannot #{action.to_s.dasherize} this #{@commit.change_type_title(current_user)} automatically.
                      It may have already been #{action.to_s.dasherize}, or a more recent commit may have updated some of its content."
         raise ChangeError, error_msg
       end
