@@ -371,10 +371,24 @@ describe 'Git HTTP requests', lib: true do
 
             shared_examples 'can download code only' do
               it 'downloads get status 200' do
-                clone_get "#{project.path_with_namespace}.git", user: 'gitlab-ci-token', password: build.token
+                allow_any_instance_of(Repository).
+                  to receive(:exists?).and_return(true)
+
+                clone_get "#{project.path_with_namespace}.git",
+                  user: 'gitlab-ci-token', password: build.token
 
                 expect(response).to have_http_status(200)
                 expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+              end
+
+              it 'downloads from non-existing repository and gets 403' do
+                allow_any_instance_of(Repository).
+                  to receive(:exists?).and_return(false)
+
+                clone_get "#{project.path_with_namespace}.git",
+                  user: 'gitlab-ci-token', password: build.token
+
+                expect(response).to have_http_status(403)
               end
 
               it 'uploads get status 403' do
