@@ -10,18 +10,6 @@
 
     Build.state = null;
 
-    function isInViewport(el) {
-      // Courtesy http://stackoverflow.com/a/7557433/414749
-      var rect = el[0].getBoundingClientRect();
-
-      return (
-        rect.top >= 0 &&
-        rect.left >= 0 &&
-        rect.bottom <= $(window).height() &&
-        rect.right <= $(window).width()
-      );
-    }
-
     function Build(options) {
       options = options || $('.js-build-options').data();
       this.pageUrl = options.pageUrl;
@@ -138,8 +126,8 @@
     };
 
     Build.prototype.initScrollButtonAffix = function() {
-      this.$scrollTopBtn.hide().removeClass('sticky');
-      this.$scrollBottomBtn.show().addClass('sticky');
+      this.$scrollTopBtn.hide();
+      this.$scrollBottomBtn.show();
       this.$autoScrollContainer.hide();
     }
 
@@ -158,23 +146,23 @@
     //      - Show Bottom Arrow button
     //      - Disable Autoscroll and hide indicator (when build is running)
     Build.prototype.initScrollMonitor = function() {
-      if (isInViewport(this.$upBuildTrace)) { // User is at Top of Build Log
-        this.$scrollTopBtn.hide().removeClass('sticky');
-        this.$scrollBottomBtn.show().addClass('sticky');
+      if (gl.utils.isInViewport(this.$upBuildTrace[0])) { // User is at Top of Build Log
+        this.$scrollTopBtn.hide();
+        this.$scrollBottomBtn.show();
       }
 
-      if (isInViewport(this.$downBuildTrace)) { // User is at Bottom of Build Log
-        this.$scrollTopBtn.show().addClass('sticky');
-        this.$scrollBottomBtn.hide().removeClass('sticky');
+      if (gl.utils.isInViewport(this.$downBuildTrace[0])) { // User is at Bottom of Build Log
+        this.$scrollTopBtn.show();
+        this.$scrollBottomBtn.hide();
 
         // Show and Reposition Autoscroll Status Indicator
         this.$autoScrollContainer.css({ top: this.$body.outerHeight() - 75 }).fadeIn(100);
         this.$autoScrollStatus.find('.status-text').addClass('animate');
       }
 
-      if (!isInViewport(this.$upBuildTrace) && !isInViewport(this.$downBuildTrace)) { // User is somewhere in middle of Build Log
-        this.$scrollTopBtn.show().addClass('sticky');
-        this.$scrollBottomBtn.show().addClass('sticky');
+      if (!gl.utils.isInViewport(this.$upBuildTrace[0]) && !gl.utils.isInViewport(this.$downBuildTrace[0])) { // User is somewhere in middle of Build Log
+        this.$scrollTopBtn.show();
+        this.$scrollBottomBtn.show();
 
         // Hide Autoscroll Status Indicator
         this.$autoScrollContainer.hide();
@@ -183,7 +171,7 @@
 
       if (this.buildStatus === "running" || this.buildStatus === "pending") {
         // Check if Refresh Animation is in Viewport and enable Autoscroll, disable otherwise.
-        this.$autoScrollStatus.data("state", isInViewport($('.js-build-refresh')) ? 'enabled' : 'disabled');
+        this.$autoScrollStatus.data("state", gl.utils.isInViewport($('.js-build-refresh')[0]) ? 'enabled' : 'disabled');
       }
     };
 
