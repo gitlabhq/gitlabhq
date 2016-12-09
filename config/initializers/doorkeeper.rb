@@ -8,7 +8,12 @@ Doorkeeper.configure do
     # Put your resource owner authentication logic here.
     # Ensure user is redirected to redirect_uri after login
     session[:user_return_to] = request.fullpath
-    current_user || redirect_to(new_user_session_url)
+    if current_user
+      current_user
+    else
+      redirect_to(new_user_session_url)
+      nil
+    end
   end
 
   resource_owner_from_credentials do |routes|

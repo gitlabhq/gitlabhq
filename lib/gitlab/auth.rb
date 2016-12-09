@@ -2,7 +2,7 @@ module Gitlab
   module Auth
     MissingPersonalTokenError = Class.new(StandardError)
 
-    SCOPES = [:api, :read_user].freeze
+    SCOPES = [:api, :read_user, :openid, :profile, :email].freeze
     DEFAULT_SCOPES = [:api].freeze
     OPTIONAL_SCOPES = SCOPES - DEFAULT_SCOPES
 

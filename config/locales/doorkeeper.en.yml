@@ -60,6 +60,7 @@ en:
     scopes:
       api: Access your API
       read_user: Read user information
+      openid: Authenticate using OpenID Connect
 
     flash:
       applications:
