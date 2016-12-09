@@ -59,12 +59,85 @@ describe Gitlab::Ci::Config::Rule::Environments do
         end
       end
 
-      context 'when teardown job is defined' do
+      context 'when teardown job has environment defined' do
+        context 'when teardown job has invalid environment name' do
+          let(:config) do
+            { deploy: {
+                script: 'rspec',
+                environment: {
+                  name: 'test',
+                  on_stop: 'teardown'
+                }
+              },
+
+              teardown: {
+                script: 'echo teardown',
+                environment: 'staging'
+              }
+            }
+          end
+
+          it 'adds errors about invalid environment name' do
+            expect(global.errors)
+              .to include 'jobs:teardown:environment name does not match ' \
+                          'environment name defined in `deploy` job'
+          end
+        end
+
+        context 'when teardown job has valid environment name' do
+          context 'when teardown has invalid action name' do
+            let(:config) do
+              { deploy: {
+                  script: 'rspec',
+                  environment: {
+                    name: 'test',
+                    on_stop: 'teardown'
+                  }
+                },
+
+                teardown: {
+                  script: 'echo teardown',
+                  environment: {
+                    name: 'test',
+                    action: 'start'
+                  }
+                }
+              }
+            end
+
+            it 'adds error about invalid action name' do
+              expect(global.errors)
+                .to include 'jobs:teardown:environment action should be ' \
+                            'defined as `stop`'
+            end
+          end
+
+          context 'when teardown job has valid action name' do
+            let(:config) do
+              { deploy: {
+                  script: 'rspec',
+                  environment: {
+                    name: 'test',
+                    on_stop: 'teardown'
+                  }
+                },
+
+                teardown: {
+                  script: 'echo teardown',
+                  environment: {
+                    name: 'test',
+                    action: 'stop'
+                  }
+                }
+              }
+            end
+
+            it 'does not invalidate configuration' do
+              expect(global).to be_valid
+            end
+          end
+        end
       end
     end
-  end
-
-  def define_config(hash)
-    Gitlab::Ci::Config::Node::Global.new(hash)
   end
 end

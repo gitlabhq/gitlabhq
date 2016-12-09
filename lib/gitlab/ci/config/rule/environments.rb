@@ -36,6 +36,8 @@ module Gitlab
             end
           end
 
+          private
+
           def stop_job_undefined?
             !@stop_job.specified?
           end
@@ -45,7 +47,7 @@ module Gitlab
           end
 
           def stop_job_environment_name_invalid?
-            @environment.name != @stop_job_environment.name
+            @job_environment.name != @stop_job_environment.name
           end
 
           def stop_job_action_invalid?
