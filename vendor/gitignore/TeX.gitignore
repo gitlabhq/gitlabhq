@@ -52,11 +52,15 @@ acs-*.bib
 
 # beamer
 *.nav
+*.pre
 *.snm
 *.vrb
 
 # cprotect
 *.cpt
+
+# endnotes
+*.ent
 
 # fixme
 *.lox
@@ -123,9 +127,7 @@ acs-*.bib
 *.maf
 *.mlf
 *.mlt
-*.mtc
-*.mtc[0-9]
-*.mtc[1-9][0-9]
+*.mtc[0-9]*
 
 # minted
 _minted*
@@ -204,3 +206,6 @@ TSWLatexianTemp*
 
 # auto folder when using emacs and auctex 
 /auto/*
+
+# expex forward references with \gathertags
+*-tags.tex
