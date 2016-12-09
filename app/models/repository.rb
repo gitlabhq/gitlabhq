@@ -862,32 +862,8 @@ class Repository
                   []
                 end
 
-      actions.each do |action|
-        path = Gitlab::Git::PathHelper.normalize_path(action[:file_path]).to_s
-
-        raise Gitlab::Git::Repository::InvalidBlobName.new("Invalid path") if
-          path.split('/').include?('..')
-
-        case action[:action]
-        when :create, :update, :move
-          mode =
-            case action[:action]
-            when :update
-              index.get(path)[:mode]
-            when :move
-              index.get(action[:previous_path])[:mode]
-            end
-          mode ||= 0o100644
-
-          index.remove(action[:previous_path]) if action[:action] == :move
-
-          content = action[:encoding] == 'base64' ? Base64.decode64(action[:content]) : action[:content]
-          oid = rugged.write(content, :blob)
-
-          index.add(path: path, oid: oid, mode: mode)
-        when :delete
-          index.remove(path)
-        end
+      actions.each do |act|
+        git_action(index, act)
       end
 
       options = {
@@ -1180,6 +1156,50 @@ class Repository
   end
 
   private
+
+  def git_action(index, action)
+    path = normalize_path(action[:file_path])
+
+    if action[:action] == :move
+      previous_path = normalize_path(action[:previous_path])
+    end
+
+    case action[:action]
+    when :create, :update, :move
+      mode =
+        case action[:action]
+        when :update
+          index.get(path)[:mode]
+        when :move
+          index.get(previous_path)[:mode]
+        end
+      mode ||= 0o100644
+
+      index.remove(previous_path) if action[:action] == :move
+
+      content = if action[:encoding] == 'base64'
+                  Base64.decode64(action[:content])
+                else
+                  action[:content]
+                end
+
+      oid = rugged.write(content, :blob)
+
+      index.add(path: path, oid: oid, mode: mode)
+    when :delete
+      index.remove(path)
+    end
+  end
+
+  def normalize_path(path)
+    pathname = Gitlab::Git::PathHelper.normalize_path(path)
+
+    if pathname.each_filename.include?('..')
+      raise Gitlab::Git::Repository::InvalidBlobName.new('Invalid path')
+    end
+
+    pathname.to_s
+  end
 
   def refs_directory_exists?
     return false unless path_with_namespace
