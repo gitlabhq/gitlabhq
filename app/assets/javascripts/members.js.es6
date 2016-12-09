@@ -71,7 +71,7 @@
     }
 
     formSubmit(e, $el = null) {
-      const $this = e? $(e.currentTarget) : $el;
+      const $this = e ? $(e.currentTarget) : $el;
       const { $toggle, $dateInput } = this.getMemberListItems($this);
 
       $this.closest('form').trigger('submit.rails');
