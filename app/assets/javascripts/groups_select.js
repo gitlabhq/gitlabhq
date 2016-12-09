@@ -1,6 +1,5 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, wrap-iife, one-var, camelcase, one-var-declaration-per-line, quotes, object-shorthand, prefer-arrow-callback, comma-dangle, consistent-return, yoda, prefer-rest-params, prefer-spread, no-unused-vars, prefer-template, max-len */
 /* global Api */
-
 (function() {
   var slice = [].slice;
 
@@ -53,8 +52,7 @@
     }
 
     GroupsSelect.prototype.formatResult = function(group) {
-      var avatar,
-          visibility;
+      var avatar, visibility;
       if (group.avatar_url) {
         avatar = group.avatar_url;
       } else {
@@ -71,6 +69,8 @@
         case 20:
           visibility = 'fa-globe';
           break;
+        default:
+          visibility = 'fa-globe';
       }
 
       return "<li class='group-row " + (!group.description ? 'no-description' : void 0) + "'> <div class='stats'><span><i class='fa fa-bookmark'></i>" + group.project_count + "</span><span><i class='fa fa-users'></i>" + group.user_count + "</span><span class='visibility-icon has-tooltip' data-container='body' data-placement='left'><i class='fa " + visibility + "'></i></span></div><div class='avatar-container s40'><img class='avatar s40 hidden-xs' src='" + avatar + "'></div><div class='title'>" + group.name + "</div><div class='description'> <p dir='auto'>" + group.description + "</p></div></li>";
