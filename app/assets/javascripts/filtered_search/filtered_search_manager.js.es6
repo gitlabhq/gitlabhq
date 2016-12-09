@@ -94,6 +94,7 @@
 
       this.setupMapping();
 
+      this.unbindEvents();
       document.removeEventListener('page:fetch', this.cleanupWrapper);
     }
 
@@ -144,12 +145,17 @@
       filteredSearchInput.value += hasExistingValue && addSpace ? ` ${word}` : word;
     }
 
+    updateDropdownOffset(key) {
+      const filterIconPadding = 27;
+      const offset = gl.text.getTextWidth(this.filteredSearchInput.value, this.font) + filterIconPadding;
+
+      this.mapping[key].reference.setOffset(offset);
+    }
+
     load(key, firstLoad = false) {
       console.log(`🦄 load ${key} dropdown`);
       const glClass = this.mapping[key].gl;
       const element = this.mapping[key].element;
-      const filterIconPadding = 27;
-      const dropdownOffset = gl.text.getTextWidth(this.filteredSearchInput.value, this.font) + filterIconPadding;
       let forceShowList = false;
 
       if (!this.mapping[key].reference) {
@@ -165,7 +171,7 @@
         forceShowList = true;
       }
 
-      this.mapping[key].reference.setOffset(dropdownOffset);
+      this.updateDropdownOffset(key);
       this.mapping[key].reference.render(firstLoad, forceShowList);
 
       this.currentDropdown = key;
@@ -213,17 +219,25 @@
       }
     }
 
-    // dismissCurrentDropdown() {
-    //   if (this.currentDropdown === 'hint') {
-    //     this.mapping['hint'].hide();
-    //   }
-    // }
-
     bindEvents() {
-      this.filteredSearchInput.addEventListener('input', this.setDropdown.bind(this));
+      this.setDropdownWrapper = this.setDropdown.bind(this);
+      this.checkForEnterWrapper = this.checkForEnter.bind(this);
+      this.clearSearchWrapper = this.clearSearch.bind(this);
+      this.checkForBackspaceWrapper = this.checkForBackspace.bind(this);
+
+      this.filteredSearchInput.addEventListener('input', this.setDropdownWrapper);
       this.filteredSearchInput.addEventListener('input', toggleClearSearchButton);
-      this.filteredSearchInput.addEventListener('keydown', this.checkForEnter.bind(this));
-      this.clearSearchButton.addEventListener('click', this.clearSearch.bind(this));
+      this.filteredSearchInput.addEventListener('keydown', this.checkForEnterWrapper);
+      this.filteredSearchInput.addEventListener('keyup', this.checkForBackspaceWrapper);
+      this.clearSearchButton.addEventListener('click', this.clearSearchWrapper);
+    }
+
+    unbindEvents() {
+      this.filteredSearchInput.removeEventListener('input', this.setDropdownWrapper);
+      this.filteredSearchInput.removeEventListener('input', toggleClearSearchButton);
+      this.filteredSearchInput.removeEventListener('keydown', this.checkForEnterWrapper);
+      this.filteredSearchInput.removeEventListener('keyup', this.checkForBackspaceWrapper);
+      this.clearSearchButton.removeEventListener('click', this.clearSearchWrapper);
     }
 
     clearSearch(e) {
@@ -233,6 +247,13 @@
       this.filteredSearchInput.value = '';
       this.clearSearchButton.classList.add('hidden');
       this.setDropdown();
+    }
+
+    checkForBackspace(e) {
+      if (e.keyCode === 8) {
+        // Reposition dropdown so that it is aligned with cursor
+        this.updateDropdownOffset(this.currentDropdown);
+      }
     }
 
     checkForEnter(e) {
