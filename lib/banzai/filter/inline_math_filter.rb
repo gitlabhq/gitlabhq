@@ -12,6 +12,7 @@ module Banzai
           closing = el
           code = el.previous
           code[:class] = 'code math'
+          code["js-math-inline"] = true
           opening = code.previous
 
           closing.content = closing.content[1..-1]

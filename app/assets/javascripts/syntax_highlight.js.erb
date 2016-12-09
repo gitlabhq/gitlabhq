@@ -22,9 +22,9 @@
       var mathNode = $( "<span></span>" );
       mathNode.insertAfter($(this));
 
-      var display = $(this).hasClass('highlight');
-      katex.render($(this).text(), mathNode.get(0), { displayMode: display })
-      $(this).remove()
+      var display = !$(this).get(0).hasAttribute('js-math-inline');
+      katex.render($(this).text(), mathNode.get(0), { displayMode: display });
+      $(this).remove();
     })
   };
   var handleMath = function () {
