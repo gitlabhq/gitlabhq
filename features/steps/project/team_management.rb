@@ -148,7 +148,7 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
   step 'I should see "Opensource" group user listing' do
     page.within '.project-members-groups' do
       expect(page).to have_content('OpenSource')
-      expect(find('select').value).to eq('40')
+      expect(first('.group_member')).to have_content('Master')
     end
   end
 end
