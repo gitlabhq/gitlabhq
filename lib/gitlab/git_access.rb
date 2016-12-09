@@ -9,8 +9,6 @@ module Gitlab
       download: 'You are not allowed to download code from this project.',
       deploy_key_upload:
         'This deploy key does not have write access to this project.',
-      deploy_key:
-        'This deploy key does not have access to this project.',
       no_repo: 'A repository for this project does not exist yet.'
     }
 
@@ -33,10 +31,11 @@ module Gitlab
       check_active_user! unless deploy_key?
       check_project_accessibility!
       check_command_existence!(cmd)
+      check_repository_existence!
 
       case cmd
       when *DOWNLOAD_COMMANDS
-        download_access_check
+        download_access_check unless deploy_key?
       when *PUSH_COMMANDS
         push_access_check(changes)
       end
@@ -47,20 +46,12 @@ module Gitlab
     end
 
     def download_access_check
-      passed = if deploy_key
-                 deploy_key.has_access_to?(project)
-               elsif user
-                 user_can_download_code? || build_can_download_code?
-               end || guest_can_download_code?
+      passed = user_can_download_code? ||
+               build_can_download_code? ||
+               guest_can_download_code?
 
       unless passed
-        message = if deploy_key
-                    ERROR_MESSAGES[:deploy_key]
-                  else
-                    ERROR_MESSAGES[:download]
-                  end
-
-        raise UnauthorizedError, message
+        raise UnauthorizedError, ERROR_MESSAGES[:download]
       end
     end
 
@@ -75,7 +66,6 @@ module Gitlab
 
       return if changes.blank? # Allow access.
 
-      check_repository_existence!
       check_change_access!(changes)
     end
 
