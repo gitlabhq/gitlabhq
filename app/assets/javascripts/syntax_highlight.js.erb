@@ -20,12 +20,12 @@
   var renderWithKaTeX = function (elements) {
     elements.each(function () {
       var mathNode = $( "<span></span>" );
-      var self = $(this);
-      mathNode.insertAfter(self);
+      var $this = $(this);
+      mathNode.insertAfter($this);
 
-      var display = self.get(0).hasAttribute('js-math-display');
-      katex.render(self.text(), mathNode.get(0), { displayMode: display });
-      self.remove();
+      var display = $this.get(0).hasAttribute('js-math-display');
+      katex.render($this.text(), mathNode.get(0), { displayMode: display });
+      $this.remove();
     })
   };
   var handleMath = function () {
