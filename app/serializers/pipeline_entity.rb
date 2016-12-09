@@ -15,7 +15,7 @@ class PipelineEntity < Grape::Entity
     expose :detailed_status, as: :status, using: StatusEntity
     expose :duration
     expose :finished_at
-    expose :stages_with_statuses, as: :stages, using: PipelineStageEntity
+    expose :stages, using: PipelineStageEntity
     expose :artifacts, using: PipelineArtifactEntity
     expose :manual_actions, using: PipelineActionEntity
   end

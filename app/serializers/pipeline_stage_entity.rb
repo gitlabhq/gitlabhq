@@ -1,15 +1,10 @@
 class PipelineStageEntity < Grape::Entity
   include RequestAwareEntity
 
-  expose :name do |stage|
-    stage.name
-  end
+  expose :name
+  expose :detailed_status, as: :status, using: StatusEntity
 
-  expose :status do |stage|
-    stage.status || 'not found'
-  end
-
-  expose :url do |stage|
+  expose :path do |stage|
     namespace_project_pipeline_path(
       stage.pipeline.project.namespace,
       stage.pipeline.project,
