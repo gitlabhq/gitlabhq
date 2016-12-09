@@ -14,7 +14,7 @@
           %li.build{ class: ("playable" if is_playable) }
             .curve
             .build-content
-              = render 'ci/status/icon_with_name_and_action', subject: status
+              = render 'ci/status/graph_icon_with_name_and_action', subject: status
         - else
           %li.build
             .curve

@@ -40,7 +40,7 @@ describe "Pipelines", feature: true, js: true do
 
     context 'pipeline graph' do
       it 'shows a running icon and a cancel action for the running build' do
-        page.within('.stage-column:first-child .build:first-child') do
+        page.within('.stage-column:nth-child(2) .build:first-child') do
           expect(page).to have_selector('.ci-status-icon-running')
           expect(page).to have_content('deploy')
           expect(page).to have_selector('.ci-action-icon-container .fa-ban')
@@ -56,7 +56,7 @@ describe "Pipelines", feature: true, js: true do
       end
 
       it 'shows the failed icon and a retry action for the failed build' do
-        page.within('.stage-column:nth-child(2) .build') do
+        page.within('.stage-column:first-child .build') do
           expect(page).to have_selector('.ci-status-icon-failed')
           expect(page).to have_content('test')
           expect(page).to have_selector('.ci-action-icon-container .fa-refresh')
@@ -64,7 +64,7 @@ describe "Pipelines", feature: true, js: true do
       end
 
       it 'shows the skipped icon and a play action for the manual build' do
-        page.within('.stage-column:first-child .build:nth-child(2)') do
+        page.within('.stage-column:nth-child(2) .build:nth-child(2)') do
           expect(page).to have_selector('.ci-status-icon-skipped')
           expect(page).to have_content('manual')
           expect(page).to have_selector('.ci-action-icon-container .ci-play-icon')
