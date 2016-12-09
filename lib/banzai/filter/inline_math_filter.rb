@@ -11,10 +11,10 @@ module Banzai
         "/following-sibling::node()[1][self::text()][starts-with(.,'$')]").each do |el|
           closing = el
           code = el.previous
-          code[:class] = 'code math'
-          code["data-math-inline"] = true
           opening = code.previous
 
+          code[:class] = 'code math'
+          code["data-math-inline"] = true
           closing.content = closing.content[1..-1]
           opening.content = opening.content[0..-2]
 
