@@ -31,6 +31,15 @@
       this.buildStage = options.buildStage;
       this.updateDropdown = bind(this.updateDropdown, this);
       this.$document = $(document);
+      this.$body = $('body');
+      this.$buildTrace = $('#build-trace');
+      this.$autoScrollContainer = $('.autoscroll-container');
+      this.$autoScrollStatus = $('#autoscroll-status');
+      this.$upBuildTrace = $('#up-build-trace');
+      this.$downBuildTrace = $('#down-build-trace');
+      this.$scrollTopBtn = $('#scroll-top');
+      this.$scrollBottomBtn = $('#scroll-bottom');
+
       clearInterval(Build.interval);
       // Init breakpoint checker
       this.bp = Breakpoints.get();
@@ -123,24 +132,15 @@
     };
 
     Build.prototype.checkAutoscroll = function() {
-      if ("enabled" === $("#autoscroll-status").data("state")) {
+      if ($("#autoscroll-status").data("state") === "enabled") {
         return $("html,body").scrollTop($("#build-trace").height());
       }
     };
 
     Build.prototype.initScrollButtonAffix = function() {
-      var $body = $('body');
-      var $buildTrace = $('#build-trace');
-      var $scrollTopBtn = $('#scroll-top');
-      var $scrollBottomBtn = $('#scroll-bottom');
-      var $autoScrollContainer = $('.autoscroll-container');
-
-      $scrollTopBtn.hide().removeClass('sticky');
-      $scrollBottomBtn.show().addClass('sticky');
-
-      if ($autoScrollContainer.length) {
-        $autoScrollContainer.hide();
-      }
+      this.$scrollTopBtn.hide().removeClass('sticky');
+      this.$scrollBottomBtn.show().addClass('sticky');
+      this.$autoScrollContainer.hide();
     }
 
     // Page scroll listener to detect if user has scrolling page
@@ -158,43 +158,32 @@
     //      - Show Bottom Arrow button
     //      - Disable Autoscroll and hide indicator (when build is running)
     Build.prototype.initScrollMonitor = function() {
-      var $body = $('body');
-      var $buildTrace = $('#build-trace');
-      var $autoScrollContainer = $('.autoscroll-container');
-      var $autoScrollStatus = $('#autoscroll-status');
-      var $upBuildTrace = $('#up-build-trace');
-      var $downBuildTrace = $('#down-build-trace');
-      var $scrollTopBtn = $('#scroll-top');
-      var $scrollBottomBtn = $('#scroll-bottom');
-
-      if (isInViewport($upBuildTrace)) { // User is at Top of Build Log
-        $scrollTopBtn.hide().removeClass('sticky');
-        $scrollBottomBtn.show().addClass('sticky');
+      if (isInViewport(this.$upBuildTrace)) { // User is at Top of Build Log
+        this.$scrollTopBtn.hide().removeClass('sticky');
+        this.$scrollBottomBtn.show().addClass('sticky');
       }
 
-      if (isInViewport($downBuildTrace)) { // User is at Bottom of Build Log
-        $scrollTopBtn.show().addClass('sticky');
-        $scrollBottomBtn.hide().removeClass('sticky');
+      if (isInViewport(this.$downBuildTrace)) { // User is at Bottom of Build Log
+        this.$scrollTopBtn.show().addClass('sticky');
+        this.$scrollBottomBtn.hide().removeClass('sticky');
 
-        if ($autoScrollContainer.length) { // Show and Reposition Autoscroll Status Message
-          $autoScrollContainer.show().css({ top: $body.outerHeight() - 75 });
-          $autoScrollStatus.find('.status-text').addClass('animate');
-        }
+        // Show and Reposition Autoscroll Status Indicator
+        this.$autoScrollContainer.css({ top: this.$body.outerHeight() - 75 }).fadeIn(100);
+        this.$autoScrollStatus.find('.status-text').addClass('animate');
       }
 
-      if (!isInViewport($upBuildTrace) && !isInViewport($downBuildTrace)) { // User is somewhere in middle of Build Log
-        $scrollTopBtn.show().addClass('sticky');
-        $scrollBottomBtn.show().addClass('sticky');
+      if (!isInViewport(this.$upBuildTrace) && !isInViewport(this.$downBuildTrace)) { // User is somewhere in middle of Build Log
+        this.$scrollTopBtn.show().addClass('sticky');
+        this.$scrollBottomBtn.show().addClass('sticky');
 
-        if ($autoScrollContainer.length) {
-          $autoScrollContainer.hide();
-          $autoScrollStatus.find('.status-text').removeClass('animate');
-        }
+        // Hide Autoscroll Status Indicator
+        this.$autoScrollContainer.hide();
+        this.$autoScrollStatus.find('.status-text').removeClass('animate');
       }
 
       if (this.buildStatus === "running" || this.buildStatus === "pending") {
         // Check if Refresh Animation is in Viewport and enable Autoscroll, disable otherwise.
-        $autoScrollStatus.data("state", isInViewport($('.js-build-refresh')) ? 'enabled' : 'disabled');
+        this.$autoScrollStatus.data("state", isInViewport($('.js-build-refresh')) ? 'enabled' : 'disabled');
       }
     };
 
