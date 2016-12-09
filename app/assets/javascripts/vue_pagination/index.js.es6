@@ -1,6 +1,8 @@
 /* global Vue, gl */
 /* eslint-disable no-param-reassign, no-plusplus */
 
+//= require ./param_helper.js.es6
+
 ((gl) => {
   const PAGINATION_UI_BUTTON_LIMIT = 4;
   const SPREAD = '...';
@@ -8,16 +10,6 @@
   const NEXT = 'Next';
   const FIRST = '<< First';
   const LAST = 'Last >>';
-
-  const getParameterByName = (name) => {
-    const url = window.location.href;
-    name = name.replace(/[[\]]/g, '\\$&');
-    const regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`);
-    const results = regex.exec(url);
-    if (!results) return null;
-    if (!results[2]) return '';
-    return decodeURIComponent(results[2].replace(/\+/g, ' '));
-  };
 
   gl.VueGlPagination = Vue.extend({
     props: [
@@ -27,7 +19,7 @@
     methods: {
       changepage(e) {
         let pagenum = this.pageInfo.page;
-        let apiScope = getParameterByName('scope');
+        let apiScope = gl.getParameterByName('scope');
 
         if (!apiScope) apiScope = 'all';
 

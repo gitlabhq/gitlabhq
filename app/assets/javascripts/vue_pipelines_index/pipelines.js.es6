@@ -2,16 +2,6 @@
 /* eslint-disable no-param-reassign, no-bitwise*/
 
 ((gl) => {
-  const getParameterByName = (name) => {
-    const url = window.location.href;
-    name = name.replace(/[[\]]/g, '\\$&');
-    const regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`);
-    const results = regex.exec(url);
-    if (!results) return null;
-    if (!results[2]) return '';
-    return decodeURIComponent(results[2].replace(/\+/g, ' '));
-  };
-
   gl.VuePipelines = Vue.extend({
     components: {
       runningPipeline: gl.VueRunningPipeline,
@@ -38,8 +28,8 @@
     },
     props: ['scope', 'store'],
     created() {
-      const pagenum = getParameterByName('p');
-      const scope = getParameterByName('scope');
+      const pagenum = gl.getParameterByName('p');
+      const scope = gl.getParameterByName('scope');
       if (pagenum) this.pagenum = pagenum;
       if (scope) this.apiScope = scope;
       this.store.fetchDataLoop.call(this, Vue, this.pagenum, this.scope, this.apiScope);
