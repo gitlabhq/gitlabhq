@@ -2,34 +2,8 @@
 
 - if current_user
   .top-area
-    .nav-links.snippet-scope-menu
-      %li{ class: ("active" unless params[:scope]) }
-        = link_to namespace_project_snippets_path(@project.namespace, @project) do
-          All
-          %span.badge
-            - if @project.team.member?(current_user) || current_user.admin?
-              = @project.snippets.count
-            - else
-              = @project.snippets.public_and_internal.count
-
-      - if @project.team.member?(current_user) || current_user.admin?
-        %li{ class: ("active" if params[:scope] == "are_private") }
-          = link_to namespace_project_snippets_path(@project.namespace, @project, scope: 'are_private') do
-            Private
-            %span.badge
-              = @project.snippets.are_private.count
-
-      %li{ class: ("active" if params[:scope] == "are_internal") }
-        = link_to namespace_project_snippets_path(@project.namespace, @project, scope: 'are_internal') do
-          Internal
-          %span.badge
-            = @project.snippets.are_internal.count
-
-      %li{ class: ("active" if params[:scope] == "are_public") }
-        = link_to namespace_project_snippets_path(@project.namespace, @project, scope: 'are_public') do
-          Public
-          %span.badge
-            = @project.snippets.are_public.count
+    - include_private = @project.team.member?(current_user) || current_user.admin?
+    = render partial: 'snippets/snippets_scope_menu', locals: { subject: @project, include_private: include_private }
 
     .nav-controls.hidden-xs
       - if can?(current_user, :create_project_snippet, @project)
