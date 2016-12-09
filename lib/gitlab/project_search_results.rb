@@ -69,7 +69,7 @@ module Gitlab
     end
 
     def notes
-      project.notes.user.search(query, as_user: @current_user).order('updated_at DESC')
+      @notes ||= NotesFinder.new(project, @current_user, search: query).execute.user.order('updated_at DESC')
     end
 
     def commits

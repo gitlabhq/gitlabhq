@@ -453,7 +453,7 @@ class MergeRequest < ActiveRecord::Base
     should_remove_source_branch? || force_remove_source_branch?
   end
 
-  def mr_and_commit_notes
+  def related_notes
     # Fetch comments only from last 100 commits
     commits_for_notes_limit = 100
     commit_ids = commits.last(commits_for_notes_limit).map(&:id)
@@ -469,7 +469,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def discussions
-    @discussions ||= self.mr_and_commit_notes.
+    @discussions ||= self.related_notes.
       inc_relations_for_view.
       fresh.
       discussions

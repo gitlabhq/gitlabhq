@@ -39,7 +39,7 @@
           = icon('thumbs-down')
           = downvotes
 
-      - note_count = merge_request.mr_and_commit_notes.user.count
+      - note_count = merge_request.related_notes.user.count
       %li
         = link_to merge_request_path(merge_request, anchor: 'notes'), class: ('no-comments' if note_count.zero?) do
           = icon('comments')
