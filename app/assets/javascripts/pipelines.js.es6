@@ -4,7 +4,7 @@
 ((global) => {
 
   class Pipelines {
-    constructor(options) {
+    constructor(options = {}) {
 
       if (options.initTabs && options.tabsOptions) {
         new global.LinkedTabs(options.tabsOptions);
