@@ -5,7 +5,6 @@ module Banzai
     # HTML filter that adds class="code math" and removes the dolar sign in $`2+2`$.
     #
     class MathFilter < HTML::Pipeline::Filter
-
       # This picks out $<code>...</code>$.
       # It will return the last $ node
       INLINE_MATH = %Q(descendant-or-self::text()[substring(., string-length(.)) = '$']
@@ -16,7 +15,6 @@ module Banzai
       DISPLAY_MATH = "descendant-or-self::pre[contains(@class, 'math')]".freeze
 
       STYLE_ATTRIBUTE = 'data-math-style'.freeze
-
 
       def call
         doc.xpath(INLINE_MATH).each do |el|
