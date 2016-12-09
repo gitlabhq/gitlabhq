@@ -4,7 +4,7 @@ module Banzai
   module Filter
     # HTML filter that adds class="code math" and removes the dolar sign in $`2+2`$.
     #
-    class InlineMathFilter < HTML::Pipeline::Filter
+    class MathFilter < HTML::Pipeline::Filter
 
       # This picks out $<code>...</code>$.
       # It will return the last $ node

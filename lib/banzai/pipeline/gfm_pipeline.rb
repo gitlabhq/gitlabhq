@@ -6,7 +6,7 @@ module Banzai
           Filter::SyntaxHighlightFilter,
           Filter::SanitizationFilter,
 
-          Filter::InlineMathFilter,
+          Filter::MathFilter,
           Filter::UploadLinkFilter,
           Filter::VideoLinkFilter,
           Filter::ImageLinkFilter,
