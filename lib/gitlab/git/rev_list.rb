@@ -3,19 +3,29 @@
 module Gitlab
   module Git
     class RevList
+      include ActiveModel::Validations
+
+      validates :env, git_environment_variables: true
+
+      attr_reader :project, :env
+
       def initialize(oldrev, newrev, project:, env: nil)
+        @project = project
+        @env = env.presence || {}
         @args = [Gitlab.config.git.bin_path,
                  "--git-dir=#{project.repository.path_to_repo}",
                  "rev-list",
                  "--max-count=1",
                  oldrev,
                  "^#{newrev}"]
-
-        @env = env.slice(*allowed_environment_variables)
       end
 
       def execute
-        Gitlab::Popen.popen(@args, nil, @env.slice(*allowed_environment_variables))
+        if self.valid?
+          Gitlab::Popen.popen(@args, nil, @env.slice(*allowed_environment_variables))
+        else
+          Gitlab::Popen.popen(@args)
+        end
       end
 
       private
