@@ -6,23 +6,14 @@
         = icon('caret-down')
       %ul.dropdown-menu.dropdown-menu-align-right
         - can_edit = can?(current_user, :admin_project, @project)
-        -# We don't use @project.team.find_member because it searches for group members too...
-        - member = @project.members.find_by(user_id: current_user.id)
-        - can_leave = member && can?(current_user, :destroy_project_member, member)
 
         = render 'layouts/nav/project_settings', can_edit: can_edit
 
-        - if can_edit || can_leave
+        - if can_edit
           %li.divider
-          - if can_edit
-            %li
-              = link_to edit_project_path(@project) do
-                Edit Project
-          - if can_leave
-            %li
-              = link_to polymorphic_path([:leave, @project, :members]),
-                data: { confirm: leave_confirmation_message(@project) }, method: :delete, title: 'Leave project' do
-                Leave Project
+          %li
+            = link_to edit_project_path(@project) do
+              Edit Project
 
 .scrolling-tabs-container{ class: nav_control_class }
   .fade-left
