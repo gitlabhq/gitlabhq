@@ -23,7 +23,7 @@ module Gitlab
           cmd << "--after=#{@from.iso8601}"
           cmd << sha
 
-          output, status = Gitlab::Popen.popen(cmd) { |io| io.read }
+          output, status = Gitlab::Popen.popen(cmd)
 
           raise IOError, output unless status.zero?
 
