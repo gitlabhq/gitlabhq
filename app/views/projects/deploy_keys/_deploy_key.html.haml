@@ -7,8 +7,8 @@
     .description
       = deploy_key.fingerprint
     - if deploy_key.can_push?
-      .can-write
-        Can write
+      .write-access-allowed
+        Write access allowed
   .deploy-key-content.prepend-left-default.deploy-key-projects
     - deploy_key.projects.each do |project|
       - if can?(current_user, :read_project, project)
