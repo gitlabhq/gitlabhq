@@ -18,6 +18,7 @@ describe Gitlab::BitbucketImport::Importer, lib: true do
       "closed"  # undocumented status
     ]
   end
+
   let(:sample_issues_statuses) do
     issues = []
 
@@ -26,6 +27,7 @@ describe Gitlab::BitbucketImport::Importer, lib: true do
         id: index,
         state: status,
         title: "Issue #{index}",
+        kind: 'bug',
         content: {
             raw: "Some content to issue #{index}",
             markup: "markdown",
@@ -38,6 +40,7 @@ describe Gitlab::BitbucketImport::Importer, lib: true do
   end
 
   let(:project_identifier) { 'namespace/repo' }
+
   let(:data) do
     {
       'bb_session' => {
@@ -46,6 +49,7 @@ describe Gitlab::BitbucketImport::Importer, lib: true do
       }
     }
   end
+
   let(:project) do
     create(
       :project,
@@ -53,7 +57,9 @@ describe Gitlab::BitbucketImport::Importer, lib: true do
       import_data: ProjectImportData.new(credentials: data)
     )
   end
+
   let(:importer) { Gitlab::BitbucketImport::Importer.new(project) }
+
   let(:issues_statuses_sample_data) do
     {
       count: sample_issues_statuses.count,
@@ -77,6 +83,12 @@ describe Gitlab::BitbucketImport::Importer, lib: true do
                   headers: { "Content-Type" => "application/json" },
                   body: issues_statuses_sample_data.to_json)
 
+      stub_request(:get, "https://api.bitbucket.org/2.0/repositories/namespace/repo?pagelen=50&sort=created_on").
+         with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>'Bearer', 'User-Agent'=>'Faraday v0.9.2'}).
+         to_return(:status => 200,
+                   :body => "",
+                   :headers => {})
+
       sample_issues_statuses.each_with_index do |issue, index|
         stub_request(
           :get,
@@ -97,7 +109,7 @@ describe Gitlab::BitbucketImport::Importer, lib: true do
     end
 
     it 'map statuses to open or closed' do
-      # HACK: Bitbucket::Representation.const_get('Issue') seems to return Issue without this
+      # HACK: Bitbucket::Representation.const_get('Issue') seems to return ::Issue without this
       Bitbucket::Representation::Issue.new({})
       importer.execute
 

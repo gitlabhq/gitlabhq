@@ -58,7 +58,7 @@ module Gitlab
             updated_at: issue.updated_at
           )
 
-          assign_label(issue, label_name)
+          issue.labels << @labels[label_name]
 
           if issue.persisted?
             client.issue_comments(repo, issue.iid).each do |comment|
@@ -90,10 +90,6 @@ module Gitlab
         LABELS.each do |label|
           @labels[label[:title]] = project.labels.create!(label)
         end
-      end
-
-      def assign_label(issue, label_name)
-        issue.labels << @labels[label_name]
       end
 
       def import_pull_requests
