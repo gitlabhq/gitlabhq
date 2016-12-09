@@ -215,6 +215,6 @@ class Projects::NotesController < Projects::ApplicationController
   end
 
   def find_current_user_notes
-    @notes = NotesFinder.new.execute(project, current_user, params)
+    @notes = NotesFinder.new(project, current_user, params).execute.inc_author
   end
 end
