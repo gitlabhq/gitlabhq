@@ -8,12 +8,10 @@ require('../window')(function(w){
       this.hook = hook;
       this.notLoading();
 
-      this.hook.trigger.addEventListener('keydown.dl', this.debounceTrigger.bind(this));
+      this.debounceTriggerWrapper = this.debounceTrigger.bind(this);
+      this.hook.trigger.addEventListener('keydown.dl', this.debounceTriggerWrapper);
+      this.hook.trigger.addEventListener('focus', this.debounceTriggerWrapper);
       this.trigger();
-    },
-
-    debounceTriggerWrapper() {
-      return this.debounceTrigger.bind(this.hook);
     },
 
     notLoading: function notLoading() {
@@ -57,7 +55,8 @@ require('../window')(function(w){
       params[config.searchKey] = searchValue;
       var self = this;
       this._loadUrlData(config.endpoint + this.buildParams(params)).then(function(data) {
-        self.hook.list.addData.call(self.hook.list, data[0]);
+        self.hook.restoreInitialState.call(self.hook);
+        self.hook.list.setData.call(self.hook.list, data[0]);
         self.notLoading();
       });
     },
@@ -93,7 +92,7 @@ require('../window')(function(w){
         clearTimeout(this.timeout);
       }
 
-      this.hook.trigger.removeEventListener('keydown.dl', this.debounceTrigger);
+      this.hook.trigger.removeEventListener('keydown.dl', this.debounceTriggerWrapper);
       this.hook.trigger.removeEventListener('focus', this.debounceTriggerWrapper);
     }
   };

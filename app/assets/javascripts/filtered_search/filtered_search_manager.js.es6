@@ -69,20 +69,19 @@
     }
   }
 
-  let dropdownHint;
-  let dropdownAuthor;
-  let dropdownAssignee;
-  let dropdownMilestone;
-  let dropdownLabel;
-
   class FilteredSearchManager {
     constructor() {
       this.tokenizer = gl.FilteredSearchTokenizer;
+      this.filteredSearchInput = document.querySelector('.filtered-search');
+      this.clearSearchButton = document.querySelector('.clear-search');
+
+      this.setupMapping();
       this.bindEvents();
       loadSearchParamsFromURL();
       this.setDropdown();
 
-      document.addEventListener('page:change', this.cleanup);
+      this.cleanupWrapper = this.cleanup.bind(this);
+      document.addEventListener('page:fetch', this.cleanupWrapper);
     }
 
     cleanup() {
@@ -93,124 +92,105 @@
         this.droplab = null;
       }
 
-      dropdownHint = null;
-      dropdownAuthor = null;
-      dropdownAssignee = null;
-      dropdownMilestone = null;
-      dropdownLabel = null;
+      this.setupMapping();
 
-      document.removeEventListener('page:change', this.cleanup);
+      document.removeEventListener('page:fetch', this.cleanupWrapper);
+    }
+
+    setupMapping() {
+      this.mapping = {
+        author: {
+          reference: null,
+          gl: 'DropdownAuthor',
+          element: document.querySelector('#js-dropdown-author'),
+        },
+        assignee: {
+          reference: null,
+          gl: 'DropdownAssignee',
+          element: document.querySelector('#js-dropdown-assignee'),
+        },
+        milestone: {
+          reference: null,
+          gl: 'DropdownMilestone',
+          element: document.querySelector('#js-dropdown-milestone'),
+        },
+        label: {
+          reference: null,
+          gl: 'DropdownLabel',
+          element: document.querySelector('#js-dropdown-label'),
+        },
+        hint: {
+          reference: null,
+          gl: 'DropdownHint',
+          element: document.querySelector('#js-dropdown-hint'),
+        },
+      }
     }
 
     static addWordToInput(word, addSpace) {
-      const filteredSearchValue = document.querySelector('.filtered-search').value;
+      const filteredSearchInput = document.querySelector('.filtered-search')
+      const filteredSearchValue = filteredSearchInput.value;
       const hasExistingValue = filteredSearchValue.length !== 0;
-
       const { lastToken } = gl.FilteredSearchTokenizer.processTokens(filteredSearchValue);
+
       if (lastToken.hasOwnProperty('key')) {
         console.log(lastToken);
         // Spaces inside the token means that the token value will be escaped by quotes
         const hasQuotes = lastToken.value.indexOf(' ') !== -1;
-
         const lengthToRemove = hasQuotes ? lastToken.value.length + 2 : lastToken.value.length;
-        document.querySelector('.filtered-search').value = filteredSearchValue.slice(0, -1 * (lengthToRemove));
+        filteredSearchInput.value = filteredSearchValue.slice(0, -1 * (lengthToRemove));
       }
 
-      document.querySelector('.filtered-search').value += hasExistingValue && addSpace ? ` ${word}` : word;
+      filteredSearchInput.value += hasExistingValue && addSpace ? ` ${word}` : word;
     }
 
-    loadDropdown(dropdownName = '', hideDropdown) {
+    load(key, firstLoad = false) {
+      console.log(`🦄 load ${key} dropdown`);
+      const glClass = this.mapping[key].gl;
+      const element = this.mapping[key].element;
+      const filterIconPadding = 27;
+      const dropdownOffset = gl.text.getTextWidth(this.filteredSearchInput.value, this.font) + filterIconPadding;
+
+      if (!this.mapping[key].reference) {
+        this.mapping[key].reference = new gl[glClass](this.droplab, element, this.filteredSearchInput);
+      }
+
+      if (firstLoad) {
+        this.mapping[key].reference.configure();
+      }
+
+      this.mapping[key].reference.setOffset(dropdownOffset);
+      this.mapping[key].reference.render(firstLoad);
+
+      this.currentDropdown = key;
+    }
+
+    loadDropdown(dropdownName = '') {
       let firstLoad = false;
-      const filteredSearch = document.querySelector('.filtered-search');
 
       if(!this.droplab) {
         firstLoad = true;
         this.droplab = new DropLab();
       }
 
-      dropdownName = dropdownName.toLowerCase();
-
-      const filterIconPadding = 27;
-      const match = gl.FilteredSearchTokenKeys.get().filter(value => value.key === dropdownName)[0];
-
       if (!this.font) {
-        this.font = window.getComputedStyle(filteredSearch).font;
+        this.font = window.getComputedStyle(this.filteredSearchInput).font;
       }
 
-      if (match && this.currentDropdown !== match.key) {
-        console.log(`🦄 load ${match.key} dropdown`);
+      const match = gl.FilteredSearchTokenKeys.get().filter(value => value.key === dropdownName.toLowerCase())[0];
+      const shouldOpenFilterDropdown = match && this.currentDropdown !== match.key && this.mapping.hasOwnProperty(match.key);
+      const shouldOpenHintDropdown = !match && this.currentDropdown !== 'hint';
 
-        const dynamicDropdownPadding = 12;
-        const dropdownOffset = gl.text.getTextWidth(filteredSearch.value, this.font) + filterIconPadding + dynamicDropdownPadding;
-        const dropdownAuthorElement = document.querySelector('#js-dropdown-author');
-        const dropdownAssigneeElement = document.querySelector('#js-dropdown-assignee');
-        const dropdownMilestoneElement = document.querySelector('#js-dropdown-milestone');
-        const dropdownLabelElemenet = document.querySelector('#js-dropdown-label');
-
-        this.dismissCurrentDropdown();
-        this.currentDropdown = match.key;
-
-        if (match.key === 'author') {
-          if (!dropdownAuthor) {
-            dropdownAuthor = new gl.DropdownAuthor(this.droplab, dropdownAuthorElement, filteredSearch);
-          }
-
-          dropdownAuthor.setOffset(dropdownOffset);
-          dropdownAuthor.render();
-        } else if (match.key === 'assignee') {
-          if (!dropdownAssignee) {
-            dropdownAssignee = new gl.DropdownAssignee(this.droplab, dropdownAssigneeElement, filteredSearch);
-          }
-
-          dropdownAssignee.setOffset(dropdownOffset);
-          dropdownAssignee.render();
-        } else if (match.key === 'milestone') {
-          if (!dropdownMilestone) {
-            dropdownMilestone = new gl.DropdownMilestone(this.droplab, dropdownMilestoneElement, filteredSearch);
-          }
-
-          dropdownMilestone.setOffset(dropdownOffset);
-          dropdownMilestone.render();
-        } else if (match.key === 'label') {
-          if (!dropdownLabel) {
-            dropdownLabel = new gl.DropdownLabel(this.droplab, dropdownLabelElemenet, filteredSearch);
-          }
-
-          dropdownLabel.setOffset(dropdownOffset);
-          dropdownLabel.render();
-        }
-
-      } else if (!match && this.currentDropdown !== 'hint') {
-        console.log('🦄 load hint dropdown');
-
-        const dropdownOffset = gl.text.getTextWidth(filteredSearch.value, this.font) + filterIconPadding;
-        const dropdownHintElement = document.querySelector('#js-dropdown-hint');
-
-        this.dismissCurrentDropdown();
-        this.currentDropdown = 'hint';
-        if (!dropdownHint) {
-          dropdownHint = new gl.DropdownHint(this.droplab, dropdownHintElement, filteredSearch);
-        }
-
-        if (firstLoad) {
-          dropdownHint.configure();
-        }
-
-        dropdownHint.setOffset(dropdownOffset);
-        dropdownHint.render(firstLoad);
+      if (shouldOpenFilterDropdown || shouldOpenHintDropdown) {
+        const key = match && match.hasOwnProperty('key') ? match.key : 'hint';
+        this.load(key, firstLoad);
       }
-    }
 
-    dismissCurrentDropdown() {
-      // if (this.currentDropdown === 'hint') {
-      //   dropdownHint.hide();
-      // } else if (this.currentDropdown === 'author') {
-      //   // dropdownAuthor.hide();
-      // }
+      gl.droplab = this.droplab;
     }
 
     setDropdown() {
-      const { lastToken } = this.tokenizer.processTokens(document.querySelector('.filtered-search').value);
+      const { lastToken } = this.tokenizer.processTokens(this.filteredSearchInput.value);
 
       if (typeof lastToken === 'string') {
         // Token is not fully initialized yet
@@ -228,32 +208,20 @@
     }
 
     bindEvents() {
-      const filteredSearchInput = document.querySelector('.filtered-search');
-
-      filteredSearchInput.addEventListener('input', this.setDropdown.bind(this));
-      filteredSearchInput.addEventListener('input', toggleClearSearchButton);
-      filteredSearchInput.addEventListener('keydown', this.checkForEnter.bind(this));
-      document.querySelector('.clear-search').addEventListener('click', this.clearSearch.bind(this));
+      this.filteredSearchInput.addEventListener('input', this.setDropdown.bind(this));
+      this.filteredSearchInput.addEventListener('input', toggleClearSearchButton);
+      this.filteredSearchInput.addEventListener('keydown', this.checkForEnter.bind(this));
+      this.clearSearchButton.addEventListener('click', this.clearSearch.bind(this));
     }
 
     clearSearch(e) {
       e.stopPropagation();
       e.preventDefault();
 
-      document.querySelector('.filtered-search').value = '';
-      document.querySelector('.clear-search').classList.add('hidden');
+      this.filteredSearchInput.value = '';
+      this.clearSearchButton.classList.add('hidden');
       dropdownHint.resetFilters();
-      this.loadDropdown('hint', true);
-    }
-
-    checkDropdownToken(e) {
-      const input = e.target.value;
-      const { lastToken } = this.tokenizer.processTokens(input);
-
-      // Check for dropdown token
-      if (lastToken[lastToken.length - 1] === ':') {
-        const token = lastToken.slice(0, -1);
-      }
+      this.loadDropdown('hint');
     }
 
     checkForEnter(e) {

@@ -6,7 +6,15 @@
     constructor(droplab, dropdown, input) {
       super(droplab, dropdown, input);
       this.listId = 'js-dropdown-label';
-      this.filterSymbol = '~';
+      this.config = {
+        droplabAjax: {
+          endpoint: 'labels.json',
+          method: 'setData',
+        },
+        droplabFilter: {
+          filterFunction: this.filterWithSymbol.bind(this, '~'),
+        }
+      };
     }
 
     itemClicked(e) {
@@ -22,17 +30,11 @@
     }
 
     renderContent() {
-      // TODO: Pass elements instead of querySelectors
-      // TODO: Don't bind filterWithSymbol to (this), just pass the symbol
-      this.droplab.changeHookList(this.hookId, '#js-dropdown-label', [droplabAjax, droplabFilter], {
-        droplabAjax: {
-          endpoint: 'labels.json',
-          method: 'setData',
-        },
-        droplabFilter: {
-          filterFunction: this.filterWithSymbol.bind(this),
-        }
-      });
+      this.droplab.changeHookList(this.hookId, this.dropdown, [droplabAjax, droplabFilter], this.config);
+    }
+
+    configure() {
+      this.droplab.addHook(this.input, this.dropdown, [droplabAjax, droplabFilter], this.config).init();
     }
   }
 

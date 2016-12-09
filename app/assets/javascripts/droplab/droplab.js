@@ -39,6 +39,10 @@ var DropDown = function(list, trigger) {
   this.getItems();
   this.addEvents();
   this.initialState = list.innerHTML;
+
+  if (this.initialState.indexOf('{{') == -1) {
+    debugger
+  }
 };
 
 Object.assign(DropDown.prototype, {
@@ -138,6 +142,10 @@ Object.assign(DropDown.prototype, {
     this.list.style.display = 'none';
     this.hidden = true;
   },
+
+  destroy: function() {
+    this.hide();
+  }
 });
 
 module.exports = DropDown;
@@ -247,7 +255,7 @@ require('./window')(function(w){
 
       changeHookList: function(trigger, list, plugins, config) {
         trigger = document.querySelector('[data-id="'+trigger+'"]');
-        list = document.querySelector(list);
+        // list = document.querySelector(list);
         this.hooks.every(function(hook, i) {
           if(hook.trigger === trigger) {
             // Restore initial State
@@ -503,6 +511,7 @@ Object.assign(HookInput.prototype, {
     this.restoreInitialState();
     this.removeEvents();
     this.removePlugins();
+    this.list.destroy();
   }
 });
 
