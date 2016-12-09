@@ -4,6 +4,7 @@
 
   class FilteredSearchDropdown {
     constructor(droplab, dropdown, input) {
+      console.log('constructor');
       this.droplab = droplab;
       this.hookId = 'filtered-search';
       this.input = input;
@@ -54,8 +55,10 @@
       // Overridden by dropdown sub class
     }
 
-    renderContent() {
-      // Overriden by dropdown sub class
+    renderContent(forceShowList = false) {
+      if (forceShowList && this.getCurrentHook().list.hidden) {
+        this.getCurrentHook().list.show();
+      }
     }
 
     setAsDropdown() {
@@ -77,7 +80,6 @@
     }
 
     dismissDropdown() {
-      this.getCurrentHook().list.hide();
       this.input.focus();
     }
 
@@ -87,31 +89,16 @@
       this.input.dispatchEvent(new Event('input'));
     }
 
-    render(forceRenderContent) {
+    render(forceRenderContent = false, forceShowList = false) {
       this.setAsDropdown();
 
-      const firstTimeInitialized = this.getCurrentHook() === undefined;
+      const currentHook = this.getCurrentHook();
+      const firstTimeInitialized = currentHook === undefined;
 
       if (firstTimeInitialized || forceRenderContent) {
-        this.renderContent();
-      } else if(this.getCurrentHook().list.list.id !== this.listId) {
-        this.renderContent();
-      }
-    }
-
-    resetFilters() {
-      const currentHook = this.getCurrentHook();
-
-      if (currentHook) {
-        const list = currentHook.list;
-
-        if (list.data) {
-          const data = list.data.map((item) => {
-            item.droplab_hidden = false;
-          });
-
-          list.render(data);
-        }
+        this.renderContent(forceShowList);
+      } else if(currentHook.list.list.id !== this.listId) {
+        this.renderContent(forceShowList);
       }
     }
 

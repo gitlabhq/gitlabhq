@@ -3,11 +3,11 @@
   class FilteredSearchTokenizer {
     // TODO: Remove when going to pro
     static printTokens(tokens, searchToken, lastToken) {
-      // console.log('tokens:');
-      // tokens.forEach(token => console.log(token));
-      // console.log(`search: ${searchToken}`);
-      // console.log('last token:');
-      // console.log(lastToken);
+      console.log('tokens:');
+      tokens.forEach(token => console.log(token));
+      console.log(`search: ${searchToken}`);
+      console.log('last token:');
+      console.log(lastToken);
     }
 
     static parseToken(input) {

@@ -28,9 +28,9 @@
       this.dismissDropdown();
     }
 
-    renderContent() {
-      // TODO: Pass elements instead of querySelectors
+    renderContent(forceShowList) {
       this.droplab.changeHookList(this.hookId, this.dropdown, [droplabAjaxFilter], this.config);
+      super.renderContent(forceShowList);
     }
 
     getSearchInput() {

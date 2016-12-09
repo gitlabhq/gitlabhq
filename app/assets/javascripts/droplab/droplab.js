@@ -51,26 +51,28 @@ Object.assign(DropDown.prototype, {
     return this.items;
   },
 
-  addEvents: function() {
-    var self = this;
-    // event delegation.
-    this.list.addEventListener('click', function(e) {
-      // climb up the tree to find the LI
-      var selected = utils.closest(e.target, 'LI');
+  clickEvent: function(e) {
+    // climb up the tree to find the LI
+    var selected = utils.closest(e.target, 'LI');
 
-      if(selected) {
-        e.preventDefault();
-        self.hide();
-        var listEvent = new CustomEvent('click.dl', {
-          detail: {
-            list: self,
-            selected: selected,
-            data: e.target.dataset,
-          },
-        });
-        self.list.dispatchEvent(listEvent);
-      }
-    });
+    if(selected) {
+      e.preventDefault();
+      this.hide();
+      var listEvent = new CustomEvent('click.dl', {
+        detail: {
+          list: this,
+          selected: selected,
+          data: e.target.dataset,
+        },
+      });
+      this.list.dispatchEvent(listEvent);
+    }
+  },
+
+  addEvents: function() {
+    this.clickWrapper = this.clickEvent.bind(this);
+    // event delegation.
+    this.list.addEventListener('click', this.clickWrapper);
   },
 
   toggle: function() {
@@ -93,6 +95,7 @@ Object.assign(DropDown.prototype, {
 
   // call render manually on data;
   render: function(data){
+    // debugger
     // empty the list first
     var sampleItem;
     var newChildren = [];
@@ -134,17 +137,23 @@ Object.assign(DropDown.prototype, {
   },
 
   show: function() {
+    // debugger
     this.list.style.display = 'block';
     this.hidden = false;
   },
 
   hide: function() {
+    // debugger
     this.list.style.display = 'none';
     this.hidden = true;
   },
 
   destroy: function() {
-    this.hide();
+    if (!this.hidden) {
+      this.hide();
+    }
+
+    this.list.removeEventListener('click', this.clickWrapper);
   }
 });
 
@@ -257,10 +266,6 @@ require('./window')(function(w){
         // list = document.querySelector(list);
         this.hooks.every(function(hook, i) {
           if(hook.trigger === trigger) {
-            // Restore initial State
-            hook.list.list.innerHTML = hook.list.initialState;
-            hook.list.hide();
-
             hook.destroy();
             this.hooks.splice(i, 1);
             this.addHook(trigger, list, plugins, config);

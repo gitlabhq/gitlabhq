@@ -29,8 +29,9 @@
       this.dismissDropdown(!dataValueSet);
     }
 
-    renderContent() {
+    renderContent(forceShowList = false) {
       this.droplab.changeHookList(this.hookId, this.dropdown, [droplabAjax, droplabFilter], this.config);
+      super.renderContent(forceShowList);
     }
 
     configure() {
