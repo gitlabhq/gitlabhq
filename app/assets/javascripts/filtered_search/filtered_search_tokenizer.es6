@@ -119,19 +119,26 @@
           const keyMatch = validTokenKeys.filter(v => v.key === tokenKey)[0];
           const symbolMatch = validTokenKeys.filter(v => v.symbol === tokenSymbol)[0];
 
+          const doubleQuoteOccurrences = tokenValue.split('"').length - 1;
+          const singleQuoteOccurrences = tokenValue.split('\'').length - 1;
+
           const doubleQuoteIndex = tokenValue.indexOf('"');
           const singleQuoteIndex = tokenValue.indexOf('\'');
 
           const doubleQuoteExist = doubleQuoteIndex !== -1;
           const singleQuoteExist = singleQuoteIndex !== -1;
 
-          if ((doubleQuoteExist && !singleQuoteExist) ||
-            (doubleQuoteExist && singleQuoteExist && doubleQuoteIndex < singleQuoteIndex)) {
+          const doubleQuoteExistOnly = doubleQuoteExist && !singleQuoteExist;
+          const doubleQuoteIsBeforeSingleQuote = doubleQuoteExist && singleQuoteExist && doubleQuoteIndex < singleQuoteIndex;
+
+          const singleQuoteExistOnly = singleQuoteExist && !doubleQuoteExist;
+          const singleQuoteIsBeforeDoubleQuote = doubleQuoteExist && singleQuoteExist && singleQuoteIndex < doubleQuoteIndex;
+
+          if ((doubleQuoteExistOnly || doubleQuoteIsBeforeSingleQuote) && doubleQuoteOccurrences % 2 !== 0) {
             // " is found and is in front of ' (if any)
             lastQuotation = '"';
             incompleteToken = true;
-          } else if ((singleQuoteExist && !doubleQuoteExist) ||
-           (doubleQuoteExist && singleQuoteExist && singleQuoteIndex < doubleQuoteIndex)) {
+          } else if ((singleQuoteExistOnly || singleQuoteIsBeforeDoubleQuote) && singleQuoteOccurrences % 2 !== 0) {
             // ' is found and is in front of " (if any)
             lastQuotation = '\'';
             incompleteToken = true;
