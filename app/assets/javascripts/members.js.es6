@@ -31,14 +31,8 @@
           toggleLabel(selected, $el) {
             return $el.text();
           },
-          clicked: (selected, $el) => {
-            const $link = $($el);
-            const { $toggle, $dateInput } = this.getMemberListItems($link);
-
-            $toggle.attr('disabled', true);
-            $dateInput.attr('disabled', true);
-
-            $btn.closest('form').trigger('submit.rails');
+          clicked: (selected, $link) => {
+            this.formSubmit(null, $link);
           },
         });
       });
@@ -55,21 +49,21 @@
       }
     }
 
-    formSubmit(e) {
-      const $this = $(e.currentTarget);
+    formSubmit(e, $el = null) {
+      const $this = e ? $(e.currentTarget) : $el;
       const { $toggle, $dateInput } = this.getMemberListItems($this);
 
       $this.closest('form').trigger('submit.rails');
 
-      $toggle.attr('disabled', true);
-      $dateInput.attr('disabled', true);
+      $toggle.disable();
+      $dateInput.disable();
     }
 
     formSuccess(e) {
       const { $toggle, $dateInput } = this.getMemberListItems($(e.currentTarget).closest('.member'));
 
-      $toggle.removeAttr('disabled');
-      $dateInput.removeAttr('disabled');
+      $toggle.enable();
+      $dateInput.enable();
     }
 
     getMemberListItems($el) {
