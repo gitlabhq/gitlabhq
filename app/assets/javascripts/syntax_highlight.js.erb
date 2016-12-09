@@ -20,17 +20,18 @@
   var renderWithKaTeX = function (elements) {
     elements.each(function () {
       var mathNode = $( "<span></span>" );
-      mathNode.insertAfter($(this));
+      var self = $(this);
+      mathNode.insertAfter(self);
 
-      var display = !$(this).get(0).hasAttribute('js-math-inline');
-      katex.render($(this).text(), mathNode.get(0), { displayMode: display });
-      $(this).remove();
+      var display = self.get(0).hasAttribute('js-math-display');
+      katex.render(self.text(), mathNode.get(0), { displayMode: display });
+      self.remove();
     })
   };
   var handleMath = function () {
     var mathElements = $('.code.math');
 
-    if (mathElements.length == 0) return;
+    if (mathElements.length === 0) return;
 
     if (katexLoaded) renderWithKaTeX(mathElements);
     else {
