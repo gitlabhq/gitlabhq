@@ -1,33 +1,42 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Config::Rule::Environments do
-  let(:rule) { described_class.new(job, config) }
+  let(:rule) { described_class.new(job, global) }
+  let(:job) { global[:jobs][:deploy] }
+
+  let(:global) do
+    # We may need factory for that
+    #
+    Gitlab::Ci::Config::Node::Global.new(config)
+  end
 
   before do
-    config.compose!
+    # We will phase public `.compose!` out
+    #
+    global.compose!
     rule.apply!
   end
 
-  context 'when `on_stop` setting is defined' do
+  context 'when environment is stoppable' do
     context 'when teardown job is not defined' do
-      let(:job) { config[:jobs][:deploy] }
-
       let(:config) do
-        define_config(
-          deploy: {
+        { deploy: {
             script: 'rspec',
             environment: {
               name: 'test',
               on_stop: 'teardown_job'
             }
           }
-        )
+        }
       end
 
       it 'invalidates environment that depends on `on_stop`' do
-        expect(config.errors)
+        expect(global.errors)
           .to include 'jobs:deploy:environment on stop job not defined'
       end
+    end
+
+    context 'when teardown job is defined' do
     end
   end
 

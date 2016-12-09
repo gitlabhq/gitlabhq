@@ -1,62 +1,56 @@
-module Gitlab::Ci
-  class Config
-    module Rule
-      ##
-      # Job environment rules
-      #
-      class Environments < Rule::Base
-        def initialize(job, config)
-          @job, @config = job, config
+module Gitlab
+  module Ci
+    class Config
+      module Rule
+        ##
+        # Job environment rules
+        #
+        class Environments < Rule::Base
+          def initialize(job, config)
+            @job = job
+            @job_environment = job[:environment]
 
-          @environment = job[:environment]
-          @on_stop_name = @environment.try(:on_stop).to_s.to_sym
-          @on_stop_job = config[:jobs][@on_stop_name]
-          @on_stop_environment = @on_stop_job[:environment]
-        end
-
-        def apply!
-          return unless has_environment_defined?
-          return unless has_on_stop_defined?
-
-          case
-          when !stop_job_defined?
-            @environment.add_error(:on_stop, 'job not defined')
-
-          when !stop_job_environment_defined?
-            @on_stop_job.add_error(:environment, 'not defined')
-
-          when !stop_job_environment_name_valid?
-            @on_stop_environment.add_error(
-              'name', "does not match environment name defined in `#{@job.name}` job")
-
-          when !stop_job_valid_action_defined?
-            @on_stop_environment.add_error(
-              'action', 'should be defined as `stop`')
+            @stop_job_name = @environment.try(:on_stop).to_s
+            @stop_job = config[:jobs][@stop_job_name.to_sym]
+            @stop_job_environment = @stop_job[:environment]
           end
-        end
 
-        def has_environment_defined?
-          @environment.specified?
-        end
+          def apply!
+            return unless @job_environment.specified?
+            return unless @job_environment.stoppable?
 
-        def has_on_stop_defined?
-          @environment.has_on_stop?
-        end
+            if stop_job_undefined?
+              @job_environment.error('on_stop', 'job not defined')
 
-        def stop_job_defined?
-          @on_stop_job.specified?
-        end
+            elsif stop_job_environment_undefined?
+              @stop_job.error('environment', 'not defined')
 
-        def stop_job_environment_defined?
-          @on_stop_environment.specified?
-        end
+            elsif stop_job_environment_name_invalid?
+              @stop_job_environment
+                .error('name', "does not match environment name " \
+                               "defined in `#{@job.name}` job")
 
-        def stop_job_environment_name_valid?
-          @environment.name == @on_stop_environment.name
-        end
+            elsif stop_job_action_invalid?
+              @stop_job_environment
+                .error('action', 'should be defined as `stop`')
+            end
+          end
 
-        def stop_job_valid_action_defined?
-          @on_stop_environment.action == 'stop'
+          def stop_job_undefined?
+            !@stop_job.specified?
+          end
+
+          def stop_job_environment_undefined?
+            !@stop_job_environment.specified?
+          end
+
+          def stop_job_environment_name_invalid?
+            @environment.name != @stop_job_environment.name
+          end
+
+          def stop_job_action_invalid?
+            @stop_job_environment.action != 'stop'
+          end
         end
       end
     end

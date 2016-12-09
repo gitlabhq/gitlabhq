@@ -50,7 +50,7 @@ module Gitlab
             @validator.messages + descendants.flat_map(&:errors)
           end
 
-          def add_error(attribute, message)
+          def error(attribute, message)
             @validator.add_error(attribute, message)
           end
 
