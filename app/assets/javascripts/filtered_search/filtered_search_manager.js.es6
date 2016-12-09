@@ -246,7 +246,15 @@
 
       this.filteredSearchInput.value = '';
       this.clearSearchButton.classList.add('hidden');
+
+      // Force dropdown to hide
+      this.mapping[this.currentDropdown].reference.hideDropdown();
+
+      // Re-Load dropdown
       this.setDropdown();
+
+      // Reposition dropdown so that it is aligned with cursor
+      this.updateDropdownOffset(this.currentDropdown);
     }
 
     checkForBackspace(e) {
