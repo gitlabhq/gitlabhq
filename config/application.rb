@@ -45,7 +45,7 @@ module Gitlab
     #
     # Parameters filtered:
     # - Password (:password, :password_confirmation)
-    # - Private tokens (:private_token, :authentication_token)
+    # - Private tokens
     # - Two-factor tokens (:otp_attempt)
     # - Repo/Project Import URLs (:import_url)
     # - Build variables (:variables)
@@ -60,11 +60,13 @@ module Gitlab
       encrypted_key
       hook
       import_url
+      incoming_email_token
       key
       otp_attempt
       password
       password_confirmation
       private_token
+      runners_token
       secret_token
       sentry_dsn
       variables
