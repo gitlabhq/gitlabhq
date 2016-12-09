@@ -37,8 +37,8 @@ class Projects::ProjectMembersController < Projects::ApplicationController
       @group_links = @project.project_group_links.where(group_id: @project.invited_groups.search(params[:search]).select(:id))
     end
 
-    wheres = ["id IN (#{@project_members.select(:id).to_sql})"]
-    wheres << "id IN (#{group_members.select(:id).to_sql})" if group_members
+    wheres = ["members.id IN (#{@project_members.select(:id).to_sql})"]
+    wheres << "members.id IN (#{group_members.select(:id).to_sql})" if group_members
 
     @project_members = Member.
       where(wheres.join(' OR ')).
