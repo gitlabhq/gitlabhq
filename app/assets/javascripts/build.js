@@ -81,6 +81,7 @@
     };
 
     Build.prototype.getInitialBuildTrace = function() {
+      var _this = this;
       var removeRefreshStatuses = ['success', 'failed', 'canceled', 'skipped']
 
       return $.ajax({
@@ -89,6 +90,7 @@
         success: function(buildData) {
           $('.js-build-output').html(buildData.trace_html);
           if (removeRefreshStatuses.indexOf(buildData.status) >= 0) {
+            _this.initScrollMonitor();
             return $('.js-build-refresh').remove();
           }
         }
@@ -123,11 +125,20 @@
       if ($("#autoscroll-status").data("state") === "enabled") {
         return $("html,body").scrollTop($("#build-trace").height());
       }
+
+      // Handle a situation where user started new build
+      // but never scrolled a page
+      if (!this.$scrollTopBtn.is(':visible') &&
+          !this.$scrollBottomBtn.is(':visible') &&
+          !gl.utils.isInViewport(this.$downBuildTrace[0])) {
+        this.$scrollBottomBtn.show();
+      }
     };
 
     Build.prototype.initScrollButtonAffix = function() {
+      // Hide everything initially
       this.$scrollTopBtn.hide();
-      this.$scrollBottomBtn.show();
+      this.$scrollBottomBtn.hide();
       this.$autoScrollContainer.hide();
     }
 
