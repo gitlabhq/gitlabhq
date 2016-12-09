@@ -35,7 +35,7 @@ module Gitlab
         # cycle analytics stage.
         interval_query = Arel::Nodes::As.new(
           cte_table,
-          subtract_datetimes(base_query, @start_time_attrs, @end_time_attrs, name.to_s))
+          subtract_datetimes(base_query.dup, @start_time_attrs, @end_time_attrs, name.to_s))
 
         median_datetime(cte_table, interval_query, name)
       end
