@@ -1,0 +1,18 @@
+= My Article
+
+*J. Smith*
+
+http://wikipedia.org[Wikipedia] is an on-line encyclopaedia, available in English and many other languages.
+
+== Software
+
+You can install \'package-name\' using the +gem+ command:
+
+ gem install package-name
+
+== Relative links
+
+link:regular[regular link]
+link:../relative[relative link 1]
+link:./relative[relative link 2]
+link:./e/f/relative[relative link 3]

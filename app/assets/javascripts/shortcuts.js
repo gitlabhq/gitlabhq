@@ -20,7 +20,7 @@
           return _this.focusFilter(e);
         };
       })(this));
-      Mousetrap.bind(['ctrl+shift+p', 'command+shift+p'], this.toggleMarkdownPreview);
+      Mousetrap.bind(['ctrl+shift+p', 'command+shift+p'], this.toggleMarkupPreview);
       if (typeof findFileURL !== "undefined" && findFileURL !== null) {
         Mousetrap.bind('t', function() {
           return Turbolinks.visit(findFileURL);
@@ -33,7 +33,7 @@
       return Shortcuts.toggleHelp(this.enabledHelp);
     };
 
-    Shortcuts.prototype.toggleMarkdownPreview = function(e) {
+    Shortcuts.prototype.toggleMarkupPreview = function(e) {
       return $(document).triggerHandler('markdown-preview:toggle', [e]);
     };
 

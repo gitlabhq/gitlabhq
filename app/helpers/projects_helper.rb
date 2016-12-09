@@ -409,4 +409,12 @@ module ProjectsHelper
   def project_issues(project)
     IssuesFinder.new(current_user, project_id: project.id).execute
   end
+
+  def preview_markup_path
+    if @project_wiki && @page
+      namespace_project_wiki_preview_path(@project.namespace, @project, @page.slug)
+    else
+      preview_markdown_namespace_project_path(@project.namespace, @project)
+    end
+  end
 end

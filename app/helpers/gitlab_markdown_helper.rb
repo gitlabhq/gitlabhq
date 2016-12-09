@@ -60,18 +60,32 @@ module GitlabMarkdownHelper
     banzai_postprocess(html, object.banzai_render_context(field))
   end
 
-  def asciidoc(text)
-    Gitlab::Asciidoc.render(
-      text,
-      project:      @project,
-      current_user: (current_user if defined?(current_user)),
-
-      # RelativeLinkFilter
+  def wiki_context(page_slug)
+    {
+      project:        @project,
+      current_user:   (current_user if defined?(current_user)),
+      pipeline:       :wiki,
       project_wiki:   @project_wiki,
       requested_path: @path,
       ref:            @ref,
-      commit:         @commit
-    )
+      commit:         @commit,
+      page_slug:      page_slug
+    }
+  end
+
+  def rdoc(text, page_slug)
+    html = @project_wiki.preview_page(text, :rdoc).formatted_data
+    context = wiki_context(page_slug)
+    html = Banzai.render(html, context)
+    html = Banzai.post_process(html, context)
+
+    html.html_safe
+  end
+
+  def asciidoc(text, page_slug)
+    context = wiki_context(page_slug)
+
+    Gitlab::Asciidoc.render(text, context)
   end
 
   def other_markup(file_name, text)
@@ -104,7 +118,9 @@ module GitlabMarkdownHelper
     when :markdown
       markdown(wiki_page.content, pipeline: :wiki, project_wiki: @project_wiki, page_slug: wiki_page.slug)
     when :asciidoc
-      asciidoc(wiki_page.content)
+      asciidoc(wiki_page.content, wiki_page.slug)
+    when :rdoc
+      rdoc(wiki_page.content, wiki_page.slug)      
     else
       wiki_page.formatted_content.html_safe
     end

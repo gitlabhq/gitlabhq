@@ -91,14 +91,25 @@ class Projects::WikisController < Projects::ApplicationController
     )
   end
 
-  def preview_markdown
+  def preview
     text = params[:text]
+    format = params[:format]
 
     ext = Gitlab::ReferenceExtractor.new(@project, current_user)
     ext.analyze(text, author: current_user)
 
+    formatted_text = 
+      case format
+      when 'rdoc'
+        view_context.rdoc(text, params[:id])
+      when 'asciidoc'
+        view_context.asciidoc(text, params[:id])
+      else
+        view_context.markdown(text, pipeline: :wiki, project_wiki: @project_wiki, page_slug: params[:id])
+      end
+  
     render json: {
-      body: view_context.markdown(text, pipeline: :wiki, project_wiki: @project_wiki, page_slug: params[:id]),
+      body: formatted_text,
       references: {
         users: ext.users.map(&:username)
       }

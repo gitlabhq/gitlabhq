@@ -11,7 +11,7 @@ scope(controller: :wikis) do
   scope(path: 'wikis/*id', as: :wiki, constraints: WIKI_SLUG_ID, format: false) do
     get :edit
     get :history
-    post :preview_markdown
+    post :preview
     get '/', action: :show
     put '/', action: :update
     delete '/', action: :destroy

@@ -31,6 +31,11 @@ module Gitlab
 
       html = ::Asciidoctor.convert(input, asciidoc_opts)
 
+      # skip non-project inputs
+      if context.has_key?(:project)
+        html = Banzai.render(html, context)      
+      end
+
       html = Banzai.post_process(html, context)
 
       html.html_safe

@@ -106,6 +106,10 @@ class ProjectWiki
     return false
   end
 
+  def preview_page(content, format)
+    wiki.preview_page('', content, format)
+  end
+
   def update_page(page, content, format = :markdown, message = nil)
     commit = commit_details(:updated, message, page.title)
 
