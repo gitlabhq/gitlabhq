@@ -29,21 +29,11 @@ class SnippetsFinder
   def by_user(current_user, user, scope)
     snippets = user.snippets.fresh
 
-    return snippets.are_public unless current_user
-
-    if user == current_user
-      case scope
-      when 'are_internal' then
-        snippets.are_internal
-      when 'are_private' then
-        snippets.are_private
-      when 'are_public' then
-        snippets.are_public
-      else
-        snippets
-      end
+    if current_user
+      include_private = user == current_user
+      by_scope(snippets, scope, include_private)
     else
-      snippets.public_and_internal
+      snippets.are_public
     end
   end
 
@@ -51,29 +41,23 @@ class SnippetsFinder
     snippets = project.snippets.fresh
 
     if current_user
-      if project.team.member?(current_user) || current_user.admin?
-        case scope
-        when 'are_internal' then
-          snippets.are_internal
-        when 'are_private' then
-          snippets.are_private
-        when 'are_public' then
-          snippets.are_public
-        else
-          snippets
-        end
-      else
-        case scope
-        when 'are_internal' then
-          snippets.are_internal
-        when 'are_public' then
-          snippets.are_public
-        else
-          snippets.public_and_internal
-        end
-      end
+      include_private = project.team.member?(current_user) || current_user.admin?
+      by_scope(snippets, scope, include_private)
     else
       snippets.are_public
+    end
+  end
+
+  def by_scope(snippets, scope = nil, include_private = false)
+    case scope.to_s
+    when 'are_private'
+      include_private ? snippets.are_private : nil
+    when 'are_internal'
+      snippets.are_internal
+    when 'are_public'
+      snippets.are_public
+    else
+      include_private ? snippets : snippets.public_and_internal
     end
   end
 end
