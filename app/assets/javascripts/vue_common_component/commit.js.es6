@@ -39,7 +39,7 @@
       },
 
       /**
-       * Used to show the commit short_sha that links to the commit url.
+       * Used to show the commit short sha that links to the commit url.
        */
       shortSha: {
         type: String,
