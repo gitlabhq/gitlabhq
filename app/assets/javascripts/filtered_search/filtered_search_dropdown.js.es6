@@ -117,6 +117,10 @@
       item.droplab_hidden = !match && !matchWithoutPrefix;
       return item;
     }
+
+    hideDropdown() {
+      this.getCurrentHook().list.hide();
+    }
   }
 
   global.FilteredSearchDropdown = FilteredSearchDropdown;
