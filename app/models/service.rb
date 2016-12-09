@@ -220,6 +220,7 @@ class Service < ActiveRecord::Base
       pushover
       redmine
       slack
+      slack_slash_commands
       teamcity
     ]
   end
