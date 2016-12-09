@@ -41,5 +41,4 @@ describe Banzai::Filter::MathFilter, lib: true do
     doc = filter(input)
     expect(doc.to_s).to eq input
   end
-
 end
