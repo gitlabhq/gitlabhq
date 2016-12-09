@@ -7,7 +7,7 @@
 
   window.gl.environmentsList.StopComponent = Vue.component('stop-component', {
     props: {
-      stop_url: {
+      stopUrl: {
         type: String,
         default: '',
       },
@@ -15,7 +15,7 @@
 
     template: `
       <a class="btn stop-env-link"
-        :href="stop_url"
+        :href="stopUrl"
         data-confirm="Are you sure you want to stop this environment?"
         data-method="post"
         rel="nofollow">

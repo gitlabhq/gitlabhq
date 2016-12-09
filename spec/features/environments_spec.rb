@@ -85,14 +85,14 @@ feature 'Environments page', :feature, :js do
         end
 
         scenario 'does show a play button' do
-          find('.dropdown-play-icon-container').click
+          find('.js-dropdown-play-icon-container').click
           expect(page).to have_content(manual.name.humanize)
         end
 
         scenario 'does allow to play manual action', js: true do
           expect(manual).to be_skipped
 
-          find('.dropdown-play-icon-container').click
+          find('.js-dropdown-play-icon-container').click
           expect(page).to have_content(manual.name.humanize)
 
           expect { click_link(manual.name.humanize) }
