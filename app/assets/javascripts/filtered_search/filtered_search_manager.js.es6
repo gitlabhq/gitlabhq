@@ -150,6 +150,7 @@
       const element = this.mapping[key].element;
       const filterIconPadding = 27;
       const dropdownOffset = gl.text.getTextWidth(this.filteredSearchInput.value, this.font) + filterIconPadding;
+      let forceShowList = false;
 
       if (!this.mapping[key].reference) {
         this.mapping[key].reference = new gl[glClass](this.droplab, element, this.filteredSearchInput);
@@ -159,8 +160,13 @@
         this.mapping[key].reference.configure();
       }
 
+      if (this.currentDropdown === 'hint') {
+        // Clicked from hint dropdown
+        forceShowList = true;
+      }
+
       this.mapping[key].reference.setOffset(dropdownOffset);
-      this.mapping[key].reference.render(firstLoad);
+      this.mapping[key].reference.render(firstLoad, forceShowList);
 
       this.currentDropdown = key;
     }
@@ -207,6 +213,12 @@
       }
     }
 
+    // dismissCurrentDropdown() {
+    //   if (this.currentDropdown === 'hint') {
+    //     this.mapping['hint'].hide();
+    //   }
+    // }
+
     bindEvents() {
       this.filteredSearchInput.addEventListener('input', this.setDropdown.bind(this));
       this.filteredSearchInput.addEventListener('input', toggleClearSearchButton);
@@ -220,8 +232,7 @@
 
       this.filteredSearchInput.value = '';
       this.clearSearchButton.classList.add('hidden');
-      dropdownHint.resetFilters();
-      this.loadDropdown('hint');
+      this.setDropdown();
     }
 
     checkForEnter(e) {
