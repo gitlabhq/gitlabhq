@@ -5,8 +5,9 @@
         %tr
           %th Name
           %th.hidden-xs
+            .pull-left Last commit
             .last-commit.hidden-sm.pull-left
-              %small.light
+              %small.light              
                 = clipboard_button(clipboard_text: @commit.id)
                 = link_to @commit.short_id, namespace_project_commit_path(@project.namespace, @project, @commit), class: "monospace"
                 = time_ago_with_tooltip(@commit.committed_date)
