@@ -6,18 +6,7 @@
     constructor(droplab, dropdown, input) {
       super(droplab, dropdown, input);
       this.listId = 'js-dropdown-author';
-    }
-
-    itemClicked(e) {
-      const username = e.detail.selected.querySelector('.dropdown-light-content').innerText.trim();
-      gl.FilteredSearchManager.addWordToInput(this.getSelectedText(username));
-
-      this.dismissDropdown();
-    }
-
-    renderContent() {
-      // TODO: Pass elements instead of querySelectors
-      this.droplab.changeHookList(this.hookId, '#js-dropdown-author', [droplabAjaxFilter], {
+      this.config = {
         droplabAjaxFilter: {
           endpoint: '/autocomplete/users.json',
           searchKey: 'search',
@@ -29,7 +18,19 @@
           },
           searchValueFunction: this.getSearchInput,
         }
-      });
+      };
+    }
+
+    itemClicked(e) {
+      const username = e.detail.selected.querySelector('.dropdown-light-content').innerText.trim();
+      gl.FilteredSearchManager.addWordToInput(this.getSelectedText(username));
+
+      this.dismissDropdown();
+    }
+
+    renderContent() {
+      // TODO: Pass elements instead of querySelectors
+      this.droplab.changeHookList(this.hookId, this.dropdown, [droplabAjaxFilter], this.config);
     }
 
     getSearchInput() {
@@ -44,6 +45,10 @@
       } else {
         return valueWithoutColon;
       }
+    }
+
+    configure() {
+      this.droplab.addHook(this.input, this.dropdown, [droplabAjaxFilter], this.config).init();
     }
   }
 

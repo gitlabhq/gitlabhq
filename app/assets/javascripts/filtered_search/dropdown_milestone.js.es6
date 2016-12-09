@@ -6,7 +6,15 @@
     constructor(droplab, dropdown, input) {
       super(droplab, dropdown, input);
       this.listId = 'js-dropdown-milestone';
-      this.filterSymbol = '%';
+      this.config = {
+        droplabAjax: {
+          endpoint: 'milestones.json',
+          method: 'setData',
+        },
+        droplabFilter: {
+          filterFunction: this.filterWithSymbol.bind(this, '%'),
+        }
+      };
     }
 
     itemClicked(e) {
@@ -22,16 +30,11 @@
     }
 
     renderContent() {
-      // TODO: Pass elements instead of querySelectors
-      this.droplab.changeHookList(this.hookId, '#js-dropdown-milestone', [droplabAjax, droplabFilter], {
-        droplabAjax: {
-          endpoint: 'milestones.json',
-          method: 'setData',
-        },
-        droplabFilter: {
-          filterFunction: this.filterWithSymbol.bind(this),
-        }
-      });
+      this.droplab.changeHookList(this.hookId, this.dropdown, [droplabAjax, droplabFilter], this.config);
+    }
+
+    configure() {
+      this.droplab.addHook(this.input, this.dropdown, [droplabAjax, droplabFilter], this.config).init();
     }
   }
 

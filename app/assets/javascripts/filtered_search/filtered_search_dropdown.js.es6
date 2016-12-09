@@ -12,11 +12,16 @@
     }
 
     bindEvents() {
-      this.dropdown.addEventListener('click.dl', this.itemClicked.bind(this));
+      this.itemClickedWrapper = this.itemClicked.bind(this);
+      this.dropdown.addEventListener('click.dl', this.itemClickedWrapper);
     }
 
     unbindEvents() {
-      this.dropdown.removeEventListener('click.dl', this.itemClicked.bind(this));
+      this.dropdown.removeEventListener('click.dl', this.itemClickedWrapper);
+    }
+
+    getCurrentHook() {
+      return this.droplab.hooks.filter(h => h.id === this.hookId)[0];
     }
 
     getEscapedText(text) {
@@ -49,34 +54,8 @@
       // Overridden by dropdown sub class
     }
 
-    getFilterConfig(filterKeyword) {
-      const config = {};
-      const filterConfig = {};
-
-      if (filterKeyword) {
-        filterConfig.text = filterKeyword;
-      }
-
-      if (this.filterMethod) {
-        filterConfig.filter = this.filterMethod;
-      }
-
-      config[this.hookId] = filterConfig;
-      return config;
-    }
-
-    destroy() {
-      this.input.setAttribute(DATA_DROPDOWN_TRIGGER, '');
-      this.droplab.setConfig(this.getFilterConfig());
-      this.droplab.setData(this.hookId, []);
-      this.unbindEvents();
-    }
-
-    dismissDropdown() {
-      this.input.focus();
-      // Propogate input change to FilteredSearchManager
-      // so that it can determine which dropdowns to open
-      this.input.dispatchEvent(new Event('input'));
+    renderContent() {
+      // Overriden by dropdown sub class
     }
 
     setAsDropdown() {
@@ -97,13 +76,12 @@
       return dataValue !== null;
     }
 
-    getCurrentHook() {
-      return this.droplab.hooks.filter(h => h.id === this.hookId)[0];
-    }
-
-    renderContent() {
-      // Overriden by dropdown sub class
-    }
+    dismissDropdown() {
+      this.input.focus();
+      // Propogate input change to FilteredSearchManager
+      // so that it can determine which dropdowns to open
+      this.input.dispatchEvent(new Event('input'));
+    }  
 
     render(forceRenderContent) {
       this.setAsDropdown();
@@ -134,14 +112,7 @@
       }
     }
 
-    hide() {
-      const currentHook = this.getCurrentHook();
-      if (currentHook) {
-        currentHook.list.hide();
-      }
-    }
-
-    filterWithSymbol(item, query) {
+    filterWithSymbol(filterSymbol, item, query) {
       const { value } = gl.FilteredSearchTokenizer.getLastTokenObject(query);
       const valueWithoutColon = value.slice(1).toLowerCase();
       const prefix = valueWithoutColon[0];
@@ -149,8 +120,8 @@
 
       const title = item.title.toLowerCase();
 
-      // Eg. this.filterSymbol = ~ for labels
-      const matchWithoutPrefix = prefix === this.filterSymbol && title.indexOf(valueWithoutPrefix) !== -1;
+      // Eg. filterSymbol = ~ for labels
+      const matchWithoutPrefix = prefix === filterSymbol && title.indexOf(valueWithoutPrefix) !== -1;
       const match = title.indexOf(valueWithoutColon) !== -1;
 
       item.droplab_hidden = !match && !matchWithoutPrefix;

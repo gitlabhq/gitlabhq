@@ -6,6 +6,19 @@
     constructor(droplab, dropdown, input) {
       super(droplab, dropdown, input);
       this.listId = 'js-dropdown-assignee';
+      this.config = {
+        droplabAjaxFilter: {
+          endpoint: '/autocomplete/users.json',
+          searchKey: 'search',
+          params: {
+            per_page: 20,
+            active: true,
+            project_id: 2,
+            current_user: true,
+          },
+          searchValueFunction: this.getSearchInput,
+        }
+      };
     }
 
     itemClicked(e) {
@@ -21,27 +34,25 @@
 
     renderContent() {
       // TODO: Pass elements instead of querySelectors
-      this.droplab.changeHookList(this.hookId, '#js-dropdown-assignee', [droplabAjax], {
-        droplabAjax: {
-          endpoint: '/autocomplete/users.json?search=&per_page=20&active=true&project_id=2&group_id=&skip_ldap=&todo_filter=&todo_state_filter=&current_user=true&push_code_to_protected_branches=&author_id=&skip_users=',
-          method: 'setData',
-        }
-      });
+      this.droplab.changeHookList(this.hookId, this.dropdown, [droplabAjaxFilter], this.config);
     }
 
-    filterMethod(item, query) {
+    getSearchInput() {
+      const query = document.querySelector('.filtered-search').value;
       const { value } = gl.FilteredSearchTokenizer.getLastTokenObject(query);
-      const valueWithoutColon = value.slice(1).toLowerCase();
+      const valueWithoutColon = value.slice(1);
+      const hasPrefix = valueWithoutColon[0] === '@';
       const valueWithoutPrefix = valueWithoutColon.slice(1);
 
-      const username = item.username.toLowerCase();
-      const name = item.name.toLowerCase();
+      if (hasPrefix) {
+        return valueWithoutPrefix;
+      } else {
+        return valueWithoutColon;
+      }
+    }
 
-      const noUsernameMatch = username.indexOf(valueWithoutPrefix) === -1 && username.indexOf(valueWithoutColon) === -1;
-      const noNameMatch = name.indexOf(valueWithoutColon) === -1;
-
-      item.droplab_hidden = noUsernameMatch && noNameMatch;
-      return item;
+    configure() {
+      this.droplab.addHook(this.input, this.dropdown, [droplabAjaxFilter], this.config).init();
     }
   }
 

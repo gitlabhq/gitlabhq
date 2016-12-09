@@ -24,26 +24,30 @@
     constructor(droplab, dropdown, input) {
       super(droplab, dropdown, input);
       this.listId = 'js-dropdown-hint';
+      this.config = {
+        droplabFilter: {
+          template: 'hint',
+          filterFunction: this.filterMethod,
+        }
+      };
     }
 
     itemClicked(e) {
-      const token = e.detail.selected.querySelector('.js-filter-hint').innerText.trim();
-      const tag = e.detail.selected.querySelector('.js-filter-tag').innerText.trim();
+      const selected = e.detail.selected;
+      if (!selected.hasAttribute('data-value')) {
+        const token = selected.querySelector('.js-filter-hint').innerText.trim();
+        const tag = selected.querySelector('.js-filter-tag').innerText.trim();
 
-      if (tag.length) {
-        gl.FilteredSearchManager.addWordToInput(this.getSelectedText(token));
+        if (tag.length) {
+          gl.FilteredSearchManager.addWordToInput(this.getSelectedText(token));
+        }
       }
 
       this.dismissDropdown();
     }
 
     renderContent() {
-      this.droplab.changeHookList(this.hookId, '#js-dropdown-hint', [droplabFilter], {
-        droplabFilter: {
-          template: 'hint',
-          filterFunction: this.filterMethod,
-        }
-      });
+      this.droplab.changeHookList(this.hookId, this.dropdown, [droplabFilter], this.config);
       this.droplab.setData(this.hookId, dropdownData);
     }
 
@@ -60,11 +64,7 @@
     }
 
     configure() {
-      this.droplab.addHook(this.input, this.dropdown, [droplabFilter], {
-        droplabFilter: {
-          template: 'hint',
-        }
-      }).init();
+      this.droplab.addHook(this.input, this.dropdown, [droplabFilter], this.config).init();
     }
   }
 
