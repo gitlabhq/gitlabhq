@@ -7,7 +7,7 @@ module Rouge
       tag 'math'
       mimetypes 'text/plain'
 
-      default_options :token => 'Test'
+      default_options :token => 'Text'
 
       def token
         @token ||= Token[option :token]
