@@ -142,7 +142,6 @@
 .commit-header {
   padding: 5px 10px;
   background-color: $gray-light;
-  border-top: 1px solid $gray-darker;
   border-bottom: 1px solid $gray-darker;
   font-size: 14px;
 
@@ -187,9 +186,8 @@
 
 .commit-actions {
   @media (min-width: $screen-sm-min) {
-    float: right;
-    margin-left: $gl-padding;
-    margin-top: 2px;
+    width: 300px;
+    text-align: right;
     font-size: 0;
   }
 
@@ -230,14 +228,6 @@
   button {
     color: $gl-dark-link-color;
     vertical-align: baseline;
-  }
-
-  .commit-content {
-    display: inline-block;
-
-    @media (min-width: $screen-sm-min) {
-      max-width: 70%;
-    }
   }
 
   .commit-row-description {
