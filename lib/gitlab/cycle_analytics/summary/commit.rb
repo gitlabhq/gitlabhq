@@ -23,8 +23,11 @@ module Gitlab
           cmd << "--after=#{@from.iso8601}"
           cmd << sha
 
-          raw_output = IO.popen(cmd) { |io| io.read }
-          raw_output.lines.count
+          output, status = Gitlab::Popen.popen(cmd) { |io| io.read }
+
+          raise IOError, output unless status.zero?
+
+          output.lines.count
         end
 
         def ref

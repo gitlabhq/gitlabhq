@@ -8,10 +8,11 @@ shared_examples 'default query config' do
                                                stage: stage_name)
   end
 
-  let(:event) { described_class.new(fetcher: fetcher, options: {}, stage: stage_name) }
+  let(project)
+  let(:event) { described_class.new(project: project, stage: stage_name, options: {}) }
 
   it 'has the stage attribute' do
-    expect(event.stage).not_to be_nil
+    expect(event.name).not_to be_nil
   end
 
   it 'has the projection attributes' do

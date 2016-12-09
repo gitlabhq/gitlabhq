@@ -8,8 +8,10 @@ module Gitlab
         super(*args)
       end
 
-      def custom_query(base_query)
+      def events_query
         base_query.join(mr_diff_table).on(mr_diff_table[:merge_request_id].eq(mr_table[:id]))
+
+        super
       end
 
       private

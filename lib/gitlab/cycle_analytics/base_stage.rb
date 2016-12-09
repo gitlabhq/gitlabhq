@@ -1,23 +1,17 @@
 module Gitlab
   module CycleAnalytics
     class BaseStage
-      include MetricsTables
-
-      attr_accessor :start_time_attrs, :end_time_attrs
+      include BaseQuery
 
       def initialize(project:, options:)
         @project = project
         @options = options
-        @fetcher = Gitlab::CycleAnalytics::MetricsFetcher.new(project: project,
-                                                              from: options[:from],
-                                                              branch: options[:branch],
-                                                              stage: self)
       end
 
       def event
-        @event ||= Gitlab::CycleAnalytics::Event[stage].new(fetcher: @fetcher,
-                                                            options: @options,
-                                                            stage: stage)
+        @event ||= Gitlab::CycleAnalytics::Event[name].new(project: @project,
+                                                           stage: name,
+                                                           options: event_options)
       end
 
       def events
@@ -29,17 +23,31 @@ module Gitlab
       end
 
       def title
-        stage.to_s.capitalize
+        name.to_s.capitalize
       end
 
       def median
-        @fetcher.median
+        cte_table = Arel::Table.new("cte_table_for_#{name}")
+
+        # Build a `SELECT` query. We find the first of the `end_time_attrs` that isn't `NULL` (call this end_time).
+        # Next, we find the first of the start_time_attrs that isn't `NULL` (call this start_time).
+        # We compute the (end_time - start_time) interval, and give it an alias based on the current
+        # cycle analytics stage.
+        interval_query = Arel::Nodes::As.new(
+          cte_table,
+          subtract_datetimes(base_query, @start_time_attrs, @end_time_attrs, name.to_s))
+
+        median_datetime(cte_table, interval_query, name)
+      end
+
+      def name
+        raise NotImplementedError.new("Expected #{self.name} to implement name")
       end
 
       private
 
-      def stage
-        class_name_for('Stage')
+      def event_options
+        @options.merge(start_time_attrs: @start_time_attrs, end_time_attrs: @end_time_attrs)
       end
     end
   end

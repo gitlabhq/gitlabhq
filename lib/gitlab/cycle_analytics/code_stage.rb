@@ -8,7 +8,7 @@ module Gitlab
         super(*args)
       end
 
-      def stage
+      def name
         :code
       end
 

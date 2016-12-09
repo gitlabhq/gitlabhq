@@ -8,12 +8,20 @@ module Gitlab
         super(*args)
       end
 
-      def stage
+      def name
         :test
       end
 
       def description
         "Total test time for all commits/merges"
+      end
+
+      def stage_query
+        if @options[:branch]
+          super.where(build_table[:ref].eq(@options[:branch]))
+        else
+          super
+        end
       end
     end
   end

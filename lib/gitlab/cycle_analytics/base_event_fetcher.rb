@@ -1,15 +1,14 @@
 module Gitlab
   module CycleAnalytics
     class BaseEventFetcher
-      include MetricsTables
+      include BaseQuery
 
       attr_reader :projections, :query, :stage, :order
 
-      def initialize(fetcher:, options:, stage:)
-        @fetcher = fetcher
-        @project = fetcher.project
-        @options = options
+      def initialize(project:, stage:, options:)
+        @project = project
         @stage = stage
+        @options = options
       end
 
       def fetch
@@ -20,8 +19,6 @@ module Gitlab
         end.compact
       end
 
-      def custom_query(_base_query); end
-
       private
 
       def update_author!
@@ -31,7 +28,21 @@ module Gitlab
       end
 
       def event_result
-        @event_result ||= @fetcher.events.to_a
+        @event_result ||= ActiveRecord::Base.connection.exec_query(events_query.to_sql).to_a
+      end
+
+      def events_query
+        diff_fn = subtract_datetimes_diff(base_query, @options[:start_time_attrs], @options[:end_time_attrs])
+
+        base_query.project(extract_diff_epoch(diff_fn).as('total_time'), *projections).order(order.desc)
+      end
+
+      def order
+        @order || default_order
+      end
+
+      def default_order
+        @options[:start_time_attrs].is_a?(Array) ? @options[:start_time_attrs].first : @options[:start_time_attrs]
       end
 
       def serialize(_event)

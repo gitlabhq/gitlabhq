@@ -14,8 +14,10 @@ module Gitlab
         super
       end
 
-      def custom_query(base_query)
+      def events_query
         base_query.join(build_table).on(mr_metrics_table[:pipeline_id].eq(build_table[:commit_id]))
+
+        super
       end
 
       private

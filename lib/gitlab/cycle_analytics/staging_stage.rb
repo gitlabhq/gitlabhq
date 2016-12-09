@@ -1,6 +1,8 @@
 module Gitlab
   module CycleAnalytics
     class StagingStage < BaseStage
+      include ProductionHelper
+
       def initialize(*args)
         @start_time_attrs = mr_metrics_table[:merged_at]
         @end_time_attrs = mr_metrics_table[:first_deployed_to_production_at]
@@ -8,7 +10,7 @@ module Gitlab
         super(*args)
       end
 
-      def stage
+      def name
         :staging
       end
 
