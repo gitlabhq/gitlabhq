@@ -26,7 +26,8 @@
         gl.FilteredSearchManager.addWordToInput(labelName);
       }
 
-      this.dismissDropdown();
+      // debugger
+      this.dismissDropdown(!dataValueSet);
     }
 
     renderContent() {
