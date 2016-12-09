@@ -133,7 +133,7 @@
                         %tr.success-message
                           %td{style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#333333;font-size:15px;font-weight:400;line-height:1.4;padding:15px 5px;text-align:center;"}
                             - build_count = @pipeline.statuses.latest.size
-                            - stage_count = @pipeline.stages.size
+                            - stage_count = @pipeline.stages_count
                             Pipeline
                             %a{href: pipeline_url(@pipeline), style: "color:#3777b0;text-decoration:none;"}
                               = "\##{@pipeline.id}"

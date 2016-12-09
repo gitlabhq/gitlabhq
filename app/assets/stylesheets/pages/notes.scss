@@ -124,7 +124,7 @@ ul.notes {
             position: absolute;
             left: 0;
             bottom: 0;
-            background: linear-gradient(rgba($gray-light, 0.1) -100px, $white-light 100%);
+            background: linear-gradient(rgba($white-light, 0.1) -100px, $white-light 100%);
           }
 
           &.hide-shade {
@@ -413,7 +413,6 @@ ul.notes {
   .fa {
     color: $notes-action-color;
     position: relative;
-    top: 1px;
     font-size: 17px;
   }
 

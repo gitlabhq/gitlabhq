@@ -4,7 +4,7 @@ class GroupUrlConstrainer
 
     return false unless valid?(id)
 
-    Group.find_by(path: id).present?
+    Group.find_by_full_path(id).present?
   end
 
   private

@@ -45,11 +45,14 @@ module API
         return nil
       end
 
-      identifier = sudo_identifier()
+      identifier = sudo_identifier
 
-      # If the sudo is the current user do nothing
-      if identifier && !(@current_user.id == identifier || @current_user.username == identifier)
+      if identifier
+        # We check for private_token because we cannot allow PAT to be used
         forbidden!('Must be admin to use sudo') unless @current_user.is_admin?
+        forbidden!('Private token must be specified in order to use sudo') unless private_token_used?
+
+        @impersonator = @current_user
         @current_user = User.by_username_or_id(identifier)
         not_found!("No user id or username for: #{identifier}") if @current_user.nil?
       end
@@ -109,7 +112,7 @@ module API
       if id =~ /^\d+$/
         Group.find_by(id: id)
       else
-        Group.find_by(path: id)
+        Group.find_by_full_path(id)
       end
     end
 
@@ -209,22 +212,6 @@ module API
           message = "\"" + key.to_s + "\" must be a timestamp in ISO 8601 format: YYYY-MM-DDTHH:MM:SSZ"
           render_api_error!(message, 400)
         end
-      end
-    end
-
-    def issuable_order_by
-      if params["order_by"] == 'updated_at'
-        'updated_at'
-      else
-        'created_at'
-      end
-    end
-
-    def issuable_sort
-      if params["sort"] == 'asc'
-        :asc
-      else
-        :desc
       end
     end
 
@@ -361,6 +348,10 @@ module API
     end
 
     private
+
+    def private_token_used?
+      private_token == @current_user.private_token
+    end
 
     def secret_token
       Gitlab::Shell.secret_token

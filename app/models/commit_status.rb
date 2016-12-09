@@ -31,18 +31,13 @@ class CommitStatus < ActiveRecord::Base
   end
 
   scope :exclude_ignored, -> do
-    quoted_when = connection.quote_column_name('when')
     # We want to ignore failed_but_allowed jobs
     where("allow_failure = ? OR status IN (?)",
-      false, all_state_names - [:failed, :canceled]).
-      # We want to ignore skipped manual jobs
-      where("#{quoted_when} <> ? OR status <> ?", 'manual', 'skipped').
-      # We want to ignore skipped on_failure
-      where("#{quoted_when} <> ? OR status <> ?", 'on_failure', 'skipped')
+      false, all_state_names - [:failed, :canceled])
   end
 
-  scope :latest_ci_stages, -> { latest.ordered.includes(project: :namespace) }
-  scope :retried_ci_stages, -> { retried.ordered.includes(project: :namespace) }
+  scope :latest_ordered, -> { latest.ordered.includes(project: :namespace) }
+  scope :retried_ordered, -> { retried.ordered.includes(project: :namespace) }
 
   state_machine :status do
     event :enqueue do
@@ -115,11 +110,6 @@ class CommitStatus < ActiveRecord::Base
 
   def group_name
     name.gsub(/\d+[\s:\/\\]+\d+\s*/, '').strip
-  end
-
-  def self.stages
-    # We group by stage name, but order stages by theirs' index
-    unscoped.from(all, :sg).group('stage').order('max(stage_idx)', 'stage').select('sg.stage')
   end
 
   def failed_but_allowed?

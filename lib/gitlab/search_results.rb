@@ -68,7 +68,7 @@ module Gitlab
     end
 
     def merge_requests
-      merge_requests = MergeRequest.in_projects(project_ids_relation)
+      merge_requests = MergeRequestsFinder.new(current_user).execute.in_projects(project_ids_relation)
       if query =~ /[#!](\d+)\z/
         merge_requests = merge_requests.where(iid: $1)
       else

@@ -234,11 +234,14 @@ describe API::MergeRequests, api: true  do
              target_branch: 'master',
              author: user,
              labels: 'label, label2',
-             milestone_id: milestone.id
+             milestone_id: milestone.id,
+             remove_source_branch: true
+
         expect(response).to have_http_status(201)
         expect(json_response['title']).to eq('Test merge_request')
         expect(json_response['labels']).to eq(['label', 'label2'])
         expect(json_response['milestone']['id']).to eq(milestone.id)
+        expect(json_response['force_remove_source_branch']).to be_truthy
       end
 
       it "returns 422 when source_branch equals target_branch" do
@@ -509,6 +512,13 @@ describe API::MergeRequests, api: true  do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), target_branch: "wiki"
       expect(response).to have_http_status(200)
       expect(json_response['target_branch']).to eq('wiki')
+    end
+
+    it "returns merge_request that removes the source branch" do
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), remove_source_branch: true
+
+      expect(response).to have_http_status(200)
+      expect(json_response['force_remove_source_branch']).to be_truthy
     end
 
     it 'allows special label names' do

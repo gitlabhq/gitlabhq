@@ -101,7 +101,9 @@ class MergeRequest < ActiveRecord::Base
   validate :validate_branches, unless: [:allow_broken, :importing?, :closed_without_fork?]
   validate :validate_fork, unless: :closed_without_fork?
 
-  scope :by_branch, ->(branch_name) { where("(source_branch LIKE :branch) OR (target_branch LIKE :branch)", branch: branch_name) }
+  scope :by_source_or_target_branch, ->(branch_name) do
+    where("source_branch = :branch OR target_branch = :branch", branch: branch_name)
+  end
   scope :cared, ->(user) { where('assignee_id = :user OR author_id = :user', user: user.id) }
   scope :by_milestone, ->(milestone) { where(milestone_id: milestone) }
   scope :of_projects, ->(ids) { where(target_project_id: ids) }
@@ -805,7 +807,7 @@ class MergeRequest < ActiveRecord::Base
     @merge_commit ||= project.commit(merge_commit_sha) if merge_commit_sha
   end
 
-  def can_be_reverted?(current_user = nil)
+  def can_be_reverted?(current_user)
     merge_commit && !merge_commit.has_been_reverted?(current_user, self)
   end
 
