@@ -11,7 +11,7 @@ module SnippetsHelper
   # Return the path of a snippets index for a user or for a project
   #
   # @returns String, path to snippet index
-  def snippets_path(subject = nil, opts = nil)
+  def subject_snippets_path(subject = nil, opts = nil)
     if subject.is_a?(Project)
       namespace_project_snippets_path(subject.namespace, subject, opts)
     else # assume subject === User

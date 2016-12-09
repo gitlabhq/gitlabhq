@@ -3,7 +3,7 @@
 
 .nav-links.snippet-scope-menu
   %li{ class: ("active" unless params[:scope]) }
-    = link_to snippets_path(subject) do
+    = link_to subject_snippets_path(subject) do
       All
       %span.badge
         - if include_private
@@ -13,19 +13,19 @@
 
   - if include_private
     %li{ class: ("active" if params[:scope] == "are_private") }
-      = link_to snippets_path(subject, scope: 'are_private') do
+      = link_to subject_snippets_path(subject, scope: 'are_private') do
         Private
         %span.badge
           = subject.snippets.are_private.count
 
   %li{ class: ("active" if params[:scope] == "are_internal") }
-    = link_to snippets_path(subject, scope: 'are_internal') do
+    = link_to subject_snippets_path(subject, scope: 'are_internal') do
       Internal
       %span.badge
         = subject.snippets.are_internal.count
 
   %li{ class: ("active" if params[:scope] == "are_public") }
-    = link_to snippets_path(subject, scope: 'are_public') do
+    = link_to subject_snippets_path(subject, scope: 'are_public') do
       Public
       %span.badge
         = subject.snippets.are_public.count
