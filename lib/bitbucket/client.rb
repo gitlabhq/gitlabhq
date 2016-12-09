@@ -35,7 +35,7 @@ module Bitbucket
     end
 
     def repos
-      path = "/repositories/#{user.username}?role=member"
+      path = "/repositories?role=member"
       get_collection(path, :repo)
     end
 
