@@ -5,25 +5,35 @@ module Banzai
     # HTML filter that adds class="code math" and removes the dolar sign in $`2+2`$.
     #
     class InlineMathFilter < HTML::Pipeline::Filter
+
+      # This picks out $<code>...</code>$.
+      # It will return the last $ node
+      INLINE_MATH = %Q(descendant-or-self::text()[substring(., string-length(.)) = '$']
+        /following-sibling::node()[1][self::code]
+        /following-sibling::node()[1][self::text()][starts-with(.,'$')]
+      ).freeze
+
+      DISPLAY_MATH = "descendant-or-self::pre[contains(@class, 'math')]".freeze
+
+      STYLE_ATTRIBUTE = 'data-math-style'.freeze
+
+
       def call
-        doc.xpath("descendant-or-self::text()[substring(., string-length(.)) = '$']"\
-        '/following-sibling::node()[1][self::code]'\
-        "/following-sibling::node()[1][self::text()][starts-with(.,'$')]").each do |el|
+        doc.xpath(INLINE_MATH).each do |el|
           closing = el
           code = el.previous
           opening = code.previous
 
           code[:class] = 'code math'
-          code["data-math-style"] = 'inline'
+          code[STYLE_ATTRIBUTE] = 'inline'
           closing.content = closing.content[1..-1]
           opening.content = opening.content[0..-2]
 
           closing
         end
 
-        doc.xpath("descendant-or-self::pre[contains(@class, 'math')]").each do |el|
-          # http://stackoverflow.com/questions/4841238/add-a-class-to-an-element-with-nokogiri
-          el["data-math-style"] = 'display'
+        doc.xpath(DISPLAY_MATH).each do |el|
+          el[STYLE_ATTRIBUTE] = 'display'
           el
         end
 
