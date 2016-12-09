@@ -29,17 +29,17 @@ module Routable
 
       order_sql = "(CASE WHEN #{binary} routes.path = #{connection.quote(path)} THEN 0 ELSE 1 END)"
 
-      where_paths_in([path]).reorder(order_sql).take
+      where_full_path_in([path]).reorder(order_sql).take
     end
 
     # Builds a relation to find multiple objects by their full paths.
     #
     # Usage:
     #
-    #     Klass.where_paths_in(%w{gitlab-org/gitlab-ce gitlab-org/gitlab-ee})
+    #     Klass.where_full_path_in(%w{gitlab-org/gitlab-ce gitlab-org/gitlab-ee})
     #
     # Returns an ActiveRecord::Relation.
-    def where_paths_in(paths)
+    def where_full_path_in(paths)
       wheres = []
       cast_lower = Gitlab::Database.postgresql?
 
