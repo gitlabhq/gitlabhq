@@ -240,6 +240,10 @@
       if (e.keyCode === 13) {
         e.stopPropagation();
         e.preventDefault();
+
+        // Prevent droplab from opening dropdown
+        this.droplab.destroy();
+
         this.search();
       }
     }
