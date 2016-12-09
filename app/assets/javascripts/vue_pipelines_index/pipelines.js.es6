@@ -2,12 +2,6 @@
 /* eslint-disable no-param-reassign, no-bitwise*/
 
 ((gl) => {
-  const SPREAD = '...';
-  const PREV = 'Prev';
-  const NEXT = 'Next';
-  const FIRST = '<< First';
-  const LAST = 'Last >>';
-
   const getParameterByName = (name) => {
     const url = window.location.href;
     name = name.replace(/[[\]]/g, '\\$&');
@@ -51,21 +45,11 @@
       this.store.fetchDataLoop.call(this, Vue, this.pagenum, this.scope, this.apiScope);
     },
     methods: {
-      changepage(e) {
-        const scope = getParameterByName('scope');
-        if (scope) this.apiScope = scope;
-        const text = e.target.innerText;
-        const { totalPages, nextPage, previousPage } = this.pageInfo;
-        if (text === SPREAD) return;
-        if (/^-?[\d.]+(?:e-?\d+)?$/.test(text)) this.pagenum = +text;
-        if (text === LAST) this.pagenum = totalPages;
-        if (text === NEXT) this.pagenum = nextPage;
-        if (text === PREV) this.pagenum = previousPage;
-        if (text === FIRST) this.pagenum = 1;
-        window.history.pushState({}, null, `?scope=${this.apiScope}&p=${this.pagenum}`);
+      change(pagenum, apiScope) {
+        window.history.pushState({}, null, `?scope=${apiScope}&p=${pagenum}`);
         clearInterval(this.timeLoopInterval);
         this.pageRequest = true;
-        this.store.fetchDataLoop.call(this, Vue, this.pagenum, this.scope, this.apiScope);
+        this.store.fetchDataLoop.call(this, Vue, pagenum, this.scope, apiScope);
       },
       author(pipeline) {
         if (!pipeline.commit) return ({ avatar_url: '', web_url: '', username: '' });
@@ -129,7 +113,7 @@
         <gl-pagination
           v-if='pageInfo.total > pageInfo.perPage'
           :pagenum='pagenum'
-          :changepage='changepage'
+          :change='change'
           :count='count.all'
           :pageInfo='pageInfo'
         >

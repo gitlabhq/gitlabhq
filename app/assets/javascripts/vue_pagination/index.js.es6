@@ -9,11 +9,41 @@
   const FIRST = '<< First';
   const LAST = 'Last >>';
 
+  const getParameterByName = (name) => {
+    const url = window.location.href;
+    name = name.replace(/[[\]]/g, '\\$&');
+    const regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`);
+    const results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+  };
+
   gl.VueGlPagination = Vue.extend({
     props: [
-      'changepage',
+      'change',
       'pageInfo',
     ],
+    methods: {
+      changepage(e) {
+        let pagenum = this.pageInfo.page;
+        let apiScope = getParameterByName('scope');
+
+        if (!apiScope) apiScope = 'all';
+
+        const text = e.target.innerText;
+        const { totalPages, nextPage, previousPage } = this.pageInfo;
+
+        if (text === SPREAD) return;
+        if (/^-?[\d.]+(?:e-?\d+)?$/.test(text)) pagenum = +text;
+        if (text === LAST) pagenum = totalPages;
+        if (text === NEXT) pagenum = nextPage;
+        if (text === PREV) pagenum = previousPage;
+        if (text === FIRST) pagenum = 1;
+
+        this.change(pagenum, apiScope);
+      },
+    },
     computed: {
       prev() {
         return this.pageInfo.previousPage;
