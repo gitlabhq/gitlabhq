@@ -247,6 +247,9 @@
       this.filteredSearchInput.value = '';
       this.clearSearchButton.classList.add('hidden');
 
+      // Reset Filters
+      this.mapping[this.currentDropdown].reference.resetFilters();
+
       // Force dropdown to hide
       this.mapping[this.currentDropdown].reference.hideDropdown();
 
