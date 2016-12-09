@@ -29,7 +29,7 @@
         setTimeago = true;
       }
 
-      $timeagoEls.each(function() {
+      $timeagoEls.filter(':not([data-timeago-rendered])').each(function() {
         var $el = $(this);
         $el.attr('title', gl.utils.formatDate($el.attr('datetime')));
 
@@ -39,6 +39,8 @@
             template: '<div class="tooltip local-timeago" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>'
           });
         }
+
+        $el.attr('data-timeago-rendered', true);
         gl.utils.renderTimeago($el);
       });
     };

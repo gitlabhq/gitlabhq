@@ -74,6 +74,8 @@
         projectStoppedEnvironmentsPath: environmentsData.projectStoppedEnvironmentsPath,
         newEnvironmentPath: environmentsData.newEnvironmentPath,
         helpPagePath: environmentsData.helpPagePath,
+        commitIconSvg: environmentsData.commitIconSvg,
+        playIconSvg: environmentsData.playIconSvg,
       };
     },
 
@@ -227,7 +229,9 @@
                     :model="model"
                     :toggleRow="toggleRow.bind(model)"
                     :can-create-deployment="canCreateDeploymentParsed"
-                    :can-read-environment="canReadEnvironmentParsed"></tr>
+                    :can-read-environment="canReadEnvironmentParsed"
+                    :play-icon-svg="playIconSvg"
+                    :commit-icon-svg="commitIconSvg"></tr>
 
                   <tr v-if="model.isOpen && model.children && model.children.length > 0"
                     is="environment-item"
@@ -235,7 +239,9 @@
                     :model="children"
                     :toggleRow="toggleRow.bind(children)"
                     :can-create-deployment="canCreateDeploymentParsed"
-                    :can-read-environment="canReadEnvironmentParsed">
+                    :can-read-environment="canReadEnvironmentParsed"
+                    :play-icon-svg="playIconSvg"
+                    :commit-icon-svg="commitIconSvg">
                     </tr>
 
                 </template>

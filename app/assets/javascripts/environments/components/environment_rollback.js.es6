@@ -7,19 +7,20 @@
 
   window.gl.environmentsList.RollbackComponent = Vue.component('rollback-component', {
     props: {
-      retry_url: {
+      retryUrl: {
         type: String,
         default: '',
       },
-      is_last_deployment: {
+
+      isLastDeployment: {
         type: Boolean,
         default: true,
       },
     },
 
     template: `
-      <a class="btn" :href="retry_url" data-method="post" rel="nofollow">
-        <span v-if="is_last_deployment">
+      <a class="btn" :href="retryUrl" data-method="post" rel="nofollow">
+        <span v-if="isLastDeployment">
           Re-deploy
         </span>
         <span v-else>

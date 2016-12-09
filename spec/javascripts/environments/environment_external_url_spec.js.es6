@@ -7,12 +7,12 @@ describe('External URL Component', () => {
     fixture.load('environments/element.html');
   });
 
-  it('should link to the provided external_url', () => {
+  it('should link to the provided externalUrl prop', () => {
     const externalURL = 'https://gitlab.com';
     const component = new window.gl.environmentsList.ExternalUrlComponent({
       el: document.querySelector('.test-dom-element'),
       propsData: {
-        external_url: externalURL,
+        externalUrl: externalURL,
       },
     });
 

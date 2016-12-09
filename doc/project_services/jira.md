@@ -197,6 +197,7 @@ incorrectly the JIRA-GitLab integration.
 Make sure that the user you set up for GitLab to communicate with JIRA has the
 correct access permission to post comments on a ticket and to also transition
 the ticket, if you'd like GitLab to also take care of closing them.
+JIRA issue references and update comments will not work if the GitLab issue tracker is disabled.
 
 ### GitLab is unable to close a ticket
 

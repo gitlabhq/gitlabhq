@@ -31,7 +31,7 @@
         %span.label-branch= source_branch_with_namespace(@merge_request)
         %span into
         %span.label-branch
-          = link_to @merge_request.target_branch, namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch)
+          = link_to_if @merge_request.target_branch_exists?, @merge_request.target_branch, namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch)
         - if @merge_request.open? && @merge_request.diverged_from_target_branch?
           %span (#{pluralize(@merge_request.diverged_commits_count, 'commit')} behind)
 

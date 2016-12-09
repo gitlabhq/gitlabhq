@@ -940,7 +940,7 @@ class Repository
       committer = user_to_committer(user)
 
       Rugged::Commit.create(rugged,
-        message: commit.revert_message,
+        message: commit.revert_message(user),
         author: committer,
         committer: committer,
         tree: revert_tree_id,
