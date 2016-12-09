@@ -30,13 +30,37 @@ describe Gitlab::Ci::Config::Rule::Environments do
         }
       end
 
-      it 'invalidates environment that depends on `on_stop`' do
+      it 'adds error about missing on stop job' do
         expect(global.errors)
           .to include 'jobs:deploy:environment on stop job not defined'
       end
     end
 
     context 'when teardown job is defined' do
+      context 'when teardown job does not have environment defined' do
+        let(:config) do
+          { deploy: {
+              script: 'rspec',
+              environment: {
+                name: 'test',
+                on_stop: 'teardown'
+              }
+            },
+
+            teardown: {
+              script: 'echo teardown'
+            }
+          }
+        end
+
+        it 'adds error about incomplete teardown job' do
+          expect(global.errors)
+            .to include 'jobs:teardown environment not defined'
+        end
+      end
+
+      context 'when teardown job is defined' do
+      end
     end
   end
 

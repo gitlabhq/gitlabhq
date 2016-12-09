@@ -10,7 +10,7 @@ module Gitlab
             @job = job
             @job_environment = job[:environment]
 
-            @stop_job_name = @environment.try(:on_stop).to_s
+            @stop_job_name = @job_environment.try(:on_stop).to_s
             @stop_job = config[:jobs][@stop_job_name.to_sym]
             @stop_job_environment = @stop_job[:environment]
           end
