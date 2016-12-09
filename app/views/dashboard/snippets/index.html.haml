@@ -33,4 +33,4 @@
   = link_to new_snippet_path, class: "btn btn-new btn-block", title: "New snippet" do
     New snippet
 
-= render 'snippets/snippets'
+= render partial: 'snippets/snippets', locals: { link_project: true }
