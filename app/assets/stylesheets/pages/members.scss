@@ -116,7 +116,7 @@
 }
 
 .alert-member-ldap {
-  background-color: #fff1e0;
+  background-color: $ldap-members-override-bg;
 
   @media (min-width: $screen-sm-min) {
     line-height: 40px;
