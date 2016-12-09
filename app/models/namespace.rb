@@ -4,11 +4,15 @@ class Namespace < ActiveRecord::Base
   include CacheMarkdownField
   include Sortable
   include Gitlab::ShellAdapter
+  include Routable
 
   cache_markdown_field :description, pipeline: :description
 
   has_many :projects, dependent: :destroy
   belongs_to :owner, class_name: "User"
+
+  belongs_to :parent, class_name: "Namespace"
+  has_many :children, class_name: "Namespace", foreign_key: :parent_id
 
   validates :owner, presence: true, unless: ->(n) { n.type == "Group" }
   validates :name,
@@ -86,7 +90,7 @@ class Namespace < ActiveRecord::Base
   end
 
   def to_param
-    path
+    full_path
   end
 
   def human_name
@@ -150,6 +154,14 @@ class Namespace < ActiveRecord::Base
     Gitlab.config.lfs.enabled
   end
 
+  def full_path
+    if parent
+      parent.full_path + '/' + path
+    else
+      path
+    end
+  end
+
   private
 
   def repository_storage_paths
@@ -184,5 +196,9 @@ class Namespace < ActiveRecord::Base
       joins(project_group_links: :project).
       where(projects: { namespace_id: id }).
       find_each(&:refresh_members_authorized_projects)
+  end
+
+  def full_path_changed?
+    path_changed? || parent_id_changed?
   end
 end

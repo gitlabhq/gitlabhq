@@ -188,6 +188,7 @@ project:
 - project_feature
 - authorized_users
 - project_authorizations
+- route
 award_emoji:
 - awardable
 - user
