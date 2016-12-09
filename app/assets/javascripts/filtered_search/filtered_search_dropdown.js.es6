@@ -121,6 +121,15 @@
     hideDropdown() {
       this.getCurrentHook().list.hide();
     }
+
+    resetFilters() {
+      const hook = this.getCurrentHook();
+      const data = hook.list.data;
+      const results = data.map(function(o) {
+        o.droplab_hidden = false;
+      });
+      hook.list.render(results);
+    }
   }
 
   global.FilteredSearchDropdown = FilteredSearchDropdown;
