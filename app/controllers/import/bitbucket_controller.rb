@@ -2,7 +2,7 @@ class Import::BitbucketController < Import::BaseController
   before_action :verify_bitbucket_import_enabled
   before_action :bitbucket_auth, except: :callback
 
-  rescue_from OAuth::Error, with: :bitbucket_unauthorized
+  rescue_from OAuth2::Error, with: :bitbucket_unauthorized
   rescue_from Bitbucket::Error::Unauthorized, with: :bitbucket_unauthorized
 
   def callback
