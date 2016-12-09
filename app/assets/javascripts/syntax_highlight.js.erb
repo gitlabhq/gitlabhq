@@ -23,7 +23,7 @@
       var $this = $(this);
       mathNode.insertAfter($this);
 
-      var display = $this.get(0).hasAttribute('js-math-display');
+      var display = $this.get(0).hasAttribute('data-math-display');
       katex.render($this.text(), mathNode.get(0), { displayMode: display });
       $this.remove();
     })

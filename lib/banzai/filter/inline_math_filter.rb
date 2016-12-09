@@ -12,7 +12,7 @@ module Banzai
           closing = el
           code = el.previous
           code[:class] = 'code math'
-          code["js-math-inline"] = true
+          code["data-math-inline"] = true
           opening = code.previous
 
           closing.content = closing.content[1..-1]
@@ -23,7 +23,7 @@ module Banzai
 
         doc.xpath("descendant-or-self::pre[contains(@class, 'math')]").each do |el|
           # http://stackoverflow.com/questions/4841238/add-a-class-to-an-element-with-nokogiri
-          el["js-math-display"] = true
+          el["data-math-display"] = true
           el
         end
 
