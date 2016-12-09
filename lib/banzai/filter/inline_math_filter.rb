@@ -7,8 +7,8 @@ module Banzai
     class InlineMathFilter < HTML::Pipeline::Filter
       def call
         doc.xpath("descendant-or-self::text()[substring(., string-length(.)) = '$']"\
-          "/following-sibling::*[name() = 'code']"\
-          "/following-sibling::text()[starts-with(.,'$')]").each do |el|
+        '/following-sibling::node()[1][self::code]'\
+        "/following-sibling::node()[1][self::text()][starts-with(.,'$')]").each do |el|
           closing = el
           code = el.previous
           code[:class] = 'code math'
@@ -23,7 +23,7 @@ module Banzai
 
         doc.xpath("descendant-or-self::pre[contains(@class, 'math')]").each do |el|
           # http://stackoverflow.com/questions/4841238/add-a-class-to-an-element-with-nokogiri
-          code["js-math-display"] = true
+          el["js-math-display"] = true
           el
         end
 
