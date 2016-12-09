@@ -10,7 +10,7 @@ describe AnalyticsStageSerializer do
   let(:resource) { Gitlab::CycleAnalytics::CodeStage.new(project: double, options: {}) }
 
   before do
-    allow_any_instance_of(Gitlab::CycleAnalytics::MetricsFetcher).to receive(:median).and_return(1.12)
+    allow_any_instance_of(Gitlab::CycleAnalytics::BaseStage).to receive(:median).and_return(1.12)
     allow_any_instance_of(Gitlab::CycleAnalytics::BaseEventFetcher).to receive(:event_result).and_return({})
   end
 
