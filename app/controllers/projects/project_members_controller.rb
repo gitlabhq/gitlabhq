@@ -35,13 +35,12 @@ class Projects::ProjectMembersController < Projects::ApplicationController
       @group_links = @project.project_group_links.where(group_id: @project.invited_groups.search(params[:search]).select(:id))
     end
 
-    member_ids = @project_members.pluck(:id)
+    wheres = ["id IN (#{@project_members.select(:id).to_sql})"]
+    wheres << "id IN (#{group_members.select(:id).to_sql})" if group_members
 
-    if group_members
-      member_ids += group_members.pluck(:id)
-    end
-
-    @project_members = Member.where(id: member_ids).order(access_level: :desc).page(params[:page])
+    @project_members = Member.
+      where(wheres.join(' OR ')).
+      order(access_level: :desc).page(params[:page])
 
     @requesters = AccessRequestsFinder.new(@project).execute(current_user)
 
