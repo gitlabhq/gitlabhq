@@ -16,7 +16,7 @@
     addMarginToBuildColumns() {
       this.pipelineGraph = document.querySelector('.pipeline-graph');
       const secondChildBuildNodes = document.querySelector('.pipeline-graph').querySelectorAll('.build:nth-child(2)');
-      for (buildNodeIndex in secondChildBuildNodes) {
+      for (const buildNodeIndex in secondChildBuildNodes) {
         const buildNode = secondChildBuildNodes[buildNodeIndex];
         const firstChildBuildNode = buildNode.previousElementSibling;
         if (!firstChildBuildNode || !firstChildBuildNode.matches('.build')) continue;

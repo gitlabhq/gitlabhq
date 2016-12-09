@@ -1,4 +1,4 @@
 ---
 title: Fix TypeError: Cannot read property 'initTabs' on commit builds tab
-merge_request:
+merge_request: 8009
 author:
