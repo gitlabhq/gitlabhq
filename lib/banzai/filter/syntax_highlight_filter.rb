@@ -48,9 +48,6 @@ module Banzai
       end
 
       def lexer_for(language)
-        if language == 'math'
-          return Rouge::Lexers::Math.new
-        end
         (Rouge::Lexer.find(language) || Rouge::Lexers::PlainText).new
       end
 

@@ -1,13 +1,13 @@
 module Rouge
   module Lexers
     class Math < Lexer
-      title "Plain Text"
+      title "A passthrough lexer used for LaTeX input"
       desc "A boring lexer that doesn't highlight anything"
 
       tag 'math'
       mimetypes 'text/plain'
 
-      default_options :token => 'Text'
+      default_options token: 'Text'
 
       def token
         @token ||= Token[option :token]

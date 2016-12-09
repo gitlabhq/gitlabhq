@@ -84,6 +84,8 @@ module Gitlab
     config.assets.precompile << "print.css"
     config.assets.precompile << "notify.css"
     config.assets.precompile << "mailers/*.css"
+    config.assets.precompile << "katex.css"
+    config.assets.precompile << "katex.js"
     config.assets.precompile << "graphs/graphs_bundle.js"
     config.assets.precompile << "users/users_bundle.js"
     config.assets.precompile << "network/network_bundle.js"
