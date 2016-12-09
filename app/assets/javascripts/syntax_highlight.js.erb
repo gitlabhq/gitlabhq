@@ -19,15 +19,12 @@
   // Loop over all math elements and render math
   var renderWithKaTeX = function (elements) {
     elements.each(function () {
-      if (!!$(this).attr('rendered')) return;
-
-      $(this).attr('rendered', true);
-      $(this).hide();
-      var mathNode = $( "<math>Test</math>" );
+      var mathNode = $( "<span></span>" );
       mathNode.insertAfter($(this));
 
       var display = $(this).hasClass('highlight');
       katex.render($(this).text(), mathNode.get(0), { displayMode: display })
+      $(this).remove()
     })
   };
   var handleMath = function () {
