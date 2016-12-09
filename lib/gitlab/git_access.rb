@@ -189,6 +189,8 @@ module Gitlab
         case actor
         when User
           actor
+        when DeployKey
+          nil
         when Key
           actor.user
         end
