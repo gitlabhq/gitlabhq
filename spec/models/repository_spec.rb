@@ -257,6 +257,24 @@ describe Repository, models: true do
       expect(newdir.path).to eq('newdir')
     end
 
+    context "when committing to another project" do
+      let(:forked_project) { create(:project) }
+
+      it "creates a fork and commit to the forked project" do
+        expect do
+          repository.commit_dir(user, 'newdir',
+            message: 'Create newdir', branch_name: 'patch',
+            source_branch_name: 'master', source_project: forked_project)
+        end.to change { repository.commits('master').count }.by(0)
+
+        expect(repository.branch_exists?('patch')).to be_truthy
+        expect(forked_project.repository.branch_exists?('patch')).to be_falsy
+
+        newdir = repository.tree('patch', 'newdir')
+        expect(newdir.path).to eq('newdir')
+      end
+    end
+
     context "when an author is specified" do
       it "uses the given email/name to set the commit's author" do
         expect do
@@ -758,9 +776,9 @@ describe Repository, models: true do
     end
 
     context 'when the update adds more than one commit' do
-      it 'runs without errors' do
-        old_rev = '33f3729a45c02fc67d00adb1b8bca394b0e761d9'
+      let(:old_rev) { '33f3729a45c02fc67d00adb1b8bca394b0e761d9' }
 
+      it 'runs without errors' do
         # old_rev is an ancestor of new_rev
         expect(repository.rugged.merge_base(old_rev, new_rev)).to eq(old_rev)
 
@@ -779,10 +797,10 @@ describe Repository, models: true do
     end
 
     context 'when the update would remove commits from the target branch' do
-      it 'raises an exception' do
-        branch = 'master'
-        old_rev = repository.find_branch(branch).dereferenced_target.sha
+      let(:branch) { 'master' }
+      let(:old_rev) { repository.find_branch(branch).dereferenced_target.sha }
 
+      it 'raises an exception' do
         # The 'master' branch is NOT an ancestor of new_rev.
         expect(repository.rugged.merge_base(old_rev, new_rev)).not_to eq(old_rev)
 

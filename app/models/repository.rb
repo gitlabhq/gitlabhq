@@ -849,15 +849,12 @@ class Repository
     GitOperationService.new(user, self).with_branch(
       branch_name,
       source_branch_name: source_branch_name,
-      source_project: source_project) do
+      source_project: source_project) do |source_commit|
       index = rugged.index
-      branch_commit = source_project.repository.find_branch(
-        source_branch_name || branch_name)
 
-      parents = if branch_commit
-                  last_commit = branch_commit.dereferenced_target
-                  index.read_tree(last_commit.raw_commit.tree)
-                  [last_commit.sha]
+      parents = if source_commit
+                  index.read_tree(source_commit.raw_commit.tree)
+                  [source_commit.sha]
                 else
                   []
                 end
@@ -904,17 +901,17 @@ class Repository
   end
 
   def merge(user, merge_request, options = {})
-    our_commit = rugged.branches[merge_request.target_branch].target
-    their_commit = rugged.lookup(merge_request.diff_head_sha)
-
-    raise "Invalid merge target" if our_commit.nil?
-    raise "Invalid merge source" if their_commit.nil?
-
-    merge_index = rugged.merge_commits(our_commit, their_commit)
-    return false if merge_index.conflicts?
-
     GitOperationService.new(user, self).with_branch(
-      merge_request.target_branch) do
+      merge_request.target_branch) do |source_commit|
+      our_commit = source_commit.raw_commit
+      their_commit = rugged.lookup(merge_request.diff_head_sha)
+
+      raise 'Invalid merge target' unless our_commit
+      raise 'Invalid merge source' unless their_commit
+
+      merge_index = rugged.merge_commits(our_commit, their_commit)
+      break if merge_index.conflicts?
+
       actual_options = options.merge(
         parents: [our_commit, their_commit],
         tree: merge_index.write_tree(rugged),
@@ -924,6 +921,8 @@ class Repository
       merge_request.update(in_progress_merge_commit_sha: commit_id)
       commit_id
     end
+  rescue Repository::CommitError # when merge_index.conflicts?
+    false
   end
 
   def revert(
@@ -936,10 +935,8 @@ class Repository
     GitOperationService.new(user, self).with_branch(
       branch_name,
       source_branch_name: source_branch_name,
-      source_project: source_project) do
+      source_project: source_project) do |source_commit|
 
-      source_sha = source_project.repository.find_source_sha(
-        source_branch_name || branch_name)
       committer = user_to_committer(user)
 
       Rugged::Commit.create(rugged,
@@ -947,7 +944,7 @@ class Repository
         author: committer,
         committer: committer,
         tree: revert_tree_id,
-        parents: [rugged.lookup(source_sha)])
+        parents: [source_commit.sha])
     end
   end
 
@@ -961,10 +958,8 @@ class Repository
     GitOperationService.new(user, self).with_branch(
       branch_name,
       source_branch_name: source_branch_name,
-      source_project: source_project) do
+      source_project: source_project) do |source_commit|
 
-      source_sha = source_project.repository.find_source_sha(
-        source_branch_name || branch_name)
       committer = user_to_committer(user)
 
       Rugged::Commit.create(rugged,
@@ -976,7 +971,7 @@ class Repository
         },
         committer: committer,
         tree: cherry_pick_tree_id,
-        parents: [rugged.lookup(source_sha)])
+        parents: [source_commit.sha])
     end
   end
 
@@ -1142,16 +1137,6 @@ class Repository
       head.blobs.find do |file|
         Gitlab::FileDetector.type_of(file.name) == type
       end
-    end
-  end
-
-  protected
-
-  def find_source_sha(branch_name)
-    if branch_exists?(branch_name)
-      find_branch(branch_name).dereferenced_target.sha
-    else
-      Gitlab::Git::BLANK_SHA
     end
   end
 

@@ -37,13 +37,16 @@ GitOperationService = Struct.new(:user, :repository) do
     check_with_branch_arguments!(
       branch_name, source_branch_name, source_project)
 
-    update_branch_with_hooks(branch_name) do |ref|
+    source_commit = source_project.repository.find_branch(
+      source_branch_name || branch_name).try(:dereferenced_target)
+
+    update_branch_with_hooks(branch_name) do
       if repository.project == source_project
-        yield(ref)
+        yield(source_commit)
       else
         repository.with_tmp_ref(
           source_project.repository, source_branch_name) do
-            yield(ref)
+            yield(source_commit)
           end
       end
     end
@@ -54,31 +57,29 @@ GitOperationService = Struct.new(:user, :repository) do
   def update_branch_with_hooks(branch_name)
     update_autocrlf_option
 
-    ref = Gitlab::Git::BRANCH_REF_PREFIX + branch_name
-    oldrev = Gitlab::Git::BLANK_SHA
     was_empty = repository.empty?
 
     # Make commit
-    newrev = yield(ref)
+    newrev = yield
 
     unless newrev
       raise Repository::CommitError.new('Failed to create commit')
     end
 
     branch = repository.find_branch(branch_name)
-    oldrev = if repository.rugged.lookup(newrev).parent_ids.empty? ||
-                branch.nil?
-               Gitlab::Git::BLANK_SHA
+    oldrev = if branch
+               # This could verify we're not losing commits
+               repository.rugged.merge_base(newrev, branch.target)
              else
-               repository.rugged.merge_base(
-                 newrev, branch.dereferenced_target.sha)
+               Gitlab::Git::BLANK_SHA
              end
 
+    ref = Gitlab::Git::BRANCH_REF_PREFIX + branch_name
     with_hooks_and_update_ref(ref, oldrev, newrev) do
       # If repo was empty expire cache
       repository.after_create if was_empty
       repository.after_create_branch if was_empty ||
-                                        oldrev == Gitlab::Git::BLANK_SHA
+                                        Gitlab::Git.blank_ref?(oldrev)
     end
 
     newrev
