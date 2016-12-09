@@ -234,8 +234,7 @@ require('./window')(function(w){
         var self = this;
         this.windowClickedWrapper = function(e){
           var thisTag = e.target;
-          if(thisTag.tagName === 'LI' || thisTag.tagName === 'A'
-             || thisTag.tagName === 'BUTTON'){
+          if(thisTag.tagName !== 'UL'){
             // climb up the tree to find the UL
             thisTag = utils.closest(thisTag, 'UL');
           }
