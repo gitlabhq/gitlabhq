@@ -81,6 +81,18 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Fix a search for non-default branches when ES is enabled
 - Re-organized the Sidekiq queues for EE specific workers
 
+## 8.12.12 (2016-12-08)
+
+- No changes.
+
+## 8.12.11 (2016-12-02)
+
+- No changes.
+
+## 8.12.10 (2016-11-28)
+
+- No changes.
+
 ## 8.12.9 (2016-11-07)
 
 - No changes
