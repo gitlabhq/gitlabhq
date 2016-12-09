@@ -28,7 +28,7 @@ describe 'projects/pipelines/show' do
   it 'shows a graph with grouped stages' do
     render
 
-    expect(rendered).to have_css('.pipeline-graph')
+    expect(rendered).to have_css('.js-pipeline-graph')
     expect(rendered).to have_css('.grouped-pipeline-dropdown')
 
     # stages

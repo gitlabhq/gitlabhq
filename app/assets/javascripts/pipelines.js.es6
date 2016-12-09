@@ -15,7 +15,9 @@
 
     addMarginToBuildColumns() {
       this.pipelineGraph = document.querySelector('.js-pipeline-graph');
-      const secondChildBuildNodes = document.querySelector('.js-pipeline-graph').querySelectorAll('.build:nth-child(2)');
+
+      const secondChildBuildNodes = this.pipelineGraph.querySelectorAll('.build:nth-child(2)');
+
       for (const buildNodeIndex in secondChildBuildNodes) {
         const buildNode = secondChildBuildNodes[buildNodeIndex];
         const firstChildBuildNode = buildNode.previousElementSibling;
@@ -28,6 +30,7 @@
         const columnBuilds = previousColumn.querySelectorAll('.build');
         if (columnBuilds.length === 1) previousColumn.classList.add('no-margin');
       }
+
       this.pipelineGraph.classList.remove('hidden');
     }
   }
