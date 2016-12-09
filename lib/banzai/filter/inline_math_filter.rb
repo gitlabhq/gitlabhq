@@ -21,6 +21,12 @@ module Banzai
           closing
         end
 
+        doc.xpath("descendant-or-self::pre[contains(@class, 'math')]").each do |el|
+          # http://stackoverflow.com/questions/4841238/add-a-class-to-an-element-with-nokogiri
+          code["js-math-display"] = true
+          el
+        end
+
         doc
       end
     end
