@@ -34,11 +34,17 @@
   padding-bottom: $gl-padding;
 }
 
+.snippet-header {
+  padding: $gl-padding 0;
+}
+
 .snippet-title {
   font-size: 24px;
   font-weight: 600;
-  padding: $gl-padding;
-  padding-left: 0;
+}
+
+.snippet-edited-ago {
+  color: $gray-darkest;
 }
 
 .snippet-actions {
