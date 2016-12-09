@@ -1,5 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 8.14.4 (2016-12-08)
+
+- No changes.
+
 ## 8.14.3 (2016-12-02)
 
 - No changes.
@@ -23,6 +27,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - gitlab:check rake task checks ES version according to requirements
 - Convert ASCII-8BIT LDAP DNs to UTF-8 to avoid unnecessary user deletions
 - [Fix] Only owner can see "Projects" button in group edit menu
+
+## 8.13.9 (2016-12-08)
+
+- No changes.
 
 ## 8.13.8 (2016-12-02)
 
