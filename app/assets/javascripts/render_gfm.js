@@ -2,10 +2,6 @@
 //
 // Delegates to syntax highlight and render math
 //
-// ### Example Markup
-//
-//   <div class="js-syntax-highlight"></div>
-//
 (function() {
   $.fn.renderGFM = function() {
     $(this).find('.js-syntax-highlight').syntaxHighlight();
