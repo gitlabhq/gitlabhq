@@ -12,7 +12,7 @@ require('../window')(function(w){
       this.debounceTriggerWrapper = this.debounceTrigger.bind(this);
       this.hook.trigger.addEventListener('keydown.dl', this.debounceTriggerWrapper);
       this.hook.trigger.addEventListener('focus', this.debounceTriggerWrapper);
-      this.trigger();
+      this.trigger(true);
     },
 
     notLoading: function notLoading() {
@@ -22,6 +22,7 @@ require('../window')(function(w){
     debounceTrigger: function debounceTrigger(e) {
       var NON_CHARACTER_KEYS = [16, 17, 18, 20, 37, 38, 39, 40, 91, 93];
       var invalidKeyPressed = NON_CHARACTER_KEYS.indexOf(e.detail.which || e.detail.keyCode) > -1;
+      var focusEvent = false;
       if (invalidKeyPressed || this.loading) {
         return;
       }
@@ -30,10 +31,14 @@ require('../window')(function(w){
         clearTimeout(this.timeout);
       }
 
-      this.timeout = setTimeout(this.trigger.bind(this), 200);
+      if (e.type === 'focus') {
+        focusEvent = true;
+      }
+
+      this.timeout = setTimeout(this.trigger.bind(this, focusEvent), 200);
     },
 
-    trigger: function trigger() {
+    trigger: function trigger(getEntireList = false) {
       var config = this.hook.config.droplabAjaxFilter;
       var searchValue = this.trigger.value;
 
@@ -43,6 +48,10 @@ require('../window')(function(w){
 
       if (config.searchValueFunction) {
         searchValue = config.searchValueFunction();
+      }
+
+      if (getEntireList) {
+        searchValue = '';
       }
 
       if (searchValue === config.searchKey) {
