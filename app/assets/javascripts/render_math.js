@@ -6,10 +6,6 @@
 //   <code class="js-render-math"></div>
 //
 (function() {
-  // CSS and JS for KaTeX
-  var CSS_PATH = "<%= asset_path('katex.css') %>";
-  var JS_PATH = "<%= asset_path('katex.js') %>";
-
   // Only load once
   var katexLoaded = false;
 
@@ -36,16 +32,16 @@
     if (katexLoaded) renderWithKaTeX($this);
     else {
       // Request CSS file so it is in the cache
-      $.get(CSS_PATH, function(){
+      $.get(gon.katex_css_url, function(){
         var css = $('<link>',
             {rel:'stylesheet',
               type:'text/css',
-              href: CSS_PATH
+              href: gon.katex_css_url
             });
         css.appendTo('head');
 
         // Load KaTeX js
-        $.getScript(JS_PATH, function() {
+        $.getScript(gon.katex_js_url, function() {
           katexLoaded = true;
           renderWithKaTeX($this); // Run KaTeX
         })
