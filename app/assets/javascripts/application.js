@@ -47,7 +47,6 @@ require('./shortcuts_dashboard_navigation');
 require('./shortcuts_issuable');
 require('./shortcuts_network');
 require('vendor/jquery.nicescroll');
-require('vendor/date.format');
 requireAll(require.context('./behaviors',  false, /^\.\/.*\.(js|es6)$/));
 requireAll(require.context('./blob',       false, /^\.\/.*\.(js|es6)$/));
 requireAll(require.context('./templates',  false, /^\.\/.*\.(js|es6)$/));

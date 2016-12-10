@@ -3,7 +3,7 @@
 /* global dateFormat */
 
 window.timeago = require('vendor/timeago');
-require('vendor/date.format');
+window.dateFormat = require('vendor/date.format');
 
 (function() {
   (function(w) {
@@ -17,7 +17,7 @@ require('vendor/date.format');
     w.gl.utils.days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
     w.gl.utils.formatDate = function(datetime) {
-      return (new Date(datetime)).format('mmm d, yyyy h:MMtt Z');
+      return dateFormat(datetime, 'mmm d, yyyy h:MMtt Z');
     };
 
     w.gl.utils.getDayName = function(date) {
