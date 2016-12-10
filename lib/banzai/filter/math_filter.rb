@@ -16,13 +16,15 @@ module Banzai
 
       STYLE_ATTRIBUTE = 'data-math-style'.freeze
 
+      TAG_CLASS = 'js-render-math'.freeze
+
       def call
         doc.xpath(INLINE_MATH).each do |el|
           closing = el
           code = el.previous
           opening = code.previous
 
-          code[:class] = 'code math'
+          code[:class] = 'code math ' << TAG_CLASS
           code[STYLE_ATTRIBUTE] = 'inline'
           closing.content = closing.content[1..-1]
           opening.content = opening.content[0..-2]
@@ -32,6 +34,7 @@ module Banzai
 
         doc.xpath(DISPLAY_MATH).each do |el|
           el[STYLE_ATTRIBUTE] = 'display'
+          el[:class] = el[:class] << ' ' << TAG_CLASS
           el
         end
 
