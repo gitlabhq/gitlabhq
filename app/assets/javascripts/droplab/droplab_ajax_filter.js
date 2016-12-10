@@ -51,8 +51,6 @@ require('../window')(function(w){
 
       this.loading = true;
 
-      this.hook.list.setData([]);
-
       var params = config.params || {};
       params[config.searchKey] = searchValue;
       var self = this;
