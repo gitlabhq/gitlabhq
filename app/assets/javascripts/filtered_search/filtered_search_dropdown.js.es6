@@ -21,6 +21,10 @@
       this.dropdown.removeEventListener('click.dl', this.itemClickedWrapper);
     }
 
+    getProjectId() {
+      return this.input.getAttribute('data-project-id');
+    }
+
     getCurrentHook() {
       return this.droplab.hooks.filter(h => h.id === this.hookId)[0];
     }

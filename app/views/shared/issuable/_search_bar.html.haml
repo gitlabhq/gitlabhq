@@ -12,7 +12,7 @@
             class: "check_all_issues left"
       .issues-other-filters.filtered-search-container
         .filtered-search-input-container
-          %input.form-control.filtered-search{ placeholder: 'Search or filter results...', 'data-id' => 'filtered-search' }
+          %input.form-control.filtered-search{ placeholder: 'Search or filter results...', 'data-id' => 'filtered-search', 'data-project-id' => @project.id }
           = icon('filter')
           %button.clear-search.hidden{ type: 'button' }
             = icon('times')
