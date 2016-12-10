@@ -22,35 +22,29 @@
         // What can we do??
         console.log(err.message);
       }
-    })
+    });
   };
-  var handleMath = function () {
-    var mathElements = $('.code.math');
 
-    if (mathElements.length === 0) return;
-
-    if (katexLoaded) renderWithKaTeX(mathElements);
+  $.fn.renderMath = function() {
+    var $this = $(this);
+    if (katexLoaded) renderWithKaTeX($this);
     else {
       // Request CSS file so it is in the cache
       $.get(CSS_PATH, function(){
         var css = $('<link>',
-          {rel:'stylesheet',
-            type:'text/css',
-            href: CSS_PATH
-          });
+            {rel:'stylesheet',
+              type:'text/css',
+              href: CSS_PATH
+            });
         css.appendTo('head');
 
         // Load KaTeX js
         $.getScript(JS_PATH, function() {
           katexLoaded = true;
-          renderWithKaTeX(mathElements); // Run KaTeX
+          renderWithKaTeX($this); // Run KaTeX
         })
       });
     }
-  };
-
-  $.fn.renderMath = function() {
-    handleMath()
   }
 
 }).call(this);

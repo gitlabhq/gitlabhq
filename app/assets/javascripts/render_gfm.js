@@ -10,7 +10,7 @@
   $.fn.renderGFM = function() {
     console.log("GFM!");
     $(this).find('.js-syntax-highlight').syntaxHighlight();
-    $(this).renderMath();
+    $(this).find('.js-render-math').renderMath();
   };
 
   $(document).on('ready page:load', function() {
