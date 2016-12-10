@@ -13,7 +13,7 @@
   // Loop over all math elements and render math
   var renderWithKaTeX = function (elements) {
     elements.each(function () {
-      var mathNode = $( "<span></span>" );
+      var mathNode = $('<span></span>');
       var $this = $(this);
 
       var display = $this.attr('data-math-style') === 'display';
@@ -33,21 +33,21 @@
     if (katexLoaded) renderWithKaTeX($this);
     else {
       // Request CSS file so it is in the cache
-      $.get(gon.katex_css_url, function(){
+      $.get(gon.katex_css_url, function() {
         var css = $('<link>',
-            {rel:'stylesheet',
-              type:'text/css',
-              href: gon.katex_css_url
-            });
+                    {rel:'stylesheet',
+                      type:'text/css',
+                      href: gon.katex_css_url
+                    });
         css.appendTo('head');
 
         // Load KaTeX js
         $.getScript(gon.katex_js_url, function() {
           katexLoaded = true;
           renderWithKaTeX($this); // Run KaTeX
-        })
+        });
       });
     }
-  }
+  };
 
 }).call(this);
