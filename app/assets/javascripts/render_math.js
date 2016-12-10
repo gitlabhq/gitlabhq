@@ -35,9 +35,9 @@
       // Request CSS file so it is in the cache
       $.get(gon.katex_css_url, function() {
         var css = $('<link>',
-                    {rel:'stylesheet',
-                      type:'text/css',
-                      href: gon.katex_css_url
+                    { rel: 'stylesheet',
+                      type: 'text/css',
+                      href: gon.katex_css_url,
                     });
         css.appendTo('head');
 
