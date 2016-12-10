@@ -247,14 +247,15 @@
       this.filteredSearchInput.value = '';
       this.clearSearchButton.classList.add('hidden');
 
-      // Reset Filters
-      this.mapping[this.currentDropdown].reference.resetFilters();
 
-      // Force dropdown to hide
+      // Force current dropdown to hide
       this.mapping[this.currentDropdown].reference.hideDropdown();
 
       // Re-Load dropdown
       this.setDropdown();
+
+      // Reset filters for current dropdown
+      this.mapping[this.currentDropdown].reference.resetFilters();
 
       // Reposition dropdown so that it is aligned with cursor
       this.updateDropdownOffset(this.currentDropdown);
