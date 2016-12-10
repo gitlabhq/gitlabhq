@@ -33,6 +33,7 @@
 
       if (validCondition) {
         inputValue += `${validCondition.key}:${validCondition.conditions[conditionIndex].keyword}`;
+        inputValue += ' ';
       } else {
         // Sanitize value since URL converts spaces into +
         // Replace before decode so that we know what was originally + versus the encoded +
