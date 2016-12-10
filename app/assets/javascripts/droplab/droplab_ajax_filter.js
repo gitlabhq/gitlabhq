@@ -85,13 +85,13 @@ require('../window')(function(w){
           var hookListChildren = self.hook.list.list.children;
           var onlyDynamicList = hookListChildren.length === 1 && hookListChildren[0].hasAttribute('data-dynamic');
 
-          if (onlyDynamicList && data[0].length === 0) {
+          if (onlyDynamicList && data.length === 0) {
             self.hook.list.hide();
-          } else if (onlyDynamicList && data[0].length !== 0) {
+          } else if (onlyDynamicList && data.length !== 0) {
             self.hook.list.show();
           }
 
-          self.hook.list.setData.call(self.hook.list, data[0]);
+          self.hook.list.setData.call(self.hook.list, data);
         }
         self.notLoading();
       });
@@ -105,7 +105,7 @@ require('../window')(function(w){
           if(xhr.readyState === XMLHttpRequest.DONE) {
             if (xhr.status === 200) {
               var data = JSON.parse(xhr.responseText);
-              return resolve([data, xhr]);
+              return resolve(data);
             } else {
               return reject([xhr.responseText, xhr.status]);
             }
