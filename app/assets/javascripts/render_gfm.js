@@ -8,7 +8,6 @@
 //
 (function() {
   $.fn.renderGFM = function() {
-    console.log("GFM!");
     $(this).find('.js-syntax-highlight').syntaxHighlight();
     $(this).find('.js-render-math').renderMath();
   };
