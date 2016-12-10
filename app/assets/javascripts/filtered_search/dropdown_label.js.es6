@@ -10,10 +10,7 @@
         droplabAjax: {
           endpoint: 'labels.json',
           method: 'setData',
-          loadingTemplate: `
-          <div class="filter-dropdown-loading">
-            <i class="fa fa-spinner fa-spin"></i>
-          </div>`,
+          loadingTemplate: this.loadingTemplate,
         },
         droplabFilter: {
           filterFunction: this.filterWithSymbol.bind(this, '~'),

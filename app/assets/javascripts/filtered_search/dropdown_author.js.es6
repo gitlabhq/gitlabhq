@@ -17,10 +17,7 @@
             current_user: true,
           },
           searchValueFunction: this.getSearchInput,
-          loadingTemplate: `
-          <div class="filter-dropdown-loading">
-            <i class="fa fa-spinner fa-spin"></i>
-          </div>`,
+          loadingTemplate: this.loadingTemplate,
         }
       };
     }

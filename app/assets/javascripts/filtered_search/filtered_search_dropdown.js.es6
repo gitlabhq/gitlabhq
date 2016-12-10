@@ -9,6 +9,9 @@
       this.hookId = 'filtered-search';
       this.input = input;
       this.dropdown = dropdown;
+      this.loadingTemplate = `<div class="filter-dropdown-loading">
+        <i class="fa fa-spinner fa-spin"></i>
+      </div>`;
       this.bindEvents();
     }
 
