@@ -10,6 +10,10 @@
         droplabAjax: {
           endpoint: 'milestones.json',
           method: 'setData',
+          loadingTemplate: `
+          <div class="filter-dropdown-loading">
+            <i class="fa fa-spinner fa-spin"></i>
+          </div>`,
         },
         droplabFilter: {
           filterFunction: this.filterWithSymbol.bind(this, '%'),
