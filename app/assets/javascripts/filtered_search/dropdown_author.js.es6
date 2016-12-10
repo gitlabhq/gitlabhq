@@ -13,7 +13,7 @@
           params: {
             per_page: 20,
             active: true,
-            project_id: 2,
+            project_id: this.getProjectId(),
             current_user: true,
           },
           searchValueFunction: this.getSearchInput,
