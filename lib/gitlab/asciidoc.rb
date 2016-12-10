@@ -38,7 +38,6 @@ module Gitlab
   end
 end
 
-
 module Gitlab
   module Asciidoc
     class Html5Converter < Asciidoctor::Converter::Html5Converter
