@@ -82,12 +82,16 @@ require('../window')(function(w){
         }
 
         if (!self.destroyed) {
-          if (data[0].length === 0) {
+          var hookListChildren = self.hook.list.list.children;
+          var onlyDynamicList = hookListChildren.length === 1 && hookListChildren[0].hasAttribute('data-dynamic');
+
+          if (onlyDynamicList && data[0].length === 0) {
             self.hook.list.hide();
-          } else {
+          } else if (onlyDynamicList && data[0].length !== 0) {
             self.hook.list.show();
-            self.hook.list.setData.call(self.hook.list, data[0]);
           }
+
+          self.hook.list.setData.call(self.hook.list, data[0]);
         }
         self.notLoading();
       });
