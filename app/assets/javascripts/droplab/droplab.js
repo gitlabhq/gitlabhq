@@ -31,18 +31,13 @@ if ( typeof CustomEvent === "function" ) {
 var CustomEvent = require('./custom_event_polyfill');
 var utils = require('./utils');
 
-var DropDown = function(list, trigger) {
+var DropDown = function(list) {
   this.hidden = true;
   this.list = list;
-  this.trigger = trigger;
   this.items = [];
   this.getItems();
   this.addEvents();
   this.initialState = list.innerHTML;
-
-  if (this.initialState.indexOf('{{') == -1) {
-    debugger
-  }
 };
 
 Object.assign(DropDown.prototype, {

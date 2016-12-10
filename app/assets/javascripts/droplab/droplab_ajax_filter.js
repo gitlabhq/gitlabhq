@@ -5,6 +5,7 @@
 require('../window')(function(w){
   w.droplabAjaxFilter = {
     init: function(hook) {
+      this.destroyed = false;
       this.hook = hook;
       this.notLoading();
 
@@ -49,14 +50,16 @@ require('../window')(function(w){
       }
 
       this.loading = true;
+
       this.hook.list.setData([]);
 
       var params = config.params || {};
       params[config.searchKey] = searchValue;
       var self = this;
       this._loadUrlData(config.endpoint + this.buildParams(params)).then(function(data) {
-        self.hook.restoreInitialState.call(self.hook);
-        self.hook.list.setData.call(self.hook.list, data[0]);
+        if (!self.destroyed) {
+          self.hook.list.setData.call(self.hook.list, data[0]);
+        }
         self.notLoading();
       });
     },
@@ -91,6 +94,8 @@ require('../window')(function(w){
       if (this.timeout) {
         clearTimeout(this.timeout);
       }
+
+      this.destroyed = true;
 
       this.hook.trigger.removeEventListener('keydown.dl', this.debounceTriggerWrapper);
       this.hook.trigger.removeEventListener('focus', this.debounceTriggerWrapper);
