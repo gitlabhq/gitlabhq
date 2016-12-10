@@ -50,6 +50,18 @@ require('../window')(function(w){
         searchValue = config.searchValueFunction();
       }
 
+      if (config.loadingTemplate && this.hook.list.data === undefined ||
+        this.hook.list.data.length === 0) {
+        var dynamicList = this.hook.list.list.querySelector('[data-dynamic]');
+
+        var loadingTemplate = document.createElement('div');
+        loadingTemplate.innerHTML = config.loadingTemplate;
+        loadingTemplate.setAttribute('data-loading-template', true);
+
+        this.listTemplate = dynamicList.outerHTML;
+        dynamicList.outerHTML = loadingTemplate.outerHTML;
+      }
+
       if (getEntireList) {
         searchValue = '';
       }
@@ -64,8 +76,18 @@ require('../window')(function(w){
       params[config.searchKey] = searchValue;
       var self = this;
       this._loadUrlData(config.endpoint + this.buildParams(params)).then(function(data) {
+        if (config.loadingTemplate && self.hook.list.data === undefined ||
+          self.hook.list.data.length === 0) {
+          self.hook.list.list.querySelector('[data-loading-template]').outerHTML = self.listTemplate;
+        }
+
         if (!self.destroyed) {
-          self.hook.list.setData.call(self.hook.list, data[0]);
+          if (data[0].length === 0) {
+            self.hook.list.hide();
+          } else {
+            self.hook.list.show();
+            self.hook.list.setData.call(self.hook.list, data[0]);
+          }
         }
         self.notLoading();
       });
