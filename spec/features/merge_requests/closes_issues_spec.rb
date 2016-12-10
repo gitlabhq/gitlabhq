@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Merge Commit Description', feature: true do
+feature 'Merge Request closing issues message', feature: true do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
   let(:issue_1) { create(:issue, project: project)}
@@ -21,8 +21,6 @@ feature 'Merge Commit Description', feature: true do
     login_as user
 
     visit namespace_project_merge_request_path(project.namespace, project, merge_request)
-
-    click_link 'Modify commit message'
   end
 
   context 'not closing or mentioning any issue' do
