@@ -23,6 +23,7 @@ require('../window')(function(w){
     },
 
     init: function init(hook) {
+      var self = this;
       var config = hook.config.droplabAjax;
 
       if (!config || !config.endpoint || !config.method) {
@@ -33,7 +34,21 @@ require('../window')(function(w){
         return;
       }
 
+      if (config.loadingTemplate) {
+        var dynamicList = hook.list.list.querySelector('[data-dynamic]');
+
+        var loadingTemplate = document.createElement('div');
+        loadingTemplate.innerHTML = config.loadingTemplate;
+        loadingTemplate.setAttribute('data-loading-template', true);
+
+        this.listTemplate = dynamicList.outerHTML;
+        dynamicList.outerHTML = loadingTemplate.outerHTML;
+      }
+
       this._loadUrlData(config.endpoint).then(function(d) {
+        if (config.loadingTemplate) {
+          hook.list.list.querySelector('[data-loading-template]').outerHTML = self.listTemplate;
+        }
         hook.list[config.method].call(hook.list, d);
       }).catch(function(e) {
         if(e.message) {
