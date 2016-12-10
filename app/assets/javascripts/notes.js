@@ -305,7 +305,7 @@
       }
       row = form.closest("tr");
       note_html = $(note.html);
-      note_html.syntaxHighlight();
+      note_html.renderGFM();
       // is this the first note of discussion?
       discussionContainer = $(".notes[data-discussion-id='" + note.discussion_id + "']");
       if ((note.original_discussion_id != null) && discussionContainer.length === 0) {
@@ -322,7 +322,7 @@
         discussionContainer.append(note_html);
         // Init discussion on 'Discussion' page if it is merge request page
         if ($('body').attr('data-page').indexOf('projects:merge_request') === 0) {
-          $('ul.main-notes-list').append(note.discussion_html).syntaxHighlight();
+          $('ul.main-notes-list').append(note.discussion_html).renderGFM();
         }
       } else {
         // append new note to all matching discussions
@@ -463,7 +463,7 @@
       // Convert returned HTML to a jQuery object so we can modify it further
       $html = $(note.html);
       gl.utils.localTimeAgo($('.js-timeago', $html));
-      $html.syntaxHighlight();
+      $html.renderGFM();
       $html.find('.js-task-list-container').taskList('enable');
       // Find the note's `li` element by ID and replace it with the updated HTML
       $note_li = $('.note-row-' + note.id);
