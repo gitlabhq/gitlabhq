@@ -22,8 +22,8 @@ module Banzai
           closing = code.next
           opening = code.previous
 
-          if not closing.nil? and closing.content[0] == DOLLAR_SIGN \
-             and not opening.nil? and opening.content[-1] == DOLLAR_SIGN
+          if (!closing.nil? and closing.content[0] == DOLLAR_SIGN) \
+             and (!opening.nil? and opening.content[-1] == DOLLAR_SIGN)
 
             code[:class] = 'code math ' << TAG_CLASS
             code[STYLE_ATTRIBUTE] = 'inline'
