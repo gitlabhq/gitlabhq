@@ -24,8 +24,6 @@ before_script:
   - '[ "$USE_BUNDLE_INSTALL" != "true" ] || retry bundle install --without postgres production --jobs $(nproc) $FLAGS'
   - retry gem install knapsack
   - '[ "$SETUP_DB" != "true" ] || bundle exec rake db:drop db:create db:schema:load db:migrate add_limits_mysql'
-  - curl --silent --location https://deb.nodesource.com/setup_6.x | bash -
-  - apt-get install --assume-yes nodejs
   - npm install
 
 stages:
@@ -64,7 +62,6 @@ stages:
   <<: *dedicated-runner
   <<: *use-db
   script:
-    - bundle exec rake webpack:compile
     - JOB_NAME=( $CI_BUILD_NAME )
     - export CI_NODE_INDEX=${JOB_NAME[1]}
     - export CI_NODE_TOTAL=${JOB_NAME[2]}
@@ -83,7 +80,6 @@ stages:
   <<: *dedicated-runner
   <<: *use-db
   script:
-    - bundle exec rake webpack:compile
     - JOB_NAME=( $CI_BUILD_NAME )
     - export CI_NODE_INDEX=${JOB_NAME[1]}
     - export CI_NODE_TOTAL=${JOB_NAME[2]}
@@ -113,6 +109,7 @@ setup-test-env:
   <<: *dedicated-runner
   stage: prepare
   script:
+    - bundle exec rake webpack:compile
     - bundle exec rake assets:precompile 2>/dev/null
     - bundle exec ruby -Ispec -e 'require "spec_helper" ; TestEnv.init'
   artifacts:
@@ -381,6 +378,8 @@ lint:javascript:
       - node_modules/
   stage: test
   image: "node:7.1"
+  before_script:
+    - npm install
   script:
     - npm --silent run eslint
 
@@ -391,6 +390,8 @@ lint:javascript:report:
       - node_modules/
   stage: post-test
   image: "node:7.1"
+  before_script:
+    - npm install
   script:
     - find app/ spec/ -name '*.js' -or -name '*.js.es6' -exec sed --in-place 's|/\* eslint-disable .*\*/||' {} \; # run report over all files
     - npm --silent run eslint-report || true # ignore exit code
