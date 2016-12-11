@@ -319,6 +319,37 @@ Here's a sample video:
 
 ![Sample Video](img/markdown_video.mp4)
 
+### Math
+
+> If this is not rendered correctly, see
+https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#math
+
+It is possible to have math written with the LaTeX syntax rendered using [KaTeX][katex].
+
+Math written inside ```$``$``` with be rendered inline with the text.
+
+Math written inside triple back quotes, with the language declared as `math`, will be rendered on a separate line.
+
+Example:
+
+    This math is inline $`a^2+b^2=c^2`$.
+
+    This is on a separate line
+    ```math
+    a^2+b^2=c^2
+    ```
+
+Becomes:
+
+This math is inline $`a^2+b^2=c^2`$.
+
+This is on a separate line
+```math
+a^2+b^2=c^2
+```
+
+_Be adviced that KaTeX only support a [subset][katex-subset] of LaTeX._
+
 ## Standard Markdown
 
 ### Headers
@@ -764,3 +795,5 @@ A link starting with a `/` is relative to the wiki root.
 [markdown.md]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md
 [rouge]: http://rouge.jneen.net/ "Rouge website"
 [redcarpet]: https://github.com/vmg/redcarpet "Redcarpet website"
+[katex]: https://github.com/Khan/KaTeX "KaTeX website"
+[katex-subset]: https://github.com/Khan/KaTeX/wiki/Function-Support-in-KaTeX "Macros supported by KaTeX"
