@@ -12,7 +12,7 @@ module Banzai
         /following-sibling::node()[1][self::text()][starts-with(.,'$')]
       ).freeze
 
-      DISPLAY_MATH = "descendant-or-self::pre[contains(@class, 'math')]".freeze
+      DISPLAY_MATH = "descendant-or-self::pre[contains(@class, 'math') and contains(@class, 'code')]".freeze
 
       STYLE_ATTRIBUTE = 'data-math-style'.freeze
 

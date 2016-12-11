@@ -90,4 +90,10 @@ describe Banzai::Filter::MathFilter, lib: true do
     doc = filter(input)
     expect(doc.to_s).to eq input
   end
+
+  it 'requires the pre to contain both code and math' do
+    input = '<pre class="highlight js-syntax-highlight plaintext math" v-pre="true"><code>2+2</code></pre>'
+    doc = filter(input)
+    expect(doc.to_s).to eq input
+  end
 end
