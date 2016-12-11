@@ -30,6 +30,7 @@ contains some settings that are common for all providers.
 - [Crowd](crowd.md)
 - [Azure](azure.md)
 - [Auth0](auth0.md)
+- [Authentiq](../administration/auth/authentiq.md)
 
 ## Initial OmniAuth Configuration
 
