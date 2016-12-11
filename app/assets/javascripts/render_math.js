@@ -30,7 +30,7 @@
 
   $.fn.renderMath = function() {
     var $this = $(this);
-    if ($this.length == 0) return;
+    if ($this.length === 0) return;
 
     if (katexLoaded) renderWithKaTeX($this);
     else {
