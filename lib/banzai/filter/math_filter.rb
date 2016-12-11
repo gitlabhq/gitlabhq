@@ -17,7 +17,7 @@ module Banzai
       DOLLAR_SIGN = '$'.freeze
 
       def call
-        doc.xpath('').each do |el|
+        doc.xpath(INLINE_MATH).each do |el|
           code = el
           closing = code.next
           opening = code.previous
