@@ -1,4 +1,4 @@
-# Documentation
+# GitLab Enterprise Edition documentation
 
 ## User documentation
 
