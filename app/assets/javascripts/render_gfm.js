@@ -5,8 +5,8 @@
 //
 (function() {
   $.fn.renderGFM = function() {
-    $(this).find('.js-syntax-highlight').syntaxHighlight();
-    $(this).find('.js-render-math').renderMath();
+    this.find('.js-syntax-highlight').syntaxHighlight();
+    this.find('.js-render-math').renderMath();
   };
 
   $(document).on('ready page:load', function() {
