@@ -5,12 +5,8 @@ module Banzai
     # HTML filter that adds class="code math" and removes the dolar sign in $`2+2`$.
     #
     class MathFilter < HTML::Pipeline::Filter
-      # This picks out $<code>...</code>$.
-      # It will return the last $ node
-      INLINE_MATH = %Q(descendant-or-self::text()[substring(., string-length(.)) = '$']
-        /following-sibling::node()[1][self::code]
-        /following-sibling::node()[1][self::text()][starts-with(.,'$')]
-      ).freeze
+      # This picks out <code>...</code>.
+      INLINE_MATH = 'descendant-or-self::code'.freeze
 
       DISPLAY_MATH = "descendant-or-self::pre[contains(@class, 'math') and contains(@class, 'code')]".freeze
 
@@ -18,18 +14,23 @@ module Banzai
 
       TAG_CLASS = 'js-render-math'.freeze
 
+      DOLLAR_SIGN = '$'.freeze
+
       def call
-        doc.xpath(INLINE_MATH).each do |el|
-          closing = el
-          code = el.previous
+        doc.xpath('').each do |el|
+          code = el
+          closing = code.next
           opening = code.previous
 
-          code[:class] = 'code math ' << TAG_CLASS
-          code[STYLE_ATTRIBUTE] = 'inline'
-          closing.content = closing.content[1..-1]
-          opening.content = opening.content[0..-2]
+          if not closing.nil? and closing.content[0] == DOLLAR_SIGN \
+             and not opening.nil? and opening.content[-1] == DOLLAR_SIGN
 
-          closing
+            code[:class] = 'code math ' << TAG_CLASS
+            code[STYLE_ATTRIBUTE] = 'inline'
+            closing.content = closing.content[1..-1]
+            opening.content = opening.content[0..-2]
+          end
+          code
         end
 
         doc.xpath(DISPLAY_MATH).each do |el|
