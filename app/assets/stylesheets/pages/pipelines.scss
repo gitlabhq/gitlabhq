@@ -117,7 +117,7 @@
       height: 14px;
       width: 14px;
       vertical-align: middle;
-      fill: $table-text-gray;
+      fill: $gl-gray-light;
     }
 
     .fa {
@@ -200,7 +200,7 @@
 
   .duration,
   .finished-at {
-    color: $table-text-gray;
+    color: $gl-gray-light;
     margin: 4px 0;
 
     .fa {
@@ -221,7 +221,7 @@
 
     .btn {
       margin: 0;
-      color: $table-text-gray;
+      color: $gl-gray-light;
     }
 
     .cancel-retry-btns {
@@ -234,10 +234,10 @@
 
     .dropdown-toggle,
     .dropdown-menu {
-      color: $table-text-gray;
+      color: $gl-gray-light;
 
       .fa {
-        color: $table-text-gray;
+        color: $gl-gray-light;
         font-size: 14px;
       }
 

@@ -96,7 +96,7 @@
 }
 
 .build-trace {
-  background: $ci-output-bg;
+  background: $black;
   color: $ci-text-color;
   white-space: pre;
   overflow-x: auto;
@@ -257,7 +257,7 @@
 }
 
 .build-light-text {
-  color: $gl-placeholder-color;
+  color: $gl-gray-light;
 }
 
 .build-gutter-toggle {

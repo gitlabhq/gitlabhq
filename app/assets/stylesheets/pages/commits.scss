@@ -38,7 +38,7 @@
 .text-expander {
   display: inline-block;
   background: $gray-light;
-  color: $gl-placeholder-color;
+  color: $gl-gray-light;
   padding: 0 5px;
   cursor: pointer;
   border: 1px solid $border-gray-dark;
@@ -174,7 +174,7 @@
       height: 14px;
       width: 14px;
       vertical-align: middle;
-      fill: $table-text-gray;
+      fill: $gl-gray-light;
     }
   }
 
