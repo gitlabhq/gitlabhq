@@ -41,11 +41,18 @@
         const tag = selected.querySelector('.js-filter-tag').innerText.trim();
 
         if (tag.length) {
-          gl.FilteredSearchDropdownManager.addWordToInput(this.getSelectedText(token));
+          gl.FilteredSearchDropdownManager.addWordToInput(this.getSelectedTextWithoutEscaping(token));
         }
         this.dismissDropdown();
         this.dispatchInputEvent();
       }
+    }
+
+    getSelectedTextWithoutEscaping(selectedToken) {
+      const lastWord = this.input.value.split(' ').last();
+      const lastWordIndex = selectedToken.indexOf(lastWord);
+
+      return lastWordIndex === -1 ? selectedToken : selectedToken.slice(lastWord.length);
     }
 
     renderContent() {
