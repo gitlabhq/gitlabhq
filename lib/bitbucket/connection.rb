@@ -15,18 +15,6 @@ module Bitbucket
       @refresh_token = options[:refresh_token]
     end
 
-    def client
-      @client ||= OAuth2::Client.new(provider.app_id, provider.app_secret, options)
-    end
-
-    def connection
-      @connection ||= OAuth2::AccessToken.new(client, @token, refresh_token: @refresh_token, expires_at: @expires_at, expires_in: @expires_in)
-    end
-
-    def set_default_query_parameters(params = {})
-      @default_query.merge!(params)
-    end
-
     def get(path, extra_query = {})
       refresh! if expired?
 
@@ -51,6 +39,14 @@ module Bitbucket
     private
 
     attr_reader :expires_at, :expires_in, :refresh_token, :token
+
+    def client
+      @client ||= OAuth2::Client.new(provider.app_id, provider.app_secret, options)
+    end
+
+    def connection
+      @connection ||= OAuth2::AccessToken.new(client, @token, refresh_token: @refresh_token, expires_at: @expires_at, expires_in: @expires_in)
+    end
 
     def build_url(path)
       return path if path.starts_with?(root_url)

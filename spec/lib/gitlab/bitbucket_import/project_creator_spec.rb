@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::BitbucketImport::ProjectCreator, lib: true do
   let(:user) { create(:user) }
+
   let(:repo) do
     double(name: 'Vim',
            slug: 'vim',
@@ -12,6 +13,7 @@ describe Gitlab::BitbucketImport::ProjectCreator, lib: true do
            visibility_level: Gitlab::VisibilityLevel::PRIVATE,
            clone_url: 'ssh://git@bitbucket.org/asd/vim.git')
   end
+
   let(:namespace){ create(:group, owner: user) }
   let(:token) { "asdasd12345" }
   let(:secret) { "sekrettt" }

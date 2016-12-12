@@ -7,8 +7,6 @@ module Bitbucket
       @type = type
       @url = url
       @page = nil
-
-      connection.set_default_query_parameters(pagelen: PAGE_LENGTH, sort: :created_on)
     end
 
     def items
@@ -31,7 +29,7 @@ module Bitbucket
     end
 
     def fetch_next_page
-      parsed_response = connection.get(next_url)
+      parsed_response = connection.get(next_url, { pagelen: PAGE_LENGTH, sort: :created_on })
       Page.new(parsed_response, type)
     end
   end
