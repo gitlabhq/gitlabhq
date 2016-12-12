@@ -20,15 +20,10 @@
     }
 
     itemClicked(e) {
-      const dataValueSet = this.setDataValueIfSelected(e.detail.selected);
-
-      if (!dataValueSet) {
+      super.itemClicked(e, (selected) => {
         const title = e.detail.selected.querySelector('.js-data-value').innerText.trim();
-        const name = `${this.symbol}${this.getEscapedText(title)}`;
-        gl.FilteredSearchDropdownManager.addWordToInput(this.getSelectedText(name));
-      }
-
-      this.dismissDropdown(!dataValueSet);
+        return `${this.symbol}${this.getEscapedText(title)}`;
+      });
     }
 
     getEscapedText(text) {

@@ -35,8 +35,15 @@
       return lastWordIndex === -1 ? selectedToken : selectedToken.slice(lastWord.length);
     }
 
-    itemClicked(e) {
-      // Overridden by dropdown sub class
+    itemClicked(e, getValueFunction) {
+      const dataValueSet = this.setDataValueIfSelected(e.detail.selected);
+
+      if (!dataValueSet) {
+        const value = getValueFunction(e.detail.selected)
+        gl.FilteredSearchDropdownManager.addWordToInput(this.getSelectedText(value));
+      }
+
+      this.dismissDropdown();
     }
 
     renderContent(forceShowList = false) {

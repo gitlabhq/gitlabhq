@@ -23,14 +23,9 @@
     }
 
     itemClicked(e) {
-      const dataValueSet = this.setDataValueIfSelected(e.detail.selected);
-
-      if (!dataValueSet) {
-        const username = e.detail.selected.querySelector('.dropdown-light-content').innerText.trim();
-        gl.FilteredSearchDropdownManager.addWordToInput(this.getSelectedText(username));
-      }
-
-      this.dismissDropdown(!dataValueSet);
+      super.itemClicked(e, (selected) => {
+        return selected.querySelector('.dropdown-light-content').innerText.trim();
+      });
     }
 
     renderContent(forceShowList = false) {
