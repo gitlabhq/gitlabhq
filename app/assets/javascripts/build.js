@@ -86,15 +86,13 @@
       return $.ajax({
         url: this.buildUrl,
         dataType: 'json',
-        success: (function(_this) {
-          return function(buildData) {
-            $('.js-build-output').html(buildData.trace_html);
-            if (removeRefreshStatuses.indexOf(buildData.status) >= 0) {
-              _this.initScrollMonitor();
-              return $('.js-build-refresh').remove();
-            }
-          };
-        })(this)
+        success: function(buildData) {
+          $('.js-build-output').html(buildData.trace_html);
+          if (removeRefreshStatuses.indexOf(buildData.status) >= 0) {
+            this.initScrollMonitor();
+            return $('.js-build-refresh').remove();
+          }
+        }.bind(this)
       });
     };
 
