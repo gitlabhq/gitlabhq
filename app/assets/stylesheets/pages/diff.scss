@@ -11,7 +11,7 @@
 
   .diff-header {
     position: relative;
-    background: $background-color;
+    background: $gray-light;
     border-bottom: 1px solid $border-color;
     padding: 10px 16px;
     color: $gl-diff-text-color;
@@ -38,7 +38,7 @@
     cursor: pointer;
 
     &:hover {
-      background-color: $dark-background-color;
+      background-color: $gray-normal;
     }
 
     .diff-toggle-caret {
@@ -187,8 +187,8 @@
 
       img {
         border: 1px solid $white-light;
-        background-image: linear-gradient(45deg, $diff-image-img-bg 25%, transparent 25%, transparent 75%, $diff-image-img-bg 75%, $diff-image-img-bg 100%),
-        linear-gradient(45deg, $diff-image-img-bg 25%, transparent 25%, transparent 75%, $diff-image-img-bg 75%, $diff-image-img-bg 100%);
+        background-image: linear-gradient(45deg, $border-color 25%, transparent 25%, transparent 75%, $border-color 75%, $border-color 100%),
+        linear-gradient(45deg, $border-color 25%, transparent 25%, transparent 75%, $border-color 75%, $border-color 100%);
         background-size: 10px 10px;
         background-position: 0 0, 5px 5px;
         max-width: 100%;

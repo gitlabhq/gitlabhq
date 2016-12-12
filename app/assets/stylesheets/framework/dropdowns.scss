@@ -34,7 +34,7 @@
 
 .dropdown-toggle {
   padding: 6px 8px 6px 10px;
-  background-color: $dropdown-toggle-bg;
+  background-color: $white-light;
   color: $gl-text-color;
   font-size: 14px;
   text-align: left;
@@ -609,7 +609,7 @@
   }
 
   .ui-datepicker-unselectable {
-    background-color: $calendar-unselectable-bg;
+    background-color: $gray-light;
   }
 }
 

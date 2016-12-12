@@ -289,7 +289,7 @@
 // Pipeline visualization
 
 .toggle-pipeline-btn {
-  background-color: $gray-dark;
+  background-color: $white-normal;
 
   &.graph-collapsed {
     background-color: $white-light;
@@ -298,7 +298,7 @@
 
 .pipeline-graph {
   width: 100%;
-  background-color: $background-color;
+  background-color: $gray-light;
   padding: $gl-padding;
   overflow: auto;
   white-space: nowrap;

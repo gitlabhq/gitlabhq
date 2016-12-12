@@ -17,14 +17,13 @@ $darken-dark-factor: 10%;
 $darken-border-factor: 5%;
 
 $white-light: #fff;
-$white-normal: darken($white-light, $darken-normal-factor);
-$white-dark: darken($white-light, $darken-dark-factor);
+$white-normal: #f0f0f0;
+$white-dark: #eaeaea;
 
 $gray-lightest: #fdfdfd;
 $gray-light: #fafafa;
 $gray-lighter: #f9f9f9;
-$gray-normal: darken($gray-light, $darken-normal-factor);
-$gray-dark: darken($gray-light, $darken-dark-factor);
+$gray-normal: #f5f5f5;
 $gray-darker: #eee;
 $gray-darkest: #c4c4c4;
 
@@ -55,11 +54,9 @@ $black-transparent: rgba(0, 0, 0, 0.3);
 
 $border-white-light: darken($white-light, $darken-border-factor);
 $border-white-normal: darken($white-normal, $darken-border-factor);
-$border-white-dark: darken($white-dark, $darken-border-factor);
 
-$border-gray-light: darken($gray-light, $darken-border-factor);
 $border-gray-normal: darken($gray-normal, $darken-border-factor);
-$border-gray-dark: darken($gray-dark, $darken-border-factor);
+$border-gray-dark: darken($white-normal, $darken-border-factor);
 
 $border-green-extra-light: #9adb84;
 $border-green-light: darken($green-light, $darken-border-factor);
@@ -78,9 +75,6 @@ $border-red-light: darken($red-light, $darken-border-factor);
 $border-red-normal: darken($red-normal, $darken-border-factor);
 $border-red-dark: darken($red-dark, $darken-border-factor);
 
-$help-well-bg: $gray-light;
-$help-well-border: #e5e5e5;
-
 $warning-message-bg: #fbf2d9;
 $warning-message-color: #9e8e60;
 $warning-message-border: #f0e2bb;
@@ -90,9 +84,6 @@ $warning-message-border: #f0e2bb;
  */
 $border-color: #e5e5e5;
 $focus-border-color: #3aabf0;
-$table-border-color: #f0f0f0;
-$background-color: $gray-light;
-$dark-background-color: #f5f5f5;
 $well-expand-item: #e8f2f7;
 $well-inner-border: #eef0f2;
 $well-light-border: #f1f1f1;
@@ -166,7 +157,6 @@ $fixed-layout-width: 1280px;
 $error-exclamation-point: #e62958;
 $border-radius-default: 2px;
 $settings-icon-size: 18px;
-$provider-btn-group-border: #e5e5e5;
 $provider-btn-not-active-color: #4688f1;
 $link-underline-blue: #4a8bee;
 $active-item-blue: #4a8bee;
@@ -241,8 +231,6 @@ $line-removed-dark: #fac5cd;
 $line-number-old: #f9d7dc;
 $line-number-new: #ddfbe6;
 $line-number-select: #fbf2da;
-$match-line: $gray-light;
-$table-border-gray: #f0f0f0;
 $line-target-blue: #f6faff;
 $line-select-yellow: #fcf8e7;
 $line-select-yellow-dark: #f0e2bd;
@@ -252,7 +240,6 @@ $file-mode-changed: #777;
 $file-mode-changed: #777;
 $diff-image-bg: #ddd;
 $diff-image-info-color: grey;
-$diff-image-img-bg: #e5e5e5;
 $diff-swipe-border: #999;
 $diff-view-modes-color: grey;
 $diff-view-modes-border: #c1c1c1;
@@ -280,10 +267,7 @@ $dropdown-input-focus-border: $focus-border-color;
 $dropdown-input-focus-shadow: rgba($dropdown-input-focus-border, .4);
 $dropdown-loading-bg: rgba(#fff, .6);
 $dropdown-chevron-size: 10px;
-
-$dropdown-toggle-bg: #fff;
-$dropdown-toggle-border-color: #e5e5e5;
-$dropdown-toggle-active-border-color: darken($dropdown-toggle-border-color, 14%);
+$dropdown-toggle-active-border-color: darken($border-color, 14%);
 
 
 /*
@@ -291,15 +275,11 @@ $dropdown-toggle-active-border-color: darken($dropdown-toggle-border-color, 14%)
 */
 $btn-active-gray: #ececec;
 $btn-active-gray-light: e4e7ed;
-$btn-gray-hover: #eee;
 
 /*
  *  Award emoji
  */
-$award-emoji-menu-bg: #fff;
-$award-emoji-menu-border: #f1f2f4;
 $award-emoji-menu-shadow: rgba(0,0,0,.175);
-$award-emoji-new-btn-icon-color: #dcdcdc;
 
 /*
  * Search Box
@@ -307,7 +287,6 @@ $award-emoji-new-btn-icon-color: #dcdcdc;
 $search-input-border-color: rgba(#4688f1, .8);
 $search-input-focus-shadow-color: $dropdown-input-focus-shadow;
 $search-input-width: 220px;
-$location-badge-bg: $dark-background-color;
 $location-badge-active-bg: #4f91f8;
 $location-icon-color: #e7e9ed;
 
@@ -316,9 +295,7 @@ $location-icon-color: #e7e9ed;
  */
 $notes-light-color: #8e8e8e;
 $notes-role-color: #8e8e8e;
-$notes-role-border-color: #e4e4e4;
 $note-disabled-comment-color: #b2b2b2;
-$note-form-border-color: #e5e5e5;
 $note-targe3-outside: #fffff0;
 $note-targe3-inside: #ffffd3;
 $note-line2-border: #ddd;
@@ -334,7 +311,6 @@ $zen-control-color: #555;
 */
 $calendar-hover-bg: #ecf3fe;
 $calendar-border-color: rgba(#000, .1);
-$calendar-unselectable-bg: $gray-light;
 $calendar-user-contrib-text: #959494;
 
 /*
@@ -445,7 +421,6 @@ $help-shortcut-header-color: #333;
 /*
 * Issues
 */
-$issues-border: #e5e5e5;
 $issues-today-bg: #f3fff2;
 $issues-today-border: #e1e8d5;
 
