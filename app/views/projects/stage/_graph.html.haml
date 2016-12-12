@@ -10,8 +10,7 @@
       - status_groups.each do |group_name, grouped_statuses|
         - if grouped_statuses.one?
           - status = grouped_statuses.first
-          - is_playable = status.playable? && can?(current_user, :update_build, @project)
-          %li.build{ class: ("playable" if is_playable) }
+          %li.build
             .curve
             .build-content
               = render 'ci/status/graph_icon_with_name_and_action', subject: status

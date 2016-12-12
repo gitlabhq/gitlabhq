@@ -654,6 +654,7 @@
 
         i {
           font-size: 11px;
+          margin-top: 0;
         }
       }
 
@@ -672,33 +673,26 @@
 }
 
 // Action Icons
-.ci-action-icon-container {
-  padding: 0;
+.ci-action-icon-container .ci-action-icon-wrapper {
+  float: right;
+  margin-top: -1px;
 
-  .ci-action-icon-wrapper {
-    display: inline-block;
-    float: right;
+  i {
+    color: $stage-badge-text;
+    border-radius: 100%;
+    border: 1px solid $stage-badge-text;
+    padding: 5px 6px;
+    font-size: 13px;
+    background: $white-light;
 
-    i {
-      color: $stage-badge-text;
-      border-radius: 100%;
-      border: 1px solid $stage-badge-text;
-      text-align: center;
-      display: table-cell;
-      vertical-align: middle;
-      padding: 5px;
-      font-size: 13px;
-      background: $white-light;
-
-      &:hover {
-        color: $gl-text-color;
-        background-color: $stage-hover-bg;
-        border: 1px solid $stage-hover-bg;
-      }
+    &:hover {
+      color: $gl-text-color;
+      background-color: $stage-hover-bg;
+      border: 1px solid $stage-hover-bg;
     }
+  }
 
-    .ci-play-icon {
-      padding: 5px 4px 5px 7px;
-    }
+  .ci-play-icon {
+    padding: 5px 5px 5px 7px;
   }
 }
