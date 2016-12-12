@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-var, one-var, one-var-declaration-per-line, object-shorthand, comma-dangle, prefer-arrow-callback, max-len */
+/* eslint-disable func-names, no-var, object-shorthand, comma-dangle, prefer-arrow-callback */
 
 // MarkdownPreview
 //
@@ -6,7 +6,10 @@
 // and showing a warning when more than `x` users are referenced.
 //
 (function () {
-  var lastTextareaPreviewed, markdownPreview, previewButtonSelector, writeButtonSelector;
+  var lastTextareaPreviewed;
+  var markdownPreview;
+  var previewButtonSelector;
+  var writeButtonSelector;
 
   window.MarkdownPreview = (function () {
     function MarkdownPreview() {}
@@ -17,9 +20,8 @@
     MarkdownPreview.prototype.ajaxCache = {};
 
     MarkdownPreview.prototype.showPreview = function ($form) {
-      var mdText, preview;
-      preview = $form.find('.js-md-preview');
-      mdText = $form.find('textarea.markdown-area').val();
+      var preview = $form.find('.js-md-preview');
+      var mdText = $form.find('textarea.markdown-area').val();
       if (mdText.trim().length === 0) {
         preview.text('Nothing to preview.');
         this.hideReferencedUsers($form);
@@ -151,4 +153,4 @@
     $form = $(this).closest('form');
     $(document).triggerHandler('markdown-preview:hide', [$form]);
   });
-}).call(this);
+}());
