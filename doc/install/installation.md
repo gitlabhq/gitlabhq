@@ -89,7 +89,7 @@ Install the Bundler Gem:
 
 Create a `git` user for Gitlab:
 
-    sudo adduser --disabled-login --gecos 'GitLab' git
+    sudo adduser --group --shell /bin/bash --disabled-login --system --gecos 'GitLab' git
 
 
 # 4. GitLab shell
@@ -97,10 +97,7 @@ Create a `git` user for Gitlab:
 GitLab Shell is a ssh access and repository management software developed specially for GitLab.
 
     # Login as git
-    sudo su git
-
-    # Go to home directory
-    cd /home/git
+    sudo su -s /bin/bash - git 
 
     # Clone gitlab shell
     git clone https://github.com/gitlabhq/gitlab-shell.git
@@ -172,6 +169,10 @@ do so with caution!
 
     # Copy the example Unicorn config
     sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
+    
+    # Set git-variables for gitlab itself
+    sudo -u git -H git config --global user.name  "GitLab"
+    sudo -u git -H git config --global user.email "gitlab@localhost"
 
 **Important Note:**
 Make sure to edit both files to match your setup.
