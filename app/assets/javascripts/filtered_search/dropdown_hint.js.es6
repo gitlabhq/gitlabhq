@@ -23,7 +23,6 @@
   class DropdownHint extends gl.FilteredSearchDropdown {
     constructor(droplab, dropdown, input) {
       super(droplab, dropdown, input);
-      this.listId = dropdown.id;
       this.config = {
         droplabFilter: {
           template: 'hint',
@@ -66,7 +65,7 @@
       return item;
     }
 
-    configure() {
+    init() {
       this.droplab.addHook(this.input, this.dropdown, [droplabFilter], this.config).init();
     }
   }

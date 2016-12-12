@@ -5,6 +5,8 @@
       this.tokenizer = gl.FilteredSearchTokenizer;
       this.filteredSearchInput = document.querySelector('.filtered-search');
 
+      this.setupMapping();
+
       this.cleanupWrapper = this.cleanup.bind(this);
       document.addEventListener('page:fetch', this.cleanupWrapper);
     }
@@ -52,21 +54,22 @@
       }
     }
 
-    static addWordToInput(word, addSpace) {
-      const filteredSearchInput = document.querySelector('.filtered-search')
-      const filteredSearchValue = filteredSearchInput.value;
-      const hasExistingValue = filteredSearchValue.length !== 0;
-      const { lastToken } = gl.FilteredSearchTokenizer.processTokens(filteredSearchValue);
+    static addWordToInput(word, addSpace = false) {
+      const input = document.querySelector('.filtered-search')
+      const value = input.value;
+      const hasExistingValue = value.length !== 0;
+      const { lastToken } = gl.FilteredSearchTokenizer.processTokens(value);
 
       if (lastToken.hasOwnProperty('key')) {
-        console.log(lastToken);
         // Spaces inside the token means that the token value will be escaped by quotes
         const hasQuotes = lastToken.value.indexOf(' ') !== -1;
+
+        // Add 2 length to account for the length of the front and back quotes
         const lengthToRemove = hasQuotes ? lastToken.value.length + 2 : lastToken.value.length;
-        filteredSearchInput.value = filteredSearchValue.slice(0, -1 * (lengthToRemove));
+        input.value = value.slice(0, -1 * (lengthToRemove));
       }
 
-      filteredSearchInput.value += hasExistingValue && addSpace ? ` ${word}` : word;
+      input.value += hasExistingValue && addSpace ? ` ${word}` : word;
     }
 
     updateCurrentDropdownOffset() {
@@ -74,6 +77,10 @@
     }
 
     updateDropdownOffset(key) {
+      if (!this.font) {
+        this.font = window.getComputedStyle(this.filteredSearchInput).font;
+      }
+
       const filterIconPadding = 27;
       const offset = gl.text.getTextWidth(this.filteredSearchInput.value, this.font) + filterIconPadding;
 
@@ -87,19 +94,20 @@
       let forceShowList = false;
 
       if (!this.mapping[key].reference) {
-        var dl = this.droplab;
+        const dl = this.droplab;
         const defaultArguments = [null, dl, element, this.filteredSearchInput];
         const glArguments = defaultArguments.concat(this.mapping[key].extraArguments || []);
 
+        // Passing glArguments to `new gl[glClass](<arguments>)`
         this.mapping[key].reference = new (Function.prototype.bind.apply(gl[glClass], glArguments));
       }
 
       if (firstLoad) {
-        this.mapping[key].reference.configure();
+        this.mapping[key].reference.init();
       }
 
       if (this.currentDropdown === 'hint') {
-        // Clicked from hint dropdown
+        // Force the dropdown to show if it was clicked from the hint dropdown
         forceShowList = true;
       }
 
@@ -117,15 +125,12 @@
         this.droplab = new DropLab();
       }
 
-      if (!this.font) {
-        this.font = window.getComputedStyle(this.filteredSearchInput).font;
-      }
-
       const match = gl.FilteredSearchTokenKeys.get().filter(value => value.key === dropdownName.toLowerCase())[0];
       const shouldOpenFilterDropdown = match && this.currentDropdown !== match.key && this.mapping.hasOwnProperty(match.key);
       const shouldOpenHintDropdown = !match && this.currentDropdown !== 'hint';
 
       if (shouldOpenFilterDropdown || shouldOpenHintDropdown) {
+        // `hint` is not listed as a tokenKey (since it is not a real `filter`)
         const key = match && match.hasOwnProperty('key') ? match.key : 'hint';
         this.load(key, firstLoad);
       }
@@ -137,14 +142,12 @@
       const { lastToken } = this.tokenizer.processTokens(this.filteredSearchInput.value);
 
       if (typeof lastToken === 'string') {
-        // Token is not fully initialized yet
-        // because it has no value
+        // Token is not fully initialized yet because it has no value
         // Eg. token = 'label:'
         const { tokenKey } = this.tokenizer.parseToken(lastToken);
         this.loadDropdown(tokenKey);
       } else if (lastToken.hasOwnProperty('key')) {
-        // Token has been initialized into an object
-        // because it has a value
+        // Token has been initialized into an object because it has a value
         this.loadDropdown(lastToken.key);
       } else {
         this.loadDropdown('hint');

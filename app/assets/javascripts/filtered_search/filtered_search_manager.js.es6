@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 ((global) => {
+  // TODO: Encapsulate inside class?
   function toggleClearSearchButton(e) {
     const clearSearchButton = document.querySelector('.clear-search');
 
@@ -25,6 +26,7 @@
       let conditionIndex = 0;
       const validCondition = gl.FilteredSearchTokenKeys.get()
         .filter(v => v.conditions && v.conditions.filter((c, index) => {
+          // TODO: Add comment here
           if (c.url === p) {
             conditionIndex = index;
           }
@@ -32,6 +34,7 @@
         })[0])[0];
 
       if (validCondition) {
+        // Parse params based on rules provided in the conditions key of gl.FilteredSearchTokenKeys.get()
         inputValue += `${validCondition.key}:${validCondition.conditions[conditionIndex].keyword}`;
         inputValue += ' ';
       } else {
@@ -77,7 +80,6 @@
       this.clearSearchButton = document.querySelector('.clear-search');
       this.dropdownManager = new gl.FilteredSearchDropdownManager();
 
-      this.dropdownManager.setupMapping();
       this.bindEvents();
       loadSearchParamsFromURL();
       this.dropdownManager.setDropdown();
@@ -130,7 +132,6 @@
     }
 
     checkForEnter(e) {
-      // Enter KeyCode
       if (e.keyCode === 13) {
         e.stopPropagation();
         e.preventDefault();
@@ -143,7 +144,6 @@
     }
 
     search() {
-      console.log('search');
       let path = '?scope=all&utf8=✓';
 
       // Check current state
@@ -152,9 +152,10 @@
       const defaultState = 'opened';
       let currentState = defaultState;
 
-      const { tokens, searchToken } = this.tokenizer.processTokens(document.querySelector('.filtered-search').value);
+      const { tokens, searchToken } = this.tokenizer.processTokens(this.filteredSearchInput.value);
 
       if (stateIndex !== -1) {
+        // TODO: Add comment here
         const remaining = currentPath.slice(stateIndex + 6);
         const separatorIndex = remaining.indexOf('&');
 

@@ -46,14 +46,8 @@
       this.dismissDropdown();
     }
 
-    renderContent(forceShowList = false) {
-      if (forceShowList && this.getCurrentHook().list.hidden) {
-        this.getCurrentHook().list.show();
-      }
-    }
-
     setAsDropdown() {
-      this.input.setAttribute(DATA_DROPDOWN_TRIGGER, `#${this.listId}`);
+      this.input.setAttribute(DATA_DROPDOWN_TRIGGER, `#${this.dropdown.id}`);
     }
 
     setOffset(offset = 0) {
@@ -67,17 +61,14 @@
         gl.FilteredSearchDropdownManager.addWordToInput(dataValue);
       }
 
+      // Return boolean based on whether it was set
       return dataValue !== null;
     }
 
-    dismissDropdown() {
-      this.input.focus();
-    }
-
-    dispatchInputEvent() {
-      // Propogate input change to FilteredSearchManager
-      // so that it can determine which dropdowns to open
-      this.input.dispatchEvent(new Event('input'));
+    renderContent(forceShowList = false) {
+      if (forceShowList && this.getCurrentHook().list.hidden) {
+        this.getCurrentHook().list.show();
+      }
     }
 
     render(forceRenderContent = false, forceShowList = false) {
@@ -88,9 +79,21 @@
 
       if (firstTimeInitialized || forceRenderContent) {
         this.renderContent(forceShowList);
-      } else if(currentHook.list.list.id !== this.listId) {
+      } else if(currentHook.list.list.id !== this.dropdown.id) {
         this.renderContent(forceShowList);
       }
+    }
+
+    dismissDropdown() {
+      // Focusing on the input will dismiss dropdown
+      // (default droplab functionality)
+      this.input.focus();
+    }
+
+    dispatchInputEvent() {
+      // Propogate input change to FilteredSearchDropdownManager
+      // so that it can determine which dropdowns to open
+      this.input.dispatchEvent(new Event('input'));
     }
 
     hideDropdown() {
@@ -100,9 +103,7 @@
     resetFilters() {
       const hook = this.getCurrentHook();
       const data = hook.list.data;
-      const results = data.map(function(o) {
-        o.droplab_hidden = false;
-      });
+      const results = data.map(o => o.droplab_hidden = false);
       hook.list.render(results);
     }
   }

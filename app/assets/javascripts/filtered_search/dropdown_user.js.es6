@@ -5,7 +5,6 @@
   class DropdownUser extends gl.FilteredSearchDropdown {
     constructor(droplab, dropdown, input) {
       super(droplab, dropdown, input);
-      this.listId = dropdown.id;
       this.config = {
         droplabAjaxFilter: {
           endpoint: '/autocomplete/users.json',
@@ -47,7 +46,7 @@
       return hasPrefix ? valueWithoutPrefix : valueWithoutColon;
     }
 
-    configure() {
+    init() {
       this.droplab.addHook(this.input, this.dropdown, [droplabAjaxFilter], this.config).init();
     }
   }

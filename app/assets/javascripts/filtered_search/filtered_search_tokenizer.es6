@@ -1,15 +1,6 @@
 /* eslint-disable no-param-reassign */
 ((global) => {
   class FilteredSearchTokenizer {
-    // TODO: Remove when going to pro
-    static printTokens(tokens, searchToken, lastToken) {
-      console.log('tokens:');
-      tokens.forEach(token => console.log(token));
-      console.log(`search: ${searchToken}`);
-      console.log('last token:');
-      console.log(lastToken);
-    }
-
     static parseToken(input) {
       const colonIndex = input.indexOf(':');
       let tokenKey;
@@ -162,9 +153,6 @@
       }, this);
 
       searchToken = searchTerms.trim();
-
-      // TODO: Remove when going to PRO
-      gl.FilteredSearchTokenizer.printTokens(tokens, searchToken, lastToken);
 
       return {
         tokens,
