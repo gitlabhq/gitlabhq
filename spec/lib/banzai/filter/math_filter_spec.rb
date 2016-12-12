@@ -108,4 +108,13 @@ describe Banzai::Filter::MathFilter, lib: true do
 
     expect(doc.to_s).to eq input
   end
+
+  it 'dollar signs around to display math' do
+    doc = filter('$<pre class="code highlight js-syntax-highlight math" v-pre="true"><code>2+2</code></pre>$')
+    before = doc.xpath('descendant-or-self::text()[1]').first
+    after = doc.xpath('descendant-or-self::text()[3]').first
+
+    expect(before.to_s).to eq '$'
+    expect(after.to_s).to eq '$'
+  end
 end
