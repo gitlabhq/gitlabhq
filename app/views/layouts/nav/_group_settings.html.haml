@@ -14,7 +14,6 @@
               = link_to 'Projects', projects_group_path(@group), title: 'Projects'
           - if can_edit && can_admin_group
             %li.divider
-<<<<<<< HEAD
           - if can_edit
             - if ldap_enabled?
               = nav_link(controller: :ldap_group_links) do
@@ -29,7 +28,5 @@
               = link_to group_audit_events_path(@group), title: "Audit Events" do
                 %span
                   Audit Events
-=======
->>>>>>> ce/master
             %li
               = link_to 'Edit Group', edit_group_path(@group)

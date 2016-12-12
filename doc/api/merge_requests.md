@@ -274,29 +274,6 @@ Creates a new merge request.
 POST /projects/:id/merge_requests
 ```
 
-<<<<<<< HEAD
-Parameters:
-
-- `id` (required)                      - The ID of a project
-- `source_branch` (required)           - The source branch
-- `target_branch` (required)           - The target branch
-- `assignee_id` (optional)             - Assignee user ID
-- `title` (required)                   - Title of MR
-- `description` (optional)             - Description of MR
-- `target_project_id` (optional)       - The target project (numeric id)
-- `labels` (optional)                  - Labels for MR as a comma-separated list
-- `milestone_id` (optional)            - Milestone ID
-- `approvals_before_merge` (optional)  - Number of approvals required before this can be merged (see below)
-
-If `approvals_before_merge` is not provided, it inherits the value from the
-target project. If it is provided, then the following conditions must hold in
-order for it to take effect:
-
-1. The target project's `approvals_before_merge` must be greater than zero. (A
-   value of zero disables approvals for that project.)
-2. The provided value of `approvals_before_merge` must be greater than the
-   target project's `approvals_before_merge`.
-=======
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id`            | string  | yes | The ID of a project |
@@ -309,7 +286,16 @@ order for it to take effect:
 | `labels` | string  | no | Labels for MR as a comma-separated list |
 | `milestone_id` | integer  | no | The ID of a milestone |
 | `remove_source_branch` | boolean  | no | Flag indicating if a merge request should remove the source branch when merging |
->>>>>>> ce/master
+| `approvals_before_merge` | integer| no | Number of approvals required before this can be merged (see below) |
+
+If `approvals_before_merge` is not provided, it inherits the value from the
+target project. If it is provided, then the following conditions must hold in
+order for it to take effect:
+
+1. The target project's `approvals_before_merge` must be greater than zero. (A
+   value of zero disables approvals for that project.)
+2. The provided value of `approvals_before_merge` must be greater than the
+   target project's `approvals_before_merge`.
 
 ```json
 {

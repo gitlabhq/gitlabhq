@@ -15,11 +15,8 @@ class Project < ActiveRecord::Base
   include Elastic::ProjectsSearch
   include ProjectFeaturesCompatibility
   include SelectForProjectAuthorization
-<<<<<<< HEAD
-  prepend EE::GeoAwareAvatar
-=======
   include Routable
->>>>>>> ce/master
+  prepend EE::GeoAwareAvatar
 
   extend Gitlab::ConfigHelper
 
@@ -1565,22 +1562,8 @@ class Project < ActiveRecord::Base
     current_application_settings.default_branch_protection == Gitlab::Access::PROTECTION_FULL ||
       current_application_settings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_MERGE
   end
-<<<<<<< HEAD
-=======
-
-  # Similar to the normal callbacks that hook into the life cycle of an
-  # Active Record object, you can also define callbacks that get triggered
-  # when you add an object to an association collection. If any of these
-  # callbacks throw an exception, the object will not be added to the
-  # collection. Before you add a new board to the boards collection if you
-  # already have 1, 2, or n it will fail, but it if you have 0 that is lower
-  # than the number of permitted boards per project it won't fail.
-  def validate_board_limit(board)
-    raise BoardLimitExceeded, 'Number of permitted boards exceeded' if boards.size >= NUMBER_OF_PERMITTED_BOARDS
-  end
 
   def full_path_changed?
     path_changed? || namespace_id_changed?
   end
->>>>>>> ce/master
 end

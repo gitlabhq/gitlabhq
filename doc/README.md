@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 # GitLab Enterprise Edition documentation
-=======
-# GitLab Community Edition documentation
->>>>>>> ce/master
 
 ## User documentation
 

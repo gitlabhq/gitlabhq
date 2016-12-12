@@ -209,9 +209,7 @@ project:
 - remote_mirrors
 - path_locks
 - approver_groups
-=======
 - route
->>>>>>> ce/master
 award_emoji:
 - awardable
 - user

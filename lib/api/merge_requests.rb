@@ -30,11 +30,8 @@ module API
           optional :assignee_id, type: Integer, desc: 'The ID of a user to assign the merge request'
           optional :milestone_id, type: Integer, desc: 'The ID of a milestone to assign the merge request'
           optional :labels, type: String, desc: 'Comma-separated list of label names'
-<<<<<<< HEAD
           optional :approvals_before_merge, type: Integer, desc: 'Number of approvals required before this can be merged'
-=======
           optional :remove_source_branch, type: Boolean, desc: 'Remove source branch when merging'
->>>>>>> ce/master
         end
       end
 
@@ -153,12 +150,8 @@ module API
                                  desc: 'Status of the merge request'
           use :optional_params
           at_least_one_of :title, :target_branch, :description, :assignee_id,
-<<<<<<< HEAD
                           :milestone_id, :labels, :state_event, :approvals_before_merge
-=======
-                          :milestone_id, :labels, :state_event,
                           :remove_source_branch
->>>>>>> ce/master
         end
         put path do
           merge_request = user_project.merge_requests.find(params.delete(:merge_request_id))

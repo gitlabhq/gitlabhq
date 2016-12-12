@@ -1761,7 +1761,6 @@ describe Project, models: true do
     end
   end
 
-<<<<<<< HEAD
   describe '.where_paths_in' do
     context 'without any paths' do
       it 'returns an empty relation' do
@@ -1856,8 +1855,6 @@ describe Project, models: true do
     end
   end
 
-=======
->>>>>>> ce/master
   describe 'change_head' do
     let(:project) { create(:project) }
 

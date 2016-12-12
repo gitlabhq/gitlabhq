@@ -148,22 +148,14 @@ describe MergeRequests::RefreshService, services: true do
 
         it { expect(@merge_request.notes).to be_empty }
         it { expect(@merge_request).to be_open }
+        it { expect(@merge_request.approvals).not_to be_empty }
         it { expect(@fork_merge_request.notes).to be_empty }
         it { expect(@fork_merge_request).to be_open }
+        it { expect(@fork_merge_request.approvals).not_to be_empty }
         it { expect(@build_failed_todo).to be_pending }
         it { expect(@fork_build_failed_todo).to be_pending }
       end
 
-<<<<<<< HEAD
-      it { expect(@merge_request.notes).to be_empty }
-      it { expect(@merge_request).to be_open }
-      it { expect(@merge_request.approvals).not_to be_empty }
-      it { expect(@fork_merge_request.notes).to be_empty }
-      it { expect(@fork_merge_request).to be_open }
-      it { expect(@build_failed_todo).to be_pending }
-      it { expect(@fork_build_failed_todo).to be_pending }
-      it { expect(@fork_merge_request.approvals).not_to be_empty }
-=======
       describe 'merge request diff' do
         it 'does not reload the diff of the merge request made from fork' do
           expect do
@@ -171,7 +163,6 @@ describe MergeRequests::RefreshService, services: true do
           end.not_to change { @fork_merge_request.reload.merge_request_diff }
         end
       end
->>>>>>> ce/master
     end
 
     context 'push to origin repo target branch after fork project was removed' do
