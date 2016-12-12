@@ -22,7 +22,7 @@ module API
       expose :provider, :extern_uid
     end
 
-    class UserFull < User
+    class UserPublic < User
       expose :last_sign_in_at
       expose :confirmed_at
       expose :email
@@ -34,7 +34,7 @@ module API
       expose :external
     end
 
-    class UserLogin < UserFull
+    class UserWithPrivateToken < UserPublic
       expose :private_token
     end
 
@@ -201,6 +201,19 @@ module API
       end
     end
 
+    class PersonalSnippet < Grape::Entity
+      expose :id, :title, :file_name
+      expose :author, using: Entities::UserBasic
+      expose :updated_at, :created_at
+
+      expose :web_url do |snippet|
+        Gitlab::UrlBuilder.build(snippet)
+      end
+      expose :raw_url do |snippet|
+        Gitlab::UrlBuilder.build(snippet) + "/raw"
+      end
+    end
+
     class ProjectEntity < Grape::Entity
       expose :id, :iid
       expose(:project_id) { |entity| entity.project.id }
@@ -289,7 +302,7 @@ module API
     end
 
     class SSHKeyWithUser < SSHKey
-      expose :user, using: Entities::UserFull
+      expose :user, using: Entities::UserPublic
     end
 
     class Note < Grape::Entity

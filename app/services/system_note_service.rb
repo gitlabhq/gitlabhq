@@ -163,6 +163,14 @@ module SystemNoteService
     create_note(noteable: merge_request, project: project, author: author, note: body)
   end
 
+  def discussion_continued_in_issue(discussion, project, author, issue)
+    body = "Added #{issue.to_reference} to continue this discussion"
+    note_attributes = discussion.reply_attributes.merge(project: project, author: author, note: body)
+    note_attributes[:type] = note_attributes.delete(:note_type)
+
+    create_note(note_attributes)
+  end
+
   # Called when the title of a Noteable is changed
   #
   # noteable  - Noteable object that responds to `title`

@@ -71,6 +71,10 @@
       border-bottom: 2px solid $link-underline-blue;
       color: $black;
       font-weight: 600;
+
+      .badge {
+        color: $black;
+      }
     }
 
     .badge {
@@ -266,6 +270,16 @@
     .nav-text,
     .nav-controls {
       width: auto;
+    }
+  }
+
+  &.multi-line {
+    .nav-text {
+      line-height: 20px;
+    }
+
+    .nav-controls {
+      padding: 17px 0;
     }
   }
 }

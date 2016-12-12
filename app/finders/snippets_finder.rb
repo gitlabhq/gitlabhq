@@ -1,12 +1,15 @@
 class SnippetsFinder
   def execute(current_user, params = {})
     filter = params[:filter]
+    user = params.fetch(:user, current_user)
 
     case filter
     when :all then
       snippets(current_user).fresh
+    when :public then
+      Snippet.are_public.fresh
     when :by_user then
-      by_user(current_user, params[:user], params[:scope])
+      by_user(current_user, user, params[:scope])
     when :by_project
       by_project(current_user, params[:project])
     end

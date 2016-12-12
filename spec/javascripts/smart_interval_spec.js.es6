@@ -14,8 +14,9 @@
       startingInterval: DEFAULT_STARTING_INTERVAL,
       maxInterval: DEFAULT_MAX_INTERVAL,
       incrementByFactorOf: DEFAULT_INCREMENT_FACTOR,
-      delayStartBy: 0,
       lazyStart: false,
+      immediateExecution: false,
+      hiddenInterval: null,
     };
 
     if (config) {
@@ -114,10 +115,27 @@
           expect(interval.state.intervalId).toBeTruthy();
 
           // simulates triggering of visibilitychange event
-          interval.state.pageVisibility = 'hidden';
-          interval.handleVisibilityChange();
+          interval.handleVisibilityChange({ target: { visibilityState: 'hidden' } });
 
           expect(interval.state.intervalId).toBeUndefined();
+          done();
+        }, DEFAULT_SHORT_TIMEOUT);
+      });
+
+      it('should change to the hidden interval when page is not visible', function (done) {
+        const HIDDEN_INTERVAL = 1500;
+        const interval = createDefaultSmartInterval({ hiddenInterval: HIDDEN_INTERVAL });
+
+        setTimeout(() => {
+          expect(interval.state.intervalId).toBeTruthy();
+          expect(interval.getCurrentInterval() >= DEFAULT_STARTING_INTERVAL &&
+            interval.getCurrentInterval() <= DEFAULT_MAX_INTERVAL).toBeTruthy();
+
+          // simulates triggering of visibilitychange event
+          interval.handleVisibilityChange({ target: { visibilityState: 'hidden' } });
+
+          expect(interval.state.intervalId).toBeTruthy();
+          expect(interval.getCurrentInterval()).toBe(HIDDEN_INTERVAL);
           done();
         }, DEFAULT_SHORT_TIMEOUT);
       });
@@ -129,14 +147,12 @@
           expect(interval.state.intervalId).toBeTruthy();
 
           // simulates triggering of visibilitychange event
-          interval.state.pageVisibility = 'hidden';
-          interval.handleVisibilityChange();
+          interval.handleVisibilityChange({ target: { visibilityState: 'hidden' } });
 
           expect(interval.state.intervalId).toBeUndefined();
 
           // simulates triggering of visibilitychange event
-          interval.state.pageVisibility = 'visible';
-          interval.handleVisibilityChange();
+          interval.handleVisibilityChange({ target: { visibilityState: 'visible' } });
 
           expect(interval.state.intervalId).toBeTruthy();
 
@@ -153,6 +169,11 @@
           expect(interval.getCurrentInterval()).toBe(interval.cfg.startingInterval);
           done();
         }, DEFAULT_SHORT_TIMEOUT);
+      });
+
+      it('should execute callback before first interval', function () {
+        const interval = createDefaultSmartInterval({ immediateExecution: true });
+        expect(interval.cfg.immediateExecution).toBeFalsy();
       });
     });
   });

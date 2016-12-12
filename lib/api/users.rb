@@ -51,7 +51,7 @@ module API
           users = users.external if params[:external] && current_user.is_admin?
         end
 
-        entity = current_user.is_admin? ? Entities::UserFull : Entities::UserBasic
+        entity = current_user.is_admin? ? Entities::UserPublic : Entities::UserBasic
         present paginate(users), with: entity
       end
 
@@ -66,7 +66,7 @@ module API
         not_found!('User') unless user
 
         if current_user && current_user.is_admin?
-          present user, with: Entities::UserFull
+          present user, with: Entities::UserPublic
         elsif can?(current_user, :read_user, user)
           present user, with: Entities::User
         else
@@ -75,7 +75,7 @@ module API
       end
 
       desc 'Create a user. Available only for admins.' do
-        success Entities::UserFull
+        success Entities::UserPublic
       end
       params do
         requires :email, type: String, desc: 'The email of the user'
@@ -99,7 +99,7 @@ module API
         end
 
         if user.save
-          present user, with: Entities::UserFull
+          present user, with: Entities::UserPublic
         else
           conflict!('Email has already been taken') if User.
               where(email: user.email).
@@ -114,7 +114,7 @@ module API
       end
 
       desc 'Update a user. Available only for admins.' do
-        success Entities::UserFull
+        success Entities::UserPublic
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
@@ -161,7 +161,7 @@ module API
         user_params.delete(:provider)
 
         if user.update_attributes(user_params)
-          present user, with: Entities::UserFull
+          present user, with: Entities::UserPublic
         else
           render_validation_error!(user)
         end
@@ -350,10 +350,10 @@ module API
 
     resource :user do
       desc 'Get the currently authenticated user' do
-        success Entities::UserFull
+        success Entities::UserPublic
       end
       get do
-        present current_user, with: Entities::UserFull
+        present current_user, with: @impersonator ? Entities::UserWithPrivateToken : Entities::UserPublic
       end
 
       desc "Get the currently authenticated user's SSH keys" do
