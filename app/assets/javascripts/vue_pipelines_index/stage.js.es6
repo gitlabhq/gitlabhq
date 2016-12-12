@@ -6,16 +6,13 @@
     props: ['stage'],
     computed: {
       buildStatus() {
-        return `Build: ${this.stage.status}`;
+        return `Build: ${this.stage.status.label}`;
       },
       tooltip() {
-        return `has-tooltip ci-status-icon-${this.stage.status}`;
+        return `has-tooltip ci-status-icon-${this.stage.status.label}`;
       },
       svg() {
-        return document
-          .querySelector(
-            `.icon_status_${this.stage.status}`,
-          ).innerHTML;
+        return document.querySelector(`.${this.stage.status.icon}`).innerHTML;
       },
     },
     template: `

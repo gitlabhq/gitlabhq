@@ -6,6 +6,14 @@
   }
 }
 
+.ci-status-icon-passed {
+  color: $gl-success;
+
+  svg {
+    fill: $gl-success;
+  }
+}
+
 .ci-status-icon-failed {
   color: $gl-danger;
 
