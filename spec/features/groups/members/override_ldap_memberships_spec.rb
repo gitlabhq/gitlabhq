@@ -13,7 +13,7 @@ feature 'Groups > Members > Master/Owner can override LDAP access levels', featu
   let!(:regular_member) { create(:group_member, :guest, group: group, user: maryjane, ldap: false) }
 
   background do
-    # We need to actually activate the LDAP config otherwise `Group#ldap_synced?` # will always be false!
+    # We need to actually activate the LDAP config otherwise `Group#ldap_synced?` will always be false!
     allow(Gitlab.config.ldap).to receive_messages(enabled: true)
 
     login_as(owner)
