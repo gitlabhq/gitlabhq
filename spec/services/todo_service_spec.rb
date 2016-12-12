@@ -469,6 +469,13 @@ describe TodoService, services: true do
 
         should_create_todo(user: author, target: mr_unassigned, action: Todo::BUILD_FAILED)
       end
+
+      it 'creates a pending todo for merge_user' do
+        mr_unassigned.update(merge_when_build_succeeds: true, merge_user: admin)
+        service.merge_request_build_failed(mr_unassigned)
+
+        should_create_todo(user: admin, author: admin, target: mr_unassigned, action: Todo::BUILD_FAILED)
+      end
     end
 
     describe '#merge_request_push' do
