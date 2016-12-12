@@ -25,7 +25,7 @@
         this.hideReferencedUsers($form);
       } else {
         preview.text('Loading...');
-        this.renderMarkdown(mdText, (function(response) {
+        this.fetchMarkdownPreview(mdText, (function(response) {
           preview.html(response.body);
           preview.renderGFM();
           this.renderReferencedUsers(response.references.users, $form);
@@ -33,7 +33,7 @@
       }
     };
 
-    MarkdownPreview.prototype.renderMarkdown = function(text, success) {
+    MarkdownPreview.prototype.fetchMarkdownPreview = function(text, success) {
       if (!window.preview_markdown_path) {
         return;
       }
