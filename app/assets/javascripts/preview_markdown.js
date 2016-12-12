@@ -1,14 +1,14 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, one-var, one-var-declaration-per-line, wrap-iife, no-else-return, consistent-return, object-shorthand, comma-dangle, no-param-reassign, padded-blocks, camelcase, prefer-arrow-callback, max-len */
+/* eslint-disable func-names, no-var, one-var, one-var-declaration-per-line, object-shorthand, comma-dangle, prefer-arrow-callback, max-len */
 
 // MarkdownPreview
 //
 // Handles toggling the "Write" and "Preview" tab clicks, rendering the preview,
 // and showing a warning when more than `x` users are referenced.
 //
-(function() {
+(function () {
   var lastTextareaPreviewed, markdownPreview, previewButtonSelector, writeButtonSelector;
 
-  window.MarkdownPreview = (function() {
+  window.MarkdownPreview = (function () {
     function MarkdownPreview() {}
 
     // Minimum number of users referenced before triggering a warning
@@ -16,7 +16,7 @@
 
     MarkdownPreview.prototype.ajaxCache = {};
 
-    MarkdownPreview.prototype.showPreview = function($form) {
+    MarkdownPreview.prototype.showPreview = function ($form) {
       var mdText, preview;
       preview = $form.find('.js-md-preview');
       mdText = $form.find('textarea.markdown-area').val();
@@ -25,7 +25,7 @@
         this.hideReferencedUsers($form);
       } else if (!preview.hasClass('md-preview-loading')) {
         preview.addClass('md-preview-loading').text('Loading...');
-        this.fetchMarkdownPreview(mdText, (function(response) {
+        this.fetchMarkdownPreview(mdText, (function (response) {
           preview.removeClass('md-preview-loading').html(response.body);
           preview.renderGFM();
           this.renderReferencedUsers(response.references.users, $form);
@@ -33,7 +33,7 @@
       }
     };
 
-    MarkdownPreview.prototype.fetchMarkdownPreview = function(text, success) {
+    MarkdownPreview.prototype.fetchMarkdownPreview = function (text, success) {
       if (!window.preview_markdown_path) {
         return;
       }
@@ -48,7 +48,7 @@
           text: text
         },
         dataType: 'json',
-        success: (function(response) {
+        success: (function (response) {
           this.ajaxCache = {
             text: text,
             response: response
@@ -58,11 +58,11 @@
       });
     };
 
-    MarkdownPreview.prototype.hideReferencedUsers = function($form) {
+    MarkdownPreview.prototype.hideReferencedUsers = function ($form) {
       $form.find('.referenced-users').hide();
     };
 
-    MarkdownPreview.prototype.renderReferencedUsers = function(users, $form) {
+    MarkdownPreview.prototype.renderReferencedUsers = function (users, $form) {
       var referencedUsers;
       referencedUsers = $form.find('.referenced-users');
       if (referencedUsers.length) {
@@ -76,7 +76,7 @@
     };
 
     return MarkdownPreview;
-  })();
+  }());
 
   markdownPreview = new window.MarkdownPreview();
 
@@ -86,18 +86,18 @@
 
   lastTextareaPreviewed = null;
 
-  $.fn.setupMarkdownPreview = function() {
+  $.fn.setupMarkdownPreview = function () {
     var $form = $(this);
     $form.find('textarea.markdown-area')
-      .on('input', function() {
+      .on('input', function () {
         markdownPreview.hideReferencedUsers($form);
       })
-      .on('blur', function() {
+      .on('blur', function () {
         markdownPreview.showPreview($form);
       });
   };
 
-  $(document).on('markdown-preview:show', function(e, $form) {
+  $(document).on('markdown-preview:show', function (e, $form) {
     if (!$form) {
       return;
     }
@@ -111,7 +111,7 @@
     markdownPreview.showPreview($form);
   });
 
-  $(document).on('markdown-preview:hide', function(e, $form) {
+  $(document).on('markdown-preview:hide', function (e, $form) {
     if (!$form) {
       return;
     }
@@ -125,7 +125,7 @@
     $form.find('.md-preview-holder').hide();
   });
 
-  $(document).on('markdown-preview:toggle', function(e, keyboardEvent) {
+  $(document).on('markdown-preview:toggle', function (e, keyboardEvent) {
     var $target;
     $target = $(keyboardEvent.target);
     if ($target.is('textarea.markdown-area')) {
@@ -138,18 +138,17 @@
     }
   });
 
-  $(document).on('click', previewButtonSelector, function(e) {
+  $(document).on('click', previewButtonSelector, function (e) {
     var $form;
     e.preventDefault();
     $form = $(this).closest('form');
     $(document).triggerHandler('markdown-preview:show', [$form]);
   });
 
-  $(document).on('click', writeButtonSelector, function(e) {
+  $(document).on('click', writeButtonSelector, function (e) {
     var $form;
     e.preventDefault();
     $form = $(this).closest('form');
     $(document).triggerHandler('markdown-preview:hide', [$form]);
   });
-
 }).call(this);
