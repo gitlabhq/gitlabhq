@@ -40,4 +40,12 @@ feature 'GFM autocomplete', feature: true, js: true do
 
     expect(page).not_to have_selector('.atwho-view')
   end
+
+  it 'doesnt open autocomplete after non-word character' do
+    page.within '.timeline-content-form' do
+      find('#note_note').native.send_keys("@#{user.username[0..2]}!")
+    end
+
+    expect(page).not_to have_selector('.atwho-view')
+  end
 end
