@@ -27,20 +27,12 @@
       return this.droplab.hooks.filter(h => h.id === this.hookId)[0];
     }
 
-    getSelectedText(selectedToken) {
-      // TODO: Get last word from FilteredSearchTokenizer
-      const lastWord = this.input.value.split(' ').last();
-      const lastWordIndex = selectedToken.indexOf(lastWord);
-
-      return lastWordIndex === -1 ? selectedToken : selectedToken.slice(lastWord.length);
-    }
-
     itemClicked(e, getValueFunction) {
       const dataValueSet = this.setDataValueIfSelected(e.detail.selected);
 
       if (!dataValueSet) {
-        const value = getValueFunction(e.detail.selected)
-        gl.FilteredSearchDropdownManager.addWordToInput(this.getSelectedText(value));
+        const value = getValueFunction(e.detail.selected);
+        gl.FilteredSearchDropdownManager.addWordToInput(value);
       }
 
       this.dismissDropdown();
