@@ -38,6 +38,10 @@
       super.renderContent(forceShowList);
     }
 
+    getProjectId() {
+      return this.input.getAttribute('data-project-id');
+    }
+
     getSearchInput() {
       const query = document.querySelector('.filtered-search').value;
       const { value } = gl.FilteredSearchTokenizer.getLastTokenObject(query);

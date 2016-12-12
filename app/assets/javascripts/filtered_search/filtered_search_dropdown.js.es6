@@ -4,7 +4,6 @@
 
   class FilteredSearchDropdown {
     constructor(droplab, dropdown, input) {
-      console.log('constructor');
       this.droplab = droplab;
       this.hookId = 'filtered-search';
       this.input = input;
@@ -24,30 +23,8 @@
       this.dropdown.removeEventListener('click.dl', this.itemClickedWrapper);
     }
 
-    getProjectId() {
-      return this.input.getAttribute('data-project-id');
-    }
-
     getCurrentHook() {
       return this.droplab.hooks.filter(h => h.id === this.hookId)[0];
-    }
-
-    getEscapedText(text) {
-      let escapedText = text;
-
-      // Encapsulate value with quotes if it has spaces
-      if (text.indexOf(' ') !== -1) {
-        if (text.indexOf('"') !== -1) {
-          // Use single quotes if value contains double quotes
-          escapedText = `'${text}'`;
-        } else {
-          // Known side effect: values's with both single and double quotes
-          // won't escape properly
-          escapedText = `"${text}"`;
-        }
-      }
-
-      return escapedText;
     }
 
     getSelectedText(selectedToken) {
@@ -107,22 +84,6 @@
       } else if(currentHook.list.list.id !== this.listId) {
         this.renderContent(forceShowList);
       }
-    }
-
-    filterWithSymbol(filterSymbol, item, query) {
-      const { value } = gl.FilteredSearchTokenizer.getLastTokenObject(query);
-      const valueWithoutColon = value.slice(1).toLowerCase();
-      const prefix = valueWithoutColon[0];
-      const valueWithoutPrefix = valueWithoutColon.slice(1);
-
-      const title = item.title.toLowerCase();
-
-      // Eg. filterSymbol = ~ for labels
-      const matchWithoutPrefix = prefix === filterSymbol && title.indexOf(valueWithoutPrefix) !== -1;
-      const match = title.indexOf(valueWithoutColon) !== -1;
-
-      item.droplab_hidden = !match && !matchWithoutPrefix;
-      return item;
     }
 
     hideDropdown() {
