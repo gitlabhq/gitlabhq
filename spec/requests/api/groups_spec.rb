@@ -245,6 +245,17 @@ describe API::Groups, api: true  do
         expect(project_names).to match_array([project1.name, project3.name])
       end
 
+      it 'filters the groups projects' do
+        public_projet = create(:project, :public, path: 'test1', group: group1)
+
+        get api("/groups/#{group1.id}/projects", user1), visibility: 'public'
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an(Array)
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['name']).to eq(public_projet.name)
+      end
+
       it "does not return a non existing group" do
         get api("/groups/1328/projects", user1)
         expect(response).to have_http_status(404)

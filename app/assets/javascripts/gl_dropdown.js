@@ -650,6 +650,11 @@
       } else if(value) {
         field = this.dropdown.parent().find("input[name='" + fieldName + "'][value='" + value.toString().replace(/'/g, '\\\'') + "']");
       }
+
+      if (this.options.isSelectable && !this.options.isSelectable(selectedObject, el)) {
+        return;
+      }
+
       if (el.hasClass(ACTIVE_CLASS)) {
         el.removeClass(ACTIVE_CLASS);
         if (field && field.length) {
