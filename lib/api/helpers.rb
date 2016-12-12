@@ -96,17 +96,6 @@ module API
       end
     end
 
-    def project_service(project = user_project)
-      @project_service ||= project.find_or_initialize_service(params[:service_slug].underscore)
-      @project_service || not_found!("Service")
-    end
-
-    def service_attributes
-      @service_attributes ||= project_service.fields.inject([]) do |arr, hash|
-        arr << hash[:name].to_sym
-      end
-    end
-
     def find_group(id)
       if id =~ /^\d+$/
         Group.find_by(id: id)
