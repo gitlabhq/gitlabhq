@@ -29,7 +29,6 @@
       let escapedText = text;
       const hasSpace = text.indexOf(' ') !== -1;
       const hasDoubleQuote = text.indexOf('"') !== -1;
-      const hasSingleQuote = text.indexOf('\'') !== -1;
 
       // Encapsulate value with quotes if it has spaces
       // Known side effect: values's with both single and double quotes
@@ -37,7 +36,8 @@
       if (hasSpace) {
         if (hasDoubleQuote) {
           escapedText = `'${text}'`;
-        } else if (hasSingleQuote) {
+        } else {
+          // Encapsulate singleQuotes or if it hasSpace
           escapedText = `"${text}"`;
         }
       }
