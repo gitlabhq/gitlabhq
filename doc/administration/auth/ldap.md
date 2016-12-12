@@ -302,4 +302,4 @@ GitLab. Common combinations are `method: 'plain'` and `port: 389`, OR
 
 If there is an unexpected error while authenticating the user with the LDAP
 backend, the login is rejected and details about the error are logged to
-`production.log`.
+`application.log`.
