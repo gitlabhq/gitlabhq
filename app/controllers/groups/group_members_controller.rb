@@ -97,7 +97,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
 
   def authorize_update_group_member!
     unless can?(current_user, :admin_group_member, group) || can?(current_user, :override_group_member, group)
-      return render_403
+      render_403
     end
   end
 
