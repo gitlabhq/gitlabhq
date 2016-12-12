@@ -5,7 +5,6 @@
   class DropdownNonUser extends gl.FilteredSearchDropdown {
     constructor(droplab, dropdown, input, endpoint, symbol) {
       super(droplab, dropdown, input);
-      this.listId = dropdown.id;
       this.symbol = symbol;
       this.config = {
         droplabAjax: {
@@ -28,15 +27,17 @@
 
     getEscapedText(text) {
       let escapedText = text;
+      const hasSpace = text.indexOf(' ') !== -1;
+      const hasDoubleQuote = text.indexOf('"') !== -1;
+      const hasSingleQuote = text.indexOf('\'') !== -1;
 
       // Encapsulate value with quotes if it has spaces
-      if (text.indexOf(' ') !== -1) {
-        if (text.indexOf('"') !== -1) {
-          // Use single quotes if value contains double quotes
+      // Known side effect: values's with both single and double quotes
+      // won't escape properly
+      if (hasSpace) {
+        if (hasDoubleQuote) {
           escapedText = `'${text}'`;
-        } else {
-          // Known side effect: values's with both single and double quotes
-          // won't escape properly
+        } else if (hasSingleQuote) {
           escapedText = `"${text}"`;
         }
       }
@@ -65,7 +66,7 @@
       super.renderContent(forceShowList);
     }
 
-    configure() {
+    init() {
       this.droplab.addHook(this.input, this.dropdown, [droplabAjax, droplabFilter], this.config).init();
     }
   }
