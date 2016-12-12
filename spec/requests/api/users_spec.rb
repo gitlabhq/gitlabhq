@@ -1100,4 +1100,22 @@ describe API::Users, api: true  do
       expect(json_response['message']).to eq('404 User Not Found')
     end
   end
+
+  context "user activities" do
+    it_behaves_like 'a paginated resources' do
+      let(:request) { get api("/users/activities", user) }
+    end
+
+    context 'last activities' do
+      it 'returns the last activities' do
+        Users::ActivityService.new(user, 'type').execute
+
+        get api("/users/activities", user)
+
+        activity = json_response.first
+
+        expect(activity['project_id'].to_i).to eq(project.id)
+      end
+    end
+  end
 end
