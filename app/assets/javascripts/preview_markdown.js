@@ -23,10 +23,10 @@
       if (mdText.trim().length === 0) {
         preview.text('Nothing to preview.');
         this.hideReferencedUsers($form);
-      } else {
-        preview.text('Loading...');
+      } else if (!preview.hasClass('md-preview-loading')) {
+        preview.addClass('md-preview-loading').text('Loading...');
         this.fetchMarkdownPreview(mdText, (function(response) {
-          preview.html(response.body);
+          preview.removeClass('md-preview-loading').html(response.body);
           preview.renderGFM();
           this.renderReferencedUsers(response.references.users, $form);
         }).bind(this));
