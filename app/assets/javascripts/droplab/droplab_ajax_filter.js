@@ -87,8 +87,6 @@ require('../window')(function(w){
 
           if (onlyDynamicList && data.length === 0) {
             self.hook.list.hide();
-          } else if (onlyDynamicList && data.length !== 0) {
-            self.hook.list.show();
           }
 
           self.hook.list.setData.call(self.hook.list, data);
