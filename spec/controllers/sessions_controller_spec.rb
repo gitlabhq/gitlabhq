@@ -24,7 +24,6 @@ describe SessionsController do
         it 'authenticates user correctly' do
           post(:create, user: { login: user.username, password: user.password })
 
-          expect(response).to set_flash.to /Signed in successfully/
           expect(subject.current_user). to eq user
         end
 

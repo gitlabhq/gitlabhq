@@ -70,6 +70,7 @@ module API
     mount ::API::Session
     mount ::API::Settings
     mount ::API::SidekiqMetrics
+    mount ::API::Snippets
     mount ::API::Subscriptions
     mount ::API::SystemHooks
     mount ::API::Tags

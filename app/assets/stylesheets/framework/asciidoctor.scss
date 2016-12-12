@@ -1,0 +1,27 @@
+.admonitionblock td.icon {
+  width: 1%;
+
+  [class^="fa icon-"] {
+    @extend .fa-2x;
+  }
+
+  .icon-note {
+    @extend .fa-thumb-tack;
+  }
+
+  .icon-tip {
+    @extend .fa-lightbulb-o;
+  }
+
+  .icon-warning {
+    @extend .fa-exclamation-triangle;
+  }
+
+  .icon-caution {
+    @extend .fa-fire;
+  }
+
+  .icon-important {
+    @extend .fa-exclamation-circle;
+  }
+}

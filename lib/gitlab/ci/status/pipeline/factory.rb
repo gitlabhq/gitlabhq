@@ -2,35 +2,15 @@ module Gitlab
   module Ci
     module Status
       module Pipeline
-        class Factory
-          EXTENDED_STATUSES = [Pipeline::SuccessWithWarnings]
-
-          def initialize(pipeline)
-            @pipeline = pipeline
-            @status = pipeline.status || :created
-          end
-
-          def fabricate!
-            if extended_status
-              extended_status.new(core_status)
-            else
-              core_status
-            end
-          end
-
+        class Factory < Status::Factory
           private
 
-          def core_status
-            Gitlab::Ci::Status
-              .const_get(@status.capitalize)
-              .new(@pipeline)
-              .extend(Status::Pipeline::Common)
+          def extended_statuses
+            [Pipeline::SuccessWithWarnings]
           end
 
-          def extended_status
-            @extended ||= EXTENDED_STATUSES.find do |status|
-              status.matches?(@pipeline)
-            end
+          def core_status
+            super.extend(Status::Pipeline::Common)
           end
         end
       end

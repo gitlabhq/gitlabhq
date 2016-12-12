@@ -274,6 +274,7 @@ Creates a new merge request.
 POST /projects/:id/merge_requests
 ```
 
+<<<<<<< HEAD
 Parameters:
 
 - `id` (required)                      - The ID of a project
@@ -295,6 +296,20 @@ order for it to take effect:
    value of zero disables approvals for that project.)
 2. The provided value of `approvals_before_merge` must be greater than the
    target project's `approvals_before_merge`.
+=======
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`            | string  | yes | The ID of a project |
+| `source_branch` | string  | yes | The source branch |
+| `target_branch` | string  | yes | The target branch |
+| `title`         | string  | yes | Title of MR |
+| `assignee_id`   | integer | no  | Assignee user ID |
+| `description`   | string  | no  | Description of MR |
+| `target_project_id` | integer  | no | The target project (numeric id) |
+| `labels` | string  | no | Labels for MR as a comma-separated list |
+| `milestone_id` | integer  | no | The ID of a milestone |
+| `remove_source_branch` | boolean  | no | Flag indicating if a merge request should remove the source branch when merging |
+>>>>>>> ce/master
 
 ```json
 {
@@ -360,17 +375,19 @@ Updates an existing merge request. You can change the target branch, title, or e
 PUT /projects/:id/merge_requests/:merge_request_id
 ```
 
-Parameters:
-
-- `id` (required)               - The ID of a project
-- `merge_request_id` (required) - ID of MR
-- `target_branch`               - The target branch
-- `assignee_id`                 - Assignee user ID
-- `title`                       - Title of MR
-- `description`                 - Description of MR
-- `state_event`                 - New state (close|reopen|merge)
-- `labels` (optional)           - Labels for MR as a comma-separated list
-- `milestone_id` (optional)     - Milestone ID
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`            | string  | yes | The ID of a project |
+| `merge_request_id` | integer  | yes | The ID of a merge request |
+| `source_branch` | string  | yes | The source branch |
+| `target_branch` | string  | yes | The target branch |
+| `title`         | string  | yes | Title of MR |
+| `assignee_id`   | integer | no  | Assignee user ID |
+| `description`   | string  | no  | Description of MR |
+| `target_project_id` | integer  | no | The target project (numeric id) |
+| `labels` | string  | no | Labels for MR as a comma-separated list |
+| `milestone_id` | integer  | no | The ID of a milestone |
+| `remove_source_branch` | boolean  | no | Flag indicating if a merge request should remove the source branch when merging |
 
 ```json
 {
@@ -441,7 +458,7 @@ DELETE /projects/:id/merge_requests/:merge_request_id
 | `merge_request_id` | integer | yes | The ID of a project's merge request |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/merge_request/85
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/merge_requests/85
 ```
 
 ## Accept MR
@@ -927,7 +944,7 @@ Example response:
 
 ## Create a todo
 
-Manually creates a todo for the current user on a merge request. 
+Manually creates a todo for the current user on a merge request.
 If there already exists a todo for the user on that merge request,
 status code `304` is returned.
 

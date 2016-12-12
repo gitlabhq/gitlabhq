@@ -136,4 +136,12 @@ describe Namespace, models: true do
       expect(Namespace.clean_path("--%+--valid_*&%name=.git.%.atom.atom.@email.com")).to eq("valid_name")
     end
   end
+
+  describe '#full_path' do
+    let(:group) { create(:group) }
+    let(:nested_group) { create(:group, parent: group) }
+
+    it { expect(group.full_path).to eq(group.path) }
+    it { expect(nested_group.full_path).to eq("#{group.path}/#{nested_group.path}") }
+  end
 end

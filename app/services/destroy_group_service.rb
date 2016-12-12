@@ -20,6 +20,10 @@ class DestroyGroupService
       ::Projects::DestroyService.new(project, current_user, skip_repo: true).execute
     end
 
+    group.children.each do |group|
+      DestroyGroupService.new(group, current_user).async_execute
+    end
+
     group.really_destroy!
   end
 end

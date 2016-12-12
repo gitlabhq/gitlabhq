@@ -197,6 +197,7 @@ project:
 - project_feature
 - authorized_users
 - project_authorizations
+<<<<<<< HEAD
 - mirror_user
 - push_rule
 - jenkins_service
@@ -208,6 +209,9 @@ project:
 - remote_mirrors
 - path_locks
 - approver_groups
+=======
+- route
+>>>>>>> ce/master
 award_emoji:
 - awardable
 - user

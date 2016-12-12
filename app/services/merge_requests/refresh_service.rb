@@ -56,8 +56,9 @@ module MergeRequests
     # Refresh merge request diff if we push to source or target branch of merge request
     # Note: we should update merge requests from forks too
     def reload_merge_requests
-      merge_requests = @project.merge_requests.opened.by_branch(@branch_name).to_a
-      merge_requests += fork_merge_requests.by_branch(@branch_name).to_a
+      merge_requests = @project.merge_requests.opened.
+        by_source_or_target_branch(@branch_name).to_a
+      merge_requests += fork_merge_requests
       merge_requests = filter_merge_requests(merge_requests)
 
       merge_requests.each do |merge_request|
@@ -172,13 +173,14 @@ module MergeRequests
     def merge_requests_for_source_branch
       @source_merge_requests ||= begin
         merge_requests = @project.origin_merge_requests.opened.where(source_branch: @branch_name).to_a
-        merge_requests += fork_merge_requests.where(source_branch: @branch_name).to_a
+        merge_requests += fork_merge_requests
         filter_merge_requests(merge_requests)
       end
     end
 
     def fork_merge_requests
-      @fork_merge_requests ||= @project.fork_merge_requests.opened
+      @fork_merge_requests ||= @project.fork_merge_requests.opened.
+        where(source_branch: @branch_name).to_a
     end
 
     def branch_added?

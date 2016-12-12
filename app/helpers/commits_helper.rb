@@ -130,7 +130,7 @@ module CommitsHelper
   def revert_commit_link(commit, continue_to_path, btn_class: nil, has_tooltip: true)
     return unless current_user
 
-    tooltip = "Revert this #{commit.change_type_title} in a new merge request" if has_tooltip
+    tooltip = "Revert this #{commit.change_type_title(current_user)} in a new merge request" if has_tooltip
 
     if can_collaborate_with_project?
       btn_class = "btn btn-warning btn-#{btn_class}" unless btn_class.nil?
@@ -154,7 +154,7 @@ module CommitsHelper
   def cherry_pick_commit_link(commit, continue_to_path, btn_class: nil, has_tooltip: true)
     return unless current_user
 
-    tooltip = "Cherry-pick this #{commit.change_type_title} in a new merge request"
+    tooltip = "Cherry-pick this #{commit.change_type_title(current_user)} in a new merge request"
 
     if can_collaborate_with_project?
       btn_class = "btn btn-default btn-#{btn_class}" unless btn_class.nil?

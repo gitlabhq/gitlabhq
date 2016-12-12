@@ -16,12 +16,17 @@ feature 'Projects > Members > Anonymous user sees members', feature: true, js: t
   end
 
   it 'updates group access level' do
-    select 'Guest', from: "member_access_level_#{group.id}"
+    click_button @group_link.human_access
+
+    page.within '.dropdown-menu' do
+      click_link 'Guest'
+    end
+
     wait_for_ajax
 
     visit namespace_project_project_members_path(project.namespace, project)
 
-    expect(page).to have_select("member_access_level_#{group.id}", selected: 'Guest')
+    expect(first('.group_member')).to have_content('Guest')
   end
 
   it 'updates expiry date' do
