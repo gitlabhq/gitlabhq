@@ -83,7 +83,7 @@
       // We can trust that each param has one & since values containing & will be encoded
       // Remove the first character of search as it is always ?
       const params = window.location.search.slice(1).split('&');
-      let inputValue = '';
+      let inputValues = [];
 
       params.forEach((p) => {
         const split = p.split('=');
@@ -103,8 +103,7 @@
 
         if (validCondition) {
           // Parse params based on rules provided in the conditions key of gl.FilteredSearchTokenKeys.get()
-          inputValue += `${validCondition.key}:${validCondition.conditions[conditionIndex].keyword}`;
-          inputValue += ' ';
+          inputValues.push(`${validCondition.key}:${validCondition.conditions[conditionIndex].keyword}`);
         } else {
           // Sanitize value since URL converts spaces into +
           // Replace before decode so that we know what was originally + versus the encoded +
@@ -122,25 +121,23 @@
               quotationsToUse = sanitizedValue.indexOf('"') === -1 ? '"' : '\'';
             }
 
-            inputValue += valueHasSpace ? `${sanitizedKey}:${symbol}${quotationsToUse}${sanitizedValue}${quotationsToUse}` : `${sanitizedKey}:${symbol}${sanitizedValue}`;
-            inputValue += ' ';
+            inputValues.push(valueHasSpace ? `${sanitizedKey}:${symbol}${quotationsToUse}${sanitizedValue}${quotationsToUse}` : `${sanitizedKey}:${symbol}${sanitizedValue}`);
           } else if (!match && key === 'search') {
-            inputValue += sanitizedValue;
-            inputValue += ' ';
+            inputValues.push(sanitizedValue);
           }
         }
       });
 
       // Trim the last space value
-      this.filteredSearchInput.value = inputValue.trim();
+      this.filteredSearchInput.value = inputValues.join(' ');
 
-      if (inputValue.trim()) {
+      if (inputValues.length > 0) {
         this.clearSearchButton.classList.remove('hidden');
       }
     }
 
     search() {
-      let path = '?scope=all&utf8=✓';
+      let paths = [];
 
       // Check current state
       const currentPath = window.location.search;
@@ -158,7 +155,7 @@
         currentState = separatorIndex === -1 ? remaining : remaining.slice(0, separatorIndex);
       }
 
-      path += `&state=${currentState}`;
+      paths.push(`state=${currentState}`);
       tokens.forEach((token) => {
         const match = gl.FilteredSearchTokenKeys.get().filter(t => t.key === token.key)[0];
         let tokenPath = '';
@@ -177,14 +174,14 @@
           tokenPath = `${token.key}_${match.param}=${encodeURIComponent(token.value)}`;
         }
 
-        path += `&${tokenPath}`;
+        paths.push(tokenPath);
       });
 
       if (searchToken) {
-        path += `&search=${encodeURIComponent(searchToken)}`;
+        paths.push(`search=${encodeURIComponent(searchToken)}`);
       }
 
-      window.location = path;
+      window.location = `?scope=all&utf8=✓&${paths.join('&')}`;
     }
   }
 
