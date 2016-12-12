@@ -25,13 +25,11 @@
         this.hideReferencedUsers(form);
       } else {
         preview.text('Loading...');
-        this.renderMarkdown(mdText, (function(_this) {
-          return function(response) {
-            preview.html(response.body);
-            preview.renderGFM();
-            _this.renderReferencedUsers(response.references.users, form);
-          };
-        })(this));
+        this.renderMarkdown(mdText, (function(response) {
+          preview.html(response.body);
+          preview.renderGFM();
+          this.renderReferencedUsers(response.references.users, form);
+        }).bind(this));
       }
     };
 
@@ -50,15 +48,13 @@
           text: text
         },
         dataType: 'json',
-        success: (function(_this) {
-          return function(response) {
-            _this.ajaxCache = {
-              text: text,
-              response: response
-            };
-            success(response);
+        success: (function(response) {
+          this.ajaxCache = {
+            text: text,
+            response: response
           };
-        })(this)
+          success(response);
+        }).bind(this)
       });
     };
 
