@@ -24,13 +24,11 @@
         $btn.glDropdown({
           selectable: true,
           isSelectable(selected, $el) {
-            const $link = $($el);
-
-            if ($link.data('revert')) {
+            if ($el.data('revert')) {
               return false;
             }
 
-            return !$link.hasClass('is-active');
+            return !$el.hasClass('is-active');
           },
           fieldName: $btn.data('field-name'),
           id(selected, $el) {
@@ -44,11 +42,11 @@
             return $el.text();
           },
           clicked: (selected, $link) => {
-            const { $memberListItem, $toggle, $dateInput } = this.getMemberListItems($link);
-
             if (!$link.data('revert')) {
               this.formSubmit(null, $link);
             } else {
+              const { $memberListItem, $toggle, $dateInput } = this.getMemberListItems($link);
+
               $toggle.disable();
               $dateInput.disable();
 
