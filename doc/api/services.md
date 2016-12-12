@@ -153,9 +153,12 @@ PUT /projects/:id/services/builds-email
 
 Parameters:
 
-- `recipients` (**required**) - Comma-separated list of recipient email addresses
-- `add_pusher` (optional) - Add pusher to recipients list
-- `notify_only_broken_builds` (optional) -Notify only broken builds
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `recipients` | string | yes | Comma-separated list of recipient email addresses |
+| `add_pusher` | boolean | no | Add pusher to recipients list |
+| `notify_only_broken_builds` | boolean | no | Notify only broken builds |
+
 
 ### Delete Build-Emails service
 
@@ -538,7 +541,10 @@ PUT /projects/:id/services/mattermost-slash-commands
 
 Parameters:
 
-- `token` (**required**) - The Mattermost token
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `token` | string | yes | The Mattermost token |
+
 
 ### Delete Mattermost Slash Command service
 
@@ -570,8 +576,12 @@ PUT /projects/:id/services/pipelines-email
 
 Parameters:
 
-- `recipients` (**required**) - Comma-separated list of recipient email addresses
-- `notify_only_broken_builds` (optional) -Notify only broken pipelines
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `recipients` | string | yes | Comma-separated list of recipient email addresses |
+| `add_pusher` | boolean | no | Add pusher to recipients list |
+| `notify_only_broken_builds` | boolean | no | Notify only broken pipelines |
+
 
 ### Delete Pipeline-Emails service
 

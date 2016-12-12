@@ -358,7 +358,7 @@ describe HipchatService, models: true do
       context 'with a failed build' do
         it 'uses the red color' do
           build_data = { object_kind: 'build', commit: { status: 'failed' } }
-          
+
           expect(hipchat.__send__(:message_options, build_data)).to eq({ notify: false, color: 'red' })
         end
       end
