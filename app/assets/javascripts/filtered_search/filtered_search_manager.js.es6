@@ -115,7 +115,6 @@
     }
 
     clearSearch(e) {
-      e.stopPropagation();
       e.preventDefault();
 
       this.filteredSearchInput.value = '';
@@ -135,7 +134,6 @@
 
     checkForEnter(e) {
       if (e.keyCode === 13) {
-        e.stopPropagation();
         e.preventDefault();
 
         // Prevent droplab from opening dropdown
