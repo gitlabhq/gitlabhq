@@ -23,6 +23,7 @@
       this.$buildTrace = $('#build-trace');
       this.$autoScrollContainer = $('.autoscroll-container');
       this.$autoScrollStatus = $('#autoscroll-status');
+      this.$autoScrollStatusText = this.$autoScrollStatus.find('.status-text');
       this.$upBuildTrace = $('#up-build-trace');
       this.$downBuildTrace = $('#down-build-trace');
       this.$scrollTopBtn = $('#scroll-top');
@@ -167,7 +168,7 @@
 
         // Show and Reposition Autoscroll Status Indicator
         this.$autoScrollContainer.css({ top: this.$body.outerHeight() - 75 }).fadeIn(100);
-        this.$autoScrollStatus.find('.status-text').addClass('animate');
+        this.$autoScrollStatusText.addClass('animate');
       }
 
       if (!gl.utils.isInViewport(this.$upBuildTrace[0]) && !gl.utils.isInViewport(this.$downBuildTrace[0])) { // User is somewhere in middle of Build Log
@@ -176,7 +177,7 @@
 
         // Hide Autoscroll Status Indicator
         this.$autoScrollContainer.hide();
-        this.$autoScrollStatus.find('.status-text').removeClass('animate');
+        this.$autoScrollStatusText.removeClass('animate');
       }
 
       if (this.buildStatus === "running" || this.buildStatus === "pending") {
