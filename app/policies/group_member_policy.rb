@@ -21,7 +21,7 @@ class GroupMemberPolicy < BasePolicy
 
     if can_override
       can! :override_group_member if @subject.ldap?
-      can! :update_group_member if !@subject.ldap? || (@subject.ldap? && @subject.override?)
+      can! :update_group_member unless @subject.ldap? && !@subject.override?
     end
   end
 end
