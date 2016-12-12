@@ -16,19 +16,19 @@
 
     MarkdownPreview.prototype.ajaxCache = {};
 
-    MarkdownPreview.prototype.showPreview = function(form) {
+    MarkdownPreview.prototype.showPreview = function($form) {
       var mdText, preview;
-      preview = form.find('.js-md-preview');
-      mdText = form.find('textarea.markdown-area').val();
+      preview = $form.find('.js-md-preview');
+      mdText = $form.find('textarea.markdown-area').val();
       if (mdText.trim().length === 0) {
         preview.text('Nothing to preview.');
-        this.hideReferencedUsers(form);
+        this.hideReferencedUsers($form);
       } else {
         preview.text('Loading...');
         this.renderMarkdown(mdText, (function(response) {
           preview.html(response.body);
           preview.renderGFM();
-          this.renderReferencedUsers(response.references.users, form);
+          this.renderReferencedUsers(response.references.users, $form);
         }).bind(this));
       }
     };
@@ -58,13 +58,13 @@
       });
     };
 
-    MarkdownPreview.prototype.hideReferencedUsers = function(form) {
-      form.find('.referenced-users').hide();
+    MarkdownPreview.prototype.hideReferencedUsers = function($form) {
+      $form.find('.referenced-users').hide();
     };
 
-    MarkdownPreview.prototype.renderReferencedUsers = function(users, form) {
+    MarkdownPreview.prototype.renderReferencedUsers = function(users, $form) {
       var referencedUsers;
-      referencedUsers = form.find('.referenced-users');
+      referencedUsers = $form.find('.referenced-users');
       if (referencedUsers.length) {
         if (users.length >= this.referenceThreshold) {
           referencedUsers.show();
