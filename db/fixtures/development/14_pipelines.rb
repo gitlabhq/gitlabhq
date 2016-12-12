@@ -115,7 +115,7 @@ class Gitlab::Seeder::Pipelines
 
   def job_attributes(pipeline, opts)
     { name: 'test build', stage: 'test', stage_idx: stage_index(opts[:stage]),
-      ref: 'master', tag: false, user: build_user, project: @project, pipeline: pipeline,
+      ref: pipeline.ref, tag: false, user: build_user, project: @project, pipeline: pipeline,
       created_at: Time.now, updated_at: Time.now
     }.merge(opts)
   end
