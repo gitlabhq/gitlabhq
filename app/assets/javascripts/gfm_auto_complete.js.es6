@@ -69,7 +69,7 @@
         _a = decodeURI("%C3%80");
         _y = decodeURI("%C3%BF");
 
-        regexp = new RegExp("(?:\\B|\\W|\\s)" + flag + "(?!\\W)([A-Za-z" + _a + "-" + _y + "0-9_\'\.\+\-]*)|([^\\x00-\\xff]*)$", 'gi');
+        regexp = new RegExp("(?:\\B|\\W|\\s)" + flag + "(?!\\W)([A-Za-z" + _a + "-" + _y + "0-9_\'\.\+\-]*)$", 'gi');
 
         match = regexp.exec(subtext);
 
