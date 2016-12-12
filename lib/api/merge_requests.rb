@@ -150,7 +150,7 @@ module API
                                  desc: 'Status of the merge request'
           use :optional_params
           at_least_one_of :title, :target_branch, :description, :assignee_id,
-                          :milestone_id, :labels, :state_event, :approvals_before_merge
+                          :milestone_id, :labels, :state_event, :approvals_before_merge,
                           :remove_source_branch
         end
         put path do
