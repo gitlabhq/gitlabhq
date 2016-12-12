@@ -32,7 +32,7 @@
     }
 
     itemClicked(e) {
-      const selected = e.detail.selected;
+      const { selected } = e.detail;
 
       if (selected.hasAttribute('data-value')) {
         this.dismissDropdown();
