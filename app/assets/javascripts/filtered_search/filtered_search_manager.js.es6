@@ -40,7 +40,7 @@
       } else {
         // Sanitize value since URL converts spaces into +
         // Replace before decode so that we know what was originally + versus the encoded +
-        const sanitizedValue = value ? decodeURIComponent(value.replace(/[+]/g, ' ')) : value;
+        const sanitizedValue = value ? decodeURIComponent(value.replace(/\+/g, ' ')) : value;
         const match = gl.FilteredSearchTokenKeys.get().filter(t => key === `${t.key}_${t.param}`)[0];
 
         if (match) {
