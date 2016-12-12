@@ -15,8 +15,9 @@ describe Milestone, models: true do
     it { is_expected.to validate_presence_of(:project) }
   end
 
-  let(:milestone) { create(:milestone) }
-  let(:issue) { create(:issue) }
+  let(:project) { create(:project, :public) }
+  let(:milestone) { create(:milestone, project: project) }
+  let(:issue) { create(:issue, project: project) }
   let(:user) { create(:user) }
 
   describe "#title" do
@@ -101,8 +102,8 @@ describe Milestone, models: true do
 
   describe :items_count do
     before do
-      milestone.issues << create(:issue)
-      milestone.issues << create(:closed_issue)
+      milestone.issues << create(:issue, project: project)
+      milestone.issues << create(:closed_issue, project: project)
       milestone.merge_requests << create(:merge_request)
     end
 
@@ -117,7 +118,7 @@ describe Milestone, models: true do
 
   describe '#total_items_count' do
     before do
-      create :closed_issue, milestone: milestone
+      create :closed_issue, milestone: milestone, project: project
       create :merge_request, milestone: milestone
     end
 
