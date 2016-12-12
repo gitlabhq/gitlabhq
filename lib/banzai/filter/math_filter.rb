@@ -16,16 +16,18 @@ module Banzai
 
       DOLLAR_SIGN = '$'.freeze
 
+      INLINE_CLASSES = "code math #{TAG_CLASS}".freeze
+
       def call
-        doc.xpath(INLINE_MATH).each do |el|
-          code = el
+        doc.xpath(INLINE_MATH).each do |code|
           closing = code.next
           opening = code.previous
 
-          if (!closing.nil? and closing.content[0] == DOLLAR_SIGN) \
-             and (!opening.nil? and opening.content[-1] == DOLLAR_SIGN)
+          if closing && opening &&
+              closing.content.first == DOLLAR_SIGN &&
+              opening.content.last == DOLLAR_SIGN
 
-            code[:class] = 'code math ' << TAG_CLASS
+            code[:class] = INLINE_CLASSES
             code[STYLE_ATTRIBUTE] = 'inline'
             closing.content = closing.content[1..-1]
             opening.content = opening.content[0..-2]
