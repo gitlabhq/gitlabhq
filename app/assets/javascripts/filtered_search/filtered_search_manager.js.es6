@@ -26,7 +26,7 @@
       let conditionIndex = 0;
       const validCondition = gl.FilteredSearchTokenKeys.get()
         .filter(v => v.conditions && v.conditions.filter((c, index) => {
-          // TODO: Add comment here
+          // Return TokenKeys that have conditions that much the URL
           if (c.url === p) {
             conditionIndex = index;
           }
@@ -155,8 +155,8 @@
       const { tokens, searchToken } = this.tokenizer.processTokens(this.filteredSearchInput.value);
 
       if (stateIndex !== -1) {
-        // TODO: Add comment here
-        const remaining = currentPath.slice(stateIndex + 6);
+        // Get currentState from url params if available
+        const remaining = currentPath.slice(stateIndex + 'state='.length);
         const separatorIndex = remaining.indexOf('&');
 
         currentState = separatorIndex === -1 ? remaining : remaining.slice(0, separatorIndex);
