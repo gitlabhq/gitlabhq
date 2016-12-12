@@ -197,7 +197,6 @@ project:
 - project_feature
 - authorized_users
 - project_authorizations
-<<<<<<< HEAD
 - mirror_user
 - push_rule
 - jenkins_service
