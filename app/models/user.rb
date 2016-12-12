@@ -948,9 +948,7 @@ class User < ActiveRecord::Base
   end
 
   def record_activity
-    Gitlab::Redis.with do |redis|
-      redis.zadd('user/activities', Time.now.to_i, self.username)
-    end
+    Gitlab::UserActivities.record(self)
   end
 
   private
