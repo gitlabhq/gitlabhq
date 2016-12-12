@@ -1,4 +1,6 @@
 class Groups::GroupMembersController < Groups::ApplicationController
+  prepend EE::Groups::GroupMembersController
+
   include MembershipActions
 
   # Authorize
@@ -79,20 +81,6 @@ class Groups::GroupMembersController < Groups::ApplicationController
     end
   end
 
-  def override
-    @group_member = @group.group_members.find(params[:id])
-
-    return render_403 unless can?(current_user, :override_group_member, @group_member)
-
-    if @group_member.update_attributes(override_params)
-      log_audit_event(@group_member, action: :override)
-
-      respond_to do |format|
-        format.js { head :ok }
-      end
-    end
-  end
-
   protected
 
   def authorize_update_group_member!
@@ -103,10 +91,6 @@ class Groups::GroupMembersController < Groups::ApplicationController
 
   def member_params
     params.require(:group_member).permit(:access_level, :user_id, :expires_at)
-  end
-
-  def override_params
-    params.require(:group_member).permit(:override)
   end
 
   # MembershipActions concern
