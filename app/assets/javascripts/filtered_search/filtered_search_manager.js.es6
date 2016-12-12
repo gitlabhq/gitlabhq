@@ -125,7 +125,9 @@
     }
 
     checkForBackspace(e) {
-      if (e.keyCode === 8) {
+      // 8 = Backspace Key
+      // 46 = Delete Key
+      if (e.keyCode === 8 || e.keyCode === 46) {
         // Reposition dropdown so that it is aligned with cursor
         this.dropdownManager.updateCurrentDropdownOffset();
       }
