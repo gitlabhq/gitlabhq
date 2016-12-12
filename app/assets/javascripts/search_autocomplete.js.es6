@@ -64,7 +64,6 @@
         filterable: true,
         filterRemote: true,
         highlight: true,
-        enterCallback: false,
         filterInput: 'input#search',
         search: {
           fields: ['text']
