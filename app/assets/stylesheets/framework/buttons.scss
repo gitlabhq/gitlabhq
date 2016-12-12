@@ -235,7 +235,7 @@
 }
 
 .btn-transparent {
-  color: $btn-transparent-color;
+  color: $gl-gray-light;
   background-color: transparent;
   border: 0;
 
@@ -309,7 +309,7 @@
   text-align: left;
   padding: 6px 16px;
   border-color: $border-color;
-  color: $btn-placeholder-gray;
+  color: $gray-darkest;
   background-color: $background-color;
 
   &:hover,
@@ -318,7 +318,7 @@
     cursor: text;
     box-shadow: none;
     border-color: $border-color;
-    color: $btn-placeholder-gray;
+    color: $gray-darkest;
     background-color: $background-color;
   }
 }

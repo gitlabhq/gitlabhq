@@ -372,7 +372,7 @@ ul.notes {
 .note-actions {
   float: right;
   margin-left: 10px;
-  color: $notes-action-color;
+  color: $gray-darkest;
 }
 
 .note-actions {
@@ -411,7 +411,7 @@ ul.notes {
   }
 
   .fa {
-    color: $notes-action-color;
+    color: $gray-darkest;
     position: relative;
     font-size: 17px;
   }
@@ -573,10 +573,10 @@ ul.notes {
 
   svg {
     position: relative;
-    color: $notes-action-color;
+    color: $gray-darkest;
 
     path {
-      fill: $notes-action-color;
+      fill: $gray-darkest;
     }
   }
 }

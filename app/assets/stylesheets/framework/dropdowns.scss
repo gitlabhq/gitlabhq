@@ -10,7 +10,7 @@
 
 @mixin chevron-active {
   .fa-chevron-down {
-    color: $dropdown-toggle-hover-icon-color;
+    color: $gray-darkest;
   }
 }
 
@@ -28,7 +28,7 @@
   .dropdown-toggle,
   .dropdown-menu-toggle {
     @include chevron-active;
-    border-color: $dropdown-toggle-hover-border-color;
+    border-color: $gray-darkest;
   }
 }
 
@@ -73,7 +73,7 @@
   }
 
   .fa {
-    color: $dropdown-toggle-icon-color;
+    color: $gray-darkest;
   }
 
   .fa-chevron-down {
@@ -85,7 +85,7 @@
 
   &:hover {
     @include chevron-active;
-    border-color: $dropdown-toggle-hover-border-color;
+    border-color: $gray-darkest;
   }
 
   &:focus:active {
@@ -210,7 +210,7 @@
   }
 
   .dropdown-header {
-    color: $dropdown-header-color;
+    color: $gl-gray-light;
     font-size: 13px;
     line-height: 22px;
     padding: 0 10px;
@@ -223,7 +223,7 @@
   .unclickable {
     cursor: not-allowed;
     padding: 5px 8px;
-    color: $dropdown-header-color;
+    color: $gl-gray-light;
   }
 }
 
@@ -602,7 +602,7 @@
 
   th {
     padding: 2px 0;
-    color: $calendar-header-color;
+    color: $note-disabled-comment-color;
     font-weight: normal;
     text-transform: lowercase;
     border-top: 1px solid $calendar-border-color;
