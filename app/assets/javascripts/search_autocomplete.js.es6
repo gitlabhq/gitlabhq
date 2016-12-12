@@ -242,6 +242,7 @@
           break;
         case KEYCODE.ENTER:
           this.disableAutocomplete();
+          this.clearSearchInput();
           break;
         case KEYCODE.UP:
         case KEYCODE.DOWN:
@@ -278,9 +279,13 @@
       return this.searchInput.val();
     }
 
+    clearSearchInput() {
+      return this.searchInput.val('').focus();
+    }
+
    onClearInputClick(e) {
       e.preventDefault();
-      return this.searchInput.val('').focus();
+      return this.clearSearchInput();
     }
 
    onSearchInputBlur(e) {
@@ -380,7 +385,7 @@
         }
         $el.removeClass('is-active');
         this.disableAutocomplete();
-        return this.searchInput.val('').focus();
+        return this.clearSearchInput();
       }
     };
 
