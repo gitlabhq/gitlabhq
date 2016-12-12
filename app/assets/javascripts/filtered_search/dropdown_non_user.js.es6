@@ -25,7 +25,7 @@
       if (!dataValueSet) {
         const title = e.detail.selected.querySelector('.js-data-value').innerText.trim();
         const name = `${this.symbol}${this.getEscapedText(title)}`;
-        gl.FilteredSearchManager.addWordToInput(this.getSelectedText(name));
+        gl.FilteredSearchDropdownManager.addWordToInput(this.getSelectedText(name));
       }
 
       this.dismissDropdown(!dataValueSet);

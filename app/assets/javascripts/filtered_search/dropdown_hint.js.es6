@@ -42,7 +42,7 @@
         const tag = selected.querySelector('.js-filter-tag').innerText.trim();
 
         if (tag.length) {
-          gl.FilteredSearchManager.addWordToInput(this.getSelectedText(token));
+          gl.FilteredSearchDropdownManager.addWordToInput(this.getSelectedText(token));
         }
         this.dismissDropdown();
         this.dispatchInputEvent();

@@ -27,7 +27,7 @@
 
       if (!dataValueSet) {
         const username = e.detail.selected.querySelector('.dropdown-light-content').innerText.trim();
-        gl.FilteredSearchManager.addWordToInput(this.getSelectedText(username));
+        gl.FilteredSearchDropdownManager.addWordToInput(this.getSelectedText(username));
       }
 
       this.dismissDropdown(!dataValueSet);
