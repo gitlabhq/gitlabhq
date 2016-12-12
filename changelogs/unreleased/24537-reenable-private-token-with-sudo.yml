@@ -1,5 +1,0 @@
----
-title: Reenables /user API request to return private-token if user is admin and request
-  is made with sudo
-merge_request: 7615
-author: 

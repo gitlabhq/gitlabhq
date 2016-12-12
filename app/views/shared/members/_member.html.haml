@@ -48,9 +48,25 @@
       - if show_controls && (member.respond_to?(:group) && @group) || (member.respond_to?(:project) && @project)
         - if user != current_user
           = form_for member, remote: true, html: { class: 'form-horizontal js-edit-member-form' } do |f|
-            = f.select :access_level, options_for_select(member.class.access_level_roles, member.access_level), {}, class: 'form-control member-form-control append-right-5 js-member-update-control', id: "member_access_level_#{member.id}", disabled: !can_admin_member
+            = f.hidden_field :access_level
+            .member-form-control.dropdown.append-right-5
+              %button.dropdown-menu-toggle.js-member-permissions-dropdown{ type: "button",
+                disabled: !can_admin_member,
+                data: { toggle: "dropdown", field_name: "#{f.object_name}[access_level]" } }
+                %span.dropdown-toggle-text
+                  = member.human_access
+                = icon("chevron-down")
+              .dropdown-menu.dropdown-select.dropdown-menu-align-right.dropdown-menu-selectable
+                = dropdown_title("Change permissions")
+                .dropdown-content
+                  %ul
+                    - Gitlab::Access.options.each do |role, role_id|
+                      %li
+                        = link_to role, "javascript:void(0)",
+                          class: ("is-active" if member.access_level == role_id),
+                          data: { id: role_id, el_id: dom_id(member) }
             .prepend-left-5.clearable-input.member-form-control
-              = f.text_field :expires_at, class: 'form-control js-access-expiration-date js-member-update-control', placeholder: 'Expiration date', id: "member_expires_at_#{member.id}", disabled: !can_admin_member
+              = f.text_field :expires_at, class: 'form-control js-access-expiration-date js-member-update-control', placeholder: 'Expiration date', id: "member_expires_at_#{member.id}", disabled: !can_admin_member, data: { el_id: dom_id(member) }
               %i.clear-icon.js-clear-input
         - else
           %span.member-access-text= member.human_access

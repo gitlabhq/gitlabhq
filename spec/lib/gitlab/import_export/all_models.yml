@@ -208,6 +208,7 @@ project:
 - remote_mirrors
 - path_locks
 - approver_groups
+- route
 award_emoji:
 - awardable
 - user

@@ -60,15 +60,58 @@ describe DiffHelper do
   end
 
   describe '#diff_line_content' do
-    it 'returns non breaking space when line is empty' do
-      expect(diff_line_content(nil)).to eq('&nbsp;')
+    context 'when the line is empty' do
+      it 'returns a non breaking space' do
+        expect(diff_line_content(nil)).to eq('&nbsp;')
+      end
+
+      it 'returns an HTML-safe string' do
+        expect(diff_line_content(nil)).to be_html_safe
+      end
     end
 
-    it 'returns the line itself' do
-      expect(diff_line_content(diff_file.diff_lines.first.text)).
-        to eq('@@ -6,12 +6,18 @@ module Popen')
-      expect(diff_line_content(diff_file.diff_lines.first.type)).to eq('match')
-      expect(diff_file.diff_lines.first.new_pos).to eq(6)
+    context 'when the line is not empty' do
+      context 'when the line starts with +, -, or a space' do
+        it 'strips the first character' do
+          expect(diff_line_content('+new line')).to eq('new line')
+          expect(diff_line_content('-new line')).to eq('new line')
+          expect(diff_line_content(' new line')).to eq('new line')
+        end
+
+        context 'when the line is HTML-safe' do
+          it 'returns an HTML-safe string' do
+            expect(diff_line_content('+new line'.html_safe)).to be_html_safe
+            expect(diff_line_content('-new line'.html_safe)).to be_html_safe
+            expect(diff_line_content(' new line'.html_safe)).to be_html_safe
+          end
+        end
+
+        context 'when the line is not HTML-safe' do
+          it 'returns a non-HTML-safe string' do
+            expect(diff_line_content('+new line')).not_to be_html_safe
+            expect(diff_line_content('-new line')).not_to be_html_safe
+            expect(diff_line_content(' new line')).not_to be_html_safe
+          end
+        end
+      end
+
+      context 'when the line does not start with a +, -, or a space' do
+        it 'returns the string' do
+          expect(diff_line_content('@@ -6,12 +6,18 @@ module Popen')).to eq('@@ -6,12 +6,18 @@ module Popen')
+        end
+
+        context 'when the line is HTML-safe' do
+          it 'returns an HTML-safe string' do
+            expect(diff_line_content('@@ -6,12 +6,18 @@ module Popen'.html_safe)).to be_html_safe
+          end
+        end
+
+        context 'when the line is not HTML-safe' do
+          it 'returns a non-HTML-safe string' do
+            expect(diff_line_content('@@ -6,12 +6,18 @@ module Popen')).not_to be_html_safe
+          end
+        end
+      end
     end
   end
 

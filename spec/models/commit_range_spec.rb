@@ -137,26 +137,25 @@ describe CommitRange, models: true do
   end
 
   describe '#has_been_reverted?' do
-    it 'returns true if the commit has been reverted' do
-      issue = create(:issue)
+    let(:issue) { create(:issue) }
+    let(:user) { issue.author }
 
+    it 'returns true if the commit has been reverted' do
       create(:note_on_issue,
              noteable: issue,
              system: true,
-             note: commit1.revert_description,
+             note: commit1.revert_description(user),
              project: issue.project)
 
       expect_any_instance_of(Commit).to receive(:reverts_commit?).
-        with(commit1).
+        with(commit1, user).
         and_return(true)
 
-      expect(commit1.has_been_reverted?(nil, issue)).to eq(true)
+      expect(commit1.has_been_reverted?(user, issue)).to eq(true)
     end
 
     it 'returns false a commit has not been reverted' do
-      issue = create(:issue)
-
-      expect(commit1.has_been_reverted?(nil, issue)).to eq(false)
+      expect(commit1.has_been_reverted?(user, issue)).to eq(false)
     end
   end
 end

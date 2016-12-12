@@ -53,7 +53,7 @@ class Projects::CompareController < Projects::ApplicationController
   end
 
   def merge_request
-    @merge_request ||= @project.merge_requests.opened.
+    @merge_request ||= MergeRequestsFinder.new(current_user, project_id: @project.id).execute.opened.
       find_by(source_project: @project, source_branch: @head_ref, target_branch: @start_ref)
   end
 end

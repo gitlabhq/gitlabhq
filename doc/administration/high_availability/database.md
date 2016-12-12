@@ -41,7 +41,7 @@ If you use a cloud-managed service, or provide your own PostgreSQL:
     mailroom['enable'] = false
 
     # PostgreSQL configuration
-    postgresql['sql_password'] = 'DB password'
+    gitlab_rails['db_password'] = 'DB password'
     postgresql['md5_auth_cidr_addresses'] = ['0.0.0.0/0']
     postgresql['listen_address'] = '0.0.0.0'
     ```
@@ -80,7 +80,7 @@ If you use a cloud-managed service, or provide your own PostgreSQL:
 
 1. Similarly, set the password for the `gitlab` database user. Use the same
    password that you specified in the `/etc/gitlab/gitlab.rb` file for
-   `postgresql['sql_password']`.
+   `gitlab_rails['db_password']`.
 
     ```
     \password gitlab

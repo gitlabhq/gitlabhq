@@ -9,24 +9,24 @@ describe('Rollback Component', () => {
     fixture.load('environments/element.html');
   });
 
-  it('Should link to the provided retry_url', () => {
+  it('Should link to the provided retryUrl', () => {
     const component = new window.gl.environmentsList.RollbackComponent({
       el: document.querySelector('.test-dom-element'),
       propsData: {
-        retry_url: retryURL,
-        is_last_deployment: true,
+        retryUrl: retryURL,
+        isLastDeployment: true,
       },
     });
 
     expect(component.$el.getAttribute('href')).toEqual(retryURL);
   });
 
-  it('Should render Re-deploy label when is_last_deployment is true', () => {
+  it('Should render Re-deploy label when isLastDeployment is true', () => {
     const component = new window.gl.environmentsList.RollbackComponent({
       el: document.querySelector('.test-dom-element'),
       propsData: {
-        retry_url: retryURL,
-        is_last_deployment: true,
+        retryUrl: retryURL,
+        isLastDeployment: true,
       },
     });
 
@@ -34,12 +34,12 @@ describe('Rollback Component', () => {
   });
 
 
-  it('Should render Rollback label when is_last_deployment is false', () => {
+  it('Should render Rollback label when isLastDeployment is false', () => {
     const component = new window.gl.environmentsList.RollbackComponent({
       el: document.querySelector('.test-dom-element'),
       propsData: {
-        retry_url: retryURL,
-        is_last_deployment: false,
+        retryUrl: retryURL,
+        isLastDeployment: false,
       },
     });
 

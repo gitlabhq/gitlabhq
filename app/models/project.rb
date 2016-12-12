@@ -15,6 +15,7 @@ class Project < ActiveRecord::Base
   include Elastic::ProjectsSearch
   include ProjectFeaturesCompatibility
   include SelectForProjectAuthorization
+  include Routable
   prepend EE::GeoAwareAvatar
 
   extend Gitlab::ConfigHelper
@@ -358,87 +359,6 @@ class Project < ActiveRecord::Base
       non_archived.where(table[:name].matches(pattern))
     end
 
-    # Finds a single project for the given path.
-    #
-    # path - The full project path (including namespace path).
-    #
-    # Returns a Project, or nil if no project could be found.
-    def find_with_namespace(path)
-      namespace_path, project_path = path.split('/', 2)
-
-      return unless namespace_path && project_path
-
-      namespace_path = connection.quote(namespace_path)
-      project_path = connection.quote(project_path)
-
-      # On MySQL we want to ensure the ORDER BY uses a case-sensitive match so
-      # any literal matches come first, for this we have to use "BINARY".
-      # Without this there's still no guarantee in what order MySQL will return
-      # rows.
-      binary = Gitlab::Database.mysql? ? 'BINARY' : ''
-
-      order_sql = "(CASE WHEN #{binary} namespaces.path = #{namespace_path} " \
-        "AND #{binary} projects.path = #{project_path} THEN 0 ELSE 1 END)"
-
-      where_paths_in([path]).reorder(order_sql).take
-    end
-
-    # Builds a relation to find multiple projects by their full paths.
-    #
-    # Each path must be in the following format:
-    #
-    #     namespace_path/project_path
-    #
-    # For example:
-    #
-    #     gitlab-org/gitlab-ce
-    #
-    # Usage:
-    #
-    #     Project.where_paths_in(%w{gitlab-org/gitlab-ce gitlab-org/gitlab-ee})
-    #
-    # This would return the projects with the full paths matching the values
-    # given.
-    #
-    # paths - An Array of full paths (namespace path + project path) for which
-    #         to find the projects.
-    #
-    # Returns an ActiveRecord::Relation.
-    def where_paths_in(paths)
-      wheres = []
-      cast_lower = Gitlab::Database.postgresql?
-
-      paths.each do |path|
-        namespace_path, project_path = path.split('/', 2)
-
-        next unless namespace_path && project_path
-
-        namespace_path = connection.quote(namespace_path)
-        project_path = connection.quote(project_path)
-
-        where = "(namespaces.path = #{namespace_path}
-          AND projects.path = #{project_path})"
-
-        if cast_lower
-          where = "(
-            #{where}
-            OR (
-              LOWER(namespaces.path) = LOWER(#{namespace_path})
-              AND LOWER(projects.path) = LOWER(#{project_path})
-            )
-          )"
-        end
-
-        wheres << where
-      end
-
-      if wheres.empty?
-        none
-      else
-        joins(:namespace).where(wheres.join(' OR '))
-      end
-    end
-
     def visibility_levels
       Gitlab::VisibilityLevel.options
     end
@@ -474,6 +394,10 @@ class Project < ActiveRecord::Base
     def group_ids
       joins(:namespace).where(namespaces: { type: 'Group' }).select(:namespace_id)
     end
+
+    # Add alias for Routable method for compatibility with old code.
+    # In future all calls `find_with_namespace` should be replaced with `find_by_full_path`
+    alias_method :find_with_namespace, :find_by_full_path
   end
 
   def lfs_enabled?
@@ -979,13 +903,14 @@ class Project < ActiveRecord::Base
   end
   alias_method :human_name, :name_with_namespace
 
-  def path_with_namespace
-    if namespace
-      namespace.path + '/' + path
+  def full_path
+    if namespace && path
+      namespace.full_path + '/' + path
     else
       path
     end
   end
+  alias_method :path_with_namespace, :full_path
 
   def execute_hooks(data, hooks_scope = :push_hooks)
     hooks.send(hooks_scope).each do |hook|
@@ -1636,5 +1561,9 @@ class Project < ActiveRecord::Base
   def default_branch_protected?
     current_application_settings.default_branch_protection == Gitlab::Access::PROTECTION_FULL ||
       current_application_settings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_MERGE
+  end
+
+  def full_path_changed?
+    path_changed? || namespace_id_changed?
   end
 end
