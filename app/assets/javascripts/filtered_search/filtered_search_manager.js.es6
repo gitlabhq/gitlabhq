@@ -1,76 +1,5 @@
 /* eslint-disable no-param-reassign */
 ((global) => {
-  // TODO: Encapsulate inside class?
-  function toggleClearSearchButton(e) {
-    const clearSearchButton = document.querySelector('.clear-search');
-
-    if (e.target.value) {
-      clearSearchButton.classList.remove('hidden');
-    } else {
-      clearSearchButton.classList.add('hidden');
-    }
-  }
-
-  function loadSearchParamsFromURL() {
-    // We can trust that each param has one & since values containing & will be encoded
-    // Remove the first character of search as it is always ?
-    const params = window.location.search.slice(1).split('&');
-    let inputValue = '';
-
-    params.forEach((p) => {
-      const split = p.split('=');
-      const key = decodeURIComponent(split[0]);
-      const value = split[1];
-
-      // Check if it matches edge conditions listed in gl.FilteredSearchTokenKeys.get()
-      let conditionIndex = 0;
-      const validCondition = gl.FilteredSearchTokenKeys.get()
-        .filter(v => v.conditions && v.conditions.filter((c, index) => {
-          // Return TokenKeys that have conditions that much the URL
-          if (c.url === p) {
-            conditionIndex = index;
-          }
-          return c.url === p;
-        })[0])[0];
-
-      if (validCondition) {
-        // Parse params based on rules provided in the conditions key of gl.FilteredSearchTokenKeys.get()
-        inputValue += `${validCondition.key}:${validCondition.conditions[conditionIndex].keyword}`;
-        inputValue += ' ';
-      } else {
-        // Sanitize value since URL converts spaces into +
-        // Replace before decode so that we know what was originally + versus the encoded +
-        const sanitizedValue = value ? decodeURIComponent(value.replace(/\+/g, ' ')) : value;
-        const match = gl.FilteredSearchTokenKeys.get().filter(t => key === `${t.key}_${t.param}`)[0];
-
-        if (match) {
-          const sanitizedKey = key.slice(0, key.indexOf('_'));
-          const valueHasSpace = sanitizedValue.indexOf(' ') !== -1;
-          const symbol = match.symbol;
-          let quotationsToUse;
-
-          if (valueHasSpace) {
-            // Prefer ", but use ' if required
-            quotationsToUse = sanitizedValue.indexOf('"') === -1 ? '"' : '\'';
-          }
-
-          inputValue += valueHasSpace ? `${sanitizedKey}:${symbol}${quotationsToUse}${sanitizedValue}${quotationsToUse}` : `${sanitizedKey}:${symbol}${sanitizedValue}`;
-          inputValue += ' ';
-        } else if (!match && key === 'search') {
-          inputValue += sanitizedValue;
-          inputValue += ' ';
-        }
-      }
-    });
-
-    // Trim the last space value
-    document.querySelector('.filtered-search').value = inputValue.trim();
-
-    if (inputValue.trim()) {
-      document.querySelector('.clear-search').classList.remove('hidden');
-    }
-  }
-
   class FilteredSearchManager {
     constructor() {
       this.tokenizer = gl.FilteredSearchTokenizer;
@@ -79,7 +8,7 @@
       this.dropdownManager = new gl.FilteredSearchDropdownManager();
 
       this.bindEvents();
-      loadSearchParamsFromURL();
+      this.loadSearchParamsFromURL();
       this.dropdownManager.setDropdown();
 
       this.cleanupWrapper = this.cleanup.bind(this);
@@ -93,12 +22,13 @@
 
     bindEvents() {
       this.setDropdownWrapper = this.dropdownManager.setDropdown.bind(this.dropdownManager);
+      this.toggleClearSearchButtonWrapper = this.toggleClearSearchButton.bind(this);
       this.checkForEnterWrapper = this.checkForEnter.bind(this);
       this.clearSearchWrapper = this.clearSearch.bind(this);
       this.checkForBackspaceWrapper = this.checkForBackspace.bind(this);
 
       this.filteredSearchInput.addEventListener('input', this.setDropdownWrapper);
-      this.filteredSearchInput.addEventListener('input', toggleClearSearchButton);
+      this.filteredSearchInput.addEventListener('input', this.toggleClearSearchButtonWrapper);
       this.filteredSearchInput.addEventListener('keydown', this.checkForEnterWrapper);
       this.filteredSearchInput.addEventListener('keyup', this.checkForBackspaceWrapper);
       this.clearSearchButton.addEventListener('click', this.clearSearchWrapper);
@@ -106,19 +36,10 @@
 
     unbindEvents() {
       this.filteredSearchInput.removeEventListener('input', this.setDropdownWrapper);
-      this.filteredSearchInput.removeEventListener('input', toggleClearSearchButton);
+      this.filteredSearchInput.removeEventListener('input', this.toggleClearSearchButtonWrapper);
       this.filteredSearchInput.removeEventListener('keydown', this.checkForEnterWrapper);
       this.filteredSearchInput.removeEventListener('keyup', this.checkForBackspaceWrapper);
       this.clearSearchButton.removeEventListener('click', this.clearSearchWrapper);
-    }
-
-    clearSearch(e) {
-      e.preventDefault();
-
-      this.filteredSearchInput.value = '';
-      this.clearSearchButton.classList.add('hidden');
-
-      this.dropdownManager.resetDropdowns();
     }
 
     checkForBackspace(e) {
@@ -138,6 +59,83 @@
         this.dropdownManager.destroyDroplab();
 
         this.search();
+      }
+    }
+
+    toggleClearSearchButton(e) {
+      if (e.target.value) {
+        this.clearSearchButton.classList.remove('hidden');
+      } else {
+        this.clearSearchButton.classList.add('hidden');
+      }
+    }
+
+    clearSearch(e) {
+      e.preventDefault();
+
+      this.filteredSearchInput.value = '';
+      this.clearSearchButton.classList.add('hidden');
+
+      this.dropdownManager.resetDropdowns();
+    }
+
+    loadSearchParamsFromURL() {
+      // We can trust that each param has one & since values containing & will be encoded
+      // Remove the first character of search as it is always ?
+      const params = window.location.search.slice(1).split('&');
+      let inputValue = '';
+
+      params.forEach((p) => {
+        const split = p.split('=');
+        const key = decodeURIComponent(split[0]);
+        const value = split[1];
+
+        // Check if it matches edge conditions listed in gl.FilteredSearchTokenKeys.get()
+        let conditionIndex = 0;
+        const validCondition = gl.FilteredSearchTokenKeys.get()
+          .filter(v => v.conditions && v.conditions.filter((c, index) => {
+            // Return TokenKeys that have conditions that much the URL
+            if (c.url === p) {
+              conditionIndex = index;
+            }
+            return c.url === p;
+          })[0])[0];
+
+        if (validCondition) {
+          // Parse params based on rules provided in the conditions key of gl.FilteredSearchTokenKeys.get()
+          inputValue += `${validCondition.key}:${validCondition.conditions[conditionIndex].keyword}`;
+          inputValue += ' ';
+        } else {
+          // Sanitize value since URL converts spaces into +
+          // Replace before decode so that we know what was originally + versus the encoded +
+          const sanitizedValue = value ? decodeURIComponent(value.replace(/\+/g, ' ')) : value;
+          const match = gl.FilteredSearchTokenKeys.get().filter(t => key === `${t.key}_${t.param}`)[0];
+
+          if (match) {
+            const sanitizedKey = key.slice(0, key.indexOf('_'));
+            const valueHasSpace = sanitizedValue.indexOf(' ') !== -1;
+            const symbol = match.symbol;
+            let quotationsToUse;
+
+            if (valueHasSpace) {
+              // Prefer ", but use ' if required
+              quotationsToUse = sanitizedValue.indexOf('"') === -1 ? '"' : '\'';
+            }
+
+            inputValue += valueHasSpace ? `${sanitizedKey}:${symbol}${quotationsToUse}${sanitizedValue}${quotationsToUse}` : `${sanitizedKey}:${symbol}${sanitizedValue}`;
+            inputValue += ' ';
+          } else if (!match && key === 'search') {
+            inputValue += sanitizedValue;
+            inputValue += ' ';
+          }
+        }
+      });
+
+      // Trim the last space value
+      this.filteredSearchInput.value = inputValue.trim();
+
+      if (inputValue.trim()) {
+        this.clearSearchButton.classList.remove('hidden');
       }
     }
 
