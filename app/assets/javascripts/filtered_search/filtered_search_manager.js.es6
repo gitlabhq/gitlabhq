@@ -47,13 +47,11 @@
           const sanitizedKey = key.slice(0, key.indexOf('_'));
           const valueHasSpace = sanitizedValue.indexOf(' ') !== -1;
           const symbol = match.symbol;
-
-          const preferredQuotations = '"';
-          let quotationsToUse = preferredQuotations;
+          let quotationsToUse;
 
           if (valueHasSpace) {
             // Prefer ", but use ' if required
-            quotationsToUse = sanitizedValue.indexOf(preferredQuotations) === -1 ? preferredQuotations : '\'';
+            quotationsToUse = sanitizedValue.indexOf('"') === -1 ? '"' : '\'';
           }
 
           inputValue += valueHasSpace ? `${sanitizedKey}:${symbol}${quotationsToUse}${sanitizedValue}${quotationsToUse}` : `${sanitizedKey}:${symbol}${sanitizedValue}`;
