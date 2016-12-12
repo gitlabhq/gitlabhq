@@ -27,8 +27,8 @@
       * @see http://stackoverflow.com/questions/118241/calculate-text-width-with-javascript/21015393#21015393
       */
       // re-use canvas object for better performance
-      var canvas = gl.text.getTextWidth.canvas || (gl.text.getTextWidth.canvas = document.createElement("canvas"));
-      var context = canvas.getContext("2d");
+      var canvas = gl.text.getTextWidth.canvas || (gl.text.getTextWidth.canvas = document.createElement('canvas'));
+      var context = canvas.getContext('2d');
       context.font = font;
       var metrics = context.measureText(text);
       return metrics.width;
