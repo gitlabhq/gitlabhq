@@ -36,13 +36,11 @@ module Banzai
             closing.content = closing.content[1..-1]
             opening.content = opening.content[0..-2]
           end
-          code
         end
 
         doc.xpath(DISPLAY_MATH).each do |el|
           el[STYLE_ATTRIBUTE] = 'display'
           el[:class] += " #{TAG_CLASS}"
-          el
         end
 
         doc
