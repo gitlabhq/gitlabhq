@@ -24,14 +24,15 @@
     }
 
     getCurrentHook() {
-      return this.droplab.hooks.filter(h => h.id === this.hookId)[0];
+      return this.droplab.hooks.filter(h => h.id === this.hookId)[0] || null;
     }
 
     itemClicked(e, getValueFunction) {
-      const dataValueSet = this.setDataValueIfSelected(e.detail.selected);
+      const { selected } = e.detail;
+      const dataValueSet = this.setDataValueIfSelected(selected);
 
       if (!dataValueSet) {
-        const value = getValueFunction(e.detail.selected);
+        const value = getValueFunction(selected);
         gl.FilteredSearchDropdownManager.addWordToInput(value);
       }
 
@@ -67,7 +68,7 @@
       this.setAsDropdown();
 
       const currentHook = this.getCurrentHook();
-      const firstTimeInitialized = currentHook === undefined;
+      const firstTimeInitialized = currentHook === null;
 
       if (firstTimeInitialized || forceRenderContent) {
         this.renderContent(forceShowList);

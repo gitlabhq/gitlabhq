@@ -55,7 +55,7 @@
     }
 
     static addWordToInput(word, addSpace = false) {
-      const input = document.querySelector('.filtered-search')
+      const input = document.querySelector('.filtered-search');
       const value = input.value;
       const hasExistingValue = value.length !== 0;
       const { lastToken } = gl.FilteredSearchTokenizer.processTokens(value);
@@ -88,22 +88,22 @@
     }
 
     load(key, firstLoad = false) {
-      console.log(`🦄 load ${key} dropdown`);
-      const glClass = this.mapping[key].gl;
-      const element = this.mapping[key].element;
+      const mappingKey = this.mapping[key];
+      const glClass = mappingKey.gl;
+      const element = mappingKey.element;
       let forceShowList = false;
 
-      if (!this.mapping[key].reference) {
+      if (!mappingKey.reference) {
         const dl = this.droplab;
         const defaultArguments = [null, dl, element, this.filteredSearchInput];
-        const glArguments = defaultArguments.concat(this.mapping[key].extraArguments || []);
+        const glArguments = defaultArguments.concat(mappingKey.extraArguments || []);
 
         // Passing glArguments to `new gl[glClass](<arguments>)`
-        this.mapping[key].reference = new (Function.prototype.bind.apply(gl[glClass], glArguments));
+        mappingKey.reference = new (Function.prototype.bind.apply(gl[glClass], glArguments));
       }
 
       if (firstLoad) {
-        this.mapping[key].reference.init();
+        mappingKey.reference.init();
       }
 
       if (this.currentDropdown === 'hint') {
@@ -112,7 +112,7 @@
       }
 
       this.updateDropdownOffset(key);
-      this.mapping[key].reference.render(firstLoad, forceShowList);
+      mappingKey.reference.render(firstLoad, forceShowList);
 
       this.currentDropdown = key;
     }
@@ -120,7 +120,7 @@
     loadDropdown(dropdownName = '') {
       let firstLoad = false;
 
-      if(!this.droplab) {
+      if (!this.droplab) {
         firstLoad = true;
         this.droplab = new DropLab();
       }
