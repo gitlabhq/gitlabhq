@@ -67,7 +67,7 @@
               %li.divider
             %ul.filter-dropdown{ 'data-dynamic' => true, 'data-dropdown' => true }
               %li.filter-dropdown-item
-                %button.btn.btn-link
+                %button.btn.btn-link.js-data-value
                   {{title}}
           #js-dropdown-label.dropdown-menu{ 'data-dropdown' => true }
             %ul{ 'data-dropdown' => true }
@@ -79,7 +79,7 @@
               %li.filter-dropdown-item
                 %button.btn.btn-link
                   %span.dropdown-label-box{ 'style': 'background: {{color}}'}
-                  %span.label-title
+                  %span.label-title.js-data-value
                     {{title}}
         .pull-right
           - if boards_page

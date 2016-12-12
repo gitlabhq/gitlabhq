@@ -23,7 +23,7 @@
   class DropdownHint extends gl.FilteredSearchDropdown {
     constructor(droplab, dropdown, input) {
       super(droplab, dropdown, input);
-      this.listId = 'js-dropdown-hint';
+      this.listId = dropdown.id;
       this.config = {
         droplabFilter: {
           template: 'hint',

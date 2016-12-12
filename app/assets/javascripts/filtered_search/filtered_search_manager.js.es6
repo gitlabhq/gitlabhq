@@ -103,22 +103,24 @@
       this.mapping = {
         author: {
           reference: null,
-          gl: 'DropdownAuthor',
+          gl: 'DropdownUser',
           element: document.querySelector('#js-dropdown-author'),
         },
         assignee: {
           reference: null,
-          gl: 'DropdownAssignee',
+          gl: 'DropdownUser',
           element: document.querySelector('#js-dropdown-assignee'),
         },
         milestone: {
           reference: null,
-          gl: 'DropdownMilestone',
+          gl: 'DropdownNonUser',
+          extraArguments: ['milestones.json', '%'],
           element: document.querySelector('#js-dropdown-milestone'),
         },
         label: {
           reference: null,
-          gl: 'DropdownLabel',
+          gl: 'DropdownNonUser',
+          extraArguments: ['labels.json', '~'],
           element: document.querySelector('#js-dropdown-label'),
         },
         hint: {
@@ -160,7 +162,11 @@
       let forceShowList = false;
 
       if (!this.mapping[key].reference) {
-        this.mapping[key].reference = new gl[glClass](this.droplab, element, this.filteredSearchInput);
+        var dl = this.droplab;
+        const defaultArguments = [null, dl, element, this.filteredSearchInput];
+        const glArguments = defaultArguments.concat(this.mapping[key].extraArguments || []);
+
+        this.mapping[key].reference = new (Function.prototype.bind.apply(gl[glClass], glArguments));
       }
 
       if (firstLoad) {
