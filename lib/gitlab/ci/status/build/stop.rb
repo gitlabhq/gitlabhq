@@ -17,10 +17,6 @@ module Gitlab
             'icon_status_skipped'
           end
 
-          def to_s
-            'stop'
-          end
-
           def has_action?
             can?(user, :update_build, subject)
           end
