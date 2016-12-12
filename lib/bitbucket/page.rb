@@ -23,6 +23,7 @@ module Bitbucket
 
     def parse_values(raw, bitbucket_rep_class)
       return [] unless raw['values'] && raw['values'].is_a?(Array)
+
       bitbucket_rep_class.decorate(raw['values'])
     end
 
