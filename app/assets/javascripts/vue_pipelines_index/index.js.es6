@@ -19,6 +19,7 @@
 (() => {
   const project = document.querySelector('.pipelines');
   const entry = document.querySelector('.vue-pipelines-index');
+  const svgs = document.querySelector('.pipeline-svgs');
 
   Vue.use(VueResource);
 
@@ -28,6 +29,7 @@
       data: {
         scope: project.dataset.url,
         store: new gl.PipelineStore(),
+        svgs: svgs.dataset,
       },
       components: {
         'vue-pipelines': gl.VuePipelines,
@@ -37,6 +39,7 @@
           <vue-pipelines
             :scope='scope'
             :store='store'
+            :svgs='svgs'
           >
           </vue-pipelines>
         </div>

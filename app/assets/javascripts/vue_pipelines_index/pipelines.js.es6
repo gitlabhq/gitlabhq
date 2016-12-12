@@ -26,7 +26,7 @@
         pageRequest: false,
       };
     },
-    props: ['scope', 'store'],
+    props: ['scope', 'store', 'svgs'],
     created() {
       const pagenum = gl.getParameterByName('p');
       const scope = gl.getParameterByName('scope');
@@ -81,12 +81,13 @@
                 <pipeline-url :pipeline='pipeline'></pipeline-url>
                 <td>
                   <commit
+                    :commit-icon-svg='svgs.commitIconSvg'
                     :author='author(pipeline)'
                     :tag="pipeline.ref['tag?']"
                     :title='commitTitle(pipeline)'
-                    :commit_ref='ref(pipeline)'
-                    :short_sha='commitSha(pipeline)'
-                    :commit_url='commitUrl(pipeline)'
+                    :commit-ref='ref(pipeline)'
+                    :short-sha='commitSha(pipeline)'
+                    :commit-url='commitUrl(pipeline)'
                   >
                   </commit>
                 </td>
