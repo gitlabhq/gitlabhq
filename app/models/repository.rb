@@ -903,8 +903,8 @@ class Repository
   def merge(user, merge_request, options = {})
     GitOperationService.new(user, self).with_branch(
       merge_request.target_branch) do |source_commit|
-      our_commit = source_commit.raw_commit
-      their_commit = rugged.lookup(merge_request.diff_head_sha)
+      our_commit = source_commit.sha
+      their_commit = merge_request.diff_head_sha
 
       raise 'Invalid merge target' unless our_commit
       raise 'Invalid merge source' unless their_commit
