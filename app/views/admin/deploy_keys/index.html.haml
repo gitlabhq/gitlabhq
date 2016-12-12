@@ -3,7 +3,7 @@
   .panel-heading
     Public deploy keys (#{@deploy_keys.count})
     .controls
-      = link_to 'New Deploy Key', new_admin_deploy_key_path, class: "btn btn-new btn-sm"
+      = link_to 'New Deploy Key', new_admin_deploy_key_path, class: "btn btn-new btn-sm btn-inverted"
   - if @deploy_keys.any?
     .table-holder
       %table.table
