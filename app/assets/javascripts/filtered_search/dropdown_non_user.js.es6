@@ -2,18 +2,18 @@
 /*= require filtered_search/filtered_search_dropdown */
 
 ((global) => {
-  class DropdownMilestone extends gl.FilteredSearchDropdown {
-    constructor(droplab, dropdown, input) {
+  class DropdownNonUser extends gl.FilteredSearchDropdown {
+    constructor(droplab, dropdown, input, endpoint, symbol) {
       super(droplab, dropdown, input);
-      this.listId = 'js-dropdown-milestone';
+      this.listId = dropdown.id;
       this.config = {
         droplabAjax: {
-          endpoint: 'milestones.json',
+          endpoint: endpoint,
           method: 'setData',
           loadingTemplate: this.loadingTemplate,
         },
         droplabFilter: {
-          filterFunction: this.filterWithSymbol.bind(this, '%'),
+          filterFunction: this.filterWithSymbol.bind(this, symbol),
         }
       };
     }
@@ -22,9 +22,9 @@
       const dataValueSet = this.setDataValueIfSelected(e.detail.selected);
 
       if (!dataValueSet) {
-        const milestoneTitle = e.detail.selected.querySelector('.btn-link').innerText.trim();
-        const milestoneName = `%${this.getEscapedText(milestoneTitle)}`;
-        gl.FilteredSearchManager.addWordToInput(this.getSelectedText(milestoneName));
+        const title = e.detail.selected.querySelector('.js-data-value').innerText.trim();
+        const name = `%${this.getEscapedText(title)}`;
+        gl.FilteredSearchManager.addWordToInput(this.getSelectedText(name));
       }
 
       this.dismissDropdown(!dataValueSet);
@@ -40,5 +40,5 @@
     }
   }
 
-  global.DropdownMilestone = DropdownMilestone;
+  global.DropdownNonUser = DropdownNonUser;
 })(window.gl || (window.gl = {}));

@@ -2,10 +2,10 @@
 /*= require filtered_search/filtered_search_dropdown */
 
 ((global) => {
-  class DropdownAssignee extends gl.FilteredSearchDropdown {
+  class DropdownUser extends gl.FilteredSearchDropdown {
     constructor(droplab, dropdown, input) {
       super(droplab, dropdown, input);
-      this.listId = 'js-dropdown-assignee';
+      this.listId = dropdown.id;
       this.config = {
         droplabAjaxFilter: {
           endpoint: '/autocomplete/users.json',
@@ -18,7 +18,7 @@
           },
           searchValueFunction: this.getSearchInput,
           loadingTemplate: this.loadingTemplate,
-        }
+        },
       };
     }
 
@@ -45,11 +45,7 @@
       const hasPrefix = valueWithoutColon[0] === '@';
       const valueWithoutPrefix = valueWithoutColon.slice(1);
 
-      if (hasPrefix) {
-        return valueWithoutPrefix;
-      } else {
-        return valueWithoutColon;
-      }
+      return hasPrefix ? valueWithoutPrefix : valueWithoutColon;
     }
 
     configure() {
@@ -57,5 +53,5 @@
     }
   }
 
-  global.DropdownAssignee = DropdownAssignee;
+  global.DropdownUser = DropdownUser;
 })(window.gl || (window.gl = {}));
