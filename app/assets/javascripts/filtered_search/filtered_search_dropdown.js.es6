@@ -57,7 +57,7 @@
       const dataValue = selected.getAttribute('data-value');
 
       if (dataValue) {
-        gl.FilteredSearchManager.addWordToInput(dataValue);
+        gl.FilteredSearchDropdownManager.addWordToInput(dataValue);
       }
 
       return dataValue !== null;
