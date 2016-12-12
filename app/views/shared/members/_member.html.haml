@@ -3,8 +3,9 @@
 - user = local_assigns.fetch(:user, member.user)
 - source = member.source
 - can_admin_member = can?(current_user, action_member_permission(:update, member), member)
+
+-# EE-only
 - can_override_member = can?(current_user, action_member_permission(:override, member), member)
-- update_url = member.type == 'GroupMember' ? group_group_member_path(@group, member) : namespace_project_project_member_path(@project.namespace, @project, member)
 
 %li.member{ class: [dom_class(member), ("is-overriden" if member.override)], id: dom_id(member) }
   %span.list-item-name
@@ -36,9 +37,7 @@
           %span{ class: ('text-warning' if member.expires_soon?) }
             Expires in #{distance_of_time_in_words_to_now(member.expires_at)}
 
-      - if can_override_member
-        %span.label.label-info.pull-right.visible-xs-block
-          LDAP
+      = render 'shared/members/ee/ldap_tag', can_override: can_override_member, visible: true
 
     - else
       = image_tag avatar_icon(member.invite_email, 40), class: "avatar s40", alt: ''
@@ -51,9 +50,7 @@
         = time_ago_with_tooltip(member.created_at)
   - if show_roles
     .controls.member-controls
-      - if can_override_member
-        %span.label.label-info.members-ldap.hidden-xs
-          LDAP
+      = render 'shared/members/ee/ldap_tag', can_override: can_override_member, visible: false
       - if show_controls && (member.respond_to?(:group) && @group) || (member.respond_to?(:project) && @project)
         - if user != current_user
           = form_for member, remote: true, html: { class: 'form-horizontal js-edit-member-form' } do |f|
@@ -74,11 +71,7 @@
                         = link_to role, "javascript:void(0)",
                           class: ("is-active" if member.access_level == role_id),
                           data: { id: role_id, el_id: dom_id(member) }
-                    - if can_override_member
-                      %li.divider
-                      %li
-                        = link_to "Revert to LDAP group sync settings", "javascript:void(0)",
-                          data: { revert: "true", endpoint: override_group_group_member_path(@group, member), el_id: dom_id(member) }
+                    = render 'shared/members/ee/revert_ldap_group_sync_option', group: @group, member: member, can_override: can_override_member
             .prepend-left-5.clearable-input.member-form-control
               = f.text_field :expires_at, class: 'form-control js-access-expiration-date js-member-update-control', placeholder: 'Expiration date', id: "member_expires_at_#{member.id}", disabled: !can_admin_member, data: { el_id: dom_id(member) }
               %i.clear-icon.js-clear-input
@@ -112,27 +105,8 @@
               %span.visible-xs-block
                 Delete
               = icon('trash', class: 'hidden-xs')
-        - if can_override_member
-          %button.btn.btn-default.btn-ldap-override.js-ldap-permissions{ type: "button",
-            "aria-label" => "Edit permissions",
-            data: { name: user.name, el_id: dom_id(member) } }
-            %span.visible-xs-block.visible-sm-block
-              Edit permissions
-            = icon("pencil", class: "hidden-xs hidden-sm")
+        = render 'shared/members/ee/override_member_buttons', group: @group, member: member, user: user, action: :edit, can_override: can_override_member
       - else
         %span.member-access-text= member.human_access
-- if can_override_member
-  %li.alert.alert-member-ldap{ style: "display: none;" }
-    %p
-      = user.name
-      is currently an LDAP user. Editing their permissions will override the settings from the LDAP group sync.
-    .controls
-      %button.btn.btn-warning.btn-loading.js-ldap-override{ type: "button",
-        "aria-label" => "Change LDAP member permissions",
-        data: { el_id: dom_id(member), endpoint: override_group_group_member_path(@group, member) } }
-        = icon('spinner spin')
-        Change permissions
-      %button.btn.btn-default.js-ldap-permissions{ type: "button",
-        "aria-label" => "Close permissions override",
-        data: { el_id: dom_id(member) } }
-        = icon("times")
+
+= render 'shared/members/ee/override_member_buttons', group: @group, member: member, user: user, action: :confirm, can_override: can_override_member
