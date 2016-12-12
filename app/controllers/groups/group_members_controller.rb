@@ -83,12 +83,6 @@ class Groups::GroupMembersController < Groups::ApplicationController
 
   protected
 
-  def authorize_update_group_member!
-    unless can?(current_user, :admin_group_member, group) || can?(current_user, :override_group_member, group)
-      render_403
-    end
-  end
-
   def member_params
     params.require(:group_member).permit(:access_level, :user_id, :expires_at)
   end
