@@ -47,7 +47,11 @@ require('../window')(function(w){
 
       this._loadUrlData(config.endpoint).then(function(d) {
         if (config.loadingTemplate) {
-          hook.list.list.querySelector('[data-loading-template]').outerHTML = self.listTemplate;
+          var dataLoadingTemplate = hook.list.list.querySelector('[data-loading-template]');
+
+          if (dataLoadingTemplate) {
+            dataLoadingTemplate.outerHTML = self.listTemplate;
+          }
         }
         hook.list[config.method].call(hook.list, d);
       }).catch(function(e) {
