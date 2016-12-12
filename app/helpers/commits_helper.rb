@@ -131,9 +131,9 @@ module CommitsHelper
     return unless current_user
 
     tooltip = "Revert this #{commit.change_type_title(current_user)} in a new merge request" if has_tooltip
+    btn_class = "btn btn-warning btn-#{btn_class}" unless btn_class.nil?
 
     if can_collaborate_with_project?
-      btn_class = "btn btn-warning btn-#{btn_class}" unless btn_class.nil?
       link_to 'Revert', '#modal-revert-commit', 'data-toggle' => 'modal', 'data-container' => 'body', title: (tooltip if has_tooltip), class: "#{btn_class} #{'has-tooltip' if has_tooltip}"
     elsif can?(current_user, :fork_project, @project)
       continue_params = {
@@ -145,8 +145,6 @@ module CommitsHelper
         namespace_key: current_user.namespace.id,
         continue: continue_params)
 
-      btn_class = "btn btn-grouped btn-warning" unless btn_class.nil?
-
       link_to 'Revert', fork_path, class: btn_class, method: :post, 'data-toggle' => 'tooltip', 'data-container' => 'body', title: (tooltip if has_tooltip)
     end
   end
@@ -154,10 +152,10 @@ module CommitsHelper
   def cherry_pick_commit_link(commit, continue_to_path, btn_class: nil, has_tooltip: true)
     return unless current_user
 
-    tooltip = "Cherry-pick this #{commit.change_type_title(current_user)} in a new merge request"
+    tooltip = "Cherry-pick this #{commit.change_type_title(current_user)} in a new merge request" if has_tooltip
+    btn_class = "btn btn-default btn-#{btn_class}" unless btn_class.nil?
 
     if can_collaborate_with_project?
-      btn_class = "btn btn-default btn-#{btn_class}" unless btn_class.nil?
       link_to 'Cherry-pick', '#modal-cherry-pick-commit', 'data-toggle' => 'modal', 'data-container' => 'body', title: (tooltip if has_tooltip), class: "#{btn_class} #{'has-tooltip' if has_tooltip}"
     elsif can?(current_user, :fork_project, @project)
       continue_params = {
@@ -169,8 +167,7 @@ module CommitsHelper
         namespace_key: current_user.namespace.id,
         continue: continue_params)
 
-      btn_class = "btn btn-grouped btn-close" unless btn_class.nil?
-      link_to 'Cherry-pick', fork_path, class: "#{btn_class}", method: :post, 'data-toggle' => 'tooltip', 'data-container' => 'body', title: (tooltip if has_tooltip)
+      link_to 'Cherry-pick', fork_path, class: btn_class, method: :post, 'data-toggle' => 'tooltip', 'data-container' => 'body', title: (tooltip if has_tooltip)
     end
   end
 
