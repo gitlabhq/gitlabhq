@@ -6,15 +6,15 @@ module Bitbucket
       end
 
       def file_path
-        inline.fetch('path', nil)
+        inline.fetch('path')
       end
 
       def old_pos
-        inline.fetch('from', nil)
+        inline.fetch('from')
       end
 
       def new_pos
-        inline.fetch('to', nil)
+        inline.fetch('to')
       end
 
       def parent_id
