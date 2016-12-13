@@ -6,14 +6,14 @@
     components: {
       'vue-stage': gl.VueStage,
     },
-    props: ['pipeline'],
+    props: ['pipeline', 'svgs', 'match'],
     template: `
       <td class="stage-cell">
         <div
           class="stage-container"
           v-for='stage in pipeline.details.stages'
         >
-          <vue-stage :stage='stage'></vue-stage>
+          <vue-stage :stage='stage' :svgs='svgs' :match='match'></vue-stage>
         </div>
       </td>
     `,

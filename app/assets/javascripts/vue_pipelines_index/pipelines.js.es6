@@ -66,6 +66,9 @@
         if (pipeline.commit) return pipeline.commit.commit_url;
         return '';
       },
+      match(string) {
+        return string.replace(/_([a-z])/g, (m, w) => w.toUpperCase());
+      },
     },
     template: `
       <div>
@@ -77,7 +80,12 @@
             <pipeline-head></pipeline-head>
             <tbody>
               <tr class="commit" v-for='pipeline in pipelines'>
-                <status-scope :pipeline='pipeline'></status-scope>
+                <status-scope
+                  :pipeline='pipeline'
+                  :match='match'
+                  :svgs='svgs'
+                >
+                </status-scope>
                 <pipeline-url :pipeline='pipeline'></pipeline-url>
                 <td>
                   <commit
@@ -91,7 +99,12 @@
                   >
                   </commit>
                 </td>
-                <stages :pipeline='pipeline'></stages>
+                <stages
+                  :pipeline='pipeline'
+                  :svgs='svgs'
+                  :match='match'
+                >
+                </stages>
                 <time-ago :pipeline='pipeline'></time-ago>
                 <pipeline-actions :pipeline='pipeline'></pipeline-actions>
               </tr>

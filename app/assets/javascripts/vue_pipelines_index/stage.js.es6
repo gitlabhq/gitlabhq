@@ -3,7 +3,7 @@
 
 ((gl) => {
   gl.VueStage = Vue.extend({
-    props: ['stage'],
+    props: ['stage', 'svgs', 'match'],
     computed: {
       buildStatus() {
         return `Build: ${this.stage.status.label}`;
@@ -12,7 +12,7 @@
         return `has-tooltip ci-status-icon-${this.stage.status.label}`;
       },
       svg() {
-        return document.querySelector(`.${this.stage.status.icon}`).innerHTML;
+        return this.svgs[this.match(this.stage.status.icon)];
       },
     },
     template: `
