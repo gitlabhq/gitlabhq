@@ -277,4 +277,15 @@ describe Group, models: true do
     it { is_expected.to be_valid }
     it { expect(subject.parent).to be_kind_of(Group) }
   end
+
+  describe '#members_with_parents' do
+    let!(:group) { create(:group, :nested) }
+    let!(:master) { group.parent.add_user(create(:user), GroupMember::MASTER) }
+    let!(:developer) { group.add_user(create(:user), GroupMember::DEVELOPER) }
+
+    it 'returns parents members' do
+      expect(group.members_with_parents).to include(developer)
+      expect(group.members_with_parents).to include(master)
+    end
+  end
 end
