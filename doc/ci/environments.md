@@ -248,7 +248,7 @@ deploy_review:
     - echo "Deploy a review app"
   environment:
     name: review/$CI_BUILD_REF_NAME
-    url: https://$CI_BUILD_REF_NAME.example.com
+    url: https://$CI_BUILD_REF_SLUG.example.com
   only:
     - branches
   except:
@@ -259,13 +259,14 @@ Let's break it down in pieces. The job's name is `deploy_review` and it runs
 on the `deploy` stage. The `script` at this point is fictional, you'd have to
 use your own based on your deployment. Then, we set the `environment` with the
 `environment:name` being `review/$CI_BUILD_REF_NAME`. Now that's an interesting
-one. Since the [environment name][env-name] can contain also slashes (`/`), we
-can use this pattern to distinguish between dynamic environments and the regular
+one. Since the [environment name][env-name] can contain slashes (`/`), we can
+use this pattern to distinguish between dynamic environments and the regular
 ones.
 
 So, the first part is `review`, followed by a `/` and then `$CI_BUILD_REF_NAME`
-which takes the value of the branch name. We also use the same
-`$CI_BUILD_REF_NAME` value in the `environment:url` so that the environment
+which takes the value of the branch name. Since `$CI_BUILD_REF_NAME` itself may
+also contain `/`, or other characters that would be invalid in a domain name or
+URL, we use `$CI_BUILD_REF_SLUG` in the `environment:url` so that the environment
 can get a specific and distinct URL for each branch. Again, the way you set up
 the webserver to serve these requests is based on your setup.
 
@@ -299,7 +300,7 @@ deploy_review:
     - echo "Deploy a review app"
   environment:
     name: review/$CI_BUILD_REF_NAME
-    url: https://$CI_BUILD_REF_NAME.example.com
+    url: https://$CI_BUILD_REF_SLUG.example.com
   only:
     - branches
   except:
@@ -329,16 +330,16 @@ deploy_prod:
 
 A more realistic example would include copying files to a location where a
 webserver (NGINX) could then read and serve. The example below will copy the
-`public` directory to `/srv/nginx/$CI_BUILD_REF_NAME/public`:
+`public` directory to `/srv/nginx/$CI_BUILD_REF_SLUG/public`:
 
 ```yaml
 review_app:
   stage: deploy
   script:
-    - rsync -av --delete public /srv/nginx/$CI_BUILD_REF_NAME
+    - rsync -av --delete public /srv/nginx/$CI_BUILD_REF_SLUG
   environment:
     name: review/$CI_BUILD_REF_NAME
-    url: https://$CI_BUILD_REF_NAME.example.com
+    url: https://$CI_BUILD_REF_SLUG.example.com
 ```
 
 It is assumed that the user has already setup NGINX and GitLab Runner in the
@@ -346,7 +347,7 @@ server this job will run on.
 
 >**Note:**
 Be sure to check out the [limitations](#limitations) section for some edge
-cases regarding naming of you branches and Review Apps.
+cases regarding naming of your branches and Review Apps.
 
 ---
 
@@ -418,7 +419,7 @@ deploy_review:
     - echo "Deploy a review app"
   environment:
     name: review/$CI_BUILD_REF_NAME
-    url: https://$CI_BUILD_REF_NAME.example.com
+    url: https://$CI_BUILD_REF_SLUG.example.com
     on_stop: stop_review
   only:
     - branches
@@ -480,9 +481,8 @@ exist, you should see something like:
 
 ## Checkout deployments locally
 
-Since 8.13, a reference in the git repository is saved for each deployment. So
-knowing what the state is of your current environments is only a `git fetch`
-away.
+Since 8.13, a reference in the git repository is saved for each deployment, so
+knowing the state of your current environments is only a `git fetch` away.
 
 In your git config, append the `[remote "<your-remote>"]` block with an extra
 fetch line:
@@ -493,10 +493,10 @@ fetch = +refs/environments/*:refs/remotes/origin/environments/*
 
 ## Limitations
 
-1. If the branch name contains special characters (`/`), and you use the
-   `$CI_BUILD_REF_NAME` variable to dynamically create environments, there might
-   be complications during your Review Apps deployment. Follow the
-   [issue 22849][ce-22849] for more information.
+1. `$CI_BUILD_REF_SLUG` is not *guaranteed* to be unique, so there is a small
+    chance of collisions between similarly-named branches (`fix-foo` would
+    conflict with `fix/foo`, for instance). Following a well-defined workflow
+    such as [GitLab Flow][gitlab-flow] can keep this from being a problem.
 1. You are limited to use only the [CI predefined variables][variables] in the
    `environment: name`. If you try to re-use variables defined inside `script`
    as part of the environment name, it will not work.
@@ -520,6 +520,6 @@ Below are some links you may find interesting:
 [only]: yaml/README.md#only-and-except
 [onstop]: yaml/README.md#environment-on_stop
 [ce-7015]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7015
-[ce-22849]: https://gitlab.com/gitlab-org/gitlab-ce/issues/22849
+[gitlab-flow]: ../workflow/gitlab_flow.md
 [gitlab runner]: https://docs.gitlab.com/runner/
 [git-strategy]: yaml/README.md#git-strategy
