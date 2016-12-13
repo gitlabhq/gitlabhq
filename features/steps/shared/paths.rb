@@ -203,10 +203,6 @@ module SharedPaths
     visit admin_teams_path
   end
 
-  step 'I visit admin settings page' do
-    visit admin_application_settings_path
-  end
-
   step 'I visit spam logs page' do
     visit admin_spam_logs_path
   end
