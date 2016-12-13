@@ -96,6 +96,10 @@ label {
     code {
       line-height: 1.8;
     }
+
+    img {
+      margin-right: $gl-padding;
+    }
   }
 
   @media(max-width: $screen-xs-max) {
