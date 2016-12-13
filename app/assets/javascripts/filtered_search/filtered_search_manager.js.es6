@@ -85,42 +85,32 @@
 
       params.forEach((p) => {
         const split = p.split('=');
-        const key = decodeURIComponent(split[0]);
+        const keyParam = decodeURIComponent(split[0]);
         const value = split[1];
 
-        // Check if it matches edge conditions listed in gl.FilteredSearchTokenKeys.get()
-        let conditionIndex = 0;
-        const validCondition = gl.FilteredSearchTokenKeys.get()
-          .filter(v => v.conditions && v.conditions.filter((c, index) => {
-            // Return TokenKeys that have conditions that much the URL
-            if (c.url === p) {
-              conditionIndex = index;
-            }
-            return c.url === p;
-          })[0])[0];
+        // Check if it matches edge conditions listed in gl.FilteredSearchTokenKeys
+        const condition = gl.FilteredSearchTokenKeys.searchByConditionUrl(p);
 
-        if (validCondition) {
-          // Parse params based on rules provided in the conditions key of gl.FilteredSearchTokenKeys.get()
-          inputValues.push(`${validCondition.key}:${validCondition.conditions[conditionIndex].keyword}`);
+        if (condition) {
+          inputValues.push(`${condition.tokenKey}:${condition.value}`);
         } else {
           // Sanitize value since URL converts spaces into +
           // Replace before decode so that we know what was originally + versus the encoded +
           const sanitizedValue = value ? decodeURIComponent(value.replace(/\+/g, ' ')) : value;
-          const match = gl.FilteredSearchTokenKeys.get().filter(t => key === `${t.key}_${t.param}`)[0];
+          const match = gl.FilteredSearchTokenKeys.searchByKeyParam(keyParam);
 
           if (match) {
-            const sanitizedKey = key.slice(0, key.indexOf('_'));
-            const valueHasSpace = sanitizedValue.indexOf(' ') !== -1;
+            const sanitizedKey = keyParam.slice(0, keyParam.indexOf('_'));
             const symbol = match.symbol;
-            let quotationsToUse;
+            let quotationsToUse = '';
 
-            if (valueHasSpace) {
+            if (sanitizedValue.indexOf(' ') !== -1) {
               // Prefer ", but use ' if required
               quotationsToUse = sanitizedValue.indexOf('"') === -1 ? '"' : '\'';
             }
 
-            inputValues.push(valueHasSpace ? `${sanitizedKey}:${symbol}${quotationsToUse}${sanitizedValue}${quotationsToUse}` : `${sanitizedKey}:${symbol}${sanitizedValue}`);
-          } else if (!match && key === 'search') {
+            inputValues.push(`${sanitizedKey}:${symbol}${quotationsToUse}${sanitizedValue}${quotationsToUse}`);
+          } else if (!match && keyParam === 'search') {
             inputValues.push(sanitizedValue);
           }
         }
@@ -141,21 +131,17 @@
       paths.push(`state=${currentState}`);
 
       tokens.forEach((token) => {
-        const match = gl.FilteredSearchTokenKeys.get().filter(t => t.key === token.key)[0];
+        const condition = gl.FilteredSearchTokenKeys.searchByConditionKeyValue(token.key, token.value.toLowerCase());
+        const { param } = gl.FilteredSearchTokenKeys.searchByKey(token.key);
         let tokenPath = '';
 
-        if (token.wildcard && match.conditions) {
-          const condition = match.conditions
-            .filter(c => c.keyword === token.value.toLowerCase())[0];
-
-          if (condition) {
-            tokenPath = `${condition.url}`;
-          }
+        if (token.wildcard && condition) {
+          tokenPath = condition.url;
         } else if (!token.wildcard) {
           // Remove the wildcard token
-          tokenPath = `${token.key}_${match.param}=${encodeURIComponent(token.value.slice(1))}`;
+          tokenPath = `${token.key}_${param}=${encodeURIComponent(token.value.slice(1))}`;
         } else {
-          tokenPath = `${token.key}_${match.param}=${encodeURIComponent(token.value)}`;
+          tokenPath = `${token.key}_${param}=${encodeURIComponent(token.value)}`;
         }
 
         paths.push(tokenPath);
