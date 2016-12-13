@@ -84,7 +84,7 @@
           break;
         case 'projects:merge_requests:index':
         case 'projects:issues:index':
-          if(gl.hasOwnProperty('FilteredSearchManager')) {
+          if(gl.FilteredSearchManager) {
             new gl.FilteredSearchManager();
           }
           Issuable.init();
