@@ -482,7 +482,7 @@ describe API::Commits, api: true  do
         project.team << [user2, :developer]
         protected_branch = create(:protected_branch, project: project, name: 'feature')
 
-        post api("/projects/#{project.id}/repository/commits/#{master_pickable_commit.id}/cherry_pick", user2), branch: 'feature'
+        post api("/projects/#{project.id}/repository/commits/#{master_pickable_commit.id}/cherry_pick", user2), branch: protected_branch.name
 
         expect(response).to have_http_status(400)
         expect(json_response['message']).to eq('You are not allowed to push into this branch')
