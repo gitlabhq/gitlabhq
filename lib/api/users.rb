@@ -456,6 +456,23 @@ module API
         email.destroy
         current_user.update_secondary_emails!
       end
+
+      desc 'Get a list of user activities' do
+        success Entities::UserBasic
+      end
+      params do
+        optional :due_date, type: String, desc: 'Date time string in the format YEAR-MONTH-DAY'
+        use :pagination
+      end
+      get ":activities" do
+        authenticated_as_admin!
+
+        user_activities = Gitlab::UserActivities.query(from: params[:from],
+                                                     page: params[:page],
+                                                     per_page: params[:per_page])
+
+        present paginate(user_activities), with: Entities::UserActivity
+      end
     end
   end
 end

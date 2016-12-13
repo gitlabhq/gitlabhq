@@ -5,7 +5,7 @@ describe Gitlab::UserActivities, :redis, lib: true do
 
   it 'shows the last user activities' do
     Timecop.freeze do
-      Users::ActivityService.new(user, 'type').execute
+      user.record_activity
 
       expect(described_class.query).to eq({ username: user.username,
                                             last_activity: DateTime.now })
@@ -17,7 +17,7 @@ describe Gitlab::UserActivities, :redis, lib: true do
       Timecop.scale(3600)
 
       7.times do
-        Users::ActivityService.new(create(:user), 'type').execute
+        create(:user).record_activity
       end
     end
 
