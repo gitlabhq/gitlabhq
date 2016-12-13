@@ -131,7 +131,7 @@ module CommitsHelper
     return unless current_user
 
     tooltip = "Revert this #{commit.change_type_title(current_user)} in a new merge request" if has_tooltip
-    btn_class = "btn btn-warning btn-#{btn_class}" unless btn_class.nil?
+    btn_class = "btn btn-#{btn_class}" unless btn_class.nil?
 
     if can_collaborate_with_project?
       link_to 'Revert', '#modal-revert-commit', 'data-toggle' => 'modal', 'data-container' => 'body', title: (tooltip if has_tooltip), class: "#{btn_class} #{'has-tooltip' if has_tooltip}"
@@ -145,7 +145,7 @@ module CommitsHelper
     return unless current_user
 
     tooltip = "Cherry-pick this #{commit.change_type_title(current_user)} in a new merge request" if has_tooltip
-    btn_class = "btn btn-default btn-#{btn_class}" unless btn_class.nil?
+    btn_class = "btn btn-#{btn_class}" unless btn_class.nil?
 
     if can_collaborate_with_project?
       link_to 'Cherry-pick', '#modal-cherry-pick-commit', 'data-toggle' => 'modal', 'data-container' => 'body', title: (tooltip if has_tooltip), class: "#{btn_class} #{'has-tooltip' if has_tooltip}"
