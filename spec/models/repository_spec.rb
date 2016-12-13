@@ -829,7 +829,6 @@ describe Repository, models: true do
     context 'when target branch is different from source branch' do
       before do
         allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, ''])
-        allow(repository).to receive(:update_ref!)
       end
 
       it 'expires branch cache' do
@@ -1474,16 +1473,16 @@ describe Repository, models: true do
     end
   end
 
-  describe '#update_ref!' do
+  describe '#update_ref' do
     it 'can create a ref' do
-      GitOperationService.new(nil, repository).send(:update_ref!, 'refs/heads/foobar', 'refs/heads/master', Gitlab::Git::BLANK_SHA)
+      GitOperationService.new(nil, repository).send(:update_ref, 'refs/heads/foobar', 'refs/heads/master', Gitlab::Git::BLANK_SHA)
 
       expect(repository.find_branch('foobar')).not_to be_nil
     end
 
     it 'raises CommitError when the ref update fails' do
       expect do
-        GitOperationService.new(nil, repository).send(:update_ref!, 'refs/heads/master', 'refs/heads/master', Gitlab::Git::BLANK_SHA)
+        GitOperationService.new(nil, repository).send(:update_ref, 'refs/heads/master', 'refs/heads/master', Gitlab::Git::BLANK_SHA)
       end.to raise_error(Repository::CommitError)
     end
   end

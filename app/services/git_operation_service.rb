@@ -11,7 +11,7 @@ class GitOperationService
     ref = Gitlab::Git::BRANCH_REF_PREFIX + branch_name
     oldrev = Gitlab::Git::BLANK_SHA
 
-    with_hooks_and_update_ref(ref, oldrev, newrev)
+    update_ref_in_hooks(ref, newrev, oldrev)
   end
 
   def rm_branch(branch)
@@ -19,14 +19,14 @@ class GitOperationService
     oldrev = branch.dereferenced_target.id
     newrev = Gitlab::Git::BLANK_SHA
 
-    with_hooks_and_update_ref(ref, oldrev, newrev)
+    update_ref_in_hooks(ref, newrev, oldrev)
   end
 
   def add_tag(tag_name, newrev, options = {})
     ref = Gitlab::Git::TAG_REF_PREFIX + tag_name
     oldrev = Gitlab::Git::BLANK_SHA
 
-    with_hooks(ref, oldrev, newrev) do |service|
+    with_hooks(ref, newrev, oldrev) do |service|
       raw_tag = repository.rugged.tags.create(tag_name, newrev, options)
       service.newrev = raw_tag.target_id
     end
@@ -82,25 +82,23 @@ class GitOperationService
              end
 
     ref = Gitlab::Git::BRANCH_REF_PREFIX + branch_name
-    with_hooks_and_update_ref(ref, oldrev, newrev) do
-      # If repo was empty expire cache
-      repository.after_create if was_empty
-      repository.after_create_branch if was_empty ||
-                                        Gitlab::Git.blank_ref?(oldrev)
-    end
+    update_ref_in_hooks(ref, newrev, oldrev)
+
+    # If repo was empty expire cache
+    repository.after_create if was_empty
+    repository.after_create_branch if was_empty ||
+                                      Gitlab::Git.blank_ref?(oldrev)
 
     newrev
   end
 
-  def with_hooks_and_update_ref(ref, oldrev, newrev)
-    with_hooks(ref, oldrev, newrev) do |service|
-      update_ref!(ref, newrev, oldrev)
-
-      yield(service) if block_given?
+  def update_ref_in_hooks(ref, newrev, oldrev)
+    with_hooks(ref, newrev, oldrev) do
+      update_ref(ref, newrev, oldrev)
     end
   end
 
-  def with_hooks(ref, oldrev, newrev)
+  def with_hooks(ref, newrev, oldrev)
     result = nil
 
     GitHooksService.new.execute(
@@ -116,7 +114,7 @@ class GitOperationService
     result
   end
 
-  def update_ref!(name, newrev, oldrev)
+  def update_ref(ref, newrev, oldrev)
     # We use 'git update-ref' because libgit2/rugged currently does not
     # offer 'compare and swap' ref updates. Without compare-and-swap we can
     # (and have!) accidentally reset the ref to an earlier state, clobbering
@@ -125,12 +123,12 @@ class GitOperationService
     _, status = Gitlab::Popen.popen(
       command,
       repository.path_to_repo) do |stdin|
-      stdin.write("update #{name}\x00#{newrev}\x00#{oldrev}\x00")
+      stdin.write("update #{ref}\x00#{newrev}\x00#{oldrev}\x00")
     end
 
     unless status.zero?
       raise Repository::CommitError.new(
-        "Could not update branch #{name.sub('refs/heads/', '')}." \
+        "Could not update branch #{Gitlab::Git.branch_name(ref)}." \
         " Please refresh and try again.")
     end
   end

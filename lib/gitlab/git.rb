@@ -6,7 +6,7 @@ module Gitlab
 
     class << self
       def ref_name(ref)
-        ref.gsub(/\Arefs\/(tags|heads)\//, '')
+        ref.sub(/\Arefs\/(tags|heads)\//, '')
       end
 
       def branch_name(ref)
