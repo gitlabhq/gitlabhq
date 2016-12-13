@@ -28,6 +28,28 @@ class GlobalMilestone
     new(title, child_milestones)
   end
 
+  def self.states_count(projects)
+    relation = MilestonesFinder.new.execute(projects, state: 'all')
+    milestones_by_state_and_title = relation.reorder(nil).group(:state, :title).count
+
+    opened = count_by_state(milestones_by_state_and_title, 'active')
+    closed = count_by_state(milestones_by_state_and_title, 'closed')
+    all = milestones_by_state_and_title.map { |(_, title), _| title }.uniq.count
+
+    { 
+      opened: opened,
+      closed: closed,
+      all: all
+    }
+  end
+
+  def self.count_by_state(milestones_by_state_and_title, state)
+    milestones_by_state_and_title.count do |(milestone_state, _), _|
+      milestone_state == state
+    end
+  end
+  private_class_method :count_by_state
+
   def initialize(title, milestones)
     @title = title
     @name = title
