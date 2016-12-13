@@ -80,9 +80,7 @@
     }
 
     loadSearchParamsFromURL() {
-      // We can trust that each param has one & since values containing & will be encoded
-      // Remove the first character of search as it is always ?
-      const params = window.location.search.slice(1).split('&');
+      const params = gl.utils.getUrlParamsArray();
       let inputValues = [];
 
       params.forEach((p) => {
