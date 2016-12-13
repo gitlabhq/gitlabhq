@@ -37,6 +37,7 @@ module Commits
           @commit,
           into,
           tree_id,
+          source_project: @source_project,
           source_branch_name: @target_branch)
 
         success

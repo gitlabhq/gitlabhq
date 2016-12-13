@@ -6,12 +6,12 @@ module CreatesCommit
 
     source_branch = @ref if @ref && @repository.find_branch(@ref)
     commit_params = @commit_params.merge(
-      source_project: @project,
+      source_project: @tree_edit_project,
       source_branch: source_branch,
       target_branch: @target_branch
     )
 
-    result = service.new(@tree_edit_project, current_user, commit_params).execute
+    result = service.new(@project, current_user, commit_params).execute
 
     if result[:status] == :success
       update_flash_notice(success_notice)

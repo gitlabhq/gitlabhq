@@ -10,6 +10,7 @@ module Files
         update: false,
         author_email: @author_email,
         author_name: @author_name,
+        source_project: @source_project,
         source_branch_name: @source_branch)
     end
 

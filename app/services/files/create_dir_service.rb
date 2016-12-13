@@ -8,6 +8,7 @@ module Files
         branch_name: @target_branch,
         author_email: @author_email,
         author_name: @author_name,
+        source_project: @source_project,
         source_branch_name: @source_branch)
     end
 
