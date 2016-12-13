@@ -493,7 +493,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       return render_404
     end
 
-    MergeRequests::ApprovalService.
+    ::MergeRequests::ApprovalService.
       new(project, current_user).
       execute(@merge_request)
 
@@ -505,8 +505,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def unapprove
-    if merge_request.has_approved?(current_user)
-      MergeRequests::RemoveApprovalService.
+    if @merge_request.has_approved?(current_user)
+      ::MergeRequests::RemoveApprovalService.
         new(project, current_user).
         execute(@merge_request)
     end
@@ -517,7 +517,12 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   protected
 
   def render_approvals_json
-    render json: API::Entities::MergeRequestApprovals.new(@merge_request)
+    respond_to do |format|
+      format.json do
+        entity = API::Entities::MergeRequestApprovals.new(@merge_request.reload, current_user: current_user)
+        render json: entity
+      end
+    end
   end
 
   def selected_target_project
