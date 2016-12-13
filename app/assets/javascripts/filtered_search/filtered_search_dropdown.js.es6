@@ -5,7 +5,7 @@
   class FilteredSearchDropdown {
     constructor(droplab, dropdown, input) {
       this.droplab = droplab;
-      this.hookId = 'filtered-search';
+      this.hookId = input.getAttribute('data-id');
       this.input = input;
       this.dropdown = dropdown;
       this.loadingTemplate = `<div class="filter-dropdown-loading">
