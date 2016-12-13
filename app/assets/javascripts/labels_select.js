@@ -7,7 +7,7 @@
       $('.js-label-select').each(function(i, dropdown) {
         var $block, $colorPreview, $dropdown, $form, $loading, $selectbox, $sidebarCollapsedValue, $value, abilityName, defaultLabel, enableLabelCreateButton, issueURLSplit, issueUpdateURL, labelHTMLTemplate, labelNoneHTMLTemplate, labelUrl, namespacePath, projectPath, saveLabelData, selectedLabel, showAny, showNo, $sidebarLabelTooltip, initialSelected, $toggleText, fieldName, useId, propertyName, showMenuAbove, $container;
         $dropdown = $(dropdown);
-        $dropdownContainer = $dropdown.closest('.labels-filter')
+        $dropdownContainer = $dropdown.closest('.labels-filter');
         $toggleText = $dropdown.find('.dropdown-toggle-text');
         namespacePath = $dropdown.data('namespace-path');
         projectPath = $dropdown.data('project-path');
@@ -170,7 +170,7 @@
             });
           },
           renderRow: function(label, instance) {
-            var $a, $li, color, colorEl, indeterminate, removesAll, selectedClass, spacing, i, marked;
+            var $a, $li, color, colorEl, indeterminate, removesAll, selectedClass, spacing, i, marked, dropdownName, dropdownValue;
             $li = $('<li>');
             $a = $('<a href="#">');
             selectedClass = [];
@@ -192,8 +192,13 @@
                 selectedClass.push('is-active');
               }
             } else {
-              if (this.id(label) && $form.find("input[type='hidden'][name='" + ($dropdown.data('fieldName')) + "'][value='" + this.id(label).toString().replace(/'/g, '\\\'') + "']").length) {
-                selectedClass.push('is-active');
+              if (this.id(label)) {
+                dropdownName = $dropdown.data('fieldName');
+                dropdownValue = this.id(label).toString().replace(/'/g, '\\\'');
+
+                if ($form.find("input[type='hidden'][name='" + dropdownName + "'][value='" + dropdownValue + "']").length) {
+                  selectedClass.push('is-active');
+                }
               }
 
               if ($dropdown.hasClass('js-multiselect') && removesAll) {
@@ -423,6 +428,7 @@
     };
 
     LabelsSelect.prototype.setDropdownData = function($dropdown, isMarking, value) {
+      var i, markedIds, unmarkedIds, indeterminateIds;
       var issuableBulkActions = $('.bulk-update').data('bulkActions');
 
       markedIds = $dropdown.data('marked') || [];
@@ -467,7 +473,9 @@
 
     LabelsSelect.prototype.setOriginalDropdownData = function($container, $dropdown) {
       var labels = [];
-      $container.find('[name="label_name[]"]').map(function() { return labels.push(this.value); });
+      $container.find('[name="label_name[]"]').map(function() {
+        return labels.push(this.value);
+      });
       $dropdown.data('marked', labels);
     };
 

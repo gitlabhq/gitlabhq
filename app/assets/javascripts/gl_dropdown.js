@@ -605,7 +605,7 @@
     };
 
     GitLabDropdown.prototype.rowClicked = function(el) {
-      var field, fieldName, groupName, isInput, selectedIndex, selectedObject, value, markedIds, unmarkedIds, i, isMarking;
+      var field, fieldName, groupName, isInput, selectedIndex, selectedObject, value, isMarking;
 
       fieldName = this.options.fieldName;
       isInput = $(this.el).is('input');

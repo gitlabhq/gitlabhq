@@ -2,8 +2,8 @@
 ((global) => {
 
   class IssuableBulkActions {
-    constructor({ container, form, issues, page } = {}) {
-      this.prefixId = page === 'projects:merge_requests:index' ? 'merge_request_' : 'issue_';
+    constructor({ container, form, issues, prefixId } = {}) {
+      this.prefixId = prefixId || 'issue_';
       this.form = form || this.getElement('.bulk-update');
       this.$labelDropdown = this.form.find('.js-label-select');
       this.issues = issues || this.getElement('.issues-list .issue');
@@ -104,9 +104,10 @@
     }
 
     setOriginalDropdownData() {
-      $('.bulk-update .js-label-select').data('common', this.getOriginalCommonIds());
-      $('.bulk-update .js-label-select').data('marked', this.getOriginalMarkedIds());
-      $('.bulk-update .js-label-select').data('indeterminate', this.getOriginalIndeterminateIds());
+      let $labelSelect = $('.bulk-update .js-label-select');
+      $labelSelect.data('common', this.getOriginalCommonIds());
+      $labelSelect.data('marked', this.getOriginalMarkedIds());
+      $labelSelect.data('indeterminate', this.getOriginalIndeterminateIds());
     }
 
     // From issuable's initial bulk selection
@@ -153,7 +154,8 @@
     }
 
     getElement(selector) {
-      return $('.content').find(selector);
+      this.scopeEl = this.scopeEl || $('.content');
+      return this.scopeEl.find(selector);
     }
   }
 
