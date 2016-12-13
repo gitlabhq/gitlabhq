@@ -4,7 +4,7 @@
 ((gl) => {
   gl.VueStatusScope = Vue.extend({
     props: [
-      'pipeline',
+      'pipeline', 'svgs', 'match',
     ],
     computed: {
       cssClasses() {
@@ -14,8 +14,7 @@
         return cssObject;
       },
       svg() {
-        return document
-          .querySelector(`.${this.pipeline.details.status.icon}`).innerHTML;
+        return this.svgs[this.match(this.pipeline.details.status.icon)];
       },
     },
     template: `
