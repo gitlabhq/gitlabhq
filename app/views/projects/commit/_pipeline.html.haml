@@ -24,7 +24,7 @@
           in
           = time_interval_in_words pipeline.duration
 
-  .row-content-block.build-content.middle-block.hidden
+  .row-content-block.build-content.middle-block.js-pipeline-graph.hidden
     = render "projects/pipelines/graph", pipeline: pipeline
 
 - if pipeline.yaml_errors.present?

@@ -21,16 +21,18 @@
       return this.project = new Project();
     });
     return describe('project list', function() {
+      var fakeAjaxResponse = function fakeAjaxResponse(req) {
+        var d;
+        expect(req.url).toBe('/api/v3/projects.json?simple=true');
+        d = $.Deferred();
+        d.resolve(this.projects_data);
+        return d.promise();
+      };
+
       beforeEach((function(_this) {
         return function() {
           _this.projects_data = fixture.load('projects.json')[0];
-          return spyOn(jQuery, 'ajax').and.callFake(function(req) {
-            var d;
-            expect(req.url).toBe('/api/v3/projects.json?simple=true');
-            d = $.Deferred();
-            d.resolve(_this.projects_data);
-            return d.promise();
-          });
+          return spyOn(jQuery, 'ajax').and.callFake(fakeAjaxResponse.bind(_this));
         };
       })(this));
       it('to show on toggle click', (function(_this) {

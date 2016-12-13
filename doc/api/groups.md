@@ -50,12 +50,17 @@ GET /groups/:id/projects
 
 Parameters:
 
-- `archived` (optional) - if passed, limit by archived status
-- `visibility` (optional) - if passed, limit by visibility `public`, `internal`, `private`
-- `order_by` (optional) - Return requests ordered by `id`, `name`, `path`, `created_at`, `updated_at` or `last_activity_at` fields. Default is `created_at`
-- `sort` (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
-- `search` (optional) - Return list of authorized projects according to a search criteria
-- `ci_enabled_first` - Return projects ordered by ci_enabled flag. Projects with enabled GitLab CI go first
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID or path of a group |
+| `archived` | boolean | no | Limit by archived status |
+| `visibility` | string | no | Limit by visibility `public`, `internal`, or `private` |
+| `order_by` | string | no | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at` |
+| `sort` | string | no | Return projects sorted in `asc` or `desc` order. Default is `desc` |
+| `search` | string | no | Return list of authorized projects matching the search criteria |
+| `simple` | boolean | no | Return only the ID, URL, name, and path of each project |
+
+Example response:
 
 ```json
 [

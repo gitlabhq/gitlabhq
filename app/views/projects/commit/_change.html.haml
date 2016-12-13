@@ -13,7 +13,7 @@
         %a.close{href: "#", "data-dismiss" => "modal"} ×
         %h3.page-title== #{label} this #{commit.change_type_title(current_user)}
       .modal-body
-        = form_tag send("#{type.underscore}_namespace_project_commit_path", @project.namespace, @project, commit.id), method: :post, remote: false, class: 'form-horizontal js-#{type}-form js-requires-input' do
+        = form_tag send("#{type.underscore}_namespace_project_commit_path", @project.namespace, @project, commit.id), method: :post, remote: false, class: "form-horizontal js-#{type}-form js-requires-input" do
           .form-group.branch
             = label_tag 'target_branch', target_label, class: 'control-label'
             .col-sm-10
@@ -23,12 +23,11 @@
               - if can?(current_user, :push_code, @project)
                 .js-create-merge-request-container
                   .checkbox
-                    - nonce = SecureRandom.hex
-                    = label_tag "create_merge_request-#{nonce}" do
-                      = check_box_tag 'create_merge_request', 1, true, class: 'js-create-merge-request', id: "create_merge_request-#{nonce}"
+                    = label_tag do
+                      = check_box_tag 'create_merge_request', 1, true, class: 'js-create-merge-request', id: nil
                       Start a <strong>new merge request</strong> with these changes
               - else
-                = hidden_field_tag 'create_merge_request', 1
+                = hidden_field_tag 'create_merge_request', 1, id: nil
           .form-actions
             = submit_tag label, class: 'btn btn-create'
             = link_to "Cancel", '#', class: "btn btn-cancel", "data-dismiss" => "modal"
