@@ -12,7 +12,6 @@
         return `has-tooltip ci-status-icon-${this.stage.status.label}`;
       },
       svg() {
-        // debugger
         return this.svgs[this.match(this.stage.status.icon)];
       },
     },
