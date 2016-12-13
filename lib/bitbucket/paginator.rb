@@ -29,7 +29,7 @@ module Bitbucket
     end
 
     def fetch_next_page
-      parsed_response = connection.get(next_url, { pagelen: PAGE_LENGTH, sort: :created_on })
+      parsed_response = connection.get(next_url, pagelen: PAGE_LENGTH, sort: :created_on)
       Page.new(parsed_response, type)
     end
   end

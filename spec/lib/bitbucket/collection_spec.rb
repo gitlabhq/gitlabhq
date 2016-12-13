@@ -18,6 +18,7 @@ end
 describe Bitbucket::Collection do
   it "iterates paginator" do
     collection = described_class.new(TestPaginator.new)
+
     expect(collection.to_a).to match(["result_1_page_1", "result_2_page_1", "result_1_page_2", "result_2_page_2"])
   end
 end
