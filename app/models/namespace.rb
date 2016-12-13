@@ -163,11 +163,26 @@ class Namespace < ActiveRecord::Base
   end
 
   def full_name
-    if parent
-      parent.full_name + ' / ' + name
-    else
-      name
-    end
+    @full_name ||=
+      if parent
+        parent.full_name + ' / ' + name
+      else
+        name
+      end
+  end
+
+  def parents
+    @parents ||=
+      begin
+        parents = []
+
+        if parent
+          parents << parent
+          parents += parent.parents
+        end
+
+        parents
+      end
   end
 
   private
