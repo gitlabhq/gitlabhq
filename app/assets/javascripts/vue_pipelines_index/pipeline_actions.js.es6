@@ -18,7 +18,7 @@
             <div class="btn-group">
               <a
                 v-if='pipeline.details.manual_actions.length > 0'
-                class="dropdown-toggle btn btn-default"
+                class="dropdown-toggle btn btn-default js-pipeline-dropdown-manual-actions"
                 data-toggle="dropdown"
                 title="Manual build"
                 alt="Manual Build"
@@ -55,7 +55,7 @@
             <div class="btn-group">
               <a
                 v-if='pipeline.details.artifacts.length > 0'
-                class="dropdown-toggle btn btn-default build-artifacts"
+                class="dropdown-toggle btn btn-default build-artifacts js-pipeline-dropdown-download"
                 data-toggle="dropdown"
                 type="button"
               >
