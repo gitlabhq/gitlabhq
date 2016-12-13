@@ -918,6 +918,14 @@ describe Ci::Build, models: true do
 
         it { is_expected.to be_retryable }
       end
+
+      context 'when build is canceled' do
+        before do
+          build.cancel!
+        end
+
+        it { is_expected.to be_retryable }
+      end
     end
 
     context 'when build is not retryable' do

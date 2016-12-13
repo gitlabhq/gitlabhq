@@ -135,7 +135,7 @@ module Ci
 
     def retryable?
       project.builds_enabled? && commands.present? &&
-        (success? || failed?)
+        (success? || failed? || canceled?)
     end
 
     def retried?
