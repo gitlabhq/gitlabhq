@@ -16,8 +16,11 @@ class GroupMemberPolicy < BasePolicy
       can! :destroy_group_member
     end
 
-    # EE-only
-    can_override = Ability.allowed?(@user, :override_group_member, group)
+    additional_rules!
+  end
+
+  def additional_rules!
+    can_override = Ability.allowed?(@user, :override_group_member, @subject.group)
 
     if can_override
       can! :override_group_member if @subject.ldap?
