@@ -16,14 +16,14 @@ describe API::Helpers, api: true do
     clear_env
     clear_param
     env[API::Helpers::PRIVATE_TOKEN_HEADER] = user_or_token.respond_to?(:private_token) ? user_or_token.private_token : user_or_token
-    env[API::Helpers::SUDO_HEADER] = identifier
+    env[API::Helpers::SUDO_HEADER] = identifier.to_s
   end
 
   def set_param(user_or_token, identifier)
     clear_env
     clear_param
     params[API::Helpers::PRIVATE_TOKEN_PARAM] = user_or_token.respond_to?(:private_token) ? user_or_token.private_token : user_or_token
-    params[API::Helpers::SUDO_PARAM] = identifier
+    params[API::Helpers::SUDO_PARAM] = identifier.to_s
   end
 
   def clear_env
