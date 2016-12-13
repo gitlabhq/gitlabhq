@@ -900,20 +900,42 @@ describe Ci::Build, models: true do
   end
 
   describe '#retryable?' do
-    context 'when build is running' do
-      before do
-        build.run!
+    subject { build }
+
+    context 'when build is retryable' do
+      context 'when build is successful' do
+        before do
+          build.success!
+        end
+
+        it { is_expected.to be_retryable }
       end
 
-      it { expect(build).not_to be_retryable }
+      context 'when build is failed' do
+        before do
+          build.drop!
+        end
+
+        it { is_expected.to be_retryable }
+      end
     end
 
-    context 'when build is finished' do
-      before do
-        build.success!
+    context 'when build is not retryable' do
+      context 'when build is running' do
+        before do
+          build.run!
+        end
+
+        it { is_expected.not_to be_retryable }
       end
 
-      it { expect(build).to be_retryable }
+      context 'when build is skipped' do
+        before do
+          build.skip!
+        end
+
+        it { is_expected.not_to be_retryable }
+      end
     end
   end
 

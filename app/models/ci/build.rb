@@ -134,7 +134,8 @@ module Ci
     end
 
     def retryable?
-      project.builds_enabled? && commands.present? && complete?
+      project.builds_enabled? && commands.present? &&
+        (success? || failed?)
     end
 
     def retried?
