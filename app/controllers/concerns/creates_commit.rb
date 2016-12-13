@@ -4,14 +4,16 @@ module CreatesCommit
   def create_commit(service, success_path:, failure_path:, failure_view: nil, success_notice: nil)
     set_commit_variables
 
-    source_branch = @ref if @ref && @repository.find_branch(@ref)
+    source_branch = @ref if @ref &&
+                            @mr_source_project.repository.branch_exists?(@ref)
     commit_params = @commit_params.merge(
-      source_project: @tree_edit_project,
+      source_project: @mr_source_project,
       source_branch: source_branch,
-      target_branch: @target_branch
+      target_branch: @mr_target_branch
     )
 
-    result = service.new(@project, current_user, commit_params).execute
+    result = service.new(
+      @mr_target_project, current_user, commit_params).execute
 
     if result[:status] == :success
       update_flash_notice(success_notice)
