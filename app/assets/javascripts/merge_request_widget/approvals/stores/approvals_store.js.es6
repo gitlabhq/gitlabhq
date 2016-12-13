@@ -23,21 +23,20 @@
 
     fetch() {
       return this.api.fetchApprovals()
-        .then((res) => this.assignToRootStore(res.data));
+        .then(res => this.assignToRootStore(res.data));
     }
 
     approve() {
       return this.api.approveMergeRequest()
-        .then((data) => this.rootStore.assignToData(data));
+        .then(res => this.rootStore.assignToData(res.data));
     }
 
     unapprove() {
       return this.api.unapproveMergeRequest()
-        .then((data) => this.rootStore.assignToData(data));
+        .then(res => this.rootStore.assignToData(res.data));
     }
   }
 
   gl.ApprovalsStore = ApprovalsStore;
 })();
-
 

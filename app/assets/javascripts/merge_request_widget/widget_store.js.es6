@@ -22,8 +22,8 @@
     }
 
     initApprovals() {
-      const approvalsStore = new gl.ApprovalsStore(this);
-      this.assignToData('approvals', approvalsStore.data);
+      gl.ApprovalsStore = new gl.ApprovalsStore(this);
+      this.assignToData('approvals', this.dataset.approvals);
     }
 
     assignToData(key, val) {

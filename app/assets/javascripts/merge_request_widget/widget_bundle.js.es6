@@ -5,7 +5,7 @@
 
   $(() => {
     const rootEl = document.getElementById('merge-request-widget-app');
-    const widgetSharedStore = new gl.MergeRequestWidgetStore(rootEl); // TODO: encapsulate better
+    const widgetSharedStore = new gl.MergeRequestWidgetStore(rootEl);
 
     gl.MergeRequestWidgetApp = new Vue({
       el: rootEl,
