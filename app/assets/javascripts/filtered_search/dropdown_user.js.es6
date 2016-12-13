@@ -15,7 +15,7 @@
             project_id: this.getProjectId(),
             current_user: true,
           },
-          searchValueFunction: this.getSearchInput,
+          searchValueFunction: this.getSearchInput.bind(this),
           loadingTemplate: this.loadingTemplate,
         },
       };
@@ -37,7 +37,7 @@
     }
 
     getSearchInput() {
-      const query = document.querySelector('.filtered-search').value;
+      const query = this.input.value;
       const { value } = gl.FilteredSearchTokenizer.getLastTokenObject(query);
       const valueWithoutColon = value.slice(1);
       const hasPrefix = valueWithoutColon[0] === '@';
