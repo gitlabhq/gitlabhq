@@ -1,4 +1,3 @@
-//= require vue
 //= require ./components/time_tracker
 //= require smart_interval
 //= require subbable_resource
