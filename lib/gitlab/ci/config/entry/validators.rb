@@ -66,7 +66,7 @@ module Gitlab
             private
 
             def look_like_regexp?(value)
-              value =~ %r{\A/.*/\z}
+              value.start_with?('/') && value.end_with?('/')
             end
 
             def validate_regexp(value)
@@ -78,7 +78,7 @@ module Gitlab
             end
           end
 
-          class ArrayOfStringsOrRegexps < RegexpValidator
+          class ArrayOfStringsOrRegexpsValidator < RegexpValidator
             def validate_each(record, attribute, value)
               unless validate_array_of_strings_or_regexps(value)
                 record.errors.add(attribute, 'should be an array of strings or regexps')
@@ -94,12 +94,8 @@ module Gitlab
             def validate_string_or_regexp(value)
               return true if value.is_a?(Symbol)
               return false unless value.is_a?(String)
-
-              if look_like_regexp?(value)
-                validate_regexp(value)
-              else
-                true
-              end
+              return validate_regexp(value) if look_like_regexp?(value)
+              true
             end
           end
 

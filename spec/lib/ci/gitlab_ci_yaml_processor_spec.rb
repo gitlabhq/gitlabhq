@@ -17,7 +17,7 @@ module Ci
           end
 
           context "and 'rspec' job doesn't have coverage set" do
-            it { is_expected.to include(coverage_regex: '/\(\d+\.\d+\) covered/') }
+            it { is_expected.to include(coverage_regex: '\(\d+\.\d+\) covered') }
           end
 
           context "but 'rspec' job also has coverage set" do
@@ -25,7 +25,7 @@ module Ci
               config_base[:rspec][:coverage] = '/Code coverage: \d+\.\d+/'
             end
 
-            it { is_expected.to include(coverage_regex: '/Code coverage: \d+\.\d+/') }
+            it { is_expected.to include(coverage_regex: 'Code coverage: \d+\.\d+') }
           end
         end
       end
@@ -48,6 +48,7 @@ module Ci
           stage_idx: 1,
           name: "rspec",
           commands: "pwd\nrspec",
+          coverage_regex: nil,
           tag_list: [],
           options: {},
           allow_failure: false,
@@ -462,6 +463,7 @@ module Ci
           stage_idx: 1,
           name: "rspec",
           commands: "pwd\nrspec",
+          coverage_regex: nil,
           tag_list: [],
           options: {
             image: "ruby:2.1",
@@ -490,6 +492,7 @@ module Ci
           stage_idx: 1,
           name: "rspec",
           commands: "pwd\nrspec",
+          coverage_regex: nil,
           tag_list: [],
           options: {
             image: "ruby:2.5",
@@ -729,6 +732,7 @@ module Ci
           stage_idx: 1,
           name: "rspec",
           commands: "pwd\nrspec",
+          coverage_regex: nil,
           tag_list: [],
           options: {
             image: "ruby:2.1",
@@ -940,6 +944,7 @@ module Ci
             stage_idx: 1,
             name: "normal_job",
             commands: "test",
+            coverage_regex: nil,
             tag_list: [],
             options: {},
             when: "on_success",
@@ -985,6 +990,7 @@ module Ci
             stage_idx: 0,
             name: "job1",
             commands: "execute-script-for-job",
+            coverage_regex: nil,
             tag_list: [],
             options: {},
             when: "on_success",
@@ -997,6 +1003,7 @@ module Ci
             stage_idx: 0,
             name: "job2",
             commands: "execute-script-for-job",
+            coverage_regex: nil,
             tag_list: [],
             options: {},
             when: "on_success",

@@ -11,6 +11,10 @@ module Gitlab
           validations do
             validates :config, regexp: true
           end
+
+          def value
+            @config[1...-1]
+          end
         end
       end
     end

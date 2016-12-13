@@ -232,11 +232,11 @@ describe Ci::Build, :models do
       end
 
       context 'and coverage_regex attribute is not set' do
-        it { is_expected.to eq("/#{project_regex}/") }
+        it { is_expected.to eq(project_regex) }
       end
 
       context 'but coverage_regex attribute is also set' do
-        let(:build_regex) { '/Code coverage: \d+\.\d+/' }
+        let(:build_regex) { 'Code coverage: \d+\.\d+' }
 
         before do
           build.coverage_regex = build_regex

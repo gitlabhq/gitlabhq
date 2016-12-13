@@ -23,7 +23,7 @@ describe Gitlab::Ci::Config::Entry::Coverage do
 
       describe '#value' do
         subject { entry.value }
-        it { is_expected.to eq(config) }
+        it { is_expected.to eq(config[1...-1]) }
       end
 
       describe '#errors' do

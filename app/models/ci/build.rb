@@ -275,30 +275,23 @@ module Ci
     end
 
     def update_coverage
-      regex = coverage_regex
-
-      return unless regex
-
-      coverage = extract_coverage(trace, regex[1...-1])
-
-      if coverage.is_a? Numeric
-        update_attributes(coverage: coverage)
-      end
+      coverage = extract_coverage(trace, coverage_regex)
+      update_attributes(coverage: coverage) if coverage.is_a?(Numeric)
     end
 
     def extract_coverage(text, regex)
-      begin
-        matches = text.scan(Regexp.new(regex)).last
-        matches = matches.last if matches.kind_of?(Array)
-        coverage = matches.gsub(/\d+(\.\d+)?/).first
+      return unless regex
 
-        if coverage.present?
-          coverage.to_f
-        end
-      rescue
-        # if bad regex or something goes wrong we dont want to interrupt transition
-        # so we just silentrly ignore error for now
+      matches = text.scan(Regexp.new(regex)).last
+      matches = matches.last if matches.kind_of?(Array)
+      coverage = matches.gsub(/\d+(\.\d+)?/).first
+
+      if coverage.present?
+        coverage.to_f
       end
+    rescue
+      # if bad regex or something goes wrong we dont want to interrupt transition
+      # so we just silentrly ignore error for now
     end
 
     def has_trace_file?
@@ -524,9 +517,7 @@ module Ci
     end
 
     def coverage_regex
-      super ||
-        project.try(:build_coverage_regex).presence &&
-        "/#{project.build_coverage_regex}/"
+      super || project.try(:build_coverage_regex)
     end
 
     def when
