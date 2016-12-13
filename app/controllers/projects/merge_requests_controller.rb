@@ -11,7 +11,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :merge_request, only: [
     :edit, :update, :show, :diffs, :commits, :conflicts, :conflict_for_path, :builds, :pipelines, :merge, :merge_check,
     :ci_status, :ci_environments_status, :toggle_subscription, :cancel_merge_when_build_succeeds, :remove_wip, :resolve_conflicts, :assign_related_issues,
-    :approve, :rebase
+    # EE
+    :approve, :approvals, :unapprove, :rebase
   ]
   before_action :validates_merge_request, only: [:show, :diffs, :commits, :builds, :pipelines]
   before_action :define_show_vars, only: [:show, :diffs, :commits, :conflicts, :conflict_for_path, :builds, :pipelines]
