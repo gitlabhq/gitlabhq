@@ -160,11 +160,23 @@
     Build.prototype.initScrollMonitor = function() {
       if (!gl.utils.isInViewport(this.$upBuildTrace[0]) && !gl.utils.isInViewport(this.$downBuildTrace[0])) { // User is somewhere in middle of Build Log
         this.$scrollTopBtn.show();
-        this.$scrollBottomBtn.show();
+
+        if (this.buildStatus === 'success' || this.buildStatus === 'failed') { // Check if Build is completed
+          this.$scrollBottomBtn.show();
+        } else if (this.$buildRefreshAnimation.is(':visible') && !gl.utils.isInViewport(this.$buildRefreshAnimation[0])) {
+          this.$scrollBottomBtn.show();
+        } else {
+          this.$scrollBottomBtn.hide();
+        }
 
         // Hide Autoscroll Status Indicator
-        this.$autoScrollContainer.hide();
-        this.$autoScrollStatusText.removeClass('animate');
+        if (this.$scrollBottomBtn.is(':visible')) {
+          this.$autoScrollContainer.hide();
+          this.$autoScrollStatusText.removeClass('animate');
+        } else {
+          this.$autoScrollContainer.css({ top: this.$body.outerHeight() - 75 }).fadeIn(100);
+          this.$autoScrollStatusText.addClass('animate');
+        }
       } else if (gl.utils.isInViewport(this.$upBuildTrace[0]) && !gl.utils.isInViewport(this.$downBuildTrace[0])) { // User is at Top of Build Log
         this.$scrollTopBtn.hide();
         this.$scrollBottomBtn.show();
