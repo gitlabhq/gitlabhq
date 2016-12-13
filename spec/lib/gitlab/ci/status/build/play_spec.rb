@@ -18,6 +18,36 @@ describe Gitlab::Ci::Status::Build::Play do
     it { expect(subject.icon).to eq 'icon_status_manual' }
   end
 
+  describe 'action details' do
+    let(:user) { create(:user) }
+    let(:build) { create(:ci_build) }
+    let(:status) { Gitlab::Ci::Status::Core.new(build, user) }
+
+    describe '#has_action?' do
+      context 'when user is allowed to update build' do
+        before { build.project.team << [user, :developer] }
+
+        it { is_expected.to have_action }
+      end
+
+      context 'when user is not allowed to update build' do
+        it { is_expected.not_to have_action }
+      end
+    end
+
+    describe '#action_path' do
+      it { expect(subject.action_path).to include "#{build.id}/play" }
+    end
+
+    describe '#action_icon' do
+      it { expect(subject.action_icon).to eq 'play' }
+    end
+
+    describe '#action_title' do
+      it { expect(subject.action_title).to eq 'Play' }
+    end
+  end
+
   describe '.matches?' do
     subject { described_class.matches?(build, user) }
 
