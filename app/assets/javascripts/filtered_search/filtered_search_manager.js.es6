@@ -137,11 +137,12 @@
 
         if (token.wildcard && condition) {
           tokenPath = condition.url;
-        } else if (!token.wildcard) {
-          // Remove the wildcard token
-          tokenPath = `${token.key}_${param}=${encodeURIComponent(token.value.slice(1))}`;
-        } else {
+        } else if (token.wildcard) {
+          // wildcard means that the token does not have a symbol
           tokenPath = `${token.key}_${param}=${encodeURIComponent(token.value)}`;
+        } else {
+          // Remove the token symbol
+          tokenPath = `${token.key}_${param}=${encodeURIComponent(token.value.slice(1))}`;
         }
 
         paths.push(tokenPath);
