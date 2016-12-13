@@ -124,6 +124,22 @@
       return parsedUrl.pathname.charAt(0) === '/' ? parsedUrl.pathname : '/' + parsedUrl.pathname;
     };
 
+    gl.utils.getParameterByName = function(name) {
+      var url = window.location.href;
+      var param = name.replace(/[[\]]/g, '\\$&');
+      var regex = new RegExp(`[?&]${param}(=([^&#]*)|&|#|$)`);
+      var results = regex.exec(url);
+
+      if (!results) {
+        return null;
+      }
+
+      if (!results[2]) {
+        return '';
+      }
+      return decodeURIComponent(results[2].replace(/\+/g, ' '));
+    };
+
     gl.utils.isMetaKey = function(e) {
       return e.metaKey || e.ctrlKey || e.altKey || e.shiftKey;
     };
