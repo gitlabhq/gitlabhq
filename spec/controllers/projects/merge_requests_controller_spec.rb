@@ -125,6 +125,26 @@ describe Projects::MergeRequestsController do
     end
   end
 
+  context 'approvals' do
+    describe 'approve' do
+      before do
+        project.team << [user, :developer]
+        post :approve,
+          namespace_id: project.namespace.to_param,
+          project_id: project.to_param,
+          id: merge_request.iid
+      end
+
+      it 'thing' do
+        expect(response).to be_success
+        binding.pry
+        expect(true).to be_true
+      end
+
+    end
+
+  end
+
   shared_examples "loads labels" do |action|
     it "loads labels into the @labels variable" do
       get action,
