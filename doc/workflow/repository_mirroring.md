@@ -92,26 +92,9 @@ While mirrors update once an hour, you can force an update (either **push** or
 
 ## Adjusting synchronization times
 
-You can manually configure the repository synchronization times by setting the following configuration values. *These are cron formatted values.* You can use a crontab generator to create these values, for example http://www.crontabgenerator.com/
-
-Please note that `update_all_mirrors_worker_cron` refers to the worker used for pulling changes from a remote mirror while `update_all_remote_mirrors_worker_cron` refers to the worker used for pushing changes to the remote mirror.
-
-**Omnibus installations**
-
-```
-# gitlab_rails['update_all_mirrors_worker_cron'] = "0 * * * *"
-# gitlab_rails['update_all_remote_mirrors_worker_cron'] = "30 * * * *"
-```
-
-**Source installations**
-
-```
-cron_jobs:
-    update_all_mirrors_worker_cron:
-      cron: "0 * * * *"
-    update_all_remote_mirrors_worker_cron:
-      cron: "30 * * * *"
-```
+You can adjust the synchronization times for the repository mirroring if you
+have access to the GitLab server. For more information, see
+[the administration documentation](../administration/cron_jobs.md#adjusting-synchronization-times-for-repository-mirroring).
 
 [ee-51]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/51
 [perms]: ../user/permissions.md
