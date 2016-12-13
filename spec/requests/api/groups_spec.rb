@@ -243,17 +243,28 @@ describe API::Groups, api: true  do
         expect(json_response.length).to eq(2)
         project_names = json_response.map { |proj| proj['name' ] }
         expect(project_names).to match_array([project1.name, project3.name])
+        expect(json_response.first['default_branch']).to be_present
+      end
+
+      it "returns the group's projects with simple representation" do
+        get api("/groups/#{group1.id}/projects", user1), simple: true
+
+        expect(response).to have_http_status(200)
+        expect(json_response.length).to eq(2)
+        project_names = json_response.map { |proj| proj['name' ] }
+        expect(project_names).to match_array([project1.name, project3.name])
+        expect(json_response.first['default_branch']).not_to be_present
       end
 
       it 'filters the groups projects' do
-        public_projet = create(:project, :public, path: 'test1', group: group1)
+        public_project = create(:project, :public, path: 'test1', group: group1)
 
         get api("/groups/#{group1.id}/projects", user1), visibility: 'public'
 
         expect(response).to have_http_status(200)
         expect(json_response).to be_an(Array)
         expect(json_response.length).to eq(1)
-        expect(json_response.first['name']).to eq(public_projet.name)
+        expect(json_response.first['name']).to eq(public_project.name)
       end
 
       it "does not return a non existing group" do
