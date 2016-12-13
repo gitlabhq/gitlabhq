@@ -1,5 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.12.13
+  - API: Memoize the current_user so that the sudo can work properly. !8017
+
 v 8.12.12
   - Replace MR access checks with use of MergeRequestsFinder
   - Reenables /user API request to return private-token if user is admin and request is made with sudo
