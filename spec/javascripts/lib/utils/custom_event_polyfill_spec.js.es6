@@ -11,7 +11,7 @@ describe('Custom Event Polyfill', () => {
     expect(e.type).toEqual('foo');
     expect(e.bubbles).toBe(false);
     expect(e.cancelable).toBe(false);
-    expect(e.detail).toBe(undefined);
+    expect(e.detail).toBeFalsy();
   });
 
   it('should create a `CustomEvent` instance with a `details` object', () => {
@@ -29,7 +29,7 @@ describe('Custom Event Polyfill', () => {
     expect(e.type).toEqual('bar');
     expect(e.bubbles).toBe(true);
     expect(e.cancelable).toBe(false);
-    expect(e.detail).toBe(undefined);
+    expect(e.detail).toBeFalsy();
   });
 
   it('should create a `CustomEvent` instance with a `cancelable` boolean', () => {
@@ -38,6 +38,6 @@ describe('Custom Event Polyfill', () => {
     expect(e.type).toEqual('bar');
     expect(e.bubbles).toBe(false);
     expect(e.cancelable).toBe(true);
-    expect(e.detail).toBe(undefined);
+    expect(e.detail).toBeFalsy();
   });
 });
