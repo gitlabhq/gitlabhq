@@ -18,6 +18,10 @@ module Gitlab
         # not using /\s+$/ here because that deletes empty lines
         body = body.gsub(/[ \t]$/, '')
 
+        # TODO [jneen]: do we want to allow empty-quoting? (replies only containing a blockquote)
+        # EmailReplyTrimmer allows this as a special case, so we detect it manually here.
+        return "" if body.lines.all? { |l| l.strip.empty? || l.start_with?('>') }
+
         body.force_encoding(encoding).encode("UTF-8")
       end
 
