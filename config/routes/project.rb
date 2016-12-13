@@ -65,6 +65,12 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
+      resources :mattermost, only: [:new] do
+        member do
+          post :configure
+        end
+      end
+
       resources :deploy_keys, constraints: { id: /\d+/ }, only: [:index, :new, :create] do
         member do
           put :enable
