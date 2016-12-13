@@ -24,13 +24,21 @@ module Gitlab
 
       private
 
-      def gitlab_user_id(project, bitbucket_id)
-        if bitbucket_id
-          user = User.joins(:identities).find_by("identities.extern_uid = ? AND identities.provider = 'bitbucket'", bitbucket_id.to_s)
+      def gitlab_user_id(project, user)
+        if user.uuid
+          user = find_user_by_uuid(user.uuid)
           (user && user.id) || project.creator_id
         else
           project.creator_id
         end
+      end
+
+      def find_user_by_uuid(uuid)
+        User.joins(:identities).find_by("identities.extern_uid = ? AND identities.provider = 'bitbucket'", uuid)
+      end
+
+      def existing_gitlab_user?(user)
+        user.uuid && find_user_by_uuid(user.uuid)
       end
 
       def repo
@@ -43,7 +51,8 @@ module Gitlab
         create_labels
 
         client.issues(repo).each do |issue|
-          description = @formatter.author_line(issue.author)
+          description = ''
+          description += @formatter.author_line(issue.author.username) unless existing_gitlab_user?(issue.author)
           description += issue.description
 
           label_name = issue.kind
@@ -69,7 +78,8 @@ module Gitlab
               # we do this check.
               next unless comment.note.present?
 
-              note = @formatter.author_line(comment.author)
+              note = ''
+              note += @formatter.author_line(comment.author.username) unless existing_gitlab_user?(comment.author)
               note += comment.note
 
               issue.notes.create!(
@@ -97,7 +107,8 @@ module Gitlab
 
         pull_requests.each do |pull_request|
           begin
-            description = @formatter.author_line(pull_request.author)
+            description = ''
+            description += @formatter.author_line(pull_request.author.username) unless existing_gitlab_user?(pull_request.author)
             description += pull_request.description
 
             merge_request = project.merge_requests.create(

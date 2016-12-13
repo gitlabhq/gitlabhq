@@ -2,7 +2,7 @@ module Bitbucket
   module Representation
     class Comment < Representation::Base
       def author
-        user.fetch('username', 'Anonymous')
+        user_representation(user)
       end
 
       def note

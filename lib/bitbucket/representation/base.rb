@@ -5,6 +5,10 @@ module Bitbucket
         @raw = raw
       end
 
+      def user_representation(raw)
+        User.new(raw)
+      end
+
       def self.decorate(entries)
         entries.map { |entry| new(entry)}
       end

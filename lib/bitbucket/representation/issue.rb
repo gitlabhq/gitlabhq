@@ -12,7 +12,7 @@ module Bitbucket
       end
 
       def author
-        raw.dig('reporter', 'username') || 'Anonymous'
+        user_representation(raw.fetch('reporter', {}))
       end
 
       def description
