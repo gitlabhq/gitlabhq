@@ -20,7 +20,7 @@ feature 'Clicking toggle commit message link', feature: true, js: true do
     [
       "Merge branch 'feature' into 'master'",
       merge_request.title,
-      "Closes issues #{issue_1.to_reference} and #{issue_2.to_reference}",
+      "Closes #{issue_1.to_reference} and #{issue_2.to_reference}",
       "See merge request #{merge_request.to_reference}"
     ].join("\n\n")
   end

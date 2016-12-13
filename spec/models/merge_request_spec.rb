@@ -416,16 +416,16 @@ describe MergeRequest, models: true do
     end
 
     it 'includes its closed issues in the body' do
-      issue = create(:issue, project: subject.project) 
+      issue = create(:issue, project: subject.project)
 
       subject.project.team << [subject.author, :developer]
-      subject.description = "Closes #{issue.to_reference}"
+      subject.description = "This issue Closes #{issue.to_reference}"
 
       allow(subject.project).to receive(:default_branch).
         and_return(subject.target_branch)
 
       expect(subject.merge_commit_message)
-        .to match("Closes issue #{issue.to_reference}")
+        .to match("Closes #{issue.to_reference}")
     end
 
     it 'includes its reference in the body' do
