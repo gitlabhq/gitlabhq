@@ -258,7 +258,7 @@
           beforeSave: function(merges) {
             return $.map(merges, function(m) {
               return {
-                title: sanitize(m.title),
+                title: gl.utils.sanitize(m.title),
                 color: m.color,
                 search: "" + m.title
               };
