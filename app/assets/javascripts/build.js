@@ -180,6 +180,9 @@
       } else if (gl.utils.isInViewport(this.$upBuildTrace[0]) && !gl.utils.isInViewport(this.$downBuildTrace[0])) { // User is at Top of Build Log
         this.$scrollTopBtn.hide();
         this.$scrollBottomBtn.show();
+
+        this.$autoScrollContainer.hide();
+        this.$autoScrollStatusText.removeClass('animate');
       } else if ((!gl.utils.isInViewport(this.$upBuildTrace[0]) && gl.utils.isInViewport(this.$downBuildTrace[0])) ||
                   gl.utils.isInViewport(this.$buildRefreshAnimation[0])) { // User is at Bottom of Build Log
         this.$scrollTopBtn.show();
