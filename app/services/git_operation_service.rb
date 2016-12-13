@@ -150,14 +150,14 @@ class GitOperationService
           ' :source_project is different from current project'
       end
 
-      unless source_project.repository.commit(source_branch_name).try(:sha)
+      unless source_project.repository.branch_exists?(source_branch_name)
         raise Repository::CommitError.new(
           "Cannot find branch #{branch_name} nor" \
           " #{source_branch_name} from" \
           " #{source_project.path_with_namespace}")
       end
     elsif source_branch_name
-      unless repository.commit(source_branch_name).try(:sha)
+      unless repository.branch_exists?(source_branch_name)
         raise Repository::CommitError.new(
           "Cannot find branch #{branch_name} nor" \
           " #{source_branch_name} from" \
