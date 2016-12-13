@@ -167,7 +167,7 @@
         paths.push(`search=${encodeURIComponent(searchToken)}`);
       }
 
-      window.location = `?scope=all&utf8=✓&${paths.join('&')}`;
+      Turbolinks.visit(`?scope=all&utf8=✓&${paths.join('&')}`);
     }
   }
 
