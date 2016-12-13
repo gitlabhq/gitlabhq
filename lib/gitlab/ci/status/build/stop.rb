@@ -6,11 +6,15 @@ module Gitlab
           include Status::Extended
 
           def text
-            'stop'
+            'manual'
           end
 
           def label
-            'stop'
+            'manual stop action'
+          end
+
+          def icon
+            'icon_status_manual'
           end
 
           def has_action?

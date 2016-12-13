@@ -6,11 +6,15 @@ module Gitlab
           include Status::Extended
 
           def text
-            'play'
+            'manual'
           end
 
           def label
-            'play'
+            'manual play action'
+          end
+
+          def icon
+            'icon_status_manual'
           end
 
           def has_action?
