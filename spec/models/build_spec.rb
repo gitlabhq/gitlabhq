@@ -899,6 +899,42 @@ describe Ci::Build, models: true do
     end
   end
 
+  describe '#cancelable?' do
+    subject { build }
+
+    context 'when build is cancelable' do
+      context 'when build is pending' do
+        it { is_expected.to be_cancelable }
+      end
+
+      context 'when build is running' do
+        before do
+          build.run!
+        end
+
+        it { is_expected.to be_cancelable }
+      end
+    end
+
+    context 'when build is not cancelable' do
+      context 'when build is successful' do
+        before do
+          build.success!
+        end
+
+        it { is_expected.not_to be_cancelable }
+      end
+
+      context 'when build is failed' do
+        before do
+          build.drop!
+        end
+
+        it { is_expected.not_to be_cancelable }
+      end
+    end
+  end
+
   describe '#retryable?' do
     subject { build }
 
