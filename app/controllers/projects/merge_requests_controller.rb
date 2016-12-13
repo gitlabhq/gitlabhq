@@ -496,10 +496,28 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       new(project, current_user).
       execute(@merge_request)
 
-    redirect_to merge_request_path(@merge_request)
+    render_approvals_json
+  end
+
+  def approvals
+    render_approvals_json
+  end
+
+  def unapprove
+    if merge_request.has_approved?(current_user)
+      MergeRequests::RemoveApprovalService.
+        new(project, current_user).
+        execute(@merge_request)
+    end
+
+    render_approvals_json
   end
 
   protected
+
+  def render_approvals_json
+    render json: API::Entities::MergeRequestApprovals.new(@merge_request)
+  end
 
   def selected_target_project
     if @project.id.to_s == params[:target_project_id] || @project.forked_project_link.nil?

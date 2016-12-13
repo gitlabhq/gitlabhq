@@ -96,7 +96,10 @@ constraints(ProjectUrlConstrainer.new) do
           post :toggle_subscription
 
           ## EE-specific
-          post :approve
+          get :approvals
+          post :approvals, to: :approve
+          delete :approvals, to: :unapprove
+
           post :rebase
           ## EE-specific
 
