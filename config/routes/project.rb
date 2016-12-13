@@ -97,8 +97,8 @@ constraints(ProjectUrlConstrainer.new) do
 
           ## EE-specific
           get :approvals
-          post :approvals, to: :approve
-          delete :approvals, to: :unapprove
+          post :approvals, action: :approve
+          delete :approvals, action: :unapprove
 
           post :rebase
           ## EE-specific
