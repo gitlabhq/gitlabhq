@@ -738,19 +738,11 @@ class Repository
     message:, branch_name:,
     author_email: nil, author_name: nil,
     source_branch_name: nil, source_project: project)
-    if branch_exists?(branch_name)
-      # tree_entry is private
-      entry = raw_repository.send(:tree_entry, commit(branch_name), path)
+    check_tree_entry_for_dir(branch_name, path)
 
-      if entry
-        if entry[:type] == :blob
-          raise Gitlab::Git::Repository::InvalidBlobName.new(
-            "Directory already exists as a file")
-        else
-          raise Gitlab::Git::Repository::InvalidBlobName.new(
-            "Directory already exists")
-        end
-      end
+    if source_branch_name
+      source_project.repository.
+        check_tree_entry_for_dir(source_branch_name, path)
     end
 
     commit_file(
@@ -773,11 +765,16 @@ class Repository
     message:, branch_name:, update: true,
     author_email: nil, author_name: nil,
     source_branch_name: nil, source_project: project)
-    if branch_exists?(branch_name) && update == false
-      # tree_entry is private
-      if raw_repository.send(:tree_entry, commit(branch_name), path)
-        raise Gitlab::Git::Repository::InvalidBlobName.new(
-          "Filename already exists; update not allowed")
+    unless update
+      error_message = "Filename already exists; update not allowed"
+
+      if tree_entry_at(branch_name, path)
+        raise Gitlab::Git::Repository::InvalidBlobName.new(error_message)
+      end
+
+      if source_branch_name &&
+         source_project.repository.tree_entry_at(source_branch_name, path)
+        raise Gitlab::Git::Repository::InvalidBlobName.new(error_message)
       end
     end
 
@@ -1137,6 +1134,30 @@ class Repository
       head.blobs.find do |file|
         Gitlab::FileDetector.type_of(file.name) == type
       end
+    end
+  end
+
+  protected
+
+  def tree_entry_at(branch_name, path)
+    branch_exists?(branch_name) &&
+      # tree_entry is private
+      raw_repository.send(:tree_entry, commit(branch_name), path)
+  end
+
+  def check_tree_entry_for_dir(branch_name, path)
+    return unless branch_exists?(branch_name)
+
+    entry = tree_entry_at(branch_name, path)
+
+    return unless entry
+
+    if entry[:type] == :blob
+      raise Gitlab::Git::Repository::InvalidBlobName.new(
+        "Directory already exists as a file")
+    else
+      raise Gitlab::Git::Repository::InvalidBlobName.new(
+        "Directory already exists")
     end
   end
 
