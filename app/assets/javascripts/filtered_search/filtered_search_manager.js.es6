@@ -138,24 +138,10 @@
 
     search() {
       let paths = [];
-
-      // Check current state
-      const currentPath = window.location.search;
-      const stateIndex = currentPath.indexOf('state=');
-      const defaultState = 'opened';
-      let currentState = defaultState;
-
       const { tokens, searchToken } = this.tokenizer.processTokens(this.filteredSearchInput.value);
-
-      if (stateIndex !== -1) {
-        // Get currentState from url params if available
-        const remaining = currentPath.slice(stateIndex + 'state='.length);
-        const separatorIndex = remaining.indexOf('&');
-
-        currentState = separatorIndex === -1 ? remaining : remaining.slice(0, separatorIndex);
-      }
-
+      const currentState = gl.utils.getParameterByName('state') || 'opened';
       paths.push(`state=${currentState}`);
+
       tokens.forEach((token) => {
         const match = gl.FilteredSearchTokenKeys.get().filter(t => t.key === token.key)[0];
         let tokenPath = '';
