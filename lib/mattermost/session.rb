@@ -20,6 +20,7 @@ module Mattermost
     attr_accessor :current_resource_owner
 
     def initialize(uri, current_user)
+      uri = normalize_uri(uri)
       self.class.base_uri(uri)
 
       @current_resource_owner = current_user
@@ -31,6 +32,8 @@ module Mattermost
       destroy
 
       result
+    rescue Errno::ECONNREFUSED
+      raise NoSessionError
     end
 
     # Next methods are needed for Doorkeeper
@@ -67,11 +70,11 @@ module Mattermost
     end
 
     def destroy
-      post('/api/v3/users/logout')
+      post('/users/logout')
     end
 
     def oauth_uri
-      response = get("/api/v3/oauth/gitlab/login", follow_redirects: false)
+      response = get("/oauth/gitlab/login", follow_redirects: false)
       return unless 300 <= response.code && response.code < 400
 
       redirect_uri = response.headers['location']
@@ -99,6 +102,12 @@ module Mattermost
 
     def post(path, options = {})
       self.class.post(path, options)
+    end
+
+    def normalize_uri(uri)
+      uri << '/' unless uri.end_with?('/')
+
+      uri << 'api/v3'
     end
   end
 end
