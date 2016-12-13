@@ -1,13 +1,8 @@
 .page-content-header
   .header-main-content
-    %strong Commit
-    %strong.monospace.js-details-short= @commit.short_id
-    = link_to("#", class: "js-details-expand hidden-xs hidden-sm") do
-      %span.text-expander
-        \...
-    %span.js-details-content.hide
-      %strong.monospace.commit-hash-full= @commit.id
+    %strong
     = clipboard_button(clipboard_text: @commit.id)
+    = @commit.short_id
     %span.hidden-xs authored
     #{time_ago_with_tooltip(@commit.authored_date)}
     %span by
