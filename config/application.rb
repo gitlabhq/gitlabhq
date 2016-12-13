@@ -94,6 +94,7 @@ module Gitlab
     config.assets.precompile << "profile/profile_bundle.js"
     config.assets.precompile << "protected_branches/protected_branches_bundle.js"
     config.assets.precompile << "diff_notes/diff_notes_bundle.js"
+    config.assets.precompile << "generic_bundles/vue_resource.js"
     config.assets.precompile << "issuable/issuable_bundle.js"
     config.assets.precompile << "boards/boards_bundle.js"
     config.assets.precompile << "cycle_analytics/cycle_analytics_bundle.js"

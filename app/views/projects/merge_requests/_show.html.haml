@@ -2,6 +2,7 @@
 - page_description     @merge_request.description
 - page_card_attributes @merge_request.card_attributes
 - content_for :page_specific_javascripts do
+  = page_specific_javascript_tag('generic_bundles/vue_resource.js')
   = page_specific_javascript_tag('diff_notes/diff_notes_bundle.js')
 
 .merge-request{'data-url' => merge_request_path(@merge_request)}
