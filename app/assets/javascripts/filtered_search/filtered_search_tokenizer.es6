@@ -73,7 +73,6 @@
       let tokens = [];
       let searchToken = '';
       let lastToken = '';
-      const validTokenKeys = gl.FilteredSearchTokenKeys.get();
 
       const inputs = input.split(' ');
       let searchTerms = '';
@@ -107,8 +106,8 @@
         if (colonIndex !== -1) {
           const { tokenKey, tokenValue, tokenSymbol } = gl.FilteredSearchTokenizer.parseToken(i);
 
-          const keyMatch = validTokenKeys.filter(v => v.key === tokenKey)[0];
-          const symbolMatch = validTokenKeys.filter(v => v.symbol === tokenSymbol)[0];
+          const keyMatch = gl.FilteredSearchTokenKeys.searchByKey(tokenKey);
+          const symbolMatch = gl.FilteredSearchTokenKeys.searchBySymbol(tokenSymbol);
 
           const doubleQuoteOccurrences = tokenValue.split('"').length - 1;
           const singleQuoteOccurrences = tokenValue.split('\'').length - 1;

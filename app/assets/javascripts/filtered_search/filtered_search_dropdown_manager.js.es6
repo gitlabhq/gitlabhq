@@ -125,7 +125,7 @@
         this.droplab = new DropLab();
       }
 
-      const match = gl.FilteredSearchTokenKeys.get().filter(value => value.key === dropdownName.toLowerCase())[0];
+      const match = gl.FilteredSearchTokenKeys.searchByKey(dropdownName.toLowerCase());
       const shouldOpenFilterDropdown = match && this.currentDropdown !== match.key && this.mapping.hasOwnProperty(match.key);
       const shouldOpenHintDropdown = !match && this.currentDropdown !== 'hint';
 
