@@ -37,7 +37,7 @@ describe('Pagination component', () => {
     expect(changeChanges.two).toEqual('all');
   });
 
-  it('should change page to 2 and previous should go cak to 1', () => {
+  it('should go to the previous page', () => {
     fixture.set('<div class="test-pagination-container"></div>');
 
     component = new window.gl.VueGlPagination({
@@ -45,23 +45,37 @@ describe('Pagination component', () => {
       propsData: {
         pageInfo: {
           totalPages: 10,
-          nextPage: 2,
-          previousPage: '',
+          nextPage: 3,
+          previousPage: 1,
         },
         change,
       },
     });
 
-    expect(component.$el.classList).toContain('gl-pagination');
-
-    component.changepage({ target: { innerText: '2' } });
-
-    expect(changeChanges.one).toEqual(2);
-    expect(changeChanges.two).toEqual('all');
-
     component.changepage({ target: { innerText: 'Prev' } });
 
     expect(changeChanges.one).toEqual(1);
+    expect(changeChanges.two).toEqual('all');
+  });
+
+  it('should go to the next page', () => {
+    fixture.set('<div class="test-pagination-container"></div>');
+
+    component = new window.gl.VueGlPagination({
+      el: document.querySelector('.test-pagination-container'),
+      propsData: {
+        pageInfo: {
+          totalPages: 10,
+          nextPage: 5,
+          previousPage: 3,
+        },
+        change,
+      },
+    });
+
+    component.changepage({ target: { innerText: 'Next' } });
+
+    expect(changeChanges.one).toEqual(5);
     expect(changeChanges.two).toEqual('all');
   });
 });
