@@ -220,7 +220,7 @@ class JiraService < IssueTrackerService
     entity_title = data[:entity][:title]
     project_name = data[:project][:name]
 
-    message      = "[#{user_name}|#{user_url}] mentioned this issue in [a #{entity_name} of #{project_name}|#{entity_url}]:\n'#{entity_title}'"
+    message      = "[#{user_name}|#{user_url}] mentioned this issue in [a #{entity_name} of #{project_name}|#{entity_url}]:\n'#{entity_title.chomp}'"
     link_title   = "GitLab: Mentioned on #{entity_name} - #{entity_title}"
     link_props   = build_remote_link_props(url: entity_url, title: link_title)
 
