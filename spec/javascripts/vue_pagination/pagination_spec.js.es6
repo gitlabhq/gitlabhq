@@ -78,4 +78,67 @@ describe('Pagination component', () => {
     expect(changeChanges.one).toEqual(5);
     expect(changeChanges.two).toEqual('all');
   });
+
+  it('should go to the last page', () => {
+    fixture.set('<div class="test-pagination-container"></div>');
+
+    component = new window.gl.VueGlPagination({
+      el: document.querySelector('.test-pagination-container'),
+      propsData: {
+        pageInfo: {
+          totalPages: 10,
+          nextPage: 5,
+          previousPage: 3,
+        },
+        change,
+      },
+    });
+
+    component.changepage({ target: { innerText: 'Last >>' } });
+
+    expect(changeChanges.one).toEqual(10);
+    expect(changeChanges.two).toEqual('all');
+  });
+
+  it('should go to the first page', () => {
+    fixture.set('<div class="test-pagination-container"></div>');
+
+    component = new window.gl.VueGlPagination({
+      el: document.querySelector('.test-pagination-container'),
+      propsData: {
+        pageInfo: {
+          totalPages: 10,
+          nextPage: 5,
+          previousPage: 3,
+        },
+        change,
+      },
+    });
+
+    component.changepage({ target: { innerText: '<< First' } });
+
+    expect(changeChanges.one).toEqual(1);
+    expect(changeChanges.two).toEqual('all');
+  });
+
+  it('should do nothing', () => {
+    fixture.set('<div class="test-pagination-container"></div>');
+
+    component = new window.gl.VueGlPagination({
+      el: document.querySelector('.test-pagination-container'),
+      propsData: {
+        pageInfo: {
+          totalPages: 10,
+          nextPage: 2,
+          previousPage: '',
+        },
+        change,
+      },
+    });
+
+    component.changepage({ target: { innerText: '...' } });
+
+    expect(changeChanges.one).toEqual(1);
+    expect(changeChanges.two).toEqual('all');
+  });
 });
