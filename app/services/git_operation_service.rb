@@ -1,5 +1,12 @@
 
-GitOperationService = Struct.new(:user, :repository) do
+class GitOperationService
+  attr_reader :user, :repository
+
+  def initialize(new_user, new_repository)
+    @user = new_user
+    @repository = new_repository
+  end
+
   def add_branch(branch_name, newrev)
     ref = Gitlab::Git::BRANCH_REF_PREFIX + branch_name
     oldrev = Gitlab::Git::BLANK_SHA
