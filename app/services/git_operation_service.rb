@@ -151,17 +151,17 @@ class GitOperationService
       end
 
       unless source_project.repository.branch_exists?(source_branch_name)
-        raise Repository::CommitError.new(
+        raise ArgumentError,
           "Cannot find branch #{branch_name} nor" \
           " #{source_branch_name} from" \
-          " #{source_project.path_with_namespace}")
+          " #{source_project.path_with_namespace}"
       end
     elsif source_branch_name
       unless repository.branch_exists?(source_branch_name)
-        raise Repository::CommitError.new(
+        raise ArgumentError,
           "Cannot find branch #{branch_name} nor" \
           " #{source_branch_name} from" \
-          " #{repository.project.path_with_namespace}")
+          " #{repository.project.path_with_namespace}"
       end
     end
   end
