@@ -70,7 +70,7 @@ shared_examples 'issuable time tracker' do
     page.within '#issuable-time-tracker' do
       find('.help-button').click
 
-      expect(find_link('Learn more')[:href]).to eq('/help/workflow/time_tracking.md')
+      expect(find_link('Learn more')[:href]).to have_content('/help/workflow/time_tracking.md')
     end
   end
 end
