@@ -21,12 +21,12 @@ module Gitlab
             can?(user, :update_build, subject)
           end
 
-          def action_title
-            'Play'
-          end
-
           def action_icon
             'play'
+          end
+
+          def action_title
+            'Play'
           end
 
           def action_class

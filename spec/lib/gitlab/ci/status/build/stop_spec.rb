@@ -1,30 +1,40 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Status::Build::Stop do
-  let(:core_status) { double('core status') }
+  let(:status) { double('core status') }
   let(:user) { double('user') }
 
   subject do
-    described_class.new(core_status)
+    described_class.new(status)
   end
 
   describe '#text' do
-    it { expect(subject.text).to eq 'stop' }
+    it { expect(subject.text).to eq 'manual' }
   end
 
   describe '#label' do
-    it { expect(subject.label).to eq 'stop' }
+    it { expect(subject.label).to eq 'manual stop action' }
   end
 
   describe '#icon' do
-    it 'does not override core status icon' do
-      expect(core_status).to receive(:icon)
+    it { expect(subject.icon).to eq 'icon_status_manual' }
+  end
 
-      subject.icon
-    end
+  describe '#has_action?' do
+  end
+
+  describe '#action_icon' do
+  end
+
+  describe '#action_path' do
+  end
+
+  describe '#action_title' do
   end
 
   describe '.matches?' do
+    subject { described_class.matches?(build, user) }
+
     context 'build is playable' do
       context 'when build stops an environment' do
         let(:build) do
@@ -32,8 +42,7 @@ describe Gitlab::Ci::Status::Build::Stop do
         end
 
         it 'is a correct match' do
-          expect(described_class.matches?(build, user))
-            .to be true
+          expect(subject).to be true
         end
       end
 
@@ -41,8 +50,7 @@ describe Gitlab::Ci::Status::Build::Stop do
         let(:build) { create(:ci_build, :playable) }
 
         it 'does not match' do
-          expect(described_class.matches?(build, user))
-            .to be false
+          expect(subject).to be false
         end
       end
     end
@@ -51,8 +59,7 @@ describe Gitlab::Ci::Status::Build::Stop do
       let(:build) { create(:ci_build) }
 
       it 'does not match' do
-        expect(described_class.matches?(build, user))
-          .to be false
+        expect(subject).to be false
       end
     end
   end
