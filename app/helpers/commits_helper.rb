@@ -136,15 +136,7 @@ module CommitsHelper
     if can_collaborate_with_project?
       link_to 'Revert', '#modal-revert-commit', 'data-toggle' => 'modal', 'data-container' => 'body', title: (tooltip if has_tooltip), class: "#{btn_class} #{'has-tooltip' if has_tooltip}"
     elsif can?(current_user, :fork_project, @project)
-      continue_params = {
-        to: continue_to_path,
-        notice: edit_in_new_fork_notice + ' Try to revert this commit again.',
-        notice_now: edit_in_new_fork_notice_now
-      }
-      fork_path = namespace_project_forks_path(@project.namespace, @project,
-        namespace_key: current_user.namespace.id,
-        continue: continue_params)
-
+      fork_path = fork_path_url(continue_to_path, message: 'Try to revert this commit again.')
       link_to 'Revert', fork_path, class: btn_class, method: :post, 'data-toggle' => 'tooltip', 'data-container' => 'body', title: (tooltip if has_tooltip)
     end
   end
@@ -158,15 +150,7 @@ module CommitsHelper
     if can_collaborate_with_project?
       link_to 'Cherry-pick', '#modal-cherry-pick-commit', 'data-toggle' => 'modal', 'data-container' => 'body', title: (tooltip if has_tooltip), class: "#{btn_class} #{'has-tooltip' if has_tooltip}"
     elsif can?(current_user, :fork_project, @project)
-      continue_params = {
-        to: continue_to_path,
-        notice: edit_in_new_fork_notice + ' Try to cherry-pick this commit again.',
-        notice_now: edit_in_new_fork_notice_now
-      }
-      fork_path = namespace_project_forks_path(@project.namespace, @project,
-        namespace_key: current_user.namespace.id,
-        continue: continue_params)
-
+      fork_path = fork_path_url(continue_to_path, message: 'Try to cherry-pick this commit again.')
       link_to 'Cherry-pick', fork_path, class: btn_class, method: :post, 'data-toggle' => 'tooltip', 'data-container' => 'body', title: (tooltip if has_tooltip)
     end
   end
@@ -206,6 +190,20 @@ module CommitsHelper
     else
       link_to(text.html_safe, user_path(user), options)
     end
+  end
+
+  def fork_path_url(continue_to_path, message: nil)
+    notice = edit_in_new_fork_notice
+    notice << " #{message}" unless message.nil?
+
+    continue_params = {
+      to: continue_to_path,
+      notice: notice,
+      notice_now: edit_in_new_fork_notice_now
+    }
+    fork_path = namespace_project_forks_path(@project.namespace, @project,
+      namespace_key: current_user.namespace.id,
+      continue: continue_params)
   end
 
   def view_file_btn(commit_sha, diff_new_path, project)
