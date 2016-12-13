@@ -1,5 +1,4 @@
-/* eslint-disable no-param-reassign */
-((global) => {
+(() => {
   const tokenKeys = [{
     key: 'author',
     type: 'string',
@@ -62,9 +61,11 @@
     }
 
     static searchByConditionKeyValue(key, value) {
-      return conditions.find(condition => condition.tokenKey === key && condition.value === value) || null;
+      return conditions
+        .find(condition => condition.tokenKey === key && condition.value === value) || null;
     }
   }
 
-  global.FilteredSearchTokenKeys = FilteredSearchTokenKeys;
-})(window.gl || (window.gl = {}));
+  window.gl = window.gl || {};
+  gl.FilteredSearchTokenKeys = FilteredSearchTokenKeys;
+})();

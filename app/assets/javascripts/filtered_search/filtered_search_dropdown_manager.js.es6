@@ -1,5 +1,4 @@
-/* eslint-disable no-param-reassign */
-((global) => {
+(() => {
   class FilteredSearchDropdownManager {
     constructor() {
       this.tokenizer = gl.FilteredSearchTokenizer;
@@ -51,7 +50,7 @@
           gl: 'DropdownHint',
           element: document.querySelector('#js-dropdown-hint'),
         },
-      }
+      };
     }
 
     static addWordToInput(word, addSpace = false) {
@@ -60,7 +59,7 @@
       const hasExistingValue = value.length !== 0;
       const { lastToken } = gl.FilteredSearchTokenizer.processTokens(value);
 
-      if (lastToken.hasOwnProperty('key')) {
+      if ({}.hasOwnProperty.call(lastToken, 'key')) {
         // Spaces inside the token means that the token value will be escaped by quotes
         const hasQuotes = lastToken.value.indexOf(' ') !== -1;
 
@@ -82,7 +81,8 @@
       }
 
       const filterIconPadding = 27;
-      const offset = gl.text.getTextWidth(this.filteredSearchInput.value, this.font) + filterIconPadding;
+      const offset = gl.text
+        .getTextWidth(this.filteredSearchInput.value, this.font) + filterIconPadding;
 
       this.mapping[key].reference.setOffset(offset);
     }
@@ -99,7 +99,7 @@
         const glArguments = defaultArguments.concat(mappingKey.extraArguments || []);
 
         // Passing glArguments to `new gl[glClass](<arguments>)`
-        mappingKey.reference = new (Function.prototype.bind.apply(gl[glClass], glArguments));
+        mappingKey.reference = new (Function.prototype.bind.apply(gl[glClass], glArguments))();
       }
 
       if (firstLoad) {
@@ -126,12 +126,13 @@
       }
 
       const match = gl.FilteredSearchTokenKeys.searchByKey(dropdownName.toLowerCase());
-      const shouldOpenFilterDropdown = match && this.currentDropdown !== match.key && this.mapping.hasOwnProperty(match.key);
+      const shouldOpenFilterDropdown = match && this.currentDropdown !== match.key
+        && {}.hasOwnProperty.call(this.mapping, match.key);
       const shouldOpenHintDropdown = !match && this.currentDropdown !== 'hint';
 
       if (shouldOpenFilterDropdown || shouldOpenHintDropdown) {
         // `hint` is not listed as a tokenKey (since it is not a real `filter`)
-        const key = match && match.hasOwnProperty('key') ? match.key : 'hint';
+        const key = match && {}.hasOwnProperty.call(match, 'key') ? match.key : 'hint';
         this.load(key, firstLoad);
       }
 
@@ -146,7 +147,7 @@
         // Eg. token = 'label:'
         const { tokenKey } = this.tokenizer.parseToken(lastToken);
         this.loadDropdown(tokenKey);
-      } else if (lastToken.hasOwnProperty('key')) {
+      } else if ({}.hasOwnProperty.call(lastToken, 'key')) {
         // Token has been initialized into an object because it has a value
         this.loadDropdown(lastToken.key);
       } else {
@@ -173,5 +174,6 @@
     }
   }
 
-  global.FilteredSearchDropdownManager = FilteredSearchDropdownManager;
-})(window.gl || (window.gl = {}));
+  window.gl = window.gl || {};
+  gl.FilteredSearchDropdownManager = FilteredSearchDropdownManager;
+})();
