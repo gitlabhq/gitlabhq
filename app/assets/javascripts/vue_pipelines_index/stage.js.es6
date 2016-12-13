@@ -12,6 +12,7 @@
         return `has-tooltip ci-status-icon-${this.stage.status.label}`;
       },
       svg() {
+        // debugger
         return this.svgs[this.match(this.stage.status.icon)];
       },
     },
@@ -19,7 +20,7 @@
       <a
         :class='tooltip'
         :title='buildStatus'
-        :href='stage.url'
+        :href='stage.path'
         v-html='svg'
       >
       </a>
