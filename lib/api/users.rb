@@ -467,11 +467,11 @@ module API
       get ":activities" do
         authenticated_as_admin!
 
-        user_activities = Gitlab::UserActivities.query(from: params[:from],
-                                                     page: params[:page],
-                                                     per_page: params[:per_page])
+        raw_activities = Gitlab::User::ActivitySet.query(from: params[:from],
+                                                          page: params[:page],
+                                                          per_page: params[:per_page])
 
-        present paginate(user_activities), with: Entities::UserActivity
+        present Gitlab::User::Activity.from_array(raw_activities), with: Entities::UserActivity
       end
     end
   end

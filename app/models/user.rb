@@ -948,7 +948,7 @@ class User < ActiveRecord::Base
   end
 
   def record_activity
-    Gitlab::UserActivities.record(self)
+    Gitlab::User::ActivitySet.record(self)
   end
 
   private

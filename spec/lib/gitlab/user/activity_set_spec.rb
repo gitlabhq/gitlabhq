@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::UserActivities, :redis, lib: true do
+describe Gitlab::User::ActivitySet, :redis, lib: true do
   let(:user) { create(:user) }
 
   it 'shows the last user activities' do

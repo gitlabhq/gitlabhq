@@ -1103,18 +1103,18 @@ describe API::Users, api: true  do
 
   context "user activities", :redis do
     it_behaves_like 'a paginated resources' do
-      let(:request) { get api("/users/activities", user) }
+      let(:request) { get api("/user/activities", admin) }
     end
 
     context 'last activities' do
       it 'returns the last activities' do
         user.record_activity
 
-        get api("/users/activities", admin)
+        get api("/user/activities", admin)
 
-        activity = json_response.first
+        activity = json_response
 
-        expect(activity['project_id'].to_i).to eq(project.id)
+        expect(activity).to eq('')
       end
     end
   end
