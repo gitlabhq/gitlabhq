@@ -1,5 +1,4 @@
-/* eslint-disable no-param-reassign */
-((global) => {
+(() => {
   class FilteredSearchManager {
     constructor() {
       this.tokenizer = gl.FilteredSearchTokenizer;
@@ -81,7 +80,7 @@
 
     loadSearchParamsFromURL() {
       const params = gl.utils.getUrlParamsArray();
-      let inputValues = [];
+      const inputValues = [];
 
       params.forEach((p) => {
         const split = p.split('=');
@@ -125,13 +124,14 @@
     }
 
     search() {
-      let paths = [];
+      const paths = [];
       const { tokens, searchToken } = this.tokenizer.processTokens(this.filteredSearchInput.value);
       const currentState = gl.utils.getParameterByName('state') || 'opened';
       paths.push(`state=${currentState}`);
 
       tokens.forEach((token) => {
-        const condition = gl.FilteredSearchTokenKeys.searchByConditionKeyValue(token.key, token.value.toLowerCase());
+        const condition = gl.FilteredSearchTokenKeys
+          .searchByConditionKeyValue(token.key, token.value.toLowerCase());
         const { param } = gl.FilteredSearchTokenKeys.searchByKey(token.key);
         let tokenPath = '';
 
@@ -156,5 +156,6 @@
     }
   }
 
-  global.FilteredSearchManager = FilteredSearchManager;
-})(window.gl || (window.gl = {}));
+  window.gl = window.gl || {};
+  gl.FilteredSearchManager = FilteredSearchManager;
+})();

@@ -1,20 +1,18 @@
-/* eslint-disable no-param-reassign */
 /*= require filtered_search/filtered_search_dropdown */
-
-((global) => {
+(() => {
   const dropdownData = [{
     icon: 'fa-pencil',
     hint: 'author:',
-    tag: '&lt;author&gt;'
-  },{
+    tag: '&lt;author&gt;',
+  }, {
     icon: 'fa-user',
     hint: 'assignee:',
     tag: '&lt;assignee&gt;',
-  },{
+  }, {
     icon: 'fa-clock-o',
     hint: 'milestone:',
     tag: '&lt;milestone&gt;',
-  },{
+  }, {
     icon: 'fa-tag',
     hint: 'label:',
     tag: '&lt;label&gt;',
@@ -27,7 +25,7 @@
         droplabFilter: {
           template: 'hint',
           filterFunction: this.filterMethod,
-        }
+        },
       };
     }
 
@@ -41,7 +39,8 @@
         const tag = selected.querySelector('.js-filter-tag').innerText.trim();
 
         if (tag.length) {
-          gl.FilteredSearchDropdownManager.addWordToInput(this.getSelectedTextWithoutEscaping(token));
+          gl.FilteredSearchDropdownManager
+            .addWordToInput(this.getSelectedTextWithoutEscaping(token));
         }
         this.dismissDropdown();
         this.dispatchInputEvent();
@@ -61,15 +60,16 @@
     }
 
     filterMethod(item, query) {
+      const updatedItem = item;
       const { value } = gl.FilteredSearchTokenizer.getLastTokenObject(query);
 
       if (value === '') {
-        item.droplab_hidden = false;
+        updatedItem.droplab_hidden = false;
       } else {
-        item.droplab_hidden = item['hint'].indexOf(value) === -1;
+        updatedItem.droplab_hidden = updatedItem.hint.indexOf(value) === -1;
       }
 
-      return item;
+      return updatedItem;
     }
 
     init() {
@@ -77,5 +77,6 @@
     }
   }
 
-  global.DropdownHint = DropdownHint;
-})(window.gl || (window.gl = {}));
+  window.gl = window.gl || {};
+  gl.DropdownHint = DropdownHint;
+})();

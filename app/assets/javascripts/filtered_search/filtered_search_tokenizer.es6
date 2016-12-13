@@ -1,5 +1,4 @@
-/* eslint-disable no-param-reassign */
-((global) => {
+(() => {
   class FilteredSearchTokenizer {
     static parseToken(input) {
       const colonIndex = input.indexOf(':');
@@ -161,5 +160,6 @@
     }
   }
 
-  global.FilteredSearchTokenizer = FilteredSearchTokenizer;
-})(window.gl || (window.gl = {}));
+  window.gl = window.gl || {};
+  gl.FilteredSearchTokenizer = FilteredSearchTokenizer;
+})();

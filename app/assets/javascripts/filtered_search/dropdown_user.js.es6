@@ -1,7 +1,5 @@
-/* eslint-disable no-param-reassign */
 /*= require filtered_search/filtered_search_dropdown */
-
-((global) => {
+(() => {
   class DropdownUser extends gl.FilteredSearchDropdown {
     constructor(droplab, dropdown, input) {
       super(droplab, dropdown, input);
@@ -22,9 +20,8 @@
     }
 
     itemClicked(e) {
-      super.itemClicked(e, (selected) => {
-        return selected.querySelector('.dropdown-light-content').innerText.trim();
-      });
+      super.itemClicked(e,
+        selected => selected.querySelector('.dropdown-light-content').innerText.trim());
     }
 
     renderContent(forceShowList = false) {
@@ -51,5 +48,6 @@
     }
   }
 
-  global.DropdownUser = DropdownUser;
-})(window.gl || (window.gl = {}));
+  window.gl = window.gl || {};
+  gl.DropdownUser = DropdownUser;
+})();

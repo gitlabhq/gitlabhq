@@ -1,5 +1,4 @@
-/* eslint-disable no-param-reassign */
-((global) => {
+(() => {
   const DATA_DROPDOWN_TRIGGER = 'data-dropdown-trigger';
 
   class FilteredSearchDropdown {
@@ -72,7 +71,7 @@
 
       if (firstTimeInitialized || forceRenderContent) {
         this.renderContent(forceShowList);
-      } else if(currentHook.list.list.id !== this.dropdown.id) {
+      } else if (currentHook.list.list.id !== this.dropdown.id) {
         this.renderContent(forceShowList);
       }
     }
@@ -96,10 +95,15 @@
     resetFilters() {
       const hook = this.getCurrentHook();
       const data = hook.list.data;
-      const results = data.map(o => o.droplab_hidden = false);
+      const results = data.map((o) => {
+        const updated = o;
+        updated.droplab_hidden = false;
+        return updated;
+      });
       hook.list.render(results);
     }
   }
 
-  global.FilteredSearchDropdown = FilteredSearchDropdown;
-})(window.gl || (window.gl = {}));
+  window.gl = window.gl || {};
+  gl.FilteredSearchDropdown = FilteredSearchDropdown;
+})();

@@ -30,8 +30,7 @@
       var canvas = gl.text.getTextWidth.canvas || (gl.text.getTextWidth.canvas = document.createElement('canvas'));
       var context = canvas.getContext('2d');
       context.font = font;
-      var metrics = context.measureText(text);
-      return metrics.width;
+      return context.measureText(text).width;
     };
     gl.text.selectedText = function(text, textarea) {
       return text.substring(textarea.selectionStart, textarea.selectionEnd);
