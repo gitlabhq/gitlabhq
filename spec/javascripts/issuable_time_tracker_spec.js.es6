@@ -3,7 +3,7 @@
 //= require vue
 //= require issuable/time_tracking/components/time_tracker
 
-function initTimeTrackingComponent(opts = {}) {
+function initTimeTrackingComponent(opts) {
   fixture.set(`
     <div>
       <div id="mock-container"></div>
@@ -11,16 +11,17 @@ function initTimeTrackingComponent(opts = {}) {
   `);
 
   this.initialData = {
-    timeEstimate: opts.timeEstimate || 100000,
-    timeSpent: opts.timeSpent || 5000,
-    timeEstimateHuman: opts.timeEstimateHuman || '3d 3h 46m',
-    timeSpentHuman: opts.timeSpentHuman || '1h 23m',
+    time_estimate: opts.timeEstimate,
+    time_spent: opts.timeSpent,
+    human_time_estimate: opts.timeEstimateHuman,
+    human_time_spent: opts.timeSpentHuman,
     docsUrl: '/help/workflow/time_tracking.md',
   };
+
   const TimeTrackingComponent = Vue.component('issuable-time-tracker');
   this.timeTracker = new TimeTrackingComponent({
     el: '#mock-container',
-    data: this.initialData,
+    propsData: this.initialData,
   });
 }
 
@@ -28,18 +29,24 @@ function initTimeTrackingComponent(opts = {}) {
   describe('Issuable Time Tracker', function() {
     describe('Initialization', function() {
       beforeEach(function() {
-        initTimeTrackingComponent.apply(this);
+        initTimeTrackingComponent.call(this, { timeEstimate: 100000, timeSpent: 5000, timeEstimateHuman: '2h 46m', timeSpentHuman: '1h 23m' });
       });
 
       it('should return something defined', function() {
         expect(this.timeTracker).toBeDefined();
       });
 
-      it ('should correctly set timeEstimate', function() {
-        expect(this.timeTracker.timeEstimate).toBe(this.initialData.timeEstimate);
+      it ('should correctly set timeEstimate', function(done) {
+        Vue.nextTick(() => {
+          expect(this.timeTracker.timeEstimate).toBe(this.initialData.time_estimate);
+          done();
+        });
       });
-      it ('should correctly set time_spent', function() {
-        expect(this.timeTracker.time_spent).toBe(this.initialData.time_spent);
+      it ('should correctly set time_spent', function(done) {
+        Vue.nextTick(() => {
+          expect(this.timeTracker.timeSpent).toBe(this.initialData.time_spent);
+          done();
+        });
       });
     });
 
@@ -47,30 +54,16 @@ function initTimeTrackingComponent(opts = {}) {
       describe('Panes', function() {
         describe('Comparison pane', function() {
           beforeEach(function() {
-            initTimeTrackingComponent.apply(this);
+            initTimeTrackingComponent.call(this, { timeEstimate: 100000, timeSpent: 5000, timeEstimateHuman: '', timeSpentHuman: '' });
           });
 
           it('should show the "Comparison" pane when timeEstimate and time_spent are truthy', function(done) {
             Vue.nextTick(() => {
+            debugger;
               const $comparisonPane = this.timeTracker.$el.querySelector('.time-tracking-comparison-pane');
               expect(this.timeTracker.showComparisonState).toBe(true);
-              expect($comparisonPane).toBeVisible();
               done();
             });
-          });
-
-          it('should display the human readable version of time estimated', function() {
-            const estimateText = this.timeTracker.$el.querySelector('.time-tracking-comparison-pane .estimated .compare-value').innerText;
-            const correctText = '3d 3h 46m';
-
-            expect(estimateText).toBe(correctText);
-          });
-
-          it('should display the human readable version of time spent', function() {
-            const spentText = this.timeTracker.$el.querySelector('.time-tracking-comparison-pane .compare-value.spent').innerText;
-            const correctText = '1h 23m';
-
-            expect(spentText).toBe(correctText);
           });
 
           describe('Remaining meter', function() {
@@ -81,17 +74,21 @@ function initTimeTrackingComponent(opts = {}) {
               expect(meterWidth).toBe(correctWidth);
             });
 
-            it('should display the remaining meter with the correct background color when within estimate', function() {
-              const styledMeter = $(this.timeTracker.$el).find('.time-tracking-comparison-pane .within_estimate .meter-fill');
-              expect(styledMeter.length).toBe(1);
+            it('should display the remaining meter with the correct background color when within estimate', function(done) {
+              Vue.nextTick(() => {
+                const styledMeter = $(this.timeTracker.$el).find('.time-tracking-comparison-pane .within_estimate .meter-fill');
+                expect(styledMeter.length).toBe(1);
+                done()
+              });
             });
 
-            it('should display the remaining meter with the correct background color when over estimate', function() {
-              this.timeTracker.timeEstimate = 1;
-              this.timeTracker.time_spent = 2;
+            it('should display the remaining meter with the correct background color when over estimate', function(done) {
+              this.timeTracker.time_estimate = 100000;
+              this.timeTracker.time_spent = 20000000;
               Vue.nextTick(() => {
                 const styledMeter = $(this.timeTracker.$el).find('.time-tracking-comparison-pane .over_estimate .meter-fill');
                 expect(styledMeter.length).toBe(1);
+                done();
               });
             });
           });
@@ -99,58 +96,43 @@ function initTimeTrackingComponent(opts = {}) {
 
         describe("Estimate only pane", function() {
           beforeEach(function() {
-            initTimeTrackingComponent.apply(this, { timeEstimate: 10000, timeSpent: '0', timeEstimateHuman: '2h 46m', timeSpentHuman: '0' });
+            initTimeTrackingComponent.call(this, { timeEstimate: 100000, timeSpent: 0, timeEstimateHuman: '2h 46m', timeSpentHuman: '' });
           });
 
-          it('should only show the "Estimate only" pane when timeEstimate is truthy and time_spent is falsey', function() {
-            Vue.nextTick(() => {
-              const $estimateOnlyPane = this.timeTracker.$el.querySelector('.time-tracking-estimate-only-pane');
-
-              expect(this.timeTracker.showEstimateOnlyState).toBe(true);
-              expect($estimateOnlyPane).toBeVisible();
-            });
-          });
-
-          it('should display the human readable version of time estimated', function() {
+          it('should display the human readable version of time estimated', function(done) {
             Vue.nextTick(() => {
               const estimateText = this.timeTracker.$el.querySelector('.time-tracking-estimate-only-pane').innerText;
+              debugger;
               const correctText = 'Estimated: 2h 46m';
 
               expect(estimateText).toBe(correctText);
+              done();
             });
           });
         });
 
         describe('Spent only pane', function() {
           beforeEach(function() {
-            initTimeTrackingComponent.apply(this, { timeEstimate: 0, timeSpent: 5000 });
-          });
-          // Look for the value
-          it('should only show the "Spent only" pane  when timeEstimate is falsey and time_spent is truthy', function() {
-            Vue.nextTick(() => {
-              const $spentOnlyPane = this.timeTracker.$el.querySelector('.time-tracking-spend-only-pane');
-
-              expect(this.timeTracker.showSpentOnlyState).toBe(true);
-              expect($spentOnlyPane).toBeVisible();
-            });
+            initTimeTrackingComponent.call(this, { timeEstimate: 0, timeSpent: 5000, timeEstimateHuman: '2h 46m', timeSpentHuman: '1h 23m' });
           });
 
-          it('should display the human readable version of time spent', function() {
+          it('should display the human readable version of time spent', function(done) {
             Vue.nextTick(() => {
               const spentText = this.timeTracker.$el.querySelector('.time-tracking-spend-only-pane').innerText;
               const correctText = 'Spent: 1h 23m';
 
               expect(spentText).toBe(correctText);
+              done();
             });
           });
         });
 
         describe('No time tracking pane', function() {
           beforeEach(function() {
-            initTimeTrackingComponent.apply(this, { timeEstimate: 0, timeSpent: 0, timeEstimateHuman: 0, timeSpentHuman: 0 });
+            initTimeTrackingComponent.call(this, { timeEstimate: 0, timeSpent: 0, timeEstimateHuman: 0, timeSpentHuman: 0 });
           });
 
-          it('should only show the "No time tracking" pane when both timeEstimate and time_spent are falsey', function() {
+          it('should only show the "No time tracking" pane when both timeEstimate and time_spent are falsey', function(done) {
             Vue.nextTick(() => {
               const $noTrackingPane = this.timeTracker.$el.querySelector('.time-tracking-no-tracking-pane');
               const noTrackingText =$noTrackingPane.innerText;
@@ -159,21 +141,23 @@ function initTimeTrackingComponent(opts = {}) {
               expect(this.timeTracker.showNoTimeTrackingState).toBe(true);
               expect($noTrackingPane).toBeVisible();
               expect(noTrackingText).toBe(correctText);
+              done();
             });
           });
         });
 
         describe("Help pane", function() {
           beforeEach(function() {
-            initTimeTrackingComponent.apply(this, { timeEstimate: 0, timeSpent: 0 });
+            initTimeTrackingComponent.call(this, { timeEstimate: 0, timeSpent: 0 });
           });
 
-          it('should not show the "Help" pane by default', function() {
+          it('should not show the "Help" pane by default', function(done) {
             Vue.nextTick(() => {
               const $helpPane = this.timeTracker.$el.querySelector('.time-tracking-help-state');
 
               expect(this.timeTracker.showHelpState).toBe(false);
               expect($helpPane).toBeNull();
+              done();
             });
           });
 
@@ -186,7 +170,7 @@ function initTimeTrackingComponent(opts = {}) {
                 expect(this.timeTracker.showHelpState).toBe(true);
                 expect($helpPane).toBeVisible();
                 done();
-              }, 100);
+              }, 10);
             });
           });
 
