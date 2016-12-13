@@ -172,17 +172,7 @@ class Namespace < ActiveRecord::Base
   end
 
   def parents
-    @parents ||=
-      begin
-        parents = []
-
-        if parent
-          parents << parent
-          parents += parent.parents
-        end
-
-        parents
-      end
+    @parents ||= parent ? parent.parents + [parent] : []
   end
 
   private

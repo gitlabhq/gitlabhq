@@ -145,7 +145,13 @@ describe Namespace, models: true do
     let(:group) { create(:group) }
     let(:nested_group) { create(:group, parent: group) }
     let(:deep_nested_group) { create(:group, parent: nested_group) }
+    let(:very_deep_nested_group) { create(:group, parent: deep_nested_group) }
 
-    it { expect(deep_nested_group.parents).to eq([nested_group, group]) }
+    it 'returns the correct parents' do
+      expect(very_deep_nested_group.parents).to eq([group, nested_group, deep_nested_group])
+      expect(deep_nested_group.parents).to eq([group, nested_group])
+      expect(nested_group.parents).to eq([group])
+      expect(group.parents).to eq([])
+    end
   end
 end
