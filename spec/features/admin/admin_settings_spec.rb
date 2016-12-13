@@ -1,31 +1,46 @@
-class Spinach::Features::AdminSettings < Spinach::FeatureSteps
-  include SharedAuthentication
-  include SharedPaths
-  include SharedAdmin
-  include Gitlab::CurrentSettings
+require 'spec_helper'
 
-  step 'I modify settings and save form' do
+feature 'Admin updates settings', feature: true do
+  before(:each) do
+    login_as :admin
+    visit admin_application_settings_path
+  end
+
+  scenario 'Change application settings' do
     uncheck 'Gravatar enabled'
     fill_in 'Home page URL', with: 'https://about.gitlab.com/'
     fill_in 'Help page text', with: 'Example text'
     click_button 'Save'
-  end
 
-  step 'I should see application settings saved' do
     expect(current_application_settings.gravatar_enabled).to be_falsey
     expect(current_application_settings.home_page_url).to eq "https://about.gitlab.com/"
     expect(page).to have_content "Application settings saved successfully"
   end
 
-  step 'I click on "Service Templates"' do
+  scenario 'Change Slack Service template settings' do
     click_link 'Service Templates'
-  end
-
-  step 'I click on "Slack" service' do
     click_link 'Slack'
+    fill_in 'Webhook', with: 'http://localhost'
+    fill_in 'Username', with: 'test_user'
+    fill_in 'service_push_channel', with: '#test_channel'
+    page.check('Notify only broken builds')
+
+    check_all_events
+    click_on 'Save'
+
+    expect(page).to have_content 'Application settings saved successfully'
+
+    click_link 'Slack'
+
+    page.all('input[type=checkbox]').each do |checkbox|
+      expect(checkbox).to be_checked
+    end
+    expect(find_field('Webhook').value).to eq 'http://localhost'
+    expect(find_field('Username').value).to eq 'test_user'
+    expect(find('#service_push_channel').value).to eq '#test_channel'
   end
 
-  step 'I check all events and submit form' do
+  def check_all_events
     page.check('Active')
     page.check('Push')
     page.check('Tag push')
@@ -34,29 +49,5 @@ class Spinach::Features::AdminSettings < Spinach::FeatureSteps
     page.check('Merge request')
     page.check('Build')
     page.check('Pipeline')
-    click_on 'Save'
-  end
-
-  step 'I fill out Slack settings' do
-    fill_in 'Webhook', with: 'http://localhost'
-    fill_in 'Username', with: 'test_user'
-    fill_in 'service_push_channel', with: '#test_channel'
-    page.check('Notify only broken builds')
-  end
-
-  step 'I should see service template settings saved' do
-    expect(page).to have_content 'Application settings saved successfully'
-  end
-
-  step 'I should see all checkboxes checked' do
-    page.all('input[type=checkbox]').each do |checkbox|
-      expect(checkbox).to be_checked
-    end
-  end
-
-  step 'I should see Slack settings saved' do
-    expect(find_field('Webhook').value).to eq 'http://localhost'
-    expect(find_field('Username').value).to eq 'test_user'
-    expect(find('#service_push_channel').value).to eq '#test_channel'
   end
 end
