@@ -23,7 +23,7 @@
 
     fetch() {
       return this.api.fetchApprovals()
-        .then((data) => this.rootStore.assignToData(data));
+        .then((res) => this.assignToRootStore(res.data));
     }
 
     approve() {
@@ -40,3 +40,57 @@
   gl.ApprovalsStore = ApprovalsStore;
 })();
 
+
+/*
+ *2
+approvals_required
+:
+3
+approved_by
+:
+Array[1]
+0
+:
+Object
+length
+:
+1
+__proto__
+:
+Array[0]
+created_at
+:
+"2016-10-17T17:26:13.169Z"
+description
+:
+"Quod corporis labore maiores voluptates ad nobis rem earum. Fugit aperiam officiis temporibus nemo qui consequatur. Perspiciatis maiores expedita est omnis vitae et assumenda."
+id
+:
+7
+iid
+:
+7
+merge_status
+:
+"can_be_merged"
+project_id
+:
+8
+state
+:
+"reopened"
+title
+:
+"Autem ea aut rem rerum sed et eligendi vel doloribus perferendis."
+updated_at
+:
+"2016-12-08T17:20:40.530Z"
+user_can_approve
+:
+false
+user_has_approved
+:
+true
+ *
+ *
+ * */

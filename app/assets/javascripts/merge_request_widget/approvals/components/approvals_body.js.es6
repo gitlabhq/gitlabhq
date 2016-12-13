@@ -4,7 +4,7 @@
 (() => {
   Vue.component('approvals-body', {
     name: 'approvals-body',
-    props: ['approverNames', 'approvalsLeft', 'userCanApprove', 'userHasApproved'],
+    props: ['approvedBy', 'approvalsLeft', 'userCanApprove', 'userHasApproved'],
     data() {
       return {
         loading: true,
@@ -16,12 +16,16 @@
           `${this.approvalsLeft} more approvals`;
       },
       approverNamesStringified() {
-        const lastIdx = this.approverNames.length - 1;
-        return this.approverNames.reduce((memo, curr, index) => {
-          const newList = index !== lastIdx ? `${memo} ${curr}, ` :
-            `${memo} or ${curr}`;
-          return newList;
-        }, '');
+        const approvers = this.approvedBy;
+        if (approvers && approvers.length) {
+          const lastIdx = approvers.length - 1;
+          return approvers.reduce((memo, curr, index) => {
+            const userDisplayName = curr.user.name;
+            const newList = index !== lastIdx ? `${memo} ${userDisplayName}, ` :
+              `${memo} or ${userDisplayName}`;
+            return newList;
+          }, '');
+        }
       },
       showApproveButton() {
         return this.userCanApprove && !this.userHasApproved;

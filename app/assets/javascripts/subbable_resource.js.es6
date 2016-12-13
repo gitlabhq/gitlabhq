@@ -8,16 +8,11 @@
 * */
 
   class SubbableResource {
-    constructor(resourcePath, test) {
+    constructor(resourcePath) {
       this.endpoint = resourcePath;
-      this.defaultPayload = { url: resourcePath };
       // TODO: Switch to axios.create asap
-      this.resource = $.ajax;
+      this.resource = Vue.resource(resourcePath);
       this.subscribers = [];
-    }
-
-    extendDefaultPayload(payload) {
-      return Object.assign(payload, this.defaultPayload);
     }
 
     subscribe(callback) {
@@ -33,26 +28,22 @@
     }
 
     get(payload) {
-      this.extendDefaultPayload(payload);
-      return this.resource(payload)
+      return this.resource.get(payload)
         .then(data => this.publish(data));
     }
 
-    post(payload) {
-      this.extendDefaultPayload(payload);
-      return this.resource(payload)
+    save(payload) {
+      return this.resource.save(payload)
         .then(data => this.publish(data));
     }
 
-    put(payload) {
-      this.extendDefaultPayload(payload);
-      return this.resource(payload)
+    update(payload) {
+      return this.resource.update(payload)
         .then(data => this.publish(data));
     }
 
-    delete(payload) {
-      this.extendDefaultPayload(payload);
-      return this.resource(payload)
+    remove(payload) {
+      return this.resource.remove(payload)
         .then(data => this.publish(data));
     }
   }

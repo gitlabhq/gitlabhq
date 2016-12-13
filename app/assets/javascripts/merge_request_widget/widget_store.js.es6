@@ -28,7 +28,7 @@
 
     assignToData(key, val) {
       this.data[key] = {};
-      Object.assign(this.data[key], val);
+      return Object.assign(this.data[key], val);
     }
   }
   gl.MergeRequestWidgetStore = MergeRequestWidgetStore;
