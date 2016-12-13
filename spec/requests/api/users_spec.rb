@@ -636,13 +636,12 @@ describe API::API, api: true  do
   end
 
   describe "GET /user" do
-    let(:personal_access_token) { create(:personal_access_token, user: user) }
-    let(:private_token) { user.private_token }
+    let(:personal_access_token) { create(:personal_access_token, user: user).token }
 
     context 'with regular user' do
       context 'with personal access token' do
         it 'returns 403 without private token when sudo is defined' do
-          get api("/user?private_token=#{personal_access_token.token}&sudo=#{user.id}")
+          get api("/user?private_token=#{personal_access_token}&sudo=123")
 
           expect(response).to have_http_status(403)
         end
@@ -650,7 +649,7 @@ describe API::API, api: true  do
 
       context 'with private token' do
         it 'returns 403 without private token when sudo defined' do
-          get api("/user?private_token=#{private_token}&sudo=#{user.id}")
+          get api("/user?private_token=#{user.private_token}&sudo=123")
 
           expect(response).to have_http_status(403)
         end
@@ -661,40 +660,44 @@ describe API::API, api: true  do
 
         expect(response).to have_http_status(200)
         expect(response).to match_response_schema('user/public')
+        expect(json_response['id']).to eq(user.id)
       end
     end
 
     context 'with admin' do
-      let(:user) { create(:admin) }
+      let(:admin_personal_access_token) { create(:personal_access_token, user: admin).token }
 
       context 'with personal access token' do
         it 'returns 403 without private token when sudo defined' do
-          get api("/user?private_token=#{personal_access_token.token}&sudo=#{user.id}")
+          get api("/user?private_token=#{admin_personal_access_token}&sudo=#{user.id}")
 
           expect(response).to have_http_status(403)
         end
 
-        it 'returns current user without private token when sudo not defined' do
-          get api("/user?private_token=#{personal_access_token.token}")
+        it 'returns initial current user without private token when sudo not defined' do
+          get api("/user?private_token=#{admin_personal_access_token}")
 
           expect(response).to have_http_status(200)
           expect(response).to match_response_schema('user/public')
+          expect(json_response['id']).to eq(admin.id)
         end
       end
 
       context 'with private token' do
-        it 'returns current user with private token when sudo defined' do
-          get api("/user?private_token=#{private_token}&sudo=#{user.id}")
+        it 'returns sudoed user with private token when sudo defined' do
+          get api("/user?private_token=#{admin.private_token}&sudo=#{user.id}")
 
           expect(response).to have_http_status(200)
           expect(response).to match_response_schema('user/login')
+          expect(json_response['id']).to eq(user.id)
         end
 
-        it 'returns current user without private token when sudo not defined' do
-          get api("/user?private_token=#{private_token}")
+        it 'returns initial current user without private token when sudo not defined' do
+          get api("/user?private_token=#{admin.private_token}")
 
           expect(response).to have_http_status(200)
           expect(response).to match_response_schema('user/public')
+          expect(json_response['id']).to eq(admin.id)
         end
       end
     end

@@ -354,7 +354,7 @@ module API
       # Example Request:
       #   GET /user
       get do
-        present @current_user, with: @impersonator ? Entities::UserWithPrivateToken : Entities::UserPublic
+        present @current_user, with: sudo? ? Entities::UserWithPrivateToken : Entities::UserPublic
       end
 
       # Get currently authenticated user's keys
