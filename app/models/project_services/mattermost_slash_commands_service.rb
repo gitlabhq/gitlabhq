@@ -25,6 +25,21 @@ class MattermostSlashCommandsService < ChatService
     ]
   end
 
+  def auto_config?
+    Gitlab.config.mattermost.enabled
+  end
+
+  def configure(host, current_user, params)
+    token = Mattermost::Mattermost.new(host, current_user).with_session do
+      Mattermost::Commands.create(params[:team_id],
+                                  trigger: params[:trigger] || @service.project.path,
+                                  url: service_trigger_url(@service),
+                                  icon_url: asset_url('gitlab_logo.png'))
+    end
+
+    update_attributes(token: token)
+  end
+
   def trigger(params)
     return nil unless valid_token?(params[:token])
 

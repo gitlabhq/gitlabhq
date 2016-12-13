@@ -54,6 +54,10 @@ class Service < ActiveRecord::Base
     template
   end
 
+  def auto_config?
+    false
+  end
+
   def category
     read_attribute(:category).to_sym
   end
