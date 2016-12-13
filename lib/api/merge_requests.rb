@@ -140,7 +140,7 @@ module API
       params do
         optional :title, type: String, allow_blank: false, desc: 'The title of the merge request'
         optional :target_branch, type: String, allow_blank: false, desc: 'The target branch'
-        optional :state_event, type: String, values: %w[close reopen merge],
+        optional :state_event, type: String, values: %w[close reopen],
                                desc: 'Status of the merge request'
         use :optional_params
         at_least_one_of :title, :target_branch, :description, :assignee_id,
