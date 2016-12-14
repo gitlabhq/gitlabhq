@@ -734,3 +734,29 @@
     padding: 5px 5px 5px 7px;
   }
 }
+
+/**
+ * Builds dropdown in mini pipeline
+ */
+.builds-dropdown {
+  border: none;
+  background: transparent;
+  padding: 0;
+  font-size: inherit;
+  border-radius: 0;
+  cursor: pointer;
+
+  .dropdown-caret {
+    display: none;
+    position: absolute;
+    top: 3px;
+    right: 6px;
+    font-size: 10px;
+  }
+
+  &:hover {
+    .dropdown-caret {
+      display: block;
+    }
+  }
+}

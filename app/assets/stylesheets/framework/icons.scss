@@ -4,6 +4,10 @@
   svg {
     fill: $gl-success;
   }
+
+  .builds-dropdown-caret {
+    color: $gl-success;
+  }
 }
 
 .ci-status-icon-failed {
@@ -11,6 +15,10 @@
 
   svg {
     fill: $gl-danger;
+  }
+
+  .builds-dropdown-caret {
+    color: $gl-danger;
   }
 }
 
@@ -21,6 +29,10 @@
   svg {
     fill: $gl-warning;
   }
+
+  .builds-dropdown-caret {
+    color: $gl-warning;
+  }
 }
 
 .ci-status-icon-running {
@@ -28,6 +40,10 @@
 
   svg {
     fill: $blue-normal;
+  }
+
+  .builds-dropdown-caret {
+    color: $blue-normal;
   }
 }
 
@@ -39,6 +55,10 @@
   svg {
     fill: $gl-gray;
   }
+
+  .builds-dropdown-caret {
+    color: $gl-gray;
+  }
 }
 
 .ci-status-icon-created,
@@ -47,5 +67,9 @@
 
   svg {
     fill: $gray-darkest;
+  }
+
+  .builds-dropdown-caret {
+    color: $gray-darkest;
   }
 }
