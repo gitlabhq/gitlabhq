@@ -463,6 +463,7 @@
     padding: 8px 4px 9px 10px;
     width: 186px;
     margin-bottom: 10px;
+    white-space: normal;
 
     &:hover {
       background-color: $stage-hover-bg;
@@ -586,7 +587,7 @@
     border: none;
     padding: 0;
     color: $gl-text-color-light;
-    flex-grow: 1;
+    white-space: normal;
 
     &:focus {
       outline: none;
@@ -603,6 +604,7 @@
 
   .dropdown-counter-badge {
     float: right;
+    clear: right;
     color: $border-color;
     font-weight: 100;
     font-size: 15px;
@@ -651,7 +653,10 @@
         padding: 0;
         font-size: 11px;
         float: right;
-        margin-top: 5px;
+        clear: right;
+        margin-top: 3px;
+        display: inline-block;
+        position: relative;
 
         i {
           font-size: 11px;
