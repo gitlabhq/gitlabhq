@@ -1,0 +1,18 @@
+- detailed_status = subject.detailed_status(current_user)
+- details_path = detailed_status.details_path if detailed_status.has_details?
+- klass = "ci-status-icon ci-status-icon-#{detailed_status}"
+
+- if details_path
+  = link_to details_path, class: klass,
+    data: { toggle: 'tooltip', title: "#{subject.name} - #{detailed_status}" } do
+    %span{ class: klass }= custom_icon(detailed_status.icon)
+    .ci-status-text= subject.name
+- else
+  %span{ class: klass }= custom_icon(detailed_status.icon)
+  .ci-status-text= subject.name
+
+- if detailed_status.has_action?
+  = link_to detailed_status.action_path, method: detailed_status.action_method,
+    title: "#{subject.name}: #{detailed_status.action_title}", class: 'ci-action-icon-container' do
+    %i.ci-action-icon-wrapper
+      = icon(detailed_status.action_icon, class: detailed_status.action_class)

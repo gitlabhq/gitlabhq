@@ -1,8 +1,0 @@
-= render "ci/status/icon_with_name", subject: subject
-
-- detailed_status = subject.detailed_status(current_user)
-- if detailed_status.has_action?
-  = link_to detailed_status.action_path, method: detailed_status.action_method,
-    title: "#{subject.name}: #{detailed_status.action_title}", class: 'ci-action-icon-container' do
-    %i.ci-action-icon-wrapper
-      = icon(detailed_status.action_icon, class: detailed_status.action_class)
