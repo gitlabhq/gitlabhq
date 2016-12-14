@@ -12,12 +12,14 @@ FactoryGirl.define do
     started_at 'Di 29. Okt 09:51:28 CET 2013'
     finished_at 'Di 29. Okt 09:53:28 CET 2013'
     commands 'ls -a'
+
     options do
       {
         image: "ruby:2.1",
         services: ["postgres"]
       }
     end
+
     yaml_variables do
       [
         { key: :DB_NAME, value: 'postgres', public: true }
@@ -60,13 +62,18 @@ FactoryGirl.define do
     end
 
     trait :teardown_environment do
-      options do
-        { environment: { action: 'stop' } }
-      end
+      environment 'staging'
+      options environment: { name: 'staging',
+                             action: 'stop' }
     end
 
     trait :allowed_to_fail do
       allow_failure true
+    end
+
+    trait :playable do
+      skipped
+      manual
     end
 
     after(:build) do |build, evaluator|

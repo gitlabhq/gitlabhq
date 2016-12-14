@@ -22,8 +22,10 @@ module Ci
       @status ||= statuses.latest.status
     end
 
-    def detailed_status
-      Gitlab::Ci::Status::Stage::Factory.new(self).fabricate!
+    def detailed_status(current_user)
+      Gitlab::Ci::Status::Stage::Factory
+        .new(self, current_user)
+        .fabricate!
     end
 
     def statuses
