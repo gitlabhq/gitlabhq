@@ -60,6 +60,9 @@ module Ci
         @runner ||= Runner.find_by_token(params[:token].to_s)
       end
 
+      def current_runner_redis_key
+        @runner_redis_key ||= "#{current_runner.token}_#{current_runner.tag_list}"
+
       def get_runner_version_from_params
         return unless params["info"].present?
         attributes_for_keys(["name", "version", "revision", "platform", "architecture"], params["info"])

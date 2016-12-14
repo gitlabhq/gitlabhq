@@ -16,6 +16,15 @@ module Ci
           not_found! unless current_runner.active?
           update_runner_info
 
+          last_update = Gitlab::Redis.with { |redis| redis.get(current_runner_redis_key)}
+
+          if params[:last_update] != ""
+            if :last_update == last_update
+              headers 'X-GitLab-Last-Update', last_update
+              return build_not_found!
+            end
+          end
+
           build = Ci::RegisterBuildService.new.execute(current_runner)
 
           if build
@@ -25,6 +34,14 @@ module Ci
             present build, with: Entities::BuildDetails
           else
             Gitlab::Metrics.add_event(:build_not_found)
+
+            if last_update == ""
+              Gitlab::Redis.with do |redis]
+                new_update = Time.new.inspect
+                redis.set(current_runner_redis_key, new_update, ex: 60.minutes)
+                headers 'X-GitLab-Last-Update', new_update
+              end
+            end
 
             build_not_found!
           end
