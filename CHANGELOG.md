@@ -1,5 +1,12 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 8.13.10 (2016-12-14)
+
+- API: Memoize the current_user so that sudo can work properly. !8017
+- Filter `authentication_token`, `incoming_email_token` and `runners_token` parameters.
+- Issue#visible_to_user moved to IssuesFinder to prevent accidental use.
+- Fix missing Note access checks by moving Note#search to updated NoteFinder.
+
 ## 8.13.9 (2016-12-08)
 
 - Reenables /user API request to return private-token if user is admin and request is made with sudo. !7615
