@@ -2,6 +2,21 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 8.14.5 (2016-12-14)
+
+- Moved Leave Project and Leave Group buttons to access_request_buttons from the settings dropdown. !7600
+- fix display hook error message. !7775 (basyura)
+- Remove wrong '.builds-feature' class from the MR settings fieldset. !7930
+- Avoid escaping relative links in Markdown twice. !7940 (winniehell)
+- API: Memoize the current_user so that sudo can work properly. !8017
+- Displays milestone remaining days only when it's present.
+- Allow branch names with dots on API endpoint.
+- Issue#visible_to_user moved to IssuesFinder to prevent accidental use.
+- Shows group members in project members list.
+- Encode input when migrating ProcessCommitWorker jobs to prevent migration errors.
+- Fixed timeago re-rendering every timeago.
+- Fix missing Note access checks by moving Note#search to updated NoteFinder.
+
 ## 8.14.4 (2016-12-08)
 
 - Fix diff view permalink highlighting. !7090
