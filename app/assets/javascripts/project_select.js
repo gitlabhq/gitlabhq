@@ -13,6 +13,7 @@
           },
           data: function(term, callback) {
             var finalCallback, projectsCallback;
+            var orderBy = $dropdown.data('order-by');
             finalCallback = function(projects) {
               return callback(projects);
             };
@@ -32,7 +33,7 @@
             if (this.groupId) {
               return Api.groupProjects(this.groupId, term, projectsCallback);
             } else {
-              return Api.projects(term, this.orderBy, projectsCallback);
+              return Api.projects(term, orderBy, projectsCallback);
             }
           },
           url: function(project) {
