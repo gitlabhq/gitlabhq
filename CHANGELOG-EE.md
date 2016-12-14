@@ -1,5 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 8.14.5 (2016-12-14)
+
+- Add milestone total weight to the milestone summary.
+
 ## 8.14.4 (2016-12-08)
 
 - No changes.
