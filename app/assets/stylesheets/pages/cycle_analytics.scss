@@ -232,6 +232,7 @@
       &:hover:not(.active) {
         background-color: $gray-lightest;
         box-shadow: inset 2px 0 0 0 $border-color;
+        cursor: pointer;
       }
 
       &:first-child {
