@@ -123,7 +123,15 @@ class TodoService
     mark_pending_todos_as_done(merge_request, merge_request.author)
     mark_pending_todos_as_done(merge_request, merge_request.merge_user) if merge_request.merge_when_build_succeeds?
   end
-
+  
+  # When a merge request could not be automatically merged due to its unmergeable state we should:
+  #
+  #  * create a todo for a merge_user
+  #
+  def merge_request_became_unmergeable(merge_request)
+    create_unmergeable_todo(merge_request, merge_request.merge_user) if merge_request.merge_when_build_succeeds?
+  end
+  
   # When create a note we should:
   #
   #  * mark all pending todos related to the noteable for the note author as done
@@ -243,6 +251,11 @@ class TodoService
   def create_build_failed_todo(merge_request, todo_author)
     attributes = attributes_for_todo(merge_request.project, merge_request, todo_author, Todo::BUILD_FAILED)
     create_todos(todo_author, attributes)
+  end
+
+  def create_unmergeable_todo(merge_request, merge_user)
+    attributes = attributes_for_todo(merge_request.project, merge_request, merge_user, Todo::UNMERGEABLE)
+    create_todos(merge_user, attributes)
   end
 
   def attributes_for_target(target)

@@ -740,10 +740,12 @@ describe MergeRequest, models: true do
     subject { create(:merge_request, source_project: project, merge_status: :unchecked) }
 
     context 'when it is not broken and has no conflicts' do
-      it 'is marked as mergeable' do
+      before do
         allow(subject).to receive(:broken?) { false }
         allow(project.repository).to receive(:can_be_merged?).and_return(true)
+      end
 
+      it 'is marked as mergeable' do
         expect { subject.check_if_can_be_merged }.to change { subject.merge_status }.to('can_be_merged')
       end
     end
@@ -753,6 +755,12 @@ describe MergeRequest, models: true do
 
       it 'becomes unmergeable' do
         expect { subject.check_if_can_be_merged }.to change { subject.merge_status }.to('cannot_be_merged')
+      end
+      
+      it 'creates Todo on unmergeability' do
+        expect_any_instance_of(TodoService).to receive(:merge_request_became_unmergeable).with(subject)
+
+        subject.check_if_can_be_merged
       end
     end
 
