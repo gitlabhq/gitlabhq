@@ -899,21 +899,87 @@ describe Ci::Build, models: true do
     end
   end
 
-  describe '#retryable?' do
-    context 'when build is running' do
-      before do
-        build.run!
+  describe '#cancelable?' do
+    subject { build }
+
+    context 'when build is cancelable' do
+      context 'when build is pending' do
+        it { is_expected.to be_cancelable }
       end
 
-      it { expect(build).not_to be_retryable }
+      context 'when build is running' do
+        before do
+          build.run!
+        end
+
+        it { is_expected.to be_cancelable }
+      end
     end
 
-    context 'when build is finished' do
-      before do
-        build.success!
+    context 'when build is not cancelable' do
+      context 'when build is successful' do
+        before do
+          build.success!
+        end
+
+        it { is_expected.not_to be_cancelable }
       end
 
-      it { expect(build).to be_retryable }
+      context 'when build is failed' do
+        before do
+          build.drop!
+        end
+
+        it { is_expected.not_to be_cancelable }
+      end
+    end
+  end
+
+  describe '#retryable?' do
+    subject { build }
+
+    context 'when build is retryable' do
+      context 'when build is successful' do
+        before do
+          build.success!
+        end
+
+        it { is_expected.to be_retryable }
+      end
+
+      context 'when build is failed' do
+        before do
+          build.drop!
+        end
+
+        it { is_expected.to be_retryable }
+      end
+
+      context 'when build is canceled' do
+        before do
+          build.cancel!
+        end
+
+        it { is_expected.to be_retryable }
+      end
+    end
+
+    context 'when build is not retryable' do
+      context 'when build is running' do
+        before do
+          build.run!
+        end
+
+        it { is_expected.not_to be_retryable }
+      end
+
+      context 'when build is skipped' do
+        before do
+          build.skip!
+        end
+
+        it { is_expected.not_to be_retryable }
+      end
     end
   end
 
@@ -1178,6 +1244,15 @@ describe Ci::Build, models: true do
       let(:build) { create(:ci_build, ref: 'master', environment: 'review/$CI_BUILD_REF_NAME') }
 
       it { is_expected.to eq('review/master') }
+    end
+  end
+
+  describe '#detailed_status' do
+    let(:user) { create(:user) }
+
+    it 'returns a detailed status' do
+      expect(build.detailed_status(user))
+        .to be_a Gitlab::Ci::Status::Build::Cancelable
     end
   end
 end
