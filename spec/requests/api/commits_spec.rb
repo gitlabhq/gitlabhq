@@ -475,7 +475,7 @@ describe API::Commits, api: true  do
 
         expect(response).to have_http_status(400)
         expect(json_response['message']).to eq('Sorry, we cannot cherry-pick this commit automatically.
-                     It may have already been cherry-pick, or a more recent commit may have updated some of its content.')
+                     A cherry-pick may have already been performed with this commit, or a more recent commit may have updated some of its content.')
       end
 
       it 'returns 400 if you are not allowed to push to the target branch' do
