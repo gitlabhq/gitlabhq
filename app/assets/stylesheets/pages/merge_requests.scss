@@ -459,6 +459,9 @@
     border-left: 1px solid $gl-gray-light;
     padding-left: 15px;
     margin-left: 10px;
+    &:hover {
+      color: lighten($gl-gray, 10%);
+    }
   }
 
   .approver-avatar {

@@ -23,12 +23,14 @@
 
     initApprovals() {
       gl.ApprovalsStore = new gl.ApprovalsStore(this);
-      this.assignToData('approvals', this.dataset.approvals);
+      this.assignToData('approvals', {});
     }
 
     assignToData(key, val) {
-      this.data[key] = {};
-      return Object.assign(this.data[key], val);
+      // TODO: Remove when passed in json
+      const base = { suggested_approvers: JSON.parse(this.dataset.suggestedApprovers) };
+      this.data[key] = Object.assign(base, val);
+      return this.data[key];
     }
   }
   gl.MergeRequestWidgetStore = MergeRequestWidgetStore;
