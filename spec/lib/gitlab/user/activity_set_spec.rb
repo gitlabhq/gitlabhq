@@ -39,7 +39,7 @@ describe Gitlab::User::ActivitySet, :redis, lib: true do
     end
   end
 
-  context 'filter by date'do
+  context 'filter by date' do
     before do
       Timecop.freeze(Date.yesterday)
     end
