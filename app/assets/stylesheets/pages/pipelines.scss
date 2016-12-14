@@ -576,17 +576,14 @@
     }
   }
 
-  .ci-status-text {
-    max-width: 110px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    vertical-align: bottom;
-    display: inline-block;
-    position: relative;
-    font-weight: 100;
+  // Position in the pipeline graph
+  .grouped-pipeline-dropdown {
+    right: -206px;
+    top: -11px;
   }
+}
 
+<<<<<<< HEAD
   .dropdown-menu-toggle {
     background-color: transparent;
     border: none;
@@ -594,110 +591,81 @@
     color: $gl-text-color-light;
     white-space: normal;
     overflow: visible;
+=======
+.dropdown-counter-badge {
+  float: right;
+  color: $border-color;
+  font-weight: 100;
+  font-size: 15px;
+  margin-right: 2px;
+}
+>>>>>>> 5ba6f0d... Dropdown with arrow
 
-    &:focus {
-      outline: none;
-    }
+.grouped-pipeline-dropdown {
+  padding: 0;
+  width: 191px;
+  left: auto;
+  right: -206px;
+  top: -11px;
+  box-shadow: 0 1px 5px $black-transparent;
+
+  a {
+    display: inline-block;
 
     &:hover {
+      background-color: $stage-hover-bg;
+    }
+  }
+
+  ul {
+    max-height: 245px;
+    overflow: auto;
+    margin: 5px 0;
+
+    li {
+      padding-top: 2px;
+      margin: 0 5px;
+    }
+
+    li:first-child {
+      padding-top: 6px;
+    }
+
+    li:last-child {
+      padding-bottom: 6px;
+    }
+  }
+}
+
+.ci-status-text {
+  max-width: 110px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: bottom;
+  display: inline-block;
+  position: relative;
+  font-weight: 100;
+}
+
+
+.dropdown-menu-toggle {
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  color: $gl-text-color-light;
+  flex-grow: 1;
+
+
+  &:focus {
+    outline: none;
+  }
+
+  &:hover {
+    color: $gl-text-color;
+
+    .dropdown-counter-badge {
       color: $gl-text-color;
-
-      .dropdown-counter-badge {
-        color: $gl-text-color;
-      }
-    }
-  }
-
-  .dropdown-counter-badge {
-    float: right;
-    clear: right;
-    color: $border-color;
-    font-weight: 100;
-    font-size: 15px;
-    margin-right: 2px;
-  }
-
-  .grouped-pipeline-dropdown {
-    padding: 0;
-    width: 191px;
-    left: auto;
-    right: -206px;
-    top: -11px;
-    box-shadow: 0 1px 5px $black-transparent;
-
-    a {
-      display: inline-block;
-
-      &:hover {
-        background-color: $stage-hover-bg;
-      }
-    }
-
-    ul {
-      max-height: 245px;
-      overflow: auto;
-      margin: 5px 0;
-
-      li {
-        margin: 0 5px;
-        padding-left: 0;
-        padding-bottom: 0;
-        margin-bottom: 0;
-        line-height: 1.2;
-      }
-    }
-
-    .dropdown-build {
-      color: $gl-text-color-light;
-
-      a.ci-action-icon-container {
-        padding: 0;
-        font-size: 11px;
-        float: right;
-        margin-top: 4px;
-        display: inline-block;
-        position: relative;
-
-        i {
-          font-size: 11px;
-          margin-top: 0;
-        }
-      }
-
-      &:hover {
-        background-color: $stage-hover-bg;
-        border-radius: 3px;
-        color: $gl-text-color;
-      }
-
-      .ci-action-icon-container {
-        i {
-          width: 25px;
-          height: 25px;
-
-          &::before {
-            top: 1px;
-            left: 1px;
-          }
-        }
-      }
-
-      .stage {
-        max-width: 100px;
-        width: 100px;
-      }
-
-      .ci-status-icon svg {
-        height: 18px;
-        width: 18px;
-      }
-
-      .ci-status-text {
-        max-width: 95px;
-        padding-bottom: 3px;
-        position: relative;
-        top: 3px;
-      }
     }
   }
 }
@@ -735,28 +703,94 @@
   }
 }
 
-/**
- * Builds dropdown in mini pipeline
- */
-.builds-dropdown {
-  border: none;
-  background: transparent;
-  padding: 0;
-  font-size: inherit;
-  border-radius: 0;
-  cursor: pointer;
+.dropdown-build {
+  color: $gl-text-color-light;
 
-  .dropdown-caret {
-    display: none;
-    position: absolute;
-    top: 3px;
-    right: 6px;
-    font-size: 10px;
+  a.ci-action-icon-container {
+    padding: 0;
+    font-size: 11px;
+    float: right;
+    margin-top: 5px;
+
+    i {
+      font-size: 11px;
+      margin-top: 0;
+    }
   }
 
   &:hover {
-    .dropdown-caret {
-      display: block;
+    background-color: $stage-hover-bg;
+    border-radius: 3px;
+    color: $gl-text-color;
+  }
+
+  .ci-action-icon-container {
+    i {
+      width: 25px;
+      height: 25px;
+
+      &:before{
+        top: 1px;
+        left: 1px;
+      }
+    }
+  }
+
+  .stage {
+    max-width: 100px;
+    width: 100px;
+  }
+
+  .ci-status-icon svg {
+    height: 18px;
+    width: 18px;
+  }
+
+  .ci-status-text {
+    max-width: 95px;
+  }
+}
+
+/**
+ * Builds dropdown in mini pipeline
+ */
+.mini-pipeline-graph {
+  .builds-dropdown {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    color: #8c8c8c;
+    flex-grow: 1;
+  }
+
+  .grouped-pipeline-dropdown {
+    right: -172px;
+    top: 23px;
+  }
+
+  .arrow-up {
+    &::before,
+    &::after {
+      content: '';
+      display: inline-block;
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-color: transparent;
+      border-style: solid;
+      top: -6px;
+      left: 2px;
+      border-width: 0 5px 6px 5px;
+    }
+
+    &::before {
+      border-width: 0 5px 5px 5px;
+      border-bottom-color: $border-color;
+    }
+
+    &::after {
+      margin-top: 1px;
+      border-bottom-color: $white-light;
     }
   }
 }

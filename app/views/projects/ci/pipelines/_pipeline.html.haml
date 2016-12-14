@@ -49,17 +49,18 @@
         - hasMultipleBuilds = stage.statuses.count > 1
         - tooltip = "#{stage.name.titleize}: #{stage.status || 'not found'}"
 
-        .stage-container
+        .stage-container.mini-pipeline-graph
           - if hasMultipleBuilds
             .dropdown.inline.build-content
-              %button.dropdown-menu-toggle.has-tooltip{id: "dropdown-#{stage.name}", title: tooltip, class: klass, "data-toggle"=> "dropdown", "aria-haspopup"=> "true", "aria-expanded" => "false"}
-                = custom_icon(detailed_status.icon)
-                = icon('caret-down', class: 'dropdown-caret')
-              .dropdown-menu.grouped-pipeline-dropdown{"aria-labelledby"=> "dropdown-#{stage.name}"}
-                .arrow
+              %button.has-tooltip.builds-dropdown{ type: 'button', data: { toggle: 'dropdown', title: tooltip} }
+                %span{ class: klass }
+                  = ci_icon_for_status(detailed_status.icon)
+                %span= icon('caret-down', class: 'dropdown-caret')
+              .dropdown-menu.grouped-pipeline-dropdown
+                .arrow-up
                   %ul
                     - stage.statuses.each do |status|
-                      %li
+                      %li.dropdown-build
                         = render 'ci/status/graph_badge', subject: status
           - else
             - if details_path
