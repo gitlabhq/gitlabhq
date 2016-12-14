@@ -10,7 +10,7 @@ module Ci
     has_many :deployments, as: :deployable
 
     serialize :options
-    serialize :yaml_variables
+    serialize :yaml_variables, Gitlab::Serialize::YamlVariables
 
     validates :coverage, numericality: true, allow_blank: true
     validates_presence_of :ref

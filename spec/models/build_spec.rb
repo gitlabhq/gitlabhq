@@ -403,7 +403,7 @@ describe Ci::Build, models: true do
             })
           end
           let(:variables) do
-            [{ key: :KEY, value: 'value', public: true }]
+            [{ key: 'KEY', value: 'value', public: true }]
           end
 
           it { is_expected.to eq(predefined_variables + variables) }
