@@ -6,8 +6,6 @@ module Gitlab
       KEY = 'user/activities'
       DEFAULT_FROM = 6.months.ago.to_i
 
-      attr_reader :page, :per_page
-
       def self.record(user)
         Gitlab::Redis.with do |redis|
           redis.zadd(KEY, Time.now.to_i, user.username)
@@ -41,11 +39,7 @@ module Gitlab
 
       def raw_activities
         Gitlab::Redis.with do |redis|
-          redis.zrangebyscore(KEY,
-                              @from,
-                              @to,
-                              with_scores: true,
-                              limit: [pagination_delegate.offset, pagination_delegate.limit_value])
+          redis.zrangebyscore(KEY, @from, @to, with_scores: true, limit: limit)
         end
       end
 
@@ -53,6 +47,10 @@ module Gitlab
         Gitlab::Redis.with do |redis|
           redis.zcount(KEY, @from, @to)
         end
+      end
+
+      def limit
+        [pagination_delegate.offset, pagination_delegate.limit_value]
       end
     end
   end
