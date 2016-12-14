@@ -665,14 +665,15 @@
         color: $gl-text-color;
       }
 
-    .stage {
-      max-width: 100px;
-      width: 100px;
-    }
+      .stage {
+        max-width: 100px;
+        width: 100px;
+      }
 
-    .ci-status-icon svg {
-      height: 18px;
-      width: 18px;
+      .ci-status-icon svg {
+        height: 18px;
+        width: 18px;
+      }
     }
   }
 }
