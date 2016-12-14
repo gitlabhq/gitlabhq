@@ -76,7 +76,7 @@ you modify its settings. Read the upstream documentation on how to achieve that.
 
 At the absolute minimum, make sure your [Registry configuration][registry-auth]
 has `container_registry` as the service and `https://gitlab.example.com/jwt/auth`
-as the realm:
+as the realm.
 
 ```
 auth:
@@ -86,6 +86,23 @@ auth:
     issuer: gitlab-issuer
     rootcertbundle: /root/certs/certbundle
 ```
+
+Also a notification endpoint must be configured with the token from
+Admin Area -> Overview -> Registry (`/admin/container_registry`) like in the following sample:
+
+```
+notifications:
+  endpoints:
+    - name: listener
+      url: https://gitlab.example.com/api/v3/registry_events
+      headers:
+        X-Registry-Token: [57Cx95fc2zHFh93VTiGD]
+      timeout: 500ms
+      threshold: 5
+      backoff: 1s
+```
+
+Check the [Registry endpoint configuration][registry-endpoint] for details.
 
 ## Container Registry domain configuration
 
@@ -477,7 +494,7 @@ configurable in future releases.
 **GitLab 8.8 ([source docs][8-8-docs])**
 
 - GitLab Container Registry feature was introduced.
-
+i
 [reconfigure gitlab]: restart_gitlab.md#omnibus-gitlab-reconfigure
 [restart gitlab]: restart_gitlab.md#installations-from-source
 [wildcard certificate]: https://en.wikipedia.org/wiki/Wildcard_certificate
@@ -487,6 +504,7 @@ configurable in future releases.
 [storage-config]: https://docs.docker.com/registry/configuration/#storage
 [registry-http-config]: https://docs.docker.com/registry/configuration/#http
 [registry-auth]: https://docs.docker.com/registry/configuration/#auth
+[registry-endpoint]: https://docs.docker.com/registry/notifications/#/configuration
 [token-config]: https://docs.docker.com/registry/configuration/#token
 [8-8-docs]: https://gitlab.com/gitlab-org/gitlab-ce/blob/8-8-stable/doc/administration/container_registry.md
 [registry-ssl]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/support/nginx/registry-ssl

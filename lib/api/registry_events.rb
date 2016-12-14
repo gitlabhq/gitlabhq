@@ -1,7 +1,7 @@
 module API
   # RegistryEvents API
   class RegistryEvents < Grape::API
-    # before { authenticate! }
+    before { authenticate_container_registry_access_token! }
 
     content_type :json, 'application/vnd.docker.distribution.events.v1+json'
 
