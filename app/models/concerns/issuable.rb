@@ -96,9 +96,10 @@ module Issuable
     after_save :record_metrics
 
     def update_assignee_cache_counts
-      # make sure we flush the cache for both the old *and* new assignee
-      User.find(assignee_id_was).update_cache_counts if assignee_id_was
-      assignee.update_cache_counts if assignee
+      # make sure we flush the cache for both the old *and* new assignees(if they exist)
+      previous_assignee = User.find_by_id(assignee_id_was)
+      previous_assignee.try(:update_cache_counts)
+      assignee.try(:update_cache_counts)
     end
 
     # We want to use optimistic lock for cases when only title or description are involved

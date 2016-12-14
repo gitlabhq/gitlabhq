@@ -1,0 +1,4 @@
+---
+title: Fix issuable assignee update bug when previous assignee is null
+merge_request:
+author:

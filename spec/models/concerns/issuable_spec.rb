@@ -44,6 +44,26 @@ describe Issue, "Issuable" do
     it { expect(described_class).to respond_to(:assigned) }
   end
 
+  describe "after_save" do
+    describe "#update_cache_counts" do
+      context "when previous assignee exists" do
+        it "user updates cache counts" do
+          expect(user).to receive(:update_cache_counts)
+
+          issue.update(assignee: user)
+        end
+      end
+
+      context "when previous assignee does not exist" do
+        it "does not raise error" do
+          issue.update(assignee_id: "")
+
+          expect { issue.update(assignee_id: user) }.not_to raise_error
+        end
+      end
+    end
+  end
+
   describe ".search" do
     let!(:searchable_issue) { create(:issue, title: "Searchable issue") }
 
