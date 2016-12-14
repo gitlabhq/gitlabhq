@@ -1,4 +1,5 @@
-/* eslint-disable */
+/* eslint-disable max-len, space-before-function-paren, no-underscore-dangle, array-bracket-spacing, consistent-return, comma-dangle, no-unused-vars, dot-notation, no-new, no-return-assign, camelcase, semi, no-param-reassign */
+
 /*
 UserTabs
 

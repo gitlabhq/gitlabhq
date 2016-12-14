@@ -1,4 +1,6 @@
-/* eslint-disable */
+/* eslint-disable arrow-parens, class-methods-use-this, no-param-reassign, padded-blocks */
+/* global Cookies */
+
 ((global) => {
   let singleton;
 

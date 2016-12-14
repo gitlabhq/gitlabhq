@@ -1,4 +1,5 @@
-/* eslint-disable */
+/* eslint-disable no-new, no-undef, no-plusplus, object-curly-spacing, prefer-const, semi */
+
 //= require lib/utils/type_utility
 //= require jquery
 //= require bootstrap

@@ -1,4 +1,7 @@
-/* eslint-disable */
+/* eslint-disable space-before-function-paren, camelcase, guard-for-in, no-restricted-syntax, no-unused-vars, max-len */
+/* global Vue */
+/* global NoteModel */
+
 class DiscussionModel {
   constructor (discussionId) {
     this.id = discussionId;
@@ -69,7 +72,7 @@ class DiscussionModel {
 
       gl.utils.localTimeAgo($('.js-timeago', `${discussionSelector}`));
     } else {
-       $discussionHeadline.remove();
+      $discussionHeadline.remove();
     }
   }
 
