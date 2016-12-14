@@ -224,7 +224,7 @@ eos
       end
 
       it 'gives compound status from latest pipelines' do
-        expect(commit.status).to eq(Ci::Pipeline.latest.status)
+        expect(commit.status).to eq(Ci::Pipeline.latest_status)
       end
     end
 
@@ -251,7 +251,7 @@ eos
       end
 
       it 'gives compound status from latest pipelines if ref is nil' do
-        expect(commit.status(nil)).to eq(Ci::Pipeline.latest.status)
+        expect(commit.status(nil)).to eq(Ci::Pipeline.latest_status)
       end
     end
   end

@@ -230,7 +230,7 @@ class Commit
 
     return @statuses[ref] if @statuses.key?(ref)
 
-    @statuses[ref] = pipelines.latest(ref).status
+    @statuses[ref] = pipelines.latest_status(ref)
   end
 
   def revert_branch_name
@@ -266,7 +266,7 @@ class Commit
     @merged_merge_request_hash ||= Hash.new do |hash, user|
       hash[user] = merged_merge_request_no_cache(user)
     end
-    
+
     @merged_merge_request_hash[current_user]
   end
 

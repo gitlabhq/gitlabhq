@@ -98,6 +98,10 @@ module Ci
       end.where(id: max_id.group(:ref, :sha))
     end
 
+    def self.latest_status(ref = nil)
+      latest(ref).status
+    end
+
     def self.latest_successful_for(ref)
       success.latest(ref).first
     end
