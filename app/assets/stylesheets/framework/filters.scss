@@ -39,7 +39,7 @@
     padding-right: 25px;
 
     &:focus ~ .fa-filter {
-      color: #444;
+      color: $common-gray-dark;
     }
   }
 
@@ -65,7 +65,7 @@
     outline: none;
 
     &:hover .fa-times {
-      color: #444;
+      color: $common-gray-dark;
     }
   }
 }
@@ -92,11 +92,11 @@
     &:hover,
     &:focus {
       background-color: $dropdown-hover-color;
-      color: white;
+      color: $white-light;
       text-decoration: none;
 
       .dropdown-label-box {
-        border-color: white;
+        border-color: $white-light;
         border-style: solid;
         border-width: 2px;
       }
