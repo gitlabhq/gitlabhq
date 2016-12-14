@@ -1246,4 +1246,13 @@ describe Ci::Build, models: true do
       it { is_expected.to eq('review/master') }
     end
   end
+
+  describe '#detailed_status' do
+    let(:user) { create(:user) }
+
+    it 'returns a detailed status' do
+      expect(build.detailed_status(user))
+        .to be_a Gitlab::Ci::Status::Build::Cancelable
+    end
+  end
 end
