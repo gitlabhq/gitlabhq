@@ -1,19 +1,19 @@
 -# Renders the graph node with both the status icon, status name and action icon
 
-- detailed_status = subject.detailed_status(current_user)
-- details_path = detailed_status.details_path if detailed_status.has_details?
-- klass = "ci-status-icon ci-status-icon-#{detailed_status}"
+- subject = local_assigns.fetch(:subject)
+- status = subject.detailed_status(current_user)
+- klass = "ci-status-icon ci-status-icon-#{status}"
 
-- if details_path
-  = link_to details_path, data: { toggle: 'tooltip', title: "#{subject.name} - #{detailed_status}" } do
-    %span{ class: klass }= custom_icon(detailed_status.icon)
+- if status.has_details?
+  = link_to status.details_path, data: { toggle: 'tooltip', title: "#{subject.name} - #{status}" } do
+    %span{ class: klass }= custom_icon(status.icon)
     .ci-status-text= subject.name
 - else
-  %span{ class: klass }= custom_icon(detailed_status.icon)
+  %span{ class: klass }= custom_icon(status.icon)
   .ci-status-text= subject.name
 
-- if detailed_status.has_action?
-  = link_to detailed_status.action_path, method: detailed_status.action_method,
-    title: "#{subject.name}: #{detailed_status.action_title}", class: 'ci-action-icon-container' do
+- if status.has_action?
+  = link_to status.action_path, method: status.action_method,
+    title: "#{subject.name}: #{status.action_title}", class: 'ci-action-icon-container' do
     %i.ci-action-icon-wrapper
-      = icon(detailed_status.action_icon, class: detailed_status.action_class)
+      = icon(status.action_icon, class: status.action_class)
