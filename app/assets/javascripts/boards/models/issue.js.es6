@@ -66,3 +66,5 @@ class ListIssue {
     return Vue.http.patch(url, data);
   }
 }
+
+window.ListIssue = ListIssue;

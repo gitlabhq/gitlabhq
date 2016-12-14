@@ -8,3 +8,5 @@ class NoteModel {
     this.resolved_by = resolved_by;
   }
 }
+
+window.NoteModel = NoteModel;
