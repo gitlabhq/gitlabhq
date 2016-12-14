@@ -5,11 +5,6 @@
   Vue.component('approvals-body', {
     name: 'approvals-body',
     props: ['approvedBy', 'approvalsLeft', 'userCanApprove', 'userHasApproved'],
-    data() {
-      return {
-        loading: true,
-      };
-    },
     computed: {
       approvalsRequiredStringified() {
         return this.approvalsLeft === 1 ? 'one more approval' :
@@ -37,9 +32,7 @@
       },
     },
     beforeCreate() {
-      gl.ApprovalsStore.fetch().then(() => {
-        this.loading = false;
-      });
+      return gl.ApprovalsStore.fetch().then();
     },
     template: `
       <div>
@@ -53,7 +46,6 @@
             </button>
           </div>
         </div>
-        <loading-icon v-if='loading'></loading-icon>
       </div>
     `,
   });

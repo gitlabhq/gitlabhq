@@ -28,12 +28,12 @@
 
     approve() {
       return this.api.approveMergeRequest()
-        .then(res => this.rootStore.assignToData(res.data));
+        .then(res => this.assignToRootStore(res.data));
     }
 
     unapprove() {
       return this.api.unapproveMergeRequest()
-        .then(res => this.rootStore.assignToData(res.data));
+        .then(res => this.assignToRootStore(res.data));
     }
   }
 

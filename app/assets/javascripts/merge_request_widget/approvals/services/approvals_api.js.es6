@@ -9,6 +9,7 @@
 
     init(mergeRequestEndpoint) {
       this.baseEndpoint = mergeRequestEndpoint;
+      Vue.http.headers.common['X-CSRF-Token'] = $.rails.csrfToken();
     }
 
     fetchApprovals() {
@@ -20,7 +21,7 @@
 
     approveMergeRequest() {
       const endpoint = `${this.baseEndpoint}/approvals`;
-      return Vue.http.save(endpoint).catch((err) => {
+      return Vue.http.post(endpoint).catch((err) => {
         console.error(`Error approving merge request. ${err}`);
       });
     }

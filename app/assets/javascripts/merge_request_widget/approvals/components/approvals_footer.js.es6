@@ -1,17 +1,11 @@
 //= require ../stores/approvals_store
 //= require vue_common_component/link_to_member_avatar
-//= require vue_common_component/loading_icon
 
 (() => {
 
   Vue.component('approvals-footer', {
     name: 'approvals-footer',
     props: ['userCanApprove', 'userHasApproved', 'approvedBy', 'approvalsLeft', 'pendingAvatarSvg', 'checkmarkSvg'],
-    data() {
-      return {
-        loading: true,
-      };
-    },
     computed: {
       hasApprovers() {
         return this.approvedBy && this.approvedBy.length;
@@ -22,13 +16,11 @@
     },
     methods: {
       removeApproval() {
-        return gl.ApprovalsStore.unapprove();
+        gl.ApprovalsStore.unapprove();
       },
     },
     beforeCreate() {
-      return gl.ApprovalsStore.fetch().then(() => {
-        this.loading = false;
-      });
+      return gl.ApprovalsStore.fetch();
     },
     template: `
       <div v-if='hasApprovers' class='mr-widget-footer approved-by-users approvals-footer clearfix'>
@@ -54,9 +46,8 @@
         </span>
         <span class='unapprove-btn-wrap' v-if='showUnapproveButton'>
           <i class='fa fa-close'></i>
-          <span @click='removeApproval'>Remove your approval</span>
+          <span @click='removeApproval()'>Remove your approval</span>
         </span>
-        <loading-icon v-if='loading'></loading-icon>
       </div>
     `,
   });
