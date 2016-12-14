@@ -18,7 +18,7 @@
             = icon('times')
           #js-dropdown-hint.dropdown-menu.hint-dropdown
             %ul{ 'data-dropdown' => true }
-              %li.filter-dropdown-item{ 'data-value': '' }
+              %li.filter-dropdown-item{ 'data-value' => '' }
                 %button.btn.btn-link
                   = icon('search')
                   %span
@@ -26,7 +26,7 @@
             %ul.filter-dropdown{ 'data-dynamic' => true, 'data-dropdown' => true }
               %li.filter-dropdown-item
                 %button.btn.btn-link
-                  %i.fa{ 'class': '{{icon}}'}
+                  %i.fa{ class: '{{icon}}'}
                   %span.js-filter-hint
                     {{hint}}
                   %span.js-filter-tag.dropdown-light-content
@@ -35,7 +35,7 @@
             %ul.filter-dropdown{ 'data-dynamic' => true, 'data-dropdown' => true }
               %li.filter-dropdown-item
                 %button.btn.btn-link.dropdown-user
-                  %img.avatar.avatar-inline{ 'data-src': '{{avatar_url}}', width: '30' }
+                  %img.avatar.avatar-inline{ 'data-src' => '{{avatar_url}}', width: '30' }
                   .dropdown-user-details
                     %span
                       {{name}}
@@ -43,14 +43,14 @@
                       @{{username}}
           #js-dropdown-assignee.dropdown-menu
             %ul{ 'data-dropdown' => true }
-              %li.filter-dropdown-item{ 'data-value': 'none' }
+              %li.filter-dropdown-item{ 'data-value' => 'none' }
                 %button.btn.btn-link
                   No Assignee
               %li.divider
             %ul.filter-dropdown{ 'data-dynamic' => true, 'data-dropdown' => true }
               %li.filter-dropdown-item
                 %button.btn.btn-link.dropdown-user
-                  %img.avatar.avatar-inline{ 'data-src': '{{avatar_url}}', width: '30' }
+                  %img.avatar.avatar-inline{ 'data-src' => '{{avatar_url}}', width: '30' }
                   .dropdown-user-details
                     %span
                       {{name}}
@@ -58,10 +58,10 @@
                       @{{username}}
           #js-dropdown-milestone.dropdown-menu{ 'data-dropdown' => true }
             %ul{ 'data-dropdown' => true }
-              %li.filter-dropdown-item{ 'data-value': 'none' }
+              %li.filter-dropdown-item{ 'data-value' => 'none' }
                 %button.btn.btn-link
                   No Milestone
-              %li.filter-dropdown-item{ 'data-value': 'upcoming' }
+              %li.filter-dropdown-item{ 'data-value' => 'upcoming' }
                 %button.btn.btn-link
                   Upcoming
               %li.divider
@@ -71,14 +71,14 @@
                   {{title}}
           #js-dropdown-label.dropdown-menu{ 'data-dropdown' => true }
             %ul{ 'data-dropdown' => true }
-              %li.filter-dropdown-item{ 'data-value': 'none' }
+              %li.filter-dropdown-item{ 'data-value' => 'none' }
                 %button.btn.btn-link
                   No Label
               %li.divider
             %ul.filter-dropdown{ 'data-dynamic' => true, 'data-dropdown' => true }
               %li.filter-dropdown-item
                 %button.btn.btn-link
-                  %span.dropdown-label-box{ 'style': 'background: {{color}}'}
+                  %span.dropdown-label-box{ style => 'background: {{color}}'}
                   %span.label-title.js-data-value
                     {{title}}
         .pull-right
