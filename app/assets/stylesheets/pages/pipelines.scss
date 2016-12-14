@@ -484,6 +484,10 @@
       }
     }
 
+    .ci-status-icon {
+      position: relative;
+      top: 1px;
+    }
     .ci-status-icon svg {
       height: 20px;
       width: 20px;
@@ -588,6 +592,7 @@
     padding: 0;
     color: $gl-text-color-light;
     white-space: normal;
+    overflow: visible;
 
     &:focus {
       outline: none;
