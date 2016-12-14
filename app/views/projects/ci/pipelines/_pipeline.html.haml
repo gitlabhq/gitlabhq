@@ -43,10 +43,26 @@
   %td.stage-cell
     - pipeline.stages.each do |stage|
       - if stage.status
+        - status = ci_label_for_status(stage.detailed_status)
+        - hasMultipleBuilds = stage.statuses.count > 1
         - tooltip = "#{stage.name.titleize}: #{stage.status || 'not found'}"
-        .stage-container
-          = link_to namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline.id, anchor: stage.name), class: "has-tooltip ci-status-icon-#{stage.status}", title: tooltip do
-            = ci_icon_for_status(stage.status)
+
+        - if status
+          .stage-container
+            - if hasMultipleBuilds
+              .dropdown.inline
+                %a.dropdown-toggle{id: "dropdown-#{stage.name}", "data-toggle"=> "dropdown", "aria-haspopup"=> "true", "aria-expanded" => "false" }
+                  = ci_icon_for_status(stage.detailed_status)
+                  %span.caret
+                .dropdown-menu.grouped-pipeline-dropdown{"aria-labelledby"=> "dropdown-#{stage.name}"}
+                  .arrow
+                    %ul
+                      - stage.statuses.each do |status|
+                        %li
+                          status
+            - else
+              = link_to namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline.id, anchor: stage.name), class: "has-tooltip ci-status-icon-#{stage.status}", title: tooltip do
+                = ci_icon_for_status(stage.detailed_status)
 
   %td
     - if pipeline.duration
