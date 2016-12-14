@@ -4,7 +4,7 @@ class BuildQueueWorker
 
   def perform(build_id)
     Ci::Build.find_by(id: build_id).try do |build|
-      project.runners.select do |runner|
+      build.project.runners.select do |runner|
         if runner.can_pick?(build)
           # Inject last_update into Redis
           Gitlab::Redis.with do |redis|
