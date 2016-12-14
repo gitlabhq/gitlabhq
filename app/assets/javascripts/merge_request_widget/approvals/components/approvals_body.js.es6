@@ -5,6 +5,11 @@
   Vue.component('approvals-body', {
     name: 'approvals-body',
     props: ['approvedBy', 'approvalsLeft', 'userCanApprove', 'userHasApproved', 'suggestedApprovers'],
+    data() {
+      return {
+        loaded: false,
+      };
+    },
     computed: {
       approvalsRequiredStringified() {
         return this.approvalsLeft === 1 ? 'one more approval' :
@@ -33,19 +38,19 @@
       },
     },
     beforeCreate() {
-      return gl.ApprovalsStore.initStoreOnce();
+      gl.ApprovalsStore.initStoreOnce().then(() => {
+        this.loaded = true;
+      });
     },
     template: `
-      <div>
-        <div>
-          <h4> Requires {{ approvalsRequiredStringified }} (from {{ approverNamesStringified }})</h4>
-          <div v-if='showApproveButton' class='append-bottom-10'>
-            <button
-              @click='approveMergeRequest'
-              class='btn btn-primary approve-btn'>
-              Approve Merge Request
-            </button>
-          </div>
+      <div v-if='loaded'>
+        <h4> Requires {{ approvalsRequiredStringified }} (from {{ approverNamesStringified }})</h4>
+        <div v-if='showApproveButton' class='append-bottom-10'>
+          <button
+            @click='approveMergeRequest'
+            class='btn btn-primary approve-btn'>
+            Approve Merge Request
+          </button>
         </div>
       </div>
     `,

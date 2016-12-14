@@ -2,10 +2,14 @@
 //= require vue_common_component/link_to_member_avatar
 
 (() => {
-
   Vue.component('approvals-footer', {
     name: 'approvals-footer',
     props: ['userCanApprove', 'userHasApproved', 'approvedBy', 'approvalsLeft', 'pendingAvatarSvg', 'checkmarkSvg'],
+    data() {
+      return {
+        loaded: false,
+      };
+    },
     computed: {
       hasApprovers() {
         return this.approvedBy && this.approvedBy.length;
@@ -20,10 +24,12 @@
       },
     },
     beforeCreate() {
-      return gl.ApprovalsStore.initStoreOnce();
+      gl.ApprovalsStore.initStoreOnce().then(() => {
+        this.loaded = true;
+      });
     },
     template: `
-      <div v-if='hasApprovers' class='mr-widget-footer approved-by-users approvals-footer clearfix'>
+      <div v-if='hasApprovers && loaded' class='mr-widget-footer approved-by-users approvals-footer clearfix'>
         <span class='approvers-prefix'> Approved by </span>
         <span v-for='approver in approvedBy'>
           <link-to-member-avatar
