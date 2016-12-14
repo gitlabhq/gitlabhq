@@ -33,7 +33,7 @@ built and deployed under a dynamic environment and can be previewed with an
 also dynamically URL.
 
 The details of the Review Apps implementation depend widely on your real
-technology stack and on your deployment process. The simplest case it to
+technology stack and on your deployment process. The simplest case is to
 deploy a simple static HTML website, but it will not be that straightforward
 when your app is using a database for example. To make a branch be deployed
 on a temporary instance and booting up this instance with all required software

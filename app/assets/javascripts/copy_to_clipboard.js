@@ -6,7 +6,7 @@
   var genericError, genericSuccess, showTooltip;
 
   genericSuccess = function(e) {
-    showTooltip(e.trigger, 'Copied!');
+    showTooltip(e.trigger, 'Copied');
     // Clear the selection and blur the trigger so it loses its border
     e.clearSelection();
     return $(e.trigger).blur();
@@ -31,7 +31,7 @@
     var originalTitle = $target.data('original-title');
 
     $target
-      .attr('title', 'Copied!')
+      .attr('title', 'Copied')
       .tooltip('fixTitle')
       .tooltip('show')
       .attr('title', originalTitle)

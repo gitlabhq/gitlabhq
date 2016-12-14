@@ -5,8 +5,11 @@
 
   class Diff {
     constructor() {
-      $('.files .diff-file').singleFileDiff();
-      $('.files .diff-file').filesCommentButton();
+      const $diffFile = $('.files .diff-file');
+      $diffFile.singleFileDiff();
+      $diffFile.filesCommentButton();
+
+      $diffFile.each((index, file) => new gl.ImageFile(file));
 
       if (this.diffViewType() === 'parallel') {
         $('.content-wrapper .container-fluid').removeClass('container-limited');

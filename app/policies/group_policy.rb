@@ -33,6 +33,8 @@ class GroupPolicy < BasePolicy
     if globally_viewable && @subject.request_access_enabled && !member
       can! :request_access
     end
+
+    additional_rules!(master)
   end
 
   def can_read_group?
@@ -42,5 +44,9 @@ class GroupPolicy < BasePolicy
     return true if @subject.users.include?(@user)
 
     GroupProjectsFinder.new(@subject).execute(@user).any?
+  end
+
+  def additional_rules!(master)
+    # This is meant to be overriden in EE
   end
 end

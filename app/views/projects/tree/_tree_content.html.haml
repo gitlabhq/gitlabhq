@@ -5,14 +5,11 @@
         %tr
           %th Name
           %th.hidden-xs
-            .pull-left Last Commit
+            .pull-left Last commit
             .last-commit.hidden-sm.pull-left
-              &nbsp;
-              %i.fa.fa-angle-right
-              &nbsp;
-              %small.light
+              %small.light              
+                = clipboard_button(clipboard_text: @commit.id)
                 = link_to @commit.short_id, namespace_project_commit_path(@project.namespace, @project, @commit), class: "monospace"
-                &ndash;
                 = time_ago_with_tooltip(@commit.committed_date)
                 = @commit.full_title
             %small.commit-history-link-spacer &#124;

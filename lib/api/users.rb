@@ -353,7 +353,7 @@ module API
         success Entities::UserPublic
       end
       get do
-        present current_user, with: @impersonator ? Entities::UserWithPrivateToken : Entities::UserPublic
+        present current_user, with: sudo? ? Entities::UserWithPrivateToken : Entities::UserPublic
       end
 
       desc "Get the currently authenticated user's SSH keys" do

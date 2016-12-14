@@ -442,11 +442,15 @@ describe Ci::Pipeline, models: true do
   end
 
   describe '#detailed_status' do
+    let(:user) { create(:user) }
+
+    subject { pipeline.detailed_status(user) }
+
     context 'when pipeline is created' do
       let(:pipeline) { create(:ci_pipeline, status: :created) }
 
       it 'returns detailed status for created pipeline' do
-        expect(pipeline.detailed_status.text).to eq 'created'
+        expect(subject.text).to eq 'created'
       end
     end
 
@@ -454,7 +458,7 @@ describe Ci::Pipeline, models: true do
       let(:pipeline) { create(:ci_pipeline, status: :pending) }
 
       it 'returns detailed status for pending pipeline' do
-        expect(pipeline.detailed_status.text).to eq 'pending'
+        expect(subject.text).to eq 'pending'
       end
     end
 
@@ -462,7 +466,7 @@ describe Ci::Pipeline, models: true do
       let(:pipeline) { create(:ci_pipeline, status: :running) }
 
       it 'returns detailed status for running pipeline' do
-        expect(pipeline.detailed_status.text).to eq 'running'
+        expect(subject.text).to eq 'running'
       end
     end
 
@@ -470,7 +474,7 @@ describe Ci::Pipeline, models: true do
       let(:pipeline) { create(:ci_pipeline, status: :success) }
 
       it 'returns detailed status for successful pipeline' do
-        expect(pipeline.detailed_status.text).to eq 'passed'
+        expect(subject.text).to eq 'passed'
       end
     end
 
@@ -478,7 +482,7 @@ describe Ci::Pipeline, models: true do
       let(:pipeline) { create(:ci_pipeline, status: :failed) }
 
       it 'returns detailed status for failed pipeline' do
-        expect(pipeline.detailed_status.text).to eq 'failed'
+        expect(subject.text).to eq 'failed'
       end
     end
 
@@ -486,7 +490,7 @@ describe Ci::Pipeline, models: true do
       let(:pipeline) { create(:ci_pipeline, status: :canceled) }
 
       it 'returns detailed status for canceled pipeline' do
-        expect(pipeline.detailed_status.text).to eq 'canceled'
+        expect(subject.text).to eq 'canceled'
       end
     end
 
@@ -494,7 +498,7 @@ describe Ci::Pipeline, models: true do
       let(:pipeline) { create(:ci_pipeline, status: :skipped) }
 
       it 'returns detailed status for skipped pipeline' do
-        expect(pipeline.detailed_status.text).to eq 'skipped'
+        expect(subject.text).to eq 'skipped'
       end
     end
 
@@ -506,7 +510,7 @@ describe Ci::Pipeline, models: true do
       end
 
       it 'retruns detailed status for successful pipeline with warnings' do
-        expect(pipeline.detailed_status.label).to eq 'passed with warnings'
+        expect(subject.label).to eq 'passed with warnings'
       end
     end
   end

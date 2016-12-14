@@ -159,6 +159,11 @@ module GitlabRoutingHelper
     resend_invite_namespace_project_project_member_path(project_member.source.namespace, project_member.source, project_member)
   end
 
+  # Snippets
+  def personal_snippet_url(snippet, *args)
+    snippet_url(snippet)
+  end
+
   # Groups
 
   ## Members

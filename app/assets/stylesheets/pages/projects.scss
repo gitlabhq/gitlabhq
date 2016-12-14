@@ -188,6 +188,10 @@
     margin-left: 10px;
   }
 
+  .notification-dropdown .dropdown-menu {
+    @extend .dropdown-menu-align-right;
+  }
+
   .download-button {
     @media (max-width: $screen-md-max) {
       margin-left: 0;
