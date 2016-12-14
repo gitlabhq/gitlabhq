@@ -13,8 +13,11 @@ module Ci
         forbidden! unless current_runner
       end
 
-      def authenticate_build_token!(build)
-        forbidden! unless build_token_valid?(build)
+      def authenticate_build!(build, verify_token: true)
+        not_found! unless build
+        forbidden! if verify_token && !build_token_valid?(build)
+        forbidden!('Project has been deleted!') unless build.project
+        forbidden!('Build has been erased!') if build.erased?
       end
 
       def runner_registration_token_valid?
