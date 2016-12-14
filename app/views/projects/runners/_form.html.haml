@@ -18,6 +18,13 @@
       .checkbox
         = f.check_box :locked
         %span.light When a runner is locked, it cannot be assigned to other projects
+  - if runner.shared?
+    .form-group
+      = label :limit_build_minutes, 'Limit build minutes', class: 'control-label'
+      .col-sm-10
+        .checkbox
+          = f.check_box :limit_build_minutes
+          %span.light When limiting is enabled, only namespaces with build minutes allowance will be picked.
   .form-group
     = label_tag :token, class: 'control-label' do
       Token

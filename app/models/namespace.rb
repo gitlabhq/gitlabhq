@@ -4,11 +4,14 @@ class Namespace < ActiveRecord::Base
   include CacheMarkdownField
   include Sortable
   include Gitlab::ShellAdapter
+  include Gitlab::CurrentSettings
   include Routable
 
   cache_markdown_field :description, pipeline: :description
 
   has_many :projects, dependent: :destroy
+  has_one :namespace_metrics, dependent: :destroy
+
   belongs_to :owner, class_name: "User"
 
   belongs_to :parent, class_name: "Namespace"
@@ -38,6 +41,8 @@ class Namespace < ActiveRecord::Base
   after_destroy :rm_dir
 
   scope :root, -> { where('type IS NULL') }
+
+  delegate :shared_runners_minutes, to: :namespace_metrics, allow_nil: true
 
   class << self
     def by_path(path)
@@ -203,7 +208,23 @@ class Namespace < ActiveRecord::Base
       find_each(&:refresh_members_authorized_projects)
   end
 
+<<<<<<< HEAD
   def full_path_changed?
     path_changed? || parent_id_changed?
+=======
+  def shared_runners_minutes_limit
+    read_attribute(:shared_runners_minutes_limit) ||
+      current_application_settings.shared_runners_minutes
+  end
+
+  def shared_runners_minutes_limit_enabled?
+    shared_runners_minutes_limit.nonzero?
+  end
+
+  def shared_runners_minutes_used?
+    shared_runners_enabled? &&
+      shared_runners_minutes_limit_enabled? &&
+      shared_runners_minutes.to_i < shared_runners_minutes_limit
+>>>>>>> Add namespace_metrics and count number of build minutes on namespace basis
   end
 end

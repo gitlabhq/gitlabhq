@@ -872,8 +872,8 @@ DEPENDENCIES
   gollum-rugged_adapter (~> 0.4.2)
   gon (~> 6.1.0)
   grape (~> 0.15.0)
-  gssapi
   grape-entity (~> 0.6.0)
+  gssapi
   haml_lint (~> 0.18.2)
   hamlit (~> 2.6.1)
   health_check (~> 2.2.0)
