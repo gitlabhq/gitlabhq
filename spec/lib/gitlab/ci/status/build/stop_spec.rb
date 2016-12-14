@@ -53,7 +53,7 @@ describe Gitlab::Ci::Status::Build::Stop do
   describe '.matches?' do
     subject { described_class.matches?(build, user) }
 
-    context 'build is playable' do
+    context 'when build is playable' do
       context 'when build stops an environment' do
         let(:build) do
           create(:ci_build, :playable, :teardown_environment)

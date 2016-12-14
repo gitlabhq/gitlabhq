@@ -65,7 +65,7 @@ describe Gitlab::Ci::Status::Build::Retryable do
   describe '.matches?' do
     subject { described_class.matches?(build, user) }
 
-    context 'build is retryable' do
+    context 'when build is retryable' do
       let(:build) do
         create(:ci_build, :success)
       end

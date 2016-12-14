@@ -65,7 +65,7 @@ describe Gitlab::Ci::Status::Build::Cancelable do
   describe '.matches?' do
     subject { described_class.matches?(build, user) }
 
-    context 'build is cancelable' do
+    context 'when build is cancelable' do
       let(:build) do
         create(:ci_build, :running)
       end
