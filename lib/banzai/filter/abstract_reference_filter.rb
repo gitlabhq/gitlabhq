@@ -248,7 +248,7 @@ module Banzai
       end
 
       def projects_relation_for_paths(paths)
-        Project.where_paths_in(paths).includes(:namespace)
+        Project.where_full_path_in(paths).includes(:namespace)
       end
 
       # Returns projects for the given paths.

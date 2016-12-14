@@ -227,6 +227,43 @@ feature 'Builds', :feature do
         expect(page).to have_selector('.js-build-value', text: 'TRIGGER_VALUE_1')
       end
     end
+
+    context 'when build starts environment' do
+      let(:environment) { create(:environment, project: project) }
+      let(:pipeline) { create(:ci_pipeline, project: project) }
+
+      context 'build is successfull and has deployment' do
+        let(:deployment) { create(:deployment) }
+        let(:build) { create(:ci_build, :success, environment: environment.name, deployments: [deployment], pipeline: pipeline) }
+
+        it 'shows a link for the build' do
+          visit namespace_project_build_path(project.namespace, project, build)
+
+          expect(page).to have_link environment.name
+        end
+      end
+
+      context 'build is complete and not successfull' do
+        let(:build) { create(:ci_build, :failed, environment: environment.name, pipeline: pipeline) }
+
+        it 'shows a link for the build' do
+          visit namespace_project_build_path(project.namespace, project, build)
+
+          expect(page).to have_link environment.name
+        end
+      end
+
+      context 'build creates a new deployment' do
+        let!(:deployment) { create(:deployment, environment: environment, sha: project.commit.id) }
+        let(:build) { create(:ci_build, :success, environment: environment.name, pipeline: pipeline) }
+
+        it 'shows a link to lastest deployment' do
+          visit namespace_project_build_path(project.namespace, project, build)
+
+          expect(page).to have_link('latest deployment')
+        end
+      end
+    end
   end
 
   describe "POST /:project/builds/:id/cancel" do

@@ -40,28 +40,31 @@
       $('#modal_merge_info').modal({
         show: false
       });
-      this.firstCICheck = true;
-      this.readyForCICheck = false;
-      this.readyForCIEnvironmentCheck = false;
-      this.cancel = false;
-      clearInterval(this.fetchBuildStatusInterval);
-      clearInterval(this.fetchBuildEnvironmentStatusInterval);
       this.clearEventListeners();
       this.addEventListeners();
       this.getCIStatus(false);
-      this.getCIEnvironmentsStatus();
       this.retrieveSuccessIcon();
-      this.pollCIStatus();
-      this.pollCIEnvironmentsStatus();
+
+      this.ciStatusInterval = new global.SmartInterval({
+        callback: this.getCIStatus.bind(this, true),
+        startingInterval: 10000,
+        maxInterval: 30000,
+        hiddenInterval: 120000,
+        incrementByFactorOf: 5000,
+      });
+      this.ciEnvironmentStatusInterval = new global.SmartInterval({
+        callback: this.getCIEnvironmentsStatus.bind(this),
+        startingInterval: 30000,
+        maxInterval: 120000,
+        hiddenInterval: 240000,
+        incrementByFactorOf: 15000,
+        immediateExecution: true,
+      });
       notifyPermissions();
     }
 
     MergeRequestWidget.prototype.clearEventListeners = function() {
       return $(document).off('page:change.merge_request');
-    };
-
-    MergeRequestWidget.prototype.cancelPolling = function() {
-      return this.cancel = true;
     };
 
     MergeRequestWidget.prototype.addEventListeners = function() {
@@ -72,9 +75,6 @@
           var page;
           page = $('body').data('page').split(':').last();
           if (allowedPages.indexOf(page) < 0) {
-            clearInterval(_this.fetchBuildStatusInterval);
-            clearInterval(_this.fetchBuildEnvironmentStatusInterval);
-            _this.cancelPolling();
             return _this.clearEventListeners();
           }
         };
@@ -101,7 +101,7 @@
               urlSuffix = deleteSourceBranch ? '?deleted_source_branch=true' : '';
               return window.location.href = window.location.pathname + urlSuffix;
             } else if (data.merge_error) {
-              return this.$widgetBody.html("<h4>" + data.merge_error + "</h4>");
+              return _this.$widgetBody.html("<h4>" + data.merge_error + "</h4>");
             } else {
               callback = function() {
                 return merge_request_widget.mergeInProgress(deleteSourceBranch);
@@ -112,6 +112,11 @@
         })(this),
         dataType: 'json'
       });
+    };
+
+    MergeRequestWidget.prototype.cancelPolling = function () {
+      this.ciStatusInterval.cancel();
+      this.ciEnvironmentStatusInterval.cancel();
     };
 
     MergeRequestWidget.prototype.getMergeStatus = function() {
@@ -131,18 +136,6 @@
       }
     };
 
-    MergeRequestWidget.prototype.pollCIStatus = function() {
-      return this.fetchBuildStatusInterval = setInterval(((function(_this) {
-        return function() {
-          if (!_this.readyForCICheck) {
-            return;
-          }
-          _this.getCIStatus(true);
-          return _this.readyForCICheck = false;
-        };
-      })(this)), 10000);
-    };
-
     MergeRequestWidget.prototype.getCIStatus = function(showNotification) {
       var _this;
       _this = this;
@@ -150,23 +143,17 @@
       return $.getJSON(this.opts.ci_status_url, (function(_this) {
         return function(data) {
           var message, status, title;
-          if (_this.cancel) {
-            return;
-          }
-          _this.readyForCICheck = true;
           if (data.status === '') {
             return;
           }
           if (data.environments && data.environments.length) _this.renderEnvironments(data.environments);
-          if (_this.firstCICheck || data.status !== _this.opts.ci_status && (data.status != null)) {
+          if (data.status !== _this.opts.ci_status && (data.status != null)) {
             _this.opts.ci_status = data.status;
             _this.showCIStatus(data.status);
             if (data.coverage) {
               _this.showCICoverage(data.coverage);
             }
-            // The first check should only update the UI, a notification
-            // should only be displayed on status changes
-            if (showNotification && !_this.firstCICheck) {
+            if (showNotification) {
               status = _this.ciLabelForStatus(data.status);
               if (status === "preparing") {
                 title = _this.opts.ci_title.preparing;
@@ -184,24 +171,13 @@
                 return Turbolinks.visit(_this.opts.builds_path);
               });
             }
-            return _this.firstCICheck = false;
           }
         };
       })(this));
     };
 
-    MergeRequestWidget.prototype.pollCIEnvironmentsStatus = function() {
-      this.fetchBuildEnvironmentStatusInterval = setInterval(() => {
-        if (!this.readyForCIEnvironmentCheck) return;
-        this.getCIEnvironmentsStatus();
-        this.readyForCIEnvironmentCheck = false;
-      }, 300000);
-    };
-
     MergeRequestWidget.prototype.getCIEnvironmentsStatus = function() {
       $.getJSON(this.opts.ci_environments_status_url, (environments) => {
-        if (this.cancel) return;
-        this.readyForCIEnvironmentCheck = true;
         if (environments && environments.length) this.renderEnvironments(environments);
       });
     };
@@ -212,11 +188,11 @@
         if ($(`.mr-state-widget #${ environment.id }`).length) return;
         const $template = $(DEPLOYMENT_TEMPLATE);
         if (!environment.external_url || !environment.external_url_formatted) $('.js-environment-link', $template).remove();
-        
+
         if (!environment.stop_url) {
           $('.js-stop-env-link', $template).remove();
         }
-        
+
         if (environment.deployed_at && environment.deployed_at_formatted) {
           environment.deployed_at = gl.utils.getTimeago().format(environment.deployed_at, 'gl_en') + '.';
         } else {

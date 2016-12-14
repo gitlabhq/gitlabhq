@@ -65,7 +65,7 @@
         .note-text.md
           = preserve do
             = note.redacted_note_html
-          = edited_time_ago_with_tooltip(note, placement: 'bottom', html_class: 'note_edited_ago', include_author: true)
+        = edited_time_ago_with_tooltip(note, placement: 'bottom', html_class: 'note_edited_ago', include_author: true)
         - if note_editable
           = render 'projects/notes/edit_form', note: note
         .note-awards

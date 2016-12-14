@@ -37,12 +37,13 @@
   }
 }
 
-.content-list {
-
-  &.pipelines,
-  &.builds-content-list {
-    width: 100%;
-    overflow: auto;
+@media (max-width: $screen-md-max) {
+  .content-list {
+    &.pipelines,
+    &.builds-content-list {
+      width: 100%;
+      overflow: auto;
+    }
   }
 }
 
@@ -663,6 +664,10 @@
         border-radius: 3px;
         color: $gl-text-color;
       }
+
+    .stage {
+      max-width: 100px;
+      width: 100px;
     }
 
     .ci-status-icon svg {

@@ -1,6 +1,6 @@
 .content-block.build-header
   .header-content
-    = render "ci/status/icon_with_description", subject: build
+    = render 'ci/status/badge', status: @build.detailed_status(current_user)
     Build
     %strong ##{@build.id}
     in pipeline

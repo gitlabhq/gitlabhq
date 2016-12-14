@@ -182,6 +182,44 @@ describe 'Edit Project Settings', feature: true do
         expect(page).not_to have_content("Comments")
       end
     end
+
+    # Regression spec for https://gitlab.com/gitlab-org/gitlab-ce/issues/25272
+    it "hides comments activity tab only on disabled issues, merge requests and repository" do
+      select "Disabled", from: "project_project_feature_attributes_issues_access_level"
+
+      save_changes_and_check_activity_tab do
+        expect(page).to have_content("Comments")
+      end
+
+      visit edit_namespace_project_path(project.namespace, project)
+
+      select "Disabled", from: "project_project_feature_attributes_merge_requests_access_level"
+
+      save_changes_and_check_activity_tab do
+        expect(page).to have_content("Comments")
+      end
+
+      visit edit_namespace_project_path(project.namespace, project)
+
+      select "Disabled", from: "project_project_feature_attributes_repository_access_level"
+
+      save_changes_and_check_activity_tab do
+        expect(page).not_to have_content("Comments")
+      end
+
+      visit edit_namespace_project_path(project.namespace, project)
+    end
+
+    def save_changes_and_check_activity_tab
+      click_button "Save changes"
+      wait_for_ajax
+
+      visit activity_namespace_project_path(project.namespace, project)
+
+      page.within(".event-filter") do
+        yield
+      end
+    end
   end
 
   # Regression spec for https://gitlab.com/gitlab-org/gitlab-ce/issues/24056

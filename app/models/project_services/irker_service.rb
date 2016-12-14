@@ -2,7 +2,8 @@ require 'uri'
 
 class IrkerService < Service
   prop_accessor :server_host, :server_port, :default_irc_uri
-  prop_accessor :colorize_messages, :recipients, :channels
+  prop_accessor :recipients, :channels
+  boolean_accessor :colorize_messages
   validates :recipients, presence: true, if: :activated?
 
   before_validation :get_channels

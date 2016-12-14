@@ -513,6 +513,21 @@ entry.
 - Fix broken Project API docs (Takuya Noguchi)
 - Migrate invalid project members (owner -> master)
 
+## 8.12.12 (2016-12-08)
+
+- Replace MR access checks with use of MergeRequestsFinder
+- Reenables /user API request to return private-token if user is admin and request is made with sudo
+
+## 8.12.11 (2016-12-02)
+
+- No changes
+
+## 8.12.10 (2016-11-28)
+
+- Fix information disclosure in `Projects::BlobController#update`
+- Fix missing access checks on issue lookup using IssuableFinder
+- Replace issue access checks with use of IssuableFinder
+
 ## 8.12.9 (2016-11-07)
 
 - Fix XSS issue in Markdown autolinker

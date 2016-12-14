@@ -37,6 +37,12 @@ class SessionsController < Devise::SessionsController
     end
   end
 
+  def destroy
+    super
+    # hide the signed_out notice
+    flash[:notice] = nil
+  end
+
   private
 
   # Handle an "initial setup" state, where there's only one user, it's an admin,
