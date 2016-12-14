@@ -45,6 +45,12 @@ module EventsHelper
     @project.feature_available?(feature_key, current_user)
   end
 
+  def comments_visible?
+    event_filter_visible(:repository) ||
+      event_filter_visible(:merge_requests) ||
+      event_filter_visible(:issues)
+  end
+
   def event_preposition(event)
     if event.push? || event.commented? || event.target
       "at"

@@ -47,7 +47,7 @@
       new gl.DueDateSelectors();
       new LabelsSelect();
       new Sidebar();
-      new Subscription('.subscription');
+      gl.Subscription.bindAll('.subscription');
     }
   });
 })();

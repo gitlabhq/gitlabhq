@@ -304,10 +304,6 @@ class User < ActiveRecord::Base
       personal_access_token.user if personal_access_token
     end
 
-    def by_username_or_id(name_or_id)
-      find_by('users.username = ? OR users.id = ?', name_or_id.to_s, name_or_id.to_i)
-    end
-
     # Returns a user for the given SSH key.
     def find_by_ssh_key_id(key_id)
       find_by(id: Key.unscoped.select(:user_id).where(id: key_id))
@@ -445,27 +441,21 @@ class User < ActiveRecord::Base
   end
 
   def refresh_authorized_projects
-    loop do
-      begin
-        Gitlab::Database.serialized_transaction do
-          project_authorizations.delete_all
+    transaction do
+      project_authorizations.delete_all
 
-          # project_authorizations_union can return multiple records for the same project/user with
-          # different access_level so we take row with the maximum access_level
-          project_authorizations.connection.execute <<-SQL
-            INSERT INTO project_authorizations (user_id, project_id, access_level)
-            SELECT user_id, project_id, MAX(access_level) AS access_level
-            FROM (#{project_authorizations_union.to_sql}) sub
-            GROUP BY user_id, project_id
-          SQL
+      # project_authorizations_union can return multiple records for the same
+      # project/user with different access_level so we take row with the maximum
+      # access_level
+      project_authorizations.connection.execute <<-SQL
+      INSERT INTO project_authorizations (user_id, project_id, access_level)
+      SELECT user_id, project_id, MAX(access_level) AS access_level
+      FROM (#{project_authorizations_union.to_sql}) sub
+      GROUP BY user_id, project_id
+      SQL
 
-          update_column(:authorized_projects_populated, true) unless authorized_projects_populated
-        end
-
-        break
-      # In the event of a concurrent modification Rails raises StatementInvalid.
-      # In this case we want to keep retrying until the transaction succeeds
-      rescue ActiveRecord::StatementInvalid
+      unless authorized_projects_populated
+        update_column(:authorized_projects_populated, true)
       end
     end
   end
@@ -518,7 +508,7 @@ class User < ActiveRecord::Base
   end
 
   def require_ssh_key?
-    keys.count == 0
+    keys.count == 0 && Gitlab::ProtocolAccess.allowed?('ssh')
   end
 
   def require_password?
@@ -706,20 +696,6 @@ class User < ActiveRecord::Base
   def can_leave_project?(project)
     project.namespace != namespace &&
       project.project_member(self)
-  end
-
-  # Reset project events cache related to this user
-  #
-  # Since we do cache @event we need to reset cache in special cases:
-  # * when the user changes their avatar
-  # Events cache stored like  events/23-20130109142513.
-  # The cache key includes updated_at timestamp.
-  # Thus it will automatically generate a new fragment
-  # when the event is updated because the key changes.
-  def reset_events_cache
-    Event.where(author_id: id).
-      order('id DESC').limit(1000).
-      update_all(updated_at: Time.now)
   end
 
   def full_website_url

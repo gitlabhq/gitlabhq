@@ -1,15 +1,15 @@
 {
   "env": {
+    "jquery": true,
     "browser": true,
     "es6": true
   },
-  "extends": "airbnb",
+  "extends": "airbnb-base",
   "globals": {
-    "$": false,
     "_": false,
     "gl": false,
     "gon": false,
-    "jQuery": false
+    "localStorage": false
   },
   "plugins": [
     "filenames"

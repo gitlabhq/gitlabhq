@@ -39,7 +39,7 @@ module Gitlab
         log.info "(#{provider}) saving user #{auth_hash.email} from login with extern_uid => #{auth_hash.uid}"
         gl_user
       rescue ActiveRecord::RecordInvalid => e
-        log.info "(#{provider}) Error saving user: #{gl_user.errors.full_messages}"
+        log.info "(#{provider}) Error saving user #{auth_hash.uid} (#{auth_hash.email}): #{gl_user.errors.full_messages}"
         return self, e.record.errors
       end
 

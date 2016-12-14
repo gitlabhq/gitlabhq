@@ -19,6 +19,9 @@ class Note < ActiveRecord::Base
   # Banzai::ObjectRenderer
   attr_accessor :user_visible_reference_count
 
+  # Attribute used to store the attributes that have ben changed by slash commands.
+  attr_accessor :commands_changes
+
   default_value_for :system, false
 
   attr_mentionable :note, pipeline: :note
@@ -96,7 +99,7 @@ class Note < ActiveRecord::Base
     end
 
     def discussions
-      Discussion.for_notes(all)
+      Discussion.for_notes(fresh)
     end
 
     def grouped_diff_discussions
@@ -196,19 +199,6 @@ class Note < ActiveRecord::Base
   #        For more information visit http://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html#label-Polymorphic+Associations
   def noteable_type=(noteable_type)
     super(noteable_type.to_s.classify.constantize.base_class.to_s)
-  end
-
-  # Reset notes events cache
-  #
-  # Since we do cache @event we need to reset cache in special cases:
-  # * when a note is updated
-  # * when a note is removed
-  # Events cache stored like  events/23-20130109142513.
-  # The cache key includes updated_at timestamp.
-  # Thus it will automatically generate a new fragment
-  # when the event is updated because the key changes.
-  def reset_events_cache
-    Event.reset_event_cache_for(self)
   end
 
   def editable?

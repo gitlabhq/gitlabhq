@@ -40,9 +40,7 @@ module Gitlab
       private
 
       def find_by_iid(iid)
-        resource = collection.find_by(iid: iid)
-
-        readable?(resource) ? resource : nil
+        collection.find_by(iid: iid)
       end
     end
   end

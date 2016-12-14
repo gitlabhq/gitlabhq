@@ -21,8 +21,6 @@ module Ci
 
     after_create :keep_around_commits, unless: :importing?
 
-    delegate :stages, to: :statuses
-
     state_machine :status, initial: :created do
       event :enqueue do
         transition created: :pending
@@ -108,17 +106,35 @@ module Ci
       sha[0...8]
     end
 
-    def self.stages
-      # We use pluck here due to problems with MySQL which doesn't allow LIMIT/OFFSET in queries
-      CommitStatus.where(pipeline: pluck(:id)).stages
-    end
-
     def self.total_duration
       where.not(duration: nil).sum(:duration)
     end
 
-    def stages_with_latest_statuses
-      statuses.latest.includes(project: :namespace).order(:stage_idx).group_by(&:stage)
+    def stages_count
+      statuses.select(:stage).distinct.count
+    end
+
+    def stages_name
+      statuses.order(:stage_idx).distinct.
+        pluck(:stage, :stage_idx).map(&:first)
+    end
+
+    def stages
+      status_sql = statuses.latest.where('stage=sg.stage').status_sql
+
+      stages_query = statuses.group('stage').select(:stage)
+                       .order('max(stage_idx)')
+
+      stages_with_statuses = CommitStatus.from(stages_query, :sg).
+        pluck('sg.stage', status_sql)
+
+      stages_with_statuses.map do |stage|
+        Ci::Stage.new(self, name: stage.first, status: stage.last)
+      end
+    end
+
+    def artifacts
+      builds.latest.with_artifacts_not_expired
     end
 
     def project_id
@@ -171,23 +187,27 @@ module Ci
     end
 
     def retryable?
-      builds.latest.any? do |build|
-        (build.failed? || build.canceled?) && build.retryable?
-      end
+      builds.latest.failed_or_canceled.any?(&:retryable?)
     end
 
     def cancelable?
-      builds.running_or_pending.any?
+      statuses.cancelable.any?
     end
 
     def cancel_running
-      builds.running_or_pending.each(&:cancel)
+      Gitlab::OptimisticLocking.retry_lock(
+        statuses.cancelable) do |cancelable|
+          cancelable.each(&:cancel)
+        end
     end
 
     def retry_failed(user)
-      builds.latest.failed.select(&:retryable?).each do |build|
-        Ci::Build.retry(build, user)
-      end
+      Gitlab::OptimisticLocking.retry_lock(
+        builds.latest.failed_or_canceled) do |failed_or_canceled|
+          failed_or_canceled.select(&:retryable?).each do |build|
+            Ci::Build.retry(build, user)
+          end
+        end
     end
 
     def mark_as_processable_after_stage(stage_idx)
@@ -323,7 +343,11 @@ module Ci
     def merge_requests
       @merge_requests ||= project.merge_requests
         .where(source_branch: self.ref)
-        .select { |merge_request| merge_request.pipeline.try(:id) == self.id }
+        .select { |merge_request| merge_request.head_pipeline.try(:id) == self.id }
+    end
+
+    def detailed_status
+      Gitlab::Ci::Status::Pipeline::Factory.new(self).fabricate!
     end
 
     private

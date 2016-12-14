@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe "Guest navigation menu" do
-  let(:project) { create :empty_project, :private }
-  let(:guest) { create :user }
+  let(:project) { create(:empty_project, :private, public_builds: false) }
+  let(:guest) { create(:user) }
 
   before do
     project.team << [guest, :guest]

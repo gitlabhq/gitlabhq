@@ -1,6 +1,7 @@
 module API
-  # Todos API
   class Todos < Grape::API
+    include PaginationParams
+
     before { authenticate! }
 
     ISSUABLE_TYPES = {
@@ -44,10 +45,11 @@ module API
       desc 'Get a todo list' do
         success Entities::Todo
       end
+      params do
+        use :pagination
+      end
       get do
-        todos = find_todos
-
-        present paginate(todos), with: Entities::Todo, current_user: current_user
+        present paginate(find_todos), with: Entities::Todo, current_user: current_user
       end
 
       desc 'Mark a todo as done' do

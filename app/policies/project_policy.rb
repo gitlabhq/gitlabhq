@@ -12,9 +12,6 @@ class ProjectPolicy < BasePolicy
       guest_access!
       public_access!
 
-      # Allow to read builds for internal projects
-      can! :read_build if project.public_builds?
-
       if project.request_access_enabled &&
          !(owner || user.admin? || project.team.member?(user) || project_group_member?(user))
         can! :request_access
@@ -46,10 +43,16 @@ class ProjectPolicy < BasePolicy
     can! :create_note
     can! :upload_file
     can! :read_cycle_analytics
+
+    if project.public_builds?
+      can! :read_pipeline
+      can! :read_build
+    end
   end
 
   def reporter_access!
     can! :download_code
+    can! :download_wiki_code
     can! :fork_project
     can! :create_project_snippet
     can! :update_issue
@@ -187,6 +190,7 @@ class ProjectPolicy < BasePolicy
 
     unless project.feature_available?(:wiki, user) || project.has_external_wiki?
       cannot!(*named_abilities(:wiki))
+      cannot!(:download_wiki_code)
     end
 
     unless project.feature_available?(:builds, user) && repository_enabled
@@ -226,6 +230,7 @@ class ProjectPolicy < BasePolicy
     can! :read_commit_status
     can! :read_container_image
     can! :download_code
+    can! :download_wiki_code
     can! :read_cycle_analytics
 
     # NOTE: may be overridden by IssuePolicy

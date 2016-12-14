@@ -7,9 +7,13 @@ describe Key, models: true do
 
   describe "Validation" do
     it { is_expected.to validate_presence_of(:title) }
+    it { is_expected.to validate_length_of(:title).is_at_most(255) }
+
     it { is_expected.to validate_presence_of(:key) }
-    it { is_expected.to validate_length_of(:title).is_within(0..255) }
-    it { is_expected.to validate_length_of(:key).is_within(0..5000) }
+    it { is_expected.to validate_length_of(:key).is_at_most(5000) }
+    it { is_expected.to allow_value('ssh-foo').for(:key) }
+    it { is_expected.to allow_value('ecdsa-foo').for(:key) }
+    it { is_expected.not_to allow_value('foo-bar').for(:key) }
   end
 
   describe "Methods" do

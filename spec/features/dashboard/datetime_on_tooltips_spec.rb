@@ -36,7 +36,7 @@ feature 'Tooltips on .timeago dates', feature: true, js: true do
       visit user_snippets_path(user)
       wait_for_ajax()
 
-      page.find('.js-timeago').hover
+      page.find('.js-timeago.snippet-created-ago').hover
     end
 
     it 'has the datetime formated correctly' do

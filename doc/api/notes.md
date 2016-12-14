@@ -21,7 +21,7 @@ Parameters:
 [
   {
     "id": 302,
-    "body": "Status changed to closed",
+    "body": "closed",
     "attachment": null,
     "author": {
       "id": 1,
@@ -109,8 +109,7 @@ Parameters:
 
 ### Delete an issue note
 
-Deletes an existing note of an issue. On success, this API method returns 200
-and the deleted note. If the note does not exist, the API returns 404.
+Deletes an existing note of an issue.
 
 ```
 DELETE /projects/:id/issues/:issue_id/notes/:note_id
@@ -234,8 +233,7 @@ Parameters:
 
 ### Delete a snippet note
 
-Deletes an existing note of a snippet. On success, this API method returns 200
-and the deleted note. If the note does not exist, the API returns 404.
+Deletes an existing note of a snippet.
 
 ```
 DELETE /projects/:id/snippets/:snippet_id/notes/:note_id
@@ -364,8 +362,7 @@ Parameters:
 
 ### Delete a merge request note
 
-Deletes an existing note of a merge request. On success, this API method returns
-200 and the deleted note. If the note does not exist, the API returns 404.
+Deletes an existing note of a merge request.
 
 ```
 DELETE /projects/:id/merge_requests/:merge_request_id/notes/:note_id

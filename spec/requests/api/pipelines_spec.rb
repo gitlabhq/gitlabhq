@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe API::API, api: true do
+describe API::Pipelines, api: true do
   include ApiHelpers
 
   let(:user)        { create(:user) }
@@ -102,6 +102,18 @@ describe API::API, api: true do
         expect(response).to have_http_status(404)
         expect(json_response['message']).to eq '404 Not found'
         expect(json_response['id']).to be nil
+      end
+
+      context 'with coverage' do
+        before do
+          create(:ci_build, coverage: 30, pipeline: pipeline)
+        end
+
+        it 'exposes the coverage' do
+          get api("/projects/#{project.id}/pipelines/#{pipeline.id}", user)
+
+          expect(json_response["coverage"].to_i).to eq(30)
+        end
       end
     end
 

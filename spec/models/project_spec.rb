@@ -131,14 +131,18 @@ describe Project, models: true do
 
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_uniqueness_of(:name).scoped_to(:namespace_id) }
-    it { is_expected.to validate_length_of(:name).is_within(0..255) }
+    it { is_expected.to validate_length_of(:name).is_at_most(255) }
 
     it { is_expected.to validate_presence_of(:path) }
     it { is_expected.to validate_uniqueness_of(:path).scoped_to(:namespace_id) }
-    it { is_expected.to validate_length_of(:path).is_within(0..255) }
-    it { is_expected.to validate_length_of(:description).is_within(0..2000) }
+    it { is_expected.to validate_length_of(:path).is_at_most(255) }
+
+    it { is_expected.to validate_length_of(:description).is_at_most(2000) }
+
     it { is_expected.to validate_presence_of(:creator) }
+
     it { is_expected.to validate_presence_of(:namespace) }
+
     it { is_expected.to validate_presence_of(:repository_storage) }
 
     it 'does not allow new projects beyond user limits' do
@@ -258,10 +262,70 @@ describe Project, models: true do
   end
 
   describe '#to_reference' do
-    let(:project) { create(:empty_project) }
+    let(:owner) { create(:user, name: 'Gitlab') }
+    let(:namespace) { create(:namespace, path: 'sample-namespace', owner: owner) }
+    let(:project) { create(:empty_project, path: 'sample-project', namespace: namespace) }
 
-    it 'returns a String reference to the object' do
-      expect(project.to_reference).to eq project.path_with_namespace
+    context 'when nil argument' do
+      it 'returns nil' do
+        expect(project.to_reference).to be_nil
+      end
+    end
+
+    context 'when same project argument' do
+      it 'returns nil' do
+        expect(project.to_reference(project)).to be_nil
+      end
+    end
+
+    context 'when cross namespace project argument' do
+      let(:another_namespace_project) { create(:empty_project, name: 'another-project') }
+
+      it 'returns complete path to the project' do
+        expect(project.to_reference(another_namespace_project)).to eq 'sample-namespace/sample-project'
+      end
+    end
+
+    context 'when same namespace / cross-project argument' do
+      let(:another_project) { create(:empty_project, namespace: namespace) }
+
+      it 'returns complete path to the project' do
+        expect(project.to_reference(another_project)).to eq 'sample-project'
+      end
+    end
+  end
+
+  describe '#to_human_reference' do
+    let(:owner) { create(:user, name: 'Gitlab') }
+    let(:namespace) { create(:namespace, name: 'Sample namespace', owner: owner) }
+    let(:project) { create(:empty_project, name: 'Sample project', namespace: namespace) }
+
+    context 'when nil argument' do
+      it 'returns nil' do
+        expect(project.to_human_reference).to be_nil
+      end
+    end
+
+    context 'when same project argument' do
+      it 'returns nil' do
+        expect(project.to_human_reference(project)).to be_nil
+      end
+    end
+
+    context 'when cross namespace project argument' do
+      let(:another_namespace_project) { create(:empty_project, name: 'another-project') }
+
+      it 'returns complete name with namespace of the project' do
+        expect(project.to_human_reference(another_namespace_project)).to eq 'Gitlab / Sample project'
+      end
+    end
+
+    context 'when same namespace / cross-project argument' do
+      let(:another_project) { create(:empty_project, namespace: namespace) }
+
+      it 'returns name of the project' do
+        expect(project.to_human_reference(another_project)).to eq 'Sample project'
+      end
     end
   end
 
@@ -361,10 +425,15 @@ describe Project, models: true do
   describe '#get_issue' do
     let(:project) { create(:empty_project) }
     let!(:issue)  { create(:issue, project: project) }
+    let(:user)    { create(:user) }
+
+    before do
+      project.team << [user, :developer]
+    end
 
     context 'with default issues tracker' do
       it 'returns an issue' do
-        expect(project.get_issue(issue.iid)).to eq issue
+        expect(project.get_issue(issue.iid, user)).to eq issue
       end
 
       it 'returns count of open issues' do
@@ -372,7 +441,12 @@ describe Project, models: true do
       end
 
       it 'returns nil when no issue found' do
-        expect(project.get_issue(999)).to be_nil
+        expect(project.get_issue(999, user)).to be_nil
+      end
+
+      it "returns nil when user doesn't have access" do
+        user = create(:user)
+        expect(project.get_issue(issue.iid, user)).to eq nil
       end
     end
 
@@ -382,7 +456,7 @@ describe Project, models: true do
       end
 
       it 'returns an ExternalIssue' do
-        issue = project.get_issue('FOO-1234')
+        issue = project.get_issue('FOO-1234', user)
         expect(issue).to be_kind_of(ExternalIssue)
         expect(issue.iid).to eq 'FOO-1234'
         expect(issue.project).to eq project
@@ -401,35 +475,6 @@ describe Project, models: true do
     it 'is falsey when issue does not exist' do
       expect(project).to receive(:get_issue).and_return(nil)
       expect(project.issue_exists?(1)).to be_falsey
-    end
-  end
-
-  describe '.find_with_namespace' do
-    context 'with namespace' do
-      before do
-        @group = create :group, name: 'gitlab'
-        @project = create(:project, name: 'gitlabhq', namespace: @group)
-      end
-
-      it { expect(Project.find_with_namespace('gitlab/gitlabhq')).to eq(@project) }
-      it { expect(Project.find_with_namespace('GitLab/GitlabHQ')).to eq(@project) }
-      it { expect(Project.find_with_namespace('gitlab-ci')).to be_nil }
-    end
-
-    context 'when multiple projects using a similar name exist' do
-      let(:group) { create(:group, name: 'gitlab') }
-
-      let!(:project1) do
-        create(:empty_project, name: 'gitlab1', path: 'gitlab', namespace: group)
-      end
-
-      let!(:project2) do
-        create(:empty_project, name: 'gitlab2', path: 'GITLAB', namespace: group)
-      end
-
-      it 'returns the row where the path matches literally' do
-        expect(Project.find_with_namespace('gitlab/GITLAB')).to eq(project2)
-      end
     end
   end
 
@@ -1470,39 +1515,6 @@ describe Project, models: true do
         end
 
         it_behaves_like 'it always returns false'
-      end
-    end
-  end
-
-  describe '.where_paths_in' do
-    context 'without any paths' do
-      it 'returns an empty relation' do
-        expect(Project.where_paths_in([])).to eq([])
-      end
-    end
-
-    context 'without any valid paths' do
-      it 'returns an empty relation' do
-        expect(Project.where_paths_in(%w[foo])).to eq([])
-      end
-    end
-
-    context 'with valid paths' do
-      let!(:project1) { create(:project) }
-      let!(:project2) { create(:project) }
-
-      it 'returns the projects matching the paths' do
-        projects = Project.where_paths_in([project1.path_with_namespace,
-                                           project2.path_with_namespace])
-
-        expect(projects).to contain_exactly(project1, project2)
-      end
-
-      it 'returns projects regardless of the casing of paths' do
-        projects = Project.where_paths_in([project1.path_with_namespace.upcase,
-                                           project2.path_with_namespace.upcase])
-
-        expect(projects).to contain_exactly(project1, project2)
       end
     end
   end

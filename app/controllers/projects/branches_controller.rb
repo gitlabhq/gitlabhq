@@ -36,7 +36,7 @@ class Projects::BranchesController < Projects::ApplicationController
         execute(branch_name, ref)
 
     if params[:issue_iid]
-      issue = @project.issues.find_by(iid: params[:issue_iid])
+      issue = IssuesFinder.new(current_user, project_id: @project.id).find_by(iid: params[:issue_iid])
       SystemNoteService.new_issue_branch(issue, @project, current_user, branch_name) if issue
     end
 

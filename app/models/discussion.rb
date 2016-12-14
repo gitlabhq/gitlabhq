@@ -25,7 +25,12 @@ class Discussion
             to: :last_resolved_note,
             allow_nil: true
 
-  delegate :blob, :highlighted_diff_lines, to: :diff_file, allow_nil: true
+  delegate  :blob,
+            :highlighted_diff_lines,
+            :diff_lines,
+
+            to: :diff_file,
+            allow_nil: true
 
   def self.for_notes(notes)
     notes.group_by(&:discussion_id).values.map { |notes| new(notes) }
@@ -81,6 +86,10 @@ class Discussion
 
   def first_note
     @first_note ||= @notes.first
+  end
+
+  def first_note_to_resolve
+    @first_note_to_resolve ||= notes.detect(&:to_be_resolved?)
   end
 
   def last_note
@@ -159,10 +168,11 @@ class Discussion
   end
 
   # Returns an array of at most 16 highlighted lines above a diff note
-  def truncated_diff_lines
+  def truncated_diff_lines(highlight: true)
+    lines = highlight ? highlighted_diff_lines : diff_lines
     prev_lines = []
 
-    highlighted_diff_lines.each do |line|
+    lines.each do |line|
       if line.meta?
         prev_lines.clear
       else

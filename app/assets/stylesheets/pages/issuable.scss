@@ -30,6 +30,7 @@
 
     .color-label {
       padding: 6px 10px;
+      border-radius: $label-border-radius;
     }
   }
 
@@ -132,7 +133,7 @@
     display: none;
   }
 
-  .btn-clipboard {
+  .btn-clipboard:hover {
     color: $gl-gray;
   }
 }
@@ -233,7 +234,11 @@
       width: 100%;
       text-align: center;
       padding-bottom: 10px;
-      color: #999;
+      color: $issuable-sidebar-color;
+
+      &:hover {
+        color: $gl-gray;
+      }
 
       span {
         display: block;
@@ -244,15 +249,17 @@
         display: none;
       }
 
+      .avatar:hover {
+        border-color: $issuable-avatar-hover-border;
+      }
+
       .btn-clipboard {
         border: none;
+        color: $issuable-clipboard-color;
 
         &:hover {
           background: transparent;
-        }
-
-        i {
-          color: #999;
+          color: $gl-gray;
         }
       }
     }

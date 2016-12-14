@@ -5,14 +5,10 @@ module GroupsHelper
 
   def group_icon(group)
     if group.is_a?(String)
-      group = Group.find_by(path: group)
+      group = Group.find_by_full_path(group)
     end
 
-    if group && group.avatar.present?
-      group.avatar.url
-    else
-      image_path('no_group_avatar.png')
-    end
+    group.try(:avatar_url) || image_path('no_group_avatar.png')
   end
 
   def group_title(group, name = nil, url = nil)

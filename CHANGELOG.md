@@ -2,6 +2,68 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 8.14.4 (2016-12-08)
+
+- Fix diff view permalink highlighting. !7090
+- Fix pipeline author for Slack and use pipeline id for pipeline link. !7506
+- Fix compatibility with Internet Explorer 11 for merge requests. !7525 (Steffen Rauh)
+- Reenables /user API request to return private-token if user is admin and request is made with sudo. !7615
+- Fix Cicking on tabs on pipeline page should set URL. !7709
+- Authorize users into imported GitLab project.
+- Destroy a user's session when they delete their own account.
+- Don't accidentally mark unsafe diff lines as HTML safe.
+- Replace MR access checks with use of MergeRequestsFinder.
+- Remove visible content caching.
+
+## 8.14.3 (2016-12-02)
+
+- Pass commit data to ProcessCommitWorker to reduce Git overhead. !7744
+- Speed up issuable dashboards.
+- Don't change relative URLs to absolute URLs in the Help page.
+- Fixes "ActionView::Template::Error: undefined method `text?` for nil:NilClass" on MR pages.
+- Fix branch validation for GitHub PR where repo/fork was renamed/deleted.
+- Validate state param when filtering issuables.
+
+## 8.14.2 (2016-12-01)
+
+- Remove caching of events data. !6578
+- Rephrase some system notes to be compatible with new system note style. !7692
+- Pass tag SHA to post-receive hook when tag is created via UI. !7700
+- Prevent error when submitting a merge request and pipeline is not defined. !7707
+- Fixes system note style in commit discussion. !7721
+- Use a Redis lease for updating authorized projects. !7733
+- Refactor JiraService by moving code out of JiraService#execute method. !7756
+- Update GitLab Workhorse to v1.0.1. !7759
+- Fix pipelines info being hidden in merge request widget. !7808
+- Fixed commit timeago not rendering after initial page.
+- Fix for error thrown in cycle analytics events if build has not started.
+- Fixed issue boards issue sorting when dragging issue into list.
+- Allow access to the wiki with git when repository feature disabled.
+- Fixed timeago not rendering when resolving a discussion.
+- Update Sidekiq-cron to fix compatibility issues with Sidekiq 4.2.1.
+- Timeout creating and viewing merge request for binary file.
+- Gracefully recover from Redis connection failures in Sidekiq initializer.
+
+## 8.14.1 (2016-11-28)
+
+- Fix deselecting calendar days on contribution graph. !6453 (ClemMakesApps)
+- Update grape entity to 0.6.0. !7491
+- If Build running change accept merge request when build succeeds button from orange to blue. !7577
+- Changed import sources buttons to checkboxes. !7598 (Luke "Jared" Bennett)
+- Last minute CI Style tweaks for 8.14. !7643
+- Fix exceptions when loading build trace. !7658
+- Fix wrong template rendered when CI/CD settings aren't update successfully. !7665
+- fixes last_deployment call environment is nil. !7671
+- Sort builds by name within pipeline graph. !7681
+- Correctly determine mergeability of MR with no discussions.
+- Sidekiq stats in the admin area will now show correctly on different platforms. (blackst0ne)
+- Fixed issue boards dragging card removing random issues.
+- Fix information disclosure in `Projects::BlobController#update`.
+- Fix missing access checks on issue lookup using IssuableFinder.
+- Replace issue access checks with use of IssuableFinder.
+- Non members cannot create labels through the API.
+- Fix cycle analytics plan stage when commits are missing.
+
 ## 8.14.0 (2016-11-22)
 
 - Use separate email-token for incoming email and revert back the inactive feature. !5914
@@ -201,6 +263,25 @@ entry.
 - Updated commit SHA styling on the branches page.
 - Fix "Without projects" filter. !6611 (Ben Bodenmiller)
 - Fix 404 when visit /projects page
+
+## 8.13.9 (2016-12-08)
+
+- Reenables /user API request to return private-token if user is admin and request is made with sudo. !7615
+- Replace MR access checks with use of MergeRequestsFinder.
+
+## 8.13.8 (2016-12-02)
+
+- Pass tag SHA to post-receive hook when tag is created via UI. !7700
+- Validate state param when filtering issuables.
+
+## 8.13.7 (2016-11-28)
+
+- fixes 500 error on project show when user is not logged in and project is still empty. !7376
+- Update grape entity to 0.6.0. !7491
+- Fix information disclosure in `Projects::BlobController#update`.
+- Fix missing access checks on issue lookup using IssuableFinder.
+- Replace issue access checks with use of IssuableFinder.
+- Non members cannot create labels through the API.
 
 ## 8.13.6 (2016-11-17)
 
@@ -431,6 +512,21 @@ entry.
 - Make guests unable to view MRs on private projects
 - Fix broken Project API docs (Takuya Noguchi)
 - Migrate invalid project members (owner -> master)
+
+## 8.12.12 (2016-12-08)
+
+- Replace MR access checks with use of MergeRequestsFinder
+- Reenables /user API request to return private-token if user is admin and request is made with sudo
+
+## 8.12.11 (2016-12-02)
+
+- No changes
+
+## 8.12.10 (2016-11-28)
+
+- Fix information disclosure in `Projects::BlobController#update`
+- Fix missing access checks on issue lookup using IssuableFinder
+- Replace issue access checks with use of IssuableFinder
 
 ## 8.12.9 (2016-11-07)
 

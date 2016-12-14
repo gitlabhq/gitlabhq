@@ -7,76 +7,51 @@ module API
     SUDO_HEADER = "HTTP_SUDO"
     SUDO_PARAM = :sudo
 
-    def private_token
-      params[PRIVATE_TOKEN_PARAM] || env[PRIVATE_TOKEN_HEADER]
-    end
-
-    def warden
-      env['warden']
-    end
-
-    # Check the Rails session for valid authentication details
-    #
-    # Until CSRF protection is added to the API, disallow this method for
-    # state-changing endpoints
-    def find_user_from_warden
-      warden.try(:authenticate) if %w[GET HEAD].include?(env['REQUEST_METHOD'])
-    end
-
     def declared_params(options = {})
       options = { include_parent_namespaces: false }.merge(options)
       declared(params, options).to_h.symbolize_keys
     end
 
-    def find_user_by_private_token
-      token = private_token
-      return nil unless token.present?
-
-      User.find_by_authentication_token(token) || User.find_by_personal_access_token(token)
-    end
-
     def current_user
-      @current_user ||= find_user_by_private_token
-      @current_user ||= doorkeeper_guard
-      @current_user ||= find_user_from_warden
+      return @current_user if defined?(@current_user)
 
-      unless @current_user && Gitlab::UserAccess.new(@current_user).allowed?
-        return nil
-      end
+      @current_user = initial_current_user
 
-      identifier = sudo_identifier()
-
-      # If the sudo is the current user do nothing
-      if identifier && !(@current_user.id == identifier || @current_user.username == identifier)
-        forbidden!('Must be admin to use sudo') unless @current_user.is_admin?
-        @current_user = User.by_username_or_id(identifier)
-        not_found!("No user id or username for: #{identifier}") if @current_user.nil?
-      end
+      sudo!
 
       @current_user
     end
 
-    def sudo_identifier
-      identifier ||= params[SUDO_PARAM] || env[SUDO_HEADER]
-
-      # Regex for integers
-      if !!(identifier =~ /\A[0-9]+\z/)
-        identifier.to_i
-      else
-        identifier
-      end
+    def sudo?
+      initial_current_user != current_user
     end
 
     def user_project
-      @project ||= find_project(params[:id])
+      @project ||= find_project!(params[:id])
     end
 
     def available_labels
       @available_labels ||= LabelsFinder.new(current_user, project_id: user_project.id).execute
     end
 
+    def find_user(id)
+      if id =~ /^\d+$/
+        User.find_by(id: id)
+      else
+        User.find_by(username: id)
+      end
+    end
+
     def find_project(id)
-      project = Project.find_with_namespace(id) || Project.find_by(id: id)
+      if id =~ /^\d+$/
+        Project.find_by(id: id)
+      else
+        Project.find_with_namespace(id)
+      end
+    end
+
+    def find_project!(id)
+      project = find_project(id)
 
       if can?(current_user, :read_project, project)
         project
@@ -85,19 +60,16 @@ module API
       end
     end
 
-    def project_service(project = user_project)
-      @project_service ||= project.find_or_initialize_service(params[:service_slug].underscore)
-      @project_service || not_found!("Service")
-    end
-
-    def service_attributes
-      @service_attributes ||= project_service.fields.inject([]) do |arr, hash|
-        arr << hash[:name].to_sym
+    def find_group(id)
+      if id =~ /^\d+$/
+        Group.find_by(id: id)
+      else
+        Group.find_by_full_path(id)
       end
     end
 
-    def find_group(id)
-      group = Group.find_by(path: id) || Group.find_by(id: id)
+    def find_group!(id)
+      group = find_group(id)
 
       if can?(current_user, :read_group, group)
         group
@@ -112,9 +84,7 @@ module API
     end
 
     def find_project_issue(id)
-      issue = user_project.issues.find(id)
-      not_found! unless can?(current_user, :read_issue, issue)
-      issue
+      IssuesFinder.new(current_user, project_id: user_project.id).find(id)
     end
 
     def paginate(relation)
@@ -127,6 +97,10 @@ module API
       unauthorized! unless current_user
     end
 
+    def authenticate_non_get!
+      authenticate! unless %w[GET HEAD].include?(route.route_method)
+    end
+
     def authenticate_by_gitlab_shell_token!
       input = params['secret_token'].try(:chomp)
       unless Devise.secure_compare(secret_token, input)
@@ -135,6 +109,7 @@ module API
     end
 
     def authenticated_as_admin!
+      authenticate!
       forbidden! unless current_user.is_admin?
     end
 
@@ -182,20 +157,6 @@ module API
       ActionController::Parameters.new(attrs).permit!
     end
 
-    # Helper method for validating all labels against its names
-    def validate_label_params(params)
-      errors = {}
-
-      params[:labels].to_s.split(',').each do |label_name|
-        label = available_labels.find_or_initialize_by(title: label_name.strip)
-        next if label.valid?
-
-        errors[label.title] = label.errors
-      end
-
-      errors
-    end
-
     # Checks the occurrences of datetime attributes, each attribute if present in the params hash must be in ISO 8601
     # format (YYYY-MM-DDTHH:MM:SSZ) or a Bad Request error is invoked.
     #
@@ -209,22 +170,6 @@ module API
           message = "\"" + key.to_s + "\" must be a timestamp in ISO 8601 format: YYYY-MM-DDTHH:MM:SSZ"
           render_api_error!(message, 400)
         end
-      end
-    end
-
-    def issuable_order_by
-      if params["order_by"] == 'updated_at'
-        'updated_at'
-      else
-        'created_at'
-      end
-    end
-
-    def issuable_sort
-      if params["sort"] == 'asc'
-        :asc
-      else
-        :desc
       end
     end
 
@@ -308,11 +253,6 @@ module API
     # Projects helpers
 
     def filter_projects(projects)
-      # If the archived parameter is passed, limit results accordingly
-      if params[:archived].present?
-        projects = projects.where(archived: to_boolean(params[:archived]))
-      end
-
       if params[:search].present?
         projects = projects.search(params[:search])
       end
@@ -321,25 +261,8 @@ module API
         projects = projects.search_by_visibility(params[:visibility])
       end
 
-      projects.reorder(project_order_by => project_sort)
-    end
-
-    def project_order_by
-      order_fields = %w(id name path created_at updated_at last_activity_at)
-
-      if order_fields.include?(params['order_by'])
-        params['order_by']
-      else
-        'created_at'
-      end
-    end
-
-    def project_sort
-      if params["sort"] == 'asc'
-        :asc
-      else
-        :desc
-      end
+      projects = projects.where(archived: params[:archived])
+      projects.reorder(params[:order_by] => params[:sort])
     end
 
     # file helpers
@@ -383,6 +306,69 @@ module API
     end
 
     private
+
+    def private_token
+      params[PRIVATE_TOKEN_PARAM] || env[PRIVATE_TOKEN_HEADER]
+    end
+
+    def warden
+      env['warden']
+    end
+
+    # Check the Rails session for valid authentication details
+    #
+    # Until CSRF protection is added to the API, disallow this method for
+    # state-changing endpoints
+    def find_user_from_warden
+      warden.try(:authenticate) if %w[GET HEAD].include?(env['REQUEST_METHOD'])
+    end
+
+    def find_user_by_private_token
+      token = private_token
+      return nil unless token.present?
+
+      User.find_by_authentication_token(token) || User.find_by_personal_access_token(token)
+    end
+
+    def initial_current_user
+      return @initial_current_user if defined?(@initial_current_user)
+
+      @initial_current_user ||= find_user_by_private_token
+      @initial_current_user ||= doorkeeper_guard
+      @initial_current_user ||= find_user_from_warden
+
+      unless @initial_current_user && Gitlab::UserAccess.new(@initial_current_user).allowed?
+        @initial_current_user = nil
+      end
+
+      @initial_current_user
+    end
+
+    def sudo!
+      return unless sudo_identifier
+      return unless initial_current_user
+
+      unless initial_current_user.is_admin?
+        forbidden!('Must be admin to use sudo')
+      end
+
+      # Only private tokens should be used for the SUDO feature
+      unless private_token == initial_current_user.private_token
+        forbidden!('Private token must be specified in order to use sudo')
+      end
+
+      sudoed_user = find_user(sudo_identifier)
+
+      if sudoed_user
+        @current_user = sudoed_user
+      else
+        not_found!("No user id or username for: #{sudo_identifier}")
+      end
+    end
+
+    def sudo_identifier
+      @sudo_identifier ||= params[SUDO_PARAM] || env[SUDO_HEADER]
+    end
 
     def add_pagination_headers(paginated_data)
       header 'X-Total',       paginated_data.total_count.to_s

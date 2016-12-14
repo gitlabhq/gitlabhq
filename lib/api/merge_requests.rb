@@ -1,5 +1,7 @@
 module API
   class MergeRequests < Grape::API
+    include PaginationParams
+
     DEPRECATION_MESSAGE = 'This endpoint is deprecated and will be removed in GitLab 9.0.'.freeze
 
     before { authenticate! }
@@ -28,6 +30,7 @@ module API
           optional :assignee_id, type: Integer, desc: 'The ID of a user to assign the merge request'
           optional :milestone_id, type: Integer, desc: 'The ID of a milestone to assign the merge request'
           optional :labels, type: String, desc: 'Comma-separated list of label names'
+          optional :remove_source_branch, type: Boolean, desc: 'Remove source branch when merging'
         end
       end
 
@@ -42,6 +45,7 @@ module API
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
                         desc: 'Return merge requests sorted in `asc` or `desc` order.'
         optional :iid, type: Array[Integer], desc: 'The IID of the merge requests'
+        use :pagination
       end
       get ":id/merge_requests" do
         authorize! :read_merge_request, user_project
@@ -75,12 +79,8 @@ module API
       post ":id/merge_requests" do
         authorize! :create_merge_request, user_project
 
-        mr_params = declared_params
-
-        # Validate label names in advance
-        if (errors = validate_label_params(mr_params)).any?
-          render_api_error!({ labels: errors }, 400)
-        end
+        mr_params = declared_params(include_missing: false)
+        mr_params[:force_remove_source_branch] = mr_params.delete(:remove_source_branch) if mr_params[:remove_source_branch].present?
 
         merge_request = ::MergeRequests::CreateService.new(user_project, current_user, mr_params).execute
 
@@ -143,24 +143,21 @@ module API
           success Entities::MergeRequest
         end
         params do
-          optional :title, type: String, desc: 'The title of the merge request'
-          optional :target_branch, type: String, desc: 'The target branch'
+          optional :title, type: String, allow_blank: false, desc: 'The title of the merge request'
+          optional :target_branch, type: String, allow_blank: false, desc: 'The target branch'
           optional :state_event, type: String, values: %w[close reopen merge],
                                  desc: 'Status of the merge request'
           use :optional_params
           at_least_one_of :title, :target_branch, :description, :assignee_id,
-                          :milestone_id, :labels, :state_event
+                          :milestone_id, :labels, :state_event,
+                          :remove_source_branch
         end
         put path do
           merge_request = user_project.merge_requests.find(params.delete(:merge_request_id))
           authorize! :update_merge_request, merge_request
 
           mr_params = declared_params(include_missing: false)
-
-          # Validate label names in advance
-          if (errors = validate_label_params(mr_params)).any?
-            render_api_error!({ labels: errors }, 400)
-          end
+          mr_params[:force_remove_source_branch] = mr_params.delete(:remove_source_branch) if mr_params[:remove_source_branch].present?
 
           merge_request = ::MergeRequests::UpdateService.new(user_project, current_user, mr_params).execute(merge_request)
 
@@ -179,7 +176,7 @@ module API
           optional :should_remove_source_branch, type: Boolean,
                                                  desc: 'When true, the source branch will be deleted if possible'
           optional :merge_when_build_succeeds, type: Boolean,
-                                               desc: 'When true, this merge request will be merged when the build succeeds'
+                                               desc: 'When true, this merge request will be merged when the pipeline succeeds'
           optional :sha, type: String, desc: 'When present, must have the HEAD SHA of the source branch'
         end
         put "#{path}/merge" do
@@ -202,18 +199,20 @@ module API
             should_remove_source_branch: params[:should_remove_source_branch]
           }
 
-          if params[:merge_when_build_succeeds] && merge_request.pipeline && merge_request.pipeline.active?
-            ::MergeRequests::MergeWhenBuildSucceedsService.new(merge_request.target_project, current_user, merge_params).
-              execute(merge_request)
+          if params[:merge_when_build_succeeds] && merge_request.head_pipeline && merge_request.head_pipeline.active?
+            ::MergeRequests::MergeWhenPipelineSucceedsService
+              .new(merge_request.target_project, current_user, merge_params)
+              .execute(merge_request)
           else
-            ::MergeRequests::MergeService.new(merge_request.target_project, current_user, merge_params).
-              execute(merge_request)
+            ::MergeRequests::MergeService
+              .new(merge_request.target_project, current_user, merge_params)
+              .execute(merge_request)
           end
 
           present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
         end
 
-        desc 'Cancel merge if "Merge when build succeeds" is enabled' do
+        desc 'Cancel merge if "Merge When Pipeline Succeeds" is enabled' do
           success Entities::MergeRequest
         end
         post "#{path}/cancel_merge_when_build_succeeds" do
@@ -221,12 +220,17 @@ module API
 
           unauthorized! unless merge_request.can_cancel_merge_when_build_succeeds?(current_user)
 
-          ::MergeRequest::MergeWhenBuildSucceedsService.new(merge_request.target_project, current_user).cancel(merge_request)
+          ::MergeRequest::MergeWhenPipelineSucceedsService
+            .new(merge_request.target_project, current_user)
+            .cancel(merge_request)
         end
 
         desc 'Get the comments of a merge request' do
           detail 'Duplicate. DEPRECATED and WILL BE REMOVED in 9.0'
           success Entities::MRNote
+        end
+        params do
+          use :pagination
         end
         get "#{path}/comments" do
           merge_request = user_project.merge_requests.find(params[:merge_request_id])
@@ -264,6 +268,9 @@ module API
 
         desc 'List issues that will be closed on merge' do
           success Entities::MRNote
+        end
+        params do
+          use :pagination
         end
         get "#{path}/closes_issues" do
           merge_request = user_project.merge_requests.find(params[:merge_request_id])

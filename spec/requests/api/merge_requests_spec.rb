@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe API::API, api: true  do
+describe API::MergeRequests, api: true  do
   include ApiHelpers
   let(:base_time)   { Time.now }
   let(:user)        { create(:user) }
@@ -234,11 +234,14 @@ describe API::API, api: true  do
              target_branch: 'master',
              author: user,
              labels: 'label, label2',
-             milestone_id: milestone.id
+             milestone_id: milestone.id,
+             remove_source_branch: true
+
         expect(response).to have_http_status(201)
         expect(json_response['title']).to eq('Test merge_request')
         expect(json_response['labels']).to eq(['label', 'label2'])
         expect(json_response['milestone']['id']).to eq(milestone.id)
+        expect(json_response['force_remove_source_branch']).to be_truthy
       end
 
       it "returns 422 when source_branch equals target_branch" do
@@ -402,14 +405,6 @@ describe API::API, api: true  do
     end
   end
 
-  describe "PUT /projects/:id/merge_requests/:merge_request_id to close MR" do
-    it "returns merge_request" do
-      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), state_event: "close"
-      expect(response).to have_http_status(200)
-      expect(json_response['state']).to eq('closed')
-    end
-  end
-
   describe "PUT /projects/:id/merge_requests/:merge_request_id/merge" do
     let(:pipeline) { create(:ci_pipeline_without_jobs) }
 
@@ -473,8 +468,8 @@ describe API::API, api: true  do
       expect(response).to have_http_status(200)
     end
 
-    it "enables merge when build succeeds if the ci is active" do
-      allow_any_instance_of(MergeRequest).to receive(:pipeline).and_return(pipeline)
+    it "enables merge when pipeline succeeds if the pipeline is active" do
+      allow_any_instance_of(MergeRequest).to receive(:head_pipeline).and_return(pipeline)
       allow(pipeline).to receive(:active?).and_return(true)
 
       put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user), merge_when_build_succeeds: true
@@ -486,6 +481,15 @@ describe API::API, api: true  do
   end
 
   describe "PUT /projects/:id/merge_requests/:merge_request_id" do
+    context "to close a MR" do
+      it "returns merge_request" do
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), state_event: "close"
+
+        expect(response).to have_http_status(200)
+        expect(json_response['state']).to eq('closed')
+      end
+    end
+
     it "updates title and returns merge_request" do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), title: "New title"
       expect(response).to have_http_status(200)
@@ -510,17 +514,40 @@ describe API::API, api: true  do
       expect(json_response['target_branch']).to eq('wiki')
     end
 
+    it "returns merge_request that removes the source branch" do
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), remove_source_branch: true
+
+      expect(response).to have_http_status(200)
+      expect(json_response['force_remove_source_branch']).to be_truthy
+    end
+
     it 'allows special label names' do
-      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}",
-              user),
-          title: 'new issue',
-          labels: 'label, label?, label&foo, ?, &'
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user),
+        title: 'new issue',
+        labels: 'label, label?, label&foo, ?, &'
+
       expect(response.status).to eq(200)
       expect(json_response['labels']).to include 'label'
       expect(json_response['labels']).to include 'label?'
       expect(json_response['labels']).to include 'label&foo'
       expect(json_response['labels']).to include '?'
       expect(json_response['labels']).to include '&'
+    end
+
+    it 'does not update state when title is empty' do
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), state_event: 'close', title: nil
+
+      merge_request.reload
+      expect(response).to have_http_status(400)
+      expect(merge_request.state).to eq('opened')
+    end
+
+    it 'does not update state when target_branch is empty' do
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), state_event: 'close', target_branch: nil
+
+      merge_request.reload
+      expect(response).to have_http_status(400)
+      expect(merge_request.state).to eq('opened')
     end
   end
 
@@ -543,7 +570,7 @@ describe API::API, api: true  do
 
     it "returns 404 if note is attached to non existent merge request" do
       post api("/projects/#{project.id}/merge_requests/404/comments", user),
-           note: 'My comment'
+        note: 'My comment'
       expect(response).to have_http_status(404)
     end
   end

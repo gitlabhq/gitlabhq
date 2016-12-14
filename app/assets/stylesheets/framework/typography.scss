@@ -33,15 +33,15 @@
     padding: 3px 5px;
     font-size: 11px;
     line-height: 10px;
-    color: #555;
+    color: $kdb-color;
     vertical-align: middle;
-    background-color: #fcfcfc;
+    background-color: $kdb-bg;
     border-width: 1px;
     border-style: solid;
-    border-color: #ccc #ccc #bbb;
+    border-color: $kdb-border $kdb-border $kdb-border-bottom;
     border-image: none;
     border-radius: 3px;
-    box-shadow: 0 -1px 0 #bbb inset;
+    box-shadow: 0 -1px 0 $kdb-shadow inset;
   }
 
   h1 {
@@ -81,7 +81,7 @@
   }
 
   blockquote {
-    color: #7f8fa4;
+    color: $gl-grayish-blue;
     font-size: inherit;
     padding: 8px 21px;
     margin: 12px 0;
@@ -94,13 +94,13 @@
   }
 
   blockquote p {
-    color: #7f8fa4 !important;
+    color: $gl-grayish-blue !important;
     font-size: inherit;
     line-height: 1.5;
   }
 
   p {
-    color: #5c5d5e;
+    color: $gl-text-color-dark;
     margin: 6px 0 0;
   }
 
@@ -108,10 +108,10 @@
     @extend .table;
     @extend .table-bordered;
     margin: 12px 0;
-    color: #5c5d5e;
+    color: $gl-text-color-dark;
 
     th {
-      background: #f8fafc;
+      background: $label-gray-bg;
     }
   }
 
@@ -182,6 +182,7 @@
       left: -16px;
       position: absolute;
       text-decoration: none;
+      outline: none;
 
       &::after {
         content: image-url('icon_anchor.svg');
@@ -201,7 +202,7 @@
  *
  */
 body {
-  -webkit-text-shadow: rgba(255,255,255,0.01) 0 0 1px;
+  -webkit-text-shadow: $body-text-shadow 0 0 1px;
 }
 
 .page-title {

@@ -49,26 +49,37 @@
       padding: $gl-btn-padding;
       padding-bottom: 11px;
       margin-bottom: -1px;
-      font-size: 15px;
+      font-size: 14px;
       line-height: 28px;
-      color: #959494;
+      color: $note-toolbar-color;
       border-bottom: 2px solid transparent;
 
       &:hover,
       &:active,
       &:focus {
         text-decoration: none;
+        border-bottom: 2px solid $gray-darkest;
+        color: $black;
+
+        .badge {
+          color: $black;
+        }
       }
     }
 
     &.active a {
       border-bottom: 2px solid $link-underline-blue;
       color: $black;
+      font-weight: 600;
+
+      .badge {
+        color: $black;
+      }
     }
 
     .badge {
       font-weight: normal;
-      background-color: #eee;
+      background-color: $nav-badge-bg;
       color: $btn-transparent-color;
       vertical-align: baseline;
     }
@@ -85,14 +96,20 @@
 
     li {
 
-      a {
-        margin: 0;
-        padding: 11px 10px 9px;
-      }
-
       &.active a {
         border-bottom: none;
         color: $link-underline-blue;
+      }
+
+      a {
+        margin: 0;
+        padding: 11px 10px 9px;
+
+        &:hover,
+        &:active,
+        &:focus {
+          border-bottom: none;
+        }
       }
     }
   }
@@ -110,7 +127,7 @@
     line-height: 28px;
 
     /* Small devices (phones, tablets, 768px and lower) */
-    @media (max-width: $screen-sm-min) {
+    @media (max-width: $screen-xs-max) {
       width: 100%;
     }
   }
@@ -255,6 +272,16 @@
       width: auto;
     }
   }
+
+  &.multi-line {
+    .nav-text {
+      line-height: 20px;
+    }
+
+    .nav-controls {
+      padding: 17px 0;
+    }
+  }
 }
 
 .layout-nav {
@@ -310,36 +337,8 @@
     height: 51px;
 
     li {
-
       a {
         padding-top: 10px;
-      }
-
-      a,
-      i {
-        color: $layout-link-gray;
-      }
-
-      &.active {
-
-        a,
-        i {
-          color: $black;
-        }
-
-        svg {
-          path,
-          polygon {
-            fill: $black;
-          }
-        }
-      }
-
-      &:hover {
-        a,
-        i {
-          color: $black;
-        }
       }
     }
   }

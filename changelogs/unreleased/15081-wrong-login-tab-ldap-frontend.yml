@@ -1,0 +1,4 @@
+---
+title: Fix wrong tab selected when loggin fails and multiple login tabs exists
+merge_request: 7314
+author: Jacopo Beschi @jacopo-beschi 

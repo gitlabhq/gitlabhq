@@ -1,5 +1,6 @@
 %li.card{ ":class" => '{ "user-can-drag": !disabled && issue.id, "is-disabled": disabled || !issue.id, "is-active": issueDetailVisible }',
   ":index" => "index",
+  ":data-issue-id" => "issue.id",
   "@mousedown" => "mouseDown",
   "@mousemove" => "mouseMove",
   "@mouseup" => "showIssue($event)" }

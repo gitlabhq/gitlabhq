@@ -1,5 +1,4 @@
 require 'sidekiq/testing'
-require './db/fixtures/support/serialized_transaction'
 
 Sidekiq::Testing.inline! do
   Gitlab::Seeder.quiet do

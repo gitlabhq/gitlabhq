@@ -70,6 +70,8 @@
       // e.g.
       // Api.gitignoreText item.name, @requestFileSuccess.bind(@)
       requestFileSuccess(file, { skipFocus } = {}) {
+        if (!file) return;
+
         const oldValue = this.editor.getValue();
         let newValue = file.content;
 

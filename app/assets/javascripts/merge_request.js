@@ -40,7 +40,7 @@
       if (window.mrTabs) {
         window.mrTabs.unbindEvents();
       }
-      window.mrTabs = new MergeRequestTabs(this.opts);
+      window.mrTabs = new gl.MergeRequestTabs(this.opts);
     };
 
     MergeRequest.prototype.showAllCommits = function() {

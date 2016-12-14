@@ -1,7 +1,8 @@
 require "spec_helper"
 
-describe API::API, api: true  do
+describe API::Services, api: true  do
   include ApiHelpers
+
   let(:user) { create(:user) }
   let(:admin) { create(:admin) }
   let(:user2) { create(:user) }
@@ -98,7 +99,7 @@ describe API::API, api: true  do
         post api("/projects/#{project.id}/services/idonotexist/trigger")
 
         expect(response).to have_http_status(404)
-        expect(json_response["message"]).to eq("404 Service Not Found")
+        expect(json_response["error"]).to eq("404 Not Found")
       end
     end
 
@@ -114,7 +115,7 @@ describe API::API, api: true  do
         end
 
         it 'when the service is inactive' do
-          post api("/projects/#{project.id}/services/mattermost_slash_commands/trigger")
+          post api("/projects/#{project.id}/services/mattermost_slash_commands/trigger"), params
 
           expect(response).to have_http_status(404)
         end
@@ -128,7 +129,7 @@ describe API::API, api: true  do
           )
         end
 
-        it 'retusn status 200' do
+        it 'returns status 200' do
           post api("/projects/#{project.id}/services/mattermost_slash_commands/trigger"), params
 
           expect(response).to have_http_status(200)

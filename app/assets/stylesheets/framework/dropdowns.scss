@@ -8,6 +8,12 @@
   }
 }
 
+@mixin chevron-active {
+  .fa-chevron-down {
+    color: $dropdown-toggle-hover-icon-color;
+  }
+}
+
 .open {
   .dropdown-menu,
   .dropdown-menu-nav {
@@ -19,51 +25,30 @@
     }
   }
 
+  .dropdown-toggle,
   .dropdown-menu-toggle {
+    @include chevron-active;
     border-color: $dropdown-toggle-hover-border-color;
-
-    .fa {
-      color: $dropdown-toggle-hover-icon-color;
-    }
   }
 }
 
-.dropdown-menu-toggle {
-  position: relative;
-  width: 160px;
-  padding: 6px 20px 6px 10px;
+.dropdown-toggle {
+  padding: 6px 8px 6px 10px;
   background-color: $dropdown-toggle-bg;
   color: $dropdown-toggle-color;
-  font-size: 15px;
+  font-size: 14px;
   text-align: left;
   border: 1px solid $border-color;
   border-radius: $border-radius-base;
-  text-overflow: ellipsis;
   white-space: nowrap;
-  overflow: hidden;
 
-  .fa {
-    position: absolute;
-    top: 10px;
-    right: 8px;
-    color: $dropdown-toggle-icon-color;
-
-    &.fa-spinner {
-      font-size: 16px;
-      margin-top: -8px;
-    }
+  &[disabled] {
+    background-color: $input-bg-disabled;
+    cursor: not-allowed;
   }
 
   &.no-outline {
     outline: 0;
-  }
-
-  &:hover, {
-    border-color: $dropdown-toggle-hover-border-color;
-
-    .fa {
-      color: $dropdown-toggle-hover-icon-color;
-    }
   }
 
   &.large {
@@ -86,6 +71,51 @@
     max-width: 100%;
     padding-right: 25px;
   }
+
+  .fa {
+    color: $dropdown-toggle-icon-color;
+  }
+
+  .fa-chevron-down {
+    font-size: $dropdown-chevron-size;
+    position: relative;
+    top: -3px;
+    margin-left: 5px;
+  }
+
+  &:hover {
+    @include chevron-active;
+    border-color: $dropdown-toggle-hover-border-color;
+  }
+
+  &:focus:active {
+    @include chevron-active;
+    border-color: $dropdown-toggle-active-border-color;
+  }
+}
+
+.dropdown-menu-toggle {
+  @extend .dropdown-toggle;
+  padding-right: 20px;
+  position: relative;
+  width: 160px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+
+  .fa {
+    position: absolute;
+
+    &.fa-spinner {
+      font-size: 16px;
+      margin-top: -8px;
+    }
+  }
+
+  .fa-chevron-down {
+    position: absolute;
+    top: 11px;
+    right: 8px;
+  }
 }
 
 .dropdown-menu,
@@ -98,7 +128,7 @@
   width: 240px;
   margin-top: 2px;
   margin-bottom: 0;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: normal;
   padding: 8px 0;
   background-color: $dropdown-bg;
@@ -351,7 +381,7 @@
     position: absolute;
     top: 10px;
     right: 20px;
-    color: #c7c7c7;
+    color: $dropdown-input-fa-color;
     font-size: 12px;
     pointer-events: none;
   }
@@ -504,7 +534,7 @@
     .ui-datepicker-calendar {
       .ui-state-hover,
       .ui-state-active {
-        color: #fff;
+        color: $white-light;
         border: 0;
       }
     }
@@ -564,7 +594,7 @@
 
     .ui-datepicker-title {
       color: $gl-gray;
-      font-size: 15px;
+      font-size: 14px;
       line-height: 1;
       font-weight: normal;
     }

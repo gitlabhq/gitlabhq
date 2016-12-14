@@ -68,7 +68,7 @@ gem 'github-linguist', '~> 4.7.0', require: 'linguist'
 
 # API
 gem 'grape',        '~> 0.15.0'
-gem 'grape-entity', '~> 0.4.2'
+gem 'grape-entity', '~> 0.6.0'
 gem 'rack-cors',    '~> 0.4.0', require: 'rack/cors'
 
 # Pagination
@@ -85,10 +85,8 @@ gem 'dropzonejs-rails', '~> 0.7.1'
 
 # for backups
 gem 'fog-aws', '~> 0.9'
-gem 'fog-azure', '~> 0.0'
 gem 'fog-core', '~> 1.40'
 gem 'fog-local', '~> 0.3'
-gem 'fog-google', '~> 0.3'
 gem 'fog-openstack', '~> 0.1'
 gem 'fog-rackspace', '~> 0.1.1'
 
@@ -134,8 +132,8 @@ gem 'after_commit_queue', '~> 1.3.0'
 gem 'acts-as-taggable-on', '~> 4.0'
 
 # Background jobs
-gem 'sidekiq', '~> 4.2'
-gem 'sidekiq-cron', '~> 0.4.0'
+gem 'sidekiq', '~> 4.2.7'
+gem 'sidekiq-cron', '~> 0.4.4'
 gem 'redis-namespace', '~> 1.5.2'
 gem 'sidekiq-limit_fetch', '~> 3.4'
 
@@ -266,14 +264,14 @@ group :development do
 end
 
 group :development, :test do
-  gem 'byebug', '~> 8.2.1', platform: :mri
+  gem 'pry-byebug', '~> 3.4.1', platform: :mri
   gem 'pry-rails', '~> 0.3.4'
 
   gem 'awesome_print', '~> 1.2.0', require: false
   gem 'fuubar', '~> 2.0.0'
 
   gem 'database_cleaner',   '~> 1.5.0'
-  gem 'factory_girl_rails', '~> 4.6.0'
+  gem 'factory_girl_rails', '~> 4.7.0'
   gem 'rspec-rails',        '~> 3.5.0'
   gem 'rspec-retry',        '~> 0.4.5'
   gem 'spinach-rails',      '~> 0.2.1'
@@ -311,6 +309,8 @@ group :development, :test do
   gem 'knapsack', '~> 1.11.0'
 
   gem 'activerecord_sane_schema_dumper', '0.2'
+
+  gem 'stackprof', '~> 0.2.10'
 end
 
 group :test do
@@ -338,7 +338,7 @@ gem 'ruby-prof', '~> 0.16.2'
 gem 'oauth2', '~> 1.2.0'
 
 # Soft deletion
-gem 'paranoia', '~> 2.0'
+gem 'paranoia', '~> 2.2'
 
 # Health check
 gem 'health_check', '~> 2.2.0'

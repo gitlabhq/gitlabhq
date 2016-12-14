@@ -1,15 +1,24 @@
+//= require lib/utils/bootstrap_linked_tabs
+
 /* eslint-disable */
 ((global) => {
 
   class Pipelines {
-    constructor() {
+    constructor(options = {}) {
+
+      if (options.initTabs && options.tabsOptions) {
+        new global.LinkedTabs(options.tabsOptions);
+      }
+
       this.addMarginToBuildColumns();
     }
 
     addMarginToBuildColumns() {
-      this.pipelineGraph = document.querySelector('.pipeline-graph');
-      const secondChildBuildNodes = document.querySelector('.pipeline-graph').querySelectorAll('.build:nth-child(2)');
-      for (buildNodeIndex in secondChildBuildNodes) {
+      this.pipelineGraph = document.querySelector('.js-pipeline-graph');
+
+      const secondChildBuildNodes = this.pipelineGraph.querySelectorAll('.build:nth-child(2)');
+
+      for (const buildNodeIndex in secondChildBuildNodes) {
         const buildNode = secondChildBuildNodes[buildNodeIndex];
         const firstChildBuildNode = buildNode.previousElementSibling;
         if (!firstChildBuildNode || !firstChildBuildNode.matches('.build')) continue;
@@ -21,6 +30,7 @@
         const columnBuilds = previousColumn.querySelectorAll('.build');
         if (columnBuilds.length === 1) previousColumn.classList.add('no-margin');
       }
+
       this.pipelineGraph.classList.remove('hidden');
     }
   }

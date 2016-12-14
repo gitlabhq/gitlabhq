@@ -1,4 +1,4 @@
-%a{ data: { toggle: 'tooltip', title: "#{subject.name} - #{subject.status}", container: '.pipeline-graph', placement: 'bottom' } }
+%a{ data: { toggle: 'tooltip', title: "#{subject.name} - #{subject.status}", container: '.js-pipeline-graph', placement: 'bottom' } }
   - if subject.target_url
     = link_to subject.target_url do
       %span{class: "ci-status-icon ci-status-icon-#{subject.status}"}

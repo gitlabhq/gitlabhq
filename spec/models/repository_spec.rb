@@ -768,7 +768,6 @@ describe Repository, models: true do
         expect(repository).not_to receive(:expire_root_ref_cache)
         expect(repository).not_to receive(:expire_emptiness_caches)
         expect(repository).to     receive(:expire_branches_cache)
-        expect(repository).to     receive(:expire_has_visible_content_cache)
 
         repository.update_branch_with_hooks(user, 'new-feature') { new_rev }
       end
@@ -786,7 +785,6 @@ describe Repository, models: true do
         expect(empty_repository).to receive(:expire_root_ref_cache)
         expect(empty_repository).to receive(:expire_emptiness_caches)
         expect(empty_repository).to receive(:expire_branches_cache)
-        expect(empty_repository).to receive(:expire_has_visible_content_cache)
 
         empty_repository.commit_file(user, 'CHANGELOG', 'Changelog!',
                                      'Updates file content', 'master', false)
@@ -828,15 +826,6 @@ describe Repository, models: true do
         expect(repository).to receive(:branch_count).and_return(3)
 
         expect(subject).to eq(true)
-      end
-
-      it 'caches the output' do
-        expect(repository).to receive(:branch_count).
-          once.
-          and_return(3)
-
-        repository.has_visible_content?
-        repository.has_visible_content?
       end
     end
   end
@@ -918,20 +907,6 @@ describe Repository, models: true do
     end
   end
 
-  describe '#expire_has_visible_content_cache' do
-    it 'expires the visible content cache' do
-      repository.has_visible_content?
-
-      expect(repository).to receive(:branch_count).
-        once.
-        and_return(0)
-
-      repository.expire_has_visible_content_cache
-
-      expect(repository.has_visible_content?).to eq(false)
-    end
-  end
-
   describe '#expire_branch_cache' do
     # This method is private but we need it for testing purposes. Sadly there's
     # no other proper way of testing caching operations.
@@ -967,7 +942,6 @@ describe Repository, models: true do
       allow(repository).to receive(:empty?).and_return(true)
 
       expect(cache).to receive(:expire).with(:empty?)
-      expect(repository).to receive(:expire_has_visible_content_cache)
 
       repository.expire_emptiness_caches
     end
@@ -976,7 +950,6 @@ describe Repository, models: true do
       allow(repository).to receive(:empty?).and_return(false)
 
       expect(cache).not_to receive(:expire).with(:empty?)
-      expect(repository).not_to receive(:expire_has_visible_content_cache)
 
       repository.expire_emptiness_caches
     end
@@ -1203,16 +1176,16 @@ describe Repository, models: true do
   end
 
   describe '#after_create_branch' do
-    it 'flushes the visible content cache' do
-      expect(repository).to receive(:expire_has_visible_content_cache)
+    it 'expires the branch caches' do
+      expect(repository).to receive(:expire_branches_cache)
 
       repository.after_create_branch
     end
   end
 
   describe '#after_remove_branch' do
-    it 'flushes the visible content cache' do
-      expect(repository).to receive(:expire_has_visible_content_cache)
+    it 'expires the branch caches' do
+      expect(repository).to receive(:expire_branches_cache)
 
       repository.after_remove_branch
     end
@@ -1303,32 +1276,36 @@ describe Repository, models: true do
         repository.add_tag(user, '8.5', 'master', 'foo')
       end
 
-      it 'does not create a tag when a pre-hook fails' do
-        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([false, ''])
-
-        expect do
-          repository.add_tag(user, '8.5', 'master', 'foo')
-        end.to raise_error(GitHooksService::PreReceiveError)
-
-        repository.expire_tags_cache
-        expect(repository.find_tag('8.5')).to be_nil
-      end
-
-      it 'passes tag SHA to hooks' do
-        spy = GitHooksService.new
-        allow(GitHooksService).to receive(:new).and_return(spy)
-        allow(spy).to receive(:execute).and_call_original
-
-        tag = repository.add_tag(user, '8.5', 'master', 'foo')
-
-        expect(spy).to have_received(:execute).
-          with(anything, anything, anything, tag.target, anything)
-      end
-
       it 'returns a Gitlab::Git::Tag object' do
         tag = repository.add_tag(user, '8.5', 'master', 'foo')
 
         expect(tag).to be_a(Gitlab::Git::Tag)
+      end
+
+      it 'passes commit SHA to pre-receive and update hooks,\
+        and tag SHA to post-receive hook' do
+        pre_receive_hook = Gitlab::Git::Hook.new('pre-receive', repository.path_to_repo)
+        update_hook = Gitlab::Git::Hook.new('update', repository.path_to_repo)
+        post_receive_hook = Gitlab::Git::Hook.new('post-receive', repository.path_to_repo)
+
+        allow(Gitlab::Git::Hook).to receive(:new).
+          and_return(pre_receive_hook, update_hook, post_receive_hook)
+
+        allow(pre_receive_hook).to receive(:trigger).and_call_original
+        allow(update_hook).to receive(:trigger).and_call_original
+        allow(post_receive_hook).to receive(:trigger).and_call_original
+
+        tag = repository.add_tag(user, '8.5', 'master', 'foo')
+
+        commit_sha = repository.commit('master').id
+        tag_sha = tag.target
+
+        expect(pre_receive_hook).to have_received(:trigger).
+          with(anything, anything, commit_sha, anything)
+        expect(update_hook).to have_received(:trigger).
+          with(anything, anything, commit_sha, anything)
+        expect(post_receive_hook).to have_received(:trigger).
+          with(anything, anything, tag_sha, anything)
       end
     end
 
