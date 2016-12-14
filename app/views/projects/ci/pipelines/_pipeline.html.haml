@@ -43,27 +43,28 @@
   %td.stage-cell
     - pipeline.stages.each do |stage|
       - if stage.status
-        - status = ci_label_for_status(stage.detailed_status)
+        - detailed_status = stage.detailed_status(current_user)
+        - details_path = detailed_status.details_path if detailed_status.has_details?
+        - klass = "has-tooltip ci-status-icon ci-status-icon-#{detailed_status}"
         - hasMultipleBuilds = stage.statuses.count > 1
         - tooltip = "#{stage.name.titleize}: #{stage.status || 'not found'}"
 
-        - if status
-          .stage-container
-            - if hasMultipleBuilds
-              .dropdown.inline
-                %a.dropdown-toggle.builds-dropdown{id: "dropdown-#{stage.name}", title: tooltip, class: "has-tooltip ci-status-icon-#{stage.status}", "data-toggle"=> "dropdown", "aria-haspopup"=> "true", "aria-expanded" => "false"}
-                  = ci_icon_for_status(stage.detailed_status)
-                  = icon('caret-down', class: 'dropdown-caret')
-                .dropdown-menu.grouped-pipeline-dropdown{"aria-labelledby"=> "dropdown-#{stage.name}"}
-                  .arrow
-                    %ul
-                      - stage.statuses.each do |status|
-                        %li
-                          = ci_icon_for_status(status)
-                          -# =render 'ci/status/icon_with_name_and_action', subject: status
-            - else
-              = link_to namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline.id, anchor: stage.name), class: "has-tooltip ci-status-icon-#{stage.status}", title: tooltip do
-                = ci_icon_for_status(stage.detailed_status)
+        .stage-container
+          - if hasMultipleBuilds
+            .dropdown.inline.build-content
+              %button.dropdown-menu-toggle.has-tooltip{id: "dropdown-#{stage.name}", title: tooltip, class: klass, "data-toggle"=> "dropdown", "aria-haspopup"=> "true", "aria-expanded" => "false"}
+                = custom_icon(detailed_status.icon)
+                = icon('caret-down', class: 'dropdown-caret')
+              .dropdown-menu.grouped-pipeline-dropdown{"aria-labelledby"=> "dropdown-#{stage.name}"}
+                .arrow
+                  %ul
+                    - stage.statuses.each do |status|
+                      %li
+                        = render 'ci/status/graph_badge', subject: status
+          - else
+            - if details_path
+              = link_to details_path, class: klass, title: tooltip do
+                = custom_icon(detailed_status.icon)
 
   %td
     - if pipeline.duration
