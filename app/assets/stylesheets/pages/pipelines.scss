@@ -192,10 +192,6 @@
           border-bottom: 2px solid $border-color;
         }
       }
-
-      a {
-        display: block;
-      }
     }
   }
 
@@ -759,13 +755,16 @@
     background-color: transparent;
     border: none;
     padding: 0;
-    color: #8c8c8c;
-    flex-grow: 1;
+    color: $gl-text-color-light;
   }
 
   .grouped-pipeline-dropdown {
     right: -172px;
     top: 23px;
+  }
+
+  .grouped-pipeline-dropdown a {
+    color: $gl-text-color-light;
   }
 
   .arrow-up {
