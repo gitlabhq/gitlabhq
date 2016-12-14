@@ -1,17 +1,16 @@
 (() => {
 /*
- *   SubbableResource can be extended to provide a pubsub-style service for one-off REST
+*   SubbableResource can be extended to provide a pubsub-style service for one-off REST
 *   calls. Subscribe by passing a callback or render method you will use to handle responses.
-*
-*   TODO: Provide support for matchers
  *
 * */
 
   class SubbableResource {
     constructor(resourcePath) {
       this.endpoint = resourcePath;
-      // TODO: Switch to axios.create asap
-      this.resource = Vue.resource(resourcePath);
+
+      // TODO: Switch to axios.create
+      this.resource = $.ajax;
       this.subscribers = [];
     }
 
@@ -28,22 +27,22 @@
     }
 
     get(payload) {
-      return this.resource.get(payload)
+      return this.resource(payload)
         .then(data => this.publish(data));
     }
 
-    save(payload) {
-      return this.resource.save(payload)
+    post(payload) {
+      return this.resource(payload)
         .then(data => this.publish(data));
     }
 
-    update(payload) {
-      return this.resource.update(payload)
+    put(payload) {
+      return this.resource(payload)
         .then(data => this.publish(data));
     }
 
-    remove(payload) {
-      return this.resource.remove(payload)
+    delete(payload) {
+      return this.resource(payload)
         .then(data => this.publish(data));
     }
   }
