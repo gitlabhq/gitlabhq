@@ -16,7 +16,7 @@
         tokenKey,
         tokenValue,
         tokenSymbol,
-      }
+      };
     }
 
     static getLastTokenObject(input) {
@@ -29,7 +29,7 @@
       return {
         key,
         value,
-      }
+      };
     }
 
     static getLastToken(input) {
@@ -40,19 +40,19 @@
 
       const doubleQuote = '"';
       const singleQuote = '\'';
-      while(!completeToken && i >= 0) {
+      while (!completeToken && i >= 0) {
         const isDoubleQuote = input[i] === doubleQuote;
         const isSingleQuote = input[i] === singleQuote;
 
         // If the second quotation is found
-        if ((lastQuotation === doubleQuote && input[i] === doubleQuote) ||
-          (lastQuotation === singleQuote && input[i] === singleQuote)) {
+        if ((lastQuotation === doubleQuote && isDoubleQuote) ||
+          (lastQuotation === singleQuote && isSingleQuote)) {
           completeQuotation = true;
         }
 
         // Save the first quotation
-        if ((input[i] === doubleQuote && lastQuotation === '') ||
-          (input[i] === singleQuote && lastQuotation === '')) {
+        if ((isDoubleQuote && lastQuotation === '') ||
+          (isSingleQuote && lastQuotation === '')) {
           lastQuotation = input[i];
           completeQuotation = false;
         }
@@ -60,7 +60,7 @@
         if (completeQuotation && input[i] === ' ') {
           completeToken = true;
         } else {
-          i--;
+          i -= 1;
         }
       }
 
@@ -69,7 +69,7 @@
     }
 
     static processTokens(input) {
-      let tokens = [];
+      const tokens = [];
       let searchToken = '';
       let lastToken = '';
 
@@ -118,16 +118,20 @@
           const singleQuoteExist = singleQuoteIndex !== -1;
 
           const doubleQuoteExistOnly = doubleQuoteExist && !singleQuoteExist;
-          const doubleQuoteIsBeforeSingleQuote = doubleQuoteExist && singleQuoteExist && doubleQuoteIndex < singleQuoteIndex;
+          const doubleQuoteIsBeforeSingleQuote =
+            doubleQuoteExist && singleQuoteExist && doubleQuoteIndex < singleQuoteIndex;
 
           const singleQuoteExistOnly = singleQuoteExist && !doubleQuoteExist;
-          const singleQuoteIsBeforeDoubleQuote = doubleQuoteExist && singleQuoteExist && singleQuoteIndex < doubleQuoteIndex;
+          const singleQuoteIsBeforeDoubleQuote =
+            doubleQuoteExist && singleQuoteExist && singleQuoteIndex < doubleQuoteIndex;
 
-          if ((doubleQuoteExistOnly || doubleQuoteIsBeforeSingleQuote) && doubleQuoteOccurrences % 2 !== 0) {
+          if ((doubleQuoteExistOnly || doubleQuoteIsBeforeSingleQuote)
+              && doubleQuoteOccurrences % 2 !== 0) {
             // " is found and is in front of ' (if any)
             lastQuotation = '"';
             incompleteToken = true;
-          } else if ((singleQuoteExistOnly || singleQuoteIsBeforeDoubleQuote) && singleQuoteOccurrences % 2 !== 0) {
+          } else if ((singleQuoteExistOnly || singleQuoteIsBeforeDoubleQuote)
+              && singleQuoteOccurrences % 2 !== 0) {
             // ' is found and is in front of " (if any)
             lastQuotation = '\'';
             incompleteToken = true;
@@ -137,7 +141,7 @@
             tokens.push({
               key: keyMatch.key,
               value: tokenValue,
-              wildcard: symbolMatch ? false : true,
+              wildcard: !symbolMatch,
             });
             lastToken = tokens.last();
 

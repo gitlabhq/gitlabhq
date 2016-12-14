@@ -1,3 +1,5 @@
+/* global Turbolinks */
+
 (() => {
   class FilteredSearchManager {
     constructor() {
