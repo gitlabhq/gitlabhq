@@ -78,42 +78,24 @@
     display: block;
     margin-bottom: 10px;
 
+    &.scroll-top .gitlab-icon-scroll-up-hover,
+    &.scroll-top:hover .gitlab-icon-scroll-up,
+    &.scroll-bottom .gitlab-icon-scroll-down-hover,
+    &.scroll-bottom:hover .gitlab-icon-scroll-down {
+      display: none;
+    }
+
+    &.scroll-top:hover .gitlab-icon-scroll-up-hover,
+    &.scroll-bottom:hover .gitlab-icon-scroll-down-hover {
+      display: inline-block;
+    }
+
     &.scroll-top {
       top: 110px;
-
-      .gitlab-icon-scroll-up-hover {
-        display: none;
-      }
-
-      &:hover {
-
-        .gitlab-icon-scroll-up {
-          display: none;
-        }
-
-        .gitlab-icon-scroll-up-hover {
-          display: inline-block;
-        }
-      }
     }
 
     &.scroll-bottom {
       bottom: -2px;
-
-      .gitlab-icon-scroll-down-hover {
-        display: none;
-      }
-
-      &:hover {
-
-        .gitlab-icon-scroll-down {
-          display: none;
-        }
-
-        .gitlab-icon-scroll-down-hover {
-          display: inline-block;
-        }
-      }
     }
   }
 
@@ -217,8 +199,7 @@
     position: relative;
     width: 6px;
     height: 6px;
-    margin-bottom: 12px;
-    margin-left: 2px;
+    margin: auto auto 12px 2px;
     border-radius: 50%;
     animation: blinking-dots 1s linear infinite;
   }
