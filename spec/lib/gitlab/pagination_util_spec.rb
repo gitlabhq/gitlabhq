@@ -11,11 +11,11 @@ describe Gitlab::PaginationUtil, lib: true do
 
   context 'class with no pagination delegate defined' do
     let(:pagination_class) { Class.new { extend Gitlab::PaginationUtil } }
-    let(:pagination_delegate) {
+    let(:pagination_delegate) do
       Gitlab::PaginationDelegate.new(page: 1,
                                      per_page: 10,
                                      count: 20)
-    }
+    end
 
     let(:delegated_methods) { %i[total_count total_pages current_page limit_value first_page? prev_page last_page? next_page] }
 
