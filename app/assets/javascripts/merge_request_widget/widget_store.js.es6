@@ -29,7 +29,7 @@
     assignToData(key, val) {
       // TODO: Remove when passed in json
       const base = { suggested_approvers: JSON.parse(this.dataset.suggestedApprovers) };
-      this.data[key] = Object.assign(base, val);
+      this.data[key] = _.extend(base, val);
       return this.data[key];
     }
   }
