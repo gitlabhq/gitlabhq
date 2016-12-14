@@ -6,23 +6,33 @@ module Gitlab
                 { title: 'proposal', color: '#69D100' },
                 { title: 'task', color: '#7F8C8D' }].freeze
 
-      attr_reader :project, :client
+      attr_reader :project, :client, :errors
 
       def initialize(project)
         @project = project
         @client = Bitbucket::Client.new(project.import_data.credentials)
         @formatter = Gitlab::ImportFormatter.new
         @labels = {}
+        @errors = []
       end
 
       def execute
         import_issues
         import_pull_requests
+        handle_errors
 
         true
       end
 
       private
+
+      def handle_errors
+        return unless errors.any?
+        project.update_column(:import_error, {
+          message: 'The remote data could not be fully imported.',
+          errors: errors
+        }.to_json)
+      end
 
       def gitlab_user_id(project, username)
         if username
@@ -51,21 +61,25 @@ module Gitlab
         create_labels
 
         client.issues(repo).each do |issue|
-          description = ''
-          description += @formatter.author_line(issue.author) unless existing_gitlab_user?(issue.author)
-          description += issue.description
+          begin
+            description = ''
+            description += @formatter.author_line(issue.author) unless existing_gitlab_user?(issue.author)
+            description += issue.description
 
-          label_name = issue.kind
+            label_name = issue.kind
 
-          issue = project.issues.create(
-            iid: issue.iid,
-            title: issue.title,
-            description: description,
-            state: issue.state,
-            author_id: gitlab_user_id(project, issue.author),
-            created_at: issue.created_at,
-            updated_at: issue.updated_at
-          )
+            issue = project.issues.create!(
+              iid: issue.iid,
+              title: issue.title,
+              description: description,
+              state: issue.state,
+              author_id: gitlab_user_id(project, issue.author),
+              created_at: issue.created_at,
+              updated_at: issue.updated_at
+            )
+          rescue StandardError => e
+            errors << { type: :issue, iid: issue.iid, errors: e.message }
+          end
 
           issue.labels << @labels[label_name]
 
@@ -82,18 +96,20 @@ module Gitlab
               note += @formatter.author_line(comment.author) unless existing_gitlab_user?(comment.author)
               note += comment.note
 
-              issue.notes.create!(
-                project: project,
-                note: note,
-                author_id: gitlab_user_id(project, comment.author),
-                created_at: comment.created_at,
-                updated_at: comment.updated_at
-              )
+              begin
+                issue.notes.create!(
+                  project: project,
+                  note: note,
+                  author_id: gitlab_user_id(project, comment.author),
+                  created_at: comment.created_at,
+                  updated_at: comment.updated_at
+                )
+              rescue StandardError => e
+                errors << { type: :issue_comment, iid: issue.iid, errors: e.message }
+              end
             end
           end
         end
-      rescue ActiveRecord::RecordInvalid => e
-        Rails.logger.error("Bitbucket importer ERROR in #{project.path_with_namespace}: Couldn't import record properly #{e.message}")
       end
 
       def create_labels
@@ -129,8 +145,8 @@ module Gitlab
             )
 
             import_pull_request_comments(pull_request, merge_request) if merge_request.persisted?
-          rescue ActiveRecord::RecordInvalid
-            Rails.logger.error("Bitbucket importer ERROR in #{project.path_with_namespace}: Invalid pull request #{e.message}")
+          rescue StandardError => e
+            errors << { type: :pull_request, iid: pull_request.iid, errors: e.message }
           end
         end
       end
@@ -169,9 +185,8 @@ module Gitlab
               type: 'DiffNote')
 
             merge_request.notes.create!(attributes)
-          rescue ActiveRecord::RecordInvalid => e
-            Rails.logger.error("Bitbucket importer ERROR in #{project.path_with_namespace}: Invalid pull request comment #{e.message}")
-            nil
+          rescue StandardError => e
+            errors << { type: :pull_request, iid: comment.iid, errors: e.message }
           end
         end
       end
@@ -192,9 +207,8 @@ module Gitlab
         pr_comments.each do |comment|
           begin
             merge_request.notes.create!(pull_request_comment_attributes(comment))
-          rescue ActiveRecord::RecordInvalid => e
-            Rails.logger.error("Bitbucket importer ERROR in #{project.path_with_namespace}: Invalid standalone pull request comment #{e.message}")
-            nil
+          rescue StandardError => e
+            errors << { type: :pull_request, iid: comment.iid, errors: e.message }
           end
         end
       end
