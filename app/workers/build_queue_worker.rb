@@ -9,10 +9,17 @@ class BuildQueueWorker
           # Inject last_update into Redis
           Gitlab::Redis.with do |redis]
             new_update = Time.new.inspect
-            redis.set(current_runner_redis_key, new_update, ex: 60.minutes)
+            redis.set(runner_redis_key(runner), new_update, ex: 60.minutes)
           end
         end
       end
     end
   end
+
+  private
+
+  def runner_redis_key(runner)
+    "#{runner.token}_#{runner.tag_list}"
+  end
+
 end
