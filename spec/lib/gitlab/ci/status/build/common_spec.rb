@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-describe Gitlab::Ci::Status::Pipeline::Common do
+describe Gitlab::Ci::Status::Build::Common do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project, :private) }
-  let(:pipeline) { create(:ci_pipeline, project: project) }
+  let(:build) { create(:ci_build) }
+  let(:project) { build.project }
 
   subject do
     Gitlab::Ci::Status::Core
-      .new(pipeline, user)
+      .new(build, user)
       .extend(described_class)
   end
 
@@ -16,21 +16,22 @@ describe Gitlab::Ci::Status::Pipeline::Common do
   end
 
   describe '#has_details?' do
-    context 'when user has access to read pipeline' do
+    context 'when user has access to read build' do
       before { project.team << [user, :developer] }
 
       it { is_expected.to have_details }
     end
 
-    context 'when user does not have access to read pipeline' do
+    context 'when user does not have access to read build' do
+      before { project.update(public_builds: false) }
+
       it { is_expected.not_to have_details }
     end
   end
 
   describe '#details_path' do
-    it 'links to the pipeline details page' do
-      expect(subject.details_path)
-        .to include "pipelines/#{pipeline.id}"
+    it 'links to the build details page' do
+      expect(subject.details_path).to include "builds/#{build.id}"
     end
   end
 end

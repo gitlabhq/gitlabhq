@@ -8,10 +8,7 @@
 
 %tr.generic_commit_status{class: ('retried' if retried)}
   %td.status
-    - if can?(current_user, :read_commit_status, generic_commit_status) && generic_commit_status.target_url
-      = ci_status_with_icon(generic_commit_status.status, generic_commit_status.target_url)
-    - else
-      = ci_status_with_icon(generic_commit_status.status)
+    = render 'ci/status/badge', status: generic_commit_status.detailed_status(current_user)
 
   %td.generic_commit_status-link
     - if can?(current_user, :read_commit_status, generic_commit_status) && generic_commit_status.target_url

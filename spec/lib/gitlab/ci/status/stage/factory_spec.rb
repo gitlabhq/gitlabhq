@@ -1,15 +1,24 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Status::Stage::Factory do
-  let(:pipeline) { create(:ci_empty_pipeline) }
-  let(:stage) { build(:ci_stage, pipeline: pipeline, name: 'test') }
+  let(:user) { create(:user) }
+  let(:project) { create(:empty_project) }
+  let(:pipeline) { create(:ci_empty_pipeline, project: project) }
+
+  let(:stage) do
+    build(:ci_stage, pipeline: pipeline, name: 'test')
+  end
 
   subject do
-    described_class.new(stage)
+    described_class.new(stage, user)
   end
 
   let(:status) do
     subject.fabricate!
+  end
+
+  before do
+    project.team << [user, :developer]
   end
 
   context 'when stage has a core status' do
