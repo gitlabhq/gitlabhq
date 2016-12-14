@@ -1,4 +1,7 @@
 /*= require filtered_search/filtered_search_dropdown */
+
+/* global droplabFilter */
+
 (() => {
   const dropdownData = [{
     icon: 'fa-pencil',
@@ -24,7 +27,7 @@
       this.config = {
         droplabFilter: {
           template: 'hint',
-          filterFunction: this.filterMethod,
+          filterFunction: gl.DropdownUtils.filterMethod,
         },
       };
     }
@@ -57,19 +60,6 @@
     renderContent() {
       this.droplab.changeHookList(this.hookId, this.dropdown, [droplabFilter], this.config);
       this.droplab.setData(this.hookId, dropdownData);
-    }
-
-    filterMethod(item, query) {
-      const updatedItem = item;
-      const { value } = gl.FilteredSearchTokenizer.getLastTokenObject(query);
-
-      if (value === '') {
-        updatedItem.droplab_hidden = false;
-      } else {
-        updatedItem.droplab_hidden = updatedItem.hint.indexOf(value) === -1;
-      }
-
-      return updatedItem;
     }
 
     init() {

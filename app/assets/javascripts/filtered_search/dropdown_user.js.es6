@@ -1,4 +1,7 @@
 /*= require filtered_search/filtered_search_dropdown */
+
+/* global droplabAjaxFilter */
+
 (() => {
   class DropdownUser extends gl.FilteredSearchDropdown {
     constructor(droplab, dropdown, input) {

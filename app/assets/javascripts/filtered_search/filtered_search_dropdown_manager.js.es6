@@ -1,3 +1,5 @@
+/* global DropLab */
+
 (() => {
   class FilteredSearchDropdownManager {
     constructor() {

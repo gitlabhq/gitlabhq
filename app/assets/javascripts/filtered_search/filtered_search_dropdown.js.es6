@@ -28,7 +28,7 @@
 
     itemClicked(e, getValueFunction) {
       const { selected } = e.detail;
-      const dataValueSet = this.setDataValueIfSelected(selected);
+      const dataValueSet = gl.DropdownUtils.setDataValueIfSelected(selected);
 
       if (!dataValueSet) {
         const value = getValueFunction(selected);
@@ -44,17 +44,6 @@
 
     setOffset(offset = 0) {
       this.dropdown.style.left = `${offset}px`;
-    }
-
-    setDataValueIfSelected(selected) {
-      const dataValue = selected.getAttribute('data-value');
-
-      if (dataValue) {
-        gl.FilteredSearchDropdownManager.addWordToInput(dataValue);
-      }
-
-      // Return boolean based on whether it was set
-      return dataValue !== null;
     }
 
     renderContent(forceShowList = false) {
