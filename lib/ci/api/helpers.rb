@@ -62,6 +62,7 @@ module Ci
 
       def current_runner_redis_key
         @runner_redis_key ||= "#{current_runner.token}_#{current_runner.tag_list}"
+      end
 
       def get_runner_version_from_params
         return unless params["info"].present?
