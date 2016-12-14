@@ -11,10 +11,6 @@ module OmniAuth
         token_url: 'https://bitbucket.org/site/oauth2/access_token'
       }
 
-      def callback_url
-        full_host + script_name + callback_path
-      end
-
       uid do
         raw_info['username']
       end
@@ -28,7 +24,7 @@ module OmniAuth
       end
 
       def raw_info
-        @raw_info ||= access_token.get('user').parsed
+        @raw_info ||= access_token.get('api/2.0/user').parsed
       end
 
       def primary_email
@@ -37,7 +33,7 @@ module OmniAuth
       end
 
       def emails
-        email_response = access_token.get('user/emails').parsed
+        email_response = access_token.get('api/2.0/user/emails').parsed
         @emails ||= email_response && email_response['values'] || nil
       end
     end
