@@ -77,7 +77,7 @@
         this.renderState();
         return $.ajax({
           type: 'GET',
-          url: `/users/${username}/exists`,
+          url: `${gon.relative_url_root}/users/${username}/exists`,
           dataType: 'json',
           success: (res) => this.setAvailabilityState(res.exists)
         });
