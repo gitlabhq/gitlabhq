@@ -1,10 +1,4 @@
 class Ability
-  module Allowable
-    def can?(user, action, subject)
-      Ability.allowed?(user, action, subject)
-    end
-  end
-
   class << self
     # Given a list of users and a project this method returns the users that can
     # read the given project.

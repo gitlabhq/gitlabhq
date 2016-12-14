@@ -5,8 +5,7 @@
 - klass = "ci-status-icon ci-status-icon-#{detailed_status}"
 
 - if details_path
-  = link_to details_path, class: klass,
-    data: { toggle: 'tooltip', title: "#{subject.name} - #{detailed_status}" } do
+  = link_to details_path, data: { toggle: 'tooltip', title: "#{subject.name} - #{detailed_status}" } do
     %span{ class: klass }= custom_icon(detailed_status.icon)
     .ci-status-text= subject.name
 - else
