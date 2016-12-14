@@ -132,26 +132,25 @@
     }
 
     .new-file-name {
-      margin-bottom: 0;
       max-width: none;
       width: 100%;
     }
 
     .file-buttons {
-      display: flex;
-      flex-direction: column;
+      display: block;
       width: 100%;
-      margin-bottom: 7px;
 
       .soft-wrap-toggle {
-        margin: 7px 0 0;
+        width: 100%;
+        margin: 7px 0;
       }
 
       .encoding-selector,
       .license-selector,
       .gitignore-selector,
       .gitlab-ci-yml-selector {
-        margin: 7px 0 0;
+        display: block;
+        margin: 7px 0;
 
         button {
           width: 100%;
