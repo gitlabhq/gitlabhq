@@ -1,4 +1,4 @@
 ---
-title: Fix issuable assignee update bug when previous assignee is null
+title: Check if user can read project before being assigned to issue
 merge_request:
 author:

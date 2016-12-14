@@ -142,6 +142,17 @@ describe Issues::UpdateService, services: true do
 
         update_issue(confidential: true)
       end
+
+      it 'does not update assignee_id with unauthorized users' do
+        project.update(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+        update_issue(confidential: true)
+        non_member        = create(:user)
+        original_assignee = issue.assignee
+
+        update_issue(assignee_id: non_member.id)
+
+        expect(issue.reload.assignee_id).to eq(original_assignee.id)
+      end
     end
 
     context 'todos' do
