@@ -15,7 +15,7 @@
         return this.approvedBy && this.approvedBy.length;
       },
       showUnapproveButton() {
-        return this.userHasApproved;
+        return this.userHasApproved && !this.userCanApprove;
       },
     },
     methods: {
