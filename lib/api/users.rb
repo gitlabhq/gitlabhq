@@ -461,17 +461,19 @@ module API
         success Entities::UserBasic
       end
       params do
-        optional :due_date, type: String, desc: 'Date time string in the format YEAR-MONTH-DAY'
+        optional :from, type: String, desc: 'Date time string in the format YEAR-MONTH-DAY'
         use :pagination
       end
       get ":activities" do
         authenticated_as_admin!
 
-        raw_activities = Gitlab::User::ActivitySet.query(from: params[:from],
-                                                          page: params[:page],
-                                                          per_page: params[:per_page])
+        activity_set = Gitlab::User::ActivitySet.new(from: params[:from],
+                                                     page: params[:page],
+                                                     per_page: params[:per_page])
 
-        present Gitlab::User::Activity.from_array(raw_activities), with: Entities::UserActivity
+        add_pagination_headers(activity_set)
+
+        present activity_set.activities, with: Entities::UserActivity
       end
     end
   end
