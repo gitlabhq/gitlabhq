@@ -62,7 +62,7 @@
 .common-note-form {
   .md-area {
     padding: $gl-padding-top $gl-padding;
-    border: 1px solid $note-form-border-color;
+    border: 1px solid $border-color;
     border-radius: $border-radius-base;
     transition: border-color ease-in-out 0.15s,
                 box-shadow ease-in-out 0.15s;
@@ -204,7 +204,7 @@
 
 .comment-toolbar {
   padding-top: $gl-padding-top;
-  color: $note-toolbar-color;
+  color: $gl-gray-light;
   border-top: 1px solid $border-color;
 }
 

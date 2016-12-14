@@ -9,7 +9,7 @@ header {
   &.navbar-empty {
     height: $header-height;
     background: $white-light;
-    border-bottom: 1px solid $btn-gray-hover;
+    border-bottom: 1px solid $white-normal;
 
     .center-logo {
       margin: 8px 0;
@@ -27,7 +27,7 @@ header {
     z-index: 100;
     margin-bottom: 0;
     height: $header-height;
-    background-color: $background-color;
+    background-color: $gray-light;
     border: none;
     border-bottom: 1px solid $border-color;
 
@@ -45,7 +45,7 @@ header {
       padding: 0;
 
       .nav > li > a {
-        color: $gl-icon-color;
+        color: $gl-gray-light;
         font-size: 18px;
         padding: 0;
         margin: ($header-height - 28) / 2 0;
@@ -62,8 +62,8 @@ header {
         &:hover,
         &:focus,
         &:active {
-          background-color: $background-color;
-          color: darken($gl-icon-color, 30%);
+          background-color: $gray-light;
+          color: darken($gl-gray-light, 30%);
 
           .todos-pending-count {
             background: darken($todo-alert-blue, 10%);
@@ -84,11 +84,11 @@ header {
         padding: 6px 10px;
 
         &:hover {
-          background-color: $btn-gray-hover;
+          background-color: $white-normal;
         }
 
         &.active {
-          color: $gl-icon-color;
+          color: $gl-gray-light;
         }
       }
     }
@@ -100,10 +100,10 @@ header {
       font-size: 18px;
       padding: 6px 10px;
       border: none;
-      background-color: $background-color;
+      background-color: $gray-light;
 
       &:hover {
-        background-color: $btn-gray-hover;
+        background-color: $white-normal;
       }
     }
   }

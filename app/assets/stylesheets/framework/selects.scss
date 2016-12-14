@@ -39,7 +39,7 @@
     }
 
     &:hover {
-      background-color: $gray-dark;
+      background-color: $white-normal;
       border-color: $border-white-normal;
       color: $gl-text-color;
     }
@@ -108,7 +108,7 @@
       border-color: $input-border;
       color: $gl-text-color;
       line-height: 15px;
-      background-color: $background-color;
+      background-color: $gray-light;
       background-image: none;
 
       .select2-search-choice-close {

@@ -118,7 +118,7 @@
       height: 14px;
       width: 14px;
       vertical-align: middle;
-      fill: $table-text-gray;
+      fill: $gl-gray-light;
     }
 
     .fa {
@@ -201,7 +201,7 @@
 
   .duration,
   .finished-at {
-    color: $table-text-gray;
+    color: $gl-gray-light;
     margin: 4px 0;
 
     .fa {
@@ -222,7 +222,7 @@
 
     .btn {
       margin: 0;
-      color: $table-text-gray;
+      color: $gl-gray-light;
     }
 
     .cancel-retry-btns {
@@ -235,10 +235,10 @@
 
     .dropdown-toggle,
     .dropdown-menu {
-      color: $table-text-gray;
+      color: $gl-gray-light;
 
       .fa {
-        color: $table-text-gray;
+        color: $gl-gray-light;
         font-size: 14px;
       }
 
@@ -290,7 +290,7 @@
 // Pipeline visualization
 
 .toggle-pipeline-btn {
-  background-color: $gray-dark;
+  background-color: $white-normal;
 
   &.graph-collapsed {
     background-color: $white-light;
@@ -299,7 +299,7 @@
 
 .pipeline-graph {
   width: 100%;
-  background-color: $background-color;
+  background-color: $gray-light;
   padding: $gl-padding;
   overflow: auto;
   white-space: nowrap;
@@ -655,7 +655,7 @@
 .toggle-pipeline-btn {
 
   .fa {
-    color: $dropdown-header-color;
+    color: $gl-gray-light;
   }
 }
 
