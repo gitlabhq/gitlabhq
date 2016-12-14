@@ -44,21 +44,40 @@ describe Issue, "Issuable" do
     it { expect(described_class).to respond_to(:assigned) }
   end
 
-  describe "after_save" do
+  describe "before_save" do
     describe "#update_cache_counts" do
       context "when previous assignee exists" do
-        it "user updates cache counts" do
+        before do
+          assignee = create(:user)
+          issue.project.team << [assignee, :developer]
+          issue.update(assignee: assignee)
+        end
+
+        it "updates cache counts for new assignee" do
+          user = create(:user)
+
           expect(user).to receive(:update_cache_counts)
 
           issue.update(assignee: user)
         end
+
+        it "updates cache counts for previous assignee" do
+          old_assignee = issue.assignee
+          allow(User).to receive(:find_by_id).with(old_assignee.id).and_return(old_assignee)
+
+          expect(old_assignee).to receive(:update_cache_counts)
+
+          issue.update(assignee: nil)
+        end
       end
 
       context "when previous assignee does not exist" do
-        it "does not raise error" do
-          issue.update(assignee_id: "")
+        before{ issue.update(assignee: nil) }
 
-          expect { issue.update(assignee_id: user) }.not_to raise_error
+        it "updates cache count for the new assignee" do
+          expect_any_instance_of(User).to receive(:update_cache_counts)
+
+          issue.update(assignee: user)
         end
       end
     end
