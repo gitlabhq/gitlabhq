@@ -132,7 +132,7 @@
     gl.utils.getParameterByName = function(name) {
       var url = window.location.href;
       var param = name.replace(/[[\]]/g, '\\$&');
-      var regex = new RegExp(`[?&]${param}(=([^&#]*)|&|#|$)`);
+      var regex = new RegExp('[?&]' + param + '(=([^&#]*)|&|#|$)');
       var results = regex.exec(url);
 
       if (!results) {

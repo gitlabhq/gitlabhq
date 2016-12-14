@@ -1,3 +1,29 @@
+// Determine where to place this
+if (typeof Object.assign != 'function') {
+  Object.assign = function (target, varArgs) { // .length of function is 2
+    'use strict';
+    if (target == null) { // TypeError if undefined or null
+      throw new TypeError('Cannot convert undefined or null to object');
+    }
+
+    var to = Object(target);
+
+    for (var index = 1; index < arguments.length; index++) {
+      var nextSource = arguments[index];
+
+      if (nextSource != null) { // Skip over if undefined or null
+        for (var nextKey in nextSource) {
+          // Avoid bugs when hasOwnProperty is shadowed
+          if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
+            to[nextKey] = nextSource[nextKey];
+          }
+        }
+      }
+    }
+    return to;
+  };
+}
+
 /* eslint-disable */
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.droplab = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var DATA_TRIGGER = 'data-dropdown-trigger';
@@ -96,20 +122,23 @@ Object.assign(DropDown.prototype, {
     var newChildren = [];
     var toAppend;
 
-    this.items.forEach(function(item) {
+    for(var i = 0; i < this.items.length; i++) {
+      var item = this.items[i];
       sampleItem = item;
       if(item.parentNode && item.parentNode.dataset.hasOwnProperty('dynamic')) {
         item.parentNode.removeChild(item);  
       }
-    });
+    }
 
     newChildren = this.data.map(function(dat){
       var html = utils.t(sampleItem.outerHTML, dat);
-      var template = document.createElement('template');
+      var template = document.createElement('div');
       template.innerHTML = html;
+      // console.log(template.content)
 
       // Help set the image src template
-      var imageTags = template.content.querySelectorAll('img[data-src]');
+      var imageTags = template.querySelectorAll('img[data-src]');
+      // debugger
       for(var i = 0; i < imageTags.length; i++) {
         var imageTag = imageTags[i];
         imageTag.src = imageTag.getAttribute('data-src');
@@ -117,11 +146,11 @@ Object.assign(DropDown.prototype, {
       }
 
       if(dat.hasOwnProperty('droplab_hidden') && dat.droplab_hidden){
-        template.content.firstChild.style.display = 'none'
+        template.firstChild.style.display = 'none'
       }else{
-        template.content.firstChild.style.display = 'block';
+        template.firstChild.style.display = 'block';
       }
-      return template.content.firstChild.outerHTML;
+      return template.firstChild.outerHTML;
     });
     toAppend = this.list.querySelector('ul[data-dynamic]');
     if(toAppend) {
@@ -200,9 +229,9 @@ require('./window')(function(w){
       },
 
       destroy: function() {
-        this.hooks.forEach(function(h){
-          h.destroy();
-        });
+        for(var i = 0; i < this.hooks.length; i++) {
+          this.hooks[i].destroy();
+        }
         this.hooks = [];
         this.removeEvents();
       },
@@ -225,13 +254,14 @@ require('./window')(function(w){
       },
 
       _processData: function(trigger, data, methodName) {
-        this.hooks.forEach(function(hook) {
+        for(var i = 0; i < this.hooks.length; i++) {
+          var hook = this.hooks[i];
           if(hook.trigger.dataset.hasOwnProperty('id')) {
             if(hook.trigger.dataset.id === trigger) {
               hook.list[methodName](data);
             }
           }
-        });
+        }
       },
 
       addEvents: function() {
@@ -244,9 +274,9 @@ require('./window')(function(w){
           }
           if(utils.isDropDownParts(thisTag)){ return }
           if(utils.isDropDownParts(e.target)){ return }
-          self.hooks.forEach(function(hook) {
-            hook.list.hide();
-          });
+          for(var i = 0; i < self.hooks.length; i++) {
+            self.hooks[i].list.hide();
+          }
         }.bind(this);
         w.addEventListener('click', this.windowClickedWrapper);
       },
@@ -289,9 +319,10 @@ require('./window')(function(w){
       },
 
       addHooks: function(hooks, plugins, config) {
-        hooks.forEach(function(hook) {
+        for(var i = 0; i < hooks.length; i++) {
+          var hook = hooks[i];
           this.addHook(hook, null, plugins, config);
-        }.bind(this));
+        }
         return this;
       },
 
@@ -308,9 +339,9 @@ require('./window')(function(w){
         });
         window.dispatchEvent(readyEvent);
         this.ready = true;
-        this.queuedData.forEach(function (args) {
-          this.addData.apply(this, args);
-        }.bind(this));
+        for(var i = 0; i < this.queuedData.length; i++) {
+          this.addData.apply(this, this.queuedData[i]);
+        }
         this.queuedData = [];
         return this;
       },
@@ -358,9 +389,9 @@ HookButton.prototype = Object.create(Hook.prototype);
 
 Object.assign(HookButton.prototype, {
   addPlugins: function() {
-    this.plugins.forEach(function(plugin) {
-      plugin.init(this);
-    });
+    for(var i = 0; i < this.plugins.length; i++) {
+      this.plugins[i].init(this);
+    }
   },
 
   clicked: function(e){
@@ -389,9 +420,9 @@ Object.assign(HookButton.prototype, {
   },
 
   removePlugins: function() {
-    this.plugins.forEach(function(plugin) {
-      plugin.destroy();
-    });
+    for(var i = 0; i < this.plugins.length; i++) {
+      this.plugins[i].destroy();
+    }
   },
 
   destroy: function() {
@@ -422,9 +453,9 @@ var HookInput = function(trigger, list, plugins, config) {
 Object.assign(HookInput.prototype, {
   addPlugins: function() {
     var self = this;
-    this.plugins.forEach(function(plugin) {
-      plugin.init(self);
-    });
+    for(var i = 0; i < this.plugins.length; i++) {
+      this.plugins[i].init(self);
+    }
   },
 
   addEvents: function(){
@@ -501,9 +532,9 @@ Object.assign(HookInput.prototype, {
   },
 
   removePlugins: function() {
-    this.plugins.forEach(function(plugin) {
-      plugin.destroy();
-    });
+    for(var i = 0; i < this.plugins.length; i++) {
+      this.plugins[i].destroy();
+    }
   },
 
   destroy: function() {
@@ -537,9 +568,9 @@ require('./window')(function(w){
     var isDownArrow = false;
     var removeHighlight = function removeHighlight(list) {
       var listItems = list.list.querySelectorAll('li');
-      listItems.forEach(function(li){
-        li.classList.remove('dropdown-active');
-      });
+      for(var i = 0; i < listItems.length; i++) {
+        listItems[i].classList.remove('dropdown-active');
+      }
       return listItems;
     };
 

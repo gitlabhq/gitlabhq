@@ -38,7 +38,7 @@ require('../window')(function(w){
       this.timeout = setTimeout(this.trigger.bind(this, focusEvent), 200);
     },
 
-    trigger: function trigger(getEntireList = false) {
+    trigger: function trigger(getEntireList) {
       var config = this.hook.config.droplabAjaxFilter;
       var searchValue = this.trigger.value;
 
