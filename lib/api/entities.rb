@@ -20,7 +20,7 @@ module API
 
     class UserActivity < Grape::Entity
       expose :username
-      expose :date
+      expose :last_activity_at
     end
 
     class Identity < Grape::Entity
