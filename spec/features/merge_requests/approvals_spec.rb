@@ -161,68 +161,61 @@ feature 'Merge request approvals', js: true, feature: true do
       login_as(user)
     end
 
-    context 'when group is assigned to a project' do
-      it 'I am able to approve' do
+
+    context 'when group is assigned to a project', js:true, focus: true do
+      before do
         create :approver_group, group: group, target: project
-
         visit namespace_project_merge_request_path(project.namespace, project, merge_request)
-
-        page.within '.mr-state-widget' do
-          click_button 'Approve Merge Request'
-        end
-
-        expect(page).to have_content("Approved by")
       end
 
-    end
-
-    context 'when group is assigned to a merge request' do
       it 'I am able to approve' do
+        approve_merge_request
+        expect(page).to have_content("Approved by")
+      end
+
+      it 'I am able to unapprove' do
+        approve_merge_request
+        unapprove_merge_request
+        expect(page).not_to have_content("Approved by")
+      end
+
+    end
+
+    context 'when group is assigned to a merge request', js:true, focus:true do
+      before do
         create :approver_group, group: group, target: merge_request
-
         visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+      end
 
+      it 'I am able to approve' do
+        approve_merge_request
         page.within '.mr-state-widget' do
           click_button 'Approve Merge Request'
         end
 
+        wait_for_ajax
         expect(page).to have_content("Approved by")
       end
+
+      it 'I am able to unapprove' do
+        approve_merge_request
+        unapprove_merge_request
+        expect(page).not_to have_content("Approved by")
+      end
     end
   end
+end
 
-  context 'Unapproving by approvers from groups' do
-    let(:other_user) { create(:user) }
-    let(:merge_request) { create(:merge_request, source_project: project) }
-    let(:group) { create :group }
-
-    before do
-      project.team << [user, :developer]
-
-      group.add_developer(other_user)
-      group.add_developer(user)
-
-      login_as(user)
-
-      create :approver_group, group: group, target: project
-
-      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
-
-      page.within '.mr-state-widget' do
-        click_button 'Approve Merge Request'
-      end
-
-      wait_for_ajax
-    end
-
-    it 'I am able to unapprove' do
-
-      page.within '.mr-state-widget' do
-        click_button 'Remove your approval'
-      end
-
-      expect(page).not_to have_content("Approved by")
-
-    end
+def approve_merge_request
+  page.within '.mr-state-widget' do
+    click_button 'Approve Merge Request'
   end
+  wait_for_ajax
+end
+
+def unapprove_merge_request
+  page.within '.mr-state-widget' do
+    click_button 'Remove your approval'
+  end
+  wait_for_ajax
 end
