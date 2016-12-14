@@ -7,7 +7,7 @@ class BuildQueueWorker
       project.runners.select do |runner|
         if runner.can_pick?(build)
           # Inject last_update into Redis
-          Gitlab::Redis.with do |redis]
+          Gitlab::Redis.with do |redis|
             new_update = Time.new.inspect
             redis.set(runner_redis_key(runner), new_update, ex: 60.minutes)
           end

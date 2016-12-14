@@ -36,7 +36,7 @@ module Ci
             Gitlab::Metrics.add_event(:build_not_found)
 
             if last_update == ""
-              Gitlab::Redis.with do |redis]
+              Gitlab::Redis.with do |redis|
                 new_update = Time.new.inspect
                 redis.set(current_runner_redis_key, new_update, ex: 60.minutes)
                 headers 'X-GitLab-Last-Update', new_update
