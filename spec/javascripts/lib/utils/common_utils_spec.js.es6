@@ -52,6 +52,5 @@
         expect(value).toBe(null);
       });
     });
-
   });
 })();
