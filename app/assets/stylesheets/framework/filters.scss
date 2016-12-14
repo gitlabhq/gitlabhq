@@ -109,11 +109,14 @@
   }
 
   .dropdown-user {
+    display: -webkit-flex;
     display: flex;
   }
 
   .dropdown-user-details {
+    display: -webkit-flex;
     display: flex;
+    -webkit-flex-direction: column;
     flex-direction: column;
   }
 }
