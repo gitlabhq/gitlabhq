@@ -90,5 +90,11 @@ While mirrors update once an hour, you can force an update (either **push** or
 - in the tags page
 - in the **Mirror repository** settings page
 
+## Adjusting synchronization times
+
+You can adjust the synchronization times for the repository mirroring if you
+have access to the GitLab server. For more information, see
+[the administration documentation](../administration/cron_jobs.md#adjusting-synchronization-times-for-repository-mirroring).
+
 [ee-51]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/51
 [perms]: ../user/permissions.md
