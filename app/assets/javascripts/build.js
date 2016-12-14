@@ -184,7 +184,7 @@
         this.$autoScrollContainer.hide();
         this.$autoScrollStatusText.removeClass('animate');
       } else if ((!gl.utils.isInViewport(this.$upBuildTrace[0]) && gl.utils.isInViewport(this.$downBuildTrace[0])) ||
-                  gl.utils.isInViewport(this.$buildRefreshAnimation[0])) { // User is at Bottom of Build Log
+                 (this.$buildRefreshAnimation.is(':visible') && gl.utils.isInViewport(this.$buildRefreshAnimation[0]))) { // User is at Bottom of Build Log
         this.$scrollTopBtn.show();
         this.$scrollBottomBtn.hide();
 
