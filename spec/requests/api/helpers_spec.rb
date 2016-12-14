@@ -46,7 +46,7 @@ describe API::Helpers, api: true do
   end
 
   def error!(message, status)
-    raise Exception
+    raise Exception.new("#{status} - #{message}")
   end
 
   describe ".current_user" do
