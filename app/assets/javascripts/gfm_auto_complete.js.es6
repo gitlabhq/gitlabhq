@@ -5,6 +5,10 @@
     window.GitLab = {};
   }
 
+  function sanitize(str) {
+    return str.replace(/<(?:.|\n)*?>/gm, '');
+  }
+
   GitLab.GfmAutoComplete = {
     dataLoading: false,
     dataLoaded: false,
@@ -48,6 +52,10 @@
         return $.fn.atwho["default"].callbacks.filter(query, data, searchKey);
       },
       beforeInsert: function(value) {
+        if (value && !this.setting.skipSpecialCharacterTest) {
+          var withoutAt = value.substring(1);
+          if (withoutAt && /[^\w\d]/.test(withoutAt)) value = value.charAt() + '"' + withoutAt + '"';
+        }
         if (!GitLab.GfmAutoComplete.dataLoaded) {
           return this.at;
         } else {
@@ -59,12 +67,13 @@
         // Tweaked to commands to start without a space only if char before is a non-word character
         // https://github.com/ichord/At.js
         var _a, _y, regexp, match;
+        subtext = subtext.split(' ').pop();
         flag = flag.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 
         _a = decodeURI("%C3%80");
         _y = decodeURI("%C3%BF");
 
-        regexp = new RegExp("(?:\\B|\\W|\\s)" + flag + "([A-Za-z" + _a + "-" + _y + "0-9_\'\.\+\-]*)|([^\\x00-\\xff]*)$", 'gi');
+        regexp = new RegExp("(?:\\B|\\W|\\s)" + flag + "(?!\\W)([A-Za-z" + _a + "-" + _y + "0-9_\'\.\+\-]*)|([^\\x00-\\xff]*)$", 'gi');
 
         match = regexp.exec(subtext);
 
@@ -112,6 +121,7 @@
         insertTpl: ':${name}:',
         data: ['loading'],
         startWithSpace: false,
+        skipSpecialCharacterTest: true,
         callbacks: {
           sorter: this.DefaultOptions.sorter,
           filter: this.DefaultOptions.filter,
@@ -136,6 +146,7 @@
         data: ['loading'],
         startWithSpace: false,
         alwaysHighlightFirst: true,
+        skipSpecialCharacterTest: true,
         callbacks: {
           sorter: this.DefaultOptions.sorter,
           filter: this.DefaultOptions.filter,
@@ -159,8 +170,8 @@
               return {
                 username: m.username,
                 avatarTag: autoCompleteAvatar.length === 1 ?  txtAvatar : imgAvatar,
-                title: gl.utils.sanitize(title),
-                search: gl.utils.sanitize(m.username + " " + m.name)
+                title: sanitize(title),
+                search: sanitize(m.username + " " + m.name)
               };
             });
           }
@@ -194,7 +205,7 @@
               }
               return {
                 id: i.iid,
-                title: gl.utils.sanitize(i.title),
+                title: sanitize(i.title),
                 search: i.iid + " " + i.title
               };
             });
@@ -214,12 +225,13 @@
             }
           };
         })(this),
-        insertTpl: '${atwho-at}"${title}"',
+        insertTpl: '${atwho-at}${title}',
         data: ['loading'],
         startWithSpace: false,
         callbacks: {
           matcher: this.DefaultOptions.matcher,
           sorter: this.DefaultOptions.sorter,
+          beforeInsert: this.DefaultOptions.beforeInsert,
           beforeSave: function(milestones) {
             return $.map(milestones, function(m) {
               if (m.title == null) {
@@ -227,7 +239,7 @@
               }
               return {
                 id: m.iid,
-                title: gl.utils.sanitize(m.title),
+                title: sanitize(m.title),
                 search: "" + m.title
               };
             });
@@ -262,7 +274,7 @@
               }
               return {
                 id: m.iid,
-                title: gl.utils.sanitize(m.title),
+                title: sanitize(m.title),
                 search: m.iid + " " + m.title
               };
             });
@@ -279,18 +291,11 @@
         callbacks: {
           matcher: this.DefaultOptions.matcher,
           sorter: this.DefaultOptions.sorter,
+          beforeInsert: this.DefaultOptions.beforeInsert,
           beforeSave: function(merges) {
-            var sanitizeLabelTitle;
-            sanitizeLabelTitle = function(title) {
-              if (/[\w\?&]+\s+[\w\?&]+/g.test(title)) {
-                return "\"" + (gl.utils.sanitize(title)) + "\"";
-              } else {
-                return gl.utils.sanitize(title);
-              }
-            };
             return $.map(merges, function(m) {
               return {
-                title: sanitizeLabelTitle(m.title),
+                title: sanitize(m.title),
                 color: m.color,
                 search: "" + m.title
               };
@@ -303,6 +308,7 @@
         at: '/',
         alias: 'commands',
         searchKey: 'search',
+        skipSpecialCharacterTest: true,
         displayTpl: function(value) {
           var tpl = '<li>/${name}';
           if (value.aliases.length > 0) {

@@ -521,6 +521,15 @@ describe Discussion, model: true do
     end
   end
 
+  describe "#first_note_to_resolve" do
+    it "returns the first not that still needs to be resolved" do
+      allow(first_note).to receive(:to_be_resolved?).and_return(false)
+      allow(second_note).to receive(:to_be_resolved?).and_return(true)
+
+      expect(subject.first_note_to_resolve).to eq(second_note)
+    end
+  end
+
   describe "#collapsed?" do
     context "when a diff discussion" do
       before do

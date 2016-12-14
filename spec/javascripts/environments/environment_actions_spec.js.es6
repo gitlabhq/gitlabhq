@@ -8,7 +8,7 @@ describe('Actions Component', () => {
     fixture.load('environments/element.html');
   });
 
-  it('Should render a dropdown with the provided actions', () => {
+  it('should render a dropdown with the provided actions', () => {
     const actionsMock = [
       {
         name: 'bar',
@@ -24,6 +24,7 @@ describe('Actions Component', () => {
       el: document.querySelector('.test-dom-element'),
       propsData: {
         actions: actionsMock,
+        playIconSvg: '<svg></svg>',
       },
     });
 
@@ -33,5 +34,34 @@ describe('Actions Component', () => {
     expect(
       component.$el.querySelector('.dropdown-menu li a').getAttribute('href'),
     ).toEqual(actionsMock[0].play_path);
+  });
+
+  it('should render a dropdown with the provided svg', () => {
+    const actionsMock = [
+      {
+        name: 'bar',
+        play_path: 'https://gitlab.com/play',
+      },
+      {
+        name: 'foo',
+        play_path: '#',
+      },
+    ];
+
+    const component = new window.gl.environmentsList.ActionsComponent({
+      el: document.querySelector('.test-dom-element'),
+      propsData: {
+        actions: actionsMock,
+        playIconSvg: '<svg></svg>',
+      },
+    });
+
+    expect(
+      component.$el.querySelector('.js-dropdown-play-icon-container').children,
+    ).toContain('svg');
+
+    expect(
+      component.$el.querySelector('.js-action-play-icon-container').children,
+    ).toContain('svg');
   });
 });

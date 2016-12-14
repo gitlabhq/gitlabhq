@@ -1,5 +1,7 @@
 # rubocop:disable all
 class CreateProjectGroupLinks < ActiveRecord::Migration
+  DOWNTIME = false
+
   def change
     create_table :project_group_links do |t|
       t.integer :project_id, null: false

@@ -5,8 +5,9 @@ module CiStatusHelper
   end
 
   def ci_status_with_icon(status, target = nil)
-    content = ci_icon_for_status(status) + ci_label_for_status(status)
+    content = ci_icon_for_status(status) + ci_text_for_status(status)
     klass = "ci-status ci-#{status}"
+
     if target
       link_to content, target, class: klass
     else
@@ -14,7 +15,19 @@ module CiStatusHelper
     end
   end
 
+  def ci_text_for_status(status)
+    if detailed_status?(status)
+      status.text
+    else
+      status
+    end
+  end
+
   def ci_label_for_status(status)
+    if detailed_status?(status)
+      return status.label
+    end
+
     case status
     when 'success'
       'passed'
@@ -31,6 +44,10 @@ module CiStatusHelper
   end
 
   def ci_icon_for_status(status)
+    if detailed_status?(status)
+      return custom_icon(status.icon)
+    end
+
     icon_name =
       case status
       when 'success'
@@ -93,5 +110,11 @@ module CiStatusHelper
       content_tag :span, ci_icon_for_status(status),
               class: klass, title: title, data: data
     end
+  end
+
+  def detailed_status?(status)
+    status.respond_to?(:text) &&
+      status.respond_to?(:label) &&
+      status.respond_to?(:icon)
   end
 end

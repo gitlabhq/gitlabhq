@@ -1,5 +1,7 @@
 # rubocop:disable all
 class CreateReleases < ActiveRecord::Migration
+  DOWNTIME = false
+
   def change
     create_table :releases do |t|
       t.string :tag

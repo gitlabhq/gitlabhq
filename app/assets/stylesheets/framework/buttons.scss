@@ -1,7 +1,7 @@
 @mixin btn-default {
   border-radius: 3px;
   font-size: $gl-font-size;
-  font-weight: 500;
+  font-weight: 400;
   padding: $gl-vert-padding $gl-btn-padding;
 
   &:focus,
@@ -68,23 +68,23 @@
 }
 
 @mixin btn-green {
-  @include btn-color($green-light, $border-green-light, $green-normal, $border-green-normal, $green-dark, $border-green-dark, #fff);
+  @include btn-color($green-light, $border-green-light, $green-normal, $border-green-normal, $green-dark, $border-green-dark, $white-light);
 }
 
 @mixin btn-blue {
-  @include btn-color($blue-light, $border-blue-light, $blue-normal, $border-blue-normal, $blue-dark, $border-blue-dark, #fff);
+  @include btn-color($blue-light, $border-blue-light, $blue-normal, $border-blue-normal, $blue-dark, $border-blue-dark, $white-light);
 }
 
 @mixin btn-blue-medium {
-  @include btn-color($blue-medium-light, $border-blue-light, $blue-medium, $border-blue-normal, $blue-medium-dark, $border-blue-dark, #fff);
+  @include btn-color($blue-medium-light, $border-blue-light, $blue-medium, $border-blue-normal, $blue-medium-dark, $border-blue-dark, $white-light);
 }
 
 @mixin btn-orange {
-  @include btn-color($orange-light, $border-orange-light, $orange-normal, $border-orange-normal, $orange-dark, $border-orange-dark, #fff);
+  @include btn-color($orange-light, $border-orange-light, $orange-normal, $border-orange-normal, $orange-dark, $border-orange-dark, $white-light);
 }
 
 @mixin btn-red {
-  @include btn-color($red-light, $border-red-light, $red-normal, $border-red-normal, $red-dark, $border-red-dark, #fff);
+  @include btn-color($red-light, $border-red-light, $red-normal, $border-red-normal, $red-dark, $border-red-dark, $white-light);
 }
 
 @mixin btn-gray {
@@ -289,8 +289,8 @@
   .active {
     box-shadow: $gl-btn-active-background;
 
-    border: 1px solid #c6cacf !important;
-    background-color: #e4e7ed !important;
+    border: 1px solid $border-white-dark !important;
+    background-color: $btn-active-gray-light !important;
   }
 }
 
@@ -345,13 +345,13 @@
 
 .btn-static {
   background-color: $background-color !important;
-  border: 1px solid lightgrey;
+  border: 1px solid $border-gray-light;
   cursor: default;
 
   &:active {
-    -moz-box-shadow: inset 0 0 0 white;
-    -webkit-box-shadow: inset 0 0 0 white;
-    box-shadow: inset 0 0 0 white;
+    -moz-box-shadow: inset 0 0 0 $white-light;
+    -webkit-box-shadow: inset 0 0 0 $white-light;
+    box-shadow: inset 0 0 0 $white-light;
   }
 }
 

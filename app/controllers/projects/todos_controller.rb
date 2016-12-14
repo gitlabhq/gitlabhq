@@ -18,7 +18,7 @@ class Projects::TodosController < Projects::ApplicationController
       when "issue"
         IssuesFinder.new(current_user, project_id: @project.id).find(params[:issuable_id])
       when "merge_request"
-        @project.merge_requests.find(params[:issuable_id])
+        MergeRequestsFinder.new(current_user, project_id: @project.id).find(params[:issuable_id])
       end
     end
   end

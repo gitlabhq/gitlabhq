@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'cycle analytics events' do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, public_builds: false) }
   let(:issue) {  create(:issue, project: project, created_at: 2.days.ago) }
 
   describe 'GET /:namespace/:project/cycle_analytics/events/issues' do
@@ -135,6 +135,6 @@ describe 'cycle analytics events' do
 
     merge_merge_requests_closing_issue(issue)
 
-    ProcessCommitWorker.new.perform(project.id, user.id, mr.commits.last.sha)
+    ProcessCommitWorker.new.perform(project.id, user.id, mr.commits.last.to_hash)
   end
 end

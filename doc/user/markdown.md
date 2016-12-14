@@ -267,6 +267,18 @@ GFM also recognizes certain cross-project references:
 | `namespace/project@9ba12248...b19a04f5` | commit range comparison |
 | `namespace/project~"Some label"`        | issues with given label |
 
+It also has a shorthand version to reference other projects from the same namespace:
+
+| input                         | references              |
+|:------------------------------|:------------------------|
+| `project#123`                 | issue                   |
+| `project!123`                 | merge request           |
+| `project%123`                 | milestone               |
+| `project$123`                 | snippet                 |
+| `project@9ba12248`            | specific commit         |
+| `project@9ba12248...b19a04f5` | commit range comparison |
+| `project~"Some label"`        | issues with given label |
+
 ### Task Lists
 
 > If this is not rendered correctly, see
@@ -604,7 +616,7 @@ This line is separated from the one above by two newlines, so it will be a *sepa
 This line is also a separate paragraph, but...
 This line is only separated by a single newline, so it's a separate line in the *same paragraph*.
 
-This line is also a separate paragraph, and...
+This line is also a separate paragraph, and...  
 This line is on its own line, because the previous line ends with two
 spaces.
 ```
@@ -616,7 +628,7 @@ This line is separated from the one above by two newlines, so it will be a *sepa
 This line is also begins a separate paragraph, but...
 This line is only separated by a single newline, so it's a separate line in the *same paragraph*.
 
-This line is also a separate paragraph, and...
+This line is also a separate paragraph, and...  
 This line is on its own line, because the previous line ends with two
 spaces.
 

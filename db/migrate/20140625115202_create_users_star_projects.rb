@@ -1,5 +1,7 @@
 # rubocop:disable all
 class CreateUsersStarProjects < ActiveRecord::Migration
+  DOWNTIME = false
+
   def change
     create_table :users_star_projects do |t|
       t.integer :project_id, null: false

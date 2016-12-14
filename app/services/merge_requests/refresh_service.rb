@@ -55,15 +55,16 @@ module MergeRequests
     # Refresh merge request diff if we push to source or target branch of merge request
     # Note: we should update merge requests from forks too
     def reload_merge_requests
-      merge_requests = @project.merge_requests.opened.by_branch(@branch_name).to_a
-      merge_requests += fork_merge_requests.by_branch(@branch_name).to_a
+      merge_requests = @project.merge_requests.opened.
+        by_source_or_target_branch(@branch_name).to_a
+      merge_requests += fork_merge_requests
       merge_requests = filter_merge_requests(merge_requests)
 
       merge_requests.each do |merge_request|
         if merge_request.source_branch == @branch_name || force_push?
           merge_request.reload_diff
         else
-          mr_commit_ids = merge_request.commits.map(&:id)
+          mr_commit_ids = merge_request.commits_sha
           push_commit_ids = @commits.map(&:id)
           matches = mr_commit_ids & push_commit_ids
           merge_request.reload_diff if matches.any?
@@ -123,7 +124,7 @@ module MergeRequests
       return unless @commits.present?
 
       merge_requests_for_source_branch.each do |merge_request|
-        mr_commit_ids = Set.new(merge_request.commits.map(&:id))
+        mr_commit_ids = Set.new(merge_request.commits_sha)
 
         new_commits, existing_commits = @commits.partition do |commit|
           mr_commit_ids.include?(commit.id)
@@ -157,13 +158,14 @@ module MergeRequests
     def merge_requests_for_source_branch
       @source_merge_requests ||= begin
         merge_requests = @project.origin_merge_requests.opened.where(source_branch: @branch_name).to_a
-        merge_requests += fork_merge_requests.where(source_branch: @branch_name).to_a
+        merge_requests += fork_merge_requests
         filter_merge_requests(merge_requests)
       end
     end
 
     def fork_merge_requests
-      @fork_merge_requests ||= @project.fork_merge_requests.opened
+      @fork_merge_requests ||= @project.fork_merge_requests.opened.
+        where(source_branch: @branch_name).to_a
     end
 
     def branch_added?

@@ -1,9 +1,9 @@
 RSpec::Matchers.define :have_issuable_counts do |opts|
-  match do |actual|
-    expected_counts = opts.map do |state, count|
-      "#{state.to_s.humanize} #{count}"
-    end
+  expected_counts = opts.map do |state, count|
+    "#{state.to_s.humanize} #{count}"
+  end
 
+  match do |actual|
     actual.within '.issues-state-filters' do
       expected_counts.each do |expected_count|
         expect(actual).to have_content(expected_count)

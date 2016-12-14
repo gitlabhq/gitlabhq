@@ -36,11 +36,16 @@
   padding: 6px 8px 6px 10px;
   background-color: $dropdown-toggle-bg;
   color: $dropdown-toggle-color;
-  font-size: 15px;
+  font-size: 14px;
   text-align: left;
   border: 1px solid $border-color;
   border-radius: $border-radius-base;
   white-space: nowrap;
+
+  &[disabled] {
+    background-color: $input-bg-disabled;
+    cursor: not-allowed;
+  }
 
   &.no-outline {
     outline: 0;
@@ -123,7 +128,7 @@
   width: 240px;
   margin-top: 2px;
   margin-bottom: 0;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: normal;
   padding: 8px 0;
   background-color: $dropdown-bg;
@@ -376,7 +381,7 @@
     position: absolute;
     top: 10px;
     right: 20px;
-    color: #c7c7c7;
+    color: $dropdown-input-fa-color;
     font-size: 12px;
     pointer-events: none;
   }
@@ -529,7 +534,7 @@
     .ui-datepicker-calendar {
       .ui-state-hover,
       .ui-state-active {
-        color: #fff;
+        color: $white-light;
         border: 0;
       }
     }
@@ -589,7 +594,7 @@
 
     .ui-datepicker-title {
       color: $gl-gray;
-      font-size: 15px;
+      font-size: 14px;
       line-height: 1;
       font-weight: normal;
     }

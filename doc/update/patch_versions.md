@@ -1,7 +1,10 @@
 # Universal update guide for patch versions
-*Make sure you view this [upgrade guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/update/patch_versions.md) from the `master` branch for the most up to date instructions.*
 
-For example from 7.14.0 to 7.14.3, also see the [semantic versioning specification](http://semver.org/).
+## Select Version to Install
+
+Make sure you view [this update guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/update/patch_versions.md) from the tag (version) of GitLab you would like to install.
+In most cases this should be the highest numbered production tag (without rc in it).
+You can select the tag in the version dropdown in the top left corner of GitLab (below the menu bar).
 
 ### 0. Backup
 
@@ -45,10 +48,9 @@ sudo -u git -H git checkout v`cat /home/git/gitlab/GITLAB_SHELL_VERSION` -b v`ca
 ### 4. Update gitlab-workhorse to the corresponding version
 
 ```bash
-cd /home/git/gitlab-workhorse
-sudo -u git -H git fetch
-sudo -u git -H git checkout v`cat /home/git/gitlab/GITLAB_WORKHORSE_VERSION` -b v`cat /home/git/gitlab/GITLAB_WORKHORSE_VERSION`
-sudo -u git -H make
+cd /home/git/gitlab
+
+sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse]" RAILS_ENV=production
 ```
 
 ### 5. Install libs, migrations, etc.

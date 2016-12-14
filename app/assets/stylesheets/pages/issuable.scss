@@ -30,6 +30,7 @@
 
     .color-label {
       padding: 6px 10px;
+      border-radius: $label-border-radius;
     }
   }
 
@@ -233,7 +234,7 @@
       width: 100%;
       text-align: center;
       padding-bottom: 10px;
-      color: #999;
+      color: $issuable-sidebar-color;
 
       &:hover {
         color: $gl-gray;
@@ -249,12 +250,12 @@
       }
 
       .avatar:hover {
-        border-color: #999;
+        border-color: $issuable-avatar-hover-border;
       }
 
       .btn-clipboard {
         border: none;
-        color: #999;
+        color: $issuable-clipboard-color;
 
         &:hover {
           background: transparent;

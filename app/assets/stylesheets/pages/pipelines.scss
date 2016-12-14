@@ -37,12 +37,13 @@
   }
 }
 
-.content-list {
-
-  &.pipelines,
-  &.builds-content-list {
-    width: 100%;
-    overflow: auto;
+@media (max-width: $screen-md-max) {
+  .content-list {
+    &.pipelines,
+    &.builds-content-list {
+      width: 100%;
+      overflow: auto;
+    }
   }
 }
 
@@ -277,6 +278,12 @@
 
   .btn-group.open .dropdown-toggle {
     box-shadow: none;
+  }
+}
+
+.admin-builds-table {
+  .ci-table td:last-child {
+    min-width: 120px;
   }
 }
 
@@ -658,10 +665,6 @@
 
     .ci-table {
       min-width: 900px;
-    }
-
-    .content-list.pipelines {
-      overflow: auto;
     }
 
     .stage {

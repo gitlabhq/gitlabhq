@@ -1,5 +1,7 @@
 # rubocop:disable all
 class CreateBroadcastMessages < ActiveRecord::Migration
+  DOWNTIME = false
+
   def change
     create_table :broadcast_messages do |t|
       t.text :message, null: false

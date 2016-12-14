@@ -8,7 +8,7 @@ RSpec.configure do |config|
   config.before(:all) do
     $stdout = StringIO.new
 
-    Rake.application.rake_require 'tasks/gitlab/task_helpers'
+    Rake.application.rake_require 'tasks/gitlab/helpers'
     Rake::Task.define_task :environment
   end
 

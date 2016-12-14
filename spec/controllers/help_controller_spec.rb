@@ -8,26 +8,32 @@ describe HelpController do
   end
 
   describe 'GET #index' do
-    context 'when url prefixed without /help/' do
-      it 'has correct url prefix' do
-        stub_readme("[API](api/README.md)")
+    context 'with absolute url' do
+      it 'keeps the URL absolute' do
+        stub_readme("[API](/api/README.md)")
+
         get :index
+
+        expect(assigns[:help_index]).to eq '[API](/api/README.md)'
+      end
+    end
+
+    context 'with relative url' do
+      it 'prefixes it with /help/' do
+        stub_readme("[API](api/README.md)")
+
+        get :index
+
         expect(assigns[:help_index]).to eq '[API](/help/api/README.md)'
       end
     end
 
-    context 'when url prefixed with help' do
-      it 'will be an absolute path' do
-        stub_readme("[API](helpful_hints/README.md)")
-        get :index
-        expect(assigns[:help_index]).to eq '[API](/help/helpful_hints/README.md)'
-      end
-    end
-
     context 'when url is an external link' do
-      it 'will not be changed' do
+      it 'does not change it' do
         stub_readme("[external](https://some.external.link)")
+
         get :index
+
         expect(assigns[:help_index]).to eq '[external](https://some.external.link)'
       end
     end

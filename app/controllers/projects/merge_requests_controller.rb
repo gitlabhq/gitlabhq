@@ -302,9 +302,13 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def cancel_merge_when_build_succeeds
-    return access_denied! unless @merge_request.can_cancel_merge_when_build_succeeds?(current_user)
+    unless @merge_request.can_cancel_merge_when_build_succeeds?(current_user)
+      return access_denied!
+    end
 
-    MergeRequests::MergeWhenBuildSucceedsService.new(@project, current_user).cancel(@merge_request)
+    MergeRequests::MergeWhenPipelineSucceedsService
+      .new(@project, current_user)
+      .cancel(@merge_request)
   end
 
   def merge
@@ -331,8 +335,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       end
 
       if @merge_request.head_pipeline.active?
-        MergeRequests::MergeWhenBuildSucceedsService.new(@project, current_user, merge_params)
-                                                        .execute(@merge_request)
+        MergeRequests::MergeWhenPipelineSucceedsService
+          .new(@project, current_user, merge_params)
+          .execute(@merge_request)
+
         @status = :merge_when_build_succeeds
       elsif @merge_request.head_pipeline.success?
         # This can be triggered when a user clicks the auto merge button while
@@ -492,7 +498,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def validates_merge_request
     # Show git not found page
     # if there is no saved commits between source & target branch
-    if @merge_request.commits.blank?
+    if @merge_request.has_no_commits?
       # and if target branch doesn't exist
       return invalid_mr unless @merge_request.target_branch_exists?
     end
@@ -500,7 +506,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def define_show_vars
     @noteable = @merge_request
-    @commits_count = @merge_request.commits.count
+    @commits_count = @merge_request.commits_count
 
     if @merge_request.locked_long_ago?
       @merge_request.unlock_mr

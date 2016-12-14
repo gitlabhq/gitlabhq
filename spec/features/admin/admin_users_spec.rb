@@ -225,4 +225,32 @@ describe "Admin::Users", feature: true  do
       end
     end
   end
+
+  describe "GET /admin/users/:id/projects" do
+    before do
+      @group = create(:group)
+      @project = create(:project, group: @group)
+      @simple_user = create(:user)
+      @group.add_developer(@simple_user)
+
+      visit projects_admin_user_path(@simple_user)
+    end
+
+    it "lists group projects" do
+      within(:css, '.append-bottom-default + .panel') do
+        expect(page).to have_content 'Group projects'
+        expect(page).to have_link @group.name, admin_group_path(@group)
+      end
+    end
+
+    it 'allows navigation to the group details' do
+      within(:css, '.append-bottom-default + .panel') do
+        click_link @group.name
+      end
+      within(:css, 'h3.page-title') do
+        expect(page).to have_content "Group: #{@group.name}"
+      end
+      expect(page).to have_content @project.name
+    end
+  end
 end

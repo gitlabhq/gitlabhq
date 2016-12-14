@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'mime/types'
 
-describe API::API, api: true  do
+describe API::Tags, api: true  do
   include ApiHelpers
   include RepoHelpers
 
@@ -14,6 +14,31 @@ describe API::API, api: true  do
   describe "GET /projects/:id/repository/tags" do
     let(:tag_name) { project.repository.tag_names.sort.reverse.first }
     let(:description) { 'Awesome release!' }
+
+    shared_examples_for 'repository tags' do
+      it 'returns the repository tags' do
+        get api("/projects/#{project.id}/repository/tags", current_user)
+
+        expect(response).to have_http_status(200)
+
+        first_tag = json_response.first
+
+        expect(first_tag['name']).to eq(tag_name)
+      end
+    end
+
+    context 'when unauthenticated' do
+      it_behaves_like 'repository tags' do
+        let(:project) { create(:project, :public) }
+        let(:current_user) { nil }
+      end
+    end
+
+    context 'when authenticated' do
+      it_behaves_like 'repository tags' do
+        let(:current_user) { user }
+      end
+    end
 
     context 'without releases' do
       it "returns an array of project tags" do
@@ -45,17 +70,33 @@ describe API::API, api: true  do
   describe 'GET /projects/:id/repository/tags/:tag_name' do
     let(:tag_name) { project.repository.tag_names.sort.reverse.first }
 
-    it 'returns a specific tag' do
-      get api("/projects/#{project.id}/repository/tags/#{tag_name}", user)
+    shared_examples_for 'repository tag' do
+      it 'returns the repository tag' do
+        get api("/projects/#{project.id}/repository/tags/#{tag_name}", current_user)
 
-      expect(response).to have_http_status(200)
-      expect(json_response['name']).to eq(tag_name)
+        expect(response).to have_http_status(200)
+
+        expect(json_response['name']).to eq(tag_name)
+      end
+
+      it 'returns 404 for an invalid tag name' do
+        get api("/projects/#{project.id}/repository/tags/foobar", current_user)
+
+        expect(response).to have_http_status(404)
+      end
     end
 
-    it 'returns 404 for an invalid tag name' do
-      get api("/projects/#{project.id}/repository/tags/foobar", user)
+    context 'when unauthenticated' do
+      it_behaves_like 'repository tag' do
+        let(:project) { create(:project, :public) }
+        let(:current_user) { nil }
+      end
+    end
 
-      expect(response).to have_http_status(404)
+    context 'when authenticated' do
+      it_behaves_like 'repository tag' do
+        let(:current_user) { user }
+      end
     end
   end
 

@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe API::API, api: true  do
+describe API::MergeRequests, api: true  do
   include ApiHelpers
   let(:base_time)   { Time.now }
   let(:user)        { create(:user) }
@@ -234,11 +234,14 @@ describe API::API, api: true  do
              target_branch: 'master',
              author: user,
              labels: 'label, label2',
-             milestone_id: milestone.id
+             milestone_id: milestone.id,
+             remove_source_branch: true
+
         expect(response).to have_http_status(201)
         expect(json_response['title']).to eq('Test merge_request')
         expect(json_response['labels']).to eq(['label', 'label2'])
         expect(json_response['milestone']['id']).to eq(milestone.id)
+        expect(json_response['force_remove_source_branch']).to be_truthy
       end
 
       it "returns 422 when source_branch equals target_branch" do
@@ -465,7 +468,7 @@ describe API::API, api: true  do
       expect(response).to have_http_status(200)
     end
 
-    it "enables merge when build succeeds if the ci is active" do
+    it "enables merge when pipeline succeeds if the pipeline is active" do
       allow_any_instance_of(MergeRequest).to receive(:head_pipeline).and_return(pipeline)
       allow(pipeline).to receive(:active?).and_return(true)
 
@@ -511,6 +514,13 @@ describe API::API, api: true  do
       expect(json_response['target_branch']).to eq('wiki')
     end
 
+    it "returns merge_request that removes the source branch" do
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), remove_source_branch: true
+
+      expect(response).to have_http_status(200)
+      expect(json_response['force_remove_source_branch']).to be_truthy
+    end
+
     it 'allows special label names' do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user),
         title: 'new issue',
@@ -522,6 +532,22 @@ describe API::API, api: true  do
       expect(json_response['labels']).to include 'label&foo'
       expect(json_response['labels']).to include '?'
       expect(json_response['labels']).to include '&'
+    end
+
+    it 'does not update state when title is empty' do
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), state_event: 'close', title: nil
+
+      merge_request.reload
+      expect(response).to have_http_status(400)
+      expect(merge_request.state).to eq('opened')
+    end
+
+    it 'does not update state when target_branch is empty' do
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), state_event: 'close', target_branch: nil
+
+      merge_request.reload
+      expect(response).to have_http_status(400)
+      expect(merge_request.state).to eq('opened')
     end
   end
 

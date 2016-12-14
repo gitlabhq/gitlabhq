@@ -22,6 +22,7 @@ Example response:
 [
   {
     "name": "master",
+    "merged": false,
     "protected": true,
     "developers_can_push": false,
     "developers_can_merge": false,
@@ -65,6 +66,7 @@ Example response:
 ```json
 {
   "name": "master",
+  "merged": false,
   "protected": true,
   "developers_can_push": false,
   "developers_can_merge": false,
@@ -123,6 +125,7 @@ Example response:
     ]
   },
   "name": "master",
+  "merged": false,
   "protected": true,
   "developers_can_push": true,
   "developers_can_merge": true
@@ -166,6 +169,7 @@ Example response:
     ]
   },
   "name": "master",
+  "merged": false,
   "protected": false,
   "developers_can_push": false,
   "developers_can_merge": false
@@ -206,6 +210,7 @@ Example response:
     ]
   },
   "name": "newbranch",
+  "merged": false,
   "protected": false,
   "developers_can_push": false,
   "developers_can_merge": false

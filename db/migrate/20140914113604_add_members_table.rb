@@ -1,5 +1,7 @@
 # rubocop:disable all
 class AddMembersTable < ActiveRecord::Migration
+  DOWNTIME = false
+
   def change
     create_table :members do |t|
       t.integer :access_level, null: false

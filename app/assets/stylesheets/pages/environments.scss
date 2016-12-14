@@ -1,6 +1,8 @@
-.deployments-container {
-  width: 100%;
-  overflow: auto;
+@media (max-width: $screen-md-max) {
+  .deployments-container {
+    width: 100%;
+    overflow: auto;
+  }
 }
 
 .environments-list-loading {
@@ -8,7 +10,7 @@
   font-size: 34px;
 }
 
-@media (max-width: $screen-sm-min) {
+@media (max-width: $screen-xs-max) {
   .environments-container {
     width: 100%;
     overflow: auto;

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe API::API, api: true do
+describe API::ProjectSnippets, api: true do
   include ApiHelpers
 
   let(:project) { create(:empty_project, :public) }

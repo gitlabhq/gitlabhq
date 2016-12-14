@@ -22,7 +22,7 @@ module API
       expose :provider, :extern_uid
     end
 
-    class UserFull < User
+    class UserPublic < User
       expose :last_sign_in_at
       expose :confirmed_at
       expose :email
@@ -34,7 +34,7 @@ module API
       expose :external
     end
 
-    class UserLogin < UserFull
+    class UserWithPrivateToken < UserPublic
       expose :private_token
     end
 
@@ -141,8 +141,12 @@ module API
         options[:project].repository.commit(repo_branch.dereferenced_target)
       end
 
+      expose :merged do |repo_branch, options|
+        options[:project].repository.merged_to_root_ref?(repo_branch.name)
+      end
+
       expose :protected do |repo_branch, options|
-        options[:project].protected_branch? repo_branch.name
+        options[:project].protected_branch?(repo_branch.name)
       end
 
       expose :developers_can_push do |repo_branch, options|
@@ -170,6 +174,7 @@ module API
 
     class RepoCommit < Grape::Entity
       expose :id, :short_id, :title, :author_name, :author_email, :created_at
+      expose :committer_name, :committer_email
       expose :safe_message, as: :message
     end
 
@@ -193,6 +198,19 @@ module API
 
       expose :web_url do |snippet, options|
         Gitlab::UrlBuilder.build(snippet)
+      end
+    end
+
+    class PersonalSnippet < Grape::Entity
+      expose :id, :title, :file_name
+      expose :author, using: Entities::UserBasic
+      expose :updated_at, :created_at
+
+      expose :web_url do |snippet|
+        Gitlab::UrlBuilder.build(snippet)
+      end
+      expose :raw_url do |snippet|
+        Gitlab::UrlBuilder.build(snippet) + "/raw"
       end
     end
 
@@ -284,7 +302,7 @@ module API
     end
 
     class SSHKeyWithUser < SSHKey
-      expose :user, using: Entities::UserFull
+      expose :user, using: Entities::UserPublic
     end
 
     class Note < Grape::Entity
