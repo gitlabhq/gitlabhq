@@ -26,3 +26,6 @@
       - if @project.feature_available?(:repository, current_user)
         .project-clone-holder
           = render "shared/clone_panel"
+
+      - if current_user
+        = render 'shared/members/access_request_buttons', source: @project

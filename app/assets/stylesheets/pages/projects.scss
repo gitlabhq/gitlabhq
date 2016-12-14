@@ -178,8 +178,10 @@
   .download-button,
   .dropdown-toggle,
   .notification-dropdown,
-  .project-dropdown {
+  .project-dropdown,
+  .access-button {
     margin-left: 10px;
+    vertical-align: top;
   }
 
   .notification-dropdown .dropdown-menu {
@@ -201,7 +203,7 @@
     display: inline-block;
 
     input {
-      height: 29px;
+      height: 28px;
     }
   }
 
@@ -255,7 +257,7 @@
       line-height: 13px;
       padding: $gl-vert-padding $gl-padding;
       letter-spacing: .4px;
-      padding: 7px 14px;
+      padding: 6px 14px;
       text-align: center;
       vertical-align: middle;
       touch-action: manipulation;

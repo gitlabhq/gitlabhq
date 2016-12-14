@@ -69,7 +69,6 @@
       %li.project-repo-buttons.right
         .project-right-buttons
           - if current_user
-            = render 'shared/members/access_request_buttons', source: @project
             = render "projects/buttons/koding"
 
           .btn-group.project-repo-btn-group
