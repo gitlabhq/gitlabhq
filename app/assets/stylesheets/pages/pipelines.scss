@@ -603,10 +603,9 @@
 
   .dropdown-counter-badge {
     float: right;
-    color: $stage-badge-text;
+    color: $border-color;
     font-weight: 100;
     font-size: 15px;
-    margin-top: 1px;
     margin-right: 2px;
   }
 
@@ -687,6 +686,10 @@
         height: 18px;
         width: 18px;
       }
+
+      .ci-status-text {
+        max-width: 95px;
+      }
     }
   }
 }
@@ -697,9 +700,9 @@
   margin-top: -4px;
 
   i {
-    color: $stage-badge-text;
+    color: $border-color;
     border-radius: 100%;
-    border: 1px solid $stage-badge-text;
+    border: 1px solid $border-color;
     padding: 5px 6px;
     font-size: 13px;
     background: $white-light;
