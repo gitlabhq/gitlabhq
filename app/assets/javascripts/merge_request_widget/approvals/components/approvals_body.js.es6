@@ -33,7 +33,7 @@
       },
     },
     beforeCreate() {
-      return gl.ApprovalsStore.fetch().then();
+      return gl.ApprovalsStore.initStoreOnce();
     },
     template: `
       <div>

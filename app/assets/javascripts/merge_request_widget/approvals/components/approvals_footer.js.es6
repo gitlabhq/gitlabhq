@@ -20,7 +20,7 @@
       },
     },
     beforeCreate() {
-      return gl.ApprovalsStore.fetch();
+      return gl.ApprovalsStore.initStoreOnce();
     },
     template: `
       <div v-if='hasApprovers' class='mr-widget-footer approved-by-users approvals-footer clearfix'>
