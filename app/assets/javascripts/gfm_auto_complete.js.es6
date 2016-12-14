@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, no-template-curly-in-string, comma-dangle, object-shorthand, quotes, dot-notation, no-else-return, one-var, no-var, no-underscore-dangle, one-var-declaration-per-line, no-param-reassign, no-useless-escape, prefer-template, consistent-return, wrap-iife, prefer-arrow-callback, camelcase, no-unused-vars, no-useless-return, padded-blocks, vars-on-top, indent, no-extra-semi, no-multi-spaces, semi, no-undef, max-len */
+/* eslint-disable func-names, space-before-function-paren, no-template-curly-in-string, comma-dangle, object-shorthand, quotes, dot-notation, no-else-return, one-var, no-var, no-underscore-dangle, one-var-declaration-per-line, no-param-reassign, no-useless-escape, prefer-template, consistent-return, wrap-iife, prefer-arrow-callback, camelcase, no-unused-vars, no-useless-return, padded-blocks, vars-on-top, indent, no-extra-semi, no-multi-spaces, semi, max-len */
 
 // Creates the variables for setting up GFM auto-completion
 (function() {
@@ -10,7 +10,7 @@
     return str.replace(/<(?:.|\n)*?>/gm, '');
   }
 
-  GitLab.GfmAutoComplete = {
+  window.GitLab.GfmAutoComplete = {
     dataLoading: false,
     dataLoaded: false,
     cachedData: {},
@@ -57,7 +57,7 @@
           var withoutAt = value.substring(1);
           if (withoutAt && /[^\w\d]/.test(withoutAt)) value = value.charAt() + '"' + withoutAt + '"';
         }
-        if (!GitLab.GfmAutoComplete.dataLoaded) {
+        if (!window.GitLab.GfmAutoComplete.dataLoaded) {
           return this.at;
         } else {
           return value;

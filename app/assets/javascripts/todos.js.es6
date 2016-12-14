@@ -1,4 +1,4 @@
-/* eslint-disable padded-blocks, class-methods-use-this, no-new, func-names, prefer-template, no-unneeded-ternary, object-shorthand, space-before-function-paren, comma-dangle, quote-props, consistent-return, no-else-return, semi, no-param-reassign, max-len, no-undef */
+/* eslint-disable padded-blocks, class-methods-use-this, no-new, func-names, prefer-template, no-unneeded-ternary, object-shorthand, space-before-function-paren, comma-dangle, quote-props, consistent-return, no-else-return, semi, no-param-reassign, max-len */
 /* global UsersSelect */
 /* global Turbolinks */
 
@@ -75,7 +75,7 @@
     allDoneClicked(e) {
       e.preventDefault();
       e.stopImmediatePropagation();
-      $target = $(e.currentTarget);
+      const $target = $(e.currentTarget);
       $target.disable();
       return $.ajax({
         type: 'POST',

@@ -1,4 +1,6 @@
-/* eslint-disable no-new, no-undef, no-plusplus, object-curly-spacing, prefer-const, semi */
+/* eslint-disable no-new, no-plusplus, object-curly-spacing, prefer-const, semi */
+/* global IssuableContext */
+/* global LabelsSelect */
 
 //= require lib/utils/type_utility
 //= require jquery
