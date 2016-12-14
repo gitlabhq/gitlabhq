@@ -1,6 +1,10 @@
 require 'spec_helper'
 
 describe Bitbucket::Connection do
+  before do
+    allow_any_instance_of(described_class).to receive(:provider).and_return(double(app_id: '', app_secret: ''))
+  end
+
   describe '#get' do
     it 'calls OAuth2::AccessToken::get' do
       expect_any_instance_of(OAuth2::AccessToken).to receive(:get).and_return(double(parsed: true))

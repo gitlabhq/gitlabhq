@@ -17,9 +17,8 @@ describe Bitbucket::Representation::PullRequestComment do
     it { expect(described_class.new('inline' => { 'to' => 3 }).new_pos).to eq(3) }
   end
 
-
   describe '#parent_id' do
-    it { expect(described_class.new({ 'parent' => { 'id' => 2 }}).parent_id).to eq(2) }
+    it { expect(described_class.new({ 'parent' => { 'id' => 2 } }).parent_id).to eq(2) }
     it { expect(described_class.new({}).parent_id).to be_nil }
   end
 

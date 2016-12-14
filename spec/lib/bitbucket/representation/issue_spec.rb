@@ -10,12 +10,12 @@ describe Bitbucket::Representation::Issue do
   end
 
   describe '#author' do
-    it { expect(described_class.new({ 'reporter' => { 'username' => 'Ben' }}).author).to eq('Ben') }
-    it { expect(described_class.new({}).author).to eq('Anonymous') }
+    it { expect(described_class.new({ 'reporter' => { 'username' => 'Ben' } }).author).to eq('Ben') }
+    it { expect(described_class.new({}).author).to be_nil }
   end
 
   describe '#description' do
-    it { expect(described_class.new({ 'content' => { 'raw' => 'Text' }}).description).to eq('Text') }
+    it { expect(described_class.new({ 'content' => { 'raw' => 'Text' } }).description).to eq('Text') }
     it { expect(described_class.new({}).description).to be_nil }
   end
 
