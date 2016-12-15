@@ -430,6 +430,10 @@
       height: 16px;
       fill: $sidebar-collapsed-icon-color;
     }
+
+    &:hover svg {
+      fill: $gl-gray;
+    }
   }
 
   .help-button,
