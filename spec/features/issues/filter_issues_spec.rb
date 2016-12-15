@@ -3,8 +3,8 @@ require 'rails_helper'
 describe 'Filter issues', feature: true do
   include WaitForAjax
 
-  let!(:project)   { create(:project) }
   let!(:group)     { create(:group) }
+  let!(:project)   { create(:project, group: group) }
   let!(:user)      { create(:user) }
   let!(:user2)      { create(:user) }
   let!(:milestone) { create(:milestone, project: project) }
@@ -652,30 +652,30 @@ describe 'Filter issues', feature: true do
 
   describe 'RSS feeds' do
     it 'updates atom feed link for project issues' do
-      visit namespace_project_issues_path(project.namespace, project, milestone_title: '', assignee_id: user.id)
+      visit namespace_project_issues_path(project.namespace, project, milestone_title: milestone.title, assignee_id: user.id)
       link = find('.nav-controls a', text: 'Subscribe')
       params = CGI::parse(URI.parse(link[:href]).query)
       auto_discovery_link = find('link[type="application/atom+xml"]', visible: false)
       auto_discovery_params = CGI::parse(URI.parse(auto_discovery_link[:href]).query)
       expect(params).to include('private_token' => [user.private_token])
-      expect(params).to include('milestone_title' => [''])
+      expect(params).to include('milestone_title' => [milestone.title])
       expect(params).to include('assignee_id' => [user.id.to_s])
       expect(auto_discovery_params).to include('private_token' => [user.private_token])
-      expect(auto_discovery_params).to include('milestone_title' => [''])
+      expect(auto_discovery_params).to include('milestone_title' => [milestone.title])
       expect(auto_discovery_params).to include('assignee_id' => [user.id.to_s])
     end
 
     it 'updates atom feed link for group issues' do
-      visit issues_group_path(group, milestone_title: '', assignee_id: user.id)
+      visit issues_group_path(group, milestone_title: milestone.title, assignee_id: user.id)
       link = find('.nav-controls a', text: 'Subscribe')
       params = CGI::parse(URI.parse(link[:href]).query)
       auto_discovery_link = find('link[type="application/atom+xml"]', visible: false)
       auto_discovery_params = CGI::parse(URI.parse(auto_discovery_link[:href]).query)
       expect(params).to include('private_token' => [user.private_token])
-      expect(params).to include('milestone_title' => [''])
+      expect(params).to include('milestone_title' => [milestone.title])
       expect(params).to include('assignee_id' => [user.id.to_s])
       expect(auto_discovery_params).to include('private_token' => [user.private_token])
-      expect(auto_discovery_params).to include('milestone_title' => [''])
+      expect(auto_discovery_params).to include('milestone_title' => [milestone.title])
       expect(auto_discovery_params).to include('assignee_id' => [user.id.to_s])
     end
   end
