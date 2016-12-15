@@ -27,7 +27,6 @@ class Projects::PipelinesController < Projects::ApplicationController
             .new(project: @project, user: @current_user)
             .with_pagination(request, response)
             .represent(@pipelines),
-          updated_at: Time.now.utc,
           count: {
             all: @pipelines_count,
             running_or_pending: @running_or_pending_count
