@@ -208,6 +208,12 @@ module SystemNoteService
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
 
+  def add_merge_request_wip_from_commit(noteable, project, author, commit)
+    body = "marked as a **Work In Progress** from #{commit.to_reference(project)}"
+
+    create_note(noteable: noteable, project: project, author: author, note: body)
+  end
+
   def self.resolve_all_discussions(merge_request, project, author)
     body = "resolved all discussions"
 

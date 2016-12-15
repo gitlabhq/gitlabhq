@@ -323,4 +323,32 @@ eos
       expect(new_commit.message).to eq(commit.message)
     end
   end
+
+  describe '#work_in_progress?' do
+    ['squash! ', 'fixup! ', 'wip: ', 'WIP: ', '[WIP] '].each do |wip_prefix|
+      it "detects the '#{wip_prefix}' prefix" do
+        commit.message = "#{wip_prefix}#{commit.message}"
+
+        expect(commit).to be_work_in_progress
+      end
+    end
+
+    it "detects WIP for a commit just saying 'wip'" do
+      commit.message = "wip"
+
+      expect(commit).to be_work_in_progress
+    end
+
+    it "doesn't detect WIP for a commit that begins with 'FIXUP! '" do
+      commit.message = "FIXUP! #{commit.message}"
+
+      expect(commit).not_to be_work_in_progress
+    end
+
+    it "doesn't detect WIP for words starting with WIP" do
+      commit.message = "Wipout #{commit.message}"
+
+      expect(commit).not_to be_work_in_progress
+    end
+  end
 end

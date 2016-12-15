@@ -805,4 +805,27 @@ describe SystemNoteService, services: true do
       noteable.save!
     end
   end
+
+  describe '.add_merge_request_wip_from_commit' do
+    let(:noteable) do
+      create(:merge_request, source_project: project, target_project: project)
+    end
+
+    subject do
+      described_class.add_merge_request_wip_from_commit(
+        noteable,
+        project,
+        author,
+        noteable.diff_head_commit
+      )
+    end
+
+    it_behaves_like 'a system note'
+
+    it "posts the 'marked as a Work In Progress from commit' system note" do
+      expect(subject.note).to match(
+        /marked as a \*\*Work In Progress\*\* from #{Commit.reference_pattern}/
+      )
+    end
+  end
 end
