@@ -40,7 +40,7 @@
           v-if='pipeline.flags.latest === true'
           class="label label-success has-tooltip"
           title=""
-          data-original-title="Latest build for this branch"
+          data-original-title="Latest pipeline for this branch"
         >
           latest
         </span>
