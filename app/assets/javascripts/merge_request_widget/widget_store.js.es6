@@ -27,10 +27,7 @@
     }
 
     assignToData(key, val) {
-      // TODO: Remove when passed in json
-      const base = { suggested_approvers: JSON.parse(this.dataset.suggestedApprovers) };
-      this.data[key] = _.assign(base, val);
-      return this.data[key];
+      return _.assign(this.data[key], val);
     }
   }
   gl.MergeRequestWidgetStore = MergeRequestWidgetStore;
