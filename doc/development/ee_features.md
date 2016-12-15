@@ -158,10 +158,16 @@ There are two ways for overriding a method that's defined in CE:
 The `prepend` method should always be preferred but there are a few gotchas with it:
 
 - you should always add a `raise NotImplementedError unless defined?(super)`
-  guard clause in the "overrider" method to ensure that if the method gets renamed in CE, the EE override won't be silently forgotten.
-- when the override would add a line in the middle of the CE implementation,
+  guard clause in the "overrider" method to ensure that if the method gets
+  renamed in CE, the EE override won't be silently forgotten.
+- when the "overrider" would add a line in the middle of the CE implementation,
   it usually means that you'd better refactor the method to split it in
   smaller methods that can be more easily and automatically overriden.
+- when the original implementation contains a guard clause (e.g.
+  `return unless condition`), it doesn't return from the overriden method (it's
+  actually the same behavior as with method overridding via inheritance). In
+  this case, it's usually better to create a "hook" method that is empty in CE,
+  and with the EE-specific implementation in EE
 - sometimes for one-liner methods that don't change often it can be more
   pragmatic to just change the method in place since conflicts resolution
   should be trivial in this case. Use your best judgement!

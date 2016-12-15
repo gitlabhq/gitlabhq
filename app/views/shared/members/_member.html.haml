@@ -37,8 +37,6 @@
           %span{ class: ('text-warning' if member.expires_soon?) }
             Expires in #{distance_of_time_in_words_to_now(member.expires_at)}
 
-      = render 'shared/members/ee/ldap_tag', can_override: can_override_member, visible: true
-
     - else
       = image_tag avatar_icon(member.invite_email, 40), class: "avatar s40", alt: ''
       %strong= member.invite_email

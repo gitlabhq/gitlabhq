@@ -24,6 +24,7 @@
       switch (page) {
         case 'sessions:new':
           new UsernameValidator();
+          new ActiveTabMemoizer();
           break;
         case 'projects:boards:show':
         case 'projects:boards:index':

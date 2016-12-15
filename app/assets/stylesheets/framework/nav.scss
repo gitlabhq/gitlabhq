@@ -71,6 +71,10 @@
       border-bottom: 2px solid $link-underline-blue;
       color: $black;
       font-weight: 600;
+
+      .badge {
+        color: $black;
+      }
     }
 
     .badge {

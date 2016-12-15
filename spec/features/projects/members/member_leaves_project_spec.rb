@@ -11,7 +11,7 @@ feature 'Projects > Members > Member leaves project', feature: true do
   end
 
   scenario 'user leaves project' do
-    click_link 'Leave Project'
+    click_link 'Leave project'
 
     expect(current_path).to eq(dashboard_projects_path)
     expect(project.users.exists?(user.id)).to be_falsey
@@ -23,8 +23,8 @@ feature 'Projects > Members > Member leaves project', feature: true do
     let!(:non_matching_protected_branch) { create(:protected_branch, authorize_user_to_push: other_user, authorize_user_to_merge: other_user, project: project) }
 
     context 'user leaves project' do
-      it "removes the user's branch permissions" do
-        click_link 'Leave Project'
+      scenario "removes the user's branch permissions" do
+        click_link 'Leave project'
 
         expect(current_path).to eq(dashboard_projects_path)
         expect(matching_protected_branch.push_access_levels.where(user: user)).not_to exist

@@ -22,6 +22,9 @@ commands in Mattermost and then enable the service in GitLab.
 
 ### Step 1. Enable custom slash commands in Mattermost
 
+This step is only required when using a source install, omnibus installs will be
+preconfigured with the right settings. 
+
 The first thing to do in Mattermost is to enable custom slash commands from
 the administrator console.
 
@@ -32,8 +35,9 @@ the administrator console.
 
     ---
 
-1. Click **Custom integrations** and set **Enable Custom Slash Commands** to
-   true.
+1. Click **Custom integrations** and set **Enable Custom Slash Commands**, 
+   **Enable custom integrations to override usernames**, and **Override 
+   custom integrations to override profile picture icons** to true
 
     ![Mattermost console](img/mattermost_console_integrations.png)
 
