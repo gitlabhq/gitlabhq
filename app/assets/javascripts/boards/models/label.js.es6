@@ -1,4 +1,5 @@
-/* eslint-disable */
+/* eslint-disable no-unused-vars, space-before-function-paren */
+
 class ListLabel {
   constructor (obj) {
     this.id = obj.id;

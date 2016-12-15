@@ -1,4 +1,7 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, camelcase, vars-on-top, semi, keyword-spacing, no-plusplus, no-undef, object-shorthand, comma-dangle, eqeqeq, no-mixed-operators, no-return-assign, newline-per-chained-call, prefer-arrow-callback, consistent-return, one-var, one-var-declaration-per-line, prefer-template, quotes, no-unused-vars, no-else-return, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, camelcase, vars-on-top, semi, keyword-spacing, no-plusplus, object-shorthand, comma-dangle, eqeqeq, no-mixed-operators, no-return-assign, newline-per-chained-call, prefer-arrow-callback, consistent-return, one-var, one-var-declaration-per-line, prefer-template, quotes, no-unused-vars, no-else-return, padded-blocks, max-len */
+/* global d3 */
+/* global dateFormat */
+
 (function() {
   var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 

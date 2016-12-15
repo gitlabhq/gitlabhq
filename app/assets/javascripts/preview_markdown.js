@@ -1,4 +1,5 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, one-var, one-var-declaration-per-line, wrap-iife, no-else-return, consistent-return, object-shorthand, comma-dangle, no-param-reassign, padded-blocks, no-undef, camelcase, prefer-arrow-callback, max-len */
+/* eslint-disable func-names, space-before-function-paren, no-var, one-var, one-var-declaration-per-line, wrap-iife, no-else-return, consistent-return, object-shorthand, comma-dangle, no-param-reassign, padded-blocks, camelcase, prefer-arrow-callback, max-len */
+
 // MarkdownPreview
 //
 // Handles toggling the "Write" and "Preview" tab clicks, rendering the preview,
@@ -7,7 +8,7 @@
 (function() {
   var lastTextareaPreviewed, markdownPreview, previewButtonSelector, writeButtonSelector;
 
-  this.MarkdownPreview = (function() {
+  window.MarkdownPreview = (function() {
     function MarkdownPreview() {}
 
     // Minimum number of users referenced before triggering a warning
@@ -27,7 +28,7 @@
         return this.renderMarkdown(mdText, (function(_this) {
           return function(response) {
             preview.html(response.body);
-            preview.syntaxHighlight();
+            preview.renderGFM();
             return _this.renderReferencedUsers(response.references.users, form);
           };
         })(this));
@@ -83,7 +84,7 @@
 
   })();
 
-  markdownPreview = new MarkdownPreview();
+  markdownPreview = new window.MarkdownPreview();
 
   previewButtonSelector = '.js-md-preview-button';
 

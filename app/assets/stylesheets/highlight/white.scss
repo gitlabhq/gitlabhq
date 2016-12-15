@@ -69,14 +69,14 @@ $white-gc-bg: #eaf2f5;
 
 @mixin matchLine {
   color: $black-transparent;
-  background-color: $match-line;
+  background-color: $gray-light;
 }
 
 .code.white {
   // Line numbers
   .line-numbers,
   .diff-line-num {
-    background-color: $background-color;
+    background-color: $gray-light;
   }
 
   .diff-line-num,
@@ -87,7 +87,7 @@ $white-gc-bg: #eaf2f5;
   // Code itself
   pre.code,
   .diff-line-num {
-    border-color: $table-border-gray;
+    border-color: $white-normal;
   }
 
   &,

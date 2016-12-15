@@ -1,6 +1,6 @@
-/* eslint-disable */
-/*= require abuse_reports */
+/* eslint-disable space-before-function-paren, no-new, padded-blocks */
 
+/*= require abuse_reports */
 /*= require jquery */
 
 ((global) => {

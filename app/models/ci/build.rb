@@ -195,6 +195,17 @@ module Ci
       project.build_timeout
     end
 
+    # A slugified version of the build ref, suitable for inclusion in URLs and
+    # domain names. Rules:
+    #
+    #   * Lowercased
+    #   * Anything not matching [a-z0-9-] is replaced with a -
+    #   * Maximum length is 63 bytes
+    def ref_slug
+      slugified = ref.to_s.downcase
+      slugified.gsub(/[^a-z0-9]/, '-')[0..62]
+    end
+
     def variables
       variables = predefined_variables
       variables += project.predefined_variables
@@ -529,6 +540,7 @@ module Ci
         { key: 'CI_BUILD_REF', value: sha, public: true },
         { key: 'CI_BUILD_BEFORE_SHA', value: before_sha, public: true },
         { key: 'CI_BUILD_REF_NAME', value: ref, public: true },
+        { key: 'CI_BUILD_REF_SLUG', value: ref_slug, public: true },
         { key: 'CI_BUILD_NAME', value: name, public: true },
         { key: 'CI_BUILD_STAGE', value: stage, public: true },
         { key: 'CI_SERVER_NAME', value: 'GitLab', public: true },

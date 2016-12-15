@@ -1,4 +1,7 @@
-/* eslint-disable */
+/* eslint-disable func-names, no-var, camelcase, no-unused-vars, object-shorthand, space-before-function-paren, no-return-assign, comma-dangle, consistent-return, one-var, one-var-declaration-per-line, quotes, prefer-template, prefer-arrow-callback, prefer-const, padded-blocks, wrap-iife, max-len */
+/* global Issuable */
+/* global Turbolinks */
+
 (function() {
   var issuable_created;
 

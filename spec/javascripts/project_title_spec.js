@@ -1,4 +1,6 @@
-/* eslint-disable space-before-function-paren, no-unused-expressions, no-return-assign, no-undef, no-param-reassign, no-var, new-cap, wrap-iife, no-unused-vars, quotes, padded-blocks, max-len */
+/* eslint-disable space-before-function-paren, no-unused-expressions, no-return-assign, no-param-reassign, no-var, new-cap, wrap-iife, no-unused-vars, quotes, jasmine/no-expect-in-setup-teardown, padded-blocks, max-len */
+
+/* global Project */
 
 /*= require bootstrap */
 /*= require select2 */

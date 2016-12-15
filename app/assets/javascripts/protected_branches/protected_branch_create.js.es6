@@ -1,4 +1,6 @@
-/* eslint-disable */
+/* eslint-disable no-new, arrow-parens, no-param-reassign, no-irregular-whitespace, comma-dangle, padded-blocks, semi, max-len */
+/* global ProtectedBranchDropdown */
+
 (global => {
   global.gl = global.gl || {};
 

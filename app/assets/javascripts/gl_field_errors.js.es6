@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable comma-dangle, class-methods-use-this, max-len, space-before-function-paren, arrow-parens, no-param-reassign, padded-blocks */
 
 //= require gl_field_error
 

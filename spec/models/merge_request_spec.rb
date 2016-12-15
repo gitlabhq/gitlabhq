@@ -205,7 +205,7 @@ describe MergeRequest, models: true do
     end
   end
 
-  describe "#mr_and_commit_notes" do
+  describe "#related_notes" do
     let!(:merge_request) { create(:merge_request) }
 
     before do
@@ -217,7 +217,7 @@ describe MergeRequest, models: true do
 
     it "includes notes for commits" do
       expect(merge_request.commits).not_to be_empty
-      expect(merge_request.mr_and_commit_notes.count).to eq(2)
+      expect(merge_request.related_notes.count).to eq(2)
     end
 
     it "includes notes for commits from target project as well" do
@@ -225,7 +225,7 @@ describe MergeRequest, models: true do
                               project: merge_request.target_project)
 
       expect(merge_request.commits).not_to be_empty
-      expect(merge_request.mr_and_commit_notes.count).to eq(3)
+      expect(merge_request.related_notes.count).to eq(3)
     end
   end
 

@@ -66,14 +66,14 @@
 
   .external-url,
   .dropdown-new {
-    color: $table-text-gray;
+    color: $gl-gray-light;
   }
 
   .dropdown-menu {
 
     .fa {
       margin-right: 6px;
-      color: $table-text-gray;
+      color: $gl-gray-light;
     }
   }
 
@@ -84,7 +84,7 @@
 
   .stop-env-link,
   .external-url {
-    color: $table-text-gray;
+    color: $gl-gray-light;
 
     .stop-env-icon {
       font-size: 14px;
@@ -119,7 +119,7 @@
     .badge {
       font-weight: normal;
       background-color: $gray-darker;
-      color: $gl-placeholder-color;
+      color: $gl-gray-light;
       vertical-align: baseline;
     }
   }

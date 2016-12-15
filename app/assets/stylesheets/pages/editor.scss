@@ -10,7 +10,7 @@
   }
 
   .ace_gutter-cell {
-    background-color: $background-color;
+    background-color: $gray-light;
   }
 
   .cancel-btn {
@@ -34,7 +34,7 @@
   }
 
   .editor-ref {
-    background: $background-color;
+    background: $gray-light;
     padding-right: $gl-padding;
     border-right: 1px solid $border-color;
     display: block;

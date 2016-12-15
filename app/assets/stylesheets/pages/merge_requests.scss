@@ -3,7 +3,7 @@
  *
  */
 .mr-state-widget {
-  background: $background-color;
+  background: $gray-light;
   color: $gl-gray;
   border: 1px solid $border-color;
   border-radius: 2px;
@@ -359,7 +359,7 @@
 
     th {
       background-color: $white-light;
-      color: $gl-placeholder-color;
+      color: $gl-gray-light;
     }
   }
 }
@@ -375,7 +375,7 @@
 }
 
 .mr-version-controls {
-  background: $background-color;
+  background: $gray-light;
   border-bottom: 1px solid $border-color;
   color: $gl-text-color;
 

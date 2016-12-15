@@ -1,4 +1,6 @@
-/* eslint-disable */
+/* eslint-disable comma-dangle, space-before-function-paren, dot-notation */
+/* global Vue */
+
 (() => {
   const Store = gl.issueBoards.BoardsStore;
 
