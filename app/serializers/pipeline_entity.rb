@@ -4,7 +4,7 @@ class PipelineEntity < Grape::Entity
   expose :id
   expose :user, using: UserEntity
 
-  expose :url do |pipeline|
+  expose :path do |pipeline|
     namespace_project_pipeline_path(
       pipeline.project.namespace,
       pipeline.project,
@@ -12,7 +12,12 @@ class PipelineEntity < Grape::Entity
   end
 
   expose :details do
-    expose :detailed_status, as: :status, using: StatusEntity
+    expose :status do |pipeline, options|
+      StatusEntity.represent(
+        pipeline.detailed_status(request.user),
+        options)
+    end
+
     expose :duration
     expose :finished_at
     expose :stages, using: PipelineStageEntity

@@ -1,12 +1,10 @@
 require 'spec_helper'
 
 describe StatusEntity do
-  let(:entity) do
-    described_class.new(status)
-  end
+  let(:entity) { described_class.new(status) }
 
-  let(:status) do # TODO, add statuses factory
-    Gitlab::Ci::Status::Success.new(double('object'))
+  let(:status) do
+    Gitlab::Ci::Status::Success.new(double('object'), double('user'))
   end
 
   before do
@@ -17,7 +15,7 @@ describe StatusEntity do
   subject { entity.as_json }
 
   it 'contains status details' do
-    expect(subject).to include :text, :icon, :label, :title
+    expect(subject).to include :text, :icon, :label
     expect(subject).to include :has_details
     expect(subject).to include :details_path
   end
