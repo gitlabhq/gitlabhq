@@ -134,15 +134,17 @@
     .new-file-name {
       max-width: none;
       width: 100%;
+      margin-bottom: 3px;
     }
 
     .file-buttons {
       display: block;
       width: 100%;
+      margin-bottom: 10px;
 
       .soft-wrap-toggle {
         width: 100%;
-        margin: 7px 0;
+        margin: 3px 0;
       }
 
       .encoding-selector,
@@ -150,15 +152,12 @@
       .gitignore-selector,
       .gitlab-ci-yml-selector {
         display: block;
-        margin: 7px 0;
+        margin: 3px 0;
 
         button {
           width: 100%;
         }
       }
-
     }
-
   }
-
 }
