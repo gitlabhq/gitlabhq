@@ -2,7 +2,7 @@ module Ci
   # This class responsible for assigning
   # proper pending build to runner on runner API request
   class RegisterBuildService
-    include CurrentSettings
+    include Gitlab::CurrentSettings
 
     def execute(current_runner)
       builds = Ci::Build.pending.unstarted
