@@ -1,9 +1,7 @@
 - content_for :page_specific_javascripts do
   = page_specific_javascript_tag('merge_request_widget/widget_bundle.js')
 
-- approvers_names = @merge_request.approvers_left.map(&:name)
-
-#merge-request-widget-app.mr-state-widget{ 'data-endpoint'=> merge_request_path(@merge_request), 'data-suggested-approvers' => approvers_names }
+#merge-request-widget-app.mr-state-widget{ 'data-endpoint'=> merge_request_path(@merge_request) }
   = render 'projects/merge_requests/widget/heading'
   .mr-widget-body
     -# After conflicts are resolved, the user is redirected back to the MR page.
@@ -28,9 +26,8 @@
       = render 'projects/merge_requests/widget/open/conflicts'
     - elsif @merge_request.work_in_progress?
       = render 'projects/merge_requests/widget/open/wip'
-    - elsif @merge_request.requires_approve? && !@merge_request.approved?
-      %approvals-body{':user-can-approve' => 'approvals.user_can_approve', ':user-has-approved' => 'approvals.user_has_approved', ':approved-by' => 'approvals.approved_by', ':approvals-left':'approvals.approvals_left', ':suggested-approvers' => 'approvals.suggested_approvers'}
-
+    - elsif @merge_request.requires_approve?
+      = render 'projects/merge_requests/widget/open/approvals_body'
     - elsif @merge_request.merge_when_build_succeeds?
       = render 'projects/merge_requests/widget/open/merge_when_build_succeeds'
     - elsif !@merge_request.can_be_merged_by?(current_user)
@@ -53,7 +50,7 @@
           != markdown issues_sentence(mr_closes_issues), pipeline: :gfm, author: @merge_request.author
         = mr_assign_issues_link
 
-  - if @merge_request.approvals.any?
-    %approvals-footer{'pending-avatar-svg' => custom_icon('icon_dotted_circle'), 'checkmark-svg' => custom_icon('icon_checkmark'), ':user-can-approve' => 'approvals.user_can_approve', ':user-has-approved' => 'approvals.user_has_approved', ':approved-by' => 'approvals.approved_by', ':approvals-left':'approvals.approvals_left'}
+  - if @merge_request.requires_approve?
+    = render 'projects/merge_requests/widget/open/approvals_footer'
 
 

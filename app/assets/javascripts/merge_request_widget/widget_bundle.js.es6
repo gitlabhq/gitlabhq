@@ -2,7 +2,6 @@
 //= require ./approvals/approvals_bundle
 
 (() => {
-
   $(() => {
     const rootEl = document.getElementById('merge-request-widget-app');
     const widgetSharedStore = new gl.MergeRequestWidgetStore(rootEl);

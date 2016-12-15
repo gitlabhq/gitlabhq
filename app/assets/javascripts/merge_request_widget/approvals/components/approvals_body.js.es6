@@ -43,7 +43,7 @@
       });
     },
     template: `
-      <div v-if='loaded'>
+      <div v-if='loaded && approvalsLeft'>
         <h4> Requires {{ approvalsRequiredStringified }} (from {{ approverNamesStringified }})</h4>
         <div v-if='showApproveButton' class='append-bottom-10'>
           <button
