@@ -84,7 +84,7 @@
           break;
         case 'projects:merge_requests:index':
         case 'projects:issues:index':
-          if(gl.FilteredSearchManager) {
+          if(document.querySelector('.filtered-search') && gl.FilteredSearchManager) {
             new gl.FilteredSearchManager();
           }
           Issuable.init();
