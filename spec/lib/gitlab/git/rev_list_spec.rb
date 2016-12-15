@@ -1,14 +1,54 @@
 require 'spec_helper'
-require 'validators/git_environment_variables_validator_spec'
 
 describe Gitlab::Git::RevList, lib: true do
   let(:project) { create(:project) }
 
   context "validations" do
-    it_behaves_like(
-      "validated git environment variables",
-      ->(env, project) { Gitlab::Git::RevList.new('oldrev', 'newrev', project: project, env: env) }
-    )
+    context "GIT_OBJECT_DIRECTORY" do
+      it "accepts values starting with the project repo path" do
+        env = { "GIT_OBJECT_DIRECTORY" => "#{project.repository.path_to_repo}/objects" }
+        rev_list = described_class.new('oldrev', 'newrev', project: project, env: env)
+
+        expect(rev_list).to be_valid
+      end
+
+      it "rejects values starting not with the project repo path" do
+        env = { "GIT_OBJECT_DIRECTORY" => "/some/other/path" }
+        rev_list = described_class.new('oldrev', 'newrev', project: project, env: env)
+
+        expect(rev_list).not_to be_valid
+      end
+
+      it "rejects values containing the project repo path but not starting with it" do
+        env = { "GIT_OBJECT_DIRECTORY" => "/some/other/path/#{project.repository.path_to_repo}" }
+        rev_list = described_class.new('oldrev', 'newrev', project: project, env: env)
+
+        expect(rev_list).not_to be_valid
+      end
+    end
+
+    context "GIT_ALTERNATE_OBJECT_DIRECTORIES" do
+      it "accepts values starting with the project repo path" do
+        env = { "GIT_ALTERNATE_OBJECT_DIRECTORIES" => project.repository.path_to_repo }
+        rev_list = described_class.new('oldrev', 'newrev', project: project, env: env)
+
+        expect(rev_list).to be_valid
+      end
+
+      it "rejects values starting not with the project repo path" do
+        env = { "GIT_ALTERNATE_OBJECT_DIRECTORIES" => "/some/other/path" }
+        rev_list = described_class.new('oldrev', 'newrev', project: project, env: env)
+
+        expect(rev_list).not_to be_valid
+      end
+
+      it "rejects values containing the project repo path but not starting with it" do
+        env = { "GIT_ALTERNATE_OBJECT_DIRECTORIES" => "/some/other/path/#{project.repository.path_to_repo}" }
+        rev_list = described_class.new('oldrev', 'newrev', project: project, env: env)
+
+        expect(rev_list).not_to be_valid
+      end
+    end
   end
 
   context "#execute" do
