@@ -591,20 +591,10 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def to_reference(from_project = nil, from_group = nil)
-    if from_group.nil?
-      if cross_namespace_reference?(from_project)
-        path_with_namespace
-      elsif cross_project_reference?(from_project)
-        path
-      elsif self == from_project
-        nil
-      else
-        path_with_namespace
-      end
-    else
-      path
-    end
+  def to_reference(from = nil, full_path: false)
+    return path_with_namespace if full_path
+
+    path_from(from)
   end
 
   def to_human_reference(from_project = nil)
@@ -1299,19 +1289,31 @@ class Project < ActiveRecord::Base
 
   private
 
+  def path_from(from)
+    if cross_namespace_reference?(from)
+      path_with_namespace
+    elsif cross_project_reference?(from)
+      path
+    end
+  end
+
+  def cross_namespace_reference?(from)
+    if from.is_a?(Project)
+      from && namespace != from.namespace
+    else
+      from && namespace != from
+    end
+  end
+
   # Check if a reference is being done cross-project
-  #
-  # from_project - Refering Project object
-  def cross_project_reference?(from_project)
-    from_project && self != from_project
+  def cross_project_reference?(from)
+    return true if from.is_a?(Namespace)
+
+    from && self != from
   end
 
   def pushes_since_gc_redis_key
     "projects/#{id}/pushes_since_gc"
-  end
-
-  def cross_namespace_reference?(from_project)
-    from_project && namespace != from_project.namespace
   end
 
   def default_branch_protected?

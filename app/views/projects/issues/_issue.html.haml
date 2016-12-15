@@ -34,7 +34,13 @@
           = note_count
 
   .issue-info
-    #{issue.to_reference(@project, @group)} &middot;
+    - if controller_name == "dashboard"
+      #{issue.to_reference(full_path: true)}
+    - else
+      #{issue.to_reference(@group || @project)}
+
+    &middot;
+
     opened #{time_ago_with_tooltip(issue.created_at, placement: 'bottom')}
     by #{link_to_member(@project, issue.author, avatar: false)}
     - if issue.milestone

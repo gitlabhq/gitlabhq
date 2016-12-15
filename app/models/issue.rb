@@ -97,10 +97,10 @@ class Issue < ActiveRecord::Base
     end
   end
 
-  def to_reference(from_project = nil, full: false)
+  def to_reference(from = nil, full_path: false)
     reference = "#{self.class.reference_prefix}#{iid}"
 
-    "#{project.to_reference(from_project, full: full)}#{reference}"
+    "#{project.to_reference(from, full_path: full_path)}#{reference}"
   end
 
   def referenced_merge_requests(current_user = nil)
