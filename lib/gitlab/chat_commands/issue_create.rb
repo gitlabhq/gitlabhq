@@ -8,7 +8,7 @@ module Gitlab
       end
 
       def self.help_message
-        'issue create <title>` *`Shift`* + *`Enter`* `<description>'
+        'issue new <title> *`⇧ Shift`*+*`↵ Enter`* <description>'
       end
 
       def self.allowed?(project, user)

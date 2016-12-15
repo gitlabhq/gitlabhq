@@ -132,7 +132,7 @@ The available slash commands are:
 
 | Command | Description | Example |
 | ------- | ----------- | ------- |
-| <kbd>/&lt;trigger&gt; issue create &lt;title&gt; **Shift** + **Enter** &lt;description&gt;</kbd> | Create a new issue in the project that `<trigger>` is tied to. `<description>` is optional. | <samp>/gitlab issue create We need to change the homepage</samp> |
+| <kbd>/&lt;trigger&gt; issue new &lt;title&gt; <kbd>⇧ Shift</kbd>+<kbd>↵ Enter</kbd> &lt;description&gt;</kbd> | Create a new issue in the project that `<trigger>` is tied to. `<description>` is optional. | <samp>/gitlab issue new We need to change the homepage</samp> |
 | <kbd>/&lt;trigger&gt; issue show &lt;issue-number&gt;</kbd> | Show the issue with ID `<issue-number>` from the project that `<trigger>` is tied to. | <samp>/gitlab issue show 42</samp> |
 | <kbd>/&lt;trigger&gt; deploy &lt;environment&gt; to &lt;environment&gt;</kbd> | Start the CI job that deploys from one environment to another, for example `staging` to `production`. CI/CD must be [properly configured][ciyaml]. | <samp>/gitlab deploy staging to production</samp> |
 
