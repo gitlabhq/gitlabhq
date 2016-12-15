@@ -76,6 +76,7 @@
         helpPagePath: environmentsData.helpPagePath,
         commitIconSvg: environmentsData.commitIconSvg,
         playIconSvg: environmentsData.playIconSvg,
+        terminalIconSvg: environmentsData.terminalIconSvg,
       };
     },
 
@@ -230,6 +231,7 @@
                     :can-create-deployment="canCreateDeploymentParsed"
                     :can-read-environment="canReadEnvironmentParsed"
                     :play-icon-svg="playIconSvg"
+                    :terminal-icon-svg="terminalIconSvg"
                     :commit-icon-svg="commitIconSvg"></tr>
 
                   <tr v-if="model.isOpen && model.children && model.children.length > 0"
@@ -240,6 +242,7 @@
                     :can-create-deployment="canCreateDeploymentParsed"
                     :can-read-environment="canReadEnvironmentParsed"
                     :play-icon-svg="playIconSvg"
+                    :terminal-icon-svg="terminalIconSvg"
                     :commit-icon-svg="commitIconSvg">
                     </tr>
 

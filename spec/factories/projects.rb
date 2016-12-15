@@ -42,6 +42,12 @@ FactoryGirl.define do
       end
     end
 
+    trait :test_repo do
+      after :create do |project|
+        TestEnv.copy_repo(project)
+      end
+    end
+
     # Nest Project Feature attributes
     transient do
       wiki_access_level ProjectFeature::ENABLED
@@ -91,9 +97,7 @@ FactoryGirl.define do
   factory :project, parent: :empty_project do
     path { 'gitlabhq' }
 
-    after :create do |project|
-      TestEnv.copy_repo(project)
-    end
+    test_repo
   end
 
   factory :forked_project_with_submodules, parent: :empty_project do

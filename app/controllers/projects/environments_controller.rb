@@ -4,7 +4,9 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action :authorize_create_environment!, only: [:new, :create]
   before_action :authorize_create_deployment!, only: [:stop]
   before_action :authorize_update_environment!, only: [:edit, :update]
-  before_action :environment, only: [:show, :edit, :update, :stop]
+  before_action :authorize_admin_environment!, only: [:terminal, :terminal_websocket_authorize]
+  before_action :environment, only: [:show, :edit, :update, :stop, :terminal, :terminal_websocket_authorize]
+  before_action :verify_api_request!, only: :terminal_websocket_authorize
 
   def index
     @scope = params[:scope]
@@ -14,7 +16,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
       format.html
       format.json do
         render json: EnvironmentSerializer
-          .new(project: @project)
+          .new(project: @project, user: current_user)
           .represent(@environments)
       end
     end
@@ -65,11 +67,9 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   # GET .../terminal.ws : implemented in gitlab-workhorse
   def terminal_websocket_authorize
-    Gitlab::Workhorse.verify_api_request!(request.headers)
-
     # Just return the first terminal for now. If the list is in the process of
     # being looked up, this may result in a 404 response, so the frontend
-    # should retry
+    # should retry those errors
     terminal = environment.terminals.try(:first)
     if terminal
       set_workhorse_internal_api_content_type
@@ -80,6 +80,10 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   end
 
   private
+
+  def verify_api_request!
+    Gitlab::Workhorse.verify_api_request!(request.headers)
+  end
 
   def environment_params
     params.require(:environment).permit(:name, :external_url)

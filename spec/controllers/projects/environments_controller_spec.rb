@@ -123,6 +123,7 @@ describe Projects::EnvironmentsController do
       context 'and invalid id' do
         it 'returns 404' do
           get :terminal_websocket_authorize, environment_params(id: 666)
+
           expect(response).to have_http_status(404)
         end
       end

@@ -8,6 +8,7 @@
 /*= require ./environment_external_url */
 /*= require ./environment_stop */
 /*= require ./environment_rollback */
+/*= require ./environment_terminal_button */
 
 (() => {
   /**
@@ -33,6 +34,7 @@
       'external-url-component': window.gl.environmentsList.ExternalUrlComponent,
       'stop-component': window.gl.environmentsList.StopComponent,
       'rollback-component': window.gl.environmentsList.RollbackComponent,
+      'terminal-button-component': window.gl.environmentsList.TerminalButtonComponent,
     },
 
     props: {
@@ -68,6 +70,12 @@
         type: String,
         required: false,
       },
+
+      terminalIconSvg: {
+        type: String,
+        required: false,
+      },
+
     },
 
     data() {
@@ -504,6 +512,14 @@
               <stop-component
                 :stop-url="model.stop_path">
               </stop-component>
+            </div>
+
+            <div v-if="model.terminal_path"
+              class="inline js-terminal-button-container">
+              <terminal-button-component
+                :terminal-icon-svg="terminalIconSvg"
+                :terminal-path="model.terminal_path">
+              </terminal-button-component>
             </div>
 
             <div v-if="canRetry && canCreateDeployment"
