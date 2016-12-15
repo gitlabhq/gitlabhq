@@ -4,6 +4,8 @@ module Bitbucket
     DEFAULT_BASE_URI    = 'https://api.bitbucket.org/'
     DEFAULT_QUERY       = {}
 
+    attr_reader :expires_at, :expires_in, :refresh_token, :token
+
     def initialize(options = {})
       @api_version   = options.fetch(:api_version, DEFAULT_API_VERSION)
       @base_uri      = options.fetch(:base_uri, DEFAULT_BASE_URI)
@@ -37,8 +39,6 @@ module Bitbucket
     end
 
     private
-
-    attr_reader :expires_at, :expires_in, :refresh_token, :token
 
     def client
       @client ||= OAuth2::Client.new(provider.app_id, provider.app_secret, options)

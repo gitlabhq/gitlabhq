@@ -1,5 +1,7 @@
 module Bitbucket
   class Client
+    attr_reader :connection
+
     def initialize(options = {})
       @connection = Connection.new(options)
     end
@@ -47,8 +49,6 @@ module Bitbucket
     end
 
     private
-
-    attr_reader :connection
 
     def get_collection(path, type)
       paginator = Paginator.new(connection, path, type)

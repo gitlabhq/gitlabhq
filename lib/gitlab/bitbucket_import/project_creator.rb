@@ -21,7 +21,7 @@ module Gitlab
           visibility_level: repo.visibility_level,
           import_type: 'bitbucket',
           import_source: repo.full_name,
-          import_url: repo.clone_url(@session_data[:token]),
+          import_url: repo.clone_url(session_data[:token]),
           import_data: { credentials: session_data }
         ).execute
       end
