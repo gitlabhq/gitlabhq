@@ -1,4 +1,10 @@
-/* eslint-disable */
+/* eslint-disable comma-dangle */
+/* global Vue */
+/* global boardsMockInterceptor */
+/* global BoardService */
+/* global List */
+/* global listObj */
+
 //= require jquery
 //= require jquery_ujs
 //= require js.cookie

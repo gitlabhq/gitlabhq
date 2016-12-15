@@ -1,4 +1,7 @@
-/* eslint-disable */
+/* eslint-disable comma-dangle */
+/* global BoardService */
+/* global ListIssue */
+
 //= require jquery
 //= require jquery_ujs
 //= require js.cookie

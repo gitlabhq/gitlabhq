@@ -1,13 +1,10 @@
 - status = pipeline.status
-- detailed_status = pipeline.detailed_status
 - show_commit = local_assigns.fetch(:show_commit, true)
 - show_branch = local_assigns.fetch(:show_branch, true)
 
 %tr.commit
   %td.commit-link
-    = link_to namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline.id), class: "ci-status ci-#{detailed_status}" do
-      = ci_icon_for_status(detailed_status)
-      = ci_text_for_status(detailed_status)
+    = render 'ci/status/badge', status: pipeline.detailed_status(current_user)
 
   %td
     = link_to namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline.id) do

@@ -1,4 +1,5 @@
-/* eslint-disable space-before-function-paren, no-return-assign, no-undef, padded-blocks */
+/* eslint-disable space-before-function-paren, no-return-assign, padded-blocks */
+/* global MergeRequest */
 
 /*= require merge_request */
 

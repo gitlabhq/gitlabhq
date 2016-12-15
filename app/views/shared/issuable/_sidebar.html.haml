@@ -167,4 +167,4 @@
       new IssuableContext('#{escape_javascript(current_user.to_json(only: [:username, :id, :name]))}');
       gl.Subscription.bindAll('.subscription');
       new gl.DueDateSelectors();
-      sidebar = new Sidebar();
+      window.sidebar = new Sidebar();

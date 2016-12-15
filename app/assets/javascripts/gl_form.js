@@ -1,4 +1,8 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-undef, no-new, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-new, padded-blocks, max-len */
+/* global GitLab */
+/* global DropzoneInput */
+/* global autosize */
+
 (function() {
   this.GLForm = (function() {
     function GLForm(form) {

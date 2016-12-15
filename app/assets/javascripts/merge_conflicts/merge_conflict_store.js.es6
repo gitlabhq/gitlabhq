@@ -1,4 +1,7 @@
-/* eslint-disable */
+/* eslint-disable comma-dangle, object-shorthand, no-dupe-keys, no-param-reassign, no-plusplus, camelcase, prefer-const, no-nested-ternary, no-continue, semi, func-call-spacing, no-spaced-func, padded-blocks, max-len */
+/* global Cookies */
+/* global Vue */
+
 ((global) => {
   global.mergeConflicts = global.mergeConflicts || {};
 

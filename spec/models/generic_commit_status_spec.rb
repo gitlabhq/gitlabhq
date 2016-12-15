@@ -1,8 +1,11 @@
 require 'spec_helper'
 
 describe GenericCommitStatus, models: true do
-  let(:pipeline) { FactoryGirl.create :ci_pipeline }
-  let(:generic_commit_status) { FactoryGirl.create :generic_commit_status, pipeline: pipeline }
+  let(:pipeline) { create(:ci_pipeline) }
+
+  let(:generic_commit_status) do
+    create(:generic_commit_status, pipeline: pipeline)
+  end
 
   describe '#context' do
     subject { generic_commit_status.context }
@@ -15,6 +18,15 @@ describe GenericCommitStatus, models: true do
     subject { generic_commit_status.tags }
 
     it { is_expected.to eq([:external]) }
+  end
+
+  describe '#detailed_status' do
+    let(:user) { create(:user) }
+
+    it 'returns detailed status object' do
+      expect(generic_commit_status.detailed_status(user))
+        .to be_a Gitlab::Ci::Status::Success
+    end
   end
 
   describe 'set_default_values' do
