@@ -26,16 +26,23 @@
         const text = e.target.innerText;
         const { totalPages, nextPage, previousPage } = this.pageInfo;
 
-        if (text === SPREAD) return;
         /**
          the regex here is to read if the string coming in will become a valid number
          had issues with parsing using `+` because `typeof NaN === 'number'`
         */
-        if (/^-?[\d.]+(?:e-?\d+)?$/.test(text)) pagenum = +text;
-        if (text === LAST) pagenum = totalPages;
-        if (text === NEXT) pagenum = nextPage;
-        if (text === PREV) pagenum = previousPage;
-        if (text === FIRST) pagenum = 1;
+        if (text === SPREAD) {
+          return;
+        } else if (text === LAST) {
+          pagenum = totalPages;
+        } else if (text === NEXT) {
+          pagenum = nextPage;
+        } else if (text === PREV) {
+          pagenum = previousPage;
+        } else if (text === FIRST) {
+          pagenum = 1;
+        } else {
+          pagenum = +text;
+        }
 
         this.change(pagenum, apiScope);
       },
