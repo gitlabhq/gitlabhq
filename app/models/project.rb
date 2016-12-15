@@ -29,7 +29,7 @@ class Project < ActiveRecord::Base
                                                        allow_nil: true
 
   delegate :shared_runners_minutes, :shared_runners_minutes_limit,
-           :shared_runners_minutes_used?, :shared_runners_minutes_limit_enabled?,
+           :shared_runners_minutes_used?,
            to: :namespace, allow_nil: true
 
   default_value_for :archived, false
@@ -1545,6 +1545,10 @@ class Project < ActiveRecord::Base
     environments_for(branch).select do |environment|
       environment.recently_updated_on_branch?(branch)
     end
+  end
+
+  def shared_runners_minutes_limit_enabled?
+    !public? && namespace.shared_runners_minutes_limit_enabled?
   end
 
   private

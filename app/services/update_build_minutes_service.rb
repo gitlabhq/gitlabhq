@@ -4,12 +4,9 @@ class UpdateBuildMinutesService < BaseService
     return unless build.runner.shared?
     return unless build.duration
     return unless build.project
-    return if build.project.public?
+    return unless build.project.shared_runners_minutes_limit_enabled?
 
-    namespace = project.namespace
-    return unless namespace
-
-    namespace.find_or_create_project_metrics.
+    project.namespace.find_or_create_namespace_metrics.
       update_all('shared_runners_minutes = shared_runners_minutes + ?', build.duration)
   end
 end
