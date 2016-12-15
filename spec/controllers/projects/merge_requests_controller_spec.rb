@@ -135,6 +135,7 @@ describe Projects::MergeRequestsController do
     before do
       merge_request.update_attribute :approvals_before_merge, 2
       project.team << [approver, :developer]
+      project.approver_ids = [user, approver].map(&:id).join(',')
     end
 
     describe 'approve' do
@@ -153,6 +154,8 @@ describe Projects::MergeRequestsController do
         expect(json_response['approved_by'][0]['user']['username']).to eq user.username
         expect(json_response['user_has_approved']).to be true
         expect(json_response['user_can_approve']).to be false
+        expect(json_response['suggested_approvers'].size).to eq 1
+        expect(json_response['suggested_approvers'][0]['username']).to eq approver.username
       end
     end
 
@@ -173,6 +176,8 @@ describe Projects::MergeRequestsController do
         expect(json_response['approved_by'][0]['user']['username']).to eq approver.username
         expect(json_response['user_has_approved']).to be false
         expect(json_response['user_can_approve']).to be true
+        expect(json_response['suggested_approvers'].size).to eq 1
+        expect(json_response['suggested_approvers'][0]['username']).to eq user.username
       end
     end
 
@@ -192,6 +197,7 @@ describe Projects::MergeRequestsController do
         expect(json_response['approved_by']).to be_empty
         expect(json_response['user_has_approved']).to be false
         expect(json_response['user_can_approve']).to be true
+        expect(json_response['suggested_approvers'].size).to eq 2
       end
     end
   end

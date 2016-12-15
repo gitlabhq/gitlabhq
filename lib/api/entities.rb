@@ -318,6 +318,7 @@ module API
       expose :approvals_required
       expose :approvals_left
       expose :approvals, as: :approved_by, using: Entities::Approvals
+      expose :approvers_left, as: :suggested_approvers, using: Entities::UserBasic
 
       expose :user_has_approved do |merge_request, options|
         merge_request.has_approved?(options[:current_user])
