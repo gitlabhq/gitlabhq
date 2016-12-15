@@ -8,8 +8,8 @@ module ImportHelper
     link_to path_with_namespace, github_project_url(path_with_namespace), target: '_blank'
   end
 
-  def gitea_project_link(root_url, path_with_namespace)
-    link_to path_with_namespace, gitea_project_url(root_url, path_with_namespace), target: '_blank'
+  def gitea_project_link(path_with_namespace)
+    link_to path_with_namespace, gitea_project_url(path_with_namespace), target: '_blank'
   end
 
   private
@@ -25,7 +25,7 @@ module ImportHelper
     @github_url = provider.fetch('url', 'https://github.com') if provider
   end
 
-  def gitea_project_url(root_url, path_with_namespace)
-    "#{root_url}/#{path_with_namespace}"
+  def gitea_project_url(path_with_namespace)
+    "#{@gitea_host_url.sub(%r{/+\z}, '')}/#{path_with_namespace}"
   end
 end

@@ -3,7 +3,7 @@ module Gitlab
     class MilestoneFormatter < BaseFormatter
       def attributes
         {
-          iid: raw_data.public_send("Gitlab::#{project.import_type.camelize}Import::MilestoneFormatter".constantize.iid_attr),
+          iid: number,
           project: project,
           title: raw_data.title,
           description: raw_data.description,
@@ -19,11 +19,15 @@ module Gitlab
       end
 
       def find_condition
-        { iid: raw_data.public_send("Gitlab::#{project.import_type.camelize}Import::MilestoneFormatter".constantize.iid_attr) }
+        { iid: number }
       end
 
-      def self.iid_attr
-        :number
+      def number
+        if project.import_type == 'gitea'
+          raw_data.id
+        else
+          raw_data.number
+        end
       end
 
       private

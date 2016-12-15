@@ -1,8 +1,8 @@
-- page_title "Gitea import"
+- page_title "Gitea Import"
 - header_title "Projects", root_path
 %h3.page-title
   = custom_icon('go_logo')
-  Import projects from Gitea
+  Import Projects from Gitea
 
 %p.light
   Select projects you want to import.
@@ -26,7 +26,7 @@
       - @already_added_projects.each do |project|
         %tr{id: "project_#{project.id}", class: "#{project_status_css_class(project.import_status)}"}
           %td
-            = gitea_project_link(@gitea_root_url, project.import_source)
+            = gitea_project_link(project.import_source)
           %td
             = link_to project.path_with_namespace, [project.namespace.becomes(Namespace), project]
           %td.job-status
@@ -43,7 +43,7 @@
       - @repos.each do |repo|
         %tr{id: "repo_#{repo.id}"}
           %td
-            = gitea_project_link(@gitea_root_url, repo.full_name)
+            = gitea_project_link(repo.full_name)
           %td.import-target
             %fieldset.row
             .input-group

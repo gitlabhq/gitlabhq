@@ -75,7 +75,6 @@ describe Import::GiteaController, 'routing' do
   it 'to #personal_access_token' do
     expect(post('/import/gitea/personal_access_token')).to route_to('import/gitea#personal_access_token')
   end
-
 end
 
 #   status_import_gitlab GET      /import/gitlab/status(.:format)                                                               import/gitlab#status

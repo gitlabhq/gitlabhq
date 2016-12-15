@@ -8,16 +8,12 @@ module Gitlab
 
       def initialize(access_token, host: nil, api_version: 'v3')
         @access_token = access_token
-        @host = host
+        @host = host.to_s.sub(%r{/+\z}, '')
         @api_version = api_version
 
         if access_token
           ::Octokit.auto_paginate = false
         end
-      end
-
-      def api_endpoint
-        host.present? && api_version.present? ? "#{host}/api/#{api_version}" : github_options[:site]
       end
 
       def api
@@ -27,7 +23,7 @@ module Gitlab
           # If there is no config, we're connecting to github.com and we
           # should verify ssl.
           connection_options: {
-            ssl: { verify: config ? config['verify_ssl'] : false }
+            ssl: { verify: config ? config['verify_ssl'] : true }
           }
         )
       end
@@ -69,6 +65,14 @@ module Gitlab
       end
 
       private
+
+      def api_endpoint
+        if host.present? && api_version.present?
+          "#{host}/api/#{api_version}"
+        else
+          github_options[:site]
+        end
+      end
 
       def config
         Gitlab.config.omniauth.providers.find { |provider| provider.name == "github" }

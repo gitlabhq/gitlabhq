@@ -11,7 +11,7 @@ class Import::GiteaController < Import::GithubController
   end
 
   def status
-    @gitea_root_url = session[:host_url]
+    @gitea_host_url = session[:host_url]
     super
   end
 

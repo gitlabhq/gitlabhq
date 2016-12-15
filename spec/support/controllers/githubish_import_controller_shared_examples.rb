@@ -82,7 +82,7 @@ shared_examples 'a GitHub-ish import controller: GET status' do
 
     expect(session[:access_token]).to eq(nil)
     expect(controller).to redirect_to(new_import_url)
-    expect(flash[:alert]).to eq("Access denied to your #{Gitlab::ImportSources.options.key(provider.to_s)} account.")
+    expect(flash[:alert]).to eq("Access denied to your #{Gitlab::ImportSources.title(provider.to_s)} account.")
   end
 end
 

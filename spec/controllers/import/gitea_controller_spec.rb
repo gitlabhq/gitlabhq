@@ -29,7 +29,7 @@ describe Import::GiteaController do
       before do
         assign_host_url
       end
-      let(:extra_assign_expectations) { { gitea_root_url: host_url } }
+      let(:extra_assign_expectations) { { gitea_host_url: host_url } }
     end
   end
 
