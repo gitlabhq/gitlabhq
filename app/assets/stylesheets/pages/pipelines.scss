@@ -683,7 +683,7 @@
           width: 25px;
           height: 25px;
 
-          &:before{
+          &::before {
             top: 1px;
             left: 1px;
           }
@@ -725,7 +725,7 @@
     height: 30px;
     width: 30px;
 
-    &:before {
+    &::before {
       position: relative;
       top: 3px;
       left: 3px;
