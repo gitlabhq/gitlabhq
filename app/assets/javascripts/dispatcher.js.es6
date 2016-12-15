@@ -1,4 +1,42 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, no-var, prefer-arrow-callback, wrap-iife, no-shadow, consistent-return, one-var, one-var-declaration-per-line, camelcase, default-case, no-new, quotes, no-duplicate-case, no-case-declarations, no-fallthrough, max-len, padded-blocks */
+/* global UsernameValidator */
+/* global ActiveTabMemoizer */
+/* global ShortcutsNavigation */
+/* global Build */
+/* global Issuable */
+/* global Issue */
+/* global ShortcutsIssuable */
+/* global ZenMode */
+/* global Milestone */
+/* global GLForm */
+/* global IssuableForm */
+/* global LabelsSelect */
+/* global MilestoneSelect */
+/* global MergedButtons */
+/* global Commit */
+/* global NotificationsForm */
+/* global TreeView */
+/* global NotificationsDropdown */
+/* global UsersSelect */
+/* global GroupAvatar */
+/* global LineHighlighter */
+/* global ShortcutsBlob */
+/* global ProjectFork */
+/* global BuildArtifacts */
+/* global GroupsSelect */
+/* global Search */
+/* global Admin */
+/* global NamespaceSelects */
+/* global ShortcutsDashboardNavigation */
+/* global Project */
+/* global ProjectAvatar */
+/* global CompareAutocomplete */
+/* global ProjectNew */
+/* global Star */
+/* global ProjectShow */
+/* global Labels */
+/* global Shortcuts */
+
 (function() {
   var Dispatcher;
 

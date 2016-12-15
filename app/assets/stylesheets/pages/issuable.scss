@@ -7,7 +7,7 @@
 
   // Border around images in issue and MR descriptions.
   .description img:not(.emoji) {
-    border: 1px solid $table-border-gray;
+    border: 1px solid $white-normal;
     padding: 5px;
     margin: 5px;
     max-height: calc(100vh - 100px);
@@ -51,7 +51,7 @@
   .block {
     @include clearfix;
     padding: $gl-padding 0;
-    border-bottom: 1px solid $border-gray-light;
+    border-bottom: 1px solid $border-gray-normal;
     // This prevents the mess when resizing the sidebar
     // of elements repositioning themselves..
     width: $gutter_inner_width;
@@ -169,7 +169,7 @@
     }
 
     .no-value {
-      color: $gl-placeholder-color;
+      color: $gl-gray-light;
     }
 
     .sidebar-collapsed-icon {
@@ -178,7 +178,7 @@
 
     .gutter-toggle {
       margin-top: 7px;
-      border-left: 1px solid $border-gray-light;
+      border-left: 1px solid $border-gray-normal;
     }
 
     .assignee .avatar {
@@ -216,7 +216,7 @@
     }
 
     .participants {
-      border-bottom: 1px solid $border-gray-light;
+      border-bottom: 1px solid $border-gray-normal;
     }
 
     .hide-collapsed {
@@ -333,7 +333,7 @@
   margin-left: 5px;
 
   a {
-    color: $gl-placeholder-color;
+    color: $gl-gray-light;
   }
 }
 

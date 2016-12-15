@@ -1,4 +1,5 @@
-/* eslint-disable */
+/* eslint-disable no-new, padded-blocks */
+
 /*= require sidebar */
 /*= require jquery */
 /*= require js.cookie */

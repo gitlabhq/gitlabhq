@@ -9,10 +9,7 @@
 
 %tr.build.commit{class: ('retried' if retried)}
   %td.status
-    - if can?(current_user, :read_build, build)
-      = ci_status_with_icon(build.status, namespace_project_build_url(build.project.namespace, build.project, build))
-    - else
-      = ci_status_with_icon(build.status)
+    = render "ci/status/badge", status: build.detailed_status(current_user)
 
   %td.branch-commit
     - if can?(current_user, :read_build, build)

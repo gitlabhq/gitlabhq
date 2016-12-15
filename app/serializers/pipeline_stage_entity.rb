@@ -2,7 +2,11 @@ class PipelineStageEntity < Grape::Entity
   include RequestAwareEntity
 
   expose :name
-  expose :detailed_status, as: :status, using: StatusEntity
+  expose :status do |stage, options|
+    StatusEntity.represent(
+      stage.detailed_status(request.user),
+      options)
+  end
 
   expose :path do |stage|
     namespace_project_pipeline_path(

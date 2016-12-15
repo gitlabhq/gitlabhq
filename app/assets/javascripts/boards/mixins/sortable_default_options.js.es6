@@ -1,4 +1,6 @@
-/* eslint-disable */
+/* eslint-disable no-unused-vars, no-mixed-operators, prefer-const, comma-dangle, semi */
+/* global DocumentTouch */
+
 ((w) => {
   window.gl = window.gl || {};
   window.gl.issueBoards = window.gl.issueBoards || {};

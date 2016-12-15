@@ -68,7 +68,9 @@ describe Ci::Stage, models: true do
   end
 
   describe '#detailed_status' do
-    subject { stage.detailed_status }
+    let(:user) { create(:user) }
+
+    subject { stage.detailed_status(user) }
 
     context 'when build is created' do
       let!(:stage_build) { create_job(:ci_build, status: :created) }

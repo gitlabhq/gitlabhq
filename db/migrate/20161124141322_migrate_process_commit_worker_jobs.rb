@@ -47,14 +47,14 @@ class MigrateProcessCommitWorkerJobs < ActiveRecord::Migration
 
         hash = {
           id: commit.oid,
-          message: commit.message,
+          message: encode(commit.message),
           parent_ids: commit.parent_ids,
           authored_date: commit.author[:time],
-          author_name: commit.author[:name],
-          author_email: commit.author[:email],
+          author_name: encode(commit.author[:name]),
+          author_email: encode(commit.author[:email]),
           committed_date: commit.committer[:time],
-          committer_email: commit.committer[:email],
-          committer_name: commit.committer[:name]
+          committer_email: encode(commit.committer[:email]),
+          committer_name: encode(commit.committer[:name])
         }
 
         payload['args'][2] = hash
@@ -87,6 +87,16 @@ class MigrateProcessCommitWorkerJobs < ActiveRecord::Migration
           multi.lpush('queue:process_commit', j)
         end
       end
+    end
+  end
+
+  def encode(data)
+    encoding = Encoding::UTF_8
+
+    if data.encoding == encoding
+      data
+    else
+      data.encode(encoding, invalid: :replace, undef: :replace)
     end
   end
 end

@@ -7,7 +7,7 @@
 %div{ class: container_class }
   .top-area
     .prepend-top-default
-      = form_tag admin_namespaces_projects_path, method: :get do |f|
+      = form_tag admin_projects_path, method: :get do |f|
         .search-holder
           .search-field-holder
             = search_field_tag :name, params[:name], class: "form-control search-text-input js-search-input", id: "dashboard_search", autofocus: true, spellcheck: false, placeholder: 'Search by name'
@@ -41,19 +41,19 @@
           = button_tag "Search", class: "btn btn-primary btn-search"
 
     %ul.nav-links
-      - opts = params[:visibility_level].present? ? {} : { page: admin_namespaces_projects_path }
+      - opts = params[:visibility_level].present? ? {} : { page: admin_projects_path }
       = nav_link(opts) do
-        = link_to admin_namespaces_projects_path do
+        = link_to admin_projects_path do
           All
 
       = nav_link(html_options: { class: params[:visibility_level] == Gitlab::VisibilityLevel::PRIVATE.to_s ? 'active' : '' }) do
-        = link_to admin_namespaces_projects_path(visibility_level: Gitlab::VisibilityLevel::PRIVATE) do
+        = link_to admin_projects_path(visibility_level: Gitlab::VisibilityLevel::PRIVATE) do
           Private
       = nav_link(html_options: { class: params[:visibility_level] == Gitlab::VisibilityLevel::INTERNAL.to_s ? 'active' : '' }) do
-        = link_to admin_namespaces_projects_path(visibility_level: Gitlab::VisibilityLevel::INTERNAL) do
+        = link_to admin_projects_path(visibility_level: Gitlab::VisibilityLevel::INTERNAL) do
           Internal
       = nav_link(html_options: { class: params[:visibility_level] == Gitlab::VisibilityLevel::PUBLIC.to_s ? 'active' : '' }) do
-        = link_to admin_namespaces_projects_path(visibility_level: Gitlab::VisibilityLevel::PUBLIC) do
+        = link_to admin_projects_path(visibility_level: Gitlab::VisibilityLevel::PUBLIC) do
           Public
 
     .nav-controls

@@ -88,11 +88,11 @@
 }
 
 @mixin btn-gray {
-  @include btn-color($gray-light, $border-gray-light, $gray-normal, $border-gray-normal, $gray-dark, $border-gray-dark, $gl-gray-dark);
+  @include btn-color($gray-light, $border-gray-normal, $gray-normal, $border-gray-normal, $gray-dark, $border-gray-dark, $gl-gray-dark);
 }
 
 @mixin btn-white {
-  @include btn-color($white-light, $border-color, $white-normal, $border-white-normal, $white-dark, $border-white-dark, $gl-text-color);
+  @include btn-color($white-light, $border-color, $white-normal, $border-white-normal, $white-dark, $border-gray-dark, $gl-text-color);
 }
 
 @mixin btn-with-margin {
@@ -235,7 +235,7 @@
 }
 
 .btn-transparent {
-  color: $btn-transparent-color;
+  color: $gl-gray-light;
   background-color: transparent;
   border: 0;
 
@@ -289,7 +289,7 @@
   .active {
     box-shadow: $gl-btn-active-background;
 
-    border: 1px solid $border-white-dark !important;
+    border: 1px solid $border-gray-dark !important;
     background-color: $btn-active-gray-light !important;
   }
 }
@@ -309,8 +309,8 @@
   text-align: left;
   padding: 6px 16px;
   border-color: $border-color;
-  color: $btn-placeholder-gray;
-  background-color: $background-color;
+  color: $gray-darkest;
+  background-color: $gray-light;
 
   &:hover,
   &:active,
@@ -318,8 +318,8 @@
     cursor: text;
     box-shadow: none;
     border-color: $border-color;
-    color: $btn-placeholder-gray;
-    background-color: $background-color;
+    color: $gray-darkest;
+    background-color: $gray-light;
   }
 }
 
@@ -331,7 +331,7 @@
   margin-left: 10px;
 
   i {
-    color: $gl-icon-color;
+    color: $gl-gray-light;
   }
 }
 
@@ -344,8 +344,8 @@
 }
 
 .btn-static {
-  background-color: $background-color !important;
-  border: 1px solid $border-gray-light;
+  background-color: $gray-light !important;
+  border: 1px solid $border-gray-normal;
   cursor: default;
 
   &:active {
