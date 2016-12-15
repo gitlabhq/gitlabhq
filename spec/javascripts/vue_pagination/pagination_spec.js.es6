@@ -31,7 +31,7 @@ describe('Pagination component', () => {
 
     expect(component.$el.classList).toContain('gl-pagination');
 
-    component.changepage({ target: { innerText: '1' } });
+    component.changePage({ target: { innerText: '1' } });
 
     expect(changeChanges.one).toEqual(1);
     expect(changeChanges.two).toEqual('all');
@@ -52,7 +52,7 @@ describe('Pagination component', () => {
       },
     });
 
-    component.changepage({ target: { innerText: 'Prev' } });
+    component.changePage({ target: { innerText: 'Prev' } });
 
     expect(changeChanges.one).toEqual(1);
     expect(changeChanges.two).toEqual('all');
@@ -73,7 +73,7 @@ describe('Pagination component', () => {
       },
     });
 
-    component.changepage({ target: { innerText: 'Next' } });
+    component.changePage({ target: { innerText: 'Next' } });
 
     expect(changeChanges.one).toEqual(5);
     expect(changeChanges.two).toEqual('all');
@@ -94,7 +94,7 @@ describe('Pagination component', () => {
       },
     });
 
-    component.changepage({ target: { innerText: 'Last >>' } });
+    component.changePage({ target: { innerText: 'Last >>' } });
 
     expect(changeChanges.one).toEqual(10);
     expect(changeChanges.two).toEqual('all');
@@ -115,7 +115,7 @@ describe('Pagination component', () => {
       },
     });
 
-    component.changepage({ target: { innerText: '<< First' } });
+    component.changePage({ target: { innerText: '<< First' } });
 
     expect(changeChanges.one).toEqual(1);
     expect(changeChanges.two).toEqual('all');
@@ -136,7 +136,7 @@ describe('Pagination component', () => {
       },
     });
 
-    component.changepage({ target: { innerText: '...' } });
+    component.changePage({ target: { innerText: '...' } });
 
     expect(changeChanges.one).toEqual(1);
     expect(changeChanges.two).toEqual('all');
