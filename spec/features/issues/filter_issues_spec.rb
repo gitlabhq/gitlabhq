@@ -654,9 +654,9 @@ describe 'Filter issues', feature: true do
     it 'updates atom feed link for project issues' do
       visit namespace_project_issues_path(project.namespace, project, milestone_title: milestone.title, assignee_id: user.id)
       link = find('.nav-controls a', text: 'Subscribe')
-      params = CGI::parse(URI.parse(link[:href]).query)
+      params = CGI.parse(URI.parse(link[:href]).query)
       auto_discovery_link = find('link[type="application/atom+xml"]', visible: false)
-      auto_discovery_params = CGI::parse(URI.parse(auto_discovery_link[:href]).query)
+      auto_discovery_params = CGI.parse(URI.parse(auto_discovery_link[:href]).query)
       expect(params).to include('private_token' => [user.private_token])
       expect(params).to include('milestone_title' => [milestone.title])
       expect(params).to include('assignee_id' => [user.id.to_s])
@@ -668,9 +668,9 @@ describe 'Filter issues', feature: true do
     it 'updates atom feed link for group issues' do
       visit issues_group_path(group, milestone_title: milestone.title, assignee_id: user.id)
       link = find('.nav-controls a', text: 'Subscribe')
-      params = CGI::parse(URI.parse(link[:href]).query)
+      params = CGI.parse(URI.parse(link[:href]).query)
       auto_discovery_link = find('link[type="application/atom+xml"]', visible: false)
-      auto_discovery_params = CGI::parse(URI.parse(auto_discovery_link[:href]).query)
+      auto_discovery_params = CGI.parse(URI.parse(auto_discovery_link[:href]).query)
       expect(params).to include('private_token' => [user.private_token])
       expect(params).to include('milestone_title' => [milestone.title])
       expect(params).to include('assignee_id' => [user.id.to_s])
