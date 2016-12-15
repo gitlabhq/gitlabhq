@@ -6,7 +6,7 @@ You can read more about GitLab support [here](http://docs.gitlab.com/ce/integrat
 To get to the importer page you need to go to "New project" page.
 
 >**Note:**
-If you are interested in importing Wiki and Merge Request data to your new instance, you'll need to follow the instructions for [project export](../../user/project/settings/import_export.html)
+If you are interested in importing Wiki and Merge Request data to your new instance, you'll need to follow the instructions for [project export](../../user/project/settings/import_export.md)
 
 ![New project page](gitlab_importer/new_project_page.png)
 
