@@ -6,7 +6,7 @@ module Gitlab
 
         def authorize_chat_name(url)
           message = if url
-                      ":wave: Hi there! Before I do anything for you, please [connect your GitLab account](#{url})."
+                      ":wave: Hi there! Before I do anything for you, please <#{url}|connect your GitLab account>."
                     else
                       ":sweat_smile: Couldn't identify you, nor can I autorize you!"
                     end
@@ -44,7 +44,7 @@ module Gitlab
         end
 
         def access_denied
-          ephemeral_response("Whoops! That action is not allowed. This incident will be [reported](https://xkcd.com/838/).")
+          ephemeral_response("Whoops! That action is not allowed. This incident will be <https://xkcd.com/838/|reported>.")
         end
 
         private
@@ -65,7 +65,7 @@ module Gitlab
         def single_resource(resource)
           return error(resource) if resource.errors.any? || !resource.persisted?
 
-          message = "### #{title(resource)}"
+          message = "#{title(resource)}:"
           message << "\n\n#{resource.description}" if resource.try(:description)
 
           in_channel_response(message)
@@ -89,7 +89,7 @@ module Gitlab
           reference = resource.try(:to_reference) || resource.try(:id)
           title = resource.try(:title) || resource.try(:name)
 
-          "[#{reference} #{title}](#{url(resource)})"
+          "<#{url(resource)}|#{reference} #{title}>"
         end
 
         def header_with_list(header, items)
