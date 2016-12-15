@@ -13,13 +13,14 @@ module Mattermost
   # This class however skips the button click, and also the approval phase to
   # speed up the process and keep it without manual action and get a session
   # going.
-  class Mattermost
+  class Session
     include Doorkeeper::Helpers::Controller
     include HTTParty
 
     attr_accessor :current_resource_owner
 
     def initialize(uri, current_user)
+      # Sets the base uri for HTTParty, so we can use paths
       self.class.base_uri(uri)
 
       @current_resource_owner = current_user
@@ -27,8 +28,10 @@ module Mattermost
 
     def with_session
       raise NoSessionError unless create
-      yield
+      result = yield
       destroy
+
+      result
     end
 
     # Next methods are needed for Doorkeeper
@@ -85,7 +88,7 @@ module Mattermost
     end
 
     def request_token
-      @request_token ||= if @token_uri
+      @request_token ||= begin
                            response = get(@token_uri, follow_redirects: false)
                            response.headers['token'] if 200 <= response.code && response.code < 400
                          end
