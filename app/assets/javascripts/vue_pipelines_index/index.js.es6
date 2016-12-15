@@ -5,7 +5,8 @@
 
 //= require vue-resource
 
-//= require ./interceptor.js.es6
+/*= require boards/vue_resource_interceptor */
+
 //= require ./status.js.es6
 //= require ./store.js.es6
 //= require ./pipeline_url.js.es6
