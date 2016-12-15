@@ -10,15 +10,36 @@ module Gitlab
       def load(string)
         return unless string
 
-        YAML.load(string).
-          map(&YamlVariables.method(:convert_key_value_to_string))
+        object = YAML.load(string)
+
+        # We don't need to verify the object once we're using SafeYAML
+        if YamlVariables.verify_object(object)
+          YamlVariables.convert_object(object)
+        else
+          []
+        end
       end
 
       def dump(object)
         YAML.dump(object)
       end
 
-      private
+      def verify_object(object)
+        YamlVariables.verify_type(object, Array) &&
+          object.all? { |obj| YamlVariables.verify_type(obj, Hash) }
+      end
+
+      # We use three ways to check if the class is exactly the one we want,
+      # rather than some subclass or duck typing class.
+      def verify_type(object, klass)
+        object.kind_of?(klass) &&
+          object.class == klass &&
+          klass === object
+      end
+
+      def convert_object(object)
+        object.map(&YamlVariables.method(:convert_key_value_to_string))
+      end
 
       def convert_key_value_to_string(variable)
         variable[:key] = variable[:key].to_s
