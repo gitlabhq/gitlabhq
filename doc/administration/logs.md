@@ -136,3 +136,13 @@ I, [2015-02-13T07:16:01.530733 #9047]  INFO -- : reaped #<Process::Status: pid 9
 I, [2015-02-13T07:16:01.534501 #13379]  INFO -- : worker=1 spawned pid=13379
 I, [2015-02-13T07:16:01.534848 #13379]  INFO -- : worker=1 ready
 ```
+
+## `repocheck.log`
+
+This file lives in `/var/log/gitlab/gitlab-rails/repocheck.log` for
+omnibus package or in `/home/git/gitlab/log/repocheck.log` for
+installations from source.
+
+It logs information whenever a [repository check is run][repocheck] on a project.
+
+[repocheck]: repository_checks.md
