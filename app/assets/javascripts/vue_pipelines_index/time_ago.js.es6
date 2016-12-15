@@ -11,6 +11,9 @@
       'pipeline',
     ],
     computed: {
+      timeAgo() {
+        return gl.utils.getTimeago();
+      },
       localTimeFinished() {
         return gl.utils.formatDate(this.pipeline.details.finished_at);
       },
@@ -25,7 +28,7 @@
         options.timeZoneName = 'short';
         const finished = this.pipeline.details.finished_at;
         if (!finished && changeTime) return false;
-        return ({ words: gl.utils.getTimeago().format(finished) });
+        return ({ words: this.timeAgo.format(finished) });
       },
     },
     methods: {
