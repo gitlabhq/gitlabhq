@@ -1,4 +1,10 @@
-/* eslint-disable */
+/* eslint-disable comma-dangle, space-before-function-paren, no-new */
+/* global Vue */
+/* global IssuableContext */
+/* global MilestoneSelect */
+/* global LabelsSelect */
+/* global Sidebar */
+
 (() => {
   const Store = gl.issueBoards.BoardsStore;
 

@@ -1,4 +1,7 @@
-/* eslint-disable */
+/* eslint-disable comma-dangle, quotes, consistent-return, func-names, array-callback-return, space-before-function-paren, prefer-arrow-callback, radix, max-len, padded-blocks, no-unused-expressions, no-sequences, no-underscore-dangle, no-unused-vars, no-param-reassign */
+/* global Issuable */
+/* global Flash */
+
 ((global) => {
 
   class IssuableBulkActions {

@@ -1,4 +1,6 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, wrap-iife, one-var, camelcase, one-var-declaration-per-line, quotes, object-shorthand, no-undef, prefer-arrow-callback, comma-dangle, consistent-return, yoda, prefer-rest-params, prefer-spread, no-unused-vars, prefer-template, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, no-var, wrap-iife, one-var, camelcase, one-var-declaration-per-line, quotes, object-shorthand, prefer-arrow-callback, comma-dangle, consistent-return, yoda, prefer-rest-params, prefer-spread, no-unused-vars, prefer-template, padded-blocks, max-len */
+/* global Api */
+
 (function() {
   var slice = [].slice;
 
@@ -14,7 +16,7 @@
             multiple: $(select).hasClass('multiselect'),
             minimumInputLength: 0,
             query: function(query) {
-              options = { all_available: all_available, skip_groups: skip_groups };
+              var options = { all_available: all_available, skip_groups: skip_groups };
               return Api.groups(query.term, options, function(groups) {
                 var data;
                 data = {

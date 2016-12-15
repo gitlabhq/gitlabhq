@@ -1,4 +1,7 @@
-/* eslint-disable */
+/* eslint-disable new-cap, comma-dangle, no-new, semi */
+/* global Vue */
+/* global Flash */
+
 //= require vue
 //= require ./merge_conflict_store
 //= require ./merge_conflict_service

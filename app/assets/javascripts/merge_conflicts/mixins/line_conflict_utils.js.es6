@@ -1,4 +1,5 @@
-/* eslint-disable */
+/* eslint-disable no-param-reassign, quote-props, comma-dangle, padded-blocks */
+
 ((global) => {
   global.mergeConflicts = global.mergeConflicts || {};
 

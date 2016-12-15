@@ -1,4 +1,6 @@
-/* eslint-disable */
+/* eslint-disable no-new, arrow-parens, no-param-reassign, no-irregular-whitespace, padded-blocks, comma-dangle, no-trailing-spaces, semi, max-len */
+/* global Flash */
+
 (global => {
   global.gl = global.gl || {};
 
@@ -33,7 +35,7 @@
       const $allowedToPushInput = this.$wrap.find(`input[name="${this.$allowedToPushDropdown.data('fieldName')}"]`);
 
       // Do not update if one dropdown has not selected any option
-      if (!($allowedToMergeInput.length && $allowedToPushInput.length)) return; 
+      if (!($allowedToMergeInput.length && $allowedToPushInput.length)) return;
 
       $.ajax({
         type: 'POST',
