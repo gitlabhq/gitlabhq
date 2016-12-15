@@ -45,7 +45,6 @@
       $('#modal_merge_info').modal({
         show: false
       });
-
       this.clearEventListeners();
       this.addEventListeners();
       this.getCIStatus(false);
