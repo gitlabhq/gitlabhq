@@ -170,7 +170,7 @@ describe "Search", feature: true  do
           sleep 2
 
           expect(page).to have_selector('.filtered-search')
-          expect(find('.filtered-search').value).to eq("assignee:#{user.username}")
+          expect(find('.filtered-search').value).to eq("assignee:@#{user.username}")
         end
 
         it 'takes user to her issues page when issues authored is clicked' do
@@ -178,7 +178,7 @@ describe "Search", feature: true  do
           sleep 2
 
           expect(page).to have_selector('.filtered-search')
-          expect(find('.filtered-search').value).to eq("author:#{user.username}")
+          expect(find('.filtered-search').value).to eq("author:@#{user.username}")
         end
 
         it 'takes user to her MR page when MR assigned is clicked' do
