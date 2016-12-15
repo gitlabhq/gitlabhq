@@ -14,14 +14,14 @@ module Gitlab
 
       def options
         {
-          'Gogs'          => 'gogs',
           'GitHub'        => 'github',
           'Bitbucket'     => 'bitbucket',
           'GitLab.com'    => 'gitlab',
           'Google Code'   => 'google_code',
           'FogBugz'       => 'fogbugz',
           'Repo by URL'   => 'git',
-          'GitLab export' => 'gitlab_project'
+          'GitLab export' => 'gitlab_project',
+          'Gitea'         => 'gitea'
         }
       end
     end

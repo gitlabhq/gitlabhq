@@ -30,4 +30,8 @@ module ImportSpecHelper
     )
     allow(Gitlab.config.omniauth).to receive(:providers).and_return([provider])
   end
+
+  def assign_session_token
+    session[:access_token] = 'asdasd12345'
+  end
 end

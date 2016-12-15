@@ -5,13 +5,13 @@ module Projects
     class Error < StandardError; end
 
     ALLOWED_TYPES = [
-      'gogs',
-      'bitbucket',
-      'fogbugz',
-      'gitlab',
       'github',
+      'bitbucket',
+      'gitlab',
       'google_code',
-      'gitlab_project'
+      'fogbugz',
+      'gitlab_project',
+      'gitea'
     ]
 
     def execute
@@ -71,8 +71,23 @@ module Projects
     def importer
       return Gitlab::ImportExport::Importer.new(project) if @project.gitlab_project_import?
 
-      class_name = "Gitlab::#{project.import_type.camelize}Import::Importer"
-      class_name.constantize.new(project)
+      class_name =
+        case project.import_type
+        when 'github', 'gitea'
+          Gitlab::GithubImport::Importer
+        when 'bitbucket'
+          Gitlab::BitbucketImport::Importer
+        when 'gitlab'
+          Gitlab::GitlabImport::Importer
+        when 'google_code'
+          Gitlab::GoogleCodeImport::Importer
+        when 'fogbugz'
+          Gitlab::FogbugzImport::Importer
+        else
+          raise 'Unknown importer type!'
+        end
+
+      class_name.new(project)
     end
 
     def unknown_url?

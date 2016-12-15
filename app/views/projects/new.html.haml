@@ -49,11 +49,6 @@
                     = link_to new_import_github_path, class: 'btn import_github' do
                       = icon('github', text: 'GitHub')
                 %div
-                  - if gogs_import_enabled?
-                    = link_to new_import_gogs_url, class: 'btn import_gogs' do
-                      = image_tag(image_path('gogs-logo.svg'), alt: 'Gogs', size: "14x14")
-                      Gogs
-                %div
                   - if bitbucket_import_enabled?
                     = link_to status_import_bitbucket_path, class: "btn import_bitbucket #{'how_to_import_link' unless bitbucket_import_configured?}", "data-no-turbolink" => "true" do
                       = icon('bitbucket', text: 'Bitbucket')
@@ -73,6 +68,11 @@
                   - if fogbugz_import_enabled?
                     = link_to new_import_fogbugz_path, class: 'btn import_fogbugz' do
                       = icon('bug', text: 'Fogbugz')
+                %div
+                  - if gitea_import_enabled?
+                    = link_to new_import_gitea_url, class: 'btn import_gitea' do
+                      = custom_icon('go_logo')
+                      Gitea
                 %div
                   - if git_import_enabled?
                     = link_to "#", class: 'btn js-toggle-button import_git' do
