@@ -63,12 +63,16 @@
         window.removeEventListener('beforeunload', () => {});
         window.removeEventListener('focus', () => {});
         window.removeEventListener('blur', () => {});
+
+        // turbolinks event handler
         document.removeEventListener('page:fetch', () => {});
       };
 
       window.addEventListener('beforeunload', removeTimeIntervals);
       window.addEventListener('focus', startIntervalLoops);
       window.addEventListener('blur', removeTimeIntervals);
+
+      // turbolinks event handler
       document.addEventListener('page:fetch', removeAll);
     }
   };

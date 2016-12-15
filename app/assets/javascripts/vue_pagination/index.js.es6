@@ -26,10 +26,6 @@
         const text = e.target.innerText;
         const { totalPages, nextPage, previousPage } = this.pageInfo;
 
-        /**
-         the regex here is to read if the string coming in will become a valid number
-         had issues with parsing using `+` because `typeof NaN === 'number'`
-        */
         if (text === SPREAD) {
           return;
         } else if (text === LAST) {
