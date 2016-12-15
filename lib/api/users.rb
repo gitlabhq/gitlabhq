@@ -467,9 +467,9 @@ module API
       get ":activities" do
         authenticated_as_admin!
 
-        activity_set = Gitlab::User::ActivitySet.new(from: params[:from],
-                                                     page: params[:page],
-                                                     per_page: params[:per_page])
+        activity_set = Gitlab::UserActivities::ActivitySet.new(from: params[:from],
+                                                               page: params[:page],
+                                                               per_page: params[:per_page])
 
         add_pagination_headers(activity_set)
 

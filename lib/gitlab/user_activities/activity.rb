@@ -1,5 +1,5 @@
 module Gitlab
-  module User
+  module UserActivities
     class Activity
       attr_reader :username
 

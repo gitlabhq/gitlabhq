@@ -1,5 +1,5 @@
 module Gitlab
-  module User
+  module UserActivities
     class ActivitySet
       include Gitlab::PaginationUtil
 
@@ -12,7 +12,7 @@ module Gitlab
         end
       end
 
-      def initialize(from:, page:, per_page:)
+      def initialize(from: nil, page: nil, per_page: nil)
         @from = sanitize_date(from)
         @to = Time.now.to_i
         @page = page

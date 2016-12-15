@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::User::Activity, :redis, lib: true do
+describe Gitlab::UserActivities::Activity, :redis, lib: true do
   let(:username) { 'user' }
   let(:activity) { described_class.new('user', Time.new(2016, 12, 12).to_i) }
 
