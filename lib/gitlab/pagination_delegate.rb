@@ -25,8 +25,6 @@ module Gitlab
     end
 
     def prev_page
-      return nil if first_page?
-
       current_page - 1 unless first_page?
     end
 
