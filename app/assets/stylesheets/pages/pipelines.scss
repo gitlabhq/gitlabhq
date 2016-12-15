@@ -22,6 +22,7 @@
 
   .table.ci-table {
     min-width: 1200px;
+    table-layout: fixed;
 
     .pipeline-id {
       color: $black;
@@ -792,6 +793,57 @@
     &::after {
       margin-top: 1px;
       border-bottom-color: $white-light;
+    }
+  }
+}
+
+.mini-pipeline-graph-icon-container .ci-status-icon {
+    display: inline-block;
+    border: 1px solid;
+    border-radius: 20px;
+    margin-right: 1px;
+    width: 20px;
+    height: 20px;
+    position: relative;
+
+    svg {
+      top: -1px;
+      position: relative;
+    }
+}
+
+.builds-dropdown {
+  &:focus {
+    margin-right: -6px;
+
+    .ci-status-icon {
+      width: 27px;
+      padding: 0px 6px 0px 0px;
+
+      + .dropdown-caret {
+          display: inline-block;
+      }
+    }
+  }
+
+  .mini-pipeline-graph-icon-container {
+    .ci-status-icon:hover,
+    .ci-status-icon:focus {
+      width: 27px;
+      padding: 0px 6px 0px 0px;
+
+      + .dropdown-caret {
+          display: inline-block;
+      }
+    }
+
+    .dropdown-caret {
+      font-size: 12px;
+      position: relative;
+      top: 3px;
+      left: -11px;
+      margin-right: -6px;
+      display: none;
     }
   }
 }
