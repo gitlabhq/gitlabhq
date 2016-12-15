@@ -3,11 +3,9 @@
 module Gitlab
   module Git
     class RevList
-      include ActiveModel::Validations
-
-      validates :env, git_environment_variables: true
-
       attr_reader :project, :env
+
+      ALLOWED_VARIABLES = %w(GIT_OBJECT_DIRECTORY GIT_ALTERNATE_OBJECT_DIRECTORIES).freeze
 
       def initialize(oldrev, newrev, project:, env: nil)
         @project = project
@@ -21,17 +19,21 @@ module Gitlab
       end
 
       def execute
-        if self.valid?
-          Gitlab::Popen.popen(@args, nil, @env.slice(*allowed_environment_variables))
-        else
-          Gitlab::Popen.popen(@args)
+        Gitlab::Popen.popen(@args, nil, parse_environment_variables)
+      end
+
+      def valid?
+        env.slice(*ALLOWED_VARIABLES).all? do |(name, value)|
+          value =~ /^#{project.repository.path_to_repo}/
         end
       end
 
       private
 
-      def allowed_environment_variables
-        %w(GIT_ALTERNATE_OBJECT_DIRECTORIES GIT_OBJECT_DIRECTORY)
+      def parse_environment_variables
+        return {} unless valid?
+
+        env.slice(*ALLOWED_VARIABLES)
       end
     end
   end
