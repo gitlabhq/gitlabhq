@@ -21,6 +21,8 @@ module Ci
     scope :online, ->() { where('contacted_at > ?', LAST_CONTACT_TIME) }
     scope :ordered, ->() { order(id: :desc) }
 
+    after_save :tick_update
+
     scope :owned_or_shared, ->(project_id) do
       joins('LEFT JOIN ci_runner_projects ON ci_runner_projects.runner_id = ci_runners.id')
         .where("ci_runner_projects.gl_project_id = :project_id OR ci_runners.is_shared = true", project_id: project_id)
@@ -122,7 +124,21 @@ module Ci
       ]
     end
 
+    def tick_update
+      new_update = Time.new.inspect
+      Gitlab::Redis.with { |redis| redis.set(redis_key, new_update, ex: 60.minutes) }
+      new_update
+    end
+
+    def last_build_queue_update
+      Gitlab::Redis.with { |redis| redis.get(redis_key) }
+    end
+
     private
+
+    def redis_key
+      "runner:build_queue:#{self.id}"
+    end
 
     def tag_constraints
       unless has_tags? || run_untagged?

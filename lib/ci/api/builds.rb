@@ -16,7 +16,7 @@ module Ci
           not_found! unless current_runner.active?
           update_runner_info
 
-          last_update = Gitlab::Redis.with { |redis| redis.get(current_runner_redis_key)}
+          last_update = current_runner.last_build_queue_update
 
           if params[:last_update].present?
             if params[:last_update] == last_update
@@ -35,13 +35,8 @@ module Ci
           else
             Gitlab::Metrics.add_event(:build_not_found)
 
-            if last_update == ""
-              Gitlab::Redis.with do |redis|
-                new_update = Time.new.inspect
-                redis.set(current_runner_redis_key, new_update, ex: 60.minutes)
-                headers 'X-GitLab-Last-Update', new_update
-              end
-            end
+            new_update = current_runner.tick_update
+            headers 'X-GitLab-Last-Update', new_update
 
             build_not_found!
           end
