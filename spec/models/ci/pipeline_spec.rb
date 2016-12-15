@@ -426,6 +426,7 @@ describe Ci::Pipeline, models: true do
 
       it 'returns the latest status for the same ref and different sha' do
         expect(latest_status).to eq(described_class.latest.status)
+        expect(latest_status).to eq('failed')
       end
     end
 
@@ -434,6 +435,7 @@ describe Ci::Pipeline, models: true do
 
       it 'returns the latest status for ref and different sha' do
         expect(latest_status).to eq(described_class.latest_status('ref'))
+        expect(latest_status).to eq('failed')
       end
     end
   end
