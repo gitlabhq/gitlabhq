@@ -1,10 +1,7 @@
 - if @issues.to_a.any?
   .panel.panel-default.panel-small
     %ul.content-list.issues-list
-      - @issues.each do |issue|
-        - project = issue.project
-
-        = render 'projects/issues/issue', issue: issue
+      = render partial: 'projects/issues/issue', collection: @issues
   = paginate @issues, theme: "gitlab"
 - else
   = render 'shared/empty_states/issues'
