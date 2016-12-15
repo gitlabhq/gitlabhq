@@ -20,7 +20,7 @@
         if (approvers && approvers.length) {
           const lastIdx = approvers.length - 1;
           return approvers.reduce((memo, curr, index) => {
-            const userDisplayName = curr;
+            const userDisplayName = curr.name;
             const newList = index !== lastIdx ? `${memo} ${userDisplayName}, ` :
               `${memo} or ${userDisplayName}`;
             return newList;
