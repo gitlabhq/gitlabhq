@@ -172,6 +172,10 @@ class Namespace < ActiveRecord::Base
     end
   end
 
+  def shared_runners_enabled?
+    current_application_settings.shared_runners_enabled?
+  end
+
   def shared_runners_minutes_limit
     read_attribute(:shared_runners_minutes_limit) ||
       current_application_settings.shared_runners_minutes
