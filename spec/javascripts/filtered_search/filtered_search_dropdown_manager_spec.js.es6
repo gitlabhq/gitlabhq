@@ -4,51 +4,85 @@
 (() => {
   describe('Filtered Search Dropdown Manager', () => {
     describe('addWordToInput', () => {
-      describe('add word and when lastToken is an empty object', () => {
-        function getInput() {
-          return document.querySelector('.filtered-search');
-        }
+      function getInputValue() {
+        return document.querySelector('.filtered-search').value;
+      }
 
+      beforeEach(() => {
+        const input = document.createElement('input');
+        input.classList.add('filtered-search');
+        document.body.appendChild(input);
+
+        expect(input.value).toBe('');
+      });
+
+      afterEach(() => {
+        document.querySelector('.filtered-search').outerHTML = '';
+      });
+
+      describe('input has no existing value', () => {
         beforeEach(() => {
           spyOn(gl.FilteredSearchTokenizer, 'processTokens')
             .and.callFake(() => ({
               lastToken: {},
             }));
-
-          const input = document.createElement('input');
-          input.classList.add('filtered-search');
-          document.body.appendChild(input);
-
-          expect(input.value).toBe('');
-        });
-
-        afterEach(() => {
-          document.querySelector('.filtered-search').outerHTML = '';
         });
 
         it('should add word', () => {
           gl.FilteredSearchDropdownManager.addWordToInput('firstWord');
-          expect(getInput().value).toBe('firstWord');
+          expect(getInputValue()).toBe('firstWord');
         });
 
         it('should not add space before first word', () => {
           gl.FilteredSearchDropdownManager.addWordToInput('firstWord', true);
-          expect(getInput().value).toBe('firstWord');
+          expect(getInputValue()).toBe('firstWord');
         });
 
         it('should not add space before second word by default', () => {
           gl.FilteredSearchDropdownManager.addWordToInput('firstWord');
-          expect(getInput().value).toBe('firstWord');
+          expect(getInputValue()).toBe('firstWord');
           gl.FilteredSearchDropdownManager.addWordToInput('secondWord');
-          expect(getInput().value).toBe('firstWordsecondWord');
+          expect(getInputValue()).toBe('firstWordsecondWord');
         });
 
         it('should add space before new word when addSpace is passed', () => {
-          expect(getInput().value).toBe('');
+          expect(getInputValue()).toBe('');
           gl.FilteredSearchDropdownManager.addWordToInput('firstWord');
-          expect(getInput().value).toBe('firstWord');
+          expect(getInputValue()).toBe('firstWord');
           gl.FilteredSearchDropdownManager.addWordToInput('secondWord', true);
-          expect(getInput().value).toBe('firstWord secondWord');
+          expect(getInputValue()).toBe('firstWord secondWord');
+        });
+      });
+
+      describe('input has exsting value', () => {
+        it('should only add the remaining characters of the word', () => {
+          const lastToken = {
+            key: 'author',
+            value: 'roo',
+          };
+
+          spyOn(gl.FilteredSearchTokenizer, 'processTokens').and.callFake(() => ({
+            lastToken,
+          }));
+
+          document.querySelector('.filtered-search').value = `${lastToken.key}:${lastToken.value}`;
+          gl.FilteredSearchDropdownManager.addWordToInput('root');
+          expect(getInputValue()).toBe('author:root');
+        });
+
+        it('should only add the remaining characters of the word (contains space)', () => {
+          const lastToken = {
+            key: 'label',
+            value: 'test me',
+          };
+
+          spyOn(gl.FilteredSearchTokenizer, 'processTokens').and.callFake(() => ({
+            lastToken,
+          }));
+
+          document.querySelector('.filtered-search').value = `${lastToken.key}:"${lastToken.value}"`;
+          gl.FilteredSearchDropdownManager.addWordToInput('~\'"test me"\'');
+          expect(getInputValue()).toBe('label:~\'"test me"\'');
         });
       });
     });
