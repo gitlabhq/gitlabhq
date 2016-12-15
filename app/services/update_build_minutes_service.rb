@@ -2,11 +2,9 @@ class UpdateBuildMinutesService < BaseService
   def execute(build)
     return unless build.runner
     return unless build.runner.shared?
-    return unless build.runner.limit_build_minutes?
     return unless build.duration
-
-    project = build.project
-    return unless project
+    return unless build.project
+    return if build.project.public?
 
     namespace = project.namespace
     return unless namespace

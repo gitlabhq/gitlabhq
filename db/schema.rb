@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161202152035) do
+ActiveRecord::Schema.define(version: 20161202152039) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -116,6 +116,7 @@ ActiveRecord::Schema.define(version: 20161202152035) do
     t.string "sidekiq_throttling_queues"
     t.decimal "sidekiq_throttling_factor"
     t.boolean "html_emails_enabled", default: true
+    t.integer "shared_runners_minutes", default: 0, null: false
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -818,6 +819,13 @@ ActiveRecord::Schema.define(version: 20161202152035) do
   add_index "milestones", ["title"], name: "index_milestones_on_title", using: :btree
   add_index "milestones", ["title"], name: "index_milestones_on_title_trigram", using: :gin, opclasses: {"title"=>"gin_trgm_ops"}
 
+  create_table "namespace_metrics", force: :cascade do |t|
+    t.integer "namespace_id", null: false
+    t.integer "shared_runners_minutes", default: 0, null: false
+  end
+
+  add_index "namespace_metrics", ["namespace_id"], name: "index_namespace_metrics_on_namespace_id", unique: true, using: :btree
+
   create_table "namespaces", force: :cascade do |t|
     t.string "name", null: false
     t.string "path", null: false
@@ -841,6 +849,7 @@ ActiveRecord::Schema.define(version: 20161202152035) do
     t.boolean "lfs_enabled"
     t.integer "repository_size_limit"
     t.integer "parent_id"
+    t.integer "shared_runners_minutes_limit"
   end
 
   add_index "namespaces", ["created_at"], name: "index_namespaces_on_created_at", using: :btree
@@ -1478,6 +1487,7 @@ ActiveRecord::Schema.define(version: 20161202152035) do
   add_foreign_key "merge_request_metrics", "merge_requests", on_delete: :cascade
   add_foreign_key "merge_requests_closing_issues", "issues", on_delete: :cascade
   add_foreign_key "merge_requests_closing_issues", "merge_requests", on_delete: :cascade
+  add_foreign_key "namespace_metrics", "namespaces", on_delete: :cascade
   add_foreign_key "path_locks", "projects"
   add_foreign_key "path_locks", "users"
   add_foreign_key "personal_access_tokens", "users"

@@ -9,6 +9,6 @@ class CreateTableNamespaceMetrics < ActiveRecord::Migration
       t.integer :shared_runners_minutes, default: 0, null: false
     end
 
-    add_foreign_key :namespace_metrics, :projects, column: :namespace_id, on_delete: :cascade
+    add_foreign_key :namespace_metrics, :namespaces, on_delete: :cascade
   end
 end

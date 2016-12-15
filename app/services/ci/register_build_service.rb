@@ -9,11 +9,7 @@ module Ci
 
       builds =
         if current_runner.shared?
-          if current_runner.limit_build_minutes?
-            builds_for_shared_runners_with_build_minutes_limit
-          else
-            builds_for_shared_runners
-          end
+          builds_for_shared_runner
         else
           builds_for_specific_runner
         end
@@ -44,21 +40,29 @@ module Ci
         joins('LEFT JOIN project_features ON ci_builds.gl_project_id = project_features.project_id').
         where('project_features.builds_access_level IS NULL or project_features.builds_access_level > 0').
 
+        # select projects which have allowed number of shared runner minutes or are public
+        where("projects.visibility_level_field=? OR (#{builds_check_limit.to_sql})",
+          Gitlab::VisibilityLevel.PUBLIC)
+
+        # Implement fair scheduling
         # this returns builds that are ordered by number of running builds
         # we prefer projects that don't use shared runners at all
         joins("LEFT JOIN (#{running_builds_for_shared_runners.to_sql}) AS project_builds ON ci_builds.gl_project_id=project_builds.gl_project_id").
         order('COALESCE(project_builds.running_builds, 0) ASC', 'ci_builds.id ASC')
     end
 
-    def builds_for_shared_runners_with_build_minutes_limit
-      builds_for_shared_runner.
-        # select projects with allowed number of shared runner minutes
-        joins('LEFT JOIN namespaces ON ci_builds.gl_project_id = namespaces.project_id').
-        joins('LEFT JOIN namespace_metrics ON namespaces.id = namespace_metrics.namespace_id').
-        where('COALESCE(namespaces.shared_runner_minutes_limit, ?, 0) > 0 AND ' \
-              'COALESCE(namespace_metrics.shared_runner_minutes, 0) < COALESCE(namespaces.shared_runner_minutes_limit, ?, 0)',
-              current_application_settings.shared_runners_minutes,
-              current_application_settings.shared_runners_minutes)
+    def builds_check_limit
+      Namespace.
+        where("namespaces.project_id = ci_builds.gl_project_id").
+        includes(:namespace_metrics).
+        where('COALESCE(namespaces.shared_runner_minutes_limit, ?, 0) == 0 OR ' \
+          'COALESCE(namespace_metrics.shared_runner_minutes, 0) < COALESCE(namespaces.shared_runner_minutes_limit, ?, 0)',
+          application_shared_runners_minutes, application_shared_runners_minutes).
+        select('1')
+    end
+
+    def application_shared_runners_minutes
+      current_application_settings.shared_runners_minutes
     end
 
     def builds_for_specific_runner
