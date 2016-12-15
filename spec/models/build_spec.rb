@@ -254,6 +254,24 @@ describe Ci::Build, models: true do
     end
   end
 
+  describe '#ref_slug' do
+    {
+      'master'    => 'master',
+      '1-foo'     => '1-foo',
+      'fix/1-foo' => 'fix-1-foo',
+      'fix-1-foo' => 'fix-1-foo',
+      'a' * 63    => 'a' * 63,
+      'a' * 64    => 'a' * 63,
+      'FOO'       => 'foo',
+    }.each do |ref, slug|
+      it "transforms #{ref} to #{slug}" do
+        build.ref = ref
+
+        expect(build.ref_slug).to eq(slug)
+      end
+    end
+  end
+
   describe '#variables' do
     let(:container_registry_enabled) { false }
     let(:predefined_variables) do
@@ -265,6 +283,7 @@ describe Ci::Build, models: true do
         { key: 'CI_BUILD_REF', value: build.sha, public: true },
         { key: 'CI_BUILD_BEFORE_SHA', value: build.before_sha, public: true },
         { key: 'CI_BUILD_REF_NAME', value: 'master', public: true },
+        { key: 'CI_BUILD_REF_SLUG', value: 'master', public: true },
         { key: 'CI_BUILD_NAME', value: 'test', public: true },
         { key: 'CI_BUILD_STAGE', value: 'test', public: true },
         { key: 'CI_SERVER_NAME', value: 'GitLab', public: true },

@@ -40,6 +40,7 @@ version of Runner required.
 | **CI_BUILD_NAME**       | all    | 0.5    | The name of the build as defined in `.gitlab-ci.yml` |
 | **CI_BUILD_STAGE**      | all    | 0.5    | The name of the stage as defined in `.gitlab-ci.yml` |
 | **CI_BUILD_REF_NAME**   | all    | all    | The branch or tag name for which project is built |
+| **CI_BUILD_REF_SLUG**   | 8.15   | all    | `$CI_BUILD_REF_NAME` lowercased, shortened to 63 bytes, and with everything except `0-9` and `a-z` replaced with `-`. Use in URLs and domain names. |
 | **CI_BUILD_REPO**       | all    | all    | The URL to clone the Git repository |
 | **CI_BUILD_TRIGGERED**  | all    | 0.5    | The flag to indicate that build was [triggered] |
 | **CI_BUILD_MANUAL**     | 8.12   | all    | The flag to indicate that build was manually started |
