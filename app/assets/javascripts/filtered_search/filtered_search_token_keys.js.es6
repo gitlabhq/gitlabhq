@@ -44,6 +44,10 @@
       return tokenKeys;
     }
 
+    static getConditions() {
+      return conditions;
+    }
+
     static searchByKey(key) {
       return tokenKeys.find(tokenKey => tokenKey.key === key) || null;
     }
