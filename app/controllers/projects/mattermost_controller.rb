@@ -32,16 +32,13 @@ class Projects::MattermostController < Projects::ApplicationController
   end
 
   def teams
-    # Mocking for frontend development
-    @teams = [{"id"=>"qz8gdr1fopncueb8n9on8ohk3h", "create_at"=>1479992105904, "update_at"=>1479992105904, "delete_at"=>0, "display_name"=>"chatops", "name"=>"chatops", "email"=>"admin@example.com", "type"=>"O", "company_name"=>"", "allowed_domains"=>"", "invite_id"=>"gthxi47gj7rxtcx6zama63zd1w", "allow_open_invite"=>false}]
-
-    #  @teams =
-    #       begin
-    #         Mattermost::Mattermost.new(Gitlab.config.mattermost.host, current_user).with_session do
-    #          Mattermost::Team.all
-    #        end
-    #      rescue Mattermost::NoSessionError
-    #        @teams = []
-    #      end
+    @teams =
+      begin
+        Mattermost::Mattermost.new(Gitlab.config.mattermost.host, current_user).with_session do
+          Mattermost::Team.team_admin
+        end
+      rescue Mattermost::NoSessionError
+        []
+      end
   end
 end

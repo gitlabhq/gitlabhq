@@ -65,6 +65,7 @@ module Mattermost
       return unless token_uri
 
       self.class.headers("Cookie" => "MMAUTHTOKEN=#{request_token}")
+      self.class.headers("X-Requested-With" => 'XMLHttpRequest')
 
       request_token
     end
@@ -106,7 +107,6 @@ module Mattermost
 
     def normalize_uri(uri)
       uri << '/' unless uri.end_with?('/')
-
       uri << 'api/v3'
     end
   end
