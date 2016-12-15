@@ -89,13 +89,15 @@ module Ci
 
     # ref can't be HEAD or SHA, can only be branch/tag name
     scope :latest, ->(ref = nil) do
-      max_id = unscope(:select).select("max(#{quoted_table_name}.id)")
+      max_id = unscope(:select)
+        .select("max(#{quoted_table_name}.id)")
+        .group(:ref, :sha)
 
       if ref
-        where(ref: ref)
+        where(id: max_id, ref: ref)
       else
-        self
-      end.where(id: max_id.group(:ref, :sha))
+        where(id: max_id)
+      end
     end
 
     def self.latest_status(ref = nil)
