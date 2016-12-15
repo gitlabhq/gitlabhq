@@ -1,8 +1,9 @@
-//= require vue
 /* global modal Vue */
 (() => {
-  Vue.component('geo-clone-dialog', {
-    name: 'geo-clone-dialog',
+  window.gl = window.gl || {};
+  window.gl.geo = window.gl.geo || {};
+
+  window.gl.geo.CloneDialog = Vue.extend({
     props: ['title', 'id'],
     data() {
       return this.$parent.$data;
@@ -33,14 +34,4 @@
       </div>
         `,
   });
-
-  $(document).ready(() => {
-    const geoClone = document.getElementById('geo-clone');
-    if (geoClone) {
-      gl.GeoCloneDialog = new Vue({
-        el: geoClone,
-        data: Object.assign({}, geoClone.dataset),
-      });
-    }
-  });
-})(window.gl || (window.gl = {}));
+})();

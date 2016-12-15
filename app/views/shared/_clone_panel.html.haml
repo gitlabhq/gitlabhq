@@ -38,9 +38,9 @@
     e.preventDefault();
     var $this = $(this);
 
-    if (gl.GeoCloneDialog) {
-      gl.GeoCloneDialog.cloneUrlSecondary = $this.attr('href');
-      gl.GeoCloneDialog.cloneUrlPrimary = $this.data('primaryUrl');
+    if (gl.GeoClone) {
+      gl.GeoClone.cloneUrlSecondary = $this.attr('href');
+      gl.GeoClone.cloneUrlPrimary = $this.data('primaryUrl');
     }
   });
 
