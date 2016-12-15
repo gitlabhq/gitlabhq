@@ -6,7 +6,7 @@
 
   class IssuableBulkActions {
     constructor({ container, form, issues, prefixId } = {}) {
-      this.prefixId = prefixId || 'issue_';
+      this.prefixId = prefixId || 'issue_';
       this.form = form || this.getElement('.bulk-update');
       this.$labelDropdown = this.form.find('.js-label-select');
       this.issues = issues || this.getElement('.issues-list .issue');
@@ -107,7 +107,7 @@
     }
 
     setOriginalDropdownData() {
-      let $labelSelect = $('.bulk-update .js-label-select');
+      const $labelSelect = $('.bulk-update .js-label-select');
       $labelSelect.data('common', this.getOriginalCommonIds());
       $labelSelect.data('marked', this.getOriginalMarkedIds());
       $labelSelect.data('indeterminate', this.getOriginalIndeterminateIds());
@@ -115,7 +115,7 @@
 
     // From issuable's initial bulk selection
     getOriginalCommonIds() {
-      let labelIds = [];
+      const labelIds = [];
 
       this.getElement('.selected_issue:checked').each((i, el) => {
         labelIds.push(this.getElement(`#${this.prefixId}${el.dataset.id}`).data('labels'));
@@ -125,17 +125,17 @@
 
     // From issuable's initial bulk selection
     getOriginalMarkedIds() {
-      var labelIds = [];
+      const labelIds = [];
       this.getElement('.selected_issue:checked').each((i, el) => {
         labelIds.push(this.getElement(`#${this.prefixId}${el.dataset.id}`).data('labels'));
       });
-      return _.intersection.apply(_, labelIds);
+      return _.intersection.apply(this, labelIds);
     }
 
     // From issuable's initial bulk selection
     getOriginalIndeterminateIds() {
-      let uniqueIds = [];
-      let labelIds = [];
+      const uniqueIds = [];
+      const labelIds = [];
       let issuableLabels = [];
 
       // Collect unique label IDs for all checked issues
