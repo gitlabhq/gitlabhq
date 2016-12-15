@@ -54,7 +54,7 @@
             .dropdown.inline.build-content
               %button.has-tooltip.builds-dropdown{ type: 'button', data: { toggle: 'dropdown', title: tooltip} }
                 %span{ class: klass }
-                  = ci_icon_for_status(detailed_status.icon)
+                  = render 'ci/status/mini_graph_badge', subject: stage
                 %span= icon('caret-down', class: 'dropdown-caret')
               .dropdown-menu.grouped-pipeline-dropdown
                 .arrow-up
@@ -65,7 +65,7 @@
           - else
             - if details_path
               = link_to details_path, class: klass, title: tooltip do
-                = custom_icon(detailed_status.icon)
+                = render 'ci/status/mini_graph_badge', subject: stage
 
   %td
     - if pipeline.duration
