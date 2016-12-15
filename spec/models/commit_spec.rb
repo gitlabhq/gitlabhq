@@ -213,7 +213,7 @@ eos
   end
 
   describe '#status' do
-    context 'without arguments' do
+    context 'without ref argument' do
       before do
         %w[success failed created pending].each do |status|
           create(:ci_empty_pipeline,

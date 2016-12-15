@@ -381,7 +381,7 @@ describe Ci::Pipeline, models: true do
     end
   end
 
-  shared_context 'with some empty pipelines' do
+  shared_context 'with some outdated pipelines' do
     before do
       create_pipeline(:canceled, 'ref', 'A')
       create_pipeline(:success, 'ref', 'A')
@@ -395,10 +395,10 @@ describe Ci::Pipeline, models: true do
   end
 
   describe '.latest' do
-    include_context 'with some empty pipelines'
+    include_context 'with some outdated pipelines'
 
     context 'when no ref is specified' do
-      let(:pipelines) { Ci::Pipeline.latest.all }
+      let(:pipelines) { described_class.latest.all }
 
       it 'returns the latest pipeline for the same ref and different sha' do
         expect(pipelines.map(&:sha)).to contain_exactly('A', 'B', 'C')
@@ -408,7 +408,7 @@ describe Ci::Pipeline, models: true do
     end
 
     context 'when ref is specified' do
-      let(:pipelines) { Ci::Pipeline.latest('ref').all }
+      let(:pipelines) { described_class.latest('ref').all }
 
       it 'returns the latest pipeline for ref and different sha' do
         expect(pipelines.map(&:sha)).to contain_exactly('A', 'B')
@@ -419,21 +419,21 @@ describe Ci::Pipeline, models: true do
   end
 
   describe '.latest_status' do
-    include_context 'with some empty pipelines'
+    include_context 'with some outdated pipelines'
 
     context 'when no ref is specified' do
-      let(:latest_status) { Ci::Pipeline.latest_status }
+      let(:latest_status) { described_class.latest_status }
 
       it 'returns the latest status for the same ref and different sha' do
-        expect(latest_status).to eq(Ci::Pipeline.latest.status)
+        expect(latest_status).to eq(described_class.latest.status)
       end
     end
 
     context 'when ref is specified' do
-      let(:latest_status) { Ci::Pipeline.latest_status('ref') }
+      let(:latest_status) { described_class.latest_status('ref') }
 
       it 'returns the latest status for ref and different sha' do
-        expect(latest_status).to eq(Ci::Pipeline.latest_status('ref'))
+        expect(latest_status).to eq(described_class.latest_status('ref'))
       end
     end
   end
