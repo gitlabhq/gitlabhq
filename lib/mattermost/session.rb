@@ -106,7 +106,6 @@ module Mattermost
 
     def normalize_uri(uri)
       uri << '/' unless uri.end_with?('/')
-
       uri << 'api/v3'
     end
   end
