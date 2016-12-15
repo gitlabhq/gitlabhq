@@ -27,7 +27,11 @@ describe Issue, models: true do
     let(:issue) { build(:issue, iid: 1, project: project) }
 
     it 'returns a String reference to the object' do
-      expect(issue.to_reference).to eq "#1"
+      expect(issue.to_reference).to eq "#{project.namespace.name}/sample-project#1"
+    end
+
+    it 'supports a project reference' do
+      expect(issue.to_reference(project)).to eq "#1"
     end
 
     it 'returns a String reference with the full path' do
@@ -37,6 +41,11 @@ describe Issue, models: true do
     it 'supports a cross-project reference' do
       another_project = build(:empty_project, name: 'another-project', namespace: project.namespace)
       expect(issue.to_reference(another_project)).to eq "sample-project#1"
+    end
+
+    it 'supports a group reference' do
+      group = build(:group, name: 'sample-group')
+      expect(issue.to_reference(nil, group)).to eq("sample-project#1")
     end
   end
 
