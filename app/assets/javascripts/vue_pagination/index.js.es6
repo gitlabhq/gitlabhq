@@ -18,7 +18,7 @@
     ],
     methods: {
       changePage(e) {
-        let pagenum = this.pageInfo.page;
+        let pageNum = this.pageInfo.page;
         let apiScope = gl.getParameterByName('scope');
 
         if (!apiScope) apiScope = 'all';
@@ -29,18 +29,18 @@
         if (text === SPREAD) {
           return;
         } else if (text === LAST) {
-          pagenum = totalPages;
+          pageNum = totalPages;
         } else if (text === NEXT) {
-          pagenum = nextPage;
+          pageNum = nextPage;
         } else if (text === PREV) {
-          pagenum = previousPage;
+          pageNum = previousPage;
         } else if (text === FIRST) {
-          pagenum = 1;
+          pageNum = 1;
         } else {
-          pagenum = +text;
+          pageNum = +text;
         }
 
-        this.change(pagenum, apiScope);
+        this.change(pageNum, apiScope);
       },
     },
     computed: {
