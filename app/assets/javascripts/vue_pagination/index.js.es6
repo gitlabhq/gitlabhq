@@ -17,7 +17,7 @@
       'pageInfo',
     ],
     methods: {
-      changepage(e) {
+      changePage(e) {
         let pagenum = this.pageInfo.page;
         let apiScope = gl.getParameterByName('scope');
 
@@ -91,11 +91,11 @@
               disabled: item.disabled
             }'
           >
-            <span
-              @click="changepage($event)"
+            <a
+              @click="changePage($event)"
             >
               {{item.title}}
-            </span>
+            </a>
           </li>
         </ul>
       </div>
