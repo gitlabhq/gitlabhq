@@ -1118,6 +1118,8 @@ describe API::Users, api: true do
 
     context 'last activity as admin' do
       it 'returns the last activity' do
+        allow(Time).to receive(:now).and_return(Time.new(2000, 1, 1))
+
         user.record_activity
 
         get api("/user/activities", admin)
@@ -1125,7 +1127,7 @@ describe API::Users, api: true do
         activity = json_response.last
 
         expect(activity['username']).to eq(user.username)
-        expect(activity['last_activity_at']).to start_with(Date.today.year.to_s)
+        expect(activity['last_activity_at']).to eq('2000-01-01 00:00:00')
       end
     end
 

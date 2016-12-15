@@ -1,7 +1,14 @@
 module Gitlab
   module UserActivities
     class ActivitySet
-      include Gitlab::PaginationUtil
+      delegate :total_count,
+               :total_pages,
+               :current_page,
+               :limit_value,
+               :first_page?,
+               :prev_page,
+               :last_page?,
+               :next_page, to: :pagination_delegate
 
       KEY = 'user/activities'
 
