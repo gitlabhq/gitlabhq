@@ -1112,7 +1112,7 @@ describe API::Users, api: true do
 
         get api("/user/activities", user)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_http_status(403)
       end
     end
 
@@ -1122,16 +1122,16 @@ describe API::Users, api: true do
 
         get api("/user/activities", admin)
 
-        activity = json_response.first
+        activity = json_response.last
 
         expect(activity['username']).to eq(user.username)
-        expect(activity['lat_activity_at']).to start_with(Date.today.year.to_s)
+        expect(activity['last_activity_at']).to start_with(Date.today.year.to_s)
       end
     end
 
-    context 'last activities paginated' do
+    context 'last activities paginated', :redis do
       let(:activity) { json_response.first }
-      let(:old_date) { 1.year.ago.to_date }
+      let(:old_date) { 2.months.ago.to_date }
 
       before do
         5.times do |num|
