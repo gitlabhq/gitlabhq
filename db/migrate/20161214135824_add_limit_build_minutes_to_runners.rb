@@ -4,6 +4,6 @@ class AddLimitBuildMinutesToRunners < ActiveRecord::Migration
   DOWNTIME = false
 
   def change
-    add_column :runners, :limit_build_minutes, :boolean
+    add_column :ci_runners, :limit_build_minutes, :boolean
   end
 end
