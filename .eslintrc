@@ -9,8 +9,7 @@
     "_": false,
     "gl": false,
     "gon": false,
-    "localStorage": false,
-    "Vue": false
+    "localStorage": false
   },
   "plugins": [
     "filenames"
