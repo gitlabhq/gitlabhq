@@ -287,8 +287,8 @@ describe Project, models: true do
     let(:project) { create(:empty_project, path: 'sample-project', namespace: namespace) }
 
     context 'when nil argument' do
-      it 'returns nil' do
-        expect(project.to_reference).to be_nil
+      it 'returns complete path to the project' do
+        expect(project.to_reference).to eq 'sample-namespace/sample-project'
       end
     end
 
@@ -309,8 +309,14 @@ describe Project, models: true do
     context 'when same namespace / cross-project argument' do
       let(:another_project) { create(:empty_project, namespace: namespace) }
 
-      it 'returns complete path to the project' do
+      it 'returns path to the project' do
         expect(project.to_reference(another_project)).to eq 'sample-project'
+      end
+    end
+
+    context 'when group argument' do
+      it 'returns path to the project' do
+        expect(project.to_reference(nil, namespace)).to eq 'sample-project'
       end
     end
   end
