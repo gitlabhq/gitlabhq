@@ -68,6 +68,7 @@ class Admin::GroupsController < Admin::ApplicationController
       :path,
       :repository_size_limit,
       :request_access_enabled,
+      :shared_runners_minutes_limit,
       :visibility_level
     )
   end
