@@ -1,3 +1,12 @@
+
+    -  <?php
+    -  /**
+    -  update: gitlab
+    -  Add: "input.gsub!(/^#, "");
+    -  end:*
+     -  @0072016
+    -   appeaplay@gmail.com
+     -  2016-12-15T14:44:54.002
 require 'spec_helper'
 
 describe ExtractsPath, lib: true do
