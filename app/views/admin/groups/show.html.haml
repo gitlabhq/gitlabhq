@@ -44,6 +44,13 @@
             = group_lfs_status(@group)
             = link_to icon('question-circle'), help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs')
 
+        - if @group.shared_runners_enabled?
+          %li
+            %span.light Shared CI Runner Quota:
+            %strong
+              = group_shared_runner_limits_quota(@group)
+              = link_to icon('question-circle'), help_page_path("user/admin_area/settings/continuous_integration", anchor: "shared-runners-minutes")
+
     .panel.panel-default
       .panel-heading Linked LDAP groups
       %ul.well-list

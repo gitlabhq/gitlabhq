@@ -51,6 +51,22 @@ module GroupsHelper
     end
   end
 
+  def group_shared_runner_limits_quota(group)
+    used = group.shared_runners_minutes.to_i
+
+    if group.shared_runners_minutes_limit_enabled?
+      limit = group.shared_runners_minutes_limit
+      status = group.shared_runners_minutes_used? ? 'over_quota' : 'under_quota'
+    else
+      limit = 'Unlimited'
+      status = 'disabled'
+    end
+
+    content_tag(:span, class: "shared_runners_limit_#{status}") do
+      "#{used} / #{limit}"
+    end
+  end
+
   def group_issues(group)
     IssuesFinder.new(current_user, group_id: group.id).execute
   end
