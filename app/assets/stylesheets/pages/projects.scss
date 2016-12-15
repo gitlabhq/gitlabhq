@@ -26,7 +26,7 @@
       margin-bottom: 5px;
     }
 
-    &> .form-group {
+    & > .form-group {
       padding-left: 0;
     }
   }
@@ -73,7 +73,7 @@
       border: 1px solid $border-color;
     }
 
-    &+ .select2 a {
+    & + .select2 a {
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
     }
@@ -618,7 +618,6 @@ pre.light-well {
   margin: 0;
 }
 
-
 .activity-filter-block {
   .controls {
     padding-bottom: 7px;
@@ -811,7 +810,31 @@ pre.light-well {
 
 .compare-form-group {
   .dropdown-menu {
-    width: 300px;
+    width: 100%;
+
+    @media (min-width: $screen-sm-min) {
+      width: 300px;
+    }
+  }
+
+  + .compare-ellipsis {
+    width: 100%;
+    vertical-align: middle;
+    text-align: center;
+    margin-top: -20px;
+
+    @media (min-width: $screen-sm-min) {
+      margin-top: 0;
+      width: auto;
+    }
+  }
+
+  .inline-input-group {
+    width: 100%;
+
+    @media (min-width: $screen-sm-min) {
+      width: 250px;
+    }
   }
 }
 
