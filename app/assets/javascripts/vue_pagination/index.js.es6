@@ -12,10 +12,16 @@
   const LAST = 'Last >>';
 
   gl.VueGlPagination = Vue.extend({
-    props: [
-      'change',
-      'pageInfo',
-    ],
+    props: {
+      change: {
+        type: Function,
+        required: true,
+      },
+      pageInfo: {
+        type: Object,
+        required: true,
+      },
+    },
     methods: {
       changePage(e) {
         let pageNum = this.pageInfo.page;
