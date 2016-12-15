@@ -188,7 +188,7 @@ class Namespace < ActiveRecord::Base
   def shared_runners_minutes_used?
     shared_runners_enabled? &&
       shared_runners_minutes_limit_enabled? &&
-      shared_runners_minutes.to_i < shared_runners_minutes_limit
+      shared_runners_minutes.to_i >= shared_runners_minutes_limit
   end
 
   private
