@@ -17,6 +17,6 @@ class FillProjectsRoutesTable < ActiveRecord::Migration
   end
 
   def down
-    Route.delete_all(source_type: 'Project')
+    execute("DELETE FROM routes WHERE source_type = 'Project'")
   end
 end
