@@ -62,14 +62,15 @@
         // The below is taken from At.js source
         // Tweaked to commands to start without a space only if char before is a non-word character
         // https://github.com/ichord/At.js
-        var _a, _y, regexp, match;
+        var _a, _y, regexp, match, atSymbols;
+        atSymbols = Object.keys(this.app.controllers).join('|');
         subtext = subtext.split(' ').pop();
         flag = flag.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 
         _a = decodeURI("%C3%80");
         _y = decodeURI("%C3%BF");
 
-        regexp = new RegExp("(?:\\B|\\W|\\s)" + flag + "(?!\\W)([A-Za-z" + _a + "-" + _y + "0-9_\'\.\+\-]*)$", 'gi');
+        regexp = new RegExp("(?:\\B|\\W|\\s)" + flag + "(?![" + atSymbols + "])([A-Za-z" + _a + "-" + _y + "0-9_\'\.\+\-]*)$", 'gi');
 
         match = regexp.exec(subtext);
 
