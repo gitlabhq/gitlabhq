@@ -40,42 +40,61 @@ describe "Pipelines", feature: true, js: true do
 
     context 'pipeline graph' do
       it 'shows a running icon and a cancel action for the running build' do
-        page.within('.stage-column:nth-child(3) .build:first-child') do
+        title = "#{@running.name} - #{@running.status}"
+
+        page.within("a[data-title='#{title}']") do
           expect(page).to have_selector('.ci-status-icon-running')
           expect(page).to have_content('deploy')
+        end
+
+        page.within("a[data-title='#{title}'] + .ci-action-icon-container") do
           expect(page).to have_selector('.ci-action-icon-container .fa-ban')
         end
+
       end
 
       it 'shows the success icon and a retry action for the successfull build' do
-        page.within('.stage-column:nth-child(2) .build:first-child') do
+        title = "#{@success.name} - #{@success.status}"
+
+        page.within("a[data-title='#{title}']") do
           expect(page).to have_selector('.ci-status-icon-success')
           expect(page).to have_content('build')
+        end
+
+        page.within("a[data-title='#{title}'] + .ci-action-icon-container") do
           expect(page).to have_selector('.ci-action-icon-container .fa-refresh')
         end
       end
 
       it 'shows the failed icon and a retry action for the failed build' do
-        page.within('.stage-column:first-child .build') do
+        title = "#{@failed.name} - #{@failed.status}"
+
+        page.within("a[data-title='#{title}']") do
           expect(page).to have_selector('.ci-status-icon-failed')
           expect(page).to have_content('test')
+        end
+
+        page.within("a[data-title='#{title}'] + .ci-action-icon-container") do
           expect(page).to have_selector('.ci-action-icon-container .fa-refresh')
         end
       end
 
       it 'shows the skipped icon and a play action for the manual build' do
-        page.within('.stage-column:nth-child(3) .build:nth-child(2)') do
+        title = "#{@manual.name} - #{@manual.status}"
+
+        page.within("a[data-title='#{title}']") do
           expect(page).to have_selector('.ci-status-icon-skipped')
           expect(page).to have_content('manual')
-          expect(page).to have_selector('.ci-action-icon-container .ci-play-icon')
+        end
+
+        page.within("a[data-title='#{title}'] + .ci-action-icon-container") do
+          expect(page).to have_selector('.ci-action-icon-container .fa-play')
         end
       end
 
-      it 'shows the success icon for the generic comit status build' do
-        page.within('.stage-column:nth-child(4) .build') do
-          expect(page).to have_selector('.ci-status-icon-success')
-          expect(page).to have_content('jenkins')
-        end
+      it 'shows the success icon and the generic comit status build' do
+        expect(page).to have_selector('.ci-status-icon-success')
+        expect(page).to have_content('jenkins')
       end
     end
 
