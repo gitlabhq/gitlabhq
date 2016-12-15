@@ -271,12 +271,9 @@ describe "Pipelines", feature: true, js: true do
       context 'with gitlab-ci.yml' do
         before { stub_ci_pipeline_to_return_yaml_file }
 
-        it do
-          expect{
-            click_on 'Create pipeline'
-          }.to change{
-            Ci::Pipeline.count
-          }.by(1)
+        it 'creates a new pipeline' do
+          expect { click_on 'Create pipeline' }
+            .to change { Ci::Pipeline.count }.by(1)
         end
       end
 
