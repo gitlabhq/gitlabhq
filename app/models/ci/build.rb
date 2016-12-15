@@ -83,7 +83,7 @@ module Ci
     state_machine :status do
       after_transition any => [:pending] do |build|
         build.run_after_commit do
-            BuildQueueWorker.perform_async(id)
+          BuildQueueWorker.perform_async(id)
         end
       end
 

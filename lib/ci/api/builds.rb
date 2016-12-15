@@ -18,8 +18,8 @@ module Ci
 
           last_update = Gitlab::Redis.with { |redis| redis.get(current_runner_redis_key)}
 
-          if params[:last_update] != ""
-            if :last_update == last_update
+          if params[:last_update].present?
+            if params[:last_update] == last_update
               headers 'X-GitLab-Last-Update', last_update
               return build_not_found!
             end
