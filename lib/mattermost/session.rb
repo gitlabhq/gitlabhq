@@ -28,10 +28,12 @@ module Mattermost
 
     def with_session
       raise NoSessionError unless create
-      result = yield
-      destroy
 
-      result
+      begin
+        yield
+      ensure
+        destroy
+      end
     end
 
     # Next methods are needed for Doorkeeper
