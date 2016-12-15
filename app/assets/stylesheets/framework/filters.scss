@@ -89,16 +89,22 @@
     overflow-y: hidden;
     border-radius: 0;
 
+    .dropdown-label-box {
+      border-color: $white-light;
+      border-style: solid;
+      border-width: 1px;
+      width: 17px;
+      height: 17px;
+    }
+
     &:hover,
     &:focus {
       background-color: $dropdown-hover-color;
       color: $white-light;
       text-decoration: none;
 
-      .dropdown-label-box {
+      .avatar {
         border-color: $white-light;
-        border-style: solid;
-        border-width: 2px;
       }
     }
   }
