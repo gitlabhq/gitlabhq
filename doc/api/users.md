@@ -834,3 +834,58 @@ Example response:
   }
 ]
 ```
+
+### Get user activities (admin only)
+
+>**Note:** This API endpoint is only available on 8.15 EE and above.
+
+
+Get the last activity date for all users, sorted from oldest to newest.
+
+The activities that update the timestamp are:
+
+  - Git HTTP/SSH activities (such as clone, push)
+  - User logging in into GitLab
+  
+The data is stored in Redis and it depends on it for being recorded and displayed
+over time. This means that we will lose the data if Redis gets flushed, or a custom
+TTL is reached.
+
+By default, it shows the activity for all users in the last 6 months, but this can be
+amended by using the `from` parameter. 
+
+This function takes pagination parameters `page` and `per_page` to restrict the list of users.
+
+
+```
+GET /user/activities
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `from` | string | no | Date string in the format YEAR-MONTH-DAY, e.g. `2016-03-11`. Defaults to 6 months ago. |
+
+```bash
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/user/activities
+```
+
+Example response:
+
+```json
+[
+  {
+    "username": "user1",
+    "last_activity_at": "2015-12-14 01:00:00"
+  },
+  {
+    "username": "user2",
+    "last_activity_at": "2015-12-15 01:00:00"
+  },
+  {
+    "username": "user3",
+    "last_activity_at": "2015-12-16 01:00:00"
+  }
+]
+```

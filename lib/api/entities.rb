@@ -18,6 +18,11 @@ module API
       expose :bio, :location, :skype, :linkedin, :twitter, :website_url, :organization
     end
 
+    class UserActivity < Grape::Entity
+      expose :username
+      expose :last_activity_at
+    end
+
     class Identity < Grape::Entity
       expose :provider, :extern_uid
     end
