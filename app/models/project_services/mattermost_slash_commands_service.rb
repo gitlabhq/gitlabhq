@@ -18,8 +18,4 @@ class MattermostSlashCommandsService < ChatService
   def to_param
     'mattermost_slash_commands'
   end
-
-  def presenter
-    Gitlab::ChatCommands::Presenters::Mattermost.new
-  end
 end

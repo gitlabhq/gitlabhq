@@ -12,8 +12,4 @@ class SlackSlashCommandsService < ChatSlashCommandsService
   def to_param
     'slack_slash_commands'
   end
-
-  def presenter
-    Gitlab::ChatCommands::Presenters::Mattermost.new
-  end
 end

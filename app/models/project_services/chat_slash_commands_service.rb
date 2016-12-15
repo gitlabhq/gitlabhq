@@ -33,10 +33,10 @@ class ChatSlashCommandsService < Service
     user = find_chat_user(params)
     unless user
       url = authorize_chat_name_url(params)
-      return presenter.authorize_chat_name(url)
+      return Gitlab::ChatCommands::Presenter.authorize_chat_name(url)
     end
 
-    Gitlab::ChatCommands::Command.new(presenter, project, user, params).execute
+    Gitlab::ChatCommands::Command.new(project, user, params).execute
   end
 
   private
@@ -47,9 +47,5 @@ class ChatSlashCommandsService < Service
 
   def authorize_chat_name_url(params)
     ChatNames::AuthorizeUserService.new(self, params).execute
-  end
-
-  def presenter
-    throw NotImplementedError
   end
 end
