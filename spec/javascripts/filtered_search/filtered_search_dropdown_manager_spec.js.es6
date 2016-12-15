@@ -11,10 +11,9 @@
 
         beforeEach(() => {
           spyOn(gl.FilteredSearchTokenizer, 'processTokens')
-            .and.callFake(query => ({
-                lastToken: {}
-              })
-            );
+            .and.callFake(() => ({
+              lastToken: {},
+            }));
 
           const input = document.createElement('input');
           input.classList.add('filtered-search');
