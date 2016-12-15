@@ -172,6 +172,21 @@ class Namespace < ActiveRecord::Base
     end
   end
 
+  def shared_runners_minutes_limit
+    read_attribute(:shared_runners_minutes_limit) ||
+      current_application_settings.shared_runners_minutes
+  end
+
+  def shared_runners_minutes_limit_enabled?
+    shared_runners_minutes_limit.nonzero?
+  end
+
+  def shared_runners_minutes_used?
+    shared_runners_enabled? &&
+      shared_runners_minutes_limit_enabled? &&
+      shared_runners_minutes.to_i < shared_runners_minutes_limit
+  end
+
   private
 
   def repository_storage_paths
@@ -210,20 +225,5 @@ class Namespace < ActiveRecord::Base
 
   def full_path_changed?
     path_changed? || parent_id_changed?
-  end
-
-  def shared_runners_minutes_limit
-    read_attribute(:shared_runners_minutes_limit) ||
-      current_application_settings.shared_runners_minutes
-  end
-
-  def shared_runners_minutes_limit_enabled?
-    shared_runners_minutes_limit.nonzero?
-  end
-
-  def shared_runners_minutes_used?
-    shared_runners_enabled? &&
-      shared_runners_minutes_limit_enabled? &&
-      shared_runners_minutes.to_i < shared_runners_minutes_limit
   end
 end

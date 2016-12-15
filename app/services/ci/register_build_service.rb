@@ -4,24 +4,30 @@ module Ci
   class RegisterBuildService
     include Gitlab::CurrentSettings
 
-    def execute(current_runner)
+    attr_reader :runner
+
+    def initialize(runner)
+      @runner = runner
+    end
+
+    def execute
       builds = Ci::Build.pending.unstarted
 
       builds =
-        if current_runner.shared?
+        if runner.shared?
           builds_for_shared_runner
         else
           builds_for_specific_runner
         end
 
       build = builds.find do |build|
-        current_runner.can_pick?(build)
+        runner.can_pick?(build)
       end
 
       if build
         # In case when 2 runners try to assign the same build, second runner will be declined
         # with StateMachines::InvalidTransition or StaleObjectError when doing run! or save method.
-        build.runner_id = current_runner.id
+        build.runner_id = runner.id
         build.run!
       end
 
@@ -41,8 +47,8 @@ module Ci
         where('project_features.builds_access_level IS NULL or project_features.builds_access_level > 0').
 
         # select projects which have allowed number of shared runner minutes or are public
-        where("projects.visibility_level_field=? OR (#{builds_check_limit.to_sql})",
-          Gitlab::VisibilityLevel.PUBLIC)
+        where("projects.visibility_level=? OR (#{builds_check_limit.to_sql})=1",
+          Gitlab::VisibilityLevel::PUBLIC).
 
         # Implement fair scheduling
         # this returns builds that are ordered by number of running builds
@@ -52,11 +58,11 @@ module Ci
     end
 
     def builds_check_limit
-      Namespace.
-        where("namespaces.project_id = ci_builds.gl_project_id").
-        includes(:namespace_metrics).
-        where('COALESCE(namespaces.shared_runner_minutes_limit, ?, 0) == 0 OR ' \
-          'COALESCE(namespace_metrics.shared_runner_minutes, 0) < COALESCE(namespaces.shared_runner_minutes_limit, ?, 0)',
+      Namespace.reorder(nil).
+        where("namespaces.id = projects.namespace_id").
+        joins('LEFT JOIN namespace_metrics ON namespace_metrics.namespace_id = namespaces.id').
+        where('COALESCE(namespaces.shared_runners_minutes_limit, ?, 0) = 0 OR ' \
+          'COALESCE(namespace_metrics.shared_runners_minutes, 0) < COALESCE(namespaces.shared_runners_minutes_limit, ?, 0)',
           application_shared_runners_minutes, application_shared_runners_minutes).
         select('1')
     end
@@ -66,7 +72,7 @@ module Ci
     end
 
     def builds_for_specific_runner
-      new_builds.where(project: current_runner.projects.with_builds_enabled).order('created_at ASC')
+      new_builds.where(project: runner.projects.with_builds_enabled).order('created_at ASC')
     end
 
     def running_builds_for_shared_runners
