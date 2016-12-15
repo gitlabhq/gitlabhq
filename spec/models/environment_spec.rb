@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Environment, models: true do
-  let(:environment) { create(:environment) }
+  subject(:environment) { create(:environment) }
 
   it { is_expected.to belong_to(:project) }
   it { is_expected.to have_many(:deployments) }
@@ -15,15 +15,11 @@ describe Environment, models: true do
   it { is_expected.to validate_uniqueness_of(:name).scoped_to(:project_id) }
   it { is_expected.to validate_length_of(:name).is_at_most(255) }
 
+  it { is_expected.to validate_uniqueness_of(:slug).scoped_to(:project_id) }
+  it { is_expected.to validate_length_of(:slug).is_at_most(24) }
+
   it { is_expected.to validate_length_of(:external_url).is_at_most(255) }
-
-  # To circumvent a not null violation of the name column:
-  # https://github.com/thoughtbot/shoulda-matchers/issues/336
-  it 'validates uniqueness of :external_url' do
-    create(:environment)
-
-    is_expected.to validate_uniqueness_of(:external_url).scoped_to(:project_id)
-  end
+  it { is_expected.to validate_uniqueness_of(:external_url).scoped_to(:project_id) }
 
   describe '#nullify_external_url' do
     it 'replaces a blank url with nil' do
@@ -197,6 +193,40 @@ describe Environment, models: true do
 
     it 'returns a list of actions with matching environment' do
       expect(environment.actions_for('review/master')).to contain_exactly(review_action)
+    end
+  end
+
+  describe '#slug' do
+    it "is automatically generated" do
+      expect(environment.slug).not_to be_nil
+    end
+
+    it "is not regenerated if name changes" do
+      original_slug = environment.slug
+      environment.update_attributes!(name: environment.name.reverse)
+
+      expect(environment.slug).to eq(original_slug)
+    end
+  end
+
+  describe '#generate_slug' do
+    SUFFIX = "-[a-z0-9]{6}"
+    {
+      "staging-12345678901234567" => "staging-123456789" + SUFFIX,
+      "9-staging-123456789012345" => "env-9-staging-123" + SUFFIX,
+      "staging-1234567890123456"  => "staging-1234567890123456",
+      "production"                => "production",
+      "PRODUCTION"                => "production" + SUFFIX,
+      "review/1-foo"              => "review-1-foo" + SUFFIX,
+      "1-foo"                     => "env-1-foo" + SUFFIX,
+      "1/foo"                     => "env-1-foo" + SUFFIX,
+      "foo-"                      => "foo" + SUFFIX,
+    }.each do |name, matcher|
+      it "returns a slug matching #{matcher}, given #{name}" do
+        slug = described_class.new(name: name).generate_slug
+
+        expect(slug).to match(/\A#{matcher}\z/)
+      end
     end
   end
 end
