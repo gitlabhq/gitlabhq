@@ -13,10 +13,45 @@
 
   gl.VueGlPagination = Vue.extend({
     props: {
+
+      /**
+        This function will take the information given by the pagination component
+        And make a new API call from the parent
+
+        Here is an example `change` method:
+
+        change(pagenum, apiScope) {
+          window.history.pushState({}, null, `?scope=${apiScope}&p=${pagenum}`);
+          clearInterval(this.timeLoopInterval);
+          this.pageRequest = true;
+          this.store.fetchDataLoop.call(this, Vue, pagenum, this.scope, apiScope);
+        },
+      */
+
       change: {
         type: Function,
         required: true,
       },
+
+      /**
+        pageInfo will come from the headers of the API call
+        in the `.then` clause of the VueResource API call
+        there should be a function that contructs the pageInfo for this component
+
+        This is an example:
+
+        const pageInfo = (headers) => {
+          const values = {};
+          values.perPage = +headers['X-Per-Page'];
+          values.page = +headers['X-Page'];
+          values.total = +headers['X-Total'];
+          values.totalPages = +headers['X-Total-Pages'];
+          values.nextPage = +headers['X-Next-Page'];
+          values.previousPage = +headers['X-Prev-Page'];
+          return values;
+        };
+      */
+
       pageInfo: {
         type: Object,
         required: true,
