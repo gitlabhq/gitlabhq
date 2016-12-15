@@ -12,4 +12,8 @@ class SlackSlashCommandsService < ChatSlashCommandsService
   def to_param
     'slack_slash_commands'
   end
+
+  def presenter_format
+    'slack'
+  end
 end

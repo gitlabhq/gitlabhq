@@ -48,15 +48,15 @@ module Gitlab
       end
 
       def help(messages)
-        Mattermost::Presenter.help(messages, params[:command])
+        presenter.help(messages, params[:command])
       end
 
       def access_denied
-        Mattermost::Presenter.access_denied
+        presenter.access_denied
       end
 
       def present(resource)
-        Mattermost::Presenter.present(resource)
+        presenter.present(resource)
       end
     end
   end
