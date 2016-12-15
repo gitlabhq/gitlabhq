@@ -1,4 +1,4 @@
-class FileUploader < CarrierWave::Uploader::Base
+class FileUploader < GitlabUploader
   include UploaderHelper
   MARKDOWN_PATTERN = %r{\!?\[.*?\]\(/uploads/(?<secret>[0-9a-f]{32})/(?<file>.*?)\)}
 
