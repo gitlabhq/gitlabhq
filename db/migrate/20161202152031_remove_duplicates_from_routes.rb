@@ -7,6 +7,11 @@ class RemoveDuplicatesFromRoutes < ActiveRecord::Migration
   DOWNTIME = false
 
   def up
+    # We can skip this migration when running a PostgreSQL database because
+    # we use an optimized query in the "FillProjectsRoutesTable" migration
+    # to fill these values that avoid duplicate entries in the routes table.
+    return unless Gitlab::Database.mysql?
+
     select_all("SELECT path FROM #{quote_table_name(:routes)} GROUP BY path HAVING COUNT(*) > 1").each do |row|
       path = connection.quote(row['path'])
       execute(%Q{
