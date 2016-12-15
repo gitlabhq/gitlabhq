@@ -208,10 +208,10 @@ class Namespace < ActiveRecord::Base
       find_each(&:refresh_members_authorized_projects)
   end
 
-<<<<<<< HEAD
   def full_path_changed?
     path_changed? || parent_id_changed?
-=======
+  end
+
   def shared_runners_minutes_limit
     read_attribute(:shared_runners_minutes_limit) ||
       current_application_settings.shared_runners_minutes
@@ -225,6 +225,5 @@ class Namespace < ActiveRecord::Base
     shared_runners_enabled? &&
       shared_runners_minutes_limit_enabled? &&
       shared_runners_minutes.to_i < shared_runners_minutes_limit
->>>>>>> Add namespace_metrics and count number of build minutes on namespace basis
   end
 end
