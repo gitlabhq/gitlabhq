@@ -10,8 +10,10 @@
 //   <div class="js-syntax-highlight"></div>
 //
 (function() {
+
   $.fn.syntaxHighlight = function() {
     var $children;
+
     if ($(this).hasClass('js-syntax-highlight')) {
       // Given the element itself, apply highlighting
       return $(this).addClass(gon.user_color_scheme);
@@ -23,9 +25,5 @@
       }
     }
   };
-
-  $(document).on('ready page:load', function() {
-    return $('.js-syntax-highlight').syntaxHighlight();
-  });
 
 }).call(this);
