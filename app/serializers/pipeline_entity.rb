@@ -33,9 +33,7 @@ class PipelineEntity < Grape::Entity
       pipeline.yaml_errors.present?
     end
 
-    expose :stuck?, as: :stuck do |pipeline|
-      pipeline.builds.any?(&:stuck?)
-    end
+    expose :stuck?, as: :stuck
   end
 
   expose :ref do

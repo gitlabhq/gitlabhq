@@ -20,6 +20,7 @@ class PipelinesFinder
       end
 
     scoped_pipelines.order(id: :desc)
+      .includes(project: [:namespace])
   end
 
   private
