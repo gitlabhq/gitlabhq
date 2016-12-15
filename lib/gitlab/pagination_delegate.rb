@@ -8,8 +8,8 @@ module Gitlab
       @options = { default_per_page: DEFAULT_PER_PAGE,
                    max_per_page: MAX_PER_PAGE }.merge(options)
 
-      @page = sanitize_page(page)
       @per_page = sanitize_per_page(per_page)
+      @page = sanitize_page(page)
     end
 
     def total_count
@@ -53,13 +53,13 @@ module Gitlab
     def sanitize_per_page(per_page)
       return @options[:default_per_page] unless per_page && per_page > 0
 
-      per_page > @options[:max_per_page] ? @options[:max_per_page] : per_page
+      [@options[:max_per_page], per_page].min
     end
 
     def sanitize_page(page)
       return 1 unless page && page > 1
 
-      page > total_count ? total_count : page
+      [total_pages, page].min
     end
   end
 end

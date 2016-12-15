@@ -459,7 +459,7 @@ module API
 
       desc 'Get a list of user activities'
       params do
-        optional :from, type: String, desc: 'Date time string in the format YEAR-MONTH-DAY'
+        optional :from, type: String, desc: 'Date string in the format YEAR-MONTH-DAY'
         use :pagination
       end
       get ":activities" do

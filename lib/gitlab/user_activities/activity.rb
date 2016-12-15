@@ -9,7 +9,7 @@ module Gitlab
       end
 
       def last_activity_at
-        @lat_activity_at ||= Time.at(@time).to_s(:db)
+        @last_activity_at ||= Time.at(@time).to_s(:db)
       end
     end
   end

@@ -4,7 +4,6 @@ module Gitlab
       include Gitlab::PaginationUtil
 
       KEY = 'user/activities'
-      DEFAULT_FROM = 6.months.ago.to_i
 
       def self.record(user)
         Gitlab::Redis.with do |redis|
@@ -28,7 +27,7 @@ module Gitlab
       def sanitize_date(date)
         Time.strptime(date, "%Y-%m-%d").to_i
       rescue TypeError, ArgumentError
-        DEFAULT_FROM
+        default_from
       end
 
       def pagination_delegate
@@ -51,6 +50,10 @@ module Gitlab
 
       def limit
         [pagination_delegate.offset, pagination_delegate.limit_value]
+      end
+
+      def default_from
+        6.months.ago.to_i
       end
     end
   end
