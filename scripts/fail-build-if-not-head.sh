@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # accept master
-if [ "$CI_BUILD_REF_NAME" == "master" ]; then
+if [ "$CI_BUILD_REF_NAME" -eq "master" ]; then
   exit 0
 fi
 
