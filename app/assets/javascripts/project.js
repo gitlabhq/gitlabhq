@@ -33,6 +33,16 @@
         $(this).parents('.no-password-message').remove();
         return e.preventDefault();
       });
+      $('.hide-shared-runner-limit-message-one-month').on('click', function(e) {
+        Cookies.set('hide_shared_runner_quota_message', 'false', { expires: 31 });
+        $(this).parents('.shared-runner-quota-message').remove();
+        e.preventDefault();
+      });
+      $('.hide-shared-runner-limit-message').on('click', function(e) {
+        Cookies.set('hide_shared_runner_quota_message', 'false');
+        $(this).parents('.shared-runner-quota-message').remove();
+        e.preventDefault();
+      });
       this.projectSelectDropdown();
     }
 
