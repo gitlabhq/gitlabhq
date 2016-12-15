@@ -1,22 +1,20 @@
 require 'rails_helper'
 
-describe 'Search bar', feature: true do
+describe 'Search bar', js: true, feature: true do
   include WaitForAjax
 
-  let!(:project)   { create(:project) }
-  let!(:group)     { create(:group) }
-  let!(:user)      { create(:user) }
+  let!(:project) { create(:empty_project) }
+  let!(:user) { create(:user) }
 
   before do
     project.team << [user, :master]
-    group.add_developer(user)
     login_as(user)
     create(:issue, project: project)
 
     visit namespace_project_issues_path(project.namespace, project)
   end
 
-  describe 'clear search button', js: true do
+  describe 'clear search button' do
     it 'clears text' do
       search_text = 'search_text'
       filtered_search = find('.filtered-search')
