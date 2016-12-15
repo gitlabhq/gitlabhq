@@ -457,9 +457,7 @@ module API
         current_user.update_secondary_emails!
       end
 
-      desc 'Get a list of user activities' do
-        success Entities::UserBasic
-      end
+      desc 'Get a list of user activities'
       params do
         optional :from, type: String, desc: 'Date time string in the format YEAR-MONTH-DAY'
         use :pagination
