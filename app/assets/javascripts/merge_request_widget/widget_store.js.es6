@@ -24,6 +24,7 @@
 
     initState() {
       this.assignToData('loading', true);
+      this.assignToData('showWidgetBody', true);
     }
 
     initApprovals() {

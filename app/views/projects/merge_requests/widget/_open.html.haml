@@ -3,7 +3,7 @@
 
 #merge-request-widget-app.mr-state-widget{ 'data-endpoint'=> merge_request_path(@merge_request) }
   = render 'projects/merge_requests/widget/heading'
-  .mr-widget-body
+  .mr-widget-body{'v-show' => 'showWidgetBody' }
     -# After conflicts are resolved, the user is redirected back to the MR page.
     -# There is a short window before background workers run and GitLab processes
     -# the new push and commits, during which it will think the conflicts still exist.
@@ -26,7 +26,7 @@
       = render 'projects/merge_requests/widget/open/conflicts'
     - elsif @merge_request.work_in_progress?
       = render 'projects/merge_requests/widget/open/wip'
-    - elsif @merge_request.requires_approve?
+    - elsif @merge_request.requires_approve? && !@merge_request.approved?
       = render 'projects/merge_requests/widget/open/approvals_body'
     - elsif @merge_request.merge_when_build_succeeds?
       = render 'projects/merge_requests/widget/open/merge_when_build_succeeds'

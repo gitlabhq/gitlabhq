@@ -20,10 +20,6 @@
       };
     }
 
-    assignToRootStore(data, key = 'approvals') {
-      return this.rootStore.assignToData(key, data);
-    }
-
     initStoreOnce() {
       const state = this.state;
       if (!state.loading) {
@@ -47,13 +43,26 @@
 
     approve() {
       return this.api.approveMergeRequest()
-        .then(res => this.assignToRootStore(res.data));
+        .then(res => this.assignToRootStore(res.data))
+        .then(data => this.maybeHideWidgetBody(data.approvals_left));
     }
 
     unapprove() {
       return this.api.unapproveMergeRequest()
-        .then(res => this.assignToRootStore(res.data));
+        .then(res => this.assignToRootStore(res.data))
+        .then(data => this.maybeHideWidgetBody(data.approvals_left));
     }
+
+    assignToRootStore(data, key = 'approvals') {
+      return this.rootStore.assignToData(key, data);
+    }
+
+    maybeHideWidgetBody(approvalsLeft) {
+      if (!approvalsLeft) {
+        this.assignToRootStore(false, 'showWidgetBody');
+      }
+    }
+
   }
 
   gl.ApprovalsStore = ApprovalsStore;
