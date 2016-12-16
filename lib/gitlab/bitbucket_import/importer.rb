@@ -67,6 +67,7 @@ module Gitlab
             description += issue.description
 
             label_name = issue.kind
+            milestone = issue.milestone ? project.milestones.find_or_create_by(title: issue.milestone) : nil
 
             issue = project.issues.create!(
               iid: issue.iid,
@@ -74,6 +75,7 @@ module Gitlab
               description: description,
               state: issue.state,
               author_id: gitlab_user_id(project, issue.author),
+              milestone: milestone,
               created_at: issue.created_at,
               updated_at: issue.updated_at
             )
