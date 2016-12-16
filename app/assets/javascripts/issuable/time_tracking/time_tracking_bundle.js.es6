@@ -1,13 +1,13 @@
-/* eslint-disable */
-//= require vue
-//= require issuable_time_tracker
+/* global Vue */
+//= require ./components/time_tracker
 //= require smart_interval
 //= require subbable_resource
 
 (() => {
   /* This Vue instance represents what will become the parent instance for the
     * sidebar. It will be responsible for managing `issuable` state and propagating
-    * changes to sidebar components.
+    * changes to sidebar components. We will want to create a separate service to
+    * interface with the server at that point.
    */
 
   class IssuableTimeTracking {
@@ -27,15 +27,6 @@
             return gl.IssuableResource.get.call(gl.IssuableResource, {
               type: 'GET',
               url: gl.IssuableResource.endpoint,
-            });
-          },
-          initPolling() {
-            return new gl.SmartInterval({
-              callback: this.fetchIssuable,
-              startingInterval: 1000,
-              maxInterval: 10000,
-              incrementByFactorOf: 10,
-              lazyStart: false,
             });
           },
           updateState(data) {
@@ -59,7 +50,6 @@
           this.fetchIssuable();
         },
         mounted() {
-          this.initPolling();
           this.subscribeToUpdates();
           this.listenForSlashCommands();
         },
