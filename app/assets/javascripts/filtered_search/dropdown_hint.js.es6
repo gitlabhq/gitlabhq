@@ -35,18 +35,20 @@
     itemClicked(e) {
       const { selected } = e.detail;
 
-      if (selected.hasAttribute('data-value')) {
+      if (selected.tagName === 'LI') {
+        if (selected.hasAttribute('data-value')) {
         this.dismissDropdown();
-      } else {
-        const token = selected.querySelector('.js-filter-hint').innerText.trim();
-        const tag = selected.querySelector('.js-filter-tag').innerText.trim();
+        } else {
+          const token = selected.querySelector('.js-filter-hint').innerText.trim();
+          const tag = selected.querySelector('.js-filter-tag').innerText.trim();
 
-        if (tag.length) {
-          gl.FilteredSearchDropdownManager
-            .addWordToInput(this.getSelectedTextWithoutEscaping(token));
+          if (tag.length) {
+            gl.FilteredSearchDropdownManager
+              .addWordToInput(this.getSelectedTextWithoutEscaping(token));
+          }
+          this.dismissDropdown();
+          this.dispatchInputEvent();
         }
-        this.dismissDropdown();
-        this.dispatchInputEvent();
       }
     }
 

@@ -28,14 +28,17 @@
 
     itemClicked(e, getValueFunction) {
       const { selected } = e.detail;
-      const dataValueSet = gl.DropdownUtils.setDataValueIfSelected(selected);
 
-      if (!dataValueSet) {
-        const value = getValueFunction(selected);
-        gl.FilteredSearchDropdownManager.addWordToInput(value);
+      if (selected.tagName === 'LI') {
+        const dataValueSet = gl.DropdownUtils.setDataValueIfSelected(selected);
+
+        if (!dataValueSet) {
+          const value = getValueFunction(selected);
+          gl.FilteredSearchDropdownManager.addWordToInput(value);
+        }
+
+        this.dismissDropdown();
       }
-
-      this.dismissDropdown();
     }
 
     setAsDropdown() {
