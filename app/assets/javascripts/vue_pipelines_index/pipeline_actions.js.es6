@@ -3,9 +3,7 @@
 
 ((gl) => {
   gl.VuePipelineActions = Vue.extend({
-    props: [
-      'pipeline',
-    ],
+    props: ['pipeline', 'svgs'],
     computed: {
       actions() {
         return this.pipeline.details.manual_actions.length > 0;
@@ -31,13 +29,7 @@
                 title="Manual build"
                 alt="Manual Build"
               >
-                <svg title="Manual build" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 11" class="icon-play">
-                  <path
-                    fill-rule="evenodd"
-                    d="m9.283 6.47l-7.564 4.254c-.949.534-1.719.266-1.719-.576v-9.292c0-.852.756-1.117 1.719-.576l7.564 4.254c.949.534.963 1.392 0 1.934"
-                  >
-                  </path>
-                </svg>
+                <span v-html='svgs.iconPlay'></span>
                 <i class="fa fa-caret-down"></i>
               </a>
               <ul class="dropdown-menu dropdown-menu-align-right">
@@ -48,13 +40,7 @@
                     :href='action.url'
                     title="Manual build"
                   >
-                    <svg title="Manual build" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 11" class="icon-play">
-                      <path
-                        fill-rule="evenodd"
-                        d="m9.283 6.47l-7.564 4.254c-.949.534-1.719.266-1.719-.576v-9.292c0-.852.756-1.117 1.719-.576l7.564 4.254c.949.534.963 1.392 0 1.934"
-                      >
-                      </path>
-                    </svg>
+                    <span v-html='svgs.iconPlay'></span>
                     <span title="Manual build">{{action.name}}</span>
                   </a>
                 </li>

@@ -102,8 +102,8 @@
                   :match='match'
                 >
                 </stages>
-                <time-ago :pipeline='pipeline'></time-ago>
-                <pipeline-actions :pipeline='pipeline'></pipeline-actions>
+                <time-ago :pipeline='pipeline' :svgs='svgs'></time-ago>
+                <pipeline-actions :pipeline='pipeline' :svgs='svgs'></pipeline-actions>
               </tr>
             </tbody>
           </table>
