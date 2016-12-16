@@ -76,7 +76,7 @@ you modify its settings. Read the upstream documentation on how to achieve that.
 
 At the absolute minimum, make sure your [Registry configuration][registry-auth]
 has `container_registry` as the service and `https://gitlab.example.com/jwt/auth`
-as the realm.
+as the realm:
 
 ```
 auth:
@@ -494,7 +494,7 @@ configurable in future releases.
 **GitLab 8.8 ([source docs][8-8-docs])**
 
 - GitLab Container Registry feature was introduced.
-i
+
 [reconfigure gitlab]: restart_gitlab.md#omnibus-gitlab-reconfigure
 [restart gitlab]: restart_gitlab.md#installations-from-source
 [wildcard certificate]: https://en.wikipedia.org/wiki/Wildcard_certificate
