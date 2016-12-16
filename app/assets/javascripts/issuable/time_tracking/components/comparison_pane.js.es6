@@ -24,7 +24,6 @@
         const prefix = this.timeRemainingMinutes < 0 ? 'Over by' : 'Time remaining:';
         return `${prefix} ${this.timeRemainingHumanReadable}`;
       },
-
       /* Diff values for comparison meter */
       timeRemainingMinutes() {
         return this.timeEstimate - this.timeSpent;
