@@ -376,5 +376,10 @@ describe Issues::UpdateService, services: true do
       let(:mentionable) { issue }
       include_examples 'updating mentions', Issues::UpdateService
     end
+
+    include_examples 'issuable update service' do
+      let(:open_issuable) { issue }
+      let(:closed_issuable) { create(:closed_issue, project: project) }
+    end
   end
 end
