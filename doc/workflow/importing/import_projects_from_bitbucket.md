@@ -13,16 +13,14 @@ to enable this if not already.
   - the repository description (GitLab 7.7+)
   - the Git repository data (GitLab 7.7+)
   - the issues (GitLab 7.7+)
+  - the issue comments (GitLab 8.15+)
   - the pull requests (GitLab 8.4+)
-  - the wiki pages (GitLab 8.4+)
-  - the milestones (GitLab 8.7+)
-  - the labels (GitLab 8.7+)
-  - the release note descriptions (GitLab 8.12+)
+  - the pull request comments (GitLab 8.15+)
+  - the milestones (GitLab 8.15+)
 - References to pull requests and issues are preserved (GitLab 8.7+)
 - Repository public access is retained. If a repository is private in Bitbucket
   it will be created as private in GitLab as well.
 
-Milestones and wiki pages are not imported from Bitbucket.
 
 ## How it works
 
