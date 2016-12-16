@@ -4,49 +4,28 @@ describe Gitlab::Git::RevList, lib: true do
   let(:project) { create(:project) }
 
   context "validations" do
-    context "GIT_OBJECT_DIRECTORY" do
-      it "accepts values starting with the project repo path" do
-        env = { "GIT_OBJECT_DIRECTORY" => "#{project.repository.path_to_repo}/objects" }
-        rev_list = described_class.new('oldrev', 'newrev', project: project, env: env)
+    described_class::ALLOWED_VARIABLES.each do |var|
+      context var do
+        it "accepts values starting with the project repo path" do
+          env = { var => "#{project.repository.path_to_repo}/objects" }
+          rev_list = described_class.new('oldrev', 'newrev', project: project, env: env)
 
-        expect(rev_list).to be_valid
-      end
+          expect(rev_list).to be_valid
+        end
 
-      it "rejects values starting not with the project repo path" do
-        env = { "GIT_OBJECT_DIRECTORY" => "/some/other/path" }
-        rev_list = described_class.new('oldrev', 'newrev', project: project, env: env)
+        it "rejects values starting not with the project repo path" do
+          env = { var => "/some/other/path" }
+          rev_list = described_class.new('oldrev', 'newrev', project: project, env: env)
 
-        expect(rev_list).not_to be_valid
-      end
+          expect(rev_list).not_to be_valid
+        end
 
-      it "rejects values containing the project repo path but not starting with it" do
-        env = { "GIT_OBJECT_DIRECTORY" => "/some/other/path/#{project.repository.path_to_repo}" }
-        rev_list = described_class.new('oldrev', 'newrev', project: project, env: env)
+        it "rejects values containing the project repo path but not starting with it" do
+          env = { var => "/some/other/path/#{project.repository.path_to_repo}" }
+          rev_list = described_class.new('oldrev', 'newrev', project: project, env: env)
 
-        expect(rev_list).not_to be_valid
-      end
-    end
-
-    context "GIT_ALTERNATE_OBJECT_DIRECTORIES" do
-      it "accepts values starting with the project repo path" do
-        env = { "GIT_ALTERNATE_OBJECT_DIRECTORIES" => project.repository.path_to_repo }
-        rev_list = described_class.new('oldrev', 'newrev', project: project, env: env)
-
-        expect(rev_list).to be_valid
-      end
-
-      it "rejects values starting not with the project repo path" do
-        env = { "GIT_ALTERNATE_OBJECT_DIRECTORIES" => "/some/other/path" }
-        rev_list = described_class.new('oldrev', 'newrev', project: project, env: env)
-
-        expect(rev_list).not_to be_valid
-      end
-
-      it "rejects values containing the project repo path but not starting with it" do
-        env = { "GIT_ALTERNATE_OBJECT_DIRECTORIES" => "/some/other/path/#{project.repository.path_to_repo}" }
-        rev_list = described_class.new('oldrev', 'newrev', project: project, env: env)
-
-        expect(rev_list).not_to be_valid
+          expect(rev_list).not_to be_valid
+        end
       end
     end
   end
@@ -57,20 +36,18 @@ describe Gitlab::Git::RevList, lib: true do
 
     it "calls out to `popen` without environment variables if the record is invalid" do
       allow(rev_list).to receive(:valid?).and_return(false)
-      allow(Open3).to receive(:popen3)
+
+      expect(Open3).to receive(:popen3).with(hash_excluding(env), any_args)
 
       rev_list.execute
-
-      expect(Open3).to have_received(:popen3).with(hash_excluding(env), any_args)
     end
 
     it "calls out to `popen` with environment variables if the record is valid" do
       allow(rev_list).to receive(:valid?).and_return(true)
-      allow(Open3).to receive(:popen3)
+
+      expect(Open3).to receive(:popen3).with(hash_including(env), any_args)
 
       rev_list.execute
-
-      expect(Open3).to have_received(:popen3).with(hash_including(env), any_args)
     end
   end
 end
