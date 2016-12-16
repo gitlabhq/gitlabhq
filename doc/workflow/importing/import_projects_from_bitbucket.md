@@ -20,7 +20,8 @@ It takes just a few steps to import your existing Bitbucket projects to GitLab. 
 
 ![Import projects](bitbucket_importer/bitbucket_import_select_project.png)
 
-A new GitLab project will be created with your imported data.
+A new GitLab project will be created with your imported data. Keep in mind that if you want to Bitbucket users
+to be linked to GitLab user you have to have all of them in GitLab in advance. They will be matched by their BitBucket username.
 
 ### Note
 Milestones and wiki pages are not imported from Bitbucket.
