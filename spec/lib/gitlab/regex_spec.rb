@@ -29,4 +29,20 @@ describe Gitlab::Regex, lib: true do
   describe 'file path regex' do
     it { expect('foo@/bar').to match(Gitlab::Regex.file_path_regex) }
   end
+
+  describe 'environment slug regex' do
+    def be_matched
+      match(Gitlab::Regex.environment_slug_regex)
+    end
+
+    it { expect('foo').to be_matched }
+    it { expect('foo-1').to be_matched }
+
+    it { expect('FOO').not_to be_matched }
+    it { expect('foo/1').not_to be_matched }
+    it { expect('foo.1').not_to be_matched }
+    it { expect('foo*1').not_to be_matched }
+    it { expect('9foo').not_to be_matched }
+    it { expect('foo-').not_to be_matched }
+  end
 end

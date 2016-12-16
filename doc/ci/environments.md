@@ -86,6 +86,13 @@ will later see, is exposed in various places within GitLab. Each time a job that
 has an environment specified and succeeds, a deployment is recorded, remembering
 the Git SHA and environment name.
 
+>**Note:**
+Starting with GitLab 8.15, the environment name is exposed to the Runner in
+two forms: `$CI_ENVIRONMENT_NAME`, and `$CI_ENVIRONMENT_SLUG`. The first is
+the name given in `.gitlab-ci.yml` (with any variables expanded), while the
+second is a "cleaned-up" version of the name, suitable for use in URLs, DNS,
+etc.
+
 To sum up, with the above `.gitlab-ci.yml` we have achieved that:
 
 - All branches will run the `test` and `build` jobs.
@@ -157,7 +164,7 @@ that can be found in the deployments page
 job with the commit associated with it.
 
 >**Note:**
-Bare in mind that your mileage will vary and it's entirely up to how you define
+Bear in mind that your mileage will vary and it's entirely up to how you define
 the deployment process in the job's `script` whether the rollback succeeds or not.
 GitLab CI is just following orders.
 
@@ -248,7 +255,7 @@ deploy_review:
     - echo "Deploy a review app"
   environment:
     name: review/$CI_BUILD_REF_NAME
-    url: https://$CI_BUILD_REF_SLUG.example.com
+    url: https://$CI_BUILD_REF_SLUG.review.example.com
   only:
     - branches
   except:
@@ -266,9 +273,18 @@ ones.
 So, the first part is `review`, followed by a `/` and then `$CI_BUILD_REF_NAME`
 which takes the value of the branch name. Since `$CI_BUILD_REF_NAME` itself may
 also contain `/`, or other characters that would be invalid in a domain name or
-URL, we use `$CI_BUILD_REF_SLUG` in the `environment:url` so that the environment
-can get a specific and distinct URL for each branch. Again, the way you set up
-the webserver to serve these requests is based on your setup.
+URL, we use `$CI_ENVIRONMENT_SLUG` in the `environment:url` so that the
+environment can get a specific and distinct URL for each branch. In this case,
+given a `$CI_BUILD_REF_NAME` of `100-Do-The-Thing`, the URL will be something
+like `https://review-100-do-the-4f99a2.example.com`. Again, the way you set up
+the web server to serve these requests is based on your setup.
+
+You could also use `$CI_BUILD_REF_SLUG` in `environment:url`, e.g.:
+`https://$CI_BUILD_REF_SLUG.review.example.com`. We use `$CI_ENVIRONMENT_SLUG`
+here because it is guaranteed to be unique, but if you're using a workflow like
+[GitLab Flow][gitlab-flow], collisions are very unlikely, and you may prefer
+environment names to be more closely based on the branch name - the example
+above would give you an URL like `https://100-do-the-thing.review.example.com`
 
 Last but not least, we tell the job to run [`only`][only] on branches
 [`except`][only] master.
@@ -300,7 +316,7 @@ deploy_review:
     - echo "Deploy a review app"
   environment:
     name: review/$CI_BUILD_REF_NAME
-    url: https://$CI_BUILD_REF_SLUG.example.com
+    url: https://$CI_ENVIRONMENT_SLUG.example.com
   only:
     - branches
   except:
@@ -419,7 +435,7 @@ deploy_review:
     - echo "Deploy a review app"
   environment:
     name: review/$CI_BUILD_REF_NAME
-    url: https://$CI_BUILD_REF_SLUG.example.com
+    url: https://$CI_ENVIRONMENT_SLUG.example.com
     on_stop: stop_review
   only:
     - branches
@@ -493,10 +509,6 @@ fetch = +refs/environments/*:refs/remotes/origin/environments/*
 
 ## Limitations
 
-1. `$CI_BUILD_REF_SLUG` is not *guaranteed* to be unique, so there is a small
-    chance of collisions between similarly-named branches (`fix-foo` would
-    conflict with `fix/foo`, for instance). Following a well-defined workflow
-    such as [GitLab Flow][gitlab-flow] can keep this from being a problem.
 1. You are limited to use only the [CI predefined variables][variables] in the
    `environment: name`. If you try to re-use variables defined inside `script`
    as part of the environment name, it will not work.

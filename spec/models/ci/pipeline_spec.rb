@@ -381,6 +381,65 @@ describe Ci::Pipeline, models: true do
     end
   end
 
+  shared_context 'with some outdated pipelines' do
+    before do
+      create_pipeline(:canceled, 'ref', 'A')
+      create_pipeline(:success, 'ref', 'A')
+      create_pipeline(:failed, 'ref', 'B')
+      create_pipeline(:skipped, 'feature', 'C')
+    end
+
+    def create_pipeline(status, ref, sha)
+      create(:ci_empty_pipeline, status: status, ref: ref, sha: sha)
+    end
+  end
+
+  describe '.latest' do
+    include_context 'with some outdated pipelines'
+
+    context 'when no ref is specified' do
+      let(:pipelines) { described_class.latest.all }
+
+      it 'returns the latest pipeline for the same ref and different sha' do
+        expect(pipelines.map(&:sha)).to contain_exactly('A', 'B', 'C')
+        expect(pipelines.map(&:status)).
+          to contain_exactly('success', 'failed', 'skipped')
+      end
+    end
+
+    context 'when ref is specified' do
+      let(:pipelines) { described_class.latest('ref').all }
+
+      it 'returns the latest pipeline for ref and different sha' do
+        expect(pipelines.map(&:sha)).to contain_exactly('A', 'B')
+        expect(pipelines.map(&:status)).
+          to contain_exactly('success', 'failed')
+      end
+    end
+  end
+
+  describe '.latest_status' do
+    include_context 'with some outdated pipelines'
+
+    context 'when no ref is specified' do
+      let(:latest_status) { described_class.latest_status }
+
+      it 'returns the latest status for the same ref and different sha' do
+        expect(latest_status).to eq(described_class.latest.status)
+        expect(latest_status).to eq('failed')
+      end
+    end
+
+    context 'when ref is specified' do
+      let(:latest_status) { described_class.latest_status('ref') }
+
+      it 'returns the latest status for ref and different sha' do
+        expect(latest_status).to eq(described_class.latest_status('ref'))
+        expect(latest_status).to eq('failed')
+      end
+    end
+  end
+
   describe '#status' do
     let!(:build) { create(:ci_build, :created, pipeline: pipeline, name: 'test') }
 
