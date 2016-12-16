@@ -67,19 +67,19 @@ describe 'Filter issues', feature: true do
       assignee: user)
     issue.labels << bug_label
 
-    issue_with_caps_label = create(:issue, 
-      title: "issue by assignee with searchTerm and label", 
-      project: project, 
-      milestone: milestone, 
-      author: user, 
+    issue_with_caps_label = create(:issue,
+      title: "issue by assignee with searchTerm and label",
+      project: project,
+      milestone: milestone,
+      author: user,
       assignee: user)
     issue_with_caps_label.labels << caps_sensitive_label
 
-    issue_with_everything = create(:issue, 
-      title: "Bug report with everything you thought was possible", 
-      project: project, 
-      milestone: milestone, 
-      author: user, 
+    issue_with_everything = create(:issue,
+      title: "Bug report with everything you thought was possible",
+      project: project,
+      milestone: milestone,
+      author: user,
       assignee: user)
     issue_with_everything.labels << bug_label
     issue_with_everything.labels << caps_sensitive_label
@@ -590,17 +590,17 @@ describe 'Filter issues', feature: true do
 
     context 'sorting', js: true do
       it 'sorts by oldest updated' do
-        create(:issue, 
-          title: '3 days ago', 
-          project: project, 
-          author: user, 
+        create(:issue,
+          title: '3 days ago',
+          project: project,
+          author: user,
           created_at: 3.days.ago,
           updated_at: 3.days.ago)
 
-        old_issue = create(:issue, 
-          title: '5 days ago', 
-          project: project, 
-          author: user, 
+        old_issue = create(:issue,
+          title: '5 days ago',
+          project: project,
+          author: user,
           created_at: 5.days.ago,
           updated_at: 5.days.ago)
 
@@ -609,10 +609,10 @@ describe 'Filter issues', feature: true do
 
         sort_toggle = find('.filtered-search-container .dropdown-toggle')
         sort_toggle.click
-        
+
         find('.filtered-search-container .dropdown-menu li a', text: 'Oldest updated').click
         wait_for_ajax
-        
+
         expect(find('.issues-list .issue:first-of-type .issue-title-text a')).to have_content(old_issue.title)
       end
     end
