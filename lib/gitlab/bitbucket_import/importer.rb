@@ -79,13 +79,13 @@ module Gitlab
               created_at: issue.created_at,
               updated_at: issue.updated_at
             )
+
+            gitlab_issue.labels << @labels[label_name]
+
+            import_issue_comments(issue, gitlab_issue) if gitlab_issue.persisted?
           rescue StandardError => e
             errors << { type: :issue, iid: issue.iid, errors: e.message }
           end
-
-          gitlab_issue.labels << @labels[label_name]
-
-          import_issue_comments(issue, gitlab_issue) if gitlab_issue.persisted?
         end
       end
 
