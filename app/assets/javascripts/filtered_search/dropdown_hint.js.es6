@@ -59,7 +59,15 @@
 
     renderContent() {
       this.droplab.changeHookList(this.hookId, this.dropdown, [droplabFilter], this.config);
-      this.droplab.setData(this.hookId, dropdownData);
+
+      // Clone dropdownData to prevent it from being
+      // changed due to pass by reference
+      const data = [];
+      dropdownData.forEach((item) => {
+        data.push(Object.assign({}, item));
+      });
+
+      this.droplab.setData(this.hookId, data);
     }
 
     init() {
