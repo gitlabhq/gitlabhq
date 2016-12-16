@@ -24,7 +24,7 @@
     `);
 
     this.initialData = {
-      suggestedApprovers: ['Approver 1'],
+      suggestedApprovers: [ { name: 'Approver 1' }],
       userCanApprove: false,
       userHasApproved: true,
       approvedBy: [],
@@ -65,7 +65,7 @@
 
         it('should display the correct string for 2 possible approver', function (done) {
           this.approvalsBody.approvalsLeft = 2;
-          this.approvalsBody.suggestedApprovers.push('Approver 2');
+          this.approvalsBody.suggestedApprovers.push({ name: 'Approver 2' });
 
           Vue.nextTick(() => {
             const correctText = '2 more approvals';
@@ -77,14 +77,17 @@
 
       describe('approverNamesStringified', function () {
         // Preceded by: Requires {one more approval} required from _____
-        it('should display the correct string for 1 possible approver name', function () {
+        it('should display the correct string for 1 possible approver name', function (done) {
           const correctText = 'Approver 1';
-          expect(this.approvalsBody.approverNamesStringified).toBe(correctText);
+          Vue.nextTick(() => {
+            expect(this.approvalsBody.approverNamesStringified).toBe(correctText);
+            done();
+          });
         });
 
         it('should display the correct string for 2 possible approver names', function (done) {
           this.approvalsBody.approvalsLeft = 2;
-          this.approvalsBody.suggestedApprovers.push('Approver 2');
+          this.approvalsBody.suggestedApprovers.push({ name: 'Approver 2' });
 
           Vue.nextTick(() => {
             const correctText = 'Approver 1 or Approver 2';
@@ -95,8 +98,8 @@
 
         it('should display the correct string for 3 possible approver names', function (done) {
           this.approvalsBody.approvalsLeft = 3;
-          this.approvalsBody.suggestedApprovers.push('Approver 2');
-          this.approvalsBody.suggestedApprovers.push('Approver 3');
+          this.approvalsBody.suggestedApprovers.push({ name: 'Approver 2' });
+          this.approvalsBody.suggestedApprovers.push({ name: 'Approver 3' });
 
           Vue.nextTick(() => {
             const correctText = 'Approver 1, Approver 2 or Approver 3';

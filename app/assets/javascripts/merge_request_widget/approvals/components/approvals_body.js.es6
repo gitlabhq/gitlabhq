@@ -13,12 +13,24 @@
       approverNamesStringified() {
         const approvers = this.suggestedApprovers;
         if (approvers && approvers.length) {
-          const lastIdx = approvers.length - 1;
+          if (approvers.length === 1) {
+            return approvers[0].name;
+          }
+          const lastIndex = approvers.length - 1;
+          const nextToLastIndex = approvers.length - 2;
           return approvers.reduce((memo, curr, index) => {
-            const userDisplayName = curr.name;
-            const newList = index !== lastIdx ? `${memo} ${userDisplayName}, ` :
-              `${memo} or ${userDisplayName}`;
-            return newList;
+            let suffix;
+
+            if (index === nextToLastIndex) {
+              suffix = ' or ';
+            } else if (index === lastIndex) {
+              suffix = '';
+            } else {
+              suffix = ', ';
+            }
+
+            const nameToAdd = `${curr.name}${suffix}`;
+            return `${memo}${nameToAdd}`;
           }, '');
         }
         return null;
