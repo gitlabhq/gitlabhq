@@ -29,10 +29,10 @@
       timeEstimate() {
         return this.time_estimate;
       },
-      timeEstimateHuman() {
+      timeEstimateHumanReadable() {
         return this.human_time_estimate;
       },
-      timeSpentHuman() {
+      timeSpentHumanReadable() {
         return this.human_time_spent;
       },
       hasTimeSpent() {
@@ -69,8 +69,8 @@
           :show-help-state='showHelpState'
           :show-spent-only-state='showSpentOnlyState'
           :show-estimate-only-state='showEstimateOnlyState'
-          :time-spent-human='timeSpentHuman'
-          :time-estimate-human='timeEstimateHuman'
+          :time-spent-human-readable='timeSpentHumanReadable'
+          :time-estimate-human-readable='timeEstimateHumanReadable'
           :stopwatch-svg='stopwatchSvg'>
         </time-tracking-collapsed-state>
         <div class='title hide-collapsed'>
@@ -89,11 +89,11 @@
         <div class='time-tracking-content hide-collapsed'>
           <time-tracking-estimate-only-pane
             v-if='showEstimateOnlyState'
-            :time-estimate-human='timeEstimateHuman'>
+            :time-estimate-human-readable='timeEstimateHumanReadable'>
           </time-tracking-estimate-only-pane>
           <time-tracking-spent-only-pane
             v-if='showSpentOnlyState'
-            :time-spent-human='timeSpentHuman'>
+            :time-spent-human-readable='timeSpentHumanReadable'>
           </time-tracking-spent-only-pane>
           <time-tracking-no-tracking-pane
             v-if='showNoTimeTrackingState'>
@@ -102,8 +102,8 @@
             v-if='showComparisonState'
             :time-estimate='timeEstimate'
             :time-spent='timeSpent'
-            :time-spent-human='timeSpentHuman'
-            :time-estimate-human='timeEstimateHuman'>
+            :time-spent-human-readable='timeSpentHumanReadable'
+            :time-estimate-human-readable='timeEstimateHumanReadable'>
           </time-tracking-comparison-pane>
           <transition name='help-state-toggle'>
             <time-tracking-help-state

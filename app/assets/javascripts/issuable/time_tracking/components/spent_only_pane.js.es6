@@ -2,11 +2,11 @@
 (() => {
   Vue.component('time-tracking-spent-only-pane', {
     name: 'time-tracking-spent-only-pane',
-    props: ['timeSpentHuman'],
+    props: ['timeSpentHumanReadable'],
     template: `
       <div class='time-tracking-spend-only-pane'>
         <span class='bold'>Spent:</span>
-        {{ timeSpentHuman }}
+        {{ timeSpentHumanReadable }}
       </div>
     `,
   });
