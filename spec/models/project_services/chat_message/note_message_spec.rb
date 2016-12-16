@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SlackService::NoteMessage, models: true do
+describe ChatMessage::NoteMessage, models: true do
   let(:color) { '#345' }
 
   before do
@@ -36,7 +36,7 @@ describe SlackService::NoteMessage, models: true do
     end
 
     it 'returns a message regarding notes on commits' do
-      message = SlackService::NoteMessage.new(@args)
+      message = described_class.new(@args)
       expect(message.pretext).to eq("test.user <http://url.com|commented on " \
       "commit 5f163b2b> in <http://somewhere.com|project_name>: " \
       "*Added a commit message*")
@@ -62,7 +62,7 @@ describe SlackService::NoteMessage, models: true do
     end
 
     it 'returns a message regarding notes on a merge request' do
-      message = SlackService::NoteMessage.new(@args)
+      message = described_class.new(@args)
       expect(message.pretext).to eq("test.user <http://url.com|commented on " \
       "merge request !30> in <http://somewhere.com|project_name>: " \
       "*merge request title*")
@@ -88,7 +88,7 @@ describe SlackService::NoteMessage, models: true do
     end
 
     it 'returns a message regarding notes on an issue' do
-      message = SlackService::NoteMessage.new(@args)
+      message = described_class.new(@args)
       expect(message.pretext).to eq(
         "test.user <http://url.com|commented on " \
         "issue #20> in <http://somewhere.com|project_name>: " \
@@ -114,7 +114,7 @@ describe SlackService::NoteMessage, models: true do
     end
 
     it 'returns a message regarding notes on a project snippet' do
-      message = SlackService::NoteMessage.new(@args)
+      message = described_class.new(@args)
       expect(message.pretext).to eq("test.user <http://url.com|commented on " \
       "snippet #5> in <http://somewhere.com|project_name>: " \
       "*snippet title*")

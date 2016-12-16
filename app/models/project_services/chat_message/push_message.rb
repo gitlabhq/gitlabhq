@@ -1,4 +1,4 @@
-class SlackService
+module ChatMessage
   class PushMessage < BaseMessage
     attr_reader :after
     attr_reader :before

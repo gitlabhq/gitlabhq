@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe SlackService::PushMessage, models: true do
-  subject { SlackService::PushMessage.new(args) }
+describe ChatMessage::PushMessage, models: true do
+  subject { described_class.new(args) }
 
   let(:args) do
     {
