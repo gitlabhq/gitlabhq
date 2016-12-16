@@ -18,8 +18,4 @@ class MattermostSlashCommandsService < ChatSlashCommandsService
   def to_param
     'mattermost_slash_commands'
   end
-
-  def presenter_format
-    'mattermost'
-  end
 end

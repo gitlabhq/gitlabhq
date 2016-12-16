@@ -3,12 +3,10 @@ require 'spec_helper'
 describe Gitlab::ChatCommands::Command, service: true do
   let(:project) { create(:empty_project) }
   let(:user) { create(:user) }
-  let(:format) { nil }
 
   describe '#execute' do
     subject do
-      described_class.new(project, user,
-        params.merge(presenter_format: format)).execute
+      described_class.new(project, user, params).execute
     end
 
     context 'when no command is available' do
@@ -51,14 +49,8 @@ describe Gitlab::ChatCommands::Command, service: true do
         expect(subject[:text]).to match("my new issue")
       end
 
-      %w(slack mattermost).each do |format|
-        context "for #{format}" do
-          let(:format) { format }
-
-          it 'shows a link to the new issue' do
-            expect(subject[:text]).to match(/\/issues\/\d+/)
-          end
-        end
+      it 'shows a link to the new issue' do
+        expect(subject[:text]).to match(/\/issues\/\d+/)
       end
     end
 

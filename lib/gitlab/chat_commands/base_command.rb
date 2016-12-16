@@ -44,7 +44,7 @@ module Gitlab
       end
 
       def presenter
-        Gitlab::ChatCommands::Presenter.new(params[:presenter_format])
+        Gitlab::ChatCommands::Presenter.new
       end
     end
   end
