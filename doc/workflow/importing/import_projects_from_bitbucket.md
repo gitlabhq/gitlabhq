@@ -1,26 +1,61 @@
 # Import your project from Bitbucket to GitLab
 
-It takes just a few steps to import your existing Bitbucket projects to GitLab. But keep in mind that it is possible only if Bitbucket support is enabled on your GitLab instance. You can read more about Bitbucket support [here](../../integration/bitbucket.md).
+Import your projects from Bitbucket to GitLab with minimal effort.
 
-* Sign in to GitLab.com and go to your dashboard
+## Overview
 
-* Click on "New project"
+>**Note:**
+The [Bitbucket integration][bb-import] must be first enabled in order to be
+able to import your projects from Bitbucket. Ask your GitLab administrator
+to enable this if not already.
 
-![New project in GitLab](bitbucket_importer/bitbucket_import_new_project.png)
+- At its current state, the Bitbucket importer can import:
+  - the repository description (GitLab 7.7+)
+  - the Git repository data (GitLab 7.7+)
+  - the issues (GitLab 7.7+)
+  - the issue comments (GitLab 8.15+)
+  - the pull requests (GitLab 8.4+)
+  - the pull request comments (GitLab 8.15+)
+  - the milestones (GitLab 8.15+)
+- References to pull requests and issues are preserved (GitLab 8.7+)
+- Repository public access is retained. If a repository is private in Bitbucket
+  it will be created as private in GitLab as well.
 
-* Click on the "Bitbucket" button
 
-![Bitbucket](bitbucket_importer/bitbucket_import_select_bitbucket.png)
+## How it works
 
-* Grant GitLab access to your Bitbucket account
+When issues/pull requests are being imported, the Bitbucket importer tries to find
+the Bitbucket author/assignee in GitLab's database using the Bitbucket ID. For this
+to work, the Bitbucket author/assignee should have signed in beforehand in GitLab
+and [**associated their Bitbucket account**][social sign-in]. If the user is not
+found in GitLab's database, the project creator (most of the times the current
+user that started the import process) is set as the author, but a reference on
+the issue about the original Bitbucket author is kept.
 
-![Grant access](bitbucket_importer/bitbucket_import_grant_access.png)
+The importer will create any new namespaces (groups) if they don't exist or in
+the case the namespace is taken, the repository will be imported under the user's
+namespace that started the import process.
 
-* Click on the projects that you'd like to import or "Import all projects"
+## Importing your Bitbucket repositories
 
-![Import projects](bitbucket_importer/bitbucket_import_select_project.png)
+1. Sign in to GitLab and go to your dashboard.
+1. Click on **New project**.
 
-A new GitLab project will be created with your imported data.
+    ![New project in GitLab](img/bitbucket_import_new_project.png)
 
-### Note
-Milestones and wiki pages are not imported from Bitbucket.
+1. Click on the "Bitbucket" button
+
+    ![Bitbucket](img/import_projects_from_new_project_page.png)
+
+1. Grant GitLab access to your Bitbucket account
+
+    ![Grant access](img/bitbucket_import_grant_access.png)
+
+1. Click on the projects that you'd like to import or **Import all projects**.
+   You can also select the namespace under which each project will be
+   imported.
+
+    ![Import projects](img/bitbucket_import_select_project.png)
+
+[bb-import]: ../../integration/bitbucket.md
+[social sign-in]: ../../user/profile/account/social_sign_in.md
