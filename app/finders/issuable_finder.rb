@@ -166,20 +166,20 @@ class IssuableFinder
   end
 
   def assignee_id?
-    params[:assignee_id].present?
+    params[:assignee_id].present? && params[:assignee_id] != NONE
   end
 
   def assignee_username?
-    params[:assignee_username].present?
+    params[:assignee_username].present? && params[:assignee_username] != NONE
   end
 
   def assignee
     return @assignee if defined?(@assignee)
 
     @assignee =
-      if assignee_id? && params[:assignee_id] != NONE
+      if assignee_id?
         User.find(params[:assignee_id])
-      elsif assignee_username? && params[:assignee_username] != NONE
+      elsif assignee_username?
         User.find_by(username: params[:assignee_username])
       else
         nil
@@ -187,11 +187,11 @@ class IssuableFinder
   end
 
   def author_id?
-    params[:author_id].present?
+    params[:author_id].present? && params[:author_id] != NONE
   end
 
   def author_username?
-    params[:author_username].present?
+    params[:author_username].present? && params[:author_username] != NONE
   end
 
   def author
