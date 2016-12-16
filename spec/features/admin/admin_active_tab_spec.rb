@@ -29,7 +29,7 @@ RSpec.describe 'admin active tab' do
 
   context 'on projects' do
     before do
-      visit admin_namespaces_projects_path
+      visit admin_projects_path
     end
 
     it_behaves_like 'page has active tab', 'Overview'
