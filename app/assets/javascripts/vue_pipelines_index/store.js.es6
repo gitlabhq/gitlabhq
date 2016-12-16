@@ -60,10 +60,9 @@
       };
 
       const removeAll = () => {
-        removeTimeIntervals();
-        window.removeEventListener('beforeunload', () => {});
-        window.removeEventListener('focus', () => {});
-        window.removeEventListener('blur', () => {});
+        window.removeEventListener('beforeunload', removeTimeIntervals);
+        window.removeEventListener('focus', startIntervalLoops);
+        window.removeEventListener('blur', removeTimeIntervals);
 
         // turbolinks event handler
         document.removeEventListener('page:fetch', () => {});
