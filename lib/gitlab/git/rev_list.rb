@@ -1,11 +1,9 @@
-# Call out to the `git rev-list` command
-
 module Gitlab
   module Git
     class RevList
       attr_reader :project, :env
 
-      ALLOWED_VARIABLES = %w(GIT_OBJECT_DIRECTORY GIT_ALTERNATE_OBJECT_DIRECTORIES).freeze
+      ALLOWED_VARIABLES = %w[GIT_OBJECT_DIRECTORY GIT_ALTERNATE_OBJECT_DIRECTORIES].freeze
 
       def initialize(oldrev, newrev, project:, env: nil)
         @project = project
@@ -23,8 +21,8 @@ module Gitlab
       end
 
       def valid?
-        env.slice(*ALLOWED_VARIABLES).all? do |(name, value)|
-          value =~ /^#{project.repository.path_to_repo}/
+        environment_variables.all? do |(name, value)|
+          value.start_with?(project.repository.path_to_repo)
         end
       end
 
@@ -33,7 +31,11 @@ module Gitlab
       def parse_environment_variables
         return {} unless valid?
 
-        env.slice(*ALLOWED_VARIABLES)
+        environment_variables
+      end
+
+      def environment_variables
+        @environment_variables ||= env.slice(*ALLOWED_VARIABLES)
       end
     end
   end

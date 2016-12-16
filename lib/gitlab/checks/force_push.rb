@@ -13,7 +13,7 @@ module Gitlab
           if exit_status == 0
             missed_ref.present?
           else
-            raise RuntimeError, "Got a non-zero exit code while calling out to `git rev-list` in the force-push check."
+            raise "Got a non-zero exit code while calling out to `git rev-list` in the force-push check."
           end
         end
       end
