@@ -34,9 +34,10 @@
 
             updatePipelineNums(this.count);
             this.pageRequest = false;
-          }, () => new Flash(
-            'Something went wrong on our end.',
-          ));
+          }, () => {
+            this.pageRequest = false;
+            return new Flash('Something went wrong on our end.');
+          });
 
       goFetch();
 

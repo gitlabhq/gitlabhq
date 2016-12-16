@@ -36,14 +36,12 @@
         'vue-pipelines': gl.VuePipelines,
       },
       template: `
-        <div>
-          <vue-pipelines
-            :scope='scope'
-            :store='store'
-            :svgs='svgs'
-          >
-          </vue-pipelines>
-        </div>
+        <vue-pipelines
+          :scope='scope'
+          :store='store'
+          :svgs='svgs'
+        >
+        </vue-pipelines>
       `,
     });
   }

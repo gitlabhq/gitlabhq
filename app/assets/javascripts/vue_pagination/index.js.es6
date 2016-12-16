@@ -5,6 +5,7 @@
 
 ((gl) => {
   const PAGINATION_UI_BUTTON_LIMIT = 4;
+  const UI_LIMIT = 6;
   const SPREAD = '...';
   const PREV = 'Prev';
   const NEXT = 'Next';
@@ -104,7 +105,7 @@
           items.push({ title: PREV, disabled: true });
         }
 
-        if (page > 6) items.push({ title: SPREAD, separator: true });
+        if (page > UI_LIMIT) items.push({ title: SPREAD, separator: true });
 
         const start = Math.max(page - PAGINATION_UI_BUTTON_LIMIT, 1);
         const end = Math.min(page + PAGINATION_UI_BUTTON_LIMIT, total);
@@ -139,11 +140,7 @@
               disabled: item.disabled
             }'
           >
-            <a
-              @click="changePage($event)"
-            >
-              {{item.title}}
-            </a>
+            <a @click="changePage($event)">{{item.title}}</a>
           </li>
         </ul>
       </div>
