@@ -22,8 +22,6 @@ module Gitlab
         end
       end
 
-      private
-
       def match_command
         match = nil
         service = available_commands.find do |klass|
@@ -32,6 +30,8 @@ module Gitlab
 
         [service, match]
       end
+
+      private
 
       def help_messages
         available_commands.map(&:help_message)

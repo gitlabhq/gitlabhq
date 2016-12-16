@@ -1,5 +1,4 @@
-- pretty_path_with_namespace = "#{@project.namespace ? @project.namespace.name : 'namespace'} / #{@project ? @project.name : 'name'}"
-- run_actions_text = "Perform common operations on this project: #{pretty_path_with_namespace}"
+- run_actions_text = "Perform common operations on this project: #{@project.name_with_namespace}"
 
 .well
   This service allows GitLab users to perform common operations on this
@@ -27,7 +26,7 @@
     .form-group
       = label_tag :display_name, 'Display name', class: 'col-sm-2 col-xs-12 control-label'
       .col-sm-10.col-xs-12.input-group
-        = text_field_tag :display_name, "GitLab / #{pretty_path_with_namespace}", class: 'form-control input-sm', readonly: 'readonly'
+        = text_field_tag :display_name, "GitLab / #{@project.name_with_namespace}", class: 'form-control input-sm', readonly: 'readonly'
         .input-group-btn
           = clipboard_button(clipboard_target: '#display_name')
 
