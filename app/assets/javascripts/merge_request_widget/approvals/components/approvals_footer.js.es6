@@ -29,7 +29,7 @@
       });
     },
     template: `
-      <div v-if='hasApprovers && loaded' class='mr-widget-footer approved-by-users approvals-footer clearfix'>
+      <div v-if='loaded' class='mr-widget-footer approved-by-users approvals-footer clearfix'>
         <span class='approvers-prefix'> Approved by </span>
         <span v-for='approver in approvedBy'>
           <link-to-member-avatar
