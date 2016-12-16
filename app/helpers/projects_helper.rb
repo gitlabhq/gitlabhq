@@ -148,6 +148,15 @@ module ProjectsHelper
     ).html_safe
   end
 
+  def mattermost_teams_options(teams)
+    teams_options = teams.map do |team|
+      return nil unless team['display_name'] && team['id']
+      [team['display_name'], team['id']]
+    end.compact
+    teams_options.unshift(['Select a team...', '0']) unless teams_options.count === 1
+    teams_options
+  end
+
   private
 
   def repo_children_classes(field)
@@ -390,7 +399,7 @@ module ProjectsHelper
       "success"
     end
   end
-  
+
   def readme_cache_key
     sha = @project.commit.try(:sha) || 'nil'
     [@project.path_with_namespace, sha, "readme"].join('-')
