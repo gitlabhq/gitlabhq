@@ -23,7 +23,7 @@ module Gitlab
       end
 
       def number
-        if project.import_type == 'gitea'
+        if project.gitea_import?
           raw_data.id
         else
           raw_data.number

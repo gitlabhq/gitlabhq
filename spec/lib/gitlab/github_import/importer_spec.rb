@@ -192,7 +192,7 @@ describe Gitlab::GithubImport::Importer, lib: true do
         ]
       }
 
-      unless project.import_type == 'gitea'
+      unless project.gitea_import?
         error[:errors] << { type: :release, url: "#{api_root}/repos/octocat/Hello-World/releases/2", errors: "Validation failed: Description can't be blank" }
       end
 

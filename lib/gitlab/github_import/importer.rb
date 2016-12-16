@@ -22,7 +22,7 @@ module Gitlab
 
         opts = {}
         # Gitea plan to be GitHub compliant
-        if project.import_type == 'gitea'
+        if project.gitea_import?
           uri = URI.parse(project.import_url)
           host = "#{uri.scheme}://#{uri.host}:#{uri.port}#{uri.path}".sub(%r{/?[\w-]+/[\w-]+\.git\z}, '')
           opts = {
@@ -53,7 +53,7 @@ module Gitlab
 
         # Gitea doesn't have a Release API yet
         # See https://github.com/go-gitea/gitea/issues/330
-        unless project.import_type == 'gitea'
+        unless project.gitea_import?
           import_releases
         end
 
@@ -141,7 +141,7 @@ module Gitlab
               merge_request = gh_pull_request.create!
 
               # Gitea doesn't return PR in the Issue API endpoint, so labels must be assigned at this stage
-              if project.import_type == 'gitea'
+              if project.gitea_import?
                 apply_labels(merge_request, raw)
               end
             rescue => e
