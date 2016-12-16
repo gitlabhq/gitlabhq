@@ -1,4 +1,6 @@
 /* eslint-disable class-methods-use-this */
+/* eslint-disable no-new */
+/* global Flash */
 (() => {
   window.gl = window.gl || {};
 
@@ -50,7 +52,10 @@
               $toggle.disable();
               $dateInput.disable();
 
-              this.overrideLdap($memberListItem, $link.data('endpoint'), false);
+              this.overrideLdap($memberListItem, $link.data('endpoint'), false).fail(() => {
+                $toggle.enable();
+                $dateInput.enable();
+              });
             }
           },
         });
@@ -111,9 +116,17 @@
 
       this.overrideLdap($memberListItem, $btn.data('endpoint'), true).then(() => {
         this.showLDAPPermissionsWarning(e);
+
         $toggle.enable();
         $dateInput.enable();
+      }).fail((xhr) => {
         $btn.enable();
+
+        if (xhr.status === 403) {
+          new Flash('You do not have the correct permissions to override the settings from the LDAP group sync.', 'alert');
+        } else {
+          new Flash('An error occured whilst saving LDAP override status. Please try again.', 'alert');
+        }
       });
     }
 
