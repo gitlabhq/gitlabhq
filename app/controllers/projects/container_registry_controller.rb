@@ -20,7 +20,6 @@ class Projects::ContainerRegistryController < Projects::ApplicationController
         redirect_to url, alert: 'Failed to remove image'
       end
     end
-
   end
 
   private

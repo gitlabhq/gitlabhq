@@ -9,11 +9,18 @@ describe ContainerRegistry::Blob do
       'size' => 1000
     }
   end
-  let(:token) { 'authorization-token' }
-  
-  let(:registry) { ContainerRegistry::Registry.new('http://example.com', token: token) }
-  let(:repository) { registry.repository('group/test') }
+  let(:token) { 'token' }
+
+  let(:group) { create(:group, name: 'group') }
+  let(:project) { create(:project, path: 'test', group: group) }
+  let(:example_host) { 'example.com' }
+  let(:registry_url) { 'http://' + example_host }
+  let(:repository) { create(:container_image, name: '', project: project) }
   let(:blob) { repository.blob(config) }
+
+  before do
+    stub_container_registry_config(enabled: true, api_url: registry_url, host_port: example_host)
+  end
 
   it { expect(blob).to respond_to(:repository) }
   it { expect(blob).to delegate_method(:registry).to(:repository) }

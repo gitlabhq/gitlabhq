@@ -16,7 +16,8 @@ module Auth
       { token: authorized_token(scope).encoded }
     end
 
-    def self.full_access_token(names)
+    def self.full_access_token(*names)
+      names = names.flatten
       registry = Gitlab.config.registry
       token = JSONWebToken::RSAToken.new(registry.key)
       token.issuer = registry.issuer

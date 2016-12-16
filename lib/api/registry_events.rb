@@ -46,9 +46,7 @@ module API
             if project
               container_image = project.container_images.find_or_create_by(name: container_image_name)
 
-              if container_image.valid?
-                puts('Valid!')
-              else
+              unless container_image.valid?
                 render_api_error!({ error: "Failed to create container image!" }, 400)
               end
             else

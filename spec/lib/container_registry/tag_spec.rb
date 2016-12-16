@@ -1,10 +1,17 @@
 require 'spec_helper'
 
 describe ContainerRegistry::Tag do
-  let(:registry) { ContainerRegistry::Registry.new('http://example.com') }
-  let(:repository) { registry.repository('group/test') }
+  let(:group) { create(:group, name: 'group') }
+  let(:project) { create(:project, path: 'test', group: group) }
+  let(:example_host) { 'example.com' }
+  let(:registry_url) { 'http://' + example_host }
+  let(:repository) { create(:container_image, name: '', project: project) }
   let(:tag) { repository.tag('tag') }
   let(:headers) { { 'Accept' => 'application/vnd.docker.distribution.manifest.v2+json' } }
+
+  before do
+    stub_container_registry_config(enabled: true, api_url: registry_url, host_port: example_host)
+  end
 
   it { expect(tag).to respond_to(:repository) }
   it { expect(tag).to delegate_method(:registry).to(:repository) }

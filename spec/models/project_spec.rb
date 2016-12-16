@@ -1173,10 +1173,13 @@ describe Project, models: true do
       project.rename_repo
     end
 
-    context 'container registry with tags' do
+    context 'container registry with images' do
+      let(:container_image) { create(:container_image) }
+
       before do
         stub_container_registry_config(enabled: true)
         stub_container_registry_tags('tag')
+        project.container_images << container_image
       end
 
       subject { project.rename_repo }
@@ -1383,20 +1386,20 @@ describe Project, models: true do
     it { is_expected.to eq(project.path_with_namespace.downcase) }
   end
 
-  describe '#container_registry_repository' do
+  describe '#container_registry' do
     let(:project) { create(:empty_project) }
 
     before { stub_container_registry_config(enabled: true) }
 
-    subject { project.container_registry_repository }
+    subject { project.container_registry }
 
     it { is_expected.not_to be_nil }
   end
 
-  describe '#container_registry_repository_url' do
+  describe '#container_registry_url' do
     let(:project) { create(:empty_project) }
 
-    subject { project.container_registry_repository_url }
+    subject { project.container_registry_url }
 
     before { stub_container_registry_config(**registry_settings) }
 
@@ -1419,34 +1422,6 @@ describe Project, models: true do
       end
 
       it { is_expected.to be_nil }
-    end
-  end
-
-  describe '#has_container_registry_tags?' do
-    let(:project) { create(:empty_project) }
-
-    subject { project.has_container_registry_tags? }
-
-    context 'for enabled registry' do
-      before { stub_container_registry_config(enabled: true) }
-
-      context 'with tags' do
-        before { stub_container_registry_tags('test', 'test2') }
-
-        it { is_expected.to be_truthy }
-      end
-
-      context 'when no tags' do
-        before { stub_container_registry_tags }
-
-        it { is_expected.to be_falsey }
-      end
-    end
-
-    context 'for disabled registry' do
-      before { stub_container_registry_config(enabled: false) }
-
-      it { is_expected.to be_falsey }
     end
   end
 

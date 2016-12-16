@@ -114,6 +114,8 @@ merge_access_levels:
 - protected_branch
 push_access_levels:
 - protected_branch
+container_images:
+- name
 project:
 - taggings
 - base_tags
@@ -197,6 +199,7 @@ project:
 - project_authorizations
 - route
 - statistics
+- container_images
 award_emoji:
 - awardable
 - user

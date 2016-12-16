@@ -8,10 +8,6 @@ module ContainerRegistry
       @client = ContainerRegistry::Client.new(uri, options)
     end
 
-    def repository(name)
-      ContainerRegistry::Repository.new(self, name)
-    end
-
     private
 
     def default_path

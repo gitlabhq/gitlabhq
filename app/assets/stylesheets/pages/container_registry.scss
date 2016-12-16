@@ -3,14 +3,14 @@
  */
 
 .container-image {
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid $white-normal;
 }
 
 .container-image-head {
-  padding: 0px 16px;
+  padding: 0 16px;
   line-height: 4;
 }
 
 .table.tags {
-  margin-bottom: 0px;
+  margin-bottom: 0;
 }

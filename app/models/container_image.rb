@@ -22,7 +22,7 @@ class ContainerImage < ActiveRecord::Base
   end
 
   def name_with_namespace
-    [container_registry_path_with_namespace, name].compact.join('/')
+    [container_registry_path_with_namespace, name].reject(&:blank?).join('/')
   end
 
   def tag(tag)
@@ -54,6 +54,8 @@ class ContainerImage < ActiveRecord::Base
       client.delete_repository_tag(name_with_namespace, digest)
     end
   end
+
+  # rubocop:disable RedundantReturn
 
   def self.split_namespace(full_path)
     image_name = full_path.split('/').last

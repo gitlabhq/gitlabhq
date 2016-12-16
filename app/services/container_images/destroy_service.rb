@@ -1,6 +1,5 @@
 module ContainerImages
   class DestroyService < BaseService
-
     class DestroyError < StandardError; end
 
     def execute(container_image)

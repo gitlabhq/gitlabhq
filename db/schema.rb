@@ -109,6 +109,7 @@ ActiveRecord::Schema.define(version: 20170215200045) do
     t.boolean "html_emails_enabled", default: true
     t.string "plantuml_url"
     t.boolean "plantuml_enabled"
+    t.string "container_registry_access_token"
     t.integer "max_pages_size", default: 100, null: false
     t.integer "terminal_max_session_time", default: 0, null: false
   end
@@ -391,6 +392,11 @@ ActiveRecord::Schema.define(version: 20170215200045) do
   end
 
   add_index "ci_variables", ["gl_project_id"], name: "index_ci_variables_on_gl_project_id", using: :btree
+
+  create_table "container_images", force: :cascade do |t|
+    t.integer "project_id"
+    t.string "name"
+  end
 
   create_table "deploy_keys_projects", force: :cascade do |t|
     t.integer "deploy_key_id", null: false

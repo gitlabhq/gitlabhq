@@ -421,16 +421,10 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def container_registry_repository_url
+  def container_registry_url
     if Gitlab.config.registry.enabled
       "#{Gitlab.config.registry.host_port}/#{container_registry_path_with_namespace}"
     end
-  end
-
-  def has_container_registry_tags?
-    return unless container_images
-
-    container_images.first.tags.any?
   end
 
   def commit(ref = 'HEAD')
@@ -913,11 +907,11 @@ class Project < ActiveRecord::Base
 
     expire_caches_before_rename(old_path_with_namespace)
 
-    if has_container_registry_tags?
-      Rails.logger.error "Project #{old_path_with_namespace} cannot be renamed because container registry tags are present"
+    if container_images.present?
+      Rails.logger.error "Project #{old_path_with_namespace} cannot be renamed because container registry images are present"
 
-      # we currently doesn't support renaming repository if it contains tags in container registry
-      raise StandardError.new('Project cannot be renamed, because tags are present in its container registry')
+      # we currently doesn't support renaming repository if it contains images in container registry
+      raise StandardError.new('Project cannot be renamed, because images are present in its container registry')
     end
 
     if gitlab_shell.mv_repository(repository_storage_path, old_path_with_namespace, new_path_with_namespace)
@@ -1264,7 +1258,7 @@ class Project < ActiveRecord::Base
     ]
 
     if container_registry_enabled?
-      variables << { key: 'CI_REGISTRY_IMAGE', value: container_registry_repository_url, public: true }
+      variables << { key: 'CI_REGISTRY_IMAGE', value: container_registry_url, public: true }
     end
 
     variables

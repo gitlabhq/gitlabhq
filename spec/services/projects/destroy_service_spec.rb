@@ -90,25 +90,30 @@ describe Projects::DestroyService, services: true do
   end
 
   context 'container registry' do
+    let(:container_image) { create(:container_image) }
+
     before do
       stub_container_registry_config(enabled: true)
       stub_container_registry_tags('tag')
+      project.container_images << container_image
     end
 
-    context 'tags deletion succeeds' do
+    context 'images deletion succeeds' do
       it do
-        expect_any_instance_of(ContainerRegistry::Tag).to receive(:delete).and_return(true)
+        expect_any_instance_of(ContainerImage).to receive(:delete_tags).and_return(true)
 
         destroy_project(project, user, {})
       end
     end
 
-    context 'tags deletion fails' do
-      before { expect_any_instance_of(ContainerRegistry::Tag).to receive(:delete).and_return(false) }
+    context 'images deletion fails' do
+      before do
+        expect_any_instance_of(ContainerImage).to receive(:delete_tags).and_return(false)
+      end
 
       subject { destroy_project(project, user, {}) }
 
-      it { expect{subject}.to raise_error(Projects::DestroyService::DestroyError) }
+      it { expect{subject}.to raise_error(ActiveRecord::RecordNotDestroyed) }
     end
   end
 

@@ -134,18 +134,20 @@ describe Namespace, models: true do
       expect(@namespace.move_dir).to be_truthy
     end
 
-    context "when any project has container tags" do
+    context "when any project has container images" do
+      let(:container_image) { create(:container_image) }
+
       before do
         stub_container_registry_config(enabled: true)
         stub_container_registry_tags('tag')
 
-        create(:empty_project, namespace: @namespace)
+        create(:empty_project, namespace: @namespace, container_images: [container_image])
 
         allow(@namespace).to receive(:path_was).and_return(@namespace.path)
         allow(@namespace).to receive(:path).and_return('new_path')
       end
 
-      it { expect { @namespace.move_dir }.to raise_error('Namespace cannot be moved, because at least one project has tags in container registry') }
+      it { expect { @namespace.move_dir }.to raise_error('Namespace cannot be moved, because at least one project has images in container registry') }
     end
   end
 
