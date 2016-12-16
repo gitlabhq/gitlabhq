@@ -143,10 +143,12 @@
   margin-top: 0;
 }
 
-.project-repo-buttons,
 .group-buttons {
   margin-top: 15px;
+}
 
+.project-repo-buttons,
+.group-buttons {
   .btn {
     @include btn-gray;
     padding: 3px 10px;
@@ -175,12 +177,8 @@
     }
   }
 
-  .download-button,
-  .dropdown-toggle,
-  .notification-dropdown,
-  .project-dropdown,
-  .access-button {
-    margin-left: 10px;
+  .project-action-button {
+    margin: 15px 5px 0 5px;
     vertical-align: top;
   }
 
@@ -197,10 +195,12 @@
   .count-buttons {
     display: inline-block;
     vertical-align: top;
+    margin-top: 15px;
   }
 
   .project-clone-holder {
     display: inline-block;
+    margin: 15px 5px 0 0;
 
     input {
       height: 28px;
@@ -494,6 +494,7 @@ a.deploy-project-label {
 
 .project-stats {
   font-size: 0;
+  text-align: center;
   border-bottom: 1px solid $border-color;
 
   .nav {

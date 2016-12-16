@@ -1,6 +1,6 @@
 - model_name = source.model_name.to_s.downcase
 
-.access-button.inline.hidden-sm.hidden-xs
+.project-action-button.inline
   - if can?(current_user, :"destroy_#{model_name}_member", source.members.find_by(user_id: current_user.id))
     = link_to "Leave #{model_name}", polymorphic_path([:leave, source, :members]),
               method: :delete,
