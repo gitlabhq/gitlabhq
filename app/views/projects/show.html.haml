@@ -67,7 +67,7 @@
               Set up CI
         - if koding_enabled? && @repository.koding_yml.blank?
           %li.missing
-            = link_to 'Set Up Koding', add_koding_stack_path(@project)
+            = link_to 'Set up Koding', add_koding_stack_path(@project)
 
   - if @repository.commit
     .project-last-commit{ class: container_class }
