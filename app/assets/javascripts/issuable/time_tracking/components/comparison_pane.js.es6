@@ -29,7 +29,7 @@
         return this.timeEstimate - this.timeSpent;
       },
       timeRemainingPercent() {
-        return `${Math.floor(((this.timeSpent / this.timeEstimate) * 100))}%`;
+        return `${Math.floor((this.timeSpent / this.timeEstimate) * 100)}%`;
       },
       timeRemainingStatusClass() {
         return this.timeEstimate >= this.timeSpent ? 'within_estimate' : 'over_estimate';
