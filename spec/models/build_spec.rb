@@ -506,6 +506,17 @@ describe Ci::Build, models: true do
       it { is_expected.to include({ key: 'CI_RUNNER_TAGS', value: 'docker, linux', public: true }) }
     end
 
+    context 'when build is for a deployment' do
+      let(:deployment_variable) { { key: 'KUBERNETES_TOKEN', value: 'TOKEN', public: false } }
+
+      before do
+        build.environment = 'production'
+        allow(project).to receive(:deployment_variables).and_return([deployment_variable])
+      end
+
+      it { is_expected.to include(deployment_variable) }
+    end
+
     context 'returns variables in valid order' do
       before do
         allow(build).to receive(:predefined_variables) { ['predefined'] }
