@@ -1,8 +1,11 @@
 class Groups::GroupMembersController < Groups::ApplicationController
+  prepend EE::Groups::GroupMembersController
+
   include MembershipActions
 
   # Authorize
-  before_action :authorize_admin_group_member!, except: [:index, :leave, :request_access]
+  before_action :authorize_admin_group_member!, except: [:index, :leave, :request_access, :update, :override]
+  before_action :authorize_update_group_member!, only: [:update, :override]
 
   def index
     @project = @group.projects.find(params[:project_id]) if params[:project_id]
