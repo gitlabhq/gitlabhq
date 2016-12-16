@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Serialize::YamlVariables do
+describe Gitlab::Serialize::Ci::Variables do
   subject do
     described_class.load(described_class.dump(object))
   end
