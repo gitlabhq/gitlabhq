@@ -55,16 +55,13 @@
         return ({ name: ref.name, tag: ref['tag?'], ref_url: ref.url });
       },
       commitTitle(pipeline) {
-        if (pipeline.commit) return pipeline.commit.title;
-        return '';
+        return pipeline.commit ? pipeline.commit.title : '';
       },
       commitSha(pipeline) {
-        if (pipeline.commit) return pipeline.commit.short_id;
-        return '';
+        return pipeline.commit ? pipeline.commit.short_id : '';
       },
       commitUrl(pipeline) {
-        if (pipeline.commit) return pipeline.commit.commit_url;
-        return '';
+        return pipeline.commit ? pipeline.commit.commit_url : '';
       },
       match(string) {
         return string.replace(/_([a-z])/g, (m, w) => w.toUpperCase());
