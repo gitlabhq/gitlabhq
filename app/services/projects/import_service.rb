@@ -4,16 +4,6 @@ module Projects
 
     class Error < StandardError; end
 
-    ALLOWED_TYPES = [
-      'github',
-      'bitbucket',
-      'gitlab',
-      'google_code',
-      'fogbugz',
-      'gitlab_project',
-      'gitea'
-    ]
-
     def execute
       add_repository_to_project unless project.gitlab_project_import?
 
@@ -65,29 +55,11 @@ module Projects
     end
 
     def has_importer?
-      ALLOWED_TYPES.include?(project.import_type)
+      Gitlab::ImportSources.importer_names.include?(project.import_type)
     end
 
     def importer
-      return Gitlab::ImportExport::Importer.new(project) if @project.gitlab_project_import?
-
-      class_name =
-        case project.import_type
-        when 'github', 'gitea'
-          Gitlab::GithubImport::Importer
-        when 'bitbucket'
-          Gitlab::BitbucketImport::Importer
-        when 'gitlab'
-          Gitlab::GitlabImport::Importer
-        when 'google_code'
-          Gitlab::GoogleCodeImport::Importer
-        when 'fogbugz'
-          Gitlab::FogbugzImport::Importer
-        else
-          raise 'Unknown importer type!'
-        end
-
-      class_name.new(project)
+      Gitlab::ImportSources.importer(project.import_type).new(project)
     end
 
     def unknown_url?
