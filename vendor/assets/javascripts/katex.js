@@ -31,7 +31,7 @@
 /*
  Here is how to build a version of KaTeX that works with gitlab.
 
- The problem is that the procedure for changing font location doesn't work for ''.
+ The problem is that the standard procedure for changing font location doesn't work for the empty string.
 
  1. Clone KaTeX. Anything later than 4fb9445a9 (is merged into master) will do.
  2. make (requires node)
