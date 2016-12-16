@@ -124,19 +124,30 @@ module Ci
       ]
     end
 
-    def tick_update
+    def tick_runner_queue
       new_update = Time.new.inspect
-      Gitlab::Redis.with { |redis| redis.set(redis_key, new_update, ex: 60.minutes) }
+      Gitlab::Redis.with { |redis| redis.set(runner_queue_key, new_update, ex: 60.minutes) }
       new_update
     end
 
-    def last_build_queue_update
-      Gitlab::Redis.with { |redis| redis.get(redis_key) }
+    def ensure_runner_queue_value
+      Gitlab::Redis.with do |redis|
+        value = redis.get(runner_queue_key)
+        if value == ""
+          value = Time.new.inspect
+          redis.set(runner_queue_key, value, ex: 60.minutes)
+        end
+        value
+      end
+    end
+
+    def is_runner_queue_value_latest?(value)
+      ensure_runner_queue_value == value if value.present?
     end
 
     private
 
-    def redis_key
+    def runner_queue_key
       "runner:build_queue:#{self.id}"
     end
 
