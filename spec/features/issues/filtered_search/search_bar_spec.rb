@@ -15,9 +15,9 @@ describe 'Search bar', js: true, feature: true do
     visit namespace_project_issues_path(project.namespace, project)
   end
 
-  def getLeftStyle(style)
-    leftStyle = /left:\s\d*[.]\d*px/.match(style)
-    leftStyle.to_s.gsub('left: ', '').to_f;
+  def get_left_style(style)
+    left_style = /left:\s\d*[.]\d*px/.match(style)
+    left_style.to_s.gsub('left: ', '').to_f
   end
 
   describe 'clear search button' do
@@ -53,7 +53,7 @@ describe 'Search bar', js: true, feature: true do
     end
 
     it 'resets the dropdown hint filter' do
-      filtered_search.click();
+      filtered_search.click()
       original_size = page.all('#js-dropdown-hint .filter-dropdown .filter-dropdown-item').size
 
       filtered_search.set('author')
@@ -66,8 +66,8 @@ describe 'Search bar', js: true, feature: true do
 
     it 'resets the dropdown filters' do
       filtered_search.set('a')
-      hintStyle = page.find('#js-dropdown-hint')['style']
-      hintOffset = getLeftStyle(hintStyle)
+      hint_style = page.find('#js-dropdown-hint')['style']
+      hint_offset = get_left_style(hint_style)
 
       filtered_search.set('author:')
       expect(page.all('#js-dropdown-hint .filter-dropdown .filter-dropdown-item').size).to eq(0)
@@ -75,7 +75,7 @@ describe 'Search bar', js: true, feature: true do
       find('.filtered-search-input-container .clear-search').click
       filtered_search.click()
       expect(page.all('#js-dropdown-hint .filter-dropdown .filter-dropdown-item').size).to be > 0
-      expect(getLeftStyle(page.find('#js-dropdown-hint')['style'])).to eq (hintOffset)
+      expect(get_left_style(page.find('#js-dropdown-hint')['style'])).to eq hint_offset
     end
   end
 end

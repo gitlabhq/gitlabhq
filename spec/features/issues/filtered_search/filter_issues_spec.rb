@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Filter issues', feature: true do
+describe 'Filter issues', js: true, feature: true do
   include WaitForAjax
 
   let!(:group) { create(:group) }
@@ -98,7 +98,7 @@ describe 'Filter issues', feature: true do
   end
 
   describe 'filter issues by author' do
-    context 'only author', js: true do
+    context 'only author' do
       it 'filters issues by searched author' do
         input_filtered_search("author:@#{user.username}")
         expect_issues_list_count(5)
@@ -113,7 +113,7 @@ describe 'Filter issues', feature: true do
       end
     end
 
-    context 'author with other filters', js: true do
+    context 'author with other filters' do
       it 'filters issues by searched author and text' do
         search = "author:@#{user.username} issue"
         input_filtered_search(search)
@@ -143,13 +143,13 @@ describe 'Filter issues', feature: true do
       end
     end
 
-    context 'sorting', js: true do
+    context 'sorting' do
       # TODO
     end
   end
 
   describe 'filter issues by assignee' do
-    context 'only assignee', js: true do
+    context 'only assignee' do
       it 'filters issues by searched assignee' do
         search = "assignee:@#{user.username}"
         input_filtered_search(search)
@@ -173,7 +173,7 @@ describe 'Filter issues', feature: true do
       end
     end
 
-    context 'assignee with other filters', js: true do
+    context 'assignee with other filters' do
       it 'filters issues by searched assignee and text' do
         search = "assignee:@#{user.username} searchTerm"
         input_filtered_search(search)
@@ -203,13 +203,13 @@ describe 'Filter issues', feature: true do
       end
     end
 
-    context 'sorting', js: true do
+    context 'sorting' do
       # TODO
     end
   end
 
   describe 'filter issues by label' do
-    context 'only label', js: true do
+    context 'only label' do
       it 'filters issues by searched label' do
         search = "label:~#{bug_label.title}"
         input_filtered_search(search)
@@ -256,7 +256,7 @@ describe 'Filter issues', feature: true do
       end
     end
 
-    context 'label with multiple words', js: true do
+    context 'label with multiple words' do
       it 'special characters' do
         special_multiple_label = create(:label, project: project, title: "Utmost |mp0rt@nce")
         special_multiple_issue = create(:issue, title: "Issue with special character multiple words label", project: project)
@@ -308,7 +308,7 @@ describe 'Filter issues', feature: true do
       end
     end
 
-    context 'label with other filters', js: true do
+    context 'label with other filters' do
       it 'filters issues by searched label and text' do
         search = "label:~#{caps_sensitive_label.title} bug"
         input_filtered_search(search)
@@ -338,7 +338,7 @@ describe 'Filter issues', feature: true do
       end
     end
 
-    context 'multiple labels with other filters', js: true do
+    context 'multiple labels with other filters' do
       it 'filters issues by searched label, label2, and text' do
         search = "label:~#{bug_label.title} label:~#{caps_sensitive_label.title} bug"
         input_filtered_search(search)
@@ -368,7 +368,7 @@ describe 'Filter issues', feature: true do
       end
     end
 
-    context 'issue label clicked', js: true do
+    context 'issue label clicked' do
       before do
         find('.issues-list .issue .issue-info a .label', text: multiple_words_label.title).click
         sleep 1
@@ -383,13 +383,13 @@ describe 'Filter issues', feature: true do
       end
     end
 
-    context 'sorting', js: true do
+    context 'sorting' do
       # TODO
     end
   end
 
   describe 'filter issues by milestone' do
-    context 'only milestone', js: true do
+    context 'only milestone' do
       it 'filters issues by searched milestone' do
         input_filtered_search("milestone:%#{milestone.title}")
         expect_issues_list_count(5)
@@ -433,7 +433,7 @@ describe 'Filter issues', feature: true do
       end
     end
 
-    context 'milestone with other filters', js: true do
+    context 'milestone with other filters' do
       it 'filters issues by searched milestone and text' do
         search = "milestone:%#{milestone.title} bug"
         input_filtered_search(search)
@@ -463,13 +463,13 @@ describe 'Filter issues', feature: true do
       end
     end
 
-    context 'sorting', js: true do
+    context 'sorting' do
       # TODO
     end
   end
 
   describe 'filter issues by text' do
-    context 'only text', js: true do
+    context 'only text' do
       it 'filters issues by searched text' do
         search = 'Bug'
         input_filtered_search(search)
@@ -520,7 +520,7 @@ describe 'Filter issues', feature: true do
       end
     end
 
-    context 'searched text with other filters', js: true do
+    context 'searched text with other filters' do
       it 'filters issues by searched text and author' do
         input_filtered_search("bug author:@#{user.username}")
         expect_issues_list_count(2)
@@ -588,7 +588,7 @@ describe 'Filter issues', feature: true do
       end
     end
 
-    context 'sorting', js: true do
+    context 'sorting' do
       it 'sorts by oldest updated' do
         create(:issue,
           title: '3 days ago',
@@ -618,7 +618,7 @@ describe 'Filter issues', feature: true do
     end
   end
 
-  describe 'retains filter when switching issue states', js: true do
+  describe 'retains filter when switching issue states' do
     before do
       input_filtered_search('bug')
 
