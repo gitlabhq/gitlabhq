@@ -61,7 +61,6 @@ constraints(ProjectUrlConstrainer.new) do
       resources :services, constraints: { id: /[^\/]+/ }, only: [:index, :edit, :update] do
         member do
           get :test
-          post :configure
         end
       end
 

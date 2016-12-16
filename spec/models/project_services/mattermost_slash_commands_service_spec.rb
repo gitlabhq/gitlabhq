@@ -96,4 +96,35 @@ describe MattermostSlashCommandsService, models: true do
       end
     end
   end
+
+  describe '#configure' do
+    let(:project) { create(:empty_project) }
+    let(:service) { project.build_mattermost_slash_commands_service }
+
+    subject do
+      service.configure('http://localhost:8065', nil, team_id: 'abc', trigger: 'gitlab', url: 'http://trigger.url', icon_url: 'http://icon.url/icon.png')
+    end
+
+    it 'creates a new Mattermost session' do
+      expect_any_instance_of(Mattermost::Session).to receive(:with_session)
+
+      subject
+    end
+
+    it 'saves the service' do
+      allow_any_instance_of(Mattermost::Session).to receive(:with_session).
+        and_return('mynewtoken')
+
+      expect { subject }.to change { project.services.count }.by(1)
+    end
+
+    it 'saves the token' do
+      allow_any_instance_of(Mattermost::Session).to receive(:with_session).
+        and_return('mynewtoken')
+
+      subject
+
+      expect(service.reload.token).to eq('mynewtoken')
+    end
+  end
 end

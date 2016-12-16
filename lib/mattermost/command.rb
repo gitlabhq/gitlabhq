@@ -14,9 +14,13 @@ module Mattermost
         icon_url: icon_url
       }
 
-      response = post( "/teams/#{team_id}/commands/create", body: command.to_json)
+      post_command(command)['token']
+    end
 
-      response.parsed_response['token']
+    private
+
+    def post_command(command)
+      post( "/teams/#{team_id}/commands/create", body: command.to_json).parsed_response
     end
   end
 end
