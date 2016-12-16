@@ -178,7 +178,7 @@ class IssuableFinder
 
     @assignee =
       if assignee_id?
-        User.find(params[:assignee_id])
+        User.find_by(id: params[:assignee_id])
       elsif assignee_username?
         User.find_by(username: params[:assignee_username])
       else
@@ -198,9 +198,9 @@ class IssuableFinder
     return @author if defined?(@author)
 
     @author =
-      if author_id? && params[:author_id] != NONE
-        User.find(params[:author_id])
-      elsif author_username? && params[:author_username] != NONE
+      if author_id?
+        User.find_by(id: params[:author_id])
+      elsif author_username?
         User.find_by(username: params[:author_username])
       else
         nil
@@ -275,16 +275,20 @@ class IssuableFinder
   end
 
   def by_assignee(items)
-    if assignee_id? || assignee_username?
-      items = items.where(assignee_id: assignee.try(:id))
+    if assignee
+      items = items.where(assignee_id: assignee.id)
+    elsif assignee_id? || assignee_username? # assignee not found
+      items = items.none
     end
 
     items
   end
 
   def by_author(items)
-    if author_id? || author_username?
-      items = items.where(author_id: author.try(:id))
+    if author
+      items = items.where(author_id: author.id)
+    elsif author_id? || author_username? # author not found
+      items = items.none
     end
 
     items
