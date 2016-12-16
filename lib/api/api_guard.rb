@@ -6,6 +6,9 @@ module API
   module APIGuard
     extend ActiveSupport::Concern
 
+    PRIVATE_TOKEN_HEADER = "HTTP_PRIVATE_TOKEN"
+    PRIVATE_TOKEN_PARAM = :private_token
+
     included do |base|
       # OAuth2 Resource Server Authentication
       use Rack::OAuth2::Server::Resource::Bearer, 'The API' do |request|
@@ -44,26 +47,59 @@ module API
         access_token = find_access_token
         return nil unless access_token
 
-        case validate_access_token(access_token, scopes)
-        when Oauth2::AccessTokenValidationService::INSUFFICIENT_SCOPE
+        case AccessTokenValidationService.new(access_token).validate(scopes: scopes)
+        when AccessTokenValidationService::INSUFFICIENT_SCOPE
           raise InsufficientScopeError.new(scopes)
 
-        when Oauth2::AccessTokenValidationService::EXPIRED
+        when AccessTokenValidationService::EXPIRED
           raise ExpiredError
 
-        when Oauth2::AccessTokenValidationService::REVOKED
+        when AccessTokenValidationService::REVOKED
           raise RevokedError
 
-        when Oauth2::AccessTokenValidationService::VALID
+        when AccessTokenValidationService::VALID
           @current_user = User.find(access_token.resource_owner_id)
         end
+      end
+
+      def find_user_by_private_token(scopes: [])
+        token_string = (params[PRIVATE_TOKEN_PARAM] || env[PRIVATE_TOKEN_HEADER]).to_s
+
+        return nil unless token_string.present?
+
+        find_user_by_authentication_token(token_string) || find_user_by_personal_access_token(token_string, scopes)
       end
 
       def current_user
         @current_user
       end
 
+      # Set the authorization scope(s) allowed for the current request.
+      #
+      # Note: A call to this method adds to any previous scopes in place. This is done because
+      # `Grape` callbacks run from the outside-in: the top-level callback (API::API) runs first, then
+      # the next-level callback (API::API::Users, for example) runs. All these scopes are valid for the
+      # given endpoint (GET `/api/users` is accessible by the `api` and `read_user` scopes), and so they
+      # need to be stored.
+      def allow_access_with_scope(*scopes)
+        @scopes ||= []
+        @scopes.concat(scopes.map(&:to_s))
+      end
+
       private
+
+      def find_user_by_authentication_token(token_string)
+        User.find_by_authentication_token(token_string)
+      end
+
+      def find_user_by_personal_access_token(token_string, scopes)
+        access_token = PersonalAccessToken.active.find_by_token(token_string)
+        return unless access_token
+
+        if AccessTokenValidationService.new(access_token).include_any_scope?(scopes)
+          User.find(access_token.user_id)
+        end
+      end
 
       def find_access_token
         @access_token ||= Doorkeeper.authenticate(doorkeeper_request, Doorkeeper.configuration.access_token_methods)
@@ -71,10 +107,6 @@ module API
 
       def doorkeeper_request
         @doorkeeper_request ||= ActionDispatch::Request.new(env)
-      end
-
-      def validate_access_token(access_token, scopes)
-        Oauth2::AccessTokenValidationService.validate(access_token, scopes: scopes)
       end
     end
 
