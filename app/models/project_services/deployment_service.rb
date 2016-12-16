@@ -8,4 +8,8 @@ class DeploymentService < Service
   def supported_events
     []
   end
+
+  def predefined_variables
+    []
+  end
 end
