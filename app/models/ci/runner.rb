@@ -132,12 +132,14 @@ module Ci
 
     def ensure_runner_queue_value
       Gitlab::Redis.with do |redis|
-        value = redis.get(runner_queue_key)
-        if value == ""
-          value = Time.new.inspect
-          redis.set(runner_queue_key, value, ex: 60.minutes)
+        redis.multi do
+          value = redis.get(runner_queue_key)
+          if value == ""
+            value = Time.new.inspect
+            redis.set(runner_queue_key, value, ex: 60.minutes)
+          end
+          value
         end
-        value
       end
     end
 
