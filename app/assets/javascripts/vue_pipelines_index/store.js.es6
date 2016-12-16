@@ -2,16 +2,14 @@
 /* eslint-disable no-param-reassign, no-underscore-dangle */
 
 ((gl) => {
-  const pageValues = (headers) => {
-    const values = {};
-    values.perPage = +headers['X-Per-Page'];
-    values.page = +headers['X-Page'];
-    values.total = +headers['X-Total'];
-    values.totalPages = +headers['X-Total-Pages'];
-    values.nextPage = +headers['X-Next-Page'];
-    values.previousPage = +headers['X-Prev-Page'];
-    return values;
-  };
+  const pageValues = headers => ({
+    perPage: +headers['X-Per-Page'],
+    page: +headers['X-Page'],
+    total: +headers['X-Total'],
+    totalPages: +headers['X-Total-Pages'],
+    nextPage: +headers['X-Next-Page'],
+    previousPage: +headers['X-Prev-Page'],
+  });
 
   gl.PipelineStore = class {
     fetchDataLoop(Vue, pageNum, url, apiScope) {
