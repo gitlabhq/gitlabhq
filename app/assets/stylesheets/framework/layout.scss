@@ -32,6 +32,14 @@ body {
   }
 }
 
+.alert-wrapper {
+  margin-bottom: $gl-padding;
+
+  .alert {
+    margin-bottom: 0;
+  }
+}
+
 
 /* The following prevents side effects related to iOS Safari's implementation of -webkit-overflow-scrolling: touch,
 which is applied to the body by jquery.nicescroling plugin to force hardware acceleration for momentum scrolling. Side
