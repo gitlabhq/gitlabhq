@@ -9,20 +9,20 @@
     props: [
       'timeSpent',
       'timeEstimate',
-      'timeSpentHuman',
-      'timeEstimateHuman',
+      'timeSpentHumanReadable',
+      'timeEstimateHumanReadable',
     ],
     computed: {
       parsedRemaining() {
         const diffSeconds = this.timeEstimate - this.timeSpent;
         return PrettyTime.parseSeconds(diffSeconds);
       },
-      timeRemainingHuman() {
+      timeRemainingHumanReadable() {
         return PrettyTime.stringifyTime(this.parsedRemaining);
       },
       timeRemainingTooltip() {
         const prefix = this.timeRemainingMinutes < 0 ? 'Over by' : 'Time remaining:';
-        return `${prefix} ${this.timeRemainingHuman}`;
+        return `${prefix} ${this.timeRemainingHumanReadable}`;
       },
 
       /* Diff values for comparison meter */
@@ -56,11 +56,11 @@
           <div class='compare-display-container'>
             <div class='compare-display pull-left'>
               <span class='compare-label'>Spent</span>
-              <span class='compare-value spent'>{{ timeSpentHuman }}</span>
+              <span class='compare-value spent'>{{ timeSpentHumanReadable }}</span>
             </div>
             <div class='compare-display estimated pull-right'>
               <span class='compare-label'>Est</span>
-              <span class='compare-value'>{{ timeEstimateHuman }}</span>
+              <span class='compare-value'>{{ timeEstimateHumanReadable }}</span>
             </div>
           </div>
         </div>
