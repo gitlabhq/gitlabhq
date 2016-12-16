@@ -38,8 +38,8 @@ describe "Pipelines", feature: true, js: true do
       expect(page).to have_css('#js-tab-pipeline.active')
     end
 
-    context 'pipeline graph' do
-      context 'running build' do
+    describe 'pipeline graph' do
+      context 'when pipeline has running builds' do
         it 'shows a running icon and a cancel action for the running build' do
           page.within('a[data-title="deploy - running"]') do
             expect(page).to have_selector('.ci-status-icon-running')
@@ -58,7 +58,7 @@ describe "Pipelines", feature: true, js: true do
         end
       end
 
-      context 'success build' do
+      context 'when pipeline has successful builds' do
         it 'shows the success icon and a retry action for the successfull build' do
           page.within('a[data-title="build - passed"]') do
             expect(page).to have_selector('.ci-status-icon-success')
@@ -77,7 +77,7 @@ describe "Pipelines", feature: true, js: true do
         end
       end
 
-      context 'failed build' do
+      context 'when pipeline has failed builds' do
         it 'shows the failed icon and a retry action for the failed build' do
           page.within('a[data-title="test - failed"]') do
             expect(page).to have_selector('.ci-status-icon-failed')
@@ -96,7 +96,7 @@ describe "Pipelines", feature: true, js: true do
         end
       end
 
-      context 'manual build' do
+      context 'when pipeline has manual builds' do
         it 'shows the skipped icon and a play action for the manual build' do
           page.within('a[data-title="manual build - manual play action"]') do
             expect(page).to have_selector('.ci-status-icon-skipped')
@@ -115,7 +115,7 @@ describe "Pipelines", feature: true, js: true do
         end
       end
 
-      context 'external build' do
+      context 'when pipeline has external build' do
         it 'shows the success icon and the generic comit status build' do
           expect(page).to have_selector('.ci-status-icon-success')
           expect(page).to have_content('jenkins')

@@ -7,7 +7,7 @@ describe Gitlab::Middleware::Multipart do
   let(:middleware) { described_class.new(app) }
 
   it 'opens top-level files' do
-    Tempfile.open do |tempfile|
+    Tempfile.open('top-level') do |tempfile|
       env = post_env({ 'file' => tempfile.path }, { 'file.name' => 'filename' }, Gitlab::Workhorse.secret, 'gitlab-workhorse')
 
       expect(app).to receive(:call) do |env|
@@ -33,7 +33,7 @@ describe Gitlab::Middleware::Multipart do
   end
 
   it 'opens files one level deep' do
-    Tempfile.open do |tempfile|
+    Tempfile.open('one-level') do |tempfile|
       in_params = { 'user' => { 'avatar' => { '.name' => 'filename' } } }
       env = post_env({ 'user[avatar]' => tempfile.path }, in_params, Gitlab::Workhorse.secret, 'gitlab-workhorse')
 
@@ -48,7 +48,7 @@ describe Gitlab::Middleware::Multipart do
   end
 
   it 'opens files two levels deep' do
-    Tempfile.open do |tempfile|
+    Tempfile.open('two-levels') do |tempfile|
       in_params = { 'project' => { 'milestone' => { 'themesong' => { '.name' => 'filename' } } } }
       env = post_env({ 'project[milestone][themesong]' => tempfile.path }, in_params, Gitlab::Workhorse.secret, 'gitlab-workhorse')
 

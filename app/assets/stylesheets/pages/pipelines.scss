@@ -616,14 +616,10 @@
     li {
       padding-top: 2px;
       margin: 0 5px;
-    }
-
-    li:first-child {
-      padding-top: 6px;
-    }
-
-    li:last-child {
-      padding-bottom: 6px;
+      padding-left: 0;
+      padding-bottom: 0;
+      margin-bottom: 0;
+      line-height: 1.2;
     }
   }
 }
