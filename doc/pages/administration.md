@@ -492,5 +492,5 @@ No new changes.
 [backup]: ../../raketasks/backup_restore.md
 [ee-80]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/80
 [ee-173]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/173
-[reconfigure]: ../../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
+[reconfigure]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
 [restart]: ../../administration/restart_gitlab.md#installations-from-source
