@@ -75,7 +75,7 @@
         case 'projects:issues:index':
           Issuable.init();
           new gl.IssuableBulkActions({
-            prefixId: page === 'projects:merge_requests:index' ?  'merge_request_' : 'issue_'
+            prefixId: page === 'projects:merge_requests:index' ? 'merge_request_' : 'issue_',
           });
           shortcut_handler = new ShortcutsNavigation();
           break;
