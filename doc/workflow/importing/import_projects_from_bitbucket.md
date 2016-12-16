@@ -47,7 +47,7 @@ namespace that started the import process.
 
 1. Click on the "Bitbucket" button
 
-    ![Bitbucket](img/import_projects_from_github_new_project_page.png)
+    ![Bitbucket](img/import_projects_from_new_project_page.png)
 
 1. Grant GitLab access to your Bitbucket account
 
