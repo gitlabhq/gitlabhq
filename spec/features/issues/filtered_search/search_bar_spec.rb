@@ -53,14 +53,14 @@ describe 'Search bar', js: true, feature: true do
     end
 
     it 'resets the dropdown hint filter' do
-      filtered_search.click()
+      filtered_search.click
       original_size = page.all('#js-dropdown-hint .filter-dropdown .filter-dropdown-item').size
 
       filtered_search.set('author')
       expect(page.all('#js-dropdown-hint .filter-dropdown .filter-dropdown-item').size).to eq(1)
 
       find('.filtered-search-input-container .clear-search').click
-      filtered_search.click()
+      filtered_search.click
       expect(page.all('#js-dropdown-hint .filter-dropdown .filter-dropdown-item').size).to eq(original_size)
     end
 
@@ -73,9 +73,9 @@ describe 'Search bar', js: true, feature: true do
       expect(page.all('#js-dropdown-hint .filter-dropdown .filter-dropdown-item').size).to eq(0)
 
       find('.filtered-search-input-container .clear-search').click
-      filtered_search.click()
+      filtered_search.click
       expect(page.all('#js-dropdown-hint .filter-dropdown .filter-dropdown-item').size).to be > 0
-      expect(get_left_style(page.find('#js-dropdown-hint')['style'])).to eq hint_offset
+      expect(get_left_style(page.find('#js-dropdown-hint')['style'])).to eq(hint_offset)
     end
   end
 end
