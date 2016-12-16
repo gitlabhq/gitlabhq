@@ -8,15 +8,15 @@ class Projects::MattermostController < Projects::ApplicationController
   end
 
   def configure
-    @service.configure(host, current_user, params)
+    @service.configure(host, current_user, configure_params)
 
     redirect_to(
-      new_namespace_project_service_path(@project.namespace, @project, @service.to_param),
+      new_namespace_project_mattermost_path(@project.namespace, @project),
       notice: 'This service is now configured.'
     )
-  rescue Mattermost::NoSessionError
+  rescue NoSessionError
     redirect_to(
-      edit_namespace_project_service_path(@project.namespace, @project, @service.to_param),
+      new_namespace_project_mattermost_path(@project.namespace, @project),
       alert: 'No session could be set up, is Mattermost configured with Single Sign on?'
     )
   end
@@ -24,11 +24,11 @@ class Projects::MattermostController < Projects::ApplicationController
   private
 
   def configure_params
-    params.require(:configure_params).permit(:trigger, :team_id)
+    params.permit(:trigger, :team_id).merge(url: service_trigger_url(@service), icon_url: asset_url('gitlab_logo.png'))
   end
 
   def service
-    @service ||= @project.services.find_by(type: 'MattermostSlashCommandsService')
+    @service ||= @project.find_or_initialize_service('mattermost_slash_commands')
   end
 
   def teams
@@ -37,7 +37,7 @@ class Projects::MattermostController < Projects::ApplicationController
         Mattermost::Mattermost.new(Gitlab.config.mattermost.host, current_user).with_session do
           Mattermost::Team.team_admin
         end
-      rescue Mattermost::NoSessionError
+      rescue
         []
       end
   end

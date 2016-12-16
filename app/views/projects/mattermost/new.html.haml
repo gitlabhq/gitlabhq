@@ -1,5 +1,6 @@
 = "hello world"
-= form_for(:create, method: :post, url: configure_namespace_project_mattermost_path(@project.namespace, @project, @service.to_param)) do |f|
+= @teams
+= form_for(:create, method: :post, url: configure_namespace_project_mattermost_path(@project.namespace, @project, )) do |f|
   = "Team ID"
   = f.text_field(:team_id)
   = f.submit 'Configure', class: 'btn btn-save'

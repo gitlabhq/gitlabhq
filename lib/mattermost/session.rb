@@ -21,6 +21,8 @@ module Mattermost
 
     def initialize(uri, current_user)
       uri = normalize_uri(uri)
+
+      # Sets the base uri for HTTParty, so we can use paths
       self.class.base_uri(uri)
 
       @current_resource_owner = current_user
@@ -28,12 +30,14 @@ module Mattermost
 
     def with_session
       raise NoSessionError unless create
-      result = yield
-      destroy
 
-      result
-    rescue Errno::ECONNREFUSED
-      raise NoSessionError
+      begin
+        yield
+      rescue Errno::ECONNREFUSED
+        raise NoSessionError
+      ensure
+        destroy
+      end
     end
 
     # Next methods are needed for Doorkeeper

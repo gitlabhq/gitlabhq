@@ -5,7 +5,7 @@ describe Mattermost::Session do
 
   subject { described_class.new('http://localhost:8065', user) }
 
-  # Needed for doorman to function
+  # Needed for doorkeeper to function
   it { is_expected.to respond_to(:current_resource_owner) }
   it { is_expected.to respond_to(:request) }
   it { is_expected.to respond_to(:authorization) }

@@ -25,15 +25,15 @@ class MattermostSlashCommandsService < ChatService
     ]
   end
 
-  def configure(host, current_user, params)
-    token = Mattermost::Mattermost.new(host, current_user).with_session do
-      Mattermost::Commands.create(params[:team_id],
-                                  trigger: params[:trigger] || @service.project.path,
-                                  url: service_trigger_url(@service),
-                                  icon_url: asset_url('gitlab_logo.png'))
+  def configure(host, current_user, team_id:, trigger:, url:, icon_url:)
+    new_token = Mattermost::Session.new(host, current_user).with_session do
+      Mattermost::Command.create(team_id,
+                                 trigger: trigger || @service.project.path,
+                                 url: url,
+                                 icon_url: icon_url)
     end
 
-    update_attributes(token: token)
+    update!(token: new_token)
   end
 
   def trigger(params)
