@@ -52,6 +52,8 @@ version of Runner required.
 | **CI_PROJECT_PATH**     | 8.10   | 0.5    | The namespace with project name |
 | **CI_PROJECT_URL**      | 8.10   | 0.5    | The HTTP address to access project |
 | **CI_PROJECT_DIR**      | all    | all    | The full path where the repository is cloned and where the build is run |
+| **CI_ENVIRONMENT_NAME** | 8.15   | all    | The name of the environment for this build |
+| **CI_ENVIRONMENT_SLUG** | 8.15   | all    | A simplified version of the environment name, suitable for inclusion in DNS, URLs, Kubernetes labels, etc. |
 | **CI_REGISTRY**         | 8.10   | 0.5    | If the Container Registry is enabled it returns the address of GitLab's Container Registry |
 | **CI_REGISTRY_IMAGE**   | 8.10   | 0.5    | If the Container Registry is enabled for the project it returns the address of the registry tied to the specific project |
 | **CI_RUNNER_ID**        | 8.10   | 0.5    | The unique id of runner being used |

@@ -131,5 +131,14 @@ module Gitlab
     def kubernetes_namespace_regex_message
       "can contain only letters, digits or '-', and cannot start or end with '-'"
     end
+
+    def environment_slug_regex
+      @environment_slug_regex ||= /\A[a-z]([a-z0-9-]*[a-z0-9])?\z/.freeze
+    end
+
+    def environment_slug_regex_message
+      "can contain only lowercase letters, digits, and '-'. " \
+      "Must start with a letter, and cannot end with '-'"
+    end
   end
 end
