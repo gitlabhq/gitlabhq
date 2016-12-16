@@ -3,9 +3,13 @@ require 'spec_helper'
 describe Gitlab::ChatCommands::Command, service: true do
   let(:project) { create(:empty_project) }
   let(:user) { create(:user) }
+  let(:format) { nil }
 
   describe '#execute' do
-    subject { described_class.new(project, user, params).execute }
+    subject do
+      described_class.new(project, user,
+        params.merge(presenter_format: format)).execute
+    end
 
     context 'when no command is available' do
       let(:params) { { text: 'issue show 1' } }
@@ -47,8 +51,14 @@ describe Gitlab::ChatCommands::Command, service: true do
         expect(subject[:text]).to match("my new issue")
       end
 
-      it 'shows a link to the new issue' do
-        expect(subject[:text]).to match(/\/issues\/\d+/)
+      %w(slack mattermost).each do |format|
+        context "for #{format}" do
+          let(:format) { format }
+
+          it 'shows a link to the new issue' do
+            expect(subject[:text]).to match(/\/issues\/\d+/)
+          end
+        end
       end
     end
 
@@ -64,7 +74,7 @@ describe Gitlab::ChatCommands::Command, service: true do
       context 'and user can not create deployment' do
         it 'returns action' do
           expect(subject[:response_type]).to be(:ephemeral)
-          expect(subject[:text]).to start_with('Whoops! This action is not allowed')
+          expect(subject[:text]).to start_with('Whoops! That action is not allowed')
         end
       end
 
@@ -74,7 +84,7 @@ describe Gitlab::ChatCommands::Command, service: true do
         end
 
         it 'returns action' do
-          expect(subject[:text]).to include('Deployment started from staging to production')
+          expect(subject[:text]).to include('Deployment from staging to production started.')
           expect(subject[:response_type]).to be(:in_channel)
         end
 

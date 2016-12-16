@@ -1,5 +1,5 @@
 module Gitlab
-  class ChatCommands
+  module ChatCommands
     class Presenter
       include Gitlab::Routing.url_helpers
 
