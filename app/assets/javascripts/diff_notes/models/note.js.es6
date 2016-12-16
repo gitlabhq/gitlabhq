@@ -1,6 +1,7 @@
-/* eslint-disable */
+/* eslint-disable camelcase, no-unused-vars */
+
 class NoteModel {
-  constructor (discussionId, noteId, canResolve, resolved, resolved_by) {
+  constructor(discussionId, noteId, canResolve, resolved, resolved_by) {
     this.discussionId = discussionId;
     this.id = noteId;
     this.canResolve = canResolve;

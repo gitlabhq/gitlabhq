@@ -1,4 +1,5 @@
-/* eslint-disable */
+/* eslint-disable wrap-iife, func-names, space-before-function-paren, comma-dangle, prefer-template, consistent-return, class-methods-use-this, arrow-body-style, prefer-const, padded-blocks, no-unused-vars, no-underscore-dangle, no-new, max-len, semi, no-sequences, no-unused-expressions, no-param-reassign */
+
 (function(global) {
   class DueDateSelect {
     constructor({ $dropdown, $loading } = {}) {

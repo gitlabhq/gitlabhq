@@ -1,4 +1,6 @@
-/* eslint-disable */
+/* eslint-disable prefer-const, comma-dangle, max-len, no-useless-return, object-curly-spacing, no-param-reassign, max-len */
+/* global Api */
+
 /*= require ../blob/template_selector */
 
 ((global) => {

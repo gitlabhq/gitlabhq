@@ -87,6 +87,26 @@ describe Ci::Build, models: true do
     end
   end
 
+  describe '#persisted_environment' do
+    before do
+      @environment = create(:environment, project: project, name: "foo-#{project.default_branch}")
+    end
+
+    subject { build.persisted_environment }
+
+    context 'referenced literally' do
+      let(:build) { create(:ci_build, pipeline: pipeline, environment: "foo-#{project.default_branch}") }
+
+      it { is_expected.to eq(@environment) }
+    end
+
+    context 'referenced with a variable' do
+      let(:build) { create(:ci_build, pipeline: pipeline, environment: "foo-$CI_BUILD_REF_NAME") }
+
+      it { is_expected.to eq(@environment) }
+    end
+  end
+
   describe '#trace' do
     it { expect(build.trace).to be_nil }
 
@@ -254,6 +274,24 @@ describe Ci::Build, models: true do
     end
   end
 
+  describe '#ref_slug' do
+    {
+      'master'    => 'master',
+      '1-foo'     => '1-foo',
+      'fix/1-foo' => 'fix-1-foo',
+      'fix-1-foo' => 'fix-1-foo',
+      'a' * 63    => 'a' * 63,
+      'a' * 64    => 'a' * 63,
+      'FOO'       => 'foo',
+    }.each do |ref, slug|
+      it "transforms #{ref} to #{slug}" do
+        build.ref = ref
+
+        expect(build.ref_slug).to eq(slug)
+      end
+    end
+  end
+
   describe '#variables' do
     let(:container_registry_enabled) { false }
     let(:predefined_variables) do
@@ -265,6 +303,7 @@ describe Ci::Build, models: true do
         { key: 'CI_BUILD_REF', value: build.sha, public: true },
         { key: 'CI_BUILD_BEFORE_SHA', value: build.before_sha, public: true },
         { key: 'CI_BUILD_REF_NAME', value: 'master', public: true },
+        { key: 'CI_BUILD_REF_SLUG', value: 'master', public: true },
         { key: 'CI_BUILD_NAME', value: 'test', public: true },
         { key: 'CI_BUILD_STAGE', value: 'test', public: true },
         { key: 'CI_SERVER_NAME', value: 'GitLab', public: true },
@@ -307,6 +346,22 @@ describe Ci::Build, models: true do
       end
 
       it { user_variables.each { |v| is_expected.to include(v) } }
+    end
+
+    context 'when build has an environment' do
+      before do
+        build.update(environment: 'production')
+        create(:environment, project: build.project, name: 'production', slug: 'prod-slug')
+      end
+
+      let(:environment_variables) do
+        [
+          { key: 'CI_ENVIRONMENT_NAME', value: 'production', public: true },
+          { key: 'CI_ENVIRONMENT_SLUG', value: 'prod-slug',  public: true }
+        ]
+      end
+
+      it { environment_variables.each { |v| is_expected.to include(v) } }
     end
 
     context 'when build started manually' do
@@ -449,6 +504,17 @@ describe Ci::Build, models: true do
       it { is_expected.to include({ key: 'CI_RUNNER_ID', value: runner.id.to_s, public: true }) }
       it { is_expected.to include({ key: 'CI_RUNNER_DESCRIPTION', value: 'description', public: true }) }
       it { is_expected.to include({ key: 'CI_RUNNER_TAGS', value: 'docker, linux', public: true }) }
+    end
+
+    context 'when build is for a deployment' do
+      let(:deployment_variable) { { key: 'KUBERNETES_TOKEN', value: 'TOKEN', public: false } }
+
+      before do
+        build.environment = 'production'
+        allow(project).to receive(:deployment_variables).and_return([deployment_variable])
+      end
+
+      it { is_expected.to include(deployment_variable) }
     end
 
     context 'returns variables in valid order' do

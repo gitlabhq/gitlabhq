@@ -22,7 +22,8 @@ describe Project, models: true do
     it { is_expected.to have_many(:protected_branches).dependent(:destroy) }
     it { is_expected.to have_many(:chat_services) }
     it { is_expected.to have_one(:forked_project_link).dependent(:destroy) }
-    it { is_expected.to have_one(:slack_service).dependent(:destroy) }
+    it { is_expected.to have_one(:slack_notification_service).dependent(:destroy) }
+    it { is_expected.to have_one(:mattermost_notification_service).dependent(:destroy) }
     it { is_expected.to have_one(:pushover_service).dependent(:destroy) }
     it { is_expected.to have_one(:asana_service).dependent(:destroy) }
     it { is_expected.to have_many(:boards).dependent(:destroy) }
@@ -1692,6 +1693,26 @@ describe Project, models: true do
       it 'finds both environments' do
         expect(project.environments_recently_updated_on_branch('feature'))
           .to contain_exactly(environment, second_environment)
+      end
+    end
+  end
+
+  describe '#deployment_variables' do
+    context 'when project has no deployment service' do
+      let(:project) { create(:empty_project) }
+
+      it 'returns an empty array' do
+        expect(project.deployment_variables).to eq []
+      end
+    end
+
+    context 'when project has a deployment service' do
+      let(:project) { create(:kubernetes_project) }
+
+      it 'returns variables from this service' do
+        expect(project.deployment_variables).to include(
+          { key: 'KUBE_TOKEN', value: project.kubernetes_service.token, public: false }
+        )
       end
     end
   end

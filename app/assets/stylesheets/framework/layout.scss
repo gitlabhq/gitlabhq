@@ -26,6 +26,10 @@ body {
 
 .container-limited {
   max-width: $fixed-layout-width;
+
+  &.limit-container-width {
+    max-width: $limited-layout-width;
+  }
 }
 
 
