@@ -27,7 +27,7 @@ describe 'Dropdown hint', js: true, feature: true do
   describe 'behavior' do
     before do
       expect(page).to have_css(js_dropdown_hint, visible: false)
-      filtered_search.click()
+      filtered_search.click
     end
 
     it 'opens when the search bar is first focused' do
@@ -35,7 +35,7 @@ describe 'Dropdown hint', js: true, feature: true do
     end
 
     it 'closes when the search bar is unfocused' do
-      find('body').click()
+      find('body').click
       expect(page).to have_css(js_dropdown_hint, visible: false)
     end
   end
