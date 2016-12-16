@@ -24,19 +24,34 @@ describe API::Files, api: true  do
   before { project.team << [user, :developer] }
 
   describe "GET /projects/:id/repository/files" do
-    it "returns file info" do
-      params = {
-        file_path: file_path,
-        ref: 'master',
-      }
+    shared_examples_for 'repository files' do
+      it "returns file info" do
+        params = {
+          file_path: file_path,
+          ref: 'master',
+        }
 
-      get api("/projects/#{project.id}/repository/files", user), params
+        get api("/projects/#{project.id}/repository/files", current_user), params
 
-      expect(response).to have_http_status(200)
-      expect(json_response['file_path']).to eq(file_path)
-      expect(json_response['file_name']).to eq('popen.rb')
-      expect(json_response['last_commit_id']).to eq('570e7b2abdd848b95f2f578043fc23bd6f6fd24d')
-      expect(Base64.decode64(json_response['content']).lines.first).to eq("require 'fileutils'\n")
+        expect(response).to have_http_status(200)
+        expect(json_response['file_path']).to eq(file_path)
+        expect(json_response['file_name']).to eq('popen.rb')
+        expect(json_response['last_commit_id']).to eq('570e7b2abdd848b95f2f578043fc23bd6f6fd24d')
+        expect(Base64.decode64(json_response['content']).lines.first).to eq("require 'fileutils'\n")
+      end
+    end
+
+    context 'when unauthenticated' do
+      it_behaves_like 'repository files' do
+        let(:project) { create(:project, :public) }
+        let(:current_user) { nil }
+      end
+    end
+
+    context 'when authenticated' do
+      it_behaves_like 'repository files' do
+        let(:current_user) { user }
+      end
     end
 
     it "returns a 400 bad request if no params given" do
