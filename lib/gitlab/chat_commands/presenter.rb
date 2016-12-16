@@ -135,9 +135,14 @@ module Gitlab
 
       def link(url, title)
         case format
-        when 'slack'      then "<#{url}|#{title}>"
-        when 'mattermost' then "[#{title}](#{url})"
-        else              then title
+        when 'slack'
+          "<#{url}|#{title}>"
+
+        when 'mattermost'
+          "[#{title}](#{url})"
+
+        else
+          title
         end
       end
     end
