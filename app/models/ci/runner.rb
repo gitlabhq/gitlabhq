@@ -21,7 +21,7 @@ module Ci
     scope :online, ->() { where('contacted_at > ?', LAST_CONTACT_TIME) }
     scope :ordered, ->() { order(id: :desc) }
 
-    after_save :tick_update
+    after_save :tick_runner_queue
 
     scope :owned_or_shared, ->(project_id) do
       joins('LEFT JOIN ci_runner_projects ON ci_runner_projects.runner_id = ci_runners.id')
@@ -132,14 +132,8 @@ module Ci
 
     def ensure_runner_queue_value
       Gitlab::Redis.with do |redis|
-        redis.multi do
-          value = redis.get(runner_queue_key)
-          if value == ""
-            value = Time.new.inspect
-            redis.set(runner_queue_key, value, ex: 60.minutes)
-          end
-          value
-        end
+        redis.set(runner_queue_key, value, ex: 60.minutes, nx: true)
+        redis.get(runner_queue_key)
       end
     end
 
