@@ -73,15 +73,51 @@ describe Projects::UpdateRemoteMirrorService do
         subject.execute(remote_mirror)
       end
 
-      it "sync deleted branches" do
-        allow(repository).to receive(:fetch_remote) do
-          sync_remote(repository, remote_mirror.ref_name, local_branch_names)
-          delete_branch(repository, 'existing-branch')
+      describe 'for delete' do
+        context 'when branch exists in local and remote repo' do
+          it 'deletes the branch from remote repo' do
+            allow(repository).to receive(:fetch_remote) do
+              sync_remote(repository, remote_mirror.ref_name, local_branch_names)
+              delete_branch(repository, 'existing-branch')
+            end
+
+            expect(repository).to receive(:delete_remote_branches).with(remote_mirror.ref_name, ['existing-branch'])
+
+            subject.execute(remote_mirror)
+          end
         end
 
-        expect(repository).to receive(:delete_remote_branches).with(remote_mirror.ref_name, ['existing-branch'])
+        context 'when branch only exists on remote repo' do
+          context 'when it has diverged' do
+            it 'does not delete the remote branch' do
+              allow(repository).to receive(:fetch_remote) do
+                sync_remote(repository, remote_mirror.ref_name, local_branch_names)
 
-        subject.execute(remote_mirror)
+                blob_id = 'c74175afd117781cbc983664339a0f599b5bb34e'
+                create_remote_branch(repository, remote_mirror.ref_name, 'remote-branch', blob_id)
+              end
+
+              expect(repository).not_to receive(:delete_remote_branches)
+
+              subject.execute(remote_mirror)
+            end
+          end
+
+          context 'when it has not diverged' do
+            it 'deletes the remote branch' do
+              allow(repository).to receive(:fetch_remote) do
+                sync_remote(repository, remote_mirror.ref_name, local_branch_names)
+
+                masterrev = repository.find_branch('master').dereferenced_target
+                create_remote_branch(repository, remote_mirror.ref_name, 'remote-branch', masterrev.id)
+              end
+
+              expect(repository).to receive(:delete_remote_branches).with(remote_mirror.ref_name, ['remote-branch'])
+
+              subject.execute(remote_mirror)
+            end
+          end
+        end
       end
     end
 
@@ -113,7 +149,9 @@ describe Projects::UpdateRemoteMirrorService do
 
       context 'when there are some tags to delete' do
         it 'deletes tags from remote' do
-          allow(repository).to receive(:remote_tags) { generate_tags(repository, 'v1.0.0', 'v1.1.0') }
+          remote_tags = generate_tags(repository, 'v1.0.0', 'v1.1.0')
+          allow(repository).to receive(:remote_tags) { remote_tags }
+
           repository.rm_tag('v1.0.0')
 
           expect(repository).to receive(:delete_remote_branches).with(remote_mirror.ref_name, ['v1.0.0'])
@@ -132,6 +170,12 @@ describe Projects::UpdateRemoteMirrorService do
     rugged.references.create("refs/heads/#{branch_name}", parentrev)
 
     repository.expire_branches_cache
+  end
+
+  def create_remote_branch(repository, remote_name, branch_name, source_id)
+    rugged = repository.rugged
+
+    rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", source_id)
   end
 
   def sync_remote(repository, remote_name, local_branch_names)

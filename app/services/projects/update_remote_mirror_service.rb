@@ -57,13 +57,7 @@ module Projects
     end
 
     def deleted_branches
-      @deleted_branches ||= remote_branches.each_with_object([]) do |(name, branch), branches|
-        local_branch = local_branches[name]
-
-        if local_branch.nil? && project.commit(branch.dereferenced_target)
-          branches << name
-        end
-      end
+      @deleted_branches ||= refs_to_delete(:branches)
     end
 
     def changed_branches
@@ -119,8 +113,22 @@ module Projects
     end
 
     def deleted_tags
-      @deleted_tags ||= remote_tags.each_with_object([]) do |(name, _), tags|
-        tags << name if local_tags[name].nil?
+      @deleted_tags ||= refs_to_delete(:tags)
+    end
+
+    def refs_to_delete(type)
+      remote_refs       = send("remote_#{type}")
+      local_refs        = send("local_#{type}")
+      default_branch_id = project.commit.id
+
+      remote_refs.each_with_object([]) do |(name, remote_ref), refs_to_delete|
+        next if local_refs[name] # skip if branch or tag exist in local repo
+
+        remote_ref_id = remote_ref.dereferenced_target.try(:id)
+
+        if remote_ref_id && project.repository.is_ancestor?(remote_ref_id, default_branch_id)
+          refs_to_delete << name
+        end
       end
     end
   end
