@@ -39,7 +39,7 @@
       gl.ApprovalsStore.initStoreOnce();
     },
     template: `
-      <div v-if='showApprovalsBody'>
+      <div class='approvals-body' v-if='showApprovalsBody'>
         <h4> Requires {{ approvalsRequiredStringified }} (from {{ approverNamesStringified }})</h4>
         <div v-if='showApproveButton' class='append-bottom-10'>
           <button
