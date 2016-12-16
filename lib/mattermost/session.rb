@@ -17,7 +17,7 @@ module Mattermost
     include Doorkeeper::Helpers::Controller
     include HTTParty
 
-    attr_accessor :current_resource_owner
+    attr_accessor :current_resource_owner, :token
 
     def initialize(uri, current_user)
       # Sets the base uri for HTTParty, so we can use paths
@@ -64,9 +64,9 @@ module Mattermost
       return unless oauth_uri
       return unless token_uri
 
-      self.class.headers("Cookie" => "MMAUTHTOKEN=#{request_token}")
-
-      request_token
+      self.token = request_token
+      self.class.headers("Cookie" => "MMAUTHTOKEN=#{self.token}")
+      self.token
     end
 
     def destroy
@@ -84,16 +84,17 @@ module Mattermost
     end
 
     def token_uri
-      @token_uri ||= if @oauth_uri
-                       authorization.authorize.redirect_uri if pre_auth.authorizable?
-                     end
+      @token_uri ||=
+        if @oauth_uri
+          authorization.authorize.redirect_uri if pre_auth.authorizable?
+        end
     end
 
     def request_token
-      @request_token ||= begin
-                           response = get(@token_uri, follow_redirects: false)
-                           response.headers['token'] if 200 <= response.code && response.code < 400
-                         end
+      response = get(@token_uri, follow_redirects: false)
+      if 200 <= response.code && response.code < 400
+        response.headers['token']
+      end
     end
 
     def get(path, options = {})

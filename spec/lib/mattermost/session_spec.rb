@@ -1,9 +1,12 @@
 require 'spec_helper'
 
-describe Mattermost::Session do
+describe Mattermost::Session, type: :request do
   let(:user) { create(:user) }
 
-  subject { described_class.new('http://localhost:8065', user) }
+  let(:gitlab_url) { "http://gitlab.com" }
+  let(:mattermost_url) { "http://mattermost.com" }
+
+  subject { described_class.new(mattermost_url, user) }
 
   # Needed for doorkeeper to function
   it { is_expected.to respond_to(:current_resource_owner) }
@@ -14,7 +17,7 @@ describe Mattermost::Session do
   describe '#with session' do
     let(:location) { 'http://location.tld' }
     let!(:stub) do
-      WebMock.stub_request(:get, 'http://localhost:8065/api/v3/oauth/gitlab/login').
+      WebMock.stub_request(:get, "#{mattermost_url}/api/v3/oauth/gitlab/login").
         to_return(headers: { 'location' => location }, status: 307)
     end
 
@@ -26,9 +29,10 @@ describe Mattermost::Session do
 
     context 'with oauth_uri' do
       let!(:doorkeeper) do
-        Doorkeeper::Application.create(name: "GitLab Mattermost",
-                                       redirect_uri: "http://localhost:8065/signup/gitlab/complete\nhttp://localhost:8065/login/gitlab/complete",
-                                       scopes: "")
+        Doorkeeper::Application.create(
+          name: "GitLab Mattermost",
+          redirect_uri: "#{mattermost_url}/signup/gitlab/complete\n#{mattermost_url}/login/gitlab/complete",
+          scopes: "")
       end
 
       context 'without token_uri' do
@@ -40,24 +44,43 @@ describe Mattermost::Session do
       end
 
       context 'with token_uri' do
-        let(:state) { "eyJhY3Rpb24iOiJsb2dpbiIsImhhc2giOiIkMmEkMTAkVC9wYVlEaTdIUS8vcWdKRmdOOUllZUptaUNJWUlvNVNtNEcwU2NBMXFqelNOVmVPZ1cxWUsifQ%3D%3D" }
-        let(:location) { "http://locahost:8065/oauth/authorize?response_type=code&client_id=#{doorkeeper.uid}&redirect_uri=http%3A%2F%2Flocalhost:8065%2Fsignup%2Fgitlab%2Fcomplete&state=#{state}" }
+        let(:state) { "state" }
+        let(:params) do
+          { response_type: "code",
+            client_id: doorkeeper.uid,
+            redirect_uri: "#{mattermost_url}/signup/gitlab/complete",
+            state: state }
+        end
+        let(:location) do
+          "#{gitlab_url}/oauth/authorize?#{URI.encode_www_form(params)}"
+        end
 
         before do
-          WebMock.stub_request(:get, /http:\/\/localhost:8065\/signup\/gitlab\/complete*/).
-            to_return(headers: { 'token' => 'thisworksnow' }, status: 202)
+          WebMock.stub_request(:get, "#{mattermost_url}/signup/gitlab/complete").
+            with(query: hash_including({ 'state' => state })).
+            to_return do |request|
+              post "/oauth/token",
+                client_id: doorkeeper.uid,
+                client_secret: doorkeeper.secret,
+                redirect_uri: params[:redirect_uri],
+                grant_type: 'authorization_code',
+                code: request.uri.query_values['code']
+
+              if response.status == 200
+                { headers: { 'token' => 'thisworksnow' }, status: 202 }
+              end
+            end
+
+          WebMock.stub_request(:post, "#{mattermost_url}/api/v3/users/logout").
+            to_return(headers: { Cookie: 'MMAUTHTOKEN=thisworksnow' }, status: 200)
         end
 
         it 'can setup a session' do
-          expect(subject).to receive(:destroy)
-
           subject.with_session { 1 + 1 }
+          expect(subject.token).not_to be_nil
         end
 
         it 'returns the value of the block' do
-          WebMock.stub_request(:post, "http://localhost:8065/api/v3/users/logout").
-            to_return(headers: { 'token' => 'thisworksnow' }, status: 200)
-
           value = subject.with_session { 1 + 1 }
 
           expect(value).to be(2)
