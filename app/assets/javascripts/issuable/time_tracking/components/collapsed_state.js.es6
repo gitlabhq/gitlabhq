@@ -15,7 +15,7 @@
     ],
     methods: {
       abbreviateTime(timeStr) {
-        return gl.PrettyTime.abbreviateTime(timeStr);
+        return gl.utils.prettyTime.abbreviateTime(timeStr);
       },
     },
     template: `

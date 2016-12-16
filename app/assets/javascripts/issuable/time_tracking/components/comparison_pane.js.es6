@@ -2,7 +2,7 @@
 //= require lib/utils/pretty_time
 
 (() => {
-  const PrettyTime = gl.PrettyTime;
+  const prettyTime = gl.utils.prettyTime;
 
   Vue.component('time-tracking-comparison-pane', {
     name: 'time-tracking-comparison-pane',
@@ -15,10 +15,10 @@
     computed: {
       parsedRemaining() {
         const diffSeconds = this.timeEstimate - this.timeSpent;
-        return PrettyTime.parseSeconds(diffSeconds);
+        return prettyTime.parseSeconds(diffSeconds);
       },
       timeRemainingHumanReadable() {
-        return PrettyTime.stringifyTime(this.parsedRemaining);
+        return prettyTime.stringifyTime(this.parsedRemaining);
       },
       timeRemainingTooltip() {
         const prefix = this.timeRemainingMinutes < 0 ? 'Over by' : 'Time remaining:';
@@ -37,10 +37,10 @@
       },
       /* Parsed time values */
       parsedEstimate() {
-        return PrettyTime.parseSeconds(this.timeEstimate);
+        return prettyTime.parseSeconds(this.timeEstimate);
       },
       parsedSpent() {
-        return PrettyTime.parseSeconds(this.timeSpent);
+        return prettyTime.parseSeconds(this.timeSpent);
       },
     },
     template: `

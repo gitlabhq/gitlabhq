@@ -59,7 +59,6 @@ function initTimeTrackingComponent(opts) {
 
           it('should show the "Comparison" pane when timeEstimate and time_spent are truthy', function(done) {
             Vue.nextTick(() => {
-            debugger;
               const $comparisonPane = this.timeTracker.$el.querySelector('.time-tracking-comparison-pane');
               expect(this.timeTracker.showComparisonState).toBe(true);
               done();
@@ -67,11 +66,14 @@ function initTimeTrackingComponent(opts) {
           });
 
           describe('Remaining meter', function() {
-            it('should display the remaining meter with the correct width', function() {
-              const meterWidth = this.timeTracker.$el.querySelector('.time-tracking-comparison-pane .meter-fill').style.width;
-              const correctWidth = '5%';
+            it('should display the remaining meter with the correct width', function(done) {
+              Vue.nextTick(() => {
+                const meterWidth = this.timeTracker.$el.querySelector('.time-tracking-comparison-pane .meter-fill').style.width;
+                const correctWidth = '5%';
 
-              expect(meterWidth).toBe(correctWidth);
+                expect(meterWidth).toBe(correctWidth);
+                done();
+              })
             });
 
             it('should display the remaining meter with the correct background color when within estimate', function(done) {
@@ -102,7 +104,6 @@ function initTimeTrackingComponent(opts) {
           it('should display the human readable version of time estimated', function(done) {
             Vue.nextTick(() => {
               const estimateText = this.timeTracker.$el.querySelector('.time-tracking-estimate-only-pane').innerText;
-              debugger;
               const correctText = 'Estimated: 2h 46m';
 
               expect(estimateText).toBe(correctText);

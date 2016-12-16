@@ -1,12 +1,12 @@
 //= require lib/utils/pretty_time
 
 (() => {
-  const PrettyTime = gl.PrettyTime;
+  const prettyTime = gl.utils.prettyTime;
 
-  describe('PrettyTime methods', function () {
+  describe('prettyTime methods', function () {
     describe('parseSeconds', function () {
       it('should correctly parse a negative value', function () {
-        const parser = PrettyTime.parseSeconds;
+        const parser = prettyTime.parseSeconds;
 
         const zeroSeconds = parser(-1000);
 
@@ -17,7 +17,7 @@
       });
 
       it('should correctly parse a zero value', function () {
-        const parser = PrettyTime.parseSeconds;
+        const parser = prettyTime.parseSeconds;
 
         const zeroSeconds = parser(0);
 
@@ -28,7 +28,7 @@
       });
 
       it('should correctly parse a small non-zero second values', function () {
-        const parser = PrettyTime.parseSeconds;
+        const parser = prettyTime.parseSeconds;
 
         const subOneMinute = parser(10);
 
@@ -53,7 +53,7 @@
       });
 
       it('should correctly parse large second values', function () {
-        const parser = PrettyTime.parseSeconds;
+        const parser = prettyTime.parseSeconds;
 
         const aboveOneHour = parser(4800);
 
@@ -87,7 +87,7 @@
           minutes: 20,
         };
 
-        const timeString = PrettyTime.stringifyTime(timeObject);
+        const timeString = prettyTime.stringifyTime(timeObject);
 
         expect(timeString).toBe('1w 4d 7h 20m');
       });
@@ -100,7 +100,7 @@
           minutes: 20,
         };
 
-        const timeString = PrettyTime.stringifyTime(timeObject);
+        const timeString = prettyTime.stringifyTime(timeObject);
 
         expect(timeString).toBe('4d 20m');
       });
@@ -113,7 +113,7 @@
           minutes: 0,
         };
 
-        const timeString = PrettyTime.stringifyTime(timeObject);
+        const timeString = prettyTime.stringifyTime(timeObject);
 
         expect(timeString).toBe('0m');
       });
@@ -122,12 +122,12 @@
     describe('abbreviateTime', function () {
       it('should abbreviate stringified times for weeks', function () {
         const fullTimeString = '1w 3d 4h 5m';
-        expect(PrettyTime.abbreviateTime(fullTimeString)).toBe('1w');
+        expect(prettyTime.abbreviateTime(fullTimeString)).toBe('1w');
       });
 
       it('should abbreviate stringified times for non-weeks', function () {
         const fullTimeString = '0w 3d 4h 5m';
-        expect(PrettyTime.abbreviateTime(fullTimeString)).toBe('3d');
+        expect(prettyTime.abbreviateTime(fullTimeString)).toBe('3d');
       });
     });
   });
