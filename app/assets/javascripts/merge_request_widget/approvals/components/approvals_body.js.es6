@@ -4,12 +4,7 @@
 (() => {
   Vue.component('approvals-body', {
     name: 'approvals-body',
-    props: ['approvedBy', 'approvalsLeft', 'userCanApprove', 'userHasApproved', 'suggestedApprovers'],
-    data() {
-      return {
-        loaded: false,
-      };
-    },
+    props: ['approvedBy', 'approvalsLeft', 'userCanApprove', 'userHasApproved', 'suggestedApprovers', 'widgetLoading'],
     computed: {
       approvalsRequiredStringified() {
         return this.approvalsLeft === 1 ? 'one more approval' :
@@ -31,6 +26,9 @@
       showApproveButton() {
         return this.userCanApprove && !this.userHasApproved;
       },
+      showApprovalsBody() {
+        return !this.widgetLoading && this.approvalsLeft;
+      }
     },
     methods: {
       approveMergeRequest() {
@@ -38,12 +36,10 @@
       },
     },
     beforeCreate() {
-      gl.ApprovalsStore.initStoreOnce().then(() => {
-        this.loaded = true;
-      });
+      gl.ApprovalsStore.initStoreOnce();
     },
     template: `
-      <div v-if='loaded && approvalsLeft'>
+      <div v-if='showApprovalsBody'>
         <h4> Requires {{ approvalsRequiredStringified }} (from {{ approverNamesStringified }})</h4>
         <div v-if='showApproveButton' class='append-bottom-10'>
           <button

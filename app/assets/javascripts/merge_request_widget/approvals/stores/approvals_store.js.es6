@@ -20,8 +20,8 @@
       };
     }
 
-    assignToRootStore(data) {
-      return this.rootStore.assignToData('approvals', data);
+    assignToRootStore(data, key = 'approvals') {
+      return this.rootStore.assignToData(key, data);
     }
 
     initStoreOnce() {
@@ -31,6 +31,7 @@
         return this.fetch()
           .then(() => {
             state.loading = false;
+            this.assignToRootStore(false, 'loading');
           })
           .catch((err) => {
             console.error(`Failed to initialize approvals store: ${err}`);

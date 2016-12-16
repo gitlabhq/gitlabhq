@@ -18,7 +18,12 @@
       this.data = {};
 
       // init other widget stores here
+      this.initState();
       this.initApprovals();
+    }
+
+    initState() {
+      this.assignToData('loading', true);
     }
 
     initApprovals() {
