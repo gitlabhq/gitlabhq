@@ -2,6 +2,7 @@ module Ci
   class Runner < ActiveRecord::Base
     extend Ci::Model
 
+    LAST_UPDATE_EXPIRE_TIME = 60.minutes
     LAST_CONTACT_TIME = 1.hour.ago
     AVAILABLE_SCOPES = %w[specific shared active paused online]
     FORM_EDITABLE = %i[description tag_list active run_untagged locked]
@@ -126,14 +127,14 @@ module Ci
 
     def tick_runner_queue
       new_update = Time.new.inspect
-      Gitlab::Redis.with { |redis| redis.set(runner_queue_key, new_update, ex: 60.minutes) }
+      Gitlab::Redis.with { |redis| redis.set(runner_queue_key, new_update, ex: LAST_UPDATE_EXPIRE_TIME) }
       new_update
     end
 
     def ensure_runner_queue_value
       Gitlab::Redis.with do |redis|
         value = Time.new.inspect
-        redis.set(runner_queue_key, value, ex: 60.minutes, nx: true)
+        redis.set(runner_queue_key, value, ex: LAST_UPDATE_EXPIRE_TIME, nx: true)
         redis.get(runner_queue_key)
       end
     end
