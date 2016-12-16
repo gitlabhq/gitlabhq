@@ -2,6 +2,10 @@ module Gitlab
   module Auth
     class MissingPersonalTokenError < StandardError; end
 
+    SCOPES = [:api, :read_user]
+    DEFAULT_SCOPES = [:api]
+    OPTIONAL_SCOPES = SCOPES - DEFAULT_SCOPES
+
     class << self
       def find_for_git_client(login, password, project:, ip:)
         raise "Must provide an IP for rate limiting" if ip.nil?
@@ -93,7 +97,7 @@ module Gitlab
       def oauth_access_token_check(login, password)
         if login == "oauth2" && password.present?
           token = Doorkeeper::AccessToken.by_token(password)
-          if token && token.accessible?
+          if valid_oauth_token?(token)
             user = User.find_by(id: token.resource_owner_id)
             Gitlab::Auth::Result.new(user, nil, :oauth, read_authentication_abilities)
           end
@@ -102,10 +106,25 @@ module Gitlab
 
       def personal_access_token_check(login, password)
         if login && password
-          user = User.find_by_personal_access_token(password)
+          token = PersonalAccessToken.active.find_by_token(password)
           validation = User.by_login(login)
-          Gitlab::Auth::Result.new(user, nil, :personal_token, full_authentication_abilities) if user.present? && user == validation
+
+          if valid_personal_access_token?(token, validation)
+            Gitlab::Auth::Result.new(validation, nil, :personal_token, full_authentication_abilities)
+          end
         end
+      end
+
+      def valid_oauth_token?(token)
+        token && token.accessible? && valid_api_token?(token)
+      end
+
+      def valid_personal_access_token?(token, user)
+        token && token.user == user && valid_api_token?(token)
+      end
+
+      def valid_api_token?(token)
+        AccessTokenValidationService.new(token).include_any_scope?(['api'])
       end
 
       def lfs_token_check(login, password)
