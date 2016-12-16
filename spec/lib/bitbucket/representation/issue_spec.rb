@@ -14,7 +14,6 @@ describe Bitbucket::Representation::Issue do
     it { expect(described_class.new({}).milestone).to be_nil }
   end
 
-
   describe '#author' do
     it { expect(described_class.new({ 'reporter' => { 'username' => 'Ben' } }).author).to eq('Ben') }
     it { expect(described_class.new({}).author).to be_nil }

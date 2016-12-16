@@ -60,8 +60,6 @@ module Gitlab
 
         create_labels
 
-        gitlab_issue = nil
-
         client.issues(repo).each do |issue|
           begin
             description = ''
@@ -87,31 +85,33 @@ module Gitlab
 
           gitlab_issue.labels << @labels[label_name]
 
-          if gitlab_issue.persisted?
-            client.issue_comments(repo, issue.iid).each do |comment|
-              # The note can be blank for issue service messages like "Changed title: ..."
-              # We would like to import those comments as well but there is no any
-              # specific parameter that would allow to process them, it's just an empty comment.
-              # To prevent our importer from just crashing or from creating useless empty comments
-              # we do this check.
-              next unless comment.note.present?
+          import_issue_comments(issue, gitlab_issue) if gitlab_issue.persisted?
+        end
+      end
 
-              note = ''
-              note += @formatter.author_line(comment.author) unless find_user_id(comment.author)
-              note += comment.note
+      def import_issue_comments(issue, gitlab_issue)
+        client.issue_comments(repo, issue.iid).each do |comment|
+          # The note can be blank for issue service messages like "Changed title: ..."
+          # We would like to import those comments as well but there is no any
+          # specific parameter that would allow to process them, it's just an empty comment.
+          # To prevent our importer from just crashing or from creating useless empty comments
+          # we do this check.
+          next unless comment.note.present?
 
-              begin
-                gitlab_issue.notes.create!(
-                  project: project,
-                  note: note,
-                  author_id: gitlab_user_id(project, comment.author),
-                  created_at: comment.created_at,
-                  updated_at: comment.updated_at
-                )
-              rescue StandardError => e
-                errors << { type: :issue_comment, iid: issue.iid, errors: e.message }
-              end
-            end
+          note = ''
+          note += @formatter.author_line(comment.author) unless find_user_id(comment.author)
+          note += comment.note
+
+          begin
+            gitlab_issue.notes.create!(
+              project: project,
+              note: note,
+              author_id: gitlab_user_id(project, comment.author),
+              created_at: comment.created_at,
+              updated_at: comment.updated_at
+            )
+          rescue StandardError => e
+            errors << { type: :issue_comment, iid: issue.iid, errors: e.message }
           end
         end
       end
