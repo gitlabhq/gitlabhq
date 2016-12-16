@@ -23,7 +23,7 @@ module Gitlab
         end
 
         def group
-          self.class.name.demodulize.downcase.underscore
+          self.class.name.demodulize.underscore
         end
 
         def has_details?
