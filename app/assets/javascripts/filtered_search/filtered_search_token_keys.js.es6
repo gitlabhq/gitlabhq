@@ -57,7 +57,15 @@
     }
 
     static searchByKeyParam(keyParam) {
-      return tokenKeys.find(tokenKey => keyParam === `${tokenKey.key}_${tokenKey.param}`) || null;
+      return tokenKeys.find((tokenKey) => {
+        let tokenKeyParam = tokenKey.key;
+
+        if (tokenKey.param) {
+          tokenKeyParam += `_${tokenKey.param}`;
+        }
+
+        return keyParam === tokenKeyParam;
+      }) || null;
     }
 
     static searchByConditionUrl(url) {

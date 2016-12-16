@@ -89,6 +89,10 @@
     overflow-y: hidden;
     border-radius: 0;
 
+    .fa {
+      width: 15px;
+    }
+
     .dropdown-label-box {
       border-color: $white-light;
       border-style: solid;

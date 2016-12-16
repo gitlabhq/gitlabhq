@@ -101,7 +101,8 @@
           const match = gl.FilteredSearchTokenKeys.searchByKeyParam(keyParam);
 
           if (match) {
-            const sanitizedKey = keyParam.slice(0, keyParam.indexOf('_'));
+            const indexOf = keyParam.indexOf('_');
+            const sanitizedKey = indexOf !== -1 ? keyParam.slice(0, keyParam.indexOf('_')) : keyParam;
             const symbol = match.symbol;
             let quotationsToUse = '';
 
@@ -137,14 +138,19 @@
         const { param } = gl.FilteredSearchTokenKeys.searchByKey(token.key);
         let tokenPath = '';
 
+        let keyParam = token.key;
+        if (param) {
+          keyParam += `_${param}`;
+        }
+
         if (token.wildcard && condition) {
           tokenPath = condition.url;
         } else if (token.wildcard) {
           // wildcard means that the token does not have a symbol
-          tokenPath = `${token.key}_${param}=${encodeURIComponent(token.value)}`;
+          tokenPath = `${keyParam}=${encodeURIComponent(token.value)}`;
         } else {
           // Remove the token symbol
-          tokenPath = `${token.key}_${param}=${encodeURIComponent(token.value.slice(1))}`;
+          tokenPath = `${keyParam}=${encodeURIComponent(token.value.slice(1))}`;
         }
 
         paths.push(tokenPath);
