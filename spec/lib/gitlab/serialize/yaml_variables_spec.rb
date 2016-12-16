@@ -2,8 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::Serialize::YamlVariables do
   subject do
-    Gitlab::Serialize::YamlVariables.load(
-      Gitlab::Serialize::YamlVariables.dump(object))
+    described_class.load(described_class.dump(object))
   end
 
   let(:object) do
