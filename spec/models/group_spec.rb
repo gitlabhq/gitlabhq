@@ -272,7 +272,7 @@ describe Group, models: true do
   end
 
   describe 'nested group' do
-    subject { create(:group, :nested) }
+    subject { build(:group, :nested) }
 
     it { is_expected.to be_valid }
     it { expect(subject.parent).to be_kind_of(Group) }

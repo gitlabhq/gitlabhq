@@ -9,6 +9,7 @@ feature 'Issues > Labels bulk assignment', feature: true do
   let!(:issue2)   { create(:issue, project: project, title: "Issue 2") }
   let!(:bug)      { create(:label, project: project, title: 'bug') }
   let!(:feature)  { create(:label, project: project, title: 'feature') }
+  let!(:wontfix)  { create(:label, project: project, title: 'wontfix') }
 
   context 'as an allowed user', js: true do
     before do
@@ -291,6 +292,45 @@ feature 'Issues > Labels bulk assignment', feature: true do
         expect(find("#issue_#{issue1.id}")).not_to have_content 'feature'
       end
     end
+
+    # Special case https://gitlab.com/gitlab-org/gitlab-ce/issues/24877
+    context 'unmarking common label' do
+      before do
+        issue1.labels << bug
+        issue1.labels << feature
+        issue2.labels << bug
+
+        visit namespace_project_issues_path(project.namespace, project)
+      end
+
+      it 'applies label from filtered results' do
+        check 'check_all_issues'
+
+        page.within('.issues_bulk_update') do
+          click_button 'Labels'
+          wait_for_ajax
+
+          expect(find('.dropdown-menu-labels li', text: 'bug')).to have_css('.is-active')
+          expect(find('.dropdown-menu-labels li', text: 'feature')).to have_css('.is-indeterminate')
+
+          click_link 'bug'
+          find('.dropdown-input-field', visible: true).set('wontfix')
+          click_link 'wontfix'
+        end
+
+        update_issues
+
+        page.within '.issues-holder' do
+          expect(find("#issue_#{issue1.id}")).not_to have_content 'bug'
+          expect(find("#issue_#{issue1.id}")).to have_content 'feature'
+          expect(find("#issue_#{issue1.id}")).to have_content 'wontfix'
+
+          expect(find("#issue_#{issue2.id}")).not_to have_content 'bug'
+          expect(find("#issue_#{issue2.id}")).not_to have_content 'feature'
+          expect(find("#issue_#{issue2.id}")).to have_content 'wontfix'
+        end
+      end
+    end
   end
 
   context 'as a guest' do
@@ -320,7 +360,7 @@ feature 'Issues > Labels bulk assignment', feature: true do
 
   def open_labels_dropdown(items = [], unmark = false)
     page.within('.issues_bulk_update') do
-      click_button 'Label'
+      click_button 'Labels'
       wait_for_ajax
       items.map do |item|
         click_link item

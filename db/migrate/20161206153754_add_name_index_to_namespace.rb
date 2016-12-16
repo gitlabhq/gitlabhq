@@ -13,7 +13,7 @@ class AddNameIndexToNamespace < ActiveRecord::Migration
   end
 
   def down
-    if index_exists?(:namespaces, :name)
+    if index_exists?(:namespaces, [:name, :parent_id])
       remove_index :namespaces, [:name, :parent_id]
     end
   end

@@ -1,4 +1,4 @@
-%li{ class: mr_css_classes(merge_request) }
+%li{ id: dom_id(merge_request), class: mr_css_classes(merge_request), data: { labels: merge_request.label_ids, id: merge_request.id } }
   - if @bulk_edit
     .issue-check
       = check_box_tag dom_id(merge_request, "selected"), nil, false, 'data-id' => merge_request.id, class: "selected_issue"
@@ -39,7 +39,7 @@
           = icon('thumbs-down')
           = downvotes
 
-      - note_count = merge_request.mr_and_commit_notes.user.count
+      - note_count = merge_request.related_notes.user.count
       %li
         = link_to merge_request_path(merge_request, anchor: 'notes'), class: ('no-comments' if note_count.zero?) do
           = icon('comments')

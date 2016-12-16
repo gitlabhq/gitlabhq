@@ -690,7 +690,7 @@ The `stop_review_app` job is **required** to have the following keywords defined
 #### dynamic environments
 
 > [Introduced][ce-6323] in GitLab 8.12 and GitLab Runner 1.6.
-  `$CI_BUILD_REF_SLUG` was [introduced][ce-8072] in GitLab 8.15.
+  `$CI_ENVIRONMENT_SLUG` was [introduced][ce-7983] in GitLab 8.15
 
 `environment` can also represent a configuration hash with `name` and `url`.
 These parameters can use any of the defined [CI variables](#variables)
@@ -703,15 +703,17 @@ deploy as review app:
   stage: deploy
   script: make deploy
   environment:
-    name: review-apps/$CI_BUILD_REF_NAME
-    url: https://$CI_BUILD_REF_SLUG.review.example.com/
+    name: review/$CI_BUILD_REF_NAME
+    url: https://$CI_ENVIRONMENT_SLUG.example.com/
 ```
 
 The `deploy as review app` job will be marked as deployment to dynamically
-create the `review-apps/$CI_BUILD_REF_NAME` environment, which `$CI_BUILD_REF_NAME`
-is an [environment variable][variables] set by the Runner. If for example the
-`deploy as review app` job was run in a branch named `pow`, this environment
-should be accessible under `https://pow.review.example.com/`.
+create the `review/$CI_BUILD_REF_NAME` environment, where `$CI_BUILD_REF_NAME`
+is an [environment variable][variables] set by the Runner. The
+`$CI_ENVIRONMENT_SLUG` variable is based on the environment name, but suitable
+for inclusion in URLs. In this case, if the `deploy as review app` job was run
+in a branch named `pow`, this environment would be accessible with an URL like
+`https://review-pow-aaaaaa.example.com/`.
 
 This of course implies that the underlying server which hosts the application
 is properly configured.
@@ -719,10 +721,6 @@ is properly configured.
 The common use case is to create dynamic environments for branches and use them
 as Review Apps. You can see a simple example using Review Apps at
 https://gitlab.com/gitlab-examples/review-apps-nginx/.
-
-`$CI_BUILD_REF_SLUG` is another environment variable set by the runner, based on
-`$CI_BUILD_REF_NAME` but lower-cased, and with some characters replaced with
-`-`, making it suitable for use in URLs and domain names.
 
 ### artifacts
 
@@ -1243,5 +1241,5 @@ CI with various languages.
 [ce-6323]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/6323
 [environment]: ../environments.md
 [ce-6669]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/6669
-[ce-8072]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/xxxx
 [variables]: ../variables/README.md
+[ce-7983]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7983
