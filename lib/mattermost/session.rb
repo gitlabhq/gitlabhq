@@ -17,12 +17,11 @@ module Mattermost
     include Doorkeeper::Helpers::Controller
     include HTTParty
 
+    base_uri Settings.mattermost.host
+
     attr_accessor :current_resource_owner, :token
 
-    def initialize(uri, current_user)
-      # Sets the base uri for HTTParty, so we can use paths
-      self.class.base_uri(uri)
-
+    def initialize(current_user)
       @current_resource_owner = current_user
     end
 
@@ -30,7 +29,7 @@ module Mattermost
       raise NoSessionError unless create
 
       begin
-        yield
+        yield self
       ensure
         destroy
       end
@@ -65,7 +64,9 @@ module Mattermost
       return unless token_uri
 
       self.token = request_token
-      self.class.headers("Cookie" => "MMAUTHTOKEN=#{self.token}")
+      @headers = {
+        "Authorization": "Bearer #{self.token}"
+      }
       self.token
     end
 
@@ -98,11 +99,11 @@ module Mattermost
     end
 
     def get(path, options = {})
-      self.class.get(path, options)
+      self.class.get(path, options.merge(headers: @headers))
     end
 
     def post(path, options = {})
-      self.class.post(path, options)
+      self.class.post(path, options.merge(headers: @headers))
     end
   end
 end

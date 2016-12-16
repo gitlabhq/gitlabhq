@@ -6,13 +6,17 @@ describe Mattermost::Session, type: :request do
   let(:gitlab_url) { "http://gitlab.com" }
   let(:mattermost_url) { "http://mattermost.com" }
 
-  subject { described_class.new(mattermost_url, user) }
+  subject { described_class.new(user) }
 
   # Needed for doorkeeper to function
   it { is_expected.to respond_to(:current_resource_owner) }
   it { is_expected.to respond_to(:request) }
   it { is_expected.to respond_to(:authorization) }
   it { is_expected.to respond_to(:strategy) }
+
+  before do
+    described_class.base_uri(mattermost_url)
+  end
 
   describe '#with session' do
     let(:location) { 'http://location.tld' }
@@ -72,18 +76,22 @@ describe Mattermost::Session, type: :request do
             end
 
           WebMock.stub_request(:post, "#{mattermost_url}/api/v3/users/logout").
-            to_return(headers: { Cookie: 'MMAUTHTOKEN=thisworksnow' }, status: 200)
+            to_return(headers: { Authorization: 'token thisworksnow' }, status: 200)
         end
 
         it 'can setup a session' do
-          subject.with_session { 1 + 1 }
+          subject.with_session do |session|
+          end
+
           expect(subject.token).not_to be_nil
         end
 
         it 'returns the value of the block' do
-          value = subject.with_session { 1 + 1 }
+          result = subject.with_session do |session|
+            "value"
+          end
 
-          expect(value).to be(2)
+          expect(result).to eq("value")
         end
       end
     end

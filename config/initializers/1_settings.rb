@@ -262,6 +262,13 @@ Settings.lfs['enabled']      = true if Settings.lfs['enabled'].nil?
 Settings.lfs['storage_path'] = File.expand_path(Settings.lfs['storage_path'] || File.join(Settings.shared['path'], "lfs-objects"), Rails.root)
 
 #
+# Mattermost
+#
+Settings['mattermost'] ||= Settingslogic.new({})
+Settings.mattermost['enabled']      = false if Settings.mattermost['enabled'].nil?
+Settings.mattermost['host']         = nil unless Settings.mattermost.enabled
+
+#
 # Gravatar
 #
 Settings['gravatar'] ||= Settingslogic.new({})
