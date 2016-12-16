@@ -25,15 +25,12 @@ class MattermostSlashCommandsService < ChatService
     ]
   end
 
-  def configure(host, current_user, team_id:, trigger:, url:, icon_url:)
+  def configure(host, current_user, params)
     new_token = Mattermost::Session.new(host, current_user).with_session do
-      Mattermost::Command.create(team_id,
-                                 trigger: trigger || @service.project.path,
-                                 url: url,
-                                 icon_url: icon_url)
+      Mattermost::Command.create(params[:team_id], command)
     end
 
-    update!(token: new_token)
+    update!(token: new_token, active: true)
   end
 
   def trigger(params)
@@ -49,6 +46,23 @@ class MattermostSlashCommandsService < ChatService
   end
 
   private
+
+  def command(trigger:, url:, icon_url:)
+    pretty_project_name = project.name_with_namespace
+
+    {
+      auto_complete: true,
+      auto_complete_desc: "Perform common operations on: #{pretty_project_name}",
+      auto_complete_hint: '[help]',
+      description: "Perform common operations on: #{pretty_project_name}",
+      display_name: "GitLab  / #{pretty_project_name}",
+      method: 'P',
+      user_name: 'GitLab',
+      trigger: trigger,
+      url: url,
+      icon_url: icon_url
+    }
+  end
 
   def find_chat_user(params)
     ChatNames::FindUserService.new(self, params).execute
