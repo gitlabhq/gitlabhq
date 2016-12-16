@@ -33,7 +33,7 @@ namespace that started the import process.
 
 The importer page is visible when you create a new project.
 
-![New project page on GitLab](img/import_projects_from_gitea_new_project_page.png)
+![New project page on GitLab](img/import_projects_from_new_project_page.png)
 
 Click on the **Gitea** link and the import authorization process will start.
 
