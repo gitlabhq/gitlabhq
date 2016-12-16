@@ -1,3 +1,4 @@
+/* global Vue */
 (() => {
   Vue.component('time-tracking-no-tracking-pane', {
     name: 'time-tracking-no-tracking-pane',

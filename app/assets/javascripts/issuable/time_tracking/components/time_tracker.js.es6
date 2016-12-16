@@ -1,3 +1,4 @@
+/* global Vue */
 //= require ./help_state
 //= require ./collapsed_state
 //= require ./spent_only_pane

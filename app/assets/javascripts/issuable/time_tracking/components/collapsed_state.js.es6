@@ -1,3 +1,4 @@
+/* global Vue */
 //= require lib/utils/pretty_time
 
 (() => {

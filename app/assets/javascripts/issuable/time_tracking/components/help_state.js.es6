@@ -1,3 +1,4 @@
+/* global Vue */
 (() => {
   Vue.component('time-tracking-help-state', {
     name: 'time-tracking-help-state',
