@@ -170,13 +170,13 @@ feature 'Merge request approvals', js: true, feature: true do
 
       it 'I am able to approve' do
         approve_merge_request
-        expect(page).to have_content("Approved by")
+        expect(page).to have_content('Approved by')
       end
 
-      it 'I am able to unapprove' do
+      it 'I am able to unapprove', focus: true do
         approve_merge_request
         unapprove_merge_request
-        expect(page).not_to have_content("Approved by")
+        expect(page).not_to have_content('Approved by')
       end
 
     end
@@ -194,13 +194,13 @@ feature 'Merge request approvals', js: true, feature: true do
         end
 
         wait_for_ajax
-        expect(page).to have_content("Approved by")
+        expect(page).to have_content('Approved by')
       end
 
-      it 'I am able to unapprove' do
+      it 'I am able to unapprove', focus: true do
         approve_merge_request
         unapprove_merge_request
-        expect(page).not_to have_content("Approved by")
+        expect(page).not_to have_content('Approved by')
       end
     end
   end
@@ -215,7 +215,7 @@ end
 
 def unapprove_merge_request
   page.within '.mr-state-widget' do
-    click_button 'Remove your approval'
+    find('.unapprove-btn-wrap').click
   end
   wait_for_ajax
 end
