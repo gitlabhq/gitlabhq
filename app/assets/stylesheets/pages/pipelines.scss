@@ -466,6 +466,28 @@
     margin-bottom: 10px;
     white-space: normal;
 
+
+    .dropdown-menu-toggle {
+      background-color: transparent;
+      border: none;
+      padding: 0;
+      color: $gl-text-color-light;
+      flex-grow: 1;
+
+
+      &:focus {
+        outline: none;
+      }
+
+      &:hover {
+        color: $gl-text-color;
+
+        .dropdown-counter-badge {
+          color: $gl-text-color;
+        }
+      }
+    }
+
     &:hover {
       background-color: $stage-hover-bg;
       border: 1px solid $stage-hover-border;
@@ -635,28 +657,6 @@
   font-weight: 100;
 }
 
-
-.dropdown-menu-toggle {
-  background-color: transparent;
-  border: none;
-  padding: 0;
-  color: $gl-text-color-light;
-  flex-grow: 1;
-
-
-  &:focus {
-    outline: none;
-  }
-
-  &:hover {
-    color: $gl-text-color;
-
-    .dropdown-counter-badge {
-      color: $gl-text-color;
-    }
-  }
-}
-
 // Action Icons
 .ci-action-icon-container .ci-action-icon-wrapper {
   float: right;
@@ -816,7 +816,7 @@
     .ci-status-icon {
       width: 28px;
       padding: 0 8px 0 0;
-      transition: all 0.2s cubic-bezier(0.25, 0, 1, 1);
+      transition: width 0.2s cubic-bezier(0.25, 0, 1, 1);
 
       + .dropdown-caret {
         display: inline-block;
@@ -853,7 +853,6 @@
     .ci-status-icon-skipped {
       background-color: rgba($gray-darkest, .1);
     }
-
   }
 
   .mini-pipeline-graph-icon-container {
@@ -861,7 +860,6 @@
     .ci-status-icon:focus {
       width: 28px;
       padding: 0 8px 0 0;
-      transition: all 0.2s cubic-bezier(0.25, 0, 1, 1);
 
       + .dropdown-caret {
         display: inline-block;
