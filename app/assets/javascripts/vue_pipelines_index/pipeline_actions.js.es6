@@ -6,6 +6,14 @@
     props: [
       'pipeline',
     ],
+    computed: {
+      actions() {
+        return this.pipeline.details.manual_actions.length > 0;
+      },
+      artifacts() {
+        return this.pipeline.details.artifacts.length > 0;
+      },
+    },
     methods: {
       download(name) {
         return `Download ${name} artifacts`;
@@ -17,7 +25,7 @@
           <div class="btn-group inline">
             <div class="btn-group">
               <a
-                v-if='pipeline.details.manual_actions.length > 0'
+                v-if='actions'
                 class="dropdown-toggle btn btn-default js-pipeline-dropdown-manual-actions"
                 data-toggle="dropdown"
                 title="Manual build"
@@ -54,7 +62,7 @@
             </div>
             <div class="btn-group">
               <a
-                v-if='pipeline.details.artifacts.length > 0'
+                v-if='artifacts'
                 class="dropdown-toggle btn btn-default build-artifacts js-pipeline-dropdown-download"
                 data-toggle="dropdown"
                 type="button"
