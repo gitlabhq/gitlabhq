@@ -265,8 +265,8 @@ Settings.lfs['storage_path'] = File.expand_path(Settings.lfs['storage_path'] || 
 # Mattermost
 #
 Settings['mattermost'] ||= Settingslogic.new({})
-Settings.mattermost['enabled']      = false if Settings.mattermost['enabled'].nil?
-Settings.mattermost['host']         = nil unless Settings.mattermost.enabled
+Settings.mattermost['enabled'] = false if Settings.mattermost['enabled'].nil?
+Settings.mattermost['host'] = nil unless Settings.mattermost.enabled
 
 #
 # Gravatar
