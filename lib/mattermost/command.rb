@@ -1,7 +1,7 @@
 module Mattermost
   class Command < Session
     def self.all(team_id)
-      get("/api/v3/teams/#{team_id}/commands/list_team_commands")
+      get("/teams/#{team_id}/commands/list_team_commands").parsed_response
     end
 
     # params should be a hash, which supplies _at least_:
@@ -16,10 +16,13 @@ module Mattermost
         description: 'Perform common operations on GitLab',
         display_name: 'GitLab',
         method: 'P',
-        user_name: 'GitLab'
+        user_name: 'GitLab',
+        trigger: 'gitlab',
       }.merge(params)
 
-      post( "/api/v3/teams/#{team_id}/commands/create", command.to_json).parsed_response['token']
+      response = post( "/teams/#{team_id}/commands/create", body: command.to_json)
+
+      response.parsed_response['token']
     end
   end
 end
