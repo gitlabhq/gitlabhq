@@ -1,6 +1,13 @@
-class SlackService < Service
+# Base class for Chat notifications services
+# This class is not meant to be used directly, but only to inherit from.
+class ChatNotificationService < Service
+  include ChatMessage
+
+  default_value_for :category, 'chat'
+
   prop_accessor :webhook, :username, :channel
   boolean_accessor :notify_only_broken_builds, :notify_only_broken_pipelines
+
   validates :webhook, presence: true, url: true, if: :activated?
 
   def initialize_properties
@@ -14,35 +21,8 @@ class SlackService < Service
     end
   end
 
-  def title
-    'Slack'
-  end
-
-  def description
-    'A team communication tool for the 21st century'
-  end
-
-  def to_param
-    'slack'
-  end
-
-  def help
-    'This service sends notifications to your Slack channel.<br/>
-    To setup this Service you need to create a new <b>"Incoming webhook"</b> in your Slack integration panel,
-    and enter the Webhook URL below.'
-  end
-
-  def fields
-    default_fields =
-      [
-        { type: 'text', name: 'webhook',   placeholder: 'https://hooks.slack.com/services/...' },
-        { type: 'text', name: 'username', placeholder: 'username' },
-        { type: 'text', name: 'channel', placeholder: "#general" },
-        { type: 'checkbox', name: 'notify_only_broken_builds' },
-        { type: 'checkbox', name: 'notify_only_broken_pipelines' },
-      ]
-
-    default_fields + build_event_channels
+  def can_test?
+    valid?
   end
 
   def supported_events
@@ -67,21 +47,16 @@ class SlackService < Service
 
     message = get_message(object_kind, data)
 
-    if message
-      opt = {}
+    return false unless message
 
-      event_channel = get_channel_field(object_kind) || channel
+    opt = {}
 
-      opt[:channel] = event_channel if event_channel
-      opt[:username] = username if username
+    opt[:channel]  = get_channel_field(object_kind).presence || channel || default_channel
+    opt[:username] = username if username
+    notifier = Slack::Notifier.new(webhook, opt)
+    notifier.ping(message.pretext, attachments: message.attachments, fallback: message.fallback)
 
-      notifier = Slack::Notifier.new(webhook, opt)
-      notifier.ping(message.pretext, attachments: message.attachments, fallback: message.fallback)
-
-      true
-    else
-      false
-    end
+    true
   end
 
   def event_channel_names
@@ -94,6 +69,10 @@ class SlackService < Service
 
   def global_fields
     fields.reject { |field| field[:name].end_with?('channel') }
+  end
+
+  def default_channel
+    raise NotImplementedError
   end
 
   private
@@ -124,7 +103,7 @@ class SlackService < Service
 
   def build_event_channels
     supported_events.reduce([]) do |channels, event|
-      channels << { type: 'text', name: event_channel_name(event), placeholder: "#general" }
+      channels << { type: 'text', name: event_channel_name(event), placeholder: default_channel }
     end
   end
 
@@ -166,11 +145,3 @@ class SlackService < Service
     end
   end
 end
-
-require "slack_service/issue_message"
-require "slack_service/push_message"
-require "slack_service/merge_message"
-require "slack_service/note_message"
-require "slack_service/build_message"
-require "slack_service/pipeline_message"
-require "slack_service/wiki_page_message"
