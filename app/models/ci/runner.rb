@@ -145,7 +145,7 @@ module Ci
     private
 
     def runner_queue_key
-      "runner:build_queue:#{self.id}"
+      "runner:build_queue:#{self.token}"
     end
 
     def tag_constraints
