@@ -5,6 +5,7 @@ describe 'Search bar', js: true, feature: true do
 
   let!(:project) { create(:empty_project) }
   let!(:user) { create(:user) }
+  let(:filtered_search) { find('.filtered-search') }
 
   before do
     project.team << [user, :master]
@@ -22,7 +23,6 @@ describe 'Search bar', js: true, feature: true do
   describe 'clear search button' do
     it 'clears text' do
       search_text = 'search_text'
-      filtered_search = find('.filtered-search')
       filtered_search.set(search_text)
 
       expect(filtered_search.value).to eq(search_text)
@@ -35,28 +35,24 @@ describe 'Search bar', js: true, feature: true do
     end
 
     it 'hides after clicked' do
-      filtered_search = find('.filtered-search')
       filtered_search.set('a')
       find('.filtered-search-input-container .clear-search').click
       expect(page).to have_css('.clear-search', visible: false)
     end
 
     it 'hides when there is no text' do
-      filtered_search = find('.filtered-search')
       filtered_search.set('a')
       filtered_search.set('')
       expect(page).to have_css('.clear-search', visible: false)
     end
 
     it 'shows when there is text' do
-      filtered_search = find('.filtered-search')
       filtered_search.set('a')
 
       expect(page).to have_css('.clear-search', visible: true)
     end
 
     it 'resets the dropdown hint filter' do
-      filtered_search = find('.filtered-search')
       filtered_search.click();
       original_size = page.all('#js-dropdown-hint .filter-dropdown .filter-dropdown-item').size
 
@@ -69,7 +65,6 @@ describe 'Search bar', js: true, feature: true do
     end
 
     it 'resets the dropdown filters' do
-      filtered_search = find('.filtered-search')
       filtered_search.set('a')
       hintStyle = page.find('#js-dropdown-hint')['style']
       hintOffset = getLeftStyle(hintStyle)
