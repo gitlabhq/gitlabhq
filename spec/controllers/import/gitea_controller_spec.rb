@@ -9,7 +9,7 @@ describe Import::GiteaController do
   include_context 'a GitHub-ish import controller'
 
   def assign_host_url
-    session[:host_url] = host_url
+    session[:gitea_host_url] = host_url
   end
 
   describe "GET new" do

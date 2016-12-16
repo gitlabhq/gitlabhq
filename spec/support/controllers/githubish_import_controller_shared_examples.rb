@@ -4,6 +4,10 @@
 #   Note: You have access to `email_value` which is the email address value
 #         being currently tested).
 
+def assign_session_token(provider)
+  session[:"#{provider}_access_token"] = 'asdasd12345'
+end
+
 shared_examples 'a GitHub-ish import controller: POST personal_access_token' do
   let(:status_import_url) { public_send("status_import_#{provider}_url") }
 
@@ -15,7 +19,7 @@ shared_examples 'a GitHub-ish import controller: POST personal_access_token' do
 
     post :personal_access_token, personal_access_token: token
 
-    expect(session[:access_token]).to eq(token)
+    expect(session[:"#{provider}_access_token"]).to eq(token)
     expect(controller).to redirect_to(status_import_url)
   end
 end
@@ -24,7 +28,7 @@ shared_examples 'a GitHub-ish import controller: GET new' do
   let(:status_import_url) { public_send("status_import_#{provider}_url") }
 
   it "redirects to status if we already have a token" do
-    assign_session_token
+    assign_session_token(provider)
     allow(controller).to receive(:logged_in_with_provider?).and_return(false)
 
     get :new
@@ -48,7 +52,7 @@ shared_examples 'a GitHub-ish import controller: GET status' do
   let(:extra_assign_expectations) { {} }
 
   before do
-    assign_session_token
+    assign_session_token(provider)
   end
 
   it "assigns variables" do
@@ -80,7 +84,7 @@ shared_examples 'a GitHub-ish import controller: GET status' do
 
     get :status
 
-    expect(session[:access_token]).to eq(nil)
+    expect(session[:"#{provider}_access_token"]).to be_nil
     expect(controller).to redirect_to(new_import_url)
     expect(flash[:alert]).to eq("Access denied to your #{Gitlab::ImportSources.title(provider.to_s)} account.")
   end
@@ -100,11 +104,11 @@ shared_examples 'a GitHub-ish import controller: POST create' do
 
   before do
     stub_client(user: provider_user, repo: provider_repo)
-    assign_session_token
+    assign_session_token(provider)
   end
 
-  context "when the repository owner is the Gitea user" do
-    context "when the Gitea user and GitLab user's usernames match" do
+  context "when the repository owner is the provider user" do
+    context "when the provider user and GitLab user's usernames match" do
       it "takes the current user's namespace" do
         expect(Gitlab::GithubImport::ProjectCreator).
           to receive(:new).with(provider_repo, provider_repo.name, user.namespace, user, access_params, type: provider).
@@ -114,7 +118,7 @@ shared_examples 'a GitHub-ish import controller: POST create' do
       end
     end
 
-    context "when the Gitea user and GitLab user's usernames don't match" do
+    context "when the provider user and GitLab user's usernames don't match" do
       let(:provider_username) { "someone_else" }
 
       it "takes the current user's namespace" do
@@ -127,15 +131,15 @@ shared_examples 'a GitHub-ish import controller: POST create' do
     end
   end
 
-  context "when the repository owner is not the Gitea user" do
+  context "when the repository owner is not the provider user" do
     let(:other_username) { "someone_else" }
 
     before do
       provider_repo.owner = OpenStruct.new(login: other_username)
-      assign_session_token
+      assign_session_token(provider)
     end
 
-    context "when a namespace with the Gitea user's username already exists" do
+    context "when a namespace with the provider user's username already exists" do
       let!(:existing_namespace) { create(:namespace, name: other_username, owner: user) }
 
       context "when the namespace is owned by the GitLab user" do
@@ -164,7 +168,7 @@ shared_examples 'a GitHub-ish import controller: POST create' do
       end
     end
 
-    context "when a namespace with the Gitea user's username doesn't exist" do
+    context "when a namespace with the provider user's username doesn't exist" do
       context "when current user can create namespaces" do
         it "creates the namespace" do
           expect(Gitlab::GithubImport::ProjectCreator).

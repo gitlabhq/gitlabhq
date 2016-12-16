@@ -7,18 +7,18 @@ class Import::GithubController < Import::BaseController
   def new
     if logged_in_with_provider?
       go_to_provider_for_permissions
-    elsif session[:access_token]
+    elsif session[access_token_key]
       redirect_to status_import_url
     end
   end
 
   def callback
-    session[:access_token] = client.get_token(params[:code])
+    session[access_token_key] = client.get_token(params[:code])
     redirect_to status_import_url
   end
 
   def personal_access_token
-    session[:access_token] = params[:personal_access_token]
+    session[access_token_key] = params[:personal_access_token]
     redirect_to status_import_url
   end
 
@@ -52,7 +52,7 @@ class Import::GithubController < Import::BaseController
   private
 
   def client
-    @client ||= Gitlab::GithubImport::Client.new(session[:access_token], client_options)
+    @client ||= Gitlab::GithubImport::Client.new(session[access_token_key], client_options)
   end
 
   def verify_import_enabled
@@ -80,13 +80,17 @@ class Import::GithubController < Import::BaseController
   end
 
   def provider_unauthorized
-    session[:access_token] = nil
+    session[access_token_key] = nil
     redirect_to new_import_url,
       alert: "Access denied to your #{Gitlab::ImportSources.title(provider.to_s)} account."
   end
 
+  def access_token_key
+    :"#{provider}_access_token"
+  end
+
   def access_params
-    { github_access_token: session[:access_token] }
+    { github_access_token: session[access_token_key] }
   end
 
   # The following methods are overriden in subclasses
@@ -99,7 +103,7 @@ class Import::GithubController < Import::BaseController
   end
 
   def provider_auth
-    if session[:access_token].blank?
+    if session[access_token_key].blank?
       go_to_provider_for_permissions
     end
   end

@@ -29,7 +29,7 @@ describe Import::GithubController do
 
       get :callback
 
-      expect(session[:access_token]).to eq(token)
+      expect(session[:github_access_token]).to eq(token)
       expect(controller).to redirect_to(status_import_github_url)
     end
   end
