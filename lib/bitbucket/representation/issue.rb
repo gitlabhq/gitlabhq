@@ -27,6 +27,10 @@ module Bitbucket
         raw['title']
       end
 
+      def milestone
+        raw.dig('milestone', 'name')
+      end
+
       def created_at
         raw['created_on']
       end
