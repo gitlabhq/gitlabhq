@@ -11,7 +11,7 @@ module API
       },
       dockerfiles: {
         klass: Gitlab::Template::DockerfileTemplate,
-        gitlab_version: 8.9
+        gitlab_version: 8.15
       }
     }.freeze
     PROJECT_TEMPLATE_REGEX =
