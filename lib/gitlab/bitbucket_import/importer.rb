@@ -28,6 +28,7 @@ module Gitlab
 
       def handle_errors
         return unless errors.any?
+
         project.update_column(:import_error, {
           message: 'The remote data could not be fully imported.',
           errors: errors
@@ -35,15 +36,12 @@ module Gitlab
       end
 
       def gitlab_user_id(project, username)
-        if username
-          user = find_user(username)
-          (user && user.id) || project.creator_id
-        else
-          project.creator_id
-        end
+        user = find_user(username)
+        user.try(:id) || project.creator_id
       end
 
       def find_user(username)
+        return nil unless username
         User.joins(:identities).find_by("identities.extern_uid = ? AND identities.provider = 'bitbucket'", username)
       end
 
