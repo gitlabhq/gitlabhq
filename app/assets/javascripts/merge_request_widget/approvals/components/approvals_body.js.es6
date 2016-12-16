@@ -33,7 +33,7 @@
         return this.userCanApprove && !this.userHasApproved;
       },
       showApprovalsBody() {
-        return !this.widgetLoading && this.approvalsLeft && this.suggestedApprovers.length;
+        return !this.widgetLoading;
       }
     },
     methods: {
@@ -45,8 +45,10 @@
       gl.ApprovalsStore.initStoreOnce();
     },
     template: `
-      <div class='approvals-body' v-if='showApprovalsBody'>
-        <h4> Requires {{ approvalsRequiredStringified }} (from {{ approverNamesStringified }})</h4>
+      <div class='approvals-body mr-widget-body' v-if='showApprovalsBody'>
+        <h4> Requires {{ approvalsRequiredStringified }}
+          <span v-if='!!suggestedApprovers.length'> (from {{ approverNamesStringified }}) </span>
+        </h4>
         <div v-if='showApproveButton' class='append-bottom-10'>
           <button
             @click='approveMergeRequest'
