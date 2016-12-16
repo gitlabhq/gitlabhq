@@ -161,6 +161,9 @@ module Gitlab
       # Add sharedRepository config
       repo.set_git_config("core.sharedRepository", "0660")
 
+      # Update the repository HEAD to point to the default branch
+      system("ssh git@#{Gitlab.config.gitolite.ssh_host} 'symbolic-ref #{project.path_with_namespace} HEAD refs/heads/#{project.default_branch}'")
+
       repo
     end
 

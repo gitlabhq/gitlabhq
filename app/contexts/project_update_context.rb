@@ -17,7 +17,12 @@ class ProjectUpdateContext < BaseContext
       end
     end
 
-    project.update_attributes(params[:project], as: role)
+    if params[:project]["default_branch"] != project.default_branch
+      project.update_attributes(params[:project], as: role)
+      project.update_repository
+    else
+      project.update_attributes(params[:project], as: role)
+    end
   end
 end
 
