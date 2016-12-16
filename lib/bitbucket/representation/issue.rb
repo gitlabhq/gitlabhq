@@ -12,11 +12,11 @@ module Bitbucket
       end
 
       def author
-        raw.dig('reporter', 'username')
+        raw.fetch('reporter', {}).fetch('username', nil)
       end
 
       def description
-        raw.dig('content', 'raw')
+        raw.fetch('content', {}).fetch('raw', nil)
       end
 
       def state
@@ -28,7 +28,7 @@ module Bitbucket
       end
 
       def milestone
-        raw.dig('milestone', 'name')
+        raw['milestone']['name'] if raw['milestone'].present?
       end
 
       def created_at

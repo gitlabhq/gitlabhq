@@ -6,7 +6,7 @@ module Bitbucket
       end
 
       def note
-        raw.dig('content', 'raw')
+        raw.fetch('content', {}).fetch('raw', nil)
       end
 
       def created_at
