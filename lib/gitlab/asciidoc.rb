@@ -35,11 +35,7 @@ module Gitlab
 
       html.html_safe
     end
-  end
-end
 
-module Gitlab
-  module Asciidoc
     class Html5Converter < Asciidoctor::Converter::Html5Converter
       extend Asciidoctor::Converter::Config
 
