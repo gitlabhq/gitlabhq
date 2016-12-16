@@ -37,7 +37,7 @@ class ChatSlashCommandsService < Service
     end
 
     Gitlab::ChatCommands::Command.new(project, user,
-      params.merge(presenter_format: presenter_format)).execute
+      params).execute
   end
 
   private
@@ -51,10 +51,6 @@ class ChatSlashCommandsService < Service
   end
 
   def presenter
-    Gitlab::ChatCommands::Presenter.new(presenter_format)
-  end
-
-  def presenter_format
-    throw NotImplementedError
+    Gitlab::ChatCommands::Presenter.new
   end
 end

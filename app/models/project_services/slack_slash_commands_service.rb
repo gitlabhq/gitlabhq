@@ -13,7 +13,14 @@ class SlackSlashCommandsService < ChatSlashCommandsService
     'slack_slash_commands'
   end
 
-  def presenter_format
-    'slack'
+  def trigger(params)
+    result = super
+
+    # Format messages to be Slack-compatible
+    if result && result[:text]
+      result[:text] = Slack::Notifier::LinkFormatter.format(result[:text])
+    end
+
+    result
   end
 end

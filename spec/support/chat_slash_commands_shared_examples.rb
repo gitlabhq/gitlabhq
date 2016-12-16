@@ -1,6 +1,4 @@
-require 'spec_helper'
-
-describe ChatSlashCommandsService, models: true do
+RSpec.shared_examples 'chat slash commands' do
   describe "Associations" do
     it { is_expected.to respond_to :token }
     it { is_expected.to have_many :chat_names }
@@ -28,10 +26,6 @@ describe ChatSlashCommandsService, models: true do
 
   describe '#trigger' do
     subject { described_class.new }
-
-    before do
-      allow(subject).to receive(:presenter_format).and_return('unknown')
-    end
 
     context 'no token is passed' do
       let(:params) { Hash.new }

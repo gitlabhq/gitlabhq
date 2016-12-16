@@ -3,15 +3,9 @@ module Gitlab
     class Presenter
       include Gitlab::Routing.url_helpers
 
-      attr_reader :format
-
-      def initialize(format)
-        @format = format
-      end
-
       def authorize_chat_name(url)
         message = if url
-                    ":wave: Hi there! Before I do anything for you, please #{link(url, 'connect your GitLab account')}."
+                    ":wave: Hi there! Before I do anything for you, please [connect your GitLab account](#{url})."
                   else
                     ":sweat_smile: Couldn't identify you, nor can I autorize you!"
                   end
@@ -49,7 +43,7 @@ module Gitlab
       end
 
       def access_denied
-        ephemeral_response("Whoops! That action is not allowed. This incident will be #{link('https://xkcd.com/838/', 'reported')}.")
+          ephemeral_response("Whoops! That action is not allowed. This incident will be [reported](https://xkcd.com/838/).")
       end
 
       private
@@ -94,7 +88,7 @@ module Gitlab
         reference = resource.try(:to_reference) || resource.try(:id)
         title = resource.try(:title) || resource.try(:name)
 
-        link(url(resource), "#{reference} #{title}")
+          "[#{reference} #{title}](#{url(resource)})"
       end
 
       def header_with_list(header, items)
@@ -131,19 +125,6 @@ module Gitlab
           text: message,
           status: 200
         }
-      end
-
-      def link(url, title)
-        case format
-        when 'slack'
-          "<#{url}|#{title}>"
-
-        when 'mattermost'
-          "[#{title}](#{url})"
-
-        else
-          title
-        end
       end
     end
   end
