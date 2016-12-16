@@ -3,13 +3,13 @@ require 'rails_helper'
 describe 'Filter issues', feature: true do
   include WaitForAjax
 
-  let!(:group)     { create(:group) }
-  let!(:project)   { create(:project, group: group) }
-  let!(:user)      { create(:user) }
-  let!(:user2)      { create(:user) }
+  let!(:group) { create(:group) }
+  let!(:project) { create(:project, group: group) }
+  let!(:user) { create(:user) }
+  let!(:user2) { create(:user) }
   let!(:milestone) { create(:milestone, project: project) }
-  let!(:label)     { create(:label, project: project) }
-  let!(:wontfix)   { create(:label, project: project, title: "Won't fix") }
+  let!(:label) { create(:label, project: project) }
+  let!(:wontfix) { create(:label, project: project, title: "Won't fix") }
 
   let!(:bug_label) { create(:label, project: project, title: 'bug') }
   let!(:caps_sensitive_label) { create(:label, project: project, title: 'CAPS_sensitive') }
