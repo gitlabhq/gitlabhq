@@ -139,6 +139,27 @@ describe Repository, models: true do
     it { is_expected.to eq('c1acaa58bbcbc3eafe538cb8274ba387047b69f8') }
   end
 
+  describe '#last_commit_id_for_path' do
+    subject { repository.last_commit_id_for_path(sample_commit.id, '.gitignore') }
+
+    it { is_expected.to eq('c1acaa58bbcbc3eafe538cb8274ba387047b69f8') }
+  end
+
+  describe '#cache_last_commit_id_for_path' do
+    subject { repository.cache_last_commit_id_for_path(sample_commit.id, '.gitignore') }
+    let(:cache) { repository.send(:cache) }
+    let(:key) { "last_commit_id_for_path:#{sample_commit.id}:#{Digest::SHA1.digest('.gitignore')}" }
+    before { cache.expire(key) }
+    after { cache.expire(key) }
+
+    it "caches #last_commit_id_for_path" do
+      expect(repository).to receive(:last_commit_id_for_path).once.and_return('c1acaa58bbcbc3eafe538cb8274ba387047b69f8')
+      2.times do
+        is_expected.to eq('c1acaa58bbcbc3eafe538cb8274ba387047b69f8')
+      end
+    end
+  end
+
   describe '#find_commits_by_message' do
     it 'returns commits with messages containing a given string' do
       commit_ids = repository.find_commits_by_message('submodule').map(&:id)
