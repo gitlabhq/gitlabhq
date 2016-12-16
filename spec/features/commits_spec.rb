@@ -107,7 +107,7 @@ describe 'Commits' do
         describe 'Cancel build' do
           it 'cancels build' do
             visit ci_status_path(pipeline)
-            click_on 'Cancel'
+            find('a.btn[title="Cancel"]').click
             expect(page).to have_content 'canceled'
           end
         end
