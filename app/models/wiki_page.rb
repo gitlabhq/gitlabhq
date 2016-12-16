@@ -12,6 +12,23 @@ class WikiPage
     ActiveModel::Name.new(self, nil, 'wiki')
   end
 
+  def self.group_by_directory(pages)
+    directories = {}
+
+    pages.each do |page|
+      if page.slug.include?('/')
+        # Directory hierarchy is given by matching from the beginning up to
+        # the last forward slash.
+        directory = page.slug.match(/\A(.+)\//)[1]
+        directories[directory] = add_to_directory(directories[directory], page)
+      else
+        directories['root'] = add_to_directory(directories['root'], page)
+      end
+    end
+
+    directories
+  end
+
   def to_key
     [:slug]
   end
@@ -175,6 +192,14 @@ class WikiPage
   end
 
   private
+
+  def self.add_to_directory(directory, page)
+    if directory.present?
+      directory << page
+    else
+      [page]
+    end
+  end
 
   def set_attributes
     attributes[:slug] = @page.url_path

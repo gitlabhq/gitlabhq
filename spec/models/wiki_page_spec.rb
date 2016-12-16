@@ -7,6 +7,23 @@ describe WikiPage, models: true do
 
   subject { WikiPage.new(wiki) }
 
+  describe '::group_by_directory' do
+    context 'when there are no pages' do
+      it 'returns an empty hash' do
+      end
+    end
+
+    context 'when there are pages' do
+      let!(:page_1) { create_page('page_1', 'content') }
+      let!(:page_2) { create_page('directory/page_2', 'content') }
+      let(:pages) { [page_1, page_2] }
+
+      xit 'returns a hash in which keys are directories and values are their pages' do
+        expected_grouped_pages = { 'root' => [page_1], 'directory' => [page_2] }
+      end
+    end
+  end
+
   describe "#initialize" do
     context "when initialized with an existing gollum page" do
       before do
