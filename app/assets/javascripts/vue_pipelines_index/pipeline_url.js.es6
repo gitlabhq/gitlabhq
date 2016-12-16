@@ -8,8 +8,7 @@
     ],
     computed: {
       user() {
-        if (this.pipeline.user) return true;
-        return false;
+        return !!this.pipeline.user;
       },
     },
     template: `
