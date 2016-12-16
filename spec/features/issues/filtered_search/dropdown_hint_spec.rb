@@ -6,6 +6,7 @@ describe 'Dropdown hint', js: true, feature: true do
   let!(:project) { create(:empty_project) }
   let!(:user) { create(:user) }
   let(:filtered_search) { find('.filtered-search') }
+
   before do
     project.team << [user, :master]
     login_as(user)
