@@ -37,7 +37,7 @@
           API
         </span>
         <span
-          v-if='pipeline.flags.latest === true'
+          v-if='pipeline.flags.latest'
           class="label label-success has-tooltip"
           title=""
           data-original-title="Latest pipeline for this branch"
@@ -45,7 +45,7 @@
           latest
         </span>
         <span
-          v-if='pipeline.flags.yaml_errors === true'
+          v-if='pipeline.flags.yaml_errors'
           class="label label-danger has-tooltip"
           title=""
           data-original-title="Undefined yaml error"
@@ -53,7 +53,7 @@
           yaml invalid
         </span>
         <span
-          v-if='pipeline.flags.stuck === true'
+          v-if='pipeline.flags.stuck'
           class="label label-warning"
         >
           stuck
