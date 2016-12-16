@@ -37,7 +37,7 @@
 
       if (selected.tagName === 'LI') {
         if (selected.hasAttribute('data-value')) {
-        this.dismissDropdown();
+          this.dismissDropdown();
         } else {
           const token = selected.querySelector('.js-filter-hint').innerText.trim();
           const tag = selected.querySelector('.js-filter-tag').innerText.trim();
