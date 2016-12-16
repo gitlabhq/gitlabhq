@@ -21,8 +21,6 @@ module Ci
 
     after_create :keep_around_commits, unless: :importing?
 
-    delegate :stages, to: :statuses
-
     state_machine :status, initial: :created do
       event :enqueue do
         transition created: :pending
@@ -90,25 +88,59 @@ module Ci
     end
 
     # ref can't be HEAD or SHA, can only be branch/tag name
+    scope :latest, ->(ref = nil) do
+      max_id = unscope(:select)
+        .select("max(#{quoted_table_name}.id)")
+        .group(:ref, :sha)
+
+      if ref
+        where(id: max_id, ref: ref)
+      else
+        where(id: max_id)
+      end
+    end
+
+    def self.latest_status(ref = nil)
+      latest(ref).status
+    end
+
     def self.latest_successful_for(ref)
-      where(ref: ref).order(id: :desc).success.first
+      success.latest(ref).first
     end
 
     def self.truncate_sha(sha)
       sha[0...8]
     end
 
-    def self.stages
-      # We use pluck here due to problems with MySQL which doesn't allow LIMIT/OFFSET in queries
-      CommitStatus.where(pipeline: pluck(:id)).stages
-    end
-
     def self.total_duration
       where.not(duration: nil).sum(:duration)
     end
 
-    def stages_with_latest_statuses
-      statuses.latest.includes(project: :namespace).order(:stage_idx).group_by(&:stage)
+    def stages_count
+      statuses.select(:stage).distinct.count
+    end
+
+    def stages_name
+      statuses.order(:stage_idx).distinct.
+        pluck(:stage, :stage_idx).map(&:first)
+    end
+
+    def stages
+      status_sql = statuses.latest.where('stage=sg.stage').status_sql
+
+      stages_query = statuses.group('stage').select(:stage)
+                       .order('max(stage_idx)')
+
+      stages_with_statuses = CommitStatus.from(stages_query, :sg).
+        pluck('sg.stage', status_sql)
+
+      stages_with_statuses.map do |stage|
+        Ci::Stage.new(self, name: stage.first, status: stage.last)
+      end
+    end
+
+    def artifacts
+      builds.latest.with_artifacts_not_expired
     end
 
     def project_id
@@ -318,6 +350,12 @@ module Ci
       @merge_requests ||= project.merge_requests
         .where(source_branch: self.ref)
         .select { |merge_request| merge_request.head_pipeline.try(:id) == self.id }
+    end
+
+    def detailed_status(current_user)
+      Gitlab::Ci::Status::Pipeline::Factory
+        .new(self, current_user)
+        .fabricate!
     end
 
     private

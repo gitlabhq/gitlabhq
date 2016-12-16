@@ -55,6 +55,30 @@ describe Projects::IssuesController do
   end
 
   describe 'GET #new' do
+    context 'internal issue tracker' do
+      before do
+        sign_in(user)
+        project.team << [user, :developer]
+      end
+
+      it 'builds a new issue' do
+        get :new, namespace_id: project.namespace.path, project_id: project
+
+        expect(assigns(:issue)).to be_a_new(Issue)
+      end
+
+      it 'fills in an issue for a merge request' do
+        project_with_repository = create(:project)
+        project_with_repository.team << [user, :developer]
+        mr = create(:merge_request_with_diff_notes, source_project: project_with_repository)
+
+        get :new, namespace_id: project_with_repository.namespace.path, project_id: project_with_repository, merge_request_for_resolving_discussions: mr.iid
+
+        expect(assigns(:issue).title).not_to be_empty
+        expect(assigns(:issue).description).not_to be_empty
+      end
+    end
+
     context 'external issue tracker' do
       it 'redirects to the external issue tracker' do
         external = double(new_issue_path: 'https://example.com/issues/new')
@@ -272,6 +296,42 @@ describe Projects::IssuesController do
   end
 
   describe 'POST #create' do
+    context 'resolving discussions in MergeRequest' do
+      let(:discussion) { Discussion.for_diff_notes([create(:diff_note_on_merge_request)]).first }
+      let(:merge_request) { discussion.noteable }
+      let(:project) { merge_request.source_project }
+
+      before do
+        project.team << [user, :master]
+        sign_in user
+      end
+
+      let(:merge_request_params) do
+        { merge_request_for_resolving_discussions: merge_request.iid }
+      end
+
+      def post_issue(issue_params)
+        post :create, namespace_id: project.namespace.to_param, project_id: project.to_param, issue: issue_params, merge_request_for_resolving_discussions: merge_request.iid
+      end
+
+      it 'creates an issue for the project' do
+        expect { post_issue({ title: 'Hello' }) }.to change { project.issues.reload.size }.by(1)
+      end
+
+      it "doesn't overwrite given params" do
+        post_issue(description: 'Manually entered description')
+
+        expect(assigns(:issue).description).to eq('Manually entered description')
+      end
+
+      it 'resolves the discussion in the merge_request' do
+        post_issue(title: 'Hello')
+        discussion.first_note.reload
+
+        expect(discussion.resolved?).to eq(true)
+      end
+    end
+
     context 'Akismet is enabled' do
       before do
         allow_any_instance_of(SpamService).to receive(:check_for_spam?).and_return(true)

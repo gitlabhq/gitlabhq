@@ -347,7 +347,8 @@ Parameters:
 ### Get single project
 
 Get a specific project, identified by project ID or NAMESPACE/PROJECT_NAME, which is owned by the authenticated user.
-If using namespaced projects call make sure that the NAMESPACE/PROJECT_NAME is URL-encoded, eg. `/api/v3/projects/diaspora%2Fdiaspora` (where `/` is represented by `%2F`).
+If using namespaced projects call make sure that the NAMESPACE/PROJECT_NAME is URL-encoded, eg. `/api/v3/projects/diaspora%2Fdiaspora` (where `/` is represented by `%2F`). This endpoint can be accessed without authentication if
+the project is publicly accessible.
 
 ```
 GET /projects/:id
@@ -436,10 +437,47 @@ Parameters:
 }
 ```
 
+## Get project users
+
+Get the users list of a project.
+
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `search` | string | no | Search for specific users |
+
+```
+GET /projects/:id/users
+```
+
+```json
+[
+  {
+    "id": 1,
+    "username": "john_smith",
+    "name": "John Smith",
+    "state": "active",
+    "avatar_url": "http://localhost:3000/uploads/user/avatar/1/cd8.jpeg",
+    "web_url": "http://localhost:3000/john_smith"
+  },
+  {
+    "id": 2,
+    "username": "jack_smith",
+    "name": "Jack Smith",
+    "state": "blocked",
+    "avatar_url": "http://gravatar.com/../e32131cd8.jpeg",
+    "web_url": "http://localhost:3000/jack_smith"
+  }
+]
+```
+
 ### Get project events
 
-Get the events for the specified project.
-Sorted from newest to oldest
+Get the events for the specified project sorted from newest to oldest. This
+endpoint can be accessed without authentication if the project is publicly
+accessible.
 
 ```
 GET /projects/:id/events
@@ -626,7 +664,6 @@ Parameters:
 | `path` | string | no | Custom repository name for new project. By default generated based on name |
 | `default_branch` | string | no | `master` by default |
 | `namespace_id` | integer | no | Namespace for the new project (defaults to the current user's namespace) |
-| `default_branch` | string | no | `master` by default |
 | `description` | string | no | Short project description |
 | `issues_enabled` | boolean | no | Enable issues for this project |
 | `merge_requests_enabled` | boolean | no | Enable merge requests for this project |
@@ -1344,7 +1381,9 @@ Parameter:
 
 ## Search for projects by name
 
-Search for projects by name which are accessible to the authenticated user.
+Search for projects by name which are accessible to the authenticated user. This
+endpoint can be accessed without authentication if the project is publicly
+accessible.
 
 ```
 GET /projects/search/:query

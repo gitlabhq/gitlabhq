@@ -24,8 +24,9 @@ describe Milestone, models: true do
     it { is_expected.to have_many(:issues) }
   end
 
-  let(:milestone) { create(:milestone) }
-  let(:issue) { create(:issue) }
+  let(:project) { create(:project, :public) }
+  let(:milestone) { create(:milestone, project: project) }
+  let(:issue) { create(:issue, project: project) }
   let(:user) { create(:user) }
 
   describe "#title" do
@@ -110,8 +111,8 @@ describe Milestone, models: true do
 
   describe :items_count do
     before do
-      milestone.issues << create(:issue)
-      milestone.issues << create(:closed_issue)
+      milestone.issues << create(:issue, project: project)
+      milestone.issues << create(:closed_issue, project: project)
       milestone.merge_requests << create(:merge_request)
     end
 
@@ -126,7 +127,7 @@ describe Milestone, models: true do
 
   describe '#total_items_count' do
     before do
-      create :closed_issue, milestone: milestone
+      create :closed_issue, milestone: milestone, project: project
       create :merge_request, milestone: milestone
     end
 
@@ -244,6 +245,20 @@ describe Milestone, models: true do
       it 'returns no results' do
         expect(milestone_ids).to be_empty
       end
+    end
+  end
+
+  describe '#to_reference' do
+    let(:project) { build(:empty_project, name: 'sample-project') }
+    let(:milestone) { build(:milestone, iid: 1, project: project) }
+
+    it 'returns a String reference to the object' do
+      expect(milestone.to_reference).to eq "%1"
+    end
+
+    it 'supports a cross-project reference' do
+      another_project = build(:project, name: 'another-project', namespace: project.namespace)
+      expect(milestone.to_reference(another_project)).to eq "sample-project%1"
     end
   end
 end

@@ -1,5 +1,7 @@
 module API
   class Groups < Grape::API
+    include PaginationParams
+
     before { authenticate! }
 
     helpers do
@@ -21,6 +23,7 @@ module API
         optional :search, type: String, desc: 'Search for a specific group'
         optional :order_by, type: String, values: %w[name path], default: 'name', desc: 'Order by name or path'
         optional :sort, type: String, values: %w[asc desc], default: 'asc', desc: 'Sort by asc (ascending) or desc (descending)'
+        use :pagination
       end
       get do
         groups = if current_user.admin
@@ -40,6 +43,9 @@ module API
 
       desc 'Get list of owned groups for authenticated user' do
         success Entities::Group
+      end
+      params do
+        use :pagination
       end
       get '/owned' do
         groups = current_user.owned_groups
@@ -110,11 +116,25 @@ module API
       desc 'Get a list of projects in this group.' do
         success Entities::Project
       end
+      params do
+        optional :archived, type: Boolean, default: false, desc: 'Limit by archived status'
+        optional :visibility, type: String, values: %w[public internal private],
+                              desc: 'Limit by visibility'
+        optional :search, type: String, desc: 'Return list of authorized projects matching the search criteria'
+        optional :order_by, type: String, values: %w[id name path created_at updated_at last_activity_at],
+                            default: 'created_at', desc: 'Return projects ordered by field'
+        optional :sort, type: String, values: %w[asc desc], default: 'desc',
+                        desc: 'Return projects sorted in ascending and descending order'
+        optional :simple, type: Boolean, default: false,
+                          desc: 'Return only the ID, URL, name, and path of each project'
+        use :pagination
+      end
       get ":id/projects" do
         group = find_group!(params[:id])
         projects = GroupProjectsFinder.new(group).execute(current_user)
-        projects = paginate projects
-        present projects, with: Entities::Project, user: current_user
+        projects = filter_projects(projects)
+        entity = params[:simple] ? Entities::BasicProjectDetails : Entities::Project
+        present paginate(projects), with: entity, user: current_user
       end
 
       desc 'Transfer a project to the group namespace. Available only for admin.' do

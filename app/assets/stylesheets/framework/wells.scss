@@ -1,5 +1,5 @@
 .info-well {
-  background: $background-color;
+  background: $gray-light;
   color: $gl-gray;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
@@ -41,5 +41,18 @@
 
   .label.label-gray {
     background-color: $well-expand-item;
+  }
+}
+
+.light-well {
+  background-color: $gray-light;
+  padding: 15px;
+}
+
+.well-centered {
+  h1 {
+    font-weight: normal;
+    text-align: center;
+    font-size: 48px;
   }
 }

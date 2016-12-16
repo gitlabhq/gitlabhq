@@ -56,7 +56,7 @@ class Admin::GroupsController < Admin::ApplicationController
   private
 
   def group
-    @group ||= Group.find_by(path: params[:id])
+    @group ||= Group.find_by_full_path(params[:id])
   end
 
   def group_params

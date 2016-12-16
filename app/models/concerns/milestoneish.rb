@@ -1,17 +1,17 @@
 module Milestoneish
-  def closed_items_count(user = nil)
+  def closed_items_count(user)
     issues_visible_to_user(user).closed.size + merge_requests.closed_and_merged.size
   end
 
-  def total_items_count(user = nil)
+  def total_items_count(user)
     issues_visible_to_user(user).size + merge_requests.size
   end
 
-  def complete?(user = nil)
+  def complete?(user)
     total_items_count(user) > 0 && total_items_count(user) == closed_items_count(user)
   end
 
-  def percent_complete(user = nil)
+  def percent_complete(user)
     ((closed_items_count(user) * 100) / total_items_count(user)).abs
   rescue ZeroDivisionError
     0
@@ -29,8 +29,8 @@ module Milestoneish
     (Date.today - start_date).to_i
   end
 
-  def issues_visible_to_user(user = nil)
-    issues.visible_to_user(user)
+  def issues_visible_to_user(user)
+    IssuesFinder.new(user).execute.where(id: issues)
   end
 
   def upcoming?

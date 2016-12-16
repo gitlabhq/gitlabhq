@@ -3,7 +3,7 @@
  *
  */
 .mr-state-widget {
-  background: $background-color;
+  background: $gray-light;
   color: $gl-gray;
   border: 1px solid $border-color;
   border-radius: 2px;
@@ -116,7 +116,7 @@
 
     @media (max-width: $screen-xs-max) {
       h4 {
-        font-size: 15px;
+        font-size: 14px;
       }
 
       p {
@@ -127,6 +127,11 @@
       .btn-group,
       .accept-action {
         margin-bottom: 4px;
+      }
+
+      .btn-grouped {
+        float: none;
+        margin-right: 0;
       }
 
       .accept-action {
@@ -354,7 +359,7 @@
 
     th {
       background-color: $white-light;
-      color: $gl-placeholder-color;
+      color: $gl-gray-light;
     }
   }
 }
@@ -370,7 +375,7 @@
 }
 
 .mr-version-controls {
-  background: $background-color;
+  background: $gray-light;
   border-bottom: 1px solid $border-color;
   color: $gl-text-color;
 

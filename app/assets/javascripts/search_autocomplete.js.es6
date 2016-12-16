@@ -1,4 +1,5 @@
-/* eslint-disable */
+/* eslint-disable comma-dangle, no-return-assign, one-var, no-var, no-underscore-dangle, one-var-declaration-per-line, no-unused-vars, no-cond-assign, consistent-return, object-shorthand, prefer-arrow-callback, func-names, space-before-function-paren, no-plusplus, prefer-template, quotes, class-methods-use-this, no-unused-expressions, no-sequences, wrap-iife, no-lonely-if, no-else-return, no-param-reassign, vars-on-top, padded-blocks, no-extra-semi, indent, max-len */
+
 ((global) => {
 
   const KEYCODE = {

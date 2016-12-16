@@ -225,8 +225,8 @@ describe SystemNoteService, services: true do
 
     it_behaves_like 'a system note'
 
-    it "posts the Merge When Build Succeeds system note" do
-      expect(subject.note).to match  /enabled an automatic merge when the build for (\w+\/\w+@)?\h{40} succeeds/
+    it "posts the 'merge when pipeline succeeds' system note" do
+      expect(subject.note).to match  /enabled an automatic merge when the pipeline for (\w+\/\w+@)?\h{40} succeeds/
     end
   end
 
@@ -239,7 +239,7 @@ describe SystemNoteService, services: true do
 
     it_behaves_like 'a system note'
 
-    it "posts the Merge When Build Succeeds system note" do
+    it "posts the 'merge when pipeline succeeds' system note" do
       expect(subject.note).to eq  "canceled the automatic merge"
     end
   end
@@ -530,7 +530,7 @@ describe SystemNoteService, services: true do
       end
 
       it 'mentions referenced project' do
-        expect(subject.note).to include new_project.to_reference
+        expect(subject.note).to include new_project.path_with_namespace
       end
     end
 
@@ -694,7 +694,7 @@ describe SystemNoteService, services: true do
 
     describe "existing reference" do
       before do
-        message = "[#{author.name}|http://localhost/#{author.username}] mentioned this issue in [a commit of #{project.path_with_namespace}|http://localhost/#{project.path_with_namespace}/commit/#{commit.id}]:\n'#{commit.title}'"
+        message = "[#{author.name}|http://localhost/#{author.username}] mentioned this issue in [a commit of #{project.path_with_namespace}|http://localhost/#{project.path_with_namespace}/commit/#{commit.id}]:\n'#{commit.title.chomp}'"
         allow_any_instance_of(JIRA::Resource::Issue).to receive(:comments).and_return([OpenStruct.new(body: message)])
       end
 
@@ -710,6 +710,34 @@ describe SystemNoteService, services: true do
         expect(WebMock).not_to have_requested(:post, jira_api_comment_url(jira_issue))
         expect(WebMock).not_to have_requested(:post, jira_api_remote_link_url(jira_issue))
       end
+    end
+  end
+
+  describe '.discussion_continued_in_issue' do
+    let(:discussion) { Discussion.for_diff_notes([create(:diff_note_on_merge_request)]).first }
+    let(:merge_request) { discussion.noteable }
+    let(:project) { merge_request.source_project }
+    let(:issue) { create(:issue, project: project) }
+    let(:user) { create(:user) }
+
+    def reloaded_merge_request
+      MergeRequest.find(merge_request.id)
+    end
+
+    before do
+      project.team << [user, :developer]
+    end
+
+    it 'creates a new note in the discussion' do
+      # we need to completely rebuild the merge request object, or the `@discussions` on the merge request are not reloaded.
+      expect { SystemNoteService.discussion_continued_in_issue(discussion, project, user, issue) }.
+        to change { reloaded_merge_request.discussions.first.notes.size }.by(1)
+    end
+
+    it 'mentions the created issue in the system note' do
+      note = SystemNoteService.discussion_continued_in_issue(discussion, project, user, issue)
+
+      expect(note.note).to include(issue.to_reference)
     end
   end
 end

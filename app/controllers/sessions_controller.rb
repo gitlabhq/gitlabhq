@@ -31,8 +31,16 @@ class SessionsController < Devise::SessionsController
         resource.update_attributes(reset_password_token: nil,
                                    reset_password_sent_at: nil)
       end
+      # hide the signed-in notification
+      flash[:notice] = nil
       log_audit_event(current_user, with: authentication_method)
     end
+  end
+
+  def destroy
+    super
+    # hide the signed_out notice
+    flash[:notice] = nil
   end
 
   private

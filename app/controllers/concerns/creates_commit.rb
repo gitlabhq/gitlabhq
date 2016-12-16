@@ -81,10 +81,8 @@ module CreatesCommit
   def merge_request_exists?
     return @merge_request if defined?(@merge_request)
 
-    @merge_request = @mr_target_project.merge_requests.opened.find_by(
-      source_branch: @mr_source_branch,
-      target_branch: @mr_target_branch
-    )
+    @merge_request = MergeRequestsFinder.new(current_user, project_id: @mr_target_project.id).execute.opened.
+      find_by(source_branch: @mr_source_branch, target_branch: @mr_target_branch)
   end
 
   def different_project?

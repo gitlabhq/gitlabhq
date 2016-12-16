@@ -1,6 +1,7 @@
 module API
-  # Projects builds API
   class Builds < Grape::API
+    include PaginationParams
+
     before { authenticate! }
 
     params do
@@ -28,6 +29,7 @@ module API
       end
       params do
         use :optional_scope
+        use :pagination
       end
       get ':id/builds' do
         builds = user_project.builds.order('id DESC')
@@ -41,8 +43,9 @@ module API
         success Entities::Build
       end
       params do
-        requires :sha,   type: String, desc: 'The SHA id of a commit'
+        requires :sha, type: String, desc: 'The SHA id of a commit'
         use :optional_scope
+        use :pagination
       end
       get ':id/repository/commits/:sha/builds' do
         authorize_read_builds!

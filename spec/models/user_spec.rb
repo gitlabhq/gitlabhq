@@ -79,7 +79,7 @@ describe User, models: true do
     it { is_expected.to allow_value(0).for(:projects_limit) }
     it { is_expected.not_to allow_value(-1).for(:projects_limit) }
 
-    it { is_expected.to validate_length_of(:bio).is_within(0..255) }
+    it { is_expected.to validate_length_of(:bio).is_at_most(255) }
 
     it_behaves_like 'an object with email-formated attributes', :email do
       subject { build(:user) }
@@ -724,17 +724,6 @@ describe User, models: true do
       expect(
         search_with_secondary_emails('testemail@example.com').map(&:id)
       ).not_to include(email3.user.id)
-    end
-  end
-
-  describe 'by_username_or_id' do
-    let(:user1) { create(:user, username: 'foo') }
-
-    it "gets the correct user" do
-      expect(User.by_username_or_id(user1.id)).to eq(user1)
-      expect(User.by_username_or_id('foo')).to eq(user1)
-      expect(User.by_username_or_id(-1)).to be_nil
-      expect(User.by_username_or_id('bar')).to be_nil
     end
   end
 

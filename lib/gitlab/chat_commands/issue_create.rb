@@ -4,11 +4,11 @@ module Gitlab
       def self.match(text)
         # we can not match \n with the dot by passing the m modifier as than 
         # the title and description are not seperated
-        /\Aissue\s+create\s+(?<title>[^\n]*)\n*(?<description>(.|\n)*)/.match(text)
+        /\Aissue\s+(new|create)\s+(?<title>[^\n]*)\n*(?<description>(.|\n)*)/.match(text)
       end
 
       def self.help_message
-        'issue create <title>\n<description>'
+        'issue new <title> *`⇧ Shift`*+*`↵ Enter`* <description>'
       end
 
       def self.allowed?(project, user)

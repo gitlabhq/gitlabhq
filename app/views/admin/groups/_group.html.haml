@@ -2,7 +2,7 @@
 
 %li.group-row{ class: css_class }
   .controls
-    = link_to 'Edit', edit_admin_group_path(group), id: "edit_#{dom_id(group)}", class: 'btn'
+    = link_to 'Edit', admin_group_edit_path(group), id: "edit_#{dom_id(group)}", class: 'btn'
     = link_to 'Delete', [:admin, group], data: { confirm: "Are you sure you want to remove #{group.name}?" }, method: :delete, class: 'btn btn-remove'
   .stats
     %span
@@ -20,7 +20,7 @@
     = image_tag group_icon(group), class: "avatar s40 hidden-xs"
   .title
     = link_to [:admin, group], class: 'group-name' do
-      = group.name
+      = group.full_name
 
   - if group.description.present?
     .description

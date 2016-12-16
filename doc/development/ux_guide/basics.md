@@ -5,8 +5,7 @@
 * [Typography](#typography)
 * [Icons](#icons)
 * [Color](#color)
-* [Motion](#motion)
-* [Voice and tone](#voice-and-tone)
+* [Cursors](#cursors)
 
 ---
 
@@ -35,26 +34,15 @@ This is the typeface used for code blocks. GitLab uses the OS default font.
 ## Icons
 GitLab uses Font Awesome icons throughout our interface.
 
-![Trash icon](img/icon-trash.png)
-The trash icon is used for destructive actions that deletes information.
-
-![Edit icon](img/icon-edit.png)
-The pencil icon is used for editing content such as comments.
-
-![Notification icon](img/icon-notification.png)
-The bell icon is for notifications, such as Todos.
-
-![Subscribe icon](img/icon-subscribe.png)
-The eye icon is for subscribing to updates. For example, you can subscribe to a label and get updated on issues with that label.
-
-![RSS icon](img/icon-rss.png)
-The standard RSS icon is used for linking to RSS/atom feeds.
-
-![Close icon](img/icon-close.png)
-An 'x' is used for closing UI elements such as dropdowns.
-
-![Add icon](img/icon-add.png)
-A plus is used when creating new objects, such as issues, projects, etc.
+| | |
+| :-----------: | :---- |
+| ![Trash icon](img/icon-trash.png) | The trash icon is used for destructive actions that deletes information. |
+| ![Edit icon](img/icon-edit.png) | The pencil icon is used for editing content such as comments.|
+| ![Notification icon](img/icon-notification.png) | The bell icon is for notifications, such as Todos. |
+| ![Subscribe icon](img/icon-subscribe.png) | The eye icon is for subscribing to updates. For example, you can subscribe to a label and get updated on issues with that label. |
+| ![RSS icon](img/icon-rss.png) | The standard RSS icon is used for linking to RSS/atom feeds. |
+| ![Close icon](img/icon-close.png) | An 'x' is used for closing UI elements such as dropdowns. |
+| ![Add icon](img/icon-add.png) | A plus is used when creating new objects, such as issues, projects, etc. |
 
 > TODO: update this section, add more general guidance to icon usage and personality, etc.
 
@@ -62,33 +50,28 @@ A plus is used when creating new objects, such as issues, projects, etc.
 
 ## Color
 
-![Blue](img/color-blue.png)
-Blue is used to highlight primary active elements (such as current tab), as well as other organization and managing commands.
-
-![Green](img/color-green.png)
-Green is for actions that create new objects.
-
-![Orange](img/color-orange.png)
-Orange is used for warnings
-
-![Red](img/color-red.png)
-Red is reserved for delete and other destructive commands
-
-![Grey](img/color-grey.png)
-Grey, and white (depending on context) is used for netral, secondary elements
+| | |
+| :------: | :------- |
+| ![Blue](img/color-blue.png) | Blue is used to highlight primary active elements (such as the current tab), as well as other organizational and managing commands.|
+| ![Green](img/color-green.png) | Green is for actions that create new objects. |
+| ![Orange](img/color-orange.png) | Orange is used for warnings |
+| ![Red](img/color-red.png) | Red is reserved for delete and other destructive commands |
+| ![Grey](img/color-grey.png) | Grey is used for neutral secondary elements. Depending on context, white is sometimes used instead. |
 
 > TODO: Establish a perspective for color in terms of our personality and rationalize with Marketing usage.
 
 ---
 
-## Motion
+## Cursors
+The mouse cursor is key in helping users understand how to interact with elements on the screen.
 
-Motion is a tool to help convey important relationships, changes or transitions between elements. It should be used sparingly and intentionally, highlighting the right elements at the right moment.
+| | |
+| :------: | :------- |
+| ![Default cursor](img/cursors-default.png) | Default cursor |
+| ![Pointer cursor](img/cursors-pointer.png) | Pointer cursor: used to indicate that you can click on an element to invoke a command or navigate, such as links and buttons |
+| ![Move cursor](img/cursors-move.png) | Move cursor: used to indicate that you can move an element around on the screen |
+| ![Pan opened cursor](img/cursors-panopened.png) | Pan cursor (opened): indicates that you can grab and move the entire canvas, affecting what is seen in the view port. |
+| ![Pan closed cursor](img/cursors-panclosed.png) | Pan cursor (closed): indicates that you are actively panning the canvas. |
+| ![I-beam cursor](img/cursors-ibeam.png) | I-beam cursor: indicates that this is either text that you can select and copy, or a text field that you can click into to enter text. |
 
-> TODO: Determine a more concrete perspective on motion, create consistent easing/timing curves to follow.
 
----
-
-## Voice and tone
-
-The copy for GitLab is clear and direct. We strike a clear balance between professional and friendly. We can empathesize with users (such as celebrating completing all Todos), and remain respectful of the importance of the work. We are that trusted, friendly coworker that is helpful and understanding.

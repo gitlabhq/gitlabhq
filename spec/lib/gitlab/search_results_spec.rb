@@ -40,6 +40,15 @@ describe Gitlab::SearchResults do
         expect(results.milestones_count).to eq(1)
       end
     end
+
+    it 'includes merge requests from source and target projects' do
+      forked_project = create(:empty_project, forked_from_project: project)
+      merge_request_2 = create(:merge_request, target_project: project, source_project: forked_project, title: 'foo')
+
+      results = described_class.new(user, Project.where(id: forked_project.id), 'foo')
+
+      expect(results.objects('merge_requests')).to include merge_request_2
+    end
   end
 
   it 'does not list issues on private projects' do
@@ -151,5 +160,12 @@ describe Gitlab::SearchResults do
       expect(issues).not_to include security_issue_5
       expect(results.issues_count).to eq 5
     end
+  end
+
+  it 'does not list merge requests on projects with limited access' do
+    project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+    project.project_feature.update!(merge_requests_access_level: ProjectFeature::PRIVATE)
+
+    expect(results.objects('merge_requests')).not_to include merge_request
   end
 end

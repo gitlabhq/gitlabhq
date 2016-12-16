@@ -41,7 +41,7 @@ module Issuable
     has_one :metrics
 
     validates :author, presence: true
-    validates :title, presence: true, length: { within: 0..255 }
+    validates :title, presence: true, length: { maximum: 255 }
 
     scope :authored, ->(user) { where(author_id: user) }
     scope :assigned_to, ->(u) { where(assignee_id: u.id)}

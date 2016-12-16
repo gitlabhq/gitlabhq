@@ -31,7 +31,7 @@
         %span.label-branch= source_branch_with_namespace(@merge_request)
         %span into
         %span.label-branch
-          = link_to @merge_request.target_branch, namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch)
+          = link_to_if @merge_request.target_branch_exists?, @merge_request.target_branch, namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch)
         - if @merge_request.open? && @merge_request.diverged_from_target_branch?
           %span (#{pluralize(@merge_request.diverged_commits_count, 'commit')} behind)
 
@@ -53,7 +53,7 @@
             %li.notes-tab
               = link_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: 'div#notes', action: 'notes', toggle: 'tab' } do
                 Discussion
-                %span.badge= @merge_request.mr_and_commit_notes.user.count
+                %span.badge= @merge_request.related_notes.user.count
             - if @merge_request.source_project
               %li.commits-tab
                 = link_to commits_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: 'div#commits', action: 'commits', toggle: 'tab' } do

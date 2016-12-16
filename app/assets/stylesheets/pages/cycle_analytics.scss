@@ -109,7 +109,7 @@
 
         &.title {
           line-height: 19px;
-          font-size: 15px;
+          font-size: 14px;
           font-weight: 600;
           color: $gl-title-color;
         }
@@ -232,6 +232,7 @@
       &:hover:not(.active) {
         background-color: $gray-lightest;
         box-shadow: inset 2px 0 0 0 $border-color;
+        cursor: pointer;
       }
 
       &:first-child {

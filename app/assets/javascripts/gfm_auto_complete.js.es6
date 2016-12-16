@@ -1,4 +1,5 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, no-template-curly-in-string, comma-dangle, object-shorthand, quotes, dot-notation, no-else-return, one-var, no-var, no-underscore-dangle, one-var-declaration-per-line, no-param-reassign, no-useless-escape, prefer-template, consistent-return, wrap-iife, prefer-arrow-callback, camelcase, no-unused-vars, no-useless-return, padded-blocks, vars-on-top, indent, no-extra-semi, no-multi-spaces, semi, max-len */
+
 // Creates the variables for setting up GFM auto-completion
 (function() {
   if (window.GitLab == null) {
@@ -9,7 +10,7 @@
     return str.replace(/<(?:.|\n)*?>/gm, '');
   }
 
-  GitLab.GfmAutoComplete = {
+  window.GitLab.GfmAutoComplete = {
     dataLoading: false,
     dataLoaded: false,
     cachedData: {},
@@ -52,7 +53,11 @@
         return $.fn.atwho["default"].callbacks.filter(query, data, searchKey);
       },
       beforeInsert: function(value) {
-        if (!GitLab.GfmAutoComplete.dataLoaded) {
+        if (value && !this.setting.skipSpecialCharacterTest) {
+          var withoutAt = value.substring(1);
+          if (withoutAt && /[^\w\d]/.test(withoutAt)) value = value.charAt() + '"' + withoutAt + '"';
+        }
+        if (!window.GitLab.GfmAutoComplete.dataLoaded) {
           return this.at;
         } else {
           return value;
@@ -62,14 +67,15 @@
         // The below is taken from At.js source
         // Tweaked to commands to start without a space only if char before is a non-word character
         // https://github.com/ichord/At.js
-        var _a, _y, regexp, match;
+        var _a, _y, regexp, match, atSymbols;
+        atSymbols = Object.keys(this.app.controllers).join('|');
         subtext = subtext.split(' ').pop();
         flag = flag.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 
         _a = decodeURI("%C3%80");
         _y = decodeURI("%C3%BF");
 
-        regexp = new RegExp("(?:\\B|\\W|\\s)" + flag + "(?!\\W)([A-Za-z" + _a + "-" + _y + "0-9_\'\.\+\-]*)|([^\\x00-\\xff]*)$", 'gi');
+        regexp = new RegExp("(?:\\B|\\W|\\s)" + flag + "(?![" + atSymbols + "])([A-Za-z" + _a + "-" + _y + "0-9_\'\.\+\-]*)$", 'gi');
 
         match = regexp.exec(subtext);
 
@@ -117,6 +123,7 @@
         insertTpl: ':${name}:',
         data: ['loading'],
         startWithSpace: false,
+        skipSpecialCharacterTest: true,
         callbacks: {
           sorter: this.DefaultOptions.sorter,
           filter: this.DefaultOptions.filter,
@@ -141,6 +148,7 @@
         data: ['loading'],
         startWithSpace: false,
         alwaysHighlightFirst: true,
+        skipSpecialCharacterTest: true,
         callbacks: {
           sorter: this.DefaultOptions.sorter,
           filter: this.DefaultOptions.filter,
@@ -219,12 +227,13 @@
             }
           };
         })(this),
-        insertTpl: '${atwho-at}"${title}"',
+        insertTpl: '${atwho-at}${title}',
         data: ['loading'],
         startWithSpace: false,
         callbacks: {
           matcher: this.DefaultOptions.matcher,
           sorter: this.DefaultOptions.sorter,
+          beforeInsert: this.DefaultOptions.beforeInsert,
           beforeSave: function(milestones) {
             return $.map(milestones, function(m) {
               if (m.title == null) {
@@ -284,18 +293,11 @@
         callbacks: {
           matcher: this.DefaultOptions.matcher,
           sorter: this.DefaultOptions.sorter,
+          beforeInsert: this.DefaultOptions.beforeInsert,
           beforeSave: function(merges) {
-            var sanitizeLabelTitle;
-            sanitizeLabelTitle = function(title) {
-              if (/[\w\?&]+\s+[\w\?&]+/g.test(title)) {
-                return "\"" + (sanitize(title)) + "\"";
-              } else {
-                return sanitize(title);
-              }
-            };
             return $.map(merges, function(m) {
               return {
-                title: sanitizeLabelTitle(m.title),
+                title: sanitize(m.title),
                 color: m.color,
                 search: "" + m.title
               };
@@ -308,6 +310,7 @@
         at: '/',
         alias: 'commands',
         searchKey: 'search',
+        skipSpecialCharacterTest: true,
         displayTpl: function(value) {
           var tpl = '<li>/${name}';
           if (value.aliases.length > 0) {

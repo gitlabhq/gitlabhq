@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "eslint": "eslint --ext .js,.js.es6 .",
+    "eslint": "eslint --max-warnings 0 --ext .js,.js.es6 .",
     "eslint-fix": "npm run eslint -- --fix",
     "eslint-report": "npm run eslint -- --format html --output-file ./eslint-report.html"
   },

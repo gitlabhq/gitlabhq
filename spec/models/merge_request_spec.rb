@@ -31,7 +31,7 @@ describe MergeRequest, models: true do
     it { is_expected.to validate_presence_of(:target_branch) }
     it { is_expected.to validate_presence_of(:source_branch) }
 
-    context "Validation of merge user with Merge When Build succeeds" do
+    context "Validation of merge user with Merge When Pipeline Succeeds" do
       it "allows user to be nil when the feature is disabled" do
         expect(subject).to be_valid
       end
@@ -142,13 +142,16 @@ describe MergeRequest, models: true do
   end
 
   describe '#to_reference' do
+    let(:project) { build(:empty_project, name: 'sample-project') }
+    let(:merge_request) { build(:merge_request, target_project: project, iid: 1) }
+
     it 'returns a String reference to the object' do
-      expect(subject.to_reference).to eq "!#{subject.iid}"
+      expect(merge_request.to_reference).to eq "!1"
     end
 
     it 'supports a cross-project reference' do
-      cross = double('project')
-      expect(subject.to_reference(cross)).to eq "#{subject.source_project.to_reference}!#{subject.iid}"
+      another_project = build(:project, name: 'another-project', namespace: project.namespace)
+      expect(merge_request.to_reference(another_project)).to eq "sample-project!1"
     end
   end
 
@@ -202,7 +205,7 @@ describe MergeRequest, models: true do
     end
   end
 
-  describe "#mr_and_commit_notes" do
+  describe "#related_notes" do
     let!(:merge_request) { create(:merge_request) }
 
     before do
@@ -214,7 +217,7 @@ describe MergeRequest, models: true do
 
     it "includes notes for commits" do
       expect(merge_request.commits).not_to be_empty
-      expect(merge_request.mr_and_commit_notes.count).to eq(2)
+      expect(merge_request.related_notes.count).to eq(2)
     end
 
     it "includes notes for commits from target project as well" do
@@ -222,7 +225,7 @@ describe MergeRequest, models: true do
                               project: merge_request.target_project)
 
       expect(merge_request.commits).not_to be_empty
-      expect(merge_request.mr_and_commit_notes.count).to eq(3)
+      expect(merge_request.related_notes.count).to eq(3)
     end
   end
 
@@ -1122,6 +1125,46 @@ describe MergeRequest, models: true do
 
     before do
       allow(subject).to receive(:diff_discussions).and_return([first_discussion, second_discussion, third_discussion])
+    end
+
+    describe '#resolvable_discussions' do
+      before do
+        allow(first_discussion).to receive(:to_be_resolved?).and_return(true)
+        allow(second_discussion).to receive(:to_be_resolved?).and_return(false)
+        allow(third_discussion).to receive(:to_be_resolved?).and_return(false)
+      end
+
+      it 'includes only discussions that need to be resolved' do
+        expect(subject.resolvable_discussions).to eq([first_discussion])
+      end
+    end
+
+    describe '#discussions_can_be_resolved_by? user' do
+      let(:user) { build(:user) }
+
+      context 'all discussions can be resolved by the user' do
+        before do
+          allow(first_discussion).to receive(:can_resolve?).with(user).and_return(true)
+          allow(second_discussion).to receive(:can_resolve?).with(user).and_return(true)
+          allow(third_discussion).to receive(:can_resolve?).with(user).and_return(true)
+        end
+
+        it 'allows a user to resolve the discussions' do
+          expect(subject.discussions_can_be_resolved_by?(user)).to be(true)
+        end
+      end
+
+      context 'one discussion cannot be resolved by the user' do
+        before do
+          allow(first_discussion).to receive(:can_resolve?).with(user).and_return(true)
+          allow(second_discussion).to receive(:can_resolve?).with(user).and_return(true)
+          allow(third_discussion).to receive(:can_resolve?).with(user).and_return(false)
+        end
+
+        it 'allows a user to resolve the discussions' do
+          expect(subject.discussions_can_be_resolved_by?(user)).to be(false)
+        end
+      end
     end
 
     describe "#discussions_resolvable?" do

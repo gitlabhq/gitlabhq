@@ -1,4 +1,4 @@
-class AvatarUploader < CarrierWave::Uploader::Base
+class AvatarUploader < GitlabUploader
   include UploaderHelper
 
   storage :file

@@ -92,19 +92,11 @@ class Commit
   end
 
   def to_reference(from_project = nil)
-    if cross_project_reference?(from_project)
-      project.to_reference + self.class.reference_prefix + self.id
-    else
-      self.id
-    end
+    commit_reference(from_project, id)
   end
 
   def reference_link_text(from_project = nil)
-    if cross_project_reference?(from_project)
-      project.to_reference + self.class.reference_prefix + self.short_id
-    else
-      self.short_id
-    end
+    commit_reference(from_project, short_id)
   end
 
   def diff_line_count
@@ -236,13 +228,9 @@ class Commit
   def status(ref = nil)
     @statuses ||= {}
 
-    if @statuses.key?(ref)
-      @statuses[ref]
-    elsif ref
-      @statuses[ref] = pipelines.where(ref: ref).status
-    else
-      @statuses[ref] = pipelines.status
-    end
+    return @statuses[ref] if @statuses.key?(ref)
+
+    @statuses[ref] = pipelines.latest_status(ref)
   end
 
   def revert_branch_name
@@ -253,44 +241,47 @@ class Commit
     project.repository.next_branch("cherry-pick-#{short_id}", mild: true)
   end
 
-  def revert_description
-    if merged_merge_request
-      "This reverts merge request #{merged_merge_request.to_reference}"
+  def revert_description(user)
+    if merged_merge_request?(user)
+      "This reverts merge request #{merged_merge_request(user).to_reference}"
     else
       "This reverts commit #{sha}"
     end
   end
 
-  def revert_message
-    %Q{Revert "#{title.strip}"\n\n#{revert_description}}
+  def revert_message(user)
+    %Q{Revert "#{title.strip}"\n\n#{revert_description(user)}}
   end
 
-  def reverts_commit?(commit)
-    description? && description.include?(commit.revert_description)
+  def reverts_commit?(commit, user)
+    description? && description.include?(commit.revert_description(user))
   end
 
   def merge_commit?
     parents.size > 1
   end
 
-  def merged_merge_request
-    return @merged_merge_request if defined?(@merged_merge_request)
+  def merged_merge_request(current_user)
+    # Memoize with per-user access check
+    @merged_merge_request_hash ||= Hash.new do |hash, user|
+      hash[user] = merged_merge_request_no_cache(user)
+    end
 
-    @merged_merge_request = project.merge_requests.find_by(merge_commit_sha: id) if merge_commit?
+    @merged_merge_request_hash[current_user]
   end
 
-  def has_been_reverted?(current_user = nil, noteable = self)
+  def has_been_reverted?(current_user, noteable = self)
     ext = all_references(current_user)
 
     noteable.notes_with_associations.system.each do |note|
       note.all_references(current_user, extractor: ext)
     end
 
-    ext.commits.any? { |commit_ref| commit_ref.reverts_commit?(self) }
+    ext.commits.any? { |commit_ref| commit_ref.reverts_commit?(self, current_user) }
   end
 
-  def change_type_title
-    merged_merge_request ? 'merge request' : 'commit'
+  def change_type_title(user)
+    merged_merge_request?(user) ? 'merge request' : 'commit'
   end
 
   # Get the URI type of the given path
@@ -329,6 +320,16 @@ class Commit
 
   private
 
+  def commit_reference(from_project, referable_commit_id)
+    reference = project.to_reference(from_project)
+
+    if reference.present?
+      "#{reference}#{self.class.reference_prefix}#{referable_commit_id}"
+    else
+      referable_commit_id
+    end
+  end
+
   def find_author_by_any_email
     User.find_by_any_email(author_email.downcase)
   end
@@ -347,5 +348,13 @@ class Commit
     end
 
     changes
+  end
+
+  def merged_merge_request?(user)
+    !!merged_merge_request(user)
+  end
+
+  def merged_merge_request_no_cache(user)
+    MergeRequestsFinder.new(user, project_id: project.id).find_by(merge_commit_sha: id) if merge_commit?
   end
 end
