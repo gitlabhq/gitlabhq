@@ -98,14 +98,14 @@ ActiveRecord::Schema.define(version: 20161213172958) do
     t.text "help_page_text_html"
     t.text "shared_runners_text_html"
     t.text "after_sign_up_text_html"
+    t.boolean "sidekiq_throttling_enabled", default: false
+    t.string "sidekiq_throttling_queues"
+    t.decimal "sidekiq_throttling_factor"
     t.boolean "housekeeping_enabled", default: true, null: false
     t.boolean "housekeeping_bitmaps_enabled", default: true, null: false
     t.integer "housekeeping_incremental_repack_period", default: 10, null: false
     t.integer "housekeeping_full_repack_period", default: 50, null: false
     t.integer "housekeeping_gc_period", default: 200, null: false
-    t.boolean "sidekiq_throttling_enabled", default: false
-    t.string "sidekiq_throttling_queues"
-    t.decimal "sidekiq_throttling_factor"
     t.boolean "html_emails_enabled", default: true
   end
 
@@ -527,7 +527,6 @@ ActiveRecord::Schema.define(version: 20161213172958) do
     t.string "type"
     t.string "fingerprint"
     t.boolean "public", default: false, null: false
-    t.boolean "can_push", default: false, null: false
   end
 
   add_index "keys", ["fingerprint"], name: "index_keys_on_fingerprint", unique: true, using: :btree
@@ -740,8 +739,8 @@ ActiveRecord::Schema.define(version: 20161213172958) do
     t.integer "visibility_level", default: 20, null: false
     t.boolean "request_access_enabled", default: false, null: false
     t.datetime "deleted_at"
-    t.text "description_html"
     t.boolean "lfs_enabled"
+    t.text "description_html"
     t.integer "parent_id"
   end
 
@@ -1222,8 +1221,8 @@ ActiveRecord::Schema.define(version: 20161213172958) do
     t.datetime "otp_grace_period_started_at"
     t.boolean "ldap_email", default: false, null: false
     t.boolean "external", default: false
-    t.string "incoming_email_token"
     t.string "organization"
+    t.string "incoming_email_token"
     t.boolean "authorized_projects_populated"
   end
 
