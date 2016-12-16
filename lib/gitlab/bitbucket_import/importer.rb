@@ -6,7 +6,7 @@ module Gitlab
                 { title: 'proposal', color: '#69D100' },
                 { title: 'task', color: '#7F8C8D' }].freeze
 
-      attr_reader :project, :client, :errors
+      attr_reader :project, :client, :errors, :users
 
       def initialize(project)
         @project = project
@@ -14,6 +14,7 @@ module Gitlab
         @formatter = Gitlab::ImportFormatter.new
         @labels = {}
         @errors = []
+        @users = {}
       end
 
       def execute
@@ -36,17 +37,18 @@ module Gitlab
       end
 
       def gitlab_user_id(project, username)
-        user = find_user(username)
-        user.try(:id) || project.creator_id
+        find_user_id(username) || project.creator_id
       end
 
-      def find_user(username)
+      def find_user_id(username)
         return nil unless username
-        User.joins(:identities).find_by("identities.extern_uid = ? AND identities.provider = 'bitbucket'", username)
-      end
 
-      def existing_gitlab_user?(username)
-        username && find_user(username)
+        return users[username] if users.key?(username)
+
+        users[username] = User.select(:id)
+                              .joins(:identities)
+                              .find_by("identities.extern_uid = ? AND identities.provider = 'bitbucket'", username)
+                              .try(:id)
       end
 
       def repo
@@ -58,16 +60,18 @@ module Gitlab
 
         create_labels
 
+        gitlab_issue = nil
+
         client.issues(repo).each do |issue|
           begin
             description = ''
-            description += @formatter.author_line(issue.author) unless existing_gitlab_user?(issue.author)
+            description += @formatter.author_line(issue.author) unless find_user_id(issue.author)
             description += issue.description
 
             label_name = issue.kind
             milestone = issue.milestone ? project.milestones.find_or_create_by(title: issue.milestone) : nil
 
-            issue = project.issues.create!(
+            gitlab_issue = project.issues.create!(
               iid: issue.iid,
               title: issue.title,
               description: description,
@@ -81,9 +85,9 @@ module Gitlab
             errors << { type: :issue, iid: issue.iid, errors: e.message }
           end
 
-          issue.labels << @labels[label_name]
+          gitlab_issue.labels << @labels[label_name]
 
-          if issue.persisted?
+          if gitlab_issue.persisted?
             client.issue_comments(repo, issue.iid).each do |comment|
               # The note can be blank for issue service messages like "Changed title: ..."
               # We would like to import those comments as well but there is no any
@@ -93,11 +97,11 @@ module Gitlab
               next unless comment.note.present?
 
               note = ''
-              note += @formatter.author_line(comment.author) unless existing_gitlab_user?(comment.author)
+              note += @formatter.author_line(comment.author) unless find_user_id(comment.author)
               note += comment.note
 
               begin
-                issue.notes.create!(
+                gitlab_issue.notes.create!(
                   project: project,
                   note: note,
                   author_id: gitlab_user_id(project, comment.author),
@@ -124,7 +128,7 @@ module Gitlab
         pull_requests.each do |pull_request|
           begin
             description = ''
-            description += @formatter.author_line(pull_request.author) unless existing_gitlab_user?(pull_request.author)
+            description += @formatter.author_line(pull_request.author) unless find_user_id(pull_request.author)
             description += pull_request.description
 
             merge_request = project.merge_requests.create(
