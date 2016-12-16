@@ -12,25 +12,19 @@
       },
       approverNamesStringified() {
         const approvers = this.suggestedApprovers;
-        if (approvers && approvers.length) {
-          if (approvers.length === 1) {
-            return approvers[0].name;
-          }
-          const lastIndex = approvers.length - 1;
-          const nextToLastIndex = approvers.length - 2;
+        if (approvers.length === 1) {
+          return approvers[0].name;
+        } else {
           return approvers.reduce((memo, curr, index) => {
-            let suffix;
+            const nextMemo = `${memo}${curr.name}`;
 
-            if (index === nextToLastIndex) {
-              suffix = ' or ';
-            } else if (index === lastIndex) {
-              suffix = '';
-            } else {
-              suffix = ', ';
+            if (index === approvers.length - 2) { // second to last index
+              return `${nextMemo} or `;
+            } else if (index === approvers.length - 1) { // last index
+              return nextMemo;
             }
 
-            const nameToAdd = `${curr.name}${suffix}`;
-            return `${memo}${nameToAdd}`;
+            return `${nextMemo}, `;
           }, '');
         }
         return null;
@@ -39,7 +33,7 @@
         return this.userCanApprove && !this.userHasApproved;
       },
       showApprovalsBody() {
-        return !this.widgetLoading && this.approvalsLeft;
+        return !this.widgetLoading && this.approvalsLeft && this.suggestedApprovers.length;
       }
     },
     methods: {
