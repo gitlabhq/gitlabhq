@@ -1,4 +1,4 @@
-class MattermostSlashCommandsService < ChatService
+class MattermostSlashCommandsService < ChatSlashCommandsService
   include TriggersHelper
 
   prop_accessor :token
