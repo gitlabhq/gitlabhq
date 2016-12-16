@@ -1,4 +1,4 @@
 ---
-title: Allow Repositories API GET endpoints to be requested anonymously
+title: Allow unauthenticated access to Repositories API GET endpoints
 merge_request: 8148
 author:
