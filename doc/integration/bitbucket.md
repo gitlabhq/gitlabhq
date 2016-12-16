@@ -18,8 +18,10 @@ Bitbucket.org.
 ## Bitbucket OmniAuth provider
 
 > **Note:**
-Make sure to first follow the [Initial OmniAuth configuration][init-oauth]
-before proceeding with setting up the Bitbucket integration.
+GitLab 8.15 significantly simplified the way to integrate Bitbucket.org with
+GitLab. You are encouraged to upgrade your GitLab instance if you haven't done
+already. If you're using GitLab 8.14 and below, [use the previous integration
+docs][bb-old].
 
 To enable the Bitbucket OmniAuth provider you must register your application
 with Bitbucket.org. Bitbucket will generate an application ID and secret key for
@@ -111,16 +113,12 @@ well, the user will be returned to GitLab and will be signed in.
 
 ## Bitbucket project import
 
-You should be able to see the "Import projects from Bitbucket" option on the New Project page
-enabled.
-
-## Acknowledgements
-
-Special thanks to the writer behind the following article:
-
-- http://stratus3d.com/blog/2015/09/06/migrating-from-bitbucket-to-local-gitlab-server/
+Once the above configuration is set up, you can use Bitbucket to sign into
+GitLab and [start importing your projects][bb-import].
 
 [init-oauth]: omniauth.md#initial-omniauth-configuration
+[bb-import]: ../workflow/importing/import_projects_from_bitbucket.md
+[bb-old]: https://gitlab.com/gitlab-org/gitlab-ce/blob/8-14-stable/doc/integration/bitbucket.md
 [bitbucket-docs]: https://confluence.atlassian.com/bitbucket/use-the-ssh-protocol-with-bitbucket-cloud-221449711.html#UsetheSSHprotocolwithBitbucketCloud-KnownhostorBitbucket%27spublickeyfingerprints
 [reconfigure]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
 [restart GitLab]: ../administration/restart_gitlab.md#installations-from-source
