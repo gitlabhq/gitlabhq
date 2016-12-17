@@ -1,4 +1,4 @@
-class SlackService
+module ChatMessage
   class IssueMessage < BaseMessage
     attr_reader :user_name
     attr_reader :title
