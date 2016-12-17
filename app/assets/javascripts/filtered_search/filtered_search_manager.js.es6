@@ -136,21 +136,13 @@
         const condition = gl.FilteredSearchTokenKeys
           .searchByConditionKeyValue(token.key, token.value.toLowerCase());
         const { param } = gl.FilteredSearchTokenKeys.searchByKey(token.key);
+        const keyParam = param ? `${token.key}_${param}` : token.key;
         let tokenPath = '';
 
-        let keyParam = token.key;
-        if (param) {
-          keyParam += `_${param}`;
-        }
-
-        if (token.wildcard && condition) {
+        if (condition) {
           tokenPath = condition.url;
-        } else if (token.wildcard) {
-          // wildcard means that the token does not have a symbol
-          tokenPath = `${keyParam}=${encodeURIComponent(token.value)}`;
         } else {
-          // Remove the token symbol
-          tokenPath = `${keyParam}=${encodeURIComponent(token.value.slice(1))}`;
+          tokenPath = `${keyParam}=${encodeURIComponent(token.value)}`;
         }
 
         paths.push(tokenPath);

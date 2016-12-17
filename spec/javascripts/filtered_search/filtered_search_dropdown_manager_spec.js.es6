@@ -21,13 +21,6 @@
       });
 
       describe('input has no existing value', () => {
-        beforeEach(() => {
-          spyOn(gl.FilteredSearchTokenizer, 'processTokens')
-            .and.callFake(() => ({
-              lastToken: {},
-            }));
-        });
-
         it('should add word', () => {
           gl.FilteredSearchDropdownManager.addWordToInput('firstWord');
           expect(getInputValue()).toBe('firstWord');
@@ -61,26 +54,13 @@
             value: 'roo',
           };
 
-          spyOn(gl.FilteredSearchTokenizer, 'processTokens').and.callFake(() => ({
-            lastToken,
-          }));
-
           document.querySelector('.filtered-search').value = `${lastToken.key}:${lastToken.value}`;
           gl.FilteredSearchDropdownManager.addWordToInput('root');
           expect(getInputValue()).toBe('author:root');
         });
 
         it('should only add the remaining characters of the word (contains space)', () => {
-          const lastToken = {
-            key: 'label',
-            value: 'test me',
-          };
-
-          spyOn(gl.FilteredSearchTokenizer, 'processTokens').and.callFake(() => ({
-            lastToken,
-          }));
-
-          document.querySelector('.filtered-search').value = `${lastToken.key}:"${lastToken.value}"`;
+          document.querySelector('.filtered-search').value = 'label:~"test';
           gl.FilteredSearchDropdownManager.addWordToInput('~\'"test me"\'');
           expect(getInputValue()).toBe('label:~\'"test me"\'');
         });

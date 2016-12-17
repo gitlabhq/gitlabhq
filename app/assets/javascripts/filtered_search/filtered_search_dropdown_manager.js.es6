@@ -57,17 +57,25 @@
 
     static addWordToInput(word, addSpace = false) {
       const input = document.querySelector('.filtered-search');
+      input.value = input.value.trim();
+
       const value = input.value;
       const hasExistingValue = value.length !== 0;
-      const { lastToken } = gl.FilteredSearchTokenizer.processTokens(value);
+      const { lastToken, searchToken } = gl.FilteredSearchTokenizer.processTokens(value);
 
-      if ({}.hasOwnProperty.call(lastToken, 'key')) {
+      // Find out what part of the token value the user has typed
+      // and remove it from input before appending the selected token value
+      if (lastToken !== searchToken) {
+        const lastTokenString = `${lastToken.symbol}${lastToken.value}`;
+
         // Spaces inside the token means that the token value will be escaped by quotes
-        const hasQuotes = lastToken.value.indexOf(' ') !== -1;
+        const hasQuotes = lastTokenString.indexOf(' ') !== -1;
 
         // Add 2 length to account for the length of the front and back quotes
-        const lengthToRemove = hasQuotes ? lastToken.value.length + 2 : lastToken.value.length;
+        const lengthToRemove = hasQuotes ? lastTokenString.length + 2 : lastTokenString.length;
         input.value = value.slice(0, -1 * (lengthToRemove));
+      } else if (searchToken !== '' && word.indexOf(searchToken) !== -1) {
+        input.value = value.slice(0, -1 * searchToken.length);
       }
 
       input.value += hasExistingValue && addSpace ? ` ${word}` : word;
@@ -129,27 +137,25 @@
 
       const match = gl.FilteredSearchTokenKeys.searchByKey(dropdownName.toLowerCase());
       const shouldOpenFilterDropdown = match && this.currentDropdown !== match.key
-        && {}.hasOwnProperty.call(this.mapping, match.key);
+        && this.mapping[match.key];
       const shouldOpenHintDropdown = !match && this.currentDropdown !== 'hint';
 
       if (shouldOpenFilterDropdown || shouldOpenHintDropdown) {
-        // `hint` is not listed as a tokenKey (since it is not a real `filter`)
-        const key = match && {}.hasOwnProperty.call(match, 'key') ? match.key : 'hint';
+        const key = match && match.key ? match.key : 'hint';
         this.load(key, firstLoad);
       }
-
-      gl.droplab = this.droplab;
     }
 
     setDropdown() {
-      const { lastToken } = this.tokenizer.processTokens(this.filteredSearchInput.value);
+      const { lastToken, searchToken } = this.tokenizer
+        .processTokens(this.filteredSearchInput.value);
 
-      if (typeof lastToken === 'string') {
+      if (lastToken === searchToken) {
         // Token is not fully initialized yet because it has no value
         // Eg. token = 'label:'
-        const { tokenKey } = this.tokenizer.parseToken(lastToken);
-        this.loadDropdown(tokenKey);
-      } else if ({}.hasOwnProperty.call(lastToken, 'key')) {
+        const split = lastToken.split(':');
+        this.loadDropdown(split.length > 1 ? split[0] : '');
+      } else if (lastToken) {
         // Token has been initialized into an object because it has a value
         this.loadDropdown(lastToken.key);
       } else {

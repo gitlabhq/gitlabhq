@@ -29,7 +29,7 @@
     itemClicked(e, getValueFunction) {
       const { selected } = e.detail;
 
-      if (selected.tagName === 'LI') {
+      if (selected.tagName === 'LI' && selected.innerHTML) {
         const dataValueSet = gl.DropdownUtils.setDataValueIfSelected(selected);
 
         if (!dataValueSet) {
