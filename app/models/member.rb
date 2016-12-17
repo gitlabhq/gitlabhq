@@ -122,8 +122,8 @@ class Member < ActiveRecord::Base
       member =
         if user.is_a?(User)
           source.members.find_by(user_id: user.id) ||
-          source.requesters.find_by(user_id: user.id) ||
-          source.members.build(user_id: user.id)
+            source.requesters.find_by(user_id: user.id) ||
+            source.members.build(user_id: user.id)
         else
           source.members.build(invite_email: user)
         end
