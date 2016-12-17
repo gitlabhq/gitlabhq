@@ -22,17 +22,17 @@
     }
 
     fetch() {
-      return this.api.fetchApprovals({ type: 'GET' })
+      return this.api.fetchApprovals()
         .then((data) => this.rootStore.assignToData(data));
     }
 
     approve() {
-      return this.api.approveMergeRequest({ type: 'POST' })
+      return this.api.approveMergeRequest()
         .then((data) => this.rootStore.assignToData(data));
     }
 
     unapprove() {
-      return this.api.unapproveMergeRequest({ type: 'DELETE' })
+      return this.api.unapproveMergeRequest()
         .then((data) => this.rootStore.assignToData(data));
     }
   }

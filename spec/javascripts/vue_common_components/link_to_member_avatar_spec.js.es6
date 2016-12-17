@@ -1,6 +1,5 @@
 /* eslint-disable */
 //= require jquery
-//= require vue
 //= require vue_common_component/link_to_member_avatar
 
 ((gl) => {
@@ -104,10 +103,10 @@
 
     describe('Interaction', function() {
       it('should remove approval', function() {
-      
+
     });
       it('should give approval', function() {
-      
+
       });
      //  click link and handler fires
     });

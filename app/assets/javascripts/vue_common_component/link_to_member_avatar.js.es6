@@ -1,4 +1,4 @@
-/* Analogue of link_to_member_avatar in app/helpers/projects_helper.rb 
+/* Analogue of link_to_member_avatar in app/helpers/projects_helper.rb
   TODO: Support gravatar link generation, adding name text, username text
   TODO: 1:1 configuration compared to link_to_member_avatar
   TODO: Backport to CE
