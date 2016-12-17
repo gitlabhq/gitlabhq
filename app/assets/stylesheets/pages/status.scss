@@ -113,6 +113,19 @@
         fill: $gl-gray-light;
       }
     }
+
+    &.ci-manual {
+      color: $gl-gray-dark;
+      border-color: $gl-gray-dark;
+
+      &:not(span):hover {
+        background-color: rgba( $gl-gray-dark, .07);
+      }
+
+      svg {
+        fill: $gl-gray-dark;
+      }
+    }
   }
 }
 
