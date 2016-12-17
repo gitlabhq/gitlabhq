@@ -65,7 +65,7 @@ constraints(ProjectUrlConstrainer.new) do
       end
 
       resources :mattermost, only: [:new] do
-        member do
+        collection do
           post :configure
         end
       end
