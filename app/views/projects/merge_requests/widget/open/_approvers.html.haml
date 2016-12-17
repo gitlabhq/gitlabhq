@@ -1,0 +1,5 @@
+.mr-widget-footer.approved-by-users
+  %remove-approval{ '@remove-approval' => 'unapproveMergeRequest', ':approverNames' => 'approverNames', ':approvalsLeft' => 'approvalsLeft', ':moreApprovals' => 'moreApprovals', ':canApprove' => 'canApprove' }
+    %span{ slot: 'links-to-members'}
+      - @merge_request.approved_by_users.each do |user|
+        = link_to_member(@project, user, name: false, size: 24)
