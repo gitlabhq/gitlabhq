@@ -49,8 +49,8 @@ module Gitlab
     def self.oauth_authentication
       return false unless Gitlab::Geo.secondary?
 
-      RequestStore.store[:geo_oauth_application] ||= Gitlab::Geo.current_node.oauth_application or
-                                                     raise OauthApplicationUndefinedError
+      RequestStore.store[:geo_oauth_application] ||=
+        Gitlab::Geo.current_node.oauth_application or raise OauthApplicationUndefinedError
     end
   end
 end

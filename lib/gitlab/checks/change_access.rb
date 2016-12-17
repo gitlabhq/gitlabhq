@@ -90,8 +90,7 @@ module Gitlab
           commit_validation = push_rule.try(:commit_validation?)
 
           # if newrev is blank, the branch was deleted
-          return if Gitlab::Git.blank_ref?(@newrev) ||
-            !(commit_validation || validate_path_locks?)
+          return if Gitlab::Git.blank_ref?(@newrev) || !(commit_validation || validate_path_locks?)
 
           commits.each do |commit|
             next if commit_from_annex_sync?(commit.safe_message)
