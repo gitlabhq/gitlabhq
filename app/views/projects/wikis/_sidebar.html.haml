@@ -13,13 +13,15 @@
     .block.block-first
       %ul.wiki-pages
         - @sidebar_wiki_directories.each do |wiki_directory, wiki_pages|
-          %li
-            = wiki_directory
-            %ul
-              - wiki_pages.each do |wiki_page|
-                %li{ class: params[:id] == wiki_page.slug ? 'active' : '' }
-                  = link_to namespace_project_wiki_path(@project.namespace, @project, wiki_page) do
-                    = wiki_page.title.capitalize
+          - if wiki_directory == '/'
+            = render 'sidebar_wiki_pages', wiki_pages: wiki_pages
+          - else
+            %li
+              = wiki_directory
+              %ul
+                = render 'sidebar_wiki_pages', wiki_pages: wiki_pages
+
+
     .block
       = link_to namespace_project_wikis_pages_path(@project.namespace, @project), class: 'btn btn-block' do
         More Pages
