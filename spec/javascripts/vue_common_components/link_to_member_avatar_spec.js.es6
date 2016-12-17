@@ -100,16 +100,5 @@
         });
       });
     });
-
-    describe('Interaction', function() {
-      it('should remove approval', function() {
-
-    });
-      it('should give approval', function() {
-
-      });
-     //  click link and handler fires
-    });
-
   });
 })(window.gl || (window.gl = {}));
