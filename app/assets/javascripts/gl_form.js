@@ -1,4 +1,8 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-undef, no-new, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-new, padded-blocks, max-len */
+/* global GitLab */
+/* global DropzoneInput */
+/* global autosize */
+
 (function() {
   this.GLForm = (function() {
     function GLForm(form) {
@@ -26,7 +30,7 @@
         this.form.addClass('gfm-form');
         // remove notify commit author checkbox for non-commit notes
         gl.utils.disableButtonIfEmptyField(this.form.find('.js-note-text'), this.form.find('.js-comment-button'));
-        GitLab.GfmAutoComplete.setup(this.form.find('.js-gfm-input'));
+        gl.GfmAutoComplete.setup(this.form.find('.js-gfm-input'));
         new DropzoneInput(this.form);
         autosize(this.textarea);
         // form and textarea event listeners

@@ -109,23 +109,6 @@ class Note < ActiveRecord::Base
       Discussion.for_diff_notes(active_notes).
         map { |d| [d.line_code, d] }.to_h
     end
-
-    # Searches for notes matching the given query.
-    #
-    # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
-    #
-    # query   - The search query as a String.
-    # as_user - Limit results to those viewable by a specific user
-    #
-    # Returns an ActiveRecord::Relation.
-    def search(query, as_user: nil)
-      table   = arel_table
-      pattern = "%#{query}%"
-
-      Note.joins('LEFT JOIN issues ON issues.id = noteable_id').
-        where(table[:note].matches(pattern)).
-        merge(Issue.visible_to_user(as_user))
-    end
   end
 
   def searchable?

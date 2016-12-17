@@ -46,8 +46,7 @@
           - else
             This build is creating a deployment to #{environment_link_for_build(@build.project, @build)}
             - if environment.try(:last_deployment)
-              and will overwrite the
-              = link_to 'latest deployment', deployment_link(environment.last_deployment)
+              and will overwrite the #{deployment_link(environment.last_deployment, text: 'latest deployment')}
 
     .prepend-top-default
       - if @build.erased?

@@ -1,4 +1,5 @@
-/* eslint-disable func-names, space-before-function-paren, one-var, no-var, one-var-declaration-per-line, no-undef, prefer-arrow-callback, camelcase, max-len, consistent-return, quotes, object-shorthand, comma-dangle, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, one-var, no-var, one-var-declaration-per-line, prefer-arrow-callback, camelcase, consistent-return, quotes, object-shorthand, comma-dangle, padded-blocks, max-len */
+
 // Quick Submit behavior
 //
 // When a child field of a form with a `js-quick-submit` class receives a

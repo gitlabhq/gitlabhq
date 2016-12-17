@@ -741,17 +741,6 @@ describe User, models: true do
     end
   end
 
-  describe 'by_username_or_id' do
-    let(:user1) { create(:user, username: 'foo') }
-
-    it "gets the correct user" do
-      expect(User.by_username_or_id(user1.id)).to eq(user1)
-      expect(User.by_username_or_id('foo')).to eq(user1)
-      expect(User.by_username_or_id(-1)).to be_nil
-      expect(User.by_username_or_id('bar')).to be_nil
-    end
-  end
-
   describe '.find_by_ssh_key_id' do
     context 'using an existing SSH key ID' do
       let(:user) { create(:user) }

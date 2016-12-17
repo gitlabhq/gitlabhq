@@ -1,10 +1,12 @@
 class Projects::ProjectMembersController < Projects::ApplicationController
   include MembershipActions
+  include SortingHelper
 
   # Authorize
   before_action :authorize_admin_project_member!, except: [:index, :leave, :request_access]
 
   def index
+    @sort = params[:sort].presence || sort_value_name
     @group_links = @project.project_group_links
 
     @project_members = @project.project_members
@@ -35,12 +37,13 @@ class Projects::ProjectMembersController < Projects::ApplicationController
       @group_links = @project.project_group_links.where(group_id: @project.invited_groups.search(params[:search]).select(:id))
     end
 
-    wheres = ["id IN (#{@project_members.select(:id).to_sql})"]
-    wheres << "id IN (#{group_members.select(:id).to_sql})" if group_members
+    wheres = ["members.id IN (#{@project_members.select(:id).to_sql})"]
+    wheres << "members.id IN (#{group_members.select(:id).to_sql})" if group_members
 
     @project_members = Member.
       where(wheres.join(' OR ')).
-      order(access_level: :desc).page(params[:page])
+      sort(@sort).
+      page(params[:page])
 
     @requesters = AccessRequestsFinder.new(@project).execute(current_user)
 

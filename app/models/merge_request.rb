@@ -475,7 +475,7 @@ class MergeRequest < ActiveRecord::Base
     should_remove_source_branch? || force_remove_source_branch?
   end
 
-  def mr_and_commit_notes
+  def related_notes
     # Fetch comments only from last 100 commits
     commits_for_notes_limit = 100
     commit_ids = commits.last(commits_for_notes_limit).map(&:id)
@@ -491,7 +491,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def discussions
-    @discussions ||= self.mr_and_commit_notes.
+    @discussions ||= self.related_notes.
       inc_relations_for_view.
       fresh.
       discussions
@@ -591,6 +591,19 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
+  def issues_mentioned_but_not_closing(current_user = self.author)
+    return [] unless target_branch == project.default_branch
+
+    ext = Gitlab::ReferenceExtractor.new(project, current_user)
+    ext.analyze(description)
+
+    issues = ext.issues
+    closing_issues = Gitlab::ClosingIssueExtractor.new(project, current_user).
+      closed_by_message(description)
+
+    issues - closing_issues
+  end
+
   def target_project_path
     if target_project
       target_project.path_with_namespace
@@ -635,13 +648,24 @@ class MergeRequest < ActiveRecord::Base
     self.target_project.repository.branch_names.include?(self.target_branch)
   end
 
-  def merge_commit_message
-    message = "Merge branch '#{source_branch}' into '#{target_branch}'\n\n"
-    message << "#{title}\n\n"
-    message << "#{description}\n\n" if description.present?
+  def merge_commit_message(include_description: false)
+    closes_issues_references = closes_issues.map do |issue|
+      issue.to_reference(target_project)
+    end
+
+    message = [
+      "Merge branch '#{source_branch}' into '#{target_branch}'",
+      title
+    ]
+
+    if !include_description && closes_issues_references.present?
+      message << "Closes #{closes_issues_references.to_sentence}"
+    end
+
+    message << "#{description}" if include_description && description.present?
     message << "See merge request #{to_reference}"
 
-    message
+    message.join("\n\n")
   end
 
   def reset_merge_when_build_succeeds

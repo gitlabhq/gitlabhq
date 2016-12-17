@@ -1,5 +1,4 @@
 module API
-  # Projects API
   class Services < Grape::API
     services = {
       'asana' => [
@@ -544,80 +543,96 @@ module API
       before { authenticate! }
       before { authorize_admin_project }
 
-      # Set <service_slug> service for project
-      #
-      # Example Request:
-      #
-      #   PUT /projects/:id/services/gitlab-ci
-      #
-      put ':id/services/:service_slug' do
-        if project_service
-          validators = project_service.class.validators.select do |s|
-            s.class == ActiveRecord::Validations::PresenceValidator &&
-              s.attributes != [:project_id]
-          end
-
-          required_attributes! validators.map(&:attributes).flatten.uniq
-          attrs = attributes_for_keys service_attributes
-
-          if project_service.update_attributes(attrs.merge(active: true))
-            true
-          else
-            not_found!
+      helpers do
+        def service_attributes(service)
+          service.fields.inject([]) do |arr, hash|
+            arr << hash[:name].to_sym
           end
         end
       end
 
-      # Delete <service_slug> service for project
-      #
-      # Example Request:
-      #
-      #   DELETE /project/:id/services/gitlab-ci
-      #
-      delete ':id/services/:service_slug' do
-        if project_service
-          attrs = service_attributes.inject({}) do |hash, key|
-            hash.merge!(key => nil)
+      services.each do |service_slug, settings|
+        desc "Set #{service_slug} service for project"
+        params do
+          settings.each do |setting|
+            if setting[:required]
+              requires setting[:name], type: setting[:type], desc: setting[:desc]
+            else
+              optional setting[:name], type: setting[:type], desc: setting[:desc]
+            end
           end
+        end
+        put ":id/services/#{service_slug}" do
+          service = user_project.find_or_initialize_service(service_slug.underscore)
+          service_params = declared_params(include_missing: false).merge(active: true)
 
-          if project_service.update_attributes(attrs.merge(active: false))
+          if service.update_attributes(service_params)
             true
           else
-            not_found!
+            render_api_error!('400 Bad Request', 400)
           end
         end
       end
 
-      # Get <service_slug> service settings for project
-      #
-      # Example Request:
-      #
-      #   GET /project/:id/services/gitlab-ci
-      #
-      get ':id/services/:service_slug' do
-        present project_service, with: Entities::ProjectService, include_passwords: current_user.is_admin?
+      desc "Delete a service for project"
+      params do
+        requires :service_slug, type: String, values: services.keys, desc: 'The name of the service'
+      end
+      delete ":id/services/:service_slug" do
+        service = user_project.find_or_initialize_service(params[:service_slug].underscore)
+
+        attrs = service_attributes(service).inject({}) do |hash, key|
+          hash.merge!(key => nil)
+        end
+
+        if service.update_attributes(attrs.merge(active: false))
+          true
+        else
+          render_api_error!('400 Bad Request', 400)
+        end
+      end
+
+      desc 'Get the service settings for project' do
+        success Entities::ProjectService
+      end
+      params do
+        requires :service_slug, type: String, values: services.keys, desc: 'The name of the service'
+      end
+      get ":id/services/:service_slug" do
+        service = user_project.find_or_initialize_service(params[:service_slug].underscore)
+        present service, with: Entities::ProjectService, include_passwords: current_user.is_admin?
       end
     end
 
-    resource :projects do
-      desc 'Trigger a slash command' do
-        detail 'Added in GitLab 8.13'
+    trigger_services.each do |service_slug, settings|
+      params do
+        requires :id, type: String, desc: 'The ID of a project'
       end
-      post ':id/services/:service_slug/trigger' do
-        project = find_project(params[:id])
+      resource :projects do
+        desc "Trigger a slash command for #{service_slug}" do
+          detail 'Added in GitLab 8.13'
+        end
+        params do
+          settings.each do |setting|
+            requires setting[:name], type: setting[:type], desc: setting[:desc]
+          end
+        end
+        post ":id/services/#{service_slug.underscore}/trigger" do
+          project = find_project(params[:id])
 
-        # This is not accurate, but done to prevent leakage of the project names
-        not_found!('Service') unless project
+          # This is not accurate, but done to prevent leakage of the project names
+          not_found!('Service') unless project
 
-        service = project_service(project)
+          service = project.find_or_initialize_service(service_slug.underscore)
 
-        result = service.try(:active?) && service.try(:trigger, params)
+          result = service.try(:active?) && service.try(:trigger, params)
 
-        if result
-          status result[:status] || 200
-          present result
-        else
-          not_found!('Service')
+          if result
+            status result[:status] || 200
+            present result
+          else
+            not_found!('Service')
+          end
         end
       end
     end

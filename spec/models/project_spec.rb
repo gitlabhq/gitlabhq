@@ -2049,6 +2049,26 @@ describe Project, models: true do
     end
   end
 
+  describe '#deployment_variables' do
+    context 'when project has no deployment service' do
+      let(:project) { create(:empty_project) }
+
+      it 'returns an empty array' do
+        expect(project.deployment_variables).to eq []
+      end
+    end
+
+    context 'when project has a deployment service' do
+      let(:project) { create(:kubernetes_project) }
+
+      it 'returns variables from this service' do
+        expect(project.deployment_variables).to include(
+          { key: 'KUBE_TOKEN', value: project.kubernetes_service.token, public: false }
+        )
+      end
+    end
+  end
+
   def enable_lfs
     allow(Gitlab.config.lfs).to receive(:enabled).and_return(true)
   end

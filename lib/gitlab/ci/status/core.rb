@@ -4,10 +4,14 @@ module Gitlab
       # Base abstract class fore core status
       #
       class Core
-        include Gitlab::Routing.url_helpers
+        include Gitlab::Routing
+        include Gitlab::Allowable
 
-        def initialize(subject)
+        attr_reader :subject, :user
+
+        def initialize(subject, user)
           @subject = subject
+          @user = user
         end
 
         def icon
@@ -16,10 +20,6 @@ module Gitlab
 
         def label
           raise NotImplementedError
-        end
-
-        def title
-          "#{@subject.class.name.demodulize}: #{label}"
         end
 
         # Deprecation warning: this method is here because we need to maintain
@@ -34,7 +34,7 @@ module Gitlab
         end
 
         def has_details?
-          raise NotImplementedError
+          false
         end
 
         def details_path
@@ -42,14 +42,25 @@ module Gitlab
         end
 
         def has_action?
-          raise NotImplementedError
+          false
         end
 
         def action_icon
           raise NotImplementedError
         end
 
+        def action_class
+        end
+
         def action_path
+          raise NotImplementedError
+        end
+
+        def action_method
+          raise NotImplementedError
+        end
+
+        def action_title
           raise NotImplementedError
         end
       end

@@ -5,7 +5,7 @@ class ProjectPolicy < BasePolicy
     team_access!(user)
 
     owner = project.owner == user ||
-            (project.group && project.group.has_owner?(user))
+      (project.group && project.group.has_owner?(user))
 
     owner_access! if user.admin? || owner
     team_member_owner_access! if owner
@@ -15,7 +15,7 @@ class ProjectPolicy < BasePolicy
       public_access!
 
       if project.request_access_enabled &&
-         !(owner || user.admin? || project.team.member?(user) || project_group_member?(user))
+          !(owner || user.admin? || project.team.member?(user) || project_group_member?(user))
         can! :request_access
       end
     end
@@ -260,10 +260,10 @@ class ProjectPolicy < BasePolicy
 
   def project_group_member?(user)
     project.group &&
-    (
-      project.group.members.exists?(user_id: user.id) ||
-      project.group.requesters.exists?(user_id: user.id)
-    )
+      (
+        project.group.members.exists?(user_id: user.id) ||
+        project.group.requesters.exists?(user_id: user.id)
+      )
   end
 
   def named_abilities(name)

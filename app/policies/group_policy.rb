@@ -47,9 +47,13 @@ class GroupPolicy < BasePolicy
   end
 
   def additional_rules!(master)
+<<<<<<< HEAD
     if @subject.ldap_synced?
       cannot! :admin_group_member
       can! :override_group_member if master
     end
+=======
+    # This is meant to be overriden in EE
+>>>>>>> ce/master
   end
 end

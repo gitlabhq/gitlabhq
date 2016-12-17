@@ -9,6 +9,14 @@ module Ci
 
     has_many :deployments, as: :deployable
 
+    # The "environment" field for builds is a String, and is the unexpanded name
+    def persisted_environment
+      @persisted_environment ||= Environment.find_by(
+        name: expanded_environment_name,
+        project_id: gl_project_id
+      )
+    end
+
     serialize :options
     serialize :yaml_variables
 
@@ -100,6 +108,12 @@ module Ci
       end
     end
 
+    def detailed_status(current_user)
+      Gitlab::Ci::Status::Build::Factory
+        .new(self, current_user)
+        .fabricate!
+    end
+
     def manual?
       self.when == 'manual'
     end
@@ -123,8 +137,13 @@ module Ci
       end
     end
 
+    def cancelable?
+      active?
+    end
+
     def retryable?
-      project.builds_enabled? && commands.present? && complete?
+      project.builds_enabled? && commands.present? &&
+        (success? || failed? || canceled?)
     end
 
     def retried?
@@ -132,11 +151,11 @@ module Ci
     end
 
     def expanded_environment_name
-      ExpandVariables.expand(environment, variables) if environment
+      ExpandVariables.expand(environment, simple_variables) if environment
     end
 
     def has_environment?
-      self.environment.present?
+      environment.present?
     end
 
     def starts_environment?
@@ -148,7 +167,7 @@ module Ci
     end
 
     def environment_action
-      self.options.fetch(:environment, {}).fetch(:action, 'start')
+      self.options.fetch(:environment, {}).fetch(:action, 'start') if self.options
     end
 
     def outdated_deployment?
@@ -184,16 +203,36 @@ module Ci
       project.build_timeout
     end
 
-    def variables
+    # A slugified version of the build ref, suitable for inclusion in URLs and
+    # domain names. Rules:
+    #
+    #   * Lowercased
+    #   * Anything not matching [a-z0-9-] is replaced with a -
+    #   * Maximum length is 63 bytes
+    def ref_slug
+      slugified = ref.to_s.downcase
+      slugified.gsub(/[^a-z0-9]/, '-')[0..62]
+    end
+
+    # Variables whose value does not depend on other variables
+    def simple_variables
       variables = predefined_variables
       variables += project.predefined_variables
       variables += pipeline.predefined_variables
       variables += runner.predefined_variables if runner
       variables += project.container_registry_variables
+      variables += project.deployment_variables if has_environment?
       variables += yaml_variables
       variables += user_variables
       variables += project.secret_variables
       variables += trigger_request.user_variables if trigger_request
+      variables
+    end
+
+    # All variables, including those dependent on other variables
+    def variables
+      variables = simple_variables
+      variables += persisted_environment.predefined_variables if persisted_environment.present?
       variables
     end
 
@@ -519,6 +558,7 @@ module Ci
         { key: 'CI_BUILD_REF', value: sha, public: true },
         { key: 'CI_BUILD_BEFORE_SHA', value: before_sha, public: true },
         { key: 'CI_BUILD_REF_NAME', value: ref, public: true },
+        { key: 'CI_BUILD_REF_SLUG', value: ref_slug, public: true },
         { key: 'CI_BUILD_NAME', value: name, public: true },
         { key: 'CI_BUILD_STAGE', value: stage, public: true },
         { key: 'CI_SERVER_NAME', value: 'GitLab', public: true },

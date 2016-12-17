@@ -1,0 +1,4 @@
+---
+title: Prevent enviroment table to overflow when name has underscores
+merge_request: 8142
+author:

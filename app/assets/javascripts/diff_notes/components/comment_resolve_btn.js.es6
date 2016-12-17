@@ -1,4 +1,7 @@
-/* eslint-disable */
+/* eslint-disable comma-dangle, object-shorthand, func-names, no-else-return, quotes, no-lonely-if, semi, max-len */
+/* global Vue */
+/* global CommentsStore */
+
 (() => {
   const CommentAndResolveBtn = Vue.extend({
     props: {

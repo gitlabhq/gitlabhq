@@ -35,7 +35,7 @@ module MergeRequests
       end
 
       if merge_request.previous_changes.include?('title') ||
-         merge_request.previous_changes.include?('description')
+          merge_request.previous_changes.include?('description')
         todo_service.update_merge_request(merge_request, current_user)
       end
 

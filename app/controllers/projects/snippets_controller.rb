@@ -19,10 +19,12 @@ class Projects::SnippetsController < Projects::ApplicationController
   respond_to :html
 
   def index
-    @snippets = SnippetsFinder.new.execute(current_user, {
+    @snippets = SnippetsFinder.new.execute(
+      current_user,
       filter: :by_project,
-      project: @project
-    })
+      project: @project,
+      scope: params[:scope]
+    )
     @snippets = @snippets.page(params[:page])
   end
 

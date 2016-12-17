@@ -6,7 +6,11 @@ module OauthApplications
   end
 
   def prepare_scopes
+<<<<<<< HEAD
     scopes = params.dig(:doorkeeper_application, :scopes)
+=======
+    scopes = params.fetch(:doorkeeper_application, {}).fetch(:scopes, nil)
+>>>>>>> ce/master
 
     if scopes
       params[:doorkeeper_application][:scopes] = scopes.join(' ')

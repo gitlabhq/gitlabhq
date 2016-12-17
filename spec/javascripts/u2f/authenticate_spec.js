@@ -1,4 +1,6 @@
-/* eslint-disable space-before-function-paren, new-parens, no-undef, quotes, comma-dangle, no-var, one-var, one-var-declaration-per-line, padded-blocks, max-len */
+/* eslint-disable space-before-function-paren, new-parens, quotes, comma-dangle, no-var, one-var, one-var-declaration-per-line, padded-blocks, max-len */
+/* global MockU2FDevice */
+/* global U2FAuthenticate */
 
 /*= require u2f/authenticate */
 /*= require u2f/util */

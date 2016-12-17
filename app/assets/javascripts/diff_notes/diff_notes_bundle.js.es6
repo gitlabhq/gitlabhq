@@ -1,4 +1,13 @@
+<<<<<<< HEAD
 /* eslint-disable */
+=======
+/* eslint-disable func-names, comma-dangle, new-cap, no-new */
+/* global Vue */
+/* global ResolveCount */
+
+//= require vue
+//= require vue-resource
+>>>>>>> ce/master
 //= require_directory ./models
 //= require_directory ./stores
 //= require_directory ./services

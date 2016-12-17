@@ -20,11 +20,15 @@ class GroupMemberPolicy < BasePolicy
   end
 
   def additional_rules!
+<<<<<<< HEAD
     can_override = Ability.allowed?(@user, :override_group_member, @subject.group)
 
     if can_override
       can! :override_group_member if @subject.ldap?
       can! :update_group_member unless @subject.ldap? && !@subject.override?
     end
+=======
+    # This is meant to be overriden in EE
+>>>>>>> ce/master
   end
 end

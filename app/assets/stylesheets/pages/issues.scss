@@ -88,12 +88,12 @@ ul.related-merge-requests > li {
 
   &.closed {
     background: $gray-light;
-    border-color: $issues-border;
+    border-color: $border-color;
   }
 
   &.merged {
     background: $gray-light;
-    border-color: $issues-border;
+    border-color: $border-color;
   }
 }
 
@@ -144,7 +144,7 @@ ul.related-merge-requests > li {
   }
 
   .btn {
-    background-color: $background-color;
-    border: 1px solid $border-gray-light;
+    background-color: $gray-light;
+    border: 1px solid $border-gray-normal;
   }
 }

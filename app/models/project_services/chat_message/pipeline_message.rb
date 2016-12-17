@@ -13,7 +13,7 @@ module ChatMessage
 
       @project_name = data[:project][:path_with_namespace]
       @project_url = data[:project][:web_url]
-      @user_name = data[:user] && data[:user][:name]
+      @user_name = (data[:user] && data[:user][:name]) || 'API'
     end
 
     def pretext

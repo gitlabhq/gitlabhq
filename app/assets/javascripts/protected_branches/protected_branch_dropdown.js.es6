@@ -1,6 +1,18 @@
+<<<<<<< HEAD
 /* eslint-disable */
 (global => {
   global.gl = global.gl || {};
+=======
+/* eslint-disable comma-dangle, no-unused-vars */
+
+class ProtectedBranchDropdown {
+  constructor(options) {
+    this.onSelect = options.onSelect;
+    this.$dropdown = options.$dropdown;
+    this.$dropdownContainer = this.$dropdown.parent();
+    this.$dropdownFooter = this.$dropdownContainer.find('.dropdown-footer');
+    this.$protectedBranch = this.$dropdownContainer.find('.create-new-protected-branch');
+>>>>>>> ce/master
 
   class ProtectedBranchDropdown {
     constructor(options) {

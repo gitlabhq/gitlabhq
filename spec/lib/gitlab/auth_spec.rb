@@ -83,6 +83,7 @@ describe Gitlab::Auth, lib: true do
         expect(gl_auth).to receive(:rate_limit!).with('ip', success: true, login: 'oauth2')
         expect(gl_auth.find_for_git_client("oauth2", token.token, project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new(user, nil, :oauth, read_authentication_abilities))
       end
+<<<<<<< HEAD
 
       it 'fails for OAuth tokens with other scopes' do
         user = create(:user)
@@ -107,6 +108,32 @@ describe Gitlab::Auth, lib: true do
         user = create(:user)
         personal_access_token = create(:personal_access_token, user: user, scopes: ['read_user'])
 
+=======
+
+      it 'fails for OAuth tokens with other scopes' do
+        user = create(:user)
+        application = Doorkeeper::Application.create!(name: "MyApp", redirect_uri: "https://app.com", owner: user)
+        token = Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id, scopes: "read_user")
+
+        expect(gl_auth).to receive(:rate_limit!).with('ip', success: false, login: 'oauth2')
+        expect(gl_auth.find_for_git_client("oauth2", token.token, project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new(nil, nil))
+      end
+    end
+
+    context "while using personal access tokens as passwords" do
+      it 'succeeds for personal access tokens with the `api` scope' do
+        user = create(:user)
+        personal_access_token = create(:personal_access_token, user: user, scopes: ['api'])
+
+        expect(gl_auth).to receive(:rate_limit!).with('ip', success: true, login: user.email)
+        expect(gl_auth.find_for_git_client(user.email, personal_access_token.token, project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new(user, nil, :personal_token, full_authentication_abilities))
+      end
+
+      it 'fails for personal access tokens with other scopes' do
+        user = create(:user)
+        personal_access_token = create(:personal_access_token, user: user, scopes: ['read_user'])
+
+>>>>>>> ce/master
         expect(gl_auth).to receive(:rate_limit!).with('ip', success: false, login: user.email)
         expect(gl_auth.find_for_git_client(user.email, personal_access_token.token, project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new(nil, nil))
       end
