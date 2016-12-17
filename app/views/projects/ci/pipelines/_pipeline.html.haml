@@ -44,10 +44,11 @@
     - pipeline.stages.each do |stage|
       - if stage.status
         - detailed_status = stage.detailed_status(current_user)
-        - details_path = detailed_status.details_path if detailed_status.has_details?
         - klass = "has-tooltip ci-status-icon ci-status-icon-#{detailed_status}"
         - hasMultipleBuilds = stage.statuses.count > 1
-        - tooltip = "#{stage.name.titleize}: #{stage.status || 'not found'}"
+        - icon_status = "#{detailed_status.icon}_borderless"
+        - icon_status_klass = "ci-status-icon ci-status-icon-#{detailed_status}"
+        - tooltip = "#{stage.name}: #{detailed_status.label || 'not found'}"
 
         .stage-container.mini-pipeline-graph
           - if hasMultipleBuilds
@@ -55,7 +56,7 @@
               %button.has-tooltip.builds-dropdown{ type: 'button', data: { toggle: 'dropdown', title: tooltip} }
                 %span{ class: klass }
                   %span.mini-pipeline-graph-icon-container
-                    = render 'ci/status/mini_graph_badge', subject: stage
+                    %span{ class: icon_status_klass }= custom_icon(icon_status)
                     = icon('caret-down', class: 'dropdown-caret')
               .dropdown-menu.grouped-pipeline-dropdown
                 .arrow-up
@@ -64,10 +65,10 @@
                       %li.dropdown-build
                         = render 'ci/status/graph_badge', subject: status
           - else
-            - if details_path
-              = link_to details_path, class: klass, title: tooltip do
+            - if detailed_status.has_details?
+              = link_to detailed_status.details_path, class: klass, title: tooltip do
                 %span.mini-pipeline-graph-icon-container
-                  = render 'ci/status/mini_graph_badge', subject: stage
+                  %span{ class: icon_status_klass }= custom_icon(icon_status)
 
   %td
     - if pipeline.duration
