@@ -13,17 +13,14 @@ class WikiPage
   end
 
   def self.group_by_directory(pages)
-    directories = {}
+    return {} if pages.blank?
+    directories = { '/' => [] }
 
     pages.each do |page|
-      if page.slug.include?('/')
-        # Directory hierarchy is given by matching from the beginning up to
-        # the last forward slash.
-        directory = page.slug.match(/\A(.+)\//)[1]
-        directories[directory] = add_to_directory(directories[directory], page)
-      else
-        directories['root'] = add_to_directory(directories['root'], page)
-      end
+      directory = page.wiki.page_title_and_dir(page.slug).last
+      directory = '/' if directory.blank?
+      directories[directory] ||= []
+      directories[directory] << page
     end
 
     directories
