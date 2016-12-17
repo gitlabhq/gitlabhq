@@ -190,14 +190,6 @@ class WikiPage
 
   private
 
-  def self.add_to_directory(directory, page)
-    if directory.present?
-      directory << page
-    else
-      [page]
-    end
-  end
-
   def set_attributes
     attributes[:slug] = @page.url_path
     attributes[:title] = @page.title
