@@ -1,5 +1,6 @@
 .container-fluid {
   .ci-status {
+    display: inline-block;
     padding: 2px 7px;
     margin-right: 10px;
     border: 1px solid $gray-darker;
@@ -15,8 +16,7 @@
       height: 13px;
       width: 13px;
       position: relative;
-      top: 1px;
-      margin-right: 3px;
+      top: 2px;
       overflow: visible;
     }
 
@@ -115,15 +115,15 @@
     }
 
     &.ci-manual {
-      color: $gl-gray-dark;
-      border-color: $gl-gray-dark;
+      color: $gl-text-color;
+      border-color: $gl-text-color;
 
       &:not(span):hover {
-        background-color: rgba( $gl-gray-dark, .07);
+        background-color: rgba( $gl-text-color, .07);
       }
 
       svg {
-        fill: $gl-gray-dark;
+        fill: $gl-text-color;
       }
     }
   }
