@@ -3,6 +3,7 @@
 /* global UsersSelect */
 /* global ZenMode */
 /* global Autosave */
+/* global GroupsSelect */
 
 (function() {
   var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };

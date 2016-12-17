@@ -36,6 +36,8 @@
 /* global ProjectShow */
 /* global Labels */
 /* global Shortcuts */
+/* global WeightSelect */
+/* global AdminEmailSelect */
 
 (function() {
   var Dispatcher;

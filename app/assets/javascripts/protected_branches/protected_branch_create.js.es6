@@ -1,4 +1,4 @@
-/* eslint-disable no-new, arrow-parens, no-param-reassign, no-irregular-whitespace, comma-dangle, padded-blocks, semi, max-len */
+/* eslint-disable */
 /* global ProtectedBranchDropdown */
 
 (global => {
@@ -96,7 +96,7 @@
           }
         }
 
-        formData.protected_branch[`${ACCESS_LEVELS[ACCESS_LEVEL]}_attributes`] = levelAttributes; 
+        formData.protected_branch[`${ACCESS_LEVELS[ACCESS_LEVEL]}_attributes`] = levelAttributes;
       }
 
       return formData;
