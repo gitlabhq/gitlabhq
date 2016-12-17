@@ -22,30 +22,32 @@
 
     static filterWithSymbol(filterSymbol, item, query) {
       const updatedItem = item;
-      const { value } = gl.FilteredSearchTokenizer.getLastTokenObject(query);
-      const valueWithoutColon = value.slice(1).toLowerCase();
-      const prefix = valueWithoutColon[0];
-      const valueWithoutPrefix = valueWithoutColon.slice(1);
+      const { lastToken, searchToken } = gl.FilteredSearchTokenizer.processTokens(query);
 
-      const title = updatedItem.title.toLowerCase();
+      if (lastToken !== searchToken) {
+        const value = lastToken.value.toLowerCase();
+        const title = updatedItem.title.toLowerCase();
 
-      // Eg. filterSymbol = ~ for labels
-      const matchWithoutPrefix =
-        prefix === filterSymbol && title.indexOf(valueWithoutPrefix) !== -1;
-      const match = title.indexOf(valueWithoutColon) !== -1;
+        // Eg. filterSymbol = ~ for labels
+        const matchWithoutSymbol = lastToken.symbol === filterSymbol && title.indexOf(value) !== -1;
+        const match = title.indexOf(`${lastToken.symbol}${value}`) !== -1;
 
-      updatedItem.droplab_hidden = !match && !matchWithoutPrefix;
+        updatedItem.droplab_hidden = !match && !matchWithoutSymbol;
+      } else {
+        updatedItem.droplab_hidden = false;
+      }
+
       return updatedItem;
     }
 
-    static filterMethod(item, query) {
+    static filterHint(item, query) {
       const updatedItem = item;
-      const { value } = gl.FilteredSearchTokenizer.getLastTokenObject(query);
+      const { lastToken } = gl.FilteredSearchTokenizer.processTokens(query);
 
-      if (value === '') {
+      if (!lastToken) {
         updatedItem.droplab_hidden = false;
       } else {
-        updatedItem.droplab_hidden = updatedItem.hint.indexOf(value) === -1;
+        updatedItem.droplab_hidden = updatedItem.hint.indexOf(lastToken.toLowerCase()) === -1;
       }
 
       return updatedItem;

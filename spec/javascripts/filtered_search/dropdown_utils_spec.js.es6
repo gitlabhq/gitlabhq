@@ -34,11 +34,6 @@
         title: '@root',
       };
 
-      beforeEach(() => {
-        spyOn(gl.FilteredSearchTokenizer, 'getLastTokenObject')
-          .and.callFake(query => ({ value: query }));
-      });
-
       it('should filter without symbol', () => {
         const updatedItem = gl.DropdownUtils.filterWithSymbol('@', item, ':roo');
         expect(updatedItem.droplab_hidden).toBe(false);
@@ -49,37 +44,27 @@
         expect(updatedItem.droplab_hidden).toBe(false);
       });
 
-      it('should filter with invalid symbol', () => {
-        const updatedItem = gl.DropdownUtils.filterWithSymbol('@', item, ':#');
-        expect(updatedItem.droplab_hidden).toBe(true);
-      });
-
       it('should filter with colon', () => {
         const updatedItem = gl.DropdownUtils.filterWithSymbol('@', item, ':');
         expect(updatedItem.droplab_hidden).toBe(false);
       });
     });
 
-    describe('filterMethod', () => {
-      beforeEach(() => {
-        spyOn(gl.FilteredSearchTokenizer, 'getLastTokenObject')
-          .and.callFake(query => ({ value: query }));
-      });
-
-      it('should filter by hint', () => {
-        let updatedItem = gl.DropdownUtils.filterMethod({
+    describe('filterHint', () => {
+      it('should filter', () => {
+        let updatedItem = gl.DropdownUtils.filterHint({
           hint: 'label',
         }, 'l');
         expect(updatedItem.droplab_hidden).toBe(false);
 
-        updatedItem = gl.DropdownUtils.filterMethod({
+        updatedItem = gl.DropdownUtils.filterHint({
           hint: 'label',
         }, 'o');
         expect(updatedItem.droplab_hidden).toBe(true);
       });
 
       it('should return droplab_hidden false when item has no hint', () => {
-        const updatedItem = gl.DropdownUtils.filterMethod({}, '');
+        const updatedItem = gl.DropdownUtils.filterHint({}, '');
         expect(updatedItem.droplab_hidden).toBe(false);
       });
     });

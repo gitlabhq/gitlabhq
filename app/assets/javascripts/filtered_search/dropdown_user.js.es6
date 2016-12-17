@@ -37,13 +37,10 @@
     }
 
     getSearchInput() {
-      const query = this.input.value;
-      const { value } = gl.FilteredSearchTokenizer.getLastTokenObject(query);
-      const valueWithoutColon = value.slice(1);
-      const hasPrefix = valueWithoutColon[0] === '@';
-      const valueWithoutPrefix = valueWithoutColon.slice(1);
+      const query = this.input.value.trim();
+      const { lastToken } = gl.FilteredSearchTokenizer.processTokens(query);
 
-      return hasPrefix ? valueWithoutPrefix : valueWithoutColon;
+      return lastToken.value || '';
     }
 
     init() {
