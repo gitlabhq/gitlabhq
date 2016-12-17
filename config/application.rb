@@ -90,12 +90,9 @@ module Gitlab
     config.assets.precompile << "print.css"
     config.assets.precompile << "notify.css"
     config.assets.precompile << "mailers/*.css"
-<<<<<<< HEAD
     config.assets.precompile << "lib/vue_resource.js"
-=======
     config.assets.precompile << "katex.css"
     config.assets.precompile << "katex.js"
->>>>>>> ce/master
     config.assets.precompile << "graphs/graphs_bundle.js"
     config.assets.precompile << "users/users_bundle.js"
     config.assets.precompile << "network/network_bundle.js"

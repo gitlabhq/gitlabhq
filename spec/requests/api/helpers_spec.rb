@@ -17,22 +17,14 @@ describe API::Helpers, api: true do
     clear_env
     clear_param
     env[API::APIGuard::PRIVATE_TOKEN_HEADER] = user_or_token.respond_to?(:private_token) ? user_or_token.private_token : user_or_token
-<<<<<<< HEAD:spec/requests/api/helpers_spec.rb
-    env[API::Helpers::SUDO_HEADER] = identifier
-=======
     env[API::Helpers::SUDO_HEADER] = identifier.to_s
->>>>>>> ce/master:spec/requests/api/helpers_spec.rb
   end
 
   def set_param(user_or_token, identifier)
     clear_env
     clear_param
     params[API::APIGuard::PRIVATE_TOKEN_PARAM] = user_or_token.respond_to?(:private_token) ? user_or_token.private_token : user_or_token
-<<<<<<< HEAD:spec/requests/api/helpers_spec.rb
-    params[API::Helpers::SUDO_PARAM] = identifier
-=======
     params[API::Helpers::SUDO_PARAM] = identifier.to_s
->>>>>>> ce/master:spec/requests/api/helpers_spec.rb
   end
 
   def clear_env

@@ -1,8 +1,8 @@
-/* eslint-disable no-new, arrow-parens, no-param-reassign, no-irregular-whitespace, padded-blocks, comma-dangle, no-trailing-spaces, semi, max-len */
+/* eslint-disable */
 /* global Flash */
 
 (global => {
-  global.gl = global.gl || {};
+  global.gl = global.gl || {};
 
   const ACCESS_LEVELS = {
     MERGE: 'merge_access_levels',
@@ -30,7 +30,6 @@
     }
 
     buildDropdowns() {
-
       // Allowed to merge dropdown
       this['merge_access_levels_dropdown'] = new gl.ProtectedBranchAccessDropdown({
         accessLevel: ACCESS_LEVELS.MERGE,
@@ -54,7 +53,7 @@
       this.hasChanges = true;
     }
 
-<<<<<<< HEAD
+
     onDropdownHide() {
       if (!this.hasChanges) return;
 
@@ -62,10 +61,6 @@
 
       this.updatePermissions();
     }
-=======
-      // Do not update if one dropdown has not selected any option
-      if (!($allowedToMergeInput.length && $allowedToPushInput.length)) return;
->>>>>>> ce/master
 
     updatePermissions() {
       let formData = {};
@@ -112,7 +107,7 @@
         if (currentItem.user_id) {
 
           // Do this only for users for now
-          // get the current data for selected items 
+          // get the current data for selected items
           let selectedItems = this[dropdownName].getSelectedItems();
           let currentSelectedItem = _.findWhere(selectedItems, { user_id: currentItem.user_id });
 

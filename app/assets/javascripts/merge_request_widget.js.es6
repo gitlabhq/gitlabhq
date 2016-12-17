@@ -119,7 +119,6 @@
       });
     };
 
-<<<<<<< HEAD
     MergeRequestWidget.prototype.rebaseInProgress = function() {
       return $.ajax({
         type: 'GET',
@@ -135,11 +134,11 @@
         })(this),
         dataType: 'json'
       });
-=======
+    };
+
     MergeRequestWidget.prototype.cancelPolling = function () {
       this.ciStatusInterval.cancel();
       this.ciEnvironmentStatusInterval.cancel();
->>>>>>> ce/master
     };
 
     MergeRequestWidget.prototype.getMergeStatus = function() {

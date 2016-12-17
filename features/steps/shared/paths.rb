@@ -207,7 +207,6 @@ module SharedPaths
     visit admin_teams_path
   end
 
-<<<<<<< HEAD
   step 'I visit admin email page' do
     visit admin_email_path
   end
@@ -216,8 +215,6 @@ module SharedPaths
     visit admin_application_settings_path
   end
 
-=======
->>>>>>> ce/master
   step 'I visit spam logs page' do
     visit admin_spam_logs_path
   end

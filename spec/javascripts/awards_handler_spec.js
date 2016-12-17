@@ -113,13 +113,8 @@
       });
     });
     describe('::getAwardUrl', function() {
-<<<<<<< HEAD
-      return it('returns the url for request', function() {
-        return expect(awardsHandler.getAwardUrl()).toBe('/gitlab-org/gitlab-test/issues/8/toggle_award_emoji');
-=======
       return it('should return the url for request', function() {
         return expect(awardsHandler.getAwardUrl()).toBe('http://test.host/frontend-fixtures/issues-project/issues/1/toggle_award_emoji');
->>>>>>> ce/master
       });
     });
     describe('::addAward and ::checkMutuality', function() {

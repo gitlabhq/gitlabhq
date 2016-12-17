@@ -840,23 +840,17 @@ ActiveRecord::Schema.define(version: 20161213172958) do
     t.datetime "ldap_sync_last_sync_at"
     t.datetime "deleted_at"
     t.boolean "lfs_enabled"
-<<<<<<< HEAD
     t.integer "repository_size_limit"
-=======
     t.text "description_html"
->>>>>>> ce/master
     t.integer "parent_id"
   end
 
   add_index "namespaces", ["created_at"], name: "index_namespaces_on_created_at", using: :btree
   add_index "namespaces", ["deleted_at"], name: "index_namespaces_on_deleted_at", using: :btree
-<<<<<<< HEAD
   add_index "namespaces", ["ldap_sync_last_successful_update_at"], name: "index_namespaces_on_ldap_sync_last_successful_update_at", using: :btree
   add_index "namespaces", ["ldap_sync_last_update_at"], name: "index_namespaces_on_ldap_sync_last_update_at", using: :btree
   add_index "namespaces", ["name"], name: "index_namespaces_on_name", unique: true, using: :btree
-=======
   add_index "namespaces", ["name", "parent_id"], name: "index_namespaces_on_name_and_parent_id", unique: true, using: :btree
->>>>>>> ce/master
   add_index "namespaces", ["name"], name: "index_namespaces_on_name_trigram", using: :gin, opclasses: {"name"=>"gin_trgm_ops"}
   add_index "namespaces", ["owner_id"], name: "index_namespaces_on_owner_id", using: :btree
   add_index "namespaces", ["parent_id", "id"], name: "index_namespaces_on_parent_id_and_id", unique: true, using: :btree

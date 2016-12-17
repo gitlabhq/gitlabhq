@@ -414,7 +414,6 @@ module ProjectsHelper
     end
   end
 
-<<<<<<< HEAD
   def membership_locked?
     if @project.group && @project.group.membership_lock
       true
@@ -423,8 +422,6 @@ module ProjectsHelper
     end
   end
 
-=======
->>>>>>> ce/master
   def readme_cache_key
     sha = @project.commit.try(:sha) || 'nil'
     [@project.path_with_namespace, sha, "readme"].join('-')

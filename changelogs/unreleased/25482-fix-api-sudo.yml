@@ -1,10 +1,4 @@
 ---
-<<<<<<< HEAD
 title: 'API: Memoize the current_user so that the sudo can work properly'
 merge_request: 8017
-author: 
-=======
-title: 'API: Memoize the current_user so that sudo can work properly'
-merge_request: 8017
 author:
->>>>>>> ce/master

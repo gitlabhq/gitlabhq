@@ -110,14 +110,14 @@ module SortingHelper
     'Most popular'
   end
 
-<<<<<<< HEAD
   def sort_title_more_weight
     'More weight'
   end
 
   def sort_title_less_weight
     'Less weight'
-=======
+  end
+
   def sort_title_last_joined
     'Last joined'
   end
@@ -160,7 +160,6 @@ module SortingHelper
 
   def sort_value_name_desc
     'name_desc'
->>>>>>> ce/master
   end
 
   def sort_value_priority

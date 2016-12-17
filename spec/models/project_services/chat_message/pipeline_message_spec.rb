@@ -2,10 +2,7 @@ require 'spec_helper'
 
 describe ChatMessage::PipelineMessage do
   subject { described_class.new(args) }
-<<<<<<< HEAD:spec/models/project_services/chat_message/pipeline_message_spec.rb
 
-=======
->>>>>>> ce/master:spec/models/project_services/chat_message/pipeline_message_spec.rb
   let(:user) { { name: 'hacker' } }
 
   let(:args) do

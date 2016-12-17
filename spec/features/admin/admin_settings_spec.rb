@@ -17,24 +17,7 @@ feature 'Admin updates settings', feature: true do
     expect(page).to have_content "Application settings saved successfully"
   end
 
-<<<<<<< HEAD:features/steps/admin/settings.rb
-  step 'I set the help text' do
-    fill_in 'Help text', with: help_text
-    click_button 'Save'
-  end
-
-  step 'I should see the help text' do
-    expect(page).to have_content help_text
-  end
-
-  step 'I go to help page' do
-    visit '/help'
-  end
-
-  step 'I click on "Service Templates"' do
-=======
   scenario 'Change Slack Service template settings' do
->>>>>>> ce/master:spec/features/admin/admin_settings_spec.rb
     click_link 'Service Templates'
     click_link 'Slack'
     fill_in 'Webhook', with: 'http://localhost'
@@ -57,10 +40,6 @@ feature 'Admin updates settings', feature: true do
     expect(find('#service_push_channel').value).to eq '#test_channel'
   end
 
-<<<<<<< HEAD:features/steps/admin/settings.rb
-  def help_text
-    'For help related to GitLab contact Marc Smith at marc@smith.example or find him in office 42.'
-=======
   def check_all_events
     page.check('Active')
     page.check('Push')
@@ -70,6 +49,5 @@ feature 'Admin updates settings', feature: true do
     page.check('Merge request')
     page.check('Build')
     page.check('Pipeline')
->>>>>>> ce/master:spec/features/admin/admin_settings_spec.rb
   end
 end
