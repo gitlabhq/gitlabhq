@@ -7,19 +7,37 @@ describe WikiPage, models: true do
 
   subject { WikiPage.new(wiki) }
 
-  describe '::group_by_directory' do
+  describe '.group_by_directory' do
     context 'when there are no pages' do
       it 'returns an empty hash' do
+        expect(WikiPage.group_by_directory(nil)).to eq({})
+        expect(WikiPage.group_by_directory([])).to eq({})
       end
     end
 
     context 'when there are pages' do
-      let!(:page_1) { create_page('page_1', 'content') }
-      let!(:page_2) { create_page('directory/page_2', 'content') }
-      let(:pages) { [page_1, page_2] }
+      before do
+        create_page('page_1', 'content')
+        create_page('dir_1/page_2', 'content')
+        create_page('dir_1/dir_2/page_3', 'content')
+      end
 
-      xit 'returns a hash in which keys are directories and values are their pages' do
-        expected_grouped_pages = { 'root' => [page_1], 'directory' => [page_2] }
+      it 'returns a hash in which keys are directories and values are their pages' do
+        page_1 = wiki.find_page('page_1')
+        page_2 = wiki.find_page('dir_1/page_2')
+        page_3 = wiki.find_page('dir_1/dir_2/page_3')
+        expected_grouped_pages = {
+          '/' => [page_1], 'dir_1' => [page_2], 'dir_1/dir_2' => [page_3]
+        }
+
+        grouped_pages = WikiPage.group_by_directory(wiki.pages)
+
+        grouped_pages.each do |dir, pages|
+          expected_slugs = expected_grouped_pages.fetch(dir).map(&:slug)
+          slugs = pages.map(&:slug)
+
+          expect(slugs).to match_array(expected_slugs)
+        end
       end
     end
   end
