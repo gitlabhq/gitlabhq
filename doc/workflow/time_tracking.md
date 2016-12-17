@@ -46,7 +46,7 @@ Every time you enter a new time estimate, any previous time estimates will be
 overridden by this new value. There should only be one valid estimate in an
 issue or a merge request.
 
-To remove an estimation entirely, use `/remove_estimation`.
+To remove an estimation entirely, use `/remove_estimate `.
 
 ### Time spent
 
