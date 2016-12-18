@@ -17,10 +17,8 @@ class WikiPage
     directories = { '/' => [] }
 
     pages.each do |page|
-      directory = page.wiki.page_title_and_dir(page.slug).last
-      directory = '/' if directory.blank?
-      directories[directory] ||= []
-      directories[directory] << page
+      directories[page.directory] ||= []
+      directories[page.directory] << page
     end
 
     directories
