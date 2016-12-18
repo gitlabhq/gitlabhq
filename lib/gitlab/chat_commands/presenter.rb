@@ -43,7 +43,7 @@ module Gitlab
       end
 
       def access_denied
-          ephemeral_response("Whoops! That action is not allowed. This incident will be [reported](https://xkcd.com/838/).")
+        ephemeral_response("Whoops! That action is not allowed. This incident will be [reported](https://xkcd.com/838/).")
       end
 
       private
@@ -88,7 +88,7 @@ module Gitlab
         reference = resource.try(:to_reference) || resource.try(:id)
         title = resource.try(:title) || resource.try(:name)
 
-          "[#{reference} #{title}](#{url(resource)})"
+        "[#{reference} #{title}](#{url(resource)})"
       end
 
       def header_with_list(header, items)
