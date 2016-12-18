@@ -23,9 +23,9 @@ module API
         success Entities::RepoBranch
       end
       params do
-        requires :branch, type: String, regexp: /.+/, desc: 'The name of the branch'
+        requires :branch, type: String, desc: 'The name of the branch'
       end
-      get ':id/repository/branches/:branch' do
+      get ':id/repository/branches/:branch', requirements: { branch: /.+/ } do
         branch = user_project.repository.find_branch(params[:branch])
         not_found!("Branch") unless branch
 
@@ -39,11 +39,11 @@ module API
         success Entities::RepoBranch
       end
       params do
-        requires :branch, type: String, regexp: /.+/, desc: 'The name of the branch'
+        requires :branch, type: String, desc: 'The name of the branch'
         optional :developers_can_push, type: Boolean, desc: 'Flag if developers can push to that branch'
         optional :developers_can_merge, type: Boolean, desc: 'Flag if developers can merge to that branch'
       end
-      put ':id/repository/branches/:branch/protect' do
+      put ':id/repository/branches/:branch/protect', requirements: { branch: /.+/ } do
         authorize_admin_project
 
         branch = user_project.repository.find_branch(params[:branch])
@@ -76,9 +76,9 @@ module API
         success Entities::RepoBranch
       end
       params do
-        requires :branch, type: String, regexp: /.+/, desc: 'The name of the branch'
+        requires :branch, type: String, desc: 'The name of the branch'
       end
-      put ':id/repository/branches/:branch/unprotect' do
+      put ':id/repository/branches/:branch/unprotect', requirements: { branch: /.+/ } do
         authorize_admin_project
 
         branch = user_project.repository.find_branch(params[:branch])
@@ -112,9 +112,9 @@ module API
 
       desc 'Delete a branch'
       params do
-        requires :branch, type: String, regexp: /.+/, desc: 'The name of the branch'
+        requires :branch, type: String, desc: 'The name of the branch'
       end
-      delete ":id/repository/branches/:branch" do
+      delete ":id/repository/branches/:branch", requirements: { branch: /.+/ } do
         authorize_push_project
 
         result = DeleteBranchService.new(user_project, current_user).
@@ -127,6 +127,18 @@ module API
         else
           render_api_error!(result[:message], result[:return_code])
         end
+      end
+
+      # Delete all merged branches
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      # Example Request:
+      #   DELETE /projects/:id/repository/branches/delete_merged
+      delete ":id/repository/merged_branches" do
+        DeleteMergedBranchesService.new(user_project, current_user).async_execute
+
+        status(200)
       end
     end
   end

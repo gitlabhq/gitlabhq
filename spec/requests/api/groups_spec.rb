@@ -1,14 +1,14 @@
 require 'spec_helper'
 
-describe API::API, api: true  do
+describe API::Groups, api: true  do
   include ApiHelpers
+  include UploadHelpers
 
   let(:user1) { create(:user, can_create_group: false) }
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
   let(:admin) { create(:admin) }
-  let(:avatar_file_path) { File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif') }
-  let!(:group1) { create(:group, avatar: File.open(avatar_file_path)) }
+  let!(:group1) { create(:group, avatar: File.open(uploaded_image_temp_path)) }
   let!(:group2) { create(:group, :private) }
   let!(:project1) { create(:project, namespace: group1) }
   let!(:project2) { create(:project, namespace: group2) }
@@ -57,13 +57,66 @@ describe API::API, api: true  do
     end
 
     context "when using all_available in request" do
+      let(:response_groups) { json_response.map { |group| group['name'] } }
+
       it "returns all groups you have access to" do
         public_group = create :group, :public
         get api("/groups", user1), all_available: true
 
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
-        expect(json_response.first['name']).to eq(public_group.name)
+        expect(response_groups).to contain_exactly(public_group.name, group1.name)
+      end
+    end
+
+    context "when using sorting" do
+      let(:group3) { create(:group, name: "a#{group1.name}", path: "z#{group1.path}") }
+      let(:response_groups) { json_response.map { |group| group['name'] } }
+
+      before do
+        group3.add_owner(user1)
+      end
+
+      it "sorts by name ascending by default" do
+        get api("/groups", user1)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(response_groups).to eq([group3.name, group1.name])
+      end
+
+      it "sorts in descending order when passed" do
+        get api("/groups", user1), sort: "desc"
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(response_groups).to eq([group1.name, group3.name])
+      end
+
+      it "sorts by the order_by param" do
+        get api("/groups", user1), order_by: "path"
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(response_groups).to eq([group1.name, group3.name])
+      end
+    end
+  end
+
+  describe 'GET /groups/owned' do
+    context 'when unauthenticated' do
+      it 'returns authentication error' do
+        get api('/groups/owned')
+        expect(response).to have_http_status(401)
+      end
+    end
+
+    context 'when authenticated as group owner' do
+      it 'returns an array of groups the user owns' do
+        get api('/groups/owned', user2)
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.first['name']).to eq(group2.name)
       end
     end
   end
@@ -149,7 +202,7 @@ describe API::API, api: true  do
       end
 
       it 'returns 404 for a non existing group' do
-        put api('/groups/1328', user1)
+        put api('/groups/1328', user1), name: new_group_name
 
         expect(response).to have_http_status(404)
       end
@@ -190,6 +243,28 @@ describe API::API, api: true  do
         expect(json_response.length).to eq(2)
         project_names = json_response.map { |proj| proj['name' ] }
         expect(project_names).to match_array([project1.name, project3.name])
+        expect(json_response.first['default_branch']).to be_present
+      end
+
+      it "returns the group's projects with simple representation" do
+        get api("/groups/#{group1.id}/projects", user1), simple: true
+
+        expect(response).to have_http_status(200)
+        expect(json_response.length).to eq(2)
+        project_names = json_response.map { |proj| proj['name' ] }
+        expect(project_names).to match_array([project1.name, project3.name])
+        expect(json_response.first['default_branch']).not_to be_present
+      end
+
+      it 'filters the groups projects' do
+        public_project = create(:project, :public, path: 'test1', group: group1)
+
+        get api("/groups/#{group1.id}/projects", user1), visibility: 'public'
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an(Array)
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['name']).to eq(public_project.name)
       end
 
       it "does not return a non existing group" do

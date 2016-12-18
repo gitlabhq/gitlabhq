@@ -18,7 +18,7 @@ class GitPushService < BaseService
   #
   def execute
     @project.repository.after_create if @project.empty_repo?
-    @project.repository.after_push_commit(branch_name, params[:newrev])
+    @project.repository.after_push_commit(branch_name)
 
     if push_remove_branch?
       @project.repository.after_remove_branch
@@ -49,27 +49,53 @@ class GitPushService < BaseService
       update_gitattributes if is_default_branch?
     end
 
-    # Update merge requests that may be affected by this push. A new branch
-    # could cause the last commit of a merge request to change.
-    update_merge_requests
-
+    execute_related_hooks
     perform_housekeeping
+
+    update_caches
   end
 
   def update_gitattributes
     @project.repository.copy_gitattributes(params[:ref])
   end
 
+  def update_caches
+    if is_default_branch?
+      paths = Set.new
+
+      @push_commits.each do |commit|
+        commit.raw_diffs(deltas_only: true).each do |diff|
+          paths << diff.new_path
+        end
+      end
+
+      types = Gitlab::FileDetector.types_in_paths(paths.to_a)
+    else
+      types = []
+    end
+
+    ProjectCacheWorker.perform_async(@project.id, types)
+  end
+
   protected
 
-  def update_merge_requests
-    UpdateMergeRequestsWorker.perform_async(@project.id, current_user.id, params[:oldrev], params[:newrev], params[:ref])
+  def execute_related_hooks
+    # Update merge requests that may be affected by this push. A new branch
+    # could cause the last commit of a merge request to change.
+    #
+    UpdateMergeRequestsWorker
+      .perform_async(@project.id, current_user.id, params[:oldrev], params[:newrev], params[:ref])
 
     EventCreateService.new.push(@project, current_user, build_push_data)
     @project.execute_hooks(build_push_data.dup, :push_hooks)
     @project.execute_services(build_push_data.dup, :push_hooks)
     Ci::CreatePipelineService.new(@project, current_user, build_push_data).execute
-    ProjectCacheWorker.perform_async(@project.id)
+
+    if push_remove_branch?
+      AfterBranchDeleteService
+        .new(project, current_user)
+        .execute(branch_name)
+    end
   end
 
   def perform_housekeeping
@@ -109,7 +135,7 @@ class GitPushService < BaseService
 
     @push_commits.each do |commit|
       ProcessCommitWorker.
-        perform_async(project.id, current_user.id, commit.id, default)
+        perform_async(project.id, current_user.id, commit.to_hash, default)
     end
   end
 

@@ -49,6 +49,14 @@ class ApplicationController < ActionController::Base
     render_404
   end
 
+  def route_not_found
+    if current_user
+      not_found
+    else
+      redirect_to new_user_session_path
+    end
+  end
+
   protected
 
   # This filter handles both private tokens and personal access tokens
@@ -224,7 +232,7 @@ class ApplicationController < ActionController::Base
   end
 
   def require_email
-    if current_user && current_user.temp_oauth_email?
+    if current_user && current_user.temp_oauth_email? && session[:impersonator_id].nil?
       redirect_to profile_path, notice: 'Please complete your profile with email address' and return
     end
   end
@@ -254,7 +262,7 @@ class ApplicationController < ActionController::Base
   end
 
   def bitbucket_import_configured?
-    Gitlab::OAuth::Provider.enabled?(:bitbucket) && Gitlab::BitbucketImport.public_key.present?
+    Gitlab::OAuth::Provider.enabled?(:bitbucket)
   end
 
   def google_code_import_enabled?

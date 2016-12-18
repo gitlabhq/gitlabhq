@@ -1,6 +1,11 @@
-/* eslint-disable */
-((w) => {
-  w.ResolveBtn = Vue.extend({
+/* eslint-disable comma-dangle, object-shorthand, func-names, quote-props, no-else-return, camelcase, no-new, max-len */
+/* global Vue */
+/* global CommentsStore */
+/* global ResolveService */
+/* global Flash */
+
+(() => {
+  const ResolveBtn = Vue.extend({
     props: {
       noteId: Number,
       discussionId: String,
@@ -54,7 +59,7 @@
     },
     methods: {
       updateTooltip: function () {
-        $(this.$els.button)
+        $(this.$refs.button)
           .tooltip('hide')
           .tooltip('fixTitle');
       },
@@ -89,8 +94,8 @@
         });
       }
     },
-    compiled: function () {
-      $(this.$els.button).tooltip({
+    mounted: function () {
+      $(this.$refs.button).tooltip({
         container: 'body'
       });
     },
@@ -101,4 +106,6 @@
       CommentsStore.create(this.discussionId, this.noteId, this.canResolve, this.resolved, this.resolvedBy);
     }
   });
-})(window);
+
+  Vue.component('resolve-btn', ResolveBtn);
+})();

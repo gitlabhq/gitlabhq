@@ -31,8 +31,8 @@
                     &nbsp;
                   .light
                     = commit_author_link(commit, avatar: false)
-                    authored
-                    #{time_ago_with_tooltip(commit.committed_date, skip_js: true)}
+                    committed
+                    #{time_ago_with_tooltip(commit.committed_date)}
               %td.line-numbers
                 - line_count = blame_group[:lines].count
                 - (current_line...(current_line + line_count)).each do |i|

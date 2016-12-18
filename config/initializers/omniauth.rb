@@ -26,3 +26,9 @@ if Gitlab.config.omniauth.enabled
     end
   end
 end
+
+module OmniAuth
+  module Strategies
+    autoload :Bitbucket, Rails.root.join('lib', 'omniauth', 'strategies', 'bitbucket')
+  end
+end

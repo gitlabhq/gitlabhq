@@ -28,7 +28,7 @@
     = image_tag group_icon(group), class: "avatar s40 hidden-xs"
   .title
     = link_to group, class: 'group-name' do
-      = group.name
+      = group.full_name
 
     - if group_member
       as

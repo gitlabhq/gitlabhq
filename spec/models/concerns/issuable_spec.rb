@@ -35,7 +35,7 @@ describe Issue, "Issuable" do
     it { is_expected.to validate_presence_of(:iid) }
     it { is_expected.to validate_presence_of(:author) }
     it { is_expected.to validate_presence_of(:title) }
-    it { is_expected.to validate_length_of(:title).is_at_least(0).is_at_most(255) }
+    it { is_expected.to validate_length_of(:title).is_at_most(255) }
   end
 
   describe "Scope" do
@@ -95,6 +95,11 @@ describe Issue, "Issuable" do
       expect(described_class.full_search(searchable_issue.description.upcase)).
         to eq([searchable_issue])
     end
+  end
+
+  describe '.to_ability_name' do
+    it { expect(Issue.to_ability_name).to eq("issue") }
+    it { expect(MergeRequest.to_ability_name).to eq("merge_request") }
   end
 
   describe "#today?" do
@@ -171,23 +176,25 @@ describe Issue, "Issuable" do
   end
 
   describe '#subscribed?' do
+    let(:project) { issue.project }
+
     context 'user is not a participant in the issue' do
       before { allow(issue).to receive(:participants).with(user).and_return([]) }
 
       it 'returns false when no subcription exists' do
-        expect(issue.subscribed?(user)).to be_falsey
+        expect(issue.subscribed?(user, project)).to be_falsey
       end
 
       it 'returns true when a subcription exists and subscribed is true' do
-        issue.subscriptions.create(user: user, subscribed: true)
+        issue.subscriptions.create(user: user, project: project, subscribed: true)
 
-        expect(issue.subscribed?(user)).to be_truthy
+        expect(issue.subscribed?(user, project)).to be_truthy
       end
 
       it 'returns false when a subcription exists and subscribed is false' do
-        issue.subscriptions.create(user: user, subscribed: false)
+        issue.subscriptions.create(user: user, project: project, subscribed: false)
 
-        expect(issue.subscribed?(user)).to be_falsey
+        expect(issue.subscribed?(user, project)).to be_falsey
       end
     end
 
@@ -195,19 +202,19 @@ describe Issue, "Issuable" do
       before { allow(issue).to receive(:participants).with(user).and_return([user]) }
 
       it 'returns false when no subcription exists' do
-        expect(issue.subscribed?(user)).to be_truthy
+        expect(issue.subscribed?(user, project)).to be_truthy
       end
 
       it 'returns true when a subcription exists and subscribed is true' do
-        issue.subscriptions.create(user: user, subscribed: true)
+        issue.subscriptions.create(user: user, project: project, subscribed: true)
 
-        expect(issue.subscribed?(user)).to be_truthy
+        expect(issue.subscribed?(user, project)).to be_truthy
       end
 
       it 'returns false when a subcription exists and subscribed is false' do
-        issue.subscriptions.create(user: user, subscribed: false)
+        issue.subscriptions.create(user: user, project: project, subscribed: false)
 
-        expect(issue.subscribed?(user)).to be_falsey
+        expect(issue.subscribed?(user, project)).to be_falsey
       end
     end
   end

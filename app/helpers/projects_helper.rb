@@ -49,10 +49,10 @@ module ProjectsHelper
     end
   end
 
-  def project_title(project, name = nil, url = nil)
+  def project_title(project)
     namespace_link =
       if project.group
-        link_to(simple_sanitize(project.group.name), group_path(project.group))
+        group_title(project.group)
       else
         owner = project.namespace.owner
         link_to(simple_sanitize(owner.name), user_path(owner))
@@ -66,10 +66,7 @@ module ProjectsHelper
       end
     end
 
-    full_title = "#{namespace_link} / #{project_link}".html_safe
-    full_title << ' &middot; '.html_safe << link_to(simple_sanitize(name), url) if name
-
-    full_title
+    "#{namespace_link} / #{project_link}".html_safe
   end
 
   def remove_project_message(project)
@@ -394,20 +391,6 @@ module ProjectsHelper
     end
   end
 
-  def new_readme_path
-    ref = @repository.root_ref if @repository
-    ref ||= 'master'
-
-    namespace_project_new_blob_path(@project.namespace, @project, tree_join(ref), file_name: 'README.md')
-  end
-
-  def new_license_path
-    ref = @repository.root_ref if @repository
-    ref ||= 'master'
-
-    namespace_project_new_blob_path(@project.namespace, @project, tree_join(ref), file_name: 'LICENSE')
-  end
-
   def readme_cache_key
     sha = @project.commit.try(:sha) || 'nil'
     [@project.path_with_namespace, sha, "readme"].join('-')
@@ -457,5 +440,9 @@ module ProjectsHelper
 
   def project_child_container_class(view_path)
     view_path == "projects/issues/issues" ? "prepend-top-default" : "project-show-#{view_path}"
+  end
+
+  def project_issues(project)
+    IssuesFinder.new(current_user, project_id: project.id).execute
   end
 end

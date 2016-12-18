@@ -22,7 +22,7 @@ module API
       expose :provider, :extern_uid
     end
 
-    class UserFull < User
+    class UserPublic < User
       expose :last_sign_in_at
       expose :confirmed_at
       expose :email
@@ -34,7 +34,7 @@ module API
       expose :external
     end
 
-    class UserLogin < UserFull
+    class UserWithPrivateToken < UserPublic
       expose :private_token
     end
 
@@ -141,8 +141,12 @@ module API
         options[:project].repository.commit(repo_branch.dereferenced_target)
       end
 
+      expose :merged do |repo_branch, options|
+        options[:project].repository.merged_to_root_ref?(repo_branch.name)
+      end
+
       expose :protected do |repo_branch, options|
-        options[:project].protected_branch? repo_branch.name
+        options[:project].protected_branch?(repo_branch.name)
       end
 
       expose :developers_can_push do |repo_branch, options|
@@ -159,7 +163,7 @@ module API
     end
 
     class RepoTreeObject < Grape::Entity
-      expose :id, :name, :type
+      expose :id, :name, :type, :path
 
       expose :mode do |obj, options|
         filemode = obj.mode.to_s(8)
@@ -170,6 +174,7 @@ module API
 
     class RepoCommit < Grape::Entity
       expose :id, :short_id, :title, :author_name, :author_email, :created_at
+      expose :committer_name, :committer_email
       expose :safe_message, as: :message
     end
 
@@ -196,6 +201,19 @@ module API
       end
     end
 
+    class PersonalSnippet < Grape::Entity
+      expose :id, :title, :file_name
+      expose :author, using: Entities::UserBasic
+      expose :updated_at, :created_at
+
+      expose :web_url do |snippet|
+        Gitlab::UrlBuilder.build(snippet)
+      end
+      expose :raw_url do |snippet|
+        Gitlab::UrlBuilder.build(snippet) + "/raw"
+      end
+    end
+
     class ProjectEntity < Grape::Entity
       expose :id, :iid
       expose(:project_id) { |entity| entity.project.id }
@@ -210,6 +228,7 @@ module API
 
     class Milestone < ProjectEntity
       expose :due_date
+      expose :start_date
     end
 
     class Issue < ProjectEntity
@@ -218,7 +237,7 @@ module API
       expose :assignee, :author, using: Entities::UserBasic
 
       expose :subscribed do |issue, options|
-        issue.subscribed?(options[:current_user])
+        issue.subscribed?(options[:current_user], options[:project] || issue.project)
       end
       expose :user_notes_count
       expose :upvotes, :downvotes
@@ -248,7 +267,7 @@ module API
       expose :diff_head_sha, as: :sha
       expose :merge_commit_sha
       expose :subscribed do |merge_request, options|
-        merge_request.subscribed?(options[:current_user])
+        merge_request.subscribed?(options[:current_user], options[:project])
       end
       expose :user_notes_count
       expose :should_remove_source_branch?, as: :should_remove_source_branch
@@ -283,7 +302,7 @@ module API
     end
 
     class SSHKeyWithUser < SSHKey
-      expose :user, using: Entities::UserFull
+      expose :user, using: Entities::UserPublic
     end
 
     class Note < Grape::Entity
@@ -437,13 +456,24 @@ module API
     end
 
     class Label < LabelBasic
-      expose :open_issues_count, :closed_issues_count, :open_merge_requests_count
+      expose :open_issues_count do |label, options|
+        label.open_issues_count(options[:current_user])
+      end
+
+      expose :closed_issues_count do |label, options|
+        label.closed_issues_count(options[:current_user])
+      end
+
+      expose :open_merge_requests_count do |label, options|
+        label.open_merge_requests_count(options[:current_user])
+      end
+
       expose :priority do |label, options|
         label.priority(options[:project])
       end
 
       expose :subscribed do |label, options|
-        label.subscribed?(options[:current_user])
+        label.subscribed?(options[:current_user], options[:project])
       end
     end
 
@@ -595,10 +625,11 @@ module API
       expose :user, with: Entities::UserBasic
       expose :created_at, :updated_at, :started_at, :finished_at, :committed_at
       expose :duration
+      expose :coverage
     end
 
     class EnvironmentBasic < Grape::Entity
-      expose :id, :name, :external_url
+      expose :id, :name, :slug, :external_url
     end
 
     class Environment < EnvironmentBasic

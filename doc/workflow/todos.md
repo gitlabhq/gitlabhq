@@ -24,16 +24,18 @@ you still have open.
 
 A Todo appears in your Todos dashboard when:
 
-- an issue or merge request is assigned to you
+- an issue or merge request is assigned to you,
 - you are `@mentioned` in an issue or merge request, be it the description of
-  the issue/merge request or in a comment
+  the issue/merge request or in a comment,
+- build in the CI pipeline running for your merge request failed, but this
+  build is not allowed to fail.
 
 >**Note:** Commenting on a commit will _not_ trigger a Todo.
 
 ### Manually creating a Todo
 
 You can also add an issue or merge request to your Todos dashboard by clicking
-the "Add Todo" button in the issue or merge request sidebar.
+the "Add todo" button in the issue or merge request sidebar.
 
 ![Adding a Todo from the issuable sidebar](img/todos_add_todo_sidebar.png)
 
@@ -67,7 +69,7 @@ corresponding **Done** button, and it will disappear from your Todo list.
 ![A Todo in the Todos dashboard](img/todo_list_item.png)
 
 A Todo can also be marked as done from the issue or merge request sidebar using
-the "Mark Done" button.
+the "Mark done" button.
 
 ![Mark Done from the issuable sidebar](img/todos_mark_done_sidebar.png)
 

@@ -11,6 +11,9 @@ class MergeRequestDiff < ActiveRecord::Base
 
   belongs_to :merge_request
 
+  serialize :st_commits
+  serialize :st_diffs
+
   state_machine :state, initial: :empty do
     state :collected
     state :overflow
@@ -22,8 +25,7 @@ class MergeRequestDiff < ActiveRecord::Base
     state :overflow_diff_lines_limit
   end
 
-  serialize :st_commits
-  serialize :st_diffs
+  scope :viewable, -> { without_state(:empty) }
 
   # All diff information is collected from repository after object is created.
   # It allows you to override variables like head_commit_sha before getting diff.
@@ -125,11 +127,7 @@ class MergeRequestDiff < ActiveRecord::Base
   end
 
   def commits_sha
-    if @commits
-      commits.map(&:sha)
-    else
-      st_commits.map { |commit| commit[:id] }
-    end
+    st_commits.map { |commit| commit[:id] }
   end
 
   def diff_refs
@@ -172,6 +170,10 @@ class MergeRequestDiff < ActiveRecord::Base
     # so we handle cases when user does squash and rebase of the commits between versions.
     # For this reason we set straight to true by default.
     CompareService.new.execute(project, head_commit_sha, project, sha, straight: straight)
+  end
+
+  def commits_count
+    st_commits.count
   end
 
   private

@@ -87,6 +87,26 @@ describe Ci::Build, models: true do
     end
   end
 
+  describe '#persisted_environment' do
+    before do
+      @environment = create(:environment, project: project, name: "foo-#{project.default_branch}")
+    end
+
+    subject { build.persisted_environment }
+
+    context 'referenced literally' do
+      let(:build) { create(:ci_build, pipeline: pipeline, environment: "foo-#{project.default_branch}") }
+
+      it { is_expected.to eq(@environment) }
+    end
+
+    context 'referenced with a variable' do
+      let(:build) { create(:ci_build, pipeline: pipeline, environment: "foo-$CI_BUILD_REF_NAME") }
+
+      it { is_expected.to eq(@environment) }
+    end
+  end
+
   describe '#trace' do
     it { expect(build.trace).to be_nil }
 
@@ -254,6 +274,24 @@ describe Ci::Build, models: true do
     end
   end
 
+  describe '#ref_slug' do
+    {
+      'master'    => 'master',
+      '1-foo'     => '1-foo',
+      'fix/1-foo' => 'fix-1-foo',
+      'fix-1-foo' => 'fix-1-foo',
+      'a' * 63    => 'a' * 63,
+      'a' * 64    => 'a' * 63,
+      'FOO'       => 'foo',
+    }.each do |ref, slug|
+      it "transforms #{ref} to #{slug}" do
+        build.ref = ref
+
+        expect(build.ref_slug).to eq(slug)
+      end
+    end
+  end
+
   describe '#variables' do
     let(:container_registry_enabled) { false }
     let(:predefined_variables) do
@@ -265,6 +303,7 @@ describe Ci::Build, models: true do
         { key: 'CI_BUILD_REF', value: build.sha, public: true },
         { key: 'CI_BUILD_BEFORE_SHA', value: build.before_sha, public: true },
         { key: 'CI_BUILD_REF_NAME', value: 'master', public: true },
+        { key: 'CI_BUILD_REF_SLUG', value: 'master', public: true },
         { key: 'CI_BUILD_NAME', value: 'test', public: true },
         { key: 'CI_BUILD_STAGE', value: 'test', public: true },
         { key: 'CI_SERVER_NAME', value: 'GitLab', public: true },
@@ -307,6 +346,22 @@ describe Ci::Build, models: true do
       end
 
       it { user_variables.each { |v| is_expected.to include(v) } }
+    end
+
+    context 'when build has an environment' do
+      before do
+        build.update(environment: 'production')
+        create(:environment, project: build.project, name: 'production', slug: 'prod-slug')
+      end
+
+      let(:environment_variables) do
+        [
+          { key: 'CI_ENVIRONMENT_NAME', value: 'production', public: true },
+          { key: 'CI_ENVIRONMENT_SLUG', value: 'prod-slug',  public: true }
+        ]
+      end
+
+      it { environment_variables.each { |v| is_expected.to include(v) } }
     end
 
     context 'when build started manually' do
@@ -449,6 +504,17 @@ describe Ci::Build, models: true do
       it { is_expected.to include({ key: 'CI_RUNNER_ID', value: runner.id.to_s, public: true }) }
       it { is_expected.to include({ key: 'CI_RUNNER_DESCRIPTION', value: 'description', public: true }) }
       it { is_expected.to include({ key: 'CI_RUNNER_TAGS', value: 'docker, linux', public: true }) }
+    end
+
+    context 'when build is for a deployment' do
+      let(:deployment_variable) { { key: 'KUBERNETES_TOKEN', value: 'TOKEN', public: false } }
+
+      before do
+        build.environment = 'production'
+        allow(project).to receive(:deployment_variables).and_return([deployment_variable])
+      end
+
+      it { is_expected.to include(deployment_variable) }
     end
 
     context 'returns variables in valid order' do
@@ -730,8 +796,8 @@ describe Ci::Build, models: true do
         pipeline2 = create(:ci_pipeline, project: project)
         @build2 = create(:ci_build, pipeline: pipeline2)
 
-        commits = [double(id: pipeline.sha), double(id: pipeline2.sha)]
-        allow(@merge_request).to receive(:commits).and_return(commits)
+        allow(@merge_request).to receive(:commits_sha).
+          and_return([pipeline.sha, pipeline2.sha])
         allow(MergeRequest).to receive_message_chain(:includes, :where, :reorder).and_return([@merge_request])
       end
 
@@ -899,21 +965,87 @@ describe Ci::Build, models: true do
     end
   end
 
-  describe '#retryable?' do
-    context 'when build is running' do
-      before do
-        build.run!
+  describe '#cancelable?' do
+    subject { build }
+
+    context 'when build is cancelable' do
+      context 'when build is pending' do
+        it { is_expected.to be_cancelable }
       end
 
-      it { expect(build).not_to be_retryable }
+      context 'when build is running' do
+        before do
+          build.run!
+        end
+
+        it { is_expected.to be_cancelable }
+      end
     end
 
-    context 'when build is finished' do
-      before do
-        build.success!
+    context 'when build is not cancelable' do
+      context 'when build is successful' do
+        before do
+          build.success!
+        end
+
+        it { is_expected.not_to be_cancelable }
       end
 
-      it { expect(build).to be_retryable }
+      context 'when build is failed' do
+        before do
+          build.drop!
+        end
+
+        it { is_expected.not_to be_cancelable }
+      end
+    end
+  end
+
+  describe '#retryable?' do
+    subject { build }
+
+    context 'when build is retryable' do
+      context 'when build is successful' do
+        before do
+          build.success!
+        end
+
+        it { is_expected.to be_retryable }
+      end
+
+      context 'when build is failed' do
+        before do
+          build.drop!
+        end
+
+        it { is_expected.to be_retryable }
+      end
+
+      context 'when build is canceled' do
+        before do
+          build.cancel!
+        end
+
+        it { is_expected.to be_retryable }
+      end
+    end
+
+    context 'when build is not retryable' do
+      context 'when build is running' do
+        before do
+          build.run!
+        end
+
+        it { is_expected.not_to be_retryable }
+      end
+
+      context 'when build is skipped' do
+        before do
+          build.skip!
+        end
+
+        it { is_expected.not_to be_retryable }
+      end
     end
   end
 
@@ -1050,6 +1182,143 @@ describe Ci::Build, models: true do
       it 'returns true' do
         expect(build).to be_retryable
       end
+    end
+  end
+
+  describe '#has_environment?' do
+    subject { build.has_environment? }
+
+    context 'when environment is defined' do
+      before do
+        build.update(environment: 'review')
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when environment is not defined' do
+      before do
+        build.update(environment: nil)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#starts_environment?' do
+    subject { build.starts_environment? }
+
+    context 'when environment is defined' do
+      before do
+        build.update(environment: 'review')
+      end
+
+      context 'no action is defined' do
+        it { is_expected.to be_truthy }
+      end
+
+      context 'and start action is defined' do
+        before do
+          build.update(options: { environment: { action: 'start' } } )
+        end
+
+        it { is_expected.to be_truthy }
+      end
+    end
+
+    context 'when environment is not defined' do
+      before do
+        build.update(environment: nil)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#stops_environment?' do
+    subject { build.stops_environment? }
+
+    context 'when environment is defined' do
+      before do
+        build.update(environment: 'review')
+      end
+
+      context 'no action is defined' do
+        it { is_expected.to be_falsey }
+      end
+
+      context 'and stop action is defined' do
+        before do
+          build.update(options: { environment: { action: 'stop' } } )
+        end
+
+        it { is_expected.to be_truthy }
+      end
+    end
+
+    context 'when environment is not defined' do
+      before do
+        build.update(environment: nil)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#last_deployment' do
+    subject { build.last_deployment }
+
+    context 'when multiple deployments are created' do
+      let!(:deployment1) { create(:deployment, deployable: build) }
+      let!(:deployment2) { create(:deployment, deployable: build) }
+
+      it 'returns the latest one' do
+        is_expected.to eq(deployment2)
+      end
+    end
+  end
+
+  describe '#outdated_deployment?' do
+    subject { build.outdated_deployment? }
+
+    context 'when build succeeded' do
+      let(:build) { create(:ci_build, :success) }
+      let!(:deployment) { create(:deployment, deployable: build) }
+
+      context 'current deployment is latest' do
+        it { is_expected.to be_falsey }
+      end
+
+      context 'current deployment is not latest on environment' do
+        let!(:deployment2) { create(:deployment, environment: deployment.environment) }
+
+        it { is_expected.to be_truthy }
+      end
+    end
+
+    context 'when build failed' do
+      let(:build) { create(:ci_build, :failed) }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#expanded_environment_name' do
+    subject { build.expanded_environment_name }
+
+    context 'when environment uses variables' do
+      let(:build) { create(:ci_build, ref: 'master', environment: 'review/$CI_BUILD_REF_NAME') }
+
+      it { is_expected.to eq('review/master') }
+    end
+  end
+
+  describe '#detailed_status' do
+    let(:user) { create(:user) }
+
+    it 'returns a detailed status' do
+      expect(build.detailed_status(user))
+        .to be_a Gitlab::Ci::Status::Build::Cancelable
     end
   end
 end

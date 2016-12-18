@@ -3,7 +3,7 @@ require 'spec_helper'
 feature 'Projects > Members > Master manages access requests', feature: true do
   let(:user) { create(:user) }
   let(:master) { create(:user) }
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:empty_project, :public, :access_requestable) }
 
   background do
     project.request_access(user)

@@ -64,6 +64,8 @@ module IssuesHelper
       'status-box-merged'
     elsif item.closed?
       'status-box-closed'
+    elsif item.respond_to?(:upcoming?) && item.upcoming?
+      'status-box-upcoming'
     else
       'status-box-open'
     end

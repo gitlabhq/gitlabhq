@@ -16,7 +16,7 @@ class SearchController < ApplicationController
       @group = nil unless can?(current_user, :read_group, @group)
     end
 
-    return if params[:search].nil? || params[:search].blank?
+    return if params[:search].blank?
 
     @search_term = params[:search]
 

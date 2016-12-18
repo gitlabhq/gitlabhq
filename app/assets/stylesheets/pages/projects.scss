@@ -6,12 +6,6 @@
   }
 }
 
-.no-ssh-key-message,
-.project-limit-message {
-  background-color: #f28d35;
-  margin-bottom: 0;
-}
-
 .new_project,
 .edit-project {
 
@@ -76,7 +70,7 @@
     &.static-namespace {
       height: 35px;
       border-radius: 3px;
-      border: 1px solid #e5e5e5;
+      border: 1px solid $border-color;
     }
 
     &+ .select2 a {
@@ -86,7 +80,8 @@
   }
 }
 
-.project-home-panel {
+.project-home-panel,
+.group-home-panel {
   padding-top: 24px;
   padding-bottom: 24px;
 
@@ -94,7 +89,8 @@
     border-bottom: 1px solid $border-color;
   }
 
-  .project-avatar {
+  .project-avatar,
+  .group-avatar {
     float: none;
     margin: 0 auto;
     border: none;
@@ -104,7 +100,8 @@
     }
   }
 
-  .project-title {
+  .project-title,
+  .group-title {
     margin-top: 10px;
     margin-bottom: 10px;
     font-size: 24px;
@@ -118,10 +115,11 @@
     }
   }
 
-  .project-home-desc {
+  .project-home-desc,
+  .group-home-desc {
     margin-left: auto;
     margin-right: auto;
-    margin-bottom: 15px;
+    margin-bottom: 0;
     max-width: 700px;
 
     > p {
@@ -141,12 +139,21 @@
   }
 }
 
-.project-repo-buttons {
-  font-size: 0;
+.nav > .project-repo-buttons {
+  margin-top: 0;
+}
+
+.project-repo-buttons,
+.group-buttons {
+  margin-top: 15px;
 
   .btn {
     @include btn-gray;
     padding: 3px 10px;
+
+    &:last-child {
+      margin-left: 0;
+    }
 
     .fa {
       color: $layout-link-gray;
@@ -168,10 +175,21 @@
     }
   }
 
-  .project-repo-btn-group,
+  .download-button,
+  .dropdown-toggle,
   .notification-dropdown,
   .project-dropdown {
     margin-left: 10px;
+  }
+
+  .notification-dropdown .dropdown-menu {
+    @extend .dropdown-menu-align-right;
+  }
+
+  .download-button {
+    @media (max-width: $screen-md-max) {
+      margin-left: 0;
+    }
   }
 
   .count-buttons {
@@ -205,7 +223,7 @@
         left: 0;
         margin-top: -6px;
         border-width: 7px 5px 7px 0;
-        border-right-color: #dce0e5;
+        border-right-color: $count-arrow-border;
         pointer-events: none;
       }
 
@@ -220,7 +238,7 @@
         left: 1px;
         margin-top: -9px;
         border-width: 10px 7px 10px 0;
-        border-right-color: #fff;
+        border-right-color: $white-light;
         pointer-events: none;
       }
     }
@@ -228,7 +246,7 @@
     .count {
       @include btn-gray;
       display: inline-block;
-      background: white;
+      background: $white-light;
       border-radius: 2px;
       border-width: 1px;
       border-style: solid;
@@ -250,7 +268,7 @@
       }
 
       &:hover {
-        background: #fff;
+        background: $white-light;
       }
     }
   }
@@ -282,7 +300,7 @@
 
     .option-descr {
       margin-left: 29px;
-      color: #54565b;
+      color: $project-option-descr-color;
     }
   }
 }
@@ -290,7 +308,7 @@
 .save-project-loader {
   margin-top: 50px;
   margin-bottom: 50px;
-  color: #555;
+  color: $save-project-loader-color;
 }
 
 .transfer-project .select2-container {
@@ -353,7 +371,7 @@ a.deploy-project-label {
 
   > li + li::before {
     padding: 0 3px;
-    color: #999;
+    color: $project-breadcrumb-color;
   }
 
   a {
@@ -396,13 +414,13 @@ a.deploy-project-label {
         width: 100px;
         height: 100px;
         background-color: $gray-light;
-        border: 1px solid $gray-dark;
+        border: 1px solid $white-normal;
         margin: 0 auto;
         border-radius: 50%;
 
         i {
           font-size: 100px;
-          color: $gray-dark;
+          color: $white-normal;
         }
       }
 
@@ -458,6 +476,20 @@ a.deploy-project-label {
   }
 }
 
+.page-sidebar-pinned {
+  .project-stats .nav > li.right {
+    @media (min-width: $screen-lg-min) {
+      float: none;
+    }
+  }
+
+  .download-button {
+    @media (min-width: $screen-lg-min) {
+      margin-left: 0;
+    }
+  }
+}
+
 .project-stats {
   font-size: 0;
   border-bottom: 1px solid $border-color;
@@ -474,12 +506,12 @@ a.deploy-project-label {
       margin-right: $gl-padding;
     }
 
-    &.project-repo-buttons-right {
-      margin-top: 10px;
+    &.right {
+      vertical-align: top;
+      margin-top: 0;
 
-      @media (min-width: $screen-md-min) {
+      @media (min-width: $screen-lg-min) {
         float: right;
-        margin-top: 0;
       }
     }
   }
@@ -487,7 +519,7 @@ a.deploy-project-label {
   .nav > li > a {
     padding: 0;
     background-color: transparent;
-    font-size: 15px;
+    font-size: 14px;
     line-height: 29px;
     color: $notes-light-color;
 
@@ -498,7 +530,7 @@ a.deploy-project-label {
   }
 
   li.missing {
-    border: 1px dashed $border-gray-light;
+    border: 1px dashed $border-gray-normal;
     border-radius: $border-radius-default;
 
     a {
@@ -515,20 +547,20 @@ a.deploy-project-label {
 }
 
 pre.light-well {
-  border-color: #f1f1f1;
+  border-color: $well-light-border;
 }
 
 .git-empty {
   margin: 0 7px 7px;
 
   h5 {
-    color: #5c5d5e;
+    color: $gl-text-color-dark;
   }
 
   .light-well {
     border-radius: 2px;
 
-    color: #5b6169;
+    color: $well-light-text-color;
     font-size: 13px;
     line-height: 1.6em;
   }
@@ -553,7 +585,7 @@ pre.light-well {
   @include basic-list;
 
   .project-row {
-    border-color: $table-border-color;
+    border-color: $white-normal;
 
     .project-full-name {
       @include str-truncated;
@@ -605,7 +637,7 @@ pre.light-well {
   &.container-fluid {
     padding-top: 12px;
     padding-bottom: 12px;
-    background-color: $background-color;
+    background-color: $gray-light;
     border: 1px solid $border-color;
     border-right-width: 0;
     border-left-width: 0;
@@ -682,7 +714,7 @@ pre.light-well {
 
   .form-control {
     @extend .monospace;
-    background: #fff;
+    background: $white-light;
     font-size: 14px;
     margin-left: -1px;
     cursor: auto;
@@ -692,17 +724,17 @@ pre.light-well {
 
 .cannot-be-merged,
 .cannot-be-merged:hover {
-  color: #e62958;
+  color: $error-exclamation-point;
   margin-top: 2px;
 }
 
 .private-forks-notice .private-fork-icon {
   i:nth-child(1) {
-    color: #2aa056;
+    color: $project-private-forks-notice-odd;
   }
 
   i:nth-child(2) {
-    color: #fff;
+    color: $white-light;
   }
 }
 
@@ -840,5 +872,13 @@ pre.light-well {
   &.disabled {
     opacity: 0.5;
     pointer-events: none;
+  }
+}
+
+.variables-table {
+  table-layout: fixed;
+
+  .variable-key {
+    width: 30%;
   }
 }

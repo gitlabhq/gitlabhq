@@ -116,6 +116,7 @@ project:
 - base_tags
 - tag_taggings
 - tags
+- chat_services
 - creator
 - group
 - namespace
@@ -127,6 +128,7 @@ project:
 - emails_on_push_service
 - builds_email_service
 - pipelines_email_service
+- mattermost_slash_commands_service
 - irker_service
 - pivotaltracker_service
 - hipchat_service
@@ -134,7 +136,8 @@ project:
 - assembla_service
 - asana_service
 - gemnasium_service
-- slack_service
+- slack_notification_service
+- mattermost_notification_service
 - buildkite_service
 - bamboo_service
 - teamcity_service
@@ -145,6 +148,7 @@ project:
 - bugzilla_service
 - gitlab_issue_tracker_service
 - external_wiki_service
+- kubernetes_service
 - forked_project_link
 - forked_from_project
 - forked_project_links
@@ -184,6 +188,9 @@ project:
 - environments
 - deployments
 - project_feature
+- authorized_users
+- project_authorizations
+- route
 award_emoji:
 - awardable
 - user

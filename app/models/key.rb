@@ -6,12 +6,20 @@ class Key < ActiveRecord::Base
 
   belongs_to :user
 
-  before_validation :strip_white_space, :generate_fingerprint
+  before_validation :generate_fingerprint
 
-  validates :title, presence: true, length: { within: 0..255 }
-  validates :key, presence: true, length: { within: 0..5000 }, format: { with: /\A(ssh|ecdsa)-.*\Z/ }
-  validates :key, format: { without: /\n|\r/, message: 'should be a single line' }
-  validates :fingerprint, uniqueness: true, presence: { message: 'cannot be generated' }
+  validates :title,
+    presence: true,
+    length: { maximum: 255 }
+  validates :key,
+    presence: true,
+    length: { maximum: 5000 },
+    format: { with: /\A(ssh|ecdsa)-.*\Z/ }
+  validates :key,
+    format: { without: /\n|\r/, message: 'should be a single line' }
+  validates :fingerprint,
+    uniqueness: true,
+    presence: { message: 'cannot be generated' }
 
   delegate :name, :email, to: :user, prefix: true
 
@@ -21,8 +29,9 @@ class Key < ActiveRecord::Base
   after_destroy :remove_from_shell
   after_destroy :post_destroy_hook
 
-  def strip_white_space
-    self.key = key.strip unless key.blank?
+  def key=(value)
+    value.strip! unless value.blank?
+    write_attribute(:key, value)
   end
 
   def publishable_key

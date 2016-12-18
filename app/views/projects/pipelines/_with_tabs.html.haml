@@ -1,0 +1,42 @@
+.tabs-holder
+  %ul.pipelines-tabs.nav-links.no-top.no-bottom
+    %li.js-pipeline-tab-link
+      = link_to namespace_project_pipeline_path(@project.namespace, @project, @pipeline), data: { target: 'div#js-tab-pipeline', action: 'pipelines', toggle: 'tab' },  class: 'pipeline-tab' do
+        Pipeline
+    %li.js-builds-tab-link
+      = link_to builds_namespace_project_pipeline_path(@project.namespace, @project, @pipeline), data: {target: 'div#js-tab-builds', action: 'builds', toggle: 'tab' }, class: 'builds-tab' do
+        Builds
+        %span.badge.js-builds-counter= pipeline.statuses.count
+
+
+
+.tab-content
+  #js-tab-pipeline.tab-pane
+    .build-content.middle-block.js-pipeline-graph
+      = render "projects/pipelines/graph", pipeline: pipeline
+
+  #js-tab-builds.tab-pane
+    - if pipeline.yaml_errors.present?
+      .bs-callout.bs-callout-danger
+        %h4 Found errors in your .gitlab-ci.yml:
+        %ul
+          - pipeline.yaml_errors.split(",").each do |error|
+            %li= error
+        You can also test your .gitlab-ci.yml in the #{link_to "Lint", ci_lint_path}
+
+    - if pipeline.project.builds_enabled? && !pipeline.ci_yaml_file
+      .bs-callout.bs-callout-warning
+        \.gitlab-ci.yml not found in this commit
+
+    .table-holder.pipeline-holder
+      %table.table.ci-table.pipeline
+        %thead
+          %tr
+            %th Status
+            %th Build ID
+            %th Name
+            %th
+            - if pipeline.project.build_coverage_enabled?
+              %th Coverage
+            %th
+        = render partial: "projects/stage/stage", collection: pipeline.stages, as: :stage

@@ -23,19 +23,26 @@ module Gitlab
       private
 
       def select_body(message)
-        text    = message.text_part if message.multipart?
-        text  ||= message           if message.content_type !~ /text\/html/
+        if message.multipart?
+          part = message.text_part || message.html_part || message
+        else
+          part = message
+        end
 
-        return "" unless text
+        decoded = fix_charset(part)
 
-        text = fix_charset(text)
+        return "" unless decoded
 
         # Certain trigger phrases that means we didn't parse correctly
-        if text =~ /(Content\-Type\:|multipart\/alternative|text\/plain)/
+        if decoded =~ /(Content\-Type\:|multipart\/alternative|text\/plain)/
           return ""
         end
 
-        text
+        if (part.content_type || '').include? 'text/html'
+          HTMLParser.parse_reply(decoded)
+        else
+          decoded
+        end
       end
 
       # Force encoding to UTF-8 on a Mail::Message or Mail::Part
@@ -62,7 +69,7 @@ module Gitlab
           # This one might be controversial but so many reply lines have years, times and end with a colon.
           # Let's try it and see how well it works.
           break if (l =~ /\d{4}/ && l =~ /\d:\d\d/ && l =~ /\:$/) ||
-                   (l =~ /On \w+ \d+,? \d+,?.*wrote:/)
+              (l =~ /On \w+ \d+,? \d+,?.*wrote:/)
 
           # Headers on subsequent lines
           break if (0..2).all? { |off| lines[idx + off] =~ REPLYING_HEADER_REGEX }

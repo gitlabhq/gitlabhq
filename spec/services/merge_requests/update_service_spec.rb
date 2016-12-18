@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe MergeRequests::UpdateService, services: true do
+  include EmailHelpers
+
   let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
@@ -79,31 +81,31 @@ describe MergeRequests::UpdateService, services: true do
       end
 
       it 'creates system note about merge_request reassign' do
-        note = find_note('Reassigned to')
+        note = find_note('assigned to')
 
         expect(note).not_to be_nil
-        expect(note.note).to include "Reassigned to \@#{user2.username}"
+        expect(note.note).to include "assigned to #{user2.to_reference}"
       end
 
       it 'creates system note about merge_request label edit' do
-        note = find_note('Added ~')
+        note = find_note('added ~')
 
         expect(note).not_to be_nil
-        expect(note.note).to include "Added ~#{label.id} label"
+        expect(note.note).to include "added #{label.to_reference} label"
       end
 
       it 'creates system note about title change' do
-        note = find_note('Changed title:')
+        note = find_note('changed title')
 
         expect(note).not_to be_nil
-        expect(note.note).to eq 'Changed title: **{-Old-} title** → **{+New+} title**'
+        expect(note.note).to eq 'changed title from **{-Old-} title** to **{+New+} title**'
       end
 
       it 'creates system note about branch change' do
-        note = find_note('Target')
+        note = find_note('changed target')
 
         expect(note).not_to be_nil
-        expect(note.note).to eq 'Target branch changed from `master` to `target`'
+        expect(note.note).to eq 'changed target branch from `master` to `target`'
       end
 
       context 'when not including source branch removal options' do
@@ -199,7 +201,7 @@ describe MergeRequests::UpdateService, services: true do
 
     context 'when the issue is relabeled' do
       let!(:non_subscriber) { create(:user) }
-      let!(:subscriber) { create(:user).tap { |u| label.toggle_subscription(u) } }
+      let!(:subscriber) { create(:user) { |u| label.toggle_subscription(u, project) } }
 
       before do
         project.team << [non_subscriber, :developer]
@@ -258,8 +260,8 @@ describe MergeRequests::UpdateService, services: true do
         before { update_merge_request({ description: "- [x] Task 1\n- [X] Task 2" }) }
 
         it 'creates system note about task status change' do
-          note1 = find_note('Marked the task **Task 1** as completed')
-          note2 = find_note('Marked the task **Task 2** as completed')
+          note1 = find_note('marked the task **Task 1** as completed')
+          note2 = find_note('marked the task **Task 2** as completed')
 
           expect(note1).not_to be_nil
           expect(note2).not_to be_nil
@@ -273,8 +275,8 @@ describe MergeRequests::UpdateService, services: true do
         end
 
         it 'creates system note about task status change' do
-          note1 = find_note('Marked the task **Task 1** as incomplete')
-          note2 = find_note('Marked the task **Task 2** as incomplete')
+          note1 = find_note('marked the task **Task 1** as incomplete')
+          note2 = find_note('marked the task **Task 2** as incomplete')
 
           expect(note1).not_to be_nil
           expect(note2).not_to be_nil
@@ -317,6 +319,11 @@ describe MergeRequests::UpdateService, services: true do
         issue_ids = MergeRequestsClosingIssues.where(merge_request: merge_request).pluck(:issue_id)
         expect(issue_ids).to be_empty
       end
+    end
+
+    include_examples 'issuable update service' do
+      let(:open_issuable) { merge_request }
+      let(:closed_issuable) { create(:closed_merge_request, source_project: project) }
     end
   end
 end

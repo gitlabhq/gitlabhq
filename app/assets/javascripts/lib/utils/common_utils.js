@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-unused-expressions, no-param-reassign, no-else-return, quotes, object-shorthand, comma-dangle, camelcase, one-var, vars-on-top, one-var-declaration-per-line, no-return-assign, consistent-return, padded-blocks, max-len, prefer-template */
 (function() {
   (function(w) {
     var base;
@@ -33,10 +33,6 @@
       });
     };
 
-    w.gl.utils.split = function(val) {
-      return val.split(/,\s*/);
-    };
-
     w.gl.utils.extractLast = function(term) {
       return this.split(term).pop();
     };
@@ -67,83 +63,57 @@
       });
     };
 
-    w.gl.utils.disableButtonIfAnyEmptyField = function(form, form_selector, button_selector) {
-      var closest_submit, updateButtons;
-      closest_submit = form.find(button_selector);
-      updateButtons = function() {
-        var filled;
-        filled = true;
-        form.find('input').filter(form_selector).each(function() {
-          return filled = this.rstrip($(this).val()) !== "" || !$(this).attr('required');
-        });
-        if (filled) {
-          return closest_submit.enable();
-        } else {
-          return closest_submit.disable();
+    // automatically adjust scroll position for hash urls taking the height of the navbar into account
+    // https://github.com/twitter/bootstrap/issues/1768
+    w.gl.utils.handleLocationHash = function() {
+      var hash = w.gl.utils.getLocationHash();
+      if (!hash) return;
+
+      var navbar = document.querySelector('.navbar-gitlab');
+      var subnav = document.querySelector('.layout-nav');
+      var fixedTabs = document.querySelector('.js-tabs-affix');
+
+      var adjustment = 0;
+      if (navbar) adjustment -= navbar.offsetHeight;
+      if (subnav) adjustment -= subnav.offsetHeight;
+
+      // scroll to user-generated markdown anchor if we cannot find a match
+      if (document.getElementById(hash) === null) {
+        var target = document.getElementById('user-content-' + hash);
+        if (target && target.scrollIntoView) {
+          target.scrollIntoView(true);
+          window.scrollBy(0, adjustment);
         }
-      };
-      updateButtons();
-      return form.keyup(updateButtons);
-    };
-
-    w.gl.utils.sanitize = function(str) {
-      return str.replace(/<(?:.|\n)*?>/gm, '');
-    };
-
-    w.gl.utils.unbindEvents = function() {
-      return $(document).off('scroll');
-    };
-
-    w.gl.utils.shiftWindow = function() {
-      return w.scrollBy(0, -100);
-    };
-
-
-    gl.utils.updateTooltipTitle = function($tooltipEl, newTitle) {
-      return $tooltipEl.tooltip('destroy').attr('title', newTitle).tooltip('fixTitle');
-    };
-    gl.utils.preventDisabledButtons = function() {
-      return $('.btn').click(function(e) {
-        if ($(this).hasClass('disabled')) {
-          e.preventDefault();
-          e.stopImmediatePropagation();
-          return false;
+      } else {
+        // only adjust for fixedTabs when not targeting user-generated content
+        if (fixedTabs) {
+          adjustment -= fixedTabs.offsetHeight;
         }
-      });
+        window.scrollBy(0, adjustment);
+      }
     };
+
     gl.utils.getPagePath = function() {
       return $('body').data('page').split(':')[0];
     };
+
     gl.utils.parseUrl = function (url) {
       var parser = document.createElement('a');
       parser.href = url;
       return parser;
     };
 
-    gl.utils.cleanupBeforeFetch = function() {
-      // Unbind scroll events
-      $(document).off('scroll');
-      // Close any open tooltips
-      $('.has-tooltip, [data-toggle="tooltip"]').tooltip('destroy');
+    gl.utils.parseUrlPathname = function (url) {
+      var parsedUrl = gl.utils.parseUrl(url);
+      // parsedUrl.pathname will return an absolute path for Firefox and a relative path for IE11
+      // We have to make sure we always have an absolute path.
+      return parsedUrl.pathname.charAt(0) === '/' ? parsedUrl.pathname : '/' + parsedUrl.pathname;
     };
 
-    return jQuery.timefor = function(time, suffix, expiredLabel) {
-      var suffixFromNow, timefor;
-      if (!time) {
-        return '';
-      }
-      suffix || (suffix = 'remaining');
-      expiredLabel || (expiredLabel = 'Past due');
-      jQuery.timeago.settings.allowFuture = true;
-      suffixFromNow = jQuery.timeago.settings.strings.suffixFromNow;
-      jQuery.timeago.settings.strings.suffixFromNow = suffix;
-      timefor = $.timeago(time);
-      if (timefor.indexOf('ago') > -1) {
-        timefor = expiredLabel;
-      }
-      jQuery.timeago.settings.strings.suffixFromNow = suffixFromNow;
-      return timefor;
+    gl.utils.isMetaKey = function(e) {
+      return e.metaKey || e.ctrlKey || e.altKey || e.shiftKey;
     };
+
   })(window);
 
 }).call(this);

@@ -34,9 +34,9 @@ as created be the pusher (local push or via the UI) and any build created in thi
 pipeline will have the permissions of the pusher.
 
 This allows us to make it really easy to evaluate the access for all projects
-that have Git submodules or are using container images that the pusher would
-have access too. **The permission is granted only for time that build is running.
-The access is revoked after the build is finished.**
+that have [Git submodules][gitsub] or are using container images that the pusher
+would have access too. **The permission is granted only for time that build is
+running. The access is revoked after the build is finished.**
 
 ## Types of users
 
@@ -141,7 +141,7 @@ with GitLab 8.12.
 With the new build permissions model, there is now an easy way to access all
 dependent source code in a project. That way, we can:
 
-1. Access a project's Git submodules
+1. Access a project's [Git submodules][gitsub]
 1. Access private container images
 1. Access project's and submodule LFS objects
 
@@ -179,119 +179,25 @@ As a user:
 
 ### Git submodules
 
->
-It often happens that while working on one project, you need to use another
-project from within it; perhaps it’s a library that a third party developed or
-you’re developing a project separately and are using it in multiple parent
-projects.
-A common issue arises in these scenarios: you want to be able to treat the two
-projects as separate yet still be able to use one from within the other.
->
-_Excerpt from the [Git website][git-scm] about submodules._
-
-If dealing with submodules, your project will probably have a file named
-`.gitmodules`. And this is how it usually looks like:
-
-```
-[submodule "tools"]
-	path = tools
-	url = git@gitlab.com/group/tools.git
-```
-
-> **Note:**
-If you are **not** using GitLab 8.12 or higher, you would need to work your way
-around this issue in order to access the sources of `gitlab.com/group/tools`
-(e.g., use [SSH keys](../ssh_keys/README.md)).
->
-With GitLab 8.12 onward, your permissions are used to evaluate what a CI build
-can access. More information about how this system works can be found in the
-[Build permissions model](../../user/permissions.md#builds-permissions).
-
-To make use of the new changes, you have to update your `.gitmodules` file to
-use a relative URL.
-
-Let's consider the following example:
-
-1. Your project is located at `https://gitlab.com/secret-group/my-project`.
-1. To checkout your sources you usually use an SSH address like
-   `git@gitlab.com:secret-group/my-project.git`.
-1. Your project depends on `https://gitlab.com/group/tools`.
-1. You have the `.gitmodules` file with above content.
-
-Since Git allows the usage of relative URLs for your `.gitmodules` configuration,
-this easily allows you to use HTTP for cloning all your CI builds and SSH
-for all your local checkouts.
-
-For example, if you change the `url` of your `tools` dependency, from
-`git@gitlab.com/group/tools.git` to `../../group/tools.git`, this will instruct
-Git to automatically deduce the URL that should be used when cloning sources.
-Whether you use HTTP or SSH, Git will use that same channel and it will allow
-to make all your CI builds use HTTPS (because GitLab CI uses HTTPS for cloning
-your sources), and all your local clones will continue using SSH.
-
-Given the above explanation, your `.gitmodules` file should eventually look
-like this:
-
-```
-[submodule "tools"]
-	path = tools
-	url = ../../group/tools.git
-```
-
-However, you have to explicitly tell GitLab CI to clone your submodules as this
-is not done automatically. You can achieve that by adding a `before_script`
-section to your `.gitlab-ci.yml`:
-
-```
-before_script:
-  - git submodule update --init --recursive
-
-test:
-  script:
-    - run-my-tests
-```
-
-This will make GitLab CI initialize (fetch) and update (checkout) all your
-submodules recursively.
-
-If Git does not use the newly added relative URLs but still uses your old URLs,
-you might need to add `git submodule sync --recursive` to your `.gitlab-ci.yml`,
-prior to running `git submodule update --init --recursive`. This transfers the
-changes from your `.gitmodules` file into the `.git` folder, which is kept by
-runners between runs.
-
-In case your environment or your Docker image doesn't have Git installed,
-you have to either ask your Administrator or install the missing dependency
-yourself:
-
-```
-# Debian / Ubuntu
-before_script:
-  - apt-get update -y
-  - apt-get install -y git-core
-  - git submodule update --init --recursive
-
-# CentOS / RedHat
-before_script:
-  - yum install git
-  - git submodule update --init --recursive
-
-# Alpine
-before_script:
-  - apk add -U git
-  - git submodule update --init --recursive
-```
+To properly configure submodules with GitLab CI, read the
+[Git submodules documentation][gitsub].
 
 ### Container Registry
 
 With the update permission model we also extended the support for accessing
 Container Registries for private projects.
 
-> **Note:**
-As GitLab Runner 1.6 doesn't yet incorporate the introduced changes for
-permissions, this makes the `image:` directive to not work with private projects
-automatically. The manual configuration by an Administrator is required to use
-private images. We plan to remove that limitation in one of the upcoming releases.
+> **Notes:**
+- GitLab Runner versions prior to 1.8 don't incorporate the introduced changes
+  for permissions. This makes the `image:` directive to not work with private
+  projects automatically and it needs to be configured manually on Runner's host
+  with a predefined account (for example administrator's personal account with
+  access token created explicitly for this purpose). This issue is resolved with
+  latest changes in GitLab Runner 1.8 which receives GitLab credentials with
+  build data.
+- Starting with GitLab 8.12, if you have 2FA enabled in your account, you need
+  to pass a personal access token instead of your password in order to login to
+  GitLab's Container Registry.
 
 Your builds can access all container images that you would normally have access
 to. The only implication is that you can push to the Container Registry of the
@@ -310,7 +216,7 @@ test:
 [build permissions]: ../permissions.md#builds-permissions
 [comment]: https://gitlab.com/gitlab-org/gitlab-ce/issues/22484#note_16648302
 [ext]: ../permissions.md#external-users
-[git-scm]: https://git-scm.com/book/en/v2/Git-Tools-Submodules
+[gitsub]: ../../ci/git_submodules.md
 [https]: ../admin_area/settings/visibility_and_access_controls.md#enabled-git-access-protocols
 [triggers]: ../../ci/triggers/README.md
 [update-docs]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/update

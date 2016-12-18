@@ -1,4 +1,8 @@
-/* eslint-disable */
+/* eslint-disable no-restricted-properties, func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, no-use-before-define, camelcase, no-unused-expressions, quotes, max-len, one-var, one-var-declaration-per-line, default-case, prefer-template, consistent-return, no-alert, no-return-assign, no-param-reassign, prefer-arrow-callback, no-else-return, comma-dangle, no-new, brace-style, no-lonely-if, vars-on-top, no-unused-vars, semi, indent, no-sequences, no-shadow, newline-per-chained-call, no-useless-escape, radix, padded-blocks */
+/* global Flash */
+/* global GLForm */
+/* global Autosave */
+/* global ResolveService */
 
 /*= require autosave */
 /*= require autosize */
@@ -12,7 +16,7 @@
   var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   this.Notes = (function() {
-    var isMetaKey;
+    const MAX_VISIBLE_COMMIT_LIST_COUNT = 3;
 
     Notes.interval = null;
 
@@ -33,6 +37,7 @@
       this.resetMainTargetForm = bind(this.resetMainTargetForm, this);
       this.refresh = bind(this.refresh, this);
       this.keydownNoteText = bind(this.keydownNoteText, this);
+      this.toggleCommitList = bind(this.toggleCommitList, this);
       this.notes_url = notes_url;
       this.note_ids = note_ids;
       this.last_fetched_at = last_fetched_at;
@@ -46,6 +51,7 @@
       this.setPollingInterval();
       this.setupMainTargetNoteForm();
       this.initTaskList();
+      this.collapseLongCommitList();
     }
 
     Notes.prototype.addBinding = function() {
@@ -81,10 +87,13 @@
       $(document).on("click", ".js-add-diff-note-button", this.addDiffNote);
       // hide diff note form
       $(document).on("click", ".js-close-discussion-note-form", this.cancelDiscussionForm);
+      // toggle commit list
+      $(document).on("click", '.system-note-commit-list-toggler', this.toggleCommitList);
       // fetch notes when tab becomes visible
       $(document).on("visibilitychange", this.visibilityChange);
       // when issue status changes, we need to refresh data
       $(document).on("issuable:change", this.refresh);
+
       // when a key is clicked on the notes
       return $(document).on("keydown", ".js-note-text", this.keydownNoteText);
     };
@@ -108,15 +117,17 @@
       $(document).off("click", ".js-note-discard");
       $(document).off("keydown", ".js-note-text");
       $(document).off('click', '.js-comment-resolve-button');
+      $(document).off("click", '.system-note-commit-list-toggler');
       $('.note .js-task-list-container').taskList('disable');
       return $(document).off('tasklist:changed', '.note .js-task-list-container');
     };
 
     Notes.prototype.keydownNoteText = function(e) {
       var $textarea, discussionNoteForm, editNote, myLastNote, myLastNoteEditBtn, newText, originalText;
-      if (isMetaKey(e)) {
+      if (gl.utils.isMetaKey(e)) {
         return;
       }
+
       $textarea = $(e.target);
       // Edit previous note when UP arrow is hit
       switch (e.which) {
@@ -154,10 +165,6 @@
             return this.removeNoteEditForm(editNote);
           }
       }
-    };
-
-    isMetaKey = function(e) {
-      return e.metaKey || e.ctrlKey || e.altKey || e.shiftKey;
     };
 
     Notes.prototype.initRefresh = function() {
@@ -263,6 +270,7 @@
         $notesList.append(note.html).syntaxHighlight();
         // Update datetime format on the recent note
         gl.utils.localTimeAgo($notesList.find("#note_" + note.id + " .js-timeago"), false);
+        this.collapseLongCommitList();
         this.initTaskList();
         this.refresh();
         return this.updateNotesCount(1);
@@ -301,7 +309,7 @@
       }
       row = form.closest("tr");
       note_html = $(note.html);
-      note_html.syntaxHighlight();
+      note_html.renderGFM();
       // is this the first note of discussion?
       discussionContainer = $(".notes[data-discussion-id='" + note.discussion_id + "']");
       if ((note.original_discussion_id != null) && discussionContainer.length === 0) {
@@ -318,18 +326,18 @@
         discussionContainer.append(note_html);
         // Init discussion on 'Discussion' page if it is merge request page
         if ($('body').attr('data-page').indexOf('projects:merge_request') === 0) {
-          $('ul.main-notes-list').append(note.discussion_html).syntaxHighlight();
+          $('ul.main-notes-list').append(note.discussion_html).renderGFM();
         }
       } else {
         // append new note to all matching discussions
         discussionContainer.append(note_html);
       }
 
-      if (typeof DiffNotesApp !== 'undefined') {
-        DiffNotesApp.compileComponents();
+      if (typeof gl.diffNotesCompileComponents !== 'undefined') {
+        gl.diffNotesCompileComponents();
       }
 
-      gl.utils.localTimeAgo($('.js-timeago', note_html), false);
+      gl.utils.localTimeAgo($('.js-timeago'), false);
       return this.updateNotesCount(1);
     };
 
@@ -433,9 +441,9 @@
       var $form = $(xhr.target);
 
       if ($form.attr('data-resolve-all') != null) {
-        var projectPath = $form.data('project-path')
-            discussionId = $form.data('discussion-id'),
-            mergeRequestId = $form.data('noteable-iid');
+        var projectPath = $form.data('project-path');
+        var discussionId = $form.data('discussion-id');
+        var mergeRequestId = $form.data('noteable-iid');
 
         if (ResolveService != null) {
           ResolveService.toggleResolveForDiscussion(projectPath, mergeRequestId, discussionId);
@@ -459,15 +467,15 @@
       // Convert returned HTML to a jQuery object so we can modify it further
       $html = $(note.html);
       gl.utils.localTimeAgo($('.js-timeago', $html));
-      $html.syntaxHighlight();
+      $html.renderGFM();
       $html.find('.js-task-list-container').taskList('enable');
       // Find the note's `li` element by ID and replace it with the updated HTML
       $note_li = $('.note-row-' + note.id);
 
       $note_li.replaceWith($html);
 
-      if (typeof DiffNotesApp !== 'undefined') {
-        DiffNotesApp.compileComponents();
+      if (typeof gl.diffNotesCompileComponents !== 'undefined') {
+        gl.diffNotesCompileComponents();
       }
     };
 
@@ -559,11 +567,9 @@
           note = $(el);
           notes = note.closest(".notes");
 
-          if (typeof DiffNotesApp !== "undefined" && DiffNotesApp !== null) {
-            ref = DiffNotesApp.$refs[noteId];
-
-            if (ref) {
-              ref.$destroy(true);
+          if (typeof gl.diffNotesCompileComponents !== 'undefined') {
+            if (gl.diffNoteApps[noteId]) {
+              gl.diffNoteApps[noteId].$destroy();
             }
           }
 
@@ -643,11 +649,12 @@
       form.find('.js-note-target-close').remove();
       this.setupNoteForm(form);
 
-      if (typeof DiffNotesApp !== 'undefined') {
+      if (typeof gl.diffNotesCompileComponents !== 'undefined') {
         var $commentBtn = form.find('comment-and-resolve-btn');
         $commentBtn
           .attr(':discussion-id', "'" + dataHolder.data('discussionId') + "'");
-        DiffNotesApp.$compile($commentBtn.get(0));
+
+        gl.diffNotesCompileComponents();
       }
 
       form.find(".js-note-text").focus();
@@ -668,7 +675,7 @@
      */
 
     Notes.prototype.addDiffNote = function(e) {
-      var $link, addForm, hasNotes, lineType, newForm, nextRow, noteForm, notesContent, replyButton, row, rowCssToAdd, targetContent;
+      var $link, addForm, hasNotes, lineType, newForm, nextRow, noteForm, notesContent, notesContentSelector, replyButton, row, rowCssToAdd, targetContent;
       e.preventDefault();
       $link = $(e.currentTarget);
       row = $link.closest("tr");
@@ -845,15 +852,45 @@
       return this.notesCountBadge.text(parseInt(this.notesCountBadge.text()) + updateCount);
     };
 
-    Notes.prototype.resolveDiscussion = function () {
-      var $this = $(this),
-          discussionId = $this.attr('data-discussion-id');
+    Notes.prototype.resolveDiscussion = function() {
+      var $this = $(this);
+      var discussionId = $this.attr('data-discussion-id');
 
       $this
         .closest('form')
         .attr('data-discussion-id', discussionId)
         .attr('data-resolve-all', 'true')
         .attr('data-project-path', $this.attr('data-project-path'));
+    };
+
+    Notes.prototype.toggleCommitList = function(e) {
+      const $element = $(e.target);
+      const $closestSystemCommitList = $element.siblings('.system-note-commit-list');
+
+      $closestSystemCommitList.toggleClass('hide-shade');
+    };
+
+    /**
+    Scans system notes with `ul` elements in system note body
+    then collapse long commit list pushed by user to make it less
+    intrusive.
+     */
+    Notes.prototype.collapseLongCommitList = function() {
+      const systemNotes = $('#notes-list').find('li.system-note').has('ul');
+
+      $.each(systemNotes, function(index, systemNote) {
+        const $systemNote = $(systemNote);
+        const headerMessage = $systemNote.find('.note-text').find('p:first').text().replace(':', '');
+
+        $systemNote.find('.note-header .system-note-message').html(headerMessage);
+
+        if ($systemNote.find('li').length > MAX_VISIBLE_COMMIT_LIST_COUNT) {
+          $systemNote.find('.note-text').addClass('system-note-commit-list');
+          $systemNote.find('.system-note-commit-list-toggler').show();
+        } else {
+          $systemNote.find('.note-text').addClass('system-note-commit-list hide-shade');
+        }
+      });
     };
 
     return Notes;

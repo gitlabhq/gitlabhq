@@ -1,4 +1,7 @@
-/* eslint-disable */
+/* eslint-disable func-names, no-var, camelcase, no-unused-vars, object-shorthand, space-before-function-paren, no-return-assign, comma-dangle, consistent-return, one-var, one-var-declaration-per-line, quotes, prefer-template, prefer-arrow-callback, prefer-const, padded-blocks, wrap-iife, max-len */
+/* global Issuable */
+/* global Turbolinks */
+
 (function() {
   var issuable_created;
 
@@ -141,6 +144,9 @@
       const $issuesOtherFilters = $('.issues-other-filters');
       const $issuesBulkUpdate = $('.issues_bulk_update');
 
+      this.issuableBulkActions.willUpdateLabels = false;
+      this.issuableBulkActions.setOriginalDropdownData();
+
       if ($checkedIssues.length > 0) {
         let ids = $.map($checkedIssues, function(value) {
           return $(value).data('id');
@@ -152,7 +158,6 @@
         $updateIssuesIds.val([]);
         $issuesBulkUpdate.hide();
         $issuesOtherFilters.show();
-        this.issuableBulkActions.willUpdateLabels = false;
       }
       return true;
     },

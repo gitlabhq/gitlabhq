@@ -6,8 +6,13 @@ Get a list of groups. (As user: my groups or all available, as admin: all groups
 
 Parameters:
 
-- `all_available` (optional) - if passed, show all groups you have access to
-- `skip_groups` (optional)(array of group IDs) - if passed, skip groups
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `skip_groups` | array of integers | no | Skip the group IDs passes |
+| `all_available` | boolean | no | Show all the groups you have access to |
+| `search` | string | no | Return list of authorized groups matching the search criteria |
+| `order_by` | string | no | Order groups by `name` or `path`. Default is `name` |
+| `sort` | string | no | Order groups in `asc` or `desc` order. Default is `asc` |
 
 ```
 GET /groups
@@ -26,6 +31,15 @@ GET /groups
 
 You can search for groups by name or path, see below.
 
+=======
+## List owned groups
+
+Get a list of groups which are owned by the authenticated user.
+
+```
+GET /groups/owned
+```
+
 ## List a group's projects
 
 Get a list of projects in this group.
@@ -36,12 +50,17 @@ GET /groups/:id/projects
 
 Parameters:
 
-- `archived` (optional) - if passed, limit by archived status
-- `visibility` (optional) - if passed, limit by visibility `public`, `internal`, `private`
-- `order_by` (optional) - Return requests ordered by `id`, `name`, `path`, `created_at`, `updated_at` or `last_activity_at` fields. Default is `created_at`
-- `sort` (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
-- `search` (optional) - Return list of authorized projects according to a search criteria
-- `ci_enabled_first` - Return projects ordered by ci_enabled flag. Projects with enabled GitLab CI go first
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID or path of a group |
+| `archived` | boolean | no | Limit by archived status |
+| `visibility` | string | no | Limit by visibility `public`, `internal`, or `private` |
+| `order_by` | string | no | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at` |
+| `sort` | string | no | Return projects sorted in `asc` or `desc` order. Default is `desc` |
+| `search` | string | no | Return list of authorized projects matching the search criteria |
+| `simple` | boolean | no | Return only the ID, URL, name, and path of each project |
+
+Example response:
 
 ```json
 [

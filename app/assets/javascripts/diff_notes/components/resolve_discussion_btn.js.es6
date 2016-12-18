@@ -1,6 +1,10 @@
-/* eslint-disable */
-((w) => {
-  w.ResolveDiscussionBtn = Vue.extend({
+/* eslint-disable object-shorthand, func-names, space-before-function-paren, comma-dangle, no-else-return, quotes, max-len */
+/* global Vue */
+/* global CommentsStore */
+/* global ResolveService */
+
+(() => {
+  const ResolveDiscussionBtn = Vue.extend({
     props: {
       discussionId: String,
       mergeRequestId: Number,
@@ -54,4 +58,6 @@
       CommentsStore.createDiscussion(this.discussionId, this.canResolve);
     }
   });
-})(window);
+
+  Vue.component('resolve-discussion-btn', ResolveDiscussionBtn);
+})();

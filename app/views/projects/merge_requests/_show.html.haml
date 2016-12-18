@@ -1,3 +1,4 @@
+- @content_class = "limit-container-width"
 - page_title           "#{@merge_request.title} (#{@merge_request.to_reference})", "Merge Requests"
 - page_description     @merge_request.description
 - page_card_attributes @merge_request.card_attributes
@@ -31,7 +32,7 @@
         %span.label-branch= source_branch_with_namespace(@merge_request)
         %span into
         %span.label-branch
-          = link_to @merge_request.target_branch, namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch)
+          = link_to_if @merge_request.target_branch_exists?, @merge_request.target_branch, namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch)
         - if @merge_request.open? && @merge_request.diverged_from_target_branch?
           %span (#{pluralize(@merge_request.diverged_commits_count, 'commit')} behind)
 
@@ -41,7 +42,7 @@
     = render "projects/merge_requests/widget/show.html.haml"
 
     - if @merge_request.source_branch_exists? && @merge_request.mergeable? && @merge_request.can_be_merged_by?(current_user)
-      .light.prepend-top-default.append-bottom-default
+      .merge-manually.light.prepend-top-default.append-bottom-default
         You can also accept this merge request manually using the
         = succeed '.' do
           = link_to "command line", "#modal_merge_info", class: "how_to_merge_link vlink", title: "How To Merge", "data-toggle" => "modal"
@@ -53,35 +54,37 @@
             %li.notes-tab
               = link_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: 'div#notes', action: 'notes', toggle: 'tab' } do
                 Discussion
-                %span.badge= @merge_request.mr_and_commit_notes.user.count
+                %span.badge= @merge_request.related_notes.user.count
             - if @merge_request.source_project
               %li.commits-tab
                 = link_to commits_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: 'div#commits', action: 'commits', toggle: 'tab' } do
                   Commits
                   %span.badge= @commits_count
-            - if @pipeline
+            - if @pipelines.any?
               %li.pipelines-tab
                 = link_to pipelines_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: '#pipelines', action: 'pipelines', toggle: 'tab' } do
                   Pipelines
                   %span.badge= @pipelines.size
+            - if @pipeline.present?
               %li.builds-tab
                 = link_to builds_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: '#builds', action: 'builds', toggle: 'tab' } do
                   Builds
-                  %span.badge= @statuses.size
+                  %span.badge= @statuses_count
             %li.diffs-tab
               = link_to diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: 'div#diffs', action: 'diffs', toggle: 'tab' } do
                 Changes
                 %span.badge= @merge_request.diff_size
             %li#resolve-count-app.line-resolve-all-container.pull-right.prepend-top-10.hidden-xs{ "v-cloak" => true }
               %resolve-count{ "inline-template" => true, ":logged-out" => "#{current_user.nil?}"  }
-                .line-resolve-all{ "v-show" => "discussionCount > 0",
-                  ":class" => "{ 'has-next-btn': !loggedOut && resolvedDiscussionCount !== discussionCount }" }
-                  %span.line-resolve-btn.is-disabled{ type: "button",
-                      ":class" => "{ 'is-active': resolvedDiscussionCount === discussionCount }" }
-                    = render "shared/icons/icon_status_success.svg"
-                  %span.line-resolve-text
-                    {{ resolvedDiscussionCount }}/{{ discussionCount }} {{ discussionCount | pluralize 'discussion' }} resolved
-                = render "discussions/jump_to_next"
+                %div
+                  .line-resolve-all{ "v-show" => "discussionCount > 0",
+                    ":class" => "{ 'has-next-btn': !loggedOut && resolvedDiscussionCount !== discussionCount }" }
+                    %span.line-resolve-btn.is-disabled{ type: "button",
+                        ":class" => "{ 'is-active': resolvedDiscussionCount === discussionCount }" }
+                      = render "shared/icons/icon_status_success.svg"
+                    %span.line-resolve-text
+                      {{ resolvedDiscussionCount }}/{{ discussionCount }} {{ resolvedCountText }} resolved
+                  = render "discussions/jump_to_next"
 
       .tab-content#diff-notes-app
         #notes.notes.tab-pane.voting_notes

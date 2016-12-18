@@ -27,7 +27,7 @@ module API
         optional :enable_ssl_verification, type: Boolean, desc: "Do SSL verification when triggering the hook"
       end
       post do
-        hook = SystemHook.new declared(params, include_missing: false).to_h
+        hook = SystemHook.new(declared_params(include_missing: false))
 
         if hook.save
           present hook, with: Entities::Hook

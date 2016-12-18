@@ -31,7 +31,7 @@ describe MergeRequest, models: true do
     it { is_expected.to validate_presence_of(:target_branch) }
     it { is_expected.to validate_presence_of(:source_branch) }
 
-    context "Validation of merge user with Merge When Build succeeds" do
+    context "Validation of merge user with Merge When Pipeline Succeeds" do
       it "allows user to be nil when the feature is disabled" do
         expect(subject).to be_valid
       end
@@ -142,13 +142,16 @@ describe MergeRequest, models: true do
   end
 
   describe '#to_reference' do
+    let(:project) { build(:empty_project, name: 'sample-project') }
+    let(:merge_request) { build(:merge_request, target_project: project, iid: 1) }
+
     it 'returns a String reference to the object' do
-      expect(subject.to_reference).to eq "!#{subject.iid}"
+      expect(merge_request.to_reference).to eq "!1"
     end
 
     it 'supports a cross-project reference' do
-      cross = double('project')
-      expect(subject.to_reference(cross)).to eq "#{subject.source_project.to_reference}!#{subject.iid}"
+      another_project = build(:project, name: 'another-project', namespace: project.namespace)
+      expect(merge_request.to_reference(another_project)).to eq "sample-project!1"
     end
   end
 
@@ -202,7 +205,7 @@ describe MergeRequest, models: true do
     end
   end
 
-  describe "#mr_and_commit_notes" do
+  describe "#related_notes" do
     let!(:merge_request) { create(:merge_request) }
 
     before do
@@ -214,7 +217,7 @@ describe MergeRequest, models: true do
 
     it "includes notes for commits" do
       expect(merge_request.commits).not_to be_empty
-      expect(merge_request.mr_and_commit_notes.count).to eq(2)
+      expect(merge_request.related_notes.count).to eq(2)
     end
 
     it "includes notes for commits from target project as well" do
@@ -222,7 +225,7 @@ describe MergeRequest, models: true do
                               project: merge_request.target_project)
 
       expect(merge_request.commits).not_to be_empty
-      expect(merge_request.mr_and_commit_notes.count).to eq(3)
+      expect(merge_request.related_notes.count).to eq(3)
     end
   end
 
@@ -249,7 +252,7 @@ describe MergeRequest, models: true do
     end
   end
 
-  describe 'detection of issues to be closed' do
+  describe '#closes_issues' do
     let(:issue0) { create :issue, project: subject.project }
     let(:issue1) { create :issue, project: subject.project }
 
@@ -277,14 +280,19 @@ describe MergeRequest, models: true do
 
       expect(subject.closes_issues).to be_empty
     end
+  end
 
-    it 'detects issues mentioned in the description' do
-      issue2 = create(:issue, project: subject.project)
-      subject.description = "Closes #{issue2.to_reference}"
+  describe '#issues_mentioned_but_not_closing' do
+    it 'detects issues mentioned in description but not closed' do
+      mentioned_issue = create(:issue, project: subject.project)
+
+      subject.project.team << [subject.author, :developer]
+      subject.description = "Is related to #{mentioned_issue.to_reference}"
+
       allow(subject.project).to receive(:default_branch).
         and_return(subject.target_branch)
 
-      expect(subject.closes_issues).to include(issue2)
+      expect(subject.issues_mentioned_but_not_closing).to match_array([mentioned_issue])
     end
   end
 
@@ -407,11 +415,17 @@ describe MergeRequest, models: true do
         .to match("Remove all technical debt\n\n")
     end
 
-    it 'includes its description in the body' do
-      request = build(:merge_request, description: 'By removing all code')
+    it 'includes its closed issues in the body' do
+      issue = create(:issue, project: subject.project)
 
-      expect(request.merge_commit_message)
-        .to match("By removing all code\n\n")
+      subject.project.team << [subject.author, :developer]
+      subject.description = "This issue Closes #{issue.to_reference}"
+
+      allow(subject.project).to receive(:default_branch).
+        and_return(subject.target_branch)
+
+      expect(subject.merge_commit_message)
+        .to match("Closes #{issue.to_reference}")
     end
 
     it 'includes its reference in the body' do
@@ -425,6 +439,20 @@ describe MergeRequest, models: true do
       request = build(:merge_request, title: 'Title', description: nil)
 
       expect(request.merge_commit_message).not_to match("Title\n\n\n\n")
+    end
+
+    it 'includes its description in the body' do
+      request = build(:merge_request, description: 'By removing all code')
+
+      expect(request.merge_commit_message(include_description: true))
+        .to match("By removing all code\n\n")
+    end
+
+    it 'does not includes its description in the body' do
+      request = build(:merge_request, description: 'By removing all code')
+
+      expect(request.merge_commit_message)
+        .not_to match("By removing all code\n\n")
     end
   end
 
@@ -557,20 +585,17 @@ describe MergeRequest, models: true do
   end
 
   describe '#commits_sha' do
-    let(:commit0) { double('commit0', sha: 'sha1') }
-    let(:commit1) { double('commit1', sha: 'sha2') }
-    let(:commit2) { double('commit2', sha: 'sha3') }
-
     before do
-      allow(subject.merge_request_diff).to receive(:commits).and_return([commit0, commit1, commit2])
+      allow(subject.merge_request_diff).to receive(:commits_sha).
+        and_return(['sha1'])
     end
 
-    it 'returns sha of commits' do
-      expect(subject.commits_sha).to contain_exactly('sha1', 'sha2', 'sha3')
+    it 'delegates to merge request diff' do
+      expect(subject.commits_sha).to eq ['sha1']
     end
   end
 
-  describe '#pipeline' do
+  describe '#head_pipeline' do
     describe 'when the source project exists' do
       it 'returns the latest pipeline' do
         pipeline = double(:ci_pipeline, ref: 'master')
@@ -581,7 +606,7 @@ describe MergeRequest, models: true do
           with('master', '123abc').
           and_return(pipeline)
 
-        expect(subject.pipeline).to eq(pipeline)
+        expect(subject.head_pipeline).to eq(pipeline)
       end
     end
 
@@ -589,7 +614,7 @@ describe MergeRequest, models: true do
       it 'returns nil' do
         allow(subject).to receive(:source_project).and_return(nil)
 
-        expect(subject.pipeline).to be_nil
+        expect(subject.head_pipeline).to be_nil
       end
     end
   end
@@ -856,16 +881,34 @@ describe MergeRequest, models: true do
     context 'when it is only allowed to merge when build is green' do
       context 'and a failed pipeline is associated' do
         before do
-          pipeline.statuses << create(:commit_status, status: 'failed', project: project)
-          allow(subject).to receive(:pipeline) { pipeline }
+          pipeline.update(status: 'failed')
+          allow(subject).to receive(:head_pipeline) { pipeline }
         end
 
         it { expect(subject.mergeable_ci_state?).to be_falsey }
       end
 
+      context 'and a successful pipeline is associated' do
+        before do
+          pipeline.update(status: 'success')
+          allow(subject).to receive(:head_pipeline) { pipeline }
+        end
+
+        it { expect(subject.mergeable_ci_state?).to be_truthy }
+      end
+
+      context 'and a skipped pipeline is associated' do
+        before do
+          pipeline.update(status: 'skipped')
+          allow(subject).to receive(:head_pipeline) { pipeline }
+        end
+
+        it { expect(subject.mergeable_ci_state?).to be_truthy }
+      end
+
       context 'when no pipeline is associated' do
         before do
-          allow(subject).to receive(:pipeline) { nil }
+          allow(subject).to receive(:head_pipeline) { nil }
         end
 
         it { expect(subject.mergeable_ci_state?).to be_truthy }
@@ -878,7 +921,7 @@ describe MergeRequest, models: true do
       context 'and a failed pipeline is associated' do
         before do
           pipeline.statuses << create(:commit_status, status: 'failed', project: project)
-          allow(subject).to receive(:pipeline) { pipeline }
+          allow(subject).to receive(:head_pipeline) { pipeline }
         end
 
         it { expect(subject.mergeable_ci_state?).to be_truthy }
@@ -886,7 +929,7 @@ describe MergeRequest, models: true do
 
       context 'when no pipeline is associated' do
         before do
-          allow(subject).to receive(:pipeline) { nil }
+          allow(subject).to receive(:head_pipeline) { nil }
         end
 
         it { expect(subject.mergeable_ci_state?).to be_truthy }
@@ -917,6 +960,16 @@ describe MergeRequest, models: true do
 
         it 'returns false' do
           expect(merge_request.mergeable_discussions_state?).to be_falsey
+        end
+      end
+
+      context 'with no discussions' do
+        before do
+          merge_request.notes.destroy_all
+        end
+
+        it 'returns true' do
+          expect(merge_request.mergeable_discussions_state?).to be_truthy
         end
       end
     end
@@ -1099,6 +1152,46 @@ describe MergeRequest, models: true do
       allow(subject).to receive(:diff_discussions).and_return([first_discussion, second_discussion, third_discussion])
     end
 
+    describe '#resolvable_discussions' do
+      before do
+        allow(first_discussion).to receive(:to_be_resolved?).and_return(true)
+        allow(second_discussion).to receive(:to_be_resolved?).and_return(false)
+        allow(third_discussion).to receive(:to_be_resolved?).and_return(false)
+      end
+
+      it 'includes only discussions that need to be resolved' do
+        expect(subject.resolvable_discussions).to eq([first_discussion])
+      end
+    end
+
+    describe '#discussions_can_be_resolved_by? user' do
+      let(:user) { build(:user) }
+
+      context 'all discussions can be resolved by the user' do
+        before do
+          allow(first_discussion).to receive(:can_resolve?).with(user).and_return(true)
+          allow(second_discussion).to receive(:can_resolve?).with(user).and_return(true)
+          allow(third_discussion).to receive(:can_resolve?).with(user).and_return(true)
+        end
+
+        it 'allows a user to resolve the discussions' do
+          expect(subject.discussions_can_be_resolved_by?(user)).to be(true)
+        end
+      end
+
+      context 'one discussion cannot be resolved by the user' do
+        before do
+          allow(first_discussion).to receive(:can_resolve?).with(user).and_return(true)
+          allow(second_discussion).to receive(:can_resolve?).with(user).and_return(true)
+          allow(third_discussion).to receive(:can_resolve?).with(user).and_return(false)
+        end
+
+        it 'allows a user to resolve the discussions' do
+          expect(subject.discussions_can_be_resolved_by?(user)).to be(false)
+        end
+      end
+    end
+
     describe "#discussions_resolvable?" do
       context "when all discussions are unresolvable" do
         before do
@@ -1176,6 +1269,50 @@ describe MergeRequest, models: true do
 
           it "returns false" do
             expect(subject.discussions_resolved?).to be false
+          end
+        end
+      end
+    end
+
+    describe "#discussions_to_be_resolved?" do
+      context "when discussions are not resolvable" do
+        before do
+          allow(subject).to receive(:discussions_resolvable?).and_return(false)
+        end
+
+        it "returns false" do
+          expect(subject.discussions_to_be_resolved?).to be false
+        end
+      end
+
+      context "when discussions are resolvable" do
+        before do
+          allow(subject).to receive(:discussions_resolvable?).and_return(true)
+
+          allow(first_discussion).to receive(:resolvable?).and_return(true)
+          allow(second_discussion).to receive(:resolvable?).and_return(false)
+          allow(third_discussion).to receive(:resolvable?).and_return(true)
+        end
+
+        context "when all resolvable discussions are resolved" do
+          before do
+            allow(first_discussion).to receive(:resolved?).and_return(true)
+            allow(third_discussion).to receive(:resolved?).and_return(true)
+          end
+
+          it "returns false" do
+            expect(subject.discussions_to_be_resolved?).to be false
+          end
+        end
+
+        context "when some resolvable discussions are not resolved" do
+          before do
+            allow(first_discussion).to receive(:resolved?).and_return(true)
+            allow(third_discussion).to receive(:resolved?).and_return(false)
+          end
+
+          it "returns true" do
+            expect(subject.discussions_to_be_resolved?).to be true
           end
         end
       end
@@ -1366,6 +1503,28 @@ describe MergeRequest, models: true do
       it 'returns false' do
         expect(subject.reopenable?).to be_falsey
       end
+    end
+  end
+
+  describe '#has_commits?' do
+    before do
+      allow(subject.merge_request_diff).to receive(:commits_count).
+        and_return(2)
+    end
+
+    it 'returns true when merge request diff has commits' do
+      expect(subject.has_commits?).to be_truthy
+    end
+  end
+
+  describe '#has_no_commits?' do
+    before do
+      allow(subject.merge_request_diff).to receive(:commits_count).
+        and_return(0)
+    end
+
+    it 'returns true when merge request diff has 0 commits' do
+      expect(subject.has_no_commits?).to be_truthy
     end
   end
 end

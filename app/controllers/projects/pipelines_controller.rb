@@ -1,6 +1,6 @@
 class Projects::PipelinesController < Projects::ApplicationController
   before_action :pipeline, except: [:index, :new, :create]
-  before_action :commit, only: [:show]
+  before_action :commit, only: [:show, :builds]
   before_action :authorize_read_pipeline!
   before_action :authorize_create_pipeline!, only: [:new, :create]
   before_action :authorize_update_pipeline!, only: [:retry, :cancel]
@@ -18,7 +18,9 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def create
-    @pipeline = Ci::CreatePipelineService.new(project, current_user, create_params).execute(ignore_skip_ci: true, save_on_errors: false)
+    @pipeline = Ci::CreatePipelineService
+      .new(project, current_user, create_params)
+      .execute(ignore_skip_ci: true, save_on_errors: false)
     unless @pipeline.persisted?
       render 'new'
       return
@@ -28,6 +30,14 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def show
+  end
+
+  def builds
+    respond_to do |format|
+      format.html do
+        render 'show'
+      end
+    end
   end
 
   def retry

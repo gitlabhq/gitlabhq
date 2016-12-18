@@ -138,6 +138,8 @@ production: &base
 
     # The mailbox where incoming mail will end up. Usually "inbox".
     mailbox: "inbox"
+    # The IDLE command timeout.
+    idle_timeout: 60
 
   ## Build Artifacts
   artifacts:
@@ -150,6 +152,12 @@ production: &base
     enabled: true
     # The location where LFS objects are stored (default: shared/lfs-objects).
     # storage_path: shared/lfs-objects
+
+  ## Mattermost
+  ## For enabling Add to Mattermost button
+  mattermost:
+    enabled: false
+    host: 'https://mattermost.example.com'
 
   ## Gravatar
   ## For Libravatar see: http://doc.gitlab.com/ce/customization/libravatar.html

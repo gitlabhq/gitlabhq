@@ -1,0 +1,4 @@
+---
+title: Fix Slack pipeline message from pipelines made by API
+merge_request: 8059
+author:

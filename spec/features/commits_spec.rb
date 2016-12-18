@@ -107,7 +107,7 @@ describe 'Commits' do
         describe 'Cancel build' do
           it 'cancels build' do
             visit ci_status_path(pipeline)
-            click_on 'Cancel'
+            find('a.btn[title="Cancel"]').click
             expect(page).to have_content 'canceled'
           end
         end
@@ -174,6 +174,25 @@ describe 'Commits' do
           expect(page).not_to have_link('Cancel running')
           expect(page).not_to have_link('Retry failed')
         end
+      end
+    end
+  end
+
+  context 'viewing commits for a branch' do
+    let(:branch_name) { 'master' }
+    let(:user) { create(:user) }
+
+    before do
+      project.team << [user, :master]
+      login_with(user)
+      visit namespace_project_commits_path(project.namespace, project, branch_name)
+    end
+
+    it 'includes the committed_date for each commit' do
+      commits = project.repository.commits(branch_name)
+
+      commits.each do |commit|
+        expect(page).to have_content("committed #{commit.committed_date}")
       end
     end
   end

@@ -11,8 +11,8 @@
   > li {
     padding: 10px 15px;
     min-height: 20px;
-    border-bottom: 1px solid #eee;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid $list-border-light;
+    border-bottom: 1px solid $list-border;
 
     &::after {
       content: " ";
@@ -21,7 +21,7 @@
     }
 
     &.disabled {
-      color: #888;
+      color: $list-text-disabled-color;
     }
 
     &.unstyled {
@@ -31,12 +31,12 @@
     }
 
     &.warning-row {
-      background-color: #fcf8e3;
-      border-color: #faebcc;
-      color: #8a6d3b;
+      background-color: $list-warning-row-bg;
+      border-color: $list-warning-row-border;
+      color: $list-warning-row-color;
     }
 
-    &.smoke { background-color: $background-color; }
+    &.smoke { background-color: $gray-light; }
 
     &:not(.ui-sort-disabled):hover {
       background: $row-hover;
@@ -46,7 +46,7 @@
       border-bottom: none;
 
       &.bottom {
-        background: $background-color;
+        background: $gray-light;
       }
     }
 
@@ -59,7 +59,7 @@
     p {
       padding-top: 1px;
       margin: 0;
-      color: $gray-dark;
+      color: $white-normal;
 
       img {
         position: relative;
@@ -106,14 +106,14 @@ ul.task-list {
   }
 }
 
+// Generic content list
 ul.content-list {
   @include basic-list;
-
   margin: 0;
   padding: 0;
 
-  > li {
-    border-color: $table-border-color;
+  li {
+    border-color: $white-normal;
     font-size: $list-font-size;
     color: $list-text-color;
 
@@ -186,10 +186,45 @@ ul.content-list {
 
     &.list-placeholder {
       background-color: $gray-light;
-      border: dotted 1px $gray-dark;
+      border: dotted 1px $white-normal;
       margin: 1px 0;
       min-height: 52px;
     }
+  }
+}
+
+// Content list using flexbox
+.flex-list {
+  .flex-row {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    white-space: nowrap;
+  }
+
+  .row-main-content {
+    flex: 1 1 auto;
+    overflow: hidden;
+    padding-right: 8px;
+  }
+
+  .row-title {
+    font-weight: 600;
+  }
+
+  .row-second-line {
+    display: block;
+  }
+
+  .dropdown {
+    .btn-block {
+      margin-bottom: 0;
+      line-height: inherit;
+    }
+  }
+
+  .label-default {
+    color: $gl-gray-light;
   }
 }
 

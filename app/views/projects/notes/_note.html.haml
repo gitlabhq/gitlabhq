@@ -14,6 +14,9 @@
           = note.author.to_reference
           - unless note.system
             commented
+          - if note.system
+            %span{class: 'system-note-message'}
+              = note.redacted_note_html
           %a{ href: "##{dom_id(note)}" }
             = time_ago_with_tooltip(note.created_at, placement: 'bottom', html_class: 'note-created-ago')
         - unless note.system?
@@ -32,7 +35,7 @@
                   "resolved-by" => "#{note.resolved_by.try(:name)}",
                   "v-show" => "#{can_resolve || note.resolved?}",
                   "inline-template" => true,
-                  "v-ref:note_#{note.id}" => true }
+                  "ref" => "note_#{note.id}" }
 
                 .note-action-button
                   = icon("spin spinner", "v-show" => "loading")
@@ -43,7 +46,7 @@
                       "@click" => "resolve",
                       ":title" => "buttonText",
                       "v-show" => "!loading",
-                      "v-el:button" => true }
+                      ":ref" => "'button'" }
 
                     = render "shared/icons/icon_status_success.svg"
 
@@ -62,12 +65,14 @@
         .note-text.md
           = preserve do
             = note.redacted_note_html
-          = edited_time_ago_with_tooltip(note, placement: 'bottom', html_class: 'note_edited_ago', include_author: true)
+        = edited_time_ago_with_tooltip(note, placement: 'bottom', html_class: 'note_edited_ago', include_author: true)
         - if note_editable
           = render 'projects/notes/edit_form', note: note
         .note-awards
           = render 'award_emoji/awards_block', awardable: note, inline: false
-
+        - if note.system
+          .system-note-commit-list-toggler
+            Toggle commit list
       - if note.attachment.url
         .note-attachment
           - if note.attachment.image?

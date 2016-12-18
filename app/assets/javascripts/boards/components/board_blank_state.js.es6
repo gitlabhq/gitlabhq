@@ -1,4 +1,7 @@
-/* eslint-disable */
+/* eslint-disable space-before-function-paren, comma-dangle, semi */
+/* global Vue */
+/* global ListLabel */
+
 (() => {
   const Store = gl.issueBoards.BoardsStore;
 
@@ -29,6 +32,8 @@
             }
           });
         });
+
+        Store.state.lists = _.sortBy(Store.state.lists, 'position');
 
         // Save the labels
         gl.boardService.generateDefaultLists()

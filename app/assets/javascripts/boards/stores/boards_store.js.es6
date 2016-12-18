@@ -1,4 +1,7 @@
-/* eslint-disable */
+/* eslint-disable comma-dangle, space-before-function-paren, one-var, indent, space-in-parens, no-shadow, radix, dot-notation, semi, max-len */
+/* global Cookies */
+/* global List */
+
 (() => {
   window.gl = window.gl || {};
   window.gl.issueBoards = window.gl.issueBoards || {};
@@ -39,6 +42,8 @@
           // Remove any new issues from the backlog
           // as they will be visible in the new list
           list.issues.forEach(backlogList.removeIssue.bind(backlogList));
+
+          this.state.lists = _.sortBy(this.state.lists, 'position');
         });
       this.removeBlankState();
     },
@@ -58,6 +63,8 @@
         title: 'Welcome to your Issue Board!',
         position: 0
       });
+
+      this.state.lists = _.sortBy(this.state.lists, 'position');
     },
     removeBlankState () {
       this.removeList('blank');
@@ -85,14 +92,14 @@
       });
       listFrom.update();
     },
-    moveIssueToList (listFrom, listTo, issue) {
+    moveIssueToList (listFrom, listTo, issue, newIndex) {
       const issueTo = listTo.findIssue(issue.id),
             issueLists = issue.getLists(),
             listLabels = issueLists.map( listIssue => listIssue.label );
 
       // Add to new lists issues if it doesn't already exist
       if (!issueTo) {
-        listTo.addIssue(issue, listFrom);
+        listTo.addIssue(issue, listFrom, newIndex);
       }
 
       if (listTo.type === 'done' && listFrom.type !== 'backlog') {

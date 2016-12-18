@@ -85,14 +85,15 @@ class IssuableBaseService < BaseService
 
   def find_or_create_label_ids
     labels = params.delete(:labels)
+
     return unless labels
 
-    params[:label_ids] = labels.split(',').map do |label_name|
+    params[:label_ids] = labels.split(",").map do |label_name|
       service = Labels::FindOrCreateService.new(current_user, project, title: label_name.strip)
       label   = service.execute
 
-      label.id
-    end
+      label.try(:id)
+    end.compact
   end
 
   def process_label_ids(attributes, existing_label_ids: nil)
@@ -119,9 +120,10 @@ class IssuableBaseService < BaseService
   def merge_slash_commands_into_params!(issuable)
     description, command_params =
       SlashCommands::InterpretService.new(project, current_user).
-      execute(params[:description], issuable)
+        execute(params[:description], issuable)
 
-    params[:description] = description
+    # Avoid a description already set on an issuable to be overwritten by a nil
+    params[:description] = description if params.has_key?(:description)
 
     params.merge!(command_params)
   end
@@ -140,6 +142,7 @@ class IssuableBaseService < BaseService
 
     params.delete(:state_event)
     params[:author] ||= current_user
+
     label_ids = process_label_ids(params)
 
     issuable.assign_attributes(params)
@@ -181,11 +184,10 @@ class IssuableBaseService < BaseService
     old_labels = issuable.labels.to_a
     old_mentioned_users = issuable.mentioned_users.to_a
 
-    params[:label_ids] = process_label_ids(params, existing_label_ids: issuable.label_ids)
+    label_ids = process_label_ids(params, existing_label_ids: issuable.label_ids)
+    params[:label_ids] = label_ids if labels_changing?(issuable.label_ids, label_ids)
 
     if params.present? && update_issuable(issuable, params)
-      issuable.reset_events_cache
-
       # We do not touch as it will affect a update on updated_at field
       ActiveRecord::Base.no_touching do
         handle_common_system_notes(issuable, old_labels: old_labels)
@@ -200,6 +202,10 @@ class IssuableBaseService < BaseService
     issuable
   end
 
+  def labels_changing?(old_label_ids, new_label_ids)
+    old_label_ids.sort != new_label_ids.sort
+  end
+
   def change_state(issuable)
     case params.delete(:state_event)
     when 'reopen'
@@ -212,9 +218,9 @@ class IssuableBaseService < BaseService
   def change_subscription(issuable)
     case params.delete(:subscription_event)
     when 'subscribe'
-      issuable.subscribe(current_user)
+      issuable.subscribe(current_user, project)
     when 'unsubscribe'
-      issuable.unsubscribe(current_user)
+      issuable.unsubscribe(current_user, project)
     end
   end
 

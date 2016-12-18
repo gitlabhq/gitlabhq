@@ -7,7 +7,7 @@ describe PipelineSuccessWorker do
 
       it 'performs "merge when pipeline succeeds"' do
         expect_any_instance_of(
-          MergeRequests::MergeWhenBuildSucceedsService
+          MergeRequests::MergeWhenPipelineSucceedsService
         ).to receive(:trigger)
 
         described_class.new.perform(pipeline.id)

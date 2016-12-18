@@ -1,7 +1,3 @@
-require_relative 'base_service'
-require_relative 'reopen_service'
-require_relative 'close_service'
-
 module MergeRequests
   class UpdateService < MergeRequests::BaseService
     def execute(merge_request)
@@ -29,7 +25,7 @@ module MergeRequests
       end
 
       if merge_request.previous_changes.include?('title') ||
-         merge_request.previous_changes.include?('description')
+          merge_request.previous_changes.include?('description')
         todo_service.update_merge_request(merge_request, current_user)
       end
 

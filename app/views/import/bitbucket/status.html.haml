@@ -1,5 +1,6 @@
-- page_title "Bitbucket import"
-- header_title "Projects", root_path
+- page_title 'Bitbucket import'
+- header_title 'Projects', root_path
+
 %h3.page-title
   %i.fa.fa-bitbucket
   Import projects from Bitbucket
@@ -10,13 +11,13 @@
   %hr
   %p
   - if @incompatible_repos.any?
-    = button_tag class: "btn btn-import btn-success js-import-all" do
+    = button_tag class: 'btn btn-import btn-success js-import-all' do
       Import all compatible projects
-      = icon("spinner spin", class: "loading-icon")
+      = icon('spinner spin', class: 'loading-icon')
   - else
-    = button_tag class: "btn btn-success js-import-all" do
+    = button_tag class: 'btn btn-import btn-success js-import-all' do
       Import all projects
-      = icon("spinner spin", class: "loading-icon")
+      = icon('spinner spin', class: 'loading-icon')
 
 .table-responsive
   %table.table.import-jobs
@@ -32,7 +33,7 @@
       - @already_added_projects.each do |project|
         %tr{id: "project_#{project.id}", class: "#{project_status_css_class(project.import_status)}"}
           %td
-            = link_to project.import_source, "https://bitbucket.org/#{project.import_source}", target: "_blank"
+            = link_to project.import_source, "https://bitbucket.org/#{project.import_source}", target: '_blank'
           %td
             = link_to project.path_with_namespace, [project.namespace.becomes(Namespace), project]
           %td.job-status
@@ -47,31 +48,41 @@
               = project.human_import_status_name
 
       - @repos.each do |repo|
-        %tr{id: "repo_#{repo["owner"]}___#{repo["slug"]}"}
+        %tr{id: "repo_#{repo.owner}___#{repo.slug}"}
           %td
-            = link_to "#{repo["owner"]}/#{repo["slug"]}", "https://bitbucket.org/#{repo["owner"]}/#{repo["slug"]}", target: "_blank"
+            = link_to repo.full_name, "https://bitbucket.org/#{repo.full_name}", target: "_blank"
           %td.import-target
-            = import_project_target(repo['owner'], repo['slug'])
+            %fieldset.row
+            .input-group
+              .project-path.input-group-btn
+                - if current_user.can_select_namespace?
+                  - selected = params[:namespace_id] || :current_user
+                  - opts = current_user.can_create_group? ? { extra_group: Group.new(name: repo.owner, path: repo.owner) } : {}
+                  = select_tag :namespace_id, namespaces_options(selected, opts.merge({ display_path: true })), { class: 'select2 js-select-namespace', tabindex: 1 }
+                - else
+                  = text_field_tag :path, current_user.namespace_path, class: "input-large form-control", tabindex: 1, disabled: true
+              %span.input-group-addon /
+              = text_field_tag :path, repo.name, class: "input-mini form-control", tabindex: 2, autofocus: true, required: true
           %td.import-actions.job-status
-            = button_tag class: "btn btn-import js-add-to-import" do
+            = button_tag class: 'btn btn-import js-add-to-import' do
               Import
-              = icon("spinner spin", class: "loading-icon")
+              = icon('spinner spin', class: 'loading-icon')
       - @incompatible_repos.each do |repo|
-        %tr{id: "repo_#{repo["owner"]}___#{repo["slug"]}"}
+        %tr{id: "repo_#{repo.owner}___#{repo.slug}"}
           %td
-            = link_to "#{repo["owner"]}/#{repo["slug"]}", "https://bitbucket.org/#{repo["owner"]}/#{repo["slug"]}", target: "_blank"
+            = link_to repo.full_name, "https://bitbucket.org/#{repo.full_name}", target: '_blank'
           %td.import-target
           %td.import-actions-job-status
-            = label_tag "Incompatible Project", nil, class: "label label-danger"
+            = label_tag 'Incompatible Project', nil, class: 'label label-danger'
 
 - if @incompatible_repos.any?
   %p
     One or more of your Bitbucket projects cannot be imported into GitLab
     directly because they use Subversion or Mercurial for version control,
     rather than Git. Please convert
-    = link_to "them to Git,", "https://www.atlassian.com/git/tutorials/migrating-overview"
+    = link_to 'them to Git,', 'https://www.atlassian.com/git/tutorials/migrating-overview'
     and go through the
-    = link_to "import flow", status_import_bitbucket_path, "data-no-turbolink" => "true"
+    = link_to 'import flow', status_import_bitbucket_path, 'data-no-turbolink' => 'true'
     again.
 
 .js-importer-status{ data: { jobs_import_path: "#{jobs_import_bitbucket_path}", import_path: "#{import_bitbucket_path}" } }

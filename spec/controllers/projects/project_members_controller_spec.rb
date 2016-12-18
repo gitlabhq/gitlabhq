@@ -2,7 +2,7 @@ require('spec_helper')
 
 describe Projects::ProjectMembersController do
   let(:user) { create(:user) }
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:empty_project, :public, :access_requestable) }
 
   describe 'GET index' do
     it 'renders index with 200 status code' do

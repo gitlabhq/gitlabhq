@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-describe API::API, api: true do
+describe API::Builds, api: true do
   include ApiHelpers
 
   let(:user) { create(:user) }
   let(:api_user) { user }
-  let!(:project) { create(:project, creator_id: user.id) }
+  let!(:project) { create(:project, creator_id: user.id, public_builds: false) }
   let!(:developer) { create(:project_member, :developer, user: user, project: project) }
   let(:reporter) { create(:project_member, :reporter, project: project) }
   let(:guest) { create(:project_member, :guest, project: project) }

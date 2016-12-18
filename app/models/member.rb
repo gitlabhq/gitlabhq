@@ -57,12 +57,18 @@ class Member < ActiveRecord::Base
   scope :owners,  -> { active.where(access_level: OWNER) }
   scope :owners_and_masters,  -> { active.where(access_level: [OWNER, MASTER]) }
 
+  scope :order_name_asc, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.name', 'ASC')) }
+  scope :order_name_desc, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.name', 'DESC')) }
+  scope :order_recent_sign_in, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.last_sign_in_at', 'DESC')) }
+  scope :order_oldest_sign_in, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.last_sign_in_at', 'ASC')) }
+
   before_validation :generate_invite_token, on: :create, if: -> (member) { member.invite_email.present? }
 
   after_create :send_invite, if: :invite?, unless: :importing?
   after_create :send_request, if: :request?, unless: :importing?
   after_create :create_notification_setting, unless: [:pending?, :importing?]
   after_create :post_create_hook, unless: [:pending?, :importing?]
+  after_create :refresh_member_authorized_projects, if: :importing?
   after_update :post_update_hook, unless: [:pending?, :importing?]
   after_destroy :post_destroy_hook, unless: :pending?
 
@@ -71,6 +77,34 @@ class Member < ActiveRecord::Base
   default_value_for :notification_level, NotificationSetting.levels[:global]
 
   class << self
+    def search(query)
+      joins(:user).merge(User.search(query))
+    end
+
+    def sort(method)
+      case method.to_s
+      when 'access_level_asc' then reorder(access_level: :asc)
+      when 'access_level_desc' then reorder(access_level: :desc)
+      when 'recent_sign_in' then order_recent_sign_in
+      when 'oldest_sign_in' then order_oldest_sign_in
+      when 'last_joined' then order_created_desc
+      when 'oldest_joined' then order_created_asc
+      else
+        order_by(method)
+      end
+    end
+
+    def left_join_users
+      users = User.arel_table
+      members = Member.arel_table
+
+      member_users = members.join(users, Arel::Nodes::OuterJoin).
+                             on(members[:user_id].eq(users[:id])).
+                             join_sources
+
+      joins(member_users)
+    end
+
     def access_for_user_ids(user_ids)
       where(user_id: user_ids).has_access.pluck(:user_id, :access_level).to_h
     end
@@ -88,8 +122,8 @@ class Member < ActiveRecord::Base
       member =
         if user.is_a?(User)
           source.members.find_by(user_id: user.id) ||
-          source.requesters.find_by(user_id: user.id) ||
-          source.members.build(user_id: user.id)
+            source.requesters.find_by(user_id: user.id) ||
+            source.members.build(user_id: user.id)
         else
           source.members.build(invite_email: user)
         end
@@ -112,6 +146,8 @@ class Member < ActiveRecord::Base
       else
         member.save
       end
+
+      UserProjectAccessChangedService.new(user.id).execute if user.is_a?(User)
 
       member
     end
@@ -239,15 +275,26 @@ class Member < ActiveRecord::Base
   end
 
   def post_create_hook
+    UserProjectAccessChangedService.new(user.id).execute
     system_hook_service.execute_hooks_for(self, :create)
   end
 
   def post_update_hook
-    # override in subclass
+    UserProjectAccessChangedService.new(user.id).execute if access_level_changed?
   end
 
   def post_destroy_hook
+    refresh_member_authorized_projects
     system_hook_service.execute_hooks_for(self, :destroy)
+  end
+
+  def refresh_member_authorized_projects
+    # If user/source is being destroyed, project access are gonna be destroyed eventually
+    # because of DB foreign keys, so we shouldn't bother with refreshing after each
+    # member is destroyed through association
+    return if destroyed_by_association.present?
+
+    UserProjectAccessChangedService.new(user_id).execute
   end
 
   def after_accept_invite

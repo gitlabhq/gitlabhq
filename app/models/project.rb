@@ -13,6 +13,8 @@ class Project < ActiveRecord::Base
   include CaseSensitivity
   include TokenAuthenticatable
   include ProjectFeaturesCompatibility
+  include SelectForProjectAuthorization
+  include Routable
 
   extend Gitlab::ConfigHelper
 
@@ -23,7 +25,9 @@ class Project < ActiveRecord::Base
 
   cache_markdown_field :description, pipeline: :description
 
-  delegate :feature_available?, :builds_enabled?, :wiki_enabled?, :merge_requests_enabled?, to: :project_feature, allow_nil: true
+  delegate :feature_available?, :builds_enabled?, :wiki_enabled?,
+           :merge_requests_enabled?, :issues_enabled?, to: :project_feature,
+                                                       allow_nil: true
 
   default_value_for :archived, false
   default_value_for :visibility_level, gitlab_config_features.visibility_level
@@ -35,6 +39,7 @@ class Project < ActiveRecord::Base
   default_value_for :builds_enabled, gitlab_config_features.builds
   default_value_for :wiki_enabled, gitlab_config_features.wiki
   default_value_for :snippets_enabled, gitlab_config_features.snippets
+  default_value_for :only_allow_merge_if_all_discussions_are_resolved, false
 
   after_create :ensure_dir_exist
   after_create :create_project_feature, unless: :project_feature
@@ -74,9 +79,9 @@ class Project < ActiveRecord::Base
 
   has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event'
   has_many :boards, before_add: :validate_board_limit, dependent: :destroy
+  has_many :chat_services
 
   # Project services
-  has_many :services
   has_one :campfire_service, dependent: :destroy
   has_one :drone_ci_service, dependent: :destroy
   has_one :emails_on_push_service, dependent: :destroy
@@ -89,7 +94,9 @@ class Project < ActiveRecord::Base
   has_one :assembla_service, dependent: :destroy
   has_one :asana_service, dependent: :destroy
   has_one :gemnasium_service, dependent: :destroy
-  has_one :slack_service, dependent: :destroy
+  has_one :mattermost_slash_commands_service, dependent: :destroy
+  has_one :mattermost_notification_service, dependent: :destroy
+  has_one :slack_notification_service, dependent: :destroy
   has_one :buildkite_service, dependent: :destroy
   has_one :bamboo_service, dependent: :destroy
   has_one :teamcity_service, dependent: :destroy
@@ -100,6 +107,7 @@ class Project < ActiveRecord::Base
   has_one :bugzilla_service, dependent: :destroy
   has_one :gitlab_issue_tracker_service, dependent: :destroy, inverse_of: :project
   has_one :external_wiki_service, dependent: :destroy
+  has_one :kubernetes_service, dependent: :destroy, inverse_of: :project
 
   has_one  :forked_project_link,  dependent: :destroy, foreign_key: "forked_to_project_id"
   has_one  :forked_from_project,  through:   :forked_project_link
@@ -121,6 +129,8 @@ class Project < ActiveRecord::Base
   has_many :hooks,              dependent: :destroy, class_name: 'ProjectHook'
   has_many :protected_branches, dependent: :destroy
 
+  has_many :project_authorizations, dependent: :destroy
+  has_many :authorized_users, through: :project_authorizations, source: :user, class_name: 'User'
   has_many :project_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source
   alias_method :members, :project_members
   has_many :users, through: :project_members
@@ -158,18 +168,20 @@ class Project < ActiveRecord::Base
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :members, to: :team, prefix: true
   delegate :add_user, to: :team
+  delegate :add_guest, :add_reporter, :add_developer, :add_master, to: :team
 
   # Validations
   validates :creator, presence: true, on: :create
   validates :description, length: { maximum: 2000 }, allow_blank: true
   validates :name,
     presence: true,
-    length: { within: 0..255 },
+    length: { maximum: 255 },
     format: { with: Gitlab::Regex.project_name_regex,
               message: Gitlab::Regex.project_name_regex_message }
   validates :path,
     presence: true,
-    length: { within: 0..255 },
+    project_path: true,
+    length: { maximum: 255 },
     format: { with: Gitlab::Regex.project_path_regex,
               message: Gitlab::Regex.project_path_regex_message }
   validates :namespace, presence: true
@@ -207,8 +219,38 @@ class Project < ActiveRecord::Base
   scope :for_milestones, ->(ids) { joins(:milestones).where('milestones.id' => ids).distinct }
   scope :with_push, -> { joins(:events).where('events.action = ?', Event::PUSHED) }
 
-  scope :with_builds_enabled, -> { joins('LEFT JOIN project_features ON projects.id = project_features.project_id').where('project_features.builds_access_level IS NULL or project_features.builds_access_level > 0') }
-  scope :with_issues_enabled, -> { joins('LEFT JOIN project_features ON projects.id = project_features.project_id').where('project_features.issues_access_level IS NULL or project_features.issues_access_level > 0') }
+  scope :with_project_feature, -> { joins('LEFT JOIN project_features ON projects.id = project_features.project_id') }
+
+  # "enabled" here means "not disabled". It includes private features!
+  scope :with_feature_enabled, ->(feature) {
+    access_level_attribute = ProjectFeature.access_level_attribute(feature)
+    with_project_feature.where(project_features: { access_level_attribute => [nil, ProjectFeature::PRIVATE, ProjectFeature::ENABLED] })
+  }
+
+  # Picks a feature where the level is exactly that given.
+  scope :with_feature_access_level, ->(feature, level) {
+    access_level_attribute = ProjectFeature.access_level_attribute(feature)
+    with_project_feature.where(project_features: { access_level_attribute => level })
+  }
+
+  scope :with_builds_enabled, -> { with_feature_enabled(:builds) }
+  scope :with_issues_enabled, -> { with_feature_enabled(:issues) }
+
+  # project features may be "disabled", "internal" or "enabled". If "internal",
+  # they are only available to team members. This scope returns projects where
+  # the feature is either enabled, or internal with permission for the user.
+  def self.with_feature_available_for_user(feature, user)
+    return with_feature_enabled(feature) if user.try(:admin?)
+
+    unconditional = with_feature_access_level(feature, [nil, ProjectFeature::ENABLED])
+    return unconditional if user.nil?
+
+    conditional = with_feature_access_level(feature, ProjectFeature::PRIVATE)
+    authorized = user.authorized_projects.merge(conditional.reorder(nil))
+
+    union = Gitlab::SQL::Union.new([unconditional.select(:id), authorized.select(:id)])
+    where(arel_table[:id].in(Arel::Nodes::SqlLiteral.new(union.to_sql)))
+  end
 
   scope :active, -> { joins(:issues, :notes, :merge_requests).order('issues.created_at, notes.created_at, merge_requests.created_at DESC') }
   scope :abandoned, -> { where('projects.last_activity_at < ?', 6.months.ago) }
@@ -285,87 +327,6 @@ class Project < ActiveRecord::Base
       non_archived.where(table[:name].matches(pattern))
     end
 
-    # Finds a single project for the given path.
-    #
-    # path - The full project path (including namespace path).
-    #
-    # Returns a Project, or nil if no project could be found.
-    def find_with_namespace(path)
-      namespace_path, project_path = path.split('/', 2)
-
-      return unless namespace_path && project_path
-
-      namespace_path = connection.quote(namespace_path)
-      project_path = connection.quote(project_path)
-
-      # On MySQL we want to ensure the ORDER BY uses a case-sensitive match so
-      # any literal matches come first, for this we have to use "BINARY".
-      # Without this there's still no guarantee in what order MySQL will return
-      # rows.
-      binary = Gitlab::Database.mysql? ? 'BINARY' : ''
-
-      order_sql = "(CASE WHEN #{binary} namespaces.path = #{namespace_path} " \
-        "AND #{binary} projects.path = #{project_path} THEN 0 ELSE 1 END)"
-
-      where_paths_in([path]).reorder(order_sql).take
-    end
-
-    # Builds a relation to find multiple projects by their full paths.
-    #
-    # Each path must be in the following format:
-    #
-    #     namespace_path/project_path
-    #
-    # For example:
-    #
-    #     gitlab-org/gitlab-ce
-    #
-    # Usage:
-    #
-    #     Project.where_paths_in(%w{gitlab-org/gitlab-ce gitlab-org/gitlab-ee})
-    #
-    # This would return the projects with the full paths matching the values
-    # given.
-    #
-    # paths - An Array of full paths (namespace path + project path) for which
-    #         to find the projects.
-    #
-    # Returns an ActiveRecord::Relation.
-    def where_paths_in(paths)
-      wheres = []
-      cast_lower = Gitlab::Database.postgresql?
-
-      paths.each do |path|
-        namespace_path, project_path = path.split('/', 2)
-
-        next unless namespace_path && project_path
-
-        namespace_path = connection.quote(namespace_path)
-        project_path = connection.quote(project_path)
-
-        where = "(namespaces.path = #{namespace_path}
-          AND projects.path = #{project_path})"
-
-        if cast_lower
-          where = "(
-            #{where}
-            OR (
-              LOWER(namespaces.path) = LOWER(#{namespace_path})
-              AND LOWER(projects.path) = LOWER(#{project_path})
-            )
-          )"
-        end
-
-        wheres << where
-      end
-
-      if wheres.empty?
-        none
-      else
-        joins(:namespace).where(wheres.join(' OR '))
-      end
-    end
-
     def visibility_levels
       Gitlab::VisibilityLevel.options
     end
@@ -380,7 +341,11 @@ class Project < ActiveRecord::Base
 
     def reference_pattern
       name_pattern = Gitlab::Regex::NAMESPACE_REGEX_STR
-      %r{(?<project>#{name_pattern}/#{name_pattern})}
+
+      %r{
+        ((?<namespace>#{name_pattern})\/)?
+        (?<project>#{name_pattern})
+      }x
     end
 
     def trending
@@ -397,6 +362,10 @@ class Project < ActiveRecord::Base
     def group_ids
       joins(:namespace).where(namespaces: { type: 'Group' }).select(:namespace_id)
     end
+
+    # Add alias for Routable method for compatibility with old code.
+    # In future all calls `find_with_namespace` should be replaced with `find_by_full_path`
+    alias_method :find_with_namespace, :find_by_full_path
   end
 
   def lfs_enabled?
@@ -611,8 +580,20 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def to_reference(_from_project = nil)
-    path_with_namespace
+  def to_reference(from_project = nil)
+    if cross_namespace_reference?(from_project)
+      path_with_namespace
+    elsif cross_project_reference?(from_project)
+      path
+    end
+  end
+
+  def to_human_reference(from_project = nil)
+    if cross_namespace_reference?(from_project)
+      name_with_namespace
+    elsif cross_project_reference?(from_project)
+      name
+    end
   end
 
   def web_url
@@ -648,9 +629,9 @@ class Project < ActiveRecord::Base
     self.id
   end
 
-  def get_issue(issue_id)
+  def get_issue(issue_id, current_user)
     if default_issues_tracker?
-      issues.find_by(iid: issue_id)
+      IssuesFinder.new(current_user, project_id: id).find_by(iid: issue_id)
     else
       ExternalIssue.new(issue_id, self)
     end
@@ -718,25 +699,30 @@ class Project < ActiveRecord::Base
     update_column(:has_external_wiki, services.external_wikis.any?)
   end
 
-  def build_missing_services
+  def find_or_initialize_services
     services_templates = Service.where(template: true)
 
-    Service.available_services_names.each do |service_name|
+    Service.available_services_names.map do |service_name|
       service = find_service(services, service_name)
 
-      # If service is available but missing in db
-      if service.nil?
+      if service
+        service
+      else
         # We should check if template for the service exists
         template = find_service(services_templates, service_name)
 
         if template.nil?
-          # If no template, we should create an instance. Ex `create_gitlab_ci_service`
-          public_send("create_#{service_name}_service")
+          # If no template, we should create an instance. Ex `build_gitlab_ci_service`
+          public_send("build_#{service_name}_service")
         else
-          Service.create_from_template(self.id, template)
+          Service.build_from_template(id, template)
         end
       end
     end
+  end
+
+  def find_or_initialize_service(name)
+    find_or_initialize_services.find { |service| service.to_param == name }
   end
 
   def create_labels
@@ -756,6 +742,14 @@ class Project < ActiveRecord::Base
 
   def ci_service
     @ci_service ||= ci_services.reorder(nil).find_by(active: true)
+  end
+
+  def deployment_services
+    services.where(category: :deployment)
+  end
+
+  def deployment_service
+    @deployment_service ||= deployment_services.reorder(nil).find_by(active: true)
   end
 
   def jira_tracker?
@@ -819,13 +813,14 @@ class Project < ActiveRecord::Base
   end
   alias_method :human_name, :name_with_namespace
 
-  def path_with_namespace
-    if namespace
-      namespace.path + '/' + path
+  def full_path
+    if namespace && path
+      namespace.full_path + '/' + path
     else
       path
     end
   end
+  alias_method :path_with_namespace, :full_path
 
   def execute_hooks(data, hooks_scope = :push_hooks)
     hooks.send(hooks_scope).each do |hook|
@@ -848,7 +843,7 @@ class Project < ActiveRecord::Base
   end
 
   def empty_repo?
-    !repository.exists? || !repository.has_visible_content?
+    repository.empty_repo?
   end
 
   def repo
@@ -932,7 +927,6 @@ class Project < ActiveRecord::Base
       begin
         gitlab_shell.mv_repository(repository_storage_path, "#{old_path_with_namespace}.wiki", "#{new_path_with_namespace}.wiki")
         send_move_instructions(old_path_with_namespace)
-        reset_events_cache
 
         @old_path_with_namespace = old_path_with_namespace
 
@@ -999,22 +993,6 @@ class Project < ActiveRecord::Base
     attrs
   end
 
-  # Reset events cache related to this project
-  #
-  # Since we do cache @event we need to reset cache in special cases:
-  # * when project was moved
-  # * when project was renamed
-  # * when the project avatar changes
-  # Events cache stored like  events/23-20130109142513.
-  # The cache key includes updated_at timestamp.
-  # Thus it will automatically generate a new fragment
-  # when the event is updated because the key changes.
-  def reset_events_cache
-    Event.where(project_id: self.id).
-      order('id DESC').limit(100).
-      update_all(updated_at: Time.now)
-  end
-
   def project_member(user)
     project_members.find_by(user_id: user)
   end
@@ -1046,7 +1024,7 @@ class Project < ActiveRecord::Base
                                         "refs/heads/#{branch}",
                                         force: true)
     repository.copy_gitattributes(branch)
-    repository.expire_avatar_cache(branch)
+    repository.expire_avatar_cache
     reload_default_branch
   end
 
@@ -1252,18 +1230,10 @@ class Project < ActiveRecord::Base
     end
   end
 
-  # Checks if `user` is authorized for this project, with at least the
-  # `min_access_level` (if given).
-  #
-  # If you change the logic of this method, please also update `User#authorized_projects`
-  def authorized_for_user?(user, min_access_level = nil)
-    return false unless user
+  def deployment_variables
+    return [] unless deployment_service
 
-    return true if personal? && namespace_id == user.namespace_id
-
-    authorized_for_user_by_group?(user, min_access_level) ||
-      authorized_for_user_by_members?(user, min_access_level) ||
-      authorized_for_user_by_shared_projects?(user, min_access_level)
+    deployment_service.predefined_variables
   end
 
   def append_or_update_attribute(name, value)
@@ -1288,55 +1258,50 @@ class Project < ActiveRecord::Base
     Gitlab::Redis.with { |redis| redis.del(pushes_since_gc_redis_key) }
   end
 
-  def environments_for(ref, commit, with_tags: false)
-    environment_ids = deployments.group(:environment_id).
-      select(:environment_id)
+  def environments_for(ref, commit: nil, with_tags: false)
+    deployments_query = with_tags ? 'ref = ? OR tag IS TRUE' : 'ref = ?'
 
-    environment_ids =
-      if with_tags
-        environment_ids.where('ref=? OR tag IS TRUE', ref)
-      else
-        environment_ids.where(ref: ref)
-      end
+    environment_ids = deployments
+      .where(deployments_query, ref.to_s)
+      .group(:environment_id)
+      .select(:environment_id)
 
-    environments.available.where(id: environment_ids).select do |environment|
+    environments_found = environments.available
+      .where(id: environment_ids).to_a
+
+    return environments_found unless commit
+
+    environments_found.select do |environment|
       environment.includes_commit?(commit)
+    end
+  end
+
+  def environments_recently_updated_on_branch(branch)
+    environments_for(branch).select do |environment|
+      environment.recently_updated_on_branch?(branch)
     end
   end
 
   private
 
+  # Check if a reference is being done cross-project
+  #
+  # from_project - Refering Project object
+  def cross_project_reference?(from_project)
+    from_project && self != from_project
+  end
+
   def pushes_since_gc_redis_key
     "projects/#{id}/pushes_since_gc"
+  end
+
+  def cross_namespace_reference?(from_project)
+    from_project && namespace != from_project.namespace
   end
 
   def default_branch_protected?
     current_application_settings.default_branch_protection == Gitlab::Access::PROTECTION_FULL ||
       current_application_settings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_MERGE
-  end
-
-  def authorized_for_user_by_group?(user, min_access_level)
-    member = user.group_members.find_by(source_id: group)
-
-    member && (!min_access_level || member.access_level >= min_access_level)
-  end
-
-  def authorized_for_user_by_members?(user, min_access_level)
-    member = members.find_by(user_id: user)
-
-    member && (!min_access_level || member.access_level >= min_access_level)
-  end
-
-  def authorized_for_user_by_shared_projects?(user, min_access_level)
-    shared_projects = user.group_members.joins(group: :shared_projects).
-      where(project_group_links: { project_id: self })
-
-    if min_access_level
-      members_scope = { access_level: Gitlab::Access.values.select { |access| access >= min_access_level } }
-      shared_projects = shared_projects.where(members: members_scope)
-    end
-
-    shared_projects.any?
   end
 
   # Similar to the normal callbacks that hook into the life cycle of an
@@ -1348,5 +1313,9 @@ class Project < ActiveRecord::Base
   # than the number of permitted boards per project it won't fail.
   def validate_board_limit(board)
     raise BoardLimitExceeded, 'Number of permitted boards exceeded' if boards.size >= NUMBER_OF_PERMITTED_BOARDS
+  end
+
+  def full_path_changed?
+    path_changed? || namespace_id_changed?
   end
 end
