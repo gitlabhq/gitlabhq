@@ -89,7 +89,7 @@ class WikiPage
   # The hierarchy of the directory this page is contained in.
   def directory
     dir = wiki.page_title_and_dir(slug).last
-    dir.present? ? dir : '/'
+    "/#{dir}"
   end
 
   # The processed/formatted content of this page.
@@ -106,7 +106,7 @@ class WikiPage
 
   # The full path for this page, including its filename and extension.
   def full_path
-    "/#{directory}/#{page.filename}".gsub(/\/+/, '/')
+    "#{directory}/#{page.filename}".gsub(/\/+/, '/')
   end
 
   # The commit message for this page version.

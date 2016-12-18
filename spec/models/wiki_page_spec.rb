@@ -27,7 +27,7 @@ describe WikiPage, models: true do
         page_2 = wiki.find_page('dir_1/page_2')
         page_3 = wiki.find_page('dir_1/dir_2/page_3')
         expected_grouped_pages = {
-          '/' => [page_1], 'dir_1' => [page_2], 'dir_1/dir_2' => [page_3]
+          '/' => [page_1], '/dir_1' => [page_2], '/dir_1/dir_2' => [page_3]
         }
 
         grouped_pages = WikiPage.group_by_directory(wiki.pages)
@@ -239,7 +239,7 @@ describe WikiPage, models: true do
         create_page('dir_1/dir_1_1/file', 'content')
         page = wiki.find_page('dir_1/dir_1_1/file')
 
-        expect(page.directory).to eq('dir_1/dir_1_1')
+        expect(page.directory).to eq('/dir_1/dir_1_1')
       end
     end
   end
