@@ -17,9 +17,9 @@ describe 'Filter issues', js: true, feature: true do
   let!(:multiple_words_label) { create(:label, project: project, title: "Two words") }
 
   let!(:closed_issue) { create(:issue, title: 'bug that is closed', project: project, state: :closed) }
+  let(:filtered_search) { find('.filtered-search') }
 
   def input_filtered_search(search_term)
-    filtered_search = find('.filtered-search')
     filtered_search.set(search_term)
     filtered_search.send_keys(:enter)
   end

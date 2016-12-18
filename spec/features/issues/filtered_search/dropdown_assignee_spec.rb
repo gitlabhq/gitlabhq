@@ -13,7 +13,7 @@ describe 'Dropdown assignee', js: true, feature: true do
   def send_keys_to_filtered_search(input)
     input.split("").each do |i|
       filtered_search.send_keys(i)
-      sleep 3
+      sleep 5
       wait_for_ajax
     end
   end
@@ -65,7 +65,7 @@ describe 'Dropdown assignee', js: true, feature: true do
 
   describe 'filtering' do
     before do
-      filtered_search.set('assignee:')
+      send_keys_to_filtered_search('assignee:')
     end
 
     it 'filters by name' do
@@ -118,7 +118,7 @@ describe 'Dropdown assignee', js: true, feature: true do
     end
 
     it 'selects `no assignee`' do
-      click_assignee('No Assignee')
+      find('#js-dropdown-assignee .filter-dropdown-item', text: 'No Assignee').click
       expect(page).to have_css(js_dropdown_assignee, visible: false)
       expect(filtered_search.value).to eq("assignee:none")
     end

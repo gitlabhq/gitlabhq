@@ -176,7 +176,7 @@ describe 'Dropdown label', js: true, feature: true do
     end
 
     it 'selects `no label`' do
-      click_label('No Label')
+      find('#js-dropdown-label .filter-dropdown-item', text: 'No Label').click
       expect(page).to have_css(js_dropdown_label, visible: false)
       expect(filtered_search.value).to eq("label:none")
     end
