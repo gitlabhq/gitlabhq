@@ -30,7 +30,7 @@ feature 'Admin updates settings', feature: true do
 
     expect(page).to have_content 'Application settings saved successfully'
 
-    click_link 'Slack'
+    click_link 'Slack notifications'
 
     page.all('input[type=checkbox]').each do |checkbox|
       expect(checkbox).to be_checked
