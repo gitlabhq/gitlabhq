@@ -9,7 +9,7 @@ FactoryGirl.define do
     end
 
     trait :with_used_limit do
-      namespace_metrics factory: :namespace_metrics, :with_used_limit
+      namespace_metrics factory: :namespace_metrics, shared_runners_minutes: 1000
       shared_runners_minutes_limit 500
     end
   end

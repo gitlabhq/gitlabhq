@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161202152039) do
+ActiveRecord::Schema.define(version: 20161202152041) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -822,6 +822,7 @@ ActiveRecord::Schema.define(version: 20161202152039) do
   create_table "namespace_metrics", force: :cascade do |t|
     t.integer "namespace_id", null: false
     t.integer "shared_runners_minutes", default: 0, null: false
+    t.datetime "shared_runners_minutes_last_reset"
   end
 
   add_index "namespace_metrics", ["namespace_id"], name: "index_namespace_metrics_on_namespace_id", unique: true, using: :btree
@@ -1032,6 +1033,14 @@ ActiveRecord::Schema.define(version: 20161202152039) do
   end
 
   add_index "project_import_data", ["project_id"], name: "index_project_import_data_on_project_id", using: :btree
+
+  create_table "project_metrics", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.integer "shared_runners_minutes", default: 0, null: false
+    t.datetime "shared_runners_minutes_last_reset"
+  end
+
+  add_index "project_metrics", ["project_id"], name: "index_project_metrics_on_project_id", unique: true, using: :btree
 
   create_table "projects", force: :cascade do |t|
     t.string "name"
@@ -1493,6 +1502,7 @@ ActiveRecord::Schema.define(version: 20161202152039) do
   add_foreign_key "personal_access_tokens", "users"
   add_foreign_key "project_authorizations", "projects", on_delete: :cascade
   add_foreign_key "project_authorizations", "users", on_delete: :cascade
+  add_foreign_key "project_metrics", "projects", on_delete: :cascade
   add_foreign_key "protected_branch_merge_access_levels", "namespaces", column: "group_id"
   add_foreign_key "protected_branch_merge_access_levels", "protected_branches"
   add_foreign_key "protected_branch_merge_access_levels", "users"

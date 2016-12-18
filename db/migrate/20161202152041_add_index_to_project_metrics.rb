@@ -1,4 +1,4 @@
-class AddIndexToNamespaceMetrics < ActiveRecord::Migration
+class AddIndexToProjectMetrics < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

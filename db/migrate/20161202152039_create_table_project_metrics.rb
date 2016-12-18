@@ -5,7 +5,7 @@ class CreateTableProjectMetrics < ActiveRecord::Migration
 
   def change
     create_table :project_metrics do |t|
-      t.integer :project_id, null: false, unique: true
+      t.integer :project_id, null: false
       t.integer :shared_runners_minutes, default: 0, null: false
       t.timestamp :shared_runners_minutes_last_reset
     end
