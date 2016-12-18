@@ -42,7 +42,8 @@ class Namespace < ActiveRecord::Base
 
   scope :root, -> { where('type IS NULL') }
 
-  delegate :shared_runners_minutes, to: :namespace_metrics, allow_nil: true
+  delegate :shared_runners_minutes, :shared_runners_minutes_last_reset,
+    to: :namespace_metrics, allow_nil: true
 
   class << self
     def by_path(path)

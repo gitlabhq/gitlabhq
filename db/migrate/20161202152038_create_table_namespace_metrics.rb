@@ -5,8 +5,9 @@ class CreateTableNamespaceMetrics < ActiveRecord::Migration
 
   def change
     create_table :namespace_metrics do |t|
-      t.integer :namespace_id, null: false
+      t.integer :namespace_id, null: false, unique: true
       t.integer :shared_runners_minutes, default: 0, null: false
+      t.timestamp :shared_runners_minutes_last_reset
     end
 
     add_foreign_key :namespace_metrics, :namespaces, on_delete: :cascade

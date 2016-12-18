@@ -28,9 +28,11 @@ class Project < ActiveRecord::Base
            :merge_requests_enabled?, :issues_enabled?, to: :project_feature,
                                                        allow_nil: true
 
-  delegate :shared_runners_minutes, :shared_runners_minutes_limit,
-           :shared_runners_minutes_used?,
-           to: :namespace, allow_nil: true
+  delegate :shared_runners_minutes, :shared_runners_minutes_last_reset,
+    to: :project_metrics, allow_nil: true
+
+  delegate :shared_runners_minutes_limit_enabled?, :shared_runners_minutes_limit,
+    :shared_runners_minutes_used?, to: :namespace
 
   default_value_for :archived, false
   default_value_for :visibility_level, gitlab_config_features.visibility_level
@@ -73,6 +75,8 @@ class Project < ActiveRecord::Base
   belongs_to :group, -> { where(type: 'Group') }, foreign_key: 'namespace_id'
   belongs_to :namespace
   belongs_to :mirror_user, foreign_key: 'mirror_user_id', class_name: 'User'
+
+  has_one :project_metrics, dependent: :destroy
 
   has_one :push_rule, dependent: :destroy
   has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event'
@@ -1237,7 +1241,7 @@ class Project < ActiveRecord::Base
     end
 
     shared_runners_enabled? &&
-      !shared_runners_minutes_used? &&
+      !namespace.shared_runners_minutes_used? &&
       Ci::Runner.shared.active.any?(&block)
   end
 
