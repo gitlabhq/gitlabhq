@@ -17,14 +17,11 @@ module Mattermost
     include Doorkeeper::Helpers::Controller
     include HTTParty
 
-    attr_accessor :current_resource_owner
+    base_uri Settings.mattermost.host
 
-    def initialize(uri, current_user)
-      uri = normalize_uri(uri)
+    attr_accessor :current_resource_owner, :token
 
-      # Sets the base uri for HTTParty, so we can use paths
-      self.class.base_uri(uri)
-
+    def initialize(current_user)
       @current_resource_owner = current_user
     end
 
@@ -32,9 +29,7 @@ module Mattermost
       raise NoSessionError unless create
 
       begin
-        yield
-      rescue Errno::ECONNREFUSED
-        raise NoSessionError
+        yield self
       ensure
         destroy
       end
@@ -59,7 +54,15 @@ module Mattermost
     end
 
     def params
-      Rack::Utils.parse_query(@oauth_uri.query).symbolize_keys
+      Rack::Utils.parse_query(oauth_uri.query).symbolize_keys
+    end
+
+    def get(path, options = {})
+      self.class.get(path, options.merge(headers: @headers))
+    end
+
+    def post(path, options = {})
+      self.class.post(path, options.merge(headers: @headers))
     end
 
     private
@@ -68,50 +71,45 @@ module Mattermost
       return unless oauth_uri
       return unless token_uri
 
-      self.class.headers("Cookie" => "MMAUTHTOKEN=#{request_token}")
-      self.class.headers("X-Requested-With" => 'XMLHttpRequest')
+      @token = request_token
+      @headers = {
+        Authorization: "Bearer #{@token}"
+      }
 
-      request_token
+      @token
     end
 
     def destroy
-      post('/users/logout')
+      post('/api/v3/users/logout')
     end
 
     def oauth_uri
-      response = get("/oauth/gitlab/login", follow_redirects: false)
+      return @oauth_uri if defined?(@oauth_uri)
+
+      @oauth_uri = nil
+
+      response = get("/api/v3/oauth/gitlab/login", follow_redirects: false)
       return unless 300 <= response.code && response.code < 400
 
       redirect_uri = response.headers['location']
       return unless redirect_uri
 
-      @oauth_uri ||= URI.parse(redirect_uri)
+      @oauth_uri = URI.parse(redirect_uri)
     end
 
     def token_uri
-      @token_uri ||= if @oauth_uri
-                       authorization.authorize.redirect_uri if pre_auth.authorizable?
-                     end
+      @token_uri ||=
+        if oauth_uri
+          authorization.authorize.redirect_uri if pre_auth.authorizable?
+        end
     end
 
     def request_token
-      @request_token ||= begin
-                           response = get(@token_uri, follow_redirects: false)
-                           response.headers['token'] if 200 <= response.code && response.code < 400
-                         end
-    end
+      response = get(token_uri, follow_redirects: false)
 
-    def get(path, options = {})
-      self.class.get(path, options)
-    end
-
-    def post(path, options = {})
-      self.class.post(path, options)
-    end
-
-    def normalize_uri(uri)
-      uri << '/' unless uri.end_with?('/')
-      uri << 'api/v3'
+      if 200 <= response.code && response.code < 400
+        response.headers['token']
+      end
     end
   end
 end

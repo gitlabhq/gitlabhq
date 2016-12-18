@@ -28,7 +28,7 @@
         return this.renderMarkdown(mdText, (function(_this) {
           return function(response) {
             preview.html(response.body);
-            preview.syntaxHighlight();
+            preview.renderGFM();
             return _this.renderReferencedUsers(response.references.users, form);
           };
         })(this));

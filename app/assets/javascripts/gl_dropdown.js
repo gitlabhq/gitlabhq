@@ -23,7 +23,6 @@
       this.filterInputBlur = (ref = this.options.filterInputBlur) != null ? ref : true;
       $inputContainer = this.input.parent();
       $clearButton = $inputContainer.find('.js-dropdown-input-clear');
-      this.indeterminateIds = [];
       $clearButton.on('click', (function(_this) {
         // Clear click
         return function(e) {
@@ -348,12 +347,12 @@
           $el = $(this);
           selected = self.rowClicked($el);
           if (self.options.clicked) {
-            self.options.clicked(selected, $el, e);
+            self.options.clicked(selected[0], $el, e, selected[1]);
           }
 
           // Update label right after all modifications in dropdown has been done
           if (self.options.toggleLabel) {
-            self.updateLabel(selected, $el, self);
+            self.updateLabel(selected[0], $el, self);
           }
 
           $el.trigger('blur');
@@ -444,12 +443,6 @@
       this.resetRows();
       this.addArrowKeyEvent();
 
-      if (this.options.setIndeterminateIds) {
-        this.options.setIndeterminateIds.call(this);
-      }
-      if (this.options.setActiveIds) {
-        this.options.setActiveIds.call(this);
-      }
       // Makes indeterminate items effective
       if (this.fullData && this.dropdown.find('.dropdown-menu-toggle').hasClass('js-filter-bulk-update')) {
         this.parseData(this.fullData);
@@ -482,11 +475,6 @@
       $input = this.dropdown.find(".dropdown-input-field");
       if (this.options.filterable) {
         $input.blur().val("");
-      }
-      // Triggering 'keyup' will re-render the dropdown which is not always required
-      // specially if we want to keep the state of the dropdown needed for bulk-assignment
-      if (!this.options.persistWhenHide) {
-        $input.trigger("input");
       }
       if (this.dropdown.find(".dropdown-toggle-page").length) {
         $('.dropdown-menu', this.dropdown).removeClass(PAGE_TWO_CLASS);
@@ -620,7 +608,8 @@
     };
 
     GitLabDropdown.prototype.rowClicked = function(el) {
-      var field, fieldName, groupName, isInput, selectedIndex, selectedObject, value;
+      var field, fieldName, groupName, isInput, selectedIndex, selectedObject, value, isMarking;
+
       fieldName = this.options.fieldName;
       isInput = $(this.el).is('input');
       if (this.renderedData) {
@@ -641,7 +630,7 @@
           el.addClass(ACTIVE_CLASS);
         }
 
-        return selectedObject;
+        return [selectedObject];
       }
 
       field = [];
@@ -659,6 +648,7 @@
       }
 
       if (el.hasClass(ACTIVE_CLASS)) {
+        isMarking = false;
         el.removeClass(ACTIVE_CLASS);
         if (field && field.length) {
           if (isInput) {
@@ -668,6 +658,7 @@
           }
         }
       } else if (el.hasClass(INDETERMINATE_CLASS)) {
+        isMarking = true;
         el.addClass(ACTIVE_CLASS);
         el.removeClass(INDETERMINATE_CLASS);
         if (field && field.length && value == null) {
@@ -677,6 +668,7 @@
           this.addInput(fieldName, value, selectedObject);
         }
       } else {
+        isMarking = true;
         if (!this.options.multiSelect || el.hasClass('dropdown-clear-active')) {
           this.dropdown.find("." + ACTIVE_CLASS).removeClass(ACTIVE_CLASS);
           if (!isInput) {
@@ -697,7 +689,7 @@
         }
       }
 
-      return selectedObject;
+      return [selectedObject, isMarking];
     };
 
     GitLabDropdown.prototype.focusTextInput = function() {

@@ -95,7 +95,8 @@ class Project < ActiveRecord::Base
   has_one :asana_service, dependent: :destroy
   has_one :gemnasium_service, dependent: :destroy
   has_one :mattermost_slash_commands_service, dependent: :destroy
-  has_one :slack_service, dependent: :destroy
+  has_one :mattermost_notification_service, dependent: :destroy
+  has_one :slack_notification_service, dependent: :destroy
   has_one :buildkite_service, dependent: :destroy
   has_one :bamboo_service, dependent: :destroy
   has_one :teamcity_service, dependent: :destroy
@@ -1227,6 +1228,12 @@ class Project < ActiveRecord::Base
     variables.map do |variable|
       { key: variable.key, value: variable.value, public: false }
     end
+  end
+
+  def deployment_variables
+    return [] unless deployment_service
+
+    deployment_service.predefined_variables
   end
 
   def append_or_update_attribute(name, value)

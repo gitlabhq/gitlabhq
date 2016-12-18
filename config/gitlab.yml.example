@@ -153,10 +153,11 @@ production: &base
     # The location where LFS objects are stored (default: shared/lfs-objects).
     # storage_path: shared/lfs-objects
 
-  # For executing commands from GitLab on Mattermost
+  ## Mattermost
+  ## For enabling Add to Mattermost button
   mattermost:
     enabled: false
-    host: 'http://locahost:8065'
+    host: 'https://mattermost.example.com'
 
   ## Gravatar
   ## For Libravatar see: http://doc.gitlab.com/ce/customization/libravatar.html

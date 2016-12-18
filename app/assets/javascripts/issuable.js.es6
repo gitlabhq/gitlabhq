@@ -144,6 +144,9 @@
       const $issuesOtherFilters = $('.issues-other-filters');
       const $issuesBulkUpdate = $('.issues_bulk_update');
 
+      this.issuableBulkActions.willUpdateLabels = false;
+      this.issuableBulkActions.setOriginalDropdownData();
+
       if ($checkedIssues.length > 0) {
         let ids = $.map($checkedIssues, function(value) {
           return $(value).data('id');
@@ -155,7 +158,6 @@
         $updateIssuesIds.val([]);
         $issuesBulkUpdate.hide();
         $issuesOtherFilters.show();
-        this.issuableBulkActions.willUpdateLabels = false;
       }
       return true;
     },

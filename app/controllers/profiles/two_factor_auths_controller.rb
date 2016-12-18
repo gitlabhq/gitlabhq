@@ -22,6 +22,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     end
 
     @qr_code = build_qr_code
+    @account_string = account_string
     setup_u2f_registration
   end
 
@@ -78,9 +79,12 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   private
 
   def build_qr_code
-    issuer = "#{issuer_host} | #{current_user.email}"
-    uri = current_user.otp_provisioning_uri(current_user.email, issuer: issuer)
+    uri = current_user.otp_provisioning_uri(account_string, issuer: issuer_host)
     RQRCode::render_qrcode(uri, :svg, level: :m, unit: 3)
+  end
+
+  def account_string
+    "#{issuer_host}:#{current_user.email}"
   end
 
   def issuer_host

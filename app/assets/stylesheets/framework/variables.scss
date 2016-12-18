@@ -154,6 +154,8 @@ $row-hover-border: #b2d7ff;
 $progress-color: #c0392b;
 $header-height: 50px;
 $fixed-layout-width: 1280px;
+$limited-layout-width: 990px;
+$gl-avatar-size: 40px;
 $error-exclamation-point: #e62958;
 $border-radius-default: 2px;
 $settings-icon-size: 18px;
@@ -436,7 +438,7 @@ $jq-ui-default-color: #777;
 $label-gray-bg: #f8fafc;
 $label-inverse-bg: #333;
 $label-remove-border: rgba(0, 0, 0, .1);
-$label-border-radius: 14px;
+$label-border-radius: 100px;
 
 /*
 * Lint
@@ -472,7 +474,6 @@ $project-option-descr-color: #54565b;
 $project-breadcrumb-color: #999;
 $project-private-forks-notice-odd: #2aa056;
 $project-network-controls-color: #888;
-$project-limit-message-bg: #f28d35;
 
 /*
 * Runners
@@ -522,3 +523,9 @@ $body-text-shadow: rgba(255,255,255,0.01);
 */
 $ui-dev-kit-example-color: #bbb;
 $ui-dev-kit-example-border: #ddd;
+
+/*
+Pipeline Graph
+*/
+$stage-hover-bg: #eaf3fc;
+$stage-hover-border: #d1e7fc;

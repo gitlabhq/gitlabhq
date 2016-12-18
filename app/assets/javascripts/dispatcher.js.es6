@@ -74,7 +74,9 @@
         case 'projects:merge_requests:index':
         case 'projects:issues:index':
           Issuable.init();
-          new gl.IssuableBulkActions();
+          new gl.IssuableBulkActions({
+            prefixId: page === 'projects:merge_requests:index' ? 'merge_request_' : 'issue_',
+          });
           shortcut_handler = new ShortcutsNavigation();
           break;
         case 'projects:issues:show':
@@ -143,10 +145,6 @@
           new gl.Diff();
           new ZenMode();
           new MergedButtons();
-          break;
-        case 'projects:merge_requests:index':
-          shortcut_handler = new ShortcutsNavigation();
-          Issuable.init();
           break;
         case 'dashboard:activity':
           new gl.Activities();

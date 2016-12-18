@@ -9,6 +9,14 @@ module Ci
 
     has_many :deployments, as: :deployable
 
+    # The "environment" field for builds is a String, and is the unexpanded name
+    def persisted_environment
+      @persisted_environment ||= Environment.find_by(
+        name: expanded_environment_name,
+        project_id: gl_project_id
+      )
+    end
+
     serialize :options
     serialize :yaml_variables
 
@@ -143,11 +151,11 @@ module Ci
     end
 
     def expanded_environment_name
-      ExpandVariables.expand(environment, variables) if environment
+      ExpandVariables.expand(environment, simple_variables) if environment
     end
 
     def has_environment?
-      self.environment.present?
+      environment.present?
     end
 
     def starts_environment?
@@ -206,16 +214,25 @@ module Ci
       slugified.gsub(/[^a-z0-9]/, '-')[0..62]
     end
 
-    def variables
+    # Variables whose value does not depend on other variables
+    def simple_variables
       variables = predefined_variables
       variables += project.predefined_variables
       variables += pipeline.predefined_variables
       variables += runner.predefined_variables if runner
       variables += project.container_registry_variables
+      variables += project.deployment_variables if has_environment?
       variables += yaml_variables
       variables += user_variables
       variables += project.secret_variables
       variables += trigger_request.user_variables if trigger_request
+      variables
+    end
+
+    # All variables, including those dependent on other variables
+    def variables
+      variables = simple_variables
+      variables += persisted_environment.predefined_variables if persisted_environment.present?
       variables
     end
 

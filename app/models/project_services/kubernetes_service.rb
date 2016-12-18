@@ -83,6 +83,16 @@ class KubernetesService < DeploymentService
     { success: false, result: err }
   end
 
+  def predefined_variables
+    variables = [
+      { key: 'KUBE_URL', value: api_url, public: true },
+      { key: 'KUBE_TOKEN', value: token, public: false },
+      { key: 'KUBE_NAMESPACE', value: namespace, public: true }
+    ]
+    variables << { key: 'KUBE_CA_PEM', value: ca_pem, public: true } if ca_pem.present?
+    variables
+  end
+
   private
 
   def build_kubeclient(api_path = '/api', api_version = 'v1')
