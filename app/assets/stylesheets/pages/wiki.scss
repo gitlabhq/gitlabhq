@@ -14,7 +14,8 @@
     font-size: 22px;
   }
 
-  .wiki-last-edit-by {
+  .wiki-last-edit-by, .wiki-page-full-path {
+    display: block;
     color: $gl-gray-light;
 
     strong {

@@ -8,7 +8,7 @@
 
     .nav-text
       %h2.wiki-page-title= @page.title.capitalize
-
+      %span.wiki-page-full-path= "(#{@page.full_path})"
       %span.wiki-last-edit-by
         Last edited by
         %strong

@@ -88,6 +88,12 @@ class WikiPage
                               end
   end
 
+  # The hierarchy of the directory this page is contained in.
+  def directory
+    dir = wiki.page_title_and_dir(slug).last
+    dir.present? ? dir : '/'
+  end
+
   # The processed/formatted content of this page.
   def formatted_content
     @attributes[:formatted_content] ||= if @page
@@ -98,6 +104,11 @@ class WikiPage
   # The markup format for the page.
   def format
     @attributes[:format] || :markdown
+  end
+
+  # The full path for this page, including its filename and extension.
+  def full_path
+    "/#{directory}/#{page.filename}".gsub(/\/+/, '/')
   end
 
   # The commit message for this page version.

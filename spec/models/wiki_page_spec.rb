@@ -224,6 +224,46 @@ describe WikiPage, models: true do
     end
   end
 
+  describe '#directory' do
+    context 'when the page is at the root directory' do
+      it 'returns /' do
+        create_page('file', 'content')
+        page = wiki.find_page('file')
+
+        expect(page.directory).to eq('/')
+      end
+    end
+
+    context 'when the page is inside an actual directory' do
+      it 'returns the full directory hierarchy' do
+        create_page('dir_1/dir_1_1/file', 'content')
+        page = wiki.find_page('dir_1/dir_1_1/file')
+
+        expect(page.directory).to eq('dir_1/dir_1_1')
+      end
+    end
+  end
+
+  describe '#full_path' do
+    context 'when the page is at the root directory' do
+      it 'returns /filename.fileextension' do
+        create_page('file', 'content')
+        page = wiki.find_page('file')
+
+        expect(page.full_path).to eq('/file.md')
+      end
+    end
+
+    context 'when the page is inside an actual directory' do
+      it 'returns /directory/filename.fileextension' do
+        create_page('dir/file', 'content')
+        page = wiki.find_page('dir/file')
+
+        expect(page.full_path).to eq('/dir/file.md')
+      end
+    end
+  end
+
   describe '#historical?' do
     before do
       create_page('Update', 'content')
