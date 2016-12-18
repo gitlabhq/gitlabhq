@@ -2,7 +2,7 @@ class SlackSlashCommandsService < ChatSlashCommandsService
   include TriggersHelper
 
   def title
-    'Slack Slash Command'
+    'Slack Command'
   end
 
   def description
