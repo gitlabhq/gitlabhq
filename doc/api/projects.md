@@ -347,7 +347,8 @@ Parameters:
 ### Get single project
 
 Get a specific project, identified by project ID or NAMESPACE/PROJECT_NAME, which is owned by the authenticated user.
-If using namespaced projects call make sure that the NAMESPACE/PROJECT_NAME is URL-encoded, eg. `/api/v3/projects/diaspora%2Fdiaspora` (where `/` is represented by `%2F`).
+If using namespaced projects call make sure that the NAMESPACE/PROJECT_NAME is URL-encoded, eg. `/api/v3/projects/diaspora%2Fdiaspora` (where `/` is represented by `%2F`). This endpoint can be accessed without authentication if
+the project is publicly accessible.
 
 ```
 GET /projects/:id
@@ -436,10 +437,47 @@ Parameters:
 }
 ```
 
+## Get project users
+
+Get the users list of a project.
+
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `search` | string | no | Search for specific users |
+
+```
+GET /projects/:id/users
+```
+
+```json
+[
+  {
+    "id": 1,
+    "username": "john_smith",
+    "name": "John Smith",
+    "state": "active",
+    "avatar_url": "http://localhost:3000/uploads/user/avatar/1/cd8.jpeg",
+    "web_url": "http://localhost:3000/john_smith"
+  },
+  {
+    "id": 2,
+    "username": "jack_smith",
+    "name": "Jack Smith",
+    "state": "blocked",
+    "avatar_url": "http://gravatar.com/../e32131cd8.jpeg",
+    "web_url": "http://localhost:3000/jack_smith"
+  }
+]
+```
+
 ### Get project events
 
-Get the events for the specified project.
-Sorted from newest to oldest
+Get the events for the specified project sorted from newest to oldest. This
+endpoint can be accessed without authentication if the project is publicly
+accessible.
 
 ```
 GET /projects/:id/events
@@ -624,6 +662,7 @@ Parameters:
 | `user_id` | integer | yes | The user ID of the project owner |
 | `name` | string | yes | The name of the new project |
 | `path` | string | no | Custom repository name for new project. By default generated based on name |
+| `default_branch` | string | no | `master` by default |
 | `namespace_id` | integer | no | Namespace for the new project (defaults to the current user's namespace) |
 | `description` | string | no | Short project description |
 | `issues_enabled` | boolean | no | Enable issues for this project |
@@ -644,7 +683,7 @@ Parameters:
 
 ### Edit project
 
-Updates an existing project
+Updates an existing project.
 
 ```
 PUT /projects/:id
@@ -657,6 +696,7 @@ Parameters:
 | `id` | integer/string | yes | The ID or NAMESPACE/PROJECT_NAME of the project |
 | `name` | string | yes | The name of the project |
 | `path` | string | no | Custom repository name for the project. By default generated based on name |
+| `default_branch` | string | no | `master` by default |
 | `description` | string | no | Short project description |
 | `issues_enabled` | boolean | no | Enable issues for this project |
 | `merge_requests_enabled` | boolean | no | Enable merge requests for this project |
@@ -673,9 +713,6 @@ Parameters:
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
-
-On success, method returns 200 with the updated project. If parameters are
-invalid, 400 is returned.
 
 ### Fork project
 
@@ -694,8 +731,7 @@ Parameters:
 
 ### Star a project
 
-Stars a given project. Returns status code `201` and the project on success and
-`304` if the project is already starred.
+Stars a given project. Returns status code `304` if the project is already starred.
 
 ```
 POST /projects/:id/star
@@ -765,8 +801,7 @@ Example response:
 
 ### Unstar a project
 
-Unstars a given project. Returns status code `200` and the project on success
-and `304` if the project is not starred.
+Unstars a given project. Returns status code `304` if the project is not starred.
 
 ```
 DELETE /projects/:id/star
@@ -836,10 +871,6 @@ Example response:
 
 Archives the project if the user is either admin or the project owner of this project. This action is
 idempotent, thus archiving an already archived project will not change the project.
-
-Status code 201 with the project as body is given when successful, in case the user doesn't
-have the proper access rights, code 403 is returned. Status 404 is returned if the project
-doesn't exist, or is hidden to the user.
 
 ```
 POST /projects/:id/archive
@@ -925,10 +956,6 @@ Example response:
 
 Unarchives the project if the user is either admin or the project owner of this project. This action is
 idempotent, thus unarchiving an non-archived project will not change the project.
-
-Status code 201 with the project as body is given when successful, in case the user doesn't
-have the proper access rights, code 403 is returned. Status 404 is returned if the project
-doesn't exist, or is hidden to the user.
 
 ```
 POST /projects/:id/unarchive
@@ -1073,6 +1100,25 @@ Parameters:
 | `group_id` | integer | yes | The ID of the group to share with |
 | `group_access` | integer | yes | The permissions level to grant the group |
 | `expires_at` | string | no | Share expiration date in ISO 8601 format: 2016-09-26 |
+
+### Delete a shared project link within a group
+
+Unshare the project from the group. Returns `204` and no content on success.
+
+```
+DELETE /projects/:id/share/:group_id
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
+| `group_id` | integer | yes | The ID of the group |
+
+```bash
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/share/17
+```
 
 ## Hooks
 
@@ -1335,7 +1381,9 @@ Parameter:
 
 ## Search for projects by name
 
-Search for projects by name which are accessible to the authenticated user.
+Search for projects by name which are accessible to the authenticated user. This
+endpoint can be accessed without authentication if the project is publicly
+accessible.
 
 ```
 GET /projects/search/:query

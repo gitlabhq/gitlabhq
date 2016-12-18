@@ -1,4 +1,5 @@
-/* eslint-disable */
+/* eslint-disable comma-dangle, no-unused-vars, quote-props */
+
 const listObj = {
   id: 1,
   position: 0,

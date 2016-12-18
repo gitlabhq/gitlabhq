@@ -88,7 +88,7 @@ describe 'projects/builds/show', :view do
         create(:ci_build, :running, environment: 'staging', pipeline: pipeline)
       end
 
-      context 'and environment does exist' do
+      context 'when environment exists' do
         let!(:environment) do
           create(:environment, name: 'staging', project: project)
         end
@@ -101,7 +101,7 @@ describe 'projects/builds/show', :view do
             '.environment-information', text: expected_text)
         end
 
-        context 'and has deployment' do
+        context 'when it has deployment' do
           let!(:deployment) do
             create(:deployment, environment: environment)
           end
@@ -118,7 +118,7 @@ describe 'projects/builds/show', :view do
         end
       end
 
-      context 'and environment does not exist' do
+      context 'when environment does not exist' do
         it 'shows deployment message' do
           expected_text = 'This build is creating a deployment to staging'
           render

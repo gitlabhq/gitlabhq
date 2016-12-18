@@ -1,4 +1,7 @@
-/* eslint-disable */
+/* eslint-disable space-before-function-paren, no-underscore-dangle, class-methods-use-this, consistent-return, no-plusplus, prefer-const, space-in-parens, no-shadow, no-param-reassign, max-len, no-unused-vars */
+/* global ListIssue */
+/* global ListLabel */
+
 class List {
   constructor (obj) {
     this.id = obj.id;
@@ -106,9 +109,13 @@ class List {
     });
   }
 
-  addIssue (issue, listFrom) {
+  addIssue (issue, listFrom, newIndex) {
     if (!this.findIssue(issue.id)) {
-      this.issues.push(issue);
+      if (newIndex !== undefined) {
+        this.issues.splice(newIndex, 0, issue);
+      } else {
+        this.issues.push(issue);
+      }
 
       if (this.label) {
         issue.addLabel(this.label);

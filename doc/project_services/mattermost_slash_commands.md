@@ -22,6 +22,9 @@ commands in Mattermost and then enable the service in GitLab.
 
 ### Step 1. Enable custom slash commands in Mattermost
 
+This step is only required when using a source install, omnibus installs will be
+preconfigured with the right settings. 
+
 The first thing to do in Mattermost is to enable custom slash commands from
 the administrator console.
 
@@ -32,8 +35,9 @@ the administrator console.
 
     ---
 
-1. Click **Custom integrations** and set **Enable Custom Slash Commands** to
-   true.
+1. Click **Custom integrations** and set **Enable Custom Slash Commands**, 
+   **Enable custom integrations to override usernames**, and **Override 
+   custom integrations to override profile picture icons** to true
 
     ![Mattermost console](img/mattermost_console_integrations.png)
 
@@ -61,7 +65,7 @@ the administrator console.
 
 ### Step 3. Create a new custom slash command in Mattermost
 
-Now that you have enabled the custom slash commands in Mattermost and opened
+Now that you have enabled custom slash commands in Mattermost and opened
 the Mattermost slash commands service in GitLab, it's time to copy these values
 in a new slash command.
 
@@ -124,20 +128,16 @@ GitLab using the Mattermost commands.
 
 ## Available slash commands
 
-The available slash commands so far are:
+The available slash commands are:
 
 | Command | Description | Example |
 | ------- | ----------- | ------- |
-| `/<trigger> issue create <title>\n<description>` | Create a new issue in the project that `<trigger>` is tied to. `<description>` is optional. | `/trigger issue create We need to change the homepage` |
-| `/<trigger> issue show <issue-number>` | Show the issue with ID `<issue-number>` from the project that `<trigger>` is tied to. | `/trigger issue show 42` |
-| `/<trigger> deploy <environment> to <environment>` | Start the CI job that deploys from one environment to another, for example `staging` to `production`. CI/CD must be [properly configured][ciyaml]. | `/trigger deploy staging to production` |
+| <kbd>/&lt;trigger&gt; issue new &lt;title&gt; <kbd>⇧ Shift</kbd>+<kbd>↵ Enter</kbd> &lt;description&gt;</kbd> | Create a new issue in the project that `<trigger>` is tied to. `<description>` is optional. | <samp>/gitlab issue new We need to change the homepage</samp> |
+| <kbd>/&lt;trigger&gt; issue show &lt;issue-number&gt;</kbd> | Show the issue with ID `<issue-number>` from the project that `<trigger>` is tied to. | <samp>/gitlab issue show 42</samp> |
+| <kbd>/&lt;trigger&gt; deploy &lt;environment&gt; to &lt;environment&gt;</kbd> | Start the CI job that deploys from one environment to another, for example `staging` to `production`. CI/CD must be [properly configured][ciyaml]. | <samp>/gitlab deploy staging to production</samp> |
 
-To see a list of available commands that can interact with GitLab, type the
-trigger word followed by `help`:
-
-```
-/my-project help
-```
+To see a list of available commands to interact with GitLab, type the
+trigger word followed by <kbd>help</kbd>. Example: <samp>/gitlab help</samp>
 
 ![Mattermost bot available commands](img/mattermost_bot_available_commands.png)
 

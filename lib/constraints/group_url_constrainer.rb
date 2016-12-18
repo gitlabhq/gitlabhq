@@ -1,15 +1,17 @@
-require_relative 'constrainer_helper'
-
 class GroupUrlConstrainer
-  include ConstrainerHelper
-
   def matches?(request)
-    id = extract_resource_path(request.path)
+    id = request.params[:id]
 
-    if id =~ Gitlab::Regex.namespace_regex
-      Group.find_by(path: id).present?
-    else
-      false
+    return false unless valid?(id)
+
+    Group.find_by_full_path(id).present?
+  end
+
+  private
+
+  def valid?(id)
+    id.split('/').all? do |namespace|
+      NamespaceValidator.valid?(namespace)
     end
   end
 end

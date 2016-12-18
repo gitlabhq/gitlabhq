@@ -55,7 +55,9 @@ module DiffHelper
     if line.blank?
       "&nbsp;".html_safe
     else
-      line.sub(/^[\-+ ]/, '').html_safe
+      # We can't use `sub` because the HTML-safeness of `line` will not survive.
+      line[0] = '' if line.start_with?('+', '-', ' ')
+      line
     end
   end
 

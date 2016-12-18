@@ -7,5 +7,9 @@
   "rules": {
     "prefer-arrow-callback": 0,
     "func-names": 0
+  },
+  "globals": {
+    "fixture": false,
+    "spyOnEvent": false
   }
 }

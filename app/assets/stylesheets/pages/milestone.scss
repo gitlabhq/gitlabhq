@@ -108,7 +108,7 @@
     margin-top: 7px;
 
     .issuable-number {
-      color: $gl-placeholder-color;
+      color: $gl-gray-light;
       margin-right: 5px;
     }
 
@@ -123,7 +123,7 @@
   padding: 20px 0;
 }
 
-@media (max-width: $screen-sm-min) {
+@media (max-width: $screen-xs-max) {
   .milestone-actions {
     @include clearfix();
     padding-top: $gl-vert-padding;

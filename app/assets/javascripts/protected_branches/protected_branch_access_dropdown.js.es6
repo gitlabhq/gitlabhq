@@ -1,4 +1,5 @@
-/* eslint-disable */
+/* eslint-disable arrow-parens, no-param-reassign, no-irregular-whitespace, object-shorthand, no-else-return, comma-dangle, semi, padded-blocks, max-len */
+
 (global => {
   global.gl = global.gl || {};
 

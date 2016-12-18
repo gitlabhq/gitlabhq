@@ -23,7 +23,7 @@ describe ProjectPolicy, models: true do
       :download_code, :fork_project, :create_project_snippet, :update_issue,
       :admin_issue, :admin_label, :admin_list, :read_commit_status, :read_build,
       :read_container_image, :read_pipeline, :read_environment, :read_deployment,
-      :read_merge_request
+      :read_merge_request, :download_wiki_code
     ]
   end
 
@@ -56,7 +56,8 @@ describe ProjectPolicy, models: true do
   let(:public_permissions) do
     [
       :download_code, :fork_project, :read_commit_status, :read_pipeline,
-      :read_container_image, :build_download_code, :build_read_container_image
+      :read_container_image, :build_download_code, :build_read_container_image,
+      :download_wiki_code
     ]
   end
 
@@ -87,6 +88,15 @@ describe ProjectPolicy, models: true do
     expect(Ability.allowed?(user, :read_issue, project)).to be_falsy
   end
 
+  it 'does not include the wiki permissions when the feature is disabled' do
+    project.project_feature.update_attribute(:wiki_access_level, ProjectFeature::DISABLED)
+    wiki_permissions = [:read_wiki, :create_wiki, :update_wiki, :admin_wiki, :download_wiki_code]
+
+    permissions = described_class.abilities(owner, project).to_set
+
+    expect(permissions).not_to include(*wiki_permissions)
+  end
+
   context 'abilities for non-public projects' do
     let(:project) { create(:empty_project, namespace: owner.namespace) }
 
@@ -101,13 +111,35 @@ describe ProjectPolicy, models: true do
     context 'guests' do
       let(:current_user) { guest }
 
+      let(:reporter_public_build_permissions) do
+        reporter_permissions - [:read_build, :read_pipeline]
+      end
+
       it do
         is_expected.to include(*guest_permissions)
-        is_expected.not_to include(*reporter_permissions)
+        is_expected.not_to include(*reporter_public_build_permissions)
         is_expected.not_to include(*team_member_reporter_permissions)
         is_expected.not_to include(*developer_permissions)
         is_expected.not_to include(*master_permissions)
         is_expected.not_to include(*owner_permissions)
+      end
+
+      context 'public builds enabled' do
+        it do
+          is_expected.to include(*guest_permissions)
+          is_expected.to include(:read_build, :read_pipeline)
+        end
+      end
+
+      context 'public builds disabled' do
+        before do
+          project.update(public_builds: false)
+        end
+
+        it do
+          is_expected.to include(*guest_permissions)
+          is_expected.not_to include(:read_build, :read_pipeline)
+        end
       end
     end
 

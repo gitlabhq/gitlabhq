@@ -23,7 +23,7 @@
 
 .sidebar-wrapper {
   z-index: 1000;
-  background: $background-color;
+  background: $gray-light;
 
   .nicescroll-rails-hr {
     // TODO: Figure out why nicescroll doesn't hide horizontal bar
@@ -36,7 +36,7 @@
   transition: padding $sidebar-transition-duration;
 
   .container-fluid {
-    background: #fff;
+    background: $white-light;
     padding: 0 $gl-padding;
 
     &.container-blank {
@@ -57,11 +57,6 @@
 
   &.navbar-collapse {
     padding: 0 !important;
-  }
-
-  .sidebar-header {
-    padding: 11px 22px 12px;
-    font-size: 20px;
   }
 
   li {
@@ -220,7 +215,7 @@ header.header-sidebar-pinned {
   padding-right: 0;
 
   @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
-    &:not(.build-sidebar) {
+    &:not(.build-sidebar):not(.wiki-sidebar) {
       padding-right: $sidebar_collapsed_width;
     }
   }

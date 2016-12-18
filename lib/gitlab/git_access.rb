@@ -46,7 +46,7 @@ module Gitlab
     def download_access_check
       if user
         user_download_access_check
-      elsif deploy_key.nil? && !Guest.can?(:download_code, project)
+      elsif deploy_key.nil? && !guest_can_downlod_code?
         raise UnauthorizedError, ERROR_MESSAGES[:download]
       end
     end
@@ -57,6 +57,10 @@ module Gitlab
       else
         raise UnauthorizedError, ERROR_MESSAGES[deploy_key ? :deploy_key : :upload]
       end
+    end
+
+    def guest_can_downlod_code?
+      Guest.can?(:download_code, project)
     end
 
     def user_download_access_check

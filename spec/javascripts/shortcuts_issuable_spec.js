@@ -1,12 +1,15 @@
-/* eslint-disable space-before-function-paren, no-return-assign, no-undef, no-var, quotes, padded-blocks, max-len */
+/* eslint-disable space-before-function-paren, no-return-assign, no-var, quotes, padded-blocks */
+/* global ShortcutsIssuable */
 
 /*= require shortcuts_issuable */
 
 (function() {
   describe('ShortcutsIssuable', function() {
-    fixture.preload('issuable.html');
+    var fixtureName = 'issues/open-issue.html.raw';
+    fixture.preload(fixtureName);
     beforeEach(function() {
-      fixture.load('issuable.html');
+      fixture.load(fixtureName);
+      document.querySelector('.js-new-note-form').classList.add('js-main-target-form');
       return this.shortcut = new ShortcutsIssuable();
     });
     return describe('#replyWithSelectedText', function() {

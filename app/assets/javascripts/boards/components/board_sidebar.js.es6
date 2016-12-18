@@ -1,4 +1,10 @@
-/* eslint-disable */
+/* eslint-disable comma-dangle, space-before-function-paren, no-new */
+/* global Vue */
+/* global IssuableContext */
+/* global MilestoneSelect */
+/* global LabelsSelect */
+/* global Sidebar */
+
 (() => {
   const Store = gl.issueBoards.BoardsStore;
 
@@ -47,7 +53,7 @@
       new gl.DueDateSelectors();
       new LabelsSelect();
       new Sidebar();
-      new Subscription('.subscription');
+      gl.Subscription.bindAll('.subscription');
     }
   });
 })();

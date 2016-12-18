@@ -9,7 +9,7 @@
         - if @pipeline && @pipeline.active?
           %span.btn-group
             = button_tag class: "btn btn-create js-merge-button merge_when_build_succeeds" do
-              Merge When Build Succeeds
+              Merge When Pipeline Succeeds
             - unless @project.only_allow_merge_if_build_succeeds?
               = button_tag class: "btn btn-success dropdown-toggle", 'data-toggle' => 'dropdown' do
                 = icon('caret-down')
@@ -19,7 +19,7 @@
                 %li
                   = link_to "#", class: "merge_when_build_succeeds" do
                     = icon('check fw')
-                    Merge When Build Succeeds
+                    Merge When Pipeline Succeeds
                 %li
                   = link_to "#", class: "accept_merge_request" do
                     = icon('warning fw')
@@ -41,6 +41,8 @@
           Modify commit message
     .js-toggle-content.hide.prepend-top-default
       = render 'shared/commit_message_container', params: params,
+          message_with_description: @merge_request.merge_commit_message(include_description: true),
+          message_without_description: @merge_request.merge_commit_message,
           text: @merge_request.merge_commit_message,
           rows: 14, hint: true
 

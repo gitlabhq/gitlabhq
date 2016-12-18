@@ -8,8 +8,10 @@ module Gitlab
     # allow non-regex validatiions, etc), `NAMESPACE_REGEX_STR_SIMPLE` serves as a Javascript-compatible version of
     # `NAMESPACE_REGEX_STR`, with the negative lookbehind assertion removed. This means that the client-side validation
     # will pass for usernames ending in `.atom` and `.git`, but will be caught by the server-side validation.
-    NAMESPACE_REGEX_STR_SIMPLE = '[a-zA-Z0-9_\.][a-zA-Z0-9_\-\.]*[a-zA-Z0-9_\-]|[a-zA-Z0-9_]'.freeze
+    PATH_REGEX_STR = '[a-zA-Z0-9_\.][a-zA-Z0-9_\-\.]*'.freeze
+    NAMESPACE_REGEX_STR_SIMPLE = PATH_REGEX_STR + '[a-zA-Z0-9_\-]|[a-zA-Z0-9_]'.freeze
     NAMESPACE_REGEX_STR = '(?:' + NAMESPACE_REGEX_STR_SIMPLE + ')(?<!\.git|\.atom)'.freeze
+    PROJECT_REGEX_STR = PATH_REGEX_STR + '(?<!\.git|\.atom)'.freeze
 
     def namespace_regex
       @namespace_regex ||= /\A#{NAMESPACE_REGEX_STR}\z/.freeze
@@ -42,7 +44,15 @@ module Gitlab
     end
 
     def project_path_regex
-      @project_path_regex ||= /\A[a-zA-Z0-9_.][a-zA-Z0-9_\-\.]*(?<!\.git|\.atom)\z/.freeze
+      @project_path_regex ||= /\A#{PROJECT_REGEX_STR}\z/.freeze
+    end
+
+    def project_route_regex
+      @project_route_regex ||= /#{PROJECT_REGEX_STR}/.freeze
+    end
+
+    def project_git_route_regex
+      @project_route_git_regex ||= /#{PATH_REGEX_STR}\.git/.freeze
     end
 
     def project_path_regex_message
@@ -51,7 +61,7 @@ module Gitlab
     end
 
     def file_name_regex
-      @file_name_regex ||= /\A[a-zA-Z0-9_\-\.\@]*\z/.freeze
+      @file_name_regex ||= /\A[[[:alnum:]]_\-\.\@]*\z/.freeze
     end
 
     def file_name_regex_message
@@ -59,7 +69,7 @@ module Gitlab
     end
 
     def file_path_regex
-      @file_path_regex ||= /\A[a-zA-Z0-9_\-\.\/\@]*\z/.freeze
+      @file_path_regex ||= /\A[[[:alnum:]]_\-\.\/\@]*\z/.freeze
     end
 
     def file_path_regex_message
@@ -112,6 +122,23 @@ module Gitlab
 
     def environment_name_regex_message
       "can contain only letters, digits, '-', '_', '/', '$', '{', '}', '.' and spaces"
+    end
+
+    def kubernetes_namespace_regex
+      /\A[a-z0-9]([-a-z0-9]*[a-z0-9])?\z/
+    end
+
+    def kubernetes_namespace_regex_message
+      "can contain only letters, digits or '-', and cannot start or end with '-'"
+    end
+
+    def environment_slug_regex
+      @environment_slug_regex ||= /\A[a-z]([a-z0-9-]*[a-z0-9])?\z/.freeze
+    end
+
+    def environment_slug_regex_message
+      "can contain only lowercase letters, digits, and '-'. " \
+      "Must start with a letter, and cannot end with '-'"
     end
   end
 end

@@ -111,16 +111,16 @@
           %span.label.label-primary
             = tag
 
-    - if @build.pipeline.stages.many?
+    - if @build.pipeline.stages_count > 1
       .dropdown.build-dropdown
         .title Stage
         %button.dropdown-menu-toggle{type: 'button', 'data-toggle' => 'dropdown'}
           %span.stage-selection More
-          = icon('caret-down')
+          = icon('chevron-down')
         %ul.dropdown-menu
           - @build.pipeline.stages.each do |stage|
             %li
-              %a.stage-item= stage
+              %a.stage-item= stage.name
 
   .builds-container
     - HasStatus::ORDERED_STATUSES.each do |build_status|
@@ -128,7 +128,8 @@
         .build-job{class: sidebar_build_class(build, @build), data: {stage: build.stage}}
           = link_to namespace_project_build_path(@project.namespace, @project, build) do
             = icon('arrow-right')
-            = ci_icon_for_status(build.status)
+            %span{class: "ci-status-icon-#{build.status}"}
+              = ci_icon_for_status(build.status)
             %span
               - if build.name
                 = build.name

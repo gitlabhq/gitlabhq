@@ -1,5 +1,7 @@
 module API
   class Groups < Grape::API
+    include PaginationParams
+
     before { authenticate! }
 
     helpers do
@@ -21,6 +23,7 @@ module API
         optional :search, type: String, desc: 'Search for a specific group'
         optional :order_by, type: String, values: %w[name path], default: 'name', desc: 'Order by name or path'
         optional :sort, type: String, values: %w[asc desc], default: 'asc', desc: 'Sort by asc (ascending) or desc (descending)'
+        use :pagination
       end
       get do
         groups = if current_user.admin
@@ -33,13 +36,16 @@ module API
 
         groups = groups.search(params[:search]) if params[:search].present?
         groups = groups.where.not(id: params[:skip_groups]) if params[:skip_groups].present?
-        groups = groups.reorder(params[:order_by] => params[:sort].to_sym)
+        groups = groups.reorder(params[:order_by] => params[:sort])
 
         present paginate(groups), with: Entities::Group
       end
 
       desc 'Get list of owned groups for authenticated user' do
         success Entities::Group
+      end
+      params do
+        use :pagination
       end
       get '/owned' do
         groups = current_user.owned_groups
@@ -82,7 +88,7 @@ module API
                         :lfs_enabled, :request_access_enabled
       end
       put ':id' do
-        group = find_group(params[:id])
+        group = find_group!(params[:id])
         authorize! :admin_group, group
 
         if ::Groups::UpdateService.new(group, current_user, declared_params(include_missing: false)).execute
@@ -96,13 +102,13 @@ module API
         success Entities::GroupDetail
       end
       get ":id" do
-        group = find_group(params[:id])
+        group = find_group!(params[:id])
         present group, with: Entities::GroupDetail
       end
 
       desc 'Remove a group.'
       delete ":id" do
-        group = find_group(params[:id])
+        group = find_group!(params[:id])
         authorize! :admin_group, group
         DestroyGroupService.new(group, current_user).execute
       end
@@ -110,11 +116,25 @@ module API
       desc 'Get a list of projects in this group.' do
         success Entities::Project
       end
+      params do
+        optional :archived, type: Boolean, default: false, desc: 'Limit by archived status'
+        optional :visibility, type: String, values: %w[public internal private],
+                              desc: 'Limit by visibility'
+        optional :search, type: String, desc: 'Return list of authorized projects matching the search criteria'
+        optional :order_by, type: String, values: %w[id name path created_at updated_at last_activity_at],
+                            default: 'created_at', desc: 'Return projects ordered by field'
+        optional :sort, type: String, values: %w[asc desc], default: 'desc',
+                        desc: 'Return projects sorted in ascending and descending order'
+        optional :simple, type: Boolean, default: false,
+                          desc: 'Return only the ID, URL, name, and path of each project'
+        use :pagination
+      end
       get ":id/projects" do
-        group = find_group(params[:id])
+        group = find_group!(params[:id])
         projects = GroupProjectsFinder.new(group).execute(current_user)
-        projects = paginate projects
-        present projects, with: Entities::Project, user: current_user
+        projects = filter_projects(projects)
+        entity = params[:simple] ? Entities::BasicProjectDetails : Entities::Project
+        present paginate(projects), with: entity, user: current_user
       end
 
       desc 'Transfer a project to the group namespace. Available only for admin.' do

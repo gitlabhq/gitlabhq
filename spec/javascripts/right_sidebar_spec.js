@@ -1,4 +1,5 @@
-/* eslint-disable space-before-function-paren, no-var, one-var, one-var-declaration-per-line, new-parens, no-undef, no-return-assign, new-cap, vars-on-top, semi, padded-blocks, max-len */
+/* eslint-disable space-before-function-paren, no-var, one-var, one-var-declaration-per-line, new-parens, no-return-assign, new-cap, vars-on-top, semi, padded-blocks, max-len */
+/* global Sidebar */
 
 /*= require right_sidebar */
 /*= require jquery */
@@ -34,9 +35,10 @@
   };
 
   describe('RightSidebar', function() {
-    fixture.preload('right_sidebar.html');
+    var fixtureName = 'issues/open-issue.html.raw';
+    fixture.preload(fixtureName);
     beforeEach(function() {
-      fixture.load('right_sidebar.html');
+      fixture.load(fixtureName);
       this.sidebar = new Sidebar;
       $aside = $('.right-sidebar');
       $page = $('.page-with-sidebar');
@@ -44,15 +46,12 @@
       $toggle = $aside.find('.js-sidebar-toggle');
       return $labelsIcon = $aside.find('.sidebar-collapsed-icon');
     });
-    it('should expand the sidebar when arrow is clicked', function() {
-      $toggle.click();
-      return assertSidebarState('expanded');
-    });
-    it('should collapse the sidebar when arrow is clicked', function() {
-      $toggle.click();
+    it('should expand/collapse the sidebar when arrow is clicked', function() {
       assertSidebarState('expanded');
       $toggle.click();
-      return assertSidebarState('collapsed');
+      assertSidebarState('collapsed');
+      $toggle.click();
+      assertSidebarState('expanded');
     });
     it('should float over the page and when sidebar icons clicked', function() {
       $labelsIcon.click();

@@ -7,9 +7,9 @@
 
 .commit-header {
   padding: 5px 10px;
-  background-color: $background-color;
-  border-top: 1px solid #eee;
-  border-bottom: 1px solid #eee;
+  background-color: $gray-light;
+  border-top: 1px solid $gray-darker;
+  border-bottom: 1px solid $gray-darker;
   font-size: 14px;
 
   &:first-child {
@@ -38,7 +38,7 @@
 .text-expander {
   display: inline-block;
   background: $gray-light;
-  color: $gl-placeholder-color;
+  color: $gl-gray-light;
   padding: 0 5px;
   cursor: pointer;
   border: 1px solid $border-gray-dark;
@@ -94,7 +94,7 @@
   }
 
   &:not(:last-child) {
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid $gray-darker;
   }
 
   a,
@@ -117,7 +117,7 @@
 
   .commit-row-description {
     font-size: 14px;
-    border-left: 1px solid $btn-gray-hover;
+    border-left: 1px solid $white-normal;
     padding: 10px 15px;
     margin: 10px 0;
     background: $gray-light;
@@ -174,7 +174,7 @@
       height: 14px;
       width: 14px;
       vertical-align: middle;
-      fill: $table-text-gray;
+      fill: $gl-gray-light;
     }
   }
 
@@ -201,7 +201,7 @@
     .bar {
       position: absolute;
       height: 4px;
-      background-color: #ccc;
+      background-color: $divergence-graph-bar-bg;
     }
 
     .bar-behind {
@@ -218,7 +218,7 @@
       padding-top: 6px;
       padding-bottom: 0;
       font-size: 12px;
-      color: #333;
+      color: $gl-title-color;
       display: block;
     }
 
@@ -239,6 +239,6 @@
     height: 18px;
     margin: 5px 0 0;
     float: left;
-    background-color: #ccc;
+    background-color: $divergence-graph-separator-bg;
   }
 }

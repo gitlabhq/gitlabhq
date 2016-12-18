@@ -1,8 +1,9 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, one-var, one-var-declaration-per-line, consistent-return, no-param-reassign, padded-blocks, no-undef, max-len */
+/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, one-var, one-var-declaration-per-line, consistent-return, no-param-reassign, padded-blocks, max-len */
+
 (function() {
   var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  this.SingleFileDiff = (function() {
+  window.SingleFileDiff = (function() {
     var COLLAPSED_HTML, ERROR_HTML, LOADING_HTML, WRAPPER;
 
     WRAPPER = '<div class="diff-content diff-wrap-lines"></div>';
@@ -14,6 +15,7 @@
     COLLAPSED_HTML = '<div class="nothing-here-block diff-collapsed">This diff is collapsed. <a class="click-to-expand">Click to expand it.</a></div>';
 
     function SingleFileDiff(file, forceLoad, cb) {
+      var clickTarget;
       this.file = file;
       this.toggleDiff = bind(this.toggleDiff, this);
       this.content = $('.diff-content', this.file);
@@ -31,9 +33,9 @@
         this.content.after(this.collapsedContent);
         this.$toggleIcon.addClass('fa-caret-down');
       }
-      $('.file-title, .click-to-expand', this.file).on('click', this.toggleDiff);
+      clickTarget = $('.file-title, .click-to-expand', this.file).on('click', this.toggleDiff);
       if (forceLoad) {
-        this.toggleDiff(null, cb);
+        this.toggleDiff({ target: clickTarget }, cb);
       }
     }
 
@@ -92,7 +94,7 @@
   $.fn.singleFileDiff = function(forceLoad, cb) {
     return this.each(function() {
       if (!$.data(this, 'singleFileDiff') || forceLoad) {
-        return $.data(this, 'singleFileDiff', new SingleFileDiff(this, forceLoad, cb));
+        return $.data(this, 'singleFileDiff', new window.SingleFileDiff(this, forceLoad, cb));
       }
     });
   };

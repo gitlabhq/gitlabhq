@@ -7,9 +7,9 @@ input {
 }
 
 input[type='text'].danger {
-  background: #f2dede!important;
-  border-color: #d66;
-  text-shadow: 0 1px 1px #fff;
+  background: $input-danger-bg !important;
+  border-color: $input-danger-border;
+  text-shadow: 0 1px 1px $white-light;
 }
 
 .datetime-controls {
@@ -22,7 +22,7 @@ input[type='text'].danger {
   margin-top: 0;
   margin-bottom: -$gl-padding;
   padding: $gl-padding;
-  background-color: $background-color;
+  background-color: $gray-light;
   border-top: 1px solid $border-color;
 }
 
@@ -98,7 +98,7 @@ label {
     }
   }
 
-  @media(max-width: $screen-sm-min) {
+  @media(max-width: $screen-xs-max) {
     padding: 0 $gl-padding;
 
     .control-label,
@@ -149,7 +149,7 @@ label {
 }
 
 .form-control::-webkit-input-placeholder {
-  color: $gl-placeholder-color;
+  color: $gl-gray-light;
 }
 
 .input-group {
@@ -159,7 +159,7 @@ label {
   }
 
   .input-group-addon {
-    background-color: #f7f8fa;
+    background-color: $input-group-addon-bg;
   }
 
   .input-group-addon:not(:first-child):not(:last-child) {
@@ -181,7 +181,7 @@ label {
     border: 1px solid $green-normal;
 
     &:focus {
-      box-shadow: 0 0 0 1px $green-normal inset, 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 4px 0 $green-normal;
+      box-shadow: 0 0 0 1px $green-normal inset, 0 1px 1px $gl-field-focus-shadow inset, 0 0 4px 0 $green-normal;
       border: 0 none;
     }
   }
@@ -190,7 +190,7 @@ label {
     border: 1px solid $red-normal;
 
     &:focus {
-      box-shadow: 0 0 0 1px $red-normal inset, 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 4px 0 rgba(210, 40, 82, 0.6);
+      box-shadow: 0 0 0 1px $red-normal inset, 0 1px 1px $gl-field-focus-shadow inset, 0 0 4px 0 $gl-field-focus-shadow-error;
       border: 0 none;
     }
   }

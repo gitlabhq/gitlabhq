@@ -158,7 +158,7 @@ class ChangelogEntry
   end
 
   def branch_name
-    @branch_name ||= %x{git symbolic-ref HEAD}.strip.sub(%r{\Arefs/heads/}, '')
+    @branch_name ||= %x{git symbolic-ref --short HEAD}.strip
   end
 end
 

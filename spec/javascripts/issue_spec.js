@@ -1,4 +1,5 @@
-/* eslint-disable space-before-function-paren, no-var, one-var, one-var-declaration-per-line, no-use-before-define, indent, no-undef, no-trailing-spaces, comma-dangle, padded-blocks, max-len */
+/* eslint-disable space-before-function-paren, no-var, one-var, one-var-declaration-per-line, no-use-before-define, indent, no-trailing-spaces, comma-dangle, padded-blocks, max-len */
+/* global Issue */
 
 /*= require lib/utils/text_utility */
 /*= require issue */
@@ -70,11 +71,11 @@
         $('input[type=checkbox]').attr('checked', true).trigger('change');
         expect($('.js-task-list-field').val()).toBe('- [x] Task List Item');
       });
-      
+
       it('submits an ajax request on tasklist:changed', function() {
         spyOn(jQuery, 'ajax').and.callFake(function(req) {
           expect(req.type).toBe('PATCH');
-          expect(req.url).toBe('https://fixture.invalid/namespace3/project3/issues/1.json');
+          expect(req.url).toBe(gl.TEST_HOST + '/frontend-fixtures/issues-project/issues/1.json'); // eslint-disable-line prefer-template
           expect(req.data.issue.description).not.toBe(null);
         });
 

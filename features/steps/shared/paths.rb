@@ -168,7 +168,7 @@ module SharedPaths
   end
 
   step 'I visit admin projects page' do
-    visit admin_namespaces_projects_path
+    visit admin_projects_path
   end
 
   step 'I visit admin users page' do
@@ -201,10 +201,6 @@ module SharedPaths
 
   step 'I visit admin teams page' do
     visit admin_teams_path
-  end
-
-  step 'I visit admin settings page' do
-    visit admin_application_settings_path
   end
 
   step 'I visit spam logs page' do

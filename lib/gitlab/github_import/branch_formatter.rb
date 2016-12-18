@@ -8,7 +8,7 @@ module Gitlab
       end
 
       def valid?
-        repo.present?
+        sha.present? && ref.present?
       end
 
       private

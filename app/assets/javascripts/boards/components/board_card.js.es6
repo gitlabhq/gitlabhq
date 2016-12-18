@@ -1,4 +1,6 @@
-/* eslint-disable */
+/* eslint-disable comma-dangle, space-before-function-paren, dot-notation */
+/* global Vue */
+
 (() => {
   const Store = gl.issueBoards.BoardsStore;
 
@@ -53,6 +55,9 @@
       },
       mouseDown () {
         this.showDetail = true;
+      },
+      mouseMove() {
+        this.showDetail = false;
       },
       showIssue (e) {
         const targetTagName = e.target.tagName.toLowerCase();

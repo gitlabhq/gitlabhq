@@ -52,7 +52,7 @@ module ProjectsHelper
   def project_title(project)
     namespace_link =
       if project.group
-        link_to(simple_sanitize(project.group.name), group_path(project.group))
+        group_title(project.group)
       else
         owner = project.namespace.owner
         link_to(simple_sanitize(owner.name), user_path(owner))
@@ -389,20 +389,6 @@ module ProjectsHelper
     when "finished"
       "success"
     end
-  end
-
-  def new_readme_path
-    ref = @repository.root_ref if @repository
-    ref ||= 'master'
-
-    namespace_project_new_blob_path(@project.namespace, @project, tree_join(ref), file_name: 'README.md')
-  end
-
-  def new_license_path
-    ref = @repository.root_ref if @repository
-    ref ||= 'master'
-
-    namespace_project_new_blob_path(@project.namespace, @project, tree_join(ref), file_name: 'LICENSE')
   end
 
   def readme_cache_key

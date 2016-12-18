@@ -1,4 +1,5 @@
-/* eslint-disable */
+/* eslint-disable indent, comma-dangle, object-shorthand, func-names, space-before-function-paren, arrow-parens, no-unused-vars, class-methods-use-this, no-var, consistent-return, prefer-const, no-param-reassign, space-in-parens, max-len */
+
 ((global) => {
     class TemplateSelector {
       constructor({ dropdown, data, pattern, wrapper, editor, fileEndpoint, $input } = {}) {
@@ -70,6 +71,8 @@
       // e.g.
       // Api.gitignoreText item.name, @requestFileSuccess.bind(@)
       requestFileSuccess(file, { skipFocus } = {}) {
+        if (!file) return;
+
         const oldValue = this.editor.getValue();
         let newValue = file.content;
 

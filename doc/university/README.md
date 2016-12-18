@@ -5,7 +5,7 @@ GitLab University is the best place to learn about **Version Control with Git an
 It doesn't replace, but accompanies our great [Documentation](https://docs.gitlab.com)
 and [Blog Articles](https://about.gitlab.com/blog/).
 
-Would you like to contribute to GitLab University? Then please take a look at our contribution [process](/process) for more information.
+Would you like to contribute to GitLab University? Then please take a look at our contribution [process](process) for more information.
 
 ## Gitlab University Curriculum
 
@@ -19,7 +19,7 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 
 ---
 
-### 1. <a name="beginner"></a> GitLab Beginner
+### 1. GitLab Beginner
 
 #### 1.1. Version Control and Git
 
@@ -85,7 +85,7 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 
 ---
 
-### 2. <a name="intermediate"></a> GitLab Intermediate
+### 2. GitLab Intermediate
 
 #### 2.1 GitLab Pages
 
@@ -97,7 +97,7 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 
 1. [Markdown in GitLab](../user/markdown.md)
 1. [Issues and Merge Requests - Video](https://www.youtube.com/watch?v=raXvuwet78M)
-1. [Due Dates and Milestones fro GitLab Issues](https://about.gitlab.com/2016/08/05/feature-highlight-set-dates-for-issues/)
+1. [Due Dates and Milestones for GitLab Issues](https://about.gitlab.com/2016/08/05/feature-highlight-set-dates-for-issues/)
 1. [How to Use GitLab Labels](https://about.gitlab.com/2016/08/17/using-gitlab-labels/)
 1. [Applying GitLab Labels Automatically](https://about.gitlab.com/2016/08/19/applying-gitlab-labels-automatically/)
 1. [GitLab Issue Board - Product Page](https://about.gitlab.com/solutions/issueboard/)
@@ -141,13 +141,13 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 
 ---
 
-### 3. <a name="advanced"></a> GitLab Advanced
+### 3. GitLab Advanced
 
 #### 3.1. Dev Ops
 
 1. [Xebia Labs: Dev Ops Terminology](https://xebialabs.com/glossary/)
 1. [Xebia Labs: Periodic Table of DevOps Tools](https://xebialabs.com/periodic-table-of-devops-tools/)
-1. [Puppet Labs: State of Dev Ops 2015 - Book](https://puppetlabs.com/sites/default/files/2015-state-of-devops-report.pdf)
+1. [Puppet Labs: State of Dev Ops 2016 - Book](https://puppet.com/resources/white-paper/2016-state-of-devops-report)
 
 #### 3.2. Installing GitLab with Omnibus
 
@@ -173,7 +173,7 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 
 #### 3.6 Custom Languages
 
-1. [How to add Syntax Highlighting Support for Custom Langauges to GitLab - Video](how to add support for your favorite language to GitLab)
+1. [How to add Syntax Highlighting Support for Custom Languages to GitLab - Video](https://youtu.be/6WxTMqatrrA)
 
 #### 3.7. Scalability and High Availability
 
@@ -186,7 +186,7 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 1. [GitLab Cycle Analytics Overview](https://about.gitlab.com/2016/09/21/cycle-analytics-feature-highlight/)
 1. [GitLab Cycle Analytics - Product Page](https://about.gitlab.com/solutions/cycle-analytics/)
 
-#### 3.9. <a name="integrations"></a> Integrations
+#### 3.9. Integrations
 
 1. [How to Integrate JIRA and Jenkins with GitLab - Video](https://gitlabmeetings.webex.com/gitlabmeetings/ldr.php?RCID=44b548147a67ab4d8a62274047146415)
 1. [How to Integrate Jira with GitLab](https://docs.gitlab.com/ee/integration/jira.html)
@@ -198,7 +198,7 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 
 ---
 
-## 4. <a name="external"></a>  External Articles
+### 4. External Articles
 
 1. [2011 WSJ article by Marc Andreessen - Software is Eating the World](http://www.wsj.com/articles/SB10001424053111903480904576512250915629460)
 1. [2014 Blog post by Chris Dixon - Software eats software development](http://cdixon.org/2014/04/13/software-eats-software-development/)
@@ -206,7 +206,7 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 
 ---
 
-## 5. <a name="team"></a> Resources for GitLab Team Members
+### 5. Resources for GitLab Team Members
 
 *Some content can only be accessed by GitLab team members*
 

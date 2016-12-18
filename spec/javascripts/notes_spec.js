@@ -1,4 +1,6 @@
-/* eslint-disable space-before-function-paren, no-unused-expressions, no-undef, no-var, object-shorthand, comma-dangle, semi, padded-blocks, max-len */
+/* eslint-disable space-before-function-paren, no-unused-expressions, no-var, object-shorthand, comma-dangle, semi, padded-blocks, max-len */
+/* global Notes */
+
 /*= require notes */
 /*= require autosize */
 /*= require gl_form */
@@ -6,17 +8,21 @@
 
 (function() {
   window.gon || (window.gon = {});
-
-  window.disableButtonIfEmptyField = function() {
-    return null;
-  };
+  window.gl = window.gl || {};
+  gl.utils = gl.utils || {};
 
   describe('Notes', function() {
-    describe('task lists', function() {
-      fixture.preload('issue_note.html');
+    var commentsTemplate = 'issues/issue_with_comment.raw';
+    fixture.preload(commentsTemplate);
 
+    beforeEach(function () {
+      fixture.load(commentsTemplate);
+      gl.utils.disableButtonIfEmptyField = _.noop;
+      window.project_uploads_path = 'http://test.host/uploads';
+    });
+
+    describe('task lists', function() {
       beforeEach(function() {
-        fixture.load('issue_note.html');
         $('form').on('submit', function(e) {
           e.preventDefault();
         });
@@ -41,12 +47,9 @@
     });
 
     describe('comments', function() {
-      var commentsTemplate = 'comments.html';
       var textarea = '.js-note-text';
-      fixture.preload(commentsTemplate);
 
       beforeEach(function() {
-        fixture.load(commentsTemplate);
         this.notes = new Notes();
 
         this.autoSizeSpy = spyOnEvent($(textarea), 'autosize:update');

@@ -112,6 +112,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :koding_enabled,
       :koding_url,
       :email_author_in_body,
+      :html_emails_enabled,
       :repository_checks_enabled,
       :metrics_packet_size,
       :send_user_confirmation_email,

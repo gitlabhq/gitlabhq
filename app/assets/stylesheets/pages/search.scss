@@ -51,9 +51,9 @@
     border-radius: $border-radius-default;
     font-size: 14px;
     font-style: normal;
-    color: $location-badge-color;
+    color: $note-disabled-comment-color;
     display: inline-block;
-    background-color: $location-badge-bg;
+    background-color: $gray-normal;
     vertical-align: top;
     cursor: default;
   }
@@ -140,7 +140,7 @@
 
     .search-input-wrap {
       i {
-        color: $location-icon-active-color;
+        color: $layout-link-gray;
       }
     }
   }

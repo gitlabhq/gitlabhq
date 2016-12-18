@@ -4,14 +4,14 @@ describe AutocompleteController do
   let!(:project) { create(:project) }
   let!(:user) { create(:user) }
 
-  context 'users and members' do
+  context 'GET users' do
     let!(:user2) { create(:user) }
     let!(:non_member) { create(:user) }
 
     context 'project members' do
       before do
         sign_in(user)
-        project.team << [user, :master]
+        project.add_master(user)
       end
 
       describe 'GET #users with project ID' do
@@ -69,7 +69,7 @@ describe AutocompleteController do
 
       before do
         sign_in(non_member)
-        project.team << [user, :master]
+        project.add_master(user)
       end
 
       let(:body) { JSON.parse(response.body) }
@@ -103,7 +103,7 @@ describe AutocompleteController do
 
       describe 'GET #users with public project' do
         before do
-          public_project.team << [user, :guest]
+          public_project.add_guest(user)
           get(:users, project_id: public_project.id)
         end
 
@@ -129,7 +129,7 @@ describe AutocompleteController do
 
       describe 'GET #users with inaccessible group' do
         before do
-          project.team << [user, :guest]
+          project.add_guest(user)
           get(:users, group_id: user.namespace.id)
         end
 
@@ -143,6 +143,15 @@ describe AutocompleteController do
 
         it { expect(body).to be_kind_of(Array) }
         it { expect(body.size).to eq 0 }
+      end
+
+      describe 'GET #users with todo filter' do
+        it 'gives an array of users' do
+          get :users, todo_filter: true
+
+          expect(response.status).to eq 200
+          expect(body).to be_kind_of(Array)
+        end
       end
     end
 
@@ -180,18 +189,18 @@ describe AutocompleteController do
     end
   end
 
-  context 'projects' do
+  context 'GET projects' do
     let(:authorized_project) { create(:project) }
     let(:authorized_search_project) { create(:project, name: 'rugged') }
 
     before do
       sign_in(user)
-      project.team << [user, :master]
+      project.add_master(user)
     end
 
     context 'authorized projects' do
       before do
-        authorized_project.team << [user, :master]
+        authorized_project.add_master(user)
       end
 
       describe 'GET #projects with project ID' do
@@ -216,8 +225,8 @@ describe AutocompleteController do
 
     context 'authorized projects and search' do
       before do
-        authorized_project.team << [user, :master]
-        authorized_search_project.team << [user, :master]
+        authorized_project.add_master(user)
+        authorized_search_project.add_master(user)
       end
 
       describe 'GET #projects with project ID and search' do
@@ -242,9 +251,9 @@ describe AutocompleteController do
         authorized_project2 = create(:project)
         authorized_project3 = create(:project)
 
-        authorized_project.team << [user, :master]
-        authorized_project2.team << [user, :master]
-        authorized_project3.team << [user, :master]
+        authorized_project.add_master(user)
+        authorized_project2.add_master(user)
+        authorized_project3.add_master(user)
 
         stub_const 'MoveToProjectFinder::PAGE_SIZE', 2
       end
@@ -268,9 +277,9 @@ describe AutocompleteController do
         authorized_project2 = create(:project)
         authorized_project3 = create(:project)
 
-        authorized_project.team << [user, :master]
-        authorized_project2.team << [user, :master]
-        authorized_project3.team << [user, :master]
+        authorized_project.add_master(user)
+        authorized_project2.add_master(user)
+        authorized_project3.add_master(user)
       end
 
       describe 'GET #projects with project ID and offset_id' do
@@ -289,7 +298,7 @@ describe AutocompleteController do
 
     context 'authorized projects without admin_issue ability' do
       before(:each) do
-        authorized_project.team << [user, :guest]
+        authorized_project.add_guest(user)
 
         expect(user.can?(:admin_issue, authorized_project)).to eq(false)
       end

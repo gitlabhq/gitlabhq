@@ -32,6 +32,7 @@
                 an outdated diff
 
             = time_ago_with_tooltip(discussion.created_at, placement: "bottom", html_class: "note-created-ago")
+          = render "discussions/headline", discussion: discussion
 
         .discussion-body.js-toggle-content{ class: ("hide" unless expanded) }
           - if discussion.diff_discussion? && discussion.diff_file

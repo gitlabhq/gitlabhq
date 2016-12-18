@@ -14,16 +14,18 @@ module Banzai
 
       def self.references_in(text, pattern = Label.reference_pattern)
         unescape_html_entities(text).gsub(pattern) do |match|
-          yield match, $~[:label_id].to_i, $~[:label_name], $~[:project], $~
+          yield match, $~[:label_id].to_i, $~[:label_name], $~[:project], $~[:namespace], $~
         end
       end
 
       def references_in(text, pattern = Label.reference_pattern)
         unescape_html_entities(text).gsub(pattern) do |match|
-          label = find_label($~[:project], $~[:label_id], $~[:label_name])
+          namespace, project = $~[:namespace], $~[:project]
+          project_path = full_project_path(namespace, project)
+          label = find_label(project_path, $~[:label_id], $~[:label_name])
 
           if label
-            yield match, label.id, $~[:project], $~
+            yield match, label.id, project, namespace, $~
           else
             match
           end
@@ -64,48 +66,12 @@ module Banzai
       end
 
       def object_link_text(object, matches)
-        if same_group?(object) && namespace_match?(matches)
-          render_same_project_label(object)
-        elsif same_project?(object)
-          render_same_project_label(object)
-        else
-          render_cross_project_label(object, matches)
-        end
-      end
+        project_path     = full_project_path(matches[:namespace], matches[:project])
+        project_from_ref = project_from_ref_cached(project_path)
+        reference        = project_from_ref.to_human_reference(project)
+        label_suffix     = " <i>in #{reference}</i>" if reference.present?
 
-      def same_group?(object)
-        object.is_a?(GroupLabel) && object.group == project.group
-      end
-
-      def namespace_match?(matches)
-        matches[:project].blank? || matches[:project] == project.path_with_namespace
-      end
-
-      def same_project?(object)
-        object.is_a?(ProjectLabel) && object.project == project
-      end
-
-      def user
-        context[:current_user] || context[:author]
-      end
-
-      def project
-        context[:project]
-      end
-
-      def render_same_project_label(object)
-        LabelsHelper.render_colored_label(object)
-      end
-
-      def render_cross_project_label(object, matches)
-        source_project =
-          if matches[:project]
-            Project.find_with_namespace(matches[:project])
-          else
-            object.project
-          end
-
-        LabelsHelper.render_colored_cross_project_label(object, source_project)
+        LabelsHelper.render_colored_label(object, label_suffix)
       end
 
       def unescape_html_entities(text)

@@ -178,6 +178,8 @@ class User < ActiveRecord::Base
   scope :not_in_project, ->(project) { project.users.present? ? where("id not in (:ids)", ids: project.users.map(&:id) ) : all }
   scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM members WHERE user_id IS NOT NULL AND requested_at IS NULL)') }
   scope :todo_authors, ->(user_id, state) { where(id: Todo.where(user_id: user_id, state: state).select(:author_id)) }
+  scope :order_recent_sign_in, -> { reorder(last_sign_in_at: :desc) }
+  scope :order_oldest_sign_in, -> { reorder(last_sign_in_at: :asc) }
 
   def self.with_two_factor
     joins("LEFT OUTER JOIN u2f_registrations AS u2f ON u2f.user_id = users.id").
@@ -205,8 +207,8 @@ class User < ActiveRecord::Base
 
     def sort(method)
       case method.to_s
-      when 'recent_sign_in' then reorder(last_sign_in_at: :desc)
-      when 'oldest_sign_in' then reorder(last_sign_in_at: :asc)
+      when 'recent_sign_in' then order_recent_sign_in
+      when 'oldest_sign_in' then order_oldest_sign_in
       else
         order_by(method)
       end
@@ -291,17 +293,17 @@ class User < ActiveRecord::Base
       end
     end
 
+    def find_by_username(username)
+      iwhere(username: username).take
+    end
+
     def find_by_username!(username)
-      find_by!('lower(username) = ?', username.downcase)
+      iwhere(username: username).take!
     end
 
     def find_by_personal_access_token(token_string)
       personal_access_token = PersonalAccessToken.active.find_by_token(token_string) if token_string
       personal_access_token.user if personal_access_token
-    end
-
-    def by_username_or_id(name_or_id)
-      find_by('users.username = ? OR users.id = ?', name_or_id.to_s, name_or_id.to_i)
     end
 
     # Returns a user for the given SSH key.
@@ -390,7 +392,7 @@ class User < ActiveRecord::Base
   def namespace_uniq
     # Return early if username already failed the first uniqueness validation
     return if errors.key?(:username) &&
-      errors[:username].include?('has already been taken')
+        errors[:username].include?('has already been taken')
 
     existing_namespace = Namespace.by_path(username)
     if existing_namespace && existing_namespace != namespace
@@ -441,27 +443,21 @@ class User < ActiveRecord::Base
   end
 
   def refresh_authorized_projects
-    loop do
-      begin
-        Gitlab::Database.serialized_transaction do
-          project_authorizations.delete_all
+    transaction do
+      project_authorizations.delete_all
 
-          # project_authorizations_union can return multiple records for the same project/user with
-          # different access_level so we take row with the maximum access_level
-          project_authorizations.connection.execute <<-SQL
-            INSERT INTO project_authorizations (user_id, project_id, access_level)
-            SELECT user_id, project_id, MAX(access_level) AS access_level
-            FROM (#{project_authorizations_union.to_sql}) sub
-            GROUP BY user_id, project_id
-          SQL
+      # project_authorizations_union can return multiple records for the same
+      # project/user with different access_level so we take row with the maximum
+      # access_level
+      project_authorizations.connection.execute <<-SQL
+      INSERT INTO project_authorizations (user_id, project_id, access_level)
+      SELECT user_id, project_id, MAX(access_level) AS access_level
+      FROM (#{project_authorizations_union.to_sql}) sub
+      GROUP BY user_id, project_id
+      SQL
 
-          update_column(:authorized_projects_populated, true) unless authorized_projects_populated
-        end
-
-        break
-      # In the event of a concurrent modification Rails raises StatementInvalid.
-      # In this case we want to keep retrying until the transaction succeeds
-      rescue ActiveRecord::StatementInvalid
+      unless authorized_projects_populated
+        update_column(:authorized_projects_populated, true)
       end
     end
   end
@@ -514,7 +510,7 @@ class User < ActiveRecord::Base
   end
 
   def require_ssh_key?
-    keys.count == 0
+    keys.count == 0 && Gitlab::ProtocolAccess.allowed?('ssh')
   end
 
   def require_password?
@@ -702,20 +698,6 @@ class User < ActiveRecord::Base
   def can_leave_project?(project)
     project.namespace != namespace &&
       project.project_member(self)
-  end
-
-  # Reset project events cache related to this user
-  #
-  # Since we do cache @event we need to reset cache in special cases:
-  # * when the user changes their avatar
-  # Events cache stored like  events/23-20130109142513.
-  # The cache key includes updated_at timestamp.
-  # Thus it will automatically generate a new fragment
-  # when the event is updated because the key changes.
-  def reset_events_cache
-    Event.where(author_id: id).
-      order('id DESC').limit(1000).
-      update_all(updated_at: Time.now)
   end
 
   def full_website_url
@@ -926,7 +908,7 @@ class User < ActiveRecord::Base
   # Returns a union query of projects that the user is authorized to access
   def project_authorizations_union
     relations = [
-      personal_projects.select("#{id} AS user_id, projects.id AS project_id, #{Gitlab::Access::OWNER} AS access_level"),
+      personal_projects.select("#{id} AS user_id, projects.id AS project_id, #{Gitlab::Access::MASTER} AS access_level"),
       groups_projects.select_for_project_authorization,
       projects.select_for_project_authorization,
       groups.joins(:shared_projects).select_for_project_authorization

@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe EmailsOnPushWorker do
   include RepoHelpers
+  include EmailHelpers
   include EmailSpec::Matchers
 
   let(:project) { create(:project) }

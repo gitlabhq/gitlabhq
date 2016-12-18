@@ -1,7 +1,7 @@
 # GitLab
 
 [![Build status](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/build.svg)](https://gitlab.com/gitlab-org/gitlab-ce/commits/master)
-[![CE coverage report](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/coverage.svg?job=coverage)](http://gitlab-org.gitlab.io/gitlab-ce/coverage-ruby)
+[![CE coverage report](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/coverage.svg?job=coverage)](https://gitlab-org.gitlab.io/gitlab-ce/coverage-ruby)
 [![Code Climate](https://codeclimate.com/github/gitlabhq/gitlabhq.svg)](https://codeclimate.com/github/gitlabhq/gitlabhq)
 [![Core Infrastructure Initiative Best Practices](https://bestpractices.coreinfrastructure.org/projects/42/badge)](https://bestpractices.coreinfrastructure.org/projects/42)
 
@@ -76,7 +76,7 @@ GitLab is a Ruby on Rails application that runs on the following software:
 
 - Ubuntu/Debian/CentOS/RHEL
 - Ruby (MRI) 2.3
-- Git 2.7.4+
+- Git 2.8.4+
 - Redis 2.8+
 - MySQL or PostgreSQL
 
@@ -84,7 +84,7 @@ For more information please see the [architecture documentation](https://docs.gi
 
 ## UX design
 
-Please adhere to the [UX Guide](doc/development/ux_guide/readme.md) when creating designs and implementing code.
+Please adhere to the [UX Guide](doc/development/ux_guide/index.md) when creating designs and implementing code.
 
 ## Third-party applications
 

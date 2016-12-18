@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Banzai::Filter::MergeRequestReferenceFilter, lib: true do
   include FilterSpecHelper
 
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:empty_project, :public) }
   let(:merge)   { create(:merge_request, source_project: project) }
 
   it 'requires project context' do
@@ -86,23 +86,97 @@ describe Banzai::Filter::MergeRequestReferenceFilter, lib: true do
     end
   end
 
-  context 'cross-project reference' do
-    let(:namespace) { create(:namespace, name: 'cross-reference') }
-    let(:project2)  { create(:project, :public, namespace: namespace) }
-    let(:merge)     { create(:merge_request, source_project: project2) }
-    let(:reference) { merge.to_reference(project) }
+  context 'cross-project / cross-namespace complete reference' do
+    let(:project2)          { create(:empty_project, :public) }
+    let(:merge)             { create(:merge_request, source_project: project2) }
+    let(:reference)         { "#{project2.path_with_namespace}!#{merge.iid}" }
 
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
 
       expect(doc.css('a').first.attr('href')).
         to eq urls.namespace_project_merge_request_url(project2.namespace,
-                                                      project, merge)
+                                                       project2, merge)
     end
 
-    it 'links with adjacent text' do
+    it 'link has valid text' do
       doc = reference_filter("Merge (#{reference}.)")
-      expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(reference)}<\/a>\.\)/)
+
+      expect(doc.css('a').first.text).to eq(reference)
+    end
+
+    it 'has valid text' do
+      doc = reference_filter("Merge (#{reference}.)")
+
+      expect(doc.text).to eq("Merge (#{reference}.)")
+    end
+
+    it 'ignores invalid merge IDs on the referenced project' do
+      exp = act = "Merge #{invalidate_reference(reference)}"
+
+      expect(reference_filter(act).to_html).to eq exp
+    end
+  end
+
+  context 'cross-project / same-namespace complete reference' do
+    let(:namespace) { create(:namespace) }
+    let(:project)   { create(:empty_project, :public, namespace: namespace) }
+    let(:project2)  { create(:empty_project, :public, namespace: namespace) }
+    let!(:merge)    { create(:merge_request, source_project: project2) }
+    let(:reference) { "#{project2.path_with_namespace}!#{merge.iid}" }
+
+    it 'links to a valid reference' do
+      doc = reference_filter("See #{reference}")
+
+      expect(doc.css('a').first.attr('href')).
+        to eq urls.namespace_project_merge_request_url(project2.namespace,
+                                                      project2, merge)
+    end
+
+    it 'link has valid text' do
+      doc = reference_filter("Merge (#{reference}.)")
+
+      expect(doc.css('a').first.text).to eq("#{project2.path}!#{merge.iid}")
+    end
+
+    it 'has valid text' do
+      doc = reference_filter("Merge (#{reference}.)")
+
+      expect(doc.text).to eq("Merge (#{project2.path}!#{merge.iid}.)")
+    end
+
+    it 'ignores invalid merge IDs on the referenced project' do
+      exp = act = "Merge #{invalidate_reference(reference)}"
+
+      expect(reference_filter(act).to_html).to eq exp
+    end
+  end
+
+  context 'cross-project shorthand reference' do
+    let(:namespace) { create(:namespace) }
+    let(:project)   { create(:empty_project, :public, namespace: namespace) }
+    let(:project2)  { create(:empty_project, :public, namespace: namespace) }
+    let!(:merge)    { create(:merge_request, source_project: project2) }
+    let(:reference) { "#{project2.path}!#{merge.iid}" }
+
+    it 'links to a valid reference' do
+      doc = reference_filter("See #{reference}")
+
+      expect(doc.css('a').first.attr('href')).
+        to eq urls.namespace_project_merge_request_url(project2.namespace,
+                                                      project2, merge)
+    end
+
+    it 'link has valid text' do
+      doc = reference_filter("Merge (#{reference}.)")
+
+      expect(doc.css('a').first.text).to eq("#{project2.path}!#{merge.iid}")
+    end
+
+    it 'has valid text' do
+      doc = reference_filter("Merge (#{reference}.)")
+
+      expect(doc.text).to eq("Merge (#{project2.path}!#{merge.iid}.)")
     end
 
     it 'ignores invalid merge IDs on the referenced project' do

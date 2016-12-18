@@ -1,9 +1,2 @@
-New comment for Merge Request <%= @merge_request.to_reference %>
-
-<%= url_for(namespace_project_merge_request_url(@merge_request.target_project.namespace, @merge_request.target_project, @merge_request, anchor: "note_#{@note.id}")) %>
-
-
-<%= @note.author_name %>
-
-<%= @note.note %>
-
+New comment for Merge Request <%= @merge_request.to_reference -%>
+<%= render partial: 'note_mr_or_commit_email', locals: { url: @target_url }%>

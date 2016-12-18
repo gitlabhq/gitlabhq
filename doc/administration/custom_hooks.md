@@ -42,6 +42,33 @@ Follow the steps below to set up a custom hook:
 That's it! Assuming the hook code is properly implemented the hook will fire
 as appropriate.
 
+## Chained hooks support
+
+> [Introduced][93] in GitLab Shell 4.1.0 and GitLab 8.15.
+
+Hooks can be also placed in `hooks/<hook_name>.d` (global) or
+`custom_hooks/<hook_name>.d` (per project) directories supporting chained
+execution of the hooks.
+
+To look in a different directory for the global custom hooks (those in
+`hooks/<hook_name.d>`), set `custom_hooks_dir` in gitlab-shell config. For
+Omnibus installations, this can be set in `gitlab.rb`; and in source
+installations, this can be set in `gitlab-shell/config.yml`.
+
+The hooks are searched and executed in this order:
+
+1. `<project>.git/hooks/` - symlink to `gitlab-shell/hooks` global dir
+1. `<project>.git/hooks/<hook_name>` -  executed by `git` itself, this is `gitlab-shell/hooks/<hook_name>`
+1. `<project>.git/custom_hooks/<hook_name>` - per project hook (this is already existing behavior)
+1. `<project>.git/custom_hooks/<hook_name>.d/*` - per project hooks
+1. `<project>.git/hooks/<hook_name>.d/*` OR `<custom_hooks_dir>/<hook_name.d>/*` - global hooks: all executable files (minus editor backup files)
+
+Files in `.d` directories need to be executable and not match the backup file
+pattern (`*~`).
+
+The hooks of the same type are executed in order and execution stops on the
+first script exiting with a non-zero value.
+
 ## Custom error messages
 
 > [Introduced][5073] in GitLab 8.10.
@@ -54,3 +81,4 @@ STDERR takes precedence over STDOUT.
 
 [hooks]: https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks#Server-Side-Hooks
 [5073]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5073
+[93]: https://gitlab.com/gitlab-org/gitlab-shell/merge_requests/93

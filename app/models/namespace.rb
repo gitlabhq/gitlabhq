@@ -4,29 +4,33 @@ class Namespace < ActiveRecord::Base
   include CacheMarkdownField
   include Sortable
   include Gitlab::ShellAdapter
+  include Routable
 
   cache_markdown_field :description, pipeline: :description
 
   has_many :projects, dependent: :destroy
   belongs_to :owner, class_name: "User"
 
+  belongs_to :parent, class_name: "Namespace"
+  has_many :children, class_name: "Namespace", foreign_key: :parent_id
+
   validates :owner, presence: true, unless: ->(n) { n.type == "Group" }
   validates :name,
-    length: { within: 0..255 },
-    namespace_name: true,
     presence: true,
-    uniqueness: true
+    uniqueness: { scope: :parent_id },
+    length: { maximum: 255 },
+    namespace_name: true
 
-  validates :description, length: { within: 0..255 }
+  validates :description, length: { maximum: 255 }
   validates :path,
-    length: { within: 1..255 },
-    namespace: true,
     presence: true,
-    uniqueness: { case_sensitive: false }
+    length: { maximum: 255 },
+    namespace: true
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
 
   after_update :move_dir, if: :path_changed?
+  after_commit :refresh_access_of_projects_invited_groups, on: :update, if: -> { previous_changes.key?('share_with_group_lock') }
 
   # Save the storage paths before the projects are destroyed to use them on after destroy
   before_destroy(prepend: true) { @old_repository_storage_paths = repository_storage_paths }
@@ -85,7 +89,7 @@ class Namespace < ActiveRecord::Base
   end
 
   def to_param
-    path
+    full_path
   end
 
   def human_name
@@ -103,6 +107,8 @@ class Namespace < ActiveRecord::Base
       gitlab_shell.add_namespace(repository_storage_path, path_was)
 
       unless gitlab_shell.mv_namespace(repository_storage_path, path_was, path)
+        Rails.logger.error "Exception moving path #{repository_storage_path} from #{path_was} to #{path}"
+
         # if we cannot move namespace directory we should rollback
         # db changes in order to prevent out of sync between db and fs
         raise Exception.new('namespace directory cannot be moved')
@@ -147,6 +153,27 @@ class Namespace < ActiveRecord::Base
     Gitlab.config.lfs.enabled
   end
 
+  def full_path
+    if parent
+      parent.full_path + '/' + path
+    else
+      path
+    end
+  end
+
+  def full_name
+    @full_name ||=
+      if parent
+        parent.full_name + ' / ' + name
+      else
+        name
+      end
+  end
+
+  def parents
+    @parents ||= parent ? parent.parents + [parent] : []
+  end
+
   private
 
   def repository_storage_paths
@@ -174,5 +201,16 @@ class Namespace < ActiveRecord::Base
         GitlabShellWorker.perform_in(5.minutes, :rm_namespace, repository_storage_path, new_path)
       end
     end
+  end
+
+  def refresh_access_of_projects_invited_groups
+    Group.
+      joins(project_group_links: :project).
+      where(projects: { namespace_id: id }).
+      find_each(&:refresh_members_authorized_projects)
+  end
+
+  def full_path_changed?
+    path_changed? || parent_id_changed?
   end
 end

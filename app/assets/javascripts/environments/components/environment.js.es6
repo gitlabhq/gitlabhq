@@ -1,12 +1,13 @@
+/* eslint-disable no-param-reassign */
+/* global Vue */
+/* global EnvironmentsService */
+
 //= require vue
 //= require vue-resource
 //= require_tree ../services/
 //= require ./environment_item
 
-/* globals Vue, EnvironmentsService */
-/* eslint-disable no-param-reassign */
-
-(() => { // eslint-disable-line
+(() => {
   window.gl = window.gl || {};
 
   /**
@@ -73,6 +74,8 @@
         projectStoppedEnvironmentsPath: environmentsData.projectStoppedEnvironmentsPath,
         newEnvironmentPath: environmentsData.newEnvironmentPath,
         helpPagePath: environmentsData.helpPagePath,
+        commitIconSvg: environmentsData.commitIconSvg,
+        playIconSvg: environmentsData.playIconSvg,
       };
     },
 
@@ -161,8 +164,7 @@
                   {{state.availableCounter}}
                 </span>
               </a>
-            </li>
-            <li v-bind:class="{ 'active' : scope === 'stopped' }">
+            </li><li v-bind:class="{ 'active' : scope === 'stopped' }">
               <a :href="projectStoppedEnvironmentsPath">
                 Stopped
                 <span class="badge js-stopped-environments-count">
@@ -180,7 +182,7 @@
 
         <div class="environments-container">
           <div class="environments-list-loading text-center" v-if="isLoading">
-            <i class="fa fa-spinner spin"></i>
+            <i class="fa fa-spinner fa-spin"></i>
           </div>
 
           <div class="blank-state blank-state-no-icon"
@@ -226,7 +228,9 @@
                     :model="model"
                     :toggleRow="toggleRow.bind(model)"
                     :can-create-deployment="canCreateDeploymentParsed"
-                    :can-read-environment="canReadEnvironmentParsed"></tr>
+                    :can-read-environment="canReadEnvironmentParsed"
+                    :play-icon-svg="playIconSvg"
+                    :commit-icon-svg="commitIconSvg"></tr>
 
                   <tr v-if="model.isOpen && model.children && model.children.length > 0"
                     is="environment-item"
@@ -234,7 +238,9 @@
                     :model="children"
                     :toggleRow="toggleRow.bind(children)"
                     :can-create-deployment="canCreateDeploymentParsed"
-                    :can-read-environment="canReadEnvironmentParsed">
+                    :can-read-environment="canReadEnvironmentParsed"
+                    :play-icon-svg="playIconSvg"
+                    :commit-icon-svg="commitIconSvg">
                     </tr>
 
                 </template>

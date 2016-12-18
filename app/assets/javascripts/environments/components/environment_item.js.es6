@@ -1,12 +1,13 @@
-/*= require lib/utils/timeago */
+/* global Vue */
+/* global timeago */
+
+/*= require timeago */
 /*= require lib/utils/text_utility */
 /*= require vue_common_component/commit */
 /*= require ./environment_actions */
 /*= require ./environment_external_url */
 /*= require ./environment_stop */
 /*= require ./environment_rollback */
-
-/* globals Vue, timeago */
 
 (() => {
   /**
@@ -22,6 +23,7 @@
 
   window.gl = window.gl || {};
   window.gl.environmentsList = window.gl.environmentsList || {};
+  window.gl.environmentsList.timeagoInstance = new timeago(); // eslint-disable-line
 
   gl.environmentsList.EnvironmentItem = Vue.component('environment-item', {
 
@@ -55,6 +57,16 @@
         type: Boolean,
         required: false,
         default: false,
+      },
+
+      commitIconSvg: {
+        type: String,
+        required: false,
+      },
+
+      playIconSvg: {
+        type: String,
+        required: false,
       },
     },
 
@@ -147,14 +159,25 @@
       },
 
       /**
+       * Verifies if the date to be shown is present.
+       *
+       * @returns {Boolean|Undefined}
+       */
+      canShowDate() {
+        return this.model.last_deployment &&
+          this.model.last_deployment.deployable &&
+          this.model.last_deployment.deployable !== undefined;
+      },
+
+      /**
        * Human readable date.
        *
        * @returns {String}
        */
       createdDate() {
-        const timeagoInstance = new timeago(); // eslint-disable-line
-
-        return timeagoInstance.format(this.model.created_at);
+        return window.gl.environmentsList.timeagoInstance.format(
+          this.model.last_deployment.deployable.created_at,
+        );
       },
 
       /**
@@ -426,7 +449,7 @@
           </span>
         </td>
 
-        <td>
+        <td class="environments-build-cell">
           <a v-if="shouldRenderBuildName"
             class="build-link"
             :href="model.last_deployment.deployable.build_path">
@@ -438,11 +461,12 @@
           <div v-if="!isFolder && hasLastDeploymentKey" class="js-commit-component">
             <commit-component
               :tag="commitTag"
-              :ref="commitRef"
-              :commit_url="commitUrl"
-              :short_sha="commitShortSha"
+              :commit-ref="commitRef"
+              :commit-url="commitUrl"
+              :short-sha="commitShortSha"
               :title="commitTitle"
-              :author="commitAuthor">
+              :author="commitAuthor"
+              :commit-icon-svg="commitIconSvg">
             </commit-component>
           </div>
           <p v-if="!isFolder && !hasLastDeploymentKey" class="commit-title">
@@ -452,7 +476,7 @@
 
         <td>
           <span
-            v-if="!isFolder && model.last_deployment"
+            v-if="!isFolder && canShowDate"
             class="environment-created-date-timeago">
             {{createdDate}}
           </span>
@@ -463,6 +487,7 @@
             <div v-if="hasManualActions && canCreateDeployment"
               class="inline js-manual-actions-container">
               <actions-component
+                :play-icon-svg="playIconSvg"
                 :actions="manualActions">
               </actions-component>
             </div>
@@ -470,22 +495,22 @@
             <div v-if="model.external_url && canReadEnvironment"
               class="inline js-external-url-container">
               <external-url-component
-                :external_url="model.external_url">
-              </external_url-component>
+                :external-url="model.external_url">
+              </external-url-component>
             </div>
 
             <div v-if="isStoppable && canCreateDeployment"
               class="inline js-stop-component-container">
               <stop-component
-                :stop_url="model.stop_path">
+                :stop-url="model.stop_path">
               </stop-component>
             </div>
 
             <div v-if="canRetry && canCreateDeployment"
               class="inline js-rollback-component-container">
               <rollback-component
-                :is_last_deployment="isLastDeployment"
-                :retry_url="retryUrl">
+                :is-last-deployment="isLastDeployment"
+                :retry-url="retryUrl">
                 </rollback-component>
             </div>
           </div>

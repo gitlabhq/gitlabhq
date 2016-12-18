@@ -1,16 +1,16 @@
 .tint-box {
-  background: #f3f3f3;
+  background: $stat-graph-common-bg;
   position: relative;
   margin-bottom: 10px;
 }
 
 .area {
-  fill: #1db34f;
+  fill: $stat-graph-area-fill;
   fill-opacity: 0.5;
 }
 
 .axis {
-  fill: #aaa;
+  fill: $stat-graph-axis-fill;
   font-size: 10px;
 }
 
@@ -37,26 +37,26 @@
     @include make-md-column(6);
     margin-top: 10px;
 
-    @media (max-width: $screen-sm-min) {
+    @media (max-width: $screen-xs-max) {
       width: 100%;
     }
   }
 
   .person .spark {
     display: block;
-    background: #f3f3f3;
+    background: $stat-graph-common-bg;
     width: 100%;
   }
 
   .person .area-contributor {
-    fill: #f17f49;
+    fill: $stat-graph-orange-fill;
   }
 }
 
 .selection rect {
-  fill: #333;
+  fill: $stat-graph-selection-fill;
   fill-opacity: 0.1;
-  stroke: #333;
+  stroke: $stat-graph-selection-stroke;
   stroke-width: 1px;
   stroke-opacity: 0.4;
   shape-rendering: crispedges;

@@ -1,6 +1,6 @@
 /* eslint-disable space-before-function-paren, quotes, comma-dangle, dot-notation, indent, quote-props, no-var, padded-blocks, max-len */
+
 /*= require merge_request_widget */
-/*= require lib/utils/timeago */
 /*= require lib/utils/datetime_utility */
 
 (function() {
@@ -105,6 +105,18 @@
         });
       });
     });
+
+    describe('mergeInProgress', function() {
+       it('should display error with h4 tag', function() {
+          spyOn(this.class.$widgetBody, 'html').and.callFake(function(html) {
+            expect(html).toBe('<h4>Sorry, something went wrong.</h4>');
+          });
+          spyOn($, 'ajax').and.callFake(function(e) {
+            e.success({ merge_error: 'Sorry, something went wrong.' });
+          });
+          this.class.mergeInProgress(null);
+        });
+      });
 
     return describe('getCIStatus', function() {
       beforeEach(function() {
