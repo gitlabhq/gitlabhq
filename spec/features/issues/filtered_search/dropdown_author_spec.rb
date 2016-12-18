@@ -70,22 +70,17 @@ describe 'Dropdown author', js: true, feature: true do
     end
 
     it 'filters by name' do
-      send_keys_to_filtered_search('j')
-      expect(dropdown_author_size).to eq(2)
+      send_keys_to_filtered_search('ja')
+      expect(dropdown_author_size).to eq(1)
     end
 
     it 'filters by case insensitive name' do
-      send_keys_to_filtered_search('J')
-      expect(dropdown_author_size).to eq(2)
+      send_keys_to_filtered_search('Ja')
+      expect(dropdown_author_size).to eq(1)
     end
 
     it 'filters by username with symbol' do
       send_keys_to_filtered_search('@ot')
-      expect(dropdown_author_size).to eq(2)
-    end
-
-    it 'filters by case insensitive username with symbol' do
-      send_keys_to_filtered_search('@OT')
       expect(dropdown_author_size).to eq(2)
     end
 

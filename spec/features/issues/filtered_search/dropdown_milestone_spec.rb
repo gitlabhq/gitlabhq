@@ -73,61 +73,36 @@ describe 'Dropdown milestone', js: true, feature: true do
 
   describe 'filtering' do
     before do
-      filtered_search.set('milestone:')
+      filtered_search.set('milestone')
     end
 
     it 'filters by name' do
-      send_keys_to_filtered_search('v1')
+      send_keys_to_filtered_search(':v1')
       expect(dropdown_milestone_size).to eq(1)
     end
 
     it 'filters by case insensitive name' do
-      send_keys_to_filtered_search('V1')
+      send_keys_to_filtered_search(':V1')
       expect(dropdown_milestone_size).to eq(1)
     end
 
     it 'filters by name with symbol' do
-      send_keys_to_filtered_search('%v1')
+      send_keys_to_filtered_search(':%v1')
       expect(dropdown_milestone_size).to eq(1)
     end
 
     it 'filters by case insensitive name with symbol' do
-      send_keys_to_filtered_search('%V1')
-      expect(dropdown_milestone_size).to eq(1)
-    end
-
-    it 'filters by multiple names using double quotes' do
-      send_keys_to_filtered_search('"future')
-      expect(dropdown_milestone_size).to eq(1)
-    end
-
-    it 'filters by multiple names using single quotes' do
-      send_keys_to_filtered_search('\'future p')
-      expect(dropdown_milestone_size).to eq(1)
-    end
-
-    it 'filters by multiple names using single and double quotes' do
-      send_keys_to_filtered_search('%"won`\'t f')
-      expect(dropdown_milestone_size).to eq(1)
-    end
-
-    it 'filters by multiple names using double quotes with symbol' do
-      send_keys_to_filtered_search('%"future p')
-      expect(dropdown_milestone_size).to eq(1)
-    end
-
-    it 'filters by multiple names using single quotes with symbol' do
-      send_keys_to_filtered_search('%\'future p')
+      send_keys_to_filtered_search(':%V1')
       expect(dropdown_milestone_size).to eq(1)
     end
 
     it 'filters by special characters' do
-      send_keys_to_filtered_search('^+')
+      send_keys_to_filtered_search(':(+')
       expect(dropdown_milestone_size).to eq(1)
     end
 
     it 'filters by special characters with symbol' do
-      send_keys_to_filtered_search('~^+')
+      send_keys_to_filtered_search(':%(+')
       expect(dropdown_milestone_size).to eq(1)
     end
   end

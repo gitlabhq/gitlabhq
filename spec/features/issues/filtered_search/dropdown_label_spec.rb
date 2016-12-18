@@ -9,6 +9,7 @@ describe 'Dropdown label', js: true, feature: true do
   let!(:uppercase_label) { create(:label, project: project, title: 'BUG') }
   let!(:two_words_label) { create(:label, project: project, title: 'High Priority') }
   let!(:wont_fix_label) { create(:label, project: project, title: 'Won"t Fix') }
+  let!(:wont_fix_single_label) { create(:label, project: project, title: 'Won\'t Fix') }
   let!(:special_label) { create(:label, project: project, title: '!@#$%^+&*()')}
   let!(:long_label) { create(:label, project: project, title: 'this is a very long title this is a very long title this is a very long title this is a very long title this is a very long title')}
   let(:filtered_search) { find('.filtered-search') }
@@ -68,61 +69,66 @@ describe 'Dropdown label', js: true, feature: true do
 
   describe 'filtering' do
     before do
-      filtered_search.set('label:')
+      filtered_search.set('label')
     end
 
     it 'filters by name' do
-      send_keys_to_filtered_search('b')
+      send_keys_to_filtered_search(':b')
       expect(dropdown_label_size).to eq(2)
     end
 
     it 'filters by case insensitive name' do
-      send_keys_to_filtered_search('B')
+      send_keys_to_filtered_search(':B')
       expect(dropdown_label_size).to eq(2)
     end
 
     it 'filters by name with symbol' do
-      send_keys_to_filtered_search('~bu')
+      send_keys_to_filtered_search(':~bu')
       expect(dropdown_label_size).to eq(2)
     end
 
     it 'filters by case insensitive name with symbol' do
-      send_keys_to_filtered_search('~BU')
+      send_keys_to_filtered_search(':~BU')
       expect(dropdown_label_size).to eq(2)
     end
 
-    it 'filters by multiple names using double quotes' do
-      send_keys_to_filtered_search('"High P')
+    it 'filters by multiple words' do
+      send_keys_to_filtered_search(':Hig')
       expect(dropdown_label_size).to eq(1)
     end
 
-    it 'filters by multiple names using single quotes' do
-      send_keys_to_filtered_search('\'High P')
+    it 'filters by multiple words with symbol' do
+      send_keys_to_filtered_search(':~Hig')
       expect(dropdown_label_size).to eq(1)
     end
 
-    it 'filters by multiple names using single and double quotes' do
-      send_keys_to_filtered_search('~"won`\'t f')
+    it 'filters by multiple words containing single quotes' do
+      send_keys_to_filtered_search(':won\'t')
       expect(dropdown_label_size).to eq(1)
     end
 
-    it 'filters by multiple names using double quotes with symbol' do
-      send_keys_to_filtered_search('~"High P')
+    it 'filters by multiple words containing single quotes with symbol' do
+      send_keys_to_filtered_search(':~won\'t')
       expect(dropdown_label_size).to eq(1)
     end
 
-    it 'filters by multiple names using single quotes with symbol' do
-      send_keys_to_filtered_search('~\'High P')
+    it 'filters by multiple words containing double quotes' do
+      send_keys_to_filtered_search(':won"t')
+      expect(dropdown_label_size).to eq(1)
+    end
+
+    it 'filters by multiple words containing double quotes with symbol' do
+      send_keys_to_filtered_search(':~won"t')
       expect(dropdown_label_size).to eq(1)
     end
 
     it 'filters by special characters' do
-      send_keys_to_filtered_search('^+')
+      send_keys_to_filtered_search(':^+')
       expect(dropdown_label_size).to eq(1)
     end
 
     it 'filters by special characters with symbol' do
-      send_keys_to_filtered_search('~^+')
+      send_keys_to_filtered_search(':~^+')
       expect(dropdown_label_size).to eq(1)
     end
   end
