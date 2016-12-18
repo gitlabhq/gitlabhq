@@ -43,7 +43,7 @@
     static filterHint(item, query) {
       const updatedItem = item;
       let { lastToken } = gl.FilteredSearchTokenizer.processTokens(query);
-      lastToken = lastToken || '';
+      lastToken = lastToken.key || lastToken || '';
 
       if (!lastToken || query.split('').last() === ' ') {
         updatedItem.droplab_hidden = false;

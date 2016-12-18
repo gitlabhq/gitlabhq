@@ -12,8 +12,6 @@
         const input = document.createElement('input');
         input.classList.add('filtered-search');
         document.body.appendChild(input);
-
-        expect(input.value).toBe('');
       });
 
       afterEach(() => {
