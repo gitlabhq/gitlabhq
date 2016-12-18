@@ -42,12 +42,17 @@
 
     static filterHint(item, query) {
       const updatedItem = item;
-      const { lastToken } = gl.FilteredSearchTokenizer.processTokens(query);
+      let { lastToken } = gl.FilteredSearchTokenizer.processTokens(query);
+      lastToken = lastToken || '';
 
-      if (!lastToken) {
+      if (!lastToken || query.split('').last() === ' ') {
         updatedItem.droplab_hidden = false;
-      } else {
-        updatedItem.droplab_hidden = updatedItem.hint.indexOf(lastToken.toLowerCase()) === -1;
+      } else if (lastToken) {
+        const split = lastToken.split(':');
+        const tokenName = split[0].split(' ').last();
+
+        const match = updatedItem.hint.indexOf(tokenName.toLowerCase()) === -1;
+        updatedItem.droplab_hidden = tokenName ? match : false;
       }
 
       return updatedItem;

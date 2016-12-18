@@ -13,7 +13,7 @@ describe 'Dropdown author', js: true, feature: true do
   def send_keys_to_filtered_search(input)
     input.split("").each do |i|
       filtered_search.send_keys(i)
-      sleep 3
+      sleep 5
       wait_for_ajax
     end
   end
@@ -65,7 +65,8 @@ describe 'Dropdown author', js: true, feature: true do
 
   describe 'filtering' do
     before do
-      filtered_search.set('author:')
+      filtered_search.set('author')
+      send_keys_to_filtered_search(':')
     end
 
     it 'filters by name' do
@@ -101,7 +102,8 @@ describe 'Dropdown author', js: true, feature: true do
 
   describe 'selecting from dropdown' do
     before do
-      filtered_search.set('author:')
+      filtered_search.set('author')
+      send_keys_to_filtered_search(':')
     end
 
     it 'fills in the author username when the author has not been filtered' do

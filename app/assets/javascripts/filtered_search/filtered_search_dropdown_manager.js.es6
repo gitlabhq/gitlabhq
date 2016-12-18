@@ -62,6 +62,7 @@
       const value = input.value;
       const hasExistingValue = value.length !== 0;
       const { lastToken, searchToken } = gl.FilteredSearchTokenizer.processTokens(value);
+      const lastSearchToken = searchToken.split(' ').last();
 
       // Find out what part of the token value the user has typed
       // and remove it from input before appending the selected token value
@@ -74,8 +75,8 @@
         // Add 2 length to account for the length of the front and back quotes
         const lengthToRemove = hasQuotes ? lastTokenString.length + 2 : lastTokenString.length;
         input.value = value.slice(0, -1 * (lengthToRemove));
-      } else if (searchToken !== '' && word.indexOf(searchToken) !== -1) {
-        input.value = value.slice(0, -1 * searchToken.length);
+      } else if (searchToken !== '' && word.indexOf(lastSearchToken) !== -1) {
+        input.value = value.slice(0, -1 * lastSearchToken.length);
       }
 
       input.value += hasExistingValue && addSpace ? ` ${word}` : word;
@@ -150,11 +151,17 @@
       const { lastToken, searchToken } = this.tokenizer
         .processTokens(this.filteredSearchInput.value);
 
-      if (lastToken === searchToken) {
+      if (this.filteredSearchInput.value.split('').last() === ' ') {
+        this.updateCurrentDropdownOffset();
+      }
+
+      if (lastToken === searchToken && lastToken !== null) {
         // Token is not fully initialized yet because it has no value
         // Eg. token = 'label:'
+
         const split = lastToken.split(':');
-        this.loadDropdown(split.length > 1 ? split[0] : '');
+        const dropdownName = split[0].split(' ').last();
+        this.loadDropdown(split.length > 1 ? dropdownName : '');
       } else if (lastToken) {
         // Token has been initialized into an object because it has a value
         this.loadDropdown(lastToken.key);
