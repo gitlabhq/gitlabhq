@@ -2,15 +2,14 @@ require 'spec_helper'
 
 feature 'CI shared runner limits', feature: true do
   let(:user) { create(:user) }
+  let(:project) { create(:project, :public, namespace: namespace, shared_runners_enabled: true) }
+  let(:namespace) { create(:namespace) }
 
   before do
     login_as(user)
   end
 
-  context 'with project' do
-    let(:project) { create(:project, namespace: namespace, shared_runners_enabled: true) }
-    let(:namespace) { create(:namespace) }
-
+  context 'when project member' do
     before do
       project.team << [user, :developer]
     end
@@ -28,7 +27,7 @@ feature 'CI shared runner limits', feature: true do
 
         scenario 'it displays a warning message on project homepage' do
           visit namespace_project_path(project.namespace, project)
-          expect_quota_exceeded_alert('You have exceeded your build minutes quota.')
+          expect_quota_exceeded_alert("#{namespace.name} has exceeded their build minutes quota.")
         end
       end
 
@@ -48,6 +47,17 @@ feature 'CI shared runner limits', feature: true do
           visit namespace_project_path(project.namespace, project)
           expect_no_quota_exceeded_alert
         end
+      end
+    end
+  end
+
+  context 'when not a project member' do
+    let(:namespace) { create(:namespace, :with_used_build_minutes_limit) }
+
+    context 'when limit is defined and limit is exceeded' do
+      scenario 'it does not display a warning message on project homepage' do
+        visit namespace_project_path(project.namespace, project)
+        expect_no_quota_exceeded_alert
       end
     end
   end
