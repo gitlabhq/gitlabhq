@@ -24,10 +24,9 @@
       %h4 Team
       %p Select or create the team where the slash commands will be used in
       - options = mattermost_teams_options(@teams)
-      - isOneTeam = options.count === 1
-      = f.select(:team_id, options, {}, {class: 'form-control', selected: "#{options.first[1] if isOneTeam}", disabled: isOneTeam})
+      = f.select(:team_id, options, {}, {class: 'form-control', selected: "#{options.first[1] if options.count.one?}", disabled: options.count.one?})
       .help-block
-        - if isOneTeam
+        - if options.count.one?
           This is the only team where you are an administrator.
         - else
           The list shows teams where you are administrator
