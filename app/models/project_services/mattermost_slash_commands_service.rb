@@ -25,18 +25,15 @@ class MattermostSlashCommandsService < ChatService
     ]
   end
 
-  def configure!(current_user, params)
-    token = Mattermost::Session.new(current_user).with_session do |session|
-      Mattermost::Command.create(session, command(params))
-    end
+  def configure!(user, params)
+    token = Mattermost::Command.new(user).
+      create(command(params))
 
     update!(active: true, token: token)
   end
 
   def list_teams(user)
-    Mattermost::Session.new(user).with_session do |session|
-      Mattermost::Team.all(session)
-    end
+    Mattermost::Team.new(user).all
   end
 
   def trigger(params)

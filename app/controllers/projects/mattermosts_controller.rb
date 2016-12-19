@@ -32,6 +32,7 @@ class Projects::MattermostsController < Projects::ApplicationController
   def teams
     @teams ||= @service.list_teams(current_user)
   rescue => e
+    @teams = []
     flash[:alert] = e.message
   end
 
