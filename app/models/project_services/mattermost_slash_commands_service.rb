@@ -37,7 +37,7 @@ class MattermostSlashCommandsService < ChatService
     end
   end
 
-  def list_teams
+  def list_teams(current_user)
     begin
       response = Mattermost::Session.new(current_user).with_session do |session|
         Mattermost::Team.all(session)
