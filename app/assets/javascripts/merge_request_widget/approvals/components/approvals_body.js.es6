@@ -20,7 +20,6 @@
 
         return approvers.length === 1 ? approvers[0].name :
           approvers.reduce((memo, curr, index) => {
-
             const nextMemo = `${memo}${curr.name}`;
 
             if (index === approvers.length - 2) { // second to last index
