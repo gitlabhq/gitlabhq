@@ -1,3 +1,4 @@
+/* global Vue */
 // Analogue of link_to_member_avatar in app/helpers/projects_helper.rb
 
 (() => {

@@ -1,3 +1,4 @@
+/* global Vue */
 //= require vue
 //= require underscore
 //= require jquery

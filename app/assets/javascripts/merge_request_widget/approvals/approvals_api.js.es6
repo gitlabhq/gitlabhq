@@ -1,3 +1,4 @@
+/* global Vue */
 //= require ./approvals_store
 
 (() => {

@@ -1,3 +1,4 @@
+/* global Vue */
 //= require ../approvals_store
 //= require vue_common_component/link_to_member_avatar
 
