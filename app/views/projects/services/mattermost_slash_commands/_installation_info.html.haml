@@ -9,7 +9,7 @@
     .col-sm-9= @service.activated? ? 'Installed' : 'Not installed'
   .row
     %strong.col-sm-3.text-right Mattermost
-    = link_to 'some_path.url', 'some_path.url', class: 'col-sm-9'
+    = link_to Gitlab.config.mattermost.host, Gitlab.config.mattermost.host, class: 'col-sm-9', target: '__blank'
   - if @service.activated?
     .row
       %strong.col-sm-3.text-right Team
