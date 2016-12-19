@@ -46,13 +46,13 @@ module TimeTrackable
   private
 
   def reset_spent_time
-    timelogs.new(time_spent: total_time_spent * -1, user: @time_spent_user)
+    timelogs.create(time_spent: total_time_spent * -1, user: @time_spent_user)
   end
 
   def add_or_subtract_spent_time
     # Exit if time to subtract exceeds the total time spent.
     return if time_spent < 0 && (time_spent.abs > total_time_spent)
 
-    timelogs.new(time_spent: time_spent, user: @time_spent_user)
+    timelogs.create(time_spent: time_spent, user: @time_spent_user)
   end
 end
