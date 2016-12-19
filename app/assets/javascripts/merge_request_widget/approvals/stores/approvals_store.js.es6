@@ -16,18 +16,18 @@
       this.rootStore = rootStore;
       this.api = new gl.ApprovalsApi(rootStore.dataset.endpoint);
       this.state = {
-        loading: false,
+        fetching: false,
       };
     }
 
     initStoreOnce() {
       const state = this.state;
-      if (!state.loading) {
-        state.loading = true;
+      if (!state.fetching) {
+        state.fetching = true;
         return this.fetch()
           .then(() => {
-            state.loading = false;
-            this.assignToRootStore(false, 'loading');
+            state.fetching = false;
+            this.assignToRootStore('showApprovals', true);
           })
           .catch((err) => {
             console.error(`Failed to initialize approvals store: ${err}`);
@@ -38,19 +38,24 @@
 
     fetch() {
       return this.api.fetchApprovals()
-        .then(res => this.assignToRootStore('approvals', res.data));
+        .then(res => this.assignToRootStore('approvals', res.data))
+        .then(data => this.maybeDisableAcceptance(data.approvals_left));
     }
 
     approve() {
       return this.api.approveMergeRequest()
         .then(res => this.assignToRootStore('approvals', res.data))
-        .then(data => this.maybeHideWidgetBody(data.approvals_left));
+        .then(data => this.maybeDisableAcceptance(data.approvals_left));
     }
 
     unapprove() {
       return this.api.unapproveMergeRequest()
         .then(res => this.assignToRootStore('approvals', res.data))
-        .then(data => this.maybeHideWidgetBody(data.approvals_left));
+        .then(data => this.maybeDisableAcceptance(data.approvals_left));
+    }
+
+    maybeDisableAcceptance(approvals_left) {
+      return this.rootStore.assignToData('disableAcceptance', !!approvals_left);
     }
 
     assignToRootStore(key, data) {

@@ -19,9 +19,7 @@
       },
     },
     beforeCreate() {
-      gl.ApprovalsStore.initStoreOnce().then(() => {
-        this.loaded = true;
-      });
+      gl.ApprovalsStore.initStoreOnce();
     },
     template: `
       <div class='mr-widget-footer approved-by-users approvals-footer clearfix'>

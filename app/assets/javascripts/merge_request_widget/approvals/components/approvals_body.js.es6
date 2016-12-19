@@ -35,6 +35,9 @@
         return gl.ApprovalsStore.approve();
       },
     },
+    beforeCreate() {
+      gl.ApprovalsStore.initStoreOnce();
+    },
     template: `
       <div class='approvals-body mr-widget-body'>
         <h4> Requires {{ approvalsRequiredStringified }}

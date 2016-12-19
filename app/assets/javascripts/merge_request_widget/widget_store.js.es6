@@ -25,6 +25,8 @@
     initState() {
       this.assignToData('loading', true);
       this.assignToData('showWidgetBody', true);
+      this.assignToData('showApprovals', false);
+      this.assignToData('disableAcceptance', false);
     }
 
     initApprovals() {
