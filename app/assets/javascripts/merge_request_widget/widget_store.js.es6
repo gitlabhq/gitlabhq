@@ -34,7 +34,7 @@
 
     assignToData(key, val) {
       this.data[key] = val;
-      return this.data[key];
+      return val;
     }
   }
   gl.MergeRequestWidgetStore = MergeRequestWidgetStore;

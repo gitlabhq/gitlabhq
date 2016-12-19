@@ -12,10 +12,8 @@
       },
       approverNamesStringified() {
         const approvers = this.suggestedApprovers;
-        if (approvers.length === 1) {
-          return approvers[0].name;
-        } else {
-          return approvers.reduce((memo, curr, index) => {
+        return approvers.length === 1 ? approvers[0].name :
+          approvers.reduce((memo, curr, index) => {
             const nextMemo = `${memo}${curr.name}`;
 
             if (index === approvers.length - 2) { // second to last index
@@ -27,25 +25,18 @@
             return `${nextMemo}, `;
           }, '');
         }
-        return null;
       },
       showApproveButton() {
         return this.userCanApprove && !this.userHasApproved;
       },
-      showApprovalsBody() {
-        return !this.widgetLoading;
-      }
     },
     methods: {
       approveMergeRequest() {
         return gl.ApprovalsStore.approve();
       },
     },
-    beforeCreate() {
-      gl.ApprovalsStore.initStoreOnce();
-    },
     template: `
-      <div class='approvals-body mr-widget-body' v-if='showApprovalsBody'>
+      <div class='approvals-body mr-widget-body'>
         <h4> Requires {{ approvalsRequiredStringified }}
           <span v-if='!!suggestedApprovers.length'> (from {{ approverNamesStringified }}) </span>
         </h4>

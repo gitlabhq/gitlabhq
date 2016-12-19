@@ -4,6 +4,13 @@
 #merge-request-widget-app.mr-state-widget{ 'data-endpoint'=> merge_request_path(@merge_request) }
   = render 'projects/merge_requests/widget/heading'
   .mr-widget-body
+    - if @merge_request.requires_approve?
+      .loading{ 'v-show' => 'loading' }
+        = icon('spinner spin')
+      = render 'projects/merge_requests/widget/open/approvals_body'
+      = render 'projects/merge_requests/widget/open/approvals_footer'
+
+
     -# After conflicts are resolved, the user is redirected back to the MR page.
     -# There is a short window before background workers run and GitLab processes
     -# the new push and commits, during which it will think the conflicts still exist.
@@ -47,9 +54,4 @@
         = succeed '.' do
           != markdown issues_sentence(mr_closes_issues), pipeline: :gfm, author: @merge_request.author
         = mr_assign_issues_link
-
-  - if @merge_request.requires_approve?
-    = render 'projects/merge_requests/widget/open/approvals_body'
-    = render 'projects/merge_requests/widget/open/approvals_footer'
-
 

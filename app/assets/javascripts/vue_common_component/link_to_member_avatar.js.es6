@@ -1,18 +1,16 @@
-/* Analogue of link_to_member_avatar in app/helpers/projects_helper.rb
-  TODO: Support gravatar link generation, adding name text, username text
-  TODO: 1:1 configuration compared to link_to_member_avatar
-  TODO: Backport to CE
-*/
+// Analogue of link_to_member_avatar in app/helpers/projects_helper.rb
+
 (() => {
   Vue.component('link-to-member-avatar', {
     props: {
       avatarUrl: {
         type: String,
-        required: false
+        required: true,
       },
-      username: {
+      profileUrl: {
         type: String,
         required: false,
+        default: '',
       },
       displayName: {
         type: String,
@@ -33,11 +31,6 @@
         required: false,
         default: false,
       },
-      size: {
-        type: Number,
-        default: 32,
-        required: false
-      },
       nonUser: {
         type: Boolean,
         default: false,
@@ -50,6 +43,11 @@
       avatarHtml: {
         type: String,
         required: false,
+      },
+      size: {
+        type: Number,
+        required: false,
+        default: 32,
       }
     },
     data() {
@@ -60,16 +58,13 @@
     },
     computed: {
       avatarSizeClass() {
-        return `s${this.size}`;
+        return `s{this.avatarSizeClass}`;
       },
       avatarHtmlClass() {
         return `${this.avatarSizeClass} ${this.defaultAvatarClass}`;
       },
       avatarElemId() {
         return this.username ? `${this.username}-avatar-link` : 'non-user-avatar-link';
-      },
-      userProfileUrl() {
-        return this.nonUser || !this.username ? '' : `/${this.username}`;
       },
       preppedAvatarUrl() {
         return this.avatarUrl || this.noAvatarUrl;
@@ -90,14 +85,9 @@
         return this.tooltipContainer || `#${this.avatarElemId}`;
       },
     },
-    methods: {
-      pixelizeValue(size) {
-        return size + 'px';
-      },
-    },
     template: `
       <div class='link-to-member-avatar' :id='avatarElemId'>
-        <a :href='userProfileUrl' :class='linkClass' :data-original-title='displayName' :data-container='tooltipContainerAttr'>
+        <a :href='profileUrl' :class='linkClass' :data-original-title='displayName' :data-container='tooltipContainerAttr'>
           <svg v-if='avatarHtml' v-html='avatarHtml' :class='avatarHtmlClass' :width='size' :height='size' :alt='displayName'></svg>
           <img :class='avatarClass' :src='preppedAvatarUrl' :width='size' :height='size' :alt='displayName'/>
         </a>

@@ -3,9 +3,6 @@
 //= require jquery
 //= require merge_request_widget/approvals/components/approvals_body
 
-
-//                  - showapprovebutton
-//
 (() => {
   gl.ApprovalsStore = {
     data: {},
@@ -38,7 +35,6 @@
     this.approvalsBody = new ApprovalsBodyComponent({
       el: '#mock-container',
       propsData: this.initialData,
-      beforeCreate() {},
     });
   }
 

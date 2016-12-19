@@ -46,7 +46,6 @@
         });
 
         it('should correctly compute computed values', function() {
-          // disabledclass, avatarClass, tooltipClass, userProfileUrl, preppedAvatarUrl, linkClass, tooltipClass
           const correctVals = {
             'disabledClass': 'disabled',
             'avatarClass': 'avatar avatar-inline s48 ',
@@ -81,7 +80,6 @@
         });
 
         it('should correctly compute computed values', function(done) {
-          // disabledclass, avatarClass, tooltipClass, userProfileUrl, preppedAvatarUrl, linkClass, tooltipClass
           const correctVals = {
             'disabledClass': '',
             'avatarClass': 'avatar avatar-inline s48 ',
@@ -100,16 +98,5 @@
         });
       });
     });
-
-    describe('Interaction', function() {
-      it('should remove approval', function() {
-
-    });
-      it('should give approval', function() {
-
-      });
-     //  click link and handler fires
-    });
-
   });
 })(window.gl || (window.gl = {}));

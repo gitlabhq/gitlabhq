@@ -5,11 +5,6 @@
   Vue.component('approvals-footer', {
     name: 'approvals-footer',
     props: ['userCanApprove', 'userHasApproved', 'approvedBy', 'approvalsLeft', 'pendingAvatarSvg', 'checkmarkSvg'],
-    data() {
-      return {
-        loaded: false,
-      };
-    },
     computed: {
       hasApprovers() {
         return this.approvedBy && this.approvedBy.length;
@@ -23,20 +18,14 @@
         gl.ApprovalsStore.unapprove();
       },
     },
-    beforeCreate() {
-      gl.ApprovalsStore.initStoreOnce().then(() => {
-        this.loaded = true;
-      });
-    },
     template: `
-      <div v-if='loaded' class='mr-widget-footer approved-by-users approvals-footer clearfix'>
+      <div class='mr-widget-footer approved-by-users approvals-footer clearfix'>
         <span class='approvers-prefix'> Approved by </span>
         <span v-for='approver in approvedBy'>
           <link-to-member-avatar
             extra-link-class='approver-avatar'
             :avatar-url='approver.user.avatar_url'
             :display-name='approver.user.name'
-            :username='approver.user.username'
             :profile-url='approver.user.web_url'
             :avatar-html='checkmarkSvg'
             :show-tooltip='true'>
