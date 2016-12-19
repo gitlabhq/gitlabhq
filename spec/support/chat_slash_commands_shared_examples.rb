@@ -1,4 +1,4 @@
-RSpec.shared_examples 'chat slash commands' do
+RSpec.shared_examples 'chat slash commands service' do
   describe "Associations" do
     it { is_expected.to respond_to :token }
     it { is_expected.to have_many :chat_names }

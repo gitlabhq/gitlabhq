@@ -1,18 +1,18 @@
 require 'spec_helper'
 
-feature 'Setup Slack slash commands', feature: true do
+feature 'Slack slash commands', feature: true do
   include WaitForAjax
 
-  let(:user) { create(:user) }
-  let(:project) { create(:project) }
-  let(:service) { project.create_slack_slash_commands_service }
+  given(:user) { create(:user) }
+  given(:project) { create(:project) }
+  given(:service) { project.create_slack_slash_commands_service }
 
-  before do
+  background do
     project.team << [user, :master]
     login_as(user)
   end
 
-  describe 'user visits the slack slash command config page', js: true do
+  scenario 'user visits the slack slash command config page', js: true do
     it 'shows a help message' do
       visit edit_namespace_project_service_path(project.namespace, project, service)
 
@@ -22,8 +22,8 @@ feature 'Setup Slack slash commands', feature: true do
     end
   end
 
-  describe 'saving a token' do
-    let(:token) { ('a'..'z').to_a.join }
+  scenario 'saving a token' do
+    given(:token) { ('a'..'z').to_a.join }
 
     it 'shows the token after saving' do
       visit edit_namespace_project_service_path(project.namespace, project, service)
@@ -37,7 +37,7 @@ feature 'Setup Slack slash commands', feature: true do
     end
   end
 
-  describe 'the trigger url' do
+  scenario 'the trigger url' do
     it 'shows the correct url' do
       visit edit_namespace_project_service_path(project.namespace, project, service)
 

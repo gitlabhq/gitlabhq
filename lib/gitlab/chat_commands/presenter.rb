@@ -1,7 +1,7 @@
 module Gitlab
   module ChatCommands
     class Presenter
-      include Gitlab::Routing.url_helpers
+      include Gitlab::Routing
 
       def authorize_chat_name(url)
         message = if url

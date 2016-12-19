@@ -39,9 +39,9 @@ Feature: Project Services
 
   Scenario: Activate Slack service
     When I visit project "Shop" services page
-    And I click Slack service link
-    And I fill Slack settings
-    Then I should see Slack service settings saved
+    And I click Slack Notifications service link
+    And I fill Slack Notifications settings
+    Then I should see Slack Notifications service settings saved
 
   Scenario: Activate Pushover service
     When I visit project "Shop" services page

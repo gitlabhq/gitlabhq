@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe SlackSlashCommandsService, models: true do
-  it_behaves_like "chat slash commands"
+describe SlackSlashCommandsService, :models do
+  it_behaves_like "chat slash commands service"
 
   describe '#trigger' do
     context 'when an auth url is generated' do
@@ -15,11 +15,13 @@ describe SlackSlashCommandsService, models: true do
           token: 'token'
         }
       end
+
       let(:service) do
         project.create_slack_slash_commands_service(
           properties: { token: 'token' }
         )
       end
+
       let(:authorize_url) do
         'http://authorize.example.com/'
       end
