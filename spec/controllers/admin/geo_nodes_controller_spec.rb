@@ -23,7 +23,9 @@ describe Admin::GeoNodesController do
     subject { get :index }
 
     context 'with add-on license available' do
-      before { allow(Gitlab::Geo).to receive(:license_allows?).and_return(true) }
+      before do
+        allow(Gitlab::Geo).to receive(:license_allows?).and_return(true)
+      end
 
       it 'renders creation form' do
         expect(subject).to render_template(partial: 'admin/geo_nodes/_form')
@@ -31,7 +33,9 @@ describe Admin::GeoNodesController do
     end
 
     context 'without add-on license available' do
-      before { allow(Gitlab::Geo).to receive(:license_allows?).and_return(false) }
+      before do
+        allow(Gitlab::Geo).to receive(:license_allows?).and_return(false)
+      end
 
       it 'does not render the creation form' do
         expect(subject).not_to render_template(partial: 'admin/geo_nodes/_form')
@@ -51,10 +55,14 @@ describe Admin::GeoNodesController do
 
   describe '#destroy' do
     let!(:geo_node) { create(:geo_node) }
-    subject { delete(:destroy, id: geo_node) }
+    subject do
+      delete(:destroy, id: geo_node)
+    end
 
     context 'without add-on license' do
-      before { allow(Gitlab::Geo).to receive(:license_allows?).and_return(false) }
+      before do
+        allow(Gitlab::Geo).to receive(:license_allows?).and_return(false)
+      end
 
       it 'deletes the node' do
         expect { subject }.to change { GeoNode.count }.by(-1)
@@ -62,7 +70,9 @@ describe Admin::GeoNodesController do
     end
 
     context 'with add-on license' do
-      before { allow(Gitlab::Geo).to receive(:license_allows?).and_return(true) }
+      before do
+        allow(Gitlab::Geo).to receive(:license_allows?).and_return(true)
+      end
 
       it 'deletes the node' do
         expect { subject }.to change { GeoNode.count }.by(-1)
@@ -84,7 +94,9 @@ describe Admin::GeoNodesController do
     end
 
     context 'with add-on license' do
-      before { allow(Gitlab::Geo).to receive(:license_allows?).and_return(true) }
+      before do
+        allow(Gitlab::Geo).to receive(:license_allows?).and_return(true)
+      end
 
       it 'creates the node' do
         expect { subject }.to change { GeoNode.count }.by(1)
