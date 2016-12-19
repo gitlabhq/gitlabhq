@@ -571,7 +571,7 @@ module API
           required: false,
           name: :multiproject_enabled,
           type: Boolean,
-          desc: 'hould unstable builds be treated as passing?'
+          desc: 'Should unstable builds be treated as passing?'
         }
       ]
     }.freeze
