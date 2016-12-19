@@ -463,15 +463,11 @@
     white-space: normal;
     color: $gl-text-color-light;
 
-<<<<<<< HEAD
-
     .dropdown-menu-toggle {
       background-color: transparent;
       border: none;
       padding: 0;
       color: $gl-text-color-light;
-      flex-grow: 1;
-
 
       &:focus {
         outline: none;
@@ -486,10 +482,6 @@
       }
     }
 
-    &:hover {
-      background-color: $stage-hover-bg;
-      border: 1px solid $stage-hover-border;
-=======
     > .build-content {
       display: inline-block;
       padding: 8px 10px 9px;
@@ -497,8 +489,7 @@
       border: 1px solid $border-color;
       border-radius: 30px;
       background-color: $white-light;
->>>>>>> master
-
+      
       &:hover {
         background-color: $stage-hover-bg;
         border: 1px solid $stage-hover-border;
@@ -603,22 +594,7 @@
       }
     }
   }
-
-  // Position in the pipeline graph
-  .grouped-pipeline-dropdown {
-<<<<<<< HEAD
-    right: -206px;
-    top: -11px;
-  }
 }
-=======
-    padding: 0;
-    width: 191px;
-    left: auto;
-    right: -195px;
-    top: -4px;
-    box-shadow: 0 1px 5px $black-transparent;
->>>>>>> master
 
 .dropdown-counter-badge {
   float: right;
@@ -632,8 +608,8 @@
   padding: 0;
   width: 191px;
   left: auto;
-  right: -206px;
-  top: -11px;
+  right: -195px;
+  top: -4px;
   box-shadow: 0 1px 5px $black-transparent;
 
   a {
@@ -644,53 +620,10 @@
     }
   }
 
-<<<<<<< HEAD
   ul {
     max-height: 245px;
     overflow: auto;
     margin: 5px 0;
-=======
-    .dropdown-build {
-      color: $gl-text-color-light;
-
-      .build-content {
-        width: 100%;
-      }
-
-      .ci-action-icon-container {
-        font-size: 11px;
-        position: absolute;
-        right: 4px;
-
-        i {
-          width: 25px;
-          height: 25px;
-          font-size: 11px;
-          margin-top: 0;
-
-          &::before {
-            top: 1px;
-            left: 1px;
-          }
-        }
-      }
-
-      &:hover {
-        background-color: $stage-hover-bg;
-        border-radius: 3px;
-        color: $gl-text-color;
-      }
-
-      .stage {
-        max-width: 100px;
-        width: 100px;
-      }
-
-      .ci-status-icon svg {
-        height: 18px;
-        width: 18px;
-      }
->>>>>>> master
 
     li {
       padding-top: 2px;
@@ -747,7 +680,7 @@
 .dropdown-build {
   color: $gl-text-color-light;
 
-  a.ci-action-icon-container {
+  .ci-action-icon-container {
     padding: 0;
     font-size: 11px;
     float: right;
