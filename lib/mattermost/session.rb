@@ -30,6 +30,8 @@ module Mattermost
 
       begin
         yield self
+      rescue Errno::ECONNREFUSED
+        raise NoSessionError
       ensure
         destroy
       end

@@ -26,8 +26,8 @@ class MattermostSlashCommandsService < ChatService
   end
 
   def configure(host, current_user, params)
-    new_token = Mattermost::Session.new(host, current_user).with_session do
-      Mattermost::Command.create(params[:team_id], command)
+    new_token = Mattermost::Session.new(current_user).with_session do |session|
+      Mattermost::Command.create(session, params[:team_id], command)
     end
 
     update!(token: new_token, active: true)
