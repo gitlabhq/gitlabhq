@@ -1,7 +1,7 @@
 //= require jquery
 //= require vue
 //= require vue-resource
-//= require merge_request_widget/approvals/stores/approvals_store
+//= require merge_request_widget/approvals/approvals_store
 
 $.rails = {
   csrfToken() {},

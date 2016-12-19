@@ -1,5 +1,5 @@
-//= require ../stores/approvals_store
-//= require ../services/approvals_api
+//= require ../approvals_store
+//= require ../approvals_api
 
 (() => {
   Vue.component('approvals-body', {

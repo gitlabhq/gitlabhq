@@ -1,4 +1,4 @@
-//= require ../services/approvals_api
+//= require ./approvals_api
 
 (() => {
   let singleton;

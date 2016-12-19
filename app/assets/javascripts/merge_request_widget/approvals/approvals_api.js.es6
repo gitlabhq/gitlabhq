@@ -1,4 +1,4 @@
-//= require ../stores/approvals_store
+//= require ./approvals_store
 
 (() => {
   class ApprovalsApi {

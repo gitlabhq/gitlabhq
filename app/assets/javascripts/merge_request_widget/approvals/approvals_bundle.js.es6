@@ -1,3 +1,3 @@
-//= require_directory ./stores
-//= require_directory ./services
+//= require ./approvals_store
+//= require ./approvals_api
 //= require_directory ./components
