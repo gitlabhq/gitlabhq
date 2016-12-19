@@ -75,7 +75,7 @@ feature 'Merge request approvals', js: true, feature: true do
 
         find('.select2-results').click
         click_on("Submit merge request")
-        expect(page).to have_content("Requires one more approval (from #{other_user.name})")
+        expect(page).to have_content("Requires 1 more approval (from #{other_user.name})")
       end
 
       it 'allows delete approvers group when it is set in project' do
@@ -94,7 +94,7 @@ feature 'Merge request approvals', js: true, feature: true do
         expect(page).to have_css('.approver-list li', count: 1)
 
         click_on("Submit merge request")
-        expect(page).not_to have_content("Requires one more approval (from #{other_user.name})")
+        expect(page).not_to have_content("Requires 1 more approval (from #{other_user.name})")
       end
     end
 
@@ -123,7 +123,7 @@ feature 'Merge request approvals', js: true, feature: true do
         find('.select2-results').click
         click_on("Save changes")
 
-        expect(page).to have_content("Requires one more approval")
+        expect(page).to have_content("Requires 1 more approval")
       end
 
       it 'allows delete approvers group when it`s set in project' do
@@ -142,7 +142,7 @@ feature 'Merge request approvals', js: true, feature: true do
         expect(page).to have_css('.approver-list li', count: 1)
 
         click_on("Save changes")
-        expect(page).to have_content("Requires one more approval (from #{approver.name})")
+        expect(page).to have_content("Requires 1 more approval (from #{approver.name})")
       end
     end
   end
