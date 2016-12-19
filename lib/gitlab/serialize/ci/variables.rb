@@ -12,19 +12,15 @@ module Gitlab
 
           object = YAML.safe_load(string, [Symbol])
 
-          object.map(&Variables.method(:convert_key_value_to_string))
+          object.map do |variable|
+            variable[:key] = variable[:key].to_s
+            variable[:value] = variable[:value].to_s
+            variable
+          end
         end
 
         def dump(object)
           YAML.dump(object)
-        end
-
-        private
-
-        def convert_key_value_to_string(variable)
-          variable[:key] = variable[:key].to_s
-          variable[:value] = variable[:value].to_s
-          variable
         end
       end
     end
