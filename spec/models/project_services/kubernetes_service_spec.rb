@@ -123,4 +123,37 @@ describe KubernetesService, models: true do
       end
     end
   end
+
+  describe '#predefined_variables' do
+    before do
+      subject.api_url = 'https://kube.domain.com'
+      subject.token = 'token'
+      subject.namespace = 'my-project'
+      subject.ca_pem = 'CA PEM DATA'
+    end
+
+    it 'sets KUBE_URL' do
+      expect(subject.predefined_variables).to include(
+        { key: 'KUBE_URL', value: 'https://kube.domain.com', public: true }
+      )
+    end
+
+    it 'sets KUBE_TOKEN' do
+      expect(subject.predefined_variables).to include(
+        { key: 'KUBE_TOKEN', value: 'token', public: false }
+      )
+    end
+
+    it 'sets KUBE_NAMESPACE' do
+      expect(subject.predefined_variables).to include(
+        { key: 'KUBE_NAMESPACE', value: 'my-project', public: true }
+      )
+    end
+
+    it 'sets KUBE_CA_PEM' do
+      expect(subject.predefined_variables).to include(
+        { key: 'KUBE_CA_PEM', value: 'CA PEM DATA', public: true }
+      )
+    end
+  end
 end

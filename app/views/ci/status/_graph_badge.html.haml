@@ -2,7 +2,7 @@
 
 - subject = local_assigns.fetch(:subject)
 - status = subject.detailed_status(current_user)
-- klass = "ci-status-icon ci-status-icon-#{status}"
+- klass = "ci-status-icon ci-status-icon-#{status.group}"
 
 - if status.has_details?
   = link_to status.details_path, data: { toggle: 'tooltip', title: "#{subject.name} - #{status.label}" } do

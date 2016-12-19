@@ -19,7 +19,7 @@
       this.renderWipExplanation = bind(this.renderWipExplanation, this);
       this.resetAutosave = bind(this.resetAutosave, this);
       this.handleSubmit = bind(this.handleSubmit, this);
-      GitLab.GfmAutoComplete.setup();
+      gl.GfmAutoComplete.setup();
       new UsersSelect();
       new ZenMode();
       this.titleField = this.form.find("input[name*='[title]']");

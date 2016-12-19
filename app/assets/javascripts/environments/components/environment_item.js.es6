@@ -449,7 +449,7 @@
           </span>
         </td>
 
-        <td>
+        <td class="environments-build-cell">
           <a v-if="shouldRenderBuildName"
             class="build-link"
             :href="model.last_deployment.deployable.build_path">

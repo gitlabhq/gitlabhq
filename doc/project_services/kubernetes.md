@@ -36,3 +36,14 @@ to create one. You can also view or create service tokens in the
 Fill in the service token and namespace according to the values you just got.
 If the API is using a self-signed TLS certificate, you'll also need to include
 the `ca.crt` contents as the `Custom CA bundle`.
+
+## Deployment variables
+
+The Kubernetes service exposes following
+[deployment variables](../ci/variables/README.md#deployment-variables) in the
+GitLab CI build environment:
+
+- `KUBE_URL` - equal to the API URL
+- `KUBE_TOKEN`
+- `KUBE_NAMESPACE`
+- `KUBE_CA_PEM` - only if a custom CA bundle was specified

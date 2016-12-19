@@ -30,19 +30,25 @@
     display: table-cell;
   }
 
+  .environments-name,
   .environments-commit,
   .environments-actions {
     width: 20%;
   }
 
-  .environments-deploy,
-  .environments-build,
   .environments-date {
     width: 10%;
   }
 
-  .environments-name {
-    width: 30%;
+  .environments-deploy,
+  .environments-build {
+    width: 15%;
+  }
+
+  .environment-name,
+  .environments-build-cell,
+  .deployment-column {
+    word-break: break-all;
   }
 
   .deployment-column {

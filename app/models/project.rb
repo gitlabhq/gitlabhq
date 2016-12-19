@@ -1230,6 +1230,12 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def deployment_variables
+    return [] unless deployment_service
+
+    deployment_service.predefined_variables
+  end
+
   def append_or_update_attribute(name, value)
     old_values = public_send(name.to_s)
 

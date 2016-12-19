@@ -13,6 +13,7 @@ this order:
 1. [Secret variables](#secret-variables)
 1. YAML-defined [job-level variables](../yaml/README.md#job-variables)
 1. YAML-defined [global variables](../yaml/README.md#variables)
+1. [Deployment variables](#deployment-variables)
 1. [Predefined variables](#predefined-variables-environment-variables) (are the
    lowest in the chain)
 
@@ -60,6 +61,9 @@ version of Runner required.
 | **CI_RUNNER_DESCRIPTION** | 8.10 | 0.5    | The description of the runner as saved in GitLab |
 | **CI_RUNNER_TAGS**      | 8.10   | 0.5    | The defined runner tags |
 | **CI_DEBUG_TRACE**      | all    | 1.7    | Whether [debug tracing](#debug-tracing) is enabled |
+| **GET_SOURCES_ATTEMPTS** | 8.15    | 1.9    | Number of attempts to fetch sources running a build |
+| **ARTIFACT_DOWNLOAD_ATTEMPTS** | 8.15    | 1.9    | Number of attempts to download artifacts running a build |
+| **RESTORE_CACHE_ATTEMPTS** | 8.15    | 1.9    | Number of attempts to restore the cache running a build |
 | **GITLAB_USER_ID**      | 8.12   | all    | The id of the user who started the build |
 | **GITLAB_USER_EMAIL**   | 8.12   | all    | The email of the user who started the build |
 
@@ -147,6 +151,20 @@ Secret variables can be added by going to your project's
 **Settings ➔ Variables ➔ Add variable**.
 
 Once you set them, they will be available for all subsequent builds.
+
+## Deployment variables
+
+>**Note:**
+This feature requires GitLab CI 8.15 or higher.
+
+[Project services](../../project_services/project_services.md) that are
+responsible for deployment configuration may define their own variables that
+are set in the build environment. These variables are only defined for
+[deployment builds](../environments.md). Please consult the documentation of
+the project services that you are using to learn which variables they define.
+
+An example project service that defines deployment variables is
+[Kubernetes Service](../../project_services/kubernetes.md).
 
 ## Debug tracing
 

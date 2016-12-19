@@ -438,7 +438,7 @@ $jq-ui-default-color: #777;
 $label-gray-bg: #f8fafc;
 $label-inverse-bg: #333;
 $label-remove-border: rgba(0, 0, 0, .1);
-$label-border-radius: 14px;
+$label-border-radius: 100px;
 
 /*
 * Lint
@@ -474,7 +474,6 @@ $project-option-descr-color: #54565b;
 $project-breadcrumb-color: #999;
 $project-private-forks-notice-odd: #2aa056;
 $project-network-controls-color: #888;
-$project-limit-message-bg: #f28d35;
 
 /*
 * Runners

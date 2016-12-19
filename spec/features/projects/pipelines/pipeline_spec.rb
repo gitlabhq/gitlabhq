@@ -99,7 +99,7 @@ describe "Pipelines", feature: true, js: true do
       context 'when pipeline has manual builds' do
         it 'shows the skipped icon and a play action for the manual build' do
           page.within('a[data-title="manual build - manual play action"]') do
-            expect(page).to have_selector('.ci-status-icon-skipped')
+            expect(page).to have_selector('.ci-status-icon-manual')
             expect(page).to have_content('manual')
           end
 
