@@ -1,4 +1,4 @@
-class UpdateBuildMinutesService
+class UpdateBuildMinutesService < BaseService
   def execute(build)
     return unless build.runner.try(:shared?)
     return unless build.project.try(:shared_runners_minutes_limit_enabled?)

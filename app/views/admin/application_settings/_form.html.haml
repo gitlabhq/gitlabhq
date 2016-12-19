@@ -220,7 +220,7 @@
       .col-sm-10
         = f.number_field :shared_runners_minutes, class: 'form-control'
         .help-block
-          Set the maximum number of minutes that a group can use shared runners in a one month period
+          Set the maximum number of minutes that a group can use shared runners in a one month period. 0 for unlimited.
           = link_to "(?)", help_page_path("user/admin_area/settings/continuous_integration", anchor: "shared-runners-minutes")
     .form-group
       = f.label :shared_runners_text, class: 'control-label col-sm-2'
