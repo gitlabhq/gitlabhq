@@ -1,10 +1,14 @@
 class Admin::GeoNodesController < Admin::ApplicationController
-  before_action :check_license
+  before_action :check_license, except: [:index, :destroy]
   before_action :load_node, only: [:destroy, :repair, :backfill_repositories]
 
   def index
     @nodes = GeoNode.all
     @node = GeoNode.new
+
+    unless Gitlab::Geo.license_allows?
+      flash.now[:alert] = 'You need a different license to enable Geo replication'
+    end
   end
 
   def create
