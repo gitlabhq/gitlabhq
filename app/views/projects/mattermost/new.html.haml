@@ -1,13 +1,8 @@
-- twoTeams = [{"id"=>"w59qt5a817f69jkxdz6xe7y4ir", "create_at"=>1481835484179, "update_at"=>1481835484179, "delete_at"=>0, "display_name"=>"new_team", "name"=>"new-team", "email"=>"", "type"=>"O", "company_name"=>"", "allowed_domains"=>"", "invite_id"=>"mfgsqnmpiby18eepo6jd6pq3oh", "allow_open_invite"=>false}, {"id"=>"my9oujxf5jy1zqdgu9rihd66do", "create_at"=>1481826062406, "update_at"=>1481826062406, "delete_at"=>0, "display_name"=>"chatops", "name"=>"chatops", "email"=>"", "type"=>"O", "company_name"=>"", "allowed_domains"=>"", "invite_id"=>"s7c1phenmi8udkybcyytc3pxuh", "allow_open_invite"=>false}]
-- oneTeams = [{"id"=>"w59qt5a817f69jkxdz6xe7y4ir", "create_at"=>1481835484179, "update_at"=>1481835484179, "delete_at"=>0, "display_name"=>"new_team", "name"=>"new-team", "email"=>"", "type"=>"O", "company_name"=>"", "allowed_domains"=>"", "invite_id"=>"mfgsqnmpiby18eepo6jd6pq3oh", "allow_open_invite"=>false}]
-- noTeams = []
-- teams = twoTeams
-
 .service-installation
   .inline.pull-right
     = custom_icon('mattermost_logo', size: 48)
   %h3 Install Mattermost Command
-  - if teams.count === 0
+  - if @teams.empty?
     %p
       To install this service, you must be administrator of a team in the Mattermost instance at
       %strong some_path.url
@@ -23,7 +18,7 @@
     = form_for(:create, method: :post, url: configure_namespace_project_mattermost_index_path(@project.namespace, @project, )) do |f|
       %h4 Team
       %p Select or create the team where the slash commands will be used in
-      - options = mattermost_teams_options(teams)
+      - options = mattermost_teams_options(@teams)
       - isOneTeam = options.count === 1
       = f.select(:team_id, options, {}, {class: 'form-control', selected: "#{options.first[1] if isOneTeam}", disabled: isOneTeam})
       - if isOneTeam
