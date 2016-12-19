@@ -52,7 +52,7 @@
     .loading{ 'v-show' => '!showApprovals' }
       = icon('spinner spin')
     .approvals-components{ 'v-show' => 'showApprovals' }
-    = render 'projects/merge_requests/widget/open/approvals_body'
-    = render 'projects/merge_requests/widget/open/approvals_footer'
+      = render 'projects/merge_requests/widget/open/approvals_body'
+      = render 'projects/merge_requests/widget/open/approvals_footer'
 
 
