@@ -15,7 +15,7 @@ module Ci
 
       def authenticate_build!(build)
         not_found! unless build
-        forbidden! if !build_token_valid?(build)
+        forbidden! unless build_token_valid?(build)
         validate_build!(build)
       end
 
