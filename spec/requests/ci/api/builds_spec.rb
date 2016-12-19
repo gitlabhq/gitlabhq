@@ -251,9 +251,7 @@ describe Ci::API::Builds do
     describe 'PATCH /builds/:id/trace.txt' do
       let(:build) do
         attributes = {runner_id: runner.id, pipeline: pipeline}
-        create(:ci_build, :pending, :trace, attributes) do |build|
-          build.run
-        end
+        create(:ci_build, :running, :trace, attributes)
       end
 
       let(:headers) { { Ci::API::Helpers::BUILD_TOKEN_HEADER => build.token, 'Content-Type' => 'text/plain' } }
@@ -338,8 +336,7 @@ describe Ci::API::Builds do
         context 'when project for the build has been deleted' do
           let(:build) do
             attributes = {runner_id: runner.id, pipeline: pipeline}
-            create(:ci_build, :pending, :trace, attributes) do |build|
-              build.run
+            create(:ci_build, :running, :trace, attributes) do |build|
               build.project.update(pending_delete: true)
             end
           end
