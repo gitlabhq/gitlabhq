@@ -4,10 +4,10 @@
 (() => {
   let singleton;
 
-  class ApprovalsStore {
+  class MergeRequestApprovalsStore {
     constructor(rootStore) {
       if (!singleton) {
-        singleton = gl.ApprovalsStore = this;
+        singleton = this;
         this.init(rootStore);
       }
       return singleton;
@@ -63,6 +63,6 @@
       return this.rootStore.assignToData(key, data);
     }
   }
-  gl.ApprovalsStore = ApprovalsStore;
-})();
+  gl.MergeRequestApprovalsStore = MergeRequestApprovalsStore;
+})(window.gl || (window.gl = {}));
 

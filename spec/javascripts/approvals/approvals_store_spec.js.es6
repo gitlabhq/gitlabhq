@@ -8,9 +8,6 @@ $.rails = {
 };
 
 (() => {
-  // store constructor reference, to overwrite ApprovalStore singleton
-  gl.ApprovalsConstructor = gl.ApprovalsStore;
-
   // stand in for promise returned by api calls
   const mockThenable = {
     then() {
@@ -34,7 +31,7 @@ $.rails = {
   describe('Approvals Store', function () {
     beforeEach(function () {
       this.rootStore = mockRootStore;
-      this.approvalsStore = new gl.ApprovalsConstructor(this.rootStore);
+      this.approvalsStore = new gl.MergeRequestApprovalsStore(this.rootStore);
     });
 
     it('should define all needed approval api calls', function () {

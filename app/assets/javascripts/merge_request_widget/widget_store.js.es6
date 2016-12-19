@@ -28,7 +28,7 @@
     }
 
     initApprovals() {
-      gl.ApprovalsStore = new gl.ApprovalsStore(this);
+      gl.ApprovalsStore = new gl.MergeRequestApprovalsStore(this);
       this.assignToData('approvals', {});
     }
 
