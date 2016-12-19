@@ -40,6 +40,8 @@ module Gitlab
       # the relation_hash, updating references with new object IDs, mapping users using
       # the "members_mapper" object, also updating notes if required.
       def create
+        return nil if unknown_service?
+
         setup_models
 
         generate_imported_object
@@ -214,6 +216,11 @@ module Gitlab
             existing_object.update!(parsed_relation_hash)
             existing_object
           end
+      end
+
+      def unknown_service?
+        @relation_name == :services && parsed_relation_hash['type'] &&
+          !Object.const_defined?(parsed_relation_hash['type'])
       end
     end
   end
