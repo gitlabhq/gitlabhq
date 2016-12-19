@@ -174,8 +174,7 @@ class Namespace < ActiveRecord::Base
   end
 
   def shared_runners_enabled?
-    projects.where(shared_runners_enabled: true).any? ||
-      current_application_settings.shared_runners_enabled?
+    projects.where(shared_runners_enabled: true).any?
   end
 
   def shared_runners_minutes_limit

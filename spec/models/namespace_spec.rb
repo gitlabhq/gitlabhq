@@ -4,6 +4,7 @@ describe Namespace, models: true do
   let!(:namespace) { create(:namespace) }
 
   it { is_expected.to have_many :projects }
+  it { is_expected.to have_one(:namespace_metrics).dependent(:destroy) }
 
   it { is_expected.to validate_presence_of(:name) }
   it { is_expected.to validate_uniqueness_of(:name) }
@@ -16,6 +17,9 @@ describe Namespace, models: true do
   it { is_expected.to validate_length_of(:path).is_at_most(255) }
 
   it { is_expected.to validate_presence_of(:owner) }
+
+  it { is_expected.to delegate_method(:shared_runner_minutes).to(:namespace_metrics) }
+  it { is_expected.to delegate_method(:shared_runner_last_reset).to(:namespace_metrics) }
 
   describe "Mass assignment" do
   end
@@ -143,5 +147,113 @@ describe Namespace, models: true do
 
     it { expect(group.full_path).to eq(group.path) }
     it { expect(nested_group.full_path).to eq("#{group.path}/#{nested_group.path}") }
+  end
+
+  describe '#shared_runners_enabled?' do
+    subject { namespace.shared_runners_enabled? }
+
+    context 'without projects' do
+      it { is_expected.to be_falsey }
+    end
+
+    context 'with project' do
+      context 'and disabled shared runners' do
+        let!(:project) { create(:empty_project, namespace: namespace) }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'and enabled shared runners' do
+        let!(:project) do
+          create(:empty_project,
+            namespace: namespace,
+            shared_runners_enabled: true)
+        end
+
+        it { is_expected.to be_truthy }
+      end
+    end
+  end
+
+  describe '#shared_runners_minutes_limit' do
+    subject { namespace.shared_runners_minutes_limit }
+
+    context 'when no limit defined' do
+      it { is_expected.to be_nil }
+    end
+
+    context 'when application settings limit is set' do
+      before do
+        stub_application_setting(shared_runners_minutes: 1000)
+      end
+
+      it 'returns global limit' do
+        is_expected.to eq(1000)
+      end
+
+      context 'when namespace limit is set' do
+        before do
+          namespace.shared_runners_minutes_limit = 500
+        end
+
+        it 'returns namespace limit' do
+          is_expected.to eq(500)
+        end
+      end
+    end
+  end
+
+  describe '#shared_runners_minutes_limit_enabled?' do
+    subject { namespace.shared_runners_minutes_limit_enabled? }
+
+    context 'when no limit defined' do
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when limit is defined' do
+      before do
+        namespace.shared_runners_minutes_limit = 500
+      end
+
+      it { is_expected.to be_truthy }
+    end
+  end
+
+  describe '#shared_runners_minutes_used?' do
+    subject { namespace.shared_runners_minutes_used? }
+
+    context 'with project' do
+      let!(:project) do
+        create(:empty_project,
+          namespace: namespace,
+          shared_runners_enabled: true)
+      end
+
+      context 'when limit is defined' do
+        context 'when limit is used' do
+          let(:namespace) { create(:namespace, :with_used_build_minutes_limit) }
+
+          it { is_expected.to be_truthy }
+        end
+
+        context 'when limit not yet used' do
+          let(:namespace) { create(:namespace, :with_not_used_build_minutes_limit) }
+
+          it { is_expected.to be_falsey }
+        end
+
+        context 'when minutes are not yet set' do
+          it { is_expected.to be_falsey }
+        end
+      end
+
+      context 'without limit' do
+        it { is_expected.to be_falsey }
+      end
+    end
+
+    context 'without project' do
+      it { is_expected.to be_falsey }
+    end
   end
 end

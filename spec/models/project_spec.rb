@@ -5,6 +5,7 @@ describe Project, models: true do
     it { is_expected.to belong_to(:group) }
     it { is_expected.to belong_to(:namespace) }
     it { is_expected.to belong_to(:creator).class_name('User') }
+    it { is_expected.to have_one(:project_metrics).dependent(:destroy) }
     it { is_expected.to have_many(:users) }
     it { is_expected.to have_many(:services) }
     it { is_expected.to have_many(:events).dependent(:destroy) }
@@ -71,6 +72,13 @@ describe Project, models: true do
     it { is_expected.to have_many(:notification_settings).dependent(:destroy) }
     it { is_expected.to have_many(:forks).through(:forked_project_links) }
     it { is_expected.to have_many(:approver_groups).dependent(:destroy) }
+
+    it { is_expected.to delegate_method(:shared_runner_minutes).to(:project_metrics) }
+    it { is_expected.to delegate_method(:shared_runner_last_reset).to(:project_metrics) }
+
+    it { is_expected.to delegate_method(:shared_runners_minutes_limit).to(:namespace) }
+    it { is_expected.to delegate_method(:shared_runners_minutes_limit_enabled?).to(:namespace) }
+    it { is_expected.to delegate_method(:shared_runners_minutes_used?).to(:namespace) }
 
     context 'after initialized' do
       it "has a project_feature" do
@@ -1087,14 +1095,29 @@ describe Project, models: true do
     context 'for shared runners enabled' do
       let(:shared_runners_enabled) { true }
 
-      it 'has a shared runner' do
+      before do
         shared_runner
+      end
+
+      it 'has a shared runner' do
         expect(project.any_runners?).to be_truthy
       end
 
       it 'checks the presence of shared runner' do
-        shared_runner
         expect(project.any_runners? { |runner| runner == shared_runner }).to be_truthy
+      end
+
+      context 'with used build minutes' do
+        let(:namespace) { create(:namespace, :with_used_build_minutes_limit) }
+        let(:project) do
+          create(:empty_project,
+            namespace: namespace,
+            shared_runners_enabled: shared_runners_enabled)
+        end
+
+        it 'does not have a shared runner' do
+          expect(project.any_runners?).to be_falsey
+        end
       end
     end
   end
@@ -2044,6 +2067,42 @@ describe Project, models: true do
       it 'finds both environments' do
         expect(project.environments_recently_updated_on_branch('feature'))
           .to contain_exactly(environment, second_environment)
+      end
+    end
+  end
+
+  describe '#shared_runners_minutes_limit_enabled?' do
+    subject { project.shared_runners_minutes_limit_enabled? }
+
+    context 'with limit enabled' do
+      let(:namespace) { create(:namespace, :with_build_minutes_limit) }
+
+      context 'for public project' do
+        let(:project) { create(:empty_project, :public, namespace: namespace) }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'for internal project' do
+        let(:project) { create(:empty_project, :internal, namespace: namespace) }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'for private project' do
+        let(:project) { create(:empty_project, :private, namespace: namespace) }
+
+        it { is_expected.to be_falsey }
+      end
+    end
+
+    context 'with limit not set' do
+      let(:namespace) { create(:namespace) }
+
+      context 'for public project' do
+        let(:project) { create(:empty_project, :public, namespace: namespace) }
+
+        it { is_expected.to be_falsey }
       end
     end
   end
