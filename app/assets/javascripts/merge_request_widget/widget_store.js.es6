@@ -23,7 +23,6 @@
     }
 
     initWidgetState() {
-      this.assignToData('showWidgetBody', true);
       this.assignToData('showApprovals', false);
       this.assignToData('disableAcceptance', false);
     }
