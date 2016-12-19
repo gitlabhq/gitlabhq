@@ -146,17 +146,11 @@ describe Repository, models: true do
   end
 
   describe '#cache_last_commit_id_for_path' do
-    subject { repository.cache_last_commit_id_for_path(sample_commit.id, '.gitignore') }
-    let(:cache) { repository.send(:cache) }
-    let(:key) { "last_commit_id_for_path:#{sample_commit.id}:#{Digest::SHA1.digest('.gitignore')}" }
-    before { cache.expire(key) }
-    after { cache.expire(key) }
-
     it "caches #last_commit_id_for_path" do
-      expect(repository).to receive(:last_commit_id_for_path).once.and_return('c1acaa58bbcbc3eafe538cb8274ba387047b69f8')
-      2.times do
-        is_expected.to eq('c1acaa58bbcbc3eafe538cb8274ba387047b69f8')
-      end
+      cache = repository.send(:cache)
+      key = "last_commit_id_for_path:#{sample_commit.id}:#{Digest::SHA1.hexdigest('.gitignore')}"
+      expect(cache).to receive(:fetch).with(key).and_return('c1acaa5')
+      expect(repository.cache_last_commit_id_for_path(sample_commit.id, '.gitignore')).to eq('c1acaa5')
     end
   end
 
