@@ -49,7 +49,7 @@
       avatarSize: {
         type: Number,
         required: false,
-        default: 32
+        default: 32,
       },
     },
     data() {

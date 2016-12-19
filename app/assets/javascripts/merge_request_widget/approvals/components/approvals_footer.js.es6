@@ -21,7 +21,7 @@
       userHasApproved: {
         type: Boolean,
         required: false,
-      } ,
+      },
       suggestedApprovers: {
         type: Array,
         required: false,
@@ -33,7 +33,7 @@
       checkmarkSvg: {
         type: String,
         required: true,
-      }
+      },
     },
     computed: {
       hasApprovers() {

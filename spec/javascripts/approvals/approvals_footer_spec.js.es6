@@ -4,7 +4,6 @@
 //= require jquery
 //= require merge_request_widget/approvals/components/approvals_footer
 
-
 (() => {
   gl.ApprovalsStore = {
     data: {},

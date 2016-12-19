@@ -21,11 +21,11 @@
       userHasApproved: {
         type: Boolean,
         required: false,
-      } ,
+      },
       suggestedApprovers: {
         type: Array,
         required: false,
-      }
+      },
     },
     computed: {
       approvalsRequiredStringified() {
