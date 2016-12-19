@@ -14,13 +14,15 @@ class SlackSlashCommandsService < ChatSlashCommandsService
   end
 
   def trigger(params)
-    result = super
-
     # Format messages to be Slack-compatible
-    if result && result[:text]
-      result[:text] = Slack::Notifier::LinkFormatter.format(result[:text])
+    super.tap do |result|
+      result[:text] = format(result[:text])
     end
+  end
 
-    result
+  private
+
+  def format(text)
+    Slack::Notifier::LinkFormatter.format(text) if text
   end
 end

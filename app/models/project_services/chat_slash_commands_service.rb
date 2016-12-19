@@ -28,7 +28,7 @@ class ChatSlashCommandsService < Service
   end
 
   def trigger(params)
-    return nil unless valid_token?(params[:token])
+    return unless valid_token?(params[:token])
 
     user = find_chat_user(params)
     unless user
