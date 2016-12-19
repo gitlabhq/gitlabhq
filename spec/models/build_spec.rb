@@ -1319,7 +1319,7 @@ describe Ci::Build, models: true do
     context 'when environment uses yaml_variables containing symbol keys' do
       let(:build) do
         create(:ci_build,
-               yaml_variables: [{key: :APP_HOST, value: 'host'}],
+               yaml_variables: [{ key: :APP_HOST, value: 'host' }],
                environment: 'review/$APP_HOST')
       end
 
