@@ -102,29 +102,34 @@ describe MattermostSlashCommandsService, models: true do
     let(:service) { project.build_mattermost_slash_commands_service }
 
     subject do
-      service.configure('http://localhost:8065', nil, team_id: 'abc', trigger: 'gitlab', url: 'http://trigger.url', icon_url: 'http://icon.url/icon.png')
+      service.configure('http://localhost:8065', team_id: 'abc', trigger: 'gitlab', url: 'http://trigger.url', icon_url: 'http://icon.url/icon.png')
     end
 
-    it 'creates a new Mattermost session' do
-      expect_any_instance_of(Mattermost::Session).to receive(:with_session)
+    context 'the requests succeeds' do
+      before do
+        allow_any_instance_of(Mattermost::Session).to receive(:with_session).
+          and_return('token' => 'mynewtoken')
+      end
 
-      subject
+      it 'saves the service' do
+        expect_any_instance_of(Mattermost::Session).to receive(:with_session)
+        expect { subject }.to change { project.services.count }.by(1)
+      end
+
+      it 'saves the token' do
+        subject
+
+        expect(service.reload.token).to eq('mynewtoken')
+      end
     end
 
-    it 'saves the service' do
-      allow_any_instance_of(Mattermost::Session).to receive(:with_session).
-        and_return('mynewtoken')
+    context 'an error is received' do
+      it 'shows error messages' do
+        allow_any_instance_of(Mattermost::Session).to receive(:with_session).
+          and_return('token' => 'mynewtoken', 'message' => "Error")
 
-      expect { subject }.to change { project.services.count }.by(1)
-    end
-
-    it 'saves the token' do
-      allow_any_instance_of(Mattermost::Session).to receive(:with_session).
-        and_return('mynewtoken')
-
-      subject
-
-      expect(service.reload.token).to eq('mynewtoken')
+        expect(subject).to eq("Error")
+      end
     end
   end
 end

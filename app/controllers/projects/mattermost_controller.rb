@@ -7,12 +7,13 @@ class Projects::MattermostController < Projects::ApplicationController
   def new
   end
 
-  def configure
-    @service.configure(host, current_user, configure_params)
+  def create
+    message = @service.configure(current_user, configure_params)
+    notice = message.is_a?(String) ? message : 'This service is now configured'
 
     redirect_to(
       new_namespace_project_mattermost_path(@project.namespace, @project),
-      notice: 'This service is now configured.'
+      notice: notice
     )
   rescue NoSessionError
     redirect_to(
@@ -24,7 +25,8 @@ class Projects::MattermostController < Projects::ApplicationController
   private
 
   def configure_params
-    params.permit(:trigger, :team_id).merge(url: service_trigger_url(@service), icon_url: asset_url('gitlab_logo.png'))
+    params.permit(:trigger, :team_id).
+      merge(url: service_trigger_url(@service), icon_url: asset_url('gitlab_logo.png'))
   end
 
   def service
@@ -32,13 +34,6 @@ class Projects::MattermostController < Projects::ApplicationController
   end
 
   def teams
-    @teams =
-      begin
-        Mattermost::Mattermost.new(Gitlab.config.mattermost.host, current_user).with_session do
-          Mattermost::Team.team_admin
-        end
-      rescue
-        []
-      end
+    @teams = @service.list_teams(current_user)
   end
 end

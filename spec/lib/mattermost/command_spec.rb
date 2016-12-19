@@ -1,17 +1,25 @@
 require 'spec_helper'
 
 describe Mattermost::Command do
+  let(:session) { double("session") }
+  let(:hash) { { 'token' => 'token' } }
+
   describe '.create' do
-    let(:new_command) do
-      JSON.parse(File.read(Rails.root.join('spec/fixtures/', 'mattermost_new_command.json')))
+    before do
+      allow(session).to receive(:post).and_return(hash)
+      allow(hash).to receive(:parsed_response).and_return(hash)
     end
 
-    it 'gets the teams' do
-      allow(described_class).to receive(:post_command).and_return(new_command)
+    context 'with access' do
+      it 'gets the teams' do
+        expect(session).to receive(:post)
 
-      token = described_class.create('abc', url: 'http://trigger.url/trigger', icon_url: 'http://myicon.com/icon.png')
+        described_class.create(session, 'abc', url: 'http://trigger.com')
+      end
+    end
 
-      expect(token).to eq('pzajm5hfbtni3r49ujpt8betpc')
+    context 'on an error' do
+
     end
   end
 end

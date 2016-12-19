@@ -25,12 +25,29 @@ class MattermostSlashCommandsService < ChatService
     ]
   end
 
-  def configure(host, current_user, params)
-    new_token = Mattermost::Session.new(host, current_user).with_session do
-      Mattermost::Command.create(params[:team_id], command)
+  def configure(current_user, params)
+    result = Mattermost::Session.new(current_user).with_session do |session|
+      Mattermost::Command.create(session, params[:team_id], command)
     end
 
-    update!(token: new_token, active: true)
+    if result.has_key?('message')
+      result['message']
+    else
+      update!(token: result['token'], active: true)
+    end
+  end
+
+  def list_teams
+    begin
+      response = Mattermost::Mattermost.new(current_user).with_session do |session|
+        Mattermost::Team.teams(session)
+      end
+
+      # We ignore the error message as we can't display it
+      response.has_key?('message') ? [] : response
+    rescue Mattermost::NoSessionError
+      []
+    end
   end
 
   def trigger(params)

@@ -1,21 +1,13 @@
 module Mattermost
-  class Team < Session
-    def self.team_admin
-      return [] unless initial_load['team_members']
+  class Team
+    def self.all(session)
+      response_body = retreive_teams(session)
 
-      team_ids = initial_load['team_members'].map do |team|
-        team['team_id'] if team['roles'].split.include?('team_admin')
-      end.compact
-
-      initial_load['teams'].select do |team|
-        team_ids.include?(team['id'])
-      end
+      response_body.has_key?('message') ? response_body : response_body.values
     end
 
-    private
-
-    def initial_load
-      @initial_load ||= get('/users/initial_load').parsed_response
+    def self.retreive_teams(session)
+      session.get('/api/v3/teams/all').parsed_response
     end
   end
 end
