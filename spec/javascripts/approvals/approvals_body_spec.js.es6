@@ -55,7 +55,7 @@
     describe('Computed properties', function () {
       describe('approvalsRequiredStringified', function () {
         it('should display the correct string for 1 possible approver', function () {
-          const correctText = 'one more approval';
+          const correctText = '1 more approval';
           expect(this.approvalsBody.approvalsRequiredStringified).toBe(correctText);
         });
 
@@ -72,7 +72,7 @@
       });
 
       describe('approverNamesStringified', function () {
-        // Preceded by: Requires {one more approval} required from _____
+        // Preceded by: Requires {1 more approval} required from _____
         it('should display the correct string for 1 possible approver name', function (done) {
           const correctText = 'Approver 1';
           Vue.nextTick(() => {
