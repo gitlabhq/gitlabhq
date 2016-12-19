@@ -209,6 +209,7 @@ project:
 - path_locks
 - approver_groups
 - route
+- project_metrics
 award_emoji:
 - awardable
 - user

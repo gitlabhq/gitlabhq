@@ -11,8 +11,6 @@ module Ci
     end
 
     def execute
-      builds = Ci::Build.pending.unstarted
-
       builds =
         if runner.shared?
           builds_for_shared_runner

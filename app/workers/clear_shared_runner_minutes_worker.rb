@@ -1,6 +1,6 @@
 class ClearSharedRunnerMinutesWorker
   include Sidekiq::Worker
-  include DedicatedSidekiqQueue
+  include CronjobQueue
 
   def perform
     ProjectMetrics.update_all(
