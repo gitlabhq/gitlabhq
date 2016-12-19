@@ -1,9 +1,7 @@
 module Mattermost
   class Team
     def self.all(session)
-      response_body = retreive_teams(session)
-
-      response_body.has_key?('message') ? response_body : response_body.values
+      retreive_teams(session)
     end
 
     def self.retreive_teams(session)

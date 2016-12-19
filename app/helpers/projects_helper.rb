@@ -153,7 +153,7 @@ module ProjectsHelper
       return nil unless team['display_name'] && team['id']
       [team['display_name'], team['id']]
     end.compact
-    teams_options.unshift(['Select a team...', '0']) unless teams_options.count === 1
+    teams_options.unshift(['Select team...', '0']) unless teams_options.one?
     teams_options
   end
 

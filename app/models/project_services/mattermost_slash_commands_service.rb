@@ -39,8 +39,8 @@ class MattermostSlashCommandsService < ChatService
 
   def list_teams
     begin
-      response = Mattermost::Mattermost.new(current_user).with_session do |session|
-        Mattermost::Team.teams(session)
+      response = Mattermost::Session.new(current_user).with_session do |session|
+        Mattermost::Team.all(session)
       end
 
       # We ignore the error message as we can't display it

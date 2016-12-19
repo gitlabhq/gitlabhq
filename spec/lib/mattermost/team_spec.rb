@@ -3,22 +3,39 @@ require 'spec_helper'
 describe Mattermost::Team do
   describe '.team_admin' do
     let(:session) { double("session") }
-    # TODO fix fixture
-    let(:json) { File.read(Rails.root.join('spec/fixtures/', 'mattermost_initial_load.json')) } 
-    let(:parsed_response) { JSON.parse(json) }
+
+    let(:response) do
+      [{
+        "id"=>"xiyro8huptfhdndadpz8r3wnbo",
+        "create_at"=>1482174222155,
+        "update_at"=>1482174222155,
+        "delete_at"=>0,
+        "display_name"=>"chatops",
+        "name"=>"chatops",
+        "email"=>"admin@example.com",
+        "type"=>"O",
+        "company_name"=>"",
+        "allowed_domains"=>"",
+        "invite_id"=>"o4utakb9jtb7imctdfzbf9r5ro",
+        "allow_open_invite"=>false}]
+    end
+
+    let(:json) { nil }
 
     before do
       allow(session).to receive(:get).with('/api/v3/teams/all').
         and_return(json)
-      allow(json).to receive(:parsed_response).and_return(parsed_response)
+      allow(json).to receive(:parsed_response).and_return(response)
     end
 
-    xit 'gets the teams' do
-      expect(described_class.all(session).count).to be(2)
+    it 'gets the teams' do
+      expect(described_class.all(session).count).to be(1)
     end
 
-    xit 'filters on being team admin' do
-      expect(ids).to include("w59qt5a817f69jkxdz6xe7y4ir", "my9oujxf5jy1zqdgu9rihd66do")
+    it 'filters on being team admin' do
+      ids = described_class.all(session).map { |team| team['id'] }
+
+      expect(ids).to include("xiyro8huptfhdndadpz8r3wnbo")
     end
   end
 end

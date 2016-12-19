@@ -1,0 +1,41 @@
+%p
+  This service will be installed on the Mattermost instance at
+  %strong= Gitlab.config.mattermost.host
+%hr
+= form_for(:create, method: :post, url: configure_namespace_project_mattermost_index_path(@project.namespace, @project)) do |f|
+  %h4 Team
+  %p Select or create the team where the slash commands will be used in
+  - options = mattermost_teams_options(@teams)
+  = f.select(:team_id, options, {}, { class: 'form-control', selected: "#{options.first[1] if options.count.one?}", disabled: options.count.one? })
+  .help-block
+    - if options.count.one?
+      This is the only team where you are an administrator.
+    - else
+      The list shows teams where you are administrator
+    To create a team, ask your Mattermost system administrator.
+    To create a team,
+    = link_to "#{Gitlab.config.mattermost.host}/create_team" do
+      use Mattermost's interface
+      = icon('external-link')
+  %hr
+  %h4 Command trigger word
+  %p Choose the word that will trigger commands
+  = f.text_field(:trigger, value: @project.path, class: 'form-control')
+  .help-block
+    %p Trigger word must be unique, and cannot begin with a slash or contain any spaces. Use the word that works best for your team.
+    %p Fill in the word that works best for your team.
+    %p
+      Suggestions:
+      %code= 'gitlab'
+      %code= @project.path # Path contains no spaces, but dashes
+      %code= @project.path_with_namespace
+    %p
+      Reserved:
+      = link_to 'https://docs.mattermost.com/help/messaging/executing-commands.html#built-in-commands', target: '__blank' do
+        see list of built-in slash commands
+        = icon('external-link')
+  %hr
+  .clearfix
+    .pull-right
+      = link_to 'Cancel', edit_namespace_project_service_path(@project.namespace, @project, @service), class: 'btn btn-lg'
+      = f.submit 'Install', class: 'btn btn-save btn-lg'

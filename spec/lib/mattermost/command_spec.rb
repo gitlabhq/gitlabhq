@@ -10,16 +10,10 @@ describe Mattermost::Command do
       allow(hash).to receive(:parsed_response).and_return(hash)
     end
 
-    context 'with access' do
-      it 'gets the teams' do
-        expect(session).to receive(:post)
+    it 'gets the teams' do
+      expect(session).to receive(:post)
 
-        described_class.create(session, 'abc', url: 'http://trigger.com')
-      end
-    end
-
-    context 'on an error' do
-
+      described_class.create(session, 'abc', url: 'http://trigger.com')
     end
   end
 end

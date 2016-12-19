@@ -1,19 +1,10 @@
--# THE ALERT BOX...
--# .alert.alert-info
--#   Mattermost Command was successfully installed. You can now use GitLab inside Mattermost
--#   = emoji_icon('')
-
 .services-installation-info
   .row
     %strong.col-sm-3.text-right Status
     .col-sm-9= @service.activated? ? 'Installed' : 'Not installed'
   .row
     %strong.col-sm-3.text-right Mattermost
-    = link_to 'some_path.url', 'some_path.url', class: 'col-sm-9'
-  - if @service.activated?
-    .row
-      %strong.col-sm-3.text-right Team
-      .col-sm-9 some_team.name
+    = link_to pretty_url(Gitlab.config.mattermost.host), Gitlab.config.mattermost.host, class: 'col-sm-9', target: '__blank'
   .row
     %strong.col-sm-3.text-right Installation
     .col-sm-9
