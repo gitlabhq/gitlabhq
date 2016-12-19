@@ -642,12 +642,12 @@
         padding-left: 0;
         padding-bottom: 0;
         margin-bottom: 0;
-        line-height: 1.2;
       }
     }
 
     .dropdown-build {
       color: $gl-text-color-light;
+      position: relative;
 
       .build-content {
         width: 100%;
@@ -656,7 +656,9 @@
       .ci-action-icon-container {
         font-size: 11px;
         position: absolute;
-        right: 4px;
+        right: 5px;
+        top: 5px;
+        padding: 0;
 
         i {
           width: 25px;
