@@ -63,6 +63,14 @@ module Gitlab
         def action_title
           raise NotImplementedError
         end
+
+        def pipeline_email_template
+          nil
+        end
+
+        def pipeline_email_status
+          raise NotImplementedError
+        end
       end
     end
   end

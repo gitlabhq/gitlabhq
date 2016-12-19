@@ -13,6 +13,14 @@ module Gitlab
         def icon
           'icon_status_failed'
         end
+
+        def pipeline_email_template
+          :pipeline_failed_email
+        end
+
+        def pipeline_email_status
+          'failed'
+        end
       end
     end
   end

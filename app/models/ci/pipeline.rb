@@ -254,6 +254,24 @@ module Ci
       builds.latest.failed_but_allowed.any?
     end
 
+    def recovered?
+      success? && previous_pipeline.try(:failed?)
+    end
+
+    def first_success?
+      success? && previous_pipeline.nil?
+    end
+
+    def previous_pipeline
+      return @previous_pipeline if defined?(@previous_pipeline)
+
+      @previous_pipeline =
+        project.pipelines.
+          where(ref: ref).
+          where("#{self.class.quoted_table_name}.id < ?", id).
+          order(id: :desc).first
+    end
+
     def config_processor
       return nil unless ci_yaml_file
       return @config_processor if defined?(@config_processor)

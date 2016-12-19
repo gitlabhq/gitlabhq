@@ -312,18 +312,12 @@ class NotificationService
   end
 
   def pipeline_finished(pipeline, recipients = nil)
-    email_template = "pipeline_#{pipeline.status}_email"
-
-    return unless mailer.respond_to?(email_template)
-
-    recipients ||= build_recipients(
-      pipeline,
-      pipeline.project,
-      nil, # The acting user, who won't be added to recipients
-      action: pipeline.status).map(&:notification_email)
-
-    if recipients.any?
-      mailer.public_send(email_template, pipeline, recipients).deliver_later
+    Emails::Pipelines.prepare_email(mailer, pipeline) do
+      build_recipients(
+        pipeline,
+        pipeline.project,
+        nil, # The acting user, who won't be added to recipients
+        action: pipeline.status).map(&:notification_email)
     end
   end
 

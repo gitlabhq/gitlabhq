@@ -1,4 +1,4 @@
-Your pipeline has passed.
+Your pipeline has <%= @status %>.
 
 Project: <%= @project.name %> ( <%= project_url(@project) %> )
 Branch: <%= @pipeline.ref %> ( <%= commits_url(@pipeline) %> )

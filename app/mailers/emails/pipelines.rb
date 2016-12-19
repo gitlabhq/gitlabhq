@@ -1,11 +1,29 @@
 module Emails
   module Pipelines
-    def pipeline_success_email(pipeline, recipients)
-      pipeline_mail(pipeline, recipients, 'succeeded')
+    def self.prepare_email(mailer, pipeline)
+      status = pipeline.detailed_status(nil)
+      template = status.pipeline_email_template
+
+      return unless template
+
+      recipients = yield
+
+      return unless recipients.any?
+
+      mailer.public_send(
+        template,
+        pipeline,
+        recipients,
+        status.pipeline_email_status
+      ).deliver_later
     end
 
-    def pipeline_failed_email(pipeline, recipients)
-      pipeline_mail(pipeline, recipients, 'failed')
+    def pipeline_success_email(pipeline, recipients, status)
+      pipeline_mail(pipeline, recipients, status)
+    end
+
+    def pipeline_failed_email(pipeline, recipients, status)
+      pipeline_mail(pipeline, recipients, status)
     end
 
     private
@@ -13,6 +31,7 @@ module Emails
     def pipeline_mail(pipeline, recipients, status)
       @project = pipeline.project
       @pipeline = pipeline
+      @status = status
       @merge_request = pipeline.merge_requests.first
       add_headers
 
