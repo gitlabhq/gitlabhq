@@ -18,12 +18,11 @@
       this.data = {};
 
       // init other widget stores here
-      this.initState();
+      this.initWidgetState();
       this.initApprovals();
     }
 
-    initState() {
-      this.assignToData('loading', true);
+    initWidgetState() {
       this.assignToData('showWidgetBody', true);
       this.assignToData('showApprovals', false);
       this.assignToData('disableAcceptance', false);
