@@ -1,17 +1,5 @@
 .services-installation-info
-  .row
-    %strong.col-sm-3.text-right Status
-    .col-sm-9= @service.activated? ? 'Installed' : 'Not installed'
-  .row
-    %strong.col-sm-3.text-right Mattermost
-    = link_to pretty_url(Gitlab.config.mattermost.host), Gitlab.config.mattermost.host, class: 'col-sm-9', target: '__blank'
   - unless @service.activated?
-    .row
-      %strong.col-sm-3.text-right Installation
-      .col-sm-9
-          To install this service, press
-          %strong Add to Mattermost
-          and follow the instructions
     .row
       .col-sm-9.col-sm-offset-3
         = link_to new_namespace_project_mattermost_path(@project.namespace, @project), class: 'btn btn-lg' do
