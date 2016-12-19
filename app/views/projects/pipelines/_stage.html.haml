@@ -1,0 +1,13 @@
+- detailed_status = @stage.detailed_status(current_user)
+- klass = "has-tooltip ci-status-icon ci-status-icon-#{detailed_status}"
+- hasMultipleBuilds = @stage.statuses.count > 1
+- icon_status = "#{detailed_status.icon}_borderless"
+- icon_status_klass = "ci-status-icon ci-status-icon-#{detailed_status}"
+- tooltip = "#{@stage.name}: #{detailed_status.label || 'not found'}"
+
+.dropdown.inline.build-content
+  %button.has-tooltip.builds-dropdown{ type: 'button', data: { toggle: 'dropdown', title: tooltip} }
+    %span{ class: klass }
+      %span.mini-pipeline-graph-icon-container
+        %span{ class: icon_status_klass }= custom_icon(icon_status)
+        = icon('caret-down', class: 'dropdown-caret')
