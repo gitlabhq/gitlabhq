@@ -44,7 +44,7 @@
         </span>
         <span class='unapprove-btn-wrap' v-if='showUnapproveButton'>
           <i class='fa fa-close'></i>
-          <span @click='removeApproval()'>Remove your approval</span>
+          <span class='unapprove-btn' @click='removeApproval()'>Remove your approval</span>
         </span>
       </div>
     `,
