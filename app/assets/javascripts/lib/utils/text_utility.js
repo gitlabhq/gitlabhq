@@ -44,8 +44,15 @@
       }
     };
     gl.text.insertText = function(textArea, text, tag, blockTag, selected, wrap) {
-      var insertText, inserted, selectedSplit, startChar, removedLastNewLine;
+      var insertText, inserted, selectedSplit, startChar, removedLastNewLine, removedFirstNewLine;
       removedLastNewLine = false;
+      removedFirstNewLine = false;
+
+      // Remove the first newline
+      if (selected.indexOf('\n') === 0) {
+        removedFirstNewLine = true;
+        selected = selected.replace(/\n+/, '');
+      }
 
       // Remove the last newline
       if (textArea.selectionEnd - textArea.selectionStart > selected.replace(/\n$/, '').length) {
@@ -70,6 +77,10 @@
         }
       } else {
         insertText = "" + startChar + tag + selected + (wrap ? tag : ' ');
+      }
+
+      if (removedFirstNewLine) {
+        insertText = '\n' + insertText;
       }
 
       if (removedLastNewLine) {
