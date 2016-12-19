@@ -5,7 +5,8 @@
     props: {
       avatarUrl: {
         type: String,
-        required: true,
+        required: false,
+        default: '/assets/no_avatar.png',
       },
       profileUrl: {
         type: String,
@@ -52,7 +53,6 @@
     },
     data() {
       return {
-        noAvatarUrl: '/assets/no_avatar.png',
         defaultAvatarClass: 'avatar avatar-inline',
       };
     },
@@ -62,12 +62,6 @@
       },
       avatarHtmlClass() {
         return `${this.avatarSizeClass} ${this.defaultAvatarClass}`;
-      },
-      avatarElemId() {
-        return this.username ? `${this.username}-avatar-link` : 'non-user-avatar-link';
-      },
-      preppedAvatarUrl() {
-        return this.avatarUrl || this.noAvatarUrl;
       },
       tooltipClass() {
         return this.showTooltip ? 'has-tooltip' : '';
@@ -82,14 +76,14 @@
         return `author_link ${this.tooltipClass} ${this.extraLinkClass} ${this.disabledClass}`
       },
       tooltipContainerAttr() {
-        return this.tooltipContainer || `#${this.avatarElemId}`;
+        return this.tooltipContainer || 'body';
       },
     },
     template: `
-      <div class='link-to-member-avatar' :id='avatarElemId'>
+      <div class='link-to-member-avatar'>
         <a :href='profileUrl' :class='linkClass' :data-original-title='displayName' :data-container='tooltipContainerAttr'>
           <svg v-if='avatarHtml' v-html='avatarHtml' :class='avatarHtmlClass' :width='size' :height='size' :alt='displayName'></svg>
-          <img :class='avatarClass' :src='preppedAvatarUrl' :width='size' :height='size' :alt='displayName'/>
+          <img :class='avatarClass' :src='avatarUrl' :width='size' :height='size' :alt='displayName'/>
         </a>
       </div>
     `
