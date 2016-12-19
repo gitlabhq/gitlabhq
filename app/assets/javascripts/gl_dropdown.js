@@ -343,16 +343,18 @@
           selector = ".dropdown-page-one .dropdown-content a";
         }
         this.dropdown.on("click", selector, function(e) {
-          var $el, selected;
+          var $el, selected, selectedObj, isMarking;
           $el = $(this);
           selected = self.rowClicked($el);
+          selectedObj = selected ? selected[0] : null;
+          isMarking = selected ? selected[1] : null;
           if (self.options.clicked) {
-            self.options.clicked(selected[0], $el, e, selected[1]);
+            self.options.clicked(selectedObj, $el, e, isMarking);
           }
 
           // Update label right after all modifications in dropdown has been done
           if (self.options.toggleLabel) {
-            self.updateLabel(selected[0], $el, self);
+            self.updateLabel(selectedObj, $el, self);
           }
 
           $el.trigger('blur');
