@@ -58,7 +58,7 @@ $.rails = {
 
       spyOn(this.rootStore, 'assignToData');
 
-      this.approvalsStore.assignToRootStore(dataToStore);
+      this.approvalsStore.assignToRootStore('approvals', dataToStore);
 
       expect(this.rootStore.assignToData).toHaveBeenCalled();
       expect(this.rootStore.assignToData).toHaveBeenCalledWith('approvals', dataToStore);
