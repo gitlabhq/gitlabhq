@@ -5,13 +5,13 @@ module Gitlab
   module Popen
     extend self
 
-    def popen(cmd, path = nil)
+    def popen(cmd, path = nil, vars = {})
       unless cmd.is_a?(Array)
         raise "System commands must be given as an array of strings"
       end
 
       path ||= Dir.pwd
-      vars = { "PWD" => path }
+      vars['PWD'] = path
       options = { chdir: path }
 
       unless File.directory?(path)

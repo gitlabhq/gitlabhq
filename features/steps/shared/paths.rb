@@ -207,10 +207,6 @@ module SharedPaths
     visit admin_spam_logs_path
   end
 
-  step 'I visit applications page' do
-    visit admin_applications_path
-  end
-
   # ----------------------------------------
   # Generic Project
   # ----------------------------------------
