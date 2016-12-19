@@ -1762,6 +1762,39 @@ describe Project, models: true do
     end
   end
 
+  describe '.where_full_path_in' do
+    context 'without any paths' do
+      it 'returns an empty relation' do
+        expect(Project.where_full_path_in([])).to eq([])
+      end
+    end
+
+    context 'without any valid paths' do
+      it 'returns an empty relation' do
+        expect(Project.where_full_path_in(%w[foo])).to eq([])
+      end
+    end
+
+    context 'with valid paths' do
+      let!(:project1) { create(:project) }
+      let!(:project2) { create(:project) }
+
+      it 'returns the projects matching the paths' do
+        projects = Project.where_full_path_in([project1.path_with_namespace,
+                                           project2.path_with_namespace])
+
+        expect(projects).to contain_exactly(project1, project2)
+      end
+
+      it 'returns projects regardless of the casing of paths' do
+        projects = Project.where_full_path_in([project1.path_with_namespace.upcase,
+                                           project2.path_with_namespace.upcase])
+
+        expect(projects).to contain_exactly(project1, project2)
+      end
+    end
+  end
+
   describe '#find_path_lock' do
     let(:project) { create :empty_project }
     let(:path_lock) { create :path_lock, project: project }
