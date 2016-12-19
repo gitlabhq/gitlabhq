@@ -5,7 +5,36 @@
 (() => {
   Vue.component('approvals-footer', {
     name: 'approvals-footer',
-    props: ['userCanApprove', 'userHasApproved', 'approvedBy', 'approvalsLeft', 'pendingAvatarSvg', 'checkmarkSvg'],
+    props: {
+      approvedBy: {
+        type: Array,
+        required: false,
+      },
+      approvalsLeft: {
+        type: Number,
+        required: false,
+      },
+      userCanApprove: {
+        type: Boolean,
+        required: false,
+      },
+      userHasApproved: {
+        type: Boolean,
+        required: false,
+      } ,
+      suggestedApprovers: {
+        type: Array,
+        required: false,
+      },
+      pendingAvatarSvg: {
+        type: String,
+        required: true,
+      },
+      checkmarkSvg: {
+        type: String,
+        required: true,
+      }
+    },
     computed: {
       hasApprovers() {
         return this.approvedBy && this.approvedBy.length;

@@ -5,7 +5,28 @@
 (() => {
   Vue.component('approvals-body', {
     name: 'approvals-body',
-    props: ['approvedBy', 'approvalsLeft', 'userCanApprove', 'userHasApproved', 'suggestedApprovers', 'widgetLoading'],
+    props: {
+      approvedBy: {
+        type: Array,
+        required: false,
+      },
+      approvalsLeft: {
+        type: Number,
+        required: false,
+      },
+      userCanApprove: {
+        type: Boolean,
+        required: false,
+      },
+      userHasApproved: {
+        type: Boolean,
+        required: false,
+      } ,
+      suggestedApprovers: {
+        type: Array,
+        required: false,
+      }
+    },
     computed: {
       approvalsRequiredStringified() {
         const baseString = `${this.approvalsLeft} more approval`;
