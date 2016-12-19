@@ -22,7 +22,7 @@
     `);
 
     this.initialData = {
-      suggestedApprovers: [ { name: 'Approver 1' }],
+      suggestedApprovers: [{ name: 'Approver 1' }],
       userCanApprove: false,
       userHasApproved: true,
       approvedBy: [],

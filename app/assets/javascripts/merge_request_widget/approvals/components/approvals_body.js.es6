@@ -20,16 +20,17 @@
 
         return approvers.length === 1 ? approvers[0].name :
           approvers.reduce((memo, curr, index) => {
-          const nextMemo = `${memo}${curr.name}`;
 
-          if (index === approvers.length - 2) { // second to last index
-            return `${nextMemo} or `;
-          } else if (index === approvers.length - 1) { // last index
-            return nextMemo;
-          }
+            const nextMemo = `${memo}${curr.name}`;
 
-          return `${nextMemo}, `;
-        }, '');
+            if (index === approvers.length - 2) { // second to last index
+              return `${nextMemo} or `;
+            } else if (index === approvers.length - 1) { // last index
+              return nextMemo;
+            }
+
+            return `${nextMemo}, `;
+          }, '');
       },
       showApproveButton() {
         return this.userCanApprove && !this.userHasApproved;

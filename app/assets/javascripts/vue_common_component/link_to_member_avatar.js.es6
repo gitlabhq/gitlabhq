@@ -50,7 +50,7 @@
         type: Number,
         required: false,
         default: 32,
-      }
+      },
     },
     data() {
       return {
@@ -74,7 +74,7 @@
         return !this.clickable ? 'disabled' : '';
       },
       linkClass() {
-        return `author_link ${this.tooltipClass} ${this.extraLinkClass} ${this.disabledClass}`
+        return `author_link ${this.tooltipClass} ${this.extraLinkClass} ${this.disabledClass}`;
       },
       tooltipContainerAttr() {
         return this.tooltipContainer || 'body';
@@ -87,6 +87,6 @@
           <img :class='avatarClass' :src='avatarUrl' :width='size' :height='size' :alt='displayName'/>
         </a>
       </div>
-    `
+    `,
   });
 })();
