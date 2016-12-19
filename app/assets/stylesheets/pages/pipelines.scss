@@ -489,7 +489,7 @@
       border: 1px solid $border-color;
       border-radius: 30px;
       background-color: $white-light;
-      
+
       &:hover {
         background-color: $stage-hover-bg;
         border: 1px solid $stage-hover-border;
@@ -547,7 +547,7 @@
         content: '';
         position: absolute;
         top: 48%;
-        right: -49px;
+        right: -48px;
         border-top: 2px solid $border-color;
         width: 48px;
         height: 1px;
