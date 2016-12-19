@@ -18,31 +18,34 @@
   class MiniPipelineGraph {
     constructor({ container }) {
       this.container = container;
+      this.dropdownListSelector = '.js-builds-dropdown-container';
       this.getBuildsList = this.getBuildsList.bind(this);
 
       this.bindEvents();
     }
 
     /**
-     * Adds an removes the event listener.
-     * TODO: Remove jQuery when we have a way to handle events properly.
+     * Adds and removes the event listener.
      */
     bindEvents() {
-      $(this.container).off('click', 'button.js-builds-dropdown-button', this.getBuildsList);
-      $(this.container).on('click', 'button.js-builds-dropdown-button', this.getBuildsList);
+      const dropdownButtonSelector = 'button.js-builds-dropdown-button';
+
+      $(this.container).off('click', dropdownButtonSelector, this.getBuildsList);
+      $(this.container).on('click', dropdownButtonSelector, this.getBuildsList);
     }
 
     /**
-     * For the clicked stage, renders the received html in the sibiling
-     * element with the `js-builds-dropdown-container` clas
+     * For the clicked stage, renders the given data in the dropdown list.
      *
-     * @param  {Element} stageContainer
+     * @param  {HTMLElement} stageContainer
      * @param  {Object} data
      */
     renderBuildsList(stageContainer, data) {
-      const dropdownContainer = stageContainer.parentElement.querySelector('.js-builds-dropdown-container');
+      const dropdownContainer = stageContainer.parentElement.querySelector(
+        `${this.dropdownListSelector} .js-builds-dropdown-list`,
+      );
 
-      dropdownContainer.innerHTML = data.html;
+      dropdownContainer.innerHTML = data;
     }
 
     /**
@@ -58,9 +61,28 @@
         dataType: 'json',
         type: 'GET',
         url: endpoint,
-        success: data => this.renderBuildsList(e.currentTarget, data),
+        beforeSend: () => {
+          this.renderBuildsList(e.currentTarget, '');
+          this.toggleLoading(e.currentTarget);
+        },
+        success: (data) => {
+          this.toggleLoading(e.currentTarget);
+          this.renderBuildsList(e.currentTarget, data.html);
+        },
         error: () => new Flash('An error occurred while fetching the builds.', 'alert'),
       });
+    }
+
+    /**
+     * Toggles the visibility of the loading icon.
+     *
+     * @param  {HTMLElement} stageContainer
+     * @return {type}
+     */
+    toggleLoading(stageContainer) {
+      stageContainer.parentElement.querySelector(
+        `${this.dropdownListSelector} .js-builds-dropdown-loading`,
+      ).classList.toggle('hidden');
     }
   }
 

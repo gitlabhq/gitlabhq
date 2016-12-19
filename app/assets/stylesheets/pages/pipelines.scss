@@ -753,13 +753,19 @@
     margin: 0;
   }
 
+  .builds-dropdown-loading {
+    margin: 10px auto;
+    width: 18px;
+  }
+
   .grouped-pipeline-dropdown {
     right: -172px;
     top: 23px;
-  }
+    min-height: 191px;
 
-  .grouped-pipeline-dropdown a {
-    color: $gl-text-color-light;
+    a {
+      color: $gl-text-color-light;
+    }
   }
 
   .arrow-up {

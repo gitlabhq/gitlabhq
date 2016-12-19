@@ -1,6 +1,4 @@
-.dropdown-menu.grouped-pipeline-dropdown
-  .arrow-up
-    %ul
-      - @stage.statuses.each do |status|
-        %li.dropdown-build
-          = render 'ci/status/graph_badge', subject: status
+%ul
+  - @stage.statuses.each do |status|
+    %li.dropdown-build
+      = render 'ci/status/graph_badge', subject: status

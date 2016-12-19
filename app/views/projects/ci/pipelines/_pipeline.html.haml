@@ -53,13 +53,19 @@
         .stage-container.mini-pipeline-graph
           - if hasMultipleBuilds
             .dropdown.inline.build-content
-              %button.has-tooltip.builds-dropdown.js-builds-dropdown-button{ type: 'button', data: { toggle: 'dropdown', title: tooltip, "stage-endpoint" => stage_namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline, stage: stage.name)}}
+              %button.has-tooltip.builds-dropdown.js-builds-dropdown-button{ type: 'button', data: { toggle: 'dropdown', title: tooltip, placement: 'top', "stage-endpoint" => stage_namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline, stage: stage.name)}}
                 %span{ class: klass }
                   %span.mini-pipeline-graph-icon-container
                     %span{ class: icon_status_klass }= custom_icon(icon_status)
                     = icon('caret-down', class: 'dropdown-caret')
 
-              %div.js-builds-dropdown-container
+              .js-builds-dropdown-container
+                .dropdown-menu.grouped-pipeline-dropdown
+                  .arrow-up
+                  .js-builds-dropdown-list
+
+                  .js-builds-dropdown-loading.builds-dropdown-loading.hidden
+                    %span.fa.fa-spinner.fa-spin
           - else
             - if detailed_status.has_details?
               = link_to detailed_status.details_path, class: klass, title: tooltip do
