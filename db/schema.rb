@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161213172958) do
+ActiveRecord::Schema.define(version: 20161219211829) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -98,14 +98,14 @@ ActiveRecord::Schema.define(version: 20161213172958) do
     t.text "help_page_text_html"
     t.text "shared_runners_text_html"
     t.text "after_sign_up_text_html"
-    t.boolean "sidekiq_throttling_enabled", default: false
-    t.string "sidekiq_throttling_queues"
-    t.decimal "sidekiq_throttling_factor"
     t.boolean "housekeeping_enabled", default: true, null: false
     t.boolean "housekeeping_bitmaps_enabled", default: true, null: false
     t.integer "housekeeping_incremental_repack_period", default: 10, null: false
     t.integer "housekeeping_full_repack_period", default: 50, null: false
     t.integer "housekeeping_gc_period", default: 200, null: false
+    t.boolean "sidekiq_throttling_enabled", default: false
+    t.string "sidekiq_throttling_queues"
+    t.decimal "sidekiq_throttling_factor"
     t.boolean "html_emails_enabled", default: true
   end
 
@@ -739,8 +739,8 @@ ActiveRecord::Schema.define(version: 20161213172958) do
     t.integer "visibility_level", default: 20, null: false
     t.boolean "request_access_enabled", default: false, null: false
     t.datetime "deleted_at"
-    t.boolean "lfs_enabled"
     t.text "description_html"
+    t.boolean "lfs_enabled"
     t.integer "parent_id"
   end
 
@@ -776,6 +776,7 @@ ActiveRecord::Schema.define(version: 20161213172958) do
     t.string "discussion_id"
     t.string "original_discussion_id"
     t.text "note_html"
+    t.integer "commit_count", default: 0, null: false
   end
 
   add_index "notes", ["author_id"], name: "index_notes_on_author_id", using: :btree
@@ -854,7 +855,7 @@ ActiveRecord::Schema.define(version: 20161213172958) do
     t.datetime "expires_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string   "scopes", default: "--- []\n", null: false
+    t.string "scopes", default: "--- []\n", null: false
   end
 
   add_index "personal_access_tokens", ["token"], name: "index_personal_access_tokens_on_token", unique: true, using: :btree
@@ -1222,8 +1223,8 @@ ActiveRecord::Schema.define(version: 20161213172958) do
     t.datetime "otp_grace_period_started_at"
     t.boolean "ldap_email", default: false, null: false
     t.boolean "external", default: false
-    t.string "organization"
     t.string "incoming_email_token"
+    t.string "organization"
     t.boolean "authorized_projects_populated"
   end
 

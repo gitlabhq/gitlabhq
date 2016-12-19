@@ -26,7 +26,7 @@ module SystemNoteService
     body << new_commit_summary(new_commits).join("\n")
     body << "\n\n[Compare with previous version](#{diff_comparison_url(noteable, project, oldrev)})"
 
-    create_note(noteable: noteable, project: project, author: author, note: body)
+    create_note(noteable: noteable, project: project, author: author, note: body, commit_count: total_count)
   end
 
   # Called when the assignee of a Noteable is changed or removed
