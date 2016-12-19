@@ -52,7 +52,7 @@ module API
           required: true,
           name: :password,
           type: String,
-          desc: 'Passord of the user'
+          desc: 'Password of the user'
         }
       ],
       'bugzilla' => [
@@ -351,7 +351,6 @@ module API
           desc: 'The ID of a transition that moves issues to a closed state. You can find this number under the JIRA workflow administration (**Administration > Issues > Workflows**) by selecting **View** under **Operations** of the desired workflow of your project. The ID of each state can be found inside the parenthesis of each transition name under the **Transitions (id)** column ([see screenshot][trans]). By default, this ID is set to `2`'
         }
       ],
-
       'kubernetes' => [
         {
           required: true,
@@ -533,7 +532,7 @@ module API
           required: true,
           name: :jenkins_url,
           type: String,
-          desc: 'Jenkins URL like http://jenkins.example.com'
+          desc: 'Jenkins root URL like https://jenkins.example.com'
         },
         {
           required: true,
@@ -542,13 +541,13 @@ module API
           desc: 'The URL-friendly project name. Example: my_project_name'
         },
         {
-          required: true,
+          required: false,
           name: :username,
           type: String,
-          desc: 'The username with permissions to trigger a manual build'
+          desc: 'A user with access to the Jenkins server, if applicable'
         },
         {
-          required: true,
+          required: false,
           name: :password,
           type: String,
           desc: 'The password of the user'
