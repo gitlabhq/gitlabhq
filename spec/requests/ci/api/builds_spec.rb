@@ -250,7 +250,7 @@ describe Ci::API::Builds do
 
     describe 'PATCH /builds/:id/trace.txt' do
       let(:build) do
-        attributes = {runner_id: runner.id, pipeline: pipeline}
+        attributes = { runner_id: runner.id, pipeline: pipeline }
         create(:ci_build, :running, :trace, attributes)
       end
 
@@ -335,7 +335,7 @@ describe Ci::API::Builds do
 
         context 'when project for the build has been deleted' do
           let(:build) do
-            attributes = {runner_id: runner.id, pipeline: pipeline}
+            attributes = { runner_id: runner.id, pipeline: pipeline }
             create(:ci_build, :running, :trace, attributes) do |build|
               build.project.update(pending_delete: true)
             end
