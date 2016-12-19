@@ -10,10 +10,6 @@
   .row
     %strong.col-sm-3.text-right Mattermost
     = link_to Gitlab.config.mattermost.host, Gitlab.config.mattermost.host, class: 'col-sm-9', target: '__blank'
-  - if @service.activated?
-    .row
-      %strong.col-sm-3.text-right Team
-      .col-sm-9 some_team.name
   .row
     %strong.col-sm-3.text-right Installation
     .col-sm-9
