@@ -53,13 +53,10 @@
         switch (visibilityLevel) {
           case 0:
             return 'fa-lock';
-            break;
           case 10:
             return 'fa-shield';
-            break;
           case 20:
             return 'fa-globe';
-            break;
           default:
             return 'fa-globe';
         }
