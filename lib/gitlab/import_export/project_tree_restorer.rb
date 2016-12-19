@@ -120,7 +120,7 @@ module Gitlab
                                                        members_mapper: members_mapper,
                                                        user: @user,
                                                        project_id: restored_project.id)
-        end
+        end.compact
 
         relation_hash_list.is_a?(Array) ? relation_array : relation_array.first
       end
