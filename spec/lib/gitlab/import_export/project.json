@@ -6548,7 +6548,9 @@
             "url": null
           },
           "erased_by_id": null,
-          "erased_at": null
+          "erased_at": null,
+          "type": "Ci::Build",
+          "token": "abcd"
         },
         {
           "id": 72,
