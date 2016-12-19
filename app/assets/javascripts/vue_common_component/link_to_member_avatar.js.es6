@@ -53,21 +53,22 @@
     },
     data() {
       return {
-        defaultAvatarClass: 'avatar avatar-inline',
+        // TODO: Rename baseClass
+        avatarBaseClass: 'avatar avatar-inline',
       };
     },
     computed: {
       avatarSizeClass() {
-        return `s{this.avatarSizeClass}`;
+        return `s${this.avatarSizeClass}`;
       },
       avatarHtmlClass() {
-        return `${this.avatarSizeClass} ${this.defaultAvatarClass}`;
+        return `${this.avatarSizeClass} ${this.avatarBaseClass}`;
       },
       tooltipClass() {
         return this.showTooltip ? 'has-tooltip' : '';
       },
       avatarClass() {
-        return `${this.defaultAvatarClass} ${this.avatarSizeClass} ${this.extraAvatarClass}`;
+        return `${this.avatarBaseClass} ${this.avatarSizeClass} ${this.extraAvatarClass}`;
       },
       disabledClass() {
         return this.nonUser ? 'disabled' : '';
