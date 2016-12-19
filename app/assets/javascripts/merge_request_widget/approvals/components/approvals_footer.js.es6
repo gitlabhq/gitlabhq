@@ -18,6 +18,11 @@
         gl.ApprovalsStore.unapprove();
       },
     },
+    beforeCreate() {
+      gl.ApprovalsStore.initStoreOnce().then(() => {
+        this.loaded = true;
+      });
+    },
     template: `
       <div class='mr-widget-footer approved-by-users approvals-footer clearfix'>
         <span class='approvers-prefix'> Approved by </span>

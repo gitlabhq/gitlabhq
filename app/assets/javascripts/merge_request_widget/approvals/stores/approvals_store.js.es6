@@ -15,6 +15,25 @@
     init(rootStore) {
       this.rootStore = rootStore;
       this.api = new gl.ApprovalsApi(rootStore.dataset.endpoint);
+      this.state = {
+        loading: false,
+      };
+    }
+
+    initStoreOnce() {
+      const state = this.state;
+      if (!state.loading) {
+        state.loading = true;
+        return this.fetch()
+          .then(() => {
+            state.loading = false;
+            this.assignToRootStore(false, 'loading');
+          })
+          .catch((err) => {
+            console.error(`Failed to initialize approvals store: ${err}`);
+          });
+      }
+      return Promise.resolve();
     }
 
     fetch() {
