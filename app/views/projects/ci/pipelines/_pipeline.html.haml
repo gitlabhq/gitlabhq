@@ -44,10 +44,10 @@
     - pipeline.stages.each do |stage|
       - if stage.status
         - detailed_status = stage.detailed_status(current_user)
-        - klass = "has-tooltip ci-status-icon ci-status-icon-#{detailed_status}"
+        - klass = "has-tooltip ci-status-icon ci-status-icon-#{detailed_status.group}"
         - hasMultipleBuilds = stage.statuses.count > 1
         - icon_status = "#{detailed_status.icon}_borderless"
-        - icon_status_klass = "ci-status-icon ci-status-icon-#{detailed_status}"
+        - icon_status_klass = "ci-status-icon ci-status-icon-#{detailed_status.group}"
         - tooltip = "#{stage.name}: #{detailed_status.label || 'not found'}"
 
         .stage-container.mini-pipeline-graph
