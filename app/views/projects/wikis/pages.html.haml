@@ -13,7 +13,7 @@
         = icon('cloud-download')
         Clone repository
 
-  %ul.content-list
+  %ul.wiki-pages-list.content-list
     - @wiki_directories.each do |wiki_directory, wiki_pages|
       - if wiki_directory == '/'
         = render 'wiki_pages', wiki_pages: wiki_pages

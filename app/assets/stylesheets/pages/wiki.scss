@@ -130,11 +130,27 @@
     margin: 5px 0 10px;
   }
 
+  ul.wiki-pages ul {
+    padding-left: 15px;
+  }
+
   .wiki-sidebar-header {
     padding: 0 $gl-padding $gl-padding;
 
     .gutter-toggle {
       margin-top: 0;
     }
+  }
+}
+
+ul.wiki-pages-list.content-list {
+  & ul {
+    list-style: none;
+    margin-left: 0;
+    padding-left: 15px;
+  }
+
+  & ul li {
+    padding: 5px 0;
   }
 }
