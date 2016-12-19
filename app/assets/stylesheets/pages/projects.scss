@@ -915,3 +915,19 @@ a.allowed-to-push {
     width: 30%;
   }
 }
+
+#modal-geo-info .modal-dialog {
+  max-width: 700px;
+
+  .btn-clipboard {
+    @extend .pull-right;
+    margin-right: 20px;
+    margin-top: 5px;
+    position: absolute;
+    right: 0;
+  }
+
+  .dark {
+    margin-right: 40px;
+  }
+}
