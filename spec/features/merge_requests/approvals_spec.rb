@@ -162,7 +162,7 @@ feature 'Merge request approvals', js: true, feature: true do
     end
 
 
-    context 'when group is assigned to a project', js:true, focus: true do
+    context 'when group is assigned to a project', js:true do
       before do
         create :approver_group, group: group, target: project
         visit namespace_project_merge_request_path(project.namespace, project, merge_request)
@@ -173,7 +173,7 @@ feature 'Merge request approvals', js: true, feature: true do
         expect(page).to have_content('Approved by')
       end
 
-      it 'I am able to unapprove', focus: true do
+      it 'I am able to unapprove' do
         approve_merge_request
         unapprove_merge_request
         expect(page).not_to have_content('Approved by')
@@ -181,7 +181,7 @@ feature 'Merge request approvals', js: true, feature: true do
 
     end
 
-    context 'when group is assigned to a merge request', js:true, focus:true do
+    context 'when group is assigned to a merge request', js:true do
       before do
         create :approver_group, group: group, target: merge_request
         visit namespace_project_merge_request_path(project.namespace, project, merge_request)
@@ -197,7 +197,7 @@ feature 'Merge request approvals', js: true, feature: true do
         expect(page).to have_content('Approved by')
       end
 
-      it 'I am able to unapprove', focus: true do
+      it 'I am able to unapprove' do
         approve_merge_request
         unapprove_merge_request
         expect(page).not_to have_content('Approved by')
