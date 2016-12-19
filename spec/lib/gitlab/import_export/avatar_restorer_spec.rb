@@ -1,12 +1,14 @@
 require 'spec_helper'
 
 describe Gitlab::ImportExport::AvatarRestorer, lib: true do
+  include UploadHelpers
+
   let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: 'test') }
   let(:project) { create(:empty_project) }
 
   before do
     allow_any_instance_of(described_class).to receive(:avatar_export_file)
-                                                .and_return(Rails.root + "spec/fixtures/dk.png")
+                                                .and_return(uploaded_image_temp_path)
   end
 
   after do

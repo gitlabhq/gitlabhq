@@ -166,7 +166,7 @@ ul.notes {
   .note {
     display: block;
     position: relative;
-    border-bottom: 1px solid $table-border-gray;
+    border-bottom: 1px solid $white-normal;
 
     &.note-discussion {
       &.timeline-entry {
@@ -291,14 +291,14 @@ ul.notes {
   font-family: $regular_font;
 
   td {
-    border: 1px solid $table-border-gray;
+    border: 1px solid $white-normal;
     border-left: none;
 
     &.notes_line {
       vertical-align: middle;
       text-align: center;
       padding: 10px 0;
-      background: $background-color;
+      background: $gray-light;
       color: $text-color;
     }
 
@@ -309,7 +309,7 @@ ul.notes {
     }
 
     &.notes_content {
-      background-color: $background-color;
+      background-color: $gray-light;
       border-width: 1px 0;
       padding: 0;
       vertical-align: top;
@@ -372,7 +372,7 @@ ul.notes {
 .note-actions {
   float: right;
   margin-left: 10px;
-  color: $notes-action-color;
+  color: $gray-darkest;
 }
 
 .note-actions {
@@ -382,10 +382,6 @@ ul.notes {
 
   .note-action-button {
     margin-left: 10px;
-  }
-
-  @media (min-width: $screen-sm-min) {
-    position: relative;
   }
 }
 
@@ -411,7 +407,7 @@ ul.notes {
   }
 
   .fa {
-    color: $notes-action-color;
+    color: $gray-darkest;
     position: relative;
     font-size: 17px;
   }
@@ -448,7 +444,7 @@ ul.notes {
   color: $notes-role-color;
   font-size: 12px;
   line-height: 20px;
-  border: 1px solid $notes-role-border-color;
+  border: 1px solid $border-color;
   border-radius: $border-radius-base;
 }
 
@@ -529,7 +525,7 @@ ul.notes {
 .line-resolve-all {
   display: inline-block;
   padding: 5px 10px;
-  background-color: $background-color;
+  background-color: $gray-light;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
 
@@ -573,10 +569,10 @@ ul.notes {
 
   svg {
     position: relative;
-    color: $notes-action-color;
+    color: $gray-darkest;
 
     path {
-      fill: $notes-action-color;
+      fill: $gray-darkest;
     }
   }
 }

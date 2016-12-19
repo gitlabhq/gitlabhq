@@ -1,4 +1,6 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, prefer-arrow-callback, comma-dangle, prefer-template, quotes, no-param-reassign, wrap-iife, max-len */
+/* global Api */
+
 (function (w) {
   class CreateLabelDropdown {
     constructor ($el, namespacePath, projectPath) {

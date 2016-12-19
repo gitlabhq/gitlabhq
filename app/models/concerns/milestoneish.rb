@@ -30,7 +30,7 @@ module Milestoneish
   end
 
   def issues_visible_to_user(user)
-    issues.visible_to_user(user)
+    IssuesFinder.new(user).execute.where(id: issues)
   end
 
   def upcoming?

@@ -60,8 +60,8 @@
 
 .account-well {
   padding: 10px;
-  background-color: $help-well-bg;
-  border: 1px solid $help-well-border;
+  background-color: $gray-light;
+  border: 1px solid $border-color;
   border-radius: $border-radius-base;
 
   ul {
@@ -136,7 +136,7 @@
 .provider-btn-group {
   display: inline-block;
   margin-right: 10px;
-  border: 1px solid $provider-btn-group-border;
+  border: 1px solid $border-color;
   border-radius: 3px;
 
   &:last-child {
@@ -147,7 +147,7 @@
 .provider-btn-image {
   display: inline-block;
   padding: 5px 10px;
-  border-right: 1px solid $provider-btn-group-border;
+  border-right: 1px solid $border-color;
 
   > img {
     width: 20px;
@@ -198,7 +198,7 @@
 }
 
 .personal-access-tokens-never-expires-label {
-  color: $personal-access-tokens-disabled-label-color;
+  color: $note-disabled-comment-color;
 }
 
 .datepicker.personal-access-tokens-expires-at .ui-state-disabled span {
@@ -260,5 +260,15 @@ table.u2f-registrations {
   th:not(:last-child),
   td:not(:last-child) {
     border-right: solid 1px transparent;
+  }
+}
+
+.oauth-application-show {
+  .scope-name {
+    font-weight: 600;
+  }
+
+  .scopes-list {
+    padding-left: 18px;
   }
 }

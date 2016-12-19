@@ -18,15 +18,21 @@ describe Gitlab::BitbucketImport::Importer, lib: true do
       "closed"  # undocumented status
     ]
   end
+
   let(:sample_issues_statuses) do
     issues = []
 
     statuses.map.with_index do |status, index|
       issues << {
-        local_id: index,
-        status: status,
+        id: index,
+        state: status,
         title: "Issue #{index}",
-        content: "Some content to issue #{index}"
+        kind: 'bug',
+        content: {
+            raw: "Some content to issue #{index}",
+            markup: "markdown",
+            html: "Some content to issue #{index}"
+        }
       }
     end
 
@@ -34,14 +40,16 @@ describe Gitlab::BitbucketImport::Importer, lib: true do
   end
 
   let(:project_identifier) { 'namespace/repo' }
+
   let(:data) do
     {
       'bb_session' => {
-        'bitbucket_access_token' => "123456",
-        'bitbucket_access_token_secret' => "secret"
+        'bitbucket_token' => "123456",
+        'bitbucket_refresh_token' => "secret"
       }
     }
   end
+
   let(:project) do
     create(
       :project,
@@ -49,11 +57,13 @@ describe Gitlab::BitbucketImport::Importer, lib: true do
       import_data: ProjectImportData.new(credentials: data)
     )
   end
+
   let(:importer) { Gitlab::BitbucketImport::Importer.new(project) }
+
   let(:issues_statuses_sample_data) do
     {
       count: sample_issues_statuses.count,
-      issues: sample_issues_statuses
+      values: sample_issues_statuses
     }
   end
 
@@ -61,26 +71,46 @@ describe Gitlab::BitbucketImport::Importer, lib: true do
     before do
       stub_request(
         :get,
-        "https://bitbucket.org/api/1.0/repositories/#{project_identifier}"
-      ).to_return(status: 200, body: { has_issues: true }.to_json)
+        "https://api.bitbucket.org/2.0/repositories/#{project_identifier}"
+      ).to_return(status: 200,
+                  headers: { "Content-Type" => "application/json" },
+                  body: { has_issues: true, full_name: project_identifier }.to_json)
 
       stub_request(
         :get,
-        "https://bitbucket.org/api/1.0/repositories/#{project_identifier}/issues?limit=50&sort=utc_created_on&start=0"
-      ).to_return(status: 200, body: issues_statuses_sample_data.to_json)
+        "https://api.bitbucket.org/2.0/repositories/#{project_identifier}/issues?pagelen=50&sort=created_on"
+      ).to_return(status: 200,
+                  headers: { "Content-Type" => "application/json" },
+                  body: issues_statuses_sample_data.to_json)
+
+      stub_request(:get, "https://api.bitbucket.org/2.0/repositories/namespace/repo?pagelen=50&sort=created_on").
+         with(headers: { 'Accept' => '*/*', 'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization' => 'Bearer', 'User-Agent' => 'Faraday v0.9.2' }).
+         to_return(status: 200,
+                   body: "",
+                   headers: {})
 
       sample_issues_statuses.each_with_index do |issue, index|
         stub_request(
           :get,
-          "https://bitbucket.org/api/1.0/repositories/#{project_identifier}/issues/#{issue[:local_id]}/comments"
+          "https://api.bitbucket.org/2.0/repositories/#{project_identifier}/issues/#{issue[:id]}/comments?pagelen=50&sort=created_on"
         ).to_return(
           status: 200,
-          body: [{ author_info: { username: "username" }, utc_created_on: index }].to_json
+          headers: { "Content-Type" => "application/json" },
+          body: { author_info: { username: "username" }, utc_created_on: index }.to_json
         )
       end
+
+      stub_request(
+        :get,
+        "https://api.bitbucket.org/2.0/repositories/#{project_identifier}/pullrequests?pagelen=50&sort=created_on&state=ALL"
+      ).to_return(status: 200,
+                  headers: { "Content-Type" => "application/json" },
+                  body: {}.to_json)
     end
 
     it 'map statuses to open or closed' do
+      # HACK: Bitbucket::Representation.const_get('Issue') seems to return ::Issue without this
+      Bitbucket::Representation::Issue.new({})
       importer.execute
 
       expect(project.issues.where(state: "closed").size).to eq(5)

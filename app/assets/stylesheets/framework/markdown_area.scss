@@ -114,7 +114,7 @@
 
   // Border around images in issue and MR comments.
   img:not(.emoji) {
-    border: 1px solid $table-border-gray;
+    border: 1px solid $white-normal;
     padding: 5px;
     margin: 5px 0;
     // Ensure that image does not exceed viewport
@@ -135,7 +135,7 @@
 .toolbar-btn {
   float: left;
   padding: 0 5px;
-  color: $note-toolbar-color;
+  color: $gl-gray-light;
   background: transparent;
   border: 0;
   outline: 0;

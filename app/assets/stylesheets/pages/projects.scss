@@ -6,12 +6,6 @@
   }
 }
 
-.no-ssh-key-message,
-.project-limit-message {
-  background-color: $project-limit-message-bg;
-  margin-bottom: 0;
-}
-
 .new_project,
 .edit-project {
 
@@ -420,13 +414,13 @@ a.deploy-project-label {
         width: 100px;
         height: 100px;
         background-color: $gray-light;
-        border: 1px solid $gray-dark;
+        border: 1px solid $white-normal;
         margin: 0 auto;
         border-radius: 50%;
 
         i {
           font-size: 100px;
-          color: $gray-dark;
+          color: $white-normal;
         }
       }
 
@@ -536,7 +530,7 @@ a.deploy-project-label {
   }
 
   li.missing {
-    border: 1px dashed $border-gray-light;
+    border: 1px dashed $border-gray-normal;
     border-radius: $border-radius-default;
 
     a {
@@ -591,7 +585,7 @@ pre.light-well {
   @include basic-list;
 
   .project-row {
-    border-color: $table-border-color;
+    border-color: $white-normal;
 
     .project-full-name {
       @include str-truncated;
@@ -643,7 +637,7 @@ pre.light-well {
   &.container-fluid {
     padding-top: 12px;
     padding-bottom: 12px;
-    background-color: $background-color;
+    background-color: $gray-light;
     border: 1px solid $border-color;
     border-right-width: 0;
     border-left-width: 0;

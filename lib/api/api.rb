@@ -3,6 +3,8 @@ module API
     include APIGuard
     version 'v3', using: :path
 
+    before { allow_access_with_scope :api }
+
     rescue_from Gitlab::Access::AccessDeniedError do
       rack_response({ 'message' => '403 Forbidden' }.to_json, 403)
     end

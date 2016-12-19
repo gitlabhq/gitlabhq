@@ -1,4 +1,5 @@
-/* eslint-disable */
+/* eslint-disable object-shorthand, func-names, guard-for-in, no-restricted-syntax, comma-dangle, no-plusplus, no-param-reassign, max-len */
+
 ((w) => {
   w.DiscussionMixins = {
     computed: {

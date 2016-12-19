@@ -1,4 +1,7 @@
-/* eslint-disable */
+/* eslint-disable space-before-function-paren, no-underscore-dangle, class-methods-use-this, consistent-return, no-plusplus, prefer-const, space-in-parens, no-shadow, no-param-reassign, max-len, no-unused-vars */
+/* global ListIssue */
+/* global ListLabel */
+
 class List {
   constructor (obj) {
     this.id = obj.id;
