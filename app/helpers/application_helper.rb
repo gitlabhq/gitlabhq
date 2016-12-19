@@ -294,4 +294,8 @@ module ApplicationHelper
   def page_class
     "issue-boards-page" if current_controller?(:boards)
   end
+
+  def pretty_url(url)
+    url.gsub(/\A.*?:\/\//, '')
+  end
 end
