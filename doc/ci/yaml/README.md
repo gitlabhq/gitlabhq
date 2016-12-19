@@ -1056,7 +1056,7 @@ variables:
   GET_SOURCES_ATTEMPTS: "3"
 ```
 
-You can set the them in the global [`variables`](#variables) section or the [`variables`](#job-variables)
+You can set them in the global [`variables`](#variables) section or the [`variables`](#job-variables)
 section for individual jobs.
 
 ## Shallow cloning
