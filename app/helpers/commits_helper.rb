@@ -194,20 +194,6 @@ module CommitsHelper
     end
   end
 
-  def fork_path_url(continue_to_path, message: nil)
-    notice = edit_in_new_fork_notice
-    notice << " #{message}" unless message.nil?
-
-    continue_params = {
-      to: continue_to_path,
-      notice: notice,
-      notice_now: edit_in_new_fork_notice_now
-    }
-    namespace_project_forks_path(@project.namespace, @project,
-      namespace_key: current_user.namespace.id,
-      continue: continue_params)
-  end
-
   def view_file_btn(commit_sha, diff_new_path, project)
     link_to(
       namespace_project_blob_path(project.namespace, project,
