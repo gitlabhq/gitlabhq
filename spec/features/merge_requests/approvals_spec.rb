@@ -162,7 +162,7 @@ feature 'Merge request approvals', js: true, feature: true do
     end
 
 
-    context 'when group is assigned to a project', js:true do
+    context 'when group is assigned to a project', js: true do
       before do
         create :approver_group, group: group, target: project
         visit namespace_project_merge_request_path(project.namespace, project, merge_request)
@@ -181,7 +181,7 @@ feature 'Merge request approvals', js: true, feature: true do
 
     end
 
-    context 'when group is assigned to a merge request', js:true do
+    context 'when group is assigned to a merge request', js: true do
       before do
         create :approver_group, group: group, target: merge_request
         visit namespace_project_merge_request_path(project.namespace, project, merge_request)
