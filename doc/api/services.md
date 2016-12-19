@@ -808,5 +808,41 @@ Get JetBrains TeamCity CI service settings for a project.
 GET /projects/:id/services/teamcity
 ```
 
+## Jenkins CI
+
+A continuous integration and build server
+
+### Create/Edit Jenkins CI service
+
+Set Jenkins CI service for a project.
+
+
+```
+PUT /projects/:id/services/jenkins
+```
+
+Parameters:
+
+- `jenkins_url` (**required**) - Jenkins URL like http://jenkins.example.com
+- `project_name` (**required**) - The URL-friendly project name. Example: my_project_name
+- `username` (**required**) - A user with permissions to trigger a manual build
+- `password` (**required**)
+
+### Delete Jenkins CI service
+
+Delete Jenkins CI service for a project.
+
+```
+DELETE /projects/:id/services/jenkins
+```
+
+### Get Jenkins CI service settings
+
+Get Jenkins CI service settings for a project.
+
+```
+GET /projects/:id/services/jenkins
+```
+
 [jira-doc]: ../project_services/jira.md
 [old-jira-api]: https://gitlab.com/gitlab-org/gitlab-ce/blob/8-13-stable/doc/api/services.md#jira

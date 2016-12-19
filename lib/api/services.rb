@@ -526,6 +526,53 @@ module API
           type: String,
           desc: 'The password of the user'
         }
+      ],
+      # EE-specific services
+      'jenkins' => [
+        {
+          required: true,
+          name: :jenkins_url,
+          type: String,
+          desc: 'Jenkins URL like http://jenkins.example.com'
+        },
+        {
+          required: true,
+          name: :project_name,
+          type: String,
+          desc: 'The URL-friendly project name. Example: my_project_name'
+        },
+        {
+          required: true,
+          name: :username,
+          type: String,
+          desc: 'The username with permissions to trigger a manual build'
+        },
+        {
+          required: true,
+          name: :password,
+          type: String,
+          desc: 'The password of the user'
+        }
+      ],
+      'jenkins-deprecated' => [
+        {
+          required: true,
+          name: :project_url,
+          type: String,
+          desc: 'Jenkins project URL like http://jenkins.example.com/job/my-project/',
+        },
+        {
+          required: false,
+          name: :pass_unstable,
+          type: Boolean,
+          desc: 'Multi-project setup enabled?',
+        },
+        {
+          required: false,
+          name: :multiproject_enabled,
+          type: Boolean,
+          desc: 'hould unstable builds be treated as passing?'
+        }
       ]
     }.freeze
 
