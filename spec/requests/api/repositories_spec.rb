@@ -7,174 +7,239 @@ describe API::Repositories, api: true  do
   include WorkhorseHelpers
 
   let(:user) { create(:user) }
-  let(:user2) { create(:user) }
+  let(:guest) { create(:user).tap { |u| create(:project_member, :guest, user: u, project: project) } }
   let!(:project) { create(:project, creator_id: user.id) }
   let!(:master) { create(:project_member, :master, user: user, project: project) }
-  let!(:guest) { create(:project_member, :guest, user: user2, project: project) }
+
+  shared_context 'disabled repository' do
+    before do
+      project.project_feature.update_attributes!(
+        repository_access_level: ProjectFeature::DISABLED,
+        merge_requests_access_level: ProjectFeature::DISABLED,
+        builds_access_level: ProjectFeature::DISABLED
+      )
+      expect(project.feature_available?(:repository, current_user)).to be false
+    end
+  end
 
   describe "GET /projects/:id/repository/tree" do
-    context "authorized user" do
-      before { project.team << [user2, :reporter] }
+    let(:route) { "/projects/#{project.id}/repository/tree" }
 
-      shared_examples_for 'repository tree' do
-        it 'returns the repository tree' do
-          get api("/projects/#{project.id}/repository/tree", current_user)
+    shared_examples_for 'repository tree' do
+      it 'returns the repository tree' do
+        get api(route, current_user)
 
-          expect(response).to have_http_status(200)
+        expect(response).to have_http_status(200)
 
-          first_commit = json_response.first
+        first_commit = json_response.first
 
-          expect(json_response).to be_an Array
-          expect(first_commit['name']).to eq('bar')
-          expect(first_commit['type']).to eq('tree')
-          expect(first_commit['mode']).to eq('040000')
+        expect(json_response).to be_an Array
+        expect(first_commit['name']).to eq('bar')
+        expect(first_commit['type']).to eq('tree')
+        expect(first_commit['mode']).to eq('040000')
+      end
+
+      context 'when ref does not exist' do
+        it_behaves_like '404 response' do
+          let(:request) { get api("#{route}?ref_name=foo", current_user) }
+          let(:message) { '404 Tree Not Found' }
         end
       end
 
-      context 'when unauthenticated' do
-        it_behaves_like 'repository tree' do
+      context 'when repository is disabled' do
+        include_context 'disabled repository'
+
+        it_behaves_like '403 response' do
+          let(:request) { get api(route, current_user) }
+        end
+      end
+
+      context 'with recursive=1' do
+        it 'returns recursive project paths tree' do
+          get api("#{route}?recursive=1", current_user)
+
+          expect(response.status).to eq(200)
+          expect(json_response).to be_an Array
+          expect(json_response[4]['name']).to eq('html')
+          expect(json_response[4]['path']).to eq('files/html')
+          expect(json_response[4]['type']).to eq('tree')
+          expect(json_response[4]['mode']).to eq('040000')
+        end
+
+        context 'when repository is disabled' do
+          include_context 'disabled repository'
+
+          it_behaves_like '403 response' do
+            let(:request) { get api(route, current_user) }
+          end
+        end
+
+        context 'when ref does not exist' do
+          it_behaves_like '404 response' do
+            let(:request) { get api("#{route}?recursive=1&ref_name=foo", current_user) }
+            let(:message) { '404 Tree Not Found' }
+          end
+        end
+      end
+    end
+
+    context 'when unauthenticated', 'and project is public' do
+      it_behaves_like 'repository tree' do
+        let(:project) { create(:project, :public) }
+        let(:current_user) { nil }
+      end
+    end
+
+    context 'when unauthenticated', 'and project is private' do
+      it_behaves_like '404 response' do
+        let(:request) { get api(route) }
+        let(:message) { '404 Project Not Found' }
+      end
+    end
+
+    context 'when authenticated', 'as a developer' do
+      it_behaves_like 'repository tree' do
+        let(:current_user) { user }
+      end
+    end
+
+    context 'when authenticated', 'as a guest' do
+      it_behaves_like '403 response' do
+        let(:request) { get api(route, guest) }
+      end
+    end
+  end
+
+  {
+    'blobs/:sha' => 'blobs/master',
+    'commits/:sha/blob' => 'commits/master/blob'
+  }.each do |desc_path, example_path|
+    describe "GET /projects/:id/repository/#{desc_path}" do
+      let(:route) { "/projects/#{project.id}/repository/#{example_path}?filepath=README.md" }
+
+      shared_examples_for 'repository blob' do
+        it 'returns the repository blob' do
+          get api(route, current_user)
+
+          expect(response).to have_http_status(200)
+        end
+
+        context 'when sha does not exist' do
+          it_behaves_like '404 response' do
+            let(:request) { get api(route.sub('master', 'invalid_branch_name'), current_user) }
+            let(:message) { '404 Commit Not Found' }
+          end
+        end
+
+        context 'when filepath does not exist' do
+          it_behaves_like '404 response' do
+            let(:request) { get api(route.sub('README.md', 'README.invalid'), current_user) }
+            let(:message) { '404 File Not Found' }
+          end
+        end
+
+        context 'when no filepath is given' do
+          it_behaves_like '400 response' do
+            let(:request) { get api(route.sub('?filepath=README.md', ''), current_user) }
+          end
+        end
+
+        context 'when repository is disabled' do
+          include_context 'disabled repository'
+
+          it_behaves_like '403 response' do
+            let(:request) { get api(route, current_user) }
+          end
+        end
+      end
+
+      context 'when unauthenticated', 'and project is public' do
+        it_behaves_like 'repository blob' do
           let(:project) { create(:project, :public) }
           let(:current_user) { nil }
         end
       end
 
-      context 'when authenticated' do
-        it_behaves_like 'repository tree' do
+      context 'when unauthenticated', 'and project is private' do
+        it_behaves_like '404 response' do
+          let(:request) { get api(route) }
+          let(:message) { '404 Project Not Found' }
+        end
+      end
+
+      context 'when authenticated', 'as a developer' do
+        it_behaves_like 'repository blob' do
           let(:current_user) { user }
         end
       end
 
-      it 'returns a 404 for unknown ref' do
-        get api("/projects/#{project.id}/repository/tree?ref_name=foo", user)
-        expect(response).to have_http_status(404)
-
-        expect(json_response).to be_an Object
-        json_response['message'] == '404 Tree Not Found'
+      context 'when authenticated', 'as a guest' do
+        it_behaves_like '403 response' do
+          let(:request) { get api(route, guest) }
+        end
       end
-    end
-
-    context "unauthorized user" do
-      it "does not return project commits" do
-        get api("/projects/#{project.id}/repository/tree")
-
-        expect(response).to have_http_status(404)
-      end
-    end
-  end
-
-  describe 'GET /projects/:id/repository/tree?recursive=1' do
-    context 'authorized user' do
-      before { project.team << [user2, :reporter] }
-
-      it 'should return recursive project paths tree' do
-        get api("/projects/#{project.id}/repository/tree?recursive=1", user)
-
-        expect(response.status).to eq(200)
-
-        expect(json_response).to be_an Array
-        expect(json_response[4]['name']).to eq('html')
-        expect(json_response[4]['path']).to eq('files/html')
-        expect(json_response[4]['type']).to eq('tree')
-        expect(json_response[4]['mode']).to eq('040000')
-      end
-
-      it 'returns a 404 for unknown ref' do
-        get api("/projects/#{project.id}/repository/tree?ref_name=foo&recursive=1", user)
-        expect(response).to have_http_status(404)
-
-        expect(json_response).to be_an Object
-        json_response['message'] == '404 Tree Not Found'
-      end
-    end
-
-    context "unauthorized user" do
-      it "does not return project commits" do
-        get api("/projects/#{project.id}/repository/tree?recursive=1")
-
-        expect(response).to have_http_status(404)
-      end
-    end
-  end
-
-  describe "GET /projects/:id/repository/blobs/:sha & /projects/:id/repository/commits/:sha" do
-    shared_examples_for 'repository blob' do
-      it 'returns the repository blob for /repository/blobs/master' do
-        get api("/projects/#{project.id}/repository/blobs/master?filepath=README.md", current_user)
-
-        expect(response).to have_http_status(200)
-      end
-
-      it 'returns the repository blob for /repository/commits/master' do
-        get api("/projects/#{project.id}/repository/commits/master/blob?filepath=README.md", current_user)
-
-        expect(response).to have_http_status(200)
-      end
-    end
-
-    context 'when unauthenticated' do
-      it_behaves_like 'repository blob' do
-        let(:project) { create(:project, :public) }
-        let(:current_user) { nil }
-      end
-    end
-
-    context 'when authenticated' do
-      it_behaves_like 'repository blob' do
-        let(:current_user) { user }
-      end
-    end
-
-    it "returns 404 for invalid branch_name" do
-      get api("/projects/#{project.id}/repository/blobs/invalid_branch_name?filepath=README.md", user)
-      expect(response).to have_http_status(404)
-    end
-
-    it "returns 404 for invalid file" do
-      get api("/projects/#{project.id}/repository/blobs/master?filepath=README.invalid", user)
-      expect(response).to have_http_status(404)
-    end
-
-    it "returns a 400 error if filepath is missing" do
-      get api("/projects/#{project.id}/repository/blobs/master", user)
-      expect(response).to have_http_status(400)
     end
   end
 
   describe "GET /projects/:id/repository/raw_blobs/:sha" do
+    let(:route) { "/projects/#{project.id}/repository/raw_blobs/#{sample_blob.oid}" }
+
     shared_examples_for 'repository raw blob' do
       it 'returns the repository raw blob' do
-        get api("/projects/#{project.id}/repository/raw_blobs/#{sample_blob.oid}", current_user)
+        get api(route, current_user)
 
         expect(response).to have_http_status(200)
       end
+
+      context 'when sha does not exist' do
+        it_behaves_like '404 response' do
+          let(:request) { get api(route.sub(sample_blob.oid, '123456'), current_user) }
+          let(:message) { '404 Blob Not Found' }
+        end
+      end
+
+      context 'when repository is disabled' do
+        include_context 'disabled repository'
+
+        it_behaves_like '403 response' do
+          let(:request) { get api(route, current_user) }
+        end
+      end
     end
 
-    context 'when unauthenticated' do
+    context 'when unauthenticated', 'and project is public' do
       it_behaves_like 'repository raw blob' do
         let(:project) { create(:project, :public) }
         let(:current_user) { nil }
       end
     end
 
-    context 'when authenticated' do
+    context 'when unauthenticated', 'and project is private' do
+      it_behaves_like '404 response' do
+        let(:request) { get api(route) }
+        let(:message) { '404 Project Not Found' }
+      end
+    end
+
+    context 'when authenticated', 'as a developer' do
       it_behaves_like 'repository raw blob' do
         let(:current_user) { user }
       end
     end
 
-    it 'returns a 404 for unknown blob' do
-      get api("/projects/#{project.id}/repository/raw_blobs/123456", user)
-      expect(response).to have_http_status(404)
-
-      expect(json_response).to be_an Object
-      json_response['message'] == '404 Blob Not Found'
+    context 'when authenticated', 'as a guest' do
+      it_behaves_like '403 response' do
+        let(:request) { get api(route, guest) }
+      end
     end
   end
 
   describe "GET /projects/:id/repository/archive(.:format)?:sha" do
+    let(:route) { "/projects/#{project.id}/repository/archive" }
+
     shared_examples_for 'repository archive' do
       it 'returns the repository archive' do
-        get api("/projects/#{project.id}/repository/archive", current_user)
+        get api(route, current_user)
 
         expect(response).to have_http_status(200)
 
@@ -208,31 +273,48 @@ describe API::Repositories, api: true  do
         expect(type).to eq('git-archive')
         expect(params['ArchivePath']).to match(/#{repo_name}\-[^\.]+\.tar.bz2/)
       end
+
+      context 'when sha does not exist' do
+        it_behaves_like '404 response' do
+          let(:request) { get api("#{route}?sha=xxx", current_user) }
+          let(:message) { '404 File Not Found' }
+        end
+      end
     end
 
-    context 'when unauthenticated' do
+    context 'when unauthenticated', 'and project is public' do
       it_behaves_like 'repository archive' do
         let(:project) { create(:project, :public) }
         let(:current_user) { nil }
       end
     end
 
-    context 'when authenticated' do
+    context 'when unauthenticated', 'and project is private' do
+      it_behaves_like '404 response' do
+        let(:request) { get api(route) }
+        let(:message) { '404 Project Not Found' }
+      end
+    end
+
+    context 'when authenticated', 'as a developer' do
       it_behaves_like 'repository archive' do
         let(:current_user) { user }
       end
     end
 
-    it "returns 404 for invalid sha" do
-      get api("/projects/#{project.id}/repository/archive/?sha=xxx", user)
-      expect(response).to have_http_status(404)
+    context 'when authenticated', 'as a guest' do
+      it_behaves_like '403 response' do
+        let(:request) { get api(route, guest) }
+      end
     end
   end
 
   describe 'GET /projects/:id/repository/compare' do
+    let(:route) { "/projects/#{project.id}/repository/compare" }
+
     shared_examples_for 'repository compare' do
       it "compares branches" do
-        get api("/projects/#{project.id}/repository/compare", current_user), from: 'master', to: 'feature'
+        get api(route, current_user), from: 'master', to: 'feature'
 
         expect(response).to have_http_status(200)
         expect(json_response['commits']).to be_present
@@ -240,7 +322,7 @@ describe API::Repositories, api: true  do
       end
 
       it "compares tags" do
-        get api("/projects/#{project.id}/repository/compare", current_user), from: 'v1.0.0', to: 'v1.1.0'
+        get api(route, current_user), from: 'v1.0.0', to: 'v1.1.0'
 
         expect(response).to have_http_status(200)
         expect(json_response['commits']).to be_present
@@ -248,7 +330,7 @@ describe API::Repositories, api: true  do
       end
 
       it "compares commits" do
-        get api("/projects/#{project.id}/repository/compare", current_user), from: sample_commit.id, to: sample_commit.parent_id
+        get api(route, current_user), from: sample_commit.id, to: sample_commit.parent_id
 
         expect(response).to have_http_status(200)
         expect(json_response['commits']).to be_empty
@@ -257,7 +339,7 @@ describe API::Repositories, api: true  do
       end
 
       it "compares commits in reverse order" do
-        get api("/projects/#{project.id}/repository/compare", current_user), from: sample_commit.parent_id, to: sample_commit.id
+        get api(route, current_user), from: sample_commit.parent_id, to: sample_commit.id
 
         expect(response).to have_http_status(200)
         expect(json_response['commits']).to be_present
@@ -265,7 +347,7 @@ describe API::Repositories, api: true  do
       end
 
       it "compares same refs" do
-        get api("/projects/#{project.id}/repository/compare", current_user), from: 'master', to: 'master'
+        get api(route, current_user), from: 'master', to: 'master'
 
         expect(response).to have_http_status(200)
         expect(json_response['commits']).to be_empty
@@ -274,24 +356,39 @@ describe API::Repositories, api: true  do
       end
     end
 
-    context 'when unauthenticated' do
+    context 'when unauthenticated', 'and project is public' do
       it_behaves_like 'repository compare' do
         let(:project) { create(:project, :public) }
         let(:current_user) { nil }
       end
     end
 
-    context 'when authenticated' do
+    context 'when unauthenticated', 'and project is private' do
+      it_behaves_like '404 response' do
+        let(:request) { get api(route) }
+        let(:message) { '404 Project Not Found' }
+      end
+    end
+
+    context 'when authenticated', 'as a developer' do
       it_behaves_like 'repository compare' do
         let(:current_user) { user }
+      end
+    end
+
+    context 'when authenticated', 'as a guest' do
+      it_behaves_like '403 response' do
+        let(:request) { get api(route, guest) }
       end
     end
   end
 
   describe 'GET /projects/:id/repository/contributors' do
+    let(:route) { "/projects/#{project.id}/repository/contributors" }
+
     shared_examples_for 'repository contributors' do
       it 'returns valid data' do
-        get api("/projects/#{project.id}/repository/contributors", user)
+        get api(route, current_user)
 
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
@@ -306,16 +403,29 @@ describe API::Repositories, api: true  do
       end
     end
 
-    context 'when unauthenticated' do
+    context 'when unauthenticated', 'and project is public' do
       it_behaves_like 'repository contributors' do
         let(:project) { create(:project, :public) }
         let(:current_user) { nil }
       end
     end
 
-    context 'when authenticated' do
+    context 'when unauthenticated', 'and project is private' do
+      it_behaves_like '404 response' do
+        let(:request) { get api(route) }
+        let(:message) { '404 Project Not Found' }
+      end
+    end
+
+    context 'when authenticated', 'as a developer' do
       it_behaves_like 'repository contributors' do
         let(:current_user) { user }
+      end
+    end
+
+    context 'when authenticated', 'as a guest' do
+      it_behaves_like '403 response' do
+        let(:request) { get api(route, guest) }
       end
     end
   end
