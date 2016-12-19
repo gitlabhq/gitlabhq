@@ -1,8 +1,8 @@
 - group_status = CommitStatus.where(id: subject).status
-%button.dropdown-menu-toggle.has-tooltip{ type: 'button', data: { toggle: 'dropdown', title: "#{name} - #{group_status}" } }
+%button.dropdown-menu-toggle.build-content.has-tooltip{ type: 'button', data: { toggle: 'dropdown'} }
   %span{class: "ci-status-icon ci-status-icon-#{group_status}"}
     = ci_icon_for_status(group_status)
-  %span.ci-status-text
+  %span.ci-status-text{ 'data-toggle' => 'tooltip', 'data-title' => "#{name} - #{group_status}" }
     = name
   %span.dropdown-counter-badge= subject.size
 .dropdown-menu.grouped-pipeline-dropdown

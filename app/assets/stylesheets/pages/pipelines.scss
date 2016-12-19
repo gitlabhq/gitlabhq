@@ -428,7 +428,7 @@
         width: 21px;
         height: 25px;
         position: absolute;
-        top: -32px;
+        top: -31px;
         border-top: 2px solid $border-color;
       }
 
@@ -456,32 +456,31 @@
   }
 
   .build {
-    border: 1px solid $border-color;
-    border-radius: 30px;
-    background-color: $white-light;
     position: relative;
-    padding: 8px 4px 9px 10px;
     width: 186px;
     margin-bottom: 10px;
     white-space: normal;
+    color: $gl-text-color-light;
 
-    &:hover {
-      background-color: $stage-hover-bg;
-      border: 1px solid $stage-hover-border;
+    > .build-content {
+      display: inline-block;
+      padding: 8px 10px 9px;
+      width: 100%;
+      border: 1px solid $border-color;
+      border-radius: 30px;
+      background-color: $white-light;
 
-      a,
-      .dropdown-counter-badge,
-      .dropdown-menu-toggle {
+      &:hover {
+        background-color: $stage-hover-bg;
+        border: 1px solid $stage-hover-border;
         color: $gl-text-color;
       }
+    }
 
-      .grouped-pipeline-dropdown a {
-        color: $gl-text-color-light;
-
-        &:hover {
-          color: $gl-text-color;
-        }
-      }
+    > .ci-action-icon-container {
+      position: absolute;
+      right: 4px;
+      top: 5px;
     }
 
     .ci-status-icon {
@@ -621,8 +620,8 @@
     padding: 0;
     width: 191px;
     left: auto;
-    right: -206px;
-    top: -11px;
+    right: -195px;
+    top: -4px;
     box-shadow: 0 1px 5px $black-transparent;
 
     a {
@@ -650,17 +649,25 @@
     .dropdown-build {
       color: $gl-text-color-light;
 
-      a.ci-action-icon-container {
-        padding: 0;
+      .build-content {
+        width: 100%;
+      }
+
+      .ci-action-icon-container {
         font-size: 11px;
-        float: right;
-        margin-top: 4px;
-        display: inline-block;
-        position: relative;
+        position: absolute;
+        right: 4px;
 
         i {
+          width: 25px;
+          height: 25px;
           font-size: 11px;
           margin-top: 0;
+
+          &::before {
+            top: 1px;
+            left: 1px;
+          }
         }
       }
 
@@ -668,18 +675,6 @@
         background-color: $stage-hover-bg;
         border-radius: 3px;
         color: $gl-text-color;
-      }
-
-      .ci-action-icon-container {
-        i {
-          width: 25px;
-          height: 25px;
-
-          &::before {
-            top: 1px;
-            left: 1px;
-          }
-        }
       }
 
       .stage {
@@ -704,9 +699,6 @@
 
 // Action Icons
 .ci-action-icon-container .ci-action-icon-wrapper {
-  float: right;
-  margin-top: -4px;
-
   i {
     color: $border-color;
     border-radius: 100%;

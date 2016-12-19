@@ -5,12 +5,13 @@
 - klass = "ci-status-icon ci-status-icon-#{status.group}"
 
 - if status.has_details?
-  = link_to status.details_path, data: { toggle: 'tooltip', title: "#{subject.name} - #{status.label}" } do
+  = link_to status.details_path, class: 'build-content' do
     %span{ class: klass }= custom_icon(status.icon)
-    .ci-status-text= subject.name
+    .ci-status-text{ 'data-toggle' => 'tooltip', 'data-title' => "#{subject.name} - #{status.label}" }= subject.name
 - else
-  %span{ class: klass }= custom_icon(status.icon)
-  .ci-status-text= subject.name
+  .build-content
+    %span{ class: klass }= custom_icon(status.icon)
+    .ci-status-text{ 'data-toggle' => 'tooltip', 'data-title' => "#{subject.name} - #{status.label}" }= subject.name
 
 - if status.has_action?
   = link_to status.action_path, method: status.action_method,

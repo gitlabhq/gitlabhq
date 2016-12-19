@@ -10,12 +10,11 @@
       - status_groups.each do |group_name, grouped_statuses|
         - if grouped_statuses.one?
           - status = grouped_statuses.first
-          %li.build
+          %li.build{ 'id' => "ci-badge-#{group_name}"  }
             .curve
-            .build-content
-              = render 'ci/status/graph_badge', subject: status
+            = render 'ci/status/graph_badge', subject: status
         - else
-          %li.build
+          %li.build{ 'id' => "ci-badge-#{group_name}"  }
             .curve
-            .dropdown.inline.build-content
-              = render 'projects/stage/in_stage_group', name: group_name, subject: grouped_statuses
+            = render 'projects/stage/in_stage_group', name: group_name, subject: grouped_statuses
+
