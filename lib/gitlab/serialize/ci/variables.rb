@@ -14,7 +14,6 @@ module Gitlab
 
           object.map do |variable|
             variable[:key] = variable[:key].to_s
-            variable[:value] = variable[:value].to_s
             variable
           end
         end
