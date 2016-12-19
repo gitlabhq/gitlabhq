@@ -57,7 +57,7 @@ Once you have the authorization code you can request an `access_token` using the
 
 ```
 parameters = 'client_id=APP_ID&client_secret=APP_SECRET&code=RETURNED_CODE&grant_type=authorization_code&redirect_uri=REDIRECT_URI'
-RestClient.post 'http://localhost:3000/oauth/token', parameters
+RestClient.post 'http://gitlab.example.com/oauth/token', parameters
 
 # The response will be
 {
@@ -77,13 +77,13 @@ You can now make requests to the API with the access token returned.
 The access token allows you to make requests to the API on a behalf of a user.
 
 ```
-GET https://localhost:3000/api/v3/user?access_token=OAUTH-TOKEN
+GET https://gitlab.example.com/api/v3/user?access_token=OAUTH-TOKEN
 ```
 
 Or you can put the token to the Authorization header:
 
 ```
-curl --header "Authorization: Bearer OAUTH-TOKEN" https://localhost:3000/api/v3/user
+curl --header "Authorization: Bearer OAUTH-TOKEN" https://gitlab.example.com/api/v3/user
 ```
 
 ## Resource Owner Password Credentials
