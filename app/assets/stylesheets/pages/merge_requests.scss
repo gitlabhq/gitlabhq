@@ -433,8 +433,15 @@
   border-top: 1px solid $well-inner-border;
 }
 
-.approvals-body .approve-btn {
-  margin-top: 20px;
+
+.approvals-body {
+  @media (max-width: $screen-xs-max) {
+    text-align: center;
+  }
+
+  .approve-btn {
+    margin-top: 10px;
+  }
 }
 
 .approvals-footer {
