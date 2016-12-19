@@ -10,9 +10,9 @@ describe Gitlab::Serialize::Ci::Variables do
      { key: 'wee', value: 1, public: false }]
   end
 
-  it 'converts key and values into strings' do
+  it 'converts keys into strings' do
     is_expected.to eq([
       { key: 'key', value: 'value', public: true },
-      { key: 'wee', value: '1', public: false }])
+      { key: 'wee', value: 1, public: false }])
   end
 end
