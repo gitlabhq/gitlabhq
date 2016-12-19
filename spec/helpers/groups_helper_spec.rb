@@ -7,7 +7,7 @@ describe GroupsHelper do
     avatar_file_path = File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif')
 
     it 'returns an url for the avatar' do
-      group.avatar = File.open(avatar_file_path)
+      group.avatar = fixture_file_upload(avatar_file_path)
       group.save!
       expect(group_icon(group.path).to_s).to match("/uploads/group/avatar/#{group.id}/banana_sample.gif")
     end
@@ -26,7 +26,7 @@ describe GroupsHelper do
       end
 
       it 'returns an url for the avatar pointing to the primary node base url' do
-        group.avatar = File.open(avatar_file_path)
+        group.avatar = fixture_file_upload(avatar_file_path)
         group.save!
         expect(group_icon(group.path).to_s).to match("#{geo_url}/uploads/group/avatar/#{group.id}/banana_sample.gif")
       end
