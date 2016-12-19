@@ -332,20 +332,17 @@ describe Ci::API::Builds do
 
         context 'when project for the build has been deleted' do
           let(:build) do
-            create(:ci_build,
-                   :pending,
-                   :trace,
-                   runner_id: runner.id,
-                   pipeline: pipeline)
+            result = create(:ci_build,
+                            :pending,
+                            :trace,
+                            runner_id: runner.id,
+                            pipeline: pipeline)
+            result.project.update(pending_delete: true)
+            result
           end
 
           it 'responds with forbidden' do
             expect(response.status).to eq 403
-          end
-
-          def initial_patch_the_trace
-            build.project.update(pending_delete: true)
-            super
           end
         end
       end
