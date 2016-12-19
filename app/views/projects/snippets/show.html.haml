@@ -8,10 +8,11 @@
       = blob_icon 0, @snippet.file_name
       = @snippet.file_name
       .file-actions
-        = clipboard_button(clipboard_target: ".blob-content[data-blob-id='#{@snippet.id}']")
+        = clipboard_button(clipboard_target: ".blob-content[data-blob-id='#{@snippet.id}']", class: "btn btn-sm")
         = link_to 'Raw', raw_namespace_project_snippet_path(@project.namespace, @project, @snippet), class: "btn btn-sm", target: "_blank"
     = render 'shared/snippets/blob'
 
-  = render 'award_emoji/awards_block', awardable: @snippet, inline: true
+  .row-content-block.top-block.content-component-block
+    = render 'award_emoji/awards_block', awardable: @snippet, inline: true
 
   %div#notes= render "projects/notes/notes_with_form"

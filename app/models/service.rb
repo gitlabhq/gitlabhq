@@ -214,12 +214,14 @@ class Service < ActiveRecord::Base
       hipchat
       irker
       jira
+      kubernetes
       mattermost_slash_commands
       pipelines_email
       pivotaltracker
       pushover
       redmine
-      slack
+      mattermost_notification
+      slack_notification
       teamcity
     ]
   end

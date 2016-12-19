@@ -1,4 +1,6 @@
-/* eslint-disable */
+/* eslint-disable no-unused-vars, no-param-reassign, padded-blocks */
+/* global BlobLicenseSelector */
+
 ((global) => {
   class BlobLicenseSelectors {
     constructor({ $dropdowns, editor }) {

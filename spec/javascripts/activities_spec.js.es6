@@ -1,4 +1,5 @@
-/* eslint-disable */
+/* eslint-disable no-unused-expressions, comma-spacing, prefer-const, no-prototype-builtins, semi, no-new, keyword-spacing, no-plusplus, no-shadow, max-len */
+
 /*= require js.cookie.js */
 /*= require jquery.endless-scroll.js */
 /*= require pager */

@@ -1,4 +1,6 @@
-/* eslint-disable */
+/* eslint-disable padded-blocks, no-param-reassign, comma-dangle */
+/* global Api */
+
 /*= require blob/template_selector */
 ((global) => {
 

@@ -22,7 +22,6 @@ gem 'doorkeeper',             '~> 4.2.0'
 gem 'omniauth',               '~> 1.3.1'
 gem 'omniauth-auth0',         '~> 1.4.1'
 gem 'omniauth-azure-oauth2',  '~> 0.0.6'
-gem 'omniauth-bitbucket',     '~> 0.0.2'
 gem 'omniauth-cas3',          '~> 1.1.2'
 gem 'omniauth-facebook',      '~> 4.0.0'
 gem 'omniauth-github',        '~> 1.1.1'
@@ -67,7 +66,7 @@ gem 'gollum-rugged_adapter', '~> 0.4.2', require: false
 gem 'github-linguist', '~> 4.7.0', require: 'linguist'
 
 # API
-gem 'grape',        '~> 0.15.0'
+gem 'grape',        '~> 0.18.0'
 gem 'grape-entity', '~> 0.6.0'
 gem 'rack-cors',    '~> 0.4.0', require: 'rack/cors'
 
@@ -177,6 +176,9 @@ gem 'asana', '~> 0.4.0'
 
 # FogBugz integration
 gem 'ruby-fogbugz', '~> 0.2.1'
+
+# Kubernetes integration
+gem 'kubeclient', '~> 2.2.0'
 
 # d3
 gem 'd3_rails', '~> 3.5.0'

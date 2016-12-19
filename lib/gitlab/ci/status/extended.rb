@@ -2,8 +2,12 @@ module Gitlab
   module Ci
     module Status
       module Extended
-        def matches?(_subject)
-          raise NotImplementedError
+        extend ActiveSupport::Concern
+
+        class_methods do
+          def matches?(_subject, _user)
+            raise NotImplementedError
+          end
         end
       end
     end

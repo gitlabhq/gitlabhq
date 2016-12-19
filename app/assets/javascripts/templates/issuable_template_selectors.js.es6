@@ -1,4 +1,5 @@
-/* eslint-disable */
+/* eslint-disable no-new, comma-dangle, class-methods-use-this, prefer-const, no-param-reassign */
+
 ((global) => {
   class IssuableTemplateSelectors {
     constructor({ $dropdowns, editor } = {}) {

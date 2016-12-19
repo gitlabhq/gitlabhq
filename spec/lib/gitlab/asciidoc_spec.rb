@@ -11,7 +11,7 @@ module Gitlab
       it "converts the input using Asciidoctor and default options" do
         expected_asciidoc_opts = {
             safe: :secure,
-            backend: :html5,
+            backend: :gitlab_html5,
             attributes: described_class::DEFAULT_ADOC_ATTRS
         }
 
@@ -27,7 +27,7 @@ module Gitlab
         it "merges the options with default ones" do
           expected_asciidoc_opts = {
               safe: :safe,
-              backend: :html5,
+              backend: :gitlab_html5,
               attributes: described_class::DEFAULT_ADOC_ATTRS + ['foo']
           }
 
