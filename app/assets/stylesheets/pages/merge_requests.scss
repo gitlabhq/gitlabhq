@@ -105,6 +105,7 @@
         color: $gl-warning;
       }
     }
+
     p:last-child {
       margin-bottom: 0;
     }
@@ -456,6 +457,7 @@
     img {
       display: none;
     }
+
     svg {
       margin-bottom: -7px; // makes up for border removed
       border: none;
@@ -482,7 +484,7 @@
     display: inline-block;
 
     svg.avatar {
-      position:absolute;
+      position: absolute;
       top: 12%;
       right: 4%;
       height: 45%;
