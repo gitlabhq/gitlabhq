@@ -99,6 +99,8 @@ module Gitlab
       def generate_imported_object
         if BUILD_MODELS.include?(@relation_name) # call #trace= method after assigning the other attributes
           trace = @relation_hash.delete('trace')
+          @relation_hash.delete('token')
+
           imported_object do |object|
             object.trace = trace
             object.commit_id = nil
