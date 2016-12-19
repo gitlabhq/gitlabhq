@@ -161,7 +161,6 @@ feature 'Merge request approvals', js: true, feature: true do
       login_as(user)
     end
 
-
     context 'when group is assigned to a project', js: true do
       before do
         create :approver_group, group: group, target: project
@@ -178,7 +177,6 @@ feature 'Merge request approvals', js: true, feature: true do
         unapprove_merge_request
         expect(page).not_to have_content('Approved by')
       end
-
     end
 
     context 'when group is assigned to a merge request', js: true do
