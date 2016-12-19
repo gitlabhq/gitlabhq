@@ -17,17 +17,22 @@ describe WikiPage, models: true do
 
     context 'when there are pages' do
       before do
-        create_page('page_1', 'content')
+        create_page('dir_1/dir_1_1/page_3', 'content')
         create_page('dir_1/page_2', 'content')
-        create_page('dir_1/dir_2/page_3', 'content')
+        create_page('dir_2/page_5', 'content')
+        create_page('dir_2/page_4', 'content')
+        create_page('page_1', 'content')
       end
 
       it 'returns a hash in which keys are directories and values are their pages' do
         page_1 = wiki.find_page('page_1')
         page_2 = wiki.find_page('dir_1/page_2')
-        page_3 = wiki.find_page('dir_1/dir_2/page_3')
+        page_3 = wiki.find_page('dir_1/dir_1_1/page_3')
+        page_4 = wiki.find_page('dir_2/page_4')
+        page_5 = wiki.find_page('dir_2/page_5')
         expected_grouped_pages = {
-          '/' => [page_1], '/dir_1' => [page_2], '/dir_1/dir_2' => [page_3]
+          '/' => [page_1], '/dir_1' => [page_2], '/dir_1/dir_1_1' => [page_3],
+          '/dir_2' => [page_4, page_5]
         }
 
         grouped_pages = WikiPage.group_by_directory(wiki.pages)
@@ -38,6 +43,23 @@ describe WikiPage, models: true do
 
           expect(slugs).to match_array(expected_slugs)
         end
+      end
+
+      it 'returns a hash in which keys (directories) are sorted by alphabetical position' do
+        expected_ordered_directories = ['/', '/dir_1', '/dir_1/dir_1_1', '/dir_2']
+
+        grouped_pages = WikiPage.group_by_directory(wiki.pages)
+
+        expect(grouped_pages.keys).to eq(expected_ordered_directories)
+      end
+
+      it 'returns a hash in which values (pages) are sorted by alphabetical position' do
+        expected_ordered_page_slugs = ['dir_2/page_4', 'dir_2/page_5']
+
+        grouped_pages = WikiPage.group_by_directory(wiki.pages)
+
+        dir_2_page_slugs = grouped_pages.fetch('/dir_2').map(&:slug)
+        expect(dir_2_page_slugs).to eq(expected_ordered_page_slugs)
       end
     end
   end
