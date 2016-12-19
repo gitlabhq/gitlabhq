@@ -31,7 +31,7 @@
       showTooltip: {
         type: Boolean,
         required: false,
-        default: false,
+        default: true,
       },
       clickable: {
         type: Boolean,
@@ -46,10 +46,10 @@
         type: String,
         required: false,
       },
-      size: {
+      avatarSize: {
         type: Number,
         required: false,
-        default: 32,
+        default: 32
       },
     },
     data() {
@@ -59,7 +59,7 @@
     },
     computed: {
       avatarSizeClass() {
-        return `s${this.size}`;
+        return `s${this.avatarSize}`;
       },
       avatarHtmlClass() {
         return `${this.avatarSizeClass} ${this.avatarBaseClass}`;
@@ -83,8 +83,8 @@
     template: `
       <div class='link-to-member-avatar'>
         <a :href='profileUrl' :class='linkClass' :data-original-title='displayName' :data-container='tooltipContainerAttr'>
-          <svg v-if='avatarHtml' v-html='avatarHtml' :class='avatarHtmlClass' :width='size' :height='size' :alt='displayName'></svg>
-          <img :class='avatarClass' :src='avatarUrl' :width='size' :height='size' :alt='displayName'/>
+          <svg v-if='avatarHtml' v-html='avatarHtml' :class='avatarHtmlClass' :width='avatarSize' :height='avatarSize' :alt='displayName'></svg>
+          <img :class='avatarClass' :src='avatarUrl' :width='avatarSize' :height='avatarSize' :alt='displayName'/>
         </a>
       </div>
     `,

@@ -1,4 +1,5 @@
 /* eslint-disable */
+//= require vue
 //= require jquery
 //= require vue_common_component/link_to_member_avatar
 
@@ -21,80 +22,51 @@
   }
   describe('Link To Members Components', function() {
     describe('Initialization', function() {
-      describe('No configuration (defaults)', function() {
-        beforeEach(function() {
-          initComponent.call(this, { nonUser: true });
-        });
-
-        it('should return a defined Vue component', function() {
-          expect(this.component).toBeDefined();
-          expect(this.component.$data).toBeDefined();
-        });
-
-        it('should have <a> and <img> children', function() {
-          const componentLink = this.component.$el;
-          const componentLinkTagname = componentLink.tagName;
-
-          const componentImg = componentLink.childNodes[0];
-          const componentImgTagname = componentImg.tagName;
-
-          expect(componentLink).toBeDefined();
-          expect(componentLinkTagname).toBe('A');
-
-          expect(componentImg).toBeDefined();
-          expect(componentImgTagname).toBe('IMG');
-        });
-
-        it('should correctly compute computed values', function() {
-          const correctVals = {
-            'disabledClass': 'disabled',
-            'avatarClass': 'avatar avatar-inline s48 ',
-            'preppedAvatarUrl': '/assets/no_avatar.png',
-            'tooltipClass': '',
-            'userProfileUrl': '',
-          };
-
-          for (var computedKey in correctVals) {
-            const expectedVal = correctVals[computedKey];
-            const actualComputed = this.component[computedKey];
-            expect(actualComputed).toBe(expectedVal);
-          }
-        });
-      });
-
-      describe('Props Configured', function() {
-        beforeEach(function() {
+      beforeEach(function() {
          const propsData = this.propsData = {
+            avatarSize: 32,
             avatarUrl: 'myavatarurl.com',
-            username: 'myusername',
             displayName: 'mydisplayname',
             extraAvatarClass: 'myextraavatarclass',
             extraLinkClass: 'myextralinkclass',
             showTooltip: true,
-            size: 32,
-            nonUser: false
           };
           initComponent.call(this, {
             propsData
           });
         });
 
-        it('should correctly compute computed values', function(done) {
-          const correctVals = {
-            'disabledClass': '',
-            'avatarClass': 'avatar avatar-inline s48 ',
-            'preppedAvatarUrl': this.propsData.avatarUrl,
-            'tooltipClass': 'has-tooltip',
-            'userProfileUrl': `/${this.propsData.username}`,
-          };
-          Vue.nextTick(() => {
-            for (var computedKey in correctVals) {
-              const expectedVal = correctVals[computedKey];
-              const actualComputed = this.component[computedKey];
-              expect(actualComputed).toBe(expectedVal);
-            }
-            done();
-          });
+      it('should return a defined Vue component', function() {
+        expect(this.component).toBeDefined();
+        expect(this.component.$data).toBeDefined();
+      });
+
+      it('should have <a> and <img> children', function() {
+        const componentLink = this.component.$el.querySelector('a');
+        const componentImg = componentLink.querySelector('img');
+
+        expect(componentLink).not.toBeNull();
+        expect(componentImg).not.toBeNull();
+      });
+
+      it('should correctly compute computed values', function(done) {
+        const correctVals = {
+          'disabledClass': '',
+          'avatarSizeClass': 's32',
+          'avatarHtmlClass': 's32 avatar avatar-inline',
+          'avatarClass': 'avatar avatar-inline s32 ',
+          'tooltipClass': 'has-tooltip',
+          'linkClass': 'author_link has-tooltip  ',
+          'tooltipContainerAttr': 'body',
+        };
+
+        Vue.nextTick(() => {
+          for (var computedKey in correctVals) {
+            const expectedVal = correctVals[computedKey];
+            const actualComputed = this.component[computedKey];
+            expect(actualComputed).toBe(expectedVal);
+          }
+          done();
         });
       });
     });
