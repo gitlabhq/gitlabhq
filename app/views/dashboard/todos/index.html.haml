@@ -5,14 +5,14 @@
   .top-area
     %ul.nav-links
       - todo_pending_active = ('active' if params[:state].blank? || params[:state] == 'pending')
-      %li{class: "todos-pending #{todo_pending_active}"}
+      %li{class: "todos-pending #{todo_pending_active}"}>
         = link_to todos_filter_path(state: 'pending') do
           %span
             To do
           %span.badge
             = number_with_delimiter(todos_pending_count)
       - todo_done_active = ('active' if params[:state] == 'done')
-      %li{class: "todos-done #{todo_done_active}"}
+      %li{class: "todos-done #{todo_done_active}"}>
         = link_to todos_filter_path(state: 'done') do
           %span
             Done
@@ -32,7 +32,7 @@
           - if params[:project_id].present?
             = hidden_field_tag(:project_id, params[:project_id])
           = dropdown_tag(project_dropdown_label(params[:project_id], 'Project'), options: { toggle_class: 'js-project-search js-filter-submit', title: 'Filter by project', filter: true, filterInput: 'input#project-search', dropdown_class: 'dropdown-menu-selectable dropdown-menu-project js-filter-submit',
-            placeholder: 'Search projects', data: { data: todo_projects_options } })
+            placeholder: 'Search projects', data: { data: todo_projects_options, default_label: 'Project' } })
         .filter-item.inline
           - if params[:author_id].present?
             = hidden_field_tag(:author_id, params[:author_id])
@@ -42,12 +42,12 @@
           - if params[:type].present?
             = hidden_field_tag(:type, params[:type])
           = dropdown_tag(todo_types_dropdown_label(params[:type], 'Type'), options: { toggle_class: 'js-type-search js-filter-submit', dropdown_class: 'dropdown-menu-selectable dropdown-menu-type js-filter-submit',
-            data: { data: todo_types_options } })
+            data: { data: todo_types_options, default_label: 'Type' } })
         .filter-item.inline.actions-filter
           - if params[:action_id].present?
             = hidden_field_tag(:action_id, params[:action_id])
           = dropdown_tag(todo_actions_dropdown_label(params[:action_id], 'Action'), options: { toggle_class: 'js-action-search js-filter-submit', dropdown_class: 'dropdown-menu-selectable dropdown-menu-action js-filter-submit',
-            data: { data: todo_actions_options }})
+            data: { data: todo_actions_options, default_label: 'Action' } })
         .pull-right
           .dropdown.inline.prepend-left-10
             %button.dropdown-toggle{type: 'button', 'data-toggle' => 'dropdown'}

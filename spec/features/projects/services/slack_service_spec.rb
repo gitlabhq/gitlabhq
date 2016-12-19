@@ -2,8 +2,8 @@ require 'spec_helper'
 
 feature 'Projects > Slack service > Setup events', feature: true do
   let(:user) { create(:user) }
-  let(:service) { SlackService.new }
-  let(:project) { create(:project, slack_service: service) }
+  let(:service) { SlackNotificationService.new }
+  let(:project) { create(:project, slack_notification_service: service) }
 
   background do
     service.fields

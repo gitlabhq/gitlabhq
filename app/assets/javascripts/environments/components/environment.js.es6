@@ -164,8 +164,7 @@
                   {{state.availableCounter}}
                 </span>
               </a>
-            </li>
-            <li v-bind:class="{ 'active' : scope === 'stopped' }">
+            </li><li v-bind:class="{ 'active' : scope === 'stopped' }">
               <a :href="projectStoppedEnvironmentsPath">
                 Stopped
                 <span class="badge js-stopped-environments-count">

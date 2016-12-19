@@ -10,19 +10,7 @@
   position: relative;
   top: 1px;
 
-  > .fa {
+  .fa {
     font-size: 18px;
   }
-}
-
-.ns-part {
-  color: $gl-text-green;
-}
-
-.ns-watch {
-  color: $gl-success;
-}
-
-.ns-mute {
-  color: $gl-danger;
 }

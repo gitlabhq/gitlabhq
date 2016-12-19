@@ -30,7 +30,7 @@
               To add the entry manually, provide the following details to the application on your phone.
             %p.prepend-top-0.append-bottom-0
               Account:
-              = current_user.email
+              = @account_string
             %p.prepend-top-0.append-bottom-0
               Key:
               = current_user.otp_secret.scan(/.{4}/).join(' ')

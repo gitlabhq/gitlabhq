@@ -20,8 +20,8 @@
     margin-bottom: 0;
 
     tr {
-      border-bottom: 1px solid $table-border-gray;
-      border-top: 1px solid $table-border-gray;
+      border-bottom: 1px solid $white-normal;
+      border-top: 1px solid $white-normal;
 
       td,
       th {
@@ -39,7 +39,7 @@
 
       .commit-history-link-spacer {
         margin: 0 10px;
-        color: $table-border-color;
+        color: $white-normal;
       }
 
       &:hover {
@@ -53,7 +53,7 @@
 
       &.selected {
         td {
-          background: $gray-dark;
+          background: $white-normal;
           border-top: 1px solid $border-gray-dark;
           border-bottom: 1px solid $border-gray-dark;
         }
@@ -134,7 +134,7 @@
 .blob-commit-info {
   list-style: none;
   padding: $gl-padding;
-  background: $background-color;
+  background: $gray-light;
   border: 1px solid $border-color;
   border-bottom: none;
   margin: 0;

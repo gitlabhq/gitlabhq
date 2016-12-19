@@ -5,7 +5,7 @@
 .event-item {
   font-size: $gl-font-size;
   padding: $gl-padding-top 0 $gl-padding-top ($gl-avatar-size + $gl-padding-top);
-  border-bottom: 1px solid $table-border-color;
+  border-bottom: 1px solid $white-normal;
   color: $list-text-color;
 
   &.event-inline {

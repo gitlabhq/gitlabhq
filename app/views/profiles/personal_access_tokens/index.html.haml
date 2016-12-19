@@ -28,21 +28,8 @@
       Add a Personal Access Token
     %p.profile-settings-content
       Pick a name for the application, and we'll give you a unique token.
-    = form_for [:profile, @personal_access_token],
-                method: :post, html: { class: 'js-requires-input' } do |f|
 
-      = form_errors(@personal_access_token)
-
-      .form-group
-        = f.label :name, class: 'label-light'
-        = f.text_field :name, class: "form-control", required: true
-
-      .form-group
-        = f.label :expires_at, class: 'label-light'
-        = f.text_field :expires_at, class: "datepicker form-control", required: false
-
-      .prepend-top-default
-        = f.submit 'Create Personal Access Token', class: "btn btn-create"
+    = render "form", personal_access_token: @personal_access_token, scopes: @scopes
 
     %hr
 
@@ -56,6 +43,7 @@
               %th Name
               %th Created
               %th Expires
+              %th Scopes
               %th
           %tbody
             - @active_personal_access_tokens.each do |token|
@@ -67,6 +55,7 @@
                     = token.expires_at.to_date.to_s(:medium)
                   - else
                     %span.personal-access-tokens-never-expires-label Never
+                %td= token.scopes.present? ? token.scopes.join(", ") : "<no scopes selected>"
                 %td= link_to "Revoke", revoke_profile_personal_access_token_path(token), method: :put, class: "btn btn-danger pull-right", data: { confirm: "Are you sure you want to revoke this token? This action cannot be undone." }
 
     - else
