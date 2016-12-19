@@ -12,6 +12,11 @@
       },
       approverNamesStringified() {
         const approvers = this.suggestedApprovers;
+
+        if (!approvers) {
+          return '';
+        }
+
         return approvers.length === 1 ? approvers[0].name :
           approvers.reduce((memo, curr, index) => {
           const nextMemo = `${memo}${curr.name}`;

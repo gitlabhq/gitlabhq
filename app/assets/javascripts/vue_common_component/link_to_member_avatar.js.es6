@@ -32,9 +32,9 @@
         required: false,
         default: false,
       },
-      nonUser: {
+      clickable: {
         type: Boolean,
-        default: false,
+        default: true,
         required: false,
       },
       tooltipContainer: {
@@ -53,13 +53,12 @@
     },
     data() {
       return {
-        // TODO: Rename baseClass
         avatarBaseClass: 'avatar avatar-inline',
       };
     },
     computed: {
       avatarSizeClass() {
-        return `s${this.avatarSizeClass}`;
+        return `s${this.size}`;
       },
       avatarHtmlClass() {
         return `${this.avatarSizeClass} ${this.avatarBaseClass}`;
@@ -71,7 +70,7 @@
         return `${this.avatarBaseClass} ${this.avatarSizeClass} ${this.extraAvatarClass}`;
       },
       disabledClass() {
-        return this.nonUser ? 'disabled' : '';
+        return !this.clickable ? 'disabled' : '';
       },
       linkClass() {
         return `author_link ${this.tooltipClass} ${this.extraLinkClass} ${this.disabledClass}`

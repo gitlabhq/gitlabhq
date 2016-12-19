@@ -36,7 +36,7 @@
         </span>
         <span v-for='n in approvalsLeft'>
           <link-to-member-avatar
-            :non-user='true'
+            :clickable='false'
             :avatar-html='pendingAvatarSvg'
             :show-tooltip='false'
             extra-link-class='hide-asset'>
