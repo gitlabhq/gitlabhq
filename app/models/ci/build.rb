@@ -18,7 +18,7 @@ module Ci
     end
 
     serialize :options
-    serialize :yaml_variables
+    serialize :yaml_variables, Gitlab::Serialize::Ci::Variables
 
     validates :coverage, numericality: true, allow_blank: true
     validates_presence_of :ref

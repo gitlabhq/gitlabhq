@@ -458,7 +458,7 @@ describe Ci::Build, models: true do
             })
           end
           let(:variables) do
-            [{ key: :KEY, value: 'value', public: true }]
+            [{ key: 'KEY', value: 'value', public: true }]
           end
 
           it { is_expected.to eq(predefined_variables + variables) }
@@ -1306,10 +1306,24 @@ describe Ci::Build, models: true do
   describe '#expanded_environment_name' do
     subject { build.expanded_environment_name }
 
-    context 'when environment uses variables' do
-      let(:build) { create(:ci_build, ref: 'master', environment: 'review/$CI_BUILD_REF_NAME') }
+    context 'when environment uses $CI_BUILD_REF_NAME' do
+      let(:build) do
+        create(:ci_build,
+               ref: 'master',
+               environment: 'review/$CI_BUILD_REF_NAME')
+      end
 
       it { is_expected.to eq('review/master') }
+    end
+
+    context 'when environment uses yaml_variables containing symbol keys' do
+      let(:build) do
+        create(:ci_build,
+               yaml_variables: [{ key: :APP_HOST, value: 'host' }],
+               environment: 'review/$APP_HOST')
+      end
+
+      it { is_expected.to eq('review/host') }
     end
   end
 
