@@ -1781,14 +1781,14 @@ describe Project, models: true do
 
       it 'returns the projects matching the paths' do
         projects = Project.where_full_path_in([project1.path_with_namespace,
-                                           project2.path_with_namespace])
+                                               project2.path_with_namespace])
 
         expect(projects).to contain_exactly(project1, project2)
       end
 
       it 'returns projects regardless of the casing of paths' do
         projects = Project.where_full_path_in([project1.path_with_namespace.upcase,
-                                           project2.path_with_namespace.upcase])
+                                               project2.path_with_namespace.upcase])
 
         expect(projects).to contain_exactly(project1, project2)
       end
