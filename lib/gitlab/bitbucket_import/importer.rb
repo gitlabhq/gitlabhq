@@ -1,6 +1,8 @@
 module Gitlab
   module BitbucketImport
     class Importer
+      include Gitlab::ShellAdapter
+
       LABELS = [{ title: 'bug', color: '#FF0000' },
                 { title: 'enhancement', color: '#428BCA' },
                 { title: 'proposal', color: '#69D100' },
@@ -18,6 +20,7 @@ module Gitlab
       end
 
       def execute
+        import_wiki
         import_issues
         import_pull_requests
         handle_errors
@@ -53,6 +56,16 @@ module Gitlab
 
       def repo
         @repo ||= client.repo(project.import_source)
+      end
+
+      def import_wiki
+        return if project.wiki.repository_exists?
+
+        path_with_namespace = "#{project.path_with_namespace}.wiki"
+        import_url = project.import_url.sub(/\.git\z/, ".git/wiki")
+        gitlab_shell.import_repository(project.repository_storage_path, path_with_namespace, import_url)
+      rescue StandardError => e
+        errors << { type: :wiki, errors: e.message }
       end
 
       def import_issues

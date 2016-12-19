@@ -17,6 +17,7 @@ to enable this if not already.
   - the pull requests (GitLab 8.4+)
   - the pull request comments (GitLab 8.15+)
   - the milestones (GitLab 8.15+)
+  - the wiki (GitLab 8.15+)
 - References to pull requests and issues are preserved (GitLab 8.7+)
 - Repository public access is retained. If a repository is private in Bitbucket
   it will be created as private in GitLab as well.
