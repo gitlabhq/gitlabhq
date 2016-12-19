@@ -69,6 +69,9 @@ describe Gitlab::BitbucketImport::Importer, lib: true do
 
   context 'issues statuses' do
     before do
+      # HACK: Bitbucket::Representation.const_get('Issue') seems to return ::Issue without this
+      Bitbucket::Representation::Issue.new({})
+
       stub_request(
         :get,
         "https://api.bitbucket.org/2.0/repositories/#{project_identifier}"
@@ -108,13 +111,16 @@ describe Gitlab::BitbucketImport::Importer, lib: true do
                   body: {}.to_json)
     end
 
-    it 'map statuses to open or closed' do
-      # HACK: Bitbucket::Representation.const_get('Issue') seems to return ::Issue without this
-      Bitbucket::Representation::Issue.new({})
+    it 'maps statuses to open or closed' do
       importer.execute
 
       expect(project.issues.where(state: "closed").size).to eq(5)
       expect(project.issues.where(state: "opened").size).to eq(2)
+    end
+
+    it 'calls import_wiki' do
+      expect(importer).to receive(:import_wiki)
+      importer.execute
     end
   end
 end
