@@ -17,7 +17,7 @@ module Gitlab
             'icon_status_warning'
           end
 
-          def to_s
+          def group
             'success_with_warnings'
           end
 

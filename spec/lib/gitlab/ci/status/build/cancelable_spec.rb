@@ -32,6 +32,14 @@ describe Gitlab::Ci::Status::Build::Cancelable do
     end
   end
 
+  describe '#group' do
+    it 'does not override status group' do
+      expect(status).to receive(:group)
+
+      subject.group
+    end
+  end
+
   describe 'action details' do
     let(:user) { create(:user) }
     let(:build) { create(:ci_build) }
