@@ -37,10 +37,10 @@ Feature: Project Services
     And I fill Assembla settings
     Then I should see Assembla service settings saved
 
-  Scenario: Activate Slack service
+  Scenario: Activate Slack notifications service
     When I visit project "Shop" services page
-    And I click Slack Notifications service link
-    And I fill Slack Notifications settings
+    And I click Slack notifications service link
+    And I fill Slack notifications settings
     Then I should see Slack Notifications service settings saved
 
   Scenario: Activate Pushover service

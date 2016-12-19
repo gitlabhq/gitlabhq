@@ -137,11 +137,11 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
     expect(find_field('Colorize messages').value).to eq '1'
   end
 
-  step 'I click Slack Notifications service link' do
-    click_link 'Slack Notifications'
+  step 'I click Slack notifications service link' do
+    click_link 'Slack notifications'
   end
 
-  step 'I fill Slack Notifications settings' do
+  step 'I fill Slack notifications settings' do
     check 'Active'
     fill_in 'Webhook', with: 'https://hooks.slack.com/services/SVRWFV0VVAR97N/B02R25XN3/ZBqu7xMupaEEICInN685'
     click_button 'Save'
