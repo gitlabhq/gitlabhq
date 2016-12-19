@@ -149,12 +149,11 @@ module ProjectsHelper
   end
 
   def mattermost_teams_options(teams)
-    teams_options = teams.map do |team|
-      return nil unless team['display_name'] && team['id']
-      [team['display_name'], team['id']]
+    teams_options = teams.map do |id, options|
+      return nil unless id && options['display_name']
+      [options['display_name'], id]
     end.compact
-    teams_options.unshift(['Select team...', '0']) unless teams_options.one?
-    teams_options
+    teams_options.unshift(['Select team...', '0'])
   end
 
   private

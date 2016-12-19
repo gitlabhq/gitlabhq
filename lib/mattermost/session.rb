@@ -1,5 +1,10 @@
 module Mattermost
-  class NoSessionError < StandardError; end
+  class NoSessionError < StandardError
+    def message
+      'No session could be set up, is Mattermost configured with Single Sign on?'
+    end
+  end
+
   # This class' prime objective is to obtain a session token on a Mattermost
   # instance with SSO configured where this GitLab instance is the provider.
   #

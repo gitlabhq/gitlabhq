@@ -1,12 +1,15 @@
 module Mattermost
   class Command
-    def self.create(session, team_id, command)
-      response = session.post("/api/v3/teams/#{team_id}/commands/create", body: command.to_json).parsed_response
+    def self.create(session, params)
+      response = session.post("/api/v3/teams/#{params[:team_id]}/commands/create",
+        body: params.to_json)
 
-      if response.has_key?('message')
-        response
+      if response.success?
+        response.parsed_response['token']
+      elsif response.parsed_response.try(:has_key?, 'message')
+        raise response.parsed_response['message']
       else
-        response['token']
+        raise 'Failed to create a new command'
       end
     end
   end

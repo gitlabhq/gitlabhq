@@ -25,28 +25,17 @@ class MattermostSlashCommandsService < ChatService
     ]
   end
 
-  def configure(current_user, params)
-    result = Mattermost::Session.new(current_user).with_session do |session|
-      Mattermost::Command.create(session, params[:team_id], command)
+  def configure!(current_user, params)
+    token = Mattermost::Session.new(current_user).with_session do |session|
+      Mattermost::Command.create(session, command(params))
     end
 
-    if result.has_key?('message')
-      result['message']
-    else
-      update!(token: result['token'], active: true)
-    end
+    update!(active: true, token: token)
   end
 
-  def list_teams(current_user)
-    begin
-      response = Mattermost::Session.new(current_user).with_session do |session|
-        Mattermost::Team.all(session)
-      end
-
-      # We ignore the error message as we can't display it
-      response.has_key?('message') ? [] : response
-    rescue Mattermost::NoSessionError
-      []
+  def list_teams(user)
+    Mattermost::Session.new(user).with_session do |session|
+      Mattermost::Team.all(session)
     end
   end
 
@@ -64,21 +53,17 @@ class MattermostSlashCommandsService < ChatService
 
   private
 
-  def command(trigger:, url:, icon_url:)
+  def command(params)
     pretty_project_name = project.name_with_namespace
 
-    {
+    params.merge(
       auto_complete: true,
       auto_complete_desc: "Perform common operations on: #{pretty_project_name}",
       auto_complete_hint: '[help]',
       description: "Perform common operations on: #{pretty_project_name}",
       display_name: "GitLab  / #{pretty_project_name}",
       method: 'P',
-      user_name: 'GitLab',
-      trigger: trigger,
-      url: url,
-      icon_url: icon_url
-    }
+      user_name: 'GitLab')
   end
 
   def find_chat_user(params)
