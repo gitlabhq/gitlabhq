@@ -41,7 +41,7 @@ module Ci
         put ":id" do
           authenticate_runner!
           build = Ci::Build.where(runner_id: current_runner.id).running.find(params[:id])
-          authenticate_build!(build, verify_token: false)
+          validate_build!(build)
 
           update_runner_info
 
