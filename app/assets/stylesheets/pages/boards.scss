@@ -97,7 +97,7 @@
 .board-inner {
   height: 100%;
   font-size: $issue-boards-font-size;
-  background: $background-color;
+  background: $gray-light;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
 }
@@ -252,7 +252,7 @@
 
 .board-list-count {
   padding: 10px 0;
-  color: $gl-placeholder-color;
+  color: $gl-gray-light;
   font-size: 13px;
 
   > .fa {

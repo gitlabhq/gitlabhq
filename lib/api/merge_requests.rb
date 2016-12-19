@@ -144,8 +144,8 @@ module API
           success Entities::MergeRequest
         end
         params do
-          optional :title, type: String, desc: 'The title of the merge request'
-          optional :target_branch, type: String, desc: 'The target branch'
+          optional :title, type: String, allow_blank: false, desc: 'The title of the merge request'
+          optional :target_branch, type: String, allow_blank: false, desc: 'The target branch'
           optional :state_event, type: String, values: %w[close reopen merge],
                                  desc: 'Status of the merge request'
           use :optional_params

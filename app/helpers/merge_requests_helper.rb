@@ -59,6 +59,10 @@ module MergeRequestsHelper
     @mr_closes_issues ||= @merge_request.closes_issues
   end
 
+  def mr_issues_mentioned_but_not_closing
+    @mr_issues_mentioned_but_not_closing ||= @merge_request.issues_mentioned_but_not_closing
+  end
+
   def mr_change_branches_path(merge_request)
     new_namespace_project_merge_request_path(
       @project.namespace, @project,

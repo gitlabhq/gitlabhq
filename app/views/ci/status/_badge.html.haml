@@ -1,0 +1,10 @@
+- status = local_assigns.fetch(:status)
+
+- if status.has_details?
+  = link_to status.details_path, class: "ci-status ci-#{status}" do
+    = custom_icon(status.icon)
+    = status.text
+- else
+  %span{ class: "ci-status ci-#{status}" }
+    = custom_icon(status.icon)
+    = status.text

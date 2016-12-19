@@ -1,4 +1,8 @@
-/* eslint-disable */
+/* eslint-disable comma-dangle, object-shorthand, func-names, no-else-return, guard-for-in, no-restricted-syntax, one-var, indent, space-before-function-paren, no-plusplus, no-lonely-if, no-continue, brace-style, max-len, quotes, semi */
+/* global Vue */
+/* global DiscussionMixins */
+/* global CommentsStore */
+
 (() => {
   const JumpToDiscussion = Vue.extend({
     mixins: [DiscussionMixins],

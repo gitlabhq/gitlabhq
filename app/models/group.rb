@@ -99,7 +99,7 @@ class Group < Namespace
   end
 
   def human_name
-    name
+    full_name
   end
 
   def visibility_level_field

@@ -98,13 +98,14 @@
   }
 
   .label {
-    padding: 9px;
+    padding: 8px 9px 9px;
     font-size: 14px;
   }
 }
 
 .color-label {
-  padding: 3px 4px;
+  padding: 3px 7px;
+  border-radius: $label-border-radius;
 }
 
 .dropdown-labels-error {
@@ -200,6 +201,8 @@
   .label-remove {
     border-left: 1px solid $label-remove-border;
     z-index: 3;
+    border-radius: $label-border-radius;
+    padding: 6px 10px 6px 9px;
   }
 
   .btn {

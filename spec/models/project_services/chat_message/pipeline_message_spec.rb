@@ -17,7 +17,7 @@ describe ChatMessage::PipelineMessage do
       },
       project: { path_with_namespace: 'project_name',
                  web_url: 'example.gitlab.com' },
-      user: { name: 'hacker' }
+      user: user
     }
   end
 
@@ -30,9 +30,7 @@ describe ChatMessage::PipelineMessage do
     let(:message) { build_message('passed') }
 
     it 'returns a message with information about succeeded build' do
-      expect(subject.pretext).to be_empty
-      expect(subject.fallback).to eq(message)
-      expect(subject.attachments).to eq([text: message, color: color])
+      verify_message
     end
   end
 
@@ -42,16 +40,29 @@ describe ChatMessage::PipelineMessage do
     let(:duration) { 10 }
 
     it 'returns a message with information about failed build' do
-      expect(subject.pretext).to be_empty
-      expect(subject.fallback).to eq(message)
-      expect(subject.attachments).to eq([text: message, color: color])
+      verify_message
+    end
+
+    context 'when triggered by API therefore lacking user' do
+      let(:user) { nil }
+      let(:message) { build_message(status, 'API') }
+
+      it 'returns a message stating it is by API' do
+        verify_message
+      end
     end
   end
 
-  def build_message(status_text = status)
+  def verify_message
+    expect(subject.pretext).to be_empty
+    expect(subject.fallback).to eq(message)
+    expect(subject.attachments).to eq([text: message, color: color])
+  end
+
+  def build_message(status_text = status, name = user[:name])
     "<example.gitlab.com|project_name>:" \
     " Pipeline <example.gitlab.com/pipelines/123|#123>" \
     " of <example.gitlab.com/commits/develop|develop> branch" \
-    " by hacker #{status_text} in #{duration} #{'second'.pluralize(duration)}"
+    " by #{name} #{status_text} in #{duration} #{'second'.pluralize(duration)}"
   end
 end

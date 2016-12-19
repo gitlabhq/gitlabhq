@@ -10,7 +10,7 @@
   }
 
   .ace_gutter-cell {
-    background-color: $background-color;
+    background-color: $gray-light;
   }
 
   .cancel-btn {
@@ -34,7 +34,7 @@
   }
 
   .editor-ref {
-    background: $background-color;
+    background: $gray-light;
     padding-right: $gl-padding;
     border-right: 1px solid $border-color;
     display: block;
@@ -51,8 +51,16 @@
 
   .new-file-name {
     display: inline-block;
-    width: 450px;
+    max-width: 450px;
     float: left;
+
+    @media(max-width: $screen-md-max) {
+      width: 280px;
+    }
+
+    @media(max-width: $screen-sm-max) {
+      width: 180px;
+    }
   }
 
   .file-buttons {
@@ -111,6 +119,45 @@
   .gitlab-ci-yml-selector {
     .dropdown-menu-toggle {
       width: 250px;
+    }
+  }
+}
+
+@media(max-width: $screen-xs-max){
+  .file-editor {
+    .file-title {
+      .pull-right {
+        height: auto;
+      }
+    }
+
+    .new-file-name {
+      max-width: none;
+      width: 100%;
+      margin-bottom: 3px;
+    }
+
+    .file-buttons {
+      display: block;
+      width: 100%;
+      margin-bottom: 10px;
+
+      .soft-wrap-toggle {
+        width: 100%;
+        margin: 3px 0;
+      }
+
+      .encoding-selector,
+      .license-selector,
+      .gitignore-selector,
+      .gitlab-ci-yml-selector {
+        display: block;
+        margin: 3px 0;
+
+        button {
+          width: 100%;
+        }
+      }
     }
   }
 }

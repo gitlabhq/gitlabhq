@@ -1,0 +1,4 @@
+---
+title: Fix missing Note access checks by moving Note#search to updated NoteFinder
+merge_request: 
+author: 

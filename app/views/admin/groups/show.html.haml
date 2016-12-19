@@ -1,8 +1,8 @@
 - page_title @group.name, "Groups"
 %h3.page-title
-  Group: #{@group.name}
+  Group: #{@group.full_name}
 
-  = link_to edit_admin_group_path(@group), class: "btn pull-right" do
+  = link_to admin_group_edit_path(@group), class: "btn pull-right" do
     %i.fa.fa-pencil-square-o
     Edit
 %hr
@@ -99,7 +99,7 @@
             Read more about project permissions
             %strong= link_to "here", help_page_path("user/permissions"), class: "vlink"
 
-          = form_tag members_update_admin_group_path(@group), id: "new_project_member", class: "bulk_import", method: :put  do
+          = form_tag admin_group_members_update_path(@group), id: "new_project_member", class: "bulk_import", method: :put  do
             %div
               = users_select_tag(:user_ids, multiple: true, email_user: true, skip_ldap: @group.ldap_synced?, scope: :all)
             %div.prepend-top-10

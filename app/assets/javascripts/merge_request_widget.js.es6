@@ -1,5 +1,10 @@
-/* eslint-disable */
- ((global) => {
+/* eslint-disable max-len, no-var, func-names, space-before-function-paren, vars-on-top, no-plusplus, comma-dangle, no-return-assign, consistent-return, no-param-reassign, one-var, one-var-declaration-per-line, quotes, prefer-template, no-else-return, prefer-arrow-callback, no-unused-vars, no-underscore-dangle, no-shadow, no-mixed-operators, template-curly-spacing, camelcase, default-case, wrap-iife, semi, padded-blocks */
+/* global notify */
+/* global notifyPermissions */
+/* global merge_request_widget */
+/* global Turbolinks */
+
+((global) => {
   var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   const DEPLOYMENT_TEMPLATE = `<div class="mr-widget-heading" id="<%- id %>">
@@ -27,7 +32,7 @@
        </div>
      </div>`;
 
-   global.MergeRequestWidget = (function() {
+  global.MergeRequestWidget = (function() {
     function MergeRequestWidget(opts) {
       // Initialize MergeRequestWidget behavior
       //
@@ -40,28 +45,31 @@
       $('#modal_merge_info').modal({
         show: false
       });
-      this.firstCICheck = true;
-      this.readyForCICheck = false;
-      this.readyForCIEnvironmentCheck = false;
-      this.cancel = false;
-      clearInterval(this.fetchBuildStatusInterval);
-      clearInterval(this.fetchBuildEnvironmentStatusInterval);
       this.clearEventListeners();
       this.addEventListeners();
       this.getCIStatus(false);
-      this.getCIEnvironmentsStatus();
       this.retrieveSuccessIcon();
-      this.pollCIStatus();
-      this.pollCIEnvironmentsStatus();
+
+      this.ciStatusInterval = new global.SmartInterval({
+        callback: this.getCIStatus.bind(this, true),
+        startingInterval: 10000,
+        maxInterval: 30000,
+        hiddenInterval: 120000,
+        incrementByFactorOf: 5000,
+      });
+      this.ciEnvironmentStatusInterval = new global.SmartInterval({
+        callback: this.getCIEnvironmentsStatus.bind(this),
+        startingInterval: 30000,
+        maxInterval: 120000,
+        hiddenInterval: 240000,
+        incrementByFactorOf: 15000,
+        immediateExecution: true,
+      });
       notifyPermissions();
     }
 
     MergeRequestWidget.prototype.clearEventListeners = function() {
       return $(document).off('page:change.merge_request');
-    };
-
-    MergeRequestWidget.prototype.cancelPolling = function() {
-      return this.cancel = true;
     };
 
     MergeRequestWidget.prototype.addEventListeners = function() {
@@ -72,9 +80,6 @@
           var page;
           page = $('body').data('page').split(':').last();
           if (allowedPages.indexOf(page) < 0) {
-            clearInterval(_this.fetchBuildStatusInterval);
-            clearInterval(_this.fetchBuildEnvironmentStatusInterval);
-            _this.cancelPolling();
             return _this.clearEventListeners();
           }
         };
@@ -82,10 +87,10 @@
     };
 
     MergeRequestWidget.prototype.retrieveSuccessIcon = function() {
-       const $ciSuccessIcon = $('.js-success-icon');
-       this.$ciSuccessIcon = $ciSuccessIcon.html();
-       $ciSuccessIcon.remove();
-     }
+      const $ciSuccessIcon = $('.js-success-icon');
+      this.$ciSuccessIcon = $ciSuccessIcon.html();
+      $ciSuccessIcon.remove();
+    }
 
     MergeRequestWidget.prototype.mergeInProgress = function(deleteSourceBranch) {
       if (deleteSourceBranch == null) {
@@ -131,6 +136,11 @@
       });
     };
 
+    MergeRequestWidget.prototype.cancelPolling = function () {
+      this.ciStatusInterval.cancel();
+      this.ciEnvironmentStatusInterval.cancel();
+    };
+
     MergeRequestWidget.prototype.getMergeStatus = function() {
       return $.get(this.opts.merge_check_url, function(data) {
         return $('.mr-state-widget').replaceWith(data);
@@ -148,18 +158,6 @@
       }
     };
 
-    MergeRequestWidget.prototype.pollCIStatus = function() {
-      return this.fetchBuildStatusInterval = setInterval(((function(_this) {
-        return function() {
-          if (!_this.readyForCICheck) {
-            return;
-          }
-          _this.getCIStatus(true);
-          return _this.readyForCICheck = false;
-        };
-      })(this)), 10000);
-    };
-
     MergeRequestWidget.prototype.getCIStatus = function(showNotification) {
       var _this;
       _this = this;
@@ -167,23 +165,17 @@
       return $.getJSON(this.opts.ci_status_url, (function(_this) {
         return function(data) {
           var message, status, title;
-          if (_this.cancel) {
-            return;
-          }
-          _this.readyForCICheck = true;
           if (data.status === '') {
             return;
           }
           if (data.environments && data.environments.length) _this.renderEnvironments(data.environments);
-          if (_this.firstCICheck || data.status !== _this.opts.ci_status && (data.status != null)) {
+          if (data.status !== _this.opts.ci_status && (data.status != null)) {
             _this.opts.ci_status = data.status;
             _this.showCIStatus(data.status);
             if (data.coverage) {
               _this.showCICoverage(data.coverage);
             }
-            // The first check should only update the UI, a notification
-            // should only be displayed on status changes
-            if (showNotification && !_this.firstCICheck) {
+            if (showNotification) {
               status = _this.ciLabelForStatus(data.status);
               if (status === "preparing") {
                 title = _this.opts.ci_title.preparing;
@@ -201,24 +193,13 @@
                 return Turbolinks.visit(_this.opts.builds_path);
               });
             }
-            return _this.firstCICheck = false;
           }
         };
       })(this));
     };
 
-    MergeRequestWidget.prototype.pollCIEnvironmentsStatus = function() {
-      this.fetchBuildEnvironmentStatusInterval = setInterval(() => {
-        if (!this.readyForCIEnvironmentCheck) return;
-        this.getCIEnvironmentsStatus();
-        this.readyForCIEnvironmentCheck = false;
-      }, 300000);
-    };
-
     MergeRequestWidget.prototype.getCIEnvironmentsStatus = function() {
       $.getJSON(this.opts.ci_environments_status_url, (environments) => {
-        if (this.cancel) return;
-        this.readyForCIEnvironmentCheck = true;
         if (environments && environments.length) this.renderEnvironments(environments);
       });
     };
@@ -245,7 +226,7 @@
         const template = _.template(templateString)(environment)
         this.$widgetBody.before(template);
       }
-     };
+    };
 
     MergeRequestWidget.prototype.showCIStatus = function(state) {
       var allowed_states;
@@ -287,4 +268,4 @@
 
   })();
 
- })(window.gl || (window.gl = {}));
+})(window.gl || (window.gl = {}));

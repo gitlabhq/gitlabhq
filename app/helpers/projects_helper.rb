@@ -52,7 +52,7 @@ module ProjectsHelper
   def project_title(project)
     namespace_link =
       if project.group
-        link_to(simple_sanitize(project.group.name), group_path(project.group))
+        group_title(project.group)
       else
         owner = project.namespace.owner
         link_to(simple_sanitize(owner.name), user_path(owner))

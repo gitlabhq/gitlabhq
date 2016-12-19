@@ -102,15 +102,15 @@
 
     &.ci-created,
     &.ci-skipped {
-      color: $table-text-gray;
-      border-color: $table-text-gray;
+      color: $gl-gray-light;
+      border-color: $gl-gray-light;
 
       &:not(span):hover {
-        background-color: rgba( $table-text-gray, .07);
+        background-color: rgba( $gl-gray-light, .07);
       }
 
       svg {
-        fill: $table-text-gray;
+        fill: $gl-gray-light;
       }
     }
   }

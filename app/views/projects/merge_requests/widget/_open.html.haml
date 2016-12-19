@@ -38,14 +38,19 @@
     - elsif @merge_request.can_be_merged? || resolved_conflicts
       = render 'projects/merge_requests/widget/open/accept'
 
-  - if mr_closes_issues.present?
+  - if mr_closes_issues.present? || mr_issues_mentioned_but_not_closing.present?
     .mr-widget-footer
       %span
-        %i.fa.fa-check
-        Accepting this merge request will close #{"issue".pluralize(mr_closes_issues.size)}
-        = succeed '.' do
-          != markdown issues_sentence(mr_closes_issues), pipeline: :gfm, author: @merge_request.author
-        = mr_assign_issues_link
+        = icon('check')
+        - if mr_closes_issues.present?
+          Accepting this merge request will close #{"issue".pluralize(mr_closes_issues.size)}
+          = succeed '.' do
+            != markdown issues_sentence(mr_closes_issues), pipeline: :gfm, author: @merge_request.author
+          = mr_assign_issues_link
+        - if mr_issues_mentioned_but_not_closing.present?
+          #{"Issue".pluralize(mr_issues_mentioned_but_not_closing.size)}
+          != markdown issues_sentence(mr_issues_mentioned_but_not_closing), pipeline: :gfm, author: @merge_request.author
+          #{mr_issues_mentioned_but_not_closing.size > 1 ? 'are' : 'is'} mentioned but will not closed.
 
   - if @merge_request.approvals.any?
     .mr-widget-footer.approved-by-users

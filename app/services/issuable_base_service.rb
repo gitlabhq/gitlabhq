@@ -189,14 +189,15 @@ class IssuableBaseService < BaseService
     change_state(issuable)
     change_subscription(issuable)
     change_todo(issuable)
-    change_time_spent(issuable)
+    time_spent = change_time_spent(issuable)
     filter_params
     old_labels = issuable.labels.to_a
     old_mentioned_users = issuable.mentioned_users.to_a
 
-    params[:label_ids] = process_label_ids(params, existing_label_ids: issuable.label_ids)
+    label_ids = process_label_ids(params, existing_label_ids: issuable.label_ids)
+    params[:label_ids] = label_ids if labels_changing?(issuable.label_ids, label_ids)
 
-    if params.present? && update_issuable(issuable, params)
+    if (params.present? || time_spent) && update_issuable(issuable, params)
       # We do not touch as it will affect a update on updated_at field
       ActiveRecord::Base.no_touching do
         handle_common_system_notes(issuable, old_labels: old_labels)
@@ -209,6 +210,10 @@ class IssuableBaseService < BaseService
     end
 
     issuable
+  end
+
+  def labels_changing?(old_label_ids, new_label_ids)
+    old_label_ids.sort != new_label_ids.sort
   end
 
   def change_state(issuable)

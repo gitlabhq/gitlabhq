@@ -8,9 +8,9 @@
 - [Custom templates for issues and merge requests](customization/issue_and_merge_request_template.md) Pre-fill the description of issues and merge requests to your liking.
 - [GitLab as OAuth2 authentication service provider](integration/oauth_provider.md). It allows you to login to other applications from GitLab.
 - [Container Registry](user/project/container_registry.md) Learn how to use GitLab Container Registry.
-- [GitLab Basics](gitlab-basics/README.md) Find step by step how to start working on your commandline and on GitLab.
+- [GitLab basics](gitlab-basics/README.md) Find step by step how to start working on your commandline and on GitLab.
 - [GitLab Pages](pages/README.md) Using GitLab Pages.
-- [Importing to GitLab](workflow/importing/README.md).
+- [Importing to GitLab](workflow/importing/README.md) Import your projects from GitHub, Bitbucket, GitLab.com, FogBugz and SVN into GitLab.
 - [Importing and exporting projects between instances](user/project/settings/import_export.md).
 - [Koding](user/project/koding.md) Learn how to use Koding, the online IDE.
 - [Markdown](user/markdown.md) GitLab's advanced formatting system.

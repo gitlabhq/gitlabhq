@@ -1,4 +1,11 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, no-undef, quotes, consistent-return, prefer-arrow-callback, comma-dangle, object-shorthand, no-new, max-len */
+/* eslint-disable func-names, space-before-function-paren, no-var, quotes, consistent-return, prefer-arrow-callback, comma-dangle, object-shorthand, no-new, max-len */
+/* global bp */
+/* global Cookies */
+/* global Flash */
+/* global ConfirmDangerModal */
+/* global AwardsHandler */
+/* global Aside */
+
 // This is a manifest file that'll be compiled into including all the files listed below.
 // Add new JavaScript code in separate files in this directory and they'll automatically
 // be included in the compiled file accessible from http://example.com/assets/application.js

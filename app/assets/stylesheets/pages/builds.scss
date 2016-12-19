@@ -42,7 +42,7 @@
   }
 
   .environment-information {
-    background-color: $background-color;
+    background-color: $gray-light;
     border: 1px solid $border-color;
     padding: 12px $gl-padding;
     border-radius: $border-radius-default;
@@ -96,8 +96,8 @@
 }
 
 .build-trace {
-  background: $ci-output-bg;
-  color: $ci-text-color;
+  background: $black;
+  color: $gray-darkest;
   white-space: pre;
   overflow-x: auto;
   font-size: 12px;
@@ -257,7 +257,7 @@
 }
 
 .build-light-text {
-  color: $gl-placeholder-color;
+  color: $gl-gray-light;
 }
 
 .build-gutter-toggle {

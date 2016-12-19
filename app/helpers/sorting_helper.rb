@@ -27,7 +27,7 @@ module SortingHelper
       sort_value_recently_updated => sort_title_recently_updated,
       sort_value_oldest_updated => sort_title_oldest_updated,
       sort_value_recently_created => sort_title_recently_created,
-      sort_value_oldest_created => sort_title_oldest_created,
+      sort_value_oldest_created => sort_title_oldest_created
     }
 
     if current_controller?('admin/projects')
@@ -35,6 +35,19 @@ module SortingHelper
     end
 
     options
+  end
+
+  def member_sort_options_hash
+    {
+      sort_value_access_level_asc => sort_title_access_level_asc,
+      sort_value_access_level_desc => sort_title_access_level_desc,
+      sort_value_last_joined => sort_title_last_joined,
+      sort_value_oldest_joined => sort_title_oldest_joined,
+      sort_value_name => sort_title_name_asc,
+      sort_value_name_desc => sort_title_name_desc,
+      sort_value_recently_signin => sort_title_recently_signin,
+      sort_value_oldest_signin => sort_title_oldest_signin
+    }
   end
 
   def sort_title_priority
@@ -103,6 +116,50 @@ module SortingHelper
 
   def sort_title_less_weight
     'Less weight'
+  end
+
+  def sort_title_last_joined
+    'Last joined'
+  end
+
+  def sort_title_oldest_joined
+    'Oldest joined'
+  end
+
+  def sort_title_access_level_asc
+    'Access level, ascending'
+  end
+
+  def sort_title_access_level_desc
+    'Access level, descending'
+  end
+
+  def sort_title_name_asc
+    'Name, ascending'
+  end
+
+  def sort_title_name_desc
+    'Name, descending'
+  end
+
+  def sort_value_last_joined
+    'last_joined'
+  end
+
+  def sort_value_oldest_joined
+    'oldest_joined'
+  end
+
+  def sort_value_access_level_asc
+    'access_level_asc'
+  end
+
+  def sort_value_access_level_desc
+    'access_level_desc'
+  end
+
+  def sort_value_name_desc
+    'name_desc'
   end
 
   def sort_value_priority

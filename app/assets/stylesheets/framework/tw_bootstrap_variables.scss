@@ -78,7 +78,7 @@ $pagination-active-bg: $white-light;
 $pagination-active-border: $border-color;
 
 $pagination-disabled-color: #cdcdcd;
-$pagination-disabled-bg: $background-color;
+$pagination-disabled-bg: $gray-light;
 $pagination-disabled-border: $border-color;
 
 
@@ -117,8 +117,8 @@ $alert-border-radius: 0;
 $panel-border-radius: 2px;
 $panel-default-text: $text-color;
 $panel-default-border: $border-color;
-$panel-default-heading-bg: $background-color;
-$panel-footer-bg: $background-color;
+$panel-default-heading-bg: $gray-light;
+$panel-footer-bg: $gray-light;
 $panel-inner-border: $border-color;
 
 //== Wells
@@ -153,8 +153,8 @@ $nav-link-padding: 13px $gl-padding;
 //== Code
 //
 //##
-$pre-bg: $background-color !default;
+$pre-bg: $gray-light !default;
 $pre-color: $gl-gray !default;
 $pre-border-color: $border-color;
 
-$table-bg-accent: $background-color;
+$table-bg-accent: $gray-light;

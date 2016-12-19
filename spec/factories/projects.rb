@@ -154,4 +154,17 @@ FactoryGirl.define do
       )
     end
   end
+
+  factory :kubernetes_project, parent: :empty_project do
+    after :create do |project|
+      project.create_kubernetes_service(
+        active: true,
+        properties: {
+          namespace: project.path,
+          api_url: 'https://kubernetes.example.com/api',
+          token: 'a' * 40,
+        }
+      )
+    end
+  end
 end
