@@ -7,24 +7,23 @@
     props: ['approvedBy', 'approvalsLeft', 'userCanApprove', 'userHasApproved', 'suggestedApprovers', 'widgetLoading'],
     computed: {
       approvalsRequiredStringified() {
-        return this.approvalsLeft === 1 ? 'one more approval' :
-          `${this.approvalsLeft} more approvals`;
+        const baseString = `${this.approvalsLeft} more approval`;
+        return this.approvalsLeft === 1 ? baseString : `${baseString}s`;
       },
       approverNamesStringified() {
         const approvers = this.suggestedApprovers;
         return approvers.length === 1 ? approvers[0].name :
           approvers.reduce((memo, curr, index) => {
-            const nextMemo = `${memo}${curr.name}`;
+          const nextMemo = `${memo}${curr.name}`;
 
-            if (index === approvers.length - 2) { // second to last index
-              return `${nextMemo} or `;
-            } else if (index === approvers.length - 1) { // last index
-              return nextMemo;
-            }
+          if (index === approvers.length - 2) { // second to last index
+            return `${nextMemo} or `;
+          } else if (index === approvers.length - 1) { // last index
+            return nextMemo;
+          }
 
-            return `${nextMemo}, `;
-          }, '');
-        }
+          return `${nextMemo}, `;
+        }, '');
       },
       showApproveButton() {
         return this.userCanApprove && !this.userHasApproved;
@@ -41,7 +40,7 @@
     template: `
       <div class='approvals-body mr-widget-body'>
         <h4> Requires {{ approvalsRequiredStringified }}
-          <span v-if='!!suggestedApprovers.length'> (from {{ approverNamesStringified }}) </span>
+          <span> (from {{ approverNamesStringified }}) </span>
         </h4>
         <div v-if='showApproveButton' class='append-bottom-10'>
           <button
