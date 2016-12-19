@@ -69,6 +69,9 @@ you to use.
 
     # For installations from source
     sudo -u git -H editor /home/git/gitlab/config/gitlab.yml
+
+    # For GitHost.io users
+    Go to the admin panel for your instance and click on **Add Bitbucket auth**
     ```
 
 1.  Follow the [Initial OmniAuth Configuration](omniauth.md#initial-omniauth-configuration)
