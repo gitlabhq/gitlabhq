@@ -100,8 +100,8 @@ module Gitlab
       return if deploy_key?
 
       passed = user_can_download_code? ||
-               build_can_download_code? ||
-               guest_can_download_code?
+        build_can_download_code? ||
+        guest_can_download_code?
 
       unless passed
         raise UnauthorizedError, ERROR_MESSAGES[:download]
