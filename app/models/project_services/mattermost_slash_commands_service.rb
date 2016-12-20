@@ -24,13 +24,13 @@ class MattermostSlashCommandsService < ChatSlashCommandsService
       create(command(params))
 
     update(active: true, token: token) if token
-  rescue => Mattermost::Error => e
-    false, e.message
+  rescue Mattermost::Error => e
+    [false, e.message]
   end
 
   def list_teams(user)
     Mattermost::Team.new(user).all
-  rescue => Mattermost::Error => e
+  rescue Mattermost::Error
     []
   end
 
