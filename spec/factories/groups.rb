@@ -1,5 +1,5 @@
 FactoryGirl.define do
-  factory :group do
+  factory :group, class: Group, parent: :namespace do
     sequence(:name) { |n| "group#{n}" }
     path { name.downcase.gsub(/\s/, '_') }
     type 'Group'
