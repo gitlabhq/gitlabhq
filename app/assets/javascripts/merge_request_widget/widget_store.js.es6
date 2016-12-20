@@ -23,7 +23,7 @@
 
     initWidgetState() {
       this.assignToData('showApprovals', false);
-      this.assignToData('disableAcceptance', false);
+      this.assignToData('disableAcceptance', Boolean(this.rootEl.dataset.approvalPending));
     }
 
     initApprovals() {
