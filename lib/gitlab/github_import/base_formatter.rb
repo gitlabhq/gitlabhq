@@ -15,6 +15,10 @@ module Gitlab
         end
       end
 
+      def url
+        raw_data.url || ''
+      end
+
       private
 
       def gitlab_user_id(github_id)

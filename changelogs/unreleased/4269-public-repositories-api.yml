@@ -1,0 +1,4 @@
+---
+title: Allow unauthenticated access to Repositories API GET endpoints
+merge_request: 8148
+author:
