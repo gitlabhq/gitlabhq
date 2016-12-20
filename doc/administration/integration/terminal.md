@@ -1,17 +1,17 @@
-# Online terminals
+# Web terminals
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7690)
-in GitLab 8.15. Only project masters and owners can access online terminals.
+in GitLab 8.15. Only project masters and owners can access web terminals.
 
 With the introduction of the [Kubernetes](../../project_services/kubernetes.md)
 project service, GitLab gained the ability to store and use credentials for a
 Kubernetes cluster. One of the things it uses these credentials for is providing
-access to [online terminals](../../ci/environments.html#online-terminals)
+access to [web terminals](../../ci/environments.html#web-terminals)
 for environments.
 
 ## How it works
 
-A detailed overview of the architecture of online terminals and how they work
+A detailed overview of the architecture of web terminals and how they work
 can be found in [this document](https://gitlab.com/gitlab-org/gitlab-workhorse/blob/master/doc/terminal.md).
 In brief:
 
@@ -31,7 +31,7 @@ In brief:
 
 ##  Enabling and disabling terminal support
 
-As online terminals use WebSockets, every HTTP/HTTPS reverse proxy in front of
+As web terminals use WebSockets, every HTTP/HTTPS reverse proxy in front of
 Workhorse needs to be configured to pass the `Connection` and `Upgrade` headers
 through to the next one in the chain. If you installed Gitlab using Omnibus, or
 from source, starting with GitLab 8.15, this should be done by the default
@@ -56,7 +56,7 @@ Omnibus installation before upgrading to 8.15, you may need to make some
 changes to your configuration. See the  [8.14 to 8.15 upgrade](../../update/8.14-to-8.15.md#nginx-configuration)
 document for more details.
 
-If you'd like to disable online terminal support in GitLab, just stop passing
+If you'd like to disable web terminal support in GitLab, just stop passing
 the `Connection` and `Upgrade` hop-by-hop headers in the *first* HTTP reverse
 proxy in the chain. For most users, this will be the NGINX server bundled with
 Omnibus Gitlab, in which case, you need to:
@@ -69,5 +69,5 @@ For your own load balancer, just reverse the configuration changes recommended
 by the above guides.
 
 When these headers are not passed through, Workhorse will return a
-`400 Bad Request` response to users attempting to use an online terminal. In
-turn, they will receive a `Connection failed` message.
+`400 Bad Request` response to users attempting to use a web terminal. In turn,
+they will receive a `Connection failed` message.
