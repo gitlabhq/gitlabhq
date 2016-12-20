@@ -1,4 +1,4 @@
-/* global Vue */
+/* global Vue, Flash */
 //= require ./approvals_store
 
 (() => {
@@ -14,7 +14,7 @@
     }
 
     fetchApprovals() {
-      const flashErrorMessage =  'An error occured while retrieving approval data for this merge request.';
+      const flashErrorMessage = 'An error occured while retrieving approval data for this merge request.';
 
       return Vue.http.get(this.baseEndpoint).catch((err) => {
         console.error('Error fetching approvals', err);

@@ -57,7 +57,7 @@
       },
       showSuggestedApprovers() {
         return this.suggestedApprovers && this.suggestedApprovers.length;
-      }
+      },
     },
     methods: {
       approveMergeRequest() {

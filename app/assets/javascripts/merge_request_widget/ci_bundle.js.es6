@@ -5,20 +5,20 @@ $(() => {
    * temporarily.
    * */
 
-  $('.accept-mr-form').on('ajax:send', function() {
-    $(".accept-mr-form :input").disable();
+  $('.accept-mr-form').on('ajax:send', () => {
+    $('.accept-mr-form :input').disable();
   });
 
-  $('.accept_merge_request').on('click', function() {
-    $('.js-merge-button').html("<i class='fa fa-spinner fa-spin'></i> Merge in progress");
+  $('.accept_merge_request').on('click', () => {
+    $('.js-merge-button').html('<i class="fa fa-spinner fa-spin"></i> Merge in progress');
   });
 
-  $('.merge_when_build_succeeds').on('click', function() {
-    $("#merge_when_build_succeeds").val("1");
+  $('.merge_when_build_succeeds').on('click', () => {
+    $('#merge_when_build_succeeds').val('1');
   });
 
-  $('.js-merge-dropdown a').on('click', function(e) {
+  $('.js-merge-dropdown a').on('click', (e) => {
     e.preventDefault();
-    $(this).closest("form").submit();
+    $(this).closest('form').submit();
   });
 });
