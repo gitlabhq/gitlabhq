@@ -42,14 +42,14 @@
         .nothing-here-block No pipelines to show
     - else
       .table-holder
-        %table.table.ci-table
+        %table.table.ci-table.js-pipeline-table
           %thead
-            %th Status
-            %th Pipeline
-            %th Commit
-            %th Stages
-            %th
-            %th.hidden-xs
+            %th.pipeline-status Status
+            %th.pipeline-info Pipeline
+            %th.pipeline-commit Commit
+            %th.pipeline-stages Stages
+            %th.pipeline-date
+            %th.pipeline-actions.hidden-xs
           = render @pipelines, commit_sha: true, stage: true, allow_retry: true
 
       = paginate @pipelines, theme: 'gitlab'

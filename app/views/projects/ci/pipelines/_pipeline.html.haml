@@ -43,10 +43,25 @@
   %td.stage-cell
     - pipeline.stages.each do |stage|
       - if stage.status
-        - tooltip = "#{stage.name.titleize}: #{stage.status || 'not found'}"
-        .stage-container
-          = link_to namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline.id, anchor: stage.name), class: "has-tooltip ci-status-icon-#{stage.status}", title: tooltip do
-            = ci_icon_for_status(stage.status)
+        - detailed_status = stage.detailed_status(current_user)
+        - icon_status = "#{detailed_status.icon}_borderless"
+        - status_klass = "ci-status-icon ci-status-icon-#{detailed_status.group}"
+
+        .stage-container.mini-pipeline-graph
+          .dropdown.inline.build-content
+            %button.has-tooltip.builds-dropdown.js-builds-dropdown-button{ type: 'button', data: { toggle: 'dropdown', title: "#{stage.name}: #{detailed_status.label}", placement: 'top', "stage-endpoint" => stage_namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline, stage: stage.name)}}
+              %span.has-tooltip{ class: status_klass }
+                %span.mini-pipeline-graph-icon-container
+                  %span{ class: status_klass }= custom_icon(icon_status)
+                  = icon('caret-down', class: 'dropdown-caret')
+
+            .js-builds-dropdown-container
+              .dropdown-menu.grouped-pipeline-dropdown
+                .arrow-up
+                .js-builds-dropdown-list
+
+                .js-builds-dropdown-loading.builds-dropdown-loading.hidden
+                  %span.fa.fa-spinner.fa-spin
 
   %td
     - if pipeline.duration
@@ -66,7 +81,7 @@
         .btn-group.inline
           - if actions.any?
             .btn-group
-              %a.dropdown-toggle.btn.btn-default{type: 'button', 'data-toggle' => 'dropdown'}
+              %a.dropdown-toggle.btn.btn-default.js-pipeline-dropdown-manual-actions{type: 'button', 'data-toggle' => 'dropdown'}
                 = custom_icon('icon_play')
                 = icon('caret-down')
               %ul.dropdown-menu.dropdown-menu-align-right
@@ -77,7 +92,7 @@
                       %span= build.name.humanize
           - if artifacts.present?
             .btn-group
-              %a.dropdown-toggle.btn.btn-default.build-artifacts{type: 'button', 'data-toggle' => 'dropdown'}
+              %a.dropdown-toggle.btn.btn-default.build-artifacts.js-pipeline-dropdown-download{type: 'button', 'data-toggle' => 'dropdown'}
                 = icon("download")
                 = icon('caret-down')
               %ul.dropdown-menu.dropdown-menu-align-right

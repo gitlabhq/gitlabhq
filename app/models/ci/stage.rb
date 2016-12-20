@@ -18,6 +18,10 @@ module Ci
       name
     end
 
+    def statuses_count
+      @statuses_count ||= statuses.count
+    end
+
     def status
       @status ||= statuses.latest.status
     end
