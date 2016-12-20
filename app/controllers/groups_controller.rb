@@ -132,7 +132,6 @@ class GroupsController < Groups::ApplicationController
       :repository_size_limit,
       :request_access_enabled,
       :share_with_group_lock,
-      :shared_runners_minutes_limit,
       :visibility_level
     )
   end
