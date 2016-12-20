@@ -8,6 +8,7 @@
       %h3.page-title= @environment.name.capitalize
     .col-md-3
       .nav-controls
+        = render 'projects/environments/terminal_button', environment: @environment
         = render 'projects/environments/external_url', environment: @environment
         - if can?(current_user, :update_environment, @environment)
           = link_to 'Edit', edit_namespace_project_environment_path(@project.namespace, @project, @environment), class: 'btn'
