@@ -6,7 +6,12 @@
   .row
     .col-sm-6
       %strong
-        Current Period Usage
+        - last_reset = @group.shared_runners_minutes_last_reset
+        - if last_reset
+          Usage since
+          = last_reset.strftime('%b %d, %Y')
+        - else
+          Current Period Usage
       %div
         = group_shared_runner_limits_quota(@group)
         minutes
