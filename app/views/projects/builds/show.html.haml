@@ -28,7 +28,7 @@
 
     - if @build.project.namespace.shared_runners_minutes_used?
       - quota_used = @build.project.namespace.shared_runners_minutes.to_i
-      - quota_limit = @build.project.namespace.shared_runners_minutes_limit
+      - quota_limit = @build.project.namespace.actual_shared_runners_minutes_limit
       .bs-callout.bs-callout-warning
         %p
           You have used all your shared runner minutes

@@ -77,7 +77,7 @@ describe Project, models: true do
     it { is_expected.to delegate_method(:shared_runner_minutes).to(:project_metrics) }
     it { is_expected.to delegate_method(:shared_runner_last_reset).to(:project_metrics) }
 
-    it { is_expected.to delegate_method(:shared_runners_minutes_limit).to(:namespace) }
+    it { is_expected.to delegate_method(:actual_shared_runners_minutes_limit).to(:namespace) }
     it { is_expected.to delegate_method(:shared_runners_minutes_limit_enabled?).to(:namespace) }
     it { is_expected.to delegate_method(:shared_runners_minutes_used?).to(:namespace) }
 

@@ -145,7 +145,6 @@ describe Namespace, models: true do
     it { expect(nested_group.full_path).to eq("#{group.path}/#{nested_group.path}") }
   end
 
-<<<<<<< HEAD
   describe '#shared_runners_enabled?' do
     subject { namespace.shared_runners_enabled? }
 
@@ -172,8 +171,8 @@ describe Namespace, models: true do
     end
   end
 
-  describe '#shared_runners_minutes_limit' do
-    subject { namespace.shared_runners_minutes_limit }
+  describe '#actual_shared_runners_minutes_limit' do
+    subject { namespace.actual_shared_runners_minutes_limit }
 
     context 'when no limit defined' do
       it { is_expected.to be_nil }
@@ -203,16 +202,28 @@ describe Namespace, models: true do
   describe '#shared_runners_minutes_limit_enabled?' do
     subject { namespace.shared_runners_minutes_limit_enabled? }
 
-    context 'when no limit defined' do
-      it { is_expected.to be_falsey }
-    end
-
-    context 'when limit is defined' do
-      before do
-        namespace.shared_runners_minutes_limit = 500
+    context 'with project' do
+      let!(:project) do
+        create(:empty_project,
+          namespace: namespace,
+          shared_runners_enabled: true)
       end
 
-      it { is_expected.to be_truthy }
+      context 'when no limit defined' do
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when limit is defined' do
+        before do
+          namespace.shared_runners_minutes_limit = 500
+        end
+
+        it { is_expected.to be_truthy }
+      end
+    end
+
+    context 'without project' do
+      it { is_expected.to be_falsey }
     end
   end
 
@@ -251,7 +262,9 @@ describe Namespace, models: true do
 
     context 'without project' do
       it { is_expected.to be_falsey }
-=======
+    end
+  end
+
   describe '#full_name' do
     let(:group) { create(:group) }
     let(:nested_group) { create(:group, parent: group) }
@@ -271,7 +284,6 @@ describe Namespace, models: true do
       expect(deep_nested_group.parents).to eq([group, nested_group])
       expect(nested_group.parents).to eq([group])
       expect(group.parents).to eq([])
->>>>>>> origin-ee/master
     end
   end
 end

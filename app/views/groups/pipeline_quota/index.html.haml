@@ -17,7 +17,7 @@
         minutes
     .col-sm-6.right
       - if @group.shared_runners_minutes_limit_enabled?
-        = "#{@group.shared_runners_minutes_percent_used}% used"
+        = "#{group_shared_runner_limits_percent_used(@group)}% used"
       - else
         Unlimited
       = group_shared_runner_limits_progress_bar(@group)

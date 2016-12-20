@@ -31,7 +31,7 @@ class Project < ActiveRecord::Base
   delegate :shared_runners_minutes, :shared_runners_minutes_last_reset,
     to: :project_metrics, allow_nil: true
 
-  delegate :shared_runners_minutes_limit_enabled?, :shared_runners_minutes_limit,
+  delegate :shared_runners_minutes_limit_enabled?, :actual_shared_runners_minutes_limit,
     :shared_runners_minutes_used?, to: :namespace
 
   default_value_for :archived, false

@@ -62,7 +62,7 @@ module GroupsHelper
     used = group.shared_runners_minutes.to_i
 
     if group.shared_runners_minutes_limit_enabled?
-      limit = group.shared_runners_minutes_limit
+      limit = group.actual_shared_runners_minutes_limit
       status = group.shared_runners_minutes_used? ? 'over_quota' : 'under_quota'
     else
       limit = 'Unlimited'
@@ -77,11 +77,11 @@ module GroupsHelper
   def group_shared_runner_limits_percent_used(group)
     return 0 unless group.shared_runners_minutes_limit_enabled?
 
-    100 * group.shared_runners_minutes / group.shared_runners_minutes_limit
+    100 * group.shared_runners_minutes / group.actual_shared_runners_minutes_limit
   end
 
   def group_shared_runner_limits_progress_bar(group)
-    percent = [group.shared_runners_minutes_percent_used, 100].min
+    percent = [group_shared_runner_limits_percent_used(group), 100].min
 
     status =
       if percent == 100
