@@ -1,7 +1,7 @@
-Dir[Rails.root.join("app/models/project_services/chat_message/*.rb")].each { |f| require f }
+require 'spec_helper'
 
-RSpec.shared_examples 'slack or mattermost notifications' do
-  let(:chat_service) { described_class.new }
+describe SlackService, models: true do
+  let(:slack) { SlackService.new }
   let(:webhook_url) { 'https://example.gitlab.com/' }
 
   describe "Associations" do
@@ -24,7 +24,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do
     end
   end
 
-  describe "#execute" do
+  describe "Execute" do
     let(:user)    { create(:user) }
     let(:project) { create(:project) }
     let(:username) { 'slack_username' }
@@ -35,7 +35,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do
     end
 
     before do
-      allow(chat_service).to receive_messages(
+      allow(slack).to receive_messages(
         project: project,
         project_id: project.id,
         service_hook: true,
@@ -77,55 +77,54 @@ RSpec.shared_examples 'slack or mattermost notifications' do
       @wiki_page_sample_data = wiki_page_service.hook_data(@wiki_page, 'create')
     end
 
-    it "calls Slack/Mattermost API for push events" do
-      chat_service.execute(push_sample_data)
+    it "calls Slack API for push events" do
+      slack.execute(push_sample_data)
 
       expect(WebMock).to have_requested(:post, webhook_url).once
     end
 
-    it "calls Slack/Mattermost API for issue events" do
-      chat_service.execute(@issues_sample_data)
+    it "calls Slack API for issue events" do
+      slack.execute(@issues_sample_data)
 
       expect(WebMock).to have_requested(:post, webhook_url).once
     end
 
-    it "calls Slack/Mattermost API for merge requests events" do
-      chat_service.execute(@merge_sample_data)
+    it "calls Slack API for merge requests events" do
+      slack.execute(@merge_sample_data)
 
       expect(WebMock).to have_requested(:post, webhook_url).once
     end
 
-    it "calls Slack/Mattermost API for wiki page events" do
-      chat_service.execute(@wiki_page_sample_data)
+    it "calls Slack API for wiki page events" do
+      slack.execute(@wiki_page_sample_data)
 
       expect(WebMock).to have_requested(:post, webhook_url).once
     end
 
     it 'uses the username as an option for slack when configured' do
-      allow(chat_service).to receive(:username).and_return(username)
-
+      allow(slack).to receive(:username).and_return(username)
       expect(Slack::Notifier).to receive(:new).
-       with(webhook_url, username: username, channel: chat_service.default_channel).
+       with(webhook_url, username: username).
        and_return(
          double(:slack_service).as_null_object
        )
 
-      chat_service.execute(push_sample_data)
+      slack.execute(push_sample_data)
     end
 
     it 'uses the channel as an option when it is configured' do
-      allow(chat_service).to receive(:channel).and_return(channel)
+      allow(slack).to receive(:channel).and_return(channel)
       expect(Slack::Notifier).to receive(:new).
         with(webhook_url, channel: channel).
         and_return(
           double(:slack_service).as_null_object
         )
-      chat_service.execute(push_sample_data)
+      slack.execute(push_sample_data)
     end
 
     context "event channels" do
       it "uses the right channel for push event" do
-        chat_service.update_attributes(push_channel: "random")
+        slack.update_attributes(push_channel: "random")
 
         expect(Slack::Notifier).to receive(:new).
          with(webhook_url, channel: "random").
@@ -133,11 +132,11 @@ RSpec.shared_examples 'slack or mattermost notifications' do
            double(:slack_service).as_null_object
          )
 
-        chat_service.execute(push_sample_data)
+        slack.execute(push_sample_data)
       end
 
       it "uses the right channel for merge request event" do
-        chat_service.update_attributes(merge_request_channel: "random")
+        slack.update_attributes(merge_request_channel: "random")
 
         expect(Slack::Notifier).to receive(:new).
          with(webhook_url, channel: "random").
@@ -145,11 +144,11 @@ RSpec.shared_examples 'slack or mattermost notifications' do
            double(:slack_service).as_null_object
          )
 
-        chat_service.execute(@merge_sample_data)
+        slack.execute(@merge_sample_data)
       end
 
       it "uses the right channel for issue event" do
-        chat_service.update_attributes(issue_channel: "random")
+        slack.update_attributes(issue_channel: "random")
 
         expect(Slack::Notifier).to receive(:new).
          with(webhook_url, channel: "random").
@@ -157,11 +156,11 @@ RSpec.shared_examples 'slack or mattermost notifications' do
            double(:slack_service).as_null_object
          )
 
-        chat_service.execute(@issues_sample_data)
+        slack.execute(@issues_sample_data)
       end
 
       it "uses the right channel for wiki event" do
-        chat_service.update_attributes(wiki_page_channel: "random")
+        slack.update_attributes(wiki_page_channel: "random")
 
         expect(Slack::Notifier).to receive(:new).
          with(webhook_url, channel: "random").
@@ -169,7 +168,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do
            double(:slack_service).as_null_object
          )
 
-        chat_service.execute(@wiki_page_sample_data)
+        slack.execute(@wiki_page_sample_data)
       end
 
       context "note event" do
@@ -178,7 +177,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do
         end
 
         it "uses the right channel" do
-          chat_service.update_attributes(note_channel: "random")
+          slack.update_attributes(note_channel: "random")
 
           note_data = Gitlab::DataBuilder::Note.build(issue_note, user)
 
@@ -188,7 +187,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do
              double(:slack_service).as_null_object
            )
 
-          chat_service.execute(note_data)
+          slack.execute(note_data)
         end
       end
     end
@@ -199,7 +198,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do
     let(:project) { create(:project, creator_id: user.id) }
 
     before do
-      allow(chat_service).to receive_messages(
+      allow(slack).to receive_messages(
         project: project,
         project_id: project.id,
         service_hook: true,
@@ -217,9 +216,9 @@ RSpec.shared_examples 'slack or mattermost notifications' do
                                 note: 'a comment on a commit')
       end
 
-      it "calls Slack/Mattermost API for commit comment events" do
+      it "calls Slack API for commit comment events" do
         data = Gitlab::DataBuilder::Note.build(commit_note, user)
-        chat_service.execute(data)
+        slack.execute(data)
 
         expect(WebMock).to have_requested(:post, webhook_url).once
       end
@@ -233,7 +232,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do
 
       it "calls Slack API for merge request comment events" do
         data = Gitlab::DataBuilder::Note.build(merge_request_note, user)
-        chat_service.execute(data)
+        slack.execute(data)
 
         expect(WebMock).to have_requested(:post, webhook_url).once
       end
@@ -246,7 +245,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do
 
       it "calls Slack API for issue comment events" do
         data = Gitlab::DataBuilder::Note.build(issue_note, user)
-        chat_service.execute(data)
+        slack.execute(data)
 
         expect(WebMock).to have_requested(:post, webhook_url).once
       end
@@ -260,7 +259,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do
 
       it "calls Slack API for snippet comment events" do
         data = Gitlab::DataBuilder::Note.build(snippet_note, user)
-        chat_service.execute(data)
+        slack.execute(data)
 
         expect(WebMock).to have_requested(:post, webhook_url).once
       end
@@ -278,21 +277,21 @@ RSpec.shared_examples 'slack or mattermost notifications' do
     end
 
     before do
-      allow(chat_service).to receive_messages(
+      allow(slack).to receive_messages(
         project: project,
         service_hook: true,
         webhook: webhook_url
       )
     end
 
-    shared_examples 'call Slack/Mattermost API' do
+    shared_examples 'call Slack API' do
       before do
         WebMock.stub_request(:post, webhook_url)
       end
 
-      it 'calls Slack/Mattermost API for pipeline events' do
+      it 'calls Slack API for pipeline events' do
         data = Gitlab::DataBuilder::Pipeline.build(pipeline)
-        chat_service.execute(data)
+        slack.execute(data)
 
         expect(WebMock).to have_requested(:post, webhook_url).once
       end
@@ -301,16 +300,16 @@ RSpec.shared_examples 'slack or mattermost notifications' do
     context 'with failed pipeline' do
       let(:status) { 'failed' }
 
-      it_behaves_like 'call Slack/Mattermost API'
+      it_behaves_like 'call Slack API'
     end
 
     context 'with succeeded pipeline' do
       let(:status) { 'success' }
 
       context 'with default to notify_only_broken_pipelines' do
-        it 'does not call Slack/Mattermost API for pipeline events' do
+        it 'does not call Slack API for pipeline events' do
           data = Gitlab::DataBuilder::Pipeline.build(pipeline)
-          result = chat_service.execute(data)
+          result = slack.execute(data)
 
           expect(result).to be_falsy
         end
@@ -318,10 +317,10 @@ RSpec.shared_examples 'slack or mattermost notifications' do
 
       context 'with setting notify_only_broken_pipelines to false' do
         before do
-          chat_service.notify_only_broken_pipelines = false
+          slack.notify_only_broken_pipelines = false
         end
 
-        it_behaves_like 'call Slack/Mattermost API'
+        it_behaves_like 'call Slack API'
       end
     end
   end

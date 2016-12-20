@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe ChatMessage::MergeMessage, models: true do
-  subject { described_class.new(args) }
+describe SlackService::MergeMessage, models: true do
+  subject { SlackService::MergeMessage.new(args) }
 
   let(:args) do
     {

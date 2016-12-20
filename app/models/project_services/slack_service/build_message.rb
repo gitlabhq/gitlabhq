@@ -1,4 +1,4 @@
-module ChatMessage
+class SlackService
   class BuildMessage < BaseMessage
     attr_reader :sha
     attr_reader :ref_type

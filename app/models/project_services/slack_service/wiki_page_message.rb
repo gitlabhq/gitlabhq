@@ -1,4 +1,4 @@
-module ChatMessage
+class SlackService
   class WikiPageMessage < BaseMessage
     attr_reader :user_name
     attr_reader :title

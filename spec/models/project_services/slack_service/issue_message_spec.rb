@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe ChatMessage::IssueMessage, models: true do
-  subject { described_class.new(args) }
+describe SlackService::IssueMessage, models: true do
+  subject { SlackService::IssueMessage.new(args) }
 
   let(:args) do
     {

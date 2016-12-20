@@ -44,11 +44,10 @@ further configuration instructions and details. Contributions are welcome.
 | JetBrains TeamCity CI | A continuous integration and build server |
 | [Kubernetes](kubernetes.md) | A containerized deployment service |
 | [Mattermost slash commands](mattermost_slash_commands.md) | Mattermost chat and ChatOps slash commands |
-| [Mattermost Notifications](mattermost.md) | Receive event notifications in Mattermost |
-| [Slack Notifications](slack.md) | Receive event notifications in Slack |
 | PivotalTracker | Project Management Software (Source Commits Endpoint) |
 | Pushover | Pushover makes it easy to get real-time notifications on your Android device, iPhone, iPad, and Desktop |
 | [Redmine](redmine.md) | Redmine issue tracker |
+| [Slack](slack.md) | A team communication tool for the 21st century |
 
 ## Services Templates
 

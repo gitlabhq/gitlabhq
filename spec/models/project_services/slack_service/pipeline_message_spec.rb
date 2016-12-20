@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe ChatMessage::PipelineMessage do
-  subject { described_class.new(args) }
+describe SlackService::PipelineMessage do
+  subject { SlackService::PipelineMessage.new(args) }
   let(:user) { { name: 'hacker' } }
 
   let(:args) do

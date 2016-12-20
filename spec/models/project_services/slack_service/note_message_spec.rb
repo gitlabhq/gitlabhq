@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ChatMessage::NoteMessage, models: true do
+describe SlackService::NoteMessage, models: true do
   let(:color) { '#345' }
 
   before do

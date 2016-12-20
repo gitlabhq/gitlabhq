@@ -1,4 +1,4 @@
-module ChatMessage
+class SlackService
   class PipelineMessage < BaseMessage
     attr_reader :ref_type, :ref, :status, :project_name, :project_url,
                 :user_name, :duration, :pipeline_id

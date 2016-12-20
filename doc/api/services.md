@@ -703,9 +703,9 @@ Get Redmine service settings for a project.
 GET /projects/:id/services/redmine
 ```
 
-## Slack notifications
+## Slack
 
-Receive event notifications in Slack
+A team communication tool for the 21st century
 
 ### Create/Edit Slack service
 
@@ -735,40 +735,6 @@ Get Slack service settings for a project.
 
 ```
 GET /projects/:id/services/slack
-```
-
-## Mattermost notifications
-
-Receive event notifications in Mattermost
-
-### Create/Edit Mattermost notifications service
-
-Set Mattermost service for a project.
-
-```
-PUT /projects/:id/services/mattermost
-```
-
-Parameters:
-
-- `webhook` (**required**) - https://mattermost.example/hooks/1298aff...
-- `username` (optional) - username
-- `channel` (optional) - #channel
-
-### Delete Mattermost notifications service
-
-Delete Mattermost Notifications service for a project.
-
-```
-DELETE /projects/:id/services/mattermost
-```
-
-### Get Mattermost notifications service settings
-
-Get Mattermost notifications service settings for a project.
-
-```
-GET /projects/:id/services/mattermost
 ```
 
 ## JetBrains TeamCity CI
