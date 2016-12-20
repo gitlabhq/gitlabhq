@@ -1,4 +1,9 @@
 class KubernetesService < DeploymentService
+  include Gitlab::Kubernetes
+  include ReactiveCaching
+
+  self.reactive_cache_key = ->(service) { [ service.class.model_name.singular, service.project_id ] }
+
   # Namespace defaults to the project path, but can be overridden in case that
   # is an invalid or inappropriate name
   prop_accessor :namespace
@@ -25,6 +30,8 @@ class KubernetesService < DeploymentService
       length: 1..63
   end
 
+  after_save :clear_reactive_cache!
+
   def initialize_properties
     if properties.nil?
       self.properties = {}
@@ -41,7 +48,8 @@ class KubernetesService < DeploymentService
   end
 
   def help
-    ''
+    'To enable terminal access to Kubernetes environments, label your ' \
+    'deployments with `app=$CI_ENVIRONMENT_SLUG`'
   end
 
   def to_param
@@ -75,9 +83,9 @@ class KubernetesService < DeploymentService
 
   # Check we can connect to the Kubernetes API
   def test(*args)
-    kubeclient = build_kubeclient
-    kubeclient.discover
+    kubeclient = build_kubeclient!
 
+    kubeclient.discover
     { success: kubeclient.discovered, result: "Checked API discovery endpoint" }
   rescue => err
     { success: false, result: err }
@@ -93,20 +101,48 @@ class KubernetesService < DeploymentService
     variables
   end
 
+  # Constructs a list of terminals from the reactive cache
+  #
+  # Returns nil if the cache is empty, in which case you should try again a
+  # short time later
+  def terminals(environment)
+    with_reactive_cache do |data|
+      pods = data.fetch(:pods, nil)
+      filter_pods(pods, app: environment.slug).
+        flat_map { |pod| terminals_for_pod(api_url, namespace, pod) }.
+        map { |terminal| add_terminal_auth(terminal, token, ca_pem) }
+    end
+  end
+
+  # Caches all pods in the namespace so other calls don't need to block on
+  # network access.
+  def calculate_reactive_cache
+    return unless active? && project && !project.pending_delete?
+
+    kubeclient = build_kubeclient!
+
+    # Store as hashes, rather than as third-party types
+    pods = begin
+      kubeclient.get_pods(namespace: namespace).as_json
+    rescue KubeException => err
+      raise err unless err.error_code == 404
+      []
+    end
+
+    # We may want to cache extra things in the future
+    { pods: pods }
+  end
+
   private
 
-  def build_kubeclient(api_path = '/api', api_version = 'v1')
-    return nil unless api_url && namespace && token
-
-    url = URI.parse(api_url)
-    url.path = url.path[0..-2] if url.path[-1] == "/"
-    url.path += api_path
+  def build_kubeclient!(api_path: 'api', api_version: 'v1')
+    raise "Incomplete settings" unless api_url && namespace && token
 
     ::Kubeclient::Client.new(
-      url,
+      join_api_url(api_path),
       api_version,
-      ssl_options: kubeclient_ssl_options,
       auth_options: kubeclient_auth_options,
+      ssl_options: kubeclient_ssl_options,
       http_proxy_uri: ENV['http_proxy']
     )
   end
@@ -124,5 +160,14 @@ class KubernetesService < DeploymentService
 
   def kubeclient_auth_options
     { bearer_token: token }
+  end
+
+  def join_api_url(*parts)
+    url = URI.parse(api_url)
+    prefix = url.path.sub(%r{/+\z}, '')
+
+    url.path = [ prefix, *parts ].join("/")
+
+    url.to_s
   end
 end

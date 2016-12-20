@@ -128,6 +128,14 @@ class Environment < ActiveRecord::Base
     end
   end
 
+  def has_terminals?
+    project.deployment_service.present? && available? && last_deployment.present?
+  end
+
+  def terminals
+    project.deployment_service.terminals(self) if has_terminals?
+  end
+
   # An environment name is not necessarily suitable for use in URLs, DNS
   # or other third-party contexts, so provide a slugified version. A slug has
   # the following properties:
