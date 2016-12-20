@@ -13,7 +13,11 @@ module Ci
     def execute
       builds =
         if runner.shared?
-          builds_for_shared_runner
+          if ENV['DISABLE_SHARED_RUNNER_BUILD_MINTUES_LIMIT'].to_s == 'true'
+            builds_for_shared_runner
+          else
+            builds_for_sharer_runner_with_build_minutes_check
+          end
         else
           builds_for_specific_runner
         end
@@ -37,16 +41,19 @@ module Ci
 
     private
 
+    def builds_for_sharer_runner_with_build_minutes_check
+      # select projects which have allowed number of shared runner minutes or are public
+      builds_for_shared_runner.
+        where("projects.visibility_level=? OR (#{builds_check_limit.to_sql})=1",
+          Gitlab::VisibilityLevel::PUBLIC).
+    end
+
     def builds_for_shared_runner
       new_builds.
         # don't run projects which have not enabled shared runners and builds
         joins(:project).where(projects: { shared_runners_enabled: true }).
         joins('LEFT JOIN project_features ON ci_builds.gl_project_id = project_features.project_id').
         where('project_features.builds_access_level IS NULL or project_features.builds_access_level > 0').
-
-        # select projects which have allowed number of shared runner minutes or are public
-        where("projects.visibility_level=? OR (#{builds_check_limit.to_sql})=1",
-          Gitlab::VisibilityLevel::PUBLIC).
 
         # Implement fair scheduling
         # this returns builds that are ordered by number of running builds
