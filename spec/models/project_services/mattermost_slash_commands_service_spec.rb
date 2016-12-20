@@ -10,13 +10,13 @@ describe MattermostSlashCommandsService, :models do
 
     before do
       allow_any_instance_of(Mattermost::Session).to
-        receive(:with_session).and_yield
+      receive(:with_session).and_yield
     end
 
     subject do
       service.configure!(user, team_id: 'abc',
-        trigger: 'gitlab', url: 'http://trigger.url',
-        icon_url: 'http://icon.url/icon.png')
+                               trigger: 'gitlab', url: 'http://trigger.url',
+                               icon_url: 'http://icon.url/icon.png')
     end
 
     context 'the requests succeeds' do

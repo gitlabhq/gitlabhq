@@ -34,7 +34,7 @@ module Mattermost
       end
 
       json_response
-    rescue JSON::JSONError => e
+    rescue JSON::JSONError
       raise ClientError('Cannot parse response')
     end
   end

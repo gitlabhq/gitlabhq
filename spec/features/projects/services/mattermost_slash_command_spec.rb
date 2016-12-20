@@ -41,7 +41,6 @@ feature 'Setup Mattermost slash commands', feature: true do
       end
     end
 
-
     describe 'mattermost service is not enabled' do
       before do
         allow(Gitlab.config.mattermost).to receive(:enabled).and_return(false)
