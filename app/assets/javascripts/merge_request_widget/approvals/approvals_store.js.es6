@@ -15,7 +15,7 @@
 
     init(rootStore) {
       this.rootStore = rootStore;
-      this.api = new gl.ApprovalsApi(rootStore.dataset.endpoint);
+      this.api = new gl.ApprovalsApi(rootStore.rootEl.dataset.endpoint);
       this.state = {
         fetching: false,
       };

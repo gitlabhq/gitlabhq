@@ -14,7 +14,6 @@
 
     init(rootEl) {
       this.rootEl = rootEl;
-      this.dataset = rootEl.dataset;
       this.data = {};
 
       // init other widget stores here
