@@ -16,8 +16,8 @@
  */
 (() => {
   class MiniPipelineGraph {
-    constructor({ container }) {
-      this.container = container;
+    constructor(opts = {}) {
+      this.container = opts.container || '';
       this.dropdownListSelector = '.js-builds-dropdown-container';
       this.getBuildsList = this.getBuildsList.bind(this);
 
@@ -56,6 +56,8 @@
      */
     getBuildsList(e) {
       const endpoint = e.currentTarget.dataset.stageEndpoint;
+
+      console.log('ENDPOINT', endpoint);
 
       return $.ajax({
         dataType: 'json',
