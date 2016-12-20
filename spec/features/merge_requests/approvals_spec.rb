@@ -75,6 +75,8 @@ feature 'Merge request approvals', js: true, feature: true do
 
         find('.select2-results').click
         click_on("Submit merge request")
+
+        find('.approvals-components')
         expect(page).to have_content("Requires 1 more approval (from #{other_user.name})")
       end
 
@@ -94,6 +96,9 @@ feature 'Merge request approvals', js: true, feature: true do
         expect(page).to have_css('.approver-list li', count: 1)
 
         click_on("Submit merge request")
+
+        wait_for_ajax
+        find('.approvals-components')
         expect(page).not_to have_content("Requires 1 more approval (from #{other_user.name})")
       end
     end
@@ -123,6 +128,9 @@ feature 'Merge request approvals', js: true, feature: true do
         find('.select2-results').click
         click_on("Save changes")
 
+
+        wait_for_ajax
+        find('.approvals-components')
         expect(page).to have_content("Requires 1 more approval")
       end
 
@@ -142,6 +150,8 @@ feature 'Merge request approvals', js: true, feature: true do
         expect(page).to have_css('.approver-list li', count: 1)
 
         click_on("Save changes")
+
+        find('.approvals-components')
         expect(page).to have_content("Requires 1 more approval (from #{approver.name})")
       end
     end
@@ -170,12 +180,13 @@ feature 'Merge request approvals', js: true, feature: true do
       it 'I am able to approve' do
         approve_merge_request
         expect(page).to have_content('Approved by')
+        expect(page).to have_css('.approver-avatar')
       end
 
       it 'I am able to unapprove' do
         approve_merge_request
         unapprove_merge_request
-        expect(page).not_to have_content('Approved by')
+        expect(page).to have_no_css('.approver-avatar')
       end
     end
 
@@ -193,12 +204,13 @@ feature 'Merge request approvals', js: true, feature: true do
 
         wait_for_ajax
         expect(page).to have_content('Approved by')
+        expect(page).to have_css('.approver-avatar')
       end
 
       it 'I am able to unapprove' do
         approve_merge_request
         unapprove_merge_request
-        expect(page).not_to have_content('Approved by')
+        expect(page).to have_no_css('.approver-avatar')
       end
     end
   end
