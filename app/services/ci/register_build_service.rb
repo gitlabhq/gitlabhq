@@ -13,10 +13,10 @@ module Ci
     def execute
       builds =
         if runner.shared?
-          if ENV['DISABLE_SHARED_RUNNER_BUILD_MINTUES_LIMIT'].to_s == 'true'
-            builds_for_shared_runner
-          else
+          if shared_runner_build_limits_feature_enabled?
             builds_for_sharer_runner_with_build_minutes_check
+          else
+            builds_for_shared_runner
           end
         else
           builds_for_specific_runner
@@ -45,7 +45,7 @@ module Ci
       # select projects which have allowed number of shared runner minutes or are public
       builds_for_shared_runner.
         where("projects.visibility_level=? OR (#{builds_check_limit.to_sql})=1",
-          Gitlab::VisibilityLevel::PUBLIC).
+          Gitlab::VisibilityLevel::PUBLIC)
     end
 
     def builds_for_shared_runner
@@ -87,6 +87,10 @@ module Ci
 
     def new_builds
       Ci::Build.pending.unstarted
+    end
+
+    def shared_runner_build_limits_feature_enabled?
+      ENV['DISABLE_SHARED_RUNNER_BUILD_MINTUES_LIMIT'].to_s != 'true'
     end
   end
 end

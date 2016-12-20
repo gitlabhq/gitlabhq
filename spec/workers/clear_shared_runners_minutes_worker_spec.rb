@@ -4,6 +4,11 @@ describe ClearSharedRunnersMinutesWorker do
   let(:worker) { described_class.new }
 
   describe '#perform' do
+    before do
+      expect_any_instance_of(described_class).
+        to receive(:try_obtain_lease).and_return(true)
+    end
+
     subject { worker.perform }
 
     context 'when project metrics are defined' do
