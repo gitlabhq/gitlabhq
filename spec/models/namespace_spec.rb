@@ -260,6 +260,8 @@ describe Namespace, models: true do
       end
 
       context 'without limit' do
+        let(:namespace) { create(:namespace, :with_build_minutes_limit) }
+
         it { is_expected.to be_falsey }
       end
     end
