@@ -50,11 +50,11 @@ Read more on high-availability configuration:
 1. [Configure NFS](nfs.md)
 1. [Configure the GitLab application servers](gitlab.md)
 
-[^1]: [Terminal support](../../ci/environments.md#terminal-support) requires
+[^1]: [Web terminal](../../ci/environments.md#web-terminals) support requires
       your load balancer to correctly handle WebSocket connections. When using
       HTTP or HTTPS proxying, this means your load balancer must be configured
       to pass through the `Connection` and `Upgrade` hop-by-hop headers. See the
-      [online terminal](../integration/terminal.md) integration guide for
+      [web terminal](../integration/terminal.md) integration guide for
       more details.
 [^2]: When using HTTPS protocol for port 443, you will need to add an SSL
       certificate to the load balancers. If you wish to terminate SSL at the
