@@ -51,13 +51,13 @@
 
       it('should correctly compute computed values', function(done) {
         const correctVals = {
-          'disabledClass': '',
-          'avatarSizeClass': 's32',
-          'avatarHtmlClass': 's32 avatar avatar-inline',
-          'avatarClass': 'avatar avatar-inline s32 ',
-          'tooltipClass': 'has-tooltip',
-          'linkClass': 'author_link has-tooltip  ',
-          'tooltipContainerAttr': 'body',
+          disabledClass: '',
+          avatarSizeClass: 's32',
+          avatarHtmlClass: 's32 avatar avatar-inline',
+          avatarClass: 'avatar avatar-inline s32 ',
+          tooltipClass: 'has-tooltip',
+          linkClass: 'author_link has-tooltip  ',
+          tooltipContainerAttr: 'body',
         };
 
         Vue.nextTick(() => {
