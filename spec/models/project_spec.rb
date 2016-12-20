@@ -75,7 +75,7 @@ describe Project, models: true do
     it { is_expected.to have_many(:approver_groups).dependent(:destroy) }
 
     it { is_expected.to delegate_method(:shared_runners_minutes).to(:project_metrics) }
-    it { is_expected.to delegate_method(:shared_runners_last_reset).to(:project_metrics) }
+    it { is_expected.to delegate_method(:shared_runners_minutes_last_reset).to(:project_metrics) }
 
     it { is_expected.to delegate_method(:actual_shared_runners_minutes_limit).to(:namespace) }
     it { is_expected.to delegate_method(:shared_runners_minutes_limit_enabled?).to(:namespace) }
@@ -2093,6 +2093,8 @@ describe Project, models: true do
   end
 
   describe '#shared_runners_minutes_quota?' do
+    let(:project) { create(:empty_project) }
+
     subject { project.shared_runners_minutes_quota? }
 
     context 'with shared runners enabled' do
