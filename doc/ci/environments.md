@@ -27,7 +27,7 @@ so every environment can have one or more deployments. GitLab keeps track of
 your deployments, so you always know what is currently being deployed on your
 servers. If you have a deployment service such as [Kubernetes][kubernetes-service]
 enabled for your project, you can use it to assist with your deployments, and
-can even access a terminal for your environment from within GitLab!
+can even access a web terminal for your environment from within GitLab!
 
 To better understand how environments and deployments work, let's consider an
 example. We assume that you have already created a project in GitLab and set up
@@ -235,10 +235,10 @@ Remember that if your environment's name is `production` (all lowercase), then
 it will get recorded in [Cycle Analytics](../user/project/cycle_analytics.md).
 Double the benefit!
 
-## Terminal support
+## Web terminals
 
 >**Note:**
-Terminal support was added in GitLab 8.15 and is only available to project
+Web terminals were added in GitLab 8.15 and are only available to project
 masters and owners.
 
 If you deploy to your environments with the help of a deployment service (e.g.,
