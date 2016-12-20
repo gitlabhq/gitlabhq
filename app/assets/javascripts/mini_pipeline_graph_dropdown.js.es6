@@ -57,8 +57,6 @@
     getBuildsList(e) {
       const endpoint = e.currentTarget.dataset.stageEndpoint;
 
-      console.log('ENDPOINT', endpoint);
-
       return $.ajax({
         dataType: 'json',
         type: 'GET',
