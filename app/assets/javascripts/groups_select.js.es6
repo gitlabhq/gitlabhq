@@ -10,8 +10,11 @@
           var all_available, skip_groups;
           all_available = $(select).data('all-available');
           skip_groups = $(select).data('skip-groups') || [];
+          $(select).on("select2-open", function() {
+            $(".select2-input").attr("placeholder", "Search for a group");
+           });
           return $(select).select2({
-            placeholder: "Search for a group",
+            placeholder: "Select a group",
             multiple: $(select).hasClass('multiselect'),
             minimumInputLength: 0,
             query: function(query) {
