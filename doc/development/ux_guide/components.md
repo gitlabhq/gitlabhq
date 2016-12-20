@@ -4,6 +4,7 @@
 * [Tooltips](#tooltips)
 * [Anchor links](#anchor-links)
 * [Buttons](#buttons)
+* [Badges](#badges)
 * [Dropdowns](#dropdowns)
 * [Counts](#counts)
 * [Lists](#lists)
@@ -94,6 +95,13 @@ Since secondary buttons only have a border on their resting state, their hover a
 | Font: `$border-color-light` <br> Border: `$border-color-light` | ![](img/button-success-secondary--resting.png) | ![](img/button-close--resting.png) | ![](img/button-spam--resting.png) |
 | Background: `$color-light` <br> Border: `$border-color-light` | ![](img/button-success-secondary--hover.png) | ![](img/button-close--hover.png) | ![](img/button-spam--hover.png) |
 | Background: `$color-normal` <br> Border: `$border-color-normal` | ![](img/button-success-secondary--active.png) | ![](img/button-close--active.png) | ![](img/button-spam--active.png) |
+
+---
+
+
+## Badges
+
+> TODO: Add guidance about clickable and non-clickable badges here
 
 ---
 
