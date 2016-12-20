@@ -26,6 +26,13 @@ describe Gitlab::Git::RevList, lib: true do
 
           expect(rev_list).not_to be_valid
         end
+
+        it "ignores nil values" do
+          env = { var => nil }
+          rev_list = described_class.new('oldrev', 'newrev', project: project, env: env)
+
+          expect(rev_list).to be_valid
+        end
       end
     end
   end

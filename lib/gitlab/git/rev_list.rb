@@ -22,7 +22,7 @@ module Gitlab
 
       def valid?
         environment_variables.all? do |(name, value)|
-          value.start_with?(project.repository.path_to_repo)
+          value.to_s.start_with?(project.repository.path_to_repo)
         end
       end
 
@@ -35,7 +35,7 @@ module Gitlab
       end
 
       def environment_variables
-        @environment_variables ||= env.slice(*ALLOWED_VARIABLES)
+        @environment_variables ||= env.slice(*ALLOWED_VARIABLES).compact
       end
     end
   end
