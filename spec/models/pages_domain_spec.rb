@@ -4,7 +4,7 @@ describe PagesDomain, models: true do
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
   end
-  
+
   describe :validate_domain do
     subject { build(:pages_domain, domain: domain) }
 
@@ -16,6 +16,12 @@ describe PagesDomain, models: true do
 
     context 'valid domain' do
       let(:domain) { 'my.domain.com' }
+
+      it { is_expected.to be_valid }
+    end
+
+    context 'valid hexadecimal-looking domain' do
+      let(:domain) { '0x12345.com'}
 
       it { is_expected.to be_valid }
     end
