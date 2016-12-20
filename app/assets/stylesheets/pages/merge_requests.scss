@@ -429,10 +429,10 @@
   }
 }
 
+#merge-request-widget-app .loading,
 .approvals-components {
   border-top: 1px solid $well-inner-border;
 }
-
 
 .approvals-body {
   @media (max-width: $screen-xs-max) {
