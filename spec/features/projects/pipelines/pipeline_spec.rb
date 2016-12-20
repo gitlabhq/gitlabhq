@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Pipelines", feature: true, js: true do
+describe 'Pipeline', :feature, :js do
   include GitlabRoutingHelper
 
   let(:project) { create(:empty_project) }
