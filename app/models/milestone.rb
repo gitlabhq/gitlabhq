@@ -147,6 +147,9 @@ class Milestone < ActiveRecord::Base
         "expires on #{due_date.to_s(:medium)}"
       end
     end
+
+  def milestoneish_ids
+    id
   end
 
   def can_be_closed?
