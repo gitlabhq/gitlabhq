@@ -22,8 +22,6 @@ module Gitlab
         end
       end
 
-      private
-
       def match_command
         match = nil
         service = available_commands.find do |klass|
@@ -32,6 +30,8 @@ module Gitlab
 
         [service, match]
       end
+
+      private
 
       def help_messages
         available_commands.map(&:help_message)
@@ -48,15 +48,15 @@ module Gitlab
       end
 
       def help(messages)
-        Mattermost::Presenter.help(messages, params[:command])
+        presenter.help(messages, params[:command])
       end
 
       def access_denied
-        Mattermost::Presenter.access_denied
+        presenter.access_denied
       end
 
       def present(resource)
-        Mattermost::Presenter.present(resource)
+        presenter.present(resource)
       end
     end
   end

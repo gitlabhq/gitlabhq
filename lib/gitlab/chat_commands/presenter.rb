@@ -1,7 +1,7 @@
-module Mattermost
-  class Presenter
-    class << self
-      include Gitlab::Routing.url_helpers
+module Gitlab
+  module ChatCommands
+    class Presenter
+      include Gitlab::Routing
 
       def authorize_chat_name(url)
         message = if url
@@ -64,7 +64,7 @@ module Mattermost
       def single_resource(resource)
         return error(resource) if resource.errors.any? || !resource.persisted?
 
-        message = "### #{title(resource)}"
+        message = "#{title(resource)}:"
         message << "\n\n#{resource.description}" if resource.try(:description)
 
         in_channel_response(message)
