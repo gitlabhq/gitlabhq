@@ -1,7 +1,15 @@
 module Mattermost
-  class NoSessionError < StandardError
+  class Error < StandardError; end
+
+  class NoSessionError < Error
     def message
       'No session could be set up, is Mattermost configured with Single Sign on?'
+    end
+  end
+
+  class ConnectionError < Error
+    def message
+      'Could not connect. Is Mattermost up?'
     end
   end
 
@@ -66,10 +74,14 @@ module Mattermost
 
     def get(path, options = {})
       self.class.get(path, options.merge(headers: @headers))
+    rescue Errno::ECONNREFUSED
+      raise ConnectionError
     end
 
     def post(path, options = {})
       self.class.post(path, options.merge(headers: @headers))
+    rescue Errno::ECONNREFUSED
+      raise ConnectionError
     end
 
     private

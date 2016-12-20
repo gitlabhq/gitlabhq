@@ -150,10 +150,10 @@ module ProjectsHelper
 
   def mattermost_teams_options(teams)
     teams_options = teams.map do |id, options|
-      return nil unless id && options['display_name']
-      [options['display_name'], id]
-    end.compact
-    teams_options.unshift(['Select team...', '0'])
+      [options['display_name'] || options['name'], id]
+    end
+
+    teams_options.compact.unshift(['Select team...', '0'])
   end
 
   private

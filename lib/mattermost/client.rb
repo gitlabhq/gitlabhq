@@ -1,4 +1,6 @@
 module Mattermost
+  class ClientError < Mattermost::Error; end
+
   class Client
     attr_reader :user
 
@@ -30,9 +32,9 @@ module Mattermost
       if response.success?
         json_response
       elsif json_response['message']
-        raise json_response['message']
+        raise ClientError(json_response['message'])
       else
-        raise 'Undefined error'
+        raise ClientError('Undefined error')
       end
     end
   end
