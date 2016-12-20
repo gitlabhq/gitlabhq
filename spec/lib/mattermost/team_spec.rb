@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Mattermost::Team do
-  describe '.team_admin' do
+  describe '#all' do
     let(:session) { double("session") }
 
     let(:response) do

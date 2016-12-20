@@ -1,19 +1,17 @@
 require 'spec_helper'
 
 describe Mattermost::Command do
-  let(:session) { double("session") }
   let(:hash) { { 'token' => 'token' } }
+  let(:user) { create(:user) }
 
-  describe '.create' do
-    before do
-      allow(session).to receive(:post).and_return(hash)
-      allow(hash).to receive(:parsed_response).and_return(hash)
-    end
+  before do
+    Mattermost::Session.base_uri("http://mattermost.example.com")
+  end
 
-    it 'gets the teams' do
-      expect(session).to receive(:post)
-
-      described_class.create(session, 'abc', url: 'http://trigger.com')
+  describe '#create' do
+    it 'creates a command' do
+      described_class.new(user).
+        create(team_id: 'abc', url: 'http://trigger.com')
     end
   end
 end

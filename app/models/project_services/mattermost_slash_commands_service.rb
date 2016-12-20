@@ -19,15 +19,19 @@ class MattermostSlashCommandsService < ChatSlashCommandsService
     'mattermost_slash_commands'
   end
 
-  def configure!(user, params)
+  def configure(user, params)
     token = Mattermost::Command.new(user).
       create(command(params))
 
-    update!(active: true, token: token)
+    update(active: true, token: token) if token
+  rescue => Mattermost::Error => e
+    false, e.message
   end
 
   def list_teams(user)
     Mattermost::Team.new(user).all
+  rescue => Mattermost::Error => e
+    []
   end
 
   private

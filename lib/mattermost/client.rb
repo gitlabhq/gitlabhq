@@ -29,13 +29,13 @@ module Mattermost
     def json_response(response)
       json_response = JSON.parse(response.body)
 
-      if response.success?
-        json_response
-      elsif json_response['message']
-        raise ClientError(json_response['message'])
-      else
-        raise ClientError('Undefined error')
+      unless response.success?
+        raise ClientError(json_response['message'] || 'Undefined error')
       end
+
+      json_response
+    rescue JSON::JSONError => e
+      raise ClientError('Cannot parse response')
     end
   end
 end

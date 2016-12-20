@@ -3,15 +3,11 @@ module Mattermost
 
   class NoSessionError < Error
     def message
-      'No session could be set up, is Mattermost configured with Single Sign on?'
+      'No session could be set up, is Mattermost configured with Single Sign On?'
     end
   end
 
-  class ConnectionError < Error
-    def message
-      'Could not connect. Is Mattermost up?'
-    end
-  end
+  class ConnectionError < Error; end
 
   # This class' prime objective is to obtain a session token on a Mattermost
   # instance with SSO configured where this GitLab instance is the provider.
@@ -74,12 +70,16 @@ module Mattermost
 
     def get(path, options = {})
       self.class.get(path, options.merge(headers: @headers))
-    rescue Errno::ECONNREFUSED
-      raise ConnectionError
+    rescue HTTParty::Error => e
+      raise ConnectionError(e.message)
+    rescue Errno::ECONNREFUSED => e
+      raise ConnectionError(e.message)
     end
 
     def post(path, options = {})
       self.class.post(path, options.merge(headers: @headers))
+    rescue HTTParty::Error => e
+      raise ConnectionError(e.message)
     rescue Errno::ECONNREFUSED
       raise ConnectionError
     end

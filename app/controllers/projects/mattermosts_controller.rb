@@ -12,13 +12,17 @@ class Projects::MattermostsController < Projects::ApplicationController
   end
 
   def create
-    @service.configure!(current_user, configure_params)
+    result, message = @service.configure(current_user, configure_params)
 
-    flash[:notice] = 'This service is now configured'
-    redirect_to edit_namespace_project_service_path(@project.namespace, @project, service)
-  rescue => e
-    flash[:alert] = e.message
-    redirect_to new_namespace_project_mattermost_path(@project.namespace, @project)
+    if result
+      flash[:notice] = 'This service is now configured'
+      redirect_to edit_namespace_project_service_path(
+        @project.namespace, @project, service)
+    else
+      flash[:alert] = message || 'Failed to configure service'
+      redirect_to new_namespace_project_mattermost_path(
+        @project.namespace, @project)
+    end
   end
 
   private
@@ -31,9 +35,6 @@ class Projects::MattermostsController < Projects::ApplicationController
 
   def teams
     @teams ||= @service.list_teams(current_user)
-  rescue => e
-    @teams = []
-    flash[:alert] = e.message
   end
 
   def service
