@@ -1,3 +1,4 @@
+//= require es6-promise.auto
 //= require jquery
 //= require vue
 //= require vue-resource
@@ -20,8 +21,10 @@ $.rails = {
 
   const mockRootStore = {
     data: {},
-    dataset: {
-      endpoint: 'gitlab/myendpoint/',
+    rootEl: {
+      dataset: {
+        endpoint: 'gitlab/myendpoint/',
+      },
     },
     assignToData(key, val) {
       return { key, val };
