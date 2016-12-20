@@ -1,3 +1,4 @@
+/* eslint-disable no-new */
 /* global Flash */
 
 /**
@@ -30,8 +31,8 @@
     bindEvents() {
       const dropdownButtonSelector = 'button.js-builds-dropdown-button';
 
-      $(this.container).off('click', dropdownButtonSelector, this.getBuildsList);
-      $(this.container).on('click', dropdownButtonSelector, this.getBuildsList);
+      $(this.container).off('click', dropdownButtonSelector, this.getBuildsList)
+        .on('click', dropdownButtonSelector, this.getBuildsList);
     }
 
     /**
@@ -55,21 +56,25 @@
      * @return {Promise}
      */
     getBuildsList(e) {
-      const endpoint = e.currentTarget.dataset.stageEndpoint;
+      const button = e.currentTarget;
+      const endpoint = button.dataset.stageEndpoint;
 
       return $.ajax({
         dataType: 'json',
         type: 'GET',
         url: endpoint,
         beforeSend: () => {
-          this.renderBuildsList(e.currentTarget, '');
-          this.toggleLoading(e.currentTarget);
+          this.renderBuildsList(button, '');
+          this.toggleLoading(button);
         },
         success: (data) => {
-          this.toggleLoading(e.currentTarget);
-          this.renderBuildsList(e.currentTarget, data.html);
+          this.toggleLoading(button);
+          this.renderBuildsList(button, data.html);
         },
-        error: () => new Flash('An error occurred while fetching the builds.', 'alert'),
+        error: () => {
+          this.toggleLoading(button);
+          new Flash('An error occurred while fetching the builds.', 'alert');
+        },
       });
     }
 

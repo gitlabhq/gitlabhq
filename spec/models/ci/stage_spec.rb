@@ -36,7 +36,7 @@ describe Ci::Stage, models: true do
 
     subject { stage.statuses_count }
 
-    it "statuses only from current stage" do
+    it "counts statuses only from current stage" do
       is_expected.to eq(1)
     end
   end

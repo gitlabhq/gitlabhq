@@ -74,7 +74,10 @@ describe "Pipelines", feature: true, js:true do
 
       before { visit namespace_project_pipelines_path(project.namespace, project) }
 
-      it { expect(page).to have_link('Manual build') }
+      it do
+        find('.js-pipeline-dropdown-manual-actions').click
+         expect(page).to have_link('Manual build')
+       end
 
       context 'when playing' do
 
