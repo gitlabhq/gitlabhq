@@ -334,7 +334,7 @@ Feature: Project Merge Requests
     And I visit project "Shop" merge requests page
     And merge request 'Bug NS-04' must be approved
     And I click link "Bug NS-04"
-    And I should see merge button disabled
+    And I should see the merge button disabled
     When I click link "Approve"
     Then I should see approved merge request "Bug NS-04"
 
