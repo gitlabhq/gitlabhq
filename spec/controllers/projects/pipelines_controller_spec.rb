@@ -12,14 +12,6 @@ describe Projects::PipelinesController do
   end
 
   describe 'GET stages.json' do
-    def get_stage(name)
-      get :stage, namespace_id: project.namespace.path,
-                  project_id: project.path,
-                  id: pipeline.id,
-                  stage: name,
-                  format: :json
-    end
-
     context 'when accessing existing stage' do
       before do
         create(:ci_build, pipeline: pipeline, stage: 'build')
@@ -39,8 +31,17 @@ describe Projects::PipelinesController do
         get_stage('test')
       end
 
-      it { expect(response).to have_http_status(:not_found) }
+      it 'responds with not found' do
+        expect(response).to have_http_status(:not_found)
+      end
     end
 
+    def get_stage(name)
+      get :stage, namespace_id: project.namespace.path,
+                  project_id: project.path,
+                  id: pipeline.id,
+                  stage: name,
+                  format: :json
+    end
   end
 end

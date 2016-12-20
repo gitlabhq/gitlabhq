@@ -183,9 +183,9 @@ describe Ci::Pipeline, models: true do
         create(:commit_status, pipeline: pipeline, stage: 'test')
       end
 
-      it { expect(subject).to be_a(Ci::Stage) }
-      it { expect(subject.name).to eq('stage') }
-      it { expect(subject.statues).not_to be_empty }
+      it { expect(subject).to be_a Ci::Stage }
+      it { expect(subject.name).to eq 'test' }
+      it { expect(subject.statuses).not_to be_empty }
     end
 
     context 'without status in stage' do

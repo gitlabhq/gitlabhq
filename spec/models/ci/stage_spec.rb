@@ -30,7 +30,7 @@ describe Ci::Stage, models: true do
 
   describe '#statuses_count' do
     before do
-      create_job(:ci_build) }
+      create_job(:ci_build)
       create_job(:ci_build, stage: 'other stage')
     end
 

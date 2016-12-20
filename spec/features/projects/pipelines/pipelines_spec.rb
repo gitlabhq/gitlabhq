@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Pipelines", feature: true, js:true do
+describe 'Pipelines', :feature, :js do
   include GitlabRoutingHelper
   include WaitForAjax
 
@@ -70,23 +70,32 @@ describe "Pipelines", feature: true, js:true do
     end
 
     context 'with manual actions' do
-      let!(:manual) { create(:ci_build, :manual, pipeline: pipeline, name: 'manual build', stage: 'test', commands: 'test') }
+      let!(:manual) do
+        create(:ci_build, :manual, pipeline: pipeline,
+                                   name: 'manual build',
+                                   stage: 'test',
+                                   commands: 'test')
+      end
 
-      before { visit namespace_project_pipelines_path(project.namespace, project) }
+      before do
+        visit namespace_project_pipelines_path(project.namespace, project)
+      end
 
-      it do
+      it 'has link to the manual action' do
         find('.js-pipeline-dropdown-manual-actions').click
-         expect(page).to have_link('Manual build')
-       end
 
-      context 'when playing' do
+        expect(page).to have_link('Manual build')
+      end
 
+      context 'when manual action was played' do
         before do
           find('.js-pipeline-dropdown-manual-actions').click
           click_link('Manual build')
         end
 
-        it { expect(manual.reload).to be_pending }
+        it 'enqueues manual action job' do
+          expect(manual.reload).to be_pending
+        end
       end
     end
 
