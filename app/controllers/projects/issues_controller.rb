@@ -5,7 +5,6 @@ class Projects::IssuesController < Projects::ApplicationController
   include ToggleAwardEmoji
   include IssuableCollections
   include SpammableActions
-  include KaminariPagination
 
   before_action :redirect_to_external_issue_tracker, only: [:index, :new]
   before_action :module_enabled
@@ -25,7 +24,10 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def index
     @issues = issues_collection
-    @issues = bounded_pagination(@issues, params[:page])
+    @issues = @issues.page(params[:page])
+    if @issues.out_of_range? && @issues.total_pages != 0
+      return redirect_to namespace_project_issues_path(page: @issues.total_pages)
+    end
 
     if params[:label_name].present?
       @labels = LabelsFinder.new(current_user, project_id: @project.id, title: params[:label_name]).execute

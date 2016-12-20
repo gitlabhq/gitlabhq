@@ -6,7 +6,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   include NotesHelper
   include ToggleAwardEmoji
   include IssuableCollections
-  include KaminariPagination
 
   before_action :module_enabled
   before_action :merge_request, only: [
@@ -38,7 +37,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def index
     @merge_requests = merge_requests_collection
-    @merge_requests = bounded_pagination(@merge_requests, params[:page])
+    @merge_requests = @merge_requests.page(params[:page])
+    if @merge_requests.out_of_range? && @merge_requests.total_pages != 0
+      return redirect_to namespace_project_merge_requests_path(page: @merge_requests.total_pages)
+    end
 
     if params[:label_name].present?
       labels_params = { project_id: @project.id, title: params[:label_name] }

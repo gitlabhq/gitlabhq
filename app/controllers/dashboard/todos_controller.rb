@@ -1,11 +1,12 @@
 class Dashboard::TodosController < Dashboard::ApplicationController
-  include KaminariPagination
-
   before_action :find_todos, only: [:index, :destroy_all]
 
   def index
     @sort = params[:sort]
-    @todos = bounded_pagination(@todos, params[:page])
+    @todos = @todos.page(params[:page])
+    if @todos.out_of_range? && @todos.total_pages != 0
+      redirect_to dashboard_todos_path(page: @todos.total_pages)
+    end
   end
 
   def destroy

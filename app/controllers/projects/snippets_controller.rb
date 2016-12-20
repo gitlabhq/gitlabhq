@@ -1,6 +1,5 @@
 class Projects::SnippetsController < Projects::ApplicationController
   include ToggleAwardEmoji
-  include KaminariPagination
 
   before_action :module_enabled
   before_action :snippet, only: [:show, :edit, :destroy, :update, :raw, :toggle_award_emoji]
@@ -26,7 +25,10 @@ class Projects::SnippetsController < Projects::ApplicationController
       project: @project,
       scope: params[:scope]
     )
-    @snippets = bounded_pagination(@snippets, params[:page])
+    @snippets = @snippets.page(params[:page])
+    if @snippets.out_of_range? && @snippets.total_pages != 0
+      redirect_to namespace_project_snippets_path(page: @snippets.total_pages)
+    end
   end
 
   def new
