@@ -734,11 +734,11 @@ describe API::MergeRequests, api: true  do
     end
   end
 
-  describe 'POST :id/merge_requests/:merge_request_id/approvals' do
+  describe 'POST :id/merge_requests/:merge_request_id/approve' do
     before { project.update_attribute(:approvals_before_merge, 2) }
 
     context 'as the author of the merge request' do
-      before { post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/approvals", user) }
+      before { post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/approve", user) }
 
       it 'returns a 401' do
         expect(response).to have_http_status(401)
@@ -752,7 +752,7 @@ describe API::MergeRequests, api: true  do
         project.team << [approver, :developer]
         project.team << [create(:user), :developer]
 
-        post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/approvals", approver)
+        post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/approve", approver)
       end
 
       it 'approves the merge request' do
@@ -764,7 +764,7 @@ describe API::MergeRequests, api: true  do
     end
   end
 
-  describe 'DELETE :id/merge_requests/:merge_request_id/approvals' do
+  describe 'DELETE :id/merge_requests/:merge_request_id/unapprove' do
     before { project.update_attribute(:approvals_before_merge, 2) }
 
     context 'as a user who has approved the merge request' do
@@ -778,7 +778,7 @@ describe API::MergeRequests, api: true  do
         merge_request.approvals.create(user: approver)
         merge_request.approvals.create(user: unapprover)
 
-        delete api("/projects/#{project.id}/merge_requests/#{merge_request.id}/approvals", unapprover)
+        delete api("/projects/#{project.id}/merge_requests/#{merge_request.id}/unapprove", unapprover)
       end
 
       it 'unapproves the merge request' do
@@ -792,6 +792,7 @@ describe API::MergeRequests, api: true  do
       end
     end
   end
+
   def mr_with_later_created_and_updated_at_time
     merge_request
     merge_request.created_at += 1.hour

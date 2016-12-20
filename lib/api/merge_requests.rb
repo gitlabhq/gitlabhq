@@ -302,7 +302,7 @@ module API
         # Examples:
         #   POST /projects/:id/merge_requests/:merge_request_id/approvals
         #
-        post "#{path}/approvals" do
+        post "#{path}/approve" do
           merge_request = user_project.merge_requests.find(params[:merge_request_id])
 
           unauthorized! unless merge_request.can_approve?(current_user)
@@ -314,7 +314,7 @@ module API
           present merge_request, with: Entities::MergeRequestApprovals, current_user: current_user
         end
 
-        delete "#{path}/approvals" do
+        delete "#{path}/unapprove" do
           merge_request = user_project.merge_requests.find(params[:merge_request_id])
 
           not_found! unless merge_request.has_approved?(current_user)
