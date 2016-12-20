@@ -24,7 +24,7 @@ feature 'Projects > Members > Master adds member with expiration date', feature:
         click_on 'Add to project'
       end
 
-      page.within '.project_member:first-child' do
+      page.within "#project_member_#{new_member.project_members.first.id}" do
         expect(page).to have_content('Expires in 4 days')
       end
     end
@@ -35,7 +35,7 @@ feature 'Projects > Members > Master adds member with expiration date', feature:
       project.team.add_users([new_member.id], :developer, expires_at: '2016-09-06')
       visit namespace_project_project_members_path(project.namespace, project)
 
-      page.within '.project_member:first-child' do
+      page.within "#project_member_#{new_member.project_members.first.id}" do
         find('.js-access-expiration-date').set '2016-08-09'
         wait_for_ajax
         expect(page).to have_content('Expires in 3 days')
