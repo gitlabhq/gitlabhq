@@ -16,7 +16,12 @@ feature 'CI shared runner limits', feature: true do
 
     context 'without limit' do
       scenario 'it does not display a warning message on project homepage' do
-        visit namespace_project_path(project.namespace, project)
+        visit_project_home
+        expect_no_quota_exceeded_alert
+      end
+
+      scenario 'it does not display a warning message on pipelines page' do
+        visit_project_pipelines
         expect_no_quota_exceeded_alert
       end
     end
@@ -26,7 +31,12 @@ feature 'CI shared runner limits', feature: true do
         let(:group) { create(:group, :with_used_build_minutes_limit) }
 
         scenario 'it displays a warning message on project homepage' do
-          visit namespace_project_path(project.namespace, project)
+          visit_project_home
+          expect_quota_exceeded_alert("#{group.name} has exceeded their build minutes quota.")
+        end
+
+        scenario 'it displays a warning message on pipelines page' do
+          visit_project_pipelines
           expect_quota_exceeded_alert("#{group.name} has exceeded their build minutes quota.")
         end
       end
@@ -35,7 +45,12 @@ feature 'CI shared runner limits', feature: true do
         let(:group) { create(:group, :with_not_used_build_minutes_limit) }
 
         scenario 'it does not display a warning message on project homepage' do
-          visit namespace_project_path(project.namespace, project)
+          visit_project_home
+          expect_no_quota_exceeded_alert
+        end
+
+        scenario 'it does not display a warning message on pipelines page' do
+          visit_project_pipelines
           expect_no_quota_exceeded_alert
         end
       end
@@ -44,7 +59,12 @@ feature 'CI shared runner limits', feature: true do
         let(:group) { create(:group, :with_build_minutes_limit) }
 
         scenario 'it does not display a warning message on project homepage' do
-          visit namespace_project_path(project.namespace, project)
+          visit_project_home
+          expect_no_quota_exceeded_alert
+        end
+
+        scenario 'it does not display a warning message on pipelines page' do
+          visit_project_pipelines
           expect_no_quota_exceeded_alert
         end
       end
@@ -56,10 +76,23 @@ feature 'CI shared runner limits', feature: true do
 
     context 'when limit is defined and limit is exceeded' do
       scenario 'it does not display a warning message on project homepage' do
-        visit namespace_project_path(project.namespace, project)
+        visit_project_home
+        expect_no_quota_exceeded_alert
+      end
+
+      scenario 'it does not display a warning message on pipelines page' do
+        visit_project_pipelines
         expect_no_quota_exceeded_alert
       end
     end
+  end
+
+  def visit_project_home
+    visit namespace_project_path(project.namespace, project)
+  end
+
+  def visit_project_pipelines
+    visit namespace_project_pipelines_path(project.namespace, project)
   end
 
   def expect_quota_exceeded_alert(message = nil)
