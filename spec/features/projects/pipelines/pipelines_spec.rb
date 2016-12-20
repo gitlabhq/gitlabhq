@@ -217,7 +217,7 @@ describe "Pipelines", feature: true, js:true do
 
       it do
         expect(page).to have_http_status(:ok)
-        expect(JSON.parse(page.source)).to include("html")
+        expect(page.source).to include("html")
       end
     end
 
