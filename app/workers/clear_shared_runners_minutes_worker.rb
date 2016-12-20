@@ -19,7 +19,7 @@ class ClearSharedRunnersMinutesWorker
   private
 
   def try_obtain_lease
-    Gitlab::ExclusiveLease.new('gitlab_clear_shared_runner_minutes_worker',
+    Gitlab::ExclusiveLease.new('gitlab_clear_shared_runners_minutes_worker',
       timeout: LEASE_TIMEOUT).try_obtain
   end
 end

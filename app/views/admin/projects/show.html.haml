@@ -96,11 +96,12 @@
             %strong
               - if @project.shared_runners_enabled?
                 Enabled
-                - if @project.shared_runners_minutes_limit.nonzero?
-                  = @project.shared_runners_minutes_limit
-                  total minutes
-                - elsif current_application_settings.shared_runners_minutes
-                  Unlimited
+                - if @project.shared_runners_minutes_quota?
+                  - if @project.shared_runners_minutes_limit_enabled?
+                    = @project.actual_shared_runners_minutes_limit.to_i
+                    total minutes
+                  - else
+                    Unlimited
               - else
                 Disabled
 
