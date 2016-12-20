@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ClearSharedRunnerMinutesWorker do
+describe ClearSharedRunnersMinutesWorker do
   let(:worker) { described_class.new }
 
   describe '#perform' do

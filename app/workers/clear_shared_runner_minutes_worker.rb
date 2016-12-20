@@ -1,4 +1,4 @@
-class ClearSharedRunnerMinutesWorker
+class ClearSharedRunnersMinutesWorker
   LEASE_TIMEOUT = 3600
 
   include Sidekiq::Worker
