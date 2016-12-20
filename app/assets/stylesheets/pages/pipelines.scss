@@ -483,11 +483,6 @@
       top: 5px;
     }
 
-    .ci-status-icon {
-      position: relative;
-      top: 1px;
-    }
-
     .ci-status-icon svg {
       height: 20px;
       width: 20px;
@@ -626,10 +621,6 @@
 
     a {
       display: inline-block;
-
-      &:hover {
-        background-color: $stage-hover-bg;
-      }
     }
 
     ul {
@@ -651,12 +642,26 @@
 
       .build-content {
         width: 100%;
+
+        &:hover {
+          background-color: $stage-hover-bg;
+        }
+
+        .ci-status-icon {
+          position: relative;
+          top: 1px;
+        }
       }
 
       .ci-action-icon-container {
         font-size: 11px;
         position: absolute;
         right: 4px;
+        margin-top: -1px;
+
+        &:hover {
+          background-color: transparent;
+        }
 
         i {
           width: 25px;
