@@ -29,8 +29,10 @@ describe Ci::Stage, models: true do
   end
 
   describe '#statuses_count' do
-    let!(:stage_build) { create_job(:ci_build) }
-    let!(:other_build) { create_job(:ci_build, stage: 'other stage') }
+    before do
+      create_job(:ci_build) }
+      create_job(:ci_build, stage: 'other stage')
+    end
 
     subject { stage.statuses_count }
 

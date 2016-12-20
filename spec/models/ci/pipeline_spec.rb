@@ -179,15 +179,19 @@ describe Ci::Pipeline, models: true do
     subject { pipeline.stage('test') }
 
     context 'with status in stage' do
-      let!(:status) { create(:commit_status, pipeline: pipeline, stage: 'test') }
-
-      it 'return stage object' do
-        is_expected.to be_a(Ci::Stage)
+      before do
+        create(:commit_status, pipeline: pipeline, stage: 'test')
       end
+
+      it { expect(subject).to be_a(Ci::Stage) }
+      it { expect(subject.name).to eq('stage') }
+      it { expect(subject.statues).not_to be_empty }
     end
 
     context 'without status in stage' do
-      let!(:status) { create(:commit_status, pipeline: pipeline, stage: 'build') }
+      before do
+        create(:commit_status, pipeline: pipeline, stage: 'build')
+      end
 
       it 'return stage object' do
         is_expected.to be_nil

@@ -152,7 +152,7 @@ describe "Pipelines" do
     end
   end
 
-  describe 'GET /:project/pipelines/stage?name=stage' do
+  describe 'GET /:project/pipelines/stage.json?name=stage' do
     let!(:pipeline) do
       create(:ci_empty_pipeline, project: project, ref: 'master',
         status: 'running')
@@ -168,7 +168,10 @@ describe "Pipelines" do
           project.namespace, project, pipeline, format: :json, stage: 'build')
       end
 
-      it { expect(page).to have_http_status(:ok) }
+      it do
+        expect(page).to have_http_status(:ok)
+        expect(JSON.parse(page.source)).to include("html")
+      end
     end
 
     context 'when accessing unknown stage' do
