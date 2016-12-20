@@ -145,8 +145,8 @@ project:
 - assembla_service
 - asana_service
 - gemnasium_service
-- slack_notification_service
-- mattermost_notification_service
+- slack_service
+- mattermost_service
 - buildkite_service
 - bamboo_service
 - teamcity_service

@@ -89,8 +89,8 @@ class Project < ActiveRecord::Base
   has_one :asana_service, dependent: :destroy
   has_one :gemnasium_service, dependent: :destroy
   has_one :mattermost_slash_commands_service, dependent: :destroy
-  has_one :mattermost_notification_service, dependent: :destroy
-  has_one :slack_notification_service, dependent: :destroy
+  has_one :mattermost_service, dependent: :destroy
+  has_one :slack_service, dependent: :destroy
   has_one :jenkins_service, dependent: :destroy
   has_one :jenkins_deprecated_service, dependent: :destroy
   has_one :buildkite_service, dependent: :destroy
