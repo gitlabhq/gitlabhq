@@ -263,7 +263,7 @@ module Banzai
             found = []
             projects.each do |project|
               ref = project.path_with_namespace
-              get_or_set_cache(cache, project.path_with_namespace) { project }
+              get_or_set_cache(cache, ref) { project }
               found << ref
             end
 
