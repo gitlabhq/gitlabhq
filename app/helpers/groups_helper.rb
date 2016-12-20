@@ -67,6 +67,28 @@ module GroupsHelper
     end
   end
 
+  def group_shared_runner_limits_progress_bar(group)
+    percent = [group.shared_runners_minutes_percent_used, 100].min
+
+    status =
+      if percent == 100
+        'danger'
+      elsif percent >= 80
+        'warning'
+      else
+        'success'
+      end
+
+    options = {
+      class: "progress-bar progress-bar-#{status}",
+      style: "width: #{percent}%;"
+    }
+
+    content_tag :div, class: 'progress' do
+      content_tag :div, nil, options
+    end
+  end
+
   def group_issues(group)
     IssuesFinder.new(current_user, group_id: group.id).execute
   end

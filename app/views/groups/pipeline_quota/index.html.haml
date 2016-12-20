@@ -1,0 +1,40 @@
+- page_title "Pipeline Quota"
+%h3.page-title Group Pipeline Quota
+%p.light Monthly build minutes usage across shared runners for #{@group.name}
+
+.pipeline-quota.container-fluid
+  .row
+    .col-sm-6
+      %strong
+        Current Period Usage
+      %div
+        = group_shared_runner_limits_quota(@group)
+        minutes
+    .col-sm-6.right
+      - if @group.shared_runners_minutes_limit_enabled?
+        = "#{@group.shared_runners_minutes_percent_used}% used"
+      - else
+        Unlimited
+      = group_shared_runner_limits_progress_bar(@group)
+
+%table.table.pipeline-project-metrics
+  %thead
+    %tr
+      %th Project
+      %th Minutes
+
+  %tbody
+    - @projects.each do |project|
+      %tr
+        %td
+          .avatar-container.s20
+            = project_icon(project, alt: '', class: 'avatar project-avatar s20')
+          %strong= link_to project.name, project
+        %td
+          = project.shared_runners_minutes.to_i
+    - if @projects.blank?
+      %tr
+        %td{colspan: 2}
+          .nothing-here-block This group has no projects
+
+= paginate @projects, theme: "gitlab"
