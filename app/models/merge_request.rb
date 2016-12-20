@@ -102,7 +102,7 @@ class MergeRequest < ActiveRecord::Base
   validates :source_branch, presence: true
   validates :target_project, presence: true
   validates :target_branch, presence: true
-  validates :merge_user, presence: true, if: :merge_when_build_succeeds?
+  validates :merge_user, presence: true, if: :merge_when_build_succeeds?, unless: :importing?
   validate :validate_branches, unless: [:allow_broken, :importing?, :closed_without_fork?]
   validate :validate_fork, unless: :closed_without_fork?
   validate :validate_approvals_before_merge

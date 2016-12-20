@@ -22,8 +22,15 @@ module Gitlab
           import_type: 'bitbucket',
           import_source: repo.full_name,
           import_url: repo.clone_url(session_data[:token]),
-          import_data: { credentials: session_data }
+          import_data: { credentials: session_data },
+          skip_wiki: skip_wiki
         ).execute
+      end
+
+      private
+
+      def skip_wiki
+        repo.has_wiki?
       end
     end
   end

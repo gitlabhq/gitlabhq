@@ -66,20 +66,11 @@
         - unless @repository.gitlab_ci_yml
           %li.missing
             = link_to add_special_file_path(@project, file_name: '.gitlab-ci.yml') do
-              Set Up CI
+              Set up CI
+        - if koding_enabled? && @repository.koding_yml.blank?
+          %li.missing
+            = link_to 'Set up Koding', add_koding_stack_path(@project)
 
-      %li.project-repo-buttons.right
-        .project-right-buttons
-          - if current_user
-            = render 'shared/members/access_request_buttons', source: @project
-            = render "projects/buttons/koding"
-
-          .btn-group.project-repo-btn-group
-            = render 'projects/buttons/download', project: @project, ref: @ref
-            = render 'projects/buttons/dropdown'
-
-          .pull-right
-            = render 'shared/notifications/button', notification_setting: @notification_setting
   - if @repository.commit
     .project-last-commit{ class: container_class }
       = render 'projects/last_commit', commit: @repository.commit, ref: current_ref, project: @project

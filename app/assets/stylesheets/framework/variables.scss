@@ -24,6 +24,7 @@ $gray-lightest: #fdfdfd;
 $gray-light: #fafafa;
 $gray-lighter: #f9f9f9;
 $gray-normal: #f5f5f5;
+$gray-dark: darken($gray-light, $darken-dark-factor);
 $gray-darker: #eee;
 $gray-darkest: #c4c4c4;
 
