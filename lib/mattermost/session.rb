@@ -26,6 +26,8 @@ module Mattermost
     include Doorkeeper::Helpers::Controller
     include HTTParty
 
+    LEASE_TIMEOUT = 60
+
     base_uri Settings.mattermost.host
 
     attr_accessor :current_resource_owner, :token
@@ -35,14 +37,16 @@ module Mattermost
     end
 
     def with_session
-      raise NoSessionError unless create
+      with_lease do
+        raise NoSessionError unless create
 
-      begin
-        yield self
-      rescue Errno::ECONNREFUSED
-        raise NoSessionError
-      ensure
-        destroy
+        begin
+          yield self
+        rescue Errno::ECONNREFUSED
+          raise NoSessionError
+        ensure
+          destroy
+        end
       end
     end
 
@@ -129,6 +133,26 @@ module Mattermost
       if 200 <= response.code && response.code < 400
         response.headers['token']
       end
+    end
+
+    def with_lease
+      lease_uuid = lease_try_obtain
+      raise NoSessionError unless lease_uuid
+
+      begin
+        yield
+      ensure
+        Gitlab::ExclusiveLease.cancel(lease_key, lease_uuid)
+      end
+    end
+
+    def lease_key
+      "mattermost:session"
+    end
+
+    def lease_try_obtain
+      lease = ::Gitlab::ExclusiveLease.new(lease_key, timeout: LEASE_TIMEOUT)
+      lease.try_obtain
     end
   end
 end
