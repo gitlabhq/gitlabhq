@@ -34,7 +34,7 @@ module Gitlab
       def allowed?
         if ldap_user
           unless ldap_config.active_directory
-            unblock_user(user, 'is not in Active Directory anymore') if user.ldap_blocked?
+            unblock_user(user, 'is available again') if user.ldap_blocked?
             return true
           end
 

@@ -103,7 +103,7 @@ describe Gitlab::LDAP::Access, lib: true do
           end
 
           it 'unblocks the user if it exists' do
-            expect(access).to receive(:unblock_user).with(user, 'is not in Active Directory anymore')
+            expect(access).to receive(:unblock_user).with(user, 'is available again')
 
             access.allowed?
           end
