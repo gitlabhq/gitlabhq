@@ -32,49 +32,19 @@ feature 'Setup Mattermost slash commands', feature: true do
     end
 
     describe 'mattermost service is enabled' do
-      let(:info) { find('.services-installation-info') }
-
       before do
-        Gitlab.config.mattermost.enabled = true
+        allow(Gitlab.config.mattermost).to receive(:enabled).and_return(true)
       end
 
-      it 'shows the correct mattermost url' do
-        expect(page).to have_content Gitlab.config.mattermost.host
-      end
-
-      describe 'mattermost service is active' do
-        before do
-          service.active = true
-        end
-
-        it 'shows that mattermost is active' do
-          expect(info).to have_content 'Installed'
-          expect(info).not_to have_content 'Not installed'
-        end
-
-        it 'shows the edit mattermost button' do
-          expect(info).to have_button 'Edit Mattermost'
-        end
-      end
-
-      describe 'mattermost service is not active' do
-        before do
-          service.active = false
-        end
-
-        it 'shows that mattermost is not active' do
-          expect(info).to have_content 'Not installed'
-        end
-
-        it 'shows the add to mattermost button' do
-          expect(info).to have_button 'Add to Mattermost'
-        end
+      it 'shows the add to mattermost button' do
+        expect(page).to have_link 'Add to Mattermost'
       end
     end
 
+
     describe 'mattermost service is not enabled' do
       before do
-        Gitlab.config.mattermost.enabled = false
+        allow(Gitlab.config.mattermost).to receive(:enabled).and_return(false)
       end
 
       it 'shows the correct trigger url' do

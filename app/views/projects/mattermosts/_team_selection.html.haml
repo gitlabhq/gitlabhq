@@ -4,7 +4,9 @@
 %hr
 = form_for(:mattermost, method: :post, url: namespace_project_mattermost_path(@project.namespace, @project)) do |f|
   %h4 Team
-  %p Select or create the team where the slash commands will be used in
+  %p
+    = @teams.one? ? 'The team' : 'Select the team'
+    where the slash commands will be used in
   - selected_id = @teams.keys.first if @teams.one?
   = f.select(:team_id, mattermost_teams_options(@teams), {}, { class: 'form-control', selected: "#{selected_id}", disabled: @teams.one? })
   .help-block
@@ -22,8 +24,9 @@
   %p Choose the word that will trigger commands
   = f.text_field(:trigger, value: @project.path, class: 'form-control')
   .help-block
-    %p Trigger word must be unique, and cannot begin with a slash or contain any spaces. Use the word that works best for your team.
-    %p Fill in the word that works best for your team.
+    %p
+      Trigger word must be unique, and can't begin with a slash or contain any spaces.
+      Use the word that works best for your team.
     %p
       Suggestions:
       %code= 'gitlab'
