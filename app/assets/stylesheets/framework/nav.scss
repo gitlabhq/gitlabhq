@@ -165,6 +165,8 @@
     padding: 11px 0;
     margin-bottom: 0;
 
+    > .btn,
+    > .btn-container,
     > .dropdown {
       margin-right: $gl-padding-top;
       display: inline-block;
@@ -172,16 +174,7 @@
 
       &:last-child {
         margin-right: 0;
-      }
-    }
-
-    > .btn {
-      margin-right: $gl-padding-top;
-      display: inline-block;
-      vertical-align: top;
-
-      &:last-child {
-        margin-right: 0;
+        float: right;
       }
     }
 
@@ -425,6 +418,38 @@
 
     .nav-links {
       border-bottom: none;
+    }
+  }
+}
+
+@media (max-width: $screen-xs-max) {
+  .top-area .nav-controls {
+    $controls-margin: $btn-xs-side-margin - 2px;
+
+    &.controls-flex {
+      display: flex;
+      flex-flow: row wrap;
+      align-items: center;
+      justify-content: center;
+      padding: 0 0 $gl-padding-top;
+    }
+
+    .controls-item,
+    .controls-item:last-child {
+      flex: 1 1 35%;
+      display: block;
+      width: 100%;
+      margin: $controls-margin;
+
+      .btn,
+      .dropdown {
+        margin: 0;
+      }
+    }
+
+    .controls-item-full {
+      @extend .controls-item;
+      flex: 1 1 100%;
     }
   }
 }

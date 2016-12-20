@@ -57,6 +57,11 @@ pre {
     border-radius: 0;
     color: $well-pre-color;
   }
+
+  &.wrap {
+    word-break: break-word;
+    white-space: pre-wrap;
+  }
 }
 
 hr {
@@ -65,6 +70,17 @@ hr {
 
 .str-truncated {
   @include str-truncated;
+}
+
+.block-truncated {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  > div,
+  .str-truncated {
+    display: inline;
+  }
 }
 
 .item-title { font-weight: 600; }
