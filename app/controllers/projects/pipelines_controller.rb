@@ -42,9 +42,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def stage
-    @stage = pipeline.stages.find do |stage|
-      stage.name == params[:stage]
-    end
+    @stage = pipeline.stage(params[:stage])
     return not_found unless @stage
 
     respond_to do |format|

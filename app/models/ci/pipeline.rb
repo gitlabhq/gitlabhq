@@ -116,6 +116,11 @@ module Ci
       where.not(duration: nil).sum(:duration)
     end
 
+    def stage(name)
+      stage = Ci::Stage.new(self, name: name)
+      stage unless stage.statuses_count.zero?
+    end
+
     def stages_count
       statuses.select(:stage).distinct.count
     end

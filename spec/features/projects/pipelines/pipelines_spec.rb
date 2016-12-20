@@ -152,6 +152,35 @@ describe "Pipelines" do
     end
   end
 
+  describe 'GET /:project/pipelines/stage?name=stage' do
+    let!(:pipeline) do
+      create(:ci_empty_pipeline, project: project, ref: 'master',
+        status: 'running')
+    end
+
+    context 'when accessing existing stage' do
+      let!(:build) do
+        create(:ci_build, pipeline: pipeline, stage: 'build')
+      end
+
+      before do
+        visit stage_namespace_project_pipeline_path(
+          project.namespace, project, pipeline, format: :json, stage: 'build')
+      end
+
+      it { expect(page).to have_http_status(:ok) }
+    end
+
+    context 'when accessing unknown stage' do
+      before do
+        visit stage_namespace_project_pipeline_path(
+          project.namespace, project, pipeline, format: :json, stage: 'test')
+      end
+
+      it { expect(page).to have_http_status(:not_found) }
+    end
+  end
+
   describe 'POST /:project/pipelines' do
     let(:project) { create(:project) }
 
