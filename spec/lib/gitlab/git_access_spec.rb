@@ -50,7 +50,7 @@ describe Gitlab::GitAccess, lib: true do
     end
   end
 
-  describe 'download_access_check' do
+  describe '#check_download_access!' do
     subject { access.check('git-upload-pack', '_any') }
 
     describe 'master permissions' do
@@ -183,7 +183,7 @@ describe Gitlab::GitAccess, lib: true do
     end
   end
 
-  describe 'push_access_check' do
+  describe '#check_push_access!' do
     before { merge_into_protected_branch }
     let(:unprotected_branch) { FFaker::Internet.user_name }
 
@@ -231,7 +231,7 @@ describe Gitlab::GitAccess, lib: true do
 
             permissions_matrix[role].each do |action, allowed|
               context action do
-                subject { access.push_access_check(changes[action]) }
+                subject { access.send(:check_push_access!, changes[action]) }
                 it { expect(subject.allowed?).to allowed ? be_truthy : be_falsey }
               end
             end

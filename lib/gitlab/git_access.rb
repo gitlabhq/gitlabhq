@@ -29,45 +29,21 @@ module Gitlab
 
     def check(cmd, changes)
       check_protocol!
-      check_active_user! unless deploy_key?
+      check_active_user!
       check_project_accessibility!
       check_command_existence!(cmd)
       check_repository_existence!
 
       case cmd
       when *DOWNLOAD_COMMANDS
-        download_access_check unless deploy_key?
+        check_download_access!
       when *PUSH_COMMANDS
-        push_access_check(changes)
+        check_push_access!(changes)
       end
 
       build_status_object(true)
     rescue UnauthorizedError => ex
       build_status_object(false, ex.message)
-    end
-
-    def download_access_check
-      passed = user_can_download_code? ||
-               build_can_download_code? ||
-               guest_can_download_code?
-
-      unless passed
-        raise UnauthorizedError, ERROR_MESSAGES[:download]
-      end
-    end
-
-    def push_access_check(changes)
-      if deploy_key
-        deploy_key_push_access_check
-      elsif user
-        user_push_access_check
-      else
-        raise UnauthorizedError, ERROR_MESSAGES[:upload]
-      end
-
-      return if changes.blank? # Allow access.
-
-      check_change_access!(changes)
     end
 
     def guest_can_download_code?
@@ -80,18 +56,6 @@ module Gitlab
 
     def build_can_download_code?
       authentication_abilities.include?(:build_download_code) && user_access.can_do_action?(:build_download_code)
-    end
-
-    def user_push_access_check
-      unless authentication_abilities.include?(:push_code)
-        raise UnauthorizedError, ERROR_MESSAGES[:upload]
-      end
-    end
-
-    def deploy_key_push_access_check
-      unless deploy_key.can_push_to?(project)
-        raise UnauthorizedError, ERROR_MESSAGES[:deploy_key_upload]
-      end
     end
 
     def protocol_allowed?
@@ -107,6 +71,8 @@ module Gitlab
     end
 
     def check_active_user!
+      return if deploy_key?
+
       if user && !user_access.allowed?
         raise UnauthorizedError, "Your account has been blocked."
       end
@@ -127,6 +93,44 @@ module Gitlab
     def check_repository_existence!
       unless project.repository.exists?
         raise UnauthorizedError, ERROR_MESSAGES[:no_repo]
+      end
+    end
+
+    def check_download_access!
+      return if deploy_key?
+
+      passed = user_can_download_code? ||
+               build_can_download_code? ||
+               guest_can_download_code?
+
+      unless passed
+        raise UnauthorizedError, ERROR_MESSAGES[:download]
+      end
+    end
+
+    def check_push_access!(changes)
+      if deploy_key
+        check_deploy_key_push_access!
+      elsif user
+        check_user_push_access!
+      else
+        raise UnauthorizedError, ERROR_MESSAGES[:upload]
+      end
+
+      return if changes.blank? # Allow access.
+
+      check_change_access!(changes)
+    end
+
+    def check_user_push_access!
+      unless authentication_abilities.include?(:push_code)
+        raise UnauthorizedError, ERROR_MESSAGES[:upload]
+      end
+    end
+
+    def check_deploy_key_push_access!
+      unless deploy_key.can_push_to?(project)
+        raise UnauthorizedError, ERROR_MESSAGES[:deploy_key_upload]
       end
     end
 
