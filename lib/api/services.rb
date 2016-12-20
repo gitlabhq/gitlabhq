@@ -492,7 +492,7 @@ module API
           desc: 'The channel name'
         }
       ],
-      'mattermost-notification' => [
+      'mattermost' => [
         {
           required: true,
           name: :webhook,
