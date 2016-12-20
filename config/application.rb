@@ -45,7 +45,7 @@ module Gitlab
     #
     # Parameters filtered:
     # - Password (:password, :password_confirmation)
-    # - Private tokens (:private_token, :authentication_token)
+    # - Private tokens
     # - Two-factor tokens (:otp_attempt)
     # - Repo/Project Import URLs (:import_url)
     # - Build variables (:variables)
@@ -60,11 +60,13 @@ module Gitlab
       encrypted_key
       hook
       import_url
+      incoming_email_token
       key
       otp_attempt
       password
       password_confirmation
       private_token
+      runners_token
       secret_token
       sentry_dsn
       variables
@@ -85,6 +87,9 @@ module Gitlab
     config.assets.precompile << "print.css"
     config.assets.precompile << "notify.css"
     config.assets.precompile << "mailers/*.css"
+    config.assets.precompile << "katex.css"
+    config.assets.precompile << "katex.js"
+    config.assets.precompile << "xterm/xterm.css"
     config.assets.precompile << "graphs/graphs_bundle.js"
     config.assets.precompile << "users/users_bundle.js"
     config.assets.precompile << "network/network_bundle.js"
@@ -98,6 +103,7 @@ module Gitlab
     config.assets.precompile << "environments/environments_bundle.js"
     config.assets.precompile << "blob_edit/blob_edit_bundle.js"
     config.assets.precompile << "snippet/snippet_bundle.js"
+    config.assets.precompile << "terminal/terminal_bundle.js"
     config.assets.precompile << "lib/utils/*.js"
     config.assets.precompile << "lib/*.js"
     config.assets.precompile << "u2f.js"

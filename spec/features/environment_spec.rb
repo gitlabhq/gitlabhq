@@ -38,6 +38,10 @@ feature 'Environment', :feature do
         scenario 'does not show a re-deploy button for deployment without build' do
           expect(page).not_to have_link('Re-deploy')
         end
+
+        scenario 'does not show terminal button' do
+          expect(page).not_to have_terminal_button
+        end
       end
 
       context 'with related deployable present' do
@@ -58,6 +62,10 @@ feature 'Environment', :feature do
 
         scenario 'does not show stop button' do
           expect(page).not_to have_link('Stop')
+        end
+
+        scenario 'does not show terminal button' do
+          expect(page).not_to have_terminal_button
         end
 
         context 'with manual action' do
@@ -81,6 +89,26 @@ feature 'Environment', :feature do
 
             scenario 'does show an external link button' do
               expect(page).to have_link(nil, href: environment.external_url)
+            end
+          end
+
+          context 'with terminal' do
+            let(:project) { create(:kubernetes_project, :test_repo) }
+
+            context 'for project master' do
+              let(:role) { :master }
+
+              scenario 'it shows the terminal button' do
+                expect(page).to have_terminal_button
+              end
+            end
+
+            context 'for developer' do
+              let(:role) { :developer }
+
+              scenario 'does not show terminal button' do
+                expect(page).not_to have_terminal_button
+              end
             end
           end
 
@@ -157,5 +185,9 @@ feature 'Environment', :feature do
     visit namespace_project_environment_path(environment.project.namespace,
                                              environment.project,
                                              environment)
+  end
+
+  def have_terminal_button
+    have_link(nil, href: terminal_namespace_project_environment_path(project.namespace, project, environment))
   end
 end

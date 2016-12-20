@@ -1,4 +1,6 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, quotes, no-undef, quote-props, prefer-template, comma-dangle, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, quotes, quote-props, prefer-template, comma-dangle, padded-blocks, max-len */
+/* global BranchGraph */
+
 (function() {
   this.Network = (function() {
     function Network(opts) {

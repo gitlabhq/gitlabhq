@@ -3,6 +3,10 @@ require 'spec_helper'
 describe Group, 'Routable' do
   let!(:group) { create(:group) }
 
+  describe 'Validations' do
+    it { is_expected.to validate_presence_of(:route) }
+  end
+
   describe 'Associations' do
     it { is_expected.to have_one(:route).dependent(:destroy) }
   end
@@ -35,16 +39,16 @@ describe Group, 'Routable' do
     it { expect(described_class.find_by_full_path('unknown')).to eq(nil) }
   end
 
-  describe '.where_paths_in' do
+  describe '.where_full_path_in' do
     context 'without any paths' do
       it 'returns an empty relation' do
-        expect(described_class.where_paths_in([])).to eq([])
+        expect(described_class.where_full_path_in([])).to eq([])
       end
     end
 
     context 'without any valid paths' do
       it 'returns an empty relation' do
-        expect(described_class.where_paths_in(%w[unknown])).to eq([])
+        expect(described_class.where_full_path_in(%w[unknown])).to eq([])
       end
     end
 
@@ -52,13 +56,13 @@ describe Group, 'Routable' do
       let!(:nested_group) { create(:group, parent: group) }
 
       it 'returns the projects matching the paths' do
-        result = described_class.where_paths_in([group.to_param, nested_group.to_param])
+        result = described_class.where_full_path_in([group.to_param, nested_group.to_param])
 
         expect(result).to contain_exactly(group, nested_group)
       end
 
       it 'returns projects regardless of the casing of paths' do
-        result = described_class.where_paths_in([group.to_param.upcase, nested_group.to_param.upcase])
+        result = described_class.where_full_path_in([group.to_param.upcase, nested_group.to_param.upcase])
 
         expect(result).to contain_exactly(group, nested_group)
       end

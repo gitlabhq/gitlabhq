@@ -1,5 +1,10 @@
-/* eslint-disable */
- ((global) => {
+/* eslint-disable max-len, no-var, func-names, space-before-function-paren, vars-on-top, no-plusplus, comma-dangle, no-return-assign, consistent-return, no-param-reassign, one-var, one-var-declaration-per-line, quotes, prefer-template, no-else-return, prefer-arrow-callback, no-unused-vars, no-underscore-dangle, no-shadow, no-mixed-operators, template-curly-spacing, camelcase, default-case, wrap-iife, semi, padded-blocks */
+/* global notify */
+/* global notifyPermissions */
+/* global merge_request_widget */
+/* global Turbolinks */
+
+((global) => {
   var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   const DEPLOYMENT_TEMPLATE = `<div class="mr-widget-heading" id="<%- id %>">
@@ -27,7 +32,7 @@
        </div>
      </div>`;
 
-   global.MergeRequestWidget = (function() {
+  global.MergeRequestWidget = (function() {
     function MergeRequestWidget(opts) {
       // Initialize MergeRequestWidget behavior
       //
@@ -82,10 +87,10 @@
     };
 
     MergeRequestWidget.prototype.retrieveSuccessIcon = function() {
-       const $ciSuccessIcon = $('.js-success-icon');
-       this.$ciSuccessIcon = $ciSuccessIcon.html();
-       $ciSuccessIcon.remove();
-     }
+      const $ciSuccessIcon = $('.js-success-icon');
+      this.$ciSuccessIcon = $ciSuccessIcon.html();
+      $ciSuccessIcon.remove();
+    }
 
     MergeRequestWidget.prototype.mergeInProgress = function(deleteSourceBranch) {
       if (deleteSourceBranch == null) {
@@ -204,7 +209,7 @@
         const template = _.template(templateString)(environment)
         this.$widgetBody.before(template);
       }
-     };
+    };
 
     MergeRequestWidget.prototype.showCIStatus = function(state) {
       var allowed_states;
@@ -246,4 +251,4 @@
 
   })();
 
- })(window.gl || (window.gl = {}));
+})(window.gl || (window.gl = {}));

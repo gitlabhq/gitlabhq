@@ -1,4 +1,5 @@
-/* eslint-disable */
+/* eslint-disable wrap-iife, func-names, space-before-function-paren, object-shorthand, comma-dangle, one-var, one-var-declaration-per-line, no-restricted-syntax, prefer-const, max-len, no-param-reassign, padded-blocks */
+
 (function(global) {
   class ProjectLabelSubscription {
     constructor(container) {

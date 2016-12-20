@@ -456,6 +456,76 @@ describe API::Commits, api: true  do
     end
   end
 
+  describe 'POST :id/repository/commits/:sha/cherry_pick' do
+    let(:master_pickable_commit)  { project.commit('7d3b0f7cff5f37573aea97cebfd5692ea1689924') }
+
+    context 'authorized user' do
+      it 'cherry picks a commit' do
+        post api("/projects/#{project.id}/repository/commits/#{master_pickable_commit.id}/cherry_pick", user), branch: 'master'
+
+        expect(response).to have_http_status(201)
+        expect(json_response['title']).to eq(master_pickable_commit.title)
+        expect(json_response['message']).to eq(master_pickable_commit.message)
+        expect(json_response['author_name']).to eq(master_pickable_commit.author_name)
+        expect(json_response['committer_name']).to eq(user.name)
+      end
+
+      it 'returns 400 if commit is already included in the target branch' do
+        post api("/projects/#{project.id}/repository/commits/#{master_pickable_commit.id}/cherry_pick", user), branch: 'markdown'
+
+        expect(response).to have_http_status(400)
+        expect(json_response['message']).to eq('Sorry, we cannot cherry-pick this commit automatically.
+                     A cherry-pick may have already been performed with this commit, or a more recent commit may have updated some of its content.')
+      end
+
+      it 'returns 400 if you are not allowed to push to the target branch' do
+        project.team << [user2, :developer]
+        protected_branch = create(:protected_branch, project: project, name: 'feature')
+
+        post api("/projects/#{project.id}/repository/commits/#{master_pickable_commit.id}/cherry_pick", user2), branch: protected_branch.name
+
+        expect(response).to have_http_status(400)
+        expect(json_response['message']).to eq('You are not allowed to push into this branch')
+      end
+
+      it 'returns 400 for missing parameters' do
+        post api("/projects/#{project.id}/repository/commits/#{master_pickable_commit.id}/cherry_pick", user)
+
+        expect(response).to have_http_status(400)
+        expect(json_response['error']).to eq('branch is missing')
+      end
+
+      it 'returns 404 if commit is not found' do
+        post api("/projects/#{project.id}/repository/commits/abcd0123/cherry_pick", user), branch: 'master'
+
+        expect(response).to have_http_status(404)
+        expect(json_response['message']).to eq('404 Commit Not Found')
+      end
+
+      it 'returns 404 if branch is not found' do
+        post api("/projects/#{project.id}/repository/commits/#{master_pickable_commit.id}/cherry_pick", user), branch: 'foo'
+
+        expect(response).to have_http_status(404)
+        expect(json_response['message']).to eq('404 Branch Not Found')
+      end
+
+      it 'returns 400 for missing parameters' do
+        post api("/projects/#{project.id}/repository/commits/#{master_pickable_commit.id}/cherry_pick", user)
+
+        expect(response).to have_http_status(400)
+        expect(json_response['error']).to eq('branch is missing')
+      end
+    end
+
+    context 'unauthorized user' do
+      it 'does not cherry pick the commit' do
+        post api("/projects/#{project.id}/repository/commits/#{master_pickable_commit.id}/cherry_pick"), branch: 'master'
+
+        expect(response).to have_http_status(401)
+      end
+    end
+  end
+
   describe 'Post comment to commit' do
     context 'authorized user' do
       it 'returns comment' do

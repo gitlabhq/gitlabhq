@@ -131,5 +131,7 @@ class Spinach::Features::GroupMilestones < Spinach::FeatureSteps
       issue.labels << project.labels.find_by(title: 'bug')
       issue.labels << project.labels.find_by(title: 'feature')
     end
+
+    current_user.refresh_authorized_projects
   end
 end

@@ -1,4 +1,7 @@
-/* eslint-disable */
+/* eslint-disable comma-dangle, space-before-function-paren, one-var, indent, radix */
+/* global Vue */
+/* global Sortable */
+
 //= require ./board_blank_state
 //= require ./board_delete
 //= require ./board_list

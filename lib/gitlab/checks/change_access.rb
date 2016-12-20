@@ -4,11 +4,12 @@ module Gitlab
       attr_reader :user_access, :project, :skip_authorization
 
       def initialize(
-        change, user_access:, project:, skip_authorization: false)
+        change, user_access:, project:, env: {}, skip_authorization: false)
         @oldrev, @newrev, @ref = change.values_at(:oldrev, :newrev, :ref)
         @branch_name = Gitlab::Git.branch_name(@ref)
         @user_access = user_access
         @project = project
+        @env = env
         @skip_authorization = skip_authorization
       end
 
@@ -75,7 +76,7 @@ module Gitlab
       end
 
       def forced_push?
-        Gitlab::Checks::ForcePush.force_push?(@project, @oldrev, @newrev)
+        Gitlab::Checks::ForcePush.force_push?(@project, @oldrev, @newrev, env: @env)
       end
 
       def matching_merge_request?

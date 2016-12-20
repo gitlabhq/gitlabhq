@@ -1,4 +1,8 @@
-/* eslint-disable no-restricted-properties, func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, no-use-before-define, camelcase, no-unused-expressions, quotes, max-len, one-var, one-var-declaration-per-line, default-case, prefer-template, no-undef, consistent-return, no-alert, no-return-assign, no-param-reassign, prefer-arrow-callback, no-else-return, comma-dangle, no-new, brace-style, no-lonely-if, vars-on-top, no-unused-vars, semi, indent, no-sequences, no-shadow, newline-per-chained-call, no-useless-escape, radix, padded-blocks, max-len */
+/* eslint-disable no-restricted-properties, func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, no-use-before-define, camelcase, no-unused-expressions, quotes, max-len, one-var, one-var-declaration-per-line, default-case, prefer-template, consistent-return, no-alert, no-return-assign, no-param-reassign, prefer-arrow-callback, no-else-return, comma-dangle, no-new, brace-style, no-lonely-if, vars-on-top, no-unused-vars, semi, indent, no-sequences, no-shadow, newline-per-chained-call, no-useless-escape, radix, padded-blocks */
+/* global Flash */
+/* global GLForm */
+/* global Autosave */
+/* global ResolveService */
 
 /*= require autosave */
 /*= require autosize */
@@ -305,7 +309,7 @@
       }
       row = form.closest("tr");
       note_html = $(note.html);
-      note_html.syntaxHighlight();
+      note_html.renderGFM();
       // is this the first note of discussion?
       discussionContainer = $(".notes[data-discussion-id='" + note.discussion_id + "']");
       if ((note.original_discussion_id != null) && discussionContainer.length === 0) {
@@ -322,7 +326,7 @@
         discussionContainer.append(note_html);
         // Init discussion on 'Discussion' page if it is merge request page
         if ($('body').attr('data-page').indexOf('projects:merge_request') === 0) {
-          $('ul.main-notes-list').append(note.discussion_html).syntaxHighlight();
+          $('ul.main-notes-list').append(note.discussion_html).renderGFM();
         }
       } else {
         // append new note to all matching discussions
@@ -463,7 +467,7 @@
       // Convert returned HTML to a jQuery object so we can modify it further
       $html = $(note.html);
       gl.utils.localTimeAgo($('.js-timeago', $html));
-      $html.syntaxHighlight();
+      $html.renderGFM();
       $html.find('.js-task-list-container').taskList('enable');
       // Find the note's `li` element by ID and replace it with the updated HTML
       $note_li = $('.note-row-' + note.id);
@@ -671,7 +675,7 @@
      */
 
     Notes.prototype.addDiffNote = function(e) {
-      var $link, addForm, hasNotes, lineType, newForm, nextRow, noteForm, notesContent, replyButton, row, rowCssToAdd, targetContent;
+      var $link, addForm, hasNotes, lineType, newForm, nextRow, noteForm, notesContent, notesContentSelector, replyButton, row, rowCssToAdd, targetContent;
       e.preventDefault();
       $link = $(e.currentTarget);
       row = $link.closest("tr");

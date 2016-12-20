@@ -483,7 +483,7 @@ module Ci
 
       context 'when global variables are defined' do
         let(:variables) do
-          { VAR1: 'value1', VAR2: 'value2' }
+          { 'VAR1' => 'value1', 'VAR2' => 'value2' }
         end
         let(:config) do
           {
@@ -495,18 +495,18 @@ module Ci
 
         it 'returns global variables' do
           expect(subject).to contain_exactly(
-            { key: :VAR1, value: 'value1', public: true },
-            { key: :VAR2, value: 'value2', public: true }
+            { key: 'VAR1', value: 'value1', public: true },
+            { key: 'VAR2', value: 'value2', public: true }
           )
         end
       end
 
       context 'when job and global variables are defined' do
         let(:global_variables) do
-          { VAR1: 'global1', VAR3: 'global3' }
+          { 'VAR1' => 'global1', 'VAR3' => 'global3' }
         end
         let(:job_variables) do
-          { VAR1: 'value1', VAR2: 'value2' }
+          { 'VAR1' => 'value1', 'VAR2' => 'value2' }
         end
         let(:config) do
           {
@@ -518,9 +518,9 @@ module Ci
 
         it 'returns all unique variables' do
           expect(subject).to contain_exactly(
-            { key: :VAR3, value: 'global3', public: true },
-            { key: :VAR1, value: 'value1', public: true },
-            { key: :VAR2, value: 'value2', public: true }
+            { key: 'VAR3', value: 'global3', public: true },
+            { key: 'VAR1', value: 'value1', public: true },
+            { key: 'VAR2', value: 'value2', public: true }
           )
         end
       end
@@ -535,13 +535,13 @@ module Ci
 
         context 'when syntax is correct' do
           let(:variables) do
-            { VAR1: 'value1', VAR2: 'value2' }
+            { 'VAR1' => 'value1', 'VAR2' => 'value2' }
           end
 
           it 'returns job variables' do
             expect(subject).to contain_exactly(
-              { key: :VAR1, value: 'value1', public: true },
-              { key: :VAR2, value: 'value2', public: true }
+              { key: 'VAR1', value: 'value1', public: true },
+              { key: 'VAR2', value: 'value2', public: true }
             )
           end
         end
@@ -549,7 +549,7 @@ module Ci
         context 'when syntax is incorrect' do
           context 'when variables defined but invalid' do
             let(:variables) do
-              [ :VAR1, 'value1', :VAR2, 'value2' ]
+              [ 'VAR1', 'value1', 'VAR2', 'value2' ]
             end
 
             it 'raises error' do

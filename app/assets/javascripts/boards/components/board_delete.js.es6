@@ -1,4 +1,6 @@
-/* eslint-disable */
+/* eslint-disable comma-dangle, space-before-function-paren, no-alert */
+/* global Vue */
+
 (() => {
   window.gl = window.gl || {};
   window.gl.issueBoards = window.gl.issueBoards || {};

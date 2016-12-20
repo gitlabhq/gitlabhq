@@ -1,8 +1,9 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, one-var, one-var-declaration-per-line, consistent-return, no-param-reassign, padded-blocks, no-undef, max-len */
+/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, one-var, one-var-declaration-per-line, consistent-return, no-param-reassign, padded-blocks, max-len */
+
 (function() {
   var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  this.SingleFileDiff = (function() {
+  window.SingleFileDiff = (function() {
     var COLLAPSED_HTML, ERROR_HTML, LOADING_HTML, WRAPPER;
 
     WRAPPER = '<div class="diff-content diff-wrap-lines"></div>';
@@ -93,7 +94,7 @@
   $.fn.singleFileDiff = function(forceLoad, cb) {
     return this.each(function() {
       if (!$.data(this, 'singleFileDiff') || forceLoad) {
-        return $.data(this, 'singleFileDiff', new SingleFileDiff(this, forceLoad, cb));
+        return $.data(this, 'singleFileDiff', new window.SingleFileDiff(this, forceLoad, cb));
       }
     });
   };

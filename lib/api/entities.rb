@@ -629,7 +629,7 @@ module API
     end
 
     class EnvironmentBasic < Grape::Entity
-      expose :id, :name, :external_url
+      expose :id, :name, :slug, :external_url
     end
 
     class Environment < EnvironmentBasic

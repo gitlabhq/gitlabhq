@@ -292,7 +292,8 @@ Style/MultilineMethodDefinitionBraceLayout:
 
 # Checks indentation of binary operations that span more than one line.
 Style/MultilineOperationIndentation:
-  Enabled: false
+  Enabled: true
+  EnforcedStyle: indented
 
 # Avoid multi-line `? :` (the ternary operator), use if/unless instead.
 Style/MultilineTernaryOperator:

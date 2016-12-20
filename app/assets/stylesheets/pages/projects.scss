@@ -6,12 +6,6 @@
   }
 }
 
-.no-ssh-key-message,
-.project-limit-message {
-  background-color: $project-limit-message-bg;
-  margin-bottom: 0;
-}
-
 .new_project,
 .edit-project {
 
@@ -151,8 +145,6 @@
 
 .project-repo-buttons,
 .group-buttons {
-  margin-top: 15px;
-
   .btn {
     @include btn-gray;
     padding: 3px 10px;
@@ -181,11 +173,9 @@
     }
   }
 
-  .download-button,
-  .dropdown-toggle,
-  .notification-dropdown,
-  .project-dropdown {
-    margin-left: 10px;
+  .project-action-button {
+    margin: 15px 5px 0;
+    vertical-align: top;
   }
 
   .notification-dropdown .dropdown-menu {
@@ -201,13 +191,15 @@
   .count-buttons {
     display: inline-block;
     vertical-align: top;
+    margin-top: 15px;
   }
 
   .project-clone-holder {
     display: inline-block;
+    margin: 15px 5px 0 0;
 
     input {
-      height: 29px;
+      height: 28px;
     }
   }
 
@@ -261,7 +253,7 @@
       line-height: 13px;
       padding: $gl-vert-padding $gl-padding;
       letter-spacing: .4px;
-      padding: 7px 14px;
+      padding: 6px 14px;
       text-align: center;
       vertical-align: middle;
       touch-action: manipulation;
@@ -420,13 +412,13 @@ a.deploy-project-label {
         width: 100px;
         height: 100px;
         background-color: $gray-light;
-        border: 1px solid $gray-dark;
+        border: 1px solid $white-normal;
         margin: 0 auto;
         border-radius: 50%;
 
         i {
           font-size: 100px;
-          color: $gray-dark;
+          color: $white-normal;
         }
       }
 
@@ -498,6 +490,7 @@ a.deploy-project-label {
 
 .project-stats {
   font-size: 0;
+  text-align: center;
   border-bottom: 1px solid $border-color;
 
   .nav {
@@ -536,7 +529,7 @@ a.deploy-project-label {
   }
 
   li.missing {
-    border: 1px dashed $border-gray-light;
+    border: 1px dashed $border-gray-normal;
     border-radius: $border-radius-default;
 
     a {
@@ -591,7 +584,7 @@ pre.light-well {
   @include basic-list;
 
   .project-row {
-    border-color: $table-border-color;
+    border-color: $white-normal;
 
     .project-full-name {
       @include str-truncated;
@@ -643,7 +636,7 @@ pre.light-well {
   &.container-fluid {
     padding-top: 12px;
     padding-bottom: 12px;
-    background-color: $background-color;
+    background-color: $gray-light;
     border: 1px solid $border-color;
     border-right-width: 0;
     border-left-width: 0;

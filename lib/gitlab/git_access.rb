@@ -18,12 +18,13 @@ module Gitlab
 
     attr_reader :actor, :project, :protocol, :user_access, :authentication_abilities
 
-    def initialize(actor, project, protocol, authentication_abilities:)
+    def initialize(actor, project, protocol, authentication_abilities:, env: {})
       @actor    = actor
       @project  = project
       @protocol = protocol
       @authentication_abilities = authentication_abilities
       @user_access = UserAccess.new(user, project: project)
+      @env = env
     end
 
     def check(cmd, changes)
@@ -147,6 +148,7 @@ module Gitlab
         change,
         user_access: user_access,
         project: project,
+        env: @env,
         skip_authorization: deploy_key?).exec
     end
 

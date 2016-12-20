@@ -3,10 +3,12 @@
 - panel_class = primary ? 'panel-primary' : 'panel-default'
 
 .panel{ class: panel_class }
-  .panel-heading
-    = title
+  .panel-heading.split
+    .left
+      = title
     - if show_counter
-      .pull-right= issuables.size
+      .right
+        = issuables.size
 
   - class_prefix = dom_class(issuables).pluralize
   %ul{ class: "well-list #{class_prefix}-sortable-list", id: "#{class_prefix}-list-#{id}", "data-state" => id }

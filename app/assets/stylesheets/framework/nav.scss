@@ -51,7 +51,7 @@
       margin-bottom: -1px;
       font-size: 14px;
       line-height: 28px;
-      color: $note-toolbar-color;
+      color: $gl-gray-light;
       border-bottom: 2px solid transparent;
 
       &:hover,
@@ -80,17 +80,17 @@
     .badge {
       font-weight: normal;
       background-color: $nav-badge-bg;
-      color: $btn-transparent-color;
+      color: $gl-gray-light;
       vertical-align: baseline;
     }
   }
 
   &.sub-nav {
     text-align: center;
-    background-color: $dark-background-color;
+    background-color: $gray-normal;
 
     .container-fluid {
-      background-color: $dark-background-color;
+      background-color: $gray-normal;
       margin-bottom: 0;
     }
 
@@ -117,7 +117,7 @@
 
 .top-area {
   @include clearfix;
-  border-bottom: 1px solid $btn-gray-hover;
+  border-bottom: 1px solid $white-normal;
 
   .nav-text {
     padding-top: 16px;
@@ -289,7 +289,7 @@
   top: $header-height;
   width: 100%;
   z-index: 11;
-  background: $background-color;
+  background: $gray-light;
   border-bottom: 1px solid $border-color;
   transition: padding $sidebar-transition-duration;
   text-align: center;
@@ -317,7 +317,7 @@
 
     .fa-caret-down {
       margin-left: 5px;
-      color: $gl-icon-color;
+      color: $gl-gray-light;
     }
 
     .dropdown {
@@ -352,7 +352,7 @@
   }
 
   .fade-right {
-    @include fade(left, $background-color);
+    @include fade(left, $gray-light);
     right: -5px;
 
     .fa {
@@ -361,7 +361,7 @@
   }
 
   .fade-left {
-    @include fade(right, $background-color);
+    @include fade(right, $gray-light);
     left: -5px;
 
     .fa {
@@ -372,7 +372,7 @@
   &.sub-nav-scroll {
 
     .fade-right {
-      @include fade(left, $dark-background-color);
+      @include fade(left, $gray-normal);
       right: 0;
 
       .fa {
@@ -381,7 +381,7 @@
     }
 
     .fade-left {
-      @include fade(right, $dark-background-color);
+      @include fade(right, $gray-normal);
       left: 0;
 
       .fa {

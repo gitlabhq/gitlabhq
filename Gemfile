@@ -22,7 +22,6 @@ gem 'doorkeeper',             '~> 4.2.0'
 gem 'omniauth',               '~> 1.3.1'
 gem 'omniauth-auth0',         '~> 1.4.1'
 gem 'omniauth-azure-oauth2',  '~> 0.0.6'
-gem 'omniauth-bitbucket',     '~> 0.0.2'
 gem 'omniauth-cas3',          '~> 1.1.2'
 gem 'omniauth-facebook',      '~> 4.0.0'
 gem 'omniauth-github',        '~> 1.1.1'
@@ -67,7 +66,7 @@ gem 'gollum-rugged_adapter', '~> 0.4.2', require: false
 gem 'github-linguist', '~> 4.7.0', require: 'linguist'
 
 # API
-gem 'grape',        '~> 0.15.0'
+gem 'grape',        '~> 0.18.0'
 gem 'grape-entity', '~> 0.6.0'
 gem 'rack-cors',    '~> 0.4.0', require: 'rack/cors'
 
@@ -132,7 +131,7 @@ gem 'after_commit_queue', '~> 1.3.0'
 gem 'acts-as-taggable-on', '~> 4.0'
 
 # Background jobs
-gem 'sidekiq', '~> 4.2'
+gem 'sidekiq', '~> 4.2.7'
 gem 'sidekiq-cron', '~> 0.4.4'
 gem 'redis-namespace', '~> 1.5.2'
 gem 'sidekiq-limit_fetch', '~> 3.4'
@@ -170,13 +169,16 @@ gem 'gitlab-flowdock-git-hook', '~> 1.0.1'
 gem 'gemnasium-gitlab-service', '~> 0.2'
 
 # Slack integration
-gem 'slack-notifier', '~> 1.2.0'
+gem 'slack-notifier', '~> 1.5.1'
 
 # Asana integration
 gem 'asana', '~> 0.4.0'
 
 # FogBugz integration
 gem 'ruby-fogbugz', '~> 0.2.1'
+
+# Kubernetes integration
+gem 'kubeclient', '~> 2.2.0'
 
 # d3
 gem 'd3_rails', '~> 3.5.0'
