@@ -11,17 +11,6 @@ describe API::Repositories, api: true  do
   let!(:project) { create(:project, creator_id: user.id) }
   let!(:master) { create(:project_member, :master, user: user, project: project) }
 
-  shared_context 'disabled repository' do
-    before do
-      project.project_feature.update_attributes!(
-        repository_access_level: ProjectFeature::DISABLED,
-        merge_requests_access_level: ProjectFeature::DISABLED,
-        builds_access_level: ProjectFeature::DISABLED
-      )
-      expect(project.feature_available?(:repository, current_user)).to be false
-    end
-  end
-
   describe "GET /projects/:id/repository/tree" do
     let(:route) { "/projects/#{project.id}/repository/tree" }
 
