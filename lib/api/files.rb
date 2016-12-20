@@ -1,8 +1,6 @@
 module API
   # Projects API
   class Files < Grape::API
-    before { authenticate! }
-
     helpers do
       def commit_params(attrs)
         {
