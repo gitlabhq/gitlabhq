@@ -74,6 +74,12 @@ module GroupsHelper
     end
   end
 
+  def group_shared_runner_limits_percent_used(group)
+    return 0 unless group.shared_runners_minutes_limit_enabled?
+
+    100 * group.shared_runners_minutes / group.shared_runners_minutes_limit
+  end
+
   def group_shared_runner_limits_progress_bar(group)
     percent = [group.shared_runners_minutes_percent_used, 100].min
 

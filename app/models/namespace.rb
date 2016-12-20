@@ -182,18 +182,13 @@ class Namespace < ActiveRecord::Base
   end
 
   def shared_runners_minutes_limit_enabled?
-    shared_runners_minutes_limit.nonzero?
+    shared_runners_enabled? &&
+      shared_runners_minutes_limit.nonzero?
   end
 
   def shared_runners_minutes_used?
-    shared_runners_enabled? &&
-      shared_runners_minutes_limit_enabled? &&
-      shared_runners_minutes.to_i >= shared_runners_minutes_limit
-  end
-
-  def shared_runners_minutes_percent_used
-    return 0 unless shared_runners_enabled? && shared_runners_minutes_limit_enabled?
-    100 * shared_runners_minutes.to_i / shared_runners_minutes_limit
+    shared_runners_minutes_limit_enabled? &&
+      shared_runners_minutes >= shared_runners_minutes_limit
   end
 
   def full_name
