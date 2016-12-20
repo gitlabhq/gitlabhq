@@ -1,6 +1,6 @@
 shared_examples 'issuable time tracker' do
   it 'renders the sidebar component empty state' do
-    page.within '.issuable-sidebar' do
+    page.within '.time-tracking-no-tracking-pane' do
       expect(page).to have_content 'No estimate or time spent'
     end
   end
@@ -8,7 +8,7 @@ shared_examples 'issuable time tracker' do
   it 'updates the sidebar component when estimate is added' do
     submit_time('/estimate 3w 1d 1h')
 
-    page.within '.time-tracking-estimate-only' do
+    page.within '.time-tracking-estimate-only-pane' do
       expect(page).to have_content '3w 1d 1h'
     end
   end
@@ -16,7 +16,7 @@ shared_examples 'issuable time tracker' do
   it 'updates the sidebar component when spent is added' do
     submit_time('/spend 3w 1d 1h')
 
-    page.within '.time-tracking-spend-only' do
+    page.within '.time-tracking-spend-only-pane' do
       expect(page).to have_content '3w 1d 1h'
     end
   end
@@ -25,7 +25,7 @@ shared_examples 'issuable time tracker' do
     submit_time('/estimate 3w 1d 1h')
     submit_time('/spend 3w 1d 1h')
 
-    page.within '.time-tracking-pane-compare' do
+    page.within '.time-tracking-comparison-pane' do
       expect(page).to have_content '3w 1d 1h'
     end
   end
@@ -63,6 +63,14 @@ shared_examples 'issuable time tracker' do
 
       expect(page).not_to have_content 'Track time with slash commands'
       expect(page).not_to have_content 'Learn more'
+    end
+  end
+
+  it 'displays the correct help url' do
+    page.within '#issuable-time-tracker' do
+      find('.help-button').click
+
+      expect(find_link('Learn more')[:href]).to have_content('/help/workflow/time_tracking.md')
     end
   end
 end

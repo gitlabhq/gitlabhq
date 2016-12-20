@@ -7,22 +7,18 @@ describe Namespace, models: true do
   it { is_expected.to have_one(:namespace_metrics).dependent(:destroy) }
 
   it { is_expected.to validate_presence_of(:name) }
-  it { is_expected.to validate_uniqueness_of(:name) }
+  it { is_expected.to validate_uniqueness_of(:name).scoped_to(:parent_id) }
   it { is_expected.to validate_length_of(:name).is_at_most(255) }
 
   it { is_expected.to validate_length_of(:description).is_at_most(255) }
 
   it { is_expected.to validate_presence_of(:path) }
-  it { is_expected.to validate_uniqueness_of(:path) }
   it { is_expected.to validate_length_of(:path).is_at_most(255) }
 
   it { is_expected.to validate_presence_of(:owner) }
 
   it { is_expected.to delegate_method(:shared_runner_minutes).to(:namespace_metrics) }
   it { is_expected.to delegate_method(:shared_runner_last_reset).to(:namespace_metrics) }
-
-  describe "Mass assignment" do
-  end
 
   describe "Respond to" do
     it { is_expected.to respond_to(:human_name) }
@@ -149,6 +145,7 @@ describe Namespace, models: true do
     it { expect(nested_group.full_path).to eq("#{group.path}/#{nested_group.path}") }
   end
 
+<<<<<<< HEAD
   describe '#shared_runners_enabled?' do
     subject { namespace.shared_runners_enabled? }
 
@@ -254,6 +251,27 @@ describe Namespace, models: true do
 
     context 'without project' do
       it { is_expected.to be_falsey }
+=======
+  describe '#full_name' do
+    let(:group) { create(:group) }
+    let(:nested_group) { create(:group, parent: group) }
+
+    it { expect(group.full_name).to eq(group.name) }
+    it { expect(nested_group.full_name).to eq("#{group.name} / #{nested_group.name}") }
+  end
+
+  describe '#parents' do
+    let(:group) { create(:group) }
+    let(:nested_group) { create(:group, parent: group) }
+    let(:deep_nested_group) { create(:group, parent: nested_group) }
+    let(:very_deep_nested_group) { create(:group, parent: deep_nested_group) }
+
+    it 'returns the correct parents' do
+      expect(very_deep_nested_group.parents).to eq([group, nested_group, deep_nested_group])
+      expect(deep_nested_group.parents).to eq([group, nested_group])
+      expect(nested_group.parents).to eq([group])
+      expect(group.parents).to eq([])
+>>>>>>> origin-ee/master
     end
   end
 end

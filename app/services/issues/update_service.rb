@@ -10,7 +10,7 @@ module Issues
       end
 
       if issue.previous_changes.include?('title') ||
-         issue.previous_changes.include?('description')
+          issue.previous_changes.include?('description')
         todo_service.update_issue(issue, current_user)
       end
 

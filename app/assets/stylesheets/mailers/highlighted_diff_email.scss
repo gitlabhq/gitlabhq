@@ -91,9 +91,9 @@ $highlighted-gc-bg: #eaf2f5;
   padding: 0 5px;
   text-align: right;
   width: 35px;
-  background-color: $background-color;
+  background-color: $gray-light;
   color: $black-transparent;
-  border-right: 1px solid $table-border-gray;
+  border-right: 1px solid $white-normal;
 
   &.old {
     background-color: $line-number-old;
@@ -130,7 +130,7 @@ $highlighted-gc-bg: #eaf2f5;
 
   &.match {
     color: $black-transparent;
-    background-color: $match-line;
+    background-color: $gray-light;
   }
 }
 

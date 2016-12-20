@@ -2,7 +2,7 @@
 (function() {
   window.ContributorsStatGraphUtil = {
     parse_log: function(log) {
-      var by_author, by_email, data, entry, i, len, total;
+      var by_author, by_email, data, entry, i, len, total, normalized_email;
       total = {};
       by_author = {};
       by_email = {};
@@ -11,7 +11,8 @@
         if (total[entry.date] == null) {
           this.add_date(entry.date, total);
         }
-        data = by_author[entry.author_name] || by_email[entry.author_email];
+        normalized_email = entry.author_email.toLowerCase();
+        data = by_author[entry.author_name] || by_email[normalized_email];
         if (data == null) {
           data = this.add_author(entry, by_author, by_email);
         }
@@ -32,12 +33,14 @@
       return collection[date].date = date;
     },
     add_author: function(author, by_author, by_email) {
-      var data;
+      var data, normalized_email;
       data = {};
       data.author_name = author.author_name;
       data.author_email = author.author_email;
+      normalized_email = author.author_email.toLowerCase();
       by_author[author.author_name] = data;
-      return by_email[author.author_email] = data;
+      by_email[normalized_email] = data;
+      return data;
     },
     store_data: function(entry, total, by_author) {
       this.store_commits(total, by_author);

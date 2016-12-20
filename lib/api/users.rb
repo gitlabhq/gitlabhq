@@ -2,7 +2,10 @@ module API
   class Users < Grape::API
     include PaginationParams
 
-    before { authenticate! }
+    before do
+      allow_access_with_scope :read_user if request.get?
+      authenticate!
+    end
 
     resource :users, requirements: { uid: /[0-9]*/, id: /[0-9]*/ } do
       helpers do
@@ -355,7 +358,7 @@ module API
         success Entities::UserPublic
       end
       get do
-        present current_user, with: @impersonator ? Entities::UserWithPrivateToken : Entities::UserPublic
+        present current_user, with: sudo? ? Entities::UserWithPrivateToken : Entities::UserPublic
       end
 
       desc "Get the currently authenticated user's SSH keys" do
@@ -455,6 +458,23 @@ module API
 
         email.destroy
         current_user.update_secondary_emails!
+      end
+
+      desc 'Get a list of user activities'
+      params do
+        optional :from, type: String, desc: 'Date string in the format YEAR-MONTH-DAY'
+        use :pagination
+      end
+      get ":activities" do
+        authenticated_as_admin!
+
+        activity_set = Gitlab::UserActivities::ActivitySet.new(from: params[:from],
+                                                               page: params[:page],
+                                                               per_page: params[:per_page])
+
+        add_pagination_headers(activity_set)
+
+        present activity_set.activities, with: Entities::UserActivity
       end
     end
   end

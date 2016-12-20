@@ -145,7 +145,8 @@ project:
 - assembla_service
 - asana_service
 - gemnasium_service
-- slack_service
+- slack_notification_service
+- mattermost_notification_service
 - buildkite_service
 - bamboo_service
 - teamcity_service
@@ -156,6 +157,7 @@ project:
 - bugzilla_service
 - gitlab_issue_tracker_service
 - external_wiki_service
+- kubernetes_service
 - forked_project_link
 - forked_from_project
 - forked_project_links

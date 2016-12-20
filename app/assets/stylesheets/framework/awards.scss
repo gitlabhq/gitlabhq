@@ -12,8 +12,8 @@
   z-index: 9;
   width: 300px;
   font-size: 14px;
-  background-color: $award-emoji-menu-bg;
-  border: 1px solid $award-emoji-menu-border;
+  background-color: $white-light;
+  border: 1px solid $border-white-light;
   border-radius: $border-radius-base;
   box-shadow: 0 6px 12px $award-emoji-menu-shadow;
   pointer-events: none;
@@ -135,7 +135,7 @@
   }
 
   .award-control-icon {
-    color: $award-emoji-new-btn-icon-color;
+    color: $border-gray-normal;
     margin-top: 1px;
   }
 }

@@ -489,8 +489,8 @@ No new changes.
 
 [8-3-docs]: https://gitlab.com/gitlab-org/gitlab-ee/blob/8-3-stable-ee/doc/pages/administration.md
 [8-3-omnidocs]: https://gitlab.com/gitlab-org/omnibus-gitlab/blob/8-3-stable-ee/doc/settings/pages.md
-[backup]: ../../raketasks/backup_restore.md
+[backup]: ../raketasks/backup_restore.md
 [ee-80]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/80
 [ee-173]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/173
-[reconfigure]: ../../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
-[restart]: ../../administration/restart_gitlab.md#installations-from-source
+[reconfigure]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
+[restart]: ../administration/restart_gitlab.md#installations-from-source

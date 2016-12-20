@@ -1,6 +1,3 @@
-//= require vue
-//= require vue-resource
-
 (() => {
 /*
 *   SubbableResource can be extended to provide a pubsub-style service for one-off REST

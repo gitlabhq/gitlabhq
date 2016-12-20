@@ -1,4 +1,6 @@
-/* eslint-disable */
+/* eslint-disable space-before-function-paren, comma-dangle, no-param-reassign, camelcase, prefer-const, no-extra-semi, max-len, no-unused-vars, no-else-return */
+/* global Vue */
+
 class BoardService {
   constructor (root, boardId) {
     this.boards = Vue.resource(`${root}{/id}.json`);

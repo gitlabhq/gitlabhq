@@ -36,7 +36,7 @@
       color: $list-warning-row-color;
     }
 
-    &.smoke { background-color: $background-color; }
+    &.smoke { background-color: $gray-light; }
 
     &:not(.ui-sort-disabled):hover {
       background: $row-hover;
@@ -46,7 +46,7 @@
       border-bottom: none;
 
       &.bottom {
-        background: $background-color;
+        background: $gray-light;
       }
     }
 
@@ -59,7 +59,7 @@
     p {
       padding-top: 1px;
       margin: 0;
-      color: $gray-dark;
+      color: $white-normal;
 
       img {
         position: relative;
@@ -113,7 +113,7 @@ ul.content-list {
   padding: 0;
 
   li {
-    border-color: $table-border-color;
+    border-color: $white-normal;
     font-size: $list-font-size;
     color: $list-text-color;
 
@@ -161,6 +161,12 @@ ul.content-list {
         margin-top: 3px;
         margin-bottom: 4px;
 
+        &.btn-ldap-override {
+          @media (min-width: $screen-sm-min) {
+            margin-bottom: 0;
+          }
+        }
+
         &:last-child {
           margin-right: 0;
         }
@@ -186,7 +192,7 @@ ul.content-list {
 
     &.list-placeholder {
       background-color: $gray-light;
-      border: dotted 1px $gray-dark;
+      border: dotted 1px $white-normal;
       margin: 1px 0;
       min-height: 52px;
     }
@@ -224,7 +230,7 @@ ul.content-list {
   }
 
   .label-default {
-    color: $btn-transparent-color;
+    color: $gl-gray-light;
   }
 }
 

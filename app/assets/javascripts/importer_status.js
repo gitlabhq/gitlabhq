@@ -1,6 +1,7 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, camelcase, no-var, one-var, one-var-declaration-per-line, prefer-template, quotes, object-shorthand, comma-dangle, no-unused-vars, prefer-arrow-callback, no-else-return, padded-blocks, vars-on-top, no-new, no-undef, max-len */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, camelcase, no-var, one-var, one-var-declaration-per-line, prefer-template, quotes, object-shorthand, comma-dangle, no-unused-vars, prefer-arrow-callback, no-else-return, padded-blocks, vars-on-top, no-new, max-len */
+
 (function() {
-  this.ImporterStatus = (function() {
+  window.ImporterStatus = (function() {
     function ImporterStatus(jobs_url, import_url) {
       this.jobs_url = jobs_url;
       this.import_url = import_url;
@@ -75,7 +76,7 @@
       var jobsImportPath = $('.js-importer-status').data('jobs-import-path');
       var importPath = $('.js-importer-status').data('import-path');
 
-      new ImporterStatus(jobsImportPath, importPath);
+      new window.ImporterStatus(jobsImportPath, importPath);
     }
   });
 }).call(this);

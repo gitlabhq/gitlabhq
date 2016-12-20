@@ -42,5 +42,9 @@ FactoryGirl.define do
     trait :access_requestable do
       request_access_enabled true
     end
+
+    trait :nested do
+      parent factory: :group
+    end
   end
 end

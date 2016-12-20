@@ -1,4 +1,6 @@
-/* eslint-disable */
+/* eslint-disable comma-dangle, no-unused-vars, class-methods-use-this, quotes, consistent-return, func-names, prefer-arrow-callback, space-before-function-paren, max-len, padded-blocks */
+/* global Flash */
+
 ((global) => {
 
   class Profile {

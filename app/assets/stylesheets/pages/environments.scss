@@ -1,6 +1,8 @@
-.deployments-container {
-  width: 100%;
-  overflow: auto;
+@media (max-width: $screen-md-max) {
+  .deployments-container {
+    width: 100%;
+    overflow: auto;
+  }
 }
 
 .environments-list-loading {
@@ -28,19 +30,25 @@
     display: table-cell;
   }
 
+  .environments-name,
   .environments-commit,
   .environments-actions {
     width: 20%;
   }
 
-  .environments-deploy,
-  .environments-build,
   .environments-date {
     width: 10%;
   }
 
-  .environments-name {
-    width: 30%;
+  .environments-deploy,
+  .environments-build {
+    width: 15%;
+  }
+
+  .environment-name,
+  .environments-build-cell,
+  .deployment-column {
+    word-break: break-all;
   }
 
   .deployment-column {
@@ -64,14 +72,14 @@
 
   .external-url,
   .dropdown-new {
-    color: $table-text-gray;
+    color: $gl-gray-light;
   }
 
   .dropdown-menu {
 
     .fa {
       margin-right: 6px;
-      color: $table-text-gray;
+      color: $gl-gray-light;
     }
   }
 
@@ -82,7 +90,7 @@
 
   .stop-env-link,
   .external-url {
-    color: $table-text-gray;
+    color: $gl-gray-light;
 
     .stop-env-icon {
       font-size: 14px;
@@ -117,7 +125,7 @@
     .badge {
       font-weight: normal;
       background-color: $gray-darker;
-      color: $gl-placeholder-color;
+      color: $gl-gray-light;
       vertical-align: baseline;
     }
   }

@@ -11,6 +11,18 @@ constraints(ProjectUrlConstrainer.new) do
           module: :projects,
           as: :project) do
 
+      resources :autocomplete_sources, only: [] do
+        collection do
+          get 'emojis'
+          get 'members'
+          get 'issues'
+          get 'merge_requests'
+          get 'labels'
+          get 'milestones'
+          get 'commands'
+        end
+      end
+
       #
       # Templates
       #
@@ -365,7 +377,6 @@ constraints(ProjectUrlConstrainer.new) do
         post :remove_export
         post :generate_new_export
         get :download_export
-        get :autocomplete_sources
         get :activity
         get :refs
         put :new_issue_address

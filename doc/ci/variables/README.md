@@ -13,6 +13,7 @@ this order:
 1. [Secret variables](#secret-variables)
 1. YAML-defined [job-level variables](../yaml/README.md#job-variables)
 1. YAML-defined [global variables](../yaml/README.md#variables)
+1. [Deployment variables](#deployment-variables)
 1. [Predefined variables](#predefined-variables-environment-variables) (are the
    lowest in the chain)
 
@@ -40,6 +41,7 @@ version of Runner required.
 | **CI_BUILD_NAME**       | all    | 0.5    | The name of the build as defined in `.gitlab-ci.yml` |
 | **CI_BUILD_STAGE**      | all    | 0.5    | The name of the stage as defined in `.gitlab-ci.yml` |
 | **CI_BUILD_REF_NAME**   | all    | all    | The branch or tag name for which project is built |
+| **CI_BUILD_REF_SLUG**   | 8.15   | all    | `$CI_BUILD_REF_NAME` lowercased, shortened to 63 bytes, and with everything except `0-9` and `a-z` replaced with `-`. Use in URLs and domain names. |
 | **CI_BUILD_REPO**       | all    | all    | The URL to clone the Git repository |
 | **CI_BUILD_TRIGGERED**  | all    | 0.5    | The flag to indicate that build was [triggered] |
 | **CI_BUILD_MANUAL**     | 8.12   | all    | The flag to indicate that build was manually started |
@@ -51,6 +53,8 @@ version of Runner required.
 | **CI_PROJECT_PATH**     | 8.10   | 0.5    | The namespace with project name |
 | **CI_PROJECT_URL**      | 8.10   | 0.5    | The HTTP address to access project |
 | **CI_PROJECT_DIR**      | all    | all    | The full path where the repository is cloned and where the build is run |
+| **CI_ENVIRONMENT_NAME** | 8.15   | all    | The name of the environment for this build |
+| **CI_ENVIRONMENT_SLUG** | 8.15   | all    | A simplified version of the environment name, suitable for inclusion in DNS, URLs, Kubernetes labels, etc. |
 | **CI_REGISTRY**         | 8.10   | 0.5    | If the Container Registry is enabled it returns the address of GitLab's Container Registry |
 | **CI_REGISTRY_IMAGE**   | 8.10   | 0.5    | If the Container Registry is enabled for the project it returns the address of the registry tied to the specific project |
 | **CI_RUNNER_ID**        | 8.10   | 0.5    | The unique id of runner being used |
@@ -144,6 +148,20 @@ Secret variables can be added by going to your project's
 **Settings ➔ Variables ➔ Add variable**.
 
 Once you set them, they will be available for all subsequent builds.
+
+## Deployment variables
+
+>**Note:**
+This feature requires GitLab CI 8.15 or higher.
+
+[Project services](../../project_services/project_services.md) that are
+responsible for deployment configuration may define their own variables that
+are set in the build environment. These variables are only defined for
+[deployment builds](../environments.md). Please consult the documentation of
+the project services that you are using to learn which variables they define.
+
+An example project service that defines deployment variables is
+[Kubernetes Service](../../project_services/kubernetes.md).
 
 ## Debug tracing
 

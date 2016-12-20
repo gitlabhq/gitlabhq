@@ -97,7 +97,8 @@ class Project < ActiveRecord::Base
   has_one :asana_service, dependent: :destroy
   has_one :gemnasium_service, dependent: :destroy
   has_one :mattermost_slash_commands_service, dependent: :destroy
-  has_one :slack_service, dependent: :destroy
+  has_one :mattermost_notification_service, dependent: :destroy
+  has_one :slack_notification_service, dependent: :destroy
   has_one :jenkins_service, dependent: :destroy
   has_one :jenkins_deprecated_service, dependent: :destroy
   has_one :buildkite_service, dependent: :destroy
@@ -110,6 +111,7 @@ class Project < ActiveRecord::Base
   has_one :bugzilla_service, dependent: :destroy
   has_one :gitlab_issue_tracker_service, dependent: :destroy, inverse_of: :project
   has_one :external_wiki_service, dependent: :destroy
+  has_one :kubernetes_service, dependent: :destroy, inverse_of: :project
   has_one :index_status, dependent: :destroy
 
   has_one  :forked_project_link,  dependent: :destroy, foreign_key: "forked_to_project_id"
@@ -846,6 +848,14 @@ class Project < ActiveRecord::Base
     @ci_service ||= ci_services.reorder(nil).find_by(active: true)
   end
 
+  def deployment_services
+    services.where(category: :deployment)
+  end
+
+  def deployment_service
+    @deployment_service ||= deployment_services.reorder(nil).find_by(active: true)
+  end
+
   def jira_tracker?
     issues_tracker.to_param == 'jira'
   end
@@ -1465,6 +1475,12 @@ class Project < ActiveRecord::Base
     variables.map do |variable|
       { key: variable.key, value: variable.value, public: false }
     end
+  end
+
+  def deployment_variables
+    return [] unless deployment_service
+
+    deployment_service.predefined_variables
   end
 
   def append_or_update_attribute(name, value)

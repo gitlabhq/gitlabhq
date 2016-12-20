@@ -32,9 +32,19 @@ namespace :admin do
 
   resources :applications
 
-  resources :groups, constraints: { id: /[^\/]+/ } do
-    member do
+  resources :groups, only: [:index, :new, :create]
+
+  scope(path: 'groups/*id',
+        controller: :groups,
+        constraints: { id: Gitlab::Regex.namespace_route_regex }) do
+
+    scope(as: :group) do
       put :members_update
+      get :edit, action: :edit
+      get '/', action: :show
+      patch '/', action: :update
+      put '/', action: :update
+      delete '/', action: :destroy
     end
   end
 
@@ -59,14 +69,13 @@ namespace :admin do
   resource :system_info, controller: 'system_info', only: [:show]
   resources :requests_profiles, only: [:index, :show], param: :name, constraints: { name: /.+\.html/ }
 
-  resources :namespaces, path: '/projects', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only: [] do
-    root to: 'projects#index', as: :projects
+  resources :projects, only: [:index]
 
+  scope(path: 'projects/*namespace_id', as: :namespace) do
     resources(:projects,
               path: '/',
-              constraints: { id: /[a-zA-Z.0-9_\-]+/ },
-              only: [:index, :show]) do
-      root to: 'projects#show'
+              constraints: { id: Gitlab::Regex.project_route_regex },
+              only: [:show]) do
 
       member do
         put :transfer

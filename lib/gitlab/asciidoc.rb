@@ -1,4 +1,5 @@
 require 'asciidoctor'
+require 'asciidoctor/converter/html5'
 
 module Gitlab
   # Parser/renderer for the AsciiDoc format that uses Asciidoctor and filters
@@ -23,7 +24,7 @@ module Gitlab
     def self.render(input, context, asciidoc_opts = {})
       asciidoc_opts.reverse_merge!(
         safe: :secure,
-        backend: :html5,
+        backend: :gitlab_html5,
         attributes: []
       )
       asciidoc_opts[:attributes].unshift(*DEFAULT_ADOC_ATTRS)
@@ -33,6 +34,30 @@ module Gitlab
       html = Banzai.post_process(html, context)
 
       html.html_safe
+    end
+
+    class Html5Converter < Asciidoctor::Converter::Html5Converter
+      extend Asciidoctor::Converter::Config
+
+      register_for 'gitlab_html5'
+
+      def stem(node)
+        return super unless node.style.to_sym == :latexmath
+
+        %(<pre#{id_attribute(node)} class="code math js-render-math #{node.role}" data-math-style="display"><code>#{node.content}</code></pre>)
+      end
+
+      def inline_quoted(node)
+        return super unless node.type.to_sym == :latexmath
+
+        %(<code#{id_attribute(node)} class="code math js-render-math #{node.role}" data-math-style="inline">#{node.text}</code>)
+      end
+
+      private
+
+      def id_attribute(node)
+        node.id ? %( id="#{node.id}") : nil
+      end
     end
   end
 end

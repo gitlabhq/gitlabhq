@@ -1,4 +1,7 @@
-/* eslint-disable */
+/* eslint-disable one-var, indent, quote-props, comma-dangle, space-before-function-paren */
+/* global Vue */
+/* global BoardService */
+
 //= require vue
 //= require vue-resource
 //= require Sortable

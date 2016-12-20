@@ -216,12 +216,14 @@ class Service < ActiveRecord::Base
       jenkins
       jenkins_deprecated
       jira
+      kubernetes
       mattermost_slash_commands
       pipelines_email
       pivotaltracker
       pushover
       redmine
-      slack
+      mattermost_notification
+      slack_notification
       teamcity
     ]
   end

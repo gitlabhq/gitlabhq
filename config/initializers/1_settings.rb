@@ -332,6 +332,13 @@ Settings.lfs['enabled']      = true if Settings.lfs['enabled'].nil?
 Settings.lfs['storage_path'] = File.expand_path(Settings.lfs['storage_path'] || File.join(Settings.shared['path'], "lfs-objects"), Rails.root)
 
 #
+# Mattermost
+#
+Settings['mattermost'] ||= Settingslogic.new({})
+Settings.mattermost['enabled'] = false if Settings.mattermost['enabled'].nil?
+Settings.mattermost['host'] = nil unless Settings.mattermost.enabled
+
+#
 # Gravatar
 #
 Settings['gravatar'] ||= Settingslogic.new({})
@@ -393,7 +400,7 @@ Settings.cron_jobs['remove_expired_group_links_worker'] ||= Settingslogic.new({}
 Settings.cron_jobs['remove_expired_group_links_worker']['cron'] ||= '10 0 * * *'
 Settings.cron_jobs['remove_expired_group_links_worker']['job_class'] = 'RemoveExpiredGroupLinksWorker'
 Settings.cron_jobs['prune_old_events_worker'] ||= Settingslogic.new({})
-Settings.cron_jobs['prune_old_events_worker']['cron'] ||= '* */6 * * *'
+Settings.cron_jobs['prune_old_events_worker']['cron'] ||= '0 */6 * * *'
 Settings.cron_jobs['prune_old_events_worker']['job_class'] = 'PruneOldEventsWorker'
 
 Settings.cron_jobs['trending_projects_worker'] ||= Settingslogic.new({})

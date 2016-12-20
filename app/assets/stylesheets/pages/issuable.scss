@@ -1,3 +1,50 @@
+// Limit MR description for side-by-side diff view
+.limit-container-width {
+  .detail-page-header {
+    max-width: calc(#{$limited-layout-width} - (#{$gl-padding} * 2));
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .issuable-details {
+    .detail-page-description,
+    .mr-source-target,
+    .mr-state-widget,
+    .merge-manually {
+      max-width: calc(#{$limited-layout-width} - (#{$gl-padding} * 2));
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .merge-request-tabs-holder {
+      &.affix {
+        border-bottom: 1px solid $border-color;
+
+        .nav-links {
+          border: 0;
+        }
+      }
+
+      .container-fluid {
+        padding-left: 0;
+        padding-right: 0;
+        max-width: calc(#{$limited-layout-width} - (#{$gl-padding} * 2));
+        margin-left: auto;
+        margin-right: auto;
+      }
+    }
+  }
+
+  .diffs {
+    .mr-version-controls,
+    .files-changed {
+      max-width: calc(#{$limited-layout-width} - (#{$gl-padding} * 2));
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+}
+
 .issuable-details {
   section {
     .issuable-discussion {
@@ -7,9 +54,8 @@
 
   // Border around images in issue and MR descriptions.
   .description img:not(.emoji) {
-    border: 1px solid $table-border-gray;
+    border: 1px solid $white-normal;
     padding: 5px;
-    margin: 5px;
     max-height: calc(100vh - 100px);
   }
 }
@@ -30,6 +76,7 @@
 
     .color-label {
       padding: 6px 10px;
+      border-radius: $label-border-radius;
     }
   }
 
@@ -50,7 +97,7 @@
   .block {
     @include clearfix;
     padding: $gl-padding 0;
-    border-bottom: 1px solid $border-gray-light;
+    border-bottom: 1px solid $border-gray-normal;
     // This prevents the mess when resizing the sidebar
     // of elements repositioning themselves..
     width: $gutter_inner_width;
@@ -168,7 +215,7 @@
     }
 
     .no-value {
-      color: $gl-placeholder-color;
+      color: $gl-gray-light;
     }
 
     .sidebar-collapsed-icon {
@@ -177,7 +224,7 @@
 
     .gutter-toggle {
       margin-top: 7px;
-      border-left: 1px solid $border-gray-light;
+      border-left: 1px solid $border-gray-normal;
     }
 
     .assignee .avatar {
@@ -215,7 +262,7 @@
     }
 
     .participants {
-      border-bottom: 1px solid $border-gray-light;
+      border-bottom: 1px solid $border-gray-normal;
     }
 
     .hide-collapsed {
@@ -332,7 +379,7 @@
   margin-left: 5px;
 
   a {
-    color: $gl-placeholder-color;
+    color: $gl-gray-light;
   }
 }
 
@@ -430,6 +477,10 @@
       height: 16px;
       fill: $sidebar-collapsed-icon-color;
     }
+
+    &:hover svg {
+      fill: $gl-gray;
+    }
   }
 
   .help-button,
@@ -493,5 +544,18 @@
     a:hover {
       color: $btn-white-active;
     }
+  }
+
+  .help-state-toggle-enter-active {
+    transition: all .8s ease;
+  }
+
+  .help-state-toggle-leave-active {
+    transition: all .5s ease;
+  }
+
+  .help-state-toggle-enter,
+  .help-state-toggle-leave-active {
+    opacity: 0;
   }
 }

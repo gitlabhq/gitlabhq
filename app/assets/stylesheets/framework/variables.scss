@@ -17,16 +17,15 @@ $darken-dark-factor: 10%;
 $darken-border-factor: 5%;
 
 $white-light: #fff;
-$white-normal: darken($white-light, $darken-normal-factor);
-$white-dark: darken($white-light, $darken-dark-factor);
+$white-normal: #f0f0f0;
+$white-dark: #eaeaea;
 
 $gray-lightest: #fdfdfd;
 $gray-light: #fafafa;
 $gray-lighter: #f9f9f9;
-$gray-normal: darken($gray-light, $darken-normal-factor);
-$gray-dark: darken($gray-light, $darken-dark-factor);
+$gray-normal: #f5f5f5;
 $gray-darker: #eee;
-$gray-darkest: #c9c9c9;
+$gray-darkest: #c4c4c4;
 
 $green-light: #3cbd70;
 $green-normal: darken($green-light, $darken-normal-factor);
@@ -55,11 +54,10 @@ $black-transparent: rgba(0, 0, 0, 0.3);
 
 $border-white-light: darken($white-light, $darken-border-factor);
 $border-white-normal: darken($white-normal, $darken-border-factor);
-$border-white-dark: darken($white-dark, $darken-border-factor);
 
 $border-gray-light: darken($gray-light, $darken-border-factor);
 $border-gray-normal: darken($gray-normal, $darken-border-factor);
-$border-gray-dark: darken($gray-dark, $darken-border-factor);
+$border-gray-dark: darken($white-normal, $darken-border-factor);
 
 $border-green-extra-light: #9adb84;
 $border-green-light: darken($green-light, $darken-border-factor);
@@ -78,9 +76,6 @@ $border-red-light: darken($red-light, $darken-border-factor);
 $border-red-normal: darken($red-normal, $darken-border-factor);
 $border-red-dark: darken($red-dark, $darken-border-factor);
 
-$help-well-bg: $gray-light;
-$help-well-border: #e5e5e5;
-
 $warning-message-bg: #fbf2d9;
 $warning-message-color: #9e8e60;
 $warning-message-border: #f0e2bb;
@@ -90,10 +85,6 @@ $warning-message-border: #f0e2bb;
  */
 $border-color: #e5e5e5;
 $focus-border-color: #3aabf0;
-$table-border-color: #f0f0f0;
-$background-color: $gray-light;
-$dark-background-color: #f5f5f5;
-$table-text-gray: #8f8f8f;
 $sidebar-collapsed-icon-color: #999;
 $well-expand-item: #e8f2f7;
 $well-inner-border: #eef0f2;
@@ -114,12 +105,10 @@ $gl-text-orange: #d90;
 $gl-link-color: #3777b0;
 $gl-diff-text-color: #555;
 $gl-dark-link-color: #333;
-$gl-placeholder-color: #8f8f8f;
-$gl-icon-color: $gl-placeholder-color;
+$gl-gray-light: #8f8f8f;
 $gl-grayish-blue: #7f8fa4;
 $gl-gray: $gl-text-color;
 $gl-gray-dark: #313236;
-$gl-gray-light: $gl-placeholder-color;
 $gl-header-color: #4c4e54;
 
 /*
@@ -167,11 +156,11 @@ $row-hover-border: #b2d7ff;
 $progress-color: #c0392b;
 $header-height: 50px;
 $fixed-layout-width: 1280px;
+$limited-layout-width: 990px;
+$gl-avatar-size: 40px;
 $error-exclamation-point: #e62958;
 $border-radius-default: 2px;
-$btn-transparent-color: #8f8f8f;
 $settings-icon-size: 18px;
-$provider-btn-group-border: #e5e5e5;
 $provider-btn-not-active-color: #4688f1;
 $link-underline-blue: #4a8bee;
 $active-item-blue: #4a8bee;
@@ -197,6 +186,7 @@ $divergence-graph-bar-bg: #ccc;
 $divergence-graph-separator-bg: #ccc;
 $issue-box-upcoming-bg: #8f8f8f;
 $pages-group-name-color: #4c4e54;
+$ldap-members-override-bg: #fff1e0;
 
 /*
 * Common component specific colors
@@ -249,8 +239,6 @@ $line-removed-dark: #fac5cd;
 $line-number-old: #f9d7dc;
 $line-number-new: #ddfbe6;
 $line-number-select: #fbf2da;
-$match-line: $gray-light;
-$table-border-gray: #f0f0f0;
 $line-target-blue: #f6faff;
 $line-select-yellow: #fcf8e7;
 $line-select-yellow-dark: #f0e2bd;
@@ -260,7 +248,6 @@ $file-mode-changed: #777;
 $file-mode-changed: #777;
 $diff-image-bg: #ddd;
 $diff-image-info-color: grey;
-$diff-image-img-bg: #e5e5e5;
 $diff-swipe-border: #999;
 $diff-view-modes-color: grey;
 $diff-view-modes-border: #c1c1c1;
@@ -275,14 +262,12 @@ $regular_font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-San
 * Dropdowns
 */
 $dropdown-width: 300px;
-$dropdown-bg: #fff;
 $dropdown-link-color: #555;
 $dropdown-link-hover-bg: $row-hover;
 $dropdown-empty-row-bg: rgba(#000, .04);
 $dropdown-border-color: $border-color;
 $dropdown-shadow-color: rgba(#000, .1);
 $dropdown-divider-color: rgba(#000, .1);
-$dropdown-header-color: #959494;
 $dropdown-title-btn-color: #bfbfbf;
 $dropdown-input-color: #555;
 $dropdown-input-fa-color: #c7c7c7;
@@ -290,31 +275,20 @@ $dropdown-input-focus-border: $focus-border-color;
 $dropdown-input-focus-shadow: rgba($dropdown-input-focus-border, .4);
 $dropdown-loading-bg: rgba(#fff, .6);
 $dropdown-chevron-size: 10px;
+$dropdown-toggle-active-border-color: darken($border-color, 14%);
 
-$dropdown-toggle-bg: #fff;
-$dropdown-toggle-color: #5c5c5c;
-$dropdown-toggle-border-color: #e5e5e5;
-$dropdown-toggle-hover-border-color: darken($dropdown-toggle-border-color, 13%);
-$dropdown-toggle-active-border-color: darken($dropdown-toggle-border-color, 14%);
-$dropdown-toggle-icon-color: #c4c4c4;
-$dropdown-toggle-hover-icon-color: darken($dropdown-toggle-icon-color, 7%);
 
 /*
 * Buttons
 */
 $btn-active-gray: #ececec;
 $btn-active-gray-light: e4e7ed;
-$btn-placeholder-gray: #c7c7c7;
 $btn-white-active: #848484;
-$btn-gray-hover: #eee;
 
 /*
  *  Award emoji
  */
-$award-emoji-menu-bg: #fff;
-$award-emoji-menu-border: #f1f2f4;
 $award-emoji-menu-shadow: rgba(0,0,0,.175);
-$award-emoji-new-btn-icon-color: #dcdcdc;
 
 /*
  * Search Box
@@ -322,22 +296,15 @@ $award-emoji-new-btn-icon-color: #dcdcdc;
 $search-input-border-color: rgba(#4688f1, .8);
 $search-input-focus-shadow-color: $dropdown-input-focus-shadow;
 $search-input-width: 220px;
-$location-badge-color: #aaa;
-$location-badge-bg: $dark-background-color;
 $location-badge-active-bg: #4f91f8;
 $location-icon-color: #e7e9ed;
-$location-icon-active-color: #807e7e;
 
 /*
  *  Notes
  */
 $notes-light-color: #8e8e8e;
-$notes-action-color: #c3c3c3;
 $notes-role-color: #8e8e8e;
-$notes-role-border-color: #e4e4e4;
 $note-disabled-comment-color: #b2b2b2;
-$note-form-border-color: #e5e5e5;
-$note-toolbar-color: #959494;
 $note-targe3-outside: #fffff0;
 $note-targe3-inside: #ffffd3;
 $note-line2-border: #ddd;
@@ -347,15 +314,12 @@ $note-line2-border: #ddd;
 * Zen
 */
 $zen-control-color: #555;
-$zen-control-hover-color: #111;
 
 /*
 * Calendar
 */
-$calendar-header-color: #b8b8b8;
 $calendar-hover-bg: #ecf3fe;
 $calendar-border-color: rgba(#000, .1);
-$calendar-unselectable-bg: $gray-light;
 $calendar-user-contrib-text: #959494;
 
 /*
@@ -369,15 +333,8 @@ $cycle-analytics-light-gray: #bfbfbf;
 $cycle-analytics-dismiss-icon-color: #b2b2b2;
 
 /*
- * Personal Access Tokens
- */
-$personal-access-tokens-disabled-label-color: #bbb;
-
-/*
 * CI
 */
-$ci-output-bg: #1d1f21;
-$ci-text-color: #c5c8c6;
 $ci-skipped-color: #888;
 
 /*
@@ -473,7 +430,6 @@ $help-shortcut-header-color: #333;
 /*
 * Issues
 */
-$issues-border: #e5e5e5;
 $issues-today-bg: #f3fff2;
 $issues-today-border: #e1e8d5;
 
@@ -489,6 +445,7 @@ $jq-ui-default-color: #777;
 $label-gray-bg: #f8fafc;
 $label-inverse-bg: #333;
 $label-remove-border: rgba(0, 0, 0, .1);
+$label-border-radius: 100px;
 
 /*
 * Lint
@@ -524,7 +481,6 @@ $project-option-descr-color: #54565b;
 $project-breadcrumb-color: #999;
 $project-private-forks-notice-odd: #2aa056;
 $project-network-controls-color: #888;
-$project-limit-message-bg: #f28d35;
 
 /*
 * Runners
@@ -574,3 +530,9 @@ $body-text-shadow: rgba(255,255,255,0.01);
 */
 $ui-dev-kit-example-color: #bbb;
 $ui-dev-kit-example-border: #ddd;
+
+/*
+Pipeline Graph
+*/
+$stage-hover-bg: #eaf3fc;
+$stage-hover-border: #d1e7fc;

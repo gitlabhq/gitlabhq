@@ -593,6 +593,22 @@ describe API::MergeRequests, api: true  do
       expect(json_response['labels']).to include '?'
       expect(json_response['labels']).to include '&'
     end
+
+    it 'does not update state when title is empty' do
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), state_event: 'close', title: nil
+
+      merge_request.reload
+      expect(response).to have_http_status(400)
+      expect(merge_request.state).to eq('opened')
+    end
+
+    it 'does not update state when target_branch is empty' do
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), state_event: 'close', target_branch: nil
+
+      merge_request.reload
+      expect(response).to have_http_status(400)
+      expect(merge_request.state).to eq('opened')
+    end
   end
 
   describe "POST /projects/:id/merge_requests/:merge_request_id/comments" do

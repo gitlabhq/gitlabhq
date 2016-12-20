@@ -1,0 +1,4 @@
+---
+title: Prevent overflow with vertical scroll when we have space to show content
+merge_request: 8061
+author:

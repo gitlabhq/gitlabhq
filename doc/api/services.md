@@ -139,6 +139,43 @@ Get Buildkite service settings for a project.
 GET /projects/:id/services/buildkite
 ```
 
+## Build-Emails
+
+Get emails for GitLab CI builds.
+
+### Create/Edit Build-Emails service
+
+Set Build-Emails service for a project.
+
+```
+PUT /projects/:id/services/builds-email
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `recipients` | string | yes | Comma-separated list of recipient email addresses |
+| `add_pusher` | boolean | no | Add pusher to recipients list |
+| `notify_only_broken_builds` | boolean | no | Notify only broken builds |
+
+
+### Delete Build-Emails service
+
+Delete Build-Emails service for a project.
+
+```
+DELETE /projects/:id/services/builds-email
+```
+
+### Get Build-Emails service settings
+
+Get Build-Emails service settings for a project.
+
+```
+GET /projects/:id/services/builds-email
+```
+
 ## Campfire
 
 Simple web-based real-time group chat
@@ -476,12 +513,11 @@ PUT /projects/:id/services/jira
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `active`        | boolean| no  | Enable/disable the JIRA service. |
 | `url`           | string | yes | The URL to the JIRA project which is being linked to this GitLab project, e.g., `https://jira.example.com`. |
 | `project_key`   | string | yes | The short identifier for your JIRA project, all uppercase, e.g., `PROJ`. |
 | `username`      | string | no  | The username of the user created to be used with GitLab/JIRA. |
 | `password`      | string | no  | The password of the user created to be used with GitLab/JIRA. |
-| `jira_issue_transition_id` | string | no | The ID of a transition that moves issues to a closed state. You can find this number under the JIRA workflow administration (**Administration > Issues > Workflows**) by selecting **View** under **Operations** of the desired workflow of your project. The ID of each state can be found inside the parenthesis of each transition name under the **Transitions (id)** column ([see screenshot][trans]). By default, this ID is set to `2`. |
+| `jira_issue_transition_id` | integer | no | The ID of a transition that moves issues to a closed state. You can find this number under the JIRA workflow administration (**Administration > Issues > Workflows**) by selecting **View** under **Operations** of the desired workflow of your project. The ID of each state can be found inside the parenthesis of each transition name under the **Transitions (id)** column ([see screenshot][trans]). By default, this ID is set to `2`. |
 
 ### Delete JIRA service
 
@@ -489,6 +525,78 @@ Remove all previously JIRA settings from a project.
 
 ```
 DELETE /projects/:id/services/jira
+```
+
+## Mattermost Slash Commands
+
+Ability to receive slash commands from a Mattermost chat instance.
+
+### Create/Edit Mattermost Slash Command service
+
+Set Mattermost Slash Command for a project.
+
+```
+PUT /projects/:id/services/mattermost-slash-commands
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `token` | string | yes | The Mattermost token |
+
+
+### Delete Mattermost Slash Command service
+
+Delete Mattermost Slash Command service for a project.
+
+```
+DELETE /projects/:id/services/mattermost-slash-commands
+```
+
+### Get Mattermost Slash Command service settings
+
+Get Mattermost Slash Command service settings for a project.
+
+```
+GET /projects/:id/services/mattermost-slash-commands
+```
+
+## Pipeline-Emails
+
+Get emails for GitLab CI pipelines.
+
+### Create/Edit Pipeline-Emails service
+
+Set Pipeline-Emails service for a project.
+
+```
+PUT /projects/:id/services/pipelines-email
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `recipients` | string | yes | Comma-separated list of recipient email addresses |
+| `add_pusher` | boolean | no | Add pusher to recipients list |
+| `notify_only_broken_builds` | boolean | no | Notify only broken pipelines |
+
+
+### Delete Pipeline-Emails service
+
+Delete Pipeline-Emails service for a project.
+
+```
+DELETE /projects/:id/services/pipelines-email
+```
+
+### Get Pipeline-Emails service settings
+
+Get Pipeline-Emails service settings for a project.
+
+```
+GET /projects/:id/services/pipelines-email
 ```
 
 ## PivotalTracker
@@ -595,9 +703,9 @@ Get Redmine service settings for a project.
 GET /projects/:id/services/redmine
 ```
 
-## Slack
+## Slack notifications
 
-A team communication tool for the 21st century
+Receive event notifications in Slack
 
 ### Create/Edit Slack service
 
@@ -627,6 +735,40 @@ Get Slack service settings for a project.
 
 ```
 GET /projects/:id/services/slack
+```
+
+## Mattermost notifications
+
+Receive event notifications in Mattermost
+
+### Create/Edit Mattermost notifications service
+
+Set Mattermost service for a project.
+
+```
+PUT /projects/:id/services/mattermost
+```
+
+Parameters:
+
+- `webhook` (**required**) - https://mattermost.example/hooks/1298aff...
+- `username` (optional) - username
+- `channel` (optional) - #channel
+
+### Delete Mattermost notifications service
+
+Delete Mattermost Notifications service for a project.
+
+```
+DELETE /projects/:id/services/mattermost
+```
+
+### Get Mattermost notifications service settings
+
+Get Mattermost notifications service settings for a project.
+
+```
+GET /projects/:id/services/mattermost
 ```
 
 ## JetBrains TeamCity CI
@@ -664,6 +806,77 @@ Get JetBrains TeamCity CI service settings for a project.
 
 ```
 GET /projects/:id/services/teamcity
+```
+
+## Jenkins CI
+
+A continuous integration and build server
+
+### Create/Edit Jenkins CI service
+
+Set Jenkins CI service for a project.
+
+
+```
+PUT /projects/:id/services/jenkins
+```
+
+Parameters:
+
+- `jenkins_url` (**required**) - Jenkins URL like http://jenkins.example.com
+- `project_name` (**required**) - The URL-friendly project name. Example: my_project_name
+- `username` (optional) - A user with access to the Jenkins server, if applicable
+- `password` (optional) - The password of the user
+
+### Delete Jenkins CI service
+
+Delete Jenkins CI service for a project.
+
+```
+DELETE /projects/:id/services/jenkins
+```
+
+### Get Jenkins CI service settings
+
+Get Jenkins CI service settings for a project.
+
+```
+GET /projects/:id/services/jenkins
+```
+
+
+## Jenkins CI (Deprecated) Service
+
+A continuous integration and build server
+
+### Create/Edit Jenkins CI (Deprecated) service
+
+Set Jenkins CI (Deprecated) service for a project.
+
+```
+PUT /projects/:id/services/jenkins-deprecated
+```
+
+Parameters:
+
+- `project_url` (**required**) - Jenkins project URL like http://jenkins.example.com/job/my-project/
+- `multiproject_enabled` (optional) - Multi-project mode is configured in Jenkins Gitlab Hook plugin
+- `pass_unstable` (optional) - Unstable builds will be treated as passing
+
+### Delete Jenkins CI (Deprecated) service
+
+Delete Jenkins CI (Deprecated) service for a project.
+
+```
+DELETE /projects/:id/services/jenkins-deprecated
+```
+
+### Get Jenkins CI (Deprecated) service settings
+
+Get Jenkins CI (Deprecated) service settings for a project.
+
+```
+GET /projects/:id/services/jenkins-deprecated
 ```
 
 [jira-doc]: ../project_services/jira.md

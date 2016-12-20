@@ -266,7 +266,7 @@ class ApplicationController < ActionController::Base
   end
 
   def bitbucket_import_configured?
-    Gitlab::OAuth::Provider.enabled?(:bitbucket) && Gitlab::BitbucketImport.public_key.present?
+    Gitlab::OAuth::Provider.enabled?(:bitbucket)
   end
 
   def google_code_import_enabled?

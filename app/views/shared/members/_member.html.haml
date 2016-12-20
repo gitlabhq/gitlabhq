@@ -4,7 +4,10 @@
 - source = member.source
 - can_admin_member = can?(current_user, action_member_permission(:update, member), member)
 
-%li.member{ class: dom_class(member), id: dom_id(member) }
+-# EE-only
+- can_override_member = can?(current_user, action_member_permission(:override, member), member)
+
+%li.member{ class: [dom_class(member), ("is-overriden" if member.override)], id: dom_id(member) }
   %span.list-item-name
     - if user
       = image_tag avatar_icon(user, 40), class: "avatar s40", alt: ''
@@ -45,6 +48,7 @@
         = time_ago_with_tooltip(member.created_at)
   - if show_roles
     .controls.member-controls
+      = render 'shared/members/ee/ldap_tag', can_override: can_override_member, visible: false
       - if show_controls && (member.respond_to?(:group) && @group) || (member.respond_to?(:project) && @project)
         - if user != current_user
           = form_for member, remote: true, html: { class: 'form-horizontal js-edit-member-form' } do |f|
@@ -65,6 +69,7 @@
                         = link_to role, "javascript:void(0)",
                           class: ("is-active" if member.access_level == role_id),
                           data: { id: role_id, el_id: dom_id(member) }
+                    = render 'shared/members/ee/revert_ldap_group_sync_option', group: @group, member: member, can_override: can_override_member
             .prepend-left-5.clearable-input.member-form-control
               = f.text_field :expires_at, class: 'form-control js-access-expiration-date js-member-update-control', placeholder: 'Expiration date', id: "member_expires_at_#{member.id}", disabled: !can_admin_member, data: { el_id: dom_id(member) }
               %i.clear-icon.js-clear-input
@@ -98,5 +103,8 @@
               %span.visible-xs-block
                 Delete
               = icon('trash', class: 'hidden-xs')
+        = render 'shared/members/ee/override_member_buttons', group: @group, member: member, user: user, action: :edit, can_override: can_override_member
       - else
         %span.member-access-text= member.human_access
+
+= render 'shared/members/ee/override_member_buttons', group: @group, member: member, user: user, action: :confirm, can_override: can_override_member

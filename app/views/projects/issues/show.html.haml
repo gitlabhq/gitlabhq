@@ -1,6 +1,9 @@
+- @content_class = "limit-container-width"
 - page_title           "#{@issue.title} (#{@issue.to_reference})", "Issues"
 - page_description     @issue.description
 - page_card_attributes @issue.card_attributes
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_tag('lib/vue_resource.js')
 
 .clearfix.detail-page-header
   .issuable-header

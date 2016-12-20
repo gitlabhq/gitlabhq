@@ -191,6 +191,8 @@ class User < ActiveRecord::Base
     joins(:identities).where(identities: { provider: provider })
   end
   scope :todo_authors, ->(user_id, state) { where(id: Todo.where(user_id: user_id, state: state).select(:author_id)) }
+  scope :order_recent_sign_in, -> { reorder(last_sign_in_at: :desc) }
+  scope :order_oldest_sign_in, -> { reorder(last_sign_in_at: :asc) }
 
   def self.with_two_factor
     joins("LEFT OUTER JOIN u2f_registrations AS u2f ON u2f.user_id = users.id").
@@ -218,8 +220,8 @@ class User < ActiveRecord::Base
 
     def sort(method)
       case method.to_s
-      when 'recent_sign_in' then reorder(last_sign_in_at: :desc)
-      when 'oldest_sign_in' then reorder(last_sign_in_at: :asc)
+      when 'recent_sign_in' then order_recent_sign_in
+      when 'oldest_sign_in' then order_oldest_sign_in
       else
         order_by(method)
       end
@@ -319,10 +321,6 @@ class User < ActiveRecord::Base
     def find_by_personal_access_token(token_string)
       personal_access_token = PersonalAccessToken.active.find_by_token(token_string) if token_string
       personal_access_token.user if personal_access_token
-    end
-
-    def by_username_or_id(name_or_id)
-      find_by('users.username = ? OR users.id = ?', name_or_id.to_s, name_or_id.to_i)
     end
 
     # Returns a user for the given SSH key.
@@ -432,7 +430,7 @@ class User < ActiveRecord::Base
   def namespace_uniq
     # Return early if username already failed the first uniqueness validation
     return if errors.key?(:username) &&
-      errors[:username].include?('has already been taken')
+        errors[:username].include?('has already been taken')
 
     existing_namespace = Namespace.by_path(username)
     if existing_namespace && existing_namespace != namespace
@@ -948,9 +946,7 @@ class User < ActiveRecord::Base
   end
 
   def record_activity
-    Gitlab::Redis.with do |redis|
-      redis.zadd('user/activities', Time.now.to_i, self.username)
-    end
+    Gitlab::UserActivities::ActivitySet.record(self)
   end
 
   private

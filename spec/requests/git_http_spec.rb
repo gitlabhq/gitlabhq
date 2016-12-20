@@ -342,7 +342,7 @@ describe 'Git HTTP requests', lib: true do
               context "when an oauth token is provided" do
                 before do
                   application = Doorkeeper::Application.create!(name: "MyApp", redirect_uri: "https://app.com", owner: user)
-                  @token = Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id)
+                  @token = Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id, scopes: "api")
                 end
 
                 it "downloads get status 200" do

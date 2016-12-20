@@ -1,4 +1,44 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, no-var, prefer-arrow-callback, wrap-iife, no-shadow, consistent-return, one-var, one-var-declaration-per-line, camelcase, default-case, no-new, quotes, no-duplicate-case, no-case-declarations, no-fallthrough, max-len, padded-blocks */
+/* global UsernameValidator */
+/* global ActiveTabMemoizer */
+/* global ShortcutsNavigation */
+/* global Build */
+/* global Issuable */
+/* global Issue */
+/* global ShortcutsIssuable */
+/* global ZenMode */
+/* global Milestone */
+/* global GLForm */
+/* global IssuableForm */
+/* global LabelsSelect */
+/* global MilestoneSelect */
+/* global MergedButtons */
+/* global Commit */
+/* global NotificationsForm */
+/* global TreeView */
+/* global NotificationsDropdown */
+/* global UsersSelect */
+/* global GroupAvatar */
+/* global LineHighlighter */
+/* global ShortcutsBlob */
+/* global ProjectFork */
+/* global BuildArtifacts */
+/* global GroupsSelect */
+/* global Search */
+/* global Admin */
+/* global NamespaceSelects */
+/* global ShortcutsDashboardNavigation */
+/* global Project */
+/* global ProjectAvatar */
+/* global CompareAutocomplete */
+/* global ProjectNew */
+/* global Star */
+/* global ProjectShow */
+/* global Labels */
+/* global Shortcuts */
+/* global WeightSelect */
+/* global AdminEmailSelect */
+
 (function() {
   var Dispatcher;
 
@@ -36,7 +76,9 @@
         case 'projects:merge_requests:index':
         case 'projects:issues:index':
           Issuable.init();
-          new gl.IssuableBulkActions();
+          new gl.IssuableBulkActions({
+            prefixId: page === 'projects:merge_requests:index' ? 'merge_request_' : 'issue_',
+          });
           shortcut_handler = new ShortcutsNavigation();
           break;
         case 'projects:issues:show':
@@ -106,10 +148,6 @@
           new gl.Diff();
           new ZenMode();
           new MergedButtons();
-          break;
-        case 'projects:merge_requests:index':
-          shortcut_handler = new ShortcutsNavigation();
-          Issuable.init();
           break;
         case 'dashboard:activity':
           new gl.Activities();

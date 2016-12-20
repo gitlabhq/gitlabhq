@@ -1,7 +1,9 @@
+- @content_class = "limit-container-width"
 - page_title           "#{@merge_request.title} (#{@merge_request.to_reference})", "Merge Requests"
 - page_description     @merge_request.description
 - page_card_attributes @merge_request.card_attributes
 - content_for :page_specific_javascripts do
+  = page_specific_javascript_tag('lib/vue_resource.js')
   = page_specific_javascript_tag('diff_notes/diff_notes_bundle.js')
 
 .merge-request{'data-url' => merge_request_path(@merge_request)}
@@ -41,7 +43,7 @@
     = render "projects/merge_requests/widget/show.html.haml"
 
     - if @merge_request.source_branch_exists? && @merge_request.mergeable? && @merge_request.can_be_merged_by?(current_user)
-      .light.prepend-top-default.append-bottom-default
+      .merge-manually.light.prepend-top-default.append-bottom-default
         You can also accept this merge request manually using the
         = succeed '.' do
           = link_to "command line", "#modal_merge_info", class: "how_to_merge_link vlink", title: "How To Merge", "data-toggle" => "modal"
@@ -53,7 +55,7 @@
             %li.notes-tab
               = link_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: 'div#notes', action: 'notes', toggle: 'tab' } do
                 Discussion
-                %span.badge= @merge_request.mr_and_commit_notes.user.count
+                %span.badge= @merge_request.related_notes.user.count
             - if @merge_request.source_project
               %li.commits-tab
                 = link_to commits_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: 'div#commits', action: 'commits', toggle: 'tab' } do

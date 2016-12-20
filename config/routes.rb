@@ -1,6 +1,5 @@
 require 'sidekiq/web'
 require 'sidekiq/cron/web'
-require 'api/api'
 require 'constraints/group_url_constrainer'
 
 Rails.application.routes.draw do
