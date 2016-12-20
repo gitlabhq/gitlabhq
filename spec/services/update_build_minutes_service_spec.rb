@@ -8,7 +8,7 @@ describe UpdateBuildMinutesService, services: true do
     let(:build) do
       create(:ci_build, :success,
         runner: runner, pipeline: pipeline,
-        started_at: 2.hour.ago, finished_at: 1.hour.ago)
+        started_at: 2.hours.ago, finished_at: 1.hour.ago)
     end
 
     subject { described_class.new.execute(build) }
@@ -19,11 +19,13 @@ describe UpdateBuildMinutesService, services: true do
       it "creates a metrics and sets duration" do
         subject
 
-        #expect(project.reload.project_metrics.shared_runners_minutes).to
-        #  eq(build.duration)
+        # expect(project.reload.project_metrics.shared_runners_minutes).to(
+        #   eq(build.duration)
+        # )
 
-        expect(namespace.reload.namespace_metrics.shared_runners_minutes).to
+        expect(namespace.reload.namespace_metrics.shared_runners_minutes).to(
           eq(build.duration)
+        )
       end
 
       context 'when metrics are created' do
@@ -35,11 +37,13 @@ describe UpdateBuildMinutesService, services: true do
         it "updates metrics and adds duration" do
           subject
 
-          expect(project.project_metrics.shared_runners_minutes).to
+          expect(project.project_metrics.shared_runners_minutes).to(
             eq(100 + build.duration)
+          )
 
-          expect(namespace.namespace_metrics.shared_runners_minutes).to
+          expect(namespace.namespace_metrics.shared_runners_minutes).to(
             eq(100 + build.duration)
+          )
         end
       end
     end
