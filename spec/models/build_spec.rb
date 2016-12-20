@@ -1321,4 +1321,63 @@ describe Ci::Build, models: true do
         .to be_a Gitlab::Ci::Status::Build::Cancelable
     end
   end
+
+  describe '#shared_runners_minutes_quota?' do
+    subject { build.shared_runners_minutes_quota? }
+
+    context 'for shared runner' do
+      before do
+        build.runner = create(:ci_runner, :shared)
+      end
+
+      context 'for public project' do
+        before do
+          build.project.visibility_level = Gitlab::VisibilityLevel::PUBLIC
+        end
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'for internal project' do
+        before do
+          build.project.visibility_level = Gitlab::VisibilityLevel::INTERNAL
+        end
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'for private project' do
+        before do
+          build.project.visibility_level = Gitlab::VisibilityLevel::INTERNAL
+        end
+
+        it { is_expected.to be_truthy }
+      end
+    end
+
+    context 'with specific runner' do
+      before do
+        build.runner = create(:ci_runner, :specific)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'without runner' do
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  context 'updates build minutes' do
+    let(:build) { create(:ci_build, :running, pipeline: pipeline) }
+
+    %w(success drop cancel).each do |event|
+      it "for event #{event}" do
+        expect(UpdateBuildMinutesService).
+          to receive(:new).and_call_original
+
+        build.public_send(event)
+      end
+    end
+  end
 end

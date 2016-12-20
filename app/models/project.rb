@@ -1567,10 +1567,6 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def shared_runners_minutes_limit_enabled?
-    !public? && namespace.shared_runners_minutes_limit_enabled?
-  end
-
   private
 
   # Check if a reference is being done cross-project

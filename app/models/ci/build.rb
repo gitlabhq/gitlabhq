@@ -103,7 +103,7 @@ module Ci
 
       after_transition any => [:success, :failed, :canceled] do |build|
         build.run_after_commit do
-          UpdateBuildMinutesService.new(project, nil).execute(build)
+          UpdateBuildMinutesService.new(project, nil).execute(self)
         end
       end
 
@@ -535,6 +535,10 @@ module Ci
 
     def credentials
       Gitlab::Ci::Build::Credentials::Factory.new(self).create!
+    end
+
+    def shared_runners_minutes_quota?
+      runner && runner.shared? && !project.public?
     end
 
     private

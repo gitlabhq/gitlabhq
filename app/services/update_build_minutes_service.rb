@@ -1,14 +1,27 @@
 class UpdateBuildMinutesService < BaseService
   def execute(build)
-    return unless build.runner.try(:shared?)
-    return unless build.project.try(:shared_runners_minutes_limit_enabled?)
-    return unless build.finished?
+    return unless build.shared_runners_minutes_quota?
+    return unless build.complete?
     return unless build.duration
 
-    project.find_or_create_project_metrics.
-      update_all('shared_runners_minutes = shared_runners_minutes + ?', build.duration)
+    ProjectMetrics.update_counters(project_metrics,
+      shared_runners_minutes: build.duration)
 
-    project.namespace.find_or_create_namespace_metrics.
-      update_all('shared_runners_minutes = shared_runners_minutes + ?', build.duration)
+    NamespaceMetrics.update_counters(namespace_metrics,
+      shared_runners_minutes: build.duration)
+  end
+
+  private
+
+  def namespace_metrics
+    namespace.namespace_metrics || namespace.create_namespace_metrics
+  end
+
+  def project_metrics
+    project.project_metrics || project.create_project_metrics
+  end
+
+  def namespace
+    project.namespace
   end
 end

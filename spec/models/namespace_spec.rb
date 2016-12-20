@@ -17,8 +17,8 @@ describe Namespace, models: true do
 
   it { is_expected.to validate_presence_of(:owner) }
 
-  it { is_expected.to delegate_method(:shared_runner_minutes).to(:namespace_metrics) }
-  it { is_expected.to delegate_method(:shared_runner_last_reset).to(:namespace_metrics) }
+  it { is_expected.to delegate_method(:shared_runners_minutes).to(:namespace_metrics) }
+  it { is_expected.to delegate_method(:shared_runners_minutes_last_reset).to(:namespace_metrics) }
 
   describe "Respond to" do
     it { is_expected.to respond_to(:human_name) }
@@ -154,7 +154,11 @@ describe Namespace, models: true do
 
     context 'with project' do
       context 'and disabled shared runners' do
-        let!(:project) { create(:empty_project, namespace: namespace) }
+        let!(:project) do
+          create(:empty_project,
+            namespace: namespace,
+            shared_runners_enabled: false)
+        end
 
         it { is_expected.to be_falsey }
       end
@@ -175,7 +179,7 @@ describe Namespace, models: true do
     subject { namespace.actual_shared_runners_minutes_limit }
 
     context 'when no limit defined' do
-      it { is_expected.to be_nil }
+      it { is_expected.to be_zero }
     end
 
     context 'when application settings limit is set' do

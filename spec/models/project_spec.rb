@@ -74,8 +74,8 @@ describe Project, models: true do
     it { is_expected.to have_many(:forks).through(:forked_project_links) }
     it { is_expected.to have_many(:approver_groups).dependent(:destroy) }
 
-    it { is_expected.to delegate_method(:shared_runner_minutes).to(:project_metrics) }
-    it { is_expected.to delegate_method(:shared_runner_last_reset).to(:project_metrics) }
+    it { is_expected.to delegate_method(:shared_runners_minutes).to(:project_metrics) }
+    it { is_expected.to delegate_method(:shared_runners_last_reset).to(:project_metrics) }
 
     it { is_expected.to delegate_method(:actual_shared_runners_minutes_limit).to(:namespace) }
     it { is_expected.to delegate_method(:shared_runners_minutes_limit_enabled?).to(:namespace) }
@@ -2068,42 +2068,6 @@ describe Project, models: true do
       it 'finds both environments' do
         expect(project.environments_recently_updated_on_branch('feature'))
           .to contain_exactly(environment, second_environment)
-      end
-    end
-  end
-
-  describe '#shared_runners_minutes_limit_enabled?' do
-    subject { project.shared_runners_minutes_limit_enabled? }
-
-    context 'with limit enabled' do
-      let(:namespace) { create(:namespace, :with_build_minutes_limit) }
-
-      context 'for public project' do
-        let(:project) { create(:empty_project, :public, namespace: namespace) }
-
-        it { is_expected.to be_truthy }
-      end
-
-      context 'for internal project' do
-        let(:project) { create(:empty_project, :internal, namespace: namespace) }
-
-        it { is_expected.to be_falsey }
-      end
-
-      context 'for private project' do
-        let(:project) { create(:empty_project, :private, namespace: namespace) }
-
-        it { is_expected.to be_falsey }
-      end
-    end
-
-    context 'with limit not set' do
-      let(:namespace) { create(:namespace) }
-
-      context 'for public project' do
-        let(:project) { create(:empty_project, :public, namespace: namespace) }
-
-        it { is_expected.to be_falsey }
       end
     end
   end

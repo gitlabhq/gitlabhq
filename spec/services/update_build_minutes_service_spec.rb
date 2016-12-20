@@ -11,7 +11,7 @@ describe UpdateBuildMinutesService, services: true do
         started_at: 2.hours.ago, finished_at: 1.hour.ago)
     end
 
-    subject { described_class.new.execute(build) }
+    subject { described_class.new(project, nil).execute(build) }
 
     context 'with shared runner' do
       let(:runner) { create(:ci_runner, :shared) }
@@ -19,13 +19,11 @@ describe UpdateBuildMinutesService, services: true do
       it "creates a metrics and sets duration" do
         subject
 
-        # expect(project.reload.project_metrics.shared_runners_minutes).to(
-        #   eq(build.duration)
-        # )
+        expect(project.project_metrics.reload.shared_runners_minutes).
+          to eq(build.duration.to_i)
 
-        expect(namespace.reload.namespace_metrics.shared_runners_minutes).to(
-          eq(build.duration)
-        )
+        expect(namespace.namespace_metrics.reload.shared_runners_minutes).
+          to eq(build.duration.to_i)
       end
 
       context 'when metrics are created' do
@@ -37,13 +35,11 @@ describe UpdateBuildMinutesService, services: true do
         it "updates metrics and adds duration" do
           subject
 
-          expect(project.project_metrics.shared_runners_minutes).to(
-            eq(100 + build.duration)
-          )
+          expect(project.project_metrics.reload.shared_runners_minutes).
+            to eq(100 + build.duration.to_i)
 
-          expect(namespace.namespace_metrics.shared_runners_minutes).to(
-            eq(100 + build.duration)
-          )
+          expect(namespace.namespace_metrics.reload.shared_runners_minutes).
+            to eq(100 + build.duration.to_i)
         end
       end
     end
