@@ -101,3 +101,11 @@ The form should be titled `Edit issue`. The submit button should be labeled `Sav
 | Approve | Approve an open merge request ||
 | Remove approval, unapproved | Remove approval of an open merge request | Do not use `unapprove` as that is not an English word|
 | Merge | Merge an open merge request ||
+
+### Comments & Discussions
+
+#### Comment
+A **comment** is a written piece of text that users of GitLab can create. Comments have the meta data of author and time stamp. Comments can be added in a variety of contexts, such as issues, merge requests, and discussions.
+
+#### Dicussion
+A **discussion** is a group of 1 or more comments. A discussion can include sub discussions. Some discussions have the special capability of being able to be **resolved**. Both the comments in the discussion and the discussion itself can be resolved.
