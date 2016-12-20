@@ -1458,6 +1458,18 @@ describe Project, models: true do
     end
   end
 
+  describe '#gitlab_project_import?' do
+    subject(:project) { build(:project, import_type: 'gitlab_project') }
+
+    it { expect(project.gitlab_project_import?).to be true }
+  end
+
+  describe '#gitea_import?' do
+    subject(:project) { build(:project, import_type: 'gitea') }
+
+    it { expect(project.gitea_import?).to be true }
+  end
+
   describe '#lfs_enabled?' do
     let(:project) { create(:project) }
 

@@ -533,6 +533,10 @@ class Project < ActiveRecord::Base
     import_type == 'gitlab_project'
   end
 
+  def gitea_import?
+    import_type == 'gitea'
+  end
+
   def check_limit
     unless creator.can_create_project? or namespace.kind == 'group'
       projects_limit = creator.projects_limit
