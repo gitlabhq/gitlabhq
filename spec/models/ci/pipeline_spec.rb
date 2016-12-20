@@ -175,6 +175,30 @@ describe Ci::Pipeline, models: true do
     end
   end
 
+  describe '#stage' do
+    subject { pipeline.stage('test') }
+
+    context 'with status in stage' do
+      before do
+        create(:commit_status, pipeline: pipeline, stage: 'test')
+      end
+
+      it { expect(subject).to be_a Ci::Stage }
+      it { expect(subject.name).to eq 'test' }
+      it { expect(subject.statuses).not_to be_empty }
+    end
+
+    context 'without status in stage' do
+      before do
+        create(:commit_status, pipeline: pipeline, stage: 'build')
+      end
+
+      it 'return stage object' do
+        is_expected.to be_nil
+      end
+    end
+  end
+
   describe 'state machine' do
     let(:current) { Time.now.change(usec: 0) }
     let(:build) { create_build('build1', 0) }
