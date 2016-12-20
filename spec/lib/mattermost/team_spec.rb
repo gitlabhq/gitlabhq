@@ -2,7 +2,9 @@ require 'spec_helper'
 
 describe Mattermost::Team do
   describe '#all' do
-    let(:session) { double("session") }
+    let(:user) { build(:user) }
+
+    subject { described_class.new(user) }
 
     let(:response) do
       [{
@@ -20,22 +22,13 @@ describe Mattermost::Team do
         "allow_open_invite" => false }]
     end
 
-    let(:json) { nil }
 
     before do
-      allow(session).to receive(:get).with('/api/v3/teams/all').
-        and_return(json)
-      allow(json).to receive(:parsed_response).and_return(response)
+      allow(subject).to receive(:json_get).and_return(response)
     end
 
     it 'gets the teams' do
-      expect(described_class.all(session).count).to be(1)
-    end
-
-    it 'filters on being team admin' do
-      ids = described_class.all(session).map { |team| team['id'] }
-
-      expect(ids).to include("xiyro8huptfhdndadpz8r3wnbo")
+      expect(subject.all.count).to be(1)
     end
   end
 end

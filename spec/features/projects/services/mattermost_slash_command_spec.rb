@@ -4,10 +4,12 @@ feature 'Setup Mattermost slash commands', feature: true do
   include WaitForAjax
 
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:empty_project) }
   let(:service) { project.create_mattermost_slash_commands_service }
+  let(:mattermost_enabled) { true }
 
   before do
+    Settings.mattermost['enabled'] = mattermost_enabled
     project.team << [user, :master]
     login_as(user)
     visit edit_namespace_project_service_path(project.namespace, project, service)
@@ -32,19 +34,13 @@ feature 'Setup Mattermost slash commands', feature: true do
     end
 
     describe 'mattermost service is enabled' do
-      before do
-        allow(Gitlab.config.mattermost).to receive(:enabled).and_return(true)
-      end
-
       it 'shows the add to mattermost button' do
         expect(page).to have_link 'Add to Mattermost'
       end
     end
 
     describe 'mattermost service is not enabled' do
-      before do
-        allow(Gitlab.config.mattermost).to receive(:enabled).and_return(false)
-      end
+      let(:mattermost_enabled) { false }
 
       it 'shows the correct trigger url' do
         value = find_field('request_url').value
