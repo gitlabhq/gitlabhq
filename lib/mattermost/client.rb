@@ -9,7 +9,7 @@ module Mattermost
     private
 
     def with_session(&blk)
-      Session.new(user).with_session(&blk)
+      Mattermost::Session.new(user).with_session(&blk)
     end
 
     def json_get(path, options = {})
