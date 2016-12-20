@@ -128,7 +128,6 @@ feature 'Merge request approvals', js: true, feature: true do
         find('.select2-results').click
         click_on("Save changes")
 
-
         wait_for_ajax
         find('.approvals-components')
         expect(page).to have_content("Requires 1 more approval")

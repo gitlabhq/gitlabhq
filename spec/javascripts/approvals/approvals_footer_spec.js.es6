@@ -66,19 +66,6 @@
           done();
         });
       });
-
-      it('should correctly set hasApprovers when there are approvers', function () {
-        expect(!!this.approvalsFooter.hasApprovers).toBe(false);
-      });
-
-      it('should correctly set hasApprovers when there are no approvers', function (done) {
-        this.approvalsFooter.approvedBy.push({});
-
-        Vue.nextTick(() => {
-          expect(!!this.approvalsFooter.hasApprovers).toBe(true);
-          done();
-        });
-      });
     });
   });
 })(window.gl || (window.gl = {}));
