@@ -16,4 +16,8 @@ describe Gitlab::Ci::Status::Failed do
   describe '#icon' do
     it { expect(subject.icon).to eq 'icon_status_failed' }
   end
+
+  describe '#group' do
+    it { expect(subject.group).to eq 'failed' }
+  end
 end

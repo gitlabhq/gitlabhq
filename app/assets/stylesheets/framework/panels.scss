@@ -18,6 +18,20 @@
       margin-top: -2px;
       margin-left: 5px;
     }
+
+    &.split {
+      display: flex;
+      align-items: center;
+    }
+
+    .left {
+      flex: 1 1 auto;
+    }
+
+    .right {
+      flex: 0 0 auto;
+      text-align: right;
+    }
   }
 
   .panel-body {

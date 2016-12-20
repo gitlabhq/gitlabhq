@@ -1,6 +1,6 @@
 Dir[Rails.root.join("app/models/project_services/chat_message/*.rb")].each { |f| require f }
 
-RSpec.shared_examples 'slack or mattermost' do
+RSpec.shared_examples 'slack or mattermost notifications' do
   let(:chat_service) { described_class.new }
   let(:webhook_url) { 'https://example.gitlab.com/' }
 
