@@ -18,7 +18,7 @@
 
       return Vue.http.get(this.baseEndpoint).catch((err) => {
         console.error('Error fetching approvals', err);
-        return new Flash(flashErrorMessage, 'alert');
+        return new Flash(flashErrorMessage);
       });
     }
 
@@ -27,7 +27,7 @@
 
       return Vue.http.post(this.baseEndpoint).catch((err) => {
         console.error('Error approving merge request', err);
-        return new Flash(flashErrorMessage, 'alert');
+        return new Flash(flashErrorMessage);
       });
     }
 
@@ -36,7 +36,7 @@
 
       return Vue.http.delete(this.baseEndpoint).catch((err) => {
         console.error('Error unapproving merge request', err);
-        return new Flash(flashErrorMessage, 'alert');
+        return new Flash(flashErrorMessage);
       });
     }
   }
