@@ -480,7 +480,7 @@ module API
           desc: 'The description of the tracker'
         }
       ],
-      'slack-notification' => [
+      'slack' => [
         {
           required: true,
           name: :webhook,
