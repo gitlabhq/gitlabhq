@@ -1,14 +1,10 @@
 class ChangeSlackServiceToSlackNotificationService < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
-  DOWNTIME = true
-  DOWNTIME_REASON = 'Rename SlackService to SlackNotificationService'
+  DOWNTIME = false
 
-  def up
-    execute("UPDATE services SET type = 'SlackNotificationService' WHERE type = 'SlackService'")
-  end
-
-  def down
-    execute("UPDATE services SET type = 'SlackService' WHERE type = 'SlackNotificationService'")
+  # This migration is a no-op, as it existed in an RC but was then moved:
+  #   db/post_migrate/20161220101029_change_slack_service_to_slack_notification_service_in_batches.rb
+  def change
   end
 end
