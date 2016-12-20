@@ -1,6 +1,4 @@
 module Mattermost
-  class Error < StandardError; end
-
   class NoSessionError < Error
     def message
       'No session could be set up, is Mattermost configured with Single Sign On?'
