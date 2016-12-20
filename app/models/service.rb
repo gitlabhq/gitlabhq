@@ -216,7 +216,7 @@ class Service < ActiveRecord::Base
       jira
       kubernetes
       mattermost_slash_commands
-      mattermost_notification
+      mattermost
       pipelines_email
       pivotaltracker
       pushover
