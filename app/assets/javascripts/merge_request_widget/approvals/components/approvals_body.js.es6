@@ -55,6 +55,9 @@
       showApproveButton() {
         return this.userCanApprove && !this.userHasApproved;
       },
+      showSuggestedApprovers() {
+        return this.suggestedApprovers && this.suggestedApprovers.length;
+      }
     },
     methods: {
       approveMergeRequest() {
@@ -67,7 +70,7 @@
     template: `
       <div class='approvals-body mr-widget-body'>
         <h4> Requires {{ approvalsRequiredStringified }}
-          <span v-if='suggestedApprovers.length'> (from {{ approverNamesStringified }}) </span>
+          <span v-if='showSuggestedApprovers'> (from {{ approverNamesStringified }}) </span>
         </h4>
         <div v-if='showApproveButton' class='append-bottom-10'>
           <button

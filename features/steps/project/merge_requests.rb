@@ -610,7 +610,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I should not see merge button' do
     page.within '.mr-state-widget' do
-      expect(page).not_to have_button("Accept Merge Request")
+      expect(page).to have_button('Accept Merge Request', disabled: true)
     end
   end
 
@@ -622,7 +622,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I should see approved merge request "Bug NS-04"' do
     page.within '.mr-state-widget' do
-      expect(page).to have_button("Accept Merge Request")
+      expect(page).to have_button('Accept Merge Request', disabled: false)
     end
   end
 
@@ -634,13 +634,13 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I should see message that MR require an approval from me' do
     page.within '.mr-state-widget' do
-      expect(page).to have_content("Requires one more approval (from #{current_user.name})")
+      expect(page).to have_content("Requires 1 more approval (from #{current_user.name})")
     end
   end
 
   step 'I should see message that MR require an approval' do
     page.within '.mr-state-widget' do
-      expect(page).to have_content("Requires one more approval")
+      expect(page).to have_content("Requires 1 more approval")
     end
   end
 

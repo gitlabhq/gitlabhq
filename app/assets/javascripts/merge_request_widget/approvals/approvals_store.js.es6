@@ -40,19 +40,19 @@
     fetch() {
       return this.api.fetchApprovals()
         .then(res => this.assignToRootStore('approvals', res.data))
-        .then(data => this.setMergeRequestAcceptanceStatus(data.approvalsLeft));
+        .then(data => this.setMergeRequestAcceptanceStatus(data.approvals_left));
     }
 
     approve() {
       return this.api.approveMergeRequest()
         .then(res => this.assignToRootStore('approvals', res.data))
-        .then(data => this.setMergeRequestAcceptanceStatus(data.approvalsLeft));
+        .then(data => this.setMergeRequestAcceptanceStatus(data.approvals_left));
     }
 
     unapprove() {
       return this.api.unapproveMergeRequest()
         .then(res => this.assignToRootStore('approvals', res.data))
-        .then(data => this.setMergeRequestAcceptanceStatus(data.approvalsLeft));
+        .then(data => this.setMergeRequestAcceptanceStatus(data.approvals_left));
     }
 
     setMergeRequestAcceptanceStatus(approvalsLeft) {
