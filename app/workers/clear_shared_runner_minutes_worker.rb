@@ -1,8 +1,12 @@
 class ClearSharedRunnerMinutesWorker
+  LEASE_TIMEOUT = 3600
+
   include Sidekiq::Worker
   include CronjobQueue
 
   def perform
+    return unless try_obtain_lease
+
     ProjectMetrics.update_all(
       shared_runners_minutes: 0,
       shared_runners_minutes_last_reset: Time.now)
@@ -10,5 +14,12 @@ class ClearSharedRunnerMinutesWorker
     NamespaceMetrics.update_all(
       shared_runners_minutes: 0,
       shared_runners_minutes_last_reset: Time.now)
+  end
+
+  private
+
+  def try_obtain_lease
+    Gitlab::ExclusiveLease.new('gitlab_clear_shared_runner_minutes_worker',
+      timeout: LEASE_TIMEOUT).try_obtain
   end
 end
