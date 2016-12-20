@@ -61,6 +61,9 @@ version of Runner required.
 | **CI_RUNNER_DESCRIPTION** | 8.10 | 0.5    | The description of the runner as saved in GitLab |
 | **CI_RUNNER_TAGS**      | 8.10   | 0.5    | The defined runner tags |
 | **CI_DEBUG_TRACE**      | all    | 1.7    | Whether [debug tracing](#debug-tracing) is enabled |
+| **GET_SOURCES_ATTEMPTS** | 8.15    | 1.9    | Number of attempts to fetch sources running a build |
+| **ARTIFACT_DOWNLOAD_ATTEMPTS** | 8.15    | 1.9    | Number of attempts to download artifacts running a build |
+| **RESTORE_CACHE_ATTEMPTS** | 8.15    | 1.9    | Number of attempts to restore the cache running a build |
 | **GITLAB_USER_ID**      | 8.12   | all    | The id of the user who started the build |
 | **GITLAB_USER_EMAIL**   | 8.12   | all    | The email of the user who started the build |
 

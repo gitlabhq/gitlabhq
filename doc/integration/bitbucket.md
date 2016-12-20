@@ -5,7 +5,7 @@ Bitbucket.org account.
 
 ## Overview
 
-You can set up Bitbucket.org as an OAuth provider so that you can use your
+You can set up Bitbucket.org as an OAuth2 provider so that you can use your
 credentials to authenticate into GitLab or import your projects from
 Bitbucket.org.
 
@@ -50,6 +50,7 @@ you to use.
     Repositories: Read
     Pull Requests: Read
     Issues: Read
+    Wiki: Read and Write
     ```
 
     ![Bitbucket OAuth settings page](img/bitbucket_oauth_settings_page.png)

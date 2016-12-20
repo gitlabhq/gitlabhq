@@ -41,7 +41,7 @@ module Ci
         put ":id" do
           authenticate_runner!
           build = Ci::Build.where(runner_id: current_runner.id).running.find(params[:id])
-          forbidden!('Build has been erased!') if build.erased?
+          validate_build!(build)
 
           update_runner_info
 
@@ -71,9 +71,7 @@ module Ci
         #   PATCH /builds/:id/trace.txt
         patch ":id/trace.txt" do
           build = Ci::Build.find_by_id(params[:id])
-          not_found! unless build
-          authenticate_build_token!(build)
-          forbidden!('Build has been erased!') if build.erased?
+          authenticate_build!(build)
 
           error!('400 Missing header Content-Range', 400) unless request.headers.has_key?('Content-Range')
           content_range = request.headers['Content-Range']
@@ -104,8 +102,7 @@ module Ci
           Gitlab::Workhorse.verify_api_request!(headers)
           not_allowed! unless Gitlab.config.artifacts.enabled
           build = Ci::Build.find_by_id(params[:id])
-          not_found! unless build
-          authenticate_build_token!(build)
+          authenticate_build!(build)
           forbidden!('build is not running') unless build.running?
 
           if params[:filesize]
@@ -142,10 +139,8 @@ module Ci
           require_gitlab_workhorse!
           not_allowed! unless Gitlab.config.artifacts.enabled
           build = Ci::Build.find_by_id(params[:id])
-          not_found! unless build
-          authenticate_build_token!(build)
+          authenticate_build!(build)
           forbidden!('Build is not running!') unless build.running?
-          forbidden!('Build has been erased!') if build.erased?
 
           artifacts_upload_path = ArtifactUploader.artifacts_upload_path
           artifacts = uploaded_file(:file, artifacts_upload_path)
@@ -176,8 +171,7 @@ module Ci
         #   GET /builds/:id/artifacts
         get ":id/artifacts" do
           build = Ci::Build.find_by_id(params[:id])
-          not_found! unless build
-          authenticate_build_token!(build)
+          authenticate_build!(build)
           artifacts_file = build.artifacts_file
 
           unless artifacts_file.file_storage?
@@ -202,8 +196,7 @@ module Ci
         #   DELETE /builds/:id/artifacts
         delete ":id/artifacts" do
           build = Ci::Build.find_by_id(params[:id])
-          not_found! unless build
-          authenticate_build_token!(build)
+          authenticate_build!(build)
 
           build.erase_artifacts!
         end

@@ -22,7 +22,7 @@ FactoryGirl.define do
 
     yaml_variables do
       [
-        { key: :DB_NAME, value: 'postgres', public: true }
+        { key: 'DB_NAME', value: 'postgres', public: true }
       ]
     end
 
