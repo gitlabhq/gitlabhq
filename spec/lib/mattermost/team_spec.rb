@@ -3,9 +3,6 @@ require 'spec_helper'
 describe Mattermost::Team do
   describe '#all' do
     let(:user) { build(:user) }
-
-    subject { described_class.new(user) }
-
     let(:response) do
       [{
         "id" => "xiyro8huptfhdndadpz8r3wnbo",
@@ -22,6 +19,7 @@ describe Mattermost::Team do
         "allow_open_invite" => false }]
     end
 
+    subject { described_class.new(user) }
 
     before do
       allow(subject).to receive(:json_get).and_return(response)

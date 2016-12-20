@@ -81,9 +81,9 @@ module Mattermost
     def post(path, options = {})
       self.class.post(path, options.merge(headers: @headers))
     rescue HTTParty::Error => e
-      raise ConnectionError(e.message)
+      raise Mattermost::ConnectionError.new(e.message)
     rescue Errno::ECONNREFUSED
-      raise ConnectionError
+      raise Mattermost::ConnectionError.new(e.message)
     end
 
     private
