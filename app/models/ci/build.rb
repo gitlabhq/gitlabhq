@@ -538,7 +538,7 @@ module Ci
     end
 
     def shared_runners_minutes_quota?
-      runner && runner.shared? && !project.public?
+      runner && runner.shared? && project.shared_runners_minutes_quota?
     end
 
     private

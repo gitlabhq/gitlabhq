@@ -2092,6 +2092,48 @@ describe Project, models: true do
     end
   end
 
+  describe '#shared_runners_minutes_quota?' do
+    subject { project.shared_runners_minutes_quota? }
+
+    context 'with shared runners enabled' do
+      before do
+        project.shared_runners_enabled = true
+      end
+
+      context 'for public project' do
+        before do
+          project.visibility_level = Project::PUBLIC
+        end
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'for internal project' do
+        before do
+          project.visibility_level = Project::INTERNAL
+        end
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'for private project' do
+        before do
+          project.visibility_level = Project::INTERNAL
+        end
+
+        it { is_expected.to be_truthy }
+      end
+    end
+
+    context 'without shared runners' do
+      before do
+        project.shared_runners_enabled = false
+      end
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
   def enable_lfs
     allow(Gitlab.config.lfs).to receive(:enabled).and_return(true)
   end

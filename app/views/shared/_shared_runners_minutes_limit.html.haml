@@ -1,8 +1,9 @@
 - project = local_assigns.fetch(:project, nil)
-- namespace = local_assigns.fetch(:namespace, project && project.namespace)
-- has_limit = (project || namespace).shared_runners_minutes_limit_enabled?
-- can_see_status = project.nil? || can?(current_user, :create_pipeline, project)
-- if cookies[:hide_shared_runner_quota_message].blank? && has_limit && namespace.shared_runners_minutes_used? && can_see_status
+
+- if cookies[:hide_shared_runner_quota_message].blank? &&
+    project.shared_runners_minutes_quota? &&
+    namespace.shared_runners_minutes_used? &&
+    can?(current_user, :create_pipeline, project)
   .shared-runner-quota-message.alert.alert-warning.hidden-xs
     = namespace.name
     has exceeded their build minutes quota. Pipelines will not run anymore on shared runners.

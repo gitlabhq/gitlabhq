@@ -1330,28 +1330,11 @@ describe Ci::Build, models: true do
         build.runner = create(:ci_runner, :shared)
       end
 
-      context 'for public project' do
-        before do
-          build.project.visibility_level = Gitlab::VisibilityLevel::PUBLIC
-        end
+      it do
+        expect(build.project).to receive(:shared_runners_minutes_quota?).
+          and_return(true)
 
-        it { is_expected.to be_falsey }
-      end
-
-      context 'for internal project' do
-        before do
-          build.project.visibility_level = Gitlab::VisibilityLevel::INTERNAL
-        end
-
-        it { is_expected.to be_truthy }
-      end
-
-      context 'for private project' do
-        before do
-          build.project.visibility_level = Gitlab::VisibilityLevel::INTERNAL
-        end
-
-        it { is_expected.to be_truthy }
+        is_expected.to be_truthy
       end
     end
 
