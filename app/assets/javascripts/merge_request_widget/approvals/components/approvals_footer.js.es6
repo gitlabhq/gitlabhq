@@ -36,9 +36,6 @@
       },
     },
     computed: {
-      hasApprovers() {
-        return this.approvedBy && this.approvedBy.length;
-      },
       showUnapproveButton() {
         return this.userHasApproved && !this.userCanApprove;
       },
