@@ -149,6 +149,7 @@ describe Repository, models: true do
     it "caches #last_commit_id_for_path" do
       cache = repository.send(:cache)
       key = "last_commit_id_for_path:#{sample_commit.id}:#{Digest::SHA1.hexdigest('.gitignore')}"
+
       expect(cache).to receive(:fetch).with(key).and_return('c1acaa5')
       expect(repository.cache_last_commit_id_for_path(sample_commit.id, '.gitignore')).to eq('c1acaa5')
     end
