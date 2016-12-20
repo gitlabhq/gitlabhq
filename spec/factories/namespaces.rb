@@ -4,6 +4,10 @@ FactoryGirl.define do
     path { name.downcase.gsub(/\s/, '_') }
     owner
 
+    trait :with_build_minutes do
+      namespace_metrics factory: :namespace_metrics, shared_runners_minutes: 400
+    end
+
     trait :with_build_minutes_limit do
       shared_runners_minutes_limit 500
     end
