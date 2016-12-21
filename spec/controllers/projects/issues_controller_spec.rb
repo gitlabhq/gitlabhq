@@ -55,11 +55,12 @@ describe Projects::IssuesController do
 
     context 'with page param' do
       let(:last_page) { project.issues.page().total_pages }
-      let!(:issue_list) { create_list(:issue, 30, project: project) }
+      let!(:issue_list) { create_list(:issue, 2, project: project) }
 
       before do
         sign_in(user)
         project.team << [user, :developer]
+        allow(Kaminari.config).to receive(:default_per_page).and_return(1)
       end
 
       it 'redirects to last_page if page number is larger than number of pages' do
@@ -68,7 +69,7 @@ describe Projects::IssuesController do
           project_id: project.path.to_param,
           page: (last_page + 1).to_param
 
-        expect(response).to redirect_to(namespace_project_issues_path(page: last_page))
+        expect(response).to redirect_to(namespace_project_issues_path(page: last_page, state: controller.params[:state], scope: controller.params[:scope]))
       end
 
       it 'redirects to specified page' do

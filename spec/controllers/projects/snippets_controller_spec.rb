@@ -26,7 +26,7 @@ describe Projects::SnippetsController do
       it 'redirects to specified page' do
         get :index,
           namespace_id: project.namespace.path,
-          project_id: project.path, page: (last_page).to_param
+          project_id: project.path, page: last_page.to_param
 
         expect(assigns(:snippets).current_page).to eq(last_page)
         expect(response).to have_http_status(200)
