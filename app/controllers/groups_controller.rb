@@ -82,10 +82,7 @@ class GroupsController < Groups::ApplicationController
     if Groups::UpdateService.new(@group, current_user, group_params).execute
       redirect_to edit_group_path(@group), notice: "Group '#{@group.name}' was successfully updated."
     else
-      error = group.errors.full_messages.first
-      alert_message = "Group '#{@group.name}' cannot be updated: " + error
-
-      redirect_to edit_group_path(@group.reload), alert: alert_message
+      render action: "edit"
     end
   end
 
