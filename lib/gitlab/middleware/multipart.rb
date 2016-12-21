@@ -42,7 +42,7 @@ module Gitlab
 
             key, value = parsed_field.first
             if value.nil?
-              value = File.open(tmp_path)
+              value = open_file(tmp_path)
               @open_files << value
             else
               value = decorate_params_value(value, @request.params[key], tmp_path)
@@ -68,7 +68,7 @@ module Gitlab
 
           case path_value
           when nil
-            value_hash[path_key] = File.open(tmp_path)
+            value_hash[path_key] = open_file(tmp_path)
             @open_files << value_hash[path_key]
             value_hash
           when Hash
@@ -77,6 +77,10 @@ module Gitlab
           else
             raise "unexpected path value: #{path_value.inspect}"
           end
+        end
+
+        def open_file(path)
+          ::UploadedFile.new(path, File.basename(path), 'application/octet-stream')
         end
       end
 
