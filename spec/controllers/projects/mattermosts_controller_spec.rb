@@ -11,6 +11,9 @@ describe Projects::MattermostsController do
 
   describe 'GET #new' do
     before do
+      allow_any_instance_of(MattermostSlashCommandsService).
+        to receive(:list_teams).and_return([])
+
       get(:new,
           namespace_id: project.namespace.to_param,
           project_id: project.to_param)
@@ -33,7 +36,9 @@ describe Projects::MattermostsController do
 
     context 'no request can be made to mattermost' do
       it 'shows the error' do
-        expect(controller).to set_flash[:alert].to /\AFailed to open TCP connection to/
+        allow_any_instance_of(MattermostSlashCommandsService).to receive(:configure).and_return([false, "error message"])
+
+        expect(subject).to redirect_to(new_namespace_project_mattermost_url(project.namespace, project))
       end
     end
 
