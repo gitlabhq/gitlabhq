@@ -1,11 +1,11 @@
 module Mattermost
-  class NoSessionError < Error
+  class NoSessionError < Mattermost::Error
     def message
       'No session could be set up, is Mattermost configured with Single Sign On?'
     end
   end
 
-  class ConnectionError < Error; end
+  class ConnectionError < Mattermost::Error; end
 
   # This class' prime objective is to obtain a session token on a Mattermost
   # instance with SSO configured where this GitLab instance is the provider.
@@ -36,12 +36,12 @@ module Mattermost
 
     def with_session
       with_lease do
-        raise NoSessionError unless create
+        raise Mattermost::NoSessionError unless create
 
         begin
           yield self
         rescue Errno::ECONNREFUSED
-          raise NoSessionError
+          raise Mattermost::NoSessionError
         ensure
           destroy
         end
@@ -71,19 +71,15 @@ module Mattermost
     end
 
     def get(path, options = {})
-      self.class.get(path, options.merge(headers: @headers))
-    rescue HTTParty::Error => e
-      raise Mattermost::ConnectionError.new(e.message)
-    rescue Errno::ECONNREFUSED => e
-      raise Mattermost::ConnectionError.new(e.message)
+      handle_exceptions do
+        self.class.get(path, options.merge(headers: @headers))
+      end
     end
 
     def post(path, options = {})
-      self.class.post(path, options.merge(headers: @headers))
-    rescue HTTParty::Error => e
-      raise Mattermost::ConnectionError.new(e.message)
-    rescue Errno::ECONNREFUSED
-      raise Mattermost::ConnectionError.new(e.message)
+      handle_exceptions do
+        self.class.post(path, options.merge(headers: @headers))
+      end
     end
 
     private
@@ -151,6 +147,14 @@ module Mattermost
     def lease_try_obtain
       lease = ::Gitlab::ExclusiveLease.new(lease_key, timeout: LEASE_TIMEOUT)
       lease.try_obtain
+    end
+
+    def handle_exceptions
+      yield
+    rescue HTTParty::Error => e
+      raise Mattermost::ConnectionError.new(e.message)
+    rescue Errno::ECONNREFUSED
+      raise Mattermost::ConnectionError.new(e.message)
     end
   end
 end

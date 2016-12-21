@@ -30,8 +30,8 @@ class MattermostSlashCommandsService < ChatSlashCommandsService
 
   def list_teams(user)
     Mattermost::Team.new(user).all
-  rescue Mattermost::Error
-    []
+  rescue Mattermost::Error => e
+    [[], e.message]
   end
 
   private
@@ -44,7 +44,7 @@ class MattermostSlashCommandsService < ChatSlashCommandsService
       auto_complete_desc: "Perform common operations on: #{pretty_project_name}",
       auto_complete_hint: '[help]',
       description: "Perform common operations on: #{pretty_project_name}",
-      display_name: "GitLab  / #{pretty_project_name}",
+      display_name: "GitLab / #{pretty_project_name}",
       method: 'P',
       user_name: 'GitLab')
   end
