@@ -159,7 +159,9 @@
     //      - Show Bottom Arrow button
     //      - Disable Autoscroll and hide indicator (when build is running)
     Build.prototype.initScrollMonitor = function() {
-      if (!gl.utils.isInViewport(this.$upBuildTrace.get(0)) && !gl.utils.isInViewport(this.$downBuildTrace.get(0))) { // User is somewhere in middle of Build Log
+      if (!gl.utils.isInViewport(this.$upBuildTrace.get(0)) && !gl.utils.isInViewport(this.$downBuildTrace.get(0))) {
+        // User is somewhere in middle of Build Log
+
         this.$scrollTopBtn.show();
 
         if (this.buildStatus === 'success' || this.buildStatus === 'failed') { // Check if Build is completed
@@ -178,21 +180,27 @@
           this.$autoScrollContainer.css({ top: this.$body.outerHeight() - AUTO_SCROLL_OFFSET }).show();
           this.$autoScrollStatusText.addClass('animate');
         }
-      } else if (gl.utils.isInViewport(this.$upBuildTrace.get(0)) && !gl.utils.isInViewport(this.$downBuildTrace.get(0))) { // User is at Top of Build Log
+      } else if (gl.utils.isInViewport(this.$upBuildTrace.get(0)) && !gl.utils.isInViewport(this.$downBuildTrace.get(0))) {
+        // User is at Top of Build Log
+
         this.$scrollTopBtn.hide();
         this.$scrollBottomBtn.show();
 
         this.$autoScrollContainer.hide();
         this.$autoScrollStatusText.removeClass('animate');
       } else if ((!gl.utils.isInViewport(this.$upBuildTrace.get(0)) && gl.utils.isInViewport(this.$downBuildTrace.get(0))) ||
-                 (this.$buildRefreshAnimation.is(':visible') && gl.utils.isInViewport(this.$buildRefreshAnimation.get(0)))) { // User is at Bottom of Build Log
+                 (this.$buildRefreshAnimation.is(':visible') && gl.utils.isInViewport(this.$buildRefreshAnimation.get(0)))) {
+        // User is at Bottom of Build Log
+
         this.$scrollTopBtn.show();
         this.$scrollBottomBtn.hide();
 
         // Show and Reposition Autoscroll Status Indicator
         this.$autoScrollContainer.css({ top: this.$body.outerHeight() - AUTO_SCROLL_OFFSET }).show();
         this.$autoScrollStatusText.addClass('animate');
-      } else if (gl.utils.isInViewport(this.$upBuildTrace.get(0)) && gl.utils.isInViewport(this.$downBuildTrace.get(0))) { // Build Log height is small
+      } else if (gl.utils.isInViewport(this.$upBuildTrace.get(0)) && gl.utils.isInViewport(this.$downBuildTrace.get(0))) {
+        // Build Log height is small
+
         this.$scrollTopBtn.hide();
         this.$scrollBottomBtn.hide();
 
