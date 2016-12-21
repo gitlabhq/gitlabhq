@@ -319,7 +319,7 @@ the file extension. Examples of unsupported JavaScript features are:
 - Generators
 - Array destructuring
 - For Of
-- Symbol/Symbol.iterator]
+- Symbol/Symbol.iterator
 - Spread
 
 Until these are polyfilled or transpiled appropriately, they should not be used. 
@@ -355,7 +355,7 @@ end
 ```
 
 In Spinach, the JavaScript driver is enabled differently. In the `*.feature` 
-file for the failing spec, add the @javascript flag above the Scenario: 
+file for the failing spec, add the `@javascript` flag above the Scenario: 
 
 ```
 @javascript
