@@ -35,8 +35,10 @@ SOFTWARE.
 
  1. Clone KaTeX. Anything later than 4fb9445a9 (is merged into master) will do.
  2. make (requires node)
- 3. sed -i 's,fonts/,,' build/katex.css
- 4. Copy build/katex.js, build/katex.css and fonts/* to gitlab.
+ 3. sed -e 's,fonts/,,' -e 's/url\(([^)]*)\)/url(font-path\1)/g' build/katex.css > build/katex.scss
+ 4. Copy build/katex.js to gitlab/vendor/assets/javascripts/katex.js,
+    build/katex.scss to gitlab/vendor/assets/stylesheets/katex.scss and
+    fonts/* to gitlab/vendor/assets/fonts/.
 */
 
 @font-face {
