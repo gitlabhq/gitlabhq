@@ -591,7 +591,11 @@ class NotificationService
     custom_action = build_custom_key(action, target)
 
     recipients = target.participants(current_user)
-    recipients = add_project_watchers(recipients, project)
+
+    # TODO: CLEAN ME UP!
+    unless custom_action == :success_pipeline
+      recipients = add_project_watchers(recipients, project)
+    end
 
     recipients = add_custom_notifications(recipients, project, custom_action)
     recipients = reject_mention_users(recipients, project)
