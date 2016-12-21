@@ -473,15 +473,22 @@
 
   .unapprove-btn-wrap {
     border-left: 1px solid $gl-gray-light;
-    padding-left: 15px;
+    padding-left: 5px;
     margin-left: 10px;
   }
 
   .unapprove-btn {
+    border: none;
+    background: transparent;
     cursor: pointer;
 
     &:hover {
       color: $gl-gray-light;
+      text-decoration: none;
+    }
+
+    &:focus {
+      outline: none;
     }
   }
 

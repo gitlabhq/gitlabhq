@@ -27,6 +27,11 @@
         required: false,
       },
     },
+    data() {
+      return {
+        approving: false,
+      };
+    },
     computed: {
       approvalsRequiredStringified() {
         const baseString = `${this.approvalsLeft} more approval`;
@@ -61,7 +66,10 @@
     },
     methods: {
       approveMergeRequest() {
-        return gl.ApprovalsStore.approve();
+        this.approving = true;
+        return gl.ApprovalsStore.approve().then(() => {
+          this.approving = false;
+        });
       },
     },
     beforeCreate() {
@@ -74,6 +82,7 @@
         </h4>
         <div v-if='showApproveButton' class='append-bottom-10'>
           <button
+            :disabled='approving'
             @click='approveMergeRequest'
             class='btn btn-primary approve-btn'>
             Approve Merge Request

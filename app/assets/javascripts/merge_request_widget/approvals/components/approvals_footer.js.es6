@@ -35,14 +35,22 @@
         required: true,
       },
     },
+    data() {
+      return {
+        unapproving: false,
+      };
+    },
     computed: {
       showUnapproveButton() {
         return this.userHasApproved && !this.userCanApprove;
       },
     },
     methods: {
-      removeApproval() {
-        gl.ApprovalsStore.unapprove();
+      unapproveMergeRequest() {
+        this.unapproving = true;
+        gl.ApprovalsStore.unapprove().then(() => {
+          this.unapproving = false;
+        });
       },
     },
     beforeCreate() {
@@ -70,9 +78,13 @@
           </link-to-member-avatar>
         </span>
         <span class='unapprove-btn-wrap' v-if='showUnapproveButton'>
-          <span class='unapprove-btn' @click='removeApproval()'>
+          <button
+            :disabled='unapproving'
+            @click='unapproveMergeRequest'
+            class='btn btn-link unapprove-btn'>
             <i class='fa fa-close'></i>
             Remove your approval</span>
+          </button>
         </span>
       </div>
     `,
