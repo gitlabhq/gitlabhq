@@ -604,6 +604,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I click link "Approve"' do
     page.within '.mr-state-widget' do
+      wait_for_ajax
       click_button 'Approve Merge Request'
     end
   end
@@ -634,6 +635,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I should see message that MR require an approval from me' do
     page.within '.mr-state-widget' do
+      wait_for_ajax
       expect(page).to have_content("Requires 1 more approval (from #{current_user.name})")
     end
   end
