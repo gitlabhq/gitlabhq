@@ -54,7 +54,7 @@
     .mr-widget-footer{ 'v-show' => '!showApprovals' }
       = icon("spinner spin")
       Checking approval status for this merge request.
-    .approvals-component{ 'v-show' => 'showApprovals' }
+    .approvals-components{ 'v-show' => 'showApprovals' }
       = render 'projects/merge_requests/widget/open/approvals_body'
       = render 'projects/merge_requests/widget/open/approvals_footer'
 

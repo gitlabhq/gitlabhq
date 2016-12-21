@@ -197,10 +197,6 @@ feature 'Merge request approvals', js: true, feature: true do
 
       it 'I am able to approve' do
         approve_merge_request
-        page.within '.mr-state-widget' do
-          click_button 'Approve Merge Request'
-        end
-
         wait_for_ajax
         expect(page).to have_content('Approved by')
         expect(page).to have_css('.approver-avatar')
