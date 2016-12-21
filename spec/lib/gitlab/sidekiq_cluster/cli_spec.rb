@@ -51,13 +51,13 @@ describe Gitlab::SidekiqCluster::CLI do
   end
 
   describe '#start_loop' do
-    it 'runs until one of the threads has been terminated' do
+    it 'runs until one of the processes has been terminated' do
       allow(cli).to receive(:sleep).with(a_kind_of(Numeric))
 
       expect(Gitlab::SidekiqCluster).to receive(:all_alive?).
         with(an_instance_of(Array)).and_return(false)
 
-      expect(Gitlab::SidekiqCluster).to receive(:signal_threads).
+      expect(Gitlab::SidekiqCluster).to receive(:signal_processes).
         with(an_instance_of(Array), :TERM)
 
       cli.start_loop
