@@ -14,7 +14,13 @@ module Groups
 
       group.assign_attributes(params)
 
-      group.save
+      begin
+        group.save
+      rescue Gitlab::UpdatePathError => e
+        group.errors.add(:base, e.message)
+
+        false
+      end
     end
   end
 end
