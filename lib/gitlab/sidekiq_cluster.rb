@@ -59,15 +59,17 @@ module Gitlab
     # queues - An Array containing Arrays. Each sub Array should specify the
     #          queues to use for a single process.
     #
+    # directory - The directory of the Rails application.
+    #
     # Returns an Array containing the PIDs of the started processes.
-    def self.start(queues, env)
-      queues.map { |pair| start_sidekiq(pair, env) }
+    def self.start(queues, env, directory = Dir.pwd)
+      queues.map { |pair| start_sidekiq(pair, env, directory) }
     end
 
     # Starts a Sidekiq process that processes _only_ the given queues.
     #
     # Returns the PID of the started process.
-    def self.start_sidekiq(queues, env)
+    def self.start_sidekiq(queues, env, directory = Dir.pwd)
       switches = queues.map { |q| "-q #{q},1" }
 
       pid = Process.spawn(

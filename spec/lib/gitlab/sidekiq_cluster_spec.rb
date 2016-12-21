@@ -58,12 +58,12 @@ describe Gitlab::SidekiqCluster do
   describe '.start' do
     it 'starts Sidekiq with the given queues and environment' do
       expect(described_class).to receive(:start_sidekiq).
-        ordered.with(%w(foo), :production)
+        ordered.with(%w(foo), :production, 'foo/bar')
 
       expect(described_class).to receive(:start_sidekiq).
-        ordered.with(%w(bar baz), :production)
+        ordered.with(%w(bar baz), :production, 'foo/bar')
 
-      described_class.start([%w(foo), %w(bar baz)], :production)
+      described_class.start([%w(foo), %w(bar baz)], :production, 'foo/bar')
     end
   end
 

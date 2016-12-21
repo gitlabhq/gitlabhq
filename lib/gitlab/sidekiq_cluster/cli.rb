@@ -14,6 +14,7 @@ module Gitlab
         @alive = true
         @processes = []
         @logger = Logger.new(log_output)
+        @rails_path = Dir.pwd
 
         # Use a log format similar to Sidekiq to make parsing/grepping easier.
         @logger.formatter = proc do |level, date, program, message|
@@ -33,7 +34,7 @@ module Gitlab
 
         @logger.info("Starting cluster with #{queues.length} processes")
 
-        @processes = SidekiqCluster.start(queues, @environment)
+        @processes = SidekiqCluster.start(queues, @environment, @rails_path)
 
         write_pid
         trap_signals
@@ -86,6 +87,10 @@ module Gitlab
 
           opt.on('-P', '--pidfile PATH', 'Path to the PID file') do |pid|
             @pid = pid
+          end
+
+          opt.on('-r', '--require PATH', 'Location of the Rails application') do |path|
+            @rails_path = path
           end
 
           opt.on('-i', '--interval INT', 'The number of seconds to wait between worker checks') do |int|
