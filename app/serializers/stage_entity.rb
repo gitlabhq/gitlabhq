@@ -1,4 +1,4 @@
-class PipelineStageEntity < Grape::Entity
+class StageEntity < Grape::Entity
   include RequestAwareEntity
 
   expose :name

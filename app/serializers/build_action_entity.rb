@@ -1,4 +1,4 @@
-class PipelineActionEntity < Grape::Entity
+class BuildActionEntity < Grape::Entity
   include RequestAwareEntity
 
   expose :name do |build|

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe PipelineActionEntity do
+describe BuildActionEntity do
   let(:build) { create(:ci_build, name: 'test_build') }
 
   let(:entity) do

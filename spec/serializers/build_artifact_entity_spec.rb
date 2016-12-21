@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe PipelineArtifactEntity do
+describe BuildArtifactEntity do
   let(:build) { create(:ci_build, name: 'test:build') }
 
   let(:entity) do

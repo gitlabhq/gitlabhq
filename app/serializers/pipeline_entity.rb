@@ -20,9 +20,9 @@ class PipelineEntity < Grape::Entity
 
     expose :duration
     expose :finished_at
-    expose :stages, using: PipelineStageEntity
-    expose :artifacts, using: PipelineArtifactEntity
-    expose :manual_actions, using: PipelineActionEntity
+    expose :stages, using: StageEntity
+    expose :artifacts, using: BuildArtifactEntity
+    expose :manual_actions, using: BuildActionEntity
   end
 
   expose :flags do
