@@ -72,7 +72,7 @@ class Project < ActiveRecord::Base
 
   has_one :push_rule, dependent: :destroy
   has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event'
-  has_many :boards, before_add: :validate_board_limit, dependent: :destroy
+  has_many :boards, dependent: :destroy
 
   # Project services
   has_one :campfire_service, dependent: :destroy
