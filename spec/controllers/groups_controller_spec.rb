@@ -122,8 +122,8 @@ describe GroupsController do
       allow_any_instance_of(Group).to receive(:move_dir).and_raise(Gitlab::UpdatePathError)
       post :update, id: group.to_param, group: { path: 'new_path' }
 
-      expect(response).to have_http_status(302)
-      expect(controller).to set_flash[:alert]
+      expect(assigns(:group).errors).not_to be_empty
+      expect(assigns(:group).path).not_to eq('new_path')
     end
   end
 end

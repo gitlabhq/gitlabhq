@@ -59,8 +59,6 @@ describe Groups::UpdateService, services: true do
     end
 
     it 'returns true' do
-      puts internal_group.errors.full_messages
-
       expect(service.execute).to eq(true)
     end
 
@@ -81,6 +79,10 @@ describe Groups::UpdateService, services: true do
         service.execute
 
         expect(internal_group.errors.full_messages.first).to eq('Gitlab::UpdatePathError')
+      end
+
+      it "hasn't changed the path" do
+        expect { service.execute}.not_to change { internal_group.reload.path}
       end
     end
   end
