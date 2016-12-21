@@ -37,6 +37,11 @@ describe Ci::API::Builds do
           let(:user_agent) { 'Go-http-client/1.1' }
           it { expect(response).to have_http_status(404) }
         end
+
+        context "when runner doesn't have a User-Agent" do
+          let(:user_agent) { nil }
+          it { expect(response).to have_http_status(404) }
+        end
       end
 
       context 'when there is a pending build' do
