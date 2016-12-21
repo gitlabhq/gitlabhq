@@ -1,5 +1,3 @@
-require 'open3'
-
 module Gitlab
   module SidekiqCluster
     # The signals that should terminate both the master and workers.
@@ -41,15 +39,15 @@ module Gitlab
       false
     end
 
-    def self.signal_threads(threads, signal)
-      threads.each { |thread| signal(thread.pid, signal) }
+    def self.signal_processes(pids, signal)
+      pids.each { |pid| signal(pid, signal) }
     end
 
     def self.parse_queues(array)
       array.map { |chunk| chunk.split(',') }
     end
 
-    # Starts Sidekiq workers for the pairs of threads.
+    # Starts Sidekiq workers for the pairs of processes.
     #
     # Example:
     #
@@ -61,29 +59,49 @@ module Gitlab
     # queues - An Array containing Arrays. Each sub Array should specify the
     #          queues to use for a single process.
     #
-    # Returns an Array containing the threads monitoring each process.
-    def self.start(queues, env)
-      queues.map { |pair| start_sidekiq(pair, env) }
+    # directory - The directory of the Rails application.
+    #
+    # Returns an Array containing the PIDs of the started processes.
+    def self.start(queues, env, directory = Dir.pwd)
+      queues.map { |pair| start_sidekiq(pair, env, directory) }
     end
 
     # Starts a Sidekiq process that processes _only_ the given queues.
-    def self.start_sidekiq(queues, env)
+    #
+    # Returns the PID of the started process.
+    def self.start_sidekiq(queues, env, directory = Dir.pwd)
       switches = queues.map { |q| "-q #{q},1" }
 
-      Open3.popen3({ 'ENABLE_SIDEKIQ_CLUSTER' => '1' },
-                   'bundle',
-                   'exec',
-                   'sidekiq',
-                   "-c #{queues.length + 1}",
-                   "-e#{env}",
-                   "-gqueues: #{queues.join(', ')}",
-                   *switches).last
+      pid = Process.spawn(
+        { 'ENABLE_SIDEKIQ_CLUSTER' => '1' },
+        'bundle',
+        'exec',
+        'sidekiq',
+        "-c #{queues.length + 1}",
+        "-e#{env}",
+        "-gqueues: #{queues.join(', ')}",
+        "-r#{directory}",
+        *switches,
+        err: $stderr,
+        out: $stdout
+      )
+
+      wait_async(pid)
+
+      pid
     end
 
-    # Returns true if all the processes/threads are alive.
-    def self.all_alive?(threads)
-      threads.each do |thread|
-        return false unless signal(thread.pid, 0)
+    # Waits for the given process to complete using a separate thread.
+    def self.wait_async(pid)
+      Thread.new do
+        Process.wait(pid) rescue Errno::ECHILD
+      end
+    end
+
+    # Returns true if all the processes are alive.
+    def self.all_alive?(pids)
+      pids.each do |pid|
+        return false unless signal(pid, 0)
       end
 
       true
