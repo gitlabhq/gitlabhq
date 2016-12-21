@@ -95,5 +95,29 @@ describe Mattermost::Session, type: :request do
         end
       end
     end
+
+    context 'with lease' do
+      before do
+        allow(subject).to receive(:lease_try_obtain).and_return('aldkfjsldfk')
+      end
+
+      it 'tries to obtain a lease' do
+        expect(subject).to receive(:lease_try_obtain)
+        expect(Gitlab::ExclusiveLease).to receive(:cancel)
+
+        # Cannot setup a session, but we should still cancel the lease
+        expect { subject.with_session }.to raise_error(Mattermost::NoSessionError)
+      end
+    end
+
+    context 'without lease' do
+      before do
+        allow(subject).to receive(:lease_try_obtain).and_return(nil)
+      end
+
+      it 'returns a NoSessionError error' do
+        expect { subject.with_session }.to raise_error(Mattermost::NoSessionError)
+      end
+    end
   end
 end
