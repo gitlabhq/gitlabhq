@@ -183,6 +183,7 @@
             container: '.js-pipeline-table',
           });
           break;
+        case 'projects:pipelines:builds':
         case 'projects:pipelines:show':
           const { controllerAction } = document.querySelector('.js-pipeline-container').dataset;
 
