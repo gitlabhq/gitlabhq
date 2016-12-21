@@ -1,5 +1,4 @@
-- pretty_path_with_namespace = "#{@project ? @project.namespace.name : 'namespace'} / #{@project ? @project.name : 'name'}"
-- run_actions_text = "Perform common operations on this project: #{pretty_path_with_namespace}"
+- enabled = Gitlab.config.mattermost.enabled
 
 .well
   This service allows GitLab users to perform common operations on this
@@ -8,93 +7,9 @@
   See list of available commands in Mattermost after setting up this service,
   by entering
   %code /&lt;command_trigger_word&gt; help
-  %br
-  %br
-  To setup this service:
-  %ul.list-unstyled
-    %li
-      1.
-      = link_to 'Enable custom slash commands', 'https://docs.mattermost.com/developer/slash-commands.html#enabling-custom-commands'
-      on your Mattermost installation
-    %li
-      2.
-      = link_to 'Add a slash command', 'https://docs.mattermost.com/developer/slash-commands.html#set-up-a-custom-command'
-      in Mattermost with these options:
 
-  %hr
+  - unless enabled
+    = render 'projects/services/mattermost_slash_commands/detailed_help', subject: @service
 
-  .help-form
-    .form-group
-      = label_tag :display_name, 'Display name', class: 'col-sm-2 col-xs-12 control-label'
-      .col-sm-10.col-xs-12.input-group
-        = text_field_tag :display_name, "GitLab / #{pretty_path_with_namespace}", class: 'form-control input-sm', readonly: 'readonly'
-        .input-group-btn
-          = clipboard_button(clipboard_target: '#display_name')
-
-    .form-group
-      = label_tag :description, 'Description', class: 'col-sm-2 col-xs-12 control-label'
-      .col-sm-10.col-xs-12.input-group
-        = text_field_tag :description, run_actions_text, class: 'form-control input-sm', readonly: 'readonly'
-        .input-group-btn
-          = clipboard_button(clipboard_target: '#description')
-
-    .form-group
-      = label_tag nil, 'Command trigger word', class: 'col-sm-2 col-xs-12 control-label'
-      .col-sm-10.col-xs-12.text-block
-        %p Fill in the word that works best for your team.
-        %p
-          Suggestions:
-          %code= 'gitlab'
-          %code= @project.path # Path contains no spaces, but dashes
-          %code= @project.path_with_namespace
-
-    .form-group
-      = label_tag :request_url, 'Request URL', class: 'col-sm-2 col-xs-12 control-label'
-      .col-sm-10.col-xs-12.input-group
-        = text_field_tag :request_url, service_trigger_url(subject), class: 'form-control input-sm', readonly: 'readonly'
-        .input-group-btn
-          = clipboard_button(clipboard_target: '#request_url')
-
-    .form-group
-      = label_tag nil, 'Request method', class: 'col-sm-2 col-xs-12 control-label'
-      .col-sm-10.col-xs-12.text-block POST
-
-    .form-group
-      = label_tag :response_username, 'Response username', class: 'col-sm-2 col-xs-12 control-label'
-      .col-sm-10.col-xs-12.input-group
-        = text_field_tag :response_username, 'GitLab', class: 'form-control input-sm', readonly: 'readonly'
-        .input-group-btn
-          = clipboard_button(clipboard_target: '#response_username')
-
-    .form-group
-      = label_tag :response_icon, 'Response icon', class: 'col-sm-2 col-xs-12 control-label'
-      .col-sm-10.col-xs-12.input-group
-        = text_field_tag :response_icon, asset_url('gitlab_logo.png'), class: 'form-control input-sm', readonly: 'readonly'
-        .input-group-btn
-          = clipboard_button(clipboard_target: '#response_icon')
-
-    .form-group
-      = label_tag nil, 'Autocomplete', class: 'col-sm-2 col-xs-12 control-label'
-      .col-sm-10.col-xs-12.text-block Yes
-
-    .form-group
-      = label_tag :autocomplete_hint, 'Autocomplete hint', class: 'col-sm-2 col-xs-12 control-label'
-      .col-sm-10.col-xs-12.input-group
-        = text_field_tag :autocomplete_hint, '[help]', class: 'form-control input-sm', readonly: 'readonly'
-        .input-group-btn
-          = clipboard_button(clipboard_target: '#autocomplete_hint')
-
-    .form-group
-      = label_tag :autocomplete_description, 'Autocomplete description', class: 'col-sm-2 col-xs-12 control-label'
-      .col-sm-10.col-xs-12.input-group
-        = text_field_tag :autocomplete_description, run_actions_text, class: 'form-control input-sm', readonly: 'readonly'
-        .input-group-btn
-          = clipboard_button(clipboard_target: '#autocomplete_description')
-
-  %hr
-
-  %ul.list-unstyled
-    %li
-      3. After adding the slash command, paste the
-      %strong token
-      into the field below
+- if enabled
+  = render 'projects/services/mattermost_slash_commands/installation_info', subject: @service
