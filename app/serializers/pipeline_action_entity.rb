@@ -5,7 +5,7 @@ class PipelineActionEntity < Grape::Entity
     build.name.humanize
   end
 
-  expose :url do |build|
+  expose :path do |build|
     play_namespace_project_build_path(
       build.project.namespace,
       build.project,

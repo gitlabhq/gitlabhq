@@ -12,11 +12,12 @@ describe StatusEntity do
     allow(status).to receive(:details_path).and_return('some/path')
   end
 
-  subject { entity.as_json }
+  describe '#as_json' do
+    subject { entity.as_json }
 
-  it 'contains status details' do
-    expect(subject).to include :text, :icon, :label
-    expect(subject).to include :has_details
-    expect(subject).to include :details_path
+    it 'contains status details' do
+      expect(subject).to include :text, :icon, :label, :group
+      expect(subject).to include :has_details, :details_path
+    end
   end
 end
