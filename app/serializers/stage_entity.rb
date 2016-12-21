@@ -2,6 +2,7 @@ class StageEntity < Grape::Entity
   include RequestAwareEntity
 
   expose :name
+
   expose :status do |stage, options|
     StatusEntity.represent(
       stage.detailed_status(request.user),
