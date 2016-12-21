@@ -5,13 +5,33 @@ describe Projects::PipelinesController do
 
   let(:user) { create(:user) }
   let(:project) { create(:empty_project, :public) }
-  let(:pipeline) { create(:ci_pipeline, project: project) }
 
   before do
     sign_in(user)
   end
 
+  describe 'GET index.json' do
+    before do
+      create_list(:ci_empty_pipeline, 2, project: project)
+
+      get :index, namespace_id: project.namespace.path,
+                  project_id: project.path,
+                  format: :json
+    end
+
+    it 'returns JSON with serialized pipelines' do
+      expect(response).to have_http_status(:ok)
+
+      expect(json_response).to include('pipelines')
+      expect(json_response['pipelines'].count).to eq 2
+      expect(json_response['count']['all']).to eq 2
+      expect(json_response['count']['running_or_pending']).to eq 2
+    end
+  end
+
   describe 'GET stages.json' do
+    let(:pipeline) { create(:ci_pipeline, project: project) }
+
     context 'when accessing existing stage' do
       before do
         create(:ci_build, pipeline: pipeline, stage: 'build')
