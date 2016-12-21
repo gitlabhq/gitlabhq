@@ -4,6 +4,7 @@
 
 (function() {
   var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var AUTO_SCROLL_OFFSET = 75;
 
   this.Build = (function() {
     Build.interval = null;
@@ -174,7 +175,7 @@
           this.$autoScrollContainer.hide();
           this.$autoScrollStatusText.removeClass('animate');
         } else {
-          this.$autoScrollContainer.css({ top: this.$body.outerHeight() - 75 }).fadeIn(100);
+          this.$autoScrollContainer.css({ top: this.$body.outerHeight() - AUTO_SCROLL_OFFSET }).fadeIn(100);
           this.$autoScrollStatusText.addClass('animate');
         }
       } else if (gl.utils.isInViewport(this.$upBuildTrace.get(0)) && !gl.utils.isInViewport(this.$downBuildTrace.get(0))) { // User is at Top of Build Log
@@ -189,7 +190,7 @@
         this.$scrollBottomBtn.hide();
 
         // Show and Reposition Autoscroll Status Indicator
-        this.$autoScrollContainer.css({ top: this.$body.outerHeight() - 75 }).fadeIn(100);
+        this.$autoScrollContainer.css({ top: this.$body.outerHeight() - AUTO_SCROLL_OFFSET }).fadeIn(100);
         this.$autoScrollStatusText.addClass('animate');
       } else if (gl.utils.isInViewport(this.$upBuildTrace.get(0)) && gl.utils.isInViewport(this.$downBuildTrace.get(0))) { // Build Log height is small
         this.$scrollTopBtn.hide();
