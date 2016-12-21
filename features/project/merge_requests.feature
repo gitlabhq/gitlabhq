@@ -329,6 +329,7 @@ Feature: Project Merge Requests
     And I click link "Close"
     Then I should see closed merge request "Bug NS-04"
 
+  @javascript
   Scenario: Developer can approve merge request
     Given I am a "Shop" developer
     And I visit project "Shop" merge requests page
@@ -337,6 +338,7 @@ Feature: Project Merge Requests
     When I click link "Approve"
     Then I should see approved merge request "Bug NS-04"
 
+  @javascript
   Scenario: I can not approve merge request if I am not an approver
     Given merge request 'Bug NS-04' must be approved by some user
     And I click link "Bug NS-04"
