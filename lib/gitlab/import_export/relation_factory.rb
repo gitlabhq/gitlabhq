@@ -22,7 +22,7 @@ module Gitlab
 
       IMPORTED_OBJECT_MAX_RETRIES = 5.freeze
 
-      EXISTING_OBJECT_CHECK = %i[milestone milestones label labels project_label project_labels project_label group_label].freeze
+      EXISTING_OBJECT_CHECK = %i[milestone milestones label labels project_label project_labels group_label group_labels].freeze
 
       def self.create(*args)
         new(*args).create
@@ -189,7 +189,7 @@ module Gitlab
         # Otherwise always create the record, skipping the extra SELECT clause.
         @existing_or_new_object ||= begin
           if EXISTING_OBJECT_CHECK.include?(@relation_name)
-            attribute_hash = attribute_hash_for(['events', 'priorities'])
+            attribute_hash = attribute_hash_for(['events'])
 
             existing_object.assign_attributes(attribute_hash) if attribute_hash.any?
 
@@ -210,9 +210,8 @@ module Gitlab
       def existing_object
         @existing_object ||=
           begin
-            finder_attributes = @relation_name == :group_label ? %w[title group_id] : %w[title project_id]
-            finder_hash = parsed_relation_hash.slice(*finder_attributes)
-            existing_object = relation_class.find_or_create_by(finder_hash)
+            existing_object = find_or_create_object!
+
             # Done in two steps, as MySQL behaves differently than PostgreSQL using
             # the +find_or_create_by+ method and does not return the ID the second time.
             existing_object.update!(parsed_relation_hash)
@@ -223,6 +222,25 @@ module Gitlab
       def unknown_service?
         @relation_name == :services && parsed_relation_hash['type'] &&
           !Object.const_defined?(parsed_relation_hash['type'])
+      end
+
+      def find_or_create_object!
+        finder_attributes = @relation_name == :group_label ? %w[title group_id] : %w[title project_id]
+        finder_hash = parsed_relation_hash.slice(*finder_attributes)
+
+        if label?
+          label = relation_class.find_or_initialize_by(finder_hash)
+          parsed_relation_hash.delete('priorities') if label.persisted?
+
+          label.save!
+          label
+        else
+          relation_class.find_or_create_by(finder_hash)
+        end
+      end
+
+      def label?
+        @relation_name.to_s.include?('label')
       end
     end
   end

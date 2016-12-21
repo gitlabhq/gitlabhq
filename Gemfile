@@ -179,7 +179,7 @@ gem 'gitlab-flowdock-git-hook', '~> 1.0.1'
 gem 'gemnasium-gitlab-service', '~> 0.2'
 
 # Slack integration
-gem 'slack-notifier', '~> 1.2.0'
+gem 'slack-notifier', '~> 1.5.1'
 
 # Asana integration
 gem 'asana', '~> 0.4.0'

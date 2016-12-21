@@ -6,8 +6,9 @@ Import your projects from GitHub to GitLab with minimal effort.
 
 >**Note:**
 If you are an administrator you can enable the [GitHub integration][gh-import]
-in your GitLab instance sitewide. This configuration is optional, users will be
-able import their GitHub repositories with a [personal access token][gh-token].
+in your GitLab instance sitewide. This configuration is optional, users will
+still be able to import their GitHub repositories with a
+[personal access token][gh-token].
 
 - At its current state, GitHub importer can import:
   - the repository description (GitLab 7.7+)
@@ -85,7 +86,7 @@ authorization with GitHub to grant GitLab access your repositories:
 1. Click **Generate token**.
 1. Copy the token hash.
 1. Go back to GitLab and provide the token to the GitHub importer.
-1. Hit the **List your GitHub repositories** button and wait while GitLab reads
+1. Hit the **List Your GitHub Repositories** button and wait while GitLab reads
    your repositories' information. Once done, you'll be taken to the importer
    page to select the repositories to import.
 
@@ -112,7 +113,6 @@ You can also choose a different name for the project and a different namespace,
 if you have the privileges to do so.
 
 [gh-import]: ../../integration/github.md "GitHub integration"
-[new-project]: ../../gitlab-basics/create-project.md "How to create a new project in GitLab"
 [gh-integration]: #authorize-access-to-your-repositories-using-the-github-integration
 [gh-token]: #authorize-access-to-your-repositories-using-a-personal-access-token
 [social sign-in]: ../../profile/account/social_sign_in.md

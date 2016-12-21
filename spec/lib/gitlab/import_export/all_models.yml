@@ -138,6 +138,7 @@ project:
 - builds_email_service
 - pipelines_email_service
 - mattermost_slash_commands_service
+- slack_slash_commands_service
 - irker_service
 - pivotaltracker_service
 - hipchat_service

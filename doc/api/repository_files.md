@@ -6,7 +6,9 @@
 
 ## Get file from repository
 
-Allows you to receive information about file in repository like name, size, content. Note that file content is Base64 encoded.
+Allows you to receive information about file in repository like name, size,
+content. Note that file content is Base64 encoded. This endpoint can be accessed
+without authentication if the repository is publicly accessible.
 
 ```
 GET /projects/:id/repository/files

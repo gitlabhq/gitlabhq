@@ -95,6 +95,19 @@ module Gitlab
         ]
       end
 
+      def terminal_websocket(terminal)
+        details = {
+          'Terminal' => {
+            'Subprotocols' => terminal[:subprotocols],
+            'Url' => terminal[:url],
+            'Header' => terminal[:headers]
+          }
+        }
+        details['Terminal']['CAPem'] = terminal[:ca_pem] if terminal.has_key?(:ca_pem)
+
+        details
+      end
+
       def version
         path = Rails.root.join(VERSION_FILE)
         path.readable? ? path.read.chomp : 'unknown'

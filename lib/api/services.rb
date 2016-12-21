@@ -377,13 +377,20 @@ module API
           desc: 'A custom certificate authority bundle to verify the Kubernetes cluster with (PEM format)'
         },
       ],
-
       'mattermost-slash-commands' => [
         {
           required: true,
           name: :token,
           type: String,
           desc: 'The Mattermost token'
+        }
+      ],
+      'slack-slash-commands' => [
+        {
+          required: true,
+          name: :token,
+          type: String,
+          desc: 'The Slack token'
         }
       ],
       'pipelines-email' => [

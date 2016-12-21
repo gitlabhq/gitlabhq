@@ -10,14 +10,14 @@ describe ChatMessage::MergeMessage, models: true do
           username: 'test.user'
       },
       project_name: 'project_name',
-      project_url: 'somewhere.com',
+      project_url: 'http://somewhere.com',
 
       object_attributes: {
         title: "Issue title\nSecond line",
         id: 10,
         iid: 100,
         assignee_id: 1,
-        url: 'url',
+        url: 'http://url.com',
         state: 'opened',
         description: 'issue description',
         source_branch: 'source_branch',
@@ -31,8 +31,8 @@ describe ChatMessage::MergeMessage, models: true do
   context 'open' do
     it 'returns a message regarding opening of merge requests' do
       expect(subject.pretext).to eq(
-        'test.user opened <somewhere.com/merge_requests/100|merge request !100> '\
-        'in <somewhere.com|project_name>: *Issue title*')
+        'test.user opened <http://somewhere.com/merge_requests/100|merge request !100> '\
+        'in <http://somewhere.com|project_name>: *Issue title*')
       expect(subject.attachments).to be_empty
     end
   end
@@ -57,8 +57,8 @@ describe ChatMessage::MergeMessage, models: true do
 
     it 'returns a message regarding closing of merge requests' do
       expect(subject.pretext).to eq(
-        'test.user closed <somewhere.com/merge_requests/100|merge request !100> '\
-        'in <somewhere.com|project_name>: *Issue title*')
+        'test.user closed <http://somewhere.com/merge_requests/100|merge request !100> '\
+        'in <http://somewhere.com|project_name>: *Issue title*')
       expect(subject.attachments).to be_empty
     end
   end

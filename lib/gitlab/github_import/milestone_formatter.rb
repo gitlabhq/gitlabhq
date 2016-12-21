@@ -3,7 +3,7 @@ module Gitlab
     class MilestoneFormatter < BaseFormatter
       def attributes
         {
-          iid: raw_data.number,
+          iid: number,
           project: project,
           title: raw_data.title,
           description: raw_data.description,
@@ -19,7 +19,15 @@ module Gitlab
       end
 
       def find_condition
-        { iid: raw_data.number }
+        { iid: number }
+      end
+
+      def number
+        if project.gitea_import?
+          raw_data.id
+        else
+          raw_data.number
+        end
       end
 
       private

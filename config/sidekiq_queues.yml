@@ -46,6 +46,7 @@
   - [repository_check, 1]
   - [system_hook, 1]
   - [git_garbage_collect, 1]
+  - [reactive_caching, 1]
   - [cronjob, 1]
   - [default, 1]
   # EE specific queues

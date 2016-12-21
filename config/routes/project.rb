@@ -179,6 +179,7 @@ constraints(ProjectUrlConstrainer.new) do
         end
 
         member do
+          get :stage
           post :cancel
           post :retry
           get :builds
@@ -188,6 +189,8 @@ constraints(ProjectUrlConstrainer.new) do
       resources :environments, except: [:destroy] do
         member do
           post :stop
+          get :terminal
+          get '/terminal.ws/authorize', to: 'environments#terminal_websocket_authorize', constraints: { format: nil }
         end
       end
 
