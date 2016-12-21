@@ -124,8 +124,8 @@
     };
 
     Build.prototype.checkAutoscroll = function() {
-      if ($("#autoscroll-status").data("state") === "enabled") {
-        return $("html,body").scrollTop($("#build-trace").height());
+      if (this.$autoScrollStatus.data("state") === "enabled") {
+        return $("html,body").scrollTop(this.$buildTrace.height());
       }
 
       // Handle a situation where user started new build
