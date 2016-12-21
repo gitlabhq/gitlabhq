@@ -93,7 +93,7 @@ feature 'Environment', :feature do
           end
 
           context 'with terminal' do
-            let(:project) { create(:kubernetes_project, :test_repo) }
+            let(:project) { create(:empty_project, :kubernetes, :test_repo) }
 
             context 'for project master' do
               let(:role) { :master }

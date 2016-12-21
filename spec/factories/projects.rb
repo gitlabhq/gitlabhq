@@ -48,6 +48,19 @@ FactoryGirl.define do
       end
     end
 
+    trait :kubernetes do
+      after :create do |project|
+        project.create_kubernetes_service(
+          active: true,
+          properties: {
+            namespace: project.path,
+            api_url: 'https://kubernetes.example.com/api',
+            token: 'a' * 40,
+          }
+        )
+      end
+    end
+
     # Nest Project Feature attributes
     transient do
       wiki_access_level ProjectFeature::ENABLED
@@ -133,19 +146,6 @@ FactoryGirl.define do
           title: 'JIRA tracker',
           url: 'http://jira.example.net',
           project_key: 'JIRA'
-        }
-      )
-    end
-  end
-
-  factory :kubernetes_project, parent: :empty_project do
-    after :create do |project|
-      project.create_kubernetes_service(
-        active: true,
-        properties: {
-          namespace: project.path,
-          api_url: 'https://kubernetes.example.com',
-          token: 'a' * 40,
         }
       )
     end

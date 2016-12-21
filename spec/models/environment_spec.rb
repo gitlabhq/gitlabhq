@@ -200,7 +200,7 @@ describe Environment, models: true do
 
     context 'when the enviroment is available' do
       context 'with a deployment service' do
-        let(:project) { create(:kubernetes_project) }
+        let(:project) { create(:empty_project, :kubernetes) }
 
         context 'and a deployment' do
           let!(:deployment) { create(:deployment, environment: environment) }
@@ -218,14 +218,14 @@ describe Environment, models: true do
     end
 
     context 'when the environment is unavailable' do
-      let(:project) { create(:kubernetes_project) }
+      let(:project) { create(:empty_project, :kubernetes) }
       before { environment.stop }
       it { is_expected.to be_falsy }
     end
   end
 
   describe '#terminals' do
-    let(:project) { create(:kubernetes_project) }
+    let(:project) { create(:empty_project, :kubernetes) }
     subject { environment.terminals }
 
     context 'when the environment has terminals' do
