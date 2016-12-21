@@ -167,9 +167,6 @@
             container: '.js-pipeline-table',
           });
           break;
-        case 'projects:commit:builds':
-          new gl.Pipelines();
-          break;
         case 'projects:commits:show':
         case 'projects:activity':
           shortcut_handler = new ShortcutsNavigation();
@@ -186,7 +183,6 @@
             container: '.js-pipeline-table',
           });
           break;
-        case 'projects:pipelines:builds':
         case 'projects:pipelines:show':
           const { controllerAction } = document.querySelector('.js-pipeline-container').dataset;
 
