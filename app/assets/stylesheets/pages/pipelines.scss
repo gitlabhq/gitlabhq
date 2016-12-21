@@ -37,6 +37,7 @@
       .branch-name {
         max-width: 195px;
       }
+    }
 
     .pipeline-date,
     .pipeline-status {
@@ -118,7 +119,6 @@
   }
 
   .branch-commit {
-
     .branch-name {
       font-weight: bold;
       max-width: 120px;
