@@ -37,7 +37,7 @@ describe 'Auto deploy' do
       click_button 'Choose a GitLab CI Yaml template'
 
       within '.gitlab-ci-yml-selector' do
-        expect(page).to have_content('Kubernetes')
+        expect(page).to have_content('OpenShift')
       end
     end
 
@@ -45,7 +45,7 @@ describe 'Auto deploy' do
       click_link 'Set up autodeploy'
       click_button 'Choose a GitLab CI Yaml template'
       within '.gitlab-ci-yml-selector' do
-        click_on 'Kubernetes'
+        click_on 'OpenShift'
       end
       wait_for_ajax
       click_button 'Commit Changes'
