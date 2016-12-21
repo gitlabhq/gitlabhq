@@ -14,7 +14,8 @@ class ProjectPathValidator < ActiveModel::EachValidator
   #  without tree as reserved name routing can match 'group/project' as group name,
   #  'tree' as project name and 'deploy_keys' as route.
   #
-  RESERVED = (NamespaceValidator::RESERVED +
+  RESERVED = (NamespaceValidator::RESERVED -
+              %w[dashboard] +
               %w[tree commits wikis new edit create update logs_tree
                  preview blob blame raw files create_dir find_file]).freeze
 
