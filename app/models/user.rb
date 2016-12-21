@@ -328,34 +328,11 @@ class User < ActiveRecord::Base
       find_by(id: Key.unscoped.select(:user_id).where(id: key_id))
     end
 
-<<<<<<< HEAD
-    def build_user(attrs = {})
-      User.new(attrs)
-    end
-
     def non_ldap
       joins('LEFT JOIN identities ON identities.user_id = users.id').
         where('identities.provider IS NULL OR identities.provider NOT LIKE ?', 'ldap%')
     end
 
-    def clean_username(username)
-      username.gsub!(/@.*\z/,             "")
-      username.gsub!(/\.git\z/,           "")
-      username.gsub!(/\A-/,               "")
-      username.gsub!(/[^a-zA-Z0-9_\-\.]/, "")
-
-      counter = 0
-      base = username
-      while User.by_login(username).present? || Namespace.by_path(username).present?
-        counter += 1
-        username = "#{base}#{counter}"
-      end
-
-      username
-    end
-
-=======
->>>>>>> 87b01636e4baf3ef58d83139129956e7eac39d1f
     def reference_prefix
       '@'
     end
