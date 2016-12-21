@@ -1719,7 +1719,7 @@ describe Project, models: true do
     end
 
     context 'when project has a deployment service' do
-      let(:project) { create(:empty_project, :kubernetes) }
+      let(:project) { create(:kubernetes_project) }
 
       it 'returns variables from this service' do
         expect(project.deployment_variables).to include(

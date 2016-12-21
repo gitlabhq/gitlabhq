@@ -4,7 +4,7 @@ describe KubernetesService, models: true, caching: true do
   include KubernetesHelpers
   include ReactiveCachingHelpers
 
-  let(:project) { create(:empty_project, :kubernetes) }
+  let(:project) { create(:kubernetes_project) }
   let(:service) { project.kubernetes_service }
 
   # We use Kubeclient to interactive with the Kubernetes API. It will

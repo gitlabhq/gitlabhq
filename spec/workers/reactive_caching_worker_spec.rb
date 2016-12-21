@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe ReactiveCachingWorker do
-  let(:project) { create(:empty_project, :kubernetes) }
+  let(:project) { create(:kubernetes_project) }
   let(:service) { project.deployment_service }
   subject { described_class.new.perform("KubernetesService", service.id) }
 

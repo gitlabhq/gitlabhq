@@ -4,9 +4,17 @@ describe 'Auto deploy' do
   include WaitForAjax
 
   let(:user) { create(:user) }
-  let(:project) { create(:project, :kubernetes) }
+  let(:project) { create(:project) }
 
   before do
+    project.create_kubernetes_service(
+      active: true,
+      properties: {
+        namespace: project.path,
+        api_url: 'https://kubernetes.example.com',
+        token: 'a' * 40,
+      }
+    )
     project.team << [user, :master]
     login_as user
   end
