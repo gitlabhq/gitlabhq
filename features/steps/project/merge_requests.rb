@@ -608,13 +608,6 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     end
   end
 
-  step 'I should see the merge button disabled' do
-    page.within '.mr-state-widget' do
-      wait_for_ajax
-      expect(page).to have_button('Accept Merge Request', disabled: true)
-    end
-  end
-
   step 'I should not see merge button' do
     page.within '.mr-state-widget' do
       expect(page).not_to have_button('Accept Merge Request')
