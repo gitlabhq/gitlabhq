@@ -146,17 +146,17 @@ class Label < ActiveRecord::Base
   #
   #   Label.first.to_reference                                     # => "~1"
   #   Label.first.to_reference(format: :name)                      # => "~\"bug\""
-  #   Label.first.to_reference(project, same_namespace_project)    # => "gitlab-ce~1"
-  #   Label.first.to_reference(project, another_namespace_project) # => "gitlab-org/gitlab-ce~1"
+  #   Label.first.to_reference(project, target_project: same_namespace_project)    # => "gitlab-ce~1"
+  #   Label.first.to_reference(project, target_project: another_namespace_project) # => "gitlab-org/gitlab-ce~1"
   #
   # Returns a String
   #
-  def to_reference(source_project = nil, target_project = nil, format: :id)
+  def to_reference(from_project = nil, target_project: nil, format: :id, full: false)
     format_reference = label_format_reference(format)
     reference = "#{self.class.reference_prefix}#{format_reference}"
 
-    if source_project
-      "#{source_project.to_reference(target_project)}#{reference}"
+    if from_project
+      "#{from_project.to_reference(target_project, full: full)}#{reference}"
     else
       reference
     end

@@ -589,8 +589,8 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def to_reference(from_project = nil)
-    if cross_namespace_reference?(from_project)
+  def to_reference(from_project = nil, full: false)
+    if full || cross_namespace_reference?(from_project)
       path_with_namespace
     elsif cross_project_reference?(from_project)
       path

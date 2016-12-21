@@ -175,10 +175,10 @@ class MergeRequest < ActiveRecord::Base
     work_in_progress?(title) ? title : "WIP: #{title}"
   end
 
-  def to_reference(from_project = nil)
+  def to_reference(from_project = nil, full: false)
     reference = "#{self.class.reference_prefix}#{iid}"
 
-    "#{project.to_reference(from_project)}#{reference}"
+    "#{project.to_reference(from_project, full: full)}#{reference}"
   end
 
   def first_commit

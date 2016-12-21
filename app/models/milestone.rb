@@ -118,11 +118,11 @@ class Milestone < ActiveRecord::Base
   #   Milestone.first.to_reference(cross_namespace_project)  # => "gitlab-org/gitlab-ce%1"
   #   Milestone.first.to_reference(same_namespace_project)   # => "gitlab-ce%1"
   #
-  def to_reference(from_project = nil, format: :iid)
+  def to_reference(from_project = nil, format: :iid, full: false)
     format_reference = milestone_format_reference(format)
     reference = "#{self.class.reference_prefix}#{format_reference}"
 
-    "#{project.to_reference(from_project)}#{reference}"
+    "#{project.to_reference(from_project, full: full)}#{reference}"
   end
 
   def reference_link_text(from_project = nil)
