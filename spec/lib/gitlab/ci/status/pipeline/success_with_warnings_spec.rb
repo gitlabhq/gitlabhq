@@ -17,6 +17,10 @@ describe Gitlab::Ci::Status::Pipeline::SuccessWithWarnings do
     it { expect(subject.icon).to eq 'icon_status_warning' }
   end
 
+  describe '#group' do
+    it { expect(subject.group).to eq 'success_with_warnings' }
+  end
+
   describe '.matches?' do
     context 'when pipeline is successful' do
       let(:pipeline) do

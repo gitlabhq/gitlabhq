@@ -14,7 +14,7 @@ module Gitlab
                     priorities: :label_priorities,
                     label: :project_label }.freeze
 
-      USER_REFERENCES = %w[author_id assignee_id updated_by_id user_id created_by_id].freeze
+      USER_REFERENCES = %w[author_id assignee_id updated_by_id user_id created_by_id merge_user_id].freeze
 
       PROJECT_REFERENCES = %w[project_id source_project_id gl_project_id target_project_id].freeze
 
@@ -40,6 +40,8 @@ module Gitlab
       # the relation_hash, updating references with new object IDs, mapping users using
       # the "members_mapper" object, also updating notes if required.
       def create
+        return nil if unknown_service?
+
         setup_models
 
         generate_imported_object
@@ -99,6 +101,8 @@ module Gitlab
       def generate_imported_object
         if BUILD_MODELS.include?(@relation_name) # call #trace= method after assigning the other attributes
           trace = @relation_hash.delete('trace')
+          @relation_hash.delete('token')
+
           imported_object do |object|
             object.trace = trace
             object.commit_id = nil
@@ -214,6 +218,11 @@ module Gitlab
             existing_object.update!(parsed_relation_hash)
             existing_object
           end
+      end
+
+      def unknown_service?
+        @relation_name == :services && parsed_relation_hash['type'] &&
+          !Object.const_defined?(parsed_relation_hash['type'])
       end
     end
   end

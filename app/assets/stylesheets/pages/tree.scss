@@ -14,6 +14,7 @@
 
   .add-to-tree {
     vertical-align: top;
+    padding: 6px 10px;
   }
 
   .tree-table {
@@ -172,7 +173,7 @@
   position: relative;
   z-index: 2;
 
-  .download-button {
+  .project-action-button {
     margin-left: $btn-side-margin;
   }
 }

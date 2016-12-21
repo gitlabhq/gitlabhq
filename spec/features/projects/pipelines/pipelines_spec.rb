@@ -1,9 +1,10 @@
 require 'spec_helper'
 require 'rails_helper'
 
-describe "Pipelines", feature: true, js: true do
+describe 'Pipelines', :feature, :js do
   include GitlabRoutingHelper
   include WaitForVueResource
+  include WaitForAjax
 
   let(:project) { create(:empty_project) }
   let(:user) { create(:user) }
@@ -117,19 +118,29 @@ describe "Pipelines", feature: true, js: true do
 
       before do
         visit namespace_project_pipelines_path(project.namespace, project)
+
         wait_for_vue_resource
       end
 
-      it { expect(page).to have_selector('.dropdown-toggle.btn.btn-default .icon-play') }
+      it 'has a dropdown with play button' do
+        expect(page).to have_selector('.dropdown-toggle.btn.btn-default .icon-play')
+      end
 
-      context 'when playing' do
+      it 'has link to the manual action' do
+        find('.js-pipeline-dropdown-manual-actions').click
+
+        expect(page).to have_link('Manual build')
+      end
+
+      context 'when manual action was played' do
         before do
-          wait_for_vue_resource
           find('.js-pipeline-dropdown-manual-actions').click
           click_link('Manual build')
         end
 
-        it { expect(manual.reload).to be_pending }
+        it 'enqueues manual action job' do
+          expect(manual.reload).to be_pending
+        end
       end
     end
 
@@ -205,16 +216,17 @@ describe "Pipelines", feature: true, js: true do
 
         before do
           visit namespace_project_pipelines_path(project.namespace, project)
+
+          wait_for_vue_resource
         end
 
-        it do
-          wait_for_vue_resource
+        it 'has artifats' do
           expect(page).to have_selector('.build-artifacts')
         end
 
-        it do
-          wait_for_vue_resource
+        it 'has artifacts download dropdown' do
           find('.js-pipeline-dropdown-download').click
+
           expect(page).to have_link(with_artifacts.name)
         end
       end
@@ -254,6 +266,42 @@ describe "Pipelines", feature: true, js: true do
         end
 
         it { expect(page).not_to have_selector('.build-artifacts') }
+      end
+    end
+
+    context 'mini pipleine graph' do
+      let!(:build) do
+        create(:ci_build, pipeline: pipeline, stage: 'build', name: 'build')
+      end
+
+      before do
+        visit namespace_project_pipelines_path(project.namespace, project)
+      end
+
+      it 'should render a mini pipeline graph' do
+        endpoint = stage_namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline, stage: build.name)
+
+        expect(page).to have_selector('.mini-pipeline-graph')
+        expect(page).to have_selector(".js-builds-dropdown-button[data-stage-endpoint='#{endpoint}']")
+      end
+
+      context 'when clicking a graph stage' do
+        it 'should open a dropdown' do
+          find('.js-builds-dropdown-button').trigger('click')
+
+          wait_for_ajax
+
+          expect(page).to have_link build.name
+        end
+
+        it 'should be possible to retry the failed build' do
+          find('.js-builds-dropdown-button').trigger('click')
+
+          wait_for_ajax
+
+          find('a.ci-action-icon-container').trigger('click')
+          expect(page).not_to have_content('Cancel running')
+        end
       end
     end
   end

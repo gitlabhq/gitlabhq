@@ -12,6 +12,7 @@ class Projects::PipelinesController < Projects::ApplicationController
       .execute(scope: @scope)
       .page(params[:page])
       .per(30)
+      .includes(project: :namespace)
 
     @running_or_pending_count = PipelinesFinder
       .new(project).execute(scope: 'running').count
@@ -60,6 +61,15 @@ class Projects::PipelinesController < Projects::ApplicationController
       format.html do
         render 'show'
       end
+    end
+  end
+
+  def stage
+    @stage = pipeline.stage(params[:stage])
+    return not_found unless @stage
+
+    respond_to do |format|
+      format.json { render json: { html: view_to_html_string('projects/pipelines/_stage') } }
     end
   end
 

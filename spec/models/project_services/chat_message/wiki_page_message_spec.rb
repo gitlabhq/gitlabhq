@@ -10,10 +10,10 @@ describe ChatMessage::WikiPageMessage, models: true do
         username: 'test.user'
       },
       project_name: 'project_name',
-      project_url: 'somewhere.com',
+      project_url: 'http://somewhere.com',
       object_attributes: {
         title: 'Wiki page title',
-        url: 'url',
+        url: 'http://url.com',
         content: 'Wiki page description'
       }
     }
@@ -25,7 +25,7 @@ describe ChatMessage::WikiPageMessage, models: true do
 
       it 'returns a message that a new wiki page was created' do
         expect(subject.pretext).to eq(
-          'test.user created <url|wiki page> in <somewhere.com|project_name>: '\
+          'test.user created <http://url.com|wiki page> in <http://somewhere.com|project_name>: '\
           '*Wiki page title*')
       end
     end
@@ -35,7 +35,7 @@ describe ChatMessage::WikiPageMessage, models: true do
 
       it 'returns a message that a wiki page was updated' do
         expect(subject.pretext).to eq(
-          'test.user edited <url|wiki page> in <somewhere.com|project_name>: '\
+          'test.user edited <http://url.com|wiki page> in <http://somewhere.com|project_name>: '\
           '*Wiki page title*')
       end
     end

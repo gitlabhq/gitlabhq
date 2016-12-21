@@ -36,3 +36,28 @@ to create one. You can also view or create service tokens in the
 Fill in the service token and namespace according to the values you just got.
 If the API is using a self-signed TLS certificate, you'll also need to include
 the `ca.crt` contents as the `Custom CA bundle`.
+
+## Deployment variables
+
+The Kubernetes service exposes following
+[deployment variables](../ci/variables/README.md#deployment-variables) in the
+GitLab CI build environment:
+
+- `KUBE_URL` - equal to the API URL
+- `KUBE_TOKEN`
+- `KUBE_NAMESPACE`
+- `KUBE_CA_PEM` - only if a custom CA bundle was specified
+
+## Web terminals
+
+>**NOTE:**
+Added in GitLab 8.15. You must be the project owner or have `master` permissions
+to use terminals. Support is currently limited to the first container in the
+first pod of your environment.
+
+When enabled, the Kubernetes service adds [web terminal](../ci/environments.md#web-terminals)
+support to your environments. This is based on the `exec` functionality found in
+Docker and Kubernetes, so you get a new shell session within your existing
+containers. To use this integration, you should deploy to Kubernetes using
+the deployment variables above, ensuring any pods you create are labelled with
+`app=$CI_ENVIRONMENT_SLUG`. GitLab will do the rest!

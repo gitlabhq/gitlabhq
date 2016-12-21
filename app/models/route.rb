@@ -13,7 +13,7 @@ class Route < ActiveRecord::Base
   def rename_children
     # We update each row separately because MySQL does not have regexp_replace.
     # rubocop:disable Rails/FindEach
-    Route.where('path LIKE ?', "#{path_was}%").each do |route|
+    Route.where('path LIKE ?', "#{path_was}/%").each do |route|
       # Note that update column skips validation and callbacks.
       # We need this to avoid recursive call of rename_children method
       route.update_column(:path, route.path.sub(path_was, path))

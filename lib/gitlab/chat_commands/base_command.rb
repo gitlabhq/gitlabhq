@@ -42,6 +42,10 @@ module Gitlab
       def find_by_iid(iid)
         collection.find_by(iid: iid)
       end
+
+      def presenter
+        Gitlab::ChatCommands::Presenter.new
+      end
     end
   end
 end

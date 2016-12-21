@@ -24,6 +24,7 @@ $gray-lightest: #fdfdfd;
 $gray-light: #fafafa;
 $gray-lighter: #f9f9f9;
 $gray-normal: #f5f5f5;
+$gray-dark: darken($gray-light, $darken-dark-factor);
 $gray-darker: #eee;
 $gray-darkest: #c4c4c4;
 
@@ -438,7 +439,7 @@ $jq-ui-default-color: #777;
 $label-gray-bg: #f8fafc;
 $label-inverse-bg: #333;
 $label-remove-border: rgba(0, 0, 0, .1);
-$label-border-radius: 14px;
+$label-border-radius: 100px;
 
 /*
 * Lint
@@ -474,7 +475,6 @@ $project-option-descr-color: #54565b;
 $project-breadcrumb-color: #999;
 $project-private-forks-notice-odd: #2aa056;
 $project-network-controls-color: #888;
-$project-limit-message-bg: #f28d35;
 
 /*
 * Runners
@@ -524,3 +524,9 @@ $body-text-shadow: rgba(255,255,255,0.01);
 */
 $ui-dev-kit-example-color: #bbb;
 $ui-dev-kit-example-border: #ddd;
+
+/*
+Pipeline Graph
+*/
+$stage-hover-bg: #eaf3fc;
+$stage-hover-border: #d1e7fc;
