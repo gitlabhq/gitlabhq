@@ -112,3 +112,5 @@
   merge_request = new MergeRequest({
     action: "#{controller.action_name}"
   });
+
+  var mrRefreshWidgetUrl = "#{@merge_request && @merge_request.source_project ? merge_widget_refresh_namespace_project_merge_request_url(@merge_request.source_project.namespace, @merge_request.source_project, @merge_request) : ''}";
