@@ -69,6 +69,11 @@
                     = link_to new_import_fogbugz_path, class: 'btn import_fogbugz' do
                       = icon('bug', text: 'Fogbugz')
                 %div
+                  - if gitea_import_enabled?
+                    = link_to new_import_gitea_url, class: 'btn import_gitea' do
+                      = custom_icon('go_logo')
+                      Gitea
+                %div
                   - if git_import_enabled?
                     = link_to "#", class: 'btn js-toggle-button import_git' do
                       = icon('git', text: 'Repo by URL')

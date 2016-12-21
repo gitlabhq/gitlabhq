@@ -113,6 +113,10 @@ feature 'Environments page', :feature, :js do
           expect(page).not_to have_css('external-url')
         end
 
+        scenario 'does not show terminal button' do
+          expect(page).not_to have_terminal_button
+        end
+
         context 'with external_url' do
           given(:environment) { create(:environment, project: project, external_url: 'https://git.gitlab.com') }
           given(:build) { create(:ci_build, pipeline: pipeline) }
@@ -142,6 +146,26 @@ feature 'Environments page', :feature, :js do
 
             scenario 'does not show stop button' do
               expect(page).not_to have_selector('.stop-env-link')
+            end
+          end
+        end
+
+        context 'with terminal' do
+          let(:project) { create(:kubernetes_project, :test_repo) }
+
+          context 'for project master' do
+            let(:role) { :master }
+
+            scenario 'it shows the terminal button' do
+              expect(page).to have_terminal_button
+            end
+          end
+
+          context 'for developer' do
+            let(:role) { :developer }
+
+            scenario 'does not show terminal button' do
+              expect(page).not_to have_terminal_button
             end
           end
         end
@@ -193,6 +217,10 @@ feature 'Environments page', :feature, :js do
         expect(page).not_to have_link('New environment')
       end
     end
+  end
+
+  def have_terminal_button
+    have_link(nil, href: terminal_namespace_project_environment_path(project.namespace, project, environment))
   end
 
   def visit_environments(project)

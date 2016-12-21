@@ -22,17 +22,22 @@
 
   .table.ci-table {
     min-width: 1200px;
+    table-layout: fixed;
 
     .pipeline-id {
       color: $black;
     }
 
-    .branch-commit {
-      width: 30%;
+    .pipeline-date,
+    .pipeline-status {
+      width: 10%;
+    }
 
-      .branch-name {
-        max-width: 195px;
-      }
+    .pipeline-info,
+    .pipeline-commit,
+    .pipeline-actions,
+    .pipeline-stages {
+      width: 20%;
     }
   }
 }
@@ -106,7 +111,7 @@
 
     .branch-name {
       font-weight: bold;
-      max-width: 150px;
+      max-width: 120px;
       overflow: hidden;
       display: inline-block;
       white-space: nowrap;
@@ -132,7 +137,7 @@
 
     .commit-title {
       margin-top: 4px;
-      max-width: 300px;
+      max-width: 225px;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
@@ -191,10 +196,6 @@
           bottom: 9px;
           border-bottom: 2px solid $border-color;
         }
-      }
-
-      a {
-        display: block;
       }
     }
   }
@@ -288,15 +289,40 @@
 }
 
 // Pipeline visualization
+.pipeline-actions {
+  border-bottom: none;
+}
 
-.toggle-pipeline-btn {
-  background-color: $white-normal;
+.tab-pane {
+  &.pipelines {
+    .ci-table {
+      min-width: 900px;
+    }
 
-  &.graph-collapsed {
-    background-color: $white-light;
+    .content-list.pipelines {
+      overflow: auto;
+    }
+
+    .stage {
+      max-width: 100px;
+      width: 100px;
+    }
+
+    .pipeline-actions {
+      min-width: initial;
+    }
+  }
+
+  &.builds {
+    .ci-table {
+      tr {
+        height: 71px;
+      }
+    }
   }
 }
 
+// Pipeline graph
 .pipeline-graph {
   width: 100%;
   background-color: $gray-light;
@@ -305,52 +331,120 @@
   white-space: nowrap;
   transition: max-height 0.3s, padding 0.3s;
 
-  &.graph-collapsed {
-    max-height: 0;
-    padding: 0 16px;
-  }
-}
-
-.pipeline-visualization {
-  position: relative;
-
   ul {
     padding: 0;
   }
-}
 
-.stage-column {
-  display: inline-block;
-  vertical-align: top;
-
-  &:not(:last-child) {
-    margin-right: 44px;
+  a {
+    text-decoration: none;
+    color: $gl-text-color-light;
   }
 
-  &.left-margin {
-    &:not(:first-child) {
-      margin-left: 44px;
+  svg {
+    vertical-align: middle;
+    margin-right: 3px;
+  }
 
-      .left-connector {
-        &::before {
-          content: '';
-          position: absolute;
-          top: 48%;
-          left: -48px;
-          border-top: 2px solid $border-color;
-          width: 48px;
-          height: 1px;
+  .stage-column {
+    display: inline-block;
+    vertical-align: top;
+
+    &:not(:last-child) {
+      margin-right: 44px;
+    }
+
+    &.left-margin {
+      &:not(:first-child) {
+        margin-left: 44px;
+
+        .left-connector {
+          &::before {
+            content: '';
+            position: absolute;
+            top: 48%;
+            left: -48px;
+            border-top: 2px solid $border-color;
+            width: 48px;
+            height: 1px;
+          }
         }
       }
     }
-  }
 
-  &.no-margin {
-    margin: 0;
-  }
+    &.no-margin {
+      margin: 0;
+    }
 
-  li {
-    list-style: none;
+    li {
+      list-style: none;
+    }
+
+    &:last-child {
+      .build {
+        // Remove right connecting horizontal line from first build in last stage
+        &:first-child {
+          &::after {
+            border: none;
+          }
+        }
+        // Remove right curved connectors from all builds in last stage
+        &:not(:first-child) {
+          &::after {
+            border: none;
+          }
+        }
+        // Remove opposite curve
+        .curve {
+          &::before {
+            display: none;
+          }
+        }
+      }
+    }
+
+    &:first-child {
+      .build {
+        // Remove left curved connectors from all builds in first stage
+        &:not(:first-child) {
+          &::before {
+            border: none;
+          }
+        }
+        // Remove opposite curve
+        .curve {
+          &::after {
+            display: none;
+          }
+        }
+      }
+    }
+
+    // Curve first child connecting lines in opposite direction
+    .curve {
+      display: none;
+
+      &::before,
+      &::after {
+        content: '';
+        width: 21px;
+        height: 25px;
+        position: absolute;
+        top: -31px;
+        border-top: 2px solid $border-color;
+      }
+
+      &::after {
+        left: -44px;
+        border-right: 2px solid $border-color;
+        border-radius: 0 20px;
+      }
+
+      &::before {
+        right: -44px;
+        border-left: 2px solid $border-color;
+        border-radius: 20px 0 0;
+      }
+    }
   }
 
   .stage-name {
@@ -363,164 +457,88 @@
   }
 
   .build {
-    border: 1px solid $border-color;
-    background-color: $white-light;
     position: relative;
-    padding: 7px 10px 8px;
-    border-radius: 30px;
     width: 186px;
     margin-bottom: 10px;
+    white-space: normal;
+    color: $gl-text-color-light;
 
-    &:hover {
-      background-color: $gray-lighter;
-    }
+    .dropdown-menu-toggle {
+      background-color: transparent;
+      border: none;
+      padding: 0;
+      color: $gl-text-color-light;
 
-    &.playable {
-
-      svg {
-        height: 13px;
-        width: 20px;
-        position: relative;
-        top: 1px;
-
-        path {
-          fill: $layout-link-gray;
-        }
-      }
-    }
-
-    .build-content {
-      display: -ms-flexbox;
-      display: -webkit-flex;
-      display: flex;
-      width: 164px;
-
-      .ci-status-icon {
-        svg {
-          height: 20px;
-          width: 20px;
-        }
+      &:focus {
+        outline: none;
       }
 
-      .tooltip {
-        white-space: nowrap;
+      &:hover {
+        color: $gl-text-color;
 
-        .tooltip-inner {
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-      }
-
-      .ci-status-text {
-        width: 135px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        vertical-align: middle;
-        display: inline-block;
-        position: relative;
-        top: -1px;
-      }
-
-      a {
-        color: $gl-text-color-light;
-        text-decoration: none;
-      }
-
-      .dropdown-menu-toggle {
-        background-color: transparent;
-        border: none;
-        width: auto;
-        padding: 0;
-        color: $gl-text-color-light;
-        flex-grow: 1;
-
-        .ci-status-text {
-          max-width: 112px;
-          width: auto;
-        }
-      }
-
-      .grouped-pipeline-dropdown {
-        padding: 0;
-        width: 186px;
-        left: auto;
-        right: -197px;
-        top: -9px;
-
-        ul {
-          max-height: 245px;
-          overflow: auto;
-
-          li:first-child {
-            padding-top: 8px;
-          }
-
-          li:last-child {
-            padding-bottom: 8px;
-          }
-        }
-
-        a {
+        .dropdown-counter-badge {
           color: $gl-text-color;
-          padding: 7px 8px 8px;
-
-          &:hover {
-            background-color: $blue-light-transparent;
-            border-radius: 3px;
-
-            .ci-status-text {
-              text-decoration: none;
-            }
-          }
         }
-
-        svg {
-          width: 14px;
-          height: 14px;
-        }
-
-        .ci-status-text {
-          width: 112px;
-        }
-
-        .arrow {
-          &::before,
-          &::after {
-            content: '';
-            display: inline-block;
-            position: absolute;
-            width: 0;
-            height: 0;
-            border-color: transparent;
-            border-style: solid;
-            top: 18px;
-          }
-
-          &::before {
-            left: -5px;
-            margin-top: -6px;
-            border-width: 7px 5px 7px 0;
-            border-right-color: $border-color;
-          }
-
-          &::after {
-            left: -4px;
-            margin-top: -9px;
-            border-width: 10px 7px 10px 0;
-            border-right-color: $white-light;
-          }
-        }
-      }
-
-      .badge {
-        margin-left: $btn-xs-side-margin;
       }
     }
 
-    svg {
-      vertical-align: middle;
-      margin-right: 5px;
+    > .build-content {
+      display: inline-block;
+      padding: 8px 10px 9px;
+      width: 100%;
+      border: 1px solid $border-color;
+      border-radius: 30px;
+      background-color: $white-light;
+
+      &:hover {
+        background-color: $stage-hover-bg;
+        border: 1px solid $stage-hover-border;
+        color: $gl-text-color;
+      }
+    }
+
+    > .ci-action-icon-container {
+      position: absolute;
+      right: 4px;
+      top: 5px;
+    }
+
+    .ci-status-icon {
+      position: relative;
+      top: 1px;
+    }
+
+    .ci-status-icon svg {
+      height: 20px;
+      width: 20px;
+    }
+
+    .arrow {
+      &::before,
+      &::after {
+        content: '';
+        display: inline-block;
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-color: transparent;
+        border-style: solid;
+        top: 18px;
+      }
+
+      &::before {
+        left: -5px;
+        margin-top: -6px;
+        border-width: 7px 5px 7px 0;
+        border-right-color: $border-color;
+      }
+
+      &::after {
+        left: -4px;
+        margin-top: -9px;
+        border-width: 10px 7px 10px 0;
+        border-right-color: $white-light;
+      }
     }
 
     // Connect first build in each stage with right horizontal line
@@ -576,110 +594,299 @@
       }
     }
   }
+}
 
-  &:last-child {
-    .build {
-      // Remove right connecting horizontal line from first build in last stage
-      &:first-child {
-        &::after {
-          border: none;
-        }
-      }
-      // Remove right curved connectors from all builds in last stage
-      &:not(:first-child) {
-        &::after {
-          border: none;
-        }
-      }
-      // Remove opposite curve
-      .curve {
-        &::before {
-          display: none;
-        }
+.dropdown-counter-badge {
+  float: right;
+  color: $border-color;
+  font-weight: 100;
+  font-size: 15px;
+  margin-right: 2px;
+}
+
+.grouped-pipeline-dropdown {
+  padding: 0;
+  width: 191px;
+  left: auto;
+  right: -195px;
+  top: -4px;
+  box-shadow: 0 1px 5px $black-transparent;
+
+  a {
+    display: inline-block;
+
+    &:hover {
+      background-color: $stage-hover-bg;
+    }
+  }
+
+  ul {
+    max-height: 245px;
+    overflow: auto;
+    margin: 5px 0;
+
+    li {
+      padding-top: 2px;
+      margin: 0 5px;
+      padding-left: 0;
+      padding-bottom: 0;
+      margin-bottom: 0;
+      line-height: 1.2;
+    }
+  }
+}
+
+.ci-status-text {
+  max-width: 110px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: bottom;
+  display: inline-block;
+  position: relative;
+  font-weight: 100;
+}
+
+// Action Icons
+.ci-action-icon-container .ci-action-icon-wrapper {
+  i {
+    color: $border-color;
+    border-radius: 100%;
+    border: 1px solid $border-color;
+    padding: 5px 6px;
+    font-size: 13px;
+    background: $white-light;
+    height: 30px;
+    width: 30px;
+
+    &::before {
+      position: relative;
+      top: 3px;
+      left: 3px;
+    }
+
+    &:hover {
+      color: $gl-text-color;
+      background-color: $stage-hover-bg;
+      border: 1px solid $stage-hover-bg;
+    }
+  }
+
+  .ci-play-icon {
+    padding: 5px 5px 5px 7px;
+  }
+}
+
+.dropdown-build {
+  color: $gl-text-color-light;
+
+  .ci-action-icon-container {
+    padding: 0;
+    font-size: 11px;
+    float: right;
+    margin-top: 4px;
+    display: inline-block;
+    position: relative;
+
+    i {
+      font-size: 11px;
+      margin-top: 0;
+    }
+  }
+
+  &:hover {
+    background-color: $stage-hover-bg;
+    border-radius: 3px;
+    color: $gl-text-color;
+  }
+
+  .ci-action-icon-container {
+    i {
+      width: 25px;
+      height: 25px;
+
+      &::before {
+        top: 1px;
+        left: 1px;
       }
     }
   }
 
-  &:first-child {
-    .build {
-      // Remove left curved connectors from all builds in first stage
-      &:not(:first-child) {
-        &::before {
-          border: none;
-        }
-      }
-      // Remove opposite curve
-      .curve {
-        &::after {
-          display: none;
-        }
-      }
+  .stage {
+    max-width: 100px;
+    width: 100px;
+  }
+
+  .ci-status-icon svg {
+    height: 18px;
+    width: 18px;
+  }
+
+  .ci-status-text {
+    max-width: 95px;
+  }
+}
+
+/**
+ * Builds dropdown in mini pipeline
+ */
+.mini-pipeline-graph {
+  .builds-dropdown {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    color: $gl-text-color-light;
+    border: none;
+    margin: 0;
+  }
+
+  .builds-dropdown-loading {
+    margin: 10px auto;
+    width: 18px;
+  }
+
+  .grouped-pipeline-dropdown {
+    right: -172px;
+    top: 23px;
+    min-height: 50px;
+
+    a {
+      color: $gl-text-color-light;
     }
   }
 
-  // Curve first child connecting lines in opposite direction
-  .curve {
-    display: none;
-
+  .arrow-up {
     &::before,
     &::after {
       content: '';
-      width: 21px;
-      height: 25px;
+      display: inline-block;
       position: absolute;
-      top: -32px;
-      border-top: 2px solid $border-color;
-    }
-
-    &::after {
-      left: -44px;
-      border-right: 2px solid $border-color;
-      border-radius: 0 20px;
+      width: 0;
+      height: 0;
+      border-color: transparent;
+      border-style: solid;
+      top: -6px;
+      left: 2px;
+      border-width: 0 5px 6px;
     }
 
     &::before {
-      right: -44px;
-      border-left: 2px solid $border-color;
-      border-radius: 20px 0 0;
+      border-width: 0 5px 5px;
+      border-bottom-color: $border-color;
+    }
+
+    &::after {
+      margin-top: 1px;
+      border-bottom-color: $white-light;
     }
   }
 }
 
-.pipeline-actions {
-  border-bottom: none;
-}
+/**
+ * Icons in mini pipeline graph
+ */
+.mini-pipeline-graph-icon-container .ci-status-icon {
+  display: inline-block;
+  border: 1px solid;
+  border-radius: 20px;
+  margin-right: 1px;
+  width: 20px;
+  height: 20px;
+  position: relative;
+  z-index: 2;
+  transition: all 0.2s cubic-bezier(0.25, 0, 1, 1);
 
-.toggle-pipeline-btn {
-
-  .fa {
-    color: $gl-gray-light;
+  svg {
+    top: -1px;
   }
 }
 
-.tab-pane {
+.builds-dropdown {
+  &:focus {
+    outline: none;
+    margin-right: -8px;
 
-  &.pipelines {
+    .ci-status-icon {
+      width: 28px;
+      padding: 0 8px 0 0;
+      transition: width 0.2s cubic-bezier(0.25, 0, 1, 1);
 
-    .ci-table {
-      min-width: 900px;
-    }
-
-    .stage {
-      max-width: 100px;
-      width: 100px;
-    }
-
-    .pipeline-actions {
-      min-width: initial;
-    }
-  }
-
-  &.builds {
-
-    .ci-table {
-      tr {
-        height: 71px;
+      + .dropdown-caret {
+        display: inline-block;
       }
+    }
+  }
+
+  &:focus,
+  &:active {
+    .ci-status-icon-success {
+      background-color: rgba($gl-success, .1);
+    }
+
+    .ci-status-icon-failed {
+      background-color: rgba($gl-danger, .1);
+    }
+
+    .ci-status-icon-pending,
+    .ci-status-icon-success_with_warnings {
+      background-color: rgba($gl-warning, .1);
+    }
+
+    .ci-status-icon-running {
+      background-color: rgba($blue-normal, .1);
+    }
+
+    .ci-status-icon-canceled,
+    .ci-status-icon-disabled,
+    .ci-status-icon-not-found {
+      background-color: rgba($gl-gray, .1);
+    }
+
+    .ci-status-icon-created,
+    .ci-status-icon-skipped {
+      background-color: rgba($gray-darkest, .1);
+    }
+  }
+
+  .mini-pipeline-graph-icon-container {
+    .ci-status-icon:hover,
+    .ci-status-icon:focus {
+      width: 28px;
+      padding: 0 8px 0 0;
+
+      + .dropdown-caret {
+        display: inline-block;
+      }
+    }
+
+    .dropdown-caret {
+      font-size: 11px;
+      position: relative;
+      top: 3px;
+      left: -11px;
+      margin-right: -6px;
+      display: none;
+      z-index: 2;
+    }
+  }
+}
+
+.terminal-icon {
+  margin-left: 3px;
+}
+
+.terminal-container {
+  .content-block {
+    border-bottom: none;
+  }
+
+  #terminal {
+    margin-top: 10px;
+    min-height: 450px;
+    box-sizing: border-box;
+
+    > div {
+      min-height: 450px;
     }
   }
 }

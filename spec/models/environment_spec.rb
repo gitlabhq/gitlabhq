@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 describe Environment, models: true do
-  subject(:environment) { create(:environment) }
+  let(:project) { create(:empty_project) }
+  subject(:environment) { create(:environment, project: project) }
 
   it { is_expected.to belong_to(:project) }
   it { is_expected.to have_many(:deployments) }
@@ -31,6 +32,8 @@ describe Environment, models: true do
   end
 
   describe '#includes_commit?' do
+    let(:project) { create(:project) }
+
     context 'without a last deployment' do
       it "returns false" do
         expect(environment.includes_commit?('HEAD')).to be false
@@ -38,9 +41,6 @@ describe Environment, models: true do
     end
 
     context 'with a last deployment' do
-      let(:project)     { create(:project) }
-      let(:environment) { create(:environment, project: project) }
-
       let!(:deployment) do
         create(:deployment, environment: environment, sha: project.commit('master').id)
       end
@@ -65,7 +65,6 @@ describe Environment, models: true do
 
   describe '#first_deployment_for' do
     let(:project)       { create(:project) }
-    let!(:environment)  { create(:environment, project: project) }
     let!(:deployment)   { create(:deployment, environment: environment, ref: commit.parent.id) }
     let!(:deployment1)  { create(:deployment, environment: environment, ref: commit.id) }
     let(:head_commit)   { project.commit }
@@ -193,6 +192,57 @@ describe Environment, models: true do
 
     it 'returns a list of actions with matching environment' do
       expect(environment.actions_for('review/master')).to contain_exactly(review_action)
+    end
+  end
+
+  describe '#has_terminals?' do
+    subject { environment.has_terminals? }
+
+    context 'when the enviroment is available' do
+      context 'with a deployment service' do
+        let(:project) { create(:kubernetes_project) }
+
+        context 'and a deployment' do
+          let!(:deployment) { create(:deployment, environment: environment) }
+          it { is_expected.to be_truthy }
+        end
+
+        context 'but no deployments' do
+          it { is_expected.to be_falsy }
+        end
+      end
+
+      context 'without a deployment service' do
+        it { is_expected.to be_falsy }
+      end
+    end
+
+    context 'when the environment is unavailable' do
+      let(:project) { create(:kubernetes_project) }
+      before { environment.stop }
+      it { is_expected.to be_falsy }
+    end
+  end
+
+  describe '#terminals' do
+    let(:project) { create(:kubernetes_project) }
+    subject { environment.terminals }
+
+    context 'when the environment has terminals' do
+      before { allow(environment).to receive(:has_terminals?).and_return(true) }
+
+      it 'returns the terminals from the deployment service' do
+        expect(project.deployment_service).
+          to receive(:terminals).with(environment).
+          and_return(:fake_terminals)
+
+        is_expected.to eq(:fake_terminals)
+      end
+    end
+
+    context 'when the environment does not have terminals' do
+      before { allow(environment).to receive(:has_terminals?).and_return(false) }
+      it { is_expected.to eq(nil) }
     end
   end
 

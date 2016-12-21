@@ -15,8 +15,7 @@
       height: 13px;
       width: 13px;
       position: relative;
-      top: 1px;
-      margin-right: 3px;
+      top: 2px;
       overflow: visible;
     }
 
@@ -25,7 +24,7 @@
       border-color: $gl-danger;
 
       &:not(span):hover {
-        background-color: rgba( $gl-danger, .07);
+        background-color: rgba($gl-danger, .07);
       }
 
       svg {
@@ -39,7 +38,7 @@
       border-color: $gl-success;
 
       &:not(span):hover {
-        background-color: rgba( $gl-success, .07);
+        background-color: rgba($gl-success, .07);
       }
 
       svg {
@@ -52,7 +51,7 @@
       border-color: $gl-info;
 
       &:not(span):hover {
-        background-color: rgba( $gl-info, .07);
+        background-color: rgba($gl-info, .07);
       }
 
       svg {
@@ -66,7 +65,7 @@
       border-color: $gl-gray;
 
       &:not(span):hover {
-        background-color: rgba( $gl-gray, .07);
+        background-color: rgba($gl-gray, .07);
       }
 
       svg {
@@ -79,7 +78,7 @@
       border-color: $gl-warning;
 
       &:not(span):hover {
-        background-color: rgba( $gl-warning, .07);
+        background-color: rgba($gl-warning, .07);
       }
 
       svg {
@@ -92,7 +91,7 @@
       border-color: $blue-normal;
 
       &:not(span):hover {
-        background-color: rgba( $blue-normal, .07);
+        background-color: rgba($blue-normal, .07);
       }
 
       svg {
@@ -106,11 +105,24 @@
       border-color: $gl-gray-light;
 
       &:not(span):hover {
-        background-color: rgba( $gl-gray-light, .07);
+        background-color: rgba($gl-gray-light, .07);
       }
 
       svg {
         fill: $gl-gray-light;
+      }
+    }
+
+    &.ci-manual {
+      color: $gl-text-color;
+      border-color: $gl-text-color;
+
+      &:not(span):hover {
+        background-color: rgba($gl-text-color, .07);
+      }
+
+      svg {
+        fill: $gl-text-color;
       }
     }
   }

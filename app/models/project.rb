@@ -79,7 +79,6 @@ class Project < ActiveRecord::Base
 
   has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event'
   has_many :boards, before_add: :validate_board_limit, dependent: :destroy
-  has_many :chat_services
 
   # Project services
   has_one :campfire_service, dependent: :destroy
@@ -95,6 +94,8 @@ class Project < ActiveRecord::Base
   has_one :asana_service, dependent: :destroy
   has_one :gemnasium_service, dependent: :destroy
   has_one :mattermost_slash_commands_service, dependent: :destroy
+  has_one :mattermost_service, dependent: :destroy
+  has_one :slack_slash_commands_service, dependent: :destroy
   has_one :slack_service, dependent: :destroy
   has_one :buildkite_service, dependent: :destroy
   has_one :bamboo_service, dependent: :destroy
@@ -530,6 +531,10 @@ class Project < ActiveRecord::Base
 
   def gitlab_project_import?
     import_type == 'gitlab_project'
+  end
+
+  def gitea_import?
+    import_type == 'gitea'
   end
 
   def check_limit
@@ -1227,6 +1232,12 @@ class Project < ActiveRecord::Base
     variables.map do |variable|
       { key: variable.key, value: variable.value, public: false }
     end
+  end
+
+  def deployment_variables
+    return [] unless deployment_service
+
+    deployment_service.predefined_variables
   end
 
   def append_or_update_attribute(name, value)

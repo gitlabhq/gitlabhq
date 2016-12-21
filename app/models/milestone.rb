@@ -129,6 +129,10 @@ class Milestone < ActiveRecord::Base
     self.title
   end
 
+  def milestoneish_ids
+    id
+  end
+
   def can_be_closed?
     active? && issues.opened.count.zero?
   end

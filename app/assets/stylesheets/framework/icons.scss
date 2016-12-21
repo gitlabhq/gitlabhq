@@ -49,3 +49,11 @@
     fill: $gray-darkest;
   }
 }
+
+.ci-status-icon-manual {
+  color: $gl-text-color;
+
+  svg {
+    fill: $gl-text-color;
+  }
+}

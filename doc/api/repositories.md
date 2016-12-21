@@ -2,7 +2,8 @@
 
 ## List repository tree
 
-Get a list of repository files and directories in a project.
+Get a list of repository files and directories in a project. This endpoint can
+be accessed without authentication if the repository is publicly accessible.
 
 ```
 GET /projects/:id/repository/tree
@@ -71,7 +72,8 @@ Parameters:
 
 ## Raw file content
 
-Get the raw file contents for a file by commit SHA and path.
+Get the raw file contents for a file by commit SHA and path. This endpoint can
+be accessed without authentication if the repository is publicly accessible.
 
 ```
 GET /projects/:id/repository/blobs/:sha
@@ -85,7 +87,8 @@ Parameters:
 
 ## Raw blob content
 
-Get the raw file contents for a blob by blob SHA.
+Get the raw file contents for a blob by blob SHA. This endpoint can be accessed
+without authentication if the repository is publicly accessible.
 
 ```
 GET /projects/:id/repository/raw_blobs/:sha
@@ -98,7 +101,8 @@ Parameters:
 
 ## Get file archive
 
-Get an archive of the repository
+Get an archive of the repository. This endpoint can be accessed without
+authentication if the repository is publicly accessible.
 
 ```
 GET /projects/:id/repository/archive
@@ -110,6 +114,9 @@ Parameters:
 - `sha` (optional) - The commit SHA to download defaults to the tip of the default branch
 
 ## Compare branches, tags or commits
+
+This endpoint can be accessed without authentication if the repository is
+publicly accessible.
 
 ```
 GET /projects/:id/repository/compare
@@ -163,7 +170,8 @@ Response:
 
 ## Contributors
 
-Get repository contributors list
+Get repository contributors list. This endpoint can be accessed without
+authentication if the repository is publicly accessible.
 
 ```
 GET /projects/:id/repository/contributors

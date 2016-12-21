@@ -262,3 +262,13 @@ table.u2f-registrations {
     border-right: solid 1px transparent;
   }
 }
+
+.oauth-application-show {
+  .scope-name {
+    font-weight: 600;
+  }
+
+  .scopes-list {
+    padding-left: 18px;
+  }
+}

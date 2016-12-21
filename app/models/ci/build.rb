@@ -18,7 +18,7 @@ module Ci
     end
 
     serialize :options
-    serialize :yaml_variables
+    serialize :yaml_variables, Gitlab::Serialize::Ci::Variables
 
     validates :coverage, numericality: true, allow_blank: true
     validates_presence_of :ref
@@ -155,7 +155,7 @@ module Ci
     end
 
     def has_environment?
-      self.environment.present?
+      environment.present?
     end
 
     def starts_environment?
@@ -221,6 +221,7 @@ module Ci
       variables += pipeline.predefined_variables
       variables += runner.predefined_variables if runner
       variables += project.container_registry_variables
+      variables += project.deployment_variables if has_environment?
       variables += yaml_variables
       variables += user_variables
       variables += project.secret_variables
