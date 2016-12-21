@@ -3,20 +3,20 @@ class PipelineSerializer < BaseSerializer
   include API::Helpers::Pagination
   Struct.new('Pagination', :request, :response)
 
-  def with_pagination(request, response)
-    tap { @pagination = Struct::Pagination.new(request, response) }
-  end
-
-  def paginate?
-    defined?(@pagination)
-  end
-
   def represent(resource, opts = {})
     if paginate?
       super(paginate(resource), opts)
     else
       super(resource, opts)
     end
+  end
+
+  def paginate?
+    defined?(@pagination)
+  end
+
+  def with_pagination(request, response)
+    tap { @pagination = Struct::Pagination.new(request, response) }
   end
 
   private

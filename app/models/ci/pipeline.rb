@@ -290,6 +290,10 @@ module Ci
       end
     end
 
+    def has_yaml_errors?
+      yaml_errors.present?
+    end
+
     def environments
       builds.where.not(environment: nil).success.pluck(:environment).uniq
     end

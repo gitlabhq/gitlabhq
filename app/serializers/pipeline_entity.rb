@@ -28,12 +28,10 @@ class PipelineEntity < Grape::Entity
   expose :flags do
     expose :latest?, as: :latest
     expose :triggered?, as: :triggered
-
-    expose :yaml_errors?, as: :yaml_errors do |pipeline|
-      pipeline.yaml_errors.present?
-    end
-
     expose :stuck?, as: :stuck
+    expose :has_yaml_errors?, as: :yaml_errors
+    expose :can_retry?, as: :retryable
+    expose :can_cancel?, as: :cancelable
   end
 
   expose :ref do
@@ -41,31 +39,45 @@ class PipelineEntity < Grape::Entity
       pipeline.ref
     end
 
-    expose :url do |pipeline|
-      namespace_project_tree_url(
+    expose :path do |pipeline|
+      namespace_project_tree_path(
         pipeline.project.namespace,
         pipeline.project,
         id: pipeline.ref)
     end
 
-    expose :tag?
+    expose :tag?, as: :tag
+    expose :branch?, as: :branch
   end
 
   expose :commit, using: CommitEntity
+  expose :yaml_errors, if: ->(pipeline, _) { pipeline.has_yaml_errors? }
 
-  expose :retry_url do |pipeline|
-    can?(request.user, :update_pipeline, pipeline.project) &&
-      pipeline.retryable? &&
-      retry_namespace_project_pipeline_path(pipeline.project.namespace,
-                                            pipeline.project, pipeline.id)
+  expose :retry_path, if: proc { can_retry? }  do |pipeline|
+    retry_namespace_project_pipeline_path(pipeline.project.namespace,
+                                          pipeline.project,
+                                          pipeline.id)
   end
 
-  expose :cancel_url do |pipeline|
-    can?(request.user, :update_pipeline, pipeline.project) &&
-      pipeline.cancelable? &&
-      cancel_namespace_project_pipeline_path(pipeline.project.namespace,
-                                             pipeline.project, pipeline.id)
+  expose :cancel_path, if: proc { can_cancel? } do |pipeline|
+    cancel_namespace_project_pipeline_path(pipeline.project.namespace,
+                                           pipeline.project,
+                                           pipeline.id)
   end
 
   expose :created_at, :updated_at
+
+  private
+
+  alias_method :pipeline, :object
+
+  def can_retry?
+    pipeline.retryable? &&
+      can?(request.user, :update_pipeline, pipeline)
+  end
+
+  def can_cancel?
+    pipeline.cancelable? &&
+      can?(request.user, :update_pipeline, pipeline)
+  end
 end
