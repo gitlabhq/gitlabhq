@@ -1,5 +1,5 @@
 module Ci
-  class UpdateBuildQueueService < BaseService
+  class UpdateBuildQueueService
     def execute(build)
       build.project.runners.select do |runner|
         if runner.can_pick?(build)

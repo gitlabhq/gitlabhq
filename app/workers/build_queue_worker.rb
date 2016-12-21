@@ -4,7 +4,7 @@ class BuildQueueWorker
 
   def perform(build_id)
     Ci::Build.find_by(id: build_id).try do |build|
-      UpdateBuildQueueService.execute(build)
+      Ci::UpdateBuildQueueService.new.execute(build)
     end
   end
 end
