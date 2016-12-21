@@ -373,14 +373,7 @@
     togglePreventSelection(isPrevented = !!this.setting.tabSelectsMatch) {
       this.setting.tabSelectsMatch = !isPrevented;
       this.setting.spaceSelectsMatch = !isPrevented;
-      const eventListenerAction = `${isPrevented ? 'add' : 'remove'}EventListener`;
-      this.$inputor[0][eventListenerAction]('keydown', gl.GfmAutoComplete.preventSpaceTabEnter);
     },
-    preventSpaceTabEnter(e) {
-      const key = e.which || e.keyCode;
-      const preventables = [9, 13, 32];
-      if (preventables.indexOf(key) > -1) e.preventDefault();
-    }
   };
 
 }).call(this);
