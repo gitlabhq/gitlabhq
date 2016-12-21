@@ -112,7 +112,6 @@
           return value.path != null ? this.Emoji.template : this.Loading.template;
         }.bind(this),
         insertTpl: ':${name}:',
-        startWithSpace: false,
         skipSpecialCharacterTest: true,
         data: this.defaultLoadingData,
         callbacks: {
@@ -129,7 +128,6 @@
         }.bind(this),
         insertTpl: '${atwho-at}${username}',
         searchKey: 'search',
-        startWithSpace: false,
         alwaysHighlightFirst: true,
         skipSpecialCharacterTest: true,
         data: this.defaultLoadingData,
@@ -172,7 +170,6 @@
         }.bind(this),
         data: this.defaultLoadingData,
         insertTpl: '${atwho-at}${id}',
-        startWithSpace: false,
         callbacks: {
           sorter: this.DefaultOptions.sorter,
           filter: this.DefaultOptions.filter,
@@ -200,7 +197,6 @@
         displayTpl: function(value) {
           return value.title != null ? this.Milestones.template : this.Loading.template;
         }.bind(this),
-        startWithSpace: false,
         data: this.defaultLoadingData,
         callbacks: {
           matcher: this.DefaultOptions.matcher,
@@ -225,7 +221,6 @@
         at: '!',
         alias: 'mergerequests',
         searchKey: 'search',
-        startWithSpace: false,
         displayTpl: function(value) {
           return value.title != null ? this.Issues.template : this.Loading.template;
         }.bind(this),
@@ -259,7 +254,6 @@
           return this.isLoading(value) ? this.Loading.template : this.Labels.template;
         }.bind(this),
         insertTpl: '${atwho-at}${title}',
-        startWithSpace: false,
         callbacks: {
           matcher: this.DefaultOptions.matcher,
           sorter: this.DefaultOptions.sorter,
