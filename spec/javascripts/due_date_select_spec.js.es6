@@ -1,9 +1,9 @@
-/* eslint-disable */
 //= require lib/utils/datetime_utility
 //= require jquery
-/*= require jquery-ui/datepicker */
-/*= require gl_dropdown */
+//= require jquery-ui/datepicker
+//= require gl_dropdown
 //= require due_date_select
+
 (() => {
   describe('Due Date Select', () => {
     describe('parseSelectedDate()', () => {
@@ -13,7 +13,7 @@
         const dueDateSelect = new gl.DueDateSelect({
           $context: $dom,
           $dropdown: $dom.find('.js-due-date-select'),
-          $loading: $dom.find('.block-loading')
+          $loading: $dom.find('.block-loading'),
         });
 
         spyOn(gl.utils, 'createDateObject');
