@@ -29,7 +29,7 @@ linters:
     enabled: true
 
   FinalNewline:
-    enabled: false
+    enabled: true
     present: true
 
   HtmlAttributes:
