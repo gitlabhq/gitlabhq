@@ -1,4 +1,4 @@
 %ul
-  - @stage.statuses.each do |status|
+  - @stage.statuses.latest.each do |status|
     %li.dropdown-build
       = render 'ci/status/graph_badge', subject: status

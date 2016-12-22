@@ -7,15 +7,47 @@ describe 'projects/pipelines/_stage', :view do
 
   before do
     assign :stage, stage
-
-    create(:ci_build, name: 'test:build',
-                      stage: stage.name,
-                      pipeline: pipeline)
   end
 
-  it 'shows the builds in the stage' do
-    render
+  context 'when there are only latest builds present' do
+    before do
+      create(:ci_build, name: 'test:build',
+                        stage: stage.name,
+                        pipeline: pipeline)
+    end
 
-    expect(rendered).to have_text 'test:build'
+    it 'shows the builds in the stage' do
+      render
+
+      expect(rendered).to have_text 'test:build'
+    end
+  end
+
+  context 'when build belongs to different stage' do
+    before do
+      create(:ci_build, name: 'test:build',
+                        stage: 'other:stage',
+                        pipeline: pipeline)
+    end
+
+    it 'does not render build' do
+      render
+
+      expect(rendered).not_to have_text 'test:build'
+    end
+  end
+
+  context 'when there are retried builds present' do
+    before do
+      create_list(:ci_build, 2, name: 'test:build',
+                                stage: stage.name,
+                                pipeline: pipeline)
+    end
+
+    it 'shows only latest builds' do
+      render
+
+      expect(rendered).to have_text 'test:build', count: 1
+    end
   end
 end
