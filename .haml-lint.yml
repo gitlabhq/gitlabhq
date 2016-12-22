@@ -7,7 +7,7 @@ exclude:
 
 linters:
   AltText:
-    enabled: false
+    enabled: true
 
   ClassAttributeWithStaticValue:
     enabled: false
