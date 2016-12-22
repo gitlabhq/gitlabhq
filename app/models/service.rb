@@ -223,7 +223,6 @@ class Service < ActiveRecord::Base
       pivotaltracker
       pushover
       redmine
-      mattermost
       slack_slash_commands
       slack
       teamcity
