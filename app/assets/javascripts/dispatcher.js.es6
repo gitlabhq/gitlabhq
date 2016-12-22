@@ -216,6 +216,7 @@
           new UsersSelect();
           break;
         case 'projects:project_members:index':
+        case 'projects:members:show':
           new gl.MemberExpirationDate();
           new gl.Members();
           new UsersSelect();

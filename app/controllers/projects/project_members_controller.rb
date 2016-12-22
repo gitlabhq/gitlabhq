@@ -53,7 +53,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   def create
     status = Members::CreateService.new(@project, current_user, params).execute
 
-    redirect_url = namespace_project_project_members_path(@project.namespace, @project)
+    redirect_url = namespace_project_settings_members_path(@project.namespace, @project)
 
     if status
       redirect_to redirect_url, notice: 'Users were successfully added.'
@@ -76,14 +76,14 @@ class Projects::ProjectMembersController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
-        redirect_to namespace_project_project_members_path(@project.namespace, @project)
+        redirect_to namespace_project_settings_members_path(@project.namespace, @project)
       end
       format.js { head :ok }
     end
   end
 
   def resend_invite
-    redirect_path = namespace_project_project_members_path(@project.namespace, @project)
+    redirect_path = namespace_project_settings_members_path(@project.namespace, @project)
 
     @project_member = @project.project_members.find(params[:id])
 
@@ -106,7 +106,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
       return render_404
     end
 
-    redirect_to(namespace_project_project_members_path(project.namespace, project),
+    redirect_to(namespace_project_settings_members_path(project.namespace, project),
                 notice: notice)
   end
 

@@ -1,17 +1,17 @@
-= form_for @project_member, as: :project_member, url: namespace_project_project_members_path(@project.namespace, @project), html: { class: 'users-project-form' } do |f|
+= form_for @project_member, as: :project_member, url: namespace_project_settings_members_path(@project.namespace, @project), html: { class: 'users-project-form' } do |f|
   .row
-    .col-md-4.col-lg-6
+    .col-md-5.col-lg-5
       = users_select_tag(:user_ids, multiple: true, class: "input-clamp", scope: :all, email_user: true)
       .help-block.append-bottom-10
         Search for users by name, username, or email, or invite new ones using their email address.
 
-    .col-md-3.col-lg-2
+    .col-md-2.col-lg-2
       = select_tag :access_level, options_for_select(ProjectMember.access_level_roles, @project_member.access_level), class: "form-control project-access-select"
       .help-block.append-bottom-10
         = link_to "Read more", help_page_path("user/permissions"), class: "vlink"
         about role permissions
 
-    .col-md-3.col-lg-2
+    .col-md-2
       .clearable-input
         = text_field_tag :expires_at, nil, class: 'form-control js-access-expiration-date', placeholder: 'Expiration date'
         %i.clear-icon.js-clear-input
@@ -20,3 +20,5 @@
 
     .col-md-2
       = f.submit "Add to project", class: "btn btn-create btn-block"
+    .col-md-1
+      = link_to "Import", import_namespace_project_project_members_path(@project.namespace, @project), class: "btn btn-default hidden-xs hidden-sm pull-right", title: "Import members from another project"
