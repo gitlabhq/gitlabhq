@@ -18,7 +18,8 @@ describe SlackSlashCommandsService, :models do
 
       let(:service) do
         project.create_slack_slash_commands_service(
-          properties: { token: 'token' }
+          properties: { token: 'token' },
+          active: true
         )
       end
 
