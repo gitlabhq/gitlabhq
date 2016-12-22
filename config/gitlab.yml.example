@@ -468,6 +468,16 @@ production: &base
       #             login_url: '/cas/login',
       #             service_validate_url: '/cas/p3/serviceValidate',
       #             logout_url: '/cas/logout'} }
+      # - { name: 'authentiq',
+      #     # for client credentials (client ID and secret), go to https://www.authentiq.com/
+      #     app_id: 'YOUR_CLIENT_ID',
+      #     app_secret: 'YOUR_CLIENT_SECRET',
+      #     args: {
+      #             scope: 'aq:name email~rs address aq:push'
+      #             # redirect_uri parameter is optional except when 'gitlab.host' in this file is set to 'localhost'
+      #             # redirect_uri: 'YOUR_REDIRECT_URI'
+      #           }
+      #   }
       # - { name: 'github',
       #     app_id: 'YOUR_APP_ID',
       #     app_secret: 'YOUR_APP_SECRET',

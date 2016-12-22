@@ -70,6 +70,10 @@
         - if koding_enabled? && @repository.koding_yml.blank?
           %li.missing
             = link_to 'Set up Koding', add_koding_stack_path(@project)
+        - if @repository.gitlab_ci_yml.blank? && @project.deployment_service.present?
+          %li.missing
+            = link_to add_special_file_path(@project, file_name: '.gitlab-ci.yml', commit_message: 'Set up autodeploy', target_branch: 'autodeploy', context: 'autodeploy') do
+              Set up autodeploy
 
   - if @repository.commit
     .project-last-commit{ class: container_class }

@@ -32,10 +32,7 @@ constraints(ProjectUrlConstrainer.new) do
       resources :commit, only: [:show], constraints: { id: /\h{7,40}/ } do
         member do
           get :branches
-          get :builds
           get :pipelines
-          post :cancel_builds
-          post :retry_builds
           post :revert
           post :cherry_pick
           get :diff_for_path
@@ -82,6 +79,8 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
+      resource :mattermost, only: [:new, :create]
+
       resources :deploy_keys, constraints: { id: /\d+/ }, only: [:index, :new, :create] do
         member do
           put :enable
@@ -98,7 +97,6 @@ constraints(ProjectUrlConstrainer.new) do
           get :diffs
           get :conflicts
           get :conflict_for_path
-          get :builds
           get :pipelines
           get :merge_check
           post :merge
