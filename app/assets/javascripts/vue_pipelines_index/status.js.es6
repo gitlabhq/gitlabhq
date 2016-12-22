@@ -10,7 +10,7 @@
       cssClasses() {
         const cssObject = {};
         cssObject['ci-status'] = true;
-        cssObject[`ci-${this.pipeline.details.status.text}`] = true;
+        cssObject[`ci-${this.pipeline.details.status.group}`] = true;
         return cssObject;
       },
       svg() {

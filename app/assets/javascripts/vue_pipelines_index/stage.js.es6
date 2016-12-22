@@ -9,7 +9,7 @@
         return `Build: ${this.stage.status.label}`;
       },
       tooltip() {
-        return `has-tooltip ci-status-icon-${this.stage.status.label}`;
+        return `has-tooltip ci-status-icon-${this.stage.status.group}`;
       },
       svg() {
         return this.svgs[this.match(this.stage.status.icon)];
