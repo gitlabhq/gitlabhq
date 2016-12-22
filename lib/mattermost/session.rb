@@ -1,5 +1,12 @@
 module Mattermost
-  class NoSessionError < StandardError; end
+  class NoSessionError < Mattermost::Error
+    def message
+      'No session could be set up, is Mattermost configured with Single Sign On?'
+    end
+  end
+
+  class ConnectionError < Mattermost::Error; end
+
   # This class' prime objective is to obtain a session token on a Mattermost
   # instance with SSO configured where this GitLab instance is the provider.
   #
@@ -17,6 +24,8 @@ module Mattermost
     include Doorkeeper::Helpers::Controller
     include HTTParty
 
+    LEASE_TIMEOUT = 60
+
     base_uri Settings.mattermost.host
 
     attr_accessor :current_resource_owner, :token
@@ -26,12 +35,16 @@ module Mattermost
     end
 
     def with_session
-      raise NoSessionError unless create
+      with_lease do
+        raise Mattermost::NoSessionError unless create
 
-      begin
-        yield self
-      ensure
-        destroy
+        begin
+          yield self
+        rescue Errno::ECONNREFUSED
+          raise Mattermost::NoSessionError
+        ensure
+          destroy
+        end
       end
     end
 
@@ -58,11 +71,15 @@ module Mattermost
     end
 
     def get(path, options = {})
-      self.class.get(path, options.merge(headers: @headers))
+      handle_exceptions do
+        self.class.get(path, options.merge(headers: @headers))
+      end
     end
 
     def post(path, options = {})
-      self.class.post(path, options.merge(headers: @headers))
+      handle_exceptions do
+        self.class.post(path, options.merge(headers: @headers))
+      end
     end
 
     private
@@ -110,6 +127,34 @@ module Mattermost
       if 200 <= response.code && response.code < 400
         response.headers['token']
       end
+    end
+
+    def with_lease
+      lease_uuid = lease_try_obtain
+      raise NoSessionError unless lease_uuid
+
+      begin
+        yield
+      ensure
+        Gitlab::ExclusiveLease.cancel(lease_key, lease_uuid)
+      end
+    end
+
+    def lease_key
+      "mattermost:session"
+    end
+
+    def lease_try_obtain
+      lease = ::Gitlab::ExclusiveLease.new(lease_key, timeout: LEASE_TIMEOUT)
+      lease.try_obtain
+    end
+
+    def handle_exceptions
+      yield
+    rescue HTTParty::Error => e
+      raise Mattermost::ConnectionError.new(e.message)
+    rescue Errno::ECONNREFUSED
+      raise Mattermost::ConnectionError.new(e.message)
     end
   end
 end

@@ -93,6 +93,19 @@
       }
     };
 
+    // Check if element scrolled into viewport from above or below
+    // Courtesy http://stackoverflow.com/a/7557433/414749
+    w.gl.utils.isInViewport = function(el) {
+      var rect = el.getBoundingClientRect();
+
+      return (
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= window.innerHeight &&
+        rect.right <= window.innerWidth
+      );
+    };
+
     gl.utils.getPagePath = function() {
       return $('body').data('page').split(':')[0];
     };

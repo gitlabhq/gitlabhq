@@ -10,7 +10,7 @@ module Banzai
             node.set_attribute('href', href)
           end
 
-          if href =~ /\Ahttp(s)?:\/\// && external_url?(href)
+          if href =~ %r{\A(https?:)?//[^/]} && external_url?(href)
             node.set_attribute('rel', 'nofollow noreferrer')
             node.set_attribute('target', '_blank')
           end

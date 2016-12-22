@@ -43,7 +43,7 @@ ul.notes {
     }
 
     .system-note-message {
-      display: inline-block;
+      display: inline;
 
       &::first-letter {
         text-transform: lowercase;
@@ -55,7 +55,7 @@ ul.notes {
       }
 
       p {
-        display: inline-block;
+        display: inline;
         margin: 0;
 
         &::first-letter {
@@ -150,6 +150,10 @@ ul.notes {
           visibility: visible;
         }
       }
+    }
+
+    .note-headline-light {
+      display: inline;
     }
   }
 

@@ -56,17 +56,22 @@
       - else
         #js-build-scroll.scroll-controls
           .scroll-step
-            = link_to '#build-trace', class: 'btn' do
-              %i.fa.fa-angle-up
-            = link_to '#down-build-trace', class: 'btn' do
-              %i.fa.fa-angle-down
+            %a{ href: '#up-build-trace', id: 'scroll-top', class: 'scroll-link scroll-top', title: 'Scroll to top' }
+              = custom_icon('scroll_up')
+              = custom_icon('scroll_up_hover_active')
+            %a{ href: '#down-build-trace', id: 'scroll-bottom', class: 'scroll-link scroll-bottom', title: 'Scroll to bottom' }
+              = custom_icon('scroll_down')
+              = custom_icon('scroll_down_hover_active')
           - if @build.active?
             .autoscroll-container
-              %button.btn.btn-sm#autoscroll-button{:type => "button", :data => {:state => 'disabled'}}
-                Enable autoscroll
+              %span.status-message#autoscroll-status{ data: { state: 'disabled' } }
+                %span.status-text Autoscroll active
+                %i.status-icon
+                  = custom_icon('scroll_down_hover_active')
+        #up-build-trace
         %pre.build-trace#build-trace
           %code.bash.js-build-output
-          = icon("refresh spin", class: "js-build-refresh")
+          .build-loader-animation.js-build-refresh
 
         #down-build-trace
 
