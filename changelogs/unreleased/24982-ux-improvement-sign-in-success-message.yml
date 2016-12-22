@@ -1,5 +1,0 @@
----
-title: 'fix: 24982- Remove''Signed in successfully'' message After this change the
-  sign-in-success flash message will not be shown'
-merge_request: 7837
-author: jnoortheen

@@ -1,4 +1,0 @@
----
-title: Fix lookup of project by unknown ref when caching is enabled
-merge_request: 7988
-author:

@@ -1,5 +1,0 @@
----
-title: Changed eslint airbnb config to the base airbnb config and corrected eslintrc
-  plugins and envs
-merge_request: 7470
-author: Luke "Jared" Bennett
