@@ -863,7 +863,8 @@
 }
 
 .builds-dropdown {
-  &:focus {
+  &:focus,
+  &:hover {
     outline: none;
     margin-right: -8px;
 
