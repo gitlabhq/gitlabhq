@@ -5,7 +5,7 @@
     describe('create date object', () => {
       describe('using dashes', () => {
         it('should instantiate the date object using integer params', () => {
-          spyOn(window, 'Date')
+          spyOn(window, 'Date');
           gl.utils.createDateObject('2016-11-12');
           expect(window.Date).toHaveBeenCalledWith(2016, 10, 12);
         });
@@ -19,8 +19,8 @@
       });
 
       describe('using slashes', () => {
-        it('should instantiate the date object using integer params', () => {
-          spyOn(window, 'Date')
+        it('should also instantiate the date object using integer params', () => {
+          spyOn(window, 'Date');
           gl.utils.createDateObject('2016/08/02');
           expect(window.Date).toHaveBeenCalledWith(2016, 7, 2);
         });
