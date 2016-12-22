@@ -20,9 +20,10 @@ The list of supported autodeploy templates is available [here][autodeploy-templa
 ## Configuration
 
 1. Enable a deployment [project service][project-services] to store your
-credentials. For example, if you want to deploy to a Kubernetes cluster
-you have to enable [Kubernetes service][kubernetes-service].
-1. Configure GitLab Runner to use [docker-in-docker executor][docker-in-docker].
+credentials. For example, if you want to deploy to OpenShift you have to
+enable [Kubernetes service][kubernetes-service].
+1. Configure GitLab Runner to use Docker or Kubernetes executor with
+[privileged mode enabled][docker-in-docker].
 1. Navigate to the "Project" tab and click "Set up autodeploy" button.
    ![Autodeploy button](img/autodeploy_button.png)
 1. Select a template.
