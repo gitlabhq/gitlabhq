@@ -11,6 +11,7 @@ class NotesFinder
   #     target_type: string
   #     target_id: integer
   #     last_fetched_at: time
+  #     discussion_id: string
   #     search: string
   #
   def initialize(project, current_user, params = {})
@@ -22,7 +23,12 @@ class NotesFinder
 
   def execute
     @notes = since_fetch_at(@params[:last_fetched_at]) if @params[:last_fetched_at]
+    @notes = for_discussion(@params[:discussion_id]) if @params[:discussion_id]
     @notes
+  end
+
+  def first_discussion
+    execute.discussions.first
   end
 
   private
@@ -99,5 +105,9 @@ class NotesFinder
     last_fetched_at = Time.at(@params.fetch(:last_fetched_at, 0).to_i)
 
     @notes.where('updated_at > ?', last_fetched_at - FETCH_OVERLAP).fresh
+  end
+
+  def for_discussion(discussion_id)
+    @notes.where(Note.arel_table[:discussion_id].eq(discussion_id))
   end
 end

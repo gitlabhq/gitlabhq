@@ -109,6 +109,15 @@ describe Projects::IssuesController do
         expect(assigns(:issue).title).not_to be_empty
         expect(assigns(:issue).description).not_to be_empty
       end
+
+      it 'fills in an issue for a discussion' do
+        note = create(:note_on_merge_request, project: project)
+
+        get :new, namespace_id: project.namespace.path, project_id: project, discussion_to_resolve: note.discussion_id
+
+        expect(assigns(:issue).title).not_to be_empty
+        expect(assigns(:issue).description).not_to be_empty
+      end
     end
 
     context 'external issue tracker' do

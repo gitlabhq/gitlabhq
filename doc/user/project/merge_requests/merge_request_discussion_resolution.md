@@ -72,9 +72,28 @@ add a note referring to the newly created issue.
 
 You can now proceed to merge the merge request from the UI.
 
+## Moving a single discussion to a new issue
+
+> [Introduced][ce-8266]
+
+To create a new issue for a single discussion, you can use the **Resolve this
+discussion in a new issue** button.
+
+![Create issue for discussion](img/new_issue_for_discussion.png)
+
+This will direct you to a new issue prefilled with the content of the
+discussion, similar to the issues created for delegating multiple
+discussions at once.
+
+![New issue for a single discussion](img/preview_issue_for_discussion.png)
+
+Saving the issue will mark the discussion as resolved and add a note
+to the discussion referencing the new issue.
+
 [ce-5022]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5022
 [ce-7125]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7125
 [ce-7180]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7180
+[ce-8266]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8266
 [resolve-discussion-button]: img/resolve_discussion_button.png
 [resolve-comment-button]: img/resolve_comment_button.png
 [discussion-view]: img/discussion_view.png

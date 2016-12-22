@@ -5,7 +5,11 @@ module Issues
     def execute
       filter_spam_check_params
 
-      issue_attributes = params.merge(merge_request_for_resolving_discussions: merge_request_for_resolving_discussions)
+      issue_attributes = params.merge(
+        merge_request_for_resolving_discussions: merge_request_for_resolving_discussions,
+        discussion_to_resolve: discussion_to_resolve
+      )
+
       @issue = BuildService.new(project, current_user, issue_attributes).execute
 
       create(@issue)
@@ -21,17 +25,16 @@ module Issues
       notification_service.new_issue(issuable, current_user)
       todo_service.new_issue(issuable, current_user)
       user_agent_detail_service.create
-
-      if merge_request_for_resolving_discussions.try(:discussions_can_be_resolved_by?, current_user)
-        resolve_discussions_in_merge_request(issuable)
-      end
+      resolve_discussions_with_issue(issuable)
     end
 
-    def resolve_discussions_in_merge_request(issue)
+    def resolve_discussions_with_issue(issue)
+      return if discussions_to_resolve.empty?
+
       Discussions::ResolveService.new(project, current_user,
                                       merge_request: merge_request_for_resolving_discussions,
                                       follow_up_issue: issue).
-          execute(merge_request_for_resolving_discussions.resolvable_discussions)
+          execute(discussions_to_resolve)
     end
 
     private

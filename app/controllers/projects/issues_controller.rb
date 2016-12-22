@@ -64,7 +64,12 @@ class Projects::IssuesController < Projects::ApplicationController
     params[:issue] ||= ActionController::Parameters.new(
       assignee_id: ""
     )
-    build_params = issue_params.merge(merge_request_for_resolving_discussions: merge_request_for_resolving_discussions)
+
+    build_params = issue_params.merge(
+      merge_request_for_resolving_discussions: merge_request_for_resolving_discussions,
+      discussion_to_resolve: discussion_to_resolve
+    )
+
     @issue = @noteable = Issues::BuildService.new(project, current_user, build_params).execute
 
     respond_with(@issue)
@@ -94,10 +99,12 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def create
-    create_params = issue_params
-      .merge(merge_request_for_resolving_discussions: merge_request_for_resolving_discussions)
-      .merge(spammable_params)
-
+    create_params = issue_params.
+                      merge(
+                        merge_request_for_resolving_discussions: merge_request_for_resolving_discussions,
+                        discussion_to_resolve: discussion_to_resolve
+                      ).
+                      merge(spammable_params)
     @issue = Issues::CreateService.new(project, current_user, create_params).execute
 
     respond_to do |format|
@@ -191,6 +198,13 @@ class Projects::IssuesController < Projects::ApplicationController
     @merge_request_for_resolving_discussions ||= MergeRequestsFinder.new(current_user, project_id: project.id).
                                                    execute.
                                                    find_by(iid: merge_request_iid)
+  end
+
+  def discussion_to_resolve
+    return unless discussion_id = params[:discussion_to_resolve]
+
+    @discussion_to_resolve ||= NotesFinder.new(project, current_user, discussion_id: discussion_id).
+                                 first_discussion
   end
 
   def authorize_read_issue!

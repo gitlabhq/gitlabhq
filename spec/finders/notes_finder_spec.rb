@@ -41,6 +41,17 @@ describe NotesFinder do
       expect(notes.count).to eq(0)
     end
 
+    context 'for a certain discussion' do
+      let!(:note_in_a_commit_discussion) { create(:note_on_commit, project: project) }
+      let!(:other_note) { create(:note_on_merge_request, project: project) }
+
+      it 'finds the only the notes for a certain discussion id' do
+        notes = described_class.new(project, user, discussion_id: note_in_a_commit_discussion.discussion_id).execute
+
+        expect(notes).to contain_exactly(note_in_a_commit_discussion)
+      end
+    end
+
     context 'on restricted projects' do
       let(:project) do
         create(:empty_project,
@@ -143,6 +154,28 @@ describe NotesFinder do
           expect { described_class.new(project, user, params).execute }.to raise_error(ActiveRecord::RecordNotFound)
         end
       end
+    end
+  end
+
+  describe "#first_discussion" do
+    let!(:discussion_note) { create(:note_on_merge_request, project: project) }
+
+    it 'returns a discussion' do
+      discussion = described_class.new(project, user, discussion_id: discussion_note.discussion_id).first_discussion
+
+      expect(discussion).is_a? Discussion
+    end
+
+    it 'includes the notes in the discussion' do
+      discussion = described_class.new(project, user, discussion_id: discussion_note.discussion_id).first_discussion
+
+      expect(discussion.notes).to include(discussion_note)
+    end
+
+    it 'returns nil when no notes are found' do
+      discussion = described_class.new(project, user, discussion_id: 'non-existant').first_discussion
+
+      expect(discussion).to be(nil)
     end
   end
 

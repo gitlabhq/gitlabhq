@@ -8,23 +8,36 @@ describe Issues::BuildService, services: true do
     project.team << [user, :developer]
   end
 
+  context 'for a single discussion' do
+    describe '#execute' do
+      it 'references the noteable title in the issue title' do
+        merge_request = create(:merge_request, title: "Hello world", source_project: project)
+        discussion = Discussion.new([create(:note_on_merge_request, project: project, noteable: merge_request)])
+        service = described_class.new(project, user, discussion_to_resolve: discussion)
+
+        issue = service.execute
+
+        expect(issue.title).to include('Hello world')
+      end
+
+      it 'adds the note content to the description' do
+        discussion = Discussion.new([create(:note_on_merge_request, project: project, note: "Almost done")])
+        service = described_class.new(project, user, discussion_to_resolve: discussion)
+
+        issue = service.execute
+
+        expect(issue.description).to include('Almost done')
+      end
+    end
+  end
+
   context 'for discussions in a merge request' do
     let(:merge_request) { create(:merge_request_with_diff_notes, source_project: project) }
     let(:issue) { described_class.new(project, user, merge_request_for_resolving_discussions: merge_request).execute }
 
-    def position_on_line(line_number)
-      Gitlab::Diff::Position.new(
-        old_path: "files/ruby/popen.rb",
-        new_path: "files/ruby/popen.rb",
-        old_line: nil,
-        new_line: line_number,
-        diff_refs: merge_request.diff_refs
-      )
-    end
-
     describe '#items_for_discussions' do
       it 'has an item for each discussion' do
-        create(:diff_note_on_merge_request, noteable: merge_request, project: merge_request.source_project, position: position_on_line(13))
+        create(:diff_note_on_merge_request, noteable: merge_request, project: merge_request.source_project, line_number: 13)
         service = described_class.new(project, user, merge_request_for_resolving_discussions: merge_request)
 
         service.execute
@@ -82,7 +95,7 @@ describe Issues::BuildService, services: true do
 
       describe 'with multiple discussions' do
         before do
-          create(:diff_note_on_merge_request, noteable: merge_request, project: merge_request.target_project, position: position_on_line(15))
+          create(:diff_note_on_merge_request, noteable: merge_request, project: merge_request.target_project, line_number: 15)
         end
 
         it 'mentions all the authors in the description' do
@@ -99,7 +112,7 @@ describe Issues::BuildService, services: true do
         end
 
         it 'mentions additional notes' do
-          create_list(:diff_note_on_merge_request, 2, noteable: merge_request, project: merge_request.target_project, position: position_on_line(15))
+          create_list(:diff_note_on_merge_request, 2, noteable: merge_request, project: merge_request.target_project, line_number: 15)
 
           expect(issue.description).to include('(+2 comments)')
         end

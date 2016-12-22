@@ -6,7 +6,7 @@ describe Discussions::ResolveService do
     let(:project) { merge_request.project }
     let(:merge_request) { discussion.noteable }
     let(:user) { create(:user) }
-    let(:service) { described_class.new(discussion.noteable.project, user, merge_request: merge_request) }
+    let(:service) { described_class.new(discussion.noteable.project, user) }
 
     before do
       project.team << [user, :master]
