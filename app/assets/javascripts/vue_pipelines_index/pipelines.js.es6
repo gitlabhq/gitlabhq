@@ -52,7 +52,7 @@
       },
       ref(pipeline) {
         const { ref } = pipeline;
-        return ({ name: ref.name, tag: ref['tag?'], ref_url: ref.url });
+        return ({ name: ref.name, tag: ref.tag, ref_url: ref.path });
       },
       commitTitle(pipeline) {
         return pipeline.commit ? pipeline.commit.title : '';
@@ -61,7 +61,7 @@
         return pipeline.commit ? pipeline.commit.short_id : '';
       },
       commitUrl(pipeline) {
-        return pipeline.commit ? pipeline.commit.commit_url : '';
+        return pipeline.commit ? pipeline.commit.commit_path : '';
       },
       match(string) {
         return string.replace(/_([a-z])/g, (m, w) => w.toUpperCase());

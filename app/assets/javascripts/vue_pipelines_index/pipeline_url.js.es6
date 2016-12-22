@@ -13,7 +13,7 @@
     },
     template: `
       <td>
-        <a :href='pipeline.url'>
+        <a :href='pipeline.path'>
           <span class="pipeline-id">#{{pipeline.id}}</span>
         </a>
         <span>by</span>
