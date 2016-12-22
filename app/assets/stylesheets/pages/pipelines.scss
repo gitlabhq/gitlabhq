@@ -597,6 +597,27 @@
       }
     }
   }
+
+  .grouped-pipeline-dropdown {
+    .dropdown-build {
+      .build-content {
+        width: 100%;
+
+        &:hover {
+          background-color: $stage-hover-bg;
+          color: $gl-text-color;
+        }
+      }
+
+      .ci-action-icon-container {
+        padding: 0;
+        font-size: 11px;
+        position: absolute;
+        top: 1px;
+        right: 8px;
+      }
+    }
+  }
 }
 
 .dropdown-counter-badge {
@@ -607,9 +628,11 @@
   margin-right: 2px;
 }
 
+
 .grouped-pipeline-dropdown {
   padding: 0;
   width: 191px;
+  min-width: 191px;
   left: auto;
   right: -195px;
   top: -4px;
@@ -619,11 +642,22 @@
     display: inline-block;
   }
 
-  .build-content {
-    width: 138px;
+  .dropdown-build {
+    .build-content {
+      width: 100%;
 
-    &:hover {
-      background-color: $stage-hover-bg;
+      &:hover {
+        background-color: $stage-hover-bg;
+        color: $gl-text-color;
+      }
+    }
+
+    .ci-action-icon-container {
+      padding: 0;
+      font-size: 11px;
+      position: absolute;
+      margin-top: 3px;
+      right: 7px;
     }
   }
 
@@ -633,12 +667,10 @@
     margin: 3px 0;
 
     li {
-      padding-top: 2px;
-      margin: 4px 7px;
-      padding: 0 3px;
-      padding-left: 0;
-      padding-bottom: 0;
-      line-height: 0;
+      margin: 4px 8px 4px 9px;
+      padding: 0;
+      line-height: 1.1;
+      position: relative;
 
       .ci-action-icon-container:hover {
         background-color: transparent;
@@ -652,6 +684,11 @@
   }
 }
 
+.pipeline-graph .dropdown-build .ci-status-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
 .ci-status-text {
   max-width: 110px;
   white-space: nowrap;
@@ -660,7 +697,7 @@
   vertical-align: bottom;
   display: inline-block;
   position: relative;
-  font-weight: 100;
+  font-weight: 200;
 }
 
 // Action Icons
@@ -697,7 +734,7 @@
   color: $gl-text-color-light;
 
   .build-content {
-    padding: 3px 7px 6px;
+    padding: 4px 7px 8px;
   }
 
   .ci-action-icon-container {
