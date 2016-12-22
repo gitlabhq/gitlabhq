@@ -259,6 +259,10 @@
           gl.utils.localTimeAgo($('.js-timeago', '#pipelines'));
           this.pipelinesLoaded = true;
           this.scrollToElement('#pipelines');
+
+          new gl.MiniPipelineGraph({
+            container: '.js-pipeline-table',
+          });
         },
       });
     }
