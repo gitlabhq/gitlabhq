@@ -79,6 +79,13 @@ describe Banzai::Filter::MathFilter, lib: true do
     expect(doc.to_s).to eq input
   end
 
+  it 'ignores dollar signs if they are inside another element' do
+    input = '<p>We check strictly <em>$</em><code>2+2</code><em>$</em></p>'
+    doc = filter(input)
+
+    expect(doc.to_s).to eq input
+  end
+
   # Display math
 
   it 'adds data-math-style display attribute to display math' do
