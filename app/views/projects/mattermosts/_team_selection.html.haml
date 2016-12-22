@@ -7,20 +7,21 @@
   %p
     = @teams.one? ? 'The team' : 'Select the team'
     where the slash commands will be used in
-  - selected_id = @teams.keys.first if @teams.one?
+  - selected_id = @teams.one? ? @teams.keys.first : 0
   - options = mattermost_teams_options(@teams)
   - options = options_for_select(options, selected_id)
-  = f.select(:team_id, options, {}, { class: 'form-control', selected: "#{selected_id}" })
+  = f.select(:team_id, options, {}, { class: 'form-control', disabled: @teams.one?, selected: selected_id })
+  = f.hidden_field(:team_id, value: selected_id) if @teams.one?
   .help-block
     - if @teams.one?
-      This is the only team where you are an administrator.
+      This is the only available team.
     - else
-      The list shows teams where you are administrator
-    To create a team, ask your Mattermost system administrator.
+      The list shows all available teams.
     To create a team,
     = link_to "#{Gitlab.config.mattermost.host}/create_team" do
       use Mattermost's interface
       = icon('external-link')
+    or ask your Mattermost system administrator.
   %hr
   %h4 Command trigger word
   %p Choose the word that will trigger commands
