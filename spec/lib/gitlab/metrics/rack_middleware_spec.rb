@@ -33,7 +33,7 @@ describe Gitlab::Metrics::RackMiddleware do
     end
 
     it 'tags a transaction with the method and path of the route in the grape endpoint' do
-      route    = double(:route, route_method: "GET", route_path: "/:version/projects/:id/archive(.:format)")
+      route    = double(:route, request_method: "GET", path: "/:version/projects/:id/archive(.:format)")
       endpoint = double(:endpoint, route: route)
 
       env['api.endpoint'] = endpoint
@@ -117,7 +117,7 @@ describe Gitlab::Metrics::RackMiddleware do
     let(:transaction) { middleware.transaction_from_env(env) }
 
     it 'tags a transaction with the method and path of the route in the grape endpount' do
-      route    = double(:route, route_method: "GET", route_path: "/:version/projects/:id/archive(.:format)")
+      route    = double(:route, request_method: "GET", path: "/:version/projects/:id/archive(.:format)")
       endpoint = double(:endpoint, route: route)
 
       env['api.endpoint'] = endpoint

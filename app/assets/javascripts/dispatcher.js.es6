@@ -138,8 +138,12 @@
           new MergedButtons();
           break;
         case 'projects:merge_requests:commits':
-        case 'projects:merge_requests:builds':
           new MergedButtons();
+          break;
+        case 'projects:merge_requests:pipelines':
+          new gl.MiniPipelineGraph({
+            container: '.js-pipeline-table',
+          });
           break;
         case "projects:merge_requests:diffs":
           new gl.Diff();
@@ -158,8 +162,10 @@
           new ZenMode();
           shortcut_handler = new ShortcutsNavigation();
           break;
-        case 'projects:commit:builds':
-          new gl.Pipelines();
+        case 'projects:commit:pipelines':
+          new gl.MiniPipelineGraph({
+            container: '.js-pipeline-table',
+          });
           break;
         case 'projects:commits:show':
         case 'projects:activity':
@@ -171,6 +177,11 @@
           if ($('#tree-slider').length) {
             new TreeView();
           }
+          break;
+        case 'projects:pipelines:index':
+          new gl.MiniPipelineGraph({
+            container: '.js-pipeline-table',
+          });
           break;
         case 'projects:pipelines:builds':
         case 'projects:pipelines:show':

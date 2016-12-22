@@ -40,8 +40,12 @@ you to use.
     | :--- | :---------- |
     | **Name** | This can be anything. Consider something like `<Organization>'s GitLab` or `<Your Name>'s GitLab` or something else descriptive. |
     | **Application description** | Fill this in if you wish. |
-    | **Callback URL** | Leave blank. |
+    | **Callback URL** | The URL to your GitLab installation, e.g., `https://gitlab.example.com`. |
     | **URL** | The URL to your GitLab installation, e.g., `https://gitlab.example.com`. |
+
+    NOTE: Starting in GitLab 8.15, you MUST specify a callback URL, or you will
+    see an "Invalid redirect_uri" message. For more details, see [the
+    Bitbucket documentation](https://confluence.atlassian.com/bitbucket/oauth-faq-338365710.html).
 
     And grant at least the following permissions:
 

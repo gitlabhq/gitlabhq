@@ -1,0 +1,74 @@
+image: registry.gitlab.com/gitlab-examples/openshift-deploy
+
+variables:
+  # Application deployment domain
+  KUBE_DOMAIN: domain.example.com
+
+stages:
+  - build
+  - test
+  - review
+  - staging
+  - production
+
+build:
+  stage: build
+  script:
+    - command build
+  only:
+    - branches
+
+production:
+  stage: production
+  variables:
+    CI_ENVIRONMENT_URL: http://production.$KUBE_DOMAIN
+  script:
+    - command deploy
+  environment:
+    name: production
+    url: http://production.$KUBE_DOMAIN
+  when: manual
+  only:
+    - master
+
+staging:
+  stage: staging
+  variables:
+    CI_ENVIRONMENT_URL: http://staging.$KUBE_DOMAIN
+  script:
+    - command deploy
+  environment:
+    name: staging
+    url: http://staging.$KUBE_DOMAIN
+  only:
+    - master
+
+review:
+  stage: review
+  variables:
+    CI_ENVIRONMENT_URL: http://$CI_ENVIRONMENT_SLUG.$KUBE_DOMAIN
+  script:
+    - command deploy
+  environment:
+    name: review/$CI_BUILD_REF_NAME
+    url: http://$CI_ENVIRONMENT_SLUG.$KUBE_DOMAIN
+    on_stop: stop_review
+  only:
+    - branches
+  except:
+    - master
+
+stop_review:
+  stage: review
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - command destroy
+  environment:
+    name: review/$CI_BUILD_REF_NAME
+    action: stop
+  when: manual
+  only:
+    - branches
+  except:
+    - master

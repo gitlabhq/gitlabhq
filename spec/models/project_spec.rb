@@ -20,10 +20,9 @@ describe Project, models: true do
     it { is_expected.to have_many(:deploy_keys) }
     it { is_expected.to have_many(:hooks).dependent(:destroy) }
     it { is_expected.to have_many(:protected_branches).dependent(:destroy) }
-    it { is_expected.to have_many(:chat_services) }
     it { is_expected.to have_one(:forked_project_link).dependent(:destroy) }
-    it { is_expected.to have_one(:slack_notification_service).dependent(:destroy) }
-    it { is_expected.to have_one(:mattermost_notification_service).dependent(:destroy) }
+    it { is_expected.to have_one(:slack_service).dependent(:destroy) }
+    it { is_expected.to have_one(:mattermost_service).dependent(:destroy) }
     it { is_expected.to have_one(:pushover_service).dependent(:destroy) }
     it { is_expected.to have_one(:asana_service).dependent(:destroy) }
     it { is_expected.to have_many(:boards).dependent(:destroy) }
@@ -37,6 +36,7 @@ describe Project, models: true do
     it { is_expected.to have_one(:hipchat_service).dependent(:destroy) }
     it { is_expected.to have_one(:flowdock_service).dependent(:destroy) }
     it { is_expected.to have_one(:assembla_service).dependent(:destroy) }
+    it { is_expected.to have_one(:slack_slash_commands_service).dependent(:destroy) }
     it { is_expected.to have_one(:mattermost_slash_commands_service).dependent(:destroy) }
     it { is_expected.to have_one(:gemnasium_service).dependent(:destroy) }
     it { is_expected.to have_one(:buildkite_service).dependent(:destroy) }
@@ -1456,6 +1456,18 @@ describe Project, models: true do
         project.add_import_job
       end
     end
+  end
+
+  describe '#gitlab_project_import?' do
+    subject(:project) { build(:project, import_type: 'gitlab_project') }
+
+    it { expect(project.gitlab_project_import?).to be true }
+  end
+
+  describe '#gitea_import?' do
+    subject(:project) { build(:project, import_type: 'gitea') }
+
+    it { expect(project.gitea_import?).to be true }
   end
 
   describe '#lfs_enabled?' do

@@ -378,13 +378,20 @@ module API
           desc: 'A custom certificate authority bundle to verify the Kubernetes cluster with (PEM format)'
         },
       ],
-
       'mattermost-slash-commands' => [
         {
           required: true,
           name: :token,
           type: String,
           desc: 'The Mattermost token'
+        }
+      ],
+      'slack-slash-commands' => [
+        {
+          required: true,
+          name: :token,
+          type: String,
+          desc: 'The Slack token'
         }
       ],
       'pipelines-email' => [
@@ -473,7 +480,7 @@ module API
           desc: 'The description of the tracker'
         }
       ],
-      'slack-notification' => [
+      'slack' => [
         {
           required: true,
           name: :webhook,
@@ -493,7 +500,7 @@ module API
           desc: 'The channel name'
         }
       ],
-      'mattermost-notification' => [
+      'mattermost' => [
         {
           required: true,
           name: :webhook,
