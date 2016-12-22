@@ -654,9 +654,17 @@ class Repository
   end
 
   def last_commit_for_path(sha, path)
-    args = %W(#{Gitlab.config.git.bin_path} rev-list --max-count=1 #{sha} -- #{path})
-    sha = Gitlab::Popen.popen(args, path_to_repo).first.strip
+    sha = last_commit_id_for_path(sha, path)
     commit(sha)
+  end
+
+  def last_commit_id_for_path(sha, path)
+    key = path.blank? ? "last_commit_id_for_path:#{sha}" : "last_commit_id_for_path:#{sha}:#{Digest::SHA1.hexdigest(path)}"
+
+    cache.fetch(key) do
+      args = %W(#{Gitlab.config.git.bin_path} rev-list --max-count=1 #{sha} -- #{path})
+      Gitlab::Popen.popen(args, path_to_repo).first.strip
+    end
   end
 
   def next_branch(name, opts = {})
