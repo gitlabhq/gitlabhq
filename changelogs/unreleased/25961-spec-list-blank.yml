@@ -1,0 +1,4 @@
+---
+title: Fix Pipeline builds list blank on MR
+merge_request: 8255
+author:
