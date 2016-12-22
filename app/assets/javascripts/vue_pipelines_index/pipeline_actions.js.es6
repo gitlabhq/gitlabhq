@@ -71,22 +71,22 @@
           </div>
           <div class="cancel-retry-btns inline">
             <a
-              v-if='pipeline.retry_url'
+              v-if='pipeline.retry_path'
               class="btn has-tooltip"
               title="Retry"
               rel="nofollow"
               data-method="post"
-              :href='pipeline.retry_url'
+              :href='pipeline.retry_path'
             >
               <i class="fa fa-repeat"></i>
             </a>
             <a
-              v-if='pipeline.cancel_url'
+              v-if='pipeline.cancel_path'
               class="btn btn-remove has-tooltip"
               title="Cancel"
               rel="nofollow"
               data-method="post"
-              :href='pipeline.cancel_url'
+              :href='pipeline.cancel_path'
               data-original-title="Cancel"
             >
               <i class="fa fa-remove"></i>
