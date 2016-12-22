@@ -1,0 +1,10 @@
+- can_override = local_assigns.fetch(:can_override, false)
+- visible = local_assigns.fetch(:visible, false)
+
+- if can_override
+  - if visible
+    %span.label.label-info.pull-right.visible-xs-block
+      LDAP
+  - else
+    %span.label.label-info.members-ldap.hidden-xs
+      LDAP

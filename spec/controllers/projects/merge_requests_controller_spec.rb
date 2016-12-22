@@ -780,10 +780,6 @@ describe Projects::MergeRequestsController do
     end
   end
 
-  describe 'GET builds' do
-    it_behaves_like "loads labels", :builds
-  end
-
   describe 'GET pipelines' do
     it_behaves_like "loads labels", :pipelines
   end

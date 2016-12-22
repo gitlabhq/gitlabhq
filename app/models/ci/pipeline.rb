@@ -88,8 +88,24 @@ module Ci
     end
 
     # ref can't be HEAD or SHA, can only be branch/tag name
+    scope :latest, ->(ref = nil) do
+      max_id = unscope(:select)
+        .select("max(#{quoted_table_name}.id)")
+        .group(:ref, :sha)
+
+      if ref
+        where(id: max_id, ref: ref)
+      else
+        where(id: max_id)
+      end
+    end
+
+    def self.latest_status(ref = nil)
+      latest(ref).status
+    end
+
     def self.latest_successful_for(ref)
-      where(ref: ref).order(id: :desc).success.first
+      success.latest(ref).first
     end
 
     def self.truncate_sha(sha)
@@ -98,6 +114,11 @@ module Ci
 
     def self.total_duration
       where.not(duration: nil).sum(:duration)
+    end
+
+    def stage(name)
+      stage = Ci::Stage.new(self, name: name)
+      stage unless stage.statuses_count.zero?
     end
 
     def stages_count
@@ -336,8 +357,10 @@ module Ci
         .select { |merge_request| merge_request.head_pipeline.try(:id) == self.id }
     end
 
-    def detailed_status
-      Gitlab::Ci::Status::Pipeline::Factory.new(self).fabricate!
+    def detailed_status(current_user)
+      Gitlab::Ci::Status::Pipeline::Factory
+        .new(self, current_user)
+        .fabricate!
     end
 
     private

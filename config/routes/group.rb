@@ -18,6 +18,10 @@ scope(path: 'groups/*group_id',
   resources :group_members, only: [:index, :create, :update, :destroy], concerns: :access_requestable do
     post :resend_invite, on: :member
     delete :leave, on: :collection
+
+    ## EE-specific
+    patch :override, on: :member
+    ## EE-specific
   end
 
   resource :avatar, only: [:destroy]

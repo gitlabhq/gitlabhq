@@ -66,7 +66,8 @@ describe Admin::ProjectsController, "routing" do
   end
 
   it "to #show" do
-    expect(get("/admin/projects/gitlab")).to route_to('admin/projects#show', namespace_id: 'gitlab')
+    expect(get("/admin/projects/gitlab/gitlab-ce")).to route_to('admin/projects#show', namespace_id: 'gitlab', id: 'gitlab-ce')
+    expect(get("/admin/projects/gitlab/subgroup/gitlab-ce")).to route_to('admin/projects#show', namespace_id: 'gitlab/subgroup', id: 'gitlab-ce')
   end
 end
 
@@ -127,5 +128,16 @@ end
 describe Admin::HealthCheckController, "routing" do
   it "to #show" do
     expect(get("/admin/health_check")).to route_to('admin/health_check#show')
+  end
+end
+
+describe Admin::GroupsController, "routing" do
+  it "to #index" do
+    expect(get("/admin/groups")).to route_to('admin/groups#index')
+  end
+
+  it "to #show" do
+    expect(get("/admin/groups/gitlab")).to route_to('admin/groups#show', id: 'gitlab')
+    expect(get("/admin/groups/gitlab/subgroup")).to route_to('admin/groups#show', id: 'gitlab/subgroup')
   end
 end

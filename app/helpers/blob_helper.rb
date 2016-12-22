@@ -188,7 +188,11 @@ module BlobHelper
   end
 
   def gitlab_ci_ymls
-    @gitlab_ci_ymls ||= Gitlab::Template::GitlabCiYmlTemplate.dropdown_names
+    @gitlab_ci_ymls ||= Gitlab::Template::GitlabCiYmlTemplate.dropdown_names(params[:context])
+  end
+
+  def dockerfile_names
+    @dockerfile_names ||= Gitlab::Template::DockerfileTemplate.dropdown_names
   end
 
   def blob_editor_paths

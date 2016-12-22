@@ -17,14 +17,13 @@ class Namespace < ActiveRecord::Base
   validates :owner, presence: true, unless: ->(n) { n.type == "Group" }
   validates :name,
     presence: true,
-    uniqueness: true,
+    uniqueness: { scope: :parent_id },
     length: { maximum: 255 },
     namespace_name: true
 
   validates :description, length: { maximum: 255 }
   validates :path,
     presence: true,
-    uniqueness: { case_sensitive: false },
     length: { maximum: 255 },
     namespace: true
 
@@ -99,7 +98,7 @@ class Namespace < ActiveRecord::Base
 
   def move_dir
     if any_project_has_container_registry_tags?
-      raise Exception.new('Namespace cannot be moved, because at least one project has tags in container registry')
+      raise Gitlab::UpdatePathError.new('Namespace cannot be moved, because at least one project has tags in container registry')
     end
 
     # Move the namespace directory in all storages paths used by member projects
@@ -112,7 +111,7 @@ class Namespace < ActiveRecord::Base
 
         # if we cannot move namespace directory we should rollback
         # db changes in order to prevent out of sync between db and fs
-        raise Exception.new('namespace directory cannot be moved')
+        raise Gitlab::UpdatePathError.new('namespace directory cannot be moved')
       end
     end
 
@@ -165,6 +164,19 @@ class Namespace < ActiveRecord::Base
     else
       path
     end
+  end
+
+  def full_name
+    @full_name ||=
+      if parent
+        parent.full_name + ' / ' + name
+      else
+        name
+      end
+  end
+
+  def parents
+    @parents ||= parent ? parent.parents + [parent] : []
   end
 
   private

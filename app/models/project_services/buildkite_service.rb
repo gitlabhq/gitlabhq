@@ -3,7 +3,8 @@ require "addressable/uri"
 class BuildkiteService < CiService
   ENDPOINT = "https://buildkite.com"
 
-  prop_accessor :project_url, :token, :enable_ssl_verification
+  prop_accessor :project_url, :token
+  boolean_accessor :enable_ssl_verification
 
   validates :project_url, presence: true, url: true, if: :activated?
   validates :token, presence: true, if: :activated?

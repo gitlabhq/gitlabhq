@@ -1,6 +1,8 @@
 /* eslint-disable */
+/* global Flash */
+
 (global => {
-  global.gl = global.gl || {};
+  global.gl = global.gl || {};
 
   const ACCESS_LEVELS = {
     MERGE: 'merge_access_levels',
@@ -28,7 +30,6 @@
     }
 
     buildDropdowns() {
-
       // Allowed to merge dropdown
       this['merge_access_levels_dropdown'] = new gl.ProtectedBranchAccessDropdown({
         accessLevel: ACCESS_LEVELS.MERGE,
@@ -51,6 +52,7 @@
     onSelectOption(item, $el, dropdownInstance) {
       this.hasChanges = true;
     }
+
 
     onDropdownHide() {
       if (!this.hasChanges) return;
@@ -105,7 +107,7 @@
         if (currentItem.user_id) {
 
           // Do this only for users for now
-          // get the current data for selected items 
+          // get the current data for selected items
           let selectedItems = this[dropdownName].getSelectedItems();
           let currentSelectedItem = _.findWhere(selectedItems, { user_id: currentItem.user_id });
 

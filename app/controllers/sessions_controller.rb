@@ -138,7 +138,7 @@ class SessionsController < Devise::SessionsController
 
   def valid_otp_attempt?(user)
     user.validate_and_consume_otp!(user_params[:otp_attempt]) ||
-    user.invalidate_otp_backup_code!(user_params[:otp_attempt])
+      user.invalidate_otp_backup_code!(user_params[:otp_attempt])
   end
 
   def log_audit_event(user, options = {})

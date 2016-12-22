@@ -4,11 +4,12 @@ module Gitlab
       include PathLocksHelper
       attr_reader :user_access, :project
 
-      def initialize(change, user_access:, project:)
+      def initialize(change, user_access:, project:, env: {})
         @oldrev, @newrev, @ref = change.values_at(:oldrev, :newrev, :ref)
         @branch_name = Gitlab::Git.branch_name(@ref)
         @user_access = user_access
         @project = project
+        @env = env
       end
 
       def exec
@@ -69,7 +70,7 @@ module Gitlab
       end
 
       def forced_push?
-        Gitlab::Checks::ForcePush.force_push?(@project, @oldrev, @newrev)
+        Gitlab::Checks::ForcePush.force_push?(@project, @oldrev, @newrev, env: @env)
       end
 
       def matching_merge_request?
@@ -90,8 +91,7 @@ module Gitlab
           commit_validation = push_rule.try(:commit_validation?)
 
           # if newrev is blank, the branch was deleted
-          return if Gitlab::Git.blank_ref?(@newrev) ||
-            !(commit_validation || validate_path_locks?)
+          return if Gitlab::Git.blank_ref?(@newrev) || !(commit_validation || validate_path_locks?)
 
           commits.each do |commit|
             next if commit_from_annex_sync?(commit.safe_message)

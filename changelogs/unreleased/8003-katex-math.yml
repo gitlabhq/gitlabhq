@@ -1,0 +1,4 @@
+---
+title: Added support for math rendering, using KaTeX, in Markdown and asciidoc
+merge_request: 8003
+author: Munken

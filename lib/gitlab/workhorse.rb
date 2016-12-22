@@ -95,6 +95,19 @@ module Gitlab
         ]
       end
 
+      def terminal_websocket(terminal)
+        details = {
+          'Terminal' => {
+            'Subprotocols' => terminal[:subprotocols],
+            'Url' => terminal[:url],
+            'Header' => terminal[:headers]
+          }
+        }
+        details['Terminal']['CAPem'] = terminal[:ca_pem] if terminal.has_key?(:ca_pem)
+
+        details
+      end
+
       def version
         path = Rails.root.join(VERSION_FILE)
         path.readable? ? path.read.chomp : 'unknown'
@@ -117,8 +130,12 @@ module Gitlab
       end
 
       def verify_api_request!(request_headers)
+        decode_jwt(request_headers[INTERNAL_API_REQUEST_HEADER])
+      end
+
+      def decode_jwt(encoded_message)
         JWT.decode(
-          request_headers[INTERNAL_API_REQUEST_HEADER],
+          encoded_message,
           secret,
           true,
           { iss: 'gitlab-workhorse', verify_iss: true, algorithm: 'HS256' },

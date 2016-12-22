@@ -9,7 +9,7 @@
   padding: 20px;
   color: $gl-gray;
   font-weight: normal;
-  font-size: 16px;
+  font-size: 14px;
   line-height: 36px;
 
   &.diff-collapsed {
@@ -24,7 +24,7 @@
 .row-content-block {
   margin-top: 0;
   margin-bottom: -$gl-padding;
-  background-color: $background-color;
+  background-color: $gray-light;
   padding: $gl-padding;
   margin-bottom: 0;
   border-top: 1px solid $white-dark;
@@ -118,7 +118,7 @@
 
 .cover-block {
   text-align: center;
-  background: $background-color;
+  background: $gray-light;
   padding-top: 44px;
   position: relative;
 

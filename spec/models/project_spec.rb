@@ -20,9 +20,9 @@ describe Project, models: true do
     it { is_expected.to have_many(:deploy_keys) }
     it { is_expected.to have_many(:hooks).dependent(:destroy) }
     it { is_expected.to have_many(:protected_branches).dependent(:destroy) }
-    it { is_expected.to have_many(:chat_services) }
     it { is_expected.to have_one(:forked_project_link).dependent(:destroy) }
     it { is_expected.to have_one(:slack_service).dependent(:destroy) }
+    it { is_expected.to have_one(:mattermost_service).dependent(:destroy) }
     it { is_expected.to have_one(:pushover_service).dependent(:destroy) }
     it { is_expected.to have_one(:asana_service).dependent(:destroy) }
     it { is_expected.to have_many(:boards).dependent(:destroy) }
@@ -36,6 +36,7 @@ describe Project, models: true do
     it { is_expected.to have_one(:hipchat_service).dependent(:destroy) }
     it { is_expected.to have_one(:flowdock_service).dependent(:destroy) }
     it { is_expected.to have_one(:assembla_service).dependent(:destroy) }
+    it { is_expected.to have_one(:slack_slash_commands_service).dependent(:destroy) }
     it { is_expected.to have_one(:mattermost_slash_commands_service).dependent(:destroy) }
     it { is_expected.to have_one(:gemnasium_service).dependent(:destroy) }
     it { is_expected.to have_one(:buildkite_service).dependent(:destroy) }
@@ -1699,6 +1700,18 @@ describe Project, models: true do
     end
   end
 
+  describe '#gitlab_project_import?' do
+    subject(:project) { build(:project, import_type: 'gitlab_project') }
+
+    it { expect(project.gitlab_project_import?).to be true }
+  end
+
+  describe '#gitea_import?' do
+    subject(:project) { build(:project, import_type: 'gitea') }
+
+    it { expect(project.gitea_import?).to be true }
+  end
+
   describe '#lfs_enabled?' do
     let(:project) { create(:project) }
 
@@ -1761,16 +1774,16 @@ describe Project, models: true do
     end
   end
 
-  describe '.where_paths_in' do
+  describe '.where_full_path_in' do
     context 'without any paths' do
       it 'returns an empty relation' do
-        expect(Project.where_paths_in([])).to eq([])
+        expect(Project.where_full_path_in([])).to eq([])
       end
     end
 
     context 'without any valid paths' do
       it 'returns an empty relation' do
-        expect(Project.where_paths_in(%w[foo])).to eq([])
+        expect(Project.where_full_path_in(%w[foo])).to eq([])
       end
     end
 
@@ -1779,15 +1792,15 @@ describe Project, models: true do
       let!(:project2) { create(:project) }
 
       it 'returns the projects matching the paths' do
-        projects = Project.where_paths_in([project1.path_with_namespace,
-                                           project2.path_with_namespace])
+        projects = Project.where_full_path_in([project1.path_with_namespace,
+                                               project2.path_with_namespace])
 
         expect(projects).to contain_exactly(project1, project2)
       end
 
       it 'returns projects regardless of the casing of paths' do
-        projects = Project.where_paths_in([project1.path_with_namespace.upcase,
-                                           project2.path_with_namespace.upcase])
+        projects = Project.where_full_path_in([project1.path_with_namespace.upcase,
+                                               project2.path_with_namespace.upcase])
 
         expect(projects).to contain_exactly(project1, project2)
       end
@@ -2044,6 +2057,26 @@ describe Project, models: true do
       it 'finds both environments' do
         expect(project.environments_recently_updated_on_branch('feature'))
           .to contain_exactly(environment, second_environment)
+      end
+    end
+  end
+
+  describe '#deployment_variables' do
+    context 'when project has no deployment service' do
+      let(:project) { create(:empty_project) }
+
+      it 'returns an empty array' do
+        expect(project.deployment_variables).to eq []
+      end
+    end
+
+    context 'when project has a deployment service' do
+      let(:project) { create(:kubernetes_project) }
+
+      it 'returns variables from this service' do
+        expect(project.deployment_variables).to include(
+          { key: 'KUBE_TOKEN', value: project.kubernetes_service.token, public: false }
+        )
       end
     end
   end

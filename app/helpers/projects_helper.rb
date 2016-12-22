@@ -52,7 +52,7 @@ module ProjectsHelper
   def project_title(project)
     namespace_link =
       if project.group
-        link_to(simple_sanitize(project.group.name), group_path(project.group))
+        group_title(project.group)
       else
         owner = project.namespace.owner
         link_to(simple_sanitize(owner.name), user_path(owner))
@@ -303,13 +303,15 @@ module ProjectsHelper
     end
   end
 
-  def add_special_file_path(project, file_name:, commit_message: nil)
+  def add_special_file_path(project, file_name:, commit_message: nil, target_branch: nil, context: nil)
     namespace_project_new_blob_path(
       project.namespace,
       project,
       project.default_branch || 'master',
       file_name:      file_name,
-      commit_message: commit_message || "Add #{file_name.downcase}"
+      commit_message: commit_message || "Add #{file_name.downcase}",
+      target_branch: target_branch,
+      context: context
     )
   end
 

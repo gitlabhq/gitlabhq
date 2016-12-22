@@ -96,7 +96,7 @@ module API
         identity_attrs = params.slice(:provider, :extern_uid)
         confirm = params.delete(:confirm)
 
-        user = User.build_user(declared_params(include_missing: false))
+        user = User.new(declared_params(include_missing: false))
         user.skip_confirmation! unless confirm
 
         if identity_attrs.any?

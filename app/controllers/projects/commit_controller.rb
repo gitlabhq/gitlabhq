@@ -8,13 +8,11 @@ class Projects::CommitController < Projects::ApplicationController
 
   # Authorize
   before_action :require_non_empty_project
-  before_action :authorize_download_code!, except: [:cancel_builds, :retry_builds]
-  before_action :authorize_update_build!, only: [:cancel_builds, :retry_builds]
+  before_action :authorize_download_code!
   before_action :authorize_read_pipeline!, only: [:pipelines]
-  before_action :authorize_read_commit_status!, only: [:builds]
   before_action :commit
-  before_action :define_commit_vars, only: [:show, :diff_for_path, :builds, :pipelines]
-  before_action :define_status_vars, only: [:show, :builds, :pipelines]
+  before_action :define_commit_vars, only: [:show, :diff_for_path, :pipelines]
+  before_action :define_status_vars, only: [:show, :pipelines]
   before_action :define_note_vars, only: [:show, :diff_for_path]
   before_action :authorize_edit_tree!, only: [:revert, :cherry_pick]
 
@@ -33,25 +31,6 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def pipelines
-  end
-
-  def builds
-  end
-
-  def cancel_builds
-    ci_builds.running_or_pending.each(&:cancel)
-
-    redirect_back_or_default default: builds_namespace_project_commit_path(project.namespace, project, commit.sha)
-  end
-
-  def retry_builds
-    ci_builds.latest.failed.each do |build|
-      if build.retryable?
-        Ci::Build.retry(build, current_user)
-      end
-    end
-
-    redirect_back_or_default default: builds_namespace_project_commit_path(project.namespace, project, commit.sha)
   end
 
   def branches
@@ -98,10 +77,6 @@ class Projects::CommitController < Projects::ApplicationController
     @noteable = @commit ||= @project.commit(params[:id])
   end
 
-  def ci_builds
-    @ci_builds ||= Ci::Build.where(pipeline: pipelines)
-  end
-
   def define_commit_vars
     return git_not_found! unless commit
 
@@ -133,8 +108,6 @@ class Projects::CommitController < Projects::ApplicationController
 
   def define_status_vars
     @ci_pipelines = project.pipelines.where(sha: commit.sha)
-    @statuses = CommitStatus.where(pipeline: @ci_pipelines).relevant
-    @builds = Ci::Build.where(pipeline: @ci_pipelines).relevant
   end
 
   def assign_change_commit_vars(mr_source_branch)

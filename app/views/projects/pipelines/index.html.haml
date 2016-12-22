@@ -5,23 +5,23 @@
 %div{ class: container_class }
   .top-area
     %ul.nav-links
-      %li{class: ('active' if @scope.nil?)}
+      %li{class: ('active' if @scope.nil?)}>
         = link_to project_pipelines_path(@project) do
           All
           %span.badge.js-totalbuilds-count
             = number_with_delimiter(@pipelines_count)
 
-      %li{class: ('active' if @scope == 'running')}
+      %li{class: ('active' if @scope == 'running')}>
         = link_to project_pipelines_path(@project, scope: :running) do
           Running
           %span.badge.js-running-count
             = number_with_delimiter(@running_or_pending_count)
 
-      %li{class: ('active' if @scope == 'branches')}
+      %li{class: ('active' if @scope == 'branches')}>
         = link_to project_pipelines_path(@project, scope: :branches) do
           Branches
 
-      %li{class: ('active' if @scope == 'tags')}
+      %li{class: ('active' if @scope == 'tags')}>
         = link_to project_pipelines_path(@project, scope: :tags) do
           Tags
 
@@ -42,14 +42,14 @@
         .nothing-here-block No pipelines to show
     - else
       .table-holder
-        %table.table.ci-table
+        %table.table.ci-table.js-pipeline-table
           %thead
-            %th Status
-            %th Pipeline
-            %th Commit
-            %th Stages
-            %th
-            %th.hidden-xs
+            %th.pipeline-status Status
+            %th.pipeline-info Pipeline
+            %th.pipeline-commit Commit
+            %th.pipeline-stages Stages
+            %th.pipeline-date
+            %th.pipeline-actions.hidden-xs
           = render @pipelines, commit_sha: true, stage: true, allow_retry: true
 
       = paginate @pipelines, theme: 'gitlab'

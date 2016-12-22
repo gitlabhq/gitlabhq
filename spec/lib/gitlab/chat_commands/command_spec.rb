@@ -5,7 +5,9 @@ describe Gitlab::ChatCommands::Command, service: true do
   let(:user) { create(:user) }
 
   describe '#execute' do
-    subject { described_class.new(project, user, params).execute }
+    subject do
+      described_class.new(project, user, params).execute
+    end
 
     context 'when no command is available' do
       let(:params) { { text: 'issue show 1' } }
@@ -74,7 +76,7 @@ describe Gitlab::ChatCommands::Command, service: true do
         end
 
         it 'returns action' do
-          expect(subject[:text]).to include('Deployment from staging to production started')
+          expect(subject[:text]).to include('Deployment from staging to production started.')
           expect(subject[:response_type]).to be(:in_channel)
         end
 
@@ -89,6 +91,28 @@ describe Gitlab::ChatCommands::Command, service: true do
           end
         end
       end
+    end
+  end
+
+  describe '#match_command' do
+    subject { described_class.new(project, user, params).match_command.first }
+
+    context 'IssueShow is triggered' do
+      let(:params) { { text: 'issue show 123' } }
+
+      it { is_expected.to eq(Gitlab::ChatCommands::IssueShow) }
+    end
+
+    context 'IssueCreate is triggered' do
+      let(:params) { { text: 'issue create my title' } }
+
+      it { is_expected.to eq(Gitlab::ChatCommands::IssueCreate) }
+    end
+
+    context 'IssueSearch is triggered' do
+      let(:params) { { text: 'issue search my query' } }
+
+      it { is_expected.to eq(Gitlab::ChatCommands::IssueSearch) }
     end
   end
 end
