@@ -56,11 +56,9 @@
       },
       filter: function(query, data, searchKey) {
         if (gl.GfmAutoComplete.isLoading(data)) {
-          gl.GfmAutoComplete.togglePreventSelection.call(this, true);
           gl.GfmAutoComplete.fetchData(this.$inputor, this.at);
           return data;
         } else {
-          gl.GfmAutoComplete.togglePreventSelection.call(this, false);
           return $.fn.atwho["default"].callbacks.filter(query, data, searchKey);
         }
       },
@@ -205,7 +203,6 @@
           sorter: this.DefaultOptions.sorter,
           beforeInsert: this.DefaultOptions.beforeInsert,
           filter: this.DefaultOptions.filter,
-          sorter: this.DefaultOptions.sorter,
           beforeSave: function(milestones) {
             return $.map(milestones, function(m) {
               if (m.title == null) {
@@ -372,11 +369,7 @@
       if (!data || !data.length) return false;
       if (Array.isArray(data)) data = data[0];
       return data === this.defaultLoadingData[0] || data.name === this.defaultLoadingData[0];
-    },
-    togglePreventSelection(isPrevented = !!this.setting.tabSelectsMatch) {
-      this.setting.tabSelectsMatch = !isPrevented;
-      this.setting.spaceSelectsMatch = !isPrevented;
-    },
+    }
   };
 
 }).call(this);
