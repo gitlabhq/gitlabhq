@@ -234,6 +234,29 @@ To minimize downtime of the search feature we recommend the following:
    repositories and commits that are already indexed, so it will be much
    shorter than the first run.
 
+
+## Troubleshooting
+
+### Exception "Can't specify parent if no parent field has been configured"
+
+If you enabled Elasticsearch before GitLab 8.12 and have not rebuilt indexes you will get
+exception in lots of different cases:
+
+```
+Elasticsearch::Transport::Transport::Errors::BadRequest ([400] {"error":{"root_cause":[{"type":"illegal_argument_exception","reason":"Can't specify parent if no parent field has been configured"}],"type":"illegal_argument_exception","rea
+son":"Can't specify parent if no parent field has been configured"},"status":400}):
+```
+
+This is because we changed the index mapping in GitLab 8.12 and the old indexes should be removed and build from scratch again,
+see details in the [8-11-to-8-12 update guide](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/doc/update/8.11-to-8.12.md#11-elasticsearch-index-update-if-you-currently-use-elasticsearch).
+
+### Exception Elasticsearch::Transport::Transport::Errors::BadRequest
+
+If you have this exception (just like in the case above but the actual message is different) please check if you have the correct Elasticsearch version and you met the other [requirements](#requirements).
+There is also an easy way to check it automatically with `sudo gitlab-rake gitlab:check` command.
+
+
+
 [ee-109]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/109 "Elasticsearch Merge Request"
 [elasticsearch]: https://www.elastic.co/products/elasticsearch "Elasticsearch website"
 [install]: https://www.elastic.co/guide/en/elasticsearch/reference/current/_installation.html "Elasticsearch installation documentation"
