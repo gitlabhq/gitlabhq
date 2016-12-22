@@ -44,6 +44,7 @@
 - [Restart GitLab](administration/restart_gitlab.md) Learn how to restart GitLab and its components.
 - [Issue closing pattern](administration/issue_closing_pattern.md) Customize how to close an issue from commit messages.
 - [Koding](administration/integration/koding.md) Set up Koding to use with GitLab.
+- [Web terminals](administration/integration/terminal.md) Provide terminal access to environments from within GitLab.
 - [Libravatar](customization/libravatar.md) Use Libravatar instead of Gravatar for user avatars.
 - [Log system](administration/logs.md) Log system.
 - [Environment Variables](administration/environment_variables.md) to configure GitLab.

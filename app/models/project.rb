@@ -73,7 +73,6 @@ class Project < ActiveRecord::Base
   has_one :push_rule, dependent: :destroy
   has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event'
   has_many :boards, dependent: :destroy
-  has_many :chat_services
 
   # Project services
   has_one :campfire_service, dependent: :destroy
@@ -93,6 +92,7 @@ class Project < ActiveRecord::Base
   has_one :slack_service, dependent: :destroy
   has_one :jenkins_service, dependent: :destroy
   has_one :jenkins_deprecated_service, dependent: :destroy
+  has_one :slack_slash_commands_service, dependent: :destroy
   has_one :buildkite_service, dependent: :destroy
   has_one :bamboo_service, dependent: :destroy
   has_one :teamcity_service, dependent: :destroy
@@ -627,6 +627,10 @@ class Project < ActiveRecord::Base
 
   def gitlab_project_import?
     import_type == 'gitlab_project'
+  end
+
+  def gitea_import?
+    import_type == 'gitea'
   end
 
   def check_limit

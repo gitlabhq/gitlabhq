@@ -8,7 +8,7 @@
       = render 'shared/empty_states/icons/issues.svg'
   .col-xs-12{ class: "#{'col-sm-6' if has_button}" }
     .text-content
-      - if has_button
+      - if has_button && current_user
         %h4
           The Issue Tracker is a good place to add things that need to be improved or solved in a project!
         %p

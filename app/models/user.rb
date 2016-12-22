@@ -328,29 +328,9 @@ class User < ActiveRecord::Base
       find_by(id: Key.unscoped.select(:user_id).where(id: key_id))
     end
 
-    def build_user(attrs = {})
-      User.new(attrs)
-    end
-
     def non_ldap
       joins('LEFT JOIN identities ON identities.user_id = users.id').
         where('identities.provider IS NULL OR identities.provider NOT LIKE ?', 'ldap%')
-    end
-
-    def clean_username(username)
-      username.gsub!(/@.*\z/,             "")
-      username.gsub!(/\.git\z/,           "")
-      username.gsub!(/\A-/,               "")
-      username.gsub!(/[^a-zA-Z0-9_\-\.]/, "")
-
-      counter = 0
-      base = username
-      while User.by_login(username).present? || Namespace.by_path(username).present?
-        counter += 1
-        username = "#{base}#{counter}"
-      end
-
-      username
     end
 
     def reference_prefix
@@ -481,22 +461,16 @@ class User < ActiveRecord::Base
   end
 
   def refresh_authorized_projects
-    transaction do
-      project_authorizations.delete_all
+    Users::RefreshAuthorizedProjectsService.new(self).execute
+  end
 
-      # project_authorizations_union can return multiple records for the same
-      # project/user with different access_level so we take row with the maximum
-      # access_level
-      project_authorizations.connection.execute <<-SQL
-      INSERT INTO project_authorizations (user_id, project_id, access_level)
-      SELECT user_id, project_id, MAX(access_level) AS access_level
-      FROM (#{project_authorizations_union.to_sql}) sub
-      GROUP BY user_id, project_id
-      SQL
+  def remove_project_authorizations(project_ids)
+    project_authorizations.where(id: project_ids).delete_all
+  end
 
-      unless authorized_projects_populated
-        update_column(:authorized_projects_populated, true)
-      end
+  def set_authorized_projects_column
+    unless authorized_projects_populated
+      update_column(:authorized_projects_populated, true)
     end
   end
 
@@ -950,18 +924,6 @@ class User < ActiveRecord::Base
   end
 
   private
-
-  # Returns a union query of projects that the user is authorized to access
-  def project_authorizations_union
-    relations = [
-      personal_projects.select("#{id} AS user_id, projects.id AS project_id, #{Gitlab::Access::MASTER} AS access_level"),
-      groups_projects.select_for_project_authorization,
-      projects.select_for_project_authorization,
-      groups.joins(:shared_projects).select_for_project_authorization
-    ]
-
-    Gitlab::SQL::Union.new(relations)
-  end
 
   def ci_projects_union
     scope  = { access_level: [Gitlab::Access::MASTER, Gitlab::Access::OWNER] }

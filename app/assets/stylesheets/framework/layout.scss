@@ -33,10 +33,12 @@ body {
 }
 
 .alert-wrapper {
-  margin-bottom: $gl-padding;
-
   .alert {
     margin-bottom: 0;
+
+    &:last-child {
+      margin-bottom: $gl-padding;
+    }
   }
 
   /* Stripe the background colors so that adjacent alert-warnings are distinct from one another */

@@ -47,6 +47,8 @@ class Issue < ActiveRecord::Base
 
   scope :created_after, -> (datetime) { where("created_at >= ?", datetime) }
 
+  scope :include_associations, -> { includes(:assignee, :labels, project: :namespace) }
+
   attr_spammable :title, spam_title: true
   attr_spammable :description, spam_description: true
 

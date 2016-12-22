@@ -17,9 +17,9 @@ feature 'Admin updates settings', feature: true do
     expect(page).to have_content "Application settings saved successfully"
   end
 
-  scenario 'Change Slack Service template settings' do
+  scenario 'Change Slack Notifications Service template settings' do
     click_link 'Service Templates'
-    click_link 'Slack'
+    click_link 'Slack notifications'
     fill_in 'Webhook', with: 'http://localhost'
     fill_in 'Username', with: 'test_user'
     fill_in 'service_push_channel', with: '#test_channel'
@@ -30,7 +30,7 @@ feature 'Admin updates settings', feature: true do
 
     expect(page).to have_content 'Application settings saved successfully'
 
-    click_link 'Slack'
+    click_link 'Slack notifications'
 
     page.all('input[type=checkbox]').each do |checkbox|
       expect(checkbox).to be_checked
