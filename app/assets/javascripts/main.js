@@ -66,6 +66,8 @@ import './blob/blob_gitignore_selectors';
 import './blob/blob_license_selector';
 import './blob/blob_license_selectors';
 import './blob/template_selector';
+import './blob/create_branch_dropdown';
+import './blob/target_branch_dropdown';
 
 // templates
 import './templates/issuable_template_selector';
