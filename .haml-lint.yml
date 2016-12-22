@@ -10,7 +10,7 @@ linters:
     enabled: true
 
   ClassAttributeWithStaticValue:
-    enabled: false
+    enabled: true
 
   ClassesBeforeIds:
     enabled: false
