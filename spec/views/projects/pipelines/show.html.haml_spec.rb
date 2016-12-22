@@ -45,6 +45,41 @@ describe 'projects/pipelines/show' do
     expect(rendered).to have_text('jenkins')
   end
 
+  it 'lists builds in the correct sort order' do
+    create_build('test', 1, 'karma 0 20', :created)
+    create_build('test', 1, 'karma 12 20', :created)
+    create_build('test', 1, 'karma 1 20', :created)
+    create_build('test', 1, 'karma 10 20', :created)
+    create_build('test', 1, 'karma 11 20', :created)
+    create_build('test', 1, 'karma 2 20', :created)
+    create_build('test', 1, 'test 1.10', :created)
+    create_build('test', 1, 'test 1.5.1', :created)
+    create_build('test', 1, 'test 1 a', :created)
+
+    render
+
+    # spaced builds order
+    expected_order_1 = [
+      'karma 0 20',
+      'karma 1 20',
+      'karma 2 20',
+      'karma 10 20',
+      'karma 11 20',
+      'karma 12 20'
+    ].join(' ')
+
+    expect(rendered).to have_text(expected_order_1)
+
+    # decimal builds order
+    expected_order_2 = [
+      'test 1 a',
+      'test 1.5.1',
+      'test 1.10'
+    ].join(' ')
+
+    expect(rendered).to have_text(expected_order_2)
+  end
+
   private
 
   def create_build(stage, stage_idx, name, status)
