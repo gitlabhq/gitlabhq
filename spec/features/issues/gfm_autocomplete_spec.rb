@@ -47,6 +47,24 @@ feature 'GFM autocomplete', feature: true, js: true do
       expect_to_wrap(true, label_item, note, label.title)
     end
 
+    it "does not show drpdown when preceded with a special character" do
+      note = find('#note_note')
+      page.within '.timeline-content-form' do
+        note.native.send_keys('')
+        note.native.send_keys("@")
+        note.click
+      end
+
+      expect(page).to have_selector('.atwho-container')
+
+      page.within '.timeline-content-form' do
+        note.native.send_keys("@")
+        note.click
+      end
+
+      expect(page).to have_selector('.atwho-container', visible: false)
+    end
+
     it 'doesn\'t wrap for assignee values' do
       note = find('#note_note')
       page.within '.timeline-content-form' do
