@@ -1,5 +1,6 @@
 require 'optparse'
 require 'logger'
+require 'time'
 
 module Gitlab
   module SidekiqCluster
@@ -11,8 +12,14 @@ module Gitlab
         @pid = nil
         @interval = 5
         @alive = true
-        @threads = []
+        @processes = []
         @logger = Logger.new(log_output)
+        @rails_path = Dir.pwd
+
+        # Use a log format similar to Sidekiq to make parsing/grepping easier.
+        @logger.formatter = proc do |level, date, program, message|
+          "#{date.utc.iso8601(3)} #{Process.pid} TID-#{Thread.current.object_id.to_s(36)} #{level}: #{message}\n"
+        end
       end
 
       def run(argv = ARGV)
@@ -27,7 +34,7 @@ module Gitlab
 
         @logger.info("Starting cluster with #{queues.length} processes")
 
-        @threads = SidekiqCluster.start(queues, @environment)
+        @processes = SidekiqCluster.start(queues, @environment, @rails_path)
 
         write_pid
         trap_signals
@@ -41,11 +48,11 @@ module Gitlab
       def trap_signals
         SidekiqCluster.trap_terminate do |signal|
           @alive = false
-          SidekiqCluster.signal_threads(@threads, signal)
+          SidekiqCluster.signal_processes(@processes, signal)
         end
 
         SidekiqCluster.trap_forward do |signal|
-          SidekiqCluster.signal_threads(@threads, signal)
+          SidekiqCluster.signal_processes(@processes, signal)
         end
       end
 
@@ -53,12 +60,12 @@ module Gitlab
         while @alive
           sleep(@interval)
 
-          unless SidekiqCluster.all_alive?(@threads)
+          unless SidekiqCluster.all_alive?(@processes)
             # If a child process died we'll just terminate the whole cluster. It's up to
             # runit and such to then restart the cluster.
             @logger.info('A worker terminated, shutting down the cluster')
 
-            SidekiqCluster.signal_threads(@threads, :TERM)
+            SidekiqCluster.signal_processes(@processes, :TERM)
             break
           end
         end
@@ -80,6 +87,10 @@ module Gitlab
 
           opt.on('-P', '--pidfile PATH', 'Path to the PID file') do |pid|
             @pid = pid
+          end
+
+          opt.on('-r', '--require PATH', 'Location of the Rails application') do |path|
+            @rails_path = path
           end
 
           opt.on('-i', '--interval INT', 'The number of seconds to wait between worker checks') do |int|

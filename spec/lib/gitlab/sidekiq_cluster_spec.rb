@@ -40,13 +40,11 @@ describe Gitlab::SidekiqCluster do
     end
   end
 
-  describe '.signal_threads' do
+  describe '.signal_processes' do
     it 'sends a signal to every thread' do
-      thread = double(:thread, pid: 1)
+      expect(described_class).to receive(:signal).with(1, :INT)
 
-      expect(described_class).to receive(:signal).with(thread.pid, :INT)
-
-      described_class.signal_threads([thread], :INT)
+      described_class.signal_processes([1], :INT)
     end
   end
 
@@ -60,41 +58,48 @@ describe Gitlab::SidekiqCluster do
   describe '.start' do
     it 'starts Sidekiq with the given queues and environment' do
       expect(described_class).to receive(:start_sidekiq).
-        ordered.with(%w(foo), :production)
+        ordered.with(%w(foo), :production, 'foo/bar')
 
       expect(described_class).to receive(:start_sidekiq).
-        ordered.with(%w(bar baz), :production)
+        ordered.with(%w(bar baz), :production, 'foo/bar')
 
-      described_class.start([%w(foo), %w(bar baz)], :production)
+      described_class.start([%w(foo), %w(bar baz)], :production, 'foo/bar')
     end
   end
 
   describe '.start_sidekiq' do
     it 'starts a Sidekiq process' do
-      thread = double(:thread, pid: 1)
+      allow(Process).to receive(:spawn).and_return(1)
 
-      allow(Open3).to receive(:popen3).
-        and_return([double(:stdout), double(:stderr), double(:stdin), thread])
+      expect(described_class).to receive(:wait_async).with(1)
+      expect(described_class.start_sidekiq(%w(foo), :production)).to eq(1)
+    end
+  end
 
-      expect(described_class.start_sidekiq(%w(foo), :production)).to eq(thread)
+  describe '.wait_async' do
+    it 'waits for a process in a separate thread' do
+      thread = described_class.wait_async(Process.spawn('true'))
+
+      # Upon success Process.wait just returns the PID.
+      expect(thread.value).to be_a_kind_of(Numeric)
     end
   end
 
   describe '.all_alive?' do
-    it 'returns true if all threads are alive' do
-      threads = [double(:thread, pid: 1)]
+    it 'returns true if all processes are alive' do
+      processes = [1]
 
       allow(described_class).to receive(:signal).with(1, 0).and_return(true)
 
-      expect(described_class.all_alive?(threads)).to eq(true)
+      expect(described_class.all_alive?(processes)).to eq(true)
     end
 
     it 'returns false when a thread was not alive' do
-      threads = [double(:thread, pid: 1)]
+      processes = [1]
 
       allow(described_class).to receive(:signal).with(1, 0).and_return(false)
 
-      expect(described_class.all_alive?(threads)).to eq(false)
+      expect(described_class.all_alive?(processes)).to eq(false)
     end
   end
 
