@@ -19,11 +19,8 @@
     },
     template: `
       <td class="commit-link">
-        <a :href='pipeline.details.status.details_path'>
-          <span :class='cssClasses'>
-            <span v-html='svg'></span>
-            <span>&nbsp;{{pipeline.details.status.text}}</span>
-          </span>
+        <a :class='cssClasses' :href='pipeline.details.status.details_path'>
+          <span v-html='svg + pipeline.details.status.text'></span>
         </a>
       </td>
     `,
