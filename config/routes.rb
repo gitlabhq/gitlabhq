@@ -43,6 +43,9 @@ Rails.application.routes.draw do
   # Koding route
   get 'koding' => 'koding#index'
 
+  # OpenSearchDescription asset
+  get "opensearch.xml", to: "opensearch#index", as: :opensearch
+
   draw :api
   draw :sidekiq
   draw :help

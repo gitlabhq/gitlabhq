@@ -1,0 +1,481 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+A slightly modified version of the file published at:
+http://weblogs.asp.net/wkriebel/archive/2008/02/04/opensearch-xsd.aspx
+
+Contributions from Greg Holmberg.
+
+-->
+<xs:schema targetNamespace="http://a9.com/-/spec/opensearch/1.1/"
+    elementFormDefault="qualified"
+    xmlns="http://a9.com/-/spec/opensearch/1.1/"
+    xmlns:mstns="http://a9.com/-/spec/opensearch/1.1/"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+	<xs:annotation>
+		<xs:documentation>Based on http://www.opensearch.org/Specifications/OpenSearch/1.1</xs:documentation>
+	</xs:annotation>
+	<xs:element name="OpenSearchDescription">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:choice maxOccurs="unbounded">
+					<xs:any namespace="##other" processContents="lax" />
+					<xs:element name="ShortName" minOccurs="1" maxOccurs="1">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:maxLength value="16"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element name="Description" minOccurs="1" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>
+								Contains a human-readable text description of the search engine.
+							</xs:documentation>
+						</xs:annotation>
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:maxLength value="1024"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element name="Url" minOccurs="1" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>
+								Describes an interface by which a search client can make search requests of the search engine.
+								OpenSearch provides support for both index-based and page-based search engines. By default, both the first search result and the first page of search results are numbered "1". Search engines can use the "indexOffset" and "pageOffset" attributes to inform search clients of different starting values.
+							</xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:attribute name="template" use="required">
+								<xs:annotation>
+									<xs:documentation>
+										Contains the search URL template to be processed according to the OpenSearch URL template syntax.
+									</xs:documentation>
+								</xs:annotation>
+							</xs:attribute>
+							<xs:attribute name="type" use="required">
+								<xs:annotation>
+									<xs:documentation>
+										Contains the MIME type of the search result format.
+										Restrictions: The value must be a valid MIME type.
+									</xs:documentation>
+								</xs:annotation>
+							</xs:attribute>
+							<xs:attribute name="indexOffset" default="1" use="optional">
+								<xs:annotation>
+									<xs:documentation>
+										Contains the index number of the first search result.
+									</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:integer"/>
+								</xs:simpleType>
+							</xs:attribute>
+							<xs:attribute name="pageOffset" default="1" use="optional">
+								<xs:annotation>
+									<xs:documentation>
+										Contains the page number of the first set of search results.
+									</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:integer"/>
+								</xs:simpleType>
+							</xs:attribute>
+							<xs:anyAttribute namespace="##any" processContents="lax" />
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="Contact" minOccurs="0" maxOccurs="1" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Contains an email address at which the maintainer of the description document can be reached.
+								Restrictions: The value must conform to the requirements of Section 3.4.1 "Addr-spec specification" in RFC 2822.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+
+					<xs:element name="Tags" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>
+
+								Contains a set of words that are used as keywords to identify and categorize this search content. Tags must be a single word and are delimited by the space character (' ').
+								Restriction: The value must not contain HTML or other markup.
+							</xs:documentation>
+						</xs:annotation>
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:maxLength value="256"/>
+							</xs:restriction>
+						</xs:simpleType>
+
+					</xs:element>
+					<xs:element name="LongName" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>
+								Contains an extended human-readable title that identifies this search engine.
+
+								Search clients should use the value of the ShortName element if this element is not available.
+								Restrictions:  The value must not contain HTML or other markup.
+							</xs:documentation>
+						</xs:annotation>
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:maxLength value="48"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element name="Image" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>
+								Contains a URL that identifies the location of an image that can be used in association with this search content.
+
+								Image sizes are offered as a hint to the search client. The search client will chose the most appropriate image for the available space and should give preference to those listed first in the OpenSearch description document. Square aspect ratios are recommended. When possible, search engines should offer a 16x16 image of type "image/x-icon" or "image/vnd.microsoft.icon" (the Microsoft ICON format) and a 64x64 image of type "image/jpeg" or "image/png".
+								Restrictions: The value must be a URI.
+							</xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:simpleContent>
+								<xs:extension base="xs:string">
+									<xs:attribute name="height" use="optional" type="xs:nonNegativeInteger">
+										<xs:annotation>
+											<xs:documentation>Contains the height, in pixels, of this image.</xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
+									<xs:attribute name="width" use="optional" type="xs:nonNegativeInteger">
+										<xs:annotation>
+											<xs:documentation>Contains the width, in pixels, of this image.</xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
+									<xs:attribute name="type" use="optional">
+										<xs:annotation>
+											<xs:documentation>
+												Contains the the MIME type of this image.
+												Restrictions: The value must be a valid MIME type.
+											</xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
+								</xs:extension>
+							</xs:simpleContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="Query" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>
+								Defines a search query that can be performed by search clients. Please see the OpenSearch Query element specification for more information.
+
+								OpenSearch description documents should include at least one Query element of role="example" that is expected to return search results. Search clients may use this example query to validate that the search engine is working properly.
+							</xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:attribute name="role" use="required">
+								<xs:annotation>
+									<xs:documentation>
+										role - Contains a string identifying how the search client should interpret the search request defined by this Query element.
+
+										Role values: A role value consists of an optional prefix followed by the local role value. If the prefix is present it will be separated from the local role value with the ":" character. All role values are associated with a namespace, either implicitly in the case of local role values, or explicitly via a prefix in the case of fully qualified role values.
+
+										Role extensibility: The role attribute may take on values beyond those specified in this document provided they are fully qualified with a prefix and associated with a declared namespace. Clients that encounter unrecognized role values should continue to process the document as if the Query element containing the unrecognized role value did not appear.
+
+										Role prefix:  A role prefix associates a local role name with a namespace. All prefixes must be previously declared as an XML namespace prefix on the containing Query element or ancestor elements.
+
+										Local role values:   Local role values are not preceded by a prefix. Local role values are associated with the OpenSearch 1.1 namespace.
+
+										The following role values are identified with the OpenSearch 1.1 namespace. The list is exhaustive; only the role values listed below may appear in the OpenSearch 1.1 namespace.
+
+										Role values:
+
+
+
+									</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="request">
+											<xs:annotation>
+												<xs:documentation>
+													Represents the search query that can be performed to retrieve the same set of search results.
+												</xs:documentation>
+											</xs:annotation>
+										</xs:enumeration>
+										<xs:enumeration value="example">
+											<xs:annotation>
+												<xs:documentation>
+													Represents a search query that can be performed to demonstrate the search engine.
+												</xs:documentation>
+											</xs:annotation>
+										</xs:enumeration>
+										<xs:enumeration value="related">
+											<xs:annotation>
+												<xs:documentation>
+													Represents a search query that can be performed to retrieve similar but different search results.
+												</xs:documentation>
+											</xs:annotation>
+										</xs:enumeration>
+										<xs:enumeration value="correction">
+											<xs:annotation>
+												<xs:documentation>
+													Represents a search query that can be performed to improve the result set, such as with a spelling correction.
+												</xs:documentation>
+											</xs:annotation>
+										</xs:enumeration>
+										<xs:enumeration value="subset">
+											<xs:annotation>
+												<xs:documentation>
+													Represents a search query that will narrow the current set of search results.
+												</xs:documentation>
+											</xs:annotation>
+										</xs:enumeration>
+										<xs:enumeration value="superset">
+											<xs:annotation>
+												<xs:documentation>
+													Represents a search query that will broaden the current set of search results.
+												</xs:documentation>
+											</xs:annotation>
+										</xs:enumeration>
+
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:attribute>
+
+							<xs:attribute name="title" use="optional">
+								<xs:annotation>
+									<xs:documentation>
+										Contains a human-readable plain text string describing the search request.
+									</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="256"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:attribute>
+
+							<xs:attribute name="totalResults" use="optional">
+								<xs:annotation>
+									<xs:documentation>
+										Contains the expected number of results to be found if the search request were made.
+									</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:nonNegativeInteger"/>
+								</xs:simpleType>
+							</xs:attribute>
+
+							<xs:attribute name="searchTerms" use="optional">
+								<xs:annotation>
+									<xs:documentation>
+										Contains the value representing the "searchTerms" as an OpenSearch 1.1 parameter.
+										Restrictions: The value must be URL-encoded.
+
+									</xs:documentation>
+								</xs:annotation>
+							</xs:attribute>
+
+							<xs:attribute name="count" use="optional">
+								<xs:annotation>
+									<xs:documentation>
+										Contains the value representing the "count" as a OpenSearch 1.1 parameter.
+										Search clients should anticipate that the value of the "count" parameter may not be honored by the search engine, and should rely exclusively on the contents of the "itemsPerPage" response element in calculating actual page size.
+
+									</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:nonNegativeInteger"/>
+								</xs:simpleType>
+							</xs:attribute>
+							<xs:attribute name="startIndex" use="optional">
+								<xs:annotation>
+									<xs:documentation>
+										Contains the value representing the "startIndex" as an OpenSearch 1.1 parameter.
+										Replaced with the index of the first search result desired by the search client.
+
+										Default: The value specified by the "indexOffset" attribute of the containing Url element.
+
+									</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:integer"/>
+								</xs:simpleType>
+							</xs:attribute>
+							<xs:attribute name="startPage" use="optional">
+								<xs:annotation>
+									<xs:documentation>
+										Contains the value representing the "startPage" as an OpenSearch 1.1 parameter.
+										Replaced with the page number of the set of search results desired by the search client.
+										Default: The value specified by the "pageOffset" attribute of the containing Url element.
+									</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:integer"/>
+								</xs:simpleType>
+							</xs:attribute>
+							<xs:attribute name="language" use="optional" default="*">
+								<xs:annotation>
+									<xs:documentation>
+										Contains the value representing the "language" as an OpenSearch 1.1 parameter.
+										Replaced with a string that indicates that the search client desires search results in the specified language.
+
+										An OpenSearch description document should include one "Language" element for each language that the search engine supports. If the search engine also supports queries for any arbitrary language then the OpenSearch description document should include a Language element with a value of "*". The "language" template parameter in the OpenSearch URL template can be used to allow the search client to choose among the available languages.
+
+										Restrictions: The value must conform to the XML 1.0 Language Identification, as specified by RFC 3066. In addition, a value of "*" will signify that the search client desires search results in any language.
+
+									</xs:documentation>
+								</xs:annotation>
+							</xs:attribute>
+							<xs:attribute name="inputEncoding" use="optional" default="UTF-8">
+								<xs:annotation>
+									<xs:documentation>
+										Contains the value representing the "inputEncoding" as an OpenSearch 1.1 parameter.
+										Replaced with a string that indicates that the search client is performing the search request encoded with the specified character encoding.
+
+										An OpenSearch description document should include one "InputEncoding" element for each character encoding that can be used to encode search requests. The "inputEncoding" template parameter in the OpenSearch URL template can be used to require the search client to identify which encoding is being used to encode the current search request.
+
+										Restrictions: The value must conform to the XML 1.0 Character Encodings, as specified by the IANA Character Set Assignments.
+
+									</xs:documentation>
+								</xs:annotation>
+							</xs:attribute>
+							<xs:attribute name="outputEncoding" use="optional" default="UTF-8">
+								<xs:annotation>
+									<xs:documentation>
+										Replaced with a string that indicates that the search client desires a search response encoding with the specified character encoding.
+
+										An OpenSearch description document should include one "OutputEncoding" element for each character encoding that can be used to encode search responses. The "outputEncoding" template parameter in the OpenSearch URL template can be used to allow the search client to choose a character encoding in the search response.
+
+										Restrictions: The value must conform to the XML 1.0 Character Encodings, as specified by the IANA Character Set Assignments.
+									</xs:documentation>
+								</xs:annotation>
+							</xs:attribute>
+
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="Developer" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>
+								Contains the human-readable name or identifier of the creator or maintainer of the description document.
+
+								The developer is the person or entity that created the description document, and may or may not be the owner, author, or copyright holder of the source of the content itself.
+								Restrictions:  The value must not contain HTML or other markup.
+							</xs:documentation>
+						</xs:annotation>
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:maxLength value="64"/>
+							</xs:restriction>
+						</xs:simpleType>
+
+					</xs:element>
+					<xs:element name="Attribution" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>
+								Contains a list of all sources or entities that should be credited for the content contained in the search feed.
+								Restrictions:  The value must not contain HTML or other markup.
+							</xs:documentation>
+						</xs:annotation>
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:maxLength value="256"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element name="SyndicationRight" default="open" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>
+								Contains a value that indicates the degree to which the search results provided by this search engine can be queried, displayed, and redistributed.
+							</xs:documentation>
+						</xs:annotation>
+
+
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="open">
+									<xs:annotation>
+										<xs:documentation>
+											The search client may request search results.
+											The search client may display the search results to end users.
+											The search client may send the search results to other search clients.
+										</xs:documentation>
+
+									</xs:annotation>
+								</xs:enumeration>
+								<xs:enumeration value="limited">
+									<xs:annotation>
+										<xs:documentation>
+											The search client may request search results.
+											The search client may display the search results to end users.
+											The search client may not send the search results to other search clients.
+										</xs:documentation>
+									</xs:annotation>
+								</xs:enumeration>
+								<xs:enumeration value="private">
+									<xs:annotation>
+										<xs:documentation>
+											The search client may request search results.
+											The search client may not display the search results to end users.
+											The search client may not send the search results to other search clients.
+										</xs:documentation>
+									</xs:annotation>
+								</xs:enumeration>
+								<xs:enumeration value="closed">
+									<xs:annotation>
+										<xs:documentation>
+											The search client may not request search results.
+										</xs:documentation>
+									</xs:annotation>
+								</xs:enumeration>
+							</xs:restriction>
+						</xs:simpleType>
+
+					</xs:element>
+					<xs:element name="AdultContent" minOccurs="0" maxOccurs="1" default="false" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Contains a boolean value that should be set to true if the search results may contain material intended only for adults.
+
+								As there are no universally applicable guidelines as to what constitutes "adult" content, the search engine should make a good faith effort to indicate when there is a possibility that search results may contain material inappropriate for all audiences.
+								The values "false", "FALSE", "0", "no", and "NO" will be considered boolean FALSE; all other strings will be considered boolean TRUE.
+							</xs:documentation>
+						</xs:annotation>
+
+					</xs:element>
+					<xs:element name="Language" minOccurs="0" maxOccurs="unbounded" default="*" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>
+								Contains a string that indicates that the search engine supports search results in the specified language.
+
+								An OpenSearch description document should include one "Language" element for each language that the search engine supports. If the search engine also supports queries for any arbitrary language then the OpenSearch description document should include a Language element with a value of "*". The "language" template parameter in the OpenSearch URL template can be used to allow the search client to choose among the available languages.
+								Restrictions: The value must conform to the XML 1.0 Language Identification, as specified by RFC 3066. In addition, the value of "*" will signify that the search engine does not restrict search results to any particular language.
+							</xs:documentation>
+						</xs:annotation>
+
+
+					</xs:element>
+					<xs:element name="InputEncoding" default="UTF-8" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>
+								Contains a string that indicates that the search engine supports search requests encoded with the specified character encoding.
+
+								An OpenSearch description document should include one "InputEncoding" element for each character encoding that can be used to encode search requests. The "inputEncoding" template parameter in the OpenSearch URL template can be used to require the search client to identify which encoding is being used to encode the current search request.
+								Restrictions: The value must conform to the XML 1.0 Character Encodings, as specified by the IANA Character Set Assignments.
+							</xs:documentation>
+						</xs:annotation>
+
+
+					</xs:element>
+					<xs:element name="OutputEncoding" default="UTF-8" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>
+								Contains a string that indicates that the search engine supports search responses encoded with the specified character encoding.
+
+								An OpenSearch description document should include one "OutputEncoding" element for each character encoding that can be used to encode search responses. The "outputEncoding" template parameter in the OpenSearch URL template can be used to allow the search client to choose a character encoding in the search response.
+								Restrictions: The value must conform to the XML 1.0 Character Encodings, as specified by the IANA Character Set Assignments.
+							</xs:documentation>
+						</xs:annotation>
+
+					</xs:element>
+				</xs:choice>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

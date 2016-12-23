@@ -1,0 +1,5 @@
+---
+title: Added opensearch description asset to register the GitLab instance as a search
+  engine provider
+merge_request: 8303
+author:
