@@ -801,7 +801,7 @@
 
         + .dropdown-caret {
           visibility: visible;
-          opacity: 1
+          opacity: 1;
         }
       }
     }
@@ -847,7 +847,7 @@
         z-index: 2;
         visibility: hidden;
         opacity: 0;
-        transition: visibility 0.1s, opacity 0.3s linear
+        transition: visibility 0.1s, opacity 0.3s linear;
       }
     }
   }
