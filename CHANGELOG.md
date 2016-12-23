@@ -4,8 +4,7 @@ entry.
 
 ## 8.15.0 (2017-01-22)
 
-- Add shortcuts for adding users to a project team with a specific role. (Nikolay Ponomarev and Dino M)
-- Ensure nil User-Agent doesn't break the CI API.
+- Whitelist next project names: notes, services.
 - Use Grape's new Route methods.
 - Fixed issue boards scrolling with a lot of lists & issues.
 - Remove unnecessary sentences for status codes in the API documentation. (Luis Alonso Chavez Armendariz)
@@ -28,11 +27,11 @@ entry.
 - Use authorized projects in ProjectTeam.
 - Destroy a user's session when they delete their own account.
 - Edit help text to clarify annotated tag creation. (Liz Lam)
+- Fixed file template dropdown for the "New File" editor for smaller/zoomed screens.
 - Fix Route#rename_children behavior.
 - Add nested groups support on data level.
-- Fixed file template dropdown for the "New File" editor for smaller/zoomed screens.
 - Allow projects with 'dashboard' as path.
-- Whitelist next project names: notes, services.
+- Disabled emoji buttons when user is not logged in.
 - Remove unused and void services from the database.
 - Add issue search slash command.
 - Accept issue new as command to create an issue.
@@ -46,7 +45,7 @@ entry.
 - Fixed timeago re-rendering every timeago.
 - Enable ColorVariable in scss-lint. (Sam Rose)
 - Various small emoji positioning adjustments.
-- Disabled emoji buttons when user is not logged in.
+- Add shortcuts for adding users to a project team with a specific role. (Nikolay Ponomarev and Dino M)
 - Additional rounded label fixes.
 - Remove unnecessary database indices.
 - 24726 Remove Across GitLab from side navigation.
@@ -85,7 +84,7 @@ entry.
 - 25617 Fix placeholder color of todo filters.
 - Made the padding on the plus button in the breadcrumb menu even. (Ryan Harris)
 - Allow to delete tag release note.
-- Don't delete branches/tags that contains changes only in the remote mirror. !968
+- Ensure nil User-Agent doesn't break the CI API.
 - Replace Rack::Multipart with GitLab-Workhorse based solution. !5867
 - Add scopes for personal access tokens and OAuth tokens. !5951
 - API: Endpoint to expose personal snippets as /snippets. !6373 (Bernard Guyzmo Pratz)
@@ -182,7 +181,7 @@ entry.
 - Allow all alphanumeric characters in file names. !8002 (winniehell)
 - Added support for math rendering, using KaTeX, in Markdown and asciidoc. !8003 (Munken)
 - Remove unnecessary commits order message. !8004
-- API: Memoize the current_user so that the sudo can work properly. !8017
+- API: Memoize the current_user so that sudo can work properly. !8017
 - group authors in contribution graph with case insensitive email handle comparison. !8021
 - Move admin active tab spinach tests to rspec. !8037 (Semyon Pupkov)
 - Add Authentiq as Oauth provider. !8038 (Alexandros Keramidas)

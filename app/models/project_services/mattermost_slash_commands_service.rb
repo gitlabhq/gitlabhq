@@ -46,6 +46,6 @@ class MattermostSlashCommandsService < ChatSlashCommandsService
       description: "Perform common operations on: #{pretty_project_name}",
       display_name: "GitLab / #{pretty_project_name}",
       method: 'P',
-      user_name: 'GitLab')
+      username: 'GitLab')
   end
 end

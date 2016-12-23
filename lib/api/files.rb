@@ -68,7 +68,7 @@ module API
           ref: params[:ref],
           blob_id: blob.id,
           commit_id: commit.id,
-          last_commit_id: repo.last_commit_for_path(commit.sha, params[:file_path]).id
+          last_commit_id: repo.last_commit_id_for_path(commit.sha, params[:file_path])
         }
       end
 
