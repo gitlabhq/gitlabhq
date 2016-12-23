@@ -134,8 +134,8 @@ $md-area-border: #ddd;
 /*
  * Code
  */
-$code_font_size: 13px;
-$code_line_height: 1.5;
+$code_font_size: 12px;
+$code_line_height: 1.6;
 
 /*
  * Padding
@@ -278,6 +278,14 @@ $dropdown-toggle-active-border-color: darken($border-color, 14%);
 */
 $btn-active-gray: #ececec;
 $btn-active-gray-light: e4e7ed;
+
+/*
+* Badges
+*/
+$badge-bg: #f3f3f3;
+$badge-bg-dark: #eee;
+$badge-color: #929292;
+$badge-color-dark: #8f8f8f;
 
 /*
  *  Award emoji

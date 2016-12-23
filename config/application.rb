@@ -83,6 +83,7 @@ module Gitlab
     # Enable the asset pipeline
     config.assets.enabled = true
     config.assets.paths << Gemojione.images_path
+    config.assets.paths << "vendor/assets/fonts"
     config.assets.precompile << "*.png"
     config.assets.precompile << "print.css"
     config.assets.precompile << "notify.css"
@@ -96,6 +97,7 @@ module Gitlab
     config.assets.precompile << "profile/profile_bundle.js"
     config.assets.precompile << "protected_branches/protected_branches_bundle.js"
     config.assets.precompile << "diff_notes/diff_notes_bundle.js"
+    config.assets.precompile << "merge_request_widget/ci_bundle.js"
     config.assets.precompile << "boards/boards_bundle.js"
     config.assets.precompile << "cycle_analytics/cycle_analytics_bundle.js"
     config.assets.precompile << "merge_conflicts/merge_conflicts_bundle.js"
@@ -109,6 +111,7 @@ module Gitlab
     config.assets.precompile << "u2f.js"
     config.assets.precompile << "vue_pipelines_index/index.js"
     config.assets.precompile << "vue_pagination/index.js"
+    config.assets.precompile << "vendor/assets/fonts/*"
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'

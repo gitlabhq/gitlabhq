@@ -1,4 +1,0 @@
----
-title: Don't display prompt to add SSH keys if SSH protocol is disabled
-merge_request: 7840
-author: Andrew Smith (EspadaV8)

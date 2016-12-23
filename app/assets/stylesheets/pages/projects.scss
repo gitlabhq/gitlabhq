@@ -880,3 +880,23 @@ pre.light-well {
     width: 30%;
   }
 }
+
+.services-installation-info .row {
+  margin-bottom: 10px;
+}
+
+.service-installation {
+  padding: 32px;
+  margin: 32px;
+  border-radius: 3px;
+  background-color: $white-light;
+
+  h3 {
+    margin-top: 0;
+  }
+
+  hr {
+    margin: 32px 0;
+    border-color: $border-color;
+  }
+}

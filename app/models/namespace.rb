@@ -98,7 +98,7 @@ class Namespace < ActiveRecord::Base
 
   def move_dir
     if any_project_has_container_registry_tags?
-      raise Exception.new('Namespace cannot be moved, because at least one project has tags in container registry')
+      raise Gitlab::UpdatePathError.new('Namespace cannot be moved, because at least one project has tags in container registry')
     end
 
     # Move the namespace directory in all storages paths used by member projects
@@ -111,7 +111,7 @@ class Namespace < ActiveRecord::Base
 
         # if we cannot move namespace directory we should rollback
         # db changes in order to prevent out of sync between db and fs
-        raise Exception.new('namespace directory cannot be moved')
+        raise Gitlab::UpdatePathError.new('namespace directory cannot be moved')
       end
     end
 

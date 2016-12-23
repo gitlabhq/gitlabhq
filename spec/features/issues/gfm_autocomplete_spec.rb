@@ -39,7 +39,6 @@ feature 'GFM autocomplete', feature: true, js: true do
       page.within '.timeline-content-form' do
         note.native.send_keys('')
         note.native.send_keys("~#{label.title[0]}")
-        sleep 1
         note.click
       end
 
@@ -48,12 +47,29 @@ feature 'GFM autocomplete', feature: true, js: true do
       expect_to_wrap(true, label_item, note, label.title)
     end
 
+    it "does not show drpdown when preceded with a special character" do
+      note = find('#note_note')
+      page.within '.timeline-content-form' do
+        note.native.send_keys('')
+        note.native.send_keys("@")
+        note.click
+      end
+
+      expect(page).to have_selector('.atwho-container')
+
+      page.within '.timeline-content-form' do
+        note.native.send_keys("@")
+        note.click
+      end
+
+      expect(page).to have_selector('.atwho-container', visible: false)
+    end
+
     it 'doesn\'t wrap for assignee values' do
       note = find('#note_note')
       page.within '.timeline-content-form' do
         note.native.send_keys('')
         note.native.send_keys("@#{user.username[0]}")
-        sleep 1
         note.click
       end
 
@@ -67,13 +83,28 @@ feature 'GFM autocomplete', feature: true, js: true do
       page.within '.timeline-content-form' do
         note.native.send_keys('')
         note.native.send_keys(":cartwheel")
-        sleep 1
         note.click
       end
 
       emoji_item = find('.atwho-view li', text: 'cartwheel_tone1')
 
       expect_to_wrap(false, emoji_item, note, 'cartwheel_tone1')
+    end
+
+    it 'doesn\'t open autocomplete after non-word character' do
+      page.within '.timeline-content-form' do
+        find('#note_note').native.send_keys("@#{user.username[0..2]}!")
+      end
+
+      expect(page).not_to have_selector('.atwho-view')
+    end
+
+    it 'doesn\'t open autocomplete if there is no space before' do
+      page.within '.timeline-content-form' do
+        find('#note_note').native.send_keys("hello:#{user.username[0..2]}")
+      end
+
+      expect(page).not_to have_selector('.atwho-view')
     end
 
     def expect_to_wrap(should_wrap, item, note, value)
@@ -88,13 +119,5 @@ feature 'GFM autocomplete', feature: true, js: true do
         expect(note.value).not_to include("\"#{value}\"")
       end
     end
-  end
-
-  it 'doesnt open autocomplete after non-word character' do
-    page.within '.timeline-content-form' do
-      find('#note_note').native.send_keys("@#{user.username[0..2]}!")
-    end
-
-    expect(page).not_to have_selector('.atwho-view')
   end
 end
