@@ -5,9 +5,10 @@ describe Gitlab::FileFinder do
   let(:finder) { described_class.new(project, 'master') }
 
   it 'finds files by name' do
-    result = finder.find('CHANGELOG').first
+    filename, blob = finder.find('CHANGELOG').first
 
-    expect(result).to match_array(['CHANGELOG', nil])
+    expect(filename).to eq('CHANGELOG')
+    expect(blob.ref).to eq('master')
   end
 
   it 'finds files by content' do

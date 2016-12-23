@@ -23,7 +23,7 @@ module Gitlab
       end
 
       project.repository.search_files_by_name(query, ref).first(BATCH_SIZE).each do |filename|
-        results << [filename, nil] unless found_file_names.include?(filename)
+        results << [filename, OpenStruct.new(ref: ref)] unless found_file_names.include?(filename)
       end
 
       results.sort_by(&:first)

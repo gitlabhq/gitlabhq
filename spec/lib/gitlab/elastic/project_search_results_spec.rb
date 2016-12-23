@@ -19,7 +19,7 @@ describe Gitlab::Elastic::ProjectSearchResults, lib: true do
     subject(:results) { described_class.new(user, query, project.id, '') }
 
     it { expect(results.project).to eq(project) }
-    it { expect(results.repository_ref).to be_nil }
+    it { expect(results.repository_ref).to eq('master') }
     it { expect(results.query).to eq('hello world') }
   end
 

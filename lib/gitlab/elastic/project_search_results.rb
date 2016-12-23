@@ -9,12 +9,7 @@ module Gitlab
       def initialize(current_user, query, project_id, repository_ref = nil)
         @current_user = current_user
         @project = Project.find(project_id)
-
-        @repository_ref = if repository_ref.present?
-                            repository_ref
-                          else
-                            nil
-                          end
+        @repository_ref = repository_ref.presence || project.default_branch
         @query = query
         @public_and_internal_projects = false
       end
@@ -121,7 +116,7 @@ module Gitlab
       end
 
       def root_ref?
-        !repository_ref || project.root_ref?(repository_ref)
+        project.root_ref?(repository_ref)
       end
     end
   end
