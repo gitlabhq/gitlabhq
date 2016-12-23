@@ -1,5 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 8.15.1 (2016-12-23)
+
+- Fix 404/500 error while navigating to the 'show/destroy' pages. !993
+
 ## 8.15.0 (2017-01-22)
 
 - Adds a check ensure only active, ie. non-blocked users can be emailed from the admin panel.
