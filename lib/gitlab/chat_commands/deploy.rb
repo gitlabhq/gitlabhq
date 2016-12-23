@@ -49,8 +49,9 @@ module Gitlab
       end
 
       def url(subject)
-        polymorphic_url(
-          [ subject.project.namespace.becomes(Namespace), subject.project, subject ])
+        project = subject.project
+
+        namespace_project_build_url(project.namespace.becomes(Namespace), project, subject)
       end
     end
   end
