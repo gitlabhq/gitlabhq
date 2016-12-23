@@ -17,7 +17,6 @@ feature 'Projects > Members > Master adds member with expiration date', feature:
   scenario 'expiration date is displayed in the members list' do
     travel_to Time.zone.parse('2016-08-06 08:00') do
       visit namespace_project_settings_members_path(project.namespace, project)
-      save_screenshot
 
       page.within '.users-project-form' do
         select2(new_member.id, from: '#user_ids', multiple: true)

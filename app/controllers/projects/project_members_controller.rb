@@ -6,7 +6,8 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   before_action :authorize_admin_project_member!, except: [:index, :leave, :request_access]
 
   def index
-    redirect_to namespace_project_settings_members_path(@project.namespace, @project)
+    sort = params[:sort].presence || sort_value_name
+    redirect_to namespace_project_settings_members_path(@project.namespace, @project, sort: sort)
   end
 
   def create
