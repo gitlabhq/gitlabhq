@@ -201,7 +201,7 @@
           width: 8px;
           position: absolute;
           right: -7px;
-          bottom: 10px;
+          top: 10px;
           border-bottom: 2px solid $border-color;
         }
       }
@@ -784,7 +784,6 @@
 .mini-pipeline-graph {
   .builds-dropdown {
     background-color: transparent;
-    border: none;
     padding: 0;
     color: $gl-text-color-light;
     border: none;
