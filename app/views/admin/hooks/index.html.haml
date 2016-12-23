@@ -54,7 +54,7 @@
     = f.submit "Add System Hook", class: "btn btn-create"
 %hr
 
--if @hooks.any?
+- if @hooks.any?
   .panel.panel-default
     .panel-heading
       System hooks (#{@hooks.count})
