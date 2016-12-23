@@ -80,7 +80,7 @@ linters:
     enabled: false
 
   SpaceBeforeScript:
-    enabled: false
+    enabled: true
 
   SpaceInsideHashAttributes:
     enabled: false
