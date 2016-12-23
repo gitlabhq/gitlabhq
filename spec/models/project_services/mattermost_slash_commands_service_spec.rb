@@ -6,7 +6,7 @@ describe MattermostSlashCommandsService, :models do
   context 'Mattermost API' do
     let(:project) { create(:empty_project) }
     let(:service) { project.build_mattermost_slash_commands_service }
-    let(:user) { create(:user)}
+    let(:user) { create(:user) }
 
     before do
       Mattermost::Session.base_uri("http://mattermost.example.com")

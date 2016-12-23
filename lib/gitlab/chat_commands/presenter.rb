@@ -30,12 +30,12 @@ module Gitlab
         if subject.is_a?(Gitlab::ChatCommands::Result)
           show_result(subject)
         elsif subject.respond_to?(:count)
-          if subject.many?
-            multiple_resources(subject)
-          elsif subject.none?
+          if subject.none?
             not_found
+          elsif subject.one?
+            single_resource(subject.first)
           else
-            single_resource(subject)
+            multiple_resources(subject)
           end
         else
           single_resource(subject)
@@ -71,9 +71,9 @@ module Gitlab
       end
 
       def multiple_resources(resources)
-        resources.map! { |resource| title(resource) }
+        titles = resources.map { |resource| title(resource) }
 
-        message = header_with_list("Multiple results were found:", resources)
+        message = header_with_list("Multiple results were found:", titles)
 
         ephemeral_response(message)
       end
