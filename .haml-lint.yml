@@ -94,7 +94,7 @@ linters:
     enabled: true
 
   TrailingWhitespace:
-    enabled: false
+    enabled: true
 
   UnnecessaryInterpolation:
     enabled: false
