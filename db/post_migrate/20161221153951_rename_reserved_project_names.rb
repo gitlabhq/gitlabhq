@@ -112,8 +112,6 @@ class RenameReservedProjectNames < ActiveRecord::Migration
 
   def rename_projects(projects)
     projects.each do |project|
-      next unless project.namespace
-
       id = project.id
       path_was = project.path
       namespace_path = project.namespace.path
