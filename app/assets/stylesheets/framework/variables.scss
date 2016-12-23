@@ -56,6 +56,7 @@ $black-transparent: rgba(0, 0, 0, 0.3);
 $border-white-light: darken($white-light, $darken-border-factor);
 $border-white-normal: darken($white-normal, $darken-border-factor);
 
+$border-gray-light: darken($gray-light, $darken-border-factor);
 $border-gray-normal: darken($gray-normal, $darken-border-factor);
 $border-gray-dark: darken($white-normal, $darken-border-factor);
 
@@ -274,6 +275,7 @@ $dropdown-hover-color: #3b86ff;
 */
 $btn-active-gray: #ececec;
 $btn-active-gray-light: e4e7ed;
+$btn-white-active: #848484;
 
 /*
 * Badges
