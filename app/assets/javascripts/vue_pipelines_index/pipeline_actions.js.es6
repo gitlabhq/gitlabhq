@@ -37,7 +37,7 @@
                   <a
                     rel="nofollow"
                     data-method="post"
-                    :href='action.url'
+                    :href='action.path'
                     title="Manual build"
                   >
                     <span v-html='svgs.iconPlay'></span>
@@ -60,7 +60,7 @@
                 <li v-for='artifact in pipeline.details.artifacts'>
                   <a
                     rel="nofollow"
-                    :href='artifact.url'
+                    :href='artifact.path'
                   >
                     <i class="fa fa-download"></i>
                     <span>{{download(artifact.name)}}</span>
