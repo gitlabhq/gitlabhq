@@ -12,7 +12,7 @@
       %p.image-info= "#{number_to_human_size file.size}"
 - else
   .image
-    %div.two-up.view
+    .two-up.view
       %span.wrap
         .frame.deleted
           %a{href: namespace_project_blob_path(@project.namespace, @project, tree_join(diff_file.old_ref, diff.old_path))}
@@ -38,7 +38,7 @@
           %b H:
           %span.meta-height
 
-    %div.swipe.view.hide
+    .swipe.view.hide
       .swipe-frame
         .frame.deleted
           %img{src: old_file_raw_path, alt: diff.old_path}
@@ -49,7 +49,7 @@
           %span.top-handle
           %span.bottom-handle
 
-    %div.onion-skin.view.hide
+    .onion-skin.view.hide
       .onion-skin-frame
         .frame.deleted
           %img{src: old_file_raw_path, alt: diff.old_path}

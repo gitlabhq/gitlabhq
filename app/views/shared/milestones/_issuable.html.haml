@@ -14,7 +14,7 @@
     - if issuable.is_a?(Issue)
       = confidential_icon(issuable)
     = link_to_gfm issuable.title, [project.namespace.becomes(Namespace), project, issuable], title: issuable.title
-  %div.issuable-detail
+  .issuable-detail
     = link_to [project.namespace.becomes(Namespace), project, issuable] do
       %span.issuable-number >= issuable.to_reference
 
