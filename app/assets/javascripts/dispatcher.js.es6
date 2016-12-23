@@ -143,11 +143,6 @@
         case 'projects:merge_requests:commits':
           new MergedButtons();
           break;
-        case 'projects:merge_requests:pipelines':
-          new gl.MiniPipelineGraph({
-            container: '.js-pipeline-table',
-          });
-          break;
         case "projects:merge_requests:diffs":
           new gl.Diff();
           new ZenMode();

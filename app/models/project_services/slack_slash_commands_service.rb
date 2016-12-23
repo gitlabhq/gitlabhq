@@ -16,7 +16,7 @@ class SlackSlashCommandsService < ChatSlashCommandsService
   def trigger(params)
     # Format messages to be Slack-compatible
     super.tap do |result|
-      result[:text] = format(result[:text])
+      result[:text] = format(result[:text]) if result.is_a?(Hash)
     end
   end
 
