@@ -30,8 +30,8 @@ class MattermostSlashCommandsService < ChatSlashCommandsService
 
   def list_teams(user)
     Mattermost::Team.new(user).all
-  rescue Mattermost::Error => e
-    [[], e.message]
+  rescue Mattermost::Error
+    []
   end
 
   private
