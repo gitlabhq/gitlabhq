@@ -841,13 +841,13 @@
       .dropdown-caret {
         font-size: 11px;
         position: absolute;
-        top: 5px;
+        top: 6px;
         left: 20px;
         margin-right: -6px;
         z-index: 2;
         visibility: hidden;
         opacity: 0;
-        transition: visibility 0.1s, opacity 0.3s linear;
+        transition: visibility 0.1s, opacity 0.1s linear;
       }
     }
   }
