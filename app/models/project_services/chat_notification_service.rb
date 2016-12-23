@@ -49,10 +49,10 @@ class ChatNotificationService < Service
 
     return false unless message
 
-    channel_name   = get_channel_field(object_kind).presence || channel
+    channel_name = get_channel_field(object_kind).presence || channel
 
     opts = {}
-    opts[:channel]  = channel_name if channel_name
+    opts[:channel] = channel_name if channel_name
     opts[:username] = username if username
 
     notifier = Slack::Notifier.new(webhook, opts)
