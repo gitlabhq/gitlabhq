@@ -10,7 +10,7 @@
     .timeline-content
       .note-header
         = link_to_member(note.project, note.author, avatar: false)
-        .inline.note-headline-light
+        .note-headline-light
           = note.author.to_reference
           - unless note.system
             commented
