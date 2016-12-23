@@ -424,7 +424,7 @@ describe Ci::Pipeline, models: true do
     context 'when no ref is specified' do
       let(:pipelines) { described_class.latest.all }
 
-      it 'returns the latest pipelines for the same ref and different sha' do
+      it 'gives the latest pipelines for the same ref and different sha in reverse chronological order' do
         expect(pipelines.map(&:sha)).to eq(%w[C B A])
         expect(pipelines.map(&:status)).to eq(%w[skipped failed success])
       end
@@ -433,7 +433,7 @@ describe Ci::Pipeline, models: true do
     context 'when ref is specified' do
       let(:pipelines) { described_class.latest('ref').all }
 
-      it 'returns the latest pipelines for ref and different sha' do
+      it 'gives the latest pipelines for ref and different sha in reverse chronological order' do
         expect(pipelines.map(&:sha)).to eq(%w[B A])
         expect(pipelines.map(&:status)).to eq(%w[failed success])
       end
