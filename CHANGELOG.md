@@ -2,6 +2,16 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 8.15.1 (2016-12-23)
+
+- Push payloads schedule at most 100 commits, instead of all commits.
+- Fix Mattermost command creation by specifying username.
+- Do not override incoming webhook for mattermost and slack.
+- Adds background color for disabled state to merge when succeeds dropdown. !8222
+- Standardises font-size for titles in Issues, Merge Requests and Merge Request widget. !8235
+- Fix Pipeline builds list blank on MR. !8255
+- Do not show retried builds in pipeline stage dropdown. !8260
+
 ## 8.15.0 (2016-12-22)
 
 - Whitelist next project names: notes, services.
