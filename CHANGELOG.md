@@ -2,7 +2,7 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
-## 8.15.0 (2017-01-22)
+## 8.15.0 (2016-12-22)
 
 - Whitelist next project names: notes, services.
 - Use Grape's new Route methods.
