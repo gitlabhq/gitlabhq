@@ -51,11 +51,11 @@ class ChatNotificationService < Service
 
     channel_name   = get_channel_field(object_kind).presence || channel
 
-    opt            = {}
-    opt[:channel]  = channel_name if channel_name
-    opt[:username] = username if username
+    opts = {}
+    opts[:channel]  = channel_name if channel_name
+    opts[:username] = username if username
 
-    notifier = Slack::Notifier.new(webhook, opt)
+    notifier = Slack::Notifier.new(webhook, opts)
     notifier.ping(message.pretext, attachments: message.attachments, fallback: message.fallback)
 
     true
