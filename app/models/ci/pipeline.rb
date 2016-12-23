@@ -93,13 +93,8 @@ module Ci
         .select("max(#{quoted_table_name}.id)")
         .group(:ref, :sha)
 
-      query = if ref
-                where(id: max_id, ref: ref)
-              else
-                where(id: max_id)
-              end
-
-      query.order(id: :desc)
+      relation = ref ? where(ref: ref) : self
+      relation.where(id: max_id).order(id: :desc)
     end
 
     def self.latest_status(ref = nil)
