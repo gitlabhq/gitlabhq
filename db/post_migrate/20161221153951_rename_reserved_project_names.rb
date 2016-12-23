@@ -1,17 +1,78 @@
+require 'thread'
+
 class RenameReservedProjectNames < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
   include Gitlab::ShellAdapter
 
   DOWNTIME = false
 
-  class Project < ActiveRecord::Base; end
+  THREAD_COUNT = 8
+
+  KNOWN_PATHS = %w(.well-known
+                   all
+                   assets
+                   blame
+                   blob
+                   commits
+                   create
+                   create_dir
+                   edit
+                   files
+                   files
+                   find_file
+                   groups
+                   hooks
+                   issues
+                   logs_tree
+                   merge_requests
+                   new
+                   new
+                   preview
+                   profile
+                   projects
+                   public
+                   raw
+                   repository
+                   robots.txt
+                   s
+                   snippets
+                   teams
+                   tree
+                   u
+                   unsubscribes
+                   update
+                   users
+                   wikis)
 
   def up
-    threads = reserved_projects.each_slice(100).map do |slice|
+    queues = Array.new(THREAD_COUNT) { Queue.new }
+    start = false
+
+    threads = Array.new(THREAD_COUNT) do |index|
       Thread.new do
-        rename_projects(slice)
+        queue = queues[index]
+
+        # Wait until we have input to process.
+        until start; end
+
+        rename_projects(queue.pop) until queue.empty?
       end
     end
+
+    enum = queues.each
+
+    reserved_projects.each_slice(100) do |slice|
+      begin
+        queue = enum.next
+      rescue StopIteration
+        enum.rewind
+        retry
+      end
+
+      queue << slice
+    end
+
+    start = true
 
     threads.each(&:join)
   end
@@ -23,18 +84,17 @@ class RenameReservedProjectNames < ActiveRecord::Migration
   private
 
   def reserved_projects
-    select_all("SELECT p.id, p.path, p.repository_storage, n.path AS namespace_path, n.id AS namespace_id FROM projects p
-               INNER JOIN namespaces n ON n.id = p.namespace_id
-               WHERE p.path IN (
-               '.well-known', 'all', 'assets', 'files', 'groups', 'hooks', 'issues',
-               'merge_requests', 'new', 'profile', 'projects', 'public', 'repository',
-               'robots.txt', 's', 'snippets', 'teams', 'u', 'unsubscribes', 'users',
-               'tree', 'commits', 'wikis', 'new', 'edit', 'create', 'update', 'logs_tree',
-               'preview', 'blob', 'blame', 'raw', 'files', 'create_dir', 'find_file')")
+    Project.unscoped.
+      includes(:namespace).
+      where('EXISTS (SELECT 1 FROM namespaces WHERE projects.namespace_id = namespaces.id)').
+      where('projects.path' => KNOWN_PATHS)
   end
 
   def route_exists?(full_path)
-    select_all("SELECT id, path FROM routes WHERE path = '#{quote_string(full_path)}'").present?
+    quoted_path = ActiveRecord::Base.connection.quote_string(full_path)
+
+    ActiveRecord::Base.connection.
+      select_all("SELECT id, path FROM routes WHERE path = '#{quoted_path}'").present?
   end
 
   # Adds number to the end of the path that is not taken by other route
@@ -51,26 +111,27 @@ class RenameReservedProjectNames < ActiveRecord::Migration
   end
 
   def rename_projects(projects)
-    projects.each do |row|
-      id = row['id']
-      path_was = row['path']
-      namespace_path = row['namespace_path']
+    projects.each do |project|
+      next unless project.namespace
+
+      id = project.id
+      path_was = project.path
+      namespace_path = project.namespace.path
       path = rename_path(namespace_path, path_was)
-      project = Project.find_by(id: id)
 
       begin
         # Because project path update is quite complex operation we can't safely
         # copy-paste all code from GitLab. As exception we use Rails code here
-        if project &&
-          project.respond_to?(:update_attributes) &&
-          project.update_attributes(path: path) &&
-          project.respond_to?(:rename_repo)
-
-          project.rename_repo
-        end
-      rescue => e
-        Rails.logger.error "Exception when rename project #{id}: #{e.message}"
+        project.rename_repo if rename_project_row(project, path)
+      rescue Exception => e # rubocop: disable Lint/RescueException
+        Rails.logger.error "Exception when renaming project #{id}: #{e.message}"
       end
     end
+  end
+
+  def rename_project_row(project, path)
+    project.respond_to?(:update_attributes) &&
+      project.update_attributes(path: path) &&
+      project.respond_to?(:rename_repo)
   end
 end
