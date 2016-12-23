@@ -197,7 +197,7 @@
           width: 8px;
           position: absolute;
           right: -7px;
-          bottom: 9px;
+          top: 10px;
           border-bottom: 2px solid $border-color;
         }
       }
@@ -737,11 +737,72 @@
 .mini-pipeline-graph {
   .builds-dropdown {
     background-color: transparent;
-    border: none;
     padding: 0;
     color: $gl-text-color-light;
     border: none;
     margin: 0;
+
+    &:focus,
+    &:hover {
+      outline: none;
+      margin-right: -8px;
+
+      .ci-status-icon {
+        width: 32px;
+        padding: 0 8px 0 0;
+        transition: width 0.1s cubic-bezier(0.25, 0, 1, 1);
+
+        + .dropdown-caret {
+          visibility: visible;
+          opacity: 1;
+        }
+      }
+    }
+
+    &:focus,
+    &:active {
+      .ci-status-icon-success {
+        background-color: rgba($gl-success, .1);
+      }
+
+      .ci-status-icon-failed {
+        background-color: rgba($gl-danger, .1);
+      }
+
+      .ci-status-icon-pending,
+      .ci-status-icon-success_with_warnings {
+        background-color: rgba($gl-warning, .1);
+      }
+
+      .ci-status-icon-running {
+        background-color: rgba($blue-normal, .1);
+      }
+
+      .ci-status-icon-canceled,
+      .ci-status-icon-disabled,
+      .ci-status-icon-not-found {
+        background-color: rgba($gl-gray, .1);
+      }
+
+      .ci-status-icon-created,
+      .ci-status-icon-skipped {
+        background-color: rgba($gray-darkest, .1);
+      }
+    }
+
+    .mini-pipeline-graph-icon-container {
+      .dropdown-caret {
+        font-size: 11px;
+        position: absolute;
+        top: 6px;
+        left: 20px;
+        margin-right: -6px;
+        z-index: 2;
+        visibility: hidden;
+        opacity: 0;
+        transition: visibility 0.1s, opacity 0.1s linear;
+      }
+    }
   }
 
   .builds-dropdown-loading {
@@ -798,81 +859,16 @@
   height: 20px;
   position: relative;
   z-index: 2;
-  transition: all 0.2s cubic-bezier(0.25, 0, 1, 1);
+  transition: all 0.1s cubic-bezier(0.25, 0, 1, 1);
 
   svg {
     top: -1px;
   }
 }
 
-.builds-dropdown {
-  &:focus {
-    outline: none;
-    margin-right: -8px;
-
-    .ci-status-icon {
-      width: 32px;
-      padding: 0 8px 0 0;
-      transition: width 0.2s cubic-bezier(0.25, 0, 1, 1);
-
-      + .dropdown-caret {
-        display: inline-block;
-      }
-    }
-  }
-
-  &:focus,
-  &:active {
-    .ci-status-icon-success {
-      background-color: rgba($gl-success, .1);
-    }
-
-    .ci-status-icon-failed {
-      background-color: rgba($gl-danger, .1);
-    }
-
-    .ci-status-icon-pending,
-    .ci-status-icon-success_with_warnings {
-      background-color: rgba($gl-warning, .1);
-    }
-
-    .ci-status-icon-running {
-      background-color: rgba($blue-normal, .1);
-    }
-
-    .ci-status-icon-canceled,
-    .ci-status-icon-disabled,
-    .ci-status-icon-not-found {
-      background-color: rgba($gl-gray, .1);
-    }
-
-    .ci-status-icon-created,
-    .ci-status-icon-skipped {
-      background-color: rgba($gray-darkest, .1);
-    }
-  }
-
-  .mini-pipeline-graph-icon-container {
-    .ci-status-icon:hover,
-    .ci-status-icon:focus {
-      width: 28px;
-      padding: 0 8px 0 0;
-
-      + .dropdown-caret {
-        display: inline-block;
-      }
-    }
-
-    .dropdown-caret {
-      font-size: 11px;
-      position: relative;
-      top: 3px;
-      left: -11px;
-      margin-right: -6px;
-      display: none;
-      z-index: 2;
-    }
-  }
+.stage-cell .mini-pipeline-graph-icon-container .ci-status-icon svg {
+  width: 22px;
+  height: 22px;
 }
 
 .terminal-icon {
