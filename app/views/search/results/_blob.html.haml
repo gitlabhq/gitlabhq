@@ -6,7 +6,7 @@
   - blob = parse_search_result(blob)
   - file_name = blob.filename
 
-- ref = blob.ref
+- ref = @search_results.repository_ref
 - blob_link = namespace_project_blob_path(project.namespace, project, tree_join(ref, file_name))
 .blob-result
   .file-holder

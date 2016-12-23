@@ -65,7 +65,7 @@ module Gitlab
             )[:blobs][:results].response
           else
             Kaminari.paginate_array(
-              project.repository.search_files(query, repository_ref)
+              Gitlab::FileFinder.new(project, repository_ref).find(query)
             )
           end
         end
@@ -105,10 +105,12 @@ module Gitlab
               per_page: per_page
             )
           else
+            offset = per_page * ((page || 1) - 1)
+
             Kaminari.paginate_array(
-              project.repository.find_commits_by_message(query).compact,
-              page: (page || 1).to_i,
-              per_page: per_page
+              project.repository.find_commits_by_message(query),
+              offset: offset,
+              limit: per_page
             )
           end
         end
