@@ -2,7 +2,7 @@ module Projects
   module Settings
     class MembersController < Projects::ApplicationController
       include SortingHelper
-      
+
       def show
         @sort = params[:sort].presence || sort_value_name
         @group_links = @project.project_group_links
@@ -12,15 +12,18 @@ module Projects
 
         group = @project.group
 
+        # group links
+        @group_links = @project.project_group_links.all
+
+        @skip_groups = @group_links.pluck(:group_id)
+        @skip_groups << @project.namespace_id unless project.personal?
+
         if group
           # We need `.where.not(user_id: nil)` here otherwise when a group has an
           # invitee, it would make the following query return 0 rows since a NULL
           # user_id would be present in the subquery
           # See http://stackoverflow.com/questions/129077/not-in-clause-and-null-values
-          # FIXME: This whole logic should be moved to a finder!
-          non_null_user_ids = @project_members.where.not(user_id: nil).select(:user_id)
-          group_members = group.group_members.where.not(user_id: non_null_user_ids)
-          group_members = group_members.non_invite unless can?(current_user, :admin_group, @group)
+          group_members = MembersFinder.new(@project, @group)
         end
 
         if params[:search].present?

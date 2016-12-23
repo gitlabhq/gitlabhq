@@ -20,7 +20,7 @@
       .form-group
         = label_tag :expires_at, 'Access expiration date', class: 'label-light'
         .clearable-input
-          = text_field_tag :expires_at, nil, class: 'form-control js-access-expiration-date', placeholder: 'Select access expiration date'
+          = text_field_tag :expires_at_groups, nil, class: 'form-control js-access-expiration-date-groups', placeholder: 'Select access expiration date'
           %i.clear-icon.js-clear-input
         .help-block
           On this date, all users in the group will automatically lose access to this project.

@@ -4,10 +4,7 @@ class Projects::GroupLinksController < Projects::ApplicationController
   before_action :authorize_admin_project_member!, only: [:update]
 
   def index
-    @group_links = project.project_group_links.all
-
-    @skip_groups = @group_links.pluck(:group_id)
-    @skip_groups << project.namespace_id unless project.personal?
+    redirect_to namespace_project_settings_members_path
   end
 
   def create
@@ -19,7 +16,7 @@ class Projects::GroupLinksController < Projects::ApplicationController
       project.project_group_links.create(
         group: group,
         group_access: params[:link_group_access],
-        expires_at: params[:expires_at]
+        expires_at: params[:expires_at] || params[:expires_at_groups]
       )
     else
       flash[:alert] = 'Please select a group.'

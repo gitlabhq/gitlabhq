@@ -215,8 +215,9 @@
           new gl.Members();
           new UsersSelect();
           break;
-        case 'projects:project_members:index':
         case 'projects:members:show':
+          new gl.MemberExpirationDate('.js-access-expiration-date-groups');
+          new GroupsSelect();
           new gl.MemberExpirationDate();
           new gl.Members();
           new UsersSelect();
@@ -261,10 +262,6 @@
           break;
         case 'projects:artifacts:browse':
           new BuildArtifacts();
-          break;
-        case 'projects:group_links:index':
-          new gl.MemberExpirationDate();
-          new GroupsSelect();
           break;
         case 'search:show':
           new Search();

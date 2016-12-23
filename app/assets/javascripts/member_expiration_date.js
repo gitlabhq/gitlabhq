@@ -5,12 +5,16 @@
   // `js-clear-input` element, then show that element when there is a value in the
   // datepicker, and make clicking on that element clear the field.
   //
-  gl.MemberExpirationDate = function() {
+  gl.MemberExpirationDate = function(newSelector) {
     function toggleClearInput() {
       $(this).closest('.clearable-input').toggleClass('has-value', $(this).val() !== '');
     }
 
-    var inputs = $('.js-access-expiration-date');
+    var selector = '.js-access-expiration-date';
+    if (typeof newSelector !== 'undefined' && newSelector !== '') {
+      selector = newSelector;
+    }
+    var inputs = $(selector);
 
     inputs.datepicker({
       dateFormat: 'yy-mm-dd',
@@ -24,7 +28,7 @@
     inputs.next('.js-clear-input').on('click', function(event) {
       event.preventDefault();
 
-      var input = $(this).closest('.clearable-input').find('.js-access-expiration-date');
+      var input = $(this).closest('.clearable-input').find(selector);
       input.datepicker('setDate', null)
         .trigger('change');
       toggleClearInput.call(input);
