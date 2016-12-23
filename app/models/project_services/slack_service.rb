@@ -34,7 +34,7 @@ class SlackService < ChatNotificationService
     ]
   end
 
-  def default_channel
+  def default_channel_placeholder
     "#general"
   end
 end
