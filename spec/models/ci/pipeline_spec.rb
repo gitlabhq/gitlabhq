@@ -424,18 +424,20 @@ describe Ci::Pipeline, models: true do
     context 'when no ref is specified' do
       let(:pipelines) { described_class.latest.all }
 
-      it 'gives the latest pipelines for the same ref and different sha in reverse chronological order' do
-        expect(pipelines.map(&:sha)).to eq(%w[C B A])
-        expect(pipelines.map(&:status)).to eq(%w[skipped failed success])
+      it 'returns the latest pipeline for the same ref and different sha' do
+        expect(pipelines.map(&:sha)).to contain_exactly('A', 'B', 'C')
+        expect(pipelines.map(&:status)).
+          to contain_exactly('success', 'failed', 'skipped')
       end
     end
 
     context 'when ref is specified' do
       let(:pipelines) { described_class.latest('ref').all }
 
-      it 'gives the latest pipelines for ref and different sha in reverse chronological order' do
-        expect(pipelines.map(&:sha)).to eq(%w[B A])
-        expect(pipelines.map(&:status)).to eq(%w[failed success])
+      it 'returns the latest pipeline for ref and different sha' do
+        expect(pipelines.map(&:sha)).to contain_exactly('A', 'B')
+        expect(pipelines.map(&:status)).
+          to contain_exactly('success', 'failed')
       end
     end
   end
