@@ -18,9 +18,12 @@
       },
     },
     template: `
-      <td class="commit-link">
-        <a :class='cssClasses' :href='pipeline.details.status.details_path'>
-          <span v-html='svg + pipeline.details.status.text'></span>
+      <td>
+        <a
+          :class='cssClasses'
+          :href='pipeline.details.status.details_path'
+          v-html='svg + pipeline.details.status.text'
+        >
         </a>
       </td>
     `,
