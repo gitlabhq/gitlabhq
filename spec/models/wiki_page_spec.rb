@@ -9,9 +9,9 @@ describe WikiPage, models: true do
 
   describe '.group_by_directory' do
     context 'when there are no pages' do
-      it 'returns an empty hash' do
-        expect(WikiPage.group_by_directory(nil)).to eq({})
-        expect(WikiPage.group_by_directory([])).to eq({})
+      it 'returns an empty array' do
+        expect(WikiPage.group_by_directory(nil)).to eq([])
+        expect(WikiPage.group_by_directory([])).to eq([])
       end
     end
 
@@ -23,43 +23,47 @@ describe WikiPage, models: true do
         create_page('dir_2/page_4', 'content')
         create_page('page_1', 'content')
       end
+      let(:page_1) { wiki.find_page('page_1') }
+      let(:dir_1) do
+        WikiDirectory.new('dir_1', [wiki.find_page('dir_1/page_2')])
+      end
+      let(:dir_1_1) do
+        WikiDirectory.new('dir_1/dir_1_1', [wiki.find_page('dir_1/dir_1_1/page_3')])
+      end
+      let(:dir_2) do
+        pages = [wiki.find_page('dir_2/page_5'),
+                 wiki.find_page('dir_2/page_4')]
+        WikiDirectory.new('dir_2', pages)
+      end
 
-      it 'returns a hash in which keys are directories and values are their pages' do
-        page_1 = wiki.find_page('page_1')
-        page_2 = wiki.find_page('dir_1/page_2')
-        page_3 = wiki.find_page('dir_1/dir_1_1/page_3')
-        page_4 = wiki.find_page('dir_2/page_4')
-        page_5 = wiki.find_page('dir_2/page_5')
-        expected_grouped_pages = {
-          '/' => [page_1], '/dir_1' => [page_2], '/dir_1/dir_1_1' => [page_3],
-          '/dir_2' => [page_4, page_5]
-        }
+      it 'returns an array with pages and directories' do
+        expected_grouped_entries = [page_1, dir_1, dir_1_1, dir_2]
 
-        grouped_pages = WikiPage.group_by_directory(wiki.pages)
+        grouped_entries = WikiPage.group_by_directory(wiki.pages)
 
-        grouped_pages.each do |dir, pages|
-          expected_slugs = expected_grouped_pages.fetch(dir).map(&:slug)
-          slugs = pages.map(&:slug)
+        grouped_entries.each_with_index do |page_or_dir, i|
+          expected_page_or_dir = expected_grouped_entries[i]
+          expected_slugs = get_slugs(expected_page_or_dir)
+          slugs = get_slugs(page_or_dir)
 
           expect(slugs).to match_array(expected_slugs)
         end
       end
 
-      it 'returns a hash in which keys (directories) are sorted by alphabetical position' do
-        expected_ordered_directories = ['/', '/dir_1', '/dir_1/dir_1_1', '/dir_2']
+      it 'returns an array sorted by alphabetical position' do
+        # Directories and pages within directories are sorted alphabetically.
+        # Pages at root come before everything.
+        expected_order = ['page_1', 'dir_1/page_2', 'dir_1/dir_1_1/page_3',
+                          'dir_2/page_4', 'dir_2/page_5']
 
-        grouped_pages = WikiPage.group_by_directory(wiki.pages)
+        grouped_entries = WikiPage.group_by_directory(wiki.pages)
 
-        expect(grouped_pages.keys).to eq(expected_ordered_directories)
-      end
-
-      it 'returns a hash in which values (pages) are sorted by alphabetical position' do
-        expected_ordered_page_slugs = ['dir_2/page_4', 'dir_2/page_5']
-
-        grouped_pages = WikiPage.group_by_directory(wiki.pages)
-
-        dir_2_page_slugs = grouped_pages.fetch('/dir_2').map(&:slug)
-        expect(dir_2_page_slugs).to eq(expected_ordered_page_slugs)
+        actual_order =
+          grouped_entries.map do |page_or_dir|
+            get_slugs(page_or_dir)
+          end.
+          flatten
+        expect(actual_order).to eq(expected_order)
       end
     end
   end
@@ -335,5 +339,13 @@ describe WikiPage, models: true do
   def destroy_page(title)
     page = wiki.wiki.paged(title)
     wiki.wiki.delete_page(page, commit_details)
+  end
+
+  def get_slugs(page_or_dir)
+    if page_or_dir.is_a? WikiPage
+      [page_or_dir.slug]
+    else
+      page_or_dir.pages.present? ? page_or_dir.pages.map(&:slug) : []
+    end
   end
 end

@@ -16,12 +16,22 @@ class WikiPage
   #
   # pages - an array of WikiPage objects.
   #
-  # Returns a hash whose keys are directories and whose values are WikiPage
-  # arrays.
+  # Returns an array of WikiPage and WikiDirectory objects. The entries are
+  # sorted by alphabetical order (directories and pages inside each directory).
+  # Pages at the root level come before everything.
   def self.group_by_directory(pages)
-    return {} if pages.blank?
+    return [] if pages.blank?
+
     pages.sort_by { |page| [page.directory, page.slug] }.
-      group_by { |page| page.directory }
+      group_by { |page| page.directory }.
+      map do |dir, pages|
+        if dir == '/'
+          pages
+        else
+          WikiDirectory.new(dir, pages)
+        end
+      end.
+      flatten
   end
 
   def to_key
