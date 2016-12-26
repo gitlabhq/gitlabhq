@@ -1,4 +1,4 @@
-/* global Vue, gl */
+/* global Vue, Flash, gl */
 /* eslint-disable no-param-reassign */
 
 ((gl) => {
@@ -22,6 +22,17 @@
       },
       spanClass() {
         return `ci-status-icon ci-status-icon-${this.stage.status.group}`;
+      },
+      methods: {
+        fetchBuilds() {
+          this.$http.get(this.stage.status.endpoint)
+            .then((response) => {
+              Vue.set(this, 'builds', response.html);
+              Vue.set(this, 'response', true);
+            }, () => new Flash(
+              'Something went wrong on our end.',
+            ));
+        },
       },
     },
     template: `
