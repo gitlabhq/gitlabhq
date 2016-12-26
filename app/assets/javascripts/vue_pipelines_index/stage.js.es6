@@ -10,7 +10,28 @@
       };
     },
     props: ['stage', 'svgs', 'match'],
+    methods: {
+      fetchBuilds() {
+        this.$http.get(this.endpoint)
+          .then((response) => {
+            this.builds = JSON.parse(response.body).html;
+            this.request = true;
+          }, () => new Flash(
+            'Something went wrong on our end.',
+          ));
+      },
+      clearState() {
+        this.response = false;
+        this.builds = '<ul></ul>';
+      },
+    },
     computed: {
+      endpoint() {
+        return '/gitlab-org/gitlab-shell/pipelines/121/stage?stage=deploy';
+      },
+      stageTitle() {
+        return 'deploy: running';
+      },
       buildStatus() {
         return `Build: ${this.stage.status.label}`;
       },
@@ -23,26 +44,17 @@
       spanClass() {
         return `ci-status-icon ci-status-icon-${this.stage.status.group}`;
       },
-      methods: {
-        fetchBuilds() {
-          this.$http.get(this.stage.status.endpoint)
-            .then((response) => {
-              Vue.set(this, 'builds', response.html);
-              Vue.set(this, 'response', true);
-            }, () => new Flash(
-              'Something went wrong on our end.',
-            ));
-        },
-      },
     },
     template: `
       <div class="stage-container mini-pipeline-graph">
         <div class="dropdown inline build-content">
           <button
+            @click='fetchBuilds'
+            @blur='clearState'
             class="has-tooltip builds-dropdown js-builds-dropdown-button"
             data-placement="top"
             data-stage-endpoint='stage.status.endpoint'
-            data-title='stage.status.type'
+            :data-title='stageTitle'
             data-toggle="dropdown"
             type="button"
           >
