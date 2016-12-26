@@ -17,7 +17,7 @@ feature 'Project group links', feature: true, js: true do
       visit namespace_project_settings_members_path(project.namespace, project)
 
       select2 group.id, from: '#link_group_id'
-      fill_in 'expires_at', with: (Time.current + 4.5.days).strftime('%Y-%m-%d')
+      fill_in 'expires_at_groups', with: (Time.current + 4.5.days).strftime('%Y-%m-%d')
       page.find('body').click
       click_on 'Share'
     end
