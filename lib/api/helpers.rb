@@ -248,7 +248,7 @@ module API
       rack_response({ 'message' => '500 Internal Server Error' }.to_json, 500)
     end
 
-    # Projects helpers
+    # project helpers
 
     def filter_projects(projects)
       if params[:search].present?

@@ -583,7 +583,7 @@ describe GitPushService, services: true do
         service.push_commits = [commit]
 
         expect(ProjectCacheWorker).to receive(:perform_async).
-          with(project.id, %i(readme))
+          with(project.id, %i(readme), %i(commit_count repository_size))
 
         service.update_caches
       end
@@ -596,7 +596,7 @@ describe GitPushService, services: true do
 
       it 'does not flush any conditional caches' do
         expect(ProjectCacheWorker).to receive(:perform_async).
-          with(project.id, []).
+          with(project.id, [], %i(commit_count repository_size)).
           and_call_original
 
         service.update_caches

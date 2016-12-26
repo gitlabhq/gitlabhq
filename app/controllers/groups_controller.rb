@@ -75,7 +75,7 @@ class GroupsController < Groups::ApplicationController
   end
 
   def projects
-    @projects = @group.projects.page(params[:page])
+    @projects = @group.projects.with_statistics.page(params[:page])
   end
 
   def update
