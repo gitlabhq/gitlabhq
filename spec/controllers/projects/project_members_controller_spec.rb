@@ -5,11 +5,11 @@ describe Projects::ProjectMembersController do
   let(:project) { create(:empty_project, :public, :access_requestable) }
 
   describe 'GET index' do
-    it 'redirects to settings/members with 302 status code' do
+    it 'should have the settings/members address with a 302 status code' do
       get :index, namespace_id: project.namespace, project_id: project
 
       expect(response).to have_http_status(302)
-      expect(response).to redirect_to(namespace_project_settings_members_path(project.namespace, project))
+      expect(response.location).to include namespace_project_settings_members_path(project.namespace, project)
     end
   end
 

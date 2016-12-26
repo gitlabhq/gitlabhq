@@ -16,14 +16,14 @@ module Projects
         @group_links = @project.project_group_links.all
 
         @skip_groups = @group_links.pluck(:group_id)
-        @skip_groups << @project.namespace_id unless project.personal?
+        @skip_groups << @project.namespace_id unless @project.personal?
 
         if group
           # We need `.where.not(user_id: nil)` here otherwise when a group has an
           # invitee, it would make the following query return 0 rows since a NULL
           # user_id would be present in the subquery
           # See http://stackoverflow.com/questions/129077/not-in-clause-and-null-values
-          group_members = MembersFinder.new(@project, @group)
+          group_members = MembersFinder.new(@project_members, group).execute(current_user)
         end
 
         if params[:search].present?
