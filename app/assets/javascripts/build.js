@@ -92,8 +92,8 @@
         success: function(buildData) {
           $('.js-build-output').html(buildData.trace_html);
           if (removeRefreshStatuses.indexOf(buildData.status) >= 0) {
-            this.initScrollMonitor();
-            return this.$buildRefreshAnimation.remove();
+            this.$buildRefreshAnimation.remove();
+            return this.initScrollMonitor();
           }
         }.bind(this)
       });
