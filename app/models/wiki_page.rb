@@ -17,10 +17,10 @@ class WikiPage
   # pages - an array of WikiPage objects.
   #
   # Returns a hash whose keys are directories and whose values are WikiPage
-  # arrays. See WikiPage.sort_by_directory for more info about the ordering.
+  # arrays.
   def self.group_by_directory(pages)
     return {} if pages.blank?
-    pages = sort_by_directory(pages)
+    pages = pages.sort_by { |page| [page.directory, page.slug] }
 
     directories = {}
     pages.each do |page|
@@ -205,26 +205,6 @@ class WikiPage
   end
 
   private
-
-  # Sorts an array of pages by directory and file alphabetical order.
-  # Pages at the root directory will come first. The next pages will be
-  # sorted by their directories. Within directories, pages are sorted by
-  # filename alphabetical order. Pages are sorted in such a fashion that
-  # nested directories will always follow their parents (e.g. pages in
-  # dir_1/nested_dir_1 will follow pages inside dir_1).
-  #
-  # pages - an array of WikiPage objects.
-  #
-  # Returns a sorted array of WikiPage objects.
-  def self.sort_by_directory(pages)
-    pages.sort do |page, next_page|
-      if page.directory == next_page.directory
-        page.slug <=> next_page.slug
-      else
-        page.directory <=> next_page.directory
-      end
-    end
-  end
 
   def set_attributes
     attributes[:slug] = @page.url_path
