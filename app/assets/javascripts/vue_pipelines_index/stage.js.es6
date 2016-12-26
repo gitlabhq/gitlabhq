@@ -16,9 +16,7 @@
         this.$http.get(this.endpoint)
           .then((response) => {
             this.request = true;
-            setTimeout(() => {
-              this.builds = JSON.parse(response.body).html;
-            }, 100);
+            this.builds = JSON.parse(response.body).html;
           }, () => new Flash(
             'Something went wrong on our end.',
           ));
@@ -30,8 +28,7 @@
     },
     computed: {
       buildsOrSpinner() {
-        if (this.request) return this.builds;
-        return this.spinner;
+        return this.request ? this.builds : this.spinner;
       },
       dropdownClass() {
         if (this.request) return 'js-builds-dropdown-container';
@@ -50,7 +47,9 @@
         return `has-tooltip ci-status-icon-${this.stage.status.group}`;
       },
       svg() {
-        return this.svgs[this.match(this.stage.status.icon)];
+        const icon = this.stage.status.icon;
+        icon.replace('icon', 'stageIcon');
+        return this.svgs[this.match(icon)];
       },
       spanClass() {
         return `ci-status-icon ci-status-icon-${this.stage.status.group}`;
@@ -58,10 +57,10 @@
     },
     template: `
       <div class="stage-container mini-pipeline-graph">
+
         <div class="dropdown inline build-content">
           <button
             @click='fetchBuilds'
-            @blur='clearState'
             class="has-tooltip builds-dropdown js-builds-dropdown-button"
             data-placement="top"
             :title='stageTitle'
@@ -79,6 +78,7 @@
               </span>
             </span>
           </button>
+
           <div class="js-builds-dropdown-container">
             <div class="dropdown-menu grouped-pipeline-dropdown">
               <div class="arrow-up"></div>
@@ -90,6 +90,7 @@
             </div>
           </div>
         </div>
+
       </div>
     `,
   });
