@@ -84,7 +84,6 @@
               <div class="arrow-up"></div>
               <div
                 :class='dropdownClass'
-                v-if='request'
                 v-html='buildsOrSpinner'
               >
               </div>
