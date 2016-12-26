@@ -20,15 +20,8 @@ class WikiPage
   # arrays.
   def self.group_by_directory(pages)
     return {} if pages.blank?
-    pages = pages.sort_by { |page| [page.directory, page.slug] }
-
-    directories = {}
-    pages.each do |page|
-      directories[page.directory] ||= []
-      directories[page.directory] << page
-    end
-
-    directories
+    pages.sort_by { |page| [page.directory, page.slug] }.
+      group_by { |page| page.directory }
   end
 
   def to_key
