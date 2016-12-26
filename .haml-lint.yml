@@ -83,7 +83,7 @@ linters:
     enabled: true
 
   SpaceInsideHashAttributes:
-    enabled: false
+    enabled: true
     style: space
 
   Indentation:
