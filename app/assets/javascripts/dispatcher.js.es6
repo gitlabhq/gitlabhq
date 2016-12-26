@@ -174,9 +174,9 @@
           }
           break;
         case 'projects:pipelines:index':
-          new gl.MiniPipelineGraph({
-            container: '.js-pipeline-table',
-          });
+          // new gl.MiniPipelineGraph({
+          //   container: '.js-pipeline-table',
+          // });
           break;
         case 'projects:pipelines:builds':
         case 'projects:pipelines:show':

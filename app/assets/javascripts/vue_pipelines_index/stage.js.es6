@@ -6,7 +6,8 @@
     data() {
       return {
         request: false,
-        builds: '<ul></ul>',
+        builds: '',
+        spinner: '<span class="fa fa-spinner fa-spin"></span>',
       };
     },
     props: ['stage', 'svgs', 'match'],
@@ -14,18 +15,28 @@
       fetchBuilds() {
         this.$http.get(this.endpoint)
           .then((response) => {
-            this.builds = JSON.parse(response.body).html;
             this.request = true;
+            setTimeout(() => {
+              this.builds = JSON.parse(response.body).html;
+            }, 100);
           }, () => new Flash(
             'Something went wrong on our end.',
           ));
       },
       clearState() {
-        this.response = false;
-        this.builds = '<ul></ul>';
+        this.request = false;
+        this.builds = '';
       },
     },
     computed: {
+      buildsOrSpinner() {
+        if (this.request) return this.builds;
+        return this.spinner;
+      },
+      dropdownClass() {
+        if (this.request) return 'js-builds-dropdown-container';
+        return 'js-builds-dropdown-loading builds-dropdown-loading';
+      },
       endpoint() {
         return '/gitlab-org/gitlab-shell/pipelines/121/stage?stage=deploy';
       },
@@ -53,8 +64,7 @@
             @blur='clearState'
             class="has-tooltip builds-dropdown js-builds-dropdown-button"
             data-placement="top"
-            data-stage-endpoint='stage.status.endpoint'
-            :data-title='stageTitle'
+            :title='stageTitle'
             data-toggle="dropdown"
             type="button"
           >
@@ -62,7 +72,7 @@
               <span class="mini-pipeline-graph-icon-container">
                 <span
                   :class='spanClass'
-                  :v-html='svg'
+                  v-html='svg'
                 >
                 </span>
                 <i class="fa fa-caret-down dropdown-caret"></i>
@@ -73,16 +83,10 @@
             <div class="dropdown-menu grouped-pipeline-dropdown">
               <div class="arrow-up"></div>
               <div
-                class="js-builds-dropdown-list"
+                :class='dropdownClass'
                 v-if='request'
-                v-html='builds'
+                v-html='buildsOrSpinner'
               >
-              </div>
-              <div
-                class="js-builds-dropdown-loading builds-dropdown-loading"
-                v-if='!request'
-              >
-                <span class="fa fa-spinner fa-spin"></span>
               </div>
             </div>
           </div>
