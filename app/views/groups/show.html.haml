@@ -32,6 +32,10 @@
         %li
           = link_to "#shared", 'data-toggle' => 'tab' do
             Shared Projects
+      - if @nested_groups.present?
+        %li
+          = link_to "#groups", 'data-toggle' => 'tab' do
+            Nested Groups
     .nav-controls
       = form_tag request.path, method: :get, class: 'project-filter-form', id: 'project-filter-form' do |f|
         = search_field_tag :filter_projects, nil, placeholder: 'Filter by name', class: 'projects-list-filter form-control', spellcheck: false
@@ -47,3 +51,9 @@
     - if @shared_projects.present?
       .tab-pane#shared
         = render "shared_projects", projects: @shared_projects
+
+    - if @nested_groups.present?
+      .tab-pane#groups
+        %ul.content-list
+          - @nested_groups.each do |group|
+            = render 'shared/groups/group', group: group
