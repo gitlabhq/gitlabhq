@@ -5,7 +5,7 @@
       = project_icon(@project, alt: @project.name, class: 'avatar s70 avatar-tile')
     %h1.project-title
       = @project.name
-      %span.visibility-icon.has-tooltip{data: { container: 'body' }, title: visibility_icon_description(@project)}
+      %span.visibility-icon.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@project) }
         = visibility_level_icon(@project.visibility_level, fw: false)
 
     .project-home-desc

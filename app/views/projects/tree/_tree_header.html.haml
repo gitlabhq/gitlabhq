@@ -15,11 +15,11 @@
   - if current_user
     %li
       - if !on_top_of_branch?
-        %span.btn.add-to-tree.disabled.has-tooltip{title: "You can only add files when you are on a branch", data: { container: 'body' }}
+        %span.btn.add-to-tree.disabled.has-tooltip{ title: "You can only add files when you are on a branch", data: { container: 'body' } }
           = icon('plus')
       - else
         %span.dropdown
-          %a.dropdown-toggle.btn.add-to-tree{href: '#', "data-toggle" => "dropdown"}
+          %a.dropdown-toggle.btn.add-to-tree{ href: '#', "data-toggle" => "dropdown" }
             = icon('plus')
           %ul.dropdown-menu
             - if can_edit_tree?
@@ -28,11 +28,11 @@
                   = icon('pencil fw')
                   New file
               %li
-                = link_to '#modal-upload-blob', { 'data-target' => '#modal-upload-blob', 'data-toggle' => 'modal'} do
+                = link_to '#modal-upload-blob', { 'data-target' => '#modal-upload-blob', 'data-toggle' => 'modal' } do
                   = icon('file fw')
                   Upload file
               %li
-                = link_to '#modal-create-new-dir', { 'data-target' => '#modal-create-new-dir', 'data-toggle' => 'modal'} do
+                = link_to '#modal-create-new-dir', { 'data-target' => '#modal-create-new-dir', 'data-toggle' => 'modal' } do
                   = icon('folder fw')
                   New directory
             - elsif can?(current_user, :fork_project, @project)
