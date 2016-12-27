@@ -3,14 +3,16 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20161221153951_rename_reserved_project_names.rb')
 
-describe RenameReservedProjectNames do
+# This migration uses multiple threads, and thus different transactions. This
+# means data created in this spec may not be visible to some threads. To work
+# around this we use the TRUNCATE cleaning strategy.
+describe RenameReservedProjectNames, truncate: true do
   let(:migration) { described_class.new }
-  let!(:project) { create(:project) }
+  let!(:project) { create(:empty_project) }
 
   before do
     project.path = 'projects'
     project.save!(validate: false)
-    allow(Thread).to receive(:new).and_yield
   end
 
   describe '#up' do
