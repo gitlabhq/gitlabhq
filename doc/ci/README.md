@@ -23,7 +23,7 @@
 - [CI/CD pipelines settings](../user/project/pipelines/settings.md)
 - [Review Apps](review_apps/index.md)
 - [Git submodules](git_submodules.md) Using Git submodules in your CI jobs
-- [Autodeploy](autodeploy/index.md)
+- [Auto deploy](autodeploy/index.md)
 
 ## Breaking changes
 
