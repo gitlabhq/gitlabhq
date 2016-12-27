@@ -114,11 +114,6 @@ class WikiPage
     @attributes[:format] || :markdown
   end
 
-  # The full path for this page, including its filename and extension.
-  def full_path
-    "#{directory}/#{page.filename}".gsub(/\/+/, '/')
-  end
-
   # The commit message for this page version.
   def message
     version.try(:message)
