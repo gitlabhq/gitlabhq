@@ -1,6 +1,6 @@
 - stage = local_assigns.fetch(:stage)
 - statuses = stage.statuses.latest
-- status_groups = statuses.sort_by(&:natsort_name).group_by(&:group_name)
+- status_groups = statuses.sort_by(&:sortable_name).group_by(&:group_name)
 %li.stage-column
   .stage-name
     %a{ name: stage.name }

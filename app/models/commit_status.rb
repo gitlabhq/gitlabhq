@@ -138,7 +138,7 @@ class CommitStatus < ActiveRecord::Base
       .fabricate!
   end
 
-  def natsort_name
+  def sortable_name
     name.split(/(\d+)/).map do |v|
       v =~ /\d+/ ? v.to_i : v
     end
