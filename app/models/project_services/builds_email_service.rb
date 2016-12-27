@@ -19,12 +19,16 @@ class BuildsEmailService < Service
     'Email the builds status to a list of recipients.'
   end
 
-  def to_param
+  def self.to_param
     'builds_email'
   end
 
-  def supported_events
+  def self.supported_events
     %w(build)
+  end
+
+  def self.event_names
+    self.supported_events.map { |event| "#{event}_events" }
   end
 
   def execute(push_data)

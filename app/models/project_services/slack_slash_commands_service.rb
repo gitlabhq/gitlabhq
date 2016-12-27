@@ -9,7 +9,7 @@ class SlackSlashCommandsService < ChatSlashCommandsService
     "Perform common operations on GitLab in Slack"
   end
 
-  def to_param
+  def self.to_param
     'slack_slash_commands'
   end
 
@@ -24,5 +24,13 @@ class SlackSlashCommandsService < ChatSlashCommandsService
 
   def format(text)
     Slack::Notifier::LinkFormatter.format(text) if text
+  end
+
+  def self.supported_events
+    %w()
+  end
+
+  def self.event_names
+    self.supported_events.map { |event| "#{event}_events" }
   end
 end

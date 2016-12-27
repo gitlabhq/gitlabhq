@@ -12,8 +12,12 @@ class JiraService < IssueTrackerService
   # This is confusing, but JiraService does not really support these events.
   # The values here are required to display correct options in the service
   # configuration screen.
-  def supported_events
+  def self.supported_events
     %w(commit merge_request)
+  end
+
+  def self.event_names
+    self.supported_events.map { |event| "#{event}_events" }
   end
 
   # {PROJECT-KEY}-{NUMBER} Examples: JIRA-1, PROJECT-1
@@ -81,7 +85,7 @@ class JiraService < IssueTrackerService
     end
   end
 
-  def to_param
+  def self.to_param
     'jira'
   end
 

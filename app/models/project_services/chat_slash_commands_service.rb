@@ -13,8 +13,8 @@ class ChatSlashCommandsService < Service
       ActiveSupport::SecurityUtils.variable_size_secure_compare(token, self.token)
   end
 
-  def supported_events
-    []
+  def self.supported_events
+    %w()
   end
 
   def can_test?

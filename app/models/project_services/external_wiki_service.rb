@@ -13,7 +13,7 @@ class ExternalWikiService < Service
     'Replaces the link to the internal wiki with a link to an external wiki.'
   end
 
-  def to_param
+  def self.to_param
     'external_wiki'
   end
 
@@ -28,5 +28,13 @@ class ExternalWikiService < Service
     if @response != 200
       nil
     end
+  end
+
+  def self.supported_events
+    %w()
+  end
+
+  def self.event_names
+    self.supported_events.map { |event| "#{event}_events" }
   end
 end

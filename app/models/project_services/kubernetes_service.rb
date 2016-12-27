@@ -52,7 +52,7 @@ class KubernetesService < DeploymentService
     'deployments with `app=$CI_ENVIRONMENT_SLUG`'
   end
 
-  def to_param
+  def self.to_param
     'kubernetes'
   end
 
@@ -156,6 +156,14 @@ class KubernetesService < DeploymentService
     end
 
     opts
+  end
+
+  def self.supported_events
+    %w()
+  end
+
+  def self.event_names
+    self.supported_events.map { |event| "#{event}_events" }
   end
 
   def kubeclient_auth_options

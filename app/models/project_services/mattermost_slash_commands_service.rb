@@ -15,7 +15,7 @@ class MattermostSlashCommandsService < ChatSlashCommandsService
     "Perform common operations on GitLab in Mattermost"
   end
 
-  def to_param
+  def self.to_param
     'mattermost_slash_commands'
   end
 
@@ -47,5 +47,13 @@ class MattermostSlashCommandsService < ChatSlashCommandsService
       display_name: "GitLab / #{pretty_project_name}",
       method: 'P',
       username: 'GitLab')
+  end
+
+  def self.supported_events
+    %w()
+  end
+
+  def self.event_names
+    self.supported_events.map { |event| "#{event}_events" }
   end
 end

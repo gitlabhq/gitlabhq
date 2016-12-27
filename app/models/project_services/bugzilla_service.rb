@@ -19,7 +19,15 @@ class BugzillaService < IssueTrackerService
     end
   end
 
-  def to_param
+  def self.to_param
     'bugzilla'
+  end
+
+  def self.supported_events
+    %w()
+  end
+
+  def self.event_names
+    self.supported_events.map { |event| "#{event}_events" }
   end
 end

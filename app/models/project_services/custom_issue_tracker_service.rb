@@ -23,7 +23,7 @@ class CustomIssueTrackerService < IssueTrackerService
     end
   end
 
-  def to_param
+  def self.to_param
     'custom_issue_tracker'
   end
 
@@ -35,5 +35,13 @@ class CustomIssueTrackerService < IssueTrackerService
       { type: 'text', name: 'issues_url', placeholder: 'Issue url' },
       { type: 'text', name: 'new_issue_url', placeholder: 'New Issue url' }
     ]
+  end
+
+  def self.supported_events
+    %w()
+  end
+
+  def self.event_names
+    self.supported_events.map { |event| "#{event}_events" }
   end
 end

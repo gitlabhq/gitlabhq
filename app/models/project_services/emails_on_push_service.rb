@@ -12,12 +12,16 @@ class EmailsOnPushService < Service
     'Email the commits and diff of each push to a list of recipients.'
   end
 
-  def to_param
+  def self.to_param
     'emails_on_push'
   end
 
-  def supported_events
+  def self.supported_events
     %w(push tag_push)
+  end
+
+  def self.event_names
+    self.supported_events.map { |event| "#{event}_events" }
   end
 
   def execute(push_data)

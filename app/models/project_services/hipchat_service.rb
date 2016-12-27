@@ -27,7 +27,7 @@ class HipchatService < Service
     'Private group chat and IM'
   end
 
-  def to_param
+  def self.to_param
     'hipchat'
   end
 
@@ -45,8 +45,12 @@ class HipchatService < Service
     ]
   end
 
-  def supported_events
+  def self.supported_events
     %w(push issue confidential_issue merge_request note tag_push build)
+  end
+
+  def self.event_names
+    self.supported_events.map { |event| "#{event}_events" }
   end
 
   def execute(data)

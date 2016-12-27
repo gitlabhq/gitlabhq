@@ -13,7 +13,7 @@ class PushoverService < Service
     'Pushover makes it easy to get real-time notifications on your Android device, iPhone, iPad, and Desktop.'
   end
 
-  def to_param
+  def self.to_param
     'pushover'
   end
 
@@ -61,8 +61,12 @@ class PushoverService < Service
     ]
   end
 
-  def supported_events
+  def self.supported_events
     %w(push)
+  end
+
+  def self.event_names
+    self.supported_events.map { |event| "#{event}_events" }
   end
 
   def execute(data)

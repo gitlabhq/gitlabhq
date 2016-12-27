@@ -76,6 +76,7 @@ class Service < ActiveRecord::Base
 
   def to_param
     # implement inside child
+    self.class.to_param
   end
 
   def fields
@@ -92,7 +93,8 @@ class Service < ActiveRecord::Base
   end
 
   def event_names
-    supported_events.map { |event| "#{event}_events" }
+    # implement inside child
+    self.class.event_names
   end
 
   def event_field(event)
@@ -104,7 +106,7 @@ class Service < ActiveRecord::Base
   end
 
   def supported_events
-    %w(push tag_push issue confidential_issue merge_request wiki_page)
+    self.class.supported_events
   end
 
   def execute(data)

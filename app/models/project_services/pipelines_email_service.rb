@@ -15,12 +15,16 @@ class PipelinesEmailService < Service
     'Email the pipelines status to a list of recipients.'
   end
 
-  def to_param
+  def self.to_param
     'pipelines_email'
   end
 
-  def supported_events
+  def self.supported_events
     %w[pipeline]
+  end
+
+  def self.event_names
+    self.supported_events.map { |event| "#{event}_events" }
   end
 
   def execute(data, force: false)

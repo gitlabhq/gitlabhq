@@ -8,10 +8,13 @@ class CiService < Service
     self.respond_to?(:token) && self.token.present? && ActiveSupport::SecurityUtils.variable_size_secure_compare(token, self.token)
   end
 
-  def supported_events
+  def self.supported_events
     %w(push)
   end
 
+  def self.event_names
+    self.supported_events.map { |event| "#{event}_events" }
+  end
   # Return complete url to build page
   #
   # Ex.
