@@ -26,7 +26,7 @@ describe 'Auto deploy' do
 
     it 'does not show a button to set up auto deploy' do
       visit namespace_project_path(project.namespace, project)
-      expect(page).to have_no_content('Set up autodeploy')
+      expect(page).to have_no_content('Set up auto deploy')
     end
   end
 
@@ -37,11 +37,11 @@ describe 'Auto deploy' do
     end
 
     it 'shows a button to set up auto deploy' do
-      expect(page).to have_link('Set up autodeploy')
+      expect(page).to have_link('Set up auto deploy')
     end
 
-    it 'includes Kubernetes as an available template', js: true do
-      click_link 'Set up autodeploy'
+    it 'includes OpenShift as an available template', js: true do
+      click_link 'Set up auto deploy'
       click_button 'Choose a GitLab CI Yaml template'
 
       within '.gitlab-ci-yml-selector' do
@@ -49,8 +49,8 @@ describe 'Auto deploy' do
       end
     end
 
-    it 'creates a merge request using "autodeploy" branch', js: true do
-      click_link 'Set up autodeploy'
+    it 'creates a merge request using "auto-deploy" branch', js: true do
+      click_link 'Set up auto deploy'
       click_button 'Choose a GitLab CI Yaml template'
       within '.gitlab-ci-yml-selector' do
         click_on 'OpenShift'
@@ -58,7 +58,7 @@ describe 'Auto deploy' do
       wait_for_ajax
       click_button 'Commit Changes'
 
-      expect(page).to have_content('New Merge Request From autodeploy into master')
+      expect(page).to have_content('New Merge Request From auto-deploy into master')
     end
   end
 end
