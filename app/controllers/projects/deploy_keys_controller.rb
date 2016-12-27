@@ -16,7 +16,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
   end
 
   def create
-    @key = DeployKey.new(deploy_key_params)
+    @key = DeployKey.new(deploy_key_params.merge(user: current_user))
     set_index_vars
 
     if @key.valid? && @project.deploy_keys << @key
@@ -53,6 +53,6 @@ class Projects::DeployKeysController < Projects::ApplicationController
   end
 
   def deploy_key_params
-    params.require(:deploy_key).permit(:key, :title)
+    params.require(:deploy_key).permit(:key, :title, :can_push)
   end
 end

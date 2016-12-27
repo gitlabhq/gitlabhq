@@ -317,7 +317,7 @@ module API
     end
 
     class SSHKey < Grape::Entity
-      expose :id, :title, :key, :created_at
+      expose :id, :title, :key, :created_at, :can_push
     end
 
     class SSHKeyWithUser < SSHKey
