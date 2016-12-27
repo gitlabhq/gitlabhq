@@ -198,7 +198,9 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def diff_size
-    diffs(diff_options).size
+    opts = diff_options || {}
+
+    raw_diffs(opts).size
   end
 
   def diff_base_commit
