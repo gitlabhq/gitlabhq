@@ -102,7 +102,7 @@ module Ci
     end
 
     def self.latest_successful_for(ref)
-      success.latest(ref).order(id: :desc).first
+      success.latest(ref).first
     end
 
     def self.truncate_sha(sha)
