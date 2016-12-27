@@ -13,7 +13,13 @@
     props: ['stage', 'svgs', 'match'],
     methods: {
       fetchBuilds() {
-        this.$http.get(this.stage.dropdown_path)
+        if (this.request) {
+          this.request = false;
+          this.builds = '';
+          return null;
+        }
+
+        return this.$http.get(this.stage.dropdown_path)
           .then((response) => {
             this.request = true;
             this.builds = JSON.parse(response.body).html;
@@ -55,6 +61,7 @@
         <div class="dropdown inline build-content">
           <button
             @click='fetchBuilds'
+            @blur='fetchBuilds'
             class="has-tooltip builds-dropdown js-builds-dropdown-button"
             data-placement="top"
             :title='stage.title'
