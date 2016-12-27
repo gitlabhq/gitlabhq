@@ -4,6 +4,8 @@ class RemoveUnneededServices < ActiveRecord::Migration
   DOWNTIME = false
 
   def up
+    disable_statement_timeout
+
     execute("DELETE FROM services WHERE active = false AND properties = '{}';")
   end
 
