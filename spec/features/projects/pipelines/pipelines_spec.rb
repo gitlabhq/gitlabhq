@@ -276,28 +276,18 @@ describe 'Pipelines', :feature, :js do
 
       before do
         visit namespace_project_pipelines_path(project.namespace, project)
-      end
-
-      it 'should render a mini pipeline graph' do
-        endpoint = stage_namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline, stage: build.name)
-
-        expect(page).to have_selector('.mini-pipeline-graph')
-        expect(page).to have_selector(".js-builds-dropdown-button[data-stage-endpoint='#{endpoint}']")
+        wait_for_vue_resource
       end
 
       context 'when clicking a graph stage' do
         it 'should open a dropdown' do
           find('.js-builds-dropdown-button').trigger('click')
 
-          wait_for_ajax
-
           expect(page).to have_link build.name
         end
 
         it 'should be possible to retry the failed build' do
           find('.js-builds-dropdown-button').trigger('click')
-
-          wait_for_ajax
 
           find('a.ci-action-icon-container').trigger('click')
           expect(page).not_to have_content('Cancel running')
