@@ -335,7 +335,6 @@
   width: 100%;
   background-color: $gray-light;
   padding: $gl-padding;
-  overflow: auto;
   white-space: nowrap;
   transition: max-height 0.3s, padding 0.3s;
 
@@ -621,13 +620,13 @@
 }
 
 .dropdown-counter-badge {
-  float: right;
   color: $border-color;
   font-weight: 100;
   font-size: 15px;
-  margin-right: 2px;
+  position: absolute;
+  right: 5px;
+  top: 8px;
 }
-
 
 .grouped-pipeline-dropdown {
   padding: 0;

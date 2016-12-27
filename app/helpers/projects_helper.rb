@@ -90,10 +90,12 @@ module ProjectsHelper
   end
 
   def project_for_deploy_key(deploy_key)
-    if deploy_key.projects.include?(@project)
+    if deploy_key.has_access_to?(@project)
       @project
     else
-      deploy_key.projects.find { |project| can?(current_user, :read_project, project) }
+      deploy_key.projects.find do |project|
+        can?(current_user, :read_project, project)
+      end
     end
   end
 
@@ -246,11 +248,6 @@ module ProjectsHelper
     end
   end
 
-  def repository_size(project = @project)
-    size_in_bytes = project.repository_size * 1.megabyte
-    number_to_human_size(size_in_bytes, delimiter: ',', precision: 2)
-  end
-
   def default_url_to_repo(project = @project)
     case default_clone_protocol
     when 'ssh'
@@ -396,20 +393,6 @@ module ProjectsHelper
   def readme_cache_key
     sha = @project.commit.try(:sha) || 'nil'
     [@project.path_with_namespace, sha, "readme"].join('-')
-  end
-
-  def round_commit_count(project)
-    count = project.commit_count
-
-    if count > 10000
-      '10000+'
-    elsif count > 5000
-      '5000+'
-    elsif count > 1000
-      '1000+'
-    else
-      count
-    end
   end
 
   def current_ref

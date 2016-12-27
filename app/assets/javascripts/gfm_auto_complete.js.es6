@@ -367,7 +367,7 @@
       return $input.trigger('keyup');
     },
     isLoading(data) {
-      if (!data) return false;
+      if (!data || !data.length) return false;
       if (Array.isArray(data)) data = data[0];
       return data === this.defaultLoadingData[0] || data.name === this.defaultLoadingData[0];
     },

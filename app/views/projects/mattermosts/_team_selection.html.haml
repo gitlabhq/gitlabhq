@@ -8,7 +8,9 @@
     = @teams.one? ? 'The team' : 'Select the team'
     where the slash commands will be used in
   - selected_id = @teams.keys.first if @teams.one?
-  = f.select(:team_id, mattermost_teams_options(@teams), {}, { class: 'form-control', selected: "#{selected_id}", disabled: @teams.one? })
+  - options = mattermost_teams_options(@teams)
+  - options = options_for_select(options, selected_id)
+  = f.select(:team_id, options, {}, { class: 'form-control', selected: "#{selected_id}" })
   .help-block
     - if @teams.one?
       This is the only team where you are an administrator.
