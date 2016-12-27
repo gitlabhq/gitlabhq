@@ -15,6 +15,7 @@ describe StageEntity do
 
   before do
     allow(request).to receive(:user).and_return(user)
+    create(:ci_build, :success, pipeline: pipeline)
   end
 
   describe '#as_json' do
@@ -26,6 +27,7 @@ describe StageEntity do
 
     it 'contains detailed status' do
       expect(subject[:status]).to include :text, :label, :group, :icon
+      expect(subject[:status][:label]).to eq 'passed'
     end
 
     it 'contains valid name' do
@@ -35,6 +37,15 @@ describe StageEntity do
     it 'contains path to the stage' do
       expect(subject[:path])
         .to include "pipelines/#{pipeline.id}##{stage.name}"
+    end
+
+    it 'contains path to the stage dropdown' do
+      expect(subject[:dropdown_path])
+        .to include "pipelines/#{pipeline.id}/stage.json?stage=test"
+    end
+
+    it 'contains stage title' do
+      expect(subject[:title]).to eq 'test: passed'
     end
   end
 end
