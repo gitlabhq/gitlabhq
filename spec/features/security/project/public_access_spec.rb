@@ -82,7 +82,7 @@ describe "Public Project Access", feature: true  do
     it { is_expected.to be_allowed_for(:visitor) }
   end
 
-  describe "GET /:project_path/settings/project_members" do
+  describe "GET /:project_path/settings/members" do
     subject { namespace_project_settings_members_path(project.namespace, project) }
 
     it { is_expected.to be_allowed_for(:admin) }
