@@ -14,13 +14,6 @@
         Clone repository
 
   %ul.wiki-pages-list.content-list
-    - @wiki_directories.each do |wiki_directory, wiki_pages|
-      - if wiki_directory == '/'
-        = render 'wiki_pages', wiki_pages: wiki_pages
-      - else
-        %li
-          = wiki_directory
-          %ul
-            = render 'wiki_pages', wiki_pages: wiki_pages
+    = render @wiki_entries, context: 'pages'
 
   = paginate @wiki_pages, theme: 'gitlab'

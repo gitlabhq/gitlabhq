@@ -12,15 +12,7 @@
   .blocks-container
     .block.block-first
       %ul.wiki-pages
-        - @sidebar_wiki_directories.each do |wiki_directory, wiki_pages|
-          - if wiki_directory == '/'
-            = render 'sidebar_wiki_pages', wiki_pages: wiki_pages
-          - else
-            %li
-              = wiki_directory
-              %ul
-                = render 'sidebar_wiki_pages', wiki_pages: wiki_pages
-
+        = render @sidebar_wiki_entries, context: 'sidebar'
 
     .block
       = link_to namespace_project_wikis_pages_path(@project.namespace, @project), class: 'btn btn-block' do
