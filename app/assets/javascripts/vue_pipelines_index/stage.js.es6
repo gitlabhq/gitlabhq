@@ -13,11 +13,7 @@
     props: ['stage', 'svgs', 'match'],
     methods: {
       fetchBuilds() {
-        if (this.request) {
-          this.request = false;
-          this.builds = '';
-          return null;
-        }
+        if (this.request) return this.clearBuilds();
 
         return this.$http.get(this.stage.dropdown_path)
           .then((response) => {
@@ -27,9 +23,9 @@
             'Something went wrong on our end.',
           ));
       },
-      clearState() {
-        this.request = false;
+      clearBuilds() {
         this.builds = '';
+        this.request = false;
       },
     },
     computed: {
