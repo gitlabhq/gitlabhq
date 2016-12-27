@@ -42,4 +42,12 @@ RSpec.describe WikiDirectory, models: true do
       end
     end
   end
+
+  describe '#to_partial_path' do
+    it 'returns the relative path to the partial to be used' do
+      directory = build(:wiki_directory)
+
+      expect(directory.to_partial_path).to eq('projects/wikis/wiki_directory')
+    end
+  end
 end
