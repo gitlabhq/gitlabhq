@@ -5,17 +5,27 @@ require 'capybara/poltergeist'
 # Give CI some extra time
 timeout = (ENV['CI'] || ENV['CI_SERVER']) ? 90 : 10
 
-Capybara.javascript_driver = :poltergeist
-Capybara.register_driver :poltergeist do |app|
-  Capybara::Poltergeist::Driver.new(
-    app,
-    js_errors: true,
-    timeout: timeout,
-    window_size: [1366, 768],
-    phantomjs_options: [
-      '--load-images=no'
-    ]
-  )
+browser = ENV['BROWSER'].to_sym if /^(firefox|chrome|internet_explorer|safari)$/.match(ENV['BROWSER'])
+driver = browser ? :selenium : :poltergeist
+
+Capybara.javascript_driver = driver
+Capybara.register_driver driver do |app|
+  if driver == :selenium
+    Capybara::Selenium::Driver.new(
+      app,
+      browser: browser,
+      desired_capabilities: Selenium::WebDriver::Remote::Capabilities.send(browser)
+    )
+  else
+    Capybara::Poltergeist::Driver.new(
+      js_errors: true,
+      timeout: timeout,
+      window_size: [1366, 768],
+      phantomjs_options: [
+        '--load-images=no'
+      ]
+    )
+  end
 end
 
 Capybara.default_max_wait_time = timeout

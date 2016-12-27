@@ -289,6 +289,7 @@ group :development, :test do
   gem 'capybara',            '~> 2.6.2'
   gem 'capybara-screenshot', '~> 1.0.0'
   gem 'poltergeist',         '~> 1.9.0'
+  gem 'selenium-webdriver',  '~> 2.53.4'
 
   gem 'teaspoon', '~> 1.1.0'
   gem 'teaspoon-jasmine', '~> 2.2.0'
