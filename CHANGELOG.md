@@ -2,6 +2,21 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 8.15.2 (2016-12-27)
+
+- Fix mr list timestamp alignment. !8271
+- Fix discussion overlap text in regular screens. !8273
+- Fixes mini-pipeline-graph dropdown animation and stage position in chrome, firefox and safari. !8282
+- Fix line breaking in nodes of the pipeline graph in firefox. !8292
+- Fixes confendential warning text alignment. !8293
+- Hide Scroll Top button for failed build page. !8295
+- Fix finding the latest pipeline. !8301
+- Disable PostgreSQL statement timeouts when removing unneeded services. !8322
+- Fix timeout when MR contains large files marked as binary by .gitattributes.
+- Rename "autodeploy" to "auto deploy".
+- Fixed GFM autocomplete error when no data exists.
+- Fixed resolve discussion note button color.
+
 ## 8.15.1 (2016-12-23)
 
 - Push payloads schedule at most 100 commits, instead of all commits.
