@@ -7,7 +7,8 @@ class StageEntity < Grape::Entity
     "#{stage.name}: #{detailed_status.label}"
   end
 
-  expose :detailed_status, as: :status,
+  expose :detailed_status,
+    as: :status,
     with: StatusEntity
 
   expose :path do |stage|
