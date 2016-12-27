@@ -588,6 +588,11 @@ describe Project, models: true do
     end
 
     describe '#above_size_limit?' do
+      let(:project) do
+        create(:empty_project,
+               statistics: build(:project_statistics))
+      end
+
       it 'returns true when above the limit' do
         allow(project).to receive(:repository_and_lfs_size).and_return(100)
 
