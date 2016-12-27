@@ -208,6 +208,11 @@ ul.content-list {
     padding-right: 8px;
   }
 
+  .row-fixed-content {
+    flex: 0 0 auto;
+    margin-left: auto;
+  }
+
   .row-title {
     font-weight: 600;
   }
