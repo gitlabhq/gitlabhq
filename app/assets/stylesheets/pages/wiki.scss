@@ -17,6 +17,11 @@
   @extend .top-area;
   position: relative;
 
+  .wiki-breadcrumb {
+    border-bottom: 1px solid $white-normal;
+    padding: 11px 0;
+  }
+
   .wiki-page-title {
     margin: 0;
     font-size: 22px;
