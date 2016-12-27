@@ -20,12 +20,17 @@
     MarkdownPreview.prototype.ajaxCache = {};
 
     MarkdownPreview.prototype.showPreview = function ($form) {
+      var mdText;
       var preview = $form.find('.js-md-preview');
-      var mdText = $form.find('textarea.markdown-area').val();
+      if (preview.hasClass('md-preview-loading')) {
+        return;
+      }
+      mdText = $form.find('textarea.markdown-area').val();
+
       if (mdText.trim().length === 0) {
         preview.text('Nothing to preview.');
         this.hideReferencedUsers($form);
-      } else if (!preview.hasClass('md-preview-loading')) {
+      } else {
         preview.addClass('md-preview-loading').text('Loading...');
         this.fetchMarkdownPreview(mdText, (function (response) {
           preview.removeClass('md-preview-loading').html(response.body);
