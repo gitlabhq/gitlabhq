@@ -138,6 +138,7 @@
           new MergedButtons();
           break;
         case 'projects:merge_requests:commits':
+        case 'projects:merge_requests:builds':
           new MergedButtons();
           break;
         case "projects:merge_requests:diffs":
@@ -161,6 +162,9 @@
           new gl.MiniPipelineGraph({
             container: '.js-pipeline-table',
           });
+          break;
+        case 'projects:commit:builds':
+          new gl.Pipelines();
           break;
         case 'projects:commits:show':
         case 'projects:activity':

@@ -74,7 +74,7 @@
 
     MergeRequestWidget.prototype.addEventListeners = function() {
       var allowedPages;
-      allowedPages = ['show', 'commits', 'pipelines', 'changes'];
+      allowedPages = ['show', 'commits', 'builds', 'pipelines', 'changes'];
       $(document).on('page:change.merge_request', (function(_this) {
         return function() {
           var page;
@@ -173,6 +173,7 @@
               message = message.replace('{{title}}', data.title);
               notify(title, message, _this.opts.gitlab_icon, function() {
                 this.close();
+                return Turbolinks.visit(_this.opts.builds_path);
               });
             }
           }

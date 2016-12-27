@@ -47,6 +47,8 @@ Feature: Project Commits
     And repository contains ".gitlab-ci.yml" file
     When I click on commit link
     Then I see commit ci info
+    And I click status link
+    Then I see builds list
 
   Scenario: I browse commit with side-by-side diff view
     Given I click on commit link
