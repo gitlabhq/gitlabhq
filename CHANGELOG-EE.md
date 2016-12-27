@@ -1,5 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 8.15.2 (2016-12-27)
+
+- Fix ES search for non-default branches.
+
 ## 8.15.1 (2016-12-23)
 
 - Fix 404/500 error while navigating to the 'show/destroy' pages. !993
