@@ -25,10 +25,10 @@ class WikiPage
     pages.sort_by { |page| [page.directory, page.slug] }.
       group_by { |page| page.directory }.
       map do |dir, pages|
-        if dir == '/'
-          pages
-        else
+        if dir.present?
           WikiDirectory.new(dir, pages)
+        else
+          pages
         end
       end.
       flatten
@@ -98,8 +98,7 @@ class WikiPage
 
   # The hierarchy of the directory this page is contained in.
   def directory
-    dir = wiki.page_title_and_dir(slug).last
-    "/#{dir}"
+    wiki.page_title_and_dir(slug).last
   end
 
   # The processed/formatted content of this page.

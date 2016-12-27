@@ -252,11 +252,11 @@ describe WikiPage, models: true do
 
   describe '#directory' do
     context 'when the page is at the root directory' do
-      it 'returns /' do
+      it 'returns an empty string' do
         create_page('file', 'content')
         page = wiki.find_page('file')
 
-        expect(page.directory).to eq('/')
+        expect(page.directory).to eq('')
       end
     end
 
@@ -265,7 +265,7 @@ describe WikiPage, models: true do
         create_page('dir_1/dir_1_1/file', 'content')
         page = wiki.find_page('dir_1/dir_1_1/file')
 
-        expect(page.directory).to eq('/dir_1/dir_1_1')
+        expect(page.directory).to eq('dir_1/dir_1_1')
       end
     end
   end
