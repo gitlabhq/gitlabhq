@@ -696,5 +696,17 @@ module API
       expose :id, :message, :starts_at, :ends_at, :color, :font
       expose :active?, as: :active
     end
+
+    class BasicPersonalAccessToken < Grape::Entity
+      expose :id, :name, :revoked, :created_at, :scopes
+      expose :active?, as: :active
+      expose :expires_at do |personal_access_token|
+        personal_access_token.expires_at ? personal_access_token.expires_at.strftime("%Y-%m-%d") : nil
+      end
+    end
+
+    class PersonalAccessToken < BasicPersonalAccessToken
+      expose :token
+    end
   end
 end

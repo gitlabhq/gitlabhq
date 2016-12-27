@@ -879,7 +879,7 @@ ActiveRecord::Schema.define(version: 20170216141440) do
     t.string "token", null: false
     t.string "name", null: false
     t.boolean "revoked", default: false
-    t.datetime "expires_at"
+    t.date "expires_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "scopes", default: "--- []\n", null: false

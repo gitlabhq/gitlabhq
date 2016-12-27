@@ -1,4 +1,5 @@
 class PersonalAccessToken < ActiveRecord::Base
+  include Expirable
   include TokenAuthenticatable
   add_authentication_token_field :token
 
@@ -18,5 +19,9 @@ class PersonalAccessToken < ActiveRecord::Base
   def revoke!
     self.revoked = true
     self.save
+  end
+
+  def active?
+    !revoked? && !expired?
   end
 end

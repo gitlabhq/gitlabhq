@@ -22,12 +22,12 @@ describe Profiles::PersonalAccessTokensController do
     end
 
     it "allows creation of a token with an expiry date" do
-      expires_at = 5.days.from_now
+      expires_at = 5.days.from_now.to_date
 
       post :create, personal_access_token: { name: FFaker::Product.brand, expires_at: expires_at }
 
       expect(created_token).not_to be_nil
-      expect(created_token.expires_at.to_i).to eq(expires_at.to_i)
+      expect(created_token.expires_at).to eq(expires_at)
     end
 
     context "scopes" do
