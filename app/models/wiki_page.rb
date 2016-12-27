@@ -207,6 +207,12 @@ class WikiPage
     end
   end
 
+  # Relative path to the partial to be used when rendering collections
+  # of this object.
+  def to_partial_path
+    'projects/wikis/wiki_page'
+  end
+
   private
 
   def set_attributes
