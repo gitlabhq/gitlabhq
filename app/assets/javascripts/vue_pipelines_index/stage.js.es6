@@ -13,7 +13,7 @@
     props: ['stage', 'svgs', 'match'],
     methods: {
       fetchBuilds() {
-        this.$http.get(this.endpoint)
+        this.$http.get(this.stage.dropdown_path)
           .then((response) => {
             this.request = true;
             this.builds = JSON.parse(response.body).html;
@@ -33,12 +33,6 @@
       dropdownClass() {
         if (this.request) return 'js-builds-dropdown-container';
         return 'js-builds-dropdown-loading builds-dropdown-loading';
-      },
-      endpoint() {
-        return '/gitlab-org/gitlab-shell/pipelines/121/stage?stage=deploy';
-      },
-      stageTitle() {
-        return 'deploy: running';
       },
       buildStatus() {
         return `Build: ${this.stage.status.label}`;
@@ -63,7 +57,7 @@
             @click='fetchBuilds'
             class="has-tooltip builds-dropdown js-builds-dropdown-button"
             data-placement="top"
-            :title='stageTitle'
+            :title='stage.title'
             data-toggle="dropdown"
             type="button"
           >
