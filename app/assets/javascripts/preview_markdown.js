@@ -90,13 +90,9 @@
 
   $.fn.setupMarkdownPreview = function () {
     var $form = $(this);
-    $form.find('textarea.markdown-area')
-      .on('input', function () {
-        markdownPreview.hideReferencedUsers($form);
-      })
-      .on('blur', function () {
-        markdownPreview.showPreview($form);
-      });
+    $form.find('textarea.markdown-area').on('input', function () {
+      markdownPreview.hideReferencedUsers($form);
+    });
   };
 
   $(document).on('markdown-preview:show', function (e, $form) {
