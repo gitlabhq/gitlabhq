@@ -1028,6 +1028,19 @@ ActiveRecord::Schema.define(version: 20161221140236) do
 
   add_index "project_import_data", ["project_id"], name: "index_project_import_data_on_project_id", using: :btree
 
+  create_table "project_statistics", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.integer "namespace_id", null: false
+    t.integer "commit_count", limit: 8, default: 0, null: false
+    t.integer "storage_size", limit: 8, default: 0, null: false
+    t.integer "repository_size", limit: 8, default: 0, null: false
+    t.integer "lfs_objects_size", limit: 8, default: 0, null: false
+    t.integer "build_artifacts_size", limit: 8, default: 0, null: false
+  end
+
+  add_index "project_statistics", ["namespace_id"], name: "index_project_statistics_on_namespace_id", using: :btree
+  add_index "project_statistics", ["project_id"], name: "index_project_statistics_on_project_id", unique: true, using: :btree
+
   create_table "projects", force: :cascade do |t|
     t.string "name"
     t.string "path"
@@ -1042,7 +1055,6 @@ ActiveRecord::Schema.define(version: 20161221140236) do
     t.boolean "archived", default: false, null: false
     t.string "avatar"
     t.string "import_status"
-    t.float "repository_size", default: 0.0
     t.text "merge_requests_template"
     t.integer "star_count", default: 0, null: false
     t.boolean "merge_requests_rebase_enabled", default: false
@@ -1050,7 +1062,6 @@ ActiveRecord::Schema.define(version: 20161221140236) do
     t.string "import_source"
     t.integer "approvals_before_merge", default: 0, null: false
     t.boolean "reset_approvals_on_push", default: true
-    t.integer "commit_count", default: 0
     t.boolean "merge_requests_ff_only_enabled", default: false
     t.text "issues_template"
     t.boolean "mirror", default: false, null: false
@@ -1488,6 +1499,7 @@ ActiveRecord::Schema.define(version: 20161221140236) do
   add_foreign_key "project_authorizations", "projects", on_delete: :cascade
   add_foreign_key "project_authorizations", "users", on_delete: :cascade
   add_foreign_key "protected_branch_merge_access_levels", "namespaces", column: "group_id"
+  add_foreign_key "project_statistics", "projects", on_delete: :cascade
   add_foreign_key "protected_branch_merge_access_levels", "protected_branches"
   add_foreign_key "protected_branch_merge_access_levels", "users"
   add_foreign_key "protected_branch_push_access_levels", "namespaces", column: "group_id"

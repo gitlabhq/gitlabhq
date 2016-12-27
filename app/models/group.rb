@@ -64,7 +64,13 @@ class Group < Namespace
     end
 
     def sort(method)
-      order_by(method)
+      if method == 'storage_size_desc'
+        # storage_size is a virtual column so we need to
+        # pass a string to avoid AR adding the table name
+        reorder('storage_size DESC, namespaces.id DESC')
+      else
+        order_by(method)
+      end
     end
 
     def reference_prefix

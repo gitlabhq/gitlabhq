@@ -54,6 +54,30 @@ describe Gitlab::ChatCommands::Command, service: true do
       end
     end
 
+    context 'searching for an issue' do
+      let(:params) { { text: 'issue search find me' } }
+      let!(:issue) { create(:issue, project: project, title: 'find me') }
+
+      before do
+        project.team << [user, :master]
+      end
+
+      context 'a single issue is found' do
+        it 'presents the issue' do
+          expect(subject[:text]).to match(issue.title)
+        end
+      end
+
+      context 'multiple issues found' do
+        let!(:issue2) { create(:issue, project: project, title: "someone find me") }
+
+        it 'shows a link to the new issue' do
+          expect(subject[:text]).to match(issue.title)
+          expect(subject[:text]).to match(issue2.title)
+        end
+      end
+    end
+
     context 'when trying to do deployment' do
       let(:params) { { text: 'deploy staging to production' } }
       let!(:build) { create(:ci_build, project: project) }

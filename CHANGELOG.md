@@ -12,7 +12,7 @@ entry.
 - Fix Pipeline builds list blank on MR. !8255
 - Do not show retried builds in pipeline stage dropdown. !8260
 
-## 8.15.0 (2017-01-22)
+## 8.15.0 (2016-12-22)
 
 - Whitelist next project names: notes, services.
 - Use Grape's new Route methods.

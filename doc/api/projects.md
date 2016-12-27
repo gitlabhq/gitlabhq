@@ -307,6 +307,8 @@ Parameters:
 | `order_by` | string | no | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at` |
 | `sort` | string | no | Return projects sorted in `asc` or `desc` order. Default is `desc` |
 | `search` | string | no | Return list of authorized projects matching the search criteria |
+| `simple` | boolean | no | Return only the ID, URL, name, and path of each project |
+| `statistics` | boolean | no | Include project statistics |
 
 ### List starred projects
 
@@ -325,6 +327,7 @@ Parameters:
 | `order_by` | string | no | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at` |
 | `sort` | string | no | Return projects sorted in `asc` or `desc` order. Default is `desc` |
 | `search` | string | no | Return list of authorized projects matching the search criteria |
+| `simple` | boolean | no | Return only the ID, URL, name, and path of each project |
 
 ### List ALL projects
 
@@ -343,6 +346,7 @@ Parameters:
 | `order_by` | string | no | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at` |
 | `sort` | string | no | Return projects sorted in `asc` or `desc` order. Default is `desc` |
 | `search` | string | no | Return list of authorized projects matching the search criteria |
+| `statistics` | boolean | no | Include project statistics |
 
 ### Get single project
 

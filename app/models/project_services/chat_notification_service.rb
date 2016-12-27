@@ -49,11 +49,13 @@ class ChatNotificationService < Service
 
     return false unless message
 
-    opt = {}
+    channel_name = get_channel_field(object_kind).presence || channel
 
-    opt[:channel]  = get_channel_field(object_kind).presence || channel || default_channel
-    opt[:username] = username if username
-    notifier = Slack::Notifier.new(webhook, opt)
+    opts = {}
+    opts[:channel] = channel_name if channel_name
+    opts[:username] = username if username
+
+    notifier = Slack::Notifier.new(webhook, opts)
     notifier.ping(message.pretext, attachments: message.attachments, fallback: message.fallback)
 
     true
@@ -71,7 +73,7 @@ class ChatNotificationService < Service
     fields.reject { |field| field[:name].end_with?('channel') }
   end
 
-  def default_channel
+  def default_channel_placeholder
     raise NotImplementedError
   end
 
@@ -103,7 +105,7 @@ class ChatNotificationService < Service
 
   def build_event_channels
     supported_events.reduce([]) do |channels, event|
-      channels << { type: 'text', name: event_channel_name(event), placeholder: default_channel }
+      channels << { type: 'text', name: event_channel_name(event), placeholder: default_channel_placeholder }
     end
   end
 

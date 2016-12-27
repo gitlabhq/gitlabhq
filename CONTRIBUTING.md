@@ -217,8 +217,8 @@ We welcome merge requests with fixes and improvements to GitLab code, tests,
 and/or documentation. The features we would really like a merge request for are
 listed with the label [`Accepting Merge Requests` on our issue tracker for CE][accepting-mrs-ce]
 and [EE][accepting-mrs-ee] but other improvements are also welcome. Please note
-that if an issue is marked for the current milestone either before or while you 
-are working on it, a team member may take over the merge request in order to 
+that if an issue is marked for the current milestone either before or while you
+are working on it, a team member may take over the merge request in order to
 ensure the work is finished before the release date.
 
 If you want to add a new feature that is not labeled it is best to first create
@@ -300,6 +300,7 @@ you start with a very simple UI? Can you do part of the refactor? The increased
 reviewability of small MRs that leads to higher code quality is more important
 to us than having a minimal commit log. The smaller an MR is the more likely it
 is it will be merged (quickly). After that you can send more MRs to enhance it.
+The ['How to get faster PR reviews' document of Kubernetes](https://github.com/kubernetes/community/blob/master/contributors/devel/faster_reviews.md) also has some great points regarding this.
 
 For examples of feedback on merge requests please look at already
 [closed merge requests][closed-merge-requests]. If you would like quick feedback

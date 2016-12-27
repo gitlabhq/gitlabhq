@@ -23,12 +23,12 @@
     }
 
     .stage-header {
-      width: 28%;
+      width: 26%;
       padding-left: $gl-padding;
     }
 
     .median-header {
-      width: 12%;
+      width: 14%;
     }
 
     .event-header {
@@ -141,7 +141,7 @@
 
     .dismiss-icon {
       position: absolute;
-      right: $cycle-analytics-dismiss-icon-color;
+      right: $cycle-analytics-box-padding;
       cursor: pointer;
       color: $cycle-analytics-dismiss-icon-color;
     }
@@ -215,7 +215,6 @@
       border-bottom: 1px solid transparent;
       border-right: 1px solid $border-color;
       background-color: $gray-light;
-      cursor: default;
 
       &.active {
         background-color: transparent;
@@ -247,11 +246,11 @@
         float: left;
 
         &.stage-name {
-          width: 70%;
+          width: 65%;
         }
 
         &.stage-median {
-          width: 30%;
+          width: 35%;
         }
       }
 
