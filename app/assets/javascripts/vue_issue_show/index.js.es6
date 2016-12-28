@@ -1,7 +1,12 @@
 /*= require vue */
 /*= require vue-resource */
 
+/*= require boards/vue_resource_interceptor */
+
 /* global Vue, VueResource, Flash */
+
+/** this needs to be disabled because this is the property provided by Vue */
+/* eslint-disable no-underscore-dangle */
 
 (() => {
   Vue.use(VueResource);
