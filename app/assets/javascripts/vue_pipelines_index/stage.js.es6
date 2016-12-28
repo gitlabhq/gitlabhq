@@ -40,7 +40,7 @@
         return `Build: ${this.stage.status.label}`;
       },
       tooltip() {
-        return `has-tooltip ci-status-icon-${this.stage.status.group}`;
+        return `has-tooltip ci-status-icon ci-status-icon-${this.stage.status.group}`;
       },
       svg() {
         const icon = this.stage.status.icon;
@@ -52,38 +52,36 @@
       },
     },
     template: `
-      <div class="stage-container mini-pipeline-graph">
+      <div class="dropdown inline build-content">
 
-        <div class="dropdown inline build-content">
-          <button
-            @click='fetchBuilds'
-            @blur='fetchBuilds'
-            class="has-tooltip builds-dropdown js-builds-dropdown-button"
-            data-placement="top"
-            :title='stage.title'
-            data-toggle="dropdown"
-            type="button"
-          >
-            <span :class='tooltip'>
-              <span class="mini-pipeline-graph-icon-container">
-                <span
-                  :class='spanClass'
-                  v-html='svg'
-                >
-                </span>
-                <i class="fa fa-caret-down dropdown-caret"></i>
-              </span>
+        <button
+          @click='fetchBuilds'
+          @blur='fetchBuilds'
+          class="has-tooltip builds-dropdown js-builds-dropdown-button"
+          data-placement="top"
+          :title='stage.title'
+          data-toggle="dropdown"
+          type="button"
+        >
+          <span :class='tooltip'></span>
+          <span class="mini-pipeline-graph-icon-container">
+            <span
+              :class='spanClass'
+              v-html='svg'
+            >
             </span>
-          </button>
+            <i class="fa fa-caret-down dropdown-caret"></i>
+            </span>
+          </span>
+        </button>
 
-          <div class="js-builds-dropdown-container">
-            <div class="dropdown-menu grouped-pipeline-dropdown">
-              <div class="arrow-up"></div>
-              <div
-                :class='dropdownClass'
-                v-html='buildsOrSpinner'
-              >
-              </div>
+        <div class="js-builds-dropdown-container">
+          <div class="dropdown-menu grouped-pipeline-dropdown">
+            <div class="arrow-up"></div>
+            <div
+              :class='dropdownClass'
+              v-html='buildsOrSpinner'
+            >
             </div>
           </div>
         </div>
