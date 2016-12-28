@@ -105,19 +105,19 @@
     li {
       flex: 1;
       text-align: center;
+      border-left: 1px solid $border-color;
 
       &:first-of-type {
+        border-left: none;
         border-top-left-radius: $border-radius-default;
       }
 
       &:last-of-type {
-        border-left: 1px solid $border-color;
         border-top-right-radius: $border-radius-default;
       }
 
       &:not(.active) {
         background-color: $gray-light;
-        border-left: 1px solid $border-color;
       }
 
       a {
