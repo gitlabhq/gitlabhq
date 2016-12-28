@@ -16,10 +16,7 @@
       };
     },
     created() {
-      this.fetch()
-      this.intervalId = setInterval(() => {
-        this.fetch();
-      }, 3000);
+      this.fetch();
     },
     computed: {
       titleMessage() {
@@ -30,17 +27,22 @@
     },
     methods: {
       fetch() {
-        this.$http.get(this.endpoint)
-          .then((res) => {
-            const issue = JSON.parse(res.body);
-            if (this.updatedAt !== issue.updated_at) {
-              this.updatedAt = issue.updated_at;
-              this.title = issue.title;
-            }
-          }, () => {
-            const flash = new Flash('Something went wrong updating the title');
-            return flash;
-          });
+        this.intervalId = setInterval(() => {
+          this.$http.get(this.endpoint)
+            .then((res) => {
+              const issue = JSON.parse(res.body);
+              if (this.updatedAt !== issue.updated_at) {
+                this.updatedAt = issue.updated_at;
+                this.title = issue.title;
+              }
+            }, () => {
+              const flash = new Flash('Something went wrong updating the title');
+              return flash;
+            });
+        }, 3000);
+      },
+      clear() {
+        clearInterval(this.intervalId);
       },
     },
     template: `
@@ -67,4 +69,35 @@
       </div>
     `,
   });
+
+  const titleComp = vm.$children
+    .filter(e => e.$options._componentTag === 'vue-title')[0];
+
+  const startTitleFetch = () => {
+    titleComp.fetch();
+  };
+
+  const removeTimeIntervals = () => {
+    titleComp.clear();
+  };
+
+  const startIntervalLoops = () => {
+    startTitleFetch();
+  };
+
+  const removeAll = () => {
+    window.removeEventListener('beforeunload', removeTimeIntervals);
+    window.removeEventListener('focus', startIntervalLoops);
+    window.removeEventListener('blur', removeTimeIntervals);
+
+    // turbolinks event handler
+    document.removeEventListener('page:fetch', () => {});
+  };
+
+  window.addEventListener('beforeunload', removeTimeIntervals);
+  window.addEventListener('focus', startIntervalLoops);
+  window.addEventListener('blur', removeTimeIntervals);
+
+  // turbolinks event handler
+  document.addEventListener('page:fetch', removeAll);
 })(window.gl || (window.gl = {}));
