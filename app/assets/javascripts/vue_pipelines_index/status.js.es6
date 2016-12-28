@@ -18,7 +18,7 @@
       },
     },
     template: `
-      <td>
+      <td class="commit-link">
         <a
           :class='cssClasses'
           :href='pipeline.details.status.details_path'
