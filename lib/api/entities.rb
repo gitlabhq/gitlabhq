@@ -706,6 +706,7 @@ module API
     end
 
     class PersonalAccessToken < BasicPersonalAccessToken
+      expose :impersonation
       expose :token
     end
   end

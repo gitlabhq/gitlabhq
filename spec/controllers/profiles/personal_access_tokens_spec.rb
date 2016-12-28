@@ -3,12 +3,12 @@ require 'spec_helper'
 describe Profiles::PersonalAccessTokensController do
   let(:user) { create(:user) }
 
+  before { sign_in(user) }
+
   describe '#create' do
     def created_token
       PersonalAccessToken.order(:created_at).last
     end
-
-    before { sign_in(user) }
 
     it "allows creation of a token" do
       name = FFaker::Product.brand
@@ -44,6 +44,31 @@ describe Profiles::PersonalAccessTokensController do
         expect(created_token).not_to be_nil
         expect(created_token.scopes).to eq([])
       end
+    end
+  end
+
+  describe '#index' do
+    let!(:active_personal_access_token) { create(:personal_access_token, user: user) }
+    let!(:inactive_personal_access_token) { create(:revoked_personal_access_token, user: user) }
+    let!(:impersonation_personal_access_token) { create(:impersonation_personal_access_token, user: user) }
+
+    it "retrieves active personal access tokens" do
+      get :index
+
+      expect(assigns(:active_personal_access_tokens)).to include(active_personal_access_token)
+    end
+
+    it "retrieves inactive personal access tokens" do
+      get :index
+
+      expect(assigns(:inactive_personal_access_tokens)).to include(inactive_personal_access_token)
+    end
+
+    it "does not retrieve impersonation personal access tokens" do
+      get :index
+
+      expect(assigns(:active_personal_access_tokens)).not_to include(impersonation_personal_access_token)
+      expect(assigns(:inactive_personal_access_tokens)).not_to include(impersonation_personal_access_token)
     end
   end
 end

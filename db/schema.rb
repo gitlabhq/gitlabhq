@@ -883,6 +883,7 @@ ActiveRecord::Schema.define(version: 20170216141440) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "scopes", default: "--- []\n", null: false
+    t.boolean "impersonation", default: false, null: false
   end
 
   add_index "personal_access_tokens", ["token"], name: "index_personal_access_tokens_on_token", unique: true, using: :btree

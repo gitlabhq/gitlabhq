@@ -367,6 +367,7 @@ module API
       params do
         requires :user_id, type: Integer
         optional :state, type: String, default: 'all', values: %w[all active inactive], desc: 'Filters (all|active|inactive) personal_access_tokens'
+        optional :impersonation, type: Boolean, default: false, desc: 'Filters only impersonation personal_access_token'
       end
       get ':user_id/personal_access_tokens' do
         authenticated_as_admin!
@@ -374,7 +375,8 @@ module API
         user = User.find_by(id: params[:user_id])
         not_found!('User') unless user
 
-        personal_access_tokens = user.personal_access_tokens
+        personal_access_tokens = PersonalAccessToken.and_impersonation_tokens.where(user_id: user.id)
+        personal_access_tokens = personal_access_tokens.impersonation if params[:impersonation]
 
         case params[:state]
         when "active"
@@ -392,6 +394,7 @@ module API
         requires :name, type: String, desc: 'The name of the personal access token'
         optional :expires_at, type: Date, desc: 'The expiration date in the format YEAR-MONTH-DAY of the personal access token'
         optional :scopes, type: Array, desc: 'The array of scopes of the personal access token'
+        optional :impersonation, type: Boolean, default: false, desc: 'The impersonation flag of the personal access token'
       end
       post ':user_id/personal_access_tokens' do
         authenticated_as_admin!
@@ -419,7 +422,7 @@ module API
         user = User.find_by(id: params[:user_id])
         not_found!('User') unless user
 
-        personal_access_token = PersonalAccessToken.find_by(id: params[:personal_access_token_id])
+        personal_access_token = PersonalAccessToken.and_impersonation_tokens.find_by(user_id: user.id, id: params[:personal_access_token_id])
         not_found!('PersonalAccessToken') unless personal_access_token
 
         personal_access_token.revoke!
