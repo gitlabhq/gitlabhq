@@ -20,3 +20,5 @@ class EnvironmentsService {
     return this.environments.get();
   }
 }
+
+window.EnvironmentsService = EnvironmentsService;

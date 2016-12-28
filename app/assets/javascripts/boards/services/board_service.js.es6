@@ -65,4 +65,6 @@ class BoardService {
       issue
     });
   }
-};
+}
+
+window.BoardService = BoardService;
