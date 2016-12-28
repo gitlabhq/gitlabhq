@@ -59,7 +59,7 @@ module SelectsHelper
 
   def users_select_data_attributes(opts)
     {
-      placeholder: opts[:placeholder]   || 'Search for a user',
+      placeholder: opts[:placeholder]   || 'Search for members to update or invite',
       null_user: opts[:null_user]       || false,
       any_user: opts[:any_user]         || false,
       email_user: opts[:email_user]     || false,

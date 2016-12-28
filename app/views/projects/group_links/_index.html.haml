@@ -8,7 +8,7 @@
   .col-lg-9
     %h5.prepend-top-0
       Set a group to share
-    = form_tag namespace_project_group_links_path(@project.namespace, @project), class: 'js-requires-input', method: :post do
+    = form_tag namespace_project_group_links_path(@project.namespace, @project), class: 'js-requires-input', method: :post, namespace: 'GROUPS' do
       .form-group
         = label_tag :link_group_id, "Group", class: "label-light"
         = groups_select_tag(:link_group_id, data: { skip_groups: @skip_groups }, required: true)
@@ -20,10 +20,10 @@
       .form-group
         = label_tag :expires_at, 'Access expiration date', class: 'label-light'
         .clearable-input
-          = text_field_tag :expires_at_groups, nil, class: 'form-control js-access-expiration-date-groups', placeholder: 'Select access expiration date'
+          = text_field_tag :expires_at, nil, class: 'form-control js-access-expiration-date-groups', placeholder: 'Select access expiration date', id: 'expires_at_groups'
           %i.clear-icon.js-clear-input
         .help-block
-          On this date, all users in the group will automatically lose access to this project.
+          On this date, all members in the group will automatically lose access to this project.
       = submit_tag "Share", class: "btn btn-create"
   .col-lg-9.col-lg-offset-3
     %hr

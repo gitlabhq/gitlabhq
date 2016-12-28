@@ -16,13 +16,13 @@ class Projects::GroupLinksController < Projects::ApplicationController
       project.project_group_links.create(
         group: group,
         group_access: params[:link_group_access],
-        expires_at: params[:expires_at] || params[:expires_at_groups]
+        expires_at: params[:expires_at]
       )
     else
       flash[:alert] = 'Please select a group.'
     end
 
-    redirect_to namespace_project_group_links_path(project.namespace, project)
+    redirect_to namespace_project_settings_members_path(project.namespace, project)
   end
 
   def update
@@ -36,7 +36,7 @@ class Projects::GroupLinksController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
-        redirect_to namespace_project_group_links_path(project.namespace, project)
+        redirect_to namespace_project_settings_members_path(project.namespace, project)
       end
       format.js { head :ok }
     end

@@ -5,7 +5,7 @@
       = link_to "Import", import_namespace_project_project_members_path(@project.namespace, @project), class: "btn btn-default visible-xs visible-sm pull-right", title: "Import members from another project"
     - if can?(current_user, :admin_project_member, @project)
       %p
-        Add new user to
+        Add a new member to
         %strong= @project.name
   .col-lg-9
     .light.prepend-top-default
@@ -15,7 +15,7 @@
         = render 'shared/members/requests', membership_source: @project, requesters: @requesters
         .append-bottom-default.clearfix
           %h5.member.existing-title
-            Existing users and groups
+            Existing members and groups
         - if @group_links.any?
           = render 'projects/project_members/groups', group_links: @group_links
 
