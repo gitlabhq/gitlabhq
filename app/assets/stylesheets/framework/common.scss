@@ -66,6 +66,7 @@ pre {
 
 hr {
   margin: $gl-padding 0;
+  border-top: 1px solid darken($gray-normal, 8%);
 }
 
 .str-truncated {
