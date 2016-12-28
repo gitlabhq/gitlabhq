@@ -63,14 +63,15 @@
           data-toggle="dropdown"
           type="button"
         >
-          <span :class='tooltip'></span>
-          <span class="mini-pipeline-graph-icon-container">
-            <span
-              :class='spanClass'
-              v-html='svg'
-            >
-            </span>
-            <i class="fa fa-caret-down dropdown-caret"></i>
+          <span :class='tooltip'>
+            <span class="mini-pipeline-graph-icon-container">
+              <span
+                :class='spanClass'
+                v-html='svg'
+              >
+              </span>
+              <i class="fa fa-caret-down dropdown-caret"></i>
+              </span>
             </span>
           </span>
         </button>
