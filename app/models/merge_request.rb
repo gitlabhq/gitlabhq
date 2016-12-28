@@ -221,7 +221,7 @@ class MergeRequest < ActiveRecord::Base
   # true base commit, so we can't simply have `#diff_base_commit` fall back on
   # this method.
   def likely_diff_base_commit
-    first_commit.parent || first_commit
+    first_commit.try(:parent) || first_commit
   end
 
   def diff_start_commit
