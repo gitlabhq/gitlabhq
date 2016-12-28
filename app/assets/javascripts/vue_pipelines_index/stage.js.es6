@@ -44,8 +44,8 @@
       },
       svg() {
         const icon = this.stage.status.icon;
-        icon.replace('icon', 'stageIcon');
-        return this.svgs[this.match(icon)];
+        const stageIcon = icon.replace(/icon/i, 'stage_icon');
+        return this.svgs[this.match(stageIcon)];
       },
       spanClass() {
         return `ci-status-icon ci-status-icon-${this.stage.status.group}`;
