@@ -55,8 +55,8 @@
 
 .issue-details.issuable-details
   .detail-page-description.content-block{ class: ('hide-bottom-border' unless @issue.description.present? ) }
-    %h2.title
-      = markdown_field(@issue, :title)
+    .vue-data.hidden{"data" => {"ruby-title" => @issue.title, "path" => issue_path(@issue)}}
+    .issue-title-vue
     - if @issue.description.present?
       .description{ class: can?(current_user, :update_issue, @issue) ? 'js-task-list-container' : '' }
         .wiki
@@ -80,3 +80,5 @@
     = render 'projects/issues/discussion'
 
 = render 'shared/issuable/sidebar', issuable: @issue
+
+= page_specific_javascript_tag('vue_issue_show/index.js')
