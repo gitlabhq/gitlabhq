@@ -127,11 +127,29 @@ describe Projects::MergeRequestsController do
   end
 
   describe 'GET index' do
-    def get_merge_requests
+    def get_merge_requests(page = nil)
       get :index,
           namespace_id: project.namespace.to_param,
           project_id: project.to_param,
-          state: 'opened'
+          state: 'opened', page: page.to_param
+    end
+
+    context 'when page param' do
+      let(:last_page) { project.merge_requests.page().total_pages }
+      let!(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
+
+      it 'redirects to last_page if page number is larger than number of pages' do
+        get_merge_requests(last_page + 1)
+
+        expect(response).to redirect_to(namespace_project_merge_requests_path(page: last_page, state: controller.params[:state], scope: controller.params[:scope]))
+      end
+
+      it 'redirects to specified page' do
+        get_merge_requests(last_page)
+
+        expect(assigns(:merge_requests).current_page).to eq(last_page)
+        expect(response).to have_http_status(200)
+      end
     end
 
     context 'when filtering by opened state' do
