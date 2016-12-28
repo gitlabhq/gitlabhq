@@ -47,6 +47,18 @@ feature 'GFM autocomplete', feature: true, js: true do
       expect_to_wrap(true, label_item, note, label.title)
     end
 
+    it "shows dropdown after a new line" do
+      note = find('#note_note')
+      page.within '.timeline-content-form' do
+        note.native.send_keys('test')
+        note.native.send_keys(:enter)
+        note.native.send_keys(:enter)
+        note.native.send_keys('@')
+      end
+
+      expect(page).to have_selector('.atwho-container')
+    end
+
     it "does not show dropdown when preceded with a special character" do
       note = find('#note_note')
       page.within '.timeline-content-form' do
