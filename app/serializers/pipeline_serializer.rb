@@ -1,17 +1,20 @@
 class PipelineSerializer < BaseSerializer
   entity PipelineEntity
+  class InvalidResourceError < StandardError; end
   include API::Helpers::Pagination
   Struct.new('Pagination', :request, :response)
 
   def represent(resource, opts = {})
-    if paginate?
+    if paginated?
+      raise InvalidResourceError unless resource.respond_to?(:page)
+
       super(paginate(resource), opts)
     else
       super(resource, opts)
     end
   end
 
-  def paginate?
+  def paginated?
     defined?(@pagination)
   end
 
