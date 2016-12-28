@@ -199,6 +199,6 @@ class Group < Namespace
   end
 
   def users_with_parents
-    User.where(id: members_with_parents.pluck(:user_id))
+    User.where(id: members_with_parents.select(:user_id))
   end
 end
