@@ -4,6 +4,7 @@ entry.
 
 ## 8.15.2 (2016-12-27)
 
+- No changes.
 - Fix mr list timestamp alignment. !8271
 - Fix discussion overlap text in regular screens. !8273
 - Fixes mini-pipeline-graph dropdown animation and stage position in chrome, firefox and safari. !8282
