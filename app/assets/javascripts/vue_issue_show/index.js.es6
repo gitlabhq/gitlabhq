@@ -80,31 +80,19 @@
   const titleComp = vm.$children
     .filter(e => e.$options._componentTag === 'vue-title')[0];
 
-  const startTitleFetch = () => {
-    titleComp.fetch();
-  };
-
-  const removeIntervalLoops = () => {
-    titleComp.clear();
-  };
-
-  const startIntervalLoops = () => {
-    startTitleFetch();
-  };
+  const startTitleFetch = () => titleComp.fetch();
+  const removeIntervalLoops = () => titleComp.clear();
+  const startIntervalLoops = () => startTitleFetch();
 
   const removeAll = () => {
     window.removeEventListener('beforeunload', removeIntervalLoops);
     window.removeEventListener('focus', startIntervalLoops);
     window.removeEventListener('blur', removeIntervalLoops);
-
-    // turbolinks event handler
     document.removeEventListener('page:fetch', () => {});
   };
 
   window.addEventListener('beforeunload', removeIntervalLoops);
   window.addEventListener('focus', startIntervalLoops);
   window.addEventListener('blur', removeIntervalLoops);
-
-  // turbolinks event handler
   document.addEventListener('page:fetch', removeAll);
 })(window.gl || (window.gl = {}));
