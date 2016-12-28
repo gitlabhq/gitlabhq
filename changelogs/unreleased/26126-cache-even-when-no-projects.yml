@@ -1,0 +1,4 @@
+---
+title: Cache project authorizations even when user has access to zero projects
+merge_request: 8327
+author:
