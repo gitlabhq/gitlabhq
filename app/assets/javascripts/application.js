@@ -76,14 +76,6 @@
     gl.utils.handleLocationHash();
   }, false);
 
-  // `hashchange` is not triggered when link target is already in window.location
-  $('body').on('click', 'a', function() {
-    var href = this.getAttribute('href');
-    if (href.indexOf('#') === 0 && href.substr(1) === gl.utils.getLocationHash()) {
-      setTimeout(gl.utils.handleLocationHash, 1);
-    }
-  });
-
   $(function () {
     var $body = $('body');
     var $document = $(document);
@@ -96,6 +88,14 @@
 
     // Set the default path for all cookies to GitLab's root directory
     Cookies.defaults.path = gon.relative_url_root || '/';
+
+    // `hashchange` is not triggered when link target is already in window.location
+    $body.on('click', 'a', function() {
+      var href = this.getAttribute('href');
+      if (href.indexOf('#') === 0 && href.substr(1) === gl.utils.getLocationHash()) {
+        setTimeout(gl.utils.handleLocationHash, 1);
+      }
+    });
 
     // prevent default action for disabled buttons
     $('.btn').click(function(e) {
