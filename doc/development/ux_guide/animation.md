@@ -39,4 +39,19 @@ When information is updating in place, a quick, subtle animation is needed. The 
 
 ![Quick update animation](img/animation-quickupdate.gif)
 
-> TODO: Add guidance for other kinds of animation 
+### Moving transitions
+
+When elements move on screen, there should be a quick animation so it is clear to users what moved where. The timing of this animation differs based on the amount of movement and change. Consider animations between `200ms` and `400ms`.
+
+#### Shifting elements on reorder
+An example of a moving transition is when elements have to move out of the way when you drag an element.
+
+View the [interactive example](http://codepen.io/awhildy/full/ALyKPE/) here.
+
+![Reorder animation](img/animation-reorder.gif)
+
+#### Autoscroll the page
+Another example of a moving transition is when you have to autoscroll the page to keep an active element visible.
+
+View the [interactive example](http://codepen.io/awhildy/full/PbxgVo/) here.
+![Autoscroll animation](img/animation-autoscroll.gif)
