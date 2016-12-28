@@ -47,6 +47,9 @@
         = succeed '.' do
           = link_to "command line", "#modal_merge_info", class: "how_to_merge_link vlink", title: "How To Merge", "data-toggle" => "modal"
 
+    .content-block.content-block-small
+      = render 'award_emoji/awards_block', awardable: @merge_request, inline: true
+
     - if @commits_count.nonzero?
       .merge-request-tabs-holder{ class: ("js-tabs-affix" unless ENV['RAILS_ENV'] == 'test') }
         %div{ class: container_class }
@@ -83,9 +86,6 @@
 
       .tab-content#diff-notes-app
         #notes.notes.tab-pane.voting_notes
-          .content-block.content-block-small
-            = render 'award_emoji/awards_block', awardable: @merge_request, inline: true
-
           .row
             %section.col-md-12
               .issuable-discussion
