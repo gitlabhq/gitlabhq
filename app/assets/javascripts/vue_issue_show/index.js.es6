@@ -17,7 +17,6 @@
       return {
         intervalId: '',
         title: '',
-        updatedAt: '',
       };
     },
     created() {
@@ -26,8 +25,7 @@
     computed: {
       titleMessage() {
         if (this.rubyTitle && !this.title) return this.rubyTitle;
-        if (this.title) return this.title;
-        return 'No Title For This Issue';
+        return this.title;
       },
     },
     methods: {
@@ -36,8 +34,7 @@
           this.$http.get(this.endpoint)
             .then((res) => {
               const issue = JSON.parse(res.body);
-              if (this.updatedAt !== issue.updated_at) {
-                this.updatedAt = issue.updated_at;
+              if (this.titleMessage !== issue.title) {
                 this.$el.style.opacity = 0;
                 setTimeout(() => {
                   this.title = issue.title;
@@ -87,7 +84,7 @@
     titleComp.fetch();
   };
 
-  const removeTimeIntervals = () => {
+  const removeIntervalLoops = () => {
     titleComp.clear();
   };
 
@@ -96,17 +93,17 @@
   };
 
   const removeAll = () => {
-    window.removeEventListener('beforeunload', removeTimeIntervals);
+    window.removeEventListener('beforeunload', removeIntervalLoops);
     window.removeEventListener('focus', startIntervalLoops);
-    window.removeEventListener('blur', removeTimeIntervals);
+    window.removeEventListener('blur', removeIntervalLoops);
 
     // turbolinks event handler
     document.removeEventListener('page:fetch', () => {});
   };
 
-  window.addEventListener('beforeunload', removeTimeIntervals);
+  window.addEventListener('beforeunload', removeIntervalLoops);
   window.addEventListener('focus', startIntervalLoops);
-  window.addEventListener('blur', removeTimeIntervals);
+  window.addEventListener('blur', removeIntervalLoops);
 
   // turbolinks event handler
   document.addEventListener('page:fetch', removeAll);
