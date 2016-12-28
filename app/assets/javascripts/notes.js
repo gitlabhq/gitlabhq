@@ -566,6 +566,7 @@
 
       $editForm.insertBefore('.notes-form');
       $editForm.find('.js-comment-button').enable();
+      $editForm.find('.js-edit-warning').hide();
     };
 
     Notes.prototype.getEditFormSelector = function($el) {
