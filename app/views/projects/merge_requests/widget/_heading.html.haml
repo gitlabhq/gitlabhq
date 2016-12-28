@@ -10,7 +10,7 @@
           = ci_label_for_status(status)
         for
         = succeed "." do
-          = link_to @pipeline.short_sha, namespace_project_commit_path(@merge_request.source_project.namespace, @merge_request.source_project, @pipeline.sha), class: "monospace"
+          = link_to @pipeline.short_sha, namespace_project_commit_path(@merge_request.source_project.namespace, @merge_request.source_project, @pipeline.sha), class: "monospace js-commit-link"
         %span.ci-coverage
 
 - elsif @merge_request.has_ci?

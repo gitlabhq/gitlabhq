@@ -154,11 +154,21 @@
             return;
           }
           if (data.environments && data.environments.length) _this.renderEnvironments(data.environments);
-          if (data.status !== _this.opts.ci_status && (data.status != null)) {
+          if (data.status !== _this.opts.ci_status ||
+              data.sha !== _this.opts.ci_sha ||
+              data.pipeline !== _this.opts.ci_pipeline) {
             _this.opts.ci_status = data.status;
             _this.showCIStatus(data.status);
             if (data.coverage) {
               _this.showCICoverage(data.coverage);
+            }
+            if (data.pipeline) {
+              _this.opts.ci_pipeline = data.pipeline;
+              _this.updatePipelineUrls(data.pipeline);
+            }
+            if (data.sha) {
+              _this.opts.ci_sha = data.sha;
+              _this.updateCommitUrls(data.sha);
             }
             if (showNotification) {
               status = _this.ciLabelForStatus(data.status);
@@ -246,6 +256,16 @@
 
     MergeRequestWidget.prototype.setMergeButtonClass = function(css_class) {
       return $('.js-merge-button,.accept-action .dropdown-toggle').removeClass('btn-danger btn-info btn-create').addClass(css_class);
+    };
+
+    MergeRequestWidget.prototype.updatePipelineUrls = function(id) {
+      const pipelineUrl = this.opts.pipeline_path;
+      $('.pipeline').text(`#${id}`).attr('href', [pipelineUrl, id].join('/'));
+    };
+
+    MergeRequestWidget.prototype.updateCommitUrls = function(id) {
+      const commitsUrl = this.opts.commits_path;
+      $('.js-commit-link').text(`#${id}`).attr('href', [commitsUrl, id].join('/'));
     };
 
     return MergeRequestWidget;
