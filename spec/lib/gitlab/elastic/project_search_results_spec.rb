@@ -19,7 +19,7 @@ describe Gitlab::Elastic::ProjectSearchResults, lib: true do
     subject(:results) { described_class.new(user, query, project.id, '') }
 
     it { expect(results.project).to eq(project) }
-    it { expect(results.repository_ref).to be_nil }
+    it { expect(results.repository_ref).to eq('master') }
     it { expect(results.query).to eq('hello world') }
   end
 
@@ -46,29 +46,48 @@ describe Gitlab::Elastic::ProjectSearchResults, lib: true do
       create :note, note: 'bla-bla term', project: project1
 
       # Wiki
-      project.wiki.create_page("index_page", "term")
+      project.wiki.create_page('index_page', 'term')
       project.wiki.index_blobs
-      project1.wiki.create_page("index_page", " term")
+      project1.wiki.create_page('index_page', ' term')
       project1.wiki.index_blobs
 
       Gitlab::Elastic::Helper.refresh_index
 
-      result = Gitlab::Elastic::ProjectSearchResults.new(user, "term", project.id)
+      result = Gitlab::Elastic::ProjectSearchResults.new(user, 'term', project.id)
       expect(result.notes_count).to eq(1)
       expect(result.wiki_blobs_count).to eq(1)
       expect(result.blobs_count).to eq(1)
 
-      result1 = Gitlab::Elastic::ProjectSearchResults.new(user, "initial", project.id)
+      result1 = Gitlab::Elastic::ProjectSearchResults.new(user, 'initial', project.id)
       expect(result1.commits_count).to eq(1)
     end
   end
 
   describe "search for commits in non-default branch" do
-    it "finds needed commit" do
+    it 'finds needed commit' do
       project = create :project
 
-      result = Gitlab::Elastic::ProjectSearchResults.new(user, "initial", project.id, 'test')
+      result = Gitlab::Elastic::ProjectSearchResults.new(user, 'initial', project.id, 'test')
       expect(result.commits_count).to eq(1)
+    end
+
+    it 'responds to total_pages method' do
+      project = create :project
+
+      result = Gitlab::Elastic::ProjectSearchResults.new(user, 'initial', project.id, 'test')
+      expect(result.objects('commits').total_pages).to eq(1)
+    end
+  end
+
+  describe 'search for blobs in non-default branch' do
+    it 'users FileFinder instead of ES search' do
+      project = create :project
+
+      expect_any_instance_of(Gitlab::FileFinder).to receive(:find).with('initial').and_return([])
+
+      result = Gitlab::Elastic::ProjectSearchResults.new(user, 'initial', project.id, 'test')
+
+      result.blobs_count
     end
   end
 

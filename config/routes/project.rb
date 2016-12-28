@@ -41,7 +41,7 @@ constraints(ProjectUrlConstrainer.new) do
 
       ## EE-specific
       resource :pages, only: [:show, :destroy] do
-        resources :domains, only: [:show, :new, :create, :destroy], controller: 'pages_domains'
+        resources :domains, only: [:show, :new, :create, :destroy], controller: 'pages_domains', constraints: { id: /[^\/]+/ }
       end
       ## EE-specific
 

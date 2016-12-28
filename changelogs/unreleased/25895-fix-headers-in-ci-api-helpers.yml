@@ -1,4 +1,0 @@
----
-title: Ensure nil User-Agent doesn't break the CI API
-merge_request:
-author:

@@ -1,4 +1,0 @@
----
-title: Don't delete branches/tags that contains changes only in the remote mirror.
-merge_request: 968
-author:

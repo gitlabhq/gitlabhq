@@ -25,11 +25,12 @@ describe Gitlab::ProjectSearchResults, lib: true do
     let(:results) { described_class.new(user, project, 'files').objects('blobs') }
 
     it 'finds by name' do
-      expect(results).to include(["files/images/wm.svg", nil])
+      blob = results.select { |result| result.first == 'files/images/wm.svg' }.flatten.last
+      expect(blob).to be_a(OpenStruct)
     end
 
     it 'finds by content' do
-      blob = results.select { |result| result.first == "CHANGELOG" }.flatten.last
+      blob = results.select { |result| result.first == 'CHANGELOG' }.flatten.last
 
       expect(blob.filename).to eq("CHANGELOG")
     end

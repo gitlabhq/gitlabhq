@@ -1,5 +1,0 @@
----
-title: Add support for setting the GitLab Runners Registration Token during initial
-  database seeding
-merge_request: 6642
-author: 
