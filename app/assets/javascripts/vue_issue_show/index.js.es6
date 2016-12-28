@@ -25,7 +25,7 @@
     },
     computed: {
       titleMessage() {
-        if (this.rubyTitle) return this.rubyTitle;
+        if (this.rubyTitle && !this.title) return this.rubyTitle;
         if (this.title) return this.title;
         return 'No Title For This Issue';
       },
