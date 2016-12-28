@@ -96,7 +96,7 @@ module API
     end
 
     def authenticate_non_get!
-      authenticate! unless %w[GET HEAD].include?(route.route_method)
+      authenticate! unless %w[GET HEAD].include?(route.request_method)
     end
 
     def authenticate_by_gitlab_shell_token!
