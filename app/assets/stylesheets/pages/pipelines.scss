@@ -1,614 +1,651 @@
-.pipelines {
-  .realtime-loading {
-    font-size: 40px;
-    text-align: center;
-  }
-
-  .stage {
-    max-width: 90px;
-    width: 90px;
-    text-align: center;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .commit-title {
-    margin: 0;
-  }
-
-  .controls {
-    white-space: nowrap;
-  }
-
-  .btn {
-    margin: 4px;
-  }
-
-  .table.ci-table {
-    min-width: 1200px;
-    table-layout: fixed;
-
-    .pipeline-id {
-      color: $black;
-    }
-
-    .branch-commit {
-      .branch-name {
-        max-width: 195px;
-      }
-    }
-
-    .pipeline-date,
-    .pipeline-status {
-      width: 10%;
-    }
-
-    .pipeline-info,
-    .pipeline-commit,
-    .pipeline-actions,
-    .pipeline-stages {
-      width: 20%;
-    }
-  }
-}
-
-@media (max-width: $screen-md-max) {
-  .content-list {
-    &.pipelines,
-    &.builds-content-list {
-      width: 100%;
-      overflow: auto;
-    }
-  }
-}
-
-.content-list.pipelines .table-holder {
-  min-height: 300px;
-}
-
-.pipeline-holder {
-  width: 100%;
-  overflow: auto;
-}
-
-.table.ci-table {
-  min-width: 900px;
-
-  &.pipeline {
-    min-width: 650px;
-  }
-
-  &.builds-page {
-
-    tr {
-      height: 71px;
-    }
-  }
-
-  tr {
-    th {
-      padding: 16px 8px;
-      border: none;
-    }
-
-    td {
-      padding: 10px 8px;
-    }
-
-    .commit-link {
-      padding: 9px 8px 10px;
-    }
-  }
-
-  tbody {
-    border-top-width: 1px;
-  }
-
-  .build.retried {
-    background-color: $gray-lightest;
-  }
-
-  .commit-link {
-    a {
-      &:focus {
-        text-decoration: none;
-      }
-    }
-
-    a:hover {
-      text-decoration: none;
-    }
-  }
-
-  .avatar {
-    margin-left: 0;
-    float: none;
-  }
-
-  .branch-commit {
-    .branch-name {
-      font-weight: bold;
-      max-width: 120px;
-      overflow: hidden;
-      display: inline-block;
-      white-space: nowrap;
-      vertical-align: top;
-      text-overflow: ellipsis;
-    }
-
-    svg {
-      height: 14px;
-      width: 14px;
-      vertical-align: middle;
-      fill: $gl-gray-light;
-    }
-
-    .fa {
-      font-size: 12px;
-      color: $gl-text-color;
-    }
-
-    .commit-id {
-      color: $gl-link-color;
-    }
-
-    .commit-title {
-      margin-top: 4px;
-      max-width: 225px;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-    }
-
-    .label {
-      margin-right: 4px;
-    }
-
-    .label-container {
-      font-size: 0;
-
-      .label {
-        margin-top: 5px;
-      }
-    }
-  }
-
-  .icon-container {
-    display: inline-block;
-    width: 10px;
-
-    &.commit-icon {
-      width: 15px;
+  .pipelines {
+    .realtime-loading {
+      font-size: 40px;
       text-align: center;
-    }
-  }
-
-  .stage-cell {
-    font-size: 0;
-
-    svg {
-      height: 18px;
-      width: 18px;
-      position: relative;
-      z-index: 2;
-      vertical-align: middle;
-      overflow: visible;
-    }
-
-    .stage-container {
-      display: inline-block;
-      position: relative;
-      margin-right: 6px;
-
-      .tooltip {
-        white-space: nowrap;
-      }
-
-      &:not(:last-child) {
-        &::after {
-          content: '';
-          width: 8px;
-          position: absolute;
-          right: -7px;
-          top: 10px;
-          border-bottom: 2px solid $border-color;
-        }
-      }
-    }
-  }
-
-  .duration,
-  .finished-at {
-    color: $gl-gray-light;
-    margin: 4px 0;
-
-    .fa {
-      font-size: 12px;
-      margin-right: 4px;
-    }
-
-    svg {
-      width: 12px;
-      height: 12px;
-      vertical-align: middle;
-      margin-right: 4px;
-    }
-  }
-
-  .pipeline-actions {
-    min-width: 140px;
-
-    .btn {
-      margin: 0;
-      color: $gl-gray-light;
-    }
-
-    .cancel-retry-btns {
-      vertical-align: middle;
-
-      .btn:not(:first-child) {
-        margin-left: 8px;
-      }
-    }
-
-    .dropdown-toggle,
-    .dropdown-menu {
-      color: $gl-gray-light;
-
-      .fa {
-        color: $gl-gray-light;
-        font-size: 14px;
-      }
-
-      svg,
-      .fa {
-        margin-right: 0;
-      }
-    }
-
-    .btn-remove {
-      color: $white-light;
-    }
-
-    .btn-group {
-      &.open {
-        .btn-default {
-          background-color: $white-normal;
-          border-color: $border-white-normal;
-        }
-      }
-
-      .btn {
-        .icon-play {
-          height: 13px;
-          width: 12px;
-        }
-      }
-    }
-  }
-
-  .build-link {
-
-    a {
-      color: $gl-dark-link-color;
-    }
-  }
-
-  .btn-group.open .dropdown-toggle {
-    box-shadow: none;
-  }
-}
-
-.admin-builds-table {
-  .ci-table td:last-child {
-    min-width: 120px;
-  }
-}
-
-// Pipeline visualization
-.pipeline-actions {
-  border-bottom: none;
-}
-
-.tab-pane {
-  &.pipelines {
-    .ci-table {
-      min-width: 900px;
-    }
-
-    .content-list.pipelines {
-      overflow: auto;
     }
 
     .stage {
-      max-width: 100px;
-      width: 100px;
+      max-width: 90px;
+      width: 90px;
+      text-align: center;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
-    .pipeline-actions {
-      min-width: initial;
+    .commit-title {
+      margin: 0;
+    }
+
+    .controls {
+      white-space: nowrap;
+    }
+
+    .btn {
+      margin: 4px;
+    }
+
+    .table.ci-table {
+      min-width: 1200px;
+      table-layout: fixed;
+
+      .pipeline-id {
+        color: $black;
+      }
+
+      .pipeline-date,
+      .pipeline-status {
+        width: 10%;
+      }
+
+      .pipeline-info,
+      .pipeline-commit,
+      .pipeline-actions,
+      .pipeline-stages {
+        width: 20%;
+      }
     }
   }
 
-  &.builds {
-    .ci-table {
+  @media (max-width: $screen-md-max) {
+    .content-list {
+      &.pipelines,
+      &.builds-content-list {
+        width: 100%;
+        overflow: auto;
+      }
+    }
+  }
+
+  .content-list.pipelines .table-holder {
+    min-height: 300px;
+  }
+
+  .pipeline-holder {
+    width: 100%;
+    overflow: auto;
+  }
+
+  .table.ci-table {
+    min-width: 900px;
+
+    &.pipeline {
+      min-width: 650px;
+    }
+
+    &.builds-page {
+
       tr {
         height: 71px;
       }
     }
-  }
-}
 
-// Pipeline graph
-.pipeline-graph {
-  width: 100%;
-  background-color: $gray-light;
-  padding: $gl-padding;
-  overflow: auto;
-  white-space: nowrap;
-  transition: max-height 0.3s, padding 0.3s;
+    tr {
+      th {
+        padding: 16px 8px;
+        border: none;
+      }
 
-  ul {
-    padding: 0;
-  }
+      td {
+        padding: 10px 8px;
+      }
 
-  a {
-    text-decoration: none;
-    color: $gl-text-color-light;
-  }
-
-  svg {
-    vertical-align: middle;
-    margin-right: 3px;
-  }
-
-  .stage-column {
-    display: inline-block;
-    vertical-align: top;
-
-    &:not(:last-child) {
-      margin-right: 44px;
+      .commit-link {
+        padding: 9px 8px 10px;
+      }
     }
 
-    &.left-margin {
-      &:not(:first-child) {
-        margin-left: 44px;
+    tbody {
+      border-top-width: 1px;
+    }
 
-        .left-connector {
-          &::before {
+    .build.retried {
+      background-color: $gray-lightest;
+    }
+
+    .commit-link {
+      a {
+        &:focus {
+          text-decoration: none;
+        }
+      }
+
+      a:hover {
+        text-decoration: none;
+      }
+    }
+
+    .avatar {
+      margin-left: 0;
+      float: none;
+    }
+
+    .branch-commit {
+
+      .branch-name {
+        font-weight: bold;
+        max-width: 120px;
+        overflow: hidden;
+        display: inline-block;
+        white-space: nowrap;
+        vertical-align: top;
+        text-overflow: ellipsis;
+      }
+
+      svg {
+        height: 14px;
+        width: 14px;
+        vertical-align: middle;
+        fill: $gl-gray-light;
+      }
+
+      .fa {
+        font-size: 12px;
+        color: $gl-text-color;
+      }
+
+      .commit-id {
+        color: $gl-link-color;
+      }
+
+      .commit-title {
+        margin-top: 4px;
+        max-width: 225px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+
+      .label {
+        margin-right: 4px;
+      }
+
+      .label-container {
+        font-size: 0;
+
+        .label {
+          margin-top: 5px;
+        }
+      }
+    }
+
+    .icon-container {
+      display: inline-block;
+      width: 10px;
+
+      &.commit-icon {
+        width: 15px;
+        text-align: center;
+      }
+    }
+
+    .stage-cell {
+      font-size: 0;
+
+      svg {
+        height: 18px;
+        width: 18px;
+        position: relative;
+        z-index: 2;
+        vertical-align: middle;
+        overflow: visible;
+      }
+
+      .stage-container {
+        display: inline-block;
+        position: relative;
+        margin-right: 6px;
+
+        .tooltip {
+          white-space: nowrap;
+        }
+
+        &:not(:last-child) {
+          &::after {
             content: '';
+            width: 8px;
             position: absolute;
-            top: 48%;
-            left: -48px;
-            border-top: 2px solid $border-color;
-            width: 48px;
-            height: 1px;
+            right: -7px;
+            top: 10px;
+            border-bottom: 2px solid $border-color;
           }
         }
       }
     }
 
-    &.no-margin {
-      margin: 0;
+    .duration,
+    .finished-at {
+      color: $gl-gray-light;
+      margin: 4px 0;
+
+      .fa {
+        font-size: 12px;
+        margin-right: 4px;
+      }
+
+      svg {
+        width: 12px;
+        height: 12px;
+        vertical-align: middle;
+        margin-right: 4px;
+      }
     }
 
-    li {
-      list-style: none;
-    }
+    .pipeline-actions {
+      min-width: 140px;
 
-    &:last-child {
-      .build {
-        // Remove right connecting horizontal line from first build in last stage
-        &:first-child {
-          &::after {
-            border: none;
+      .btn {
+        margin: 0;
+        color: $gl-gray-light;
+      }
+
+      .cancel-retry-btns {
+        vertical-align: middle;
+
+        .btn:not(:first-child) {
+          margin-left: 8px;
+        }
+      }
+
+      .dropdown-toggle,
+      .dropdown-menu {
+        color: $gl-gray-light;
+
+        .fa {
+          color: $gl-gray-light;
+          font-size: 14px;
+        }
+
+        svg,
+        .fa {
+          margin-right: 0;
+        }
+      }
+
+      .btn-remove {
+        color: $white-light;
+      }
+
+      .btn-group {
+        &.open {
+          .btn-default {
+            background-color: $white-normal;
+            border-color: $border-white-normal;
           }
         }
-        // Remove right curved connectors from all builds in last stage
-        &:not(:first-child) {
-          &::after {
-            border: none;
-          }
-        }
-        // Remove opposite curve
-        .curve {
-          &::before {
-            display: none;
+
+        .btn {
+          .icon-play {
+            height: 13px;
+            width: 12px;
           }
         }
       }
     }
 
-    &:first-child {
-      .build {
-        // Remove left curved connectors from all builds in first stage
-        &:not(:first-child) {
-          &::before {
-            border: none;
-          }
-        }
-        // Remove opposite curve
-        .curve {
-          &::after {
-            display: none;
-          }
-        }
+    .build-link {
+
+      a {
+        color: $gl-dark-link-color;
       }
     }
 
-    // Curve first child connecting lines in opposite direction
-    .curve {
-      display: none;
+    .btn-group.open .dropdown-toggle {
+      box-shadow: none;
+    }
+  }
 
-      &::before,
-      &::after {
-        content: '';
-        width: 21px;
-        height: 25px;
-        position: absolute;
-        top: -31px;
-        border-top: 2px solid $border-color;
+  .admin-builds-table {
+    .ci-table td:last-child {
+      min-width: 120px;
+    }
+  }
+
+  // Pipeline visualization
+  .pipeline-actions {
+    border-bottom: none;
+  }
+
+  .tab-pane {
+    &.pipelines {
+      .ci-table {
+        min-width: 900px;
       }
 
-      &::after {
-        left: -44px;
-        border-right: 2px solid $border-color;
-        border-radius: 0 20px;
+      .content-list.pipelines {
+        overflow: auto;
       }
 
-      &::before {
-        right: -44px;
-        border-left: 2px solid $border-color;
-        border-radius: 20px 0 0;
+      .stage {
+        max-width: 100px;
+        width: 100px;
+      }
+
+      .pipeline-actions {
+        min-width: initial;
+      }
+    }
+
+    &.builds {
+      .ci-table {
+        tr {
+          height: 71px;
+        }
       }
     }
   }
 
-  .stage-name {
-    margin: 0 0 15px 10px;
-    font-weight: bold;
-    width: 176px;
+  // Pipeline graph
+  .pipeline-graph {
+    width: 100%;
+    background-color: $gray-light;
+    padding: $gl-padding;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+    transition: max-height 0.3s, padding 0.3s;
 
-  .build {
-    position: relative;
-    width: 186px;
-    margin-bottom: 10px;
-    white-space: normal;
-    color: $gl-text-color-light;
-
-    .dropdown-menu-toggle {
-      background-color: transparent;
-      border: none;
+    ul {
       padding: 0;
+    }
+
+    a {
+      text-decoration: none;
+      color: $gl-text-color-light;
+    }
+
+    svg {
+      vertical-align: middle;
+      margin-right: 3px;
+    }
+
+    .stage-column {
+      display: inline-block;
+      vertical-align: top;
+
+      &:not(:last-child) {
+        margin-right: 44px;
+      }
+
+      &.left-margin {
+        &:not(:first-child) {
+          margin-left: 44px;
+
+          .left-connector {
+            &::before {
+              content: '';
+              position: absolute;
+              top: 48%;
+              left: -48px;
+              border-top: 2px solid $border-color;
+              width: 48px;
+              height: 1px;
+            }
+          }
+        }
+      }
+
+      &.no-margin {
+        margin: 0;
+      }
+
+      li {
+        list-style: none;
+      }
+
+      &:last-child {
+        .build {
+          // Remove right connecting horizontal line from first build in last stage
+          &:first-child {
+            &::after {
+              border: none;
+            }
+          }
+          // Remove right curved connectors from all builds in last stage
+          &:not(:first-child) {
+            &::after {
+              border: none;
+            }
+          }
+          // Remove opposite curve
+          .curve {
+            &::before {
+              display: none;
+            }
+          }
+        }
+      }
+
+      &:first-child {
+        .build {
+          // Remove left curved connectors from all builds in first stage
+          &:not(:first-child) {
+            &::before {
+              border: none;
+            }
+          }
+          // Remove opposite curve
+          .curve {
+            &::after {
+              display: none;
+            }
+          }
+        }
+      }
+
+      // Curve first child connecting lines in opposite direction
+      .curve {
+        display: none;
+
+        &::before,
+        &::after {
+          content: '';
+          width: 21px;
+          height: 25px;
+          position: absolute;
+          top: -31px;
+          border-top: 2px solid $border-color;
+        }
+
+        &::after {
+          left: -44px;
+          border-right: 2px solid $border-color;
+          border-radius: 0 20px;
+        }
+
+        &::before {
+          right: -44px;
+          border-left: 2px solid $border-color;
+          border-radius: 20px 0 0;
+        }
+      }
+    }
+
+    .stage-name {
+      margin: 0 0 15px 10px;
+      font-weight: bold;
+      width: 176px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .build {
+      position: relative;
+      width: 186px;
+      margin-bottom: 10px;
+      white-space: normal;
       color: $gl-text-color-light;
 
-      &:focus {
-        outline: none;
+      .dropdown-menu-toggle {
+        background-color: transparent;
+        border: none;
+        padding: 0;
+        color: $gl-text-color-light;
+
+        &:focus {
+          outline: none;
+        }
+
+        &:hover {
+          color: $gl-text-color;
+
+          .dropdown-counter-badge {
+            color: $gl-text-color;
+          }
+        }
       }
 
-      &:hover {
-        color: $gl-text-color;
+      > .build-content {
+        display: inline-block;
+        padding: 8px 10px 9px;
+        width: 100%;
+        border: 1px solid $border-color;
+        border-radius: 30px;
+        background-color: $white-light;
 
-        .dropdown-counter-badge {
+        &:hover {
+          background-color: $stage-hover-bg;
+          border: 1px solid $stage-hover-border;
           color: $gl-text-color;
         }
       }
-    }
 
-    > .build-content {
-      display: inline-block;
-      padding: 8px 10px 9px;
-      width: 100%;
-      border: 1px solid $border-color;
-      border-radius: 30px;
-      background-color: $white-light;
-
-      &:hover {
-        background-color: $stage-hover-bg;
-        border: 1px solid $stage-hover-border;
-        color: $gl-text-color;
-      }
-    }
-
-    > .ci-action-icon-container {
-      position: absolute;
-      right: 5px;
-      top: 5px;
-    }
-
-    .ci-status-icon svg {
-      height: 20px;
-      width: 20px;
-    }
-
-    .arrow {
-      &::before,
-      &::after {
-        content: '';
-        display: inline-block;
+      > .ci-action-icon-container {
         position: absolute;
-        width: 0;
-        height: 0;
-        border-color: transparent;
-        border-style: solid;
-        top: 18px;
+        right: 5px;
+        top: 5px;
       }
 
-      &::before {
-        left: -5px;
-        margin-top: -6px;
-        border-width: 7px 5px 7px 0;
-        border-right-color: $border-color;
+      .ci-status-icon svg {
+        height: 20px;
+        width: 20px;
       }
 
-      &::after {
-        left: -4px;
-        margin-top: -9px;
-        border-width: 10px 7px 10px 0;
-        border-right-color: $white-light;
+      .arrow {
+        &::before,
+        &::after {
+          content: '';
+          display: inline-block;
+          position: absolute;
+          width: 0;
+          height: 0;
+          border-color: transparent;
+          border-style: solid;
+          top: 18px;
+        }
+
+        &::before {
+          left: -5px;
+          margin-top: -6px;
+          border-width: 7px 5px 7px 0;
+          border-right-color: $border-color;
+        }
+
+        &::after {
+          left: -4px;
+          margin-top: -9px;
+          border-width: 10px 7px 10px 0;
+          border-right-color: $white-light;
+        }
+      }
+
+      // Connect first build in each stage with right horizontal line
+      &:first-child {
+        &::after {
+          content: '';
+          position: absolute;
+          top: 48%;
+          right: -48px;
+          border-top: 2px solid $border-color;
+          width: 48px;
+          height: 1px;
+        }
+      }
+
+      // Connect each build (except for first) with curved lines
+      &:not(:first-child) {
+        &::after,
+        &::before {
+          content: '';
+          top: -49px;
+          position: absolute;
+          border-bottom: 2px solid $border-color;
+          width: 25px;
+          height: 69px;
+        }
+
+        // Right connecting curves
+        &::after {
+          right: -25px;
+          border-right: 2px solid $border-color;
+          border-radius: 0 0 20px;
+        }
+
+        // Left connecting curves
+        &::before {
+          left: -25px;
+          border-left: 2px solid $border-color;
+          border-radius: 0 0 0 20px;
+        }
+      }
+
+      // Connect second build to first build with smaller curved line
+      &:nth-child(2) {
+        &::after,
+        &::before {
+          height: 29px;
+          top: -9px;
+        }
+
+        .curve {
+          display: block;
+        }
       }
     }
 
-    // Connect first build in each stage with right horizontal line
-    &:first-child {
-      &::after {
-        content: '';
-        position: absolute;
-        top: 48%;
-        right: -48px;
-        border-top: 2px solid $border-color;
-        width: 48px;
-        height: 1px;
-      }
-    }
+    .grouped-pipeline-dropdown {
+      .dropdown-build {
+        .build-content {
+          width: 100%;
 
-    // Connect each build (except for first) with curved lines
-    &:not(:first-child) {
-      &::after,
-      &::before {
-        content: '';
-        top: -49px;
-        position: absolute;
-        border-bottom: 2px solid $border-color;
-        width: 25px;
-        height: 69px;
-      }
+          &:hover {
+            background-color: $stage-hover-bg;
+            color: $gl-text-color;
+          }
+        }
 
-      // Right connecting curves
-      &::after {
-        right: -25px;
-        border-right: 2px solid $border-color;
-        border-radius: 0 0 20px;
-      }
-
-      // Left connecting curves
-      &::before {
-        left: -25px;
-        border-left: 2px solid $border-color;
-        border-radius: 0 0 0 20px;
-      }
-    }
-
-    // Connect second build to first build with smaller curved line
-    &:nth-child(2) {
-      &::after,
-      &::before {
-        height: 29px;
-        top: -9px;
-      }
-
-      .curve {
-        display: block;
+        .ci-action-icon-container {
+          padding: 0;
+          font-size: 11px;
+          position: absolute;
+          top: 1px;
+          right: 8px;
+        }
       }
     }
   }
 
+  .dropdown-counter-badge {
+    color: $border-color;
+    font-weight: 100;
+    font-size: 15px;
+    position: absolute;
+    right: 5px;
+    top: 8px;
+  }
+
   .grouped-pipeline-dropdown {
+    padding: 0;
+    width: 191px;
+    min-width: 191px;
+    left: auto;
+    right: -195px;
+    top: -4px;
+    box-shadow: 0 1px 5px $black-transparent;
+
+    a {
+      display: inline-block;
+    }
+
     .dropdown-build {
       .build-content {
         width: 100%;
@@ -623,333 +660,290 @@
         padding: 0;
         font-size: 11px;
         position: absolute;
-        top: 1px;
-        right: 8px;
+        margin-top: 3px;
+        right: 7px;
+      }
+    }
+
+    ul {
+      max-height: 245px;
+      overflow: auto;
+      margin: 3px 0;
+
+      li {
+        margin: 4px 8px 4px 9px;
+        padding: 0;
+        line-height: 1.1;
+        position: relative;
+
+        .ci-action-icon-container:hover {
+          background-color: transparent;
+        }
+
+        .ci-status-icon {
+          position: relative;
+          top: 2px;
+        }
       }
     }
   }
-}
 
-.dropdown-counter-badge {
-  float: right;
-  color: $border-color;
-  font-weight: 100;
-  font-size: 15px;
-  margin-right: 2px;
-}
+  .pipeline-graph .dropdown-build .ci-status-icon svg {
+    width: 18px;
+    height: 18px;
+  }
 
-
-.grouped-pipeline-dropdown {
-  padding: 0;
-  width: 191px;
-  min-width: 191px;
-  left: auto;
-  right: -195px;
-  top: -4px;
-  box-shadow: 0 1px 5px $black-transparent;
-
-  a {
+  .ci-status-text {
+    max-width: 110px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: bottom;
     display: inline-block;
+    position: relative;
+    font-weight: 200;
+  }
+
+  // Action Icons
+  .ci-action-icon-container .ci-action-icon-wrapper {
+    i {
+      color: $border-color;
+      border-radius: 100%;
+      border: 1px solid $border-color;
+      padding: 5px 6px;
+      font-size: 13px;
+      background: $white-light;
+      height: 30px;
+      width: 30px;
+
+      &::before {
+        position: relative;
+        top: 3px;
+        left: 3px;
+      }
+
+      &:hover {
+        color: $gl-text-color;
+        background-color: $stage-hover-bg;
+        border: 1px solid $stage-hover-bg;
+      }
+    }
+
+    .ci-play-icon {
+      padding: 5px 5px 5px 7px;
+    }
   }
 
   .dropdown-build {
-    .build-content {
-      width: 100%;
+    color: $gl-text-color-light;
 
-      &:hover {
-        background-color: $stage-hover-bg;
-        color: $gl-text-color;
-      }
+    .build-content {
+      padding: 4px 7px 8px;
     }
 
     .ci-action-icon-container {
       padding: 0;
       font-size: 11px;
-      position: absolute;
+      float: right;
       margin-top: 3px;
-      right: 7px;
-    }
-  }
-
-  ul {
-    max-height: 245px;
-    overflow: auto;
-    margin: 3px 0;
-
-    li {
-      margin: 4px 8px 4px 9px;
-      padding: 0;
-      line-height: 1.1;
+      display: inline-block;
       position: relative;
 
-      .ci-action-icon-container:hover {
-        background-color: transparent;
-      }
-
-      .ci-status-icon {
-        position: relative;
-        top: 2px;
+      i {
+        font-size: 11px;
+        margin-top: 0;
       }
     }
-  }
-}
 
-.pipeline-graph .dropdown-build .ci-status-icon svg {
-  width: 18px;
-  height: 18px;
-}
+    .ci-action-icon-container {
+      i {
+        width: 24px;
+        height: 24px;
 
-.ci-status-text {
-  max-width: 110px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  vertical-align: bottom;
-  display: inline-block;
-  position: relative;
-  font-weight: 200;
-}
-
-// Action Icons
-.ci-action-icon-container .ci-action-icon-wrapper {
-  i {
-    color: $border-color;
-    border-radius: 100%;
-    border: 1px solid $border-color;
-    padding: 5px 6px;
-    font-size: 13px;
-    background: $white-light;
-    height: 30px;
-    width: 30px;
-
-    &::before {
-      position: relative;
-      top: 3px;
-      left: 3px;
-    }
-
-    &:hover {
-      color: $gl-text-color;
-      background-color: $stage-hover-bg;
-      border: 1px solid $stage-hover-bg;
-    }
-  }
-
-  .ci-play-icon {
-    padding: 5px 5px 5px 7px;
-  }
-}
-
-.dropdown-build {
-  color: $gl-text-color-light;
-
-  .build-content {
-    padding: 4px 7px 8px;
-  }
-
-  .ci-action-icon-container {
-    padding: 0;
-    font-size: 11px;
-    float: right;
-    margin-top: 3px;
-    display: inline-block;
-    position: relative;
-
-    i {
-      font-size: 11px;
-      margin-top: 0;
-    }
-  }
-
-  .ci-action-icon-container {
-    i {
-      width: 24px;
-      height: 24px;
-
-      &::before {
-        top: 1px;
-        left: 1px;
-      }
-    }
-  }
-
-  .stage {
-    max-width: 100px;
-    width: 100px;
-  }
-
-  .ci-status-icon svg {
-    height: 18px;
-    width: 18px;
-  }
-
-  .ci-status-text {
-    max-width: 95px;
-  }
-}
-
-/**
- * Builds dropdown in mini pipeline
- */
-.mini-pipeline-graph {
-  .builds-dropdown {
-    background-color: transparent;
-    padding: 0;
-    color: $gl-text-color-light;
-    border: none;
-    margin: 0;
-
-    &:focus,
-    &:hover {
-      outline: none;
-      margin-right: -8px;
-
-      .ci-status-icon {
-        width: 32px;
-        padding: 0 8px 0 0;
-        transition: width 0.1s cubic-bezier(0.25, 0, 1, 1);
-
-        + .dropdown-caret {
-          visibility: visible;
-          opacity: 1;
+        &::before {
+          top: 1px;
+          left: 1px;
         }
       }
     }
 
-    &:focus,
-    &:active {
-      .ci-status-icon-success {
-        background-color: rgba($gl-success, .1);
-      }
-
-      .ci-status-icon-failed {
-        background-color: rgba($gl-danger, .1);
-      }
-
-      .ci-status-icon-pending,
-      .ci-status-icon-success_with_warnings {
-        background-color: rgba($gl-warning, .1);
-      }
-
-      .ci-status-icon-running {
-        background-color: rgba($blue-normal, .1);
-      }
-
-      .ci-status-icon-canceled,
-      .ci-status-icon-disabled,
-      .ci-status-icon-not-found {
-        background-color: rgba($gl-gray, .1);
-      }
-
-      .ci-status-icon-created,
-      .ci-status-icon-skipped {
-        background-color: rgba($gray-darkest, .1);
-      }
+    .stage {
+      max-width: 100px;
+      width: 100px;
     }
 
-    .mini-pipeline-graph-icon-container {
-      .dropdown-caret {
-        font-size: 11px;
-        position: absolute;
-        top: 6px;
-        left: 20px;
-        margin-right: -6px;
-        z-index: 2;
-        visibility: hidden;
-        opacity: 0;
-        transition: visibility 0.1s, opacity 0.1s linear;
-      }
+    .ci-status-icon svg {
+      height: 18px;
+      width: 18px;
+    }
+
+    .ci-status-text {
+      max-width: 95px;
     }
   }
 
-  .dropdown-build .build-content {
-    padding: 3px 7px 7px;
-  }
-
-  .builds-dropdown-loading {
-    margin: 10px auto;
-    width: 18px;
-  }
-
-  .grouped-pipeline-dropdown {
-    right: -172px;
-    top: 23px;
-    min-height: 50px;
-
-    a {
+  /**
+   * Builds dropdown in mini pipeline
+   */
+  .mini-pipeline-graph {
+    .builds-dropdown {
+      background-color: transparent;
+      padding: 0;
       color: $gl-text-color-light;
+      border: none;
+      margin: 0;
+
+      &:focus,
+      &:hover {
+        outline: none;
+        margin-right: -8px;
+
+        .ci-status-icon {
+          width: 32px;
+          padding: 0 8px 0 0;
+          transition: width 0.1s cubic-bezier(0.25, 0, 1, 1);
+
+          + .dropdown-caret {
+            visibility: visible;
+            opacity: 1;
+          }
+        }
+      }
+
+      &:focus,
+      &:active {
+        .ci-status-icon-success {
+          background-color: rgba($gl-success, .1);
+        }
+
+        .ci-status-icon-failed {
+          background-color: rgba($gl-danger, .1);
+        }
+
+        .ci-status-icon-pending,
+        .ci-status-icon-success_with_warnings {
+          background-color: rgba($gl-warning, .1);
+        }
+
+        .ci-status-icon-running {
+          background-color: rgba($blue-normal, .1);
+        }
+
+        .ci-status-icon-canceled,
+        .ci-status-icon-disabled,
+        .ci-status-icon-not-found {
+          background-color: rgba($gl-gray, .1);
+        }
+
+        .ci-status-icon-created,
+        .ci-status-icon-skipped {
+          background-color: rgba($gray-darkest, .1);
+        }
+      }
+
+      .mini-pipeline-graph-icon-container {
+        .dropdown-caret {
+          font-size: 11px;
+          position: absolute;
+          top: 6px;
+          left: 20px;
+          margin-right: -6px;
+          z-index: 2;
+          visibility: hidden;
+          opacity: 0;
+          transition: visibility 0.1s, opacity 0.1s linear;
+        }
+      }
+    }
+
+    .dropdown-build .build-content {
+      padding: 3px 7px 7px;
+    }
+
+    .builds-dropdown-loading {
+      margin: 10px auto;
+      width: 18px;
+    }
+
+    .grouped-pipeline-dropdown {
+      right: -172px;
+      top: 23px;
+      min-height: 50px;
+
+      a {
+        color: $gl-text-color-light;
+      }
+    }
+
+    .arrow-up {
+      &::before,
+      &::after {
+        content: '';
+        display: inline-block;
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-color: transparent;
+        border-style: solid;
+        top: -6px;
+        left: 2px;
+        border-width: 0 5px 6px;
+      }
+
+      &::before {
+        border-width: 0 5px 5px;
+        border-bottom-color: $border-color;
+      }
+
+      &::after {
+        margin-top: 1px;
+        border-bottom-color: $white-light;
+      }
     }
   }
 
-  .arrow-up {
-    &::before,
-    &::after {
-      content: '';
-      display: inline-block;
-      position: absolute;
-      width: 0;
-      height: 0;
-      border-color: transparent;
-      border-style: solid;
-      top: -6px;
-      left: 2px;
-      border-width: 0 5px 6px;
-    }
+  /**
+   * Icons in mini pipeline graph
+   */
+  .mini-pipeline-graph-icon-container .ci-status-icon {
+    display: inline-block;
+    border: 1px solid;
+    border-radius: 22px;
+    margin-right: 1px;
+    width: 22px;
+    height: 22px;
+    position: relative;
+    z-index: 2;
+    transition: all 0.1s cubic-bezier(0.25, 0, 1, 1);
 
-    &::before {
-      border-width: 0 5px 5px;
-      border-bottom-color: $border-color;
-    }
-
-    &::after {
-      margin-top: 1px;
-      border-bottom-color: $white-light;
+    svg {
+      top: -1px;
+      left: -1px;
     }
   }
-}
 
-/**
- * Icons in mini pipeline graph
- */
-.mini-pipeline-graph-icon-container .ci-status-icon {
-  display: inline-block;
-  border: 1px solid;
-  border-radius: 22px;
-  margin-right: 1px;
-  width: 22px;
-  height: 22px;
-  position: relative;
-  z-index: 2;
-  transition: all 0.1s cubic-bezier(0.25, 0, 1, 1);
-
-  svg {
-    top: -1px;
-    left: -1px;
-  }
-}
-
-.stage-cell .mini-pipeline-graph-icon-container .ci-status-icon svg {
-  width: 22px;
-  height: 22px;
-}
-
-
-.terminal-icon {
-  margin-left: 3px;
-}
-
-.terminal-container {
-  .content-block {
-    border-bottom: none;
+  .stage-cell .mini-pipeline-graph-icon-container .ci-status-icon svg {
+    width: 22px;
+    height: 22px;
   }
 
-  #terminal {
-    margin-top: 10px;
-    min-height: 450px;
-    box-sizing: border-box;
 
-    > div {
+  .terminal-icon {
+    margin-left: 3px;
+  }
+
+  .terminal-container {
+    .content-block {
+      border-bottom: none;
+    }
+
+    #terminal {
+      margin-top: 10px;
       min-height: 450px;
+      box-sizing: border-box;
+
+      > div {
+        min-height: 450px;
+      }
     }
   }
-}
