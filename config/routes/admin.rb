@@ -6,7 +6,6 @@ namespace :admin do
     member do
       get :projects
       get :keys
-      get :groups
       put :block
       put :unblock
       put :unlock
