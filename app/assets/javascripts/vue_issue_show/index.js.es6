@@ -38,7 +38,12 @@
               const issue = JSON.parse(res.body);
               if (this.updatedAt !== issue.updated_at) {
                 this.updatedAt = issue.updated_at;
-                this.title = issue.title;
+                this.$el.style.opacity = 0;
+                setTimeout(() => {
+                  this.title = issue.title;
+                  this.$el.style.transition = 'opacity 0.2s ease';
+                  this.$el.style.opacity = 1;
+                }, 100);
               }
             }, () => {
               const flash = new Flash('Something went wrong updating the title');
