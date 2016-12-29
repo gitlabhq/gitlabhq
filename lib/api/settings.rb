@@ -87,6 +87,10 @@ module API
       given sentry_enabled: ->(val) { val } do
         requires :sentry_dsn, type: String, desc: 'Sentry Data Source Name'
       end
+<<<<<<< HEAD
+=======
+      optional :repository_storage, type: String, desc: 'Storage paths for new projects'
+>>>>>>> 714f70a38df10e678bffde6e6081a97e31d8317c
       optional :repository_checks_enabled, type: Boolean, desc: "GitLab will periodically run 'git fsck' in all project and wiki repositories to look for silent disk corruption issues."
       optional :koding_enabled, type: Boolean, desc: 'Enable Koding'
       given koding_enabled: ->(val) { val } do
@@ -102,6 +106,7 @@ module API
         requires :housekeeping_full_repack_period, type: Integer, desc: "Number of Git pushes after which a full 'git repack' is run."
         requires :housekeeping_gc_period, type: Integer, desc: "Number of Git pushes after which 'git gc' is run."
       end
+<<<<<<< HEAD
       # GitLab-EE specific settings
       optional :help_text, type: String, desc: 'GitLab server administrator information'
       optional :max_pages_size, type: Integer, desc: 'Maximum size of pages in MB'
@@ -116,6 +121,8 @@ module API
       optional :repository_storage, type: String, desc: 'The first entry in `repository_storages`. Deprecated, but retained for compatibility reasons'
       optional :repository_storages, type: Array[String], desc: 'A list of names of enabled storage paths, taken from `gitlab.yml`. New projects will be created in one of these stores, chosen at random.'
       optional :repository_size_limit, type: Integer, desc: 'Size limit per repository (MB)'
+=======
+>>>>>>> 714f70a38df10e678bffde6e6081a97e31d8317c
       at_least_one_of :default_branch_protection, :default_project_visibility, :default_snippet_visibility,
                       :default_group_visibility, :restricted_visibility_levels, :import_sources,
                       :enabled_git_access_protocol, :gravatar_enabled, :default_projects_limit,
@@ -127,11 +134,17 @@ module API
                       :shared_runners_enabled, :max_artifacts_size, :container_registry_token_expire_delay,
                       :metrics_enabled, :sidekiq_throttling_enabled, :recaptcha_enabled,
                       :akismet_enabled, :admin_notification_email, :sentry_enabled,
+<<<<<<< HEAD
                       :repository_checks_enabled, :koding_enabled, :housekeeping_enabled,
                       :version_check_enabled, :email_author_in_body, :html_emails_enabled,
                       # GitLab-EE specific settings
                       :help_text, :max_pages_size, :elasticsearch_indexing, :usage_ping_enabled,
                       :repository_storage, :repository_storages, :repository_size_limit
+=======
+                      :repository_storage, :repository_checks_enabled, :koding_enabled,
+                      :version_check_enabled, :email_author_in_body, :html_emails_enabled,
+                      :housekeeping_enabled
+>>>>>>> 714f70a38df10e678bffde6e6081a97e31d8317c
     end
     put "application/settings" do
       if current_settings.update_attributes(declared_params(include_missing: false))

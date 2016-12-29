@@ -1036,7 +1036,7 @@ class Project < ActiveRecord::Base
       Rails.logger.error "Project #{old_path_with_namespace} cannot be renamed because container registry tags are present"
 
       # we currently doesn't support renaming repository if it contains tags in container registry
-      raise Exception.new('Project cannot be renamed, because tags are present in its container registry')
+      raise StandardError.new('Project cannot be renamed, because tags are present in its container registry')
     end
 
     if gitlab_shell.mv_repository(repository_storage_path, old_path_with_namespace, new_path_with_namespace)
@@ -1063,7 +1063,7 @@ class Project < ActiveRecord::Base
 
       # if we cannot move namespace directory we should rollback
       # db changes in order to prevent out of sync between db and fs
-      raise Exception.new('repository cannot be renamed')
+      raise StandardError.new('repository cannot be renamed')
     end
 
     Gitlab::AppLogger.info "Project was renamed: #{old_path_with_namespace} -> #{new_path_with_namespace}"

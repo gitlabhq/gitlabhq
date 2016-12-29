@@ -80,6 +80,7 @@ PUT /application/settings
 | `koding_enabled` | boolean | no | Enable Koding integration. Default is `false`. |
 | `koding_url` | string | yes (if `koding_enabled` is `true`) |  The Koding instance URL for integration. |
 | `disabled_oauth_sign_in_sources` | Array of strings | no | Disabled OAuth sign-in sources |
+<<<<<<< HEAD
 | `help_text` | string | no | GitLab server administrator information |
 | `elasticsearch_indexing` | boolean | no | Enable Elasticsearch indexing |
 | `elasticsearch_search` | boolean | no | Enable Elasticsearch search |
@@ -87,6 +88,8 @@ PUT /application/settings
 | `elasticsearch_port` | integer | no | The TCP/IP port that Elasticsearch listens to. The default value is 9200 |
 | `usage_ping_enabled` | boolean | no | Every week GitLab will report license usage back to GitLab, Inc.|
 | `repository_size_limit` | integer | no | Size limit per repository (MB) |
+=======
+>>>>>>> 714f70a38df10e678bffde6e6081a97e31d8317c
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/application/settings?signup_enabled=false&default_project_visibility=1

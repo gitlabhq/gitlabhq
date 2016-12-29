@@ -1,4 +1,0 @@
----
-title: Disable PostgreSQL statement timeouts when removing unneeded services
-merge_request: 8322
-author:

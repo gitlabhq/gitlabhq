@@ -55,7 +55,7 @@ describe Gitlab::GitAccess, lib: true do
     end
   end
 
-  describe 'download_access_check' do
+  describe '#check_download_access!' do
     subject { access.check('git-upload-pack', '_any') }
 
     describe 'master permissions' do
@@ -87,7 +87,7 @@ describe Gitlab::GitAccess, lib: true do
       end
     end
 
-    describe 'without acccess to project' do
+    describe 'without access to project' do
       context 'pull code' do
         it { expect(subject.allowed?).to be_falsey }
       end
@@ -117,7 +117,7 @@ describe Gitlab::GitAccess, lib: true do
     end
 
     describe 'deploy key permissions' do
-      let(:key) { create(:deploy_key) }
+      let(:key) { create(:deploy_key, user: user) }
       let(:actor) { key }
 
       context 'pull code' do
@@ -141,7 +141,7 @@ describe Gitlab::GitAccess, lib: true do
           end
 
           context 'from private project' do
-            let(:project) { create(:project, :internal) }
+            let(:project) { create(:project, :private) }
 
             it { expect(subject).not_to be_allowed }
           end
@@ -199,7 +199,7 @@ describe Gitlab::GitAccess, lib: true do
     end
   end
 
-  describe 'push_access_check' do
+  describe '#check_push_access!' do
     before { merge_into_protected_branch }
     let(:unprotected_branch) { FFaker::Internet.user_name }
 
@@ -247,6 +247,7 @@ describe Gitlab::GitAccess, lib: true do
 
             permissions_matrix[role].each do |action, allowed|
               context action do
+<<<<<<< HEAD
                 subject { access.push_access_check(changes[action]) }
 
                 it do
@@ -283,6 +284,10 @@ describe Gitlab::GitAccess, lib: true do
                 else
                   expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError)
                 end
+=======
+                subject { access.send(:check_push_access!, changes[action]) }
+                it { expect(subject.allowed?).to allowed ? be_truthy : be_falsey }
+>>>>>>> 714f70a38df10e678bffde6e6081a97e31d8317c
               end
             end
           end
@@ -769,13 +774,13 @@ describe Gitlab::GitAccess, lib: true do
     end
   end
 
-  shared_examples 'can not push code' do
+  shared_examples 'pushing code' do |can|
     subject { access.check('git-receive-pack', '_any') }
 
     context 'when project is authorized' do
       before { authorize }
 
-      it { expect(subject).not_to be_allowed }
+      it { expect(subject).public_send(can, be_allowed) }
     end
 
     context 'when unauthorized' do
@@ -802,7 +807,7 @@ describe Gitlab::GitAccess, lib: true do
   describe 'build authentication abilities' do
     let(:authentication_abilities) { build_authentication_abilities }
 
-    it_behaves_like 'can not push code' do
+    it_behaves_like 'pushing code', :not_to do
       def authorize
         project.team << [user, :reporter]
       end
@@ -821,12 +826,26 @@ describe Gitlab::GitAccess, lib: true do
   end
 
   describe 'deploy key permissions' do
-    let(:key) { create(:deploy_key) }
+    let(:key) { create(:deploy_key, user: user, can_push: can_push) }
     let(:actor) { key }
 
-    it_behaves_like 'can not push code' do
-      def authorize
-        key.projects << project
+    context 'when deploy_key can push' do
+      let(:can_push) { true }
+
+      it_behaves_like 'pushing code', :to do
+        def authorize
+          key.projects << project
+        end
+      end
+    end
+
+    context 'when deploy_key cannot push' do
+      let(:can_push) { false }
+
+      it_behaves_like 'pushing code', :not_to do
+        def authorize
+          key.projects << project
+        end
       end
     end
   end

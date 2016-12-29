@@ -105,4 +105,70 @@ describe GroupPolicy, models: true do
       is_expected.to include(*owner_permissions)
     end
   end
+
+  describe 'private nested group inherit permissions' do
+    let(:nested_group) { create(:group, :private, parent: group) }
+
+    subject { described_class.abilities(current_user, nested_group).to_set }
+
+    context 'with no user' do
+      let(:current_user) { nil }
+
+      it do
+        is_expected.not_to include(:read_group)
+        is_expected.not_to include(*master_permissions)
+        is_expected.not_to include(*owner_permissions)
+      end
+    end
+
+    context 'guests' do
+      let(:current_user) { guest }
+
+      it do
+        is_expected.to include(:read_group)
+        is_expected.not_to include(*master_permissions)
+        is_expected.not_to include(*owner_permissions)
+      end
+    end
+
+    context 'reporter' do
+      let(:current_user) { reporter }
+
+      it do
+        is_expected.to include(:read_group)
+        is_expected.not_to include(*master_permissions)
+        is_expected.not_to include(*owner_permissions)
+      end
+    end
+
+    context 'developer' do
+      let(:current_user) { developer }
+
+      it do
+        is_expected.to include(:read_group)
+        is_expected.not_to include(*master_permissions)
+        is_expected.not_to include(*owner_permissions)
+      end
+    end
+
+    context 'master' do
+      let(:current_user) { master }
+
+      it do
+        is_expected.to include(:read_group)
+        is_expected.to include(*master_permissions)
+        is_expected.not_to include(*owner_permissions)
+      end
+    end
+
+    context 'owner' do
+      let(:current_user) { owner }
+
+      it do
+        is_expected.to include(:read_group)
+        is_expected.to include(*master_permissions)
+        is_expected.to include(*owner_permissions)
+      end
+    end
+  end
 end

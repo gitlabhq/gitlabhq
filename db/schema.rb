@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161221140236) do
+ActiveRecord::Schema.define(version: 20161227192806) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -601,6 +601,7 @@ ActiveRecord::Schema.define(version: 20161221140236) do
     t.string "type"
     t.string "fingerprint"
     t.boolean "public", default: false, null: false
+    t.boolean "can_push", default: false, null: false
   end
 
   add_index "keys", ["fingerprint"], name: "index_keys_on_fingerprint", unique: true, using: :btree

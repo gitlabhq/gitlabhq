@@ -284,12 +284,16 @@ describe MergeRequest, models: true do
   end
 
   describe '#issues_mentioned_but_not_closing' do
+    let(:closing_issue) { create :issue, project: subject.project }
+    let(:mentioned_issue) { create :issue, project: subject.project }
+
+    let(:commit) { double('commit', safe_message: "Fixes #{closing_issue.to_reference}") }
+
     it 'detects issues mentioned in description but not closed' do
-      mentioned_issue = create(:issue, project: subject.project)
-
       subject.project.team << [subject.author, :developer]
-      subject.description = "Is related to #{mentioned_issue.to_reference}"
+      subject.description = "Is related to #{mentioned_issue.to_reference} and #{closing_issue.to_reference}"
 
+      allow(subject).to receive(:commits).and_return([commit])
       allow(subject.project).to receive(:default_branch).
         and_return(subject.target_branch)
 

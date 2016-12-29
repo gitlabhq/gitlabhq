@@ -57,14 +57,31 @@ pre {
     border-radius: 0;
     color: $well-pre-color;
   }
+
+  &.wrap {
+    word-break: break-word;
+    white-space: pre-wrap;
+  }
 }
 
 hr {
   margin: $gl-padding 0;
+  border-top: 1px solid darken($gray-normal, 8%);
 }
 
 .str-truncated {
   @include str-truncated;
+}
+
+.block-truncated {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  > div,
+  .str-truncated {
+    display: inline;
+  }
 }
 
 .item-title { font-weight: 600; }

@@ -77,7 +77,7 @@
         var _a, _y, regexp, match, atSymbolsWithBar, atSymbolsWithoutBar;
         atSymbolsWithBar = Object.keys(this.app.controllers).join('|');
         atSymbolsWithoutBar = Object.keys(this.app.controllers).join('');
-        subtext = subtext.split(' ').pop();
+        subtext = subtext.split(/\s+/g).pop();
         flag = flag.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 
         _a = decodeURI("%C3%80");

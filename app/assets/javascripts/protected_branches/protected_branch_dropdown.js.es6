@@ -78,6 +78,12 @@
       this.$dropdownFooter.toggleClass('hidden', !branchName);
     }
   }
+<<<<<<< HEAD
 
   global.gl.ProtectedBranchDropdown = ProtectedBranchDropdown;
 })(window);
+=======
+}
+
+window.ProtectedBranchDropdown = ProtectedBranchDropdown;
+>>>>>>> 714f70a38df10e678bffde6e6081a97e31d8317c

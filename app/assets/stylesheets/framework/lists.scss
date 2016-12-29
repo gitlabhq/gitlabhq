@@ -205,6 +205,7 @@ ul.content-list {
     display: -webkit-flex;
     display: -ms-flexbox;
     display: flex;
+    align-items: center;
     white-space: nowrap;
   }
 
@@ -212,6 +213,11 @@ ul.content-list {
     flex: 1 1 auto;
     overflow: hidden;
     padding-right: 8px;
+  }
+
+  .row-fixed-content {
+    flex: 0 0 auto;
+    margin-left: auto;
   }
 
   .row-title {

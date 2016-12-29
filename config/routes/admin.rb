@@ -36,7 +36,7 @@ namespace :admin do
 
   scope(path: 'groups/*id',
         controller: :groups,
-        constraints: { id: Gitlab::Regex.namespace_route_regex }) do
+        constraints: { id: Gitlab::Regex.namespace_route_regex, format: /(html|json|atom)/ }) do
 
     scope(as: :group) do
       put :members_update
