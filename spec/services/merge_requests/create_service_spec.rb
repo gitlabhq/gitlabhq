@@ -84,6 +84,8 @@ describe MergeRequests::CreateService, services: true do
       end
     end
 
+    it_behaves_like 'issuable create service'
+
     context 'while saving references to issues that the created merge request closes' do
       let(:first_issue) { create(:issue, project: project) }
       let(:second_issue) { create(:issue, project: project) }
