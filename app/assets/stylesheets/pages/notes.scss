@@ -43,7 +43,7 @@ ul.notes {
     }
 
     .system-note-message {
-      display: inline;
+      display: inline-block;
 
       &::first-letter {
         text-transform: lowercase;
@@ -55,7 +55,7 @@ ul.notes {
       }
 
       p {
-        display: inline;
+        display: inline-block;
         margin: 0;
 
         &::first-letter {
@@ -150,10 +150,6 @@ ul.notes {
           visibility: visible;
         }
       }
-    }
-
-    .note-headline-light {
-      display: inline;
     }
   }
 
@@ -452,11 +448,6 @@ ul.notes {
   border-radius: $border-radius-base;
 }
 
-.diff-file .note .note-actions {
-  right: 0;
-  top: 0;
-}
-
 
 /**
  * Line note button on the side of diffs
@@ -588,5 +579,21 @@ ul.notes {
     path {
       fill: $gray-darkest;
     }
+  }
+}
+
+// Merge request notes in diffs
+.diff-file {
+
+  // Diff is side by side
+  .notes_content.parallel .note-header .note-headline-light {
+    display: block;
+    position: relative;
+  }
+
+  // Diff is inline
+  .notes_content .note-header .note-headline-light {
+    display: inline-block;
+    position: relative;
   }
 }

@@ -63,8 +63,7 @@ namespace :gitlab do
 
             if project.persisted?
               puts " * Created #{project.name} (#{repo_path})".color(:green)
-              project.update_repository_size
-              project.update_commit_count
+              ProjectCacheWorker.perform(project.id)
             else
               puts " * Failed trying to create #{project.name} (#{repo_path})".color(:red)
               puts "   Errors: #{project.errors.messages}".color(:red)

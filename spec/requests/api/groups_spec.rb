@@ -45,6 +45,14 @@ describe API::Groups, api: true  do
         expect(ldap_group_link['group_access']).to eq(group1.ldap_access)
         expect(ldap_group_link['provider']).to eq('ldap')
       end
+
+      it "does not include statistics" do
+        get api("/groups", user1), statistics: true
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.first).not_to include 'statistics'
+      end
     end
 
     context "when authenticated as admin" do
@@ -53,6 +61,31 @@ describe API::Groups, api: true  do
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(2)
+      end
+
+      it "does not include statistics by default" do
+        get api("/groups", admin)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.first).not_to include('statistics')
+      end
+
+      it "includes statistics if requested" do
+        attributes = {
+          storage_size: 702,
+          repository_size: 123,
+          lfs_objects_size: 234,
+          build_artifacts_size: 345,
+        }
+
+        project1.statistics.update!(attributes)
+
+        get api("/groups", admin), statistics: true
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.first['statistics']).to eq attributes.stringify_keys
       end
     end
 

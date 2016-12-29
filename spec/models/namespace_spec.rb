@@ -4,6 +4,7 @@ describe Namespace, models: true do
   let!(:namespace) { create(:namespace) }
 
   it { is_expected.to have_many :projects }
+  it { is_expected.to have_many :project_statistics }
 
   it { is_expected.to validate_presence_of(:name) }
   it { is_expected.to validate_uniqueness_of(:name).scoped_to(:parent_id) }
@@ -54,6 +55,50 @@ describe Namespace, models: true do
 
     it 'returns namespaces with a matching path regardless of the casing' do
       expect(described_class.search(namespace.path.upcase)).to eq([namespace])
+    end
+  end
+
+  describe '.with_statistics' do
+    let(:namespace) { create :namespace }
+
+    let(:project1) do
+      create(:empty_project,
+             namespace: namespace,
+             statistics: build(:project_statistics,
+                               storage_size:         606,
+                               repository_size:      101,
+                               lfs_objects_size:     202,
+                               build_artifacts_size: 303))
+    end
+
+    let(:project2) do
+      create(:empty_project,
+             namespace: namespace,
+             statistics: build(:project_statistics,
+                               storage_size:         60,
+                               repository_size:      10,
+                               lfs_objects_size:     20,
+                               build_artifacts_size: 30))
+    end
+
+    it "sums all project storage counters in the namespace" do
+      project1
+      project2
+      statistics = Namespace.with_statistics.find(namespace.id)
+
+      expect(statistics.storage_size).to eq 666
+      expect(statistics.repository_size).to eq 111
+      expect(statistics.lfs_objects_size).to eq 222
+      expect(statistics.build_artifacts_size).to eq 333
+    end
+
+    it "correctly handles namespaces without projects" do
+      statistics = Namespace.with_statistics.find(namespace.id)
+
+      expect(statistics.storage_size).to eq 0
+      expect(statistics.repository_size).to eq 0
+      expect(statistics.lfs_objects_size).to eq 0
+      expect(statistics.build_artifacts_size).to eq 0
     end
   end
 

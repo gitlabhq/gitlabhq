@@ -43,6 +43,7 @@ class Project < ActiveRecord::Base
   after_create :ensure_dir_exist
   after_create :create_project_feature, unless: :project_feature
   after_save :ensure_dir_exist, if: :namespace_id_changed?
+  after_save :update_project_statistics, if: :namespace_id_changed?
 
   # set last_activity_at to the same as created_at
   after_create :set_last_activity_at
@@ -152,6 +153,7 @@ class Project < ActiveRecord::Base
 
   has_one :import_data, dependent: :destroy, class_name: "ProjectImportData"
   has_one :project_feature, dependent: :destroy
+  has_one :statistics, class_name: 'ProjectStatistics', dependent: :delete
 
   has_many :commit_statuses, dependent: :destroy, foreign_key: :gl_project_id
   has_many :pipelines, dependent: :destroy, class_name: 'Ci::Pipeline', foreign_key: :gl_project_id
@@ -237,6 +239,7 @@ class Project < ActiveRecord::Base
   scope :with_remote_mirrors, -> { joins(:remote_mirrors).where(remote_mirrors: { enabled: true }).distinct }
 
   scope :with_project_feature, -> { joins('LEFT JOIN project_features ON projects.id = project_features.project_id') }
+  scope :with_statistics, -> { includes(:statistics) }
 
   # "enabled" here means "not disabled". It includes private features!
   scope :with_feature_enabled, ->(feature) {
@@ -366,8 +369,10 @@ class Project < ActiveRecord::Base
     end
 
     def sort(method)
-      if method == 'repository_size_desc'
-        reorder(repository_size: :desc, id: :desc)
+      if method == 'storage_size_desc'
+        # storage_size is a joined column so we need to
+        # pass a string to avoid AR adding the table name
+        reorder('project_statistics.storage_size DESC, projects.id DESC')
       else
         order_by(method)
       end
@@ -1147,14 +1152,6 @@ class Project < ActiveRecord::Base
     forked? && project == forked_from_project
   end
 
-  def update_repository_size
-    update_attribute(:repository_size, repository.size)
-  end
-
-  def update_commit_count
-    update_attribute(:commit_count, repository.commit_count)
-  end
-
   def forks_count
     forks.count
   end
@@ -1510,7 +1507,7 @@ class Project < ActiveRecord::Base
   end
 
   def repository_and_lfs_size
-    repository_size + lfs_objects.sum(:size).to_i.to_mb
+    statistics.storage_size + statistics.lfs_objects_size
   end
 
   def above_size_limit?
@@ -1585,5 +1582,10 @@ class Project < ActiveRecord::Base
 
   def full_path_changed?
     path_changed? || namespace_id_changed?
+  end
+
+  def update_project_statistics
+    stats = statistics || build_statistics
+    stats.update(namespace_id: namespace_id)
   end
 end

@@ -11,6 +11,7 @@ module SortingHelper
       sort_value_due_date_soon => sort_title_due_date_soon,
       sort_value_due_date_later => sort_title_due_date_later,
       sort_value_largest_repo => sort_title_largest_repo,
+      sort_value_largest_group => sort_title_largest_group,
       sort_value_recently_signin => sort_title_recently_signin,
       sort_value_oldest_signin => sort_title_oldest_signin,
       sort_value_downvotes => sort_title_downvotes,
@@ -92,6 +93,10 @@ module SortingHelper
 
   def sort_title_largest_repo
     'Largest repository'
+  end
+
+  def sort_title_largest_group
+    'Largest group'
   end
 
   def sort_title_recently_signin
@@ -203,7 +208,11 @@ module SortingHelper
   end
 
   def sort_value_largest_repo
-    'repository_size_desc'
+    'storage_size_desc'
+  end
+
+  def sort_value_largest_group
+    'storage_size_desc'
   end
 
   def sort_value_recently_signin

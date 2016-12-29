@@ -9,6 +9,7 @@ class Namespace < ActiveRecord::Base
   cache_markdown_field :description, pipeline: :description
 
   has_many :projects, dependent: :destroy
+  has_many :project_statistics
   belongs_to :owner, class_name: "User"
 
   belongs_to :parent, class_name: "Namespace"
@@ -37,6 +38,18 @@ class Namespace < ActiveRecord::Base
   after_destroy :rm_dir
 
   scope :root, -> { where('type IS NULL') }
+
+  scope :with_statistics, -> do
+    joins('LEFT JOIN project_statistics ps ON ps.namespace_id = namespaces.id')
+      .group('namespaces.id')
+      .select(
+        'namespaces.*',
+        'COALESCE(SUM(ps.storage_size), 0) AS storage_size',
+        'COALESCE(SUM(ps.repository_size), 0) AS repository_size',
+        'COALESCE(SUM(ps.lfs_objects_size), 0) AS lfs_objects_size',
+        'COALESCE(SUM(ps.build_artifacts_size), 0) AS build_artifacts_size',
+      )
+  end
 
   class << self
     def by_path(path)
