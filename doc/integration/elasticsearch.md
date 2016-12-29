@@ -13,18 +13,20 @@ GitLab leverages the search capabilities of Elasticsearch and enables it when
 searching in:
 
 - GitLab application
-- issues
-- merge requests
-- milestones
-- notes
-- projects
-- repositories
-- snippets
-- wiki repositories
+- Issues
+- Merge requests
+- Milestones
+- Notes
+- Projects
+- Repositories
+- Snippets
+- Wiki
 
-Once the data is added to the database or repository, search indexes will be updated
-automatically. Elasticsearch can be installed on the same machine that GitLab
+Once the data is added to the database or repository and [Elasticsearch is enabled in the admin area](#enable-elasticsearch) the search index will be updated
+automatically.
+Elasticsearch can be installed on the same machine that GitLab
 is installed or on a separate server.
+
 
 ## Requirements
 
@@ -32,6 +34,7 @@ These are the minimum requirements needed for Elasticsearch to work:
 
 - GitLab 8.4+
 - Elasticsearch 2.4.x (with [Delete By Query Plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/2.4/plugins-delete-by-query.html) installed)
+
 
 ## Install Elasticsearch
 
@@ -42,6 +45,7 @@ is out of the scope of this document.
 
 You can follow the steps as described in the [official web site][install] or
 use the packages that are available for your OS.
+
 
 ## Enable Elasticsearch
 
@@ -57,6 +61,7 @@ The following Elasticsearch settings are available:
 | `Port`                              | The TCP port that Elasticsearch listens to. The default value is 9200  |
 
 
+
 ## Add GitLab's data to the Elasticsearch index
 
 Configure Elasticsearch's host and port in **Admin > Settings**. Then create empty indexes using one of the following commands:
@@ -70,14 +75,7 @@ Configure Elasticsearch's host and port in **Admin > Settings**. Then create emp
     bundle exec rake gitlab:elastic:create_empty_index RAILS_ENV=production
     ```
 
-
-
-Then enable Elasticsearch indexing and run indexing tasks. It might take a while depending on how big your Git repositories are (see
-[Indexing large repositories](#indexing-large-repositories)).
-
----
-
-To index all your repositories:
+Then enable Elasticsearch indexing and run repository indexing tasks:
 
 ```
 # Omnibus installations
@@ -86,6 +84,8 @@ sudo gitlab-rake gitlab:elastic:index_repositories
 # Installations from source
 bundle exec rake gitlab:elastic:index_repositories RAILS_ENV=production
 ```
+ It might take a while depending on how big your Git repositories are (see
+[Indexing large repositories](#indexing-large-repositories)).
 
 If you want to run several tasks in parallel (probably in separate terminal
 windows) you can provide the `ID_FROM` and `ID_TO` parameters:
@@ -95,11 +95,8 @@ ID_FROM=1001 ID_TO=2000 sudo gitlab-rake gitlab:elastic:index_repositories
 
 ```
 
-Both parameters are optional. Keep in mind that this task will skip repositories
-(and certain commits) that have already been indexed. It stores the last commit
-SHA of every indexed repository in the database. As an example, if you have
-3,000 repositories and you want to run three separate indexing tasks, you might
-run:
+Where `ID_FROM` and `ID_TO` are project IDs. Both parameters are optional.
+As an example, if you have 3,000 repositories and you want to run three separate indexing tasks, you might run:
 
 ```
 ID_TO=1000 sudo gitlab-rake gitlab:elastic:index_repositories
@@ -107,14 +104,12 @@ ID_FROM=1001 ID_TO=2000 sudo gitlab-rake gitlab:elastic:index_repositories
 ID_FROM=2001 sudo gitlab-rake gitlab:elastic:index_repositories
 ```
 
-If you need to update any outdated indexes, you can use
-the `UPDATE_INDEX` parameter:
+Sometimes your repository index process `gitlab:elastic:index_repositories` get interupted due to various reasons, in this case you can safely run it again and it will skip those repositories that already have been indexed. As the indexer stores the last commit SHA of every indexed repository in the database you can run the indexer with the special parameter `UPDATE_INDEX` and it will check every project repository again to make sure that every commit in that repository is indexed, it can be useful in case if your index is outdated:
 
 ```
 UPDATE_INDEX=true ID_TO=1000 sudo gitlab-rake gitlab:elastic:index_repositories
 ```
 
-Keep in mind that it will scan all repositories to make sure that last commit is already indexed.
 
 To index all wikis:
 
@@ -139,7 +134,7 @@ sudo gitlab-rake gitlab:elastic:index_database
 bundle exec rake gitlab:elastic:index_database RAILS_ENV=production
 ```
 
-Or everything at once (database records, repositories, wikis):
+If your instance is small enough you can index everything at once (database records, repositories, wikis):
 
 ```
 # Omnibus installations
@@ -149,18 +144,21 @@ sudo gitlab-rake gitlab:elastic:index
 bundle exec rake gitlab:elastic:index RAILS_ENV=production
 ```
 
+
 ## Disable Elasticsearch
 
 Disabling the Elasticsearch integration is as easy as unchecking `Search with Elasticsearch enabled` and `Elasticsearch indexing` in **Admin > Settings**.
+
 
 ## Special recommendations
 
 Here are some tips to use Elasticsearch with GitLab more efficiently.
 
+
 ### Indexing large repositories
 
 Indexing large Git repositories can take a while. To speed up the process, you
-can temporarily disable auto-refreshing. In our experience you can expect a 20%
+can temporarily disable auto-refreshing and replicating. In our experience you can expect a 20%
 time drop.
 
 1.  Disable refreshing:
@@ -172,7 +170,7 @@ time drop.
         } }'
     ```
 
-1.  (optional) You may want to disable replication and enable it after indexing:
+1.  Disable replication and enable it after indexing:
 
     ```bash
     curl --request PUT localhost:9200/_settings --data '{
@@ -183,7 +181,7 @@ time drop.
 
 1. [Create the indexes](#add-gitlabs-data-to-the-elasticsearch-index)
 
-1.  (optional) If you disabled replication in step 2, enable it after
+1.  Enable replication again after
     the indexing is done and set it to its default value, which is 1:
 
     ```bash
@@ -233,6 +231,29 @@ To minimize downtime of the search feature we recommend the following:
    performed the initial indexing. The repository indexer will skip
    repositories and commits that are already indexed, so it will be much
    shorter than the first run.
+
+
+## Troubleshooting
+
+### Exception "Can't specify parent if no parent field has been configured"
+
+If you enabled Elasticsearch before GitLab 8.12 and have not rebuilt indexes you will get
+exception in lots of different cases:
+
+```
+Elasticsearch::Transport::Transport::Errors::BadRequest ([400] {"error":{"root_cause":[{"type":"illegal_argument_exception","reason":"Can't specify parent if no parent field has been configured"}],"type":"illegal_argument_exception","rea
+son":"Can't specify parent if no parent field has been configured"},"status":400}):
+```
+
+This is because we changed the index mapping in GitLab 8.12 and the old indexes should be removed and built from scratch again,
+see details in the [8-11-to-8-12 update guide](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/doc/update/8.11-to-8.12.md#11-elasticsearch-index-update-if-you-currently-use-elasticsearch).
+
+### Exception Elasticsearch::Transport::Transport::Errors::BadRequest
+
+If you have this exception (just like in the case above but the actual message is different) please check if you have the correct Elasticsearch version and you met the other [requirements](#requirements).
+There is also an easy way to check it automatically with `sudo gitlab-rake gitlab:check` command.
+
+
 
 [ee-109]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/109 "Elasticsearch Merge Request"
 [elasticsearch]: https://www.elastic.co/products/elasticsearch "Elasticsearch website"
