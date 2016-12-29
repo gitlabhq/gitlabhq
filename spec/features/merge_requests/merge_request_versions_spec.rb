@@ -24,7 +24,7 @@ feature 'Merge Request versions', js: true, feature: true do
     before do
       page.within '.mr-version-dropdown' do
         find('.btn-default').click
-        click_link 'version 1'
+        find(:link, 'version 1').trigger('click')
       end
     end
 
@@ -45,7 +45,7 @@ feature 'Merge Request versions', js: true, feature: true do
     before do
       page.within '.mr-version-compare-dropdown' do
         find('.btn-default').click
-        click_link 'version 1'
+        find(:link, 'version 1').trigger('click')
       end
     end
 
