@@ -24,8 +24,7 @@
     },
     computed: {
       titleMessage() {
-        if (this.rubyTitle && !this.title) return this.rubyTitle;
-        return this.title;
+        return this.title ? this.title : this.rubyTitle;
       },
     },
     methods: {
@@ -53,21 +52,19 @@
       },
     },
     template: `
-      <h2 class='title'>
-        {{titleMessage}}
-      </h2>
+      <h2 class='title'>{{titleMessage}}</h2>
     `,
   });
 
+  const vueData = document.querySelector('.vue-data').dataset;
+
   const vm = new Vue({
     el: '.issue-title-vue',
-    components: {
-      'vue-title': gl.VueIssueTitle,
-    },
+    components: { 'vue-title': gl.VueIssueTitle },
     data() {
       return {
-        rubyTitle: document.querySelector('.vue-data').dataset.rubyTitle,
-        endpoint: document.querySelector('.vue-data').dataset.endpoint,
+        rubyTitle: vueData.rubyTitle,
+        endpoint: vueData.endpoint,
       };
     },
     template: `
@@ -85,10 +82,11 @@
   const startIntervalLoops = () => startTitleFetch();
 
   const removeAll = () => {
+    removeIntervalLoops(); // this gets rid of the interval prior to the events unbinding
     window.removeEventListener('beforeunload', removeIntervalLoops);
     window.removeEventListener('focus', startIntervalLoops);
     window.removeEventListener('blur', removeIntervalLoops);
-    document.removeEventListener('page:fetch', () => {});
+    document.removeEventListener('page:fetch', removeAll);
   };
 
   window.addEventListener('beforeunload', removeIntervalLoops);
