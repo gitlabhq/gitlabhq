@@ -36,7 +36,6 @@ class IssuableBaseService < BaseService
     end
   end
 
-<<<<<<< HEAD
   def create_time_estimate_note(issuable)
     SystemNoteService.change_time_estimate(issuable, issuable.project, current_user)
   end
@@ -47,12 +46,11 @@ class IssuableBaseService < BaseService
 
   def filter_params(issuable)
     ability_name = :"admin_#{issuable.to_ability_name}"
+  end
 
-=======
   def filter_params(issuable)
     ability_name = :"admin_#{issuable.to_ability_name}"
 
->>>>>>> 714f70a38df10e678bffde6e6081a97e31d8317c
     unless can?(current_user, ability_name, project)
       params.delete(:milestone_id)
       params.delete(:labels)
@@ -170,10 +168,7 @@ class IssuableBaseService < BaseService
   def create(issuable)
     merge_slash_commands_into_params!(issuable)
     filter_params(issuable)
-<<<<<<< HEAD
     change_time_spent(issuable)
-=======
->>>>>>> 714f70a38df10e678bffde6e6081a97e31d8317c
 
     params.delete(:state_event)
     params[:author] ||= current_user
@@ -215,10 +210,7 @@ class IssuableBaseService < BaseService
     change_state(issuable)
     change_subscription(issuable)
     change_todo(issuable)
-<<<<<<< HEAD
     time_spent = change_time_spent(issuable)
-=======
->>>>>>> 714f70a38df10e678bffde6e6081a97e31d8317c
     filter_params(issuable)
     old_labels = issuable.labels.to_a
     old_mentioned_users = issuable.mentioned_users.to_a

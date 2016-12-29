@@ -4,11 +4,7 @@ entry.
 
 ## 8.15.2 (2016-12-27)
 
-<<<<<<< HEAD
-- No changes.
-=======
 - Fix finding the latest pipeline. !8301
->>>>>>> 714f70a38df10e678bffde6e6081a97e31d8317c
 - Fix mr list timestamp alignment. !8271
 - Fix discussion overlap text in regular screens. !8273
 - Fixes mini-pipeline-graph dropdown animation and stage position in chrome, firefox and safari. !8282

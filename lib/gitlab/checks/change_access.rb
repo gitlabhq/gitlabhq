@@ -1,12 +1,9 @@
 module Gitlab
   module Checks
     class ChangeAccess
-<<<<<<< HEAD
       include PathLocksHelper
-      attr_reader :user_access, :project
-=======
+
       attr_reader :user_access, :project, :skip_authorization
->>>>>>> 714f70a38df10e678bffde6e6081a97e31d8317c
 
       def initialize(
         change, user_access:, project:, env: {}, skip_authorization: false)

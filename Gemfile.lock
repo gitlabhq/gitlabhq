@@ -167,7 +167,6 @@ GEM
       railties (>= 4.2)
     dropzonejs-rails (0.7.2)
       rails (> 3.1)
-<<<<<<< HEAD
     elasticsearch (1.0.15)
       elasticsearch-api (= 1.0.15)
       elasticsearch-transport (= 1.0.15)
@@ -181,10 +180,7 @@ GEM
     elasticsearch-transport (1.0.15)
       faraday
       multi_json
-    email_reply_parser (0.5.8)
-=======
     email_reply_trimmer (0.1.6)
->>>>>>> 714f70a38df10e678bffde6e6081a97e31d8317c
     email_spec (1.6.0)
       launchy (~> 2.1)
       mail (~> 2.2)
@@ -870,13 +866,9 @@ DEPENDENCIES
   diffy (~> 3.1.0)
   doorkeeper (~> 4.2.0)
   dropzonejs-rails (~> 0.7.1)
-<<<<<<< HEAD
   elasticsearch-model
   elasticsearch-rails
-  email_reply_parser (~> 0.5.8)
-=======
   email_reply_trimmer (~> 0.1)
->>>>>>> 714f70a38df10e678bffde6e6081a97e31d8317c
   email_spec (~> 1.6.0)
   factory_girl_rails (~> 4.7.0)
   ffaker (~> 2.0.0)
