@@ -18,13 +18,13 @@ en:
       unconfirmed: "You have to confirm your email address before continuing."
     mailer:
       confirmation_instructions:
-        subject: "Confirmation instructions"
+        subject: "GitLab Email Confirmation Instructions"
       reset_password_instructions:
-        subject: "Reset password instructions"
+        subject: "GitLab Password Reset Instructions"
       unlock_instructions:
-        subject: "Unlock instructions"
+        subject: "Unlock Your GitLab Account"
       password_change:
-        subject: "Password Changed"
+        subject: "Your GitLab Password Was Changed"
     omniauth_callbacks:
       failure: "Could not authenticate you from %{kind} because \"%{reason}\"."
       success: "Successfully authenticated from %{kind} account."
