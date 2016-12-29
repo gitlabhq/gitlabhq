@@ -49,28 +49,20 @@
 
       startTimeLoops();
 
-      const removeTimeIntervals = () => {
-        clearInterval(this.timeLoopInterval);
-      };
-
-      const startIntervalLoops = () => {
-        startTimeLoops();
-      };
+      const removeTimeIntervals = () => clearInterval(this.timeLoopInterval);
+      const startIntervalLoops = () => startTimeLoops();
 
       const removeAll = () => {
+        removeTimeIntervals();
         window.removeEventListener('beforeunload', removeTimeIntervals);
         window.removeEventListener('focus', startIntervalLoops);
         window.removeEventListener('blur', removeTimeIntervals);
-
-        // turbolinks event handler
-        document.removeEventListener('page:fetch', () => {});
+        document.removeEventListener('page:fetch', removeAll);
       };
 
       window.addEventListener('beforeunload', removeTimeIntervals);
       window.addEventListener('focus', startIntervalLoops);
       window.addEventListener('blur', removeTimeIntervals);
-
-      // turbolinks event handler
       document.addEventListener('page:fetch', removeAll);
     }
   };
