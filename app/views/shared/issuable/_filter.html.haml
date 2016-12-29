@@ -35,7 +35,7 @@
 
         .pull-right
           - if boards_page
-            #js-boards-seach.issue-boards-search
+            #js-boards-search.issue-boards-search
               %input.pull-left.form-control{ type: "search", placeholder: "Filter by name...", "v-model" => "filters.search", "debounce" => "250" }
               - if can?(current_user, :admin_list, @project)
                 .dropdown.pull-right
