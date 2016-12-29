@@ -17,10 +17,6 @@ module Issues
 
     private
 
-    def filter_params
-      super(:issue)
-    end
-
     def execute_hooks(issue, action = 'open')
       issue_data  = hook_data(issue, action)
       hooks_scope = issue.confidential? ? :confidential_issue_hooks : :issue_hooks

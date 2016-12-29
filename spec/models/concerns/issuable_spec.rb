@@ -44,6 +44,45 @@ describe Issue, "Issuable" do
     it { expect(described_class).to respond_to(:assigned) }
   end
 
+  describe "before_save" do
+    describe "#update_cache_counts" do
+      context "when previous assignee exists" do
+        before do
+          assignee = create(:user)
+          issue.project.team << [assignee, :developer]
+          issue.update(assignee: assignee)
+        end
+
+        it "updates cache counts for new assignee" do
+          user = create(:user)
+
+          expect(user).to receive(:update_cache_counts)
+
+          issue.update(assignee: user)
+        end
+
+        it "updates cache counts for previous assignee" do
+          old_assignee = issue.assignee
+          allow(User).to receive(:find_by_id).with(old_assignee.id).and_return(old_assignee)
+
+          expect(old_assignee).to receive(:update_cache_counts)
+
+          issue.update(assignee: nil)
+        end
+      end
+
+      context "when previous assignee does not exist" do
+        before{ issue.update(assignee: nil) }
+
+        it "updates cache count for the new assignee" do
+          expect_any_instance_of(User).to receive(:update_cache_counts)
+
+          issue.update(assignee: user)
+        end
+      end
+    end
+  end
+
   describe ".search" do
     let!(:searchable_issue) { create(:issue, title: "Searchable issue") }
 
