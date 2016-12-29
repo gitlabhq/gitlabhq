@@ -5,4 +5,5 @@
 /public/
 /tmp/
 /vendor/
+karma.config.js
 webpack.config.js
