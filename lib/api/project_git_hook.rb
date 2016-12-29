@@ -7,72 +7,71 @@ module API
     before { authenticate! }
     before { authorize_admin_project }
 
+    DEPRECATION_MESSAGE = 'This endpoint is deprecated, replaced with push_rules, and will be removed in GitLab 9.0.'.freeze
+
+    params do
+      requires :id, type: String, desc: 'The ID of a project'
+    end
     resource :projects do
-      # Get project push rule
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      # Example Request:
-      #   GET /projects/:id/push_rule
-      get ":id/git_hook" do
-        @push_rule = user_project.push_rule
-        present @push_rule, with: Entities::ProjectPushRule
+      helpers do
+        params :push_rule_params do
+          optional :commit_message_regex, type: String, desc: 'The commit message regex'
+          optional :deny_delete_tag, type: Boolean, desc: 'Deny deleting a tag'
+          at_least_one_of :commit_message_regex, :deny_delete_tag
+        end
       end
 
-      # Add push rule to project
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      # Example Request:
-      #   POST /projects/:id/push_rule
-      post ":id/git_hook" do
-        attrs = attributes_for_keys [
-          :commit_message_regex,
-          :deny_delete_tag
-        ]
+      desc 'Get project push rule' do
+        success Entities::ProjectPushRule
+        detail DEPRECATION_MESSAGE
+      end
+      get ":id/git_hook" do
+        push_rule = user_project.push_rule
+        present push_rule, with: Entities::ProjectPushRule
+      end
 
+      desc 'Add a push rule to a project' do
+        success Entities::ProjectPushRule
+        detail DEPRECATION_MESSAGE
+      end
+      params do
+        use :push_rule_params
+      end
+      post ":id/git_hook" do
         if user_project.push_rule
           error!("Project push rule exists", 422)
         else
-          @push_rule = user_project.create_push_rule(attrs)
-          present @push_rule, with: Entities::ProjectPushRule
+          push_rule = user_project.create_push_rule(declared_params)
+          present push_rule, with: Entities::ProjectPushRule
         end
       end
 
-      # Update an existing project push rule
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      # Example Request:
-      #   PUT /projects/:id/push_rule
+      desc 'Update an existing project push rule' do
+        success Entities::ProjectPushRule
+        detail DEPRECATION_MESSAGE
+      end
+      params do
+        use :push_rule_params
+      end
       put ":id/git_hook" do
-        @push_rule = user_project.push_rule
+        push_rule = user_project.push_rule
+        not_found!('Push Rule') unless push_rule
 
-        attrs = attributes_for_keys [
-          :commit_message_regex,
-          :deny_delete_tag
-        ]
-
-        if @push_rule && @push_rule.update_attributes(attrs)
-          present @push_rule, with: Entities::ProjectPushRule
+        if push_rule.update_attributes(declared_params(include_missing: false))
+          present push_rule, with: Entities::ProjectPushRule
         else
-          not_found!
+          render_validation_error!(push_rule)
         end
       end
 
-      # Deletes project push rule. This is an idempotent function.
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      # Example Request:
-      #   DELETE /projects/:id/push_rule
+      desc 'Deletes project push rule' do
+        detail DEPRECATION_MESSAGE
+      end
       delete ":id/git_hook" do
-        @push_rule = user_project.push_rule
-        if @push_rule
-          @push_rule.destroy
-        else
-          not_found!
-        end
+        push_rule = user_project.push_rule
+        not_found!('Push Rule') unless push_rule
+
+        push_rule.destroy
       end
     end
   end
