@@ -115,7 +115,7 @@ feature 'Group', feature: true do
 
     it 'has nested groups tab with nested groups inside' do
       visit path
-      click_link 'Nested Groups'
+      click_link 'Subgroups'
 
       expect(page).to have_content(nested_group.full_name)
     end

@@ -12,17 +12,11 @@ module Groups
         return @group
       end
 
-      parent_id = params[:parent_id]
+      if @group.parent && !can?(current_user, :admin_group, @group.parent)
+        @group.parent = nil
+        @group.errors.add(:parent_id, 'manage access required to create subgroup')
 
-      if parent_id
-        parent = Group.find(parent_id)
-
-        unless can?(current_user, :admin_group, parent)
-          @group.parent_id = nil
-          @group.errors.add(:parent_id, 'manage access required to create subgroup')
-
-          return @group
-        end
+        return @group
       end
 
       @group.name ||= @group.path.dup

@@ -35,7 +35,7 @@
       - if @nested_groups.present?
         %li
           = link_to "#groups", 'data-toggle' => 'tab' do
-            Nested Groups
+            Subgroups
     .nav-controls
       = form_tag request.path, method: :get, class: 'project-filter-form', id: 'project-filter-form' do |f|
         = search_field_tag :filter_projects, nil, placeholder: 'Filter by name', class: 'projects-list-filter form-control', spellcheck: false
@@ -55,5 +55,4 @@
     - if @nested_groups.present?
       .tab-pane#groups
         %ul.content-list
-          - @nested_groups.each do |group|
-            = render 'shared/groups/group', group: group
+          = render partial: 'shared/groups/group', collection: @nested_groups
