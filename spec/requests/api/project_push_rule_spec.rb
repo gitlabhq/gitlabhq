@@ -128,7 +128,7 @@ describe API::ProjectPushRule, 'ProjectPushRule', api: true  do
         expect(response.status).to eq(404)
 
         expect(json_response).to be_an Hash
-        expect(json_response['message']).to eq("404 Not Found")
+        expect(json_response['message']).to eq('404 Push Rule Not Found')
       end
 
       it "returns a 403 error if not authorized" do
