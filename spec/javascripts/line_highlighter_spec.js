@@ -1,7 +1,8 @@
 /* eslint-disable space-before-function-paren, no-var, no-param-reassign, quotes, prefer-template, no-else-return, new-cap, dot-notation, no-return-assign, comma-dangle, no-new, one-var, one-var-declaration-per-line, no-plusplus, jasmine/no-spec-dupes, no-underscore-dangle, padded-blocks, max-len */
 /* global LineHighlighter */
 
-/*= require line_highlighter */
+require('./spec_helper');
+require('line_highlighter');
 
 (function() {
   describe('LineHighlighter', function() {

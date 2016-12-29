@@ -1,13 +1,12 @@
 /* eslint-disable space-before-function-paren, max-len, no-var, one-var, one-var-declaration-per-line, no-unused-expressions, consistent-return, no-param-reassign, default-case, no-return-assign, comma-dangle, object-shorthand, prefer-template, quotes, new-parens, vars-on-top, new-cap, padded-blocks, max-len */
-
-/*= require gl_dropdown */
-/*= require search_autocomplete */
-/*= require jquery */
-/*= require lib/utils/common_utils */
-/*= require lib/utils/type_utility */
-/*= require fuzzaldrin-plus */
-/*= require turbolinks */
-/*= require jquery.turbolinks */
+require('./spec_helper');
+require('gl_dropdown');
+require('search_autocomplete');
+require('lib/utils/common_utils');
+require('lib/utils/type_utility');
+require('vendor/fuzzaldrin-plus');
+require('vendor/turbolinks');
+require('vendor/jquery.turbolinks');
 
 (function() {
   var addBodyAttributes, assertLinks, dashboardIssuesPath, dashboardMRsPath, groupIssuesPath, groupMRsPath, groupName, mockDashboardOptions, mockGroupOptions, mockProjectOptions, projectIssuesPath, projectMRsPath, projectName, userId, widget;

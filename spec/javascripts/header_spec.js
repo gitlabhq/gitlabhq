@@ -1,7 +1,7 @@
 /* eslint-disable space-before-function-paren, padded-blocks, no-var */
-/*= require header */
-/*= require lib/utils/text_utility */
-/*= require jquery */
+require('./spec_helper');
+require('header');
+require('lib/utils/text_utility');
 
 (function() {
 

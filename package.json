@@ -4,7 +4,8 @@
     "dev-server": "node_modules/.bin/webpack-dev-server --config config/webpack.config.js",
     "eslint": "eslint --max-warnings 0 --ext .js,.js.es6 .",
     "eslint-fix": "npm run eslint -- --fix",
-    "eslint-report": "npm run eslint -- --format html --output-file ./eslint-report.html"
+    "eslint-report": "npm run eslint -- --format html --output-file ./eslint-report.html",
+    "karma-start": "karma start config/karma.config.js"
   },
   "dependencies": {
     "babel": "^5.8.38",
@@ -35,6 +36,11 @@
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jasmine": "^2.1.0",
     "istanbul": "^0.4.5",
-    "karma": "^1.3.0"
+    "jasmine-core": "^2.5.2",
+    "jasmine-jquery": "^2.1.1",
+    "karma": "^1.3.0",
+    "karma-jasmine": "^1.1.0",
+    "karma-jquery": "^0.1.0",
+    "karma-webpack": "^1.8.0"
   }
 }

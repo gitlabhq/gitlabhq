@@ -1,7 +1,8 @@
 /* eslint-disable space-before-function-paren, no-return-assign, padded-blocks */
 /* global MergeRequest */
 
-/*= require merge_request */
+require('./spec_helper');
+require('merge_request');
 
 (function() {
   describe('MergeRequest', function() {

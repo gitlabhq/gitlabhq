@@ -1,4 +1,5 @@
-//= require vue_common_component/commit
+require('./spec_helper');
+require('vue_common_component/commit');
 
 describe('Commit component', () => {
   let props;

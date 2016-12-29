@@ -6,7 +6,7 @@ namespace :gitlab do
       %W(rake rubocop),
       %W(rake spinach),
       %W(rake spec),
-      %W(rake teaspoon)
+      %W(npm run karma-start)
     ]
 
     cmds.each do |cmd|

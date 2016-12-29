@@ -1,5 +1,6 @@
-//= require vue
-//= require environments/components/environment_actions
+require('./spec_helper');
+require('vue');
+require('environments/components/environment_actions');
 
 describe('Actions Component', () => {
   preloadFixtures('static/environments/element.html.raw');

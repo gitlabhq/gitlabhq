@@ -1,4 +1,5 @@
-//= require lib/utils/bootstrap_linked_tabs
+require('./spec_helper');
+require('lib/utils/bootstrap_linked_tabs');
 
 (() => {
   describe('Linked Tabs', () => {

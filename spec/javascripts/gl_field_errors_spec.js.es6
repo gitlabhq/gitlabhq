@@ -1,7 +1,7 @@
 /* eslint-disable space-before-function-paren, arrow-body-style, indent, padded-blocks */
 
-//= require jquery
-//= require gl_field_errors
+require('./spec_helper');
+require('gl_field_errors');
 
 ((global) => {
   preloadFixtures('static/gl_field_errors.html.raw');

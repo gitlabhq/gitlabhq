@@ -1,9 +1,10 @@
 /* eslint-disable no-var, comma-dangle, object-shorthand */
 
-/*= require merge_request_tabs */
-//= require breakpoints
-//= require lib/utils/common_utils
-//= require jquery.scrollTo
+require('./spec_helper');
+require('merge_request_tabs');
+require('breakpoints');
+require('lib/utils/common_utils');
+require('vendor/jquery.scrollTo');
 
 (function () {
   describe('MergeRequestTabs', function () {

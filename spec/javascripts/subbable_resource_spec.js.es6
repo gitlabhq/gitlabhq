@@ -1,9 +1,8 @@
 /* eslint-disable max-len, arrow-parens, comma-dangle, no-plusplus */
 
-//= vue
-//= vue-resource
-//= require jquery
-//= require subbable_resource
+require('./spec_helper');
+window._ = require('underscore');
+require('subbable_resource');
 
 /*
 * Test that each rest verb calls the publish and subscribe function and passes the correct value back

@@ -1,9 +1,9 @@
 /* eslint-disable no-new, padded-blocks */
 
-/*= require sidebar */
-/*= require jquery */
-/*= require js.cookie */
-/*= require lib/utils/text_utility */
+require('./spec_helper');
+require('sidebar');
+require('vendor/js.cookie');
+require('lib/utils/text_utility');
 
 ((global) => {
   describe('Dashboard', () => {

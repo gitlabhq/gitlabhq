@@ -1,9 +1,10 @@
 /* eslint-disable no-unused-expressions, comma-spacing, prefer-const, no-prototype-builtins, semi, no-new, keyword-spacing, no-plusplus, no-shadow, max-len */
 
-/*= require js.cookie.js */
-/*= require jquery.endless-scroll.js */
-/*= require pager */
-/*= require activities */
+require('./spec_helper');
+require('vendor/js.cookie.js');
+require('vendor/jquery.endless-scroll.js');
+require('pager');
+require('activities');
 
 (() => {
   window.gon || (window.gon = {});

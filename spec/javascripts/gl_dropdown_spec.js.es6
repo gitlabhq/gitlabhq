@@ -1,11 +1,11 @@
 /* eslint-disable comma-dangle, prefer-const, no-param-reassign, no-plusplus, semi, no-unused-expressions, arrow-spacing, max-len */
 /* global Turbolinks */
 
-/*= require jquery */
-/*= require gl_dropdown */
-/*= require turbolinks */
-/*= require lib/utils/common_utils */
-/*= require lib/utils/type_utility */
+require('./spec_helper');
+require('gl_dropdown');
+require('vendor/turbolinks');
+require('lib/utils/common_utils');
+require('lib/utils/type_utility');
 
 (() => {
   const NON_SELECTABLE_CLASSES = '.divider, .separator, .dropdown-header, .dropdown-menu-empty-link';

@@ -1,6 +1,7 @@
-//= require vue
-//= require timeago
-//= require environments/components/environment_item
+require('./spec_helper');
+require('vue');
+require('timeago');
+require('environments/components/environment_item');
 
 describe('Environment item', () => {
   preloadFixtures('static/environments/table.html.raw');

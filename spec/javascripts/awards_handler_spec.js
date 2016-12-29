@@ -1,10 +1,10 @@
 /* eslint-disable space-before-function-paren, no-var, one-var, one-var-declaration-per-line, no-unused-expressions, comma-dangle, new-parens, no-unused-vars, quotes, jasmine/no-spec-dupes, prefer-template, padded-blocks, max-len */
 /* global AwardsHandler */
 
-/*= require awards_handler */
-/*= require jquery */
-/*= require js.cookie */
-/*= require ./fixtures/emoji_menu */
+require('./spec_helper');
+require('awards_handler');
+require('vendor/js.cookie');
+require('./fixtures/emoji_menu');
 
 (function() {
   var awardsHandler, lazyAssert, urlRoot;

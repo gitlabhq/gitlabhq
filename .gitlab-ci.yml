@@ -291,7 +291,7 @@ rake db:seed_fu:
     paths:
       - log/development.log
 
-teaspoon:
+karma:
   cache:
     paths:
       - vendor/ruby
@@ -300,9 +300,9 @@ teaspoon:
   <<: *use-db
   <<: *dedicated-runner
   script:
-    - npm install
     - npm link istanbul
-    - rake teaspoon
+    - rake webpack:compile
+    - npm run karma-start
   artifacts:
     name: coverage-javascript
     expire_in: 31d
@@ -381,8 +381,6 @@ lint:javascript:
       - node_modules/
   stage: test
   image: "node:7.1"
-  before_script:
-    - npm install
   script:
     - npm --silent run eslint
 
@@ -393,8 +391,6 @@ lint:javascript:report:
       - node_modules/
   stage: post-test
   image: "node:7.1"
-  before_script:
-    - npm install
   script:
     - find app/ spec/ -name '*.js' -or -name '*.js.es6' -exec sed --in-place 's|/\* eslint-disable .*\*/||' {} \; # run report over all files
     - npm --silent run eslint-report || true # ignore exit code
@@ -444,7 +440,7 @@ pages:
   <<: *dedicated-runner
   dependencies:
     - coverage
-    - teaspoon
+    - karma
     - lint:javascript:report
   script:
     - mv public/ .public/

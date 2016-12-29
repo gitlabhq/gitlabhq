@@ -1,5 +1,6 @@
-/*= require lib/utils/text_utility */
-/*= require abuse_reports */
+require('./spec_helper');
+require('lib/utils/text_utility');
+require('abuse_reports');
 
 ((global) => {
   describe('Abuse Reports', () => {

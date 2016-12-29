@@ -1,5 +1,5 @@
-//= require jquery
-//= require smart_interval
+require('./spec_helper');
+require('smart_interval');
 
 (() => {
   const DEFAULT_MAX_INTERVAL = 100;

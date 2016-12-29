@@ -1,7 +1,8 @@
 /* eslint-disable space-before-function-paren, no-return-assign, no-var, quotes, padded-blocks */
 /* global ShortcutsIssuable */
 
-/*= require shortcuts_issuable */
+require('./spec_helper');
+require('shortcuts_issuable');
 
 (function() {
   describe('ShortcutsIssuable', function() {

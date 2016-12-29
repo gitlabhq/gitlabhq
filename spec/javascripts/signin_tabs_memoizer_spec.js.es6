@@ -1,4 +1,5 @@
-/*= require signin_tabs_memoizer */
+require('./spec_helper');
+require('signin_tabs_memoizer');
 
 ((global) => {
   describe('SigninTabsMemoizer', () => {

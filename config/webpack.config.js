@@ -58,7 +58,7 @@ var config = {
       {
         test: /\.(js|es6)$/,
         loader: 'imports-loader',
-        query: 'this=>window'
+        query: '$=jquery,jQuery=jquery,this=>window'
       },
       {
         test: /\.json$/,
@@ -87,7 +87,10 @@ var config = {
       'vendor':         path.join(ROOT_PATH, 'vendor/assets/javascripts'),
       'vue$':           'vue/dist/vue.js',
       'vue-resource$':  'vue-resource/dist/vue-resource.js'
-    }
+    },
+    root: [
+      path.join(ROOT_PATH, 'app/assets/javascripts'),
+    ],
   }
 }
 
