@@ -67,7 +67,7 @@
     return $('.notes-form .js-zen-enter').click();
   };
 
-  exitZen = function() { // Ohmmmmmmm
+  exitZen = function() {
     return $('.notes-form .js-zen-leave').click();
   };
 

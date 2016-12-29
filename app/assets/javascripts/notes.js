@@ -498,10 +498,9 @@
       }
       else {
         var $buttons = $el.find('.note-form-actions');
-        var isButtonsVisible = gl.utils.isElementVisibleInViewport($buttons[0]);
-        var isWidgetVisible = gl.utils.isElementVisibleInViewport($el[0]);
+        var isWidgetVisible = gl.utils.isInViewport($el[0]);
 
-        if (!isButtonsVisible || !isWidgetVisible) {
+        if (!isWidgetVisible) {
           gl.utils.animateToElement($el);
         }
 
@@ -536,7 +535,7 @@
         }
       }
 
-      $note.find('.js-note-attachment-delete').show(); // Show the attachment delete link
+      $note.find('.js-note-attachment-delete').show();
       $editForm.addClass('current-note-edit-form');
       $note.addClass('is-editting');
       this.putEditFormInPlace($target);
@@ -580,11 +579,11 @@
     };
 
     Notes.prototype.removeNoteEditForm = function(note) {
-      var form = note.find(".current-note-edit-form");
-      note.removeClass("is-editting");
-      form.removeClass("current-note-edit-form");
+      var form = note.find('.current-note-edit-form');
+      note.removeClass('is-editting');
+      form.removeClass('current-note-edit-form');
       // Replace markdown textarea text with original note text.
-      return form.find(".js-note-text").val(form.find('form.edit-note').data('original-note'));
+      return form.find('.js-note-text').val(form.find('form.edit-note').data('original-note'));
     };
 
 
@@ -885,7 +884,6 @@
     };
 
     Notes.prototype.putEditFormInPlace = function($el) {
-
       var $editForm = $(this.getEditFormSelector($el));
       var $note = $el.closest('.note');
 

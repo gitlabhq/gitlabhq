@@ -128,18 +128,17 @@
       return e.metaKey || e.ctrlKey || e.altKey || e.shiftKey;
     };
 
+    gl.utils.animateToElement = function($el) {
+      var top = $el.offset().top;
+      gl.navBarHeight = gl.navBarHeight || $('.navbar-gitlab').height();
+      gl.navLinksHieght = gl.navLinksHieght || $('.nav-links').height();
+      gl.mrTabsHeight = gl.mrTabsHeight || $('.merge-request-tabs').height();
+
+      return $('body, html').animate({
+        scrollTop: top - (gl.navBarHeight + gl.navLinksHieght + gl.mrTabsHeight)
+      }, 200);
+    };
+
   })(window);
-
-  gl.utils.isElementVisibleInViewport = function(el) {
-    var rect = el.getBoundingClientRect();
-    var height = Math.max(document.documentElement.clientHeight, window.innerHeight);
-    return !(rect.bottom - 110 < 0 || rect.top - height >= 0); // -110 for sticky GitLab navigation header
-  };
-
-  gl.utils.animateToElement = function($el) {
-    return $('body, html').animate({
-      scrollTop: $el.offset().top - 110
-    }, 200);
-  };
 
 }).call(this);
