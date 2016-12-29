@@ -11,6 +11,8 @@ shared_examples 'new issuable record that supports slash commands' do
   let(:params) { base_params.merge(defined?(default_params) ? default_params : {}).merge(example_params) }
   let(:issuable) { described_class.new(project, user, params).execute }
 
+  before { project.team << [assignee, :master ] }
+
   context 'with labels in command only' do
     let(:example_params) do
       {
@@ -55,7 +57,7 @@ shared_examples 'new issuable record that supports slash commands' do
   context 'with assignee and milestone in params and command' do
     let(:example_params) do
       {
-        assignee: build_stubbed(:user),
+        assignee: create(:user),
         milestone_id: double(:milestone),
         description: %(/assign @#{assignee.username}\n/milestone %"#{milestone.name}")
       }
