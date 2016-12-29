@@ -16,12 +16,16 @@
       svg() {
         return this.svgs[this.match(this.pipeline.details.status.icon)];
       },
+      detailsPath() {
+        const { status } = this.pipeline.details;
+        return status.path ? status.path : '#';
+      },
     },
     template: `
       <td class="commit-link">
         <a
           :class='cssClasses'
-          :href='pipeline.details.status.details_path'
+          :href='detailsPath'
           v-html='svg + pipeline.details.status.text'
         >
         </a>
