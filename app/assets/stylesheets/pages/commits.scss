@@ -19,7 +19,7 @@
 
   .commit-title {
     margin: 0;
-    color: $gl-gray-dark;
+    color: $gl-text-color;
   }
 
   .commit-description {
@@ -96,14 +96,14 @@
   }
 
   .commit-row-message {
-    color: $gl-dark-link-color;
+    color: $gl-text-color;
   }
 }
 
 .text-expander {
   display: inline-block;
   background: $gray-light;
-  color: $gl-gray-light;
+  color: $gl-text-color-secondary;
   padding: 0 5px;
   cursor: pointer;
   border: 1px solid $border-gray-dark;
@@ -153,7 +153,7 @@
 
   a,
   button {
-    color: $gl-dark-link-color;
+    color: $gl-text-color;
     vertical-align: baseline;
   }
 
@@ -176,7 +176,7 @@
     }
 
     a {
-      color: $gl-dark-link-color;
+      color: $gl-text-color;
     }
   }
 
@@ -193,7 +193,7 @@
 }
 
 .branch-commit {
-  color: $gl-gray;
+  color: $gl-text-color;
 
   .commit-icon {
     text-align: center;
@@ -203,7 +203,7 @@
       height: 14px;
       width: 14px;
       vertical-align: middle;
-      fill: $gl-gray-light;
+      fill: $gl-text-color-secondary;
     }
   }
 
@@ -212,6 +212,6 @@
   }
 
   .commit-row-message {
-    color: $gl-gray;
+    color: $gl-text-color;
   }
 }

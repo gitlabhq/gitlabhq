@@ -78,7 +78,7 @@
 
       i,
       a {
-        color: $gl-dark-link-color;
+        color: $gl-text-color;
       }
 
       img {
@@ -104,21 +104,21 @@
     padding-right: 8px;
 
     .commit-author-name {
-      color: $gl-gray;
+      color: $gl-text-color;
     }
   }
 
   .tree-time-ago {
     min-width: 135px;
-    color: $gl-gray-light;
+    color: $gl-text-color-secondary;
   }
 
   .tree-commit {
     max-width: 320px;
-    color: $gl-gray-light;
+    color: $gl-text-color-secondary;
 
     .tree-commit-link {
-      color: $gl-gray-light;
+      color: $gl-text-color-secondary;
 
       &:hover {
         text-decoration: underline;

@@ -131,7 +131,7 @@
       height: 14px;
       width: 14px;
       vertical-align: middle;
-      fill: $gl-gray-light;
+      fill: $gl-text-color-secondary;
     }
 
     .fa {
@@ -210,7 +210,7 @@
 
   .duration,
   .finished-at {
-    color: $gl-gray-light;
+    color: $gl-text-color-secondary;
     margin: 4px 0;
 
     .fa {
@@ -231,7 +231,7 @@
 
     .btn {
       margin: 0;
-      color: $gl-gray-light;
+      color: $gl-text-color-secondary;
     }
 
     .cancel-retry-btns {
@@ -244,10 +244,10 @@
 
     .dropdown-toggle,
     .dropdown-menu {
-      color: $gl-gray-light;
+      color: $gl-text-color-secondary;
 
       .fa {
-        color: $gl-gray-light;
+        color: $gl-text-color-secondary;
         font-size: 14px;
       }
 
@@ -281,7 +281,7 @@
   .build-link {
 
     a {
-      color: $gl-dark-link-color;
+      color: $gl-text-color;
     }
   }
 
@@ -344,7 +344,7 @@
 
   a {
     text-decoration: none;
-    color: $gl-text-color-light;
+    color: $gl-text-color-secondary;
   }
 
   svg {
@@ -468,13 +468,13 @@
     width: 186px;
     margin-bottom: 10px;
     white-space: normal;
-    color: $gl-text-color-light;
+    color: $gl-text-color-secondary;
 
     .dropdown-menu-toggle {
       background-color: transparent;
       border: none;
       padding: 0;
-      color: $gl-text-color-light;
+      color: $gl-text-color-secondary;
 
       &:focus {
         outline: none;
@@ -730,7 +730,7 @@
 }
 
 .dropdown-build {
-  color: $gl-text-color-light;
+  color: $gl-text-color-secondary;
 
   .build-content {
     padding: 4px 7px 8px;
@@ -784,7 +784,7 @@
   .builds-dropdown {
     background-color: transparent;
     padding: 0;
-    color: $gl-text-color-light;
+    color: $gl-text-color-secondary;
     border: none;
     margin: 0;
 
@@ -827,7 +827,7 @@
       .ci-status-icon-canceled,
       .ci-status-icon-disabled,
       .ci-status-icon-not-found {
-        background-color: rgba($gl-gray, .1);
+        background-color: rgba($gl-text-color, .1);
       }
 
       .ci-status-icon-created,
@@ -866,7 +866,7 @@
     min-height: 50px;
 
     a {
-      color: $gl-text-color-light;
+      color: $gl-text-color-secondary;
     }
   }
 
