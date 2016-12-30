@@ -1,4 +1,6 @@
-(() => {
+/* eslint-disable no-param-reassign */
+
+((gl) => {
   gl.VueRealtimeListener = (removeIntervals, startIntervals) => {
     const removeAll = () => {
       removeIntervals();
