@@ -37,7 +37,7 @@ feature 'issue move to another project' do
       edit_issue(issue)
     end
 
-    scenario 'moving issue to another project' do
+    scenario 'moving issue to another project', js: true do
       first('#move_to_project_id', visible: false).set(new_project.id)
       click_button('Save changes')
 
