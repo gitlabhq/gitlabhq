@@ -191,8 +191,11 @@ describe ApplicationHelper do
   end
 
   describe 'time_ago_with_tooltip' do
+    before do
+      allow(Time).to receive(:zone).and_return(ActiveSupport::TimeZone.new('UTC'))
+    end
+
     def element(*arguments)
-      Time.zone = 'UTC'
       time = Time.zone.parse('2015-07-02 08:23')
       element = helper.time_ago_with_tooltip(time, *arguments)
 
