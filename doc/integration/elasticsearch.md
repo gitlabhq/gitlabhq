@@ -55,7 +55,7 @@ The following Elasticsearch settings are available:
 
 | Parameter                           | Description |
 | ---------                           | ----------- |
-| `Elasticsearch indexing`            | Enables/disables Elasticsearch indexing. You may want to enable indexing but disable search in order to give the index time to be fully completed, for example. |
+| `Elasticsearch indexing`            | Enables/disables Elasticsearch indexing. You may want to enable indexing but disable search in order to give the index time to be fully completed, for example. Also keep in mind that this option doesn't have any impact on existing data, this only enables/disables background indexer which tracks data changes. So by enabling this you will not get your existing data indexed, use special rake task for that as explained in [Add GitLab's data to the Elasticsearch index](#add-gitlabs-data-to-the-elasticsearch-index). |
 | `Search with Elasticsearch enabled` | Enables/disables using Elasticsearch in search. |
 | `Host`                              | The TCP/IP host to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., "host1, host2"). |
 | `Port`                              | The TCP port that Elasticsearch listens to. The default value is 9200  |
