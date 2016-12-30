@@ -34,7 +34,8 @@
     },
     computed: {
       titleMessage() {
-        return this.htmlTitle ? this.htmlTitle : this.rubyTitle;
+        const rubyTitle = `<p dir="auto">${this.rubyTitle}</p>`;
+        return this.htmlTitle ? this.htmlTitle : rubyTitle;
       },
       diff() {
         return this.diffTitle ? this.diffTitle : this.rubyDiffTitle;
