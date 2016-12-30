@@ -22,4 +22,16 @@ feature 'Diffs URL', js: true, feature: true do
       expect(page).to have_css('.diffs.tab-pane.active')
     end
   end
+
+  context 'when merge request has overflow' do
+    it 'displays warning' do
+      allow_any_instance_of(MergeRequest).to receive(:diff_overflow?).and_return(true)
+
+      visit diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
+
+      page.within('.alert') do
+        expect(page).to have_text('Too many changes to show')
+      end
+    end
+  end
 end

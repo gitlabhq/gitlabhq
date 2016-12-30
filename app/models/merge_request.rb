@@ -211,6 +211,12 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
+  def diff_overflow?
+    return false unless merge_request_diff
+
+    merge_request_diff.overflow?
+  end
+
   # MRs created before 8.4 don't store a MergeRequestDiff#base_commit_sha,
   # but we need to get a commit for the "View file @ ..." link by deleted files,
   # so we find the likely one if we can't get the actual one.
