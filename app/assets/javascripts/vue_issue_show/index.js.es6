@@ -2,6 +2,7 @@
 /*= require vue-resource */
 
 /*= require boards/vue_resource_interceptor */
+/*= require vue_realtime_listener/index */
 
 /* global Vue, VueResource, Flash */
 
@@ -81,16 +82,5 @@
   const removeIntervalLoops = () => titleComp.clear();
   const startIntervalLoops = () => startTitleFetch();
 
-  const removeAll = () => {
-    removeIntervalLoops(); // this gets rid of the interval prior to the events unbinding
-    window.removeEventListener('beforeunload', removeIntervalLoops);
-    window.removeEventListener('focus', startIntervalLoops);
-    window.removeEventListener('blur', removeIntervalLoops);
-    document.removeEventListener('page:fetch', removeAll);
-  };
-
-  window.addEventListener('beforeunload', removeIntervalLoops);
-  window.addEventListener('focus', startIntervalLoops);
-  window.addEventListener('blur', removeIntervalLoops);
-  document.addEventListener('page:fetch', removeAll);
+  gl.VueRealtimeListener(removeIntervalLoops, startIntervalLoops);
 })(window.gl || (window.gl = {}));
