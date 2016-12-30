@@ -61,10 +61,10 @@ module SlashCommands
 
     desc 'Merge (when build succeeds)'
     condition do
-      last_diff_sha = params.to_h[:merge_request_diff_head_sha]
+      last_diff_sha = params && params[:merge_request_diff_head_sha]
       issuable.is_a?(MergeRequest) &&
-        issuable.mergeable_with_slash_command?(current_user, autocomplete_precheck: !last_diff_sha, last_diff_sha: last_diff_sha) &&
-        issuable.persisted?
+        issuable.persisted? &&
+        issuable.mergeable_with_slash_command?(current_user, autocomplete_precheck: !last_diff_sha, last_diff_sha: last_diff_sha)
     end
     command :merge do
       @updates[:merge] = params[:merge_request_diff_head_sha]

@@ -250,7 +250,7 @@
         return;
       }
 
-      if (note.commands_changes && note.commands_changes.includes('merge')) {
+      if (note.commands_changes && note.commands_changes.indexOf('merge') !== -1) {
         $.get(mrRefreshWidgetUrl);
       }
     };

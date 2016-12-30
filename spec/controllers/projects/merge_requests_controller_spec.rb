@@ -1071,8 +1071,22 @@ describe Projects::MergeRequestsController do
         expect(response).to have_http_status(:ok)
       end
 
-      it 'returns :success' do
+      it 'sets status to :success' do
         expect(assigns(:status)).to eq(:success)
+        expect(response).to render_template('merge')
+      end
+    end
+
+    context 'when merge request was merged already' do
+      let(:merge_request) { create(:merge_request, source_project: project, state: :merged) }
+
+      it 'returns an OK response' do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'sets status to :success' do
+        expect(assigns(:status)).to eq(:success)
+        expect(response).to render_template('merge')
       end
     end
 
@@ -1083,8 +1097,9 @@ describe Projects::MergeRequestsController do
         expect(response).to have_http_status(:ok)
       end
 
-      it 'returns :merge_when_build_succeeds' do
+      it 'sets status to :merge_when_build_succeeds' do
         expect(assigns(:status)).to eq(:merge_when_build_succeeds)
+        expect(response).to render_template('merge')
       end
     end
 
@@ -1095,8 +1110,9 @@ describe Projects::MergeRequestsController do
         expect(response).to have_http_status(:ok)
       end
 
-      it 'returns nil' do
+      it 'sets status to nil' do
         expect(assigns(:status)).to be_nil
+        expect(response).to render_template('merge')
       end
     end
   end

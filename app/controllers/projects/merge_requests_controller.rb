@@ -348,7 +348,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def merge_widget_refresh
-    if merge_request.in_progress_merge_commit_sha
+    if merge_request.in_progress_merge_commit_sha || merge_request.state == 'merged'
       @status = :success
     elsif merge_request.merge_when_build_succeeds
       @status = :merge_when_build_succeeds

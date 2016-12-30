@@ -73,7 +73,7 @@ feature 'Merge Requests > User uses slash commands', feature: true, js: true do
         it 'merges the MR' do
           write_note("/merge")
 
-          expect(page).to have_content 'Your commands have been executed!'
+          expect(page).to have_content 'Commands applied'
 
           expect(merge_request.reload).to be_merged
         end
@@ -81,20 +81,8 @@ feature 'Merge Requests > User uses slash commands', feature: true, js: true do
 
       context 'when the head diff changes in the meanwhile' do
         before do
-          path = File.expand_path("#{project.repository_storage_path}/#{project.namespace.path}/#{project.path}/new_file.txt")
-
-          params = {
-            source_project: merge_request.project,
-            target_project: merge_request.project,
-            target_branch: merge_request.source_branch,
-            source_branch: merge_request.source_branch,
-            file_path: path,
-            file_content: 'some content',
-            commit_message: 'additional commit',
-          }
-
-          Files::UpdateService.new(project, user, params).execute
-          merge_request.reload_diff
+          merge_request.source_branch = 'another_branch'
+          merge_request.save
         end
 
         it 'does not merge the MR' do

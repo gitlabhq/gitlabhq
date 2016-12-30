@@ -179,7 +179,7 @@ describe MergeRequests::UpdateService, services: true do
         it { service.execute(merge_request) }
       end
 
-      context 'MR can not be merged by non authorised user' do
+      context 'with a non-authorised user' do
         let(:visitor) { create(:user) }
         let(:service) { MergeRequests::UpdateService.new(project, visitor, opts) }
 

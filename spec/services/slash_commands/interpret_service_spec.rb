@@ -283,7 +283,7 @@ describe SlashCommands::InterpretService, services: true do
         end
       end
 
-      context 'non merge request object cant be merged' do
+      context 'issue can not be merged' do
         it_behaves_like 'empty command' do
           let(:content) { "/merge" }
           let(:issuable) { issue }

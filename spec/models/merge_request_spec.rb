@@ -1578,6 +1578,12 @@ describe MergeRequest, models: true do
         end
       end
 
+      context 'sha is not provided'  do
+        it 'is not mergeable' do
+          expect(merge_request.mergeable_with_slash_command?(developer)).to be_falsey
+        end
+      end
+
       context 'with pipeline ok'  do
         before do
           create_pipeline(:success)
