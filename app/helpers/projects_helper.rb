@@ -173,48 +173,27 @@ module ProjectsHelper
       nav_tabs << :merge_requests
     end
 
-    if can?(current_user, :read_pipeline, project)
-      nav_tabs << :pipelines
-    end
-
-    if can?(current_user, :read_build, project)
-      nav_tabs << :builds
-    end
-
     if Gitlab.config.registry.enabled && can?(current_user, :read_container_image, project)
       nav_tabs << :container_registry
     end
 
-    if can?(current_user, :read_environment, project)
-      nav_tabs << :environments
-    end
+    tab_ability_map = {
+      environments: :read_environment,
+      milestones:   :read_milestone,
+      pipelines:    :read_pipeline,
+      snippets:     :read_project_snippet,
+      settings:     :admin_project,
+      builds:       :read_build,
+      labels:       :read_label,
+      issues:       :read_issue,
+      team:         :read_project_member,
+      wiki:         :read_wiki
+    }
 
-    if can?(current_user, :admin_project, project)
-      nav_tabs << :settings
-    end
-
-    if can?(current_user, :read_project_member, project)
-      nav_tabs << :team
-    end
-
-    if can?(current_user, :read_issue, project)
-      nav_tabs << :issues
-    end
-
-    if can?(current_user, :read_wiki, project)
-      nav_tabs << :wiki
-    end
-
-    if can?(current_user, :read_project_snippet, project)
-      nav_tabs << :snippets
-    end
-
-    if can?(current_user, :read_label, project)
-      nav_tabs << :labels
-    end
-
-    if can?(current_user, :read_milestone, project)
-      nav_tabs << :milestones
+    tab_ability_map.each do |tab, ability|
+      if can?(current_user, ability, project)
+        nav_tabs << tab
+      end
     end
 
     nav_tabs.flatten

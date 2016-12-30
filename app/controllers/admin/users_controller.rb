@@ -16,9 +16,6 @@ class Admin::UsersController < Admin::ApplicationController
     @joined_projects = user.projects.joined(@user)
   end
 
-  def groups
-  end
-
   def keys
     @keys = user.keys
   end

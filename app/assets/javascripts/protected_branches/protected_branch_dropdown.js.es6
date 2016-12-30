@@ -76,3 +76,5 @@ class ProtectedBranchDropdown {
     this.$dropdownFooter.toggleClass('hidden', !branchName);
   }
 }
+
+window.ProtectedBranchDropdown = ProtectedBranchDropdown;

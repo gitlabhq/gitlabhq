@@ -424,6 +424,10 @@
 .merge-request-tabs-holder {
   background-color: $white-light;
 
+  .container-limited {
+    max-width: $limited-layout-width;
+  }
+
   &.affix {
     top: 100px;
     left: 0;

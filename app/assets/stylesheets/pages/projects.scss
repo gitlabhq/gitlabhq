@@ -627,6 +627,12 @@ pre.light-well {
   }
 }
 
+.commits-search-form {
+  .input-short {
+    min-width: 200px;
+  }
+}
+
 .project-last-commit {
   @media (min-width: $screen-sm-min) {
     margin-top: $gl-padding;

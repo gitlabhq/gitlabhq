@@ -44,8 +44,7 @@ describe API::Settings, 'Settings', api: true  do
         put api("/application/settings", admin), koding_enabled: true
 
         expect(response).to have_http_status(400)
-        expect(json_response['message']).to have_key('koding_url')
-        expect(json_response['message']['koding_url']).to include "can't be blank"
+        expect(json_response['error']).to eq('koding_url is missing')
       end
     end
   end
