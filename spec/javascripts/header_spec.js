@@ -7,7 +7,7 @@
 
   describe('Header', function() {
     var todosPendingCount = '.todos-pending-count';
-    var fixtureTemplate = 'header.html';
+    var fixtureTemplate = 'static/header.html.raw';
 
     function isTodosCountHidden() {
       return $(todosPendingCount).hasClass('hidden');

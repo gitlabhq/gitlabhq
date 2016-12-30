@@ -12,7 +12,7 @@
   gl.utils = gl.utils || {};
 
   describe('Notes', function() {
-    var commentsTemplate = 'issues/issue_with_comment.raw';
+    var commentsTemplate = 'issues/issue_with_comment.html.raw';
     fixture.preload(commentsTemplate);
 
     beforeEach(function () {

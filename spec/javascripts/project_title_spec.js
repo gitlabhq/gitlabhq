@@ -16,10 +16,10 @@
   window.gon.api_version = 'v3';
 
   describe('Project Title', function() {
-    fixture.preload('project_title.html');
+    fixture.preload('static/project_title.html.raw');
     fixture.preload('projects.json');
     beforeEach(function() {
-      fixture.load('project_title.html');
+      fixture.load('static/project_title.html.raw');
       return this.project = new Project();
     });
     return describe('project list', function() {

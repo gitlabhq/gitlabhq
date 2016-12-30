@@ -2,7 +2,7 @@
 
 ((global) => {
   describe('SigninTabsMemoizer', () => {
-    const fixtureTemplate = 'signin_tabs.html';
+    const fixtureTemplate = 'static/signin_tabs.html.raw';
     const tabSelector = 'ul.nav-tabs';
     const currentTabKey = 'current_signin_tab';
     let memo;

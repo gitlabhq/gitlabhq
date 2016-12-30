@@ -3,9 +3,9 @@
 //= require environments/components/environment_item
 
 describe('Environment item', () => {
-  fixture.preload('environments/table.html');
+  fixture.preload('static/environments/table.html.raw');
   beforeEach(() => {
-    fixture.load('environments/table.html');
+    fixture.load('static/environments/table.html.raw');
   });
 
   describe('When item is folder', () => {

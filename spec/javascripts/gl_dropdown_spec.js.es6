@@ -43,7 +43,7 @@
   }
 
   describe('Dropdown', function describeDropdown() {
-    fixture.preload('gl_dropdown.html');
+    fixture.preload('static/gl_dropdown.html.raw');
     fixture.preload('projects.json');
 
     function initDropDown(hasRemote, isFilterable) {
@@ -61,7 +61,7 @@
     }
 
     beforeEach(() => {
-      fixture.load('gl_dropdown.html');
+      fixture.load('static/gl_dropdown.html.raw');
       this.dropdownContainerElement = $('.dropdown.inline');
       this.$dropdownMenuElement = $('.dropdown-menu', this.dropdownContainerElement);
       this.projectsData = fixture.load('projects.json')[0];

@@ -7,7 +7,7 @@
 
 (() => {
   window.gon || (window.gon = {});
-  const fixtureTemplate = 'event_filter.html';
+  const fixtureTemplate = 'static/event_filter.html.raw';
   const filters = [
     {
       id: 'all',

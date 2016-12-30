@@ -4,9 +4,9 @@
 
 (function() {
   describe('requiresInput', function() {
-    fixture.preload('behaviors/requires_input.html');
+    fixture.preload('static/behaviors/requires_input.html.raw');
     beforeEach(function() {
-      return fixture.load('behaviors/requires_input.html');
+      return fixture.load('static/behaviors/requires_input.html.raw');
     });
     it('disables submit when any field is required', function() {
       $('.js-requires-input').requiresInput();

@@ -7,7 +7,7 @@
 
 ((global) => {
   describe('Dashboard', () => {
-    const fixtureTemplate = 'dashboard.html';
+    const fixtureTemplate = 'static/dashboard.html.raw';
 
     function todosCountText() {
       return $('.js-todos-count').text();

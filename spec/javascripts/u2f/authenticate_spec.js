@@ -10,7 +10,7 @@
 
 (function() {
   describe('U2FAuthenticate', function() {
-    fixture.load('u2f/authenticate');
+    fixture.load('static/u2f/authenticate.html.raw');
     beforeEach(function() {
       this.u2fDevice = new MockU2FDevice;
       this.container = $("#js-authenticate-u2f");

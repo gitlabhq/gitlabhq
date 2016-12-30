@@ -2,10 +2,10 @@
 
 (() => {
   describe('Pipelines', () => {
-    fixture.preload('pipeline_graph');
+    fixture.preload('static/pipeline_graph.html.raw');
 
     beforeEach(() => {
-      fixture.load('pipeline_graph');
+      fixture.load('static/pipeline_graph.html.raw');
     });
 
     it('should be defined', () => {
