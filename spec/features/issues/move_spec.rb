@@ -38,7 +38,7 @@ feature 'issue move to another project' do
     end
 
     scenario 'moving issue to another project', js: true do
-      first('#move_to_project_id', visible: false).set(new_project.id)
+      find('#move_to_project_id', visible: false).set(new_project.id)
       click_button('Save changes')
 
       expect(current_url).to include project_path(new_project)
