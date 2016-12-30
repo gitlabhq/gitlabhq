@@ -1,6 +1,8 @@
 /* global gl, Flash */
 /* eslint-disable no-param-reassign, no-underscore-dangle */
 
+/*= require vue_realtime_listener/index.js */
+
 ((gl) => {
   const pageValues = headers => ({
     perPage: +headers['X-Per-Page'],
@@ -49,21 +51,10 @@
 
       startTimeLoops();
 
-      const removeTimeIntervals = () => clearInterval(this.timeLoopInterval);
-      const startIntervalLoops = () => startTimeLoops();
+      const removeIntervals = () => clearInterval(this.timeLoopInterval);
+      const startIntervals = () => startTimeLoops();
 
-      const removeAll = () => {
-        removeTimeIntervals();
-        window.removeEventListener('beforeunload', removeTimeIntervals);
-        window.removeEventListener('focus', startIntervalLoops);
-        window.removeEventListener('blur', removeTimeIntervals);
-        document.removeEventListener('page:fetch', removeAll);
-      };
-
-      window.addEventListener('beforeunload', removeTimeIntervals);
-      window.addEventListener('focus', startIntervalLoops);
-      window.addEventListener('blur', removeTimeIntervals);
-      document.addEventListener('page:fetch', removeAll);
+      gl.VueRealtimeListener(removeIntervals, startIntervals);
     }
   };
 })(window.gl || (window.gl = {}));
