@@ -7,6 +7,7 @@ feature 'Groups > Members > Master/Owner can override LDAP access levels', featu
   let(:maryjane) { create(:user, name: 'Mary Jane') }
   let(:owner)    { create(:user) }
   let(:group)    { create(:group_with_ldap_group_link, :public) }
+  let(:project)  { create(:empty_project, namespace: group)  }
 
   let!(:owner_member)   { create(:group_member, :owner, group: group, user: owner) }
   let!(:ldap_member)    { create(:group_member, :guest, group: group, user: johndoe, ldap: true) }
@@ -17,6 +18,12 @@ feature 'Groups > Members > Master/Owner can override LDAP access levels', featu
     allow(Gitlab.config.ldap).to receive_messages(enabled: true)
 
     login_as(owner)
+  end
+
+  scenario 'override not available on project members page', js: true do
+    visit namespace_project_project_members_path(group, project)
+
+    expect(page).not_to have_button 'Edit permissions'
   end
 
   scenario 'owner can override LDAP access level', js: true do
