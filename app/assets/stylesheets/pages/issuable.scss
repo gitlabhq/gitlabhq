@@ -5,6 +5,12 @@
     }
   }
 
+  .title {
+    padding: 0;
+    margin: 0;
+    border-bottom: none;
+  }
+
   // Border around images in issue and MR descriptions.
   .description img:not(.emoji) {
     border: 1px solid $white-normal;
