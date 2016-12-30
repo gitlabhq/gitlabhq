@@ -10,7 +10,7 @@
 
 (function() {
   describe('U2FRegister', function() {
-    fixture.load('static/u2f/register.html.raw');
+    fixture.load('u2f/register.html.raw');
     beforeEach(function() {
       this.u2fDevice = new MockU2FDevice;
       this.container = $("#js-register-u2f");
