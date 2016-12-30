@@ -400,8 +400,8 @@ describe "Public Project Access", feature: true  do
     it { is_expected.to be_allowed_for(:visitor) }
   end
 
-  describe "GET /:project_path/hooks" do
-    subject { namespace_project_hooks_path(project.namespace, project) }
+  describe "GET /:project_path/settings/integrations" do
+    subject { namespace_project_settings_integrations_path(project.namespace, project) }
 
     it { is_expected.to be_allowed_for(:admin) }
     it { is_expected.to be_allowed_for(:owner).of(project) }

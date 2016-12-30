@@ -276,7 +276,7 @@ module SharedPaths
   end
 
   step 'I visit project hooks page' do
-    visit namespace_project_hooks_path(@project.namespace, @project)
+    visit namespace_project_settings_integrations_path(@project.namespace, @project)
   end
 
   step 'I visit group hooks page' do
