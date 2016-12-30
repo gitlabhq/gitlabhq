@@ -8,6 +8,14 @@ feature 'Tooltips on .timeago dates', feature: true, js: true do
   let(:created_date)    { Date.yesterday.to_time }
   let(:expected_format) { created_date.strftime('%b %-d, %Y %l:%M%P UTC') }
 
+  before(:all) do
+    if Time.now.getlocal.zone != 'UTC'
+      $stderr.puts "WARNING: This spec (#{__FILE__}) only works in the UTC time zone."
+      $stderr.puts ''
+      $stderr.puts 'Set TZ=UTC when running this spec to force the time zone to UTC.'
+    end
+  end
+
   context 'on the activity tab' do
     before do
       project.team << [user, :master]
@@ -17,7 +25,7 @@ feature 'Tooltips on .timeago dates', feature: true, js: true do
 
       login_as user
       visit user_path(user)
-      wait_for_ajax()
+      wait_for_ajax
 
       page.find('.js-timeago').hover
     end
@@ -34,7 +42,7 @@ feature 'Tooltips on .timeago dates', feature: true, js: true do
 
       login_as user
       visit user_snippets_path(user)
-      wait_for_ajax()
+      wait_for_ajax
 
       page.find('.js-timeago.snippet-created-ago').hover
     end
