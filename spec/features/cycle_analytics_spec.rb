@@ -7,7 +7,10 @@ feature 'Cycle Analytics', feature: true, js: true do
   let(:user) { create(:user) }
   let(:guest) { create(:user) }
   let(:project) { create(:project) }
-  let(:issue) {  create(:issue, project: project, created_at: 2.days.ago) }
+  let(:issue) { create(:issue, project: project, created_at: 2.days.ago) }
+  let(:milestone) { create(:milestone, project: project) }
+  let(:mr) { create_merge_request_closing_issue(issue) }
+  let(:pipeline) { create(:ci_empty_pipeline, status: 'created', project: project, ref: mr.source_branch, sha: mr.source_branch_sha) }
 
   context 'as an allowed user' do
     context 'when project is new' do
@@ -44,7 +47,7 @@ feature 'Cycle Analytics', feature: true, js: true do
         expect_issue_to_be_present
 
         click_stage('Plan')
-        expect(find('.stage-events')).to have_content(@merge_request.commits.last.title)
+        expect(find('.stage-events')).to have_content(mr.commits.last.title)
 
         click_stage('Code')
         expect_merge_request_to_be_present
@@ -66,7 +69,6 @@ feature 'Cycle Analytics', feature: true, js: true do
 
   context "as a guest" do
     before do
-      project.team << [user, :master]
       project.team << [guest, :guest]
 
       allow_any_instance_of(Gitlab::ReferenceExtractor).to receive(:issues).and_return([issue])
@@ -102,23 +104,19 @@ feature 'Cycle Analytics', feature: true, js: true do
   end
 
   def expect_merge_request_to_be_present
-    expect(find('.stage-events')).to have_content(@merge_request.title)
-    expect(find('.stage-events')).to have_content(@merge_request.author.name)
-    expect(find('.stage-events')).to have_content("!#{@merge_request.iid}")
+    expect(find('.stage-events')).to have_content(mr.title)
+    expect(find('.stage-events')).to have_content(mr.author.name)
+    expect(find('.stage-events')).to have_content("!#{mr.iid}")
   end
 
   def create_cycle
-    milestone = create(:milestone, project: project)
     issue.update(milestone: milestone)
-    @merge_request = create_merge_request_closing_issue(issue)
-
-    pipeline = create(:ci_empty_pipeline, status: 'created', project: project, ref: @merge_request.source_branch, sha: @merge_request.source_branch_sha)
     pipeline.run
 
     @build = create(:ci_build, pipeline: pipeline, status: :success, author: user)
 
     merge_merge_requests_closing_issue(issue)
-    ProcessCommitWorker.new.perform(project.id, user.id, @merge_request.commits.last.to_hash)
+    ProcessCommitWorker.new.perform(project.id, user.id, mr.commits.last.to_hash)
   end
 
   def click_stage(stage_name)
