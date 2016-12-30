@@ -73,7 +73,7 @@ $(() => {
   });
 
   gl.IssueBoardsSearch = new Vue({
-    el: '#js-boards-seach',
+    el: '#js-boards-search',
     data: {
       filters: Store.state.filters
     },
