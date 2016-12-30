@@ -1,4 +1,4 @@
-require ('spec_helper')
+require('spec_helper')
 
 describe Projects::Settings::IntegrationsController do
   let(:project) { create(:project, :public) }
