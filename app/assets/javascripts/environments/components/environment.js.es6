@@ -216,7 +216,7 @@
                   <th class="environments-deploy">Last deployment</th>
                   <th class="environments-build">Build</th>
                   <th class="environments-commit">Commit</th>
-                  <th class="environments-date"></th>
+                  <th class="environments-date">Created</th>
                   <th class="hidden-xs environments-actions"></th>
                 </tr>
               </thead>
