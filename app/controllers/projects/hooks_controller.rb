@@ -7,8 +7,7 @@ class Projects::HooksController < Projects::ApplicationController
   layout "project_settings"
 
   def index
-    @hooks = @project.hooks
-    @hook = ProjectHook.new
+    redirect_to namespace_project_settings_integrations_path(@project.namespace, @project)
   end
 
   def create
@@ -16,7 +15,7 @@ class Projects::HooksController < Projects::ApplicationController
     @hook.save
 
     if @hook.valid?
-      redirect_to namespace_project_hooks_path(@project.namespace, @project)
+      redirect_to namespace_project_settings_integrations_path(@project.namespace, @project)
     else
       @hooks = @project.hooks.select(&:persisted?)
       render :index
@@ -44,7 +43,7 @@ class Projects::HooksController < Projects::ApplicationController
   def destroy
     hook.destroy
 
-    redirect_to namespace_project_hooks_path(@project.namespace, @project)
+    redirect_to namespace_project_settings_integrations_path(@project.namespace, @project)
   end
 
   private
