@@ -55,7 +55,11 @@
 
 .issue-details.issuable-details
   .detail-page-description.content-block{ class: ('hide-bottom-border' unless @issue.description.present? ) }
-    .vue-data.hidden{"data" => {"ruby-title" => @issue.title, "path" => issue_path(@issue)}}
+    .vue-data.hidden{"data" => {"ruby-title" => markdown_field(@issue, :title),
+      "path" => issue_path(@issue),
+      "project_path" => project_path(@project),
+      "ruby_diff_title" => @issue.title,
+    }}
     .issue-title-vue
     - if @issue.description.present?
       .description{ class: can?(current_user, :update_issue, @issue) ? 'js-task-list-container' : '' }

@@ -68,7 +68,7 @@ describe "GitLab Flavored Markdown", feature: true do
       expect(page).to have_link(@other_issue.to_reference)
     end
 
-    it "renders subject in issues#show" do
+    it "renders subject in issues#show", js: true do
       visit namespace_project_issue_path(project.namespace, project, @issue)
 
       expect(page).to have_link(@other_issue.to_reference)
