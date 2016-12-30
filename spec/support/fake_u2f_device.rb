@@ -5,7 +5,7 @@ class FakeU2fDevice
     @page = page
     @name = name
   end
-  
+
   def respond_to_u2f_registration
     app_id = @page.evaluate_script('gon.u2f.app_id')
     challenges = @page.evaluate_script('gon.u2f.challenges')
@@ -28,6 +28,7 @@ class FakeU2fDevice
     u2f.sign = function(appId, challenges, signRequests, callback) {
       callback(#{json_response});
     };
+    window.gl.u2fAuthenticate.start();
     ")
   end
 
