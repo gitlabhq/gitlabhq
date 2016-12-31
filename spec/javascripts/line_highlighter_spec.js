@@ -6,7 +6,7 @@
 (function() {
   describe('LineHighlighter', function() {
     var clickLine;
-    fixture.preload('static/line_highlighter.html.raw');
+    preloadFixtures('static/line_highlighter.html.raw');
     clickLine = function(number, eventData) {
       var e;
       if (eventData == null) {
@@ -20,7 +20,7 @@
       }
     };
     beforeEach(function() {
-      fixture.load('static/line_highlighter.html.raw');
+      loadFixtures('static/line_highlighter.html.raw');
       this["class"] = new LineHighlighter();
       this.css = this["class"].highlightClass;
       return this.spies = {

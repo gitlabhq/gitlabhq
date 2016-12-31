@@ -15,10 +15,10 @@
       return memo;
     }
 
-    fixture.preload(fixtureTemplate);
+    preloadFixtures(fixtureTemplate);
 
     beforeEach(() => {
-      fixture.load(fixtureTemplate);
+      loadFixtures(fixtureTemplate);
     });
 
     it('does nothing if no tab was previously selected', () => {

@@ -17,10 +17,10 @@
 (() => {
   let saveLabelCount = 0;
   describe('Issue dropdown sidebar', () => {
-    fixture.preload('static/issue_sidebar_label.html.raw');
+    preloadFixtures('static/issue_sidebar_label.html.raw');
 
     beforeEach(() => {
-      fixture.load('static/issue_sidebar_label.html.raw');
+      loadFixtures('static/issue_sidebar_label.html.raw');
       new IssuableContext('{"id":1,"name":"Administrator","username":"root"}');
       new LabelsSelect();
 

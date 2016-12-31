@@ -16,10 +16,9 @@
   window.gon.api_version = 'v3';
 
   describe('Project Title', function() {
-    fixture.preload('static/project_title.html.raw');
-    fixture.preload('projects.json');
+    preloadFixtures('static/project_title.html.raw');
     beforeEach(function() {
-      fixture.load('static/project_title.html.raw');
+      loadFixtures('static/project_title.html.raw');
       return this.project = new Project();
     });
     return describe('project list', function() {
@@ -34,7 +33,7 @@
 
       beforeEach((function(_this) {
         return function() {
-          _this.projects_data = fixture.load('projects.json')[0];
+          _this.projects_data = getJSONFixture('projects.json');
           return spyOn(jQuery, 'ajax').and.callFake(fakeAjaxResponse.bind(_this));
         };
       })(this));

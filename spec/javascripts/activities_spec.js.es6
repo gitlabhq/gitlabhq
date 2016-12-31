@@ -35,7 +35,7 @@
 
   describe('Activities', () => {
     beforeEach(() => {
-      fixture.load(fixtureTemplate);
+      loadFixtures(fixtureTemplate);
       new gl.Activities();
     });
 

@@ -17,9 +17,9 @@
       $(document).trigger('todo:toggle', newCount);
     }
 
-    fixture.preload(fixtureTemplate);
+    preloadFixtures(fixtureTemplate);
     beforeEach(function() {
-      fixture.load(fixtureTemplate);
+      loadFixtures(fixtureTemplate);
     });
 
     it('should update todos-pending-count after receiving the todo:toggle event', function() {

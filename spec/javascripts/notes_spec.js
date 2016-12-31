@@ -13,10 +13,10 @@
 
   describe('Notes', function() {
     var commentsTemplate = 'issues/issue_with_comment.html.raw';
-    fixture.preload(commentsTemplate);
+    preloadFixtures(commentsTemplate);
 
     beforeEach(function () {
-      fixture.load(commentsTemplate);
+      loadFixtures(commentsTemplate);
       gl.utils.disableButtonIfEmptyField = _.noop;
       window.project_uploads_path = 'http://test.host/uploads';
     });

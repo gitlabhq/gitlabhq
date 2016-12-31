@@ -5,9 +5,9 @@
 (function() {
   describe('Quick Submit behavior', function() {
     var keydownEvent;
-    fixture.preload('static/behaviors/quick_submit.html.raw');
+    preloadFixtures('static/behaviors/quick_submit.html.raw');
     beforeEach(function() {
-      fixture.load('static/behaviors/quick_submit.html.raw');
+      loadFixtures('static/behaviors/quick_submit.html.raw');
       $('form').submit(function(e) {
         // Prevent a form submit from moving us off the testing page
         return e.preventDefault();

@@ -17,9 +17,9 @@
       $(document).trigger('todo:toggle', newCount);
     }
 
-    fixture.preload(fixtureTemplate);
+    preloadFixtures(fixtureTemplate);
     beforeEach(() => {
-      fixture.load(fixtureTemplate);
+      loadFixtures(fixtureTemplate);
       new global.Sidebar();
     });
 

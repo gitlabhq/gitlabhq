@@ -8,9 +8,9 @@
   var INVALID_URL = 'http://goesnowhere.nothing/whereami';
   var $boxClosed, $boxOpen, $btnClose, $btnReopen;
 
-  fixture.preload('issues/closed-issue.html.raw');
-  fixture.preload('issues/issue-with-task-list.html.raw');
-  fixture.preload('issues/open-issue.html.raw');
+  preloadFixtures('issues/closed-issue.html.raw');
+  preloadFixtures('issues/issue-with-task-list.html.raw');
+  preloadFixtures('issues/open-issue.html.raw');
 
   function expectErrorMessage() {
     var $flashMessage = $('div.flash-alert');
@@ -61,8 +61,8 @@
 
   describe('Issue', function() {
     describe('task lists', function() {
-      fixture.load('issues/issue-with-task-list.html.raw');
       beforeEach(function() {
+        loadFixtures('issues/issue-with-task-list.html.raw');
         this.issue = new Issue();
       });
 
@@ -86,7 +86,7 @@
 
   describe('close issue', function() {
     beforeEach(function() {
-      fixture.load('issues/open-issue.html.raw');
+      loadFixtures('issues/open-issue.html.raw');
       findElements();
       this.issue = new Issue();
 
@@ -140,7 +140,7 @@
 
   describe('reopen issue', function() {
     beforeEach(function() {
-      fixture.load('issues/closed-issue.html.raw');
+      loadFixtures('issues/closed-issue.html.raw');
       findElements();
       this.issue = new Issue();
 

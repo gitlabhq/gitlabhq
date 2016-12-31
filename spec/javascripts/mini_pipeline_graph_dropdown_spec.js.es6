@@ -5,10 +5,10 @@
 
 (() => {
   describe('Mini Pipeline Graph Dropdown', () => {
-    fixture.preload('static/mini_dropdown_graph.html.raw');
+    preloadFixtures('static/mini_dropdown_graph.html.raw');
 
     beforeEach(() => {
-      fixture.load('static/mini_dropdown_graph.html.raw');
+      loadFixtures('static/mini_dropdown_graph.html.raw');
     });
 
     describe('When is initialized', () => {

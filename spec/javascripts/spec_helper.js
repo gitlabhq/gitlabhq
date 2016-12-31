@@ -37,12 +37,12 @@
 // file as a manifest.
 // For more information: http://github.com/modeset/teaspoon
 
-(function() {
-
-
-}).call(this);
+// set our fixtures path
+jasmine.getFixtures().fixturesPath = '/teaspoon/fixtures';
+jasmine.getJSONFixtures().fixturesPath = '/teaspoon/fixtures';
 
 // defined in ActionDispatch::TestRequest
 // see https://github.com/rails/rails/blob/v4.2.7.1/actionpack/lib/action_dispatch/testing/test_request.rb#L7
 window.gl = window.gl || {};
-gl.TEST_HOST = 'http://test.host';
+window.gl.TEST_HOST = 'http://test.host';
+window.gon = window.gon || {};
