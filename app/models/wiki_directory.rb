@@ -1,14 +1,13 @@
 class WikiDirectory
   include ActiveModel::Validations
 
-  attr_accessor :slug, :pages, :directories
+  attr_accessor :slug, :pages
 
   validates :slug, presence: true
 
-  def initialize(slug, pages = [], directories = [])
+  def initialize(slug, pages = [])
     @slug = slug
     @pages = pages
-    @directories = directories
   end
 
   # Relative path to the partial to be used when rendering collections

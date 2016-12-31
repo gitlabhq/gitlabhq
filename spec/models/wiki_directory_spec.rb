@@ -8,10 +8,9 @@ RSpec.describe WikiDirectory, models: true do
   end
 
   describe '#initialize' do
-    context 'when there are pages and directories' do
+    context 'when there are pages' do
       let(:pages) { [build(:wiki_page)] }
-      let(:other_directories) { [build(:wiki_directory)] }
-      let(:directory) { WikiDirectory.new('/path_up_to/dir', pages, other_directories) }
+      let(:directory) { WikiDirectory.new('/path_up_to/dir', pages) }
 
       it 'sets the slug attribute' do
         expect(directory.slug).to eq('/path_up_to/dir')
@@ -20,13 +19,9 @@ RSpec.describe WikiDirectory, models: true do
       it 'sets the pages attribute' do
         expect(directory.pages).to eq(pages)
       end
-
-      it 'sets the directories attribute' do
-        expect(directory.directories).to eq(other_directories)
-      end
     end
 
-    context 'when there are no pages or directories' do
+    context 'when there are no pages' do
       let(:directory) { WikiDirectory.new('/path_up_to/dir') }
 
       it 'sets the slug attribute' do
@@ -35,10 +30,6 @@ RSpec.describe WikiDirectory, models: true do
 
       it 'sets the pages attribute to an empty array' do
         expect(directory.pages).to eq([])
-      end
-
-      it 'sets the directories attribute to an empty array' do
-        expect(directory.directories).to eq([])
       end
     end
   end
