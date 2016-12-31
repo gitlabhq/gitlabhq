@@ -23,7 +23,7 @@ class WikiPage
     return [] if pages.blank?
 
     pages.sort_by { |page| [page.directory, page.slug] }.
-      group_by { |page| page.directory }.
+      group_by(&:directory).
       map do |dir, pages|
         if dir.present?
           WikiDirectory.new(dir, pages)
