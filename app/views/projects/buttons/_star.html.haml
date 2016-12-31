@@ -6,7 +6,7 @@
     - else
       = icon('star-o')
       %span Star
-  %div.count-with-arrow
+  .count-with-arrow
     %span.arrow
     %span.count.star-count
       = @project.star_count
@@ -15,7 +15,7 @@
   = link_to new_user_session_path, class: 'btn has-tooltip star-btn', title: 'You must sign in to star a project' do
     = icon('star')
     Star
-  %div.count-with-arrow
+  .count-with-arrow
     %span.arrow
     %span.count
       = @project.star_count

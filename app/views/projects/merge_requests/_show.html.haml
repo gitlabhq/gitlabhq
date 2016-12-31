@@ -5,10 +5,10 @@
 - content_for :page_specific_javascripts do
   = page_specific_javascript_tag('diff_notes/diff_notes_bundle.js')
 
-.merge-request{'data-url' => merge_request_path(@merge_request)}
+.merge-request{ 'data-url' => merge_request_path(@merge_request) }
   = render "projects/merge_requests/show/mr_title"
 
-  .merge-request-details.issuable-details{data: {id: @merge_request.project.id}}
+  .merge-request-details.issuable-details{ data: { id: @merge_request.project.id } }
     = render "projects/merge_requests/show/mr_box"
     .append-bottom-default.mr-source-target.prepend-top-default
       - if @merge_request.open?
@@ -73,7 +73,7 @@
                 Changes
                 %span.badge= @merge_request.diff_size
             %li#resolve-count-app.line-resolve-all-container.pull-right.prepend-top-10.hidden-xs{ "v-cloak" => true }
-              %resolve-count{ "inline-template" => true, ":logged-out" => "#{current_user.nil?}"  }
+              %resolve-count{ "inline-template" => true, ":logged-out" => "#{current_user.nil?}" }
                 %div
                   .line-resolve-all{ "v-show" => "discussionCount > 0",
                     ":class" => "{ 'has-next-btn': !loggedOut && resolvedDiscussionCount !== discussionCount }" }

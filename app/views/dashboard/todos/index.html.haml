@@ -5,14 +5,14 @@
   .top-area
     %ul.nav-links
       - todo_pending_active = ('active' if params[:state].blank? || params[:state] == 'pending')
-      %li{class: "todos-pending #{todo_pending_active}"}>
+      %li{ class: "todos-pending #{todo_pending_active}" }>
         = link_to todos_filter_path(state: 'pending') do
           %span
             To do
           %span.badge
             = number_with_delimiter(todos_pending_count)
       - todo_done_active = ('active' if params[:state] == 'done')
-      %li{class: "todos-done #{todo_done_active}"}>
+      %li{ class: "todos-done #{todo_done_active}" }>
         = link_to todos_filter_path(state: 'done') do
           %span
             Done
@@ -50,7 +50,7 @@
             data: { data: todo_actions_options, default_label: 'Action' } })
         .pull-right
           .dropdown.inline.prepend-left-10
-            %button.dropdown-toggle{type: 'button', 'data-toggle' => 'dropdown'}
+            %button.dropdown-toggle{ type: 'button', 'data-toggle' => 'dropdown' }
               %span.light
               - if @sort.present?
                 = sort_options_hash[@sort]

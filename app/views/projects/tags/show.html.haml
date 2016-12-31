@@ -26,7 +26,7 @@
         .btn-container.controls-item-full
           = link_to namespace_project_tag_path(@project.namespace, @project, @tag.name), class: 'btn btn-remove remove-row has-tooltip', title: "Delete tag", method: :delete, data: { confirm: "Deleting the '#{@tag.name}' tag cannot be undone. Are you sure?" } do
             %i.fa.fa-trash-o
-            
+
     - if @tag.message.present?
       %pre.wrap
         = strip_gpg_signature(@tag.message)

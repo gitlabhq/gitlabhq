@@ -58,7 +58,7 @@
         as resolved. Ask someone with sufficient rights to resolve the them.
 
 - is_footer = !(issuable.is_a?(MergeRequest) && issuable.new_record?)
-.row-content-block{class: (is_footer ? "footer-block" : "middle-block")}
+.row-content-block{ class: (is_footer ? "footer-block" : "middle-block") }
   - if issuable.new_record?
     = form.submit "Submit #{issuable.class.model_name.human.downcase}", class: 'btn btn-create'
   - else

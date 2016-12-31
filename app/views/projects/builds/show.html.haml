@@ -56,10 +56,10 @@
       - else
         #js-build-scroll.scroll-controls
           .scroll-step
-            %a{ href: '#up-build-trace', id: 'scroll-top', class: 'scroll-link scroll-top', title: 'Scroll to top' }
+            %a.scroll-link.scroll-top{ href: '#up-build-trace', id: 'scroll-top', title: 'Scroll to top' }
               = custom_icon('scroll_up')
               = custom_icon('scroll_up_hover_active')
-            %a{ href: '#down-build-trace', id: 'scroll-bottom', class: 'scroll-link scroll-bottom', title: 'Scroll to bottom' }
+            %a.scroll-link.scroll-bottom{ href: '#down-build-trace', id: 'scroll-bottom', title: 'Scroll to bottom' }
               = custom_icon('scroll_down')
               = custom_icon('scroll_down_hover_active')
           - if @build.active?
