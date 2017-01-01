@@ -51,8 +51,9 @@
                 %td= token.name
                 %td= token.created_at.to_date.to_s(:medium)
                 %td
-                  - if token.expires_at.present?
-                    = token.expires_at.to_date.to_s(:medium)
+                  - if token.expires?
+                    %span{ class: ('text-warning' if token.expires_soon?) }
+                      In #{distance_of_time_in_words_to_now(token.expires_at)}
                   - else
                     %span.personal-access-tokens-never-expires-label Never
                 %td= token.scopes.present? ? token.scopes.join(", ") : "<no scopes selected>"

@@ -43,7 +43,7 @@ describe 'Profile > Personal Access Tokens', feature: true, js: true do
 
       click_on "Create Personal Access Token"
       expect(active_personal_access_tokens).to have_text(name)
-      expect(active_personal_access_tokens).to have_text(Date.today.next_month.at_beginning_of_month.to_s(:medium))
+      expect(active_personal_access_tokens).to have_text('In')
       expect(active_personal_access_tokens).to have_text('api')
       expect(active_personal_access_tokens).to have_text('read_user')
     end
