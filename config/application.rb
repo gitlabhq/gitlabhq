@@ -108,6 +108,8 @@ module Gitlab
     config.assets.precompile << "terminal/terminal_bundle.js"
     config.assets.precompile << "lib/utils/*.js"
     config.assets.precompile << "lib/*.js"
+    config.assets.precompile << "service_workers/*.js"
+    config.assets.precompile << "manifest.json"
     config.assets.precompile << "u2f.js"
     config.assets.precompile << "vendor/assets/fonts/*"
 

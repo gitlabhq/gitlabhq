@@ -10,6 +10,11 @@ module Gitlab
       gon.award_menu_url         = emojis_path
       gon.katex_css_url          = ActionController::Base.helpers.asset_path('katex.css')
       gon.katex_js_url           = ActionController::Base.helpers.asset_path('katex.js')
+      gon.cache_worker_path      = ActionController::Base.helpers.asset_path('service_workers/cache_worker.js')
+      gon.asset_paths            = [
+        ActionController::Base.helpers.asset_path('application.js'),
+        ActionController::Base.helpers.asset_path('application.css')
+      ]
 
       if current_user
         gon.current_user_id = current_user.id

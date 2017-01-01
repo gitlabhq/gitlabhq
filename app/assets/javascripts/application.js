@@ -61,6 +61,7 @@
 /*= require_directory . */
 /*= require fuzzaldrin-plus */
 /*= require es6-promise.auto */
+/*= require cache_worker_client */
 
 (function () {
   document.addEventListener('page:fetch', function () {

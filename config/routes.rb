@@ -43,6 +43,8 @@ Rails.application.routes.draw do
   # Koding route
   get 'koding' => 'koding#index'
 
+  get 'manifest.json', to: 'manifest_json#index', as: :manifest_json
+
   draw :api
   draw :sidekiq
   draw :help
