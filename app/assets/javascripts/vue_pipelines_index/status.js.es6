@@ -18,7 +18,7 @@
       },
       detailsPath() {
         const { status } = this.pipeline.details;
-        return status.details_path ? status.details_path : '#';
+        return status.details_path ? status.details_path : false;
       },
     },
     template: `

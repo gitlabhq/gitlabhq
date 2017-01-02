@@ -88,7 +88,7 @@
                   <commit
                     :commit-icon-svg='svgs.commitIconSvg'
                     :author='author(pipeline)'
-                    :tag="pipeline.ref['tag?']"
+                    :tag="pipeline.ref.tag"
                     :title='commitTitle(pipeline)'
                     :commit-ref='ref(pipeline)'
                     :short-sha='commitSha(pipeline)'
