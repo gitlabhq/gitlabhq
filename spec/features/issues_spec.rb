@@ -619,14 +619,16 @@ describe 'Issues', feature: true do
       end
 
       it 'adds due date to issue' do
+        date = Date.today.at_beginning_of_month + 2.days
+
         page.within '.due_date' do
           click_link 'Edit'
 
           page.within '.ui-datepicker-calendar' do
-            first('.ui-state-default').click
+            click_link date.day
           end
 
-          expect(page).to have_no_content 'None'
+          expect(find('.value').text).to have_content date.strftime('%b %-d, %Y')
         end
       end
 
