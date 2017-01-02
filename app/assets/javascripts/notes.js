@@ -494,18 +494,16 @@
 
       if (currentContent === initialContent) {
         this.removeNoteEditForm($el);
-        $el.find('.js-md-write-button').trigger('click');
       }
       else {
         var $buttons = $el.find('.note-form-actions');
-        var isWidgetVisible = gl.utils.isInViewport($el[0]);
+        var isWidgetVisible = gl.utils.isInViewport($el.get(0));
 
         if (!isWidgetVisible) {
           gl.utils.animateToElement($el);
         }
 
         $el.find('.js-edit-warning').show();
-        $el.find('.js-md-write-button').trigger('click');
         isAllowed = false;
       }
 
@@ -553,7 +551,6 @@
       var $target = $(e.target);
       var note = $target.closest('.note');
       note.find('.js-edit-warning').hide();
-      note.find('.js-md-write-button').trigger('click');
       this.revertNoteEditForm($target);
       return this.removeNoteEditForm(note);
     };
@@ -566,6 +563,7 @@
       $editForm.insertBefore('.notes-form');
       $editForm.find('.js-comment-button').enable();
       $editForm.find('.js-edit-warning').hide();
+      $editForm.find('.js-md-write-button').trigger('click');
     };
 
     Notes.prototype.getEditFormSelector = function($el) {
@@ -582,6 +580,7 @@
       var form = note.find('.current-note-edit-form');
       note.removeClass('is-editting');
       form.removeClass('current-note-edit-form');
+      form.find('.js-edit-warning').hide();
       // Replace markdown textarea text with original note text.
       return form.find('.js-note-text').val(form.find('form.edit-note').data('original-note'));
     };
@@ -898,8 +897,8 @@
       new GLForm($editForm.find('form'));
 
       $editForm.find('form').attr('action', postUrl);
-      $editForm.find('.formTargetId').val(targetId);
-      $editForm.find('.formTargetType').val(targetType);
+      $editForm.find('.js-form-target-id').val(targetId);
+      $editForm.find('.js-form-target-type').val(targetType);
       $editForm.find('.js-note-text').focus().val(originalContent);
     }
 

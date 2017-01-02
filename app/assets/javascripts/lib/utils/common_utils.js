@@ -131,11 +131,11 @@
     gl.utils.animateToElement = function($el) {
       var top = $el.offset().top;
       gl.navBarHeight = gl.navBarHeight || $('.navbar-gitlab').height();
-      gl.navLinksHieght = gl.navLinksHieght || $('.nav-links').height();
+      gl.navLinksHeight = gl.navLinksHeight || $('.nav-links').height();
       gl.mrTabsHeight = gl.mrTabsHeight || $('.merge-request-tabs').height();
 
       return $('body, html').animate({
-        scrollTop: top - (gl.navBarHeight + gl.navLinksHieght + gl.mrTabsHeight)
+        scrollTop: top - (gl.navBarHeight + gl.navLinksHeight + gl.mrTabsHeight)
       }, 200);
     };
 
