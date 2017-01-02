@@ -83,9 +83,8 @@
       this.rawSelectedDate = $(`input[name='${this.fieldName}']`).val();
 
       if (this.rawSelectedDate.length) {
-        // Avoid time zone inconsistency using the utils.createDateObject
-        // method, instead of the native Date object.
-        const dateObj = gl.utils.createDateObject(this.rawSelectedDate);
+        const dateArray = this.rawSelectedDate.split('-').map(v => parseInt(v, 10));
+        const dateObj = new Date(dateArray[0], dateArray[1] - 1, dateArray[2]);
         this.displayedDate = $.datepicker.formatDate('M d, yy', dateObj);
       } else {
         this.displayedDate = 'No due date';
