@@ -83,6 +83,10 @@
       return window.location.href.split("#")[0];
     };
 
+    Build.prototype.locationHash = function() {
+      return window.location.href.split("#")[1];
+    };
+
     Build.prototype.getInitialBuildTrace = function() {
       var removeRefreshStatuses = ['success', 'failed', 'canceled', 'skipped']
 
@@ -91,6 +95,9 @@
         dataType: 'json',
         success: function(buildData) {
           $('.js-build-output').html(buildData.trace_html);
+          if (this.locationHash() === 'down-build-trace') {
+            $("html,body").scrollTop(this.$buildTrace.height());
+          }
           if (removeRefreshStatuses.indexOf(buildData.status) >= 0) {
             this.$buildRefreshAnimation.remove();
             return this.initScrollMonitor();
@@ -105,6 +112,8 @@
         dataType: "json",
         success: (function(_this) {
           return function(log) {
+            var pageUrl;
+
             if (log.state) {
               _this.state = log.state;
             }
@@ -116,7 +125,12 @@
               }
               return _this.checkAutoscroll();
             } else if (log.status !== _this.buildStatus) {
-              return Turbolinks.visit(_this.pageUrl);
+              pageUrl = _this.pageUrl;
+              if (_this.$autoScrollStatus.data('state') === 'enabled') {
+                pageUrl += '#down-build-trace';
+              }
+
+              return Turbolinks.visit(pageUrl);
             }
           };
         })(this)
