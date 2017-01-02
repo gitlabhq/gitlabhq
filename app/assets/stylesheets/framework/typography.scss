@@ -4,6 +4,7 @@
 
   a {
     color: $md-link-color;
+    @include gl-link-hover-focus-state;
   }
 
   img {

@@ -21,6 +21,7 @@
 .profile-settings-sidebar a,
 .settings-sidebar a {
   color: $md-link-color;
+  @include gl-link-hover-focus-state;
 }
 
 .private-tokens-reset div.reset-action:not(:first-child) {
@@ -87,6 +88,10 @@
   }
 
   &:last-child {
+    a {
+      @include gl-link-hover-focus-state;
+    }
+
     &::after {
       content: "";
       padding: 0;

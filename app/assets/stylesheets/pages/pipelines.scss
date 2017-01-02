@@ -38,6 +38,7 @@
 
     .pipeline-id {
       color: $black;
+      @include gl-link-hover-focus-state;
     }
 
     .stage-cell {
@@ -178,6 +179,7 @@
       white-space: nowrap;
       vertical-align: top;
       text-overflow: ellipsis;
+      @include gl-link-hover-focus-state;
     }
 
     svg {
@@ -194,6 +196,7 @@
 
     .commit-id {
       color: $gl-link-color;
+      @include gl-link-hover-focus-state;
     }
 
     .commit-title {

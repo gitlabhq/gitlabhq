@@ -119,6 +119,11 @@ ul.content-list {
 
     a {
       color: $gl-text-color;
+      @include gl-link-hover-focus-state;
+
+      .project-full-name {
+        @include gl-link-hover-focus-state;
+      }
     }
 
     .member-group-link {

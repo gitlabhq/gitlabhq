@@ -113,11 +113,7 @@
 
   a {
     color: $layout-link-gray;
-
-    &:hover,
-    &.active {
-      color: $black;
-    }
+    @include gl-link-hover-focus-state;
   }
 
   .active > a {

@@ -51,6 +51,7 @@
 
     a:not(.btn) {
       color: $gl-text-color;
+      @include gl-link-hover-focus-state;
     }
 
     .left-options {

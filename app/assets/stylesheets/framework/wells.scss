@@ -15,6 +15,15 @@
       .monospace,
       .commit-info {
         margin-left: 4px;
+
+        a:hover,
+        a:focus {
+          text-decoration: none;
+
+          .label {
+            @include gl-link-hover-focus-state;
+          }
+        }
       }
     }
   }

@@ -335,15 +335,7 @@ ul.notes {
 
   a {
     color: inherit;
-
-    &:hover {
-      color: $gl-link-color;
-    }
-
-    &:focus,
-    &:hover {
-      text-decoration: none;
-    }
+    @include gl-link-hover-focus-state;
   }
 
   .author_link {

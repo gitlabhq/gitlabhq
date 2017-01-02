@@ -149,6 +149,7 @@
 
     .edit-link {
       color: $gl-text-color;
+      @include gl-link-hover-focus-state;
 
       &:not([href]):hover {
         color: rgba($avatar-border, .2);
@@ -330,10 +331,9 @@
   }
 
   a {
-    &:hover {
-      color: $md-link-color;
-      text-decoration: none;
+    @include gl-link-hover-focus-state;
 
+    &:hover {
       .avatar {
         border-color: rgba($avatar-border, .2);
       }

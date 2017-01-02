@@ -83,6 +83,10 @@
       i,
       a {
         color: $gl-text-color;
+
+        .str-truncated {
+          @include gl-link-hover-focus-state;
+        }
       }
 
       img {
@@ -123,10 +127,7 @@
 
     .tree-commit-link {
       color: $gl-text-color-secondary;
-
-      &:hover {
-        text-decoration: underline;
-      }
+      @include gl-link-hover-focus-state;
     }
   }
 }

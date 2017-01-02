@@ -44,6 +44,7 @@
   .commit-author-link {
     color: $gl-text-color;
     font-weight: bold;
+    @include gl-link-hover-focus-state;
   }
 
   .commit-info {

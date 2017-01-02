@@ -232,6 +232,7 @@
     color: $gl-text-color;
     word-wrap: break-word;
     margin-right: 2px;
+    @include gl-link-hover-focus-state;
   }
 }
 

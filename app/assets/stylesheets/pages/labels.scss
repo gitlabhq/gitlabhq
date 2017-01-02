@@ -106,6 +106,7 @@
 .color-label {
   padding: 3px 7px;
   border-radius: $label-border-radius;
+  @include gl-link-hover-focus-state(inherit);
 }
 
 .dropdown-labels-error {

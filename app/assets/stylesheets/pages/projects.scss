@@ -377,6 +377,7 @@ a.deploy-project-label {
 
   a {
     color: $gl-text-color;
+    @include gl-link-hover-focus-state;
   }
 
   .dropdown-menu {
@@ -503,11 +504,7 @@ a.deploy-project-label {
     font-size: 14px;
     line-height: 29px;
     color: $notes-light-color;
-
-    &:hover,
-    &:focus {
-      color: $gl-text-color;
-    }
+    @include gl-link-hover-focus-state;
   }
 
   li.missing {
@@ -660,6 +657,7 @@ pre.light-well {
     margin-right: 5px;
     color: $gl-link-color;
     font-weight: 600;
+    @include gl-link-hover-focus-state;
   }
 
   .commit-author-link {

@@ -169,6 +169,7 @@ summary {
 
       a {
         color: $panel-heading-link-color;
+        @include gl-link-hover-focus-state;
       }
     }
   }

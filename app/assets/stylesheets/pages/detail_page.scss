@@ -6,6 +6,7 @@
 
   .author {
     color: $gl-text-color;
+    @include gl-link-hover-focus-state;
   }
 
   .identifier {

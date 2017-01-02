@@ -111,3 +111,13 @@
     @content;
   }
 }
+
+@mixin gl-link-hover-focus-state($color: $gl-link-hover-color, $text-decoration: underline) {
+  &:not(.btn) {
+    &:hover,
+    &:focus {
+      color: $color;
+      text-decoration: $text-decoration;
+    }
+  }
+}
