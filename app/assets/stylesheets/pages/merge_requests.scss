@@ -424,11 +424,19 @@
 .merge-request-tabs-holder {
   background-color: $white-light;
 
+  .container-limited {
+    max-width: $limited-layout-width;
+  }
+
   &.affix {
     top: 100px;
     left: 0;
     z-index: 10;
     transition: right .15s;
+
+    @media (max-width: $screen-xs-max) {
+      right: 0;
+    }
   }
 
   &:not(.affix) .container-fluid {

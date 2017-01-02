@@ -48,7 +48,13 @@ class Group < Namespace
     end
 
     def sort(method)
-      order_by(method)
+      if method == 'storage_size_desc'
+        # storage_size is a virtual column so we need to
+        # pass a string to avoid AR adding the table name
+        reorder('storage_size DESC, namespaces.id DESC')
+      else
+        order_by(method)
+      end
     end
 
     def reference_prefix
@@ -155,15 +161,17 @@ class Group < Namespace
   end
 
   def has_owner?(user)
-    owners.include?(user)
+    members_with_parents.owners.where(user_id: user).any?
   end
 
   def has_master?(user)
-    members.masters.where(user_id: user).any?
+    members_with_parents.masters.where(user_id: user).any?
   end
 
+  # Check if user is a last owner of the group.
+  # Parent owners are ignored for nested groups.
   def last_owner?(user)
-    has_owner?(user) && owners.size == 1
+    owners.include?(user) && owners.size == 1
   end
 
   def avatar_type
@@ -189,6 +197,14 @@ class Group < Namespace
   end
 
   def refresh_members_authorized_projects
-    UserProjectAccessChangedService.new(users.pluck(:id)).execute
+    UserProjectAccessChangedService.new(users_with_parents.pluck(:id)).execute
+  end
+
+  def members_with_parents
+    GroupMember.where(requested_at: nil, source_id: parents.map(&:id).push(id))
+  end
+
+  def users_with_parents
+    User.where(id: members_with_parents.select(:user_id))
   end
 end

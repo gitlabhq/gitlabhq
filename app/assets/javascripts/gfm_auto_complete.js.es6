@@ -77,7 +77,7 @@
         var _a, _y, regexp, match, atSymbolsWithBar, atSymbolsWithoutBar;
         atSymbolsWithBar = Object.keys(this.app.controllers).join('|');
         atSymbolsWithoutBar = Object.keys(this.app.controllers).join('');
-        subtext = subtext.split(' ').pop();
+        subtext = subtext.split(/\s+/g).pop();
         flag = flag.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 
         _a = decodeURI("%C3%80");
@@ -367,7 +367,7 @@
       return $input.trigger('keyup');
     },
     isLoading(data) {
-      if (!data) return false;
+      if (!data || !data.length) return false;
       if (Array.isArray(data)) data = data[0];
       return data === this.defaultLoadingData[0] || data.name === this.defaultLoadingData[0];
     },

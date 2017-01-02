@@ -64,6 +64,17 @@
           new UsernameValidator();
           new ActiveTabMemoizer();
           break;
+        case 'sessions:create':
+          if (!gon.u2f) break;
+          window.gl.u2fAuthenticate = new gl.U2FAuthenticate(
+            $("#js-authenticate-u2f"),
+            '#js-login-u2f-form',
+            gon.u2f,
+            document.querySelector('#js-login-2fa-device'),
+            document.querySelector('.js-2fa-form'),
+          );
+          window.gl.u2fAuthenticate.start();
+          break;
         case 'projects:boards:show':
         case 'projects:boards:index':
           shortcut_handler = new ShortcutsNavigation();

@@ -198,7 +198,9 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def diff_size
-    diffs(diff_options).size
+    opts = diff_options || {}
+
+    raw_diffs(opts).size
   end
 
   def diff_base_commit
@@ -574,11 +576,7 @@ class MergeRequest < ActiveRecord::Base
     ext = Gitlab::ReferenceExtractor.new(project, current_user)
     ext.analyze(description)
 
-    issues = ext.issues
-    closing_issues = Gitlab::ClosingIssueExtractor.new(project, current_user).
-      closed_by_message(description)
-
-    issues - closing_issues
+    ext.issues - closes_issues
   end
 
   def target_project_path

@@ -5,6 +5,9 @@
     = link_to 'Edit', admin_group_edit_path(group), id: "edit_#{dom_id(group)}", class: 'btn'
     = link_to 'Delete', [:admin, group], data: { confirm: "Are you sure you want to remove #{group.name}?" }, method: :delete, class: 'btn btn-remove'
   .stats
+    %span.badge
+      = storage_counter(group.storage_size)
+
     %span
       = icon('bookmark')
       = number_with_delimiter(group.projects.count)
@@ -13,7 +16,7 @@
       = icon('users')
       = number_with_delimiter(group.users.count)
 
-    %span.visibility-icon.has-tooltip{data: { container: 'body', placement: 'left' }, title: visibility_icon_description(group)}
+    %span.visibility-icon.has-tooltip{ data: { container: 'body', placement: 'left' }, title: visibility_icon_description(group) }
       = visibility_level_icon(group.visibility_level, fw: false)
 
   .avatar-container.s40

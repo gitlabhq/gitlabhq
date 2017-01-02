@@ -15,7 +15,7 @@ module Gitlab
           {
             'General' => '',
             'Pages' => 'Pages',
-            'Autodeploy' => 'autodeploy'
+            'Auto deploy' => 'autodeploy'
           }
         end
 
@@ -28,7 +28,7 @@ module Gitlab
         end
 
         def dropdown_names(context)
-          categories = context == 'autodeploy' ? ['Autodeploy'] : ['General', 'Pages']
+          categories = context == 'autodeploy' ? ['Auto deploy'] : ['General', 'Pages']
           super().slice(*categories)
         end
       end

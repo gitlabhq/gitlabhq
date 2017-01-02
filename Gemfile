@@ -332,7 +332,7 @@ gem 'octokit', '~> 4.3.0'
 
 gem 'mail_room', '~> 0.9.0'
 
-gem 'email_reply_parser', '~> 0.5.8'
+gem 'email_reply_trimmer', '~> 0.1'
 gem 'html2text'
 
 gem 'ruby-prof', '~> 0.16.2'
@@ -347,5 +347,5 @@ gem 'paranoia', '~> 2.2'
 gem 'health_check', '~> 2.2.0'
 
 # System information
-gem 'vmstat', '~> 2.2'
+gem 'vmstat', '~> 2.3.0'
 gem 'sys-filesystem', '~> 1.1.6'

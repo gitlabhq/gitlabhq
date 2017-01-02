@@ -91,7 +91,7 @@ module API
     end
 
     def authenticate_non_get!
-      authenticate! unless %w[GET HEAD].include?(route.route_method)
+      authenticate! unless %w[GET HEAD].include?(route.request_method)
     end
 
     def authenticate_by_gitlab_shell_token!
@@ -243,7 +243,7 @@ module API
       rack_response({ 'message' => '500 Internal Server Error' }.to_json, 500)
     end
 
-    # Projects helpers
+    # project helpers
 
     def filter_projects(projects)
       if params[:search].present?

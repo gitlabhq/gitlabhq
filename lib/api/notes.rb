@@ -69,8 +69,6 @@ module API
           optional :created_at, type: String, desc: 'The creation date of the note'
         end
         post ":id/#{noteables_str}/:noteable_id/notes" do
-          required_attributes! [:body]
-
           opts = {
            note: params[:body],
            noteable_type: noteables_str.classify,

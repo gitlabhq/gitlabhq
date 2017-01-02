@@ -85,4 +85,30 @@ describe Ci::Build, models: true do
       it { expect(build.trace_file_path).to eq(build.old_path_to_trace) }
     end
   end
+
+  describe '#update_project_statistics' do
+    let!(:build) { create(:ci_build, artifacts_size: 23) }
+
+    it 'updates project statistics when the artifact size changes' do
+      expect(ProjectCacheWorker).to receive(:perform_async)
+        .with(build.project_id, [], [:build_artifacts_size])
+
+      build.artifacts_size = 42
+      build.save!
+    end
+
+    it 'does not update project statistics when the artifact size stays the same' do
+      expect(ProjectCacheWorker).not_to receive(:perform_async)
+
+      build.name = 'changed'
+      build.save!
+    end
+
+    it 'updates project statistics when the build is destroyed' do
+      expect(ProjectCacheWorker).to receive(:perform_async)
+        .with(build.project_id, [], [:build_artifacts_size])
+
+      build.destroy
+    end
+  end
 end

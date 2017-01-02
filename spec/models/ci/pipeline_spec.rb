@@ -464,6 +464,19 @@ describe Ci::Pipeline, models: true do
     end
   end
 
+  describe '.latest_successful_for' do
+    include_context 'with some outdated pipelines'
+
+    let!(:latest_successful_pipeline) do
+      create_pipeline(:success, 'ref', 'D')
+    end
+
+    it 'returns the latest successful pipeline' do
+      expect(described_class.latest_successful_for('ref')).
+        to eq(latest_successful_pipeline)
+    end
+  end
+
   describe '#status' do
     let!(:build) { create(:ci_build, :created, pipeline: pipeline, name: 'test') }
 

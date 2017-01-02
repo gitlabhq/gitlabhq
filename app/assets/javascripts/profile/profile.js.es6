@@ -41,15 +41,12 @@
     }
 
     beforeUpdateUsername() {
-      $('.loading-username').show();
-      $(this).find('.update-success').hide();
-      return $(this).find('.update-failed').hide();
+      $('.loading-username', this).removeClass('hidden');
     }
 
     afterUpdateUsername() {
-      $('.loading-username').hide();
-      $(this).find('.btn-save').enable();
-      return $(this).find('.loading-gif').hide();
+      $('.loading-username', this).addClass('hidden');
+      $('button[type=submit]', this).enable();
     }
 
     onUpdateNotifs(e, data) {

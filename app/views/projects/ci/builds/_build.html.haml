@@ -7,7 +7,7 @@
 - coverage = local_assigns.fetch(:coverage, false)
 - allow_retry = local_assigns.fetch(:allow_retry, false)
 
-%tr.build.commit{class: ('retried' if retried)}
+%tr.build.commit{ class: ('retried' if retried) }
   %td.status
     = render "ci/status/badge", status: build.detailed_status(current_user)
 

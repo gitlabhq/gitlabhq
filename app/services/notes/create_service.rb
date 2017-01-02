@@ -41,7 +41,7 @@ module Notes
         # We must add the error after we call #save because errors are reset
         # when #save is called
         if only_commands
-          note.errors.add(:commands_only, 'Your commands have been executed!')
+          note.errors.add(:commands_only, 'Commands applied')
         end
 
         note.commands_changes = command_params.keys

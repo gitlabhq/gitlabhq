@@ -14,7 +14,7 @@
     %a.author_link.bold{ ":href" => "'#{root_url}' + issue.assignee.username",
       "v-if" => "issue.assignee" }
       %img.avatar.avatar-inline.s32{ ":src" => "issue.assignee.avatar",
-        width: "32" }
+        width: "32", alt: "Avatar" }
       %span.author
         {{ issue.assignee.name }}
       %span.username
