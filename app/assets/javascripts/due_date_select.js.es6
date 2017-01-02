@@ -2,10 +2,9 @@
 
 (function(global) {
   class DueDateSelect {
-    constructor({ $dropdown, $loading, $context } = {}) {
+    constructor({ $dropdown, $loading } = {}) {
       const $dropdownParent = $dropdown.closest('.dropdown');
       const $block = $dropdown.closest('.block');
-      this.$context = $context || $('body');
       this.$loading = $loading;
       this.$dropdown = $dropdown;
       this.$dropdownParent = $dropdownParent;
@@ -81,7 +80,7 @@
     }
 
     parseSelectedDate() {
-      this.rawSelectedDate = this.$context.find(`input[name='${this.fieldName}']`).val();
+      this.rawSelectedDate = $(`input[name='${this.fieldName}']`).val();
 
       if (this.rawSelectedDate.length) {
         // Avoid time zone inconsistency using the utils.createDateObject
@@ -180,6 +179,5 @@
   }
 
   global.DueDateSelectors = DueDateSelectors;
-  global.DueDateSelect = DueDateSelect;
 
 })(window.gl || (window.gl = {}));
