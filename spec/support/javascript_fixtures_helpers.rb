@@ -34,7 +34,7 @@ module JavaScriptFixturesHelpers
       link_tags = doc.css('link')
       link_tags.remove
 
-      scripts = doc.css('script')
+      scripts = doc.css("script:not([type='text/template'])")
       scripts.remove
 
       fixture = doc.to_html
