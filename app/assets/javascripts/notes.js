@@ -1,6 +1,5 @@
 /* eslint-disable no-restricted-properties, func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, no-use-before-define, camelcase, no-unused-expressions, quotes, max-len, one-var, one-var-declaration-per-line, default-case, prefer-template, consistent-return, no-alert, no-return-assign, no-param-reassign, prefer-arrow-callback, no-else-return, comma-dangle, no-new, brace-style, no-lonely-if, vars-on-top, no-unused-vars, no-sequences, no-shadow, newline-per-chained-call, no-useless-escape */
 /* global Flash */
-/* global GLForm */
 /* global Autosave */
 /* global ResolveService */
 /* global mrRefreshWidgetUrl */
@@ -427,7 +426,7 @@
 
     Notes.prototype.setupNoteForm = function(form) {
       var textarea;
-      new GLForm(form);
+      new gl.GLForm(form);
       textarea = form.find(".js-note-text");
       return new Autosave(textarea, ["Note", form.find("#note_noteable_type").val(), form.find("#note_noteable_id").val(), form.find("#note_commit_id").val(), form.find("#note_type").val(), form.find("#note_line_code").val(), form.find("#note_position").val()]);
     };
@@ -905,7 +904,7 @@
       var targetId = $originalContentEl.data('target-id');
       var targetType = $originalContentEl.data('target-type');
 
-      new GLForm($editForm.find('form'));
+      new gl.GLForm($editForm.find('form'));
 
       $editForm.find('form')
         .attr('action', postUrl)

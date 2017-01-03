@@ -8,7 +8,6 @@
 /* global ShortcutsIssuable */
 /* global ZenMode */
 /* global Milestone */
-/* global GLForm */
 /* global IssuableForm */
 /* global LabelsSelect */
 /* global MilestoneSelect */
@@ -110,7 +109,7 @@
         case 'projects:milestones:edit':
           new ZenMode();
           new gl.DueDateSelectors();
-          new GLForm($('.milestone-form'));
+          new gl.GLForm($('.milestone-form'));
           break;
         case 'groups:milestones:new':
           new ZenMode();
@@ -121,7 +120,7 @@
         case 'projects:issues:new':
         case 'projects:issues:edit':
           shortcut_handler = new ShortcutsNavigation();
-          new GLForm($('.issue-form'));
+          new gl.GLForm($('.issue-form'));
           new IssuableForm($('.issue-form'));
           new LabelsSelect();
           new MilestoneSelect();
@@ -131,7 +130,7 @@
         case 'projects:merge_requests:edit':
           new gl.Diff();
           shortcut_handler = new ShortcutsNavigation();
-          new GLForm($('.merge-request-form'));
+          new gl.GLForm($('.merge-request-form'));
           new IssuableForm($('.merge-request-form'));
           new LabelsSelect();
           new MilestoneSelect();
@@ -139,11 +138,11 @@
           break;
         case 'projects:tags:new':
           new ZenMode();
-          new GLForm($('.tag-form'));
+          new gl.GLForm($('.tag-form'));
           break;
         case 'projects:releases:edit':
           new ZenMode();
-          new GLForm($('.release-form'));
+          new gl.GLForm($('.release-form'));
           break;
         case 'projects:merge_requests:show':
           new gl.Diff();
@@ -329,7 +328,7 @@
               new gl.Wikis();
               shortcut_handler = new ShortcutsNavigation();
               new ZenMode();
-              new GLForm($('.wiki-form'));
+              new gl.GLForm($('.wiki-form'));
               break;
             case 'snippets':
               shortcut_handler = new ShortcutsNavigation();
