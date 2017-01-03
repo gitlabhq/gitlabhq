@@ -93,7 +93,7 @@ describe ProjectsHelper do
     end
 
     it "includes a version" do
-      expect(helper.project_list_cache_key(project)).to include("v2.3")
+      expect(helper.project_list_cache_key(project).last).to start_with('v')
     end
 
     it "includes the pipeline status when there is a status" do
