@@ -5,11 +5,7 @@ class Projects::RunnersController < Projects::ApplicationController
   layout 'project_settings'
 
   def index
-    @project_runners = project.runners.ordered
-    @assignable_runners = current_user.ci_authorized_runners.
-      assignable_for(project).ordered.page(params[:page]).per(20)
-    @shared_runners = Ci::Runner.shared.active
-    @shared_runners_count = @shared_runners.count(:all)
+    redirect_to namespace_project_settings_pipelines_path(@project.namespace, @project)
   end
 
   def edit
@@ -53,7 +49,7 @@ class Projects::RunnersController < Projects::ApplicationController
   def toggle_shared_runners
     project.toggle!(:shared_runners_enabled)
 
-    redirect_to namespace_project_runners_path(project.namespace, project)
+    redirect_to namespace_project_settings_pipelines_path(@project.namespace, @project)
   end
 
   protected

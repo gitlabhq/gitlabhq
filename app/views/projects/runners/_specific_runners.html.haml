@@ -20,10 +20,10 @@
 - if @project_runners.any?
   %h4.underlined-title Runners activated for this project
   %ul.bordered-list.activated-specific-runners
-    = render partial: 'runner', collection: @project_runners, as: :runner
+    = render partial: 'projects/runners/runner', collection: @project_runners, as: :runner
 
 - if @assignable_runners.any?
   %h4.underlined-title Available specific runners
   %ul.bordered-list.available-specific-runners
-    = render partial: 'runner', collection: @assignable_runners, as: :runner
+    = render partial: 'projects/runners/runner', collection: @assignable_runners, as: :runner
   = paginate @assignable_runners, theme: "gitlab"
