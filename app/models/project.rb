@@ -609,10 +609,6 @@ class Project < ActiveRecord::Base
     Gitlab::Routing.url_helpers.namespace_project_url(self.namespace, self)
   end
 
-  def web_url_without_protocol
-    web_url.split('://')[1]
-  end
-
   def new_issue_address(author)
     return unless Gitlab::IncomingEmail.supports_issue_creation? && author
 
