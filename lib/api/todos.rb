@@ -4,7 +4,7 @@ module API
     before { authenticate! }
 
     ISSUABLE_TYPES = {
-      'merge_requests' => ->(id) { user_project.merge_requests.find(id) },
+      'merge_requests' => ->(id) { find_merge_request_with_access(id) },
       'issues' => ->(id) { find_project_issue(id) }
     }
 
