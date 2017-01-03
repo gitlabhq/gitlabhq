@@ -27,6 +27,7 @@ class PostReceive
       # Triggers repository update on secondary nodes when Geo is enabled
       Gitlab::Geo.notify_wiki_update(post_received.project) if Gitlab::Geo.enabled?
     elsif post_received.regular_project?
+      # TODO: Remove this if block once Geo is fixed
       if Gitlab::Geo.enabled?
         hook_data = {
           project_id: post_received.project.id,
