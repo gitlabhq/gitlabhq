@@ -16,7 +16,7 @@ module API
           optional :website_url, type: String, desc: 'The website of the user'
           optional :organization, type: String, desc: 'The organization of the user'
           optional :projects_limit, type: Integer, desc: 'The number of projects a user can create'
-          optional :extern_uid, type: Integer, desc: 'The external authentication provider UID'
+          optional :extern_uid, type: String, desc: 'The external authentication provider UID'
           optional :provider, type: String, desc: 'The external provider'
           optional :bio, type: String, desc: 'The biography of the user'
           optional :location, type: String, desc: 'The location of the user'
