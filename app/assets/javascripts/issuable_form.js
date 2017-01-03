@@ -3,6 +3,8 @@
 /* global UsersSelect */
 /* global ZenMode */
 /* global Autosave */
+/* global dateFormat */
+/* global Pikaday */
 
 (function() {
   var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
@@ -35,12 +37,13 @@
       this.initMoveDropdown();
       $issuableDueDate = $('#issuable-due-date');
       if ($issuableDueDate.length) {
-        $('.datepicker').datepicker({
-          dateFormat: 'yy-mm-dd',
-          onSelect: function(dateText, inst) {
-            return $issuableDueDate.val(dateText);
+        new Pikaday({
+          field: $issuableDueDate.get(0),
+          format: 'yyyy-mm-dd',
+          onSelect: function(dateText) {
+            $issuableDueDate.val(dateFormat(new Date(dateText), 'yyyy-mm-dd'));
           }
-        }).datepicker('setDate', $.datepicker.parseDate('yy-mm-dd', $issuableDueDate.val()));
+        }).setDate(new Date($issuableDueDate.val()));
       }
     }
 

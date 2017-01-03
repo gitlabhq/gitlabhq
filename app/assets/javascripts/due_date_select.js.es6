@@ -1,4 +1,5 @@
 /* eslint-disable wrap-iife, func-names, space-before-function-paren, comma-dangle, prefer-template, consistent-return, class-methods-use-this, arrow-body-style, no-unused-vars, no-underscore-dangle, no-new, max-len, no-sequences, no-unused-expressions, no-param-reassign */
+/* global dateFormat */
 
 (function(global) {
   class DueDateSelect {
@@ -86,7 +87,7 @@
         // Construct Date object manually to avoid buggy dateString support within Date constructor
         const dateArray = this.rawSelectedDate.split('-').map(v => parseInt(v, 10));
         const dateObj = new Date(dateArray[0], dateArray[1] - 1, dateArray[2]);
-        this.displayedDate = $.datepicker.formatDate('M d, yy', dateObj);
+        this.displayedDate = dateFormat(dateObj, 'mmm d, yyyy');
       } else {
         this.displayedDate = 'No due date';
       }
