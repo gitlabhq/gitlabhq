@@ -65,9 +65,10 @@
     });
 
     it('should broadcast todo:toggle event when add todo clicked', function() {
+      var todos = getJSONFixture('todos.json');
       spyOn(jQuery, 'ajax').and.callFake(function() {
         var d = $.Deferred();
-        var response = getJSONFixture('todos.json');
+        var response = todos;
         d.resolve(response);
         return d.promise();
       });
