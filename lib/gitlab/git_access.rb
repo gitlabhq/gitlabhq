@@ -42,13 +42,9 @@ module Gitlab
       when *DOWNLOAD_COMMANDS
         check_download_access!
       when *PUSH_COMMANDS
-<<<<<<< HEAD
-        push_access_check(changes)
+        check_push_access!(changes)
       when *GIT_ANNEX_COMMANDS
         git_annex_access_check(project, changes)
-=======
-        check_push_access!(changes)
->>>>>>> 714f70a38df10e678bffde6e6081a97e31d8317c
       end
 
       build_status_object(true)
@@ -56,37 +52,7 @@ module Gitlab
       build_status_object(false, ex.message)
     end
 
-<<<<<<< HEAD
-    def download_access_check
-      if user
-        user_download_access_check
-      elsif deploy_key.nil? && geo_node_key.nil? && !guest_can_downlod_code?
-        raise UnauthorizedError, ERROR_MESSAGES[:download]
-      end
-    end
-
-    def push_access_check(changes)
-      if project.repository_read_only?
-        raise UnauthorizedError, 'The repository is temporarily read-only. Please try again later.'
-      end
-
-      if Gitlab::Geo.secondary?
-        raise UnauthorizedError, "You can't push code on a secondary GitLab Geo node."
-      end
-
-      return if git_annex_branch_sync?(changes)
-
-      if user
-        user_push_access_check(changes)
-      else
-        raise UnauthorizedError, ERROR_MESSAGES[deploy_key ? :deploy_key : :upload]
-      end
-    end
-
-    def guest_can_downlod_code?
-=======
     def guest_can_download_code?
->>>>>>> 714f70a38df10e678bffde6e6081a97e31d8317c
       Guest.can?(:download_code, project)
     end
 
@@ -98,57 +64,6 @@ module Gitlab
       authentication_abilities.include?(:build_download_code) && user_access.can_do_action?(:build_download_code)
     end
 
-<<<<<<< HEAD
-    def user_push_access_check(changes)
-      unless authentication_abilities.include?(:push_code)
-        raise UnauthorizedError, ERROR_MESSAGES[:upload]
-      end
-
-      if changes.blank?
-        return # Allow access.
-      end
-
-      unless project.repository.exists?
-        raise UnauthorizedError, ERROR_MESSAGES[:no_repo]
-      end
-
-      if project.above_size_limit?
-        raise UnauthorizedError, Gitlab::RepositorySizeError.new(project).push_error
-      end
-
-      if ::License.block_changes?
-        message = ::LicenseHelper.license_message(signed_in: true, is_admin: (user && user.is_admin?))
-        raise UnauthorizedError, message
-      end
-
-      changes_list = Gitlab::ChangesList.new(changes)
-
-      push_size_in_bytes = 0
-
-      # Iterate over all changes to find if user allowed all of them to be applied
-      changes_list.each do |change|
-        status = change_access_check(change)
-        unless status.allowed?
-          # If user does not have access to make at least one change - cancel all push
-          raise UnauthorizedError, status.message
-        end
-
-        if project.size_limit_enabled?
-          push_size_in_bytes += EE::Gitlab::Deltas.delta_size_check(change, project.repository)
-        end
-      end
-
-      if project.changes_will_exceed_size_limit?(push_size_in_bytes.to_mb)
-        raise UnauthorizedError, Gitlab::RepositorySizeError.new(project).new_changes_error
-      end
-    end
-
-    def change_access_check(change)
-      Checks::ChangeAccess.new(change, user_access: user_access, project: project, env: @env).exec
-    end
-
-=======
->>>>>>> 714f70a38df10e678bffde6e6081a97e31d8317c
     def protocol_allowed?
       Gitlab::ProtocolAccess.allowed?(protocol)
     end
@@ -162,7 +77,7 @@ module Gitlab
     end
 
     def check_active_user!
-      return if deploy_key?
+      return if deploy_key? || geo_node_key?
 
       if user && !user_access.allowed?
         raise UnauthorizedError, "Your account has been blocked."
@@ -181,47 +96,12 @@ module Gitlab
       end
     end
 
-<<<<<<< HEAD
     def check_geo_license!
       if Gitlab::Geo.secondary? && !Gitlab::Geo.license_allows?
         raise UnauthorizedError, 'Your current license does not have GitLab Geo add-on enabled.'
       end
     end
 
-    def matching_merge_request?(newrev, branch_name)
-      Checks::MatchingMergeRequest.new(newrev, branch_name, project).match?
-    end
-
-    def protected_branch_action(oldrev, newrev, branch_name)
-      # we dont allow force push to protected branch
-      if forced_push?(oldrev, newrev)
-        :force_push_code_to_protected_branches
-      elsif Gitlab::Git.blank_ref?(newrev)
-        # and we dont allow remove of protected branch
-        :remove_protected_branches
-      elsif matching_merge_request?(newrev, branch_name) && project.developers_can_merge_to_protected_branch?(branch_name)
-        :push_code
-      elsif project.developers_can_push_to_protected_branch?(branch_name)
-        :push_code
-      else
-        :push_code_to_protected_branches
-      end
-    end
-
-    def protected_tag?(tag_name)
-      project.repository.tag_exists?(tag_name)
-    end
-
-    def deploy_key
-      actor if actor.is_a?(DeployKey)
-    end
-
-    def geo_node_key
-      actor if actor.is_a?(GeoNodeKey)
-    end
-
-    def deploy_key_can_read_project?
-=======
     def check_repository_existence!
       unless project.repository.exists?
         raise UnauthorizedError, ERROR_MESSAGES[:no_repo]
@@ -229,7 +109,7 @@ module Gitlab
     end
 
     def check_download_access!
-      return if deploy_key?
+      return if deploy_key? || geo_node_key?
 
       passed = user_can_download_code? ||
         build_can_download_code? ||
@@ -240,8 +120,18 @@ module Gitlab
       end
     end
 
+    # TODO: please clean this up
     def check_push_access!(changes)
->>>>>>> 714f70a38df10e678bffde6e6081a97e31d8317c
+      if project.repository_read_only?
+        raise UnauthorizedError, 'The repository is temporarily read-only. Please try again later.'
+      end
+
+      if Gitlab::Geo.secondary?
+        raise UnauthorizedError, "You can't push code on a secondary GitLab Geo node."
+      end
+
+      return if git_annex_branch_sync?(changes)
+
       if deploy_key
         check_deploy_key_push_access!
       elsif user
@@ -252,24 +142,21 @@ module Gitlab
 
       return if changes.blank? # Allow access.
 
+      if project.above_size_limit?
+        raise UnauthorizedError, Gitlab::RepositorySizeError.new(project).push_error
+      end
+
+      if ::License.block_changes?
+        message = ::LicenseHelper.license_message(signed_in: true, is_admin: (user && user.is_admin?))
+        raise UnauthorizedError, message
+      end
+
       check_change_access!(changes)
     end
 
-<<<<<<< HEAD
-    def can_read_project?
-      if user
-        user_access.can_read_project?
-      elsif deploy_key
-        deploy_key_can_read_project?
-      elsif geo_node_key
-        true
-      else
-        Guest.can?(:read_project, project)
-=======
     def check_user_push_access!
       unless authentication_abilities.include?(:push_code)
         raise UnauthorizedError, ERROR_MESSAGES[:upload]
->>>>>>> 714f70a38df10e678bffde6e6081a97e31d8317c
       end
     end
 
@@ -282,13 +169,24 @@ module Gitlab
     def check_change_access!(changes)
       changes_list = Gitlab::ChangesList.new(changes)
 
+      push_size_in_bytes = 0
+
       # Iterate over all changes to find if user allowed all of them to be applied
       changes_list.each do |change|
         status = check_single_change_access(change)
+
         unless status.allowed?
           # If user does not have access to make at least one change - cancel all push
           raise UnauthorizedError, status.message
         end
+
+        if project.size_limit_enabled?
+          push_size_in_bytes += EE::Gitlab::Deltas.delta_size_check(change, project.repository)
+        end
+      end
+
+      if project.changes_will_exceed_size_limit?(push_size_in_bytes.to_mb)
+        raise UnauthorizedError, Gitlab::RepositorySizeError.new(project).new_changes_error
       end
     end
 
@@ -301,10 +199,6 @@ module Gitlab
         skip_authorization: deploy_key?).exec
     end
 
-    def matching_merge_request?(newrev, branch_name)
-      Checks::MatchingMergeRequest.new(newrev, branch_name, project).match?
-    end
-
     def deploy_key
       actor if deploy_key?
     end
@@ -313,9 +207,19 @@ module Gitlab
       actor.is_a?(DeployKey)
     end
 
+    def geo_node_key
+      actor if geo_node_key?
+    end
+
+    def geo_node_key?
+      actor.is_a?(GeoNodeKey)
+    end
+
     def can_read_project?
-      if deploy_key
+      if deploy_key?
         deploy_key.has_access_to?(project)
+      elsif geo_node_key?
+        true
       elsif user
         user.can?(:read_project, project)
       end || Guest.can?(:read_project, project)
@@ -350,10 +254,6 @@ module Gitlab
         raise UnauthorizedError, "You don't have access"
       end
 
-      unless project.repository.exists?
-        raise UnauthorizedError, "Repository does not exist"
-      end
-
       if Gitlab::Geo.enabled? && Gitlab::Geo.secondary?
         raise UnauthorizedError, "You can't use git-annex with a secondary GitLab Geo node."
       end
@@ -379,17 +279,6 @@ module Gitlab
       end
 
       true
-    end
-
-    def commit_from_annex_sync?(commit_message)
-      return false unless Gitlab.config.gitlab_shell.git_annex_enabled
-
-      # Commit message starting with <git-annex in > so avoid push rules on this
-      commit_message.start_with?('git-annex in')
-    end
-
-    def old_commit?(commit)
-      commit.refs(project.repository).any?
     end
   end
 end
