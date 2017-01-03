@@ -84,9 +84,9 @@
   @for $i from 1 through length($defaultProperties) {
     $p: null;
     @if $i <= length($transition) {
-      $p: nth($transition, $i)
+      $p: nth($transition, $i);
     } @else {
-      $p: nth($defaultProperties, $i)
+      $p: nth($defaultProperties, $i);
     }
     $unfoldedTransition: append($unfoldedTransition, $p);
   }

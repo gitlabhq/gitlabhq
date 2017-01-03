@@ -108,7 +108,7 @@
   border-radius: $label-border-radius;
 
   &:hover {
-    box-shadow: inset 0 0 0 80px rgba(0,0,0,0.1);
+    box-shadow: inset 0 0 0 80px $label-remove-border;
   }
 }
 
@@ -209,7 +209,7 @@
     padding: 6px 10px 6px 9px;
 
     &:hover {
-      box-shadow: inset 0 0 0 80px rgba(0,0,0,0.1);
+      box-shadow: inset 0 0 0 80px $label-remove-border;
     }
   }
 
