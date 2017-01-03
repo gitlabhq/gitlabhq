@@ -98,6 +98,10 @@
     padding-right: 35px;
 
     @media (min-width: $screen-sm-min) {
+      width: 250px;
+    }
+
+    @media (min-width: $screen-md-min) {
       width: 350px;
     }
 
