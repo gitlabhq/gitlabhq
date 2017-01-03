@@ -128,8 +128,10 @@ module IssuesHelper
     names.to_sentence
   end
 
-  def award_active_class(awards, current_user)
-    if current_user && awards.find { |a| a.user_id == current_user.id }
+  def award_state_class(awards, current_user)
+    if !current_user
+      "disabled"
+    elsif current_user && awards.find { |a| a.user_id == current_user.id }
       "active"
     else
       ""
