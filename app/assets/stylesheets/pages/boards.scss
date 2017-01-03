@@ -528,12 +528,6 @@
 
 }
 
-.boards-switcher {
-  padding-right: 10px;
-  margin-right: 10px;
-  border-right: 1px solid $white-dark;
-}
-
 .modal-filters {
   display: flex;
 
@@ -553,4 +547,10 @@
       width: 140px;
     }
   }
+}
+
+.issue-boards-switcher {
+  padding-right: 10px;
+  margin-right: 10px;
+  border-right: 1px solid $white-dark;
 }
