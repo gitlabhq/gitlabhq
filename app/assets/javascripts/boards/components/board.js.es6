@@ -50,9 +50,13 @@
             const left = boardsList.scrollLeft - this.$el.offsetLeft;
 
             if (right - boardsList.scrollLeft > 0) {
-              boardsList.scrollLeft = right;
+              $(boardsList).animate({
+                scrollLeft: right
+              }, 200);
             } else if (left > 0) {
-              boardsList.scrollLeft = this.$el.offsetLeft;
+              $(boardsList).animate({
+                scrollLeft: this.$el.offsetLeft
+              }, 200);
             }
           }
         },
