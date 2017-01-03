@@ -36,6 +36,9 @@
       // Do not update if one dropdown has not selected any option
       if (!($allowedToMergeInput.length && $allowedToPushInput.length)) return;
 
+      this.$allowedToMergeDropdown.disable();
+      this.$allowedToPushDropdown.disable();
+
       $.ajax({
         type: 'POST',
         url: this.$wrap.data('url'),
@@ -53,13 +56,13 @@
             }]
           }
         },
-        success: () => {
-          this.$wrap.effect('highlight');
-        },
         error() {
           $.scrollTo(0);
           new Flash('Failed to update branch!');
         }
+      }).always(() => {
+        this.$allowedToMergeDropdown.enable();
+        this.$allowedToPushDropdown.enable();
       });
     }
   };
