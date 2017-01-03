@@ -1,0 +1,4 @@
+---
+title: Gitlab::LDAP::Person uses LDAP attributes configuration
+merge_request: 8418
+author:
