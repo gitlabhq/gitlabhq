@@ -13,10 +13,9 @@
 
 = render "projects/issues/head"
 
-= render 'shared/issuable/filter', type: :boards
+= render 'shared/issuable/filter', type: :boards, board: board
 
 #board-app.boards-app{ "v-cloak" => true, data: board_data }
-  = render "title", board: board
   .boards-list{ ":class" => "{ 'is-compact': detailIssueVisible }" }
     .boards-app-loading.text-center{ "v-if" => "loading" }
       = icon("spinner spin")

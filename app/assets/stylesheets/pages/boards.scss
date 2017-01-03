@@ -49,6 +49,15 @@
   .page-with-sidebar {
     padding-bottom: 0;
   }
+
+  .issues-details-filters {
+    display: -webkit-flex;
+    display: flex;
+  }
+
+  .filter-form {
+    width: 100%;
+  }
 }
 
 .boards-app {
@@ -63,6 +72,7 @@
 .boards-list {
   height: calc(100vh - 152px);
   width: 100%;
+  padding-top: 25px;
   padding-bottom: 25px;
   padding-right: ($gl-padding / 2);
   padding-left: ($gl-padding / 2);
@@ -70,8 +80,8 @@
   white-space: nowrap;
 
   @media (min-width: $screen-sm-min) {
-    height: 409px; // Needed for PhantomJS
-    height: calc(100vh - 290px);
+    height: 475px; // Needed for PhantomJS
+    height: calc(100vh - 220px);
     min-height: 409px;
     transition: width .2s;
 
@@ -304,21 +314,6 @@
   }
 }
 
-.boards-switcher {
-  padding: 0;
-  border: 0;
-  outline: 0;
-  background: none;
-  font-size: 19px;
-  font-weight: 600;
-
-  > .fa {
-    position: relative;
-    top: 2px;
-    margin-left: 5px;
-  }
-}
-
 .board-selector-page-two {
   padding-left: 10px;
   padding-right: 10px;
@@ -534,6 +529,12 @@
   font-size: 9px;
   line-height: 15px;
   border-radius: 50%;
+
+}
+.issue-boards-switcher {
+  padding-right: 10px;
+  margin-right: 10px;
+  border-right: 1px solid $white-dark;
 }
 
 .modal-filters {

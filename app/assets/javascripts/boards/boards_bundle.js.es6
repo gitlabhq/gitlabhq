@@ -35,7 +35,6 @@ $(() => {
     el: $boardApp,
     components: {
       'board': gl.issueBoards.Board,
-      'boards-selector': gl.issueBoards.BoardsSelector,
       'board-sidebar': gl.issueBoards.BoardSidebar,
       'board-add-issues-modal': gl.issueBoards.IssuesModal,
     },
@@ -109,5 +108,12 @@ $(() => {
         Add issues
       </button>
     `,
+  });
+
+  gl.IssueboardsSwitcher = new Vue({
+    el: '#js-multiple-boards-switcher',
+    components: {
+      'boards-selector': gl.issueBoards.BoardsSelector,
+    }
   });
 });
