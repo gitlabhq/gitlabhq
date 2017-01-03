@@ -1,7 +1,7 @@
 = form_for @project_member, as: :project_member, url: namespace_project_project_members_path(@project.namespace, @project), html: { class: 'users-project-form' } do |f|
   .row
     .col-md-5.col-lg-5
-      = users_select_tag(:user_ids, multiple: true, class: "input-clamp", scope: :all, email_user: true)
+      = users_select_tag(:user_ids, multiple: true, class: "input-clamp", scope: :all, email_user: true, placeholder: "Search for members to update or invite")
       .help-block.append-bottom-10
         Search for members by name, username, or email, or invite new ones using their email address.
 
