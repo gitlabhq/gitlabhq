@@ -2,11 +2,8 @@
 
 > Introduced in GitLab 8.14.
 
-Time Tracking lets teams stack their project estimates against their time spent.
-
-Other interesting links:
-
-- [Time Tracking landing page on about.gitlab.com][landing]
+Time Tracking allows you to track estimates and time spent on issues and merge
+requests within GitLab.
 
 ## Overview
 
