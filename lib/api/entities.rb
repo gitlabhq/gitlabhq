@@ -113,7 +113,7 @@ module API
       expose :request_access_enabled
       expose :only_allow_merge_if_all_discussions_are_resolved
       expose :approvals_before_merge
-     
+
       expose :statistics, using: 'API::Entities::ProjectStatistics', if: :statistics
     end
 
@@ -284,6 +284,7 @@ module API
       expose :upvotes, :downvotes
       expose :due_date
       expose :confidential
+      expose :weight
 
       expose :web_url do |issue, options|
         Gitlab::UrlBuilder.build(issue)

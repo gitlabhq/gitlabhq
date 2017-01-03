@@ -81,7 +81,8 @@ Example response:
       "user_notes_count": 1,
       "due_date": "2016-07-22",
       "web_url": "http://example.com/example/example/issues/6",
-      "confidential": false
+      "confidential": false,
+      "weight": null
    }
 ]
 ```
@@ -160,7 +161,8 @@ Example response:
       "user_notes_count": 1,
       "due_date": null,
       "web_url": "http://example.com/example/example/issues/1",
-      "confidential": false
+      "confidential": false,
+      "weight": null
    }
 ]
 ```
@@ -241,7 +243,8 @@ Example response:
       "user_notes_count": 1,
       "due_date": "2016-07-22",
       "web_url": "http://example.com/example/example/issues/1",
-      "confidential": false
+      "confidential": false,
+      "weight": null
    }
 ]
 ```
@@ -307,7 +310,8 @@ Example response:
    "user_notes_count": 1,
    "due_date": null,
    "web_url": "http://example.com/example/example/issues/1",
-   "confidential": false
+   "confidential": false,
+   "weight": null
 }
 ```
 
@@ -331,6 +335,7 @@ POST /projects/:id/issues
 | `created_at`    | string  | no  | Date time string, ISO 8601 formatted, e.g. `2016-03-11T03:45:40Z` (requires admin or project owner rights) |
 | `due_date`      | string  | no  | Date time string in the format YEAR-MONTH-DAY, e.g. `2016-03-11` |
 | `merge_request_for_resolving_discussions` | integer | no       | The IID of a merge request in which to resolve all issues. This will fill the issue with a default description and mark all discussions as resolved. When passing a description or title, these values will take precedence over the default values. |
+| `weight` | integer | no | The weight of the issue in range 0 to 9 |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues?title=Issues%20with%20auth&labels=bug
@@ -365,7 +370,8 @@ Example response:
    "user_notes_count": 0,
    "due_date": null,
    "web_url": "http://example.com/example/example/issues/14",
-   "confidential": false
+   "confidential": false,
+   "weight": null
 }
 ```
 
@@ -391,6 +397,7 @@ PUT /projects/:id/issues/:issue_id
 | `state_event`   | string  | no  | The state event of an issue. Set `close` to close the issue and `reopen` to reopen it |
 | `updated_at`    | string  | no  | Date time string, ISO 8601 formatted, e.g. `2016-03-11T03:45:40Z` (requires admin or project owner rights) |
 | `due_date`      | string  | no  | Date time string in the format YEAR-MONTH-DAY, e.g. `2016-03-11` |
+| `weight` | integer | no | The weight of the issue in range 0 to 9 |
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues/85?state_event=close
@@ -425,7 +432,8 @@ Example response:
    "user_notes_count": 0,
    "due_date": "2016-07-22",
    "web_url": "http://example.com/example/example/issues/15",
-   "confidential": false
+   "confidential": false,
+   "weight": null
 }
 ```
 
@@ -501,7 +509,8 @@ Example response:
   },
   "due_date": null,
   "web_url": "http://example.com/example/example/issues/11",
-  "confidential": false
+  "confidential": false,
+  "weight": null
 }
 ```
 
@@ -556,7 +565,8 @@ Example response:
   },
   "due_date": null,
   "web_url": "http://example.com/example/example/issues/11",
-  "confidential": false
+  "confidential": false,
+  "weight": null
 }
 ```
 
@@ -612,7 +622,8 @@ Example response:
   "subscribed": false,
   "due_date": null,
   "web_url": "http://example.com/example/example/issues/12",
-  "confidential": false
+  "confidential": false,
+  "weight": null
 }
 ```
 
@@ -700,7 +711,8 @@ Example response:
     "downvotes": 0,
     "due_date": null,
     "web_url": "http://example.com/example/example/issues/110",
-    "confidential": false
+    "confidential": false,
+    "weight": null
   },
   "target_url": "https://gitlab.example.com/gitlab-org/gitlab-ci/issues/10",
   "body": "Vel voluptas atque dicta mollitia adipisci qui at.",
