@@ -1,16 +1,21 @@
 /*= require vue */
 /*= require vue-resource */
 
-/*= require boards/vue_resource_interceptor */
 /*= require vue_realtime_listener/index */
 
 /* global Vue, VueResource, Flash */
 
-/** this needs to be disabled because this is the property provided by Vue */
 /* eslint-disable no-underscore-dangle */
 
 (() => {
   Vue.use(VueResource);
+
+  /**
+    not using vue_resource_interceptor because of the nested call to render html
+    this requires a bit more custom logic
+    specifically the 'if/else' in the 'fetch' method
+  */
+  Vue.activeResources = 0;
 
   const user = document.querySelector('meta[name="csrf-token"]');
   if (user) Vue.http.headers.post['X-CSRF-token'] = user.content;
@@ -27,6 +32,7 @@
         intervalId: '',
         htmlTitle: '',
         diffTitle: '',
+        failedCount: 0,
       };
     },
     created() {
@@ -43,6 +49,7 @@
     },
     methods: {
       fetch() {
+        Vue.activeResources = 1;
         this.intervalId = setInterval(() => {
           this.$http.get(this.endpoint)
             .then((res) => {
@@ -51,8 +58,10 @@
               if (this.diff !== title) {
                 this.diffTitle = title;
                 this.mdToHtml(title, this.projectPath);
+              } else {
+                Vue.activeResources = 0;
               }
-            }, () => new Flash('Something went wrong on our end.'));
+            }, () => this.onError('attempting to check if there is a new title'));
         }, 3000);
       },
       mdToHtml(title, projectPath) {
@@ -63,11 +72,23 @@
               this.htmlTitle = JSON.parse(res.body).body;
               this.$el.style.transition = 'opacity 0.2s ease';
               this.$el.style.opacity = 1;
+              Vue.activeResources = 0;
             }, 100);
-          }, () => new Flash('Something went wrong on our end.'));
+          }, () => this.onError('trying to render the updated title'));
       },
       clear() {
         clearInterval(this.intervalId);
+      },
+      onError(reason) {
+        /**
+          When the API call fails to update in realtime,
+          the interval is killed if more than 3 calls failed.
+          the user is then instructed to refresh the page
+        */
+        this.failedCount = this.failedCount += 1;
+        if (this.failedCount > 2) this.clear();
+        Vue.activeResources = 0;
+        return new Flash(`Something went wrong ${reason}. Refresh the page and try again.`);
       },
     },
     template: `

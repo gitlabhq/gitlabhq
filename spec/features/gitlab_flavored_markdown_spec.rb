@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'rails_helper'
 
 describe "GitLab Flavored Markdown", feature: true do
   let(:project) { create(:project) }
@@ -48,7 +49,9 @@ describe "GitLab Flavored Markdown", feature: true do
     end
   end
 
-  describe "for issues" do
+  describe "for issues", feature: true, js: true do
+    include WaitForVueResource
+
     before do
       @other_issue = create(:issue,
                             author: @user,
@@ -68,7 +71,7 @@ describe "GitLab Flavored Markdown", feature: true do
       expect(page).to have_link(@other_issue.to_reference)
     end
 
-    it "renders subject in issues#show", js: true do
+    it "renders subject in issues#show" do
       visit namespace_project_issue_path(project.namespace, project, @issue)
 
       expect(page).to have_link(@other_issue.to_reference)
@@ -78,6 +81,16 @@ describe "GitLab Flavored Markdown", feature: true do
       visit namespace_project_issue_path(project.namespace, project, @issue)
 
       expect(page).to have_link(fred.to_reference)
+    end
+
+    it "renders updated subject once edited somewhere else in issues#show" do
+      visit namespace_project_issue_path(project.namespace, project, @issue)
+
+      @issue.update(title: "fix #{@other_issue.to_reference} and update")
+
+      wait_for_vue_resource
+
+      expect(page).to have_text("fix #{@other_issue.to_reference} and update")
     end
   end
 
