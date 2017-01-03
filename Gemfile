@@ -328,7 +328,7 @@ end
 
 gem 'newrelic_rpm', '~> 3.16'
 
-gem 'octokit', '~> 4.3.0'
+gem 'octokit', '~> 4.6.2'
 
 gem 'mail_room', '~> 0.9.0'
 
