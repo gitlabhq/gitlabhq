@@ -3,9 +3,7 @@
 > Introduced in GitLab 8.14 in beta.
 
 Time Tracking allows you to track estimates and time spent on issues and merge
-requests within GitLab. This functionality is in beta and is available for free
-to all Enterprise Edition customers. As we expand on this feature, we will remove
-it from Beta and a new License key will need to be issued to use it.
+requests within GitLab.
 
 ## Overview
 
