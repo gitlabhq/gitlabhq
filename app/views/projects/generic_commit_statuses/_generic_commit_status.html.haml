@@ -6,7 +6,7 @@
 - stage = local_assigns.fetch(:stage, false)
 - coverage = local_assigns.fetch(:coverage, false)
 
-%tr.generic_commit_status{class: ('retried' if retried)}
+%tr.generic_commit_status{ class: ('retried' if retried) }
   %td.status
     = render 'ci/status/badge', status: generic_commit_status.detailed_status(current_user)
 

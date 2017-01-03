@@ -6,7 +6,7 @@
   = stylesheet_link_tag "xterm/xterm"
   = page_specific_javascript_tag("terminal/terminal_bundle.js")
 
-%div{class: container_class}
+%div{ class: container_class }
   .top-area
     .row
       .col-sm-6
@@ -18,5 +18,5 @@
         .nav-controls
           = render 'projects/deployments/actions', deployment: @environment.last_deployment
 
-.terminal-container{class: container_class}
-  #terminal{data:{project_path: "#{terminal_namespace_project_environment_path(@project.namespace, @project, @environment)}.ws"}}
+.terminal-container{ class: container_class }
+  #terminal{ data: { project_path: "#{terminal_namespace_project_environment_path(@project.namespace, @project, @environment)}.ws" } }
