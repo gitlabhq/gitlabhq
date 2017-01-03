@@ -41,6 +41,21 @@ body {
     }
   }
 
+  .alert-link-group {
+    float: right;
+  }
+
+  /* Center alert text and alert action links on smaller screens */
+  @media (max-width: $screen-sm-max) {
+    .alert {
+      text-align: center;
+    }
+
+    .alert-link-group {
+      float: none;
+    }
+  }
+
   /* Stripe the background colors so that adjacent alert-warnings are distinct from one another */
   .alert-warning {
     transition: background-color 0.15s, border-color 0.15s;
