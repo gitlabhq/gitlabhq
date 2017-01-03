@@ -26,6 +26,7 @@ module JavaScriptFixturesHelpers
   def store_frontend_fixture(response, fixture_file_name)
     fixture_file_name = File.expand_path(fixture_file_name, FIXTURE_PATH)
     fixture = response.body
+    fixture.force_encoding("utf-8")
 
     response_mime_type = Mime::Type.lookup(response.content_type)
     if response_mime_type.html?
