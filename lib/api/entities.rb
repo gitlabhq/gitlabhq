@@ -60,6 +60,8 @@ module API
     class ProjectPushRule < Grape::Entity
       expose :id, :project_id, :created_at
       expose :commit_message_regex, :deny_delete_tag
+      expose :member_check, :prevent_secrets, :author_email_regex
+      expose :file_name_regex, :max_file_size
     end
 
     class BasicProjectDetails < Grape::Entity
@@ -113,7 +115,7 @@ module API
       expose :request_access_enabled
       expose :only_allow_merge_if_all_discussions_are_resolved
       expose :approvals_before_merge
-     
+
       expose :statistics, using: 'API::Entities::ProjectStatistics', if: :statistics
     end
 
