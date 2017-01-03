@@ -12,8 +12,8 @@
 (() => {
   Vue.use(VueResource);
 
-  Vue.http.headers.put['X-CSRF-token'] = document
-    .querySelector('meta[name="csrf-token"]').content;
+  const user = document.querySelector('meta[name="csrf-token"]');
+  if (user) Vue.http.headers.post['X-CSRF-token'] = user.content;
 
   gl.VueIssueTitle = Vue.extend({
     props: [
