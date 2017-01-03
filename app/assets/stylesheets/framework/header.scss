@@ -104,6 +104,7 @@ header {
 
       &:hover {
         background-color: $white-normal;
+        color: $gl-header-nav-hover-color;
       }
     }
   }
@@ -180,6 +181,7 @@ header {
 
         &:hover {
           text-decoration: underline;
+          color: $gl-header-nav-hover-color;
         }
       }
 
@@ -198,7 +200,7 @@ header {
         cursor: pointer;
 
         &:hover {
-          color: darken($color: $gl-text-color, $amount: 30%);
+          color: $gl-header-nav-hover-color;
         }
       }
 

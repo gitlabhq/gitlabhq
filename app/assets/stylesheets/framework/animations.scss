@@ -94,8 +94,21 @@
   @return $unfoldedTransition;
 }
 
-.btn {
+.btn,
+.side-nav-toggle {
   @include transition(background-color, border-color, color, box-shadow);
+}
+
+.dropdown-menu-toggle,
+.avatar-circle {
+  @include transition(border-color);
+}
+
+.note-action-button .link-highlight,
+.toolbar-btn,
+.dropdown-toggle-caret,
+.fa {
+  @include transition(color);
 }
 
 a {
@@ -106,6 +119,11 @@ a {
   @include transition(box-shadow);
 }
 
-.tree-table td {
+.tree-table td,
+.well-list > li {
   @include transition(background-color, border-color);
+}
+
+.stage-nav-item {
+  @include transition(background-color, box-shadow);
 }

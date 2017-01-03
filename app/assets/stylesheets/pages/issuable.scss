@@ -277,6 +277,10 @@
     &:hover {
       color: $md-link-color;
       text-decoration: none;
+
+      .avatar {
+        border-color: $md-link-color;
+      }
     }
   }
 

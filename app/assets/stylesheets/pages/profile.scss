@@ -222,6 +222,10 @@
     margin-left: 5px;
   }
 
+  .nav-links li {
+    margin-right: -4px;
+  }
+
   .profile-header {
     margin: 0 auto;
 
@@ -252,6 +256,10 @@
           margin-left: 0;
         }
       }
+    }
+
+    .nav-links li {
+      margin-right: -7px;
     }
   }
 }
