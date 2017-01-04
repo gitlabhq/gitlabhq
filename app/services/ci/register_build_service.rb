@@ -14,7 +14,7 @@ module Ci
       builds =
         if runner.shared?
           if shared_runner_build_limits_feature_enabled?
-            builds_for_sharer_runner_with_build_minutes_check
+            builds_for_shared_runner_with_build_minutes_check
           else
             builds_for_shared_runner
           end
@@ -41,7 +41,7 @@ module Ci
 
     private
 
-    def builds_for_sharer_runner_with_build_minutes_check
+    def builds_for_shared_runner_with_build_minutes_check
       # select projects which have allowed number of shared runner minutes or are public
       builds_for_shared_runner.
         where("projects.visibility_level=? OR (#{builds_check_limit.to_sql})=1",
@@ -90,7 +90,7 @@ module Ci
     end
 
     def shared_runner_build_limits_feature_enabled?
-      ENV['DISABLE_SHARED_RUNNER_BUILD_MINTUES_LIMIT'].to_s != 'true'
+      ENV['DISABLE_SHARED_RUNNER_BUILD_MINUTES_LIMIT'].to_s != 'true'
     end
   end
 end
