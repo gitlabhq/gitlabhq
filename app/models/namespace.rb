@@ -111,6 +111,8 @@ class Namespace < ActiveRecord::Base
 
     Gitlab::UploadsTransfer.new.rename_namespace(path_was, path)
 
+    remove_exports!
+
     # If repositories moved successfully we need to
     # send update instructions to users.
     # However we cannot allow rollback since we moved namespace dir
@@ -173,6 +175,24 @@ class Namespace < ActiveRecord::Base
         # GitLab has time to remove all projects first
         GitlabShellWorker.perform_in(5.minutes, :rm_namespace, repository_storage_path, new_path)
       end
+    end
+
+    remove_exports!
+  end
+
+  def remove_exports!
+    Gitlab::Popen.popen(%W(find #{export_path} -not -path #{export_path} -delete))
+  end
+
+  def export_path
+    File.join(Gitlab::ImportExport.storage_path, full_path_was)
+  end
+
+  def full_path_was
+    if parent
+      parent.full_path + '/' + path_was
+    else
+      path_was
     end
   end
 end
