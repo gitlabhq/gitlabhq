@@ -9,10 +9,10 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :redirect_to_external_issue_tracker, only: [:index, :new]
   before_action :module_enabled
   before_action :issue, only: [:edit, :update, :show, :referenced_merge_requests,
-                               :related_branches, :can_create_branch]
+                               :related_branches, :can_create_branch, :rendered_title]
 
   # Allow read any issue
-  before_action :authorize_read_issue!, only: [:show]
+  before_action :authorize_read_issue!, only: [:show, :rendered_title]
 
   # Allow write(create) issue
   before_action :authorize_create_issue!, only: [:new, :create]
@@ -160,6 +160,14 @@ class Projects::IssuesController < Projects::ApplicationController
     respond_to do |format|
       format.json do
         render json: { can_create_branch: can_create }
+      end
+    end
+  end
+
+  def rendered_title
+    respond_to do |format|
+      format.json do
+        render json: { title: view_context.markdown_field(@issue, :title) }
       end
     end
   end

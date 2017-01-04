@@ -54,10 +54,8 @@
 
 .issue-details.issuable-details
   .detail-page-description.content-block{ class: ('hide-bottom-border' unless @issue.description.present? ) }
-    .vue-data.hidden{ "data" => { "ruby-title" => markdown_field(@issue, :title),
-      "path" => issue_path(@issue),
-      "project_path" => project_path(@project),
-      "ruby_diff_title" => @issue.title,
+    .vue-data.hidden{ "data" => { "initial-title" => markdown_field(@issue, :title),
+      "endpoint" => rendered_title_namespace_project_issue_path(@project.namespace, @project, @issue),
       "user" => "#{current_user.nil?}",
     } }
     .issue-title-vue

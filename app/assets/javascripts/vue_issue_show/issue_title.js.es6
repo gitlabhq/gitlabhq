@@ -3,17 +3,13 @@
 (() => {
   gl.VueIssueTitle = Vue.extend({
     props: [
-      'rubyTitle',
-      'endpoint',
-      'projectPath',
-      'rubyDiffTitle',
-      'user',
+      'initialTitle',
+      'endpoint'
     ],
     data() {
       return {
         intervalId: '',
-        htmlTitle: '',
-        diffTitle: '',
+        title: this.initialTitle,
         failedCount: 0,
         pageRequest: false,
       };
@@ -21,50 +17,30 @@
     created() {
       this.fetch();
     },
-    computed: {
-      titleMessage() {
-        const rubyTitle = `<p dir="auto">${this.rubyTitle}</p>`;
-        return this.htmlTitle ? this.htmlTitle : rubyTitle;
-      },
-      diff() {
-        return this.diffTitle ? this.diffTitle : this.rubyDiffTitle;
-      },
-    },
     methods: {
       fetch() {
-        if (this.user) {
-          Vue.activeResources = 1;
-          this.intervalId = setInterval(() => {
-            if (!this.pageRequest) {
-              this.$http.get(this.endpoint)
-                .then((res) => {
-                  const issue = JSON.parse(res.body);
-                  const { title } = issue;
-                  if (this.diff !== title) {
-                    this.diffTitle = title;
-                    this.mdToHtml(title, this.projectPath);
-                  } else {
-                    Vue.activeResources = 0;
-                  }
-                }, () => this.onError());
-            }
-          }, 3000);
-        }
-      },
-      mdToHtml(title, projectPath) {
-        this.$http.post(`${projectPath}/preview_markdown`, { text: title })
-          .then((res) => {
-            this.$el.style.opacity = 0;
-            setTimeout(() => {
-              this.htmlTitle = JSON.parse(res.body).body;
-              this.$el.style.transition = 'opacity 0.2s ease';
-              this.$el.style.opacity = 1;
-              Vue.activeResources = 0;
-            }, 100);
-          }, () => this.onError());
+        Vue.activeResources = 1;
+        this.intervalId = setInterval(() => {
+          if (!this.pageRequest) {
+            this.$http.get(this.endpoint)
+              .then((res) => {
+                Vue.activeResources = 0;
+                let title = JSON.parse(res.body).title;
+                if (this.title === title) {
+                  return;
+                }
+                this.$el.style.opacity = 0;
+                setTimeout(() => {
+                  this.title = title;
+                  this.$el.style.transition = 'opacity 0.2s ease';
+                  this.$el.style.opacity = 1;
+                }, 100);
+              }, () => this.onError());
+          }
+        }, 3000);
       },
       clear() {
-        if (this.user) clearInterval(this.intervalId);
+        clearInterval(this.intervalId);
       },
       onError() {
         this.pageRequest = false;
@@ -72,7 +48,7 @@
       },
     },
     template: `
-      <h2 class='title' v-html='titleMessage'></h2>
+      <h2 class='title' v-html='title'></h2>
     `,
   });
 })();

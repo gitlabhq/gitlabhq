@@ -38,10 +38,8 @@
     },
     data() {
       return {
-        rubyTitle: vueData.rubyTitle,
+        initialTitle: vueData.initialTitle,
         endpoint: vueData.endpoint,
-        projectPath: vueData.projectPath,
-        rubyDiffTitle: vueData.rubyDiffTitle,
         user,
         token,
       };
@@ -49,10 +47,8 @@
     template: `
       <div>
         <vue-title
-          :rubyTitle='rubyTitle'
+          :initialTitle='initialTitle'
           :endpoint='endpoint'
-          :projectPath='projectPath'
-          :rubyDiffTitle='rubyDiffTitle'
           :user='user'
         >
         </vue-title>
