@@ -33,7 +33,7 @@ module Gitlab
       def initialize(repository, name, target)
         encode! name
         @name = name.gsub(/\Arefs\/(tags|heads)\//, '')
-        @dereferenced_target = Commit.find(repository, target)
+        @dereferenced_target = Gitlab::Git::Commit.find(repository, target)
         @target = if target.respond_to?(:oid)
                     target.oid
                   elsif target.respond_to?(:name)

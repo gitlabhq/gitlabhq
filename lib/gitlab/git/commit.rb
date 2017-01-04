@@ -58,7 +58,7 @@ module Gitlab
           obj = if commit_id.is_a?(String)
                   repo.rev_parse_target(commit_id)
                 else
-                  Ref.dereference_object(commit_id)
+                  Gitlab::Git::Ref.dereference_object(commit_id)
                 end
 
           return nil unless obj.is_a?(Rugged::Commit)
@@ -123,7 +123,7 @@ module Gitlab
         def diff_from_parent(rugged_commit, options = {})
           options ||= {}
           break_rewrites = options[:break_rewrites]
-          actual_options = Diff.filter_diff_options(options)
+          actual_options = Gitlab::Git::Diff.filter_diff_options(options)
 
           diff = if rugged_commit.parents.empty?
                    rugged_commit.diff(actual_options.merge(reverse: true))
@@ -211,7 +211,7 @@ module Gitlab
       end
 
       def diffs(options = {})
-        DiffCollection.new(diff_from_parent(options), options)
+        Gitlab::Git::DiffCollection.new(diff_from_parent(options), options)
       end
 
       def parents

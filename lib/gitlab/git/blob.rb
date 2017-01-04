@@ -30,7 +30,7 @@ module Gitlab
             blob = repository.lookup(blob_entry[:oid])
 
             if blob
-              Blob.new(
+              new(
                 id: blob.oid,
                 name: blob_entry[:name],
                 size: blob.size,
@@ -47,7 +47,7 @@ module Gitlab
         def raw(repository, sha)
           blob = repository.lookup(sha)
 
-          Blob.new(
+          new(
             id: blob.oid,
             size: blob.size,
             data: blob.content(MAX_DATA_DISPLAY_SIZE),
@@ -88,7 +88,7 @@ module Gitlab
         end
 
         def submodule_blob(blob_entry, path, sha)
-          Blob.new(
+          new(
             id: blob_entry[:oid],
             name: blob_entry[:name],
             data: '',
@@ -140,16 +140,16 @@ module Gitlab
             ref = 'refs/heads/' + ref
           end
 
-          path_name = PathHelper.normalize_path(file[:path])
+          path_name = Gitlab::Git::PathHelper.normalize_path(file[:path])
           # Abort if any invalid characters remain (e.g. ../foo)
-          raise Repository::InvalidBlobName.new("Invalid path") if path_name.each_filename.to_a.include?('..')
+          raise Gitlab::Git::Repository::InvalidBlobName.new("Invalid path") if path_name.each_filename.to_a.include?('..')
 
           filename = path_name.to_s
           index = repo.index
 
           unless repo.empty?
             rugged_ref = repo.references[ref]
-            raise Repository::InvalidRef.new("Invalid branch name") unless rugged_ref
+            raise Gitlab::Git::Repository::InvalidRef.new("Invalid branch name") unless rugged_ref
             last_commit = rugged_ref.target
             index.read_tree(last_commit.tree)
             parents = [last_commit]
@@ -161,14 +161,14 @@ module Gitlab
             file_entry = index.get(filename)
 
             if action == :rename
-              old_path_name = PathHelper.normalize_path(file[:previous_path])
+              old_path_name = Gitlab::Git::PathHelper.normalize_path(file[:previous_path])
               old_filename = old_path_name.to_s
               file_entry = index.get(old_filename)
               index.remove(old_filename) unless file_entry.blank?
             end
 
             if file_entry
-              raise Repository::InvalidBlobName.new("Filename already exists; update not allowed") unless update
+              raise Gitlab::Git::Repository::InvalidBlobName.new("Filename already exists; update not allowed") unless update
 
               # Preserve the current file mode if one is available
               mode = file_entry[:mode] if file_entry[:mode]

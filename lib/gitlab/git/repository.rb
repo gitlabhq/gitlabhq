@@ -32,7 +32,7 @@ module Gitlab
       def initialize(path)
         @path = path
         @name = path.split("/").last
-        @attributes = Attributes.new(path)
+        @attributes = Gitlab::Git::Attributes.new(path)
       end
 
       # Default branch in the repository
@@ -61,7 +61,7 @@ module Gitlab
       def branches
         rugged.branches.map do |rugged_ref|
           begin
-            Branch.new(self, rugged_ref.name, rugged_ref.target)
+            Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target)
           rescue Rugged::ReferenceError
             # Omit invalid branch
           end
@@ -83,12 +83,12 @@ module Gitlab
         reload_rugged if force_reload
 
         rugged_ref = rugged.branches[name]
-        Branch.new(self, rugged_ref.name, rugged_ref.target) if rugged_ref
+        Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target) if rugged_ref
       end
 
       def local_branches
         rugged.branches.each(:local).map do |branch|
-          Branch.new(self, branch.name, branch.target)
+          Gitlab::Git::Branch.new(self, branch.name, branch.target)
         end
       end
 
@@ -123,7 +123,7 @@ module Gitlab
             end
           end
 
-          Tag.new(self, ref.name, ref.target, message)
+          Gitlab::Git::Tag.new(self, ref.name, ref.target, message)
         end.sort_by(&:name)
       end
 
@@ -260,7 +260,7 @@ module Gitlab
           # Discard submodules
           next if submodule?(entry)
 
-          blob = Blob.raw(self, entry[:oid])
+          blob = Gitlab::Git::Blob.raw(self, entry[:oid])
 
           # Skip binary files
           next if blob.data.encoding == Encoding::ASCII_8BIT
@@ -397,7 +397,7 @@ module Gitlab
       # diff options.  The +options+ hash can also include :break_rewrites to
       # split larger rewrites into delete/add pairs.
       def diff(from, to, options = {}, *paths)
-        DiffCollection.new(diff_patches(from, to, options, *paths), options)
+        Gitlab::Git::DiffCollection.new(diff_patches(from, to, options, *paths), options)
       end
 
       # Returns commits collection
@@ -755,7 +755,7 @@ module Gitlab
       #   create_branch("other-feature", "master")
       def create_branch(ref, start_point = "HEAD")
         rugged_ref = rugged.branches.create(ref, start_point)
-        Branch.new(self, rugged_ref.name, rugged_ref.target)
+        Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target)
       rescue Rugged::ReferenceError => e
         raise InvalidRef.new("Branch #{ref} already exists") if e.to_s =~ /'refs\/heads\/#{ref}'/
         raise InvalidRef.new("Invalid reference #{start_point}")
@@ -870,7 +870,7 @@ module Gitlab
         # Check if this directory exists; if it does, then don't bother
         # adding .gitkeep file.
         ref = options[:commit][:branch]
-        path = PathHelper.normalize_path(path).to_s
+        path = Gitlab::Git::PathHelper.normalize_path(path).to_s
         rugged_ref = rugged.ref(ref)
 
         raise InvalidRef.new("Invalid ref") if rugged_ref.nil?
@@ -895,7 +895,7 @@ module Gitlab
           update: true
         }
 
-        Blob.commit(self, options)
+        Gitlab::Git::Blob.commit(self, options)
       end
 
       # Returns result like "git ls-files" , recursive and full file path
@@ -1242,7 +1242,7 @@ module Gitlab
       def diff_patches(from, to, options = {}, *paths)
         options ||= {}
         break_rewrites = options[:break_rewrites]
-        actual_options = Diff.filter_diff_options(options.merge(paths: paths))
+        actual_options = Gitlab::Git::Diff.filter_diff_options(options.merge(paths: paths))
 
         diff = rugged.diff(from, to, actual_options)
         diff.find_similar!(break_rewrites: break_rewrites)

@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe Gitlab::Git::Repository, seed_helper: true do
-  include EncodingHelper
+  include Gitlab::Git::EncodingHelper
 
   let(:repository) { Gitlab::Git::Repository.new(TEST_REPO_PATH) }
 
