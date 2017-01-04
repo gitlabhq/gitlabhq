@@ -36,6 +36,10 @@ FactoryGirl.define do
         #
         pipeline.config_processor if evaluator.config
       end
+
+      trait :invalid do
+        config(rspec: nil)
+      end
     end
   end
 end

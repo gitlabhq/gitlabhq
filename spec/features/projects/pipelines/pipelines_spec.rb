@@ -86,6 +86,24 @@ describe 'Pipelines', :feature, :js do
         end
       end
 
+      context 'when pipeline has configuration errors' do
+        let(:pipeline) do
+          create(:ci_pipeline, :invalid, project: project)
+        end
+
+        before { visit_project_pipelines }
+
+        it 'contains badge that indicate errors' do
+          expect(page).to have_content 'yaml invalid'
+        end
+
+        it 'contains badge with tooltip which contains error' do
+          expect(pipeline).to have_yaml_errors
+          expect(page).to have_selector(
+            %Q{span[data-original-title="#{pipeline.yaml_errors}"]})
+        end
+      end
+
       context 'with manual actions' do
         let!(:manual) do
           create(:ci_build, :manual,
