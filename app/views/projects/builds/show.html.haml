@@ -26,18 +26,7 @@
             = link_to namespace_project_runners_path(@build.project.namespace, @build.project) do
               Runners page
 
-    - if @build.project.namespace.shared_runners_minutes_used?
-      - quota_used = @build.project.namespace.shared_runners_minutes
-      - quota_limit = @build.project.namespace.actual_shared_runners_minutes_limit
-      .bs-callout.bs-callout-warning
-        %p
-          You have used all your shared runner minutes
-          = "(#{quota_used} of #{quota_limit})."
-          %br
-          For more information, go to the
-          = succeed "." do
-            = link_to namespace_project_runners_path(@build.project.namespace, @build.project) do
-              runners page
+    = render "shared_runner_limit_warning", project: @build.project
 
     - if @build.starts_environment?
       .prepend-top-default
