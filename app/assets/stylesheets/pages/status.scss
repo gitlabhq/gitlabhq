@@ -46,20 +46,6 @@
       }
     }
 
-    &.ci-passed,
-    &.ci-passed_with_warnings {
-      color: $gl-success;
-      border-color: $gl-success;
-
-      &:not(span):hover {
-        background-color: rgba( $gl-success, .07);
-      }
-
-      svg {
-        fill: $gl-success;
-      }
-    }
-
     &.ci-info {
       color: $gl-info;
       border-color: $gl-info;
