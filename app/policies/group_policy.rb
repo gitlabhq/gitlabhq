@@ -1,4 +1,6 @@
 class GroupPolicy < BasePolicy
+  prepend EE::GroupPolicy
+
   def rules
     can! :read_group if @subject.public?
     return unless @user
@@ -34,8 +36,6 @@ class GroupPolicy < BasePolicy
     if globally_viewable && @subject.request_access_enabled && !member
       can! :request_access
     end
-
-    additional_rules!(master)
   end
 
   def can_read_group?
@@ -46,12 +46,5 @@ class GroupPolicy < BasePolicy
     return true if @subject.users.include?(@user)
 
     GroupProjectsFinder.new(@subject).execute(@user).any?
-  end
-
-  def additional_rules!(master)
-    if @subject.ldap_synced?
-      cannot! :admin_group_member
-      can! :override_group_member if master
-    end
   end
 end
