@@ -2,9 +2,7 @@ require 'spec_helper'
 require 'rails_helper'
 
 describe 'Pipelines', :feature, :js do
-  include GitlabRoutingHelper
   include WaitForVueResource
-  include WaitForAjax
 
   let(:project) { create(:empty_project) }
 
