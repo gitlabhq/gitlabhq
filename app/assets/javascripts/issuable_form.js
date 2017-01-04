@@ -37,14 +37,15 @@
       this.initMoveDropdown();
       $issuableDueDate = $('#issuable-due-date');
       if ($issuableDueDate.length) {
-        new Pikaday({
+        var calendar = new Pikaday({
           field: $issuableDueDate.get(0),
+          theme: 'gitlab-theme',
           format: 'yyyy-mm-dd',
-          defaultDate: new Date($issuableDueDate.val()),
           onSelect: function(dateText) {
             $issuableDueDate.val(dateFormat(new Date(dateText), 'yyyy-mm-dd'));
           }
         });
+        calendar.setDate(new Date($issuableDueDate.val()));
       }
     }
 
