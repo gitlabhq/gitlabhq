@@ -16,6 +16,7 @@ module API
                             desc: 'Return issues ordered by `created_at` or `updated_at` fields.'
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
                         desc: 'Return issues sorted in `asc` or `desc` order.'
+        optional :milestone, type: String, desc: 'Return issues for a specific milestone'
         use :pagination
       end
 
