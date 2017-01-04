@@ -1,4 +1,3 @@
-
 class GitOperationService
   attr_reader :user, :repository
 
@@ -28,6 +27,9 @@ class GitOperationService
 
     with_hooks(ref, newrev, oldrev) do |service|
       raw_tag = repository.rugged.tags.create(tag_name, newrev, options)
+
+      # If raw_tag is an annotated tag, we'll need to update newrev to point
+      # to the new revision.
       service.newrev = raw_tag.target_id
     end
   end
