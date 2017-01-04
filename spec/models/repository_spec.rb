@@ -1419,9 +1419,10 @@ describe Repository, models: true do
   describe '#rm_tag' do
     it 'removes a tag' do
       expect(repository).to receive(:before_remove_tag)
-      expect(repository.rugged.tags).to receive(:delete).with('v1.1.0')
 
-      repository.rm_tag('v1.1.0')
+      repository.rm_tag(create(:user), 'v1.1.0')
+
+      expect(repository.find_tag('v1.1.0')).to be_nil
     end
   end
 

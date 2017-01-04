@@ -15,7 +15,7 @@ class GitOperationService
 
   def rm_branch(branch)
     ref = Gitlab::Git::BRANCH_REF_PREFIX + branch.name
-    oldrev = branch.dereferenced_target.id
+    oldrev = branch.target
     newrev = Gitlab::Git::BLANK_SHA
 
     update_ref_in_hooks(ref, newrev, oldrev)
@@ -33,6 +33,16 @@ class GitOperationService
       # "post-receive" hook will receive the correct value in this case.
       raw_tag = repository.rugged.tags.create(tag_name, newrev, options)
       service.newrev = raw_tag.target_id
+    end
+  end
+
+  def rm_tag(tag)
+    ref = Gitlab::Git::TAG_REF_PREFIX + tag.name
+    oldrev = tag.target
+    newrev = Gitlab::Git::BLANK_SHA
+
+    update_ref_in_hooks(ref, newrev, oldrev) do
+      repository.rugged.tags.delete(tag_name)
     end
   end
 

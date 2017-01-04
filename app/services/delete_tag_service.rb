@@ -7,7 +7,7 @@ class DeleteTagService < BaseService
       return error('No such tag', 404)
     end
 
-    if repository.rm_tag(tag_name)
+    if repository.rm_tag(current_user, tag_name)
       release = project.releases.find_by(tag: tag_name)
       release.destroy if release
 

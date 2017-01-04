@@ -196,16 +196,14 @@ class Repository
     true
   end
 
-  # TODO: why we don't pass user here?
-  def rm_tag(tag_name)
+  def rm_tag(user, tag_name)
     before_remove_tag
+    tag = find_tag(tag_name)
 
-    begin
-      rugged.tags.delete(tag_name)
-      true
-    rescue Rugged::ReferenceError
-      false
-    end
+    GitOperationService.new(user, self).rm_tag(tag)
+
+    after_remove_tag
+    true
   end
 
   def ref_names
@@ -399,6 +397,11 @@ class Repository
     expire_statistics_caches
 
     repository_event(:remove_tag)
+  end
+
+  # Runs code after removing a tag.
+  def after_remove_tag
+    expire_tags_cache
   end
 
   def before_import
