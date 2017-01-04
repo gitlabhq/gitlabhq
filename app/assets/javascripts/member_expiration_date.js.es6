@@ -14,13 +14,13 @@
     inputs.datepicker({
       dateFormat: 'yy-mm-dd',
       minDate: 1,
-      onSelect: () => {
+      onSelect: function onSelect() {
         $(this).trigger('change');
         toggleClearInput.call(this);
       },
     });
 
-    inputs.next('.js-clear-input').on('click', (event) => {
+    inputs.next('.js-clear-input').on('click', function clicked(event) {
       event.preventDefault();
 
       const input = $(this).closest('.clearable-input').find(selector);
