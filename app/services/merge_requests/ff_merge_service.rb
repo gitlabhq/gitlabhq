@@ -10,7 +10,7 @@ module MergeRequests
 
     def commit
       repository.ff_merge(current_user,
-                          merge_request.diff_head_sha,
+                          source,
                           merge_request.target_branch,
                           merge_request: merge_request)
     ensure

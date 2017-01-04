@@ -1027,8 +1027,8 @@ class Repository
     end
   end
 
-  def merge(user, source, target_branch, merge_request, options = {})
-    our_commit = rugged.branches[target_branch].target
+  def merge(user, source, merge_request, options = {})
+    our_commit = rugged.branches[merge_request.target_branch].target
     their_commit = rugged.lookup(source)
 
     raise "Invalid merge target" if our_commit.nil?
@@ -1037,7 +1037,7 @@ class Repository
     merge_index = rugged.merge_commits(our_commit, their_commit)
     return false if merge_index.conflicts?
 
-    update_branch_with_hooks(user, target_branch) do
+    update_branch_with_hooks(user, merge_request.target_branch) do
       actual_options = options.merge(
         parents: [our_commit, their_commit],
         tree: merge_index.write_tree(rugged),

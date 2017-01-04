@@ -18,7 +18,6 @@ describe Repository, models: true do
 
     merge_commit_id = repository.merge(user,
                                        merge_request.diff_head_sha,
-                                       merge_request.target_branch,
                                        merge_request,
                                        commit_options)
 
@@ -1018,7 +1017,6 @@ describe Repository, models: true do
 
       merge_commit_id = repository.merge(user,
                                          merge_request.diff_head_sha,
-                                         merge_request.target_branch,
                                          merge_request,
                                          commit_options)
 

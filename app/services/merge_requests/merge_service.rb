@@ -6,7 +6,7 @@ module MergeRequests
   # Executed when you do merge via GitLab UI
   #
   class MergeService < MergeRequests::BaseService
-    attr_reader :merge_request
+    attr_reader :merge_request, :source
 
     def execute(merge_request)
       if project.merge_requests_ff_only_enabled && !self.is_a?(FfMergeService)
@@ -22,6 +22,18 @@ module MergeRequests
         message = Gitlab::RepositorySizeError.new(@merge_request.target_project).merge_error
         @merge_request.update(merge_error: message)
         return error(message)
+      end
+
+      if merge_request.squash
+        squash_result = SquashService.new(project, current_user, params).execute(merge_request)
+
+        if squash_result[:success]
+          @source = squash_result[:squash_oid]
+        else
+          log_merge_error('Squashing this merge request failed', true)
+        end
+      else
+        @source = merge_request.diff_head_sha
       end
 
       merge_request.in_locked_state do
@@ -64,11 +76,7 @@ module MergeRequests
         committer: committer
       }
 
-      commit_id = repository.merge(current_user,
-                                   merge_request.diff_head_sha,
-                                   merge_request.target_branch,
-                                   merge_request,
-                                   options)
+      commit_id = repository.merge(current_user, source, merge_request, options)
 
       if commit_id
         merge_request.update(merge_commit_sha: commit_id)

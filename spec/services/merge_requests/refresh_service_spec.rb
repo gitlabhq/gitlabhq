@@ -101,12 +101,7 @@ describe MergeRequests::RefreshService, services: true do
         # Merge master -> feature branch
         author = { email: 'test@gitlab.com', time: Time.now, name: "Me" }
         commit_options = { message: 'Test message', committer: author, author: author }
-
-        @project.repository.merge(@user,
-                                  @merge_request.diff_head_sha,
-                                  @merge_request.target_branch,
-                                  @merge_request,
-                                  commit_options)
+        @project.repository.merge(@user, @merge_request.diff_head_sha, @merge_request, commit_options)
 
         commit = @project.repository.commit('feature')
         service.new(@project, @user).execute(@oldrev, commit.id, 'refs/heads/feature')
