@@ -11,15 +11,19 @@ GET /projects/:id/merge_requests
 GET /projects/:id/merge_requests?state=opened
 GET /projects/:id/merge_requests?state=all
 GET /projects/:id/merge_requests?iids[]=42&iids[]=43
+GET /projects/:id/merge_requests?milestone=release
 ```
 
 Parameters:
 
-- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
-- `iid` (optional) - Return the request having the given `iid`
-- `state` (optional) - Return `all` requests or just those that are `merged`, `opened` or `closed`
-- `order_by` (optional) - Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`
-- `sort` (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of a project |
+| `iids` | Array[integer] | no | Return the request having the given `iid` |
+| `state`   | string  | no    | Return all merge requests or just those that are `opened`, `closed`, or `merged`|
+| `order_by`| string  | no    | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at` |
+| `sort`    | string  | no    | Return requests sorted in `asc` or `desc` order. Default is `desc`  |
+| `milestone`  | string  | no |Return merge requests for a specific milestone |
 
 ```json
 [

@@ -16,7 +16,7 @@
 #     label_name: string
 #     sort: string
 #     non_archived: boolean
-#     iids: integer[]
+#     iid: Array[Integer]
 #
 class IssuableFinder
   NONE = '0'.freeze
