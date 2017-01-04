@@ -64,7 +64,11 @@ module MergeRequests
         committer: committer
       }
 
-      commit_id = repository.merge(current_user, merge_request, options)
+      commit_id = repository.merge(current_user,
+                                   merge_request.diff_head_sha,
+                                   merge_request.target_branch,
+                                   merge_request,
+                                   options)
 
       if commit_id
         merge_request.update(merge_commit_sha: commit_id)
