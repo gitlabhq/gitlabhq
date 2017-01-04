@@ -1157,5 +1157,11 @@ module API
         pages_domain
       end
     end
+
+    class Application < Grape::Entity
+      expose :uid, as: :application_id
+      expose :secret
+      expose :redirect_uri, as: :callback_url
+    end
   end
 end
