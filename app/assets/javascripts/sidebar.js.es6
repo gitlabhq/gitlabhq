@@ -6,7 +6,7 @@
   const sidebarBreakpoint = 1024;
 
   const pageSelector = '.page-with-sidebar';
-  const navbarSelector = '.navbar-fixed-top';
+  const navbarSelector = '.navbar-gitlab';
   const sidebarWrapperSelector = '.sidebar-wrapper';
   const sidebarContentSelector = '.nav-sidebar';
 
