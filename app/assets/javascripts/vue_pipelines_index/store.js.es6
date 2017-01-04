@@ -46,7 +46,7 @@
           this.$children
             .filter(e => e.$options._componentTag === 'time-ago')
             .forEach(e => e.changeTime());
-        }, 1000);
+        }, 10000);
       };
 
       startTimeLoops();
