@@ -827,3 +827,89 @@ Example response:
   }
 ]
 ```
+
+## Retrieve user personal access tokens
+
+It retrieves every personal access token of the user. Note that only administrators can do this.
+
+```
+GET /users/:user_id/personal_access_tokens
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `user_id` | integer | yes | The ID of the user |
+
+An example:
+```json
+[
+  {
+    "id": 1,
+    "name": "mytoken",
+    "revoked": false,
+    "expires_at": "2017-01-04",
+    "scopes": ['api'],
+    "active": true,
+    "impersonation": false,
+    "token": "9koXpg98eAheJpvBs5tK"
+  }
+]
+```
+
+In addition, you can filter users based on state: `all`, `active` and `inactive`
+
+```
+GET /users/:user_id/personal_access_tokens?state=all
+```
+
+```
+GET /users/:user_id/personal_access_tokens?state=active
+```
+
+```
+GET /users/:user_id/personal_access_tokens?state=inactive
+```
+
+Finally, you can filter based on impersonation: `true` or `false`.
+
+```
+GET /users/:user_id/personal_access_tokens?impersonation=true
+```
+
+## Create a personal access token
+
+It creates a new personal access token. Note that only administrators can do this.
+If you set the impersonation flag to true, you can impersonate the user and
+performing both API calls and Git reads and writes. The user will not see these
+tokens in his profile settings.
+
+```
+POST /users/:user_id/personal_access_tokens
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `user_id` | integer | yes | The ID of the user |
+| `name` | string | yes | The name of the personal access token |
+| `expires_at` | date | no | The expiration date of the personal access token |
+| `scopes` | array | no | The array of scopes of the personal access token |
+| `impersonation` | boolean | no | The impersonation flag of the personal access token |
+
+## Revoke a personal access token
+
+It revokes a personal access token. Note that only administrators can revoke impersonation tokens.
+
+```
+DELETE /users/:user_id/personal_access_tokens/:personal_access_token_id
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `user_id` | integer | yes | The ID of the user |
+| `personal_access_token_id` | integer | yes | The ID of the personal access token |

@@ -8,6 +8,7 @@ under [`/lib/api`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/lib/api).
 Documentation for various API resources can be found separately in the
 following locations:
 
+- [Access Tokens](personal_access_tokens.md)
 - [Award Emoji](award_emoji.md)
 - [Branches](branches.md)
 - [Broadcast Messages](broadcast_messages.md)
