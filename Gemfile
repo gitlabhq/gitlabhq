@@ -16,6 +16,8 @@ gem 'default_value_for', '~> 3.0.0'
 gem 'mysql2', '~> 0.3.16', group: :mysql
 gem 'pg', '~> 0.18.2', group: :postgres
 
+gem 'rugged', '~> 0.24.0'
+
 # Authentication libraries
 gem 'devise',                 '~> 4.2'
 gem 'doorkeeper',             '~> 4.2.0'
@@ -48,10 +50,6 @@ gem 'u2f', '~> 0.2.1'
 
 # Browser detection
 gem 'browser', '~> 2.2'
-
-# Extracting information from a git repository
-# Provide access to Gitlab::Git library
-gem 'gitlab_git', '~> 10.7.0'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
