@@ -2,9 +2,9 @@
 /*= require vue-resource */
 
 /*= require vue_realtime_listener/index */
+//= require ./issue_title
 
 /* global Vue, VueResource, Flash */
-
 /* eslint-disable no-underscore-dangle */
 
 (() => {
@@ -13,90 +13,23 @@
   /**
     not using vue_resource_interceptor because of the nested call to render html
     this requires a bit more custom logic
-    specifically the 'if/else' in the 'fetch' method
+    specifically the 'if/else' in the 'setInterval' inside the 'fetch' method
   */
   Vue.activeResources = 0;
 
-  const user = document.querySelector('meta[name="csrf-token"]');
-  if (user) Vue.http.headers.post['X-CSRF-token'] = user.content;
-
-  gl.VueIssueTitle = Vue.extend({
-    props: [
-      'rubyTitle',
-      'endpoint',
-      'projectPath',
-      'rubyDiffTitle',
-    ],
-    data() {
-      return {
-        intervalId: '',
-        htmlTitle: '',
-        diffTitle: '',
-        failedCount: 0,
-      };
-    },
-    created() {
-      this.fetch();
-    },
-    computed: {
-      titleMessage() {
-        const rubyTitle = `<p dir="auto">${this.rubyTitle}</p>`;
-        return this.htmlTitle ? this.htmlTitle : rubyTitle;
-      },
-      diff() {
-        return this.diffTitle ? this.diffTitle : this.rubyDiffTitle;
-      },
-    },
-    methods: {
-      fetch() {
-        Vue.activeResources = 1;
-        this.intervalId = setInterval(() => {
-          this.$http.get(this.endpoint)
-            .then((res) => {
-              const issue = JSON.parse(res.body);
-              const { title } = issue;
-              if (this.diff !== title) {
-                this.diffTitle = title;
-                this.mdToHtml(title, this.projectPath);
-              } else {
-                Vue.activeResources = 0;
-              }
-            }, () => this.onError('attempting to check if there is a new title'));
-        }, 3000);
-      },
-      mdToHtml(title, projectPath) {
-        this.$http.post(`${projectPath}/preview_markdown`, { text: title })
-          .then((res) => {
-            this.$el.style.opacity = 0;
-            setTimeout(() => {
-              this.htmlTitle = JSON.parse(res.body).body;
-              this.$el.style.transition = 'opacity 0.2s ease';
-              this.$el.style.opacity = 1;
-              Vue.activeResources = 0;
-            }, 100);
-          }, () => this.onError('trying to render the updated title'));
-      },
-      clear() {
-        clearInterval(this.intervalId);
-      },
-      onError(reason) {
-        /**
-          When the API call fails to update in realtime,
-          the interval is killed if more than 3 calls failed.
-          the user is then instructed to refresh the page
-        */
-        this.failedCount = this.failedCount += 1;
-        if (this.failedCount > 2) this.clear();
-        Vue.activeResources = 0;
-        return new Flash(`Something went wrong ${reason}. Refresh the page and try again.`);
-      },
-    },
-    template: `
-      <h2 class='title' v-html='titleMessage'></h2>
-    `,
-  });
+  const token = document.querySelector('meta[name="csrf-token"]');
+  if (token) Vue.http.headers.post['X-CSRF-token'] = token.content;
 
   const vueData = document.querySelector('.vue-data').dataset;
+  const isNotUser = vueData.user;
+
+  let user;
+
+  if (isNotUser === 'true') {
+    user = false;
+  } else {
+    user = true;
+  }
 
   const vm = new Vue({
     el: '.issue-title-vue',
@@ -109,6 +42,8 @@
         endpoint: vueData.endpoint,
         projectPath: vueData.projectPath,
         rubyDiffTitle: vueData.rubyDiffTitle,
+        user,
+        token,
       };
     },
     template: `
@@ -118,18 +53,21 @@
           :endpoint='endpoint'
           :projectPath='projectPath'
           :rubyDiffTitle='rubyDiffTitle'
+          :user='user'
         >
         </vue-title>
       </div>
     `,
   });
 
-  const titleComp = vm.$children
-    .filter(e => e.$options._componentTag === 'vue-title')[0];
+  if (user) {
+    const titleComp = vm.$children
+      .filter(e => e.$options._componentTag === 'vue-title')[0];
 
-  const startTitleFetch = () => titleComp.fetch();
-  const removeIntervalLoops = () => titleComp.clear();
-  const startIntervalLoops = () => startTitleFetch();
+    const startTitleFetch = () => titleComp.fetch();
+    const removeIntervalLoops = () => titleComp.clear();
+    const startIntervalLoops = () => startTitleFetch();
 
-  gl.VueRealtimeListener(removeIntervalLoops, startIntervalLoops);
+    gl.VueRealtimeListener(removeIntervalLoops, startIntervalLoops);
+  }
 })(window.gl || (window.gl = {}));
