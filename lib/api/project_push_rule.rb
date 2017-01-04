@@ -13,7 +13,7 @@ module API
           optional :member_check, type: Boolean, desc: 'Restrict commits by author (email) to existing GitLab users'
           optional :prevent_secrets, type: Boolean, desc: 'GitLab will reject any files that are likely to contain secrets'
           optional :commit_message_regex, type: String, desc: 'All commit messages must match this'
-          optional :author_email_regex, type: String, desc: "All commit author's email must match this"
+          optional :author_email_regex, type: String, desc: 'All commit author emails must match this'
           optional :file_name_regex, type: String, desc: 'All commited filenames must not match this'
           optional :max_file_size, type: Integer, desc: 'Maximum file size (MB)'
           at_least_one_of :deny_delete_tag, :member_check, :prevent_secrets,

@@ -40,9 +40,9 @@ describe API::ProjectPushRule, 'ProjectPushRule', api: true  do
       it "adds push rule to project" do
         post api("/projects/#{project.id}/push_rule", user),
           deny_delete_tag: true,  member_check: true, prevent_secrets: true,
-          commit_message_regex: '/JIRA\-\d+/',
-          author_email_regex: '/[a-zA-Z0-9]+@gitlab.com/',
-          file_name_regex: '/[a-zA-Z0-9]+.key/',
+          commit_message_regex: 'JIRA\-\d+',
+          author_email_regex: '[a-zA-Z0-9]+@gitlab.com',
+          file_name_regex: '[a-zA-Z0-9]+.key',
           max_file_size: 5
 
         expect(response).to have_http_status(201)
@@ -50,9 +50,9 @@ describe API::ProjectPushRule, 'ProjectPushRule', api: true  do
         expect(json_response['deny_delete_tag']).to eq(true)
         expect(json_response['member_check']).to eq(true)
         expect(json_response['prevent_secrets']).to eq(true)
-        expect(json_response['commit_message_regex']).to eq('/JIRA\-\d+/')
-        expect(json_response['author_email_regex']).to eq('/[a-zA-Z0-9]+@gitlab.com/')
-        expect(json_response['file_name_regex']).to eq('/[a-zA-Z0-9]+.key/')
+        expect(json_response['commit_message_regex']).to eq('JIRA\-\d+')
+        expect(json_response['author_email_regex']).to eq('[a-zA-Z0-9]+@gitlab.com')
+        expect(json_response['file_name_regex']).to eq('[a-zA-Z0-9]+.key')
         expect(json_response['max_file_size']).to eq(5)
       end
     end
