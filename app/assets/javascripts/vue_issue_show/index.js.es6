@@ -40,6 +40,7 @@
       return {
         initialTitle: vueData.initialTitle,
         endpoint: vueData.endpoint,
+        initialTitleDigest: vueData.initialTitleDigest,
         user,
         token,
       };
@@ -50,6 +51,7 @@
           :initialTitle='initialTitle'
           :endpoint='endpoint'
           :user='user'
+          :initialTitleDigest='initialTitleDigest'
         >
         </vue-title>
       </div>

@@ -57,6 +57,7 @@
     .vue-data.hidden{ "data" => { "initial-title" => markdown_field(@issue, :title),
       "endpoint" => rendered_title_namespace_project_issue_path(@project.namespace, @project, @issue),
       "user" => "#{current_user.nil?}",
+      "initial-title-digest" => hexdigest(@issue.title),
     } }
     .issue-title-vue
     - if @issue.description.present?
