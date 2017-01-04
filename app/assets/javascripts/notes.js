@@ -500,7 +500,7 @@
         var isWidgetVisible = gl.utils.isInViewport($el.get(0));
 
         if (!isWidgetVisible) {
-          gl.utils.animateToElement($el);
+          gl.utils.scrollToElement($el);
         }
 
         $el.find('.js-edit-warning').show();
@@ -563,7 +563,6 @@
       $editForm.insertBefore('.notes-form');
       $editForm.find('.js-comment-button').enable();
       $editForm.find('.js-edit-warning').hide();
-      $editForm.find('.js-md-write-button').trigger('click');
     };
 
     Notes.prototype.getEditFormSelector = function($el) {
@@ -900,6 +899,8 @@
       $editForm.find('.js-form-target-id').val(targetId);
       $editForm.find('.js-form-target-type').val(targetType);
       $editForm.find('.js-note-text').focus().val(originalContent);
+      $editForm.find('.js-md-write-button').trigger('click');
+      $editForm.find('.referenced-users').hide();
     }
 
     Notes.prototype.updateTaskList = function(e) {

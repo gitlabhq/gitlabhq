@@ -128,7 +128,7 @@
       return e.metaKey || e.ctrlKey || e.altKey || e.shiftKey;
     };
 
-    gl.utils.animateToElement = function($el) {
+    gl.utils.scrollToElement = function($el) {
       var top = $el.offset().top;
       gl.navBarHeight = gl.navBarHeight || $('.navbar-gitlab').height();
       gl.navLinksHeight = gl.navLinksHeight || $('.nav-links').height();
