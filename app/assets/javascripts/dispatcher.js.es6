@@ -275,6 +275,10 @@
         case 'projects:variables:index':
           new gl.ProjectVariables();
           break;
+        case 'ci:lints:create':
+        case 'ci:lints:show':
+          new gl.CILintEditor();
+          break;
       }
       switch (path.first()) {
         case 'admin':

@@ -9,3 +9,13 @@
     color: $lint-correct-color;
   }
 }
+
+.ci-linter {
+  .ci-editor {
+    height: 400px;
+  }
+
+  .ci-template pre {
+    white-space: pre-wrap;
+  }
+}
