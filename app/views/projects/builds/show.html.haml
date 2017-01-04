@@ -27,7 +27,7 @@
               Runners page
 
     - if @build.project.namespace.shared_runners_minutes_used?
-      - quota_used = @build.project.namespace.shared_runners_minutes.to_i
+      - quota_used = @build.project.namespace.shared_runners_minutes
       - quota_limit = @build.project.namespace.actual_shared_runners_minutes_limit
       .bs-callout.bs-callout-warning
         %p
