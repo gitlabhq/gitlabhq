@@ -13,7 +13,7 @@ module CreatesCommit
     )
 
     result = service.new(
-      @mr_target_project, current_user, commit_params).execute
+      @tree_edit_project, current_user, commit_params).execute
 
     if result[:status] == :success
       update_flash_notice(success_notice)
