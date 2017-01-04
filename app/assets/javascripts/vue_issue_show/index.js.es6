@@ -12,6 +12,9 @@
 
   Vue.activeResources = 0;
 
+  const token = document.querySelector('meta[name="csrf-token"]');
+  if (token) Vue.http.headers.get['X-CSRF-token'] = token.content;
+
   const vueData = document.querySelector('.vue-data').dataset;
   const notUser = vueData.user;
 
