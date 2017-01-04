@@ -38,7 +38,7 @@
         <span
           v-if='pipeline.flags.latest'
           class="label label-success has-tooltip"
-          title=""
+          title="Latest pipeline for this branch"
           data-original-title="Latest pipeline for this branch"
         >
           latest
@@ -46,8 +46,8 @@
         <span
           v-if='pipeline.flags.yaml_errors'
           class="label label-danger has-tooltip"
-          title=""
-          data-original-title="Undefined yaml error"
+          :title='pipeline.yaml_errors'
+          :data-original-title='pipeline.yaml_errors'
         >
           yaml invalid
         </span>

@@ -93,7 +93,7 @@ describe 'Pipelines', :feature, :js do
 
         before { visit_project_pipelines }
 
-        it 'contains badge that indicate errors' do
+        it 'contains badge that indicates errors' do
           expect(page).to have_content 'yaml invalid'
         end
 
