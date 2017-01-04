@@ -14,10 +14,9 @@ describe 'Pipelines', :feature, :js do
     project.team << [user, :developer]
   end
 
-  describe 'GET /:project/pipelines', feature: true, js: true do
-    include WaitForVueResource
-
+  describe 'GET /:project/pipelines' do
     let(:project) { create(:project) }
+
     let!(:pipeline) do
       create(
         :ci_empty_pipeline,
@@ -29,39 +28,38 @@ describe 'Pipelines', :feature, :js do
     end
 
     [:all, :running, :branches].each do |scope|
-      context "displaying #{scope}" do
+      context "when displaying #{scope}" do
         before do
-          visit namespace_project_pipelines_path(
-            project.namespace,
-            project, scope: scope
-          )
-          wait_for_vue_resource
+          visit_project_pipelines(scope: scope)
         end
 
-        it do
+        it 'contains pipeline commit short SHA' do
           expect(page).to have_content(pipeline.short_sha)
         end
       end
     end
 
     context 'anonymous access' do
+      let(:project) { create(:project, :public) }
+
       before do
-        visit namespace_project_pipelines_path(project.namespace, project)
-        wait_for_vue_resource
+        logout
+        visit_project_pipelines
       end
 
       it { expect(page).to have_http_status(:success) }
     end
 
-    context 'cancelable pipeline' do
+    context 'when pipeline is cancelable' do
       let!(:build) do
-        create(:ci_build, pipeline: pipeline, stage: 'test', commands: 'test')
+        create(:ci_build, pipeline: pipeline,
+                          stage: 'test',
+                          commands: 'test')
       end
 
       before do
         build.run
-        visit namespace_project_pipelines_path(project.namespace, project)
-        wait_for_vue_resource
+        visit_project_pipelines
       end
 
       it { expect(page).to have_link('Cancel') }
@@ -69,35 +67,30 @@ describe 'Pipelines', :feature, :js do
       it { expect(page).to have_selector('.ci-running') }
 
       context 'when canceling' do
-        before do
-          wait_for_vue_resource
-          click_link('Cancel')
-        end
+        before { click_link('Cancel') }
 
         it { expect(page).not_to have_link('Cancel') }
-
         it { expect(page).to have_selector('.ci-canceled') }
       end
     end
 
-    context 'retryable pipelines' do
+    context 'when pipeline is retryable' do
       let!(:build) do
-        create(:ci_build, pipeline: pipeline, stage: 'test', commands: 'test')
+        create(:ci_build, pipeline: pipeline,
+                          stage: 'test',
+                          commands: 'test')
       end
 
       before do
         build.drop
-        visit namespace_project_pipelines_path(project.namespace, project)
+        visit_project_pipelines
       end
 
       it { expect(page).to have_link('Retry') }
       it { expect(page).to have_selector('.ci-failed') }
 
       context 'when retrying' do
-        before do
-          wait_for_vue_resource
-          click_link('Retry')
-        end
+        before { click_link('Retry') }
 
         it { expect(page).not_to have_link('Retry') }
         it { expect(page).to have_selector('.ci-running') }
@@ -106,21 +99,14 @@ describe 'Pipelines', :feature, :js do
 
     context 'with manual actions' do
       let!(:manual) do
-        create(
-          :ci_build,
-          :manual,
+        create(:ci_build, :manual,
           pipeline: pipeline,
           name: 'manual build',
           stage: 'test',
-          commands: 'test'
-        )
+          commands: 'test')
       end
 
-      before do
-        visit namespace_project_pipelines_path(project.namespace, project)
-
-        wait_for_vue_resource
-      end
+      before { visit_project_pipelines }
 
       it 'has a dropdown with play button' do
         expect(page).to have_selector('.dropdown-toggle.btn.btn-default .icon-play')
@@ -147,18 +133,14 @@ describe 'Pipelines', :feature, :js do
     context 'for generic statuses' do
       context 'when running' do
         let!(:running) do
-          create(
-            :generic_commit_status,
+          create(:generic_commit_status,
             status: 'running',
             pipeline: pipeline,
             stage: 'test'
           )
         end
 
-        before do
-          visit namespace_project_pipelines_path(project.namespace, project)
-          wait_for_vue_resource
-        end
+        before { visit_project_pipelines }
 
         it 'is cancelable' do
           expect(page).to have_link('Cancel')
@@ -178,17 +160,14 @@ describe 'Pipelines', :feature, :js do
 
       context 'when failed' do
         let!(:status) do
-          create(
-            :generic_commit_status,
-            :pending,
+          create(:generic_commit_status, :pending,
             pipeline: pipeline,
-            stage: 'test'
-          )
+            stage: 'test')
         end
 
         before do
           status.drop
-          visit namespace_project_pipelines_path(project.namespace, project)
+          visit_project_pipelines
         end
 
         it 'is not retryable' do
@@ -204,21 +183,13 @@ describe 'Pipelines', :feature, :js do
     context 'downloadable pipelines' do
       context 'with artifacts' do
         let!(:with_artifacts) do
-          create(
-            :ci_build,
-            :artifacts,
-            :success,
+          create(:ci_build, :artifacts, :success,
             pipeline: pipeline,
             name: 'rspec tests',
-            stage: 'test'
-          )
+            stage: 'test')
         end
 
-        before do
-          visit namespace_project_pipelines_path(project.namespace, project)
-
-          wait_for_vue_resource
-        end
+        before { visit_project_pipelines }
 
         it 'has artifats' do
           expect(page).to have_selector('.build-artifacts')
@@ -233,37 +204,26 @@ describe 'Pipelines', :feature, :js do
 
       context 'with artifacts expired' do
         let!(:with_artifacts_expired) do
-          create(
-            :ci_build,
-            :artifacts_expired,
-            :success,
+          create(:ci_build, :artifacts_expired, :success,
             pipeline: pipeline,
             name: 'rspec',
-            stage: 'test'
-          )
+            stage: 'test')
         end
 
-        before do
-          visit namespace_project_pipelines_path(project.namespace, project)
-        end
+        before { visit_project_pipelines }
 
         it { expect(page).not_to have_selector('.build-artifacts') }
       end
 
       context 'without artifacts' do
         let!(:without_artifacts) do
-          create(
-            :ci_build,
-            :success,
+          create(:ci_build, :success,
             pipeline: pipeline,
             name: 'rspec',
-            stage: 'test'
-          )
+            stage: 'test')
         end
 
-        before do
-          visit namespace_project_pipelines_path(project.namespace, project)
-        end
+        before { visit_project_pipelines }
 
         it { expect(page).not_to have_selector('.build-artifacts') }
       end
@@ -271,13 +231,12 @@ describe 'Pipelines', :feature, :js do
 
     context 'mini pipleine graph' do
       let!(:build) do
-        create(:ci_build, pipeline: pipeline, stage: 'build', name: 'build')
+        create(:ci_build, pipeline: pipeline,
+                          stage: 'build',
+                          name: 'build')
       end
 
-      before do
-        visit namespace_project_pipelines_path(project.namespace, project)
-        wait_for_vue_resource
-      end
+      before { visit_project_pipelines }
 
       context 'when clicking a graph stage' do
         it 'should open a dropdown' do
@@ -296,7 +255,7 @@ describe 'Pipelines', :feature, :js do
     end
   end
 
-  describe 'POST /:project/pipelines', feature: true, js: true do
+  describe 'POST /:project/pipelines' do
     let(:project) { create(:project) }
 
     before do
@@ -332,7 +291,7 @@ describe 'Pipelines', :feature, :js do
     end
   end
 
-  describe 'Create pipelines', feature: true, js: true do
+  describe 'Create pipelines' do
     let(:project) { create(:project) }
 
     before do
@@ -356,5 +315,10 @@ describe 'Pipelines', :feature, :js do
         end
       end
     end
+  end
+
+  def visit_project_pipelines(**query)
+    visit namespace_project_pipelines_path(project.namespace, project, query)
+    wait_for_vue_resource
   end
 end
