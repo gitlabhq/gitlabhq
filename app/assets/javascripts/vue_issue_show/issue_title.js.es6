@@ -66,7 +66,7 @@
       clear() {
         if (this.user) clearInterval(this.intervalId);
       },
-      onError(reason) {
+      onError() {
         this.pageRequest = false;
         Vue.activeResources = 0;
       },

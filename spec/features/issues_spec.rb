@@ -674,7 +674,7 @@ describe 'Issues', feature: true do
       @realtime_issue.update(title: "updated title")
 
       wait_for_vue_resource
-      expect(page).to_not have_text("updated title")
+      expect(page).not_to have_text("updated title")
     end
   end
 
