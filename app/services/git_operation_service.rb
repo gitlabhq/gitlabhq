@@ -26,10 +26,12 @@ class GitOperationService
     oldrev = Gitlab::Git::BLANK_SHA
 
     with_hooks(ref, newrev, oldrev) do |service|
+      # We want to pass the OID of the tag object to the hooks. For an
+      # annotated tag we don't know that OID until after the tag object
+      # (raw_tag) is created in the repository. That is why we have to
+      # update the value after creating the tag object. Only the
+      # "post-receive" hook will receive the correct value in this case.
       raw_tag = repository.rugged.tags.create(tag_name, newrev, options)
-
-      # If raw_tag is an annotated tag, we'll need to update newrev to point
-      # to the new revision.
       service.newrev = raw_tag.target_id
     end
   end
