@@ -43,23 +43,17 @@ class GitOperationService
   def with_branch(
     branch_name,
     source_branch_name: nil,
-    source_project: repository.project)
+    source_project: repository.project,
+    &block)
 
     check_with_branch_arguments!(
       branch_name, source_branch_name, source_project)
 
-    source_commit = source_project.repository.find_branch(
-      source_branch_name || branch_name).try(:dereferenced_target)
-
     update_branch_with_hooks(branch_name) do
-      if repository.project == source_project
-        yield(source_commit)
-      else
-        repository.with_tmp_ref(
-          source_project.repository, source_branch_name) do
-            yield(source_commit)
-          end
-      end
+      repository.with_repo_branch_commit(
+        source_project.repository,
+        source_branch_name || branch_name,
+        &block)
     end
   end
 

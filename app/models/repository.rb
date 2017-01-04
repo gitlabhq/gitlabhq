@@ -1063,19 +1063,26 @@ class Repository
     Gitlab::Popen.popen(args, path_to_repo).first.lines.map(&:strip)
   end
 
-  def with_tmp_ref(source_repository, source_branch_name)
-    tmp_ref = "refs/tmp/#{SecureRandom.hex}/head"
+  def with_repo_branch_commit(source_repository, source_branch_name)
+    branch_name_or_sha =
+      if source_repository == self
+        source_branch_name
+      else
+        tmp_ref = "refs/tmp/#{SecureRandom.hex}/head"
 
-    fetch_ref(
-      source_repository.path_to_repo,
-      "#{Gitlab::Git::BRANCH_REF_PREFIX}#{source_branch_name}",
-      tmp_ref
-    )
+        fetch_ref(
+          source_repository.path_to_repo,
+          "#{Gitlab::Git::BRANCH_REF_PREFIX}#{source_branch_name}",
+          tmp_ref
+        )
 
-    yield
+        source_repository.commit(source_branch_name).sha
+      end
+
+    yield(commit(branch_name_or_sha))
 
   ensure
-    rugged.references.delete(tmp_ref)
+    rugged.references.delete(tmp_ref) if tmp_ref
   end
 
   def fetch_ref(source_path, source_ref, target_ref)

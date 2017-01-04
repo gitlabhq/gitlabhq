@@ -11,19 +11,13 @@ class CompareService
   end
 
   def execute(target_project, target_branch, straight: false)
-    source_sha = source_project.repository.
-      commit(source_branch_name).try(:sha)
-
-    return unless source_sha
-
     # If compare with other project we need to fetch ref first
-    if target_project == source_project
-      compare(source_sha, target_project, target_branch, straight)
-    else
-      target_project.repository.with_tmp_ref(
-        source_project.repository, source_branch_name) do
-        compare(source_sha, target_project, target_branch, straight)
-      end
+    target_project.repository.with_repo_branch_commit(
+      source_project.repository,
+      source_branch_name) do |commit|
+      break unless commit
+
+      compare(commit.sha, target_project, target_branch, straight)
     end
   end
 
