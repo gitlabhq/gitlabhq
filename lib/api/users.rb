@@ -92,6 +92,8 @@ module API
 
         # Filter out params which are used later
         identity_attrs = params.slice(:provider, :extern_uid)
+        params.delete(:provider)
+        params.delete(:extern_uid)
         confirm = params.delete(:confirm)
 
         user = User.new(declared_params(include_missing: false))

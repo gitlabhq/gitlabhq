@@ -1,0 +1,4 @@
+---
+title: 'API: Fix user creation with external identity'
+merge_request: 8435
+author: Robert Schilling

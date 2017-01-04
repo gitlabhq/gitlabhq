@@ -181,6 +181,16 @@ describe API::Users, api: true  do
       expect(new_user.external).to be_truthy
     end
 
+    it 'creates an user with an external provider' do
+      post api('/users', admin), attributes_for(:user, provider: 'github', extern_uid: 'john')
+
+      expect(response).to have_http_status(201)
+      new_user = User.find(json_response['id'])
+      expect(new_user).not_to eq(nil)
+      expect(new_user.identities.first.provider).to eq('github')
+      expect(new_user.identities.first.extern_uid).to eq('john')
+    end
+
     it "does not create user with invalid email" do
       post api('/users', admin),
         email: 'invalid email',
