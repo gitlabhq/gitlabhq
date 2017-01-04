@@ -57,6 +57,14 @@ header {
 
         &.header-user-dropdown-toggle {
           margin-left: 14px;
+
+          &:hover,
+          &:focus,
+          &:active {
+            .header-user-avatar {
+              border-color: rgba($avatar-border, .2);
+            }
+          }
         }
 
         &:hover,
@@ -273,4 +281,5 @@ header {
   float: left;
   margin-right: 5px;
   border-radius: 50%;
+  border: 1px solid $avatar-border;
 }

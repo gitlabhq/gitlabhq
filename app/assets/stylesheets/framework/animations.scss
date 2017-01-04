@@ -100,7 +100,8 @@
 }
 
 .dropdown-menu-toggle,
-.avatar-circle {
+.avatar-circle,
+.header-user-avatar {
   @include transition(border-color);
 }
 
