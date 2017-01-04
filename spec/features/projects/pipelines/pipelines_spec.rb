@@ -143,8 +143,7 @@ describe 'Pipelines', :feature, :js do
             create(:generic_commit_status,
               status: 'running',
               pipeline: pipeline,
-              stage: 'test'
-            )
+              stage: 'test')
           end
 
           before { visit_project_pipelines }
