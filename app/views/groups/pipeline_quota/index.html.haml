@@ -40,6 +40,6 @@
     - if @projects.blank?
       %tr
         %td{colspan: 2}
-          .nothing-here-block This group has no projects
+          .nothing-here-block This group has no projects which use shared runners
 
 = paginate @projects, theme: "gitlab"

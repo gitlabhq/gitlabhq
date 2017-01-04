@@ -21,7 +21,7 @@ feature 'Groups > Pipeline Quota', feature: true do
       end
     end
 
-    it 'shows correct ratio and status' do
+    it 'shows correct group quota info' do
       visit_pipeline_quota_page
 
       page.within('.pipeline-quota') do
@@ -43,12 +43,16 @@ feature 'Groups > Pipeline Quota', feature: true do
       end
     end
 
-    it 'shows correct ratio and status' do
+    it 'shows correct group quota info' do
       visit_pipeline_quota_page
 
       page.within('.pipeline-quota') do
         expect(page).to have_content("300 / Unlimited minutes")
         expect(page).to have_selector('.progress-bar-success')
+      end
+
+      page.within('.pipeline-project-metrics') do
+        expect(page).to have_content('This group has no projects which use shared runners')
       end
     end
   end
@@ -64,7 +68,7 @@ feature 'Groups > Pipeline Quota', feature: true do
       end
     end
 
-    it 'shows correct ratio and status' do
+    it 'shows correct group quota info' do
       visit_pipeline_quota_page
 
       page.within('.pipeline-quota') do
@@ -77,6 +81,7 @@ feature 'Groups > Pipeline Quota', feature: true do
 
   context 'minutes over quota' do
     let(:group) { create(:group, :with_used_build_minutes_limit) }
+    let!(:other_project) { create(:empty_project, namespace: group, shared_runners_enabled: false) }
 
     it 'is linked within the group settings dropdown' do
       visit group_path(group)
@@ -86,13 +91,18 @@ feature 'Groups > Pipeline Quota', feature: true do
       end
     end
 
-    it 'shows correct ratio and status' do
+    it 'shows correct group quota and projects info' do
       visit_pipeline_quota_page
 
       page.within('.pipeline-quota') do
         expect(page).to have_content("1000 / 500 minutes")
         expect(page).to have_content("200% used")
         expect(page).to have_selector('.progress-bar-danger')
+      end
+
+      page.within('.pipeline-project-metrics') do
+        expect(page).to have_content(project.name)
+        expect(page).not_to have_content(other_project.name)
       end
     end
   end
