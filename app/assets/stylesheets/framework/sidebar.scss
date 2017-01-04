@@ -256,4 +256,9 @@ header.header-sidebar-pinned {
 
 .right-sidebar {
   border-left: 1px solid $border-color;
+
+  &.affix {
+    position: fixed;
+    top: 0;
+  }
 }

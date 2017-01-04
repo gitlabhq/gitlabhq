@@ -337,7 +337,7 @@ require('./flash');
         .affix({
           offset: {
             top: () => (
-              $diffTabs.offset().top - $tabs.height() - $fixedNav.height() - $layoutNav.height()
+              $diffTabs.offset().top - $tabs.height()
             ),
           },
         })

@@ -189,7 +189,8 @@
 }
 
 .right-sidebar {
-  position: fixed;
+  position: absolute;
+  height: 100%;
   top: $header-height;
   bottom: 0;
   right: 0;

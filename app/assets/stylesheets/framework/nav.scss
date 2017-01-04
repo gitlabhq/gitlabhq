@@ -416,14 +416,20 @@
 }
 
 .page-with-layout-nav {
-
   .right-sidebar {
     top: ($header-height * 2) + 2;
+  }
+
+  .build-sidebar {
+    top: ($header-height * 3) + 3;
+
+    &.affix {
+      top: 0;
+    }
   }
 }
 
 .activities {
-
   .nav-block {
     border-bottom: 1px solid $border-color;
 
