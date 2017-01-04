@@ -3,6 +3,7 @@
 
 /*= require vue */
 /*= require vue-resource */
+/*= require boards/vue_resource_interceptor */
 
 /*= require vue_realtime_listener/index */
 //= require ./issue_title
@@ -13,7 +14,7 @@
   Vue.activeResources = 0;
 
   const token = document.querySelector('meta[name="csrf-token"]');
-  if (token) Vue.http.headers.get['X-CSRF-token'] = token.content;
+  if (token) Vue.http.headers.common['X-CSRF-token'] = token.content;
 
   const vueData = document.querySelector('.vue-data').dataset;
   const notUser = vueData.user;

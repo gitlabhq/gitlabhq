@@ -13,7 +13,6 @@
         intervalId: '',
         title: this.initialTitle,
         titleDigest: this.initialTitleDigest,
-        pageRequest: false,
       };
     },
     created() {
@@ -21,9 +20,8 @@
     },
     methods: {
       fetch() {
-        Vue.activeResources = 1;
         this.intervalId = setInterval(() => {
-          if (!this.pageRequest) {
+          if (Vue.activeResources === 0) {
             this.$http.get(this.endpoint, { params: { digest: this.titleDigest } })
               .then((res) => {
                 this.renderResponse(res);
@@ -35,15 +33,10 @@
         clearInterval(this.intervalId);
       },
       endOfCall() {
-        this.pageRequest = false;
-        Vue.activeResources = 0;
       },
       renderResponse(res) {
-        this.pageRequest = true;
         const body = JSON.parse(res.body);
-        const { changed } = body;
-        this.endOfCall();
-        this.triggerAnimation(changed, body);
+        this.triggerAnimation(body.changed, body);
       },
       triggerAnimation(changed, body) {
         if (changed) {
