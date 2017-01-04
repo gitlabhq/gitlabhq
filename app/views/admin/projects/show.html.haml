@@ -98,10 +98,10 @@
                 Enabled
                 - if @project.shared_runners_minutes_quota?
                   - if @project.shared_runners_minutes_limit_enabled?
-                    = @project.actual_shared_runners_minutes_limit.to_i
-                    total minutes
+                    - limit = @project.actual_shared_runners_minutes_limit.to_i
+                    (Limited to #{limit} minutes per month)
                   - else
-                    Unlimited
+                    (Unlimited minutes)
               - else
                 Disabled
 
