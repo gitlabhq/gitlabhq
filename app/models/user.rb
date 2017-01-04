@@ -99,6 +99,7 @@ class User < ActiveRecord::Base
   #
   # Note: devise :validatable above adds validations for :email and :password
   validates :name, presence: true
+  validates_confirmation_of :email
   validates :notification_email, presence: true
   validates :notification_email, email: true, if: ->(user) { user.notification_email != user.email }
   validates :public_email, presence: true, uniqueness: true, email: true, allow_blank: true
@@ -332,7 +333,7 @@ class User < ActiveRecord::Base
     username
   end
 
-  def to_reference(_from_project = nil, _target_project = nil)
+  def to_reference(_from_project = nil, target_project: nil, full: nil)
     "#{self.class.reference_prefix}#{username}"
   end
 

@@ -362,14 +362,6 @@ describe Project, models: true do
     end
   end
 
-  describe "#web_url_without_protocol" do
-    let(:project) { create(:empty_project, path: "somewhere") }
-
-    it 'returns the web URL without the protocol for this repo' do
-      expect(project.web_url_without_protocol).to eq("#{Gitlab.config.gitlab.url.split('://')[1]}/#{project.namespace.path}/somewhere")
-    end
-  end
-
   describe "#new_issue_address" do
     let(:project) { create(:empty_project, path: "somewhere") }
     let(:user) { create(:user) }

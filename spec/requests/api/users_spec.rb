@@ -317,9 +317,9 @@ describe API::Users, api: true  do
     end
 
     it 'updates user with new identity' do
-      put api("/users/#{user.id}", admin), provider: 'github', extern_uid: '67890'
+      put api("/users/#{user.id}", admin), provider: 'github', extern_uid: 'john'
       expect(response).to have_http_status(200)
-      expect(user.reload.identities.first.extern_uid).to eq('67890')
+      expect(user.reload.identities.first.extern_uid).to eq('john')
       expect(user.reload.identities.first.provider).to eq('github')
     end
 

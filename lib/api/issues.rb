@@ -5,20 +5,9 @@ module API
     before { authenticate! }
 
     helpers do
-      def filter_issues_state(issues, state)
-        case state
-        when 'opened' then issues.opened
-        when 'closed' then issues.closed
-        else issues
-        end
-      end
-
+      # TODO: Remove in 9.0 and switch to IssueFinder-based label filtering
       def filter_issues_labels(issues, labels)
         issues.includes(:labels).where('labels.title' => labels.split(','))
-      end
-
-      def filter_issues_milestone(issues, milestone)
-        issues.includes(:milestone).where('milestones.title' => milestone)
       end
 
       params :issues_params do
@@ -27,6 +16,7 @@ module API
                             desc: 'Return issues ordered by `created_at` or `updated_at` fields.'
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
                         desc: 'Return issues sorted in `asc` or `desc` order.'
+        optional :milestone, type: String, desc: 'Return issues for a specific milestone'
         use :pagination
       end
 
@@ -50,8 +40,7 @@ module API
         use :issues_params
       end
       get do
-        issues = current_user.issues.inc_notes_with_associations
-        issues = filter_issues_state(issues, params[:state])
+        issues = IssuesFinder.new(current_user, scope: 'all', author_id: current_user.id, state: params[:state]).execute.inc_notes_with_associations
         issues = filter_issues_labels(issues, params[:labels]) unless params[:labels].nil?
         issues = issues.reorder(params[:order_by] => params[:sort])
 
@@ -99,16 +88,14 @@ module API
         use :issues_params
       end
       get ":id/issues" do
-        issues = IssuesFinder.new(current_user, project_id: user_project.id).execute.inc_notes_with_associations
-        issues = filter_issues_state(issues, params[:state])
+        issues = IssuesFinder.new(current_user,
+                                  project_id: user_project.id,
+                                  state: params[:state],
+                                  milestone_title: params[:milestone]).execute.inc_notes_with_associations
         issues = filter_issues_labels(issues, params[:labels]) unless params[:labels].nil?
         issues = filter_by_iid(issues, params[:iid]) unless params[:iid].nil?
-
-        unless params[:milestone].nil?
-          issues = filter_issues_milestone(issues, params[:milestone])
-        end
-
         issues = issues.reorder(params[:order_by] => params[:sort])
+
         present paginate(issues), with: Entities::Issue, current_user: current_user, project: user_project
       end
 
