@@ -24,10 +24,6 @@
   &.s110 { @include avatar-size(110px, 15px); }
   &.s140 { @include avatar-size(140px, 15px); }
   &.s160 { @include avatar-size(160px, 20px); }
-
-  &:hover {
-    border-color: $gl-link-color;
-  }
 }
 
 .avatar {
@@ -55,6 +51,10 @@
   &.avatar-tile {
     border-radius: 0;
     border: none;
+  }
+
+  &:not([href]):hover {
+    border-color: rgba($avatar-border, .2);
   }
 }
 
