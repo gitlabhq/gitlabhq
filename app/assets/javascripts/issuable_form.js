@@ -40,10 +40,11 @@
         new Pikaday({
           field: $issuableDueDate.get(0),
           format: 'yyyy-mm-dd',
+          defaultDate: new Date($issuableDueDate.val()),
           onSelect: function(dateText) {
             $issuableDueDate.val(dateFormat(new Date(dateText), 'yyyy-mm-dd'));
           }
-        }).setDate(new Date($issuableDueDate.val()));
+        });
       }
     }
 
