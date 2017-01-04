@@ -109,7 +109,7 @@ describe 'Issue Boards', feature: true, js: true do
     end
 
     it 'search backlog list' do
-      page.within('#js-boards-seach') do
+      page.within('#js-boards-search') do
         find('.form-control').set(issue1.title)
       end
 
@@ -122,7 +122,7 @@ describe 'Issue Boards', feature: true, js: true do
     end
 
     it 'search done list' do
-      page.within('#js-boards-seach') do
+      page.within('#js-boards-search') do
         find('.form-control').set(issue8.title)
       end
 
@@ -135,7 +135,7 @@ describe 'Issue Boards', feature: true, js: true do
     end
 
     it 'search list' do
-      page.within('#js-boards-seach') do
+      page.within('#js-boards-search') do
         find('.form-control').set(issue5.title)
       end
 

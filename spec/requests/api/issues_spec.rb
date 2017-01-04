@@ -932,6 +932,13 @@ describe API::Issues, api: true  do
       expect(json_response['state']).to eq "closed"
     end
 
+    it 'reopens a project isssue' do
+      put api("/projects/#{project.id}/issues/#{closed_issue.id}", user), state_event: 'reopen'
+
+      expect(response).to have_http_status(200)
+      expect(json_response['state']).to eq 'reopened'
+    end
+
     context 'when an admin or owner makes the request' do
       it 'accepts the update date to be set' do
         update_time = 2.weeks.ago

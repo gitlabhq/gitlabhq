@@ -14,24 +14,23 @@
         %li
           - if diff_file.deleted_file
             %span.deleted-file
-              %a{href: "##{file_hash}"}
+              %a{ href: "##{file_hash}" }
                 %i.fa.fa-minus
                 = diff_file.old_path
           - elsif diff_file.renamed_file
             %span.renamed-file
-              %a{href: "##{file_hash}"}
+              %a{ href: "##{file_hash}" }
                 %i.fa.fa-minus
                 = diff_file.old_path
                 &rarr;
                 = diff_file.new_path
           - elsif diff_file.new_file
             %span.new-file
-              %a{href: "##{file_hash}"}
+              %a{ href: "##{file_hash}" }
                 %i.fa.fa-plus
                 = diff_file.new_path
           - else
             %span.edit-file
-              %a{href: "##{file_hash}"}
+              %a{ href: "##{file_hash}" }
                 %i.fa.fa-adjust
                 = diff_file.new_path
-

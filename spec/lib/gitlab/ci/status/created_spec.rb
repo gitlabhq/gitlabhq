@@ -1,7 +1,9 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Status::Created do
-  subject { described_class.new(double('subject')) }
+  subject do
+    described_class.new(double('subject'), double('user'))
+  end
 
   describe '#text' do
     it { expect(subject.label).to eq 'created' }
@@ -15,7 +17,7 @@ describe Gitlab::Ci::Status::Created do
     it { expect(subject.icon).to eq 'icon_status_created' }
   end
 
-  describe '#title' do
-    it { expect(subject.title).to eq 'Double: created' }
+  describe '#group' do
+    it { expect(subject.group).to eq 'created' }
   end
 end

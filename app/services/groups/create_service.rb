@@ -12,6 +12,13 @@ module Groups
         return @group
       end
 
+      if @group.parent && !can?(current_user, :admin_group, @group.parent)
+        @group.parent = nil
+        @group.errors.add(:parent_id, 'manage access required to create subgroup')
+
+        return @group
+      end
+
       @group.name ||= @group.path.dup
       @group.save
       @group.add_owner(current_user)

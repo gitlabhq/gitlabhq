@@ -1,4 +1,6 @@
-/* eslint-disable */
+/* eslint-disable comma-dangle, prefer-const, no-param-reassign, no-plusplus, semi, no-unused-expressions, arrow-spacing, max-len */
+/* global Turbolinks */
+
 /*= require jquery */
 /*= require gl_dropdown */
 /*= require turbolinks */

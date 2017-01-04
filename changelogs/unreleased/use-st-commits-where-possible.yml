@@ -1,5 +1,0 @@
----
-title: Replace references to MergeRequestDiff#commits with st_commits when we care
-  only about the number of commits
-merge_request: 7668
-author:

@@ -1,6 +1,6 @@
 class EmailsOnPushService < Service
-  prop_accessor :send_from_committer_email
-  prop_accessor :disable_diffs
+  boolean_accessor :send_from_committer_email
+  boolean_accessor :disable_diffs
   prop_accessor :recipients
   validates :recipients, presence: true, if: :activated?
 
@@ -24,20 +24,20 @@ class EmailsOnPushService < Service
     return unless supported_events.include?(push_data[:object_kind])
 
     EmailsOnPushWorker.perform_async(
-      project_id, 
-      recipients, 
-      push_data, 
-      send_from_committer_email:  send_from_committer_email?, 
-      disable_diffs:              disable_diffs?
+      project_id,
+      recipients,
+      push_data,
+      send_from_committer_email: send_from_committer_email?,
+      disable_diffs:             disable_diffs?
     )
   end
 
   def send_from_committer_email?
-    self.send_from_committer_email == "1"
+    Gitlab::Utils.to_boolean(self.send_from_committer_email)
   end
 
   def disable_diffs?
-    self.disable_diffs == "1"
+    Gitlab::Utils.to_boolean(self.disable_diffs)
   end
 
   def fields

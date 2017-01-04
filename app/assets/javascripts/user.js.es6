@@ -1,4 +1,6 @@
-/* eslint-disable */
+/* eslint-disable class-methods-use-this, comma-dangle, arrow-parens, no-param-reassign, semi */
+/* global Cookies */
+
 ((global) => {
   global.User = class {
     constructor({ action }) {

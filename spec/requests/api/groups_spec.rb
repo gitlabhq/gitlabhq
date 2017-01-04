@@ -2,13 +2,13 @@ require 'spec_helper'
 
 describe API::Groups, api: true  do
   include ApiHelpers
+  include UploadHelpers
 
   let(:user1) { create(:user, can_create_group: false) }
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
   let(:admin) { create(:admin) }
-  let(:avatar_file_path) { File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif') }
-  let!(:group1) { create(:group, avatar: File.open(avatar_file_path)) }
+  let!(:group1) { create(:group, avatar: File.open(uploaded_image_temp_path)) }
   let!(:group2) { create(:group, :private) }
   let!(:project1) { create(:project, namespace: group1) }
   let!(:project2) { create(:project, namespace: group2) }
@@ -35,6 +35,14 @@ describe API::Groups, api: true  do
         expect(json_response.length).to eq(1)
         expect(json_response.first['name']).to eq(group1.name)
       end
+
+      it "does not include statistics" do
+        get api("/groups", user1), statistics: true
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.first).not_to include 'statistics'
+      end
     end
 
     context "when authenticated as admin" do
@@ -43,6 +51,31 @@ describe API::Groups, api: true  do
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(2)
+      end
+
+      it "does not include statistics by default" do
+        get api("/groups", admin)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.first).not_to include('statistics')
+      end
+
+      it "includes statistics if requested" do
+        attributes = {
+          storage_size: 702,
+          repository_size: 123,
+          lfs_objects_size: 234,
+          build_artifacts_size: 345,
+        }
+
+        project1.statistics.update!(attributes)
+
+        get api("/groups", admin), statistics: true
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.first['statistics']).to eq attributes.stringify_keys
       end
     end
 
@@ -243,17 +276,28 @@ describe API::Groups, api: true  do
         expect(json_response.length).to eq(2)
         project_names = json_response.map { |proj| proj['name' ] }
         expect(project_names).to match_array([project1.name, project3.name])
+        expect(json_response.first['default_branch']).to be_present
+      end
+
+      it "returns the group's projects with simple representation" do
+        get api("/groups/#{group1.id}/projects", user1), simple: true
+
+        expect(response).to have_http_status(200)
+        expect(json_response.length).to eq(2)
+        project_names = json_response.map { |proj| proj['name' ] }
+        expect(project_names).to match_array([project1.name, project3.name])
+        expect(json_response.first['default_branch']).not_to be_present
       end
 
       it 'filters the groups projects' do
-        public_projet = create(:project, :public, path: 'test1', group: group1)
+        public_project = create(:project, :public, path: 'test1', group: group1)
 
         get api("/groups/#{group1.id}/projects", user1), visibility: 'public'
 
         expect(response).to have_http_status(200)
         expect(json_response).to be_an(Array)
         expect(json_response.length).to eq(1)
-        expect(json_response.first['name']).to eq(public_projet.name)
+        expect(json_response.first['name']).to eq(public_project.name)
       end
 
       it "does not return a non existing group" do

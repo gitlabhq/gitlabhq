@@ -2,7 +2,10 @@ module API
   class Users < Grape::API
     include PaginationParams
 
-    before { authenticate! }
+    before do
+      allow_access_with_scope :read_user if request.get?
+      authenticate!
+    end
 
     resource :users, requirements: { uid: /[0-9]*/, id: /[0-9]*/ } do
       helpers do
@@ -13,7 +16,7 @@ module API
           optional :website_url, type: String, desc: 'The website of the user'
           optional :organization, type: String, desc: 'The organization of the user'
           optional :projects_limit, type: Integer, desc: 'The number of projects a user can create'
-          optional :extern_uid, type: Integer, desc: 'The external authentication provider UID'
+          optional :extern_uid, type: String, desc: 'The external authentication provider UID'
           optional :provider, type: String, desc: 'The external provider'
           optional :bio, type: String, desc: 'The biography of the user'
           optional :location, type: String, desc: 'The location of the user'
@@ -91,7 +94,7 @@ module API
         identity_attrs = params.slice(:provider, :extern_uid)
         confirm = params.delete(:confirm)
 
-        user = User.build_user(declared_params(include_missing: false))
+        user = User.new(declared_params(include_missing: false))
         user.skip_confirmation! unless confirm
 
         if identity_attrs.any?
@@ -353,7 +356,7 @@ module API
         success Entities::UserPublic
       end
       get do
-        present current_user, with: @impersonator ? Entities::UserWithPrivateToken : Entities::UserPublic
+        present current_user, with: sudo? ? Entities::UserWithPrivateToken : Entities::UserPublic
       end
 
       desc "Get the currently authenticated user's SSH keys" do

@@ -20,9 +20,9 @@ describe Project, models: true do
     it { is_expected.to have_many(:deploy_keys) }
     it { is_expected.to have_many(:hooks).dependent(:destroy) }
     it { is_expected.to have_many(:protected_branches).dependent(:destroy) }
-    it { is_expected.to have_many(:chat_services) }
     it { is_expected.to have_one(:forked_project_link).dependent(:destroy) }
     it { is_expected.to have_one(:slack_service).dependent(:destroy) }
+    it { is_expected.to have_one(:mattermost_service).dependent(:destroy) }
     it { is_expected.to have_one(:pushover_service).dependent(:destroy) }
     it { is_expected.to have_one(:asana_service).dependent(:destroy) }
     it { is_expected.to have_many(:boards).dependent(:destroy) }
@@ -36,6 +36,7 @@ describe Project, models: true do
     it { is_expected.to have_one(:hipchat_service).dependent(:destroy) }
     it { is_expected.to have_one(:flowdock_service).dependent(:destroy) }
     it { is_expected.to have_one(:assembla_service).dependent(:destroy) }
+    it { is_expected.to have_one(:slack_slash_commands_service).dependent(:destroy) }
     it { is_expected.to have_one(:mattermost_slash_commands_service).dependent(:destroy) }
     it { is_expected.to have_one(:gemnasium_service).dependent(:destroy) }
     it { is_expected.to have_one(:buildkite_service).dependent(:destroy) }
@@ -48,6 +49,7 @@ describe Project, models: true do
     it { is_expected.to have_one(:gitlab_issue_tracker_service).dependent(:destroy) }
     it { is_expected.to have_one(:external_wiki_service).dependent(:destroy) }
     it { is_expected.to have_one(:project_feature).dependent(:destroy) }
+    it { is_expected.to have_one(:statistics).class_name('ProjectStatistics').dependent(:delete) }
     it { is_expected.to have_one(:import_data).class_name('ProjectImportData').dependent(:destroy) }
     it { is_expected.to have_one(:last_event).class_name('Event') }
     it { is_expected.to have_one(:forked_from_project).through(:forked_project_link) }
@@ -1457,6 +1459,18 @@ describe Project, models: true do
     end
   end
 
+  describe '#gitlab_project_import?' do
+    subject(:project) { build(:project, import_type: 'gitlab_project') }
+
+    it { expect(project.gitlab_project_import?).to be true }
+  end
+
+  describe '#gitea_import?' do
+    subject(:project) { build(:project, import_type: 'gitea') }
+
+    it { expect(project.gitea_import?).to be true }
+  end
+
   describe '#lfs_enabled?' do
     let(:project) { create(:project) }
 
@@ -1693,6 +1707,46 @@ describe Project, models: true do
         expect(project.environments_recently_updated_on_branch('feature'))
           .to contain_exactly(environment, second_environment)
       end
+    end
+  end
+
+  describe '#deployment_variables' do
+    context 'when project has no deployment service' do
+      let(:project) { create(:empty_project) }
+
+      it 'returns an empty array' do
+        expect(project.deployment_variables).to eq []
+      end
+    end
+
+    context 'when project has a deployment service' do
+      let(:project) { create(:kubernetes_project) }
+
+      it 'returns variables from this service' do
+        expect(project.deployment_variables).to include(
+          { key: 'KUBE_TOKEN', value: project.kubernetes_service.token, public: false }
+        )
+      end
+    end
+  end
+
+  describe '#update_project_statistics' do
+    let(:project) { create(:empty_project) }
+
+    it "is called after creation" do
+      expect(project.statistics).to be_a ProjectStatistics
+      expect(project.statistics).to be_persisted
+    end
+
+    it "copies the namespace_id" do
+      expect(project.statistics.namespace_id).to eq project.namespace_id
+    end
+
+    it "updates the namespace_id when changed" do
+      namespace = create(:namespace)
+      project.update(namespace: namespace)
+
+      expect(project.statistics.namespace_id).to eq namespace.id
     end
   end
 

@@ -18,11 +18,11 @@
       - elsif current_user
         - if @user.abuse_report
           %button.btn.btn-danger{ title: 'Already reported for abuse',
-            data: { toggle: 'tooltip', placement: 'bottom', container: 'body' }}
+            data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } }
             = icon('exclamation-circle')
         - else
           = link_to new_abuse_report_path(user_id: @user.id, ref_url: request.referrer), class: 'btn btn-gray',
-            title: 'Report abuse', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+            title: 'Report abuse', data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
             = icon('exclamation-circle')
       - if current_user
         = link_to user_path(@user, :atom, { private_token: current_user.private_token }), class: 'btn btn-gray' do
@@ -101,12 +101,12 @@
     .tab-content
       #activity.tab-pane
         .row-content-block.calender-block.white.second-block.hidden-xs
-          .user-calendar{data: {href: user_calendar_path}}
+          .user-calendar{ data: { href: user_calendar_path } }
             %h4.center.light
               %i.fa.fa-spinner.fa-spin
           .user-calendar-activities
 
-        .content_list{ data: {href: user_path} }
+        .content_list{ data: { href: user_path } }
         = spinner
 
       #groups.tab-pane

@@ -1,4 +1,6 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, one-var, no-var, one-var-declaration-per-line, no-unused-vars, consistent-return, prefer-arrow-callback, no-else-return, no-undef, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, one-var, no-var, one-var-declaration-per-line, no-unused-vars, consistent-return, prefer-arrow-callback, no-else-return, padded-blocks, max-len */
+/* global Flash */
+
 (function() {
   this.NotificationsDropdown = (function() {
     function NotificationsDropdown() {
@@ -17,7 +19,7 @@
       });
       $(document).off('ajax:success', '.notification-form').on('ajax:success', '.notification-form', function(e, data) {
         if (data.saved) {
-          return $(e.currentTarget).closest('.notification-dropdown').replaceWith(data.html);
+          return $(e.currentTarget).closest('.js-notification-dropdown').replaceWith(data.html);
         } else {
           return new Flash('Failed to save new settings', 'alert');
         }

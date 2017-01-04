@@ -1,0 +1,4 @@
+---
+title: Fixed regression of note-headline-light where it was always placed on 2 lines, even on wide viewports
+merge_request:
+author:

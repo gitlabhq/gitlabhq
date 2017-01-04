@@ -4,21 +4,18 @@ describe Namespace, models: true do
   let!(:namespace) { create(:namespace) }
 
   it { is_expected.to have_many :projects }
+  it { is_expected.to have_many :project_statistics }
 
   it { is_expected.to validate_presence_of(:name) }
-  it { is_expected.to validate_uniqueness_of(:name) }
+  it { is_expected.to validate_uniqueness_of(:name).scoped_to(:parent_id) }
   it { is_expected.to validate_length_of(:name).is_at_most(255) }
 
   it { is_expected.to validate_length_of(:description).is_at_most(255) }
 
   it { is_expected.to validate_presence_of(:path) }
-  it { is_expected.to validate_uniqueness_of(:path) }
   it { is_expected.to validate_length_of(:path).is_at_most(255) }
 
   it { is_expected.to validate_presence_of(:owner) }
-
-  describe "Mass assignment" do
-  end
 
   describe "Respond to" do
     it { is_expected.to respond_to(:human_name) }
@@ -58,6 +55,50 @@ describe Namespace, models: true do
 
     it 'returns namespaces with a matching path regardless of the casing' do
       expect(described_class.search(namespace.path.upcase)).to eq([namespace])
+    end
+  end
+
+  describe '.with_statistics' do
+    let(:namespace) { create :namespace }
+
+    let(:project1) do
+      create(:empty_project,
+             namespace: namespace,
+             statistics: build(:project_statistics,
+                               storage_size:         606,
+                               repository_size:      101,
+                               lfs_objects_size:     202,
+                               build_artifacts_size: 303))
+    end
+
+    let(:project2) do
+      create(:empty_project,
+             namespace: namespace,
+             statistics: build(:project_statistics,
+                               storage_size:         60,
+                               repository_size:      10,
+                               lfs_objects_size:     20,
+                               build_artifacts_size: 30))
+    end
+
+    it "sums all project storage counters in the namespace" do
+      project1
+      project2
+      statistics = Namespace.with_statistics.find(namespace.id)
+
+      expect(statistics.storage_size).to eq 666
+      expect(statistics.repository_size).to eq 111
+      expect(statistics.lfs_objects_size).to eq 222
+      expect(statistics.build_artifacts_size).to eq 333
+    end
+
+    it "correctly handles namespaces without projects" do
+      statistics = Namespace.with_statistics.find(namespace.id)
+
+      expect(statistics.storage_size).to eq 0
+      expect(statistics.repository_size).to eq 0
+      expect(statistics.lfs_objects_size).to eq 0
+      expect(statistics.build_artifacts_size).to eq 0
     end
   end
 
@@ -131,5 +172,27 @@ describe Namespace, models: true do
 
     it { expect(group.full_path).to eq(group.path) }
     it { expect(nested_group.full_path).to eq("#{group.path}/#{nested_group.path}") }
+  end
+
+  describe '#full_name' do
+    let(:group) { create(:group) }
+    let(:nested_group) { create(:group, parent: group) }
+
+    it { expect(group.full_name).to eq(group.name) }
+    it { expect(nested_group.full_name).to eq("#{group.name} / #{nested_group.name}") }
+  end
+
+  describe '#parents' do
+    let(:group) { create(:group) }
+    let(:nested_group) { create(:group, parent: group) }
+    let(:deep_nested_group) { create(:group, parent: nested_group) }
+    let(:very_deep_nested_group) { create(:group, parent: deep_nested_group) }
+
+    it 'returns the correct parents' do
+      expect(very_deep_nested_group.parents).to eq([group, nested_group, deep_nested_group])
+      expect(deep_nested_group.parents).to eq([group, nested_group])
+      expect(nested_group.parents).to eq([group])
+      expect(group.parents).to eq([])
+    end
   end
 end

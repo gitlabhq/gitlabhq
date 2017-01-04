@@ -15,6 +15,7 @@ variables:
   USE_BUNDLE_INSTALL: "true"
   GIT_DEPTH: "20"
   PHANTOMJS_VERSION: "2.1.1"
+  GET_SOURCES_ATTEMPTS: "3"
 
 before_script:
   - source ./scripts/prepare_build.sh
@@ -424,7 +425,7 @@ notify:slack:
     SETUP_DB: "false"
     USE_BUNDLE_INSTALL: "false"
   script:
-    - ./scripts/notify_slack.sh "#development" "Build on \`$CI_BUILD_REF_NAME\` failed! Commit \`$(git log -1 --oneline)\` See <https://gitlab.com/gitlab-org/$(basename "$PWD")/commit/"$CI_BUILD_REF"/builds>"
+    - ./scripts/notify_slack.sh "#development" "Build on \`$CI_BUILD_REF_NAME\` failed! Commit \`$(git log -1 --oneline)\` See <https://gitlab.com/gitlab-org/$(basename "$PWD")/commit/"$CI_BUILD_REF"/pipelines>"
   when: on_failure
   only:
     - master@gitlab-org/gitlab-ce

@@ -1,4 +1,0 @@
----
-title: 'Remove unnecessary require_relative calls from service classes'
-merge_request: '7601'
-author: Semyon Pupkov

@@ -1,5 +1,5 @@
 .file-actions
-  .btn-group{"v-if" => "file.type === 'text'"}
+  .btn-group{ "v-if" => "file.type === 'text'" }
     %button.btn{ ":class" => "{ 'active': file.resolveMode == 'interactive' }",
       '@click' => "onClickResolveModeButton(file, 'interactive')",
       type: 'button' }
@@ -8,5 +8,5 @@
       '@click' => "onClickResolveModeButton(file, 'edit')",
       type: 'button' }
       Edit inline
-  %a.btn.view-file.btn-file-option{":href" => "file.blobPath"}
+  %a.btn.view-file.btn-file-option{ ":href" => "file.blobPath" }
     View file @{{conflictsData.shortCommitSha}}

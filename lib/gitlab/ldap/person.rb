@@ -28,7 +28,7 @@ module Gitlab
       end
 
       def name
-        entry.cn.first
+        attribute_value(:name)
       end
 
       def uid
@@ -40,7 +40,7 @@ module Gitlab
       end
 
       def email
-        entry.try(:mail)
+        attribute_value(:email)
       end
 
       def dn
@@ -55,6 +55,21 @@ module Gitlab
 
       def config
         @config ||= Gitlab::LDAP::Config.new(provider)
+      end
+
+      # Using the LDAP attributes configuration, find and return the first
+      # attribute with a value. For example, by default, when given 'email',
+      # this method looks for 'mail', 'email' and 'userPrincipalName' and
+      # returns the first with a value.
+      def attribute_value(attribute)
+        attributes = Array(config.attributes[attribute.to_sym])
+        selected_attr = attributes.find { |attr| entry.respond_to?(attr) }
+
+        return nil unless selected_attr
+
+        # Some LDAP attributes return an array,
+        # even if it is a single value (like 'cn')
+        Array(entry.public_send(selected_attr)).first
       end
     end
   end

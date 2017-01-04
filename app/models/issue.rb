@@ -39,6 +39,8 @@ class Issue < ActiveRecord::Base
 
   scope :created_after, -> (datetime) { where("created_at >= ?", datetime) }
 
+  scope :include_associations, -> { includes(:assignee, :labels, project: :namespace) }
+
   attr_spammable :title, spam_title: true
   attr_spammable :description, spam_description: true
 
@@ -58,61 +60,6 @@ class Issue < ActiveRecord::Base
 
   def hook_attrs
     attributes
-  end
-
-  class << self
-    private
-
-    # Returns the project that the current scope belongs to if any, nil otherwise.
-    #
-    # Examples:
-    # - my_project.issues.without_due_date.owner_project => my_project
-    # - Issue.all.owner_project => nil
-    def owner_project
-      # No owner if we're not being called from an association
-      return unless all.respond_to?(:proxy_association)
-
-      owner = all.proxy_association.owner
-
-      # Check if the association is or belongs to a project
-      if owner.is_a?(Project)
-        owner
-      else
-        begin
-          owner.association(:project).target
-        rescue ActiveRecord::AssociationNotFoundError
-          nil
-        end
-      end
-    end
-  end
-
-  def self.visible_to_user(user)
-    return where('issues.confidential IS NULL OR issues.confidential IS FALSE') if user.blank?
-    return all if user.admin?
-
-    # Check if we are scoped to a specific project's issues
-    if owner_project
-      if owner_project.team.member?(user, Gitlab::Access::REPORTER)
-        # If the project is authorized for the user, they can see all issues in the project
-        return all
-      else
-        # else only non confidential and authored/assigned to them
-        return where('issues.confidential IS NULL OR issues.confidential IS FALSE
-          OR issues.author_id = :user_id OR issues.assignee_id = :user_id',
-          user_id: user.id)
-      end
-    end
-
-    where('
-      issues.confidential IS NULL
-      OR issues.confidential IS FALSE
-      OR (issues.confidential = TRUE
-        AND (issues.author_id = :user_id
-          OR issues.assignee_id = :user_id
-          OR issues.project_id IN(:project_ids)))',
-      user_id: user.id,
-      project_ids: user.authorized_projects(Gitlab::Access::REPORTER).select(:id))
   end
 
   def self.reference_prefix
@@ -150,10 +97,10 @@ class Issue < ActiveRecord::Base
     end
   end
 
-  def to_reference(from_project = nil)
+  def to_reference(from_project = nil, full: false)
     reference = "#{self.class.reference_prefix}#{iid}"
 
-    "#{project.to_reference(from_project)}#{reference}"
+    "#{project.to_reference(from_project, full: full)}#{reference}"
   end
 
   def referenced_merge_requests(current_user = nil)

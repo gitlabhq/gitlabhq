@@ -1,4 +1,7 @@
-/* eslint-disable */
+/* eslint-disable one-var, indent, quote-props, comma-dangle, space-before-function-paren */
+/* global Vue */
+/* global BoardService */
+
 //= require vue
 //= require vue-resource
 //= require Sortable
@@ -70,7 +73,7 @@ $(() => {
   });
 
   gl.IssueBoardsSearch = new Vue({
-    el: '#js-boards-seach',
+    el: '#js-boards-search',
     data: {
       filters: Store.state.filters
     },

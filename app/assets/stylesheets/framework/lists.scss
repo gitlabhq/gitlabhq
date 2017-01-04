@@ -36,7 +36,7 @@
       color: $list-warning-row-color;
     }
 
-    &.smoke { background-color: $background-color; }
+    &.smoke { background-color: $gray-light; }
 
     &:not(.ui-sort-disabled):hover {
       background: $row-hover;
@@ -46,7 +46,7 @@
       border-bottom: none;
 
       &.bottom {
-        background: $background-color;
+        background: $gray-light;
       }
     }
 
@@ -59,7 +59,7 @@
     p {
       padding-top: 1px;
       margin: 0;
-      color: $gray-dark;
+      color: $white-normal;
 
       img {
         position: relative;
@@ -113,7 +113,7 @@ ul.content-list {
   padding: 0;
 
   li {
-    border-color: $table-border-color;
+    border-color: $white-normal;
     font-size: $list-font-size;
     color: $list-text-color;
 
@@ -186,7 +186,7 @@ ul.content-list {
 
     &.list-placeholder {
       background-color: $gray-light;
-      border: dotted 1px $gray-dark;
+      border: dotted 1px $white-normal;
       margin: 1px 0;
       min-height: 52px;
     }
@@ -199,6 +199,7 @@ ul.content-list {
     display: -webkit-flex;
     display: -ms-flexbox;
     display: flex;
+    align-items: center;
     white-space: nowrap;
   }
 
@@ -206,6 +207,11 @@ ul.content-list {
     flex: 1 1 auto;
     overflow: hidden;
     padding-right: 8px;
+  }
+
+  .row-fixed-content {
+    flex: 0 0 auto;
+    margin-left: auto;
   }
 
   .row-title {
@@ -224,7 +230,7 @@ ul.content-list {
   }
 
   .label-default {
-    color: $btn-transparent-color;
+    color: $gl-gray-light;
   }
 }
 
@@ -239,7 +245,6 @@ ul.content-list {
 }
 
 ul.controls {
-  padding-top: 1px;
   float: right;
   list-style: none;
 

@@ -3,7 +3,7 @@
  *
  */
 .mr-state-widget {
-  background: $background-color;
+  background: $gray-light;
   color: $gl-gray;
   border: 1px solid $border-color;
   border-radius: 2px;
@@ -20,6 +20,14 @@
     .accept-action {
       display: inline-block;
       float: left;
+
+      .btn-success.dropdown-toggle .fa {
+        color: inherit;
+      }
+
+      .btn-success.dropdown-toggle:disabled {
+        background-color: $gl-success;
+      }
 
       .accept_merge_request {
         &.ci-pending,
@@ -96,7 +104,7 @@
   .mr-widget-body {
     h4 {
       font-weight: 600;
-      font-size: 17px;
+      font-size: 16px;
       margin: 5px 0;
       color: $gl-gray-dark;
 
@@ -359,7 +367,7 @@
 
     th {
       background-color: $white-light;
-      color: $gl-placeholder-color;
+      color: $gl-gray-light;
     }
   }
 }
@@ -375,7 +383,7 @@
 }
 
 .mr-version-controls {
-  background: $background-color;
+  background: $gray-light;
   border-bottom: 1px solid $border-color;
   color: $gl-text-color;
 
@@ -416,11 +424,19 @@
 .merge-request-tabs-holder {
   background-color: $white-light;
 
+  .container-limited {
+    max-width: $limited-layout-width;
+  }
+
   &.affix {
     top: 100px;
     left: 0;
     z-index: 10;
     transition: right .15s;
+
+    @media (max-width: $screen-xs-max) {
+      right: 0;
+    }
   }
 
   &:not(.affix) .container-fluid {

@@ -17,7 +17,7 @@
       %ul.dropdown-footer-list
         - if can?(current_user, :admin_label, @project)
           %li
-            %a.dropdown-toggle-page{href: "#"}
+            %a.dropdown-toggle-page{ href: "#" }
               Create new label
         %li
           = link_to namespace_project_labels_path(@project.namespace, @project), :"data-is-link" => true do

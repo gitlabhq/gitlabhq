@@ -24,12 +24,16 @@ class GlobalMilestone
     @first_milestone = milestones.find {|m| m.description.present? } || milestones.first
   end
 
+  def milestoneish_ids
+    milestones.select(:id)
+  end
+
   def safe_title
     @title.to_slug.normalize.to_s
   end
 
   def projects
-    @projects ||= Project.for_milestones(milestones.select(:id))
+    @projects ||= Project.for_milestones(milestoneish_ids)
   end
 
   def state
@@ -49,11 +53,11 @@ class GlobalMilestone
   end
 
   def issues
-    @issues ||= Issue.of_milestones(milestones.select(:id)).includes(:project, :assignee, :labels)
+    @issues ||= Issue.of_milestones(milestoneish_ids).includes(:project, :assignee, :labels)
   end
 
   def merge_requests
-    @merge_requests ||= MergeRequest.of_milestones(milestones.select(:id)).includes(:target_project, :assignee, :labels)
+    @merge_requests ||= MergeRequest.of_milestones(milestoneish_ids).includes(:target_project, :assignee, :labels)
   end
 
   def participants

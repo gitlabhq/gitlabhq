@@ -7,24 +7,31 @@
 (() => {
   class SmartInterval {
     /**
-      * @param { function } callback Function to be called on each iteration (required)
-      * @param { milliseconds } startingInterval `currentInterval` is set to this initially
-      * @param { milliseconds } maxInterval `currentInterval` will be incremented to this
-      * @param { integer } incrementByFactorOf `currentInterval` is incremented by this factor
-      * @param { boolean } lazyStart Configure if timer is initialized on instantiation or lazily
+      * @param { function } opts.callback Function to be called on each iteration (required)
+      * @param { milliseconds } opts.startingInterval `currentInterval` is set to this initially
+      * @param { milliseconds } opts.maxInterval `currentInterval` will be incremented to this
+      * @param { milliseconds } opts.hiddenInterval `currentInterval` is set to this
+      *                         when the page is hidden
+      * @param { integer } opts.incrementByFactorOf `currentInterval` is incremented by this factor
+      * @param { boolean } opts.lazyStart Configure if timer is initialized on
+      *                    instantiation or lazily
+      * @param { boolean } opts.immediateExecution Configure if callback should
+      *                    be executed before the first interval.
       */
-    constructor({ callback, startingInterval, maxInterval, incrementByFactorOf, lazyStart }) {
+    constructor(opts = {}) {
       this.cfg = {
-        callback,
-        startingInterval,
-        maxInterval,
-        incrementByFactorOf,
-        lazyStart,
+        callback: opts.callback,
+        startingInterval: opts.startingInterval,
+        maxInterval: opts.maxInterval,
+        hiddenInterval: opts.hiddenInterval,
+        incrementByFactorOf: opts.incrementByFactorOf,
+        lazyStart: opts.lazyStart,
+        immediateExecution: opts.immediateExecution,
       };
 
       this.state = {
         intervalId: null,
-        currentInterval: startingInterval,
+        currentInterval: this.cfg.startingInterval,
         pageVisibility: 'visible',
       };
 
@@ -35,6 +42,11 @@
     start() {
       const cfg = this.cfg;
       const state = this.state;
+
+      if (cfg.immediateExecution) {
+        cfg.immediateExecution = false;
+        cfg.callback();
+      }
 
       state.intervalId = window.setInterval(() => {
         cfg.callback();
@@ -54,14 +66,29 @@
       this.stopTimer();
     }
 
+    onVisibilityHidden() {
+      if (this.cfg.hiddenInterval) {
+        this.setCurrentInterval(this.cfg.hiddenInterval);
+        this.resume();
+      } else {
+        this.cancel();
+      }
+    }
+
     // start a timer, using the existing interval
     resume() {
       this.stopTimer(); // stop exsiting timer, in case timer was not previously stopped
       this.start();
     }
 
+    onVisibilityVisible() {
+      this.cancel();
+      this.start();
+    }
+
     destroy() {
       this.cancel();
+      document.removeEventListener('visibilitychange', this.handleVisibilityChange);
       $(document).off('visibilitychange').off('page:before-unload');
     }
 
@@ -80,11 +107,7 @@
 
     initVisibilityChangeHandling() {
       // cancel interval when tab no longer shown (prevents cached pages from polling)
-      $(document)
-        .off('visibilitychange').on('visibilitychange', (e) => {
-          this.state.pageVisibility = e.target.visibilityState;
-          this.handleVisibilityChange();
-        });
+      document.addEventListener('visibilitychange', this.handleVisibilityChange.bind(this));
     }
 
     initPageUnloadHandling() {
@@ -92,10 +115,11 @@
       $(document).on('page:before-unload', () => this.cancel());
     }
 
-    handleVisibilityChange() {
-      const state = this.state;
-
-      const intervalAction = state.pageVisibility === 'hidden' ? this.cancel : this.resume;
+    handleVisibilityChange(e) {
+      this.state.pageVisibility = e.target.visibilityState;
+      const intervalAction = this.isPageVisible() ?
+        this.onVisibilityVisible :
+        this.onVisibilityHidden;
 
       intervalAction.apply(this);
     }
@@ -111,6 +135,7 @@
     incrementInterval() {
       const cfg = this.cfg;
       const currentInterval = this.getCurrentInterval();
+      if (cfg.hiddenInterval && !this.isPageVisible()) return;
       let nextInterval = currentInterval * cfg.incrementByFactorOf;
 
       if (nextInterval > cfg.maxInterval) {
@@ -119,6 +144,8 @@
 
       this.setCurrentInterval(nextInterval);
     }
+
+    isPageVisible() { return this.state.pageVisibility === 'visible'; }
 
     stopTimer() {
       const state = this.state;

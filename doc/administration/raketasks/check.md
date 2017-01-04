@@ -74,24 +74,5 @@ Example output:
 
 The LDAP check Rake task will test the bind_dn and password credentials
 (if configured) and will list a sample of LDAP users. This task is also
-executed as part of the `gitlab:check` task, but can run independently
-using the command below.
-
-**Omnibus Installation**
-
-```
-sudo gitlab-rake gitlab:ldap:check
-```
-
-**Source Installation**
-
-```bash
-sudo -u git -H bundle exec rake gitlab:ldap:check RAILS_ENV=production
-```
-
-By default, the task will return a sample of 100 LDAP users. Change this
-limit by passing a number to the check task:
-
-```bash
-rake gitlab:ldap:check[50]
-```
+executed as part of the `gitlab:check` task, but can run independently.
+See [LDAP Rake Tasks - LDAP Check](ldap.md#check) for details.

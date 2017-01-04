@@ -1,4 +1,9 @@
-/* eslint-disable */
+/* eslint-disable no-unused-vars, space-before-function-paren, arrow-body-style, space-in-parens, arrow-parens, comma-dangle, max-len */
+/* global Vue */
+/* global ListLabel */
+/* global ListMilestone */
+/* global ListUser */
+
 class ListIssue {
   constructor (obj) {
     this.id = obj.iid;
@@ -66,3 +71,5 @@ class ListIssue {
     return Vue.http.patch(url, data);
   }
 }
+
+window.ListIssue = ListIssue;
