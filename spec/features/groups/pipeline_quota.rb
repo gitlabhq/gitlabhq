@@ -13,6 +13,14 @@ feature 'Groups > Pipeline Quota', feature: true do
   context 'with no quota' do
     let(:group) { create(:group, :with_build_minutes) }
 
+    it 'is not linked within the group settings dropdown' do
+      visit group_path(group)
+
+      page.within('.layout-nav') do
+        expect(page).not_to have_selector(:link_or_button, 'Pipeline Quota')
+      end
+    end
+
     it 'shows correct ratio and status' do
       visit_pipeline_quota_page
 
@@ -27,6 +35,14 @@ feature 'Groups > Pipeline Quota', feature: true do
     let(:group) { create(:group, :with_not_used_build_minutes_limit) }
     let!(:project) { create(:project, namespace: group, shared_runners_enabled: false) }
 
+    it 'is not linked within the group settings dropdown' do
+      visit group_path(group)
+
+      page.within('.layout-nav') do
+        expect(page).not_to have_selector(:link_or_button, 'Pipeline Quota')
+      end
+    end
+
     it 'shows correct ratio and status' do
       visit_pipeline_quota_page
 
@@ -39,6 +55,14 @@ feature 'Groups > Pipeline Quota', feature: true do
 
   context 'minutes under quota' do
     let(:group) { create(:group, :with_not_used_build_minutes_limit) }
+
+    it 'is linked within the group settings dropdown' do
+      visit group_path(group)
+
+      page.within('.layout-nav') do
+        expect(page).to have_selector(:link_or_button, 'Pipeline Quota')
+      end
+    end
 
     it 'shows correct ratio and status' do
       visit_pipeline_quota_page
@@ -53,6 +77,14 @@ feature 'Groups > Pipeline Quota', feature: true do
 
   context 'minutes over quota' do
     let(:group) { create(:group, :with_used_build_minutes_limit) }
+
+    it 'is linked within the group settings dropdown' do
+      visit group_path(group)
+
+      page.within('.layout-nav') do
+        expect(page).to have_selector(:link_or_button, 'Pipeline Quota')
+      end
+    end
 
     it 'shows correct ratio and status' do
       visit_pipeline_quota_page
