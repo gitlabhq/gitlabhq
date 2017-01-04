@@ -115,10 +115,6 @@ a {
   @include transition(background-color, color, border);
 }
 
-.color-label {
-  @include transition(box-shadow);
-}
-
 .tree-table td,
 .well-list > li {
   @include transition(background-color, border-color);
