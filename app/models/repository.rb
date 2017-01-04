@@ -781,7 +781,7 @@ class Repository
       end
 
       if source_branch_name &&
-         source_project.repository.tree_entry_at(source_branch_name, path)
+          source_project.repository.tree_entry_at(source_branch_name, path)
         raise Gitlab::Git::Repository::InvalidBlobName.new(error_message)
       end
     end

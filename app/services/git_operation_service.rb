@@ -90,8 +90,8 @@ class GitOperationService
 
     # If repo was empty expire cache
     repository.after_create if was_empty
-    repository.after_create_branch if was_empty ||
-                                      Gitlab::Git.blank_ref?(oldrev)
+    repository.after_create_branch if
+      was_empty || Gitlab::Git.blank_ref?(oldrev)
 
     newrev
   end
