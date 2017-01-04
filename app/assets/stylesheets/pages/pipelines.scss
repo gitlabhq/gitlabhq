@@ -29,6 +29,10 @@
     min-width: 1200px;
     table-layout: fixed;
 
+    .label {
+      margin-bottom: 3px;
+    }
+
     .pipeline-id {
       color: $black;
     }
