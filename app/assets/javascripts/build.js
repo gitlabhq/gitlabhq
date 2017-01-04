@@ -285,7 +285,7 @@
       e.preventDefault();
       $currentTarget = $(e.currentTarget);
       $.scrollTo($currentTarget.attr('href'), {
-        offset: -($('.navbar-gitlab').outerHeight() + $('.layout-nav').outerHeight())
+        offset: 0
       });
     };
 
