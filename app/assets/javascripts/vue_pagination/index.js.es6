@@ -98,9 +98,9 @@
         if (page > 1) items.push({ title: FIRST });
 
         if (page > 1) {
-          items.push({ title: PREV });
+          items.push({ title: PREV, prev: true });
         } else {
-          items.push({ title: PREV, disabled: true });
+          items.push({ title: PREV, disabled: true, prev: true });
         }
 
         if (page > UI_LIMIT) items.push({ title: SPREAD, separator: true });
@@ -110,29 +110,32 @@
 
         for (let i = start; i <= end; i++) {
           const isActive = i === page;
-          items.push({ title: i, active: isActive });
+          items.push({ title: i, active: isActive, page: true });
         }
 
         if (total - page > PAGINATION_UI_BUTTON_LIMIT) {
-          items.push({ title: SPREAD, separator: true });
+          items.push({ title: SPREAD, separator: true, page: true });
         }
 
         if (page === total) {
-          items.push({ title: NEXT, disabled: true });
+          items.push({ title: NEXT, disabled: true, next: true });
         } else if (total - page >= 1) {
-          items.push({ title: NEXT });
+          items.push({ title: NEXT, next: true });
         }
 
-        if (total - page >= 1) items.push({ title: LAST });
+        if (total - page >= 1) items.push({ title: LAST, last: true });
 
         return items;
       },
     },
     template: `
       <div class="gl-pagination">
-        <ul class="pagination clearfix" v-for='item in getItems'>
-          <li
+        <ul class="pagination clearfix">
+          <li v-for='item in getItems'
             :class='{
+              page: item.page,
+              prev: item.prev,
+              next: item.next,
               separator: item.separator,
               active: item.active,
               disabled: item.disabled
