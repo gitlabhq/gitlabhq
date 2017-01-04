@@ -263,6 +263,39 @@ describe Ci::Runner, models: true do
     end
   end
 
+  describe '#tick_runner_queue' do
+    let(:runner) { create(:ci_runner) }
+
+    it 'returns a new last_update value' do
+      expect(runner.tick_runner_queue).not_to be_empty
+    end
+  end
+
+  describe '#ensure_runner_queue_value' do
+    let(:runner) { create(:ci_runner) }
+
+    it 'sets a new last_update value when it is called the first time' do
+      last_update = runner.ensure_runner_queue_value
+
+      expect_value_in_redis(last_update)
+    end
+
+    it 'does not change if it is not expired and called again' do
+      last_update = runner.ensure_runner_queue_value
+
+      expect(runner.ensure_runner_queue_value).to eq(last_update)
+      expect_value_in_redis(last_update)
+    end
+
+    def expect_value_in_redis(last_update)
+      Gitlab::Redis.with do |redis|
+        runner_queue_key = runner.send(:runner_queue_key)
+
+        expect(redis.get(runner_queue_key)).to eq(last_update)
+      end
+    end
+  end
+
   describe '.assignable_for' do
     let(:runner) { create(:ci_runner) }
     let(:project) { create(:project) }

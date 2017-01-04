@@ -1180,4 +1180,14 @@ describe Ci::Build, models: true do
       it { is_expected.to eq('review/master') }
     end
   end
+
+  describe 'State transition: any => [:pending]' do
+    let(:build) { create(:ci_build, :created) }
+
+    it 'queues BuildQueueWorker' do
+      expect(BuildQueueWorker).to receive(:perform_async).with(build.id)
+
+      build.enqueue
+    end
+  end
 end

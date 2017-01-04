@@ -5,6 +5,7 @@ describe Ci::API::Builds do
 
   let(:runner) { FactoryGirl.create(:ci_runner, tag_list: ["mysql", "ruby"]) }
   let(:project) { FactoryGirl.create(:empty_project) }
+  let(:last_update) { nil }
 
   describe "Builds API for runners" do
     let(:pipeline) { create(:ci_pipeline_without_jobs, project: project, ref: 'master') }
@@ -24,7 +25,31 @@ describe Ci::API::Builds do
       shared_examples 'no builds available' do
         context 'when runner sends version in User-Agent' do
           context 'for stable version' do
-            it { expect(response).to have_http_status(204) }
+            it 'gives 204 and set X-GitLab-Last-Update' do
+              expect(response).to have_http_status(204)
+              expect(response.header).to have_key('X-GitLab-Last-Update')
+            end
+          end
+
+          context 'when last_update is up-to-date' do
+            let(:last_update) { runner.ensure_runner_queue_value }
+
+            it 'gives 204 and set the same X-GitLab-Last-Update' do
+              expect(response).to have_http_status(204)
+              expect(response.header['X-GitLab-Last-Update'])
+                .to eq(last_update)
+            end
+          end
+
+          context 'when last_update is outdated' do
+            let(:last_update) { runner.ensure_runner_queue_value }
+            let!(:new_update) { runner.tick_runner_queue }
+
+            it 'gives 204 and set a new X-GitLab-Last-Update' do
+              expect(response).to have_http_status(204)
+              expect(response.header['X-GitLab-Last-Update'])
+                .to eq(new_update)
+            end
           end
 
           context 'for beta version' do
@@ -44,6 +69,7 @@ describe Ci::API::Builds do
           register_builds info: { platform: :darwin }
 
           expect(response).to have_http_status(201)
+          expect(response.headers).not_to have_key('X-GitLab-Last-Update')
           expect(json_response['sha']).to eq(build.sha)
           expect(runner.reload.platform).to eq("darwin")
           expect(json_response["options"]).to eq({ "image" => "ruby:2.1", "services" => ["postgres"] })
@@ -219,7 +245,9 @@ describe Ci::API::Builds do
       end
 
       def register_builds(token = runner.token, **params)
-        post ci_api("/builds/register"), params.merge(token: token), { 'User-Agent' => user_agent }
+        new_params = params.merge(token: token, last_update: last_update)
+
+        post ci_api("/builds/register"), new_params, { 'User-Agent' => user_agent }
       end
     end
 

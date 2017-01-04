@@ -17,7 +17,7 @@ module Ci
           update_runner_info
 
           if current_runner.is_runner_queue_value_latest?(params[:last_update])
-            headers 'X-GitLab-Last-Update', params[:last_update]
+            header 'X-GitLab-Last-Update', params[:last_update]
             return build_not_found!
           end
 
@@ -33,7 +33,7 @@ module Ci
           else
             Gitlab::Metrics.add_event(:build_not_found)
 
-            headers 'X-GitLab-Last-Update', new_update
+            header 'X-GitLab-Last-Update', new_update
 
             build_not_found!
           end
