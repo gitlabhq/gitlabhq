@@ -4,8 +4,8 @@
 
 (() => {
   class DropdownUser extends gl.FilteredSearchDropdown {
-    constructor(droplab, dropdown, input) {
-      super(droplab, dropdown, input);
+    constructor(droplab, dropdown, input, filter) {
+      super(droplab, dropdown, input, filter);
       this.config = {
         droplabAjaxFilter: {
           endpoint: '/autocomplete/users.json',

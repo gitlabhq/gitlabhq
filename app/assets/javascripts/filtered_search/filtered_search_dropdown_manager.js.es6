@@ -55,31 +55,30 @@
       };
     }
 
-    static addWordToInput(word, addSpace = false) {
+    static addWordToInput(tokenName, tokenValue = '') {
       const input = document.querySelector('.filtered-search');
-      input.value = input.value.trim();
+      const word = `${tokenName}:${tokenValue}`;
 
-      const value = input.value;
-      const hasExistingValue = value.length !== 0;
-      const { lastToken, searchToken } = gl.FilteredSearchTokenizer.processTokens(value);
+      const { lastToken, searchToken } = gl.FilteredSearchTokenizer.processTokens(input.value);
       const lastSearchToken = searchToken.split(' ').last();
+      const lastInputCharacter = input.value[input.value.length - 1];
+      const lastInputTrimmedCharacter = input.value.trim()[input.value.trim().length - 1];
 
-      // Find out what part of the token value the user has typed
-      // and remove it from input before appending the selected token value
-      if (lastToken !== searchToken) {
-        const lastTokenString = `${lastToken.symbol}${lastToken.value}`;
+      // Remove the typed tokenName
+      if (word.indexOf(lastSearchToken) === 0 && searchToken !== '') {
+        // Remove spaces after the colon
+        if (lastInputCharacter === ' ' && lastInputTrimmedCharacter === ':') {
+          input.value = input.value.trim();
+        }
 
-        // Spaces inside the token means that the token value will be escaped by quotes
-        const hasQuotes = lastTokenString.indexOf(' ') !== -1;
-
-        // Add 2 length to account for the length of the front and back quotes
-        const lengthToRemove = hasQuotes ? lastTokenString.length + 2 : lastTokenString.length;
-        input.value = value.slice(0, -1 * (lengthToRemove));
-      } else if (searchToken !== '' && word.indexOf(lastSearchToken) !== -1) {
-        input.value = value.slice(0, -1 * lastSearchToken.length);
+        input.value = input.value.slice(0, -1 * lastSearchToken.length);
+      } else if (lastInputCharacter !== ' ') {
+        // Remove the existing tokenValue
+        const lastTokenString = `${lastToken.key}:${lastToken.symbol}${lastToken.value}`;
+        input.value = input.value.slice(0, -1 * lastTokenString.length);
       }
 
-      input.value += hasExistingValue && addSpace ? ` ${word}` : word;
+      input.value += word;
     }
 
     updateCurrentDropdownOffset() {
@@ -106,7 +105,7 @@
 
       if (!mappingKey.reference) {
         const dl = this.droplab;
-        const defaultArguments = [null, dl, element, this.filteredSearchInput];
+        const defaultArguments = [null, dl, element, this.filteredSearchInput, key];
         const glArguments = defaultArguments.concat(mappingKey.extraArguments || []);
 
         // Passing glArguments to `new gl[glClass](<arguments>)`

@@ -4,8 +4,8 @@
 
 (() => {
   class DropdownHint extends gl.FilteredSearchDropdown {
-    constructor(droplab, dropdown, input) {
-      super(droplab, dropdown, input);
+    constructor(droplab, dropdown, input, filter) {
+      super(droplab, dropdown, input, filter);
       this.config = {
         droplabFilter: {
           template: 'hint',
@@ -25,7 +25,7 @@
           const tag = selected.querySelector('.js-filter-tag').innerText.trim();
 
           if (tag.length) {
-            gl.FilteredSearchDropdownManager.addWordToInput(token);
+            gl.FilteredSearchDropdownManager.addWordToInput(token.replace(':', ''));
           }
           this.dismissDropdown();
           this.dispatchInputEvent();
