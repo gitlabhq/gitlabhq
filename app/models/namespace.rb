@@ -183,8 +183,26 @@ class Namespace < ActiveRecord::Base
       end
   end
 
-  def parents
-    @parents ||= parent ? parent.parents + [parent] : []
+  # Scopes the model on ancestors of the record
+  def ancestors
+    if parent_id
+      path = route.path
+      paths = []
+
+      until path.blank?
+        path = path.rpartition('/').first
+        paths << path
+      end
+
+      self.class.joins(:route).where('routes.path IN (?)', paths).order_id_asc
+    else
+      self.class.none
+    end
+  end
+
+  # Scopes the model on direct and indirect children of the record
+  def descendants
+    self.class.joins(:route).where('routes.path LIKE ?', "#{route.path}/%").order_id_asc
   end
 
   private

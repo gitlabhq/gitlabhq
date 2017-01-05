@@ -14,7 +14,7 @@ module GroupsHelper
   def group_title(group, name = nil, url = nil)
     full_title = ''
 
-    group.parents.each do |parent|
+    group.ancestors.each do |parent|
       full_title += link_to(simple_sanitize(parent.name), group_path(parent))
       full_title += ' / '.html_safe
     end

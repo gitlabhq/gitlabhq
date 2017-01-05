@@ -14,7 +14,7 @@ describe Route, models: true do
     it { is_expected.to validate_uniqueness_of(:path) }
   end
 
-  describe '#rename_children' do
+  describe '#rename_descendants' do
     let!(:nested_group) { create(:group, path: "test", parent: group) }
     let!(:deep_nested_group) { create(:group, path: "foo", parent: nested_group) }
     let!(:similar_group) { create(:group, path: 'gitlab-org') }
