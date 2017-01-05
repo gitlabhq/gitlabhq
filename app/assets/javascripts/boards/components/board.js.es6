@@ -46,8 +46,14 @@
 
           if (issue) {
             const boardsList = document.querySelectorAll('.boards-list')[0];
-            const right = (this.$el.offsetLeft + this.$el.offsetWidth) - boardsList.offsetWidth;
             const left = boardsList.scrollLeft - this.$el.offsetLeft;
+            let right = (this.$el.offsetLeft + this.$el.offsetWidth);
+
+            if (window.innerWidth > 768 && boardsList.classList.contains('is-compact')) {
+              right -= (boardsList.offsetWidth - 290);
+            } else {
+              right -= boardsList.offsetWidth;
+            }
 
             if (right - boardsList.scrollLeft > 0) {
               $(boardsList).animate({
