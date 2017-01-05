@@ -25,6 +25,8 @@
             %ul.filter-dropdown{ 'data-dynamic' => true, 'data-dropdown' => true }
               %li.filter-dropdown-item
                 %button.btn.btn-link
+                  -# Encapsulate static class name `{{icon}}` inside #{} to bypass
+                  -# haml lint's ClassAttributeWithStaticValue
                   %i.fa{ class: "#{'{{icon}}'}" }
                   %span.js-filter-hint
                     {{hint}}
