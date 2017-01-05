@@ -592,8 +592,7 @@ class NotificationService
 
     recipients = target.participants(current_user)
 
-    # TODO: CLEAN ME UP!
-    unless custom_action == :success_pipeline
+    unless NotificationSetting::EXCLUDED_WATCHER_EVENTS.include?(custom_action)
       recipients = add_project_watchers(recipients, project)
     end
 
