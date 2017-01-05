@@ -32,11 +32,11 @@ class PostReceive
         hook_data = {
           event_name: 'repository_update',
           project_id: post_received.project.id,
-          project: project.hook_attrs,
+          project: post_received.project.hook_attrs,
           remote_url: post_received.project.ssh_url_to_repo
         }
 
-        SystemHooksService.new.execute_hooks(hook_data, :repository_update)
+        SystemHooksService.new.execute_hooks(hook_data, :repository_update_hooks)
       end
 
       process_project_changes(post_received)
