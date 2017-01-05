@@ -5,12 +5,10 @@ class PipelineSerializer < BaseSerializer
   Struct.new('Pagination', :request, :response)
 
   def represent(resource, opts = {})
-    resource = resource.includes(project: :namespace)
-
     if paginated?
       raise InvalidResourceError unless resource.respond_to?(:page)
 
-      super(paginate(resource), opts)
+      super(paginate(resource.includes(project: :namespace)), opts)
     else
       super(resource, opts)
     end
