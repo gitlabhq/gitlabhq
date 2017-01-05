@@ -1,5 +1,4 @@
 module API
-  # Projects push rule API
   class ProjectPushRule < Grape::API
     before { authenticate! }
     before { authorize_admin_project }
@@ -10,9 +9,16 @@ module API
     resource :projects do
       helpers do
         params :push_rule_params do
-          optional :commit_message_regex, type: String, desc: 'The commit message regex'
           optional :deny_delete_tag, type: Boolean, desc: 'Deny deleting a tag'
-          at_least_one_of :commit_message_regex, :deny_delete_tag
+          optional :member_check, type: Boolean, desc: 'Restrict commits by author (email) to existing GitLab users'
+          optional :prevent_secrets, type: Boolean, desc: 'GitLab will reject any files that are likely to contain secrets'
+          optional :commit_message_regex, type: String, desc: 'All commit messages must match this'
+          optional :author_email_regex, type: String, desc: 'All commit author emails must match this'
+          optional :file_name_regex, type: String, desc: 'All commited filenames must not match this'
+          optional :max_file_size, type: Integer, desc: 'Maximum file size (MB)'
+          at_least_one_of :deny_delete_tag, :member_check, :prevent_secrets,
+                          :commit_message_regex, :author_email_regex,
+                          :file_name_regex, :max_file_size
         end
       end
 
