@@ -44,7 +44,7 @@
 .note-textarea {
   display: block;
   padding: 10px 0;
-  color: $gl-gray;
+  color: $gl-text-color;
   font-family: $regular_font;
   border: 0;
 
@@ -204,7 +204,7 @@
 
 .comment-toolbar {
   padding-top: $gl-padding-top;
-  color: $gl-gray-light;
+  color: $gl-text-color-secondary;
   border-top: 1px solid $border-color;
 }
 

@@ -103,7 +103,7 @@
     }
 
     .edit-link {
-      color: $gl-gray;
+      color: $gl-text-color;
 
       &:hover {
         color: $md-link-color;
@@ -139,7 +139,7 @@
   }
 
   .btn-clipboard:hover {
-    color: $gl-gray;
+    color: $gl-text-color;
   }
 }
 
@@ -174,7 +174,7 @@
     }
 
     .no-value {
-      color: $gl-gray-light;
+      color: $gl-text-color-secondary;
     }
 
     .sidebar-collapsed-icon {
@@ -242,7 +242,7 @@
       color: $issuable-sidebar-color;
 
       &:hover {
-        color: $gl-gray;
+        color: $gl-text-color;
       }
 
       span {
@@ -255,16 +255,16 @@
       }
 
       .avatar:hover {
-        border-color: $issuable-avatar-hover-border;
+        border-color: $issuable-sidebar-color;
       }
 
       .btn-clipboard {
         border: none;
-        color: $issuable-clipboard-color;
+        color: $issuable-sidebar-color;
 
         &:hover {
           background: transparent;
-          color: $gl-gray;
+          color: $gl-text-color;
         }
       }
     }
@@ -338,7 +338,7 @@
   margin-left: 5px;
 
   a {
-    color: $gl-gray-light;
+    color: $gl-text-color-secondary;
   }
 }
 
