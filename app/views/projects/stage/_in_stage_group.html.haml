@@ -5,9 +5,10 @@
   %span.ci-status-text
     = name
   %span.dropdown-counter-badge= subject.size
-.dropdown-menu.grouped-pipeline-dropdown
+
+%ul.dropdown-menu.big-pipeline-graph-dropdown-menu.js-grouped-pipeline-dropdown
   .arrow
-  %ul
+  .scrollable-menu
     - subject.each do |status|
-      %li.dropdown-build
-        = render 'ci/status/graph_badge', subject: status
+      %li
+        = render 'ci/status/dropdown_graph_badge', subject: status
