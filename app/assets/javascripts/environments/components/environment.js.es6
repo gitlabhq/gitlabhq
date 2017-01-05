@@ -45,7 +45,7 @@
     return fn(item);
   }).filter(Boolean);
 
-  window.gl.environmentsList.EnvironmentsComponent = Vue.component('environment-component', {
+  gl.environmentsList.EnvironmentsComponent = Vue.component('environment-component', {
     props: {
       store: {
         type: Object,
@@ -55,7 +55,7 @@
     },
 
     components: {
-      'environment-item': window.gl.environmentsList.EnvironmentItem,
+      'environment-item': gl.environmentsList.EnvironmentItem,
     },
 
     data() {

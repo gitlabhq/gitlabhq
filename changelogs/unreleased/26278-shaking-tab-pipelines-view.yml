@@ -1,0 +1,4 @@
+---
+title: Removes invalid html and unneed CSS to prevent shaking in the pipelines tab
+merge_request: 8411
+author:

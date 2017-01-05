@@ -14,7 +14,7 @@
 
   .header-action-buttons {
     i {
-      color: $gl-gray-light;
+      color: $gl-text-color-secondary;
       font-size: 13px;
       margin-right: 3px;
     }
@@ -42,7 +42,7 @@
 
   .commit-committer-link,
   .commit-author-link {
-    color: $gl-gray;
+    color: $gl-text-color;
     font-weight: bold;
   }
 

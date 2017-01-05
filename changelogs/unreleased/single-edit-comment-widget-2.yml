@@ -1,0 +1,5 @@
+---
+title: Refactored note edit form to improve frontend performance on MR and Issues
+  pages, especially pages with has a lot of discussions in it
+merge_request: 8356
+author:

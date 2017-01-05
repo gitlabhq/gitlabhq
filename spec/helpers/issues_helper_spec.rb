@@ -98,15 +98,15 @@ describe IssuesHelper do
     end
   end
 
-  describe '#award_active_class' do
+  describe '#award_state_class' do
     let!(:upvote) { create(:award_emoji) }
 
-    it "returns empty string for unauthenticated user" do
-      expect(award_active_class(AwardEmoji.all, nil)).to eq("")
+    it "returns disabled string for unauthenticated user" do
+      expect(award_state_class(AwardEmoji.all, nil)).to eq("disabled")
     end
 
     it "returns active string for author" do
-      expect(award_active_class(AwardEmoji.all, upvote.user)).to eq("active")
+      expect(award_state_class(AwardEmoji.all, upvote.user)).to eq("active")
     end
   end
 

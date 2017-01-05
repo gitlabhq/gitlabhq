@@ -1,9 +1,9 @@
-%ul.content-list.pipelines
+%div
   - if pipelines.blank?
-    %li
+    %div
       .nothing-here-block No pipelines to show
   - else
-    .table-holder
+    .table-holder.pipelines
       %table.table.ci-table.js-pipeline-table
         %thead
           %th.pipeline-status Status

@@ -19,7 +19,7 @@
             %ul
               - @merge_request_diffs.each do |merge_request_diff|
                 %li
-                  = link_to merge_request_version_path(@project, @merge_request, merge_request_diff), class: ('is-active' if merge_request_diff == @merge_request_diff) do
+                  = link_to merge_request_version_path(@project, @merge_request, merge_request_diff, @start_sha), class: ('is-active' if merge_request_diff == @merge_request_diff) do
                     %strong
                       - if merge_request_diff.latest?
                         latest version

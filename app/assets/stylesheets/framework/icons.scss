@@ -34,10 +34,10 @@
 .ci-status-icon-canceled,
 .ci-status-icon-disabled,
 .ci-status-icon-not-found {
-  color: $gl-gray;
+  color: $gl-text-color;
 
   svg {
-    fill: $gl-gray;
+    fill: $gl-text-color;
   }
 }
 

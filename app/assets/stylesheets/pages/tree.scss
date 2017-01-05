@@ -78,7 +78,7 @@
 
       i,
       a {
-        color: $gl-dark-link-color;
+        color: $gl-text-color;
       }
 
       img {
@@ -104,21 +104,21 @@
     padding-right: 8px;
 
     .commit-author-name {
-      color: $gl-gray;
+      color: $gl-text-color;
     }
   }
 
   .tree-time-ago {
     min-width: 135px;
-    color: $gl-gray-light;
+    color: $gl-text-color-secondary;
   }
 
   .tree-commit {
     max-width: 320px;
-    color: $gl-gray-light;
+    color: $gl-text-color-secondary;
 
     .tree-commit-link {
-      color: $gl-gray-light;
+      color: $gl-text-color-secondary;
 
       &:hover {
         text-decoration: underline;
@@ -134,21 +134,18 @@
 
 .blob-commit-info {
   list-style: none;
-  padding: $gl-padding;
   background: $gray-light;
+  padding: 6px 0;
   border: 1px solid $border-color;
   border-bottom: none;
   margin: 0;
 
-  .commit {
-    padding-top: 0;
-    padding-bottom: 0;
+  .table-list-cell {
+    border-bottom: none;
+  }
 
-    .commit-row-title {
-      .commit-row-message {
-        font-weight: normal;
-      }
-    }
+  .commit-actions {
+    width: 200px;
   }
 }
 

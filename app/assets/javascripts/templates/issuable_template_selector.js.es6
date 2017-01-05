@@ -23,7 +23,7 @@
       });
 
       $('.no-template', this.dropdown.parent()).on('click', () => {
-        this.currentTemplate = '';
+        this.currentTemplate.content = '';
         this.setInputValueToTemplateContent();
         $('.dropdown-toggle-text', this.dropdown).text('Choose a template');
       });

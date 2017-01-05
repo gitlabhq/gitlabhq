@@ -70,16 +70,15 @@ describe 'Comments', feature: true do
     end
 
     describe 'when editing a note', js: true do
-      it 'contains the hidden edit form' do
-        page.within("#note_#{note.id}") do
-          is_expected.to have_css('.note-edit-form', visible: false)
-        end
+      it 'there should be a hidden edit form' do
+        is_expected.to have_css('.note-edit-form:not(.mr-note-edit-form)', visible: false, count: 1)
+        is_expected.to have_css('.note-edit-form.mr-note-edit-form', visible: false, count: 1)
       end
 
       describe 'editing the note' do
         before do
           find('.note').hover
-          find(".js-note-edit").click
+          find('.js-note-edit').click
         end
 
         it 'shows the note edit form and hide the note body' do
@@ -90,14 +89,29 @@ describe 'Comments', feature: true do
           end
         end
 
-        # TODO: fix after 7.7 release
-        # it "should reset the edit note form textarea with the original content of the note if cancelled" do
-        #   within(".current-note-edit-form") do
-        #     fill_in "note[note]", with: "Some new content"
-        #     find(".btn-cancel").click
-        #     expect(find(".js-note-text", visible: false).text).to eq note.note
-        #   end
-        # end
+        it 'should reset the edit note form textarea with the original content of the note if cancelled' do
+          within('.current-note-edit-form') do
+            fill_in 'note[note]', with: 'Some new content'
+            find('.btn-cancel').click
+            expect(find('.js-note-text', visible: false).text).to eq ''
+          end
+        end
+
+        it 'allows using markdown buttons after saving a note and then trying to edit it again' do
+          page.within('.current-note-edit-form') do
+            fill_in 'note[note]', with: 'This is the new content'
+            find('.btn-save').click
+          end
+
+          find('.note').hover
+          find('.js-note-edit').click
+
+          page.within('.current-note-edit-form') do
+            expect(find('#note_note').value).to eq('This is the new content')
+            find('.js-md:first-child').click
+            expect(find('#note_note').value).to eq('This is the new content****')
+          end
+        end
 
         it 'appends the edited at time to the note' do
           page.within('.current-note-edit-form') do

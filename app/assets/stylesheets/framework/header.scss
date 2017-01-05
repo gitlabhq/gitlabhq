@@ -45,7 +45,7 @@ header {
       padding: 0;
 
       .nav > li > a {
-        color: $gl-gray-light;
+        color: $gl-text-color-secondary;
         font-size: 18px;
         padding: 0;
         margin: ($header-height - 28) / 2 0;
@@ -71,7 +71,7 @@ header {
         &:focus,
         &:active {
           background-color: $gray-light;
-          color: darken($gl-gray-light, 30%);
+          color: darken($gl-text-color-secondary, 30%);
 
           .todos-pending-count {
             background: darken($todo-alert-blue, 10%);
@@ -96,7 +96,7 @@ header {
         }
 
         &.active {
-          color: $gl-gray-light;
+          color: $gl-text-color-secondary;
         }
       }
     }

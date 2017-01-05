@@ -15,6 +15,9 @@
       .form-group
         = f.label :email
         = f.email_field :email, class: "form-control middle", required: true, title: "Please provide a valid email address."
+      .form-group
+        = f.label :email_confirmation
+        = f.email_field :email_confirmation, class: "form-control middle", required: true, title: "Please retype the email address."
       .form-group.append-bottom-20#password-strength
         = f.label :password
         = f.password_field :password, class: "form-control bottom", required: true, pattern: ".{#{@minimum_password_length},}", title: "Minimum length is #{@minimum_password_length} characters."
