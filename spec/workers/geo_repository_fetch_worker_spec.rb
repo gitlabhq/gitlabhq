@@ -9,6 +9,10 @@ describe GeoRepositoryFetchWorker do
       allow_any_instance_of(Repository).to receive(:fetch_geo_mirror).and_return(true)
       allow_any_instance_of(Project).to receive(:repository_exists?) { false }
       allow_any_instance_of(Project).to receive(:empty_repo?) { true }
+
+      allow_any_instance_of(Repository).to receive(:expire_all_method_caches)
+      allow_any_instance_of(Repository).to receive(:expire_branch_cache)
+      allow_any_instance_of(Repository).to receive(:expire_content_cache)
     end
 
     it 'creates a new repository' do
@@ -25,6 +29,14 @@ describe GeoRepositoryFetchWorker do
 
     it 'fetches the Geo mirror' do
       expect_any_instance_of(Repository).to receive(:fetch_geo_mirror)
+
+      perform
+    end
+
+    it 'expires repository caches' do
+      expect_any_instance_of(Repository).to receive(:expire_all_method_caches)
+      expect_any_instance_of(Repository).to receive(:expire_branch_cache)
+      expect_any_instance_of(Repository).to receive(:expire_content_cache)
 
       perform
     end
