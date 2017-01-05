@@ -46,10 +46,6 @@ class IssuableBaseService < BaseService
 
   def filter_params(issuable)
     ability_name = :"admin_#{issuable.to_ability_name}"
-  end
-
-  def filter_params(issuable)
-    ability_name = :"admin_#{issuable.to_ability_name}"
 
     unless can?(current_user, ability_name, project)
       params.delete(:milestone_id)
