@@ -628,6 +628,8 @@ describe 'Issues', feature: true do
             click_link date.day
           end
 
+          wait_for_ajax
+
           expect(find('.value').text).to have_content date.strftime('%b %-d, %Y')
         end
       end
@@ -639,6 +641,8 @@ describe 'Issues', feature: true do
           page.within '.ui-datepicker-calendar' do
             first('.ui-state-default').click
           end
+
+          wait_for_ajax
 
           expect(page).to have_no_content 'No due date'
 
