@@ -339,7 +339,8 @@
   white-space: nowrap;
   transition: max-height 0.3s, padding 0.3s;
 
-  ul {
+  .stage-column-list,
+  .builds-container > ul {
     padding: 0;
   }
 
@@ -640,17 +641,6 @@
   top: 8px;
 }
 
-// Dropdown in the big pipeline graph
-.big-pipeline-graph-dropdown-menu {
-  padding: 0;
-  width: 195px;
-  min-width: 195px;
-  left: auto;
-  right: -195px;
-  top: -4px;
-  box-shadow: 0 1px 5px $black-transparent;
-}
-
 .ci-status-text {
   max-width: 110px;
   white-space: nowrap;
@@ -865,6 +855,22 @@
       text-decoration: none;
       color: $gl-text-color;
       background-color: $stage-hover-bg;
+    }
+  }
+}
+
+// Dropdown in the big pipeline graph
+.big-pipeline-graph-dropdown-menu {
+  width: 195px;
+  min-width: 195px;
+  left: auto;
+  right: -195px;
+  top: -4px;
+  box-shadow: 0 1px 5px $black-transparent;
+
+  .mini-pipeline-graph-dropdown-item {
+    .ci-status-icon {
+      top: -1px;
     }
   }
 }
