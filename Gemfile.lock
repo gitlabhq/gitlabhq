@@ -277,11 +277,6 @@ GEM
       posix-spawn (~> 0.3)
     gitlab-license (1.0.0)
     gitlab-markup (1.5.0)
-    gitlab_git (10.7.0)
-      activesupport (~> 4.0)
-      charlock_holmes (~> 0.7.3)
-      github-linguist (~> 4.7.0)
-      rugged (~> 0.24.0)
     gitlab_omniauth-ldap (1.2.1)
       net-ldap (~> 0.9)
       omniauth (~> 1.0)
@@ -888,7 +883,6 @@ DEPENDENCIES
   gitlab-flowdock-git-hook (~> 1.0.1)
   gitlab-license (~> 1.0)
   gitlab-markup (~> 1.5.0)
-  gitlab_git (~> 10.7.0)
   gitlab_omniauth-ldap (~> 1.2.1)
   gollum-lib (~> 4.2)
   gollum-rugged_adapter (~> 0.4.2)
@@ -975,6 +969,7 @@ DEPENDENCIES
   rubocop-rspec (~> 1.5.0)
   ruby-fogbugz (~> 0.2.1)
   ruby-prof (~> 0.16.2)
+  rugged (~> 0.24.0)
   sanitize (~> 2.0)
   sass-rails (~> 5.0.6)
   scss_lint (~> 0.47.0)
@@ -1022,4 +1017,4 @@ DEPENDENCIES
   wikicloth (= 0.8.1)
 
 BUNDLED WITH
-   1.13.6
+   1.13.7
