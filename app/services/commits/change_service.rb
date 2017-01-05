@@ -26,8 +26,15 @@ module Commits
     def commit_change(action)
       raise NotImplementedError unless repository.respond_to?(action)
 
-      into = @create_merge_request ? @commit.public_send("#{action}_branch_name") : @target_branch
-      tree_id = repository.public_send("check_#{action}_content", @commit, @target_branch)
+      if @create_merge_request
+        into = @commit.public_send("#{action}_branch_name")
+        tree_branch = @source_branch
+      else
+        into = tree_branch = @target_branch
+      end
+
+      tree_id = repository.public_send(
+        "check_#{action}_content", @commit, tree_branch)
 
       if tree_id
         validate_target_branch(into) if @create_merge_request

@@ -140,8 +140,6 @@ module API
         commit_params = {
           commit: commit,
           create_merge_request: false,
-          source_project: user_project,
-          source_branch: commit.cherry_pick_branch_name,
           target_branch: params[:branch]
         }
 

@@ -4,9 +4,10 @@ module CreatesCommit
   def create_commit(service, success_path:, failure_path:, failure_view: nil, success_notice: nil)
     set_commit_variables
 
+    source_branch = @mr_target_branch unless initial_commit?
     commit_params = @commit_params.merge(
       source_project: @mr_target_project,
-      source_branch: @mr_target_branch,
+      source_branch: source_branch,
       target_branch: @mr_source_branch
     )
 
@@ -113,7 +114,7 @@ module CreatesCommit
       else
         # Merge request to this project
         @mr_target_project = @project
-        @mr_target_branch ||= @ref
+        @mr_target_branch = @ref || @target_branch
       end
     else
       # Edit file in fork
@@ -121,7 +122,12 @@ module CreatesCommit
       # Merge request from fork to this project
       @mr_source_project = @tree_edit_project
       @mr_target_project = @project
-      @mr_target_branch ||= @ref
+      @mr_target_branch = @ref || @target_branch
     end
+  end
+
+  def initial_commit?
+    @mr_target_branch.nil? ||
+      !@mr_target_project.repository.branch_exists?(@mr_target_branch)
   end
 end
