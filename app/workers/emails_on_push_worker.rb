@@ -33,15 +33,15 @@ class EmailsOnPushWorker
     reverse_compare = false
 
     if action == :push
-      compare = CompareService.new(project, after_sha).
-        execute(project, before_sha)
+      compare = CompareService.new(project, after_sha)
+        .execute(project, before_sha)
       diff_refs = compare.diff_refs
 
       return false if compare.same
 
       if compare.commits.empty?
-        compare = CompareService.new(project, before_sha).
-          execute(project, after_sha)
+        compare = CompareService.new(project, before_sha)
+          .execute(project, after_sha)
         diff_refs = compare.diff_refs
 
         reverse_compare = true
