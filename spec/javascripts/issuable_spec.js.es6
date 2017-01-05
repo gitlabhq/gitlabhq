@@ -21,10 +21,10 @@
   }
 
   describe('Issuable', () => {
-    fixture.preload('issuable_filter');
+    preloadFixtures('static/issuable_filter.html.raw');
 
     beforeEach(() => {
-      fixture.load('issuable_filter');
+      loadFixtures('static/issuable_filter.html.raw');
       Issuable.init();
     });
 
@@ -37,7 +37,7 @@
 
       beforeEach(() => {
         $filtersForm = $('.js-filter-form');
-        fixture.load('issuable_filter');
+        loadFixtures('static/issuable_filter.html.raw');
         resetForm($filtersForm);
       });
 

@@ -6,9 +6,9 @@
 (function() {
   describe('ShortcutsIssuable', function() {
     var fixtureName = 'issues/open-issue.html.raw';
-    fixture.preload(fixtureName);
+    preloadFixtures(fixtureName);
     beforeEach(function() {
-      fixture.load(fixtureName);
+      loadFixtures(fixtureName);
       document.querySelector('.js-new-note-form').classList.add('js-main-target-form');
       return this.shortcut = new ShortcutsIssuable();
     });

@@ -1,13 +1,13 @@
 //= require vue
 //= require environments/components/environment_stop
 describe('Stop Component', () => {
-  fixture.preload('environments/element.html');
+  preloadFixtures('static/environments/element.html.raw');
 
   let stopURL;
   let component;
 
   beforeEach(() => {
-    fixture.load('environments/element.html');
+    loadFixtures('static/environments/element.html.raw');
 
     stopURL = '/stop';
     component = new window.gl.environmentsList.StopComponent({

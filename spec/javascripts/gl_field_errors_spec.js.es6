@@ -4,11 +4,11 @@
 //= require gl_field_errors
 
 ((global) => {
-  fixture.preload('gl_field_errors.html');
+  preloadFixtures('static/gl_field_errors.html.raw');
 
   describe('GL Style Field Errors', function() {
     beforeEach(function() {
-      fixture.load('gl_field_errors.html');
+      loadFixtures('static/gl_field_errors.html.raw');
       const $form = this.$form = $('form.gl-show-field-errors');
       this.fieldErrors = new global.GlFieldErrors($form);
     });
