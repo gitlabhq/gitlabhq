@@ -25,7 +25,7 @@
             %ul.filter-dropdown{ 'data-dynamic' => true, 'data-dropdown' => true }
               %li.filter-dropdown-item
                 %button.btn.btn-link
-                  %i.fa{ class: '{{icon}}'}
+                  %i.fa{ class: "#{'{{icon}}'}" }
                   %span.js-filter-hint
                     {{hint}}
                   %span.js-filter-tag.dropdown-light-content
@@ -34,7 +34,7 @@
             %ul.filter-dropdown{ 'data-dynamic' => true, 'data-dropdown' => true }
               %li.filter-dropdown-item
                 %button.btn.btn-link.dropdown-user
-                  %img.avatar.avatar-inline{ 'data-src' => '{{avatar_url}}', width: '30' }
+                  %img.avatar.avatar-inline{ 'data-src' => '{{avatar_url}}', alt: '{{name}}\'s avatar', width: '30' }
                   .dropdown-user-details
                     %span
                       {{name}}
@@ -49,7 +49,7 @@
             %ul.filter-dropdown{ 'data-dynamic' => true, 'data-dropdown' => true }
               %li.filter-dropdown-item
                 %button.btn.btn-link.dropdown-user
-                  %img.avatar.avatar-inline{ 'data-src' => '{{avatar_url}}', width: '30' }
+                  %img.avatar.avatar-inline{ 'data-src' => '{{avatar_url}}', alt: '{{name}}\'s avatar', width: '30' }
                   .dropdown-user-details
                     %span
                       {{name}}
@@ -77,7 +77,7 @@
             %ul.filter-dropdown{ 'data-dynamic' => true, 'data-dropdown' => true }
               %li.filter-dropdown-item
                 %button.btn.btn-link
-                  %span.dropdown-label-box{ style: 'background: {{color}}'}
+                  %span.dropdown-label-box{ style: 'background: {{color}}' }
                   %span.label-title.js-data-value
                     {{title}}
         .pull-right
@@ -90,9 +90,9 @@
             = dropdown_tag("Status", options: { toggle_class: "js-issue-status", title: "Change status", dropdown_class: "dropdown-menu-status dropdown-menu-selectable", data: { field_name: "update[state_event]" } } ) do
               %ul
                 %li
-                  %a{href: "#", data: {id: "reopen"}} Open
+                  %a{ href: "#", data: { id: "reopen" } } Open
                 %li
-                  %a{href: "#", data: {id: "close"}} Closed
+                  %a{ href: "#", data: { id: "close" } } Closed
           .filter-item.inline
             = dropdown_tag("Assignee", options: { toggle_class: "js-user-search js-update-assignee js-filter-submit js-filter-bulk-update", title: "Assign to", filter: true, dropdown_class: "dropdown-menu-user dropdown-menu-selectable",
               placeholder: "Search authors", data: { first_user: (current_user.username if current_user), null_user: true, current_user: true, project_id: @project.id, field_name: "update[assignee_id]" } })
@@ -104,9 +104,9 @@
             = dropdown_tag("Subscription", options: { toggle_class: "js-subscription-event", title: "Change subscription", dropdown_class: "dropdown-menu-selectable", data: { field_name: "update[subscription_event]" } } ) do
               %ul
                 %li
-                  %a{href: "#", data: {id: "subscribe"}} Subscribe
+                  %a{ href: "#", data: { id: "subscribe" } } Subscribe
                 %li
-                  %a{href: "#", data: {id: "unsubscribe"}} Unsubscribe
+                  %a{ href: "#", data: { id: "unsubscribe" } } Unsubscribe
 
           = hidden_field_tag 'update[issuable_ids]', []
           = hidden_field_tag :state_event, params[:state_event]
