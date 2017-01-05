@@ -1,0 +1,4 @@
+---
+title: Updated Turbolinks to mitigate potential XSS attacks
+merge_request:
+author:
