@@ -5,7 +5,7 @@
   window.gl = window.gl || {};
   window.gl.environmentsList = window.gl.environmentsList || {};
 
-  window.gl.environmentsList.TerminalButtonComponent = Vue.component('terminal-button-component', {
+  gl.environmentsList.TerminalButtonComponent = Vue.component('terminal-button-component', {
     props: {
       terminalPath: {
         type: String,

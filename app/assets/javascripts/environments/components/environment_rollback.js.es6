@@ -5,7 +5,7 @@
   window.gl = window.gl || {};
   window.gl.environmentsList = window.gl.environmentsList || {};
 
-  window.gl.environmentsList.RollbackComponent = Vue.component('rollback-component', {
+  gl.environmentsList.RollbackComponent = Vue.component('rollback-component', {
     props: {
       retryUrl: {
         type: String,
