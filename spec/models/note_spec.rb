@@ -52,6 +52,19 @@ describe Note, models: true do
       subject { create(:note) }
       it { is_expected.to be_valid }
     end
+
+    context 'when project is missing for a project related note' do
+      subject { build(:note, project: nil, noteable: build_stubbed(:issue)) }
+      it { is_expected.to be_invalid }
+    end
+
+    context 'when noteable is a personal snippet' do
+      subject { create(:note_on_personal_snippet) }
+
+      it 'is valid without project' do
+        is_expected.to be_valid
+      end
+    end
   end
 
   describe "Commit notes" do

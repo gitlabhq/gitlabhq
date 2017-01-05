@@ -138,6 +138,16 @@ describe Issue, "Mentionable" do
         issue.update_attributes(description: issues[1].to_reference)
         issue.create_new_cross_references!
       end
+
+      it 'notifies new references from project snippet note' do
+        snippet = create(:snippet, project: project)
+        note = create(:note, note: issues[0].to_reference, noteable: snippet, project: project, author: author)
+
+        expect(SystemNoteService).to receive(:cross_reference).with(issues[1], any_args)
+
+        note.update_attributes(note: issues[1].to_reference)
+        note.create_new_cross_references!
+      end
     end
 
     def create_issue(description:)

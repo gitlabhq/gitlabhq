@@ -171,6 +171,36 @@ describe Ability, lib: true do
     end
   end
 
+  describe '.users_that_can_read_personal_snippet' do
+    subject { Ability.users_that_can_read_personal_snippet(users, snippet) }
+    let(:users)  { create_list(:user, 3) }
+    let(:author) { users[0] }
+
+    context 'private snippet' do
+      let(:snippet) { create(:personal_snippet, :private, author: author) }
+
+      it 'is readable only by its author' do
+        expect(subject).to match_array([author])
+      end
+    end
+
+    context 'internal snippet' do
+      let(:snippet) { create(:personal_snippet, :public, author: author) }
+
+      it 'is readable by all registered users' do
+        expect(subject).to match_array(users)
+      end
+    end
+
+    context 'public snippet' do
+      let(:snippet) { create(:personal_snippet, :public, author: author) }
+
+      it 'is readable by all users' do
+        expect(subject).to match_array(users)
+      end
+    end
+  end
+
   describe '.issues_readable_by_user' do
     context 'with an admin user' do
       it 'returns all given issues' do

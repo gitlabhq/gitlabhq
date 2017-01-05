@@ -269,6 +269,55 @@ describe NotificationService, services: true do
       end
     end
 
+    context 'personal snippet note' do
+      let(:snippet) { create(:personal_snippet, :public, author: @u_snippet_author) }
+      let(:note)    { create(:note_on_personal_snippet, noteable: snippet, note: '@mentioned note', author: @u_note_author) }
+
+      before do
+        @u_watcher               = create_global_setting_for(create(:user), :watch)
+        @u_participant           = create_global_setting_for(create(:user), :participating)
+        @u_disabled              = create_global_setting_for(create(:user), :disabled)
+        @u_mentioned             = create_global_setting_for(create(:user, username: 'mentioned'), :mention)
+        @u_mentioned_level       = create_global_setting_for(create(:user, username: 'participator'), :mention)
+        @u_note_author           = create(:user, username: 'note_author')
+        @u_snippet_author        = create(:user, username: 'snippet_author')
+        @u_not_mentioned         = create_global_setting_for(create(:user, username: 'regular'), :participating)
+
+        reset_delivered_emails!
+      end
+
+      let!(:notes) do
+        [
+          create(:note_on_personal_snippet, noteable: snippet, note: 'note', author: @u_watcher),
+          create(:note_on_personal_snippet, noteable: snippet, note: 'note', author: @u_participant),
+          create(:note_on_personal_snippet, noteable: snippet, note: 'note', author: @u_mentioned),
+          create(:note_on_personal_snippet, noteable: snippet, note: 'note', author: @u_disabled),
+          create(:note_on_personal_snippet, noteable: snippet, note: 'note', author: @u_note_author),
+        ]
+      end
+
+      describe '#new_note' do
+        it 'notifies the participants' do
+          notification.new_note(note)
+
+          # it emails participants
+          should_email(@u_watcher)
+          should_email(@u_participant)
+          should_email(@u_watcher)
+          should_email(@u_snippet_author)
+
+          # TODO: make mentions working for pesronal snippets
+          # should_email(@u_mentioned_level)
+
+          # it does not email participants with mention notification level
+          should_not_email(@u_mentioned_level)
+
+          # it does not email note author
+          should_not_email(@u_note_author)
+        end
+      end
+    end
+
     context 'commit note' do
       let(:project) { create(:project, :public) }
       let(:note) { create(:note_on_commit, project: project) }

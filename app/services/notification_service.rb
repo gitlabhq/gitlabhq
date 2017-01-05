@@ -178,8 +178,15 @@ class NotificationService
     recipients = []
 
     mentioned_users = note.mentioned_users
-    mentioned_users.select! do |user|
-      user.can?(:read_project, note.project)
+
+    if note.for_personal_snippet?
+      mentioned_users.select! do |user|
+        user.can?(:read_personal_snippet, note.noteable)
+      end
+    else
+      mentioned_users.select! do |user|
+        user.can?(:read_project, note.project)
+      end
     end
 
     # Add all users participating in the thread (author, assignee, comment authors)
@@ -192,11 +199,13 @@ class NotificationService
 
     recipients = recipients.concat(participants)
 
-    # Merge project watchers
-    recipients = add_project_watchers(recipients, note.project)
+    unless note.for_personal_snippet?
+      # Merge project watchers
+      recipients = add_project_watchers(recipients, note.project)
 
-    # Merge project with custom notification
-    recipients = add_custom_notifications(recipients, note.project, :new_note)
+      # Merge project with custom notification
+      recipients = add_custom_notifications(recipients, note.project, :new_note)
+    end
 
     # Reject users with Mention notification level, except those mentioned in _this_ note.
     recipients = reject_mention_users(recipients - mentioned_users, note.project)
@@ -212,7 +221,11 @@ class NotificationService
     recipients = recipients.uniq
 
     # build notify method like 'note_commit_email'
-    notify_method = "note_#{note.noteable_type.underscore}_email".to_sym
+    if note.for_personal_snippet?
+      notify_method = "note_personal_snippet_email".to_sym
+    else
+      notify_method = "note_#{note.noteable_type.underscore}_email".to_sym
+    end
 
     recipients.each do |recipient|
       mailer.send(notify_method, recipient.id, note.id).deliver_later

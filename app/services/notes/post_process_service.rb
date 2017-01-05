@@ -10,8 +10,10 @@ module Notes
       # Skip system notes, like status changes and cross-references and awards
       unless @note.system?
         EventCreateService.new.leave_note(@note, @note.author)
-        @note.create_cross_references!
-        execute_note_hooks
+        unless @note.for_personal_snippet?
+          @note.create_cross_references!
+          execute_note_hooks
+        end
       end
     end
 

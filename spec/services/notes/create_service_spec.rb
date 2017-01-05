@@ -32,9 +32,15 @@ describe Notes::CreateService, services: true do
         expect(note.note).to eq(opts[:note])
       end
 
+      it 'note belongs to the correct project' do
+        note = Notes::CreateService.new(project, user, opts).execute
+
+        expect(note.project).to eq(project)
+      end
+
       it 'TodoService#new_note is called' do
-        note = build(:note)
-        allow(project).to receive_message_chain(:notes, :new).with(opts) { note }
+        note = build(:note, project: project)
+        allow(Note).to receive(:new).with(opts) { note }
 
         expect_any_instance_of(TodoService).to receive(:new_note).with(note, user)
 
@@ -42,8 +48,8 @@ describe Notes::CreateService, services: true do
       end
 
       it 'enqueues NewNoteWorker' do
-        note = build(:note, id: 999)
-        allow(project).to receive_message_chain(:notes, :new).with(opts) { note }
+        note = build(:note, id: 999, project: project)
+        allow(Note).to receive(:new).with(opts) { note }
 
         expect(NewNoteWorker).to receive(:perform_async).with(note.id)
 
@@ -73,6 +79,27 @@ describe Notes::CreateService, services: true do
 
           expect(note.note).to eq "HELLO\nWORLD"
         end
+      end
+    end
+
+    describe 'personal snippet note' do
+      subject { described_class.new(nil, user, params).execute }
+
+      let(:snippet) { create(:personal_snippet) }
+      let(:params) do
+        { note: 'comment', noteable_type: 'Snippet', noteable_id: snippet.id }
+      end
+
+      it 'returns a valid note' do
+        expect(subject).to be_valid
+      end
+
+      it 'returns a persisted note' do
+        expect(subject).to be_persisted
+      end
+
+      it 'note has valid content' do
+        expect(subject.note).to eq(params[:note])
       end
     end
   end
