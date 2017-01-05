@@ -18,9 +18,6 @@ module API
       post ":id/ldap_group_links" do
         group = find_group(params[:id])
         authorize! :admin_group, group
-        unless validate_access_level?(params[:group_access])
-          render_api_error!("Wrong group access level", 422)
-        end
 
         ldap_group_link = group.ldap_group_links.new(declared_params(include_missing: false))
         if ldap_group_link.save
