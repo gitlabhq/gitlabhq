@@ -27,6 +27,7 @@
 .new-note,
 .note-edit-form {
   .note-form-actions {
+    position: relative;
     margin-top: $gl-padding;
   }
 
@@ -263,5 +264,20 @@
         margin-bottom: 10px;
       }
     }
+  }
+}
+
+.note-edit-warning.settings-message {
+  display: none;
+  padding: 5px 10px;
+  position: absolute;
+  left: 127px;
+  top: 2px;
+
+  @media (max-width: $screen-xs-max) {
+    position: relative;
+    top: 0;
+    left: 0;
+    margin-bottom: 10px;
   }
 }
