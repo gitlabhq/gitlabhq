@@ -194,7 +194,7 @@ class Namespace < ActiveRecord::Base
         paths << path
       end
 
-      self.class.joins(:route).where('routes.path IN (?)', paths).order_id_asc
+      self.class.joins(:route).where('routes.path IN (?)', paths).reorder('routes.path ASC')
     else
       self.class.none
     end
@@ -202,7 +202,7 @@ class Namespace < ActiveRecord::Base
 
   # Scopes the model on direct and indirect children of the record
   def descendants
-    self.class.joins(:route).where('routes.path LIKE ?', "#{route.path}/%").order_id_asc
+    self.class.joins(:route).where('routes.path LIKE ?', "#{route.path}/%").reorder('routes.path ASC')
   end
 
   private

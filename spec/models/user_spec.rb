@@ -1356,6 +1356,39 @@ describe User, models: true do
     end
   end
 
+  describe '#nested_groups' do
+    let!(:user) { create(:user) }
+    let!(:group) { create(:group) }
+    let!(:nested_group) { create(:group, parent: group) }
+
+    before do
+      group.add_owner(user)
+
+      # Add more data to ensure method does not include wrong groups
+      create(:group).add_owner(create(:user))
+    end
+
+    it { expect(user.nested_groups).to eq([nested_group]) }
+  end
+
+  describe '#nested_projects' do
+    let!(:user) { create(:user) }
+    let!(:group) { create(:group) }
+    let!(:nested_group) { create(:group, parent: group) }
+    let!(:project) { create(:project, namespace: group) }
+    let!(:nested_project) { create(:project, namespace: nested_group) }
+
+    before do
+      group.add_owner(user)
+
+      # Add more data to ensure method does not include wrong projects
+      other_project = create(:project, namespace: create(:group, :nested))
+      other_project.add_developer(create(:user))
+    end
+
+    it { expect(user.nested_projects).to eq([nested_project]) }
+  end
+
   describe '#refresh_authorized_projects', redis: true do
     let(:project1) { create(:empty_project) }
     let(:project2) { create(:empty_project) }

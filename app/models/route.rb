@@ -15,8 +15,9 @@ class Route < ActiveRecord::Base
     # rubocop:disable Rails/FindEach
     Route.where('path LIKE ?', "#{path_was}/%").each do |route|
       # Note that update column skips validation and callbacks.
-      # We need this to avoid recursive call of rename_children method
+      # We need this to avoid recursive call of rename_descendants method
       route.update_column(:path, route.path.sub(path_was, path))
     end
+    # rubocop:enable Rails/FindEach
   end
 end
