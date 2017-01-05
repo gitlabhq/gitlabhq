@@ -245,9 +245,9 @@ describe 'Pipelines', :feature, :js do
 
       context 'mini pipeline graph' do
         let!(:build) do
-          create(:ci_build, pipeline: pipeline,
-                            stage: 'build',
-                            name: 'build')
+          create(:ci_build, :pending, pipeline: pipeline,
+                                      stage: 'build',
+                                      name: 'build')
         end
 
         before { visit_project_pipelines }
@@ -257,18 +257,19 @@ describe 'Pipelines', :feature, :js do
           expect(page).to have_selector('.js-builds-dropdown-button')
         end
 
-        context 'when clicking a graph stage' do
+        context 'when clicking a stage badge' do
           it 'should open a dropdown' do
             find('.js-builds-dropdown-button').trigger('click')
 
             expect(page).to have_link build.name
           end
 
-          it 'should be possible to retry the failed build' do
+          it 'should be possible to cancel pending build' do
             find('.js-builds-dropdown-button').trigger('click')
             find('a.js-ci-action-icon').trigger('click')
 
-            expect(page).not_to have_content('Cancel running')
+            expect(page).to have_content('canceled')
+            expect(build.reload).to be_canceled
           end
         end
       end
