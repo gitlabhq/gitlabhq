@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'rails_helper'
 
 describe 'Pipelines', :feature, :js do
   include WaitForVueResource
@@ -51,15 +50,18 @@ describe 'Pipelines', :feature, :js do
           visit_project_pipelines
         end
 
-        it { expect(page).to have_link('Cancel') }
-
-        it { expect(page).to have_selector('.ci-running') }
+        it 'indicates that pipeline can be canceled' do
+          expect(page).to have_link('Cancel')
+          expect(page).to have_selector('.ci-running')
+        end
 
         context 'when canceling' do
           before { click_link('Cancel') }
 
-          it { expect(page).not_to have_link('Cancel') }
-          it { expect(page).to have_selector('.ci-canceled') }
+          it 'indicated that pipelines was canceled' do
+            expect(page).not_to have_link('Cancel')
+            expect(page).to have_selector('.ci-canceled')
+          end
         end
       end
 
@@ -75,14 +77,18 @@ describe 'Pipelines', :feature, :js do
           visit_project_pipelines
         end
 
-        it { expect(page).to have_link('Retry') }
-        it { expect(page).to have_selector('.ci-failed') }
+        it 'indicates that pipeline can be retried' do
+          expect(page).to have_link('Retry')
+          expect(page).to have_selector('.ci-failed')
+        end
 
         context 'when retrying' do
           before { click_link('Retry') }
 
-          it { expect(page).not_to have_link('Retry') }
-          it { expect(page).to have_selector('.ci-running') }
+          it 'shows running pipeline that is not retryable' do
+            expect(page).not_to have_link('Retry')
+            expect(page).to have_selector('.ci-running')
+          end
         end
       end
 
@@ -159,8 +165,10 @@ describe 'Pipelines', :feature, :js do
           context 'when canceling' do
             before { click_link('Cancel') }
 
-            it { expect(page).not_to have_link('Cancel') }
-            it { expect(page).to have_selector('.ci-canceled') }
+            it 'indicates that pipeline was canceled' do
+              expect(page).not_to have_link('Cancel')
+              expect(page).to have_selector('.ci-canceled')
+            end
           end
         end
 
