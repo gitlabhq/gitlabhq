@@ -44,7 +44,7 @@
           = check_box_tag :squash, '1', @merge_request.squash
           Squash commits
 
-      .accept-control.right
+      .accept-control
         - if @project.merge_requests_ff_only_enabled
           Fast-forward merge without a merge commit
         - else

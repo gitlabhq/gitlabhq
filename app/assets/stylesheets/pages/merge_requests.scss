@@ -56,10 +56,10 @@
       &.right {
         float: right;
         padding-right: 0;
+      }
 
-        a {
-          color: $gl-text-color;
-        }
+      .modify-merge-commit-link {
+        color: $gl-text-color;
       }
 
       .merge-param-checkbox {
