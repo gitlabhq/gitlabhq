@@ -243,7 +243,7 @@ describe 'Pipelines', :feature, :js do
         end
       end
 
-      context 'mini pipleine graph' do
+      context 'mini pipeline graph' do
         let!(:build) do
           create(:ci_build, pipeline: pipeline,
                             stage: 'build',
@@ -251,6 +251,11 @@ describe 'Pipelines', :feature, :js do
         end
 
         before { visit_project_pipelines }
+
+        it 'should render a mini pipeline graph' do
+          expect(page).to have_selector('.js-mini-pipeline-graph')
+          expect(page).to have_selector('.js-builds-dropdown-button')
+        end
 
         context 'when clicking a graph stage' do
           it 'should open a dropdown' do
@@ -261,8 +266,8 @@ describe 'Pipelines', :feature, :js do
 
           it 'should be possible to retry the failed build' do
             find('.js-builds-dropdown-button').trigger('click')
+            find('a.js-ci-action-icon').trigger('click')
 
-            find('a.ci-action-icon-container').trigger('click')
             expect(page).not_to have_content('Cancel running')
           end
         end
@@ -279,15 +284,8 @@ describe 'Pipelines', :feature, :js do
       context 'for valid commit' do
         before { fill_in('pipeline[ref]', with: 'master') }
 
-        expect(page).to have_selector('.js-mini-pipeline-graph')
-        expect(page).to have_selector(".js-builds-dropdown-button[data-stage-endpoint='#{endpoint}']")
-      end
-
-      context 'when clicking a graph stage' do
-        it 'should open a dropdown' do
-          find('.js-builds-dropdown-button').trigger('click')
-
-          wait_for_ajax
+        context 'with gitlab-ci.yml' do
+          before { stub_ci_pipeline_to_return_yaml_file }
 
           it 'creates a new pipeline' do
             expect { click_on 'Create pipeline' }
@@ -298,10 +296,7 @@ describe 'Pipelines', :feature, :js do
         context 'without gitlab-ci.yml' do
           before { click_on 'Create pipeline' }
 
-          wait_for_ajax
-
-          find('a.js-ci-action-icon').trigger('click')
-          expect(page).not_to have_content('Cancel running')
+          it { expect(page).to have_content('Missing .gitlab-ci.yml file') }
         end
       end
 
