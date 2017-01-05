@@ -59,7 +59,7 @@
 
           if (occurs.length) {
             acc[acc.indexOf(occurs[0])].children.push(environment);
-            acc[acc.indexOf(occurs[0])].children.sort(this.sortByName);
+            acc[acc.indexOf(occurs[0])].children.slice().sort(this.sortByName);
           } else {
             acc.push({
               name: environment.environment_type,
@@ -73,7 +73,7 @@
         }
 
         return acc;
-      }, []).sort(this.sortByName);
+      }, []).slice().sort(this.sortByName);
 
       this.state.environments = environmentsTree;
 

@@ -193,7 +193,7 @@
 
           <div class="blank-state blank-state-no-icon"
             v-if="!isLoading && state.environments.length === 0">
-            <h2 class="blank-state-title">
+            <h2 class="blank-state-title js-blank-state-title">
               You don't have any environments right now.
             </h2>
             <p class="blank-state-text">
@@ -207,7 +207,7 @@
             <a
               v-if="canCreateEnvironmentParsed"
               :href="newEnvironmentPath"
-              class="btn btn-create">
+              class="btn btn-create js-new-environment-button">
               New Environment
             </a>
           </div>
