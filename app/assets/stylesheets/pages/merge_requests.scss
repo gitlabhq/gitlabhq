@@ -65,6 +65,15 @@
       .merge-param-checkbox {
         margin: 0;
       }
+
+      a .fa-question-circle {
+        color: $gl-text-color-secondary;
+
+        &:hover,
+        &:focus {
+          color: $link-hover-color;
+        }
+      }
     }
   }
 

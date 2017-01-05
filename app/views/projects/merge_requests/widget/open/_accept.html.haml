@@ -43,6 +43,7 @@
           = hidden_field_tag :squash, '0', id: nil
           = check_box_tag :squash, '1', @merge_request.squash
           Squash commits
+          = link_to icon('question-circle'), help_page_path('user/project/merge_requests/squash_before_merge'), title: 'Learn more', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'}
 
       .accept-control
         - if @project.merge_requests_ff_only_enabled
