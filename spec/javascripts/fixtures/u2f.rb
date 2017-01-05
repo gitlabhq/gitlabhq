@@ -1,35 +1,43 @@
 require 'spec_helper'
 
-describe SessionsController, '(JavaScript fixtures)', type: :controller do
+context 'U2F' do
   include JavaScriptFixturesHelpers
+
+  let(:user) { create(:user, :two_factor_via_u2f) }
 
   before(:all) do
     clean_frontend_fixtures('u2f/')
   end
 
-  it 'u2f/authenticate.html.raw' do |example|
-    fixture = render_template('u2f/_authenticate.html.haml', locals: {
-      new_user_session_path: "/users/sign_in",
-      params: {},
-      resource_name: "user"
-    })
-    store_frontend_fixture(fixture, example.description)
+  describe SessionsController, '(JavaScript fixtures)', type: :controller do
+    render_views
+
+    before do
+      @request.env['devise.mapping'] = Devise.mappings[:user]
+    end
+
+    it 'u2f/authenticate.html.raw' do |example|
+      allow(controller).to receive(:find_user).and_return(user)
+
+      post :create, user: { login: user.username, password: user.password }
+
+      expect(response).to be_success
+      store_frontend_fixture(response, example.description)
+    end
   end
 
-  it 'u2f/register.html.raw' do |example|
-    user = build(:user, :two_factor_via_otp)
+  describe Profiles::TwoFactorAuthsController, '(JavaScript fixtures)', type: :controller do
+    render_views
 
-    fixture = render_template('u2f/_register.html.haml', locals: {
-      create_u2f_profile_two_factor_auth_path: '/profile/two_factor_auth/create_u2f',
-      current_user: user
-    })
-    store_frontend_fixture(fixture, example.description)
-  end
+    before do
+      sign_in(user)
+    end
 
-  private
+    it 'u2f/register.html.raw' do |example|
+      get :show
 
-  def render_template(template, **args)
-    controller = ApplicationController.new
-    controller.render_to_string(template: template, layout: false, **args)
+      expect(response).to be_success
+      store_frontend_fixture(response, example.description)
+    end
   end
 end

@@ -39,6 +39,7 @@ module JavaScriptFixturesHelpers
   #
   def parse_response(response)
     fixture = response.body
+    fixture.force_encoding("utf-8")
 
     response_mime_type = Mime::Type.lookup(response.content_type)
     if response_mime_type.html?
@@ -47,7 +48,7 @@ module JavaScriptFixturesHelpers
       link_tags = doc.css('link')
       link_tags.remove
 
-      scripts = doc.css('script')
+      scripts = doc.css("script:not([type='text/template'])")
       scripts.remove
 
       fixture = doc.to_html
