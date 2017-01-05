@@ -23,8 +23,8 @@
    */
 
   window.gl = window.gl || {};
-  gl.environmentsList = window.gl.environmentsList || {};
-  gl.environmentsList.timeagoInstance = new timeago(); // eslint-disable-line
+  window.gl.environmentsList = window.gl.environmentsList || {};
+  window.gl.environmentsList.timeagoInstance = new timeago(); // eslint-disable-line
 
   gl.environmentsList.EnvironmentItem = Vue.component('environment-item', {
 

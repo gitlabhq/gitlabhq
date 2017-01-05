@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 (() => {
   window.gl = window.gl || {};
-  gl.environmentsList = window.gl.environmentsList || {};
+  window.gl.environmentsList = window.gl.environmentsList || {};
 
   gl.environmentsList.EnvironmentsStore = {
     state: {},
