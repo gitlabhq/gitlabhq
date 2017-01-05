@@ -12,7 +12,6 @@ class Projects::PipelinesController < Projects::ApplicationController
       .execute(scope: @scope)
       .page(params[:page])
       .per(30)
-      .includes(project: :namespace)
 
     @running_or_pending_count = PipelinesFinder
       .new(project).execute(scope: 'running').count
