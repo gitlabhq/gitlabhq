@@ -163,6 +163,10 @@ ul.content-list {
 
         &:last-child {
           margin-right: 0;
+
+          @media(max-width: $screen-xs-max) {
+            margin: 0 auto;
+          }
         }
       }
 
