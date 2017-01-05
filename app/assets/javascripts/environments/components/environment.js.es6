@@ -1,6 +1,7 @@
-/* eslint-disable no-param-reassign */
+/* eslint-disable no-param-reassign, no-new */
 /* global Vue */
 /* global EnvironmentsService */
+/* global Flash */
 
 //= require vue
 //= require vue-resource
@@ -121,6 +122,10 @@
         .then((json) => {
           this.store.storeEnvironments(json);
           this.isLoading = false;
+        })
+        .catch(() => {
+          this.isLoading = false;
+          new Flash('An error occurred while fetching the environments.', 'alert');
         });
     },
 
