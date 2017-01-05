@@ -5,8 +5,8 @@
 
 (() => {
   class DropdownNonUser extends gl.FilteredSearchDropdown {
-    constructor(droplab, dropdown, input, endpoint, symbol) {
-      super(droplab, dropdown, input);
+    constructor(droplab, dropdown, input, filter, endpoint, symbol) {
+      super(droplab, dropdown, input, filter);
       this.symbol = symbol;
       this.config = {
         droplabAjax: {

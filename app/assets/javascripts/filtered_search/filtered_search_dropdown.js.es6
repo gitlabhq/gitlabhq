@@ -2,10 +2,11 @@
   const DATA_DROPDOWN_TRIGGER = 'data-dropdown-trigger';
 
   class FilteredSearchDropdown {
-    constructor(droplab, dropdown, input) {
+    constructor(droplab, dropdown, input, filter) {
       this.droplab = droplab;
       this.hookId = input.getAttribute('data-id');
       this.input = input;
+      this.filter = filter;
       this.dropdown = dropdown;
       this.loadingTemplate = `<div class="filter-dropdown-loading">
         <i class="fa fa-spinner fa-spin"></i>
@@ -30,11 +31,11 @@
       const { selected } = e.detail;
 
       if (selected.tagName === 'LI' && selected.innerHTML) {
-        const dataValueSet = gl.DropdownUtils.setDataValueIfSelected(selected);
+        const dataValueSet = gl.DropdownUtils.setDataValueIfSelected(this.filter, selected);
 
         if (!dataValueSet) {
           const value = getValueFunction(selected);
-          gl.FilteredSearchDropdownManager.addWordToInput(value);
+          gl.FilteredSearchDropdownManager.addWordToInput(this.filter, value);
         }
 
         this.dismissDropdown();

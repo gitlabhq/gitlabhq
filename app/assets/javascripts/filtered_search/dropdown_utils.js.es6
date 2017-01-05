@@ -58,11 +58,11 @@
       return updatedItem;
     }
 
-    static setDataValueIfSelected(selected) {
+    static setDataValueIfSelected(filter, selected) {
       const dataValue = selected.getAttribute('data-value');
 
       if (dataValue) {
-        gl.FilteredSearchDropdownManager.addWordToInput(dataValue);
+        gl.FilteredSearchDropdownManager.addWordToInput(filter, dataValue);
       }
 
       // Return boolean based on whether it was set
