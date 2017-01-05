@@ -47,46 +47,30 @@
         const stageIcon = icon.replace(/icon/i, 'stage_icon');
         return this.svgs[this.match(stageIcon)];
       },
-      spanClass() {
-        return `ci-status-icon ci-status-icon-${this.stage.status.group}`;
+      triggerButtonClass() {
+        return `mini-pipeline-graph-dropdown-toggle has-tooltip js-builds-dropdown-button ci-status-icon-${this.stage.status.group}`;
       },
     },
     template: `
-      <div class="dropdown inline build-content">
-
+      <div>
         <button
           @click='fetchBuilds'
           @blur='fetchBuilds'
-          class="has-tooltip builds-dropdown js-builds-dropdown-button"
-          data-placement="top"
+          :class="triggerButtonClass"
           :title='stage.title'
+          data-placement="top"
           data-toggle="dropdown"
-          type="button"
-        >
-          <span :class='tooltip'>
-            <span class="mini-pipeline-graph-icon-container">
-              <span
-                :class='spanClass'
-                v-html='svg'
-              >
-              </span>
-              <i class="fa fa-caret-down dropdown-caret"></i>
-              </span>
-            </span>
-          </span>
+          type="button">
+
+          <span v-html="svg"></span>
+          <i class="fa fa-caret-down "></i>
+
         </button>
 
-        <div class="js-builds-dropdown-container">
-          <div class="dropdown-menu grouped-pipeline-dropdown">
-            <div class="arrow-up"></div>
-            <div
-              :class='dropdownClass'
-              v-html='buildsOrSpinner'
-            >
-            </div>
-          </div>
-        </div>
-
+        <ul class="dropdown-menu mini-pipeline-graph-dropdown-menu js-builds-dropdown-container">
+          <div class="arrow-up"></div>
+          <div :class="dropdownClass" class="js-builds-dropdown-list scrollable-menu" v-html="buildsOrSpinner"></div>
+        </ul>
       </div>
     `,
   });

@@ -10,7 +10,7 @@
     template: `
       <td class="stage-cell">
         <div
-          class="stage-container mini-pipeline-graph"
+          class="stage-container dropdown js-mini-pipeline-graph"
           v-for='stage in pipeline.details.stages'
         >
           <vue-stage :stage='stage' :svgs='svgs' :match='match'></vue-stage>

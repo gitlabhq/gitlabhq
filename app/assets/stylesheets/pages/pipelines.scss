@@ -186,6 +186,7 @@
   .stage-cell {
     font-size: 0;
 
+    > .stage-container > div > button > span > svg,
     > .stage-container > button > svg {
       height: 22px;
       width: 22px;
