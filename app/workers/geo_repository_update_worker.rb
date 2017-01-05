@@ -9,8 +9,6 @@ class GeoRepositoryUpdateWorker
     @project = Project.find(project_id)
     @push_data = push_data
 
-    # TODO: Enable fetch once Geo is fixed
-    # fetch_repository(clone_url)
     process_hooks if push_data # we should be compatible with old unprocessed data
   end
 

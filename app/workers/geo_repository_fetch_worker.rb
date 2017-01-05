@@ -1,4 +1,3 @@
-# TODO: Remove me once Geo is fixed
 class GeoRepositoryFetchWorker
   include Sidekiq::Worker
   include Gitlab::ShellAdapter

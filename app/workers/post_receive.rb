@@ -27,15 +27,16 @@ class PostReceive
       # Triggers repository update on secondary nodes when Geo is enabled
       Gitlab::Geo.notify_wiki_update(post_received.project) if Gitlab::Geo.enabled?
     elsif post_received.regular_project?
-      # TODO: Remove this if block once Geo is fixed
+      # TODO: gitlab-org/gitlab-ce#26325. Remove this.
       if Gitlab::Geo.enabled?
         hook_data = {
+          event_name: 'repository_update',
           project_id: post_received.project.id,
-          event_name: 'trigger_fetch',
+          project: project.hook_attrs,
           remote_url: post_received.project.ssh_url_to_repo
         }
 
-        SystemHooksService.new.execute_hooks(hook_data, :fetch_hooks)
+        SystemHooksService.new.execute_hooks(hook_data, :repository_update)
       end
 
       process_project_changes(post_received)

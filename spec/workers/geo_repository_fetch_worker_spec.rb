@@ -1,6 +1,5 @@
 require 'spec_helper'
 
-# TODO: Remove me once Geo is fixed
 describe GeoRepositoryFetchWorker do
   describe '#perform' do
     let(:project) { create(:empty_project) }
