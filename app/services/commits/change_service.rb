@@ -5,6 +5,7 @@ module Commits
 
     def execute
       @source_project = params[:source_project] || @project
+      @source_branch = params[:source_branch]
       @target_branch = params[:target_branch]
       @commit = params[:commit]
       @create_merge_request = params[:create_merge_request].present?
@@ -38,7 +39,7 @@ module Commits
           into,
           tree_id,
           source_project: @source_project,
-          source_branch_name: @target_branch)
+          source_branch_name: @source_branch)
 
         success
       else
