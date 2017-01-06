@@ -106,7 +106,7 @@ DELETE /projects/:id/environments/:environment_id
 | `environment_id` | integer | yes | The ID of the environment |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/environment/1"
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/environments/1"
 ```
 
 Example response:
