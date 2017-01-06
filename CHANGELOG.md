@@ -2,6 +2,26 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 8.15.3 (2017-01-06)
+
+- Rename wiki_events to wiki_page_events in project hooks API to avoid errors. !0 (8425)
+- Rename projects wth reserved names. !8234
+- Cache project authorizations even when user has access to zero projects. !8327
+- Fix a minor grammar error in merge request widget. !8337
+- Fix unclear closing issue behaviour on Merge Request show page. !8345 (Gabriel Gizotti)
+- fix border in login session tabs. !8346
+- Copy, don't move uploaded avatar files. !8396
+- Increases width of mini-pipeline-graph dropdown to prevent wrong position on chrome on ubuntu. !8399
+- Removes invalid html and unneed CSS to prevent shaking in the pipelines tab. !8411
+- Gitlab::LDAP::Person uses LDAP attributes configuration. !8418
+- Fix 500 errors when creating a user with identity via API. !8442
+- Whitelist next project names: assets, profile, public. !8470
+- Fixed regression of note-headline-light where it was always placed on 2 lines, even on wide viewports.
+- Fix 500 error when visit group from admin area if group name contains dot.
+- Fix cross-project references copy to include the project reference.
+- Fix 500 error renaming group.
+- Fixed GFM dropdown not showing on new lines.
+
 ## 8.15.2 (2016-12-27)
 
 - Fix finding the latest pipeline. !8301
