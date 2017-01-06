@@ -50,14 +50,15 @@
     return (
       children[target.index] ||
       children[target.index === 'first' ? 0 : -1] ||
-      children[target.index === 'last' ? children.length - 1 : -1]
+      children[target.index === 'last' ? children.length - 1 : -1] ||
+      el
     );
   }
 
   function getRect(el) {
     var rect = el.getBoundingClientRect();
     var width = rect.right - rect.left;
-    var height = rect.bottom - rect.top;
+    var height = rect.bottom - rect.top + 10;
 
     return {
       x: rect.left,

@@ -17,7 +17,7 @@ var config = {
     application:          './application.js',
     blob_edit:            './blob_edit/blob_edit_bundle.js',
     boards:               './boards/boards_bundle.js',
-    boards_test:          './boards/test_utils/simulate_drag.js',
+    simulate_drag:        './test_utils/simulate_drag.js',
     cycle_analytics:      './cycle_analytics/cycle_analytics_bundle.js',
     diff_notes:           './diff_notes/diff_notes_bundle.js',
     environments:         './environments/environments_bundle.js',

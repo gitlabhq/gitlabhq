@@ -6,7 +6,6 @@ function requireAll(context) { return context.keys().map(context); }
 
 window.Vue = require('vue');
 window.Vue.use(require('vue-resource'));
-window.Sortable = require('vendor/Sortable');
 requireAll(require.context('./models',   true, /^\.\/.*\.(js|es6)$/));
 requireAll(require.context('./stores',   true, /^\.\/.*\.(js|es6)$/));
 requireAll(require.context('./services', true, /^\.\/.*\.(js|es6)$/));
