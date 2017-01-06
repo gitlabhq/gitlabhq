@@ -10,8 +10,8 @@ module Files
         update: false,
         author_email: @author_email,
         author_name: @author_name,
-        source_project: @source_project,
-        source_branch_name: @source_branch)
+        base_project: @base_project,
+        base_branch_name: @base_branch)
     end
 
     def validate
@@ -34,7 +34,7 @@ module Files
       unless project.empty_repo?
         @file_path.slice!(0) if @file_path.start_with?('/')
 
-        blob = repository.blob_at_branch(@source_branch, @file_path)
+        blob = repository.blob_at_branch(@base_branch, @file_path)
 
         if blob
           raise_error('Your changes could not be committed because a file with the same name already exists')

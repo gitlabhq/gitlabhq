@@ -9,8 +9,8 @@ module Files
                              previous_path: @previous_path,
                              author_email: @author_email,
                              author_name: @author_name,
-                             source_project: @source_project,
-                             source_branch_name: @source_branch)
+                             base_project: @base_project,
+                             base_branch_name: @base_branch)
     end
 
     private
@@ -25,7 +25,7 @@ module Files
 
     def last_commit
       @last_commit ||= Gitlab::Git::Commit.
-        last_for_path(@source_project.repository, @source_branch, @file_path)
+        last_for_path(@base_project.repository, @base_branch, @file_path)
     end
   end
 end

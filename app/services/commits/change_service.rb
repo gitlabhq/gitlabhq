@@ -4,8 +4,8 @@ module Commits
     class ChangeError < StandardError; end
 
     def execute
-      @source_project = params[:source_project] || @project
-      @source_branch = params[:source_branch]
+      @base_project = params[:base_project] || @project
+      @base_branch = params[:base_branch]
       @target_branch = params[:target_branch]
       @commit = params[:commit]
       @create_merge_request = params[:create_merge_request].present?
@@ -28,7 +28,7 @@ module Commits
 
       if @create_merge_request
         into = @commit.public_send("#{action}_branch_name")
-        tree_branch = @source_branch
+        tree_branch = @base_branch
       else
         into = tree_branch = @target_branch
       end
@@ -45,8 +45,8 @@ module Commits
           @commit,
           into,
           tree_id,
-          source_project: @source_project,
-          source_branch_name: @source_branch)
+          base_project: @base_project,
+          base_branch_name: @base_branch)
 
         success
       else

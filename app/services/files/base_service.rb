@@ -3,8 +3,8 @@ module Files
     class ValidationError < StandardError; end
 
     def execute
-      @source_project = params[:source_project] || @project
-      @source_branch = params[:source_branch]
+      @base_project = params[:base_project] || @project
+      @base_branch = params[:base_branch]
       @target_branch = params[:target_branch]
 
       @commit_message = params[:commit_message]
@@ -22,7 +22,7 @@ module Files
       # Validate parameters
       validate
 
-      # Create new branch if it different from source_branch
+      # Create new branch if it different from base_branch
       validate_target_branch if different_branch?
 
       result = commit
@@ -38,7 +38,7 @@ module Files
     private
 
     def different_branch?
-      @source_branch != @target_branch || @source_project != @project
+      @base_branch != @target_branch || @base_project != @project
     end
 
     def file_has_changed?
@@ -59,7 +59,7 @@ module Files
       end
 
       unless project.empty_repo?
-        unless @source_project.repository.branch_exists?(@source_branch)
+        unless @base_project.repository.branch_exists?(@base_branch)
           raise_error('You can only create or edit files when you are on a branch')
         end
 

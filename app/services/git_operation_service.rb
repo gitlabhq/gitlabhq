@@ -46,23 +46,23 @@ class GitOperationService
     end
   end
 
-  # Whenever `source_branch_name` is passed, if `branch_name` doesn't exist,
-  # it would be created from `source_branch_name`.
-  # If `source_project` is passed, and the branch doesn't exist,
-  # it would try to find the source from it instead of current repository.
+  # Whenever `base_branch_name` is passed, if `branch_name` doesn't exist,
+  # it would be created from `base_branch_name`.
+  # If `base_project` is passed, and the branch doesn't exist,
+  # it would try to find the base from it instead of current repository.
   def with_branch(
     branch_name,
-    source_branch_name: nil,
-    source_project: repository.project,
+    base_branch_name: nil,
+    base_project: repository.project,
     &block)
 
     check_with_branch_arguments!(
-      branch_name, source_branch_name, source_project)
+      branch_name, base_branch_name, base_project)
 
     update_branch_with_hooks(branch_name) do
       repository.with_repo_branch_commit(
-        source_project.repository,
-        source_branch_name || branch_name,
+        base_project.repository,
+        base_branch_name || branch_name,
         &block)
     end
   end
@@ -148,27 +148,27 @@ class GitOperationService
   end
 
   def check_with_branch_arguments!(
-    branch_name, source_branch_name, source_project)
+    branch_name, base_branch_name, base_project)
     return if repository.branch_exists?(branch_name)
 
-    if repository.project != source_project
-      unless source_branch_name
+    if repository.project != base_project
+      unless base_branch_name
         raise ArgumentError,
-          'Should also pass :source_branch_name if' +
-          ' :source_project is different from current project'
+          'Should also pass :base_branch_name if' +
+          ' :base_project is different from current project'
       end
 
-      unless source_project.repository.branch_exists?(source_branch_name)
+      unless base_project.repository.branch_exists?(base_branch_name)
         raise ArgumentError,
           "Cannot find branch #{branch_name} nor" \
-          " #{source_branch_name} from" \
-          " #{source_project.path_with_namespace}"
+          " #{base_branch_name} from" \
+          " #{base_project.path_with_namespace}"
       end
-    elsif source_branch_name
-      unless repository.branch_exists?(source_branch_name)
+    elsif base_branch_name
+      unless repository.branch_exists?(base_branch_name)
         raise ArgumentError,
           "Cannot find branch #{branch_name} nor" \
-          " #{source_branch_name} from" \
+          " #{base_branch_name} from" \
           " #{repository.project.path_with_namespace}"
       end
     end
