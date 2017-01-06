@@ -17,10 +17,10 @@ describe('Build', () => {
     offset: BUILD_TRACE.length, n_open_tags: 0, fg_color: null, bg_color: null, style_mask: 0,
   }));
 
-  fixture.preload('builds/build-with-artifacts.html.raw');
+  preloadFixtures('builds/build-with-artifacts.html.raw');
 
   beforeEach(() => {
-    fixture.load('builds/build-with-artifacts.html.raw');
+    loadFixtures('builds/build-with-artifacts.html.raw');
     spyOn($, 'ajax');
   });
 

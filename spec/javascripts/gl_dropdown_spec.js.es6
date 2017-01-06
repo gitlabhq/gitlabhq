@@ -43,8 +43,7 @@
   }
 
   describe('Dropdown', function describeDropdown() {
-    fixture.preload('gl_dropdown.html');
-    fixture.preload('projects.json');
+    preloadFixtures('static/gl_dropdown.html.raw');
 
     function initDropDown(hasRemote, isFilterable) {
       this.dropdownButtonElement = $('#js-project-dropdown', this.dropdownContainerElement).glDropdown({
@@ -61,10 +60,10 @@
     }
 
     beforeEach(() => {
-      fixture.load('gl_dropdown.html');
+      loadFixtures('static/gl_dropdown.html.raw');
       this.dropdownContainerElement = $('.dropdown.inline');
       this.$dropdownMenuElement = $('.dropdown-menu', this.dropdownContainerElement);
-      this.projectsData = fixture.load('projects.json')[0];
+      this.projectsData = getJSONFixture('projects.json');
     });
 
     afterEach(() => {

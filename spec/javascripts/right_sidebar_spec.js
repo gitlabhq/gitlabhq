@@ -36,9 +36,9 @@
 
   describe('RightSidebar', function() {
     var fixtureName = 'issues/open-issue.html.raw';
-    fixture.preload(fixtureName);
+    preloadFixtures(fixtureName);
     beforeEach(function() {
-      fixture.load(fixtureName);
+      loadFixtures(fixtureName);
       this.sidebar = new Sidebar;
       $aside = $('.right-sidebar');
       $page = $('.page-with-sidebar');
@@ -65,9 +65,10 @@
     });
 
     it('should broadcast todo:toggle event when add todo clicked', function() {
+      var todos = getJSONFixture('todos.json');
       spyOn(jQuery, 'ajax').and.callFake(function() {
         var d = $.Deferred();
-        var response = fixture.load('todos.json');
+        var response = todos;
         d.resolve(response);
         return d.promise();
       });

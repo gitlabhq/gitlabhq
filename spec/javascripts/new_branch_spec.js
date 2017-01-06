@@ -8,7 +8,7 @@
   describe('Branch', function() {
     return describe('create a new branch', function() {
       var expectToHaveError, fillNameWith;
-      fixture.preload('new_branch.html');
+      preloadFixtures('static/new_branch.html.raw');
       fillNameWith = function(value) {
         return $('.js-branch-name').val(value).trigger('blur');
       };
@@ -16,7 +16,7 @@
         return expect($('.js-branch-name-error span').text()).toEqual(error);
       };
       beforeEach(function() {
-        fixture.load('new_branch.html');
+        loadFixtures('static/new_branch.html.raw');
         $('form').on('submit', function(e) {
           return e.preventDefault();
         });
