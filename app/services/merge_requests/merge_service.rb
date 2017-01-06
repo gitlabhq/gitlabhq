@@ -24,17 +24,9 @@ module MergeRequests
         return error(message)
       end
 
-      if merge_request.squash
-        squash_result = SquashService.new(project, current_user, params).execute(merge_request)
+      @source = find_merge_source
 
-        if squash_result[:success]
-          @source = squash_result[:squash_oid]
-        else
-          log_merge_error('Squashing this merge request failed', true)
-        end
-      else
-        @source = merge_request.diff_head_sha
-      end
+      return log_merge_error('No source for merge', true) unless @source
 
       merge_request.in_locked_state do
         if commit
@@ -118,6 +110,20 @@ module MergeRequests
       project = merge_request.project
 
       "#{project.to_reference}#{merge_request.to_reference}"
+    end
+
+    def find_merge_source
+      return merge_request.diff_head_sha unless merge_request.squash
+
+      squash_result = SquashService.new(project, current_user, params).execute(merge_request)
+
+      if squash_result[:status] == :success
+        squash_result[:squash_sha]
+      else
+        log_merge_error("Squashing #{merge_request_info} failed")
+
+        nil
+      end
     end
   end
 end
