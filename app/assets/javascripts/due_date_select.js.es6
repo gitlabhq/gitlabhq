@@ -86,7 +86,6 @@
       });
     }
 
-
     saveDueDate(isDropdown) {
       this.parseSelectedDate();
       this.prepSelectedDate();

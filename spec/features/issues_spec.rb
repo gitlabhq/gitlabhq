@@ -635,8 +635,10 @@ describe 'Issues', feature: true do
       end
 
       it 'removes due date from issue' do
+        date = Date.today.at_beginning_of_month + 2.days
+        
         page.within '.due_date' do
-          date = Date.today.at_beginning_of_month + 2.days
+          click_link 'Edit'
 
           page.within '.pika-single' do
             click_button date.day
