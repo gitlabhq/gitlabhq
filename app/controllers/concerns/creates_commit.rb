@@ -91,16 +91,13 @@ module CreatesCommit
     @mr_source_project != @mr_target_project
   end
 
-  def different_branch?
-    @mr_source_branch != @mr_target_branch || different_project?
-  end
-
   def create_merge_request?
-    params[:create_merge_request].present? && different_branch?
+    params[:create_merge_request].present?
   end
 
+  # TODO: We should really clean this up
   def set_commit_variables
-    @mr_source_branch ||= @target_branch
+    @mr_source_branch = @target_branch unless create_merge_request?
 
     if can?(current_user, :push_code, @project)
       # Edit file in this project
