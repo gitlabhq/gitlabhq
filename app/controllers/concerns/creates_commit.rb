@@ -4,10 +4,10 @@ module CreatesCommit
   def create_commit(service, success_path:, failure_path:, failure_view: nil, success_notice: nil)
     set_commit_variables
 
-    base_branch = @mr_target_branch unless initial_commit?
+    start_branch = @mr_target_branch unless initial_commit?
     commit_params = @commit_params.merge(
-      base_project: @mr_target_project,
-      base_branch: base_branch,
+      start_project: @mr_target_project,
+      start_branch: start_branch,
       target_branch: @mr_source_branch
     )
 

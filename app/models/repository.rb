@@ -748,12 +748,12 @@ class Repository
     user, path,
     message:, branch_name:,
     author_email: nil, author_name: nil,
-    base_branch_name: nil, base_project: project)
+    start_branch_name: nil, start_project: project)
     check_tree_entry_for_dir(branch_name, path)
 
-    if base_branch_name
-      base_project.repository.
-        check_tree_entry_for_dir(base_branch_name, path)
+    if start_branch_name
+      start_project.repository.
+        check_tree_entry_for_dir(start_branch_name, path)
     end
 
     commit_file(
@@ -765,8 +765,8 @@ class Repository
       update: false,
       author_email: author_email,
       author_name: author_name,
-      base_branch_name: base_branch_name,
-      base_project: base_project)
+      start_branch_name: start_branch_name,
+      start_project: start_project)
   end
   # rubocop:enable Metrics/ParameterLists
 
@@ -775,7 +775,7 @@ class Repository
     user, path, content,
     message:, branch_name:, update: true,
     author_email: nil, author_name: nil,
-    base_branch_name: nil, base_project: project)
+    start_branch_name: nil, start_project: project)
     unless update
       error_message = "Filename already exists; update not allowed"
 
@@ -783,8 +783,8 @@ class Repository
         raise Gitlab::Git::Repository::InvalidBlobName.new(error_message)
       end
 
-      if base_branch_name &&
-          base_project.repository.tree_entry_at(base_branch_name, path)
+      if start_branch_name &&
+          start_project.repository.tree_entry_at(start_branch_name, path)
         raise Gitlab::Git::Repository::InvalidBlobName.new(error_message)
       end
     end
@@ -795,8 +795,8 @@ class Repository
       branch_name: branch_name,
       author_email: author_email,
       author_name: author_name,
-      base_branch_name: base_branch_name,
-      base_project: base_project,
+      start_branch_name: start_branch_name,
+      start_project: start_project,
       actions: [{ action: :create,
                   file_path: path,
                   content: content }])
@@ -808,7 +808,7 @@ class Repository
     user, path, content,
     message:, branch_name:, previous_path:,
     author_email: nil, author_name: nil,
-    base_branch_name: nil, base_project: project)
+    start_branch_name: nil, start_project: project)
     action = if previous_path && previous_path != path
                :move
              else
@@ -821,8 +821,8 @@ class Repository
       branch_name: branch_name,
       author_email: author_email,
       author_name: author_name,
-      base_branch_name: base_branch_name,
-      base_project: base_project,
+      start_branch_name: start_branch_name,
+      start_project: start_project,
       actions: [{ action: action,
                   file_path: path,
                   content: content,
@@ -835,15 +835,15 @@ class Repository
     user, path,
     message:, branch_name:,
     author_email: nil, author_name: nil,
-    base_branch_name: nil, base_project: project)
+    start_branch_name: nil, start_project: project)
     multi_action(
       user: user,
       message: message,
       branch_name: branch_name,
       author_email: author_email,
       author_name: author_name,
-      base_branch_name: base_branch_name,
-      base_project: base_project,
+      start_branch_name: start_branch_name,
+      start_project: start_project,
       actions: [{ action: :delete,
                   file_path: path }])
   end
@@ -853,16 +853,16 @@ class Repository
   def multi_action(
     user:, branch_name:, message:, actions:,
     author_email: nil, author_name: nil,
-    base_branch_name: nil, base_project: project)
+    start_branch_name: nil, start_project: project)
     GitOperationService.new(user, self).with_branch(
       branch_name,
-      base_branch_name: base_branch_name,
-      base_project: base_project) do |base_commit|
+      start_branch_name: start_branch_name,
+      start_project: start_project) do |start_commit|
       index = rugged.index
 
-      parents = if base_commit
-                  index.read_tree(base_commit.raw_commit.tree)
-                  [base_commit.sha]
+      parents = if start_commit
+                  index.read_tree(start_commit.raw_commit.tree)
+                  [start_commit.sha]
                 else
                   []
                 end
@@ -910,8 +910,8 @@ class Repository
 
   def merge(user, merge_request, options = {})
     GitOperationService.new(user, self).with_branch(
-      merge_request.target_branch) do |base_commit|
-      our_commit = base_commit.sha
+      merge_request.target_branch) do |start_commit|
+      our_commit = start_commit.sha
       their_commit = merge_request.diff_head_sha
 
       raise 'Invalid merge target' unless our_commit
@@ -935,15 +935,15 @@ class Repository
 
   def revert(
     user, commit, branch_name, revert_tree_id = nil,
-    base_branch_name: nil, base_project: project)
+    start_branch_name: nil, start_project: project)
     revert_tree_id ||= check_revert_content(commit, branch_name)
 
     return false unless revert_tree_id
 
     GitOperationService.new(user, self).with_branch(
       branch_name,
-      base_branch_name: base_branch_name,
-      base_project: base_project) do |base_commit|
+      start_branch_name: start_branch_name,
+      start_project: start_project) do |start_commit|
 
       committer = user_to_committer(user)
 
@@ -952,21 +952,21 @@ class Repository
         author: committer,
         committer: committer,
         tree: revert_tree_id,
-        parents: [base_commit.sha])
+        parents: [start_commit.sha])
     end
   end
 
   def cherry_pick(
     user, commit, branch_name, cherry_pick_tree_id = nil,
-    base_branch_name: nil, base_project: project)
+    start_branch_name: nil, start_project: project)
     cherry_pick_tree_id ||= check_cherry_pick_content(commit, branch_name)
 
     return false unless cherry_pick_tree_id
 
     GitOperationService.new(user, self).with_branch(
       branch_name,
-      base_branch_name: base_branch_name,
-      base_project: base_project) do |base_commit|
+      start_branch_name: start_branch_name,
+      start_project: start_project) do |start_commit|
 
       committer = user_to_committer(user)
 
@@ -979,7 +979,7 @@ class Repository
         },
         committer: committer,
         tree: cherry_pick_tree_id,
-        parents: [base_commit.sha])
+        parents: [start_commit.sha])
     end
   end
 
@@ -1066,20 +1066,20 @@ class Repository
     Gitlab::Popen.popen(args, path_to_repo).first.lines.map(&:strip)
   end
 
-  def with_repo_branch_commit(base_repository, base_branch_name)
+  def with_repo_branch_commit(start_repository, start_branch_name)
     branch_name_or_sha =
-      if base_repository == self
-        base_branch_name
+      if start_repository == self
+        start_branch_name
       else
         tmp_ref = "refs/tmp/#{SecureRandom.hex}/head"
 
         fetch_ref(
-          base_repository.path_to_repo,
-          "#{Gitlab::Git::BRANCH_REF_PREFIX}#{base_branch_name}",
+          start_repository.path_to_repo,
+          "#{Gitlab::Git::BRANCH_REF_PREFIX}#{start_branch_name}",
           tmp_ref
         )
 
-        base_repository.commit(base_branch_name).sha
+        start_repository.commit(start_branch_name).sha
       end
 
     yield(commit(branch_name_or_sha))

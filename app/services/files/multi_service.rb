@@ -10,8 +10,8 @@ module Files
         actions: params[:actions],
         author_email: @author_email,
         author_name: @author_name,
-        base_project: @base_project,
-        base_branch_name: @base_branch
+        start_project: @start_project,
+        start_branch_name: @start_branch
       )
     end
 
@@ -63,7 +63,7 @@ module Files
     end
 
     def last_commit
-      Gitlab::Git::Commit.last_for_path(repository, @base_branch, @file_path)
+      Gitlab::Git::Commit.last_for_path(repository, @start_branch, @file_path)
     end
 
     def regex_check(file)
