@@ -1,5 +1,5 @@
 /* global Vue, gl */
-/* eslint-disable no-param-reassign, no-bitwise*/
+/* eslint-disable no-param-reassign */
 
 ((gl) => {
   gl.VuePipelines = Vue.extend({
