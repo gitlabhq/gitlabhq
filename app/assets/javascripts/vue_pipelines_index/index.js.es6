@@ -1,5 +1,4 @@
 /* global Vue, VueResource, gl */
-/* eslint-disable no-bitwise, no-plusplus*/
 /*= require vue_common_component/commit */
 /*= require vue-resource
 /*= require boards/vue_resource_interceptor */
