@@ -1,0 +1,80 @@
+- page_title "Personal Access Tokens"
+= render 'admin/users/head'
+
+.row.prepend-top-default
+  .col-lg-12
+
+    %h5.prepend-top-0
+      Add a Personal Access Token
+    %p.profile-settings-content
+      Pick a name for the application, and we'll give you a unique token.
+
+    = render "form", personal_access_token: @personal_access_token, scopes: @scopes
+
+    %hr
+
+    %h5 Active Personal Access Tokens (#{@active_personal_access_tokens.length})
+
+    - if @active_personal_access_tokens.present?
+      .table-responsive
+        %table.table.active-personal-access-tokens
+          %thead
+            %tr
+              %th Name
+              %th Created
+              %th Expires
+              %th Scopes
+              %th Token
+              %th Impersonation
+              %th
+          %tbody
+            - @active_personal_access_tokens.each do |personal_access_token|
+              %tr
+                %td= personal_access_token.name
+                %td= personal_access_token.created_at.to_date.to_s(:medium)
+                %td
+                  - if personal_access_token.expires?
+                    %span{ class: ('text-warning' if personal_access_token.expires_soon?) }
+                      In #{distance_of_time_in_words_to_now(personal_access_token.expires_at)}
+                  - else
+                    %span.personal-access-personal_access_tokens-never-expires-label Never
+                %td= personal_access_token.scopes.present? ? personal_access_token.scopes.join(", ") : "<no scopes selected>"
+                %td.personal-access-token-token-container
+                  = text_field_tag 'personal-access-token-token', personal_access_token.token, readonly: true, class: "form-control"
+                  = clipboard_button(clipboard_text: personal_access_token.token)
+                %td= personal_access_token.impersonation
+                %td= link_to "Revoke", revoke_admin_user_personal_access_token_path(id: personal_access_token.id, user_id: personal_access_token.user.username), method: :put, class: "btn btn-danger pull-right", data: { confirm: "Are you sure you want to revoke this token? This action cannot be undone." }
+
+    - else
+      .settings-message.text-center
+        This user has no active tokens.
+
+    %hr
+
+    %h5 Inactive Personal Access Tokens (#{@inactive_personal_access_tokens.length})
+
+    - if @inactive_personal_access_tokens.present?
+      .table-responsive
+        %table.table.inactive-personal-access-tokens
+          %thead
+            %tr
+              %th Name
+              %th Created
+          %tbody
+            - @inactive_personal_access_tokens.each do |token|
+              %tr
+                %td= token.name
+                %td= token.created_at.to_date.to_s(:medium)
+
+    - else
+      .settings-message.text-center
+        This user has no inactive tokens.
+
+
+:javascript
+  var date = $('#personal_access_token_expires_at').val();
+
+  var datepicker = $(".datepicker").datepicker({
+    dateFormat: "yy-mm-dd",
+    minDate: 0
+  });
