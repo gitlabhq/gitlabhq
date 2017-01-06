@@ -15,7 +15,7 @@
     IssuableForm.prototype.wipRegex = /^\s*(\[WIP\]\s*|WIP:\s*|WIP\s+)+\s*/i;
 
     function IssuableForm(form) {
-      var $issuableDueDate;
+      var $issuableDueDate, calendar;
       this.form = form;
       this.toggleWip = bind(this.toggleWip, this);
       this.renderWipExplanation = bind(this.renderWipExplanation, this);
@@ -37,7 +37,7 @@
       this.initMoveDropdown();
       $issuableDueDate = $('#issuable-due-date');
       if ($issuableDueDate.length) {
-        var calendar = new Pikaday({
+        calendar = new Pikaday({
           field: $issuableDueDate.get(0),
           theme: 'gitlab-theme',
           format: 'yyyy-mm-dd',

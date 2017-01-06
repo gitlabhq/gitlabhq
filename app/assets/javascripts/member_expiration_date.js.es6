@@ -21,12 +21,12 @@
         theme: 'gitlab-theme',
         format: 'yyyy-mm-dd',
         minDate: new Date(),
-        onSelect: (dateText) => {
+        onSelect(dateText) {
           $input.val(dateFormat(new Date(dateText), 'yyyy-mm-dd'));
 
           $input.trigger('change');
 
-          toggleClearInput.call(this);
+          toggleClearInput.call($input);
         },
       });
 
