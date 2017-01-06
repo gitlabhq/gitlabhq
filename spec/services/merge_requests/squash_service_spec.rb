@@ -14,7 +14,7 @@ describe MergeRequests::SquashService do
     context 'when the squash succeeds' do
       it 'returns the squashed commit SHA' do
         expect(service.execute(merge_request)).to match(status: :success,
-                                                        squash_oid: a_string_matching(/\h{40}/))
+                                                        squash_sha: a_string_matching(/\h{40}/))
       end
 
       it 'cleans up the temporary directory' do
@@ -25,7 +25,7 @@ describe MergeRequests::SquashService do
 
       context 'the squashed commit' do
         let(:squashed_commit) do
-          squash_oid = service.execute(merge_request)[:squash_oid]
+          squash_oid = service.execute(merge_request)[:squash_sha]
 
           project.repository.commit(squash_oid)
         end
@@ -46,11 +46,11 @@ describe MergeRequests::SquashService do
     end
 
     stages = {
-      'clone repository' => ['git', 'clone'],
-      'apply patch' => ['git', 'apply'],
-      'commit squashed changes' => ['git', 'commit'],
-      'get SHA of squashed branch' => ['git', 'rev-parse'],
-      'push squashed branch' => ['git', 'push']
+      'clone repository' => 'clone',
+      'apply patch' => 'apply',
+      'commit squashed changes' => 'commit',
+      'get SHA of squashed branch' => 'rev-parse',
+      'push squashed branch' => 'push'
     }
 
     stages.each do |stage, command|
@@ -58,16 +58,18 @@ describe MergeRequests::SquashService do
         let(:error) { 'A test error' }
 
         before do
+          git_command = a_collection_starting_with([Gitlab.config.git.bin_path, command])
+
           allow(service).to receive(:popen).and_return(['', 0])
 
-          allow(service).to receive(:popen).with(a_collection_starting_with(command), anything, anything) do
+          allow(service).to receive(:popen).with(git_command, anything, anything) do
             [error, 1]
           end
         end
 
         it 'logs the stage and output' do
-          expect(service).to receive(:log).with(a_string_including(stage))
-          expect(service).to receive(:log).with(error)
+          expect(service).to receive(:log_error).with(a_string_including(stage))
+          expect(service).to receive(:log_error).with(error)
 
           service.execute(merge_request)
         end
@@ -93,8 +95,8 @@ describe MergeRequests::SquashService do
       end
 
       it 'logs the MR reference and exception' do
-        expect(service).to receive(:log).with(a_string_including("#{project.path_with_namespace}#{merge_request.to_reference}"))
-        expect(service).to receive(:log).with(error)
+        expect(service).to receive(:log_error).with(a_string_including("#{project.path_with_namespace}#{merge_request.to_reference}"))
+        expect(service).to receive(:log_error).with(error)
 
         service.execute(merge_request)
       end
