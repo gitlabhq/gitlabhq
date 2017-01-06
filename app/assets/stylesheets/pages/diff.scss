@@ -44,6 +44,15 @@
     .diff-toggle-caret {
       padding-right: 6px;
     }
+
+    .file-title-name {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: inline-block;
+      vertical-align: bottom;
+      max-width: 450px;
+    }
   }
 
   .diff-content {
@@ -477,6 +486,69 @@
       &::before {
         content: attr(data-linenumber);
       }
+    }
+  }
+}
+
+/**
+ * Diff file title
+ */
+.file-holder[data-view="parallel"] .file-title-name,
+.file-holder[data-view="inline"] .file-title-name {
+  @media (max-width: $screen-xs) {
+    max-width: 140px;
+  }
+
+  @media (min-width: $screen-xs) and (max-width: $screen-xs-max) {
+    max-width: 250px;
+  }
+
+  @media (min-width: $screen-sm) and (max-width: $screen-sm-max) {
+    max-width: 250px;
+  }
+
+  @media (min-width: $screen-md) and (max-width: $screen-md-max) {
+    max-width: 480px;
+  }
+}
+
+.file-holder[data-view="parallel"] .file-title-name {
+  @media (min-width: $screen-lg) {
+    max-width: 760px;
+  }
+}
+
+.file-holder[data-view="inline"] .file-title-name {
+  @media (min-width: $screen-lg) {
+    max-width: 530px;
+  }
+}
+
+.right-sidebar-expanded {
+  .file-holder[data-view="parallel"] .file-title-name,
+  .file-holder[data-view="inline"] .file-title-name {
+    @media (min-width: $screen-sm) and (max-width: $screen-sm-max) {
+      max-width: 250px;
+    }
+
+    @media (min-width: $screen-md) and (max-width: $screen-md-max) {
+      max-width: 250px;
+    }
+
+    @media (min-width: $screen-lg) {
+      max-width: 460px;
+    }
+  }
+
+  .file-holder[data-view="parallel"] .file-title-name {
+    @media (min-width: $screen-xs) and (max-width: $screen-xs-max) {
+      max-width: 180px;
+    }
+   }
+
+  .file-holder[data-view="inline"] .file-title-name {
+    @media (min-width: $screen-xs) and (max-width: $screen-xs-max) {
+      max-width: 100px;
     }
   }
 }

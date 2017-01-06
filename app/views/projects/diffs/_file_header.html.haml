@@ -10,13 +10,13 @@
 
     - if diff_file.renamed_file
       - old_path, new_path = mark_inline_diffs(diff_file.old_path, diff_file.new_path)
-      %strong
+      %strong.file-title-name
         = old_path
       &rarr;
-      %strong
+      %strong.file-title-name
         = new_path
     - else
-      %strong
+      %strong.file-title-name
         = diff_file.new_path
       - if diff_file.deleted_file
         deleted
