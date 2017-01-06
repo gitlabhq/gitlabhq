@@ -3,6 +3,10 @@ require('jasmine-jquery');
 // include common libraries
 window.$ = window.jQuery = require('jquery');
 window._ = require('underscore');
+window.Cookies = require('vendor/js.cookie');
+window.Vue = require('vue');
+window.Vue.use(require('vue-resource'));
+require('jquery-ujs');
 require('vendor/turbolinks');
 require('vendor/jquery.turbolinks');
 require('bootstrap/js/affix');

@@ -2,7 +2,6 @@
 /* global AwardsHandler */
 
 require('awards_handler');
-window.Cookies = require('vendor/js.cookie');
 require('./fixtures/emoji_menu');
 
 (function() {

@@ -2,7 +2,6 @@
 /* global Sidebar */
 
 require('right_sidebar');
-window.Cookies = require('vendor/js.cookie');
 require('extensions/jquery.js');
 
 (function() {

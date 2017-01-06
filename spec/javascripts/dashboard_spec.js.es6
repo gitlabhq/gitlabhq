@@ -1,7 +1,6 @@
 /* eslint-disable no-new, padded-blocks */
 
 require('sidebar');
-window.Cookies = require('vendor/js.cookie');
 require('lib/utils/text_utility');
 
 ((global) => {

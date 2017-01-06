@@ -1,4 +1,3 @@
-window.Vue = require('vue');
 require('environments/components/environment_actions');
 
 describe('Actions Component', () => {
