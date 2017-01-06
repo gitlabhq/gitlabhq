@@ -28,7 +28,7 @@ module Gitlab
       end
 
       def name
-        attribute_value(:name)
+        attribute_value(:name).first
       end
 
       def uid
@@ -62,14 +62,12 @@ module Gitlab
       # this method looks for 'mail', 'email' and 'userPrincipalName' and
       # returns the first with a value.
       def attribute_value(attribute)
-        attributes = Array(config.attributes[attribute.to_sym])
+        attributes = Array(config.attributes[attribute.to_s])
         selected_attr = attributes.find { |attr| entry.respond_to?(attr) }
 
         return nil unless selected_attr
 
-        # Some LDAP attributes return an array,
-        # even if it is a single value (like 'cn')
-        Array(entry.public_send(selected_attr)).first
+        entry.public_send(selected_attr)
       end
     end
   end
