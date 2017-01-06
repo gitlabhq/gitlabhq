@@ -1,3 +1,4 @@
+//= require extensions/array
 //= require filtered_search/dropdown_utils
 //= require filtered_search/filtered_search_tokenizer
 //= require filtered_search/filtered_search_dropdown_manager
@@ -80,7 +81,7 @@
           getAttribute: () => 'value',
         };
 
-        gl.DropdownUtils.setDataValueIfSelected(selected);
+        gl.DropdownUtils.setDataValueIfSelected(null, selected);
         expect(gl.FilteredSearchDropdownManager.addWordToInput.calls.count()).toEqual(1);
       });
 
@@ -89,7 +90,7 @@
           getAttribute: () => 'value',
         };
 
-        const result = gl.DropdownUtils.setDataValueIfSelected(selected);
+        const result = gl.DropdownUtils.setDataValueIfSelected(null, selected);
         expect(result).toBe(true);
       });
 
@@ -98,7 +99,7 @@
           getAttribute: () => null,
         };
 
-        const result = gl.DropdownUtils.setDataValueIfSelected(selected);
+        const result = gl.DropdownUtils.setDataValueIfSelected(null, selected);
         expect(result).toBe(false);
       });
     });
