@@ -44,15 +44,15 @@
       author(pipeline) {
         if (!pipeline.commit) return ({ avatar_url: '', web_url: '', username: '' });
         if (pipeline.commit.author) return pipeline.commit.author;
-        return ({
+        return {
           avatar_url: pipeline.commit.author_gravatar_url,
           web_url: `mailto:${pipeline.commit.author_email}`,
           username: pipeline.commit.author_name,
-        });
+        };
       },
       ref(pipeline) {
         const { ref } = pipeline;
-        return ({ name: ref.name, tag: ref.tag, ref_url: ref.path });
+        return { name: ref.name, tag: ref.tag, ref_url: ref.path };
       },
       commitTitle(pipeline) {
         return pipeline.commit ? pipeline.commit.title : '';
