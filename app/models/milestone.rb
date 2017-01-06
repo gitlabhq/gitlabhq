@@ -215,4 +215,8 @@ class Milestone < ActiveRecord::Base
   def sanitize_title(value)
     CGI.unescape_html(Sanitize.clean(value.to_s))
   end
+
+  def issues_finder_params
+    { project_id: project_id }
+  end
 end
