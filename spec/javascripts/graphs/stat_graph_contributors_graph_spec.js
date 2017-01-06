@@ -3,7 +3,6 @@
 /* global ContributorsGraph */
 /* global ContributorsMasterGraph */
 
-require('../spec_helper');
 require('graphs/stat_graph_contributors_graph');
 
 describe("ContributorsGraph", function () {

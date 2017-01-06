@@ -1,6 +1,5 @@
 /* eslint-disable space-before-function-paren, arrow-body-style, indent, padded-blocks */
 
-require('./spec_helper');
 require('gl_field_errors');
 
 ((global) => {

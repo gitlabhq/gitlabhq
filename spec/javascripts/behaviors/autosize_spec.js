@@ -1,6 +1,5 @@
 /* eslint-disable space-before-function-paren, no-var, comma-dangle, no-return-assign, padded-blocks, max-len */
 
-require('../spec_helper');
 require('behaviors/autosize');
 
 (function() {

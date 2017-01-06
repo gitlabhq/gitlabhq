@@ -3,7 +3,6 @@
 /* global Mousetrap */
 /* global ZenMode */
 
-require('./spec_helper');
 require('zen_mode');
 
 (function() {

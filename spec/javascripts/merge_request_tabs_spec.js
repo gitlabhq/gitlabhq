@@ -1,6 +1,5 @@
 /* eslint-disable no-var, comma-dangle, object-shorthand */
 
-require('./spec_helper');
 require('merge_request_tabs');
 require('breakpoints');
 require('lib/utils/common_utils');

@@ -1,6 +1,5 @@
 /* eslint-disable max-len, arrow-parens, comma-dangle, no-plusplus */
 
-require('./spec_helper');
 require('subbable_resource');
 
 /*

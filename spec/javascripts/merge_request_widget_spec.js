@@ -1,6 +1,5 @@
 /* eslint-disable space-before-function-paren, quotes, comma-dangle, dot-notation, indent, quote-props, no-var, padded-blocks, max-len */
 
-require('./spec_helper');
 require('merge_request_widget');
 require('lib/utils/datetime_utility');
 

@@ -6,7 +6,6 @@
 /* global listObj */
 /* global listObjDuplicate */
 
-require('../spec_helper');
 require('jquery-ujs');
 window.Cookies = require('vendor/js.cookie');
 window.Vue = require('vue');

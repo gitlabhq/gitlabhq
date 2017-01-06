@@ -1,7 +1,6 @@
 /* eslint-disable space-before-function-paren, no-var, one-var, one-var-declaration-per-line, no-unused-expressions, comma-dangle, new-parens, no-unused-vars, quotes, jasmine/no-spec-dupes, prefer-template, padded-blocks, max-len */
 /* global AwardsHandler */
 
-require('./spec_helper');
 require('awards_handler');
 window.Cookies = require('vendor/js.cookie');
 require('./fixtures/emoji_menu');

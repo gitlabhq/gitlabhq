@@ -2,7 +2,6 @@
 /* global MockU2FDevice */
 /* global U2FAuthenticate */
 
-require('../spec_helper');
 require('u2f/authenticate');
 require('u2f/util');
 require('u2f/error');

@@ -1,7 +1,6 @@
 /* eslint-disable quotes, padded-blocks, no-var, camelcase, object-curly-spacing, semi, indent, object-property-newline, comma-dangle, comma-spacing, spaced-comment, max-len, key-spacing, vars-on-top, quote-props, no-multi-spaces */
 /* global ContributorsStatGraphUtil */
 
-require('../spec_helper');
 require('graphs/stat_graph_contributors_util');
 
 describe("ContributorsStatGraphUtil", function () {

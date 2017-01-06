@@ -1,4 +1,3 @@
-require('../spec_helper');
 window.Vue = require('vue');
 require('environments/components/environment_actions');
 

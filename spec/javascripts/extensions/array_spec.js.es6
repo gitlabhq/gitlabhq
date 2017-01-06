@@ -1,6 +1,5 @@
 /* eslint-disable space-before-function-paren, no-var, padded-blocks */
 
-require('../spec_helper');
 require('extensions/array');
 
 (function() {

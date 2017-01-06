@@ -1,7 +1,6 @@
 /* eslint-disable space-before-function-paren, no-return-assign, padded-blocks */
 /* global MergeRequest */
 
-require('./spec_helper');
 require('merge_request');
 
 (function() {

@@ -2,7 +2,6 @@
 /* global IssuableContext */
 /* global LabelsSelect */
 
-require('./spec_helper');
 require('lib/utils/type_utility');
 require('gl_dropdown');
 require('select2');

@@ -1,4 +1,3 @@
-require('../spec_helper');
 require('vue_common_component/commit');
 
 describe('Commit component', () => {

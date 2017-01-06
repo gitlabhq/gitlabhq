@@ -1,4 +1,3 @@
-require('./spec_helper');
 require('signin_tabs_memoizer');
 
 ((global) => {

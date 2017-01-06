@@ -1,4 +1,3 @@
-require('../spec_helper');
 require('extensions/object');
 
 describe('Object extensions', () => {

@@ -1,7 +1,6 @@
 /* global Issuable */
 /* global Turbolinks */
 
-require('./spec_helper');
 require('issuable');
 
 (() => {

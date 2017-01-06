@@ -1,4 +1,3 @@
-require('./spec_helper');
 require('lib/utils/bootstrap_linked_tabs');
 
 (() => {

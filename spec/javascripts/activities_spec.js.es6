@@ -1,6 +1,5 @@
 /* eslint-disable no-unused-expressions, comma-spacing, prefer-const, no-prototype-builtins, semi, no-new, keyword-spacing, no-plusplus, no-shadow, max-len */
 
-require('./spec_helper');
 window.Cookies = require('vendor/js.cookie');
 require('vendor/jquery.endless-scroll.js');
 require('pager');
