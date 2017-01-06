@@ -37,19 +37,19 @@
       const dropdownData = [{
         icon: 'fa-pencil',
         hint: 'author:',
-        tag: '&lt;author&gt;',
+        tag: '&lt;@author&gt;',
       }, {
         icon: 'fa-user',
         hint: 'assignee:',
-        tag: '&lt;assignee&gt;',
+        tag: '&lt;@assignee&gt;',
       }, {
         icon: 'fa-clock-o',
         hint: 'milestone:',
-        tag: '&lt;milestone&gt;',
+        tag: '&lt;%milestone&gt;',
       }, {
         icon: 'fa-tag',
         hint: 'label:',
-        tag: '&lt;label&gt;',
+        tag: '&lt;~label&gt;',
       }];
 
       this.droplab.changeHookList(this.hookId, this.dropdown, [droplabFilter], this.config);
