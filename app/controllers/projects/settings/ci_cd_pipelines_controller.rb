@@ -1,8 +1,8 @@
 module Projects
   module Settings
-    class PipelinesController < Projects::ApplicationController
+    class CiCdPipelinesController < Projects::ApplicationController
       before_action :authorize_admin_pipeline!
-      
+
       def show
         # runners
         @project_runners = @project.runners.ordered

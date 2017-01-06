@@ -2,13 +2,13 @@ class Projects::PipelinesSettingsController < Projects::ApplicationController
   before_action :authorize_admin_pipeline!
 
   def show
-    redirect_to namespace_project_settings_pipelines_path(@project.namespace, @project)
+    redirect_to namespace_project_settings_ci_cd_pipelines_path(@project.namespace, @project)
   end
 
   def update
     if @project.update_attributes(update_params)
       flash[:notice] = "CI/CD Pipelines settings for '#{@project.name}' were successfully updated."
-      redirect_to namespace_project_settings_pipelines_path(@project.namespace, @project)
+      redirect_to namespace_project_settings_ci_cd_pipelines_path(@project.namespace, @project)
     else
       render 'show'
     end
