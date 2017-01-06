@@ -1,5 +1,5 @@
 require('../spec_helper');
-require('vue');
+window.Vue = require('vue');
 require('environments/components/environment_actions');
 
 describe('Actions Component', () => {

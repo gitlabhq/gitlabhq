@@ -1,5 +1,5 @@
 require('../spec_helper');
-require('vue');
+window.Vue = require('vue');
 window.timeago = require('vendor/timeago');
 require('environments/components/environment_item');
 

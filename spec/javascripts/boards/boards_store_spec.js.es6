@@ -9,8 +9,8 @@
 require('../spec_helper');
 require('jquery-ujs');
 window.Cookies = require('vendor/js.cookie');
-require('vue');
-require('vue-resource');
+window.Vue = require('vue');
+window.Vue.use(require('vue-resource'));
 require('lib/utils/url_utility');
 require('boards/models/issue');
 require('boards/models/label');
