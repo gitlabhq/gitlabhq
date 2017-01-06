@@ -5,8 +5,7 @@ Import your projects from Gitea to GitLab with minimal effort.
 ## Overview
 
 >**Note:**
-As of Gitea `v1.0.0`, issue & pull-request comments cannot be imported! This is
-a [known issue][issue-401] that should be fixed in a near-future.
+This requires Gitea `v1.0.0` or newer.
 
 - At its current state, Gitea importer can import:
   - the repository description (GitLab 8.15+)
@@ -76,5 +75,3 @@ If you want, you can import all your Gitea projects in one go by hitting
 
 You can also choose a different name for the project and a different namespace,
 if you have the privileges to do so.
-
-[issue-401]: https://github.com/go-gitea/gitea/issues/401
