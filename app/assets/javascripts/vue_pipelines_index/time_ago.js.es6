@@ -1,5 +1,6 @@
 /* global Vue, gl */
 /* eslint-disable no-param-reassign */
+
 ((gl) => {
   gl.VueTimeAgo = Vue.extend({
     data() {
