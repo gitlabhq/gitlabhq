@@ -72,7 +72,7 @@
         <div class="pipelines realtime-loading" v-if='pipelines.length < 1'>
           <i class="fa fa-spinner fa-spin"></i>
         </div>
-        <div class="table-holder" v-if='pipelines.length > 0'>
+        <div class="table-holder" v-if='pipelines.length'>
           <table class="table ci-table">
             <thead>
               <tr>
