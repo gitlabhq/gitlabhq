@@ -1,6 +1,6 @@
 require('../spec_helper');
 require('vue');
-require('timeago');
+window.timeago = require('vendor/timeago');
 require('environments/components/environment_item');
 
 describe('Environment item', () => {

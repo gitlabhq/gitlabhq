@@ -3,7 +3,7 @@
 /* global ListIssue */
 
 require('../spec_helper');
-require('jquery_ujs');
+require('jquery-ujs');
 window.Cookies = require('vendor/js.cookie');
 require('vue');
 require('vue-resource');
