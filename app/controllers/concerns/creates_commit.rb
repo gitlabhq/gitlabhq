@@ -97,8 +97,6 @@ module CreatesCommit
 
   # TODO: We should really clean this up
   def set_commit_variables
-    @mr_source_branch = @target_branch unless create_merge_request?
-
     if can?(current_user, :push_code, @project)
       # Edit file in this project
       @tree_edit_project = @project
@@ -121,10 +119,25 @@ module CreatesCommit
       @mr_target_project = @project
       @mr_target_branch = @ref || @target_branch
     end
+
+    @mr_source_branch = guess_mr_source_branch
   end
 
   def initial_commit?
     @mr_target_branch.nil? ||
       !@mr_target_project.repository.branch_exists?(@mr_target_branch)
+  end
+
+  def guess_mr_source_branch
+    # XXX: Happens when viewing a commit without a branch. In this case,
+    # @target_branch would be the default branch for @mr_source_project,
+    # however we want a generated new branch here. Thus we can't use
+    # @target_branch, but should pass nil to indicate that we want a new
+    # branch instead of @target_branch.
+    return if
+      create_merge_request? &&
+        @mr_source_project.repository.branch_exists?(@target_branch)
+
+    @target_branch
   end
 end
