@@ -74,7 +74,16 @@
         </div>
         <div class="table-holder" v-if='pipelines.length > 0'>
           <table class="table ci-table">
-            <pipeline-head></pipeline-head>
+            <thead>
+              <tr>
+                <th>Status</th>
+                <th>Pipeline</th>
+                <th>Commit</th>
+                <th>Stages</th>
+                <th></th>
+                <th class="hidden-xs"></th>
+              </tr>
+            </thead>
             <tbody>
               <tr class="commit" v-for='pipeline in pipelines'>
                 <status-scope
