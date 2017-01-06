@@ -19,9 +19,11 @@
           .then((response) => {
             this.request = true;
             this.builds = JSON.parse(response.body).html;
-          }, () => new Flash(
-            'Something went wrong on our end.',
-          ));
+          }, () => {
+            const flash = new Flash('Something went wrong on our end.');
+            this.request = false;
+            return flash;
+          });
       },
       clearBuilds() {
         this.builds = '';
