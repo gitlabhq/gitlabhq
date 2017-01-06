@@ -3,7 +3,6 @@
 
 require('./spec_helper');
 require('gl_dropdown');
-require('vendor/turbolinks');
 require('lib/utils/common_utils');
 require('lib/utils/type_utility');
 

@@ -6,8 +6,6 @@ require('search_autocomplete');
 require('lib/utils/common_utils');
 require('lib/utils/type_utility');
 require('vendor/fuzzaldrin-plus');
-require('vendor/turbolinks');
-require('vendor/jquery.turbolinks');
 
 (function() {
   var addBodyAttributes, assertLinks, dashboardIssuesPath, dashboardMRsPath, groupIssuesPath, groupMRsPath, groupName, mockDashboardOptions, mockGroupOptions, mockProjectOptions, projectIssuesPath, projectMRsPath, projectName, userId, widget;

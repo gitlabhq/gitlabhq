@@ -58,7 +58,7 @@ var config = {
       {
         test: /\.(js|es6)$/,
         loader: 'imports-loader',
-        query: '$=jquery,jQuery=jquery,this=>window'
+        query: 'this=>window'
       },
       {
         test: /\.json$/,

@@ -41,7 +41,6 @@
     "jasmine-jquery": "^2.1.1",
     "karma": "^1.3.0",
     "karma-jasmine": "^1.1.0",
-    "karma-jquery": "^0.1.0",
     "karma-webpack": "^1.8.0"
   }
 }

@@ -3,7 +3,6 @@
 
 require('./spec_helper');
 require('issuable');
-require('turbolinks');
 
 (() => {
   const BASE_URL = '/user/project/issues?scope=all&state=closed';

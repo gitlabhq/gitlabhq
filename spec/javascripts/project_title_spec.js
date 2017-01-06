@@ -2,7 +2,6 @@
 /* global Project */
 
 require('./spec_helper');
-require('bootstrap/js/dropdown');
 require('select2/select2.js');
 require('lib/utils/type_utility');
 require('gl_dropdown');

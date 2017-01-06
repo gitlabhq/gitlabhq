@@ -2,7 +2,6 @@
 /* global Notes */
 
 require('./spec_helper');
-window._ = require('underscore');
 require('notes');
 require('vendor/autosize');
 require('gl_form');
