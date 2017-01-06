@@ -1,7 +1,7 @@
 /* global Vue, gl */
 /* eslint-disable no-param-reassign, no-plusplus */
 
-//= require ./param_helper.js.es6
+/*= require lib/utils/param_helper.js.es6 */
 
 ((gl) => {
   const PAGINATION_UI_BUTTON_LIMIT = 4;
@@ -58,7 +58,6 @@
     },
     methods: {
       changePage(e) {
-        let pageNum = this.pageInfo.page;
         let apiScope = gl.getParameterByName('scope');
 
         if (!apiScope) apiScope = 'all';
@@ -70,23 +69,21 @@
           case SPREAD:
             break;
           case LAST:
-            pageNum = totalPages;
+            this.change(totalPages, apiScope);
             break;
           case NEXT:
-            pageNum = nextPage;
+            this.change(nextPage, apiScope);
             break;
           case PREV:
-            pageNum = previousPage;
+            this.change(previousPage, apiScope);
             break;
           case FIRST:
-            pageNum = 1;
+            this.change(1, apiScope);
             break;
           default:
-            pageNum = +text;
+            this.change(+text, apiScope);
             break;
         }
-
-        this.change(pageNum, apiScope);
       },
     },
     computed: {

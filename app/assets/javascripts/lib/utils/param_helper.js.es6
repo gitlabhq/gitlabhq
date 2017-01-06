@@ -1,6 +1,11 @@
 /* eslint-disable no-param-reassign */
 
 ((w) => {
+  /**
+    this will take in the `name` of the param you want to parse in the url
+    if the name does not exist this function will return `null`
+    otherwise it will return the value of the param key provided
+  */
   w.getParameterByName = (name) => {
     const url = window.location.href;
     name = name.replace(/[[\]]/g, '\\$&');
