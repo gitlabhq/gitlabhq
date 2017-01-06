@@ -1,30 +1,29 @@
-/* eslint-disable func-names, space-before-function-paren, vars-on-top, no-var, object-shorthand, comma-dangle, max-len */
-(function() {
+(() => {
   // Add datepickers to all `js-access-expiration-date` elements. If those elements are
   // children of an element with the `clearable-input` class, and have a sibling
   // `js-clear-input` element, then show that element when there is a value in the
   // datepicker, and make clicking on that element clear the field.
   //
-  gl.MemberExpirationDate = function() {
+  window.gl = window.gl || {};
+  gl.MemberExpirationDate = (selector = '.js-access-expiration-date') => {
     function toggleClearInput() {
       $(this).closest('.clearable-input').toggleClass('has-value', $(this).val() !== '');
     }
-
-    var inputs = $('.js-access-expiration-date');
+    const inputs = $(selector);
 
     inputs.datepicker({
       dateFormat: 'yy-mm-dd',
       minDate: 1,
-      onSelect: function () {
+      onSelect: function onSelect() {
         $(this).trigger('change');
         toggleClearInput.call(this);
-      }
+      },
     });
 
-    inputs.next('.js-clear-input').on('click', function(event) {
+    inputs.next('.js-clear-input').on('click', function clicked(event) {
       event.preventDefault();
 
-      var input = $(this).closest('.clearable-input').find('.js-access-expiration-date');
+      const input = $(this).closest('.clearable-input').find(selector);
       input.datepicker('setDate', null)
         .trigger('change');
       toggleClearInput.call(input);

@@ -113,8 +113,10 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
     project.team << [user, :reporter]
   end
 
-  step 'I click link "Import team from another project"' do
-    click_link "Import"
+  step 'I click link "Import team from another project"' do    
+    page.within '.users-project-form' do
+      click_link "Import"
+    end
   end
 
   When 'I submit "Website" project for import team' do
