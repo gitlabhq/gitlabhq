@@ -145,6 +145,28 @@
       return decodeURIComponent(results[2].replace(/\+/g, ' '));
     };
 
+    gl.utils.getCursorPosition = function(input) {
+      var cursorPosition = 0;
+
+      // IE Support
+      if (document.selection) {
+        input.focus();
+
+        // To get cursor position, get empty selection range
+        var range = document.selection.createRange();
+
+        // Move selection start to 0 position
+        range.moveStart('character', -1 * input.value.length);
+
+        // The cursor position is selection length
+        cursorPosition = range.text.length;
+      } else if (input.selectionStart || input.selectionStart === '0') {
+        cursorPosition = input.selectionStart;
+      }
+
+      return cursorPosition;
+    };
+
     gl.utils.isMetaKey = function(e) {
       return e.metaKey || e.ctrlKey || e.altKey || e.shiftKey;
     };

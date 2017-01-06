@@ -23,6 +23,7 @@
 
     bindEvents() {
       this.setDropdownWrapper = this.dropdownManager.setDropdown.bind(this.dropdownManager);
+      this.getWordFromCursorPositionWrapper = this.getWordFromCursorPosition.bind(this);
       this.toggleClearSearchButtonWrapper = this.toggleClearSearchButton.bind(this);
       this.checkForEnterWrapper = this.checkForEnter.bind(this);
       this.clearSearchWrapper = this.clearSearch.bind(this);
@@ -32,6 +33,7 @@
       this.filteredSearchInput.addEventListener('input', this.toggleClearSearchButtonWrapper);
       this.filteredSearchInput.addEventListener('keydown', this.checkForEnterWrapper);
       this.filteredSearchInput.addEventListener('keyup', this.checkForBackspaceWrapper);
+      this.filteredSearchInput.addEventListener('click', this.getWordFromCursorPositionWrapper);
       this.clearSearchButton.addEventListener('click', this.clearSearchWrapper);
     }
 
@@ -40,6 +42,7 @@
       this.filteredSearchInput.removeEventListener('input', this.toggleClearSearchButtonWrapper);
       this.filteredSearchInput.removeEventListener('keydown', this.checkForEnterWrapper);
       this.filteredSearchInput.removeEventListener('keyup', this.checkForBackspaceWrapper);
+      this.filteredSearchInput.removeEventListener('click', this.getWordFromCursorPositionWrapper);
       this.clearSearchButton.removeEventListener('click', this.clearSearchWrapper);
     }
 
@@ -78,6 +81,35 @@
       this.clearSearchButton.classList.add('hidden');
 
       this.dropdownManager.resetDropdowns();
+    }
+
+    getWordFromCursorPosition() {
+      const value = this.filteredSearchInput.value;
+      const cursorPosition = gl.utils.getCursorPosition(this.filteredSearchInput);
+
+      const left = value.slice(0, cursorPosition);
+      const right = value.slice(cursorPosition);
+
+      // Extracts all the labels and search terms
+      const regex = /((\w+):([~%@]?)(?:('[^']*'{0,1})|("[^"]*"{0,1})|(\S+)))|(\S+)/g;
+      const leftTokens = left.match(regex) || [];
+      const rightTokens = right.match(regex) || [];
+      const tokens = value.match(regex);
+      let selectedToken = null;
+
+      // Clean split down the middle
+      if (leftTokens.concat(rightTokens).join() === tokens.join()) {
+        selectedToken = leftTokens.slice(-1)[0] || tokens[0];
+      } else {
+        let i = 0;
+        while (i < tokens.length && !selectedToken) {
+          if (leftTokens[i] !== tokens[i]) {
+            selectedToken = tokens[i];
+          }
+          i += 1;
+        }
+      }
+      console.log(selectedToken);
     }
 
     loadSearchParamsFromURL() {
