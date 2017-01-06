@@ -2,7 +2,7 @@ class Projects::PipelinesSettingsController < Projects::ApplicationController
   before_action :authorize_admin_pipeline!
 
   def show
-    redirect_to namespace_project_settings_ci_cd_pipelines_path(@project.namespace, @project)
+    redirect_to namespace_project_settings_ci_cd_pipelines_path(@project.namespace, @project, params: params)
   end
 
   def update
