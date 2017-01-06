@@ -15,7 +15,7 @@ class ProjectPathValidator < ActiveModel::EachValidator
   #  'tree' as project name and 'deploy_keys' as route.
   #
   RESERVED = (NamespaceValidator::RESERVED -
-              %w[dashboard help ci admin search notes services] +
+              %w[dashboard help ci admin search notes services assets profile public] +
               %w[tree commits wikis new edit create update logs_tree
                  preview blob blame raw files create_dir find_file]).freeze
 
