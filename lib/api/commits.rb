@@ -55,7 +55,7 @@ module API
         authorize! :push_code, user_project
 
         attrs = declared_params
-        attrs[:source_branch] = attrs[:branch_name]
+        attrs[:start_branch] = attrs[:branch_name]
         attrs[:target_branch] = attrs[:branch_name]
         attrs[:actions].map! do |action|
           action[:action] = action[:action].to_sym

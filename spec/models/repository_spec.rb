@@ -280,7 +280,7 @@ describe Repository, models: true do
         expect do
           repository.commit_dir(user, 'newdir',
             message: 'Create newdir', branch_name: 'patch',
-            source_branch_name: 'master', source_project: forked_project)
+            start_branch_name: 'master', start_project: forked_project)
         end.to change { repository.commits('master').count }.by(0)
 
         expect(repository.branch_exists?('patch')).to be_truthy

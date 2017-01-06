@@ -17,8 +17,8 @@ describe Files::UpdateService do
       file_content: new_contents,
       file_content_encoding: "text",
       last_commit_sha: last_commit_sha,
-      source_project: project,
-      source_branch: project.default_branch,
+      start_project: project,
+      start_branch: project.default_branch,
       target_branch: target_branch
     }
   end
