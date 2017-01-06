@@ -1,4 +1,4 @@
-require('./spec_helper');
+require('../spec_helper');
 require('vue');
 require('timeago');
 require('environments/components/environment_item');

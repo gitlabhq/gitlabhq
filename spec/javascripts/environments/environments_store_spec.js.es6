@@ -1,5 +1,6 @@
 /* global environmentsList */
 
+require('../spec_helper');
 require('vue');
 require('environments/stores/environments_store');
 require('./mock_data');

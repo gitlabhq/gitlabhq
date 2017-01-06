@@ -1,6 +1,7 @@
 /* eslint-disable no-extra-semi, jasmine/no-global-setup, dot-notation, jasmine/no-expect-in-setup-teardown, max-len */
 /* global CommentsStore */
 
+require('./spec_helper');
 require('diff_notes/models/discussion');
 require('diff_notes/models/note');
 require('diff_notes/stores/comments');

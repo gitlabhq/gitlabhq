@@ -1,3 +1,4 @@
+require('./spec_helper');
 require('lib/utils/datetime_utility');
 
 (() => {

@@ -5,6 +5,7 @@
 /* global List */
 /* global listObj */
 
+require('../spec_helper');
 require('jquery_ujs');
 require('js.cookie');
 require('vue');

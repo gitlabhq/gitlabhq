@@ -2,6 +2,7 @@
 /* global BoardService */
 /* global ListIssue */
 
+require('../spec_helper');
 require('jquery_ujs');
 require('js.cookie');
 require('vue');

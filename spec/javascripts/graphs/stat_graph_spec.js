@@ -1,6 +1,7 @@
 /* eslint-disable quotes, padded-blocks, semi */
 /* global StatGraph */
 
+require('../spec_helper');
 require('graphs/stat_graph');
 
 describe("StatGraph", function () {

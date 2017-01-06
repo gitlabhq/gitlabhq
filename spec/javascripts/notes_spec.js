@@ -1,6 +1,7 @@
 /* eslint-disable space-before-function-paren, no-unused-expressions, no-var, object-shorthand, comma-dangle, semi, padded-blocks, max-len */
 /* global Notes */
 
+require('./spec_helper');
 window._ = require('underscore');
 require('notes');
 require('vendor/autosize');

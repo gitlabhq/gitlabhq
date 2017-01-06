@@ -1,6 +1,6 @@
 /* eslint-disable space-before-function-paren, no-var, no-return-assign, comma-dangle, jasmine/no-spec-dupes, new-cap, padded-blocks, max-len */
 
-require('./spec_helper');
+require('../spec_helper');
 require('behaviors/quick_submit');
 
 (function() {

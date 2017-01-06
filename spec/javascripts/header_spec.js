@@ -1,4 +1,5 @@
 /* eslint-disable space-before-function-paren, padded-blocks, no-var */
+
 require('./spec_helper');
 require('header');
 require('lib/utils/text_utility');

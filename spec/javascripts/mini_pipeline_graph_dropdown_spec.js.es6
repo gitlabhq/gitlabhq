@@ -1,5 +1,6 @@
 /* eslint-disable no-new */
 
+require('./spec_helper');
 require('flash');
 require('mini_pipeline_graph_dropdown');
 
