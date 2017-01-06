@@ -61,12 +61,9 @@
           data-placement="top"
           data-toggle="dropdown"
           type="button">
-
           <span v-html="svg"></span>
           <i class="fa fa-caret-down "></i>
-
         </button>
-
         <ul class="dropdown-menu mini-pipeline-graph-dropdown-menu js-builds-dropdown-container">
           <div class="arrow-up"></div>
           <div :class="dropdownClass" class="js-builds-dropdown-list scrollable-menu" v-html="buildsOrSpinner"></div>
