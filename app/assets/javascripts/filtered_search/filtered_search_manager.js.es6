@@ -142,7 +142,14 @@
         if (condition) {
           tokenPath = condition.url;
         } else {
-          tokenPath = `${keyParam}=${encodeURIComponent(token.value)}`;
+          let tokenValue = token.value;
+
+          if ((tokenValue[0] === '\'' && tokenValue[tokenValue.length - 1] === '\'') ||
+            (tokenValue[0] === '"' && tokenValue[tokenValue.length - 1] === '"')) {
+            tokenValue = tokenValue.slice(1, tokenValue.length - 1);
+          }
+
+          tokenPath = `${keyParam}=${encodeURIComponent(tokenValue)}`;
         }
 
         paths.push(tokenPath);

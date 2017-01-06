@@ -24,7 +24,7 @@
         expect(results.tokens[0].symbol).toBe('@');
 
         expect(results.tokens[1].key).toBe('label');
-        expect(results.tokens[1].value).toBe('Very Important');
+        expect(results.tokens[1].value).toBe('"Very Important"');
         expect(results.tokens[1].symbol).toBe('~');
 
         expect(results.tokens[2].key).toBe('milestone');
@@ -72,7 +72,7 @@
         expect(results.tokens[0].symbol).toBe('@');
 
         expect(results.tokens[1].key).toBe('label');
-        expect(results.tokens[1].value).toBe('Won\'t fix');
+        expect(results.tokens[1].value).toBe('"Won\'t fix"');
         expect(results.tokens[1].symbol).toBe('~');
 
         expect(results.tokens[2].key).toBe('milestone');
