@@ -1,7 +1,7 @@
 (() => {
   class FilteredSearchTokenizer {
     static processTokens(input) {
-      const tokenRegex = /(\w+):([~%@]?)(?:"(.*?)"|'(.*?)'|(\S+))/g;
+      const tokenRegex = /(\w+):([~%@]?)(?:('[^']*'{0,1})|("[^"]*"{0,1})|(\S+))/g;
       const tokens = [];
       let lastToken = null;
       const searchToken = input.replace(tokenRegex, (match, key, symbol, v1, v2, v3) => {
