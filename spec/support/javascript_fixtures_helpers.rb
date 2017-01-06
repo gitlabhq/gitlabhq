@@ -20,11 +20,24 @@ module JavaScriptFixturesHelpers
 
   # Public: Store a response object as fixture file
   #
-  # response - response object to store
+  # response - string or response object to store
   # fixture_file_name - file name to store the fixture in (relative to FIXTURE_PATH)
   #
   def store_frontend_fixture(response, fixture_file_name)
     fixture_file_name = File.expand_path(fixture_file_name, FIXTURE_PATH)
+    fixture = response.respond_to?(:body) ? parse_response(response) : response
+
+    FileUtils.mkdir_p(File.dirname(fixture_file_name))
+    File.write(fixture_file_name, fixture)
+  end
+
+  private
+
+  # Private: Prepare a response object for use as a frontend fixture
+  #
+  # response - response object to prepare
+  #
+  def parse_response(response)
     fixture = response.body
     fixture.force_encoding("utf-8")
 
@@ -45,7 +58,6 @@ module JavaScriptFixturesHelpers
       fixture.gsub!(%r{="/}, "=\"http://#{test_host}/")
     end
 
-    FileUtils.mkdir_p(File.dirname(fixture_file_name))
-    File.write(fixture_file_name, fixture)
+    fixture
   end
 end

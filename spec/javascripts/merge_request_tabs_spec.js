@@ -16,7 +16,7 @@
       };
       $.extend(stubLocation, defaults, stubs || {});
     };
-    fixture.preload('merge_request_tabs.html');
+    preloadFixtures('static/merge_request_tabs.html.raw');
 
     beforeEach(function () {
       this.class = new gl.MergeRequestTabs({ stubLocation: stubLocation });
@@ -30,7 +30,7 @@
     describe('#activateTab', function () {
       beforeEach(function () {
         spyOn($, 'ajax').and.callFake(function () {});
-        fixture.load('merge_request_tabs.html');
+        loadFixtures('static/merge_request_tabs.html.raw');
         this.subject = this.class.activateTab;
       });
       it('shows the first tab when action is show', function () {

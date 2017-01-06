@@ -10,10 +10,10 @@
 
 (function() {
   describe('U2FRegister', function() {
-    fixture.preload('u2f/register.html.raw');
+    preloadFixtures('u2f/register.html.raw');
 
     beforeEach(function() {
-      fixture.load('u2f/register.html.raw');
+      loadFixtures('u2f/register.html.raw');
       this.u2fDevice = new MockU2FDevice;
       this.container = $("#js-register-u2f");
       this.component = new U2FRegister(this.container, $("#js-register-u2f-templates"), {}, "token");

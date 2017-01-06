@@ -5,7 +5,7 @@ describe('Commit component', () => {
   let component;
 
   it('should render a code-fork icon if it does not represent a tag', () => {
-    fixture.set('<div class="test-commit-container"></div>');
+    setFixtures('<div class="test-commit-container"></div>');
     component = new window.gl.CommitComponent({
       el: document.querySelector('.test-commit-container'),
       propsData: {
@@ -30,7 +30,7 @@ describe('Commit component', () => {
 
   describe('Given all the props', () => {
     beforeEach(() => {
-      fixture.set('<div class="test-commit-container"></div>');
+      setFixtures('<div class="test-commit-container"></div>');
 
       props = {
         tag: true,
@@ -105,7 +105,7 @@ describe('Commit component', () => {
 
   describe('When commit title is not provided', () => {
     it('should render default message', () => {
-      fixture.set('<div class="test-commit-container"></div>');
+      setFixtures('<div class="test-commit-container"></div>');
       props = {
         tag: false,
         commitRef: {
