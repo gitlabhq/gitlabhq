@@ -3,7 +3,7 @@
 
 require('./spec_helper');
 require('awards_handler');
-require('vendor/js.cookie');
+window.Cookies = require('vendor/js.cookie');
 require('./fixtures/emoji_menu');
 
 (function() {

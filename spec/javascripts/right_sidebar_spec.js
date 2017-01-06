@@ -3,7 +3,7 @@
 
 require('./spec_helper');
 require('right_sidebar');
-require('vendor/js.cookie');
+window.Cookies = require('vendor/js.cookie');
 require('extensions/jquery.js');
 
 (function() {

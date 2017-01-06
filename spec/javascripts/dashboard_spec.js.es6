@@ -2,7 +2,7 @@
 
 require('./spec_helper');
 require('sidebar');
-require('vendor/js.cookie');
+window.Cookies = require('vendor/js.cookie');
 require('lib/utils/text_utility');
 
 ((global) => {

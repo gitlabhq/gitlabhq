@@ -4,7 +4,7 @@
 
 require('../spec_helper');
 require('jquery_ujs');
-require('js.cookie');
+window.Cookies = require('vendor/js.cookie');
 require('vue');
 require('vue-resource');
 require('lib/utils/url_utility');
