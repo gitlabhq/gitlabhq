@@ -6,3 +6,5 @@ class ListMilestone {
     this.title = obj.title;
   }
 }
+
+window.ListMilestone = ListMilestone;

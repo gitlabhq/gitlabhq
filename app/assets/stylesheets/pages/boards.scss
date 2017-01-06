@@ -108,6 +108,12 @@
 
   &.has-border {
     border-top: 3px solid;
+    margin-top: -1px;
+    margin-right: -1px;
+    margin-left: -1px;
+    padding-top: 1px;
+    padding-right: 1px;
+    padding-left: 1px;
 
     .board-title {
       padding-top: ($gl-padding - 3px);

@@ -87,6 +87,7 @@ module API
       given sentry_enabled: ->(val) { val } do
         requires :sentry_dsn, type: String, desc: 'Sentry Data Source Name'
       end
+      optional :repository_storage, type: String, desc: 'Storage paths for new projects'
       optional :repository_checks_enabled, type: Boolean, desc: "GitLab will periodically run 'git fsck' in all project and wiki repositories to look for silent disk corruption issues."
       optional :koding_enabled, type: Boolean, desc: 'Enable Koding'
       given koding_enabled: ->(val) { val } do

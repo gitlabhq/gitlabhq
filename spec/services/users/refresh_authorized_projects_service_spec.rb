@@ -54,12 +54,37 @@ describe Users::RefreshAuthorizedProjectsService do
   end
 
   describe '#update_authorizations' do
-    it 'does nothing when there are no rows to add and remove' do
-      expect(user).not_to receive(:remove_project_authorizations)
-      expect(ProjectAuthorization).not_to receive(:insert_authorizations)
-      expect(user).not_to receive(:set_authorized_projects_column)
+    context 'when there are no rows to add and remove' do
+      it 'does not change authorizations' do
+        expect(user).not_to receive(:remove_project_authorizations)
+        expect(ProjectAuthorization).not_to receive(:insert_authorizations)
 
-      service.update_authorizations([], [])
+        service.update_authorizations([], [])
+      end
+
+      context 'when the authorized projects column is not set' do
+        before do
+          user.update!(authorized_projects_populated: nil)
+        end
+
+        it 'populates the authorized projects column' do
+          service.update_authorizations([], [])
+
+          expect(user.authorized_projects_populated).to eq true
+        end
+      end
+
+      context 'when the authorized projects column is set' do
+        before do
+          user.update!(authorized_projects_populated: true)
+        end
+
+        it 'does nothing' do
+          expect(user).not_to receive(:set_authorized_projects_column)
+
+          service.update_authorizations([], [])
+        end
+      end
     end
 
     it 'removes authorizations that should be removed' do
@@ -84,7 +109,7 @@ describe Users::RefreshAuthorizedProjectsService do
     it 'populates the authorized projects column' do
       # make sure we start with a nil value no matter what the default in the
       # factory may be.
-      user.update(authorized_projects_populated: nil)
+      user.update!(authorized_projects_populated: nil)
 
       service.update_authorizations([], [[user.id, project.id, Gitlab::Access::MASTER]])
 

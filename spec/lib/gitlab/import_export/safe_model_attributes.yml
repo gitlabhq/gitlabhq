@@ -251,6 +251,7 @@ DeployKey:
 - type
 - fingerprint
 - public
+- can_push
 Service:
 - id
 - type

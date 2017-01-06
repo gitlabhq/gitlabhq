@@ -261,7 +261,7 @@ class ProjectPolicy < BasePolicy
   def project_group_member?(user)
     project.group &&
       (
-        project.group.members.exists?(user_id: user.id) ||
+        project.group.members_with_parents.exists?(user_id: user.id) ||
         project.group.requesters.exists?(user_id: user.id)
       )
   end

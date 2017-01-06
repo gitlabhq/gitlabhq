@@ -4,6 +4,9 @@ class Dashboard::TodosController < Dashboard::ApplicationController
   def index
     @sort = params[:sort]
     @todos = @todos.page(params[:page])
+    if @todos.out_of_range? && @todos.total_pages != 0
+      redirect_to url_for(params.merge(page: @todos.total_pages))
+    end
   end
 
   def destroy

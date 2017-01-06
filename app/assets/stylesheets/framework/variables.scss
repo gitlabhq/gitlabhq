@@ -496,9 +496,9 @@ $project-network-controls-color: #888;
 */
 $runner-state-shared-bg: #32b186;
 $runner-state-specific-bg: #3498db;
-$runner-status-online-color: green;
-$runner-status-offline-color: gray;
-$runner-status-paused-color: red;
+$runner-status-online-color: $green-normal;
+$runner-status-offline-color: $gray-darkest;
+$runner-status-paused-color: $red-normal;
 
 /*
 Stat Graph

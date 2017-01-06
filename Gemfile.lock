@@ -180,7 +180,7 @@ GEM
     elasticsearch-transport (1.0.15)
       faraday
       multi_json
-    email_reply_parser (0.5.8)
+    email_reply_trimmer (0.1.6)
     email_spec (1.6.0)
       launchy (~> 2.1)
       mail (~> 2.2)
@@ -800,7 +800,7 @@ GEM
       coercible (~> 1.0)
       descendants_tracker (~> 0.0, >= 0.0.3)
       equalizer (~> 0.0, >= 0.0.9)
-    vmstat (2.2.0)
+    vmstat (2.3.0)
     warden (1.2.6)
       rack (>= 1.0)
     web-console (2.3.0)
@@ -868,7 +868,7 @@ DEPENDENCIES
   dropzonejs-rails (~> 0.7.1)
   elasticsearch-model
   elasticsearch-rails
-  email_reply_parser (~> 0.5.8)
+  email_reply_trimmer (~> 0.1)
   email_spec (~> 1.6.0)
   factory_girl_rails (~> 4.7.0)
   ffaker (~> 2.0.0)
@@ -1016,7 +1016,7 @@ DEPENDENCIES
   validates_hostname (~> 1.0.6)
   version_sorter (~> 2.1.0)
   virtus (~> 1.0.1)
-  vmstat (~> 2.2)
+  vmstat (~> 2.3.0)
   web-console (~> 2.0)
   webmock (~> 1.21.0)
   wikicloth (= 0.8.1)
