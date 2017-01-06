@@ -92,7 +92,9 @@ module CreatesCommit
   end
 
   def create_merge_request?
-    params[:create_merge_request].present?
+    # XXX: Even if the field is set, if we're checking the same branch
+    # as the target branch, we don't want to create a merge request.
+    params[:create_merge_request].present? && @ref != @target_branch
   end
 
   # TODO: We should really clean this up
@@ -136,7 +138,8 @@ module CreatesCommit
     # branch instead of @target_branch.
     return if
       create_merge_request? &&
-        @mr_source_project.repository.branch_exists?(@target_branch)
+          # XXX: Don't understand why rubocop prefers this indention
+          @mr_source_project.repository.branch_exists?(@target_branch)
 
     @target_branch
   end
