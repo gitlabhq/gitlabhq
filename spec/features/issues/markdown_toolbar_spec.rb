@@ -16,7 +16,7 @@ feature 'Issue markdown toolbar', feature: true, js: true do
     find('#note_note').native.send_key(:enter)
     find('#note_note').native.send_keys('bold')
 
-    page.evaluate_script('document.getElementById("note_note").setSelectionRange(4, 9)')
+    page.evaluate_script('document.querySelectorAll(".js-main-target-form #note_note")[0].setSelectionRange(4, 9)')
 
     first('.toolbar-btn').click
 
@@ -28,7 +28,7 @@ feature 'Issue markdown toolbar', feature: true, js: true do
     find('#note_note').native.send_key(:enter)
     find('#note_note').native.send_keys('underline')
 
-    page.evaluate_script('document.getElementById("note_note").setSelectionRange(4, 50)')
+    page.evaluate_script('document.querySelectorAll(".js-main-target-form #note_note")[0].setSelectionRange(4, 50)')
 
     find('.toolbar-btn:nth-child(2)').click
 
