@@ -8,8 +8,7 @@
     ],
     computed: {
       cssClasses() {
-        const cssObject = {};
-        cssObject['ci-status'] = true;
+        const cssObject = { 'ci-status': true };
         cssObject[`ci-${this.pipeline.details.status.group}`] = true;
         return cssObject;
       },
