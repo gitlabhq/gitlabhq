@@ -72,7 +72,7 @@
         }
 
         input.value = input.value.slice(0, -1 * lastSearchToken.length);
-      } else if (lastInputCharacter !== ' ') {
+      } else if (lastInputCharacter !== ' ' || (lastToken && lastToken.value[lastToken.value.length - 1] === ' ')) {
         // Remove the existing tokenValue
         const lastTokenString = `${lastToken.key}:${lastToken.symbol}${lastToken.value}`;
         input.value = input.value.slice(0, -1 * lastTokenString.length);
