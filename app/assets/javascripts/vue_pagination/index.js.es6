@@ -66,18 +66,24 @@
         const text = e.target.innerText;
         const { totalPages, nextPage, previousPage } = this.pageInfo;
 
-        if (text === SPREAD) {
-          return;
-        } else if (text === LAST) {
-          pageNum = totalPages;
-        } else if (text === NEXT) {
-          pageNum = nextPage;
-        } else if (text === PREV) {
-          pageNum = previousPage;
-        } else if (text === FIRST) {
-          pageNum = 1;
-        } else {
-          pageNum = +text;
+        switch (text) {
+          case SPREAD:
+            break;
+          case LAST:
+            pageNum = totalPages;
+            break;
+          case NEXT:
+            pageNum = nextPage;
+            break;
+          case PREV:
+            pageNum = previousPage;
+            break;
+          case FIRST:
+            pageNum = 1;
+            break;
+          default:
+            pageNum = +text;
+            break;
         }
 
         this.change(pageNum, apiScope);
