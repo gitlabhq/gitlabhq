@@ -134,3 +134,5 @@ const environmentsList = [
     updated_at: '2016-11-07T11:11:16.525Z',
   },
 ];
+
+window.environmentsList = environmentsList;
