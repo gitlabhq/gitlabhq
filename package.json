@@ -25,7 +25,7 @@
     "select2": "3.5.2-browserify",
     "stats-webpack-plugin": "^0.4.2",
     "underscore": "1.8.3",
-    "vue": "1.0.26",
+    "vue": "2.0.3",
     "vue-resource": "0.9.3",
     "webpack": "^1.13.2",
     "webpack-dev-server": "^1.16.2"
