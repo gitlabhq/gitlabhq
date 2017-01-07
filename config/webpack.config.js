@@ -40,7 +40,7 @@ var config = {
     filename: IS_PRODUCTION ? '[name]-[chunkhash].js' : '[name].js'
   },
 
-  devtool: 'source-map',
+  devtool: 'inline-source-map',
 
   module: {
     loaders: [
@@ -93,6 +93,7 @@ var config = {
 }
 
 if (IS_PRODUCTION) {
+  config.devtool = 'source-map';
   config.plugins.push(
     new webpack.NoErrorsPlugin(),
     new webpack.optimize.UglifyJsPlugin({
