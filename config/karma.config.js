@@ -8,8 +8,7 @@ module.exports = function(config) {
     basePath: ROOT_PATH,
     frameworks: ['jasmine'],
     files: [
-      'spec/javascripts/spec_helper.js',
-      'spec/javascripts/**/*_spec.js?(.es6)',
+      'spec/javascripts/test_bundle.js',
       { pattern: 'spec/javascripts/fixtures/**/*@(.json|.html|.html.raw)', included: false },
     ],
     preprocessors: {
