@@ -1,5 +1,7 @@
 - page_title "CI Lint"
 - page_description "Validate your GitLab CI configuration file"
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_tag('lib/ace.js')
 
 %h2 Check your .gitlab-ci.yml
 
@@ -21,7 +23,3 @@
     .col-sm-12
       .results.ci-template
         = render partial: 'create' if defined?(@status)
-
-
-- content_for :page_specific_javascripts do
-  = page_specific_javascript_tag('lib/ace.js')
