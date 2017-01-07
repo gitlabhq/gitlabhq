@@ -5,6 +5,7 @@
 (function() {
   var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   var AUTO_SCROLL_OFFSET = 75;
+  var DOWN_BUILD_TRACE = 'down-build-trace';
 
   this.Build = (function() {
     Build.interval = null;
@@ -83,10 +84,6 @@
       return window.location.href.split("#")[0];
     };
 
-    Build.prototype.locationHash = function() {
-      return window.location.href.split("#")[1];
-    };
-
     Build.prototype.getInitialBuildTrace = function() {
       var removeRefreshStatuses = ['success', 'failed', 'canceled', 'skipped']
 
@@ -95,7 +92,7 @@
         dataType: 'json',
         success: function(buildData) {
           $('.js-build-output').html(buildData.trace_html);
-          if (this.locationHash() === 'down-build-trace') {
+          if (window.location.hash.substring(1) === DOWN_BUILD_TRACE) {
             $("html,body").scrollTop(this.$buildTrace.height());
           }
           if (removeRefreshStatuses.indexOf(buildData.status) >= 0) {
