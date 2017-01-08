@@ -29,23 +29,23 @@
         if (!finished && changeTime) return false;
         return ({ words: this.timeAgo.format(finished) });
       },
-    },
-    methods: {
       duration() {
         const { duration } = this.pipeline.details;
         if (duration === 0) return '00:00:00';
         if (duration !== null) return duration;
         return false;
       },
+    },
+    methods: {
       changeTime() {
         this.currentTime = new Date();
       },
     },
     template: `
       <td>
-        <p class="duration" v-if='duration()'>
+        <p class="duration" v-if='duration'>
           <span v-html='svgs.iconTimer'></span>
-          {{duration()}}
+          {{duration}}
         </p>
         <p class="finished-at" v-if='timeStopped'>
           <i class="fa fa-calendar"></i>

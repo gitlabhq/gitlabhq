@@ -25,11 +25,11 @@
         this.$http.get(`${url}?scope=${apiScope}&page=${pageNum}`)
           .then((response) => {
             const pageInfo = pageValues(response.headers);
-            Vue.set(this, 'pageInfo', pageInfo);
+            this.pageInfo = Object.assign({}, this.pageInfo, pageInfo);
 
             const res = JSON.parse(response.body);
-            Vue.set(this, 'pipelines', res.pipelines);
-            Vue.set(this, 'count', res.count);
+            this.count = Object.assign({}, this.count, res.count);
+            this.pipelines = Object.assign([], this.pipelines, res.pipelines);
 
             updatePipelineNums(this.count);
             this.pageRequest = false;
