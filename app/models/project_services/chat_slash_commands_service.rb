@@ -23,7 +23,7 @@ class ChatSlashCommandsService < Service
 
   def fields
     [
-      { type: 'text', name: 'token', placeholder: '' }
+      { type: 'text', name: 'token', placeholder: 'XXxxXXxxXXxxXXxxXXxxXXxx' }
     ]
   end
 

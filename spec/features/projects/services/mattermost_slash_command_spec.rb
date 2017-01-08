@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 feature 'Setup Mattermost slash commands', feature: true do
-  include WaitForAjax
-
   let(:user) { create(:user) }
   let(:project) { create(:empty_project) }
   let(:service) { project.create_mattermost_slash_commands_service }
@@ -15,11 +13,15 @@ feature 'Setup Mattermost slash commands', feature: true do
     visit edit_namespace_project_service_path(project.namespace, project, service)
   end
 
-  describe 'user visits the mattermost slash command config page', js: true do
+  describe 'user visits the mattermost slash command config page' do
     it 'shows a help message' do
-      wait_for_ajax
+      expect(page).to have_content("This service allows users to perform common")
+    end
 
-      expect(page).to have_content("This service allows GitLab users to perform common")
+    it 'shows a token placeholder' do
+      token_placeholder = find_field('service_token')['placeholder']
+
+      expect(token_placeholder).to eq('XXxxXXxxXXxxXXxxXXxxXXxx')
     end
 
     it 'shows the token after saving' do
@@ -64,7 +66,7 @@ feature 'Setup Mattermost slash commands', feature: true do
       select_element = find('select#mattermost_team_id')
       selected_option = select_element.find('option[selected]')
 
-      expect(select_element['disabled']).to be(true)
+      expect(select_element['disabled']).to eq('disabled')
       expect(selected_option).to have_content(team_name.to_s)
     end
 
@@ -93,7 +95,7 @@ feature 'Setup Mattermost slash commands', feature: true do
       select_element = find('select#mattermost_team_id')
       selected_option = select_element.find('option[selected]')
 
-      expect(select_element['disabled']).to be(false)
+      expect(select_element['disabled']).to be(nil)
       expect(selected_option).to have_content('Select team...')
       # The 'Select team...' placeholder is item `0`.
       expect(select_element.all('option').count).to eq(3)
@@ -134,6 +136,12 @@ feature 'Setup Mattermost slash commands', feature: true do
         value = find_field('request_url').value
 
         expect(value).to match("api/v3/projects/#{project.id}/services/mattermost_slash_commands/trigger")
+      end
+
+      it 'shows a token placeholder' do
+        token_placeholder = find_field('service_token')['placeholder']
+
+        expect(token_placeholder).to eq('XXxxXXxxXXxxXXxxXXxxXXxx')
       end
     end
   end

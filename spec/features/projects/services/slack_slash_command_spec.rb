@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 feature 'Slack slash commands', feature: true do
-  include WaitForAjax
-
   given(:user) { create(:user) }
   given(:project) { create(:project) }
   given(:service) { project.create_slack_slash_commands_service }
@@ -10,19 +8,20 @@ feature 'Slack slash commands', feature: true do
   background do
     project.team << [user, :master]
     login_as(user)
+    visit edit_namespace_project_service_path(project.namespace, project, service)
   end
 
-  scenario 'user visits the slack slash command config page and shows a help message', js: true do
-    visit edit_namespace_project_service_path(project.namespace, project, service)
+  it 'shows a token placeholder' do
+    token_placeholder = find_field('service_token')['placeholder']
 
-    wait_for_ajax
-
-    expect(page).to have_content('This service allows GitLab users to perform common')
+    expect(token_placeholder).to eq('XXxxXXxxXXxxXXxxXXxxXXxx')
   end
 
-  scenario 'shows the token after saving' do
-    visit edit_namespace_project_service_path(project.namespace, project, service)
+  it 'shows a help message' do
+    expect(page).to have_content('This service allows users to perform common')
+  end
 
+  it 'shows the token after saving' do
     fill_in 'service_token', with: 'token'
     click_on 'Save'
 
@@ -31,9 +30,7 @@ feature 'Slack slash commands', feature: true do
     expect(value).to eq('token')
   end
 
-  scenario 'shows the correct trigger url' do
-    visit edit_namespace_project_service_path(project.namespace, project, service)
-
+  it 'shows the correct trigger url' do
     value = find_field('url').value
     expect(value).to match("api/v3/projects/#{project.id}/services/slack_slash_commands/trigger")
   end
