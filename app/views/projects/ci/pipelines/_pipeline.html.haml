@@ -89,7 +89,7 @@
                       %span= build.name.humanize
           - if artifacts.present?
             .btn-group
-              %a.dropdown-toggle.btn.btn-default.build-artifacts.js-pipeline-dropdown-download{ type: 'button', 'data-toggle' => 'dropdown' }
+              %button.dropdown-toggle.btn.btn-default.build-artifacts.js-pipeline-dropdown-download{ type: 'button', 'data-toggle' => 'dropdown' }
                 = icon("download")
                 = icon('caret-down')
               %ul.dropdown-menu.dropdown-menu-align-right
