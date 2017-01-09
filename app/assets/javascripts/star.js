@@ -4,7 +4,7 @@
 (function() {
   this.Star = (function() {
     function Star() {
-      $('.project-home-panel .toggle-star').on('ajax:success', function(e, data, status, xhr) {
+      $('.project-home-panel .toggle-star').off('ajax:success.toggleStar').on('ajax:success.toggleStar', function(e, data, status, xhr) {
         var $starIcon, $starSpan, $this, toggleStar;
         $this = $(this);
         $starSpan = $this.find('span');
@@ -20,9 +20,10 @@
           }
         };
         toggleStar($starSpan.hasClass('starred'));
-      }).on('ajax:error', function(e, xhr, status, error) {
-        new Flash('Star toggle failed. Try again later.', 'alert');
-      });
+      }).off('ajax:error.toggleStar')
+        .on('ajax:error.toggleStar', function(e, xhr, status, error) {
+          new Flash('Star toggle failed. Try again later.', 'alert');
+        });
     }
 
     return Star;

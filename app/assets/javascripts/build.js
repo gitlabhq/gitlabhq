@@ -42,9 +42,12 @@
       this.updateStageDropdownText(this.buildStage);
       this.sidebarOnResize();
 
-      this.$document.off('click', '.js-sidebar-build-toggle').on('click', '.js-sidebar-build-toggle', this.sidebarOnClick.bind(this));
-      this.$document.off('click', '.stage-item').on('click', '.stage-item', this.updateDropdown);
-      this.$document.on('scroll', this.initScrollMonitor.bind(this));
+      this.$document.off('click.sidebarOnClick', '.js-sidebar-build-toggle')
+        .on('click.sidebarOnClick', '.js-sidebar-build-toggle', this.sidebarOnClick.bind(this));
+      this.$document.off('click.updateDropdown', '.stage-item')
+        .on('click.updateDropdown', '.stage-item', this.updateDropdown);
+      this.$document.off('scroll.initScrollMonitor')
+        .on('scroll.initScrollMonitor', this.initScrollMonitor.bind(this));
       $(window).off('resize.build').on('resize.build', this.sidebarOnResize.bind(this));
       $('a', this.$buildScroll).off('click.stepTrace').on('click.stepTrace', this.stepTrace);
       this.updateArtifactRemoveDate();
@@ -75,7 +78,8 @@
         top: this.sidebarTranslationLimits.max
       });
       this.$sidebar.niceScroll();
-      this.$document.off('click', '.js-sidebar-build-toggle').on('click', '.js-sidebar-build-toggle', this.toggleSidebar);
+      this.$document.off('click.toggleSidebar', '.js-sidebar-build-toggle')
+        .on('click.toggleSidebar', '.js-sidebar-build-toggle', this.toggleSidebar);
       this.$document.off('scroll.translateSidebar').on('scroll.translateSidebar', this.translateSidebar.bind(this));
     };
 

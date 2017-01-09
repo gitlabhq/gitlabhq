@@ -10,7 +10,7 @@
     }
 
     ImporterStatus.prototype.initStatusPage = function() {
-      $('.js-add-to-import').off('click').on('click', (function(_this) {
+      $('.js-add-to-import').off('click.addToImport').on('click.addToImport', (function(_this) {
         return function(e) {
           var $btn, $namespace_input, $target_field, $tr, id, target_namespace, newName;
           $btn = $(e.currentTarget);
@@ -35,7 +35,7 @@
           });
         };
       })(this));
-      return $('.js-import-all').off('click').on('click', function(e) {
+      return $('.js-import-all').off('click.importAll').on('click.importAll', function(e) {
         var $btn;
         $btn = $(this);
         $btn.disable().addClass('is-loading');

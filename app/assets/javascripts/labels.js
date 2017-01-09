@@ -14,13 +14,17 @@
     }
 
     Labels.prototype.addBinding = function() {
-      $(document).on('click', '.suggest-colors a', this.setSuggestedColor);
-      return $(document).on('input', 'input#label_color', this.updateColorPreview);
+      var $document = $(document);
+      $document.off('click.setSuggestedColor')
+        .on('click.setSuggestedColor', '.suggest-colors a', this.setSuggestedColor);
+      return $document.off('input.updateColorPreview')
+        .on('input.updateColorPreview', 'input#label_color', this.updateColorPreview);
     };
 
     Labels.prototype.cleanBinding = function() {
-      $(document).off('click', '.suggest-colors a');
-      return $(document).off('input', 'input#label_color');
+      var $document = $(document);
+      $document.off('click.setSuggestedColor', '.suggest-colors a');
+      return $document.off('input.updateColorPreview', 'input#label_color');
     };
 
     Labels.prototype.updateColorPreview = function() {

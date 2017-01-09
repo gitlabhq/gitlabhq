@@ -61,71 +61,94 @@
     }
 
     Notes.prototype.addBinding = function() {
+      var $document = $(document);
       // add note to UI after creation
-      $(document).on("ajax:success", ".js-main-target-form", this.addNote);
-      $(document).on("ajax:success", ".js-discussion-note-form", this.addDiscussionNote);
+      $document.off('ajax:success.addNote')
+        .on("ajax:success.addNote", ".js-main-target-form", this.addNote);
+      $document.off('ajax:success.addDiscussionNote')
+        .on("ajax:success.addDiscussionNote", ".js-discussion-note-form", this.addDiscussionNote);
       // catch note ajax errors
-      $(document).on("ajax:error", ".js-main-target-form", this.addNoteError);
+      $document.off('ajax:error.addNoteError')
+        .on("ajax:error.addNoteError", ".js-main-target-form", this.addNoteError);
       // change note in UI after update
-      $(document).on("ajax:success", "form.edit-note", this.updateNote);
+      $document.off('ajax:success.updateNote')
+        .on("ajax:success.updateNote", "form.edit-note", this.updateNote);
       // Edit note link
-      $(document).on("click", ".js-note-edit", this.showEditForm.bind(this));
-      $(document).on("click", ".note-edit-cancel", this.cancelEdit);
+      $document.off('click.showEditForm')
+        .on("click.showEditForm", ".js-note-edit", this.showEditForm.bind(this));
+      $document.off('click.cancelEdit')
+        .on("click.cancelEdit", ".note-edit-cancel", this.cancelEdit);
       // Reopen and close actions for Issue/MR combined with note form submit
-      $(document).on("click", ".js-comment-button", this.updateCloseButton);
-      $(document).on("keyup input", ".js-note-text", this.updateTargetButtons);
+      $document.off('click.updateCloseButton')
+        .on("click.updateCloseButton", ".js-comment-button", this.updateCloseButton);
+      $document.off('keyup.updateTargetButtons input.updateTargetButtons')
+        .on("keyup.updateTargetButtons input.updateTargetButtons", ".js-note-text", this.updateTargetButtons);
       // resolve a discussion
-      $(document).on('click', '.js-comment-resolve-button', this.resolveDiscussion);
+      $document.off('click.resolveDiscussion')
+        .on('click.resolveDiscussion', '.js-comment-resolve-button', this.resolveDiscussion);
       // remove a note (in general)
-      $(document).on("click", ".js-note-delete", this.removeNote);
+      $document.off('click.removeNote')
+        .on("click.removeNote", ".js-note-delete", this.removeNote);
       // delete note attachment
-      $(document).on("click", ".js-note-attachment-delete", this.removeAttachment);
+      $document.off('click.removeAttachment')
+        .on("click.removeAttachment", ".js-note-attachment-delete", this.removeAttachment);
       // reset main target form after submit
-      $(document).on("ajax:complete", ".js-main-target-form", this.reenableTargetFormSubmitButton);
-      $(document).on("ajax:success", ".js-main-target-form", this.resetMainTargetForm);
+      $document.off('ajax:complete.reenableTargetFormSubmitButton')
+        .on("ajax:complete.reenableTargetFormSubmitButton", ".js-main-target-form", this.reenableTargetFormSubmitButton);
+      $document.off('ajax:success.resetMainTargetForm')
+        .on("ajax:success.resetMainTargetForm", ".js-main-target-form", this.resetMainTargetForm);
       // reset main target form when clicking discard
-      $(document).on("click", ".js-note-discard", this.resetMainTargetForm);
+      $document.off('click.resetMainTargetForm')
+        .on("click.resetMainTargetForm", ".js-note-discard", this.resetMainTargetForm);
       // update the file name when an attachment is selected
-      $(document).on("change", ".js-note-attachment-input", this.updateFormAttachment);
+      $document.off('change.updateFormAttachment')
+        .on("change.updateFormAttachment", ".js-note-attachment-input", this.updateFormAttachment);
       // reply to diff/discussion notes
-      $(document).on("click", ".js-discussion-reply-button", this.replyToDiscussionNote);
+      $document.off('click.replyToDiscussionNote')
+        .on("click.replyToDiscussionNote", ".js-discussion-reply-button", this.replyToDiscussionNote);
       // add diff note
-      $(document).on("click", ".js-add-diff-note-button", this.addDiffNote);
+      $document.off('click.addDiffNote')
+        .on("click.addDiffNote", ".js-add-diff-note-button", this.addDiffNote);
       // hide diff note form
-      $(document).on("click", ".js-close-discussion-note-form", this.cancelDiscussionForm);
+      $document.off('click.cancelDiscussionForm')
+        .on("click.cancelDiscussionForm", ".js-close-discussion-note-form", this.cancelDiscussionForm);
       // toggle commit list
-      $(document).on("click", '.system-note-commit-list-toggler', this.toggleCommitList);
+      $document.off('click.toggleCommitList')
+        .on("click.toggleCommitList", '.system-note-commit-list-toggler', this.toggleCommitList);
       // fetch notes when tab becomes visible
-      $(document).on("visibilitychange", this.visibilityChange);
+      $document.off('visibilitychange.visibilityChange')
+        .on("visibilitychange.visibilityChange", this.visibilityChange);
       // when issue status changes, we need to refresh data
-      $(document).on("issuable:change", this.refresh);
+      $document.off('issuable:change.refresh')
+        .on("issuable:change.refresh", this.refresh);
 
       // when a key is clicked on the notes
-      return $(document).on("keydown", ".js-note-text", this.keydownNoteText);
+      return $document.off('keydown.keydownNoteText')
+        .on("keydown.keydownNoteText", ".js-note-text", this.keydownNoteText);
     };
 
     Notes.prototype.cleanBinding = function() {
-      $(document).off("ajax:success", ".js-main-target-form");
-      $(document).off("ajax:success", ".js-discussion-note-form");
-      $(document).off("ajax:success", "form.edit-note");
-      $(document).off("click", ".js-note-edit");
-      $(document).off("click", ".note-edit-cancel");
-      $(document).off("click", ".js-note-delete");
-      $(document).off("click", ".js-note-attachment-delete");
-      $(document).off("ajax:complete", ".js-main-target-form");
-      $(document).off("ajax:success", ".js-main-target-form");
-      $(document).off("click", ".js-discussion-reply-button");
-      $(document).off("click", ".js-add-diff-note-button");
-      $(document).off("visibilitychange");
-      $(document).off("keyup", ".js-note-text");
-      $(document).off("click", ".js-note-target-reopen");
-      $(document).off("click", ".js-note-target-close");
-      $(document).off("click", ".js-note-discard");
-      $(document).off("keydown", ".js-note-text");
-      $(document).off('click', '.js-comment-resolve-button');
-      $(document).off("click", '.system-note-commit-list-toggler');
+      var $document = $(document);
+
+      $document.off("ajax:success.addNote", ".js-main-target-form");
+      $document.off("ajax:success.addDiscussionNote", ".js-discussion-note-form");
+      $document.off("ajax:success.updateNote", "form.edit-note");
+      $document.off("click.showEditForm", ".js-note-edit");
+      $document.off("click.cancelEdit", ".note-edit-cancel");
+      $document.off("click.removeNote", ".js-note-delete");
+      $document.off("click.removeAttachment", ".js-note-attachment-delete");
+      $document.off("ajax:complete.reenableTargetFormSubmitButton", ".js-main-target-form");
+      $document.off("ajax:success.resetMainTargetForm", ".js-main-target-form");
+      $document.off("click.replyToDiscussionNote", ".js-discussion-reply-button");
+      $document.off("click.addDiffNote", ".js-add-diff-note-button");
+      $document.off("visibilitychange.visibilityChange");
+      $document.off("keyup.updateTargetButtons", ".js-note-text");
+      $document.off("click.resetMainTargetForm", ".js-note-discard");
+      $document.off("keydown.keydownNoteText", ".js-note-text");
+      $document.off('click.resolveDiscussion', '.js-comment-resolve-button');
+      $document.off("click.toggleCommitList", '.system-note-commit-list-toggler');
       $('.note .js-task-list-container').taskList('disable');
-      return $(document).off('tasklist:changed', '.note .js-task-list-container');
+      return $document.off('tasklist:changed.updateTaskList', '.note .js-task-list-container');
     };
 
     Notes.prototype.keydownNoteText = function(e) {
@@ -874,7 +897,8 @@
 
     Notes.prototype.initTaskList = function() {
       this.enableTaskList();
-      return $(document).on('tasklist:changed', '.note .js-task-list-container', this.updateTaskList.bind(this));
+      return $(document).off('tasklist:changed.updateTaskList')
+        .on('tasklist:changed.updateTaskList', '.note .js-task-list-container', this.updateTaskList.bind(this));
     };
 
     Notes.prototype.enableTaskList = function() {

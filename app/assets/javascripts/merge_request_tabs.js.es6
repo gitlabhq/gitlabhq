@@ -81,14 +81,16 @@
 
     bindEvents() {
       $(document)
-        .on('shown.bs.tab', '.merge-request-tabs a[data-toggle="tab"]', this.tabShown)
-        .on('click', '.js-show-tab', this.showTab);
+        .off('shown.bs.tab.tabShown')
+        .on('shown.bs.tab.tabShown', '.merge-request-tabs a[data-toggle="tab"]', this.tabShown)
+        .off('click.showTab')
+        .on('click.showTab', '.js-show-tab', this.showTab);
     }
 
     unbindEvents() {
       $(document)
-        .off('shown.bs.tab', '.merge-request-tabs a[data-toggle="tab"]', this.tabShown)
-        .off('click', '.js-show-tab', this.showTab);
+        .off('shown.bs.tab.tabShown', '.merge-request-tabs a[data-toggle="tab"]', this.tabShown)
+        .off('click.showTab', '.js-show-tab', this.showTab);
     }
 
     showTab(e) {
@@ -347,16 +349,16 @@
       const $fixedNav = $('.navbar-fixed-top');
       const $layoutNav = $('.layout-nav');
 
-      $tabs.off('affix.bs.affix affix-top.bs.affix')
-        .affix({
-          offset: {
-            top: () => (
-              $diffTabs.offset().top - $tabs.height() - $fixedNav.height() - $layoutNav.height()
-            ),
-          },
-        })
-        .on('affix.bs.affix', () => $diffTabs.css({ marginTop: $tabs.height() }))
-        .on('affix-top.bs.affix', () => $diffTabs.css({ marginTop: '' }));
+      $tabs.affix({
+        offset: {
+          top: () => (
+            $diffTabs.offset().top - $tabs.height() - $fixedNav.height() - $layoutNav.height()
+          ),
+        },
+      }).off('affix.bs.affix.diffTabsHeight')
+        .on('affix.bs.affix.diffTabsHeight', () => $diffTabs.css({ marginTop: $tabs.height() }))
+        .off('affix-top.bs.affix.diffTabsMargin')
+        .on('affix-top.bs.affix.diffTabsMargin', () => $diffTabs.css({ marginTop: '' }));
 
       // Fix bug when reloading the page already scrolling
       if ($tabs.hasClass('affix')) {

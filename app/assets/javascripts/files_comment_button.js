@@ -36,7 +36,11 @@
       this.render = bind(this.render, this);
       this.VIEW_TYPE = $('input#view[type=hidden]').val();
       debounce = _.debounce(this.render, DEBOUNCE_TIMEOUT_DURATION);
-      $(this.filesContainerElement).off('mouseover', LINE_COLUMN_CLASSES).off('mouseleave', LINE_COLUMN_CLASSES).on('mouseover', LINE_COLUMN_CLASSES, debounce).on('mouseleave', LINE_COLUMN_CLASSES, this.destroy);
+      $(this.filesContainerElement)
+        .off('mouseover.debounce', LINE_COLUMN_CLASSES)
+        .on('mouseover.debounce', LINE_COLUMN_CLASSES, debounce)
+        .off('mouseleave.destroy', LINE_COLUMN_CLASSES)
+        .on('mouseleave.destroy', LINE_COLUMN_CLASSES, this.destroy);
     }
 
     FilesCommentButton.prototype.render = function(e) {

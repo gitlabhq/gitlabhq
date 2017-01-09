@@ -29,8 +29,8 @@
         return;
       }
       this.initAutosave();
-      this.form.on("submit", this.handleSubmit);
-      this.form.on("click", ".btn-cancel", this.resetAutosave);
+      this.form.off('submit.handleSubmit').on("submit.handleSubmit", this.handleSubmit);
+      this.form.off('click.resetAutosave').on("click.resetAutosave", ".btn-cancel", this.resetAutosave);
       this.initWip();
       this.initMoveDropdown();
       $issuableDueDate = $('#issuable-due-date');
@@ -70,8 +70,9 @@
       if (!(this.$wipExplanation.length && this.$noWipExplanation.length)) {
         return;
       }
-      this.form.on("click", ".js-toggle-wip", this.toggleWip);
-      this.titleField.on("keyup blur", this.renderWipExplanation);
+      this.form.off('click.toggleWip').on("click.toggleWip", ".js-toggle-wip", this.toggleWip);
+      this.titleField.off('keyup.renderWipExplanation blur.renderWipExplanation')
+        .on("keyup.renderWipExplanation blur.renderWipExplanation", this.renderWipExplanation);
       return this.renderWipExplanation();
     };
 

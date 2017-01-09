@@ -8,8 +8,10 @@
       this.$subscribeButtons = $container.find('.js-subscribe-button');
       this.$unsubscribeButtons = $container.find('.js-unsubscribe-button');
 
-      this.$subscribeButtons.on('click', this.subscribe.bind(this));
-      this.$unsubscribeButtons.on('click', this.unsubscribe.bind(this));
+      this.$subscribeButtons.off('click.subscribe')
+        .on('click.subscribe', this.subscribe.bind(this));
+      this.$unsubscribeButtons.off('click.unsubscribe')
+        .on('click.unsubscribe', this.unsubscribe.bind(this));
     }
 
     unsubscribe(event) {

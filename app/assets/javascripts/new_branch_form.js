@@ -16,7 +16,7 @@
     }
 
     NewBranchForm.prototype.addBinding = function() {
-      return this.name.on('blur', this.validate);
+      return this.name.off('blur.validate').on('blur.validate', this.validate);
     };
 
     NewBranchForm.prototype.init = function() {

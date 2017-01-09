@@ -13,19 +13,26 @@
     }
 
     Sidebar.prototype.removeListeners = function () {
-      this.sidebar.off('click', '.sidebar-collapsed-icon');
-      $('.dropdown').off('hidden.gl.dropdown');
-      $('.dropdown').off('loading.gl.dropdown');
-      $('.dropdown').off('loaded.gl.dropdown');
-      $(document).off('click', '.js-sidebar-toggle');
+      var $dropdown = $('.dropdown');
+      this.sidebar.off('click.sidebarCollapseClicked', '.sidebar-collapsed-icon');
+      $dropdown.off('hidden.gl.dropdown.onSidebarDropdownHidden');
+      $dropdown.off('loading.gl.dropdown.sidebarDropdownLoading');
+      $dropdown.off('loaded.gl.dropdown.sidebarDropdownLoaded');
+      $(document).off('click.toggleRightSidebar', '.js-sidebar-toggle');
     }
 
     Sidebar.prototype.addEventListeners = function() {
-      this.sidebar.on('click', '.sidebar-collapsed-icon', this, this.sidebarCollapseClicked);
-      $('.dropdown').on('hidden.gl.dropdown', this, this.onSidebarDropdownHidden);
-      $('.dropdown').on('loading.gl.dropdown', this.sidebarDropdownLoading);
-      $('.dropdown').on('loaded.gl.dropdown', this.sidebarDropdownLoaded);
-      $(document).on('click', '.js-sidebar-toggle', function(e, triggered) {
+      var $dropdown = $('.dropdown');
+      var $document = $(document);
+      this.sidebar.off('click.sidebarCollapseClicked')
+        .on('click.sidebarCollapseClicked', '.sidebar-collapsed-icon', this, this.sidebarCollapseClicked);
+      $dropdown.off('hidden.gl.dropdown.onSidebarDropdownHidden')
+        .on('hidden.gl.dropdown.onSidebarDropdownHidden', this, this.onSidebarDropdownHidden);
+      $dropdown.off('loading.gl.dropdown.sidebarDropdownLoading')
+        .on('loading.gl.dropdown.sidebarDropdownLoading', this.sidebarDropdownLoading);
+      $dropdown.off('loaded.gl.dropdown.sidebarDropdownLoaded')
+        .on('loaded.gl.dropdown.sidebarDropdownLoaded', this.sidebarDropdownLoaded);
+      $document.off('click.toggleRightSidebar').on('click.toggleRightSidebar', '.js-sidebar-toggle', function(e, triggered) {
         var $allGutterToggleIcons, $this, $thisIcon;
         e.preventDefault();
         $this = $(this);
@@ -44,7 +51,8 @@
           return Cookies.set("collapsed_gutter", $('.right-sidebar').hasClass('right-sidebar-collapsed'));
         }
       });
-      return $(document).off('click', '.js-issuable-todo').on('click', '.js-issuable-todo', this.toggleTodo);
+      return $document.off('click.rightSidebarToggleTodo', '.js-issuable-todo')
+        .on('click.rightSidebarToggleTodo', '.js-issuable-todo', this.toggleTodo);
     };
 
     Sidebar.prototype.toggleTodo = function(e) {

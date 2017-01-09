@@ -43,16 +43,16 @@
     };
 
     GLForm.prototype.clearEventListeners = function() {
-      this.textarea.off('focus');
-      this.textarea.off('blur');
+      this.textarea.off('focus.addFocus');
+      this.textarea.off('blur.removeFocus');
       return gl.text.removeListeners(this.form);
     };
 
     GLForm.prototype.addEventListeners = function() {
-      this.textarea.on('focus', function() {
+      this.textarea.off('focus.addFocus').on('focus.addFocus', function() {
         return $(this).closest('.md-area').addClass('is-focused');
       });
-      return this.textarea.on('blur', function() {
+      return this.textarea.off('blur.removeFocus').on('blur.removeFocus', function() {
         return $(this).closest('.md-area').removeClass('is-focused');
       });
     };

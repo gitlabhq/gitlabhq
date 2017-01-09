@@ -6,7 +6,7 @@
   gl.SnippetsList = function() {
     var $holder = $('.snippets-list-holder');
 
-    $holder.find('.pagination').on('ajax:success', (e, data) => {
+    $holder.find('.pagination').off('ajax:success.snippetPagination').on('ajax:success.snippetPagination', (e, data) => {
       $holder.replaceWith(data.html);
     });
   }

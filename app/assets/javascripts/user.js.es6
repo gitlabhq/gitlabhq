@@ -24,7 +24,7 @@
     }
 
     hideProjectLimitMessage() {
-      $('.hide-project-limit-message').on('click', e => {
+      $('.hide-project-limit-message').off('click.hideProjectLimitMessage').on('click.hideProjectLimitMessage', e => {
         e.preventDefault();
         Cookies.set('hide_project_limit_message', 'false');
         $(this).parents('.project-limit-message').remove();

@@ -154,7 +154,8 @@
     };
 
     ContributorsMasterGraph.prototype.create_brush = function() {
-      return this.brush = d3.svg.brush().x(this.x).on("brushend", this.update_content);
+      return this.brush = d3.svg.brush().x(this.x).off('brushend.updateContent')
+        .on("brushend.updateContent", this.update_content);
     };
 
     ContributorsMasterGraph.prototype.draw_path = function(data) {

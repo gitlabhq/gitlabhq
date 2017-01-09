@@ -8,8 +8,8 @@
     constructor() {
       $(MESSAGE_CELL_SELECTOR).each(this.truncateLongMessage);
       $(document)
-        .off('click', MESSAGE_CELL_SELECTOR)
-        .on('click', MESSAGE_CELL_SELECTOR, this.toggleMessageTruncation);
+        .off('click.toggleMessageTruncation', MESSAGE_CELL_SELECTOR)
+        .on('click.toggleMessageTruncation', MESSAGE_CELL_SELECTOR, this.toggleMessageTruncation);
     }
 
     truncateLongMessage() {

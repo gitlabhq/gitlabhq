@@ -133,7 +133,7 @@
     gl.text.init = function(form) {
       var self;
       self = this;
-      return $('.js-md', form).off('click').on('click', function() {
+      return $('.js-md', form).off('click.updateText').on('click.updateText', function() {
         var $this;
         $this = $(this);
         return self.updateText($this.closest('.md-area').find('textarea'), $this.data('md-tag'), $this.data('md-block'), !$this.data('md-prepend'));

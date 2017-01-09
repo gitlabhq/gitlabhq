@@ -24,12 +24,18 @@
     }
 
     bindEvents() {
-      $('.js-preferences-form').on('change.preference', 'input[type=radio]', this.submitForm);
-      $('#user_notification_email').on('change', this.submitForm);
-      $('.update-username').on('ajax:before', this.beforeUpdateUsername);
-      $('.update-username').on('ajax:complete', this.afterUpdateUsername);
-      $('.update-notifications').on('ajax:success', this.onUpdateNotifs);
-      this.form.on('submit', this.onSubmitForm);
+      $('.js-preferences-form').off('change.preference')
+        .on('change.preference', 'input[type=radio]', this.submitForm);
+      $('#user_notification_email').off('change.submitForm')
+        .on('change.submitForm', this.submitForm);
+      $('.update-username').off('ajax:before.beforeUpdateUsername')
+        .on('ajax:before.beforeUpdateUsername', this.beforeUpdateUsername);
+      $('.update-username').off('ajax:complete.afterUpdateUsername')
+        .on('ajax:complete.afterUpdateUsername', this.afterUpdateUsername);
+      $('.update-notifications').off('ajax:success.onUpdateNotifs')
+        .on('ajax:success.onUpdateNotifs', this.onUpdateNotifs);
+      this.form.off('submit.onSubmitFormProfile')
+        .on('submit.onSubmitFormProfile', this.onSubmitForm);
     }
 
     submitForm() {

@@ -31,8 +31,8 @@
     bindEvents() {
       const dropdownButtonSelector = 'button.js-builds-dropdown-button';
 
-      $(this.container).off('click', dropdownButtonSelector, this.getBuildsList)
-        .on('click', dropdownButtonSelector, this.getBuildsList);
+      $(this.container).off('click.getBuildsList', dropdownButtonSelector, this.getBuildsList)
+        .on('click.getBuildsList', dropdownButtonSelector, this.getBuildsList);
     }
 
     /**

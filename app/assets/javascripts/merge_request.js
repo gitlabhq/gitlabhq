@@ -18,11 +18,12 @@
       this.opts = opts != null ? opts : {};
       this.submitNoteForm = bind(this.submitNoteForm, this);
       this.$el = $('.merge-request');
-      this.$('.show-all-commits').on('click', (function(_this) {
-        return function() {
-          return _this.showAllCommits();
-        };
-      })(this));
+      this.$('.show-all-commits').off('click.showAllCommits')
+        .on('click.showAllCommits', (function(_this) {
+          return function() {
+            return _this.showAllCommits();
+          };
+        })(this));
       this.initTabs();
       // Prevent duplicate event bindings
       this.disableTaskList();
@@ -52,13 +53,13 @@
 
     MergeRequest.prototype.initTaskList = function() {
       $('.detail-page-description .js-task-list-container').taskList('enable');
-      return $(document).on('tasklist:changed', '.detail-page-description .js-task-list-container', this.updateTaskList);
+      return $(document).on('tasklist:changed.updateTaskList', '.detail-page-description .js-task-list-container', this.updateTaskList);
     };
 
     MergeRequest.prototype.initMRBtnListeners = function() {
       var _this;
       _this = this;
-      return $('a.btn-close, a.btn-reopen').on('click', function(e) {
+      return $('a.btn-close, a.btn-reopen').off('click.submitNoteForm').on('click.submitNoteForm', function(e) {
         var $this, shouldSubmit;
         $this = $(this);
         shouldSubmit = $this.hasClass('btn-comment');
@@ -87,7 +88,7 @@
 
     MergeRequest.prototype.disableTaskList = function() {
       $('.detail-page-description .js-task-list-container').taskList('disable');
-      return $(document).off('tasklist:changed', '.detail-page-description .js-task-list-container');
+      return $(document).off('tasklist:changed.updateTaskList', '.detail-page-description .js-task-list-container');
     };
 
     MergeRequest.prototype.updateTaskList = function() {
@@ -112,21 +113,23 @@
     MergeRequest.prototype.initCommitMessageListeners = function() {
       var textarea = $('textarea.js-commit-message');
 
-      $('a.js-with-description-link').on('click', function(e) {
-        e.preventDefault();
+      $('a.js-with-description-link').off('click.hideDescriptionHint')
+        .on('click.hideDescriptionHint', function(e) {
+          e.preventDefault();
 
-        textarea.val(textarea.data('messageWithDescription'));
-        $('p.js-with-description-hint').hide();
-        $('p.js-without-description-hint').show();
-      });
+          textarea.val(textarea.data('messageWithDescription'));
+          $('p.js-with-description-hint').hide();
+          $('p.js-without-description-hint').show();
+        });
 
-      $('a.js-without-description-link').on('click', function(e) {
-        e.preventDefault();
+      $('a.js-without-description-link').off('click.showDescriptionHint')
+        .on('click.showDescriptionHint', function(e) {
+          e.preventDefault();
 
-        textarea.val(textarea.data('messageWithoutDescription'));
-        $('p.js-with-description-hint').show();
-        $('p.js-without-description-hint').hide();
-      });
+          textarea.val(textarea.data('messageWithoutDescription'));
+          $('p.js-with-description-hint').show();
+          $('p.js-without-description-hint').hide();
+        });
     };
 
     return MergeRequest;

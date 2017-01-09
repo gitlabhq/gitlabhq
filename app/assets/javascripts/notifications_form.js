@@ -10,11 +10,12 @@
     }
 
     NotificationsForm.prototype.removeEventListeners = function() {
-      return $(document).off('change', '.js-custom-notification-event');
+      return $(document).off('change.toggleCheckbox', '.js-custom-notification-event');
     };
 
     NotificationsForm.prototype.initEventListeners = function() {
-      return $(document).on('change', '.js-custom-notification-event', this.toggleCheckbox);
+      return $(document).off('change.toggleCheckbox')
+        .on('change.toggleCheckbox', '.js-custom-notification-event', this.toggleCheckbox);
     };
 
     NotificationsForm.prototype.toggleCheckbox = function(e) {

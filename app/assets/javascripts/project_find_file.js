@@ -25,8 +25,7 @@
     }
 
     ProjectFindFile.prototype.initEvent = function() {
-      this.inputElement.off("keyup");
-      this.inputElement.on("keyup", (function(_this) {
+      this.inputElement.off("keyup.findFile").on("keyup.findFile", (function(_this) {
         return function(event) {
           var oldValue, ref, target, value;
           target = $(event.target);

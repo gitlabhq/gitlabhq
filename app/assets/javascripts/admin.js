@@ -5,7 +5,7 @@
   this.Admin = (function() {
     function Admin() {
       var modal, showBlacklistType;
-      $('input#user_force_random_password').on('change', function(elem) {
+      $('input#user_force_random_password').off('change.forceRandomPassword').on('change.forceRandomPassword', function(elem) {
         var elems;
         elems = $('#user_password, #user_password_confirmation');
         if ($(this).attr('checked')) {
@@ -14,7 +14,7 @@
           return elems.removeAttr('disabled');
         }
       });
-      $('body').on('click', '.js-toggle-colors-link', function(e) {
+      $('body').off('click.toggleColorsContainer').on('click.toggleColorsContainer', '.js-toggle-colors-link', function(e) {
         e.preventDefault();
         return $('.js-toggle-colors-container').toggle();
       });

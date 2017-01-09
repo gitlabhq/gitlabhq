@@ -7,18 +7,21 @@
     }
 
     BuildArtifacts.prototype.disablePropagation = function() {
-      $('.top-block').on('click', '.download', function(e) {
-        return e.stopPropagation();
-      });
-      return $('.tree-holder').on('click', 'tr[data-link] a', function(e) {
-        return e.stopImmediatePropagation();
-      });
+      $('.top-block').off('click.download')
+        .on('click.download', '.download', function(e) {
+          return e.stopPropagation();
+        });
+      return $('.tree-holder').off('click.treeHolder')
+        .on('click.treeHolder', 'tr[data-link] a', function(e) {
+          return e.stopImmediatePropagation();
+        });
     };
 
     BuildArtifacts.prototype.setupEntryClick = function() {
-      return $('.tree-holder').on('click', 'tr[data-link]', function(e) {
-        return window.location = this.dataset.link;
-      });
+      return $('.tree-holder').off('click.visitLink')
+        .on('click.visitLink', 'tr[data-link]', function(e) {
+          return window.location = this.dataset.link;
+        });
     };
 
     return BuildArtifacts;

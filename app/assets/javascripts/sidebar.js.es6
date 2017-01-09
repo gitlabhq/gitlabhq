@@ -37,11 +37,16 @@
         $(pageSelector).hasClass(expandedPageClass)
       );
       $(document)
-        .on('click', sidebarToggleSelector, () => this.toggleSidebar())
-        .on('click', pinnedToggleSelector, () => this.togglePinnedState())
-        .on('click', 'html, body', (e) => this.handleClickEvent(e))
-        .on('page:change', () => this.renderState())
-        .on('todo:toggle', (e, count) => this.updateTodoCount(count));
+        .off('click.toggleSidebar')
+        .on('click.toggleSidebar', sidebarToggleSelector, () => this.toggleSidebar())
+        .off('click.togglePinnedState')
+        .on('click.togglePinnedState', pinnedToggleSelector, () => this.togglePinnedState())
+        .off('click.sidebarHandleClickEvent')
+        .on('click.sidebarHandleClickEvent', 'html, body', (e) => this.handleClickEvent(e))
+        .off('page:change.sidebarRenderState')
+        .on('page:change.sidebarRenderState', () => this.renderState())
+        .off('todo:toggle.updateTodoCount')
+        .on('todo:toggle.updateTodoCount', (e, count) => this.updateTodoCount(count));
       this.renderState();
     }
 

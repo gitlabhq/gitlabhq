@@ -6,7 +6,7 @@
       this.$container = $(container);
       this.$buttons = this.$container.find('.js-subscribe-button');
 
-      this.$buttons.on('click', this.toggleSubscription.bind(this));
+      this.$buttons.off('click.toggleSubscription').on('click.toggleSubscription', this.toggleSubscription.bind(this));
     }
 
     toggleSubscription(event) {

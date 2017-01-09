@@ -52,14 +52,15 @@ $(() => {
         const $dropdown = $('.js-ca-dropdown');
         const $label = $dropdown.find('.dropdown-label');
 
-        $dropdown.find('li a').off('click').on('click', (e) => {
-          e.preventDefault();
-          const $target = $(e.currentTarget);
-          this.startDate = $target.data('value');
+        $dropdown.find('li a').off('click.fetchCycleAnalyticsData')
+          .on('click.fetchCycleAnalyticsData', (e) => {
+            e.preventDefault();
+            const $target = $(e.currentTarget);
+            this.startDate = $target.data('value');
 
-          $label.text($target.text().trim());
-          this.fetchCycleAnalyticsData({ startDate: this.startDate });
-        });
+            $label.text($target.text().trim());
+            this.fetchCycleAnalyticsData({ startDate: this.startDate });
+          });
       },
       fetchCycleAnalyticsData(options) {
         const fetchOptions = options || { startDate: this.startDate };

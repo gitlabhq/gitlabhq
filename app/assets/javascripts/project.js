@@ -24,15 +24,15 @@
       });
       // Ref switcher
       this.initRefSwitcher();
-      $('.project-refs-select').on('change', function() {
+      $('.project-refs-select').off('change.submitRefs').on('change.submitRefs', function() {
         return $(this).parents('form').submit();
       });
-      $('.hide-no-ssh-message').on('click', function(e) {
+      $('.hide-no-ssh-message').off('click.hideNoSSH').on('click.hideNoSSH', function(e) {
         Cookies.set('hide_no_ssh_message', 'false');
         $(this).parents('.no-ssh-key-message').remove();
         return e.preventDefault();
       });
-      $('.hide-no-password-message').on('click', function(e) {
+      $('.hide-no-password-message').off('click.hideNoPassword').on('click.hideNoPassword', function(e) {
         Cookies.set('hide_no_password_message', 'false');
         $(this).parents('.no-password-message').remove();
         return e.preventDefault();
@@ -42,12 +42,12 @@
 
     Project.prototype.projectSelectDropdown = function() {
       new ProjectSelect();
-      $('.project-item-select').on('click', (function(_this) {
+      $('.project-item-select').off('click.changeProject').on('click.changeProject', (function(_this) {
         return function(e) {
           return _this.changeProject($(e.currentTarget).val());
         };
       })(this));
-      return $('.js-projects-dropdown-toggle').on('click', function(e) {
+      return $('.js-projects-dropdown-toggle').off('click.toggleProjectDropdown').on('click.toggleProjectDropdown', function(e) {
         e.preventDefault();
         return $('.js-projects-dropdown').select2('open');
       });

@@ -2,8 +2,7 @@
 (function() {
   this.Aside = (function() {
     function Aside() {
-      $(document).off("click", "a.show-aside");
-      $(document).on("click", 'a.show-aside', function(e) {
+      $(document).off("click.showAside", "a.show-aside").on("click.showAside", 'a.show-aside', function(e) {
         var btn, icon;
         e.preventDefault();
         btn = $(e.currentTarget);

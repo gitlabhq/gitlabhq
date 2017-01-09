@@ -54,7 +54,7 @@
     }
 
     initRemoveDueDate() {
-      this.$block.on('click', '.js-remove-due-date', (e) => {
+      this.$block.off('click.removeDueDate').on('click.removeDueDate', '.js-remove-due-date', (e) => {
         e.preventDefault();
 
         if (this.$dropdown.hasClass('js-issue-boards-due-date')) {
@@ -68,9 +68,10 @@
     }
 
     initStopPropagation() {
-      $(document).off('click', '.ui-datepicker-header a').on('click', '.ui-datepicker-header a', (e) => {
-        return e.stopImmediatePropagation();
-      });
+      $(document).off('click.stopImmediatePropagation', '.ui-datepicker-header a')
+        .on('click.stopImmediatePropagation', '.ui-datepicker-header a', (e) => {
+          return e.stopImmediatePropagation();
+        });
     }
 
     saveDueDate(isDropdown) {
@@ -158,11 +159,12 @@
         dateFormat: 'yy-mm-dd'
       });
 
-      $('.js-clear-due-date,.js-clear-start-date').on('click', (e) => {
-        e.preventDefault();
-        const datepicker = $(e.target).siblings('.datepicker');
-        $.datepicker._clearDate(datepicker);
-      });
+      $('.js-clear-due-date,.js-clear-start-date').off('click.clearDate')
+        .on('click.clearDate', (e) => {
+          e.preventDefault();
+          const datepicker = $(e.target).siblings('.datepicker');
+          $.datepicker._clearDate(datepicker);
+        });
     }
 
     initIssuableSelect() {

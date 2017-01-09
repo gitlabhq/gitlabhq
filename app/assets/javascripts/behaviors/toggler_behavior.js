@@ -8,7 +8,7 @@
     //   %a.js-toggle-button
     //   %div.js-toggle-content
     //
-    $('body').on('click', '.js-toggle-button', function(e) {
+    $('body').off('click.toggler').on('click.toggler', '.js-toggle-button', function(e) {
       e.preventDefault();
       $(this)
         .find('.fa')

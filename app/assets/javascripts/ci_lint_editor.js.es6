@@ -7,7 +7,7 @@
       this.textarea = document.querySelector('#content');
 
       this.editor.getSession().setMode('ace/mode/yaml');
-      this.editor.on('input', () => {
+      this.editor.off('input.updateContent').on('input.updateContent', () => {
         const content = this.editor.getSession().getValue();
         this.textarea.value = content;
       });

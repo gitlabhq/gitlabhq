@@ -6,14 +6,14 @@
     var FROM_SENTENCE_REGEX = /(?:, and | and |, )/; //For separating lists produced by ruby's Array#toSentence
     function AwardsHandler() {
       this.aliases = gl.emojiAliases();
-      $(document).off('click', '.js-add-award').on('click', '.js-add-award', (function(_this) {
+      $(document).off('click.showMenu', '.js-add-award').on('click.showMenu', '.js-add-award', (function(_this) {
         return function(e) {
           e.stopPropagation();
           e.preventDefault();
           return _this.showEmojiMenu($(e.currentTarget));
         };
       })(this));
-      $('html').on('click', function(e) {
+      $('html').off('click.removeFocus').on('click.removeFocus', function(e) {
         var $target;
         $target = $(e.target);
         if (!$target.closest('.emoji-menu-content').length) {
@@ -26,7 +26,7 @@
           }
         }
       });
-      $(document).off('click', '.js-emoji-btn').on('click', '.js-emoji-btn', (function(_this) {
+      $(document).off('click.addAward', '.js-emoji-btn').on('click.addAward', '.js-emoji-btn', (function(_this) {
         return function(e) {
           var $target, emoji;
           e.preventDefault();
@@ -263,9 +263,10 @@
       var className = 'pulse animated once short';
       $emoji.addClass(className);
 
-      $emoji.on('webkitAnimationEnd animationEnd', function() {
-        $(this).removeClass(className);
-      });
+      $emoji.off('webkitAnimationEnd.removeClass animationEnd.removeClass')
+        .on('webkitAnimationEnd.removeClass animationEnd.removeClass', function() {
+          $(this).removeClass(className);
+        });
     };
 
     AwardsHandler.prototype.createEmoji = function(votesBlock, emoji) {
@@ -349,7 +350,7 @@
     };
 
     AwardsHandler.prototype.setupSearch = function() {
-      return $('input.emoji-search').on('keyup', (function(_this) {
+      return $('input.emoji-search').off('keyup.search').on('keyup.search', (function(_this) {
         return function(ev) {
           var found_emojis, h5, term, ul;
           term = $(ev.target).val();

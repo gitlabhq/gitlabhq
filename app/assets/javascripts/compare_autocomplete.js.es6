@@ -47,7 +47,7 @@
             return $el.text().trim();
           }
         });
-        $filterInput.on('keyup', (e) => {
+        $filterInput.off('keyup.filterInput').on('keyup.filterInput', (e) => {
           const keyCode = e.keyCode || e.which;
           if (keyCode !== 13) return;
           const text = $filterInput.val();
@@ -56,7 +56,7 @@
           $dropdownContainer.removeClass('open');
         });
 
-        $dropdownContainer.on('click', '.dropdown-content a', (e) => {
+        $dropdownContainer.off('click.dropdownTooltip').on('click.dropdownTooltip', '.dropdown-content a', (e) => {
           $dropdown.prop('title', e.target.text.replace(/_+?/g, '-'));
           if ($dropdown.hasClass('has-tooltip')) {
             $dropdown.tooltip('fixTitle');

@@ -33,7 +33,7 @@
         this.content.after(this.collapsedContent);
         this.$toggleIcon.addClass('fa-caret-down');
       }
-      clickTarget = $('.file-title, .click-to-expand', this.file).on('click', this.toggleDiff);
+      clickTarget = $('.file-title, .click-to-expand', this.file).off('click.toggleDiff').on('click.toggleDiff', this.toggleDiff);
       if (forceLoad) {
         this.toggleDiff({ target: clickTarget }, cb);
       }

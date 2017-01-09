@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, prefer-arrow-callback, no-unused-vars, consistent-return, camelcase, comma-dangle, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, prefer-arrow-callback, no-unused-vars, consistent-return, camelcase, comma-dangle, padded-blocks, max-len, no-var */
 /* global Dropzone */
 /* global Mousetrap */
 
@@ -36,31 +36,34 @@
 (function() {
   this.ZenMode = (function() {
     function ZenMode() {
+      var $document = $(document);
+
       this.active_backdrop = null;
       this.active_textarea = null;
-      $(document).on('click', '.js-zen-enter', function(e) {
+
+      $document.off('click.zenEnter').on('click.zenEnter', '.js-zen-enter', function(e) {
         e.preventDefault();
         return $(e.currentTarget).trigger('zen_mode:enter');
       });
-      $(document).on('click', '.js-zen-leave', function(e) {
+      $document.off('click.zenLeave').on('click.zenLeave', '.js-zen-leave', function(e) {
         e.preventDefault();
         return $(e.currentTarget).trigger('zen_mode:leave');
       });
-      $(document).on('zen_mode:enter', (function(_this) {
+      $document.off('zen_mode:enter.zenBackdrop').on('zen_mode:enter.zenBackdrop', (function(_this) {
         return function(e) {
           return _this.enter($(e.target).closest('.md-area').find('.zen-backdrop'));
         };
       })(this));
-      $(document).on('zen_mode:leave', (function(_this) {
+      $document.off('zen_mode:leave.exit').on('zen_mode:leave.exit', (function(_this) {
         return function(e) {
           return _this.exit();
         };
       })(this));
-      $(document).on('keydown', function(e) {
+      $document.off('keydown.zenEscape').on('keydown.zenEscape', function(e) {
         // Esc
         if (e.keyCode === 27) {
           e.preventDefault();
-          return $(document).trigger('zen_mode:leave');
+          return $document.trigger('zen_mode:leave');
         }
       });
     }

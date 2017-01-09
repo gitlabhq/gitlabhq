@@ -43,8 +43,8 @@
     var clipboard;
 
     clipboard = new Clipboard('[data-clipboard-target], [data-clipboard-text]');
-    clipboard.on('success', genericSuccess);
-    return clipboard.on('error', genericError);
+    clipboard.off('success.genericSuccess').on('success.genericSuccess', genericSuccess);
+    return clipboard.off('error.genericError').on('error.genericError', genericError);
   });
 
 }).call(this);

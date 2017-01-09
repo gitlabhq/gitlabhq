@@ -28,13 +28,14 @@
       var viewMode;
       viewMode = ImageFile.viewModes[0];
       $('.view-modes', this.file).removeClass('hide');
-      $('.view-modes-menu', this.file).on('click', 'li', (function(_this) {
-        return function(event) {
-          if (!$(event.currentTarget).hasClass('active')) {
-            return _this.activateViewMode(event.currentTarget.className);
-          }
-        };
-      })(this));
+      $('.view-modes-menu', this.file).off('click.activateViewMode')
+        .on('click.activateViewMode', 'li', (function(_this) {
+          return function(event) {
+            if (!$(event.currentTarget).hasClass('active')) {
+              return _this.activateViewMode(event.currentTarget.className);
+            }
+          };
+        })(this));
       return this.activateViewMode(viewMode);
     };
 
@@ -162,7 +163,7 @@
         if (domImg.complete) {
           return callback.call(this, domImg.naturalWidth, domImg.naturalHeight);
         } else {
-          return img.on('load', (function(_this) {
+          return img.off('load.requestImageInfo').on('load.requestImageInfo', (function(_this) {
             return function() {
               return callback.call(_this, domImg.naturalWidth, domImg.naturalHeight);
             };

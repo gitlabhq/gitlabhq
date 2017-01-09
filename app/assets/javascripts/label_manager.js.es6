@@ -19,7 +19,8 @@
     }
 
     bindEvents() {
-      return this.togglePriorityButton.on('click', this, this.onTogglePriorityClick);
+      return this.off('click.onTogglePriorityClick')
+        .on('click.onTogglePriorityClick', this, this.onTogglePriorityClick);
     }
 
     onTogglePriorityClick(e) {

@@ -9,8 +9,9 @@
     this.find('.js-render-math').renderMath();
   };
 
-  $(document).on('ready page:load', function() {
-    return $('body').renderGFM();
-  });
+  $(document).off('ready.renderGFM page:load.renderGFM')
+    .on('ready.renderGFM page:load.renderGFM', function() {
+      return $('body').renderGFM();
+    });
 
 }).call(this);

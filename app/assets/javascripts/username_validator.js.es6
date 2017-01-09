@@ -24,7 +24,7 @@
         this.validateUsername(username);
       }, debounceTimeoutDuration);
 
-      this.inputElement.on('keyup.username_check', () => {
+      this.inputElement.off('keyup.username_check').on('keyup.username_check', () => {
         const username = this.inputElement.val();
 
         this.state.valid = this.inputDomElement.validity.valid;
@@ -38,7 +38,7 @@
       });
 
       // Override generic field validation
-      this.inputElement.on('invalid', this.interceptInvalid.bind(this));
+      this.inputElement.off('invalid.interceptInvalid').on('invalid.interceptInvalid', this.interceptInvalid.bind(this));
     }
 
     renderState() {

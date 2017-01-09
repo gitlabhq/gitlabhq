@@ -92,7 +92,7 @@
         error_message: error.message(),
         error_code: error.errorCode
       });
-      return this.container.find('#js-u2f-try-again').on('click', this.renderInProgress);
+      return this.container.find('#js-u2f-try-again').off('click.renderInProgress').on('click.renderInProgress', this.renderInProgress);
     };
 
     U2FAuthenticate.prototype.renderAuthenticated = function(deviceResponse) {

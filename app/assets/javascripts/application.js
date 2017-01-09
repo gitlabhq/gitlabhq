@@ -65,7 +65,9 @@
 (function () {
   document.addEventListener('page:fetch', function () {
     // Unbind scroll events
+    /* eslint-disable turbolinks-event-handling/jquery-use-event-namespaces */
     $(document).off('scroll');
+    /* eslint-enable turbolinks-event-handling/jquery-use-event-namespaces */
     // Close any open tooltips
     $('.has-tooltip, [data-toggle="tooltip"]').tooltip('destroy');
   });
@@ -90,12 +92,13 @@
     Cookies.defaults.path = gon.relative_url_root || '/';
 
     // `hashchange` is not triggered when link target is already in window.location
-    $body.on('click', 'a[href^="#"]', function() {
-      var href = this.getAttribute('href');
-      if (href.substr(1) === gl.utils.getLocationHash()) {
-        setTimeout(gl.utils.handleLocationHash, 1);
-      }
-    });
+    $body.off('click.handleLocationHash')
+      .on('click.handleLocationHash', 'a[href^="#"]', function() {
+        var href = this.getAttribute('href');
+        if (href.substr(1) === gl.utils.getLocationHash()) {
+          setTimeout(gl.utils.handleLocationHash, 1);
+        }
+      });
 
     // prevent default action for disabled buttons
     $('.btn').click(function(e) {
@@ -111,13 +114,14 @@
       cursorcolor: '#FFF',
       cursorborder: '1px solid #FFF'
     });
-    $('.js-select-on-focus').on('focusin', function () {
-      return $(this).select().one('mouseup', function (e) {
-        return e.preventDefault();
+    $('.js-select-on-focus').off('focusin.selectOnFocus')
+      .on('focusin.selectOnFocus', function () {
+        return $(this).select().one('mouseup', function (e) {
+          return e.preventDefault();
+        });
+      // Click a .js-select-on-focus field, select the contents
+      // Prevent a mouseup event from deselecting the input
       });
-    // Click a .js-select-on-focus field, select the contents
-    // Prevent a mouseup event from deselecting the input
-    });
     $('.remove-row').bind('ajax:success', function () {
       $(this).tooltip('destroy')
         .closest('li')
@@ -149,7 +153,7 @@
         return $(el).data('placement') || 'bottom';
       }
     });
-    $('.trigger-submit').on('change', function () {
+    $('.trigger-submit').off('change.triggerSubmit').on('change.triggerSubmit', function () {
       return $(this).parents('form').submit();
     // Form submitter
     });
@@ -162,17 +166,18 @@
       $flash.show();
     }
     // Disable form buttons while a form is submitting
-    $body.on('ajax:complete, ajax:beforeSend, submit', 'form', function (e) {
-      var buttons;
-      buttons = $('[type="submit"]', this);
-      switch (e.type) {
-        case 'ajax:beforeSend':
-        case 'submit':
-          return buttons.disable();
-        default:
-          return buttons.enable();
-      }
-    });
+    $body.off('ajax:complete.submitting, ajax:beforeSend.submitting, submit.submitting')
+      .on('ajax:complete.submitting, ajax:beforeSend.submitting, submit.submitting', 'form', function (e) {
+        var buttons;
+        buttons = $('[type="submit"]', this);
+        switch (e.type) {
+          case 'ajax:beforeSend':
+          case 'submit':
+            return buttons.disable();
+          default:
+            return buttons.enable();
+        }
+      });
     $(document).ajaxError(function (e, xhrObj) {
       var ref = xhrObj.status;
       if (xhrObj.status === 401) {
@@ -185,21 +190,22 @@
       // Show/Hide the profile menu when hovering the account box
       return $(this).toggleClass('hover');
     });
-    $document.on('click', '.diff-content .js-show-suppressed-diff', function () {
-      var $container;
-      $container = $(this).parent();
-      $container.next('table').show();
-      return $container.remove();
-    // Commit show suppressed diff
-    });
-    $('.navbar-toggle').on('click', function () {
+    $document.off('click.showSuppressedDiff')
+      .on('click.showSuppressedDiff', '.diff-content .js-show-suppressed-diff', function () {
+        var $container;
+        $container = $(this).parent();
+        $container.next('table').show();
+        return $container.remove();
+      // Commit show suppressed diff
+      });
+    $('.navbar-toggle').off('click.toggleNavbar').on('click.toggleNavbar', function () {
       $('.header-content .title').toggle();
       $('.header-content .header-logo').toggle();
       $('.header-content .navbar-collapse').toggle();
       return $('.navbar-toggle').toggleClass('active');
     });
     // Show/hide comments on diff
-    $body.on('click', '.js-toggle-diff-comments', function (e) {
+    $body.off('click.toggleComments').on('click.toggleComments', '.js-toggle-diff-comments', function (e) {
       var $this = $(this);
       var notesHolders = $this.closest('.diff-file').find('.notes_holder');
       $this.toggleClass('active');
@@ -211,32 +217,34 @@
       $this.trigger('blur');
       return e.preventDefault();
     });
-    $document.off('click', '.js-confirm-danger');
-    $document.on('click', '.js-confirm-danger', function (e) {
-      var btn = $(e.target);
-      var form = btn.closest('form');
-      var text = btn.data('confirm-danger-message');
-      e.preventDefault();
-      return new ConfirmDangerModal(form, text);
-    });
+    $document.off('click.confirmDanger', '.js-confirm-danger')
+      .on('click.confirmDanger', '.js-confirm-danger', function (e) {
+        var btn = $(e.target);
+        var form = btn.closest('form');
+        var text = btn.data('confirm-danger-message');
+        e.preventDefault();
+        return new ConfirmDangerModal(form, text);
+      });
     $('input[type="search"]').each(function () {
       var $this = $(this);
       $this.attr('value', $this.val());
     });
-    $document.off('keyup', 'input[type="search"]').on('keyup', 'input[type="search"]', function () {
-      var $this;
-      $this = $(this);
-      return $this.attr('value', $this.val());
-    });
-    $document.off('breakpoint:change').on('breakpoint:change', function (e, breakpoint) {
-      var $gutterIcon;
-      if (breakpoint === 'sm' || breakpoint === 'xs') {
-        $gutterIcon = $sidebarGutterToggle.find('i');
-        if ($gutterIcon.hasClass('fa-angle-double-right')) {
-          return $sidebarGutterToggle.trigger('click');
+    $document.off('keyup.searchInput', 'input[type="search"]')
+      .on('keyup.searchInput', 'input[type="search"]', function () {
+        var $this;
+        $this = $(this);
+        return $this.attr('value', $this.val());
+      });
+    $document.off('breakpoint:change.sidebarGutterToggle')
+      .on('breakpoint:change.sidebarGutterToggle', function (e, breakpoint) {
+        var $gutterIcon;
+        if (breakpoint === 'sm' || breakpoint === 'xs') {
+          $gutterIcon = $sidebarGutterToggle.find('i');
+          if ($gutterIcon.hasClass('fa-angle-double-right')) {
+            return $sidebarGutterToggle.trigger('click');
+          }
         }
-      }
-    });
+      });
     fitSidebarForSize = function () {
       var oldBootstrapBreakpoint;
       oldBootstrapBreakpoint = bootstrapBreakpoint;

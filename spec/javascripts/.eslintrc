@@ -23,6 +23,9 @@
   "plugins": ["jasmine"],
   "rules": {
     "prefer-arrow-callback": 0,
-    "func-names": 0
+    "func-names": 0,
+    "turbolinks-event-handling/jquery-off-before-on": 0,
+    "turbolinks-event-handling/jquery-use-event-namespaces": 0
+    # "turbolinks-event-handling/vanilla-addeventlistener-needs-function-reference": 0
   }
 }

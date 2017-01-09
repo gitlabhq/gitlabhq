@@ -24,28 +24,32 @@
     }
 
     cleanBinding () {
-      this.$colorSuggestions.off('click');
-      this.$newLabelField.off('keyup change');
-      this.$newColorField.off('keyup change');
-      this.$dropdownBack.off('click');
-      this.$cancelButton.off('click');
-      this.$newLabelCreateButton.off('click');
+      this.$colorSuggestions.off('click.addColorValue');
+      this.$newLabelField.off('keyup.enableLabelCreateButton change.enableLabelCreateButton');
+      this.$newColorField.off('keyup.enableLabelCreateButton change.enableLabelCreateButton');
+      this.$dropdownBack.off('click.resetForm');
+      this.$cancelButton.off('click.cancelForm');
+      this.$newLabelCreateButton.off('click.saveLabel');
     }
 
     addBinding () {
       const self = this;
 
-      this.$colorSuggestions.on('click', function (e) {
+      this.$colorSuggestions.off('click.addColorValue').on('click.addColorValue', function (e) {
         const $this = $(this);
         self.addColorValue(e, $this);
       });
 
-      this.$newLabelField.on('keyup change', this.enableLabelCreateButton.bind(this));
-      this.$newColorField.on('keyup change', this.enableLabelCreateButton.bind(this));
+      this.$newLabelField
+        .off('keyup.enableLabelCreateButton change.enableLabelCreateButton')
+        .on('keyup.enableLabelCreateButton change.enableLabelCreateButton', this.enableLabelCreateButton.bind(this));
+      this.$newColorField
+        .off('keyup.enableLabelCreateButton change.enableLabelCreateButton')
+        .on('keyup.enableLabelCreateButton change.enableLabelCreateButton', this.enableLabelCreateButton.bind(this));
 
-      this.$dropdownBack.on('click', this.resetForm.bind(this));
+      this.$dropdownBack.off('click.resetForm').on('click.resetForm', this.resetForm.bind(this));
 
-      this.$cancelButton.on('click', function(e) {
+      this.$cancelButton.off('click.cancelForm').on('click.cancelForm', function(e) {
         e.preventDefault();
         e.stopPropagation();
 
@@ -53,7 +57,7 @@
         self.$dropdownBack.trigger('click');
       });
 
-      this.$newLabelCreateButton.on('click', this.saveLabel.bind(this));
+      this.$newLabelCreateButton.off('click.saveLabel').on('click.saveLabel', this.saveLabel.bind(this));
     }
 
     addColorValue (e, $this) {

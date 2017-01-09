@@ -6,7 +6,7 @@
       this.initKeyNav();
       // Code browser tree slider
       // Make the entire tree-item row clickable, but not if clicking another link (like a commit message)
-      $(".tree-content-holder .tree-item").on('click', function(e) {
+      $(".tree-content-holder .tree-item").off('click.openItem').on('click.openItem', function(e) {
         var $clickedEl, path;
         $clickedEl = $(e.target);
         path = $('.tree-item-file-name a', this).attr('href');

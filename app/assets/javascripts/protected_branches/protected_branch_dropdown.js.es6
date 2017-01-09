@@ -43,7 +43,8 @@ class ProtectedBranchDropdown {
   }
 
   bindEvents() {
-    this.$protectedBranch.on('click', this.onClickCreateWildcard.bind(this));
+    this.$protectedBranch.off('click.onClickCreateWildcard')
+      .on('click.onClickCreateWildcard', this.onClickCreateWildcard.bind(this));
   }
 
   onClickCreateWildcard() {

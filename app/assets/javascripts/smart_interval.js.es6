@@ -88,8 +88,10 @@
 
     destroy() {
       this.cancel();
-      document.removeEventListener('visibilitychange', this.handleVisibilityChange);
-      $(document).off('visibilitychange').off('page:before-unload');
+      const $document = $(document);
+      $document.off('visibilitychange.handleVisibilityChange')
+        .on('visibilitychange.handleVisibilityChange', this.handleVisibilityChange);
+      $document.off('page:before-unload.cancelSmartInterval');
     }
 
     /* private */
@@ -112,7 +114,7 @@
 
     initPageUnloadHandling() {
       // prevent interval continuing after page change, when kept in cache by Turbolinks
-      $(document).on('page:before-unload', () => this.cancel());
+      $(document).off('page:before-unload.cancelSmartInterval').on('page:before-unload.cancelSmartInterval', () => this.cancel());
     }
 
     handleVisibilityChange(e) {

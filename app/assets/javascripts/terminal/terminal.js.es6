@@ -39,7 +39,7 @@
       const decoder = new TextDecoder('utf-8');
       const encoder = new TextEncoder('utf-8');
 
-      this.terminal.on('data', (data) => {
+      this.terminal.off('data.sendEncodedData').on('data.sendEncodedData', (data) => {
         this.socket.send(encoder.encode(data));
       });
 

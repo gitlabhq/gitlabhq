@@ -67,16 +67,18 @@
     }
 
     LineHighlighter.prototype.bindEvents = function() {
-      $('#blob-content-holder').on('mousedown', 'a[data-line-number]', this.clickHandler);
+      $('#blob-content-holder').off('mousedown.clickHandler')
+        .on('mousedown.clickHandler', 'a[data-line-number]', this.clickHandler);
       // While it may seem odd to bind to the mousedown event and then throw away
       // the click event, there is a method to our madness.
       //
       // If not done this way, the line number anchor will sometimes keep its
       // active state even when the event is cancelled, resulting in an ugly border
       // around the link and/or a persisted underline text decoration.
-      return $('#blob-content-holder').on('click', 'a[data-line-number]', function(event) {
-        return event.preventDefault();
-      });
+      return $('#blob-content-holder').off('click.preventDefault')
+        .on('click.preventDefault', 'a[data-line-number]', function(event) {
+          return event.preventDefault();
+        });
     };
 
     LineHighlighter.prototype.clickHandler = function(event) {

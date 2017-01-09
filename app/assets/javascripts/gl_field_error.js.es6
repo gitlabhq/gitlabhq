@@ -78,7 +78,8 @@
 
       // hidden when injected into DOM
       errorAnchor.after(this.fieldErrorElement);
-      this.inputElement.off('invalid').on('invalid', this.handleInvalidSubmit.bind(this));
+      this.inputElement.off('invalid.handleInvalidSubmit')
+        .on('invalid.handleInvalidSubmit', this.handleInvalidSubmit.bind(this));
       this.scopedSiblings = this.safelySelectSiblings();
     }
 

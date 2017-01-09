@@ -44,18 +44,24 @@
     bindEvents() {
       var _this;
       _this = this;
-      this.fileInput.on('change', function(e) {
-        return _this.onFileInputChange(e, this);
-      });
-      this.pickImageEl.on('click', this.onPickImageClick);
-      this.modalCrop.on('shown.bs.modal', this.onModalShow);
-      this.modalCrop.on('hidden.bs.modal', this.onModalHide);
-      this.uploadImageBtn.on('click', this.onUploadImageBtnClick);
-      this.cropActionsBtn.on('click', function(e) {
-        var btn;
-        btn = this;
-        return _this.onActionBtnClick(btn);
-      });
+      this.fileInput.off('change.onFileInputChange')
+        .on('change.onFileInputChange', function(e) {
+          return _this.onFileInputChange(e, this);
+        });
+      this.pickImageEl.off('click.onPickImageClick')
+        .on('click.onPickImageClick', this.onPickImageClick);
+      this.modalCrop.off('shown.bs.modal.onModalShowCrop')
+        .on('shown.bs.modal.onModalShowCrop', this.onModalShow);
+      this.modalCrop.off('hidden.bs.modal.onModalHideCrop')
+        .on('hidden.bs.modal.onModalHideCrop', this.onModalHide);
+      this.uploadImageBtn.off('click.onUploadImageBtnClick')
+        .on('click.onUploadImageBtnClick', this.onUploadImageBtnClick);
+      this.cropActionsBtn.off('click.onActionBtnClick')
+        .on('click.onActionBtnClick', function(e) {
+          var btn;
+          btn = this;
+          return _this.onActionBtnClick(btn);
+        });
       return this.croppedImageBlob = null;
     }
 

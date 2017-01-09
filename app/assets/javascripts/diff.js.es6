@@ -16,9 +16,10 @@
       }
 
       $(document)
-        .off('click', '.js-unfold, .diff-line-num a')
-        .on('click', '.js-unfold', this.handleClickUnfold.bind(this))
-        .on('click', '.diff-line-num a', this.handleClickLineNum.bind(this));
+        .off('click.handleClickUnfold', '.js-unfold')
+        .on('click.handleClickUnfold', '.js-unfold', this.handleClickUnfold.bind(this))
+        .off('click.handleClickLineNum', '.diff-line-num a')
+        .on('click.handleClickLineNum', '.diff-line-num a', this.handleClickLineNum.bind(this));
 
       this.highlighSelectedLine();
     }

@@ -27,10 +27,10 @@
       // `immediate` param set to false debounces on the `trailing` edge, lets user finish typing
       const debouncedExecSearch = _.debounce(Issuable.executeSearch, 1000, false);
 
-      $searchInput.off('keyup').on('keyup', debouncedExecSearch);
+      $searchInput.off('keyup.debouncedExecSearch').on('keyup.debouncedExecSearch', debouncedExecSearch);
 
       // ensures existing filters are preserved when manually submitted
-      $('#issuable_search_form').on('submit', (e) => {
+      $('#issuable_search_form').off('submit.debouncedExecSearch').on('submit.debouncedExecSearch', (e) => {
         e.preventDefault();
         debouncedExecSearch(e);
       });
@@ -97,16 +97,17 @@
       Issuable.filterResults($filtersForm);
     },
     initLabelFilterRemove: function() {
-      return $(document).off('click', '.js-label-filter-remove').on('click', '.js-label-filter-remove', function(e) {
-        var $button;
-        $button = $(this);
-        // Remove the label input box
-        $('input[name="label_name[]"]').filter(function() {
-          return this.value === $button.data('label');
-        }).remove();
-        // Submit the form to get new data
-        Issuable.filterResults($('.filter-form'));
-      });
+      return $(document).off('click.filterResults', '.js-label-filter-remove')
+        .on('click.filterResults', '.js-label-filter-remove', function(e) {
+          var $button;
+          $button = $(this);
+          // Remove the label input box
+          $('input[name="label_name[]"]').filter(function() {
+            return this.value === $button.data('label');
+          }).remove();
+          // Submit the form to get new data
+          Issuable.filterResults($('.filter-form'));
+        });
     },
     filterResults: (function(_this) {
       return function(form) {
@@ -124,7 +125,7 @@
       };
     })(this),
     initResetFilters: function() {
-      $('.reset-filters').on('click', function(e) {
+      $('.reset-filters').off('click.resetFilters').on('click.resetFilters', function(e) {
         e.preventDefault();
         const target = e.target;
         const $form = $(target).parents('.js-filter-form');
@@ -136,11 +137,12 @@
     },
     initChecks: function() {
       this.issuableBulkActions = $('.bulk-update').data('bulkActions');
-      $('.check_all_issues').off('click').on('click', function() {
+      $('.check_all_issues').off('click.checkChanged').on('click.checkChanged', function() {
         $('.selected_issue').prop('checked', this.checked);
         return Issuable.checkChanged();
       });
-      return $('.selected_issue').off('change').on('change', Issuable.checkChanged.bind(this));
+      return $('.selected_issue').off('change.checkChanged')
+        .on('change.checkChanged', Issuable.checkChanged.bind(this));
     },
     checkChanged: function() {
       const $checkedIssues = $('.selected_issue:checked');
@@ -167,7 +169,7 @@
     },
 
     resetIncomingEmailToken: function() {
-      $('.incoming-email-token-reset').on('click', function(e) {
+      $('.incoming-email-token-reset').off('click.resetToken').on('click.resetToken', function(e) {
         e.preventDefault();
 
         $.ajax({

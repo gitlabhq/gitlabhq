@@ -9,7 +9,7 @@
       this.key = "autosave/" + key;
       this.field.data("autosave", this);
       this.restore();
-      this.field.on("input", (function(_this) {
+      this.field.off('input.save').on("input.save", (function(_this) {
         return function() {
           return _this.save();
         };

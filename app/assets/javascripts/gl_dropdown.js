@@ -23,7 +23,7 @@
       this.filterInputBlur = (ref = this.options.filterInputBlur) != null ? ref : true;
       $inputContainer = this.input.parent();
       $clearButton = $inputContainer.find('.js-dropdown-input-clear');
-      $clearButton.on('click', (function(_this) {
+      $clearButton.off('click.clear').on('click.clear', (function(_this) {
         // Clear click
         return function(e) {
           e.preventDefault();
@@ -34,13 +34,15 @@
       // Key events
       timeout = "";
       this.input
-        .on('keydown', function (e) {
+        .off('keydown.preventDefault')
+        .on('keydown.preventDefault', function (e) {
           var keyCode = e.which;
           if (keyCode === 13 && !options.elIsInput) {
             e.preventDefault()
           }
         })
-        .on('input', function() {
+        .off('input.filter')
+        .on('input.filter', function() {
           if (this.input.val() !== "" && !$inputContainer.hasClass(HAS_VALUE_CLASS)) {
             $inputContainer.addClass(HAS_VALUE_CLASS);
           } else if (this.input.val() === "" && $inputContainer.hasClass(HAS_VALUE_CLASS)) {
@@ -304,11 +306,15 @@
         });
       }
       // Event listeners
-      this.dropdown.on("shown.bs.dropdown", this.opened);
-      this.dropdown.on("hidden.bs.dropdown", this.hidden);
-      $(this.el).on("update.label", this.updateLabel);
-      this.dropdown.on("click", ".dropdown-menu, .dropdown-menu-close", this.shouldPropagate);
-      this.dropdown.on('keyup', (function(_this) {
+      this.dropdown.off('shown.bs.dropdown.opened')
+        .on("shown.bs.dropdown.opened", this.opened);
+      this.dropdown.off('hidden.bs.dropdown.hidden')
+        .on("hidden.bs.dropdown.hidden", this.hidden);
+      $(this.el).off('update.label.updateLabel')
+        .on("update.label.updateLabel", this.updateLabel);
+      this.dropdown.off('click.shouldPropagate')
+        .on("click.shouldPropagate", ".dropdown-menu, .dropdown-menu-close", this.shouldPropagate);
+      this.dropdown.off('keyup.escape').on('keyup.escape', (function(_this) {
         return function(e) {
           // Escape key
           if (e.which === 27) {
@@ -316,7 +322,7 @@
           }
         };
       })(this));
-      this.dropdown.on('blur', 'a', (function(_this) {
+      this.dropdown.off('blur.removeOpen').on('blur.removeOpen', 'a', (function(_this) {
         return function(e) {
           var $dropdownMenu, $relatedTarget;
           if (e.relatedTarget != null) {
@@ -329,20 +335,21 @@
         };
       })(this));
       if (this.dropdown.find(".dropdown-toggle-page").length) {
-        this.dropdown.find(".dropdown-toggle-page, .dropdown-menu-back").on("click", (function(_this) {
-          return function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            return _this.togglePage();
-          };
-        })(this));
+        this.dropdown.find(".dropdown-toggle-page, .dropdown-menu-back").off('click.togglePage')
+          .on("click.togglePage", (function(_this) {
+            return function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              return _this.togglePage();
+            };
+          })(this));
       }
       if (this.options.selectable) {
         selector = ".dropdown-content a";
         if (this.dropdown.find(".dropdown-toggle-page").length) {
           selector = ".dropdown-page-one .dropdown-content a";
         }
-        this.dropdown.on("click", selector, function(e) {
+        this.dropdown.off('click.updateLabel').on("click.updateLabel", selector, function(e) {
           var $el, selected, selectedObj, isMarking;
           $el = $(this);
           selected = self.rowClicked($el);
@@ -739,7 +746,7 @@
       if (this.dropdown.find(".dropdown-toggle-page").length) {
         selector = ".dropdown-page-one " + selector;
       }
-      return $('body').on('keydown', (function(_this) {
+      return $('body').off('keydown.arrowEvents').on('keydown.arrowEvents', (function(_this) {
         return function(e) {
           var $listItems, PREV_INDEX, currentKeyCode;
           currentKeyCode = e.which;
@@ -775,7 +782,7 @@
     };
 
     GitLabDropdown.prototype.removeArrayKeyEvent = function() {
-      return $('body').off('keydown');
+      return $('body').off('keydown.arrowEvents');
     };
 
     GitLabDropdown.prototype.resetRows = function resetRows() {

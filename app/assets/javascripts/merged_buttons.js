@@ -14,15 +14,20 @@
     }
 
     MergedButtons.prototype.cleanEventListeners = function() {
-      $(document).off('click', '.remove_source_branch');
-      $(document).off('ajax:success', '.remove_source_branch');
-      return $(document).off('ajax:error', '.remove_source_branch');
+      var $document = $(document);
+      $document.off('click.removeSourceBranch', '.remove_source_branch');
+      $document.off('ajax:success.removeBranchSuccess', '.remove_source_branch');
+      return $document.off('ajax:error.removeBranchError', '.remove_source_branch');
     };
 
     MergedButtons.prototype.initEventListeners = function() {
-      $(document).on('click', '.remove_source_branch', this.removeSourceBranch);
-      $(document).on('ajax:success', '.remove_source_branch', this.removeBranchSuccess);
-      return $(document).on('ajax:error', '.remove_source_branch', this.removeBranchError);
+      var $document = $(document);
+      $document.off('click.removeSourceBranch')
+        .on('click.removeSourceBranch', '.remove_source_branch', this.removeSourceBranch);
+      $document.off('ajax:success.removeBranchSuccess')
+        .on('ajax:success.removeBranchSuccess', '.remove_source_branch', this.removeBranchSuccess);
+      return $document.off('ajax:error.removeBranchError')
+        .on('ajax:error.removeBranchError', '.remove_source_branch', this.removeBranchError);
     };
 
     MergedButtons.prototype.removeSourceBranch = function() {

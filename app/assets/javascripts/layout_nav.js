@@ -17,7 +17,7 @@
     $(window).off('resize.nav').on('resize.nav', function() {
       return hideEndFade($scrollingTabs);
     });
-    $scrollingTabs.off('scroll').on('scroll', function(event) {
+    $scrollingTabs.off('scroll.initScrolling').on('scroll.initScrolling', function(event) {
       var $this, currentPosition, maxPosition;
       $this = $(this);
       currentPosition = $this.scrollLeft();

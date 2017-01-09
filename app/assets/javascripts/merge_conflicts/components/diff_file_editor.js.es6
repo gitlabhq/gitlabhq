@@ -61,9 +61,10 @@
             this.editor = ace.edit(content);
             this.editor.$blockScrolling = Infinity; // Turn off annoying warning
             this.editor.getSession().setMode(`ace/mode/${file.blob_ace_mode}`);
-            this.editor.on('change', () => {
-              this.saveDiffResolution();
-            });
+            this.editor.off('change.saveDiffResolution')
+              .on('change.saveDiffResolution', () => {
+                this.saveDiffResolution();
+              });
             this.saveDiffResolution();
           })
           .fail(() => {

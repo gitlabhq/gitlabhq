@@ -8,7 +8,7 @@
     CommitsList.timer = null;
 
     CommitsList.init = function(limit) {
-      $("body").on("click", ".day-commits-table li.commit", function(e) {
+      $("body").off('click.visitCommit').on("click.visitCommit", ".day-commits-table li.commit", function(e) {
         if (e.target.nodeName !== "A") {
           location.href = $(this).attr("url");
           e.stopPropagation();

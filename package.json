@@ -6,11 +6,12 @@
     "eslint-report": "npm run eslint -- --format html --output-file ./eslint-report.html"
   },
   "devDependencies": {
-    "eslint": "^3.10.1",
+    "eslint": "^3.12.2",
     "eslint-config-airbnb-base": "^10.0.1",
     "eslint-plugin-filenames": "^1.1.0",
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jasmine": "^2.1.0",
+    "eslint-plugin-turbolinks-event-handling": "0.0.1",
     "istanbul": "^0.4.5"
   }
 }

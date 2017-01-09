@@ -190,13 +190,13 @@
     }
 
     bindEvents() {
-      this.searchInput.on('keydown', this.onSearchInputKeyDown);
-      this.searchInput.on('keyup', this.onSearchInputKeyUp);
-      this.searchInput.on('click', this.onSearchInputClick);
-      this.searchInput.on('focus', this.onSearchInputFocus);
-      this.searchInput.on('blur', this.onSearchInputBlur);
-      this.clearInput.on('click', this.onClearInputClick);
-      return this.locationBadgeEl.on('click', (function(_this) {
+      this.searchInput.off('keydown.onSearchInputKeyDown').on('keydown.onSearchInputKeyDown', this.onSearchInputKeyDown);
+      this.searchInput.off('keyup.onSearchInputKeyUp').on('keyup.onSearchInputKeyUp', this.onSearchInputKeyUp);
+      this.searchInput.off('click.onSearchInputClick').on('click.onSearchInputClick', this.onSearchInputClick);
+      this.searchInput.off('focus.onSearchInputFocus').on('focus.onSearchInputFocus', this.onSearchInputFocus);
+      this.searchInput.off('blur.onSearchInputBlur').on('blur.onSearchInputBlur', this.onSearchInputBlur);
+      this.clearInput.off('click.onClearInputClick').on('click.onClearInputClick', this.onClearInputClick);
+      return this.locationBadgeEl.off('click.focusInputBadge').on('click.focusInputBadge', (function(_this) {
         return function() {
           return _this.searchInput.focus();
         };

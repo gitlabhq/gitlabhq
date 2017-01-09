@@ -4,7 +4,7 @@
   class ProjectVariables {
     constructor() {
       this.$revealBtn = $('.js-btn-toggle-reveal-values');
-      this.$revealBtn.on('click', this.toggleRevealState.bind(this));
+      this.$revealBtn.off('click.toggleRevealState').on('click.toggleRevealState', this.toggleRevealState.bind(this));
     }
 
     toggleRevealState(e) {

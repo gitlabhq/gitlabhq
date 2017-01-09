@@ -6,11 +6,12 @@
   class Activities {
     constructor() {
       Pager.init(20, true, false, this.updateTooltips);
-      $('.event-filter-link').on('click', (e) => {
-        e.preventDefault();
-        this.toggleFilter(e.currentTarget);
-        this.reloadActivities();
-      });
+      $('.event-filter-link').off('click.reloadActivities')
+        .on('click.reloadActivities', (e) => {
+          e.preventDefault();
+          this.toggleFilter(e.currentTarget);
+          this.reloadActivities();
+        });
     }
 
     updateTooltips() {

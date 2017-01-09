@@ -24,7 +24,7 @@
       flash = $('<div/>', {
         "class": "flash-" + type
       });
-      flash.on('click', hideFlash);
+      flash.off('click.hideFlash').on('click.hideFlash', hideFlash);
       textDiv = $('<div/>', {
         "class": 'flash-text',
         text: message

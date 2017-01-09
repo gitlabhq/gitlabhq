@@ -133,7 +133,7 @@
             return '#ededed';
           }
         };
-      })(this)).attr('data-container', 'body').on('click', this.clickDay);
+      })(this)).attr('data-container', 'body').off('click.renderDays').on('click.renderDays', this.clickDay);
     };
 
     Calendar.prototype.renderDayTitles = function() {

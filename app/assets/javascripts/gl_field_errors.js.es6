@@ -24,7 +24,8 @@
         .filter((input) => !input.classList.contains(customValidationFlag))
         .map((input) => new global.GlFieldError({ input, formErrors: this }));
 
-      this.form.on('submit', this.catchInvalidFormSubmit);
+      this.form.off('submit.catchInvalidFormSubmit')
+        .on('submit.catchInvalidFormSubmit', this.catchInvalidFormSubmit);
     }
 
     /* Neccessary to prevent intercept and override invalid form submit

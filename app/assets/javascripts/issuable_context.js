@@ -4,22 +4,28 @@
 (function() {
   this.IssuableContext = (function() {
     function IssuableContext(currentUser) {
+      var $document = $(document);
+
       this.initParticipants();
       new UsersSelect(currentUser);
       $('select.select2').select2({
         width: 'resolve',
         dropdownAutoWidth: true
       });
-      $(".issuable-sidebar .inline-update").on("change", "select", function() {
-        return $(this).submit();
-      });
-      $(".issuable-sidebar .inline-update").on("change", ".js-assignee", function() {
-        return $(this).submit();
-      });
-      $(document).off('click', '.issuable-sidebar .dropdown-content a').on('click', '.issuable-sidebar .dropdown-content a', function(e) {
-        return e.preventDefault();
-      });
-      $(document).off('click', '.edit-link').on('click', '.edit-link', function(e) {
+      $(".issuable-sidebar .inline-update").off('change.submitSelect')
+        .on("change.submitSelect", "select", function() {
+          return $(this).submit();
+        });
+      $(".issuable-sidebar .inline-update").off('change.submitAssignee')
+        .on("change.submitAssignee", ".js-assignee", function() {
+          return $(this).submit();
+        });
+
+      $document.off('click.preventDefault', '.issuable-sidebar .dropdown-content a')
+        .on('click.preventDefault', '.issuable-sidebar .dropdown-content a', function(e) {
+          return e.preventDefault();
+        });
+      $document.off('click.editLink', '.edit-link').on('click.editLink', '.edit-link', function(e) {
         var $block, $selectbox;
         e.preventDefault();
         $block = $(this).parents('.block');
@@ -43,7 +49,8 @@
     IssuableContext.prototype.initParticipants = function() {
       var _this;
       _this = this;
-      $(document).on("click", ".js-participants-more", this.toggleHiddenParticipants);
+      $(document).off('click.toggleHiddenParticipants')
+        .on("click.toggleHiddenParticipants", ".js-participants-more", this.toggleHiddenParticipants);
       return $(".js-participants-author").each(function(i) {
         if (i >= _this.PARTICIPANTS_ROW_COUNT) {
           return $(this).addClass("js-participants-hidden").hide();

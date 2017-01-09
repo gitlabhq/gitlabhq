@@ -26,16 +26,16 @@
           "X-CSRF-Token": $("meta[name=\"csrf-token\"]").attr("content")
         },
         init: function() {
-          this.on('addedfile', function(file) {
+          this.off('addedfile.alertsHide').on('addedfile.alertsHide', function(file) {
             $('.dropzone-alerts').html('').hide();
           });
-          this.on('success', function(header, response) {
+          this.off('success.visitFile').on('success.visitFile', function(header, response) {
             window.location.href = response.filePath;
           });
-          this.on('maxfilesexceeded', function(file) {
+          this.off('maxfilesexceeded.removeFile').on('maxfilesexceeded.removeFile', function(file) {
             this.removeFile(file);
           });
-          return this.on('sending', function(file, xhr, formData) {
+          return this.off('sending.appendData').on('sending.appendData', function(file, xhr, formData) {
             formData.append('target_branch', form.find('.js-target-branch').val());
             formData.append('create_merge_request', form.find('.js-create-merge-request').val());
             formData.append('commit_message', form.find('.js-commit-message').val());

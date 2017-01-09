@@ -20,16 +20,17 @@
       },
     });
 
-    inputs.next('.js-clear-input').on('click', function clicked(event) {
-      event.preventDefault();
+    inputs.next('.js-clear-input').off('click.clearInput')
+      .on('click.clearInput', function clicked(event) {
+        event.preventDefault();
 
-      const input = $(this).closest('.clearable-input').find(selector);
-      input.datepicker('setDate', null)
-        .trigger('change');
-      toggleClearInput.call(input);
-    });
+        const input = $(this).closest('.clearable-input').find(selector);
+        input.datepicker('setDate', null)
+          .trigger('change');
+        toggleClearInput.call(input);
+      });
 
-    inputs.on('blur', toggleClearInput);
+    inputs.off('blur.toggleClearInput').on('blur.toggleClearInput', toggleClearInput);
 
     inputs.each(toggleClearInput);
   };

@@ -412,7 +412,8 @@
     }
 
     LabelsSelect.prototype.bindEvents = function() {
-      return $('body').on('change', '.selected_issue', this.onSelectCheckboxIssue);
+      return $('body').off('change.onSelectCheckboxIssue')
+        .on('change.onSelectCheckboxIssue', '.selected_issue', this.onSelectCheckboxIssue);
     };
 
     LabelsSelect.prototype.onSelectCheckboxIssue = function() {

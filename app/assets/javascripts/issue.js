@@ -24,14 +24,15 @@
 
     Issue.prototype.initTaskList = function() {
       $('.detail-page-description .js-task-list-container').taskList('enable');
-      return $(document).on('tasklist:changed', '.detail-page-description .js-task-list-container', this.updateTaskList);
+      return $(document).off('tasklist:changed.updateTaskList')
+        .on('tasklist:changed.updateTaskList', '.detail-page-description .js-task-list-container', this.updateTaskList);
     };
 
     Issue.prototype.initIssueBtnEventListeners = function() {
       var _this, issueFailMessage;
       _this = this;
       issueFailMessage = 'Unable to update this issue at this time.';
-      return $('a.btn-close, a.btn-reopen').on('click', function(e) {
+      return $('a.btn-close, a.btn-reopen').off('click.submitIssue').on('click.submitIssue', function(e) {
         var $this, isClose, shouldSubmit, url;
         e.preventDefault();
         e.stopImmediatePropagation();
@@ -84,7 +85,7 @@
 
     Issue.prototype.disableTaskList = function() {
       $('.detail-page-description .js-task-list-container').taskList('disable');
-      return $(document).off('tasklist:changed', '.detail-page-description .js-task-list-container');
+      return $(document).off('tasklist:changed.updateTaskList', '.detail-page-description .js-task-list-container');
     };
 
     Issue.prototype.updateTaskList = function() {

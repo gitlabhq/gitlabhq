@@ -18,7 +18,8 @@
     }
 
     bindEvents() {
-      return this.form.off('submit').on('submit', this.onFormSubmit.bind(this));
+      return this.form.off('submit.onFormSubmit')
+        .on('submit.onFormSubmit', this.onFormSubmit.bind(this));
     }
 
     onFormSubmit(e) {

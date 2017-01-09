@@ -10,21 +10,20 @@
       this.doneClicked = this.doneClicked.bind(this);
       this.el = el || $('.js-todos-options');
       this.perPage = this.el.data('perPage');
-      this.clearListeners();
       this.initBtnListeners();
       this.initFilters();
     }
 
     clearListeners() {
-      $('.done-todo').off('click');
-      $('.js-todos-mark-all').off('click');
-      return $('.todo').off('click');
+      $('.done-todo').off('click.doneClicked');
+      $('.js-todos-mark-all').off('click.allDoneClicked');
+      return $('.todo').off('click.goToTodoUrl');
     }
 
     initBtnListeners() {
-      $('.done-todo').on('click', this.doneClicked);
-      $('.js-todos-mark-all').on('click', this.allDoneClicked);
-      return $('.todo').on('click', this.goToTodoUrl);
+      $('.done-todo').off('click.doneClicked').on('click.doneClicked', this.doneClicked);
+      $('.js-todos-mark-all').off('click.allDoneClicked').on('click.allDoneClicked', this.allDoneClicked);
+      return $('.todo').off('click.goToTodoUrl').on('click.goToTodoUrl', this.goToTodoUrl);
     }
 
     initFilters() {
@@ -33,7 +32,7 @@
       this.initFilterDropdown($('.js-type-search'), 'type');
       this.initFilterDropdown($('.js-action-search'), 'action_id');
 
-      $('form.filter-form').on('submit', function (event) {
+      $('form.filter-form').off('submit.submitFilters').on('submit.submitFilters', function (event) {
         event.preventDefault();
         Turbolinks.visit(this.action + '&' + $(this).serialize());
       });

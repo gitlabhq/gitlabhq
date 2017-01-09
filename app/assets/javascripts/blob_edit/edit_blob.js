@@ -74,7 +74,8 @@
     EditBlob.prototype.initSoftWrap = function() {
       this.isSoftWrapped = false;
       this.$toggleButton = $('.soft-wrap-toggle');
-      this.$toggleButton.on('click', this.toggleSoftWrap.bind(this));
+      this.$toggleButton.off('click.toggleSoftWrap')
+        .on('click.toggleSoftWrap', this.toggleSoftWrap.bind(this));
     };
 
     EditBlob.prototype.toggleSoftWrap = function(e) {

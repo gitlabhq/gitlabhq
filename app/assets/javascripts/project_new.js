@@ -8,7 +8,7 @@
       this.$selects = $('.features select');
       this.$repoSelects = this.$selects.filter('.js-repo-select');
 
-      $('.project-edit-container').on('ajax:before', (function(_this) {
+      $('.project-edit-container').off('ajax:before.saveProject').on('ajax:before.saveProject', (function(_this) {
         return function() {
           $('.project-edit-container').hide();
           return $('.save-project-loader').show();
@@ -31,7 +31,7 @@
     };
 
     ProjectNew.prototype.toggleSettingsOnclick = function() {
-      this.$selects.on('change', this.toggleSettings);
+      this.$selects.off('change.toggleSettings').on('change.toggleSettings', this.toggleSettings);
     };
 
     ProjectNew.prototype._showOrHide = function(checkElement, container) {
@@ -53,8 +53,8 @@
         .nextAll()
         .hide();
 
-      $repoAccessLevel.off('change')
-        .on('change', function () {
+      $repoAccessLevel.off('change.updateAccessLevel')
+        .on('change.updateAccessLevel', function () {
           var selectedVal = parseInt($repoAccessLevel.val());
 
           this.$repoSelects.each(function () {

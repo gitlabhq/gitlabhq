@@ -18,11 +18,11 @@
 
       if (initialQuery.name) this.requestFile(initialQuery);
 
-      $('.reset-template', this.dropdown.parent()).on('click', () => {
+      $('.reset-template', this.dropdown.parent()).off('click.resetTemplate').on('click.resetTemplate', () => {
         this.setInputValueToTemplateContent();
       });
 
-      $('.no-template', this.dropdown.parent()).on('click', () => {
+      $('.no-template', this.dropdown.parent()).off('click.removeTemplate').on('click.removeTemplate', () => {
         this.currentTemplate.content = '';
         this.setInputValueToTemplateContent();
         $('.dropdown-toggle-text', this.dropdown).text('Choose a template');

@@ -21,7 +21,7 @@
       max_file_size = gon.max_file_size || 10;
       form_textarea = $(form).find(".js-gfm-input");
       form_textarea.wrap("<div class=\"div-dropzone\"></div>");
-      form_textarea.on('paste', (function(_this) {
+      form_textarea.off('paste.handlePaste').on('paste.handlePaste', (function(_this) {
         return function(event) {
           return handlePaste(event);
         };

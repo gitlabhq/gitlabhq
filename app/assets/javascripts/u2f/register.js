@@ -66,7 +66,7 @@
 
     U2FRegister.prototype.renderSetup = function() {
       this.renderTemplate('setup');
-      return this.container.find('#js-setup-u2f-device').on('click', this.renderInProgress);
+      return this.container.find('#js-setup-u2f-device').off('click.renderInProgress').on('click.renderInProgress', this.renderInProgress);
     };
 
     U2FRegister.prototype.renderInProgress = function() {
@@ -79,7 +79,7 @@
         error_message: error.message(),
         error_code: error.errorCode
       });
-      return this.container.find('#js-u2f-try-again').on('click', this.renderSetup);
+      return this.container.find('#js-u2f-try-again').off('click.renderSetup').on('click.renderSetup', this.renderSetup);
     };
 
     U2FRegister.prototype.renderRegistered = function(deviceResponse) {

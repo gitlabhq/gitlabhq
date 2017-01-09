@@ -52,7 +52,7 @@
               });
           };
 
-          $block.on('click', '.js-assign-yourself', function(e) {
+          $block.off('click.assignYourself').on('click.assignYourself', '.js-assign-yourself', function(e) {
             e.preventDefault();
 
             if ($dropdown.hasClass('js-issue-board-sidebar')) {

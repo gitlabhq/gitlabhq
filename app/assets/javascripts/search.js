@@ -67,8 +67,9 @@
     }
 
     Search.prototype.eventListeners = function() {
-      $(document).off('keyup', '.js-search-input').on('keyup', '.js-search-input', this.searchKeyUp);
-      return $(document).off('click', '.js-search-clear').on('click', '.js-search-clear', this.clearSearchField);
+      var $document = $(document);
+      $document.off('keyup.searchKeyUp', '.js-search-input').on('keyup.searchKeyUp', '.js-search-input', this.searchKeyUp);
+      return $document.off('click.clearSearchField', '.js-search-clear').on('click.clearSearchField', '.js-search-clear', this.clearSearchField);
     };
 
     Search.prototype.submitSearch = function() {

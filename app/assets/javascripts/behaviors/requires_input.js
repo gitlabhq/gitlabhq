@@ -36,7 +36,8 @@
     };
     // Set initial button state
     requireInput();
-    return $form.on('change input', fieldSelector, requireInput);
+    return $form.off('change.requireInput input.requireInput')
+      .on('change.requireInput input.requireInput', fieldSelector, requireInput);
   };
 
   $(function() {
