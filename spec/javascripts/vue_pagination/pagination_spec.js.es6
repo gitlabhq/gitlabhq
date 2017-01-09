@@ -1,6 +1,7 @@
 //= require vue
 //= require lib/utils/common_utils
 //= require vue_pagination/index
+/* global fixture, gl */
 
 describe('Pagination component', () => {
   let component;
