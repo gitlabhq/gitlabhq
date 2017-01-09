@@ -1,0 +1,4 @@
+---
+title: Fixes buttons not being accessible via the keyboard when creating new group
+merge_request: 8469
+author:
