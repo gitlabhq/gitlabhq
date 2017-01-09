@@ -130,22 +130,6 @@
       return window.location.search.slice(1).split('&');
     };
 
-    gl.utils.getParameterByName = function(name) {
-      var url = window.location.href;
-      var param = name.replace(/[[\]]/g, '\\$&');
-      var regex = new RegExp('[?&]' + param + '(=([^&#]*)|&|#|$)');
-      var results = regex.exec(url);
-
-      if (!results) {
-        return null;
-      }
-
-      if (!results[2]) {
-        return '';
-      }
-      return decodeURIComponent(results[2].replace(/\+/g, ' '));
-    };
-
     gl.utils.isMetaKey = function(e) {
       return e.metaKey || e.ctrlKey || e.altKey || e.shiftKey;
     };
@@ -169,8 +153,6 @@
     w.gl.utils.getParameterByName = (name) => {
       const url = window.location.href;
       name = name.replace(/[[\]]/g, '\\$&');
-      // Finds the value associated to the name
-      // Example, state=open where state is the name and open is the value
       const regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`);
       const results = regex.exec(url);
       if (!results) return null;
