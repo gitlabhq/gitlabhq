@@ -169,6 +169,8 @@
     w.gl.utils.getParameterByName = (name) => {
       const url = window.location.href;
       name = name.replace(/[[\]]/g, '\\$&');
+      // Finds the value associated to the name
+      // Example, state=open where state is the name and open is the value
       const regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`);
       const results = regex.exec(url);
       if (!results) return null;

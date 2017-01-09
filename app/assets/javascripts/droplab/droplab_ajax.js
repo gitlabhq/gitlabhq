@@ -3,6 +3,10 @@
 /* global droplab */
 
 require('../window')(function(w){
+  function droplabAjaxException(message) {
+    this.message = message;
+  }
+
   w.droplabAjax = {
     _loadUrlData: function _loadUrlData(url) {
       return new Promise(function(resolve, reject) {
@@ -56,11 +60,7 @@ require('../window')(function(w){
           }
           hook.list[config.method].call(hook.list, d);
         }).catch(function(e) {
-          if(e.message) {
-            console.error(e.message, e.stack); // eslint-disable-line no-console
-          } else {
-            console.error(e); // eslint-disable-line no-console
-          }
+          throw new droplabAjaxException(e.message || e);
         });
     },
 
