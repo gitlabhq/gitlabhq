@@ -14,7 +14,11 @@ module API
     end
 
     # Retain 405 error rather than a 500 error for Grape 0.15.0+.
-    # See: https://github.com/ruby-grape/grape/commit/252bfd27c320466ec3c0751812cf44245e97e5de
+    # https://github.com/ruby-grape/grape/blob/a3a28f5b5dfbb2797442e006dbffd750b27f2a76/UPGRADING.md#changes-to-method-not-allowed-routes
+    rescue_from Grape::Exceptions::MethodNotAllowed do |e|
+      error! e.message, e.status, e.headers
+    end
+
     rescue_from Grape::Exceptions::Base do |e|
       error! e.message, e.status, e.headers
     end
