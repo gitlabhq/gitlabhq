@@ -70,8 +70,12 @@ module Gitlab
 
       def tag_endpoint(trans, env)
         endpoint = env[ENDPOINT_KEY]
-        path = endpoint_paths_cache[endpoint.route.request_method][endpoint.route.path]
-        trans.action = "Grape##{endpoint.route.request_method} #{path}"
+
+        # endpoint.route is nil in the case of a 405 response
+        if endpoint.route
+          path = endpoint_paths_cache[endpoint.route.request_method][endpoint.route.path]
+          trans.action = "Grape##{endpoint.route.request_method} #{path}"
+        end
       end
 
       private
