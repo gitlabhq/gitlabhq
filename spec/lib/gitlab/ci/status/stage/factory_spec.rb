@@ -42,7 +42,6 @@ describe Gitlab::Ci::Status::Stage::Factory do
         end
       end
     end
-
   end
 
   context 'when stage has warnings' do

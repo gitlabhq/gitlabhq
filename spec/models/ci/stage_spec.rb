@@ -142,6 +142,54 @@ describe Ci::Stage, models: true do
     end
   end
 
+  describe '#success?' do
+    context 'when stage is successful' do
+      before do
+        create_job(:ci_build, status: :success)
+        create_job(:generic_commit_status, status: :success)
+      end
+
+      it 'is successful' do
+        expect(stage).to be_success
+      end
+    end
+
+    context 'when stage is not successful' do
+      before do
+        create_job(:ci_build, status: :failed)
+        create_job(:generic_commit_status, status: :success)
+      end
+
+      it 'is not successful' do
+        expect(stage).not_to be_success
+      end
+    end
+  end
+
+  describe '#has_warnings?' do
+    context 'when stage has warnings' do
+      before do
+        create(:ci_build, :failed, :allowed_to_fail,
+               stage: stage_name, pipeline: pipeline)
+      end
+
+      it 'has warnings' do
+        expect(stage).to have_warnings
+      end
+    end
+
+    context 'when stage does not have warnings' do
+      before do
+        create(:ci_build, :success, stage: stage_name,
+                                    pipeline: pipeline)
+      end
+
+      it 'does not have warnings' do
+        expect(stage).not_to have_warnings
+      end
+    end
+  end
+
   def create_job(type, status: 'success', stage: stage_name)
     create(type, pipeline: pipeline, stage: stage, status: status)
   end
