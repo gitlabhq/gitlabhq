@@ -45,22 +45,23 @@ require('../window')(function(w){
         dynamicList.outerHTML = loadingTemplate.outerHTML;
       }
 
-      this._loadUrlData(config.endpoint).then(function(d) {
-        if (config.loadingTemplate) {
-          var dataLoadingTemplate = hook.list.list.querySelector('[data-loading-template]');
+      this._loadUrlData(config.endpoint)
+        .then(function(d) {
+          if (config.loadingTemplate) {
+            var dataLoadingTemplate = hook.list.list.querySelector('[data-loading-template]');
 
-          if (dataLoadingTemplate) {
-            dataLoadingTemplate.outerHTML = self.listTemplate;
+            if (dataLoadingTemplate) {
+              dataLoadingTemplate.outerHTML = self.listTemplate;
+            }
           }
-        }
-        hook.list[config.method].call(hook.list, d);
-      }).catch(function(e) {
-        if(e.message) {
-          console.error(e.message, e.stack); // eslint-disable-line no-console
-        } else {
-          console.error(e); // eslint-disable-line no-console
-        }
-      });
+          hook.list[config.method].call(hook.list, d);
+        }).catch(function(e) {
+          if(e.message) {
+            console.error(e.message, e.stack); // eslint-disable-line no-console
+          } else {
+            console.error(e); // eslint-disable-line no-console
+          }
+        });
     },
 
     destroy: function() {
