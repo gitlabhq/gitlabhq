@@ -136,6 +136,14 @@ describe Ci::Ansi2html, lib: true do
     expect(subject.convert("<")[:html]).to eq('&lt;')
   end
 
+  it "replaces newlines with line break tags" do
+    expect(subject.convert("\n")[:html]).to eq('<br>')
+  end
+
+  it "groups carriage returns with newlines" do
+    expect(subject.convert("\r\n")[:html]).to eq('<br>')
+  end
+
   describe "incremental update" do
     shared_examples 'stateable converter' do
       let(:pass1) { subject.convert(pre_text) }
