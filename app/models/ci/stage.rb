@@ -39,5 +39,13 @@ module Ci
     def builds
       @builds ||= pipeline.builds.where(stage: name)
     end
+
+    def success?
+      status.to_s == 'success'
+    end
+
+    def has_warnings?
+      statuses.latest.failed_but_allowed.any?
+    end
   end
 end

@@ -42,5 +42,27 @@ describe Gitlab::Ci::Status::Stage::Factory do
         end
       end
     end
+
+  end
+
+  context 'when stage has warnings' do
+    let(:stage) do
+      build(:ci_stage, name: 'test', status: :success, pipeline: pipeline)
+    end
+
+    before do
+      create(:ci_build, :allowed_to_fail, :failed,
+             stage: 'test', pipeline: stage.pipeline)
+    end
+
+    it 'fabricates extended "success with warnings" status' do
+      expect(status)
+        .to be_a Gitlab::Ci::Status::SuccessWarning
+    end
+
+    it 'extends core status with common stage method' do
+      expect(status).to have_details
+      expect(status.details_path).to include "pipelines/#{pipeline.id}##{stage.name}"
+    end
   end
 end

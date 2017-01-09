@@ -2,9 +2,7 @@ module Gitlab
   module Ci
     module Status
       ##
-      # Abstract extended status used when pipeline/stage/build passed
-      # conditionally.
-      #
+      # Extended status used when pipeline or stage passed conditionally.
       # This means that failed jobs that are allowed to fail were present.
       #
       class SuccessWarning < SimpleDelegator
@@ -27,7 +25,7 @@ module Gitlab
         end
 
         def self.matches?(subject, user)
-          raise NotImplementedError
+          subject.success? && subject.has_warnings?
         end
       end
     end
