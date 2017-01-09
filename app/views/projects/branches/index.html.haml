@@ -5,7 +5,8 @@
 %div{ class: container_class }
   .top-area.adjust
     .nav-text
-      Protected branches can be managed in project settings
+      Protected branches can be managed in
+      = link_to 'project settings', namespace_project_protected_branches_path(@project.namespace, @project)
 
     .nav-controls
       = form_tag(filter_branches_path, method: :get) do
