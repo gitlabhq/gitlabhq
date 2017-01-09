@@ -50,13 +50,8 @@ require('~/shortcuts_issuable');
           return expect(triggered).toBe(true);
         });
         return it('triggers `focus`', function() {
-          var focused;
-          focused = false;
-          $(this.selector).on('focus', function() {
-            return focused = true;
-          });
           this.shortcut.replyWithSelectedText();
-          return expect(focused).toBe(true);
+          expect(document.activeElement).toBe(document.querySelector(this.selector));
         });
       });
       describe('with a one-line selection', function() {
