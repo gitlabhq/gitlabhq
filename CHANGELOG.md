@@ -2,6 +2,16 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 8.15.4 (2017-01-09)
+
+- Make successful pipeline emails off for watchers. !8176
+- Speed up group milestone index by passing group_id to IssuesFinder. !8363
+- Don't instrument 405 Grape calls. !8445
+- Update the gitlab-markup gem to the version 1.5.1. !8509
+- Updated Turbolinks to mitigate potential XSS attacks.
+- Re-order update steps in the 8.14 -> 8.15 upgrade guide.
+- Re-add Google Cloud Storage as a backup strategy.
+
 ## 8.15.3 (2017-01-06)
 
 - Rename wiki_events to wiki_page_events in project hooks API to avoid errors. !0 (8425)
