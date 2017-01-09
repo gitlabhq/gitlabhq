@@ -39,7 +39,7 @@ require('../window')(function(w){
 
         var loadingTemplate = document.createElement('div');
         loadingTemplate.innerHTML = config.loadingTemplate;
-        loadingTemplate.setAttribute('data-loading-template', true);
+        loadingTemplate.setAttribute('data-loading-template', '');
 
         this.listTemplate = dynamicList.outerHTML;
         dynamicList.outerHTML = loadingTemplate.outerHTML;

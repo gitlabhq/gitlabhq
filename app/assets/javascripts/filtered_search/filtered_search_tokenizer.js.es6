@@ -1,6 +1,8 @@
 (() => {
   class FilteredSearchTokenizer {
     static processTokens(input) {
+      // Regex extracts `(token):(symbol)(value)`
+      // Values that start with a double quote must end in a double quote (same for single)
       const tokenRegex = /(\w+):([~%@]?)(?:('[^']*'{0,1})|("[^"]*"{0,1})|(\S+))/g;
       const tokens = [];
       let lastToken = null;
