@@ -1,4 +1,4 @@
-/* global Vue, gl */
+/* global Vue, Turbolinks, gl */
 /* eslint-disable no-param-reassign */
 
 ((gl) => {
@@ -36,10 +36,7 @@
     },
     methods: {
       change(pagenum, apiScope) {
-        window.history.pushState({}, null, `?scope=${apiScope}&p=${pagenum}`);
-        clearInterval(this.timeLoopInterval);
-        this.pageRequest = true;
-        this.store.fetchDataLoop.call(this, Vue, pagenum, this.scope, apiScope);
+        Turbolinks.visit(`?scope=${apiScope}&p=${pagenum}`);
       },
       author(pipeline) {
         if (!pipeline.commit) return { avatar_url: '', web_url: '', username: '' };

@@ -17,15 +17,12 @@
 
       /**
         This function will take the information given by the pagination component
-        And make a new API call from the parent
+        And make a new Turbolinks call
 
         Here is an example `change` method:
 
         change(pagenum, apiScope) {
-          window.history.pushState({}, null, `?scope=${apiScope}&p=${pagenum}`);
-          clearInterval(this.timeLoopInterval);
-          this.pageRequest = true;
-          this.store.fetchDataLoop.call(this, Vue, pagenum, this.scope, apiScope);
+          Turbolinks.visit(`?scope=${apiScope}&p=${pagenum}`);
         },
       */
 
