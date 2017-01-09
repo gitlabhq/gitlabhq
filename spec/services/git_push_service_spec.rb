@@ -26,6 +26,13 @@ describe GitPushService do
     it { should include(user_id: user.id) }
     it { should include(user_name: user.name) }
 
+    context "with pusher information" do
+      subject { @push_data[:pusher] }
+      
+      it { should include(name: user.username) }
+      it { should include(email: user.email) }
+    end
+
     context "with repository data" do
       subject { @push_data[:repository] }
 
