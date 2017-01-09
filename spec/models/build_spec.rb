@@ -652,6 +652,24 @@ describe Ci::Build, models: true do
     end
   end
 
+  describe '#has_expiring_artifacts?' do
+    context 'when artifacts have expiration date set' do
+      before { build.update(artifacts_expire_at: 1.day.from_now) }
+
+      it 'has expiring artifacts' do
+        expect(build).to have_expiring_artifacts
+      end
+    end
+
+    context 'when artifacts do not have expiration date set' do
+      before { build.update(artifacts_expire_at: nil) }
+
+      it 'does not have expiring artifacts' do
+        expect(build).not_to have_expiring_artifacts
+      end
+    end
+  end
+
   describe '#artifacts_metadata?' do
     subject { build.artifacts_metadata? }
     context 'artifacts metadata does not exist' do
@@ -662,19 +680,6 @@ describe Ci::Build, models: true do
       let(:build) { create(:ci_build, :artifacts) }
       it { is_expected.to be_truthy }
     end
-  end
-  describe '#repo_url' do
-    let(:build) { create(:ci_build) }
-    let(:project) { build.project }
-
-    subject { build.repo_url }
-
-    it { is_expected.to be_a(String) }
-    it { is_expected.to end_with(".git") }
-    it { is_expected.to start_with(project.web_url[0..6]) }
-    it { is_expected.to include(build.token) }
-    it { is_expected.to include('gitlab-ci-token') }
-    it { is_expected.to include(project.web_url[7..-1]) }
   end
 
   describe '#artifacts_expire_in' do
@@ -719,6 +724,20 @@ describe Ci::Build, models: true do
 
       expect(build.artifacts_expire_at).to be_nil
     end
+  end
+
+  describe '#repo_url' do
+    let(:build) { create(:ci_build) }
+    let(:project) { build.project }
+
+    subject { build.repo_url }
+
+    it { is_expected.to be_a(String) }
+    it { is_expected.to end_with(".git") }
+    it { is_expected.to start_with(project.web_url[0..6]) }
+    it { is_expected.to include(build.token) }
+    it { is_expected.to include('gitlab-ci-token') }
+    it { is_expected.to include(project.web_url[7..-1]) }
   end
 
   describe '#depends_on_builds' do

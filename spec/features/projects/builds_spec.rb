@@ -155,8 +155,8 @@ feature 'Builds', :feature do
 
             click_link 'Keep'
 
-            expect(page).not_to have_link 'Keep'
-            expect(page).not_to have_content 'The artifacts will be removed'
+            expect(page).to have_no_link 'Keep'
+            expect(page).to have_no_content 'The artifacts will be removed'
           end
         end
 

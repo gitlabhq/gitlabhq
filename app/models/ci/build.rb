@@ -507,6 +507,10 @@ module Ci
         end
     end
 
+    def has_expiring_artifacts?
+      artifacts_expire_at.present?
+    end
+
     def keep_artifacts!
       self.update(artifacts_expire_at: nil)
     end
