@@ -7,7 +7,7 @@
 
 ((global) => {
   describe('Dashboard', () => {
-    const fixtureTemplate = 'dashboard.html';
+    const fixtureTemplate = 'static/dashboard.html.raw';
 
     function todosCountText() {
       return $('.js-todos-count').text();
@@ -17,9 +17,9 @@
       $(document).trigger('todo:toggle', newCount);
     }
 
-    fixture.preload(fixtureTemplate);
+    preloadFixtures(fixtureTemplate);
     beforeEach(() => {
-      fixture.load(fixtureTemplate);
+      loadFixtures(fixtureTemplate);
       new global.Sidebar();
     });
 

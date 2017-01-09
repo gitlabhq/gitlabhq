@@ -10,9 +10,9 @@
 
   describe('ZenMode', function() {
     var fixtureName = 'issues/open-issue.html.raw';
-    fixture.preload(fixtureName);
+    preloadFixtures(fixtureName);
     beforeEach(function() {
-      fixture.load(fixtureName);
+      loadFixtures(fixtureName);
       spyOn(Dropzone, 'forElement').and.callFake(function() {
         return {
           enable: function() {

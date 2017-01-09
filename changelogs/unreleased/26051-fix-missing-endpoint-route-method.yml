@@ -1,0 +1,4 @@
+---
+title: Don't instrument 405 Grape calls
+merge_request: 8445
+author:
