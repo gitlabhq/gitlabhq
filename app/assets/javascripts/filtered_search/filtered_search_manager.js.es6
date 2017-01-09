@@ -3,17 +3,20 @@
 (() => {
   class FilteredSearchManager {
     constructor() {
-      this.tokenizer = gl.FilteredSearchTokenizer;
       this.filteredSearchInput = document.querySelector('.filtered-search');
       this.clearSearchButton = document.querySelector('.clear-search');
-      this.dropdownManager = new gl.FilteredSearchDropdownManager();
 
-      this.bindEvents();
-      this.loadSearchParamsFromURL();
-      this.dropdownManager.setDropdown();
+      if (this.filteredSearchInput) {
+        this.tokenizer = gl.FilteredSearchTokenizer;
+        this.dropdownManager = new gl.FilteredSearchDropdownManager();
 
-      this.cleanupWrapper = this.cleanup.bind(this);
-      document.addEventListener('page:fetch', this.cleanupWrapper);
+        this.bindEvents();
+        this.loadSearchParamsFromURL();
+        this.dropdownManager.setDropdown();
+
+        this.cleanupWrapper = this.cleanup.bind(this);
+        document.addEventListener('page:fetch', this.cleanupWrapper);
+      }
     }
 
     cleanup() {
