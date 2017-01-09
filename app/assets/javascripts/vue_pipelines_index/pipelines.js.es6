@@ -28,8 +28,8 @@
     },
     props: ['scope', 'store', 'svgs'],
     created() {
-      const pagenum = gl.getParameterByName('p');
-      const scope = gl.getParameterByName('scope');
+      const pagenum = gl.utils.getParameterByName('p');
+      const scope = gl.utils.getParameterByName('scope');
       if (pagenum) this.pagenum = pagenum;
       if (scope) this.apiScope = scope;
       this.store.fetchDataLoop.call(this, Vue, this.pagenum, this.scope, this.apiScope);
@@ -42,7 +42,7 @@
         this.store.fetchDataLoop.call(this, Vue, pagenum, this.scope, apiScope);
       },
       author(pipeline) {
-        if (!pipeline.commit) return ({ avatar_url: '', web_url: '', username: '' });
+        if (!pipeline.commit) return { avatar_url: '', web_url: '', username: '' };
         if (pipeline.commit.author) return pipeline.commit.author;
         return {
           avatar_url: pipeline.commit.author_gravatar_url,

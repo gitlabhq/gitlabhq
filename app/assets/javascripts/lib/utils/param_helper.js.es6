@@ -1,12 +1,15 @@
 /* eslint-disable no-param-reassign */
 
-((w) => {
+((gl) => {
+  gl.utils = gl.utils || (gl.utils = {});
+
   /**
     this will take in the `name` of the param you want to parse in the url
     if the name does not exist this function will return `null`
     otherwise it will return the value of the param key provided
   */
-  w.getParameterByName = (name) => {
+
+  gl.utils.getParameterByName = (name) => {
     const url = window.location.href;
     name = name.replace(/[[\]]/g, '\\$&');
     const regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`);

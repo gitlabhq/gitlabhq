@@ -58,7 +58,7 @@
     },
     methods: {
       changePage(e) {
-        let apiScope = gl.getParameterByName('scope');
+        let apiScope = gl.utils.getParameterByName('scope');
 
         if (!apiScope) apiScope = 'all';
 

@@ -147,8 +147,8 @@ describe('paramHelper', () => {
   it('can parse url parameters correctly', () => {
     window.history.pushState({}, null, '?scope=all&p=2');
 
-    const scope = gl.getParameterByName('scope');
-    const p = gl.getParameterByName('p');
+    const scope = gl.utils.getParameterByName('scope');
+    const p = gl.utils.getParameterByName('p');
 
     expect(scope).toEqual('all');
     expect(p).toEqual('2');
@@ -157,8 +157,8 @@ describe('paramHelper', () => {
   it('returns null if param not in url', () => {
     window.history.pushState({}, null, '?p=2');
 
-    const scope = gl.getParameterByName('scope');
-    const p = gl.getParameterByName('p');
+    const scope = gl.utils.getParameterByName('scope');
+    const p = gl.utils.getParameterByName('p');
 
     expect(scope).toEqual(null);
     expect(p).toEqual('2');
