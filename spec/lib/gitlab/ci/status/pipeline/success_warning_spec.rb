@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Ci::Status::Pipeline::SuccessWithWarnings do
+describe Gitlab::Ci::Status::Pipeline::SuccessWarning do
   subject do
     described_class.new(double('status'))
   end

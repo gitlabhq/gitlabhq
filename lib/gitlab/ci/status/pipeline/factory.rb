@@ -4,7 +4,7 @@ module Gitlab
       module Pipeline
         class Factory < Status::Factory
           def self.extended_statuses
-            [Pipeline::SuccessWithWarnings]
+            [Pipeline::SuccessWarning]
           end
 
           def self.common_helpers

@@ -49,7 +49,7 @@ describe Gitlab::Ci::Status::Pipeline::Factory do
 
     it 'fabricates extended "success with warnings" status' do
       expect(status)
-        .to be_a Gitlab::Ci::Status::Pipeline::SuccessWithWarnings
+        .to be_a Gitlab::Ci::Status::Pipeline::SuccessWarning
     end
 
     it 'extends core status with common pipeline methods' do
