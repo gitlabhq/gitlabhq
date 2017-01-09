@@ -1,8 +1,6 @@
 /* global Vue, gl */
 /* eslint-disable no-param-reassign, no-plusplus */
 
-/*= require lib/utils/param_helper.js.es6 */
-
 ((gl) => {
   const PAGINATION_UI_BUTTON_LIMIT = 4;
   const UI_LIMIT = 6;
