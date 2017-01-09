@@ -1,5 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 8.15.4 (2017-01-09)
+
+- No changes.
+
 ## 8.15.3 (2017-01-06)
 
 - Disable LDAP permission override in project members edit list.
