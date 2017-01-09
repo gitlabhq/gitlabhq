@@ -2,11 +2,11 @@
 /* global Project */
 
 require('select2/select2.js');
-require('lib/utils/type_utility');
-require('gl_dropdown');
-require('api');
-require('project_select');
-require('project');
+require('~/lib/utils/type_utility');
+require('~/gl_dropdown');
+require('~/api');
+require('~/project_select');
+require('~/project');
 
 (function() {
   window.gon || (window.gon = {});

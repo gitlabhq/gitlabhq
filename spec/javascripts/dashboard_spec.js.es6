@@ -1,7 +1,7 @@
 /* eslint-disable no-new, padded-blocks */
 
-require('sidebar');
-require('lib/utils/text_utility');
+require('~/sidebar');
+require('~/lib/utils/text_utility');
 
 ((global) => {
   describe('Dashboard', () => {

@@ -1,6 +1,6 @@
 /* eslint-disable space-before-function-paren, no-var, padded-blocks */
 
-require('behaviors/requires_input');
+require('~/behaviors/requires_input');
 
 (function() {
   describe('requiresInput', function() {

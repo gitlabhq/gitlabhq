@@ -2,9 +2,9 @@
 /* global Build */
 /* global Turbolinks */
 
-require('lib/utils/datetime_utility');
-require('build');
-require('breakpoints');
+require('~/lib/utils/datetime_utility');
+require('~/build');
+require('~/breakpoints');
 require('vendor/jquery.nicescroll');
 
 describe('Build', () => {

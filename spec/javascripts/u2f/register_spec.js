@@ -2,9 +2,9 @@
 /* global MockU2FDevice */
 /* global U2FRegister */
 
-require('u2f/register');
-require('u2f/util');
-require('u2f/error');
+require('~/u2f/register');
+require('~/u2f/util');
+require('~/u2f/error');
 require('vendor/u2f');
 require('./mock_u2f_device');
 

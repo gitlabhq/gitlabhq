@@ -1,6 +1,6 @@
 /* eslint-disable max-len, arrow-parens, comma-dangle, no-plusplus */
 
-require('subbable_resource');
+require('~/subbable_resource');
 
 /*
 * Test that each rest verb calls the publish and subscribe function and passes the correct value back

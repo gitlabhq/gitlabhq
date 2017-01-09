@@ -1,4 +1,4 @@
-require('environments/components/environment_rollback');
+require('~/environments/components/environment_rollback');
 
 describe('Rollback Component', () => {
   preloadFixtures('static/environments/element.html.raw');

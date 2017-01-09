@@ -82,15 +82,13 @@ var config = {
   resolve: {
     extensions: ['', '.js', '.es6', '.js.es6'],
     alias: {
+      '~':              path.join(ROOT_PATH, 'app/assets/javascripts'),
       'bootstrap/js':   'bootstrap-sass/assets/javascripts/bootstrap',
       'emoji-aliases$': path.join(ROOT_PATH, 'fixtures/emojis/aliases.json'),
       'vendor':         path.join(ROOT_PATH, 'vendor/assets/javascripts'),
       'vue$':           'vue/dist/vue.js',
       'vue-resource$':  'vue-resource/dist/vue-resource.js'
-    },
-    root: [
-      path.join(ROOT_PATH, 'app/assets/javascripts'),
-    ],
+    }
   }
 }
 

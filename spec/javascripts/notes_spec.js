@@ -1,10 +1,10 @@
 /* eslint-disable space-before-function-paren, no-unused-expressions, no-var, object-shorthand, comma-dangle, semi, padded-blocks, max-len */
 /* global Notes */
 
-require('notes');
+require('~/notes');
 require('vendor/autosize');
-require('gl_form');
-require('lib/utils/text_utility');
+require('~/gl_form');
+require('~/lib/utils/text_utility');
 
 (function() {
   window.gon || (window.gon = {});

@@ -1,4 +1,4 @@
-require('environments/components/environment_stop');
+require('~/environments/components/environment_stop');
 
 describe('Stop Component', () => {
   preloadFixtures('static/environments/element.html.raw');

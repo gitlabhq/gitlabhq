@@ -1,4 +1,4 @@
-require('lib/utils/bootstrap_linked_tabs');
+require('~/lib/utils/bootstrap_linked_tabs');
 
 (() => {
   describe('Linked Tabs', () => {

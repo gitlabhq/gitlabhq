@@ -1,6 +1,6 @@
 /* global environmentsList */
 
-require('environments/stores/environments_store');
+require('~/environments/stores/environments_store');
 require('./mock_data');
 
 (() => {

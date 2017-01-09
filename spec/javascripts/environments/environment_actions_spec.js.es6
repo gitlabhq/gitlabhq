@@ -1,4 +1,4 @@
-require('environments/components/environment_actions');
+require('~/environments/components/environment_actions');
 
 describe('Actions Component', () => {
   preloadFixtures('static/environments/element.html.raw');

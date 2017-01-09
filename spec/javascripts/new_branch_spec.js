@@ -2,7 +2,7 @@
 /* global NewBranchForm */
 
 require('jquery-ui/ui/autocomplete');
-require('new_branch_form');
+require('~/new_branch_form');
 
 (function() {
   describe('Branch', function() {

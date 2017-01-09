@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-expressions, comma-spacing, prefer-const, no-prototype-builtins, semi, no-new, keyword-spacing, no-plusplus, no-shadow, max-len */
 
 require('vendor/jquery.endless-scroll.js');
-require('pager');
-require('activities');
+require('~/pager');
+require('~/activities');
 
 (() => {
   window.gon || (window.gon = {});

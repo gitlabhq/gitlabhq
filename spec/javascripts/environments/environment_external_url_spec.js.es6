@@ -1,4 +1,4 @@
-require('environments/components/environment_external_url');
+require('~/environments/components/environment_external_url');
 
 describe('External URL Component', () => {
   preloadFixtures('static/environments/element.html.raw');

@@ -2,13 +2,13 @@
 /* global BoardService */
 /* global ListIssue */
 
-require('lib/utils/url_utility');
-require('boards/models/issue');
-require('boards/models/label');
-require('boards/models/list');
-require('boards/models/user');
-require('boards/services/board_service');
-require('boards/stores/boards_store');
+require('~/lib/utils/url_utility');
+require('~/boards/models/issue');
+require('~/boards/models/label');
+require('~/boards/models/list');
+require('~/boards/models/user');
+require('~/boards/services/board_service');
+require('~/boards/stores/boards_store');
 require('./mock_data');
 
 describe('Issue model', () => {
