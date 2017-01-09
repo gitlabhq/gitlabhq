@@ -20,7 +20,7 @@ describe Users::RefreshAuthorizedProjectsService do
       to_remove = create_authorization(project2, user)
 
       expect(service).to receive(:update_with_lease).
-        with([to_remove.id], [[user.id, project.id, Gitlab::Access::MASTER]])
+        with([to_remove.project_id], [[user.id, project.id, Gitlab::Access::MASTER]])
 
       service.execute
     end
@@ -29,7 +29,7 @@ describe Users::RefreshAuthorizedProjectsService do
       to_remove = create_authorization(project, user, Gitlab::Access::DEVELOPER)
 
       expect(service).to receive(:update_with_lease).
-        with([to_remove.id], [[user.id, project.id, Gitlab::Access::MASTER]])
+        with([to_remove.project_id], [[user.id, project.id, Gitlab::Access::MASTER]])
 
       service.execute
     end
@@ -90,7 +90,7 @@ describe Users::RefreshAuthorizedProjectsService do
     it 'removes authorizations that should be removed' do
       authorization = create_authorization(project, user)
 
-      service.update_authorizations([authorization.id])
+      service.update_authorizations([authorization.project_id])
 
       expect(user.project_authorizations).to be_empty
     end
@@ -147,7 +147,12 @@ describe Users::RefreshAuthorizedProjectsService do
     end
 
     it 'sets the values to the project authorization rows' do
-      expect(hash.values).to eq([ProjectAuthorization.first])
+      expect(hash.values.length).to eq(1)
+
+      value = hash.values[0]
+
+      expect(value.project_id).to eq(project.id)
+      expect(value.access_level).to eq(Gitlab::Access::MASTER)
     end
   end
 
@@ -165,10 +170,6 @@ describe Users::RefreshAuthorizedProjectsService do
 
       it 'returns the currently authorized projects' do
         expect(service.current_authorizations.length).to eq(1)
-      end
-
-      it 'includes the row ID for every row' do
-        expect(row.id).to be_a_kind_of(Numeric)
       end
 
       it 'includes the project ID for every row' do

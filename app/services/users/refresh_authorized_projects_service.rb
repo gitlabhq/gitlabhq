@@ -35,7 +35,7 @@ module Users
         # rows not in the new list or with a different access level should be
         # removed.
         if !fresh[project_id] || fresh[project_id] != row.access_level
-          array << row.id
+          array << row.project_id
         end
       end
 
@@ -100,7 +100,7 @@ module Users
     end
 
     def current_authorizations
-      user.project_authorizations.select(:id, :project_id, :access_level)
+      user.project_authorizations.select(:project_id, :access_level)
     end
 
     def fresh_authorizations
