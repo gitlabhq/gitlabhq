@@ -6,7 +6,7 @@
     %li{class: (:active unless crowd_enabled? || ldap_enabled?)}
       = link_to "Kerberos", "#kerberos", 'data-toggle' => 'tab'
   - @ldap_servers.each_with_index do |server, i|
-    %li{class: (:active if i.zero? && !crowd_enabled?)}
+    %li{ class: (:active if i.zero? && !crowd_enabled?) }
       = link_to server['label'], "##{server['provider_name']}", 'data-toggle' => 'tab'
   - if signin_enabled?
     %li

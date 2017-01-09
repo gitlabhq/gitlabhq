@@ -1,13 +1,13 @@
 .centered-light-block {
   text-align: center;
-  color: $gl-gray;
+  color: $gl-text-color;
   margin: 20px;
 }
 
 .nothing-here-block {
   text-align: center;
   padding: 20px;
-  color: $gl-gray;
+  color: $gl-text-color;
   font-weight: normal;
   font-size: 14px;
   line-height: 36px;
@@ -29,7 +29,7 @@
   margin-bottom: 0;
   border-top: 1px solid $white-dark;
   border-bottom: 1px solid $white-dark;
-  color: $gl-gray;
+  color: $gl-text-color;
 
   &.oneline-block {
     line-height: 42px;
@@ -135,11 +135,11 @@
   }
 
   .cover-title {
-    color: $gl-header-color;
+    color: $gl-text-color;
     font-size: 23px;
 
     h1 {
-      color: $gl-gray-dark;
+      color: $gl-text-color;
       margin-bottom: 6px;
       font-size: 23px;
     }
@@ -153,7 +153,7 @@
 
     p {
       padding: 0 $gl-padding;
-      color: $gl-text-color-dark;
+      color: $gl-text-color;
     }
   }
 
@@ -211,7 +211,7 @@
       display: inline;
       font-weight: normal;
       font-size: 24px;
-      color: $gl-title-color;
+      color: $gl-text-color;
     }
   }
 }

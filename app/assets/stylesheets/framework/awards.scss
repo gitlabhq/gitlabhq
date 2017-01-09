@@ -97,8 +97,20 @@
   padding: 5px 6px;
   outline: 0;
 
-  &:hover,
+  &.disabled {
+    cursor: default;
+
+    &:hover,
+    &:focus,
+    &:active {
+      background-color: $white-light;
+      border-color: $border-color;
+      box-shadow: none;
+    }
+  }
+
   &.active,
+  &:hover,
   &:active {
     background-color: $row-hover;
     border-color: $row-hover-border;

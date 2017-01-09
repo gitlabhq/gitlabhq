@@ -5,7 +5,7 @@
   window.gl = window.gl || {};
   window.gl.environmentsList = window.gl.environmentsList || {};
 
-  window.gl.environmentsList.ExternalUrlComponent = Vue.component('external-url-component', {
+  gl.environmentsList.ExternalUrlComponent = Vue.component('external-url-component', {
     props: {
       externalUrl: {
         type: String,

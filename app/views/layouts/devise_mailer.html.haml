@@ -1,7 +1,7 @@
 !!! 5
 %html
   %head
-    %meta(content='text/html; charset=UTF-8' http-equiv='Content-Type')
+    %meta{ content: 'text/html; charset=UTF-8', 'http-equiv'=> 'Content-Type' }
     = stylesheet_link_tag 'mailers/devise'
 
   %body
@@ -9,7 +9,7 @@
       %tr
         %td
           %table#header
-            %td{valign: "top"}
+            %td{ valign: "top" }
               = image_tag('mailers/gitlab_header_logo.png', id: 'logo', alt: 'GitLab Wordmark')
 
           %table#body

@@ -403,15 +403,9 @@ GitLab-Workhorse uses [GNU Make](https://www.gnu.org/software/make/). The
 following command-line will install GitLab-Workhorse in `/home/git/gitlab-workhorse`
 which is the recommended location.
 
-    cd /home/git/gitlab
-
     sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse]" RAILS_ENV=production
 
 ### Initialize Database and Activate Advanced Features
-
-    # Go to GitLab installation folder
-
-    cd /home/git/gitlab
 
     sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production
 

@@ -19,6 +19,7 @@
       loadFixtures(commentsTemplate);
       gl.utils.disableButtonIfEmptyField = _.noop;
       window.project_uploads_path = 'http://test.host/uploads';
+      $('body').data('page', 'projects:issues:show');
     });
 
     describe('task lists', function() {
