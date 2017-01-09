@@ -5,7 +5,7 @@
         = render 'devise/sessions/new_crowd'
 
   - if kerberos_enabled?
-    .login-box.tab-pane{id: "kerberos", role: 'tabpanel', class: (:active unless crowd_enabled? || ldap_enabled?)}
+    .login-box.tab-pane{ id: "kerberos", role: 'tabpanel', class: (:active unless crowd_enabled? || ldap_enabled?) }
       .login-body
         = render 'devise/sessions/new_kerberos'
 

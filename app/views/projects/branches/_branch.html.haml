@@ -21,7 +21,7 @@
         protected
 
     - if @project.mirror_ever_updated_successfully? && @repository.diverged_from_upstream?(branch.name)
-      %span.label.label-danger.has-tooltip{data: { html: "true", title: branch_diverged_tooltip_message }}
+      %span.label.label-danger.has-tooltip{ data: { html: "true", title: branch_diverged_tooltip_message } }
         = icon('exclamation-triangle')
         diverged from upstream
 

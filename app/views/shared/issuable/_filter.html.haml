@@ -38,7 +38,7 @@
               %ul
                 - Issue.weight_filter_options.each do |weight|
                   %li
-                    %a{href: "#", data: { id: weight }, class: ("is-active" if params[:weight] == weight.to_s)}
+                    %a{ href: "#", data: { id: weight }, class: ("is-active" if params[:weight] == weight.to_s) }
                       = weight
 
         - if issuable_filter_present?
