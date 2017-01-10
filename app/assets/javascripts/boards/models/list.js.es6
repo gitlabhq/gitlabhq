@@ -1,4 +1,4 @@
-/* eslint-disable space-before-function-paren, no-underscore-dangle, class-methods-use-this, consistent-return, no-plusplus, prefer-const, space-in-parens, no-shadow, no-param-reassign, max-len, no-unused-vars */
+/* eslint-disable space-before-function-paren, no-underscore-dangle, class-methods-use-this, consistent-return, prefer-const, space-in-parens, no-shadow, no-param-reassign, max-len, no-unused-vars */
 /* global ListIssue */
 /* global ListLabel */
 
@@ -58,7 +58,7 @@ class List {
 
   nextPage () {
     if (this.issuesSize > this.issues.length) {
-      this.page++;
+      this.page += 1;
 
       return this.getIssues(false);
     }
@@ -94,7 +94,7 @@ class List {
 
   newIssue (issue) {
     this.addIssue(issue);
-    this.issuesSize++;
+    this.issuesSize += 1;
 
     return gl.boardService.newIssue(this.id, issue)
       .then((resp) => {
@@ -122,7 +122,7 @@ class List {
       }
 
       if (listFrom) {
-        this.issuesSize++;
+        this.issuesSize += 1;
         gl.boardService.moveIssue(issue.id, listFrom.id, this.id)
           .then(() => {
             listFrom.getIssues(false);
@@ -140,7 +140,7 @@ class List {
       const matchesRemove = removeIssue.id === issue.id;
 
       if (matchesRemove) {
-        this.issuesSize--;
+        this.issuesSize -= 1;
         issue.removeLabel(this.label);
       }
 

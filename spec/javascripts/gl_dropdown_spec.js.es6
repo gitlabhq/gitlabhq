@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, prefer-const, no-param-reassign, no-plusplus, semi, no-unused-expressions, arrow-spacing, max-len */
+/* eslint-disable comma-dangle, prefer-const, no-param-reassign, semi, no-unused-expressions, arrow-spacing, max-len */
 /* global Turbolinks */
 
 /*= require jquery */
@@ -30,7 +30,7 @@
       which: ARROW_KEYS[direction],
       keyCode: ARROW_KEYS[direction]
     });
-    i++;
+    i += 1;
     if (i <= steps) {
       navigateWithKeys(direction, steps, cb, i);
     } else {

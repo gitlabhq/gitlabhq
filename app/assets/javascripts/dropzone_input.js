@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, max-len, one-var, no-var, one-var-declaration-per-line, no-unused-vars, camelcase, quotes, no-useless-concat, prefer-template, quote-props, comma-dangle, object-shorthand, consistent-return, no-plusplus, prefer-arrow-callback, padded-blocks */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, max-len, one-var, no-var, one-var-declaration-per-line, no-unused-vars, camelcase, quotes, no-useless-concat, prefer-template, quote-props, comma-dangle, object-shorthand, consistent-return, prefer-arrow-callback, padded-blocks */
 /* global Dropzone */
 
 /*= require preview_markdown */
@@ -120,7 +120,7 @@
           if (item.type.indexOf("image") !== -1) {
             return item;
           }
-          i++;
+          i += 1;
         }
         return false;
       };

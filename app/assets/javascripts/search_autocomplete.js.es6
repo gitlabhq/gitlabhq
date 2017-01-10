@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, no-return-assign, one-var, no-var, no-underscore-dangle, one-var-declaration-per-line, no-unused-vars, no-cond-assign, consistent-return, object-shorthand, prefer-arrow-callback, func-names, space-before-function-paren, no-plusplus, prefer-template, quotes, class-methods-use-this, no-unused-expressions, no-sequences, wrap-iife, no-lonely-if, no-else-return, no-param-reassign, vars-on-top, padded-blocks, no-extra-semi, indent, max-len */
+/* eslint-disable comma-dangle, no-return-assign, one-var, no-var, no-underscore-dangle, one-var-declaration-per-line, no-unused-vars, no-cond-assign, consistent-return, object-shorthand, prefer-arrow-callback, func-names, space-before-function-paren, prefer-template, quotes, class-methods-use-this, no-unused-expressions, no-sequences, wrap-iife, no-lonely-if, no-else-return, no-param-reassign, vars-on-top, padded-blocks, no-extra-semi, indent, max-len */
 
 ((global) => {
 
@@ -105,7 +105,7 @@
         data = [];
         // List results
         firstCategory = true;
-        for (i = 0, len = response.length; i < len; i++) {
+        for (i = 0, len = response.length; i < len; i += 1) {
           suggestion = response[i];
           // Add group header before list each group
           if (lastCategory !== suggestion.category) {
@@ -310,7 +310,7 @@
     restoreOriginalState() {
       var i, input, inputs, len;
       inputs = Object.keys(this.originalState);
-      for (i = 0, len = inputs.length; i < len; i++) {
+      for (i = 0, len = inputs.length; i < len; i += 1) {
         input = inputs[i];
         this.getElement("#" + input).val(this.originalState[input]);
       }
@@ -331,7 +331,7 @@
       var i, input, inputs, len, results;
       inputs = Object.keys(this.originalState);
       results = [];
-      for (i = 0, len = inputs.length; i < len; i++) {
+      for (i = 0, len = inputs.length; i < len; i += 1) {
         input = inputs[i];
         // _location isnt a input
         if (input === '_location') {

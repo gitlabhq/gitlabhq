@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, one-var, no-var, space-before-blocks, prefer-rest-params, wrap-iife, quotes, max-len, one-var-declaration-per-line, vars-on-top, prefer-arrow-callback, consistent-return, comma-dangle, object-shorthand, no-shadow, no-unused-vars, no-plusplus, no-else-return, no-self-compare, prefer-template, no-unused-expressions, no-lonely-if, yoda, prefer-spread, no-void, camelcase, keyword-spacing, no-param-reassign, padded-blocks */
+/* eslint-disable func-names, space-before-function-paren, one-var, no-var, space-before-blocks, prefer-rest-params, wrap-iife, quotes, max-len, one-var-declaration-per-line, vars-on-top, prefer-arrow-callback, consistent-return, comma-dangle, object-shorthand, no-shadow, no-unused-vars, no-else-return, no-self-compare, prefer-template, no-unused-expressions, no-lonely-if, yoda, prefer-spread, no-void, camelcase, keyword-spacing, no-param-reassign, padded-blocks */
 /* global Vue */
 /* global Issuable */
 /* global ListUser */
@@ -116,7 +116,7 @@
                   showDivider = 0;
                   if (firstUser) {
                     // Move current user to the front of the list
-                    for (index = j = 0, len = users.length; j < len; index = ++j) {
+                    for (index = j = 0, len = users.length; j < len; index = (j += 1)) {
                       obj = users[index];
                       if (obj.username === firstUser) {
                         users.splice(index, 1);
@@ -278,7 +278,7 @@
                   if (firstUser) {
                     // Move current user to the front of the list
                     ref = data.results;
-                    for (index = j = 0, len = ref.length; j < len; index = ++j) {
+                    for (index = j = 0, len = ref.length; j < len; index = (j += 1)) {
                       obj = ref[index];
                       if (obj.username === firstUser) {
                         data.results.splice(index, 1);

@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, object-shorthand, func-names, no-else-return, guard-for-in, no-restricted-syntax, one-var, indent, space-before-function-paren, no-plusplus, no-lonely-if, no-continue, brace-style, max-len, quotes, semi */
+/* eslint-disable comma-dangle, object-shorthand, func-names, no-else-return, guard-for-in, no-restricted-syntax, one-var, indent, space-before-function-paren, no-lonely-if, no-continue, brace-style, max-len, quotes, semi */
 /* global Vue */
 /* global DiscussionMixins */
 /* global CommentsStore */
@@ -68,11 +68,11 @@
 
           let unresolvedDiscussionCount = 0;
 
-          for (let i = 0; i < discussionIdsInScope.length; i++) {
+          for (let i = 0; i < discussionIdsInScope.length; i += 1) {
             const discussionId = discussionIdsInScope[i];
             const discussion = discussions[discussionId];
             if (discussion && !discussion.isResolved()) {
-              unresolvedDiscussionCount++;
+              unresolvedDiscussionCount += 1;
             }
           }
 
@@ -109,7 +109,7 @@
         }
 
         let currentDiscussionFound = false;
-        for (let i = 0; i < discussionIdsInScope.length; i++) {
+        for (let i = 0; i < discussionIdsInScope.length; i += 1) {
           const discussionId = discussionIdsInScope[i];
           const discussion = discussions[discussionId];
 
@@ -170,7 +170,7 @@
           // If we are on the diffs tab, we don't scroll to the discussion itself, but to
           // 4 diff lines above it: the line the discussion was in response to + 3 context
           let prevEl;
-          for (let i = 0; i < 4; i++) {
+          for (let i = 0; i < 4; i += 1) {
             prevEl = $target.prev();
 
             // If the discussion doesn't have 4 lines above it, we'll have to do with fewer.

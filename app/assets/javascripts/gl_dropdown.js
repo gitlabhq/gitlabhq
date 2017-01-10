@@ -1,11 +1,11 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, one-var, one-var-declaration-per-line, space-before-blocks, prefer-rest-params, max-len, vars-on-top, no-plusplus, wrap-iife, no-unused-vars, quotes, no-shadow, no-cond-assign, prefer-arrow-callback, semi, no-return-assign, no-else-return, camelcase, comma-dangle, no-lonely-if, guard-for-in, no-restricted-syntax, consistent-return, padded-blocks, prefer-template, no-param-reassign, no-loop-func, no-extra-semi, keyword-spacing, no-mixed-operators */
+/* eslint-disable func-names, space-before-function-paren, no-var, one-var, one-var-declaration-per-line, space-before-blocks, prefer-rest-params, max-len, vars-on-top, wrap-iife, no-unused-vars, quotes, no-shadow, no-cond-assign, prefer-arrow-callback, semi, no-return-assign, no-else-return, camelcase, comma-dangle, no-lonely-if, guard-for-in, no-restricted-syntax, consistent-return, padded-blocks, prefer-template, no-param-reassign, no-loop-func, no-extra-semi, keyword-spacing, no-mixed-operators */
 /* global fuzzaldrinPlus */
 /* global Turbolinks */
 
 (function() {
   var GitLabDropdown, GitLabDropdownFilter, GitLabDropdownRemote,
     bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
-    indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+    indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i += 1) { if (i in this && this[i] === item) return i; } return -1; };
 
   GitLabDropdownFilter = (function() {
     var ARROW_KEY_CODES, BLUR_KEYCODES, HAS_VALUE_CLASS;
@@ -494,7 +494,7 @@
       } else {
         var ul = document.createElement('ul');
 
-        for (var i = 0; i < html.length; i++) {
+        for (var i = 0; i < html.length; i += 1) {
           var el = html[i];
 
           if (el instanceof jQuery) {

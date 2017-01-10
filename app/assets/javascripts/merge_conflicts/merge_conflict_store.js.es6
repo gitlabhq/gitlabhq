@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, object-shorthand, no-dupe-keys, no-param-reassign, no-plusplus, camelcase, prefer-const, no-nested-ternary, no-continue, semi, func-call-spacing, no-spaced-func, padded-blocks, max-len */
+/* eslint-disable comma-dangle, object-shorthand, no-dupe-keys, no-param-reassign, camelcase, prefer-const, no-nested-ternary, no-continue, semi, func-call-spacing, no-spaced-func, padded-blocks, max-len */
 /* global Cookies */
 /* global Vue */
 
@@ -129,7 +129,7 @@
         this.checkLineLengths(linesObj);
       });
 
-      for (let i = 0, len = linesObj.left.length; i < len; i++) {
+      for (let i = 0, len = linesObj.left.length; i < len; i += 1) {
         file.parallelLines.push([
           linesObj.right[i],
           linesObj.left[i]
@@ -162,11 +162,11 @@
         if (file.type === CONFLICT_TYPES.TEXT) {
           file.sections.forEach((section) => {
             if (section.conflict) {
-              count++;
+              count += 1;
             }
           });
         } else {
-          count++;
+          count += 1;
         }
       });
 
@@ -257,12 +257,12 @@
       if (left.length !== right.length) {
         if (left.length > right.length) {
           const diff = left.length - right.length;
-          for (let i = 0; i < diff; i++) {
+          for (let i = 0; i < diff; i += 1) {
             right.push({ lineType: 'emptyLine', richText: '' });
           }
         } else {
           const diff = right.length - left.length;
-          for (let i = 0; i < diff; i++) {
+          for (let i = 0; i < diff; i += 1) {
             left.push({ lineType: 'emptyLine', richText: '' });
           }
         }
@@ -316,7 +316,7 @@
       const hasCommitMessage = $.trim(this.state.conflictsData.commitMessage).length;
       let unresolved = 0;
 
-      for (let i = 0, l = files.length; i < l; i++) {
+      for (let i = 0, l = files.length; i < l; i += 1) {
         let file = files[i];
 
         if (file.resolveMode === INTERACTIVE_RESOLVE_MODE) {
@@ -326,14 +326,14 @@
           // We only check for conflicts type 'text'
           // since conflicts `text_editor` can´t be resolved in interactive mode
           if (file.type === CONFLICT_TYPES.TEXT) {
-            for (let j = 0, k = file.sections.length; j < k; j++) {
+            for (let j = 0, k = file.sections.length; j < k; j += 1) {
               if (file.sections[j].conflict) {
-                numberConflicts++;
+                numberConflicts += 1;
               }
             }
 
             if (resolvedConflicts !== numberConflicts) {
-              unresolved++;
+              unresolved += 1;
             }
           }
         } else if (file.resolveMode === EDIT_RESOLVE_MODE) {
@@ -341,7 +341,7 @@
           // Unlikely to happen since switching to Edit mode saves content automatically.
           // Checking anyway in case the save strategy changes in the future
           if (!file.content) {
-            unresolved++;
+            unresolved += 1;
             continue;
           }
         }

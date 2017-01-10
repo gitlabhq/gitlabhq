@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, camelcase, vars-on-top, semi, keyword-spacing, no-plusplus, object-shorthand, comma-dangle, eqeqeq, no-mixed-operators, no-return-assign, newline-per-chained-call, prefer-arrow-callback, consistent-return, one-var, one-var-declaration-per-line, prefer-template, quotes, no-unused-vars, no-else-return, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, camelcase, vars-on-top, semi, keyword-spacing, object-shorthand, comma-dangle, eqeqeq, no-mixed-operators, no-return-assign, newline-per-chained-call, prefer-arrow-callback, consistent-return, one-var, one-var-declaration-per-line, prefer-template, quotes, no-unused-vars, no-else-return, padded-blocks, max-len */
 /* global d3 */
 /* global dateFormat */
 
@@ -28,7 +28,7 @@
 
       var days = gl.utils.getDayDifference(oneYearAgo, today);
 
-      for(var i = 0; i <= days; i++) {
+      for(var i = 0; i <= days; i += 1) {
         var date = new Date(oneYearAgo);
         date.setDate(date.getDate() + i);
 
@@ -39,7 +39,7 @@
         // or if is first object
         if ((day === 0 && i !== 0) || i === 0) {
           this.timestampsTmp.push([]);
-          group++;
+          group += 1;
         }
 
         var innerArray = this.timestampsTmp[group - 1];

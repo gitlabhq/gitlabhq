@@ -1,11 +1,11 @@
-/* eslint-disable max-len, no-var, func-names, space-before-function-paren, vars-on-top, no-plusplus, comma-dangle, no-return-assign, consistent-return, no-param-reassign, one-var, one-var-declaration-per-line, quotes, prefer-template, no-else-return, prefer-arrow-callback, no-unused-vars, no-underscore-dangle, no-shadow, no-mixed-operators, template-curly-spacing, camelcase, default-case, wrap-iife, semi, padded-blocks */
+/* eslint-disable max-len, no-var, func-names, space-before-function-paren, vars-on-top, comma-dangle, no-return-assign, consistent-return, no-param-reassign, one-var, one-var-declaration-per-line, quotes, prefer-template, no-else-return, prefer-arrow-callback, no-unused-vars, no-underscore-dangle, no-shadow, no-mixed-operators, template-curly-spacing, camelcase, default-case, wrap-iife, semi, padded-blocks */
 /* global notify */
 /* global notifyPermissions */
 /* global merge_request_widget */
 /* global Turbolinks */
 
 ((global) => {
-  var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+  var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i += 1) { if (i in this && this[i] === item) return i; } return -1; };
 
   const DEPLOYMENT_TEMPLATE = `<div class="mr-widget-heading" id="<%- id %>">
        <div class="ci_widget ci-success">
@@ -187,7 +187,7 @@
     };
 
     MergeRequestWidget.prototype.renderEnvironments = function(environments) {
-      for (let i = 0; i < environments.length; i++) {
+      for (let i = 0; i < environments.length; i += 1) {
         const environment = environments[i];
         if ($(`.mr-state-widget #${ environment.id }`).length) return;
         const $template = $(DEPLOYMENT_TEMPLATE);

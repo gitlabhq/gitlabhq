@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, max-len, no-var, spaced-comment, prefer-arrow-callback, consistent-return, one-var, one-var-declaration-per-line, no-unused-vars, no-else-return, prefer-template, quotes, comma-dangle, no-param-reassign, no-void, radix, keyword-spacing, space-before-blocks, brace-style, no-underscore-dangle, no-plusplus, no-return-assign, camelcase, padded-blocks */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, max-len, no-var, spaced-comment, prefer-arrow-callback, consistent-return, one-var, one-var-declaration-per-line, no-unused-vars, no-else-return, prefer-template, quotes, comma-dangle, no-param-reassign, no-void, radix, keyword-spacing, space-before-blocks, brace-style, no-underscore-dangle, no-return-assign, camelcase, padded-blocks */
 /* global Cookies */
 
 (function() {
@@ -339,7 +339,7 @@
       if (Cookies.get('frequently_used_emojis')) {
         frequentlyUsedEmojis = this.getFrequentlyUsedEmojis();
         ul = $("<ul class='clearfix emoji-menu-list frequent-emojis'>");
-        for (i = 0, len = frequentlyUsedEmojis.length; i < len; i++) {
+        for (i = 0, len = frequentlyUsedEmojis.length; i < len; i += 1) {
           emoji = frequentlyUsedEmojis[i];
           $(".emoji-menu-content [data-emoji='" + emoji + "']").closest('li').clone().appendTo(ul);
         }
