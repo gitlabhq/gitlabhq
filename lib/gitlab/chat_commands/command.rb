@@ -13,9 +13,9 @@ module Gitlab
 
         if command
           if command.allowed?(project, current_user)
-            present command.new(project, current_user, params).execute(match)
+            command.new(project, current_user, params).execute(match)
           else
-            access_denied
+            Gitlab::ChatCommands::Presenters::Access.new.access_denied
           end
         else
           help(help_messages)
@@ -25,7 +25,7 @@ module Gitlab
       def match_command
         match = nil
         service = available_commands.find do |klass|
-          match = klass.match(command)
+          match = klass.match(params[:text])
         end
 
         [service, match]
@@ -41,22 +41,6 @@ module Gitlab
         COMMANDS.select do |klass|
           klass.available?(project)
         end
-      end
-
-      def command
-        params[:text]
-      end
-
-      def help(messages)
-        presenter.help(messages, params[:command])
-      end
-
-      def access_denied
-        presenter.access_denied
-      end
-
-      def present(resource)
-        presenter.present(resource)
       end
     end
   end
