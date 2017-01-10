@@ -30,11 +30,12 @@ is installed or on a separate server.
 
 ## Requirements
 
-These are the minimum requirements needed for Elasticsearch to work:
+These are the requirements needed for Elasticsearch to work:
 
 - GitLab 8.4+
 - Elasticsearch 2.4.x (with [Delete By Query Plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/2.4/plugins-delete-by-query.html) installed)
 
+Please note that we don't support Elasticsearch 5.x at this time.
 
 ## Install Elasticsearch
 
