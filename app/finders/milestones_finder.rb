@@ -3,6 +3,7 @@ class MilestonesFinder
     milestones = Milestone.of_projects(projects)
     milestones = by_state(milestones)
     milestones = by_iid(milestones, params[:iid])
+    milestones = by_search(milestones, params[:search])
     sort(milestones)
   end
 
@@ -22,6 +23,10 @@ class MilestonesFinder
   end
 
   def by_iid(milestones, iid)
-    params[:iid].present? ? milestones.where(iid: iid) : milestones
+    iid.present? ? milestones.where(iid: iid) : milestones
+  end
+
+  def by_search(milestones, search)
+    milestones.search(search) if search
   end
 end
