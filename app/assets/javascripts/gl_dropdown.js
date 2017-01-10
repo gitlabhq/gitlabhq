@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, one-var, one-var-declaration-per-line, space-before-blocks, prefer-rest-params, max-len, vars-on-top, wrap-iife, no-unused-vars, quotes, no-shadow, no-cond-assign, prefer-arrow-callback, semi, no-return-assign, no-else-return, camelcase, comma-dangle, no-lonely-if, guard-for-in, no-restricted-syntax, consistent-return, padded-blocks, prefer-template, no-param-reassign, no-loop-func, no-extra-semi, keyword-spacing, no-mixed-operators */
+/* eslint-disable func-names, space-before-function-paren, no-var, one-var, one-var-declaration-per-line, space-before-blocks, prefer-rest-params, max-len, vars-on-top, wrap-iife, no-unused-vars, quotes, no-shadow, no-cond-assign, prefer-arrow-callback, no-return-assign, no-else-return, camelcase, comma-dangle, no-lonely-if, guard-for-in, no-restricted-syntax, consistent-return, padded-blocks, prefer-template, no-param-reassign, no-loop-func, keyword-spacing, no-mixed-operators */
 /* global fuzzaldrinPlus */
 /* global Turbolinks */
 
@@ -37,7 +37,7 @@
         .on('keydown', function (e) {
           var keyCode = e.which;
           if (keyCode === 13 && !options.elIsInput) {
-            e.preventDefault()
+            e.preventDefault();
           }
         })
         .on('input', function() {
@@ -206,7 +206,7 @@
 
     SELECTABLE_CLASSES = ".dropdown-content li:not(" + NON_SELECTABLE_CLASSES + ", .option-hidden)";
 
-    CURSOR_SELECT_SCROLL_PADDING = 5
+    CURSOR_SELECT_SCROLL_PADDING = 5;
 
     FILTER_INPUT = '.dropdown-input .dropdown-input-field';
 
@@ -223,7 +223,7 @@
       this.dropdown = selector != null ? $(selector) : $(this.el).parent();
       // Set Defaults
       this.filterInput = this.options.filterInput || this.getElement(FILTER_INPUT);
-      this.highlight = !!this.options.highlight
+      this.highlight = !!this.options.highlight;
       this.filterInputBlur = this.options.filterInputBlur != null
         ? this.options.filterInputBlur
         : true;
@@ -550,7 +550,7 @@
           value = this.options.id ? this.options.id(data) : data.id;
           fieldName = this.options.fieldName;
 
-          if (value) { value = value.toString().replace(/'/g, '\\\'') };
+          if (value) { value = value.toString().replace(/'/g, '\\\''); }
 
           field = this.dropdown.parent().find("input[name='" + fieldName + "'][value='" + value + "']");
           if (field.length) {
@@ -695,8 +695,8 @@
     };
 
     GitLabDropdown.prototype.focusTextInput = function() {
-      if (this.options.filterable) { this.filterInput.focus() }
-    }
+      if (this.options.filterable) { this.filterInput.focus(); }
+    };
 
     GitLabDropdown.prototype.addInput = function(fieldName, value, selectedObject) {
       var $input;
@@ -802,7 +802,7 @@
       listItemBottom = listItemTop + listItemHeight;
       if (!index) {
         // Scroll the dropdown content to the top
-        $dropdownContent.scrollTop(0)
+        $dropdownContent.scrollTop(0);
       } else if (index === ($listItems.length - 1)) {
         // Scroll the dropdown content to the bottom
         $dropdownContent.scrollTop($dropdownContent.prop('scrollHeight'));

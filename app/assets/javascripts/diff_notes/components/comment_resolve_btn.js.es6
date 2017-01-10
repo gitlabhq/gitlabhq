@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, object-shorthand, func-names, no-else-return, quotes, no-lonely-if, semi, max-len */
+/* eslint-disable comma-dangle, object-shorthand, func-names, no-else-return, quotes, no-lonely-if, max-len */
 /* global Vue */
 /* global CommentsStore */
 
@@ -10,7 +10,7 @@
     data() {
       return {
         textareaIsEmpty: true
-      }
+      };
     },
     computed: {
       discussion: function () {

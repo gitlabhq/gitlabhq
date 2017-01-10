@@ -1,4 +1,4 @@
-/* eslint-disable no-new, object-curly-spacing, prefer-const, semi */
+/* eslint-disable no-new, object-curly-spacing, prefer-const */
 /* global IssuableContext */
 /* global LabelsSelect */
 
@@ -26,14 +26,14 @@
 
       spyOn(jQuery, 'ajax').and.callFake((req) => {
         const d = $.Deferred();
-        let LABELS_DATA = []
+        let LABELS_DATA = [];
 
         if (req.url === '/root/test/labels.json') {
           for (let i = 0; i < 10; i += 1) {
             LABELS_DATA.push({id: i, title: `test ${i}`, color: '#5CB85C'});
           }
         } else if (req.url === '/root/test/issues/2.json') {
-          let tmp = []
+          let tmp = [];
           for (let i = 0; i < saveLabelCount; i += 1) {
             tmp.push({id: i, title: `test ${i}`, color: '#5CB85C'});
           }

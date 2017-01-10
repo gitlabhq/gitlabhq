@@ -1,4 +1,4 @@
-/* eslint-disable class-methods-use-this, one-var, indent, camelcase, no-new, comma-dangle, semi, no-param-reassign, max-len */
+/* eslint-disable class-methods-use-this, one-var, indent, camelcase, no-new, comma-dangle, no-param-reassign, max-len */
 /* global Vue */
 /* global Flash */
 /* global CommentsStore */
@@ -59,7 +59,7 @@
         } else {
           new Flash('An error occurred when trying to resolve a discussion. Please try again.', 'alert');
         }
-      })
+      });
     }
 
     resolveAll(projectPath, mergeRequestId, discussionId) {

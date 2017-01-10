@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, no-return-assign, one-var, no-var, no-underscore-dangle, one-var-declaration-per-line, no-unused-vars, no-cond-assign, consistent-return, object-shorthand, prefer-arrow-callback, func-names, space-before-function-paren, prefer-template, quotes, class-methods-use-this, no-unused-expressions, no-sequences, wrap-iife, no-lonely-if, no-else-return, no-param-reassign, vars-on-top, padded-blocks, no-extra-semi, indent, max-len */
+/* eslint-disable comma-dangle, no-return-assign, one-var, no-var, no-underscore-dangle, one-var-declaration-per-line, no-unused-vars, no-cond-assign, consistent-return, object-shorthand, prefer-arrow-callback, func-names, space-before-function-paren, prefer-template, quotes, class-methods-use-this, no-unused-expressions, no-sequences, wrap-iife, no-lonely-if, no-else-return, no-param-reassign, vars-on-top, padded-blocks, indent, max-len */
 
 ((global) => {
 
@@ -216,7 +216,7 @@
         this.dropdown.addClass('open').trigger('shown.bs.dropdown');
         return this.searchInput.removeClass('disabled');
       }
-    };
+    }
 
       // Saves last length of the entered text
     onSearchInputKeyDown() {
@@ -305,7 +305,7 @@
 
     hasLocationBadge() {
       return this.wrap.is('.has-location-badge');
-    };
+    }
 
     restoreOriginalState() {
       var i, input, inputs, len;
@@ -361,7 +361,7 @@
       var html;
       html = "<ul> <li><a class='dropdown-menu-empty-link is-focused'>Loading...</a></li> </ul>";
       return this.dropdownContent.html(html);
-    };
+    }
 
     onClick(item, $el, e) {
       if (location.pathname.indexOf(item.url) !== -1) {
@@ -384,7 +384,7 @@
         this.disableAutocomplete();
         return this.searchInput.val('').focus();
       }
-    };
+    }
 
   }
 

@@ -1,4 +1,4 @@
-/* eslint-disable no-new, arrow-parens, no-param-reassign, no-irregular-whitespace, padded-blocks, comma-dangle, no-trailing-spaces, semi, max-len */
+/* eslint-disable no-new, arrow-parens, no-param-reassign, no-irregular-whitespace, padded-blocks, comma-dangle, no-trailing-spaces, max-len */
 /* global Flash */
 
 (global => {
@@ -63,6 +63,6 @@
         }
       });
     }
-  }
+  };
 
 })(window);

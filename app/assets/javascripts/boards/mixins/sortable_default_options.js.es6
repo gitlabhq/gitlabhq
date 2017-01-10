@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars, no-mixed-operators, prefer-const, comma-dangle, semi */
+/* eslint-disable no-unused-vars, no-mixed-operators, prefer-const, comma-dangle */
 /* global DocumentTouch */
 
 ((w) => {
@@ -31,7 +31,7 @@
       scrollSpeed: 20,
       onStart: gl.issueBoards.onStart,
       onEnd: gl.issueBoards.onEnd
-    }
+    };
 
     Object.keys(obj).forEach((key) => { defaultSortOptions[key] = obj[key]; });
     return defaultSortOptions;

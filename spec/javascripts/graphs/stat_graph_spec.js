@@ -1,4 +1,4 @@
-/* eslint-disable quotes, padded-blocks, semi */
+/* eslint-disable quotes, padded-blocks */
 /* global StatGraph */
 
 //= require graphs/stat_graph
@@ -16,7 +16,7 @@ describe("StatGraph", function () {
     it("sets the log", function () {
       StatGraph.set_log("test");
       expect(StatGraph.log).toBe("test");
-    })
-  })
+    });
+  });
 
 });

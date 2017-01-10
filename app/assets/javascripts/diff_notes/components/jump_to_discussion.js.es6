@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, object-shorthand, func-names, no-else-return, guard-for-in, no-restricted-syntax, one-var, indent, space-before-function-paren, no-lonely-if, no-continue, brace-style, max-len, quotes, semi */
+/* eslint-disable comma-dangle, object-shorthand, func-names, no-else-return, guard-for-in, no-restricted-syntax, one-var, indent, space-before-function-paren, no-lonely-if, no-continue, brace-style, max-len, quotes */
 /* global Vue */
 /* global DiscussionMixins */
 /* global CommentsStore */
@@ -156,7 +156,7 @@
 
           // If the next discussion is closed, toggle it open.
           if ($target.find('.js-toggle-content').is(':hidden')) {
-            $target.find('.js-toggle-button i').trigger('click')
+            $target.find('.js-toggle-button i').trigger('click');
           }
         } else if (activeTab === 'diffs') {
           // Resolved discussions are hidden in the diffs tab by default.

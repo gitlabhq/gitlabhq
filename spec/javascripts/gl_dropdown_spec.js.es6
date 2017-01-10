@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, prefer-const, no-param-reassign, semi, no-unused-expressions, arrow-spacing, max-len */
+/* eslint-disable comma-dangle, prefer-const, no-param-reassign, no-unused-expressions, arrow-spacing, max-len */
 /* global Turbolinks */
 
 /*= require jquery */
@@ -40,7 +40,7 @@
 
   let remoteMock = function remoteMock(data, term, callback) {
     remoteCallback = callback.bind({}, data);
-  }
+  };
 
   describe('Dropdown', function describeDropdown() {
     preloadFixtures('static/gl_dropdown.html.raw');
@@ -109,8 +109,8 @@
       });
 
       it('should click the selected item on ENTER keypress', () => {
-        expect(this.dropdownContainerElement).toHaveClass('open')
-        let randomIndex = Math.floor(Math.random() * (this.projectsData.length - 1)) + 0
+        expect(this.dropdownContainerElement).toHaveClass('open');
+        let randomIndex = Math.floor(Math.random() * (this.projectsData.length - 1)) + 0;
         navigateWithKeys('down', randomIndex, () => {
           spyOn(Turbolinks, 'visit').and.stub();
           navigateWithKeys('enter', null, () => {

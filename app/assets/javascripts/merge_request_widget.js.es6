@@ -1,4 +1,4 @@
-/* eslint-disable max-len, no-var, func-names, space-before-function-paren, vars-on-top, comma-dangle, no-return-assign, consistent-return, no-param-reassign, one-var, one-var-declaration-per-line, quotes, prefer-template, no-else-return, prefer-arrow-callback, no-unused-vars, no-underscore-dangle, no-shadow, no-mixed-operators, template-curly-spacing, camelcase, default-case, wrap-iife, semi, padded-blocks */
+/* eslint-disable max-len, no-var, func-names, space-before-function-paren, vars-on-top, comma-dangle, no-return-assign, consistent-return, no-param-reassign, one-var, one-var-declaration-per-line, quotes, prefer-template, no-else-return, prefer-arrow-callback, no-unused-vars, no-underscore-dangle, no-shadow, no-mixed-operators, template-curly-spacing, camelcase, default-case, wrap-iife, padded-blocks */
 /* global notify */
 /* global notifyPermissions */
 /* global merge_request_widget */
@@ -90,7 +90,7 @@
       const $ciSuccessIcon = $('.js-success-icon');
       this.$ciSuccessIcon = $ciSuccessIcon.html();
       $ciSuccessIcon.remove();
-    }
+    };
 
     MergeRequestWidget.prototype.mergeInProgress = function(deleteSourceBranch) {
       if (deleteSourceBranch == null) {
@@ -205,7 +205,7 @@
         }
         environment.ci_success_icon = this.$ciSuccessIcon;
         const templateString = _.unescape($template[0].outerHTML);
-        const template = _.template(templateString)(environment)
+        const template = _.template(templateString)(environment);
         this.$widgetBody.before(template);
       }
     };

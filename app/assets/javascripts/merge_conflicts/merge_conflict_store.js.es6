@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, object-shorthand, no-dupe-keys, no-param-reassign, camelcase, prefer-const, no-nested-ternary, no-continue, semi, func-call-spacing, no-spaced-func, padded-blocks, max-len */
+/* eslint-disable comma-dangle, object-shorthand, no-dupe-keys, no-param-reassign, camelcase, prefer-const, no-nested-ternary, no-continue, func-call-spacing, no-spaced-func, padded-blocks, max-len */
 /* global Cookies */
 /* global Vue */
 
@@ -89,7 +89,7 @@
 
           this.decorateLineForInlineView(line, id, conflict);
           file.inlineLines.push(line);
-        })
+        });
 
         if (conflict) {
           file.inlineLines.push(this.getOriginHeaderLine(id));
@@ -321,7 +321,7 @@
 
         if (file.resolveMode === INTERACTIVE_RESOLVE_MODE) {
           let numberConflicts = 0;
-          let resolvedConflicts = Object.keys(file.resolutionData).length
+          let resolvedConflicts = Object.keys(file.resolutionData).length;
 
           // We only check for conflicts type 'text'
           // since conflicts `text_editor` can´t be resolved in interactive mode

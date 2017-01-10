@@ -1,4 +1,4 @@
-/* eslint-disable space-before-function-paren, comma-dangle, no-param-reassign, camelcase, prefer-const, no-extra-semi, max-len, no-unused-vars */
+/* eslint-disable space-before-function-paren, comma-dangle, no-param-reassign, camelcase, prefer-const, max-len, no-unused-vars */
 /* global Vue */
 
 class BoardService {

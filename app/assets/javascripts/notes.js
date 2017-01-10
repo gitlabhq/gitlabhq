@@ -1,4 +1,4 @@
-/* eslint-disable no-restricted-properties, func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, no-use-before-define, camelcase, no-unused-expressions, quotes, max-len, one-var, one-var-declaration-per-line, default-case, prefer-template, consistent-return, no-alert, no-return-assign, no-param-reassign, prefer-arrow-callback, no-else-return, comma-dangle, no-new, brace-style, no-lonely-if, vars-on-top, no-unused-vars, semi, indent, no-sequences, no-shadow, newline-per-chained-call, no-useless-escape, radix, padded-blocks */
+/* eslint-disable no-restricted-properties, func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, no-use-before-define, camelcase, no-unused-expressions, quotes, max-len, one-var, one-var-declaration-per-line, default-case, prefer-template, consistent-return, no-alert, no-return-assign, no-param-reassign, prefer-arrow-callback, no-else-return, comma-dangle, no-new, brace-style, no-lonely-if, vars-on-top, no-unused-vars, indent, no-sequences, no-shadow, newline-per-chained-call, no-useless-escape, radix, padded-blocks */
 /* global Flash */
 /* global GLForm */
 /* global Autosave */
@@ -508,7 +508,7 @@
       }
 
       return isAllowed;
-    }
+    };
 
 
     /*
@@ -903,7 +903,7 @@
       $editForm.find('.js-note-text').focus().val(originalContent);
       $editForm.find('.js-md-write-button').trigger('click');
       $editForm.find('.referenced-users').hide();
-    }
+    };
 
     Notes.prototype.updateTaskList = function(e) {
       var $target = $(e.target);

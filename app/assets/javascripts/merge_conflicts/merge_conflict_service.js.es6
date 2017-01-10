@@ -1,4 +1,4 @@
-/* eslint-disable no-param-reassign, comma-dangle, no-extra-semi, padded-blocks */
+/* eslint-disable no-param-reassign, comma-dangle, padded-blocks */
 
 ((global) => {
   global.mergeConflicts = global.mergeConflicts || {};
@@ -25,7 +25,7 @@
         method: 'POST'
       });
     }
-  };
+  }
 
   global.mergeConflicts.mergeConflictsService = mergeConflictsService;
 

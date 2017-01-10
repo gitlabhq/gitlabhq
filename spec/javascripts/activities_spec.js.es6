@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-expressions, comma-spacing, prefer-const, no-prototype-builtins, semi, no-new, keyword-spacing, no-shadow, max-len */
+/* eslint-disable no-unused-expressions, comma-spacing, prefer-const, no-prototype-builtins, no-new, keyword-spacing, no-shadow, max-len */
 
 /*= require js.cookie.js */
 /*= require jquery.endless-scroll.js */
@@ -30,7 +30,7 @@
 
   function getSelector(index) {
     let filter = filters[index];
-    return `#${filter.id}_event_filter`
+    return `#${filter.id}_event_filter`;
   }
 
   describe('Activities', () => {

@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, no-template-curly-in-string, comma-dangle, object-shorthand, quotes, dot-notation, no-else-return, one-var, no-var, no-underscore-dangle, one-var-declaration-per-line, no-param-reassign, no-useless-escape, prefer-template, consistent-return, wrap-iife, prefer-arrow-callback, camelcase, no-unused-vars, no-useless-return, padded-blocks, vars-on-top, indent, no-extra-semi, no-multi-spaces, semi, max-len */
+/* eslint-disable func-names, space-before-function-paren, no-template-curly-in-string, comma-dangle, object-shorthand, quotes, dot-notation, no-else-return, one-var, no-var, no-underscore-dangle, one-var-declaration-per-line, no-param-reassign, no-useless-escape, prefer-template, consistent-return, wrap-iife, prefer-arrow-callback, camelcase, no-unused-vars, no-useless-return, padded-blocks, vars-on-top, indent, no-multi-spaces, max-len */
 
 // Creates the variables for setting up GFM auto-completion
 (function() {
@@ -334,7 +334,7 @@
             });
           },
           matcher: function(flag, subtext, should_startWithSpace, acceptSpaceBar) {
-            var regexp = /(?:^|\n)\/([A-Za-z_]*)$/gi
+            var regexp = /(?:^|\n)\/([A-Za-z_]*)$/gi;
             var match = regexp.exec(subtext);
             if (match) {
               return match[1];

@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, space-before-function-paren, one-var, indent, space-in-parens, no-shadow, radix, dot-notation, semi, max-len */
+/* eslint-disable comma-dangle, space-before-function-paren, one-var, indent, space-in-parens, no-shadow, radix, dot-notation, max-len */
 /* global Cookies */
 /* global List */
 
@@ -105,7 +105,7 @@
       if (listTo.type === 'done' && listFrom.type !== 'backlog') {
         issueLists.forEach((list) => {
           list.removeIssue(issue);
-        })
+        });
         issue.removeLabels(listLabels);
       } else {
         listFrom.removeIssue(issue);

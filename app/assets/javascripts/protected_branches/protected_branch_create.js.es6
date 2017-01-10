@@ -1,4 +1,4 @@
-/* eslint-disable no-new, arrow-parens, no-param-reassign, no-irregular-whitespace, comma-dangle, padded-blocks, semi, max-len */
+/* eslint-disable no-new, arrow-parens, no-param-reassign, no-irregular-whitespace, comma-dangle, padded-blocks, max-len */
 /* global ProtectedBranchDropdown */
 
 (global => {
@@ -52,6 +52,6 @@
 
       this.$form.find('input[type="submit"]').attr('disabled', !($branchInput.val() && $allowedToMergeInput.length && $allowedToPushInput.length));
     }
-  }
+  };
 
 })(window);
