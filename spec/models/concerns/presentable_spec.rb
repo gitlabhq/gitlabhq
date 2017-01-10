@@ -1,11 +1,11 @@
 require 'spec_helper'
 
 describe Presentable do
-  let(:build) { create(:ci_build) }
+  let(:build) { Ci::Build.new }
 
   describe '#present' do
     it 'returns a presenter' do
-      expect(build.present).to be_a(Ci::Build::Presenter)
+      expect(build.present).to be_a(Ci::BuildPresenter)
     end
 
     it 'takes optional attributes' do

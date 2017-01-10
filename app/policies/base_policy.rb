@@ -53,7 +53,7 @@ class BasePolicy
   def self.class_for(subject)
     return GlobalPolicy if subject.nil?
 
-    if subject.class.ancestors.include?(Gitlab::View::Presenter::Base)
+    if subject.class.try(:presenter?)
       subject = subject.subject
     end
 

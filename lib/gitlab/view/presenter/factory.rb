@@ -8,13 +8,15 @@ module Gitlab
         end
 
         def fabricate!
-          presenter_class.new(@subject, @attributes)
+          presenter_class.new(subject, attributes)
         end
 
         private
 
+        attr_reader :subject, :attributes
+
         def presenter_class
-          @subject.class.const_get('Presenter')
+          "#{subject.class.name}Presenter".constantize
         end
       end
     end

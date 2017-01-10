@@ -9,13 +9,15 @@ module Gitlab
 
         attr_reader :subject
 
-        def can?(user, action)
-          super(user, action, subject)
+        def can?(user, action, overriden_subject = nil)
+          super(user, action, overriden_subject || subject)
         end
 
-        private
-
         class_methods do
+          def presenter?
+            true
+          end
+
           def presents(name)
             define_method(name) { subject }
           end

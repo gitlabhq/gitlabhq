@@ -6,32 +6,45 @@ describe Gitlab::View::Presenter::Base do
     Struct.new(:subject).include(described_class)
   end
 
-  subject do
-    presenter_class.new(project)
+  describe '.presenter?' do
+    it 'returns true' do
+      presenter = presenter_class.new(project)
+
+      expect(presenter.class).to be_presenter
+    end
   end
 
   describe '.presents' do
     it 'exposes #subject with the given keyword' do
       presenter_class.presents(:foo)
+      presenter = presenter_class.new(project)
 
-      expect(subject.foo).to eq(project)
+      expect(presenter.foo).to eq(project)
     end
   end
 
   describe '#can?' do
-    let(:project) { create(:empty_project) }
-
     context 'user is not allowed' do
       it 'returns false' do
-        expect(subject.can?(nil, :read_project)).to be_falsy
+        presenter = presenter_class.new(build_stubbed(:empty_project))
+
+        expect(presenter.can?(nil, :read_project)).to be_falsy
       end
     end
 
     context 'user is allowed' do
-      let(:project) { create(:empty_project, :public) }
-
       it 'returns true' do
-        expect(subject.can?(nil, :read_project)).to be_truthy
+        presenter = presenter_class.new(build_stubbed(:empty_project, :public))
+
+        expect(presenter.can?(nil, :read_project)).to be_truthy
+      end
+    end
+
+    context 'subject is overriden' do
+      it 'returns true' do
+        presenter = presenter_class.new(build_stubbed(:empty_project, :public))
+
+        expect(presenter.can?(nil, :read_project, build_stubbed(:empty_project))).to be_falsy
       end
     end
   end

@@ -66,7 +66,7 @@ we gain the following benefits:
 
 ### Presenter definition
 
-Every presenters should inherit from `Gitlab::View::Presenter::Simple`, which
+Every presenter should inherit from `Gitlab::View::Presenter::Simple`, which
 provides a `.presents` method which allows you to define an accessor for the
 presented object. It also includes common helpers like `Gitlab::Routing` and
 `Gitlab::Allowable`.
@@ -76,7 +76,7 @@ class LabelPresenter < Gitlab::View::Presenter::Simple
   presents :label
 
   def text_color
-    LabelsHelper.text_color_for_bg(label.color)
+    label.color.to_s
   end
 
   def to_partial_path
@@ -95,7 +95,7 @@ class LabelPresenter < Gitlab::View::Presenter::Delegated
 
   def text_color
     # color is delegated to label
-    LabelsHelper.text_color_for_bg(color)
+    color.to_s
   end
 
   def to_partial_path
@@ -132,7 +132,7 @@ and then in the controller:
 ```ruby
 class Projects::LabelsController < Projects::ApplicationController
   def edit
-    @label = @label.present(current_user)
+    @label = @label.present(user: current_user)
   end
 end
 ```
