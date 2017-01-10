@@ -5,6 +5,7 @@
     "eslint": "eslint --max-warnings 0 --ext .js,.js.es6 .",
     "eslint-fix": "npm run eslint -- --fix",
     "eslint-report": "npm run eslint -- --format html --output-file ./eslint-report.html",
+    "karma": "karma start config/karma.config.js --single-run",
     "karma-start": "karma start config/karma.config.js"
   },
   "dependencies": {

@@ -298,8 +298,7 @@ karma:
   <<: *dedicated-runner
   script:
     - npm link istanbul
-    - rake webpack:compile
-    - npm run karma-start
+    - rake karma
   artifacts:
     name: coverage-javascript
     expire_in: 31d
