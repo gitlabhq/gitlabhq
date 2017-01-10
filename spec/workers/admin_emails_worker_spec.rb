@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe AdminEmailsWorker do
-  include EmailHelpers
-
   context "recipients" do
     let(:group) { create :group }
     let(:project) { create :project }
@@ -16,11 +14,11 @@ describe AdminEmailsWorker do
       unsubscribed_user = create(:user, admin_email_unsubscribed_at: 5.days.ago)
       group.add_user(unsubscribed_user, Gitlab::Access::DEVELOPER)
       project.add_user(unsubscribed_user, Gitlab::Access::DEVELOPER)
-      
+
       blocked_user = create(:user, state: :blocked)
       group.add_user(blocked_user, Gitlab::Access::DEVELOPER)
       project.add_user(blocked_user, Gitlab::Access::DEVELOPER)
-      reset_delivered_emails!
+      ActionMailer::Base.deliveries = []
     end
 
     context "sending emails to members of a group only" do
