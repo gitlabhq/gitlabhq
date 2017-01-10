@@ -1,5 +1,10 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 8.13.11 (2017-01-10)
+
+- Update the gitlab-markup gem to the version 1.5.1. !8509
+- Updated Turbolinks to mitigate potential XSS attacks.
+
 ## 8.13.10 (2016-12-14)
 
 - API: Memoize the current_user so that sudo can work properly. !8017
