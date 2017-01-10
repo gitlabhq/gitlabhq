@@ -2,6 +2,11 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 8.14.6 (2017-01-10)
+
+- Update the gitlab-markup gem to the version 1.5.1. !8509
+- Updated Turbolinks to mitigate potential XSS attacks.
+
 ## 8.14.5 (2016-12-14)
 
 - Moved Leave Project and Leave Group buttons to access_request_buttons from the settings dropdown. !7600
