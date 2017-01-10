@@ -87,7 +87,7 @@ class Environment < ActiveRecord::Base
   end
 
   def update_merge_request_metrics?
-    self.name == "production"
+    (environment_type || name) == "production"
   end
 
   def first_deployment_for(commit)
