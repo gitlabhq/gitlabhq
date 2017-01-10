@@ -65,6 +65,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Convert ASCII-8BIT LDAP DNs to UTF-8 to avoid unnecessary user deletions
 - [Fix] Only owner can see "Projects" button in group edit menu
 
+## 8.13.11 (2017-01-10)
+
+- No changes.
+
 ## 8.13.10 (2016-12-14)
 
 - No changes.
