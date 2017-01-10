@@ -1,4 +1,0 @@
----
-title: Speed up group milestone index by passing group_id to IssuesFinder
-merge_request: 8363
-author:
