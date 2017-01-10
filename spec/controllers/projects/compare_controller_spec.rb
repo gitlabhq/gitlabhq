@@ -64,6 +64,16 @@ describe Projects::CompareController do
       expect(assigns(:diffs)).to eq(nil)
       expect(assigns(:commits)).to eq(nil)
     end
+
+    it 'redirects back to index when params[:from] & params[:to] are empty' do
+      post(:create,
+           namespace_id: project.namespace.to_param,
+           project_id: project.to_param,
+           from: '',
+           to: '')
+
+      expect(response).to redirect_to(namespace_project_compare_index_path)
+    end
   end
 
   describe 'GET diff_for_path' do
