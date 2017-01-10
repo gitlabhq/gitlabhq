@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, quotes, consistent-return, no-new, prefer-arrow-callback, no-return-assign, one-var, one-var-declaration-per-line, object-shorthand, comma-dangle, no-else-return, newline-per-chained-call, no-shadow, vars-on-top, indent, prefer-template, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, quotes, consistent-return, no-new, prefer-arrow-callback, no-return-assign, one-var, one-var-declaration-per-line, object-shorthand, comma-dangle, no-else-return, newline-per-chained-call, no-shadow, vars-on-top, indent, prefer-template, max-len */
 /* global Cookies */
 /* global Turbolinks */
 /* global ProjectSelect */
@@ -107,7 +107,5 @@
     };
 
     return Project;
-
   })();
-
 }).call(this);

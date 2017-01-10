@@ -1,10 +1,9 @@
-/* eslint-disable comma-dangle, quote-props, no-useless-computed-key, object-shorthand, prefer-const, no-new, padded-blocks, no-param-reassign, max-len */
+/* eslint-disable comma-dangle, quote-props, no-useless-computed-key, object-shorthand, prefer-const, no-new, no-param-reassign, max-len */
 /* global Vue */
 /* global ace */
 /* global Flash */
 
 ((global) => {
-
   global.mergeConflicts = global.mergeConflicts || {};
 
   global.mergeConflicts.diffFileEditor = Vue.extend({
@@ -94,5 +93,4 @@
       }
     }
   });
-
 })(window.gl || (window.gl = {}));

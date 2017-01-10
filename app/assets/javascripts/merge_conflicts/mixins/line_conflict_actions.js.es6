@@ -1,4 +1,4 @@
-/* eslint-disable no-param-reassign, comma-dangle, padded-blocks */
+/* eslint-disable no-param-reassign, comma-dangle */
 
 ((global) => {
   global.mergeConflicts = global.mergeConflicts || {};
@@ -10,5 +10,4 @@
       }
     }
   };
-
 })(window.gl || (window.gl = {}));

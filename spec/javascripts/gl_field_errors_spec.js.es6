@@ -1,4 +1,4 @@
-/* eslint-disable space-before-function-paren, arrow-body-style, indent, padded-blocks */
+/* eslint-disable space-before-function-paren, arrow-body-style, indent */
 
 //= require jquery
 //= require gl_field_errors
@@ -107,7 +107,5 @@
       expect(noTitleErrorElem.text()).toBe('This field is required.');
       expect(hasTitleErrorElem.text()).toBe('Please provide a valid email address.');
     });
-
   });
-
 })(window.gl || (window.gl = {}));

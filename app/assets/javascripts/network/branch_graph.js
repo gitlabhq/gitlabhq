@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, quotes, comma-dangle, one-var, one-var-declaration-per-line, no-mixed-operators, new-cap, no-loop-func, no-floating-decimal, consistent-return, no-unused-vars, prefer-template, prefer-arrow-callback, camelcase, max-len, padded-blocks */
+/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, quotes, comma-dangle, one-var, one-var-declaration-per-line, no-mixed-operators, new-cap, no-loop-func, no-floating-decimal, consistent-return, no-unused-vars, prefer-template, prefer-arrow-callback, camelcase, max-len */
 /* global Raphael */
 
 (function() {
@@ -346,7 +346,6 @@
     };
 
     return BranchGraph;
-
   })();
 
   Raphael.prototype.commitTooltip = function(x, y, commit) {
@@ -422,5 +421,4 @@
       y: h
     });
   };
-
 }).call(this);

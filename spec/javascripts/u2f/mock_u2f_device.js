@@ -1,4 +1,4 @@
-/* eslint-disable space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, no-unused-expressions, no-return-assign, no-param-reassign, padded-blocks, max-len */
+/* eslint-disable space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, no-unused-expressions, no-return-assign, no-param-reassign, max-len */
 (function() {
   var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
@@ -28,7 +28,5 @@
     };
 
     return MockU2FDevice;
-
   })();
-
 }).call(this);

@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, quotes, object-shorthand, camelcase, no-var, comma-dangle, prefer-arrow-callback, indent, object-curly-spacing, quote-props, no-param-reassign, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, quotes, object-shorthand, camelcase, no-var, comma-dangle, prefer-arrow-callback, indent, object-curly-spacing, quote-props, no-param-reassign, max-len */
 
 (function() {
   var Api = {

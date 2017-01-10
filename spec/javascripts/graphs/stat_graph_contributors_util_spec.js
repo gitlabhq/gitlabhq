@@ -1,10 +1,9 @@
-/* eslint-disable quotes, padded-blocks, no-var, camelcase, object-curly-spacing, indent, object-property-newline, comma-dangle, comma-spacing, spaced-comment, max-len, key-spacing, vars-on-top, quote-props, no-multi-spaces */
+/* eslint-disable quotes, no-var, camelcase, object-curly-spacing, indent, object-property-newline, comma-dangle, comma-spacing, spaced-comment, max-len, key-spacing, vars-on-top, quote-props, no-multi-spaces */
 /* global ContributorsStatGraphUtil */
 
 //= require graphs/stat_graph_contributors_util
 
 describe("ContributorsStatGraphUtil", function () {
-
   describe("#parse_log", function () {
     it("returns a correctly parsed log", function () {
       var fake_log = [
@@ -34,7 +33,6 @@ describe("ContributorsStatGraphUtil", function () {
   });
 
   describe("#store_data", function () {
-
     var fake_entry = {author: "Karlo Soriano", date: "2013-05-09", additions: 471};
     var fake_total = {};
     var fake_by_author = {};
@@ -56,7 +54,6 @@ describe("ContributorsStatGraphUtil", function () {
       ContributorsStatGraphUtil.store_data(fake_entry, fake_total, fake_by_author);
       expect(ContributorsStatGraphUtil.store_deletions).toHaveBeenCalled();
     });
-
   });
 
   // TODO: fix or remove
@@ -210,6 +207,4 @@ describe("ContributorsStatGraphUtil", function () {
       expect(ContributorsStatGraphUtil.in_range(date, date_range)).toEqual(false);
     });
   });
-
-
 });

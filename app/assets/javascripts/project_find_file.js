@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, quotes, consistent-return, one-var, one-var-declaration-per-line, no-cond-assign, max-len, object-shorthand, no-param-reassign, comma-dangle, prefer-template, no-unused-vars, no-return-assign, padded-blocks */
+/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, quotes, consistent-return, one-var, one-var-declaration-per-line, no-cond-assign, max-len, object-shorthand, no-param-reassign, comma-dangle, prefer-template, no-unused-vars, no-return-assign */
 /* global fuzzaldrinPlus */
 
 (function() {
@@ -167,7 +167,5 @@
     };
 
     return ProjectFindFile;
-
   })();
-
 }).call(this);

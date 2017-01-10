@@ -1,4 +1,4 @@
-/* eslint-disable space-before-function-paren, no-unused-expressions, no-var, object-shorthand, comma-dangle, padded-blocks, max-len */
+/* eslint-disable space-before-function-paren, no-unused-expressions, no-var, object-shorthand, comma-dangle, max-len */
 /* global Notes */
 
 /*= require notes */
@@ -75,5 +75,4 @@
       });
     });
   });
-
 }).call(this);

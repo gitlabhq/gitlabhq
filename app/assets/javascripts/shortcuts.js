@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, quotes, prefer-arrow-callback, consistent-return, object-shorthand, no-unused-vars, one-var, one-var-declaration-per-line, no-else-return, comma-dangle, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, quotes, prefer-arrow-callback, consistent-return, object-shorthand, no-unused-vars, one-var, one-var-declaration-per-line, no-else-return, comma-dangle, max-len */
 /* global Mousetrap */
 /* global Turbolinks */
 /* global findFileURL */
@@ -78,7 +78,6 @@
     };
 
     return Shortcuts;
-
   })();
 
   $(document).on('click.more_help', '.js-more-help-button', function(e) {
@@ -99,5 +98,4 @@
       }
     };
   })();
-
 }).call(this);

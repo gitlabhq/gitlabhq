@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, prefer-arrow-callback, no-var, quotes, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, prefer-arrow-callback, no-var, quotes, max-len */
 /* global ace */
 
 /*= require_tree . */
@@ -11,5 +11,4 @@
       $(".snippet-file-content").val(editor.getValue());
     });
   });
-
 }).call(this);

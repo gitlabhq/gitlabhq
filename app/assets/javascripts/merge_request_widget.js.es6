@@ -1,4 +1,4 @@
-/* eslint-disable max-len, no-var, func-names, space-before-function-paren, vars-on-top, comma-dangle, no-return-assign, consistent-return, no-param-reassign, one-var, one-var-declaration-per-line, quotes, prefer-template, no-else-return, prefer-arrow-callback, no-unused-vars, no-underscore-dangle, no-shadow, no-mixed-operators, template-curly-spacing, camelcase, default-case, wrap-iife, padded-blocks */
+/* eslint-disable max-len, no-var, func-names, space-before-function-paren, vars-on-top, comma-dangle, no-return-assign, consistent-return, no-param-reassign, one-var, one-var-declaration-per-line, quotes, prefer-template, no-else-return, prefer-arrow-callback, no-unused-vars, no-underscore-dangle, no-shadow, no-mixed-operators, template-curly-spacing, camelcase, default-case, wrap-iife */
 /* global notify */
 /* global notifyPermissions */
 /* global merge_request_widget */
@@ -247,7 +247,5 @@
     };
 
     return MergeRequestWidget;
-
   })();
-
 })(window.gl || (window.gl = {}));

@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, camelcase, no-param-reassign, quotes, prefer-template, no-new, comma-dangle, one-var, one-var-declaration-per-line, prefer-arrow-callback, no-else-return, no-unused-vars, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, camelcase, no-param-reassign, quotes, prefer-template, no-new, comma-dangle, one-var, one-var-declaration-per-line, prefer-arrow-callback, no-else-return, no-unused-vars, max-len */
 /* global ace */
 /* global BlobGitignoreSelectors */
 
@@ -84,7 +84,5 @@
     };
 
     return EditBlob;
-
   })();
-
 }).call(this);

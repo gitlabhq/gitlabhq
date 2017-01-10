@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, one-var, one-var-declaration-per-line, space-before-blocks, prefer-rest-params, max-len, vars-on-top, wrap-iife, no-unused-vars, quotes, no-shadow, no-cond-assign, prefer-arrow-callback, no-return-assign, no-else-return, camelcase, comma-dangle, no-lonely-if, guard-for-in, no-restricted-syntax, consistent-return, padded-blocks, prefer-template, no-param-reassign, no-loop-func, keyword-spacing, no-mixed-operators */
+/* eslint-disable func-names, space-before-function-paren, no-var, one-var, one-var-declaration-per-line, space-before-blocks, prefer-rest-params, max-len, vars-on-top, wrap-iife, no-unused-vars, quotes, no-shadow, no-cond-assign, prefer-arrow-callback, no-return-assign, no-else-return, camelcase, comma-dangle, no-lonely-if, guard-for-in, no-restricted-syntax, consistent-return, prefer-template, no-param-reassign, no-loop-func, keyword-spacing, no-mixed-operators */
 /* global fuzzaldrinPlus */
 /* global Turbolinks */
 
@@ -133,7 +133,6 @@
     };
 
     return GitLabDropdownFilter;
-
   })();
 
   GitLabDropdownRemote = (function() {
@@ -186,7 +185,6 @@
     };
 
     return GitLabDropdownRemote;
-
   })();
 
   GitLabDropdown = (function() {
@@ -829,7 +827,6 @@
     };
 
     return GitLabDropdown;
-
   })();
 
   $.fn.glDropdown = function(opts) {
@@ -839,5 +836,4 @@
       }
     });
   };
-
 }).call(this);

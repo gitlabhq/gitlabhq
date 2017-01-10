@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, max-len, no-var, spaced-comment, prefer-arrow-callback, consistent-return, one-var, one-var-declaration-per-line, no-unused-vars, no-else-return, prefer-template, quotes, comma-dangle, no-param-reassign, no-void, radix, keyword-spacing, space-before-blocks, brace-style, no-underscore-dangle, no-return-assign, camelcase, padded-blocks */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, max-len, no-var, spaced-comment, prefer-arrow-callback, consistent-return, one-var, one-var-declaration-per-line, no-unused-vars, no-else-return, prefer-template, quotes, comma-dangle, no-param-reassign, no-void, radix, keyword-spacing, space-before-blocks, brace-style, no-underscore-dangle, no-return-assign, camelcase */
 /* global Cookies */
 
 (function() {
@@ -374,7 +374,5 @@
     };
 
     return AwardsHandler;
-
   })();
-
 }).call(this);

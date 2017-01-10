@@ -1,4 +1,4 @@
-/* eslint-disable func-names, object-shorthand, comma-dangle, wrap-iife, space-before-function-paren, no-param-reassign, padded-blocks, max-len */
+/* eslint-disable func-names, object-shorthand, comma-dangle, wrap-iife, space-before-function-paren, no-param-reassign, max-len */
 
 (function(global) {
   class GroupLabelSubscription {
@@ -50,5 +50,4 @@
   }
 
   global.GroupLabelSubscription = GroupLabelSubscription;
-
 })(window.gl || (window.gl = {}));

@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, object-shorthand, no-dupe-keys, no-param-reassign, camelcase, prefer-const, no-nested-ternary, no-continue, func-call-spacing, no-spaced-func, padded-blocks, max-len */
+/* eslint-disable comma-dangle, object-shorthand, no-dupe-keys, no-param-reassign, camelcase, prefer-const, no-nested-ternary, no-continue, func-call-spacing, no-spaced-func, max-len */
 /* global Cookies */
 /* global Vue */
 
@@ -337,7 +337,6 @@
             }
           }
         } else if (file.resolveMode === EDIT_RESOLVE_MODE) {
-
           // Unlikely to happen since switching to Edit mode saves content automatically.
           // Checking anyway in case the save strategy changes in the future
           if (!file.content) {
@@ -374,7 +373,6 @@
         };
 
         if (file.type === CONFLICT_TYPES.TEXT) {
-
           // Submit only one data for type of editing
           if (file.resolveMode === INTERACTIVE_RESOLVE_MODE) {
             addFile.sections = file.resolutionData;
@@ -435,5 +433,4 @@
       return this.state.conflictsData.files.some(f => f.type === CONFLICT_TYPES.TEXT);
     }
   };
-
 })(window.gl || (window.gl = {}));

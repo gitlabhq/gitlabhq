@@ -1,4 +1,4 @@
-/* eslint-disable quotes, indent, object-curly-spacing, jasmine/no-suite-dupes, vars-on-top, no-var, padded-blocks, spaced-comment, max-len */
+/* eslint-disable quotes, indent, object-curly-spacing, jasmine/no-suite-dupes, vars-on-top, no-var, spaced-comment, max-len */
 /* global d3 */
 /* global ContributorsGraph */
 /* global ContributorsMasterGraph */
@@ -94,7 +94,6 @@ describe("ContributorsGraph", function () {
 });
 
 describe("ContributorsMasterGraph", function () {
-
   // TODO: fix or remove
   //describe("#process_dates", function () {
     //it("gets and parses dates", function () {
@@ -128,6 +127,4 @@ describe("ContributorsMasterGraph", function () {
       expect(data).toEqual(correct);
     });
   });
-
-
 });

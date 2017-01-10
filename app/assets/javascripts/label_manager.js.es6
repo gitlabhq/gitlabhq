@@ -1,8 +1,7 @@
-/* eslint-disable comma-dangle, class-methods-use-this, no-underscore-dangle, no-param-reassign, no-unused-vars, consistent-return, func-names, space-before-function-paren, padded-blocks, max-len */
+/* eslint-disable comma-dangle, class-methods-use-this, no-underscore-dangle, no-param-reassign, no-unused-vars, consistent-return, func-names, space-before-function-paren, max-len */
 /* global Flash */
 
 ((global) => {
-
   class LabelManager {
     constructor({ togglePriorityButton, prioritizedLabels, otherLabels } = {}) {
       this.togglePriorityButton = togglePriorityButton || $('.js-toggle-priority');
@@ -104,5 +103,4 @@
   }
 
   gl.LabelManager = LabelManager;
-
 })(window.gl || (window.gl = {}));

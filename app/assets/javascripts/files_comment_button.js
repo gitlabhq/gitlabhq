@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, max-len, one-var, one-var-declaration-per-line, quotes, prefer-template, newline-per-chained-call, comma-dangle, new-cap, no-else-return, padded-blocks, consistent-return */
+/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, max-len, one-var, one-var-declaration-per-line, quotes, prefer-template, newline-per-chained-call, comma-dangle, new-cap, no-else-return, consistent-return */
 /* global FilesCommentButton */
 
 (function() {
@@ -132,7 +132,6 @@
     };
 
     return FilesCommentButton;
-
   })();
 
   $.fn.filesCommentButton = function() {
@@ -145,5 +144,4 @@
       }
     });
   };
-
 }).call(this);

@@ -1,4 +1,4 @@
-/* eslint-disable func-names, prefer-arrow-callback, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, one-var, one-var-declaration-per-line, consistent-return, no-param-reassign, padded-blocks, max-len */
+/* eslint-disable func-names, prefer-arrow-callback, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, one-var, one-var-declaration-per-line, consistent-return, no-param-reassign, max-len */
 
 (function() {
   var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
@@ -86,7 +86,6 @@
     };
 
     return SingleFileDiff;
-
   })();
 
   $.fn.singleFileDiff = function() {
@@ -96,5 +95,4 @@
       }
     });
   };
-
 }).call(this);

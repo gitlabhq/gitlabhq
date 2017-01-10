@@ -1,4 +1,4 @@
-/* eslint-disable arrow-parens, no-param-reassign, no-irregular-whitespace, no-new, comma-dangle, padded-blocks, max-len */
+/* eslint-disable arrow-parens, no-param-reassign, no-irregular-whitespace, no-new, comma-dangle, max-len */
 
 (global => {
   global.gl = global.gl || {};
@@ -15,5 +15,4 @@
       });
     }
   };
-
 })(window);

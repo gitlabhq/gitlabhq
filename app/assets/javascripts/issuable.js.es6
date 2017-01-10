@@ -1,4 +1,4 @@
-/* eslint-disable no-param-reassign, func-names, no-var, camelcase, no-unused-vars, object-shorthand, space-before-function-paren, no-return-assign, comma-dangle, consistent-return, one-var, one-var-declaration-per-line, quotes, prefer-template, prefer-arrow-callback, prefer-const, padded-blocks, wrap-iife, max-len */
+/* eslint-disable no-param-reassign, func-names, no-var, camelcase, no-unused-vars, object-shorthand, space-before-function-paren, no-return-assign, comma-dangle, consistent-return, one-var, one-var-declaration-per-line, quotes, prefer-template, prefer-arrow-callback, prefer-const, wrap-iife, max-len */
 /* global Issuable */
 /* global Turbolinks */
 
@@ -34,7 +34,6 @@
         e.preventDefault();
         debouncedExecSearch(e);
       });
-
     },
     initSearchState: function($searchInput) {
       const currentSearchVal = $searchInput.val();
@@ -187,5 +186,4 @@
       });
     }
   };
-
 })(window);

@@ -1,4 +1,4 @@
-/* eslint-disable no-new, arrow-parens, no-param-reassign, no-irregular-whitespace, comma-dangle, padded-blocks, max-len */
+/* eslint-disable no-new, arrow-parens, no-param-reassign, no-irregular-whitespace, comma-dangle, max-len */
 /* global ProtectedBranchDropdown */
 
 (global => {
@@ -44,7 +44,6 @@
 
     // This will run after clicked callback
     onSelect() {
-
       // Enable submit button
       const $branchInput = this.$wrap.find('input[name="protected_branch[name]"]');
       const $allowedToMergeInput = this.$wrap.find('input[name="protected_branch[merge_access_levels_attributes][0][access_level]"]');
@@ -53,5 +52,4 @@
       this.$form.find('input[type="submit"]').attr('disabled', !($branchInput.val() && $allowedToMergeInput.length && $allowedToPushInput.length));
     }
   };
-
 })(window);

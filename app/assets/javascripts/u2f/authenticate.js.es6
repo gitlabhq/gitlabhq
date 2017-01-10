@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, prefer-arrow-callback, no-else-return, quotes, quote-props, comma-dangle, one-var, one-var-declaration-per-line, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, prefer-arrow-callback, no-else-return, quotes, quote-props, comma-dangle, one-var, one-var-declaration-per-line, max-len */
 /* global u2f */
 /* global U2FError */
 /* global U2FUtil */
@@ -114,7 +114,5 @@
     };
 
     return U2FAuthenticate;
-
   })();
-
 })();

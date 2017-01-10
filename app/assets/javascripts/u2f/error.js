@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, no-console, quotes, prefer-template, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, no-console, quotes, prefer-template, max-len */
 /* global u2f */
 
 (function() {
@@ -23,7 +23,5 @@
     };
 
     return U2FError;
-
   })();
-
 }).call(this);
