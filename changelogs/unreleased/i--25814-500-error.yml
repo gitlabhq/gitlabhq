@@ -1,0 +1,4 @@
+---
+title: Fix Compare page throws 500 error when any branch/reference is not selected
+merge_request: 8492
+author: Martin Cabrera

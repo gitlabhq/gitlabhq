@@ -25,8 +25,13 @@ class Projects::CompareController < Projects::ApplicationController
   end
 
   def create
-    redirect_to namespace_project_compare_path(@project.namespace, @project,
+    if params[:from].blank? || params[:to].blank?
+      flash[:alert] = "You must select from & to branches"
+      redirect_to namespace_project_compare_index_path
+    else
+      redirect_to namespace_project_compare_path(@project.namespace, @project,
                                                params[:from], params[:to])
+    end
   end
 
   private
