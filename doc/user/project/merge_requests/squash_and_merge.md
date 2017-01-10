@@ -1,3 +1,3 @@
-# Squash before merge
+# Squash and merge
 
 Documentation forthcoming.
