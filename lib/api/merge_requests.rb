@@ -69,6 +69,7 @@ module API
                         desc: 'Return merge requests sorted in `asc` or `desc` order.'
         optional :iids, type: Array[Integer], desc: 'The IID array of merge requests'
         optional :milestone, type: String, desc: 'Return merge requests for a specific milestone'
+        optional :labels, type: String, desc: 'Comma-separated list of label names'
         use :pagination
       end
       get ":id/merge_requests" do
