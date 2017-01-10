@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe AdminEmailsWorker do
+  include EmailHelpers
+
   context "recipients" do
     let(:group) { create :group }
     let(:project) { create :project }
@@ -18,7 +20,7 @@ describe AdminEmailsWorker do
       blocked_user = create(:user, state: :blocked)
       group.add_user(blocked_user, Gitlab::Access::DEVELOPER)
       project.add_user(blocked_user, Gitlab::Access::DEVELOPER)
-      ActionMailer::Base.deliveries = []
+      reset_delivered_emails!
     end
 
     context "sending emails to members of a group only" do
