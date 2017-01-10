@@ -591,10 +591,12 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def to_reference(from = nil, full_path: false)
-    return path_with_namespace if full_path
-
-    path_from(from)
+  def to_reference(from = nil, full: false)
+    if full || cross_namespace_reference?(from)
+      path_with_namespace
+    elsif cross_project_reference?(from)
+      path
+    end
   end
 
   def to_human_reference(from_project = nil)
@@ -1289,19 +1291,12 @@ class Project < ActiveRecord::Base
 
   private
 
-  def path_from(from)
-    if cross_namespace_reference?(from)
-      path_with_namespace
-    elsif cross_project_reference?(from)
-      path
-    end
-  end
-
   def cross_namespace_reference?(from)
-    if from.is_a?(Project)
-      from && namespace != from.namespace
-    else
-      from && namespace != from
+    case from
+    when Project
+      namespace != from.namespace
+    when Namespace
+      namespace != from
     end
   end
 

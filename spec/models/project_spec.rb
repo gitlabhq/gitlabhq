@@ -293,11 +293,11 @@ describe Project, models: true do
       end
     end
 
-    context 'when full_path is true' do
+    context 'when full is true' do
       it 'returns complete path to the project' do
-        expect(project.to_reference(full_path: true)).to          eq 'sample-namespace/sample-project'
-        expect(project.to_reference(project, full_path: true)).to eq 'sample-namespace/sample-project'
-        expect(project.to_reference(group, full_path: true)).to   eq 'sample-namespace/sample-project'
+        expect(project.to_reference(full: true)).to          eq 'sample-namespace/sample-project'
+        expect(project.to_reference(project, full: true)).to eq 'sample-namespace/sample-project'
+        expect(project.to_reference(group, full: true)).to   eq 'sample-namespace/sample-project'
       end
     end
 

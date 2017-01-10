@@ -34,11 +34,11 @@ describe Issue, models: true do
       end
     end
 
-    context 'when full_path is true' do
+    context 'when full is true' do
       it 'returns complete path to the issue' do
-        expect(issue.to_reference(full_path: true)).to          eq 'sample-namespace/sample-project#1'
-        expect(issue.to_reference(project, full_path: true)).to eq 'sample-namespace/sample-project#1'
-        expect(issue.to_reference(group, full_path: true)).to   eq 'sample-namespace/sample-project#1'
+        expect(issue.to_reference(full: true)).to          eq 'sample-namespace/sample-project#1'
+        expect(issue.to_reference(project, full: true)).to eq 'sample-namespace/sample-project#1'
+        expect(issue.to_reference(group, full: true)).to   eq 'sample-namespace/sample-project#1'
       end
     end
 
