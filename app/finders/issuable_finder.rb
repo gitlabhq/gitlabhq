@@ -174,6 +174,7 @@ class IssuableFinder
   end
 
   def no_assignee?
+    # Assignee_id takes precedence over assignee_username
     params[:assignee_id] == NONE || params[:assignee_username] == NONE
   end
 
@@ -199,6 +200,7 @@ class IssuableFinder
   end
 
   def no_author?
+    # author_id takes precedence over author_username
     params[:author_id] == NONE || params[:author_username] == NONE
   end
 
