@@ -163,7 +163,7 @@ class NotificationService
   end
 
   def unapprove_mr(merge_request, current_user)
-    warn 'TODO: send unapproval email'
+    # TODO: send unapproval email
   end
 
   def resolve_all_discussions(merge_request, current_user)

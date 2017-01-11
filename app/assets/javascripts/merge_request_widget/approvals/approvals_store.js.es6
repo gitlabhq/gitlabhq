@@ -31,7 +31,7 @@
             this.assignToRootStore('showApprovals', true);
           })
           .catch((err) => {
-            console.error(`Failed to initialize approvals store: ${err}`);
+            console.error('Failed to initialize approvals store', err);
           });
       }
       return Promise.resolve();
