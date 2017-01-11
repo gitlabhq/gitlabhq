@@ -60,9 +60,9 @@ class JiraService < IssueTrackerService
   end
 
   def help
-    'You need to configure JIRA before enabling this service. For more details
+    "You need to configure JIRA before enabling this service. For more details
     read the
-    [JIRA service documentation](https://docs.gitlab.com/ce/project_services/jira.html).'
+    [JIRA service documentation](#{help_page_url('project_services/jira')})."
   end
 
   def title
