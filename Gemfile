@@ -111,7 +111,7 @@ gem 'gitlab-elasticsearch-git', '~> 1.0.1', require: "elasticsearch/git"
 # Markdown and HTML processing
 gem 'html-pipeline',      '~> 1.11.0'
 gem 'deckar01-task_list', '1.0.6', require: 'task_list/railtie'
-gem 'gitlab-markup',      '~> 1.5.0'
+gem 'gitlab-markup',      '~> 1.5.1'
 gem 'redcarpet',          '~> 3.3.3'
 gem 'RedCloth',           '~> 4.3.2'
 gem 'rdoc',               '~> 4.2'
@@ -231,8 +231,7 @@ gem 'chronic_duration', '~> 0.10.6'
 gem 'sass-rails', '~> 5.0.6'
 gem 'coffee-rails', '~> 4.1.0'
 gem 'uglifier', '~> 2.7.2'
-gem 'turbolinks', '~> 2.5.0'
-gem 'jquery-turbolinks', '~> 2.1.0'
+gem 'gitlab-turbolinks-classic', '~> 2.5', '>= 2.5.6'
 
 gem 'addressable',        '~> 2.3.8'
 gem 'bootstrap-sass',     '~> 3.3.0'

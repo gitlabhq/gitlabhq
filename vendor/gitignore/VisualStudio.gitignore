@@ -8,7 +8,6 @@
 *.user
 *.userosscache
 *.sln.docstates
-*.vcxproj.filters
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -43,11 +42,11 @@ TestResult.xml
 [Rr]eleasePS/
 dlldata.c
 
-# DNX
+# .NET Core
 project.lock.json
 project.fragment.lock.json
 artifacts/
-Properties/launchSettings.json
+**/Properties/launchSettings.json
 
 *_i.c
 *_p.c

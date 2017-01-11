@@ -38,21 +38,21 @@ module Gitlab
       def allowed?
         if ldap_user
           unless ldap_config.active_directory
-            user.activate if user.ldap_blocked?
+            unblock_user(user, 'is available again') if user.ldap_blocked?
             return true
           end
 
           # Block user in GitLab if he/she was blocked in AD
           if Gitlab::LDAP::Person.disabled_via_active_directory?(user.ldap_identity.extern_uid, adapter)
-            user.ldap_block
+            block_user(user, 'is disabled in Active Directory')
             false
           else
-            user.activate if user.ldap_blocked?
+            unblock_user(user, 'is not disabled anymore') if user.ldap_blocked?
             true
           end
         else
           # Block the user if they no longer exist in LDAP/AD
-          user.ldap_block
+          block_user(user, 'does not exist anymore')
           false
         end
       end
@@ -69,6 +69,7 @@ module Gitlab
         @ldap_user ||= Gitlab::LDAP::Person.find_by_dn(user.ldap_identity.extern_uid, adapter)
       end
 
+<<<<<<< HEAD
       def update_user
         update_email
         update_ssh_keys if sync_ssh_keys?
@@ -150,6 +151,24 @@ module Gitlab
 
       def logger
         Rails.logger
+=======
+      def block_user(user, reason)
+        user.ldap_block
+
+        Gitlab::AppLogger.info(
+          "LDAP account \"#{user.ldap_identity.extern_uid}\" #{reason}, " \
+          "blocking Gitlab user \"#{user.name}\" (#{user.email})"
+        )
+      end
+
+      def unblock_user(user, reason)
+        user.activate
+
+        Gitlab::AppLogger.info(
+          "LDAP account \"#{user.ldap_identity.extern_uid}\" #{reason}, " \
+          "unblocking Gitlab user \"#{user.name}\" (#{user.email})"
+        )
+>>>>>>> ce/master
       end
     end
   end
