@@ -685,8 +685,8 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def to_reference(from_project = nil)
-    if cross_namespace_reference?(from_project)
+  def to_reference(from_project = nil, full: false)
+    if full || cross_namespace_reference?(from_project)
       path_with_namespace
     elsif cross_project_reference?(from_project)
       path
@@ -703,10 +703,6 @@ class Project < ActiveRecord::Base
 
   def web_url
     Gitlab::Routing.url_helpers.namespace_project_url(self.namespace, self)
-  end
-
-  def web_url_without_protocol
-    web_url.split('://')[1]
   end
 
   def new_issue_address(author)

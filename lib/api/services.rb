@@ -589,6 +589,13 @@ module API
           type: String,
           desc: 'The Mattermost token'
         }
+      ],
+      'slack-slash-commands' => [
+        {
+          name: :token,
+          type: String,
+          desc: 'The Slack token'
+        }
       ]
     }.freeze
 

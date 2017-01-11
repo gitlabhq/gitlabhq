@@ -31,7 +31,7 @@
   }
 
   .form-horizontal {
-    margin-top: 5px;
+    margin-top: 20px;
 
     @media (min-width: $screen-sm-min) {
       display: -webkit-flex;
@@ -104,6 +104,10 @@
     padding-right: 35px;
 
     @media (min-width: $screen-sm-min) {
+      width: 250px;
+    }
+
+    @media (min-width: $screen-md-min) {
       width: 350px;
     }
 

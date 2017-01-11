@@ -602,6 +602,7 @@ ActiveRecord::Schema.define(version: 20161227192806) do
     t.string "fingerprint"
     t.boolean "public", default: false, null: false
     t.boolean "can_push", default: false, null: false
+    t.datetime "last_used_at"
   end
 
   add_index "keys", ["fingerprint"], name: "index_keys_on_fingerprint", unique: true, using: :btree

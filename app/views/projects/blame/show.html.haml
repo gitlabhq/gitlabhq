@@ -36,7 +36,7 @@
               %td.line-numbers
                 - line_count = blame_group[:lines].count
                 - (current_line...(current_line + line_count)).each do |i|
-                  %a.diff-line-num{href: "#L#{i}", id: "L#{i}", 'data-line-number' => i}
+                  %a.diff-line-num{ href: "#L#{i}", id: "L#{i}", 'data-line-number' => i }
                     = icon("link")
                     = i
                   \

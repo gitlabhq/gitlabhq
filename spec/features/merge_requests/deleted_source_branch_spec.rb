@@ -4,6 +4,8 @@ require 'spec_helper'
 # message to be shown by JavaScript when the source branch was deleted.
 # Please do not remove "js: true".
 describe 'Deleted source branch', feature: true, js: true do
+  include WaitForAjax
+
   let(:user) { create(:user) }
   let(:merge_request) { create(:merge_request) }
 
@@ -13,7 +15,8 @@ describe 'Deleted source branch', feature: true, js: true do
     merge_request.update!(source_branch: 'this-branch-does-not-exist')
     visit namespace_project_merge_request_path(
       merge_request.project.namespace,
-      merge_request.project, merge_request
+      merge_request.project,
+      merge_request
     )
   end
 
@@ -23,11 +26,17 @@ describe 'Deleted source branch', feature: true, js: true do
     )
   end
 
-  it 'hides Discussion, Commits and Changes tabs' do
+  it 'still contains Discussion, Commits and Changes tabs' do
     within '.merge-request-details' do
-      expect(page).to have_no_content('Discussion')
-      expect(page).to have_no_content('Commits')
-      expect(page).to have_no_content('Changes')
+      expect(page).to have_content('Discussion')
+      expect(page).to have_content('Commits')
+      expect(page).to have_content('Changes')
     end
+
+    click_on 'Changes'
+    wait_for_ajax
+
+    expect(page).to have_selector('.diffs.tab-pane .nothing-here-block')
+    expect(page).to have_content('Nothing to merge from this-branch-does-not-exist into feature')
   end
 end

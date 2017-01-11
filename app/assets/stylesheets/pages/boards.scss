@@ -73,6 +73,7 @@
     height: 409px; // Needed for PhantomJS
     height: calc(100vh - 290px);
     min-height: 409px;
+    transition: width .2s;
 
     &.is-compact {
       width: calc(100% - 290px);
@@ -258,7 +259,7 @@
 
 .board-list-count {
   padding: 10px 0;
-  color: $gl-gray-light;
+  color: $gl-text-color-secondary;
   font-size: 13px;
 
   > .fa {
@@ -370,5 +371,20 @@
     > strong {
       font-weight: 600;
     }
+  }
+}
+
+.right-sidebar.right-sidebar-expanded {
+  &.boards-sidebar-slide-enter-active,
+  &.boards-sidebar-slide-leave-active {
+    transition: width .2s,
+                padding .2s;
+  }
+
+  &.boards-sidebar-slide-enter,
+  &.boards-sidebar-slide-leave-active {
+    width: 0;
+    padding-left: 0;
+    padding-right: 0;
   }
 }

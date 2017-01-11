@@ -100,7 +100,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       @start_version = @comparable_diffs.find { |diff| diff.head_commit_sha == @start_sha }
 
       unless @start_version
-        render_404
+        @start_sha = @merge_request_diff.head_commit_sha
+        @start_version = @merge_request_diff
       end
     end
 

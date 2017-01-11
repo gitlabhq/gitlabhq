@@ -6,7 +6,7 @@
 .sub-header-block
   .pull-right
     .dropdown.inline
-      %button.dropdown-toggle.btn{type: 'button', 'data-toggle' => 'dropdown'}
+      %button.dropdown-toggle.btn{ type: 'button', 'data-toggle' => 'dropdown' }
         = icon('calendar-o')
         %b.caret
       %ul.dropdown-menu.dropdown-menu-align-right
@@ -41,7 +41,7 @@
   .col-md-8
     %div
       %p.light Push events per group member
-      %canvas#push{height: 250}
+      %canvas#push{ height: 250 }
 
 %h3 Merge Requests
 
@@ -58,7 +58,7 @@
   .col-md-8
     %div
       %p.light Merge requests created per group member
-      %canvas#merge_requests{height: 250}
+      %canvas#merge_requests{ height: 250 }
 
 %h3 Issues
 
@@ -75,7 +75,7 @@
   .col-md-8
     %div
       %p.light Issues closed per group member
-      %canvas#issues{height: 250}
+      %canvas#issues{ height: 250 }
 
 .gray-content-block
   .oneline

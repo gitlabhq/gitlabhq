@@ -27,7 +27,7 @@
     %a.btn.btn-warning#js-u2f-try-again Try again?
 
 %script#js-register-u2f-registered{ type: "text/template" }
-  %div.row.append-bottom-10
+  .row.append-bottom-10
     .col-md-12
       %p Your device was successfully set up! Give it a name and register it with the GitLab server.
       = form_tag(create_u2f_profile_two_factor_auth_path, method: :post) do

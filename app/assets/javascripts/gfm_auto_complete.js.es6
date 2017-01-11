@@ -48,6 +48,7 @@
     },
     DefaultOptions: {
       sorter: function(query, items, searchKey) {
+        this.setting.highlightFirst = query.length > 0;
         if (gl.GfmAutoComplete.isLoading(items)) {
           return items;
         }
@@ -55,11 +56,9 @@
       },
       filter: function(query, data, searchKey) {
         if (gl.GfmAutoComplete.isLoading(data)) {
-          gl.GfmAutoComplete.togglePreventSelection.call(this, true);
           gl.GfmAutoComplete.fetchData(this.$inputor, this.at);
           return data;
         } else {
-          gl.GfmAutoComplete.togglePreventSelection.call(this, false);
           return $.fn.atwho["default"].callbacks.filter(query, data, searchKey);
         }
       },
@@ -257,9 +256,9 @@
         insertTpl: '${atwho-at}${title}',
         callbacks: {
           matcher: this.DefaultOptions.matcher,
-          sorter: this.DefaultOptions.sorter,
           beforeInsert: this.DefaultOptions.beforeInsert,
           filter: this.DefaultOptions.filter,
+          sorter: this.DefaultOptions.sorter,
           beforeSave: function(merges) {
             if (gl.GfmAutoComplete.isLoading(merges)) return merges;
             var sanitizeLabelTitle;
@@ -370,11 +369,7 @@
       if (!data || !data.length) return false;
       if (Array.isArray(data)) data = data[0];
       return data === this.defaultLoadingData[0] || data.name === this.defaultLoadingData[0];
-    },
-    togglePreventSelection(isPrevented = !!this.setting.tabSelectsMatch) {
-      this.setting.tabSelectsMatch = !isPrevented;
-      this.setting.spaceSelectsMatch = !isPrevented;
-    },
+    }
   };
 
 }).call(this);

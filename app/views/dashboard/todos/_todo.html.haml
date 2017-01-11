@@ -1,4 +1,4 @@
-%li{class: "todo todo-#{todo.done? ? 'done' : 'pending'}", id: dom_id(todo), data:{url: todo_target_path(todo)} }
+%li{ class: "todo todo-#{todo.done? ? 'done' : 'pending'}", id: dom_id(todo), data: { url: todo_target_path(todo) } }
   = author_avatar(todo, size: 40)
 
   .todo-item.todo-block

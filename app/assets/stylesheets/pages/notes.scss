@@ -43,7 +43,7 @@ ul.notes {
     }
 
     .system-note-message {
-      display: inline-block;
+      display: inline;
 
       &::first-letter {
         text-transform: lowercase;
@@ -55,7 +55,7 @@ ul.notes {
       }
 
       p {
-        display: inline-block;
+        display: inline;
         margin: 0;
 
         &::first-letter {
@@ -345,12 +345,20 @@ ul.notes {
   }
 
   .author_link {
-    color: $gl-gray;
+    color: $gl-text-color;
   }
 }
 
 .discussion-header {
   font-size: 14px;
+}
+
+.note-headline-light {
+  display: inline;
+
+  @media (max-width: $screen-xs-min) {
+    display: block;
+  }
 }
 
 .note-headline-light,
@@ -580,13 +588,11 @@ ul.notes {
 
 // Merge request notes in diffs
 .diff-file {
-
   // Diff is side by side
   .notes_content.parallel .note-header .note-headline-light {
     display: block;
     position: relative;
   }
-
   // Diff is inline
   .notes_content .note-header .note-headline-light {
     display: inline-block;

@@ -71,8 +71,8 @@ If you want to use Gmail / Google Apps with Reply by email, make sure you have
 [IMAP access enabled](https://support.google.com/mail/troubleshooter/1668960?hl=en#ts=1665018)
 and [allowed less secure apps to access the account](https://support.google.com/accounts/answer/6010255).
 
-To set up a basic Postfix mail server with IMAP access on Ubuntu, follow
-[these instructions](./postfix.md).
+To set up a basic Postfix mail server with IMAP access on Ubuntu, follow the
+[Postfix setup documentation](reply_by_email_postfix_setup.md).
 
 ### Omnibus package installations
 

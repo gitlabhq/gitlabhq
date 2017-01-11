@@ -89,9 +89,13 @@ gem 'dropzonejs-rails', '~> 0.7.1'
 # for backups
 gem 'fog-aws', '~> 0.9'
 gem 'fog-core', '~> 1.40'
+gem 'fog-google', '~> 0.5'
 gem 'fog-local', '~> 0.3'
 gem 'fog-openstack', '~> 0.1'
 gem 'fog-rackspace', '~> 0.1.1'
+
+# for Google storage
+gem 'google-api-client', '~> 0.8.6'
 
 # for aws storage
 gem 'unf', '~> 0.1.4'
@@ -337,7 +341,7 @@ end
 
 gem 'newrelic_rpm', '~> 3.16'
 
-gem 'octokit', '~> 4.3.0'
+gem 'octokit', '~> 4.6.2'
 
 gem 'mail_room', '~> 0.9.0'
 

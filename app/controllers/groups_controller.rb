@@ -42,6 +42,8 @@ class GroupsController < Groups::ApplicationController
       @notification_setting = current_user.notification_settings_for(group)
     end
 
+    @nested_groups = group.children
+
     setup_projects
 
     respond_to do |format|

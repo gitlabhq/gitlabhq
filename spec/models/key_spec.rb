@@ -28,6 +28,15 @@ describe Key, models: true do
         expect(build(:key, user: user).publishable_key).to include("#{user.name} (#{Gitlab.config.gitlab.host})")
       end
     end
+
+    describe "#update_last_used_at" do
+      it "enqueues a UseKeyWorker job" do
+        key = create(:key)
+
+        expect(UseKeyWorker).to receive(:perform_async).with(key.id)
+        key.update_last_used_at
+      end
+    end
   end
 
   context "validation of uniqueness (based on fingerprint uniqueness)" do

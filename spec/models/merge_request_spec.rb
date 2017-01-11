@@ -154,6 +154,10 @@ describe MergeRequest, models: true do
       another_project = build(:project, name: 'another-project', namespace: project.namespace)
       expect(merge_request.to_reference(another_project)).to eq "sample-project!1"
     end
+
+    it 'returns a String reference with the full path' do
+      expect(merge_request.to_reference(full: true)).to eq(project.path_with_namespace + '!1')
+    end
   end
 
   describe '#raw_diffs' do
