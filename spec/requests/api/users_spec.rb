@@ -137,6 +137,15 @@ describe API::Users, api: true  do
       expect(new_user.can_create_group).to eq(true)
     end
 
+    it "creates user with optional attributes" do
+      optional_attributes = { confirm: true }
+      attributes = attributes_for(:user).merge(optional_attributes)
+
+      post api('/users', admin), attributes
+
+      expect(response).to have_http_status(201)
+    end
+
     it "creates non-admin user" do
       post api('/users', admin), attributes_for(:user, admin: false, can_create_group: false)
       expect(response).to have_http_status(201)

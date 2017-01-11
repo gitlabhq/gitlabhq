@@ -1,0 +1,4 @@
+---
+title: Fix 500 error when POSTing to Users API with optional confirm param
+merge_request:
+author:
