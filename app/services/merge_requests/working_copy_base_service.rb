@@ -11,7 +11,12 @@ module MergeRequests
       output, status = popen(git_command, path, env, &block)
 
       unless status.zero?
-        log_error("Failed to #{message}:") if message
+        if message
+          log_error("Failed to #{message} with `#{git_command.join(' ')}`:")
+        else
+          log_error("`#{git_command.join(' ')}` failed:")
+        end
+
         log_error(output)
 
         raise GitCommandError
