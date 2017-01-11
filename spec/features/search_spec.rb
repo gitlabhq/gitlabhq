@@ -217,6 +217,31 @@ describe "Search", feature: true  do
       visit search_path(project_id: project.id)
     end
 
+    it 'redirects to commit page when search by sha and only commit found' do
+      fill_in 'search', with: '6d394385cf567f80a8fd85055db1ab4c5295806f'
+
+      click_button 'Search'
+
+      expect(page).to have_current_path(namespace_project_commit_path(project.namespace, project, '6d394385cf567f80a8fd85055db1ab4c5295806f'))
+    end
+
+    it 'redirects to single commit regardless of query case' do
+      fill_in 'search', with: '6D394385cf'
+
+      click_button 'Search'
+
+      expect(page).to have_current_path(namespace_project_commit_path(project.namespace, project, '6d394385cf567f80a8fd85055db1ab4c5295806f'))
+    end
+
+    it 'holds on /search page when the only commit is found by message' do
+      create_commit('Message referencing another sha: "deadbeef" ', project, user, 'master')
+
+      fill_in 'search', with: 'deadbeef'
+      click_button 'Search'
+
+      expect(page).to have_current_path('/search', only_path: true)
+    end
+
     it 'shows multiple matching commits' do
       fill_in 'search', with: 'See merge request'
 

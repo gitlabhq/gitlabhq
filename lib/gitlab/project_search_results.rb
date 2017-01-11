@@ -71,6 +71,14 @@ module Gitlab
       )
     end
 
+    def single_commit_result?
+      commits_count == 1 && total_result_count == 1
+    end
+
+    def total_result_count
+      issues_count + merge_requests_count + milestones_count + notes_count + blobs_count + wiki_blobs_count + commits_count
+    end
+
     private
 
     def blobs
@@ -122,7 +130,7 @@ module Gitlab
 
       commits = find_commits_by_message(query)
       commit_by_sha = find_commit_by_sha(query)
-      commits << commit_by_sha if commit_by_sha && !commits.include?(commit_by_sha)
+      commits |= [commit_by_sha] if commit_by_sha
       commits
     end
 
