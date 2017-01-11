@@ -591,6 +591,7 @@ class Project < ActiveRecord::Base
     end
   end
 
+  # `from` argument can be a Namespace or Project.
   def to_reference(from = nil, full: false)
     if full || cross_namespace_reference?(from)
       path_with_namespace
