@@ -69,7 +69,24 @@ module Gitlab
         @ldap_user ||= Gitlab::LDAP::Person.find_by_dn(user.ldap_identity.extern_uid, adapter)
       end
 
-<<<<<<< HEAD
+      def block_user(user, reason)
+        user.ldap_block
+
+        Gitlab::AppLogger.info(
+          "LDAP account \"#{user.ldap_identity.extern_uid}\" #{reason}, " \
+          "blocking Gitlab user \"#{user.name}\" (#{user.email})"
+        )
+      end
+
+      def unblock_user(user, reason)
+        user.activate
+
+        Gitlab::AppLogger.info(
+          "LDAP account \"#{user.ldap_identity.extern_uid}\" #{reason}, " \
+          "unblocking Gitlab user \"#{user.name}\" (#{user.email})"
+        )
+      end
+
       def update_user
         update_email
         update_ssh_keys if sync_ssh_keys?
@@ -151,24 +168,6 @@ module Gitlab
 
       def logger
         Rails.logger
-=======
-      def block_user(user, reason)
-        user.ldap_block
-
-        Gitlab::AppLogger.info(
-          "LDAP account \"#{user.ldap_identity.extern_uid}\" #{reason}, " \
-          "blocking Gitlab user \"#{user.name}\" (#{user.email})"
-        )
-      end
-
-      def unblock_user(user, reason)
-        user.activate
-
-        Gitlab::AppLogger.info(
-          "LDAP account \"#{user.ldap_identity.extern_uid}\" #{reason}, " \
-          "unblocking Gitlab user \"#{user.name}\" (#{user.email})"
-        )
->>>>>>> ce/master
       end
     end
   end

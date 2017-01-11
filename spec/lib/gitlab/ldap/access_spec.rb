@@ -14,13 +14,9 @@ describe Gitlab::LDAP::Access, lib: true do
 
       it { is_expected.to be_falsey }
 
-<<<<<<< HEAD
       it 'blocks user in GitLab' do
-=======
-      it 'should block user in GitLab' do
         expect(access).to receive(:block_user).with(user, 'does not exist anymore')
 
->>>>>>> ce/master
         access.allowed?
       end
     end
@@ -116,7 +112,48 @@ describe Gitlab::LDAP::Access, lib: true do
     end
   end
 
-<<<<<<< HEAD
+  describe '#block_user' do
+    before do
+      user.activate
+      allow(Gitlab::AppLogger).to receive(:info)
+
+      access.block_user user, 'reason'
+    end
+
+    it 'blocks the user' do
+      expect(user).to be_blocked
+      expect(user).to be_ldap_blocked
+    end
+
+    it 'logs the reason' do
+      expect(Gitlab::AppLogger).to have_received(:info).with(
+        "LDAP account \"123456\" reason, " \
+        "blocking Gitlab user \"#{user.name}\" (#{user.email})"
+      )
+    end
+  end
+
+  describe '#unblock_user' do
+    before do
+      user.ldap_block
+      allow(Gitlab::AppLogger).to receive(:info)
+
+      access.unblock_user user, 'reason'
+    end
+
+    it 'activates the user' do
+      expect(user).not_to be_blocked
+      expect(user).not_to be_ldap_blocked
+    end
+
+    it 'logs the reason' do
+      Gitlab::AppLogger.info(
+        "LDAP account \"123456\" reason, " \
+        "unblocking Gitlab user \"#{user.name}\" (#{user.email})"
+      )
+    end
+  end
+
   describe '#update_user' do
     subject { access.update_user }
     let(:entry) do
@@ -266,47 +303,6 @@ describe Gitlab::LDAP::Access, lib: true do
     it "updates the email if the user email is different" do
       entry['mail'] = ["new_email@example.com"]
       expect{ access.update_email }.to change(user, :email)
-=======
-  describe '#block_user' do
-    before do
-      user.activate
-      allow(Gitlab::AppLogger).to receive(:info)
-
-      access.block_user user, 'reason'
-    end
-
-    it 'blocks the user' do
-      expect(user).to be_blocked
-      expect(user).to be_ldap_blocked
-    end
-
-    it 'logs the reason' do
-      expect(Gitlab::AppLogger).to have_received(:info).with(
-        "LDAP account \"123456\" reason, " \
-        "blocking Gitlab user \"#{user.name}\" (#{user.email})"
-      )
-    end
-  end
-
-  describe '#unblock_user' do
-    before do
-      user.ldap_block
-      allow(Gitlab::AppLogger).to receive(:info)
-
-      access.unblock_user user, 'reason'
-    end
-
-    it 'activates the user' do
-      expect(user).not_to be_blocked
-      expect(user).not_to be_ldap_blocked
-    end
-
-    it 'logs the reason' do
-      Gitlab::AppLogger.info(
-        "LDAP account \"123456\" reason, " \
-        "unblocking Gitlab user \"#{user.name}\" (#{user.email})"
-      )
->>>>>>> ce/master
     end
   end
 end
