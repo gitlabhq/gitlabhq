@@ -3,18 +3,45 @@ require 'spec_helper'
 describe MergeRequests::SquashService do
   let(:service) { described_class.new(project, user, {}) }
   let(:user) { create(:user) }
-  let(:merge_request) { create(:merge_request, source_branch: 'feature_conflict', target_branch: 'master') }
-  let(:project) { merge_request.project }
+  let(:project) { create(:project) }
+
+  let(:merge_request) do
+    create(:merge_request,
+           source_branch: 'fix', source_project: project,
+           target_branch: 'master', target_project: project)
+  end
+
+  let(:merge_request_with_one_commit) do
+    create(:merge_request,
+           source_branch: 'feature.custom-highlighting', source_project: project,
+           target_branch: 'master', target_project: project)
+  end
 
   before do
     project.team << [user, :master]
   end
 
   describe '#execute' do
+    context 'when there is only one commit in the merge request' do
+      it 'returns that commit SHA' do
+        result = service.execute(merge_request_with_one_commit)
+
+        expect(result).to match(status: :success, squash_sha: merge_request_with_one_commit.diff_head_sha)
+      end
+
+      it 'does not perform any git actions' do
+        expect(service).not_to receive(:run_git_command)
+
+        service.execute(merge_request_with_one_commit)
+      end
+    end
+
     context 'when the squash succeeds' do
       it 'returns the squashed commit SHA' do
-        expect(service.execute(merge_request)).to match(status: :success,
-                                                        squash_sha: a_string_matching(/\h{40}/))
+        result = service.execute(merge_request)
+
+        expect(result).to match(status: :success, squash_sha: a_string_matching(/\h{40}/))
+        expect(result[:squash_sha]).not_to eq(merge_request.diff_head_sha)
       end
 
       it 'cleans up the temporary directory' do
@@ -24,23 +51,28 @@ describe MergeRequests::SquashService do
       end
 
       context 'the squashed commit' do
-        let(:squashed_commit) do
-          squash_oid = service.execute(merge_request)[:squash_sha]
-
-          project.repository.commit(squash_oid)
-        end
+        let(:squash_sha) { service.execute(merge_request)[:squash_sha] }
+        let(:squash_commit) { project.repository.commit(squash_sha) }
 
         it 'copies the author info and message from the last commit in the source branch' do
           diff_head_commit = merge_request.diff_head_commit
 
-          expect(squashed_commit.author_name).to eq(diff_head_commit.author_name)
-          expect(squashed_commit.author_email).to eq(diff_head_commit.author_email)
-          expect(squashed_commit.message).to eq(diff_head_commit.message)
+          expect(squash_commit.author_name).to eq(diff_head_commit.author_name)
+          expect(squash_commit.author_email).to eq(diff_head_commit.author_email)
+          expect(squash_commit.message).to eq(diff_head_commit.message)
         end
 
         it 'sets the current user as the committer' do
-          expect(squashed_commit.committer_name).to eq(user.name)
-          expect(squashed_commit.committer_email).to eq(user.email)
+          expect(squash_commit.committer_name).to eq(user.name.delete('.'))
+          expect(squash_commit.committer_email).to eq(user.email)
+        end
+
+        it 'has the same diff as the merge request' do
+          rugged = project.repository.rugged
+          mr_diff = rugged.diff(merge_request.diff_base_sha, merge_request.diff_head_sha)
+          squash_diff = rugged.diff(merge_request.diff_start_sha, squash_sha)
+
+          expect(squash_diff.patch).to eq(mr_diff.patch)
         end
       end
     end

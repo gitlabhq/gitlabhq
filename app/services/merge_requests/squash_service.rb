@@ -13,6 +13,10 @@ module MergeRequests
     end
 
     def squash
+      if merge_request.commits_count <= 1
+        return success(squash_sha: merge_request.diff_head_sha)
+      end
+
       # We will push to this ref, then immediately delete the ref. This is
       # because we don't want a new branch to appear in the UI - we just want
       # the commit to be present in the repo.
