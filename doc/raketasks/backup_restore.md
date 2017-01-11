@@ -94,7 +94,7 @@ In the example below we use Amazon S3 for storage, but Fog also lets you use
 for AWS, Google, OpenStack Swift and Rackspace as well. A local driver is
 [also available](#uploading-to-locally-mounted-shares).
 
-For omnibus packages:
+For omnibus packages, add the following to `/etc/gitlab/gitlab.rb`:
 
 ```ruby
 gitlab_rails['backup_upload_connection'] = {
@@ -108,6 +108,8 @@ gitlab_rails['backup_upload_connection'] = {
 }
 gitlab_rails['backup_upload_remote_directory'] = 'my.s3.bucket'
 ```
+
+Make sure to run `sudo gitlab-ctl reconfigure` after editing `/etc/gitlab/gitlab.rb` to reflect the changes.
 
 For installations from source:
 
