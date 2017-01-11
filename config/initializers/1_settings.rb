@@ -261,7 +261,7 @@ Settings.gitlab.default_projects_features['builds']             = true if Settin
 Settings.gitlab.default_projects_features['container_registry'] = true if Settings.gitlab.default_projects_features['container_registry'].nil?
 Settings.gitlab.default_projects_features['visibility_level']   = Settings.send(:verify_constant, Gitlab::VisibilityLevel, Settings.gitlab.default_projects_features['visibility_level'], Gitlab::VisibilityLevel::PRIVATE)
 Settings.gitlab['domain_whitelist'] ||= []
-Settings.gitlab['import_sources'] ||= %w[github bitbucket gitlab google_code fogbugz git gitlab_project]
+Settings.gitlab['import_sources'] ||= %w[github bitbucket gitlab google_code fogbugz git gitlab_project gitea]
 Settings.gitlab['trusted_proxies'] ||= []
 Settings.gitlab['no_todos_messages'] ||= YAML.load_file(Rails.root.join('config', 'no_todos_messages.yml'))
 
@@ -332,6 +332,13 @@ Settings.lfs['enabled']      = true if Settings.lfs['enabled'].nil?
 Settings.lfs['storage_path'] = File.expand_path(Settings.lfs['storage_path'] || File.join(Settings.shared['path'], "lfs-objects"), Rails.root)
 
 #
+# Mattermost
+#
+Settings['mattermost'] ||= Settingslogic.new({})
+Settings.mattermost['enabled'] = false if Settings.mattermost['enabled'].nil?
+Settings.mattermost['host'] = nil unless Settings.mattermost.enabled
+
+#
 # Gravatar
 #
 Settings['gravatar'] ||= Settingslogic.new({})
@@ -393,7 +400,7 @@ Settings.cron_jobs['remove_expired_group_links_worker'] ||= Settingslogic.new({}
 Settings.cron_jobs['remove_expired_group_links_worker']['cron'] ||= '10 0 * * *'
 Settings.cron_jobs['remove_expired_group_links_worker']['job_class'] = 'RemoveExpiredGroupLinksWorker'
 Settings.cron_jobs['prune_old_events_worker'] ||= Settingslogic.new({})
-Settings.cron_jobs['prune_old_events_worker']['cron'] ||= '* */6 * * *'
+Settings.cron_jobs['prune_old_events_worker']['cron'] ||= '0 */6 * * *'
 Settings.cron_jobs['prune_old_events_worker']['job_class'] = 'PruneOldEventsWorker'
 
 Settings.cron_jobs['trending_projects_worker'] ||= Settingslogic.new({})

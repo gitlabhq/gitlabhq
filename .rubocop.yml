@@ -292,7 +292,8 @@ Style/MultilineMethodDefinitionBraceLayout:
 
 # Checks indentation of binary operations that span more than one line.
 Style/MultilineOperationIndentation:
-  Enabled: false
+  Enabled: true
+  EnforcedStyle: indented
 
 # Avoid multi-line `? :` (the ternary operator), use if/unless instead.
 Style/MultilineTernaryOperator:
@@ -340,10 +341,6 @@ Style/ParenthesesAroundCondition:
 
 # Checks for parentheses that seem not to serve any purpose.
 Style/RedundantParentheses:
-  Enabled: true
-
-# Don't use return where it's not required.
-Style/RedundantReturn:
   Enabled: true
 
 # Don't use semicolons to terminate expressions.

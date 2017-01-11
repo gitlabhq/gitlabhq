@@ -10,23 +10,23 @@ describe IssuesFinder do
   let(:issue1) { create(:issue, author: user, assignee: user, project: project1, milestone: milestone, title: 'gitlab') }
   let(:issue2) { create(:issue, author: user, assignee: user, project: project2, description: 'gitlab') }
   let(:issue3) { create(:issue, author: user2, assignee: user2, project: project2) }
-  let(:closed_issue) { create(:issue, author: user2, assignee: user2, project: project2, state: 'closed') }
-  let!(:label_link) { create(:label_link, label: label, target: issue2) }
-
-  before do
-    project1.team << [user, :master]
-    project2.team << [user, :developer]
-    project2.team << [user2, :developer]
-
-    issue1
-    issue2
-    issue3
-  end
 
   describe '#execute' do
+    let(:closed_issue) { create(:issue, author: user2, assignee: user2, project: project2, state: 'closed') }
+    let!(:label_link) { create(:label_link, label: label, target: issue2) }
     let(:search_user) { user }
     let(:params) { {} }
     let(:issues) { IssuesFinder.new(search_user, params.reverse_merge(scope: scope, state: 'opened')).execute }
+
+    before do
+      project1.team << [user, :master]
+      project2.team << [user, :developer]
+      project2.team << [user2, :developer]
+
+      issue1
+      issue2
+      issue3
+    end
 
     context 'scope: all' do
       let(:scope) { 'all' }
@@ -209,6 +209,15 @@ describe IssuesFinder do
           expect(issues).to contain_exactly(issue2, issue3)
         end
       end
+
+      it 'finds issues user can access due to group' do
+        group = create(:group)
+        project = create(:empty_project, group: group)
+        issue = create(:issue, project: project)
+        group.add_user(user, :owner)
+
+        expect(issues).to include(issue)
+      end
     end
 
     context 'personal scope' do
@@ -225,6 +234,44 @@ describe IssuesFinder do
           expect(issues).to contain_exactly(issue1)
         end
       end
+    end
+
+    context 'when project restricts issues' do
+      let(:scope) { nil }
+
+      it "doesn't return team-only issues to non team members" do
+        project = create(:empty_project, :public, issues_access_level: ProjectFeature::PRIVATE)
+        issue = create(:issue, project: project)
+
+        expect(issues).not_to include(issue)
+      end
+
+      it "doesn't return issues if feature disabled" do
+        [project1, project2].each do |project|
+          project.project_feature.update!(issues_access_level: ProjectFeature::DISABLED)
+        end
+
+        expect(issues.count).to eq 0
+      end
+    end
+  end
+
+  describe '.not_restricted_by_confidentiality' do
+    let(:authorized_user) { create(:user) }
+    let(:project) { create(:empty_project, namespace: authorized_user.namespace) }
+    let!(:public_issue) { create(:issue, project: project) }
+    let!(:confidential_issue) { create(:issue, project: project, confidential: true) }
+
+    it 'returns non confidential issues for nil user' do
+      expect(IssuesFinder.send(:not_restricted_by_confidentiality, nil)).to include(public_issue)
+    end
+
+    it 'returns non confidential issues for user not authorized for the issues projects' do
+      expect(IssuesFinder.send(:not_restricted_by_confidentiality, user)).to include(public_issue)
+    end
+
+    it 'returns all issues for user authorized for the issues projects' do
+      expect(IssuesFinder.send(:not_restricted_by_confidentiality, authorized_user)).to include(public_issue, confidential_issue)
     end
   end
 end

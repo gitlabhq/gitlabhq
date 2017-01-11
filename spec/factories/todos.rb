@@ -21,6 +21,7 @@ FactoryGirl.define do
 
     trait :build_failed do
       action { Todo::BUILD_FAILED }
+      target factory: :merge_request
     end
 
     trait :approval_required do

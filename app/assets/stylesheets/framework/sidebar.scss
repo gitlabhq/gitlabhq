@@ -23,7 +23,7 @@
 
 .sidebar-wrapper {
   z-index: 1000;
-  background: $background-color;
+  background: $gray-light;
 
   .nicescroll-rails-hr {
     // TODO: Figure out why nicescroll doesn't hide horizontal bar
@@ -100,6 +100,17 @@
     float: right;
     padding: 0 8px;
     border-radius: 6px;
+  }
+
+  .about-gitlab {
+    padding: 7px $gl-sidebar-padding;
+    font-size: $gl-font-size;
+    line-height: 24px;
+    display: block;
+    text-decoration: none;
+    font-weight: normal;
+    position: absolute;
+    bottom: 10px;
   }
 }
 

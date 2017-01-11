@@ -1,4 +1,44 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, no-var, prefer-arrow-callback, wrap-iife, no-shadow, consistent-return, one-var, one-var-declaration-per-line, camelcase, default-case, no-new, quotes, no-duplicate-case, no-case-declarations, no-fallthrough, max-len, padded-blocks */
+/* global UsernameValidator */
+/* global ActiveTabMemoizer */
+/* global ShortcutsNavigation */
+/* global Build */
+/* global Issuable */
+/* global Issue */
+/* global ShortcutsIssuable */
+/* global ZenMode */
+/* global Milestone */
+/* global GLForm */
+/* global IssuableForm */
+/* global LabelsSelect */
+/* global MilestoneSelect */
+/* global MergedButtons */
+/* global Commit */
+/* global NotificationsForm */
+/* global TreeView */
+/* global NotificationsDropdown */
+/* global UsersSelect */
+/* global GroupAvatar */
+/* global LineHighlighter */
+/* global ShortcutsBlob */
+/* global ProjectFork */
+/* global BuildArtifacts */
+/* global GroupsSelect */
+/* global Search */
+/* global Admin */
+/* global NamespaceSelects */
+/* global ShortcutsDashboardNavigation */
+/* global Project */
+/* global ProjectAvatar */
+/* global CompareAutocomplete */
+/* global ProjectNew */
+/* global Star */
+/* global ProjectShow */
+/* global Labels */
+/* global Shortcuts */
+/* global WeightSelect */
+/* global AdminEmailSelect */
+
 (function() {
   var Dispatcher;
 
@@ -26,6 +66,17 @@
           new UsernameValidator();
           new ActiveTabMemoizer();
           break;
+        case 'sessions:create':
+          if (!gon.u2f) break;
+          window.gl.u2fAuthenticate = new gl.U2FAuthenticate(
+            $("#js-authenticate-u2f"),
+            '#js-login-u2f-form',
+            gon.u2f,
+            document.querySelector('#js-login-2fa-device'),
+            document.querySelector('.js-2fa-form'),
+          );
+          window.gl.u2fAuthenticate.start();
+          break;
         case 'projects:boards:show':
         case 'projects:boards:index':
           shortcut_handler = new ShortcutsNavigation();
@@ -36,7 +87,9 @@
         case 'projects:merge_requests:index':
         case 'projects:issues:index':
           Issuable.init();
-          new gl.IssuableBulkActions();
+          new gl.IssuableBulkActions({
+            prefixId: page === 'projects:merge_requests:index' ? 'merge_request_' : 'issue_',
+          });
           shortcut_handler = new ShortcutsNavigation();
           break;
         case 'projects:issues:show':
@@ -99,17 +152,12 @@
           new MergedButtons();
           break;
         case 'projects:merge_requests:commits':
-        case 'projects:merge_requests:builds':
           new MergedButtons();
           break;
         case "projects:merge_requests:diffs":
           new gl.Diff();
           new ZenMode();
           new MergedButtons();
-          break;
-        case 'projects:merge_requests:index':
-          shortcut_handler = new ShortcutsNavigation();
-          Issuable.init();
           break;
         case 'dashboard:activity':
           new gl.Activities();
@@ -123,8 +171,10 @@
           new ZenMode();
           shortcut_handler = new ShortcutsNavigation();
           break;
-        case 'projects:commit:builds':
-          new gl.Pipelines();
+        case 'projects:commit:pipelines':
+          new gl.MiniPipelineGraph({
+            container: '.js-pipeline-table',
+          });
           break;
         case 'projects:commits:show':
         case 'projects:activity':
@@ -136,6 +186,11 @@
           if ($('#tree-slider').length) {
             new TreeView();
           }
+          break;
+        case 'projects:pipelines:index':
+          new gl.MiniPipelineGraph({
+            container: '.js-pipeline-table',
+          });
           break;
         case 'projects:pipelines:builds':
         case 'projects:pipelines:show':
@@ -163,7 +218,9 @@
           new gl.Members();
           new UsersSelect();
           break;
-        case 'projects:project_members:index':
+        case 'projects:members:show':
+          new gl.MemberExpirationDate('.js-access-expiration-date-groups');
+          new GroupsSelect();
           new gl.MemberExpirationDate();
           new gl.Members();
           new UsersSelect();
@@ -208,10 +265,6 @@
           break;
         case 'projects:artifacts:browse':
           new BuildArtifacts();
-          break;
-        case 'projects:group_links:index':
-          new gl.MemberExpirationDate();
-          new GroupsSelect();
           break;
         case 'search:show':
           new Search();

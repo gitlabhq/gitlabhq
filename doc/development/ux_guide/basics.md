@@ -5,6 +5,7 @@
 * [Typography](#typography)
 * [Icons](#icons)
 * [Color](#color)
+* [Cursors](#cursors)
 
 ---
 
@@ -49,13 +50,35 @@ GitLab uses Font Awesome icons throughout our interface.
 
 ## Color
 
-| | |
-| :------: | :------- |
-| ![Blue](img/color-blue.png) | Blue is used to highlight primary active elements (such as the current tab), as well as other organizational and managing commands.|
-| ![Green](img/color-green.png) | Green is for actions that create new objects. |
-| ![Orange](img/color-orange.png) | Orange is used for warnings |
-| ![Red](img/color-red.png) | Red is reserved for delete and other destructive commands |
-| ![Grey](img/color-grey.png) | Grey is used for neutral secondary elements. Depending on context, white is sometimes used instead. |
+| | State | Action |
+| :------: | :------- | :------- |
+| ![Blue](img/color-blue.png) | Primary and active (such as the current tab) | Organizational, managing, and retry commands|
+| ![Green](img/color-green.png) | Opened | Create new objects |
+| ![Orange](img/color-orange.png) | Warning | Non destructive action |
+| ![Red](img/color-red.png) | Closed | Delete and other destructive commands |
+| ![Grey](img/color-grey.png) | Neutral | Neutral secondary commands |
+
+### Text colors
+
+|||
+| :---: | :--- |
+| ![Text primary](img/color-textprimary.png) | Used for primary body text, such as issue description and comment |
+| ![Text secondary](img/color-textsecondary.png) | Used for secondary body text, such as username and date |
 
 > TODO: Establish a perspective for color in terms of our personality and rationalize with Marketing usage.
+
+---
+
+## Cursors
+The mouse cursor is key in helping users understand how to interact with elements on the screen.
+
+| | |
+| :------: | :------- |
+| ![Default cursor](img/cursors-default.png) | Default cursor |
+| ![Pointer cursor](img/cursors-pointer.png) | Pointer cursor: used to indicate that you can click on an element to invoke a command or navigate, such as links and buttons |
+| ![Move cursor](img/cursors-move.png) | Move cursor: used to indicate that you can move an element around on the screen |
+| ![Pan opened cursor](img/cursors-panopened.png) | Pan cursor (opened): indicates that you can grab and move the entire canvas, affecting what is seen in the view port. |
+| ![Pan closed cursor](img/cursors-panclosed.png) | Pan cursor (closed): indicates that you are actively panning the canvas. |
+| ![I-beam cursor](img/cursors-ibeam.png) | I-beam cursor: indicates that this is either text that you can select and copy, or a text field that you can click into to enter text. |
+
 

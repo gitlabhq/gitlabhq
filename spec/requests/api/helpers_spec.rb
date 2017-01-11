@@ -17,14 +17,14 @@ describe API::Helpers, api: true do
     clear_env
     clear_param
     env[API::APIGuard::PRIVATE_TOKEN_HEADER] = user_or_token.respond_to?(:private_token) ? user_or_token.private_token : user_or_token
-    env[API::Helpers::SUDO_HEADER] = identifier
+    env[API::Helpers::SUDO_HEADER] = identifier.to_s
   end
 
   def set_param(user_or_token, identifier)
     clear_env
     clear_param
     params[API::APIGuard::PRIVATE_TOKEN_PARAM] = user_or_token.respond_to?(:private_token) ? user_or_token.private_token : user_or_token
-    params[API::Helpers::SUDO_PARAM] = identifier
+    params[API::Helpers::SUDO_PARAM] = identifier.to_s
   end
 
   def clear_env
@@ -396,7 +396,7 @@ describe API::Helpers, api: true do
     %w[HEAD GET].each do |method_name|
       context "method is #{method_name}" do
         before do
-          expect_any_instance_of(self.class).to receive(:route).and_return(double(route_method: method_name))
+          expect_any_instance_of(self.class).to receive(:route).and_return(double(request_method: method_name))
         end
 
         it 'does not raise an error' do
@@ -410,7 +410,7 @@ describe API::Helpers, api: true do
     %w[POST PUT PATCH DELETE].each do |method_name|
       context "method is #{method_name}" do
         before do
-          expect_any_instance_of(self.class).to receive(:route).and_return(double(route_method: method_name))
+          expect_any_instance_of(self.class).to receive(:route).and_return(double(request_method: method_name))
         end
 
         it 'calls authenticate!' do

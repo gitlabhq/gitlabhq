@@ -5,11 +5,10 @@ class GeoRepositoryUpdateWorker
 
   attr_accessor :project
 
-  def perform(project_id, clone_url, push_data = nil)
+  def perform(project_id, _clone_url, push_data = nil)
     @project = Project.find(project_id)
     @push_data = push_data
 
-    fetch_repository(clone_url)
     process_hooks if push_data # we should be compatible with old unprocessed data
   end
 

@@ -31,7 +31,7 @@ feature 'Merge Requests > User uses slash commands', feature: true, js: true do
           write_note("/wip")
 
           expect(page).not_to have_content '/wip'
-          expect(page).to have_content 'Your commands have been executed!'
+          expect(page).to have_content 'Commands applied'
 
           expect(merge_request.reload.work_in_progress?).to eq true
         end
@@ -42,7 +42,7 @@ feature 'Merge Requests > User uses slash commands', feature: true, js: true do
           write_note("/wip")
 
           expect(page).not_to have_content '/wip'
-          expect(page).to have_content 'Your commands have been executed!'
+          expect(page).to have_content 'Commands applied'
 
           expect(merge_request.reload.work_in_progress?).to eq false
         end
@@ -61,7 +61,7 @@ feature 'Merge Requests > User uses slash commands', feature: true, js: true do
           write_note("/wip")
 
           expect(page).not_to have_content '/wip'
-          expect(page).not_to have_content 'Your commands have been executed!'
+          expect(page).not_to have_content 'Commands applied'
 
           expect(merge_request.reload.work_in_progress?).to eq false
         end

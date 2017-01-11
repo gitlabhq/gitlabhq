@@ -43,6 +43,7 @@ class Project < ActiveRecord::Base
   after_create :ensure_dir_exist
   after_create :create_project_feature, unless: :project_feature
   after_save :ensure_dir_exist, if: :namespace_id_changed?
+  after_save :update_project_statistics, if: :namespace_id_changed?
 
   # set last_activity_at to the same as created_at
   after_create :set_last_activity_at
@@ -73,7 +74,6 @@ class Project < ActiveRecord::Base
   has_one :push_rule, dependent: :destroy
   has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event'
   has_many :boards, dependent: :destroy
-  has_many :chat_services
 
   # Project services
   has_one :campfire_service, dependent: :destroy
@@ -89,9 +89,11 @@ class Project < ActiveRecord::Base
   has_one :asana_service, dependent: :destroy
   has_one :gemnasium_service, dependent: :destroy
   has_one :mattermost_slash_commands_service, dependent: :destroy
+  has_one :mattermost_service, dependent: :destroy
   has_one :slack_service, dependent: :destroy
   has_one :jenkins_service, dependent: :destroy
   has_one :jenkins_deprecated_service, dependent: :destroy
+  has_one :slack_slash_commands_service, dependent: :destroy
   has_one :buildkite_service, dependent: :destroy
   has_one :bamboo_service, dependent: :destroy
   has_one :teamcity_service, dependent: :destroy
@@ -102,6 +104,7 @@ class Project < ActiveRecord::Base
   has_one :bugzilla_service, dependent: :destroy
   has_one :gitlab_issue_tracker_service, dependent: :destroy, inverse_of: :project
   has_one :external_wiki_service, dependent: :destroy
+  has_one :kubernetes_service, dependent: :destroy, inverse_of: :project
   has_one :index_status, dependent: :destroy
 
   has_one  :forked_project_link,  dependent: :destroy, foreign_key: "forked_to_project_id"
@@ -150,6 +153,7 @@ class Project < ActiveRecord::Base
 
   has_one :import_data, dependent: :destroy, class_name: "ProjectImportData"
   has_one :project_feature, dependent: :destroy
+  has_one :statistics, class_name: 'ProjectStatistics', dependent: :delete
 
   has_many :commit_statuses, dependent: :destroy, foreign_key: :gl_project_id
   has_many :pipelines, dependent: :destroy, class_name: 'Ci::Pipeline', foreign_key: :gl_project_id
@@ -235,6 +239,7 @@ class Project < ActiveRecord::Base
   scope :with_remote_mirrors, -> { joins(:remote_mirrors).where(remote_mirrors: { enabled: true }).distinct }
 
   scope :with_project_feature, -> { joins('LEFT JOIN project_features ON projects.id = project_features.project_id') }
+  scope :with_statistics, -> { includes(:statistics) }
 
   # "enabled" here means "not disabled". It includes private features!
   scope :with_feature_enabled, ->(feature) {
@@ -364,8 +369,10 @@ class Project < ActiveRecord::Base
     end
 
     def sort(method)
-      if method == 'repository_size_desc'
-        reorder(repository_size: :desc, id: :desc)
+      if method == 'storage_size_desc'
+        # storage_size is a joined column so we need to
+        # pass a string to avoid AR adding the table name
+        reorder('project_statistics.storage_size DESC, projects.id DESC')
       else
         order_by(method)
       end
@@ -627,6 +634,10 @@ class Project < ActiveRecord::Base
     import_type == 'gitlab_project'
   end
 
+  def gitea_import?
+    import_type == 'gitea'
+  end
+
   def check_limit
     unless creator.can_create_project? or namespace.kind == 'group'
       projects_limit = creator.projects_limit
@@ -674,8 +685,8 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def to_reference(from_project = nil)
-    if cross_namespace_reference?(from_project)
+  def to_reference(from_project = nil, full: false)
+    if full || cross_namespace_reference?(from_project)
       path_with_namespace
     elsif cross_project_reference?(from_project)
       path
@@ -692,10 +703,6 @@ class Project < ActiveRecord::Base
 
   def web_url
     Gitlab::Routing.url_helpers.namespace_project_url(self.namespace, self)
-  end
-
-  def web_url_without_protocol
-    web_url.split('://')[1]
   end
 
   def new_issue_address(author)
@@ -836,6 +843,14 @@ class Project < ActiveRecord::Base
 
   def ci_service
     @ci_service ||= ci_services.reorder(nil).find_by(active: true)
+  end
+
+  def deployment_services
+    services.where(category: :deployment)
+  end
+
+  def deployment_service
+    @deployment_service ||= deployment_services.reorder(nil).find_by(active: true)
   end
 
   def jira_tracker?
@@ -1017,7 +1032,7 @@ class Project < ActiveRecord::Base
       Rails.logger.error "Project #{old_path_with_namespace} cannot be renamed because container registry tags are present"
 
       # we currently doesn't support renaming repository if it contains tags in container registry
-      raise Exception.new('Project cannot be renamed, because tags are present in its container registry')
+      raise StandardError.new('Project cannot be renamed, because tags are present in its container registry')
     end
 
     if gitlab_shell.mv_repository(repository_storage_path, old_path_with_namespace, new_path_with_namespace)
@@ -1044,7 +1059,7 @@ class Project < ActiveRecord::Base
 
       # if we cannot move namespace directory we should rollback
       # db changes in order to prevent out of sync between db and fs
-      raise Exception.new('repository cannot be renamed')
+      raise StandardError.new('repository cannot be renamed')
     end
 
     Gitlab::AppLogger.info "Project was renamed: #{old_path_with_namespace} -> #{new_path_with_namespace}"
@@ -1131,14 +1146,6 @@ class Project < ActiveRecord::Base
 
   def forked_from?(project)
     forked? && project == forked_from_project
-  end
-
-  def update_repository_size
-    update_attribute(:repository_size, repository.size)
-  end
-
-  def update_commit_count
-    update_attribute(:commit_count, repository.commit_count)
   end
 
   def forks_count
@@ -1457,6 +1464,12 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def deployment_variables
+    return [] unless deployment_service
+
+    deployment_service.predefined_variables
+  end
+
   def append_or_update_attribute(name, value)
     old_values = public_send(name.to_s)
 
@@ -1490,7 +1503,7 @@ class Project < ActiveRecord::Base
   end
 
   def repository_and_lfs_size
-    repository_size + lfs_objects.sum(:size).to_i.to_mb
+    statistics.storage_size + statistics.lfs_objects_size
   end
 
   def above_size_limit?
@@ -1565,5 +1578,10 @@ class Project < ActiveRecord::Base
 
   def full_path_changed?
     path_changed? || namespace_id_changed?
+  end
+
+  def update_project_statistics
+    stats = statistics || build_statistics
+    stats.update(namespace_id: namespace_id)
   end
 end

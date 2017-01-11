@@ -1,4 +1,8 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, no-undef, no-else-return, quotes, quote-props, comma-dangle, one-var, one-var-declaration-per-line, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, no-else-return, quotes, quote-props, comma-dangle, one-var, one-var-declaration-per-line, padded-blocks, max-len */
+/* global u2f */
+/* global U2FError */
+/* global U2FUtil */
+
 // Register U2F (universal 2nd factor) devices for users to authenticate with.
 //
 // State Flow #1: setup -> in_progress -> registered -> POST to server
@@ -72,7 +76,8 @@
 
     U2FRegister.prototype.renderError = function(error) {
       this.renderTemplate('error', {
-        error_message: error.message()
+        error_message: error.message(),
+        error_code: error.errorCode
       });
       return this.container.find('#js-u2f-try-again').on('click', this.renderSetup);
     };

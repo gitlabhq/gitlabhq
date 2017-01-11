@@ -16,13 +16,14 @@ gem 'default_value_for', '~> 3.0.0'
 gem 'mysql2', '~> 0.3.16', group: :mysql
 gem 'pg', '~> 0.18.2', group: :postgres
 
+gem 'rugged', '~> 0.24.0'
+
 # Authentication libraries
 gem 'devise',                 '~> 4.2'
 gem 'doorkeeper',             '~> 4.2.0'
 gem 'omniauth',               '~> 1.3.1'
 gem 'omniauth-auth0',         '~> 1.4.1'
 gem 'omniauth-azure-oauth2',  '~> 0.0.6'
-gem 'omniauth-bitbucket',     '~> 0.0.2'
 gem 'omniauth-cas3',          '~> 1.1.2'
 gem 'omniauth-facebook',      '~> 4.0.0'
 gem 'omniauth-github',        '~> 1.1.1'
@@ -34,6 +35,7 @@ gem 'omniauth-shibboleth',    '~> 1.2.0'
 gem 'omniauth-twitter',       '~> 1.2.0'
 gem 'omniauth_crowd',         '~> 2.2.0'
 gem 'gssapi', group: :kerberos
+gem 'omniauth-authentiq',     '~> 0.2.0'
 gem 'rack-oauth2',            '~> 1.2.1'
 gem 'jwt'
 
@@ -48,14 +50,10 @@ gem 'attr_encrypted', '~> 3.0.0'
 gem 'u2f', '~> 0.2.1'
 
 # GitLab Pages
-gem 'validates_hostname', '~> 1.0.0'
+gem 'validates_hostname', '~> 1.0.6'
 
 # Browser detection
 gem 'browser', '~> 2.2'
-
-# Extracting information from a git repository
-# Provide access to Gitlab::Git library
-gem 'gitlab_git', '~> 10.7.0'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
@@ -72,7 +70,7 @@ gem 'gollum-rugged_adapter', '~> 0.4.2', require: false
 gem 'github-linguist', '~> 4.7.0', require: 'linguist'
 
 # API
-gem 'grape',        '~> 0.15.0'
+gem 'grape',        '~> 0.18.0'
 gem 'grape-entity', '~> 0.6.0'
 gem 'rack-cors',    '~> 0.4.0', require: 'rack/cors'
 
@@ -91,9 +89,13 @@ gem 'dropzonejs-rails', '~> 0.7.1'
 # for backups
 gem 'fog-aws', '~> 0.9'
 gem 'fog-core', '~> 1.40'
+gem 'fog-google', '~> 0.5'
 gem 'fog-local', '~> 0.3'
 gem 'fog-openstack', '~> 0.1'
 gem 'fog-rackspace', '~> 0.1.1'
+
+# for Google storage
+gem 'google-api-client', '~> 0.8.6'
 
 # for aws storage
 gem 'unf', '~> 0.1.4'
@@ -142,7 +144,7 @@ gem 'after_commit_queue', '~> 1.3.0'
 gem 'acts-as-taggable-on', '~> 4.0'
 
 # Background jobs
-gem 'sidekiq', '~> 4.2'
+gem 'sidekiq', '~> 4.2.7'
 gem 'sidekiq-cron', '~> 0.4.4'
 gem 'redis-namespace', '~> 1.5.2'
 gem 'sidekiq-limit_fetch', '~> 3.4'
@@ -180,13 +182,16 @@ gem 'gitlab-flowdock-git-hook', '~> 1.0.1'
 gem 'gemnasium-gitlab-service', '~> 0.2'
 
 # Slack integration
-gem 'slack-notifier', '~> 1.2.0'
+gem 'slack-notifier', '~> 1.5.1'
 
 # Asana integration
 gem 'asana', '~> 0.4.0'
 
 # FogBugz integration
 gem 'ruby-fogbugz', '~> 0.2.1'
+
+# Kubernetes integration
+gem 'kubeclient', '~> 2.2.0'
 
 # d3
 gem 'd3_rails', '~> 3.5.0'
@@ -306,8 +311,8 @@ group :development, :test do
   gem 'spring-commands-spinach',  '~> 1.1.0'
   gem 'spring-commands-teaspoon', '~> 0.0.2'
 
-  gem 'rubocop', '~> 0.43.0', require: false
-  gem 'rubocop-rspec', '~> 1.5.0', require: false
+  gem 'rubocop', '~> 0.46.0', require: false
+  gem 'rubocop-rspec', '~> 1.9.1', require: false
   gem 'scss_lint', '~> 0.47.0', require: false
   gem 'haml_lint', '~> 0.18.2', require: false
   gem 'simplecov', '0.12.0', require: false
@@ -336,11 +341,11 @@ end
 
 gem 'newrelic_rpm', '~> 3.16'
 
-gem 'octokit', '~> 4.3.0'
+gem 'octokit', '~> 4.6.2'
 
 gem 'mail_room', '~> 0.9.0'
 
-gem 'email_reply_parser', '~> 0.5.8'
+gem 'email_reply_trimmer', '~> 0.1'
 gem 'html2text'
 
 gem 'ruby-prof', '~> 0.16.2'
@@ -355,5 +360,5 @@ gem 'paranoia', '~> 2.2'
 gem 'health_check', '~> 2.2.0'
 
 # System information
-gem 'vmstat', '~> 2.2'
+gem 'vmstat', '~> 2.3.0'
 gem 'sys-filesystem', '~> 1.1.6'

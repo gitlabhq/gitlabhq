@@ -2,9 +2,9 @@
 //= require environments/components/environment_external_url
 
 describe('External URL Component', () => {
-  fixture.preload('environments/element.html');
+  preloadFixtures('static/environments/element.html.raw');
   beforeEach(() => {
-    fixture.load('environments/element.html');
+    loadFixtures('static/environments/element.html.raw');
   });
 
   it('should link to the provided externalUrl prop', () => {

@@ -1,4 +1,5 @@
 /* eslint-disable */
+
 (global => {
   global.gl = global.gl || {};
 
@@ -153,7 +154,7 @@
     addSelectedItem(selectedItem) {
       var itemToAdd = {};
 
-      // If the item already exists, just use it 
+      // If the item already exists, just use it
       let index = -1;
       let selectedItems = this.getAllSelectedItems();
 
@@ -285,17 +286,17 @@
       let selectedItems = this.getSelectedItems();
 
       // ID property is handled differently locally from the server
-      // 
+      //
       // For Groups
-      // In dropdown: `id` 
+      // In dropdown: `id`
       // For submit: `group_id`
-      // 
+      //
       // For Roles
-      // In dropdown: `id` 
+      // In dropdown: `id`
       // For submit: `access_level`
-      // 
+      //
       // For Users
-      // In dropdown: `id` 
+      // In dropdown: `id`
       // For submit: `user_id`
 
       /*
@@ -322,7 +323,7 @@
 
         if (current.type !== LEVEL_TYPES.USER) { continue; }
 
-        // Collect selected users 
+        // Collect selected users
         selectedUsers.push({
           id: current.user_id,
           name: current.name,

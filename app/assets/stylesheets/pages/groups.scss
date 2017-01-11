@@ -18,7 +18,7 @@
   .stats {
     float: right;
     line-height: $list-text-height;
-    color: $gl-gray;
+    color: $gl-text-color;
 
     span {
       margin-right: 15px;
@@ -32,11 +32,6 @@
   }
 }
 
-.group-buttons {
-  .notification-dropdown {
-    display: inline-block;
-  }
-}
 
 .ldap-group-links {
   .form-actions {

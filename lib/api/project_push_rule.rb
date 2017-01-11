@@ -1,75 +1,73 @@
 module API
-  # Projects push rule API
   class ProjectPushRule < Grape::API
     before { authenticate! }
     before { authorize_admin_project }
 
+    params do
+      requires :id, type: String, desc: 'The ID of a project'
+    end
     resource :projects do
-      # Get project push rule
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      # Example Request:
-      #   GET /projects/:id/push_rule
-      get ":id/push_rule" do
-        @push_rule = user_project.push_rule
-        present @push_rule, with: Entities::ProjectPushRule
+      helpers do
+        params :push_rule_params do
+          optional :deny_delete_tag, type: Boolean, desc: 'Deny deleting a tag'
+          optional :member_check, type: Boolean, desc: 'Restrict commits by author (email) to existing GitLab users'
+          optional :prevent_secrets, type: Boolean, desc: 'GitLab will reject any files that are likely to contain secrets'
+          optional :commit_message_regex, type: String, desc: 'All commit messages must match this'
+          optional :author_email_regex, type: String, desc: 'All commit author emails must match this'
+          optional :file_name_regex, type: String, desc: 'All commited filenames must not match this'
+          optional :max_file_size, type: Integer, desc: 'Maximum file size (MB)'
+          at_least_one_of :deny_delete_tag, :member_check, :prevent_secrets,
+                          :commit_message_regex, :author_email_regex,
+                          :file_name_regex, :max_file_size
+        end
       end
 
-      # Add push rule to project
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      # Example Request:
-      #   POST /projects/:id/push_rule
-      post ":id/push_rule" do
-        attrs = attributes_for_keys [
-          :commit_message_regex,
-          :deny_delete_tag
-        ]
+      desc 'Get project push rule' do
+        success Entities::ProjectPushRule
+      end
+      get ":id/push_rule" do
+        push_rule = user_project.push_rule
+        present push_rule, with: Entities::ProjectPushRule
+      end
 
+      desc 'Add a push rule to a project' do
+        success Entities::ProjectPushRule
+      end
+      params do
+        use :push_rule_params
+      end
+      post ":id/push_rule" do
         if user_project.push_rule
           error!("Project push rule exists", 422)
         else
-          @push_rule = user_project.create_push_rule(attrs)
-          present @push_rule, with: Entities::ProjectPushRule
+          push_rule = user_project.create_push_rule(declared_params)
+          present push_rule, with: Entities::ProjectPushRule
         end
       end
 
-      # Update an existing project push rule
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      # Example Request:
-      #   PUT /projects/:id/push_rule
+      desc 'Update an existing project push rule' do
+        success Entities::ProjectPushRule
+      end
+      params do
+        use :push_rule_params
+      end
       put ":id/push_rule" do
-        @push_rule = user_project.push_rule
+        push_rule = user_project.push_rule
+        not_found!('Push Rule') unless push_rule
 
-        attrs = attributes_for_keys [
-          :commit_message_regex,
-          :deny_delete_tag
-        ]
-
-        if @push_rule && @push_rule.update_attributes(attrs)
-          present @push_rule, with: Entities::ProjectPushRule
+        if push_rule.update_attributes(declared_params(include_missing: false))
+          present push_rule, with: Entities::ProjectPushRule
         else
-          not_found!
+          render_validation_error!(push_rule)
         end
       end
 
-      # Deletes project push rule. This is an idempotent function.
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      # Example Request:
-      #   DELETE /projects/:id/push_rule
+      desc 'Deletes project push rule'
       delete ":id/push_rule" do
-        @push_rule = user_project.push_rule
-        if @push_rule
-          @push_rule.destroy
-        else
-          not_found!
-        end
+        push_rule = user_project.push_rule
+        not_found!('Push Rule') unless push_rule
+
+        push_rule.destroy
       end
     end
   end

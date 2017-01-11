@@ -1,0 +1,29 @@
+- group  = local_assigns.fetch(:group)
+- member = local_assigns.fetch(:member)
+- user   = local_assigns.fetch(:user)
+- action = local_assigns.fetch(:action, :edit).to_s.inquiry
+- can_override = local_assigns.fetch(:can_override, false)
+
+- if group && can_override
+  - if action.edit?
+    %button.btn.btn-default.btn-ldap-override.js-ldap-permissions{ type: 'button',
+      'aria-label' => 'Edit permissions',
+      data: { name: user.name, el_id: dom_id(member) } }
+      %span.visible-xs-block.visible-sm-block
+        Edit permissions
+      = icon('pencil', class: 'hidden-xs hidden-sm')
+  - else
+    %li.alert.alert-member-ldap{ style: 'display: none;' }
+      %p
+        = user.name
+        is currently an LDAP user. Editing their permissions will override the settings from the LDAP group sync.
+      .controls
+        %button.btn.btn-warning.btn-loading.js-ldap-override{ type: 'button',
+          'aria-label' => 'Change LDAP member permissions',
+          data: { el_id: dom_id(member), endpoint: override_group_group_member_path(group, member) } }
+          = icon('spinner spin')
+          Change permissions
+        %button.btn.btn-default.js-ldap-permissions{ type: 'button',
+          'aria-label' => 'Close permissions override',
+          data: { el_id: dom_id(member) } }
+          = icon('times')

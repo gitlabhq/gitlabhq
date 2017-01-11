@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20161124141322_migrate_process_commit_worker_jobs.rb')
 
@@ -59,6 +61,10 @@ describe MigrateProcessCommitWorkerJobs do
       Sidekiq.redis { |r| r.llen('queue:process_commit') }
     end
 
+    def pop_job
+      JSON.load(Sidekiq.redis { |r| r.lpop('queue:process_commit') })
+    end
+
     before do
       Sidekiq.redis do |redis|
         job = JSON.dump(args: [project.id, user.id, commit.oid])
@@ -92,11 +98,28 @@ describe MigrateProcessCommitWorkerJobs do
       expect(job_count).to eq(1)
     end
 
+    it 'encodes data to UTF-8' do
+      allow_any_instance_of(Rugged::Repository).to receive(:lookup).
+        with(commit.oid).
+        and_return(commit)
+
+      allow(commit).to receive(:message).
+        and_return('김치'.force_encoding('BINARY'))
+
+      migration.up
+
+      job = pop_job
+
+      # We don't care so much about what is being stored, instead we just want
+      # to make sure the encoding is right so that JSON encoding the data
+      # doesn't produce any errors.
+      expect(job['args'][2]['message'].encoding).to eq(Encoding::UTF_8)
+    end
+
     context 'a migrated job' do
       let(:job) do
         migration.up
-
-        JSON.load(Sidekiq.redis { |r| r.lpop('queue:process_commit') })
+        pop_job
       end
 
       let(:commit_hash) do

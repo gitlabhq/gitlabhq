@@ -44,9 +44,25 @@
       }
     };
     gl.text.insertText = function(textArea, text, tag, blockTag, selected, wrap) {
-      var insertText, inserted, selectedSplit, startChar;
+      var insertText, inserted, selectedSplit, startChar, removedLastNewLine, removedFirstNewLine;
+      removedLastNewLine = false;
+      removedFirstNewLine = false;
+
+      // Remove the first newline
+      if (selected.indexOf('\n') === 0) {
+        removedFirstNewLine = true;
+        selected = selected.replace(/\n+/, '');
+      }
+
+      // Remove the last newline
+      if (textArea.selectionEnd - textArea.selectionStart > selected.replace(/\n$/, '').length) {
+        removedLastNewLine = true;
+        selected = selected.replace(/\n$/, '');
+      }
+
       selectedSplit = selected.split('\n');
       startChar = !wrap && textArea.selectionStart > 0 ? '\n' : '';
+
       if (selectedSplit.length > 1 && (!wrap || (blockTag != null))) {
         if (blockTag != null) {
           insertText = this.blockTagText(text, textArea, blockTag, selected);
@@ -62,6 +78,15 @@
       } else {
         insertText = "" + startChar + tag + selected + (wrap ? tag : ' ');
       }
+
+      if (removedFirstNewLine) {
+        insertText = '\n' + insertText;
+      }
+
+      if (removedLastNewLine) {
+        insertText += '\n';
+      }
+
       if (document.queryCommandSupported('insertText')) {
         inserted = document.execCommand('insertText', false, insertText);
       }
@@ -74,9 +99,9 @@
           document.execCommand("ms-endUndoUnit");
         } catch (error) {}
       }
-      return this.moveCursor(textArea, tag, wrap);
+      return this.moveCursor(textArea, tag, wrap, removedLastNewLine);
     };
-    gl.text.moveCursor = function(textArea, tag, wrapped) {
+    gl.text.moveCursor = function(textArea, tag, wrapped, removedLastNewLine) {
       var pos;
       if (!textArea.setSelectionRange) {
         return;
@@ -87,6 +112,11 @@
         } else {
           pos = textArea.selectionStart;
         }
+
+        if (removedLastNewLine) {
+          pos -= 1;
+        }
+
         return textArea.setSelectionRange(pos, pos);
       }
     };

@@ -1,0 +1,6 @@
+- page_title "Members"
+
+= render "projects/project_members/index"
+- if can?(current_user, :admin_project, @project)
+  - if @project.allowed_to_share_with_group?
+    = render "projects/group_links/index"

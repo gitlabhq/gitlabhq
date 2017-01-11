@@ -65,11 +65,11 @@ class Snippet < ActiveRecord::Base
     @link_reference_pattern ||= super("snippets", /(?<snippet>\d+)/)
   end
 
-  def to_reference(from_project = nil)
+  def to_reference(from_project = nil, full: false)
     reference = "#{self.class.reference_prefix}#{id}"
 
     if project.present?
-      "#{project.to_reference(from_project)}#{reference}"
+      "#{project.to_reference(from_project, full: full)}#{reference}"
     else
       reference
     end

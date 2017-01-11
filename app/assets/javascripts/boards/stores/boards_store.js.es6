@@ -1,4 +1,7 @@
-/* eslint-disable */
+/* eslint-disable comma-dangle, space-before-function-paren, one-var, indent, space-in-parens, no-shadow, radix, dot-notation, semi, max-len */
+/* global Cookies */
+/* global List */
+
 (() => {
   window.gl = window.gl || {};
   window.gl.issueBoards = window.gl.issueBoards || {};

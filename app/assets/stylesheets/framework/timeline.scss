@@ -6,8 +6,8 @@
 
   .timeline-entry {
     padding: $gl-padding $gl-btn-padding 11px;
-    border-color: $table-border-color;
-    color: $gl-gray;
+    border-color: $white-normal;
+    color: $gl-text-color;
     border-bottom: 1px solid $border-white-light;
 
     &:target {
@@ -32,7 +32,7 @@
 
   .system-note {
     .note-text {
-      color: $gl-gray !important;
+      color: $gl-text-color !important;
     }
   }
 

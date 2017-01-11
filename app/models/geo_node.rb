@@ -108,8 +108,8 @@ class GeoNode < ActiveRecord::Base
   def validate(record)
     # Prevent locking yourself out
     if record.host == Gitlab.config.gitlab.host &&
-      record.port == Gitlab.config.gitlab.port &&
-      record.relative_url_root == Gitlab.config.gitlab.relative_url_root && !record.primary
+        record.port == Gitlab.config.gitlab.port &&
+        record.relative_url_root == Gitlab.config.gitlab.relative_url_root && !record.primary
       record.errors[:base] << 'Current node must be the primary node or you will be locking yourself out'
     end
   end

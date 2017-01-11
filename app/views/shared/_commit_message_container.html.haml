@@ -1,5 +1,6 @@
 .form-group.commit_message-group
   - nonce = SecureRandom.hex
+  - descriptions = local_assigns.slice(:message_with_description, :message_without_description)
   = label_tag "commit_message-#{nonce}", class: 'control-label' do
     Commit message
   .col-sm-10
@@ -8,9 +9,17 @@
       = text_area_tag 'commit_message',
           (params[:commit_message] || local_assigns[:text] || local_assigns[:placeholder]),
           class: 'form-control js-commit-message', placeholder: local_assigns[:placeholder],
+          data: descriptions,
           required: true, rows: (local_assigns[:rows] || 3),
           id: "commit_message-#{nonce}"
     - if local_assigns[:hint]
       %p.hint
         Try to keep the first line under 52 characters
         and the others under 72.
+    - if descriptions.present?
+      %p.hint.js-with-description-hint
+        = link_to "#", class: "js-with-description-link" do
+          Include description in commit message
+      %p.hint.js-without-description-hint.hide
+        = link_to "#", class: "js-without-description-link" do
+          Don't include description in commit message

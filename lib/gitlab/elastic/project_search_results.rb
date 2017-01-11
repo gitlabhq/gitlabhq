@@ -9,12 +9,7 @@ module Gitlab
       def initialize(current_user, query, project_id, repository_ref = nil)
         @current_user = current_user
         @project = Project.find(project_id)
-
-        @repository_ref = if repository_ref.present?
-                            repository_ref
-                          else
-                            nil
-                          end
+        @repository_ref = repository_ref.presence || project.default_branch
         @query = query
         @public_and_internal_projects = false
       end
@@ -65,7 +60,7 @@ module Gitlab
             )[:blobs][:results].response
           else
             Kaminari.paginate_array(
-              project.repository.search_files(query, repository_ref)
+              Gitlab::FileFinder.new(project, repository_ref).find(query)
             )
           end
         end
@@ -105,10 +100,12 @@ module Gitlab
               per_page: per_page
             )
           else
+            offset = per_page * ((page || 1) - 1)
+
             Kaminari.paginate_array(
-              project.repository.find_commits_by_message(query).compact,
-              page: (page || 1).to_i,
-              per_page: per_page
+              project.repository.find_commits_by_message(query),
+              offset: offset,
+              limit: per_page
             )
           end
         end
@@ -119,7 +116,7 @@ module Gitlab
       end
 
       def root_ref?
-        !repository_ref || project.root_ref?(repository_ref)
+        project.root_ref?(repository_ref)
       end
     end
   end

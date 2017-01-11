@@ -1,4 +1,6 @@
 /* eslint-disable */
+/* global ProtectedBranchDropdown */
+
 (global => {
   global.gl = global.gl || {};
 
@@ -49,7 +51,7 @@
       });
 
       // Protected branch dropdown
-      new gl.ProtectedBranchDropdown({
+      new window.ProtectedBranchDropdown({
         $dropdown: this.$wrap.find('.js-protected-branch-select'),
         onSelect: this.onSelectCallback
       });
@@ -94,7 +96,7 @@
           }
         }
 
-        formData.protected_branch[`${ACCESS_LEVELS[ACCESS_LEVEL]}_attributes`] = levelAttributes; 
+        formData.protected_branch[`${ACCESS_LEVELS[ACCESS_LEVEL]}_attributes`] = levelAttributes;
       }
 
       return formData;

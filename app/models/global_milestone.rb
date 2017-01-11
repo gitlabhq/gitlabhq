@@ -1,6 +1,8 @@
 class GlobalMilestone
   include Milestoneish
 
+  EPOCH = DateTime.parse('1970-01-01')
+
   attr_accessor :title, :milestones
   alias_attribute :name, :title
 
@@ -8,13 +10,22 @@ class GlobalMilestone
     @first_milestone
   end
 
-  def self.build_collection(milestones)
-    milestones = milestones.group_by(&:title)
+  def self.build_collection(projects, params)
+    child_milestones = MilestonesFinder.new.execute(projects, params)
 
-    milestones.map do |title, milestones|
-      milestones_relation = Milestone.where(id: milestones.map(&:id))
+    milestones = child_milestones.select(:id, :title).group_by(&:title).map do |title, grouped|
+      milestones_relation = Milestone.where(id: grouped.map(&:id))
       new(title, milestones_relation)
     end
+
+    milestones.sort_by { |milestone| milestone.due_date || EPOCH }
+  end
+
+  def self.build(projects, title)
+    child_milestones = Milestone.of_projects(projects).where(title: title)
+    return if child_milestones.blank?
+
+    new(title, child_milestones)
   end
 
   def initialize(title, milestones)
@@ -24,12 +35,16 @@ class GlobalMilestone
     @first_milestone = milestones.find {|m| m.description.present? } || milestones.first
   end
 
+  def milestoneish_ids
+    milestones.select(:id)
+  end
+
   def safe_title
     @title.to_slug.normalize.to_s
   end
 
   def projects
-    @projects ||= Project.for_milestones(milestones.select(:id))
+    @projects ||= Project.for_milestones(milestoneish_ids)
   end
 
   def state
@@ -49,11 +64,11 @@ class GlobalMilestone
   end
 
   def issues
-    @issues ||= Issue.of_milestones(milestones.select(:id)).includes(:project, :assignee, :labels)
+    @issues ||= Issue.of_milestones(milestoneish_ids).includes(:project, :assignee, :labels)
   end
 
   def merge_requests
-    @merge_requests ||= MergeRequest.of_milestones(milestones.select(:id)).includes(:target_project, :assignee, :labels)
+    @merge_requests ||= MergeRequest.of_milestones(milestoneish_ids).includes(:target_project, :assignee, :labels)
   end
 
   def participants

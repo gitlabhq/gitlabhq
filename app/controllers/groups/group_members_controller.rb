@@ -1,20 +1,23 @@
 class Groups::GroupMembersController < Groups::ApplicationController
+  prepend EE::Groups::GroupMembersController
+
   include MembershipActions
+  include SortingHelper
 
   # Authorize
-  before_action :authorize_admin_group_member!, except: [:index, :leave, :request_access]
+  before_action :authorize_admin_group_member!, except: [:index, :leave, :request_access, :update, :override]
+  before_action :authorize_update_group_member!, only: [:update, :override]
 
   def index
+    @sort = params[:sort].presence || sort_value_name
     @project = @group.projects.find(params[:project_id]) if params[:project_id]
+
     @members = @group.group_members
     @members = @members.non_invite unless can?(current_user, :admin_group, @group)
+    @members = @members.search(params[:search]) if params[:search].present?
+    @members = @members.sort(@sort)
+    @members = @members.page(params[:page]).per(50)
 
-    if params[:search].present?
-      users = @group.users.search(params[:search]).to_a
-      @members = @members.where(user_id: users)
-    end
-
-    @members = @members.order('access_level DESC').page(params[:page]).per(50)
     @requesters = AccessRequestsFinder.new(@group).execute(current_user)
 
     @group_member = @group.group_members.new

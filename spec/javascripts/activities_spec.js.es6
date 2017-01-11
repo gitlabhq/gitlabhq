@@ -1,4 +1,5 @@
-/* eslint-disable */
+/* eslint-disable no-unused-expressions, comma-spacing, prefer-const, no-prototype-builtins, semi, no-new, keyword-spacing, no-plusplus, no-shadow, max-len */
+
 /*= require js.cookie.js */
 /*= require jquery.endless-scroll.js */
 /*= require pager */
@@ -6,7 +7,7 @@
 
 (() => {
   window.gon || (window.gon = {});
-  const fixtureTemplate = 'event_filter.html';
+  const fixtureTemplate = 'static/event_filter.html.raw';
   const filters = [
     {
       id: 'all',
@@ -34,7 +35,7 @@
 
   describe('Activities', () => {
     beforeEach(() => {
-      fixture.load(fixtureTemplate);
+      loadFixtures(fixtureTemplate);
       new gl.Activities();
     });
 

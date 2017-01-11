@@ -25,11 +25,12 @@ describe Gitlab::ProjectSearchResults, lib: true do
     let(:results) { described_class.new(user, project, 'files').objects('blobs') }
 
     it 'finds by name' do
-      expect(results).to include(["files/images/wm.svg", nil])
+      blob = results.select { |result| result.first == 'files/images/wm.svg' }.flatten.last
+      expect(blob).to be_a(OpenStruct)
     end
 
     it 'finds by content' do
-      blob = results.select { |result| result.first == "CHANGELOG" }.flatten.last
+      blob = results.select { |result| result.first == 'CHANGELOG' }.flatten.last
 
       expect(blob.filename).to eq("CHANGELOG")
     end
@@ -147,6 +148,35 @@ describe Gitlab::ProjectSearchResults, lib: true do
       expect(issues).to include security_issue_1
       expect(issues).to include security_issue_2
       expect(results.issues_count).to eq 3
+    end
+  end
+
+  describe 'notes search' do
+    it 'lists notes' do
+      project = create(:empty_project, :public)
+      note = create(:note, project: project)
+
+      results = described_class.new(user, project, note.note)
+
+      expect(results.objects('notes')).to include note
+    end
+
+    it "doesn't list issue notes when access is restricted" do
+      project = create(:empty_project, :public, issues_access_level: ProjectFeature::PRIVATE)
+      note = create(:note_on_issue, project: project)
+
+      results = described_class.new(user, project, note.note)
+
+      expect(results.objects('notes')).not_to include note
+    end
+
+    it "doesn't list merge_request notes when access is restricted" do
+      project = create(:empty_project, :public, merge_requests_access_level: ProjectFeature::PRIVATE)
+      note = create(:note_on_merge_request, project: project)
+
+      results = described_class.new(user, project, note.note)
+
+      expect(results.objects('notes')).not_to include note
     end
   end
 end

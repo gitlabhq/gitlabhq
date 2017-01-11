@@ -2,8 +2,8 @@ require 'uri'
 
 class JenkinsDeprecatedService < CiService
   prop_accessor :project_url
-  prop_accessor :multiproject_enabled
-  prop_accessor :pass_unstable
+  boolean_accessor :multiproject_enabled
+  boolean_accessor :pass_unstable
 
   validates :project_url, presence: true, if: :activated?
 
@@ -46,11 +46,11 @@ class JenkinsDeprecatedService < CiService
   end
 
   def multiproject_enabled?
-    self.multiproject_enabled == '1'
+    Gitlab::Utils.to_boolean(self.multiproject_enabled)
   end
 
   def pass_unstable?
-    self.pass_unstable == '1'
+    Gitlab::Utils.to_boolean(self.pass_unstable)
   end
 
   def build_page(sha, ref = nil)

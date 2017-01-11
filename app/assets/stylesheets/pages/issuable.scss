@@ -5,11 +5,16 @@
     }
   }
 
+  .title {
+    padding: 0;
+    margin: 0;
+    border-bottom: none;
+  }
+
   // Border around images in issue and MR descriptions.
   .description img:not(.emoji) {
-    border: 1px solid $table-border-gray;
+    border: 1px solid $white-normal;
     padding: 5px;
-    margin: 5px;
     max-height: calc(100vh - 100px);
   }
 }
@@ -30,6 +35,7 @@
 
     .color-label {
       padding: 6px 10px;
+      border-radius: $label-border-radius;
     }
   }
 
@@ -50,7 +56,7 @@
   .block {
     @include clearfix;
     padding: $gl-padding 0;
-    border-bottom: 1px solid $border-gray-light;
+    border-bottom: 1px solid $border-gray-normal;
     // This prevents the mess when resizing the sidebar
     // of elements repositioning themselves..
     width: $gutter_inner_width;
@@ -97,7 +103,7 @@
     }
 
     .edit-link {
-      color: $gl-gray;
+      color: $gl-text-color;
 
       &:hover {
         color: $md-link-color;
@@ -133,7 +139,7 @@
   }
 
   .btn-clipboard:hover {
-    color: $gl-gray;
+    color: $gl-text-color;
   }
 }
 
@@ -168,7 +174,7 @@
     }
 
     .no-value {
-      color: $gl-placeholder-color;
+      color: $gl-text-color-secondary;
     }
 
     .sidebar-collapsed-icon {
@@ -177,7 +183,7 @@
 
     .gutter-toggle {
       margin-top: 7px;
-      border-left: 1px solid $border-gray-light;
+      border-left: 1px solid $border-gray-normal;
     }
 
     .assignee .avatar {
@@ -215,7 +221,7 @@
     }
 
     .participants {
-      border-bottom: 1px solid $border-gray-light;
+      border-bottom: 1px solid $border-gray-normal;
     }
 
     .hide-collapsed {
@@ -236,7 +242,7 @@
       color: $issuable-sidebar-color;
 
       &:hover {
-        color: $gl-gray;
+        color: $gl-text-color;
       }
 
       span {
@@ -249,16 +255,16 @@
       }
 
       .avatar:hover {
-        border-color: $issuable-avatar-hover-border;
+        border-color: $issuable-sidebar-color;
       }
 
       .btn-clipboard {
         border: none;
-        color: $issuable-clipboard-color;
+        color: $issuable-sidebar-color;
 
         &:hover {
           background: transparent;
-          color: $gl-gray;
+          color: $gl-text-color;
         }
       }
     }
@@ -332,7 +338,7 @@
   margin-left: 5px;
 
   a {
-    color: $gl-placeholder-color;
+    color: $gl-text-color-secondary;
   }
 }
 
@@ -387,6 +393,7 @@
 .issuable-meta {
   display: inline-block;
   line-height: 18px;
+  font-size: 14px;
 }
 
 .js-issuable-selector-wrap {
@@ -432,7 +439,7 @@
     }
 
     &:hover svg {
-      fill: $gl-gray;
+      fill: $gl-text-color;
     }
   }
 
@@ -479,10 +486,10 @@
 
     .compare-display {
       font-size: 13px;
-      color: $gl-gray-light;
+      color: $gl-text-color-secondary;
 
       .compare-value {
-        color: $gl-gray;
+        color: $gl-text-color;
       }
     }
   }

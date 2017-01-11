@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161202152035) do
+ActiveRecord::Schema.define(version: 20161227192806) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -107,14 +107,14 @@ ActiveRecord::Schema.define(version: 20161202152035) do
     t.text "help_page_text_html"
     t.text "shared_runners_text_html"
     t.text "after_sign_up_text_html"
+    t.boolean "sidekiq_throttling_enabled", default: false
+    t.string "sidekiq_throttling_queues"
+    t.decimal "sidekiq_throttling_factor"
     t.boolean "housekeeping_enabled", default: true, null: false
     t.boolean "housekeeping_bitmaps_enabled", default: true, null: false
     t.integer "housekeeping_incremental_repack_period", default: 10, null: false
     t.integer "housekeeping_full_repack_period", default: 50, null: false
     t.integer "housekeeping_gc_period", default: 200, null: false
-    t.boolean "sidekiq_throttling_enabled", default: false
-    t.string "sidekiq_throttling_queues"
-    t.decimal "sidekiq_throttling_factor"
     t.boolean "html_emails_enabled", default: true
   end
 
@@ -467,9 +467,11 @@ ActiveRecord::Schema.define(version: 20161202152035) do
     t.string "external_url"
     t.string "environment_type"
     t.string "state", default: "available", null: false
+    t.string "slug", null: false
   end
 
-  add_index "environments", ["project_id", "name"], name: "index_environments_on_project_id_and_name", using: :btree
+  add_index "environments", ["project_id", "name"], name: "index_environments_on_project_id_and_name", unique: true, using: :btree
+  add_index "environments", ["project_id", "slug"], name: "index_environments_on_project_id_and_slug", unique: true, using: :btree
 
   create_table "events", force: :cascade do |t|
     t.string "target_type"
@@ -599,6 +601,8 @@ ActiveRecord::Schema.define(version: 20161202152035) do
     t.string "type"
     t.string "fingerprint"
     t.boolean "public", default: false, null: false
+    t.boolean "can_push", default: false, null: false
+    t.datetime "last_used_at"
   end
 
   add_index "keys", ["fingerprint"], name: "index_keys_on_fingerprint", unique: true, using: :btree
@@ -837,9 +841,9 @@ ActiveRecord::Schema.define(version: 20161202152035) do
     t.datetime "ldap_sync_last_successful_update_at"
     t.datetime "ldap_sync_last_sync_at"
     t.datetime "deleted_at"
-    t.text "description_html"
     t.boolean "lfs_enabled"
     t.integer "repository_size_limit"
+    t.text "description_html"
     t.integer "parent_id"
   end
 
@@ -848,10 +852,11 @@ ActiveRecord::Schema.define(version: 20161202152035) do
   add_index "namespaces", ["ldap_sync_last_successful_update_at"], name: "index_namespaces_on_ldap_sync_last_successful_update_at", using: :btree
   add_index "namespaces", ["ldap_sync_last_update_at"], name: "index_namespaces_on_ldap_sync_last_update_at", using: :btree
   add_index "namespaces", ["name"], name: "index_namespaces_on_name", unique: true, using: :btree
+  add_index "namespaces", ["name", "parent_id"], name: "index_namespaces_on_name_and_parent_id", unique: true, using: :btree
   add_index "namespaces", ["name"], name: "index_namespaces_on_name_trigram", using: :gin, opclasses: {"name"=>"gin_trgm_ops"}
   add_index "namespaces", ["owner_id"], name: "index_namespaces_on_owner_id", using: :btree
   add_index "namespaces", ["parent_id", "id"], name: "index_namespaces_on_parent_id_and_id", unique: true, using: :btree
-  add_index "namespaces", ["path"], name: "index_namespaces_on_path", unique: true, using: :btree
+  add_index "namespaces", ["path"], name: "index_namespaces_on_path", using: :btree
   add_index "namespaces", ["path"], name: "index_namespaces_on_path_trigram", using: :gin, opclasses: {"path"=>"gin_trgm_ops"}
   add_index "namespaces", ["type"], name: "index_namespaces_on_type", using: :btree
 
@@ -978,7 +983,7 @@ ActiveRecord::Schema.define(version: 20161202152035) do
     t.datetime "expires_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string   "scopes", default: "--- []\n", null: false
+    t.string "scopes", default: "--- []\n", null: false
   end
 
   add_index "personal_access_tokens", ["token"], name: "index_personal_access_tokens_on_token", unique: true, using: :btree
@@ -1025,6 +1030,19 @@ ActiveRecord::Schema.define(version: 20161202152035) do
 
   add_index "project_import_data", ["project_id"], name: "index_project_import_data_on_project_id", using: :btree
 
+  create_table "project_statistics", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.integer "namespace_id", null: false
+    t.integer "commit_count", limit: 8, default: 0, null: false
+    t.integer "storage_size", limit: 8, default: 0, null: false
+    t.integer "repository_size", limit: 8, default: 0, null: false
+    t.integer "lfs_objects_size", limit: 8, default: 0, null: false
+    t.integer "build_artifacts_size", limit: 8, default: 0, null: false
+  end
+
+  add_index "project_statistics", ["namespace_id"], name: "index_project_statistics_on_namespace_id", using: :btree
+  add_index "project_statistics", ["project_id"], name: "index_project_statistics_on_project_id", unique: true, using: :btree
+
   create_table "projects", force: :cascade do |t|
     t.string "name"
     t.string "path"
@@ -1039,7 +1057,6 @@ ActiveRecord::Schema.define(version: 20161202152035) do
     t.boolean "archived", default: false, null: false
     t.string "avatar"
     t.string "import_status"
-    t.float "repository_size", default: 0.0
     t.text "merge_requests_template"
     t.integer "star_count", default: 0, null: false
     t.boolean "merge_requests_rebase_enabled", default: false
@@ -1047,7 +1064,6 @@ ActiveRecord::Schema.define(version: 20161202152035) do
     t.string "import_source"
     t.integer "approvals_before_merge", default: 0, null: false
     t.boolean "reset_approvals_on_push", default: true
-    t.integer "commit_count", default: 0
     t.boolean "merge_requests_ff_only_enabled", default: false
     t.text "issues_template"
     t.boolean "mirror", default: false, null: false
@@ -1414,8 +1430,8 @@ ActiveRecord::Schema.define(version: 20161202152035) do
     t.datetime "otp_grace_period_started_at"
     t.boolean "ldap_email", default: false, null: false
     t.boolean "external", default: false
-    t.string "incoming_email_token"
     t.string "organization"
+    t.string "incoming_email_token"
     t.boolean "authorized_projects_populated"
   end
 
@@ -1485,6 +1501,7 @@ ActiveRecord::Schema.define(version: 20161202152035) do
   add_foreign_key "project_authorizations", "projects", on_delete: :cascade
   add_foreign_key "project_authorizations", "users", on_delete: :cascade
   add_foreign_key "protected_branch_merge_access_levels", "namespaces", column: "group_id"
+  add_foreign_key "project_statistics", "projects", on_delete: :cascade
   add_foreign_key "protected_branch_merge_access_levels", "protected_branches"
   add_foreign_key "protected_branch_merge_access_levels", "users"
   add_foreign_key "protected_branch_push_access_levels", "namespaces", column: "group_id"

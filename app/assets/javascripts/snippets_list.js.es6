@@ -1,4 +1,5 @@
-/* eslint-disable */
+/* eslint-disable arrow-parens, no-param-reassign, space-before-function-paren, func-names, no-var, semi, max-len */
+
 (global => {
   global.gl = global.gl || {};
 

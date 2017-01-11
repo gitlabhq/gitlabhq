@@ -112,9 +112,9 @@
   };
 
   describe('Search autocomplete dropdown', function() {
-    fixture.preload('search_autocomplete.html');
+    preloadFixtures('static/search_autocomplete.html.raw');
     beforeEach(function() {
-      fixture.load('search_autocomplete.html');
+      loadFixtures('static/search_autocomplete.html.raw');
       return widget = new gl.SearchAutocomplete;
     });
     it('should show Dashboard specific dropdown menu', function() {

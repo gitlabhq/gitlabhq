@@ -5,7 +5,7 @@
   window.gl = window.gl || {};
   window.gl.environmentsList = window.gl.environmentsList || {};
 
-  window.gl.environmentsList.ActionsComponent = Vue.component('actions-component', {
+  gl.environmentsList.ActionsComponent = Vue.component('actions-component', {
     props: {
       actions: {
         type: Array,

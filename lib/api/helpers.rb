@@ -32,6 +32,14 @@ module API
       @available_labels ||= LabelsFinder.new(current_user, project_id: user_project.id).execute
     end
 
+    def find_user(id)
+      if id =~ /^\d+$/
+        User.find_by(id: id)
+      else
+        User.find_by(username: id)
+      end
+    end
+
     def find_project(id)
       if id =~ /^\d+$/
         Project.find_by(id: id)
@@ -47,17 +55,6 @@ module API
         project
       else
         not_found!('Project')
-      end
-    end
-
-    def project_service(project = user_project)
-      @project_service ||= project.find_or_initialize_service(params[:service_slug].underscore)
-      @project_service || not_found!("Service")
-    end
-
-    def service_attributes
-      @service_attributes ||= project_service.fields.inject([]) do |arr, hash|
-        arr << hash[:name].to_sym
       end
     end
 
@@ -99,7 +96,7 @@ module API
     end
 
     def authenticate_non_get!
-      authenticate! unless %w[GET HEAD].include?(route.route_method)
+      authenticate! unless %w[GET HEAD].include?(route.request_method)
     end
 
     def authenticate_by_gitlab_shell_token!
@@ -127,10 +124,6 @@ module API
 
     def authorize_push_project
       authorize! :push_code, user_project
-    end
-
-    def validate_access_level?(level)
-      Gitlab::Access.options_with_owner.values.include? level.to_i
     end
 
     def authorize_admin_project
@@ -262,7 +255,7 @@ module API
       rack_response({ 'message' => '500 Internal Server Error' }.to_json, 500)
     end
 
-    # Projects helpers
+    # project helpers
 
     def filter_projects(projects)
       if params[:search].present?
@@ -351,7 +344,7 @@ module API
 
     def sudo!
       return unless sudo_identifier
-      return unless initial_current_user.is_a?(User)
+      return unless initial_current_user
 
       unless initial_current_user.is_admin?
         forbidden!('Must be admin to use sudo')
@@ -362,7 +355,7 @@ module API
         forbidden!('Private token must be specified in order to use sudo')
       end
 
-      sudoed_user = User.by_username_or_id(sudo_identifier)
+      sudoed_user = find_user(sudo_identifier)
 
       if sudoed_user
         @current_user = sudoed_user
@@ -372,17 +365,7 @@ module API
     end
 
     def sudo_identifier
-      return @sudo_identifier if defined?(@sudo_identifier)
-
-      identifier ||= params[SUDO_PARAM] || env[SUDO_HEADER]
-
-      # Regex for integers
-      @sudo_identifier =
-        if !!(identifier =~ /\A[0-9]+\z/)
-          identifier.to_i
-        else
-          identifier
-        end
+      @sudo_identifier ||= params[SUDO_PARAM] || env[SUDO_HEADER]
     end
 
     def add_pagination_headers(paginated_data)

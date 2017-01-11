@@ -154,6 +154,10 @@ describe MergeRequest, models: true do
       another_project = build(:project, name: 'another-project', namespace: project.namespace)
       expect(merge_request.to_reference(another_project)).to eq "sample-project!1"
     end
+
+    it 'returns a String reference with the full path' do
+      expect(merge_request.to_reference(full: true)).to eq(project.path_with_namespace + '!1')
+    end
   end
 
   describe '#raw_diffs' do
@@ -206,7 +210,7 @@ describe MergeRequest, models: true do
     end
   end
 
-  describe "#mr_and_commit_notes" do
+  describe "#related_notes" do
     let!(:merge_request) { create(:merge_request) }
 
     before do
@@ -218,7 +222,7 @@ describe MergeRequest, models: true do
 
     it "includes notes for commits" do
       expect(merge_request.commits).not_to be_empty
-      expect(merge_request.mr_and_commit_notes.count).to eq(2)
+      expect(merge_request.related_notes.count).to eq(2)
     end
 
     it "includes notes for commits from target project as well" do
@@ -226,7 +230,7 @@ describe MergeRequest, models: true do
                               project: merge_request.target_project)
 
       expect(merge_request.commits).not_to be_empty
-      expect(merge_request.mr_and_commit_notes.count).to eq(3)
+      expect(merge_request.related_notes.count).to eq(3)
     end
   end
 
@@ -253,7 +257,7 @@ describe MergeRequest, models: true do
     end
   end
 
-  describe 'detection of issues to be closed' do
+  describe '#closes_issues' do
     let(:issue0) { create :issue, project: subject.project }
     let(:issue1) { create :issue, project: subject.project }
 
@@ -281,14 +285,23 @@ describe MergeRequest, models: true do
 
       expect(subject.closes_issues).to be_empty
     end
+  end
 
-    it 'detects issues mentioned in the description' do
-      issue2 = create(:issue, project: subject.project)
-      subject.description = "Closes #{issue2.to_reference}"
+  describe '#issues_mentioned_but_not_closing' do
+    let(:closing_issue) { create :issue, project: subject.project }
+    let(:mentioned_issue) { create :issue, project: subject.project }
+
+    let(:commit) { double('commit', safe_message: "Fixes #{closing_issue.to_reference}") }
+
+    it 'detects issues mentioned in description but not closed' do
+      subject.project.team << [subject.author, :developer]
+      subject.description = "Is related to #{mentioned_issue.to_reference} and #{closing_issue.to_reference}"
+
+      allow(subject).to receive(:commits).and_return([commit])
       allow(subject.project).to receive(:default_branch).
         and_return(subject.target_branch)
 
-      expect(subject.closes_issues).to include(issue2)
+      expect(subject.issues_mentioned_but_not_closing).to match_array([mentioned_issue])
     end
   end
 
@@ -605,11 +618,17 @@ describe MergeRequest, models: true do
         .to match("Remove all technical debt\n\n")
     end
 
-    it 'includes its description in the body' do
-      request = build(:merge_request, description: 'By removing all code')
+    it 'includes its closed issues in the body' do
+      issue = create(:issue, project: subject.project)
 
-      expect(request.merge_commit_message)
-        .to match("By removing all code\n\n")
+      subject.project.team << [subject.author, :developer]
+      subject.description = "This issue Closes #{issue.to_reference}"
+
+      allow(subject.project).to receive(:default_branch).
+        and_return(subject.target_branch)
+
+      expect(subject.merge_commit_message)
+        .to match("Closes #{issue.to_reference}")
     end
 
     it 'includes its reference in the body' do
@@ -623,6 +642,20 @@ describe MergeRequest, models: true do
       request = build(:merge_request, title: 'Title', description: nil)
 
       expect(request.merge_commit_message).not_to match("Title\n\n\n\n")
+    end
+
+    it 'includes its description in the body' do
+      request = build(:merge_request, description: 'By removing all code')
+
+      expect(request.merge_commit_message(include_description: true))
+        .to match("By removing all code\n\n")
+    end
+
+    it 'does not includes its description in the body' do
+      request = build(:merge_request, description: 'By removing all code')
+
+      expect(request.merge_commit_message)
+        .not_to match("By removing all code\n\n")
     end
   end
 

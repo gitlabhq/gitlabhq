@@ -4,7 +4,7 @@ class GroupPolicy < BasePolicy
     return unless @user
 
     globally_viewable = @subject.public? || (@subject.internal? && !@user.external?)
-    member = @subject.users.include?(@user)
+    member = @subject.users_with_parents.include?(@user)
     owner = @user.admin? || @subject.has_owner?(@user)
     master = owner || @subject.has_master?(@user)
 
@@ -34,8 +34,7 @@ class GroupPolicy < BasePolicy
       can! :request_access
     end
 
-    # EE-only
-    cannot! :admin_group_member if @subject.ldap_synced?
+    additional_rules!(master)
   end
 
   def can_read_group?
@@ -45,5 +44,12 @@ class GroupPolicy < BasePolicy
     return true if @subject.users.include?(@user)
 
     GroupProjectsFinder.new(@subject).execute(@user).any?
+  end
+
+  def additional_rules!(master)
+    if @subject.ldap_synced?
+      cannot! :admin_group_member
+      can! :override_group_member if master
+    end
   end
 end

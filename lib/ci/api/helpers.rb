@@ -13,8 +13,19 @@ module Ci
         forbidden! unless current_runner
       end
 
-      def authenticate_build_token!(build)
-        forbidden! unless build_token_valid?(build)
+      def authenticate_build!(build)
+        validate_build!(build) do
+          forbidden! unless build_token_valid?(build)
+        end
+      end
+
+      def validate_build!(build)
+        not_found! unless build
+
+        yield if block_given?
+
+        forbidden!('Project has been deleted!') unless build.project
+        forbidden!('Build has been erased!') if build.erased?
       end
 
       def runner_registration_token_valid?
@@ -49,7 +60,7 @@ module Ci
       end
 
       def build_not_found!
-        if headers['User-Agent'].match(/gitlab-ci-multi-runner \d+\.\d+\.\d+(~beta\.\d+\.g[0-9a-f]+)? /)
+        if headers['User-Agent'].to_s.match(/gitlab-ci-multi-runner \d+\.\d+\.\d+(~beta\.\d+\.g[0-9a-f]+)? /)
           no_content!
         else
           not_found!

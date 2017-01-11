@@ -6,8 +6,7 @@
   - blob = parse_search_result(blob)
   - file_name = blob.filename
 
-- ref = blob.ref
-- blob_link = namespace_project_blob_path(project.namespace, project, tree_join(ref, file_name))
+- blob_link = namespace_project_blob_path(project.namespace, project, tree_join(blob.ref, file_name))
 .blob-result
   .file-holder
     .file-title
@@ -19,6 +18,6 @@
           - else
             #{project.name_with_namespace}:
             %i= file_name
-    - if blob
+    - if blob.data
       .file-content.code.term
         = render 'shared/file_highlight', blob: blob, first_line_number: blob.startline, blob_link: blob_link

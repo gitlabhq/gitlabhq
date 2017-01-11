@@ -8,6 +8,7 @@
 /*= require ./environment_external_url */
 /*= require ./environment_stop */
 /*= require ./environment_rollback */
+/*= require ./environment_terminal_button */
 
 (() => {
   /**
@@ -28,11 +29,12 @@
   gl.environmentsList.EnvironmentItem = Vue.component('environment-item', {
 
     components: {
-      'commit-component': window.gl.CommitComponent,
-      'actions-component': window.gl.environmentsList.ActionsComponent,
-      'external-url-component': window.gl.environmentsList.ExternalUrlComponent,
-      'stop-component': window.gl.environmentsList.StopComponent,
-      'rollback-component': window.gl.environmentsList.RollbackComponent,
+      'commit-component': gl.CommitComponent,
+      'actions-component': gl.environmentsList.ActionsComponent,
+      'external-url-component': gl.environmentsList.ExternalUrlComponent,
+      'stop-component': gl.environmentsList.StopComponent,
+      'rollback-component': gl.environmentsList.RollbackComponent,
+      'terminal-button-component': gl.environmentsList.TerminalButtonComponent,
     },
 
     props: {
@@ -68,6 +70,12 @@
         type: String,
         required: false,
       },
+
+      terminalIconSvg: {
+        type: String,
+        required: false,
+      },
+
     },
 
     data() {
@@ -175,7 +183,7 @@
        * @returns {String}
        */
       createdDate() {
-        return window.gl.environmentsList.timeagoInstance.format(
+        return gl.environmentsList.timeagoInstance.format(
           this.model.last_deployment.deployable.created_at,
         );
       },
@@ -449,7 +457,7 @@
           </span>
         </td>
 
-        <td>
+        <td class="environments-build-cell">
           <a v-if="shouldRenderBuildName"
             class="build-link"
             :href="model.last_deployment.deployable.build_path">
@@ -504,6 +512,14 @@
               <stop-component
                 :stop-url="model.stop_path">
               </stop-component>
+            </div>
+
+            <div v-if="model.terminal_path"
+              class="inline js-terminal-button-container">
+              <terminal-button-component
+                :terminal-icon-svg="terminalIconSvg"
+                :terminal-path="model.terminal_path">
+              </terminal-button-component>
             </div>
 
             <div v-if="canRetry && canCreateDeployment"
