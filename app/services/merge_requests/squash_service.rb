@@ -65,7 +65,7 @@ module MergeRequests
         'push squashed branch'
       )
 
-      repository.rm_branch(current_user, temp_branch)
+      remove_branch(temp_branch, squash_sha)
 
       success(squash_sha: squash_sha)
     rescue GitCommandError
@@ -107,6 +107,33 @@ module MergeRequests
       end
 
       protected_branch
+    end
+
+    # If the branch is protected, no-one can remove it, so we have to skip hooks
+    # in order to remove it. We also don't want a branch creation event left
+    # hanging around, so we look in the user's last 10 push events for this
+    # repository and find it from those.
+    #
+    def remove_branch(branch, rev)
+      full_ref = "#{Gitlab::Git::BRANCH_REF_PREFIX}#{branch}"
+      blank_sha = Gitlab::Git::BLANK_SHA
+      events = Event.code_push
+                 .where(project: target_project, author: current_user)
+                 .order('created_at DESC')
+                 .limit(10)
+
+      repository.before_remove_branch
+      repository.update_ref!(full_ref, blank_sha, rev)
+      repository.after_remove_branch
+
+      event = events.find do |event|
+        event.data[:before] == blank_sha &&
+          event.data[:after] == rev &&
+          event.data[:ref] == full_ref &&
+          event.data[:total_commits_count] == 1
+      end
+
+      event.destroy if event
     end
   end
 end

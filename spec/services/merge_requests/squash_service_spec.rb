@@ -17,11 +17,36 @@ describe MergeRequests::SquashService do
            target_branch: 'master', target_project: project)
   end
 
-  def stub_git_command(command, &block)
-    git_command = a_collection_starting_with([Gitlab.config.git.bin_path, command])
+  def git_command(command)
+    a_collection_starting_with([Gitlab.config.git.bin_path, command])
+  end
 
-    allow(service).to receive(:popen).and_call_original
-    allow(service).to receive(:popen).with(git_command, anything, anything, &block)
+  shared_examples 'the squashed commit' do
+    context 'the squashed commit' do
+      let(:squash_sha) { service.execute(merge_request)[:squash_sha] }
+      let(:squash_commit) { project.repository.commit(squash_sha) }
+
+      it 'copies the author info and message from the last commit in the source branch' do
+        diff_head_commit = merge_request.diff_head_commit
+
+        expect(squash_commit.author_name).to eq(diff_head_commit.author_name)
+        expect(squash_commit.author_email).to eq(diff_head_commit.author_email)
+        expect(squash_commit.message).to eq(diff_head_commit.message)
+      end
+
+      it 'sets the current user as the committer' do
+        expect(squash_commit.committer_name).to eq(user.name.chomp('.'))
+        expect(squash_commit.committer_email).to eq(user.email)
+      end
+
+      it 'has the same diff as the merge request' do
+        rugged = project.repository.rugged
+        mr_diff = rugged.diff(merge_request.diff_base_sha, merge_request.diff_head_sha)
+        squash_diff = rugged.diff(merge_request.diff_start_sha, squash_sha)
+
+        expect(squash_diff.patch).to eq(mr_diff.patch)
+      end
+    end
   end
 
   describe '#execute' do
@@ -39,20 +64,27 @@ describe MergeRequests::SquashService do
       end
     end
 
+    # We don't run hooks in tests, so fake this case. This does involve
+    # duplicating logic from the service itself, but that is worth it to test
+    # this case.
+    #
     context 'when the chosen branch name is protected with a wildcard' do
       let!(:protected_branch) { create(:protected_branch, :no_one_can_push, name: '*', project: project) }
 
       before do
-        # We don't run hooks in tests, so fake this case. This does involve
-        # duplicating logic from the service itself, but that is worth it to
-        # test this case.
         user_access = Gitlab::UserAccess.new(user, project: project)
 
-        stub_git_command('push') do |cmd|
+        # If the branch is protected, then nobody can remove it, so we need to
+        # ensure we aren't executing hooks.
+        allow(GitHooksService).to receive(:new).and_raise(GitHooksService::PreReceiveError)
+
+        allow(service).to receive(:popen).and_call_original
+
+        allow(service).to receive(:popen).with(git_command('push'), anything, anything).and_wrap_original do |meth, cmd, *args|
           ref = cmd.last.split(':').last
 
           if user_access.can_push_to_branch?(ref)
-            ['', 0]
+            meth.call(cmd, *args)
           else
             ['You are not allowed to push code to protected branches on this project', 1]
           end
@@ -62,7 +94,8 @@ describe MergeRequests::SquashService do
       it 'allows the user to push to that protected branch' do
         branch_params = a_hash_including(name: a_string_starting_with('temporary-gitlab-squash-branch'))
 
-        expect(ProtectedBranches::CreateService).to receive(:new).with(project, user, branch_params)
+        expect(ProtectedBranches::CreateService)
+          .to receive(:new).with(project, user, branch_params).and_call_original
 
         service.execute(merge_request)
       end
@@ -82,6 +115,8 @@ describe MergeRequests::SquashService do
 
         expect(protected_branch).to be_persisted
       end
+
+      include_examples 'the squashed commit'
     end
 
     context 'when the squash succeeds' do
@@ -98,31 +133,11 @@ describe MergeRequests::SquashService do
         service.execute(merge_request)
       end
 
-      context 'the squashed commit' do
-        let(:squash_sha) { service.execute(merge_request)[:squash_sha] }
-        let(:squash_commit) { project.repository.commit(squash_sha) }
-
-        it 'copies the author info and message from the last commit in the source branch' do
-          diff_head_commit = merge_request.diff_head_commit
-
-          expect(squash_commit.author_name).to eq(diff_head_commit.author_name)
-          expect(squash_commit.author_email).to eq(diff_head_commit.author_email)
-          expect(squash_commit.message).to eq(diff_head_commit.message)
-        end
-
-        it 'sets the current user as the committer' do
-          expect(squash_commit.committer_name).to eq(user.name.gsub('.', ''))
-          expect(squash_commit.committer_email).to eq(user.email)
-        end
-
-        it 'has the same diff as the merge request' do
-          rugged = project.repository.rugged
-          mr_diff = rugged.diff(merge_request.diff_base_sha, merge_request.diff_head_sha)
-          squash_diff = rugged.diff(merge_request.diff_start_sha, squash_sha)
-
-          expect(squash_diff.patch).to eq(mr_diff.patch)
-        end
+      it 'does not keep the branch push event' do
+        expect { service.execute(merge_request) }.not_to change { Event.count }
       end
+
+      include_examples 'the squashed commit'
     end
 
     stages = {
@@ -138,7 +153,8 @@ describe MergeRequests::SquashService do
         let(:error) { 'A test error' }
 
         before do
-          stub_git_command(command) { [error, 1] }
+          allow(service).to receive(:popen).and_return(['', 0])
+          allow(service).to receive(:popen).with(git_command(command), anything, anything).and_return([error, 1])
         end
 
         it 'logs the stage and output' do
