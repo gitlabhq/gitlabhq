@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe MergeRequests::SquashService do
   let(:service) { described_class.new(project, user, {}) }
-  let(:user) { create(:user) }
+  let(:user) { project.owner }
   let(:project) { create(:project) }
 
   let(:merge_request) do
@@ -17,8 +17,11 @@ describe MergeRequests::SquashService do
            target_branch: 'master', target_project: project)
   end
 
-  before do
-    project.team << [user, :master]
+  def stub_git_command(command, &block)
+    git_command = a_collection_starting_with([Gitlab.config.git.bin_path, command])
+
+    allow(service).to receive(:popen).and_call_original
+    allow(service).to receive(:popen).with(git_command, anything, anything, &block)
   end
 
   describe '#execute' do
@@ -33,6 +36,51 @@ describe MergeRequests::SquashService do
         expect(service).not_to receive(:run_git_command)
 
         service.execute(merge_request_with_one_commit)
+      end
+    end
+
+    context 'when the chosen branch name is protected with a wildcard' do
+      let!(:protected_branch) { create(:protected_branch, :no_one_can_push, name: '*', project: project) }
+
+      before do
+        # We don't run hooks in tests, so fake this case. This does involve
+        # duplicating logic from the service itself, but that is worth it to
+        # test this case.
+        user_access = Gitlab::UserAccess.new(user, project: project)
+
+        stub_git_command('push') do |cmd|
+          ref = cmd.last.split(':').last
+
+          if user_access.can_push_to_branch?(ref)
+            ['', 0]
+          else
+            ['You are not allowed to push code to protected branches on this project', 1]
+          end
+        end
+      end
+
+      it 'allows the user to push to that protected branch' do
+        branch_params = a_hash_including(name: a_string_starting_with('temporary-gitlab-squash-branch'))
+
+        expect(ProtectedBranches::CreateService).to receive(:new).with(project, user, branch_params)
+
+        service.execute(merge_request)
+      end
+
+      it 'returns the squashed commit SHA' do
+        result = service.execute(merge_request)
+
+        expect(result).to match(status: :success, squash_sha: a_string_matching(/\h{40}/))
+      end
+
+      it 'cleans up the temporary directory and the protected branch' do
+        expect(service).to receive(:clean_dir).and_call_original
+        expect_any_instance_of(ProtectedBranch).to receive(:destroy).and_call_original
+
+        expect { service.execute(merge_request) }
+          .not_to change { project.protected_branches.count }
+
+        expect(protected_branch).to be_persisted
       end
     end
 
@@ -63,7 +111,7 @@ describe MergeRequests::SquashService do
         end
 
         it 'sets the current user as the committer' do
-          expect(squash_commit.committer_name).to eq(user.name.delete('.'))
+          expect(squash_commit.committer_name).to eq(user.name.gsub('.', ''))
           expect(squash_commit.committer_email).to eq(user.email)
         end
 
@@ -90,13 +138,7 @@ describe MergeRequests::SquashService do
         let(:error) { 'A test error' }
 
         before do
-          git_command = a_collection_starting_with([Gitlab.config.git.bin_path, command])
-
-          allow(service).to receive(:popen).and_return(['', 0])
-
-          allow(service).to receive(:popen).with(git_command, anything, anything) do
-            [error, 1]
-          end
+          stub_git_command(command) { [error, 1] }
         end
 
         it 'logs the stage and output' do

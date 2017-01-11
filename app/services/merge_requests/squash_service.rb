@@ -24,12 +24,14 @@ module MergeRequests
       # Squashing would ideally be possible by applying a patch to a bare repo
       # and creating a commit object, in which case wouldn't need this dance.
       #
-      temp_branch = SecureRandom.uuid
+      temp_branch = "temporary-gitlab-squash-branch-#{SecureRandom.uuid}"
 
       if merge_request.squash_in_progress?
         log_error('Squash task canceled: Another squash is already in progress')
         return false
       end
+
+      protected_branch = create_protected_branch_exception(temp_branch)
 
       run_git_command(
         %W(clone -b #{merge_request.target_branch} -- #{repository.path_to_repo} #{tree_path}),
@@ -73,6 +75,8 @@ module MergeRequests
       log_error(e.message)
       false
     ensure
+      protected_branch.destroy if protected_branch
+
       clean_dir
     end
 
@@ -82,6 +86,27 @@ module MergeRequests
 
     def merge_request_to_patch
       @merge_request_to_patch ||= rugged.diff(merge_request.diff_base_sha, merge_request.diff_head_sha).patch
+    end
+
+    def create_protected_branch_exception(temp_branch)
+      user_access = Gitlab::UserAccess.new(current_user, project: target_project)
+
+      return if user_access.can_push_to_branch?(temp_branch)
+
+      protected_branch_params = {
+        name: temp_branch,
+        push_access_levels_attributes: [{ user_id: current_user.id }],
+        merge_access_levels_attributes: [{ user_id: current_user.id }]
+      }
+
+      create_service = ProtectedBranches::CreateService.new(target_project, current_user, protected_branch_params)
+      protected_branch = create_service.execute(skip_authorization: true)
+
+      unless protected_branch.persisted?
+        raise "Failed to create protected branch override #{ref}"
+      end
+
+      protected_branch
     end
   end
 end
