@@ -107,9 +107,7 @@ module MergeRequests
     end
 
     def merge_request_info
-      project = merge_request.project
-
-      "#{project.to_reference}#{merge_request.to_reference}"
+      merge_request.to_reference(full: true)
     end
 
     def find_merge_source
