@@ -307,6 +307,8 @@ Parameters:
 | `order_by` | string | no | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at` |
 | `sort` | string | no | Return projects sorted in `asc` or `desc` order. Default is `desc` |
 | `search` | string | no | Return list of authorized projects matching the search criteria |
+| `simple` | boolean | no | Return only the ID, URL, name, and path of each project |
+| `statistics` | boolean | no | Include project statistics |
 
 ### List starred projects
 
@@ -325,6 +327,7 @@ Parameters:
 | `order_by` | string | no | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at` |
 | `sort` | string | no | Return projects sorted in `asc` or `desc` order. Default is `desc` |
 | `search` | string | no | Return list of authorized projects matching the search criteria |
+| `simple` | boolean | no | Return only the ID, URL, name, and path of each project |
 
 ### List ALL projects
 
@@ -343,6 +346,7 @@ Parameters:
 | `order_by` | string | no | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at` |
 | `sort` | string | no | Return projects sorted in `asc` or `desc` order. Default is `desc` |
 | `search` | string | no | Return list of authorized projects matching the search criteria |
+| `statistics` | boolean | no | Include project statistics |
 
 ### Get single project
 
@@ -1425,7 +1429,12 @@ Parameters:
   "project_id": 3,
   "commit_message_regex": "Fixes \d +\",
   "deny_delete_tag": false,
-  "created_at": "2012-10-12T17:04:47Z"
+  "created_at": "2012-10-12T17:04:47Z",
+  "member_check": false,
+  "prevent_secrets": false,
+  "author_email_regex": "",
+  "file_name_regex": "",
+  "max_file_size": 5
 }
 ```
 
@@ -1439,9 +1448,16 @@ POST /projects/:id/push_rule
 
 Parameters:
 
-- `id` (required) - The ID of a project
-- `deny_delete_tag` - Do not allow users to remove git tags with git push
-- `commit_message_regex` - Commit message regex
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
+| `deny_delete_tag` | boolean | no | Deny deleting a tag |
+| `member_check` | boolean | no | Restrict commits by author (email) to existing GitLab users |
+| `prevent_secrets` | boolean | no | GitLab will reject any files that are likely to contain secrets |
+| `commit_message_regex` | string | no | All commit messages must match this, e.g. `Fixed \d+\..*` |
+| `author_email_regex` | string | no | All commit author emails must match this, e.g. `@my-company.com$` |
+| `file_name_regex` | string | no | All commited filenames must **not** match this, e.g. `(jar|exe)$` |
+| `max_file_size` | integer | no | Maximum file size (MB) |
 
 ### Edit project push rule
 
@@ -1453,9 +1469,16 @@ PUT /projects/:id/push_rule
 
 Parameters:
 
-- `id` (required) - The ID of a project
-- `deny_delete_tag` - Do not allow users to remove git tags with git push
-- `commit_message_regex` - Commit message regex
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
+| `deny_delete_tag` | boolean | no | Deny deleting a tag |
+| `member_check` | boolean | no | Restrict commits by author (email) to existing GitLab users |
+| `prevent_secrets` | boolean | no | GitLab will reject any files that are likely to contain secrets |
+| `commit_message_regex` | string | no | All commit messages must match this, e.g. `Fixed \d+\..*` |
+| `author_email_regex` | string | no | All commit author emails must match this, e.g. `@my-company.com$` |
+| `file_name_regex` | string | no | All commited filenames must **not** match this, e.g. `(jar|exe)$` |
+| `max_file_size` | integer | no | Maximum file size (MB) |
 
 ### Delete project push rule
 

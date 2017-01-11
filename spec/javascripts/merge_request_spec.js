@@ -6,9 +6,9 @@
 (function() {
   describe('MergeRequest', function() {
     return describe('task lists', function() {
-      fixture.preload('merge_requests_show.html');
+      preloadFixtures('static/merge_requests_show.html.raw');
       beforeEach(function() {
-        fixture.load('merge_requests_show.html');
+        loadFixtures('static/merge_requests_show.html.raw');
         return this.merge = new MergeRequest();
       });
       it('modifies the Markdown field', function() {

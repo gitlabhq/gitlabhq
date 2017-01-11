@@ -15,7 +15,7 @@ module API
         optional :note_events, type: Boolean, desc: "Trigger hook on note(comment) events"
         optional :build_events, type: Boolean, desc: "Trigger hook on build events"
         optional :pipeline_events, type: Boolean, desc: "Trigger hook on pipeline events"
-        optional :wiki_events, type: Boolean, desc: "Trigger hook on wiki events"
+        optional :wiki_page_events, type: Boolean, desc: "Trigger hook on wiki events"
         optional :enable_ssl_verification, type: Boolean, desc: "Do SSL verification when triggering the hook"
         optional :token, type: String, desc: "Secret token to validate received payloads; this will not be returned in the response"
       end

@@ -17,6 +17,16 @@ feature 'Admin Groups', feature: true do
     end
   end
 
+  describe 'show a group' do
+    scenario 'shows the group' do
+      group = create(:group, :private)
+
+      visit admin_group_path(group)
+
+      expect(page).to have_content("Group: #{group.name}")
+    end
+  end
+
   describe 'group edit' do
     scenario 'shows the visibility level radio populated with the group visibility_level value' do
       group = create(:group, :private)

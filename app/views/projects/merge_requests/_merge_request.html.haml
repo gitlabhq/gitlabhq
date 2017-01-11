@@ -65,7 +65,7 @@
       &nbsp;
       - merge_request.labels.each do |label|
         = link_to_label(label, subject: merge_request.project, type: :merge_request)
-        
+
     - if merge_request.tasks?
       &nbsp;
       %span.task-status

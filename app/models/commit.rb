@@ -91,8 +91,8 @@ class Commit
     @link_reference_pattern ||= super("commit", /(?<commit>\h{7,40})/)
   end
 
-  def to_reference(from_project = nil)
-    commit_reference(from_project, id)
+  def to_reference(from_project = nil, full: false)
+    commit_reference(from_project, id, full: full)
   end
 
   def reference_link_text(from_project = nil)
@@ -320,8 +320,8 @@ class Commit
 
   private
 
-  def commit_reference(from_project, referable_commit_id)
-    reference = project.to_reference(from_project)
+  def commit_reference(from_project, referable_commit_id, full: false)
+    reference = project.to_reference(from_project, full: full)
 
     if reference.present?
       "#{reference}#{self.class.reference_prefix}#{referable_commit_id}"

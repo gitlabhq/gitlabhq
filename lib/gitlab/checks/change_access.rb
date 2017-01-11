@@ -2,14 +2,17 @@ module Gitlab
   module Checks
     class ChangeAccess
       include PathLocksHelper
-      attr_reader :user_access, :project
 
-      def initialize(change, user_access:, project:, env: {})
+      attr_reader :user_access, :project, :skip_authorization
+
+      def initialize(
+        change, user_access:, project:, env: {}, skip_authorization: false)
         @oldrev, @newrev, @ref = change.values_at(:oldrev, :newrev, :ref)
         @branch_name = Gitlab::Git.branch_name(@ref)
         @user_access = user_access
         @project = project
         @env = env
+        @skip_authorization = skip_authorization
       end
 
       def exec
@@ -25,6 +28,7 @@ module Gitlab
       protected
 
       def protected_branch_checks
+        return if skip_authorization
         return unless @branch_name
         return unless project.protected_branch?(@branch_name)
 
@@ -50,6 +54,8 @@ module Gitlab
       end
 
       def tag_checks
+        return if skip_authorization
+
         tag_ref = Gitlab::Git.tag_name(@ref)
 
         if tag_ref && protected_tag?(tag_ref) && user_access.cannot_do_action?(:admin_project)
@@ -58,6 +64,8 @@ module Gitlab
       end
 
       def push_checks
+        return if skip_authorization
+
         if user_access.cannot_do_action?(:push_code)
           "You are not allowed to push code to this project."
         end

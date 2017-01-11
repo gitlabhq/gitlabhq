@@ -80,9 +80,12 @@
     }
 
     parseSelectedDate() {
-      this.rawSelectedDate = $("input[name='" + this.fieldName + "']").val();
+      this.rawSelectedDate = $(`input[name='${this.fieldName}']`).val();
+
       if (this.rawSelectedDate.length) {
-        let dateObj = new Date(this.rawSelectedDate);
+        // Construct Date object manually to avoid buggy dateString support within Date constructor
+        const dateArray = this.rawSelectedDate.split('-').map(v => parseInt(v, 10));
+        const dateObj = new Date(dateArray[0], dateArray[1] - 1, dateArray[2]);
         this.displayedDate = $.datepicker.formatDate('M d, yy', dateObj);
       } else {
         this.displayedDate = 'No due date';

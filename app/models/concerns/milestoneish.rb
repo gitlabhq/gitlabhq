@@ -36,8 +36,8 @@ module Milestoneish
 
   def issues_visible_to_user(user)
     memoize_per_user(user, :issues_visible_to_user) do
-      params = try(:project_id) ? { project_id: project_id } : {}
-      IssuesFinder.new(user, params).execute.where(milestone_id: milestoneish_ids)
+      IssuesFinder.new(user, issues_finder_params)
+        .execute.where(milestone_id: milestoneish_ids)
     end
   end
 
@@ -71,5 +71,11 @@ module Milestoneish
     @memoized ||= {}
     @memoized[method_name] ||= {}
     @memoized[method_name][user.try!(:id)] ||= yield
+  end
+
+  # override in a class that includes this module to get a faster query
+  # from IssuesFinder
+  def issues_finder_params
+    {}
   end
 end

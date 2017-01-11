@@ -356,6 +356,10 @@ constraints(ProjectUrlConstrainer.new) do
       resources :audit_events, only: [:index]
       ## EE-specific
 
+      namespace :settings do
+        resource :members, only: [:show]
+      end
+
       # Since both wiki and repository routing contains wildcard characters
       # its preferable to keep it below all other project routes
       draw :wiki

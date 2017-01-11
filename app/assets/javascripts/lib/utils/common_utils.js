@@ -106,8 +106,9 @@
       );
     };
 
-    gl.utils.getPagePath = function() {
-      return $('body').data('page').split(':')[0];
+    gl.utils.getPagePath = function(index) {
+      index = index || 0;
+      return $('body').data('page').split(':')[index];
     };
 
     gl.utils.parseUrl = function (url) {
@@ -125,6 +126,17 @@
 
     gl.utils.isMetaKey = function(e) {
       return e.metaKey || e.ctrlKey || e.altKey || e.shiftKey;
+    };
+
+    gl.utils.scrollToElement = function($el) {
+      var top = $el.offset().top;
+      gl.navBarHeight = gl.navBarHeight || $('.navbar-gitlab').height();
+      gl.navLinksHeight = gl.navLinksHeight || $('.nav-links').height();
+      gl.mrTabsHeight = gl.mrTabsHeight || $('.merge-request-tabs').height();
+
+      return $('body, html').animate({
+        scrollTop: top - (gl.navBarHeight + gl.navLinksHeight + gl.mrTabsHeight)
+      }, 200);
     };
 
   })(window);

@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe "Admin::Users", feature: true  do
+  include WaitForAjax
+
   before { login_as :admin }
 
   describe "GET /admin/users" do
@@ -251,6 +253,21 @@ describe "Admin::Users", feature: true  do
         expect(page).to have_content "Group: #{@group.name}"
       end
       expect(page).to have_content @project.name
+    end
+
+    it 'shows the group access level' do
+      within(:css, '.append-bottom-default + .panel') do
+        expect(page).to have_content 'Developer'
+      end
+    end
+
+    it 'allows group membership to be revoked', js: true do
+      page.within(first('.group_member')) do
+        find('.btn-remove').click
+      end
+      wait_for_ajax
+
+      expect(page).not_to have_selector('.group_member')
     end
   end
 end

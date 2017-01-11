@@ -60,7 +60,7 @@
         as resolved. Ask someone with sufficient rights to resolve the them.
 
 - is_footer = !(issuable.is_a?(MergeRequest) && issuable.new_record?)
-.row-content-block{class: (is_footer ? "footer-block" : "middle-block")}
+.row-content-block{ class: (is_footer ? "footer-block" : "middle-block") }
   - if issuable.new_record?
     = form.submit "Submit #{issuable.class.model_name.human.downcase}", class: 'btn btn-create'
   - else
@@ -81,7 +81,7 @@
                                                                                                   method: :delete, class: 'btn btn-danger btn-grouped'
       = link_to 'Cancel', polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable]), class: 'btn btn-grouped btn-cancel'
 
-%li.unsaved-approvers.hide.approver.approver-template{id: "user_{user_id}"}
+%li.unsaved-approvers.hide.approver.approver-template{ id: "user_{user_id}" }
   = link_to "{approver_name}", "#"
   .pull-right
     = link_to "#", data: { confirm: "Are you sure you want to remove approver {approver_name}"}, class: "btn-xs btn btn-remove", title: 'Remove approver' do

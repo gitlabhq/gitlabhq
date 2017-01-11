@@ -7,15 +7,17 @@
 $(() => {
   window.gl = window.gl || {};
 
-  if (window.gl.EnvironmentsListApp) {
-    window.gl.EnvironmentsListApp.$destroy(true);
+  if (gl.EnvironmentsListApp) {
+    gl.EnvironmentsListApp.$destroy(true);
   }
-  const Store = window.gl.environmentsList.EnvironmentsStore;
+  const Store = gl.environmentsList.EnvironmentsStore;
 
-  window.gl.EnvironmentsListApp = new window.gl.environmentsList.EnvironmentsComponent({
+  gl.EnvironmentsListApp = new gl.environmentsList.EnvironmentsComponent({
     el: document.querySelector('#environments-list-view'),
+
     propsData: {
       store: Store.create(),
     },
+
   });
 });

@@ -132,12 +132,18 @@ describe Admin::HealthCheckController, "routing" do
 end
 
 describe Admin::GroupsController, "routing" do
+  let(:name) { 'complex.group-namegit' }
+
   it "to #index" do
     expect(get("/admin/groups")).to route_to('admin/groups#index')
   end
 
   it "to #show" do
-    expect(get("/admin/groups/gitlab")).to route_to('admin/groups#show', id: 'gitlab')
-    expect(get("/admin/groups/gitlab/subgroup")).to route_to('admin/groups#show', id: 'gitlab/subgroup')
+    expect(get("/admin/groups/#{name}")).to route_to('admin/groups#show', id: name)
+    expect(get("/admin/groups/#{name}/subgroup")).to route_to('admin/groups#show', id: "#{name}/subgroup")
+  end
+
+  it "to #edit" do
+    expect(get("/admin/groups/#{name}/edit")).to route_to('admin/groups#edit', id: name)
   end
 end

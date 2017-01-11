@@ -13,15 +13,15 @@
       - case diff_view
       - when :inline
         %td.old_line.diff-line-num{ data: { linenumber: line_old } }
-          %a{href: "##{line_old}", data: { linenumber: line_old }}
+          %a{ href: "##{line_old}", data: { linenumber: line_old } }
         %td.new_line.diff-line-num{ data: { linenumber: line_new } }
-          %a{href: "##{line_new}", data: { linenumber: line_new }}
+          %a{ href: "##{line_new}", data: { linenumber: line_new } }
         = line_content
       - when :parallel
-        %td.old_line.diff-line-num{data: { linenumber: line_old }}
+        %td.old_line.diff-line-num{ data: { linenumber: line_old } }
           = link_to raw(line_old), "##{line_old}"
         = line_content
-        %td.new_line.diff-line-num{data: { linenumber: line_new }}
+        %td.new_line.diff-line-num{ data: { linenumber: line_new } }
           = link_to raw(line_new), "##{line_new}"
         = line_content
 

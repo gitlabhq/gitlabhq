@@ -98,7 +98,7 @@
   }
 
   .label {
-    padding: 8px 9px 9px $gl-padding;
+    padding: 8px 9px 9px;
     font-size: 14px;
   }
 }
@@ -117,7 +117,7 @@
 
 .manage-labels-list {
   .btn-action {
-    color: $gl-dark-link-color;
+    color: $gl-text-color;
 
     .fa {
       font-size: 18px;

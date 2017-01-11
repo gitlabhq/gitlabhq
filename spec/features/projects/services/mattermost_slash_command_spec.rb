@@ -49,4 +49,10 @@ feature 'Setup Mattermost slash commands', feature: true do
       end
     end
   end
+
+  describe 'stable logo url' do
+    it 'shows a publicly available logo' do
+      expect(File.exist?(Rails.root.join('public/slash-command-logo.png')))
+    end
+  end
 end

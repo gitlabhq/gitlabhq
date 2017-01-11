@@ -105,7 +105,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do
       allow(chat_service).to receive(:username).and_return(username)
 
       expect(Slack::Notifier).to receive(:new).
-       with(webhook_url, username: username, channel: chat_service.default_channel).
+       with(webhook_url, username: username).
        and_return(
          double(:slack_service).as_null_object
        )

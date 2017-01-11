@@ -396,7 +396,7 @@ describe API::Helpers, api: true do
     %w[HEAD GET].each do |method_name|
       context "method is #{method_name}" do
         before do
-          expect_any_instance_of(self.class).to receive(:route).and_return(double(route_method: method_name))
+          expect_any_instance_of(self.class).to receive(:route).and_return(double(request_method: method_name))
         end
 
         it 'does not raise an error' do
@@ -410,7 +410,7 @@ describe API::Helpers, api: true do
     %w[POST PUT PATCH DELETE].each do |method_name|
       context "method is #{method_name}" do
         before do
-          expect_any_instance_of(self.class).to receive(:route).and_return(double(route_method: method_name))
+          expect_any_instance_of(self.class).to receive(:route).and_return(double(request_method: method_name))
         end
 
         it 'calls authenticate!' do

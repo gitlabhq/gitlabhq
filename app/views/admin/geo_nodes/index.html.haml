@@ -10,7 +10,7 @@
 
 = render :partial => 'form', locals: {geo_node: @node} if Gitlab::Geo.license_allows?
 
--if @nodes.any?
+- if @nodes.any?
   .panel.panel-default
     .panel-heading
       Geo nodes (#{@nodes.count})

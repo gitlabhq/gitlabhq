@@ -66,6 +66,17 @@
           new UsernameValidator();
           new ActiveTabMemoizer();
           break;
+        case 'sessions:create':
+          if (!gon.u2f) break;
+          window.gl.u2fAuthenticate = new gl.U2FAuthenticate(
+            $("#js-authenticate-u2f"),
+            '#js-login-u2f-form',
+            gon.u2f,
+            document.querySelector('#js-login-2fa-device'),
+            document.querySelector('.js-2fa-form'),
+          );
+          window.gl.u2fAuthenticate.start();
+          break;
         case 'projects:boards:show':
         case 'projects:boards:index':
           shortcut_handler = new ShortcutsNavigation();
@@ -207,7 +218,9 @@
           new gl.Members();
           new UsersSelect();
           break;
-        case 'projects:project_members:index':
+        case 'projects:members:show':
+          new gl.MemberExpirationDate('.js-access-expiration-date-groups');
+          new GroupsSelect();
           new gl.MemberExpirationDate();
           new gl.Members();
           new UsersSelect();
@@ -252,10 +265,6 @@
           break;
         case 'projects:artifacts:browse':
           new BuildArtifacts();
-          break;
-        case 'projects:group_links:index':
-          new gl.MemberExpirationDate();
-          new GroupsSelect();
           break;
         case 'search:show':
           new Search();

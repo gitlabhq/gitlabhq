@@ -10,9 +10,9 @@
 
   describe('ZenMode', function() {
     var fixtureName = 'issues/open-issue.html.raw';
-    fixture.preload(fixtureName);
+    preloadFixtures(fixtureName);
     beforeEach(function() {
-      fixture.load(fixtureName);
+      loadFixtures(fixtureName);
       spyOn(Dropzone, 'forElement').and.callFake(function() {
         return {
           enable: function() {
@@ -32,9 +32,9 @@
         return expect(Mousetrap.pause).toHaveBeenCalled();
       });
       return it('removes textarea styling', function() {
-        $('textarea').attr('style', 'height: 400px');
+        $('.notes-form textarea').attr('style', 'height: 400px');
         enterZen();
-        return expect('textarea').not.toHaveAttr('style');
+        return expect($('.notes-form textarea')).not.toHaveAttr('style');
       });
     });
     describe('in use', function() {
@@ -43,7 +43,7 @@
       });
       return it('exits on Escape', function() {
         escapeKeydown();
-        return expect($('.zen-backdrop')).not.toHaveClass('fullscreen');
+        return expect($('.notes-form .zen-backdrop')).not.toHaveClass('fullscreen');
       });
     });
     return describe('on exit', function() {
@@ -64,15 +64,15 @@
   });
 
   enterZen = function() {
-    return $('.js-zen-enter').click();
+    return $('.notes-form .js-zen-enter').click();
   };
 
-  exitZen = function() { // Ohmmmmmmm
-    return $('.js-zen-leave').click();
+  exitZen = function() {
+    return $('.notes-form .js-zen-leave').click();
   };
 
   escapeKeydown = function() {
-    return $('textarea').trigger($.Event('keydown', {
+    return $('.notes-form textarea').trigger($.Event('keydown', {
       keyCode: 27
     }));
   };

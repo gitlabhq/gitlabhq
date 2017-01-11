@@ -40,16 +40,21 @@ Its simplest usage is to provide the value for `title`:
 
 ```text
 $ bin/changelog 'Hey DZ, I added a feature to GitLab!'
+```
+
+The entry filename is based on the name of the current Git branch. If you run
+the command above on a branch called `feature/hey-dz`, it will generate a
+`changelogs/unreleased/feature-hey-dz.yml` file.
+
+The command will output the path of the generated file and its contents:
+
+```text
 create changelogs/unreleased/my-feature.yml
 ---
 title: Hey DZ, I added a feature to GitLab!
 merge_request:
 author:
 ```
-
-The entry filename is based on the name of the current Git branch. If you run
-the command above on a branch called `feature/hey-dz`, it will generate a
-`changelogs/unreleased/feature-hey-dz.yml` file.
 
 ### Arguments
 
@@ -139,7 +144,7 @@ Use the **`--git-username`** or **`-u`** argument to automatically fill in the
 $ git config user.name
 Jane Doe
 
-$ bin/changelog --u 'Hey DZ, I added a feature to GitLab!'
+$ bin/changelog -u 'Hey DZ, I added a feature to GitLab!'
 create changelogs/unreleased/feature-hey-dz.yml
 ---
 title: Hey DZ, I added a feature to GitLab!

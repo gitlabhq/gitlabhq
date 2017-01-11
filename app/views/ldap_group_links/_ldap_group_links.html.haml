@@ -1,8 +1,7 @@
 .panel.panel-default
   .panel-heading
     %h4.panel-title
-      Linked LDAP groups
-      == (#{group.ldap_group_links.count})
+      Linked LDAP groups (#{group.ldap_group_links.count})
 
   - if group.ldap_group_links.any?
     %ul.well-list

@@ -154,6 +154,10 @@ describe MergeRequest, models: true do
       another_project = build(:project, name: 'another-project', namespace: project.namespace)
       expect(merge_request.to_reference(another_project)).to eq "sample-project!1"
     end
+
+    it 'returns a String reference with the full path' do
+      expect(merge_request.to_reference(full: true)).to eq(project.path_with_namespace + '!1')
+    end
   end
 
   describe '#raw_diffs' do
@@ -284,12 +288,16 @@ describe MergeRequest, models: true do
   end
 
   describe '#issues_mentioned_but_not_closing' do
+    let(:closing_issue) { create :issue, project: subject.project }
+    let(:mentioned_issue) { create :issue, project: subject.project }
+
+    let(:commit) { double('commit', safe_message: "Fixes #{closing_issue.to_reference}") }
+
     it 'detects issues mentioned in description but not closed' do
-      mentioned_issue = create(:issue, project: subject.project)
-
       subject.project.team << [subject.author, :developer]
-      subject.description = "Is related to #{mentioned_issue.to_reference}"
+      subject.description = "Is related to #{mentioned_issue.to_reference} and #{closing_issue.to_reference}"
 
+      allow(subject).to receive(:commits).and_return([commit])
       allow(subject.project).to receive(:default_branch).
         and_return(subject.target_branch)
 

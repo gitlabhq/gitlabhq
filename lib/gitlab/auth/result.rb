@@ -9,8 +9,7 @@ module Gitlab
 
       def lfs_deploy_token?(for_project)
         type == :lfs_deploy_token &&
-          actor &&
-          actor.projects.include?(for_project)
+          actor.try(:has_access_to?, for_project)
       end
 
       def success?

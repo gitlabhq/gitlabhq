@@ -30,25 +30,6 @@ describe GeoRepositoryUpdateWorker do
     expect(Project).to receive(:find).at_least(:once).with(project.id) { project }
   end
 
-  context 'when no repository' do
-    before do
-      allow(project.repository).to receive(:fetch_geo_mirror)
-      allow(project).to receive(:repository_exists?) { false }
-    end
-
-    it 'creates a new repository' do
-      expect(project).to receive(:create_repository)
-
-      performed
-    end
-
-    it 'executes after_create hook' do
-      expect(project.repository).to receive(:after_create)
-
-      performed
-    end
-  end
-
   context 'when empty repository' do
     before do
       allow(project.repository).to receive(:fetch_geo_mirror)

@@ -40,6 +40,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def index
     @merge_requests = merge_requests_collection
     @merge_requests = @merge_requests.page(params[:page])
+    if @merge_requests.out_of_range? && @merge_requests.total_pages != 0
+      return redirect_to url_for(params.merge(page: @merge_requests.total_pages))
+    end
 
     if params[:label_name].present?
       labels_params = { project_id: @project.id, title: params[:label_name] }
@@ -97,7 +100,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       @start_version = @comparable_diffs.find { |diff| diff.head_commit_sha == @start_sha }
 
       unless @start_version
-        render_404
+        @start_sha = @merge_request_diff.head_commit_sha
+        @start_version = @merge_request_diff
       end
     end
 

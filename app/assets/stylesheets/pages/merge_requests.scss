@@ -4,7 +4,7 @@
  */
 .mr-state-widget {
   background: $gray-light;
-  color: $gl-gray;
+  color: $gl-text-color;
   border: 1px solid $border-color;
   border-radius: 2px;
 
@@ -58,7 +58,7 @@
         padding-right: 0;
 
         a {
-          color: $gl-gray;
+          color: $gl-text-color;
         }
       }
 
@@ -70,7 +70,7 @@
 
   .ci_widget {
     border-bottom: 1px solid $well-inner-border;
-    color: $gl-gray;
+    color: $gl-text-color;
 
     svg {
       margin-right: 4px;
@@ -94,7 +94,7 @@
   }
 
   .normal {
-    color: $gl-text-color-dark;
+    color: $gl-text-color;
   }
 
   .js-deployment-link {
@@ -106,7 +106,7 @@
       font-weight: 600;
       font-size: 16px;
       margin: 5px 0;
-      color: $gl-gray-dark;
+      color: $gl-text-color;
 
       &.has-conflicts .fa-exclamation-triangle {
         color: $gl-warning;
@@ -190,7 +190,7 @@
 }
 
 .label-branch {
-  color: $gl-gray-dark;
+  color: $gl-text-color;
   font-family: $monospace_font;
   font-weight: bold;
   overflow: hidden;
@@ -310,10 +310,6 @@
       left: 0;
       top: 2px;
     }
-
-    .commit-row-info {
-      line-height: 20px;
-    }
   }
 
   .btn-clipboard {
@@ -367,7 +363,7 @@
 
     th {
       background-color: $white-light;
-      color: $gl-gray-light;
+      color: $gl-text-color-secondary;
     }
   }
 }
@@ -424,11 +420,19 @@
 .merge-request-tabs-holder {
   background-color: $white-light;
 
+  .container-limited {
+    max-width: $limited-layout-width;
+  }
+
   &.affix {
     top: 100px;
     left: 0;
     z-index: 10;
     transition: right .15s;
+
+    @media (max-width: $screen-xs-max) {
+      right: 0;
+    }
   }
 
   &:not(.affix) .container-fluid {

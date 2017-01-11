@@ -86,7 +86,8 @@ describe API::ProjectHooks, 'ProjectHooks', api: true do
   describe "POST /projects/:id/hooks" do
     it "adds hook to project" do
       expect do
-        post api("/projects/#{project.id}/hooks", user), url: "http://example.com", issues_events: true
+        post api("/projects/#{project.id}/hooks", user),
+          url: "http://example.com", issues_events: true, wiki_page_events: true
       end.to change {project.hooks.count}.by(1)
 
       expect(response).to have_http_status(201)
@@ -98,7 +99,7 @@ describe API::ProjectHooks, 'ProjectHooks', api: true do
       expect(json_response['note_events']).to eq(false)
       expect(json_response['build_events']).to eq(false)
       expect(json_response['pipeline_events']).to eq(false)
-      expect(json_response['wiki_page_events']).to eq(false)
+      expect(json_response['wiki_page_events']).to eq(true)
       expect(json_response['enable_ssl_verification']).to eq(true)
       expect(json_response).not_to include('token')
     end

@@ -45,7 +45,7 @@
     return fn(item);
   }).filter(Boolean);
 
-  window.gl.environmentsList.EnvironmentsComponent = Vue.component('environment-component', {
+  gl.environmentsList.EnvironmentsComponent = Vue.component('environment-component', {
     props: {
       store: {
         type: Object,
@@ -55,7 +55,7 @@
     },
 
     components: {
-      'environment-item': window.gl.environmentsList.EnvironmentItem,
+      'environment-item': gl.environmentsList.EnvironmentItem,
     },
 
     data() {
@@ -216,7 +216,7 @@
                   <th class="environments-deploy">Last deployment</th>
                   <th class="environments-build">Build</th>
                   <th class="environments-commit">Commit</th>
-                  <th class="environments-date"></th>
+                  <th class="environments-date">Created</th>
                   <th class="hidden-xs environments-actions"></th>
                 </tr>
               </thead>
