@@ -39,6 +39,7 @@ describe API::MergeRequests, api: true  do
         expect(json_response.first['sha']).to eq(merge_request_merged.diff_head_sha)
         expect(json_response.first['merge_commit_sha']).not_to be_nil
         expect(json_response.first['merge_commit_sha']).to eq(merge_request_merged.merge_commit_sha)
+        expect(json_response.first['squash']).to eq(merge_request_merged.squash)
       end
 
       it "returns an array of all merge_requests" do
@@ -233,13 +234,15 @@ describe API::MergeRequests, api: true  do
              author: user,
              labels: 'label, label2',
              milestone_id: milestone.id,
-             remove_source_branch: true
+             remove_source_branch: true,
+             squash: true
 
         expect(response).to have_http_status(201)
         expect(json_response['title']).to eq('Test merge_request')
         expect(json_response['labels']).to eq(['label', 'label2'])
         expect(json_response['milestone']['id']).to eq(milestone.id)
         expect(json_response['force_remove_source_branch']).to be_truthy
+        expect(json_response['squash']).to be_truthy
       end
 
       it "returns 422 when source_branch equals target_branch" do
@@ -526,6 +529,14 @@ describe API::MergeRequests, api: true  do
       expect(response).to have_http_status(200)
     end
 
+    it "updates the MR's squash attribute" do
+      expect do
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user), squash: true
+      end.to change { merge_request.reload.squash }
+
+      expect(response).to have_http_status(200)
+    end
+
     it "enables merge when pipeline succeeds if the pipeline is active" do
       allow_any_instance_of(MergeRequest).to receive(:head_pipeline).and_return(pipeline)
       allow(pipeline).to receive(:active?).and_return(true)
@@ -564,6 +575,13 @@ describe API::MergeRequests, api: true  do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), milestone_id: milestone.id
       expect(response).to have_http_status(200)
       expect(json_response['milestone']['id']).to eq(milestone.id)
+    end
+
+    it "updates squash and returns merge_request" do
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), squash: true
+
+      expect(response).to have_http_status(200)
+      expect(json_response['squash']).to be_truthy
     end
 
     it "returns merge_request with renamed target_branch" do
