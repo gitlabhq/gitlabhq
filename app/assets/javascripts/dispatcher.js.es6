@@ -187,11 +187,6 @@
             new TreeView();
           }
           break;
-        case 'projects:pipelines:index':
-          new gl.MiniPipelineGraph({
-            container: '.js-pipeline-table',
-          });
-          break;
         case 'projects:pipelines:builds':
         case 'projects:pipelines:show':
           const { controllerAction } = document.querySelector('.js-pipeline-container').dataset;
@@ -282,6 +277,10 @@
           break;
         case 'projects:variables:index':
           new gl.ProjectVariables();
+          break;
+        case 'ci:lints:create':
+        case 'ci:lints:show':
+          new gl.CILintEditor();
           break;
       }
       switch (path.first()) {
