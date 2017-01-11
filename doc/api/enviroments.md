@@ -78,7 +78,7 @@ PUT /projects/:id/environments/:environments_id
 | `external_url`  | string  | no                                | The new external_url             |
 
 ```bash
-curl --request PUT --data "name=staging&external_url=https://staging.example.gitlab.com" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/environment/1"
+curl --request PUT --data "name=staging&external_url=https://staging.example.gitlab.com" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/environments/1"
 ```
 
 Example response:
@@ -106,7 +106,7 @@ DELETE /projects/:id/environments/:environment_id
 | `environment_id` | integer | yes | The ID of the environment |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/environment/1"
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/environments/1"
 ```
 
 Example response:
