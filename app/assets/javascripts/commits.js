@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, quotes, consistent-return, no-return-assign, no-param-reassign, one-var, no-var, one-var-declaration-per-line, no-unused-vars, prefer-template, object-shorthand, comma-dangle, padded-blocks, max-len, prefer-arrow-callback */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, quotes, consistent-return, no-return-assign, no-param-reassign, one-var, no-var, one-var-declaration-per-line, no-unused-vars, prefer-template, object-shorthand, comma-dangle, max-len, prefer-arrow-callback */
 /* global Pager */
 
 (function() {
@@ -58,7 +58,5 @@
     };
 
     return CommitsList;
-
   })();
-
 }).call(this);

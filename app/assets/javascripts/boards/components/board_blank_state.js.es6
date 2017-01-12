@@ -1,4 +1,4 @@
-/* eslint-disable space-before-function-paren, comma-dangle, semi */
+/* eslint-disable space-before-function-paren, comma-dangle */
 /* global Vue */
 /* global ListLabel */
 
@@ -15,7 +15,7 @@
           new ListLabel({ title: 'To Do', color: '#F0AD4E' }),
           new ListLabel({ title: 'Doing', color: '#5CB85C' })
         ]
-      }
+      };
     },
     methods: {
       addDefaultLists () {

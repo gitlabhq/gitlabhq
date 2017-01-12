@@ -1,7 +1,8 @@
-/* eslint-disable */
+/* eslint-disable arrow-parens, no-param-reassign, object-shorthand, no-else-return, comma-dangle, no-underscore-dangle, no-continue, no-restricted-syntax, guard-for-in, no-new, class-methods-use-this, consistent-return, max-len */
+/* global Flash */
 
 (global => {
-  global.gl = global.gl || {};
+  global.gl = global.gl || {};
 
   const PUSH_ACCESS_LEVEL = 'push_access_levels';
   const LEVEL_TYPES = {
@@ -58,7 +59,6 @@
           if ($el.is('.is-active')) {
             if (self.isAllowedToPushDropdown) {
               if (item.id === self.noOneObj.id) {
-
                 // remove all others selected items
                 self.accessLevelsData.forEach((level) => {
                   if (level.id !== item.id) {
@@ -67,9 +67,9 @@
                 });
 
                 // remove selected item visually
-                self.$wrap.find(`.item-${item.type}`).removeClass(`is-active`);
+                self.$wrap.find(`.item-${item.type}`).removeClass('is-active');
               } else {
-                let $noOne = self.$wrap.find(`.is-active.item-${item.type}:contains('No one')`);
+                const $noOne = self.$wrap.find(`.is-active.item-${item.type}:contains('No one')`);
                 if ($noOne.length) {
                   $noOne.removeClass('is-active');
                   self.removeSelectedItem(self.noOneObj);
@@ -94,7 +94,7 @@
     }
 
     persistPreselectedItems() {
-      let itemsToPreselect = this.$dropdown.data('preselectedItems');
+      const itemsToPreselect = this.$dropdown.data('preselectedItems');
 
       if (typeof itemsToPreselect === 'undefined' || !itemsToPreselect.length) {
         return;
@@ -112,9 +112,7 @@
     }
 
     getSelectedItems() {
-      return this.items.filter((item) => {
-        return !item._destroy;
-      });
+      return this.items.filter((item) => !item._destroy);
     }
 
     getAllSelectedItems() {
@@ -123,11 +121,11 @@
 
     // Return dropdown as input data ready to submit
     getInputData() {
-      let accessLevels = [];
-      let selectedItems = this.getAllSelectedItems();
+      const accessLevels = [];
+      const selectedItems = this.getAllSelectedItems();
 
-      selectedItems.map((item) => {
-        let obj = {};
+      selectedItems.forEach((item) => {
+        const obj = {};
 
         if (typeof item.id !== 'undefined') {
           obj.id = item.id;
@@ -138,7 +136,7 @@
         }
 
         if (item.type === LEVEL_TYPES.ROLE) {
-          obj.access_level = item.access_level
+          obj.access_level = item.access_level;
         } else if (item.type === LEVEL_TYPES.USER) {
           obj.user_id = item.user_id;
         } else if (item.type === LEVEL_TYPES.GROUP) {
@@ -152,13 +150,13 @@
     }
 
     addSelectedItem(selectedItem) {
-      var itemToAdd = {};
+      let itemToAdd = {};
 
       // If the item already exists, just use it
       let index = -1;
-      let selectedItems = this.getAllSelectedItems();
+      const selectedItems = this.getAllSelectedItems();
 
-      for (var i = 0; i < selectedItems.length; i++) {
+      for (let i = 0; i < selectedItems.length; i += 1) {
         if (selectedItem.id === selectedItems[i].access_level) {
           index = i;
           continue;
@@ -175,21 +173,21 @@
       if (selectedItem.type === LEVEL_TYPES.USER) {
         itemToAdd = {
           user_id: selectedItem.id,
-          name: selectedItem.name || '_name1',
+          name: selectedItem.name || '_name1',
           username: selectedItem.username || '_username1',
-          avatar_url: selectedItem.avatar_url || '_avatar_url1',
+          avatar_url: selectedItem.avatar_url || '_avatar_url1',
           type: LEVEL_TYPES.USER
         };
       } else if (selectedItem.type === LEVEL_TYPES.ROLE) {
         itemToAdd = {
           access_level: selectedItem.id,
           type: LEVEL_TYPES.ROLE
-        }
+        };
       } else if (selectedItem.type === LEVEL_TYPES.GROUP) {
         itemToAdd = {
           group_id: selectedItem.id,
           type: LEVEL_TYPES.GROUP
-        }
+        };
       }
 
       this.items.push(itemToAdd);
@@ -197,11 +195,11 @@
 
     removeSelectedItem(itemToDelete) {
       let index = -1;
-      let selectedItems = this.getAllSelectedItems();
+      const selectedItems = this.getAllSelectedItems();
 
       // To find itemToDelete on selectedItems, first we need the index
-      for (let i = 0; i < selectedItems.length; i++) {
-        let currentItem = selectedItems[i];
+      for (let i = 0; i < selectedItems.length; i += 1) {
+        const currentItem = selectedItems[i];
 
         if (currentItem.type !== itemToDelete.type) {
           continue;
@@ -224,7 +222,6 @@
       }
 
       if (selectedItems[index].persisted) {
-
         // If we toggle an item that has been already marked with _destroy
         if (selectedItems[index]._destroy) {
           delete selectedItems[index]._destroy;
@@ -236,16 +233,16 @@
       }
     }
 
-    toggleLabel(selectedItem, el) {
-      let currentItems = this.getSelectedItems();
-      let types = _.groupBy(currentItems, (item) => { return item.type; });
-      let label = [];
+    toggleLabel() {
+      const currentItems = this.getSelectedItems();
+      const types = _.groupBy(currentItems, (item) => item.type);
+      const label = [];
 
       if (currentItems.length) {
-        for (let LEVEL_TYPE in LEVEL_TYPES) {
-          let typeName = LEVEL_TYPES[LEVEL_TYPE];
-          let numberOfTypes = types[typeName] ? types[typeName].length : 0;
-          let text = numberOfTypes === 1 ? typeName : `${typeName}s`;
+        for (const LEVEL_TYPE in LEVEL_TYPES) {
+          const typeName = LEVEL_TYPES[LEVEL_TYPE];
+          const numberOfTypes = types[typeName] ? types[typeName].length : 0;
+          const text = numberOfTypes === 1 ? typeName : `${typeName}s`;
 
           label.push(`${numberOfTypes} ${text}`);
         }
@@ -263,27 +260,25 @@
         if (this.groups.length) {
           callback(this.consolidateData(usersResponse, this.groups));
         } else {
-         this.getGroups(query).done((groupsResponse) => {
-
+          this.getGroups(query).done((groupsResponse) => {
             // Cache groups to avoid multiple requests
             this.groups = groupsResponse;
             callback(this.consolidateData(usersResponse, groupsResponse));
-         });
+          });
         }
-
       }).error(() => {
         new Flash('Failed to load users.');
       });
     }
 
-    consolidateData(usersResponse, groupsResponse) {
+    consolidateData(usersResponse, groupsResponse) {
       let consolidatedData = [];
-      let map = [];
+      const map = [];
       let roles = [];
-      let selectedUsers = [];
-      let unselectedUsers = [];
+      const selectedUsers = [];
+      const unselectedUsers = [];
       let groups = [];
-      let selectedItems = this.getSelectedItems();
+      const selectedItems = this.getSelectedItems();
 
       // ID property is handled differently locally from the server
       //
@@ -318,8 +313,8 @@
       /*
        * Build users
        */
-      for (let x = 0; x < selectedItems.length; x++) {
-        let current = selectedItems[x];
+      for (let x = 0; x < selectedItems.length; x += 1) {
+        const current = selectedItems[x];
 
         if (current.type !== LEVEL_TYPES.USER) { continue; }
 
@@ -338,18 +333,18 @@
 
       // Has to be checked against server response
       // because the selected item can be in filter results
-      for (let i = 0; i < usersResponse.length; i++) {
-        let u = usersResponse[i];
+      for (let i = 0; i < usersResponse.length; i += 1) {
+        const u = usersResponse[i];
 
         // Add is it has not been added
-        if (map.indexOf(LEVEL_TYPES.USER + u.id) === -1){
+        if (map.indexOf(LEVEL_TYPES.USER + u.id) === -1) {
           u.type = LEVEL_TYPES.USER;
           unselectedUsers.push(u);
         }
       }
 
       if (groups.length) {
-        consolidatedData =consolidatedData.concat(groups);
+        consolidatedData = consolidatedData.concat(groups);
       }
 
       if (roles.length) {
@@ -389,14 +384,14 @@
       });
     }
 
-    getGroups(query) {
-     return $.ajax({
-       dataType: 'json',
-       url: this.buildUrl(this.groupsPath),
-       data: {
-         project_id: gon.current_project_id
-       }
-     });
+    getGroups() {
+      return $.ajax({
+        dataType: 'json',
+        url: this.buildUrl(this.groupsPath),
+        data: {
+          project_id: gon.current_project_id
+        }
+      });
     }
 
     buildUrl(url) {
@@ -406,8 +401,7 @@
       return url;
     }
 
-    renderRow(item, instance) {
-      let isActive;
+    renderRow(item) {
       let criteria = {};
 
       // Dectect if the current item is already saved so we can add
@@ -420,7 +414,7 @@
         criteria = { group_id: item.id };
       }
 
-      isActive = _.findWhere(this.getSelectedItems(), criteria) ? 'is-active' : '';
+      const isActive = _.findWhere(this.getSelectedItems(), criteria) ? 'is-active' : '';
 
       if (item.type === LEVEL_TYPES.USER) {
         return this.userRowHtml(item, isActive);
@@ -432,22 +426,21 @@
     }
 
     userRowHtml(user, isActive) {
-      const  avatarHtml = `<img src='${user.avatar_url}' class='avatar avatar-inline' width='30'>`;
-      const  nameHtml = `<strong class='dropdown-menu-user-full-name'>${user.name}</strong>`;
-      const  usernameHtml = `<span class='dropdown-menu-user-username'>${user.username}</span>`;
+      const avatarHtml = `<img src='${user.avatar_url}' class='avatar avatar-inline' width='30'>`;
+      const nameHtml = `<strong class='dropdown-menu-user-full-name'>${user.name}</strong>`;
+      const usernameHtml = `<span class='dropdown-menu-user-username'>${user.username}</span>`;
       return `<li><a href='#' class='${isActive ? 'is-active' : ''}'>${avatarHtml} ${nameHtml} ${usernameHtml}</a></li>`;
     }
 
     groupRowHtml(group, isActive) {
-     const  avatarHtml = group.avatar_url ? `<img src='${group.avatar_url}' class='avatar avatar-inline' width='30'>` : '';
-     const  nameHtml = `<strong class='dropdown-menu-group-full-name'>${group.name}</strong>`;
-     const  groupnameHtml = `<span class='dropdown-menu-group-groupname'>${group.name}</span>`;
-     return `<li><a href='#' class='${isActive ? 'is-active' : ''}'>${avatarHtml} ${nameHtml} ${groupnameHtml}</a></li>`;
+      const avatarHtml = group.avatar_url ? `<img src='${group.avatar_url}' class='avatar avatar-inline' width='30'>` : '';
+      const nameHtml = `<strong class='dropdown-menu-group-full-name'>${group.name}</strong>`;
+      const groupnameHtml = `<span class='dropdown-menu-group-groupname'>${group.name}</span>`;
+      return `<li><a href='#' class='${isActive ? 'is-active' : ''}'>${avatarHtml} ${nameHtml} ${groupnameHtml}</a></li>`;
     }
 
     roleRowHtml(role, isActive) {
       return `<li><a href='#' class='${isActive ? 'is-active' : ''} item-${role.type}'>${role.text}</a></li>`;
     }
-  }
-
+  };
 })(window);

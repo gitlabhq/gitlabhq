@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, prefer-arrow-callback, no-unused-vars, consistent-return, camelcase, comma-dangle, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, prefer-arrow-callback, no-unused-vars, consistent-return, camelcase, comma-dangle, max-len */
 /* global Dropzone */
 /* global Mousetrap */
 
@@ -93,7 +93,5 @@
     };
 
     return ZenMode;
-
   })();
-
 }).call(this);
