@@ -203,33 +203,53 @@ describe Project, models: true do
     end
 
     it 'does not allow an invalid URI as import_url' do
-      project2 = build(:project, import_url: 'invalid://')
+      project2 = build(:empty_project, import_url: 'invalid://')
 
       expect(project2).not_to be_valid
     end
 
     it 'does allow a valid URI as import_url' do
-      project2 = build(:project, import_url: 'ssh://test@gitlab.com/project.git')
+      project2 = build(:empty_project, import_url: 'ssh://test@gitlab.com/project.git')
 
       expect(project2).to be_valid
     end
 
     it 'allows an empty URI' do
-      project2 = build(:project, import_url: '')
+      project2 = build(:empty_project, import_url: '')
 
       expect(project2).to be_valid
     end
 
     it 'does not produce import data on an empty URI' do
-      project2 = build(:project, import_url: '')
+      project2 = build(:empty_project, import_url: '')
 
       expect(project2.import_data).to be_nil
     end
 
     it 'does not produce import data on an invalid URI' do
-      project2 = build(:project, import_url: 'test://')
+      project2 = build(:empty_project, import_url: 'test://')
 
       expect(project2.import_data).to be_nil
+    end
+
+    describe 'project pending deletion' do
+      let!(:project_pending_deletion) do
+        create(:empty_project,
+               pending_delete: true)
+      end
+      let(:new_project) do
+        build(:empty_project,
+              name: project_pending_deletion.name,
+              namespace: project_pending_deletion.namespace)
+      end
+
+      before do
+        new_project.validate
+      end
+
+      it 'contains errors related to the project being deleted' do
+        expect(new_project.errors.full_messages.first).to eq('The project is still being deleted. Please try again later.')
+      end
     end
   end
 
