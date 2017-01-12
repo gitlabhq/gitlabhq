@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, space-before-function-paren, one-var, space-in-parens, no-shadow, dot-notation, max-len */
+/* eslint-disable comma-dangle, space-before-function-paren, one-var, no-shadow, dot-notation, max-len */
 /* global Cookies */
 /* global List */
 
@@ -52,7 +52,7 @@
     },
     shouldAddBlankState () {
       // Decide whether to add the blank state
-      return !(this.state.lists.filter( list => list.type !== 'backlog' && list.type !== 'done' )[0]);
+      return !(this.state.lists.filter(list => list.type !== 'backlog' && list.type !== 'done')[0]);
     },
     addBlankState () {
       if (!this.shouldAddBlankState() || this.welcomeIsHidden() || this.disabled) return;
@@ -82,7 +82,7 @@
 
       if (!list) return;
 
-      this.state.lists = this.state.lists.filter( list => list.id !== id );
+      this.state.lists = this.state.lists.filter(list => list.id !== id);
     },
     moveList (listFrom, orderLists) {
       orderLists.forEach((id, i) => {
@@ -95,7 +95,7 @@
     moveIssueToList (listFrom, listTo, issue, newIndex) {
       const issueTo = listTo.findIssue(issue.id);
       const issueLists = issue.getLists();
-      const listLabels = issueLists.map( listIssue => listIssue.label );
+      const listLabels = issueLists.map(listIssue => listIssue.label);
 
       // Add to new lists issues if it doesn't already exist
       if (!issueTo) {

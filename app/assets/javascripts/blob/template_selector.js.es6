@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, object-shorthand, func-names, space-before-function-paren, arrow-parens, no-unused-vars, class-methods-use-this, no-var, consistent-return, no-param-reassign, space-in-parens, max-len */
+/* eslint-disable comma-dangle, object-shorthand, func-names, space-before-function-paren, arrow-parens, no-unused-vars, class-methods-use-this, no-var, consistent-return, no-param-reassign, max-len */
 
 ((global) => {
   class TemplateSelector {
@@ -98,4 +98,4 @@
   }
 
   global.TemplateSelector = TemplateSelector;
-})(window.gl || ( window.gl = {}));
+})(window.gl || (window.gl = {}));

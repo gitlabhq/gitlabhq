@@ -1,4 +1,4 @@
-/* eslint-disable space-before-function-paren, no-underscore-dangle, class-methods-use-this, consistent-return, space-in-parens, no-shadow, no-param-reassign, max-len, no-unused-vars */
+/* eslint-disable space-before-function-paren, no-underscore-dangle, class-methods-use-this, consistent-return, no-shadow, no-param-reassign, max-len, no-unused-vars */
 /* global ListIssue */
 /* global ListLabel */
 
@@ -71,7 +71,7 @@ class List {
     Object.keys(filters).forEach((key) => { data[key] = filters[key]; });
 
     if (this.label) {
-      data.label_name = data.label_name.filter( label => label !== this.label.title );
+      data.label_name = data.label_name.filter(label => label !== this.label.title);
     }
 
     if (emptyIssues) {
@@ -132,7 +132,7 @@ class List {
   }
 
   findIssue (id) {
-    return this.issues.filter( issue => issue.id === id )[0];
+    return this.issues.filter(issue => issue.id === id)[0];
   }
 
   removeIssue (removeIssue) {
