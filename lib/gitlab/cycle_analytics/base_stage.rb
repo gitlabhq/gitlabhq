@@ -8,17 +8,11 @@ module Gitlab
         @options = options
       end
 
-      def event
-        @event ||= Gitlab::CycleAnalytics::Event[name].new(project: @project,
-                                                           stage: name,
-                                                           options: event_options)
-      end
-
       def events
-        event.fetch
+        event_fetcher.fetch
       end
 
-      def median_data
+      def as_json
         AnalyticsStageSerializer.new.represent(self).as_json
       end
 
@@ -35,7 +29,7 @@ module Gitlab
         # cycle analytics stage.
         interval_query = Arel::Nodes::As.new(
           cte_table,
-          subtract_datetimes(base_query.dup, @start_time_attrs, @end_time_attrs, name.to_s))
+          subtract_datetimes(base_query.dup, start_time_attrs, end_time_attrs, name.to_s))
 
         median_datetime(cte_table, interval_query, name)
       end
@@ -46,8 +40,14 @@ module Gitlab
 
       private
 
+      def event_fetcher
+        @event_fetcher ||= Gitlab::CycleAnalytics::EventFetcher[name].new(project: @project,
+                                                                   stage: name,
+                                                                   options: event_options)
+      end
+
       def event_options
-        @options.merge(start_time_attrs: @start_time_attrs, end_time_attrs: @end_time_attrs)
+        @options.merge(start_time_attrs: start_time_attrs, end_time_attrs: end_time_attrs)
       end
     end
   end

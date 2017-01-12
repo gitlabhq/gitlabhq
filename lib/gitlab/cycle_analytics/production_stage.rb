@@ -3,11 +3,12 @@ module Gitlab
     class ProductionStage < BaseStage
       include ProductionHelper
 
-      def initialize(*args)
-        @start_time_attrs = issue_table[:created_at]
-        @end_time_attrs = mr_metrics_table[:first_deployed_to_production_at]
+      def start_time_attrs
+        @start_time_attrs ||= issue_table[:created_at]
+      end
 
-        super(*args)
+      def end_time_attrs
+        @end_time_attrs ||= mr_metrics_table[:first_deployed_to_production_at]
       end
 
       def name

@@ -17,7 +17,7 @@ class CycleAnalytics
   end
 
   def no_stats?
-    stats.map { |hash| hash[:value] }.compact.empty?
+    stats.all? { hash[:value].nil? }
   end
 
   def permissions(user:)
@@ -32,7 +32,7 @@ class CycleAnalytics
 
   def stats_per_stage
     STAGES.map do |stage_name|
-      self[stage_name].median_data
+      self[stage_name].as_json
     end
   end
 end

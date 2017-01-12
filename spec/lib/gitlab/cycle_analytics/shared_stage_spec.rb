@@ -9,15 +9,15 @@ shared_examples 'base stage' do
   end
 
   it 'has the median data value' do
-    expect(stage.median_data[:value]).not_to be_nil
+    expect(stage.as_json[:value]).not_to be_nil
   end
 
   it 'has the median data stage' do
-    expect(stage.median_data[:title]).not_to be_nil
+    expect(stage.as_json[:title]).not_to be_nil
   end
 
   it 'has the median data description' do
-    expect(stage.median_data[:description]).not_to be_nil
+    expect(stage.as_json[:description]).not_to be_nil
   end
 
   it 'has the title' do

@@ -42,7 +42,7 @@ module Gitlab
       end
 
       def default_order
-        @options[:start_time_attrs].is_a?(Array) ? @options[:start_time_attrs].first : @options[:start_time_attrs]
+        [@options[:start_time_attrs]].flatten.first
       end
 
       def serialize(_event)

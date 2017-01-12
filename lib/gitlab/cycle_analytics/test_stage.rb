@@ -1,11 +1,12 @@
 module Gitlab
   module CycleAnalytics
     class TestStage < BaseStage
-      def initialize(*args)
-        @start_time_attrs =  mr_metrics_table[:latest_build_started_at]
-        @end_time_attrs = mr_metrics_table[:latest_build_finished_at]
+      def start_time_attrs
+        @start_time_attrs ||= mr_metrics_table[:latest_build_started_at]
+      end
 
-        super(*args)
+      def end_time_attrs
+        @end_time_attrs ||= mr_metrics_table[:latest_build_finished_at]
       end
 
       def name
