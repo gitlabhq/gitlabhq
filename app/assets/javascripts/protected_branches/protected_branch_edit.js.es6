@@ -1,8 +1,8 @@
-/* eslint-disable no-new, arrow-parens, no-param-reassign, no-irregular-whitespace, comma-dangle, no-trailing-spaces, max-len */
+/* eslint-disable no-new, arrow-parens, no-param-reassign, comma-dangle, no-trailing-spaces, max-len */
 /* global Flash */
 
 (global => {
-  global.gl = global.gl || {};
+  global.gl = global.gl || {};
 
   gl.ProtectedBranchEdit = class {
     constructor(options) {

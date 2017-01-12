@@ -1,8 +1,8 @@
-/* eslint-disable no-new, arrow-parens, no-param-reassign, no-irregular-whitespace, comma-dangle, max-len */
+/* eslint-disable no-new, arrow-parens, no-param-reassign, comma-dangle, max-len */
 /* global ProtectedBranchDropdown */
 
 (global => {
-  global.gl = global.gl || {};
+  global.gl = global.gl || {};
 
   gl.ProtectedBranchCreate = class {
     constructor() {
