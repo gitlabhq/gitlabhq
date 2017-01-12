@@ -484,7 +484,7 @@
   }
 
   .unapprove-btn-wrap {
-    border-left: 1px solid $gray-light;
+    border-left: 1px solid $gray-darker;
     padding-left: 5px;
     margin-left: 10px;
   }
@@ -495,7 +495,7 @@
     cursor: pointer;
 
     &:hover {
-      color: $gray-light;
+      color: $gl-text-color-secondary;
       text-decoration: none;
     }
 
