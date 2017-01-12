@@ -3,14 +3,22 @@ require 'spec_helper'
 describe Gitlab::Ci::Status::Build::Factory do
   let(:user) { create(:user) }
   let(:project) { build.project }
-
-  subject { described_class.new(build, user) }
-  let(:status) { subject.fabricate! }
+  let(:status) { factory.fabricate! }
+  let(:factory) { described_class.new(build, user) }
 
   before { project.team << [user, :developer] }
 
   context 'when build is successful' do
     let(:build) { create(:ci_build, :success) }
+
+    it 'matches correct core status' do
+      expect(factory.core_status).to be_a Gitlab::Ci::Status::Success
+    end
+
+    it 'matches correct extended statuses' do
+      expect(factory.extended_statuses)
+        .to eq [Gitlab::Ci::Status::Build::Retryable]
+    end
 
     it 'fabricates a retryable build status' do
       expect(status).to be_a Gitlab::Ci::Status::Build::Retryable
@@ -26,23 +34,71 @@ describe Gitlab::Ci::Status::Build::Factory do
   end
 
   context 'when build is failed' do
-    let(:build) { create(:ci_build, :failed) }
+    context 'when build is not allowed to fail' do
+      let(:build) { create(:ci_build, :failed) }
 
-    it 'fabricates a retryable build status' do
-      expect(status).to be_a Gitlab::Ci::Status::Build::Retryable
+      it 'matches correct core status' do
+        expect(factory.core_status).to be_a Gitlab::Ci::Status::Failed
+      end
+
+      it 'matches correct extended statuses' do
+        expect(factory.extended_statuses)
+          .to eq [Gitlab::Ci::Status::Build::Retryable]
+      end
+
+      it 'fabricates a retryable build status' do
+        expect(status).to be_a Gitlab::Ci::Status::Build::Retryable
+      end
+
+      it 'fabricates status with correct details' do
+        expect(status.text).to eq 'failed'
+        expect(status.icon).to eq 'icon_status_failed'
+        expect(status.label).to eq 'failed'
+        expect(status).to have_details
+        expect(status).to have_action
+      end
     end
 
-    it 'fabricates status with correct details' do
-      expect(status.text).to eq 'failed'
-      expect(status.icon).to eq 'icon_status_failed'
-      expect(status.label).to eq 'failed'
-      expect(status).to have_details
-      expect(status).to have_action
+    context 'when build is allowed to fail' do
+      let(:build) { create(:ci_build, :failed, :allowed_to_fail) }
+
+      it 'matches correct core status' do
+        expect(factory.core_status).to be_a Gitlab::Ci::Status::Failed
+      end
+
+      it 'matches correct extended statuses' do
+        expect(factory.extended_statuses)
+          .to eq [Gitlab::Ci::Status::Build::Retryable,
+                  Gitlab::Ci::Status::Build::FailedAllowed]
+      end
+
+      it 'fabricates a failed but allowed build status' do
+        expect(status).to be_a Gitlab::Ci::Status::Build::FailedAllowed
+      end
+
+      it 'fabricates status with correct details' do
+        expect(status.text).to eq 'failed'
+        expect(status.icon).to eq 'icon_status_warning'
+        expect(status.label).to eq 'failed (allowed to fail)'
+        expect(status).to have_details
+        expect(status).to have_action
+        expect(status.action_title).to include 'Retry'
+        expect(status.action_path).to include 'retry'
+      end
     end
   end
 
   context 'when build is a canceled' do
     let(:build) { create(:ci_build, :canceled) }
+
+    it 'matches correct core status' do
+      expect(factory.core_status).to be_a Gitlab::Ci::Status::Canceled
+    end
+
+    it 'matches correct extended statuses' do
+      expect(factory.extended_statuses)
+        .to eq [Gitlab::Ci::Status::Build::Retryable]
+    end
 
     it 'fabricates a retryable build status' do
       expect(status).to be_a Gitlab::Ci::Status::Build::Retryable
@@ -60,6 +116,15 @@ describe Gitlab::Ci::Status::Build::Factory do
   context 'when build is running' do
     let(:build) { create(:ci_build, :running) }
 
+    it 'matches correct core status' do
+      expect(factory.core_status).to be_a Gitlab::Ci::Status::Running
+    end
+
+    it 'matches correct extended statuses' do
+      expect(factory.extended_statuses)
+        .to eq [Gitlab::Ci::Status::Build::Cancelable]
+    end
+
     it 'fabricates a canceable build status' do
       expect(status).to be_a Gitlab::Ci::Status::Build::Cancelable
     end
@@ -76,6 +141,15 @@ describe Gitlab::Ci::Status::Build::Factory do
   context 'when build is pending' do
     let(:build) { create(:ci_build, :pending) }
 
+    it 'matches correct core status' do
+      expect(factory.core_status).to be_a Gitlab::Ci::Status::Pending
+    end
+
+    it 'matches correct extended statuses' do
+      expect(factory.extended_statuses)
+        .to eq [Gitlab::Ci::Status::Build::Cancelable]
+    end
+
     it 'fabricates a cancelable build status' do
       expect(status).to be_a Gitlab::Ci::Status::Build::Cancelable
     end
@@ -91,6 +165,14 @@ describe Gitlab::Ci::Status::Build::Factory do
 
   context 'when build is skipped' do
     let(:build) { create(:ci_build, :skipped) }
+
+    it 'matches correct core status' do
+      expect(factory.core_status).to be_a Gitlab::Ci::Status::Skipped
+    end
+
+    it 'does not match extended statuses' do
+      expect(factory.extended_statuses).to be_empty
+    end
 
     it 'fabricates a core skipped status' do
       expect(status).to be_a Gitlab::Ci::Status::Skipped
@@ -109,6 +191,15 @@ describe Gitlab::Ci::Status::Build::Factory do
     context 'when build is a play action' do
       let(:build) { create(:ci_build, :playable) }
 
+      it 'matches correct core status' do
+        expect(factory.core_status).to be_a Gitlab::Ci::Status::Skipped
+      end
+
+      it 'matches correct extended statuses' do
+        expect(factory.extended_statuses)
+          .to eq [Gitlab::Ci::Status::Build::Play]
+      end
+
       it 'fabricates a core skipped status' do
         expect(status).to be_a Gitlab::Ci::Status::Build::Play
       end
@@ -119,11 +210,21 @@ describe Gitlab::Ci::Status::Build::Factory do
         expect(status.label).to eq 'manual play action'
         expect(status).to have_details
         expect(status).to have_action
+        expect(status.action_path).to include 'play'
       end
     end
 
     context 'when build is an environment stop action' do
       let(:build) { create(:ci_build, :playable, :teardown_environment) }
+
+      it 'matches correct core status' do
+        expect(factory.core_status).to be_a Gitlab::Ci::Status::Skipped
+      end
+
+      it 'matches correct extended statuses' do
+        expect(factory.extended_statuses)
+          .to eq [Gitlab::Ci::Status::Build::Stop]
+      end
 
       it 'fabricates a core skipped status' do
         expect(status).to be_a Gitlab::Ci::Status::Build::Stop
