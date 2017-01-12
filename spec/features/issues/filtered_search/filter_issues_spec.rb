@@ -107,12 +107,12 @@ describe 'Filter issues', js: true, feature: true do
 
       it 'filters issues by invalid author' do
         pending('to be tested, issue #26546')
-        fail
+        expect(true).to be(false)
       end
 
       it 'filters issues by multiple authors' do
         pending('to be tested, issue #26546')
-        fail
+        expect(true).to be(false)
       end
     end
 
@@ -152,7 +152,7 @@ describe 'Filter issues', js: true, feature: true do
 
     it 'sorting' do
       pending('to be tested, issue #26546')
-      fail
+      expect(true).to be(false)
     end
   end
 
@@ -176,12 +176,12 @@ describe 'Filter issues', js: true, feature: true do
 
       it 'filters issues by invalid assignee' do
         pending('to be tested, issue #26546')
-        fail
+        expect(true).to be(false)
       end
 
       it 'filters issues by multiple assignees' do
         pending('to be tested, issue #26546')
-        fail
+        expect(true).to be(false)
       end
     end
 
@@ -222,7 +222,7 @@ describe 'Filter issues', js: true, feature: true do
     context 'sorting' do
       it 'sorts' do
         pending('to be tested, issue #26546')
-        fail
+        expect(true).to be(false)
       end
     end
   end
@@ -247,7 +247,7 @@ describe 'Filter issues', js: true, feature: true do
 
       it 'filters issues by invalid label' do
         pending('to be tested, issue #26546')
-        fail
+        expect(true).to be(false)
       end
 
       it 'filters issues by multiple labels' do
@@ -423,7 +423,7 @@ describe 'Filter issues', js: true, feature: true do
     context 'sorting' do
       it 'sorts' do
         pending('to be tested, issue #26546')
-        fail
+        expect(true).to be(false)
       end
     end
   end
@@ -450,12 +450,12 @@ describe 'Filter issues', js: true, feature: true do
 
       it 'filters issues by invalid milestones' do
         pending('to be tested, issue #26546')
-        fail
+        expect(true).to be(false)
       end
 
       it 'filters issues by multiple milestones' do
         pending('to be tested, issue #26546')
-        fail
+        expect(true).to be(false)
       end
 
       it 'filters issues by milestone containing special characters' do
@@ -517,7 +517,7 @@ describe 'Filter issues', js: true, feature: true do
     context 'sorting' do
       it 'sorts' do
         pending('to be tested, issue #26546')
-        fail
+        expect(true).to be(false)
       end
     end
   end
