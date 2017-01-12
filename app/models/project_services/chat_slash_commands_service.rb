@@ -28,7 +28,7 @@ class ChatSlashCommandsService < Service
   end
 
   def trigger(params)
-    return access_presenter unless valid_token?(params[:token])
+    return unless valid_token?(params[:token])
 
     user = find_chat_user(params)
 
@@ -36,15 +36,11 @@ class ChatSlashCommandsService < Service
       Gitlab::ChatCommands::Command.new(project, user, params).execute
     else
       url = authorize_chat_name_url(params)
-      access_presenter(url).authorize
+      Gitlab::ChatCommands::Presenters::Access.new(url).authorize
     end
   end
 
   private
-
-  def access_presenter(url = nil)
-    Gitlab::ChatCommands::Presenters::Access.new(url)
-  end
 
   def find_chat_user(params)
     ChatNames::FindUserService.new(self, params).execute
