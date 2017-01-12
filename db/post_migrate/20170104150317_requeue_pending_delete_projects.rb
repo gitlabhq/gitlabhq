@@ -19,7 +19,7 @@ class RequeuePendingDeleteProjects < ActiveRecord::Migration
 
       args = ids.map { |id| [id['id'], admin.id, {}] }
 
-      Sidekiq::Client.push_bulk('class' => ProjectDestroyWorker, 'args' => args)
+      Sidekiq::Client.push_bulk('class' => "ProjectDestroyWorker", 'args' => args)
 
       @offset += 1
     end
