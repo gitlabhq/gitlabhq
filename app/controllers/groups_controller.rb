@@ -125,19 +125,28 @@ class GroupsController < Groups::ApplicationController
   end
 
   def group_params
-    params.require(:group).permit(
+    params.require(:group).permit(group_params_ce << group_params_ee)
+  end
+
+  def group_params_ce
+    [
       :avatar,
       :description,
       :lfs_enabled,
-      :membership_lock,
       :name,
       :path,
       :public,
-      :repository_size_limit,
       :request_access_enabled,
       :share_with_group_lock,
       :visibility_level
-    )
+    ]
+  end
+
+  def group_params_ee
+    [
+      :membership_lock,
+      :repository_size_limit
+    ]
   end
 
   def load_events
