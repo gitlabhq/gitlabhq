@@ -434,10 +434,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     else
       ci_service = @merge_request.source_project.try(:ci_service)
       status = ci_service.commit_status(merge_request.diff_head_sha, merge_request.source_branch) if ci_service
-
-      if ci_service.respond_to?(:commit_coverage)
-        coverage = ci_service.commit_coverage(merge_request.diff_head_sha, merge_request.source_branch)
-      end
     end
 
     response = {
