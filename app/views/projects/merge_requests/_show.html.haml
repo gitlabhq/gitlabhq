@@ -1,4 +1,4 @@
-- @content_class = "limit-container-width"
+- @content_class = "limit-container-width" unless fluid_layout
 - page_title           "#{@merge_request.title} (#{@merge_request.to_reference})", "Merge Requests"
 - page_description     @merge_request.description
 - page_card_attributes @merge_request.card_attributes
@@ -48,7 +48,7 @@
         = succeed '.' do
           = link_to "command line", "#modal_merge_info", class: "how_to_merge_link vlink", title: "How To Merge", "data-toggle" => "modal"
 
-    .content-block.content-block-small
+    .content-block.content-block-small.emoji-list-container
       = render 'award_emoji/awards_block', awardable: @merge_request, inline: true
 
     .merge-request-tabs-holder{ class: ("js-tabs-affix" unless ENV['RAILS_ENV'] == 'test') }

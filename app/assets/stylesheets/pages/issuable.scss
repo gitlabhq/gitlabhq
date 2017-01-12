@@ -1,3 +1,52 @@
+// Limit MR description for side-by-side diff view
+.fixed-width-container {
+  max-width: $limited-layout-width - ($gl-padding * 2);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.limit-container-width {
+  .detail-page-header {
+    @extend .fixed-width-container;
+  }
+
+  .issuable-details {
+    .detail-page-description,
+    .mr-source-target,
+    .mr-state-widget,
+    .merge-manually {
+      @extend .fixed-width-container;
+    }
+
+    .merge-request-tabs-holder {
+      &.affix {
+        border-bottom: 1px solid $border-color;
+
+        .nav-links {
+          border: 0;
+        }
+      }
+
+      .container-fluid {
+        @extend .fixed-width-container;
+      }
+    }
+  }
+
+  .merge-request-details {
+    .emoji-list-container {
+      @extend .fixed-width-container;
+    }
+  }
+
+  .diffs {
+    .mr-version-controls,
+    .files-changed {
+      @extend .fixed-width-container;
+    }
+  }
+}
+
 .issuable-details {
   section {
     .issuable-discussion {
