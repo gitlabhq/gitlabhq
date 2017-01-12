@@ -10,7 +10,7 @@
     max-width: 100%;
   }
 
-  *:first-child {
+  *:first-child:not(.katex-display) {
     margin-top: 0;
   }
 
