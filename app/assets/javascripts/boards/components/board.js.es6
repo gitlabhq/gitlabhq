@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, space-before-function-paren, one-var, indent, radix */
+/* eslint-disable comma-dangle, space-before-function-paren, one-var, radix */
 /* global Vue */
 /* global Sortable */
 
@@ -88,8 +88,8 @@
           gl.issueBoards.onEnd();
 
           if (e.newIndex !== undefined && e.oldIndex !== e.newIndex) {
-            const order = this.sortable.toArray(),
-                  list = Store.findList('id', parseInt(e.item.dataset.id));
+            const order = this.sortable.toArray();
+            const list = Store.findList('id', parseInt(e.item.dataset.id));
 
             this.$nextTick(() => {
               Store.moveList(list, order);

@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, func-names, no-new, space-before-function-paren, one-var, indent */
+/* eslint-disable comma-dangle, func-names, no-new, space-before-function-paren, one-var */
 
 (() => {
   window.gl = window.gl || {};
@@ -32,17 +32,17 @@
             });
         },
         renderRow (label) {
-          const active = Store.findList('title', label.title),
-                $li = $('<li />'),
-                $a = $('<a />', {
-                  class: (active ? `is-active js-board-list-${active.id}` : ''),
-                  text: label.title,
-                  href: '#'
-                }),
-                $labelColor = $('<span />', {
-                  class: 'dropdown-label-box',
-                  style: `background-color: ${label.color}`
-                });
+          const active = Store.findList('title', label.title);
+          const $li = $('<li />');
+          const $a = $('<a />', {
+            class: (active ? `is-active js-board-list-${active.id}` : ''),
+            text: label.title,
+            href: '#'
+          });
+          const $labelColor = $('<span />', {
+            class: 'dropdown-label-box',
+            style: `background-color: ${label.color}`
+          });
 
           return $li.append($a.prepend($labelColor));
         },

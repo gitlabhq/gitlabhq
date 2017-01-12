@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, space-before-function-paren, one-var, indent, space-in-parens, no-shadow, radix, dot-notation, max-len */
+/* eslint-disable comma-dangle, space-before-function-paren, one-var, space-in-parens, no-shadow, radix, dot-notation, max-len */
 /* global Cookies */
 /* global List */
 
@@ -33,8 +33,8 @@
       return list;
     },
     new (listObj) {
-      const list = this.addList(listObj),
-            backlogList = this.findList('type', 'backlog', 'backlog');
+      const list = this.addList(listObj);
+      const backlogList = this.findList('type', 'backlog', 'backlog');
 
       list
         .save()
@@ -93,9 +93,9 @@
       listFrom.update();
     },
     moveIssueToList (listFrom, listTo, issue, newIndex) {
-      const issueTo = listTo.findIssue(issue.id),
-            issueLists = issue.getLists(),
-            listLabels = issueLists.map( listIssue => listIssue.label );
+      const issueTo = listTo.findIssue(issue.id);
+      const issueLists = issue.getLists();
+      const listLabels = issueLists.map( listIssue => listIssue.label );
 
       // Add to new lists issues if it doesn't already exist
       if (!issueTo) {

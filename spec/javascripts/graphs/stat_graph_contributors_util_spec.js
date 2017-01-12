@@ -1,4 +1,4 @@
-/* eslint-disable quotes, no-var, camelcase, object-curly-spacing, indent, object-property-newline, comma-dangle, comma-spacing, spaced-comment, max-len, key-spacing, vars-on-top, quote-props, no-multi-spaces */
+/* eslint-disable quotes, no-var, camelcase, object-curly-spacing, object-property-newline, comma-dangle, comma-spacing, spaced-comment, max-len, key-spacing, vars-on-top, quote-props, no-multi-spaces */
 /* global ContributorsStatGraphUtil */
 
 //= require graphs/stat_graph_contributors_util
@@ -18,14 +18,14 @@ describe("ContributorsStatGraphUtil", function () {
         {date: "2013-05-08", additions: 54, deletions: 7, commits: 3}],
         by_author:
         [
-        {
-          author_name: "Karlo Soriano", author_email: "karlo@email.com",
-          "2013-05-09": {date: "2013-05-09", additions: 471, deletions: 0, commits: 1}
-        },
-        {
-          author_name: "Dmitriy Zaporozhets",author_email: "dzaporozhets@email.com",
-          "2013-05-08": {date: "2013-05-08", additions: 54, deletions: 7, commits: 3}
-        }
+          {
+            author_name: "Karlo Soriano", author_email: "karlo@email.com",
+            "2013-05-09": {date: "2013-05-09", additions: 471, deletions: 0, commits: 1}
+          },
+          {
+            author_name: "Dmitriy Zaporozhets",author_email: "dzaporozhets@email.com",
+            "2013-05-08": {date: "2013-05-08", additions: 54, deletions: 7, commits: 3}
+          }
         ]
       };
       expect(ContributorsStatGraphUtil.parse_log(fake_log)).toEqual(correct_parsed_log);
@@ -129,18 +129,21 @@ describe("ContributorsStatGraphUtil", function () {
   describe("#get_total_data", function () {
     it("returns the collection sorted via specified field", function () {
       var fake_parsed_log = {
-      total: [{date: "2013-05-09", additions: 471, deletions: 0, commits: 1},
-      {date: "2013-05-08", additions: 54, deletions: 7, commits: 3}],
-      by_author:[
-      {
-        author: "Karlo Soriano",
-        "2013-05-09": {date: "2013-05-09", additions: 471, deletions: 0, commits: 1}
-      },
-      {
-        author: "Dmitriy Zaporozhets",
-        "2013-05-08": {date: "2013-05-08", additions: 54, deletions: 7, commits: 3}
-      }
-      ]};
+        total: [
+          {date: "2013-05-09", additions: 471, deletions: 0, commits: 1},
+          {date: "2013-05-08", additions: 54, deletions: 7, commits: 3}
+        ],
+        by_author:[
+          {
+            author: "Karlo Soriano",
+            "2013-05-09": {date: "2013-05-09", additions: 471, deletions: 0, commits: 1}
+          },
+          {
+            author: "Dmitriy Zaporozhets",
+            "2013-05-08": {date: "2013-05-08", additions: 54, deletions: 7, commits: 3}
+          }
+        ]
+      };
       var correct_total_data = [{date: "2013-05-08", commits: 3},
       {date: "2013-05-09", commits: 1}];
       expect(ContributorsStatGraphUtil.get_total_data(fake_parsed_log, "commits")).toEqual(correct_total_data);

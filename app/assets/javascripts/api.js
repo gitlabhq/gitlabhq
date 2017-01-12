@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, quotes, object-shorthand, camelcase, no-var, comma-dangle, prefer-arrow-callback, indent, object-curly-spacing, quote-props, no-param-reassign, max-len */
+/* eslint-disable func-names, space-before-function-paren, quotes, object-shorthand, camelcase, no-var, comma-dangle, prefer-arrow-callback, object-curly-spacing, quote-props, no-param-reassign, max-len */
 
 (function() {
   var Api = {
@@ -29,9 +29,9 @@
       return $.ajax({
         url: url,
         data: $.extend({
-                search: query,
-                per_page: 20
-              }, options),
+          search: query,
+          per_page: 20
+        }, options),
         dataType: "json"
       }).done(function(groups) {
         return callback(groups);

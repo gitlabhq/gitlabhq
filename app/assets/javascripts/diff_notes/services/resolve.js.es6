@@ -1,4 +1,4 @@
-/* eslint-disable class-methods-use-this, one-var, indent, camelcase, no-new, comma-dangle, no-param-reassign, max-len */
+/* eslint-disable class-methods-use-this, one-var, camelcase, no-new, comma-dangle, no-param-reassign, max-len */
 /* global Vue */
 /* global Flash */
 /* global CommentsStore */
@@ -32,8 +32,8 @@
     }
 
     toggleResolveForDiscussion(projectPath, mergeRequestId, discussionId) {
-      const discussion = CommentsStore.state[discussionId],
-            isResolved = discussion.isResolved();
+      const discussion = CommentsStore.state[discussionId];
+      const isResolved = discussion.isResolved();
       let promise;
 
       if (isResolved) {

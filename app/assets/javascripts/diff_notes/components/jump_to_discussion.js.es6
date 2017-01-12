@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, object-shorthand, func-names, no-else-return, guard-for-in, no-restricted-syntax, one-var, indent, space-before-function-paren, no-lonely-if, no-continue, brace-style, max-len, quotes */
+/* eslint-disable comma-dangle, object-shorthand, func-names, no-else-return, guard-for-in, no-restricted-syntax, one-var, space-before-function-paren, no-lonely-if, no-continue, brace-style, max-len, quotes */
 /* global Vue */
 /* global DiscussionMixins */
 /* global CommentsStore */
@@ -46,13 +46,13 @@
     },
     methods: {
       jumpToNextUnresolvedDiscussion: function () {
-        let discussionsSelector,
-            discussionIdsInScope,
-            firstUnresolvedDiscussionId,
-            nextUnresolvedDiscussionId,
-            activeTab = window.mrTabs.currentAction,
-            hasDiscussionsToJumpTo = true,
-            jumpToFirstDiscussion = !this.discussionId;
+        let discussionsSelector;
+        let discussionIdsInScope;
+        let firstUnresolvedDiscussionId;
+        let nextUnresolvedDiscussionId;
+        let activeTab = window.mrTabs.currentAction;
+        let hasDiscussionsToJumpTo = true;
+        let jumpToFirstDiscussion = !this.discussionId;
 
         const discussionIdsForElements = function(elements) {
           return elements.map(function() {

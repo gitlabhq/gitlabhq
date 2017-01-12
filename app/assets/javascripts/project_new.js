@@ -1,4 +1,5 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, no-unused-vars, one-var, indent, no-underscore-dangle, prefer-template, no-else-return, prefer-arrow-callback, radix, max-len */
+/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, no-unused-vars, one-var, no-underscore-dangle, prefer-template, no-else-return, prefer-arrow-callback, radix, max-len */
+
 (function() {
   var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
@@ -23,9 +24,10 @@
       var self = this;
 
       this.$selects.each(function () {
-        var $select = $(this),
-            className = $select.data('field').replace(/_/g, '-')
-              .replace('access-level', 'feature');
+        var $select = $(this);
+        var className = $select.data('field')
+          .replace(/_/g, '-')
+          .replace('access-level', 'feature');
         self._showOrHide($select, '.' + className);
       });
     };
@@ -45,9 +47,9 @@
     };
 
     ProjectNew.prototype.toggleRepoVisibility = function () {
-      var $repoAccessLevel = $('.js-repo-access-level select'),
-          containerRegistry = document.querySelectorAll('.js-container-registry')[0],
-          containerRegistryCheckbox = document.getElementById('project_container_registry_enabled');
+      var $repoAccessLevel = $('.js-repo-access-level select');
+      var containerRegistry = document.querySelectorAll('.js-container-registry')[0];
+      var containerRegistryCheckbox = document.getElementById('project_container_registry_enabled');
 
       this.$repoSelects.find("option[value='" + $repoAccessLevel.val() + "']")
         .nextAll()
@@ -58,8 +60,8 @@
           var selectedVal = parseInt($repoAccessLevel.val());
 
           this.$repoSelects.each(function () {
-            var $this = $(this),
-                repoSelectVal = parseInt($this.val());
+            var $this = $(this);
+            var repoSelectVal = parseInt($this.val());
 
             $this.find('option').show();
 

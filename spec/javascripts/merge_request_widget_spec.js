@@ -1,4 +1,4 @@
-/* eslint-disable space-before-function-paren, quotes, comma-dangle, dot-notation, indent, quote-props, no-var, max-len */
+/* eslint-disable space-before-function-paren, quotes, comma-dangle, dot-notation, quote-props, no-var, max-len */
 
 /*= require merge_request_widget */
 /*= require lib/utils/datetime_utility */
@@ -42,17 +42,17 @@
       });
 
       it('should call renderEnvironments when the environments property is set', function() {
-         const spy = spyOn(this.class, 'renderEnvironments').and.stub();
-         this.class.getCIEnvironmentsStatus();
-         expect(spy).toHaveBeenCalledWith(this.ciEnvironmentsStatusData);
-       });
+        const spy = spyOn(this.class, 'renderEnvironments').and.stub();
+        this.class.getCIEnvironmentsStatus();
+        expect(spy).toHaveBeenCalledWith(this.ciEnvironmentsStatusData);
+      });
 
-       it('should not call renderEnvironments when the environments property is not set', function() {
-         this.ciEnvironmentsStatusData = null;
-         const spy = spyOn(this.class, 'renderEnvironments').and.stub();
-         this.class.getCIEnvironmentsStatus();
-         expect(spy).not.toHaveBeenCalled();
-       });
+      it('should not call renderEnvironments when the environments property is not set', function() {
+        this.ciEnvironmentsStatusData = null;
+        const spy = spyOn(this.class, 'renderEnvironments').and.stub();
+        this.class.getCIEnvironmentsStatus();
+        expect(spy).not.toHaveBeenCalled();
+      });
     });
 
     describe('renderEnvironments', function() {
@@ -107,16 +107,16 @@
     });
 
     describe('mergeInProgress', function() {
-       it('should display error with h4 tag', function() {
-          spyOn(this.class.$widgetBody, 'html').and.callFake(function(html) {
-            expect(html).toBe('<h4>Sorry, something went wrong.</h4>');
-          });
-          spyOn($, 'ajax').and.callFake(function(e) {
-            e.success({ merge_error: 'Sorry, something went wrong.' });
-          });
-          this.class.mergeInProgress(null);
+      it('should display error with h4 tag', function() {
+        spyOn(this.class.$widgetBody, 'html').and.callFake(function(html) {
+          expect(html).toBe('<h4>Sorry, something went wrong.</h4>');
         });
+        spyOn($, 'ajax').and.callFake(function(e) {
+          e.success({ merge_error: 'Sorry, something went wrong.' });
+        });
+        this.class.mergeInProgress(null);
       });
+    });
 
     return describe('getCIStatus', function() {
       beforeEach(function() {

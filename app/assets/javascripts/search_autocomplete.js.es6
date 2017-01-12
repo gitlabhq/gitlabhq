@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, no-return-assign, one-var, no-var, no-underscore-dangle, one-var-declaration-per-line, no-unused-vars, no-cond-assign, consistent-return, object-shorthand, prefer-arrow-callback, func-names, space-before-function-paren, prefer-template, quotes, class-methods-use-this, no-unused-expressions, no-sequences, wrap-iife, no-lonely-if, no-else-return, no-param-reassign, vars-on-top, indent, max-len */
+/* eslint-disable comma-dangle, no-return-assign, one-var, no-var, no-underscore-dangle, one-var-declaration-per-line, no-unused-vars, no-cond-assign, consistent-return, object-shorthand, prefer-arrow-callback, func-names, space-before-function-paren, prefer-template, quotes, class-methods-use-this, no-unused-expressions, no-sequences, wrap-iife, no-lonely-if, no-else-return, no-param-reassign, vars-on-top, max-len */
 
 ((global) => {
   const KEYCODE = {
@@ -279,12 +279,12 @@
       return this.searchInput.val();
     }
 
-   onClearInputClick(e) {
+    onClearInputClick(e) {
       e.preventDefault();
       return this.searchInput.val('').focus();
     }
 
-   onSearchInputBlur(e) {
+    onSearchInputBlur(e) {
       this.isFocused = false;
       this.wrap.removeClass('search-active');
       // If input is blank then restore state

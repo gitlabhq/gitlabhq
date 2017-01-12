@@ -1,4 +1,4 @@
-/* eslint-disable quotes, indent, object-curly-spacing, jasmine/no-suite-dupes, vars-on-top, no-var, spaced-comment, max-len */
+/* eslint-disable quotes, object-curly-spacing, jasmine/no-suite-dupes, vars-on-top, no-var, spaced-comment, max-len */
 /* global d3 */
 /* global ContributorsGraph */
 /* global ContributorsMasterGraph */
@@ -8,10 +8,10 @@
 describe("ContributorsGraph", function () {
   describe("#set_x_domain", function () {
     it("set the x_domain", function () {
-     ContributorsGraph.set_x_domain(20);
-     expect(ContributorsGraph.prototype.x_domain).toEqual(20);
-   });
- });
+      ContributorsGraph.set_x_domain(20);
+      expect(ContributorsGraph.prototype.x_domain).toEqual(20);
+    });
+  });
 
   describe("#set_y_domain", function () {
     it("sets the y_domain", function () {

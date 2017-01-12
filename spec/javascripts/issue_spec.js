@@ -1,4 +1,4 @@
-/* eslint-disable space-before-function-paren, no-var, one-var, one-var-declaration-per-line, no-use-before-define, indent, comma-dangle, max-len */
+/* eslint-disable space-before-function-paren, no-var, one-var, one-var-declaration-per-line, no-use-before-define, comma-dangle, max-len */
 /* global Issue */
 
 /*= require lib/utils/text_utility */
@@ -42,21 +42,21 @@
   }
 
   function findElements() {
-      $boxClosed = $('div.status-box-closed');
-      expect($boxClosed).toExist();
-      expect($boxClosed).toHaveText('Closed');
+    $boxClosed = $('div.status-box-closed');
+    expect($boxClosed).toExist();
+    expect($boxClosed).toHaveText('Closed');
 
-      $boxOpen = $('div.status-box-open');
-      expect($boxOpen).toExist();
-      expect($boxOpen).toHaveText('Open');
+    $boxOpen = $('div.status-box-open');
+    expect($boxOpen).toExist();
+    expect($boxOpen).toHaveText('Open');
 
-      $btnClose = $('.btn-close.btn-grouped');
-      expect($btnClose).toExist();
-      expect($btnClose).toHaveText('Close issue');
+    $btnClose = $('.btn-close.btn-grouped');
+    expect($btnClose).toExist();
+    expect($btnClose).toHaveText('Close issue');
 
-      $btnReopen = $('.btn-reopen.btn-grouped');
-      expect($btnReopen).toExist();
-      expect($btnReopen).toHaveText('Reopen issue');
+    $btnReopen = $('.btn-reopen.btn-grouped');
+    expect($btnReopen).toExist();
+    expect($btnReopen).toHaveText('Reopen issue');
   }
 
   describe('Issue', function() {
