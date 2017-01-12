@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, one-var, no-var, one-var-declaration-per-line, object-shorthand, comma-dangle, prefer-arrow-callback, no-else-return, newline-per-chained-call, no-dupe-keys, wrap-iife, max-len */
+/* eslint-disable func-names, space-before-function-paren, one-var, no-var, one-var-declaration-per-line, object-shorthand, comma-dangle, prefer-arrow-callback, no-else-return, newline-per-chained-call, wrap-iife, max-len */
 
 (function() {
   this.CompareAutocomplete = (function() {
@@ -28,7 +28,6 @@
           selectable: true,
           filterable: true,
           filterByText: true,
-          toggleLabel: true,
           fieldName: $dropdown.data('field-name'),
           filterInput: 'input[type="search"]',
           renderRow: function(ref) {

@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, object-shorthand, no-dupe-keys, no-param-reassign, camelcase, prefer-const, no-nested-ternary, no-continue, max-len */
+/* eslint-disable comma-dangle, object-shorthand, no-param-reassign, camelcase, prefer-const, no-nested-ternary, no-continue, max-len */
 /* global Cookies */
 /* global Vue */
 
@@ -40,7 +40,6 @@
         commitMessage: data.commit_message,
         sourceBranch: data.source_branch,
         targetBranch: data.target_branch,
-        commitMessage: data.commit_message,
         shortCommitSha: data.commit_sha.slice(0, 7),
       };
     },
