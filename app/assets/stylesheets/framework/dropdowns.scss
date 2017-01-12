@@ -172,7 +172,8 @@
     background-color: $dropdown-divider-color;
   }
 
-  a {
+  a,
+  button {
     display: block;
     position: relative;
     padding: 5px 8px;

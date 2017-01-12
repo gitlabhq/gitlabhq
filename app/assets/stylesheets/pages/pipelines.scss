@@ -287,6 +287,10 @@
         }
       }
     }
+
+    .tooltip {
+      white-space: nowrap;
+    }
   }
 
   .build-link {
@@ -310,6 +314,13 @@
 // Pipeline visualization
 .pipeline-actions {
   border-bottom: none;
+}
+
+.pipeline-actions-dropdown-button {
+  width: 100%;
+  background: none;
+  border: 0;
+  text-align: left;
 }
 
 .tab-pane {
