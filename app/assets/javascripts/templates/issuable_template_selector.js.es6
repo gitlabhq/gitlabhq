@@ -1,4 +1,4 @@
-/* eslint-disable prefer-const, comma-dangle, max-len, no-useless-return, no-param-reassign, max-len */
+/* eslint-disable comma-dangle, max-len, no-useless-return, no-param-reassign, max-len */
 /* global Api */
 
 /*= require ../blob/template_selector */
@@ -12,7 +12,7 @@
       this.issuableType = this.wrapper.data('issuable-type');
       this.titleInput = $(`#${this.issuableType}_title`);
 
-      let initialQuery = {
+      const initialQuery = {
         name: this.dropdown.data('selected')
       };
 

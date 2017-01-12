@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, object-shorthand, func-names, space-before-function-paren, arrow-parens, no-unused-vars, class-methods-use-this, no-var, consistent-return, prefer-const, no-param-reassign, space-in-parens, max-len */
+/* eslint-disable comma-dangle, object-shorthand, func-names, space-before-function-paren, arrow-parens, no-unused-vars, class-methods-use-this, no-var, consistent-return, no-param-reassign, space-in-parens, max-len */
 
 ((global) => {
   class TemplateSelector {
@@ -74,7 +74,7 @@
       if (!file) return;
 
       const oldValue = this.editor.getValue();
-      let newValue = file.content;
+      const newValue = file.content;
 
       this.editor.setValue(newValue, 1);
       if (!skipFocus) this.editor.focus();

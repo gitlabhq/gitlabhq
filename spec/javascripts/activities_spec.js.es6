@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-expressions, prefer-const, no-prototype-builtins, no-new, no-shadow, max-len */
+/* eslint-disable no-unused-expressions, no-prototype-builtins, no-new, no-shadow, max-len */
 
 /*= require js.cookie.js */
 /*= require jquery.endless-scroll.js */
@@ -24,12 +24,12 @@
     }];
 
   function getEventName(index) {
-    let filter = filters[index];
+    const filter = filters[index];
     return filter.hasOwnProperty('name') ? filter.name : filter.id;
   }
 
   function getSelector(index) {
-    let filter = filters[index];
+    const filter = filters[index];
     return `#${filter.id}_event_filter`;
   }
 
@@ -48,8 +48,8 @@
 
           for (let x = 0; x < filters.length; x += 1) {
             ((x) => {
-              let shouldHighlight = i === x;
-              let testName = shouldHighlight ? 'should highlight' : 'should not highlight';
+              const shouldHighlight = i === x;
+              const testName = shouldHighlight ? 'should highlight' : 'should not highlight';
 
               it(`${testName} ${getEventName(x)}`, () => {
                 expect($(getSelector(x)).parent().hasClass('active')).toEqual(shouldHighlight);

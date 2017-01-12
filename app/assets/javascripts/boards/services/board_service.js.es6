@@ -1,4 +1,4 @@
-/* eslint-disable space-before-function-paren, comma-dangle, no-param-reassign, camelcase, prefer-const, max-len, no-unused-vars */
+/* eslint-disable space-before-function-paren, comma-dangle, no-param-reassign, camelcase, max-len, no-unused-vars */
 /* global Vue */
 
 class BoardService {
@@ -47,7 +47,7 @@ class BoardService {
   }
 
   getIssuesForList (id, filter = {}) {
-    let data = { id };
+    const data = { id };
     Object.keys(filter).forEach((key) => { data[key] = filter[key]; });
 
     return this.issues.get(data);

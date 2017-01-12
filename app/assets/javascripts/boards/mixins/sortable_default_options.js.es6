@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars, no-mixed-operators, prefer-const, comma-dangle */
+/* eslint-disable no-unused-vars, no-mixed-operators, comma-dangle */
 /* global DocumentTouch */
 
 ((w) => {
@@ -19,7 +19,7 @@
   gl.issueBoards.touchEnabled = ('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch;
 
   gl.issueBoards.getBoardSortableDefaultOptions = (obj) => {
-    let defaultSortOptions = {
+    const defaultSortOptions = {
       animation: 200,
       forceFallback: true,
       fallbackClass: 'is-dragging',

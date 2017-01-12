@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, object-shorthand, no-param-reassign, camelcase, prefer-const, no-nested-ternary, no-continue, max-len */
+/* eslint-disable comma-dangle, object-shorthand, no-param-reassign, camelcase, no-nested-ternary, no-continue, max-len */
 /* global Cookies */
 /* global Vue */
 
@@ -251,7 +251,7 @@
     },
 
     checkLineLengths(linesObj) {
-      let { left, right } = linesObj;
+      const { left, right } = linesObj;
 
       if (left.length !== right.length) {
         if (left.length > right.length) {
@@ -316,11 +316,11 @@
       let unresolved = 0;
 
       for (let i = 0, l = files.length; i < l; i += 1) {
-        let file = files[i];
+        const file = files[i];
 
         if (file.resolveMode === INTERACTIVE_RESOLVE_MODE) {
           let numberConflicts = 0;
-          let resolvedConflicts = Object.keys(file.resolutionData).length;
+          const resolvedConflicts = Object.keys(file.resolutionData).length;
 
           // We only check for conflicts type 'text'
           // since conflicts `text_editor` can´t be resolved in interactive mode
@@ -364,9 +364,7 @@
       };
 
       this.state.conflictsData.files.forEach((file) => {
-        let addFile;
-
-        addFile = {
+        const addFile = {
           old_path: file.old_path,
           new_path: file.new_path
         };

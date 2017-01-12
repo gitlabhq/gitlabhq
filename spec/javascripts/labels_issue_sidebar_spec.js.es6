@@ -1,4 +1,4 @@
-/* eslint-disable no-new, prefer-const */
+/* eslint-disable no-new */
 /* global IssuableContext */
 /* global LabelsSelect */
 
@@ -33,7 +33,7 @@
             LABELS_DATA.push({ id: i, title: `test ${i}`, color: '#5CB85C' });
           }
         } else if (req.url === '/root/test/issues/2.json') {
-          let tmp = [];
+          const tmp = [];
           for (let i = 0; i < saveLabelCount; i += 1) {
             tmp.push({ id: i, title: `test ${i}`, color: '#5CB85C' });
           }

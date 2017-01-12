@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, quote-props, no-useless-computed-key, object-shorthand, prefer-const, no-new, no-param-reassign, max-len */
+/* eslint-disable comma-dangle, quote-props, no-useless-computed-key, object-shorthand, no-new, no-param-reassign, max-len */
 /* global Vue */
 /* global ace */
 /* global Flash */
@@ -50,8 +50,8 @@
 
         $.get(this.file.content_path)
           .done((file) => {
-            let content = this.$el.querySelector('pre');
-            let fileContent = document.createTextNode(file.content);
+            const content = this.$el.querySelector('pre');
+            const fileContent = document.createTextNode(file.content);
 
             content.textContent = fileContent.textContent;
 

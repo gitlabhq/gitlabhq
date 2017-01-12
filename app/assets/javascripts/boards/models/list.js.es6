@@ -1,4 +1,4 @@
-/* eslint-disable space-before-function-paren, no-underscore-dangle, class-methods-use-this, consistent-return, prefer-const, space-in-parens, no-shadow, no-param-reassign, max-len, no-unused-vars */
+/* eslint-disable space-before-function-paren, no-underscore-dangle, class-methods-use-this, consistent-return, space-in-parens, no-shadow, no-param-reassign, max-len, no-unused-vars */
 /* global ListIssue */
 /* global ListLabel */
 
@@ -66,7 +66,7 @@ class List {
 
   getIssues (emptyIssues = true) {
     const filters = this.filters;
-    let data = { page: this.page };
+    const data = { page: this.page };
 
     Object.keys(filters).forEach((key) => { data[key] = filters[key]; });
 
