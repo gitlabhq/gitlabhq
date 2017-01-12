@@ -27,6 +27,7 @@ describe 'Search bar', js: true, feature: true do
 
       expect(filtered_search.value).to eq(search_text)
       find('.filtered-search-input-container .clear-search').click
+
       expect(filtered_search.value).to eq('')
     end
 
@@ -37,12 +38,14 @@ describe 'Search bar', js: true, feature: true do
     it 'hides after clicked' do
       filtered_search.set('a')
       find('.filtered-search-input-container .clear-search').click
+
       expect(page).to have_css('.clear-search', visible: false)
     end
 
     it 'hides when there is no text' do
       filtered_search.set('a')
       filtered_search.set('')
+
       expect(page).to have_css('.clear-search', visible: false)
     end
 
@@ -57,10 +60,12 @@ describe 'Search bar', js: true, feature: true do
       original_size = page.all('#js-dropdown-hint .filter-dropdown .filter-dropdown-item').size
 
       filtered_search.set('author')
+
       expect(page.all('#js-dropdown-hint .filter-dropdown .filter-dropdown-item').size).to eq(1)
 
       find('.filtered-search-input-container .clear-search').click
       filtered_search.click
+
       expect(page.all('#js-dropdown-hint .filter-dropdown .filter-dropdown-item').size).to eq(original_size)
     end
 
@@ -70,10 +75,12 @@ describe 'Search bar', js: true, feature: true do
       hint_offset = get_left_style(hint_style)
 
       filtered_search.set('author:')
+
       expect(page.all('#js-dropdown-hint .filter-dropdown .filter-dropdown-item').size).to eq(0)
 
       find('.filtered-search-input-container .clear-search').click
       filtered_search.click
+
       expect(page.all('#js-dropdown-hint .filter-dropdown .filter-dropdown-item').size).to be > 0
       expect(get_left_style(page.find('#js-dropdown-hint')['style'])).to eq(hint_offset)
     end

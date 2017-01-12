@@ -22,17 +22,14 @@ require('../window')(function(w){
     debounceTrigger: function debounceTrigger(e) {
       var NON_CHARACTER_KEYS = [16, 17, 18, 20, 37, 38, 39, 40, 91, 93];
       var invalidKeyPressed = NON_CHARACTER_KEYS.indexOf(e.detail.which || e.detail.keyCode) > -1;
-      var focusEvent = false;
+      var focusEvent = e.type === 'focus';
+
       if (invalidKeyPressed || this.loading) {
         return;
       }
 
       if (this.timeout) {
         clearTimeout(this.timeout);
-      }
-
-      if (e.type === 'focus') {
-        focusEvent = true;
       }
 
       this.timeout = setTimeout(this.trigger.bind(this, focusEvent), 200);
@@ -66,7 +63,7 @@ require('../window')(function(w){
         searchValue = '';
       }
 
-      if (searchValue === config.searchKey) {
+      if (config.searchKey === searchValue) {
         return this.list.show();
       }
 

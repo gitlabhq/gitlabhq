@@ -36,6 +36,7 @@ describe 'Dropdown hint', js: true, feature: true do
 
     it 'closes when the search bar is unfocused' do
       find('body').click
+
       expect(page).to have_css(js_dropdown_hint, visible: false)
     end
   end
@@ -43,12 +44,14 @@ describe 'Dropdown hint', js: true, feature: true do
   describe 'filtering' do
     it 'does not filter `Keep typing and press Enter`' do
       filtered_search.set('randomtext')
+
       expect(page).to have_css(js_dropdown_hint, text: 'Keep typing and press Enter', visible: false)
       expect(dropdown_hint_size).to eq(0)
     end
 
     it 'filters with text' do
       filtered_search.set('a')
+
       expect(dropdown_hint_size).to eq(3)
     end
   end
@@ -60,6 +63,7 @@ describe 'Dropdown hint', js: true, feature: true do
 
     it 'opens the author dropdown when you click on author' do
       click_hint('author')
+
       expect(page).to have_css(js_dropdown_hint, visible: false)
       expect(page).to have_css('#js-dropdown-author', visible: true)
       expect(filtered_search.value).to eq('author:')
@@ -67,6 +71,7 @@ describe 'Dropdown hint', js: true, feature: true do
 
     it 'opens the assignee dropdown when you click on assignee' do
       click_hint('assignee')
+
       expect(page).to have_css(js_dropdown_hint, visible: false)
       expect(page).to have_css('#js-dropdown-assignee', visible: true)
       expect(filtered_search.value).to eq('assignee:')
@@ -74,6 +79,7 @@ describe 'Dropdown hint', js: true, feature: true do
 
     it 'opens the milestone dropdown when you click on milestone' do
       click_hint('milestone')
+
       expect(page).to have_css(js_dropdown_hint, visible: false)
       expect(page).to have_css('#js-dropdown-milestone', visible: true)
       expect(filtered_search.value).to eq('milestone:')
@@ -81,6 +87,7 @@ describe 'Dropdown hint', js: true, feature: true do
 
     it 'opens the label dropdown when you click on label' do
       click_hint('label')
+
       expect(page).to have_css(js_dropdown_hint, visible: false)
       expect(page).to have_css('#js-dropdown-label', visible: true)
       expect(filtered_search.value).to eq('label:')
@@ -91,6 +98,7 @@ describe 'Dropdown hint', js: true, feature: true do
     it 'opens the author dropdown when you click on author' do
       filtered_search.set('auth')
       click_hint('author')
+
       expect(page).to have_css(js_dropdown_hint, visible: false)
       expect(page).to have_css('#js-dropdown-author', visible: true)
       expect(filtered_search.value).to eq('author:')
@@ -99,6 +107,7 @@ describe 'Dropdown hint', js: true, feature: true do
     it 'opens the assignee dropdown when you click on assignee' do
       filtered_search.set('assign')
       click_hint('assignee')
+
       expect(page).to have_css(js_dropdown_hint, visible: false)
       expect(page).to have_css('#js-dropdown-assignee', visible: true)
       expect(filtered_search.value).to eq('assignee:')
@@ -107,6 +116,7 @@ describe 'Dropdown hint', js: true, feature: true do
     it 'opens the milestone dropdown when you click on milestone' do
       filtered_search.set('mile')
       click_hint('milestone')
+
       expect(page).to have_css(js_dropdown_hint, visible: false)
       expect(page).to have_css('#js-dropdown-milestone', visible: true)
       expect(filtered_search.value).to eq('milestone:')
@@ -115,6 +125,7 @@ describe 'Dropdown hint', js: true, feature: true do
     it 'opens the label dropdown when you click on label' do
       filtered_search.set('lab')
       click_hint('label')
+
       expect(page).to have_css(js_dropdown_hint, visible: false)
       expect(page).to have_css('#js-dropdown-label', visible: true)
       expect(filtered_search.value).to eq('label:')

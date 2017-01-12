@@ -39,26 +39,31 @@ describe 'Dropdown author', js: true, feature: true do
   describe 'behavior' do
     it 'opens when the search bar has author:' do
       filtered_search.set('author:')
+
       expect(page).to have_css(js_dropdown_author, visible: true)
     end
 
     it 'closes when the search bar is unfocused' do
       find('body').click()
+
       expect(page).to have_css(js_dropdown_author, visible: false)
     end
 
     it 'should show loading indicator when opened' do
       filtered_search.set('author:')
+
       expect(page).to have_css('#js-dropdown-author .filter-dropdown-loading', visible: true)
     end
 
     it 'should hide loading indicator when loaded' do
       send_keys_to_filtered_search('author:')
+
       expect(page).not_to have_css('#js-dropdown-author .filter-dropdown-loading')
     end
 
     it 'should load all the authors when opened' do
       send_keys_to_filtered_search('author:')
+
       expect(dropdown_author_size).to eq(3)
     end
   end
@@ -71,26 +76,31 @@ describe 'Dropdown author', js: true, feature: true do
 
     it 'filters by name' do
       send_keys_to_filtered_search('ja')
+
       expect(dropdown_author_size).to eq(1)
     end
 
     it 'filters by case insensitive name' do
       send_keys_to_filtered_search('Ja')
+
       expect(dropdown_author_size).to eq(1)
     end
 
     it 'filters by username with symbol' do
       send_keys_to_filtered_search('@ot')
+
       expect(dropdown_author_size).to eq(2)
     end
 
     it 'filters by username without symbol' do
       send_keys_to_filtered_search('ot')
+
       expect(dropdown_author_size).to eq(2)
     end
 
     it 'filters by case insensitive username without symbol' do
       send_keys_to_filtered_search('OT')
+
       expect(dropdown_author_size).to eq(2)
     end
   end
@@ -103,12 +113,14 @@ describe 'Dropdown author', js: true, feature: true do
 
     it 'fills in the author username when the author has not been filtered' do
       click_author(user_jacob.name)
+
       expect(page).to have_css(js_dropdown_author, visible: false)
       expect(filtered_search.value).to eq("author:@#{user_jacob.username}")
     end
 
     it 'fills in the author username when the author has been filtered' do
       click_author(user.name)
+
       expect(page).to have_css(js_dropdown_author, visible: false)
       expect(filtered_search.value).to eq("author:@#{user.username}")
     end
@@ -117,21 +129,25 @@ describe 'Dropdown author', js: true, feature: true do
   describe 'input has existing content' do
     it 'opens author dropdown with existing search term' do
       filtered_search.set('searchTerm author:')
+
       expect(page).to have_css(js_dropdown_author, visible: true)
     end
 
     it 'opens author dropdown with existing assignee' do
       filtered_search.set('assignee:@user author:')
+
       expect(page).to have_css(js_dropdown_author, visible: true)
     end
 
     it 'opens author dropdown with existing label' do
       filtered_search.set('label:~bug author:')
+
       expect(page).to have_css(js_dropdown_author, visible: true)
     end
 
     it 'opens author dropdown with existing milestone' do
       filtered_search.set('milestone:%v1.0 author:')
+
       expect(page).to have_css(js_dropdown_author, visible: true)
     end
   end

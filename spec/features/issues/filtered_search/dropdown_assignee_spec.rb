@@ -39,26 +39,31 @@ describe 'Dropdown assignee', js: true, feature: true do
   describe 'behavior' do
     it 'opens when the search bar has assignee:' do
       filtered_search.set('assignee:')
+
       expect(page).to have_css(js_dropdown_assignee, visible: true)
     end
 
     it 'closes when the search bar is unfocused' do
       find('body').click()
+
       expect(page).to have_css(js_dropdown_assignee, visible: false)
     end
 
     it 'should show loading indicator when opened' do
       filtered_search.set('assignee:')
+
       expect(page).to have_css('#js-dropdown-assignee .filter-dropdown-loading', visible: true)
     end
 
     it 'should hide loading indicator when loaded' do
       send_keys_to_filtered_search('assignee:')
+
       expect(page).not_to have_css('#js-dropdown-assignee .filter-dropdown-loading')
     end
 
     it 'should load all the assignees when opened' do
       send_keys_to_filtered_search('assignee:')
+
       expect(dropdown_assignee_size).to eq(3)
     end
   end
@@ -70,31 +75,37 @@ describe 'Dropdown assignee', js: true, feature: true do
 
     it 'filters by name' do
       send_keys_to_filtered_search('j')
+
       expect(dropdown_assignee_size).to eq(2)
     end
 
     it 'filters by case insensitive name' do
       send_keys_to_filtered_search('J')
+
       expect(dropdown_assignee_size).to eq(2)
     end
 
     it 'filters by username with symbol' do
       send_keys_to_filtered_search('@ot')
+
       expect(dropdown_assignee_size).to eq(2)
     end
 
     it 'filters by case insensitive username with symbol' do
       send_keys_to_filtered_search('@OT')
+
       expect(dropdown_assignee_size).to eq(2)
     end
 
     it 'filters by username without symbol' do
       send_keys_to_filtered_search('ot')
+
       expect(dropdown_assignee_size).to eq(2)
     end
 
     it 'filters by case insensitive username without symbol' do
       send_keys_to_filtered_search('OT')
+
       expect(dropdown_assignee_size).to eq(2)
     end
   end
@@ -106,6 +117,7 @@ describe 'Dropdown assignee', js: true, feature: true do
 
     it 'fills in the assignee username when the assignee has not been filtered' do
       click_assignee(user_jacob.name)
+
       expect(page).to have_css(js_dropdown_assignee, visible: false)
       expect(filtered_search.value).to eq("assignee:@#{user_jacob.username}")
     end
@@ -113,12 +125,14 @@ describe 'Dropdown assignee', js: true, feature: true do
     it 'fills in the assignee username when the assignee has been filtered' do
       send_keys_to_filtered_search('roo')
       click_assignee(user.name)
+
       expect(page).to have_css(js_dropdown_assignee, visible: false)
       expect(filtered_search.value).to eq("assignee:@#{user.username}")
     end
 
     it 'selects `no assignee`' do
       find('#js-dropdown-assignee .filter-dropdown-item', text: 'No Assignee').click
+
       expect(page).to have_css(js_dropdown_assignee, visible: false)
       expect(filtered_search.value).to eq("assignee:none")
     end
@@ -127,21 +141,25 @@ describe 'Dropdown assignee', js: true, feature: true do
   describe 'input has existing content' do
     it 'opens assignee dropdown with existing search term' do
       filtered_search.set('searchTerm assignee:')
+
       expect(page).to have_css(js_dropdown_assignee, visible: true)
     end
 
     it 'opens assignee dropdown with existing author' do
       filtered_search.set('author:@user assignee:')
+
       expect(page).to have_css(js_dropdown_assignee, visible: true)
     end
 
     it 'opens assignee dropdown with existing label' do
       filtered_search.set('label:~bug assignee:')
+
       expect(page).to have_css(js_dropdown_assignee, visible: true)
     end
 
     it 'opens assignee dropdown with existing milestone' do
       filtered_search.set('milestone:%v1.0 assignee:')
+
       expect(page).to have_css(js_dropdown_assignee, visible: true)
     end
   end

@@ -101,15 +101,18 @@ describe 'Filter issues', js: true, feature: true do
     context 'only author' do
       it 'filters issues by searched author' do
         input_filtered_search("author:@#{user.username}")
+
         expect_issues_list_count(5)
       end
 
       it 'filters issues by invalid author' do
-        # YOLO
+        pending('to be tested, issue #26546')
+        fail
       end
 
       it 'filters issues by multiple authors' do
-        # YOLO
+        pending('to be tested, issue #26546')
+        fail
       end
     end
 
@@ -117,6 +120,7 @@ describe 'Filter issues', js: true, feature: true do
       it 'filters issues by searched author and text' do
         search = "author:@#{user.username} issue"
         input_filtered_search(search)
+
         expect_issues_list_count(3)
         expect_filtered_search_input(search)
       end
@@ -124,6 +128,7 @@ describe 'Filter issues', js: true, feature: true do
       it 'filters issues by searched author, assignee and text' do
         search = "author:@#{user.username} assignee:@#{user.username} issue"
         input_filtered_search(search)
+
         expect_issues_list_count(3)
         expect_filtered_search_input(search)
       end
@@ -131,6 +136,7 @@ describe 'Filter issues', js: true, feature: true do
       it 'filters issues by searched author, assignee, label, and text' do
         search = "author:@#{user.username} assignee:@#{user.username} label:~#{caps_sensitive_label.title} issue"
         input_filtered_search(search)
+
         expect_issues_list_count(1)
         expect_filtered_search_input(search)
       end
@@ -138,13 +144,15 @@ describe 'Filter issues', js: true, feature: true do
       it 'filters issues by searched author, assignee, label, milestone and text' do
         search = "author:@#{user.username} assignee:@#{user.username} label:~#{caps_sensitive_label.title} milestone:%#{milestone.title} issue"
         input_filtered_search(search)
+
         expect_issues_list_count(1)
         expect_filtered_search_input(search)
       end
     end
 
-    context 'sorting' do
-      # TODO
+    it 'sorting' do
+      pending('to be tested, issue #26546')
+      fail
     end
   end
 
@@ -153,6 +161,7 @@ describe 'Filter issues', js: true, feature: true do
       it 'filters issues by searched assignee' do
         search = "assignee:@#{user.username}"
         input_filtered_search(search)
+
         expect_issues_list_count(5)
         expect_filtered_search_input(search)
       end
@@ -160,16 +169,19 @@ describe 'Filter issues', js: true, feature: true do
       it 'filters issues by no assignee' do
         search = "assignee:none"
         input_filtered_search(search)
+
         expect_issues_list_count(8, 1)
         expect_filtered_search_input(search)
       end
 
       it 'filters issues by invalid assignee' do
-        # YOLO
+        pending('to be tested, issue #26546')
+        fail
       end
 
       it 'filters issues by multiple assignees' do
-        # YOLO
+        pending('to be tested, issue #26546')
+        fail
       end
     end
 
@@ -177,6 +189,7 @@ describe 'Filter issues', js: true, feature: true do
       it 'filters issues by searched assignee and text' do
         search = "assignee:@#{user.username} searchTerm"
         input_filtered_search(search)
+
         expect_issues_list_count(2)
         expect_filtered_search_input(search)
       end
@@ -184,6 +197,7 @@ describe 'Filter issues', js: true, feature: true do
       it 'filters issues by searched assignee, author and text' do
         search = "assignee:@#{user.username} author:@#{user.username} searchTerm"
         input_filtered_search(search)
+
         expect_issues_list_count(2)
         expect_filtered_search_input(search)
       end
@@ -191,6 +205,7 @@ describe 'Filter issues', js: true, feature: true do
       it 'filters issues by searched assignee, author, label, text' do
         search = "assignee:@#{user.username} author:@#{user.username} label:~#{caps_sensitive_label.title} searchTerm"
         input_filtered_search(search)
+
         expect_issues_list_count(1)
         expect_filtered_search_input(search)
       end
@@ -198,13 +213,17 @@ describe 'Filter issues', js: true, feature: true do
       it 'filters issues by searched assignee, author, label, milestone and text' do
         search = "assignee:@#{user.username} author:@#{user.username} label:~#{caps_sensitive_label.title} milestone:%#{milestone.title} searchTerm"
         input_filtered_search(search)
+
         expect_issues_list_count(1)
         expect_filtered_search_input(search)
       end
     end
 
     context 'sorting' do
-      # TODO
+      it 'sorts' do
+        pending('to be tested, issue #26546')
+        fail
+      end
     end
   end
 
@@ -213,6 +232,7 @@ describe 'Filter issues', js: true, feature: true do
       it 'filters issues by searched label' do
         search = "label:~#{bug_label.title}"
         input_filtered_search(search)
+
         expect_issues_list_count(2)
         expect_filtered_search_input(search)
       end
@@ -220,17 +240,20 @@ describe 'Filter issues', js: true, feature: true do
       it 'filters issues by no label' do
         search = "label:none"
         input_filtered_search(search)
+
         expect_issues_list_count(9, 1)
         expect_filtered_search_input(search)
       end
 
       it 'filters issues by invalid label' do
-        # YOLO
+        pending('to be tested, issue #26546')
+        fail
       end
 
       it 'filters issues by multiple labels' do
         search = "label:~#{bug_label.title} label:~#{caps_sensitive_label.title}"
         input_filtered_search(search)
+
         expect_issues_list_count(1)
         expect_filtered_search_input(search)
       end
@@ -242,6 +265,7 @@ describe 'Filter issues', js: true, feature: true do
 
         search = "label:~#{special_label.title}"
         input_filtered_search(search)
+
         expect_issues_list_count(1)
         expect_filtered_search_input(search)
       end
@@ -251,6 +275,7 @@ describe 'Filter issues', js: true, feature: true do
 
         search = "label:~#{new_label.title}"
         input_filtered_search(search)
+
         expect_no_issues_list()
         expect_filtered_search_input(search)
       end
@@ -264,6 +289,7 @@ describe 'Filter issues', js: true, feature: true do
 
         search = "label:~'#{special_multiple_label.title}'"
         input_filtered_search(search)
+
         expect_issues_list_count(1)
 
         # filtered search defaults quotations to double quotes
@@ -273,14 +299,15 @@ describe 'Filter issues', js: true, feature: true do
       it 'single quotes' do
         search = "label:~'#{multiple_words_label.title}'"
         input_filtered_search(search)
-        expect_issues_list_count(1)
 
+        expect_issues_list_count(1)
         expect_filtered_search_input("label:~\"#{multiple_words_label.title}\"")
       end
 
       it 'double quotes' do
         search = "label:~\"#{multiple_words_label.title}\""
         input_filtered_search(search)
+
         expect_issues_list_count(1)
         expect_filtered_search_input(search)
       end
@@ -292,6 +319,7 @@ describe 'Filter issues', js: true, feature: true do
 
         search = "label:~'#{double_quotes_label.title}'"
         input_filtered_search(search)
+
         expect_issues_list_count(1)
         expect_filtered_search_input(search)
       end
@@ -303,6 +331,7 @@ describe 'Filter issues', js: true, feature: true do
 
         search = "label:~\"#{single_quotes_label.title}\""
         input_filtered_search(search)
+
         expect_issues_list_count(1)
         expect_filtered_search_input(search)
       end
@@ -312,6 +341,7 @@ describe 'Filter issues', js: true, feature: true do
       it 'filters issues by searched label and text' do
         search = "label:~#{caps_sensitive_label.title} bug"
         input_filtered_search(search)
+
         expect_issues_list_count(1)
         expect_filtered_search_input(search)
       end
@@ -319,6 +349,7 @@ describe 'Filter issues', js: true, feature: true do
       it 'filters issues by searched label, author and text' do
         search = "label:~#{caps_sensitive_label.title} author:@#{user.username} bug"
         input_filtered_search(search)
+
         expect_issues_list_count(1)
         expect_filtered_search_input(search)
       end
@@ -326,6 +357,7 @@ describe 'Filter issues', js: true, feature: true do
       it 'filters issues by searched label, author, assignee and text' do
         search = "label:~#{caps_sensitive_label.title} author:@#{user.username} assignee:@#{user.username} bug"
         input_filtered_search(search)
+
         expect_issues_list_count(1)
         expect_filtered_search_input(search)
       end
@@ -333,6 +365,7 @@ describe 'Filter issues', js: true, feature: true do
       it 'filters issues by searched label, author, assignee, milestone and text' do
         search = "label:~#{caps_sensitive_label.title} author:@#{user.username} assignee:@#{user.username} milestone:%#{milestone.title} bug"
         input_filtered_search(search)
+
         expect_issues_list_count(1)
         expect_filtered_search_input(search)
       end
@@ -342,6 +375,7 @@ describe 'Filter issues', js: true, feature: true do
       it 'filters issues by searched label, label2, and text' do
         search = "label:~#{bug_label.title} label:~#{caps_sensitive_label.title} bug"
         input_filtered_search(search)
+
         expect_issues_list_count(1)
         expect_filtered_search_input(search)
       end
@@ -349,6 +383,7 @@ describe 'Filter issues', js: true, feature: true do
       it 'filters issues by searched label, label2, author and text' do
         search = "label:~#{bug_label.title} label:~#{caps_sensitive_label.title} author:@#{user.username} bug"
         input_filtered_search(search)
+
         expect_issues_list_count(1)
         expect_filtered_search_input(search)
       end
@@ -356,6 +391,7 @@ describe 'Filter issues', js: true, feature: true do
       it 'filters issues by searched label, label2, author, assignee and text' do
         search = "label:~#{bug_label.title} label:~#{caps_sensitive_label.title} author:@#{user.username} assignee:@#{user.username} bug"
         input_filtered_search(search)
+
         expect_issues_list_count(1)
         expect_filtered_search_input(search)
       end
@@ -363,6 +399,7 @@ describe 'Filter issues', js: true, feature: true do
       it 'filters issues by searched label, label2, author, assignee, milestone and text' do
         search = "label:~#{bug_label.title} label:~#{caps_sensitive_label.title} author:@#{user.username} assignee:@#{user.username} milestone:%#{milestone.title} bug"
         input_filtered_search(search)
+
         expect_issues_list_count(1)
         expect_filtered_search_input(search)
       end
@@ -384,7 +421,10 @@ describe 'Filter issues', js: true, feature: true do
     end
 
     context 'sorting' do
-      # TODO
+      it 'sorts' do
+        pending('to be tested, issue #26546')
+        fail
+      end
     end
   end
 
@@ -392,25 +432,30 @@ describe 'Filter issues', js: true, feature: true do
     context 'only milestone' do
       it 'filters issues by searched milestone' do
         input_filtered_search("milestone:%#{milestone.title}")
+
         expect_issues_list_count(5)
       end
 
       it 'filters issues by no milestone' do
         input_filtered_search("milestone:none")
+
         expect_issues_list_count(7, 1)
       end
 
       it 'filters issues by upcoming milestones' do
         input_filtered_search("milestone:upcoming")
+
         expect_issues_list_count(1)
       end
 
       it 'filters issues by invalid milestones' do
-        # YOLO
+        pending('to be tested, issue #26546')
+        fail
       end
 
       it 'filters issues by multiple milestones' do
-        # YOLO
+        pending('to be tested, issue #26546')
+        fail
       end
 
       it 'filters issues by milestone containing special characters' do
@@ -419,6 +464,7 @@ describe 'Filter issues', js: true, feature: true do
 
         search = "milestone:%#{special_milestone.title}"
         input_filtered_search(search)
+
         expect_issues_list_count(1)
         expect_filtered_search_input(search)
       end
@@ -428,6 +474,7 @@ describe 'Filter issues', js: true, feature: true do
 
         search = "milestone:%#{new_milestone.title}"
         input_filtered_search(search)
+
         expect_no_issues_list()
         expect_filtered_search_input(search)
       end
@@ -437,6 +484,7 @@ describe 'Filter issues', js: true, feature: true do
       it 'filters issues by searched milestone and text' do
         search = "milestone:%#{milestone.title} bug"
         input_filtered_search(search)
+
         expect_issues_list_count(2)
         expect_filtered_search_input(search)
       end
@@ -444,6 +492,7 @@ describe 'Filter issues', js: true, feature: true do
       it 'filters issues by searched milestone, author and text' do
         search = "milestone:%#{milestone.title} author:@#{user.username} bug"
         input_filtered_search(search)
+
         expect_issues_list_count(2)
         expect_filtered_search_input(search)
       end
@@ -451,6 +500,7 @@ describe 'Filter issues', js: true, feature: true do
       it 'filters issues by searched milestone, author, assignee and text' do
         search = "milestone:%#{milestone.title} author:@#{user.username} assignee:@#{user.username} bug"
         input_filtered_search(search)
+
         expect_issues_list_count(2)
         expect_filtered_search_input(search)
       end
@@ -458,13 +508,17 @@ describe 'Filter issues', js: true, feature: true do
       it 'filters issues by searched milestone, author, assignee, label and text' do
         search = "milestone:%#{milestone.title} author:@#{user.username} assignee:@#{user.username} label:~#{bug_label.title} bug"
         input_filtered_search(search)
+
         expect_issues_list_count(2)
         expect_filtered_search_input(search)
       end
     end
 
     context 'sorting' do
-      # TODO
+      it 'sorts' do
+        pending('to be tested, issue #26546')
+        fail
+      end
     end
   end
 
@@ -473,6 +527,7 @@ describe 'Filter issues', js: true, feature: true do
       it 'filters issues by searched text' do
         search = 'Bug'
         input_filtered_search(search)
+
         expect_issues_list_count(4, 1)
         expect_filtered_search_input(search)
       end
@@ -480,6 +535,7 @@ describe 'Filter issues', js: true, feature: true do
       it 'filters issues by multiple searched text' do
         search = 'Bug report'
         input_filtered_search(search)
+
         expect_issues_list_count(3)
         expect_filtered_search_input(search)
       end
@@ -487,6 +543,7 @@ describe 'Filter issues', js: true, feature: true do
       it 'filters issues by case insensitive searched text' do
         search = 'bug report'
         input_filtered_search(search)
+
         expect_issues_list_count(3)
         expect_filtered_search_input(search)
       end
@@ -494,6 +551,7 @@ describe 'Filter issues', js: true, feature: true do
       it 'filters issues by searched text containing single quotes' do
         search = '\'single quotes\''
         input_filtered_search(search)
+
         expect_issues_list_count(1)
         expect_filtered_search_input(search)
       end
@@ -501,6 +559,7 @@ describe 'Filter issues', js: true, feature: true do
       it 'filters issues by searched text containing double quotes' do
         search = '"double quotes"'
         input_filtered_search(search)
+
         expect_issues_list_count(1)
         expect_filtered_search_input(search)
       end
@@ -508,6 +567,7 @@ describe 'Filter issues', js: true, feature: true do
       it 'filters issues by searched text containing special characters' do
         search = '!@#{$%^&*()-+'
         input_filtered_search(search)
+
         expect_issues_list_count(1)
         expect_filtered_search_input(search)
       end
@@ -515,6 +575,7 @@ describe 'Filter issues', js: true, feature: true do
       it 'does not show any issues' do
         search = 'testing'
         input_filtered_search(search)
+
         expect_no_issues_list()
         expect_filtered_search_input(search)
       end
@@ -523,66 +584,77 @@ describe 'Filter issues', js: true, feature: true do
     context 'searched text with other filters' do
       it 'filters issues by searched text and author' do
         input_filtered_search("bug author:@#{user.username}")
+
         expect_issues_list_count(2)
         expect_filtered_search_input("author:@#{user.username} bug")
       end
 
       it 'filters issues by searched text, author and more text' do
         input_filtered_search("bug author:@#{user.username} report")
+
         expect_issues_list_count(1)
         expect_filtered_search_input("author:@#{user.username} bug report")
       end
 
       it 'filters issues by searched text, author and assignee' do
         input_filtered_search("bug author:@#{user.username} assignee:@#{user.username}")
+
         expect_issues_list_count(2)
         expect_filtered_search_input("author:@#{user.username} assignee:@#{user.username} bug")
       end
 
       it 'filters issues by searched text, author, more text and assignee' do
         input_filtered_search("bug author:@#{user.username} report assignee:@#{user.username}")
+
         expect_issues_list_count(1)
         expect_filtered_search_input("author:@#{user.username} assignee:@#{user.username} bug report")
       end
 
       it 'filters issues by searched text, author, more text, assignee and even more text' do
         input_filtered_search("bug author:@#{user.username} report assignee:@#{user.username} with")
+
         expect_issues_list_count(1)
         expect_filtered_search_input("author:@#{user.username} assignee:@#{user.username} bug report with")
       end
 
       it 'filters issues by searched text, author, assignee and label' do
         input_filtered_search("bug author:@#{user.username} assignee:@#{user.username} label:~#{bug_label.title}")
+
         expect_issues_list_count(2)
         expect_filtered_search_input("author:@#{user.username} assignee:@#{user.username} label:~#{bug_label.title} bug")
       end
 
       it 'filters issues by searched text, author, text, assignee, text, label and text' do
         input_filtered_search("bug author:@#{user.username} report assignee:@#{user.username} with label:~#{bug_label.title} everything")
+
         expect_issues_list_count(1)
         expect_filtered_search_input("author:@#{user.username} assignee:@#{user.username} label:~#{bug_label.title} bug report with everything")
       end
 
       it 'filters issues by searched text, author, assignee, label and milestone' do
         input_filtered_search("bug author:@#{user.username} assignee:@#{user.username} label:~#{bug_label.title} milestone:%#{milestone.title}")
+
         expect_issues_list_count(2)
         expect_filtered_search_input("author:@#{user.username} assignee:@#{user.username} label:~#{bug_label.title} milestone:%#{milestone.title} bug")
       end
 
       it 'filters issues by searched text, author, text, assignee, text, label, text, milestone and text' do
         input_filtered_search("bug author:@#{user.username} report assignee:@#{user.username} with label:~#{bug_label.title} everything milestone:%#{milestone.title} you")
+
         expect_issues_list_count(1)
         expect_filtered_search_input("author:@#{user.username} assignee:@#{user.username} label:~#{bug_label.title} milestone:%#{milestone.title} bug report with everything you")
       end
 
       it 'filters issues by searched text, author, assignee, multiple labels and milestone' do
         input_filtered_search("bug author:@#{user.username} assignee:@#{user.username} label:~#{bug_label.title} label:~#{caps_sensitive_label.title} milestone:%#{milestone.title}")
+
         expect_issues_list_count(1)
         expect_filtered_search_input("author:@#{user.username} assignee:@#{user.username} label:~#{bug_label.title} label:~#{caps_sensitive_label.title} milestone:%#{milestone.title} bug")
       end
 
       it 'filters issues by searched text, author, text, assignee, text, label1, text, label2, text, milestone and text' do
         input_filtered_search("bug author:@#{user.username} report assignee:@#{user.username} with label:~#{bug_label.title} everything label:~#{caps_sensitive_label.title} you milestone:%#{milestone.title} thought")
+
         expect_issues_list_count(1)
         expect_filtered_search_input("author:@#{user.username} assignee:@#{user.username} label:~#{bug_label.title} label:~#{caps_sensitive_label.title} milestone:%#{milestone.title} bug report with everything you thought")
       end
@@ -605,6 +677,7 @@ describe 'Filter issues', js: true, feature: true do
           updated_at: 5.days.ago)
 
         input_filtered_search('days ago')
+
         expect_issues_list_count(2)
 
         sort_toggle = find('.filtered-search-container .dropdown-toggle')
@@ -639,6 +712,7 @@ describe 'Filter issues', js: true, feature: true do
     it 'closed state' do
       find('.issues-state-filters a', text: 'Closed').click
       wait_for_ajax
+
       expect(page).to have_selector('.issues-list .issue', count: 1)
       expect(find('.issues-list .issue:first-of-type .issue-title-text a')).to have_content(closed_issue.title)
     end
@@ -646,6 +720,7 @@ describe 'Filter issues', js: true, feature: true do
     it 'all state' do
       find('.issues-state-filters a', text: 'All').click
       wait_for_ajax
+
       expect(page).to have_selector('.issues-list .issue', count: 5)
     end
   end
@@ -657,6 +732,7 @@ describe 'Filter issues', js: true, feature: true do
       params = CGI.parse(URI.parse(link[:href]).query)
       auto_discovery_link = find('link[type="application/atom+xml"]', visible: false)
       auto_discovery_params = CGI.parse(URI.parse(auto_discovery_link[:href]).query)
+
       expect(params).to include('private_token' => [user.private_token])
       expect(params).to include('milestone_title' => [milestone.title])
       expect(params).to include('assignee_id' => [user.id.to_s])
@@ -671,6 +747,7 @@ describe 'Filter issues', js: true, feature: true do
       params = CGI.parse(URI.parse(link[:href]).query)
       auto_discovery_link = find('link[type="application/atom+xml"]', visible: false)
       auto_discovery_params = CGI.parse(URI.parse(auto_discovery_link[:href]).query)
+
       expect(params).to include('private_token' => [user.private_token])
       expect(params).to include('milestone_title' => [milestone.title])
       expect(params).to include('assignee_id' => [user.id.to_s])
