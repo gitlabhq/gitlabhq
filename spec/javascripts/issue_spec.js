@@ -1,4 +1,4 @@
-/* eslint-disable space-before-function-paren, no-var, one-var, one-var-declaration-per-line, no-use-before-define, indent, no-trailing-spaces, comma-dangle, max-len */
+/* eslint-disable space-before-function-paren, no-var, one-var, one-var-declaration-per-line, no-use-before-define, indent, comma-dangle, max-len */
 /* global Issue */
 
 /*= require lib/utils/text_utility */

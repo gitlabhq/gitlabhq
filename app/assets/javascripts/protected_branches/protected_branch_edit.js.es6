@@ -1,4 +1,4 @@
-/* eslint-disable no-new, arrow-parens, no-param-reassign, comma-dangle, no-trailing-spaces, max-len */
+/* eslint-disable no-new, arrow-parens, no-param-reassign, comma-dangle, max-len */
 /* global Flash */
 
 (global => {
