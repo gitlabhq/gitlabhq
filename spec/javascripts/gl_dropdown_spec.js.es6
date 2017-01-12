@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, prefer-const, no-param-reassign, no-unused-expressions, arrow-spacing, max-len */
+/* eslint-disable comma-dangle, prefer-const, no-param-reassign, no-unused-expressions, max-len */
 /* global Turbolinks */
 
 /*= require jquery */
@@ -140,18 +140,18 @@
         this.dropdownButtonElement.click();
       });
 
-      it('should not focus search input while remote task is not complete', ()=> {
+      it('should not focus search input while remote task is not complete', () => {
         expect($(document.activeElement)).not.toEqual($(SEARCH_INPUT_SELECTOR));
         remoteCallback();
         expect($(document.activeElement)).toEqual($(SEARCH_INPUT_SELECTOR));
       });
 
-      it('should focus search input after remote task is complete', ()=> {
+      it('should focus search input after remote task is complete', () => {
         remoteCallback();
         expect($(document.activeElement)).toEqual($(SEARCH_INPUT_SELECTOR));
       });
 
-      it('should focus on input when opening for the second time', ()=> {
+      it('should focus on input when opening for the second time', () => {
         remoteCallback();
         this.dropdownContainerElement.trigger({
           type: 'keyup',
@@ -164,7 +164,7 @@
     });
 
     describe('input focus with array data', () => {
-      it('should focus input when passing array data to drop down', ()=> {
+      it('should focus input when passing array data to drop down', () => {
         initDropDown.call(this, false, true);
         this.dropdownButtonElement.click();
         expect($(document.activeElement)).toEqual($(SEARCH_INPUT_SELECTOR));

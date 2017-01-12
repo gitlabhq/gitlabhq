@@ -1,8 +1,8 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, quotes, comma-dangle, one-var, one-var-declaration-per-line, no-mixed-operators, new-cap, no-loop-func, no-floating-decimal, consistent-return, no-unused-vars, prefer-template, prefer-arrow-callback, camelcase, max-len */
+/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, quotes, comma-dangle, one-var, one-var-declaration-per-line, no-mixed-operators, new-cap, no-loop-func, no-floating-decimal, consistent-return, no-unused-vars, prefer-template, prefer-arrow-callback, camelcase, max-len */
 /* global Raphael */
 
 (function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
 
   this.BranchGraph = (function() {
     function BranchGraph(element1, options1) {

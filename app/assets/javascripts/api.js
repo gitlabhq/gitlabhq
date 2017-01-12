@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, quotes, object-shorthand, camelcase, no-var, comma-dangle, prefer-arrow-callback, object-curly-spacing, quote-props, no-param-reassign, max-len */
+/* eslint-disable func-names, space-before-function-paren, quotes, object-shorthand, camelcase, no-var, comma-dangle, prefer-arrow-callback, quote-props, no-param-reassign, max-len */
 
 (function() {
   var Api = {
@@ -73,7 +73,7 @@
       return $.ajax({
         url: url,
         type: "POST",
-        data: {'label': data},
+        data: { 'label': data },
         dataType: "json"
       }).done(function(label) {
         return callback(label);

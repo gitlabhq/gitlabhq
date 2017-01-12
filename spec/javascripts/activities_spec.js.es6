@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-expressions, comma-spacing, prefer-const, no-prototype-builtins, no-new, keyword-spacing, no-shadow, max-len */
+/* eslint-disable no-unused-expressions, prefer-const, no-prototype-builtins, no-new, no-shadow, max-len */
 
 /*= require js.cookie.js */
 /*= require jquery.endless-scroll.js */
@@ -19,7 +19,7 @@
       name: 'merge events',
     }, {
       id: 'comments',
-    },{
+    }, {
       id: 'team',
     }];
 
@@ -39,14 +39,14 @@
       new gl.Activities();
     });
 
-    for(let i = 0; i < filters.length; i += 1) {
+    for (let i = 0; i < filters.length; i += 1) {
       ((i) => {
         describe(`when selecting ${getEventName(i)}`, () => {
           beforeEach(() => {
             $(getSelector(i)).click();
           });
 
-          for(let x = 0; x < filters.length; x += 1) {
+          for (let x = 0; x < filters.length; x += 1) {
             ((x) => {
               let shouldHighlight = i === x;
               let testName = shouldHighlight ? 'should highlight' : 'should not highlight';

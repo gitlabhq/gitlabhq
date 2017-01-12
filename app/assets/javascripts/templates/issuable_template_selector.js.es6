@@ -1,4 +1,4 @@
-/* eslint-disable prefer-const, comma-dangle, max-len, no-useless-return, object-curly-spacing, no-param-reassign, max-len */
+/* eslint-disable prefer-const, comma-dangle, max-len, no-useless-return, no-param-reassign, max-len */
 /* global Api */
 
 /*= require ../blob/template_selector */
@@ -47,10 +47,10 @@
         // If the title has not yet been set, focus the title input and
         // skip focusing the description input by setting `true` as the
         // `skipFocus` option to `requestFileSuccess`.
-        this.requestFileSuccess(this.currentTemplate, {skipFocus: true});
+        this.requestFileSuccess(this.currentTemplate, { skipFocus: true });
         this.titleInput.focus();
       } else {
-        this.requestFileSuccess(this.currentTemplate, {skipFocus: false});
+        this.requestFileSuccess(this.currentTemplate, { skipFocus: false });
       }
       return;
     }

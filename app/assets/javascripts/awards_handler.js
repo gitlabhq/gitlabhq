@@ -1,9 +1,9 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, max-len, no-var, spaced-comment, prefer-arrow-callback, consistent-return, one-var, one-var-declaration-per-line, no-unused-vars, no-else-return, prefer-template, quotes, comma-dangle, no-param-reassign, no-void, radix, keyword-spacing, space-before-blocks, brace-style, no-underscore-dangle, no-return-assign, camelcase */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, max-len, no-var, prefer-arrow-callback, consistent-return, one-var, one-var-declaration-per-line, no-unused-vars, no-else-return, prefer-template, quotes, comma-dangle, no-param-reassign, no-void, radix, brace-style, no-underscore-dangle, no-return-assign, camelcase */
 /* global Cookies */
 
 (function() {
   this.AwardsHandler = (function() {
-    var FROM_SENTENCE_REGEX = /(?:, and | and |, )/; //For separating lists produced by ruby's Array#toSentence
+    var FROM_SENTENCE_REGEX = /(?:, and | and |, )/; // For separating lists produced by ruby's Array#toSentence
     function AwardsHandler() {
       this.aliases = gl.emojiAliases();
       $(document).off('click', '.js-add-award').on('click', '.js-add-award', (function(_this) {
@@ -211,10 +211,10 @@
     };
 
     AwardsHandler.prototype.toSentence = function(list) {
-      if(list.length <= 2){
+      if (list.length <= 2) {
         return list.join(' and ');
       }
-      else{
+      else {
         return list.slice(0, -1).join(', ') + ', and ' + list[list.length - 1];
       }
     };

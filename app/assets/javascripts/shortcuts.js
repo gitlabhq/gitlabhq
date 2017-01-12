@@ -1,10 +1,10 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, quotes, prefer-arrow-callback, consistent-return, object-shorthand, no-unused-vars, one-var, one-var-declaration-per-line, no-else-return, comma-dangle, max-len */
+/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, quotes, prefer-arrow-callback, consistent-return, object-shorthand, no-unused-vars, one-var, one-var-declaration-per-line, no-else-return, comma-dangle, max-len */
 /* global Mousetrap */
 /* global Turbolinks */
 /* global findFileURL */
 
 (function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
 
   this.Shortcuts = (function() {
     function Shortcuts(skipResetBindings) {

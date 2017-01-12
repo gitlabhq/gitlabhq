@@ -1,4 +1,4 @@
-/* eslint-disable wrap-iife, func-names, strict, no-var, vars-on-top, no-param-reassign, object-shorthand, no-shadow, comma-dangle, prefer-template, consistent-return, no-mixed-operators, no-unused-vars, object-curly-spacing, no-unused-expressions, prefer-arrow-callback, max-len */
+/* eslint-disable wrap-iife, func-names, strict, no-var, vars-on-top, no-param-reassign, object-shorthand, no-shadow, comma-dangle, prefer-template, consistent-return, no-mixed-operators, no-unused-vars, no-unused-expressions, prefer-arrow-callback, max-len */
 (function () {
   'use strict';
 
@@ -83,7 +83,7 @@
 
     var startTime = new Date().getTime();
     var duration = options.duration || 1000;
-    simulateEvent(fromEl, 'mousedown', {button: 0});
+    simulateEvent(fromEl, 'mousedown', { button: 0 });
     options.ontap && options.ontap();
     window.SIMULATE_DRAG_ACTIVE = 1;
 

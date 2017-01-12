@@ -1,4 +1,4 @@
-/* eslint-disable quotes, object-curly-spacing, jasmine/no-suite-dupes, vars-on-top, no-var, spaced-comment, max-len */
+/* eslint-disable quotes, jasmine/no-suite-dupes, vars-on-top, no-var, max-len */
 /* global d3 */
 /* global ContributorsGraph */
 /* global ContributorsMasterGraph */
@@ -15,21 +15,21 @@ describe("ContributorsGraph", function () {
 
   describe("#set_y_domain", function () {
     it("sets the y_domain", function () {
-      ContributorsGraph.set_y_domain([{commits: 30}]);
+      ContributorsGraph.set_y_domain([{ commits: 30 }]);
       expect(ContributorsGraph.prototype.y_domain).toEqual([0, 30]);
     });
   });
 
   describe("#init_x_domain", function () {
     it("sets the initial x_domain", function () {
-      ContributorsGraph.init_x_domain([{date: "2013-01-31"}, {date: "2012-01-31"}]);
+      ContributorsGraph.init_x_domain([{ date: "2013-01-31" }, { date: "2012-01-31" }]);
       expect(ContributorsGraph.prototype.x_domain).toEqual(["2012-01-31", "2013-01-31"]);
     });
   });
 
   describe("#init_y_domain", function () {
     it("sets the initial y_domain", function () {
-      ContributorsGraph.init_y_domain([{commits: 30}]);
+      ContributorsGraph.init_y_domain([{ commits: 30 }]);
       expect(ContributorsGraph.prototype.y_domain).toEqual([0, 30]);
     });
   });
@@ -95,24 +95,24 @@ describe("ContributorsGraph", function () {
 
 describe("ContributorsMasterGraph", function () {
   // TODO: fix or remove
-  //describe("#process_dates", function () {
-    //it("gets and parses dates", function () {
-      //var graph = new ContributorsMasterGraph();
-      //var data = 'random data here';
-      //spyOn(graph, 'parse_dates');
-      //spyOn(graph, 'get_dates').andReturn("get");
-      //spyOn(ContributorsGraph,'set_dates').andCallThrough();
-      //graph.process_dates(data);
-      //expect(graph.parse_dates).toHaveBeenCalledWith(data);
-      //expect(graph.get_dates).toHaveBeenCalledWith(data);
-      //expect(ContributorsGraph.set_dates).toHaveBeenCalledWith("get");
-    //});
-  //});
+  // describe("#process_dates", function () {
+  //   it("gets and parses dates", function () {
+  //     var graph = new ContributorsMasterGraph();
+  //     var data = 'random data here';
+  //     spyOn(graph, 'parse_dates');
+  //     spyOn(graph, 'get_dates').andReturn("get");
+  //     spyOn(ContributorsGraph,'set_dates').andCallThrough();
+  //     graph.process_dates(data);
+  //     expect(graph.parse_dates).toHaveBeenCalledWith(data);
+  //     expect(graph.get_dates).toHaveBeenCalledWith(data);
+  //     expect(ContributorsGraph.set_dates).toHaveBeenCalledWith("get");
+  //   });
+  // });
 
   describe("#get_dates", function () {
     it("plucks the date field from data collection", function () {
       var graph = new ContributorsMasterGraph();
-      var data = [{date: "2013-01-01"}, {date: "2012-12-15"}];
+      var data = [{ date: "2013-01-01" }, { date: "2012-12-15" }];
       expect(graph.get_dates(data)).toEqual(["2013-01-01", "2012-12-15"]);
     });
   });
@@ -121,8 +121,8 @@ describe("ContributorsMasterGraph", function () {
     it("parses the dates", function () {
       var graph = new ContributorsMasterGraph();
       var parseDate = d3.time.format("%Y-%m-%d").parse;
-      var data = [{date: "2013-01-01"}, {date: "2012-12-15"}];
-      var correct = [{date: parseDate(data[0].date)}, {date: parseDate(data[1].date)}];
+      var data = [{ date: "2013-01-01" }, { date: "2012-12-15" }];
+      var correct = [{ date: parseDate(data[0].date) }, { date: parseDate(data[1].date) }];
       graph.parse_dates(data);
       expect(data).toEqual(correct);
     });

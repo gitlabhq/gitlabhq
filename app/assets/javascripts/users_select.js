@@ -1,10 +1,10 @@
-/* eslint-disable func-names, space-before-function-paren, one-var, no-var, space-before-blocks, prefer-rest-params, wrap-iife, quotes, max-len, one-var-declaration-per-line, vars-on-top, prefer-arrow-callback, consistent-return, comma-dangle, object-shorthand, no-shadow, no-unused-vars, no-else-return, no-self-compare, prefer-template, no-unused-expressions, no-lonely-if, yoda, prefer-spread, no-void, camelcase, keyword-spacing, no-param-reassign */
+/* eslint-disable func-names, space-before-function-paren, one-var, no-var, prefer-rest-params, wrap-iife, quotes, max-len, one-var-declaration-per-line, vars-on-top, prefer-arrow-callback, consistent-return, comma-dangle, object-shorthand, no-shadow, no-unused-vars, no-else-return, no-self-compare, prefer-template, no-unused-expressions, no-lonely-if, yoda, prefer-spread, no-void, camelcase, no-param-reassign */
 /* global Vue */
 /* global Issuable */
 /* global ListUser */
 
 (function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; },
     slice = [].slice;
 
   this.UsersSelect = (function() {
@@ -371,7 +371,7 @@
     };
 
     UsersSelect.prototype.user = function(user_id, callback) {
-      if(!/^\d+$/.test(user_id)) {
+      if (!/^\d+$/.test(user_id)) {
         return false;
       }
 

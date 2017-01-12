@@ -1,4 +1,4 @@
-/* eslint-disable no-restricted-properties, func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, no-use-before-define, camelcase, no-unused-expressions, quotes, max-len, one-var, one-var-declaration-per-line, default-case, prefer-template, consistent-return, no-alert, no-return-assign, no-param-reassign, prefer-arrow-callback, no-else-return, comma-dangle, no-new, brace-style, no-lonely-if, vars-on-top, no-unused-vars, no-sequences, no-shadow, newline-per-chained-call, no-useless-escape, radix */
+/* eslint-disable no-restricted-properties, func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, no-use-before-define, camelcase, no-unused-expressions, quotes, max-len, one-var, one-var-declaration-per-line, default-case, prefer-template, consistent-return, no-alert, no-return-assign, no-param-reassign, prefer-arrow-callback, no-else-return, comma-dangle, no-new, brace-style, no-lonely-if, vars-on-top, no-unused-vars, no-sequences, no-shadow, newline-per-chained-call, no-useless-escape, radix */
 /* global Flash */
 /* global GLForm */
 /* global Autosave */
@@ -13,7 +13,7 @@
 /*= require task_list */
 
 (function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
 
   this.Notes = (function() {
     const MAX_VISIBLE_COMMIT_LIST_COUNT = 3;

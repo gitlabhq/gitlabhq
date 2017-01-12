@@ -1,4 +1,4 @@
-/* eslint-disable max-len, no-var, func-names, space-before-function-paren, vars-on-top, comma-dangle, no-return-assign, consistent-return, no-param-reassign, one-var, one-var-declaration-per-line, quotes, prefer-template, no-else-return, prefer-arrow-callback, no-unused-vars, no-underscore-dangle, no-shadow, no-mixed-operators, template-curly-spacing, camelcase, default-case, wrap-iife */
+/* eslint-disable max-len, no-var, func-names, space-before-function-paren, vars-on-top, comma-dangle, no-return-assign, consistent-return, no-param-reassign, one-var, one-var-declaration-per-line, quotes, prefer-template, no-else-return, prefer-arrow-callback, no-unused-vars, no-underscore-dangle, no-shadow, no-mixed-operators, camelcase, default-case, wrap-iife */
 /* global notify */
 /* global notifyPermissions */
 /* global merge_request_widget */
@@ -189,7 +189,7 @@
     MergeRequestWidget.prototype.renderEnvironments = function(environments) {
       for (let i = 0; i < environments.length; i += 1) {
         const environment = environments[i];
-        if ($(`.mr-state-widget #${ environment.id }`).length) return;
+        if ($(`.mr-state-widget #${environment.id}`).length) return;
         const $template = $(DEPLOYMENT_TEMPLATE);
         if (!environment.external_url || !environment.external_url_formatted) $('.js-environment-link', $template).remove();
 

@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, no-use-before-define, no-underscore-dangle, no-param-reassign, prefer-template, quotes, comma-dangle, prefer-arrow-callback, consistent-return, one-var, one-var-declaration-per-line, spaced-comment, radix, no-else-return, max-len */
+/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, no-use-before-define, no-underscore-dangle, no-param-reassign, prefer-template, quotes, comma-dangle, prefer-arrow-callback, consistent-return, one-var, one-var-declaration-per-line, radix, no-else-return, max-len */
 
 // LineHighlighter
 //
@@ -31,7 +31,7 @@
 //   </div>
 //
 (function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
 
   this.LineHighlighter = (function() {
     // CSS class applied to highlighted lines
@@ -119,7 +119,7 @@
     // Returns an Array
     LineHighlighter.prototype.hashToRange = function(hash) {
       var first, last, matches;
-      //?L(\d+)(?:-(\d+))?$/)
+      // ?L(\d+)(?:-(\d+))?$/)
       matches = hash.match(/^#?L(\d+)(?:-(\d+))?$/);
       if (matches && matches.length) {
         first = parseInt(matches[1]);

@@ -1,9 +1,9 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, camelcase, vars-on-top, keyword-spacing, object-shorthand, comma-dangle, eqeqeq, no-mixed-operators, no-return-assign, newline-per-chained-call, prefer-arrow-callback, consistent-return, one-var, one-var-declaration-per-line, prefer-template, quotes, no-unused-vars, no-else-return, max-len */
+/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, camelcase, vars-on-top, object-shorthand, comma-dangle, eqeqeq, no-mixed-operators, no-return-assign, newline-per-chained-call, prefer-arrow-callback, consistent-return, one-var, one-var-declaration-per-line, prefer-template, quotes, no-unused-vars, no-else-return, max-len */
 /* global d3 */
 /* global dateFormat */
 
 (function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
 
   this.Calendar = (function() {
     function Calendar(timestamps, calendar_activities_path) {
@@ -28,7 +28,7 @@
 
       var days = gl.utils.getDayDifference(oneYearAgo, today);
 
-      for(var i = 0; i <= days; i += 1) {
+      for (var i = 0; i <= days; i += 1) {
         var date = new Date(oneYearAgo);
         date.setDate(date.getDate() + i);
 

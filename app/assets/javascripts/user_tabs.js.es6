@@ -1,4 +1,4 @@
-/* eslint-disable max-len, space-before-function-paren, no-underscore-dangle, array-bracket-spacing, consistent-return, comma-dangle, no-unused-vars, dot-notation, no-new, no-return-assign, camelcase, no-param-reassign */
+/* eslint-disable max-len, space-before-function-paren, no-underscore-dangle, consistent-return, comma-dangle, no-unused-vars, dot-notation, no-new, no-return-assign, camelcase, no-param-reassign */
 
 /*
 UserTabs
@@ -107,7 +107,7 @@ content on the Users#show page.
         this.loadActivities(source);
       }
 
-      const loadableActions = [ 'groups', 'contributed', 'projects', 'snippets' ];
+      const loadableActions = ['groups', 'contributed', 'projects', 'snippets'];
       if (loadableActions.indexOf(action) > -1) {
         return this.loadTab(source, action);
       }

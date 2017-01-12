@@ -1,4 +1,4 @@
-/* eslint-disable no-new, object-curly-spacing, prefer-const */
+/* eslint-disable no-new, prefer-const */
 /* global IssuableContext */
 /* global LabelsSelect */
 
@@ -30,14 +30,14 @@
 
         if (req.url === '/root/test/labels.json') {
           for (let i = 0; i < 10; i += 1) {
-            LABELS_DATA.push({id: i, title: `test ${i}`, color: '#5CB85C'});
+            LABELS_DATA.push({ id: i, title: `test ${i}`, color: '#5CB85C' });
           }
         } else if (req.url === '/root/test/issues/2.json') {
           let tmp = [];
           for (let i = 0; i < saveLabelCount; i += 1) {
-            tmp.push({id: i, title: `test ${i}`, color: '#5CB85C'});
+            tmp.push({ id: i, title: `test ${i}`, color: '#5CB85C' });
           }
-          LABELS_DATA = {labels: tmp};
+          LABELS_DATA = { labels: tmp };
         }
 
         d.resolve(LABELS_DATA);

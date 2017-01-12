@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, object-shorthand, no-dupe-keys, no-param-reassign, camelcase, prefer-const, no-nested-ternary, no-continue, func-call-spacing, no-spaced-func, max-len */
+/* eslint-disable comma-dangle, object-shorthand, no-dupe-keys, no-param-reassign, camelcase, prefer-const, no-nested-ternary, no-continue, max-len */
 /* global Cookies */
 /* global Vue */
 
@@ -121,7 +121,7 @@
           } else {
             const lineType = type || 'context';
 
-            linesObj.left.push (this.getLineForParallelView(line, id, lineType));
+            linesObj.left.push(this.getLineForParallelView(line, id, lineType));
             linesObj.right.push(this.getLineForParallelView(line, id, lineType, true));
           }
         });
