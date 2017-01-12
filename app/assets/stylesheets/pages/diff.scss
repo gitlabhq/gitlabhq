@@ -37,6 +37,10 @@
   .file-title {
     cursor: pointer;
 
+    a:hover {
+      text-decoration: none;
+    }
+
     &:hover {
       background-color: $gray-normal;
     }
