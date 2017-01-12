@@ -120,8 +120,6 @@ class Project < ActiveRecord::Base
 
   # Merge Requests for target project should be removed with it
   has_many :merge_requests,     dependent: :destroy, foreign_key: 'target_project_id'
-  # Merge requests from source project should be kept when source project was removed
-  has_many :fork_merge_requests, foreign_key: 'source_project_id', class_name: 'MergeRequest'
   has_many :issues,             dependent: :destroy
   has_many :labels,             dependent: :destroy, class_name: 'ProjectLabel'
   has_many :services,           dependent: :destroy

@@ -118,25 +118,50 @@ describe MergeRequests::RefreshService, services: true do
 
     context 'push to fork repo source branch' do
       let(:refresh_service) { service.new(@fork_project, @user) }
-      before do
-        allow(refresh_service).to receive(:execute_hooks)
-        refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
-        reload_mrs
+
+      context 'open fork merge request' do
+        before do
+          allow(refresh_service).to receive(:execute_hooks)
+          refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
+          reload_mrs
+        end
+
+        it 'executes hooks with update action' do
+          expect(refresh_service).to have_received(:execute_hooks).
+            with(@fork_merge_request, 'update', @oldrev)
+        end
+
+        it { expect(@merge_request.notes).to be_empty }
+        it { expect(@merge_request).to be_open }
+        it { expect(@merge_request.approvals).not_to be_empty }
+        it { expect(@fork_merge_request.notes.last.note).to include('added 28 commits') }
+        it { expect(@fork_merge_request).to be_open }
+        it { expect(@build_failed_todo).to be_pending }
+        it { expect(@fork_build_failed_todo).to be_pending }
+        it { expect(@fork_merge_request.approvals).to be_empty }
       end
 
-      it 'executes hooks with update action' do
-        expect(refresh_service).to have_received(:execute_hooks).
-          with(@fork_merge_request, 'update', @oldrev)
-      end
+      context 'closed fork merge request' do
+        before do
+          @fork_merge_request.close!
+          allow(refresh_service).to receive(:execute_hooks)
+          refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
+          reload_mrs
+        end
 
-      it { expect(@merge_request.notes).to be_empty }
-      it { expect(@merge_request).to be_open }
-      it { expect(@merge_request.approvals).not_to be_empty }
-      it { expect(@fork_merge_request.notes.last.note).to include('added 28 commits') }
-      it { expect(@fork_merge_request).to be_open }
-      it { expect(@build_failed_todo).to be_pending }
-      it { expect(@fork_build_failed_todo).to be_pending }
-      it { expect(@fork_merge_request.approvals).to be_empty }
+        it 'do not execute hooks with update action' do
+          expect(refresh_service).not_to have_received(:execute_hooks)
+        end
+
+        it { expect(@merge_request.notes).to be_empty }
+        it { expect(@merge_request).to be_open }
+        it { expect(@merge_request.approvals).not_to be_empty }
+        it { expect(@fork_merge_request.notes).to be_empty }
+        it { expect(@fork_merge_request).to be_closed }
+        it { expect(@build_failed_todo).to be_pending }
+        it { expect(@fork_build_failed_todo).to be_pending }
+        it { expect(@fork_merge_request.approvals).to be_empty }
+      end
     end
 
     context 'push to fork repo target branch' do
@@ -197,7 +222,7 @@ describe MergeRequests::RefreshService, services: true do
         end
       end
 
-      context 'when approvals_before_merge is disabled' do
+      context 'when reset_approvals_on_push is disabled' do
         before do
           @project.update(reset_approvals_on_push: false)
           refresh_service = service.new(@project, @user)
@@ -225,16 +250,32 @@ describe MergeRequests::RefreshService, services: true do
         end
       end
 
-      context 'when there are approvals to be reset' do
-        before do
-          refresh_service = service.new(@project, @user)
-          allow(refresh_service).to receive(:execute_hooks)
-          refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
-          reload_mrs
+      context 'when there are approvals' do
+        context 'closed merge request' do
+          before do
+            @merge_request.close!
+            refresh_service = service.new(@project, @user)
+            allow(refresh_service).to receive(:execute_hooks)
+            refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
+            reload_mrs
+          end
+
+          it 'resets the approvals' do
+            expect(@merge_request.approvals).to be_empty
+          end
         end
 
-        it 'resets the approvals' do
-          expect(@merge_request.approvals).to be_empty
+        context 'opened merge request' do
+          before do
+            refresh_service = service.new(@project, @user)
+            allow(refresh_service).to receive(:execute_hooks)
+            refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
+            reload_mrs
+          end
+
+          it 'resets the approvals' do
+            expect(@merge_request.approvals).to be_empty
+          end
         end
       end
     end
