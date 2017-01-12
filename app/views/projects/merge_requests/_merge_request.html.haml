@@ -46,8 +46,7 @@
           = note_count
 
   .merge-request-info
-    = @show_full_reference ? merge_request.to_reference(full: true) : merge_request.to_reference(@group || @project)
-    &middot;
+    #{issuable_reference(merge_request)} &middot;
     opened #{time_ago_with_tooltip(merge_request.created_at, placement: 'bottom')}
     by #{link_to_member(@project, merge_request.author, avatar: false)}
     - if merge_request.target_project.default_branch != merge_request.target_branch

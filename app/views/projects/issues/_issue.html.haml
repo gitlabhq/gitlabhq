@@ -34,8 +34,7 @@
           = note_count
 
   .issue-info
-    = @show_full_reference ? issue.to_reference(full: true) : issue.to_reference(@group || @project)
-    &middot;
+    #{issuable_reference(issue)} &middot;
     opened #{time_ago_with_tooltip(issue.created_at, placement: 'bottom')}
     by #{link_to_member(@project, issue.author, avatar: false)}
     - if issue.milestone
