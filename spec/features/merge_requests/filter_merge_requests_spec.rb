@@ -1,10 +1,10 @@
 require 'rails_helper'
 
-describe 'Filter issues', feature: true do
+describe 'Filter merge requests', feature: true do
   include WaitForAjax
 
+  let!(:project)   { create(:project) }
   let!(:group)     { create(:group) }
-  let!(:project)   { create(:project, group: group) }
   let!(:user)      { create(:user)}
   let!(:milestone) { create(:milestone, project: project) }
   let!(:label)     { create(:label, project: project) }
@@ -14,12 +14,12 @@ describe 'Filter issues', feature: true do
     project.team << [user, :master]
     group.add_developer(user)
     login_as(user)
-    create(:issue, project: project)
+    create(:merge_request, source_project: project, target_project: project)
   end
 
-  describe 'for assignee from issues#index' do
+  describe 'for assignee from mr#index' do
     before do
-      visit namespace_project_issues_path(project.namespace, project)
+      visit namespace_project_merge_requests_path(project.namespace, project)
 
       find('.js-assignee-search').click
 
@@ -47,9 +47,9 @@ describe 'Filter issues', feature: true do
     end
   end
 
-  describe 'for milestone from issues#index' do
+  describe 'for milestone from mr#index' do
     before do
-      visit namespace_project_issues_path(project.namespace, project)
+      visit namespace_project_merge_requests_path(project.namespace, project)
 
       find('.js-milestone-select').click
 
@@ -77,9 +77,9 @@ describe 'Filter issues', feature: true do
     end
   end
 
-  describe 'for label from issues#index', js: true do
+  describe 'for label from mr#index', js: true do
     before do
-      visit namespace_project_issues_path(project.namespace, project)
+      visit namespace_project_merge_requests_path(project.namespace, project)
       find('.js-label-select').click
       wait_for_ajax
     end
@@ -127,7 +127,7 @@ describe 'Filter issues', feature: true do
         expect(page).to have_content wontfix.title
       end
 
-      find('.dropdown-menu-close-icon').click
+      find('body').click
 
       expect(find('.filtered-labels')).to have_content(wontfix.title)
 
@@ -135,7 +135,7 @@ describe 'Filter issues', feature: true do
       wait_for_ajax
       find('.dropdown-menu-labels a', text: label.title).click
 
-      find('.dropdown-menu-close-icon').click
+      find('body').click
 
       expect(find('.filtered-labels')).to have_content(wontfix.title)
       expect(find('.filtered-labels')).to have_content(label.title)
@@ -150,21 +150,21 @@ describe 'Filter issues', feature: true do
     it "selects and unselects `won't fix`" do
       find('.dropdown-menu-labels a', text: wontfix.title).click
       find('.dropdown-menu-labels a', text: wontfix.title).click
-
-      find('.dropdown-menu-close-icon').click
+      # Close label dropdown to load
+      find('body').click
       expect(page).not_to have_css('.filtered-labels')
     end
   end
 
   describe 'for assignee and label from issues#index' do
     before do
-      visit namespace_project_issues_path(project.namespace, project)
+      visit namespace_project_merge_requests_path(project.namespace, project)
 
       find('.js-assignee-search').click
 
       find('.dropdown-menu-user-link', text: user.username).click
 
-      expect(page).not_to have_selector('.issues-list .issue')
+      expect(page).not_to have_selector('.mr-list .merge-request')
 
       find('.js-label-select').click
 
@@ -196,38 +196,40 @@ describe 'Filter issues', feature: true do
     end
   end
 
-  describe 'filter issues by text' do
+  describe 'filter merge requests by text' do
     before do
-      create(:issue, title: "Bug", project: project)
+      create(:merge_request, title: "Bug", source_project: project, target_project: project, source_branch: "bug")
 
       bug_label = create(:label, project: project, title: 'bug')
       milestone = create(:milestone, title: "8", project: project)
 
-      issue = create(:issue,
-        title: "Bug 2",
-        project: project,
+      mr = create(:merge_request, 
+        title: "Bug 2", 
+        source_project: project, 
+        target_project: project, 
+        source_branch: "bug2", 
         milestone: milestone,
         author: user,
         assignee: user)
-      issue.labels << bug_label
+      mr.labels << bug_label
 
-      visit namespace_project_issues_path(project.namespace, project)
+      visit namespace_project_merge_requests_path(project.namespace, project)
     end
 
     context 'only text', js: true do
-      it 'filters issues by searched text' do
+      it 'filters merge requests by searched text' do
         fill_in 'issuable_search', with: 'Bug'
 
-        page.within '.issues-list' do
-          expect(page).to have_selector('.issue', count: 2)
+        page.within '.mr-list' do
+          expect(page).to have_selector('.merge-request', count: 2)
         end
       end
 
-      it 'does not show any issues' do
+      it 'does not show any merge requests' do
         fill_in 'issuable_search', with: 'testing'
 
-        page.within '.issues-list' do
-          expect(page).not_to have_selector('.issue')
+        page.within '.mr-list' do
+          expect(page).not_to have_selector('.merge-request')
         end
       end
     end
@@ -237,8 +239,8 @@ describe 'Filter issues', feature: true do
         fill_in 'issuable_search', with: 'Bug'
 
         expect(page).to have_issuable_counts(open: 2, closed: 0, all: 2)
-        page.within '.issues-list' do
-          expect(page).to have_selector('.issue', count: 2)
+        page.within '.mr-list' do
+          expect(page).to have_selector('.merge-request', count: 2)
         end
 
         click_button 'Label'
@@ -248,8 +250,8 @@ describe 'Filter issues', feature: true do
         find('.dropdown-menu-close-icon').click
 
         expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
-        page.within '.issues-list' do
-          expect(page).to have_selector('.issue', count: 1)
+        page.within '.mr-list' do
+          expect(page).to have_selector('.merge-request', count: 1)
         end
       end
 
@@ -257,8 +259,8 @@ describe 'Filter issues', feature: true do
         fill_in 'issuable_search', with: 'Bug'
 
         expect(page).to have_issuable_counts(open: 2, closed: 0, all: 2)
-        page.within '.issues-list' do
-          expect(page).to have_selector('.issue', count: 2)
+        page.within '.mr-list' do
+          expect(page).to have_selector('.merge-request', count: 2)
         end
 
         click_button 'Milestone'
@@ -267,8 +269,8 @@ describe 'Filter issues', feature: true do
         end
 
         expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
-        page.within '.issues-list' do
-          expect(page).to have_selector('.issue', count: 1)
+        page.within '.mr-list' do
+          expect(page).to have_selector('.merge-request', count: 1)
         end
       end
 
@@ -276,8 +278,8 @@ describe 'Filter issues', feature: true do
         fill_in 'issuable_search', with: 'Bug'
 
         expect(page).to have_issuable_counts(open: 2, closed: 0, all: 2)
-        page.within '.issues-list' do
-          expect(page).to have_selector('.issue', count: 2)
+        page.within '.mr-list' do
+          expect(page).to have_selector('.merge-request', count: 2)
         end
 
         click_button 'Assignee'
@@ -286,8 +288,8 @@ describe 'Filter issues', feature: true do
         end
 
         expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
-        page.within '.issues-list' do
-          expect(page).to have_selector('.issue', count: 1)
+        page.within '.mr-list' do
+          expect(page).to have_selector('.merge-request', count: 1)
         end
       end
 
@@ -295,8 +297,8 @@ describe 'Filter issues', feature: true do
         fill_in 'issuable_search', with: 'Bug'
 
         expect(page).to have_issuable_counts(open: 2, closed: 0, all: 2)
-        page.within '.issues-list' do
-          expect(page).to have_selector('.issue', count: 2)
+        page.within '.mr-list' do
+          expect(page).to have_selector('.merge-request', count: 2)
         end
 
         click_button 'Author'
@@ -305,26 +307,27 @@ describe 'Filter issues', feature: true do
         end
 
         expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
-        page.within '.issues-list' do
-          expect(page).to have_selector('.issue', count: 1)
+        page.within '.mr-list' do
+          expect(page).to have_selector('.merge-request', count: 1)
         end
       end
     end
   end
 
-  describe 'filter issues and sort', js: true do
+  describe 'filter merge requests and sort', js: true do
     before do
       bug_label = create(:label, project: project, title: 'bug')
-      bug_one = create(:issue, title: "Frontend", project: project)
-      bug_two = create(:issue, title: "Bug 2", project: project)
 
-      bug_one.labels << bug_label
-      bug_two.labels << bug_label
+      mr1 = create(:merge_request, title: "Frontend", source_project: project, target_project: project, source_branch: "Frontend")
+      mr2 = create(:merge_request, title: "Bug 2", source_project: project, target_project: project, source_branch: "bug2")
 
-      visit namespace_project_issues_path(project.namespace, project)
+      mr1.labels << bug_label
+      mr2.labels << bug_label
+
+      visit namespace_project_merge_requests_path(project.namespace, project)
     end
 
-    it 'is able to filter and sort issues' do
+    it 'is able to filter and sort merge requests' do
       click_button 'Label'
       wait_for_ajax
       page.within '.labels-filter' do
@@ -334,8 +337,8 @@ describe 'Filter issues', feature: true do
       wait_for_ajax
 
       expect(page).to have_issuable_counts(open: 2, closed: 0, all: 2)
-      page.within '.issues-list' do
-        expect(page).to have_selector('.issue', count: 2)
+      page.within '.mr-list' do
+        expect(page).to have_selector('.merge-request', count: 2)
       end
 
       click_button 'Last created'
@@ -344,41 +347,9 @@ describe 'Filter issues', feature: true do
       end
       wait_for_ajax
 
-      page.within '.issues-list' do
+      page.within '.mr-list' do
         expect(page).to have_content('Frontend')
       end
     end
-  end
-
-  it 'updates atom feed link for project issues' do
-    visit namespace_project_issues_path(project.namespace, project, milestone_title: '', assignee_id: user.id)
-
-    link = find('.nav-controls a', text: 'Subscribe')
-    params = CGI::parse(URI.parse(link[:href]).query)
-    auto_discovery_link = find('link[type="application/atom+xml"]', visible: false)
-    auto_discovery_params = CGI::parse(URI.parse(auto_discovery_link[:href]).query)
-
-    expect(params).to include('private_token' => [user.private_token])
-    expect(params).to include('milestone_title' => [''])
-    expect(params).to include('assignee_id' => [user.id.to_s])
-    expect(auto_discovery_params).to include('private_token' => [user.private_token])
-    expect(auto_discovery_params).to include('milestone_title' => [''])
-    expect(auto_discovery_params).to include('assignee_id' => [user.id.to_s])
-  end
-
-  it 'updates atom feed link for group issues' do
-    visit issues_group_path(group, milestone_title: '', assignee_id: user.id)
-
-    link = find('.nav-controls a', text: 'Subscribe')
-    params = CGI::parse(URI.parse(link[:href]).query)
-    auto_discovery_link = find('link[type="application/atom+xml"]', visible: false)
-    auto_discovery_params = CGI::parse(URI.parse(auto_discovery_link[:href]).query)
-
-    expect(params).to include('private_token' => [user.private_token])
-    expect(params).to include('milestone_title' => [''])
-    expect(params).to include('assignee_id' => [user.id.to_s])
-    expect(auto_discovery_params).to include('private_token' => [user.private_token])
-    expect(auto_discovery_params).to include('milestone_title' => [''])
-    expect(auto_discovery_params).to include('assignee_id' => [user.id.to_s])
   end
 end

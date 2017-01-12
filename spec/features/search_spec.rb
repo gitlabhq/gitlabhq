@@ -169,16 +169,16 @@ describe "Search", feature: true  do
           find('.dropdown-menu').click_link 'Issues assigned to me'
           sleep 2
 
-          expect(page).to have_selector('.issues-holder')
-          expect(find('.js-assignee-search .dropdown-toggle-text')).to have_content(user.name)
+          expect(page).to have_selector('.filtered-search')
+          expect(find('.filtered-search').value).to eq("assignee:@#{user.username}")
         end
 
         it 'takes user to her issues page when issues authored is clicked' do
           find('.dropdown-menu').click_link "Issues I've created"
           sleep 2
 
-          expect(page).to have_selector('.issues-holder')
-          expect(find('.js-author-search .dropdown-toggle-text')).to have_content(user.name)
+          expect(page).to have_selector('.filtered-search')
+          expect(find('.filtered-search').value).to eq("author:@#{user.username}")
         end
 
         it 'takes user to her MR page when MR assigned is clicked' do
