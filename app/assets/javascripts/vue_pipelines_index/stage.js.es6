@@ -82,12 +82,13 @@
           data-placement="top"
           data-toggle="dropdown"
           type="button"
+          :aria-label='stage.title'
         >
-          <span v-html="svg"></span>
-          <i class="fa fa-caret-down "></i>
+          <span v-html="svg" aria-hidden="true"></span>
+          <i class="fa fa-caret-down" aria-hidden="true"></i>
         </button>
         <ul class="dropdown-menu mini-pipeline-graph-dropdown-menu js-builds-dropdown-container">
-          <div class="arrow-up"></div>
+          <div class="arrow-up" aria-hidden="true"></div>
           <div
             @click='keepGraph($event)'
             :class="dropdownClass"
