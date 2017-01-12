@@ -42,8 +42,8 @@ module Gitlab
 
       def event_fetcher
         @event_fetcher ||= Gitlab::CycleAnalytics::EventFetcher[name].new(project: @project,
-                                                                   stage: name,
-                                                                   options: event_options)
+                                                                          stage: name,
+                                                                          options: event_options)
       end
 
       def event_options

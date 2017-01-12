@@ -17,7 +17,7 @@ class CycleAnalytics
   end
 
   def no_stats?
-    stats.all? { hash[:value].nil? }
+    stats.all? { |hash| hash[:value].nil? }
   end
 
   def permissions(user:)
