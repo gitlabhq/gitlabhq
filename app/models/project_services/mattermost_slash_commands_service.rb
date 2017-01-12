@@ -48,12 +48,4 @@ class MattermostSlashCommandsService < ChatSlashCommandsService
       method: 'P',
       username: 'GitLab')
   end
-
-  def self.supported_events
-    %w()
-  end
-
-  def self.event_names
-    self.supported_events.map { |event| "#{event}_events" }
-  end
 end

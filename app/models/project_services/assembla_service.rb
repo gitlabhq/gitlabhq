@@ -27,10 +27,6 @@ class AssemblaService < Service
     %w(push)
   end
 
-  def self.event_names
-    self.supported_events.map { |event| "#{event}_events" }
-  end
-
   def execute(data)
     return unless supported_events.include?(data[:object_kind])
 

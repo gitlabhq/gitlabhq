@@ -23,10 +23,6 @@ class PipelinesEmailService < Service
     %w[pipeline]
   end
 
-  def self.event_names
-    self.supported_events.map { |event| "#{event}_events" }
-  end
-
   def execute(data, force: false)
     return unless supported_events.include?(data[:object_kind])
     return unless force || should_pipeline_be_notified?(data)

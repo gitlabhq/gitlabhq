@@ -56,10 +56,6 @@ class BambooService < CiService
     ]
   end
 
-  def self.supported_events
-    %w(push)
-  end
-
   def build_page(sha, ref)
     with_reactive_cache(sha, ref) {|cached| cached[:build_page] }
   end

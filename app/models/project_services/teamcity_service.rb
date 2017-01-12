@@ -47,14 +47,6 @@ class TeamcityService < CiService
     'teamcity'
   end
 
-  def self.supported_events
-    %w(push)
-  end
-
-  def self.event_names
-    self.supported_events.map { |event| "#{event}_events" }
-  end
-
   def fields
     [
       { type: 'text', name: 'teamcity_url',

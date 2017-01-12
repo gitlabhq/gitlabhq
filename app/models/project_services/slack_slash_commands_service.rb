@@ -25,12 +25,4 @@ class SlackSlashCommandsService < ChatSlashCommandsService
   def format(text)
     Slack::Notifier::LinkFormatter.format(text) if text
   end
-
-  def self.supported_events
-    %w()
-  end
-
-  def self.event_names
-    self.supported_events.map { |event| "#{event}_events" }
-  end
 end

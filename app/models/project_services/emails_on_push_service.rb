@@ -20,10 +20,6 @@ class EmailsOnPushService < Service
     %w(push tag_push)
   end
 
-  def self.event_names
-    self.supported_events.map { |event| "#{event}_events" }
-  end
-
   def execute(push_data)
     return unless supported_events.include?(push_data[:object_kind])
 

@@ -600,12 +600,11 @@ module API
           service_classes.each do |service|
             event_names = service.try(:event_names) || []
             event_names.each do |event_name|
-              services[service.to_param.gsub("_", "-")] << {
+              services[service.to_param.tr("_", "-")] << {
                 required: false,
                 name: event_name.to_sym,
                 type: String,
-                desc: ServicesHelper.instance_method(:service_event_description)
-                                    .bind(self).call(event_name)
+                desc: ServicesHelper.service_event_description(event_name)
               }
             end
           end

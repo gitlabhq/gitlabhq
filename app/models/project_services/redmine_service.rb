@@ -22,12 +22,4 @@ class RedmineService < IssueTrackerService
   def self.to_param
     'redmine'
   end
-
-  def self.supported_events
-    %w()
-  end
-
-  def self.event_names
-    self.supported_events.map { |event| "#{event}_events" }
-  end
 end

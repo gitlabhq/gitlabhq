@@ -79,6 +79,10 @@ class Service < ActiveRecord::Base
     self.class.to_param
   end
 
+  def self.to_param
+    raise NotImplementedError
+  end
+
   def fields
     # implement inside child
     []
@@ -93,8 +97,11 @@ class Service < ActiveRecord::Base
   end
 
   def event_names
-    # implement inside child
     self.class.event_names
+  end
+
+  def self.event_names
+    self.supported_events.map { |event| "#{event}_events" }
   end
 
   def event_field(event)
@@ -107,6 +114,10 @@ class Service < ActiveRecord::Base
 
   def supported_events
     self.class.supported_events
+  end
+
+  def self.supported_events
+    %w(push tag_push issue confidential_issue merge_request wiki_page)
   end
 
   def execute(data)

@@ -37,12 +37,4 @@ class SlackService < ChatNotificationService
   def default_channel_placeholder
     "#general"
   end
-
-  def self.supported_events
-    %w()
-  end
-
-  def self.event_names
-    self.supported_events.map { |event| "#{event}_events" }
-  end
 end

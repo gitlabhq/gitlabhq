@@ -12,9 +12,6 @@ class CiService < Service
     %w(push)
   end
 
-  def self.event_names
-    self.supported_events.map { |event| "#{event}_events" }
-  end
   # Return complete url to build page
   #
   # Ex.

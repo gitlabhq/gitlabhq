@@ -16,10 +16,6 @@ class JiraService < IssueTrackerService
     %w(commit merge_request)
   end
 
-  def self.event_names
-    self.supported_events.map { |event| "#{event}_events" }
-  end
-
   # {PROJECT-KEY}-{NUMBER} Examples: JIRA-1, PROJECT-1
   def reference_pattern
     @reference_pattern ||= %r{(?<issue>\b([A-Z][A-Z0-9_]+-)\d+)}

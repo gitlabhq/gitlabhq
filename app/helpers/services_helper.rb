@@ -26,4 +26,6 @@ module ServicesHelper
     event = event.pluralize if %w[merge_request issue confidential_issue].include?(event)
     "#{event}_events"
   end
+
+  extend self
 end

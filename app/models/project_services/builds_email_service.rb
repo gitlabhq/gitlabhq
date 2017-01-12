@@ -27,10 +27,6 @@ class BuildsEmailService < Service
     %w(build)
   end
 
-  def self.event_names
-    self.supported_events.map { |event| "#{event}_events" }
-  end
-
   def execute(push_data)
     return unless supported_events.include?(push_data[:object_kind])
     return unless should_build_be_notified?(push_data)
