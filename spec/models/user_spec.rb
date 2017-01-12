@@ -141,6 +141,11 @@ describe User, models: true do
           user = build(:user, email: "example@test.com")
           expect(user).to be_invalid
         end
+
+        it 'accepts example@test.com when added by another user' do
+          user = build(:user, email: "example@test.com", created_by_id: 1)
+          expect(user).to be_valid
+        end
       end
 
       context 'domain blacklist' do
@@ -158,6 +163,11 @@ describe User, models: true do
           it 'rejects info@example.com' do
             user = build(:user, email: 'info@example.com')
             expect(user).not_to be_valid
+          end
+
+          it 'accepts info@example.com when added by another user' do
+            user = build(:user, email: 'info@example.com', created_by_id: 1)
+            expect(user).to be_valid
           end
         end
 
