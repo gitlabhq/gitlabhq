@@ -512,12 +512,17 @@
 
     // Append the menu into the dropdown
     GitLabDropdown.prototype.appendMenu = function(html) {
+      return this.clearMenu().append(html);
+    };
+
+    GitLabDropdown.prototype.clearMenu = function() {
       var selector;
       selector = '.dropdown-content';
       if (this.dropdown.find(".dropdown-toggle-page").length) {
         selector = ".dropdown-page-one .dropdown-content";
       }
-      return $(selector, this.dropdown).empty().append(html);
+
+      return $(selector, this.dropdown).empty();
     };
 
     GitLabDropdown.prototype.renderItem = function(data, group, index) {

@@ -30,6 +30,10 @@
       detail: {
         handler () {
           this.issue = this.detail.issue;
+
+          if (this.showSidebar) {
+            $('.js-user-search', this.$el).data('glDropdown').clearMenu();
+          }
         },
         deep: true
       },
