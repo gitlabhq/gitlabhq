@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, no-use-before-define, no-useless-escape, no-new, quotes, object-shorthand, no-unused-vars, comma-dangle, radix, no-alert, consistent-return, no-else-return, prefer-template, one-var, one-var-declaration-per-line, curly, max-len */
+/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, no-use-before-define, no-useless-escape, no-new, quotes, object-shorthand, no-unused-vars, comma-dangle, no-alert, consistent-return, no-else-return, prefer-template, one-var, one-var-declaration-per-line, curly, max-len */
 /* global GitLab */
 /* global UsersSelect */
 /* global ZenMode */
@@ -51,7 +51,7 @@
 
     IssuableForm.prototype.handleSubmit = function() {
       var fieldId = (this.issueMoveField != null) ? this.issueMoveField.val() : null;
-      if ((parseInt(fieldId) || 0) > 0) {
+      if ((parseInt(fieldId, 10) || 0) > 0) {
         if (!confirm(this.issueMoveConfirmMsg)) {
           return false;
         }

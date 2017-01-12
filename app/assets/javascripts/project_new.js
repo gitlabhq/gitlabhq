@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, no-unused-vars, one-var, no-underscore-dangle, prefer-template, no-else-return, prefer-arrow-callback, radix, max-len */
+/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, no-unused-vars, one-var, no-underscore-dangle, prefer-template, no-else-return, prefer-arrow-callback, max-len */
 
 (function() {
   var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
@@ -57,11 +57,11 @@
 
       $repoAccessLevel.off('change')
         .on('change', function () {
-          var selectedVal = parseInt($repoAccessLevel.val());
+          var selectedVal = parseInt($repoAccessLevel.val(), 10);
 
           this.$repoSelects.each(function () {
             var $this = $(this);
-            var repoSelectVal = parseInt($this.val());
+            var repoSelectVal = parseInt($this.val(), 10);
 
             $this.find('option').show();
 

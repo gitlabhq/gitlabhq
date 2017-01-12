@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, max-len, no-var, prefer-arrow-callback, consistent-return, one-var, one-var-declaration-per-line, no-unused-vars, no-else-return, prefer-template, quotes, comma-dangle, no-param-reassign, no-void, radix, brace-style, no-underscore-dangle, no-return-assign, camelcase */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, max-len, no-var, prefer-arrow-callback, consistent-return, one-var, one-var-declaration-per-line, no-unused-vars, no-else-return, prefer-template, quotes, comma-dangle, no-param-reassign, no-void, brace-style, no-underscore-dangle, no-return-assign, camelcase */
 /* global Cookies */
 
 (function() {
@@ -134,7 +134,7 @@
           return this.decrementCounter($emojiButton, emoji);
         } else {
           counter = $emojiButton.find('.js-counter');
-          counter.text(parseInt(counter.text()) + 1);
+          counter.text(parseInt(counter.text(), 10) + 1);
           $emojiButton.addClass('active');
           this.addYouToUserList(votesBlock, emoji);
           return this.animateEmoji($emojiButton);

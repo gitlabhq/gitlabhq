@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, space-before-function-paren, one-var, space-in-parens, no-shadow, radix, dot-notation, max-len */
+/* eslint-disable comma-dangle, space-before-function-paren, one-var, space-in-parens, no-shadow, dot-notation, max-len */
 /* global Cookies */
 /* global List */
 
@@ -86,7 +86,7 @@
     },
     moveList (listFrom, orderLists) {
       orderLists.forEach((id, i) => {
-        const list = this.findList('id', parseInt(id));
+        const list = this.findList('id', parseInt(id, 10));
 
         list.position = i;
       });
