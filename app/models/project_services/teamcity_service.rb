@@ -1,4 +1,6 @@
 class TeamcityService < CiService
+  include ReactiveService
+
   prop_accessor :teamcity_url, :build_type, :username, :password
 
   validates :teamcity_url, presence: true, url: true, if: :activated?
@@ -61,43 +63,18 @@ class TeamcityService < CiService
     ]
   end
 
-  def build_info(sha)
-    @response = get_path("httpAuth/app/rest/builds/branch:unspecified:any,number:#{sha}")
-  end
-
   def build_page(sha, ref)
-    build_info(sha) if @response.nil? || !@response.code
-
-    if @response.code != 200
-      # If actual build link can't be determined,
-      # send user to build summary page.
-      build_url("viewLog.html?buildTypeId=#{build_type}")
-    else
-      # If actual build link is available, go to build result page.
-      built_id = @response['build']['id']
-      build_url("viewLog.html?buildId=#{built_id}&buildTypeId=#{build_type}")
-    end
+    with_reactive_cache(sha, ref) {|cached| cached[:build_page] }
   end
 
   def commit_status(sha, ref)
-    build_info(sha) if @response.nil? || !@response.code
-    return :error unless @response.code == 200 || @response.code == 404
+    with_reactive_cache(sha, ref) {|cached| cached[:commit_status] }
+  end
 
-    status = if @response.code == 404
-               'Pending'
-             else
-               @response['build']['status']
-             end
+  def calculate_reactive_cache(sha, ref)
+    response = get_path("httpAuth/app/rest/builds/branch:unspecified:any,number:#{sha}")
 
-    if status.include?('SUCCESS')
-      'success'
-    elsif status.include?('FAILURE')
-      'failed'
-    elsif status.include?('Pending')
-      'pending'
-    else
-      :error
-    end
+    { build_page: read_build_page(response), commit_status: read_commit_status(response) }
   end
 
   def execute(data)
@@ -121,6 +98,40 @@ class TeamcityService < CiService
   end
 
   private
+
+  def read_build_page(response)
+    if response.code != 200
+      # If actual build link can't be determined,
+      # send user to build summary page.
+      build_url("viewLog.html?buildTypeId=#{build_type}")
+    else
+      # If actual build link is available, go to build result page.
+      built_id = response['build']['id']
+      build_url("viewLog.html?buildId=#{built_id}&buildTypeId=#{build_type}")
+    end
+  end
+
+  def read_commit_status(response)
+    return :error unless response.code == 200 || response.code == 404
+
+    status = if response.code == 404
+               'Pending'
+             else
+               response['build']['status']
+             end
+
+    return :error unless status.present?
+
+    if status.include?('SUCCESS')
+      'success'
+    elsif status.include?('FAILURE')
+      'failed'
+    elsif status.include?('Pending')
+      'pending'
+    else
+      :error
+    end
+  end
 
   def build_url(path)
     URI.join("#{teamcity_url}/", path).to_s
