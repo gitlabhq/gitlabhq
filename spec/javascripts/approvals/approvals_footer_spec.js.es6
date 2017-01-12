@@ -1,4 +1,4 @@
-/* global Vue */
+/* global Vue eslint-disable fixture */
 //= require vue
 //= require underscore
 //= require jquery
