@@ -1,0 +1,4 @@
+---
+title: Fixes builds dropdown making request when clicked to be closed
+merge_request: 8545
+author:

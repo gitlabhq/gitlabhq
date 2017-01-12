@@ -10,9 +10,9 @@
  * The container should be the table element.
  *
  * The stage icon clicked needs to have the following HTML structure:
- * <div>
- *   <button class="dropdown js-builds-dropdown-button"></button>
- *   <div class="js-builds-dropdown-container"></div>
+ * <div class="dropdown">
+ *   <button class="dropdown js-builds-dropdown-button" data-toggle="dropdown"></button>
+ *   <div class="js-builds-dropdown-container dropdown-menu"></div>
  * </div>
  */
 (() => {
@@ -26,13 +26,11 @@
     }
 
     /**
-     * Adds and removes the event listener.
+     * Adds the event listener when the dropdown is opened.
+     * All dropdown events are fired at the .dropdown-menu's parent element.
      */
     bindEvents() {
-      const dropdownButtonSelector = 'button.js-builds-dropdown-button';
-
-      $(this.container).off('click', dropdownButtonSelector, this.getBuildsList)
-        .on('click', dropdownButtonSelector, this.getBuildsList);
+      $(this.container).on('shown.bs.dropdown', this.getBuildsList);
     }
 
     /**
@@ -52,11 +50,14 @@
     /**
      * For the clicked stage, gets the list of builds.
      *
-     * @param  {Object} e
+     * All dropdown events have a relatedTarget property,
+     * whose value is the toggling anchor element.
+     *
+     * @param  {Object} e bootstrap dropdown event
      * @return {Promise}
      */
     getBuildsList(e) {
-      const button = e.currentTarget;
+      const button = e.relatedTarget;
       const endpoint = button.dataset.stageEndpoint;
 
       return $.ajax({
