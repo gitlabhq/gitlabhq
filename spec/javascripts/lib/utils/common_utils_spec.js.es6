@@ -15,6 +15,7 @@
         expect(gl.utils.parseUrl('" test="asf"').pathname).toEqual('/teaspoon/%22%20test=%22asf%22');
       });
     });
+
     describe('gl.utils.parseUrlPathname', () => {
       beforeEach(() => {
         spyOn(gl.utils, 'parseUrl').and.callFake(url => ({
@@ -26,6 +27,29 @@
       });
       it('returns an absolute url when given a relative url', () => {
         expect(gl.utils.parseUrlPathname('some/relative/url')).toEqual('/some/relative/url');
+      });
+    });
+
+    describe('gl.utils.getUrlParamsArray', () => {
+      it('should return params array', () => {
+        expect(gl.utils.getUrlParamsArray() instanceof Array).toBe(true);
+      });
+
+      it('should remove the question mark from the search params', () => {
+        const paramsArray = gl.utils.getUrlParamsArray();
+        expect(paramsArray[0][0] !== '?').toBe(true);
+      });
+    });
+
+    describe('gl.utils.getParameterByName', () => {
+      it('should return valid parameter', () => {
+        const value = gl.utils.getParameterByName('reporter');
+        expect(value).toBe('Console');
+      });
+
+      it('should return invalid parameter', () => {
+        const value = gl.utils.getParameterByName('fakeParameter');
+        expect(value).toBe(null);
       });
     });
   });

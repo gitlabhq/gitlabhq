@@ -1,0 +1,127 @@
+- type = local_assigns.fetch(:type)
+
+.issues-filters
+  .issues-details-filters.row-content-block.second-block.filtered-search-block
+    = form_tag page_filter_path(without: [:assignee_id, :author_id, :milestone_title, :label_name, :search]), method: :get, class: 'filter-form js-filter-form' do
+      - if params[:search].present?
+        = hidden_field_tag :search, params[:search]
+      - if @bulk_edit
+        .check-all-holder
+          = check_box_tag "check_all_issues", nil, false,
+            class: "check_all_issues left"
+      .issues-other-filters.filtered-search-container
+        .filtered-search-input-container
+          %input.form-control.filtered-search{ placeholder: 'Search or filter results...', 'data-id' => 'filtered-search', 'data-project-id' => @project.id }
+          = icon('filter')
+          %button.clear-search.hidden{ type: 'button' }
+            = icon('times')
+          #js-dropdown-hint.dropdown-menu.hint-dropdown
+            %ul{ 'data-dropdown' => true }
+              %li.filter-dropdown-item{ 'data-value' => '' }
+                %button.btn.btn-link
+                  = icon('search')
+                  %span
+                    Keep typing and press Enter
+            %ul.filter-dropdown{ 'data-dynamic' => true, 'data-dropdown' => true }
+              %li.filter-dropdown-item
+                %button.btn.btn-link
+                  -# Encapsulate static class name `{{icon}}` inside #{} to bypass
+                  -# haml lint's ClassAttributeWithStaticValue
+                  %i.fa{ class: "#{'{{icon}}'}" }
+                  %span.js-filter-hint
+                    {{hint}}
+                  %span.js-filter-tag.dropdown-light-content
+                    {{tag}}
+          #js-dropdown-author.dropdown-menu
+            %ul.filter-dropdown{ 'data-dynamic' => true, 'data-dropdown' => true }
+              %li.filter-dropdown-item
+                %button.btn.btn-link.dropdown-user
+                  %img.avatar.avatar-inline{ 'data-src' => '{{avatar_url}}', alt: '{{name}}\'s avatar', width: '30' }
+                  .dropdown-user-details
+                    %span
+                      {{name}}
+                    %span.dropdown-light-content
+                      @{{username}}
+          #js-dropdown-assignee.dropdown-menu
+            %ul{ 'data-dropdown' => true }
+              %li.filter-dropdown-item{ 'data-value' => 'none' }
+                %button.btn.btn-link
+                  No Assignee
+              %li.divider
+            %ul.filter-dropdown{ 'data-dynamic' => true, 'data-dropdown' => true }
+              %li.filter-dropdown-item
+                %button.btn.btn-link.dropdown-user
+                  %img.avatar.avatar-inline{ 'data-src' => '{{avatar_url}}', alt: '{{name}}\'s avatar', width: '30' }
+                  .dropdown-user-details
+                    %span
+                      {{name}}
+                    %span.dropdown-light-content
+                      @{{username}}
+          #js-dropdown-milestone.dropdown-menu{ 'data-dropdown' => true }
+            %ul{ 'data-dropdown' => true }
+              %li.filter-dropdown-item{ 'data-value' => 'none' }
+                %button.btn.btn-link
+                  No Milestone
+              %li.filter-dropdown-item{ 'data-value' => 'upcoming' }
+                %button.btn.btn-link
+                  Upcoming
+              %li.divider
+            %ul.filter-dropdown{ 'data-dynamic' => true, 'data-dropdown' => true }
+              %li.filter-dropdown-item
+                %button.btn.btn-link.js-data-value
+                  {{title}}
+          #js-dropdown-label.dropdown-menu{ 'data-dropdown' => true }
+            %ul{ 'data-dropdown' => true }
+              %li.filter-dropdown-item{ 'data-value' => 'none' }
+                %button.btn.btn-link
+                  No Label
+              %li.divider
+            %ul.filter-dropdown{ 'data-dynamic' => true, 'data-dropdown' => true }
+              %li.filter-dropdown-item
+                %button.btn.btn-link
+                  %span.dropdown-label-box{ style: 'background: {{color}}' }
+                  %span.label-title.js-data-value
+                    {{title}}
+        .pull-right
+          = render 'shared/sort_dropdown'
+
+    - if @bulk_edit
+      .issues_bulk_update.hide
+        = form_tag [:bulk_update, @project.namespace.becomes(Namespace), @project, type], method: :post, class: 'bulk-update'  do
+          .filter-item.inline
+            = dropdown_tag("Status", options: { toggle_class: "js-issue-status", title: "Change status", dropdown_class: "dropdown-menu-status dropdown-menu-selectable", data: { field_name: "update[state_event]" } } ) do
+              %ul
+                %li
+                  %a{ href: "#", data: { id: "reopen" } } Open
+                %li
+                  %a{ href: "#", data: { id: "close" } } Closed
+          .filter-item.inline
+            = dropdown_tag("Assignee", options: { toggle_class: "js-user-search js-update-assignee js-filter-submit js-filter-bulk-update", title: "Assign to", filter: true, dropdown_class: "dropdown-menu-user dropdown-menu-selectable",
+              placeholder: "Search authors", data: { first_user: (current_user.username if current_user), null_user: true, current_user: true, project_id: @project.id, field_name: "update[assignee_id]" } })
+          .filter-item.inline
+            = dropdown_tag("Milestone", options: { title: "Assign milestone", toggle_class: 'js-milestone-select js-extra-options js-filter-submit js-filter-bulk-update', filter: true, dropdown_class: "dropdown-menu-selectable dropdown-menu-milestone", placeholder: "Search milestones", data: { show_no: true, field_name: "update[milestone_id]", project_id: @project.id, milestones: namespace_project_milestones_path(@project.namespace, @project, :json), use_id: true } })
+          .filter-item.inline.labels-filter
+            = render "shared/issuable/label_dropdown", classes: ['js-filter-bulk-update', 'js-multiselect'], show_create: false, show_footer: false, extra_options: false, filter_submit: false, data_options: { persist_when_hide: "true", field_name: "update[label_ids][]", show_no: false, show_any: false, use_id: true }
+          .filter-item.inline
+            = dropdown_tag("Subscription", options: { toggle_class: "js-subscription-event", title: "Change subscription", dropdown_class: "dropdown-menu-selectable", data: { field_name: "update[subscription_event]" } } ) do
+              %ul
+                %li
+                  %a{ href: "#", data: { id: "subscribe" } } Subscribe
+                %li
+                  %a{ href: "#", data: { id: "unsubscribe" } } Unsubscribe
+
+          = hidden_field_tag 'update[issuable_ids]', []
+          = hidden_field_tag :state_event, params[:state_event]
+          .filter-item.inline
+            = button_tag "Update #{type.to_s.humanize(capitalize: false)}", class: "btn update_selected_issues btn-save"
+
+:javascript
+  new UsersSelect();
+  new LabelsSelect();
+  new MilestoneSelect();
+  new IssueStatusSelect();
+  new SubscriptionSelect();
+  $('form.filter-form').on('submit', function (event) {
+    event.preventDefault();
+    Turbolinks.visit(this.action + '&' + $(this).serialize());
+  });

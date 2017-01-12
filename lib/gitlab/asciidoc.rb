@@ -1,5 +1,6 @@
 require 'asciidoctor'
 require 'asciidoctor/converter/html5'
+require "asciidoctor-plantuml"
 
 module Gitlab
   # Parser/renderer for the AsciiDoc format that uses Asciidoctor and filters
@@ -29,11 +30,22 @@ module Gitlab
       )
       asciidoc_opts[:attributes].unshift(*DEFAULT_ADOC_ATTRS)
 
+      plantuml_setup
+
       html = ::Asciidoctor.convert(input, asciidoc_opts)
 
       html = Banzai.post_process(html, context)
 
       html.html_safe
+    end
+
+    def self.plantuml_setup
+      Asciidoctor::PlantUml.configure do |conf|
+        conf.url = ApplicationSetting.current.plantuml_url
+        conf.svg_enable = ApplicationSetting.current.plantuml_enabled
+        conf.png_enable = ApplicationSetting.current.plantuml_enabled
+        conf.txt_enable = false
+      end
     end
 
     class Html5Converter < Asciidoctor::Converter::Html5Converter

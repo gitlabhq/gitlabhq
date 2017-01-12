@@ -8,6 +8,10 @@ module Gitlab
     let(:html) { 'H<sub>2</sub>O' }
 
     context "without project" do
+      before do
+        allow_any_instance_of(ApplicationSetting).to receive(:current).and_return(::ApplicationSetting.create_from_defaults)
+      end
+
       it "converts the input using Asciidoctor and default options" do
         expected_asciidoc_opts = {
             safe: :secure,
