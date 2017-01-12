@@ -5,6 +5,7 @@ module Gitlab
         def initialize(subject, user)
           @subject = subject
           @user = user
+          @status = subject.status || :created
         end
 
         def fabricate!
@@ -17,23 +18,9 @@ module Gitlab
           end
         end
 
-        def self.extended_statuses
-          []
-        end
-
-        def self.common_helpers
-          Module.new
-        end
-
-        private
-
-        def simple_status
-          @simple_status ||= @subject.status || :created
-        end
-
         def core_status
           Gitlab::Ci::Status
-            .const_get(simple_status.capitalize)
+            .const_get(@status.capitalize)
             .new(@subject, @user)
             .extend(self.class.common_helpers)
         end
@@ -46,6 +33,14 @@ module Gitlab
           end
 
           @extended_statuses = groups.flatten.compact
+        end
+
+        def self.extended_statuses
+          []
+        end
+
+        def self.common_helpers
+          Module.new
         end
       end
     end

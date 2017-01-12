@@ -2,17 +2,28 @@ require 'spec_helper'
 
 describe Gitlab::Ci::Status::Factory do
   let(:user) { create(:user) }
-  let(:status) { factory.fabricate! }
+  let(:fabricated_status) { factory.fabricate! }
   let(:factory) { described_class.new(resource, user) }
 
   context 'when object has a core status' do
-    HasStatus::AVAILABLE_STATUSES.each do |core_status|
-      context "when core status is #{core_status}" do
-        let(:resource) { double('resource', status: core_status) }
+    HasStatus::AVAILABLE_STATUSES.each do |simple_status|
+      context "when simple core status is #{simple_status}" do
+        let(:resource) { double('resource', status: simple_status) }
 
-        it "fabricates a core status #{core_status}" do
-          expect(status).to be_a(
-            Gitlab::Ci::Status.const_get(core_status.capitalize))
+        let(:expected_status) do
+            Gitlab::Ci::Status.const_get(simple_status.capitalize)
+        end
+
+        it "fabricates a core status #{simple_status}" do
+          expect(fabricated_status).to be_a expected_status
+        end
+
+        it "matches a valid core status for #{simple_status}" do
+          expect(factory.core_status).to be_a expected_status
+        end
+
+        it "does not match any extended statuses for #{simple_status}" do
+          expect(factory.extended_statuses).to be_empty
         end
       end
     end
@@ -55,17 +66,26 @@ describe Gitlab::Ci::Status::Factory do
 
     shared_examples 'compound decorator factory' do
       it 'fabricates compound decorator' do
-        expect(status.first_method).to eq 'decorated return value'
-        expect(status.second_method).to eq 'second return value'
-        expect(status.third_method).to eq 'third return value'
+        expect(fabricated_status.first_method).to eq 'decorated return value'
+        expect(fabricated_status.second_method).to eq 'second return value'
+        expect(fabricated_status.third_method).to eq 'third return value'
       end
 
       it 'delegates to core status' do
-        expect(status.text).to eq 'passed'
+        expect(fabricated_status.text).to eq 'passed'
       end
 
       it 'latest matches status becomes a status name' do
-        expect(status.class).to eq second_extended_status
+        expect(fabricated_status.class).to eq second_extended_status
+      end
+
+      it 'matches correct core status' do
+        expect(factory.core_status).to be_a Gitlab::Ci::Status::Success
+      end
+
+      it 'matches correct extended statuses' do
+        expect(factory.extended_statuses)
+          .to eq [first_extended_status, second_extended_status]
       end
     end
 
@@ -75,14 +95,22 @@ describe Gitlab::Ci::Status::Factory do
           .and_return([[first_extended_status, second_extended_status]])
       end
 
-      it 'fabricates compound decorator' do
-        expect(status.first_method).to eq 'first return value'
-        expect(status.second_method).to eq 'second return value'
-        expect(status).not_to respond_to(:third_method)
+      it 'does not fabricate compound decorator' do
+        expect(fabricated_status.first_method).to eq 'first return value'
+        expect(fabricated_status.second_method).to eq 'second return value'
+        expect(fabricated_status).not_to respond_to(:third_method)
       end
 
       it 'delegates to core status' do
-        expect(status.text).to eq 'passed'
+        expect(fabricated_status.text).to eq 'passed'
+      end
+
+      it 'matches correct core status' do
+        expect(factory.core_status).to be_a Gitlab::Ci::Status::Success
+      end
+
+      it 'matches correct extended statuses' do
+        expect(factory.extended_statuses).to eq [first_extended_status]
       end
     end
 
