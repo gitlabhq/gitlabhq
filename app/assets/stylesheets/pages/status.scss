@@ -19,7 +19,8 @@
       overflow: visible;
     }
 
-    &.ci-failed {
+    &.ci-failed,
+    &.ci-failed_with_warnings {
       color: $gl-danger;
       border-color: $gl-danger;
 
