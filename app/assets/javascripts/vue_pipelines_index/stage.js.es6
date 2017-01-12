@@ -19,7 +19,8 @@
           This was preventing turbolinks to make the request to the link clicked
           Vue will always look at the VDOM element which is the button
 
-          It has a special attribute 'aria-describedby' which will not exist:
+          It has a special attribute 'aria-expanded':
+            - which will let us know if it is expanded
             - once the build link is clicked
             - when someone clicks outside of the dropdown
 
@@ -27,12 +28,13 @@
             - here we setTimeout to give enough time to initialize the request
             - but short enough that a subsequent click will reset that state
         */
-        if (!e.currentTarget.attributes['aria-describedby']) {
-          setTimeout(() => {
-            this.request = false;
-          }, 100);
-          return null;
+
+        const areaExpanded = e.currentTarget.attributes['aria-expanded'];
+
+        if (areaExpanded && areaExpanded.textContent) {
+          return setTimeout(() => (this.request = false), 100);
         }
+
         if (this.request) return this.clearBuilds();
 
         return this.$http.get(this.stage.dropdown_path)
