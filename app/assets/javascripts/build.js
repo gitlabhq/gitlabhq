@@ -5,7 +5,7 @@
 (function() {
   var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   var AUTO_SCROLL_OFFSET = 75;
-  var DOWN_BUILD_TRACE = 'down-build-trace';
+  var DOWN_BUILD_TRACE = '#down-build-trace';
 
   this.Build = (function() {
     Build.interval = null;
@@ -27,7 +27,7 @@
       this.$autoScrollStatus = $('#autoscroll-status');
       this.$autoScrollStatusText = this.$autoScrollStatus.find('.status-text');
       this.$upBuildTrace = $('#up-build-trace');
-      this.$downBuildTrace = $('#down-build-trace');
+      this.$downBuildTrace = $(DOWN_BUILD_TRACE);
       this.$scrollTopBtn = $('#scroll-top');
       this.$scrollBottomBtn = $('#scroll-bottom');
       this.$buildRefreshAnimation = $('.js-build-refresh');
@@ -92,7 +92,7 @@
         dataType: 'json',
         success: function(buildData) {
           $('.js-build-output').html(buildData.trace_html);
-          if (window.location.hash.substring(1) === DOWN_BUILD_TRACE) {
+          if (window.location.hash === DOWN_BUILD_TRACE) {
             $("html,body").scrollTop(this.$buildTrace.height());
           }
           if (removeRefreshStatuses.indexOf(buildData.status) >= 0) {
@@ -124,7 +124,7 @@
             } else if (log.status !== _this.buildStatus) {
               pageUrl = _this.pageUrl;
               if (_this.$autoScrollStatus.data('state') === 'enabled') {
-                pageUrl += '#down-build-trace';
+                pageUrl += DOWN_BUILD_TRACE;
               }
 
               return Turbolinks.visit(pageUrl);
