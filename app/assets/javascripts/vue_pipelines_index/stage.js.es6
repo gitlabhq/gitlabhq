@@ -12,7 +12,27 @@
     },
     props: ['stage', 'svgs', 'match'],
     methods: {
-      fetchBuilds() {
+      fetchBuilds(e) {
+        /**
+          This is a very interesting UI problem
+          Essentially we have to clear builds on blur no matter what
+          This was preventing turbolinks to make the request to the link clicked
+          Vue will always look at the VDOM element which is the button
+
+          It has a special attribute 'aria-describedby' which will not exist:
+            - once the build link is clicked
+            - when someone clicks outside of the dropdown
+
+          In order for this to work:
+            - here we setTimeout to give enough time to initialize the request
+            - but short enough that a subsequent click will reset that state
+        */
+        if (!e.currentTarget.attributes['aria-describedby']) {
+          setTimeout(() => {
+            this.request = false;
+          }, 100);
+          return null;
+        }
         if (this.request) return this.clearBuilds();
 
         return this.$http.get(this.stage.dropdown_path)
@@ -56,8 +76,8 @@
     template: `
       <div>
         <button
-          @click='fetchBuilds'
-          @blur='fetchBuilds'
+          @click='fetchBuilds($event)'
+          @blur='fetchBuilds($event)'
           :class="triggerButtonClass"
           :title='stage.title'
           data-placement="top"
