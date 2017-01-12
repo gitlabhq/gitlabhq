@@ -1,0 +1,4 @@
+---
+title: Remove extra orphaned rows when removing stray namespaces
+merge_request: 7841
+author: 
