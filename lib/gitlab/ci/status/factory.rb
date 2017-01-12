@@ -8,10 +8,12 @@ module Gitlab
         end
 
         def fabricate!
-          if extended_status
-            extended_status.new(core_status)
-          else
+          if extended_statuses.none?
             core_status
+          else
+            extended_statuses.inject(core_status) do |status, extended|
+              extended.new(status)
+            end
           end
         end
 
@@ -36,10 +38,14 @@ module Gitlab
             .extend(self.class.common_helpers)
         end
 
-        def extended_status
-          @extended ||= self.class.extended_statuses.find do |status|
-            status.matches?(@subject, @user)
+        def extended_statuses
+          return @extended_statuses if defined?(@extended_statuses)
+
+          groups = self.class.extended_statuses.map do |group|
+            Array(group).find { |status| status.matches?(@subject, @user) }
           end
+
+          @extended_statuses = groups.flatten.compact
         end
       end
     end
