@@ -109,6 +109,10 @@
     .avatar {
       float: none;
     }
+
+    > a:not(:last-of-type) {
+      margin-right: 5px;
+    }
   }
 }
 
