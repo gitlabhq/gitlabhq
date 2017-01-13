@@ -842,7 +842,6 @@ describe Ci::Build, :models do
       end
     end
 
-
     describe '#allow_git_fetch' do
       it 'return project allow_git_fetch configuration' do
         expect(build.allow_git_fetch).to eq(project.build_allow_git_fetch)
