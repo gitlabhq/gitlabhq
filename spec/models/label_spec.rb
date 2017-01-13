@@ -31,12 +31,14 @@ describe Label, models: true do
     it 'validates title' do
       is_expected.not_to allow_value('G,ITLAB').for(:title)
       is_expected.not_to allow_value('').for(:title)
+      is_expected.not_to allow_value('s' * 256).for(:title)
 
       is_expected.to allow_value('GITLAB').for(:title)
       is_expected.to allow_value('gitlab').for(:title)
       is_expected.to allow_value('G?ITLAB').for(:title)
       is_expected.to allow_value('G&ITLAB').for(:title)
       is_expected.to allow_value("customer's request").for(:title)
+      is_expected.to allow_value('s' * 255).for(:title)
     end
   end
 

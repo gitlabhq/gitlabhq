@@ -142,7 +142,7 @@ module Ci
     end
 
     def artifacts
-      builds.latest.with_artifacts_not_expired
+      builds.latest.with_artifacts_not_expired.includes(project: [:namespace])
     end
 
     def project_id
@@ -191,7 +191,11 @@ module Ci
     end
 
     def manual_actions
-      builds.latest.manual_actions
+      builds.latest.manual_actions.includes(project: [:namespace])
+    end
+
+    def stuck?
+      builds.pending.any?(&:stuck?)
     end
 
     def retryable?
@@ -281,6 +285,10 @@ module Ci
       rescue
         nil
       end
+    end
+
+    def has_yaml_errors?
+      yaml_errors.present?
     end
 
     def environments

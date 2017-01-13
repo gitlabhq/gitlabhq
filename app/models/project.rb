@@ -12,6 +12,7 @@ class Project < ActiveRecord::Base
   include AfterCommitQueue
   include CaseSensitivity
   include TokenAuthenticatable
+  include ValidAttribute
   include ProjectFeaturesCompatibility
   include SelectForProjectAuthorization
   include Routable
@@ -64,6 +65,8 @@ class Project < ActiveRecord::Base
       end
     end
   end
+
+  after_validation :check_pending_delete
 
   ActsAsTaggableOn.strict_case_match = true
   acts_as_taggable_on :tags
@@ -130,7 +133,7 @@ class Project < ActiveRecord::Base
   has_many :hooks,              dependent: :destroy, class_name: 'ProjectHook'
   has_many :protected_branches, dependent: :destroy
 
-  has_many :project_authorizations, dependent: :destroy
+  has_many :project_authorizations
   has_many :authorized_users, through: :project_authorizations, source: :user, class_name: 'User'
   has_many :project_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source
   alias_method :members, :project_members
@@ -1319,5 +1322,22 @@ class Project < ActiveRecord::Base
   def update_project_statistics
     stats = statistics || build_statistics
     stats.update(namespace_id: namespace_id)
+  end
+
+  def check_pending_delete
+    return if valid_attribute?(:name) && valid_attribute?(:path)
+    return unless pending_delete_twin
+
+    %i[route route.path name path].each do |error|
+      errors.delete(error)
+    end
+
+    errors.add(:base, "The project is still being deleted. Please try again later.")
+  end
+
+  def pending_delete_twin
+    return false unless path
+
+    Project.unscoped.where(pending_delete: true).find_with_namespace(path_with_namespace)
   end
 end

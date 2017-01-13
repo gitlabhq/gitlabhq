@@ -888,6 +888,48 @@ describe Ci::Pipeline, models: true do
     end
   end
 
+  describe '#stuck?' do
+    before do
+      create(:ci_build, :pending, pipeline: pipeline)
+    end
+
+    context 'when pipeline is stuck' do
+      it 'is stuck' do
+        expect(pipeline).to be_stuck
+      end
+    end
+
+    context 'when pipeline is not stuck' do
+      before { create(:ci_runner, :shared, :online) }
+
+      it 'is not stuck' do
+        expect(pipeline).not_to be_stuck
+      end
+    end
+  end
+
+  describe '#has_yaml_errors?' do
+    context 'when pipeline has errors' do
+      let(:pipeline) do
+        create(:ci_pipeline, config: { rspec: nil })
+      end
+
+      it 'contains yaml errors' do
+        expect(pipeline).to have_yaml_errors
+      end
+    end
+
+    context 'when pipeline does not have errors' do
+      let(:pipeline) do
+        create(:ci_pipeline, config: { rspec: { script: 'rake test' } })
+      end
+
+      it 'does not containyaml errors' do
+        expect(pipeline).not_to have_yaml_errors
+      end
+    end
+  end
+
   describe 'notifications when pipeline success or failed' do
     let(:project) { create(:project) }
 

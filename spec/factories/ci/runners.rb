@@ -8,6 +8,10 @@ FactoryGirl.define do
     is_shared false
     active    true
 
+    trait :online do
+      contacted_at Time.now
+    end
+
     trait :shared do
       is_shared true
     end

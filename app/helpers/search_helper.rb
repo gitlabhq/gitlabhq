@@ -75,7 +75,7 @@ module SearchHelper
         { category: "Current Project", label: "Merge Requests", url: namespace_project_merge_requests_path(@project.namespace, @project) },
         { category: "Current Project", label: "Milestones",     url: namespace_project_milestones_path(@project.namespace, @project) },
         { category: "Current Project", label: "Snippets",       url: namespace_project_snippets_path(@project.namespace, @project) },
-        { category: "Current Project", label: "Members",        url: namespace_project_project_members_path(@project.namespace, @project) },
+        { category: "Current Project", label: "Members",        url: namespace_project_settings_members_path(@project.namespace, @project) },
         { category: "Current Project", label: "Wiki",           url: namespace_project_wikis_path(@project.namespace, @project) },
       ]
     else

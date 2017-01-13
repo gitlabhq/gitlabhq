@@ -61,7 +61,11 @@ class Admin::GroupsController < Admin::ApplicationController
   end
 
   def group_params
-    params.require(:group).permit(
+    params.require(:group).permit(group_params_ce)
+  end
+
+  def group_params_ce
+    [
       :avatar,
       :description,
       :lfs_enabled,
@@ -69,6 +73,6 @@ class Admin::GroupsController < Admin::ApplicationController
       :path,
       :request_access_enabled,
       :visibility_level
-    )
+    ]
   end
 end

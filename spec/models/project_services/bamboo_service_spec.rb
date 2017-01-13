@@ -1,14 +1,28 @@
 require 'spec_helper'
 
-describe BambooService, models: true do
+describe BambooService, models: true, caching: true do
+  include ReactiveCachingHelpers
+
+  let(:bamboo_url) { 'http://gitlab.com/bamboo' }
+
+  subject(:service) do
+    described_class.create(
+      project: create(:empty_project),
+      properties: {
+        bamboo_url: bamboo_url,
+        username: 'mic',
+        password: 'password',
+        build_key: 'foo'
+      }
+    )
+  end
+
   describe 'Associations' do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
   end
 
   describe 'Validations' do
-    subject { service }
-
     context 'when service is active' do
       before { subject.active = true }
 
@@ -103,95 +117,112 @@ describe BambooService, models: true do
   end
 
   describe '#build_page' do
-    it 'returns a specific URL when status is 500' do
-      stub_request(status: 500)
+    it 'returns the contents of the reactive cache' do
+      stub_reactive_cache(service, { build_page: 'foo' }, 'sha', 'ref')
 
-      expect(service.build_page('123', 'unused')).to eq('http://gitlab.com/bamboo/browse/foo')
-    end
-
-    it 'returns a specific URL when response has no results' do
-      stub_request(body: %Q({"results":{"results":{"size":"0"}}}))
-
-      expect(service.build_page('123', 'unused')).to eq('http://gitlab.com/bamboo/browse/foo')
-    end
-
-    it 'returns a build URL when bamboo_url has no trailing slash' do
-      stub_request(body: %Q({"results":{"results":{"result":{"planResultKey":{"key":"42"}}}}}))
-
-      expect(service(bamboo_url: 'http://gitlab.com/bamboo').build_page('123', 'unused')).to eq('http://gitlab.com/bamboo/browse/42')
-    end
-
-    it 'returns a build URL when bamboo_url has a trailing slash' do
-      stub_request(body: %Q({"results":{"results":{"result":{"planResultKey":{"key":"42"}}}}}))
-
-      expect(service(bamboo_url: 'http://gitlab.com/bamboo/').build_page('123', 'unused')).to eq('http://gitlab.com/bamboo/browse/42')
+      expect(service.build_page('sha', 'ref')).to eq('foo')
     end
   end
 
   describe '#commit_status' do
-    it 'sets commit status to :error when status is 500' do
-      stub_request(status: 500)
+    it 'returns the contents of the reactive cache' do
+      stub_reactive_cache(service, { commit_status: 'foo' }, 'sha', 'ref')
 
-      expect(service.commit_status('123', 'unused')).to eq(:error)
-    end
-
-    it 'sets commit status to "pending" when status is 404' do
-      stub_request(status: 404)
-
-      expect(service.commit_status('123', 'unused')).to eq('pending')
-    end
-
-    it 'sets commit status to "pending" when response has no results' do
-      stub_request(body: %Q({"results":{"results":{"size":"0"}}}))
-
-      expect(service.commit_status('123', 'unused')).to eq('pending')
-    end
-
-    it 'sets commit status to "success" when build state contains Success' do
-      stub_request(build_state: 'YAY Success!')
-
-      expect(service.commit_status('123', 'unused')).to eq('success')
-    end
-
-    it 'sets commit status to "failed" when build state contains Failed' do
-      stub_request(build_state: 'NO Failed!')
-
-      expect(service.commit_status('123', 'unused')).to eq('failed')
-    end
-
-    it 'sets commit status to "pending" when build state contains Pending' do
-      stub_request(build_state: 'NO Pending!')
-
-      expect(service.commit_status('123', 'unused')).to eq('pending')
-    end
-
-    it 'sets commit status to :error when build state is unknown' do
-      stub_request(build_state: 'FOO BAR!')
-
-      expect(service.commit_status('123', 'unused')).to eq(:error)
+      expect(service.commit_status('sha', 'ref')).to eq('foo')
     end
   end
 
-  def service(bamboo_url: 'http://gitlab.com/bamboo')
-    described_class.create(
-      project: create(:empty_project),
-      properties: {
-        bamboo_url: bamboo_url,
-        username: 'mic',
-        password: 'password',
-        build_key: 'foo'
-      }
-    )
+  describe '#calculate_reactive_cache' do
+    context '#build_page' do
+      subject { service.calculate_reactive_cache('123', 'unused')[:build_page] }
+
+      it 'returns a specific URL when status is 500' do
+        stub_request(status: 500)
+
+        is_expected.to eq('http://gitlab.com/bamboo/browse/foo')
+      end
+
+      it 'returns a specific URL when response has no results' do
+        stub_request(body: bamboo_response(size: 0))
+
+        is_expected.to eq('http://gitlab.com/bamboo/browse/foo')
+      end
+
+      it 'returns a build URL when bamboo_url has no trailing slash' do
+        stub_request(body: bamboo_response)
+
+        is_expected.to eq('http://gitlab.com/bamboo/browse/42')
+      end
+
+      context 'bamboo_url has trailing slash' do
+        let(:bamboo_url) { 'http://gitlab.com/bamboo/' }
+
+        it 'returns a build URL' do
+          stub_request(body: bamboo_response)
+
+          is_expected.to eq('http://gitlab.com/bamboo/browse/42')
+        end
+      end
+    end
+
+    context '#commit_status' do
+      subject { service.calculate_reactive_cache('123', 'unused')[:commit_status] }
+
+      it 'sets commit status to :error when status is 500' do
+        stub_request(status: 500)
+
+        is_expected.to eq(:error)
+      end
+
+      it 'sets commit status to "pending" when status is 404' do
+        stub_request(status: 404)
+
+        is_expected.to eq('pending')
+      end
+
+      it 'sets commit status to "pending" when response has no results' do
+        stub_request(body: %Q({"results":{"results":{"size":"0"}}}))
+
+        is_expected.to eq('pending')
+      end
+
+      it 'sets commit status to "success" when build state contains Success' do
+        stub_request(body: bamboo_response(build_state: 'YAY Success!'))
+
+        is_expected.to eq('success')
+      end
+
+      it 'sets commit status to "failed" when build state contains Failed' do
+        stub_request(body: bamboo_response(build_state: 'NO Failed!'))
+
+        is_expected.to eq('failed')
+      end
+
+      it 'sets commit status to "pending" when build state contains Pending' do
+        stub_request(body: bamboo_response(build_state: 'NO Pending!'))
+
+        is_expected.to eq('pending')
+      end
+
+      it 'sets commit status to :error when build state is unknown' do
+        stub_request(body: bamboo_response(build_state: 'FOO BAR!'))
+
+        is_expected.to eq(:error)
+      end
+    end
   end
 
-  def stub_request(status: 200, body: nil, build_state: 'success')
+  def stub_request(status: 200, body: nil)
     bamboo_full_url = 'http://mic:password@gitlab.com/bamboo/rest/api/latest/result?label=123&os_authType=basic'
-    body ||= %Q({"results":{"results":{"result":{"buildState":"#{build_state}"}}}})
 
     WebMock.stub_request(:get, bamboo_full_url).to_return(
       status: status,
       headers: { 'Content-Type' => 'application/json' },
       body: body
     )
+  end
+
+  def bamboo_response(result_key: 42, build_state: 'success', size: 1)
+    %Q({"results":{"results":{"size":"#{size}","result":{"buildState":"#{build_state}","planResultKey":{"key":"#{result_key}"}}}}})
   end
 end

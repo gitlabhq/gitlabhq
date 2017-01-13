@@ -84,9 +84,13 @@ gem 'dropzonejs-rails', '~> 0.7.1'
 # for backups
 gem 'fog-aws', '~> 0.9'
 gem 'fog-core', '~> 1.40'
+gem 'fog-google', '~> 0.5'
 gem 'fog-local', '~> 0.3'
 gem 'fog-openstack', '~> 0.1'
 gem 'fog-rackspace', '~> 0.1.1'
+
+# for Google storage
+gem 'google-api-client', '~> 0.8.6'
 
 # for aws storage
 gem 'unf', '~> 0.1.4'
@@ -95,18 +99,19 @@ gem 'unf', '~> 0.1.4'
 gem 'seed-fu', '~> 2.3.5'
 
 # Markdown and HTML processing
-gem 'html-pipeline',      '~> 1.11.0'
-gem 'deckar01-task_list', '1.0.6', require: 'task_list/railtie'
-gem 'gitlab-markup',      '~> 1.5.0'
-gem 'redcarpet',          '~> 3.3.3'
-gem 'RedCloth',           '~> 4.3.2'
-gem 'rdoc',               '~> 4.2'
-gem 'org-ruby',           '~> 0.9.12'
-gem 'creole',             '~> 0.5.0'
-gem 'wikicloth',          '0.8.1'
-gem 'asciidoctor',        '~> 1.5.2'
-gem 'rouge',              '~> 2.0'
-gem 'truncato',           '~> 0.7.8'
+gem 'html-pipeline',        '~> 1.11.0'
+gem 'deckar01-task_list',   '1.0.6', require: 'task_list/railtie'
+gem 'gitlab-markup',        '~> 1.5.1'
+gem 'redcarpet',            '~> 3.3.3'
+gem 'RedCloth',             '~> 4.3.2'
+gem 'rdoc',                 '~> 4.2'
+gem 'org-ruby',             '~> 0.9.12'
+gem 'creole',               '~> 0.5.0'
+gem 'wikicloth',            '0.8.1'
+gem 'asciidoctor',          '~> 1.5.2'
+gem 'asciidoctor-plantuml', '0.0.6'
+gem 'rouge',                '~> 2.0'
+gem 'truncato',             '~> 0.7.8'
 
 # See https://groups.google.com/forum/#!topic/ruby-security-ann/aSbgDiwb24s
 # and https://groups.google.com/forum/#!topic/ruby-security-ann/Dy7YiKb_pMM
@@ -219,8 +224,7 @@ gem 'webpack-rails', '~> 0.9.9'
 gem 'sass-rails', '~> 5.0.6'
 gem 'coffee-rails', '~> 4.1.0'
 gem 'uglifier', '~> 2.7.2'
-gem 'turbolinks', '~> 2.5.0'
-gem 'jquery-turbolinks', '~> 2.1.0'
+gem 'gitlab-turbolinks-classic', '~> 2.5', '>= 2.5.6'
 
 gem 'addressable',        '~> 2.3.8'
 gem 'bootstrap-sass',     '~> 3.3.0'
@@ -294,8 +298,8 @@ group :development, :test do
   gem 'spring-commands-rspec',    '~> 1.0.4'
   gem 'spring-commands-spinach',  '~> 1.1.0'
 
-  gem 'rubocop', '~> 0.43.0', require: false
-  gem 'rubocop-rspec', '~> 1.5.0', require: false
+  gem 'rubocop', '~> 0.46.0', require: false
+  gem 'rubocop-rspec', '~> 1.9.1', require: false
   gem 'scss_lint', '~> 0.47.0', require: false
   gem 'haml_lint', '~> 0.18.2', require: false
   gem 'simplecov', '0.12.0', require: false

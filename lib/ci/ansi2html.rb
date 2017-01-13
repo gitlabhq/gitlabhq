@@ -105,7 +105,7 @@ module Ci
             break
           elsif s.scan(/</)
             @out << '&lt;'
-          elsif s.scan(/\n/)
+          elsif s.scan(/\r?\n/)
             @out << '<br>'
           else
             @out << s.scan(/./m)

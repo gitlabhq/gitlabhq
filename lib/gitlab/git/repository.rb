@@ -332,7 +332,7 @@ module Gitlab
       end
 
       def log_by_shell(sha, options)
-        cmd = %W(git --git-dir=#{path} log)
+        cmd = %W(#{Gitlab.config.git.bin_path} --git-dir=#{path} log)
         cmd += %W(-n #{options[:limit].to_i})
         cmd += %w(--format=%H)
         cmd += %W(--skip=#{options[:offset].to_i})
@@ -913,7 +913,7 @@ module Gitlab
           return []
         end
 
-        cmd = %W(git --git-dir=#{path} ls-tree)
+        cmd = %W(#{Gitlab.config.git.bin_path} --git-dir=#{path} ls-tree)
         cmd += %w(-r)
         cmd += %w(--full-tree)
         cmd += %w(--full-name)
@@ -1108,7 +1108,7 @@ module Gitlab
       end
 
       def archive_to_file(treeish = 'master', filename = 'archive.tar.gz', format = nil, compress_cmd = %w(gzip -n))
-        git_archive_cmd = %W(git --git-dir=#{path} archive)
+        git_archive_cmd = %W(#{Gitlab.config.git.bin_path} --git-dir=#{path} archive)
 
         # Put files into a directory before archiving
         prefix = "#{archive_name(treeish)}/"

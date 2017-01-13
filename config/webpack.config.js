@@ -21,6 +21,7 @@ var config = {
     cycle_analytics:      './cycle_analytics/cycle_analytics_bundle.js',
     diff_notes:           './diff_notes/diff_notes_bundle.js',
     environments:         './environments/environments_bundle.js',
+    filtered_search:      './filtered_search/filtered_search_bundle.js',
     graphs:               './graphs/graphs_bundle.js',
     merge_conflicts:      './merge_conflicts/merge_conflicts_bundle.js',
     merge_request_widget: './merge_request_widget/ci_bundle.js',
@@ -31,7 +32,9 @@ var config = {
     terminal:             './terminal/terminal_bundle.js',
     users:                './users/users_bundle.js',
     lib_chart:            './lib/chart.js',
-    lib_d3:               './lib/d3.js'
+    lib_d3:               './lib/d3.js',
+    vue_pagination:       './vue_pagination/index.js',
+    vue_pipelines:  './vue_pipelines_index/index.js',
   },
 
   output: {

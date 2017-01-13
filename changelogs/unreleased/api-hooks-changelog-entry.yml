@@ -1,4 +1,0 @@
----
-title: Rename wiki_events to wiki_page_events in project hooks API to avoid errors
-merge_request: Robert Schilling
-author: 8425

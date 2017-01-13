@@ -896,7 +896,9 @@ require('vendor/task_list');
 
       new GLForm($editForm.find('form'));
 
-      $editForm.find('form').attr('action', postUrl);
+      $editForm.find('form')
+        .attr('action', postUrl)
+        .attr('data-remote', 'true');
       $editForm.find('.js-form-target-id').val(targetId);
       $editForm.find('.js-form-target-type').val(targetType);
       $editForm.find('.js-note-text').focus().val(originalContent);
