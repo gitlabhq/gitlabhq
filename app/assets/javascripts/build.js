@@ -1,6 +1,5 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, no-use-before-define, no-param-reassign, quotes, yoda, no-else-return, consistent-return, comma-dangle, object-shorthand, prefer-template, one-var, one-var-declaration-per-line, no-unused-vars, max-len, vars-on-top */
 /* global Breakpoints */
-/* global Turbolinks */
 
 (function() {
   var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
@@ -127,7 +126,7 @@
                 pageUrl += DOWN_BUILD_TRACE;
               }
 
-              return Turbolinks.visit(pageUrl);
+              return gl.utils.visitUrl(pageUrl);
             }
           };
         })(this)

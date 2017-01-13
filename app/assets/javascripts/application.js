@@ -24,9 +24,7 @@
 /*= require jquery.waitforimages */
 /*= require jquery.atwho */
 /*= require jquery.scrollTo */
-/*= require jquery.turbolinks */
 /*= require js.cookie */
-/*= require turbolinks */
 /*= require autosave */
 /*= require bootstrap/affix */
 /*= require bootstrap/alert */
@@ -64,7 +62,7 @@
 /*= require es6-promise.auto */
 
 (function () {
-  document.addEventListener('page:fetch', function () {
+  document.addEventListener('beforeunload', function () {
     // Unbind scroll events
     $(document).off('scroll');
     // Close any open tooltips
