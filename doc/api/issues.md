@@ -23,12 +23,15 @@ GET /issues?state=closed
 GET /issues?labels=foo
 GET /issues?labels=foo,bar
 GET /issues?labels=foo,bar&state=opened
+GET /issues?milestone=1.0.0
+GET /issues?milestone=1.0.0&state=opened
 ```
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `state`   | string  | no    | Return all issues or just those that are `opened` or `closed`|
 | `labels`  | string  | no    | Comma-separated list of label names, issues with any of the labels will be returned |
+| `milestone` | string| no    | The milestone title |
 | `order_by`| string  | no    | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at` |
 | `sort`    | string  | no    | Return requests sorted in `asc` or `desc` order. Default is `desc`  |
 

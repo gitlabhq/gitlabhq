@@ -1,0 +1,4 @@
+---
+title: Fixes pipeline status cell is too wide by adding missing classes in table head cells
+merge_request: 8549
+author:
