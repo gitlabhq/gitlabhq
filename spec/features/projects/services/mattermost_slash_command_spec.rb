@@ -33,10 +33,89 @@ feature 'Setup Mattermost slash commands', feature: true do
       expect(value).to eq(token)
     end
 
-    describe 'mattermost service is enabled' do
-      it 'shows the add to mattermost button' do
-        expect(page).to have_link 'Add to Mattermost'
+    it 'shows the add to mattermost button' do
+      expect(page).to have_link('Add to Mattermost')
+    end
+
+    it 'shows an explanation if user is a member of no teams' do
+      stub_teams(count: 0)
+
+      click_link 'Add to Mattermost'
+
+      expect(page).to have_content('You aren’t a member of any team on the Mattermost instance')
+      expect(page).to have_link('join a team', href: "#{Gitlab.config.mattermost.host}/select_team")
+    end
+
+    it 'shows an explanation if user is a member of 1 team' do
+      stub_teams(count: 1)
+
+      click_link 'Add to Mattermost'
+
+      expect(page).to have_content('The team where the slash commands will be used in')
+      expect(page).to have_content('This is the only available team.')
+    end
+
+    it 'shows a disabled prefilled select if user is a member of 1 team' do
+      teams = stub_teams(count: 1)
+
+      click_link 'Add to Mattermost'
+
+      team_name = teams.first[1]['display_name']
+      select_element = find('select#mattermost_team_id')
+      selected_option = select_element.find('option[selected]')
+
+      expect(select_element['disabled']).to be(true)
+      expect(selected_option).to have_content(team_name.to_s)
+    end
+
+    it 'has a hidden input for the prefilled value if user is a member of 1 team' do
+      teams = stub_teams(count: 1)
+
+      click_link 'Add to Mattermost'
+
+      expect(find('input#mattermost_team_id', visible: false).value).to eq(teams.first[0].to_s)
+    end
+
+    it 'shows an explanation user is a member of multiple teams' do
+      stub_teams(count: 2)
+
+      click_link 'Add to Mattermost'
+
+      expect(page).to have_content('Select the team where the slash commands will be used in')
+      expect(page).to have_content('The list shows all available teams.')
+    end
+
+    it 'shows a select with team options user is a member of multiple teams' do
+      stub_teams(count: 2)
+
+      click_link 'Add to Mattermost'
+
+      select_element = find('select#mattermost_team_id')
+      selected_option = select_element.find('option[selected]')
+
+      expect(select_element['disabled']).to be(false)
+      expect(selected_option).to have_content('Select team...')
+      # The 'Select team...' placeholder is item `0`.
+      expect(select_element.all('option').count).to eq(3)
+    end
+
+    def stub_teams(count: 0)
+      teams = create_teams(count)
+
+      allow_any_instance_of(MattermostSlashCommandsService).to receive(:list_teams) { teams }
+
+      teams
+    end
+
+    def create_teams(count = 0)
+      teams = {}
+
+      count.times do |i|
+        i += 1
+        teams[i] = { id: i, display_name: i }
       end
+
+      teams
     end
 
     describe 'mattermost service is not enabled' do
