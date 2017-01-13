@@ -3,6 +3,7 @@
 var path = require('path');
 var webpack = require('webpack');
 var StatsPlugin = require('stats-webpack-plugin');
+var CompressionPlugin = require("compression-webpack-plugin");
 
 var IS_PRODUCTION = process.env.NODE_ENV === 'production';
 var IS_DEV_SERVER = process.argv[1].indexOf('webpack-dev-server') !== -1;
@@ -79,7 +80,10 @@ var config = {
       chunks: false,
       modules: false,
       assets: true
-    })
+    }),
+    new CompressionPlugin({
+      asset: '[path].gz[query]',
+    }),
   ],
 
   resolve: {
