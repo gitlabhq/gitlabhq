@@ -42,9 +42,13 @@ require('~/lib/utils/common_utils');
     });
 
     describe('gl.utils.getParameterByName', () => {
+      beforeEach(() => {
+        window.history.pushState({}, null, '?scope=all&p=2');
+      });
+
       it('should return valid parameter', () => {
-        const value = gl.utils.getParameterByName('reporter');
-        expect(value).toBe('Console');
+        const value = gl.utils.getParameterByName('scope');
+        expect(value).toBe('all');
       });
 
       it('should return invalid parameter', () => {
