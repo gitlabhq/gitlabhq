@@ -42,7 +42,7 @@ module Gitlab
         return @_raw_config if defined?(@_raw_config)
 
         begin
-          @_raw_config = File.read(CONFIG_FILE).freeze
+          @_raw_config = ERB.new(File.read(CONFIG_FILE)).result.freeze
         rescue Errno::ENOENT
           @_raw_config = false
         end
