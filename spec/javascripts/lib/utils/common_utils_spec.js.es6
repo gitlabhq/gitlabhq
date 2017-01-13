@@ -12,7 +12,7 @@ require('~/lib/utils/common_utils');
         // element will create an absolute url relative to the current execution context.
         // The JavaScript test suite is executed at '/' which will lead to an absolute url
         // starting with '/'.
-        expect(gl.utils.parseUrl('" test="asf"').pathname).toEqual('/%22%20test=%22asf%22');
+        expect(gl.utils.parseUrl('" test="asf"').pathname).toContain('/%22%20test=%22asf%22');
       });
     });
 

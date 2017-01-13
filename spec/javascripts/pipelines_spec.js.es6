@@ -1,5 +1,10 @@
 require('~/pipelines');
 
+// Fix for phantomJS
+if (!Element.prototype.matches && Element.prototype.webkitMatchesSelector) {
+  Element.prototype.matches = Element.prototype.webkitMatchesSelector;
+}
+
 (() => {
   describe('Pipelines', () => {
     preloadFixtures('static/pipeline_graph.html.raw');

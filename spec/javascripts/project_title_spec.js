@@ -15,6 +15,8 @@ require('~/project');
 
   describe('Project Title', function() {
     preloadFixtures('static/project_title.html.raw');
+    loadJSONFixtures('projects.json');
+
     beforeEach(function() {
       loadFixtures('static/project_title.html.raw');
       return this.project = new Project();
