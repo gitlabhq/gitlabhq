@@ -97,7 +97,7 @@ linters:
     enabled: true
 
   UnnecessaryInterpolation:
-    enabled: false
+    enabled: true
 
   UnnecessaryStringOutput:
     enabled: false
