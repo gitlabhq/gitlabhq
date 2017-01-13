@@ -3,9 +3,9 @@
 %p.slead
   - source_title, target_title = format_mr_branch_names(@merge_request)
   From
-  %strong.label-branch #{source_title}
+  %strong.label-branch= source_title
   %span into
-  %strong.label-branch #{target_title}
+  %strong.label-branch= target_title
 
   %span.pull-right
     = link_to 'Change branches', mr_change_branches_path(@merge_request)
