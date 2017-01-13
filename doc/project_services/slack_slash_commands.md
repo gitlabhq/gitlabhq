@@ -6,7 +6,7 @@ Slack commands give users an extra interface to perform common operations
 from the chat environment. This allows one to, for example, create an issue as
 soon as the idea was discussed in chat.
 For all available commands try the help subcommand, for example: `/gitlab help`, 
-all review the [full list of commands](../integrations/chat_commands.md).
+all review the [full list of commands](../integration/chat_commands.md).
 
 ## Prerequisites
 
