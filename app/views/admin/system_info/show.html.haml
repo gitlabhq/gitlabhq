@@ -29,5 +29,5 @@
         .data
           - @disks.each do |disk|
             %h1= "#{number_to_human_size(disk[:bytes_used])} / #{number_to_human_size(disk[:bytes_total])}"
-            %p= "#{disk[:disk_name]}"
-            %p= "#{disk[:mount_path]}"
+            %p= disk[:disk_name]
+            %p= disk[:mount_path]
