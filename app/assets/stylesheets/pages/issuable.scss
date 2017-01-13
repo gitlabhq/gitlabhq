@@ -488,7 +488,7 @@
     }
 
     &:hover svg {
-      fill: $gl-gray;
+      fill: $gl-text-color;
     }
   }
 
@@ -535,10 +535,10 @@
 
     .compare-display {
       font-size: 13px;
-      color: $gl-gray-light;
+      color: $compare-display-color;
 
       .compare-value {
-        color: $gl-gray;
+        color: $gl-text-color;
       }
     }
   }
