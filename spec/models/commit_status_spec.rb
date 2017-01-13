@@ -245,8 +245,6 @@ describe CommitStatus, models: true do
   end
 
   describe '#sortable_name' do
-    subject { commit_status.sortable_name }
-
     tests = {
       'karma' => ['karma'],
       'karma 0 20' => ['karma ', 0, ' ', 20],
@@ -260,8 +258,7 @@ describe CommitStatus, models: true do
     tests.each do |name, sortable_name|
       it "'#{name}' sorts as '#{sortable_name}'" do
         commit_status.name = name
-
-        is_expected.to eq(sortable_name)
+        expect(commit_status.sortable_name).to eq(sortable_name)
       end
     end
   end
