@@ -59,6 +59,7 @@ module API
     mount ::API::Milestones
     mount ::API::Namespaces
     mount ::API::Notes
+    mount ::API::NoteTemplates
     mount ::API::NotificationSettings
     mount ::API::Pipelines
     mount ::API::ProjectHooks
