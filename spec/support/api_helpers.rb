@@ -18,7 +18,7 @@ module ApiHelpers
   #
   # Returns the relative path to the requested API resource
   def api(path, user = nil)
-    "/api/#{API::API.version}#{path}" +
+    "/api/#{API::API.version}#{URI.escape(path)}" +
 
       # Normalize query string
       (path.index('?') ? '' : '?') +
