@@ -116,6 +116,8 @@ ActiveRecord::Schema.define(version: 20170106172224) do
     t.integer "housekeeping_full_repack_period", default: 50, null: false
     t.integer "housekeeping_gc_period", default: 200, null: false
     t.boolean "html_emails_enabled", default: true
+    t.string "plantuml_url"
+    t.boolean "plantuml_enabled"
   end
 
   create_table "approvals", force: :cascade do |t|

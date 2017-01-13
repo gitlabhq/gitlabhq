@@ -110,6 +110,8 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :html_emails_enabled,
       :koding_enabled,
       :koding_url,
+      :plantuml_enabled,
+      :plantuml_url,
       :max_artifacts_size,
       :max_attachment_size,
       :metrics_enabled,

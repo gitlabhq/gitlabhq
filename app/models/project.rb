@@ -60,6 +60,8 @@ class Project < ActiveRecord::Base
 
   after_validation :check_pending_delete
 
+  after_validation :check_pending_delete
+
   ActsAsTaggableOn.strict_case_match = true
   acts_as_taggable_on :tags
 

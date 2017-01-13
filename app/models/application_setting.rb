@@ -68,6 +68,10 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             if: :koding_enabled
 
+  validates :plantuml_url,
+            presence: true,
+            if: :plantuml_enabled
+
   validates :max_attachment_size,
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }
@@ -196,6 +200,8 @@ class ApplicationSetting < ActiveRecord::Base
       akismet_enabled: false,
       koding_enabled: false,
       koding_url: nil,
+      plantuml_enabled: false,
+      plantuml_url: nil,
       repository_checks_enabled: true,
       disabled_oauth_sign_in_sources: [],
       send_user_confirmation_email: false,

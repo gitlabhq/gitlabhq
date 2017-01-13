@@ -769,6 +769,19 @@ module Ci
           expect(builds.first[:environment]).to eq(environment[:name])
           expect(builds.first[:options]).to include(environment: environment)
         end
+
+        context 'the url has a port as variable' do
+          let(:environment) do
+            { name: 'production',
+              url: 'http://production.gitlab.com:$PORT' }
+          end
+
+          it 'allows a variable for the port' do
+            expect(builds.size).to eq(1)
+            expect(builds.first[:environment]).to eq(environment[:name])
+            expect(builds.first[:options]).to include(environment: environment)
+          end
+        end
       end
 
       context 'when no environment is specified' do
