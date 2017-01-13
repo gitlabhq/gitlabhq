@@ -166,6 +166,11 @@ spinach 9 10: *spinach-knapsack
 .ruby-21: &ruby-21
   image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.1-git-2.7-phantomjs-2.1"
   <<: *use-db
+  only:
+    - master@gitlab-org/gitlab-ce
+    - master@gitlab-org/gitlab-ee
+    - master@gitlab/gitlabhq
+    - master@gitlab/gitlab-ee
   cache:
     key: "ruby21"
     paths:
