@@ -50,7 +50,7 @@
                       = icon('github', text: 'GitHub')
                 %div
                   - if bitbucket_import_enabled?
-                    = link_to status_import_bitbucket_path, class: "btn import_bitbucket #{'how_to_import_link' unless bitbucket_import_configured?}", "data-no-turbolink" => "true" do
+                    = link_to status_import_bitbucket_path, class: "btn import_bitbucket #{'how_to_import_link' unless bitbucket_import_configured?}" do
                       = icon('bitbucket', text: 'Bitbucket')
                     - unless bitbucket_import_configured?
                       = render 'bitbucket_import_modal'

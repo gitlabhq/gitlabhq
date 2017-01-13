@@ -40,7 +40,7 @@
         .on('click', sidebarToggleSelector, () => this.toggleSidebar())
         .on('click', pinnedToggleSelector, () => this.togglePinnedState())
         .on('click', 'html, body', (e) => this.handleClickEvent(e))
-        .on('page:change', () => this.renderState())
+        .on('DOMContentLoaded', () => this.renderState())
         .on('todo:toggle', (e, count) => this.updateTodoCount(count));
       this.renderState();
     }

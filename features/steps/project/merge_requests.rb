@@ -521,6 +521,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I fill in merge request search with "Fe"' do
     fill_in 'issuable_search', with: "Fe"
+    sleep 3
   end
 
   step 'I click the "Target branch" dropdown' do

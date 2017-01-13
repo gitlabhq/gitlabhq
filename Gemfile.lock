@@ -288,8 +288,6 @@ GEM
       posix-spawn (~> 0.3)
     gitlab-license (1.0.0)
     gitlab-markup (1.5.1)
-    gitlab-turbolinks-classic (2.5.6)
-      coffee-rails
     gitlab_omniauth-ldap (1.2.1)
       net-ldap (~> 0.9)
       omniauth (~> 1.0)
@@ -922,7 +920,6 @@ DEPENDENCIES
   gitlab-flowdock-git-hook (~> 1.0.1)
   gitlab-license (~> 1.0)
   gitlab-markup (~> 1.5.1)
-  gitlab-turbolinks-classic (~> 2.5, >= 2.5.6)
   gitlab_omniauth-ldap (~> 1.2.1)
   gollum-lib (~> 4.2)
   gollum-rugged_adapter (~> 0.4.2)

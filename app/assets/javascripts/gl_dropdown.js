@@ -1,6 +1,5 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, one-var, one-var-declaration-per-line, prefer-rest-params, max-len, vars-on-top, wrap-iife, no-unused-vars, quotes, no-shadow, no-cond-assign, prefer-arrow-callback, no-return-assign, no-else-return, camelcase, comma-dangle, no-lonely-if, guard-for-in, no-restricted-syntax, consistent-return, prefer-template, no-param-reassign, no-loop-func, no-mixed-operators */
 /* global fuzzaldrinPlus */
-/* global Turbolinks */
 
 (function() {
   var GitLabDropdown, GitLabDropdownFilter, GitLabDropdownRemote,
@@ -718,7 +717,7 @@
       if ($el.length) {
         var href = $el.attr('href');
         if (href && href !== '#') {
-          Turbolinks.visit(href);
+          gl.utils.visitUrl(href);
         } else {
           $el.first().trigger('click');
         }
