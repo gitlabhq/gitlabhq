@@ -1,7 +1,7 @@
 /* global Vue, VueResource, gl */
 window.Vue = require('vue');
 window.Vue.use(require('vue-resource'));
-require('../vue_common_component/commit')
+require('../vue_common_component/commit');
 require('../boards/vue_resource_interceptor');
 require('./status');
 require('./store');

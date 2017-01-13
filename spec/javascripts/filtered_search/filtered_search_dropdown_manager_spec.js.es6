@@ -1,6 +1,6 @@
-//= require extensions/array
-//= require filtered_search/filtered_search_tokenizer
-//= require filtered_search/filtered_search_dropdown_manager
+require('~/extensions/array');
+require('~/filtered_search/filtered_search_tokenizer');
+require('~/filtered_search/filtered_search_dropdown_manager');
 
 (() => {
   describe('Filtered Search Dropdown Manager', () => {

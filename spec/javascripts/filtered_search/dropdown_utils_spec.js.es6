@@ -1,7 +1,7 @@
-//= require extensions/array
-//= require filtered_search/dropdown_utils
-//= require filtered_search/filtered_search_tokenizer
-//= require filtered_search/filtered_search_dropdown_manager
+require('~/extensions/array');
+require('~/filtered_search/dropdown_utils');
+require('~/filtered_search/filtered_search_tokenizer');
+require('~/filtered_search/filtered_search_dropdown_manager');
 
 (() => {
   describe('Dropdown Utils', () => {
