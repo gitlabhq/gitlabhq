@@ -41,6 +41,10 @@ FactoryGirl.define do
       mirror_user_id { creator_id }
     end
 
+    trait :archived do
+      archived true
+    end
+
     trait :access_requestable do
       request_access_enabled true
     end

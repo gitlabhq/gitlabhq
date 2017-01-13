@@ -608,6 +608,8 @@ module API
       expose :repository_storages
       expose :koding_enabled
       expose :koding_url
+      expose :plantuml_enabled
+      expose :plantuml_url
     end
 
     class Release < Grape::Entity

@@ -86,6 +86,9 @@
           break;
         case 'projects:merge_requests:index':
         case 'projects:issues:index':
+          if (gl.FilteredSearchManager) {
+            new gl.FilteredSearchManager();
+          }
           Issuable.init();
           new gl.IssuableBulkActions({
             prefixId: page === 'projects:merge_requests:index' ? 'merge_request_' : 'issue_',

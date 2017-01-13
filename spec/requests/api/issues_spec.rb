@@ -50,6 +50,8 @@ describe API::Issues, api: true  do
   end
   let!(:note) { create(:note_on_issue, author: user, project: project, noteable: issue) }
 
+  let(:no_milestone_title) { URI.escape(Milestone::None.title) }
+
   before do
     project.team << [user, :reporter]
     project.team << [guest, :guest]
@@ -174,7 +176,7 @@ describe API::Issues, api: true  do
       end
 
       it 'returns an array of issues with no milestone' do
-        get api("/issues?milestone=#{Milestone::None.title}", author)
+        get api("/issues?milestone=#{no_milestone_title}", author)
 
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
@@ -365,7 +367,7 @@ describe API::Issues, api: true  do
     end
 
     it 'returns an array of issues with no milestone' do
-      get api("#{base_url}?milestone=#{Milestone::None.title}", user)
+      get api("#{base_url}?milestone=#{no_milestone_title}", user)
 
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
@@ -537,7 +539,7 @@ describe API::Issues, api: true  do
     end
 
     it 'returns an array of issues with no milestone' do
-      get api("#{base_url}/issues?milestone=#{Milestone::None.title}", user)
+      get api("#{base_url}/issues?milestone=#{no_milestone_title}", user)
 
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array

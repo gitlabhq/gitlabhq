@@ -111,6 +111,7 @@ module Gitlab
     config.assets.precompile << "blob_edit/blob_edit_bundle.js"
     config.assets.precompile << "snippet/snippet_bundle.js"
     config.assets.precompile << "terminal/terminal_bundle.js"
+    config.assets.precompile << "filtered_search/filtered_search_bundle.js"
     config.assets.precompile << "lib/utils/*.js"
     config.assets.precompile << "lib/*.js"
     config.assets.precompile << "u2f.js"

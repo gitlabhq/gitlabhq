@@ -109,18 +109,19 @@ gem 'elasticsearch-rails'
 gem 'gitlab-elasticsearch-git', '~> 1.0.1', require: "elasticsearch/git"
 
 # Markdown and HTML processing
-gem 'html-pipeline',      '~> 1.11.0'
-gem 'deckar01-task_list', '1.0.6', require: 'task_list/railtie'
-gem 'gitlab-markup',      '~> 1.5.1'
-gem 'redcarpet',          '~> 3.3.3'
-gem 'RedCloth',           '~> 4.3.2'
-gem 'rdoc',               '~> 4.2'
-gem 'org-ruby',           '~> 0.9.12'
-gem 'creole',             '~> 0.5.0'
-gem 'wikicloth',          '0.8.1'
-gem 'asciidoctor',        '~> 1.5.2'
-gem 'rouge',              '~> 2.0'
-gem 'truncato',           '~> 0.7.8'
+gem 'html-pipeline',        '~> 1.11.0'
+gem 'deckar01-task_list',   '1.0.6', require: 'task_list/railtie'
+gem 'gitlab-markup',        '~> 1.5.1'
+gem 'redcarpet',            '~> 3.3.3'
+gem 'RedCloth',             '~> 4.3.2'
+gem 'rdoc',                 '~> 4.2'
+gem 'org-ruby',             '~> 0.9.12'
+gem 'creole',               '~> 0.5.0'
+gem 'wikicloth',            '0.8.1'
+gem 'asciidoctor',          '~> 1.5.2'
+gem 'asciidoctor-plantuml', '0.0.6'
+gem 'rouge',                '~> 2.0'
+gem 'truncato',             '~> 0.7.8'
 
 # See https://groups.google.com/forum/#!topic/ruby-security-ann/aSbgDiwb24s
 # and https://groups.google.com/forum/#!topic/ruby-security-ann/Dy7YiKb_pMM

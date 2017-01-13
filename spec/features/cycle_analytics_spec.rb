@@ -3,7 +3,6 @@ require 'spec_helper'
 feature 'Cycle Analytics', feature: true, js: true do
   include WaitForAjax
 
-  let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:guest) { create(:user) }
   let(:project) { create(:project) }

@@ -93,6 +93,10 @@ module API
       given koding_enabled: ->(val) { val } do
         requires :koding_url, type: String, desc: 'The Koding team URL'
       end
+      optional :plantuml_enabled, type: Boolean, desc: 'Enable PlantUML'
+      given plantuml_enabled: ->(val) { val } do
+        requires :plantuml_url, type: String, desc: 'The PlantUML server URL'
+      end
       optional :version_check_enabled, type: Boolean, desc: 'Let GitLab inform you when an update is available.'
       optional :email_author_in_body, type: Boolean, desc: 'Some email servers do not support overriding the email sender name. Enable this option to include the name of the author of the issue, merge request or comment in the email body instead.'
       optional :html_emails_enabled, type: Boolean, desc: 'By default GitLab sends emails in HTML and plain text formats so mail clients can choose what format to use. Disable this option if you only want to send emails in plain text format.'
@@ -128,7 +132,7 @@ module API
                       :shared_runners_enabled, :max_artifacts_size, :container_registry_token_expire_delay,
                       :metrics_enabled, :sidekiq_throttling_enabled, :recaptcha_enabled,
                       :akismet_enabled, :admin_notification_email, :sentry_enabled,
-                      :repository_checks_enabled, :koding_enabled, :housekeeping_enabled,
+                      :repository_checks_enabled, :koding_enabled, :housekeeping_enabled, :plantuml_enabled,
                       :version_check_enabled, :email_author_in_body, :html_emails_enabled,
                       # GitLab-EE specific settings
                       :help_text, :max_pages_size, :elasticsearch_indexing, :usage_ping_enabled,
