@@ -337,6 +337,12 @@ module API
       expose(:downvote?)  { |note| false }
     end
 
+    class NoteTemplate < Grape::Entity
+      expose :id
+      expose :title
+      expose :note
+    end
+
     class AwardEmoji < Grape::Entity
       expose :id
       expose :name
