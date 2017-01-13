@@ -107,6 +107,7 @@ describe API::Issues, api: true  do
 
       it 'returns an array of labeled issues when at least one label matches' do
         get api("/issues?labels=#{label.title},foo,bar", user)
+
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
@@ -134,6 +135,51 @@ describe API::Issues, api: true  do
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(0)
+      end
+
+      it 'returns an empty array if no issue matches milestone' do
+        get api("/issues?milestone=#{empty_milestone.title}", user)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(0)
+      end
+
+      it 'returns an empty array if milestone does not exist' do
+        get api("/issues?milestone=foo", user)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(0)
+      end
+
+      it 'returns an array of issues in given milestone' do
+        get api("/issues?milestone=#{milestone.title}", user)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(2)
+        expect(json_response.first['id']).to eq(issue.id)
+        expect(json_response.second['id']).to eq(closed_issue.id)
+      end
+
+      it 'returns an array of issues matching state in milestone' do
+        get api("/issues?milestone=#{milestone.title}"\
+                '&state=closed', user)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['id']).to eq(closed_issue.id)
+      end
+
+      it 'returns an array of issues with no milestone' do
+        get api("/issues?milestone=#{Milestone::None.title}", author)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['id']).to eq(confidential_issue.id)
       end
 
       it 'sorts by created_at descending by default' do
@@ -318,6 +364,15 @@ describe API::Issues, api: true  do
       expect(json_response.first['id']).to eq(group_closed_issue.id)
     end
 
+    it 'returns an array of issues with no milestone' do
+      get api("#{base_url}?milestone=#{Milestone::None.title}", user)
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(1)
+      expect(json_response.first['id']).to eq(group_confidential_issue.id)
+    end
+
     it 'sorts by created_at descending by default' do
       get api(base_url, user)
       response_dates = json_response.map { |issue| issue['created_at'] }
@@ -357,7 +412,6 @@ describe API::Issues, api: true  do
 
   describe "GET /projects/:id/issues" do
     let(:base_url) { "/projects/#{project.id}" }
-    let(:title) { milestone.title }
 
     it "returns 404 on private projects for other users" do
       private_project = create(:empty_project, :private)
@@ -433,8 +487,9 @@ describe API::Issues, api: true  do
       expect(json_response.first['labels']).to eq([label.title])
     end
 
-    it 'returns an array of labeled project issues when at least one label matches' do
+    it 'returns an array of labeled project issues where all labels match' do
       get api("#{base_url}/issues?labels=#{label.title},foo,bar", user)
+
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(1)
@@ -463,7 +518,8 @@ describe API::Issues, api: true  do
     end
 
     it 'returns an array of issues in given milestone' do
-      get api("#{base_url}/issues?milestone=#{title}", user)
+      get api("#{base_url}/issues?milestone=#{milestone.title}", user)
+
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(2)
@@ -478,6 +534,15 @@ describe API::Issues, api: true  do
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(1)
       expect(json_response.first['id']).to eq(closed_issue.id)
+    end
+
+    it 'returns an array of issues with no milestone' do
+      get api("#{base_url}/issues?milestone=#{Milestone::None.title}", user)
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(1)
+      expect(json_response.first['id']).to eq(confidential_issue.id)
     end
 
     it 'sorts by created_at descending by default' do
@@ -548,10 +613,19 @@ describe API::Issues, api: true  do
 
     it 'returns a project issue by iid' do
       get api("/projects/#{project.id}/issues?iid=#{issue.iid}", user)
+
       expect(response.status).to eq 200
+      expect(json_response.length).to eq 1
       expect(json_response.first['title']).to eq issue.title
       expect(json_response.first['id']).to eq issue.id
       expect(json_response.first['iid']).to eq issue.iid
+    end
+
+    it 'returns an empty array for an unknown project issue iid' do
+      get api("/projects/#{project.id}/issues?iid=#{issue.iid + 10}", user)
+
+      expect(response.status).to eq 200
+      expect(json_response.length).to eq 0
     end
 
     it "returns 404 if issue id not found" do
