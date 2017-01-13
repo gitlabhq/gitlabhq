@@ -243,4 +243,23 @@ describe CommitStatus, models: true do
         .to be_a Gitlab::Ci::Status::Success
     end
   end
+
+  describe '#sortable_name' do
+    tests = {
+      'karma' => ['karma'],
+      'karma 0 20' => ['karma ', 0, ' ', 20],
+      'karma 10 20' => ['karma ', 10, ' ', 20],
+      'karma 50:100' => ['karma ', 50, ':', 100],
+      'karma 1.10' => ['karma ', 1, '.', 10],
+      'karma 1.5.1' => ['karma ', 1, '.', 5, '.', 1],
+      'karma 1 a' => ['karma ', 1, ' a']
+    }
+
+    tests.each do |name, sortable_name|
+      it "'#{name}' sorts as '#{sortable_name}'" do
+        commit_status.name = name
+        expect(commit_status.sortable_name).to eq(sortable_name)
+      end
+    end
+  end
 end
