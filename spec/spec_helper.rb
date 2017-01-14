@@ -2,6 +2,7 @@ require './spec/simplecov_env'
 SimpleCovEnv.start!
 
 ENV["RAILS_ENV"] ||= 'test'
+ENV["IN_MEMORY_APPLICATION_SETTINGS"] = 'true'
 
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
