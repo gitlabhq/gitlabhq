@@ -13,7 +13,16 @@ class Projects::LabelsController < Projects::ApplicationController
 
   def index
     @prioritized_labels = @available_labels.prioritized(@project)
-    @labels = @available_labels.unprioritized(@project).page(params[:page])
+
+    subscribed_label_ids = Subscription.where(user_id: current_user,
+                                              project_id: project,
+                                              subscribable_type: 'Label',
+                                              subscribed: true)
+                                              .map(&:subscribable_id)
+
+    @subscribed_labels = @available_labels.find(subscribed_label_ids)
+
+    @labels = @available_labels.where.not(id: subscribed_label_ids).unprioritized(@project).page(params[:page])
 
     respond_to do |format|
       format.html

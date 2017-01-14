@@ -147,9 +147,12 @@
   color: $gray-darkest;
 }
 
-.prioritized-labels {
+.prioritized-labels,
+.subscribed-labels {
   margin-bottom: 30px;
+}
 
+.prioritized-labels {
   .add-priority {
     display: none;
     color: $gray-light;

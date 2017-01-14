@@ -24,6 +24,17 @@
           - if @prioritized_labels.present?
             = render partial: 'shared/label', subject: @project, collection: @prioritized_labels, as: :label
 
+
+    - if can?(current_user, :admin_label, @project)
+      -# Only show it in the first page
+      - hide = @available_labels.empty? || (params[:page].present? && params[:page] != '1')
+      .subscribed-labels{ class: ('hide' if hide) }
+        %h5 Subscribed Labels
+        %ul.content-list.manage-labels-list.js-subscribed-labels
+          %p.empty-message{ class: ('hidden' unless @subscribed_labels.empty?) } No subscribed labels yet
+          - if @subscribed_labels.present?
+            = render partial: 'shared/label', subject: @project, collection: @subscribed_labels, as: :label
+
     .other-labels
       - if can?(current_user, :admin_label, @project)
         %h5{ class: ('hide' if hide) } Other Labels
