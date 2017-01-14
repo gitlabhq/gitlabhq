@@ -104,7 +104,7 @@ describe Gitlab::Ci::Config::Entry::Job do
       end
 
       it 'overrides global config' do
-        expect(entry[:image].value).to eq 'some_image'
+        expect(entry[:image].value).to eq(name: 'some_image')
         expect(entry[:cache].value).to eq(key: 'test')
       end
     end

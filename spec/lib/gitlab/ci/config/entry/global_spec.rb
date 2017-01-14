@@ -95,13 +95,13 @@ describe Gitlab::Ci::Config::Entry::Global do
 
         describe '#image_value' do
           it 'returns valid image' do
-            expect(global.image_value).to eq 'ruby:2.2'
+            expect(global.image_value).to eq(name: 'ruby:2.2')
           end
         end
 
         describe '#services_value' do
           it 'returns array of services' do
-            expect(global.services_value).to eq ['postgres:9.1', 'mysql:5.5']
+            expect(global.services_value).to eq [{ name: 'postgres:9.1' }, { name: 'mysql:5.5' }]
           end
         end
 
@@ -150,8 +150,8 @@ describe Gitlab::Ci::Config::Entry::Global do
                        script: %w[rspec ls],
                        before_script: %w(ls pwd),
                        commands: "ls\npwd\nrspec\nls",
-                       image: 'ruby:2.2',
-                       services: ['postgres:9.1', 'mysql:5.5'],
+                       image: { name: 'ruby:2.2' },
+                       services: [{ name: 'postgres:9.1' }, { name: 'mysql:5.5' }],
                        stage: 'test',
                        cache: { key: 'k', untracked: true, paths: ['public/'] },
                        variables: { 'VAR' => 'value' },
@@ -161,8 +161,8 @@ describe Gitlab::Ci::Config::Entry::Global do
                          before_script: [],
                          script: %w[spinach],
                          commands: 'spinach',
-                         image: 'ruby:2.2',
-                         services: ['postgres:9.1', 'mysql:5.5'],
+                         image: { name: 'ruby:2.2' },
+                         services: [{ name: 'postgres:9.1' }, { name: 'mysql:5.5' }],
                          stage: 'test',
                          cache: { key: 'k', untracked: true, paths: ['public/'] },
                          variables: {},

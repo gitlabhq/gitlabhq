@@ -3,13 +3,13 @@ module Gitlab
     class Config
       module Entry
         ##
-        # Entry that represents a Docker image.
+        # Entry that represents a configuration of Docker service.
         #
-        class Image < Node
+        class Service < Node
           include Validatable
           include DockerImage
 
-          ALLOWED_KEYS = %i[name entrypoint].freeze
+          ALLOWED_KEYS = %i[name entrypoint command alias].freeze
 
           validations do
             validates :config, hash_or_string: true
@@ -17,6 +17,16 @@ module Gitlab
 
             validates :name, type: String, presence: true
             validates :entrypoint, type: String, allow_nil: true
+            validates :command, type: String, allow_nil: true
+            validates :alias, type: String, allow_nil: true
+          end
+
+          def alias
+            value[:alias]
+          end
+
+          def command
+            value[:command]
           end
         end
       end
