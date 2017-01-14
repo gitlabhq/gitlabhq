@@ -50,6 +50,10 @@
         icon: 'fa-tag',
         hint: 'label:',
         tag: '&lt;~label&gt;',
+      }, {
+        icon: 'fa-balance-scale',
+        hint: 'weight:',
+        tag: '&lt;weight&gt;',
       }];
 
       this.droplab.changeHookList(this.hookId, this.dropdown, [droplabFilter], this.config);

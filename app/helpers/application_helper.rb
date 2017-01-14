@@ -251,7 +251,8 @@ module ApplicationHelper
       author_id: params[:author_id],
       author_username: params[:author_username],
       search: params[:search],
-      label_name: params[:label_name]
+      label_name: params[:label_name],
+      weight: params[:weight]
     }
 
     options = exist_opts.merge(options)

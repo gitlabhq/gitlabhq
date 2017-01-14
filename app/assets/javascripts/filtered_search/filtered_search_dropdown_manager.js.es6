@@ -47,6 +47,11 @@
           extraArguments: ['labels.json', '~'],
           element: document.querySelector('#js-dropdown-label'),
         },
+        weight: {
+          reference: null,
+          gl: 'DropdownNonUser',
+          element: document.querySelector('#js-dropdown-weight'),
+        },
         hint: {
           reference: null,
           gl: 'DropdownHint',

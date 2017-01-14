@@ -82,8 +82,22 @@
                   %span.dropdown-label-box{ style: 'background: {{color}}' }
                   %span.label-title.js-data-value
                     {{title}}
+          #js-dropdown-weight.dropdown-menu{ 'data-dropdown' => true }
+            %ul{ 'data-dropdown' => true }
+              %li.filter-dropdown-item{ 'data-value' => 'none' }
+                %button.btn.btn-link
+                  No Weight
+              %li.filter-dropdown-item{ 'data-value' => 'any' }
+                %button.btn.btn-link
+                  Any Weight
+              %li.divider
+            %ul.filter-dropdown{ 'data-dropdown' => true }
+              - Issue.weight_filter_options.each do |weight|
+                %li.filter-dropdown-item{ 'data-value' => "#{weight}" }
+                  %button.btn.btn-link= weight
+
         .pull-right
-          = render 'shared/sort_dropdown'
+          = render 'shared/sort_dropdown', type: local_assigns[:type]
 
     - if @bulk_edit
       .issues_bulk_update.hide
