@@ -9,7 +9,9 @@ module Gitlab
     end
 
     def ensure_application_settings!
-      if connect_to_db?
+      return fake_application_settings unless connect_to_db?
+
+      unless ENV['IN_MEMORY_APPLICATION_SETTINGS'] == 'true'
         begin
           settings = ::ApplicationSetting.current
         # In case Redis isn't running or the Redis UNIX socket file is not available
@@ -20,15 +22,23 @@ module Gitlab
         settings ||= ::ApplicationSetting.create_from_defaults unless ActiveRecord::Migrator.needs_migration?
       end
 
-      settings || fake_application_settings
+      settings || in_memory_application_settings
     end
 
     def sidekiq_throttling_enabled?
       current_application_settings.sidekiq_throttling_enabled?
     end
 
+    def in_memory_application_settings
+      @in_memory_application_settings ||= ApplicationSetting.new(ApplicationSetting::DEFAULTS)
+    # In case migrations the application_settings table is not created yet,
+    # we fallback to a simple OpenStruct
+    rescue ActiveRecord::StatementInvalid
+      fake_application_settings
+    end
+
     def fake_application_settings
-      ApplicationSetting.new(ApplicationSetting::DEFAULTS)
+      OpenStruct.new(ApplicationSetting::DEFAULTS)
     end
 
     private
