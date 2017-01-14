@@ -198,6 +198,7 @@ production: &base
   satellites:
     # Relative paths are relative to Rails.root (default: tmp/repo_satellites/)
     path: /home/git/gitlab-satellites/
+    timeout: 30
 
   ## Backup settings
   backup:

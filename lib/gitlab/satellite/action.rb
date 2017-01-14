@@ -1,7 +1,7 @@
 module Gitlab
   module Satellite
     class Action
-      DEFAULT_OPTIONS = { git_timeout: 30.seconds }
+      DEFAULT_OPTIONS = { git_timeout: Gitlab.config.satellites.timeout.seconds }
 
       attr_accessor :options, :project, :user
 
