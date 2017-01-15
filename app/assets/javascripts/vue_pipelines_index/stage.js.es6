@@ -31,7 +31,7 @@
 
         const areaExpanded = e.currentTarget.attributes['aria-expanded'];
 
-        if (areaExpanded && areaExpanded.textContent) {
+        if (areaExpanded && (areaExpanded.textContent === 'true')) {
           return setTimeout(() => (this.request = false), 100);
         }
 
