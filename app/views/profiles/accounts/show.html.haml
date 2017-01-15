@@ -102,7 +102,7 @@
             = f.text_field :username, required: true, class: 'form-control'
         .help-block
           Current path:
-          = "#{root_url}#{current_user.username}"
+          #{root_url}#{current_user.username}
         .prepend-top-default
           = f.button class: "btn btn-warning", type: "submit" do
             = icon "spinner spin", class: "hidden loading-username"

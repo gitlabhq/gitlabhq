@@ -10,7 +10,7 @@
         %h4 CPU
         .data
           - if @cpus
-            %h1= "#{@cpus.length} cores"
+            %h1 #{@cpus.length} cores
           - else
             = icon('warning', class: 'text-warning')
             Unable to collect CPU info
@@ -19,7 +19,7 @@
         %h4 Memory
         .data
           - if @memory
-            %h1= "#{number_to_human_size(@memory.active_bytes)} / #{number_to_human_size(@memory.total_bytes)}"
+            %h1 #{number_to_human_size(@memory.active_bytes)} / #{number_to_human_size(@memory.total_bytes)}
           - else
             = icon('warning', class: 'text-warning')
             Unable to collect memory info
@@ -28,6 +28,6 @@
         %h4 Disks
         .data
           - @disks.each do |disk|
-            %h1= "#{number_to_human_size(disk[:bytes_used])} / #{number_to_human_size(disk[:bytes_total])}"
+            %h1 #{number_to_human_size(disk[:bytes_used])} / #{number_to_human_size(disk[:bytes_total])}
             %p= disk[:disk_name]
             %p= disk[:mount_path]
