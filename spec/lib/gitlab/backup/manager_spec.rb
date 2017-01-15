@@ -1,9 +1,27 @@
 require 'spec_helper'
 
 describe Backup::Manager, lib: true do
-  describe '#remove_old' do
-    let(:progress) { StringIO.new }
+  include StubENV
 
+  let(:progress) { StringIO.new }
+
+  before do
+    allow(progress).to receive(:puts)
+    allow(progress).to receive(:print)
+
+    allow_any_instance_of(String).to receive(:color) do |string, _color|
+      string
+    end
+
+    @old_progress = $progress # rubocop:disable Style/GlobalVars
+    $progress = progress # rubocop:disable Style/GlobalVars
+  end
+
+  after do
+    $progress = @old_progress # rubocop:disable Style/GlobalVars
+  end
+
+  describe '#remove_old' do
     let(:files) do
       [
         '1451606400_2016_01_01_gitlab_backup.tar',
@@ -20,20 +38,6 @@ describe Backup::Manager, lib: true do
       allow(Dir).to receive(:glob).and_return(files)
       allow(FileUtils).to receive(:rm)
       allow(Time).to receive(:now).and_return(Time.utc(2016))
-
-      allow(progress).to receive(:puts)
-      allow(progress).to receive(:print)
-
-      allow_any_instance_of(String).to receive(:color) do |string, _color|
-        string
-      end
-
-      @old_progress = $progress # rubocop:disable Style/GlobalVars
-      $progress = progress # rubocop:disable Style/GlobalVars
-    end
-
-    after do
-      $progress = @old_progress # rubocop:disable Style/GlobalVars
     end
 
     context 'when keep_time is zero' do
@@ -121,6 +125,84 @@ describe Backup::Manager, lib: true do
 
       it 'prints the error from file that could not be removed' do
         expect(progress).to have_received(:puts).with(a_string_matching(message))
+      end
+    end
+  end
+
+  describe '#unpack' do
+    before do
+      allow(Dir).to receive(:chdir)
+    end
+
+    context 'when there are no backup files in the directory' do
+      before do
+        allow(Dir).to receive(:glob).and_return([])
+      end
+
+      it 'fails the operation and prints an error' do
+        expect { subject.unpack }.to raise_error SystemExit
+        expect(progress).to have_received(:puts)
+          .with(a_string_matching('No backups found'))
+      end
+    end
+
+    context 'when there are two backup files in the directory and BACKUP variable is not set' do
+      before do
+        allow(Dir).to receive(:glob).and_return(
+          [
+            '1451606400_2016_01_01_gitlab_backup.tar',
+            '1451520000_2015_12_31_gitlab_backup.tar',
+          ]
+        )
+      end
+
+      it 'fails the operation and prints an error' do
+        expect { subject.unpack }.to raise_error SystemExit
+        expect(progress).to have_received(:puts)
+          .with(a_string_matching('Found more than one backup'))
+      end
+    end
+
+    context 'when BACKUP variable is set to a non-existing file' do
+      before do
+        allow(Dir).to receive(:glob).and_return(
+          [
+            '1451606400_2016_01_01_gitlab_backup.tar'
+          ]
+        )
+        allow(File).to receive(:exist?).and_return(false)
+
+        stub_env('BACKUP', 'wrong')
+      end
+
+      it 'fails the operation and prints an error' do
+        expect { subject.unpack }.to raise_error SystemExit
+        expect(File).to have_received(:exist?).with('wrong_gitlab_backup.tar')
+        expect(progress).to have_received(:puts)
+          .with(a_string_matching('The backup file wrong_gitlab_backup.tar does not exist'))
+      end
+    end
+
+    context 'when BACKUP variable is set to a correct file' do
+      before do
+        allow(Dir).to receive(:glob).and_return(
+          [
+            '1451606400_2016_01_01_gitlab_backup.tar'
+          ]
+        )
+        allow(File).to receive(:exist?).and_return(true)
+        allow(Kernel).to receive(:system).and_return(true)
+        allow(YAML).to receive(:load_file).and_return(gitlab_version: Gitlab::VERSION)
+
+        stub_env('BACKUP', '1451606400_2016_01_01')
+      end
+
+      it 'unpacks the file' do
+        subject.unpack
+
+        expect(Kernel).to have_received(:system)
+          .with("tar", "-xf", "1451606400_2016_01_01_gitlab_backup.tar")
+        expect(progress).to have_received(:puts).with(a_string_matching('done'))
       end
     end
   end

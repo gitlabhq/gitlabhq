@@ -142,8 +142,9 @@
     }
 
     getCategoryContents() {
-      var dashboardOptions, groupOptions, issuesPath, items, mrPath, name, options, projectOptions, userId, utils;
+      var dashboardOptions, groupOptions, issuesPath, items, mrPath, name, options, projectOptions, userId, userName, utils;
       userId = gon.current_user_id;
+      userName = gon.current_username;
       utils = gl.utils, projectOptions = gl.projectOptions, groupOptions = gl.groupOptions, dashboardOptions = gl.dashboardOptions;
       if (utils.isInGroupsPage() && groupOptions) {
         options = groupOptions[utils.getGroupSlug()];
@@ -158,10 +159,10 @@
           header: "" + name
         }, {
           text: 'Issues assigned to me',
-          url: issuesPath + "/?assignee_id=" + userId
+          url: issuesPath + "/?assignee_username=" + userName
         }, {
           text: "Issues I've created",
-          url: issuesPath + "/?author_id=" + userId
+          url: issuesPath + "/?author_username=" + userName
         }, 'separator', {
           text: 'Merge requests assigned to me',
           url: mrPath + "/?assignee_id=" + userId

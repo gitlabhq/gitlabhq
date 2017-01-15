@@ -1,0 +1,4 @@
+---
+title: 'API: fix query response for `/projects/:id/issues?milestone="No%20Milestone"`'
+merge_request: 8457
+author: Panagiotis Atmatzidis, David Eisner

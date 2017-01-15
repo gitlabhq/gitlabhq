@@ -69,7 +69,7 @@ module Gitlab
         user.ldap_block
 
         Gitlab::AppLogger.info(
-          "LDAP account \"#{user.ldap_identity.extern_uid}\" #{reason}, " +
+          "LDAP account \"#{user.ldap_identity.extern_uid}\" #{reason}, " \
           "blocking Gitlab user \"#{user.name}\" (#{user.email})"
         )
       end
@@ -78,7 +78,7 @@ module Gitlab
         user.activate
 
         Gitlab::AppLogger.info(
-          "LDAP account \"#{user.ldap_identity.extern_uid}\" #{reason}, " +
+          "LDAP account \"#{user.ldap_identity.extern_uid}\" #{reason}, " \
           "unblocking Gitlab user \"#{user.name}\" (#{user.email})"
         )
       end

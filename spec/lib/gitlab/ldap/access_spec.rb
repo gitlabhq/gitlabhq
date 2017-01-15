@@ -127,7 +127,7 @@ describe Gitlab::LDAP::Access, lib: true do
 
     it 'logs the reason' do
       expect(Gitlab::AppLogger).to have_received(:info).with(
-        "LDAP account \"123456\" reason, " +
+        "LDAP account \"123456\" reason, " \
         "blocking Gitlab user \"#{user.name}\" (#{user.email})"
       )
     end
@@ -148,7 +148,7 @@ describe Gitlab::LDAP::Access, lib: true do
 
     it 'logs the reason' do
       Gitlab::AppLogger.info(
-        "LDAP account \"123456\" reason, " +
+        "LDAP account \"123456\" reason, " \
         "unblocking Gitlab user \"#{user.name}\" (#{user.email})"
       )
     end

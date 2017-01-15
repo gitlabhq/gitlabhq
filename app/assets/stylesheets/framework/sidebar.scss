@@ -183,7 +183,9 @@
 
   &.right-sidebar-expanded {
     .line-resolve-all-container {
-      display: none;
+      @media (min-width: $sidebar-breakpoint) {
+        display: none;
+      }
     }
   }
 }

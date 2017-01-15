@@ -126,5 +126,16 @@ describe Gitlab::Metrics::RackMiddleware do
 
       expect(transaction.action).to eq('Grape#GET /projects/:id/archive')
     end
+
+    it 'does not tag a transaction if route infos are missing' do
+      endpoint = double(:endpoint)
+      allow(endpoint).to receive(:route).and_raise
+
+      env['api.endpoint'] = endpoint
+
+      middleware.tag_endpoint(transaction, env)
+
+      expect(transaction.action).to be_nil
+    end
   end
 end
