@@ -183,12 +183,8 @@ describe API::ProjectHooks, 'ProjectHooks', api: true do
       expect do
         delete api("/projects/#{project.id}/hooks/#{hook.id}", user)
       end.to change {project.hooks.count}.by(-1)
-      expect(response).to have_http_status(200)
-    end
 
-    it "returns success when deleting hook" do
-      delete api("/projects/#{project.id}/hooks/#{hook.id}", user)
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(204)
     end
 
     it "returns a 404 error when deleting non existent hook" do

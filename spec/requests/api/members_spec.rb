@@ -256,7 +256,7 @@ describe API::Members, api: true  do
           expect do
             delete api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", developer)
 
-            expect(response).to have_http_status(200)
+            expect(response).to have_http_status(204)
           end.to change { source.members.count }.by(-1)
         end
       end
@@ -267,7 +267,7 @@ describe API::Members, api: true  do
             expect do
               delete api("/#{source_type.pluralize}/#{source.id}/members/#{access_requester.id}", master)
 
-              expect(response).to have_http_status(source_type == 'project' ? 200 : 404)
+              expect(response).to have_http_status(source_type == 'project' ? 204 : 404)
             end.not_to change { source.requesters.count }
           end
         end
@@ -276,15 +276,15 @@ describe API::Members, api: true  do
           expect do
             delete api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", master)
 
-            expect(response).to have_http_status(200)
+            expect(response).to have_http_status(204)
           end.to change { source.members.count }.by(-1)
         end
       end
 
-      it "returns #{source_type == 'project' ? 200 : 404} if member does not exist" do
+      it "returns #{source_type == 'project' ? 204 : 404} if member does not exist" do
         delete api("/#{source_type.pluralize}/#{source.id}/members/123", master)
 
-        expect(response).to have_http_status(source_type == 'project' ? 200 : 404)
+        expect(response).to have_http_status(source_type == 'project' ? 204 : 404)
       end
     end
   end

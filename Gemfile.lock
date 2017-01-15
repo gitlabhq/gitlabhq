@@ -311,7 +311,7 @@ GEM
       multi_json (~> 1.11)
       os (~> 0.9)
       signet (~> 0.7)
-    grape (0.18.0)
+    grape (0.19.1)
       activesupport
       builder
       hashie (>= 2.1.0)
@@ -899,7 +899,7 @@ DEPENDENCIES
   gollum-rugged_adapter (~> 0.4.2)
   gon (~> 6.1.0)
   google-api-client (~> 0.8.6)
-  grape (~> 0.18.0)
+  grape (~> 0.19.0)
   grape-entity (~> 0.6.0)
   haml_lint (~> 0.18.2)
   hamlit (~> 2.6.1)

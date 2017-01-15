@@ -100,9 +100,8 @@ module API
         end
         delete ":id/#{path}/:key_id/disable" do
           key = user_project.deploy_keys_projects.find_by(deploy_key_id: params[:key_id])
-          key.destroy
 
-          present key.deploy_key, with: Entities::SSHKey
+          key.destroy
         end
 
         desc 'Delete existing deploy key of currently authenticated user' do
@@ -113,6 +112,7 @@ module API
         end
         delete ":id/#{path}/:key_id" do
           key = user_project.deploy_keys.find(params[:key_id])
+          
           key.destroy
         end
       end

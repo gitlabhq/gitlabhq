@@ -122,10 +122,10 @@ describe API::Environments, api: true  do
 
   describe 'DELETE /projects/:id/environments/:environment_id' do
     context 'as a master' do
-      it 'returns a 200 for an existing environment' do
+      it 'returns a 204 for an existing environment' do
         delete api("/projects/#{project.id}/environments/#{environment.id}", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(204)
       end
 
       it 'returns a 404 for non existing id' do

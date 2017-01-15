@@ -91,6 +91,8 @@ describe API::SystemHooks, api: true  do
       expect do
         delete api("/hooks/#{hook.id}", admin)
       end.to change { SystemHook.count }.by(-1)
+
+      expect(response).to have_http_status(204)
     end
 
     it 'returns 404 if the system hook does not exist' do

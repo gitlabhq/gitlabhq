@@ -190,7 +190,8 @@ describe API::Triggers do
         expect do
           delete api("/projects/#{project.id}/triggers/#{trigger.token}", user)
         end.to change{project.triggers.count}.by(-1)
-        expect(response).to have_http_status(200)
+        
+        expect(response).to have_http_status(204)
       end
 
       it 'responds with 404 Not Found if requesting non-existing trigger' do

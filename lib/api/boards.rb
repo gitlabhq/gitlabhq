@@ -118,11 +118,9 @@ module API
 
           list = board_lists.find(params[:list_id])
 
-          service = ::Boards::Lists::DestroyService.new(user_project, current_user)
+          status = ::Boards::Lists::DestroyService.new(user_project, current_user).execute(list)
 
-          if service.execute(list)
-            present list, with: Entities::List
-          else
+          if status.nil?
             render_api_error!({ error: 'List could not be deleted!' }, 400)
           end
         end

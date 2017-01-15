@@ -421,7 +421,7 @@ describe API::Groups, api: true  do
       it "removes group" do
         delete api("/groups/#{group1.id}", user1)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(204)
       end
 
       it "does not remove a group if not an owner" do
@@ -450,7 +450,7 @@ describe API::Groups, api: true  do
       it "removes any existing group" do
         delete api("/groups/#{group2.id}", admin)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(204)
       end
 
       it "does not remove a non existing group" do

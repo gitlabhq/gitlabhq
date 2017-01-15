@@ -348,8 +348,6 @@ module API
         if current_user.starred?(user_project)
           current_user.toggle_star(user_project)
           user_project.reload
-
-          present user_project, with: Entities::Project
         else
           not_modified!
         end
@@ -428,7 +426,6 @@ module API
         not_found!('Group Link') unless link
 
         link.destroy
-        no_content!
       end
 
       desc 'Upload a file'

@@ -899,7 +899,8 @@ describe API::Projects, api: true  do
       expect do
         delete api("/projects/#{project.id}/snippets/#{snippet.id}", user)
       end.to change { Snippet.count }.by(-1)
-      expect(response).to have_http_status(200)
+
+      expect(response).to have_http_status(204)
     end
 
     it 'returns 404 when deleting unknown snippet id' do
@@ -981,10 +982,13 @@ describe API::Projects, api: true  do
         it 'makes forked project unforked' do
           post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", admin)
           project_fork_target.reload
+
           expect(project_fork_target.forked_from_project).not_to be_nil
           expect(project_fork_target.forked?).to be_truthy
+
           delete api("/projects/#{project_fork_target.id}/fork", admin)
-          expect(response).to have_http_status(200)
+
+          expect(response).to have_http_status(204)
           project_fork_target.reload
           expect(project_fork_target.forked_from_project).to be_nil
           expect(project_fork_target.forked?).not_to be_truthy
@@ -1365,8 +1369,7 @@ describe API::Projects, api: true  do
       it 'unstars the project' do
         expect { delete api("/projects/#{project.id}/star", user) }.to change { project.reload.star_count }.by(-1)
 
-        expect(response).to have_http_status(200)
-        expect(json_response['star_count']).to eq(0)
+        expect(response).to have_http_status(204)
       end
     end
 
@@ -1383,7 +1386,8 @@ describe API::Projects, api: true  do
     context 'when authenticated as user' do
       it 'removes project' do
         delete api("/projects/#{project.id}", user)
-        expect(response).to have_http_status(200)
+
+        expect(response).to have_http_status(204)
       end
 
       it 'does not remove a project if not an owner' do
@@ -1407,7 +1411,8 @@ describe API::Projects, api: true  do
     context 'when authenticated as admin' do
       it 'removes any existing project' do
         delete api("/projects/#{project.id}", admin)
-        expect(response).to have_http_status(200)
+
+        expect(response).to have_http_status(204)
       end
 
       it 'does not remove a non existing project' do

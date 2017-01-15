@@ -599,9 +599,7 @@ module API
           hash.merge!(key => nil)
         end
 
-        if service.update_attributes(attrs.merge(active: false))
-          true
-        else
+        if service.update_attributes(attrs.merge(active: false)).nil?
           render_api_error!('400 Bad Request', 400)
         end
       end

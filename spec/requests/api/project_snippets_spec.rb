@@ -110,7 +110,7 @@ describe API::ProjectSnippets, api: true do
 
       delete api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/", admin)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(204)
     end
 
     it 'returns 404 for invalid snippet id' do

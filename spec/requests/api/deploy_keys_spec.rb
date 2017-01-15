@@ -120,6 +120,8 @@ describe API::DeployKeys, api: true  do
       expect do
         delete api("/projects/#{project.id}/deploy_keys/#{deploy_key.id}", admin)
       end.to change{ project.deploy_keys.count }.by(-1)
+
+      expect(response).to have_http_status(204)
     end
 
     it 'should return 404 Not Found with invalid ID' do
@@ -159,8 +161,7 @@ describe API::DeployKeys, api: true  do
           delete api("/projects/#{project.id}/deploy_keys/#{deploy_key.id}/disable", admin)
         end.to change { project.deploy_keys.count }.from(1).to(0)
 
-        expect(response).to have_http_status(200)
-        expect(json_response['id']).to eq(deploy_key.id)
+        expect(response).to have_http_status(204)
       end
     end
 

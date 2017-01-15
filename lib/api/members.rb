@@ -123,8 +123,6 @@ module API
             { message: "Access revoked", id: params[:user_id].to_i }
           else
             ::Members::DestroyService.new(source, current_user, declared_params).execute
-
-            present member.user, with: Entities::Member, member: member
           end
         end
       end

@@ -120,11 +120,7 @@ module API
         result = DeleteBranchService.new(user_project, current_user).
                  execute(params[:branch])
 
-        if result[:status] == :success
-          {
-            branch_name: params[:branch]
-          }
-        else
+        if result[:status] != :success
           render_api_error!(result[:message], result[:return_code])
         end
       end
@@ -137,8 +133,6 @@ module API
       #   DELETE /projects/:id/repository/branches/delete_merged
       delete ":id/repository/merged_branches" do
         DeleteMergedBranchesService.new(user_project, current_user).async_execute
-
-        status(200)
       end
     end
   end

@@ -115,7 +115,6 @@ module API
         return not_found!('Snippet') unless snippet
         authorize! :destroy_personal_snippet, snippet
         snippet.destroy
-        no_content!
       end
 
       desc 'Get a raw snippet' do

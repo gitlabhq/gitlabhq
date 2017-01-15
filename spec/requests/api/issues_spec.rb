@@ -1056,8 +1056,8 @@ describe API::Issues, api: true  do
 
       it "deletes the issue if an admin requests it" do
         delete api("/projects/#{project.id}/issues/#{issue.id}", owner)
-        expect(response).to have_http_status(200)
-        expect(json_response['state']).to eq 'opened'
+
+        expect(response).to have_http_status(204)
       end
     end
 
@@ -1171,8 +1171,8 @@ describe API::Issues, api: true  do
     it 'unsubscribes from an issue' do
       delete api("/projects/#{project.id}/issues/#{issue.id}/subscription", user)
 
-      expect(response).to have_http_status(200)
-      expect(json_response['subscribed']).to eq(false)
+      expect(response).to have_http_status(204)
+      expect(issue.subscribed?(user, project)).to be_falsey
     end
 
     it 'returns 304 if not subscribed' do

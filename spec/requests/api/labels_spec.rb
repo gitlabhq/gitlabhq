@@ -176,7 +176,8 @@ describe API::Labels, api: true  do
   describe 'DELETE /projects/:id/labels' do
     it 'returns 200 for existing label' do
       delete api("/projects/#{project.id}/labels", user), name: 'label1'
-      expect(response).to have_http_status(200)
+
+      expect(response).to have_http_status(204)
     end
 
     it 'returns 404 for non existing label' do
@@ -364,9 +365,8 @@ describe API::Labels, api: true  do
       it "unsubscribes from the label" do
         delete api("/projects/#{project.id}/labels/#{label1.title}/subscription", user)
 
-        expect(response).to have_http_status(200)
-        expect(json_response["name"]).to eq(label1.title)
-        expect(json_response["subscribed"]).to be_falsey
+        expect(response).to have_http_status(204)
+        expect(label1.subscribed?(user, project)).to be_falsey
       end
     end
 
@@ -374,9 +374,8 @@ describe API::Labels, api: true  do
       it "unsubscribes from the label" do
         delete api("/projects/#{project.id}/labels/#{label1.id}/subscription", user)
 
-        expect(response).to have_http_status(200)
-        expect(json_response["name"]).to eq(label1.title)
-        expect(json_response["subscribed"]).to be_falsey
+        expect(response).to have_http_status(204)
+        expect(label1.subscribed?(user, project)).to be_falsey
       end
     end
 

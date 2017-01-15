@@ -61,8 +61,6 @@ module API
       delete ':id' do
         todo = current_user.todos.find(params[:id])
         TodoService.new.mark_todos_as_done([todo], current_user)
-
-        present todo.reload, with: Entities::Todo, current_user: current_user
       end
 
       desc 'Mark all todos as done'

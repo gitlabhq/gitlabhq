@@ -400,7 +400,7 @@ describe API::MergeRequests, api: true  do
       it "destroys the merge request owners can destroy" do
         delete api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(204)
       end
     end
   end
@@ -654,8 +654,7 @@ describe API::MergeRequests, api: true  do
     it 'unsubscribes from a merge request' do
       delete api("/projects/#{project.id}/merge_requests/#{merge_request.id}/subscription", user)
 
-      expect(response).to have_http_status(200)
-      expect(json_response['subscribed']).to eq(false)
+      expect(response).to have_http_status(204)
     end
 
     it 'returns 304 if not subscribed' do

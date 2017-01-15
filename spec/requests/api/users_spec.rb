@@ -513,7 +513,8 @@ describe API::Users, api: true  do
         expect do
           delete api("/users/#{user.id}/keys/#{key.id}", admin)
         end.to change { user.keys.count }.by(-1)
-        expect(response).to have_http_status(200)
+
+        expect(response).to have_http_status(204)
       end
 
       it 'returns 404 error if user not found' do
@@ -607,7 +608,8 @@ describe API::Users, api: true  do
         expect do
           delete api("/users/#{user.id}/emails/#{email.id}", admin)
         end.to change { user.emails.count }.by(-1)
-        expect(response).to have_http_status(200)
+
+        expect(response).to have_http_status(204)
       end
 
       it 'returns 404 error if user not found' do
@@ -638,10 +640,10 @@ describe API::Users, api: true  do
 
     it "deletes user" do
       delete api("/users/#{user.id}", admin)
-      expect(response).to have_http_status(200)
+
+      expect(response).to have_http_status(204)
       expect { User.find(user.id) }.to raise_error ActiveRecord::RecordNotFound
       expect { Namespace.find(namespace.id) }.to raise_error ActiveRecord::RecordNotFound
-      expect(json_response['email']).to eq(user.email)
     end
 
     it "does not delete for unauthenticated user" do
@@ -836,7 +838,8 @@ describe API::Users, api: true  do
       expect do
         delete api("/user/keys/#{key.id}", user)
       end.to change{user.keys.count}.by(-1)
-      expect(response).to have_http_status(200)
+
+      expect(response).to have_http_status(204)
     end
 
     it "returns 404 if key ID not found" do
@@ -940,7 +943,8 @@ describe API::Users, api: true  do
       expect do
         delete api("/user/emails/#{email.id}", user)
       end.to change{user.emails.count}.by(-1)
-      expect(response).to have_http_status(200)
+
+      expect(response).to have_http_status(204)
     end
 
     it "returns 404 if email ID not found" do

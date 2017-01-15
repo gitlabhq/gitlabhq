@@ -64,7 +64,7 @@ module API
       put ':id/variables/:key' do
         variable = user_project.variables.find_by(key: params[:key])
 
-        return not_found!('Variable') unless variable
+        not_found!('Variable') unless variable
 
         if variable.update(value: params[:value])
           present variable, with: Entities::Variable
@@ -82,9 +82,9 @@ module API
       delete ':id/variables/:key' do
         variable = user_project.variables.find_by(key: params[:key])
 
-        return not_found!('Variable') unless variable
+        not_found!('Variable') unless variable
 
-        present variable.destroy, with: Entities::Variable
+        variable.destroy
       end
     end
   end

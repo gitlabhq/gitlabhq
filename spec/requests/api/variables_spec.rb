@@ -153,7 +153,8 @@ describe API::Variables, api: true do
         expect do
           delete api("/projects/#{project.id}/variables/#{variable.key}", user)
         end.to change{project.variables.count}.by(-1)
-        expect(response).to have_http_status(200)
+
+        expect(response).to have_http_status(204)
       end
 
       it 'responds with 404 Not Found if requesting non-existing variable' do

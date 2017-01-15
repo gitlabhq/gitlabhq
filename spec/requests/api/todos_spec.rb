@@ -114,7 +114,7 @@ describe API::Todos, api: true do
       it 'marks a todo as done' do
         delete api("/todos/#{pending_1.id}", john_doe)
 
-        expect(response.status).to eq(200)
+        expect(response.status).to eq(204)
         expect(pending_1.reload).to be_done
       end
 
@@ -139,11 +139,7 @@ describe API::Todos, api: true do
       it 'marks all todos as done' do
         delete api('/todos', john_doe)
 
-        expect(response.status).to eq(200)
-        expect(response.body).to eq('3')
-        expect(pending_1.reload).to be_done
-        expect(pending_2.reload).to be_done
-        expect(pending_3.reload).to be_done
+        expect(response.status).to eq(204)
       end
 
       it 'updates todos cache' do
