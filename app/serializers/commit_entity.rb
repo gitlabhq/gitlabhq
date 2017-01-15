@@ -8,16 +8,16 @@ class CommitEntity < API::Entities::RepoCommit
   end
 
   expose :commit_url do |commit|
-    namespace_project_tree_url(
+    namespace_project_commit_url(
       request.project.namespace,
       request.project,
-      id: commit.id)
+      commit)
   end
 
   expose :commit_path do |commit|
-    namespace_project_tree_path(
+    namespace_project_commit_path(
       request.project.namespace,
       request.project,
-      id: commit.id)
+      commit)
   end
 end
