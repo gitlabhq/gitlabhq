@@ -33,8 +33,10 @@
 
         if (areaExpanded && (areaExpanded.textContent === 'true')) {
           const related = e.relatedTarget;
-          if (!related) {
+          if (!related && e.sourceCapabilities) {
             return this.clearBuilds();
+          } else if (!related && !e.sourceCapabilities) {
+            return null;
           } else if (!related.parentElement) {
             return this.clearBuilds();
           } else if (~related.parentElement.parentElement.className.indexOf('js-builds-dropdown-container')) {
