@@ -55,30 +55,30 @@ module ReactiveCaching
     self.reactive_cache_refresh_interval = 1.minute
     self.reactive_cache_lifetime = 10.minutes
 
-    def calculate_reactive_cache
+    def calculate_reactive_cache(*args)
       raise NotImplementedError
     end
 
-    def with_reactive_cache(&blk)
-      within_reactive_cache_lifetime do
-        data = Rails.cache.read(full_reactive_cache_key)
+    def with_reactive_cache(*args, &blk)
+      within_reactive_cache_lifetime(*args) do
+        data = Rails.cache.read(full_reactive_cache_key(*args))
         yield data if data.present?
       end
     ensure
-      Rails.cache.write(full_reactive_cache_key('alive'), true, expires_in: self.class.reactive_cache_lifetime)
-      ReactiveCachingWorker.perform_async(self.class, id)
+      Rails.cache.write(alive_reactive_cache_key(*args), true, expires_in: self.class.reactive_cache_lifetime)
+      ReactiveCachingWorker.perform_async(self.class, id, *args)
     end
 
-    def clear_reactive_cache!
-      Rails.cache.delete(full_reactive_cache_key)
+    def clear_reactive_cache!(*args)
+      Rails.cache.delete(full_reactive_cache_key(*args))
     end
 
-    def exclusively_update_reactive_cache!
-      locking_reactive_cache do
-        within_reactive_cache_lifetime do
-          enqueuing_update do
-            value = calculate_reactive_cache
-            Rails.cache.write(full_reactive_cache_key, value)
+    def exclusively_update_reactive_cache!(*args)
+      locking_reactive_cache(*args) do
+        within_reactive_cache_lifetime(*args) do
+          enqueuing_update(*args) do
+            value = calculate_reactive_cache(*args)
+            Rails.cache.write(full_reactive_cache_key(*args), value)
           end
         end
       end
@@ -93,22 +93,26 @@ module ReactiveCaching
       ([prefix].flatten + qualifiers).join(':')
     end
 
-    def locking_reactive_cache
-      lease = Gitlab::ExclusiveLease.new(full_reactive_cache_key, timeout: reactive_cache_lease_timeout)
+    def alive_reactive_cache_key(*qualifiers)
+      full_reactive_cache_key(*(qualifiers + ['alive']))
+    end
+
+    def locking_reactive_cache(*args)
+      lease = Gitlab::ExclusiveLease.new(full_reactive_cache_key(*args), timeout: reactive_cache_lease_timeout)
       uuid = lease.try_obtain
       yield if uuid
     ensure
-      Gitlab::ExclusiveLease.cancel(full_reactive_cache_key, uuid)
+      Gitlab::ExclusiveLease.cancel(full_reactive_cache_key(*args), uuid)
     end
 
-    def within_reactive_cache_lifetime
-      yield if Rails.cache.read(full_reactive_cache_key('alive'))
+    def within_reactive_cache_lifetime(*args)
+      yield if Rails.cache.read(alive_reactive_cache_key(*args))
     end
 
-    def enqueuing_update
+    def enqueuing_update(*args)
       yield
     ensure
-      ReactiveCachingWorker.perform_in(self.class.reactive_cache_refresh_interval, self.class, id)
+      ReactiveCachingWorker.perform_in(self.class.reactive_cache_refresh_interval, self.class, id, *args)
     end
   end
 end

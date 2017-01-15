@@ -12,38 +12,13 @@ class CiService < Service
     %w(push)
   end
 
-  def merge_request_page(iid, sha, ref)
-    commit_page(sha, ref)
-  end
-
-  def commit_page(sha, ref)
-    build_page(sha, ref)
-  end
-
-  # Return complete url to merge_request page
+  # Return complete url to build page
   #
   # Ex.
   #   http://jenkins.example.com:8888/job/test1/scm/bySHA1/12d65c
   #
   def build_page(sha, ref)
     # implement inside child
-  end
-
-  # Return string with build status or :error symbol
-  #
-  # Allowed states: 'success', 'failed', 'running', 'pending', 'skipped'
-  #
-  #
-  # Ex.
-  #   @service.merge_request_status(9, '13be4ac', 'dev')
-  #   # => 'success'
-  #
-  #   @service.merge_request_status(10, '2abe4ac', 'dev)
-  #   # => 'running'
-  #
-  #
-  def merge_request_status(iid, sha, ref)
-    commit_status(sha, ref)
   end
 
   # Return string with build status or :error symbol

@@ -73,12 +73,12 @@
           <table class="table ci-table">
             <thead>
               <tr>
-                <th>Status</th>
-                <th>Pipeline</th>
-                <th>Commit</th>
-                <th>Stages</th>
-                <th></th>
-                <th class="hidden-xs"></th>
+                <th class="pipeline-status">Status</th>
+                <th class="pipeline-info">Pipeline</th>
+                <th class="pipeline-commit">Commit</th>
+                <th class="pipeline-stages">Stages</th>
+                <th class="pipeline-date"></th>
+                <th class="pipeline-actions hidden-xs"></th>
               </tr>
             </thead>
             <tbody>
