@@ -24,7 +24,6 @@ before_script:
   - '[ "$USE_BUNDLE_INSTALL" != "true" ] || retry bundle install --without postgres production --jobs $(nproc) $FLAGS'
   - retry gem install knapsack
   - '[ "$SETUP_DB" != "true" ] || bundle exec rake db:drop db:create db:schema:load db:migrate add_limits_mysql'
-  - npm install
 
 stages:
 - prepare
@@ -109,12 +108,14 @@ setup-test-env:
   <<: *dedicated-runner
   stage: prepare
   script:
+    - npm install
     - bundle exec rake webpack:compile
     - bundle exec rake assets:precompile 2>/dev/null
     - bundle exec ruby -Ispec -e 'require "spec_helper" ; TestEnv.init'
   artifacts:
     expire_in: 7d
     paths:
+      - node_modules
       - public/assets
       - tmp/tests
 
@@ -235,7 +236,7 @@ spinach 9 10 ruby21: *spinach-knapsack-ruby21
   script:
     - bundle exec $CI_BUILD_NAME
 
-rubocop: 
+rubocop:
   <<: *ruby-static-analysis
   <<: *dedicated-runner
   stage: test
@@ -298,7 +299,7 @@ karma:
   cache:
     paths:
       - vendor/ruby
-      - node_modules/
+      - node_modules
   stage: test
   <<: *use-db
   <<: *dedicated-runner
