@@ -1,6 +1,8 @@
 require 'uri'
 
 class JenkinsDeprecatedService < CiService
+  include ReactiveService
+
   prop_accessor :project_url
   boolean_accessor :multiproject_enabled
   boolean_accessor :pass_unstable
@@ -61,6 +63,10 @@ class JenkinsDeprecatedService < CiService
     end
   end
 
+  def commit_status(sha, ref = nil)
+    with_reactive_cache(sha, ref) {|cached| cached[:commit_status] }
+  end
+
   # When multi-project is enabled we need to have a different URL. Rather than
   # relying on the user to provide the proper URL depending on multi-project
   # we just parse the URL and make sure it's how we want it.
@@ -69,7 +75,13 @@ class JenkinsDeprecatedService < CiService
     URI.join(url, '/job').to_s
   end
 
-  def commit_status(sha, ref = nil)
+  def calculate_reactive_cache(sha, ref)
+    { commit_status: read_commit_status(sha, ref) }
+  end
+
+  private
+
+  def read_commit_status(sha, ref)
     parsed_url = URI.parse(build_page(sha, ref))
 
     if parsed_url.userinfo.blank?
