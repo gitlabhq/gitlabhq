@@ -42,19 +42,16 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def update
-    project = ::Projects::UpdateService.new(@project, current_user, project_params).execute
+    result = ::Projects::UpdateService.new(@project, current_user, project_params).execute
 
     # Refresh the repo in case anything changed
-    @repository = project.repository
+    @repository = @project.repository
 
     respond_to do |format|
-      if project.valid?
+      if result[:status] == :success
         flash[:notice] = "Project '#{@project.name}' was successfully updated."
         format.html do
-          redirect_to(
-            edit_project_path(@project),
-            notice: "Project '#{@project.name}' was successfully updated."
-          )
+          redirect_to(edit_project_path(@project))
         end
       else
         format.html { render 'edit' }

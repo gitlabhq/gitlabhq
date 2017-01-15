@@ -1,4 +1,4 @@
 ---
-title: Fix none display notice when project settings updated
-merge_request:
+title: Ensure updating project settings shows a flash message on success
+merge_request: 8579
 author: Sandish Chen

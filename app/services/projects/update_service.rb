@@ -9,7 +9,7 @@ module Projects
             Gitlab::VisibilityLevel.allowed_for?(current_user, new_visibility)
 
           deny_visibility_level(project, new_visibility)
-          return project
+          return error('Visibility level unallowed')
         end
       end
 
@@ -30,8 +30,11 @@ module Projects
         if project.previous_changes.include?('path')
           project.rename_repo
         end
+
+        success
+      else
+        error('Project could not be updated')
       end
-      project
     end
   end
 end
