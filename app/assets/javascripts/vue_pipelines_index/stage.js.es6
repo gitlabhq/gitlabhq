@@ -36,7 +36,10 @@
           const related = e.relatedTarget;
           if (!related && e.sourceCapabilities) {
             return this.clearBuilds();
-          } else if (!related && !e.sourceCapabilities) {
+          } else if (!related && e.sourceCapabilities === null) {
+            return null;
+          } else if (!related && e.sourceCapabilities === undefined) {
+            this.request = false;
             return null;
           } else if (!related.parentElement) {
             return this.clearBuilds();
