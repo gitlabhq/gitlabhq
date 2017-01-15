@@ -25,8 +25,9 @@
             - when someone clicks outside of the dropdown
 
           In order for this to work:
-            - here we setTimeout to give enough time to initialize the request
-            - but short enough that a subsequent click will reset that state
+            - we check that the event has the correct aria attribute
+            - we make sure that if it does, we check where the event is on the DOM
+            - we also check to see if the event is on the DOM or the native browser client
         */
 
         const areaExpanded = e.currentTarget.attributes['aria-expanded'];
