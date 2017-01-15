@@ -1,6 +1,6 @@
 %tr.deployment
   %td
-    %strong= "##{deployment.iid}"
+    %strong= ("##{deployment.iid}")
 
   %td
     = render 'projects/deployments/commit', deployment: deployment
@@ -8,7 +8,7 @@
   %td.build-column
     - if deployment.deployable
       = link_to [@project.namespace.becomes(Namespace), @project, deployment.deployable], class: 'build-link' do
-        = "#{deployment.deployable.name} (##{deployment.deployable.id})"
+        = ("#{deployment.deployable.name} (##{deployment.deployable.id})")
       - if deployment.user
         by
         = user_avatar(user: deployment.user, size: 20)
