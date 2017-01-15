@@ -1,5 +1,5 @@
 /* global Vue, Flash, gl */
-/* eslint-disable no-param-reassign */
+/* eslint-disable no-param-reassign, no-bitwise */
 
 ((gl) => {
   gl.VueStage = Vue.extend({
@@ -32,7 +32,14 @@
         const areaExpanded = e.currentTarget.attributes['aria-expanded'];
 
         if (areaExpanded && (areaExpanded.textContent === 'true')) {
-          return setTimeout(() => (this.request = false), 100);
+          const related = e.relatedTarget;
+          if (!related) {
+            return this.clearBuilds();
+          } else if (!related.parentElement) {
+            return this.clearBuilds();
+          } else if (~related.parentElement.parentElement.className.indexOf('js-builds-dropdown-container')) {
+            return null;
+          }
         }
 
         if (this.request) return this.clearBuilds();
