@@ -100,4 +100,4 @@ linters:
     enabled: true
 
   UnnecessaryStringOutput:
-    enabled: false
+    enabled: true
