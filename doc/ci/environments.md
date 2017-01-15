@@ -297,7 +297,7 @@ deploy_review:
     - echo "Deploy a review app"
   environment:
     name: review/$CI_BUILD_REF_NAME
-    url: https://$CI_BUILD_REF_SLUG.review.example.com
+    url: https://$CI_ENVIRONMENT_SLUG.review.example.com
   only:
     - branches
   except:
