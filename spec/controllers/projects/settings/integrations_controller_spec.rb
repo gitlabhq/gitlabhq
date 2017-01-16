@@ -1,8 +1,8 @@
-require('spec_helper')
+require 'spec_helper'
 
 describe Projects::Settings::IntegrationsController do
   let(:project) { create(:project, :public) }
-  let(:user)    { create(:user) }
+  let(:user) { create(:user) }
 
   before do
     project.team << [user, :master]

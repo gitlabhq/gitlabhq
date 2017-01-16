@@ -4,8 +4,8 @@ module Projects
       include ServiceParams
 
       before_action :authorize_admin_project!
-
       layout "project_settings"
+      
       def show
         @hooks = @project.hooks
         @hook = ProjectHook.new
