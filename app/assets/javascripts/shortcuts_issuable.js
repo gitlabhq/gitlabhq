@@ -39,29 +39,33 @@
     }
 
     ShortcutsIssuable.prototype.replyWithSelectedText = function() {
-      var quote, replyField, selected, separator;
-      if (window.getSelection) {
-        selected = window.getSelection().toString();
-        replyField = $('.js-main-target-form #note_note');
-        if (selected.trim() === "") {
-          return;
-        }
-        // Put a '>' character before each non-empty line in the selection
-        quote = _.map(selected.split("\n"), function(val) {
-          if (val.trim() !== '') {
-            return "> " + val + "\n";
-          }
-        });
-        // If replyField already has some content, add a newline before our quote
-        separator = replyField.val().trim() !== "" && "\n" || '';
-        replyField.val(function(_, current) {
-          return current + separator + quote.join('') + "\n";
-        });
-        // Trigger autosave for the added text
-        replyField.trigger('input');
-        // Focus the input field
-        return replyField.focus();
+      var quote, replyField, selectedDocument, selected, selection, separator;
+      if (!window.getSelection) return;
+
+      selection = window.getSelection();
+      if (!selection.rangeCount || selection.rangeCount === 0) return;
+
+      selectedDocument = selection.getRangeAt(0).cloneContents();
+      if (!selectedDocument) return;
+
+      selected = window.gl.CopyAsGFM.nodeToGFM(selectedDocument);
+
+      replyField = $('.js-main-target-form #note_note');
+      if (selected.trim() === "") {
+        return;
       }
+      quote = _.map(selected.split("\n"), function(val) {
+        return "> " + val + "\n";
+      });
+      // If replyField already has some content, add a newline before our quote
+      separator = replyField.val().trim() !== "" && "\n" || '';
+      replyField.val(function(_, current) {
+        return current + separator + quote.join('') + "\n";
+      });
+      // Trigger autosave for the added text
+      replyField.trigger('input');
+      // Focus the input field
+      return replyField.focus();
     };
 
     ShortcutsIssuable.prototype.editIssue = function() {

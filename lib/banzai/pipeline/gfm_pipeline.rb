@@ -1,6 +1,9 @@
 module Banzai
   module Pipeline
     class GfmPipeline < BasePipeline
+      # Every filter should have an entry in app/assets/javascripts/copy_as_gfm.js.es6,
+      # in reverse order.
+      # Should have test coverage in spec/features/copy_as_gfm_spec.rb.
       def self.filters
         @filters ||= FilterArray[
           Filter::SyntaxHighlightFilter,
