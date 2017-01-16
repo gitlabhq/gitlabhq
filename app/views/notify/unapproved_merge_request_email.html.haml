@@ -78,9 +78,9 @@
                                   %span{ style: "font-weight: bold;color:#333333;"} Merge request 
                                   %a{ href: merge_request_url(@merge_request), style: "font-weight: bold;color:#3777b0;text-decoration:none" }  #{@merge_request.to_reference} 
                                   %span was unapproved by 
-                                  %img.avatar{ height: "24", src: avatar_icon(@merge_request.assignee, 24), style: "border-radius:12px;margin:-7px 0 -7px 3px;", width: "24", alt: "Avatar" }/
-                                  %a.muted{ href: user_url(@merge_request.assignee), style: "color:#333333;text-decoration:none;" }
-                                    = @merge_request.assignee.name
+                                  %img.avatar{ height: "24", src: avatar_icon(@unapproved_by, 24), style: "border-radius:12px;margin:-7px 0 -7px 3px;", width: "24", alt: "Avatar" }/
+                                  %a.muted{ href: user_url(@unapproved_by), style: "color:#333333;text-decoration:none;" }
+                                    = @unapproved_by.name
                         %tr.spacer
                           %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;height:18px;font-size:18px;line-height:18px;" }
                             &nbsp;
