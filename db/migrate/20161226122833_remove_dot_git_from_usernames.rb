@@ -68,14 +68,12 @@ class RemoveDotGitFromUsernames < ActiveRecord::Migration
   end
 
   def check_routes(base, counter, path)
-    Gitlab.config.repositories.storages.each_with_index do |(_key, storage), index|
+    Gitlab.config.repositories.storages.each_value do |storage|
       if route_exists?(path) || path_exists?(path, storage)
         counter += 1
         path = "#{base}#{counter}"
 
-        # Start again unless this is the first storage,
-        # to make sure no other storages contain the new path already.
-        return check_route(base, counter, path) unless index.zero?
+        return check_route(base, counter, path)
       end
     end
 
@@ -110,7 +108,5 @@ class RemoveDotGitFromUsernames < ActiveRecord::Migration
         raise e
       end
     end
-
-    path
   end
 end
