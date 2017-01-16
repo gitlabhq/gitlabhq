@@ -134,8 +134,7 @@ class Projects::IssuesController < Projects::ApplicationController
     end
 
   rescue ActiveRecord::StaleObjectError
-    @conflict = true
-    render :edit
+    render_conflict_response
   end
 
   def referenced_merge_requests
