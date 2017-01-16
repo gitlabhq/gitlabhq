@@ -43,7 +43,7 @@
       #commits.commits.tab-pane.active
         = render "projects/merge_requests/show/commits"
       #diffs.diffs.tab-pane
-        - # This tab is always loaded via AJAX
+        -# This tab is always loaded via AJAX
       - if @pipelines.any?
         #pipelines.pipelines.tab-pane
           = render "projects/merge_requests/show/pipelines"
