@@ -1,9 +1,10 @@
 module Banzai
   module Pipeline
     class GfmPipeline < BasePipeline
-      # Every filter should have an entry in app/assets/javascripts/copy_as_gfm.js.es6,
-      # in reverse order.
-      # Should have test coverage in spec/features/copy_as_gfm_spec.rb.
+      # These filters convert GitLab Flavored Markdown (GFM) to HTML.
+      # The handlers defined in app/assets/javascripts/copy_as_gfm.js.es6 consequently convert that same HTML to GFM to be copied to the clipboard.
+      # Every filter that generates HTML from GFM should have a handler in app/assets/javascripts/copy_as_gfm.js.es6, in reverse order.
+      # The GFM-to-HTML-to-GFM cycle is tested in spec/features/copy_as_gfm_spec.rb.
       def self.filters
         @filters ||= FilterArray[
           Filter::SyntaxHighlightFilter,

@@ -3,9 +3,10 @@
 
 (() => {
   const gfmRules = {
-    // Should have an entry for every filter in lib/banzai/pipeline/gfm_pipeline.rb,
-    // in reverse order.
-    // Should have test coverage in spec/features/copy_as_gfm_spec.rb.
+    // The filters referenced in lib/banzai/pipeline/gfm_pipeline.rb convert GitLab Flavored Markdown (GFM) to HTML.
+    // These handlers consequently convert that same HTML to GFM to be copied to the clipboard.
+    // Every filter in lib/banzai/pipeline/gfm_pipeline.rb that generates HTML from GFM should have a handler here, in reverse order.
+    // The GFM-to-HTML-to-GFM cycle is tested in spec/features/copy_as_gfm_spec.rb.
     InlineDiffFilter: {
       'span.idiff.addition'(el, text) {
         return `{+${text}+}`;
