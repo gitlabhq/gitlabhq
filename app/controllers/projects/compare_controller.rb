@@ -27,8 +27,11 @@ class Projects::CompareController < Projects::ApplicationController
   def create
     if params[:from].blank? || params[:to].blank?
       flash[:alert] = "You must select from and to branches"
-      from_to_preservation = from_to_hash(params)
-      redirect_to namespace_project_compare_index_path(@project.namespace, @project, from_to_preservation)
+      from_to_vars = {
+        from: params[:from].presence,
+        to: params[:to].presence
+      }
+      redirect_to namespace_project_compare_index_path(@project.namespace, @project, from_to_vars)
     else
       redirect_to namespace_project_compare_path(@project.namespace, @project,
                                                params[:from], params[:to])
@@ -61,12 +64,5 @@ class Projects::CompareController < Projects::ApplicationController
   def merge_request
     @merge_request ||= MergeRequestsFinder.new(current_user, project_id: @project.id).execute.opened.
       find_by(source_project: @project, source_branch: @head_ref, target_branch: @start_ref)
-  end
-
-  def from_to_hash(params)
-    return_hash = {}
-    return_hash[:from] = params[:from].presence
-    return_hash[:to] = params[:to].presence
-    return_hash
   end
 end
