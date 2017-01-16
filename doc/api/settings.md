@@ -44,7 +44,9 @@ Example response:
    "repository_storage": "default",
    "repository_storages": ["default"],
    "koding_enabled": false,
-   "koding_url": null
+   "koding_url": null,
+   "plantuml_enabled": false,
+   "plantuml_url": null
 }
 ```
 
@@ -87,6 +89,8 @@ PUT /application/settings
 | `elasticsearch_port` | integer | no | The TCP/IP port that Elasticsearch listens to. The default value is 9200 |
 | `usage_ping_enabled` | boolean | no | Every week GitLab will report license usage back to GitLab, Inc.|
 | `repository_size_limit` | integer | no | Size limit per repository (MB) |
+| `plantuml_enabled` | boolean | no | Enable PlantUML integration. Default is `false`. |
+| `plantuml_url` | string | yes (if `plantuml_enabled` is `true`) |  The PlantUML instance URL for integration. |
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/application/settings?signup_enabled=false&default_project_visibility=1
@@ -119,6 +123,8 @@ Example response:
   "container_registry_token_expire_delay": 5,
   "repository_storage": "default",
   "koding_enabled": false,
-  "koding_url": null
+  "koding_url": null,
+  "plantuml_enabled": false,
+  "plantuml_url": null
 }
 ```

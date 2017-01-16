@@ -52,7 +52,7 @@
               git push -u origin master
 
         %fieldset
-          %h5 Existing folder or Git repository
+          %h5 Existing folder
           %pre.light-well
             :preserve
               cd existing_folder
@@ -61,6 +61,15 @@
               git add .
               git commit
               git push -u origin master
+
+        %fieldset
+          %h5 Existing Git repository
+          %pre.light-well
+            :preserve
+              cd existing_repo
+              git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'clone')}
+              git push -u origin --all
+              git push -u origin --tags
 
           - if can? current_user, :remove_project, @project
             .prepend-top-20

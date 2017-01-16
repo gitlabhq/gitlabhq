@@ -1,4 +1,9 @@
 .pipelines {
+  .realtime-loading {
+    font-size: 40px;
+    text-align: center;
+  }
+
   .stage {
     max-width: 90px;
     width: 90px;
@@ -23,6 +28,10 @@
   .table.ci-table {
     min-width: 1200px;
     table-layout: fixed;
+
+    .label {
+      margin-bottom: 3px;
+    }
 
     .pipeline-id {
       color: $black;
@@ -177,6 +186,7 @@
   .stage-cell {
     font-size: 0;
 
+    > .stage-container > div > button > span > svg,
     > .stage-container > button > svg {
       height: 22px;
       width: 22px;

@@ -17,6 +17,21 @@
     gl.text.replaceRange = function(s, start, end, substitute) {
       return s.substring(0, start) + substitute + s.substring(end);
     };
+    gl.text.getTextWidth = function(text, font) {
+      /**
+      * Uses canvas.measureText to compute and return the width of the given text of given font in pixels.
+      *
+      * @param {String} text The text to be rendered.
+      * @param {String} font The css font descriptor that text is to be rendered with (e.g. "bold 14px verdana").
+      *
+      * @see http://stackoverflow.com/questions/118241/calculate-text-width-with-javascript/21015393#21015393
+      */
+      // re-use canvas object for better performance
+      var canvas = gl.text.getTextWidth.canvas || (gl.text.getTextWidth.canvas = document.createElement('canvas'));
+      var context = canvas.getContext('2d');
+      context.font = font;
+      return context.measureText(text).width;
+    };
     gl.text.selectedText = function(text, textarea) {
       return text.substring(textarea.selectionStart, textarea.selectionEnd);
     };

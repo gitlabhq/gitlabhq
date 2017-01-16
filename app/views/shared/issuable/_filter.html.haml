@@ -29,18 +29,6 @@
         .filter-item.inline.labels-filter
           = render "shared/issuable/label_dropdown", selected: finder.labels.select(:title).uniq, use_id: false, selected_toggle: params[:label_name], data_options: { field_name: "label_name[]" }
 
-        - if local_assigns[:type] == :issues
-          .filter-item.inline.weight-filter
-            - if params[:weight]
-              = hidden_field_tag(:weight, params[:weight])
-            = dropdown_tag(weight_dropdown_label(params[:weight]), options: { title: "Filter by weight", toggle_class: 'js-weight-select js-filter-submit', dropdown_class: "dropdown-menu-selectable",
-              placeholder: "Search weight", data: { field_name: "weight" , default_label: "Weight" } }) do
-              %ul
-                - Issue.weight_filter_options.each do |weight|
-                  %li
-                    %a{ href: "#", data: { id: weight }, class: ("is-active" if params[:weight] == weight.to_s) }
-                      = weight
-
         - if issuable_filter_present?
           .filter-item.inline.reset-filters
             %a{ href: page_filter_path(without: issuable_filter_params) } Reset filters

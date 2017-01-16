@@ -271,9 +271,9 @@ sudo usermod -aG redis git
 ### Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-15-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-16-stable gitlab
 
-**Note:** You can change `8-15-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `8-16-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 
@@ -607,6 +607,12 @@ If you want to connect the Redis server via socket, then use the "unix:" URL sch
     # example
     production:
       url: unix:/path/to/redis/socket
+
+Also you can use environment variables in the `config/resque.yml` file:
+
+    # example
+    production:
+      url: <%= ENV.fetch('GITLAB_REDIS_URL') %>
 
 ### Custom SSH Connection
 

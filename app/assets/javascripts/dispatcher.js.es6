@@ -86,6 +86,9 @@
           break;
         case 'projects:merge_requests:index':
         case 'projects:issues:index':
+          if (gl.FilteredSearchManager) {
+            new gl.FilteredSearchManager();
+          }
           Issuable.init();
           new gl.IssuableBulkActions({
             prefixId: page === 'projects:merge_requests:index' ? 'merge_request_' : 'issue_',
@@ -187,11 +190,6 @@
             new TreeView();
           }
           break;
-        case 'projects:pipelines:index':
-          new gl.MiniPipelineGraph({
-            container: '.js-pipeline-table',
-          });
-          break;
         case 'projects:pipelines:builds':
         case 'projects:pipelines:show':
           const { controllerAction } = document.querySelector('.js-pipeline-container').dataset;
@@ -282,6 +280,10 @@
           break;
         case 'projects:variables:index':
           new gl.ProjectVariables();
+          break;
+        case 'ci:lints:create':
+        case 'ci:lints:show':
+          new gl.CILintEditor();
           break;
       }
       switch (path.first()) {

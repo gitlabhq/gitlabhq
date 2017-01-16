@@ -1,35 +1,79 @@
 module ServiceParams
   extend ActiveSupport::Concern
 
-  ALLOWED_PARAMS = [:title, :token, :type, :active, :api_key, :api_url, :api_version, :subdomain,
-                    :room, :recipients, :project_url, :webhook,
-                    :user_key, :device, :priority, :sound, :bamboo_url, :username, :password,
-                    :build_key, :server, :teamcity_url, :drone_url, :build_type,
-                    :description, :issues_url, :new_issue_url, :restrict_to_branch, :channel,
-                    :colorize_messages, :channels,
-                    # We're using `issues_events` and `merge_requests_events`
-                    # in the view so we still need to explicitly state them
-                    # here. `Service#event_names` would only give
-                    # `issue_events` and `merge_request_events` (singular!)
-                    # See app/helpers/services_helper.rb for how we
-                    # make those event names plural as special case.
-                    :issues_events, :confidential_issues_events, :merge_requests_events,
-                    :notify_only_broken_builds, :notify_only_broken_pipelines,
-                    :add_pusher, :send_from_committer_email, :disable_diffs,
-                    :external_wiki_url, :notify, :color,
-                    :server_host, :server_port, :default_irc_uri, :enable_ssl_verification,
-                    :jira_issue_transition_id, :url, :project_key, :ca_pem, :namespace,
+  ALLOWED_PARAMS_CE = [
+    :active,
+    :add_pusher,
+    :api_key,
+    :api_url,
+    :api_version,
+    :bamboo_url,
+    :build_key,
+    :build_type,
+    :ca_pem,
+    :channel,
+    :channels,
+    :color,
+    :colorize_messages,
+    :confidential_issues_events,
+    :default_irc_uri,
+    :description,
+    :device,
+    :disable_diffs,
+    :drone_url,
+    :enable_ssl_verification,
+    :external_wiki_url,
+    # We're using `issues_events` and `merge_requests_events`
+    # in the view so we still need to explicitly state them
+    # here. `Service#event_names` would only give
+    # `issue_events` and `merge_request_events` (singular!)
+    # See app/helpers/services_helper.rb for how we
+    # make those event names plural as special case.
+    :issues_events,
+    :issues_url,
+    :jira_issue_transition_id,
+    :merge_requests_events,
+    :namespace,
+    :new_issue_url,
+    :notify,
+    :notify_only_broken_builds,
+    :notify_only_broken_pipelines,
+    :password,
+    :priority,
+    :project_key,
+    :project_url,
+    :recipients,
+    :restrict_to_branch,
+    :room,
+    :send_from_committer_email,
+    :server,
+    :server_host,
+    :server_port,
+    :sound,
+    :subdomain,
+    :teamcity_url,
+    :title,
+    :token,
+    :type,
+    :url,
+    :user_key,
+    :username,
+    :webhook
+  ]
 
-                    ## EE Specific
-                    :multiproject_enabled, :pass_unstable,
-                    :jenkins_url, :project_name]
+  ALLOWED_PARAMS_EE = [
+    :jenkins_url,
+    :multiproject_enabled,
+    :pass_unstable,
+    :project_name
+  ]
 
   # Parameters to ignore if no value is specified
   FILTER_BLANK_PARAMS = [:password]
 
   def service_params
     dynamic_params = @service.event_channel_names + @service.event_names
-    service_params = params.permit(:id, service: ALLOWED_PARAMS + dynamic_params)
+    service_params = params.permit(:id, service: ALLOWED_PARAMS_CE + ALLOWED_PARAMS_EE + dynamic_params)
 
     if service_params[:service].is_a?(Hash)
       FILTER_BLANK_PARAMS.each do |param|

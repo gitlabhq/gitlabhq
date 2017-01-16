@@ -3,31 +3,35 @@ module ReactiveCachingHelpers
     ([subject.class.reactive_cache_key.call(subject)].flatten + qualifiers).join(':')
   end
 
-  def stub_reactive_cache(subject = nil, data = nil)
+  def alive_reactive_cache_key(subject, *qualifiers)
+    reactive_cache_key(subject, *(qualifiers + ['alive']))
+  end
+
+  def stub_reactive_cache(subject = nil, data = nil, *qualifiers)
     allow(ReactiveCachingWorker).to receive(:perform_async)
     allow(ReactiveCachingWorker).to receive(:perform_in)
-    write_reactive_cache(subject, data) if data
+    write_reactive_cache(subject, data, *qualifiers) if data
   end
 
-  def read_reactive_cache(subject)
-    Rails.cache.read(reactive_cache_key(subject))
+  def read_reactive_cache(subject, *qualifiers)
+    Rails.cache.read(reactive_cache_key(subject, *qualifiers))
   end
 
-  def write_reactive_cache(subject, data)
-    start_reactive_cache_lifetime(subject)
-    Rails.cache.write(reactive_cache_key(subject), data)
+  def write_reactive_cache(subject, data, *qualifiers)
+    start_reactive_cache_lifetime(subject, *qualifiers)
+    Rails.cache.write(reactive_cache_key(subject, *qualifiers), data)
   end
 
-  def reactive_cache_alive?(subject)
-    Rails.cache.read(reactive_cache_key(subject, 'alive'))
+  def reactive_cache_alive?(subject, *qualifiers)
+    Rails.cache.read(alive_reactive_cache_key(subject, *qualifiers))
   end
 
-  def invalidate_reactive_cache(subject)
-    Rails.cache.delete(reactive_cache_key(subject, 'alive'))
+  def invalidate_reactive_cache(subject, *qualifiers)
+    Rails.cache.delete(alive_reactive_cache_key(subject, *qualifiers))
   end
 
-  def start_reactive_cache_lifetime(subject)
-    Rails.cache.write(reactive_cache_key(subject, 'alive'), true)
+  def start_reactive_cache_lifetime(subject, *qualifiers)
+    Rails.cache.write(alive_reactive_cache_key(subject, *qualifiers), true)
   end
 
   def expect_reactive_cache_update_queued(subject)

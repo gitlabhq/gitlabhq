@@ -1,6 +1,8 @@
 require "addressable/uri"
 
 class BuildkiteService < CiService
+  include ReactiveService
+
   ENDPOINT = "https://buildkite.com"
 
   prop_accessor :project_url, :token
@@ -33,13 +35,7 @@ class BuildkiteService < CiService
   end
 
   def commit_status(sha, ref)
-    response = HTTParty.get(commit_status_path(sha), verify: false)
-
-    if response.code == 200 && response['status']
-      response['status']
-    else
-      :error
-    end
+    with_reactive_cache(sha, ref) {|cached| cached[:commit_status] }
   end
 
   def commit_status_path(sha)
@@ -76,6 +72,19 @@ class BuildkiteService < CiService
         name: 'enable_ssl_verification',
         title: "Enable SSL verification" }
     ]
+  end
+
+  def calculate_reactive_cache(sha, ref)
+    response = HTTParty.get(commit_status_path(sha), verify: false)
+
+    status =
+      if response.code == 200 && response['status']
+        response['status']
+      else
+        :error
+      end
+
+    { commit_status: status }
   end
 
   private

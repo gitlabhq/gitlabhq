@@ -31,6 +31,14 @@ FactoryGirl.define do
             File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml'))
           end
         end
+
+        # Populates pipeline with errors
+        #
+        pipeline.config_processor if evaluator.config
+      end
+
+      trait :invalid do
+        config(rspec: nil)
       end
     end
   end
