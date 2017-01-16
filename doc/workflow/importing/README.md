@@ -15,3 +15,20 @@ repository is too large the import can timeout.
 
 You can copy your repos by changing the remote and pushing to the new server;
 but issues and merge requests can't be imported.
+
+### Troubleshooting Migration issues.
+
+You'll need admin access to the Gitlab Instance. You can run the following commands:
+
+```
+gitlab-rails console production
+project = Project.find_with_namespace('group/user/project')
+project.import_error
+# If you are confident that the errors are minor, you could manually finish the import
+# This could have unintended side effects, so work to fix the import errors before trying this.
+project.import_finish
+
+```
+
+This output will let you know what was causing the errors for the import 
+so that you can correct them.
