@@ -46,7 +46,7 @@ linters:
     max: 80
 
   MultilinePipe:
-    enabled: false
+    enabled: true
 
   MultilineScript:
     enabled: true
