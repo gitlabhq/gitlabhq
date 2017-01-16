@@ -52,6 +52,10 @@
     border-radius: 0;
     border: none;
   }
+
+  &:not([href]):hover {
+    border-color: rgba($avatar-border, .2);
+  }
 }
 
 .identicon {
