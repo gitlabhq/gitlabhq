@@ -1887,7 +1887,6 @@ describe Project, models: true do
   end
 
   describe '#change_head' do
-    describe '#change_head' do
     let(:project) { create(:project) }
 
     it 'calls the before_change_head and after_change_head methods' do
