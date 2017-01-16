@@ -14,10 +14,9 @@ class RemoveDotGitFromUsernames < ActiveRecord::Migration
       namespace_id = user['namespace_id']
       path_was = user['username']
       path_was_wildcard = quote_string("#{path_was}/%")
+      path = quote_string(new_path(path_was))
 
-      # It's possible for `move_namespace` to return nil if the given namespace
-      # has nothing on storage (i.e., they never made a project).
-      path = move_namespace(namespace_id, path_was) || new_path(path_was)
+      move_namespace(namespace_id, path_was, path)
 
       begin
         execute "UPDATE routes SET path = '#{path}' WHERE source_type = 'Namespace' AND source_id = #{namespace_id}"
@@ -30,6 +29,8 @@ class RemoveDotGitFromUsernames < ActiveRecord::Migration
         end
       rescue => e
         say("Couldn't update routes for path #{path_was} to #{path}")
+        # Move namespace back
+        move_namespace(namespace_id, path, path_was)
 
         raise e
       end
@@ -58,35 +59,38 @@ class RemoveDotGitFromUsernames < ActiveRecord::Migration
 
   # Accepts invalid path like test.git and returns test_git or
   # test_git1 if test_git already taken
-  def new_path(path, repository_storage_path = nil)
+  def new_path(path)
     # To stay closer with original name and reduce risk of duplicates
     # we rename suffix instead of removing it
     path = path.sub(/\.git\z/, '_git')
 
-    counter = 0
-    base = path
+    check_routes(path.dup, 0, path)
+  end
 
-    while route_exists?(path) || path_exists?(path, repository_storage_path)
-      counter += 1
-      path = "#{base}#{counter}"
+  def check_routes(base, counter, path)
+    Gitlab.config.repositories.storages.each_with_index do |(_key, storage), index|
+      if route_exists?(path) || path_exists?(path, storage)
+        counter += 1
+        path = "#{base}#{counter}"
+
+        # Start again unless this is the first storage,
+        # to make sure no other storages contain the new path already.
+        return check_route(base, counter, path) unless index.zero?
+      end
     end
 
     path
   end
 
-  def move_namespace(namespace_id, path_was)
+  def move_namespace(namespace_id, path_was, path)
     repository_storage_paths = select_all("SELECT distinct(repository_storage) FROM projects WHERE namespace_id = #{namespace_id}").map do |row|
       Gitlab.config.repositories.storages[row['repository_storage']]
     end.compact
-
-    path = nil
 
     # Move the namespace directory in all storages paths used by member projects
     repository_storage_paths.each do |repository_storage_path|
       # Ensure old directory exists before moving it
       gitlab_shell.add_namespace(repository_storage_path, path_was)
-
-      path = quote_string(new_path(path_was, repository_storage_path))
 
       unless gitlab_shell.mv_namespace(repository_storage_path, path_was, path)
         Rails.logger.error "Exception moving path #{repository_storage_path} from #{path_was} to #{path}"
