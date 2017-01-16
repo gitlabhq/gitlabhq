@@ -79,6 +79,8 @@ class RemoveDotGitFromUsernames < ActiveRecord::Migration
       Gitlab.config.repositories.storages[row['repository_storage']]
     end.compact
 
+    path = nil
+
     # Move the namespace directory in all storages paths used by member projects
     repository_storage_paths.each do |repository_storage_path|
       # Ensure old directory exists before moving it
