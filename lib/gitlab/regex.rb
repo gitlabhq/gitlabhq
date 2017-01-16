@@ -61,11 +61,11 @@ module Gitlab
     end
 
     def file_name_regex
-      @file_name_regex ||= /\A[[[:alnum:]]_\-\.\@]*\z/.freeze
+      @file_name_regex ||= /\A[[[:alnum:]]_\-\.\@\+]*\z/.freeze
     end
 
     def file_name_regex_message
-      "can contain only letters, digits, '_', '-', '@' and '.'."
+      "can contain only letters, digits, '_', '-', '@', '+' and '.'."
     end
 
     def file_path_regex

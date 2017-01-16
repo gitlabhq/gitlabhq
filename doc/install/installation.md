@@ -608,6 +608,12 @@ If you want to connect the Redis server via socket, then use the "unix:" URL sch
     production:
       url: unix:/path/to/redis/socket
 
+Also you can use environment variables in the `config/resque.yml` file:
+
+    # example
+    production:
+      url: <%= ENV.fetch('GITLAB_REDIS_URL') %>
+
 ### Custom SSH Connection
 
 If you are running SSH on a non-standard port, you must change the GitLab user's SSH config.

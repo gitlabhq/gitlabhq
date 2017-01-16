@@ -56,7 +56,6 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
 
       it 'returns an error if the user is not allowed to do forced pushes to protected branches' do
         expect(Gitlab::Checks::ForcePush).to receive(:force_push?).and_return(true)
-        expect(user_access).to receive(:can_do_action?).with(:force_push_code_to_protected_branches).and_return(false)
 
         expect(subject.status).to be(false)
         expect(subject.message).to eq('You are not allowed to force push code to a protected branch on this project.')
@@ -88,8 +87,6 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
         end
 
         it 'returns an error if the user is not allowed to delete protected branches' do
-          expect(user_access).to receive(:can_do_action?).with(:remove_protected_branches).and_return(false)
-
           expect(subject.status).to be(false)
           expect(subject.message).to eq('You are not allowed to delete protected branches from this project.')
         end
