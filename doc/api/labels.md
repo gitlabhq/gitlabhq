@@ -131,22 +131,6 @@ DELETE /projects/:id/labels
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/labels?name=bug"
 ```
 
-Example response:
-
-```json
-{
-  "id" : 1,
-  "name" : "bug",
-  "color" : "#d9534f",
-  "description": "Bug reported by user",
-  "open_issues_count": 1,
-  "closed_issues_count": 0,
-  "open_merge_requests_count": 1,
-  "subscribed": false,
-  "priority": null
-}
-```
-
 ## Edit an existing label
 
 Updates an existing label with new name or new color. At least one parameter
@@ -188,7 +172,7 @@ Example response:
 
 ## Subscribe to a label
 
-Subscribes the authenticated user to a label to receive notifications. 
+Subscribes the authenticated user to a label to receive notifications.
 If the user is already subscribed to the label, the status code `304`
 is returned.
 
@@ -238,20 +222,4 @@ DELETE /projects/:id/labels/:label_id/subscription
 
 ```bash
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/labels/1/subscription
-```
-
-Example response:
-
-```json
-{
-  "id" : 1,
-  "name" : "bug",
-  "color" : "#d9534f",
-  "description": "Bug reported by user",
-  "open_issues_count": 1,
-  "closed_issues_count": 0,
-  "open_merge_requests_count": 1,
-  "subscribed": false,
-  "priority": null
-}
 ```

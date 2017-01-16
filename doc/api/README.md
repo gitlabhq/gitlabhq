@@ -144,7 +144,7 @@ The following table gives an overview of how the API functions generally behave.
 | `GET`   | Access one or more resources and return the result as JSON. |
 | `POST`  | Return `201 Created` if the resource is successfully created and return the newly created resource as JSON. |
 | `GET` / `PUT` / `DELETE` | Return `200 OK` if the resource is accessed, modified or deleted successfully. The (modified) result is returned as JSON. |
-| `DELETE` | Designed to be idempotent, meaning a request to a resource still returns `200 OK` even it was deleted before or is not available. The reasoning behind this, is that the user is not really interested if the resource existed before or not. |
+| `DELETE` | Designed to be idempotent, meaning a request to a resource still returns `204 No Content` if the the request was executed successfully. |
 
 The following table shows the possible return codes for API requests.
 
@@ -152,6 +152,7 @@ The following table shows the possible return codes for API requests.
 | ------------- | ----------- |
 | `200 OK` | The `GET`, `PUT` or `DELETE` request was successful, the resource(s) itself is returned as JSON. |
 | `201 Created` | The `POST` request was successful and the resource is returned as JSON. |
+| `204 No Content` | The server has fulfilled the request but does not need to return an entity-body. |
 | `304 Not Modified` | Indicates that the resource has not been modified since the last request. |
 | `400 Bad Request` | A required attribute of the API request is missing, e.g., the title of an issue is not given. |
 | `401 Unauthorized` | The user is not authenticated, a valid [user token](#authentication) is necessary. |

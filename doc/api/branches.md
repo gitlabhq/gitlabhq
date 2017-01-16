@@ -234,14 +234,6 @@ In case of an error, an explaining message is provided.
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/repository/branches/newbranch"
 ```
 
-Example response:
-
-```json
-{
-  "branch_name": "newbranch"
-}
-```
-
 ## Delete merged branches
 
 Will delete all branches that are merged into the project's default branch.

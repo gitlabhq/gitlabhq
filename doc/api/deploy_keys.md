@@ -152,21 +152,6 @@ DELETE /projects/:id/deploy_keys/:key_id
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/deploy_keys/13"
 ```
 
-Example response:
-
-```json
-{
-   "updated_at" : "2015-08-29T12:50:57.259Z",
-   "key" : "ssh-rsa AAAA...",
-   "public" : false,
-   "title" : "My deploy key",
-   "user_id" : null,
-   "created_at" : "2015-08-29T12:50:57.259Z",
-   "fingerprint" : "6a:33:1f:74:51:c0:39:81:79:ec:7a:31:f8:40:20:43",
-   "id" : 13
-}
-```
-
 ## Enable a deploy key
 
 Enables a deploy key for a project so this can be used. Returns the enabled key, with a status code 201 when successful.
@@ -203,14 +188,3 @@ curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://git
 | --------- | ---- | -------- | ----------- |
 | `id`      | integer | yes | The ID of the project |
 | `key_id`  | integer | yes | The ID of the deploy key |
-
-Example response:
-
-```json
-{
-   "key" : "ssh-rsa AAAA...",
-   "id" : 12,
-   "title" : "My deploy key",
-   "created_at" : "2015-08-29T12:44:31.550Z"
-}
-```

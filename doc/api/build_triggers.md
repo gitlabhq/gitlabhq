@@ -106,13 +106,3 @@ DELETE /projects/:id/triggers/:token
 ```
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/triggers/7b9148c158980bbd9bcea92c17522d"
 ```
-
-```json
-{
-    "created_at": "2015-12-23T16:25:56.760Z",
-    "deleted_at": "2015-12-24T12:32:20.100Z",
-    "last_used": null,
-    "token": "7b9148c158980bbd9bcea92c17522d",
-    "updated_at": "2015-12-24T12:32:20.100Z"
-}
-```

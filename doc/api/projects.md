@@ -819,58 +819,6 @@ DELETE /projects/:id/star
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/star"
 ```
 
-Example response:
-
-```json
-{
-  "id": 3,
-  "description": null,
-  "default_branch": "master",
-  "public": false,
-  "visibility_level": 10,
-  "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
-  "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
-  "web_url": "http://example.com/diaspora/diaspora-project-site",
-  "tag_list": [
-    "example",
-    "disapora project"
-  ],
-  "name": "Diaspora Project Site",
-  "name_with_namespace": "Diaspora / Diaspora Project Site",
-  "path": "diaspora-project-site",
-  "path_with_namespace": "diaspora/diaspora-project-site",
-  "issues_enabled": true,
-  "open_issues_count": 1,
-  "merge_requests_enabled": true,
-  "builds_enabled": true,
-  "wiki_enabled": true,
-  "snippets_enabled": false,
-  "container_registry_enabled": false,
-  "created_at": "2013-09-30T13:46:02Z",
-  "last_activity_at": "2013-09-30T13:46:02Z",
-  "creator_id": 3,
-  "namespace": {
-    "created_at": "2013-09-30T13:46:02Z",
-    "description": "",
-    "id": 3,
-    "name": "Diaspora",
-    "owner_id": 1,
-    "path": "diaspora",
-    "updated_at": "2013-09-30T13:46:02Z"
-  },
-  "archived": true,
-  "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png",
-  "shared_runners_enabled": true,
-  "forks_count": 0,
-  "star_count": 0,
-  "public_builds": true,
-  "shared_with_groups": [],
-  "only_allow_merge_if_build_succeeds": false,
-  "only_allow_merge_if_all_discussions_are_resolved": false,
-  "request_access_enabled": false
-}
-```
-
 ### Archive a project
 
 Archives the project if the user is either admin or the project owner of this project. This action is

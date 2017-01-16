@@ -1,0 +1,4 @@
+---
+title: Return 204 for delete endpoints
+merge_request: 8599
+author: Robert Schilling

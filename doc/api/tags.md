@@ -141,12 +141,6 @@ Parameters:
 - `id` (required) - The ID of a project
 - `tag_name` (required) - The name of a tag
 
-```json
-{
-  "tag_name": "v4.3.0"
-}
-```
-
 ## Create a new release
 
 Add release notes to the existing git tag. If there

@@ -108,14 +108,3 @@ DELETE /projects/:id/environments/:environment_id
 ```bash
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/environment/1"
 ```
-
-Example response:
-
-```json
-{
-  "id": 1,
-  "name": "deploy",
-  "slug": "deploy",
-  "external_url": "https://deploy.example.gitlab.com"
-}
-```
