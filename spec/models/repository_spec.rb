@@ -1176,6 +1176,24 @@ describe Repository, models: true do
     end
   end
 
+  describe '#after_change_head' do
+    it 'flushes the readme cache' do
+      expect(repository).to receive(:expire_method_caches).with([
+        :readme,
+        :changelog,
+        :license,
+        :contributing,
+        :version,
+        :gitignore,
+        :koding,
+        :gitlab_ci,
+        :avatar
+      ])
+
+      repository.after_change_head
+    end
+  end
+
   describe '#before_push_tag' do
     it 'flushes the cache' do
       expect(repository).to receive(:expire_statistics_caches)
@@ -1578,14 +1596,6 @@ describe Repository, models: true do
         with(Repository::CACHED_METHODS)
 
       repository.expire_all_method_caches
-    end
-  end
-
-  describe '#expire_avatar_cache' do
-    it 'expires the cache' do
-      expect(repository).to receive(:expire_method_caches).with(%i(avatar))
-
-      repository.expire_avatar_cache
     end
   end
 
