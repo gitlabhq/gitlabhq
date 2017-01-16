@@ -198,7 +198,7 @@ GEM
     faraday_middleware-multi_json (0.0.6)
       faraday_middleware
       multi_json
-    ffaker (2.0.0)
+    ffaker (2.4.0)
     ffi (1.9.10)
     flay (2.6.1)
       ruby_parser (~> 3.0)
@@ -877,7 +877,7 @@ DEPENDENCIES
   email_reply_trimmer (~> 0.1)
   email_spec (~> 1.6.0)
   factory_girl_rails (~> 4.7.0)
-  ffaker (~> 2.0.0)
+  ffaker (~> 2.4)
   flay (~> 2.6.1)
   fog-aws (~> 0.9)
   fog-core (~> 1.40)
