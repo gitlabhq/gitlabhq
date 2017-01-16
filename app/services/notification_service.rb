@@ -163,7 +163,7 @@ class NotificationService
   end
 
   def unapprove_mr(merge_request, current_user)
-    # TODO: send unapproval email
+    unapprove_mr_email(merge_request, merge_request.target_project, current_user)
   end
 
   def resolve_all_discussions(merge_request, current_user)
@@ -609,6 +609,14 @@ class NotificationService
 
     recipients.each do |recipient|
       mailer.approved_merge_request_email(recipient.id, merge_request.id, current_user.id).deliver_later
+    end
+  end
+
+  def unapprove_mr_email(merge_request, project, current_user)
+    recipients = build_recipients(merge_request, project, current_user)
+
+    recipients.each do |recipient|
+      mailer.unapproved_merge_request_email(recipient.id, merge_request.id, current_user.id).deliver_later
     end
   end
 

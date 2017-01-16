@@ -405,6 +405,44 @@ describe Notify do
           end
         end
 
+        describe 'that are unapproved' do
+          let(:last_unapprover) { create(:user) }
+          subject { Notify.unapproved_merge_request_email(recipient.id, merge_request.id, last_unapprover.id) }
+
+          before do
+            merge_request.approvals.create(user: merge_request.assignee)
+          end
+
+          it_behaves_like 'a multiple recipients email'
+          it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
+            let(:model) { merge_request }
+          end
+          it_behaves_like 'it should show Gmail Actions View Merge request link'
+          it_behaves_like 'an unsubscribeable thread'
+
+          it 'is sent as the last unapprover' do
+            sender = subject.header[:from].addrs[0]
+            expect(sender.display_name).to eq(last_unapprover.name)
+            expect(sender.address).to eq(gitlab_sender)
+          end
+
+          it 'has the correct subject' do
+            is_expected.to have_subject /#{merge_request.title} \(#{merge_request.to_reference}\)/
+          end
+
+          it 'contains the new status' do
+            is_expected.to have_body_text /unapproved/i
+          end
+
+          it 'contains a link to the merge request' do
+            is_expected.to have_body_text /#{namespace_project_merge_request_path project.namespace, project, merge_request}/
+          end
+
+          it 'contains the names of all of the approvers' do
+            is_expected.to have_body_text /#{merge_request.assignee.name}/
+          end
+        end
+
         describe 'that are merged' do
           subject { Notify.merged_merge_request_email(recipient.id, merge_request.id, merge_author.id) }
 
