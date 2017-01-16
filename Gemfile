@@ -109,7 +109,7 @@ gem 'org-ruby',             '~> 0.9.12'
 gem 'creole',               '~> 0.5.0'
 gem 'wikicloth',            '0.8.1'
 gem 'asciidoctor',          '~> 1.5.2'
-gem 'asciidoctor-plantuml', '0.0.6'
+gem 'asciidoctor-plantuml', '0.0.7'
 gem 'rouge',                '~> 2.0'
 gem 'truncato',             '~> 0.7.8'
 
