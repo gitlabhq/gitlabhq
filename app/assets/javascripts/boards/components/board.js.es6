@@ -5,6 +5,7 @@
 require('./board_blank_state');
 require('./board_delete');
 require('./board_list');
+require('./board_header');
 
 (() => {
   const Store = gl.issueBoards.BoardsStore;
@@ -13,17 +14,46 @@ require('./board_list');
   window.gl.issueBoards = window.gl.issueBoards || {};
 
   gl.issueBoards.Board = Vue.extend({
-    template: '#js-board-template',
+    template: `
+      <div
+        class="board"
+        :class="{ 'is-draggable': !list.preset }"
+        :data-id="list.id">
+        <div class="board-inner">
+          <board-header
+            :disabled="disabled"
+            :list="list"
+            :can-admin-issue="canAdminIssue"
+            :can-admin-list="canAdminList">
+          </board-header>
+          <board-list
+            v-if="list.type !== 'blank'"
+            :list="list"
+            :issues="list.issues"
+            :loading="list.loading"
+            :disabled="disabled"
+            :issue-link-base="issueLinkBase"
+            :can-create-issue="canCreateIssue"
+            ref="board-list">
+          </board-list>
+          <board-blank-state v-if="list.id == 'blank'">
+          </board-blank-state>
+        </div>
+      </div>
+    `,
     components: {
       'board-list': gl.issueBoards.BoardList,
-      'board-delete': gl.issueBoards.BoardDelete,
-      'board-blank-state': gl.issueBoards.BoardBlankState
+      'board-blank-state': gl.issueBoards.BoardBlankState,
+      'board-header': gl.issueBoards.BoardHeader,
     },
     props: {
       list: Object,
       disabled: Boolean,
       issueLinkBase: String,
       rootPath: String,
+      canCreateIssue: Boolean,
+      canAdminIssue: Boolean,
+      canAdminList: Boolean,
     },
     data () {
       return {
@@ -72,11 +102,6 @@ require('./board_list');
           }
         },
         deep: true
-      }
-    },
-    methods: {
-      showNewIssueForm() {
-        this.$refs['board-list'].showIssueForm = !this.$refs['board-list'].showIssueForm;
       }
     },
     mounted () {

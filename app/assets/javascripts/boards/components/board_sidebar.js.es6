@@ -6,6 +6,7 @@
 /* global Sidebar */
 
 require('./sidebar/remove_issue');
+require('./sidebar/assignee');
 
 (() => {
   const Store = gl.issueBoards.BoardsStore;
@@ -14,9 +15,48 @@ require('./sidebar/remove_issue');
   window.gl.issueBoards = window.gl.issueBoards || {};
 
   gl.issueBoards.BoardSidebar = Vue.extend({
-    props: {
-      currentUser: Object
+    template: `
+      <transition name="boards-sidebar-slide">
+        <aside
+          class="right-sidebar right-sidebar-expanded issue-boards-sidebar"
+          v-show="showSidebar">
+          <div class="issuable-sidebar">
+            <div class="block issuable-sidebar-header">
+              <span class="issuable-header-text hide-collapsed pull-left">
+                <strong>
+                  {{ issue.title }}
+                </strong>
+                <br />
+                {{ issue.reference }}
+              </span>
+              <a
+                class="gutter-toggle pull-right"
+                role="button"
+                href="#"
+                @click.prevent="closeSidebar"
+                aria-label="Toggle sidebar"
+                v-html="closeIconHtml">
+              </a>
+            </div>
+            <div class="js-issuable-update">
+              <boards-sidebar-assignee
+                :current-user="currentUser"
+                :can-admin-issue="canAdminIssue"
+                :issue="issue"
+                :issue-link-base="issueLinkBase"
+                :project-id="projectId">
+              </boards-sidebar-assignee>
+            </div>
+          </div>
+        </aside>
+      </transition>
+    `,
+    components: {
+      'boards-sidebar-assignee': gl.issueBoards.BoardsSidebarAssignee,
     },
+    props: [
+      'currentUser', 'closeIconHtml', 'canAdminIssue', 'issueLinkBase', 'projectId',
+    ],
     data() {
       return {
         detail: Store.detail,

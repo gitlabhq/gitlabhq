@@ -12,7 +12,48 @@ require('./board_new_issue');
   window.gl.issueBoards = window.gl.issueBoards || {};
 
   gl.issueBoards.BoardList = Vue.extend({
-    template: '#js-board-list-template',
+    template: `
+      <div class="board-list-component">
+        <div
+            class="board-list-loading text-center"
+            v-if="loading">
+          <i class="fa fa-spinner fa-spin"></i>
+        </div>
+        <board-new-issue
+          :list="list"
+          v-if="canCreateIssue && list.type !== 'done' && showIssueForm">
+        </board-new-issue>
+        <ul
+          class="board-list"
+          ref="list"
+          v-show="!loading"
+          :data-board="list.id"
+          :class="{ 'is-smaller': showIssueForm }">
+          <board-card
+            v-for="(issue, index) in orderedIssues"
+            ref="issue"
+            :index="index"
+            :list="list"
+            :issue="issue"
+            :issue-link-base="issueLinkBase"
+            :disabled="disabled"
+            :key="issue.id">
+          </board-card>
+          <li
+            class="board-list-count text-center"
+            v-if="showCount">
+            <i
+              class="fa fa-spinner fa-spin"
+              v-show="list.loadingMore"></i>
+            <span v-if="list.issues.length === list.issuesSize">
+              Showing all issues
+            </span>
+            <span v-else>
+              Showing {{ list.issues.length }} of {{ list.issuesSize }} issues
+            </span>
+        </ul>
+      </div>
+    `,
     components: {
       'board-card': gl.issueBoards.BoardCard,
       'board-new-issue': gl.issueBoards.BoardNewIssue
@@ -24,6 +65,7 @@ require('./board_new_issue');
       loading: Boolean,
       issueLinkBase: String,
       rootPath: String,
+      canCreateIssue: Boolean,
     },
     data () {
       return {

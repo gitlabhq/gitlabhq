@@ -8,6 +8,45 @@
   window.gl = window.gl || {};
 
   gl.issueBoards.BoardNewIssue = Vue.extend({
+    template: `
+      <div class="card board-new-issue-form">
+        <form @submit="submit($event)">
+          <div
+              class="flash-container"
+              v-if="error">
+            <div class="flash-alert">
+              An error occured. Please try again.
+            </div>
+          </div>
+          <label
+            class="label-light"
+            :for="list.id + '-title'">
+            Title
+          </label>
+          <input
+            class="form-control"
+            type="text"
+            v-model="title"
+            ref="input"
+            :id="list.id + '-title'" />
+          <div class="clearfix prepend-top-10">
+            <button
+              class="btn btn-success pull-left"
+              type="submit"
+              :disabled="title === ''"
+              ref="submit-button">
+              Submit issue
+            </button>
+            <button
+              class="btn btn-default pull-right"
+              type="button"
+              @click="cancel">
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    `,
     props: {
       list: Object,
     },

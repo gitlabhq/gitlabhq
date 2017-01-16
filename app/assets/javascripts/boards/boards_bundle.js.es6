@@ -47,7 +47,13 @@ $(() => {
       issueLinkBase: $boardApp.dataset.issueLinkBase,
       rootPath: $boardApp.dataset.rootPath,
       bulkUpdatePath: $boardApp.dataset.bulkUpdatePath,
-      detailIssue: Store.detail
+      canCreateIssue: $boardApp.dataset.canCreateIssue === 'true',
+      canAdminIssue: $boardApp.dataset.canAdminIssue === 'true',
+      canAdminList: $boardApp.dataset.canAdminList === 'true',
+      currentUser: JSON.parse($boardApp.dataset.currentUser),
+      detailIssue: Store.detail,
+      closeIconHtml: $boardApp.dataset.closeIconHtml,
+      projectId: $boardApp.dataset.projectId,
     },
     computed: {
       detailIssueVisible () {

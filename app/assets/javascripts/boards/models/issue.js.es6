@@ -8,6 +8,7 @@ class ListIssue {
   constructor (obj) {
     this.globalId = obj.id;
     this.id = obj.iid;
+    this.reference = `#${this.id}`;
     this.title = obj.title;
     this.confidential = obj.confidential;
     this.dueDate = obj.due_date;

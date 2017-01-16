@@ -9,6 +9,37 @@
   window.gl.issueBoards = window.gl.issueBoards || {};
 
   gl.issueBoards.BoardBlankState = Vue.extend({
+    template: `
+      <div class="board-blank-state">
+        <p>
+          Add the following default lists to your Issue Board with one click:
+        </p>
+        <ul class="board-blank-state-list">
+          <li v-for="label in predefinedLabels">
+            <span
+              class="label-color"
+              :style="{ backgroundColor: label.color } ">
+            </span>
+            {{ label.title }}
+          </li>
+        </ul>
+        <p>
+          Starting out with the default set of lists will get you right on the way to making the most of your board.
+        </p>
+        <button
+          class="btn btn-create btn-inverted btn-block"
+          type="button"
+          @click.stop="addDefaultLists">
+          Add default lists
+        </button>
+        <button
+          class="btn btn-default btn-block"
+          type="button"
+          @click.stop="clearBlankState">
+          Nevermind, I'll use my own
+        </button>
+      </div>
+    `,
     data () {
       return {
         predefinedLabels: [

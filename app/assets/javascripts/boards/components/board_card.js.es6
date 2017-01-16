@@ -10,10 +10,26 @@ require('./issue_card_inner');
   window.gl.issueBoards = window.gl.issueBoards || {};
 
   gl.issueBoards.BoardCard = Vue.extend({
-    template: '#js-board-list-card',
     components: {
       'issue-card-inner': gl.issueBoards.IssueCardInner,
     },
+    template: `
+      <li
+        class="card"
+        :class="{ 'user-can-drag': userCanDrag, 'is-disabled': isDisabled, 'is-active': issueDetailVisible }"
+        :index="index"
+        :data-issue-id="issue.id"
+        @mousedown="mouseDown"
+        @mousemove="mouseMove"
+        @mouseup="showIssue($event)">
+        <issue-card-inner
+          :list="list"
+          :issue="issue"
+          :issue-link-base="issueLinkBase"
+          :root-path="rootPath">
+        </issue-card-inner>
+      </li>
+    `,
     props: {
       list: Object,
       issue: Object,
@@ -31,6 +47,15 @@ require('./issue_card_inner');
     computed: {
       issueDetailVisible () {
         return this.detailIssue.issue && this.detailIssue.issue.id === this.issue.id;
+      },
+      userCanDrag() {
+        return !this.disabled && this.issue.id;
+      },
+      isDisabled() {
+        return this.disabled || !this.issue.id;
+      },
+      relativeUrl() {
+        return gon.relative_url_root;
       }
     },
     methods: {

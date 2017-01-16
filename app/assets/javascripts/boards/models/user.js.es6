@@ -5,6 +5,7 @@ class ListUser {
     this.id = user.id;
     this.name = user.name;
     this.username = user.username;
+    this.reference = `@${this.username}`;
     this.avatar = user.avatar_url;
   }
 }
