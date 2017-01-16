@@ -77,7 +77,7 @@ linters:
       - Style/WhileUntilModifier
 
   RubyComments:
-    enabled: false
+    enabled: true
 
   SpaceBeforeScript:
     enabled: true
