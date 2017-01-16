@@ -75,7 +75,7 @@ class RemoveDotGitFromUsernames < ActiveRecord::Migration
         counter += 1
         path = "#{base}#{counter}"
 
-        return check_route(base, counter, path)
+        return check_routes(base, counter, path)
       end
     end
 
