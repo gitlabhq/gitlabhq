@@ -10,8 +10,8 @@ describe BuildActionEntity do
   describe '#as_json' do
     subject { entity.as_json }
 
-    it 'contains humanized build name' do
-      expect(subject[:name]).to eq 'Test build'
+    it 'contains original build name' do
+      expect(subject[:name]).to eq 'test_build'
     end
 
     it 'contains path to the action play' do
