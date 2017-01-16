@@ -15,15 +15,26 @@ class RemoveDotGitFromUsernames < ActiveRecord::Migration
       path_was = user['username']
       path_was_wildcard = quote_string("#{path_was}/%")
 
-      path = move_namespace(namespace_id, path_was, path)
+      # It's possible for `move_namespace` to return nil if the given namespace
+      # has nothing on storage (i.e., they never made a project).
+      path = move_namespace(namespace_id, path_was) || rename_path(path_was)
 
-      execute "UPDATE routes SET path = '#{path}' WHERE source_type = 'Namespace' AND source_id = #{namespace_id}"
-      execute "UPDATE namespaces SET path = '#{path}' WHERE id = #{namespace_id}"
-      execute "UPDATE users SET username = '#{path}' WHERE id = #{id}"
+      begin
+        execute "UPDATE routes SET path = '#{path}' WHERE source_type = 'Namespace' AND source_id = #{namespace_id}"
+        execute "UPDATE namespaces SET path = '#{path}' WHERE id = #{namespace_id}"
+        execute "UPDATE users SET username = '#{path}' WHERE id = #{id}"
 
-      select_all("SELECT id, path FROM routes WHERE path LIKE '#{path_was_wildcard}'").each do |route|
-        new_path = "#{path}/#{route['path'].split('/').last}"
-        execute "UPDATE routes SET path = '#{new_path}' WHERE id = #{route['id']}"
+        select_all("SELECT id, path FROM routes WHERE path LIKE '#{path_was_wildcard}'").each do |route|
+          new_path = "#{path}/#{route['path'].split('/').last}"
+          execute "UPDATE routes SET path = '#{new_path}' WHERE id = #{route['id']}"
+        end
+      rescue => e
+        # Move namespace path back, if it has been moved already.
+        unless path_exists?(repository_storage_path, path_was)
+          gitlab_shell.mv_namespace(repository_storage_path, path, path_was)
+        end
+
+        raise e
       end
     end
   end
@@ -87,7 +98,15 @@ class RemoveDotGitFromUsernames < ActiveRecord::Migration
       end
     end
 
-    Gitlab::UploadsTransfer.new.rename_namespace(path_was, path)
+    begin
+      Gitlab::UploadsTransfer.new.rename_namespace(path_was, path)
+    rescue => e
+      if path.nil?
+        say("Couldn't find a storage path for #{namespace_id}, #{path_was} -- skipping")
+      else
+        raise e
+      end
+    end
 
     path
   end
