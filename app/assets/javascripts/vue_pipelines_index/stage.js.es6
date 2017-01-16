@@ -1,11 +1,11 @@
 /* global Vue, Flash, gl */
-/* eslint-disable no-param-reassign */
+/* eslint-disable no-param-reassign, no-bitwise */
 
 ((gl) => {
   gl.VueStage = Vue.extend({
     data() {
       return {
-        request: false,
+        count: 0,
         builds: '',
         spinner: '<span class="fa fa-spinner fa-spin"></span>',
       };
@@ -13,29 +13,23 @@
     props: ['stage', 'svgs', 'match'],
     methods: {
       fetchBuilds() {
-        if (this.request) return this.clearBuilds();
-
+        if (this.count > 0) return null;
         return this.$http.get(this.stage.dropdown_path)
           .then((response) => {
-            this.request = true;
+            this.count += 1;
             this.builds = JSON.parse(response.body).html;
           }, () => {
             const flash = new Flash('Something went wrong on our end.');
-            this.request = false;
             return flash;
           });
-      },
-      clearBuilds() {
-        this.builds = '';
-        this.request = false;
       },
     },
     computed: {
       buildsOrSpinner() {
-        return this.request ? this.builds : this.spinner;
+        return this.builds ? this.builds : this.spinner;
       },
       dropdownClass() {
-        if (this.request) return 'js-builds-dropdown-container';
+        if (this.builds) return 'js-builds-dropdown-container';
         return 'js-builds-dropdown-loading builds-dropdown-loading';
       },
       buildStatus() {
@@ -57,7 +51,6 @@
       <div>
         <button
           @click='fetchBuilds'
-          @blur='fetchBuilds'
           :class="triggerButtonClass"
           :title='stage.title'
           data-placement="top"
