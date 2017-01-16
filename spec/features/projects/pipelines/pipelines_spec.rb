@@ -128,13 +128,13 @@ describe 'Pipelines', :feature, :js do
         it 'has link to the manual action' do
           find('.js-pipeline-dropdown-manual-actions').click
 
-          expect(page).to have_link('Manual build')
+          expect(page).to have_link('manual build')
         end
 
         context 'when manual action was played' do
           before do
             find('.js-pipeline-dropdown-manual-actions').click
-            click_link('Manual build')
+            click_link('manual build')
           end
 
           it 'enqueues manual action job' do
