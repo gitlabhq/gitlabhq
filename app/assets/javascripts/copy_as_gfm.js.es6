@@ -239,6 +239,8 @@
       let selectedDocument = selection.getRangeAt(0).cloneContents();
       if (!selectedDocument) return;
 
+      if (selectedDocument.textContent.length === 0) return;
+
       e.preventDefault();
       clipboardData.setData('text/plain', selectedDocument.textContent);
 
