@@ -71,7 +71,7 @@ class RemoveDotGitFromUsernames < ActiveRecord::Migration
     route_exists = route_exists?(path)
 
     Gitlab.config.repositories.storages.each_value do |storage|
-      if route_exists && path_exists?(path, storage)
+      if route_exists || path_exists?(path, storage)
         counter += 1
         path = "#{base}#{counter}"
 
