@@ -65,7 +65,7 @@
                                   %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;vertical-align:middle;color:#ffffff;text-align:center;padding-right:5px;" }
                                     %img{ alt: "✓", height: "13", src: image_url('mailers/ci_pipeline_notif_v1/icon-check-green-inverted.gif'), style: "display:block;", width: "13" }/
                                   %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;vertical-align:middle;color:#ffffff;text-align:center;" }
-                                    %p Merge request was approved!
+                                    %p Merge request was approved.
                       %tr.spacer
                         %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;height:18px;font-size:18px;line-height:18px;" }
                           &nbsp;
@@ -75,7 +75,7 @@
                             %tbody
                               %tr{ style: 'width:100%;'}
                                 %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;color:#8c8c8c;font-weight:300;padding:14px 0;margin:0;text-align:center;" }
-                                  %span{ style: "font-weight: bold;color:#333333;"} Merge Request
+                                  %span{ style: "font-weight: bold;color:#333333;"} Merge request
                                   %a{ href: merge_request_url(@merge_request), style: "font-weight: bold;color:#3777b0;text-decoration:none" }  #{@merge_request.to_reference}
                                   %span was approved by
                                   %img.avatar{ height: "24", src: avatar_icon(@merge_request.assignee, 24), style: "border-radius:12px;margin:-7px 0 -7px 3px;", width: "24", alt: "Avatar" }/
