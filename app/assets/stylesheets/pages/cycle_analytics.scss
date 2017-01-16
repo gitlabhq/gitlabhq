@@ -20,6 +20,10 @@
 
     .fa {
       color: $cycle-analytics-light-gray;
+
+      &:hover {
+        color: $gl-text-color;
+      }
     }
 
     .stage-header {

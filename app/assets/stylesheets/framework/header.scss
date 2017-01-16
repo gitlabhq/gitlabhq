@@ -57,6 +57,14 @@ header {
 
         &.header-user-dropdown-toggle {
           margin-left: 14px;
+
+          &:hover,
+          &:focus,
+          &:active {
+            .header-user-avatar {
+              border-color: rgba($avatar-border, .2);
+            }
+          }
         }
 
         &:hover,
@@ -104,6 +112,7 @@ header {
 
       &:hover {
         background-color: $white-normal;
+        color: $gl-header-nav-hover-color;
       }
     }
   }
@@ -180,6 +189,7 @@ header {
 
         &:hover {
           text-decoration: underline;
+          color: $gl-header-nav-hover-color;
         }
       }
 
@@ -198,7 +208,7 @@ header {
         cursor: pointer;
 
         &:hover {
-          color: darken($color: $gl-text-color, $amount: 30%);
+          color: $gl-header-nav-hover-color;
         }
       }
 
@@ -271,4 +281,5 @@ header {
   float: left;
   margin-right: 5px;
   border-radius: 50%;
+  border: 1px solid $avatar-border;
 }
