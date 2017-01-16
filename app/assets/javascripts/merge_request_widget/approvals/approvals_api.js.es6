@@ -16,28 +16,19 @@
     fetchApprovals() {
       const flashErrorMessage = 'An error occured while retrieving approval data for this merge request.';
 
-      return Vue.http.get(this.baseEndpoint).catch((err) => {
-        console.error('Error fetching approvals', err);
-        return new Flash(flashErrorMessage);
-      });
+      return Vue.http.get(this.baseEndpoint).catch(() => new Flash(flashErrorMessage));
     }
 
     approveMergeRequest() {
       const flashErrorMessage = 'An error occured while submitting your approval.';
 
-      return Vue.http.post(this.baseEndpoint).catch((err) => {
-        console.error('Error approving merge request', err);
-        return new Flash(flashErrorMessage);
-      });
+      return Vue.http.post(this.baseEndpoint).catch(() => new Flash(flashErrorMessage));
     }
 
     unapproveMergeRequest() {
       const flashErrorMessage = 'An error occured while removing your approval.';
 
-      return Vue.http.delete(this.baseEndpoint).catch((err) => {
-        console.error('Error unapproving merge request', err);
-        return new Flash(flashErrorMessage);
-      });
+      return Vue.http.delete(this.baseEndpoint).catch(() => new Flash(flashErrorMessage));
     }
   }
 
