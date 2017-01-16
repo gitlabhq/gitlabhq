@@ -132,6 +132,12 @@ module API
 
         { success: true, recovery_codes: codes }
       end
+
+      get '/gitaly' do
+        status 200
+
+        { socket_path: Gitlab.config.gitaly.socket_path }
+      end
     end
   end
 end

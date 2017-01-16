@@ -1,0 +1,4 @@
+---
+title: Add internal API endpoint to share Gitaly's paths with other components
+merge_request: 8618
+author:

@@ -412,6 +412,20 @@ describe API::Internal, api: true  do
     end
   end
 
+  describe 'GET /internal/gitaly' do
+    before do
+      allow(Gitlab.config).to receive(:gitaly).and_return(Settingslogic.new('socket_path' => '/my/gitaly.socket'))
+
+      get api("/internal/gitaly"), secret_token: secret_token
+    end
+
+    it 'returns the gitaly socket path' do
+      expect(response.status).to eq(200)
+
+      expect(json_response['socket_path']).to eq('/my/gitaly.socket')
+    end
+  end
+
   def project_with_repo_path(path)
     double().tap do |fake_project|
       allow(fake_project).to receive_message_chain('repository.path_to_repo' => path)
