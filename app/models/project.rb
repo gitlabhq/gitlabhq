@@ -12,6 +12,7 @@ class Project < ActiveRecord::Base
   include AfterCommitQueue
   include CaseSensitivity
   include TokenAuthenticatable
+  include ValidAttribute
   include ProjectFeaturesCompatibility
   include SelectForProjectAuthorization
   include Routable
@@ -64,6 +65,8 @@ class Project < ActiveRecord::Base
       end
     end
   end
+
+  after_validation :check_pending_delete
 
   ActsAsTaggableOn.strict_case_match = true
   acts_as_taggable_on :tags
@@ -119,7 +122,7 @@ class Project < ActiveRecord::Base
   # Merge Requests for target project should be removed with it
   has_many :merge_requests,     dependent: :destroy, foreign_key: 'target_project_id'
   # Merge requests from source project should be kept when source project was removed
-  has_many :fork_merge_requests, foreign_key: 'source_project_id', class_name: MergeRequest
+  has_many :fork_merge_requests, foreign_key: 'source_project_id', class_name: 'MergeRequest'
   has_many :issues,             dependent: :destroy
   has_many :labels,             dependent: :destroy, class_name: 'ProjectLabel'
   has_many :services,           dependent: :destroy
@@ -130,7 +133,7 @@ class Project < ActiveRecord::Base
   has_many :hooks,              dependent: :destroy, class_name: 'ProjectHook'
   has_many :protected_branches, dependent: :destroy
 
-  has_many :project_authorizations, dependent: :destroy
+  has_many :project_authorizations
   has_many :authorized_users, through: :project_authorizations, source: :user, class_name: 'User'
   has_many :project_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source
   alias_method :members, :project_members
@@ -1029,7 +1032,7 @@ class Project < ActiveRecord::Base
                                         "refs/heads/#{branch}",
                                         force: true)
     repository.copy_gitattributes(branch)
-    repository.expire_avatar_cache
+    repository.after_change_head
     reload_default_branch
   end
 
@@ -1319,5 +1322,22 @@ class Project < ActiveRecord::Base
   def update_project_statistics
     stats = statistics || build_statistics
     stats.update(namespace_id: namespace_id)
+  end
+
+  def check_pending_delete
+    return if valid_attribute?(:name) && valid_attribute?(:path)
+    return unless pending_delete_twin
+
+    %i[route route.path name path].each do |error|
+      errors.delete(error)
+    end
+
+    errors.add(:base, "The project is still being deleted. Please try again later.")
+  end
+
+  def pending_delete_twin
+    return false unless path
+
+    Project.unscoped.where(pending_delete: true).find_with_namespace(path_with_namespace)
   end
 end

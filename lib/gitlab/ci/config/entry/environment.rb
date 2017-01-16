@@ -33,7 +33,6 @@ module Gitlab
 
               validates :url,
                         length: { maximum: 255 },
-                        addressable_url: true,
                         allow_nil: true
 
               validates :action,

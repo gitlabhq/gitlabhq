@@ -93,7 +93,7 @@ module API
         # Filter out params which are used later
         user_params = declared_params(include_missing: false)
         identity_attrs = user_params.slice(:provider, :extern_uid)
-        confirm = params.delete(:confirm)
+        confirm = user_params.delete(:confirm)
 
         user = User.new(user_params.except(:extern_uid, :provider))
         user.skip_confirmation! unless confirm

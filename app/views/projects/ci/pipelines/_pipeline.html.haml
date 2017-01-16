@@ -78,9 +78,9 @@
         .btn-group.inline
           - if actions.any?
             .btn-group
-              %a.dropdown-toggle.btn.btn-default.js-pipeline-dropdown-manual-actions{ type: 'button', 'data-toggle' => 'dropdown' }
+              %button.dropdown-toggle.btn.btn-default.js-pipeline-dropdown-manual-actions{ type: 'button', 'data-toggle' => 'dropdown' }
                 = custom_icon('icon_play')
-                = icon('caret-down')
+                = icon('caret-down', 'aria-hidden' => 'true')
               %ul.dropdown-menu.dropdown-menu-align-right
                 - actions.each do |build|
                   %li
@@ -89,7 +89,7 @@
                       %span= build.name.humanize
           - if artifacts.present?
             .btn-group
-              %a.dropdown-toggle.btn.btn-default.build-artifacts.js-pipeline-dropdown-download{ type: 'button', 'data-toggle' => 'dropdown' }
+              %button.dropdown-toggle.btn.btn-default.build-artifacts.js-pipeline-dropdown-download{ type: 'button', 'data-toggle' => 'dropdown' }
                 = icon("download")
                 = icon('caret-down')
               %ul.dropdown-menu.dropdown-menu-align-right

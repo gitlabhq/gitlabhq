@@ -587,10 +587,20 @@ pre.light-well {
 
     .project-full-name {
       @include str-truncated;
+
+      @media (max-width: $screen-xs-max) {
+        max-width: 50%;
+      }
     }
 
     .controls {
       line-height: $list-text-height;
+
+      .badge {
+        @media (max-width: $screen-xs-max) {
+          display: none;
+        }
+      }
 
       a:hover {
         text-decoration: none;
@@ -603,6 +613,12 @@ pre.light-well {
       svg {
         position: relative;
         top: 2px;
+      }
+    }
+
+    .description p {
+      @media (max-width: $screen-xs-max) {
+        max-width: 50%;
       }
     }
   }

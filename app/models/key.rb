@@ -49,6 +49,10 @@ class Key < ActiveRecord::Base
     "key-#{id}"
   end
 
+  def update_last_used_at
+    UseKeyWorker.perform_async(self.id)
+  end
+
   def add_to_shell
     GitlabShellWorker.perform_async(
       :add_key,

@@ -2,9 +2,19 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 8.15.4 (2017-01-09)
+
+- Make successful pipeline emails off for watchers. !8176
+- Speed up group milestone index by passing group_id to IssuesFinder. !8363
+- Don't instrument 405 Grape calls. !8445
+- Update the gitlab-markup gem to the version 1.5.1. !8509
+- Updated Turbolinks to mitigate potential XSS attacks.
+- Re-order update steps in the 8.14 -> 8.15 upgrade guide.
+- Re-add Google Cloud Storage as a backup strategy.
+
 ## 8.15.3 (2017-01-06)
 
-- Rename wiki_events to wiki_page_events in project hooks API to avoid errors. !0 (8425)
+- Rename wiki_events to wiki_page_events in project hooks API to avoid errors. !8425
 - Rename projects wth reserved names. !8234
 - Cache project authorizations even when user has access to zero projects. !8327
 - Fix a minor grammar error in merge request widget. !8337
@@ -254,6 +264,11 @@ entry.
 - Rename groups with .git in the end of the path. !8199
 - Whitelist next project names: help, ci, admin, search. !8227
 - Adds back CSS for progress-bars. !8237
+
+## 8.14.6 (2017-01-10)
+
+- Update the gitlab-markup gem to the version 1.5.1. !8509
+- Updated Turbolinks to mitigate potential XSS attacks.
 
 ## 8.14.5 (2016-12-14)
 
@@ -531,6 +546,11 @@ entry.
 - Updated commit SHA styling on the branches page.
 - Fix "Without projects" filter. !6611 (Ben Bodenmiller)
 - Fix 404 when visit /projects page
+
+## 8.13.11 (2017-01-10)
+
+- Update the gitlab-markup gem to the version 1.5.1. !8509
+- Updated Turbolinks to mitigate potential XSS attacks.
 
 ## 8.13.10 (2016-12-14)
 

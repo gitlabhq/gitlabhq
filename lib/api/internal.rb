@@ -28,6 +28,8 @@ module API
 
         protocol = params[:protocol]
 
+        actor.update_last_used_at if actor.is_a?(Key)
+
         access =
           if wiki?
             Gitlab::GitAccessWiki.new(actor, project, protocol, authentication_abilities: ssh_authentication_abilities)
@@ -61,6 +63,8 @@ module API
         status 200
 
         key = Key.find(params[:key_id])
+        key.update_last_used_at
+
         token_handler = Gitlab::LfsToken.new(key)
 
         {
@@ -103,7 +107,9 @@ module API
 
         key = Key.find_by(id: params[:key_id])
 
-        unless key
+        if key
+          key.update_last_used_at
+        else
           return { 'success' => false, 'message' => 'Could not find the given key' }
         end
 

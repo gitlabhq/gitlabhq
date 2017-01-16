@@ -73,7 +73,7 @@ class User < ActiveRecord::Base
   has_many :created_projects,         foreign_key: :creator_id, class_name: 'Project'
   has_many :users_star_projects, dependent: :destroy
   has_many :starred_projects, through: :users_star_projects, source: :project
-  has_many :project_authorizations, dependent: :destroy
+  has_many :project_authorizations
   has_many :authorized_projects, through: :project_authorizations, source: :project
 
   has_many :snippets,                 dependent: :destroy, foreign_key: :author_id
@@ -444,7 +444,7 @@ class User < ActiveRecord::Base
   end
 
   def remove_project_authorizations(project_ids)
-    project_authorizations.where(id: project_ids).delete_all
+    project_authorizations.where(project_id: project_ids).delete_all
   end
 
   def set_authorized_projects_column
