@@ -125,7 +125,9 @@ describe 'Issue Boards', feature: true, js: true do
         first('.card').click
       end
 
-      page.within('.assignee') do
+      page.within(find('.assignee')) do
+        expect(page).to have_content('No assignee')
+
         click_link 'assign yourself'
 
         wait_for_vue_resource
