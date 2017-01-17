@@ -97,7 +97,7 @@
 
       const filterIconPadding = 27;
       const offset = gl.text
-        .getTextWidth(this.filteredSearchInput.value, this.font) + filterIconPadding;
+        .getTextWidth(this.getSearchInput(), this.font) + filterIconPadding;
 
       this.mapping[key].reference.setOffset(offset);
     }
@@ -153,7 +153,7 @@
 
     setDropdown() {
       const { lastToken, searchToken } = this.tokenizer
-        .processTokens(this.filteredSearchInput.value);
+        .processTokens(this.getSearchInput());
 
       if (this.filteredSearchInput.value.split('').last() === ' ') {
         this.updateCurrentDropdownOffset();
@@ -172,6 +172,18 @@
       } else {
         this.loadDropdown('hint');
       }
+    }
+
+    getSearchInput() {
+      const selectionStart = this.filteredSearchInput.selectionStart;
+      const inputValue = this.filteredSearchInput.value;
+      const rightPos = inputValue.slice(selectionStart).search(/\s/);
+
+      if (rightPos < 0) {
+        return inputValue;
+      }
+
+      return inputValue.slice(0, rightPos + selectionStart + 1).trim();
     }
 
     resetDropdowns() {
