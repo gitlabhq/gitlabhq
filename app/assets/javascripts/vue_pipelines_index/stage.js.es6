@@ -11,7 +11,13 @@
     },
     props: ['stage', 'svgs', 'match'],
     methods: {
-      fetchBuilds() {
+      fetchBuilds(e) {
+        const areaExpanded = e.currentTarget.attributes['aria-expanded'];
+
+        console.log('HIT');
+
+        if (areaExpanded && (areaExpanded.textContent === 'true')) return null;
+
         return this.$http.get(this.stage.dropdown_path)
           .then((response) => {
             this.builds = JSON.parse(response.body).html;
@@ -47,7 +53,7 @@
     template: `
       <div>
         <button
-          @click='fetchBuilds'
+          @click='fetchBuilds($event)'
           :class="triggerButtonClass"
           :title='stage.title'
           data-placement="top"
