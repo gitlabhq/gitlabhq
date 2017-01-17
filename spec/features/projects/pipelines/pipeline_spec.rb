@@ -36,7 +36,8 @@ describe 'Pipeline', :feature, :js do
       create(:generic_commit_status, status: 'success',
                                      pipeline: pipeline,
                                      name: 'jenkins',
-                                     stage: 'external')
+                                     stage: 'external',
+                                     target_url: 'http://gitlab.com/status')
     end
   end
 
@@ -139,6 +140,7 @@ describe 'Pipeline', :feature, :js do
         it 'shows the success icon and the generic comit status build' do
           expect(page).to have_selector('.ci-status-icon-success')
           expect(page).to have_content('jenkins')
+          expect(page).to have_link('jenkins', href: 'http://gitlab.com/status')
         end
       end
     end

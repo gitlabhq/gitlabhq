@@ -4,8 +4,8 @@ module Gitlab
       module External
         module Common
           def has_details?
-            can?(user, :read_commit_status, subject) &&
-              subject.target_url.present?
+            subject.target_url.present? &&
+              can?(user, :read_commit_status, subject)
           end
 
           def details_path
