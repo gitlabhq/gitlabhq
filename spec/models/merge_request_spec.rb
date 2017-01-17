@@ -1514,6 +1514,108 @@ describe MergeRequest, models: true do
     end
   end
 
+  describe '#mergeable_with_slash_command?' do
+    def create_pipeline(status)
+      create(:ci_pipeline_with_one_job,
+        project: project,
+        ref:     merge_request.source_branch,
+        sha:     merge_request.diff_head_sha,
+        status:  status)
+    end
+
+    let(:project)       { create(:project, :public, only_allow_merge_if_build_succeeds: true) }
+    let(:developer)     { create(:user) }
+    let(:user)          { create(:user) }
+    let(:merge_request) { create(:merge_request, source_project: project) }
+    let(:mr_sha)        { merge_request.diff_head_sha }
+
+    before do
+      project.team << [developer, :developer]
+    end
+
+    context 'when autocomplete_precheck is set to true' do
+      it 'is mergeable by developer' do
+        expect(merge_request.mergeable_with_slash_command?(developer, autocomplete_precheck: true)).to be_truthy
+      end
+
+      it 'is not mergeable by normal user' do
+        expect(merge_request.mergeable_with_slash_command?(user, autocomplete_precheck: true)).to be_falsey
+      end
+    end
+
+    context 'when autocomplete_precheck is set to false' do
+      it 'is mergeable by developer' do
+        expect(merge_request.mergeable_with_slash_command?(developer, last_diff_sha: mr_sha)).to be_truthy
+      end
+
+      it 'is not mergeable by normal user' do
+        expect(merge_request.mergeable_with_slash_command?(user, last_diff_sha: mr_sha)).to be_falsey
+      end
+
+      context 'closed MR'  do
+        before do
+          merge_request.update_attribute(:state, :closed)
+        end
+
+        it 'is not mergeable' do
+          expect(merge_request.mergeable_with_slash_command?(developer, last_diff_sha: mr_sha)).to be_falsey
+        end
+      end
+
+      context 'MR with WIP'  do
+        before do
+          merge_request.update_attribute(:title, 'WIP: some MR')
+        end
+
+        it 'is not mergeable' do
+          expect(merge_request.mergeable_with_slash_command?(developer, last_diff_sha: mr_sha)).to be_falsey
+        end
+      end
+
+      context 'sha differs from the MR diff_head_sha'  do
+        it 'is not mergeable' do
+          expect(merge_request.mergeable_with_slash_command?(developer, last_diff_sha: 'some other sha')).to be_falsey
+        end
+      end
+
+      context 'sha is not provided'  do
+        it 'is not mergeable' do
+          expect(merge_request.mergeable_with_slash_command?(developer)).to be_falsey
+        end
+      end
+
+      context 'with pipeline ok'  do
+        before do
+          create_pipeline(:success)
+        end
+
+        it 'is mergeable' do
+          expect(merge_request.mergeable_with_slash_command?(developer, last_diff_sha: mr_sha)).to be_truthy
+        end
+      end
+
+      context 'with failing pipeline'  do
+        before do
+          create_pipeline(:failed)
+        end
+
+        it 'is not mergeable' do
+          expect(merge_request.mergeable_with_slash_command?(developer, last_diff_sha: mr_sha)).to be_falsey
+        end
+      end
+
+      context 'with running pipeline'  do
+        before do
+          create_pipeline(:running)
+        end
+
+        it 'is mergeable' do
+          expect(merge_request.mergeable_with_slash_command?(developer, last_diff_sha: mr_sha)).to be_truthy
+        end
+      end
+    end
+  end
+
   describe '#has_commits?' do
     before do
       allow(subject.merge_request_diff).to receive(:commits_count).
