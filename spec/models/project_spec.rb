@@ -1886,11 +1886,13 @@ describe Project, models: true do
     end
   end
 
-  describe 'change_head' do
+  describe '#change_head' do
     let(:project) { create(:project) }
 
-    it 'calls the before_change_head method' do
+    it 'calls the before_change_head and after_change_head methods' do
       expect(project.repository).to receive(:before_change_head)
+      expect(project.repository).to receive(:after_change_head)
+
       project.change_head(project.default_branch)
     end
 
@@ -1903,11 +1905,6 @@ describe Project, models: true do
 
     it 'copies the gitattributes' do
       expect(project.repository).to receive(:copy_gitattributes).with(project.default_branch)
-      project.change_head(project.default_branch)
-    end
-
-    it 'expires the avatar cache' do
-      expect(project.repository).to receive(:expire_avatar_cache)
       project.change_head(project.default_branch)
     end
 
