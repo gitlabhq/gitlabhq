@@ -1,0 +1,4 @@
+---
+title: Switch to sassc-rails for faster stylesheet compilation
+merge_request: 8556
+author: Richard Macklin

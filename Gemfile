@@ -219,7 +219,7 @@ gem 'oj', '~> 2.17.4'
 gem 'chronic', '~> 0.10.2'
 gem 'chronic_duration', '~> 0.10.6'
 
-gem 'sass-rails', '~> 5.0.6'
+gem 'sassc-rails', '~> 1.3.0'
 gem 'coffee-rails', '~> 4.1.0'
 gem 'uglifier', '~> 2.7.2'
 gem 'gitlab-turbolinks-classic', '~> 2.5', '>= 2.5.6'
