@@ -62,7 +62,7 @@ Lint/UnusedMethodArgument:
 # Offense count: 112
 # Configuration parameters: CountComments.
 Metrics/BlockLength:
-  Max: 303
+  Enabled: false
 
 # Offense count: 4
 # Cop supports --auto-correct.
@@ -125,7 +125,7 @@ RSpec/MessageSpies:
 
 # Offense count: 3278
 RSpec/MultipleExpectations:
-  Max: 37
+  Enabled: false
 
 # Offense count: 2287
 RSpec/NamedSubject:
