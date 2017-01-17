@@ -18,7 +18,8 @@
             or change it at #{link_to Gitlab.config.gravatar.host, "http://" + Gitlab.config.gravatar.host}
     .col-lg-9
       .clearfix.avatar-image.append-bottom-default
-        = image_tag avatar_icon(@user, 160), alt: '', class: 'avatar s160'
+        = link_to avatar_icon(@user, 400), target: '_blank' do
+          = image_tag avatar_icon(@user, 160), alt: '', class: 'avatar s160'
       %h5.prepend-top-0
         Upload new avatar
       .prepend-top-5.append-bottom-10

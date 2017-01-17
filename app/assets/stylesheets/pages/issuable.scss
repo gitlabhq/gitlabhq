@@ -154,8 +154,8 @@
     .edit-link {
       color: $gl-text-color;
 
-      &:hover {
-        color: $md-link-color;
+      &:not([href]):hover {
+        color: rgba($avatar-border, .2);
       }
     }
   }
@@ -332,6 +332,10 @@
     &:hover {
       color: $md-link-color;
       text-decoration: none;
+
+      .avatar {
+        border-color: rgba($avatar-border, .2);
+      }
     }
   }
 

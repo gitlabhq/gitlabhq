@@ -216,8 +216,8 @@
   }
 }
 
-.user-profile {
 
+.user-profile {
   .cover-controls a {
     margin-left: 5px;
   }
@@ -231,8 +231,11 @@
     }
   }
 
-  @media (max-width: $screen-xs-max) {
+  .user-profile-nav {
+    font-size: 0;
+  }
 
+  @media (max-width: $screen-xs-max) {
     .cover-block {
       padding-top: 20px;
     }
@@ -251,6 +254,12 @@
         &:first-child {
           margin-left: 0;
         }
+      }
+    }
+
+    .user-profile-nav {
+      a {
+        margin-right: 0;
       }
     }
   }

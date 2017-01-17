@@ -86,7 +86,7 @@
                   %li
                     = link_to play_namespace_project_build_path(pipeline.project.namespace, pipeline.project, build), method: :post, rel: 'nofollow' do
                       = custom_icon('icon_play')
-                      %span= build.name.humanize
+                      %span= build.name
           - if artifacts.present?
             .btn-group
               %button.dropdown-toggle.btn.btn-default.build-artifacts.js-pipeline-dropdown-download{ type: 'button', 'data-toggle' => 'dropdown' }

@@ -49,6 +49,9 @@ require('~/lib/utils/type_utility');
         selectable: true,
         filterable: isFilterable,
         data: hasRemote ? remoteMock.bind({}, this.projectsData) : this.projectsData,
+        search: {
+          fields: ['name']
+        },
         text: (project) => {
           (project.name_with_namespace || project.name);
         },
@@ -165,6 +168,22 @@ require('~/lib/utils/type_utility');
         this.dropdownButtonElement.click();
         expect($(document.activeElement)).toEqual($(SEARCH_INPUT_SELECTOR));
       });
+    });
+
+
+    it('should still have input value on close and restore', () => {
+      let $searchInput = $(SEARCH_INPUT_SELECTOR);
+      initDropDown.call(this, false, true);
+      $searchInput
+        .trigger('focus')
+        .val('g')
+        .trigger('input');
+      expect($searchInput.val()).toEqual('g');
+      this.dropdownButtonElement.trigger('hidden.bs.dropdown');
+      $searchInput
+        .trigger('blur')
+        .trigger('focus');
+      expect($searchInput.val()).toEqual('g');
     });
   });
 })();

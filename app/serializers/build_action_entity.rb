@@ -2,7 +2,7 @@ class BuildActionEntity < Grape::Entity
   include RequestAwareEntity
 
   expose :name do |build|
-    build.name.humanize
+    build.name
   end
 
   expose :path do |build|
