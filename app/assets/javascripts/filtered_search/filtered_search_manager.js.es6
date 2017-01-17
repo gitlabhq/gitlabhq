@@ -35,6 +35,7 @@
       this.filteredSearchInput.addEventListener('input', this.toggleClearSearchButtonWrapper);
       this.filteredSearchInput.addEventListener('keydown', this.checkForEnterWrapper);
       this.filteredSearchInput.addEventListener('keyup', this.checkForBackspaceWrapper);
+      this.filteredSearchInput.addEventListener('click', this.setDropdownWrapper);
       this.clearSearchButton.addEventListener('click', this.clearSearchWrapper);
     }
 
