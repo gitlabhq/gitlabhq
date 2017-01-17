@@ -1085,7 +1085,7 @@ describe API::Projects, api: true  do
   end
 
   describe 'GET /projects/search/:query' do
-    let!(:query) { 'query'}
+    let!(:query)            { 'query'}
     let!(:search)           { create(:empty_project, name: query, creator_id: user.id, namespace: user.namespace) }
     let!(:pre)              { create(:empty_project, name: "pre_#{query}", creator_id: user.id, namespace: user.namespace) }
     let!(:post)             { create(:empty_project, name: "#{query}_post", creator_id: user.id, namespace: user.namespace) }
@@ -1095,32 +1095,37 @@ describe API::Projects, api: true  do
     let!(:unfound_internal) { create(:empty_project, :internal, name: 'unfound internal') }
     let!(:public)           { create(:empty_project, :public, name: "public #{query}") }
     let!(:unfound_public)   { create(:empty_project, :public, name: 'unfound public') }
+    let!(:one_dot_two)      { create(:empty_project, :public, name: "one.dot.two") }
 
     shared_examples_for 'project search response' do |args = {}|
       it 'returns project search responses' do
-        get api("/projects/search/#{query}", current_user)
+        get api("/projects/search/#{args[:query]}", current_user)
 
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.size).to eq(args[:results])
-        json_response.each { |project| expect(project['name']).to match(args[:match_regex] || /.*query.*/) }
+        json_response.each { |project| expect(project['name']).to match(args[:match_regex] || /.*#{args[:query]}.*/) }
       end
     end
 
     context 'when unauthenticated' do
-      it_behaves_like 'project search response', results: 1 do
+      it_behaves_like 'project search response', query: 'query', results: 1 do
         let(:current_user) { nil }
       end
     end
 
     context 'when authenticated' do
-      it_behaves_like 'project search response', results: 6 do
+      it_behaves_like 'project search response', query: 'query', results: 6 do
         let(:current_user) { user }
       end
+      it_behaves_like 'project search response', query: 'one.dot.two', results: 1 do
+        let(:current_user) { user }
+      end
+      
     end
 
     context 'when authenticated as a different user' do
-      it_behaves_like 'project search response', results: 2, match_regex: /(internal|public) query/ do
+      it_behaves_like 'project search response', query: 'query', results: 2, match_regex: /(internal|public) query/ do
         let(:current_user) { user2 }
       end
     end

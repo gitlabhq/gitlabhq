@@ -266,7 +266,7 @@ describe ProjectsController do
 
       expect(project.repository.path).to include(new_path)
       expect(assigns(:repository).path).to eq(project.repository.path)
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(302)
     end
   end
 

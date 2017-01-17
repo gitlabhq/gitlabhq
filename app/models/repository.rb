@@ -495,6 +495,11 @@ class Repository
     expire_content_cache
   end
 
+  # Runs code after the HEAD of a repository is changed.
+  def after_change_head
+    expire_method_caches(METHOD_CACHES_FOR_FILE_TYPES.keys)
+  end
+
   # Runs code after a repository has been forked/imported.
   def after_import
     expire_content_cache

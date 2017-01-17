@@ -195,10 +195,6 @@ module SharedPaths
     visit admin_background_jobs_path
   end
 
-  step 'I visit admin groups page' do
-    visit admin_groups_path
-  end
-
   step 'I visit admin teams page' do
     visit admin_teams_path
   end
