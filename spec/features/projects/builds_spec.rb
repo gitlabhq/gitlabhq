@@ -3,6 +3,7 @@ require 'tempfile'
 
 feature 'Builds', :feature do
   let(:user) { create(:user) }
+  let(:user_access_level) { :developer }
   let(:project) { create(:project) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
 
@@ -14,7 +15,7 @@ feature 'Builds', :feature do
   end
 
   before do
-    project.team << [user, :developer]
+    project.team << [user, user_access_level]
     login_as(user)
   end
 
@@ -131,7 +132,9 @@ feature 'Builds', :feature do
 
     context 'Artifacts expire date' do
       before do
-        build.update_attributes(artifacts_file: artifacts_file, artifacts_expire_at: expire_at)
+        build.update_attributes(artifacts_file: artifacts_file,
+                                artifacts_expire_at: expire_at)
+
         visit namespace_project_build_path(project.namespace, project, build)
       end
 
@@ -146,12 +149,23 @@ feature 'Builds', :feature do
       context 'when expire date is defined' do
         let(:expire_at) { Time.now + 7.days }
 
-        it 'keeps artifacts when Keep button is clicked' do
-          expect(page).to have_content 'The artifacts will be removed'
-          click_link 'Keep'
+        context 'when user has ability to update build' do
+          it 'keeps artifacts when keep button is clicked' do
+            expect(page).to have_content 'The artifacts will be removed'
 
-          expect(page).not_to have_link 'Keep'
-          expect(page).not_to have_content 'The artifacts will be removed'
+            click_link 'Keep'
+
+            expect(page).to have_no_link 'Keep'
+            expect(page).to have_no_content 'The artifacts will be removed'
+          end
+        end
+
+        context 'when user does not have ability to update build' do
+          let(:user_access_level) { :guest }
+
+          it 'does not have keep button' do
+            expect(page).to have_no_link 'Keep'
+          end
         end
       end
 

@@ -26,8 +26,26 @@ module Users
       user.reload
     end
 
-    # This method returns the updated User object.
     def execute
+      lease_key = "refresh_authorized_projects:#{user.id}"
+      lease = Gitlab::ExclusiveLease.new(lease_key, timeout: LEASE_TIMEOUT)
+
+      until uuid = lease.try_obtain
+        # Keep trying until we obtain the lease. If we don't do so we may end up
+        # not updating the list of authorized projects properly. To prevent
+        # hammering Redis too much we'll wait for a bit between retries.
+        sleep(1)
+      end
+
+      begin
+        execute_without_lease
+      ensure
+        Gitlab::ExclusiveLease.cancel(lease_key, uuid)
+      end
+    end
+
+    # This method returns the updated User object.
+    def execute_without_lease
       current = current_authorizations_per_project
       fresh = fresh_access_levels_per_project
 
@@ -47,26 +65,7 @@ module Users
         end
       end
 
-      update_with_lease(remove, add)
-    end
-
-    # Updates the list of authorizations using an exclusive lease.
-    def update_with_lease(remove = [], add = [])
-      lease_key = "refresh_authorized_projects:#{user.id}"
-      lease = Gitlab::ExclusiveLease.new(lease_key, timeout: LEASE_TIMEOUT)
-
-      until uuid = lease.try_obtain
-        # Keep trying until we obtain the lease. If we don't do so we may end up
-        # not updating the list of authorized projects properly. To prevent
-        # hammering Redis too much we'll wait for a bit between retries.
-        sleep(1)
-      end
-
-      begin
-        update_authorizations(remove, add)
-      ensure
-        Gitlab::ExclusiveLease.cancel(lease_key, uuid)
-      end
+      update_authorizations(remove, add)
     end
 
     # Updates the list of authorizations for the current user.

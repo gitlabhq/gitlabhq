@@ -3,6 +3,7 @@
 /* global GLForm */
 /* global Autosave */
 /* global ResolveService */
+/* global mrRefreshWidgetUrl */
 
 /*= require autosave */
 /*= require autosize */
@@ -244,6 +245,16 @@
     };
 
 
+    Notes.prototype.handleCreateChanges = function(note) {
+      if (typeof note === 'undefined') {
+        return;
+      }
+
+      if (note.commands_changes && note.commands_changes.indexOf('merge') !== -1) {
+        $.get(mrRefreshWidgetUrl);
+      }
+    };
+
     /*
     Render note in main comments area.
 
@@ -429,6 +440,7 @@
      */
 
     Notes.prototype.addNote = function(xhr, note, status) {
+      this.handleCreateChanges(note);
       return this.renderNote(note);
     };
 
