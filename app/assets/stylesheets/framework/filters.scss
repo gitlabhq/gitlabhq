@@ -76,7 +76,7 @@
 
 .filter-dropdown {
   max-height: 215px;
-  overflow-x: scroll;
+  overflow: auto;
 }
 
 .filter-dropdown-item {
@@ -86,7 +86,7 @@
     text-align: left;
     padding: 8px 16px;
     text-overflow: ellipsis;
-    overflow-y: hidden;
+    overflow: hidden;
     border-radius: 0;
 
     .fa {
