@@ -1,10 +1,13 @@
 require 'spec_helper'
 
 describe GenericCommitStatus, models: true do
-  let(:pipeline) { create(:ci_pipeline) }
+  let(:project) { create(:empty_project) }
+  let(:pipeline) { create(:ci_pipeline, project: project) }
+  let(:external_url) { 'http://example.gitlab.com/status' }
 
   let(:generic_commit_status) do
-    create(:generic_commit_status, pipeline: pipeline)
+    create(:generic_commit_status, pipeline: pipeline,
+                                   target_url: external_url)
   end
 
   describe '#context' do
@@ -22,10 +25,25 @@ describe GenericCommitStatus, models: true do
 
   describe '#detailed_status' do
     let(:user) { create(:user) }
+    let(:status) { generic_commit_status.detailed_status(user) }
 
     it 'returns detailed status object' do
-      expect(generic_commit_status.detailed_status(user))
-        .to be_a Gitlab::Ci::Status::Success
+      expect(status).to be_a Gitlab::Ci::Status::Success
+    end
+
+    context 'when user has ability to see datails' do
+      before { project.team << [user, :developer] }
+
+      it 'details path points to an external URL' do
+        expect(status).to have_details
+        expect(status.details_path).to eq external_url
+      end
+    end
+
+    context 'when user should not see details' do
+      it 'does not have details' do
+        expect(status).not_to have_details
+      end
     end
   end
 
