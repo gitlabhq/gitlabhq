@@ -4,11 +4,11 @@ class Spinach::Features::ProjectRedirects < Spinach::FeatureSteps
   include SharedProject
 
   step 'public project "Community"' do
-    create :project, :public, name: 'Community'
+    create(:project, :public, :repository, name: 'Community')
   end
 
   step 'private project "Enterprise"' do
-    create :project, name: 'Enterprise'
+    create(:project, :repository, name: 'Enterprise')
   end
 
   step 'I visit project "Community" page' do

@@ -44,7 +44,7 @@ module SharedGroup
     user = User.find_by(name: username) || create(:user, name: username)
     group = Group.find_by(name: groupname) || create(:group, name: groupname)
     group.add_user(user, role)
-    project ||= create(:project, namespace: group, path: "project#{@project_count}")
+    project ||= create(:project, :repository, namespace: group, path: "project#{@project_count}")
     create(:closed_issue_event, project: project)
     project.team << [user, :master]
     @project_count += 1
