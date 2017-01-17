@@ -1,6 +1,3 @@
-require_relative 'encoding_helper'
-require_relative 'path_helper'
-
 module Gitlab
   module Git
     class Blob
