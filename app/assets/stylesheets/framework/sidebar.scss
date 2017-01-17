@@ -236,8 +236,12 @@ header.header-sidebar-pinned {
   @media (min-width: $screen-md-min) {
     padding-right: $gutter_width;
 
-    .merge-request-tabs-holder.affix {
+    &:not(.with-overlay) .merge-request-tabs-holder.affix {
       right: $gutter_width;
+    }
+
+    &.with-overlay .merge-request-tabs-holder.affix {
+      right: $sidebar_collapsed_width;
     }
   }
 
