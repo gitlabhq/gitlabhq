@@ -231,20 +231,13 @@
       let clipboardData = e.originalEvent.clipboardData;
       if (!clipboardData) return;
 
-      if (!window.getSelection) return;
-
-      let selection = window.getSelection();
-      if (!selection.rangeCount || selection.rangeCount === 0) return;
-
-      let selectedDocument = selection.getRangeAt(0).cloneContents();
-      if (!selectedDocument) return;
-
-      if (selectedDocument.textContent.length === 0) return;
+      let documentFragment = CopyAsGFM.getSelectedFragment();
+      if (!documentFragment) return;
 
       e.preventDefault();
-      clipboardData.setData('text/plain', selectedDocument.textContent);
+      clipboardData.setData('text/plain', documentFragment.textContent);
 
-      let gfm = CopyAsGFM.nodeToGFM(selectedDocument);
+      let gfm = CopyAsGFM.nodeToGFM(documentFragment);
       clipboardData.setData('text/x-gfm', gfm);
     }
 
@@ -257,11 +250,25 @@
 
       e.preventDefault();
 
-      this.insertText(e.target, gfm);
+      CopyAsGFM.insertText(e.target, gfm);
     }
 
-    insertText(target, text) {
-      // Firefox doesn't support `document.execCommand('insertText', false, text);` on textareas
+    static getSelectedFragment() {
+      if (!window.getSelection) return null;
+
+      let selection = window.getSelection();
+      if (!selection.rangeCount || selection.rangeCount === 0) return null;
+
+      let documentFragment = selection.getRangeAt(0).cloneContents();
+      if (!documentFragment) return null;
+
+      if (documentFragment.textContent.length === 0) return null;
+
+      return documentFragment;
+    }
+
+    static insertText(target, text) {
+      // Firefox doesn't support `document.execCommand('insertText', false, text)` on textareas
 
       let selectionStart = target.selectionStart;
       let selectionEnd = target.selectionEnd;
@@ -292,7 +299,7 @@
         for (let selector in rules) {
           let func = rules[selector];
 
-          if (!node.matches(selector)) continue;
+          if (!CopyAsGFM.nodeMatchesSelector(node, selector)) continue;
 
           let result = func(node, text);
           if (result === false) continue;
@@ -315,10 +322,37 @@
         let clonedNode = clonedNodes[i];
 
         let text = this.nodeToGFM(node);
+        
+        // `clonedNode.replaceWith(text)` is not yet widely supported
         clonedNode.parentNode.replaceChild(document.createTextNode(text), clonedNode);
       }
 
       return clonedParentNode.innerText || clonedParentNode.textContent;
+    }
+
+    static nodeMatchesSelector(node, selector) {
+      let matches = Element.prototype.matches ||
+        Element.prototype.matchesSelector ||
+        Element.prototype.mozMatchesSelector ||
+        Element.prototype.msMatchesSelector ||
+        Element.prototype.oMatchesSelector ||
+        Element.prototype.webkitMatchesSelector;
+
+      if (matches) {
+        return matches.call(node, selector);
+      }
+
+      // IE11 doesn't support `node.matches(selector)`
+
+      let parentNode = node.parentNode;
+      if (!parentNode) {
+        parentNode = document.createElement('div');
+        node = node.cloneNode(true);
+        parentNode.appendChild(node);
+      }
+
+      let matchingNodes = parentNode.querySelectorAll(selector);
+      return Array.prototype.indexOf.call(matchingNodes, node) !== -1;
     }
   }
 

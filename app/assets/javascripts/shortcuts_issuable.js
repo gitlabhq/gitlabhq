@@ -39,26 +39,22 @@
     }
 
     ShortcutsIssuable.prototype.replyWithSelectedText = function() {
-      var quote, replyField, selectedDocument, selected, selection, separator;
-      if (!window.getSelection) return;
+      var quote, replyField, documentFragment, selected, separator;
 
-      selection = window.getSelection();
-      if (!selection.rangeCount || selection.rangeCount === 0) return;
+      documentFragment = window.gl.CopyAsGFM.getSelectedFragment();
+      if (!documentFragment) return;
 
-      selectedDocument = selection.getRangeAt(0).cloneContents();
-      if (!selectedDocument) return;
-
-      selected = window.gl.CopyAsGFM.nodeToGFM(selectedDocument);
+      selected = window.gl.CopyAsGFM.nodeToGFM(documentFragment);
 
       replyField = $('.js-main-target-form #note_note');
       if (selected.trim() === "") {
         return;
       }
       quote = _.map(selected.split("\n"), function(val) {
-        return "> " + val + "\n";
+        return ("> " + val).trim() + "\n";
       });
       // If replyField already has some content, add a newline before our quote
-      separator = replyField.val().trim() !== "" && "\n" || '';
+      separator = replyField.val().trim() !== "" && "\n\n" || '';
       replyField.val(function(_, current) {
         return current + separator + quote.join('') + "\n";
       });
