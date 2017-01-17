@@ -255,7 +255,6 @@ group :development do
   gem 'brakeman', '~> 3.3.0', require: false
 
   gem 'letter_opener_web', '~> 1.3.0'
-  gem 'rerun', '~> 0.11.0'
   gem 'bullet', '~> 5.2.0', require: false
   gem 'rblineprof', '~> 0.3.6', platform: :mri, require: false
   gem 'web-console', '~> 2.0'
