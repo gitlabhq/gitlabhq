@@ -3,9 +3,11 @@
 
 (() => {
   const gfmRules = {
-    // The filters referenced in lib/banzai/pipeline/gfm_pipeline.rb convert GitLab Flavored Markdown (GFM) to HTML.
+    // The filters referenced in lib/banzai/pipeline/gfm_pipeline.rb convert
+    // GitLab Flavored Markdown (GFM) to HTML.
     // These handlers consequently convert that same HTML to GFM to be copied to the clipboard.
-    // Every filter in lib/banzai/pipeline/gfm_pipeline.rb that generates HTML from GFM should have a handler here, in reverse order.
+    // Every filter in lib/banzai/pipeline/gfm_pipeline.rb that generates HTML
+    // from GFM should have a handler here, in reverse order.
     // The GFM-to-HTML-to-GFM cycle is tested in spec/features/copy_as_gfm_spec.rb.
     InlineDiffFilter: {
       'span.idiff.addition'(el, text) {
@@ -113,7 +115,7 @@
         return backticks + spaceOrNoSpace + text + spaceOrNoSpace + backticks;
       },
       'blockquote'(el, text) {
-        return text.trim().split('\n').map((s) => (`> ${s}`).trim()).join('\n');
+        return text.trim().split('\n').map((s) => `> ${s}`.trim()).join('\n');
       },
       'img'(el, text) {
         return `![${el.getAttribute('alt')}](${el.getAttribute('src')})`;

@@ -16,7 +16,7 @@ describe 'Copy as GFM', feature: true, js: true do
   # The filters referenced in lib/banzai/pipeline/gfm_pipeline.rb convert GitLab Flavored Markdown (GFM) to HTML.
   # The handlers defined in app/assets/javascripts/copy_as_gfm.js.es6 consequently convert that same HTML to GFM.
   # To make sure these filters and handlers are properly aligned, this spec tests the GFM-to-HTML-to-GFM cycle
-  # by verifying (`html_to_gfm(gfm_to_html(gfm)) == gfm`) for a number of examples of GFM for every filter.
+  # by verifying (`html_to_gfm(gfm_to_html(gfm)) == gfm`) for a number of examples of GFM for every filter, using the `verify` helper.
 
   it 'supports nesting' do
     verify '> 1. [x] **[$`2 + 2`$ {-=-}{+=+} 2^2 ~~:thumbsup:~~](http://google.com)**'
@@ -107,26 +107,150 @@ describe 'Copy as GFM', feature: true, js: true do
     verify '![Video](https://example.com/video.mp4)'
   end
 
-  it 'supports MathFilter' do
+  context 'MathFilter' do
+    it 'supports math as converted from GFM to HTML' do
+      verify(
+        '$`c = \pm\sqrt{a^2 + b^2}`$',
+
+        # math block
+        <<-GFM.strip_heredoc
+          ```math
+          c = \pm\sqrt{a^2 + b^2}
+          ```
+        GFM
+      )
+    end
+
+    it 'supports math as transformed from HTML to KaTeX' do
+      gfm = '$`c = \pm\sqrt{a^2 + b^2}`$'
+
+      html = <<-HTML.strip_heredoc
+        <span class="katex">
+          <span class="katex-mathml">
+            <math>
+              <semantics>
+                <mrow>
+                  <mi>c</mi>
+                  <mo>=</mo>
+                  <mo>±</mo>
+                  <msqrt>
+                    <mrow>
+                      <msup>
+                        <mi>a</mi>
+                        <mn>2</mn>
+                      </msup>
+                      <mo>+</mo>
+                      <msup>
+                        <mi>b</mi>
+                        <mn>2</mn>
+                      </msup>
+                    </mrow>
+                  </msqrt>
+                </mrow>
+                <annotation encoding="application/x-tex">c = \\pm\\sqrt{a^2 + b^2}</annotation>
+              </semantics>
+            </math>
+          </span>
+          <span class="katex-html" aria-hidden="true">
+              <span class="strut" style="height: 0.913389em;"></span>
+              <span class="strut bottom" style="height: 1.04em; vertical-align: -0.126611em;"></span>
+              <span class="base textstyle uncramped">
+                <span class="mord mathit">c</span>
+                <span class="mrel">=</span>
+                <span class="mord">±</span>
+                <span class="sqrt mord"><span class="sqrt-sign" style="top: -0.073389em;">
+                  <span class="style-wrap reset-textstyle textstyle uncramped">√</span>
+                </span>
+                <span class="vlist">
+                  <span class="" style="top: 0em;">
+                    <span class="fontsize-ensurer reset-size5 size5">
+                      <span class="" style="font-size: 1em;">​</span>
+                    </span>
+                    <span class="mord textstyle cramped">
+                      <span class="mord">
+                        <span class="mord mathit">a</span>
+                        <span class="msupsub">
+                          <span class="vlist">
+                            <span class="" style="top: -0.289em; margin-right: 0.05em;">
+                              <span class="fontsize-ensurer reset-size5 size5">
+                                <span class="" style="font-size: 0em;">​</span>
+                              </span>
+                              <span class="reset-textstyle scriptstyle cramped">
+                                <span class="mord mathrm">2</span>
+                              </span>
+                            </span>
+                            <span class="baseline-fix">
+                              <span class="fontsize-ensurer reset-size5 size5">
+                                <span class="" style="font-size: 0em;">​</span>
+                              </span>
+                            ​</span>
+                          </span>
+                        </span>
+                      </span>
+                      <span class="mbin">+</span>
+                      <span class="mord">
+                        <span class="mord mathit">b</span>
+                        <span class="msupsub">
+                          <span class="vlist">
+                            <span class="" style="top: -0.289em; margin-right: 0.05em;">
+                              <span class="fontsize-ensurer reset-size5 size5">
+                                <span class="" style="font-size: 0em;">​</span>
+                              </span>
+                              <span class="reset-textstyle scriptstyle cramped">
+                                <span class="mord mathrm">2</span>
+                              </span>
+                            </span>
+                            <span class="baseline-fix">
+                              <span class="fontsize-ensurer reset-size5 size5">
+                                <span class="" style="font-size: 0em;">​</span>
+                              </span>
+                            ​</span>
+                          </span>
+                        </span>
+                      </span>
+                    </span>
+                  </span>
+                  <span class="" style="top: -0.833389em;">
+                    <span class="fontsize-ensurer reset-size5 size5">
+                      <span class="" style="font-size: 1em;">​</span>
+                    </span>
+                    <span class="reset-textstyle textstyle uncramped sqrt-line"></span>
+                  </span>
+                  <span class="baseline-fix">
+                    <span class="fontsize-ensurer reset-size5 size5">
+                      <span class="" style="font-size: 1em;">​</span>
+                    </span>
+                  ​</span>
+                </span>
+              </span>
+            </span>
+          </span>
+        </span>
+      HTML
+
+      output_gfm = html_to_gfm(html)
+      expect(output_gfm.strip).to eq(gfm.strip)
+    end
+  end
+
+
+
+  it 'supports SyntaxHighlightFilter' do
     verify(
-      '$`c = \pm\sqrt{a^2 + b^2}`$',
-      # math block
+      <<-GFM.strip_heredoc,
+        ```
+        Plain text
+        ```
+      GFM
+
       <<-GFM.strip_heredoc
-        ```math
-        c = \pm\sqrt{a^2 + b^2}
+        ```ruby
+        def foo
+          bar
+        end
         ```
       GFM
     )
-  end
-
-  it 'supports SyntaxHighlightFilter' do
-    verify <<-GFM.strip_heredoc
-      ```ruby
-      def foo
-        bar
-      end
-      ```
-    GFM
   end
 
   it 'supports MarkdownFilter' do
@@ -135,6 +259,7 @@ describe 'Copy as GFM', feature: true, js: true do
       '`` code with ` ticks ``',
 
       '> Quote',
+
       # multiline quote
       <<-GFM.strip_heredoc,
         > Multiline
