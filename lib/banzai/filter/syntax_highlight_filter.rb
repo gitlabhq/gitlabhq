@@ -27,6 +27,7 @@ module Banzai
 
           css_classes << " js-syntax-highlight #{lang}"
         rescue
+          lang = nil
           # Gracefully handle syntax highlighter bugs/errors to ensure
           # users can still access an issue/comment/etc.
         end

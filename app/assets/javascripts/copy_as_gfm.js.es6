@@ -89,7 +89,7 @@
     SyntaxHighlightFilter: {
       'pre.code.highlight'(el, text) {
         let lang = el.getAttribute('lang');
-        if (lang === 'text') {
+        if (lang === 'plaintext') {
           lang = '';
         }
         return '```' + lang + '\n' + text.trim() + '\n```';
