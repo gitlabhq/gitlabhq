@@ -79,13 +79,13 @@ class Spinach::Features::DashboardIssues < Spinach::FeatureSteps
 
   def project
     @project ||= begin
-                   project = create(:project, :repository)
+                   project = create(:empty_project)
                    project.team << [current_user, :master]
                    project
                  end
   end
 
   def public_project
-    @public_project ||= create(:project, :public, :repository)
+    @public_project ||= create(:empty_project, :public)
   end
 end
