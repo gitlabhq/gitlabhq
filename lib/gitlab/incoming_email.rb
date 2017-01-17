@@ -3,8 +3,6 @@ module Gitlab
     WILDCARD_PLACEHOLDER = '%{key}'.freeze
 
     class << self
-      FALLBACK_MESSAGE_ID_REGEX = /\Areply\-(.+)@#{Gitlab.config.gitlab.host}\Z/.freeze
-
       def enabled?
         config.enabled && config.address
       end
@@ -32,10 +30,11 @@ module Gitlab
       end
 
       def key_from_fallback_message_id(mail_id)
-        match = mail_id.match(FALLBACK_MESSAGE_ID_REGEX)
-        return unless match
+        mail_id[/\Areply\-(.+)@#{Gitlab.config.gitlab.host}\z/, 1]
+      end
 
-        match[1]
+      def scan_fallback_references(references)
+        references.scan(/(?!<)[^<>]+(?=>)/.freeze)
       end
 
       def config

@@ -174,6 +174,12 @@ describe Gitlab::Email::Handler::CreateNoteHandler, lib: true do
 
         it_behaves_like 'an email that contains a mail key', 'References'
       end
+
+      context 'mail key is in the References header with a comma' do
+        let(:email_raw) { fixture_file('emails/reply_without_subaddressing_and_key_inside_references_with_a_comma.eml') }
+
+        it_behaves_like 'an email that contains a mail key', 'References'
+      end
     end
   end
 end
