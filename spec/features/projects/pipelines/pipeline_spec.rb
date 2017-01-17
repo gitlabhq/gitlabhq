@@ -187,7 +187,6 @@ describe 'Pipeline', :feature, :js do
     let(:project) { create(:project) }
     let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id) }
 
-
     before do
       visit builds_namespace_project_pipeline_path(project.namespace, project, pipeline)
     end
