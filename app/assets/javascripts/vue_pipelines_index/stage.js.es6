@@ -14,8 +14,6 @@
       fetchBuilds(e) {
         const areaExpanded = e.currentTarget.attributes['aria-expanded'];
 
-        console.log('HIT');
-
         if (areaExpanded && (areaExpanded.textContent === 'true')) return null;
 
         return this.$http.get(this.stage.dropdown_path)
