@@ -5,7 +5,6 @@
   gl.VueStage = Vue.extend({
     data() {
       return {
-        count: 0,
         builds: '',
         spinner: '<span class="fa fa-spinner fa-spin"></span>',
       };
@@ -13,10 +12,8 @@
     props: ['stage', 'svgs', 'match'],
     methods: {
       fetchBuilds() {
-        if (this.count > 0) return null;
         return this.$http.get(this.stage.dropdown_path)
           .then((response) => {
-            this.count += 1;
             this.builds = JSON.parse(response.body).html;
           }, () => {
             const flash = new Flash('Something went wrong on our end.');
@@ -55,13 +52,20 @@
           :title='stage.title'
           data-placement="top"
           data-toggle="dropdown"
-          type="button">
+          type="button"
+        >
           <span v-html="svg"></span>
           <i class="fa fa-caret-down "></i>
         </button>
         <ul class="dropdown-menu mini-pipeline-graph-dropdown-menu js-builds-dropdown-container">
           <div class="arrow-up"></div>
-          <div :class="dropdownClass" class="js-builds-dropdown-list scrollable-menu" v-html="buildsOrSpinner"></div>
+          <div
+            @click=''
+            :class="dropdownClass"
+            class="js-builds-dropdown-list scrollable-menu"
+            v-html="buildsOrSpinner"
+          >
+          </div>
         </ul>
       </div>
     `,
