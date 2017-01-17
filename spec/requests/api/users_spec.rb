@@ -507,8 +507,11 @@ describe API::Users, api: true  do
       it 'returns array of ssh keys' do
         user.keys << key
         user.save
+
         get api("/users/#{user.id}/keys", admin)
+
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first['title']).to eq(key.title)
       end
@@ -774,8 +777,11 @@ describe API::Users, api: true  do
       it "returns array of ssh keys" do
         user.keys << key
         user.save
+
         get api("/user/keys", user)
+
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first["title"]).to eq(key.title)
       end

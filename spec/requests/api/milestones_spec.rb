@@ -41,16 +41,6 @@ describe API::Milestones, api: true  do
       expect(json_response.length).to eq(1)
       expect(json_response.first['id']).to eq(closed_milestone.id)
     end
-  end
-
-  describe 'GET /projects/:id/milestones/:milestone_id' do
-    it 'returns a project milestone by id' do
-      get api("/projects/#{project.id}/milestones/#{milestone.id}", user)
-
-      expect(response).to have_http_status(200)
-      expect(json_response['title']).to eq(milestone.title)
-      expect(json_response['iid']).to eq(milestone.iid)
-    end
 
     it 'returns a project milestone by iid' do
       get api("/projects/#{project.id}/milestones?iid=#{closed_milestone.iid}", user)
@@ -68,6 +58,16 @@ describe API::Milestones, api: true  do
       expect(json_response.size).to eq(2)
       expect(json_response.first['title']).to eq milestone.title
       expect(json_response.first['id']).to eq milestone.id
+    end
+  end
+
+  describe 'GET /projects/:id/milestones/:milestone_id' do
+    it 'returns a project milestone by id' do
+      get api("/projects/#{project.id}/milestones/#{milestone.id}", user)
+
+      expect(response).to have_http_status(200)
+      expect(json_response['title']).to eq(milestone.title)
+      expect(json_response['iid']).to eq(milestone.iid)
     end
 
     it 'returns 401 error if user not authenticated' do

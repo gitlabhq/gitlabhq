@@ -191,6 +191,8 @@ describe API::MergeRequests, api: true  do
       commit = merge_request.commits.first
 
       expect(response.status).to eq 200
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
       expect(json_response.size).to eq(merge_request.commits.size)
       expect(json_response.first['id']).to eq(commit.id)
       expect(json_response.first['title']).to eq(commit.title)

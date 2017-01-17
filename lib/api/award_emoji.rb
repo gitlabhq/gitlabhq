@@ -28,8 +28,8 @@ module API
           end
           get endpoint do
             if can_read_awardable?
-              awards = paginate(awardable.award_emoji)
-              present awards, with: Entities::AwardEmoji
+              awards = awardable.award_emoji
+              present paginate(awards), with: Entities::AwardEmoji
             else
               not_found!("Award Emoji")
             end

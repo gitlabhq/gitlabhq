@@ -1,8 +1,9 @@
 require 'mime/types'
 
 module API
-  # Projects API
   class Branches < Grape::API
+    include PaginationParams
+
     before { authenticate! }
     before { authorize! :download_code, user_project }
 
@@ -13,10 +14,13 @@ module API
       desc 'Get a project repository branches' do
         success Entities::RepoBranch
       end
+      params do
+        use :pagination
+      end
       get ":id/repository/branches" do
-        branches = user_project.repository.branches.sort_by(&:name)
+        branches = ::Kaminari.paginate_array(user_project.repository.branches.sort_by(&:name))
 
-        present branches, with: Entities::RepoBranch, project: user_project
+        present paginate(branches), with: Entities::RepoBranch, project: user_project
       end
 
       desc 'Get a single branch' do
