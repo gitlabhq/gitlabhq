@@ -27,7 +27,7 @@ module Gitlab
       private
 
       def load_blame
-        cmd = %W(git --git-dir=#{@repo.path} blame -p #{@sha} -- #{@path})
+        cmd = %W(#{Gitlab.config.git.bin_path} --git-dir=#{@repo.path} blame -p #{@sha} -- #{@path})
         # Read in binary mode to ensure ASCII-8BIT
         raw_output = IO.popen(cmd, 'rb') {|io| io.read }
         output = encode_utf8(raw_output)

@@ -31,7 +31,7 @@ class CycleAnalytics
       repository = @project.repository.raw_repository
       sha = @project.repository.commit(ref).sha
 
-      cmd = %W(git --git-dir=#{repository.path} log)
+      cmd = %W(#{Gitlab.config.git.bin_path} --git-dir=#{repository.path} log)
       cmd << '--format=%H'
       cmd << "--after=#{@from.iso8601}"
       cmd << sha

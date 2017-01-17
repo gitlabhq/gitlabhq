@@ -12,7 +12,7 @@ describe Dashboard::TodosController do
     end
 
     context 'when using pagination' do
-      let(:last_page) { user.todos.page().total_pages }
+      let(:last_page) { user.todos.page.total_pages }
       let!(:issues) { create_list(:issue, 2, project: project, assignee: user) }
 
       before do

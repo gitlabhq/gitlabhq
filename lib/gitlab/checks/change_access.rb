@@ -32,9 +32,9 @@ module Gitlab
         return unless @branch_name
         return unless project.protected_branch?(@branch_name)
 
-        if forced_push? && user_access.cannot_do_action?(:force_push_code_to_protected_branches)
+        if forced_push?
           return "You are not allowed to force push code to a protected branch on this project."
-        elsif Gitlab::Git.blank_ref?(@newrev) && user_access.cannot_do_action?(:remove_protected_branches)
+        elsif Gitlab::Git.blank_ref?(@newrev)
           return "You are not allowed to delete protected branches from this project."
         end
 

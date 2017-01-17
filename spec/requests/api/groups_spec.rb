@@ -87,7 +87,7 @@ describe API::Groups, api: true  do
 
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
-        expect(json_response.first['statistics']).to eq attributes.stringify_keys
+        expect(json_response.find { |r| r['id'] == group1.id }['statistics']).to eq attributes.stringify_keys
       end
     end
 

@@ -14,7 +14,7 @@ entry.
 
 ## 8.15.3 (2017-01-06)
 
-- Rename wiki_events to wiki_page_events in project hooks API to avoid errors. !0 (8425)
+- Rename wiki_events to wiki_page_events in project hooks API to avoid errors. !8425
 - Rename projects wth reserved names. !8234
 - Cache project authorizations even when user has access to zero projects. !8327
 - Fix a minor grammar error in merge request widget. !8337

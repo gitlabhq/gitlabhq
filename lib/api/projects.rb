@@ -163,7 +163,7 @@ module API
         use :sort_params
         use :pagination
       end
-      get "/search/:query" do
+      get "/search/:query", requirements: { query: /[^\/]+/ } do
         search_service = Search::GlobalService.new(current_user, search: params[:query]).execute
         projects = search_service.objects('projects', params[:page])
         projects = projects.reorder(params[:order_by] => params[:sort])
@@ -301,13 +301,13 @@ module API
         authorize! :rename_project, user_project if attrs[:name].present?
         authorize! :change_visibility_level, user_project if attrs[:visibility_level].present?
 
-        ::Projects::UpdateService.new(user_project, current_user, attrs).execute
+        result = ::Projects::UpdateService.new(user_project, current_user, attrs).execute
 
-        if user_project.errors.any?
-          render_validation_error!(user_project)
-        else
+        if result[:status] == :success
           present user_project, with: Entities::Project,
                                 user_can_admin_project: can?(current_user, :admin_project, user_project)
+        else
+          render_validation_error!(user_project)
         end
       end
 

@@ -166,31 +166,53 @@ class IssuableFinder
       end
   end
 
-  def assignee?
-    params[:assignee_id].present?
+  def assignee_id?
+    params[:assignee_id].present? && params[:assignee_id] != NONE
+  end
+
+  def assignee_username?
+    params[:assignee_username].present? && params[:assignee_username] != NONE
+  end
+
+  def no_assignee?
+    # Assignee_id takes precedence over assignee_username
+    params[:assignee_id] == NONE || params[:assignee_username] == NONE
   end
 
   def assignee
     return @assignee if defined?(@assignee)
 
     @assignee =
-      if assignee? && params[:assignee_id] != NONE
-        User.find(params[:assignee_id])
+      if assignee_id?
+        User.find_by(id: params[:assignee_id])
+      elsif assignee_username?
+        User.find_by(username: params[:assignee_username])
       else
         nil
       end
   end
 
-  def author?
-    params[:author_id].present?
+  def author_id?
+    params[:author_id].present? && params[:author_id] != NONE
+  end
+
+  def author_username?
+    params[:author_username].present? && params[:author_username] != NONE
+  end
+
+  def no_author?
+    # author_id takes precedence over author_username
+    params[:author_id] == NONE || params[:author_username] == NONE
   end
 
   def author
     return @author if defined?(@author)
 
     @author =
-      if author? && params[:author_id] != NONE
-        User.find(params[:author_id])
+      if author_id?
+        User.find_by(id: params[:author_id])
+      elsif author_username?
+        User.find_by(username: params[:author_username])
       else
         nil
       end
@@ -264,16 +286,24 @@ class IssuableFinder
   end
 
   def by_assignee(items)
-    if assignee?
-      items = items.where(assignee_id: assignee.try(:id))
+    if assignee
+      items = items.where(assignee_id: assignee.id)
+    elsif no_assignee?
+      items = items.where(assignee_id: nil)
+    elsif assignee_id? || assignee_username? # assignee not found
+      items = items.none
     end
 
     items
   end
 
   def by_author(items)
-    if author?
-      items = items.where(author_id: author.try(:id))
+    if author
+      items = items.where(author_id: author.id)
+    elsif no_author?
+      items = items.where(author_id: nil)
+    elsif author_id? || author_username? # author not found
+      items = items.none
     end
 
     items

@@ -18,6 +18,7 @@ See the documentation below for details on how to configure these services.
 - [reCAPTCHA](recaptcha.md) Configure GitLab to use Google reCAPTCHA for new users
 - [Akismet](akismet.md) Configure Akismet to stop spam
 - [Koding](../administration/integration/koding.md) Configure Koding to use IDE integration
+- [PlantUML](../administration/integration/plantuml.md) Configure PlantUML to use diagrams in AsciiDoc documents.
 
 GitLab Enterprise Edition contains [advanced Jenkins support][jenkins].
 

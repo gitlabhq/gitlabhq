@@ -26,6 +26,7 @@ class Label < ActiveRecord::Base
   # Don't allow ',' for label titles
   validates :title, presence: true, format: { with: /\A[^,]+\z/ }
   validates :title, uniqueness: { scope: [:group_id, :project_id] }
+  validates :title, length: { maximum: 255 }
 
   default_scope { order(title: :asc) }
 
