@@ -139,9 +139,7 @@ require('./flash');
 
     scrollToElement(container) {
       if (location.hash) {
-        const offset = 0 - (
-          $('.js-tabs-affix').outerHeight()
-        );
+        const offset = -$('.js-tabs-affix').outerHeight();
         const $el = $(`${container} ${location.hash}:not(.match)`);
         if ($el.length) {
           $.scrollTo($el[0], { offset });
