@@ -38,4 +38,5 @@
         - if discussion_left || discussion_right
           = render "discussions/parallel_diff_discussion", discussion_left: discussion_left, discussion_right: discussion_right
     - if !diff_file.new_file && last_line > 0
-      = diff_match_line last_line, last_line, bottom: true, view: :parallel
+      %tr.line_holder.parallel
+        = diff_match_line last_line, last_line, bottom: true, view: :parallel

@@ -13,4 +13,5 @@
 
   - last_line = diff_file.highlighted_diff_lines.last.new_pos
   - if !diff_file.new_file && last_line > 0
-    = diff_match_line last_line, last_line, bottom: true
+    %tr.line_holder
+      = diff_match_line last_line, last_line, bottom: true
