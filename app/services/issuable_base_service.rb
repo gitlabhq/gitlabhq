@@ -36,6 +36,14 @@ class IssuableBaseService < BaseService
     end
   end
 
+  def create_time_estimate_note(issuable)
+    SystemNoteService.change_time_estimate(issuable, issuable.project, current_user)
+  end
+
+  def create_time_spent_note(issuable)
+    SystemNoteService.change_time_spent(issuable, issuable.project, current_user)
+  end
+
   def filter_params(issuable)
     ability_name = :"admin_#{issuable.to_ability_name}"
 
@@ -156,6 +164,7 @@ class IssuableBaseService < BaseService
   def create(issuable)
     merge_slash_commands_into_params!(issuable)
     filter_params(issuable)
+    change_time_spent(issuable)
 
     params.delete(:state_event)
     params[:author] ||= current_user
@@ -198,13 +207,14 @@ class IssuableBaseService < BaseService
     change_subscription(issuable)
     change_todo(issuable)
     filter_params(issuable)
+    time_spent = change_time_spent(issuable)
     old_labels = issuable.labels.to_a
     old_mentioned_users = issuable.mentioned_users.to_a
 
     label_ids = process_label_ids(params, existing_label_ids: issuable.label_ids)
     params[:label_ids] = label_ids if labels_changing?(issuable.label_ids, label_ids)
 
-    if params.present? && update_issuable(issuable, params)
+    if (params.present? || time_spent) && update_issuable(issuable, params)
       # We do not touch as it will affect a update on updated_at field
       ActiveRecord::Base.no_touching do
         handle_common_system_notes(issuable, old_labels: old_labels)
@@ -251,6 +261,12 @@ class IssuableBaseService < BaseService
     end
   end
 
+  def change_time_spent(issuable)
+    time_spent = params.delete(:spend_time)
+
+    issuable.spend_time(time_spent, current_user) if time_spent
+  end
+
   def has_changes?(issuable, old_labels: [])
     valid_attrs = [:title, :description, :assignee_id, :milestone_id, :target_branch]
 
@@ -270,6 +286,14 @@ class IssuableBaseService < BaseService
 
     if issuable.previous_changes.include?('description') && issuable.tasks?
       create_task_status_note(issuable)
+    end
+
+    if issuable.previous_changes.include?('time_estimate')
+      create_time_estimate_note(issuable)
+    end
+
+    if issuable.time_spent?
+      create_time_spent_note(issuable)
     end
 
     create_labels_note(issuable, old_labels) if issuable.labels != old_labels
