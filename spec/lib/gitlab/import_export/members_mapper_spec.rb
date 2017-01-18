@@ -75,8 +75,9 @@ describe Gitlab::ImportExport::MembersMapper, services: true do
       expect(user2.authorized_project?(project)).to be true
     end
 
-    context 'user is not admin' do
+    context 'user is not an admin' do
       let(:user) { create(:user, authorized_projects_populated: true) }
+
       it 'does not map a project member' do
         expect(members_mapper.map[exported_user_id]).to eq(user.id)
       end
