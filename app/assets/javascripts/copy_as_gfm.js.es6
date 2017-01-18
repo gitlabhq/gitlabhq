@@ -112,7 +112,7 @@
           backtickCount = backtickMatch[0].length + 1;
         }
 
-        const backticks = new Array(backtickCount + 1).join('`');
+        const backticks = Array(backtickCount + 1).join('`');
         const spaceOrNoSpace = backtickCount > 1 ? ' ' : '';
 
         return backticks + spaceOrNoSpace + text + spaceOrNoSpace + backticks;
@@ -211,7 +211,7 @@
 
           chars = Math.max(chars, 0);
 
-          const middle = new Array(chars + 1).join('-');
+          const middle = Array(chars + 1).join('-');
 
           return before + middle + after;
         });
