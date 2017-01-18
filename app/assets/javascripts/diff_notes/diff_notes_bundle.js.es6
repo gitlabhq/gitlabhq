@@ -2,8 +2,6 @@
 /* global Vue */
 /* global ResolveCount */
 
-//= require vue
-//= require vue-resource
 //= require_directory ./models
 //= require_directory ./stores
 //= require_directory ./services
