@@ -489,7 +489,7 @@ Make sure to edit the config file to match your setup. Also, ensure that you mat
 
 If you intend to enable GitLab pages, there is a separate Nginx config you need
 to use. Read all about the needed configuration at the
-[GitLab Pages administration guide](../pages/administration.md).
+[GitLab Pages administration guide](../administration/pages/index.md).
 
 **Note:** If you want to use HTTPS, replace the `gitlab` Nginx config with `gitlab-ssl`. See [Using HTTPS](#using-https) for HTTPS configuration details.
 
