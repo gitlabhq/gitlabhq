@@ -233,8 +233,6 @@ describe 'Copy as GFM', feature: true, js: true do
     end
   end
 
-
-
   it 'supports SyntaxHighlightFilter' do
     verify(
       <<-GFM.strip_heredoc,
