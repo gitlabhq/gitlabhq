@@ -66,7 +66,8 @@ module Gitlab
             private
 
             def look_like_regexp?(value)
-              value.start_with?('/') && value.end_with?('/')
+              value.is_a?(String) && value.start_with?('/') &&
+                value.end_with?('/')
             end
 
             def validate_regexp(value)
@@ -92,7 +93,6 @@ module Gitlab
             end
 
             def validate_string_or_regexp(value)
-              return true if value.is_a?(Symbol)
               return false unless value.is_a?(String)
               return validate_regexp(value) if look_like_regexp?(value)
               true
