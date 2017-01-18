@@ -55,6 +55,6 @@ class Spinach::Features::User < Spinach::FeatureSteps
   end
 
   def contributed_project
-    @contributed_project ||= create(:project, :public)
+    @contributed_project ||= create(:empty_project, :public)
   end
 end

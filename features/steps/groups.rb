@@ -132,7 +132,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
 
   step 'Group "Owned" has archived project' do
     group = Group.find_by(name: 'Owned')
-    @archived_project = create(:project, namespace: group, archived: true, path: "archived-project")
+    @archived_project = create(:empty_project, :archived, namespace: group, path: "archived-project")
   end
 
   step 'I should see "archived" label' do
