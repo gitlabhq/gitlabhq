@@ -128,5 +128,17 @@ FactoryGirl.define do
         build.save!
       end
     end
+
+    trait :with_commit do
+      after(:build) do |build|
+        allow(build).to receive(:commit).and_return build(:commit, :without_author)
+      end
+    end
+
+    trait :with_commit_and_author do
+      after(:build) do |build|
+        allow(build).to receive(:commit).and_return build(:commit)
+      end
+    end
   end
 end
