@@ -44,8 +44,8 @@
 
     .pipeline-info,
     .pipeline-commit,
-    .pipeline-actions,
-    .pipeline-stages {
+    .pipeline-stages,
+    .pipeline-actions {
       width: 20%;
     }
   }
@@ -185,6 +185,7 @@
 
   .stage-cell {
     font-size: 0;
+    padding: 10px 4px;
 
     > .stage-container > div > button > span > svg,
     > .stage-container > button > svg {
@@ -202,8 +203,8 @@
       position: relative;
       margin-right: 6px;
 
-      .tooltip {
-        white-space: nowrap;
+      .tooltip-inner {
+        padding: 3px 4px;
       }
 
       &:not(:last-child) {
@@ -348,6 +349,7 @@
   padding: $gl-padding;
   white-space: nowrap;
   transition: max-height 0.3s, padding 0.3s;
+  overflow: auto;
 
   .stage-column-list,
   .builds-container > ul {
