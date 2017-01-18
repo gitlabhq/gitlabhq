@@ -21,6 +21,7 @@ describe Gitlab::UsageData do
         license_md5
         recorded_at
         version
+        mattermost_enabled
       ))
     end
 
