@@ -50,13 +50,20 @@ GitLab uses Font Awesome icons throughout our interface.
 
 ## Color
 
-| | |
-| :------: | :------- |
-| ![Blue](img/color-blue.png) | Blue is used to highlight primary active elements (such as the current tab), as well as other organizational and managing commands.|
-| ![Green](img/color-green.png) | Green is for actions that create new objects. |
-| ![Orange](img/color-orange.png) | Orange is used for warnings |
-| ![Red](img/color-red.png) | Red is reserved for delete and other destructive commands |
-| ![Grey](img/color-grey.png) | Grey is used for neutral secondary elements. Depending on context, white is sometimes used instead. |
+| | State | Action |
+| :------: | :------- | :------- |
+| ![Blue](img/color-blue.png) | Primary and active (such as the current tab) | Organizational, managing, and retry commands|
+| ![Green](img/color-green.png) | Opened | Create new objects |
+| ![Orange](img/color-orange.png) | Warning | Non destructive action |
+| ![Red](img/color-red.png) | Closed | Delete and other destructive commands |
+| ![Grey](img/color-grey.png) | Neutral | Neutral secondary commands |
+
+### Text colors
+
+|||
+| :---: | :--- |
+| ![Text primary](img/color-textprimary.png) | Used for primary body text, such as issue description and comment |
+| ![Text secondary](img/color-textsecondary.png) | Used for secondary body text, such as username and date |
 
 > TODO: Establish a perspective for color in terms of our personality and rationalize with Marketing usage.
 

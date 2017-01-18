@@ -43,7 +43,7 @@ ul.notes {
     }
 
     .system-note-message {
-      display: inline-block;
+      display: inline;
 
       &::first-letter {
         text-transform: lowercase;
@@ -55,7 +55,7 @@ ul.notes {
       }
 
       p {
-        display: inline-block;
+        display: inline;
         margin: 0;
 
         &::first-letter {
@@ -345,12 +345,20 @@ ul.notes {
   }
 
   .author_link {
-    color: $gl-gray;
+    color: $gl-text-color;
   }
 }
 
 .discussion-header {
   font-size: 14px;
+}
+
+.note-headline-light {
+  display: inline;
+
+  @media (max-width: $screen-xs-min) {
+    display: block;
+  }
 }
 
 .note-headline-light,
@@ -448,11 +456,6 @@ ul.notes {
   border-radius: $border-radius-base;
 }
 
-.diff-file .note .note-actions {
-  right: 0;
-  top: 0;
-}
-
 
 /**
  * Line note button on the side of diffs
@@ -523,8 +526,9 @@ ul.notes {
 }
 
 .line-resolve-all {
+  vertical-align: middle;
   display: inline-block;
-  padding: 5px 10px;
+  padding: 6px 10px;
   background-color: $gray-light;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
@@ -532,16 +536,12 @@ ul.notes {
   &.has-next-btn {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
+    border-right: 0;
   }
 
   .line-resolve-btn {
-    vertical-align: middle;
     margin-right: 5px;
   }
-}
-
-.line-resolve-text {
-  vertical-align: middle;
 }
 
 .line-resolve-btn {
@@ -562,18 +562,14 @@ ul.notes {
   &.is-active {
     color: $gl-text-green;
 
-    svg path {
+    svg {
       fill: $gl-text-green;
     }
   }
 
   svg {
     position: relative;
-    color: $gray-darkest;
-
-    path {
-      fill: $gray-darkest;
-    }
+    fill: $gray-darkest;
   }
 }
 
@@ -584,5 +580,19 @@ ul.notes {
     path {
       fill: $gray-darkest;
     }
+  }
+}
+
+// Merge request notes in diffs
+.diff-file {
+  // Diff is side by side
+  .notes_content.parallel .note-header .note-headline-light {
+    display: block;
+    position: relative;
+  }
+  // Diff is inline
+  .notes_content .note-header .note-headline-light {
+    display: inline-block;
+    position: relative;
   }
 }

@@ -148,3 +148,5 @@ class List {
     });
   }
 }
+
+window.List = List;

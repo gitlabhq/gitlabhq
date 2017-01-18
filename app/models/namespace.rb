@@ -12,6 +12,7 @@ class Namespace < ActiveRecord::Base
   has_many :projects, dependent: :destroy
   has_one :namespace_metrics, dependent: :destroy
 
+  has_many :project_statistics
   belongs_to :owner, class_name: "User"
 
   belongs_to :parent, class_name: "Namespace"
@@ -39,10 +40,22 @@ class Namespace < ActiveRecord::Base
   before_destroy(prepend: true) { @old_repository_storage_paths = repository_storage_paths }
   after_destroy :rm_dir
 
-  scope :root, -> { where('type IS NULL') }
-
   delegate :shared_runners_minutes, :shared_runners_minutes_last_reset,
     to: :namespace_metrics, allow_nil: true
+
+  scope :root, -> { where('type IS NULL') }
+
+  scope :with_statistics, -> do
+    joins('LEFT JOIN project_statistics ps ON ps.namespace_id = namespaces.id')
+      .group('namespaces.id')
+      .select(
+        'namespaces.*',
+        'COALESCE(SUM(ps.storage_size), 0) AS storage_size',
+        'COALESCE(SUM(ps.repository_size), 0) AS repository_size',
+        'COALESCE(SUM(ps.lfs_objects_size), 0) AS lfs_objects_size',
+        'COALESCE(SUM(ps.build_artifacts_size), 0) AS build_artifacts_size',
+      )
+  end
 
   class << self
     def by_path(path)
@@ -104,7 +117,7 @@ class Namespace < ActiveRecord::Base
 
   def move_dir
     if any_project_has_container_registry_tags?
-      raise Exception.new('Namespace cannot be moved, because at least one project has tags in container registry')
+      raise Gitlab::UpdatePathError.new('Namespace cannot be moved, because at least one project has tags in container registry')
     end
 
     # Move the namespace directory in all storages paths used by member projects
@@ -117,7 +130,7 @@ class Namespace < ActiveRecord::Base
 
         # if we cannot move namespace directory we should rollback
         # db changes in order to prevent out of sync between db and fs
-        raise Exception.new('namespace directory cannot be moved')
+        raise Gitlab::UpdatePathError.new('namespace directory cannot be moved')
       end
     end
 

@@ -25,5 +25,10 @@ describe Projects::BlameController do
       let(:id) { 'master/files/ruby/popen.rb' }
       it { is_expected.to respond_with(:success) }
     end
+
+    context "invalid file" do
+      let(:id) { 'master/files/ruby/missing_file.rb'}
+      it { expect(response).to have_http_status(404) }
+    end
   end
 end

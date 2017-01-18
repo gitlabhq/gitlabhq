@@ -87,7 +87,7 @@ class Environment < ActiveRecord::Base
   end
 
   def update_merge_request_metrics?
-    self.name == "production"
+    (environment_type || name) == "production"
   end
 
   def first_deployment_for(commit)
@@ -126,6 +126,14 @@ class Environment < ActiveRecord::Base
     manual_actions.select do |action|
       action.expanded_environment_name == environment
     end
+  end
+
+  def has_terminals?
+    project.deployment_service.present? && available? && last_deployment.present?
+  end
+
+  def terminals
+    project.deployment_service.terminals(self) if has_terminals?
   end
 
   # An environment name is not necessarily suitable for use in URLs, DNS

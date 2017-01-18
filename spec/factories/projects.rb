@@ -41,6 +41,10 @@ FactoryGirl.define do
       mirror_user_id { creator_id }
     end
 
+    trait :archived do
+      archived true
+    end
+
     trait :access_requestable do
       request_access_enabled true
     end
@@ -60,6 +64,12 @@ FactoryGirl.define do
         project.create_repository
 
         FileUtils.rm_r(File.join(project.repository_storage_path, "#{project.path_with_namespace}.git", 'refs'))
+      end
+    end
+
+    trait :test_repo do
+      after :create do |project|
+        TestEnv.copy_repo(project)
       end
     end
 
@@ -112,9 +122,7 @@ FactoryGirl.define do
   factory :project, parent: :empty_project do
     path { 'gitlabhq' }
 
-    after :create do |project|
-      TestEnv.copy_repo(project)
-    end
+    test_repo
   end
 
   factory :forked_project_with_submodules, parent: :empty_project do
@@ -161,7 +169,7 @@ FactoryGirl.define do
         active: true,
         properties: {
           namespace: project.path,
-          api_url: 'https://kubernetes.example.com/api',
+          api_url: 'https://kubernetes.example.com',
           token: 'a' * 40,
         }
       )

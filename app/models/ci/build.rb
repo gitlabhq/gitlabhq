@@ -18,7 +18,7 @@ module Ci
     end
 
     serialize :options
-    serialize :yaml_variables
+    serialize :yaml_variables, Gitlab::Serialize::Ci::Variables
 
     validates :coverage, numericality: true, allow_blank: true
     validates_presence_of :ref
@@ -43,6 +43,8 @@ module Ci
     before_destroy { project }
 
     after_create :execute_hooks
+    after_save :update_project_statistics, if: :artifacts_size_changed?
+    after_destroy :update_project_statistics
 
     class << self
       def first_pending
@@ -594,6 +596,10 @@ module Ci
       Ci::MaskSecret.mask!(trace, project.runners_token) if project
       Ci::MaskSecret.mask!(trace, token)
       trace
+    end
+
+    def update_project_statistics
+      ProjectCacheWorker.perform_async(project_id, [], [:build_artifacts_size])
     end
   end
 end

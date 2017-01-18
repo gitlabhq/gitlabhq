@@ -9,11 +9,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   before_action :module_enabled
   before_action :merge_request, only: [
-    :edit, :update, :show, :diffs, :commits, :conflicts, :conflict_for_path, :builds, :pipelines, :merge, :merge_check,
+    :edit, :update, :show, :diffs, :commits, :conflicts, :conflict_for_path, :pipelines, :merge, :merge_check,
     :ci_status, :ci_environments_status, :toggle_subscription, :cancel_merge_when_build_succeeds, :remove_wip, :resolve_conflicts, :assign_related_issues,
     :approve, :rebase
   ]
-  before_action :validates_merge_request, only: [:show, :diffs, :commits, :builds, :pipelines]
+  before_action :validates_merge_request, only: [:show, :diffs, :commits, :pipelines]
   before_action :define_show_vars, only: [:show, :diffs, :commits, :conflicts, :conflict_for_path, :builds, :pipelines]
   before_action :define_widget_vars, only: [:merge, :cancel_merge_when_build_succeeds, :merge_check]
   before_action :define_commit_vars, only: [:diffs]
@@ -40,6 +40,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def index
     @merge_requests = merge_requests_collection
     @merge_requests = @merge_requests.page(params[:page])
+    if @merge_requests.out_of_range? && @merge_requests.total_pages != 0
+      return redirect_to url_for(params.merge(page: @merge_requests.total_pages))
+    end
 
     if params[:label_name].present?
       labels_params = { project_id: @project.id, title: params[:label_name] }
@@ -97,7 +100,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       @start_version = @comparable_diffs.find { |diff| diff.head_commit_sha == @start_sha }
 
       unless @start_version
-        render_404
+        @start_sha = @merge_request_diff.head_commit_sha
+        @start_version = @merge_request_diff
       end
     end
 
@@ -200,17 +204,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       render json: { redirect_to: namespace_project_merge_request_url(@project.namespace, @project, @merge_request, resolved_conflicts: true) }
     rescue Gitlab::Conflict::ResolutionError => e
       render status: :bad_request, json: { message: e.message }
-    end
-  end
-
-  def builds
-    respond_to do |format|
-      format.html do
-        define_discussion_vars
-
-        render 'show'
-      end
-      format.json { render json: { html: view_to_html_string('projects/merge_requests/show/_builds') } }
     end
   end
 
@@ -441,10 +434,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     else
       ci_service = @merge_request.source_project.try(:ci_service)
       status = ci_service.commit_status(merge_request.diff_head_sha, merge_request.source_branch) if ci_service
-
-      if ci_service.respond_to?(:commit_coverage)
-        coverage = ci_service.commit_coverage(merge_request.diff_head_sha, merge_request.source_branch)
-      end
     end
 
     response = {

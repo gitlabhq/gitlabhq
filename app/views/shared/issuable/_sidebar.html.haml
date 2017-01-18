@@ -19,9 +19,9 @@
               Add todo
           = icon('spin spinner', class: 'hidden js-issuable-todo-loading')
 
-    = form_for [@project.namespace.becomes(Namespace), @project, issuable], remote: true, format: :json, html: {class: 'issuable-context-form inline-update js-issuable-update'} do |f|
+    = form_for [@project.namespace.becomes(Namespace), @project, issuable], remote: true, format: :json, html: { class: 'issuable-context-form inline-update js-issuable-update' } do |f|
       .block.assignee
-        .sidebar-collapsed-icon.sidebar-collapsed-user{data: {toggle: "tooltip", placement: "left", container: "body"}, title: (issuable.assignee.name if issuable.assignee)}
+        .sidebar-collapsed-icon.sidebar-collapsed-user{ data: { toggle: "tooltip", placement: "left", container: "body" }, title: (issuable.assignee.name if issuable.assignee) }
           - if issuable.assignee
             = link_to_member(@project, issuable.assignee, size: 24)
           - else
@@ -56,7 +56,7 @@
           = icon('clock-o')
           %span
             - if issuable.milestone
-              %span.has-tooltip{title: milestone_remaining_days(issuable.milestone), data: {container: 'body', html: 1, placement: 'left'}}
+              %span.has-tooltip{ title: milestone_remaining_days(issuable.milestone), data: { container: 'body', html: 1, placement: 'left' } }
                 = issuable.milestone.title
             - else
               None
@@ -76,7 +76,7 @@
           = dropdown_tag('Milestone', options: { title: 'Assign milestone', toggle_class: 'js-milestone-select js-extra-options', filter: true, dropdown_class: 'dropdown-menu-selectable', placeholder: 'Search milestones', data: { show_no: true, field_name: "#{issuable.to_ability_name}[milestone_id]", project_id: @project.id, issuable_id: issuable.id, milestones: namespace_project_milestones_path(@project.namespace, @project, :json), ability_name: issuable.to_ability_name, issue_update: issuable_json_path(issuable), use_id: true }})
       - if issuable.has_attribute?(:time_estimate)
         #issuable-time-tracker.block
-          %issuable-time-tracker{ ':time_estimate' => 'issuable.time_estimate', ':time_spent' => 'issuable.total_time_spent', ':human_time_estimate' => 'issuable.human_time_estimate', ':human_time_spent' => 'issuable.human_total_time_spent', 'stopwatch-svg' => custom_icon('icon_stopwatch'), 'docs-url' => help_page_path('workflow/time_tracking.md')}
+          %issuable-time-tracker{ ':time_estimate' => 'issuable.time_estimate', ':time_spent' => 'issuable.total_time_spent', ':human_time_estimate' => 'issuable.human_time_estimate', ':human_time_spent' => 'issuable.human_total_time_spent', 'stopwatch-svg' => custom_icon('icon_stopwatch'), 'docs-url' => help_page_path('workflow/time_tracking.md') }
             // Fallback while content is loading
             .title.hide-collapsed
               Time tracking
@@ -105,7 +105,7 @@
                   remove due date
           - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
             .selectbox.hide-collapsed
-              = f.hidden_field :due_date, value: issuable.due_date
+              = f.hidden_field :due_date, value: issuable.due_date.try(:strftime, 'yy-mm-dd')
               .dropdown
                 %button.dropdown-menu-toggle.js-due-date-select{ type: 'button', data: { toggle: 'dropdown', field_name: "#{issuable.to_ability_name}[due_date]", ability_name: issuable.to_ability_name, issue_update: issuable_json_path(issuable) } }
                   %span.dropdown-toggle-text Due date
@@ -137,8 +137,8 @@
             - selected_labels.each do |label|
               = hidden_field_tag "#{issuable.to_ability_name}[label_names][]", label.id, id: nil
             .dropdown
-              %button.dropdown-menu-toggle.js-label-select.js-multiselect.js-label-sidebar-dropdown{type: "button", data: {toggle: "dropdown", default_label: "Labels", field_name: "#{issuable.to_ability_name}[label_names][]", ability_name: issuable.to_ability_name, show_no: "true", show_any: "true", namespace_path: @project.try(:namespace).try(:path), project_path: @project.try(:path), issue_update: issuable_json_path(issuable), labels: (namespace_project_labels_path(@project.namespace, @project, :json) if @project)}}
-                %span.dropdown-toggle-text{ class: ("is-default" if selected_labels.empty?)}
+              %button.dropdown-menu-toggle.js-label-select.js-multiselect.js-label-sidebar-dropdown{ type: "button", data: {toggle: "dropdown", default_label: "Labels", field_name: "#{issuable.to_ability_name}[label_names][]", ability_name: issuable.to_ability_name, show_no: "true", show_any: "true", namespace_path: @project.try(:namespace).try(:path), project_path: @project.try(:path), issue_update: issuable_json_path(issuable), labels: (namespace_project_labels_path(@project.namespace, @project, :json) if @project) } }
+                %span.dropdown-toggle-text{ class: ("is-default" if selected_labels.empty?) }
                   = multi_label_name(selected_labels, "Labels")
                 = icon('chevron-down')
               .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable
@@ -176,7 +176,7 @@
       = render "shared/issuable/participants", participants: issuable.participants(current_user)
       - if current_user
         - subscribed = issuable.subscribed?(current_user, @project)
-        .block.light.subscription{data: {url: toggle_subscription_path(issuable)}}
+        .block.light.subscription{ data: { url: toggle_subscription_path(issuable) } }
           .sidebar-collapsed-icon
             = icon('rss')
           %span.issuable-header-text.hide-collapsed.pull-left
@@ -188,13 +188,13 @@
       - project_ref = cross_project_reference(@project, issuable)
       .block.project-reference
         .sidebar-collapsed-icon.dont-change-state
-          = clipboard_button(clipboard_text: project_ref)
+          = clipboard_button(clipboard_text: project_ref, title: "Copy reference to clipboard", placement: "left")
         .cross-project-reference.hide-collapsed
           %span
             Reference:
-            %cite{title: project_ref}
+            %cite{ title: project_ref }
               = project_ref
-          = clipboard_button(clipboard_text: project_ref)
+          = clipboard_button(clipboard_text: project_ref, title: "Copy reference to clipboard", placement: "left")
 
     :javascript
       gl.IssuableResource = new gl.SubbableResource('#{issuable_json_path(issuable)}');

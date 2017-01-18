@@ -35,8 +35,8 @@
         autosize(this.textarea);
         // form and textarea event listeners
         this.addEventListeners();
-        gl.text.init(this.form);
       }
+      gl.text.init(this.form);
       // hide discard button
       this.form.find('.js-note-discard').hide();
       return this.form.show();

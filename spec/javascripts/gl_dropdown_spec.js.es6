@@ -43,14 +43,16 @@
   }
 
   describe('Dropdown', function describeDropdown() {
-    fixture.preload('gl_dropdown.html');
-    fixture.preload('projects.json');
+    preloadFixtures('static/gl_dropdown.html.raw');
 
     function initDropDown(hasRemote, isFilterable) {
       this.dropdownButtonElement = $('#js-project-dropdown', this.dropdownContainerElement).glDropdown({
         selectable: true,
         filterable: isFilterable,
         data: hasRemote ? remoteMock.bind({}, this.projectsData) : this.projectsData,
+        search: {
+          fields: ['name']
+        },
         text: (project) => {
           (project.name_with_namespace || project.name);
         },
@@ -61,10 +63,10 @@
     }
 
     beforeEach(() => {
-      fixture.load('gl_dropdown.html');
+      loadFixtures('static/gl_dropdown.html.raw');
       this.dropdownContainerElement = $('.dropdown.inline');
       this.$dropdownMenuElement = $('.dropdown-menu', this.dropdownContainerElement);
-      this.projectsData = fixture.load('projects.json')[0];
+      this.projectsData = getJSONFixture('projects.json');
     });
 
     afterEach(() => {
@@ -167,6 +169,22 @@
         this.dropdownButtonElement.click();
         expect($(document.activeElement)).toEqual($(SEARCH_INPUT_SELECTOR));
       });
+    });
+
+
+    it('should still have input value on close and restore', () => {
+      let $searchInput = $(SEARCH_INPUT_SELECTOR);
+      initDropDown.call(this, false, true);
+      $searchInput
+        .trigger('focus')
+        .val('g')
+        .trigger('input');
+      expect($searchInput.val()).toEqual('g');
+      this.dropdownButtonElement.trigger('hidden.bs.dropdown');
+      $searchInput
+        .trigger('blur')
+        .trigger('focus');
+      expect($searchInput.val()).toEqual('g');
     });
   });
 })();

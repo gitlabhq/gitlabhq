@@ -1,9 +1,13 @@
 // Limit MR description for side-by-side diff view
+.fixed-width-container {
+  max-width: $limited-layout-width - ($gl-padding * 2);
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .limit-container-width {
   .detail-page-header {
-    max-width: calc(#{$limited-layout-width} - (#{$gl-padding} * 2));
-    margin-left: auto;
-    margin-right: auto;
+    @extend .fixed-width-container;
   }
 
   .issuable-details {
@@ -11,9 +15,7 @@
     .mr-source-target,
     .mr-state-widget,
     .merge-manually {
-      max-width: calc(#{$limited-layout-width} - (#{$gl-padding} * 2));
-      margin-left: auto;
-      margin-right: auto;
+      @extend .fixed-width-container;
     }
 
     .merge-request-tabs-holder {
@@ -26,21 +28,21 @@
       }
 
       .container-fluid {
-        padding-left: 0;
-        padding-right: 0;
-        max-width: calc(#{$limited-layout-width} - (#{$gl-padding} * 2));
-        margin-left: auto;
-        margin-right: auto;
+        @extend .fixed-width-container;
       }
+    }
+  }
+
+  .merge-request-details {
+    .emoji-list-container {
+      @extend .fixed-width-container;
     }
   }
 
   .diffs {
     .mr-version-controls,
     .files-changed {
-      max-width: calc(#{$limited-layout-width} - (#{$gl-padding} * 2));
-      margin-left: auto;
-      margin-right: auto;
+      @extend .fixed-width-container;
     }
   }
 }
@@ -50,6 +52,12 @@
     .issuable-discussion {
       margin-right: 1px;
     }
+  }
+
+  .title {
+    padding: 0;
+    margin: 0;
+    border-bottom: none;
   }
 
   // Border around images in issue and MR descriptions.
@@ -144,10 +152,10 @@
     }
 
     .edit-link {
-      color: $gl-gray;
+      color: $gl-text-color;
 
-      &:hover {
-        color: $md-link-color;
+      &:not([href]):hover {
+        color: rgba($avatar-border, .2);
       }
     }
   }
@@ -180,7 +188,7 @@
   }
 
   .btn-clipboard:hover {
-    color: $gl-gray;
+    color: $gl-text-color;
   }
 }
 
@@ -215,7 +223,7 @@
     }
 
     .no-value {
-      color: $gl-gray-light;
+      color: $gl-text-color-secondary;
     }
 
     .sidebar-collapsed-icon {
@@ -283,7 +291,7 @@
       color: $issuable-sidebar-color;
 
       &:hover {
-        color: $gl-gray;
+        color: $gl-text-color;
       }
 
       span {
@@ -296,16 +304,16 @@
       }
 
       .avatar:hover {
-        border-color: $issuable-avatar-hover-border;
+        border-color: $issuable-sidebar-color;
       }
 
       .btn-clipboard {
         border: none;
-        color: $issuable-clipboard-color;
+        color: $issuable-sidebar-color;
 
         &:hover {
           background: transparent;
-          color: $gl-gray;
+          color: $gl-text-color;
         }
       }
     }
@@ -324,6 +332,10 @@
     &:hover {
       color: $md-link-color;
       text-decoration: none;
+
+      .avatar {
+        border-color: rgba($avatar-border, .2);
+      }
     }
   }
 
@@ -379,7 +391,7 @@
   margin-left: 5px;
 
   a {
-    color: $gl-gray-light;
+    color: $gl-text-color-secondary;
   }
 }
 
@@ -434,6 +446,7 @@
 .issuable-meta {
   display: inline-block;
   line-height: 18px;
+  font-size: 14px;
 }
 
 .js-issuable-selector-wrap {
@@ -479,7 +492,7 @@
     }
 
     &:hover svg {
-      fill: $gl-gray;
+      fill: $gl-text-color;
     }
   }
 
@@ -526,10 +539,10 @@
 
     .compare-display {
       font-size: 13px;
-      color: $gl-gray-light;
+      color: $gl-text-color-secondary;
 
       .compare-value {
-        color: $gl-gray;
+        color: $gl-text-color;
       }
     }
   }

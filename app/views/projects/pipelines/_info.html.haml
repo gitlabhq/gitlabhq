@@ -23,7 +23,7 @@
 .info-well
   - if @commit.status
     .well-segment.pipeline-info
-      %div{class: "icon-container ci-status-icon-#{@commit.status}"}
+      %div{ class: "icon-container ci-status-icon-#{@commit.status}" }
         = ci_icon_for_status(@commit.status)
       = pluralize @pipeline.statuses.count(:id), "build"
       - if @pipeline.ref

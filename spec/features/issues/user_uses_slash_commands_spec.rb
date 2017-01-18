@@ -30,7 +30,7 @@ feature 'Issues > User uses slash commands', feature: true, js: true do
           write_note("/due 2016-08-28")
 
           expect(page).not_to have_content '/due 2016-08-28'
-          expect(page).to have_content 'Your commands have been executed!'
+          expect(page).to have_content 'Commands applied'
 
           issue.reload
 
@@ -51,7 +51,7 @@ feature 'Issues > User uses slash commands', feature: true, js: true do
           write_note("/due 2016-08-28")
 
           expect(page).to have_content '/due 2016-08-28'
-          expect(page).not_to have_content 'Your commands have been executed!'
+          expect(page).not_to have_content 'Commands applied'
 
           issue.reload
 
@@ -70,7 +70,7 @@ feature 'Issues > User uses slash commands', feature: true, js: true do
           write_note("/remove_due_date")
 
           expect(page).not_to have_content '/remove_due_date'
-          expect(page).to have_content 'Your commands have been executed!'
+          expect(page).to have_content 'Commands applied'
 
           issue.reload
 
@@ -91,7 +91,7 @@ feature 'Issues > User uses slash commands', feature: true, js: true do
           write_note("/remove_due_date")
 
           expect(page).to have_content '/remove_due_date'
-          expect(page).not_to have_content 'Your commands have been executed!'
+          expect(page).not_to have_content 'Commands applied'
 
           issue.reload
 

@@ -10,22 +10,25 @@
 
 (function() {
   describe('U2FAuthenticate', function() {
-    fixture.load('u2f/authenticate');
+    preloadFixtures('u2f/authenticate.html.raw');
+
     beforeEach(function() {
+      loadFixtures('u2f/authenticate.html.raw');
       this.u2fDevice = new MockU2FDevice;
       this.container = $("#js-authenticate-u2f");
-      this.component = new U2FAuthenticate(this.container, {
-        sign_requests: []
-      }, "token");
+      this.component = new window.gl.U2FAuthenticate(
+        this.container,
+        '#js-login-u2f-form',
+        {
+          sign_requests: []
+        },
+        document.querySelector('#js-login-2fa-device'),
+        document.querySelector('.js-2fa-form')
+      );
       return this.component.start();
     });
     it('allows authenticating via a U2F device', function() {
-      var authenticatedMessage, deviceResponse, inProgressMessage, setupButton, setupMessage;
-      setupButton = this.container.find("#js-login-u2f-device");
-      setupMessage = this.container.find("p");
-      expect(setupMessage.text()).toContain('Insert your security key');
-      expect(setupButton.text()).toBe('Sign in via U2F device');
-      setupButton.trigger('click');
+      var authenticatedMessage, deviceResponse, inProgressMessage;
       inProgressMessage = this.container.find("p");
       expect(inProgressMessage.text()).toContain("Trying to communicate with your device");
       this.u2fDevice.respondToAuthenticateRequest({
@@ -33,7 +36,7 @@
       });
       authenticatedMessage = this.container.find("p");
       deviceResponse = this.container.find('#js-device-response');
-      expect(authenticatedMessage.text()).toContain("Click this button to authenticate with the GitLab server");
+      expect(authenticatedMessage.text()).toContain('We heard back from your U2F device. You have been authenticated.');
       return expect(deviceResponse.val()).toBe('{"deviceData":"this is data from the device"}');
     });
     return describe("errors", function() {
@@ -62,7 +65,7 @@
           deviceData: "this is data from the device"
         });
         authenticatedMessage = this.container.find("p");
-        return expect(authenticatedMessage.text()).toContain("Click this button to authenticate with the GitLab server");
+        return expect(authenticatedMessage.text()).toContain("We heard back from your U2F device. You have been authenticated.");
       });
     });
   });

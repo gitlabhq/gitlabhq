@@ -25,7 +25,9 @@ Environments are like tags for your CI jobs, describing where code gets deployed
 Deployments are created when [jobs] deploy versions of code to environments,
 so every environment can have one or more deployments. GitLab keeps track of
 your deployments, so you always know what is currently being deployed on your
-servers.
+servers. If you have a deployment service such as [Kubernetes][kubernetes-service]
+enabled for your project, you can use it to assist with your deployments, and
+can even access a web terminal for your environment from within GitLab!
 
 To better understand how environments and deployments work, let's consider an
 example. We assume that you have already created a project in GitLab and set up
@@ -232,6 +234,46 @@ environment named `production`.
 Remember that if your environment's name is `production` (all lowercase), then
 it will get recorded in [Cycle Analytics](../user/project/cycle_analytics.md).
 Double the benefit!
+
+## Web terminals
+
+>**Note:**
+Web terminals were added in GitLab 8.15 and are only available to project
+masters and owners.
+
+If you deploy to your environments with the help of a deployment service (e.g.,
+the [Kubernetes](../project_services/kubernetes.md) service), GitLab can open
+a terminal session to your environment! This is a very powerful feature that
+allows you to debug issues without leaving the comfort of your web browser. To
+enable it, just follow the instructions given in the service documentation.
+
+Once enabled, your environments will gain a "terminal" button:
+
+![Terminal button on environment index](img/environments_terminal_button_on_index.png)
+
+You can also access the terminal button from the page for a specific environment:
+
+![Terminal button for an environment](img/environments_terminal_button_on_show.png)
+
+Wherever you find it, clicking the button will take you to a separate page to
+establish the terminal session:
+
+![Terminal page](img/environments_terminal_page.png)
+
+This works just like any other terminal - you'll be in the container created
+by your deployment, so you can run shell commands and get responses in real
+time, check the logs, try out configuration or code tweaks, etc. You can open
+multiple terminals to the same environment - they each get their own shell
+session -  and even a multiplexer like `screen` or `tmux`!  
+
+>**Note:**
+Container-based deployments often lack basic tools (like an editor), and may
+be stopped or restarted at any time. If this happens, you will lose all your
+changes! Treat this as a debugging tool, not a comprehensive online IDE. You
+can use [Koding](../administration/integration/koding.md) for online
+development.
+
+---
 
 While this is fine for deploying to some stable environments like staging or
 production, what happens for branches? So far we haven't defined anything
@@ -524,6 +566,7 @@ Below are some links you may find interesting:
 [Pipelines]: pipelines.md
 [jobs]: yaml/README.md#jobs
 [yaml]: yaml/README.md
+[kubernetes-service]: ../project_services/kubernetes.md]
 [environments]: #environments
 [deployments]: #deployments
 [permissions]: ../user/permissions.md

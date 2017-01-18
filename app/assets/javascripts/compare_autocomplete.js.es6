@@ -55,6 +55,13 @@
           $('.dropdown-toggle-text', $dropdown).text(text);
           $dropdownContainer.removeClass('open');
         });
+
+        $dropdownContainer.on('click', '.dropdown-content a', (e) => {
+          $dropdown.prop('title', e.target.text.replace(/_+?/g, '-'));
+          if ($dropdown.hasClass('has-tooltip')) {
+            $dropdown.tooltip('fixTitle');
+          }
+        });
       });
     };
 

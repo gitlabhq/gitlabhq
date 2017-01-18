@@ -3,26 +3,22 @@ module API
     before { authenticated_as_admin! }
 
     resource :license do
-      # Get information on the currently active license
-      #
-      # Example request:
-      #   GET /license
+      desc 'Get information on the currently active license' do
+        success Entities::License
+      end
       get do
         license = ::License.current
 
         present license, with: Entities::License
       end
 
-      # Add a new license
-      #
-      # Parameters:
-      #   license (required) - The license text
-      #
-      # Example request:
-      #   POST /license
+      desc 'Add a new license' do
+        success Entities::License
+      end
+      params do
+        requires :license, type: String, desc: 'The license text'
+      end
       post do
-        required_attributes! [:license]
-
         license = ::License.new(data: params[:license])
         if license.save
           present license, with: Entities::License

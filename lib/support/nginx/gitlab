@@ -20,6 +20,11 @@ upstream gitlab-workhorse {
   server unix:/home/git/gitlab/tmp/sockets/gitlab-workhorse.socket fail_timeout=0;
 }
 
+map $http_upgrade $connection_upgrade_gitlab {
+    default upgrade;
+    ''      close;
+}
+
 ## Normal HTTP host
 server {
   ## Either remove "default_server" from the listen line below,
@@ -53,6 +58,8 @@ server {
     proxy_set_header    X-Real-IP           $remote_addr;
     proxy_set_header    X-Forwarded-For     $proxy_add_x_forwarded_for;
     proxy_set_header    X-Forwarded-Proto   $scheme;
+    proxy_set_header    Upgrade             $http_upgrade;
+    proxy_set_header    Connection          $connection_upgrade_gitlab;
 
     proxy_pass http://gitlab-workhorse;
   }

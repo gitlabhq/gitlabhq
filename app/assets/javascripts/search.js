@@ -12,6 +12,9 @@
         selectable: true,
         filterable: true,
         fieldName: 'group_id',
+        search: {
+          fields: ['name']
+        },
         data: function(term, callback) {
           return Api.groups(term, {}, function(data) {
             data.unshift({
@@ -40,6 +43,9 @@
         selectable: true,
         filterable: true,
         fieldName: 'project_id',
+        search: {
+          fields: ['name']
+        },
         data: function(term, callback) {
           return Api.projects(term, 'id', function(data) {
             data.unshift({

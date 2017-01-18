@@ -8,3 +8,5 @@ class ListUser {
     this.avatar = user.avatar_url;
   }
 }
+
+window.ListUser = ListUser;

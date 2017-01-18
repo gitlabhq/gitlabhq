@@ -22,15 +22,8 @@ module Gitlab
           raise NotImplementedError
         end
 
-        # Deprecation warning: this method is here because we need to maintain
-        # backwards compatibility with legacy statuses. We often do something
-        # like "ci-status ci-status-#{status}" to set CSS class.
-        #
-        # `to_s` method should be renamed to `group` at some point, after
-        # phasing legacy satuses out.
-        #
-        def to_s
-          self.class.name.demodulize.downcase.underscore
+        def group
+          self.class.name.demodulize.underscore
         end
 
         def has_details?

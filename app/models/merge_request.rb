@@ -102,7 +102,7 @@ class MergeRequest < ActiveRecord::Base
   validates :source_branch, presence: true
   validates :target_project, presence: true
   validates :target_branch, presence: true
-  validates :merge_user, presence: true, if: :merge_when_build_succeeds?
+  validates :merge_user, presence: true, if: :merge_when_build_succeeds?, unless: :importing?
   validate :validate_branches, unless: [:allow_broken, :importing?, :closed_without_fork?]
   validate :validate_fork, unless: :closed_without_fork?
   validate :validate_approvals_before_merge
@@ -182,10 +182,10 @@ class MergeRequest < ActiveRecord::Base
     work_in_progress?(title) ? title : "WIP: #{title}"
   end
 
-  def to_reference(from_project = nil)
+  def to_reference(from_project = nil, full: false)
     reference = "#{self.class.reference_prefix}#{iid}"
 
-    "#{project.to_reference(from_project)}#{reference}"
+    "#{project.to_reference(from_project, full: full)}#{reference}"
   end
 
   def first_commit
@@ -205,7 +205,9 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def diff_size
-    diffs(diff_options).size
+    opts = diff_options || {}
+
+    raw_diffs(opts).size
   end
 
   def diff_base_commit
@@ -226,7 +228,7 @@ class MergeRequest < ActiveRecord::Base
   # true base commit, so we can't simply have `#diff_base_commit` fall back on
   # this method.
   def likely_diff_base_commit
-    first_commit.parent || first_commit
+    first_commit.try(:parent) || first_commit
   end
 
   def diff_start_commit
@@ -597,11 +599,7 @@ class MergeRequest < ActiveRecord::Base
     ext = Gitlab::ReferenceExtractor.new(project, current_user)
     ext.analyze(description)
 
-    issues = ext.issues
-    closing_issues = Gitlab::ClosingIssueExtractor.new(project, current_user).
-      closed_by_message(description)
-
-    issues - closing_issues
+    ext.issues - closes_issues
   end
 
   def target_project_path

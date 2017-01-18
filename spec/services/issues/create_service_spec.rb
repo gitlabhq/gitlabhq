@@ -135,6 +135,8 @@ describe Issues::CreateService, services: true do
       end
     end
 
+    it_behaves_like 'issuable create service'
+
     it_behaves_like 'new issuable record that supports slash commands'
 
     context 'for a merge request' do

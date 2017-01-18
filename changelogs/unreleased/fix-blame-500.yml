@@ -1,0 +1,4 @@
+---
+title: Fix blame 500 error on invalid path.
+merge_request: 25761
+author: Jeff Stubler

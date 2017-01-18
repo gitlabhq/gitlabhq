@@ -35,7 +35,7 @@ describe Gitlab::GitAccessWiki, lib: true do
     end
   end
 
-  describe '#download_access_check' do
+  describe '#access_check_download!' do
     subject { access.check('git-upload-pack', '_any') }
 
     before do

@@ -7,7 +7,7 @@
 %hr.clearfix
 
 = form_for [:admin, @push_rule] do |f|
-  -if @push_rule.errors.any?
+  - if @push_rule.errors.any?
     .alert.alert-danger
       - @push_rule.errors.full_messages.each do |msg|
         %p= msg

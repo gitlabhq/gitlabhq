@@ -33,7 +33,7 @@
 @import "bootstrap/labels";
 @import "bootstrap/badges";
 @import "bootstrap/alerts";
-// @import "bootstrap/progress-bars";
+@import "bootstrap/progress-bars";
 @import "bootstrap/list-group";
 @import "bootstrap/wells";
 @import "bootstrap/close";
@@ -91,14 +91,14 @@
 // Labels
 .label {
   padding: 4px 5px;
-  font-size: 13px;
+  font-size: 12px;
   font-style: normal;
   font-weight: normal;
   display: inline-block;
 
   &.label-gray {
     background-color: $label-gray-bg;
-    color: $gl-gray;
+    color: $gl-text-color;
     text-shadow: none;
   }
 

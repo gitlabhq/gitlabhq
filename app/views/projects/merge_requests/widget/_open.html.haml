@@ -50,7 +50,7 @@
         - if mr_issues_mentioned_but_not_closing.present?
           #{"Issue".pluralize(mr_issues_mentioned_but_not_closing.size)}
           != markdown issues_sentence(mr_issues_mentioned_but_not_closing), pipeline: :gfm, author: @merge_request.author
-          #{mr_issues_mentioned_but_not_closing.size > 1 ? 'are' : 'is'} mentioned but will not closed.
+          #{mr_issues_mentioned_but_not_closing.size > 1 ? 'are' : 'is'} mentioned but will not be closed.
 
   - if @merge_request.approvals.any?
     .mr-widget-footer.approved-by-users

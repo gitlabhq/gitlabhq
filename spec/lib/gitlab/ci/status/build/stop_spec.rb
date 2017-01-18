@@ -20,6 +20,10 @@ describe Gitlab::Ci::Status::Build::Stop do
     it { expect(subject.icon).to eq 'icon_status_manual' }
   end
 
+  describe '#group' do
+    it { expect(subject.group).to eq 'manual' }
+  end
+
   describe 'action details' do
     let(:user) { create(:user) }
     let(:build) { create(:ci_build) }

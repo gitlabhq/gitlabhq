@@ -7,27 +7,17 @@ describe AuthorizedProjectsWorker do
     it "refreshes user's authorized projects" do
       user = create(:user)
 
-      expect(worker).to receive(:refresh).with(an_instance_of(User))
+      expect_any_instance_of(User).to receive(:refresh_authorized_projects)
 
       worker.perform(user.id)
     end
 
     context "when the user is not found" do
       it "does nothing" do
-        expect(worker).not_to receive(:refresh)
+        expect_any_instance_of(User).not_to receive(:refresh_authorized_projects)
 
         described_class.new.perform(-1)
       end
-    end
-  end
-
-  describe '#refresh', redis: true do
-    it 'refreshes the authorized projects of the user' do
-      user = create(:user)
-
-      expect(user).to receive(:refresh_authorized_projects)
-
-      worker.refresh(user)
     end
   end
 end

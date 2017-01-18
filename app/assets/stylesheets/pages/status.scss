@@ -1,6 +1,6 @@
 .container-fluid {
   .ci-status {
-    padding: 2px 7px;
+    padding: 2px 7px 4px;
     margin-right: 10px;
     border: 1px solid $gray-darker;
     white-space: nowrap;
@@ -15,8 +15,7 @@
       height: 13px;
       width: 13px;
       position: relative;
-      top: 1px;
-      margin-right: 3px;
+      top: 2px;
       overflow: visible;
     }
 
@@ -25,7 +24,7 @@
       border-color: $gl-danger;
 
       &:not(span):hover {
-        background-color: rgba( $gl-danger, .07);
+        background-color: rgba($gl-danger, .07);
       }
 
       svg {
@@ -39,7 +38,7 @@
       border-color: $gl-success;
 
       &:not(span):hover {
-        background-color: rgba( $gl-success, .07);
+        background-color: rgba($gl-success, .07);
       }
 
       svg {
@@ -52,7 +51,7 @@
       border-color: $gl-info;
 
       &:not(span):hover {
-        background-color: rgba( $gl-info, .07);
+        background-color: rgba($gl-info, .07);
       }
 
       svg {
@@ -62,15 +61,15 @@
 
     &.ci-canceled,
     &.ci-disabled {
-      color: $gl-gray;
-      border-color: $gl-gray;
+      color: $gl-text-color;
+      border-color: $gl-text-color;
 
       &:not(span):hover {
-        background-color: rgba( $gl-gray, .07);
+        background-color: rgba($gl-text-color, .07);
       }
 
       svg {
-        fill: $gl-gray;
+        fill: $gl-text-color;
       }
     }
 
@@ -79,7 +78,7 @@
       border-color: $gl-warning;
 
       &:not(span):hover {
-        background-color: rgba( $gl-warning, .07);
+        background-color: rgba($gl-warning, .07);
       }
 
       svg {
@@ -92,7 +91,7 @@
       border-color: $blue-normal;
 
       &:not(span):hover {
-        background-color: rgba( $blue-normal, .07);
+        background-color: rgba($blue-normal, .07);
       }
 
       svg {
@@ -102,15 +101,28 @@
 
     &.ci-created,
     &.ci-skipped {
-      color: $gl-gray-light;
-      border-color: $gl-gray-light;
+      color: $gl-text-color-secondary;
+      border-color: $gl-text-color-secondary;
 
       &:not(span):hover {
-        background-color: rgba( $gl-gray-light, .07);
+        background-color: rgba($gl-text-color-secondary, .07);
       }
 
       svg {
-        fill: $gl-gray-light;
+        fill: $gl-text-color-secondary;
+      }
+    }
+
+    &.ci-manual {
+      color: $gl-text-color;
+      border-color: $gl-text-color;
+
+      &:not(span):hover {
+        background-color: rgba($gl-text-color, .07);
+      }
+
+      svg {
+        fill: $gl-text-color;
       }
     }
   }
@@ -121,5 +133,11 @@
     position: relative;
     top: 2px;
     left: 5px;
+  }
+}
+
+.ci-status-link {
+  svg {
+    overflow: visible;
   }
 }

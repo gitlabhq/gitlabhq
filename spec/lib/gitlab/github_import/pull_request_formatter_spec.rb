@@ -32,9 +32,9 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
     }
   end
 
-  subject(:pull_request) { described_class.new(project, raw_data)}
+  subject(:pull_request) { described_class.new(project, raw_data) }
 
-  describe '#attributes' do
+  shared_examples 'Gitlab::GithubImport::PullRequestFormatter#attributes' do
     context 'when pull request is open' do
       let(:raw_data) { double(base_data.merge(state: 'open')) }
 
@@ -149,7 +149,7 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
     end
 
     context 'when it has a milestone' do
-      let(:milestone) { double(number: 45) }
+      let(:milestone) { double(id: 42, number: 42) }
       let(:raw_data) { double(base_data.merge(milestone: milestone)) }
 
       it 'returns nil when milestone does not exist' do
@@ -157,22 +157,22 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
       end
 
       it 'returns milestone when it exists' do
-        milestone = create(:milestone, project: project, iid: 45)
+        milestone = create(:milestone, project: project, iid: 42)
 
         expect(pull_request.attributes.fetch(:milestone)).to eq milestone
       end
     end
   end
 
-  describe '#number' do
-    let(:raw_data) { double(base_data.merge(number: 1347)) }
+  shared_examples 'Gitlab::GithubImport::PullRequestFormatter#number' do
+    let(:raw_data) { double(base_data) }
 
     it 'returns pull request number' do
       expect(pull_request.number).to eq 1347
     end
   end
 
-  describe '#source_branch_name' do
+  shared_examples 'Gitlab::GithubImport::PullRequestFormatter#source_branch_name' do
     context 'when source branch exists' do
       let(:raw_data) { double(base_data) }
 
@@ -190,7 +190,7 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
     end
   end
 
-  describe '#target_branch_name' do
+  shared_examples 'Gitlab::GithubImport::PullRequestFormatter#target_branch_name' do
     context 'when source branch exists' do
       let(:raw_data) { double(base_data) }
 
@@ -206,6 +206,24 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
         expect(pull_request.target_branch_name).to eq 'pull/1347/removed-branch'
       end
     end
+  end
+
+  context 'when importing a GitHub project' do
+    it_behaves_like 'Gitlab::GithubImport::PullRequestFormatter#attributes'
+    it_behaves_like 'Gitlab::GithubImport::PullRequestFormatter#number'
+    it_behaves_like 'Gitlab::GithubImport::PullRequestFormatter#source_branch_name'
+    it_behaves_like 'Gitlab::GithubImport::PullRequestFormatter#target_branch_name'
+  end
+
+  context 'when importing a Gitea project' do
+    before do
+      project.update(import_type: 'gitea')
+    end
+
+    it_behaves_like 'Gitlab::GithubImport::PullRequestFormatter#attributes'
+    it_behaves_like 'Gitlab::GithubImport::PullRequestFormatter#number'
+    it_behaves_like 'Gitlab::GithubImport::PullRequestFormatter#source_branch_name'
+    it_behaves_like 'Gitlab::GithubImport::PullRequestFormatter#target_branch_name'
   end
 
   describe '#valid?' do

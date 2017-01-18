@@ -93,11 +93,8 @@ module Ci
         .select("max(#{quoted_table_name}.id)")
         .group(:ref, :sha)
 
-      if ref
-        where(id: max_id, ref: ref)
-      else
-        where(id: max_id)
-      end
+      relation = ref ? where(ref: ref) : self
+      relation.where(id: max_id)
     end
 
     def self.latest_status(ref = nil)
@@ -105,7 +102,7 @@ module Ci
     end
 
     def self.latest_successful_for(ref)
-      success.latest(ref).first
+      success.latest(ref).order(id: :desc).first
     end
 
     def self.truncate_sha(sha)
@@ -114,6 +111,11 @@ module Ci
 
     def self.total_duration
       where.not(duration: nil).sum(:duration)
+    end
+
+    def stage(name)
+      stage = Ci::Stage.new(self, name: name)
+      stage unless stage.statuses_count.zero?
     end
 
     def stages_count
@@ -140,7 +142,7 @@ module Ci
     end
 
     def artifacts
-      builds.latest.with_artifacts_not_expired
+      builds.latest.with_artifacts_not_expired.includes(project: [:namespace])
     end
 
     def project_id
@@ -189,7 +191,11 @@ module Ci
     end
 
     def manual_actions
-      builds.latest.manual_actions
+      builds.latest.manual_actions.includes(project: [:namespace])
+    end
+
+    def stuck?
+      builds.pending.any?(&:stuck?)
     end
 
     def retryable?
@@ -279,6 +285,10 @@ module Ci
       rescue
         nil
       end
+    end
+
+    def has_yaml_errors?
+      yaml_errors.present?
     end
 
     def environments

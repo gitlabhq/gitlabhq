@@ -345,7 +345,7 @@
         = f.text_field :recaptcha_site_key, class: 'form-control'
         .help-block
           Generate site and private keys at
-          %a{ href: 'http://www.google.com/recaptcha', target: 'blank'} http://www.google.com/recaptcha
+          %a{ href: 'http://www.google.com/recaptcha', target: 'blank' } http://www.google.com/recaptcha
 
     .form-group
       = f.label :recaptcha_private_key, 'reCAPTCHA Private Key', class: 'control-label col-sm-2'
@@ -366,7 +366,7 @@
         = f.text_field :akismet_api_key, class: 'form-control'
         .help-block
           Generate API key at
-          %a{ href: 'http://www.akismet.com', target: 'blank'} http://www.akismet.com
+          %a{ href: 'http://www.akismet.com', target: 'blank' } http://www.akismet.com
 
   %fieldset
     %legend Abuse reports
@@ -471,6 +471,23 @@
           team, and you need to provide that team's URL here. Learn more in the
           = succeed "." do
             = link_to "Koding administration documentation", help_page_path("administration/integration/koding")
+
+  %fieldset
+    %legend PlantUML
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :plantuml_enabled do
+            = f.check_box :plantuml_enabled
+            Enable PlantUML
+    .form-group
+      = f.label :plantuml_url, 'PlantUML URL', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :plantuml_url, class: 'form-control', placeholder: 'http://gitlab.your-plantuml-instance.com:8080'
+        .help-block
+          Allow rendering of
+          = link_to "PlantUML", "http://plantuml.com"
+          diagrams in Asciidoc documents using an external PlantUML service.
 
   %fieldset
     %legend Usage statistics

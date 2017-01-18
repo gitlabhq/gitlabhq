@@ -139,15 +139,12 @@
         return;
       }
       return $.getJSON($container.data('path')).error(function() {
-        $container.find('.checking').hide();
         $container.find('.unavailable').show();
         return new Flash('Failed to check if a new branch can be created.', 'alert');
       }).success(function(data) {
         if (data.can_create_branch) {
-          $container.find('.checking').hide();
           $container.find('.available').show();
         } else {
-          $container.find('.checking').hide();
           return $container.find('.unavailable').show();
         }
       });

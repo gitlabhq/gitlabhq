@@ -20,15 +20,19 @@
 
     .fa {
       color: $cycle-analytics-light-gray;
+
+      &:hover {
+        color: $gl-text-color;
+      }
     }
 
     .stage-header {
-      width: 28%;
+      width: 26%;
       padding-left: $gl-padding;
     }
 
     .median-header {
-      width: 12%;
+      width: 14%;
     }
 
     .event-header {
@@ -111,14 +115,14 @@
           line-height: 19px;
           font-size: 14px;
           font-weight: 600;
-          color: $gl-title-color;
+          color: $gl-text-color;
         }
 
         &.text {
           color: $layout-link-gray;
 
           &.value-col {
-            color: $gl-title-color;
+            color: $gl-text-color;
           }
         }
       }
@@ -141,7 +145,7 @@
 
     .dismiss-icon {
       position: absolute;
-      right: $cycle-analytics-dismiss-icon-color;
+      right: $cycle-analytics-box-padding;
       cursor: pointer;
       color: $cycle-analytics-dismiss-icon-color;
     }
@@ -215,7 +219,6 @@
       border-bottom: 1px solid transparent;
       border-right: 1px solid $border-color;
       background-color: $gray-light;
-      cursor: default;
 
       &.active {
         background-color: transparent;
@@ -247,11 +250,11 @@
         float: left;
 
         &.stage-name {
-          width: 70%;
+          width: 65%;
         }
 
         &.stage-median {
-          width: 30%;
+          width: 35%;
         }
       }
 
@@ -261,7 +264,7 @@
 
       .stage-empty,
       .not-available {
-        color: $gl-text-color-light;
+        color: $gl-text-color-secondary;
       }
     }
   }
@@ -328,7 +331,7 @@
         @include text-overflow();
 
         a {
-          color: $gl-dark-link-color;
+          color: $gl-text-color;
         }
       }
     }
@@ -356,7 +359,7 @@
     .issue-link,
     .commit-author-link,
     .issue-author-link {
-      color: $gl-dark-link-color;
+      color: $gl-text-color;
     }
 
     // Custom CSS for components
@@ -397,11 +400,11 @@
       }
 
       .item-build-name {
-        color: $gl-title-color;
+        color: $gl-text-color;
       }
 
       .pipeline-id {
-        color: $gl-title-color;
+        color: $gl-text-color;
         padding: 0 3px 0 0;
       }
 
@@ -424,7 +427,7 @@
       }
 
       .fa {
-        color: $gl-text-color-light;
+        color: $gl-text-color-secondary;
         font-size: $code_font_size;
       }
     }
@@ -436,7 +439,7 @@
     width: 75%;
     margin: 0 auto;
     padding-top: 130px;
-    color: $gl-text-color-light;
+    color: $gl-text-color-secondary;
 
     h4 {
       color: $gl-text-color;

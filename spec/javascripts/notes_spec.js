@@ -12,13 +12,14 @@
   gl.utils = gl.utils || {};
 
   describe('Notes', function() {
-    var commentsTemplate = 'issues/issue_with_comment.raw';
-    fixture.preload(commentsTemplate);
+    var commentsTemplate = 'issues/issue_with_comment.html.raw';
+    preloadFixtures(commentsTemplate);
 
     beforeEach(function () {
-      fixture.load(commentsTemplate);
+      loadFixtures(commentsTemplate);
       gl.utils.disableButtonIfEmptyField = _.noop;
       window.project_uploads_path = 'http://test.host/uploads';
+      $('body').data('page', 'projects:issues:show');
     });
 
     describe('task lists', function() {

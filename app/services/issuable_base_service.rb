@@ -44,14 +44,10 @@ class IssuableBaseService < BaseService
     SystemNoteService.change_time_spent(issuable, issuable.project, current_user)
   end
 
-  def filter_params(issuable_ability_name = :issue)
-    filter_assignee
-    filter_milestone
-    filter_labels
+  def filter_params(issuable)
+    ability_name = :"admin_#{issuable.to_ability_name}"
 
-    ability = :"admin_#{issuable_ability_name}"
-
-    unless can?(current_user, ability, project)
+    unless can?(current_user, ability_name, project)
       params.delete(:milestone_id)
       params.delete(:labels)
       params.delete(:add_label_ids)
@@ -60,12 +56,33 @@ class IssuableBaseService < BaseService
       params.delete(:assignee_id)
       params.delete(:due_date)
     end
+
+    filter_assignee(issuable)
+    filter_milestone
+    filter_labels
   end
 
-  def filter_assignee
-    if params[:assignee_id] == IssuableFinder::NONE
-      params[:assignee_id] = ''
+  def filter_assignee(issuable)
+    return unless params[:assignee_id].present?
+
+    assignee_id = params[:assignee_id]
+
+    if assignee_id.to_s == IssuableFinder::NONE
+      params[:assignee_id] = ""
+    else
+      params.delete(:assignee_id) unless assignee_can_read?(issuable, assignee_id)
     end
+  end
+
+  def assignee_can_read?(issuable, assignee_id)
+    new_assignee = User.find_by_id(assignee_id)
+
+    return false unless new_assignee.present?
+
+    ability_name = :"read_#{issuable.to_ability_name}"
+    resource     = issuable.persisted? ? issuable : project
+
+    can?(new_assignee, ability_name, resource)
   end
 
   def filter_milestone
@@ -146,7 +163,7 @@ class IssuableBaseService < BaseService
 
   def create(issuable)
     merge_slash_commands_into_params!(issuable)
-    filter_params
+    filter_params(issuable)
     change_time_spent(issuable)
 
     params.delete(:state_event)
@@ -190,7 +207,7 @@ class IssuableBaseService < BaseService
     change_subscription(issuable)
     change_todo(issuable)
     time_spent = change_time_spent(issuable)
-    filter_params
+    filter_params(issuable)
     old_labels = issuable.labels.to_a
     old_mentioned_users = issuable.mentioned_users.to_a
 

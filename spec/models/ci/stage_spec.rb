@@ -28,6 +28,19 @@ describe Ci::Stage, models: true do
     end
   end
 
+  describe '#statuses_count' do
+    before do
+      create_job(:ci_build)
+      create_job(:ci_build, stage: 'other stage')
+    end
+
+    subject { stage.statuses_count }
+
+    it "counts statuses only from current stage" do
+      is_expected.to eq(1)
+    end
+  end
+
   describe '#builds' do
     let!(:stage_build) { create_job(:ci_build) }
     let!(:commit_status) { create_job(:commit_status) }

@@ -20,6 +20,7 @@
 
   gl.issueBoards.getBoardSortableDefaultOptions = (obj) => {
     let defaultSortOptions = {
+      animation: 200,
       forceFallback: true,
       fallbackClass: 'is-dragging',
       fallbackOnBody: true,

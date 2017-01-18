@@ -1,6 +1,7 @@
 module API
   module Helpers
     include Gitlab::Utils
+    include Helpers::Pagination
 
     SUDO_HEADER = "HTTP_SUDO"
     SUDO_PARAM = :sudo
@@ -85,18 +86,12 @@ module API
       IssuesFinder.new(current_user, project_id: user_project.id).find(id)
     end
 
-    def paginate(relation)
-      relation.page(params[:page]).per(params[:per_page].to_i).tap do |data|
-        add_pagination_headers(data)
-      end
-    end
-
     def authenticate!
       unauthorized! unless current_user
     end
 
     def authenticate_non_get!
-      authenticate! unless %w[GET HEAD].include?(route.route_method)
+      authenticate! unless %w[GET HEAD].include?(route.request_method)
     end
 
     def authenticate_by_gitlab_shell_token!
@@ -124,10 +119,6 @@ module API
 
     def authorize_push_project
       authorize! :push_code, user_project
-    end
-
-    def validate_access_level?(level)
-      Gitlab::Access.options_with_owner.values.include? level.to_i
     end
 
     def authorize_admin_project
@@ -259,7 +250,7 @@ module API
       rack_response({ 'message' => '500 Internal Server Error' }.to_json, 500)
     end
 
-    # Projects helpers
+    # project helpers
 
     def filter_projects(projects)
       if params[:search].present?
@@ -310,7 +301,7 @@ module API
         header['X-Sendfile'] = path
         body
       else
-        file FileStreamer.new(path)
+        path
       end
     end
 
@@ -370,38 +361,6 @@ module API
 
     def sudo_identifier
       @sudo_identifier ||= params[SUDO_PARAM] || env[SUDO_HEADER]
-    end
-
-    def add_pagination_headers(paginated_data)
-      header 'X-Total',       paginated_data.total_count.to_s
-      header 'X-Total-Pages', paginated_data.total_pages.to_s
-      header 'X-Per-Page',    paginated_data.limit_value.to_s
-      header 'X-Page',        paginated_data.current_page.to_s
-      header 'X-Next-Page',   paginated_data.next_page.to_s
-      header 'X-Prev-Page',   paginated_data.prev_page.to_s
-      header 'Link',          pagination_links(paginated_data)
-    end
-
-    def pagination_links(paginated_data)
-      request_url = request.url.split('?').first
-      request_params = params.clone
-      request_params[:per_page] = paginated_data.limit_value
-
-      links = []
-
-      request_params[:page] = paginated_data.current_page - 1
-      links << %(<#{request_url}?#{request_params.to_query}>; rel="prev") unless paginated_data.first_page?
-
-      request_params[:page] = paginated_data.current_page + 1
-      links << %(<#{request_url}?#{request_params.to_query}>; rel="next") unless paginated_data.last_page?
-
-      request_params[:page] = 1
-      links << %(<#{request_url}?#{request_params.to_query}>; rel="first")
-
-      request_params[:page] = paginated_data.total_pages
-      links << %(<#{request_url}?#{request_params.to_query}>; rel="last")
-
-      links.join(', ')
     end
 
     def secret_token

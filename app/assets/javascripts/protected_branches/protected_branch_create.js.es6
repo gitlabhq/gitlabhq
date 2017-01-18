@@ -51,7 +51,7 @@
       });
 
       // Protected branch dropdown
-      new gl.ProtectedBranchDropdown({
+      new window.ProtectedBranchDropdown({
         $dropdown: this.$wrap.find('.js-protected-branch-select'),
         onSelect: this.onSelectCallback
       });

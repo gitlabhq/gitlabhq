@@ -51,7 +51,7 @@
       margin-bottom: -1px;
       font-size: 14px;
       line-height: 28px;
-      color: $gl-gray-light;
+      color: $gl-text-color-secondary;
       border-bottom: 2px solid transparent;
 
       &:hover,
@@ -75,13 +75,6 @@
       .badge {
         color: $black;
       }
-    }
-
-    .badge {
-      font-weight: normal;
-      background-color: $nav-badge-bg;
-      color: $gl-gray-light;
-      vertical-align: baseline;
     }
   }
 
@@ -108,7 +101,7 @@
         &:hover,
         &:active,
         &:focus {
-          border-bottom: none;
+          border-color: transparent;
         }
       }
     }
@@ -123,8 +116,8 @@
     padding-top: 16px;
     padding-bottom: 11px;
     display: inline-block;
-    width: 50%;
     line-height: 28px;
+    white-space: normal;
 
     /* Small devices (phones, tablets, 768px and lower) */
     @media (max-width: $screen-xs-max) {
@@ -165,30 +158,24 @@
   }
 
   .nav-controls {
-    width: 50%;
     display: inline-block;
     float: right;
     text-align: right;
     padding: 11px 0;
     margin-bottom: 0;
 
-    > .dropdown {
+    > .btn,
+    > .btn-container,
+    > .dropdown,
+    > input,
+    > form {
       margin-right: $gl-padding-top;
       display: inline-block;
       vertical-align: top;
 
       &:last-child {
         margin-right: 0;
-      }
-    }
-
-    > .btn {
-      margin-right: $gl-padding-top;
-      display: inline-block;
-      vertical-align: top;
-
-      &:last-child {
-        margin-right: 0;
+        float: right;
       }
     }
 
@@ -196,19 +183,21 @@
       float: none;
     }
 
-    > form {
-      display: inline-block;
-    }
-
     .icon-label {
       display: none;
     }
 
-    input {
+    .btn,
+    .dropdown,
+    .dropdown-toggle,
+    input,
+    form {
       height: 35px;
+    }
+
+    input {
       display: inline-block;
       position: relative;
-      margin-right: $gl-padding-top;
 
       /* Medium devices (desktops, 992px and up) */
       @media (min-width: $screen-md-min) { width: 200px; }
@@ -232,6 +221,7 @@
       .btn,
       form,
       .dropdown,
+      .dropdown-toggle,
       .dropdown-menu-toggle,
       .form-control {
         margin: 0 0 10px;
@@ -270,6 +260,10 @@
     .nav-text,
     .nav-controls {
       width: auto;
+
+      @media (max-width: $screen-xs-max) {
+        width: 100%;
+      }
     }
   }
 
@@ -281,6 +275,10 @@
     .nav-controls {
       padding: 17px 0;
     }
+  }
+
+  pre {
+    width: 100%;
   }
 }
 
@@ -317,7 +315,7 @@
 
     .fa-caret-down {
       margin-left: 5px;
-      color: $gl-gray-light;
+      color: $gl-text-color-secondary;
     }
 
     .dropdown {
@@ -432,6 +430,43 @@
 
     .nav-links {
       border-bottom: none;
+    }
+  }
+}
+
+@media (max-width: $screen-xs-max) {
+  .top-area {
+    flex-flow: row wrap;
+
+    .nav-controls {
+      $controls-margin: $btn-xs-side-margin - 2px;
+      flex: 0 0 100%;
+
+      &.controls-flex {
+        display: flex;
+        flex-flow: row wrap;
+        align-items: center;
+        justify-content: center;
+        padding: 0 0 $gl-padding-top;
+      }
+
+      .controls-item,
+      .controls-item-full,
+      .controls-item:last-child {
+        flex: 1 1 35%;
+        display: block;
+        width: 100%;
+        margin: $controls-margin;
+
+        .btn,
+        .dropdown {
+          margin: 0;
+        }
+      }
+
+      .controls-item-full {
+        flex: 1 1 100%;
+      }
     }
   }
 }

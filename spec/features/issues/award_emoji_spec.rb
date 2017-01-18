@@ -76,7 +76,7 @@ describe 'Awards Emoji', feature: true do
     end
 
     it 'has disabled emoji button' do
-      expect(first('.award-control')[:disabled]).to be(true)
+      expect(first('.award-control')[:class]).to have_text('disabled')
     end
   end
 

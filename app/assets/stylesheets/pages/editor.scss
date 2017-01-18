@@ -75,7 +75,8 @@
   .soft-wrap-toggle,
   .license-selector,
   .gitignore-selector,
-  .gitlab-ci-yml-selector {
+  .gitlab-ci-yml-selector,
+  .dockerfile-selector {
     display: inline-block;
     vertical-align: top;
     font-family: $regular_font;
@@ -105,7 +106,8 @@
 
   .gitignore-selector,
   .license-selector,
-  .gitlab-ci-yml-selector {
+  .gitlab-ci-yml-selector,
+  .dockerfile-selector {
     .dropdown {
       line-height: 21px;
     }

@@ -19,7 +19,7 @@
           Your New Personal Access Token
         .form-group
           = text_field_tag 'created-personal-access-token', flash[:personal_access_token], readonly: true, class: "form-control", 'aria-describedby' => "created-personal-access-token-help-block"
-          = clipboard_button(clipboard_text: flash[:personal_access_token])
+          = clipboard_button(clipboard_text: flash[:personal_access_token], title: "Copy personal access token to clipboard", placement: "left")
           %span#created-personal-access-token-help-block.help-block.text-danger Make sure you save it - you won't be able to access it again.
 
       %hr

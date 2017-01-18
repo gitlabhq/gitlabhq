@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Projects::BlobController do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :public) }
   let(:user)    { create(:user) }
 
   before do
@@ -82,6 +82,36 @@ describe Projects::BlobController do
 
           expect(response).to redirect_to(blob_after_edit_path)
         end
+      end
+    end
+
+    context 'when user has forked project' do
+      let(:guest) { create(:user) }
+      let!(:forked_project) { Projects::ForkService.new(project, guest).execute }
+      let!(:merge_request) { create(:merge_request, source_project: project, target_project: project, source_branch: "fork-test-1", target_branch: "master") }
+
+      before { sign_in(guest) }
+
+      it "redirects to forked project new merge request" do
+        default_params[:target_branch] = "fork-test-1"
+        default_params[:create_merge_request] = 1
+
+        allow_any_instance_of(Files::UpdateService).to receive(:commit).and_return(:success)
+
+        put :update, default_params
+
+        expect(response).to redirect_to(
+          new_namespace_project_merge_request_path(
+            forked_project.namespace,
+            forked_project,
+            merge_request: {
+              source_project_id: forked_project.id,
+              target_project_id: project.id,
+              source_branch: "fork-test-1",
+              target_branch: "master"
+            }
+          )
+        )
       end
     end
   end

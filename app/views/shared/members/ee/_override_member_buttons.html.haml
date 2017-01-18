@@ -4,7 +4,7 @@
 - action = local_assigns.fetch(:action, :edit).to_s.inquiry
 - can_override = local_assigns.fetch(:can_override, false)
 
-- if can_override
+- if group && can_override
   - if action.edit?
     %button.btn.btn-default.btn-ldap-override.js-ldap-permissions{ type: 'button',
       'aria-label' => 'Edit permissions',

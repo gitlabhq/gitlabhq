@@ -30,6 +30,10 @@ describe Issue, models: true do
       expect(issue.to_reference).to eq "#1"
     end
 
+    it 'returns a String reference with the full path' do
+      expect(issue.to_reference(full: true)).to eq(project.path_with_namespace + '#1')
+    end
+
     it 'supports a cross-project reference' do
       another_project = build(:project, name: 'another-project', namespace: project.namespace)
       expect(issue.to_reference(another_project)).to eq "sample-project#1"

@@ -476,7 +476,7 @@
       this.removeArrayKeyEvent();
       $input = this.dropdown.find(".dropdown-input-field");
       if (this.options.filterable) {
-        $input.blur().val("");
+        $input.blur();
       }
       if (this.dropdown.find(".dropdown-toggle-page").length) {
         $('.dropdown-menu', this.dropdown).removeClass(PAGE_TWO_CLASS);

@@ -88,3 +88,9 @@ artifacts through the [Admin area settings](../user/admin_area/settings/continuo
 
 [reconfigure gitlab]: restart_gitlab.md "How to restart GitLab"
 [restart gitlab]: restart_gitlab.md "How to restart GitLab"
+
+## Storage statistics
+
+You can see the total storage used for build artifacts on groups and projects
+in the administration area, as well as through the [groups](../api/groups.md)
+and [projects APIs](../api/projects.md).

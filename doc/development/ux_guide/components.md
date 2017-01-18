@@ -12,6 +12,7 @@
 * [Panels](#panels)
 * [Alerts](#alerts)
 * [Forms](#forms)
+* [Search box](#search-box)
 * [File holders](#file-holders)
 * [Data formats](#data-formats)
 
@@ -212,6 +213,18 @@ Form (`form`) with label rendered above input.
 Horizontal form (`form.horizontal-form`) with label rendered inline with input.
 
 ![Horizontal form](img/components-horizontalform.png)
+
+---
+
+## Search box
+
+Search boxes across GitLab have a consistent rest, active and text entered state. When text isn't entered in the box, there should be a magnifying glass right aligned with the input field. When text is entered, the magnifying glass should become a x, allowing users to clear their text.
+
+![Search box](img/components-searchbox.png)
+
+If needed, we indicate the scope of the search in the search box.
+
+![Scoped Search box](img/components-searchboxscoped.png)
 
 ---
 

@@ -197,7 +197,7 @@ module SystemNoteService
   end
 
   def remove_merge_request_wip(noteable, project, author)
-    body = 'unmarked as a Work In Progress'
+    body = 'unmarked as a **Work In Progress**'
 
     create_note(noteable: noteable, project: project, author: author, note: body)
   end

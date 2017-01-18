@@ -34,10 +34,10 @@
 .ci-status-icon-canceled,
 .ci-status-icon-disabled,
 .ci-status-icon-not-found {
-  color: $gl-gray;
+  color: $gl-text-color;
 
   svg {
-    fill: $gl-gray;
+    fill: $gl-text-color;
   }
 }
 
@@ -47,5 +47,13 @@
 
   svg {
     fill: $gray-darkest;
+  }
+}
+
+.ci-status-icon-manual {
+  color: $gl-text-color;
+
+  svg {
+    fill: $gl-text-color;
   }
 }

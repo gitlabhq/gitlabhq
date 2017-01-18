@@ -48,6 +48,7 @@
     },
     DefaultOptions: {
       sorter: function(query, items, searchKey) {
+        this.setting.highlightFirst = query.length > 0;
         if (gl.GfmAutoComplete.isLoading(items)) {
           return items;
         }
@@ -55,11 +56,9 @@
       },
       filter: function(query, data, searchKey) {
         if (gl.GfmAutoComplete.isLoading(data)) {
-          gl.GfmAutoComplete.togglePreventSelection.call(this, true);
           gl.GfmAutoComplete.fetchData(this.$inputor, this.at);
           return data;
         } else {
-          gl.GfmAutoComplete.togglePreventSelection.call(this, false);
           return $.fn.atwho["default"].callbacks.filter(query, data, searchKey);
         }
       },
@@ -74,15 +73,16 @@
         // The below is taken from At.js source
         // Tweaked to commands to start without a space only if char before is a non-word character
         // https://github.com/ichord/At.js
-        var _a, _y, regexp, match, atSymbols;
-        atSymbols = Object.keys(this.app.controllers).join('|');
-        subtext = subtext.split(' ').pop();
+        var _a, _y, regexp, match, atSymbolsWithBar, atSymbolsWithoutBar;
+        atSymbolsWithBar = Object.keys(this.app.controllers).join('|');
+        atSymbolsWithoutBar = Object.keys(this.app.controllers).join('');
+        subtext = subtext.split(/\s+/g).pop();
         flag = flag.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 
         _a = decodeURI("%C3%80");
         _y = decodeURI("%C3%BF");
 
-        regexp = new RegExp("(?:\\B|\\W|\\s)" + flag + "(?![" + atSymbols + "])([A-Za-z" + _a + "-" + _y + "0-9_\'\.\+\-]*)$", 'gi');
+        regexp = new RegExp("^(?:\\B|[^a-zA-Z0-9_" + atSymbolsWithoutBar + "]|\\s)" + flag + "(?![" + atSymbolsWithBar + "])([A-Za-z" + _a + "-" + _y + "0-9_\'\.\+\-]*)$", 'gi');
 
         match = regexp.exec(subtext);
 
@@ -112,7 +112,6 @@
           return value.path != null ? this.Emoji.template : this.Loading.template;
         }.bind(this),
         insertTpl: ':${name}:',
-        startWithSpace: false,
         skipSpecialCharacterTest: true,
         data: this.defaultLoadingData,
         callbacks: {
@@ -129,7 +128,6 @@
         }.bind(this),
         insertTpl: '${atwho-at}${username}',
         searchKey: 'search',
-        startWithSpace: false,
         alwaysHighlightFirst: true,
         skipSpecialCharacterTest: true,
         data: this.defaultLoadingData,
@@ -172,7 +170,6 @@
         }.bind(this),
         data: this.defaultLoadingData,
         insertTpl: '${atwho-at}${id}',
-        startWithSpace: false,
         callbacks: {
           sorter: this.DefaultOptions.sorter,
           filter: this.DefaultOptions.filter,
@@ -200,7 +197,6 @@
         displayTpl: function(value) {
           return value.title != null ? this.Milestones.template : this.Loading.template;
         }.bind(this),
-        startWithSpace: false,
         data: this.defaultLoadingData,
         callbacks: {
           matcher: this.DefaultOptions.matcher,
@@ -225,7 +221,6 @@
         at: '!',
         alias: 'mergerequests',
         searchKey: 'search',
-        startWithSpace: false,
         displayTpl: function(value) {
           return value.title != null ? this.Issues.template : this.Loading.template;
         }.bind(this),
@@ -259,12 +254,11 @@
           return this.isLoading(value) ? this.Loading.template : this.Labels.template;
         }.bind(this),
         insertTpl: '${atwho-at}${title}',
-        startWithSpace: false,
         callbacks: {
           matcher: this.DefaultOptions.matcher,
-          sorter: this.DefaultOptions.sorter,
           beforeInsert: this.DefaultOptions.beforeInsert,
           filter: this.DefaultOptions.filter,
+          sorter: this.DefaultOptions.sorter,
           beforeSave: function(merges) {
             if (gl.GfmAutoComplete.isLoading(merges)) return merges;
             var sanitizeLabelTitle;
@@ -372,20 +366,9 @@
       return $input.trigger('keyup');
     },
     isLoading(data) {
-      if (!data) return false;
+      if (!data || !data.length) return false;
       if (Array.isArray(data)) data = data[0];
       return data === this.defaultLoadingData[0] || data.name === this.defaultLoadingData[0];
-    },
-    togglePreventSelection(isPrevented = !!this.setting.tabSelectsMatch) {
-      this.setting.tabSelectsMatch = !isPrevented;
-      this.setting.spaceSelectsMatch = !isPrevented;
-      const eventListenerAction = `${isPrevented ? 'add' : 'remove'}EventListener`;
-      this.$inputor[0][eventListenerAction]('keydown', gl.GfmAutoComplete.preventSpaceTabEnter);
-    },
-    preventSpaceTabEnter(e) {
-      const key = e.which || e.keyCode;
-      const preventables = [9, 13, 32];
-      if (preventables.indexOf(key) > -1) e.preventDefault();
     }
   };
 

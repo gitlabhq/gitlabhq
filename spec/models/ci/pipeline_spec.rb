@@ -175,6 +175,30 @@ describe Ci::Pipeline, models: true do
     end
   end
 
+  describe '#stage' do
+    subject { pipeline.stage('test') }
+
+    context 'with status in stage' do
+      before do
+        create(:commit_status, pipeline: pipeline, stage: 'test')
+      end
+
+      it { expect(subject).to be_a Ci::Stage }
+      it { expect(subject.name).to eq 'test' }
+      it { expect(subject.statuses).not_to be_empty }
+    end
+
+    context 'without status in stage' do
+      before do
+        create(:commit_status, pipeline: pipeline, stage: 'build')
+      end
+
+      it 'return stage object' do
+        is_expected.to be_nil
+      end
+    end
+  end
+
   describe 'state machine' do
     let(:current) { Time.now.change(usec: 0) }
     let(:build) { create_build('build1', 0) }
@@ -437,6 +461,19 @@ describe Ci::Pipeline, models: true do
         expect(latest_status).to eq(described_class.latest_status('ref'))
         expect(latest_status).to eq('failed')
       end
+    end
+  end
+
+  describe '.latest_successful_for' do
+    include_context 'with some outdated pipelines'
+
+    let!(:latest_successful_pipeline) do
+      create_pipeline(:success, 'ref', 'D')
+    end
+
+    it 'returns the latest successful pipeline' do
+      expect(described_class.latest_successful_for('ref')).
+        to eq(latest_successful_pipeline)
     end
   end
 
@@ -848,6 +885,48 @@ describe Ci::Pipeline, models: true do
       allow_any_instance_of(MergeRequest).to receive(:diff_head_sha) { '97de212e80737a608d939f648d959671fb0a0142b' }
 
       expect(pipeline.merge_requests).to be_empty
+    end
+  end
+
+  describe '#stuck?' do
+    before do
+      create(:ci_build, :pending, pipeline: pipeline)
+    end
+
+    context 'when pipeline is stuck' do
+      it 'is stuck' do
+        expect(pipeline).to be_stuck
+      end
+    end
+
+    context 'when pipeline is not stuck' do
+      before { create(:ci_runner, :shared, :online) }
+
+      it 'is not stuck' do
+        expect(pipeline).not_to be_stuck
+      end
+    end
+  end
+
+  describe '#has_yaml_errors?' do
+    context 'when pipeline has errors' do
+      let(:pipeline) do
+        create(:ci_pipeline, config: { rspec: nil })
+      end
+
+      it 'contains yaml errors' do
+        expect(pipeline).to have_yaml_errors
+      end
+    end
+
+    context 'when pipeline does not have errors' do
+      let(:pipeline) do
+        create(:ci_pipeline, config: { rspec: { script: 'rake test' } })
+      end
+
+      it 'does not containyaml errors' do
+        expect(pipeline).not_to have_yaml_errors
+      end
     end
   end
 

@@ -11,15 +11,15 @@ describe ChatMessage::NoteMessage, models: true do
             avatar_url: 'http://fakeavatar'
         },
         project_name: 'project_name',
-        project_url: 'somewhere.com',
+        project_url: 'http://somewhere.com',
         repository: {
             name: 'project_name',
-            url: 'somewhere.com',
+            url: 'http://somewhere.com',
         },
         object_attributes: {
             id: 10,
             note: 'comment on a commit',
-            url: 'url',
+            url: 'http://url.com',
             noteable_type: 'Commit'
         }
     }
@@ -37,8 +37,8 @@ describe ChatMessage::NoteMessage, models: true do
 
     it 'returns a message regarding notes on commits' do
       message = described_class.new(@args)
-      expect(message.pretext).to eq("test.user <url|commented on " \
-      "commit 5f163b2b> in <somewhere.com|project_name>: " \
+      expect(message.pretext).to eq("test.user <http://url.com|commented on " \
+      "commit 5f163b2b> in <http://somewhere.com|project_name>: " \
       "*Added a commit message*")
       expected_attachments = [
           {
@@ -63,8 +63,8 @@ describe ChatMessage::NoteMessage, models: true do
 
     it 'returns a message regarding notes on a merge request' do
       message = described_class.new(@args)
-      expect(message.pretext).to eq("test.user <url|commented on " \
-      "merge request !30> in <somewhere.com|project_name>: " \
+      expect(message.pretext).to eq("test.user <http://url.com|commented on " \
+      "merge request !30> in <http://somewhere.com|project_name>: " \
       "*merge request title*")
       expected_attachments = [
           {
@@ -90,8 +90,8 @@ describe ChatMessage::NoteMessage, models: true do
     it 'returns a message regarding notes on an issue' do
       message = described_class.new(@args)
       expect(message.pretext).to eq(
-        "test.user <url|commented on " \
-        "issue #20> in <somewhere.com|project_name>: " \
+        "test.user <http://url.com|commented on " \
+        "issue #20> in <http://somewhere.com|project_name>: " \
         "*issue title*")
       expected_attachments = [
           {
@@ -115,8 +115,8 @@ describe ChatMessage::NoteMessage, models: true do
 
     it 'returns a message regarding notes on a project snippet' do
       message = described_class.new(@args)
-      expect(message.pretext).to eq("test.user <url|commented on " \
-      "snippet #5> in <somewhere.com|project_name>: " \
+      expect(message.pretext).to eq("test.user <http://url.com|commented on " \
+      "snippet #5> in <http://somewhere.com|project_name>: " \
       "*snippet title*")
       expected_attachments = [
           {

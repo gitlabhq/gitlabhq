@@ -66,6 +66,17 @@
           new UsernameValidator();
           new ActiveTabMemoizer();
           break;
+        case 'sessions:create':
+          if (!gon.u2f) break;
+          window.gl.u2fAuthenticate = new gl.U2FAuthenticate(
+            $("#js-authenticate-u2f"),
+            '#js-login-u2f-form',
+            gon.u2f,
+            document.querySelector('#js-login-2fa-device'),
+            document.querySelector('.js-2fa-form'),
+          );
+          window.gl.u2fAuthenticate.start();
+          break;
         case 'projects:boards:show':
         case 'projects:boards:index':
           shortcut_handler = new ShortcutsNavigation();
@@ -75,6 +86,9 @@
           break;
         case 'projects:merge_requests:index':
         case 'projects:issues:index':
+          if (gl.FilteredSearchManager) {
+            new gl.FilteredSearchManager();
+          }
           Issuable.init();
           new gl.IssuableBulkActions({
             prefixId: page === 'projects:merge_requests:index' ? 'merge_request_' : 'issue_',
@@ -141,7 +155,6 @@
           new MergedButtons();
           break;
         case 'projects:merge_requests:commits':
-        case 'projects:merge_requests:builds':
           new MergedButtons();
           break;
         case "projects:merge_requests:diffs":
@@ -161,8 +174,10 @@
           new ZenMode();
           shortcut_handler = new ShortcutsNavigation();
           break;
-        case 'projects:commit:builds':
-          new gl.Pipelines();
+        case 'projects:commit:pipelines':
+          new gl.MiniPipelineGraph({
+            container: '.js-pipeline-table',
+          });
           break;
         case 'projects:commits:show':
         case 'projects:activity':
@@ -201,7 +216,9 @@
           new gl.Members();
           new UsersSelect();
           break;
-        case 'projects:project_members:index':
+        case 'projects:members:show':
+          new gl.MemberExpirationDate('.js-access-expiration-date-groups');
+          new GroupsSelect();
           new gl.MemberExpirationDate();
           new gl.Members();
           new UsersSelect();
@@ -247,10 +264,6 @@
         case 'projects:artifacts:browse':
           new BuildArtifacts();
           break;
-        case 'projects:group_links:index':
-          new gl.MemberExpirationDate();
-          new GroupsSelect();
-          break;
         case 'search:show':
           new Search();
           break;
@@ -267,6 +280,10 @@
           break;
         case 'projects:variables:index':
           new gl.ProjectVariables();
+          break;
+        case 'ci:lints:create':
+        case 'ci:lints:show':
+          new gl.CILintEditor();
           break;
       }
       switch (path.first()) {

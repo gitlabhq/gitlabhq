@@ -19,7 +19,7 @@
       });
       $(document).off('ajax:success', '.notification-form').on('ajax:success', '.notification-form', function(e, data) {
         if (data.saved) {
-          return $(e.currentTarget).closest('.notification-dropdown').replaceWith(data.html);
+          return $(e.currentTarget).closest('.js-notification-dropdown').replaceWith(data.html);
         } else {
           return new Flash('Failed to save new settings', 'alert');
         }

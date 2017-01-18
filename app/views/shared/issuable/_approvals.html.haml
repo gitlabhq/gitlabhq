@@ -42,7 +42,7 @@
           - unsaved_approvers = !issuable.approvers_overwritten?
           - item_classes = unsaved_approvers ? ['unsaved-approvers'] : []
           - issuable.overall_approvers.each do |approver|
-            %li{id: dom_id(approver.user), class: item_classes + ['approver']}
+            %li{ id: dom_id(approver.user), class: item_classes + ['approver'] }
               = link_to approver.user.name, approver.user
               .pull-right
                 - if unsaved_approvers
@@ -54,7 +54,7 @@
                     = icon("sign-out")
                     Remove
           - issuable.overall_approver_groups.each do |approver_group|
-            %li{id: dom_id(approver_group.group), class: item_classes + ['approver-group']}
+            %li{ id: dom_id(approver_group.group), class: item_classes + ['approver-group'] }
               Group:
               = link_to approver_group.group.name, approver_group.group
               .pull-right

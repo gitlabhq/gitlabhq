@@ -17,6 +17,10 @@ module Gitlab
             'icon_status_manual'
           end
 
+          def group
+            'manual'
+          end
+
           def has_action?
             can?(user, :update_build, subject)
           end

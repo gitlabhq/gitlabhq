@@ -218,12 +218,13 @@ class Service < ActiveRecord::Base
       jira
       kubernetes
       mattermost_slash_commands
+      mattermost
       pipelines_email
       pivotaltracker
       pushover
       redmine
-      mattermost_notification
-      slack_notification
+      slack_slash_commands
+      slack
       teamcity
     ]
   end

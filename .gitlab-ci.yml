@@ -16,6 +16,7 @@ variables:
   USE_BUNDLE_INSTALL: "true"
   GIT_DEPTH: "20"
   PHANTOMJS_VERSION: "2.1.1"
+  GET_SOURCES_ATTEMPTS: "3"
 
 before_script:
   - source ./scripts/prepare_build.sh
@@ -234,7 +235,13 @@ spinach 9 10 ruby21: *spinach-knapsack-ruby21
   script:
     - bundle exec $CI_BUILD_NAME
 
-rubocop: *exec
+rubocop: 
+  <<: *ruby-static-analysis
+  <<: *dedicated-runner
+  stage: test
+  script:
+    - bundle exec "rubocop --require rubocop-rspec"
+
 rake haml_lint: *exec
 rake scss_lint: *exec
 rake brakeman: *exec
@@ -406,7 +413,7 @@ notify:slack:
     SETUP_DB: "false"
     USE_BUNDLE_INSTALL: "false"
   script:
-    - ./scripts/notify_slack.sh "#development" "Build on \`$CI_BUILD_REF_NAME\` failed! Commit \`$(git log -1 --oneline)\` See <https://gitlab.com/gitlab-org/$(basename "$PWD")/commit/"$CI_BUILD_REF"/builds>"
+    - ./scripts/notify_slack.sh "#development" "Build on \`$CI_BUILD_REF_NAME\` failed! Commit \`$(git log -1 --oneline)\` See <https://gitlab.com/gitlab-org/$(basename "$PWD")/commit/"$CI_BUILD_REF"/pipelines>"
   when: on_failure
   only:
     - master@gitlab-org/gitlab-ce

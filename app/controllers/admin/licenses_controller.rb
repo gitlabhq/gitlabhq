@@ -17,11 +17,11 @@ class Admin::LicensesController < Admin::ApplicationController
   end
 
   def create
-    unless params[:license]
-      flash.now[:alert] = "No license was selected."
+    unless params[:license][:data].present? || params[:license][:data_file].present?
+      flash[:alert] = 'Please enter or upload a license.'
 
       @license = License.new
-      render :new
+      redirect_to new_admin_license_path
       return
     end
 

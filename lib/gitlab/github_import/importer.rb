@@ -3,7 +3,7 @@ module Gitlab
     class Importer
       include Gitlab::ShellAdapter
 
-      attr_reader :client, :errors, :project, :repo, :repo_url
+      attr_reader :errors, :project, :repo, :repo_url
 
       def initialize(project)
         @project  = project
@@ -11,12 +11,27 @@ module Gitlab
         @repo_url = project.import_url
         @errors   = []
         @labels   = {}
+      end
 
-        if credentials
-          @client = Client.new(credentials[:user])
-        else
-          raise Projects::ImportService::Error, "Unable to find project import data credentials for project ID: #{@project.id}"
+      def client
+        return @client if defined?(@client)
+        unless credentials
+          raise Projects::ImportService::Error,
+                "Unable to find project import data credentials for project ID: #{@project.id}"
         end
+
+        opts = {}
+        # Gitea plan to be GitHub compliant
+        if project.gitea_import?
+          uri = URI.parse(project.import_url)
+          host = "#{uri.scheme}://#{uri.host}:#{uri.port}#{uri.path}".sub(%r{/?[\w-]+/[\w-]+\.git\z}, '')
+          opts = {
+            host: host,
+            api_version: 'v1'
+          }
+        end
+
+        @client = Client.new(credentials[:user], opts)
       end
 
       def execute
@@ -35,7 +50,13 @@ module Gitlab
         import_comments(:issues)
         import_comments(:pull_requests)
         import_wiki
-        import_releases
+
+        # Gitea doesn't have a Release API yet
+        # See https://github.com/go-gitea/gitea/issues/330
+        unless project.gitea_import?
+          import_releases
+        end
+
         handle_errors
 
         true
@@ -44,7 +65,9 @@ module Gitlab
       private
 
       def credentials
-        @credentials ||= project.import_data.credentials if project.import_data
+        return @credentials if defined?(@credentials)
+
+        @credentials = project.import_data ? project.import_data.credentials : nil
       end
 
       def handle_errors
@@ -60,9 +83,10 @@ module Gitlab
         fetch_resources(:labels, repo, per_page: 100) do |labels|
           labels.each do |raw|
             begin
-              LabelFormatter.new(project, raw).create!
+              gh_label = LabelFormatter.new(project, raw)
+              gh_label.create!
             rescue => e
-              errors << { type: :label, url: Gitlab::UrlSanitizer.sanitize(raw.url), errors: e.message }
+              errors << { type: :label, url: Gitlab::UrlSanitizer.sanitize(gh_label.url), errors: e.message }
             end
           end
         end
@@ -74,9 +98,10 @@ module Gitlab
         fetch_resources(:milestones, repo, state: :all, per_page: 100) do |milestones|
           milestones.each do |raw|
             begin
-              MilestoneFormatter.new(project, raw).create!
+              gh_milestone = MilestoneFormatter.new(project, raw)
+              gh_milestone.create!
             rescue => e
-              errors << { type: :milestone, url: Gitlab::UrlSanitizer.sanitize(raw.url), errors: e.message }
+              errors << { type: :milestone, url: Gitlab::UrlSanitizer.sanitize(gh_milestone.url), errors: e.message }
             end
           end
         end
@@ -97,7 +122,7 @@ module Gitlab
 
               apply_labels(issuable, raw)
             rescue => e
-              errors << { type: :issue, url: Gitlab::UrlSanitizer.sanitize(raw.url), errors: e.message }
+              errors << { type: :issue, url: Gitlab::UrlSanitizer.sanitize(gh_issue.url), errors: e.message }
             end
           end
         end
@@ -106,18 +131,23 @@ module Gitlab
       def import_pull_requests
         fetch_resources(:pull_requests, repo, state: :all, sort: :created, direction: :asc, per_page: 100) do |pull_requests|
           pull_requests.each do |raw|
-            pull_request = PullRequestFormatter.new(project, raw)
-            next unless pull_request.valid?
+            gh_pull_request = PullRequestFormatter.new(project, raw)
+            next unless gh_pull_request.valid?
 
             begin
-              restore_source_branch(pull_request) unless pull_request.source_branch_exists?
-              restore_target_branch(pull_request) unless pull_request.target_branch_exists?
+              restore_source_branch(gh_pull_request) unless gh_pull_request.source_branch_exists?
+              restore_target_branch(gh_pull_request) unless gh_pull_request.target_branch_exists?
 
-              pull_request.create!
+              merge_request = gh_pull_request.create!
+
+              # Gitea doesn't return PR in the Issue API endpoint, so labels must be assigned at this stage
+              if project.gitea_import?
+                apply_labels(merge_request, raw)
+              end
             rescue => e
-              errors << { type: :pull_request, url: Gitlab::UrlSanitizer.sanitize(pull_request.url), errors: e.message }
+              errors << { type: :pull_request, url: Gitlab::UrlSanitizer.sanitize(gh_pull_request.url), errors: e.message }
             ensure
-              clean_up_restored_branches(pull_request)
+              clean_up_restored_branches(gh_pull_request)
             end
           end
         end
@@ -233,7 +263,7 @@ module Gitlab
               gh_release = ReleaseFormatter.new(project, raw)
               gh_release.create! if gh_release.valid?
             rescue => e
-              errors << { type: :release, url: Gitlab::UrlSanitizer.sanitize(raw.url), errors: e.message }
+              errors << { type: :release, url: Gitlab::UrlSanitizer.sanitize(gh_release.url), errors: e.message }
             end
           end
         end

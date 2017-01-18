@@ -6,7 +6,7 @@
   describe('Autosize behavior', function() {
     var load;
     beforeEach(function() {
-      return fixture.set('<textarea class="js-autosize" style="resize: vertical"></textarea>');
+      return setFixtures('<textarea class="js-autosize" style="resize: vertical"></textarea>');
     });
     it('does not overwrite the resize property', function() {
       load();

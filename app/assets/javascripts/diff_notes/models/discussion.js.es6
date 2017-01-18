@@ -92,3 +92,5 @@ class DiscussionModel {
     return false;
   }
 }
+
+window.DiscussionModel = DiscussionModel;

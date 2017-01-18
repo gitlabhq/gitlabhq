@@ -11,7 +11,8 @@ describe Gitlab::BitbucketImport::ProjectCreator, lib: true do
            owner: "asd",
            full_name: 'Vim repo',
            visibility_level: Gitlab::VisibilityLevel::PRIVATE,
-           clone_url: 'ssh://git@bitbucket.org/asd/vim.git')
+           clone_url: 'ssh://git@bitbucket.org/asd/vim.git',
+           has_wiki?: false)
   end
 
   let(:namespace){ create(:group, owner: user) }

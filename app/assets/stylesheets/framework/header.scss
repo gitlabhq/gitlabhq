@@ -45,7 +45,7 @@ header {
       padding: 0;
 
       .nav > li > a {
-        color: $gl-gray-light;
+        color: $gl-text-color-secondary;
         font-size: 18px;
         padding: 0;
         margin: ($header-height - 28) / 2 0;
@@ -57,13 +57,21 @@ header {
 
         &.header-user-dropdown-toggle {
           margin-left: 14px;
+
+          &:hover,
+          &:focus,
+          &:active {
+            .header-user-avatar {
+              border-color: rgba($avatar-border, .2);
+            }
+          }
         }
 
         &:hover,
         &:focus,
         &:active {
           background-color: $gray-light;
-          color: darken($gl-gray-light, 30%);
+          color: darken($gl-text-color-secondary, 30%);
 
           .todos-pending-count {
             background: darken($todo-alert-blue, 10%);
@@ -88,7 +96,7 @@ header {
         }
 
         &.active {
-          color: $gl-gray-light;
+          color: $gl-text-color-secondary;
         }
       }
     }
@@ -104,6 +112,7 @@ header {
 
       &:hover {
         background-color: $white-normal;
+        color: $gl-header-nav-hover-color;
       }
     }
   }
@@ -180,6 +189,7 @@ header {
 
         &:hover {
           text-decoration: underline;
+          color: $gl-header-nav-hover-color;
         }
       }
 
@@ -198,7 +208,7 @@ header {
         cursor: pointer;
 
         &:hover {
-          color: darken($color: $gl-text-color, $amount: 30%);
+          color: $gl-header-nav-hover-color;
         }
       }
 
@@ -271,4 +281,5 @@ header {
   float: left;
   margin-right: 5px;
   border-radius: 50%;
+  border: 1px solid $avatar-border;
 }

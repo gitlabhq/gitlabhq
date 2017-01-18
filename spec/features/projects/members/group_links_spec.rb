@@ -12,7 +12,7 @@ feature 'Projects > Members > Anonymous user sees members', feature: true, js: t
     @group_link = create(:project_group_link, project: project, group: group)
 
     login_as(user)
-    visit namespace_project_project_members_path(project.namespace, project)
+    visit namespace_project_settings_members_path(project.namespace, project)
   end
 
   it 'updates group access level' do
@@ -24,7 +24,7 @@ feature 'Projects > Members > Anonymous user sees members', feature: true, js: t
 
     wait_for_ajax
 
-    visit namespace_project_project_members_path(project.namespace, project)
+    visit namespace_project_settings_members_path(project.namespace, project)
 
     expect(first('.group_member')).to have_content('Guest')
   end

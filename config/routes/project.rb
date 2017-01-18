@@ -32,10 +32,7 @@ constraints(ProjectUrlConstrainer.new) do
       resources :commit, only: [:show], constraints: { id: /\h{7,40}/ } do
         member do
           get :branches
-          get :builds
           get :pipelines
-          post :cancel_builds
-          post :retry_builds
           post :revert
           post :cherry_pick
           get :diff_for_path
@@ -44,7 +41,7 @@ constraints(ProjectUrlConstrainer.new) do
 
       ## EE-specific
       resource :pages, only: [:show, :destroy] do
-        resources :domains, only: [:show, :new, :create, :destroy], controller: 'pages_domains'
+        resources :domains, only: [:show, :new, :create, :destroy], controller: 'pages_domains', constraints: { id: /[^\/]+/ }
       end
       ## EE-specific
 
@@ -82,6 +79,8 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
+      resource :mattermost, only: [:new, :create]
+
       resources :deploy_keys, constraints: { id: /\d+/ }, only: [:index, :new, :create] do
         member do
           put :enable
@@ -98,7 +97,6 @@ constraints(ProjectUrlConstrainer.new) do
           get :diffs
           get :conflicts
           get :conflict_for_path
-          get :builds
           get :pipelines
           get :merge_check
           post :merge
@@ -179,6 +177,7 @@ constraints(ProjectUrlConstrainer.new) do
         end
 
         member do
+          get :stage
           post :cancel
           post :retry
           get :builds
@@ -188,6 +187,8 @@ constraints(ProjectUrlConstrainer.new) do
       resources :environments, except: [:destroy] do
         member do
           post :stop
+          get :terminal
+          get '/terminal.ws/authorize', to: 'environments#terminal_websocket_authorize', constraints: { format: nil }
         end
       end
 
@@ -354,6 +355,10 @@ constraints(ProjectUrlConstrainer.new) do
       ## EE-specific
       resources :audit_events, only: [:index]
       ## EE-specific
+
+      namespace :settings do
+        resource :members, only: [:show]
+      end
 
       # Since both wiki and repository routing contains wildcard characters
       # its preferable to keep it below all other project routes

@@ -69,7 +69,8 @@ to add details to the issue.
 - ~UX needs help from a UX designer
 - ~Frontend needs help from a Front-end engineer. Please follow the
   ["Implement design & UI elements" guidelines].
-- ~up-for-grabs is an issue suitable for first-time contributors, of reasonable difficulty and size. Not exclusive with other labels.
+- ~"Accepting Merge Requests" is a low priority, well-defined issue that we
+  encourage people to contribute to. Not exclusive with other labels.
 - ~"feature proposal" is a proposal for a new feature for GitLab. People are encouraged to vote
 in support or comment for further detail. Do not use `feature request`.
 - ~bug is an issue reporting undesirable or incorrect behavior.

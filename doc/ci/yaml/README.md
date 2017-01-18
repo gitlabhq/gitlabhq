@@ -1034,6 +1034,31 @@ variables:
   GIT_STRATEGY: none
 ```
 
+## Build stages attempts
+
+> Introduced in GitLab, it requires GitLab Runner v1.9+.
+
+You can set the number for attempts the running build will try to execute each
+of the following stages:
+
+| Variable                | Description |
+|-------------------------|-------------|
+| **GET_SOURCES_ATTEMPTS** | Number of attempts to fetch sources running a build |
+| **ARTIFACT_DOWNLOAD_ATTEMPTS** | Number of attempts to download artifacts running a build |
+| **RESTORE_CACHE_ATTEMPTS** | Number of attempts to restore the cache running a build |
+
+The default is one single attempt.
+
+Example:
+
+```
+variables:
+  GET_SOURCES_ATTEMPTS: "3"
+```
+
+You can set them in the global [`variables`](#variables) section or the [`variables`](#job-variables)
+section for individual jobs.
+
 ## Shallow cloning
 
 > Introduced in GitLab 8.9 as an experimental feature. May change in future

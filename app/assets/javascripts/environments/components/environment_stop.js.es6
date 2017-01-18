@@ -5,7 +5,7 @@
   window.gl = window.gl || {};
   window.gl.environmentsList = window.gl.environmentsList || {};
 
-  window.gl.environmentsList.StopComponent = Vue.component('stop-component', {
+  gl.environmentsList.StopComponent = Vue.component('stop-component', {
     props: {
       stopUrl: {
         type: String,

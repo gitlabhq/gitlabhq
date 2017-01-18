@@ -24,6 +24,9 @@ module API
         when 'key_create', 'key_destroy'
           required_attributes! %w(key id)
           ::Geo::ScheduleKeyChangeService.new(params).execute
+        when 'repository_update'
+          required_attributes! %w(event_name project_id remote_url)
+          ::Geo::ScheduleRepoFetchService.new(params).execute
         when 'push'
           required_attributes! %w(event_name project_id project)
           ::Geo::ScheduleRepoUpdateService.new(params).execute

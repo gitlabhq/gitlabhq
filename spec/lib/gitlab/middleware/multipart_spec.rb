@@ -12,7 +12,7 @@ describe Gitlab::Middleware::Multipart do
 
       expect(app).to receive(:call) do |env|
         file = Rack::Request.new(env).params['file']
-        expect(file).to be_a(File)
+        expect(file).to be_a(::UploadedFile)
         expect(file.path).to eq(tempfile.path)
       end
 
@@ -39,7 +39,7 @@ describe Gitlab::Middleware::Multipart do
 
       expect(app).to receive(:call) do |env|
         file = Rack::Request.new(env).params['user']['avatar']
-        expect(file).to be_a(File)
+        expect(file).to be_a(::UploadedFile)
         expect(file.path).to eq(tempfile.path)
       end
 
@@ -54,7 +54,7 @@ describe Gitlab::Middleware::Multipart do
 
       expect(app).to receive(:call) do |env|
         file = Rack::Request.new(env).params['project']['milestone']['themesong']
-        expect(file).to be_a(File)
+        expect(file).to be_a(::UploadedFile)
         expect(file.path).to eq(tempfile.path)
       end
 

@@ -107,4 +107,17 @@ feature 'Group', feature: true do
       expect(page).to have_css('.group-home-desc a[rel]')
     end
   end
+
+  describe 'group page with nested groups', js: true do
+    let!(:group) { create(:group) }
+    let!(:nested_group) { create(:group, parent: group) }
+    let!(:path)  { group_path(group) }
+
+    it 'has nested groups tab with nested groups inside' do
+      visit path
+      click_link 'Subgroups'
+
+      expect(page).to have_content(nested_group.full_name)
+    end
+  end
 end

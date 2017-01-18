@@ -9,8 +9,8 @@
         - offset = defined?(first_line_number) ? first_line_number : 1
         - i = index + offset
         -# We're not using `link_to` because it is too slow once we get to thousands of lines.
-        %a.diff-line-num{href: "#{link}#L#{i}", id: "L#{i}", 'data-line-number' => i}
+        %a.diff-line-num{ href: "#{link}#L#{i}", id: "L#{i}", 'data-line-number' => i }
           = link_icon
           = i
-  .blob-content{data: {blob_id: blob.id}}
+  .blob-content{ data: { blob_id: blob.id } }
     = highlight(blob.path, blob.data, repository: repository, plain: blob.no_highlighting?)

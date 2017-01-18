@@ -47,6 +47,8 @@ class Issue < ActiveRecord::Base
 
   scope :created_after, -> (datetime) { where("created_at >= ?", datetime) }
 
+  scope :include_associations, -> { includes(:assignee, :labels, project: :namespace) }
+
   attr_spammable :title, spam_title: true
   attr_spammable :description, spam_description: true
 
@@ -105,10 +107,10 @@ class Issue < ActiveRecord::Base
     end
   end
 
-  def to_reference(from_project = nil)
+  def to_reference(from_project = nil, full: false)
     reference = "#{self.class.reference_prefix}#{iid}"
 
-    "#{project.to_reference(from_project)}#{reference}"
+    "#{project.to_reference(from_project, full: full)}#{reference}"
   end
 
   def referenced_merge_requests(current_user = nil)
@@ -159,7 +161,7 @@ class Issue < ActiveRecord::Base
   end
 
   def self.weight_filter_options
-    weight_options + [WEIGHT_ALL, WEIGHT_ANY]
+    WEIGHT_RANGE.to_a
   end
 
   def self.weight_options

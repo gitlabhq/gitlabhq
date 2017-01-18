@@ -129,4 +129,27 @@ describe Gitlab::LDAP::Config, lib: true do
       expect(config.has_auth?).to be_falsey
     end
   end
+
+  describe '#attributes' do
+    it 'uses default attributes when no custom attributes are configured' do
+      expect(config.attributes).to eq(config.default_attributes)
+    end
+
+    it 'merges the configuration attributes with default attributes' do
+      stub_ldap_config(
+        options: {
+          'attributes' => {
+            'username' => %w(sAMAccountName),
+            'email'    => %w(userPrincipalName)
+          }
+        }
+      )
+
+      expect(config.attributes).to include({
+        'username' => %w(sAMAccountName),
+        'email'    => %w(userPrincipalName),
+        'name'     => 'cn'
+      })
+    end
+  end
 end

@@ -105,8 +105,8 @@ module IssuablesHelper
 
     if issuable.tasks?
       output << "&ensp;".html_safe
-      output << content_tag(:span, issuable.task_status, id: "task_status", class: "hidden-xs")
-      output << content_tag(:span, issuable.task_status_short, id: "task_status_short", class: "hidden-sm hidden-md hidden-lg")
+      output << content_tag(:span, issuable.task_status, id: "task_status", class: "hidden-xs hidden-sm")
+      output << content_tag(:span, issuable.task_status_short, id: "task_status_short", class: "hidden-md hidden-lg")
     end
 
     output

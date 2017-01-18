@@ -16,4 +16,8 @@ describe Gitlab::Ci::Status::Success do
   describe '#icon' do
     it { expect(subject.icon).to eq 'icon_status_success' }
   end
+
+  describe '#group' do
+    it { expect(subject.group).to eq 'success' }
+  end
 end

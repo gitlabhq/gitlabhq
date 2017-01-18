@@ -195,14 +195,6 @@ module SharedPaths
     visit admin_background_jobs_path
   end
 
-  step 'I visit admin groups page' do
-    visit admin_groups_path
-  end
-
-  step 'I visit admin appearance page' do
-    visit admin_appearances_path
-  end
-
   step 'I visit admin teams page' do
     visit admin_teams_path
   end
@@ -217,10 +209,6 @@ module SharedPaths
 
   step 'I visit spam logs page' do
     visit admin_spam_logs_path
-  end
-
-  step 'I visit applications page' do
-    visit admin_applications_path
   end
 
   step 'I visit push rules page' do

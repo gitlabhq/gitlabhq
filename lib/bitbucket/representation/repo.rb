@@ -51,6 +51,10 @@ module Bitbucket
         raw['scm'] == 'git'
       end
 
+      def has_wiki?
+        raw['has_wiki']
+      end
+
       def visibility_level
         if raw['is_private']
           Gitlab::VisibilityLevel::PRIVATE

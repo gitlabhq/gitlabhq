@@ -72,25 +72,25 @@
 
   .external-url,
   .dropdown-new {
-    color: $gl-gray-light;
+    color: $gl-text-color-secondary;
   }
 
   .dropdown-menu {
 
     .fa {
       margin-right: 6px;
-      color: $gl-gray-light;
+      color: $gl-text-color-secondary;
     }
   }
 
   .build-link,
   .branch-name {
-    color: $gl-dark-link-color;
+    color: $gl-text-color;
   }
 
   .stop-env-link,
   .external-url {
-    color: $gl-gray-light;
+    color: $gl-text-color-secondary;
 
     .stop-env-icon {
       font-size: 14px;
@@ -101,7 +101,7 @@
     .build-column {
 
       .build-link {
-        color: $gl-dark-link-color;
+        color: $gl-text-color;
       }
 
       .avatar {
@@ -121,13 +121,6 @@
 
   .folder-name {
     cursor: pointer;
-
-    .badge {
-      font-weight: normal;
-      background-color: $gray-darker;
-      color: $gl-gray-light;
-      vertical-align: baseline;
-    }
   }
 }
 

@@ -2,18 +2,19 @@
 
 - subject = local_assigns.fetch(:subject)
 - status = subject.detailed_status(current_user)
-- klass = "ci-status-icon ci-status-icon-#{status}"
+- klass = "ci-status-icon ci-status-icon-#{status.group}"
+- tooltip = "#{subject.name} - #{status.label}"
 
 - if status.has_details?
-  = link_to status.details_path, data: { toggle: 'tooltip', title: "#{subject.name} - #{status.label}" } do
+  = link_to status.details_path, class: 'build-content has-tooltip', data: { toggle: 'tooltip', title: tooltip }  do
     %span{ class: klass }= custom_icon(status.icon)
     .ci-status-text= subject.name
 - else
-  %span{ class: klass }= custom_icon(status.icon)
-  .ci-status-text= subject.name
+  .build-content.has-tooltip{ data: { toggle: 'tooltip', title: tooltip } }
+    %span{ class: klass }= custom_icon(status.icon)
+    .ci-status-text= subject.name
 
 - if status.has_action?
-  = link_to status.action_path, method: status.action_method,
-    title: status.action_title, class: 'ci-action-icon-container' do
+  = link_to status.action_path, class: 'ci-action-icon-container has-tooltip', method: status.action_method, data: { toggle: 'tooltip', title: status.action_title }  do
     %i.ci-action-icon-wrapper
       = icon(status.action_icon, class: status.action_class)

@@ -10,14 +10,14 @@ describe ChatMessage::IssueMessage, models: true do
         username: 'test.user'
       },
       project_name: 'project_name',
-      project_url: 'somewhere.com',
+      project_url: 'http://somewhere.com',
 
       object_attributes: {
         title: 'Issue title',
         id: 10,
         iid: 100,
         assignee_id: 1,
-        url: 'url',
+        url: 'http://url.com',
         action: 'open',
         state: 'opened',
         description: 'issue description'
@@ -40,11 +40,11 @@ describe ChatMessage::IssueMessage, models: true do
   context 'open' do
     it 'returns a message regarding opening of issues' do
       expect(subject.pretext).to eq(
-        '<somewhere.com|[project_name>] Issue opened by test.user')
+        '[<http://somewhere.com|project_name>] Issue opened by test.user')
       expect(subject.attachments).to eq([
         {
           title: "#100 Issue title",
-          title_link: "url",
+          title_link: "http://url.com",
           text: "issue description",
           color: color,
         }
@@ -60,7 +60,7 @@ describe ChatMessage::IssueMessage, models: true do
 
     it 'returns a message regarding closing of issues' do
       expect(subject.pretext). to eq(
-        '<somewhere.com|[project_name>] Issue <url|#100 Issue title> closed by test.user')
+        '[<http://somewhere.com|project_name>] Issue <http://url.com|#100 Issue title> closed by test.user')
       expect(subject.attachments).to be_empty
     end
   end

@@ -14,11 +14,17 @@ If you have the Omnibus GitLab package installed, Mattermost is already bundled
 in it. All you have to do is configure it. Read more in the
 [Omnibus GitLab Mattermost documentation][omnimmdocs].
 
-## Configuration
+## Automated Configuration
+
+If Mattermost is installed on the same server as GitLab, the configuration process can be
+done for you by GitLab. 
+
+Go to the Mattermost Slash Command service on your project and click the 'Add to Mattermost' button.
+
+## Manual Configuration
 
 The configuration consists of two parts. First you need to enable the slash
 commands in Mattermost and then enable the service in GitLab.
-
 
 ### Step 1. Enable custom slash commands in Mattermost
 

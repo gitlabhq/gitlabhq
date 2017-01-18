@@ -2,10 +2,10 @@
 
 (() => {
   describe('Linked Tabs', () => {
-    fixture.preload('linked_tabs');
+    preloadFixtures('static/linked_tabs.html.raw');
 
     beforeEach(() => {
-      fixture.load('linked_tabs');
+      loadFixtures('static/linked_tabs.html.raw');
     });
 
     describe('when is initialized', () => {

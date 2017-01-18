@@ -35,7 +35,7 @@ module TodosHelper
     else
       path = [todo.project.namespace.becomes(Namespace), todo.project, todo.target]
 
-      path.unshift(:builds) if todo.build_failed?
+      path.unshift(:pipelines) if todo.build_failed?
 
       polymorphic_path(path, anchor: anchor)
     end

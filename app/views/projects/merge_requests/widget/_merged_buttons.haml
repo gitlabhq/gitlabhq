@@ -5,10 +5,10 @@
 - if can_remove_source_branch || mr_can_be_reverted || mr_can_be_cherry_picked
   .clearfix.merged-buttons
     - if can_remove_source_branch
-      = link_to namespace_project_branch_path(@merge_request.source_project.namespace, @merge_request.source_project, @merge_request.source_branch), remote: true, method: :delete, class: "btn btn-default btn-sm remove_source_branch" do
+      = link_to namespace_project_branch_path(@merge_request.source_project.namespace, @merge_request.source_project, @merge_request.source_branch), remote: true, method: :delete, class: "btn btn-default remove_source_branch" do
         = icon('trash-o')
         Remove Source Branch
     - if mr_can_be_reverted
-      = revert_commit_link(@merge_request.merge_commit, namespace_project_merge_request_path(@project.namespace, @project, @merge_request), btn_class: 'sm')
+      = revert_commit_link(@merge_request.merge_commit, namespace_project_merge_request_path(@project.namespace, @project, @merge_request), btn_class: "warning")
     - if mr_can_be_cherry_picked
-      = cherry_pick_commit_link(@merge_request.merge_commit, namespace_project_merge_request_path(@project.namespace, @project, @merge_request), btn_class: 'sm')
+      = cherry_pick_commit_link(@merge_request.merge_commit, namespace_project_merge_request_path(@project.namespace, @project, @merge_request), btn_class: "default")

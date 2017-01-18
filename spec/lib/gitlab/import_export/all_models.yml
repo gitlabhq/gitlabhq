@@ -138,6 +138,7 @@ project:
 - builds_email_service
 - pipelines_email_service
 - mattermost_slash_commands_service
+- slack_slash_commands_service
 - irker_service
 - pivotaltracker_service
 - hipchat_service
@@ -145,8 +146,8 @@ project:
 - assembla_service
 - asana_service
 - gemnasium_service
-- slack_notification_service
-- mattermost_notification_service
+- slack_service
+- mattermost_service
 - buildkite_service
 - bamboo_service
 - teamcity_service
@@ -212,6 +213,7 @@ project:
 - approver_groups
 - route
 - project_metrics
+- statistics
 award_emoji:
 - awardable
 - user

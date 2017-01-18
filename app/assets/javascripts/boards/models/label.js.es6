@@ -10,3 +10,5 @@ class ListLabel {
     this.priority = (obj.priority !== null) ? obj.priority : Infinity;
   }
 }
+
+window.ListLabel = ListLabel;

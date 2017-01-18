@@ -1,0 +1,4 @@
+---
+title: Properly handle failed reCAPTCHA on user registration
+merge_request: 8403
+author:

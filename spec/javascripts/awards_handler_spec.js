@@ -34,9 +34,9 @@
   };
 
   describe('AwardsHandler', function() {
-    fixture.preload('issues/open-issue.html.raw');
+    preloadFixtures('issues/open-issue.html.raw');
     beforeEach(function() {
-      fixture.load('issues/open-issue.html.raw');
+      loadFixtures('issues/open-issue.html.raw');
       awardsHandler = new AwardsHandler;
       spyOn(awardsHandler, 'postEmoji').and.callFake((function(_this) {
         return function(url, emoji, cb) {

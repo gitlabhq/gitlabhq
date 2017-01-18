@@ -187,9 +187,7 @@ class ProjectPolicy < BasePolicy
   def disabled_features!
     repository_enabled = project.feature_available?(:repository, user)
 
-    unless project.feature_available?(:issues, user)
-      cannot!(*named_abilities(:issue))
-    end
+    block_issues_abilities
 
     unless project.feature_available?(:merge_requests, user) && repository_enabled
       cannot!(*named_abilities(:merge_request))
@@ -261,9 +259,18 @@ class ProjectPolicy < BasePolicy
   def project_group_member?(user)
     project.group &&
       (
-        project.group.members.exists?(user_id: user.id) ||
+        project.group.members_with_parents.exists?(user_id: user.id) ||
         project.group.requesters.exists?(user_id: user.id)
       )
+  end
+
+  def block_issues_abilities
+    unless project.feature_available?(:issues, user)
+      cannot! :read_issue if project.default_issues_tracker?
+      cannot! :create_issue
+      cannot! :update_issue
+      cannot! :admin_issue
+    end
   end
 
   def named_abilities(name)

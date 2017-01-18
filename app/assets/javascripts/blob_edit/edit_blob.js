@@ -36,6 +36,9 @@
       new gl.BlobCiYamlSelectors({
         editor: this.editor
       });
+      new gl.BlobDockerfileSelectors({
+        editor: this.editor
+      });
     }
 
     EditBlob.prototype.initModePanesAndLinks = function() {

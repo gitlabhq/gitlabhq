@@ -7,10 +7,10 @@ exclude:
 
 linters:
   AltText:
-    enabled: false
+    enabled: true
 
   ClassAttributeWithStaticValue:
-    enabled: false
+    enabled: true
 
   ClassesBeforeIds:
     enabled: false
@@ -29,14 +29,14 @@ linters:
     enabled: true
 
   FinalNewline:
-    enabled: false
+    enabled: true
     present: true
 
   HtmlAttributes:
-    enabled: false
+    enabled: true
 
   ImplicitDiv:
-    enabled: false
+    enabled: true
 
   LeadingCommentSpace:
     enabled: false
@@ -80,10 +80,10 @@ linters:
     enabled: false
 
   SpaceBeforeScript:
-    enabled: false
+    enabled: true
 
   SpaceInsideHashAttributes:
-    enabled: false
+    enabled: true
     style: space
 
   Indentation:
@@ -94,7 +94,7 @@ linters:
     enabled: true
 
   TrailingWhitespace:
-    enabled: false
+    enabled: true
 
   UnnecessaryInterpolation:
     enabled: false

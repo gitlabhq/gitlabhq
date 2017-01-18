@@ -1,0 +1,4 @@
+---
+title: Allow API query to find projects with dots in their name
+merge_request:
+author: Bruno Melli

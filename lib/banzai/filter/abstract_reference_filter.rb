@@ -254,15 +254,26 @@ module Banzai
       # Returns projects for the given paths.
       def find_projects_for_paths(paths)
         if RequestStore.active?
-          to_query = paths - project_refs_cache.keys
+          cache = project_refs_cache
+          to_query = paths - cache.keys
 
           unless to_query.empty?
-            projects_relation_for_paths(to_query).each do |project|
-              get_or_set_cache(project_refs_cache, project.path_with_namespace) { project }
+            projects = projects_relation_for_paths(to_query)
+
+            found = []
+            projects.each do |project|
+              ref = project.path_with_namespace
+              get_or_set_cache(cache, ref) { project }
+              found << ref
+            end
+
+            not_found = to_query - found
+            not_found.each do |ref|
+              get_or_set_cache(cache, ref) { nil }
             end
           end
 
-          project_refs_cache.slice(*paths).values
+          cache.slice(*paths).values.compact
         else
           projects_relation_for_paths(paths)
         end

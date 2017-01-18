@@ -74,7 +74,7 @@ class User < ActiveRecord::Base
   has_many :created_projects,         foreign_key: :creator_id, class_name: 'Project'
   has_many :users_star_projects, dependent: :destroy
   has_many :starred_projects, through: :users_star_projects, source: :project
-  has_many :project_authorizations, dependent: :destroy
+  has_many :project_authorizations
   has_many :authorized_projects, through: :project_authorizations, source: :project
 
   has_many :snippets,                 dependent: :destroy, foreign_key: :author_id
@@ -107,6 +107,7 @@ class User < ActiveRecord::Base
   #
   # Note: devise :validatable above adds validations for :email and :password
   validates :name, presence: true
+  validates_confirmation_of :email
   validates :notification_email, presence: true
   validates :notification_email, email: true, if: ->(user) { user.notification_email != user.email }
   validates :public_email, presence: true, uniqueness: true, email: true, allow_blank: true
@@ -328,29 +329,9 @@ class User < ActiveRecord::Base
       find_by(id: Key.unscoped.select(:user_id).where(id: key_id))
     end
 
-    def build_user(attrs = {})
-      User.new(attrs)
-    end
-
     def non_ldap
       joins('LEFT JOIN identities ON identities.user_id = users.id').
         where('identities.provider IS NULL OR identities.provider NOT LIKE ?', 'ldap%')
-    end
-
-    def clean_username(username)
-      username.gsub!(/@.*\z/,             "")
-      username.gsub!(/\.git\z/,           "")
-      username.gsub!(/\A-/,               "")
-      username.gsub!(/[^a-zA-Z0-9_\-\.]/, "")
-
-      counter = 0
-      base = username
-      while User.by_login(username).present? || Namespace.by_path(username).present?
-        counter += 1
-        username = "#{base}#{counter}"
-      end
-
-      username
     end
 
     def reference_prefix
@@ -374,7 +355,7 @@ class User < ActiveRecord::Base
     username
   end
 
-  def to_reference(_from_project = nil, _target_project = nil)
+  def to_reference(_from_project = nil, target_project: nil, full: nil)
     "#{self.class.reference_prefix}#{username}"
   end
 
@@ -481,22 +462,16 @@ class User < ActiveRecord::Base
   end
 
   def refresh_authorized_projects
-    transaction do
-      project_authorizations.delete_all
+    Users::RefreshAuthorizedProjectsService.new(self).execute
+  end
 
-      # project_authorizations_union can return multiple records for the same
-      # project/user with different access_level so we take row with the maximum
-      # access_level
-      project_authorizations.connection.execute <<-SQL
-      INSERT INTO project_authorizations (user_id, project_id, access_level)
-      SELECT user_id, project_id, MAX(access_level) AS access_level
-      FROM (#{project_authorizations_union.to_sql}) sub
-      GROUP BY user_id, project_id
-      SQL
+  def remove_project_authorizations(project_ids)
+    project_authorizations.where(project_id: project_ids).delete_all
+  end
 
-      unless authorized_projects_populated
-        update_column(:authorized_projects_populated, true)
-      end
+  def set_authorized_projects_column
+    unless authorized_projects_populated
+      update_column(:authorized_projects_populated, true)
     end
   end
 
@@ -950,18 +925,6 @@ class User < ActiveRecord::Base
   end
 
   private
-
-  # Returns a union query of projects that the user is authorized to access
-  def project_authorizations_union
-    relations = [
-      personal_projects.select("#{id} AS user_id, projects.id AS project_id, #{Gitlab::Access::MASTER} AS access_level"),
-      groups_projects.select_for_project_authorization,
-      projects.select_for_project_authorization,
-      groups.joins(:shared_projects).select_for_project_authorization
-    ]
-
-    Gitlab::SQL::Union.new(relations)
-  end
 
   def ci_projects_union
     scope  = { access_level: [Gitlab::Access::MASTER, Gitlab::Access::OWNER] }

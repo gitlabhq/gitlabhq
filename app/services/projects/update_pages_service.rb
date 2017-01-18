@@ -130,7 +130,7 @@ module Projects
     end
 
     def tmp_path
-      @tmp_path ||= File.join(Settings.pages.path, 'tmp')
+      @tmp_path ||= File.join(::Settings.pages.path, 'tmp')
     end
 
     def pages_path

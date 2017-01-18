@@ -7,7 +7,7 @@
 
 (() => {
   window.gon || (window.gon = {});
-  const fixtureTemplate = 'event_filter.html';
+  const fixtureTemplate = 'static/event_filter.html.raw';
   const filters = [
     {
       id: 'all',
@@ -35,7 +35,7 @@
 
   describe('Activities', () => {
     beforeEach(() => {
-      fixture.load(fixtureTemplate);
+      loadFixtures(fixtureTemplate);
       new gl.Activities();
     });
 

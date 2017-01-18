@@ -1,5 +1,38 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 8.15.4 (2017-01-09)
+
+- No changes.
+
+## 8.15.3 (2017-01-06)
+
+- Disable LDAP permission override in project members edit list.
+- Perform only one fetch per push on Geo secondary nodes.
+
+## 8.15.2 (2016-12-27)
+
+- No changes.
+- Fix ES search for non-default branches.
+
+## 8.15.1 (2016-12-23)
+
+- Fix 404/500 error while navigating to the 'show/destroy' pages. !993
+
+## 8.15.0 (2016-12-22)
+
+- Adds a check ensure only active, ie. non-blocked users can be emailed from the admin panel.
+- Add user activities API.
+- Add milestone total weight to the milestone summary.
+- Allow master/owner to change permission levels when LDAP group sync is enabled. !822
+- Geo: Improve project view UI to teach users how to clone from a secondary Geo node and push to a primary. !905
+- Technical debt follow-up from restricting pushes / merges by group. !927
+- Geo: Enables nodes to be removed even without proper license. !978
+- Update validates_hostname to 1.0.6 to fix a bug in parsing hexadecimal-looking domain names. !982
+
+## 8.14.6 (2017-01-10)
+
+- No changes.
+
 ## 8.14.5 (2016-12-14)
 
 - Add milestone total weight to the milestone summary.
@@ -31,6 +64,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - gitlab:check rake task checks ES version according to requirements
 - Convert ASCII-8BIT LDAP DNs to UTF-8 to avoid unnecessary user deletions
 - [Fix] Only owner can see "Projects" button in group edit menu
+
+## 8.13.11 (2017-01-10)
+
+- No changes.
 
 ## 8.13.10 (2016-12-14)
 
