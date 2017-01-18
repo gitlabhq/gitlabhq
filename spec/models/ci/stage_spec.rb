@@ -168,13 +168,23 @@ describe Ci::Stage, models: true do
 
   describe '#has_warnings?' do
     context 'when stage has warnings' do
-      before do
-        create(:ci_build, :failed, :allowed_to_fail,
-               stage: stage_name, pipeline: pipeline)
+      context 'when using memoized warnings flag' do
+        let(:stage) { build(:ci_stage, warnings: true) }
+
+        it 'has warnings' do
+          expect(stage).to have_warnings
+        end
       end
 
-      it 'has warnings' do
-        expect(stage).to have_warnings
+      context 'when calculating warnings from statuses' do
+        before do
+          create(:ci_build, :failed, :allowed_to_fail,
+                 stage: stage_name, pipeline: pipeline)
+        end
+
+        it 'has warnings' do
+          expect(stage).to have_warnings
+        end
       end
     end
 
