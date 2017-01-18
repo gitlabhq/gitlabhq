@@ -172,7 +172,7 @@ Move on to understanding some of GitLab's more advanced features. You can make u
 - Get to know the [GitLab API](https://docs.gitlab.com/ee/api/README.html), its capabilities and shortcomings
 - Learn how to [migrate from SVN to Git](https://docs.gitlab.com/ee/workflow/importing/migrating_from_svn.html)
 - Set up [GitLab CI](https://docs.gitlab.com/ee/ci/quick_start/README.html)
-- Create your first [GitLab Page](https://docs.gitlab.com/ee/pages/administration.html)
+- Create your first [GitLab Page](https://docs.gitlab.com/ce/administration/pages/)
 - Get to know the GitLab Codebase by reading through the source code:
   - Find the differences between the [EE codebase](https://gitlab.com/gitlab-org/gitlab-ce)
      and the [CE codebase](https://gitlab.com/gitlab-org/gitlab-ce)
