@@ -4,7 +4,7 @@ module Gitlab
       attr_reader :missing_author_ids
 
       def initialize(exported_members:, user:, project:)
-        @exported_members = exported_members
+        @exported_members = user.admin? ? exported_members : []
         @user = user
         @project = project
         @missing_author_ids = []
@@ -64,7 +64,7 @@ module Gitlab
       end
 
       def find_project_user_query(member)
-        user_arel[:username].eq(member['user']['username']).or(user_arel[:email].eq(member['user']['email']))
+        user_arel[:email].eq(member['user']['email']).or(user_arel[:username].eq(member['user']['username']))
       end
 
       def user_arel
