@@ -262,13 +262,10 @@ module SlashCommands
       current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)
     end
     command :spend do |raw_duration|
-      reduce_time = raw_duration.sub!(/\A-/, '')
       time_spent = Gitlab::TimeTrackingFormatter.parse(raw_duration)
 
       if time_spent
-        time_spent *= -1 if reduce_time
-
-        @updates[:spend_time] = time_spent
+        @updates[:spend_time] = { duration: time_spent, user: current_user }
       end
     end
 
@@ -287,7 +284,7 @@ module SlashCommands
         current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
     command :remove_time_spent do
-      @updates[:spend_time] = :reset
+      @updates[:spend_time] = { duration: :reset, user: current_user }
     end
 
     # This is a dummy command, so that it appears in the autocomplete commands

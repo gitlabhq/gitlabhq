@@ -4,7 +4,11 @@ module Gitlab
 
     def parse(string)
       with_custom_config do
-        ChronicDuration.parse(string, default_unit: 'hours') rescue nil
+        string.sub!(/\A-/, '')
+
+        seconds = ChronicDuration.parse(string, default_unit: 'hours') rescue nil
+        seconds *= -1 if seconds && Regexp.last_match
+        seconds
       end
     end
 

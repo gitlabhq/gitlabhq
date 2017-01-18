@@ -86,6 +86,10 @@ module API
       IssuesFinder.new(current_user, project_id: user_project.id).find(id)
     end
 
+    def find_project_merge_request(id)
+      MergeRequestsFinder.new(current_user, project_id: user_project.id).find(id)
+    end
+
     def authenticate!
       unauthorized! unless current_user
     end
