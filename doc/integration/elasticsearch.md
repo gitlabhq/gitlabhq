@@ -67,14 +67,13 @@ The following Elasticsearch settings are available:
 
 Configure Elasticsearch's host and port in **Admin > Settings**. Then create empty indexes using one of the following commands:
 
+```
+# Omnibus installations
+sudo gitlab-rake gitlab:elastic:create_empty_index
 
-    ```
-    # Omnibus installations
-    sudo gitlab-rake gitlab:elastic:create_empty_index
-
-    # Installations from source
-    bundle exec rake gitlab:elastic:create_empty_index RAILS_ENV=production
-    ```
+# Installations from source
+bundle exec rake gitlab:elastic:create_empty_index RAILS_ENV=production
+```
 
 Then enable Elasticsearch indexing and run repository indexing tasks:
 
@@ -93,7 +92,6 @@ windows) you can provide the `ID_FROM` and `ID_TO` parameters:
 
 ```
 ID_FROM=1001 ID_TO=2000 sudo gitlab-rake gitlab:elastic:index_repositories
-
 ```
 
 Where `ID_FROM` and `ID_TO` are project IDs. Both parameters are optional.
@@ -110,7 +108,6 @@ Sometimes your repository index process `gitlab:elastic:index_repositories` get 
 ```
 UPDATE_INDEX=true ID_TO=1000 sudo gitlab-rake gitlab:elastic:index_repositories
 ```
-
 
 To index all wikis:
 
@@ -242,8 +239,17 @@ If you enabled Elasticsearch before GitLab 8.12 and have not rebuilt indexes you
 exception in lots of different cases:
 
 ```
-Elasticsearch::Transport::Transport::Errors::BadRequest ([400] {"error":{"root_cause":[{"type":"illegal_argument_exception","reason":"Can't specify parent if no parent field has been configured"}],"type":"illegal_argument_exception","rea
-son":"Can't specify parent if no parent field has been configured"},"status":400}):
+Elasticsearch::Transport::Transport::Errors::BadRequest([400] {
+    "error": {
+        "root_cause": [{
+            "type": "illegal_argument_exception",
+            "reason": "Can't specify parent if no parent field has been configured"
+        }],
+        "type": "illegal_argument_exception",
+        "reason": "Can't specify parent if no parent field has been configured"
+    },
+    "status": 400
+}):
 ```
 
 This is because we changed the index mapping in GitLab 8.12 and the old indexes should be removed and built from scratch again,
