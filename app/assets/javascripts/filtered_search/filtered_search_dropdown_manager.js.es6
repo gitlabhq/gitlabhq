@@ -59,7 +59,8 @@
       const input = document.querySelector('.filtered-search');
       const word = `${tokenName}:${tokenValue}`;
 
-      const { lastToken, searchToken } = gl.FilteredSearchTokenizer.processTokens(input.value);
+      const inputValue = gl.DropdownUtils.getSearchInput(input).trim();
+      const { lastToken, searchToken } = gl.FilteredSearchTokenizer.processTokens(inputValue);
       const lastSearchToken = searchToken.split(' ').last();
       const lastInputCharacter = input.value[input.value.length - 1];
       const lastInputTrimmedCharacter = input.value.trim()[input.value.trim().length - 1];
@@ -92,7 +93,7 @@
 
       const filterIconPadding = 27;
       const offset = gl.text
-        .getTextWidth(this.getSearchInput(), this.font) + filterIconPadding;
+        .getTextWidth(gl.DropdownUtils.getSearchInput(this.filteredSearchInput).trim(), this.font) + filterIconPadding;
 
       this.mapping[key].reference.setOffset(offset);
     }
@@ -148,7 +149,7 @@
 
     setDropdown() {
       const { lastToken, searchToken } = this.tokenizer
-        .processTokens(this.getSearchInput());
+        .processTokens(gl.DropdownUtils.getSearchInput(this.filteredSearchInput));
 
       if (this.filteredSearchInput.value.split('').last() === ' ') {
         this.updateCurrentDropdownOffset();
@@ -167,18 +168,6 @@
       } else {
         this.loadDropdown('hint');
       }
-    }
-
-    getSearchInput() {
-      const selectionStart = this.filteredSearchInput.selectionStart;
-      const inputValue = this.filteredSearchInput.value;
-      const rightPos = inputValue.slice(selectionStart).search(/\s/);
-
-      if (rightPos < 0) {
-        return inputValue;
-      }
-
-      return inputValue.slice(0, rightPos + selectionStart + 1).trim();
     }
 
     resetDropdowns() {

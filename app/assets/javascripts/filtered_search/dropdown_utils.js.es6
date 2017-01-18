@@ -72,6 +72,18 @@
       // Return boolean based on whether it was set
       return dataValue !== null;
     }
+
+    static getSearchInput(filteredSearchInput) {
+      const selectionStart = filteredSearchInput.selectionStart;
+      const inputValue = filteredSearchInput.value;
+      const rightPos = inputValue.slice(selectionStart).search(/\s/);
+
+      if (rightPos < 0) {
+        return inputValue;
+      }
+
+      return inputValue.slice(0, rightPos + selectionStart + 1).trim();
+    }
   }
 
   window.gl = window.gl || {};
