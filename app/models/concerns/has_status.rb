@@ -1,6 +1,7 @@
 module HasStatus
   extend ActiveSupport::Concern
 
+  DEFAULT_STATUS = 'created'
   AVAILABLE_STATUSES = %w[created pending running success failed canceled skipped]
   STARTED_STATUSES = %w[running success failed skipped]
   ACTIVE_STATUSES = %w[pending running]

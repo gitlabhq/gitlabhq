@@ -5,7 +5,7 @@ module Gitlab
         def initialize(subject, user)
           @subject = subject
           @user = user
-          @status = subject.status || :created
+          @status = subject.status || HasStatus::DEFAULT_STATUS
         end
 
         def fabricate!
