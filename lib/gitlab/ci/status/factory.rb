@@ -12,9 +12,7 @@ module Gitlab
           if extended_statuses.none?
             core_status
           else
-            extended_statuses.inject(core_status) do |status, extended|
-              extended.new(status)
-            end
+            compound_extended_status
           end
         end
 
@@ -23,6 +21,12 @@ module Gitlab
             .const_get(@status.capitalize)
             .new(@subject, @user)
             .extend(self.class.common_helpers)
+        end
+
+        def compound_extended_status
+          extended_statuses.inject(core_status) do |status, extended|
+            extended.new(status)
+          end
         end
 
         def extended_statuses
