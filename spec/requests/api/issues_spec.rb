@@ -1193,4 +1193,10 @@ describe API::Issues, api: true  do
       expect(response).to have_http_status(404)
     end
   end
+
+  describe 'time tracking endpoints' do
+    let(:issuable) { issue }
+
+    include_examples 'time tracking endpoints', 'issue'
+  end
 end
