@@ -1,6 +1,6 @@
 class UpdateBuildMinutesService < BaseService
   def execute(build)
-    return unless build.shared_runners_minutes_quota?
+    return unless build.shared_runners_minutes_limit_enabled?
     return unless build.complete?
     return unless build.duration
 

@@ -6,8 +6,8 @@ module EE
   module Build
     extend ActiveSupport::Concern
 
-    def shared_runners_minutes_quota?
-      runner && runner.shared? && project.shared_runners_minutes_quota?
+    def shared_runners_minutes_limit_enabled?
+      runner && runner.shared? && project.shared_runners_minutes_limit_enabled?
     end
   end
 end

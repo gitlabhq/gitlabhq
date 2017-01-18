@@ -4,11 +4,10 @@
     %strong
       - if project.shared_runners_enabled?
         Enabled
-        - if project.shared_runners_minutes_quota?
-          - if project.shared_runners_minutes_limit_enabled?
-            - limit = project.actual_shared_runners_minutes_limit.to_i
-            (Limited to #{limit} minutes per month)
-          - else
-            (Unlimited minutes)
+        - if project.shared_runners_minutes_limit_enabled?
+          - limit = project.actual_shared_runners_minutes_limit.to_i
+          (Limited to #{limit} minutes per month)
+        - else
+          (Unlimited minutes)
       - else
         Disabled

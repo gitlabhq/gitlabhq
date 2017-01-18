@@ -10,14 +10,14 @@ module EE
       delegate :shared_runners_minutes, :shared_runners_minutes_last_reset,
         to: :project_metrics, allow_nil: true
 
-      delegate :shared_runners_minutes_limit_enabled?, :actual_shared_runners_minutes_limit,
+      delegate :actual_shared_runners_minutes_limit,
         :shared_runners_minutes_used?, to: :namespace
 
       has_one :project_metrics, dependent: :destroy
     end
 
-    def shared_runners_minutes_quota?
-      !public? && shared_runners_enabled?
+    def shared_runners_minutes_limit_enabled?
+      !public? && shared_runners_enabled? && namespace.shared_runners_minutes_limit_enabled?
     end
 
     def shared_runners
