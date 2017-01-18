@@ -104,6 +104,10 @@ $gl-text-red: #d12f19;
 $gl-text-orange: #d90;
 $gl-link-color: #3777b0;
 $gl-grayish-blue: #7f8fa4;
+$gl-gray: $gl-text-color;
+$gl-gray-dark: #313236;
+$gl-header-color: #4c4e54;
+$gl-header-nav-hover-color: #434343;
 
 /*
  * Lists
@@ -175,6 +179,8 @@ $count-arrow-border: #dce0e5;
 $save-project-loader-color: #555;
 $divergence-graph-bar-bg: #ccc;
 $divergence-graph-separator-bg: #ccc;
+$general-hover-transition-duration: 150ms;
+$general-hover-transition-curve: linear;
 $issue-box-upcoming-bg: #8f8f8f;
 $pages-group-name-color: #4c4e54;
 $ldap-members-override-bg: #fff1e0;

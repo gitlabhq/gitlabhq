@@ -7,9 +7,4 @@ namespace :dev do
     Rake::Task["gitlab:setup"].invoke
     Rake::Task["gitlab:shell:setup"].invoke
   end
-
-  desc 'GitLab | Start/restart foreman and watch for changes'
-  task :foreman => :environment do
-    sh 'rerun --dir app,config,lib -- foreman start'
-  end
 end

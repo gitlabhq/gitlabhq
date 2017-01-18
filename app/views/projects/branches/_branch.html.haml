@@ -17,7 +17,6 @@
 
     - if @project.protected_branch? branch.name
       %span.label.label-success
-        = icon('lock')
         protected
 
     - if @project.mirror_ever_updated_successfully? && @repository.diverged_from_upstream?(branch.name)

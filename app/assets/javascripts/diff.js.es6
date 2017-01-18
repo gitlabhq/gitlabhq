@@ -20,7 +20,7 @@
         .on('click', '.js-unfold', this.handleClickUnfold.bind(this))
         .on('click', '.diff-line-num a', this.handleClickLineNum.bind(this));
 
-      this.highlighSelectedLine();
+      this.openAnchoredDiff();
     }
 
     handleClickUnfold(e) {
@@ -61,13 +61,22 @@
       $.get(link, params, response => $target.parent().replaceWith(response));
     }
 
-    openAnchoredDiff(anchoredDiff, cb) {
-      const diffTitle = $(`#file-path-${anchoredDiff}`);
+    openAnchoredDiff(cb) {
+      const locationHash = gl.utils.getLocationHash();
+      const anchoredDiff = locationHash && locationHash.split('_')[0];
+
+      if (!anchoredDiff) return;
+
+      const diffTitle = $(`#${anchoredDiff}`);
       const diffFile = diffTitle.closest('.diff-file');
       const nothingHereBlock = $('.nothing-here-block:visible', diffFile);
       if (nothingHereBlock.length) {
-        diffFile.singleFileDiff(true, cb);
-      } else {
+        const clickTarget = $('.file-title, .click-to-expand', diffFile);
+        diffFile.data('singleFileDiff').toggleDiff(clickTarget, () => {
+          this.highlighSelectedLine();
+          if (cb) cb();
+        });
+      } else if (cb) {
         cb();
       }
     }
