@@ -128,7 +128,7 @@ describe Gitlab::ImportExport::RelationFactory, lib: true do
     let(:new_user) { create(:user) }
     let(:exported_member) do
       {
-        "id" => 999,
+        "id" => 111,
         "access_level" => 30,
         "source_id" => 1,
         "source_type" => "Project",
@@ -137,7 +137,7 @@ describe Gitlab::ImportExport::RelationFactory, lib: true do
         "created_at" => "2016-11-18T09:29:42.634Z",
         "updated_at" => "2016-11-18T09:29:42.634Z",
         "user" => {
-          "id" => new_user.id,
+          "id" => 999,
           "email" => new_user.email,
           "username" => new_user.username
         }

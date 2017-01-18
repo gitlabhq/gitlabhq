@@ -7,7 +7,6 @@ module Gitlab
         @exported_members = user.admin? ? exported_members : []
         @user = user
         @project = project
-        @missing_author_ids = []
 
         # This needs to run first, as second call would be from #map
         # which means project members already exist.
@@ -39,7 +38,6 @@ module Gitlab
 
       def missing_keys_tracking_hash
         Hash.new do |_, key|
-          @missing_author_ids << key
           default_user_id
         end
       end
