@@ -10,13 +10,11 @@ class Projects::HooksController < Projects::ApplicationController
     @hook = @project.hooks.new(hook_params)
     @hook.save
 
-    if @hook.valid?
-      redirect_to namespace_project_settings_integrations_path(@project.namespace, @project)
-    else
+    unless @hook.valid?      
       @hooks = @project.hooks.select(&:persisted?)
       flash[:alert] = @hook.errors.full_messages.join.html_safe
-      redirect_to namespace_project_settings_integrations_path(@project.namespace, @project)
     end
+    redirect_to namespace_project_settings_integrations_path(@project.namespace, @project)
   end
 
   def test
