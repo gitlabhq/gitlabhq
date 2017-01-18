@@ -724,6 +724,146 @@ Example response:
 }
 ```
 
+## Set a time estimate for an issue
+
+Sets an estimated time of work for this issue.
+
+```
+POST /projects/:id/issues/:issue_id/time_estimate
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer | yes   | The ID of a project |
+| `issue_id` | integer | yes | The ID of a project's issue |
+| `duration` | string | yes | The duration in human format. e.g: 3h30m |
+
+```bash
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/issues/93/time_estimate?duration=3h30m
+```
+
+Example response:
+
+```json
+{
+  "human_time_estimate": "3h 30m",
+  "human_total_time_spent": null,
+  "time_estimate": 12600,
+  "total_time_spent": 0
+}
+```
+
+## Reset the time estimate for an issue
+
+Resets the estimated time for this issue to 0 seconds.
+
+```
+POST /projects/:id/issues/:issue_id/reset_time_estimate
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer | yes   | The ID of a project |
+| `issue_id` | integer | yes | The ID of a project's issue |
+
+```bash
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/issues/93/reset_time_estimate
+```
+
+Example response:
+
+```json
+{
+  "human_time_estimate": null,
+  "human_total_time_spent": null,
+  "time_estimate": 0,
+  "total_time_spent": 0
+}
+```
+
+## Add spent time for an issue
+
+Adds spent time for this issue
+
+```
+POST /projects/:id/issues/:issue_id/add_spent_time
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer | yes   | The ID of a project |
+| `issue_id` | integer | yes | The ID of a project's issue |
+| `duration` | string | yes | The duration in human format. e.g: 3h30m |
+
+```bash
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/issues/93/add_spent_time?duration=1h
+```
+
+Example response:
+
+```json
+{
+  "human_time_estimate": null,
+  "human_total_time_spent": "1h",
+  "time_estimate": 0,
+  "total_time_spent": 3600
+}
+```
+
+## Reset spent time for an issue
+
+Resets the total spent time for this issue to 0 seconds.
+
+```
+POST /projects/:id/issues/:issue_id/reset_spent_time
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer | yes   | The ID of a project |
+| `issue_id` | integer | yes | The ID of a project's issue |
+
+```bash
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/issues/93/reset_spent_time
+```
+
+Example response:
+
+```json
+{
+  "human_time_estimate": null,
+  "human_total_time_spent": null,
+  "time_estimate": 0,
+  "total_time_spent": 0
+}
+```
+
+## Get time tracking stats
+
+```
+GET /projects/:id/issues/:issue_id/time_stats
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer | yes   | The ID of a project |
+| `issue_id` | integer | yes | The ID of a project's issue |
+
+```bash
+curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/issues/93/time_stats
+```
+
+Example response:
+
+```json
+{
+  "human_time_estimate": "2h",
+  "human_total_time_spent": "1h",
+  "time_estimate": 7200,
+  "total_time_spent": 3600
+}
+```
+
 ## Comments on issues
 
 Comments are done via the [notes](notes.md) resource.

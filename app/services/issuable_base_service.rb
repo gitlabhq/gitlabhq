@@ -41,7 +41,7 @@ class IssuableBaseService < BaseService
   end
 
   def create_time_spent_note(issuable)
-    SystemNoteService.change_time_spent(issuable, issuable.project, current_user)
+    SystemNoteService.change_time_spent(issuable, issuable.project, issuable.time_spent_user)
   end
 
   def filter_params(issuable)
@@ -164,7 +164,6 @@ class IssuableBaseService < BaseService
   def create(issuable)
     merge_slash_commands_into_params!(issuable)
     filter_params(issuable)
-    change_time_spent(issuable)
 
     params.delete(:state_event)
     params[:author] ||= current_user
@@ -206,7 +205,6 @@ class IssuableBaseService < BaseService
     change_state(issuable)
     change_subscription(issuable)
     change_todo(issuable)
-    time_spent = change_time_spent(issuable)
     filter_params(issuable)
     old_labels = issuable.labels.to_a
     old_mentioned_users = issuable.mentioned_users.to_a
@@ -214,7 +212,7 @@ class IssuableBaseService < BaseService
     label_ids = process_label_ids(params, existing_label_ids: issuable.label_ids)
     params[:label_ids] = label_ids if labels_changing?(issuable.label_ids, label_ids)
 
-    if (params.present? || time_spent) && update_issuable(issuable, params)
+    if params.present? && update_issuable(issuable, params)
       # We do not touch as it will affect a update on updated_at field
       ActiveRecord::Base.no_touching do
         handle_common_system_notes(issuable, old_labels: old_labels)
@@ -259,12 +257,6 @@ class IssuableBaseService < BaseService
       todo = TodosFinder.new(current_user).execute.find_by(target: issuable)
       todo_service.mark_todos_as_done([todo], current_user) if todo
     end
-  end
-
-  def change_time_spent(issuable)
-    time_spent = params.delete(:spend_time)
-
-    issuable.spend_time(time_spent, current_user) if time_spent
   end
 
   def has_changes?(issuable, old_labels: [])

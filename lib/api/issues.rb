@@ -91,6 +91,8 @@ module API
       requires :id, type: String, desc: 'The ID of a project'
     end
     resource :projects do
+      include TimeTrackingEndpoints
+
       desc 'Get a list of project issues' do
         success Entities::Issue
       end

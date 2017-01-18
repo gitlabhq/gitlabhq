@@ -757,7 +757,7 @@ describe SystemNoteService, services: true do
     # We need a custom noteable in order to the shared examples to be green.
     let(:noteable) do
       mr = create(:merge_request, source_project: project)
-      mr.spend_time(1, author)
+      mr.spend_time(duration: 360000, user: author)
       mr.save!
       mr
     end
@@ -793,7 +793,7 @@ describe SystemNoteService, services: true do
     end
 
     def spend_time!(seconds)
-      noteable.spend_time(seconds, author)
+      noteable.spend_time(duration: seconds, user: author)
       noteable.save!
     end
   end
