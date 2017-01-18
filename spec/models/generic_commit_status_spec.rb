@@ -10,6 +10,13 @@ describe GenericCommitStatus, models: true do
                                    target_url: external_url)
   end
 
+  describe 'validations' do
+    it { is_expected.to validate_length_of(:target_url).is_at_most(255) }
+    it { is_expected.to allow_value(nil).for(:target_url) }
+    it { is_expected.to allow_value('http://gitlab.com/s').for(:target_url) }
+    it { is_expected.not_to allow_value('javascript:alert(1)').for(:target_url) }
+  end
+
   describe '#context' do
     subject { generic_commit_status.context }
     before { generic_commit_status.context = 'my_context' }

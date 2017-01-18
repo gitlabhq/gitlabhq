@@ -152,8 +152,11 @@ describe API::CommitStatuses, api: true do
 
       context 'with all optional parameters' do
         before do
-          optional_params = { state: 'success', context: 'coverage',
-                              ref: 'develop', target_url: 'url', description: 'test' }
+          optional_params = { state: 'success',
+                              context: 'coverage',
+                              ref: 'develop',
+                              description: 'test',
+                              target_url: 'http://gitlab.com/status' }
 
           post api(post_url, developer), optional_params
         end
@@ -164,8 +167,8 @@ describe API::CommitStatuses, api: true do
           expect(json_response['status']).to eq('success')
           expect(json_response['name']).to eq('coverage')
           expect(json_response['ref']).to eq('develop')
-          expect(json_response['target_url']).to eq('url')
           expect(json_response['description']).to eq('test')
+          expect(json_response['target_url']).to eq('http://gitlab.com/status')
         end
       end
 
