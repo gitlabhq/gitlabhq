@@ -40,7 +40,7 @@
         return `has-tooltip ci-status-icon ci-status-icon-${this.stage.status.group}`;
       },
       svg() {
-        const icon = this.stage.status.icon;
+        const { icon } = this.stage.status;
         const stageIcon = icon.replace(/icon/i, 'stage_icon');
         return this.svgs[this.match(stageIcon)];
       },
