@@ -75,6 +75,9 @@ The total number of the following is sent back to GitLab Inc.:
 - Remote mirrors
 - Web hooks
 
+Also, we track if you've installed Mattermost with GitLab. 
+For example: `"mattermost_enabled":true"`.
+
 ## Privacy policy
 
 GitLab Inc. does **not** collect any sensitive information, like project names

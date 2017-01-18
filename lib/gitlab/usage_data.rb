@@ -47,7 +47,8 @@ module Gitlab
       def license_usage_data
         usage_data = { version: Gitlab::VERSION,
                        active_user_count: User.active.count,
-                       recorded_at: Time.now }
+                       recorded_at: Time.now,
+                       mattermost_enabled: Gitlab.config.mattermost.enabled }
 
         usage_data
       end

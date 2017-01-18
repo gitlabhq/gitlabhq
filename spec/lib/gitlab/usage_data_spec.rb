@@ -14,6 +14,7 @@ describe Gitlab::UsageData do
         counts
         version
         recorded_at
+        mattermost_enabled
       ))
     end
 
