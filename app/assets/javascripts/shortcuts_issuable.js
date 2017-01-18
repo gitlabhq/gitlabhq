@@ -41,7 +41,7 @@
     ShortcutsIssuable.prototype.replyWithSelectedText = function() {
       var quote, replyField, documentFragment, selected, separator;
 
-      documentFragment = window.gl.CopyAsGFM.getSelectedFragment();
+      documentFragment = window.gl.utils.getSelectedFragment();
       if (!documentFragment) return;
 
       selected = window.gl.CopyAsGFM.nodeToGFM(documentFragment);

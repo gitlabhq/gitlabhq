@@ -15,9 +15,9 @@
     });
     return describe('#replyWithSelectedText', function() {
       var stubSelection;
-      // Stub window.gl.CopyAsGFM.getSelectedFragment to return a node with the provided HTML.
+      // Stub window.gl.utils.getSelectedFragment to return a node with the provided HTML.
       stubSelection = function(html) {
-        window.gl.CopyAsGFM.getSelectedFragment = function() {
+        window.gl.utils.getSelectedFragment = function() {
           var node = document.createElement('div');
           node.innerHTML = html;
           return node;

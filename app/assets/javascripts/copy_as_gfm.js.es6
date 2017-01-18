@@ -1,6 +1,9 @@
 /* eslint-disable class-methods-use-this */
 /*jshint esversion: 6 */
 
+/*= require lib/utils/common_utils */
+
+
 (() => {
   const gfmRules = {
     // The filters referenced in lib/banzai/pipeline/gfm_pipeline.rb convert
@@ -233,7 +236,7 @@
       let clipboardData = e.originalEvent.clipboardData;
       if (!clipboardData) return;
 
-      let documentFragment = CopyAsGFM.getSelectedFragment();
+      let documentFragment = window.gl.utils.getSelectedFragment();
       if (!documentFragment) return;
 
       e.preventDefault();
@@ -252,36 +255,7 @@
 
       e.preventDefault();
 
-      CopyAsGFM.insertText(e.target, gfm);
-    }
-
-    static getSelectedFragment() {
-      if (!window.getSelection) return null;
-
-      let selection = window.getSelection();
-      if (!selection.rangeCount || selection.rangeCount === 0) return null;
-
-      let documentFragment = selection.getRangeAt(0).cloneContents();
-      if (!documentFragment) return null;
-
-      if (documentFragment.textContent.length === 0) return null;
-
-      return documentFragment;
-    }
-
-    static insertText(target, text) {
-      // Firefox doesn't support `document.execCommand('insertText', false, text)` on textareas
-
-      let selectionStart = target.selectionStart;
-      let selectionEnd = target.selectionEnd;
-      let value = target.value;
-
-      let textBefore = value.substring(0, selectionStart);
-      let textAfter  = value.substring(selectionEnd, value.length);
-      let newText = textBefore + text + textAfter;
-
-      target.value = newText;
-      target.selectionStart = target.selectionEnd = selectionStart + text.length;
+      window.gl.utils.insertText(e.target, gfm);
     }
 
     static nodeToGFM(node) {
@@ -301,7 +275,7 @@
         for (let selector in rules) {
           let func = rules[selector];
 
-          if (!CopyAsGFM.nodeMatchesSelector(node, selector)) continue;
+          if (!window.gl.utils.nodeMatchesSelector(node, selector)) continue;
 
           let result = func(node, text);
           if (result === false) continue;
@@ -324,37 +298,12 @@
         let clonedNode = clonedNodes[i];
 
         let text = this.nodeToGFM(node);
-        
+
         // `clonedNode.replaceWith(text)` is not yet widely supported
         clonedNode.parentNode.replaceChild(document.createTextNode(text), clonedNode);
       }
 
       return clonedParentNode.innerText || clonedParentNode.textContent;
-    }
-
-    static nodeMatchesSelector(node, selector) {
-      let matches = Element.prototype.matches ||
-        Element.prototype.matchesSelector ||
-        Element.prototype.mozMatchesSelector ||
-        Element.prototype.msMatchesSelector ||
-        Element.prototype.oMatchesSelector ||
-        Element.prototype.webkitMatchesSelector;
-
-      if (matches) {
-        return matches.call(node, selector);
-      }
-
-      // IE11 doesn't support `node.matches(selector)`
-
-      let parentNode = node.parentNode;
-      if (!parentNode) {
-        parentNode = document.createElement('div');
-        node = node.cloneNode(true);
-        parentNode.appendChild(node);
-      }
-
-      let matchingNodes = parentNode.querySelectorAll(selector);
-      return Array.prototype.indexOf.call(matchingNodes, node) !== -1;
     }
   }
 

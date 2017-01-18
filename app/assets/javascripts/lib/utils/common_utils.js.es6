@@ -160,6 +160,59 @@
       return decodeURIComponent(results[2].replace(/\+/g, ' '));
     };
 
+    w.gl.utils.getSelectedFragment = () => {
+      if (!window.getSelection) return null;
+
+      let selection = window.getSelection();
+      if (!selection.rangeCount || selection.rangeCount === 0) return null;
+
+      let documentFragment = selection.getRangeAt(0).cloneContents();
+      if (!documentFragment) return null;
+
+      if (documentFragment.textContent.length === 0) return null;
+
+      return documentFragment;
+    }
+
+    w.gl.utils.insertText = (target, text) => {
+      // Firefox doesn't support `document.execCommand('insertText', false, text)` on textareas
+
+      let selectionStart = target.selectionStart;
+      let selectionEnd = target.selectionEnd;
+      let value = target.value;
+
+      let textBefore = value.substring(0, selectionStart);
+      let textAfter  = value.substring(selectionEnd, value.length);
+      let newText = textBefore + text + textAfter;
+
+      target.value = newText;
+      target.selectionStart = target.selectionEnd = selectionStart + text.length;
+    }
+
+    w.gl.utils.nodeMatchesSelector = (node, selector) => {
+      let matches = Element.prototype.matches ||
+        Element.prototype.matchesSelector ||
+        Element.prototype.mozMatchesSelector ||
+        Element.prototype.msMatchesSelector ||
+        Element.prototype.oMatchesSelector ||
+        Element.prototype.webkitMatchesSelector;
+
+      if (matches) {
+        return matches.call(node, selector);
+      }
+
+      // IE11 doesn't support `node.matches(selector)`
+
+      let parentNode = node.parentNode;
+      if (!parentNode) {
+        parentNode = document.createElement('div');
+        node = node.cloneNode(true);
+        parentNode.appendChild(node);
+      }
+
+      let matchingNodes = parentNode.querySelectorAll(selector);
+      return Array.prototype.indexOf.call(matchingNodes, node) !== -1;
+    }
   })(window);
 
 }).call(this);
