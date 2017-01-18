@@ -440,3 +440,93 @@
     padding-right: 0;
   }
 }
+
+#merge-request-widget-app .loading {
+  padding-top: 5px;
+}
+
+#merge-request-widget-app .loading,
+.approvals-components {
+  border-top: 1px solid $well-inner-border;
+}
+
+.approvals-body {
+  @media (max-width: $screen-xs-max) {
+    text-align: center;
+  }
+
+  .approve-btn {
+    margin-top: 10px;
+  }
+}
+
+.approvals-footer {
+  display: flex;
+
+  // vertically centers all children
+  > span {
+    align-self: center;
+  }
+
+  .hide-asset {
+    img {
+      display: none;
+    }
+
+    svg {
+      margin-bottom: -7px; // makes up for border removed
+      border: none;
+    }
+  }
+
+  .approvers-prefix {
+    margin-right: 5px;
+  }
+
+  .unapprove-btn-wrap {
+    border-left: 1px solid $gray-darker;
+    padding-left: 5px;
+    margin-left: 10px;
+  }
+
+  .unapprove-btn {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+
+    &:hover {
+      color: $gl-text-color-secondary;
+      text-decoration: none;
+    }
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  // styles for approver avatar checkmark
+  .approver-avatar {
+    position: relative;
+    display: inline-block;
+
+    svg.avatar {
+      position: absolute;
+      top: 12%;
+      right: 4%;
+      height: 45%;
+      width: 45%;
+    }
+  }
+}
+
+.link-to-member-avatar {
+  .disabled {
+    pointer-events: none;
+    cursor: default;
+  }
+
+  .avatar {
+    margin-bottom: -2px;
+    margin-right: 3px;
+  }
+}

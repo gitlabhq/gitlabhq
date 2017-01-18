@@ -54,11 +54,18 @@ module Emails
       mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, recipient_id))
     end
 
-    def approved_merge_request_email(recipient_id, merge_request_id, updated_by_user_id)
+    def approved_merge_request_email(recipient_id, merge_request_id, approved_by_user_id)
       setup_merge_request_mail(merge_request_id, recipient_id)
 
-      @approved_by_users = @merge_request.approved_by_users.map(&:name)
-      mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, recipient_id))
+      @approved_by = User.find(approved_by_user_id)
+      mail_answer_thread(@merge_request, merge_request_thread_options(approved_by_user_id, recipient_id))
+    end
+
+    def unapproved_merge_request_email(recipient_id, merge_request_id, unapproved_by_user_id)
+      setup_merge_request_mail(merge_request_id, recipient_id)
+
+      @unapproved_by = User.find(unapproved_by_user_id)
+      mail_answer_thread(@merge_request, merge_request_thread_options(unapproved_by_user_id, recipient_id))
     end
 
     def resolved_all_discussions_email(recipient_id, merge_request_id, resolved_by_user_id)

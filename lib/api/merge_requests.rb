@@ -313,6 +313,18 @@ module API
 
           present merge_request, with: Entities::MergeRequestApprovals, current_user: current_user
         end
+
+        delete "#{path}/unapprove" do
+          merge_request = user_project.merge_requests.find(params[:merge_request_id])
+
+          not_found! unless merge_request.has_approved?(current_user)
+
+          ::MergeRequests::RemoveApprovalService
+            .new(user_project, current_user)
+            .execute(merge_request)
+
+          present merge_request, with: Entities::MergeRequestApprovals, current_user: current_user
+        end
       end
     end
   end

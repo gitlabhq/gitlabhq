@@ -90,6 +90,7 @@ module MergeRequestsHelper
     end
   end
 
+  # This may be able to be removed with associated specs
   def render_require_section(merge_request)
     str = if merge_request.approvals_left == 1
             "Requires one more approval"

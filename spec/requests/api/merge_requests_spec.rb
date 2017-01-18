@@ -745,6 +745,8 @@ describe API::MergeRequests, api: true  do
       expect(json_response['approvals_required']).to eq 2
       expect(json_response['approvals_left']).to eq 1
       expect(json_response['approved_by'][0]['user']['username']).to eq(approver.username)
+      expect(json_response['user_can_approve']).to be false
+      expect(json_response['user_has_approved']).to be false
     end
   end
 
@@ -773,6 +775,36 @@ describe API::MergeRequests, api: true  do
         expect(response.status).to eq(201)
         expect(json_response['approvals_left']).to eq(1)
         expect(json_response['approved_by'][0]['user']['username']).to eq(approver.username)
+        expect(json_response['user_has_approved']).to be true
+      end
+    end
+  end
+
+  describe 'DELETE :id/merge_requests/:merge_request_id/unapprove' do
+    before { project.update_attribute(:approvals_before_merge, 2) }
+
+    context 'as a user who has approved the merge request' do
+      let(:approver) { create(:user) }
+      let(:unapprover) { create(:user) }
+
+      before do
+        project.team << [approver, :developer]
+        project.team << [unapprover, :developer]
+        project.team << [create(:user), :developer]
+        merge_request.approvals.create(user: approver)
+        merge_request.approvals.create(user: unapprover)
+
+        delete api("/projects/#{project.id}/merge_requests/#{merge_request.id}/unapprove", unapprover)
+      end
+
+      it 'unapproves the merge request' do
+        expect(response.status).to eq(200)
+        expect(json_response['approvals_left']).to eq(1)
+        usernames = json_response['approved_by'].map { |u| u['user']['username'] }
+        expect(usernames).not_to include(unapprover.username)
+        expect(usernames.size).to be 1
+        expect(json_response['user_has_approved']).to be false
+        expect(json_response['user_can_approve']).to be true
       end
     end
   end

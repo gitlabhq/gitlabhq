@@ -125,6 +125,83 @@ describe Projects::MergeRequestsController do
     end
   end
 
+  context 'approvals' do
+    def json_response
+      JSON.load(response.body)
+    end
+
+    let(:approver) { create(:user) }
+
+    before do
+      merge_request.update_attribute :approvals_before_merge, 2
+      project.team << [approver, :developer]
+      project.approver_ids = [user, approver].map(&:id).join(',')
+    end
+
+    describe 'approve' do
+      before do
+        post :approve,
+          namespace_id: project.namespace.to_param,
+          project_id: project.to_param,
+          id: merge_request.iid,
+          format: :json
+      end
+
+      it 'approves the merge request' do
+        expect(response).to be_success
+        expect(json_response['approvals_left']).to eq 1
+        expect(json_response['approved_by'].size).to eq 1
+        expect(json_response['approved_by'][0]['user']['username']).to eq user.username
+        expect(json_response['user_has_approved']).to be true
+        expect(json_response['user_can_approve']).to be false
+        expect(json_response['suggested_approvers'].size).to eq 1
+        expect(json_response['suggested_approvers'][0]['username']).to eq approver.username
+      end
+    end
+
+    describe 'approvals' do
+      before do
+        merge_request.approvals.create(user: approver)
+        get :approvals,
+          namespace_id: project.namespace.to_param,
+          project_id: project.to_param,
+          id: merge_request.iid,
+          format: :json
+      end
+
+      it 'shows approval information' do
+        expect(response).to be_success
+        expect(json_response['approvals_left']).to eq 1
+        expect(json_response['approved_by'].size).to eq 1
+        expect(json_response['approved_by'][0]['user']['username']).to eq approver.username
+        expect(json_response['user_has_approved']).to be false
+        expect(json_response['user_can_approve']).to be true
+        expect(json_response['suggested_approvers'].size).to eq 1
+        expect(json_response['suggested_approvers'][0]['username']).to eq user.username
+      end
+    end
+
+    describe 'unapprove' do
+      before do
+        merge_request.approvals.create(user: user)
+        delete :unapprove,
+          namespace_id: project.namespace.to_param,
+          project_id: project.to_param,
+          id: merge_request.iid,
+          format: :json
+      end
+
+      it 'unapproves the merge request' do
+        expect(response).to be_success
+        expect(json_response['approvals_left']).to eq 2
+        expect(json_response['approved_by']).to be_empty
+        expect(json_response['user_has_approved']).to be false
+        expect(json_response['user_can_approve']).to be true
+        expect(json_response['suggested_approvers'].size).to eq 2
+      end
+    end
+  end
+
   shared_examples "loads labels" do |action|
     it "loads labels into the @labels variable" do
       get action,

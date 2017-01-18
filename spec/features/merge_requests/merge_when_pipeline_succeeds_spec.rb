@@ -32,7 +32,7 @@ feature 'Merge When Pipeline Succeeds', :feature, :js do
       expect(page).to have_button "Merge When Pipeline Succeeds"
     end
 
-    context "Merge When Pipeline Succeeds enabled" do
+    context "Merge When Pipeline Succeeds enabled", js: true do
       before do
         click_button "Merge When Pipeline Succeeds"
       end

@@ -28,7 +28,7 @@
                     = icon('warning fw')
                     Merge Immediately
         - else
-          = f.button class: "btn btn-create btn-grouped js-merge-button accept_merge_request #{status_class}" do
+          = f.button class: "btn btn-create btn-grouped js-merge-button accept_merge_request #{status_class}", ':disabled' => 'disableAcceptance' do
             Accept Merge Request
       - if @merge_request.force_remove_source_branch?
         .accept-control

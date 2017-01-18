@@ -58,14 +58,14 @@
                     %table.content{ border: "0", cellpadding: "0", cellspacing: "0", style: "width:100%;border-collapse:separate;border-spacing:0;" }
                       %tbody
                         %tr.success
-                          %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;padding:10px;border-radius:3px;font-size:14px;line-height:1.3;text-align:center;overflow:hidden;color:#ffffff;background-color:#31af64;" }
+                          %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;padding:10px;border-radius:3px;font-size:14px;line-height:1.3;text-align:center;overflow:hidden;color:#ffffff;background-color:#FC6D26;" }
                             %table.img{ border: "0", cellpadding: "0", cellspacing: "0", style: "border-collapse:collapse;margin:0 auto;" }
                               %tbody
                                 %tr
                                   %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;vertical-align:middle;color:#ffffff;text-align:center;padding-right:5px;" }
-                                    %img{ alt: "✓", height: "13", src: image_url('mailers/ci_pipeline_notif_v1/icon-check-green-inverted.gif'), style: "display:block;", width: "13" }/
+                                    %img{ alt: "✗", height: "13", src: image_url('mailers/approval/icon-x-orange-inverted.gif'), style: "display:block;", width: "13" }/
                                   %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;vertical-align:middle;color:#ffffff;text-align:center;" }
-                                    %span Merge request was approved (#{@merge_request.approvals.count}/#{@merge_request.approvals_required})
+                                    %span Merge request was unapproved (#{@merge_request.approvals.count}/#{@merge_request.approvals_required})
                       %tr.spacer
                         %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;height:18px;font-size:18px;line-height:18px;" }
                           &nbsp;
@@ -78,10 +78,10 @@
                                   %img{ src: image_url('mailers/approval/icon-merge-request-gray.gif'), style: "height:18px;width:18px;margin-bottom:-4px;", alt: "Merge request icon" }
                                   %span{ style: "font-weight: bold;color:#333333;" } Merge request
                                   %a{ href: merge_request_url(@merge_request), style: "font-weight: bold;color:#3777b0;text-decoration:none" }  #{@merge_request.to_reference}
-                                  %span was approved by
-                                  %img.avatar{ height: "24", src: avatar_icon(@approved_by, 24), style: "border-radius:12px;margin:-7px 0 -7px 3px;", width: "24", alt: "Avatar" }/
-                                  %a.muted{ href: user_url(@approved_by), style: "color:#333333;text-decoration:none;" }
-                                    = @approved_by.name
+                                  %span was unapproved by
+                                  %img.avatar{ height: "24", src: avatar_icon(@unapproved_by, 24), style: "border-radius:12px;margin:-7px 0 -7px 3px;", width: "24", alt: "Avatar" }/
+                                  %a.muted{ href: user_url(@unapproved_by), style: "color:#333333;text-decoration:none;" }
+                                    = @unapproved_by.name
                         %tr.spacer
                           %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;height:18px;font-size:18px;line-height:18px;" }
                             &nbsp;

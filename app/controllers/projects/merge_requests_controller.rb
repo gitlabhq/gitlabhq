@@ -11,7 +11,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :merge_request, only: [
     :edit, :update, :show, :diffs, :commits, :conflicts, :conflict_for_path, :pipelines, :merge, :merge_check,
     :ci_status, :ci_environments_status, :toggle_subscription, :cancel_merge_when_build_succeeds, :remove_wip, :resolve_conflicts, :assign_related_issues,
-    :approve, :rebase
+    # EE
+    :approve, :approvals, :unapprove, :rebase
   ]
   before_action :validates_merge_request, only: [:show, :diffs, :commits, :pipelines]
   before_action :define_show_vars, only: [:show, :diffs, :commits, :conflicts, :conflict_for_path, :builds, :pipelines]
@@ -481,14 +482,37 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       return render_404
     end
 
-    MergeRequests::ApprovalService.
+    ::MergeRequests::ApprovalService.
       new(project, current_user).
       execute(@merge_request)
 
-    redirect_to merge_request_path(@merge_request)
+    render_approvals_json
+  end
+
+  def approvals
+    render_approvals_json
+  end
+
+  def unapprove
+    if @merge_request.has_approved?(current_user)
+      ::MergeRequests::RemoveApprovalService.
+        new(project, current_user).
+        execute(@merge_request)
+    end
+
+    render_approvals_json
   end
 
   protected
+
+  def render_approvals_json
+    respond_to do |format|
+      format.json do
+        entity = API::Entities::MergeRequestApprovals.new(@merge_request, current_user: current_user)
+        render json: entity
+      end
+    end
+  end
 
   def selected_target_project
     if @project.id.to_s == params[:target_project_id] || @project.forked_project_link.nil?

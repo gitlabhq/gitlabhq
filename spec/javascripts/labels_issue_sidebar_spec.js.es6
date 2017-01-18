@@ -1,4 +1,4 @@
-/* eslint-disable no-new, no-plusplus, object-curly-spacing, prefer-const, semi */
+/* eslint-disable no-new, no-plusplus, object-curly-spacing, prefer-const, semi, new-cap */
 /* global IssuableContext */
 /* global LabelsSelect */
 

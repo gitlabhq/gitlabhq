@@ -75,7 +75,9 @@ feature 'Merge request approvals', js: true, feature: true do
 
         find('.select2-results').click
         click_on("Submit merge request")
-        expect(page).to have_content("Requires one more approval (from #{other_user.name})")
+
+        find('.approvals-components')
+        expect(page).to have_content("Requires 1 more approval (from #{other_user.name})")
       end
 
       it 'allows delete approvers group when it is set in project' do
@@ -94,7 +96,10 @@ feature 'Merge request approvals', js: true, feature: true do
         expect(page).to have_css('.approver-list li', count: 1)
 
         click_on("Submit merge request")
-        expect(page).not_to have_content("Requires one more approval (from #{other_user.name})")
+
+        wait_for_ajax
+        find('.approvals-components')
+        expect(page).not_to have_content("Requires 1 more approval (from #{other_user.name})")
       end
     end
 
@@ -123,7 +128,9 @@ feature 'Merge request approvals', js: true, feature: true do
         find('.select2-results').click
         click_on("Save changes")
 
-        expect(page).to have_content("Requires one more approval")
+        wait_for_ajax
+        find('.approvals-components')
+        expect(page).to have_content("Requires 1 more approval")
       end
 
       it 'allows delete approvers group when it`s set in project' do
@@ -142,7 +149,9 @@ feature 'Merge request approvals', js: true, feature: true do
         expect(page).to have_css('.approver-list li', count: 1)
 
         click_on("Save changes")
-        expect(page).to have_content("Requires one more approval (from #{approver.name})")
+
+        find('.approvals-components')
+        expect(page).to have_content("Requires 1 more approval (from #{approver.name})")
       end
     end
   end
@@ -161,32 +170,57 @@ feature 'Merge request approvals', js: true, feature: true do
       login_as(user)
     end
 
-    context 'when group is assigned to a project' do
-      it 'I am able to approve' do
+    context 'when group is assigned to a project', js: true do
+      before do
         create :approver_group, group: group, target: project
-
         visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+      end
 
-        page.within '.mr-state-widget' do
-          click_button 'Approve Merge Request'
-        end
+      it 'I am able to approve' do
+        approve_merge_request
+        expect(page).to have_content('Approved by')
+        expect(page).to have_css('.approver-avatar')
+      end
 
-        expect(page).to have_content("Approved by")
+      it 'I am able to unapprove' do
+        approve_merge_request
+        unapprove_merge_request
+        expect(page).to have_no_css('.approver-avatar')
       end
     end
 
-    context 'when group is assigned to a merge request' do
-      it 'I am able to approve' do
+    context 'when group is assigned to a merge request', js: true do
+      before do
         create :approver_group, group: group, target: merge_request
-
         visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+      end
 
-        page.within '.mr-state-widget' do
-          click_button 'Approve Merge Request'
-        end
+      it 'I am able to approve' do
+        approve_merge_request
+        wait_for_ajax
+        expect(page).to have_content('Approved by')
+        expect(page).to have_css('.approver-avatar')
+      end
 
-        expect(page).to have_content("Approved by")
+      it 'I am able to unapprove' do
+        approve_merge_request
+        unapprove_merge_request
+        expect(page).to have_no_css('.approver-avatar')
       end
     end
   end
+end
+
+def approve_merge_request
+  page.within '.mr-state-widget' do
+    click_button 'Approve Merge Request'
+  end
+  wait_for_ajax
+end
+
+def unapprove_merge_request
+  page.within '.mr-state-widget' do
+    find('.unapprove-btn-wrap').click
+  end
+  wait_for_ajax
 end

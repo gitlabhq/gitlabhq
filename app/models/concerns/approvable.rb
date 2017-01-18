@@ -123,6 +123,12 @@ module Approvable
       any_approver_allowed? && approvals.where(user: user).empty?
     end
 
+    def has_approved?(user)
+      return false unless user
+
+      approved_by_users.include?(user)
+    end
+
     # Once there are fewer approvers left in the list than approvals required, allow other
     # project members to approve the MR.
     #
