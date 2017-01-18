@@ -9,10 +9,6 @@ class Projects::ServicesController < Projects::ApplicationController
 
   layout "project_settings"
 
-  def index
-    redirect_to namespace_project_settings_integrations_path(@project.namespace, @project)
-  end
-
   def edit
   end
 

@@ -6,10 +6,6 @@ class Projects::HooksController < Projects::ApplicationController
 
   layout "project_settings"
 
-  def index
-    redirect_to namespace_project_settings_integrations_path(@project.namespace, @project)
-  end
-
   def create
     @hook = @project.hooks.new(hook_params)
     @hook.save
@@ -18,7 +14,8 @@ class Projects::HooksController < Projects::ApplicationController
       redirect_to namespace_project_settings_integrations_path(@project.namespace, @project)
     else
       @hooks = @project.hooks.select(&:persisted?)
-      render :index
+      flash[:alert] = @hook.errors.full_messages.join.html_safe
+      redirect_to namespace_project_settings_integrations_path(@project.namespace, @project)
     end
   end
 
