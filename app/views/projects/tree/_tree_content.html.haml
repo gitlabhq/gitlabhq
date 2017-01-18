@@ -8,7 +8,7 @@
             .pull-left Last commit
             .last-commit.hidden-sm.pull-left
               %small.light
-                = clipboard_button(clipboard_text: @commit.id)
+                = clipboard_button(clipboard_text: @commit.id, title: "Copy commit SHA to clipboard")
                 = link_to @commit.short_id, namespace_project_commit_path(@project.namespace, @project, @commit), class: "monospace"
                 = time_ago_with_tooltip(@commit.committed_date)
                 = @commit.full_title
