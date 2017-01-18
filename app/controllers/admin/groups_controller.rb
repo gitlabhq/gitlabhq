@@ -72,14 +72,14 @@ class Admin::GroupsController < Admin::ApplicationController
       :name,
       :path,
       :request_access_enabled,
-      :shared_runners_minutes_limit,
       :visibility_level
     ]
   end
 
   def group_params_ee
     [
-      :repository_size_limit
+      :repository_size_limit,
+      :shared_runners_minutes_limit
     ]
   end
 end

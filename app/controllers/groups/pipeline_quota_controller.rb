@@ -4,6 +4,6 @@ class Groups::PipelineQuotaController < Groups::ApplicationController
   layout 'group_settings'
 
   def index
-    @projects = @group.projects.where(shared_runners_enabled: true).page(params[:page])
+    @projects = @group.projects.with_shared_runners.page(params[:page])
   end
 end

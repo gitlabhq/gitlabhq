@@ -1,6 +1,7 @@
 class Namespace < ActiveRecord::Base
   acts_as_paranoid
 
+  include EE::Namespace
   include CacheMarkdownField
   include Sortable
   include Gitlab::ShellAdapter
@@ -10,8 +11,6 @@ class Namespace < ActiveRecord::Base
   cache_markdown_field :description, pipeline: :description
 
   has_many :projects, dependent: :destroy
-  has_one :namespace_metrics, dependent: :destroy
-
   has_many :project_statistics
   belongs_to :owner, class_name: "User"
 
@@ -39,9 +38,6 @@ class Namespace < ActiveRecord::Base
   # Save the storage paths before the projects are destroyed to use them on after destroy
   before_destroy(prepend: true) { @old_repository_storage_paths = repository_storage_paths }
   after_destroy :rm_dir
-
-  delegate :shared_runners_minutes, :shared_runners_minutes_last_reset,
-    to: :namespace_metrics, allow_nil: true
 
   scope :root, -> { where('type IS NULL') }
 
@@ -187,21 +183,6 @@ class Namespace < ActiveRecord::Base
 
   def shared_runners_enabled?
     projects.where(shared_runners_enabled: true).any?
-  end
-
-  def actual_shared_runners_minutes_limit
-    shared_runners_minutes_limit ||
-      current_application_settings.shared_runners_minutes
-  end
-
-  def shared_runners_minutes_limit_enabled?
-    shared_runners_enabled? &&
-      actual_shared_runners_minutes_limit.nonzero?
-  end
-
-  def shared_runners_minutes_used?
-    shared_runners_minutes_limit_enabled? &&
-      shared_runners_minutes.to_i >= actual_shared_runners_minutes_limit
   end
 
   def full_name

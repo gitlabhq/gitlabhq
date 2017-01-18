@@ -2,6 +2,7 @@ module Ci
   class Build < CommitStatus
     include TokenAuthenticatable
     include AfterCommitQueue
+    include EE::Build
 
     belongs_to :runner
     belongs_to :trigger_request
@@ -100,12 +101,6 @@ module Ci
       after_transition any => [:success, :failed, :canceled] do |build|
         build.run_after_commit do
           BuildFinishedWorker.perform_async(id)
-        end
-      end
-
-      after_transition any => [:success, :failed, :canceled] do |build|
-        build.run_after_commit do
-          UpdateBuildMinutesService.new(project, nil).execute(self)
         end
       end
 
@@ -537,10 +532,6 @@ module Ci
 
     def credentials
       Gitlab::Ci::Build::Credentials::Factory.new(self).create!
-    end
-
-    def shared_runners_minutes_quota?
-      runner && runner.shared? && project.shared_runners_minutes_quota?
     end
 
     private

@@ -18,6 +18,7 @@ class Project < ActiveRecord::Base
   include SelectForProjectAuthorization
   include Routable
   prepend EE::GeoAwareAvatar
+  include EE::Project
 
   extend Gitlab::ConfigHelper
 
@@ -28,12 +29,6 @@ class Project < ActiveRecord::Base
   delegate :feature_available?, :builds_enabled?, :wiki_enabled?,
            :merge_requests_enabled?, :issues_enabled?, to: :project_feature,
                                                        allow_nil: true
-
-  delegate :shared_runners_minutes, :shared_runners_minutes_last_reset,
-    to: :project_metrics, allow_nil: true
-
-  delegate :shared_runners_minutes_limit_enabled?, :actual_shared_runners_minutes_limit,
-    :shared_runners_minutes_used?, to: :namespace
 
   default_value_for :archived, false
   default_value_for :visibility_level, gitlab_config_features.visibility_level
@@ -81,8 +76,6 @@ class Project < ActiveRecord::Base
   belongs_to :group, -> { where(type: 'Group') }, foreign_key: 'namespace_id'
   belongs_to :namespace
   belongs_to :mirror_user, foreign_key: 'mirror_user_id', class_name: 'User'
-
-  has_one :project_metrics, dependent: :destroy
 
   has_one :push_rule, dependent: :destroy
   has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event'
@@ -253,6 +246,7 @@ class Project < ActiveRecord::Base
 
   scope :with_project_feature, -> { joins('LEFT JOIN project_features ON projects.id = project_features.project_id') }
   scope :with_statistics, -> { includes(:statistics) }
+  scope :with_shared_runners_limit_enabled, -> { where(shared_runners_enabled: true).non_public_only }
 
   # "enabled" here means "not disabled". It includes private features!
   scope :with_feature_enabled, ->(feature) {
@@ -1247,14 +1241,16 @@ class Project < ActiveRecord::Base
     project_feature.update_attribute(:builds_access_level, ProjectFeature::ENABLED)
   end
 
+  def shared_runners
+    shared_runners_enabled? ? Ci::Runner.shared : Ci::Runner.none
+  end unless defined?(:shared_runners)
+
   def any_runners?(&block)
     if runners.active.any?(&block)
       return true
     end
 
-    shared_runners_enabled? &&
-      !namespace.shared_runners_minutes_used? &&
-      Ci::Runner.shared.active.any?(&block)
+    shared_runners.active.any?(&block)
   end
 
   def valid_runners_token?(token)
@@ -1567,10 +1563,6 @@ class Project < ActiveRecord::Base
     environments_for(branch).select do |environment|
       environment.recently_updated_on_branch?(branch)
     end
-  end
-
-  def shared_runners_minutes_quota?
-    !public? && shared_runners_enabled?
   end
 
   private
