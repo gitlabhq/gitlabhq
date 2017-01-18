@@ -30,6 +30,15 @@ module IssuablesHelper
     end
   end
 
+  def serialize_issuable(issuable)
+    case issuable
+    when Issue
+      IssueSerializer.new.represent(issuable).to_json
+    when MergeRequest
+      MergeRequestSerializer.new.represent(issuable).to_json
+    end
+  end
+
   def template_dropdown_tag(issuable, &block)
     title = selected_template(issuable) || "Choose a template"
     options = {
