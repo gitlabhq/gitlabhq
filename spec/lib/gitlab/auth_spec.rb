@@ -210,6 +210,18 @@ describe Gitlab::Auth, lib: true do
       end
     end
 
+    it "does not find user in blocked state" do
+      user.block
+
+      expect( gl_auth.find_with_user_password(username, password) ).not_to eql user
+    end
+
+    it "does not find user in ldap_blocked state" do
+      user.ldap_block
+
+      expect( gl_auth.find_with_user_password(username, password) ).not_to eql user
+    end
+
     context "with ldap enabled" do
       before do
         allow(Gitlab::LDAP::Config).to receive(:enabled?).and_return(true)

@@ -40,7 +40,7 @@ module Gitlab
 
             Gitlab::LDAP::Authentication.login(login, password)
           else
-            user if user.valid_password?(password)
+            user if user.active? && user.valid_password?(password)
           end
         end
       end
