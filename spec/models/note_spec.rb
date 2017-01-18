@@ -152,6 +152,7 @@ describe Note, models: true do
         with([{
           text: note1.note,
           context: {
+            skip_project_check: false,
             pipeline: :note,
             cache_key: [note1, "note"],
             project: note1.project,
@@ -163,6 +164,7 @@ describe Note, models: true do
         with([{
           text: note2.note,
           context: {
+            skip_project_check: false,
             pipeline: :note,
             cache_key: [note2, "note"],
             project: note2.project,

@@ -24,11 +24,10 @@ module Banzai
       end
 
       def call
-        return doc if project.nil?
+        return doc if project.nil? && !skip_project_check?
 
         ref_pattern = User.reference_pattern
         ref_pattern_start = /\A#{ref_pattern}\z/
-
         nodes.each do |node|
           if text_node?(node)
             replace_text_when_pattern_matches(node, ref_pattern) do |content|
@@ -58,7 +57,7 @@ module Banzai
       # have `gfm` and `gfm-project_member` class names attached for styling.
       def user_link_filter(text, link_content: nil)
         self.class.references_in(text) do |match, username|
-          if username == 'all'
+          if username == 'all' && !skip_project_check?
             link_to_all(link_content: link_content)
           elsif namespace = namespaces[username]
             link_to_namespace(namespace, link_content: link_content) || match

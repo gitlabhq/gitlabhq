@@ -49,7 +49,11 @@ module Mentionable
 
     self.class.mentionable_attrs.each do |attr, options|
       text    = __send__(attr)
-      options = options.merge(cache_key: [self, attr], author: author)
+      options = options.merge(
+        cache_key: [self, attr],
+        author: author,
+        skip_project_check: is_a?(Note) && for_personal_snippet?
+      )
 
       extractor.analyze(text, options)
     end

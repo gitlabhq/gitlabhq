@@ -152,6 +152,27 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
     end
   end
 
+  context 'when a project is not specified' do
+    let(:project) { nil }
+
+    it 'does not link a User' do
+      doc = reference_filter("Hey #{reference}")
+      expect(doc).not_to include('a')
+    end
+
+    context 'when skip_project_check set to true' do
+      it 'links to a User' do
+        doc = reference_filter("Hey #{reference}", skip_project_check: true)
+        expect(doc.css('a').first.attr('href')).to eq urls.user_url(user)
+      end
+
+      it 'does not link users using @all reference' do
+        doc = reference_filter("Hey #{User.reference_prefix}all", skip_project_check: true)
+        expect(doc).not_to include('a')
+      end
+    end
+  end
+
   describe '#namespaces' do
     it 'returns a Hash containing all Namespaces' do
       document = Nokogiri::HTML.fragment("<p>#{user.to_reference}</p>")

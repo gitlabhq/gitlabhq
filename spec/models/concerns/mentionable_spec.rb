@@ -30,12 +30,23 @@ describe Issue, "Mentionable" do
   describe '#mentioned_users' do
     let!(:user) { create(:user, username: 'stranger') }
     let!(:user2) { create(:user, username: 'john') }
-    let!(:issue) { create(:issue, description: "#{user.to_reference} mentioned") }
+    let!(:user3) { create(:user, username: 'jim') }
+    let(:issue) { create(:issue, description: "#{user.to_reference} mentioned") }
 
     subject { issue.mentioned_users }
 
     it { is_expected.to include(user) }
     it { is_expected.not_to include(user2) }
+
+    context 'when a note on personal snippet' do
+      let!(:note) { create(:note_on_personal_snippet, note: "#{user.to_reference} mentioned #{user3.to_reference}") }
+
+      subject { note.mentioned_users }
+
+      it { is_expected.to include(user) }
+      it { is_expected.to include(user3) }
+      it { is_expected.not_to include(user2) }
+    end
   end
 
   describe '#referenced_mentionables' do

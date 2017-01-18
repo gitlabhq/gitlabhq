@@ -306,8 +306,8 @@ describe NotificationService, services: true do
           should_email(@u_watcher)
           should_email(@u_snippet_author)
 
-          # TODO: make mentions working for pesronal snippets
-          # should_email(@u_mentioned_level)
+          # it emails mentioned users
+          should_email(@u_mentioned)
 
           # it does not email participants with mention notification level
           should_not_email(@u_mentioned_level)

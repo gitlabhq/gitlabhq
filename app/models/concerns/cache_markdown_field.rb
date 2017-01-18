@@ -112,7 +112,10 @@ module CacheMarkdownField
       invalidation_method = "#{html_field}_invalidated?".to_sym
 
       define_method(cache_method) do
-        html = Banzai::Renderer.cacheless_render_field(self, markdown_field)
+        options = {
+          skip_project_check: is_a?(Note) && for_personal_snippet?
+        }
+        html = Banzai::Renderer.cacheless_render_field(self, markdown_field, options)
         __send__("#{html_field}=", html)
         true
       end
