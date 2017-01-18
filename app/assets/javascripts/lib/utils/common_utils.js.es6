@@ -163,34 +163,34 @@
     w.gl.utils.getSelectedFragment = () => {
       if (!window.getSelection) return null;
 
-      let selection = window.getSelection();
+      const selection = window.getSelection();
       if (!selection.rangeCount || selection.rangeCount === 0) return null;
 
-      let documentFragment = selection.getRangeAt(0).cloneContents();
+      const documentFragment = selection.getRangeAt(0).cloneContents();
       if (!documentFragment) return null;
 
       if (documentFragment.textContent.length === 0) return null;
 
       return documentFragment;
-    }
+    };
 
     w.gl.utils.insertText = (target, text) => {
       // Firefox doesn't support `document.execCommand('insertText', false, text)` on textareas
 
-      let selectionStart = target.selectionStart;
-      let selectionEnd = target.selectionEnd;
-      let value = target.value;
+      const selectionStart = target.selectionStart;
+      const selectionEnd = target.selectionEnd;
+      const value = target.value;
 
-      let textBefore = value.substring(0, selectionStart);
-      let textAfter  = value.substring(selectionEnd, value.length);
-      let newText = textBefore + text + textAfter;
+      const textBefore = value.substring(0, selectionStart);
+      const textAfter = value.substring(selectionEnd, value.length);
+      const newText = textBefore + text + textAfter;
 
       target.value = newText;
       target.selectionStart = target.selectionEnd = selectionStart + text.length;
-    }
+    };
 
     w.gl.utils.nodeMatchesSelector = (node, selector) => {
-      let matches = Element.prototype.matches ||
+      const matches = Element.prototype.matches ||
         Element.prototype.matchesSelector ||
         Element.prototype.mozMatchesSelector ||
         Element.prototype.msMatchesSelector ||
@@ -210,9 +210,9 @@
         parentNode.appendChild(node);
       }
 
-      let matchingNodes = parentNode.querySelectorAll(selector);
+      const matchingNodes = parentNode.querySelectorAll(selector);
       return Array.prototype.indexOf.call(matchingNodes, node) !== -1;
-    }
+    };
   })(window);
 
 }).call(this);

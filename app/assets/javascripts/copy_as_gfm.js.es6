@@ -1,5 +1,5 @@
-/* eslint-disable class-methods-use-this */
-/*jshint esversion: 6 */
+/* eslint-disable class-methods-use-this, object-shorthand, no-unused-vars, no-use-before-define, no-new, max-len, no-restricted-syntax, guard-for-in, no-continue */
+/* jshint esversion: 6 */
 
 /*= require lib/utils/common_utils */
 
@@ -23,7 +23,7 @@
     TaskListFilter: {
       'input[type=checkbox].task-list-item-checkbox'(el, text) {
         return `[${el.checked ? 'x' : ' '}]`;
-      }
+      },
     },
     ReferenceFilter: {
       'a.gfm:not([data-link=true])'(el, text) {
@@ -55,7 +55,7 @@
     },
     VideoLinkFilter: {
       '.video-container'(el, text) {
-        let videoEl = el.querySelector('video');
+        const videoEl = el.querySelector('video');
         if (!videoEl) return false;
 
         return CopyAsGFM.nodeToGFM(videoEl);
@@ -66,22 +66,22 @@
     },
     MathFilter: {
       'pre.code.math[data-math-style=display]'(el, text) {
-        return '```math\n' + text.trim() + '\n```';
+        return `\`\`\`math\n${text.trim()}\n\`\`\``;
       },
       'code.code.math[data-math-style=inline]'(el, text) {
-        return '$`' + text + '`$';
+        return `$\`${text}\`$`;
       },
       'span.katex-display span.katex-mathml'(el, text) {
-        let mathAnnotation = el.querySelector('annotation[encoding="application/x-tex"]');
+        const mathAnnotation = el.querySelector('annotation[encoding="application/x-tex"]');
         if (!mathAnnotation) return false;
 
-        return '```math\n' + CopyAsGFM.nodeToGFM(mathAnnotation)  + '\n```';
+        return `\`\`\`math\n${CopyAsGFM.nodeToGFM(mathAnnotation)}\n\`\`\``;
       },
       'span.katex-mathml'(el, text) {
-        let mathAnnotation = el.querySelector('annotation[encoding="application/x-tex"]');
+        const mathAnnotation = el.querySelector('annotation[encoding="application/x-tex"]');
         if (!mathAnnotation) return false;
 
-        return '$`' + CopyAsGFM.nodeToGFM(mathAnnotation) + '`$';
+        return `$\`${CopyAsGFM.nodeToGFM(mathAnnotation)}\`$`;
       },
       'span.katex-html'(el, text) {
         // We don't want to include the content of this element in the copied text.
@@ -89,7 +89,7 @@
       },
       'annotation[encoding="application/x-tex"]'(el, text) {
         return text.trim();
-      }
+      },
     },
     SyntaxHighlightFilter: {
       'pre.code.highlight'(el, text) {
@@ -97,7 +97,7 @@
         if (lang === 'plaintext') {
           lang = '';
         }
-        return '```' + lang + '\n' + text.trim() + '\n```';
+        return `\`\`\`${lang}\n${text.trim()}\n\`\`\``;
       },
       'pre > code'(el, text) {
          // Don't wrap code blocks in ``
@@ -107,18 +107,18 @@
     MarkdownFilter: {
       'code'(el, text) {
         let backtickCount = 1;
-        let backtickMatch = text.match(/`+/);
+        const backtickMatch = text.match(/`+/);
         if (backtickMatch) {
           backtickCount = backtickMatch[0].length + 1;
         }
 
-        let backticks = new Array(backtickCount + 1).join('`');
-        let spaceOrNoSpace = backtickCount > 1 ? ' ' : '';
+        const backticks = new Array(backtickCount + 1).join('`');
+        const spaceOrNoSpace = backtickCount > 1 ? ' ' : '';
 
         return backticks + spaceOrNoSpace + text + spaceOrNoSpace + backticks;
       },
       'blockquote'(el, text) {
-        return text.trim().split('\n').map((s) => `> ${s}`.trim()).join('\n');
+        return text.trim().split('\n').map(s => `> ${s}`.trim()).join('\n');
       },
       'img'(el, text) {
         return `![${el.getAttribute('alt')}](${el.getAttribute('src')})`;
@@ -131,15 +131,14 @@
         return `[${text}](${el.getAttribute('href')})`;
       },
       'li'(el, text) {
-        let lines = text.trim().split('\n');
-        let firstLine = '- ' + lines.shift();
-        // Add two spaces to the front of subsequent list items lines, or leave the line entirely blank.
-        let nextLines = lines.map(function(s) {
-          if (s.trim().length === 0) {
-            return '';
-          } else {
-            return `  ${s}`;
-          }
+        const lines = text.trim().split('\n');
+        const firstLine = `- ${lines.shift()}`;
+        // Add two spaces to the front of subsequent list items lines,
+        // or leave the line entirely blank.
+        const nextLines = lines.map((s) => {
+          if (s.trim().length === 0) return '';
+
+          return `  ${s}`;
         });
 
         return `${firstLine}\n${nextLines.join('\n')}`;
@@ -185,13 +184,13 @@
         return '-----';
       },
       'table'(el, text) {
-        let theadText = CopyAsGFM.nodeToGFM(el.querySelector('thead'));
-        let tbodyText = CopyAsGFM.nodeToGFM(el.querySelector('tbody'));
+        const theadText = CopyAsGFM.nodeToGFM(el.querySelector('thead'));
+        const tbodyText = CopyAsGFM.nodeToGFM(el.querySelector('tbody'));
 
         return theadText + tbodyText;
       },
       'thead'(el, text) {
-        let cells = _.map(el.querySelectorAll('th'), function(cell) {
+        const cells = _.map(el.querySelectorAll('th'), (cell) => {
           let chars = CopyAsGFM.nodeToGFM(cell).trim().length;
 
           let before = '';
@@ -206,24 +205,24 @@
               after = ':';
               chars -= 1;
               break;
+            default:
+              break;
           }
 
           chars = Math.max(chars, 0);
 
-          let middle = new Array(chars + 1).join('-');
+          const middle = new Array(chars + 1).join('-');
 
           return before + middle + after;
         });
 
-        return text + `| ${cells.join(' | ')} |`;
+        return `${text}| ${cells.join(' | ')} |`;
       },
       'tr'(el, text) {
-        let cells = _.map(el.querySelectorAll('td, th'), function(cell) {
-          return CopyAsGFM.nodeToGFM(cell).trim();
-        });
+        const cells = _.map(el.querySelectorAll('td, th'), cell => CopyAsGFM.nodeToGFM(cell).trim());
         return `| ${cells.join(' | ')} |`;
       },
-    }
+    },
   };
 
   class CopyAsGFM {
@@ -233,24 +232,24 @@
     }
 
     handleCopy(e) {
-      let clipboardData = e.originalEvent.clipboardData;
+      const clipboardData = e.originalEvent.clipboardData;
       if (!clipboardData) return;
 
-      let documentFragment = window.gl.utils.getSelectedFragment();
+      const documentFragment = window.gl.utils.getSelectedFragment();
       if (!documentFragment) return;
 
       e.preventDefault();
       clipboardData.setData('text/plain', documentFragment.textContent);
 
-      let gfm = CopyAsGFM.nodeToGFM(documentFragment);
+      const gfm = CopyAsGFM.nodeToGFM(documentFragment);
       clipboardData.setData('text/x-gfm', gfm);
     }
 
     handlePaste(e) {
-      let clipboardData = e.originalEvent.clipboardData;
+      const clipboardData = e.originalEvent.clipboardData;
       if (!clipboardData) return;
 
-      let gfm = clipboardData.getData('text/x-gfm');
+      const gfm = clipboardData.getData('text/x-gfm');
       if (!gfm) return;
 
       e.preventDefault();
@@ -263,21 +262,21 @@
         return node.textContent;
       }
 
-      let text = this.innerGFM(node);
+      const text = this.innerGFM(node);
 
       if (node.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
         return text;
       }
 
-      for (let filter in gfmRules) {
-        let rules = gfmRules[filter];
+      for (const filter in gfmRules) {
+        const rules = gfmRules[filter];
 
-        for (let selector in rules) {
-          let func = rules[selector];
+        for (const selector in rules) {
+          const func = rules[selector];
 
           if (!window.gl.utils.nodeMatchesSelector(node, selector)) continue;
 
-          let result = func(node, text);
+          const result = func(node, text);
           if (result === false) continue;
 
           return result;
@@ -288,16 +287,16 @@
     }
 
     static innerGFM(parentNode) {
-      let nodes = parentNode.childNodes;
+      const nodes = parentNode.childNodes;
 
-      let clonedParentNode = parentNode.cloneNode(true);
-      let clonedNodes = Array.prototype.slice.call(clonedParentNode.childNodes, 0);
+      const clonedParentNode = parentNode.cloneNode(true);
+      const clonedNodes = Array.prototype.slice.call(clonedParentNode.childNodes, 0);
 
-      for (let i = 0; i < nodes.length; i++) {
-        let node = nodes[i];
-        let clonedNode = clonedNodes[i];
+      for (let i = 0; i < nodes.length; i += 1) {
+        const node = nodes[i];
+        const clonedNode = clonedNodes[i];
 
-        let text = this.nodeToGFM(node);
+        const text = this.nodeToGFM(node);
 
         // `clonedNode.replaceWith(text)` is not yet widely supported
         clonedNode.parentNode.replaceChild(document.createTextNode(text), clonedNode);
