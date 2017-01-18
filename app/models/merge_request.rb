@@ -576,7 +576,7 @@ class MergeRequest < ActiveRecord::Base
     ext = Gitlab::ReferenceExtractor.new(project, current_user)
     ext.analyze(description)
 
-    ext.issues - closes_issues
+    ext.issues - closes_issues(current_user)
   end
 
   def target_project_path
