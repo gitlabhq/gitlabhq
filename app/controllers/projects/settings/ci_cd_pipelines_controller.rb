@@ -4,18 +4,29 @@ module Projects
       before_action :authorize_admin_pipeline!
 
       def show
-        # runners
+        define_runners_variables
+        # variables
+        @variable = Ci::Variable.new
+        define_triggers_variables
+        define_badges_variables
+      end
+
+      private
+
+      def define_runners_variables
         @project_runners = @project.runners.ordered
         @assignable_runners = current_user.ci_authorized_runners.
           assignable_for(project).ordered.page(params[:page]).per(20)
         @shared_runners = Ci::Runner.shared.active
         @shared_runners_count = @shared_runners.count(:all)
-        # variables
-        @variable = Ci::Variable.new
-        # triggers
+      end
+
+      def define_triggers_variables
         @triggers = @project.triggers
         @trigger = Ci::Trigger.new
-        # pipelines
+      end
+
+      def define_badges_variables
         @ref = params[:ref] || @project.default_branch || 'master'
 
         @badges = [Gitlab::Badge::Build::Status,
