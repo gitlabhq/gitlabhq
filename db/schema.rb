@@ -827,8 +827,8 @@ ActiveRecord::Schema.define(version: 20170106172237) do
 
   create_table "namespace_statistics", force: :cascade do |t|
     t.integer "namespace_id", null: false
-    t.integer "shared_runners_minutes", default: 0, null: false
-    t.datetime "shared_runners_minutes_last_reset"
+    t.integer "shared_runners_seconds", default: 0, null: false
+    t.datetime "shared_runners_seconds_last_reset"
   end
 
   add_index "namespace_statistics", ["namespace_id"], name: "index_namespace_statistics_on_namespace_id", unique: true, using: :btree
@@ -1050,8 +1050,8 @@ ActiveRecord::Schema.define(version: 20170106172237) do
     t.integer "repository_size", limit: 8, default: 0, null: false
     t.integer "lfs_objects_size", limit: 8, default: 0, null: false
     t.integer "build_artifacts_size", limit: 8, default: 0, null: false
-    t.integer "shared_runners_minutes", limit: 8, default: 0, null: false
-    t.datetime "shared_runners_minutes_last_reset"
+    t.integer "shared_runners_seconds", limit: 8, default: 0, null: false
+    t.datetime "shared_runners_seconds_last_reset"
   end
 
   add_index "project_statistics", ["namespace_id"], name: "index_project_statistics_on_namespace_id", using: :btree

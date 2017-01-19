@@ -9,7 +9,7 @@ describe Prependable do
     end
 
     it 'can execute a method' do
-      expect(subject.class_value).to eq(200)
+      expect(subject.class_value).to eq(20)
     end
   end
 

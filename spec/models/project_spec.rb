@@ -990,8 +990,8 @@ describe Project, models: true do
     context 'when shared runners are disabled for project' do
       let!(:project) { create(:empty_project, shared_runners_enabled: false) }
 
-      it "returns a project" do
-        is_expected.to eq([project])
+      it "returns an empty array" do
+        is_expected.to be_empty
       end
     end
   end
@@ -1155,7 +1155,7 @@ describe Project, models: true do
       let!(:project) { create(:empty_project, shared_runners_enabled: false) }
 
       it "returns a empty list" do
-        is_expected.to be_nil
+        is_expected.to be_empty
       end
     end
   end

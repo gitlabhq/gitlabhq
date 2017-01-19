@@ -6,7 +6,7 @@
   .row
     .col-sm-6
       %strong
-        - last_reset = @group.shared_runners_minutes_last_reset
+        - last_reset = @group.shared_runners_seconds_last_reset
         - if last_reset
           Usage since
           = last_reset.strftime('%b %d, %Y')

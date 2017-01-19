@@ -9,7 +9,7 @@ module EE
     prepended do
       has_one :namespace_statistics, dependent: :destroy
 
-      delegate :shared_runners_minutes, :shared_runners_minutes_last_reset,
+      delegate :shared_runners_minutes, :shared_runners_seconds, :shared_runners_seconds_last_reset,
         to: :namespace_statistics, allow_nil: true
     end
 

@@ -16,35 +16,35 @@ describe ClearSharedRunnersMinutesWorker do
       let(:statistics) { project.statistics }
 
       before do
-        statistics.update(shared_runners_minutes: 100)
+        statistics.update(shared_runners_seconds: 100)
       end
 
       it 'clears counters' do
         subject
 
-        expect(statistics.reload.shared_runners_minutes).to be_zero
+        expect(statistics.reload.shared_runners_seconds).to be_zero
       end
 
       it 'resets timer' do
         subject
 
-        expect(statistics.reload.shared_runners_minutes_last_reset).to be_like_time(Time.now)
+        expect(statistics.reload.shared_runners_seconds_last_reset).to be_like_time(Time.now)
       end
     end
 
     context 'when namespace statistics are defined' do
-      let!(:statistics) { create(:namespace_statistics, shared_runners_minutes: 100) }
+      let!(:statistics) { create(:namespace_statistics, shared_runners_seconds: 100) }
 
       it 'clears counters' do
         subject
 
-        expect(statistics.reload.shared_runners_minutes).to be_zero
+        expect(statistics.reload.shared_runners_seconds).to be_zero
       end
 
       it 'resets timer' do
         subject
 
-        expect(statistics.reload.shared_runners_minutes_last_reset).to be_like_time(Time.now)
+        expect(statistics.reload.shared_runners_seconds_last_reset).to be_like_time(Time.now)
       end
     end
   end

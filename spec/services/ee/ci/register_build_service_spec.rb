@@ -11,7 +11,7 @@ module Ci
       context 'for project with shared runners when global minutes limit is set' do
         before do
           project.update(shared_runners_enabled: true)
-          stub_application_setting(shared_runners_minutes: 500)
+          stub_application_setting(shared_runners_minutes: 100)
         end
 
         context 'allow to pick builds' do
@@ -23,7 +23,7 @@ module Ci
         context 'when over the global quota' do
           before do
             project.namespace.create_namespace_statistics(
-              shared_runners_minutes: 600)
+              shared_runners_seconds: 6001)
           end
 
           let(:build) { execute(shared_runner) }
@@ -54,7 +54,7 @@ module Ci
 
           context 'when namespace quota is bigger than a global one' do
             before do
-              project.namespace.update(shared_runners_minutes_limit: 1000)
+              project.namespace.update(shared_runners_minutes_limit: 101)
             end
 
             it "does return the build" do

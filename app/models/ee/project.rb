@@ -9,7 +9,7 @@ module EE
     prepended do
       scope :with_shared_runners_limit_enabled, -> { with_shared_runners.non_public_only }
 
-      delegate :shared_runners_minutes, :shared_runners_minutes_last_reset,
+      delegate :shared_runners_minutes, :shared_runners_seconds, :shared_runners_seconds_last_reset,
         to: :statistics, allow_nil: true
 
       delegate :actual_shared_runners_minutes_limit,

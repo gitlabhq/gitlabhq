@@ -6,7 +6,8 @@ describe Namespace, models: true do
   it { is_expected.to have_one(:namespace_statistics).dependent(:destroy) }
 
   it { is_expected.to delegate_method(:shared_runners_minutes).to(:namespace_statistics) }
-  it { is_expected.to delegate_method(:shared_runners_minutes_last_reset).to(:namespace_statistics) }
+  it { is_expected.to delegate_method(:shared_runners_seconds).to(:namespace_statistics) }
+  it { is_expected.to delegate_method(:shared_runners_seconds_last_reset).to(:namespace_statistics) }
 
   describe '#shared_runners_enabled?' do
     subject { namespace.shared_runners_enabled? }

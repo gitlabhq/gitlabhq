@@ -21,7 +21,7 @@ module EE
           where('namespaces.id = projects.namespace_id').
           joins('LEFT JOIN namespace_statistics ON namespace_statistics.namespace_id = namespaces.id').
           where('COALESCE(namespaces.shared_runners_minutes_limit, ?, 0) = 0 OR ' \
-            'COALESCE(namespace_statistics.shared_runners_minutes, 0) < COALESCE(namespaces.shared_runners_minutes_limit, ?, 0)',
+            'COALESCE(namespace_statistics.shared_runners_seconds, 0) < COALESCE(namespaces.shared_runners_minutes_limit, ?, 0) * 60',
                 application_shared_runners_minutes, application_shared_runners_minutes).
           select('1')
       end

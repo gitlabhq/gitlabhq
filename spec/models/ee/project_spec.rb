@@ -3,7 +3,8 @@ require 'spec_helper'
 describe Project, models: true do
   describe 'associations' do
     it { is_expected.to delegate_method(:shared_runners_minutes).to(:statistics) }
-    it { is_expected.to delegate_method(:shared_runners_minutes_last_reset).to(:statistics) }
+    it { is_expected.to delegate_method(:shared_runners_seconds).to(:statistics) }
+    it { is_expected.to delegate_method(:shared_runners_seconds_last_reset).to(:statistics) }
 
     it { is_expected.to delegate_method(:actual_shared_runners_minutes_limit).to(:namespace) }
     it { is_expected.to delegate_method(:shared_runners_minutes_limit_enabled?).to(:namespace) }
