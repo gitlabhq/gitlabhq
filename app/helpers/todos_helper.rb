@@ -11,9 +11,10 @@ module TodosHelper
     case todo.action
     when Todo::ASSIGNED then 'assigned you'
     when Todo::MENTIONED then 'mentioned you on'
-    when Todo::BUILD_FAILED then 'The build failed for your'
+    when Todo::BUILD_FAILED then 'The build failed for'
     when Todo::MARKED then 'added a todo for'
     when Todo::APPROVAL_REQUIRED then 'set you as an approver for'
+    when Todo::UNMERGEABLE then 'Could not merge'
     end
   end
 
