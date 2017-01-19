@@ -1,6 +1,7 @@
 class ApplicationSetting < ActiveRecord::Base
   include CacheMarkdownField
   include TokenAuthenticatable
+  prepend EE::ApplicationSetting
 
   add_authentication_token_field :runners_registration_token
   add_authentication_token_field :health_check_access_token
@@ -122,9 +123,6 @@ class ApplicationSetting < ActiveRecord::Base
   validates :housekeeping_gc_period,
             presence: true,
             numericality: { only_integer: true, greater_than: :housekeeping_full_repack_period }
-
-  validates :shared_runners_minutes,
-            numericality: { greater_than_or_equal_to: 0 }
 
   validates_each :restricted_visibility_levels do |record, attr, value|
     unless value.nil?

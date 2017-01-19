@@ -1,5 +1,5 @@
 FactoryGirl.define do
-  factory :namespace_metrics do
+  factory :namespace_statistics do
     namespace factory: :namespace
   end
 end

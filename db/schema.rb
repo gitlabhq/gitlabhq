@@ -825,13 +825,13 @@ ActiveRecord::Schema.define(version: 20170106172224) do
   add_index "milestones", ["title"], name: "index_milestones_on_title", using: :btree
   add_index "milestones", ["title"], name: "index_milestones_on_title_trigram", using: :gin, opclasses: {"title"=>"gin_trgm_ops"}
 
-  create_table "namespace_metrics", force: :cascade do |t|
+  create_table "namespace_statistics", force: :cascade do |t|
     t.integer "namespace_id", null: false
     t.integer "shared_runners_minutes", default: 0, null: false
     t.datetime "shared_runners_minutes_last_reset"
   end
 
-  add_index "namespace_metrics", ["namespace_id"], name: "index_namespace_metrics_on_namespace_id", unique: true, using: :btree
+  add_index "namespace_statistics", ["namespace_id"], name: "index_namespace_metrics_on_namespace_id", unique: true, using: :btree
 
   create_table "namespaces", force: :cascade do |t|
     t.string "name", null: false
@@ -1515,7 +1515,7 @@ ActiveRecord::Schema.define(version: 20170106172224) do
   add_foreign_key "merge_request_metrics", "merge_requests", on_delete: :cascade
   add_foreign_key "merge_requests_closing_issues", "issues", on_delete: :cascade
   add_foreign_key "merge_requests_closing_issues", "merge_requests", on_delete: :cascade
-  add_foreign_key "namespace_metrics", "namespaces", on_delete: :cascade
+  add_foreign_key "namespace_statistics", "namespaces", on_delete: :cascade
   add_foreign_key "path_locks", "projects"
   add_foreign_key "path_locks", "users"
   add_foreign_key "personal_access_tokens", "users"

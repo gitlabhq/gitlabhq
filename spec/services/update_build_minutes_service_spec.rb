@@ -22,7 +22,7 @@ describe UpdateBuildMinutesService, services: true do
         expect(project.project_metrics.reload.shared_runners_minutes).
           to eq(build.duration.to_i)
 
-        expect(namespace.namespace_metrics.reload.shared_runners_minutes).
+        expect(namespace.namespace_statistics.reload.shared_runners_minutes).
           to eq(build.duration.to_i)
       end
 
@@ -38,7 +38,7 @@ describe UpdateBuildMinutesService, services: true do
           expect(project.project_metrics.reload.shared_runners_minutes).
             to eq(100 + build.duration.to_i)
 
-          expect(namespace.namespace_metrics.reload.shared_runners_minutes).
+          expect(namespace.namespace_statistics.reload.shared_runners_minutes).
             to eq(100 + build.duration.to_i)
         end
       end
@@ -51,7 +51,7 @@ describe UpdateBuildMinutesService, services: true do
         subject
 
         expect(project.project_metrics).to be_nil
-        expect(namespace.namespace_metrics).to be_nil
+        expect(namespace.namespace_statistics).to be_nil
       end
     end
   end

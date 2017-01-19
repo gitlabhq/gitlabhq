@@ -28,18 +28,18 @@ describe ClearSharedRunnersMinutesWorker do
     end
 
     context 'when project metrics are defined' do
-      let!(:namespace_metrics) { create(:namespace_metrics, shared_runners_minutes: 100) }
+      let!(:namespace_statistics) { create(:namespace_statistics, shared_runners_minutes: 100) }
 
       it 'clears counters' do
         subject
 
-        expect(namespace_metrics.reload.shared_runners_minutes).to be_zero
+        expect(namespace_statistics.reload.shared_runners_minutes).to be_zero
       end
 
       it 'resets timer' do
         subject
 
-        expect(namespace_metrics.reload.shared_runners_minutes_last_reset).to be_like_time(Time.now)
+        expect(namespace_statistics.reload.shared_runners_minutes_last_reset).to be_like_time(Time.now)
       end
     end
   end

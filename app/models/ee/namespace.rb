@@ -4,13 +4,13 @@ module EE
   # This module is intended to encapsulate EE-specific model logic
   # and be included in the `Namespace` model
   module Namespace
-    extend ActiveSupport::Concern
+    extend ActiveSupport::Prependable
 
-    included do
-      has_one :namespace_metrics, dependent: :destroy
+    prepended do
+      has_one :namespace_statistics, dependent: :destroy
 
       delegate :shared_runners_minutes, :shared_runners_minutes_last_reset,
-        to: :namespace_metrics, allow_nil: true
+        to: :namespace_statistics, allow_nil: true
     end
 
     def actual_shared_runners_minutes_limit

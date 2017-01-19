@@ -4,21 +4,21 @@ class UpdateBuildMinutesService < BaseService
     return unless build.complete?
     return unless build.duration
 
-    ProjectMetrics.update_counters(project_metrics,
+    ProjectStatistics.update_counters(project.statistics,
       shared_runners_minutes: build.duration)
 
-    NamespaceMetrics.update_counters(namespace_metrics,
-      shared_runners_minutes: build.duration)
+    NamespaceStatistics.update_counters(namespace_statistics,
+                                        shared_runners_minutes: build.duration)
   end
 
   private
 
-  def namespace_metrics
-    namespace.namespace_metrics || namespace.create_namespace_metrics
+  def namespace_statistics
+    namespace.namespace_statistics || namespace.create_namespace_statistics
   end
 
-  def project_metrics
-    project.project_metrics || project.create_project_metrics
+  def project_statistics
+    project.statistics || project.create_statistics(namespace: namespace)
   end
 
   def namespace

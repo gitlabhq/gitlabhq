@@ -1,7 +1,7 @@
 class Namespace < ActiveRecord::Base
   acts_as_paranoid
 
-  include EE::Namespace
+  prepend EE::Namespace
   include CacheMarkdownField
   include Sortable
   include Gitlab::ShellAdapter
