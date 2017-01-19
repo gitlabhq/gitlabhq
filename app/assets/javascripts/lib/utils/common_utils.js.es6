@@ -162,11 +162,7 @@
 
     w.gl.utils.getSelectedFragment = () => {
       const selection = window.getSelection();
-      if (!selection.rangeCount || selection.rangeCount === 0) return null;
-
       const documentFragment = selection.getRangeAt(0).cloneContents();
-      if (!documentFragment) return null;
-
       if (documentFragment.textContent.length === 0) return null;
 
       return documentFragment;
