@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, prefer-arrow-callback, no-var, quotes, vars-on-top, no-unused-vars, no-new, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, prefer-arrow-callback, no-var, quotes, vars-on-top, no-unused-vars, no-new, max-len */
 /* global EditBlob */
 /* global NewCommitForm */
 
@@ -12,5 +12,4 @@
     var blob = new EditBlob(url, $('.js-edit-blob-form').data('blob-language'));
     new NewCommitForm($('.js-edit-blob-form'));
   });
-
 }).call(this);

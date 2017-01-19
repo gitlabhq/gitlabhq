@@ -1,4 +1,4 @@
-/* eslint-disable space-before-function-paren, new-parens, quotes, no-var, one-var, one-var-declaration-per-line, comma-dangle, padded-blocks, max-len */
+/* eslint-disable space-before-function-paren, new-parens, quotes, no-var, one-var, one-var-declaration-per-line, comma-dangle, max-len */
 /* global MockU2FDevice */
 /* global U2FRegister */
 
@@ -74,5 +74,4 @@
       });
     });
   });
-
 }).call(this);

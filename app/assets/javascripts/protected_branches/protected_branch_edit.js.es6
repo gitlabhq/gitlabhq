@@ -1,8 +1,8 @@
-/* eslint-disable no-new, arrow-parens, no-param-reassign, no-irregular-whitespace, padded-blocks, comma-dangle, no-trailing-spaces, semi, max-len */
+/* eslint-disable no-new, arrow-parens, no-param-reassign, comma-dangle, max-len */
 /* global Flash */
 
 (global => {
-  global.gl = global.gl || {};
+  global.gl = global.gl || {};
 
   gl.ProtectedBranchEdit = class {
     constructor(options) {
@@ -14,7 +14,6 @@
     }
 
     buildDropdowns() {
-
       // Allowed to merge dropdown
       new gl.ProtectedBranchAccessDropdown({
         $dropdown: this.$allowedToMergeDropdown,
@@ -63,6 +62,5 @@
         }
       });
     }
-  }
-
+  };
 })(window);

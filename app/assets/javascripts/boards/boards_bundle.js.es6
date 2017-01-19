@@ -1,4 +1,4 @@
-/* eslint-disable one-var, indent, quote-props, comma-dangle, space-before-function-paren */
+/* eslint-disable one-var, quote-props, comma-dangle, space-before-function-paren */
 /* global Vue */
 /* global BoardService */
 
@@ -16,8 +16,8 @@
 //= require ./vue_resource_interceptor
 
 $(() => {
-  const $boardApp = document.getElementById('board-app'),
-        Store = gl.issueBoards.BoardsStore;
+  const $boardApp = document.getElementById('board-app');
+  const Store = gl.issueBoards.BoardsStore;
 
   window.gl = window.gl || {};
 

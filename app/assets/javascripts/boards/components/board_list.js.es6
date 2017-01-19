@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, space-before-function-paren, max-len, no-plusplus */
+/* eslint-disable comma-dangle, space-before-function-paren, max-len */
 /* global Vue */
 /* global Sortable */
 
@@ -43,7 +43,7 @@
       issues () {
         this.$nextTick(() => {
           if (this.scrollHeight() <= this.listHeight() && this.list.issuesSize > this.list.issues.length) {
-            this.list.page++;
+            this.list.page += 1;
             this.list.getIssues(false);
           }
 

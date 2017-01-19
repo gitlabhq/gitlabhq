@@ -1,4 +1,4 @@
-/* eslint-disable no-useless-return, func-names, space-before-function-paren, wrap-iife, no-var, no-underscore-dangle, prefer-arrow-callback, max-len, one-var, no-unused-vars, one-var-declaration-per-line, prefer-template, no-new, consistent-return, object-shorthand, comma-dangle, no-shadow, no-param-reassign, brace-style, vars-on-top, quotes, no-lonely-if, no-else-return, semi, dot-notation, no-empty, no-return-assign, camelcase, prefer-spread, padded-blocks */
+/* eslint-disable no-useless-return, func-names, space-before-function-paren, wrap-iife, no-var, no-underscore-dangle, prefer-arrow-callback, max-len, one-var, no-unused-vars, one-var-declaration-per-line, prefer-template, no-new, consistent-return, object-shorthand, comma-dangle, no-shadow, no-param-reassign, brace-style, vars-on-top, quotes, no-lonely-if, no-else-return, dot-notation, no-empty, no-return-assign, camelcase, prefer-spread */
 /* global Issuable */
 /* global ListLabel */
 
@@ -333,7 +333,7 @@
             if ($dropdown.parent().find('.is-active:not(.dropdown-clear-active)').length) {
               $dropdown.parent()
                 .find('.dropdown-clear-active')
-                .removeClass('is-active')
+                .removeClass('is-active');
             }
 
             if ($dropdown.hasClass('js-filter-bulk-update') || $dropdown.hasClass('js-issuable-form-dropdown')) {
@@ -484,5 +484,4 @@
 
     return LabelsSelect;
   })();
-
 }).call(this);

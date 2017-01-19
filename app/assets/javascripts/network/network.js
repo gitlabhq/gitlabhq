@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, quotes, quote-props, prefer-template, comma-dangle, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, quotes, quote-props, prefer-template, comma-dangle, max-len */
 /* global BranchGraph */
 
 (function() {
@@ -16,7 +16,5 @@
     }
 
     return Network;
-
   })();
-
 }).call(this);
