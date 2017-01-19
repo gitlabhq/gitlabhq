@@ -279,10 +279,6 @@ class Repository
     end
   end
 
-  def fetch_remote_forced!(remote)
-    gitlab_shell.fetch_remote(storage_path, path_with_namespace, remote, forced: true)
-  end
-
   def ref_names
     branch_names + tag_names
   end
@@ -1151,7 +1147,7 @@ class Repository
   def fetch_geo_mirror(url)
     add_remote(Repository::MIRROR_GEO, url)
     set_remote_as_mirror(Repository::MIRROR_GEO)
-    fetch_remote_forced!(Repository::MIRROR_GEO)
+    fetch_remote(Repository::MIRROR_GEO, forced: true)
   end
 
   def upstream_branches
