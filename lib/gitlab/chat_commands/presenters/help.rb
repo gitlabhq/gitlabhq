@@ -1,20 +1,25 @@
-module Gitlab::ChatCommands::Presenters
-  class Help < Gitlab::ChatCommands::Presenters::Base
-    def present(trigger)
-      message =
-        if @resource.none?
-          "No commands available :thinking_face:"
-        else
-          header_with_list("Available commands", full_commands(trigger))
+module Gitlab
+  module ChatCommands
+    module Presenters
+      class Help < Presenters::Base
+        def present(trigger)
+          ephemeral_response(text: help_message(trigger))
         end
 
-      ephemeral_response(text: message)
-    end
+        private
 
-    private
+        def help_message(trigger)
+          if @resource.none?
+            "No commands available :thinking_face:"
+          else
+            header_with_list("Available commands", full_commands(trigger))
+          end
+        end
 
-    def full_commands(trigger)
-      @resource.map { |command| "#{trigger} #{command.help_message}" }
+        def full_commands(trigger)
+          @resource.map { |command| "#{trigger} #{command.help_message}" }
+        end
+      end
     end
   end
 end

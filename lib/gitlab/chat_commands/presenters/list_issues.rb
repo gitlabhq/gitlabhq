@@ -1,32 +1,43 @@
-module Gitlab::ChatCommands::Presenters
-  class ListIssues < Gitlab::ChatCommands::Presenters::Base
-    def present
-      ephemeral_response(text: "Here are the issues I found:", attachments: attachments)
-    end
+module Gitlab
+  module ChatCommands
+    module Presenters
+      class ListIssues < Presenters::Issuable
+        def present
+          text = if @resource.count >= 5
+                   "Here are the first 5 issues I found:"
+                 else
+                   "Here are the #{@resource.count} issues I found:"
+                 end
 
-    private
+          ephemeral_response(text: text, attachments: attachments)
+        end
 
-    def attachments
-      @resource.map do |issue|
-        state = issue.open? ? "Open" : "Closed"
+        private
 
-        {
-          fallback: "Issue #{issue.to_reference}: #{issue.title}",
-          color: "#d22852",
-          text: "[#{issue.to_reference}](#{url_for([namespace, project, issue])}) · #{issue.title} (#{state})",
-          mrkdwn_in: [
-            "text"
-          ]
-        }
+        def attachments
+          @resource.map do |issue|
+            url = "[#{issue.to_reference}](#{url_for([namespace, project, issue])})"
+
+            {
+              color: color(issue),
+              fallback: "#{issue.to_reference} #{issue.title}",
+              text: "#{url} · #{issue.title} (#{status_text(issue)})",
+
+              mrkdwn_in: [
+                "text"
+              ]
+            }
+          end
+        end
+
+        def project
+          @project ||= @resource.first.project
+        end
+
+        def namespace
+          @namespace ||= project.namespace.becomes(Namespace)
+        end
       end
-    end
-
-    def project
-      @project ||= @resource.first.project
-    end
-
-    def namespace
-      @namespace ||= project.namespace.becomes(Namespace)
     end
   end
 end

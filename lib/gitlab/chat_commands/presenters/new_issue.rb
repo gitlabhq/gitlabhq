@@ -1,7 +1,7 @@
 module Gitlab
   module ChatCommands
     module Presenters
-      class ShowIssue < Presenters::Issuable
+      class NewIssue < Presenters::Issuable
         def present
           in_channel_response(show_issue)
         end
@@ -18,11 +18,10 @@ module Gitlab
                 author_icon:  author.avatar_url,
                 fallback:     "New issue #{@resource.to_reference}: #{@resource.title}",
                 pretext:      pretext,
-                text:         text,
                 color:        color(@resource),
                 fields:       fields,
                 mrkdwn_in: [
-                  :pretext,
+                  :title,
                   :text
                 ]
               }
@@ -30,23 +29,12 @@ module Gitlab
           }
         end
 
-        def text
-          message = "**#{status_text(@resource)}**"
-
-          if @resource.upvotes.zero? && @resource.downvotes.zero? && @resource.user_notes_count.zero?
-            return message
-          end
-
-          message << " · "
-          message << ":+1: #{@resource.upvotes} " unless @resource.upvotes.zero?
-          message << ":-1: #{@resource.downvotes} " unless @resource.downvotes.zero?
-          message << ":speech_balloon: #{@resource.user_notes_count}" unless @resource.user_notes_count.zero?
-
-          message
+        def pretext
+          "I opened an issue on behalf on #{author_profile_link}: *#{@resource.to_reference}* from #{project.name_with_namespace}"
         end
 
-        def pretext
-          "Issue *#{@resource.to_reference} from #{project.name_with_namespace}"
+        def author_profile_link
+          "[#{author.to_reference}](#{url_for(author)})"
         end
       end
     end

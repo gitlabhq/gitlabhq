@@ -1,33 +1,45 @@
-module Gitlab::ChatCommands::Presenters
-  class Issuable < Gitlab::ChatCommands::Presenters::Base
-    private
+module Gitlab
+  module ChatCommands
+    module Presenters
+      class Issuable < Presenters::Base
+        private
 
-    def project
-      @resource.project
-    end
+        def color(issuable)
+          issuable.open? ? '#38ae67' : '#d22852'
+        end
 
-    def author
-      @resource.author
-    end
+        def status_text(issuable)
+          issuable.open? ? 'Open' : 'Closed'
+        end
 
-    def fields
-      [
-        {
-          title: "Assignee",
-          value: @resource.assignee ? @resource.assignee.name : "_None_",
-          short: true
-        },
-        {
-          title: "Milestone",
-          value: @resource.milestone ? @resource.milestone.title : "_None_",
-          short: true
-        },
-        {
-          title: "Labels",
-          value: @resource.labels.any? ? @resource.label_names : "_None_",
-          short: true
-        }
-      ]
+        def project
+          @resource.project
+        end
+
+        def author
+          @resource.author
+        end
+
+        def fields
+          [
+            {
+              title: "Assignee",
+              value: @resource.assignee ? @resource.assignee.name : "_None_",
+              short: true
+            },
+            {
+              title: "Milestone",
+              value: @resource.milestone ? @resource.milestone.title : "_None_",
+              short: true
+            },
+            {
+              title: "Labels",
+              value: @resource.labels.any? ? @resource.label_names : "_None_",
+              short: true
+            }
+          ]
+        end
+      end
     end
   end
 end

@@ -20,7 +20,7 @@ describe Gitlab::ChatCommands::IssueShow, service: true do
 
       it 'returns the issue' do
         expect(subject[:response_type]).to be(:in_channel)
-        expect(title).to eq(issue.title)
+        expect(title).to start_with(issue.title)
       end
 
       context 'when its reference is given' do
@@ -28,7 +28,7 @@ describe Gitlab::ChatCommands::IssueShow, service: true do
 
         it 'shows the issue' do
           expect(subject[:response_type]).to be(:in_channel)
-          expect(title).to eq(issue.title)
+          expect(title).to start_with(issue.title)
         end
       end
     end

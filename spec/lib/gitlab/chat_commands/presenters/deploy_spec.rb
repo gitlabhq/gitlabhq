@@ -32,7 +32,7 @@ describe Gitlab::ChatCommands::Presenters::Deploy do
   end
 
   describe '#too_many_actions' do
-    subject { described_class.new(nil).too_many_actions }
+    subject { described_class.new([]).too_many_actions }
 
     it { is_expected.to have_key(:text) }
     it { is_expected.to have_key(:response_type) }

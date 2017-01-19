@@ -26,7 +26,7 @@ describe Gitlab::ChatCommands::IssueSearch, service: true do
 
       it 'returns all results' do
         expect(subject).to have_key(:attachments)
-        expect(subject[:text]).to match("Here are the issues I found:")
+        expect(subject[:text]).to eq("Here are the 2 issues I found:")
       end
     end
 
