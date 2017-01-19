@@ -1,0 +1,4 @@
+---
+title: Pass Gitaly resource path to gitlab-workhorse if Gitaly is enabled
+merge_request: 8440
+author:

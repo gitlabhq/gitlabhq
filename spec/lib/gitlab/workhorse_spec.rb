@@ -174,4 +174,27 @@ describe Gitlab::Workhorse, lib: true do
       described_class.verify_api_request!(headers)
     end
   end
+
+  describe '.git_http_ok' do
+    let(:user) { create(:user) }
+
+    subject { described_class.git_http_ok(repository, user) }
+
+    it { expect(subject).to eq({ GL_ID: "user-#{user.id}", RepoPath: repository.path_to_repo }) }
+
+    context 'when Gitaly socket path is present' do
+      let(:gitaly_socket_path) { '/tmp/gitaly.sock' }
+
+      before do
+        allow(Gitlab.config.gitaly).to receive(:socket_path).and_return(gitaly_socket_path)
+      end
+
+      it 'includes Gitaly params in the returned value' do
+        expect(subject).to include({
+          GitalyResourcePath: "/projects/#{repository.project.id}/git-http/info-refs",
+          GitalySocketPath: gitaly_socket_path,
+        })
+      end
+    end
+  end
 end
