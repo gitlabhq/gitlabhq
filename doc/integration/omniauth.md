@@ -41,6 +41,9 @@ that are in common for all providers that we need to consider.
 - `allow_single_sign_on` allows you to specify the providers you want to allow to
   automatically create an account. It defaults to `false`. If `false` users must
   be created manually or they will not be able to sign in via OmniAuth.
+- `auto_link_ldap_user` can be used if you have [LDAP / ActiveDirectory](ldap.md)
+  integration enabled. It defaults to false. When enabled, users automatically
+  created through OmniAuth will be linked to their LDAP entry as well.
 - `block_auto_created_users` defaults to `true`. If `true` auto created users will
   be blocked by default and will have to be unblocked by an administrator before
   they are able to sign in.
@@ -51,6 +54,10 @@ define providers under `allow_single_sign_on` that you are able to control, like
 SAML, Shibboleth, Crowd or Google, or set it to `false` otherwise any user on
 the Internet will be able to successfully sign in to your GitLab without
 administrative approval.
+
+>**Note:**
+`auto_link_ldap_user` requires the `uid` of the user to be the same in both LDAP
+and the OmniAuth provider.
 
 To change these settings:
 
@@ -72,6 +79,7 @@ To change these settings:
     # using an array, e.g. ["saml", "twitter"], or as true/false to allow all providers or none.
     # User accounts will be created automatically when authentication was successful.
     gitlab_rails['omniauth_allow_single_sign_on'] = ['saml', 'twitter']
+    gitlab_rails['omniauth_auto_link_ldap_user'] = true
     gitlab_rails['omniauth_block_auto_created_users'] = true
     ```
 
@@ -98,6 +106,8 @@ To change these settings:
         # using an array, e.g. ["saml", "twitter"], or as true/false to allow all providers or none.
         # User accounts will be created automatically when authentication was successful.
         allow_single_sign_on: ["saml", "twitter"]
+
+        auto_link_ldap_user: true
 
         # Locks down those users until they have been cleared by the admin (default: true).
         block_auto_created_users: true
