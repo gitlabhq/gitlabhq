@@ -39,7 +39,7 @@
           = project.shared_runners_minutes
     - if @projects.blank?
       %tr
-        %td{colspan: 2}
+        %td{ colspan: 2 }
           .nothing-here-block This group has no projects which use shared runners
 
 = paginate @projects, theme: "gitlab"

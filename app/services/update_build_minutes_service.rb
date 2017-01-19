@@ -8,7 +8,7 @@ class UpdateBuildMinutesService < BaseService
       shared_runners_minutes: build.duration)
 
     NamespaceStatistics.update_counters(namespace_statistics,
-                                        shared_runners_minutes: build.duration)
+      shared_runners_minutes: build.duration)
   end
 
   private

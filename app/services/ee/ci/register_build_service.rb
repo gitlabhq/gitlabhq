@@ -13,7 +13,7 @@ module EE
         # select projects which have allowed number of shared runner minutes or are public
         super.
           where("projects.visibility_level=? OR (#{builds_check_limit.to_sql})=1",
-                Gitlab::VisibilityLevel::PUBLIC)
+                ::Gitlab::VisibilityLevel::PUBLIC)
       end
 
       def builds_check_limit

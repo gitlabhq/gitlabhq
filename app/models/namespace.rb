@@ -182,7 +182,7 @@ class Namespace < ActiveRecord::Base
   end
 
   def shared_runners_enabled?
-    projects.where(shared_runners_enabled: true).any?
+    projects.with_shared_runners.any?
   end
 
   def full_name
