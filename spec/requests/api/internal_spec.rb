@@ -239,7 +239,7 @@ describe API::Internal, api: true  do
     end
 
     context "blocked user" do
-      let(:personal_project) { create(:project, namespace: user.namespace) }
+      let(:personal_project) { create(:empty_project, namespace: user.namespace) }
 
       before do
         user.block
@@ -265,7 +265,7 @@ describe API::Internal, api: true  do
     end
 
     context "archived project" do
-      let(:personal_project) { create(:project, namespace: user.namespace) }
+      let(:personal_project) { create(:empty_project, namespace: user.namespace) }
 
       before do
         project.team << [user, :developer]
