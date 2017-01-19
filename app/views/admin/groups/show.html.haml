@@ -56,6 +56,8 @@
             = group_lfs_status(@group)
             = link_to icon('question-circle'), help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs')
 
+        = render "shared_runner_status", group: @group
+
     .panel.panel-default
       .panel-heading Linked LDAP groups
       %ul.well-list

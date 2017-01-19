@@ -28,5 +28,10 @@
               = link_to group_audit_events_path(@group), title: "Audit Events" do
                 %span
                   Audit Events
+            - if @group.shared_runners_enabled? && @group.shared_runners_minutes_limit_enabled?
+              = nav_link(controller: :pipeline_quota) do
+                = link_to group_pipeline_quota_path(@group), title: "Pipeline Quota" do
+                  %span
+                    Pipeline Quota
             %li
               = link_to 'Edit Group', edit_group_path(@group)

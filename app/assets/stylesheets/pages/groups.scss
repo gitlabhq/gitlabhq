@@ -85,3 +85,39 @@
     }
   }
 }
+
+.panel {
+  .shared_runners_limit_under_quota {
+    color: $gl-success;
+  }
+
+  .shared_runners_limit_over_quota {
+    color: $gl-danger;
+  }
+}
+
+.pipeline-quota {
+  border-top: 1px solid $table-border-color;
+  border-bottom: 1px solid $table-border-color;
+  margin: 0 0 $gl-padding;
+
+  .row {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .right {
+    text-align: right;
+  }
+
+  .progress {
+    height: 6px;
+    width: 100%;
+    margin-bottom: 0;
+    margin-top: 4px;
+  }
+}
+
+table.pipeline-project-metrics tr td {
+  padding: $gl-padding;
+}
