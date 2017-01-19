@@ -1,27 +1,22 @@
 class Projects::ProtectedBranchesController < Projects::ApplicationController
+  include RepositoryHelper
   # Authorize
   before_action :require_non_empty_project
   before_action :authorize_admin_project!
   before_action :load_protected_branch, only: [:show, :update, :destroy]
-  before_action :load_protected_branches, only: [:index]
 
   layout "project_settings"
 
   def index
-    @protected_branch = @project.protected_branches.new
-    load_gon_index
+    redirect_to namespace_project_settings_repository_path(@project.namespace, @project)
   end
 
   def create
     @protected_branch = ::ProtectedBranches::CreateService.new(@project, current_user, protected_branch_params).execute
-
-    if @protected_branch.persisted?
-      redirect_to namespace_project_protected_branches_path(@project.namespace, @project)
-    else
-      load_protected_branches
-      load_gon_index
-      render :index
+    unless @protected_branch.persisted?
+      flash[:alert] = @protected_branches.errors.full_messages.join(',').html_safe
     end
+    redirect_to namespace_project_settings_repository_path(@project.namespace, @project)
   end
 
   def show
@@ -46,7 +41,7 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
     @protected_branch.destroy
 
     respond_to do |format|
-      format.html { redirect_to namespace_project_protected_branches_path }
+      format.html { redirect_to namespace_project_settings_repository_path }
       format.js { head :ok }
     end
   end

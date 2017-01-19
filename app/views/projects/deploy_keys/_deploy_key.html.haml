@@ -18,7 +18,7 @@
     %span.key-created-at
       created #{time_ago_with_tooltip(deploy_key.created_at)}
     .visible-xs-block.visible-sm-block
-    - if @available_keys.include?(deploy_key)
+    - if @deploy_keys.available_keys.include?(deploy_key)
       = link_to enable_namespace_project_deploy_key_path(@project.namespace, @project, deploy_key), class: "btn btn-sm prepend-left-10", method: :put do
         Enable
     - else
