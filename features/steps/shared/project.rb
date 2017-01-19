@@ -3,7 +3,7 @@ module SharedProject
 
   # Create a project without caring about what it's called
   step "I own a project" do
-    @project = create(:project, namespace: @user.namespace)
+    @project = create(:project, :repository, namespace: @user.namespace)
     @project.team << [@user, :master]
   end
 
@@ -15,13 +15,13 @@ module SharedProject
 
   step "project exists in some group namespace" do
     @group = create(:group, name: 'some group')
-    @project = create(:project, namespace: @group, public_builds: false)
+    @project = create(:project, :repository, namespace: @group, public_builds: false)
   end
 
   # Create a specific project called "Shop"
   step 'I own project "Shop"' do
     @project = Project.find_by(name: "Shop")
-    @project ||= create(:project, name: "Shop", namespace: @user.namespace, issues_template: "This issue should contain the following.", merge_requests_template: "This merge request should contain the following.")
+    @project ||= create(:project, :repository, name: "Shop", namespace: @user.namespace, issues_template: "This issue should contain the following.", merge_requests_template: "This merge request should contain the following.")
     @project.team << [@user, :master]
   end
 
@@ -46,7 +46,7 @@ module SharedProject
   # Create another specific project called "Forum"
   step 'I own project "Forum"' do
     @project = Project.find_by(name: "Forum")
-    @project ||= create(:project, name: "Forum", namespace: @user.namespace, path: 'forum_project')
+    @project ||= create(:project, :repository, name: "Forum", namespace: @user.namespace, path: 'forum_project')
     @project.build_project_feature
     @project.project_feature.save
     @project.team << [@user, :master]
@@ -127,7 +127,7 @@ module SharedProject
   # ----------------------------------------
 
   step 'archived project "Archive"' do
-    create :project, :public, archived: true, name: 'Archive'
+    create(:project, :archived, :public, :repository, name: 'Archive')
   end
 
   step 'I should not see project "Archive"' do
@@ -150,7 +150,7 @@ module SharedProject
   # ----------------------------------------
 
   step 'private project "Enterprise"' do
-    create :project, name: 'Enterprise'
+    create(:project, :private, :repository, name: 'Enterprise')
   end
 
   step 'I should see project "Enterprise"' do
@@ -162,7 +162,7 @@ module SharedProject
   end
 
   step 'internal project "Internal"' do
-    create :project, :internal, name: 'Internal'
+    create(:project, :internal, :repository, name: 'Internal')
   end
 
   step 'I should see project "Internal"' do
@@ -174,7 +174,7 @@ module SharedProject
   end
 
   step 'public project "Community"' do
-    create :project, :public, name: 'Community'
+    create(:project, :public, :repository, name: 'Community')
   end
 
   step 'I should see project "Community"' do

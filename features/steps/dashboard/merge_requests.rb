@@ -105,14 +105,14 @@ class Spinach::Features::DashboardMergeRequests < Spinach::FeatureSteps
 
   def project
     @project ||= begin
-                   project = create :project
+                   project = create(:project, :repository)
                    project.team << [current_user, :master]
                    project
                  end
   end
 
   def public_project
-    @public_project ||= create :project, :public
+    @public_project ||= create(:project, :public, :repository)
   end
 
   def forked_project

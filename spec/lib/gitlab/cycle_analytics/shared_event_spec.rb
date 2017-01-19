@@ -1,18 +1,11 @@
 require 'spec_helper'
 
 shared_examples 'default query config' do
-  let(:event) { described_class.new(project: double, options: {}) }
-
-  it 'has the start attributes' do
-    expect(event.start_time_attrs).not_to be_nil
-  end
+  let(:project) { create(:empty_project) }
+  let(:event) { described_class.new(project: project, stage: stage_name, options: { from: 1.day.ago }) }
 
   it 'has the stage attribute' do
     expect(event.stage).not_to be_nil
-  end
-
-  it 'has the end attributes' do
-    expect(event.end_time_attrs).not_to be_nil
   end
 
   it 'has the projection attributes' do

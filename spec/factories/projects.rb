@@ -49,6 +49,10 @@ FactoryGirl.define do
       request_access_enabled true
     end
 
+    trait :repository do
+      # no-op... for now!
+    end
+
     trait :empty_repo do
       after(:create) do |project|
         project.create_repository
