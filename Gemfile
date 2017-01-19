@@ -19,7 +19,7 @@ gem 'pg', '~> 0.18.2', group: :postgres
 # Authentication libraries
 gem 'devise',                 '~> 4.2'
 gem 'doorkeeper',             '~> 4.2.0'
-gem 'omniauth',               '~> 1.3.1'
+gem 'omniauth',               '~> 1.3.2'
 gem 'omniauth-auth0',         '~> 1.4.1'
 gem 'omniauth-azure-oauth2',  '~> 0.0.6'
 gem 'omniauth-bitbucket',     '~> 0.0.2'
