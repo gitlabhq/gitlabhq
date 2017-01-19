@@ -277,21 +277,44 @@ describe Ci::Runner, models: true do
     it 'sets a new last_update value when it is called the first time' do
       last_update = runner.ensure_runner_queue_value
 
-      expect_value_in_redis(last_update)
+      expect_value_in_redis.to eq(last_update)
     end
 
     it 'does not change if it is not expired and called again' do
       last_update = runner.ensure_runner_queue_value
 
       expect(runner.ensure_runner_queue_value).to eq(last_update)
-      expect_value_in_redis(last_update)
+      expect_value_in_redis.to eq(last_update)
     end
 
-    def expect_value_in_redis(last_update)
+    context 'updates runner queue after changing editable value' do
+      let!(:last_update) { runner.ensure_runner_queue_value }
+
+      before do
+        runner.update(description: 'new runner')
+      end
+
+      it 'sets a new last_update value' do
+        expect_value_in_redis.not_to eq(last_update)
+      end
+    end
+
+    context 'does not update runner value after save' do
+      let!(:last_update) { runner.ensure_runner_queue_value }
+
+      before do
+        runner.touch
+      end
+
+      it 'has an old last_update value' do
+        expect_value_in_redis.to eq(last_update)
+      end
+    end
+
+    def expect_value_in_redis
       Gitlab::Redis.with do |redis|
         runner_queue_key = runner.send(:runner_queue_key)
-
-        expect(redis.get(runner_queue_key)).to eq(last_update)
+        expect(redis.get(runner_queue_key))
       end
     end
   end

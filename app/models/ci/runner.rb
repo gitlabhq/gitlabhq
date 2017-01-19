@@ -22,7 +22,7 @@ module Ci
     scope :online, ->() { where('contacted_at > ?', LAST_CONTACT_TIME) }
     scope :ordered, ->() { order(id: :desc) }
 
-    after_save :tick_runner_queue
+    after_save :tick_runner_queue, if: :form_editable_changed?
 
     scope :owned_or_shared, ->(project_id) do
       joins('LEFT JOIN ci_runner_projects ON ci_runner_projects.runner_id = ci_runners.id')
@@ -126,14 +126,14 @@ module Ci
     end
 
     def tick_runner_queue
-      new_update = Time.new.inspect
+      new_update = SecureRandom.hex
       Gitlab::Redis.with { |redis| redis.set(runner_queue_key, new_update, ex: RUNNER_QUEUE_EXPIRY_TIME) }
       new_update
     end
 
     def ensure_runner_queue_value
       Gitlab::Redis.with do |redis|
-        value = Time.new.inspect
+        value = SecureRandom.hex
         redis.set(runner_queue_key, value, ex: RUNNER_QUEUE_EXPIRY_TIME, nx: true)
         redis.get(runner_queue_key)
       end
@@ -147,6 +147,12 @@ module Ci
 
     def runner_queue_key
       "runner:build_queue:#{self.token}"
+    end
+
+    def form_editable_changed?
+      FORM_EDITABLE.any? do |editable|
+        public_send("#{editable}_changed?")
+      end
     end
 
     def tag_constraints
