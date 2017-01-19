@@ -193,7 +193,8 @@
     }
 
     showOnClick() {
-      const currentDropdownRef = this.dropdownManager.mapping[this.dropdownManager.currentDropdown].reference;
+      const dropdown = this.dropdownManager.mapping[this.dropdownManager.currentDropdown];
+      const currentDropdownRef = dropdown.reference;
 
       this.setDropdownWrapper();
       currentDropdownRef.dispatchInputEvent();
