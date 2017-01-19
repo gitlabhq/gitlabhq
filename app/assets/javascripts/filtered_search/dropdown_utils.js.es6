@@ -20,8 +20,9 @@
       return escapedText;
     }
 
-    static filterWithSymbol(filterSymbol, item, query) {
+    static filterWithSymbol(filterSymbol, input, item) {
       const updatedItem = item;
+      const query = gl.DropdownUtils.getSearchInput(input).trim();
       const { lastToken, searchToken } = gl.FilteredSearchTokenizer.processTokens(query);
 
       if (lastToken !== searchToken) {
