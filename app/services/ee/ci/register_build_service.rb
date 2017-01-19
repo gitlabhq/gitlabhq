@@ -1,8 +1,10 @@
 module EE
   module Ci
-    # This class responsible for assigning
-    # proper pending build to runner on runner API request
-    class RegisterBuildService
+    # RegisterBuildService EE mixin
+    #
+    # This module is intended to encapsulate EE-specific service logic
+    # and be included in the `RegisterBuildService` service
+    module RegisterBuildService
       extend ActiveSupport::Prependable
 
       def builds_for_shared_runner
@@ -15,7 +17,7 @@ module EE
       end
 
       def builds_check_limit
-        Namespace.reorder(nil).
+        ::Namespace.reorder(nil).
           where('namespaces.id = projects.namespace_id').
           joins('LEFT JOIN namespace_statistics ON namespace_statistics.namespace_id = namespaces.id').
           where('COALESCE(namespaces.shared_runners_minutes_limit, ?, 0) = 0 OR ' \
