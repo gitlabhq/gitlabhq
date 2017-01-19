@@ -2,6 +2,7 @@ class ApplicationSetting < ActiveRecord::Base
   include CacheMarkdownField
   include TokenAuthenticatable
   prepend EE::ApplicationSetting
+  include RepositorySizeLimit
 
   add_authentication_token_field :runners_registration_token
   add_authentication_token_field :health_check_access_token

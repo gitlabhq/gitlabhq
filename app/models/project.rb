@@ -17,6 +17,7 @@ class Project < ActiveRecord::Base
   include ProjectFeaturesCompatibility
   include SelectForProjectAuthorization
   include Routable
+  include RepositorySizeLimit
   prepend EE::GeoAwareAvatar
   prepend EE::Project
 
