@@ -46,7 +46,11 @@ module Ci
     end
 
     def has_warnings?
-      @warnings ||= statuses.latest.failed_but_allowed.any?
+      if @warnings.nil?
+        statuses.latest.failed_but_allowed.any?
+      else
+        @warnings
+      end
     end
   end
 end

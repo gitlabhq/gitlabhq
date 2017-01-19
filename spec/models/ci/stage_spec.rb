@@ -169,10 +169,22 @@ describe Ci::Stage, models: true do
   describe '#has_warnings?' do
     context 'when stage has warnings' do
       context 'when using memoized warnings flag' do
-        let(:stage) { build(:ci_stage, warnings: true) }
+        context 'when there are warnings' do
+          let(:stage) { build(:ci_stage, warnings: true) }
 
-        it 'has warnings' do
-          expect(stage).to have_warnings
+          it 'has memoized warnings' do
+            expect(stage).not_to receive(:statuses)
+            expect(stage).to have_warnings
+          end
+        end
+
+        context 'when there are no warnings' do
+          let(:stage) { build(:ci_stage, warnings: false) }
+
+          it 'has memoized warnings' do
+            expect(stage).not_to receive(:statuses)
+            expect(stage).not_to have_warnings
+          end
         end
       end
 
@@ -182,7 +194,8 @@ describe Ci::Stage, models: true do
                  stage: stage_name, pipeline: pipeline)
         end
 
-        it 'has warnings' do
+        it 'has warnings calculated from statuses' do
+          expect(stage).to receive(:statuses).and_call_original
           expect(stage).to have_warnings
         end
       end
@@ -194,7 +207,8 @@ describe Ci::Stage, models: true do
                                     pipeline: pipeline)
       end
 
-      it 'does not have warnings' do
+      it 'does not have warnings calculated from statuses' do
+        expect(stage).to receive(:statuses).and_call_original
         expect(stage).not_to have_warnings
       end
     end
