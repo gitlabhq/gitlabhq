@@ -19,7 +19,7 @@ describe UpdateBuildMinutesService, services: true do
       it "creates a metrics and sets duration" do
         subject
 
-        expect(project.project_statistics.reload.shared_runners_minutes).
+        expect(project.statistics.reload.shared_runners_minutes).
           to eq(build.duration.to_i)
 
         expect(namespace.namespace_statistics.reload.shared_runners_minutes).
@@ -28,14 +28,14 @@ describe UpdateBuildMinutesService, services: true do
 
       context 'when metrics are created' do
         before do
-          project.create_project_statistics(shared_runners_minutes: 100)
-          namespace.create_namespace_metrics(shared_runners_minutes: 100)
+          project.create_statistics(shared_runners_minutes: 100)
+          namespace.create_namespace_statistics(shared_runners_minutes: 100)
         end
 
         it "updates metrics and adds duration" do
           subject
 
-          expect(project.project_statistics.reload.shared_runners_minutes).
+          expect(project.statistics.reload.shared_runners_minutes).
             to eq(100 + build.duration.to_i)
 
           expect(namespace.namespace_statistics.reload.shared_runners_minutes).
@@ -50,7 +50,7 @@ describe UpdateBuildMinutesService, services: true do
       it "does not create metrics" do
         subject
 
-        expect(project.project_statistics).to be_nil
+        expect(project.statistics).to be_nil
         expect(namespace.namespace_statistics).to be_nil
       end
     end

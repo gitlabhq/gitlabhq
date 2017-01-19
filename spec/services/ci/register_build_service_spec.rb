@@ -136,13 +136,13 @@ module Ci
         end
 
         context 'shared runner' do
-          let(:build) { service.execute(shared_runner) }
+          let(:build) { execute(shared_runner) }
 
           it { expect(build).to be_nil }
         end
 
         context 'specific runner' do
-          let(:build) { service.execute(specific_runner) }
+          let(:build) { execute(specific_runner) }
 
           it { expect(build).to be_kind_of(Build) }
           it { expect(build).to be_valid }

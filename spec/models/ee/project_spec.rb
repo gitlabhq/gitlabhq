@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe Project, models: true do
   describe 'associations' do
-    it { is_expected.to delegate_method(:shared_runners_minutes).to(:project_statistics) }
-    it { is_expected.to delegate_method(:shared_runners_minutes_last_reset).to(:project_statistics) }
+    it { is_expected.to delegate_method(:shared_runners_minutes).to(:statistics) }
+    it { is_expected.to delegate_method(:shared_runners_minutes_last_reset).to(:statistics) }
 
     it { is_expected.to delegate_method(:actual_shared_runners_minutes_limit).to(:namespace) }
     it { is_expected.to delegate_method(:shared_runners_minutes_limit_enabled?).to(:namespace) }
@@ -45,10 +45,36 @@ describe Project, models: true do
     end
   end
 
-  describe '#shared_runners_minutes_quota?' do
+  describe '#shared_runners_available?' do
+    subject { project.shared_runners_available? }
+
+    context 'with used build minutes' do
+      let(:namespace) { create(:namespace, :with_used_build_minutes_limit) }
+      let(:project) do
+        create(:empty_project,
+          namespace: namespace,
+          shared_runners_enabled: true)
+      end
+
+      before do
+        expect(namespace).to receive(:shared_runners_minutes_used?).and_call_original
+      end
+
+      it 'shared runners are not available' do
+        expect(project.shared_runners_available?).to be_falsey
+      end
+    end
+  end
+
+  describe '#shared_runners_minutes_limit_enabled?' do
     let(:project) { create(:empty_project) }
 
-    subject { project.shared_runners_minutes_quota? }
+    subject { project.shared_runners_minutes_limit_enabled? }
+
+    before do
+      allow(project.namespace).to receive(:shared_runners_minutes_limit_enabled?).
+        and_return(true)
+    end
 
     context 'with shared runners enabled' do
       before do

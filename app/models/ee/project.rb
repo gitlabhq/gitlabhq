@@ -4,13 +4,13 @@ module EE
   # This module is intended to encapsulate EE-specific model logic
   # and be included in the `Project` model
   module Project
-    extend ActiveSupport::Prependable
+    extend ::Prependable
 
     prepended do
       scope :with_shared_runners_limit_enabled, -> { with_shared_runners.non_public_only }
 
       delegate :shared_runners_minutes, :shared_runners_minutes_last_reset,
-        to: :project_statistics, allow_nil: true
+        to: :statistics, allow_nil: true
 
       delegate :actual_shared_runners_minutes_limit,
         :shared_runners_minutes_used?, to: :namespace

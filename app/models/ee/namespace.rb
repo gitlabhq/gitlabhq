@@ -4,7 +4,7 @@ module EE
   # This module is intended to encapsulate EE-specific model logic
   # and be included in the `Namespace` model
   module Namespace
-    extend ActiveSupport::Prependable
+    extend ::Prependable
 
     prepended do
       has_one :namespace_statistics, dependent: :destroy

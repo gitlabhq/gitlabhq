@@ -4,7 +4,7 @@ module EE
   # This module is intended to encapsulate EE-specific model logic
   # and be included in the `ApplicationSetting` model
   module ApplicationSetting
-    extend ActiveSupport::Prependable
+    extend ::Prependable
 
     prepended do
       validates :shared_runners_minutes,

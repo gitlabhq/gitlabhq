@@ -5,7 +5,7 @@ module EE
     # This module is intended to encapsulate EE-specific service logic
     # and be included in the `RegisterBuildService` service
     module RegisterBuildService
-      extend ActiveSupport::Prependable
+      extend ::Prependable
 
       def builds_for_shared_runner
         return super unless shared_runner_build_limits_feature_enabled?

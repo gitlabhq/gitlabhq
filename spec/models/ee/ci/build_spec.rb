@@ -12,8 +12,8 @@ describe Ci::Build, models: true do
 
   let(:build) { create(:ci_build, pipeline: pipeline) }
 
-  describe '#shared_runners_minutes_quota?' do
-    subject { build.shared_runners_minutes_quota? }
+  describe '#shared_runners_minutes_limit_enabled?' do
+    subject { build.shared_runners_minutes_limit_enabled? }
 
     context 'for shared runner' do
       before do
@@ -21,7 +21,7 @@ describe Ci::Build, models: true do
       end
 
       it do
-        expect(build.project).to receive(:shared_runners_minutes_quota?).
+        expect(build.project).to receive(:shared_runners_minutes_limit_enabled?).
           and_return(true)
 
         is_expected.to be_truthy
