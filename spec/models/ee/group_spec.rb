@@ -100,7 +100,18 @@ describe Group, models: true do
     it 'returns the value set locally' do
       group.update_attribute(:repository_size_limit, 75)
 
-      expect(group.actual_size_limit).to eq(75)
+      expect(group.actual_size_limit).to eq(75.megabytes)
+    end
+  end
+
+  describe '#repository_size_limit column' do
+    it 'support values up to 8 exabytes' do
+      group = create(:group)
+      group.update_column(:repository_size_limit, 8.exabytes - 1)
+
+      group.reload
+
+      expect(group.repository_size_limit).to eql(8.exabytes - 1)
     end
   end
 end
