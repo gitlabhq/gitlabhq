@@ -1,4 +1,5 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, quotes, no-undef, no-underscore-dangle, one-var, one-var-declaration-per-line, consistent-return, dot-notation, quote-props, comma-dangle, object-shorthand, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, quotes, no-underscore-dangle, one-var, one-var-declaration-per-line, consistent-return, dot-notation, quote-props, comma-dangle, object-shorthand, padded-blocks, max-len, prefer-arrow-callback */
+/* global MergeRequestTabs */
 
 /*= require jquery.waitforimages */
 /*= require task_list */
@@ -26,6 +27,7 @@
       // Prevent duplicate event bindings
       this.disableTaskList();
       this.initMRBtnListeners();
+      this.initCommitMessageListeners();
       if ($("a.btn-close").length) {
         this.initTaskList();
       }
@@ -105,6 +107,26 @@
       });
     // TODO (rspeicher): Make the merge request description inline-editable like a
     // note so that we can re-use its form here
+    };
+
+    MergeRequest.prototype.initCommitMessageListeners = function() {
+      var textarea = $('textarea.js-commit-message');
+
+      $('a.js-with-description-link').on('click', function(e) {
+        e.preventDefault();
+
+        textarea.val(textarea.data('messageWithDescription'));
+        $('p.js-with-description-hint').hide();
+        $('p.js-without-description-hint').show();
+      });
+
+      $('a.js-without-description-link').on('click', function(e) {
+        e.preventDefault();
+
+        textarea.val(textarea.data('messageWithoutDescription'));
+        $('p.js-with-description-hint').show();
+        $('p.js-without-description-hint').hide();
+      });
     };
 
     return MergeRequest;

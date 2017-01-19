@@ -1,4 +1,4 @@
-## Log system
+# Log system
 
 GitLab has an advanced log system where everything is logged so that you
 can analyze your instance using various system log files. In addition to
@@ -9,10 +9,10 @@ documentation](http://docs.gitlab.com/ee/administration/audit_events.html)
 System log files are typically plain text in a standard log file format.
 This guide talks about how to read and use these system log files.
 
-### production.log
+## `production.log`
 
 This file lives in `/var/log/gitlab/gitlab-rails/production.log` for
-omnibus package or in `/home/git/gitlab/log/production.log` for
+Omnibus GitLab packages or in `/home/git/gitlab/log/production.log` for
 installations from source. (When Gitlab is running in an environment
 other than production, the corresponding logfile is shown here.)
 
@@ -46,10 +46,10 @@ In this example we can see that server processed an HTTP request with URL
 19:34:53 +0200. Also we can see that request was processed by
 `Projects::TreeController`.
 
-### application.log
+## `application.log`
 
 This file lives in `/var/log/gitlab/gitlab-rails/application.log` for
-omnibus package or in `/home/git/gitlab/log/application.log` for
+Omnibus GitLab packages or in `/home/git/gitlab/log/application.log` for
 installations from source.
 
 It helps you discover events happening in your instance such as user creation,
@@ -63,10 +63,10 @@ October 07, 2014 11:25: User "Claudie Hodkiewicz" (nasir_stehr@olson.co.uk)  was
 October 07, 2014 11:25: Project "project133" was removed
 ```
 
-### githost.log
+## `githost.log`
 
 This file lives in `/var/log/gitlab/gitlab-rails/githost.log` for
-omnibus package or in `/home/git/gitlab/log/githost.log` for
+Omnibus GitLab packages or in `/home/git/gitlab/log/githost.log` for
 installations from source.
 
 GitLab has to interact with Git repositories but in some rare cases
@@ -81,10 +81,10 @@ December 03, 2014 13:20 -> ERROR -> Command failed [1]: /usr/bin/git --git-dir=/
 error: failed to push some refs to '/Users/vsizov/gitlab-development-kit/repositories/gitlabhq/gitlab_git.git'
 ```
 
-### sidekiq.log
+## `sidekiq.log`
 
 This file lives in `/var/log/gitlab/gitlab-rails/sidekiq.log` for
-omnibus package or in `/home/git/gitlab/log/sidekiq.log` for
+Omnibus GitLab packages or in `/home/git/gitlab/log/sidekiq.log` for
 installations from source.
 
 GitLab uses background jobs for processing tasks which can take a long
@@ -96,10 +96,10 @@ this file. For example:
 2014-06-10T18:18:26Z 14299 TID-55uqo INFO: Booting Sidekiq 3.0.0 with redis options {:url=>"redis://localhost:6379/0", :namespace=>"sidekiq"}
 ```
 
-### gitlab-shell.log
+## `gitlab-shell.log`
 
 This file lives in `/var/log/gitlab/gitlab-shell/gitlab-shell.log` for
-omnibus package or in `/home/git/gitlab-shell/gitlab-shell.log` for
+Omnibus GitLab packages or in `/home/git/gitlab-shell/gitlab-shell.log` for
 installations from source.
 
 GitLab shell is used by Gitlab for executing Git commands and provide
@@ -110,10 +110,10 @@ I, [2015-02-13T06:17:00.671315 #9291]  INFO -- : Adding project root/example.git
 I, [2015-02-13T06:17:00.679433 #9291]  INFO -- : Moving existing hooks directory and symlinking global hooks directory for /var/opt/gitlab/git-data/repositories/root/example.git.
 ```
 
-### unicorn\_stderr.log
+## `unicorn\_stderr.log`
 
 This file lives in `/var/log/gitlab/unicorn/unicorn_stderr.log` for
-omnibus package or in `/home/git/gitlab/log/unicorn_stderr.log` for
+Omnibus GitLab packages or in `/home/git/gitlab/log/unicorn_stderr.log` for
 installations from source.
 
 Unicorn is a high-performance forking Web server which is used for
@@ -136,3 +136,13 @@ I, [2015-02-13T07:16:01.530733 #9047]  INFO -- : reaped #<Process::Status: pid 9
 I, [2015-02-13T07:16:01.534501 #13379]  INFO -- : worker=1 spawned pid=13379
 I, [2015-02-13T07:16:01.534848 #13379]  INFO -- : worker=1 ready
 ```
+
+## `repocheck.log`
+
+This file lives in `/var/log/gitlab/gitlab-rails/repocheck.log` for
+Omnibus GitLab packages or in `/home/git/gitlab/log/repocheck.log` for
+installations from source.
+
+It logs information whenever a [repository check is run][repocheck] on a project.
+
+[repocheck]: repository_checks.md

@@ -1,14 +1,14 @@
-%div.tree-content-holder
+.tree-content-holder
   .table-holder
-    %table.table#tree-slider{class: "table_#{@hex_path} tree-table" }
+    %table.table#tree-slider{ class: "table_#{@hex_path} tree-table" }
       %thead
         %tr
           %th Name
           %th.hidden-xs
             .pull-left Last commit
             .last-commit.hidden-sm.pull-left
-              %small.light              
-                = clipboard_button(clipboard_text: @commit.id)
+              %small.light
+                = clipboard_button(clipboard_text: @commit.id, title: "Copy commit SHA to clipboard")
                 = link_to @commit.short_id, namespace_project_commit_path(@project.namespace, @project, @commit), class: "monospace"
                 = time_ago_with_tooltip(@commit.committed_date)
                 = @commit.full_title

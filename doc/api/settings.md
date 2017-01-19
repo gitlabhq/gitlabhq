@@ -44,7 +44,9 @@ Example response:
    "repository_storage": "default",
    "repository_storages": ["default"],
    "koding_enabled": false,
-   "koding_url": null
+   "koding_url": null,
+   "plantuml_enabled": false,
+   "plantuml_url": null
 }
 ```
 
@@ -79,6 +81,9 @@ PUT /application/settings
 | `enabled_git_access_protocol` | string | no | Enabled protocols for Git access. Allowed values are: `ssh`, `http`, and `nil` to allow both protocols. |
 | `koding_enabled` | boolean | no | Enable Koding integration. Default is `false`. |
 | `koding_url` | string | yes (if `koding_enabled` is `true`) |  The Koding instance URL for integration. |
+| `disabled_oauth_sign_in_sources` | Array of strings | no | Disabled OAuth sign-in sources |
+| `plantuml_enabled` | boolean | no | Enable PlantUML integration. Default is `false`. |
+| `plantuml_url` | string | yes (if `plantuml_enabled` is `true`) |  The PlantUML instance URL for integration. |
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/application/settings?signup_enabled=false&default_project_visibility=1
@@ -111,6 +116,8 @@ Example response:
   "container_registry_token_expire_delay": 5,
   "repository_storage": "default",
   "koding_enabled": false,
-  "koding_url": null
+  "koding_url": null,
+  "plantuml_enabled": false,
+  "plantuml_url": null
 }
 ```

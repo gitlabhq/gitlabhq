@@ -11,6 +11,7 @@
 
 (function() {
   var addBodyAttributes, assertLinks, dashboardIssuesPath, dashboardMRsPath, groupIssuesPath, groupMRsPath, groupName, mockDashboardOptions, mockGroupOptions, mockProjectOptions, projectIssuesPath, projectMRsPath, projectName, userId, widget;
+  var userName = 'root';
 
   widget = null;
 
@@ -19,6 +20,7 @@
   window.gon || (window.gon = {});
 
   window.gon.current_user_id = userId;
+  window.gon.current_username = userName;
 
   dashboardIssuesPath = '/dashboard/issues';
 
@@ -93,8 +95,8 @@
 
   assertLinks = function(list, issuesPath, mrsPath) {
     var a1, a2, a3, a4, issuesAssignedToMeLink, issuesIHaveCreatedLink, mrsAssignedToMeLink, mrsIHaveCreatedLink;
-    issuesAssignedToMeLink = issuesPath + "/?assignee_id=" + userId;
-    issuesIHaveCreatedLink = issuesPath + "/?author_id=" + userId;
+    issuesAssignedToMeLink = issuesPath + "/?assignee_username=" + userName;
+    issuesIHaveCreatedLink = issuesPath + "/?author_username=" + userName;
     mrsAssignedToMeLink = mrsPath + "/?assignee_id=" + userId;
     mrsIHaveCreatedLink = mrsPath + "/?author_id=" + userId;
     a1 = "a[href='" + issuesAssignedToMeLink + "']";
@@ -112,9 +114,9 @@
   };
 
   describe('Search autocomplete dropdown', function() {
-    fixture.preload('search_autocomplete.html');
+    preloadFixtures('static/search_autocomplete.html.raw');
     beforeEach(function() {
-      fixture.load('search_autocomplete.html');
+      loadFixtures('static/search_autocomplete.html.raw');
       return widget = new gl.SearchAutocomplete;
     });
     it('should show Dashboard specific dropdown menu', function() {

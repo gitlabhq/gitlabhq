@@ -19,7 +19,7 @@
 
   .file-title {
     position: relative;
-    background-color: $background-color;
+    background-color: $gray-light;
     border-bottom: 1px solid $border-color;
     margin: 0;
     text-align: left;
@@ -180,5 +180,54 @@ span.idiff {
   &.right {
     border-top-right-radius: 2px;
     border-bottom-right-radius: 2px;
+  }
+}
+
+.file-stats {
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 10px 0;
+
+    li {
+      padding: 3px 0;
+      line-height: 20px;
+    }
+  }
+
+  .new-file {
+    a {
+      color: $gl-text-green;
+    }
+  }
+
+  .renamed-file {
+    a {
+      color: $gl-text-orange;
+    }
+  }
+
+  .deleted-file {
+    a {
+      color: $gl-text-red;
+    }
+  }
+
+  .edit-file {
+    a {
+      color: $gl-text-color;
+    }
+  }
+
+  a {
+    text-decoration: none;
+
+    .new-file {
+      color: $notify-new-file;
+    }
+
+    .deleted-file {
+      color: $notify-deleted-file;
+    }
   }
 }

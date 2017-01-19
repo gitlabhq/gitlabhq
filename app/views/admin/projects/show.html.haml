@@ -65,9 +65,16 @@
               = @project.repository.path_to_repo
 
           %li
-            %span.light Size
-            %strong
-              = repository_size(@project)
+            %span.light Storage:
+            %strong= storage_counter(@project.statistics.storage_size)
+            (
+            = storage_counter(@project.statistics.repository_size)
+            repository,
+            = storage_counter(@project.statistics.build_artifacts_size)
+            build artifacts,
+            = storage_counter(@project.statistics.lfs_objects_size)
+            LFS
+            )
 
           %li
             %span.light last commit:

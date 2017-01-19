@@ -16,13 +16,14 @@ gem 'default_value_for', '~> 3.0.0'
 gem 'mysql2', '~> 0.3.16', group: :mysql
 gem 'pg', '~> 0.18.2', group: :postgres
 
+gem 'rugged', '~> 0.24.0'
+
 # Authentication libraries
 gem 'devise',                 '~> 4.2'
 gem 'doorkeeper',             '~> 4.2.0'
 gem 'omniauth',               '~> 1.3.1'
 gem 'omniauth-auth0',         '~> 1.4.1'
 gem 'omniauth-azure-oauth2',  '~> 0.0.6'
-gem 'omniauth-bitbucket',     '~> 0.0.2'
 gem 'omniauth-cas3',          '~> 1.1.2'
 gem 'omniauth-facebook',      '~> 4.0.0'
 gem 'omniauth-github',        '~> 1.1.1'
@@ -33,6 +34,7 @@ gem 'omniauth-saml',          '~> 1.7.0'
 gem 'omniauth-shibboleth',    '~> 1.2.0'
 gem 'omniauth-twitter',       '~> 1.2.0'
 gem 'omniauth_crowd',         '~> 2.2.0'
+gem 'omniauth-authentiq',     '~> 0.2.0'
 gem 'rack-oauth2',            '~> 1.2.1'
 gem 'jwt'
 
@@ -49,10 +51,6 @@ gem 'u2f', '~> 0.2.1'
 # Browser detection
 gem 'browser', '~> 2.2'
 
-# Extracting information from a git repository
-# Provide access to Gitlab::Git library
-gem 'gitlab_git', '~> 10.7.0'
-
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
 # see https://github.com/intridea/omniauth-ldap/compare/master...gitlabhq:master
@@ -67,7 +65,7 @@ gem 'gollum-rugged_adapter', '~> 0.4.2', require: false
 gem 'github-linguist', '~> 4.7.0', require: 'linguist'
 
 # API
-gem 'grape',        '~> 0.15.0'
+gem 'grape',        '~> 0.18.0'
 gem 'grape-entity', '~> 0.6.0'
 gem 'rack-cors',    '~> 0.4.0', require: 'rack/cors'
 
@@ -86,9 +84,13 @@ gem 'dropzonejs-rails', '~> 0.7.1'
 # for backups
 gem 'fog-aws', '~> 0.9'
 gem 'fog-core', '~> 1.40'
+gem 'fog-google', '~> 0.5'
 gem 'fog-local', '~> 0.3'
 gem 'fog-openstack', '~> 0.1'
 gem 'fog-rackspace', '~> 0.1.1'
+
+# for Google storage
+gem 'google-api-client', '~> 0.8.6'
 
 # for aws storage
 gem 'unf', '~> 0.1.4'
@@ -97,18 +99,19 @@ gem 'unf', '~> 0.1.4'
 gem 'seed-fu', '~> 2.3.5'
 
 # Markdown and HTML processing
-gem 'html-pipeline',      '~> 1.11.0'
-gem 'deckar01-task_list', '1.0.6', require: 'task_list/railtie'
-gem 'gitlab-markup',      '~> 1.5.0'
-gem 'redcarpet',          '~> 3.3.3'
-gem 'RedCloth',           '~> 4.3.2'
-gem 'rdoc',               '~> 4.2'
-gem 'org-ruby',           '~> 0.9.12'
-gem 'creole',             '~> 0.5.0'
-gem 'wikicloth',          '0.8.1'
-gem 'asciidoctor',        '~> 1.5.2'
-gem 'rouge',              '~> 2.0'
-gem 'truncato',           '~> 0.7.8'
+gem 'html-pipeline',        '~> 1.11.0'
+gem 'deckar01-task_list',   '1.0.6', require: 'task_list/railtie'
+gem 'gitlab-markup',        '~> 1.5.1'
+gem 'redcarpet',            '~> 3.3.3'
+gem 'RedCloth',             '~> 4.3.2'
+gem 'rdoc',                 '~> 4.2'
+gem 'org-ruby',             '~> 0.9.12'
+gem 'creole',               '~> 0.5.0'
+gem 'wikicloth',            '0.8.1'
+gem 'asciidoctor',          '~> 1.5.2'
+gem 'asciidoctor-plantuml', '0.0.6'
+gem 'rouge',                '~> 2.0'
+gem 'truncato',             '~> 0.7.8'
 
 # See https://groups.google.com/forum/#!topic/ruby-security-ann/aSbgDiwb24s
 # and https://groups.google.com/forum/#!topic/ruby-security-ann/Dy7YiKb_pMM
@@ -170,13 +173,16 @@ gem 'gitlab-flowdock-git-hook', '~> 1.0.1'
 gem 'gemnasium-gitlab-service', '~> 0.2'
 
 # Slack integration
-gem 'slack-notifier', '~> 1.2.0'
+gem 'slack-notifier', '~> 1.5.1'
 
 # Asana integration
 gem 'asana', '~> 0.4.0'
 
 # FogBugz integration
 gem 'ruby-fogbugz', '~> 0.2.1'
+
+# Kubernetes integration
+gem 'kubeclient', '~> 2.2.0'
 
 # d3
 gem 'd3_rails', '~> 3.5.0'
@@ -213,11 +219,10 @@ gem 'oj', '~> 2.17.4'
 gem 'chronic', '~> 0.10.2'
 gem 'chronic_duration', '~> 0.10.6'
 
-gem 'sass-rails', '~> 5.0.6'
+gem 'sassc-rails', '~> 1.3.0'
 gem 'coffee-rails', '~> 4.1.0'
 gem 'uglifier', '~> 2.7.2'
-gem 'turbolinks', '~> 2.5.0'
-gem 'jquery-turbolinks', '~> 2.1.0'
+gem 'gitlab-turbolinks-classic', '~> 2.5', '>= 2.5.6'
 
 gem 'addressable',        '~> 2.3.8'
 gem 'bootstrap-sass',     '~> 3.3.0'
@@ -250,7 +255,6 @@ group :development do
   gem 'brakeman', '~> 3.3.0', require: false
 
   gem 'letter_opener_web', '~> 1.3.0'
-  gem 'rerun', '~> 0.11.0'
   gem 'bullet', '~> 5.2.0', require: false
   gem 'rblineprof', '~> 0.3.6', platform: :mri, require: false
   gem 'web-console', '~> 2.0'
@@ -281,7 +285,7 @@ group :development, :test do
   gem 'minitest', '~> 5.7.0'
 
   # Generate Fake data
-  gem 'ffaker', '~> 2.0.0'
+  gem 'ffaker', '~> 2.4'
 
   gem 'capybara',            '~> 2.6.2'
   gem 'capybara-screenshot', '~> 1.0.0'
@@ -295,8 +299,8 @@ group :development, :test do
   gem 'spring-commands-spinach',  '~> 1.1.0'
   gem 'spring-commands-teaspoon', '~> 0.0.2'
 
-  gem 'rubocop', '~> 0.43.0', require: false
-  gem 'rubocop-rspec', '~> 1.5.0', require: false
+  gem 'rubocop', '~> 0.46.0', require: false
+  gem 'rubocop-rspec', '~> 1.9.1', require: false
   gem 'scss_lint', '~> 0.47.0', require: false
   gem 'haml_lint', '~> 0.18.2', require: false
   gem 'simplecov', '0.12.0', require: false
@@ -325,11 +329,11 @@ end
 
 gem 'newrelic_rpm', '~> 3.16'
 
-gem 'octokit', '~> 4.3.0'
+gem 'octokit', '~> 4.6.2'
 
 gem 'mail_room', '~> 0.9.0'
 
-gem 'email_reply_parser', '~> 0.5.8'
+gem 'email_reply_trimmer', '~> 0.1'
 gem 'html2text'
 
 gem 'ruby-prof', '~> 0.16.2'
@@ -344,5 +348,5 @@ gem 'paranoia', '~> 2.2'
 gem 'health_check', '~> 2.2.0'
 
 # System information
-gem 'vmstat', '~> 2.2'
+gem 'vmstat', '~> 2.3.0'
 gem 'sys-filesystem', '~> 1.1.6'

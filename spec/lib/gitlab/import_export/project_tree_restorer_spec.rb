@@ -189,6 +189,14 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
           end
         end
       end
+
+      context 'when there is an existing build with build token' do
+        it 'restores project json correctly' do
+          create(:ci_build, token: 'abcd')
+
+          expect(restored_project_json).to be true
+        end
+      end
     end
   end
 end

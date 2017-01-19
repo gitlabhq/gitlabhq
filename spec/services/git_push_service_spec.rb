@@ -583,7 +583,7 @@ describe GitPushService, services: true do
         service.push_commits = [commit]
 
         expect(ProjectCacheWorker).to receive(:perform_async).
-          with(project.id, %i(readme))
+          with(project.id, %i(readme), %i(commit_count repository_size))
 
         service.update_caches
       end
@@ -596,11 +596,30 @@ describe GitPushService, services: true do
 
       it 'does not flush any conditional caches' do
         expect(ProjectCacheWorker).to receive(:perform_async).
-          with(project.id, []).
+          with(project.id, [], %i(commit_count repository_size)).
           and_call_original
 
         service.update_caches
       end
+    end
+  end
+
+  describe '#process_commit_messages' do
+    let(:service) do
+      described_class.new(project,
+                          user,
+                          oldrev: sample_commit.parent_id,
+                          newrev: sample_commit.id,
+                          ref: 'refs/heads/master')
+    end
+
+    it 'only schedules a limited number of commits' do
+      allow(service).to receive(:push_commits).
+        and_return(Array.new(1000, double(:commit, to_hash: {})))
+
+      expect(ProcessCommitWorker).to receive(:perform_async).exactly(100).times
+
+      service.process_commit_messages
     end
   end
 

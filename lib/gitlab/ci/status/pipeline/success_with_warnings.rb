@@ -3,7 +3,7 @@ module Gitlab
     module Status
       module Pipeline
         class SuccessWithWarnings < SimpleDelegator
-          extend Status::Extended
+          include Status::Extended
 
           def text
             'passed'
@@ -17,11 +17,11 @@ module Gitlab
             'icon_status_warning'
           end
 
-          def to_s
+          def group
             'success_with_warnings'
           end
 
-          def self.matches?(pipeline)
+          def self.matches?(pipeline, user)
             pipeline.success? && pipeline.has_warnings?
           end
         end

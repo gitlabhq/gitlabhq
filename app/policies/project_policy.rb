@@ -3,7 +3,7 @@ class ProjectPolicy < BasePolicy
     team_access!(user)
 
     owner = project.owner == user ||
-            (project.group && project.group.has_owner?(user))
+      (project.group && project.group.has_owner?(user))
 
     owner_access! if user.admin? || owner
     team_member_owner_access! if owner
@@ -13,7 +13,7 @@ class ProjectPolicy < BasePolicy
       public_access!
 
       if project.request_access_enabled &&
-         !(owner || user.admin? || project.team.member?(user) || project_group_member?(user))
+          !(owner || user.admin? || project.team.member?(user) || project_group_member?(user))
         can! :request_access
       end
     end
@@ -171,9 +171,7 @@ class ProjectPolicy < BasePolicy
   def disabled_features!
     repository_enabled = project.feature_available?(:repository, user)
 
-    unless project.feature_available?(:issues, user)
-      cannot!(*named_abilities(:issue))
-    end
+    block_issues_abilities
 
     unless project.feature_available?(:merge_requests, user) && repository_enabled
       cannot!(*named_abilities(:merge_request))
@@ -244,10 +242,19 @@ class ProjectPolicy < BasePolicy
 
   def project_group_member?(user)
     project.group &&
-    (
-      project.group.members.exists?(user_id: user.id) ||
-      project.group.requesters.exists?(user_id: user.id)
-    )
+      (
+        project.group.members_with_parents.exists?(user_id: user.id) ||
+        project.group.requesters.exists?(user_id: user.id)
+      )
+  end
+
+  def block_issues_abilities
+    unless project.feature_available?(:issues, user)
+      cannot! :read_issue if project.default_issues_tracker?
+      cannot! :create_issue
+      cannot! :update_issue
+      cannot! :admin_issue
+    end
   end
 
   def named_abilities(name)

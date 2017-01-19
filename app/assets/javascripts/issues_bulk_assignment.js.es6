@@ -1,20 +1,20 @@
-/* eslint-disable */
+/* eslint-disable comma-dangle, quotes, consistent-return, func-names, array-callback-return, space-before-function-paren, prefer-arrow-callback, radix, max-len, padded-blocks, no-unused-expressions, no-sequences, no-underscore-dangle, no-unused-vars, no-param-reassign */
+/* global Issuable */
+/* global Flash */
+
 ((global) => {
 
   class IssuableBulkActions {
-    constructor({ container, form, issues } = {}) {
-      this.container = container || $('.content'),
+    constructor({ container, form, issues, prefixId } = {}) {
+      this.prefixId = prefixId || 'issue_';
       this.form = form || this.getElement('.bulk-update');
+      this.$labelDropdown = this.form.find('.js-label-select');
       this.issues = issues || this.getElement('.issues-list .issue');
       this.form.data('bulkActions', this);
       this.willUpdateLabels = false;
       this.bindEvents();
       // Fixes bulk-assign not working when navigating through pages
       Issuable.initChecks();
-    }
-
-    getElement(selector) {
-      return this.container.find(selector);
     }
 
     bindEvents() {
@@ -70,10 +70,7 @@
 
     getUnmarkedIndeterminedLabels() {
       const result = [];
-      const labelsToKeep = [];
-
-      this.getElement('.labels-filter .is-indeterminate')
-        .each((i, el) => labelsToKeep.push($(el).data('labelId')));
+      const labelsToKeep = this.$labelDropdown.data('indeterminate');
 
       this.getLabelsFromSelection().forEach((id) => {
         if (labelsToKeep.indexOf(id) === -1) {
@@ -103,45 +100,65 @@
         }
       };
       if (this.willUpdateLabels) {
-        this.getLabelsToApply().map(function(id) {
-          return formData.update.add_label_ids.push(id);
-        });
-        this.getLabelsToRemove().map(function(id) {
-          return formData.update.remove_label_ids.push(id);
-        });
+        formData.update.add_label_ids = this.$labelDropdown.data('marked');
+        formData.update.remove_label_ids = this.$labelDropdown.data('unmarked');
       }
       return formData;
     }
 
-    getLabelsToApply() {
-      const labelIds = [];
-      const $labels = this.form.find('.labels-filter input[name="update[label_ids][]"]');
-      $labels.each(function(k, label) {
-        if (label) {
-          return labelIds.push(parseInt($(label).val()));
-        }
-      });
-      return labelIds;
+    setOriginalDropdownData() {
+      const $labelSelect = $('.bulk-update .js-label-select');
+      $labelSelect.data('common', this.getOriginalCommonIds());
+      $labelSelect.data('marked', this.getOriginalMarkedIds());
+      $labelSelect.data('indeterminate', this.getOriginalIndeterminateIds());
     }
 
+    // From issuable's initial bulk selection
+    getOriginalCommonIds() {
+      const labelIds = [];
 
-    /**
-     * Returns Label IDs that will be removed from issue selection
-     * @return {Array} Array of labels IDs
-     */
-
-    getLabelsToRemove() {
-      const result = [];
-      const indeterminatedLabels = this.getUnmarkedIndeterminedLabels();
-      const labelsToApply = this.getLabelsToApply();
-      indeterminatedLabels.map(function(id) {
-        // We need to exclude label IDs that will be applied
-        // By not doing this will cause issues from selection to not add labels at all
-        if (labelsToApply.indexOf(id) === -1) {
-          return result.push(id);
-        }
+      this.getElement('.selected_issue:checked').each((i, el) => {
+        labelIds.push(this.getElement(`#${this.prefixId}${el.dataset.id}`).data('labels'));
       });
-      return result;
+      return _.intersection.apply(this, labelIds);
+    }
+
+    // From issuable's initial bulk selection
+    getOriginalMarkedIds() {
+      const labelIds = [];
+      this.getElement('.selected_issue:checked').each((i, el) => {
+        labelIds.push(this.getElement(`#${this.prefixId}${el.dataset.id}`).data('labels'));
+      });
+      return _.intersection.apply(this, labelIds);
+    }
+
+    // From issuable's initial bulk selection
+    getOriginalIndeterminateIds() {
+      const uniqueIds = [];
+      const labelIds = [];
+      let issuableLabels = [];
+
+      // Collect unique label IDs for all checked issues
+      this.getElement('.selected_issue:checked').each((i, el) => {
+        issuableLabels = this.getElement(`#${this.prefixId}${el.dataset.id}`).data('labels');
+        issuableLabels.forEach((labelId) => {
+          // Store unique IDs
+          if (uniqueIds.indexOf(labelId) === -1) {
+            uniqueIds.push(labelId);
+          }
+        });
+        // Store array of IDs per issuable
+        labelIds.push(issuableLabels);
+      });
+      // Add uniqueIds to add it as argument for _.intersection
+      labelIds.unshift(uniqueIds);
+      // Return IDs that are present but not in all selected issueables
+      return _.difference(uniqueIds, _.intersection.apply(this, labelIds));
+    }
+
+    getElement(selector) {
+      this.scopeEl = this.scopeEl || $('.content');
+      return this.scopeEl.find(selector);
     }
   }
 

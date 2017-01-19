@@ -1,4 +1,6 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, quotes, consistent-return, no-undef, no-return-assign, no-param-reassign, one-var, no-var, one-var-declaration-per-line, no-unused-vars, prefer-template, object-shorthand, comma-dangle, padded-blocks, max-len, prefer-arrow-callback */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, quotes, consistent-return, no-return-assign, no-param-reassign, one-var, no-var, one-var-declaration-per-line, no-unused-vars, prefer-template, object-shorthand, comma-dangle, padded-blocks, max-len, prefer-arrow-callback */
+/* global Pager */
+
 (function() {
   this.CommitsList = (function() {
     function CommitsList() {}
@@ -6,8 +8,8 @@
     CommitsList.timer = null;
 
     CommitsList.init = function(limit) {
-      $("body").on("click", ".day-commits-table li.commit", function(event) {
-        if (event.target.nodeName !== "A") {
+      $("body").on("click", ".day-commits-table li.commit", function(e) {
+        if (e.target.nodeName !== "A") {
           location.href = $(this).attr("url");
           e.stopPropagation();
           return false;

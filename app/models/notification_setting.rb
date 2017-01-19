@@ -37,6 +37,10 @@ class NotificationSetting < ActiveRecord::Base
     :success_pipeline
   ]
 
+  EXCLUDED_WATCHER_EVENTS = [
+    :success_pipeline
+  ]
+
   store :events, accessors: EMAIL_EVENTS, coder: JSON
 
   before_create :set_events

@@ -71,6 +71,75 @@ describe Projects::EnvironmentsController do
     end
   end
 
+  describe 'GET #terminal' do
+    context 'with valid id' do
+      it 'responds with a status code 200' do
+        get :terminal, environment_params
+
+        expect(response).to have_http_status(200)
+      end
+
+      it 'loads the terminals for the enviroment' do
+        expect_any_instance_of(Environment).to receive(:terminals)
+
+        get :terminal, environment_params
+      end
+    end
+
+    context 'with invalid id' do
+      it 'responds with a status code 404' do
+        get :terminal, environment_params(id: 666)
+
+        expect(response).to have_http_status(404)
+      end
+    end
+  end
+
+  describe 'GET #terminal_websocket_authorize' do
+    context 'with valid workhorse signature' do
+      before do
+        allow(Gitlab::Workhorse).to receive(:verify_api_request!).and_return(nil)
+      end
+
+      context 'and valid id' do
+        it 'returns the first terminal for the environment' do
+          expect_any_instance_of(Environment).
+            to receive(:terminals).
+            and_return([:fake_terminal])
+
+          expect(Gitlab::Workhorse).
+            to receive(:terminal_websocket).
+            with(:fake_terminal).
+            and_return(workhorse: :response)
+
+          get :terminal_websocket_authorize, environment_params
+
+          expect(response).to have_http_status(200)
+          expect(response.headers["Content-Type"]).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+          expect(response.body).to eq('{"workhorse":"response"}')
+        end
+      end
+
+      context 'and invalid id' do
+        it 'returns 404' do
+          get :terminal_websocket_authorize, environment_params(id: 666)
+
+          expect(response).to have_http_status(404)
+        end
+      end
+    end
+
+    context 'with invalid workhorse signature' do
+      it 'aborts with an exception' do
+        allow(Gitlab::Workhorse).to receive(:verify_api_request!).and_raise(JWT::DecodeError)
+
+        expect { get :terminal_websocket_authorize, environment_params }.to raise_error(JWT::DecodeError)
+        # controller tests don't set the response status correctly. It's enough
+        # to check that the action raised an exception
+      end
+    end
+  end
+
   def environment_params(opts = {})
     opts.reverse_merge(namespace_id: project.namespace,
                        project_id: project,

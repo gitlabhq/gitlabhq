@@ -12,11 +12,18 @@ module GroupsHelper
   end
 
   def group_title(group, name = nil, url = nil)
-    full_title = link_to(simple_sanitize(group.name), group_path(group))
+    full_title = ''
+
+    group.parents.each do |parent|
+      full_title += link_to(simple_sanitize(parent.name), group_path(parent))
+      full_title += ' / '.html_safe
+    end
+
+    full_title += link_to(simple_sanitize(group.name), group_path(group))
     full_title += ' &middot; '.html_safe + link_to(simple_sanitize(name), url) if name
 
     content_tag :span do
-      full_title
+      full_title.html_safe
     end
   end
 

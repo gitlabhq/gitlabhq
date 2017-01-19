@@ -42,7 +42,7 @@ module MergeRequests
       end
 
       if merge_request.source_project == merge_request.target_project &&
-         merge_request.target_branch == merge_request.source_branch
+          merge_request.target_branch == merge_request.source_branch
 
         messages << 'You must select different branches'
       end

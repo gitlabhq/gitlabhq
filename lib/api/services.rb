@@ -351,12 +351,47 @@ module API
           desc: 'The ID of a transition that moves issues to a closed state. You can find this number under the JIRA workflow administration (**Administration > Issues > Workflows**) by selecting **View** under **Operations** of the desired workflow of your project. The ID of each state can be found inside the parenthesis of each transition name under the **Transitions (id)** column ([see screenshot][trans]). By default, this ID is set to `2`'
         }
       ],
+
+      'kubernetes' => [
+        {
+          required: true,
+          name: :namespace,
+          type: String,
+          desc: 'The Kubernetes namespace to use'
+        },
+        {
+          required: true,
+          name: :api_url,
+          type: String,
+          desc: 'The URL to the Kubernetes cluster API, e.g., https://kubernetes.example.com'
+        },
+        {
+          required: true,
+          name: :token,
+          type: String,
+          desc: 'The service token to authenticate against the Kubernetes cluster with'
+        },
+        {
+          required: false,
+          name: :ca_pem,
+          type: String,
+          desc: 'A custom certificate authority bundle to verify the Kubernetes cluster with (PEM format)'
+        },
+      ],
       'mattermost-slash-commands' => [
         {
           required: true,
           name: :token,
           type: String,
           desc: 'The Mattermost token'
+        }
+      ],
+      'slack-slash-commands' => [
+        {
+          required: true,
+          name: :token,
+          type: String,
+          desc: 'The Slack token'
         }
       ],
       'pipelines-email' => [
@@ -465,6 +500,14 @@ module API
           desc: 'The channel name'
         }
       ],
+      'mattermost' => [
+        {
+          required: true,
+          name: :webhook,
+          type: String,
+          desc: 'The Mattermost webhook. e.g. http://mattermost_host/hooks/...'
+        }
+      ],
       'teamcity' => [
         {
           required: true,
@@ -499,6 +542,13 @@ module API
           name: :token,
           type: String,
           desc: 'The Mattermost token'
+        }
+      ],
+      'slack-slash-commands' => [
+        {
+          name: :token,
+          type: String,
+          desc: 'The Slack token'
         }
       ]
     }.freeze

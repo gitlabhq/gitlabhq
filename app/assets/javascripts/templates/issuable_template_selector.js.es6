@@ -1,4 +1,6 @@
-/* eslint-disable */
+/* eslint-disable prefer-const, comma-dangle, max-len, no-useless-return, object-curly-spacing, no-param-reassign, max-len */
+/* global Api */
+
 /*= require ../blob/template_selector */
 
 ((global) => {
@@ -21,7 +23,7 @@
       });
 
       $('.no-template', this.dropdown.parent()).on('click', () => {
-        this.currentTemplate = '';
+        this.currentTemplate.content = '';
         this.setInputValueToTemplateContent();
         $('.dropdown-toggle-text', this.dropdown).text('Choose a template');
       });

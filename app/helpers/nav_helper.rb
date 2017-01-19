@@ -7,12 +7,12 @@ module NavHelper
 
   def page_gutter_class
     if current_path?('merge_requests#show') ||
-      current_path?('merge_requests#diffs') ||
-      current_path?('merge_requests#commits') ||
-      current_path?('merge_requests#builds') ||
-      current_path?('merge_requests#conflicts') ||
-      current_path?('merge_requests#pipelines') ||
-      current_path?('issues#show')
+        current_path?('merge_requests#diffs') ||
+        current_path?('merge_requests#commits') ||
+        current_path?('merge_requests#builds') ||
+        current_path?('merge_requests#conflicts') ||
+        current_path?('merge_requests#pipelines') ||
+        current_path?('issues#show')
       if cookies[:collapsed_gutter] == 'true'
         "page-gutter right-sidebar-collapsed"
       else
@@ -21,9 +21,9 @@ module NavHelper
     elsif current_path?('builds#show')
       "page-gutter build-sidebar right-sidebar-expanded"
     elsif current_path?('wikis#show') ||
-      current_path?('wikis#edit') ||
-      current_path?('wikis#history') ||
-      current_path?('wikis#git_access')
+        current_path?('wikis#edit') ||
+        current_path?('wikis#history') ||
+        current_path?('wikis#git_access')
       "page-gutter wiki-sidebar right-sidebar-expanded"
     end
   end

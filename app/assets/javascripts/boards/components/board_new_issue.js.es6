@@ -1,4 +1,7 @@
-/* eslint-disable */
+/* eslint-disable comma-dangle, no-unused-vars */
+/* global Vue */
+/* global ListIssue */
+
 (() => {
   const Store = gl.issueBoards.BoardsStore;
 

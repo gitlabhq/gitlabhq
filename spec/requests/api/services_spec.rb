@@ -6,7 +6,7 @@ describe API::Services, api: true  do
   let(:user) { create(:user) }
   let(:admin) { create(:admin) }
   let(:user2) { create(:user) }
-  let(:project) {create(:project, creator_id: user.id, namespace: user.namespace) }
+  let(:project) {create(:empty_project, creator_id: user.id, namespace: user.namespace) }
 
   Service.available_services_names.each do |service|
     describe "PUT /projects/:id/services/#{service.dasherize}" do
@@ -92,57 +92,78 @@ describe API::Services, api: true  do
 
   describe 'POST /projects/:id/services/:slug/trigger' do
     let!(:project) { create(:empty_project) }
-    let(:service_name) { 'mattermost_slash_commands' }
 
-    context 'no service is available' do
-      it 'returns a not found message' do
-        post api("/projects/#{project.id}/services/idonotexist/trigger")
+    describe 'Mattermost Service' do
+      let(:service_name) { 'mattermost_slash_commands' }
 
-        expect(response).to have_http_status(404)
-        expect(json_response["error"]).to eq("404 Not Found")
+      context 'no service is available' do
+        it 'returns a not found message' do
+          post api("/projects/#{project.id}/services/idonotexist/trigger")
+
+          expect(response).to have_http_status(404)
+          expect(json_response["error"]).to eq("404 Not Found")
+        end
+      end
+
+      context 'the service exists' do
+        let(:params) { { token: 'token' } }
+
+        context 'the service is not active' do
+          before do
+            project.create_mattermost_slash_commands_service(
+              active: false,
+              properties: params
+            )
+          end
+
+          it 'when the service is inactive' do
+            post api("/projects/#{project.id}/services/#{service_name}/trigger"), params
+
+            expect(response).to have_http_status(404)
+          end
+        end
+
+        context 'the service is active' do
+          before do
+            project.create_mattermost_slash_commands_service(
+              active: true,
+              properties: params
+            )
+          end
+
+          it 'returns status 200' do
+            post api("/projects/#{project.id}/services/#{service_name}/trigger"), params
+
+            expect(response).to have_http_status(200)
+          end
+        end
+
+        context 'when the project can not be found' do
+          it 'returns a generic 404' do
+            post api("/projects/404/services/#{service_name}/trigger"), params
+
+            expect(response).to have_http_status(404)
+            expect(json_response["message"]).to eq("404 Service Not Found")
+          end
+        end
       end
     end
 
-    context 'the service exists' do
-      let(:params) { { token: 'token' } }
+    describe 'Slack Service' do
+      let(:service_name) { 'slack_slash_commands' }
 
-      context 'the service is not active' do
-        let!(:inactive_service) do
-          project.create_mattermost_slash_commands_service(
-            active: false,
-            properties: { token: 'token' }
-          )
-        end
-
-        it 'when the service is inactive' do
-          post api("/projects/#{project.id}/services/mattermost_slash_commands/trigger"), params
-
-          expect(response).to have_http_status(404)
-        end
+      before do
+        project.create_slack_slash_commands_service(
+          active: true,
+          properties: { token: 'token' }
+        )
       end
 
-      context 'the service is active' do
-        let!(:active_service) do
-          project.create_mattermost_slash_commands_service(
-            active: true,
-            properties: { token: 'token' }
-          )
-        end
+      it 'returns status 200' do
+        post api("/projects/#{project.id}/services/#{service_name}/trigger"), token: 'token', text: 'help'
 
-        it 'returns status 200' do
-          post api("/projects/#{project.id}/services/mattermost_slash_commands/trigger"), params
-
-          expect(response).to have_http_status(200)
-        end
-      end
-
-      context 'when the project can not be found' do
-        it 'returns a generic 404' do
-          post api("/projects/404/services/mattermost_slash_commands/trigger"), params
-
-          expect(response).to have_http_status(404)
-          expect(json_response["message"]).to eq("404 Service Not Found")
-        end
+        expect(response).to have_http_status(200)
+        expect(json_response['response_type']).to eq("ephemeral")
       end
     end
   end

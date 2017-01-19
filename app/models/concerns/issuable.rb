@@ -13,6 +13,7 @@ module Issuable
   include StripAttribute
   include Awardable
   include Taskable
+  include TimeTrackable
 
   included do
     cache_markdown_field :title, pipeline: :single_line
@@ -92,8 +93,9 @@ module Issuable
     after_save :record_metrics
 
     def update_assignee_cache_counts
-      # make sure we flush the cache for both the old *and* new assignee
-      User.find(assignee_id_was).update_cache_counts if assignee_id_was
+      # make sure we flush the cache for both the old *and* new assignees(if they exist)
+      previous_assignee = User.find_by_id(assignee_id_was) if assignee_id_was
+      previous_assignee.update_cache_counts if previous_assignee
       assignee.update_cache_counts if assignee
     end
 

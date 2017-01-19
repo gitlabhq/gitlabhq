@@ -1,9 +1,8 @@
 module API
   module Helpers
     include Gitlab::Utils
+    include Helpers::Pagination
 
-    PRIVATE_TOKEN_HEADER = "HTTP_PRIVATE_TOKEN"
-    PRIVATE_TOKEN_PARAM = :private_token
     SUDO_HEADER = "HTTP_SUDO"
     SUDO_PARAM = :sudo
 
@@ -87,10 +86,8 @@ module API
       IssuesFinder.new(current_user, project_id: user_project.id).find(id)
     end
 
-    def paginate(relation)
-      relation.page(params[:page]).per(params[:per_page].to_i).tap do |data|
-        add_pagination_headers(data)
-      end
+    def find_project_merge_request(id)
+      MergeRequestsFinder.new(current_user, project_id: user_project.id).find(id)
     end
 
     def authenticate!
@@ -98,7 +95,7 @@ module API
     end
 
     def authenticate_non_get!
-      authenticate! unless %w[GET HEAD].include?(route.route_method)
+      authenticate! unless %w[GET HEAD].include?(route.request_method)
     end
 
     def authenticate_by_gitlab_shell_token!
@@ -250,7 +247,7 @@ module API
       rack_response({ 'message' => '500 Internal Server Error' }.to_json, 500)
     end
 
-    # Projects helpers
+    # project helpers
 
     def filter_projects(projects)
       if params[:search].present?
@@ -301,14 +298,14 @@ module API
         header['X-Sendfile'] = path
         body
       else
-        file FileStreamer.new(path)
+        path
       end
     end
 
     private
 
     def private_token
-      params[PRIVATE_TOKEN_PARAM] || env[PRIVATE_TOKEN_HEADER]
+      params[APIGuard::PRIVATE_TOKEN_PARAM] || env[APIGuard::PRIVATE_TOKEN_HEADER]
     end
 
     def warden
@@ -323,18 +320,11 @@ module API
       warden.try(:authenticate) if %w[GET HEAD].include?(env['REQUEST_METHOD'])
     end
 
-    def find_user_by_private_token
-      token = private_token
-      return nil unless token.present?
-
-      User.find_by_authentication_token(token) || User.find_by_personal_access_token(token)
-    end
-
     def initial_current_user
       return @initial_current_user if defined?(@initial_current_user)
 
-      @initial_current_user ||= find_user_by_private_token
-      @initial_current_user ||= doorkeeper_guard
+      @initial_current_user ||= find_user_by_private_token(scopes: @scopes)
+      @initial_current_user ||= doorkeeper_guard(scopes: @scopes)
       @initial_current_user ||= find_user_from_warden
 
       unless @initial_current_user && Gitlab::UserAccess.new(@initial_current_user).allowed?
@@ -368,38 +358,6 @@ module API
 
     def sudo_identifier
       @sudo_identifier ||= params[SUDO_PARAM] || env[SUDO_HEADER]
-    end
-
-    def add_pagination_headers(paginated_data)
-      header 'X-Total',       paginated_data.total_count.to_s
-      header 'X-Total-Pages', paginated_data.total_pages.to_s
-      header 'X-Per-Page',    paginated_data.limit_value.to_s
-      header 'X-Page',        paginated_data.current_page.to_s
-      header 'X-Next-Page',   paginated_data.next_page.to_s
-      header 'X-Prev-Page',   paginated_data.prev_page.to_s
-      header 'Link',          pagination_links(paginated_data)
-    end
-
-    def pagination_links(paginated_data)
-      request_url = request.url.split('?').first
-      request_params = params.clone
-      request_params[:per_page] = paginated_data.limit_value
-
-      links = []
-
-      request_params[:page] = paginated_data.current_page - 1
-      links << %(<#{request_url}?#{request_params.to_query}>; rel="prev") unless paginated_data.first_page?
-
-      request_params[:page] = paginated_data.current_page + 1
-      links << %(<#{request_url}?#{request_params.to_query}>; rel="next") unless paginated_data.last_page?
-
-      request_params[:page] = 1
-      links << %(<#{request_url}?#{request_params.to_query}>; rel="first")
-
-      request_params[:page] = paginated_data.total_pages
-      links << %(<#{request_url}?#{request_params.to_query}>; rel="last")
-
-      links.join(', ')
     end
 
     def secret_token

@@ -31,7 +31,7 @@ table {
       }
 
       th {
-        background-color: $background-color;
+        background-color: $gray-light;
         font-weight: normal;
         border-bottom: none;
 
@@ -41,7 +41,7 @@ table {
       }
 
       td {
-        border-color: $table-border-color;
+        border-color: $white-normal;
       }
     }
   }

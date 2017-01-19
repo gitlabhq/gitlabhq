@@ -62,6 +62,11 @@ describe Ci::API::Builds do
           let(:user_agent) { 'Go-http-client/1.1' }
           it { expect(response).to have_http_status(404) }
         end
+
+        context "when runner doesn't have a User-Agent" do
+          let(:user_agent) { nil }
+          it { expect(response).to have_http_status(404) }
+        end
       end
 
       context 'when there is a pending build' do
@@ -277,7 +282,11 @@ describe Ci::API::Builds do
     end
 
     describe 'PATCH /builds/:id/trace.txt' do
-      let(:build) { create(:ci_build, :pending, :trace, runner_id: runner.id) }
+      let(:build) do
+        attributes = { runner_id: runner.id, pipeline: pipeline }
+        create(:ci_build, :running, :trace, attributes)
+      end
+
       let(:headers) { { Ci::API::Helpers::BUILD_TOKEN_HEADER => build.token, 'Content-Type' => 'text/plain' } }
       let(:headers_with_range) { headers.merge({ 'Content-Range' => '11-20' }) }
       let(:update_interval) { 10.seconds.to_i }
@@ -304,7 +313,6 @@ describe Ci::API::Builds do
       end
 
       before do
-        build.run!
         initial_patch_the_trace
       end
 
@@ -355,6 +363,19 @@ describe Ci::API::Builds do
 
               expect(build.reload.trace).to eq 'BUILD TRACE appended'
             end
+          end
+        end
+
+        context 'when project for the build has been deleted' do
+          let(:build) do
+            attributes = { runner_id: runner.id, pipeline: pipeline }
+            create(:ci_build, :running, :trace, attributes) do |build|
+              build.project.update(pending_delete: true)
+            end
+          end
+
+          it 'responds with forbidden' do
+            expect(response.status).to eq(403)
           end
         end
       end

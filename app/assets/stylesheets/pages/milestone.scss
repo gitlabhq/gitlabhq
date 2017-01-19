@@ -25,12 +25,6 @@
   }
 
   .issuable-row {
-    .color-label {
-      border-radius: 2px;
-      padding: 3px !important;
-      margin-right: 7px;
-    }
-
     span a {
       color: $gl-text-color;
       word-wrap: break-word;
@@ -108,12 +102,16 @@
     margin-top: 7px;
 
     .issuable-number {
-      color: $gl-placeholder-color;
+      color: $gl-text-color-secondary;
       margin-right: 5px;
     }
 
     .avatar {
       float: none;
+    }
+
+    > a:not(:last-of-type) {
+      margin-right: 5px;
     }
   }
 }

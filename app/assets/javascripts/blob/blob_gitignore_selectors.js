@@ -1,4 +1,6 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-unused-expressions, no-cond-assign, no-sequences, no-undef, comma-dangle, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-unused-expressions, no-cond-assign, no-sequences, comma-dangle, padded-blocks, max-len */
+/* global BlobGitignoreSelector */
+
 (function() {
   this.BlobGitignoreSelectors = (function() {
     function BlobGitignoreSelectors(opts) {

@@ -1,4 +1,6 @@
-/* eslint-disable func-names, space-before-function-paren, prefer-arrow-callback, no-var, no-undef, quotes, semi, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, prefer-arrow-callback, no-var, quotes, semi, padded-blocks, max-len */
+/* global ace */
+
 /*= require_tree . */
 
 (function() {

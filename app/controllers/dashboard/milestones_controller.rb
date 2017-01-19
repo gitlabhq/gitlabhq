@@ -1,6 +1,4 @@
 class Dashboard::MilestonesController < Dashboard::ApplicationController
-  include GlobalMilestones
-
   before_action :projects
   before_action :milestone, only: [:show]
 
@@ -16,5 +14,16 @@ class Dashboard::MilestonesController < Dashboard::ApplicationController
   end
 
   def show
+  end
+
+  private
+
+  def milestones
+    @milestones = GlobalMilestone.build_collection(@projects, params)
+  end
+
+  def milestone
+    @milestone = GlobalMilestone.build(@projects, params[:title])
+    render_404 unless @milestone
   end
 end

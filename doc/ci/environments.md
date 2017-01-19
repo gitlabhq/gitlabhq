@@ -25,7 +25,9 @@ Environments are like tags for your CI jobs, describing where code gets deployed
 Deployments are created when [jobs] deploy versions of code to environments,
 so every environment can have one or more deployments. GitLab keeps track of
 your deployments, so you always know what is currently being deployed on your
-servers.
+servers. If you have a deployment service such as [Kubernetes][kubernetes-service]
+enabled for your project, you can use it to assist with your deployments, and
+can even access a web terminal for your environment from within GitLab!
 
 To better understand how environments and deployments work, let's consider an
 example. We assume that you have already created a project in GitLab and set up
@@ -85,6 +87,13 @@ deploys to this environment's `name`. It can also have a `url` which, as we
 will later see, is exposed in various places within GitLab. Each time a job that
 has an environment specified and succeeds, a deployment is recorded, remembering
 the Git SHA and environment name.
+
+>**Note:**
+Starting with GitLab 8.15, the environment name is exposed to the Runner in
+two forms: `$CI_ENVIRONMENT_NAME`, and `$CI_ENVIRONMENT_SLUG`. The first is
+the name given in `.gitlab-ci.yml` (with any variables expanded), while the
+second is a "cleaned-up" version of the name, suitable for use in URLs, DNS,
+etc.
 
 To sum up, with the above `.gitlab-ci.yml` we have achieved that:
 
@@ -157,7 +166,7 @@ that can be found in the deployments page
 job with the commit associated with it.
 
 >**Note:**
-Bare in mind that your mileage will vary and it's entirely up to how you define
+Bear in mind that your mileage will vary and it's entirely up to how you define
 the deployment process in the job's `script` whether the rollback succeeds or not.
 GitLab CI is just following orders.
 
@@ -226,6 +235,46 @@ Remember that if your environment's name is `production` (all lowercase), then
 it will get recorded in [Cycle Analytics](../user/project/cycle_analytics.md).
 Double the benefit!
 
+## Web terminals
+
+>**Note:**
+Web terminals were added in GitLab 8.15 and are only available to project
+masters and owners.
+
+If you deploy to your environments with the help of a deployment service (e.g.,
+the [Kubernetes](../project_services/kubernetes.md) service), GitLab can open
+a terminal session to your environment! This is a very powerful feature that
+allows you to debug issues without leaving the comfort of your web browser. To
+enable it, just follow the instructions given in the service documentation.
+
+Once enabled, your environments will gain a "terminal" button:
+
+![Terminal button on environment index](img/environments_terminal_button_on_index.png)
+
+You can also access the terminal button from the page for a specific environment:
+
+![Terminal button for an environment](img/environments_terminal_button_on_show.png)
+
+Wherever you find it, clicking the button will take you to a separate page to
+establish the terminal session:
+
+![Terminal page](img/environments_terminal_page.png)
+
+This works just like any other terminal - you'll be in the container created
+by your deployment, so you can run shell commands and get responses in real
+time, check the logs, try out configuration or code tweaks, etc. You can open
+multiple terminals to the same environment - they each get their own shell
+session -  and even a multiplexer like `screen` or `tmux`!  
+
+>**Note:**
+Container-based deployments often lack basic tools (like an editor), and may
+be stopped or restarted at any time. If this happens, you will lose all your
+changes! Treat this as a debugging tool, not a comprehensive online IDE. You
+can use [Koding](../administration/integration/koding.md) for online
+development.
+
+---
+
 While this is fine for deploying to some stable environments like staging or
 production, what happens for branches? So far we haven't defined anything
 regarding deployments for branches other than `master`. Dynamic environments
@@ -248,7 +297,7 @@ deploy_review:
     - echo "Deploy a review app"
   environment:
     name: review/$CI_BUILD_REF_NAME
-    url: https://$CI_BUILD_REF_NAME.example.com
+    url: https://$CI_BUILD_REF_SLUG.review.example.com
   only:
     - branches
   except:
@@ -259,15 +308,25 @@ Let's break it down in pieces. The job's name is `deploy_review` and it runs
 on the `deploy` stage. The `script` at this point is fictional, you'd have to
 use your own based on your deployment. Then, we set the `environment` with the
 `environment:name` being `review/$CI_BUILD_REF_NAME`. Now that's an interesting
-one. Since the [environment name][env-name] can contain also slashes (`/`), we
-can use this pattern to distinguish between dynamic environments and the regular
+one. Since the [environment name][env-name] can contain slashes (`/`), we can
+use this pattern to distinguish between dynamic environments and the regular
 ones.
 
 So, the first part is `review`, followed by a `/` and then `$CI_BUILD_REF_NAME`
-which takes the value of the branch name. We also use the same
-`$CI_BUILD_REF_NAME` value in the `environment:url` so that the environment
-can get a specific and distinct URL for each branch. Again, the way you set up
-the webserver to serve these requests is based on your setup.
+which takes the value of the branch name. Since `$CI_BUILD_REF_NAME` itself may
+also contain `/`, or other characters that would be invalid in a domain name or
+URL, we use `$CI_ENVIRONMENT_SLUG` in the `environment:url` so that the
+environment can get a specific and distinct URL for each branch. In this case,
+given a `$CI_BUILD_REF_NAME` of `100-Do-The-Thing`, the URL will be something
+like `https://review-100-do-the-4f99a2.example.com`. Again, the way you set up
+the web server to serve these requests is based on your setup.
+
+You could also use `$CI_BUILD_REF_SLUG` in `environment:url`, e.g.:
+`https://$CI_BUILD_REF_SLUG.review.example.com`. We use `$CI_ENVIRONMENT_SLUG`
+here because it is guaranteed to be unique, but if you're using a workflow like
+[GitLab Flow][gitlab-flow], collisions are very unlikely, and you may prefer
+environment names to be more closely based on the branch name - the example
+above would give you an URL like `https://100-do-the-thing.review.example.com`
 
 Last but not least, we tell the job to run [`only`][only] on branches
 [`except`][only] master.
@@ -299,7 +358,7 @@ deploy_review:
     - echo "Deploy a review app"
   environment:
     name: review/$CI_BUILD_REF_NAME
-    url: https://$CI_BUILD_REF_NAME.example.com
+    url: https://$CI_ENVIRONMENT_SLUG.example.com
   only:
     - branches
   except:
@@ -329,16 +388,16 @@ deploy_prod:
 
 A more realistic example would include copying files to a location where a
 webserver (NGINX) could then read and serve. The example below will copy the
-`public` directory to `/srv/nginx/$CI_BUILD_REF_NAME/public`:
+`public` directory to `/srv/nginx/$CI_BUILD_REF_SLUG/public`:
 
 ```yaml
 review_app:
   stage: deploy
   script:
-    - rsync -av --delete public /srv/nginx/$CI_BUILD_REF_NAME
+    - rsync -av --delete public /srv/nginx/$CI_BUILD_REF_SLUG
   environment:
     name: review/$CI_BUILD_REF_NAME
-    url: https://$CI_BUILD_REF_NAME.example.com
+    url: https://$CI_BUILD_REF_SLUG.example.com
 ```
 
 It is assumed that the user has already setup NGINX and GitLab Runner in the
@@ -346,7 +405,7 @@ server this job will run on.
 
 >**Note:**
 Be sure to check out the [limitations](#limitations) section for some edge
-cases regarding naming of you branches and Review Apps.
+cases regarding naming of your branches and Review Apps.
 
 ---
 
@@ -418,7 +477,7 @@ deploy_review:
     - echo "Deploy a review app"
   environment:
     name: review/$CI_BUILD_REF_NAME
-    url: https://$CI_BUILD_REF_NAME.example.com
+    url: https://$CI_ENVIRONMENT_SLUG.example.com
     on_stop: stop_review
   only:
     - branches
@@ -480,9 +539,8 @@ exist, you should see something like:
 
 ## Checkout deployments locally
 
-Since 8.13, a reference in the git repository is saved for each deployment. So
-knowing what the state is of your current environments is only a `git fetch`
-away.
+Since 8.13, a reference in the git repository is saved for each deployment, so
+knowing the state of your current environments is only a `git fetch` away.
 
 In your git config, append the `[remote "<your-remote>"]` block with an extra
 fetch line:
@@ -493,10 +551,6 @@ fetch = +refs/environments/*:refs/remotes/origin/environments/*
 
 ## Limitations
 
-1. If the branch name contains special characters (`/`), and you use the
-   `$CI_BUILD_REF_NAME` variable to dynamically create environments, there might
-   be complications during your Review Apps deployment. Follow the
-   [issue 22849][ce-22849] for more information.
 1. You are limited to use only the [CI predefined variables][variables] in the
    `environment: name`. If you try to re-use variables defined inside `script`
    as part of the environment name, it will not work.
@@ -512,6 +566,7 @@ Below are some links you may find interesting:
 [Pipelines]: pipelines.md
 [jobs]: yaml/README.md#jobs
 [yaml]: yaml/README.md
+[kubernetes-service]: ../project_services/kubernetes.md]
 [environments]: #environments
 [deployments]: #deployments
 [permissions]: ../user/permissions.md
@@ -520,6 +575,6 @@ Below are some links you may find interesting:
 [only]: yaml/README.md#only-and-except
 [onstop]: yaml/README.md#environment-on_stop
 [ce-7015]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7015
-[ce-22849]: https://gitlab.com/gitlab-org/gitlab-ce/issues/22849
+[gitlab-flow]: ../workflow/gitlab_flow.md
 [gitlab runner]: https://docs.gitlab.com/runner/
 [git-strategy]: yaml/README.md#git-strategy

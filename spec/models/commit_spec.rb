@@ -213,23 +213,19 @@ eos
   end
 
   describe '#status' do
-    context 'without arguments for compound status' do
-      shared_examples 'giving the status from pipeline' do
-        it do
-          expect(commit.status).to eq(Ci::Pipeline.status)
+    context 'without ref argument' do
+      before do
+        %w[success failed created pending].each do |status|
+          create(:ci_empty_pipeline,
+                 project: project,
+                 sha: commit.sha,
+                 status: status)
         end
       end
 
-      context 'with pipelines' do
-        let!(:pipeline) do
-          create(:ci_empty_pipeline, project: project, sha: commit.sha)
-        end
-
-        it_behaves_like 'giving the status from pipeline'
-      end
-
-      context 'without pipelines' do
-        it_behaves_like 'giving the status from pipeline'
+      it 'gives compound status from latest pipelines' do
+        expect(commit.status).to eq(Ci::Pipeline.latest_status)
+        expect(commit.status).to eq('pending')
       end
     end
 
@@ -255,8 +251,9 @@ eos
         expect(commit.status('fix')).to eq(pipeline_from_fix.status)
       end
 
-      it 'gives compound status if ref is nil' do
-        expect(commit.status(nil)).to eq(commit.status)
+      it 'gives compound status from latest pipelines if ref is nil' do
+        expect(commit.status(nil)).to eq(Ci::Pipeline.latest_status)
+        expect(commit.status(nil)).to eq('failed')
       end
     end
   end

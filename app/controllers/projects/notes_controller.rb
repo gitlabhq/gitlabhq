@@ -23,7 +23,8 @@ class Projects::NotesController < Projects::ApplicationController
   end
 
   def create
-    @note = Notes::CreateService.new(project, current_user, note_params).execute
+    create_params = note_params.merge(merge_request_diff_head_sha: params[:merge_request_diff_head_sha])
+    @note = Notes::CreateService.new(project, current_user, create_params).execute
 
     if @note.is_a?(Note)
       Banzai::NoteRenderer.render([@note], @project, current_user)
@@ -217,6 +218,6 @@ class Projects::NotesController < Projects::ApplicationController
   end
 
   def find_current_user_notes
-    @notes = NotesFinder.new.execute(project, current_user, params)
+    @notes = NotesFinder.new(project, current_user, params).execute.inc_author
   end
 end

@@ -1,4 +1,7 @@
-/* eslint-disable */
+/* eslint-disable space-before-function-paren, comma-dangle, semi */
+/* global Vue */
+/* global ListLabel */
+
 (() => {
   const Store = gl.issueBoards.BoardsStore;
 

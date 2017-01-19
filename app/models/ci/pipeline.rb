@@ -88,8 +88,21 @@ module Ci
     end
 
     # ref can't be HEAD or SHA, can only be branch/tag name
+    scope :latest, ->(ref = nil) do
+      max_id = unscope(:select)
+        .select("max(#{quoted_table_name}.id)")
+        .group(:ref, :sha)
+
+      relation = ref ? where(ref: ref) : self
+      relation.where(id: max_id)
+    end
+
+    def self.latest_status(ref = nil)
+      latest(ref).status
+    end
+
     def self.latest_successful_for(ref)
-      where(ref: ref).order(id: :desc).success.first
+      success.latest(ref).order(id: :desc).first
     end
 
     def self.truncate_sha(sha)
@@ -98,6 +111,11 @@ module Ci
 
     def self.total_duration
       where.not(duration: nil).sum(:duration)
+    end
+
+    def stage(name)
+      stage = Ci::Stage.new(self, name: name)
+      stage unless stage.statuses_count.zero?
     end
 
     def stages_count
@@ -124,7 +142,7 @@ module Ci
     end
 
     def artifacts
-      builds.latest.with_artifacts_not_expired
+      builds.latest.with_artifacts_not_expired.includes(project: [:namespace])
     end
 
     def project_id
@@ -173,7 +191,11 @@ module Ci
     end
 
     def manual_actions
-      builds.latest.manual_actions
+      builds.latest.manual_actions.includes(project: [:namespace])
+    end
+
+    def stuck?
+      builds.pending.any?(&:stuck?)
     end
 
     def retryable?
@@ -265,6 +287,10 @@ module Ci
       end
     end
 
+    def has_yaml_errors?
+      yaml_errors.present?
+    end
+
     def environments
       builds.where.not(environment: nil).success.pluck(:environment).uniq
     end
@@ -336,8 +362,10 @@ module Ci
         .select { |merge_request| merge_request.head_pipeline.try(:id) == self.id }
     end
 
-    def detailed_status
-      Gitlab::Ci::Status::Pipeline::Factory.new(self).fabricate!
+    def detailed_status(current_user)
+      Gitlab::Ci::Status::Pipeline::Factory
+        .new(self, current_user)
+        .fabricate!
     end
 
     private

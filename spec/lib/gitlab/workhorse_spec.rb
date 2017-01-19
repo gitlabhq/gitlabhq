@@ -37,6 +37,42 @@ describe Gitlab::Workhorse, lib: true do
     end
   end
 
+  describe '.terminal_websocket' do
+    def terminal(ca_pem: nil)
+      out = {
+        subprotocols: ['foo'],
+        url: 'wss://example.com/terminal.ws',
+        headers: { 'Authorization' => ['Token x'] }
+      }
+      out[:ca_pem] = ca_pem if ca_pem
+      out
+    end
+
+    def workhorse(ca_pem: nil)
+      out = {
+        'Terminal' => {
+          'Subprotocols' => ['foo'],
+          'Url' => 'wss://example.com/terminal.ws',
+          'Header' => { 'Authorization' => ['Token x'] }
+        }
+      }
+      out['Terminal']['CAPem'] = ca_pem if ca_pem
+      out
+    end
+
+    context 'without ca_pem' do
+      subject { Gitlab::Workhorse.terminal_websocket(terminal) }
+
+      it { is_expected.to eq(workhorse) }
+    end
+
+    context 'with ca_pem' do
+      subject { Gitlab::Workhorse.terminal_websocket(terminal(ca_pem: "foo")) }
+
+      it { is_expected.to eq(workhorse(ca_pem: "foo")) }
+    end
+  end
+
   describe '.send_git_diff' do
     let(:diff_refs) { double(base_sha: "base", head_sha: "head") }
     subject { described_class.send_git_patch(repository, diff_refs) }

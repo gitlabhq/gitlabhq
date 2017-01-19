@@ -131,4 +131,16 @@ class CommitStatus < ActiveRecord::Base
   def has_trace?
     false
   end
+
+  def detailed_status(current_user)
+    Gitlab::Ci::Status::Factory
+      .new(self, current_user)
+      .fabricate!
+  end
+
+  def sortable_name
+    name.split(/(\d+)/).map do |v|
+      v =~ /\d+/ ? v.to_i : v
+    end
+  end
 end

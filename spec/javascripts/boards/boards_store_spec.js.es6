@@ -1,4 +1,11 @@
-/* eslint-disable */
+/* eslint-disable comma-dangle, one-var, no-unused-vars, indent */
+/* global Vue */
+/* global BoardService */
+/* global boardsMockInterceptor */
+/* global Cookies */
+/* global listObj */
+/* global listObjDuplicate */
+
 //= require jquery
 //= require jquery_ujs
 //= require js.cookie

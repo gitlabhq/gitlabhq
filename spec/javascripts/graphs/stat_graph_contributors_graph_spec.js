@@ -1,4 +1,8 @@
-/* eslint-disable quotes, no-undef, indent, semi, object-curly-spacing, jasmine/no-suite-dupes, vars-on-top, no-var, padded-blocks, spaced-comment, max-len */
+/* eslint-disable quotes, indent, semi, object-curly-spacing, jasmine/no-suite-dupes, vars-on-top, no-var, padded-blocks, spaced-comment, max-len */
+/* global d3 */
+/* global ContributorsGraph */
+/* global ContributorsMasterGraph */
+
 //= require graphs/stat_graph_contributors_graph
 
 describe("ContributorsGraph", function () {

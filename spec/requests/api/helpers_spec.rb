@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe API::Helpers, api: true do
+  include API::APIGuard::HelperMethods
   include API::Helpers
   include SentryHelper
 
@@ -15,24 +16,24 @@ describe API::Helpers, api: true do
   def set_env(user_or_token, identifier)
     clear_env
     clear_param
-    env[API::Helpers::PRIVATE_TOKEN_HEADER] = user_or_token.respond_to?(:private_token) ? user_or_token.private_token : user_or_token
+    env[API::APIGuard::PRIVATE_TOKEN_HEADER] = user_or_token.respond_to?(:private_token) ? user_or_token.private_token : user_or_token
     env[API::Helpers::SUDO_HEADER] = identifier.to_s
   end
 
   def set_param(user_or_token, identifier)
     clear_env
     clear_param
-    params[API::Helpers::PRIVATE_TOKEN_PARAM] = user_or_token.respond_to?(:private_token) ? user_or_token.private_token : user_or_token
+    params[API::APIGuard::PRIVATE_TOKEN_PARAM] = user_or_token.respond_to?(:private_token) ? user_or_token.private_token : user_or_token
     params[API::Helpers::SUDO_PARAM] = identifier.to_s
   end
 
   def clear_env
-    env.delete(API::Helpers::PRIVATE_TOKEN_HEADER)
+    env.delete(API::APIGuard::PRIVATE_TOKEN_HEADER)
     env.delete(API::Helpers::SUDO_HEADER)
   end
 
   def clear_param
-    params.delete(API::Helpers::PRIVATE_TOKEN_PARAM)
+    params.delete(API::APIGuard::PRIVATE_TOKEN_PARAM)
     params.delete(API::Helpers::SUDO_PARAM)
   end
 
@@ -94,22 +95,28 @@ describe API::Helpers, api: true do
 
     describe "when authenticating using a user's private token" do
       it "returns nil for an invalid token" do
-        env[API::Helpers::PRIVATE_TOKEN_HEADER] = 'invalid token'
+        env[API::APIGuard::PRIVATE_TOKEN_HEADER] = 'invalid token'
         allow_any_instance_of(self.class).to receive(:doorkeeper_guard){ false }
+
         expect(current_user).to be_nil
       end
 
       it "returns nil for a user without access" do
-        env[API::Helpers::PRIVATE_TOKEN_HEADER] = user.private_token
+        env[API::APIGuard::PRIVATE_TOKEN_HEADER] = user.private_token
         allow_any_instance_of(Gitlab::UserAccess).to receive(:allowed?).and_return(false)
+
         expect(current_user).to be_nil
       end
 
       it "leaves user as is when sudo not specified" do
-        env[API::Helpers::PRIVATE_TOKEN_HEADER] = user.private_token
+        env[API::APIGuard::PRIVATE_TOKEN_HEADER] = user.private_token
+
         expect(current_user).to eq(user)
+
         clear_env
-        params[API::Helpers::PRIVATE_TOKEN_PARAM] = user.private_token
+
+        params[API::APIGuard::PRIVATE_TOKEN_PARAM] = user.private_token
+
         expect(current_user).to eq(user)
       end
     end
@@ -117,37 +124,51 @@ describe API::Helpers, api: true do
     describe "when authenticating using a user's personal access tokens" do
       let(:personal_access_token) { create(:personal_access_token, user: user) }
 
+      before do
+        allow_any_instance_of(self.class).to receive(:doorkeeper_guard) { false }
+      end
+
       it "returns nil for an invalid token" do
-        env[API::Helpers::PRIVATE_TOKEN_HEADER] = 'invalid token'
-        allow_any_instance_of(self.class).to receive(:doorkeeper_guard){ false }
+        env[API::APIGuard::PRIVATE_TOKEN_HEADER] = 'invalid token'
+
         expect(current_user).to be_nil
       end
 
       it "returns nil for a user without access" do
-        env[API::Helpers::PRIVATE_TOKEN_HEADER] = personal_access_token.token
+        env[API::APIGuard::PRIVATE_TOKEN_HEADER] = personal_access_token.token
         allow_any_instance_of(Gitlab::UserAccess).to receive(:allowed?).and_return(false)
+
+        expect(current_user).to be_nil
+      end
+
+      it "returns nil for a token without the appropriate scope" do
+        personal_access_token = create(:personal_access_token, user: user, scopes: ['read_user'])
+        env[API::APIGuard::PRIVATE_TOKEN_HEADER] = personal_access_token.token
+        allow_access_with_scope('write_user')
+
         expect(current_user).to be_nil
       end
 
       it "leaves user as is when sudo not specified" do
-        env[API::Helpers::PRIVATE_TOKEN_HEADER] = personal_access_token.token
+        env[API::APIGuard::PRIVATE_TOKEN_HEADER] = personal_access_token.token
         expect(current_user).to eq(user)
         clear_env
-        params[API::Helpers::PRIVATE_TOKEN_PARAM] = personal_access_token.token
+        params[API::APIGuard::PRIVATE_TOKEN_PARAM] = personal_access_token.token
+
         expect(current_user).to eq(user)
       end
 
       it 'does not allow revoked tokens' do
         personal_access_token.revoke!
-        env[API::Helpers::PRIVATE_TOKEN_HEADER] = personal_access_token.token
-        allow_any_instance_of(self.class).to receive(:doorkeeper_guard){ false }
+        env[API::APIGuard::PRIVATE_TOKEN_HEADER] = personal_access_token.token
+
         expect(current_user).to be_nil
       end
 
       it 'does not allow expired tokens' do
         personal_access_token.update_attributes!(expires_at: 1.day.ago)
-        env[API::Helpers::PRIVATE_TOKEN_HEADER] = personal_access_token.token
-        allow_any_instance_of(self.class).to receive(:doorkeeper_guard){ false }
+        env[API::APIGuard::PRIVATE_TOKEN_HEADER] = personal_access_token.token
+
         expect(current_user).to be_nil
       end
     end
@@ -375,7 +396,7 @@ describe API::Helpers, api: true do
     %w[HEAD GET].each do |method_name|
       context "method is #{method_name}" do
         before do
-          expect_any_instance_of(self.class).to receive(:route).and_return(double(route_method: method_name))
+          expect_any_instance_of(self.class).to receive(:route).and_return(double(request_method: method_name))
         end
 
         it 'does not raise an error' do
@@ -389,7 +410,7 @@ describe API::Helpers, api: true do
     %w[POST PUT PATCH DELETE].each do |method_name|
       context "method is #{method_name}" do
         before do
-          expect_any_instance_of(self.class).to receive(:route).and_return(double(route_method: method_name))
+          expect_any_instance_of(self.class).to receive(:route).and_return(double(request_method: method_name))
         end
 
         it 'calls authenticate!' do

@@ -11,6 +11,20 @@ module API
         optional :lfs_enabled, type: Boolean, desc: 'Enable/disable LFS for the projects in this group'
         optional :request_access_enabled, type: Boolean, desc: 'Allow users to request member access'
       end
+
+      params :statistics_params do
+        optional :statistics, type: Boolean, default: false, desc: 'Include project statistics'
+      end
+
+      def present_groups(groups, options = {})
+        options = options.reverse_merge(
+          with: Entities::Group,
+          current_user: current_user,
+        )
+
+        groups = groups.with_statistics if options[:statistics]
+        present paginate(groups), options
+      end
     end
 
     resource :groups do
@@ -18,6 +32,7 @@ module API
         success Entities::Group
       end
       params do
+        use :statistics_params
         optional :skip_groups, type: Array[Integer], desc: 'Array of group ids to exclude from list'
         optional :all_available, type: Boolean, desc: 'Show all group that you have access to'
         optional :search, type: String, desc: 'Search for a specific group'
@@ -38,7 +53,7 @@ module API
         groups = groups.where.not(id: params[:skip_groups]) if params[:skip_groups].present?
         groups = groups.reorder(params[:order_by] => params[:sort])
 
-        present paginate(groups), with: Entities::Group
+        present_groups groups, statistics: params[:statistics] && current_user.is_admin?
       end
 
       desc 'Get list of owned groups for authenticated user' do
@@ -46,10 +61,10 @@ module API
       end
       params do
         use :pagination
+        use :statistics_params
       end
       get '/owned' do
-        groups = current_user.owned_groups
-        present paginate(groups), with: Entities::Group, user: current_user
+        present_groups current_user.owned_groups, statistics: params[:statistics]
       end
 
       desc 'Create a group. Available only for users who can create groups.' do
@@ -66,7 +81,7 @@ module API
         group = ::Groups::CreateService.new(current_user, declared_params(include_missing: false)).execute
 
         if group.persisted?
-          present group, with: Entities::Group
+          present group, with: Entities::Group, current_user: current_user
         else
           render_api_error!("Failed to save group #{group.errors.messages}", 400)
         end
@@ -92,7 +107,7 @@ module API
         authorize! :admin_group, group
 
         if ::Groups::UpdateService.new(group, current_user, declared_params(include_missing: false)).execute
-          present group, with: Entities::GroupDetail
+          present group, with: Entities::GroupDetail, current_user: current_user
         else
           render_validation_error!(group)
         end
@@ -103,7 +118,7 @@ module API
       end
       get ":id" do
         group = find_group!(params[:id])
-        present group, with: Entities::GroupDetail
+        present group, with: Entities::GroupDetail, current_user: current_user
       end
 
       desc 'Remove a group.'
@@ -134,23 +149,23 @@ module API
         projects = GroupProjectsFinder.new(group).execute(current_user)
         projects = filter_projects(projects)
         entity = params[:simple] ? Entities::BasicProjectDetails : Entities::Project
-        present paginate(projects), with: entity, user: current_user
+        present paginate(projects), with: entity, current_user: current_user
       end
 
       desc 'Transfer a project to the group namespace. Available only for admin.' do
         success Entities::GroupDetail
       end
       params do
-        requires :project_id, type: String, desc: 'The ID of the project'
+        requires :project_id, type: String, desc: 'The ID or path of the project'
       end
       post ":id/projects/:project_id" do
         authenticated_as_admin!
-        group = Group.find_by(id: params[:id])
-        project = Project.find(params[:project_id])
+        group = find_group!(params[:id])
+        project = find_project!(params[:project_id])
         result = ::Projects::TransferService.new(project, current_user).execute(group)
 
         if result
-          present group, with: Entities::GroupDetail
+          present group, with: Entities::GroupDetail, current_user: current_user
         else
           render_api_error!("Failed to transfer project #{project.errors.messages}", 400)
         end

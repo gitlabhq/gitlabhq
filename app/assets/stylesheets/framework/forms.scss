@@ -22,7 +22,7 @@ input[type='text'].danger {
   margin-top: 0;
   margin-bottom: -$gl-padding;
   padding: $gl-padding;
-  background-color: $background-color;
+  background-color: $gray-light;
   border-top: 1px solid $border-color;
 }
 
@@ -96,6 +96,10 @@ label {
     code {
       line-height: 1.8;
     }
+
+    img {
+      margin-right: $gl-padding;
+    }
   }
 
   @media(max-width: $screen-xs-max) {
@@ -149,7 +153,7 @@ label {
 }
 
 .form-control::-webkit-input-placeholder {
-  color: $gl-placeholder-color;
+  color: $gl-text-color-secondary;
 }
 
 .input-group {

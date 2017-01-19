@@ -1,6 +1,7 @@
-/* eslint-disable func-names, space-before-function-paren, quotes, object-shorthand, camelcase, no-var, no-undef, comma-dangle, prefer-arrow-callback, indent, object-curly-spacing, quote-props, no-param-reassign, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, quotes, object-shorthand, camelcase, no-var, comma-dangle, prefer-arrow-callback, indent, object-curly-spacing, quote-props, no-param-reassign, padded-blocks, max-len */
+
 (function() {
-  this.Api = {
+  var Api = {
     groupsPath: "/api/:version/groups.json",
     groupPath: "/api/:version/groups/:id.json",
     namespacesPath: "/api/:version/namespaces.json",
@@ -10,6 +11,7 @@
     licensePath: "/api/:version/templates/licenses/:key",
     gitignorePath: "/api/:version/templates/gitignores/:key",
     gitlabCiYmlPath: "/api/:version/templates/gitlab_ci_ymls/:key",
+    dockerfilePath: "/api/:version/dockerfiles/:key",
     issuableTemplatePath: "/:namespace_path/:project_path/templates/:type/:key",
     group: function(group_id, callback) {
       var url = Api.buildUrl(Api.groupPath)
@@ -119,6 +121,10 @@
         return callback(file);
       });
     },
+    dockerfileYml: function(key, callback) {
+      var url = Api.buildUrl(Api.dockerfilePath).replace(':key', key);
+      $.get(url, callback);
+    },
     issueTemplate: function(namespacePath, projectPath, key, type, callback) {
       var url = Api.buildUrl(Api.issuableTemplatePath)
         .replace(':key', key)
@@ -140,4 +146,5 @@
     }
   };
 
+  window.Api = Api;
 }).call(this);

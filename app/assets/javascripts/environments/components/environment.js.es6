@@ -18,7 +18,7 @@
    * The environments array is a recursive tree structure and we need to filter
    * both root level environments and children environments.
    *
-   * In order to acomplish that, both `filterState` and `filterEnvironmnetsByState`
+   * In order to acomplish that, both `filterState` and `filterEnvironmentsByState`
    * functions work together.
    * The first one works as the filter that verifies if the given environment matches
    * the given state.
@@ -34,9 +34,9 @@
    * @param {Array} array
    * @return {Array}
    */
-  const filterEnvironmnetsByState = (fn, arr) => arr.map((item) => {
+  const filterEnvironmentsByState = (fn, arr) => arr.map((item) => {
     if (item.children) {
-      const filteredChildren = filterEnvironmnetsByState(fn, item.children).filter(Boolean);
+      const filteredChildren = filterEnvironmentsByState(fn, item.children).filter(Boolean);
       if (filteredChildren.length) {
         item.children = filteredChildren;
         return item;
@@ -45,7 +45,7 @@
     return fn(item);
   }).filter(Boolean);
 
-  window.gl.environmentsList.EnvironmentsComponent = Vue.component('environment-component', {
+  gl.environmentsList.EnvironmentsComponent = Vue.component('environment-component', {
     props: {
       store: {
         type: Object,
@@ -55,7 +55,7 @@
     },
 
     components: {
-      'environment-item': window.gl.environmentsList.EnvironmentItem,
+      'environment-item': gl.environmentsList.EnvironmentItem,
     },
 
     data() {
@@ -76,12 +76,13 @@
         helpPagePath: environmentsData.helpPagePath,
         commitIconSvg: environmentsData.commitIconSvg,
         playIconSvg: environmentsData.playIconSvg,
+        terminalIconSvg: environmentsData.terminalIconSvg,
       };
     },
 
     computed: {
       filteredEnvironments() {
-        return filterEnvironmnetsByState(filterState(this.visibility), this.state.environments);
+        return filterEnvironmentsByState(filterState(this.visibility), this.state.environments);
       },
 
       scope() {
@@ -102,7 +103,7 @@
     },
 
     /**
-     * Fetches all the environmnets and stores them.
+     * Fetches all the environments and stores them.
      * Toggles loading property.
      */
     created() {
@@ -164,8 +165,7 @@
                   {{state.availableCounter}}
                 </span>
               </a>
-            </li>
-            <li v-bind:class="{ 'active' : scope === 'stopped' }">
+            </li><li v-bind:class="{ 'active' : scope === 'stopped' }">
               <a :href="projectStoppedEnvironmentsPath">
                 Stopped
                 <span class="badge js-stopped-environments-count">
@@ -216,7 +216,7 @@
                   <th class="environments-deploy">Last deployment</th>
                   <th class="environments-build">Build</th>
                   <th class="environments-commit">Commit</th>
-                  <th class="environments-date"></th>
+                  <th class="environments-date">Created</th>
                   <th class="hidden-xs environments-actions"></th>
                 </tr>
               </thead>
@@ -231,6 +231,7 @@
                     :can-create-deployment="canCreateDeploymentParsed"
                     :can-read-environment="canReadEnvironmentParsed"
                     :play-icon-svg="playIconSvg"
+                    :terminal-icon-svg="terminalIconSvg"
                     :commit-icon-svg="commitIconSvg"></tr>
 
                   <tr v-if="model.isOpen && model.children && model.children.length > 0"
@@ -241,6 +242,7 @@
                     :can-create-deployment="canCreateDeploymentParsed"
                     :can-read-environment="canReadEnvironmentParsed"
                     :play-icon-svg="playIconSvg"
+                    :terminal-icon-svg="terminalIconSvg"
                     :commit-icon-svg="commitIconSvg">
                     </tr>
 

@@ -23,7 +23,7 @@
 
 .sidebar-wrapper {
   z-index: 1000;
-  background: $background-color;
+  background: $gray-light;
 
   .nicescroll-rails-hr {
     // TODO: Figure out why nicescroll doesn't hide horizontal bar
@@ -101,6 +101,17 @@
     padding: 0 8px;
     border-radius: 6px;
   }
+
+  .about-gitlab {
+    padding: 7px $gl-sidebar-padding;
+    font-size: $gl-font-size;
+    line-height: 24px;
+    display: block;
+    text-decoration: none;
+    font-weight: normal;
+    position: absolute;
+    bottom: 10px;
+  }
 }
 
 .sidebar-action-buttons {
@@ -172,7 +183,9 @@
 
   &.right-sidebar-expanded {
     .line-resolve-all-container {
-      display: none;
+      @media (min-width: $sidebar-breakpoint) {
+        display: none;
+      }
     }
   }
 }
@@ -223,8 +236,12 @@ header.header-sidebar-pinned {
   @media (min-width: $screen-md-min) {
     padding-right: $gutter_width;
 
-    .merge-request-tabs-holder.affix {
+    &:not(.with-overlay) .merge-request-tabs-holder.affix {
       right: $gutter_width;
+    }
+
+    &.with-overlay .merge-request-tabs-holder.affix {
+      right: $sidebar_collapsed_width;
     }
   }
 

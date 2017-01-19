@@ -1,4 +1,5 @@
-/* eslint-disable */
+/* eslint-disable max-len, arrow-parens, comma-dangle, no-plusplus */
+
 //= vue
 //= vue-resource
 //= require jquery

@@ -2,7 +2,6 @@ require 'mime/types'
 
 module API
   class Repositories < Grape::API
-    before { authenticate! }
     before { authorize! :download_code, user_project }
 
     params do
@@ -79,8 +78,6 @@ module API
         optional :format, type: String, desc: 'The archive format'
       end
       get ':id/repository/archive', requirements: { format: Gitlab::Regex.archive_formats_regex } do
-        authorize! :download_code, user_project
-
         begin
           send_git_archive user_project.repository, ref: params[:sha], format: params[:format]
         rescue
@@ -96,7 +93,6 @@ module API
         requires :to, type: String, desc: 'The commit, branch name, or tag name to stop comparison'
       end
       get ':id/repository/compare' do
-        authorize! :download_code, user_project
         compare = Gitlab::Git::Compare.new(user_project.repository.raw_repository, params[:from], params[:to])
         present compare, with: Entities::Compare
       end
@@ -105,8 +101,6 @@ module API
         success Entities::Contributor
       end
       get ':id/repository/contributors' do
-        authorize! :download_code, user_project
-
         begin
           present user_project.repository.contributors,
                   with: Entities::Contributor

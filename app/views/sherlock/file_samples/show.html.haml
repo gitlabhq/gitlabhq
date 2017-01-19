@@ -41,7 +41,7 @@
             %th= t('sherlock.percent')
         %tbody
           - @file_sample.line_samples.each_with_index do |sample, index|
-            %tr{class: sample.majority_of?(@file_sample.duration) ? 'slow' : ''}
+            %tr{ class: sample.majority_of?(@file_sample.duration) ? 'slow' : '' }
               %td= index + 1
               %td= sample.events
               %td

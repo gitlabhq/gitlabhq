@@ -97,7 +97,7 @@ class MergeRequest < ActiveRecord::Base
   validates :source_branch, presence: true
   validates :target_project, presence: true
   validates :target_branch, presence: true
-  validates :merge_user, presence: true, if: :merge_when_build_succeeds?
+  validates :merge_user, presence: true, if: :merge_when_build_succeeds?, unless: :importing?
   validate :validate_branches, unless: [:allow_broken, :importing?, :closed_without_fork?]
   validate :validate_fork, unless: :closed_without_fork?
 
@@ -175,10 +175,10 @@ class MergeRequest < ActiveRecord::Base
     work_in_progress?(title) ? title : "WIP: #{title}"
   end
 
-  def to_reference(from_project = nil)
+  def to_reference(from_project = nil, full: false)
     reference = "#{self.class.reference_prefix}#{iid}"
 
-    "#{project.to_reference(from_project)}#{reference}"
+    "#{project.to_reference(from_project, full: full)}#{reference}"
   end
 
   def first_commit
@@ -198,7 +198,9 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def diff_size
-    diffs(diff_options).size
+    opts = diff_options || {}
+
+    raw_diffs(opts).size
   end
 
   def diff_base_commit
@@ -219,7 +221,7 @@ class MergeRequest < ActiveRecord::Base
   # true base commit, so we can't simply have `#diff_base_commit` fall back on
   # this method.
   def likely_diff_base_commit
-    first_commit.parent || first_commit
+    first_commit.try(:parent) || first_commit
   end
 
   def diff_start_commit
@@ -452,7 +454,7 @@ class MergeRequest < ActiveRecord::Base
     should_remove_source_branch? || force_remove_source_branch?
   end
 
-  def mr_and_commit_notes
+  def related_notes
     # Fetch comments only from last 100 commits
     commits_for_notes_limit = 100
     commit_ids = commits.last(commits_for_notes_limit).map(&:id)
@@ -468,7 +470,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def discussions
-    @discussions ||= self.mr_and_commit_notes.
+    @discussions ||= self.related_notes.
       inc_relations_for_view.
       fresh.
       discussions
@@ -568,6 +570,15 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
+  def issues_mentioned_but_not_closing(current_user = self.author)
+    return [] unless target_branch == project.default_branch
+
+    ext = Gitlab::ReferenceExtractor.new(project, current_user)
+    ext.analyze(description)
+
+    ext.issues - closes_issues
+  end
+
   def target_project_path
     if target_project
       target_project.path_with_namespace
@@ -612,13 +623,24 @@ class MergeRequest < ActiveRecord::Base
     self.target_project.repository.branch_names.include?(self.target_branch)
   end
 
-  def merge_commit_message
-    message = "Merge branch '#{source_branch}' into '#{target_branch}'\n\n"
-    message << "#{title}\n\n"
-    message << "#{description}\n\n" if description.present?
+  def merge_commit_message(include_description: false)
+    closes_issues_references = closes_issues.map do |issue|
+      issue.to_reference(target_project)
+    end
+
+    message = [
+      "Merge branch '#{source_branch}' into '#{target_branch}'",
+      title
+    ]
+
+    if !include_description && closes_issues_references.present?
+      message << "Closes #{closes_issues_references.to_sentence}"
+    end
+
+    message << "#{description}" if include_description && description.present?
     message << "See merge request #{to_reference}"
 
-    message
+    message.join("\n\n")
   end
 
   def reset_merge_when_build_succeeds
@@ -876,10 +898,22 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def has_commits?
-    commits_count > 0
+    merge_request_diff && commits_count > 0
   end
 
   def has_no_commits?
     !has_commits?
+  end
+
+  def mergeable_with_slash_command?(current_user, autocomplete_precheck: false, last_diff_sha: nil)
+    return false unless can_be_merged_by?(current_user)
+
+    return true if autocomplete_precheck
+
+    return false unless mergeable?(skip_ci_check: true)
+    return false if head_pipeline && !(head_pipeline.success? || head_pipeline.active?)
+    return false if last_diff_sha != diff_head_sha
+
+    true
   end
 end

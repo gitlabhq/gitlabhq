@@ -175,6 +175,30 @@ describe Ci::Pipeline, models: true do
     end
   end
 
+  describe '#stage' do
+    subject { pipeline.stage('test') }
+
+    context 'with status in stage' do
+      before do
+        create(:commit_status, pipeline: pipeline, stage: 'test')
+      end
+
+      it { expect(subject).to be_a Ci::Stage }
+      it { expect(subject.name).to eq 'test' }
+      it { expect(subject.statuses).not_to be_empty }
+    end
+
+    context 'without status in stage' do
+      before do
+        create(:commit_status, pipeline: pipeline, stage: 'build')
+      end
+
+      it 'return stage object' do
+        is_expected.to be_nil
+      end
+    end
+  end
+
   describe 'state machine' do
     let(:current) { Time.now.change(usec: 0) }
     let(:build) { create_build('build1', 0) }
@@ -381,6 +405,78 @@ describe Ci::Pipeline, models: true do
     end
   end
 
+  shared_context 'with some outdated pipelines' do
+    before do
+      create_pipeline(:canceled, 'ref', 'A')
+      create_pipeline(:success, 'ref', 'A')
+      create_pipeline(:failed, 'ref', 'B')
+      create_pipeline(:skipped, 'feature', 'C')
+    end
+
+    def create_pipeline(status, ref, sha)
+      create(:ci_empty_pipeline, status: status, ref: ref, sha: sha)
+    end
+  end
+
+  describe '.latest' do
+    include_context 'with some outdated pipelines'
+
+    context 'when no ref is specified' do
+      let(:pipelines) { described_class.latest.all }
+
+      it 'returns the latest pipeline for the same ref and different sha' do
+        expect(pipelines.map(&:sha)).to contain_exactly('A', 'B', 'C')
+        expect(pipelines.map(&:status)).
+          to contain_exactly('success', 'failed', 'skipped')
+      end
+    end
+
+    context 'when ref is specified' do
+      let(:pipelines) { described_class.latest('ref').all }
+
+      it 'returns the latest pipeline for ref and different sha' do
+        expect(pipelines.map(&:sha)).to contain_exactly('A', 'B')
+        expect(pipelines.map(&:status)).
+          to contain_exactly('success', 'failed')
+      end
+    end
+  end
+
+  describe '.latest_status' do
+    include_context 'with some outdated pipelines'
+
+    context 'when no ref is specified' do
+      let(:latest_status) { described_class.latest_status }
+
+      it 'returns the latest status for the same ref and different sha' do
+        expect(latest_status).to eq(described_class.latest.status)
+        expect(latest_status).to eq('failed')
+      end
+    end
+
+    context 'when ref is specified' do
+      let(:latest_status) { described_class.latest_status('ref') }
+
+      it 'returns the latest status for ref and different sha' do
+        expect(latest_status).to eq(described_class.latest_status('ref'))
+        expect(latest_status).to eq('failed')
+      end
+    end
+  end
+
+  describe '.latest_successful_for' do
+    include_context 'with some outdated pipelines'
+
+    let!(:latest_successful_pipeline) do
+      create_pipeline(:success, 'ref', 'D')
+    end
+
+    it 'returns the latest successful pipeline' do
+      expect(described_class.latest_successful_for('ref')).
+        to eq(latest_successful_pipeline)
+    end
+  end
+
   describe '#status' do
     let!(:build) { create(:ci_build, :created, pipeline: pipeline, name: 'test') }
 
@@ -442,11 +538,15 @@ describe Ci::Pipeline, models: true do
   end
 
   describe '#detailed_status' do
+    let(:user) { create(:user) }
+
+    subject { pipeline.detailed_status(user) }
+
     context 'when pipeline is created' do
       let(:pipeline) { create(:ci_pipeline, status: :created) }
 
       it 'returns detailed status for created pipeline' do
-        expect(pipeline.detailed_status.text).to eq 'created'
+        expect(subject.text).to eq 'created'
       end
     end
 
@@ -454,7 +554,7 @@ describe Ci::Pipeline, models: true do
       let(:pipeline) { create(:ci_pipeline, status: :pending) }
 
       it 'returns detailed status for pending pipeline' do
-        expect(pipeline.detailed_status.text).to eq 'pending'
+        expect(subject.text).to eq 'pending'
       end
     end
 
@@ -462,7 +562,7 @@ describe Ci::Pipeline, models: true do
       let(:pipeline) { create(:ci_pipeline, status: :running) }
 
       it 'returns detailed status for running pipeline' do
-        expect(pipeline.detailed_status.text).to eq 'running'
+        expect(subject.text).to eq 'running'
       end
     end
 
@@ -470,7 +570,7 @@ describe Ci::Pipeline, models: true do
       let(:pipeline) { create(:ci_pipeline, status: :success) }
 
       it 'returns detailed status for successful pipeline' do
-        expect(pipeline.detailed_status.text).to eq 'passed'
+        expect(subject.text).to eq 'passed'
       end
     end
 
@@ -478,7 +578,7 @@ describe Ci::Pipeline, models: true do
       let(:pipeline) { create(:ci_pipeline, status: :failed) }
 
       it 'returns detailed status for failed pipeline' do
-        expect(pipeline.detailed_status.text).to eq 'failed'
+        expect(subject.text).to eq 'failed'
       end
     end
 
@@ -486,7 +586,7 @@ describe Ci::Pipeline, models: true do
       let(:pipeline) { create(:ci_pipeline, status: :canceled) }
 
       it 'returns detailed status for canceled pipeline' do
-        expect(pipeline.detailed_status.text).to eq 'canceled'
+        expect(subject.text).to eq 'canceled'
       end
     end
 
@@ -494,7 +594,7 @@ describe Ci::Pipeline, models: true do
       let(:pipeline) { create(:ci_pipeline, status: :skipped) }
 
       it 'returns detailed status for skipped pipeline' do
-        expect(pipeline.detailed_status.text).to eq 'skipped'
+        expect(subject.text).to eq 'skipped'
       end
     end
 
@@ -506,7 +606,7 @@ describe Ci::Pipeline, models: true do
       end
 
       it 'retruns detailed status for successful pipeline with warnings' do
-        expect(pipeline.detailed_status.label).to eq 'passed with warnings'
+        expect(subject.label).to eq 'passed with warnings'
       end
     end
   end
@@ -785,6 +885,48 @@ describe Ci::Pipeline, models: true do
       allow_any_instance_of(MergeRequest).to receive(:diff_head_sha) { '97de212e80737a608d939f648d959671fb0a0142b' }
 
       expect(pipeline.merge_requests).to be_empty
+    end
+  end
+
+  describe '#stuck?' do
+    before do
+      create(:ci_build, :pending, pipeline: pipeline)
+    end
+
+    context 'when pipeline is stuck' do
+      it 'is stuck' do
+        expect(pipeline).to be_stuck
+      end
+    end
+
+    context 'when pipeline is not stuck' do
+      before { create(:ci_runner, :shared, :online) }
+
+      it 'is not stuck' do
+        expect(pipeline).not_to be_stuck
+      end
+    end
+  end
+
+  describe '#has_yaml_errors?' do
+    context 'when pipeline has errors' do
+      let(:pipeline) do
+        create(:ci_pipeline, config: { rspec: nil })
+      end
+
+      it 'contains yaml errors' do
+        expect(pipeline).to have_yaml_errors
+      end
+    end
+
+    context 'when pipeline does not have errors' do
+      let(:pipeline) do
+        create(:ci_pipeline, config: { rspec: { script: 'rake test' } })
+      end
+
+      it 'does not containyaml errors' do
+        expect(pipeline).not_to have_yaml_errors
+      end
     end
   end
 

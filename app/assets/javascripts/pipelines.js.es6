@@ -1,6 +1,7 @@
+/* eslint-disable no-new, guard-for-in, no-restricted-syntax, no-continue, padded-blocks, no-param-reassign, max-len */
+
 //= require lib/utils/bootstrap_linked_tabs
 
-/* eslint-disable */
 ((global) => {
 
   class Pipelines {

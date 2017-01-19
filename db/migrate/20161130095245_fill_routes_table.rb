@@ -16,6 +16,6 @@ class FillRoutesTable < ActiveRecord::Migration
   end
 
   def down
-    Route.delete_all(source_type: 'Namespace')
+    execute("DELETE FROM routes WHERE source_type = 'Namespace'")
   end
 end

@@ -42,19 +42,16 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def update
-    status = ::Projects::UpdateService.new(@project, current_user, project_params).execute
+    result = ::Projects::UpdateService.new(@project, current_user, project_params).execute
 
     # Refresh the repo in case anything changed
-    @repository = project.repository
+    @repository = @project.repository
 
     respond_to do |format|
-      if status
+      if result[:status] == :success
         flash[:notice] = "Project '#{@project.name}' was successfully updated."
         format.html do
-          redirect_to(
-            edit_project_path(@project),
-            notice: "Project '#{@project.name}' was successfully updated."
-          )
+          redirect_to(edit_project_path(@project))
         end
       else
         format.html { render 'edit' }
@@ -125,39 +122,6 @@ class ProjectsController < Projects::ApplicationController
     redirect_to dashboard_projects_path
   rescue Projects::DestroyService::DestroyError => ex
     redirect_to edit_project_path(@project), alert: ex.message
-  end
-
-  def autocomplete_sources
-    noteable =
-      case params[:type]
-      when 'Issue'
-        IssuesFinder.new(current_user, project_id: @project.id).
-          execute.find_by(iid: params[:type_id])
-      when 'MergeRequest'
-        MergeRequestsFinder.new(current_user, project_id: @project.id).
-          execute.find_by(iid: params[:type_id])
-      when 'Commit'
-        @project.commit(params[:type_id])
-      else
-        nil
-      end
-
-    autocomplete = ::Projects::AutocompleteService.new(@project, current_user)
-    participants = ::Projects::ParticipantsService.new(@project, current_user).execute(noteable)
-
-    @suggestions = {
-      emojis: Gitlab::AwardEmoji.urls,
-      issues: autocomplete.issues,
-      milestones: autocomplete.milestones,
-      mergerequests: autocomplete.merge_requests,
-      labels: autocomplete.labels,
-      members: participants,
-      commands: autocomplete.commands(noteable, params[:type])
-    }
-
-    respond_to do |format|
-      format.json { render json: @suggestions }
-    end
   end
 
   def new_issue_address

@@ -17,7 +17,7 @@
       ":title" => '"Assigned to " + issue.assignee.name',
       "v-if" => "issue.assignee",
       data: { container: 'body' } }
-      %img.avatar.avatar-inline.s20{ ":src" => "issue.assignee.avatar", width: 20, height: 20 }
+      %img.avatar.avatar-inline.s20{ ":src" => "issue.assignee.avatar", width: 20, height: 20, alt: "Avatar" }
     %button.label.color-label.has-tooltip{ "v-for" => "label in issue.labels",
       type: "button",
       "v-if" => "(!list.label || label.id !== list.label.id)",

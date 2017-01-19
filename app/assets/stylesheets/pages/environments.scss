@@ -30,19 +30,25 @@
     display: table-cell;
   }
 
+  .environments-name,
   .environments-commit,
   .environments-actions {
     width: 20%;
   }
 
-  .environments-deploy,
-  .environments-build,
   .environments-date {
     width: 10%;
   }
 
-  .environments-name {
-    width: 30%;
+  .environments-deploy,
+  .environments-build {
+    width: 15%;
+  }
+
+  .environment-name,
+  .environments-build-cell,
+  .deployment-column {
+    word-break: break-all;
   }
 
   .deployment-column {
@@ -66,25 +72,25 @@
 
   .external-url,
   .dropdown-new {
-    color: $table-text-gray;
+    color: $gl-text-color-secondary;
   }
 
   .dropdown-menu {
 
     .fa {
       margin-right: 6px;
-      color: $table-text-gray;
+      color: $gl-text-color-secondary;
     }
   }
 
   .build-link,
   .branch-name {
-    color: $gl-dark-link-color;
+    color: $gl-text-color;
   }
 
   .stop-env-link,
   .external-url {
-    color: $table-text-gray;
+    color: $gl-text-color-secondary;
 
     .stop-env-icon {
       font-size: 14px;
@@ -95,7 +101,7 @@
     .build-column {
 
       .build-link {
-        color: $gl-dark-link-color;
+        color: $gl-text-color;
       }
 
       .avatar {
@@ -115,13 +121,6 @@
 
   .folder-name {
     cursor: pointer;
-
-    .badge {
-      font-weight: normal;
-      background-color: $gray-darker;
-      color: $gl-placeholder-color;
-      vertical-align: baseline;
-    }
   }
 }
 

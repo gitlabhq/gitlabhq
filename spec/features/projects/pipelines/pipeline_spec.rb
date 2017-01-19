@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Pipelines", feature: true, js: true do
+describe 'Pipeline', :feature, :js do
   include GitlabRoutingHelper
 
   let(:project) { create(:empty_project) }
@@ -19,7 +19,7 @@ describe "Pipelines", feature: true, js: true do
       @success = create(:ci_build, :success, pipeline: pipeline, stage: 'build', name: 'build')
       @failed = create(:ci_build, :failed, pipeline: pipeline, stage: 'test', name: 'test', commands: 'test')
       @running = create(:ci_build, :running, pipeline: pipeline, stage: 'deploy', name: 'deploy')
-      @manual = create(:ci_build, :manual, pipeline: pipeline, stage: 'deploy', name: 'manual build')
+      @manual = create(:ci_build, :manual, pipeline: pipeline, stage: 'deploy', name: 'manual-build')
       @external = create(:generic_commit_status, status: 'success', pipeline: pipeline, name: 'jenkins', stage: 'external')
     end
 
@@ -36,6 +36,88 @@ describe "Pipelines", feature: true, js: true do
 
     it 'shows Pipeline tab pane as active' do
       expect(page).to have_css('#js-tab-pipeline.active')
+    end
+
+    describe 'pipeline graph' do
+      context 'when pipeline has running builds' do
+        it 'shows a running icon and a cancel action for the running build' do
+          page.within('#ci-badge-deploy') do
+            expect(page).to have_selector('.ci-status-icon-running')
+            expect(page).to have_selector('.ci-action-icon-container .fa-ban')
+            expect(page).to have_content('deploy')
+          end
+        end
+
+        it 'should be possible to cancel the running build' do
+          find('#ci-badge-deploy .ci-action-icon-container').trigger('click')
+
+          expect(page).not_to have_content('Cancel running')
+        end
+      end
+
+      context 'when pipeline has successful builds' do
+        it 'shows the success icon and a retry action for the successful build' do
+          page.within('#ci-badge-build') do
+            expect(page).to have_selector('.ci-status-icon-success')
+            expect(page).to have_content('build')
+          end
+
+          page.within('#ci-badge-build .ci-action-icon-container') do
+            expect(page).to have_selector('.ci-action-icon-container .fa-refresh')
+          end
+        end
+
+        it 'should be possible to retry the success build' do
+          find('#ci-badge-build .ci-action-icon-container').trigger('click')
+
+          expect(page).not_to have_content('Retry build')
+        end
+      end
+
+      context 'when pipeline has failed builds' do
+        it 'shows the failed icon and a retry action for the failed build' do
+          page.within('#ci-badge-test') do
+            expect(page).to have_selector('.ci-status-icon-failed')
+            expect(page).to have_content('test')
+          end
+
+          page.within('#ci-badge-test .ci-action-icon-container') do
+            expect(page).to have_selector('.ci-action-icon-container .fa-refresh')
+          end
+        end
+
+        it 'should be possible to retry the failed build' do
+          find('#ci-badge-test .ci-action-icon-container').trigger('click')
+
+          expect(page).not_to have_content('Retry build')
+        end
+      end
+
+      context 'when pipeline has manual builds' do
+        it 'shows the skipped icon and a play action for the manual build' do
+          page.within('#ci-badge-manual-build') do
+            expect(page).to have_selector('.ci-status-icon-manual')
+            expect(page).to have_content('manual')
+          end
+
+          page.within('#ci-badge-manual-build .ci-action-icon-container') do
+            expect(page).to have_selector('.ci-action-icon-container .fa-play')
+          end
+        end
+
+        it 'should be possible to play the manual build' do
+          find('#ci-badge-manual-build .ci-action-icon-container').trigger('click')
+
+          expect(page).not_to have_content('Play build')
+        end
+      end
+
+      context 'when pipeline has external build' do
+        it 'shows the success icon and the generic comit status build' do
+          expect(page).to have_selector('.ci-status-icon-success')
+          expect(page).to have_content('jenkins')
+        end
+      end
     end
 
     context 'page tabs' do
@@ -82,7 +164,7 @@ describe "Pipelines", feature: true, js: true do
       @success = create(:ci_build, :success, pipeline: pipeline, stage: 'build', name: 'build')
       @failed = create(:ci_build, :failed, pipeline: pipeline, stage: 'test', name: 'test', commands: 'test')
       @running = create(:ci_build, :running, pipeline: pipeline, stage: 'deploy', name: 'deploy')
-      @manual = create(:ci_build, :manual, pipeline: pipeline, stage: 'deploy', name: 'manual build')
+      @manual = create(:ci_build, :manual, pipeline: pipeline, stage: 'deploy', name: 'manual-build')
       @external = create(:generic_commit_status, status: 'success', pipeline: pipeline, name: 'jenkins', stage: 'external')
     end
 

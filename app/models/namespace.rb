@@ -9,6 +9,7 @@ class Namespace < ActiveRecord::Base
   cache_markdown_field :description, pipeline: :description
 
   has_many :projects, dependent: :destroy
+  has_many :project_statistics
   belongs_to :owner, class_name: "User"
 
   belongs_to :parent, class_name: "Namespace"
@@ -17,14 +18,13 @@ class Namespace < ActiveRecord::Base
   validates :owner, presence: true, unless: ->(n) { n.type == "Group" }
   validates :name,
     presence: true,
-    uniqueness: true,
+    uniqueness: { scope: :parent_id },
     length: { maximum: 255 },
     namespace_name: true
 
   validates :description, length: { maximum: 255 }
   validates :path,
     presence: true,
-    uniqueness: { case_sensitive: false },
     length: { maximum: 255 },
     namespace: true
 
@@ -38,6 +38,18 @@ class Namespace < ActiveRecord::Base
   after_destroy :rm_dir
 
   scope :root, -> { where('type IS NULL') }
+
+  scope :with_statistics, -> do
+    joins('LEFT JOIN project_statistics ps ON ps.namespace_id = namespaces.id')
+      .group('namespaces.id')
+      .select(
+        'namespaces.*',
+        'COALESCE(SUM(ps.storage_size), 0) AS storage_size',
+        'COALESCE(SUM(ps.repository_size), 0) AS repository_size',
+        'COALESCE(SUM(ps.lfs_objects_size), 0) AS lfs_objects_size',
+        'COALESCE(SUM(ps.build_artifacts_size), 0) AS build_artifacts_size',
+      )
+  end
 
   class << self
     def by_path(path)
@@ -99,7 +111,7 @@ class Namespace < ActiveRecord::Base
 
   def move_dir
     if any_project_has_container_registry_tags?
-      raise Exception.new('Namespace cannot be moved, because at least one project has tags in container registry')
+      raise Gitlab::UpdatePathError.new('Namespace cannot be moved, because at least one project has tags in container registry')
     end
 
     # Move the namespace directory in all storages paths used by member projects
@@ -112,7 +124,7 @@ class Namespace < ActiveRecord::Base
 
         # if we cannot move namespace directory we should rollback
         # db changes in order to prevent out of sync between db and fs
-        raise Exception.new('namespace directory cannot be moved')
+        raise Gitlab::UpdatePathError.new('namespace directory cannot be moved')
       end
     end
 
@@ -160,6 +172,19 @@ class Namespace < ActiveRecord::Base
     else
       path
     end
+  end
+
+  def full_name
+    @full_name ||=
+      if parent
+        parent.full_name + ' / ' + name
+      else
+        name
+      end
+  end
+
+  def parents
+    @parents ||= parent ? parent.parents + [parent] : []
   end
 
   private

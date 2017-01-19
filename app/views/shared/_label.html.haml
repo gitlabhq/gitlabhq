@@ -4,7 +4,7 @@
 - status = label_subscription_status(label, @project).inquiry if current_user
 - subject = local_assigns[:subject]
 
-%li{id: label_css_id, data: { id: label.id } }
+%li{ id: label_css_id, data: { id: label.id } }
   = render "shared/label_row", label: label
 
   .visible-xs.visible-sm-inline-block.visible-md-inline-block.dropdown
@@ -56,7 +56,7 @@
             = icon('spinner spin', class: 'label-subscribe-button-loading')
 
           .dropdown.dropdown-group-label{ class: ('hidden' unless status.unsubscribed?) }
-            %button.dropdown-menu-toggle{type: 'button', 'data-toggle' => 'dropdown'}
+            %button.dropdown-menu-toggle{ type: 'button', 'data-toggle' => 'dropdown' }
               %span Subscribe
               = icon('chevron-down')
             %ul.dropdown-menu

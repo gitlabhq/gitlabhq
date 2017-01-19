@@ -17,6 +17,10 @@ describe Gitlab::Ci::Status::Pipeline::SuccessWithWarnings do
     it { expect(subject.icon).to eq 'icon_status_warning' }
   end
 
+  describe '#group' do
+    it { expect(subject.group).to eq 'success_with_warnings' }
+  end
+
   describe '.matches?' do
     context 'when pipeline is successful' do
       let(:pipeline) do
@@ -29,13 +33,13 @@ describe Gitlab::Ci::Status::Pipeline::SuccessWithWarnings do
         end
 
         it 'is a correct match' do
-          expect(described_class.matches?(pipeline)).to eq true
+          expect(described_class.matches?(pipeline, double)).to eq true
         end
       end
 
       context 'when pipeline does not have warnings' do
         it 'does not match' do
-          expect(described_class.matches?(pipeline)).to eq false
+          expect(described_class.matches?(pipeline, double)).to eq false
         end
       end
     end
@@ -51,13 +55,13 @@ describe Gitlab::Ci::Status::Pipeline::SuccessWithWarnings do
         end
 
         it 'does not match' do
-          expect(described_class.matches?(pipeline)).to eq false
+          expect(described_class.matches?(pipeline, double)).to eq false
         end
       end
 
       context 'when pipeline does not have warnings' do
         it 'does not match' do
-          expect(described_class.matches?(pipeline)).to eq false
+          expect(described_class.matches?(pipeline, double)).to eq false
         end
       end
     end

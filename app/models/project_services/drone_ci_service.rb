@@ -1,4 +1,6 @@
 class DroneCiService < CiService
+  include ReactiveService
+
   prop_accessor :drone_url, :token
   boolean_accessor :enable_ssl_verification
 
@@ -34,14 +36,6 @@ class DroneCiService < CiService
     %w(push merge_request tag_push)
   end
 
-  def merge_request_status_path(iid, sha = nil, ref = nil)
-    url = [drone_url,
-           "gitlab/#{project.namespace.path}/#{project.path}/pulls/#{iid}",
-           "?access_token=#{token}"]
-
-    URI.join(*url).to_s
-  end
-
   def commit_status_path(sha, ref)
     url = [drone_url,
            "gitlab/#{project.namespace.path}/#{project.path}/commits/#{sha}",
@@ -50,67 +44,39 @@ class DroneCiService < CiService
     URI.join(*url).to_s
   end
 
-  def merge_request_status(iid, sha, ref)
-    response = HTTParty.get(merge_request_status_path(iid), verify: enable_ssl_verification)
-
-    if response.code == 200 and response['status']
-      case response['status']
-      when 'killed'
-        :canceled
-      when 'failure', 'error'
-        # Because drone return error if some test env failed
-        :failed
-      else
-        response["status"]
-      end
-    else
-      :error
-    end
-  rescue Errno::ECONNREFUSED
-    :error
+  def commit_status(sha, ref)
+    with_reactive_cache(sha, ref) {|cached| cached[:commit_status] }
   end
 
-  def commit_status(sha, ref)
+  def calculate_reactive_cache(sha, ref)
     response = HTTParty.get(commit_status_path(sha, ref), verify: enable_ssl_verification)
 
-    if response.code == 200 and response['status']
-      case response['status']
-      when 'killed'
-        :canceled
-      when 'failure', 'error'
-        # Because drone return error if some test env failed
-        :failed
+    status =
+      if response.code == 200 and response['status']
+        case response['status']
+        when 'killed'
+          :canceled
+        when 'failure', 'error'
+          # Because drone return error if some test env failed
+          :failed
+        else
+          response["status"]
+        end
       else
-        response["status"]
+        :error
       end
-    else
-      :error
-    end
+
+    { commit_status: status }
   rescue Errno::ECONNREFUSED
-    :error
+    { commit_status: :error }
   end
 
-  def merge_request_page(iid, sha, ref)
-    url = [drone_url,
-           "gitlab/#{project.namespace.path}/#{project.path}/redirect/pulls/#{iid}"]
-
-    URI.join(*url).to_s
-  end
-
-  def commit_page(sha, ref)
+  def build_page(sha, ref)
     url = [drone_url,
            "gitlab/#{project.namespace.path}/#{project.path}/redirect/commits/#{sha}",
            "?branch=#{URI::encode(ref.to_s)}"]
 
     URI.join(*url).to_s
-  end
-
-  def commit_coverage(sha, ref)
-    nil
-  end
-
-  def build_page(sha, ref)
-    commit_page(sha, ref)
   end
 
   def title

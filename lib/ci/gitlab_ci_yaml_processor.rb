@@ -118,7 +118,7 @@ module Ci
         .merge(job_variables(name))
 
       variables.map do |key, value|
-        { key: key, value: value, public: true }
+        { key: key.to_s, value: value, public: true }
       end
     end
 

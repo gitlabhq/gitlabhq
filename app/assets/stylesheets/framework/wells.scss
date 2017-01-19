@@ -1,6 +1,6 @@
 .info-well {
-  background: $background-color;
-  color: $gl-gray;
+  background: $gray-light;
+  color: $gl-text-color;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
 
@@ -45,7 +45,7 @@
 }
 
 .light-well {
-  background-color: $background-color;
+  background-color: $gray-light;
   padding: 15px;
 }
 

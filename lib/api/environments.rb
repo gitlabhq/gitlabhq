@@ -1,6 +1,7 @@
 module API
   # Environments RESTfull API endpoints
   class Environments < Grape::API
+    include ::API::Helpers::CustomValidators
     include PaginationParams
 
     before { authenticate! }
@@ -29,6 +30,7 @@ module API
       params do
         requires :name,           type: String,   desc: 'The name of the environment to be created'
         optional :external_url,   type: String,   desc: 'URL on which this deployment is viewable'
+        optional :slug, absence: { message: "is automatically generated and cannot be changed" }
       end
       post ':id/environments' do
         authorize! :create_environment, user_project
@@ -50,6 +52,7 @@ module API
         requires :environment_id, type: Integer,  desc: 'The environment ID'
         optional :name,           type: String,   desc: 'The new environment name'
         optional :external_url,   type: String,   desc: 'The new URL on which this deployment is viewable'
+        optional :slug, absence: { message: "is automatically generated and cannot be changed" }
       end
       put ':id/environments/:environment_id' do
         authorize! :update_environment, user_project

@@ -6,26 +6,27 @@ class ProjectCacheWorker
   LEASE_TIMEOUT = 15.minutes.to_i
 
   # project_id - The ID of the project for which to flush the cache.
-  # refresh - An Array containing extra types of data to refresh such as
-  #           `:readme` to flush the README and `:changelog` to flush the
-  #           CHANGELOG.
-  def perform(project_id, refresh = [])
+  # files - An Array containing extra types of files to refresh such as
+  #         `:readme` to flush the README and `:changelog` to flush the
+  #         CHANGELOG.
+  # statistics - An Array containing columns from ProjectStatistics to
+  #              refresh, if empty all columns will be refreshed
+  def perform(project_id, files = [], statistics = [])
     project = Project.find_by(id: project_id)
 
     return unless project && project.repository.exists?
 
-    update_repository_size(project)
-    project.update_commit_count
+    update_statistics(project, statistics.map(&:to_sym))
 
-    project.repository.refresh_method_caches(refresh.map(&:to_sym))
+    project.repository.refresh_method_caches(files.map(&:to_sym))
   end
 
-  def update_repository_size(project)
-    return unless try_obtain_lease_for(project.id, :update_repository_size)
+  def update_statistics(project, statistics = [])
+    return unless try_obtain_lease_for(project.id, :update_statistics)
 
-    Rails.logger.info("Updating repository size for project #{project.id}")
+    Rails.logger.info("Updating statistics for project #{project.id}")
 
-    project.update_repository_size
+    project.statistics.refresh!(only: statistics)
   end
 
   private

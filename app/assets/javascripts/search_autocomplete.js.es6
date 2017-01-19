@@ -1,4 +1,5 @@
-/* eslint-disable */
+/* eslint-disable comma-dangle, no-return-assign, one-var, no-var, no-underscore-dangle, one-var-declaration-per-line, no-unused-vars, no-cond-assign, consistent-return, object-shorthand, prefer-arrow-callback, func-names, space-before-function-paren, no-plusplus, prefer-template, quotes, class-methods-use-this, no-unused-expressions, no-sequences, wrap-iife, no-lonely-if, no-else-return, no-param-reassign, vars-on-top, padded-blocks, no-extra-semi, indent, max-len */
+
 ((global) => {
 
   const KEYCODE = {
@@ -141,8 +142,9 @@
     }
 
     getCategoryContents() {
-      var dashboardOptions, groupOptions, issuesPath, items, mrPath, name, options, projectOptions, userId, utils;
+      var dashboardOptions, groupOptions, issuesPath, items, mrPath, name, options, projectOptions, userId, userName, utils;
       userId = gon.current_user_id;
+      userName = gon.current_username;
       utils = gl.utils, projectOptions = gl.projectOptions, groupOptions = gl.groupOptions, dashboardOptions = gl.dashboardOptions;
       if (utils.isInGroupsPage() && groupOptions) {
         options = groupOptions[utils.getGroupSlug()];
@@ -157,10 +159,10 @@
           header: "" + name
         }, {
           text: 'Issues assigned to me',
-          url: issuesPath + "/?assignee_id=" + userId
+          url: issuesPath + "/?assignee_username=" + userName
         }, {
           text: "Issues I've created",
-          url: issuesPath + "/?author_id=" + userId
+          url: issuesPath + "/?author_username=" + userName
         }, 'separator', {
           text: 'Merge requests assigned to me',
           url: mrPath + "/?assignee_id=" + userId

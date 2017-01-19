@@ -1,6 +1,6 @@
 - stage = local_assigns.fetch(:stage)
 - statuses = stage.statuses.latest
-- status_groups = statuses.sort_by(&:name).group_by(&:group_name)
+- status_groups = statuses.sort_by(&:sortable_name).group_by(&:group_name)
 %li.stage-column
   .stage-name
     %a{ name: stage.name }
@@ -10,13 +10,10 @@
       - status_groups.each do |group_name, grouped_statuses|
         - if grouped_statuses.one?
           - status = grouped_statuses.first
-          - is_playable = status.playable? && can?(current_user, :update_build, @project)
-          %li.build{ class: ("playable" if is_playable) }
+          %li.build{ 'id' => "ci-badge-#{group_name}" }
             .curve
-            .build-content
-              = render "projects/#{status.to_partial_path}_pipeline", subject: status
+            = render 'ci/status/graph_badge', subject: status
         - else
-          %li.build
+          %li.build{ 'id' => "ci-badge-#{group_name}" }
             .curve
-            .dropdown.inline.build-content
-              = render "projects/stage/in_stage_group", name: group_name, subject: grouped_statuses
+            = render 'projects/stage/in_stage_group', name: group_name, subject: grouped_statuses

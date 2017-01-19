@@ -2,10 +2,9 @@ module Gitlab
   module Ci
     module Status
       class Factory
-        attr_reader :subject
-
-        def initialize(subject)
+        def initialize(subject, user)
           @subject = subject
+          @user = user
         end
 
         def fabricate!
@@ -16,26 +15,31 @@ module Gitlab
           end
         end
 
+        def self.extended_statuses
+          []
+        end
+
+        def self.common_helpers
+          Module.new
+        end
+
         private
 
-        def subject_status
-          @subject_status ||= subject.status
+        def simple_status
+          @simple_status ||= @subject.status || :created
         end
 
         def core_status
           Gitlab::Ci::Status
-            .const_get(subject_status.capitalize)
-            .new(subject)
+            .const_get(simple_status.capitalize)
+            .new(@subject, @user)
+            .extend(self.class.common_helpers)
         end
 
         def extended_status
-          @extended ||= extended_statuses.find do |status|
-            status.matches?(subject)
+          @extended ||= self.class.extended_statuses.find do |status|
+            status.matches?(@subject, @user)
           end
-        end
-
-        def extended_statuses
-          []
         end
       end
     end

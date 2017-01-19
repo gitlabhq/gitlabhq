@@ -11,10 +11,10 @@
 
   .diff-header {
     position: relative;
-    background: $background-color;
+    background: $gray-light;
     border-bottom: 1px solid $border-color;
     padding: 10px 16px;
-    color: $gl-diff-text-color;
+    color: $gl-text-color;
     z-index: 10;
     border-radius: 3px 3px 0 0;
 
@@ -38,7 +38,7 @@
     cursor: pointer;
 
     &:hover {
-      background-color: $dark-background-color;
+      background-color: $gray-normal;
     }
 
     .diff-toggle-caret {
@@ -50,7 +50,7 @@
     overflow: auto;
     overflow-y: hidden;
     background: $white-light;
-    color: $gl-title-color;
+    color: $gl-text-color;
     border-radius: 0 0 3px 3px;
 
     .unfold {
@@ -187,8 +187,8 @@
 
       img {
         border: 1px solid $white-light;
-        background-image: linear-gradient(45deg, $diff-image-img-bg 25%, transparent 25%, transparent 75%, $diff-image-img-bg 75%, $diff-image-img-bg 100%),
-        linear-gradient(45deg, $diff-image-img-bg 25%, transparent 25%, transparent 75%, $diff-image-img-bg 75%, $diff-image-img-bg 100%);
+        background-image: linear-gradient(45deg, $border-color 25%, transparent 25%, transparent 75%, $border-color 75%, $border-color 100%),
+        linear-gradient(45deg, $border-color 25%, transparent 25%, transparent 75%, $border-color 75%, $border-color 100%);
         background-size: 10px 10px;
         background-position: 0 0, 5px 5px;
         max-width: 100%;
@@ -380,7 +380,7 @@
         }
 
         cursor: default;
-        color: $gl-title-color;
+        color: $gl-text-color;
       }
 
       &.disabled {

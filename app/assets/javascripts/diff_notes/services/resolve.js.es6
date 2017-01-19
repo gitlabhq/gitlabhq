@@ -1,4 +1,8 @@
-/* eslint-disable */
+/* eslint-disable class-methods-use-this, one-var, indent, camelcase, no-new, comma-dangle, semi, no-param-reassign, max-len */
+/* global Vue */
+/* global Flash */
+/* global CommentsStore */
+
 ((w) => {
   class ResolveServiceClass {
     constructor() {

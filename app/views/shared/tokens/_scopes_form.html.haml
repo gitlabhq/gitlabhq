@@ -1,0 +1,9 @@
+- scopes = local_assigns.fetch(:scopes)
+- prefix = local_assigns.fetch(:prefix)
+- token = local_assigns.fetch(:token)
+
+- scopes.each do |scope|
+  %fieldset
+    = check_box_tag "#{prefix}[scopes][]", scope, token.scopes.include?(scope), id: "#{prefix}_scopes_#{scope}"
+    = label_tag "#{prefix}_scopes_#{scope}", scope
+    %span= "(#{t(scope, scope: [:doorkeeper, :scopes])})"

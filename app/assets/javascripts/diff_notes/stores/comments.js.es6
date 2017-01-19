@@ -1,4 +1,7 @@
-/* eslint-disable */
+/* eslint-disable object-shorthand, func-names, camelcase, prefer-const, no-restricted-syntax, guard-for-in, comma-dangle, max-len, no-param-reassign */
+/* global Vue */
+/* global DiscussionModel */
+
 ((w) => {
   w.CommentsStore = {
     state: {},

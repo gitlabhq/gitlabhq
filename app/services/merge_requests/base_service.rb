@@ -38,10 +38,6 @@ module MergeRequests
 
     private
 
-    def filter_params
-      super(:merge_request)
-    end
-
     def merge_requests_for(branch)
       origin_merge_requests = @project.origin_merge_requests
         .opened.where(source_branch: branch).to_a

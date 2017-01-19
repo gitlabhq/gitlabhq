@@ -61,11 +61,11 @@ module Gitlab
     end
 
     def file_name_regex
-      @file_name_regex ||= /\A[[[:alnum:]]_\-\.\@]*\z/.freeze
+      @file_name_regex ||= /\A[[[:alnum:]]_\-\.\@\+]*\z/.freeze
     end
 
     def file_name_regex_message
-      "can contain only letters, digits, '_', '-', '@' and '.'."
+      "can contain only letters, digits, '_', '-', '@', '+' and '.'."
     end
 
     def file_path_regex
@@ -122,6 +122,23 @@ module Gitlab
 
     def environment_name_regex_message
       "can contain only letters, digits, '-', '_', '/', '$', '{', '}', '.' and spaces"
+    end
+
+    def kubernetes_namespace_regex
+      /\A[a-z0-9]([-a-z0-9]*[a-z0-9])?\z/
+    end
+
+    def kubernetes_namespace_regex_message
+      "can contain only letters, digits or '-', and cannot start or end with '-'"
+    end
+
+    def environment_slug_regex
+      @environment_slug_regex ||= /\A[a-z]([a-z0-9-]*[a-z0-9])?\z/.freeze
+    end
+
+    def environment_slug_regex_message
+      "can contain only lowercase letters, digits, and '-'. " \
+      "Must start with a letter, and cannot end with '-'"
     end
   end
 end

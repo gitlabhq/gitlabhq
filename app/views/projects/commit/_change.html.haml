@@ -6,19 +6,19 @@
   - label = 'Cherry-pick'
   - target_label = 'Pick into branch'
 
-.modal{id: "modal-#{type}-commit"}
+.modal{ id: "modal-#{type}-commit" }
   .modal-dialog
     .modal-content
       .modal-header
-        %a.close{href: "#", "data-dismiss" => "modal"} ×
+        %a.close{ href: "#", "data-dismiss" => "modal" } ×
         %h3.page-title== #{label} this #{commit.change_type_title(current_user)}
       .modal-body
-        = form_tag send("#{type.underscore}_namespace_project_commit_path", @project.namespace, @project, commit.id), method: :post, remote: false, class: "form-horizontal js-#{type}-form js-requires-input" do
+        = form_tag [type.underscore, @project.namespace, @project, commit], method: :post, remote: false, class: "form-horizontal js-#{type}-form js-requires-input" do
           .form-group.branch
             = label_tag 'target_branch', target_label, class: 'control-label'
             .col-sm-10
               = hidden_field_tag :target_branch, @project.default_branch, id: 'target_branch'
-              = dropdown_tag(@project.default_branch, options: { title: "Switch branch", filter: true, placeholder: "Search branches", toggle_class: 'js-project-refs-dropdown js-target-branch dynamic', dropdown_class: 'dropdown-menu-selectable', data: { field_name: "target_branch", selected: @project.default_branch, target_branch: @project.default_branch, refs_url: namespace_project_branches_path(@project.namespace, @project), submit_form_on_click: false }})
+              = dropdown_tag(@project.default_branch, options: { title: "Switch branch", filter: true, placeholder: "Search branches", toggle_class: 'js-project-refs-dropdown js-target-branch dynamic', dropdown_class: 'dropdown-menu-selectable', data: { field_name: "target_branch", selected: @project.default_branch, target_branch: @project.default_branch, refs_url: namespace_project_branches_path(@project.namespace, @project), submit_form_on_click: false } })
 
               - if can?(current_user, :push_code, @project)
                 .js-create-merge-request-container

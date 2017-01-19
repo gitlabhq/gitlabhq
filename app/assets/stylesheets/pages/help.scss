@@ -60,7 +60,7 @@
 
   // Border around images in the help pages.
   img:not(.emoji) {
-    border: 1px solid $table-border-gray;
+    border: 1px solid $white-normal;
     padding: 5px;
     margin: 5px;
     max-height: calc(100vh - 100px);

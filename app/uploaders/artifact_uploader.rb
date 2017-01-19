@@ -1,4 +1,4 @@
-class ArtifactUploader < CarrierWave::Uploader::Base
+class ArtifactUploader < GitlabUploader
   storage :file
 
   attr_accessor :build, :field
@@ -37,13 +37,5 @@ class ArtifactUploader < CarrierWave::Uploader::Base
 
   def exists?
     file.try(:exists?)
-  end
-
-  def move_to_cache
-    true
-  end
-
-  def move_to_store
-    true
   end
 end

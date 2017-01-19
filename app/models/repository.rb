@@ -439,6 +439,11 @@ class Repository
     expire_content_cache
   end
 
+  # Runs code after the HEAD of a repository is changed.
+  def after_change_head
+    expire_method_caches(METHOD_CACHES_FOR_FILE_TYPES.keys)
+  end
+
   # Runs code after a repository has been forked/imported.
   def after_import
     expire_content_cache
@@ -654,9 +659,17 @@ class Repository
   end
 
   def last_commit_for_path(sha, path)
-    args = %W(#{Gitlab.config.git.bin_path} rev-list --max-count=1 #{sha} -- #{path})
-    sha = Gitlab::Popen.popen(args, path_to_repo).first.strip
+    sha = last_commit_id_for_path(sha, path)
     commit(sha)
+  end
+
+  def last_commit_id_for_path(sha, path)
+    key = path.blank? ? "last_commit_id_for_path:#{sha}" : "last_commit_id_for_path:#{sha}:#{Digest::SHA1.hexdigest(path)}"
+
+    cache.fetch(key) do
+      args = %W(#{Gitlab.config.git.bin_path} rev-list --max-count=1 #{sha} -- #{path})
+      Gitlab::Popen.popen(args, path_to_repo).first.strip
+    end
   end
 
   def next_branch(name, opts = {})

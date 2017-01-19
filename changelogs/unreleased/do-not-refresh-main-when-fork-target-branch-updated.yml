@@ -1,4 +1,0 @@
----
-title: Do not reload diff for merge request made from fork when target branch in fork is updated
-merge_request: 7973
-author:

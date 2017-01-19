@@ -10,18 +10,29 @@ module Ci
       end
     end
 
+    def project
+      pipeline.project
+    end
+
     private
 
     def create_build(build_attributes)
       build_attributes = build_attributes.merge(
         pipeline: pipeline,
-        project: pipeline.project,
+        project: project,
         ref: pipeline.ref,
         tag: pipeline.tag,
         user: current_user,
         trigger_request: trigger_request
       )
-      pipeline.builds.create(build_attributes)
+      build = pipeline.builds.create(build_attributes)
+
+      # Create the environment before the build starts. This sets its slug and
+      # makes it available as an environment variable
+      project.environments.find_or_create_by(name: build.expanded_environment_name) if
+        build.has_environment?
+
+      build
     end
 
     def new_builds

@@ -20,9 +20,9 @@ describe Project, models: true do
     it { is_expected.to have_many(:deploy_keys) }
     it { is_expected.to have_many(:hooks).dependent(:destroy) }
     it { is_expected.to have_many(:protected_branches).dependent(:destroy) }
-    it { is_expected.to have_many(:chat_services) }
     it { is_expected.to have_one(:forked_project_link).dependent(:destroy) }
     it { is_expected.to have_one(:slack_service).dependent(:destroy) }
+    it { is_expected.to have_one(:mattermost_service).dependent(:destroy) }
     it { is_expected.to have_one(:pushover_service).dependent(:destroy) }
     it { is_expected.to have_one(:asana_service).dependent(:destroy) }
     it { is_expected.to have_many(:boards).dependent(:destroy) }
@@ -36,6 +36,7 @@ describe Project, models: true do
     it { is_expected.to have_one(:hipchat_service).dependent(:destroy) }
     it { is_expected.to have_one(:flowdock_service).dependent(:destroy) }
     it { is_expected.to have_one(:assembla_service).dependent(:destroy) }
+    it { is_expected.to have_one(:slack_slash_commands_service).dependent(:destroy) }
     it { is_expected.to have_one(:mattermost_slash_commands_service).dependent(:destroy) }
     it { is_expected.to have_one(:gemnasium_service).dependent(:destroy) }
     it { is_expected.to have_one(:buildkite_service).dependent(:destroy) }
@@ -48,6 +49,7 @@ describe Project, models: true do
     it { is_expected.to have_one(:gitlab_issue_tracker_service).dependent(:destroy) }
     it { is_expected.to have_one(:external_wiki_service).dependent(:destroy) }
     it { is_expected.to have_one(:project_feature).dependent(:destroy) }
+    it { is_expected.to have_one(:statistics).class_name('ProjectStatistics').dependent(:delete) }
     it { is_expected.to have_one(:import_data).class_name('ProjectImportData').dependent(:destroy) }
     it { is_expected.to have_one(:last_event).class_name('Event') }
     it { is_expected.to have_one(:forked_from_project).through(:forked_project_link) }
@@ -188,33 +190,53 @@ describe Project, models: true do
     end
 
     it 'does not allow an invalid URI as import_url' do
-      project2 = build(:project, import_url: 'invalid://')
+      project2 = build(:empty_project, import_url: 'invalid://')
 
       expect(project2).not_to be_valid
     end
 
     it 'does allow a valid URI as import_url' do
-      project2 = build(:project, import_url: 'ssh://test@gitlab.com/project.git')
+      project2 = build(:empty_project, import_url: 'ssh://test@gitlab.com/project.git')
 
       expect(project2).to be_valid
     end
 
     it 'allows an empty URI' do
-      project2 = build(:project, import_url: '')
+      project2 = build(:empty_project, import_url: '')
 
       expect(project2).to be_valid
     end
 
     it 'does not produce import data on an empty URI' do
-      project2 = build(:project, import_url: '')
+      project2 = build(:empty_project, import_url: '')
 
       expect(project2.import_data).to be_nil
     end
 
     it 'does not produce import data on an invalid URI' do
-      project2 = build(:project, import_url: 'test://')
+      project2 = build(:empty_project, import_url: 'test://')
 
       expect(project2.import_data).to be_nil
+    end
+
+    describe 'project pending deletion' do
+      let!(:project_pending_deletion) do
+        create(:empty_project,
+               pending_delete: true)
+      end
+      let(:new_project) do
+        build(:empty_project,
+              name: project_pending_deletion.name,
+              namespace: project_pending_deletion.namespace)
+      end
+
+      before do
+        new_project.validate
+      end
+
+      it 'contains errors related to the project being deleted' do
+        expect(new_project.errors.full_messages.first).to eq('The project is still being deleted. Please try again later.')
+      end
     end
   end
 
@@ -357,14 +379,6 @@ describe Project, models: true do
 
     it 'returns the full web URL for this repo' do
       expect(project.web_url).to eq("#{Gitlab.config.gitlab.url}/#{project.namespace.path}/somewhere")
-    end
-  end
-
-  describe "#web_url_without_protocol" do
-    let(:project) { create(:empty_project, path: "somewhere") }
-
-    it 'returns the web URL without the protocol for this repo' do
-      expect(project.web_url_without_protocol).to eq("#{Gitlab.config.gitlab.url.split('://')[1]}/#{project.namespace.path}/somewhere")
     end
   end
 
@@ -1457,6 +1471,18 @@ describe Project, models: true do
     end
   end
 
+  describe '#gitlab_project_import?' do
+    subject(:project) { build(:project, import_type: 'gitlab_project') }
+
+    it { expect(project.gitlab_project_import?).to be true }
+  end
+
+  describe '#gitea_import?' do
+    subject(:project) { build(:project, import_type: 'gitea') }
+
+    it { expect(project.gitea_import?).to be true }
+  end
+
   describe '#lfs_enabled?' do
     let(:project) { create(:project) }
 
@@ -1519,11 +1545,13 @@ describe Project, models: true do
     end
   end
 
-  describe 'change_head' do
+  describe '#change_head' do
     let(:project) { create(:project) }
 
-    it 'calls the before_change_head method' do
+    it 'calls the before_change_head and after_change_head methods' do
       expect(project.repository).to receive(:before_change_head)
+      expect(project.repository).to receive(:after_change_head)
+
       project.change_head(project.default_branch)
     end
 
@@ -1536,11 +1564,6 @@ describe Project, models: true do
 
     it 'copies the gitattributes' do
       expect(project.repository).to receive(:copy_gitattributes).with(project.default_branch)
-      project.change_head(project.default_branch)
-    end
-
-    it 'expires the avatar cache' do
-      expect(project.repository).to receive(:expire_avatar_cache)
       project.change_head(project.default_branch)
     end
 
@@ -1693,6 +1716,46 @@ describe Project, models: true do
         expect(project.environments_recently_updated_on_branch('feature'))
           .to contain_exactly(environment, second_environment)
       end
+    end
+  end
+
+  describe '#deployment_variables' do
+    context 'when project has no deployment service' do
+      let(:project) { create(:empty_project) }
+
+      it 'returns an empty array' do
+        expect(project.deployment_variables).to eq []
+      end
+    end
+
+    context 'when project has a deployment service' do
+      let(:project) { create(:kubernetes_project) }
+
+      it 'returns variables from this service' do
+        expect(project.deployment_variables).to include(
+          { key: 'KUBE_TOKEN', value: project.kubernetes_service.token, public: false }
+        )
+      end
+    end
+  end
+
+  describe '#update_project_statistics' do
+    let(:project) { create(:empty_project) }
+
+    it "is called after creation" do
+      expect(project.statistics).to be_a ProjectStatistics
+      expect(project.statistics).to be_persisted
+    end
+
+    it "copies the namespace_id" do
+      expect(project.statistics.namespace_id).to eq project.namespace_id
+    end
+
+    it "updates the namespace_id when changed" do
+      namespace = create(:namespace)
+      project.update(namespace: namespace)
+
+      expect(project.statistics.namespace_id).to eq namespace.id
     end
   end
 

@@ -1,4 +1,9 @@
-/* eslint-disable */
+/* eslint-disable comma-dangle, object-shorthand, func-names, quote-props, no-else-return, camelcase, no-new, max-len */
+/* global Vue */
+/* global CommentsStore */
+/* global ResolveService */
+/* global Flash */
+
 (() => {
   const ResolveBtn = Vue.extend({
     props: {
@@ -54,9 +59,11 @@
     },
     methods: {
       updateTooltip: function () {
-        $(this.$refs.button)
-          .tooltip('hide')
-          .tooltip('fixTitle');
+        this.$nextTick(() => {
+          $(this.$refs.button)
+            .tooltip('hide')
+            .tooltip('fixTitle');
+        });
       },
       resolve: function () {
         if (!this.canResolve) return;
@@ -85,7 +92,7 @@
             new Flash('An error occurred when trying to resolve a comment. Please try again.', 'alert');
           }
 
-          this.$nextTick(this.updateTooltip);
+          this.updateTooltip();
         });
       }
     },

@@ -1,4 +1,0 @@
----
-title: Do not raise error in AutocompleteController#users when not authorized
-merge_request: 7817
-author: Semyon Pupkov

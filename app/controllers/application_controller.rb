@@ -25,7 +25,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   helper_method :can?, :current_application_settings
-  helper_method :import_sources_enabled?, :github_import_enabled?, :github_import_configured?, :gitlab_import_enabled?, :gitlab_import_configured?, :bitbucket_import_enabled?, :bitbucket_import_configured?, :google_code_import_enabled?, :fogbugz_import_enabled?, :git_import_enabled?, :gitlab_project_import_enabled?
+  helper_method :import_sources_enabled?, :github_import_enabled?, :gitea_import_enabled?, :github_import_configured?, :gitlab_import_enabled?, :gitlab_import_configured?, :bitbucket_import_enabled?, :bitbucket_import_configured?, :google_code_import_enabled?, :fogbugz_import_enabled?, :git_import_enabled?, :gitlab_project_import_enabled?
 
   rescue_from Encoding::CompatibilityError do |exception|
     log_exception(exception)
@@ -245,6 +245,10 @@ class ApplicationController < ActionController::Base
     current_application_settings.import_sources.include?('github')
   end
 
+  def gitea_import_enabled?
+    current_application_settings.import_sources.include?('gitea')
+  end
+
   def github_import_configured?
     Gitlab::OAuth::Provider.enabled?(:github)
   end
@@ -262,7 +266,7 @@ class ApplicationController < ActionController::Base
   end
 
   def bitbucket_import_configured?
-    Gitlab::OAuth::Provider.enabled?(:bitbucket) && Gitlab::BitbucketImport.public_key.present?
+    Gitlab::OAuth::Provider.enabled?(:bitbucket)
   end
 
   def google_code_import_enabled?

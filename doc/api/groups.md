@@ -13,6 +13,7 @@ Parameters:
 | `search` | string | no | Return list of authorized groups matching the search criteria |
 | `order_by` | string | no | Order groups by `name` or `path`. Default is `name` |
 | `sort` | string | no | Order groups in `asc` or `desc` order. Default is `asc` |
+| `statistics` | boolean | no | Include group statistics (admins only) |
 
 ```
 GET /groups
@@ -31,7 +32,6 @@ GET /groups
 
 You can search for groups by name or path, see below.
 
-=======
 ## List owned groups
 
 Get a list of groups which are owned by the authenticated user.
@@ -39,6 +39,12 @@ Get a list of groups which are owned by the authenticated user.
 ```
 GET /groups/owned
 ```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `statistics` | boolean | no | Include group statistics |
 
 ## List a group's projects
 
@@ -329,7 +335,7 @@ POST  /groups/:id/projects/:project_id
 Parameters:
 
 - `id` (required) - The ID or path of a group
-- `project_id` (required) - The ID of a project
+- `project_id` (required) - The ID or path of a project
 
 ## Update group
 

@@ -1,4 +1,7 @@
-/* eslint-disable */
+/* eslint-disable comma-dangle, space-before-function-paren, max-len, no-plusplus */
+/* global Vue */
+/* global Sortable */
+
 //= require ./board_card
 //= require ./board_new_issue
 

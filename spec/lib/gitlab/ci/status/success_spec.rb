@@ -1,7 +1,9 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Status::Success do
-  subject { described_class.new(double('subject')) }
+  subject do
+    described_class.new(double('subject'), double('user'))
+  end
 
   describe '#text' do
     it { expect(subject.label).to eq 'passed' }
@@ -15,7 +17,7 @@ describe Gitlab::Ci::Status::Success do
     it { expect(subject.icon).to eq 'icon_status_success' }
   end
 
-  describe '#title' do
-    it { expect(subject.title).to eq 'Double: passed' }
+  describe '#group' do
+    it { expect(subject.group).to eq 'success' }
   end
 end

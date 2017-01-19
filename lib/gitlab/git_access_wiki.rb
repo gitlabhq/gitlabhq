@@ -1,6 +1,6 @@
 module Gitlab
   class GitAccessWiki < GitAccess
-    def guest_can_downlod_code?
+    def guest_can_download_code?
       Guest.can?(:download_wiki_code, project)
     end
 
@@ -8,7 +8,7 @@ module Gitlab
       authentication_abilities.include?(:download_code) && user_access.can_do_action?(:download_wiki_code)
     end
 
-    def change_access_check(change)
+    def check_single_change_access(change)
       if user_access.can_do_action?(:create_wiki)
         build_status_object(true)
       else

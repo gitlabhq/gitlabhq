@@ -1,4 +1,8 @@
-/* eslint-disable */
+/* eslint-disable comma-dangle, quote-props, no-useless-computed-key, object-shorthand, prefer-const, no-new, padded-blocks, no-param-reassign, semi, max-len */
+/* global Vue */
+/* global ace */
+/* global Flash */
+
 ((global) => {
 
   global.mergeConflicts = global.mergeConflicts || {};

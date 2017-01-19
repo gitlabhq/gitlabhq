@@ -12,7 +12,7 @@ class NotePolicy < BasePolicy
     end
 
     if @subject.for_merge_request? &&
-       @subject.noteable.author == @user
+        @subject.noteable.author == @user
       can! :resolve_note
     end
   end

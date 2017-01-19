@@ -1,6 +1,7 @@
-/* eslint-disable */
-//= require vue
-//= require vue-resource
+/* eslint-disable func-names, comma-dangle, new-cap, no-new */
+/* global Vue */
+/* global ResolveCount */
+
 //= require_directory ./models
 //= require_directory ./stores
 //= require_directory ./services

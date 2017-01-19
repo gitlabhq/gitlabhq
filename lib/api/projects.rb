@@ -40,6 +40,15 @@ module API
 
     resource :projects do
       helpers do
+        params :collection_params do
+          use :sort_params
+          use :filter_params
+          use :pagination
+
+          optional :simple, type: Boolean, default: false,
+                            desc: 'Return only the ID, URL, name, and path of each project'
+        end
+
         params :sort_params do
           optional :order_by, type: String, values: %w[id name path created_at updated_at last_activity_at],
                               default: 'created_at', desc: 'Return projects ordered by field'
@@ -52,12 +61,29 @@ module API
           optional :visibility, type: String, values: %w[public internal private],
                                 desc: 'Limit by visibility'
           optional :search, type: String, desc: 'Return list of authorized projects matching the search criteria'
-          use :sort_params
+        end
+
+        params :statistics_params do
+          optional :statistics, type: Boolean, default: false, desc: 'Include project statistics'
         end
 
         params :create_params do
           optional :namespace_id, type: Integer, desc: 'Namespace ID for the new project. Default to the user namespace.'
           optional :import_url, type: String, desc: 'URL from which the project is imported'
+        end
+
+        def present_projects(projects, options = {})
+          options = options.reverse_merge(
+            with: Entities::Project,
+            current_user: current_user,
+            simple: params[:simple],
+          )
+
+          projects = filter_projects(projects)
+          projects = projects.with_statistics if options[:statistics]
+          options[:with] = Entities::BasicProjectDetails if options[:simple]
+
+          present paginate(projects), options
         end
       end
 
@@ -65,84 +91,64 @@ module API
         success Entities::BasicProjectDetails
       end
       params do
-        optional :simple, type: Boolean, default: false,
-                          desc: 'Return only the ID, URL, name, and path of each project'
-        use :filter_params
-        use :pagination
+        use :collection_params
       end
       get '/visible' do
-        projects = ProjectsFinder.new.execute(current_user)
-        projects = filter_projects(projects)
-        entity = params[:simple] || !current_user ? Entities::BasicProjectDetails : Entities::ProjectWithAccess
-
-        present paginate(projects), with: entity, user: current_user
+        entity = current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails
+        present_projects ProjectsFinder.new.execute(current_user), with: entity
       end
 
       desc 'Get a projects list for authenticated user' do
         success Entities::BasicProjectDetails
       end
       params do
-        optional :simple, type: Boolean, default: false,
-                          desc: 'Return only the ID, URL, name, and path of each project'
-        use :filter_params
-        use :pagination
+        use :collection_params
       end
       get do
         authenticate!
 
-        projects = current_user.authorized_projects
-        projects = filter_projects(projects)
-        entity = params[:simple] ? Entities::BasicProjectDetails : Entities::ProjectWithAccess
-
-        present paginate(projects), with: entity, user: current_user
+        present_projects current_user.authorized_projects,
+          with: Entities::ProjectWithAccess
       end
 
       desc 'Get an owned projects list for authenticated user' do
         success Entities::BasicProjectDetails
       end
       params do
-        use :filter_params
-        use :pagination
+        use :collection_params
+        use :statistics_params
       end
       get '/owned' do
         authenticate!
 
-        projects = current_user.owned_projects
-        projects = filter_projects(projects)
-
-        present paginate(projects), with: Entities::ProjectWithAccess, user: current_user
+        present_projects current_user.owned_projects,
+          with: Entities::ProjectWithAccess,
+          statistics: params[:statistics]
       end
 
       desc 'Gets starred project for the authenticated user' do
         success Entities::BasicProjectDetails
       end
       params do
-        use :filter_params
-        use :pagination
+        use :collection_params
       end
       get '/starred' do
         authenticate!
 
-        projects = current_user.viewable_starred_projects
-        projects = filter_projects(projects)
-
-        present paginate(projects), with: Entities::Project, user: current_user
+        present_projects current_user.viewable_starred_projects
       end
 
       desc 'Get all projects for admin user' do
         success Entities::BasicProjectDetails
       end
       params do
-        use :filter_params
-        use :pagination
+        use :collection_params
+        use :statistics_params
       end
       get '/all' do
         authenticated_as_admin!
 
-        projects = Project.all
-        projects = filter_projects(projects)
-
-        present paginate(projects), with: Entities::ProjectWithAccess, user: current_user
+        present_projects Project.all, with: Entities::ProjectWithAccess, statistics: params[:statistics]
       end
 
       desc 'Search for projects the current user has access to' do
@@ -153,7 +159,7 @@ module API
         use :sort_params
         use :pagination
       end
-      get "/search/:query" do
+      get "/search/:query", requirements: { query: /[^\/]+/ } do
         search_service = Search::GlobalService.new(current_user, search: params[:query]).execute
         projects = search_service.objects('projects', params[:page])
         projects = projects.reorder(params[:order_by] => params[:sort])
@@ -221,7 +227,7 @@ module API
       end
       get ":id" do
         entity = current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails
-        present user_project, with: entity, user: current_user,
+        present user_project, with: entity, current_user: current_user,
                               user_can_admin_project: can?(current_user, :admin_project, user_project)
       end
 
@@ -289,13 +295,13 @@ module API
         authorize! :rename_project, user_project if attrs[:name].present?
         authorize! :change_visibility_level, user_project if attrs[:visibility_level].present?
 
-        ::Projects::UpdateService.new(user_project, current_user, attrs).execute
+        result = ::Projects::UpdateService.new(user_project, current_user, attrs).execute
 
-        if user_project.errors.any?
-          render_validation_error!(user_project)
-        else
+        if result[:status] == :success
           present user_project, with: Entities::Project,
                                 user_can_admin_project: can?(current_user, :admin_project, user_project)
+        else
+          render_validation_error!(user_project)
         end
       end
 

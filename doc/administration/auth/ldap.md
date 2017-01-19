@@ -298,8 +298,11 @@ LDAP server please double-check the LDAP `port` and `method` settings used by
 GitLab. Common combinations are `method: 'plain'` and `port: 389`, OR
 `method: 'ssl'` and `port: 636`.
 
-### Login with valid credentials rejected
+### Troubleshooting
 
-If there is an unexpected error while authenticating the user with the LDAP
-backend, the login is rejected and details about the error are logged to
+If a user account is blocked or unblocked due to the LDAP configuration, a
+message will be logged to `application.log`.
+
+If there is an unexpected error during an LDAP lookup (configuration error,
+timeout), the login is rejected and a message will be logged to
 `production.log`.

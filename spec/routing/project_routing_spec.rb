@@ -80,10 +80,6 @@ describe 'project routing' do
       expect(get('/gitlab/gitlabhq/edit')).to route_to('projects#edit', namespace_id: 'gitlab', id: 'gitlabhq')
     end
 
-    it 'to #autocomplete_sources' do
-      expect(get('/gitlab/gitlabhq/autocomplete_sources')).to route_to('projects#autocomplete_sources', namespace_id: 'gitlab', id: 'gitlabhq')
-    end
-
     describe 'to #show' do
       context 'regular name' do
         it { expect(get('/gitlab/gitlabhq')).to route_to('projects#show', namespace_id: 'gitlab', id: 'gitlabhq') }
@@ -114,6 +110,21 @@ describe 'project routing' do
       expect(post('/gitlab/gitlabhq/preview_markdown')).to(
         route_to('projects#preview_markdown', namespace_id: 'gitlab', id: 'gitlabhq')
       )
+    end
+  end
+
+  # emojis_namespace_project_autocomplete_sources_path         GET /:project_id/autocomplete_sources/emojis(.:format)         projects/autocomplete_sources#emojis
+  # members_namespace_project_autocomplete_sources_path        GET /:project_id/autocomplete_sources/members(.:format)        projects/autocomplete_sources#members
+  # issues_namespace_project_autocomplete_sources_path         GET /:project_id/autocomplete_sources/issues(.:format)         projects/autocomplete_sources#issues
+  # merge_requests_namespace_project_autocomplete_sources_path GET /:project_id/autocomplete_sources/merge_requests(.:format) projects/autocomplete_sources#merge_requests
+  # labels_namespace_project_autocomplete_sources_path         GET /:project_id/autocomplete_sources/labels(.:format)         projects/autocomplete_sources#labels
+  # milestones_namespace_project_autocomplete_sources_path     GET /:project_id/autocomplete_sources/milestones(.:format)     projects/autocomplete_sources#milestones
+  # commands_namespace_project_autocomplete_sources_path       GET /:project_id/autocomplete_sources/commands(.:format)       projects/autocomplete_sources#commands
+  describe Projects::AutocompleteSourcesController, 'routing' do
+    [:emojis, :members, :issues, :merge_requests, :labels, :milestones, :commands].each do |action|
+      it "to ##{action}" do
+        expect(get("/gitlab/gitlabhq/autocomplete_sources/#{action}")).to route_to("projects/autocomplete_sources##{action}", namespace_id: 'gitlab', project_id: 'gitlabhq')
+      end
     end
   end
 

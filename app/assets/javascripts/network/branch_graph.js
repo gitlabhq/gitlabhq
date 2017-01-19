@@ -1,4 +1,6 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, quotes, comma-dangle, one-var, one-var-declaration-per-line, no-mixed-operators, new-cap, no-undef, no-plusplus, no-loop-func, no-floating-decimal, consistent-return, no-unused-vars, prefer-template, prefer-arrow-callback, camelcase, max-len, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, quotes, comma-dangle, one-var, one-var-declaration-per-line, no-mixed-operators, new-cap, no-plusplus, no-loop-func, no-floating-decimal, consistent-return, no-unused-vars, prefer-template, prefer-arrow-callback, camelcase, max-len, padded-blocks */
+/* global Raphael */
+
 (function() {
   var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
@@ -354,7 +356,7 @@
     icon = this.image(gon.relative_url_root + commit.author.icon, x, y, 20, 20);
     nameText = this.text(x + 25, y + 10, commit.author.name);
     idText = this.text(x, y + 35, commit.id);
-    messageText = this.text(x, y + 50, commit.message);
+    messageText = this.text(x, y + 50, commit.message.replace(/\r?\n/g, " \n "));
     textSet = this.set(icon, nameText, idText, messageText).attr({
       "text-anchor": "start",
       font: "12px Monaco, monospace"
@@ -366,6 +368,7 @@
     idText.attr({
       fill: "#AAA"
     });
+    messageText.node.style["white-space"] = "pre";
     this.textWrap(messageText, boxWidth - 50);
     rect = this.rect(x - 10, y - 10, boxWidth, 100, 4).attr({
       fill: "#FFF",
@@ -402,16 +405,21 @@
         s.push("\n");
         x = 0;
       }
-      x += word.length * letterWidth;
-      s.push(word + " ");
+      if (word === "\n") {
+        s.push("\n");
+        x = 0;
+      } else {
+        s.push(word + " ");
+        x += word.length * letterWidth;
+      }
     }
     t.attr({
-      text: s.join("")
+      text: s.join("").trim()
     });
     b = t.getBBox();
-    h = Math.abs(b.y2) - Math.abs(b.y) + 1;
+    h = Math.abs(b.y2) + 1;
     return t.attr({
-      y: b.y + h
+      y: h
     });
   };
 

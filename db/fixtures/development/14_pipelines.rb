@@ -1,25 +1,49 @@
 class Gitlab::Seeder::Pipelines
   STAGES = %w[build test deploy notify]
   BUILDS = [
-    { name: 'build:linux', stage: 'build', status: :success },
-    { name: 'build:osx', stage: 'build', status: :success },
-    { name: 'rspec:linux 0 3', stage: 'test', status: :success },
-    { name: 'rspec:linux 1 3', stage: 'test', status: :success },
-    { name: 'rspec:linux 2 3', stage: 'test', status: :success },
-    { name: 'rspec:windows 0 3', stage: 'test', status: :success },
-    { name: 'rspec:windows 1 3', stage: 'test', status: :success },
-    { name: 'rspec:windows 2 3', stage: 'test', status: :success },
-    { name: 'rspec:windows 2 3', stage: 'test', status: :success },
-    { name: 'rspec:osx', stage: 'test', status_event: :success },
-    { name: 'spinach:linux', stage: 'test', status: :success },
-    { name: 'spinach:osx', stage: 'test', status: :failed, allow_failure: true},
-    { name: 'env:alpha', stage: 'deploy', environment: 'alpha', status: :pending },
-    { name: 'env:beta', stage: 'deploy', environment: 'beta', status: :running },
-    { name: 'env:gamma', stage: 'deploy', environment: 'gamma', status: :canceled },
-    { name: 'staging', stage: 'deploy', environment: 'staging', status_event: :success, options: { environment: { on_stop: 'stop staging' } } },
-    { name: 'stop staging', stage: 'deploy', environment: 'staging', when: 'manual', status: :skipped },
-    { name: 'production', stage: 'deploy', environment: 'production', when: 'manual', status: :skipped },
+    # build stage
+    { name: 'build:linux', stage: 'build', status: :success,
+      queued_at: 10.hour.ago, started_at: 9.hour.ago, finished_at: 8.hour.ago },
+    { name: 'build:osx', stage: 'build', status: :success,
+      queued_at: 10.hour.ago, started_at: 10.hour.ago, finished_at: 9.hour.ago },
+
+    # test stage
+    { name: 'rspec:linux 0 3', stage: 'test', status: :success,
+      queued_at: 8.hour.ago, started_at: 8.hour.ago, finished_at: 7.hour.ago },
+    { name: 'rspec:linux 1 3', stage: 'test', status: :success,
+      queued_at: 8.hour.ago, started_at: 8.hour.ago, finished_at: 7.hour.ago },
+    { name: 'rspec:linux 2 3', stage: 'test', status: :success,
+      queued_at: 8.hour.ago, started_at: 8.hour.ago, finished_at: 7.hour.ago },
+    { name: 'rspec:windows 0 3', stage: 'test', status: :success,
+      queued_at: 8.hour.ago, started_at: 8.hour.ago, finished_at: 7.hour.ago },
+    { name: 'rspec:windows 1 3', stage: 'test', status: :success,
+      queued_at: 8.hour.ago, started_at: 8.hour.ago, finished_at: 7.hour.ago },
+    { name: 'rspec:windows 2 3', stage: 'test', status: :success,
+      queued_at: 8.hour.ago, started_at: 8.hour.ago, finished_at: 7.hour.ago },
+    { name: 'rspec:windows 2 3', stage: 'test', status: :success,
+      queued_at: 8.hour.ago, started_at: 8.hour.ago, finished_at: 7.hour.ago },
+    { name: 'rspec:osx', stage: 'test', status_event: :success,
+      queued_at: 8.hour.ago, started_at: 8.hour.ago, finished_at: 7.hour.ago },
+    { name: 'spinach:linux', stage: 'test', status: :success,
+      queued_at: 8.hour.ago, started_at: 8.hour.ago, finished_at: 7.hour.ago },
+    { name: 'spinach:osx', stage: 'test', status: :failed, allow_failure: true,
+      queued_at: 8.hour.ago, started_at: 8.hour.ago, finished_at: 7.hour.ago },
+
+    # deploy stage
+    { name: 'staging', stage: 'deploy', environment: 'staging', status_event: :success,
+      options: { environment: { action: 'start', on_stop: 'stop staging' } },
+      queued_at: 7.hour.ago, started_at: 6.hour.ago, finished_at: 4.hour.ago },
+    { name: 'stop staging', stage: 'deploy', environment: 'staging',
+      when: 'manual', status: :skipped },
+    { name: 'production', stage: 'deploy', environment: 'production',
+      when: 'manual', status: :skipped },
+
+    # notify stage
     { name: 'slack', stage: 'notify', when: 'manual', status: :created },
+  ]
+  EXTERNAL_JOBS = [
+    { name: 'jenkins', stage: 'test', status: :success,
+      queued_at: 7.hour.ago, started_at: 6.hour.ago, finished_at: 4.hour.ago },
   ]
 
   def initialize(project)
@@ -30,11 +54,12 @@ class Gitlab::Seeder::Pipelines
     pipelines.each do |pipeline|
       begin
         BUILDS.each { |opts| build_create!(pipeline, opts) }
-        commit_status_create!(pipeline, name: 'jenkins', stage: 'test', status: :success)
+        EXTERNAL_JOBS.each { |opts| commit_status_create!(pipeline, opts) }
         print '.'
       rescue ActiveRecord::RecordInvalid
         print 'F'
       ensure
+        pipeline.update_duration
         pipeline.update_status
       end
     end
@@ -115,7 +140,7 @@ class Gitlab::Seeder::Pipelines
 
   def job_attributes(pipeline, opts)
     { name: 'test build', stage: 'test', stage_idx: stage_index(opts[:stage]),
-      ref: 'master', tag: false, user: build_user, project: @project, pipeline: pipeline,
+      ref: pipeline.ref, tag: false, user: build_user, project: @project, pipeline: pipeline,
       created_at: Time.now, updated_at: Time.now
     }.merge(opts)
   end

@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Key, models: true do
+  include EmailHelpers
+
   describe "Associations" do
     it { is_expected.to belong_to(:user) }
   end
@@ -24,6 +26,15 @@ describe Key, models: true do
     describe "#publishable_keys" do
       it 'replaces SSH key comment with simple identifier of username + hostname' do
         expect(build(:key, user: user).publishable_key).to include("#{user.name} (#{Gitlab.config.gitlab.host})")
+      end
+    end
+
+    describe "#update_last_used_at" do
+      it "enqueues a UseKeyWorker job" do
+        key = create(:key)
+
+        expect(UseKeyWorker).to receive(:perform_async).with(key.id)
+        key.update_last_used_at
       end
     end
   end
@@ -94,6 +105,18 @@ describe Key, models: true do
 
     it 'strips white spaces' do
       expect(described_class.new(key: " #{valid_key} ").key).to eq(valid_key)
+    end
+  end
+
+  describe 'notification' do
+    let(:user) { create(:user) }
+
+    it 'sends a notification' do
+      perform_enqueued_jobs do
+        create(:key, user: user)
+      end
+
+      should_email(user)
     end
   end
 end

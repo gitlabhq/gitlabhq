@@ -170,4 +170,14 @@ describe GitlabMarkdownHelper do
       expect(doc.content).to eq "@#{user.username}, can you look at this?..."
     end
   end
+
+  describe '#cross_project_reference' do
+    it 'shows the full MR reference' do
+      expect(helper.cross_project_reference(project, merge_request)).to include(project.path_with_namespace)
+    end
+
+    it 'shows the full issue reference' do
+      expect(helper.cross_project_reference(project, issue)).to include(project.path_with_namespace)
+    end
+  end
 end

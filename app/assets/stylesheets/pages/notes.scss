@@ -43,7 +43,7 @@ ul.notes {
     }
 
     .system-note-message {
-      display: inline-block;
+      display: inline;
 
       &::first-letter {
         text-transform: lowercase;
@@ -55,7 +55,7 @@ ul.notes {
       }
 
       p {
-        display: inline-block;
+        display: inline;
         margin: 0;
 
         &::first-letter {
@@ -166,7 +166,7 @@ ul.notes {
   .note {
     display: block;
     position: relative;
-    border-bottom: 1px solid $table-border-gray;
+    border-bottom: 1px solid $white-normal;
 
     &.note-discussion {
       &.timeline-entry {
@@ -291,14 +291,14 @@ ul.notes {
   font-family: $regular_font;
 
   td {
-    border: 1px solid $table-border-gray;
+    border: 1px solid $white-normal;
     border-left: none;
 
     &.notes_line {
       vertical-align: middle;
       text-align: center;
       padding: 10px 0;
-      background: $background-color;
+      background: $gray-light;
       color: $text-color;
     }
 
@@ -309,7 +309,7 @@ ul.notes {
     }
 
     &.notes_content {
-      background-color: $background-color;
+      background-color: $gray-light;
       border-width: 1px 0;
       padding: 0;
       vertical-align: top;
@@ -345,12 +345,20 @@ ul.notes {
   }
 
   .author_link {
-    color: $gl-gray;
+    color: $gl-text-color;
   }
 }
 
 .discussion-header {
   font-size: 14px;
+}
+
+.note-headline-light {
+  display: inline;
+
+  @media (max-width: $screen-xs-min) {
+    display: block;
+  }
 }
 
 .note-headline-light,
@@ -372,7 +380,7 @@ ul.notes {
 .note-actions {
   float: right;
   margin-left: 10px;
-  color: $notes-action-color;
+  color: $gray-darkest;
 }
 
 .note-actions {
@@ -382,10 +390,6 @@ ul.notes {
 
   .note-action-button {
     margin-left: 10px;
-  }
-
-  @media (min-width: $screen-sm-min) {
-    position: relative;
   }
 }
 
@@ -411,7 +415,7 @@ ul.notes {
   }
 
   .fa {
-    color: $notes-action-color;
+    color: $gray-darkest;
     position: relative;
     font-size: 17px;
   }
@@ -448,13 +452,8 @@ ul.notes {
   color: $notes-role-color;
   font-size: 12px;
   line-height: 20px;
-  border: 1px solid $notes-role-border-color;
+  border: 1px solid $border-color;
   border-radius: $border-radius-base;
-}
-
-.diff-file .note .note-actions {
-  right: 0;
-  top: 0;
 }
 
 
@@ -527,25 +526,22 @@ ul.notes {
 }
 
 .line-resolve-all {
+  vertical-align: middle;
   display: inline-block;
-  padding: 5px 10px;
-  background-color: $background-color;
+  padding: 6px 10px;
+  background-color: $gray-light;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
 
   &.has-next-btn {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
+    border-right: 0;
   }
 
   .line-resolve-btn {
-    vertical-align: middle;
     margin-right: 5px;
   }
-}
-
-.line-resolve-text {
-  vertical-align: middle;
 }
 
 .line-resolve-btn {
@@ -566,18 +562,14 @@ ul.notes {
   &.is-active {
     color: $gl-text-green;
 
-    svg path {
+    svg {
       fill: $gl-text-green;
     }
   }
 
   svg {
     position: relative;
-    color: $notes-action-color;
-
-    path {
-      fill: $notes-action-color;
-    }
+    fill: $gray-darkest;
   }
 }
 
@@ -588,5 +580,19 @@ ul.notes {
     path {
       fill: $gray-darkest;
     }
+  }
+}
+
+// Merge request notes in diffs
+.diff-file {
+  // Diff is side by side
+  .notes_content.parallel .note-header .note-headline-light {
+    display: block;
+    position: relative;
+  }
+  // Diff is inline
+  .notes_content .note-header .note-headline-light {
+    display: inline-block;
+    position: relative;
   }
 }

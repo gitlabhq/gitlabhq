@@ -162,44 +162,6 @@ describe Note, models: true do
     end
   end
 
-  describe '.search' do
-    let(:note) { create(:note_on_issue, note: 'WoW') }
-
-    it 'returns notes with matching content' do
-      expect(described_class.search(note.note)).to eq([note])
-    end
-
-    it 'returns notes with matching content regardless of the casing' do
-      expect(described_class.search('WOW')).to eq([note])
-    end
-
-    context "confidential issues" do
-      let(:user) { create(:user) }
-      let(:project) { create(:project) }
-      let(:confidential_issue) { create(:issue, :confidential, project: project, author: user) }
-      let(:confidential_note) { create(:note, note: "Random", noteable: confidential_issue, project: confidential_issue.project) }
-
-      it "returns notes with matching content if user can see the issue" do
-        expect(described_class.search(confidential_note.note, as_user: user)).to eq([confidential_note])
-      end
-
-      it "does not return notes with matching content if user can not see the issue" do
-        user = create(:user)
-        expect(described_class.search(confidential_note.note, as_user: user)).to be_empty
-      end
-
-      it "does not return notes with matching content for project members with guest role" do
-        user = create(:user)
-        project.team << [user, :guest]
-        expect(described_class.search(confidential_note.note, as_user: user)).to be_empty
-      end
-
-      it "does not return notes with matching content for unauthenticated users" do
-        expect(described_class.search(confidential_note.note)).to be_empty
-      end
-    end
-  end
-
   describe "editable?" do
     it "returns true" do
       note = build(:note)

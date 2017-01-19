@@ -98,7 +98,7 @@
   }
 
   .label {
-    padding: 9px;
+    padding: 8px 9px 9px;
     font-size: 14px;
   }
 }
@@ -117,7 +117,7 @@
 
 .manage-labels-list {
   .btn-action {
-    color: $gl-dark-link-color;
+    color: $gl-text-color;
 
     .fa {
       font-size: 18px;
@@ -201,6 +201,12 @@
   .label-remove {
     border-left: 1px solid $label-remove-border;
     z-index: 3;
+    border-radius: $label-border-radius;
+    padding: 6px 10px 6px 9px;
+
+    &:hover {
+      box-shadow: inset 0 0 0 80px $label-remove-border;
+    }
   }
 
   .btn {

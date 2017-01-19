@@ -52,6 +52,36 @@ describe Projects::IssuesController do
         expect(response).to have_http_status(404)
       end
     end
+
+    context 'with page param' do
+      let(:last_page) { project.issues.page().total_pages }
+      let!(:issue_list) { create_list(:issue, 2, project: project) }
+
+      before do
+        sign_in(user)
+        project.team << [user, :developer]
+        allow(Kaminari.config).to receive(:default_per_page).and_return(1)
+      end
+
+      it 'redirects to last_page if page number is larger than number of pages' do
+        get :index,
+          namespace_id: project.namespace.path.to_param,
+          project_id: project.path.to_param,
+          page: (last_page + 1).to_param
+
+        expect(response).to redirect_to(namespace_project_issues_path(page: last_page, state: controller.params[:state], scope: controller.params[:scope]))
+      end
+
+      it 'redirects to specified page' do
+        get :index,
+          namespace_id: project.namespace.path.to_param,
+          project_id: project.path.to_param,
+          page: last_page.to_param
+
+        expect(assigns(:issues).current_page).to eq(last_page)
+        expect(response).to have_http_status(200)
+      end
+    end
   end
 
   describe 'GET #new' do
@@ -296,6 +326,20 @@ describe Projects::IssuesController do
   end
 
   describe 'POST #create' do
+    def post_new_issue(attrs = {})
+      sign_in(user)
+      project = create(:empty_project, :public)
+      project.team << [user, :developer]
+
+      post :create, {
+        namespace_id: project.namespace.to_param,
+        project_id: project.to_param,
+        issue: { title: 'Title', description: 'Description' }.merge(attrs)
+      }
+
+      project.issues.first
+    end
+
     context 'resolving discussions in MergeRequest' do
       let(:discussion) { Discussion.for_diff_notes([create(:diff_note_on_merge_request)]).first }
       let(:merge_request) { discussion.noteable }
@@ -339,13 +383,7 @@ describe Projects::IssuesController do
       end
 
       def post_spam_issue
-        sign_in(user)
-        spam_project = create(:empty_project, :public)
-        post :create, {
-          namespace_id: spam_project.namespace.to_param,
-          project_id: spam_project.to_param,
-          issue: { title: 'Spam Title', description: 'Spam lives here' }
-        }
+        post_new_issue(title: 'Spam Title', description: 'Spam lives here')
       end
 
       it 'rejects an issue recognized as spam' do
@@ -366,18 +404,26 @@ describe Projects::IssuesController do
         request.env['action_dispatch.remote_ip'] = '127.0.0.1'
       end
 
-      def post_new_issue
-        sign_in(user)
-        project = create(:empty_project, :public)
-        post :create, {
-          namespace_id: project.namespace.to_param,
-          project_id: project.to_param,
-          issue: { title: 'Title', description: 'Description' }
-        }
-      end
-
       it 'creates a user agent detail' do
         expect{ post_new_issue }.to change(UserAgentDetail, :count).by(1)
+      end
+    end
+
+    context 'when description has slash commands' do
+      before do
+        sign_in(user)
+      end
+
+      it 'can add spent time' do
+        issue = post_new_issue(description: '/spend 1h')
+
+        expect(issue.total_time_spent).to eq(3600)
+      end
+
+      it 'can set the time estimate' do
+        issue = post_new_issue(description: '/estimate 2h')
+
+        expect(issue.time_estimate).to eq(7200)
       end
     end
   end

@@ -8,7 +8,7 @@
 %div{ class: container_class }
   %ul.nav-links.log-tabs
     - loggers.each do |klass|
-      %li{ class: (klass == Gitlab::GitLogger ? 'active' : '') }
+      %li{ class: (klass == Gitlab::GitLogger ? 'active' : '') }>
         = link_to klass::file_name, "##{klass::file_name_noext}",
             'data-toggle' => 'tab'
   .row-content-block

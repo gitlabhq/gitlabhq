@@ -29,7 +29,7 @@ describe Gitlab::Gfm::ReferenceRewriter do
       context 'description with ignored elements' do
         let(:text) do
           "Hi. This references #1, but not `#2`\n" +
-          '<pre>and not !1</pre>'
+            '<pre>and not !1</pre>'
         end
 
         it { is_expected.to include issue_first.to_reference(new_project) }

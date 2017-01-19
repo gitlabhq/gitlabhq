@@ -1,23 +1,36 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Status::Pipeline::Common do
-  let(:pipeline) { create(:ci_pipeline) }
+  let(:user) { create(:user) }
+  let(:project) { create(:empty_project, :private) }
+  let(:pipeline) { create(:ci_pipeline, project: project) }
 
   subject do
-    Class.new(Gitlab::Ci::Status::Core)
-      .new(pipeline).extend(described_class)
+    Gitlab::Ci::Status::Core
+      .new(pipeline, user)
+      .extend(described_class)
   end
 
-  it 'does not have action' do
-    expect(subject).not_to have_action
+  describe '#has_action?' do
+    it { is_expected.not_to have_action }
   end
 
-  it 'has details' do
-    expect(subject).to have_details
+  describe '#has_details?' do
+    context 'when user has access to read pipeline' do
+      before { project.team << [user, :developer] }
+
+      it { is_expected.to have_details }
+    end
+
+    context 'when user does not have access to read pipeline' do
+      it { is_expected.not_to have_details }
+    end
   end
 
-  it 'links to the pipeline details page' do
-    expect(subject.details_path)
-      .to include "pipelines/#{pipeline.id}"
+  describe '#details_path' do
+    it 'links to the pipeline details page' do
+      expect(subject.details_path)
+        .to include "pipelines/#{pipeline.id}"
+    end
   end
 end

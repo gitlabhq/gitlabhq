@@ -3,10 +3,8 @@ module Gitlab
     module Status
       module Stage
         class Factory < Status::Factory
-          private
-
-          def core_status
-            super.extend(Status::Stage::Common)
+          def self.common_helpers
+            Status::Stage::Common
           end
         end
       end

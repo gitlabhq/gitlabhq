@@ -3,7 +3,7 @@
 
 %div
   - if @user.errors.any?
-    %div.alert.alert-danger
+    .alert.alert-danger
       %ul
         - @user.errors.full_messages.each do |msg|
           %li= msg

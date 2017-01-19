@@ -7,10 +7,33 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   def index
     @scope = params[:scope]
-    @pipelines = PipelinesFinder.new(project).execute(scope: @scope).page(params[:page]).per(30)
+    @pipelines = PipelinesFinder
+      .new(project)
+      .execute(scope: @scope)
+      .page(params[:page])
+      .per(30)
 
-    @running_or_pending_count = PipelinesFinder.new(project).execute(scope: 'running').count
-    @pipelines_count = PipelinesFinder.new(project).execute.count
+    @running_or_pending_count = PipelinesFinder
+      .new(project).execute(scope: 'running').count
+
+    @pipelines_count = PipelinesFinder
+      .new(project).execute.count
+
+    respond_to do |format|
+      format.html
+      format.json do
+        render json: {
+          pipelines: PipelineSerializer
+            .new(project: @project, user: @current_user)
+            .with_pagination(request, response)
+            .represent(@pipelines),
+          count: {
+            all: @pipelines_count,
+            running_or_pending: @running_or_pending_count
+          }
+        }
+      end
+    end
   end
 
   def new
@@ -37,6 +60,15 @@ class Projects::PipelinesController < Projects::ApplicationController
       format.html do
         render 'show'
       end
+    end
+  end
+
+  def stage
+    @stage = pipeline.stage(params[:stage])
+    return not_found unless @stage
+
+    respond_to do |format|
+      format.json { render json: { html: view_to_html_string('projects/pipelines/_stage') } }
     end
   end
 

@@ -91,8 +91,8 @@ class Commit
     @link_reference_pattern ||= super("commit", /(?<commit>\h{7,40})/)
   end
 
-  def to_reference(from_project = nil)
-    commit_reference(from_project, id)
+  def to_reference(from_project = nil, full: false)
+    commit_reference(from_project, id, full: full)
   end
 
   def reference_link_text(from_project = nil)
@@ -228,13 +228,9 @@ class Commit
   def status(ref = nil)
     @statuses ||= {}
 
-    if @statuses.key?(ref)
-      @statuses[ref]
-    elsif ref
-      @statuses[ref] = pipelines.where(ref: ref).status
-    else
-      @statuses[ref] = pipelines.status
-    end
+    return @statuses[ref] if @statuses.key?(ref)
+
+    @statuses[ref] = pipelines.latest_status(ref)
   end
 
   def revert_branch_name
@@ -270,7 +266,7 @@ class Commit
     @merged_merge_request_hash ||= Hash.new do |hash, user|
       hash[user] = merged_merge_request_no_cache(user)
     end
-    
+
     @merged_merge_request_hash[current_user]
   end
 
@@ -322,10 +318,18 @@ class Commit
     Gitlab::Diff::FileCollection::Commit.new(self, diff_options: diff_options)
   end
 
+  def persisted?
+    true
+  end
+
+  def touch
+    # no-op but needs to be defined since #persisted? is defined
+  end
+
   private
 
-  def commit_reference(from_project, referable_commit_id)
-    reference = project.to_reference(from_project)
+  def commit_reference(from_project, referable_commit_id, full: false)
+    reference = project.to_reference(from_project, full: full)
 
     if reference.present?
       "#{reference}#{self.class.reference_prefix}#{referable_commit_id}"
