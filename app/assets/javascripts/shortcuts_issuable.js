@@ -44,6 +44,9 @@
       documentFragment = window.gl.utils.getSelectedFragment();
       if (!documentFragment) return;
 
+      // If the documentFragment contains more than just Markdown, don't copy as GFM.
+      if (documentFragment.querySelector('.md, .wiki')) return;
+
       selected = window.gl.CopyAsGFM.nodeToGFM(documentFragment);
 
       replyField = $('.js-main-target-form #note_note');

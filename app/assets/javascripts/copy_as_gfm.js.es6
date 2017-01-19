@@ -260,6 +260,9 @@
       const documentFragment = window.gl.utils.getSelectedFragment();
       if (!documentFragment) return;
 
+      // If the documentFragment contains more than just Markdown, don't copy as GFM.
+      if (documentFragment.querySelector('.md, .wiki')) return;
+
       e.preventDefault();
       clipboardData.setData('text/plain', documentFragment.textContent);
 
