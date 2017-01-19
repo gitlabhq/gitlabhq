@@ -236,8 +236,6 @@ describe 'Copy as GFM', feature: true, js: true do
   it 'supports SanitizationFilter' do
     verify(
       <<-GFM.strip_heredoc
-      BR: <br>
-
       <sub>sub</sub>
 
       <dl>
@@ -284,6 +282,8 @@ describe 'Copy as GFM', feature: true, js: true do
 
   it 'supports MarkdownFilter' do
     verify(
+      "Line with two spaces at the end  \nto insert a linebreak",
+
       '`code`',
       '`` code with ` ticks ``',
 
@@ -308,7 +308,7 @@ describe 'Copy as GFM', feature: true, js: true do
       # multiline list item
       <<-GFM.strip_heredoc,
         - Multiline
-          List item
+            List item
       GFM
 
       # nested lists
@@ -316,7 +316,14 @@ describe 'Copy as GFM', feature: true, js: true do
         - Nested
 
 
-          - Lists
+            - Lists
+      GFM
+
+      # list with blockquote
+      <<-GFM.strip_heredoc,
+        - List
+
+            > Blockquote
       GFM
 
       '1. Numbered list item',
@@ -324,7 +331,7 @@ describe 'Copy as GFM', feature: true, js: true do
       # multiline numbered list item
       <<-GFM.strip_heredoc,
         1. Multiline
-          Numbered list item
+            Numbered list item
       GFM
 
       # nested numbered list
@@ -332,7 +339,7 @@ describe 'Copy as GFM', feature: true, js: true do
         1. Nested
 
 
-          1. Numbered lists
+            1. Numbered lists
       GFM
 
       '# Heading',
@@ -355,9 +362,17 @@ describe 'Copy as GFM', feature: true, js: true do
       # table
       <<-GFM.strip_heredoc,
         | Centered | Right | Left |
-        | :------: | ----: | ---- |
+        |:--------:|------:|------|
         | Foo | Bar | **Baz** |
         | Foo | Bar | **Baz** |
+      GFM
+
+      # table with empty heading
+      <<-GFM.strip_heredoc,
+        |  | x | y |
+        |---|---|---|
+        | a | 1 | 0 |
+        | b | 0 | 1 |
       GFM
     )
   end

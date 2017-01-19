@@ -92,9 +92,6 @@
       },
     },
     SanitizationFilter: {
-      'br'(el, text) {
-        return '<br>';
-      },
       'dl'(el, text) {
         let lines = text.trim().split('\n');
         // Add two spaces to the front of subsequent list items lines,
@@ -127,6 +124,10 @@
       },
     },
     MarkdownFilter: {
+      'br'(el, text) {
+        // Two spaces at the end of a line are turned into a BR
+        return '  ';
+      },
       'code'(el, text) {
         let backtickCount = 1;
         const backtickMatch = text.match(/`+/);
@@ -155,12 +156,12 @@
       'li'(el, text) {
         const lines = text.trim().split('\n');
         const firstLine = `- ${lines.shift()}`;
-        // Add two spaces to the front of subsequent list items lines,
+        // Add four spaces to the front of subsequent list items lines,
         // or leave the line entirely blank.
         const nextLines = lines.map((s) => {
           if (s.trim().length === 0) return '';
 
-          return `  ${s}`;
+          return `    ${s}`;
         });
 
         return `${firstLine}\n${nextLines.join('\n')}`;
@@ -213,7 +214,7 @@
       },
       'thead'(el, text) {
         const cells = _.map(el.querySelectorAll('th'), (cell) => {
-          let chars = CopyAsGFM.nodeToGFM(cell).trim().length;
+          let chars = CopyAsGFM.nodeToGFM(cell).trim().length + 2;
 
           let before = '';
           let after = '';
@@ -231,14 +232,14 @@
               break;
           }
 
-          chars = Math.max(chars, 0);
+          chars = Math.max(chars, 3);
 
           const middle = Array(chars + 1).join('-');
 
           return before + middle + after;
         });
 
-        return `${text}| ${cells.join(' | ')} |`;
+        return `${text}|${cells.join('|')}|`;
       },
       'tr'(el, text) {
         const cells = _.map(el.querySelectorAll('td, th'), cell => CopyAsGFM.nodeToGFM(cell).trim());
