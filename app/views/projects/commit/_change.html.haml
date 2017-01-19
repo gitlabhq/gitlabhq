@@ -13,7 +13,7 @@
         %a.close{ href: "#", "data-dismiss" => "modal" } ×
         %h3.page-title== #{label} this #{commit.change_type_title(current_user)}
       .modal-body
-        = form_tag [type.underscore, @project.namespace, @project, commit], method: :post, remote: false, class: "form-horizontal js-#{type}-form js-requires-input" do
+        = form_tag [type.underscore, @project.namespace.becomes(Namespace), @project, commit], method: :post, remote: false, class: "form-horizontal js-#{type}-form js-requires-input" do
           .form-group.branch
             = label_tag 'target_branch', target_label, class: 'control-label'
             .col-sm-10

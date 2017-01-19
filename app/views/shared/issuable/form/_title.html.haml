@@ -1,4 +1,5 @@
 - issuable = local_assigns.fetch(:issuable)
+- has_wip_commits = local_assigns.fetch(:has_wip_commits)
 - form = local_assigns.fetch(:form)
 - no_issuable_templates = issuable_templates(issuable).empty?
 - div_class = no_issuable_templates ? 'col-sm-10' : 'col-sm-7 col-lg-8'
@@ -18,6 +19,9 @@
         %strong Work In Progress
         merge request to be merged when it's ready.
       .js-no-wip-explanation
+        - if has_wip_commits
+          It looks like you have some WIP commits in this branch.
+          %br
         %a.js-toggle-wip{ href: '', tabindex: -1 }
           Start the title with
           %code WIP:

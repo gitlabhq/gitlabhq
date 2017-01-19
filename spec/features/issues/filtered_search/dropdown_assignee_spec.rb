@@ -66,6 +66,12 @@ describe 'Dropdown assignee', js: true, feature: true do
 
       expect(dropdown_assignee_size).to eq(3)
     end
+
+    it 'shows current user at top of dropdown' do
+      send_keys_to_filtered_search('assignee:')
+
+      expect(first('#js-dropdown-assignee .filter-dropdown li')).to have_content(user.name)
+    end
   end
 
   describe 'filtering' do

@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, one-var, no-var, one-var-declaration-per-line, prefer-arrow-callback, camelcase, consistent-return, quotes, object-shorthand, comma-dangle, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, one-var, no-var, one-var-declaration-per-line, prefer-arrow-callback, camelcase, consistent-return, quotes, object-shorthand, comma-dangle, max-len */
 
 // Quick Submit behavior
 //
@@ -74,5 +74,4 @@
       return $this.tooltip('hide');
     });
   });
-
 }).call(this);

@@ -1,4 +1,4 @@
-/* eslint-disable space-before-function-paren, no-return-assign, no-var, quotes, padded-blocks */
+/* eslint-disable space-before-function-paren, no-return-assign, no-var, quotes */
 /* global ShortcutsIssuable */
 
 /*= require shortcuts_issuable */
@@ -75,5 +75,4 @@
       });
     });
   });
-
 }).call(this);

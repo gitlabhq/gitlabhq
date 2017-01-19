@@ -1,4 +1,4 @@
-/* eslint-disable space-before-function-paren, no-var, padded-blocks */
+/* eslint-disable space-before-function-paren, no-var */
 
 /*= require behaviors/requires_input */
 
@@ -41,5 +41,4 @@
       return expect(spy).toHaveBeenCalled();
     });
   });
-
 }).call(this);

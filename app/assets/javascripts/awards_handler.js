@@ -1,9 +1,9 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, max-len, no-var, spaced-comment, prefer-arrow-callback, consistent-return, one-var, one-var-declaration-per-line, no-unused-vars, no-else-return, prefer-template, quotes, comma-dangle, no-param-reassign, no-void, radix, keyword-spacing, space-before-blocks, brace-style, no-underscore-dangle, no-plusplus, no-return-assign, camelcase, padded-blocks */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, max-len, no-var, prefer-arrow-callback, consistent-return, one-var, one-var-declaration-per-line, no-unused-vars, no-else-return, prefer-template, quotes, comma-dangle, no-param-reassign, no-void, brace-style, no-underscore-dangle, no-return-assign, camelcase */
 /* global Cookies */
 
 (function() {
   this.AwardsHandler = (function() {
-    var FROM_SENTENCE_REGEX = /(?:, and | and |, )/; //For separating lists produced by ruby's Array#toSentence
+    var FROM_SENTENCE_REGEX = /(?:, and | and |, )/; // For separating lists produced by ruby's Array#toSentence
     function AwardsHandler() {
       this.aliases = gl.emojiAliases();
       $(document).off('click', '.js-add-award').on('click', '.js-add-award', (function(_this) {
@@ -134,7 +134,7 @@
           return this.decrementCounter($emojiButton, emoji);
         } else {
           counter = $emojiButton.find('.js-counter');
-          counter.text(parseInt(counter.text()) + 1);
+          counter.text(parseInt(counter.text(), 10) + 1);
           $emojiButton.addClass('active');
           this.addYouToUserList(votesBlock, emoji);
           return this.animateEmoji($emojiButton);
@@ -211,10 +211,10 @@
     };
 
     AwardsHandler.prototype.toSentence = function(list) {
-      if(list.length <= 2){
+      if (list.length <= 2) {
         return list.join(' and ');
       }
-      else{
+      else {
         return list.slice(0, -1).join(', ') + ', and ' + list[list.length - 1];
       }
     };
@@ -339,7 +339,7 @@
       if (Cookies.get('frequently_used_emojis')) {
         frequentlyUsedEmojis = this.getFrequentlyUsedEmojis();
         ul = $("<ul class='clearfix emoji-menu-list frequent-emojis'>");
-        for (i = 0, len = frequentlyUsedEmojis.length; i < len; i++) {
+        for (i = 0, len = frequentlyUsedEmojis.length; i < len; i += 1) {
           emoji = frequentlyUsedEmojis[i];
           $(".emoji-menu-content [data-emoji='" + emoji + "']").closest('li').clone().appendTo(ul);
         }
@@ -374,7 +374,5 @@
     };
 
     return AwardsHandler;
-
   })();
-
 }).call(this);
