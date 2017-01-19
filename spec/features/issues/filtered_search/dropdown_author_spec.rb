@@ -66,6 +66,12 @@ describe 'Dropdown author', js: true, feature: true do
 
       expect(dropdown_author_size).to eq(3)
     end
+
+    it 'shows current user at top of dropdown' do
+      send_keys_to_filtered_search('author:')
+
+      expect(first('#js-dropdown-author li')).to have_content(user.name)
+    end
   end
 
   describe 'filtering' do
