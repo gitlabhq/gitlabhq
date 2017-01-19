@@ -252,10 +252,9 @@ end
 
 group :development do
   gem 'foreman', '~> 0.78.0'
-  gem 'brakeman', '~> 3.3.0', require: false
+  gem 'brakeman', '~> 3.4.0', require: false
 
   gem 'letter_opener_web', '~> 1.3.0'
-  gem 'rerun', '~> 0.11.0'
   gem 'bullet', '~> 5.2.0', require: false
   gem 'rblineprof', '~> 0.3.6', platform: :mri, require: false
   gem 'web-console', '~> 2.0'
@@ -286,7 +285,7 @@ group :development, :test do
   gem 'minitest', '~> 5.7.0'
 
   # Generate Fake data
-  gem 'ffaker', '~> 2.0.0'
+  gem 'ffaker', '~> 2.4'
 
   gem 'capybara',            '~> 2.6.2'
   gem 'capybara-screenshot', '~> 1.0.0'

@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, consistent-return, no-var, no-undef, no-else-return, prefer-arrow-callback, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, consistent-return, no-var, no-undef, no-else-return, prefer-arrow-callback, max-len */
 // Render Gitlab flavoured Markdown
 //
 // Delegates to syntax highlight and render math
@@ -12,5 +12,4 @@
   $(document).on('ready page:load', function() {
     return $('body').renderGFM();
   });
-
 }).call(this);

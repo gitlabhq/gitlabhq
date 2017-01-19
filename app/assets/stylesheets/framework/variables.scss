@@ -5,7 +5,7 @@ $sidebar_collapsed_width: 62px;
 $sidebar_width: 220px;
 $gutter_collapsed_width: 62px;
 $gutter_width: 290px;
-$gutter_inner_width: 258px;
+$gutter_inner_width: 250px;
 $sidebar-transition-duration: .15s;
 $sidebar-breakpoint: 1024px;
 
@@ -56,6 +56,7 @@ $black-transparent: rgba(0, 0, 0, 0.3);
 $border-white-light: darken($white-light, $darken-border-factor);
 $border-white-normal: darken($white-normal, $darken-border-factor);
 
+$border-gray-light: darken($gray-light, $darken-border-factor);
 $border-gray-normal: darken($gray-normal, $darken-border-factor);
 $border-gray-dark: darken($white-normal, $darken-border-factor);
 
@@ -85,6 +86,7 @@ $warning-message-border: #f0e2bb;
  */
 $border-color: #e5e5e5;
 $focus-border-color: #3aabf0;
+$sidebar-collapsed-icon-color: #999;
 $well-expand-item: #e8f2f7;
 $well-inner-border: #eef0f2;
 $well-light-border: #f1f1f1;
@@ -280,6 +282,7 @@ $dropdown-hover-color: #3b86ff;
 */
 $btn-active-gray: #ececec;
 $btn-active-gray-light: e4e7ed;
+$btn-white-active: #848484;
 
 /*
 * Badges
@@ -433,6 +436,7 @@ $help-shortcut-header-color: #333;
 */
 $issues-today-bg: #f3fff2;
 $issues-today-border: #e1e8d5;
+$compare-display-color: #888;
 
 /*
 * jQuery UI

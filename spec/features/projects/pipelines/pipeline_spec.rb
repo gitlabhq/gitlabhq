@@ -11,17 +11,41 @@ describe 'Pipeline', :feature, :js do
     project.team << [user, :developer]
   end
 
+  shared_context 'pipeline builds' do
+    let!(:build_passed) do
+      create(:ci_build, :success,
+             pipeline: pipeline, stage: 'build', name: 'build')
+    end
+
+    let!(:build_failed) do
+      create(:ci_build, :failed,
+             pipeline: pipeline, stage: 'test', name: 'test', commands: 'test')
+    end
+
+    let!(:build_running) do
+      create(:ci_build, :running,
+             pipeline: pipeline, stage: 'deploy', name: 'deploy')
+    end
+
+    let!(:build_manual) do
+      create(:ci_build, :manual,
+             pipeline: pipeline, stage: 'deploy', name: 'manual-build')
+    end
+
+    let!(:build_external) do
+      create(:generic_commit_status, status: 'success',
+                                     pipeline: pipeline,
+                                     name: 'jenkins',
+                                     stage: 'external',
+                                     target_url: 'http://gitlab.com/status')
+    end
+  end
+
   describe 'GET /:project/pipelines/:id' do
+    include_context 'pipeline builds'
+
     let(:project) { create(:project) }
     let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id) }
-
-    before do
-      @success = create(:ci_build, :success, pipeline: pipeline, stage: 'build', name: 'build')
-      @failed = create(:ci_build, :failed, pipeline: pipeline, stage: 'test', name: 'test', commands: 'test')
-      @running = create(:ci_build, :running, pipeline: pipeline, stage: 'deploy', name: 'deploy')
-      @manual = create(:ci_build, :manual, pipeline: pipeline, stage: 'deploy', name: 'manual-build')
-      @external = create(:generic_commit_status, status: 'success', pipeline: pipeline, name: 'jenkins', stage: 'external')
-    end
 
     before { visit namespace_project_pipeline_path(project.namespace, project, pipeline) }
 
@@ -116,6 +140,7 @@ describe 'Pipeline', :feature, :js do
         it 'shows the success icon and the generic comit status build' do
           expect(page).to have_selector('.ci-status-icon-success')
           expect(page).to have_content('jenkins')
+          expect(page).to have_link('jenkins', href: 'http://gitlab.com/status')
         end
       end
     end
@@ -157,26 +182,22 @@ describe 'Pipeline', :feature, :js do
   end
 
   describe 'GET /:project/pipelines/:id/builds' do
+    include_context 'pipeline builds'
+
     let(:project) { create(:project) }
     let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id) }
 
     before do
-      @success = create(:ci_build, :success, pipeline: pipeline, stage: 'build', name: 'build')
-      @failed = create(:ci_build, :failed, pipeline: pipeline, stage: 'test', name: 'test', commands: 'test')
-      @running = create(:ci_build, :running, pipeline: pipeline, stage: 'deploy', name: 'deploy')
-      @manual = create(:ci_build, :manual, pipeline: pipeline, stage: 'deploy', name: 'manual-build')
-      @external = create(:generic_commit_status, status: 'success', pipeline: pipeline, name: 'jenkins', stage: 'external')
+      visit builds_namespace_project_pipeline_path(project.namespace, project, pipeline)
     end
-
-    before { visit builds_namespace_project_pipeline_path(project.namespace, project, pipeline)}
 
     it 'shows a list of builds' do
       expect(page).to have_content('Test')
-      expect(page).to have_content(@success.id)
+      expect(page).to have_content(build_passed.id)
       expect(page).to have_content('Deploy')
-      expect(page).to have_content(@failed.id)
-      expect(page).to have_content(@running.id)
-      expect(page).to have_content(@external.id)
+      expect(page).to have_content(build_failed.id)
+      expect(page).to have_content(build_running.id)
+      expect(page).to have_content(build_external.id)
       expect(page).to have_content('Retry failed')
       expect(page).to have_content('Cancel running')
       expect(page).to have_link('Play')
@@ -230,7 +251,7 @@ describe 'Pipeline', :feature, :js do
         end
       end
 
-      it { expect(@manual.reload).to be_pending }
+      it { expect(build_manual.reload).to be_pending }
     end
   end
 end

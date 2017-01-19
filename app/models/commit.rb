@@ -318,6 +318,20 @@ class Commit
     Gitlab::Diff::FileCollection::Commit.new(self, diff_options: diff_options)
   end
 
+  def persisted?
+    true
+  end
+
+  def touch
+    # no-op but needs to be defined since #persisted? is defined
+  end
+
+  WIP_REGEX = /\A\s*(((?i)(\[WIP\]|WIP:|WIP)\s|WIP$))|(fixup!|squash!)\s/.freeze
+
+  def work_in_progress?
+    !!(title =~ WIP_REGEX)
+  end
+
   private
 
   def commit_reference(from_project, referable_commit_id, full: false)

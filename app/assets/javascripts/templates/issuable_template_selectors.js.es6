@@ -1,4 +1,4 @@
-/* eslint-disable no-new, comma-dangle, class-methods-use-this, prefer-const, no-param-reassign */
+/* eslint-disable no-new, comma-dangle, class-methods-use-this, no-param-reassign */
 
 ((global) => {
   class IssuableTemplateSelectors {
@@ -19,7 +19,7 @@
     }
 
     initEditor() {
-      let editor = $('.markdown-area');
+      const editor = $('.markdown-area');
       // Proxy ace-editor's .setValue to jQuery's .val
       editor.setValue = editor.val;
       editor.getValue = editor.val;

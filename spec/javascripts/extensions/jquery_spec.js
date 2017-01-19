@@ -1,4 +1,4 @@
-/* eslint-disable space-before-function-paren, no-var, padded-blocks */
+/* eslint-disable space-before-function-paren, no-var */
 
 /*= require extensions/jquery */
 
@@ -39,5 +39,4 @@
       });
     });
   });
-
 }).call(this);

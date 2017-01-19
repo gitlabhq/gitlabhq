@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, prefer-arrow-callback, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, prefer-arrow-callback, max-len */
 /* global Turbolinks */
 
 (function() {
@@ -10,7 +10,5 @@
     }
 
     return ProjectImport;
-
   })();
-
 }).call(this);

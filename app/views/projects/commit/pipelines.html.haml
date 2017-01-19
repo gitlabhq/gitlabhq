@@ -3,4 +3,4 @@
 = render "commit_box"
 
 = render "ci_menu"
-= render "pipelines_list", pipelines: @ci_pipelines
+= render "pipelines_list", pipelines: @commit.pipelines.order(id: :desc)

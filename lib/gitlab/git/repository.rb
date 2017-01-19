@@ -1,6 +1,4 @@
 # Gitlab::Git::Repository is a wrapper around native Rugged::Repository object
-require_relative 'encoding_helper'
-require_relative 'path_helper'
 require 'forwardable'
 require 'tempfile'
 require 'forwardable'

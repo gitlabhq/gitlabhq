@@ -3,7 +3,7 @@
 
   .todo-item.todo-block
     .todo-title.title
-      - unless todo.build_failed?
+      - unless todo.build_failed? || todo.unmergeable?
         = todo_target_state_pill(todo)
 
         %span.author-name

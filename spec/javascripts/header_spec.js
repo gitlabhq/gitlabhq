@@ -1,10 +1,9 @@
-/* eslint-disable space-before-function-paren, padded-blocks, no-var */
+/* eslint-disable space-before-function-paren, no-var */
 /*= require header */
 /*= require lib/utils/text_utility */
 /*= require jquery */
 
 (function() {
-
   describe('Header', function() {
     var todosPendingCount = '.todos-pending-count';
     var fixtureTemplate = 'static/header.html.raw';
@@ -51,5 +50,4 @@
       });
     });
   });
-
 }).call(this);

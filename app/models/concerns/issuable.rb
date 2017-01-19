@@ -13,6 +13,7 @@ module Issuable
   include StripAttribute
   include Awardable
   include Taskable
+  include TimeTrackable
 
   included do
     cache_markdown_field :title, pipeline: :single_line

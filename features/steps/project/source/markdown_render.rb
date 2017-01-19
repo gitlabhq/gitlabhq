@@ -8,7 +8,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
 
   step 'I own project "Delta"' do
     @project = Project.find_by(name: "Delta")
-    @project ||= create(:project, name: "Delta", namespace: @user.namespace)
+    @project ||= create(:project, :repository, name: "Delta", namespace: @user.namespace)
     @project.team << [@user, :master]
   end
 

@@ -1,4 +1,4 @@
-/* eslint-disable max-len, arrow-parens, comma-dangle, no-plusplus */
+/* eslint-disable max-len, arrow-parens, comma-dangle */
 
 //= vue
 //= vue-resource
@@ -53,7 +53,7 @@
         this.MockResource.subscribe(callbacks.two);
         this.MockResource.subscribe(callbacks.three);
 
-        state.myprop++;
+        state.myprop += 1;
 
         this.MockResource.publish(state);
 
