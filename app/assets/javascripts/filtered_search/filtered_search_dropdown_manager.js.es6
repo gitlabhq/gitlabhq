@@ -62,29 +62,23 @@
 
     static addWordToInput(tokenName, tokenValue = '') {
       const input = document.querySelector('.filtered-search');
+      const inputValue = input.value;
       const word = `${tokenName}:${tokenValue}`;
 
-      const inputValue = gl.DropdownUtils.getSearchInput(input).trim();
-      const { lastToken, searchToken } = gl.FilteredSearchTokenizer.processTokens(inputValue);
-      const lastSearchToken = searchToken.split(' ').last();
-      const lastInputCharacter = input.value[input.value.length - 1];
-      const lastInputTrimmedCharacter = input.value.trim()[input.value.trim().length - 1];
+      // Get the string to replace
+      const selectionStart = input.selectionStart;
+      const { left } = gl.DropdownUtils.getInputSelectionPosition(input);
+      let { right } = gl.DropdownUtils.getInputSelectionPosition(input);
 
-      // Remove the typed tokenName
-      if (word.indexOf(lastSearchToken) === 0 && searchToken !== '') {
-        // Remove spaces after the colon
-        if (lastInputCharacter === ' ' && lastInputTrimmedCharacter === ':') {
-          input.value = input.value.trim();
-        }
-
-        input.value = input.value.slice(0, -1 * lastSearchToken.length);
-      } else if (lastInputCharacter !== ' ' || (lastToken && lastToken.value[lastToken.value.length - 1] === ' ')) {
-        // Remove the existing tokenValue
-        const lastTokenString = `${lastToken.key}:${lastToken.symbol}${lastToken.value}`;
-        input.value = input.value.slice(0, -1 * lastTokenString.length);
+      if (right < 0) {
+        right = inputValue.length;
       }
 
-      input.value += word;
+      if (left !== -1) {
+        input.value = `${inputValue.substr(0, left)}${word}${inputValue.substr(right + selectionStart)}`;
+      } else {
+        input.value += word;
+      }
     }
 
     updateCurrentDropdownOffset() {
@@ -98,7 +92,8 @@
 
       const filterIconPadding = 27;
       const offset = gl.text
-        .getTextWidth(gl.DropdownUtils.getSearchInput(this.filteredSearchInput).trim(), this.font) + filterIconPadding;
+        .getTextWidth(gl.DropdownUtils.getSearchInput(this.filteredSearchInput).trim(), this.font)
+        + filterIconPadding;
 
       this.mapping[key].reference.setOffset(offset);
     }

@@ -76,13 +76,25 @@
     static getSearchInput(filteredSearchInput) {
       const selectionStart = filteredSearchInput.selectionStart;
       const inputValue = filteredSearchInput.value;
-      const rightPos = inputValue.slice(selectionStart).search(/\s/);
+      const { right } = gl.DropdownUtils.getInputSelectionPosition(filteredSearchInput);
 
-      if (rightPos < 0) {
+      if (right < 0) {
         return inputValue;
       }
 
-      return inputValue.slice(0, rightPos + selectionStart + 1).trim();
+      return inputValue.slice(0, right + selectionStart + 1).trim();
+    }
+
+    static getInputSelectionPosition(input) {
+      const inputValue = input.value;
+      const selectionStart = input.selectionStart;
+      const left = inputValue.slice(0, selectionStart + 1).search(/\S+$/);
+      const right = inputValue.slice(selectionStart).search(/\s/);
+
+      return {
+        left,
+        right,
+      };
     }
   }
 
