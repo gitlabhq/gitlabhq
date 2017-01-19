@@ -8,8 +8,7 @@
       = title
     - if show_counter
       .right
-        = issuables.size
-      .pull-right= number_with_delimiter(issuables.size)
+        = number_with_delimiter(issuables.size)
 
   - class_prefix = dom_class(issuables).pluralize
   %ul{ class: "well-list #{class_prefix}-sortable-list", id: "#{class_prefix}-list-#{id}", "data-state" => id }
