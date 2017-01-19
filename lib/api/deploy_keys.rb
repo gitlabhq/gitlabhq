@@ -100,15 +100,19 @@ module API
           present key.deploy_key, with: Entities::SSHKey
         end
 
-        desc 'Delete existing deploy key of currently authenticated user' do
+        desc 'Delete deploy key for a project' do
           success Key
         end
         params do
           requires :key_id, type: Integer, desc: 'The ID of the deploy key'
         end
         delete ":id/#{path}/:key_id" do
-          key = user_project.deploy_keys.find(params[:key_id])
-          key.destroy
+          key = user_project.deploy_keys_projects.find_by(deploy_key_id: params[:key_id])
+          if key
+            key.destroy
+          else
+            not_found!('Deploy Key')
+          end
         end
       end
     end
