@@ -161,8 +161,6 @@
     };
 
     w.gl.utils.getSelectedFragment = () => {
-      if (!window.getSelection) return null;
-
       const selection = window.getSelection();
       if (!selection.rangeCount || selection.rangeCount === 0) return null;
 

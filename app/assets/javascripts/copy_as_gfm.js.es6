@@ -249,8 +249,8 @@
 
   class CopyAsGFM {
     constructor() {
-      $(document).on('copy', '.md, .wiki', this.handleCopy.bind(this));
-      $(document).on('paste', '.js-gfm-input', this.handlePaste.bind(this));
+      $(document).on('copy', '.md, .wiki', this.handleCopy);
+      $(document).on('paste', '.js-gfm-input', this.handlePaste);
     }
 
     handleCopy(e) {
