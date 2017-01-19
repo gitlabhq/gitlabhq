@@ -1,6 +1,7 @@
-/* eslint-disable no-param-reassign */
+/* eslint-disable no-param-reassign, no-new */
 /* global Vue */
 /* global EnvironmentsService */
+/* global Flash */
 
 //= require vue
 //= require vue-resource
@@ -9,41 +10,6 @@
 
 (() => {
   window.gl = window.gl || {};
-
-  /**
-   * Given the visibility prop provided by the url query parameter and which
-   * changes according to the active tab we need to filter which environments
-   * should be visible.
-   *
-   * The environments array is a recursive tree structure and we need to filter
-   * both root level environments and children environments.
-   *
-   * In order to acomplish that, both `filterState` and `filterEnvironmentsByState`
-   * functions work together.
-   * The first one works as the filter that verifies if the given environment matches
-   * the given state.
-   * The second guarantees both root level and children elements are filtered as well.
-   */
-
-  const filterState = state => environment => environment.state === state && environment;
-  /**
-   * Given the filter function and the array of environments will return only
-   * the environments that match the state provided to the filter function.
-   *
-   * @param {Function} fn
-   * @param {Array} array
-   * @return {Array}
-   */
-  const filterEnvironmentsByState = (fn, arr) => arr.map((item) => {
-    if (item.children) {
-      const filteredChildren = filterEnvironmentsByState(fn, item.children).filter(Boolean);
-      if (filteredChildren.length) {
-        item.children = filteredChildren;
-        return item;
-      }
-    }
-    return fn(item);
-  }).filter(Boolean);
 
   gl.environmentsList.EnvironmentsComponent = Vue.component('environment-component', {
     props: {
@@ -81,10 +47,6 @@
     },
 
     computed: {
-      filteredEnvironments() {
-        return filterEnvironmentsByState(filterState(this.visibility), this.state.environments);
-      },
-
       scope() {
         return this.$options.getQueryParameter('scope');
       },
@@ -111,7 +73,7 @@
 
       const scope = this.$options.getQueryParameter('scope');
       if (scope) {
-        this.visibility = scope;
+        this.store.storeVisibility(scope);
       }
 
       this.isLoading = true;
@@ -121,6 +83,10 @@
         .then((json) => {
           this.store.storeEnvironments(json);
           this.isLoading = false;
+        })
+        .catch(() => {
+          this.isLoading = false;
+          new Flash('An error occurred while fetching the environments.', 'alert');
         });
     },
 
@@ -188,7 +154,7 @@
 
           <div class="blank-state blank-state-no-icon"
             v-if="!isLoading && state.environments.length === 0">
-            <h2 class="blank-state-title">
+            <h2 class="blank-state-title js-blank-state-title">
               You don't have any environments right now.
             </h2>
             <p class="blank-state-text">
@@ -202,13 +168,13 @@
             <a
               v-if="canCreateEnvironmentParsed"
               :href="newEnvironmentPath"
-              class="btn btn-create">
+              class="btn btn-create js-new-environment-button">
               New Environment
             </a>
           </div>
 
           <div class="table-holder"
-            v-if="!isLoading && state.environments.length > 0">
+            v-if="!isLoading && state.filteredEnvironments.length > 0">
             <table class="table ci-table environments">
               <thead>
                 <tr>
@@ -221,7 +187,7 @@
                 </tr>
               </thead>
               <tbody>
-                <template v-for="model in filteredEnvironments"
+                <template v-for="model in state.filteredEnvironments"
                   v-bind:model="model">
 
                   <tr
