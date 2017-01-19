@@ -1,5 +1,6 @@
 'use strict';
 
+var fs = require('fs');
 var path = require('path');
 var webpack = require('webpack');
 var StatsPlugin = require('stats-webpack-plugin');
@@ -10,7 +11,13 @@ var IS_DEV_SERVER = process.argv[1].indexOf('webpack-dev-server') !== -1;
 var ROOT_PATH = path.resolve(__dirname, '..');
 
 // must match config.webpack.dev_server.port
-var DEV_SERVER_PORT = 3808;
+var DEV_SERVER_PORT;
+
+try {
+  DEV_SERVER_PORT = parseInt(fs.readFileSync('../webpack_port'), 10);
+} catch (e) {
+  DEV_SERVER_PORT = 3808;
+}
 
 var config = {
   context: path.join(ROOT_PATH, 'app/assets/javascripts'),
