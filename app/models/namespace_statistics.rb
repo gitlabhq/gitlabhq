@@ -4,6 +4,6 @@ class NamespaceStatistics < ActiveRecord::Base
   validates :namespace, presence: true
 
   def shared_runners_minutes
-    shared_runners_seconds.to_i / 60.0
+    shared_runners_seconds.to_i / 60
   end
 end

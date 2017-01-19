@@ -8,7 +8,7 @@ class ProjectStatistics < ActiveRecord::Base
   STATISTICS_COLUMNS = [:commit_count] + STORAGE_COLUMNS
 
   def shared_runners_minutes
-    shared_runners_seconds.to_i / 60.0
+    shared_runners_seconds.to_i / 60
   end
 
   def total_repository_size
