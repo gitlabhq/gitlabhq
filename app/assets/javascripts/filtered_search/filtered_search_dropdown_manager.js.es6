@@ -67,18 +67,33 @@
 
       // Get the string to replace
       const selectionStart = input.selectionStart;
-      const { left } = gl.DropdownUtils.getInputSelectionPosition(input);
+      let { left, right } = gl.DropdownUtils.getInputSelectionPosition(input);
+
+      if (right < 0) {
+        right = inputValue.length;
+      }
+
+      if (left < 0) {
+        left += 1;
+      }
+
+      input.value = `${inputValue.substr(0, left)}${word}${inputValue.substr(right + selectionStart)}`;
+      gl.FilteredSearchDropdownManager.updateInputCaretPosition(selectionStart, input);
+    }
+
+    static updateInputCaretPosition(selectionStart, input) {
+      // Reset the position
+      // Sometimes can end up at end of input
+      input.setSelectionRange(selectionStart, selectionStart);
+
+      const inputValue = input.value;
       let { right } = gl.DropdownUtils.getInputSelectionPosition(input);
 
       if (right < 0) {
         right = inputValue.length;
       }
 
-      if (left !== -1) {
-        input.value = `${inputValue.substr(0, left)}${word}${inputValue.substr(right + selectionStart)}`;
-      } else {
-        input.value += word;
-      }
+      input.setSelectionRange(selectionStart + right, selectionStart + right);
     }
 
     updateCurrentDropdownOffset() {
