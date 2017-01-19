@@ -89,8 +89,14 @@
     static getInputSelectionPosition(input) {
       const inputValue = input.value;
       const selectionStart = input.selectionStart;
-      const left = inputValue.slice(0, selectionStart + 1).search(/\S+$/);
+      let left = inputValue.slice(0, selectionStart + 1).search(/\S+$/);
       const right = inputValue.slice(selectionStart).search(/\s/);
+
+      if (selectionStart === 0) {
+        left = 0;
+      } else if (selectionStart === inputValue.length && left < 0) {
+        left = inputValue.length;
+      }
 
       return {
         left,

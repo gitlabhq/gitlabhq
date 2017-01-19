@@ -67,14 +67,11 @@
 
       // Get the string to replace
       const selectionStart = input.selectionStart;
-      let { left, right } = gl.DropdownUtils.getInputSelectionPosition(input);
+      const { left } = gl.DropdownUtils.getInputSelectionPosition(input);
+      let { right } = gl.DropdownUtils.getInputSelectionPosition(input);
 
       if (right < 0) {
         right = inputValue.length;
-      }
-
-      if (left < 0) {
-        left += 1;
       }
 
       input.value = `${inputValue.substr(0, left)}${word}${inputValue.substr(right + selectionStart)}`;
