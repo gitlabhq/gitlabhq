@@ -1,9 +1,11 @@
 class Namespace < ActiveRecord::Base
   acts_as_paranoid
 
+  prepend EE::Namespace
   include CacheMarkdownField
   include Sortable
   include Gitlab::ShellAdapter
+  include Gitlab::CurrentSettings
   include Routable
 
   cache_markdown_field :description, pipeline: :description
@@ -177,6 +179,10 @@ class Namespace < ActiveRecord::Base
     else
       path
     end
+  end
+
+  def shared_runners_enabled?
+    projects.with_shared_runners.any?
   end
 
   def full_name

@@ -2,6 +2,7 @@ module Ci
   class Build < CommitStatus
     include TokenAuthenticatable
     include AfterCommitQueue
+    prepend EE::Build
 
     belongs_to :runner
     belongs_to :trigger_request

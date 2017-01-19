@@ -37,6 +37,13 @@
         $(this).parents('.no-password-message').remove();
         return e.preventDefault();
       });
+      $('.hide-shared-runner-limit-message').on('click', function(e) {
+        var $alert = $(this).parents('.shared-runner-quota-message');
+        var scope = $alert.data('scope');
+        Cookies.set('hide_shared_runner_quota_message', 'false', { path: scope });
+        $alert.remove();
+        e.preventDefault();
+      });
       this.projectSelectDropdown();
     }
 
