@@ -116,7 +116,6 @@ ActiveRecord::Schema.define(version: 20170106172224) do
     t.integer "housekeeping_full_repack_period", default: 50, null: false
     t.integer "housekeeping_gc_period", default: 200, null: false
     t.boolean "html_emails_enabled", default: true
-    t.integer "shared_runners_minutes", default: 0, null: false
     t.string "plantuml_url"
     t.boolean "plantuml_enabled"
   end
@@ -825,14 +824,6 @@ ActiveRecord::Schema.define(version: 20170106172224) do
   add_index "milestones", ["title"], name: "index_milestones_on_title", using: :btree
   add_index "milestones", ["title"], name: "index_milestones_on_title_trigram", using: :gin, opclasses: {"title"=>"gin_trgm_ops"}
 
-  create_table "namespace_statistics", force: :cascade do |t|
-    t.integer "namespace_id", null: false
-    t.integer "shared_runners_minutes", default: 0, null: false
-    t.datetime "shared_runners_minutes_last_reset"
-  end
-
-  add_index "namespace_statistics", ["namespace_id"], name: "index_namespace_metrics_on_namespace_id", unique: true, using: :btree
-
   create_table "namespaces", force: :cascade do |t|
     t.string "name", null: false
     t.string "path", null: false
@@ -856,15 +847,14 @@ ActiveRecord::Schema.define(version: 20170106172224) do
     t.integer "repository_size_limit"
     t.text "description_html"
     t.integer "parent_id"
-    t.integer "shared_runners_minutes_limit"
   end
 
   add_index "namespaces", ["created_at"], name: "index_namespaces_on_created_at", using: :btree
   add_index "namespaces", ["deleted_at"], name: "index_namespaces_on_deleted_at", using: :btree
   add_index "namespaces", ["ldap_sync_last_successful_update_at"], name: "index_namespaces_on_ldap_sync_last_successful_update_at", using: :btree
   add_index "namespaces", ["ldap_sync_last_update_at"], name: "index_namespaces_on_ldap_sync_last_update_at", using: :btree
-  add_index "namespaces", ["name", "parent_id"], name: "index_namespaces_on_name_and_parent_id", unique: true, using: :btree
   add_index "namespaces", ["name"], name: "index_namespaces_on_name", unique: true, using: :btree
+  add_index "namespaces", ["name", "parent_id"], name: "index_namespaces_on_name_and_parent_id", unique: true, using: :btree
   add_index "namespaces", ["name"], name: "index_namespaces_on_name_trigram", using: :gin, opclasses: {"name"=>"gin_trgm_ops"}
   add_index "namespaces", ["owner_id"], name: "index_namespaces_on_owner_id", using: :btree
   add_index "namespaces", ["parent_id", "id"], name: "index_namespaces_on_parent_id_and_id", unique: true, using: :btree
@@ -1041,14 +1031,6 @@ ActiveRecord::Schema.define(version: 20170106172224) do
   end
 
   add_index "project_import_data", ["project_id"], name: "index_project_import_data_on_project_id", using: :btree
-
-  create_table "project_metrics", force: :cascade do |t|
-    t.integer "project_id", null: false
-    t.integer "shared_runners_minutes", default: 0, null: false
-    t.datetime "shared_runners_minutes_last_reset"
-  end
-
-  add_index "project_metrics", ["project_id"], name: "index_project_metrics_on_project_id", unique: true, using: :btree
 
   create_table "project_statistics", force: :cascade do |t|
     t.integer "project_id", null: false
@@ -1515,15 +1497,13 @@ ActiveRecord::Schema.define(version: 20170106172224) do
   add_foreign_key "merge_request_metrics", "merge_requests", on_delete: :cascade
   add_foreign_key "merge_requests_closing_issues", "issues", on_delete: :cascade
   add_foreign_key "merge_requests_closing_issues", "merge_requests", on_delete: :cascade
-  add_foreign_key "namespace_statistics", "namespaces", on_delete: :cascade
   add_foreign_key "path_locks", "projects"
   add_foreign_key "path_locks", "users"
   add_foreign_key "personal_access_tokens", "users"
   add_foreign_key "project_authorizations", "projects", on_delete: :cascade
   add_foreign_key "project_authorizations", "users", on_delete: :cascade
-  add_foreign_key "project_metrics", "projects", on_delete: :cascade
-  add_foreign_key "project_statistics", "projects", on_delete: :cascade
   add_foreign_key "protected_branch_merge_access_levels", "namespaces", column: "group_id"
+  add_foreign_key "project_statistics", "projects", on_delete: :cascade
   add_foreign_key "protected_branch_merge_access_levels", "protected_branches"
   add_foreign_key "protected_branch_merge_access_levels", "users"
   add_foreign_key "protected_branch_push_access_levels", "namespaces", column: "group_id"
