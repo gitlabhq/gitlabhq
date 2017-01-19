@@ -222,7 +222,7 @@ describe SlashCommands::InterpretService, services: true do
       it 'populates spend_time: 3600 if content contains /spend 1h' do
         _, updates = service.execute(content, issuable)
 
-        expect(updates).to eq(spend_time: 3600)
+        expect(updates).to eq(spend_time: { duration: 3600, user: developer })
       end
     end
 
@@ -230,7 +230,7 @@ describe SlashCommands::InterpretService, services: true do
       it 'populates spend_time: -1800 if content contains /spend -30m' do
         _, updates = service.execute(content, issuable)
 
-        expect(updates).to eq(spend_time: -1800)
+        expect(updates).to eq(spend_time: { duration: -1800, user: developer })
       end
     end
 
@@ -246,7 +246,7 @@ describe SlashCommands::InterpretService, services: true do
       it 'populates spend_time: :reset if content contains /remove_time_spent' do
         _, updates = service.execute(content, issuable)
 
-        expect(updates).to eq(spend_time: :reset)
+        expect(updates).to eq(spend_time: { duration: :reset, user: developer })
       end
     end
 

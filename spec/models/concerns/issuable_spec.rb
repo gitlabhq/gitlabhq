@@ -431,7 +431,7 @@ describe Issue, "Issuable" do
     let(:issue) { create(:issue) }
 
     def spend_time(seconds)
-      issue.spend_time(seconds, user)
+      issue.spend_time(duration: seconds, user: user)
       issue.save!
     end
 
@@ -455,10 +455,10 @@ describe Issue, "Issuable" do
       end
 
       context 'when time to substract exceeds the total time spent' do
-        it 'should not alter the total time spent' do
-          spend_time(-3600)
-
-          expect(issue.total_time_spent).to eq(1800)
+        it 'raise a validation error' do
+          expect do
+            spend_time(-3600)
+          end.to raise_error(ActiveRecord::RecordInvalid)
         end
       end
     end

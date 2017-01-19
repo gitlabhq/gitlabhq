@@ -293,6 +293,13 @@ module API
       end
     end
 
+    class IssuableTimeStats < Grape::Entity
+      expose :time_estimate
+      expose :total_time_spent
+      expose :human_time_estimate
+      expose :human_total_time_spent
+    end
+
     class ExternalIssue < Grape::Entity
       expose :title
       expose :id
