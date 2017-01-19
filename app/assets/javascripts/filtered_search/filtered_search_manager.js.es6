@@ -194,17 +194,12 @@
       return usernamesById;
     }
 
-    tokenChange(e) {
+    tokenChange() {
       const dropdown = this.dropdownManager.mapping[this.dropdownManager.currentDropdown];
       const currentDropdownRef = dropdown.reference;
 
       this.setDropdownWrapper();
       currentDropdownRef.dispatchInputEvent();
-
-      if (e.type === 'click') {
-        // If click event, we need to trigger filter
-        this.filteredSearchInput.dispatchEvent(new Event('keyup'));
-      }
     }
   }
 
