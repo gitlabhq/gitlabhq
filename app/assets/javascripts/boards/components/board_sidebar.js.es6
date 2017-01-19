@@ -29,11 +29,13 @@
     watch: {
       detail: {
         handler () {
-          this.issue = this.detail.issue;
-
-          if (this.showSidebar) {
-            $('.js-user-search', this.$el).data('glDropdown').clearMenu();
+          if (this.issue.id !== this.detail.issue.id) {
+            $('.js-issue-board-sidebar', this.$el).each((i, el) => {
+              $(el).data('glDropdown').clearMenu();
+            });
           }
+
+          this.issue = this.detail.issue;
         },
         deep: true
       },
