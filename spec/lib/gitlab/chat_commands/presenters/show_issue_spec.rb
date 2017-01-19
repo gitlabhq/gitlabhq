@@ -12,7 +12,7 @@ describe Gitlab::ChatCommands::Presenters::ShowIssue do
   it 'shows the issue' do
     expect(subject[:response_type]).to be(:in_channel)
     expect(subject).to have_key(:attachments)
-    expect(attachment[:title]).to eq(issue.title)
+    expect(attachment[:title]).to start_with(issue.title)
   end
 
   context 'with upvotes' do
@@ -21,7 +21,7 @@ describe Gitlab::ChatCommands::Presenters::ShowIssue do
     end
 
     it 'shows the upvote count' do
-      expect(attachment[:text]).to start_with(":+1: 1")
+      expect(attachment[:text]).to start_with("**Open** · :+1: 1")
     end
   end
 end

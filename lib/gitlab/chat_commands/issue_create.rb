@@ -35,7 +35,7 @@ module Gitlab
       end
 
       def presenter(issue)
-        Gitlab::ChatCommands::Presenters::ShowIssue.new(issue)
+        Gitlab::ChatCommands::Presenters::NewIssue.new(issue)
       end
     end
   end
