@@ -17,6 +17,8 @@
 
   = render 'groups/group_lfs_settings', f: f
 
+  = render 'groups/shared_runners_minutes_setting', f: f
+
   - if @group.new_record?
     .form-group
       .col-sm-offset-2.col-sm-10

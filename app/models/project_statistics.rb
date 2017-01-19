@@ -7,6 +7,10 @@ class ProjectStatistics < ActiveRecord::Base
   STORAGE_COLUMNS = [:repository_size, :lfs_objects_size, :build_artifacts_size]
   STATISTICS_COLUMNS = [:commit_count] + STORAGE_COLUMNS
 
+  def shared_runners_minutes
+    shared_runners_seconds.to_i / 60
+  end
+
   def total_repository_size
     repository_size + lfs_objects_size
   end

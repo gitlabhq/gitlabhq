@@ -976,6 +976,26 @@ describe Project, models: true do
     it { expect(project.builds_enabled?).to be_truthy }
   end
 
+  describe '.with_shared_runners' do
+    subject { Project.with_shared_runners }
+
+    context 'when shared runners are enabled for project' do
+      let!(:project) { create(:empty_project, shared_runners_enabled: true) }
+
+      it "returns a project" do
+        is_expected.to eq([project])
+      end
+    end
+
+    context 'when shared runners are disabled for project' do
+      let!(:project) { create(:empty_project, shared_runners_enabled: false) }
+
+      it "returns an empty array" do
+        is_expected.to be_empty
+      end
+    end
+  end
+
   describe '.cached_count', caching: true do
     let(:group)     { create(:group, :public) }
     let!(:project1) { create(:empty_project, :public, group: group) }
@@ -1114,6 +1134,28 @@ describe Project, models: true do
       it 'checks the presence of shared runner' do
         shared_runner
         expect(project.any_runners? { |runner| runner == shared_runner }).to be_truthy
+      end
+    end
+  end
+
+  describe '#shared_runners' do
+    let!(:runner) { create(:ci_runner, :shared) }
+
+    subject { project.shared_runners }
+
+    context 'when shared runners are enabled for project' do
+      let!(:project) { create(:empty_project, shared_runners_enabled: true) }
+
+      it "returns a list of shared runners" do
+        is_expected.to eq([runner])
+      end
+    end
+
+    context 'when shared runners are disabled for project' do
+      let!(:project) { create(:empty_project, shared_runners_enabled: false) }
+
+      it "returns a empty list" do
+        is_expected.to be_empty
       end
     end
   end
