@@ -33,6 +33,45 @@ feature 'GFM autocomplete', feature: true, js: true do
     expect(page).not_to have_selector('.atwho-view')
   end
 
+  it 'doesnt select the first item for non-assignee dropdowns' do
+    page.within '.timeline-content-form' do
+      find('#note_note').native.send_keys('')
+      find('#note_note').native.send_keys(':')
+    end
+
+    expect(page).to have_selector('.atwho-container')
+
+    wait_for_ajax
+
+    expect(find('#at-view-58')).not_to have_selector('.cur:first-of-type')
+  end
+
+  it 'selects the first item for assignee dropdowns' do
+    page.within '.timeline-content-form' do
+      find('#note_note').native.send_keys('')
+      find('#note_note').native.send_keys('@')
+    end
+
+    expect(page).to have_selector('.atwho-container')
+
+    wait_for_ajax
+
+    expect(find('#at-view-64')).to have_selector('.cur:first-of-type')
+  end
+
+  it 'selects the first item for non-assignee dropdowns if a query is entered' do
+    page.within '.timeline-content-form' do
+      find('#note_note').native.send_keys('')
+      find('#note_note').native.send_keys(':1')
+    end
+
+    expect(page).to have_selector('.atwho-container')
+
+    wait_for_ajax
+
+    expect(find('#at-view-58')).to have_selector('.cur:first-of-type')
+  end
+
   context 'if a selected value has special characters' do
     it 'wraps the result in double quotes' do
       note = find('#note_note')
