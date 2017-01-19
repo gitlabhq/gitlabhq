@@ -48,8 +48,9 @@
     },
     DefaultOptions: {
       sorter: function(query, items, searchKey) {
-        this.setting.highlightFirst = query.length > 0;
+        this.setting.highlightFirst = this.setting.alwaysHighlightFirst || query.length > 0;
         if (gl.GfmAutoComplete.isLoading(items)) {
+          this.setting.highlightFirst = false;
           return items;
         }
         return $.fn.atwho["default"].callbacks.sorter(query, items, searchKey);
