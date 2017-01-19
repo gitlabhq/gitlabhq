@@ -24,7 +24,7 @@
         = icon('exclamation-triangle')
         diverged from upstream
 
-    .controls.hidden-xs
+    .controls.hidden-xs<
       - if merge_project && create_mr_button?(@repository.root_ref, branch.name)
         = link_to create_mr_path(@repository.root_ref, branch.name), class: 'btn btn-default' do
           Merge Request
