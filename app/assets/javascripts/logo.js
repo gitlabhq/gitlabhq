@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, prefer-arrow-callback, padded-blocks */
+/* eslint-disable func-names, space-before-function-paren, prefer-arrow-callback */
 /* global Turbolinks */
 
 (function() {
@@ -11,5 +11,4 @@
   $(document).on('page:change', function() {
     $('.tanuki-logo').removeClass('animate');
   });
-
 }).call(this);

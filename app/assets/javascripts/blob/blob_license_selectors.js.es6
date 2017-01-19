@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars, no-param-reassign, padded-blocks */
+/* eslint-disable no-unused-vars, no-param-reassign */
 /* global BlobLicenseSelector */
 
 ((global) => {
@@ -20,5 +20,4 @@
   }
 
   global.BlobLicenseSelectors = BlobLicenseSelectors;
-
 })(window.gl || (window.gl = {}));

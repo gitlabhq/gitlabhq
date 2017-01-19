@@ -1,4 +1,4 @@
-/* eslint-disable space-before-function-paren, no-var, no-return-assign, quotes, padded-blocks */
+/* eslint-disable space-before-function-paren, no-var, no-return-assign, quotes */
 
 /*= require syntax_highlight */
 
@@ -41,5 +41,4 @@
       });
     });
   });
-
 }).call(this);

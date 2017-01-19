@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, object-shorthand, no-var, one-var, camelcase, one-var-declaration-per-line, no-plusplus, comma-dangle, no-param-reassign, no-return-assign, quotes, prefer-arrow-callback, wrap-iife, consistent-return, no-unused-vars, max-len, no-cond-assign, no-else-return, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, object-shorthand, no-var, one-var, camelcase, one-var-declaration-per-line, comma-dangle, no-param-reassign, no-return-assign, quotes, prefer-arrow-callback, wrap-iife, consistent-return, no-unused-vars, max-len, no-cond-assign, no-else-return, max-len */
 (function() {
   window.ContributorsStatGraphUtil = {
     parse_log: function(log) {
@@ -6,7 +6,7 @@
       total = {};
       by_author = {};
       by_email = {};
-      for (i = 0, len = log.length; i < len; i++) {
+      for (i = 0, len = log.length; i < len; i += 1) {
         entry = log[i];
         if (total[entry.date] == null) {
           this.add_date(entry.date, total);
@@ -135,5 +135,4 @@
       }
     }
   };
-
 }).call(this);

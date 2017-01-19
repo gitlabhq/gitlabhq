@@ -1,8 +1,9 @@
-/* eslint-disable */
+/* eslint-disable no-new, arrow-parens, no-param-reassign, comma-dangle, guard-for-in, no-restricted-syntax, max-len */
 /* global ProtectedBranchDropdown */
+/* global Flash */
 
 (global => {
-  global.gl = global.gl || {};
+  global.gl = global.gl || {};
 
   const ACCESS_LEVELS = {
     MERGE: 'merge_access_levels',
@@ -61,25 +62,25 @@
     onSelect() {
       const $allowedToMerge = this[`${ACCESS_LEVELS.MERGE}_dropdown`].getSelectedItems();
       const $allowedToPush = this[`${ACCESS_LEVELS.PUSH}_dropdown`].getSelectedItems();
-      let toggle = !(this.$wrap.find('input[name="protected_branch[name]"]').val() && $allowedToMerge.length && $allowedToPush.length);
+      const toggle = !(this.$wrap.find('input[name="protected_branch[name]"]').val() && $allowedToMerge.length && $allowedToPush.length);
 
       this.$form.find('input[type="submit"]').attr('disabled', toggle);
     }
 
     getFormData() {
-      let formData = {
+      const formData = {
         authenticity_token: this.$form.find('input[name="authenticity_token"]').val(),
         protected_branch: {
           name: this.$wrap.find('input[name="protected_branch[name]"]').val(),
         }
       };
 
-      for (let ACCESS_LEVEL in ACCESS_LEVELS) {
-        let selectedItems = this[`${ACCESS_LEVELS[ACCESS_LEVEL]}_dropdown`].getSelectedItems();
-        let levelAttributes = [];
+      for (const ACCESS_LEVEL in ACCESS_LEVELS) {
+        const selectedItems = this[`${ACCESS_LEVELS[ACCESS_LEVEL]}_dropdown`].getSelectedItems();
+        const levelAttributes = [];
 
-        for (let i = 0; i < selectedItems.length; i++) {
-          let current = selectedItems[i];
+        for (let i = 0; i < selectedItems.length; i += 1) {
+          const current = selectedItems[i];
 
           if (current.type === LEVEL_TYPES.USER) {
             levelAttributes.push({
@@ -117,6 +118,5 @@
         new Flash('Failed to protect the branch');
       });
     }
-  }
-
+  };
 })(window);

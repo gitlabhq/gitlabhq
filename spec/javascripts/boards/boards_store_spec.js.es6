@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, one-var, no-unused-vars, indent */
+/* eslint-disable comma-dangle, one-var, no-unused-vars */
 /* global Vue */
 /* global BoardService */
 /* global boardsMockInterceptor */
@@ -146,8 +146,8 @@ describe('Store', () => {
     });
 
     it('moves the position of lists', () => {
-      const listOne = gl.issueBoards.BoardsStore.addList(listObj),
-            listTwo = gl.issueBoards.BoardsStore.addList(listObjDuplicate);
+      const listOne = gl.issueBoards.BoardsStore.addList(listObj);
+      const listTwo = gl.issueBoards.BoardsStore.addList(listObjDuplicate);
 
       expect(gl.issueBoards.BoardsStore.state.lists.length).toBe(2);
 
@@ -157,8 +157,8 @@ describe('Store', () => {
     });
 
     it('moves an issue from one list to another', (done) => {
-      const listOne = gl.issueBoards.BoardsStore.addList(listObj),
-            listTwo = gl.issueBoards.BoardsStore.addList(listObjDuplicate);
+      const listOne = gl.issueBoards.BoardsStore.addList(listObj);
+      const listTwo = gl.issueBoards.BoardsStore.addList(listObjDuplicate);
 
       expect(gl.issueBoards.BoardsStore.state.lists.length).toBe(2);
 

@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable no-new, arrow-parens, no-param-reassign, comma-dangle, dot-notation, no-unused-vars, no-restricted-syntax, guard-for-in, max-len */
 /* global Flash */
 
 (global => {
@@ -63,10 +63,10 @@
     }
 
     updatePermissions() {
-      let formData = {};
+      const formData = {};
 
-      for (let ACCESS_LEVEL in ACCESS_LEVELS) {
-        let accessLevelName = ACCESS_LEVELS[ACCESS_LEVEL];
+      for (const ACCESS_LEVEL in ACCESS_LEVELS) {
+        const accessLevelName = ACCESS_LEVELS[ACCESS_LEVEL];
 
         formData[`${accessLevelName}_attributes`] = this[`${accessLevelName}_dropdown`].getInputData(accessLevelName);
       }
@@ -83,8 +83,8 @@
           this.$wrap.effect('highlight');
           this.hasChanges = false;
 
-          for (let ACCESS_LEVEL in ACCESS_LEVELS) {
-            let accessLevelName = ACCESS_LEVELS[ACCESS_LEVEL];
+          for (const ACCESS_LEVEL in ACCESS_LEVELS) {
+            const accessLevelName = ACCESS_LEVELS[ACCESS_LEVEL];
 
             // The data coming from server will be the new persisted *state* for each dropdown
             this.setSelectedItemsToDropdown(response[accessLevelName], `${accessLevelName}_dropdown`);
@@ -98,18 +98,17 @@
     }
 
     setSelectedItemsToDropdown(items = [], dropdownName) {
-      let itemsToAdd = [];
+      const itemsToAdd = [];
 
-      for (let i = 0; i < items.length; i++) {
+      for (let i = 0; i < items.length; i += 1) {
         let itemToAdd;
-        let currentItem = items[i];
+        const currentItem = items[i];
 
         if (currentItem.user_id) {
-
           // Do this only for users for now
           // get the current data for selected items
-          let selectedItems = this[dropdownName].getSelectedItems();
-          let currentSelectedItem = _.findWhere(selectedItems, { user_id: currentItem.user_id });
+          const selectedItems = this[dropdownName].getSelectedItems();
+          const currentSelectedItem = _.findWhere(selectedItems, { user_id: currentItem.user_id });
 
           itemToAdd = {
             id: currentItem.id,
@@ -119,7 +118,7 @@
             name: currentSelectedItem.name,
             username: currentSelectedItem.username,
             avatar_url: currentSelectedItem.avatar_url
-          }
+          };
         } else if (currentItem.group_id) {
           itemToAdd = {
             id: currentItem.id,
@@ -133,7 +132,7 @@
             access_level: currentItem.access_level,
             type: LEVEL_TYPES.ROLE,
             persisted: true
-          }
+          };
         }
 
         itemsToAdd.push(itemToAdd);
@@ -141,5 +140,5 @@
 
       this[dropdownName].setSelectedItems(itemsToAdd);
     }
-  }
+  };
 })(window);

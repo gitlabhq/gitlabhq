@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, one-var, one-var-declaration-per-line, object-shorthand, prefer-arrow-callback, comma-dangle, prefer-template, quotes, no-else-return, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, one-var, one-var-declaration-per-line, object-shorthand, prefer-arrow-callback, comma-dangle, prefer-template, quotes, no-else-return, max-len */
 /* global Api */
 
 (function() {
@@ -96,7 +96,5 @@
     };
 
     return Search;
-
   })();
-
 }).call(this);

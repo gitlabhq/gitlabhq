@@ -1,4 +1,4 @@
-/* eslint-disable no-new, padded-blocks */
+/* eslint-disable no-new */
 
 /*= require sidebar */
 /*= require jquery */
@@ -36,5 +36,4 @@
       expect(todosCountText()).toEqual('1,000,000');
     });
   });
-
 })(window.gl);
