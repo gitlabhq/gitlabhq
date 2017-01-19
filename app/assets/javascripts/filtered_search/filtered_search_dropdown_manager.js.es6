@@ -85,10 +85,9 @@
         this.font = window.getComputedStyle(this.filteredSearchInput).font;
       }
 
+      const inputText = gl.DropdownUtils.getSearchInput(this.filteredSearchInput).trim();
       const filterIconPadding = 27;
-      const offset = gl.text
-        .getTextWidth(gl.DropdownUtils.getSearchInput(this.filteredSearchInput).trim(), this.font)
-        + filterIconPadding;
+      const offset = gl.text.getTextWidth(inputText, this.font) + filterIconPadding;
 
       this.mapping[key].reference.setOffset(offset);
     }
@@ -146,7 +145,7 @@
       const { lastToken, searchToken } = this.tokenizer
         .processTokens(gl.DropdownUtils.getSearchInput(this.filteredSearchInput));
 
-      if (this.filteredSearchInput.value.split('').last() === ' ') {
+      if (this.currentDropdown) {
         this.updateCurrentDropdownOffset();
       }
 
