@@ -233,6 +233,37 @@ describe 'Copy as GFM', feature: true, js: true do
     end
   end
 
+  it 'supports SanitizationFilter' do
+    verify(
+      <<-GFM.strip_heredoc
+      BR: <br>
+
+      <sub>sub</sub>
+
+      <dl>
+        <dt>dt</dt>
+        <dd>dd</dd>
+      </dl>
+
+      <kbd>kbd</kbd>
+
+      <q>q</q>
+
+      <samp>samp</samp>
+
+      <var>var</var>
+
+      <ruby>ruby</ruby>
+
+      <rt>rt</rt>
+
+      <rp>rp</rp>
+
+      <abbr>abbr</abbr>
+      GFM
+    )
+  end
+
   it 'supports SyntaxHighlightFilter' do
     verify(
       <<-GFM.strip_heredoc,

@@ -91,6 +91,28 @@
         return text.trim();
       },
     },
+    SanitizationFilter: {
+      'br'(el, text) {
+        return '<br>';
+      },
+      'dl'(el, text) {
+        let lines = text.trim().split('\n');
+        // Add two spaces to the front of subsequent list items lines,
+        // or leave the line entirely blank.
+        lines = lines.map((s) => {
+          s = s.trim();
+          if (s.length === 0) return '';
+
+          return `  ${s}`;
+        });
+
+        return `<dl>\n${lines.join('\n')}\n</dl>`;
+      },
+      'sub, dt, dd, kbd, q, samp, var, ruby, rt, rp, abbr'(el, text) {
+        const tag = el.nodeName.toLowerCase();
+        return `<${tag}>${text}</${tag}>`;
+      },
+    },
     SyntaxHighlightFilter: {
       'pre.code.highlight'(el, text) {
         let lang = el.getAttribute('lang');
