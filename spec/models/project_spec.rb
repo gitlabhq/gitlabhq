@@ -573,13 +573,13 @@ describe Project, models: true do
         group = create(:group, repository_size_limit: 100)
         project.update_attribute(:namespace_id, group.id)
 
-        expect(project.actual_size_limit).to eq(100)
+        expect(project.actual_size_limit).to eq(100.megabytes)
       end
 
       it 'returns the value set locally' do
         project.update_attribute(:repository_size_limit, 75)
 
-        expect(project.actual_size_limit).to eq(75)
+        expect(project.actual_size_limit).to eq(75.megabytes)
       end
     end
 

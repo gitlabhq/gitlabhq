@@ -55,7 +55,7 @@ module Gitlab
     end
 
     def format_number(number)
-      number_to_human_size(number * 1.megabyte, delimiter: ',', precision: 2)
+      number_to_human_size(number, delimiter: ',', precision: 2)
     end
   end
 end

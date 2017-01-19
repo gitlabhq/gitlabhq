@@ -1541,8 +1541,10 @@ class Project < ActiveRecord::Base
     actual_size_limit != 0
   end
 
-  def changes_will_exceed_size_limit?(size_mb)
-    size_limit_enabled? && (size_mb > actual_size_limit || size_mb + repository_and_lfs_size > actual_size_limit)
+  def changes_will_exceed_size_limit?(size_in_bytes)
+    size_limit_enabled? &&
+      (size_in_bytes > actual_size_limit ||
+       size_in_bytes + repository_and_lfs_size > actual_size_limit)
   end
 
   def environments_for(ref, commit: nil, with_tags: false)

@@ -136,7 +136,7 @@ module LfsRequest
 
       size_of_objects = objects.sum { |o| o[:size] }
 
-      @limit_exceeded = (project.repository_and_lfs_size + size_of_objects.to_mb) > project.actual_size_limit
+      @limit_exceeded = (project.repository_and_lfs_size + size_of_objects) > project.actual_size_limit
     end
   end
 
