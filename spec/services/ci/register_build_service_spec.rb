@@ -2,6 +2,7 @@ require 'spec_helper'
 
 module Ci
   describe RegisterBuildService, services: true do
+    let!(:service) { RegisterBuildService.new }
     let!(:project) { FactoryGirl.create :empty_project, shared_runners_enabled: false }
     let!(:pipeline) { FactoryGirl.create :ci_pipeline, project: project }
     let!(:pending_build) { FactoryGirl.create :ci_build, pipeline: pipeline }
@@ -18,29 +19,29 @@ module Ci
           pending_build.tag_list = ["linux"]
           pending_build.save
           specific_runner.tag_list = ["linux"]
-          expect(execute(specific_runner)).to eq(pending_build)
+          expect(service.execute(specific_runner)).to eq(pending_build)
         end
 
         it "does not pick build with different tag" do
           pending_build.tag_list = ["linux"]
           pending_build.save
           specific_runner.tag_list = ["win32"]
-          expect(execute(specific_runner)).to be_falsey
+          expect(service.execute(specific_runner)).to be_falsey
         end
 
         it "picks build without tag" do
-          expect(execute(specific_runner)).to eq(pending_build)
+          expect(service.execute(specific_runner)).to eq(pending_build)
         end
 
         it "does not pick build with tag" do
           pending_build.tag_list = ["linux"]
           pending_build.save
-          expect(execute(specific_runner)).to be_falsey
+          expect(service.execute(specific_runner)).to be_falsey
         end
 
         it "pick build without tag" do
           specific_runner.tag_list = ["win32"]
-          expect(execute(specific_runner)).to eq(pending_build)
+          expect(service.execute(specific_runner)).to eq(pending_build)
         end
       end
 
@@ -55,13 +56,13 @@ module Ci
           end
 
           it 'does not pick a build' do
-            expect(execute(shared_runner)).to be_nil
+            expect(service.execute(shared_runner)).to be_nil
           end
         end
 
         context 'for specific runner' do
           it 'does not pick a build' do
-            expect(execute(specific_runner)).to be_nil
+            expect(service.execute(specific_runner)).to be_nil
           end
         end
       end
@@ -85,34 +86,34 @@ module Ci
 
           it 'prefers projects without builds first' do
             # it gets for one build from each of the projects
-            expect(execute(shared_runner)).to eq(build1_project1)
-            expect(execute(shared_runner)).to eq(build1_project2)
-            expect(execute(shared_runner)).to eq(build1_project3)
+            expect(service.execute(shared_runner)).to eq(build1_project1)
+            expect(service.execute(shared_runner)).to eq(build1_project2)
+            expect(service.execute(shared_runner)).to eq(build1_project3)
 
             # then it gets a second build from each of the projects
-            expect(execute(shared_runner)).to eq(build2_project1)
-            expect(execute(shared_runner)).to eq(build2_project2)
+            expect(service.execute(shared_runner)).to eq(build2_project1)
+            expect(service.execute(shared_runner)).to eq(build2_project2)
 
             # in the end the third build
-            expect(execute(shared_runner)).to eq(build3_project1)
+            expect(service.execute(shared_runner)).to eq(build3_project1)
           end
 
           it 'equalises number of running builds' do
             # after finishing the first build for project 1, get a second build from the same project
-            expect(execute(shared_runner)).to eq(build1_project1)
+            expect(service.execute(shared_runner)).to eq(build1_project1)
             build1_project1.reload.success
-            expect(execute(shared_runner)).to eq(build2_project1)
+            expect(service.execute(shared_runner)).to eq(build2_project1)
 
-            expect(execute(shared_runner)).to eq(build1_project2)
+            expect(service.execute(shared_runner)).to eq(build1_project2)
             build1_project2.reload.success
-            expect(execute(shared_runner)).to eq(build2_project2)
-            expect(execute(shared_runner)).to eq(build1_project3)
-            expect(execute(shared_runner)).to eq(build3_project1)
+            expect(service.execute(shared_runner)).to eq(build2_project2)
+            expect(service.execute(shared_runner)).to eq(build1_project3)
+            expect(service.execute(shared_runner)).to eq(build3_project1)
           end
         end
 
         context 'shared runner' do
-          let(:build) { execute(shared_runner) }
+          let(:build) { service.execute(shared_runner) }
 
           it { expect(build).to be_kind_of(Build) }
           it { expect(build).to be_valid }
@@ -121,7 +122,7 @@ module Ci
         end
 
         context 'specific runner' do
-          let(:build) { execute(specific_runner) }
+          let(:build) { service.execute(specific_runner) }
 
           it { expect(build).to be_kind_of(Build) }
           it { expect(build).to be_valid }
@@ -136,13 +137,13 @@ module Ci
         end
 
         context 'shared runner' do
-          let(:build) { execute(shared_runner) }
+          let(:build) { service.execute(shared_runner) }
 
           it { expect(build).to be_nil }
         end
 
         context 'specific runner' do
-          let(:build) { execute(specific_runner) }
+          let(:build) { service.execute(specific_runner) }
 
           it { expect(build).to be_kind_of(Build) }
           it { expect(build).to be_valid }
@@ -158,20 +159,16 @@ module Ci
         end
 
         context 'and uses shared runner' do
-          let(:build) { execute(shared_runner) }
+          let(:build) { service.execute(shared_runner) }
 
           it { expect(build).to be_nil }
         end
 
         context 'and uses specific runner' do
-          let(:build) { execute(specific_runner) }
+          let(:build) { service.execute(specific_runner) }
 
           it { expect(build).to be_nil }
         end
-      end
-
-      def execute(runner)
-        described_class.new(runner).execute
       end
     end
   end

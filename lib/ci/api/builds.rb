@@ -16,7 +16,7 @@ module Ci
           not_found! unless current_runner.active?
           update_runner_info
 
-          build = Ci::RegisterBuildService.new(current_runner).execute
+          build = Ci::RegisterBuildService.new.execute(current_runner)
 
           if build
             Gitlab::Metrics.add_event(:build_found,
