@@ -270,12 +270,22 @@ describe 'Copy as GFM', feature: true, js: true do
         ```
       GFM
 
-      <<-GFM.strip_heredoc
+      <<-GFM.strip_heredoc,
         ```ruby
         def foo
           bar
         end
         ```
+      GFM
+
+      <<-GFM.strip_heredoc
+        Foo
+        
+            This is an example of GFM
+
+            ```js
+            Code goes here
+            ```
       GFM
     )
   end

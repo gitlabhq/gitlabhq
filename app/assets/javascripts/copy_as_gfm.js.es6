@@ -116,7 +116,19 @@
         if (lang === 'plaintext') {
           lang = '';
         }
-        return `\`\`\`${lang}\n${text.trim()}\n\`\`\``;
+        text = text.trim();
+
+          // Prefixes lines with 4 spaces if the code contains triple backticks
+        if (lang === '' && text.match(/^```/gm)) {
+          return text.split('\n').map((s) => {
+            s = s.trim();
+            if (s.length === 0) return '';
+
+            return `    ${s}`;
+          }).join('\n');
+        }
+
+        return `\`\`\`${lang}\n${text}\n\`\`\``;
       },
       'pre > code'(el, text) {
          // Don't wrap code blocks in ``
@@ -207,8 +219,12 @@
         return '-----';
       },
       'table'(el, text) {
-        const theadText = CopyAsGFM.nodeToGFM(el.querySelector('thead'));
-        const tbodyText = CopyAsGFM.nodeToGFM(el.querySelector('tbody'));
+        const theadEl = el.querySelector('thead');
+        const tbodyEl = el.querySelector('tbody');
+        if (!theadEl || !tbodyEl) return false;
+
+        const theadText = CopyAsGFM.nodeToGFM(theadEl);
+        const tbodyText = CopyAsGFM.nodeToGFM(tbodyEl);
 
         return theadText + tbodyText;
       },
