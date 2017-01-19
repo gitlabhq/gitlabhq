@@ -185,6 +185,14 @@
 
       target.value = newText;
       target.selectionStart = target.selectionEnd = selectionStart + text.length;
+
+      // Trigger autosave
+      $(target).trigger('input');
+
+      // Trigger autosize
+      var event = document.createEvent('Event');
+      event.initEvent('autosize:update', true, false);
+      target.dispatchEvent(event);
     };
 
     w.gl.utils.nodeMatchesSelector = (node, selector) => {

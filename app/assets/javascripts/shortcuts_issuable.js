@@ -61,8 +61,15 @@
       replyField.val(function(_, current) {
         return current + separator + quote.join('') + "\n";
       });
-      // Trigger autosave for the added text
+      
+      // Trigger autosave
       replyField.trigger('input');
+
+      // Trigger autosize
+      var event = document.createEvent('Event');
+      event.initEvent('autosize:update', true, false);
+      replyField.get(0).dispatchEvent(event);
+
       // Focus the input field
       return replyField.focus();
     };
