@@ -9,17 +9,17 @@
 .new_project,
 .edit-project {
 
-  fieldset {
+  .sharing-and-permissions {
+    .header {
+      padding-top: $gl-vert-padding;
+    }
 
-    &.features {
+    .label-light {
+      margin-bottom: 0;
+    }
 
-      .label-light {
-        margin-bottom: 0;
-      }
-
-      .help-block {
-        margin-top: 0;
-      }
+    .help-block {
+      margin-top: 0;
     }
 
     .form-group {
@@ -905,9 +905,17 @@ pre.light-well {
   }
 }
 
-.project-feature-nested {
+.project-feature {
+  padding-top: 10px;
+
   @media (min-width: $screen-sm-min) {
     padding-left: 45px;
+  }
+
+  &.nested {
+    @media (min-width: $screen-sm-min) {
+      padding-left: 90px;
+    }
   }
 }
 
