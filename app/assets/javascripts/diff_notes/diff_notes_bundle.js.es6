@@ -3,9 +3,6 @@
 /* global ResolveCount */
 
 function requireAll(context) { return context.keys().map(context); }
-
-window.Vue = require('vue');
-window.Vue.use(require('vue-resource'));
 requireAll(require.context('./models',     false, /^\.\/.*\.(js|es6)$/));
 requireAll(require.context('./stores',     false, /^\.\/.*\.(js|es6)$/));
 requireAll(require.context('./services',   false, /^\.\/.*\.(js|es6)$/));

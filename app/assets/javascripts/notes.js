@@ -3,6 +3,7 @@
 /* global GLForm */
 /* global Autosave */
 /* global ResolveService */
+/* global mrRefreshWidgetUrl */
 
 require('./autosave');
 window.autosize = require('vendor/autosize');
@@ -245,6 +246,16 @@ require('vendor/task_list');
     };
 
 
+    Notes.prototype.handleCreateChanges = function(note) {
+      if (typeof note === 'undefined') {
+        return;
+      }
+
+      if (note.commands_changes && note.commands_changes.indexOf('merge') !== -1) {
+        $.get(mrRefreshWidgetUrl);
+      }
+    };
+
     /*
     Render note in main comments area.
 
@@ -430,6 +441,7 @@ require('vendor/task_list');
      */
 
     Notes.prototype.addNote = function(xhr, note, status) {
+      this.handleCreateChanges(note);
       return this.renderNote(note);
     };
 

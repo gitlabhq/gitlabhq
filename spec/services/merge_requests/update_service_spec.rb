@@ -121,6 +121,99 @@ describe MergeRequests::UpdateService, services: true do
       end
     end
 
+    context 'merge' do
+      let(:opts) do
+        {
+          merge: merge_request.diff_head_sha
+        }
+      end
+
+      let(:service) { MergeRequests::UpdateService.new(project, user, opts) }
+
+      context 'without pipeline' do
+        before do
+          merge_request.merge_error = 'Error'
+
+          perform_enqueued_jobs do
+            service.execute(merge_request)
+            @merge_request = MergeRequest.find(merge_request.id)
+          end
+        end
+
+        it { expect(@merge_request).to be_valid }
+        it { expect(@merge_request.state).to eq('merged') }
+        it { expect(@merge_request.merge_error).to be_nil }
+      end
+
+      context 'with finished pipeline' do
+        before do
+          create(:ci_pipeline_with_one_job,
+            project: project,
+            ref:     merge_request.source_branch,
+            sha:     merge_request.diff_head_sha,
+            status:  :success)
+
+          perform_enqueued_jobs do
+            @merge_request = service.execute(merge_request)
+            @merge_request = MergeRequest.find(merge_request.id)
+          end
+        end
+
+        it { expect(@merge_request).to be_valid }
+        it { expect(@merge_request.state).to eq('merged') }
+      end
+
+      context 'with active pipeline' do
+        before do
+          service_mock = double
+          create(:ci_pipeline_with_one_job,
+            project: project,
+            ref:     merge_request.source_branch,
+            sha:     merge_request.diff_head_sha)
+
+          expect(MergeRequests::MergeWhenPipelineSucceedsService).to receive(:new).with(project, user).
+            and_return(service_mock)
+          expect(service_mock).to receive(:execute).with(merge_request)
+        end
+
+        it { service.execute(merge_request) }
+      end
+
+      context 'with a non-authorised user' do
+        let(:visitor) { create(:user) }
+        let(:service) { MergeRequests::UpdateService.new(project, visitor, opts) }
+
+        before do
+          merge_request.update_attribute(:merge_error, 'Error')
+
+          perform_enqueued_jobs do
+            @merge_request = service.execute(merge_request)
+            @merge_request = MergeRequest.find(merge_request.id)
+          end
+        end
+
+        it { expect(@merge_request.state).to eq('opened') }
+        it { expect(@merge_request.merge_error).not_to be_nil }
+      end
+
+      context 'MR can not be merged when note sha != MR sha' do
+        let(:opts) do
+          {
+            merge: 'other_commit'
+          }
+        end
+
+        before do
+          perform_enqueued_jobs do
+            @merge_request = service.execute(merge_request)
+            @merge_request = MergeRequest.find(merge_request.id)
+          end
+        end
+
+        it { expect(@merge_request.state).to eq('opened') }
+      end
+    end
+
     context 'todos' do
       let!(:pending_todo) { create(:todo, :assigned, user: user, project: project, target: merge_request, author: user2) }
 

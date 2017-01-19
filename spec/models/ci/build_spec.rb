@@ -1013,6 +1013,24 @@ describe Ci::Build, :models do
     end
   end
 
+  describe '#has_expiring_artifacts?' do
+    context 'when artifacts have expiration date set' do
+      before { build.update(artifacts_expire_at: 1.day.from_now) }
+
+      it 'has expiring artifacts' do
+        expect(build).to have_expiring_artifacts
+      end
+    end
+
+    context 'when artifacts do not have expiration date set' do
+      before { build.update(artifacts_expire_at: nil) }
+
+      it 'does not have expiring artifacts' do
+        expect(build).not_to have_expiring_artifacts
+      end
+    end
+  end
+
   describe '#has_trace_file?' do
     context 'when there is no trace' do
       it { expect(build.has_trace_file?).to be_falsey }

@@ -898,10 +898,22 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def has_commits?
-    commits_count > 0
+    merge_request_diff && commits_count > 0
   end
 
   def has_no_commits?
     !has_commits?
+  end
+
+  def mergeable_with_slash_command?(current_user, autocomplete_precheck: false, last_diff_sha: nil)
+    return false unless can_be_merged_by?(current_user)
+
+    return true if autocomplete_precheck
+
+    return false unless mergeable?(skip_ci_check: true)
+    return false if head_pipeline && !(head_pipeline.success? || head_pipeline.active?)
+    return false if last_diff_sha != diff_head_sha
+
+    true
   end
 end
