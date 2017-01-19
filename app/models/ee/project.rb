@@ -14,8 +14,6 @@ module EE
 
       delegate :actual_shared_runners_minutes_limit,
         :shared_runners_minutes_used?, to: :namespace
-
-      has_one :project_metrics, dependent: :destroy
     end
 
     def shared_runners_available?

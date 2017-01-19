@@ -12,18 +12,18 @@ describe ClearSharedRunnersMinutesWorker do
     subject { worker.perform }
 
     context 'when project metrics are defined' do
-      let!(:project_metrics) { create(:project_metrics, shared_runners_minutes: 100) }
+      let!(:project_statistics) { create(:project_statistics, shared_runners_minutes: 100) }
 
       it 'clears counters' do
         subject
 
-        expect(project_metrics.reload.shared_runners_minutes).to be_zero
+        expect(project_statistics.reload.shared_runners_minutes).to be_zero
       end
 
       it 'resets timer' do
         subject
 
-        expect(project_metrics.reload.shared_runners_minutes_last_reset).to be_like_time(Time.now)
+        expect(project_statistics.reload.shared_runners_minutes_last_reset).to be_like_time(Time.now)
       end
     end
 

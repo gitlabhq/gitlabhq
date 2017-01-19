@@ -212,7 +212,6 @@ project:
 - path_locks
 - approver_groups
 - route
-- project_metrics
 - statistics
 award_emoji:
 - awardable

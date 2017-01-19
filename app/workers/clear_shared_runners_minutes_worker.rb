@@ -7,7 +7,7 @@ class ClearSharedRunnersMinutesWorker
   def perform
     return unless try_obtain_lease
 
-    ProjectMetrics.update_all(
+    ProjectStatistics.update_all(
       shared_runners_minutes: 0,
       shared_runners_minutes_last_reset: Time.now)
 
