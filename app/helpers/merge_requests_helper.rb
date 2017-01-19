@@ -64,11 +64,11 @@ module MergeRequestsHelper
   end
 
   def mr_closes_issues
-    @mr_closes_issues ||= @merge_request.closes_issues
+    @mr_closes_issues ||= @merge_request.closes_issues(current_user)
   end
 
   def mr_issues_mentioned_but_not_closing
-    @mr_issues_mentioned_but_not_closing ||= @merge_request.issues_mentioned_but_not_closing
+    @mr_issues_mentioned_but_not_closing ||= @merge_request.issues_mentioned_but_not_closing(current_user)
   end
 
   def mr_change_branches_path(merge_request)
