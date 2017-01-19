@@ -78,8 +78,7 @@ class Admin::GroupsController < Admin::ApplicationController
 
   def group_params_ee
     [
-      :repository_size_limit,
-      :shared_runners_minutes_limit
+      :repository_size_limit
     ]
   end
 end

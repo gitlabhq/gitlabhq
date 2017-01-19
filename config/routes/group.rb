@@ -30,7 +30,6 @@ scope(path: 'groups/*group_id',
   ## EE-specific
   resource :notification_setting, only: [:update]
   resources :audit_events, only: [:index]
-  resources :pipeline_quota, only: [:index]
   ## EE-specific
 
   ## EE-specific
