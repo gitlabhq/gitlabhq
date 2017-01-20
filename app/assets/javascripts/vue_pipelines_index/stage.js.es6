@@ -1,5 +1,5 @@
 /* global Vue, Flash, gl */
-/* eslint-disable no-param-reassign, no-bitwise */
+/* eslint-disable no-param-reassign */
 
 ((gl) => {
   gl.VueStage = Vue.extend({
@@ -40,11 +40,11 @@
       keepGraph(e) {
         const { target } = e;
 
-        if (~target.className.indexOf('js-ci-action-icon')) return null;
+        if (target.className.indexOf('js-ci-action-icon') >= 0) return null;
 
         if (
           target.parentElement &&
-          ~target.parentElement.className.indexOf('js-ci-action-icon')
+          (target.parentElement.className.indexOf('js-ci-action-icon') >= 0)
         ) return null;
 
         return e.stopPropagation();
