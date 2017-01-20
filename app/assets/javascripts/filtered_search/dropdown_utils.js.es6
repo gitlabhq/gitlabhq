@@ -91,6 +91,7 @@
       inputValue = inputValue.replace(/"(.*?)"/g, str => str.replace(/\s/g, '_') );
 
       // Get the right position for the word selected
+      // Regex matches first space
       let right = inputValue.slice(selectionStart).search(/\s/);
 
       if (right >= 0) {
@@ -100,6 +101,7 @@
       }
 
       // Get the left position for the word selected
+      // Regex matches last non-whitespace character
       let left = inputValue.slice(0, right).search(/\S+$/);
 
       if (selectionStart === 0) {
