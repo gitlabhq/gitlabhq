@@ -38,6 +38,8 @@ module Ci
 
     acts_as_taggable
 
+    after_destroy :cleanup_runner_queue
+
     # Searches for runners matching the given query.
     #
     # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
@@ -142,6 +144,12 @@ module Ci
     end
 
     private
+
+    def cleanup_runner_queue
+      Gitlab::Redis.with do |redis|
+        redis.del(runner_queue_key)
+      end
+    end
 
     def runner_queue_key
       "runner:build_queue:#{self.token}"

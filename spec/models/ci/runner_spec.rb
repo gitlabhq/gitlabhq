@@ -319,6 +319,25 @@ describe Ci::Runner, models: true do
     end
   end
 
+  describe '#destroy' do
+    let(:runner) { create(:ci_runner) }
+
+    context 'when there is a tick in the queue' do
+      let!(:queue_key) { runner.send(:runner_queue_key) }
+
+      before do
+        runner.tick_runner_queue
+        runner.destroy
+      end
+
+      it 'cleans up the queue' do
+        Gitlab::Redis.with do |redis|
+          expect(redis.get(queue_key)).to be_nil
+        end
+      end
+    end
+  end
+
   describe '.assignable_for' do
     let(:runner) { create(:ci_runner) }
     let(:project) { create(:project) }
