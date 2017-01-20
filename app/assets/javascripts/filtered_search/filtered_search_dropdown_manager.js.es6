@@ -93,7 +93,8 @@
         this.font = window.getComputedStyle(this.filteredSearchInput).font;
       }
 
-      const inputText = gl.DropdownUtils.getSearchInput(this.filteredSearchInput).trim();
+      const input = this.filteredSearchInput;
+      const inputText = input.value.slice(0, input.selectionStart);
       const filterIconPadding = 27;
       const offset = gl.text.getTextWidth(inputText, this.font) + filterIconPadding;
 
