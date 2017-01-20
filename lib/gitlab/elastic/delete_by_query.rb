@@ -4,7 +4,7 @@ module Elasticsearch
       # The built-in action https://github.com/elastic/elasticsearch-ruby/blob/master/elasticsearch-api/lib/elasticsearch/api/actions/delete_by_query.rb
       # does not work with Elasticsearch 5.0 yet. There is an issue for that https://github.com/elastic/elasticsearch-ruby/issues/387
       # but until it's not fixed we can use our own action for that
-      def gitlab_delete_by_query(arguments={})
+      def gitlab_delete_by_query(arguments = {})
         raise ArgumentError, "Required argument 'index' missing" unless arguments[:index]
 
         valid_params = [
