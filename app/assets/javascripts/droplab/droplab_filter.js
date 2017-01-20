@@ -3,10 +3,11 @@
 /* global droplab */
 
 require('../window')(function(w){
-  var charRegex = new RegExp('^.$', 'g');
   w.droplabFilter = {
 
     keydownWrapper: function(e){
+        var hiddenCount = 0;
+        var dataHiddenCount = 0;
         var list = e.detail.hook.list;
         var data = list.data;
         var value = e.detail.hook.trigger.value.toLowerCase();
@@ -15,10 +16,6 @@ require('../window')(function(w){
         var filterFunction;
         // will only work on dynamically set data
         if(!data){
-          return;
-        }
-
-        if (!charRegex.test(e.detail.key)) {
           return;
         }
 
@@ -32,11 +29,22 @@ require('../window')(function(w){
           };
         }
 
+        dataHiddenCount = data.filter(function(o) {
+          return !o.droplab_hidden;
+        }).length;
+
         matches = data.map(function(o) {
           return filterFunction(o, value);
         });
-        list.render(matches);
-        list.currentIndex = 0;
+
+        hiddenCount = matches.filter(function(o) {
+          return !o.droplab_hidden;
+        }).length;
+
+        if (dataHiddenCount !== hiddenCount) {
+          list.render(matches);
+          list.currentIndex = 0;
+        }
     },
 
     init: function init(hookInput) {

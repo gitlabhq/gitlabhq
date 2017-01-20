@@ -615,7 +615,6 @@ require('./window')(function(w){
 
             if (elOffsetTop > filterDropdownBottom) {
               filterDropdownEl.scrollTop = elOffsetTop - filterDropdownBottom;
-              console.log(filterDropdownEl.scrollTop);
             }
           }
         }
