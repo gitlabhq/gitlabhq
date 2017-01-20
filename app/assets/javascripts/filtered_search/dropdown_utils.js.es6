@@ -99,7 +99,7 @@
         right += selectionStart;
       }
 
-      let left = inputValue.slice(0, right).search(/\S+$/);
+      let left = inputValue.slice(0, selectionStart + 1).search(/\S+$/);
 
       if (selectionStart === 0) {
         left = 0;
