@@ -185,14 +185,6 @@ class Namespace < ActiveRecord::Base
   end
 
   def export_path
-    File.join(Gitlab::ImportExport.storage_path, full_path_was)
-  end
-
-  def full_path_was
-    if parent
-      parent.full_path + '/' + path_was
-    else
-      path_was
-    end
+    File.join(Gitlab::ImportExport.storage_path, path_was)
   end
 end
