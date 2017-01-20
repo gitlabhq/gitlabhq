@@ -58,6 +58,7 @@ var CustomEvent = require('./custom_event_polyfill');
 var utils = require('./utils');
 
 var DropDown = function(list) {
+  this.currentIndex = 0;
   this.hidden = true;
   this.list = list;
   this.items = [];
@@ -576,7 +577,7 @@ require('./window')(function(w){
     var isUpArrow = false;
     var isDownArrow = false;
     var removeHighlight = function removeHighlight(list) {
-      var listItems = list.list.querySelectorAll('li');
+      var listItems = list.list.querySelectorAll('li:not(.divider)');
       for(var i = 0; i < listItems.length; i++) {
         listItems[i].classList.remove('dropdown-active');
       }
@@ -589,7 +590,10 @@ require('./window')(function(w){
         if(!listItems[currentIndex-1]){
           currentIndex = currentIndex-1;
         }
-        listItems[currentIndex-1].classList.add('dropdown-active');
+
+        if (listItems[currentIndex-1]) {
+          listItems[currentIndex-1].classList.add('dropdown-active');
+        }
       }
     };
 
@@ -617,6 +621,8 @@ require('./window')(function(w){
 
     var keydown = function keydown(e){
       var typedOn = e.target;
+      var dropdown = e.detail.hook.list;
+      currentIndex = dropdown.currentIndex;
       isUpArrow = false;
       isDownArrow = false;
 
@@ -649,6 +655,7 @@ require('./window')(function(w){
       if(isDownArrow){ currentIndex++; }
       if(currentIndex < 0){ currentIndex = 0; }
       setMenuForArrows(e.detail.hook.list);
+      dropdown.currentIndex = currentIndex;
     };
 
     w.addEventListener('mousedown.dl', mousedown);
