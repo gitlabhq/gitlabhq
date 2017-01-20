@@ -38,7 +38,7 @@
           .form-group
             = f.label :repository_size_limit, class: 'label-light' do
               Repository size limit (MB)
-            = f.number_field :repository_size_limit, class: 'form-control', min: 0
+            = f.number_field :repository_size_limit, value: f.object.repository_size_limit.try(:to_mb), class: 'form-control', min: 0
             %span.help-block#repository_size_limit_help_block
               = size_limit_message(@project)
 

@@ -623,6 +623,17 @@ describe Project, models: true do
     end
   end
 
+  describe '#repository_size_limit column' do
+    it 'support values up to 8 exabytes' do
+      project = create(:empty_project)
+      project.update_column(:repository_size_limit, 8.exabytes - 1)
+
+      project.reload
+
+      expect(project.repository_size_limit).to eql(8.exabytes - 1)
+    end
+  end
+
   describe '#default_issues_tracker?' do
     it "is true if used internal tracker" do
       project = build(:empty_project)

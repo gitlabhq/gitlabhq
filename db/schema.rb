@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170106172237) do
+ActiveRecord::Schema.define(version: 20170118200412) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -102,7 +102,6 @@ ActiveRecord::Schema.define(version: 20170106172237) do
     t.boolean "usage_ping_enabled", default: true, null: false
     t.boolean "koding_enabled"
     t.string "koding_url"
-    t.integer "repository_size_limit", default: 0
     t.text "sign_in_text_html"
     t.text "help_page_text_html"
     t.text "shared_runners_text_html"
@@ -119,6 +118,7 @@ ActiveRecord::Schema.define(version: 20170106172237) do
     t.string "plantuml_url"
     t.boolean "plantuml_enabled"
     t.integer "shared_runners_minutes", default: 0, null: false
+    t.integer "repository_size_limit", limit: 8, default: 0
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -853,10 +853,10 @@ ActiveRecord::Schema.define(version: 20170106172237) do
     t.datetime "ldap_sync_last_sync_at"
     t.datetime "deleted_at"
     t.boolean "lfs_enabled"
-    t.integer "repository_size_limit"
     t.text "description_html"
     t.integer "parent_id"
     t.integer "shared_runners_minutes_limit"
+    t.integer "repository_size_limit", limit: 8
   end
 
   add_index "namespaces", ["created_at"], name: "index_namespaces_on_created_at", using: :btree
@@ -1105,8 +1105,8 @@ ActiveRecord::Schema.define(version: 20170106172237) do
     t.boolean "repository_read_only"
     t.boolean "lfs_enabled"
     t.text "description_html"
-    t.integer "repository_size_limit"
     t.boolean "only_allow_merge_if_all_discussions_are_resolved"
+    t.integer "repository_size_limit", limit: 8
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree

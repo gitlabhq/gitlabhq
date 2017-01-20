@@ -176,4 +176,14 @@ describe ApplicationSetting, models: true do
       expect(setting.domain_blacklist).to contain_exactly('example.com', 'test.com', 'foo.bar')
     end
   end
+
+  describe '#repository_size_limit column' do
+    it 'support values up to 8 exabytes' do
+      setting.update_column(:repository_size_limit, 8.exabytes - 1)
+
+      setting.reload
+
+      expect(setting.repository_size_limit).to eql(8.exabytes - 1)
+    end
+  end
 end

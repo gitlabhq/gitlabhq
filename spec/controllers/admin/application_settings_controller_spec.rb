@@ -6,6 +6,36 @@ describe Admin::ApplicationSettingsController do
   let(:admin) { create(:admin) }
   let(:user) { create(:user)}
 
+  describe 'PUT #update' do
+    before do
+      sign_in(admin)
+    end
+
+    context 'with valid params' do
+      subject { put :update, application_setting: { repository_size_limit: '100' } }
+
+      it 'redirect to application settings page' do
+        is_expected.to redirect_to(admin_application_settings_path)
+      end
+
+      it 'set flash notice' do
+        is_expected.to set_flash[:notice].to('Application settings saved successfully')
+      end
+    end
+
+    context 'with invalid params' do
+      subject! { put :update, application_setting: { repository_size_limit: '-100' } }
+
+      it 'render show template' do
+        is_expected.to render_template(:show)
+      end
+
+      it 'assigned @application_settings has errors' do
+        expect(assigns(:application_setting).errors[:repository_size_limit]).to be_present
+      end
+    end
+  end
+
   describe 'GET #usage_data with no access' do
     before do
       sign_in(user)

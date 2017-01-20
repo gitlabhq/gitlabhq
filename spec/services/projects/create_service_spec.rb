@@ -98,6 +98,30 @@ describe Projects::CreateService, '#execute', services: true do
     end
   end
 
+  context 'repository_size_limit assignment as Bytes' do
+    let(:admin_user) { create(:user, admin: true) }
+
+    context 'when param present' do
+      let(:opts) { { repository_size_limit: '100' } }
+
+      it 'assign repository_size_limit as Bytes' do
+        project = create_project(admin_user, opts)
+
+        expect(project.repository_size_limit).to eql(100 * 1024 * 1024)
+      end
+    end
+
+    context 'when param not present' do
+      let(:opts) { { repository_size_limit: '' } }
+
+      it 'assign nil value' do
+        project = create_project(admin_user, opts)
+
+        expect(project.repository_size_limit).to be_nil
+      end
+    end
+  end
+
   context 'restricted visibility level' do
     before do
       stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
