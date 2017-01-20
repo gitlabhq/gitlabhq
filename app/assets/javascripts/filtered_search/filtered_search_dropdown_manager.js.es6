@@ -78,7 +78,6 @@
       // Sometimes can end up at end of input
       input.setSelectionRange(selectionStart, selectionStart);
 
-      const inputValue = input.value;
       const { right } = gl.DropdownUtils.getInputSelectionPosition(input);
 
       input.setSelectionRange(right, right);
