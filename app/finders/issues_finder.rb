@@ -33,7 +33,7 @@ class IssuesFinder < IssuableFinder
   def self.not_restricted_by_confidentiality(user)
     return Issue.where('issues.confidential IS NULL OR issues.confidential IS FALSE') if user.blank?
 
-    return Issue.all if user.admin?
+    return Issue.all if user.admin? || user.auditor?
 
     Issue.where('
       issues.confidential IS NULL

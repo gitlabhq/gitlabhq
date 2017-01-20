@@ -8,6 +8,7 @@ class ProjectPolicy < BasePolicy
       (project.group && project.group.has_owner?(user))
 
     owner_access! if user.admin? || owner
+    auditor_access! if user.auditor?
     team_member_owner_access! if owner
 
     if project.public? || (project.internal? && !user.external?)
@@ -180,6 +181,37 @@ class ProjectPolicy < BasePolicy
     cannot! :push_code_to_protected_branches
     cannot! :update_merge_request
     cannot! :admin_merge_request
+  end
+
+  # An auditor user has read-only access to all projects
+  def auditor_access!
+    can! :download_code
+    can! :download_wiki_code
+    can! :read_project
+    can! :read_board
+    can! :read_list
+    can! :read_wiki
+    can! :read_issue
+    can! :read_label
+    can! :read_milestone
+    can! :read_project_snippet
+    can! :read_project_member
+    can! :read_note
+    can! :read_cycle_analytics
+    can! :read_pipeline
+    can! :read_build
+    can! :read_commit_status
+    can! :read_build
+    can! :read_container_image
+    can! :read_pipeline
+    can! :read_environment
+    can! :read_deployment
+    can! :read_merge_request
+    can! :read_pages
+    can! :read_commit_status
+    can! :read_pipeline
+    can! :read_container_image
+    can! :read_merge_request
   end
 
   def disabled_features!
