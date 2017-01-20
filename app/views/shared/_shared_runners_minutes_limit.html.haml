@@ -6,7 +6,7 @@
 - if cookies[:hide_shared_runner_quota_message].blank? && has_limit && namespace.shared_runners_minutes_used? && can_see_status
   .shared-runner-quota-message.alert.alert-warning.hidden-xs{ data: { scope: scope } }
     = namespace.name
-    has exceeded their build minutes quota. Pipelines will not run anymore on shared runners.
+    has exceeded their build minutes quota. Pipelines will not run anymore on shared Runners.
 
     .pull-right
       = link_to 'Remind later', '#', class: 'hide-shared-runner-limit-message alert-link'

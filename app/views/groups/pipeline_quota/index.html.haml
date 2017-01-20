@@ -1,6 +1,11 @@
-- page_title "Pipeline Quota"
-%h3.page-title Group Pipeline Quota
-%p.light Monthly build minutes usage across shared runners for #{@group.name}
+- page_title "Pipelines quota"
+%h3.page-title
+  Group pipelines quota
+  = link_to icon('question-circle'), help_page_path("user/admin_area/settings/continuous_integration", anchor: "shared-runners-build-minutes-quota"), target: '_blank'
+%p.light
+  Monthly build minutes usage across shared Runners for the
+  %strong #{@group.name}
+  group
 
 .pipeline-quota.container-fluid
   .row
@@ -11,7 +16,7 @@
           Usage since
           = last_reset.strftime('%b %d, %Y')
         - else
-          Current Period Usage
+          Current period usage
       %div
         = group_shared_runner_limits_quota(@group)
         minutes
