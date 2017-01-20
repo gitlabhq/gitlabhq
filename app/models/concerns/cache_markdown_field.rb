@@ -51,6 +51,10 @@ module CacheMarkdownField
     CACHING_CLASSES.map(&:constantize)
   end
 
+  def skip_project_check?
+    false
+  end
+
   extend ActiveSupport::Concern
 
   included do
@@ -112,9 +116,7 @@ module CacheMarkdownField
       invalidation_method = "#{html_field}_invalidated?".to_sym
 
       define_method(cache_method) do
-        options = {
-          skip_project_check: is_a?(Note) && for_personal_snippet?
-        }
+        options = { skip_project_check: skip_project_check? }
         html = Banzai::Renderer.cacheless_render_field(self, markdown_field, options)
         __send__("#{html_field}=", html)
         true

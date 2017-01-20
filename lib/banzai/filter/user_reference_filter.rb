@@ -28,6 +28,7 @@ module Banzai
 
         ref_pattern = User.reference_pattern
         ref_pattern_start = /\A#{ref_pattern}\z/
+
         nodes.each do |node|
           if text_node?(node)
             replace_text_when_pattern_matches(node, ref_pattern) do |content|

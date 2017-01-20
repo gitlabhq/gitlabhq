@@ -15,25 +15,25 @@ describe Notes::CreateService, services: true do
 
     context "valid params" do
       it 'returns a valid note' do
-        note = Notes::CreateService.new(project, user, opts).execute
+        note = described_class.new(project, user, opts).execute
 
         expect(note).to be_valid
       end
 
       it 'returns a persisted note' do
-        note = Notes::CreateService.new(project, user, opts).execute
+        note = described_class.new(project, user, opts).execute
 
         expect(note).to be_persisted
       end
 
       it 'note has valid content' do
-        note = Notes::CreateService.new(project, user, opts).execute
+        note = described_class.new(project, user, opts).execute
 
         expect(note.note).to eq(opts[:note])
       end
 
       it 'note belongs to the correct project' do
-        note = Notes::CreateService.new(project, user, opts).execute
+        note = described_class.new(project, user, opts).execute
 
         expect(note.project).to eq(project)
       end
@@ -44,7 +44,7 @@ describe Notes::CreateService, services: true do
 
         expect_any_instance_of(TodoService).to receive(:new_note).with(note, user)
 
-        Notes::CreateService.new(project, user, opts).execute
+        described_class.new(project, user, opts).execute
       end
 
       it 'enqueues NewNoteWorker' do
@@ -53,7 +53,7 @@ describe Notes::CreateService, services: true do
 
         expect(NewNoteWorker).to receive(:perform_async).with(note.id)
 
-        Notes::CreateService.new(project, user, opts).execute
+        described_class.new(project, user, opts).execute
       end
     end
 
@@ -115,7 +115,7 @@ describe Notes::CreateService, services: true do
         noteable_type: 'Issue',
         noteable_id: issue.id
       }
-      note = Notes::CreateService.new(project, user, opts).execute
+      note = described_class.new(project, user, opts).execute
 
       expect(note).to be_valid
       expect(note.name).to eq('smile')
@@ -127,7 +127,7 @@ describe Notes::CreateService, services: true do
         noteable_type: 'Issue',
         noteable_id: issue.id
       }
-      note = Notes::CreateService.new(project, user, opts).execute
+      note = described_class.new(project, user, opts).execute
 
       expect(note).to be_valid
       expect(note.note).to eq(opts[:note])
@@ -142,7 +142,7 @@ describe Notes::CreateService, services: true do
 
       expect_any_instance_of(TodoService).to receive(:new_award_emoji).with(issue, user)
 
-      Notes::CreateService.new(project, user, opts).execute
+      described_class.new(project, user, opts).execute
     end
   end
 end

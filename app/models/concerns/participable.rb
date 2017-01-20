@@ -96,7 +96,8 @@ module Participable
 
     participants.merge(ext.users)
 
-    if self.is_a?(PersonalSnippet)
+    case self
+    when PersonalSnippet
       Ability.users_that_can_read_personal_snippet(participants.to_a, self)
     else
       Ability.users_that_can_read_project(participants.to_a, project)

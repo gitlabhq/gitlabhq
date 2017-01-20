@@ -35,17 +35,14 @@ describe Issue, "Mentionable" do
 
     subject { issue.mentioned_users }
 
-    it { is_expected.to include(user) }
-    it { is_expected.not_to include(user2) }
+    it { expect(subject).to contain_exactly(user) }
 
     context 'when a note on personal snippet' do
       let!(:note) { create(:note_on_personal_snippet, note: "#{user.to_reference} mentioned #{user3.to_reference}") }
 
       subject { note.mentioned_users }
 
-      it { is_expected.to include(user) }
-      it { is_expected.to include(user3) }
-      it { is_expected.not_to include(user2) }
+      it { expect(subject).to contain_exactly(user, user3) }
     end
   end
 

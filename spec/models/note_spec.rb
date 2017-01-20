@@ -59,7 +59,7 @@ describe Note, models: true do
     end
 
     context 'when noteable is a personal snippet' do
-      subject { create(:note_on_personal_snippet) }
+      subject { build(:note_on_personal_snippet) }
 
       it 'is valid without project' do
         is_expected.to be_valid
@@ -318,6 +318,72 @@ describe Note, models: true do
 
         expect(reloaded_note.discussion_id).not_to be_nil
         expect(reloaded_note.discussion_id).to match(/\A\h{40}\z/)
+      end
+    end
+  end
+
+  describe '#for_personal_snippet?' do
+    it 'returns false for a project snippet note' do
+      expect(build(:note_on_project_snippet).for_personal_snippet?).to be_falsy
+    end
+
+    it 'returns true for a personal snippet note' do
+      expect(build(:note_on_personal_snippet).for_personal_snippet?).to be_truthy
+    end
+  end
+
+  describe '#to_ability_name' do
+    it 'returns snippet for a project snippet note' do
+      expect(build(:note_on_project_snippet).to_ability_name).to eq('snippet')
+    end
+
+    it 'returns personal_snippet for a personal snippet note' do
+      expect(build(:note_on_personal_snippet).to_ability_name).to eq('personal_snippet')
+    end
+
+    it 'returns merge_request for an MR note' do
+      expect(build(:note_on_merge_request).to_ability_name).to eq('merge_request')
+    end
+
+    it 'returns issue for an issue note' do
+      expect(build(:note_on_issue).to_ability_name).to eq('issue')
+    end
+
+    it 'returns issue for a commit note' do
+      expect(build(:note_on_commit).to_ability_name).to eq('commit')
+    end
+  end
+
+  describe '#cache_markdown_field' do
+    let(:html) { '<p>some html</p>'}
+
+    context 'note for a project snippet' do
+      let(:note) { build(:note_on_project_snippet) }
+
+      before do
+        expect(Banzai::Renderer).to receive(:cacheless_render_field).
+          with(note, :note, { skip_project_check: false }).and_return(html)
+
+        note.save
+      end
+
+      it 'creates a note' do
+        expect(note.note_html).to eq(html)
+      end
+    end
+
+    context 'note for a personal snippet' do
+      let(:note) { build(:note_on_personal_snippet) }
+
+      before do
+        expect(Banzai::Renderer).to receive(:cacheless_render_field).
+          with(note, :note, { skip_project_check: true }).and_return(html)
+
+        note.save
+      end
+
+      it 'creates a note' do
+        expect(note.note_html).to eq(html)
       end
     end
   end

@@ -52,7 +52,7 @@ module Mentionable
       options = options.merge(
         cache_key: [self, attr],
         author: author,
-        skip_project_check: is_a?(Note) && for_personal_snippet?
+        skip_project_check: skip_project_check?
       )
 
       extractor.analyze(text, options)
@@ -124,5 +124,9 @@ module Mentionable
   # the specified target.
   def cross_reference_exists?(target)
     SystemNoteService.cross_reference_exists?(target, local_reference)
+  end
+
+  def skip_project_check?
+    false
   end
 end

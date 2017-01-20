@@ -29,7 +29,7 @@ class Ability
       when Snippet::INTERNAL, Snippet::PUBLIC
         users
       when Snippet::PRIVATE
-        users.select { |user| snippet.author == user }
+        users.include?(snippet.author) ? [snippet.author] : []
       end
     end
 

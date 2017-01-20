@@ -172,32 +172,29 @@ describe Ability, lib: true do
   end
 
   describe '.users_that_can_read_personal_snippet' do
-    subject { Ability.users_that_can_read_personal_snippet(users, snippet) }
+    def users_for_snippet(snippet)
+      described_class.users_that_can_read_personal_snippet(users, snippet)
+    end
+
     let(:users)  { create_list(:user, 3) }
     let(:author) { users[0] }
 
-    context 'private snippet' do
-      let(:snippet) { create(:personal_snippet, :private, author: author) }
+    it 'private snippet is readable only by its author' do
+      snippet = create(:personal_snippet, :private, author: author)
 
-      it 'is readable only by its author' do
-        expect(subject).to match_array([author])
-      end
+      expect(users_for_snippet(snippet)).to match_array([author])
     end
 
-    context 'internal snippet' do
-      let(:snippet) { create(:personal_snippet, :public, author: author) }
+    it 'internal snippet is readable by all registered users' do
+      snippet = create(:personal_snippet, :public, author: author)
 
-      it 'is readable by all registered users' do
-        expect(subject).to match_array(users)
-      end
+      expect(users_for_snippet(snippet)).to match_array(users)
     end
 
-    context 'public snippet' do
-      let(:snippet) { create(:personal_snippet, :public, author: author) }
+    it 'public snippet is readable by all users' do
+      snippet = create(:personal_snippet, :public, author: author)
 
-      it 'is readable by all users' do
-        expect(subject).to match_array(users)
-      end
+      expect(users_for_snippet(snippet)).to match_array(users)
     end
   end
 
