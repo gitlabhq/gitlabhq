@@ -127,6 +127,31 @@ describe Projects::UpdateService, services: true do
     end
   end
 
+  context 'repository_size_limit assignment as Bytes' do
+    let(:admin_user) { create(:user, admin: true) }
+    let(:project) { create(:empty_project, repository_size_limit: 0) }
+
+    context 'when param present' do
+      let(:opts) { { repository_size_limit: '100' } }
+
+      it 'converts from MB to Bytes' do
+        update_project(project, admin_user, opts)
+
+        expect(project.reload.repository_size_limit).to eql(100 * 1024 * 1024)
+      end
+    end
+
+    context 'when param not present' do
+      let(:opts) { { repository_size_limit: '' } }
+
+      it 'assign nil value' do
+        update_project(project, admin_user, opts)
+
+        expect(project.reload.repository_size_limit).to be_nil
+      end
+    end
+  end
+
   it 'returns an error result when record cannot be updated' do
     result = update_project(project, admin, { name: 'foo&bar' })
 

@@ -13,6 +13,9 @@ module Projects
         end
       end
 
+      # Repository size limit comes as MB from the view
+      assign_repository_size_limit_as_bytes(project)
+
       new_branch = params.delete(:default_branch)
       new_repository_storage = params.delete(:repository_storage)
 

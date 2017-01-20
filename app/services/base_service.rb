@@ -46,6 +46,13 @@ class BaseService
 
   private
 
+  def assign_repository_size_limit_as_bytes(model)
+    repository_size_limit = @params.delete(:repository_size_limit)
+    new_value = repository_size_limit.to_i.megabytes if repository_size_limit.present?
+
+    model.repository_size_limit = new_value
+  end
+
   def error(message, http_status = nil)
     result = {
       message: message,

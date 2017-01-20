@@ -100,7 +100,7 @@ describe Group, models: true do
     it 'returns the value set locally' do
       group.update_attribute(:repository_size_limit, 75)
 
-      expect(group.actual_size_limit).to eq(75.megabytes)
+      expect(group.actual_size_limit).to eq(75)
     end
   end
 

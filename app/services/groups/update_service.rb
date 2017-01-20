@@ -12,6 +12,9 @@ module Groups
         end
       end
 
+      # Repository size limit comes as MB from the view
+      assign_repository_size_limit_as_bytes(group)
+
       group.assign_attributes(params)
 
       begin
