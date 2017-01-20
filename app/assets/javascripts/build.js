@@ -67,22 +67,6 @@
 
     Build.prototype.initSidebar = function() {
       this.$sidebar = $('.js-build-sidebar');
-<<<<<<< 36beffc12461d2e479ad8b000b7ba5b6ea40cd33
-      this.sidebarTranslationLimits = {
-<<<<<<< 3ee255139ab555ec49a177d3b2eed65580f36c4f
-        min: $('.navbar-gitlab').outerHeight() + $('.layout-nav').outerHeight()
-      };
-      this.sidebarTranslationLimits.max = this.sidebarTranslationLimits.min + $('.scrolling-tabs-container').outerHeight();
-=======
-        min: 0
-      }
-      this.sidebarTranslationLimits.max = $('.scrolling-tabs-container').outerHeight() + $('.navbar-gitlab').outerHeight() + $('.layout-nav').outerHeight();
->>>>>>> Fix sidebar scrolling
-      this.$sidebar.css({
-        top: this.sidebarTranslationLimits.max
-      });
-=======
->>>>>>> Keep sidebars absolute until fixed at top; remove unneeded JS
       this.$sidebar.niceScroll();
       this.$document.off('click', '.js-sidebar-build-toggle').on('click', '.js-sidebar-build-toggle', this.toggleSidebar);
     };
