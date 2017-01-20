@@ -86,6 +86,43 @@ describe API::Commits, api: true  do
         expect(json_response.first["id"]).to eq("570e7b2abdd848b95f2f578043fc23bd6f6fd24d")
       end
     end
+
+    context 'pagination' do
+      it_behaves_like 'a paginated resources'
+
+      let(:page) { 0 }
+      let(:per_page) { 5 }
+      let(:ref_name) { 'master' }
+      let!(:request) do
+        get api("/projects/#{project.id}/repository/commits?page=#{page}&per_page=#{per_page}&ref_name=#{ref_name}", user)
+      end
+
+      it 'returns the commit count in the correct header' do
+        commit_count = project.repository.commit_count_for_ref(ref_name).to_s
+
+        expect(response.headers['X-Total']).to eq(commit_count)
+      end
+
+      context 'viewing the first page' do
+        it 'returns the first 5 commits' do
+          commit = project.repository.commit
+
+          expect(json_response.size).to eq(per_page)
+          expect(json_response.first['id']).to eq(commit.id)
+        end
+      end
+
+      context 'viewing the second page' do
+        let(:page) { 1 }
+
+        it 'returns the second 5 commits' do
+          commit = project.repository.commits('HEAD', offset: per_page * page).first
+
+          expect(json_response.size).to eq(per_page)
+          expect(json_response.first['id']).to eq(commit.id)
+        end
+      end
+    end
   end
 
   describe "Create a commit with multiple files and actions" do

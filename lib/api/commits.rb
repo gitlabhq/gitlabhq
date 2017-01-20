@@ -33,7 +33,10 @@ module API
                                                   after: params[:since],
                                                   before: params[:until])
 
-        present commits, with: Entities::RepoCommit
+        commit_count = user_project.repository.commit_count_for_ref(ref)
+        paginated_commits = Kaminari.paginate_array(commits, total_count: commit_count)
+
+        present paginate(paginated_commits), with: Entities::RepoCommit
       end
 
       desc 'Commit multiple file changes as one commit' do
