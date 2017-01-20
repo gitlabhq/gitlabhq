@@ -2,11 +2,17 @@ module Ci
   # This class responsible for assigning
   # proper pending build to runner on runner API request
   class RegisterBuildService
-    def execute(current_runner)
+    attr_reader :runner
+
+    def initialize(runner)
+      @runner = runner
+    end
+
+    def execute
       builds = Ci::Build.pending.unstarted
 
       builds =
-        if current_runner.shared?
+        if runner.shared?
           builds.
             # don't run projects which have not enabled shared runners and builds
             joins(:project).where(projects: { shared_runners_enabled: true }).
@@ -19,17 +25,17 @@ module Ci
             order('COALESCE(project_builds.running_builds, 0) ASC', 'ci_builds.id ASC')
         else
           # do run projects which are only assigned to this runner (FIFO)
-          builds.where(project: current_runner.projects.with_builds_enabled).order('created_at ASC')
+          builds.where(project: runner.projects.with_builds_enabled).order('created_at ASC')
         end
 
       build = builds.find do |build|
-        current_runner.can_pick?(build)
+        runner.can_pick?(build)
       end
 
       if build
         # In case when 2 runners try to assign the same build, second runner will be declined
         # with StateMachines::InvalidTransition or StaleObjectError when doing run! or save method.
-        build.runner_id = current_runner.id
+        build.runner_id = runner.id
         build.run!
       end
 

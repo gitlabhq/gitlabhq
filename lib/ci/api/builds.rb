@@ -23,7 +23,7 @@ module Ci
 
           new_update = current_runner.ensure_runner_queue_value
 
-          build = Ci::RegisterBuildService.new.execute(current_runner)
+          build = Ci::RegisterBuildService.new(current_runner).execute
 
           if build
             Gitlab::Metrics.add_event(:build_found,
