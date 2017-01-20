@@ -40,6 +40,16 @@ describe 'Dropdown label', js: true, feature: true do
     visit namespace_project_issues_path(project.namespace, project)
   end
 
+  describe 'keyboard navigation' do
+    it 'selects label' do
+      send_keys_to_filtered_search('label:')
+
+      filtered_search.native.send_keys(:down, :down, :enter)
+
+      expect(filtered_search.value).to eq("label:~#{special_label.name}")
+    end
+  end
+
   describe 'behavior' do
     it 'opens when the search bar has label:' do
       filtered_search.set('label:')

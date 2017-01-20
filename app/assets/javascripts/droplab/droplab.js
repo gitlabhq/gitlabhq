@@ -165,15 +165,21 @@ Object.assign(DropDown.prototype, {
   },
 
   show: function() {
-    // debugger
-    this.list.style.display = 'block';
-    this.hidden = false;
+    if (this.hidden) {
+      // debugger
+      this.list.style.display = 'block';
+      this.currentIndex = 0;
+      this.hidden = false;
+    }
   },
 
   hide: function() {
-    // debugger
-    this.list.style.display = 'none';
-    this.hidden = true;
+    if (!this.hidden) {
+      // debugger
+      this.list.style.display = 'none';
+      this.currentIndex = 0;
+      this.hidden = true;
+    }
   },
 
   destroy: function() {
@@ -479,6 +485,8 @@ Object.assign(HookInput.prototype, {
     this.input = function input(e) {
       if(self.hasRemovedEvents) return;
 
+      self.list.show();
+
       var inputEvent = new CustomEvent('input.dl', {
         detail: {
           hook: self,
@@ -488,7 +496,6 @@ Object.assign(HookInput.prototype, {
         cancelable: true
       });
       e.target.dispatchEvent(inputEvent);
-      self.list.show();
     }
 
     this.keyup = function keyup(e) {
@@ -504,6 +511,8 @@ Object.assign(HookInput.prototype, {
     }
 
     function keyEvent(e, keyEventName){
+      self.list.show();
+
       var keyEvent = new CustomEvent(keyEventName, {
         detail: {
           hook: self,
@@ -515,7 +524,6 @@ Object.assign(HookInput.prototype, {
         cancelable: true
       });
       e.target.dispatchEvent(keyEvent);
-      self.list.show();
     }
 
     this.events = this.events || {};
@@ -573,26 +581,43 @@ require('./window')(function(w){
   module.exports = function(){
     var currentKey;
     var currentFocus;
-    var currentIndex = 0;
     var isUpArrow = false;
     var isDownArrow = false;
     var removeHighlight = function removeHighlight(list) {
-      var listItems = list.list.querySelectorAll('li:not(.divider)');
+      var listItems = Array.prototype.slice.call(list.list.querySelectorAll('li:not(.divider)'), 0);
+      var listItemsTmp = [];
       for(var i = 0; i < listItems.length; i++) {
-        listItems[i].classList.remove('dropdown-active');
+        var listItem = listItems[i];
+        listItem.classList.remove('dropdown-active');
+
+        if (listItem.style.display !== 'none') {
+          listItemsTmp.push(listItem);
+        }
       }
-      return listItems;
+      return listItemsTmp;
     };
 
     var setMenuForArrows = function setMenuForArrows(list) {
       var listItems = removeHighlight(list);
-      if(currentIndex>0){
-        if(!listItems[currentIndex-1]){
-          currentIndex = currentIndex-1;
+      if(list.currentIndex>0){
+        if(!listItems[list.currentIndex-1]){
+          list.currentIndex = list.currentIndex-1;
         }
 
-        if (listItems[currentIndex-1]) {
-          listItems[currentIndex-1].classList.add('dropdown-active');
+        if (listItems[list.currentIndex-1]) {
+          var el = listItems[list.currentIndex-1];
+          var filterDropdownEl = el.closest('.filter-dropdown');
+          el.classList.add('dropdown-active');
+
+          if (filterDropdownEl) {
+            var filterDropdownBottom = filterDropdownEl.offsetHeight;
+            var elOffsetTop = el.offsetTop - 30;
+
+            if (elOffsetTop > filterDropdownBottom) {
+              filterDropdownEl.scrollTop = elOffsetTop - filterDropdownBottom;
+              console.log(filterDropdownEl.scrollTop);
+            }
+          }
         }
       }
     };
@@ -601,13 +626,13 @@ require('./window')(function(w){
       var list = e.detail.hook.list;
       removeHighlight(list);
       list.show();
-      currentIndex = 0;
+      list.currentIndex = 0;
       isUpArrow = false;
       isDownArrow = false;
     };
     var selectItem = function selectItem(list) {
       var listItems = removeHighlight(list);
-      var currentItem = listItems[currentIndex-1];
+      var currentItem = listItems[list.currentIndex-1];
       var listEvent = new CustomEvent('click.dl', {
         detail: {
           list: list,
@@ -621,8 +646,8 @@ require('./window')(function(w){
 
     var keydown = function keydown(e){
       var typedOn = e.target;
-      var dropdown = e.detail.hook.list;
-      currentIndex = dropdown.currentIndex;
+      var list = e.detail.hook.list;
+      var currentIndex = list.currentIndex;
       isUpArrow = false;
       isDownArrow = false;
 
@@ -654,8 +679,8 @@ require('./window')(function(w){
       if(isUpArrow){ currentIndex--; }
       if(isDownArrow){ currentIndex++; }
       if(currentIndex < 0){ currentIndex = 0; }
+      list.currentIndex = currentIndex;
       setMenuForArrows(e.detail.hook.list);
-      dropdown.currentIndex = currentIndex;
     };
 
     w.addEventListener('mousedown.dl', mousedown);

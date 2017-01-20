@@ -36,6 +36,7 @@ require('../window')(function(w){
           return filterFunction(o, value);
         });
         list.render(matches);
+        list.currentIndex = 0;
     },
 
     init: function init(hookInput) {
