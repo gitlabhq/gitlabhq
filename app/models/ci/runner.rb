@@ -22,8 +22,6 @@ module Ci
     scope :online, ->() { where('contacted_at > ?', LAST_CONTACT_TIME) }
     scope :ordered, ->() { order(id: :desc) }
 
-    after_save :tick_runner_queue, if: :form_editable_changed?
-
     scope :owned_or_shared, ->(project_id) do
       joins('LEFT JOIN ci_runner_projects ON ci_runner_projects.runner_id = ci_runners.id')
         .where("ci_runner_projects.gl_project_id = :project_id OR ci_runners.is_shared = true", project_id: project_id)
@@ -147,12 +145,6 @@ module Ci
 
     def runner_queue_key
       "runner:build_queue:#{self.token}"
-    end
-
-    def form_editable_changed?
-      FORM_EDITABLE.any? do |editable|
-        public_send("#{editable}_changed?")
-      end
     end
 
     def tag_constraints

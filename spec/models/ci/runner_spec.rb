@@ -291,7 +291,7 @@ describe Ci::Runner, models: true do
       let!(:last_update) { runner.ensure_runner_queue_value }
 
       before do
-        runner.update(description: 'new runner')
+        Ci::UpdateRunnerService.new(runner).update(description: 'new runner')
       end
 
       it 'sets a new last_update value' do
