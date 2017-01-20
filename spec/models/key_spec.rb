@@ -30,11 +30,30 @@ describe Key, models: true do
     end
 
     describe "#update_last_used_at" do
-      it "enqueues a UseKeyWorker job" do
-        key = create(:key)
+      let(:key) { create(:key) }
 
-        expect(UseKeyWorker).to receive(:perform_async).with(key.id)
-        key.update_last_used_at
+      context 'when key was not updated during the last day' do
+        before do
+          allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).
+            and_return('000000')
+        end
+
+        it 'enqueues a UseKeyWorker job' do
+          expect(UseKeyWorker).to receive(:perform_async).with(key.id)
+          key.update_last_used_at
+        end
+      end
+
+      context 'when key was updated during the last day' do
+        before do
+          allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).
+            and_return(false)
+        end
+
+        it 'does not enqueue a UseKeyWorker job' do
+          expect(UseKeyWorker).not_to receive(:perform_async)
+          key.update_last_used_at
+        end
       end
     end
   end
