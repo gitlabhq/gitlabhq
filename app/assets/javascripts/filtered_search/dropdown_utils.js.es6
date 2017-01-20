@@ -83,14 +83,23 @@
         return inputValue;
       }
 
-      return inputValue.slice(0, right + selectionStart + 1).trim();
+      return inputValue.slice(0, right + 1).trim();
     }
 
     static getInputSelectionPosition(input) {
-      const inputValue = input.value;
+      let inputValue = input.value;
+      // Replace all spaces inside quote marks with underscores
+      // This helps with matching the beginning & end of a token:key
+      inputValue = inputValue.replace(/"(.*?)"/g, str => str.replace(/\s/g, '_') );
+
       const selectionStart = input.selectionStart;
-      let left = inputValue.slice(0, selectionStart + 1).search(/\S+$/);
-      const right = inputValue.slice(selectionStart).search(/\s/);
+      let right = inputValue.slice(selectionStart).search(/\s/);
+
+      if (right >= 0) {
+        right += selectionStart;
+      }
+
+      let left = inputValue.slice(0, right).search(/\S+$/);
 
       if (selectionStart === 0) {
         left = 0;

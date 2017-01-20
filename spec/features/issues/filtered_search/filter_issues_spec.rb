@@ -553,6 +553,18 @@ describe 'Filter issues', js: true, feature: true do
 
       expect(filtered_search.value).to eq("author:@#{user.username} label:~#{label.name}")
     end
+
+    it 'changes label correctly space is in previous label' do
+      input_filtered_search("label:~\"#{multiple_words_label.title}\"", submit: false)
+
+      select_search_at_index(0)
+
+      page.within '#js-dropdown-label' do
+        click_button label.name
+      end
+
+      expect(filtered_search.value).to eq("label:~#{label.name}")
+    end
   end
 
   describe 'filter issues by text' do
