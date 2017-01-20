@@ -1,8 +1,6 @@
 module Gitlab
   module ImportExport
     class MembersMapper
-      attr_reader :missing_author_ids
-
       def initialize(exported_members:, user:, project:)
         @exported_members = user.admin? ? exported_members : []
         @user = user

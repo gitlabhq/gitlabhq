@@ -49,8 +49,6 @@ describe Gitlab::ImportExport::MembersMapper, services: true do
     end
 
     it 'includes the exported user ID in the map' do
-      members_mapper.map[-1]
-
       expect(members_mapper.map.keys).to include(exported_user_id)
     end
 
@@ -88,28 +86,7 @@ describe Gitlab::ImportExport::MembersMapper, services: true do
     end
 
     context 'chooses the one with an email first' do
-      before do
-        exported_members << {
-          "id" => 2,
-          "access_level" => 40,
-          "source_id" => 14,
-          "source_type" => "Project",
-          "user_id" => 19,
-          "notification_level" => 3,
-          "created_at" => "2016-03-11T10:21:44.822Z",
-          "updated_at" => "2016-03-11T10:21:44.822Z",
-          "created_by_id" => nil,
-          "invite_email" => nil,
-          "invite_token" => nil,
-          "invite_accepted_at" => nil,
-          "user" =>
-            {
-              "id" => exported_user_id,
-              "email" => 'test@email.com',
-              "username" => user2.username
-            }
-        }
-      end
+      let(:user3) { create(:user, username: 'test') }
 
       it 'maps the project member that has a matching email first' do
         expect(members_mapper.map[exported_user_id]).to eq(user2.id)
