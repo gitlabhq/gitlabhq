@@ -8,7 +8,9 @@ module Gitlab
           @subject = subject
 
           attributes.each do |key, value|
-            define_singleton_method(key) { value }
+            unless subject.respond_to?(key)
+              define_singleton_method(key) { value }
+            end
           end
 
           super(subject)

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::View::Presenter::Delegated do
-  let(:project) { double(:project, bar: 'baz') }
+  let(:project) { double(:project, user: 'John Doe') }
   let(:presenter_class) do
     Class.new(described_class)
   end
@@ -12,10 +12,15 @@ describe Gitlab::View::Presenter::Delegated do
 
   describe '#initialize' do
     it 'takes arbitrary key/values and exposes them' do
-      presenter = presenter_class.new(project, user: 'user', foo: 'bar')
+      presenter = presenter_class.new(project, current_user: 'Jane Doe')
 
-      expect(presenter.user).to eq('user')
-      expect(presenter.foo).to eq('bar')
+      expect(presenter.current_user).to eq('Jane Doe')
+    end
+
+    it 'does not override the presentee attributes' do
+      presenter = presenter_class.new(project, user: 'Jane Doe')
+
+      expect(presenter.user).to eq('John Doe')
     end
   end
 
@@ -23,7 +28,7 @@ describe Gitlab::View::Presenter::Delegated do
     it 'forwards missing methods to subject' do
       presenter = presenter_class.new(project)
 
-      expect(presenter.bar).to eq('baz')
+      expect(presenter.user).to eq('John Doe')
     end
   end
 end
