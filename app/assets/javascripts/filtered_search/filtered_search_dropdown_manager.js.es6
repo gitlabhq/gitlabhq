@@ -74,7 +74,7 @@
         right = inputValue.length;
       }
 
-      input.value = `${inputValue.substr(0, left)}${word}${inputValue.substr(right + selectionStart)}`;
+      input.value = `${inputValue.substr(0, left)}${word}${inputValue.substr(right)}`;
       gl.FilteredSearchDropdownManager.updateInputCaretPosition(selectionStart, input);
     }
 
@@ -90,7 +90,7 @@
         right = inputValue.length;
       }
 
-      input.setSelectionRange(selectionStart + right, selectionStart + right);
+      input.setSelectionRange(selectionStart + right, selectionStart);
     }
 
     updateCurrentDropdownOffset() {
