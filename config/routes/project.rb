@@ -307,9 +307,9 @@ constraints(ProjectUrlConstrainer.new) do
           end
         end
       end
-
       namespace :settings do
         resource :members, only: [:show]
+        resource :integrations, only: [:show]
       end
 
       # Since both wiki and repository routing contains wildcard characters
