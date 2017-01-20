@@ -9,7 +9,6 @@ class Group < Namespace
   include AccessRequestable
   include Referable
   include SelectForProjectAuthorization
-  include RepositorySizeLimit
   prepend EE::GeoAwareAvatar
 
   has_many :group_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source
