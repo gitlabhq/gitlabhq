@@ -21,6 +21,7 @@ module MergeRequests
       end
 
       comment_mr_with_commits
+      mark_mr_as_wip_from_commits
       execute_mr_web_hooks
       reset_approvals_for_merge_requests
 
@@ -148,6 +149,24 @@ module MergeRequests
         SystemNoteService.add_commits(merge_request, merge_request.project,
                                       @current_user, new_commits,
                                       existing_commits, @oldrev)
+      end
+    end
+
+    def mark_mr_as_wip_from_commits
+      return unless @commits.present?
+
+      merge_requests_for_source_branch.each do |merge_request|
+        wip_commit = @commits.detect(&:work_in_progress?)
+
+        if wip_commit && !merge_request.work_in_progress?
+          merge_request.update(title: merge_request.wip_title)
+          SystemNoteService.add_merge_request_wip_from_commit(
+            merge_request,
+            merge_request.project,
+            @current_user,
+            wip_commit
+          )
+        end
       end
     end
 

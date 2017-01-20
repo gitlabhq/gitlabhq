@@ -436,4 +436,15 @@ module ProjectsHelper
   def project_issues(project)
     IssuesFinder.new(current_user, project_id: project.id).execute
   end
+
+  def visibility_select_options(project, selected_level)
+    levels_options_array = Gitlab::VisibilityLevel.values.map do |level|
+      [
+        visibility_level_label(level),
+        { data: { description: visibility_level_description(level, project) } },
+        level
+      ]
+    end
+    options_for_select(levels_options_array, selected_level)
+  end
 end

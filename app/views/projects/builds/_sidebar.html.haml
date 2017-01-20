@@ -22,14 +22,14 @@
           %p.build-detail-row
             The artifacts were removed
             #{time_ago_with_tooltip(@build.artifacts_expire_at)}
-        - elsif @build.artifacts_expire_at
+        - elsif @build.has_expiring_artifacts?
           %p.build-detail-row
             The artifacts will be removed in
             %span.js-artifacts-remove= @build.artifacts_expire_at
 
         - if @build.artifacts?
           .btn-group.btn-group-justified{ role: :group }
-            - if @build.artifacts_expire_at
+            - if @build.has_expiring_artifacts? && can?(current_user, :update_build, @build)
               = link_to keep_namespace_project_build_artifacts_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-default', method: :post do
                 Keep
 

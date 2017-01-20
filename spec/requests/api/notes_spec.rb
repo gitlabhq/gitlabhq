@@ -3,7 +3,7 @@ require 'spec_helper'
 describe API::Notes, api: true  do
   include ApiHelpers
   let(:user) { create(:user) }
-  let!(:project) { create(:project, :public, namespace: user.namespace) }
+  let!(:project) { create(:empty_project, :public, namespace: user.namespace) }
   let!(:issue) { create(:issue, project: project, author: user) }
   let!(:merge_request) { create(:merge_request, source_project: project, target_project: project, author: user) }
   let!(:snippet) { create(:project_snippet, project: project, author: user) }
@@ -14,12 +14,12 @@ describe API::Notes, api: true  do
   # For testing the cross-reference of a private issue in a public issue
   let(:private_user)    { create(:user) }
   let(:private_project) do
-    create(:project, namespace: private_user.namespace).
+    create(:empty_project, namespace: private_user.namespace).
     tap { |p| p.team << [private_user, :master] }
   end
   let(:private_issue)    { create(:issue, project: private_project) }
 
-  let(:ext_proj)  { create(:project, :public) }
+  let(:ext_proj)  { create(:empty_project, :public) }
   let(:ext_issue) { create(:issue, project: ext_proj) }
 
   let!(:cross_reference_note) do
@@ -265,7 +265,7 @@ describe API::Notes, api: true  do
     end
 
     context 'when user does not have access to create noteable' do
-      let(:private_issue) { create(:issue, project: create(:project, :private)) }
+      let(:private_issue) { create(:issue, project: create(:empty_project, :private)) }
 
       ##
       # We are posting to project user has access to, but we use issue id

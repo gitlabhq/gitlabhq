@@ -2,6 +2,7 @@ module Ci
   class Build < CommitStatus
     include TokenAuthenticatable
     include AfterCommitQueue
+    include Presentable
     prepend EE::Build
 
     belongs_to :runner
@@ -507,6 +508,10 @@ module Ci
         if value
           Time.now + ChronicDuration.parse(value)
         end
+    end
+
+    def has_expiring_artifacts?
+      artifacts_expire_at.present?
     end
 
     def keep_artifacts!

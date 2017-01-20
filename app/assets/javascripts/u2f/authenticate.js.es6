@@ -57,7 +57,7 @@
         return function(response) {
           var error;
           if (response.errorCode) {
-            error = new U2FError(response.errorCode);
+            error = new U2FError(response.errorCode, 'authenticate');
             return _this.renderError(error);
           } else {
             return _this.renderAuthenticated(JSON.stringify(response));

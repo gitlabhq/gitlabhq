@@ -3,8 +3,8 @@ require 'spec_helper'
 describe API::Todos, api: true do
   include ApiHelpers
 
-  let(:project_1) { create(:project) }
-  let(:project_2) { create(:project) }
+  let(:project_1) { create(:empty_project) }
+  let(:project_2) { create(:empty_project) }
   let(:author_1) { create(:user) }
   let(:author_2) { create(:user) }
   let(:john_doe) { create(:user, username: 'john_doe') }

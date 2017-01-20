@@ -7,9 +7,12 @@ module Milestoneish
 
   def total_items_count(user)
     memoize_per_user(user, :total_items_count) do
-      issues_count = count_issues_by_state(user).values.sum
-      issues_count + merge_requests.size
+      total_issues_count(user) + merge_requests.size
     end
+  end
+
+  def total_issues_count(user)
+    count_issues_by_state(user).values.sum
   end
 
   def complete?(user)

@@ -10,9 +10,9 @@ describe API::Groups, api: true  do
   let(:admin) { create(:admin) }
   let!(:group1) { create(:group, avatar: File.open(uploaded_image_temp_path)) }
   let!(:group2) { create(:group, :private) }
-  let!(:project1) { create(:project, namespace: group1) }
-  let!(:project2) { create(:project, namespace: group2) }
-  let!(:project3) { create(:project, namespace: group1, path: 'test', visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
+  let!(:project1) { create(:empty_project, namespace: group1) }
+  let!(:project2) { create(:empty_project, namespace: group2) }
+  let!(:project3) { create(:empty_project, namespace: group1, path: 'test', visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
 
   before do
     group1.add_owner(user1)
@@ -172,7 +172,7 @@ describe API::Groups, api: true  do
   describe "GET /groups/:id" do
     context "when authenticated as user" do
       it "returns one of user1's groups" do
-        project = create(:project, namespace: group2, path: 'Foo')
+        project = create(:empty_project, namespace: group2, path: 'Foo')
         create(:project_group_link, project: project, group: group1)
 
         get api("/groups/#{group1.id}", user1)
@@ -296,7 +296,7 @@ describe API::Groups, api: true  do
         expect(json_response.length).to eq(2)
         project_names = json_response.map { |proj| proj['name' ] }
         expect(project_names).to match_array([project1.name, project3.name])
-        expect(json_response.first['default_branch']).to be_present
+        expect(json_response.first['visibility_level']).to be_present
       end
 
       it "returns the group's projects with simple representation" do
@@ -306,11 +306,11 @@ describe API::Groups, api: true  do
         expect(json_response.length).to eq(2)
         project_names = json_response.map { |proj| proj['name' ] }
         expect(project_names).to match_array([project1.name, project3.name])
-        expect(json_response.first['default_branch']).not_to be_present
+        expect(json_response.first['visibility_level']).not_to be_present
       end
 
       it 'filters the groups projects' do
-        public_project = create(:project, :public, path: 'test1', group: group1)
+        public_project = create(:empty_project, :public, path: 'test1', group: group1)
 
         get api("/groups/#{group1.id}/projects", user1), visibility: 'public'
 
@@ -494,7 +494,7 @@ describe API::Groups, api: true  do
   end
 
   describe "POST /groups/:id/projects/:project_id" do
-    let(:project) { create(:project) }
+    let(:project) { create(:empty_project) }
     let(:project_path) { "#{project.namespace.path}%2F#{project.path}" }
 
     before(:each) do
