@@ -4,7 +4,7 @@ describe Ci::API::Builds do
   include ApiHelpers
 
   let(:runner) { FactoryGirl.create(:ci_runner, tag_list: ["mysql", "ruby"]) }
-  let(:project) { FactoryGirl.create(:empty_project) }
+  let(:project) { FactoryGirl.create(:empty_project, shared_runners_enabled: false) }
   let(:last_update) { nil }
 
   describe "Builds API for runners" do
@@ -17,6 +17,8 @@ describe Ci::API::Builds do
     describe "POST /builds/register" do
       let!(:build) { create(:ci_build, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
       let(:user_agent) { 'gitlab-ci-multi-runner 1.5.2 (1-5-stable; go1.6.3; linux/amd64)' }
+      let!(:last_update) { }
+      let!(:new_update) { }
 
       before do
         stub_container_registry_config(enabled: false)
@@ -43,7 +45,7 @@ describe Ci::API::Builds do
 
           context 'when last_update is outdated' do
             let(:last_update) { runner.ensure_runner_queue_value }
-            let!(:new_update) { runner.tick_runner_queue }
+            let(:new_update) { runner.tick_runner_queue }
 
             it 'gives 204 and set a new X-GitLab-Last-Update' do
               expect(response).to have_http_status(204)
@@ -145,10 +147,10 @@ describe Ci::API::Builds do
       end
 
       context 'for shared runner' do
-        let(:shared_runner) { create(:ci_runner, token: "SharedRunner") }
+        let!(:runner) { create(:ci_runner, :shared, token: "SharedRunner") }
 
         before do
-          register_builds shared_runner.token
+          register_builds(runner.token)
         end
 
         it_behaves_like 'no builds available'
