@@ -3,7 +3,7 @@
 /* global droplab */
 
 require('../window')(function(w){
-  var whiteListedKeys = [37, 38, 39, 40];
+  var charRegex = new RegExp('^.$', 'g');
   w.droplabFilter = {
 
     keydownWrapper: function(e){
@@ -18,7 +18,7 @@ require('../window')(function(w){
           return;
         }
 
-        if (whiteListedKeys.indexOf(e.detail.which) !== -1) {
+        if (!charRegex.test(e.detail.key)) {
           return;
         }
 
