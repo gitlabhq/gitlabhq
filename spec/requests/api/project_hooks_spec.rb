@@ -4,7 +4,7 @@ describe API::ProjectHooks, 'ProjectHooks', api: true do
   include ApiHelpers
   let(:user) { create(:user) }
   let(:user3) { create(:user) }
-  let!(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }
+  let!(:project) { create(:empty_project, creator_id: user.id, namespace: user.namespace) }
   let!(:hook) do
     create(:project_hook,
            :all_events_enabled,
@@ -204,7 +204,7 @@ describe API::ProjectHooks, 'ProjectHooks', api: true do
 
     it "returns a 404 if a user attempts to delete project hooks he/she does not own" do
       test_user = create(:user)
-      other_project = create(:project)
+      other_project = create(:empty_project)
       other_project.team << [test_user, :master]
 
       delete api("/projects/#{other_project.id}/hooks/#{hook.id}", test_user)

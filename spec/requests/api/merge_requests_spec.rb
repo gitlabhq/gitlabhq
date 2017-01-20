@@ -308,8 +308,8 @@ describe API::MergeRequests, api: true  do
 
     context 'forked projects' do
       let!(:user2) { create(:user) }
-      let!(:fork_project) { create(:project, forked_from_project: project,  namespace: user2.namespace, creator_id: user2.id) }
-      let!(:unrelated_project) { create(:project,  namespace: create(:user).namespace, creator_id: user2.id) }
+      let!(:fork_project) { create(:empty_project, forked_from_project: project,  namespace: user2.namespace, creator_id: user2.id) }
+      let!(:unrelated_project) { create(:empty_project,  namespace: create(:user).namespace, creator_id: user2.id) }
 
       before :each do |each|
         fork_project.team << [user2, :reporter]
@@ -731,6 +731,7 @@ describe API::MergeRequests, api: true  do
     end
   end
 
+<<<<<<< HEAD
   describe 'GET :id/merge_requests/:merge_request_id/approvals' do
     it 'retrieves the approval status' do
       approver = create :user
@@ -809,6 +810,8 @@ describe API::MergeRequests, api: true  do
     end
   end
 
+=======
+>>>>>>> ce/master
   describe 'Time tracking' do
     let(:issuable) { merge_request }
 

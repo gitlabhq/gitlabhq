@@ -1,6 +1,10 @@
 # Time Tracking
 
+<<<<<<< HEAD
 > Introduced in GitLab 8.14 in beta.
+=======
+> Introduced in GitLab 8.14.
+>>>>>>> ce/master
 
 Time Tracking allows you to track estimates and time spent on issues and merge
 requests within GitLab.
@@ -21,7 +25,11 @@ below.
 
 ## How to enter data
 
+<<<<<<< HEAD
 Time Tracking uses two slash [commands] that are available with this new
+=======
+Time Tracking uses two [slash commands] that GitLab introduced with this new
+>>>>>>> ce/master
 feature: `/spend` and `/estimate`.
 
 Slash commands can be used in the body of an issue or a merge request, but also
@@ -37,14 +45,22 @@ Adding time entries (time spent or estimates) is limited to project members.
 
 To enter an estimate, write `/estimate`, followed by the time. For example, if
 you need to enter an estimate of 3 days, 5 hours and 10 minutes, you would write
+<<<<<<< HEAD
 `/estimate 3d 5h 10m`. Time units that we support are listed at the bottom of
 this help page.
+=======
+`/estimate 3d 5h 10m`.
+>>>>>>> ce/master
 
 Every time you enter a new time estimate, any previous time estimates will be
 overridden by this new value. There should only be one valid estimate in an
 issue or a merge request.
 
+<<<<<<< HEAD
 To remove an estimation entirely, use `/remove_estimate `.
+=======
+To remove an estimation entirely, use `/remove_estimation`.
+>>>>>>> ce/master
 
 ### Time spent
 
@@ -68,6 +84,7 @@ The following time units are available:
 * hours (h)
 * minutes (m)
 
+<<<<<<< HEAD
 Default conversion rates are
 * 1 week = 5 days,
 * 1 day = 8 hours.
@@ -78,3 +95,9 @@ Other interesting links:
 
 [landing]: https://about.gitlab.com/features/time-tracking
 [commands]: ../user/project/slash_commands.md
+=======
+Default conversion rates are 1w = 5d and 1d = 8h.
+
+[landing]: https://about.gitlab.com/features/time-tracking
+[slash-commands]: ../user/project/slash_commands.md
+>>>>>>> ce/master

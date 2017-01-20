@@ -366,11 +366,22 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     end
   end
 
+<<<<<<< HEAD
   def rebase
     return access_denied! unless @merge_request.can_be_merged_by?(current_user)
     return render_404 unless @merge_request.approved?
 
     RebaseWorker.perform_async(@merge_request.id, current_user.id)
+=======
+  def merge_widget_refresh
+    if merge_request.in_progress_merge_commit_sha || merge_request.state == 'merged'
+      @status = :success
+    elsif merge_request.merge_when_build_succeeds
+      @status = :merge_when_build_succeeds
+    end
+
+    render 'merge'
+>>>>>>> ce/master
   end
 
   def branch_from

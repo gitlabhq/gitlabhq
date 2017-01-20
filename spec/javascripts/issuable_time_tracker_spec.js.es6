@@ -4,7 +4,11 @@
 //= require issuable/time_tracking/components/time_tracker
 
 function initTimeTrackingComponent(opts) {
+<<<<<<< HEAD
   setFixtures(`
+=======
+  fixture.set(`
+>>>>>>> ce/master
     <div>
       <div id="mock-container"></div>
     </div>

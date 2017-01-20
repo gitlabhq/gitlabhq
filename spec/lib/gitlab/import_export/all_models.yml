@@ -78,9 +78,12 @@ merge_requests:
 - events
 - merge_requests_closing_issues
 - metrics
+<<<<<<< HEAD
 - approvals
 - approvers
 - approver_groups
+=======
+>>>>>>> ce/master
 - timelogs
 merge_request_diff:
 - merge_request

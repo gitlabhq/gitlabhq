@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* eslint-disable arrow-parens, no-param-reassign, object-shorthand, no-else-return, comma-dangle, no-underscore-dangle, no-continue, no-restricted-syntax, guard-for-in, no-new, class-methods-use-this, consistent-return, max-len */
 /* global Flash */
 
@@ -10,6 +11,12 @@
     USER: 'user',
     GROUP: 'group'
   };
+=======
+/* eslint-disable arrow-parens, no-param-reassign, object-shorthand, no-else-return, comma-dangle, max-len */
+
+(global => {
+  global.gl = global.gl || {};
+>>>>>>> ce/master
 
   gl.ProtectedBranchAccessDropdown = class {
     constructor(options) {
@@ -192,6 +199,7 @@
 
       this.items.push(itemToAdd);
     }
+<<<<<<< HEAD
 
     removeSelectedItem(itemToDelete) {
       let index = -1;
@@ -442,5 +450,7 @@
     roleRowHtml(role, isActive) {
       return `<li><a href='#' class='${isActive ? 'is-active' : ''} item-${role.type}'>${role.text}</a></li>`;
     }
+=======
+>>>>>>> ce/master
   };
 })(window);

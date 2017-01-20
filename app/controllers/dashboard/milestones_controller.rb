@@ -19,11 +19,11 @@ class Dashboard::MilestonesController < Dashboard::ApplicationController
   private
 
   def milestones
-    @milestones = GlobalMilestone.build_collection(@projects, params)
+    @milestones = DashboardMilestone.build_collection(@projects, params)
   end
 
   def milestone
-    @milestone = GlobalMilestone.build(@projects, params[:title])
+    @milestone = DashboardMilestone.build(@projects, params[:title])
     render_404 unless @milestone
   end
 end

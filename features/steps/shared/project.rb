@@ -4,12 +4,15 @@ module SharedProject
   # Create a project without caring about what it's called
   step "I own a project" do
     @project = create(:project, :repository, namespace: @user.namespace)
+<<<<<<< HEAD
     @project.team << [@user, :master]
   end
 
   step "I own a project in some group namespace" do
     @group = create(:group, name: 'some group')
     @project = create(:project, namespace: @group)
+=======
+>>>>>>> ce/master
     @project.team << [@user, :master]
   end
 
@@ -21,7 +24,11 @@ module SharedProject
   # Create a specific project called "Shop"
   step 'I own project "Shop"' do
     @project = Project.find_by(name: "Shop")
+<<<<<<< HEAD
     @project ||= create(:project, :repository, name: "Shop", namespace: @user.namespace, issues_template: "This issue should contain the following.", merge_requests_template: "This merge request should contain the following.")
+=======
+    @project ||= create(:project, :repository, name: "Shop", namespace: @user.namespace)
+>>>>>>> ce/master
     @project.team << [@user, :master]
   end
 
@@ -103,7 +110,7 @@ module SharedProject
   step 'I should see project settings' do
     expect(current_path).to eq edit_namespace_project_path(@project.namespace, @project)
     expect(page).to have_content("Project name")
-    expect(page).to have_content("Feature Visibility")
+    expect(page).to have_content("Sharing & Permissions")
   end
 
   def current_project

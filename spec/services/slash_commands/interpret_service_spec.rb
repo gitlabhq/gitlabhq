@@ -1,12 +1,13 @@
 require 'spec_helper'
 
 describe SlashCommands::InterpretService, services: true do
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
   let(:developer) { create(:user) }
   let(:issue) { create(:issue, project: project) }
   let(:milestone) { create(:milestone, project: project, title: '9.10') }
   let(:inprogress) { create(:label, project: project, title: 'In Progress') }
   let(:bug) { create(:label, project: project, title: 'Bug') }
+  let(:note) { build(:note, commit_id: merge_request.diff_head_sha) }
 
   before do
     project.team << [developer, :developer]
@@ -258,6 +259,14 @@ describe SlashCommands::InterpretService, services: true do
       end
     end
 
+    shared_examples 'merge command' do
+      it 'runs merge command if content contains /merge' do
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(merge: merge_request.diff_head_sha)
+      end
+    end
+
     it_behaves_like 'reopen command' do
       let(:content) { '/reopen' }
       let(:issuable) { issue }
@@ -276,6 +285,64 @@ describe SlashCommands::InterpretService, services: true do
     it_behaves_like 'close command' do
       let(:content) { '/close' }
       let(:issuable) { merge_request }
+    end
+
+    context 'merge command' do
+      let(:service) { described_class.new(project, developer, { merge_request_diff_head_sha: merge_request.diff_head_sha }) }
+
+      it_behaves_like 'merge command' do
+        let(:content) { '/merge' }
+        let(:issuable) { merge_request }
+      end
+
+      context 'can not be merged when logged user does not have permissions' do
+        let(:service) { described_class.new(project, create(:user)) }
+
+        it_behaves_like 'empty command' do
+          let(:content) { "/merge" }
+          let(:issuable) { merge_request }
+        end
+      end
+
+      context 'can not be merged when sha does not match' do
+        let(:service) { described_class.new(project, developer, { merge_request_diff_head_sha: 'othersha' }) }
+
+        it_behaves_like 'empty command' do
+          let(:content) { "/merge" }
+          let(:issuable) { merge_request }
+        end
+      end
+
+      context 'when sha is missing' do
+        let(:service) { described_class.new(project, developer, {}) }
+
+        it 'precheck passes and returns merge command' do
+          _, updates = service.execute('/merge', merge_request)
+
+          expect(updates).to eq(merge: nil)
+        end
+      end
+
+      context 'issue can not be merged' do
+        it_behaves_like 'empty command' do
+          let(:content) { "/merge" }
+          let(:issuable) { issue }
+        end
+      end
+
+      context 'non persisted merge request  cant be merged' do
+        it_behaves_like 'empty command' do
+          let(:content) { "/merge" }
+          let(:issuable) { build(:merge_request) }
+        end
+      end
+
+      context 'not persisted merge request can not be merged' do
+        it_behaves_like 'empty command' do
+          let(:content) { "/merge" }
+          let(:issuable) { build(:merge_request, source_project: project) }
+        end
+      end
     end
 
     it_behaves_like 'title command' do

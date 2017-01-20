@@ -7,6 +7,8 @@ module MergeRequests
       params.except!(:target_project_id)
       params.except!(:source_branch)
 
+      merge_from_slash_command(merge_request) if params[:merge]
+
       if merge_request.closed_without_fork?
         params.except!(:target_branch, :force_remove_source_branch)
       end
@@ -76,6 +78,19 @@ module MergeRequests
           added_mentions,
           current_user
         )
+      end
+    end
+
+    def merge_from_slash_command(merge_request)
+      last_diff_sha = params.delete(:merge)
+      return unless merge_request.mergeable_with_slash_command?(current_user, last_diff_sha: last_diff_sha)
+
+      merge_request.update(merge_error: nil)
+
+      if merge_request.head_pipeline && merge_request.head_pipeline.active?
+        MergeRequests::MergeWhenPipelineSucceedsService.new(project, current_user).execute(merge_request)
+      else
+        MergeWorker.perform_async(merge_request.id, current_user.id, {})
       end
     end
 

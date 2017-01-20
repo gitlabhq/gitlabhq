@@ -515,6 +515,12 @@ Settings.rack_attack.git_basic_auth['findtime'] ||= 1.minute
 Settings.rack_attack.git_basic_auth['bantime'] ||= 1.hour
 
 #
+# Gitaly
+#
+Settings['gitaly'] ||= Settingslogic.new({})
+Settings.gitaly['socket_path'] ||= ENV['GITALY_SOCKET_PATH']
+
+#
 # Testing settings
 #
 if Rails.env.test?
