@@ -1,0 +1,4 @@
+---
+title: Reduce DB-load for build-queues by storing last_update in Redis
+merge_request: 8084
+author:
