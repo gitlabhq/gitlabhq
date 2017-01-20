@@ -40,10 +40,12 @@ class PipelineEntity < Grape::Entity
     end
 
     expose :path do |pipeline|
-      namespace_project_tree_path(
-        pipeline.project.namespace,
-        pipeline.project,
-        id: pipeline.ref)
+      if pipeline.ref
+        namespace_project_tree_path(
+          pipeline.project.namespace,
+          pipeline.project,
+          id: pipeline.ref)
+      end
     end
 
     expose :tag?, as: :tag

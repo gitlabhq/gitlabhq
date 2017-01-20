@@ -134,5 +134,17 @@ describe PipelineEntity do
         expect(subject).not_to have_key(:yaml_errors)
       end
     end
+
+    context 'when pipeline ref is empty' do
+      let(:pipeline) { create(:ci_empty_pipeline) }
+
+      before do
+        allow(pipeline).to receive(:ref).and_return(nil)
+      end
+
+      it 'does not generate branch path' do
+        expect(subject[:ref][:path]).to be_nil
+      end
+    end
   end
 end
