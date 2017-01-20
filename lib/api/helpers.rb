@@ -233,7 +233,7 @@ module API
     end
 
     def render_api_error!(message, status)
-      error!({ 'message' => message }, status)
+      error!({ 'message' => message }, status, header)
     end
 
     def handle_api_exception(exception)

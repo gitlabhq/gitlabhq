@@ -16,6 +16,13 @@ module Ci
           not_found! unless current_runner.active?
           update_runner_info
 
+          if current_runner.is_runner_queue_value_latest?(params[:last_update])
+            header 'X-GitLab-Last-Update', params[:last_update]
+            return build_not_found!
+          end
+
+          new_update = current_runner.ensure_runner_queue_value
+
           build = Ci::RegisterBuildService.new(current_runner).execute
 
           if build
@@ -25,6 +32,8 @@ module Ci
             present build, with: Entities::BuildDetails
           else
             Gitlab::Metrics.add_event(:build_not_found)
+
+            header 'X-GitLab-Last-Update', new_update
 
             build_not_found!
           end
