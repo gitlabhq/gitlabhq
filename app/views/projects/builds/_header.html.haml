@@ -7,7 +7,7 @@
     = link_to pipeline_path(@build.pipeline) do
       %strong ##{@build.pipeline.id}
     for commit
-    = link_to namespace_project_commit_path(@project.namespace, @project, @build.pipeline.sha) do
+    = link_to ci_status_path(@build.pipeline) do
       %strong= @build.pipeline.short_sha
     from
     = link_to namespace_project_commits_path(@project.namespace, @project, @build.ref) do

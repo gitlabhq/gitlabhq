@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'project commit pipelines' do
+feature 'project commit builds' do
   given(:project) { create(:project) }
 
   background do
@@ -16,13 +16,11 @@ feature 'project commit pipelines' do
                            ref: 'master')
     end
 
-    scenario 'user views commit pipelines page' do
-      visit pipelines_namespace_project_commit_path(project.namespace, project, project.commit.sha)
+    scenario 'user views commit builds page' do
+      visit builds_namespace_project_commit_path(project.namespace,
+                                                 project, project.commit.sha)
 
-      page.within('.table-holder') do
-        expect(page).to have_content project.pipelines[0].status # pipeline status
-        expect(page).to have_content project.pipelines[0].id     # pipeline ids
-      end
+      expect(page).to have_content('Builds')
     end
   end
 end
