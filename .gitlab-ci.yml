@@ -36,7 +36,6 @@ stages:
 .dedicated-runner: &dedicated-runner
   tags:
     - gitlab-org
-    - 2gb
 
 .knapsack-state: &knapsack-state
   services: []
