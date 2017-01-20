@@ -85,7 +85,7 @@
         right = inputValue.length;
       }
 
-      input.setSelectionRange(selectionStart + right, selectionStart);
+      input.setSelectionRange(right, right);
     }
 
     updateCurrentDropdownOffset() {
