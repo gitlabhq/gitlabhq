@@ -1,5 +1,5 @@
 /* global Vue, Flash, gl */
-/* eslint-disable no-param-reassign, no-bitwise */
+/* eslint-disable no-param-reassign */
 
 ((gl) => {
   gl.VueStage = Vue.extend({
@@ -9,7 +9,20 @@
         spinner: '<span class="fa fa-spinner fa-spin"></span>',
       };
     },
-    props: ['stage', 'svgs', 'match'],
+    props: {
+      stage: {
+        type: Object,
+        required: true,
+      },
+      svgs: {
+        type: DOMStringMap,
+        required: true,
+      },
+      match: {
+        type: Function,
+        required: true,
+      },
+    },
     methods: {
       fetchBuilds(e) {
         const areaExpanded = e.currentTarget.attributes['aria-expanded'];
@@ -23,6 +36,18 @@
             const flash = new Flash('Something went wrong on our end.');
             return flash;
           });
+      },
+      keepGraph(e) {
+        const { target } = e;
+
+        if (target.className.indexOf('js-ci-action-icon') >= 0) return null;
+
+        if (
+          target.parentElement &&
+          (target.parentElement.className.indexOf('js-ci-action-icon') >= 0)
+        ) return null;
+
+        return e.stopPropagation();
       },
     },
     computed: {
@@ -64,7 +89,7 @@
         <ul class="dropdown-menu mini-pipeline-graph-dropdown-menu js-builds-dropdown-container">
           <div class="arrow-up"></div>
           <div
-            @click=''
+            @click='keepGraph($event)'
             :class="dropdownClass"
             class="js-builds-dropdown-list scrollable-menu"
             v-html="buildsOrSpinner"
