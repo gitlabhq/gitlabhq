@@ -8,8 +8,8 @@
   by entering
   %code /&lt;command_trigger_word&gt; help
 
-  - unless enabled
+  - unless enabled || @service.template?
     = render 'projects/services/mattermost_slash_commands/detailed_help', subject: @service
 
-- if enabled
+- if enabled && !@service.template?
   = render 'projects/services/mattermost_slash_commands/installation_info', subject: @service

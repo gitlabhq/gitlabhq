@@ -1138,7 +1138,6 @@ Example response:
   }]
 }
 ```
-
 ## Set a time estimate for a merge request
 
 Sets an estimated time of work for this merge request.

@@ -229,7 +229,7 @@ gem 'oj', '~> 2.17.4'
 gem 'chronic', '~> 0.10.2'
 gem 'chronic_duration', '~> 0.10.6'
 
-gem 'sassc-rails', '~> 1.3.0'
+gem 'sass-rails', '~> 5.0.6'
 gem 'coffee-rails', '~> 4.1.0'
 gem 'uglifier', '~> 2.7.2'
 gem 'gitlab-turbolinks-classic', '~> 2.5', '>= 2.5.6'
@@ -263,7 +263,7 @@ end
 
 group :development do
   gem 'foreman', '~> 0.78.0'
-  gem 'brakeman', '~> 3.3.0', require: false
+  gem 'brakeman', '~> 3.4.0', require: false
 
   gem 'letter_opener_web', '~> 1.3.0'
   gem 'bullet', '~> 5.2.0', require: false

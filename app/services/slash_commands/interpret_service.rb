@@ -2,7 +2,7 @@ module SlashCommands
   class InterpretService < BaseService
     include Gitlab::SlashCommands::Dsl
 
-    attr_reader :issuable
+    attr_reader :issuable, :options
 
     # Takes a text and interprets the commands that are extracted from it.
     # Returns the content without commands, and hash of changes to be applied to a record.
@@ -13,7 +13,8 @@ module SlashCommands
       opts = {
         issuable:     issuable,
         current_user: current_user,
-        project:      project
+        project:      project,
+        params:       params
       }
 
       content, commands = extractor.extract_commands(content, opts)
@@ -56,6 +57,17 @@ module SlashCommands
     end
     command :reopen do
       @updates[:state_event] = 'reopen'
+    end
+
+    desc 'Merge (when build succeeds)'
+    condition do
+      last_diff_sha = params && params[:merge_request_diff_head_sha]
+      issuable.is_a?(MergeRequest) &&
+        issuable.persisted? &&
+        issuable.mergeable_with_slash_command?(current_user, autocomplete_precheck: !last_diff_sha, last_diff_sha: last_diff_sha)
+    end
+    command :merge do
+      @updates[:merge] = params[:merge_request_diff_head_sha]
     end
 
     desc 'Change title'

@@ -11,7 +11,7 @@ describe API::Issues, api: true  do
   let(:author)      { create(:author) }
   let(:assignee)    { create(:assignee) }
   let(:admin)       { create(:user, :admin) }
-  let!(:project)    { create(:project, :public, creator_id: user.id, namespace: user.namespace ) }
+  let!(:project)    { create(:empty_project, :public, creator_id: user.id, namespace: user.namespace ) }
   let!(:closed_issue) do
     create :closed_issue,
            author: user,
@@ -224,7 +224,7 @@ describe API::Issues, api: true  do
 
   describe "GET /groups/:id/issues" do
     let!(:group)            { create(:group) }
-    let!(:group_project)    { create(:project, :public, creator_id: user.id, namespace: group) }
+    let!(:group_project)    { create(:empty_project, :public, creator_id: user.id, namespace: group) }
     let!(:group_closed_issue) do
       create :closed_issue,
              author: user,
@@ -1086,7 +1086,7 @@ describe API::Issues, api: true  do
 
     context "when the user is project owner" do
       let(:owner)     { create(:user) }
-      let(:project)   { create(:project, namespace: owner.namespace) }
+      let(:project)   { create(:empty_project, namespace: owner.namespace) }
 
       it "deletes the issue if an admin requests it" do
         delete api("/projects/#{project.id}/issues/#{issue.id}", owner)
@@ -1105,8 +1105,8 @@ describe API::Issues, api: true  do
   end
 
   describe '/projects/:id/issues/:issue_id/move' do
-    let!(:target_project) { create(:project, path: 'project2', creator_id: user.id, namespace: user.namespace ) }
-    let!(:target_project2) { create(:project, creator_id: non_member.id, namespace: non_member.namespace ) }
+    let!(:target_project) { create(:empty_project, path: 'project2', creator_id: user.id, namespace: user.namespace ) }
+    let!(:target_project2) { create(:empty_project, creator_id: non_member.id, namespace: non_member.namespace ) }
 
     it 'moves an issue' do
       post api("/projects/#{project.id}/issues/#{issue.id}/move", user),

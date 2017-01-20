@@ -751,7 +751,7 @@ describe Gitlab::GitAccess, lib: true do
 
       describe 'repository size restrictions' do
         before do
-          project.update_attribute(:repository_size_limit, 50)
+          project.update_attribute(:repository_size_limit, 50.megabytes)
         end
 
         it 'returns false when blob is too big' do

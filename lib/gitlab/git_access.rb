@@ -185,7 +185,7 @@ module Gitlab
         end
       end
 
-      if project.changes_will_exceed_size_limit?(push_size_in_bytes.to_mb)
+      if project.changes_will_exceed_size_limit?(push_size_in_bytes)
         raise UnauthorizedError, Gitlab::RepositorySizeError.new(project).new_changes_error
       end
     end

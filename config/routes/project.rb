@@ -100,6 +100,7 @@ constraints(ProjectUrlConstrainer.new) do
           get :pipelines
           get :merge_check
           post :merge
+          get :merge_widget_refresh
           post :cancel_merge_when_build_succeeds
           get :ci_status
           get :ci_environments_status
@@ -361,6 +362,7 @@ constraints(ProjectUrlConstrainer.new) do
 
       namespace :settings do
         resource :members, only: [:show]
+        resource :integrations, only: [:show]
       end
 
       # Since both wiki and repository routing contains wildcard characters

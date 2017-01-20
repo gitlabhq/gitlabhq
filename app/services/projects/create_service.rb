@@ -22,6 +22,9 @@ module Projects
         return @project
       end
 
+      # Repository size limit comes as MB from the view
+      assign_repository_size_limit_as_bytes(@project)
+
       # Set project name from path
       if @project.name.present? && @project.path.present?
         # if both name and path set - everything is ok
