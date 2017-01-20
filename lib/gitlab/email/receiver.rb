@@ -63,7 +63,9 @@ module Gitlab
         case references
         when Array
           references
-        when String # Handle emails from Microsoft exchange which uses commas
+        when String
+          # Handle emails from clients which append with commas,
+          # example clients are Microsoft exchange and iOS app
           Gitlab::IncomingEmail.scan_fallback_references(references)
         end
       end
