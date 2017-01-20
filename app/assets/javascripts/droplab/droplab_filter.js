@@ -3,6 +3,7 @@
 /* global droplab */
 
 require('../window')(function(w){
+  var whiteListedKeys = [37, 38, 39, 40];
   w.droplabFilter = {
 
     keydownWrapper: function(e){
@@ -14,6 +15,10 @@ require('../window')(function(w){
         var filterFunction;
         // will only work on dynamically set data
         if(!data){
+          return;
+        }
+
+        if (whiteListedKeys.indexOf(e.detail.which) !== -1) {
           return;
         }
 
