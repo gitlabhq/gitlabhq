@@ -1,5 +1,9 @@
 # GitLab Community Edition documentation
 
+## University
+
+[University](university/README.md) contain guides to learn Git and GitLab through courses and videos.
+
 ## User documentation
 
 - [Account Security](user/account/security.md) Securing your account via two-factor authentication, etc.
@@ -19,7 +23,6 @@
 - [SSH](ssh/README.md) Setup your ssh keys and deploy keys for secure access to your projects.
 - [Webhooks](web_hooks/web_hooks.md) Let GitLab notify you when new code has been pushed to your project.
 - [Workflow](workflow/README.md) Using GitLab functionality and importing projects from GitHub and SVN.
-- [University](university/README.md) Learn Git and GitLab through videos and courses.
 - [Git Attributes](user/project/git_attributes.md) Managing Git attributes using a `.gitattributes` file.
 - [Git cheatsheet](https://gitlab.com/gitlab-com/marketing/raw/master/design/print/git-cheatsheet/print-pdf/git-cheatsheet.pdf) Download a PDF describing the most used Git operations.
 
