@@ -23,8 +23,6 @@ class Projects::IssuesController < Projects::ApplicationController
   respond_to :html
 
   def index
-    return redirect_to_fixed_params if params[:assignee_id].present? || params[:author_id].present?
-
     @issues = issues_collection
     @issues = @issues.page(params[:page])
     if @issues.out_of_range? && @issues.total_pages != 0
@@ -33,6 +31,18 @@ class Projects::IssuesController < Projects::ApplicationController
 
     if params[:label_name].present?
       @labels = LabelsFinder.new(current_user, project_id: @project.id, title: params[:label_name]).execute
+    end
+
+    @users = []
+
+    if params[:assignee_id].present?
+      assignee = User.find_by_id(params[:assignee_id])
+      @users.push(assignee) if assignee
+    end
+
+    if params[:author_id].present?
+      author = User.find_by_id(params[:author_id])
+      @users.push(author) if author
     end
 
     respond_to do |format|
@@ -211,22 +221,6 @@ class Projects::IssuesController < Projects::ApplicationController
     else
       redirect_to external.project_path
     end
-  end
-
-  def redirect_to_fixed_params
-    fixed_params = params.except(:assignee_id, :author_id)
-
-    if params[:assignee_id].present?
-      assignee = User.find_by_id(params[:assignee_id])
-      fixed_params.merge!(assignee_username: assignee.username) if assignee
-    end
-
-    if params[:author_id].present?
-      author = User.find_by_id(params[:author_id])
-      fixed_params.merge!(author_username: author.username) if author
-    end
-
-    redirect_to url_for(fixed_params)
   end
 
   # Since iids are implemented only in 6.1

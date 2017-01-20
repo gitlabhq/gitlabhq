@@ -85,6 +85,7 @@
 
     loadSearchParamsFromURL() {
       const params = gl.utils.getUrlParamsArray();
+      const usernameParams = this.getUsernameParams();
       const inputValues = [];
 
       params.forEach((p) => {
@@ -115,6 +116,16 @@
             }
 
             inputValues.push(`${sanitizedKey}:${symbol}${quotationsToUse}${sanitizedValue}${quotationsToUse}`);
+          } else if (!match && keyParam === 'assignee_id') {
+            const id = parseInt(value, 10);
+            if (usernameParams[id]) {
+              inputValues.push(`assignee:@${usernameParams[id]}`);
+            }
+          } else if (!match && keyParam === 'author_id') {
+            const id = parseInt(value, 10);
+            if (usernameParams[id]) {
+              inputValues.push(`author:@${usernameParams[id]}`);
+            }
           } else if (!match && keyParam === 'search') {
             inputValues.push(sanitizedValue);
           }
@@ -163,6 +174,19 @@
       }
 
       Turbolinks.visit(`?scope=all&utf8=✓&${paths.join('&')}`);
+    }
+
+    getUsernameParams() {
+      const usernamesById = {};
+      try {
+        const attribute = this.filteredSearchInput.getAttribute('data-username-params');
+        JSON.parse(attribute).forEach((user) => {
+          usernamesById[user.id] = user.username;
+        });
+      } catch (e) {
+        // do nothing
+      }
+      return usernamesById;
     }
   }
 
