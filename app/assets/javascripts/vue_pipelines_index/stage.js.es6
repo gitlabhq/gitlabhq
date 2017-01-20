@@ -40,7 +40,16 @@
           });
       },
       keepGraph(e) {
-        e.stopPropagation();
+        const { target } = e;
+
+        if (~target.className.indexOf('js-ci-action-icon')) return null;
+
+        if (
+          target.parentElement &&
+          ~target.parentElement.className.indexOf('js-ci-action-icon')
+        ) return null;
+
+        return e.stopPropagation();
       },
     },
     computed: {
