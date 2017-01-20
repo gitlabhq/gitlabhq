@@ -123,6 +123,7 @@ class User < ActiveRecord::Base
   validate :unique_email, if: ->(user) { user.email_changed? }
   validate :owns_notification_email, if: ->(user) { user.notification_email_changed? }
   validate :owns_public_email, if: ->(user) { user.public_email_changed? }
+  validate :cannot_be_admin_and_auditor
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
   before_validation :generate_password, on: :create
@@ -450,6 +451,12 @@ class User < ActiveRecord::Base
       emails.create(email: email_was)
 
       update_secondary_emails!
+    end
+  end
+
+  def cannot_be_admin_and_auditor
+    if admin? && auditor?
+      errors.add(:admin, "user cannot also be an Auditor.")
     end
   end
 
