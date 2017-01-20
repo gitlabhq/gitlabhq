@@ -41,6 +41,7 @@ class RequeuePendingDeleteProjects < ActiveRecord::Migration
     projects = Arel::Table.new(:projects)
     projects.project(projects[:id]).
       where(projects[:pending_delete].eq(true)).
+      where(projects[:namespace_id].not_eq(nil)).
       skip(@offset * BATCH_SIZE).
       take(BATCH_SIZE).
       to_sql
