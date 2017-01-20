@@ -1,14 +1,9 @@
-<<<<<<< HEAD
 /* eslint-disable no-new, arrow-parens, no-param-reassign, comma-dangle, guard-for-in, no-restricted-syntax, max-len */
-=======
-/* eslint-disable no-new, arrow-parens, no-param-reassign, comma-dangle, max-len */
->>>>>>> ce/master
 /* global ProtectedBranchDropdown */
 /* global Flash */
 
 (global => {
   global.gl = global.gl || {};
-<<<<<<< HEAD
 
   const ACCESS_LEVELS = {
     MERGE: 'merge_access_levels',
@@ -20,8 +15,6 @@
     USER: 'user',
     GROUP: 'group'
   };
-=======
->>>>>>> ce/master
 
   gl.ProtectedBranchCreate = class {
     constructor() {
@@ -67,7 +60,6 @@
 
     // Enable submit button after selecting an option
     onSelect() {
-<<<<<<< HEAD
       const $allowedToMerge = this[`${ACCESS_LEVELS.MERGE}_dropdown`].getSelectedItems();
       const $allowedToPush = this[`${ACCESS_LEVELS.PUSH}_dropdown`].getSelectedItems();
       const toggle = !(this.$wrap.find('input[name="protected_branch[name]"]').val() && $allowedToMerge.length && $allowedToPush.length);
@@ -104,19 +96,12 @@
             });
           }
         }
-=======
-      // Enable submit button
-      const $branchInput = this.$wrap.find('input[name="protected_branch[name]"]');
-      const $allowedToMergeInput = this.$wrap.find('input[name="protected_branch[merge_access_levels_attributes][0][access_level]"]');
-      const $allowedToPushInput = this.$wrap.find('input[name="protected_branch[push_access_levels_attributes][0][access_level]"]');
->>>>>>> ce/master
 
         formData.protected_branch[`${ACCESS_LEVELS[ACCESS_LEVEL]}_attributes`] = levelAttributes;
       }
 
       return formData;
     }
-<<<<<<< HEAD
 
     onFormSubmit(e) {
       e.preventDefault();
@@ -133,7 +118,5 @@
         new Flash('Failed to protect the branch');
       });
     }
-=======
->>>>>>> ce/master
   };
 })(window);

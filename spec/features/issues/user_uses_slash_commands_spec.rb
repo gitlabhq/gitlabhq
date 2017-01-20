@@ -126,8 +126,6 @@ feature 'Issues > User uses slash commands', feature: true, js: true do
       end
     end
 
-<<<<<<< HEAD
-=======
     describe 'Issuable time tracking' do
       let(:issue) { create(:issue, project: project) }
 
@@ -154,7 +152,6 @@ feature 'Issues > User uses slash commands', feature: true, js: true do
       end
     end
 
->>>>>>> ce/master
     describe 'toggling the WIP prefix from the title from note' do
       let(:issue) { create(:issue, project: project) }
 

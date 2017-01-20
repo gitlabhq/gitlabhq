@@ -731,7 +731,6 @@ describe API::MergeRequests, api: true  do
     end
   end
 
-<<<<<<< HEAD
   describe 'GET :id/merge_requests/:merge_request_id/approvals' do
     it 'retrieves the approval status' do
       approver = create :user
@@ -810,8 +809,6 @@ describe API::MergeRequests, api: true  do
     end
   end
 
-=======
->>>>>>> ce/master
   describe 'Time tracking' do
     let(:issuable) { merge_request }
 

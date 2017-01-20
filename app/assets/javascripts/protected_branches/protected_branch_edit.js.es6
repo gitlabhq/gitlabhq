@@ -1,13 +1,8 @@
-<<<<<<< HEAD
 /* eslint-disable no-new, arrow-parens, no-param-reassign, comma-dangle, dot-notation, no-unused-vars, no-restricted-syntax, guard-for-in, max-len */
-=======
-/* eslint-disable no-new, arrow-parens, no-param-reassign, comma-dangle, max-len */
->>>>>>> ce/master
 /* global Flash */
 
 (global => {
   global.gl = global.gl || {};
-<<<<<<< HEAD
 
   const ACCESS_LEVELS = {
     MERGE: 'merge_access_levels',
@@ -19,8 +14,6 @@
     USER: 'user',
     GROUP: 'group'
   };
-=======
->>>>>>> ce/master
 
   gl.ProtectedBranchEdit = class {
     constructor(options) {
@@ -103,7 +96,6 @@
         }
       });
     }
-<<<<<<< HEAD
 
     setSelectedItemsToDropdown(items = [], dropdownName) {
       const itemsToAdd = [];
@@ -148,7 +140,5 @@
 
       this[dropdownName].setSelectedItems(itemsToAdd);
     }
-=======
->>>>>>> ce/master
   };
 })(window);

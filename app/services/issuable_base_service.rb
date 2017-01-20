@@ -41,11 +41,7 @@ class IssuableBaseService < BaseService
   end
 
   def create_time_spent_note(issuable)
-<<<<<<< HEAD
     SystemNoteService.change_time_spent(issuable, issuable.project, issuable.time_spent_user)
-=======
-    SystemNoteService.change_time_spent(issuable, issuable.project, current_user)
->>>>>>> ce/master
   end
 
   def filter_params(issuable)

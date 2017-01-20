@@ -261,17 +261,11 @@ class TodoService
     create_todos(mentioned_users, attributes)
   end
 
-<<<<<<< HEAD
   def create_approval_required_todos(merge_request, approvers, author)
     attributes = attributes_for_todo(merge_request.project, merge_request, author, Todo::APPROVAL_REQUIRED)
     create_todos(approvers.map(&:user), attributes)
   end
 
-  def create_build_failed_todo(merge_request)
-    author = merge_request.author
-    attributes = attributes_for_todo(merge_request.project, merge_request, author, Todo::BUILD_FAILED)
-    create_todos(author, attributes)
-=======
   def create_build_failed_todo(merge_request, todo_author)
     attributes = attributes_for_todo(merge_request.project, merge_request, todo_author, Todo::BUILD_FAILED)
     create_todos(todo_author, attributes)
@@ -280,7 +274,6 @@ class TodoService
   def create_unmergeable_todo(merge_request, merge_user)
     attributes = attributes_for_todo(merge_request.project, merge_request, merge_user, Todo::UNMERGEABLE)
     create_todos(merge_user, attributes)
->>>>>>> ce/master
   end
 
   def attributes_for_target(target)
