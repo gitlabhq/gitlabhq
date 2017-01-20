@@ -67,20 +67,32 @@
     });
 
     describe('filterHint', () => {
+      let input;
+
+      beforeEach(() => {
+        setFixtures(`
+          <input type="text" id="test" />
+        `);
+
+        input = document.getElementById('test');
+      });
+
       it('should filter', () => {
-        let updatedItem = gl.DropdownUtils.filterHint({
+        input.value = 'l';
+        let updatedItem = gl.DropdownUtils.filterHint(input, {
           hint: 'label',
-        }, 'l');
+        });
         expect(updatedItem.droplab_hidden).toBe(false);
 
-        updatedItem = gl.DropdownUtils.filterHint({
+        input.value = 'o';
+        updatedItem = gl.DropdownUtils.filterHint(input, {
           hint: 'label',
         }, 'o');
         expect(updatedItem.droplab_hidden).toBe(true);
       });
 
       it('should return droplab_hidden false when item has no hint', () => {
-        const updatedItem = gl.DropdownUtils.filterHint({}, '');
+        const updatedItem = gl.DropdownUtils.filterHint(input, {}, '');
         expect(updatedItem.droplab_hidden).toBe(false);
       });
     });
