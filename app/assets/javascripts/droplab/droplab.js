@@ -126,7 +126,7 @@ Object.assign(DropDown.prototype, {
       var item = this.items[i];
       sampleItem = item;
       if(item.parentNode && item.parentNode.dataset.hasOwnProperty('dynamic')) {
-        item.parentNode.removeChild(item);  
+        item.parentNode.removeChild(item);
       }
     }
 
@@ -156,7 +156,7 @@ Object.assign(DropDown.prototype, {
     if(toAppend) {
       toAppend.innerHTML = newChildren.join('');
     } else {
-      this.list.innerHTML = newChildren.join('');  
+      this.list.innerHTML = newChildren.join('');
     }
   },
 
@@ -278,7 +278,7 @@ require('./window')(function(w){
             self.hooks[i].list.hide();
           }
         }.bind(this);
-        w.addEventListener('click', this.windowClickedWrapper);
+        document.addEventListener('click', this.windowClickedWrapper);
       },
 
       removeEvents: function(){
@@ -307,7 +307,7 @@ require('./window')(function(w){
         if(!list){
           list = document.querySelector(hook.dataset[utils.toDataCamelCase(DATA_TRIGGER)]);
         }
-        
+
         if(hook) {
           if(hook.tagName === 'A' || hook.tagName === 'BUTTON') {
             this.hooks.push(new HookButton(hook, list, plugins, config));
@@ -578,7 +578,7 @@ require('./window')(function(w){
       var listItems = removeHighlight(list);
       if(currentIndex>0){
         if(!listItems[currentIndex-1]){
-          currentIndex = currentIndex-1; 
+          currentIndex = currentIndex-1;
         }
         listItems[currentIndex-1].classList.add('dropdown-active');
       }
@@ -630,7 +630,7 @@ require('./window')(function(w){
           return;
         }
         if(currentKey === 'ArrowUp') {
-          isUpArrow = true; 
+          isUpArrow = true;
         }
         if(currentKey === 'ArrowDown') {
           isDownArrow = true;
@@ -677,7 +677,7 @@ var closest = function(thisTag, stopTag) {
 var isDropDownParts = function(target) {
   if(target.tagName === 'HTML') { return false; }
   return (
-    target.hasAttribute(DATA_TRIGGER) || 
+    target.hasAttribute(DATA_TRIGGER) ||
       target.hasAttribute(DATA_DROPDOWN)
   );
 };
