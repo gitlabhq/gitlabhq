@@ -266,7 +266,7 @@ describe API::API, api: true  do
 
     context 'when user does not have access to read the noteable' do
       it 'responds with 404' do
-        project = create(:empty_project, :private) { |p| p.add_guest(user) }
+        project = create(:empty_project, :private) { |p| p.team << [user, :guest] }
         issue = create(:issue, :confidential, project: project)
 
         post api("/projects/#{project.id}/issues/#{issue.id}/notes", user),
