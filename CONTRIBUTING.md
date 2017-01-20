@@ -399,6 +399,12 @@ There are a few rules to get your merge request accepted:
 1. Contains functionality we think other users will benefit from too
 1. Doesn't add configuration options or settings options since they complicate
    making and testing future changes
+1. Changes do not adversely degrade performance.
+   - Avoid repeated polling of endpoints that require a significant amount of overhead
+   - Check for N+1 queries via the SQL log or [`QueryRecorder`](https://docs.gitlab.com/ce/development/merge_request_performance_guidelines.html)
+   - Avoid repeated access of filesystem
+1. If you need polling to support real-time features, consider using this [described long
+   polling approach](https://gitlab.com/gitlab-org/gitlab-ce/issues/26926).
 1. Changes after submitting the merge request should be in separate commits
    (no squashing). If necessary, you will be asked to squash when the review is
    over, before merging.
@@ -434,6 +440,7 @@ the feature you contribute through all of these steps.
 1. Description explaining the relevancy (see following item)
 1. Working and clean code that is commented where needed
 1. Unit and integration tests that pass on the CI server
+1. Performance/scalability implications have been considered, addressed, and tested
 1. [Documented][doc-styleguide] in the /doc directory
 1. Changelog entry added
 1. Reviewed and any concerns are addressed
