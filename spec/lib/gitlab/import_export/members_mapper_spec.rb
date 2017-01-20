@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::ImportExport::MembersMapper, services: true do
   describe 'map members' do
-    let(:user) { create(:user, authorized_projects_populated: true) }
+    let(:user) { create(:admin, authorized_projects_populated: true) }
     let(:project) { create(:project, :public, name: 'searchable_project') }
     let(:user2) { create(:user, authorized_projects_populated: true) }
     let(:exported_user_id) { 99 }
@@ -24,7 +24,7 @@ describe Gitlab::ImportExport::MembersMapper, services: true do
            {
              "id" => exported_user_id,
              "email" => user2.email,
-             "username" => user2.username
+             "username" => 'test'
            }
        },
        {
@@ -48,18 +48,16 @@ describe Gitlab::ImportExport::MembersMapper, services: true do
         exported_members: exported_members, user: user, project: project)
     end
 
+    it 'includes the exported user ID in the map' do
+      expect(members_mapper.map.keys).to include(exported_user_id)
+    end
+
     it 'maps a project member' do
       expect(members_mapper.map[exported_user_id]).to eq(user2.id)
     end
 
     it 'defaults to importer project member if it does not exist' do
       expect(members_mapper.map[-1]).to eq(user.id)
-    end
-
-    it 'updates missing author IDs on missing project member' do
-      members_mapper.map[-1]
-
-      expect(members_mapper.missing_author_ids.first).to eq(-1)
     end
 
     it 'has invited members with no user' do
@@ -73,6 +71,26 @@ describe Gitlab::ImportExport::MembersMapper, services: true do
 
       expect(user.authorized_project?(project)).to be true
       expect(user2.authorized_project?(project)).to be true
+    end
+
+    context 'user is not an admin' do
+      let(:user) { create(:user, authorized_projects_populated: true) }
+
+      it 'does not map a project member' do
+        expect(members_mapper.map[exported_user_id]).to eq(user.id)
+      end
+
+      it 'defaults to importer project member if it does not exist' do
+        expect(members_mapper.map[-1]).to eq(user.id)
+      end
+    end
+
+    context 'chooses the one with an email first' do
+      let(:user3) { create(:user, username: 'test') }
+
+      it 'maps the project member that has a matching email first' do
+        expect(members_mapper.map[exported_user_id]).to eq(user2.id)
+      end
     end
   end
 end
