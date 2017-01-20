@@ -82,19 +82,19 @@ class ChatNotificationService < Service
   def get_message(object_kind, data)
     case object_kind
     when "push", "tag_push"
-      PushMessage.new(data)
+      ChatMessage::PushMessage.new(data)
     when "issue"
-      IssueMessage.new(data) unless is_update?(data)
+      ChatMessage::IssueMessage.new(data) unless is_update?(data)
     when "merge_request"
-      MergeMessage.new(data) unless is_update?(data)
+      ChatMessage::MergeMessage.new(data) unless is_update?(data)
     when "note"
-      NoteMessage.new(data)
+      ChatMessage::NoteMessage.new(data)
     when "build"
-      BuildMessage.new(data) if should_build_be_notified?(data)
+      ChatMessage::BuildMessage.new(data) if should_build_be_notified?(data)
     when "pipeline"
-      PipelineMessage.new(data) if should_pipeline_be_notified?(data)
+      ChatMessage::PipelineMessage.new(data) if should_pipeline_be_notified?(data)
     when "wiki_page"
-      WikiPageMessage.new(data)
+      ChatMessage::WikiPageMessage.new(data)
     end
   end
 
