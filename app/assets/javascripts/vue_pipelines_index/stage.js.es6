@@ -25,8 +25,6 @@
     },
     methods: {
       fetchBuilds(e) {
-        if (this.builds) this.builds = '';
-
         const areaExpanded = e.currentTarget.attributes['aria-expanded'];
 
         if (areaExpanded && (areaExpanded.textContent === 'true')) return null;
