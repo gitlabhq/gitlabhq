@@ -91,7 +91,7 @@ module Elastic
           }
         end
 
-        query_hash[:query][:bool][:filter] = { and: filters }
+        query_hash[:query][:bool][:filter] = filters
 
         query_hash[:sort] = [:_score]
 
