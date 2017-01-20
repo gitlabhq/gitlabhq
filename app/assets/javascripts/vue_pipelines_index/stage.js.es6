@@ -9,9 +9,24 @@
         spinner: '<span class="fa fa-spinner fa-spin"></span>',
       };
     },
-    props: ['stage', 'svgs', 'match'],
+    props: {
+      stage: {
+        type: Object,
+        required: true,
+      },
+      svgs: {
+        type: DOMStringMap,
+        required: true,
+      },
+      match: {
+        type: Function,
+        required: true,
+      },
+    },
     methods: {
       fetchBuilds(e) {
+        if (this.builds) this.builds = '';
+
         const areaExpanded = e.currentTarget.attributes['aria-expanded'];
 
         if (areaExpanded && (areaExpanded.textContent === 'true')) return null;
@@ -23,6 +38,9 @@
             const flash = new Flash('Something went wrong on our end.');
             return flash;
           });
+      },
+      keepGraph(e) {
+        e.stopPropagation();
       },
     },
     computed: {
@@ -64,7 +82,7 @@
         <ul class="dropdown-menu mini-pipeline-graph-dropdown-menu js-builds-dropdown-container">
           <div class="arrow-up"></div>
           <div
-            @click=''
+            @click='keepGraph($event)'
             :class="dropdownClass"
             class="js-builds-dropdown-list scrollable-menu"
             v-html="buildsOrSpinner"
