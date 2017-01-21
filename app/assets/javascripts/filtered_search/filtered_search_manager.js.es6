@@ -30,11 +30,14 @@
       this.checkForEnterWrapper = this.checkForEnter.bind(this);
       this.clearSearchWrapper = this.clearSearch.bind(this);
       this.checkForBackspaceWrapper = this.checkForBackspace.bind(this);
+      this.tokenChange = this.tokenChange.bind(this);
 
       this.filteredSearchInput.addEventListener('input', this.setDropdownWrapper);
       this.filteredSearchInput.addEventListener('input', this.toggleClearSearchButtonWrapper);
       this.filteredSearchInput.addEventListener('keydown', this.checkForEnterWrapper);
       this.filteredSearchInput.addEventListener('keyup', this.checkForBackspaceWrapper);
+      this.filteredSearchInput.addEventListener('click', this.tokenChange);
+      this.filteredSearchInput.addEventListener('keyup', this.tokenChange);
       this.clearSearchButton.addEventListener('click', this.clearSearchWrapper);
     }
 
@@ -43,6 +46,8 @@
       this.filteredSearchInput.removeEventListener('input', this.toggleClearSearchButtonWrapper);
       this.filteredSearchInput.removeEventListener('keydown', this.checkForEnterWrapper);
       this.filteredSearchInput.removeEventListener('keyup', this.checkForBackspaceWrapper);
+      this.filteredSearchInput.removeEventListener('click', this.tokenChange);
+      this.filteredSearchInput.removeEventListener('keyup', this.tokenChange);
       this.clearSearchButton.removeEventListener('click', this.clearSearchWrapper);
     }
 
@@ -85,6 +90,7 @@
 
     loadSearchParamsFromURL() {
       const params = gl.utils.getUrlParamsArray();
+      const usernameParams = this.getUsernameParams();
       const inputValues = [];
 
       params.forEach((p) => {
@@ -115,6 +121,16 @@
             }
 
             inputValues.push(`${sanitizedKey}:${symbol}${quotationsToUse}${sanitizedValue}${quotationsToUse}`);
+          } else if (!match && keyParam === 'assignee_id') {
+            const id = parseInt(value, 10);
+            if (usernameParams[id]) {
+              inputValues.push(`assignee:@${usernameParams[id]}`);
+            }
+          } else if (!match && keyParam === 'author_id') {
+            const id = parseInt(value, 10);
+            if (usernameParams[id]) {
+              inputValues.push(`author:@${usernameParams[id]}`);
+            }
           } else if (!match && keyParam === 'search') {
             inputValues.push(sanitizedValue);
           }
@@ -163,6 +179,27 @@
       }
 
       Turbolinks.visit(`?scope=all&utf8=✓&${paths.join('&')}`);
+    }
+
+    getUsernameParams() {
+      const usernamesById = {};
+      try {
+        const attribute = this.filteredSearchInput.getAttribute('data-username-params');
+        JSON.parse(attribute).forEach((user) => {
+          usernamesById[user.id] = user.username;
+        });
+      } catch (e) {
+        // do nothing
+      }
+      return usernamesById;
+    }
+
+    tokenChange() {
+      const dropdown = this.dropdownManager.mapping[this.dropdownManager.currentDropdown];
+      const currentDropdownRef = dropdown.reference;
+
+      this.setDropdownWrapper();
+      currentDropdownRef.dispatchInputEvent();
     }
   }
 

@@ -19,9 +19,12 @@ describe 'Filter issues', js: true, feature: true do
   let!(:closed_issue) { create(:issue, title: 'bug that is closed', project: project, state: :closed) }
   let(:filtered_search) { find('.filtered-search') }
 
-  def input_filtered_search(search_term)
+  def input_filtered_search(search_term, submit: true)
     filtered_search.set(search_term)
-    filtered_search.send_keys(:enter)
+
+    if submit
+      filtered_search.send_keys(:enter)
+    end
   end
 
   def expect_filtered_search_input(input)
@@ -41,6 +44,10 @@ describe 'Filter issues', js: true, feature: true do
     page.within '.issues-list' do
       expect(page).to have_selector('.issue', count: open_count)
     end
+  end
+
+  def select_search_at_index(pos)
+    evaluate_script("el = document.querySelector('.filtered-search'); el.focus(); el.setSelectionRange(#{pos}, #{pos});")
   end
 
   before do
@@ -519,6 +526,44 @@ describe 'Filter issues', js: true, feature: true do
         pending('to be tested, issue #26546')
         expect(true).to be(false)
       end
+    end
+  end
+
+  describe 'overwrites selected filter' do
+    it 'changes author' do
+      input_filtered_search("author:@#{user.username}", submit: false)
+
+      select_search_at_index(3)
+
+      page.within '#js-dropdown-author' do
+        click_button user2.username
+      end
+
+      expect(filtered_search.value).to eq("author:@#{user2.username}")
+    end
+
+    it 'changes label' do
+      input_filtered_search("author:@#{user.username} label:~#{bug_label.title}", submit: false)
+
+      select_search_at_index(27)
+
+      page.within '#js-dropdown-label' do
+        click_button label.name
+      end
+
+      expect(filtered_search.value).to eq("author:@#{user.username} label:~#{label.name}")
+    end
+
+    it 'changes label correctly space is in previous label' do
+      input_filtered_search("label:~\"#{multiple_words_label.title}\"", submit: false)
+
+      select_search_at_index(0)
+
+      page.within '#js-dropdown-label' do
+        click_button label.name
+      end
+
+      expect(filtered_search.value).to eq("label:~#{label.name}")
     end
   end
 
