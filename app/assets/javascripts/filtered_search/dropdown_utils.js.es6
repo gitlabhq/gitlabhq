@@ -28,10 +28,7 @@
       if (lastToken !== searchToken) {
         const title = updatedItem.title.toLowerCase();
         let value = lastToken.value.toLowerCase();
-
-        if ((value[0] === '"' || value[0] === '\'') && title.indexOf(' ') !== -1) {
-          value = value.slice(1);
-        }
+        value = value.replace(/"(.*?)"/g, str => str.slice(1).slice(0, -1));
 
         // Eg. filterSymbol = ~ for labels
         const matchWithoutSymbol = lastToken.symbol === filterSymbol && title.indexOf(value) !== -1;
