@@ -62,7 +62,6 @@ var DropDown = function(list) {
   this.list = list;
   this.items = [];
   this.getItems();
-  this.initTemplateString();
   this.addEvents();
   this.initialState = list.innerHTML;
 };
@@ -71,17 +70,6 @@ Object.assign(DropDown.prototype, {
   getItems: function() {
     this.items = [].slice.call(this.list.querySelectorAll('li'));
     return this.items;
-  },
-
-  initTemplateString: function() {
-    var items = this.items || this.getItems();
-
-    var templateString = '';
-    if(items.length > 0) {
-      templateString = items[items.length - 1].outerHTML;
-    }
-    this.templateString = templateString;
-    return this.templateString;
   },
 
   clickEvent: function(e) {
@@ -123,21 +111,30 @@ Object.assign(DropDown.prototype, {
 
   addData: function(data) {
     this.data = (this.data || []).concat(data);
-    this.render(this.data);
+    this.render(data);
   },
 
   // call render manually on data;
   render: function(data){
     // debugger
     // empty the list first
-    var templateString = this.templateString;
+    var sampleItem;
     var newChildren = [];
     var toAppend;
 
-    newChildren = (data ||[]).map(function(dat){
-      var html = utils.t(templateString, dat);
+    for(var i = 0; i < this.items.length; i++) {
+      var item = this.items[i];
+      sampleItem = item;
+      if(item.parentNode && item.parentNode.dataset.hasOwnProperty('dynamic')) {
+        item.parentNode.removeChild(item);
+      }
+    }
+
+    newChildren = this.data.map(function(dat){
+      var html = utils.t(sampleItem.outerHTML, dat);
       var template = document.createElement('div');
       template.innerHTML = html;
+      // console.log(template.content)
 
       // Help set the image src template
       var imageTags = template.querySelectorAll('img[data-src]');
@@ -176,7 +173,10 @@ Object.assign(DropDown.prototype, {
   },
 
   destroy: function() {
-    this.hide();
+    if (!this.hidden) {
+      this.hide();
+    }
+
     this.list.removeEventListener('click', this.clickWrapper);
   }
 });
@@ -462,8 +462,6 @@ Object.assign(HookInput.prototype, {
     var self = this;
 
     this.mousedown = function mousedown(e) {
-      if(self.hasRemovedEvents) return;
-
       var mouseEvent = new CustomEvent('mousedown.dl', {
         detail: {
           hook: self,
@@ -476,8 +474,6 @@ Object.assign(HookInput.prototype, {
     }
 
     this.input = function input(e) {
-      if(self.hasRemovedEvents) return;
-
       var inputEvent = new CustomEvent('input.dl', {
         detail: {
           hook: self,
@@ -491,14 +487,10 @@ Object.assign(HookInput.prototype, {
     }
 
     this.keyup = function keyup(e) {
-      if(self.hasRemovedEvents) return;
-
       keyEvent(e, 'keyup.dl');
     }
 
     this.keydown = function keydown(e) {
-      if(self.hasRemovedEvents) return;
-
       keyEvent(e, 'keydown.dl');
     }
 
@@ -528,8 +520,7 @@ Object.assign(HookInput.prototype, {
     this.trigger.addEventListener('keydown', this.keydown);
   },
 
-  removeEvents: function() {
-    this.hasRemovedEvents = true;
+  removeEvents: function(){
     this.trigger.removeEventListener('mousedown', this.mousedown);
     this.trigger.removeEventListener('input', this.input);
     this.trigger.removeEventListener('keyup', this.keyup);
@@ -677,14 +668,14 @@ var camelize = function(str) {
 };
 
 var closest = function(thisTag, stopTag) {
-  while(thisTag && thisTag.tagName !== stopTag && thisTag.tagName !== 'HTML'){
+  while(thisTag.tagName !== stopTag && thisTag.tagName !== 'HTML'){
     thisTag = thisTag.parentNode;
   }
   return thisTag;
 };
 
 var isDropDownParts = function(target) {
-  if(!target || target.tagName === 'HTML') { return false; }
+  if(target.tagName === 'HTML') { return false; }
   return (
     target.hasAttribute(DATA_TRIGGER) ||
       target.hasAttribute(DATA_DROPDOWN)
