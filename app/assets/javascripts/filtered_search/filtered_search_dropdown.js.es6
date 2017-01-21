@@ -39,6 +39,7 @@
         }
 
         this.dismissDropdown();
+        this.dispatchInputEvent();
       }
     }
 
