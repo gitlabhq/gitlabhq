@@ -4,11 +4,7 @@ module ApplicationSettings
       # Repository size limit comes as MB from the view
       assign_repository_size_limit_as_bytes(application_setting)
 
-      if application_setting.update(params)
-        success
-      else
-        error('Application settings could not be updated')
-      end
+      application_setting.update(params)
     end
   end
 end

@@ -20,9 +20,7 @@ describe ApplicationSettings::UpdateService, services: true do
       let(:opts) { { repository_size_limit: '100' } }
 
       it 'returns success params' do
-        result = service.execute
-
-        expect(result).to eql(status: :success)
+        expect(service.execute).to eql(true)
       end
     end
 
@@ -30,9 +28,7 @@ describe ApplicationSettings::UpdateService, services: true do
       let(:opts) { { repository_size_limit: '-100' } }
 
       it 'returns error params' do
-        result = service.execute
-
-        expect(result).to eql(message: "Application settings could not be updated", status: :error)
+        expect(service.execute).to eql(false)
       end
     end
 
