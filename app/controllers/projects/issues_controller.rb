@@ -33,6 +33,18 @@ class Projects::IssuesController < Projects::ApplicationController
       @labels = LabelsFinder.new(current_user, project_id: @project.id, title: params[:label_name]).execute
     end
 
+    @users = []
+
+    if params[:assignee_id].present?
+      assignee = User.find_by_id(params[:assignee_id])
+      @users.push(assignee) if assignee
+    end
+
+    if params[:author_id].present?
+      author = User.find_by_id(params[:author_id])
+      @users.push(author) if author
+    end
+
     respond_to do |format|
       format.html
       format.atom { render layout: false }
