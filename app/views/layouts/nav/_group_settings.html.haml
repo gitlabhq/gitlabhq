@@ -30,8 +30,8 @@
                   Audit Events
             - if @group.shared_runners_enabled? && @group.shared_runners_minutes_limit_enabled?
               = nav_link(controller: :pipeline_quota) do
-                = link_to group_pipeline_quota_path(@group), title: "Pipeline Quota" do
+                = link_to group_pipeline_quota_path(@group), title: "Pipelines quota" do
                   %span
-                    Pipeline Quota
+                    Pipelines quota
             %li
               = link_to 'Edit Group', edit_group_path(@group)

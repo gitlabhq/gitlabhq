@@ -286,7 +286,7 @@ feature 'Builds', :feature do
       it 'displays a warning message' do
         visit namespace_project_build_path(project.namespace, project, build)
 
-        expect(page).to have_content('You have used all your shared runner minutes')
+        expect(page).to have_content('You have used all your shared Runners build minutes.')
       end
     end
   end

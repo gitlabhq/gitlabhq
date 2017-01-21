@@ -6,8 +6,8 @@
         Enabled
         - if project.shared_runners_minutes_limit_enabled?
           - limit = project.actual_shared_runners_minutes_limit.to_i
-          (Limited to #{limit} minutes per month)
+          (Limited to #{limit} build minutes per month)
         - else
-          (Unlimited minutes)
+          (Unlimited build minutes)
       - else
         Disabled
