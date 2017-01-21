@@ -37,7 +37,7 @@
     }
 
     getSearchInput() {
-      const query = this.input.value.trim();
+      const query = gl.DropdownUtils.getSearchInput(this.input);
       const { lastToken } = gl.FilteredSearchTokenizer.processTokens(query);
 
       return lastToken.value || '';
