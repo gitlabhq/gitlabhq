@@ -8,31 +8,42 @@
      * temporarily.
      * */
 
-    if ($('.accept-mr-form').length) {
-      $('.accept-mr-form').on('ajax:send', () => {
-        $('.accept-mr-form :input').disable();
-      });
+    $(document)
+    .off('ajax:send', '.accept-mr-form')
+    .on('ajax:send', '.accept-mr-form', () => {
+      $('.accept-mr-form :input').disable();
+    });
 
-      $('.accept_merge_request').on('click', () => {
-        $('.js-merge-button').html('<i class="fa fa-spinner fa-spin"></i> Merge in progress');
-      });
+    $(document)
+    .off('click', '.accept_merge_request')
+    .on('click', '.accept_merge_request', () => {
+      $('.js-merge-button').html('<i class="fa fa-spinner fa-spin"></i> Merge in progress');
+    });
 
-      $('.merge_when_build_succeeds').on('click', () => {
-        $('#merge_when_build_succeeds').val('1');
-      });
+    $(document)
+    .off('click', '.merge_when_build_succeeds')
+    .on('click', '.merge_when_build_succeeds', () => {
+      $('#merge_when_build_succeeds').val('1');
+    });
 
-      $('.js-merge-dropdown a').on('click', (e) => {
-        e.preventDefault();
-        $(this).closest('form').submit();
-      });
-    } else if ($('.rebase-in-progress').length) {
+    $(document)
+    .off('click', '.js-merge-dropdown a')
+    .on('click', '.js-merge-dropdown a', (e) => {
+      e.preventDefault();
+      $(this).closest('form').submit();
+    });
+    if ($('.rebase-in-progress').length) {
       merge_request_widget.rebaseInProgress();
     } else if ($('.rebase-mr-form').length) {
-      $('.rebase-mr-form').on('ajax:send', () => {
+      $(document)
+      .off('ajax:send', '.rebase-mr-form')
+      .on('ajax:send', '.rebase-mr-form', () => {
         $('.rebase-mr-form :input').disable();
       });
 
-      $('.js-rebase-button').on('click', () => {
+      $(document)
+      .off('click', '.js-rebase-button')
+      .on('click', '.js-rebase-button', () => {
         $('.js-rebase-button').html("<i class='fa fa-spinner fa-spin'></i> Rebase in progress");
       });
     } else {
