@@ -59,13 +59,16 @@
 
   class MergeRequestTabs {
 
-    constructor({ action, setUrl, stubLocation } = {}) {
+    constructor({ action, setUrl, buildsLoaded, stubLocation } = {}) {
       this.diffsLoaded = false;
+      this.buildsLoaded = false;
       this.pipelinesLoaded = false;
       this.commitsLoaded = false;
       this.fixedLayoutPref = null;
 
       this.setUrl = setUrl !== undefined ? setUrl : true;
+      this.buildsLoaded = buildsLoaded || false;
+
       this.setCurrentAction = this.setCurrentAction.bind(this);
       this.tabShown = this.tabShown.bind(this);
       this.showTab = this.showTab.bind(this);
@@ -116,6 +119,10 @@
         $.scrollTo('.merge-request-details .merge-request-tabs', {
           offset: -navBarHeight,
         });
+      } else if (action === 'builds') {
+        this.loadBuilds($target.attr('href'));
+        this.expandView();
+        this.resetViewContainer();
       } else if (action === 'pipelines') {
         this.loadPipelines($target.attr('href'));
         this.expandView();
@@ -173,8 +180,8 @@
     setCurrentAction(action) {
       this.currentAction = action === 'show' ? 'notes' : action;
 
-      // Remove a trailing '/commits' '/diffs' '/pipelines' '/new' '/new/diffs'
-      let newState = location.pathname.replace(/\/(commits|diffs|pipelines|new|new\/diffs)(\.html)?\/?$/, '');
+      // Remove a trailing '/commits' '/diffs' '/builds' '/pipelines' '/new' '/new/diffs'
+      let newState = location.pathname.replace(/\/(commits|diffs|builds|pipelines|new|new\/diffs)(\.html)?\/?$/, '');
 
       // Append the new action if we're on a tab other than 'notes'
       if (this.currentAction !== 'notes') {
@@ -239,6 +246,22 @@
 
           new gl.Diff();
           this.scrollToElement('#diffs');
+        },
+      });
+    }
+
+    loadBuilds(source) {
+      if (this.buildsLoaded) {
+        return;
+      }
+      this.ajaxGet({
+        url: `${source}.json`,
+        success: (data) => {
+          document.querySelector('div#builds').innerHTML = data.html;
+          gl.utils.localTimeAgo($('.js-timeago', 'div#builds'));
+          this.buildsLoaded = true;
+          new gl.Pipelines();
+          this.scrollToElement('#builds');
         },
       });
     }
