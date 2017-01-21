@@ -84,6 +84,12 @@
       }));
     }
 
+    dispatchFormSubmitEvent() {
+      // dispatchEvent() is necessary as form.submit() does not
+      // trigger event handlers
+      this.input.form.dispatchEvent(new Event('submit'));
+    }
+
     hideDropdown() {
       this.getCurrentHook().list.hide();
     }
