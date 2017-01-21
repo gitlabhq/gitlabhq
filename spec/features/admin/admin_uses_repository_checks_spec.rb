@@ -1,12 +1,7 @@
 require 'rails_helper'
 
 feature 'Admin uses repository checks', feature: true do
-  include StubENV
-
-  before do
-    stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
-    login_as :admin
-  end
+  before { login_as :admin }
 
   scenario 'to trigger a single check' do
     project = create(:empty_project)
@@ -34,7 +29,7 @@ feature 'Admin uses repository checks', feature: true do
 
   scenario 'to clear all repository checks', js: true do
     visit admin_application_settings_path
-
+    
     expect(RepositoryCheck::ClearWorker).to receive(:perform_async)
 
     click_link 'Clear all repository checks'
