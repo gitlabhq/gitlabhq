@@ -30,11 +30,14 @@
       this.checkForEnterWrapper = this.checkForEnter.bind(this);
       this.clearSearchWrapper = this.clearSearch.bind(this);
       this.checkForBackspaceWrapper = this.checkForBackspace.bind(this);
+      this.tokenChange = this.tokenChange.bind(this);
 
       this.filteredSearchInput.addEventListener('input', this.setDropdownWrapper);
       this.filteredSearchInput.addEventListener('input', this.toggleClearSearchButtonWrapper);
       this.filteredSearchInput.addEventListener('keydown', this.checkForEnterWrapper);
       this.filteredSearchInput.addEventListener('keyup', this.checkForBackspaceWrapper);
+      this.filteredSearchInput.addEventListener('click', this.tokenChange);
+      this.filteredSearchInput.addEventListener('keyup', this.tokenChange);
       this.clearSearchButton.addEventListener('click', this.clearSearchWrapper);
     }
 
@@ -43,6 +46,8 @@
       this.filteredSearchInput.removeEventListener('input', this.toggleClearSearchButtonWrapper);
       this.filteredSearchInput.removeEventListener('keydown', this.checkForEnterWrapper);
       this.filteredSearchInput.removeEventListener('keyup', this.checkForBackspaceWrapper);
+      this.filteredSearchInput.removeEventListener('click', this.tokenChange);
+      this.filteredSearchInput.removeEventListener('keyup', this.tokenChange);
       this.clearSearchButton.removeEventListener('click', this.clearSearchWrapper);
     }
 
@@ -187,6 +192,14 @@
         // do nothing
       }
       return usernamesById;
+    }
+
+    tokenChange() {
+      const dropdown = this.dropdownManager.mapping[this.dropdownManager.currentDropdown];
+      const currentDropdownRef = dropdown.reference;
+
+      this.setDropdownWrapper();
+      currentDropdownRef.dispatchInputEvent();
     }
   }
 

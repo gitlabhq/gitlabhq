@@ -15,7 +15,7 @@
           loadingTemplate: this.loadingTemplate,
         },
         droplabFilter: {
-          filterFunction: gl.DropdownUtils.filterWithSymbol.bind(null, this.symbol),
+          filterFunction: gl.DropdownUtils.filterWithSymbol.bind(null, this.symbol, input),
         },
       };
     }

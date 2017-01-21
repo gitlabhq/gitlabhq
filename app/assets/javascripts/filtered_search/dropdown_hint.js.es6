@@ -9,7 +9,7 @@
       this.config = {
         droplabFilter: {
           template: 'hint',
-          filterFunction: gl.DropdownUtils.filterHint,
+          filterFunction: gl.DropdownUtils.filterHint.bind(null, input),
         },
       };
     }

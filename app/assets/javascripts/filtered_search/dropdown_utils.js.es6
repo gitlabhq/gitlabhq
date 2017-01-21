@@ -20,17 +20,15 @@
       return escapedText;
     }
 
-    static filterWithSymbol(filterSymbol, item, query) {
+    static filterWithSymbol(filterSymbol, input, item) {
       const updatedItem = item;
+      const query = gl.DropdownUtils.getSearchInput(input);
       const { lastToken, searchToken } = gl.FilteredSearchTokenizer.processTokens(query);
 
       if (lastToken !== searchToken) {
         const title = updatedItem.title.toLowerCase();
         let value = lastToken.value.toLowerCase();
-
-        if ((value[0] === '"' || value[0] === '\'') && title.indexOf(' ') !== -1) {
-          value = value.slice(1);
-        }
+        value = value.replace(/"(.*?)"/g, str => str.slice(1).slice(0, -1));
 
         // Eg. filterSymbol = ~ for labels
         const matchWithoutSymbol = lastToken.symbol === filterSymbol && title.indexOf(value) !== -1;
@@ -44,8 +42,9 @@
       return updatedItem;
     }
 
-    static filterHint(item, query) {
+    static filterHint(input, item) {
       const updatedItem = item;
+      const query = gl.DropdownUtils.getSearchInput(input);
       let { lastToken } = gl.FilteredSearchTokenizer.processTokens(query);
       lastToken = lastToken.key || lastToken || '';
 
@@ -71,6 +70,48 @@
 
       // Return boolean based on whether it was set
       return dataValue !== null;
+    }
+
+    static getSearchInput(filteredSearchInput) {
+      const inputValue = filteredSearchInput.value;
+      const { right } = gl.DropdownUtils.getInputSelectionPosition(filteredSearchInput);
+
+      return inputValue.slice(0, right);
+    }
+
+    static getInputSelectionPosition(input) {
+      const selectionStart = input.selectionStart;
+      let inputValue = input.value;
+      // Replace all spaces inside quote marks with underscores
+      // This helps with matching the beginning & end of a token:key
+      inputValue = inputValue.replace(/"(.*?)"/g, str => str.replace(/\s/g, '_'));
+
+      // Get the right position for the word selected
+      // Regex matches first space
+      let right = inputValue.slice(selectionStart).search(/\s/);
+
+      if (right >= 0) {
+        right += selectionStart;
+      } else if (right < 0) {
+        right = inputValue.length;
+      }
+
+      // Get the left position for the word selected
+      // Regex matches last non-whitespace character
+      let left = inputValue.slice(0, right).search(/\S+$/);
+
+      if (selectionStart === 0) {
+        left = 0;
+      } else if (selectionStart === inputValue.length && left < 0) {
+        left = inputValue.length;
+      } else if (left < 0) {
+        left = selectionStart;
+      }
+
+      return {
+        left,
+        right,
+      };
     }
   }
 
