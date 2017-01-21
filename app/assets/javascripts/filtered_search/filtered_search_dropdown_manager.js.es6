@@ -98,7 +98,15 @@
       const input = this.filteredSearchInput;
       const inputText = input.value.slice(0, input.selectionStart);
       const filterIconPadding = 27;
-      const offset = gl.text.getTextWidth(inputText, this.font) + filterIconPadding;
+      let offset = gl.text.getTextWidth(inputText, this.font) + filterIconPadding;
+
+      const currentDropdownWidth = this.mapping[key].element.clientWidth === 0 ? 200 :
+      this.mapping[key].element.clientWidth;
+      const offsetMaxWidth = this.filteredSearchInput.clientWidth - currentDropdownWidth;
+
+      if (offsetMaxWidth < offset) {
+        offset = offsetMaxWidth;
+      }
 
       this.mapping[key].reference.setOffset(offset);
     }
