@@ -1,10 +1,7 @@
 require 'spec_helper'
 
 feature 'Admin updates settings', feature: true do
-  include StubENV
-
-  before do
-    stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
+  before(:each) do
     login_as :admin
     visit admin_application_settings_path
   end
