@@ -56,11 +56,9 @@
           #{mr_issues_mentioned_but_not_closing.size > 1 ? 'are' : 'is'} mentioned but will not be closed.
 
   - if @merge_request.requires_approve?
-    .mr-widget-footer{ 'v-show' => '!showApprovals' }
+    .mr-widget-footer.mr-approvals-footer{ 'v-show' => '!showApprovals' }
       = icon("spinner spin")
       Checking approval status for this merge request.
     .approvals-components{ 'v-show' => 'showApprovals' }
       = render 'projects/merge_requests/widget/open/approvals_body'
       = render 'projects/merge_requests/widget/open/approvals_footer'
-
-

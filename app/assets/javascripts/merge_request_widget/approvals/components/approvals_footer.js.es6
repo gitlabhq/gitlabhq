@@ -57,7 +57,7 @@
       gl.ApprovalsStore.initStoreOnce();
     },
     template: `
-      <div class='mr-widget-footer approved-by-users approvals-footer clearfix'>
+      <div class='mr-widget-footer approved-by-users approvals-footer clearfix mr-approvals-footer'>
         <span class='approvers-prefix'> Approved by </span>
         <span v-for='approver in approvedBy'>
           <link-to-member-avatar
@@ -90,4 +90,3 @@
     `,
   });
 })();
-

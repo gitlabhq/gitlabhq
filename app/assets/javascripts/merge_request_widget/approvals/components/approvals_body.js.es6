@@ -76,7 +76,7 @@
       gl.ApprovalsStore.initStoreOnce();
     },
     template: `
-      <div class='approvals-body mr-widget-footer'>
+      <div class='approvals-body mr-widget-footer mr-approvals-footer'>
         <h4> Requires {{ approvalsRequiredStringified }}
           <span v-if='showSuggestedApprovers'> (from {{ approverNamesStringified }}) </span>
         </h4>
