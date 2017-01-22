@@ -30,7 +30,7 @@
     .off('click', '.js-merge-dropdown a')
     .on('click', '.js-merge-dropdown a', (e) => {
       e.preventDefault();
-      $(this).closest('form').submit();
+      $(e.target).closest('form').submit();
     });
     if ($('.rebase-in-progress').length) {
       merge_request_widget.rebaseInProgress();
