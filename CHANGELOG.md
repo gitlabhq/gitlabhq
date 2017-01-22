@@ -2,6 +2,136 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 8.16.0 (2017-02-22)
+
+- Add LDAP Rake task to rename a provider. !2181
+- Validate label's title length. !5767 (Tomáš Kukrál)
+- Allow to add deploy keys with write-access. !5807 (Ali Ibrahim)
+- Allow to use + symbol in filenames. !6644 (blackst0ne)
+- Search bar redesign first iteration. !7345
+- Fix date inconsistency on due date picker. !7422 (Giuliano Varriale)
+- Add email confirmation field to registration form. !7432
+- Updated project visibility settings UX. !7645
+- Go to a project order. !7737 (Jacopo Beschi @jacopo-beschi)
+- Support slash comand `/merge` for merging merge requests. !7746 (Jarka Kadlecova)
+- Add more storage statistics. !7754 (Markus Koller)
+- Add support for PlantUML diagrams in AsciiDoc documents. !7810 (Horacio Sanson)
+- Remove extra orphaned rows when removing stray namespaces. !7841
+- Added lighter count badge background-color for on white backgrounds. !7873
+- Fixes issue boards list colored top border visual glitch. !7898 (Pier Paolo Ramon)
+- change 'gray' color theme name to 'black' to match the actual color. !7908 (BM5k)
+- Remove trailing whitespace when generating changelog entry. !7948
+- Remove checking branches state in issue new branch button. !8023
+- Log LDAP blocking/unblocking events to application log. !8042 (Markus Koller)
+- ensure permalinks scroll to correct position on multiple clicks. !8046
+- Allow to use ENV variables in redis config. !8073 (Semyon Pupkov)
+- fix button layout issue on branches page. !8074
+- Reduce DB-load for build-queues by storing last_update in Redis. !8084
+- Record and show last used date of SSH Keys. !8113 (Vincent Wong)
+- Resolves overflow in compare branch and tags dropdown. !8118
+- Replace wording for slash command confirmation message. !8123
+- remove build_user. !8162 (Arsenev Vladislav)
+- Prevent empty pagination when list is not empty. !8172
+- Make successful pipeline emails off for watchers. !8176
+- Improve copy in Issue Tracker empty state. !8202
+- Adds CSS class to status icon on MR widget to prevent non-colored icon. !8219
+- Improve visibility of "Resolve conflicts" and "Merge locally" actions. !8229
+- Add Gitaly to the architecture documentation. !8264 (Pablo Carranza <pablo@gitlab.com>)
+- Sort numbers in build names more intelligently. !8277
+- Show nested groups tab on group page. !8308
+- Rename users with namespace ending with .git. !8309
+- Rename filename to file path in tooltip of file header in merge request diff. !8314
+- About GitLab link in sidebar that links to help page. !8316
+- Merged the 'Groups' and 'Projects' tabs when viewing user profiles. !8323 (James Gregory)
+- re-enable change username button after failure. !8332
+- Darkened hr border color in descriptions because of update of bootstrap. !8333
+- display merge request discussion tab for empty branches. !8347
+- Fix double spaced CI log. !8349 (Jared Deckard <jared.deckard@gmail.com>)
+- Refactored note edit form to improve frontend performance on MR and Issues pages, especially pages with has a lot of discussions in it. !8356
+- Make CTRL+Enter submits a new merge request. !8360 (Saad Shahd)
+- Fixes too short input for placeholder message in commit listing page. !8367
+- Fix typo: seach to search. !8370
+- Adds label to Environments "Date Created". !8376 (Saad Shahd)
+- Convert project setting text into protected branch path link. !8377 (Ken Ding)
+- Precompile all JavaScript fixtures. !8384
+- Use original casing for build action text. !8387
+- Scroll to bottom on build completion if autoscroll was active. !8391
+- Properly handle failed reCAPTCHA on user registration. !8403
+- Changed alerts to be responsive, centered text on smaller viewports. !8424 (Connor Smallman)
+- Pass Gitaly resource path to gitlab-workhorse if Gitaly is enabled. !8440
+- Fixes and Improves CSS and HTML problems in mini pipeline graph and builds dropdown. !8443
+- Don't instrument 405 Grape calls. !8445
+- Change CI template linter textarea with Ace Editor. !8452 (Didem Acet)
+- Removes unneeded `window` declaration in environments related code. !8456
+- API: fix query response for `/projects/:id/issues?milestone="No%20Milestone"`. !8457 (Panagiotis Atmatzidis, David Eisner)
+- Fix broken url on group avatar. !8464 (hogewest)
+- Fixes buttons not being accessible via the keyboard when creating new group. !8469
+- Restore backup correctly when "BACKUP" environment variable is passed. !8477
+- Add new endpoints for Time Tracking. !8483
+- Fix Compare page throws 500 error when any branch/reference is not selected. !8492 (Martin Cabrera)
+- Treat environments matching `production/*` as Production. !8500
+- Hide build artifacts keep button if operation is not allowed. !8501
+- Update the gitlab-markup gem to the version 1.5.1. !8509
+- Remove Lock Icon on Protected Tag. !8513 (Sergey Nikitin)
+- Use cached values to compute total issues count in milestone index pages. !8518
+- Speed up dashboard milestone index by scoping IssuesFinder to user authorized projects. !8524
+- Copy <some text> to clipboard. !8535
+- Check for env[Grape::Env::GRAPE_ROUTING_ARGS] instead of endpoint.route. !8544
+- Fixes builds dropdown making request when clicked to be closed. !8545
+- Fixes pipeline status cell is too wide by adding missing classes in table head cells. !8549
+- Mutate the attribute instead of issuing a write operation to the DB in `ProjectFeaturesCompatibility` concern. !8552
+- Fix links to commits pages on pipelines list page. !8558
+- Ensure updating project settings shows a flash message on success. !8579 (Sandish Chen)
+- Fixes big pipeline and small pipeline width problems and tooltips text being outside the tooltip. !8593
+- Autoresize markdown preview. !8607 (Didem Acet)
+- Link external build badge to its target URL. !8611
+- Adjust ProjectStatistic#repository_size with values saved as MB. !8616
+- Correct User-agent placement in robots.txt. !8623 (Eric Sabelhaus)
+- Record used SSH keys only once per day. !8655
+- Do not generate pipeline branch/tag path if not present. !8658
+- Fix Merge When Pipeline Succeeds immediate merge bug. !8685
+- Fix blame 500 error on invalid path. !25761 (Jeff Stubler)
+- Added animations to issue boards interactions.
+- Check if user can read project before being assigned to issue.
+- Show 'too many changes' message for created merge requests when they are too large.
+- Fix redirect after update file when user has forked project.
+- Parse JIRA issue references even if Issue Tracker is disabled.
+- Made download artifacts button accessible via keyboard by changing it from an anchor tag to an actual button. (Ryan Harris)
+- Make play button on Pipelines page accessible via keyboard. (Ryan Harris)
+- Decreases font-size on login page.
+- Fixed merge request tabs dont move when opening collapsed sidebar.
+- Display project avatars on Admin Area and Projects pages for mobile views. (Ryan Harris)
+- Fix participants margins to fit on one line.
+- 26352 Change Profile settings to User / Settings.
+- Fix Commits API to accept a Project path upon POST.
+- Expire related caches after changing HEAD. (Minqi Pan)
+- Add various hover animations throughout the application.
+- Re-order update steps in the 8.14 -> 8.15 upgrade guide.
+- Move award emoji's out of the discussion tab for merge requests.
+- Synchronize all project authorization refreshing work to prevent race conditions.
+- Remove the project_authorizations.id column.
+- Combined the settings options project members and groups into a single one called members.
+- Change earlier to task_status_short to avoid titlebar line wraps.
+- 25701 standardize text colors.
+- Handle HTTP errors in environment list.
+- Re-add Google Cloud Storage as a backup strategy.
+- Change status colors of runners to better defaults.
+- Added number_with_delimiter to counter on milestone panels. (Ryan Harris)
+- Query external CI statuses in the background.
+- Allow group and project paths when transferring projects via the API.
+- Don't validate environment urls on .gitlab-ci.yml.
+- Fix a Grape deprecation, use `#request_method` instead of `#route_method`.
+- Fill missing authorized projects rows.
+- Allow API query to find projects with dots in their name. (Bruno Melli)
+- Fix import/export wrong user mapping.
+- Removed bottom padding from merge manually from CLI because of repositioning award emoji's.
+- Fix project queued for deletion re-creation tooltip.
+- Fix search group/project filtering to show results.
+- Fix 500 error when POSTing to Users API with optional confirm param.
+- 26504 Fix styling of MR jump to discussion button.
+- Add margin to markdown math blocks.
+- Add hover state to MR comment reply button.
+
 ## 8.15.4 (2017-01-09)
 
 - Make successful pipeline emails off for watchers. !8176
