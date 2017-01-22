@@ -50,7 +50,8 @@
 - [Migrate GitLab CI to CE/EE](migrate_ci_to_ce/README.md) Follow this guide to migrate your existing GitLab CI data to GitLab CE/EE.
 - [Git LFS configuration](workflow/lfs/lfs_administration.md)
 - [Housekeeping](administration/housekeeping.md) Keep your Git repository tidy and fast.
-- [GitLab Performance Monitoring](administration/monitoring/performance/introduction.md) Configure GitLab and InfluxDB for measuring performance metrics.
+- [GitLab performance monitoring with InfluxDB](administration/monitoring/performance/introduction.md) Configure GitLab and InfluxDB for measuring performance metrics.
+- [GitLab performance monitoring with Prometheus](administration/monitoring/performance/prometheus.md) Configure GitLab and Prometheus for measuring performance metrics.
 - [Request Profiling](administration/monitoring/performance/request_profiling.md) Get a detailed profile on slow requests.
 - [Monitoring uptime](user/admin_area/monitoring/health_check.md) Check the server status using the health check endpoint.
 - [Debugging Tips](administration/troubleshooting/debug.md) Tips to debug problems when things go wrong
