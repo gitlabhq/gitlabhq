@@ -43,6 +43,9 @@ Prometheus.
 
 ## Viewing Performance Metrics
 
+After you have [enabled Prometheus](#configuring-prometheus), you can visit
+`<your_domain_name>:9090` for the dashboard that Prometheus offers by default.
+
 The performance data collected by Prometheus can be viewed directly in the
 Prometheus console or through a compatible dashboard tool.
 The Prometheus interface provides a [flexible query language][prom-query] to work
@@ -85,7 +88,9 @@ To enable the node exporter:
    take effect
 
 Prometheus it will now automatically begin collecting performance data from
-the node exporter.
+the node exporter. You can visit `<your_domain_name>:9100/metrics` for a real
+time representation of the metrics that are collected. Refresh the page and
+you will see the data change.
 
 [grafana]: https://grafana.net
 [node exporter]: https://github.com/prometheus/node_exporter
