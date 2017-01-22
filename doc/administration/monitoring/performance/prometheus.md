@@ -30,7 +30,7 @@ To enable Prometheus:
 1. Find and uncomment the following line, making sure it's set to `true`:
 
     ```ruby
-    node_exporter['enable'] = true
+    prometheus['enable'] = true
     ```
 
 1. Save the file and [reconfigure GitLab][reconfigure] for the changes to
