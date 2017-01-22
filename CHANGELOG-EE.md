@@ -1,5 +1,14 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 8.16.0 (2017-02-22)
+
+- Allow to limit shared runners minutes quota for group. !965
+- About GitLab link in sidebar that links to help page. !1008
+- Prevent 500 error when uploading/entering a blank license. !1016
+- Add more push rules to the API. !1022 (Robert Schilling)
+- Expose issue weight in the API. !1023 (Robert Schilling)
+- Copy <some text> to clipboard. !1048
+
 ## 8.15.5 (2017-01-20)
 
 - No changes.
