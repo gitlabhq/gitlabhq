@@ -4,7 +4,6 @@ SimpleCovEnv.start!
 ENV['RAILS_ENV'] = 'test'
 require './config/environment'
 require 'rspec/expectations'
-require 'sidekiq/testing/inline'
 
 require_relative 'capybara'
 require_relative 'db_cleaner'
@@ -15,7 +14,7 @@ if ENV['CI']
   Knapsack::Adapters::SpinachAdapter.bind
 end
 
-%w(select2_helper test_env repo_helpers license wait_for_ajax).each do |f|
+%w(select2_helper test_env repo_helpers license wait_for_ajax sidekiq).each do |f|
   require Rails.root.join('spec', 'support', f)
 end
 

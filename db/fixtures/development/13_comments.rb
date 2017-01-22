@@ -1,3 +1,5 @@
+require './spec/support/sidekiq'
+
 Gitlab::Seeder.quiet do
   Issue.all.each do |issue|
     project = issue.project

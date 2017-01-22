@@ -1,3 +1,5 @@
+require './spec/support/sidekiq'
+
 class Gitlab::Seeder::Pipelines
   STAGES = %w[build test deploy notify]
   BUILDS = [

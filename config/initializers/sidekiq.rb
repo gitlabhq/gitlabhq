@@ -12,6 +12,11 @@ Sidekiq.configure_server do |config|
     chain.add Gitlab::SidekiqMiddleware::ArgumentsLogger if ENV['SIDEKIQ_LOG_ARGUMENTS']
     chain.add Gitlab::SidekiqMiddleware::MemoryKiller if ENV['SIDEKIQ_MEMORY_KILLER_MAX_RSS']
     chain.add Gitlab::SidekiqMiddleware::RequestStoreMiddleware unless ENV['SIDEKIQ_REQUEST_STORE'] == '0'
+    chain.add Gitlab::SidekiqStatus::ServerMiddleware
+  end
+
+  config.client_middleware do |chain|
+    chain.add Gitlab::SidekiqStatus::ClientMiddleware
   end
 
   # Sidekiq-cron: load recurring jobs from gitlab.yml
@@ -49,6 +54,10 @@ end
 
 Sidekiq.configure_client do |config|
   config.redis = redis_config_hash
+
+  config.client_middleware do |chain|
+    chain.add Gitlab::SidekiqStatus::ClientMiddleware
+  end
 end
 
 # The Sidekiq client API always adds the queue to the Sidekiq queue
