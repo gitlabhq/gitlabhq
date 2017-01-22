@@ -31,41 +31,68 @@
     });
 
     describe('filterWithSymbol', () => {
+      let input;
       const item = {
         title: '@root',
       };
 
+      beforeEach(() => {
+        setFixtures(`
+          <input type="text" id="test" />
+        `);
+
+        input = document.getElementById('test');
+      });
+
       it('should filter without symbol', () => {
-        const updatedItem = gl.DropdownUtils.filterWithSymbol('@', item, ':roo');
+        input.value = ':roo';
+
+        const updatedItem = gl.DropdownUtils.filterWithSymbol('@', input, item);
         expect(updatedItem.droplab_hidden).toBe(false);
       });
 
       it('should filter with symbol', () => {
-        const updatedItem = gl.DropdownUtils.filterWithSymbol('@', item, ':@roo');
+        input.value = '@roo';
+
+        const updatedItem = gl.DropdownUtils.filterWithSymbol('@', input, item);
         expect(updatedItem.droplab_hidden).toBe(false);
       });
 
       it('should filter with colon', () => {
-        const updatedItem = gl.DropdownUtils.filterWithSymbol('@', item, ':');
+        input.value = 'roo';
+
+        const updatedItem = gl.DropdownUtils.filterWithSymbol('@', input, item);
         expect(updatedItem.droplab_hidden).toBe(false);
       });
     });
 
     describe('filterHint', () => {
+      let input;
+
+      beforeEach(() => {
+        setFixtures(`
+          <input type="text" id="test" />
+        `);
+
+        input = document.getElementById('test');
+      });
+
       it('should filter', () => {
-        let updatedItem = gl.DropdownUtils.filterHint({
+        input.value = 'l';
+        let updatedItem = gl.DropdownUtils.filterHint(input, {
           hint: 'label',
-        }, 'l');
+        });
         expect(updatedItem.droplab_hidden).toBe(false);
 
-        updatedItem = gl.DropdownUtils.filterHint({
+        input.value = 'o';
+        updatedItem = gl.DropdownUtils.filterHint(input, {
           hint: 'label',
         }, 'o');
         expect(updatedItem.droplab_hidden).toBe(true);
       });
 
       it('should return droplab_hidden false when item has no hint', () => {
-        const updatedItem = gl.DropdownUtils.filterHint({}, '');
+        const updatedItem = gl.DropdownUtils.filterHint(input, {}, '');
         expect(updatedItem.droplab_hidden).toBe(false);
       });
     });
