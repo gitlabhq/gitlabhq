@@ -1,5 +1,0 @@
----
-title: Mutate the attribute instead of issuing a write operation to the DB in `ProjectFeaturesCompatibility`
-  concern.
-merge_request: 8552
-author:
