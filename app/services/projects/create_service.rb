@@ -23,7 +23,8 @@ module Projects
       end
 
       # Repository size limit comes as MB from the view
-      assign_repository_size_limit_as_bytes(@project)
+      limit = params.delete(:repository_size_limit)
+      @project.repository_size_limit = (limit.to_i.megabytes if limit.present?)
 
       # Set project name from path
       if @project.name.present? && @project.path.present?
