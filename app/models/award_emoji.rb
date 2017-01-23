@@ -16,6 +16,14 @@ class AwardEmoji < ActiveRecord::Base
   scope :downvotes, -> { where(name: DOWNVOTE_NAME) }
   scope :upvotes,   -> { where(name: UPVOTE_NAME) }
 
+  class << self
+    def votes_for_collection(ids, type)
+      select('name', 'awardable_id', 'COUNT(*) as count').
+        where('name IN (?) AND awardable_type = ? AND awardable_id IN (?)', [DOWNVOTE_NAME, UPVOTE_NAME], type, ids).
+        group('name', 'awardable_id')
+    end
+  end
+
   def downvote?
     self.name == DOWNVOTE_NAME
   end

@@ -9,6 +9,28 @@ module IssuableCollections
 
   private
 
+  def issuable_meta_data(issuable_collection)
+    # map has to be used here since using pluck or select will
+    # throw an error when ordering issuables by priority which inserts
+    # a new order into the collection.
+    # We cannot use reorder to not mess up the paginated collection.
+    issuable_ids         = issuable_collection.map(&:id)
+    issuable_note_count  = Note.count_for_collection(issuable_ids, @collection_type)
+    issuable_votes_count = AwardEmoji.votes_for_collection(issuable_ids, @collection_type)
+
+    issuable_ids.each_with_object({}) do |id, issuable_meta|
+      downvotes = issuable_votes_count.find { |votes| votes.awardable_id == id && votes.downvote? }
+      upvotes   = issuable_votes_count.find { |votes| votes.awardable_id == id && votes.upvote? }
+      notes     = issuable_note_count.find  { |notes| notes.noteable_id == id }
+
+      issuable_meta[id] = Issuable::IssuableMeta.new(
+        upvotes.try(:count).to_i,
+        downvotes.try(:count).to_i,
+        notes.try(:count).to_i
+      )
+    end
+  end
+
   def issues_collection
     issues_finder.execute.preload(:project, :author, :assignee, :labels, :milestone, project: :namespace)
   end
