@@ -1,4 +1,5 @@
 require_dependency Rails.root.join('lib/gitlab') # Load Gitlab as soon as possible
+require_dependency Rails.root.join('lib/ee') # Load EE as soon as possible
 
 class Settings < Settingslogic
   source ENV.fetch('GITLAB_CONFIG') { "#{Rails.root}/config/gitlab.yml" }
