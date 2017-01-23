@@ -24,6 +24,7 @@
         pagenum: 1,
         count: { all: 0, running_or_pending: 0 },
         pageRequest: false,
+        failure: false,
       };
     },
     props: ['scope', 'store', 'svgs'],
@@ -65,7 +66,7 @@
       },
     },
     template: `
-      <div>
+      <div v-if='!failure'>
         <div class="pipelines realtime-loading" v-if='pipelines.length < 1'>
           <i class="fa fa-spinner fa-spin"></i>
         </div>

@@ -45,6 +45,7 @@
             this.pageRequest = false;
           }, () => {
             this.pageRequest = false;
+            this.failure = true;
             return new Flash('Something went wrong on our end.');
           });
 
