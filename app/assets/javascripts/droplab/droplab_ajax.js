@@ -58,7 +58,10 @@ require('../window')(function(w){
               dataLoadingTemplate.outerHTML = self.listTemplate;
             }
           }
-          hook.list[config.method].call(hook.list, d);
+
+          if (!hook.list.hidden) {
+            hook.list[config.method].call(hook.list, d);
+          }
         }).catch(function(e) {
           throw new droplabAjaxException(e.message || e);
         });
