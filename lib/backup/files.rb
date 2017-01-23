@@ -8,6 +8,7 @@ module Backup
       @name = name
       @app_files_dir = File.realpath(app_files_dir)
       @files_parent_dir = File.realpath(File.join(@app_files_dir, '..'))
+      @backup_files_dir = File.join(Gitlab.config.backup.path, File.basename(@app_files_dir) )
       @backup_tarball = File.join(Gitlab.config.backup.path, name + '.tar.gz')
     end
 
@@ -15,7 +16,21 @@ module Backup
     def dump
       FileUtils.mkdir_p(Gitlab.config.backup.path)
       FileUtils.rm_f(backup_tarball)
-      run_pipeline!([%W(tar -C #{app_files_dir} -cf - .), %W(gzip -c -1)], out: [backup_tarball, 'w', 0600])
+
+      if ENV['STRATEGY'] == 'copy'
+        cmd = %W(cp -a #{app_files_dir} #{Gitlab.config.backup.path})
+        output, status = Gitlab::Popen.popen(cmd)
+
+        unless status.zero?
+          puts output
+          abort 'Backup failed'
+        end
+
+        run_pipeline!([%W(tar -C #{@backup_files_dir} -cf - .), %W(gzip -c -1)], out: [backup_tarball, 'w', 0600])
+        FileUtils.rm_rf(@backup_files_dir)
+      else
+        run_pipeline!([%W(tar -C #{app_files_dir} -cf - .), %W(gzip -c -1)], out: [backup_tarball, 'w', 0600])
+      end
     end
 
     def restore
