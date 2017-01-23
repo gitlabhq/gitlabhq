@@ -39,6 +39,7 @@
         }
 
         this.dismissDropdown();
+        this.dispatchInputEvent();
       }
     }
 
@@ -79,6 +80,12 @@
       // Propogate input change to FilteredSearchDropdownManager
       // so that it can determine which dropdowns to open
       this.input.dispatchEvent(new Event('input'));
+    }
+
+    dispatchFormSubmitEvent() {
+      // dispatchEvent() is necessary as form.submit() does not
+      // trigger event handlers
+      this.input.form.dispatchEvent(new Event('submit'));
     }
 
     hideDropdown() {
