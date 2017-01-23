@@ -1,12 +1,10 @@
 # GitLab Pages
 
-> **Note:**
-> This feature was [introduced][ee-80] in GitLab EE 8.3.
-> Custom CNAMEs with TLS support were [introduced][ee-173] in GitLab EE 8.5.
-
-> **Note:**
-> This document is about the user guide. To learn how to enable GitLab Pages
-> across your GitLab instance, visit the [administrator documentation](administration.md).
+> **Notes:**
+> - This feature was [introduced][ee-80] in GitLab EE 8.3.
+> - Custom CNAMEs with TLS support were [introduced][ee-173] in GitLab EE 8.5.
+> - This document is about the user guide. To learn how to enable GitLab Pages
+>   across your GitLab instance, visit the [administrator documentation](../../../administration/pages/index.md).
 
 With GitLab Pages you can host for free your static websites on GitLab.
 Combined with the power of [GitLab CI] and the help of [GitLab Runner] you can
