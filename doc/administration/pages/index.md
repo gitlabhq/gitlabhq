@@ -462,9 +462,9 @@ latest previous version.
 
 ---
 
-**GitLab 8.16 ([documentation][8-16-docs])**
+**GitLab 8.17 ([documentation][8-17-docs])**
 
-- GitLab Pages were ported to Community Edition in GitLab 8.16.
+- GitLab Pages were ported to Community Edition in GitLab 8.17.
 - Documentation was refactored to be more modular and easy to follow.
 
 **GitLab 8.5 ([documentation][8-5-docs])**
@@ -476,15 +476,13 @@ latest previous version.
 - Custom CNAME and TLS certificates support.
 - Documentation was moved to one place.
 
----
-
 **GitLab 8.3 ([documentation][8-3-docs])**
 
 - GitLab Pages feature was introduced.
 
 [8-3-docs]: https://gitlab.com/gitlab-org/gitlab-ee/blob/8-3-stable-ee/doc/pages/administration.md
 [8-5-docs]: https://gitlab.com/gitlab-org/gitlab-ee/blob/8-5-stable-ee/doc/pages/administration.md
-[8-16-docs]: https://gitlab.com/gitlab-org/gitlab-ce/blob/8-16-stable-ce/doc/administration/pages/index.md
+[8-17-docs]: https://gitlab.com/gitlab-org/gitlab-ce/blob/8-17-stable-ce/doc/administration/pages/index.md
 [backup]: ../raketasks/backup_restore.md
 [ee-80]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/80
 [ee-173]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/173
