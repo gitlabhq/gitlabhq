@@ -2,12 +2,12 @@
 (function() {
   this.GroupAvatar = (function() {
     function GroupAvatar() {
-      $('.js-choose-group-avatar-button').bind("click", function() {
+      $('.js-choose-group-avatar-button').on("click", function() {
         var form;
         form = $(this).closest("form");
         return form.find(".js-group-avatar-input").click();
       });
-      $('.js-group-avatar-input').bind("change", function() {
+      $('.js-group-avatar-input').on("change", function() {
         var filename, form;
         form = $(this).closest("form");
         filename = $(this).val().replace(/^.*[\\\/]/, '');

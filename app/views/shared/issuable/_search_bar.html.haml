@@ -11,7 +11,7 @@
             class: "check_all_issues left"
       .issues-other-filters.filtered-search-container
         .filtered-search-input-container
-          %input.form-control.filtered-search{ placeholder: 'Search or filter results...', 'data-id' => 'filtered-search', 'data-project-id' => @project.id }
+          %input.form-control.filtered-search{ placeholder: 'Search or filter results...', 'data-id' => 'filtered-search', 'data-project-id' => @project.id, 'data-username-params' => @users.to_json(only: [:id, :username]) }
           = icon('filter')
           %button.clear-search.hidden{ type: 'button' }
             = icon('times')
@@ -47,6 +47,10 @@
               %li.filter-dropdown-item{ 'data-value' => 'none' }
                 %button.btn.btn-link
                   No Assignee
+              - if current_user
+                %li.filter-dropdown-item{ 'data-value' => current_user.to_reference }
+                  %button.btn.btn-link
+                    Assigned to me
               %li.divider
             %ul.filter-dropdown{ 'data-dynamic' => true, 'data-dropdown' => true }
               %li.filter-dropdown-item
@@ -138,4 +142,14 @@
   $('form.filter-form').on('submit', function (event) {
     event.preventDefault();
     Turbolinks.visit(this.action + '&' + $(this).serialize());
+  });
+
+  $(document).off('page:restore').on('page:restore', function (event) {
+    if (gl.FilteredSearchManager) {
+      new gl.FilteredSearchManager();
+    }
+    Issuable.init();
+    new gl.IssuableBulkActions({
+      prefixId: 'issue_',
+    });
   });

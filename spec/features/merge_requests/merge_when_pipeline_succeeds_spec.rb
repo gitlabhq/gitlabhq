@@ -32,19 +32,61 @@ feature 'Merge When Pipeline Succeeds', :feature, :js do
       expect(page).to have_button "Merge When Pipeline Succeeds"
     end
 
-    context "Merge When Pipeline Succeeds enabled", js: true do
-      before do
-        click_button "Merge When Pipeline Succeeds"
+    describe 'enabling Merge When Pipeline Succeeds' do
+      shared_examples 'Merge When Pipeline Succeeds activator' do
+        it 'activates the Merge When Pipeline Succeeds feature' do
+          click_button "Merge When Pipeline Succeeds"
+
+          expect(page).to have_content "Set by #{user.name} to be merged automatically when the pipeline succeeds."
+          expect(page).to have_content "The source branch will not be removed."
+          expect(page).to have_link "Cancel Automatic Merge"
+          visit_merge_request(merge_request) # Needed to refresh the page
+          expect(page).to have_content /enabled an automatic merge when the pipeline for \h{8} succeeds/i
+        end
       end
 
-      it 'activates Merge When Pipeline Succeeds feature' do
-        expect(page).to have_link "Cancel Automatic Merge"
+      context "when enabled immediately" do
+        it_behaves_like 'Merge When Pipeline Succeeds activator'
+      end
 
-        expect(page).to have_content "Set by #{user.name} to be merged automatically when the pipeline succeeds."
-        expect(page).to have_content "The source branch will not be removed."
+      context 'when enabled after pipeline status changed' do
+        before do
+          pipeline.run!
 
-        visit_merge_request(merge_request) # Needed to refresh the page
-        expect(page).to have_content /enabled an automatic merge when the pipeline for \h{8} succeeds/i
+          # We depend on merge request widget being reloaded
+          # so we have to wait for asynchronous call to reload it
+          # and have_content expectation handles that.
+          #
+          expect(page).to have_content "Pipeline ##{pipeline.id} running"
+        end
+
+        it_behaves_like 'Merge When Pipeline Succeeds activator'
+      end
+
+      context 'when enabled after it was previously canceled' do
+        before do
+          click_button "Merge When Pipeline Succeeds"
+          click_link "Cancel Automatic Merge"
+        end
+
+        it_behaves_like 'Merge When Pipeline Succeeds activator'
+      end
+
+      context 'when it was enabled and then canceled' do
+        let(:merge_request) do
+          create(:merge_request_with_diffs,
+                 :merge_when_build_succeeds,
+                   source_project: project,
+                   title: 'Bug NS-04',
+                   author: user,
+                   merge_user: user)
+        end
+
+        before do
+          click_link "Cancel Automatic Merge"
+        end
+
+        it_behaves_like 'Merge When Pipeline Succeeds activator'
       end
     end
   end

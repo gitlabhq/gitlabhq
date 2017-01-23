@@ -1015,7 +1015,7 @@ describe MergeRequest, models: true do
       it 'becomes unmergeable' do
         expect { subject.check_if_can_be_merged }.to change { subject.merge_status }.to('cannot_be_merged')
       end
-      
+
       it 'creates Todo on unmergeability' do
         expect_any_instance_of(TodoService).to receive(:merge_request_became_unmergeable).with(subject)
 
@@ -1963,7 +1963,7 @@ describe MergeRequest, models: true do
         status:  status)
     end
 
-    let(:project)       { create(:project, :public, only_allow_merge_if_build_succeeds: true) }
+    let(:project)       { create(:project, :public, :repository, only_allow_merge_if_build_succeeds: true) }
     let(:developer)     { create(:user) }
     let(:user)          { create(:user) }
     let(:merge_request) { create(:merge_request, source_project: project) }
