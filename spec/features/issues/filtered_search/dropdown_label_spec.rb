@@ -159,7 +159,7 @@ describe 'Dropdown label', js: true, feature: true do
       click_label(bug_label.title)
 
       expect(page).to have_css(js_dropdown_label, visible: false)
-      expect(filtered_search.value).to eq("label:~#{bug_label.title}")
+      expect(filtered_search.value).to eq("label:~#{bug_label.title} ")
     end
 
     it 'fills in the label name when the label is partially filled' do
@@ -167,49 +167,49 @@ describe 'Dropdown label', js: true, feature: true do
       click_label(bug_label.title)
 
       expect(page).to have_css(js_dropdown_label, visible: false)
-      expect(filtered_search.value).to eq("label:~#{bug_label.title}")
+      expect(filtered_search.value).to eq("label:~#{bug_label.title} ")
     end
 
     it 'fills in the label name that contains multiple words' do
       click_label(two_words_label.title)
 
       expect(page).to have_css(js_dropdown_label, visible: false)
-      expect(filtered_search.value).to eq("label:~\"#{two_words_label.title}\"")
+      expect(filtered_search.value).to eq("label:~\"#{two_words_label.title}\" ")
     end
 
     it 'fills in the label name that contains multiple words and is very long' do
       click_label(long_label.title)
 
       expect(page).to have_css(js_dropdown_label, visible: false)
-      expect(filtered_search.value).to eq("label:~\"#{long_label.title}\"")
+      expect(filtered_search.value).to eq("label:~\"#{long_label.title}\" ")
     end
 
     it 'fills in the label name that contains double quotes' do
       click_label(wont_fix_label.title)
 
       expect(page).to have_css(js_dropdown_label, visible: false)
-      expect(filtered_search.value).to eq("label:~'#{wont_fix_label.title}'")
+      expect(filtered_search.value).to eq("label:~'#{wont_fix_label.title}' ")
     end
 
     it 'fills in the label name with the correct capitalization' do
       click_label(uppercase_label.title)
 
       expect(page).to have_css(js_dropdown_label, visible: false)
-      expect(filtered_search.value).to eq("label:~#{uppercase_label.title}")
+      expect(filtered_search.value).to eq("label:~#{uppercase_label.title} ")
     end
 
     it 'fills in the label name with special characters' do
       click_label(special_label.title)
 
       expect(page).to have_css(js_dropdown_label, visible: false)
-      expect(filtered_search.value).to eq("label:~#{special_label.title}")
+      expect(filtered_search.value).to eq("label:~#{special_label.title} ")
     end
 
     it 'selects `no label`' do
       find('#js-dropdown-label .filter-dropdown-item', text: 'No Label').click
 
       expect(page).to have_css(js_dropdown_label, visible: false)
-      expect(filtered_search.value).to eq("label:none")
+      expect(filtered_search.value).to eq("label:none ")
     end
   end
 
