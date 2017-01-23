@@ -6,7 +6,7 @@ describe API::Services, api: true  do
   let(:user) { create(:user) }
   let(:admin) { create(:admin) }
   let(:user2) { create(:user) }
-  let(:project) {create(:empty_project, creator_id: user.id, namespace: user.namespace) }
+  let(:project) { create(:empty_project, creator_id: user.id, namespace: user.namespace) }
 
   Service.available_services_names.each do |service|
     describe "PUT /projects/:id/services/#{service.dasherize}" do
@@ -16,6 +16,15 @@ describe API::Services, api: true  do
         put api("/projects/#{project.id}/services/#{dashed_service}", user), service_attrs
 
         expect(response).to have_http_status(200)
+
+        current_service = project.services.first
+        event = current_service.event_names.empty? ? "foo" : current_service.event_names.first
+        state = current_service[event] || false
+
+        put api("/projects/#{project.id}/services/#{dashed_service}?#{event}=#{!state}", user), service_attrs
+
+        expect(response).to have_http_status(200)
+        expect(project.services.first[event]).not_to eq(state) unless event == "foo"
       end
 
       it "returns if required fields missing" do
