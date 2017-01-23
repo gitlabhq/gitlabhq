@@ -27,7 +27,20 @@
         failure: false,
       };
     },
-    props: ['scope', 'store', 'svgs'],
+    props: {
+      scope: {
+        type: String,
+        required: true,
+      },
+      store: {
+        type: Object,
+        required: true,
+      },
+      svgs: {
+        type: DOMStringMap,
+        required: true,
+      },
+    },
     created() {
       const pagenum = gl.utils.getParameterByName('p');
       const scope = gl.utils.getParameterByName('scope');
