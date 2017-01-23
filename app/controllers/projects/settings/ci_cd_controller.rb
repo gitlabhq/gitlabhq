@@ -1,12 +1,11 @@
 module Projects
   module Settings
-    class CiCdPipelinesController < Projects::ApplicationController
+    class CiCdController < Projects::ApplicationController
       before_action :authorize_admin_pipeline!
 
       def show
         define_runners_variables
-        # variables
-        @variable = Ci::Variable.new
+        define_project_variables_variables
         define_triggers_variables
         define_badges_variables
       end
@@ -19,6 +18,10 @@ module Projects
           assignable_for(project).ordered.page(params[:page]).per(20)
         @shared_runners = Ci::Runner.shared.active
         @shared_runners_count = @shared_runners.count(:all)
+      end
+
+      def define_project_variables_variables
+        @variable = Ci::Variable.new
       end
 
       def define_triggers_variables

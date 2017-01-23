@@ -122,7 +122,7 @@ describe "Runners" do
 
     scenario 'user checks default configuration' do
       visit namespace_project_runner_path(project.namespace, project, runner)
-      
+
       expect(page).to have_content 'Can run untagged jobs Yes'
     end
 

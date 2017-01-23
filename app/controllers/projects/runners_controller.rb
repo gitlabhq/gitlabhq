@@ -4,10 +4,6 @@ class Projects::RunnersController < Projects::ApplicationController
 
   layout 'project_settings'
 
-  def index
-    redirect_to namespace_project_settings_ci_cd_pipelines_path(@project.namespace, @project)
-  end
-
   def edit
   end
 
@@ -49,7 +45,7 @@ class Projects::RunnersController < Projects::ApplicationController
   def toggle_shared_runners
     project.toggle!(:shared_runners_enabled)
 
-    redirect_to namespace_project_settings_ci_cd_pipelines_path(@project.namespace, @project)
+    redirect_to namespace_project_settings_ci_cd_path(@project.namespace, @project)
   end
 
   protected
