@@ -29,6 +29,7 @@ require('../window')(function(w){
     init: function init(hook) {
       var self = this;
       var config = hook.config.droplabAjax;
+      this.hook = hook;
 
       if (!config || !config.endpoint || !config.method) {
         return;
@@ -52,15 +53,15 @@ require('../window')(function(w){
       this._loadUrlData(config.endpoint)
         .then(function(d) {
           if (config.loadingTemplate) {
-            var dataLoadingTemplate = hook.list.list.querySelector('[data-loading-template]');
+            var dataLoadingTemplate = self.hook.list.list.querySelector('[data-loading-template]');
 
             if (dataLoadingTemplate) {
               dataLoadingTemplate.outerHTML = self.listTemplate;
             }
           }
 
-          if (!hook.list.hidden) {
-            hook.list[config.method].call(hook.list, d);
+          if (!self.hook.list.hidden) {
+            self.hook.list[config.method].call(self.hook.list, d);
           }
         }).catch(function(e) {
           throw new droplabAjaxException(e.message || e);
@@ -68,6 +69,10 @@ require('../window')(function(w){
     },
 
     destroy: function() {
+      if (this.listTemplate) {
+        var dynamicList = this.hook.list.list.querySelector('[data-dynamic]');
+        dynamicList.outerHTML = this.listTemplate;
+      }
     }
   };
 });
