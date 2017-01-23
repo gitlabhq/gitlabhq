@@ -71,7 +71,7 @@ header {
         &:focus,
         &:active {
           background-color: $gray-light;
-          color: darken($gl-text-color-secondary, 30%);
+          color: $gl-text-color;
 
           .todos-pending-count {
             background: darken($todo-alert-blue, 10%);
