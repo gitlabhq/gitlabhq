@@ -72,8 +72,8 @@ feature 'Expand and collapse diffs', js: true, feature: true do
     it 'collapses large diffs for renamed files by default' do
       expect(large_diff_renamed).not_to have_selector('.code')
       expect(large_diff_renamed).to have_selector('.nothing-here-block')
-      expect(large_diff_renamed).to have_selector('.file-title .deletion')
-      expect(large_diff_renamed).to have_selector('.file-title .addition')
+      expect(large_diff_renamed).to have_selector('.js-file-title .deletion')
+      expect(large_diff_renamed).to have_selector('.js-file-title .addition')
     end
 
     it 'shows non-renderable diffs as such immediately, regardless of their size' do
@@ -115,9 +115,9 @@ feature 'Expand and collapse diffs', js: true, feature: true do
     context 'expanding a large diff' do
       before do
         # Wait for diffs
-        find('.file-title', match: :first)
+        find('.js-file-title', match: :first)
         # Click `large_diff.md` title
-        all('.file-title')[1].click
+        all('.diff-toggle-caret')[1].click
         wait_for_ajax
       end
 
@@ -159,9 +159,9 @@ feature 'Expand and collapse diffs', js: true, feature: true do
           context 'expanding the diff' do
             before do
               # Wait for diffs
-              find('.file-title', match: :first)
+              find('.js-file-title', match: :first)
               # Click `large_diff.md` title
-              all('.file-title')[1].click
+              all('.diff-toggle-caret')[1].click
               wait_for_ajax
             end
 
@@ -181,9 +181,9 @@ feature 'Expand and collapse diffs', js: true, feature: true do
     context 'collapsing an expanded diff' do
       before do
         # Wait for diffs
-        find('.file-title', match: :first)
+        find('.js-file-title', match: :first)
         # Click `small_diff.md` title
-        all('.file-title')[3].click
+        all('.diff-toggle-caret')[3].click
       end
 
       it 'hides the diff content' do
@@ -194,9 +194,9 @@ feature 'Expand and collapse diffs', js: true, feature: true do
       context 're-expanding the same diff' do
         before do
           # Wait for diffs
-          find('.file-title', match: :first)
+          find('.js-file-title', match: :first)
           # Click `small_diff.md` title
-          all('.file-title')[3].click
+          all('.diff-toggle-caret')[3].click
         end
 
         it 'shows the diff content' do
@@ -290,9 +290,9 @@ feature 'Expand and collapse diffs', js: true, feature: true do
     context 'collapsing an expanded diff' do
       before do
         # Wait for diffs
-        find('.file-title', match: :first)
+        find('.js-file-title', match: :first)
         # Click `small_diff.md` title
-        all('.file-title')[3].click
+        all('.diff-toggle-caret')[3].click
       end
 
       it 'hides the diff content' do
@@ -303,9 +303,9 @@ feature 'Expand and collapse diffs', js: true, feature: true do
       context 're-expanding the same diff' do
         before do
           # Wait for diffs
-          find('.file-title', match: :first)
+          find('.js-file-title', match: :first)
           # Click `small_diff.md` title
-          all('.file-title')[3].click
+          all('.diff-toggle-caret')[3].click
         end
 
         it 'shows the diff content' do
