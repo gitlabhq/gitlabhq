@@ -1,0 +1,4 @@
+---
+title: 'API: Remove deprecated upvote and downvote field from notes API'
+merge_request: 8724
+author: Robert Schilling
