@@ -5,7 +5,7 @@ describe Projects::MergeRequestsController do
 
   let(:project) { create(:project) }
   let(:user)    { create(:user) }
-  let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
+  let!(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
   let(:merge_request_with_conflicts) do
     create(:merge_request, source_branch: 'conflict-resolvable', target_branch: 'conflict-start', source_project: project) do |mr|
       mr.mark_as_unmergeable
@@ -153,6 +153,8 @@ describe Projects::MergeRequestsController do
           project_id: project.to_param,
           state: 'opened', page: page.to_param
     end
+
+    it_behaves_like "issuables list meta-data", :merge_request
 
     context 'when page param' do
       let(:last_page) { project.merge_requests.page().total_pages }

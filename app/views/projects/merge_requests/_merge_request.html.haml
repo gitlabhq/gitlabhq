@@ -29,22 +29,7 @@
           %li
             = link_to_member(merge_request.source_project, merge_request.assignee, name: false, title: "Assigned to :name")
 
-        - upvotes, downvotes = merge_request.upvotes, merge_request.downvotes
-        - if upvotes > 0
-          %li
-            = icon('thumbs-up')
-            = upvotes
-
-        - if downvotes > 0
-          %li
-            = icon('thumbs-down')
-            = downvotes
-
-        - note_count = merge_request.related_notes.user.count
-        %li
-          = link_to merge_request_path(merge_request, anchor: 'notes'), class: ('no-comments' if note_count.zero?) do
-            = icon('comments')
-            = note_count
+        = render 'shared/issuable_meta_data', issuable: merge_request
 
     .merge-request-info
       #{issuable_reference(merge_request)} &middot;

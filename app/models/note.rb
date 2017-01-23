@@ -108,6 +108,12 @@ class Note < ActiveRecord::Base
       Discussion.for_diff_notes(active_notes).
         map { |d| [d.line_code, d] }.to_h
     end
+
+    def count_for_collection(ids, type)
+      user.select('noteable_id', 'COUNT(*)').
+        group(:noteable_id).
+        where(noteable_type: type, noteable_id: ids)
+    end
   end
 
   def cross_reference?
