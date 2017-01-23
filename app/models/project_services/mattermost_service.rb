@@ -36,6 +36,6 @@ class MattermostService < ChatNotificationService
   end
 
   def default_channel_placeholder
-    "#town-square"
+    "town-square"
   end
 end
