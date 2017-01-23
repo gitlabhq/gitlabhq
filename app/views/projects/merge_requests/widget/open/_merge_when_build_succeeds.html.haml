@@ -1,3 +1,6 @@
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_tag('merge_request_widget/ci_bundle.js')
+
 %h4
   Set by #{link_to_member(@project, @merge_request.merge_user, avatar: true)}
   to be merged automatically when the pipeline succeeds.

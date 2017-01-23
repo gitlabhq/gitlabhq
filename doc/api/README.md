@@ -106,6 +106,13 @@ that needs access to the GitLab API.
 Once you have your token, pass it to the API using either the `private_token`
 parameter or the `PRIVATE-TOKEN` header.
 
+> [Introduced][ce-5951] in GitLab 8.15.
+
+Personal Access Tokens can be created with one or more scopes that allow various actions
+that a given token can perform. Although there are only two scopes available at the
+moment – `read_user` and `api` – the groundwork has been laid to add more scopes easily.
+
+At any time you can revoke any personal access token by just clicking **Revoke**.
 
 ### Session Cookie
 
@@ -382,3 +389,4 @@ programming languages. Visit the [GitLab website] for a complete list.
 [GitLab website]: https://about.gitlab.com/applications/#api-clients "Clients using the GitLab API"
 [lib-api-url]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/lib/api/api.rb
 [ce-3749]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3749
+[ce-5951]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5951
