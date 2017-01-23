@@ -1,7 +1,9 @@
 .panel.panel-default
   .panel-heading
-    Members with access to
-    %strong= @project.name
+    %span.str-truncated-30
+      Members of
+      %strong
+        #{@project.name}
     %span.badge= @project_members.total_count
     = form_tag namespace_project_settings_members_path(@project.namespace, @project), method: :get, class: 'form-inline member-search-form'  do
       .form-group
