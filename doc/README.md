@@ -13,7 +13,7 @@
 - [GitLab as OAuth2 authentication service provider](integration/oauth_provider.md). It allows you to login to other applications from GitLab.
 - [Container Registry](user/project/container_registry.md) Learn how to use GitLab Container Registry.
 - [GitLab basics](gitlab-basics/README.md) Find step by step how to start working on your commandline and on GitLab.
-- [GitLab Pages](pages/README.md) Using GitLab Pages.
+- [GitLab Pages](user/project/pages/index.md) Using GitLab Pages.
 - [Importing to GitLab](workflow/importing/README.md) Import your projects from GitHub, Bitbucket, GitLab.com, FogBugz and SVN into GitLab.
 - [Importing and exporting projects between instances](user/project/settings/import_export.md).
 - [Koding](user/project/koding.md) Learn how to use Koding, the online IDE.
@@ -65,7 +65,7 @@
 - [git-annex configuration](workflow/git_annex.md#configuration)
 - [Git LFS configuration](workflow/lfs/lfs_administration.md)
 - [Housekeeping](administration/housekeeping.md) Keep your Git repository tidy and fast.
-- [GitLab Pages configuration](pages/administration.md) Configure GitLab Pages.
+- [GitLab Pages configuration](administration/pages/index.md) Configure GitLab Pages.
 - [Elasticsearch](integration/elasticsearch.md) Enable Elasticsearch.
 - [GitLab GEO](gitlab-geo/README.md) Configure GitLab GEO, a secondary read-only GitLab instance.
 - [GitLab performance monitoring with InfluxDB](administration/monitoring/performance/introduction.md) Configure GitLab and InfluxDB for measuring performance metrics.
