@@ -86,10 +86,6 @@ describe 'Search bar', js: true, feature: true do
     end
 
     it 'resets the dropdown filters' do
-      filtered_search.set('a')
-      hint_style = page.find('#js-dropdown-hint')['style']
-      hint_offset = get_left_style(hint_style)
-
       filtered_search.set('author:')
 
       expect(page.all('#js-dropdown-hint .filter-dropdown .filter-dropdown-item').size).to eq(0)
@@ -98,7 +94,7 @@ describe 'Search bar', js: true, feature: true do
       filtered_search.click
 
       expect(page.all('#js-dropdown-hint .filter-dropdown .filter-dropdown-item').size).to be > 0
-      expect(get_left_style(page.find('#js-dropdown-hint')['style'])).to eq(hint_offset)
+      expect(get_left_style(page.find('#js-dropdown-hint')['style'])).to eq(0)
     end
   end
 end
