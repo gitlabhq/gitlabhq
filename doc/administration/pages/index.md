@@ -89,6 +89,27 @@ In that case, the pages daemon is running, NGINX still proxies requests to
 the daemon but the daemon is also able to receive requests from the outside
 world. Custom domains and TLS are supported.
 
+**Omnibus installations:**
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+    ```ruby
+    pages_external_url "https://example.io"
+    nginx['listen_addresses'] = ['1.1.1.1']
+    pages_nginx['enable'] = false
+    gitlab_pages['cert'] = "/etc/gitlab/ssl/example.io.crt"
+    gitlab_pages['cert_key'] = "/etc/gitlab/ssl/example.io.key"
+    gitlab_pages['external_http'] = '1.1.1.2:80'
+    gitlab_pages['external_https'] = '1.1.1.2:443'
+    ```
+
+    where `1.1.1.1` is the primary IP address that GitLab is listening to and
+    `1.1.1.2` the secondary IP where the GitLab Pages daemon listens to.
+
+1. [Reconfigure GitLab][reconfigure]
+
+---
+
 **Source installations:**
 
 1. Install the Pages daemon:
@@ -97,7 +118,7 @@ world. Custom domains and TLS are supported.
     cd /home/git
     sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-pages.git
     cd gitlab-pages
-    sudo -u git -H git checkout v0.2.1
+    sudo -u git -H git checkout v0.2.4
     sudo -u git -H make
     ```
 
@@ -148,27 +169,6 @@ world. Custom domains and TLS are supported.
 1. Restart NGINX
 1. [Restart GitLab][restart]
 
----
-
-**Omnibus installations:**
-
-1. Edit `/etc/gitlab/gitlab.rb`:
-
-    ```ruby
-    pages_external_url "https://example.io"
-    nginx['listen_addresses'] = ['1.1.1.1']
-    pages_nginx['enable'] = false
-    gitlab_pages['cert'] = "/etc/gitlab/ssl/example.io.crt"
-    gitlab_pages['cert_key'] = "/etc/gitlab/ssl/example.io.key"
-    gitlab_pages['external_http'] = '1.1.1.2:80'
-    gitlab_pages['external_https'] = '1.1.1.2:443'
-    ```
-
-    where `1.1.1.1` is the primary IP address that GitLab is listening to and
-    `1.1.1.2` the secondary IP where the GitLab Pages daemon listens to.
-
-1. [Reconfigure GitLab][reconfigure]
-
 ### Option 2. Custom domains without HTTPS support
 
 | URL scheme |  Wildcard certificate | Custom domain with HTTP support | Custom domain with HTTPS support | Secondary IP |
@@ -180,6 +180,24 @@ In that case, the pages daemon is running, NGINX still proxies requests to
 the daemon but the daemon is also able to receive requests from the outside
 world. Custom domains and TLS are supported.
 
+**Omnibus installations:**
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+    ```ruby
+    pages_external_url "http://example.io"
+    nginx['listen_addresses'] = ['1.1.1.1']
+    pages_nginx['enable'] = false
+    gitlab_pages['external_http'] = '1.1.1.2:80'
+    ```
+
+    where `1.1.1.1` is the primary IP address that GitLab is listening to and
+    `1.1.1.2` the secondary IP where the GitLab Pages daemon listens to.
+
+1. [Reconfigure GitLab][reconfigure]
+
+---
+
 **Source installations:**
 
 1. Install the Pages daemon:
@@ -188,7 +206,7 @@ world. Custom domains and TLS are supported.
     cd /home/git
     sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-pages.git
     cd gitlab-pages
-    sudo -u git -H git checkout v0.2.1
+    sudo -u git -H git checkout v0.2.4
     sudo -u git -H make
     ```
 
@@ -235,24 +253,6 @@ world. Custom domains and TLS are supported.
 1. Restart NGINX
 1. [Restart GitLab][restart]
 
----
-
-**Omnibus installations:**
-
-1. Edit `/etc/gitlab/gitlab.rb`:
-
-    ```ruby
-    pages_external_url "http://example.io"
-    nginx['listen_addresses'] = ['1.1.1.1']
-    pages_nginx['enable'] = false
-    gitlab_pages['external_http'] = '1.1.1.2:80'
-    ```
-
-    where `1.1.1.1` is the primary IP address that GitLab is listening to and
-    `1.1.1.2` the secondary IP where the GitLab Pages daemon listens to.
-
-1. [Reconfigure GitLab][reconfigure]
-
 ### Option 3. Wildcard HTTPS domain without custom domains
 
 | URL scheme | Wildcard certificate | Custom domain with HTTP support | Custom domain with HTTPS support | Secondary IP |
@@ -262,6 +262,26 @@ world. Custom domains and TLS are supported.
 Pages enabled, daemon is enabled and NGINX will proxy all requests to the
 daemon. Pages daemon doesn't listen to the outside world.
 
+**Omnibus installations:**
+
+1. Place the certificate and key inside `/etc/gitlab/ssl`
+1. In `/etc/gitlab/gitlab.rb` specify the following configuration:
+
+    ```ruby
+    pages_external_url 'https://example.io'
+
+    pages_nginx['redirect_http_to_https'] = true
+    pages_nginx['ssl_certificate'] = "/etc/gitlab/ssl/pages-nginx.crt"
+    pages_nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/pages-nginx.key"
+    ```
+
+    where `pages-nginx.crt` and `pages-nginx.key` are the SSL cert and key,
+    respectively.
+
+1. [Reconfigure GitLab][reconfigure]
+
+---
+
 **Source installations:**
 
 1. Install the Pages daemon:
@@ -270,7 +290,7 @@ daemon. Pages daemon doesn't listen to the outside world.
     cd /home/git
     sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-pages.git
     cd gitlab-pages
-    sudo -u git -H git checkout v0.2.1
+    sudo -u git -H git checkout v0.2.4
     sudo -u git -H make
     ```
 1. In `gitlab.yml`, set the port to `443` and https to `true`:
@@ -296,25 +316,8 @@ daemon. Pages daemon doesn't listen to the outside world.
 
       Replace `gitlab-pages-ssl` with `gitlab-pages` if you are not using SSL.
 
----
-
-**Omnibus installations:**
-
-1. Place the certificate and key inside `/etc/gitlab/ssl`
-1. In `/etc/gitlab/gitlab.rb` specify the following configuration:
-
-    ```ruby
-    pages_external_url 'https://example.io'
-
-    pages_nginx['redirect_http_to_https'] = true
-    pages_nginx['ssl_certificate'] = "/etc/gitlab/ssl/pages-nginx.crt"
-    pages_nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/pages-nginx.key"
-    ```
-
-    where `pages-nginx.crt` and `pages-nginx.key` are the SSL cert and key,
-    respectively.
-
-1. [Reconfigure GitLab][reconfigure]
+1. Restart NGINX
+1. [Restart GitLab][restart]
 
 ### Option 4. Wildcard HTTP domain without custom domains
 
@@ -325,6 +328,18 @@ daemon. Pages daemon doesn't listen to the outside world.
 Pages enabled, daemon is enabled and NGINX will proxy all requests to the
 daemon. Pages daemon doesn't listen to the outside world.
 
+**Omnibus installations:**
+
+1. Set the external URL for GitLab Pages in `/etc/gitlab/gitlab.rb`:
+
+    ```ruby
+    pages_external_url 'http://example.io'
+    ```
+
+1. [Reconfigure GitLab][reconfigure]
+
+---
+
 **Source installations:**
 
 1. Install the Pages daemon:
@@ -333,7 +348,7 @@ daemon. Pages daemon doesn't listen to the outside world.
     cd /home/git
     sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-pages.git
     cd gitlab-pages
-    sudo -u git -H git checkout v0.2.1
+    sudo -u git -H git checkout v0.2.4
     sudo -u git -H make
     ```
 
@@ -370,17 +385,54 @@ daemon. Pages daemon doesn't listen to the outside world.
 1. Restart NGINX
 1. [Restart GitLab][restart]
 
----
+## Set maximum pages size
+
+The maximum size of the unpacked archive per project can be configured in the
+Admin area under the Application settings in the **Maximum size of pages (MB)**.
+The default is 100MB.
+
+## Change storage path
+
+Follow the steps below to change the default path where GitLab Pages' contents
+are stored.
 
 **Omnibus installations:**
 
-1. Set the external URL for GitLab Pages in `/etc/gitlab/gitlab.rb`:
+1. Pages are stored by default in `/var/opt/gitlab/gitlab-rails/shared/pages`.
+   If you wish to store them in another location you must set it up in
+   `/etc/gitlab/gitlab.rb`:
 
-    ```ruby
-    pages_external_url 'http://example.io'
-    ```
+     ```ruby
+     gitlab_rails['pages_path'] = "/mnt/storage/pages"
+     ```
 
 1. [Reconfigure GitLab][reconfigure]
+
+---
+
+**Source installations:**
+
+1. Pages are stored by default in `/home/git/gitlab/shared/pages`.
+   If you wish to store them in another location you must set it up in
+   `gitlab.yml` under the `pages` section:
+
+     ```yaml
+     pages:
+       enabled: true
+       # The location where pages are stored (default: shared/pages).
+       path: /mnt/storage/pages
+     ```
+
+1. [Restart GitLab][restart]
+
+## Backup
+
+Pages are part of the [regular backup][backup] so there is nothing to configure.
+
+## Security
+
+You should strongly consider running GitLab pages under a different hostname
+than GitLab to prevent XSS attacks.
 
 ## NGINX caveats
 
@@ -408,50 +460,6 @@ the first one with a backslash (\). For example `pages.example.io` would be:
 ```
 server_name ~^.*\.pages\.example\.io$;
 ```
-
-## Set maximum pages size
-
-The maximum size of the unpacked archive per project can be configured in the
-Admin area under the Application settings in the **Maximum size of pages (MB)**.
-The default is 100MB.
-
-## Change storage path
-
-**Source installations:**
-
-1. Pages are stored by default in `/home/git/gitlab/shared/pages`.
-   If you wish to store them in another location you must set it up in
-   `gitlab.yml` under the `pages` section:
-
-     ```yaml
-     pages:
-       enabled: true
-       # The location where pages are stored (default: shared/pages).
-       path: /mnt/storage/pages
-     ```
-
-1. [Restart GitLab][restart]
-
-**Omnibus installations:**
-
-1. Pages are stored by default in `/var/opt/gitlab/gitlab-rails/shared/pages`.
-   If you wish to store them in another location you must set it up in
-   `/etc/gitlab/gitlab.rb`:
-
-     ```ruby
-     gitlab_rails['pages_path'] = "/mnt/storage/pages"
-     ```
-
-1. [Reconfigure GitLab][reconfigure]
-
-## Backup
-
-Pages are part of the [regular backup][backup] so there is nothing to configure.
-
-## Security
-
-You should strongly consider running GitLab pages under a different hostname
-than GitLab to prevent XSS attacks.
 
 ## Changelog
 
@@ -493,4 +501,4 @@ latest previous version.
 [pages-userguide]: ../../user/project/pages/index.md
 [reconfigure]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
 [restart]: ../administration/restart_gitlab.md#installations-from-source
-[gitlab-pages]: https://gitlab.com/gitlab-org/gitlab-pages/tree/v0.2.1
+[gitlab-pages]: https://gitlab.com/gitlab-org/gitlab-pages/tree/v0.2.4
