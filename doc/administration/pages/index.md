@@ -47,12 +47,13 @@ In this document, we will proceed assuming the first option.
 
 Before proceeding with the Pages configuration, you will need to:
 
-1. Have a separate domain under which the GitLab Pages will be served
-1. (Optional) Have a wildcard certificate for that domain if you decide to serve
-   Pages under HTTPS
-1. Configure a wildcard DNS record
+1. Have a separate domain under which the GitLab Pages will be served. In this
+   document we assume that to be `example.io`.
+1. Configure a **wildcard DNS record**.
+1. (Optional) Have a **wildcard certificate** for that domain if you decide to
+   serve Pages under HTTPS.
 1. (Optional but recommended) Enable [Shared runners](../ci/runners/README.md)
-   so that your users don't have to bring their own
+   so that your users don't have to bring their own.
 
 ### DNS configuration
 
