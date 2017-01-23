@@ -21,18 +21,6 @@
             .form-group
               = f.label :default_branch, "Default Branch", class: 'label-light'
               = f.select(:default_branch, @project.repository.branch_names, {}, {class: 'select2 select-wide'})
-        .form-group.project-visibility-level-holder
-          = f.label :visibility_level, class: 'label-light' do
-            Visibility Level
-            = link_to "(?)", help_page_path("public_access/public_access")
-          - if can_change_visibility_level?(@project, current_user)
-            = render('shared/visibility_radios', model_method: :visibility_level, form: f, selected_level: @project.visibility_level, form_model: @project)
-          - else
-            .info
-              = visibility_level_icon(@project.visibility_level)
-              %strong
-                = visibility_level_label(@project.visibility_level)
-              .light= visibility_level_description(@project.visibility_level, @project)
 
         - if current_user.admin?
           .form-group
@@ -41,9 +29,6 @@
             = f.number_field :repository_size_limit, value: f.object.repository_size_limit.try(:to_mb), class: 'form-control', min: 0
             %span.help-block#repository_size_limit_help_block
               = size_limit_message(@project)
-
-        .form-group
-          = render 'shared/allow_request_access', form: f
 
         .form-group
           = f.label :tag_list, "Tags", class: 'label-light'
