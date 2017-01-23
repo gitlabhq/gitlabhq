@@ -927,6 +927,9 @@ pre.light-well {
 }
 
 .variables-table {
+  &.table-responsive {
+    border: none;
+  }
   table-layout: fixed;
 
   .variable-key {
