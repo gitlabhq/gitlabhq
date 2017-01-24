@@ -25,6 +25,7 @@ class ApplicationController < ActionController::Base
 
   helper_method :can?, :current_application_settings
   helper_method :import_sources_enabled?, :github_import_enabled?, :gitea_import_enabled?, :github_import_configured?, :gitlab_import_enabled?, :gitlab_import_configured?, :bitbucket_import_enabled?, :bitbucket_import_configured?, :google_code_import_enabled?, :fogbugz_import_enabled?, :git_import_enabled?, :gitlab_project_import_enabled?
+  helper_method :two_factor_grace_period_expired?, :two_factor_skippable?
 
   rescue_from Encoding::CompatibilityError do |exception|
     log_exception(exception)
@@ -276,6 +277,12 @@ class ApplicationController < ActionController::Base
   def two_factor_grace_period_expired?
     date = current_user.otp_grace_period_started_at
     date && (date + two_factor_grace_period.hours) < Time.current
+  end
+
+  def two_factor_skippable?
+    two_factor_authentication_required? &&
+      !current_user.two_factor_enabled? &&
+      !two_factor_grace_period_expired?
   end
 
   def skip_two_factor?
