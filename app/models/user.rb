@@ -963,6 +963,15 @@ class User < ActiveRecord::Base
     super
   end
 
+  def update_two_factor_requirement
+    periods = groups.where(require_two_factor_authentication: true).pluck(:two_factor_grace_period)
+
+    self.require_two_factor_authentication = periods.any?
+    self.two_factor_grace_period = periods.min || User.column_defaults['two_factor_grace_period']
+
+    save
+  end
+
   private
 
   def ci_projects_union

@@ -267,11 +267,19 @@ class ApplicationController < ActionController::Base
   end
 
   def two_factor_authentication_required?
-    current_application_settings.require_two_factor_authentication
+    current_application_settings.require_two_factor_authentication ||
+      current_user.try(:require_two_factor_authentication)
   end
 
   def two_factor_grace_period
-    current_application_settings.two_factor_grace_period
+    if current_user.try(:require_two_factor_authentication)
+      [
+        current_application_settings.two_factor_grace_period,
+        current_user.two_factor_grace_period
+      ].min
+    else
+      current_application_settings.two_factor_grace_period
+    end
   end
 
   def two_factor_grace_period_expired?

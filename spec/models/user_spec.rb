@@ -1521,4 +1521,46 @@ describe User, models: true do
       end
     end
   end
+
+  describe '#update_two_factor_requirement' do
+    let(:user) { create :user }
+
+    context 'with 2FA requirement on groups' do
+      let(:group1) { create :group, require_two_factor_authentication: true, two_factor_grace_period: 23 }
+      let(:group2) { create :group, require_two_factor_authentication: true, two_factor_grace_period: 32 }
+
+      before do
+        group1.add_user(user, GroupMember::OWNER)
+        group2.add_user(user, GroupMember::OWNER)
+
+        user.update_two_factor_requirement
+      end
+
+      it 'requires 2FA' do
+        expect(user.require_two_factor_authentication).to be true
+      end
+
+      it 'uses the shortest grace period' do
+        expect(user.two_factor_grace_period).to be 23
+      end
+    end
+
+    context 'without 2FA requirement on groups' do
+      let(:group) { create :group }
+
+      before do
+        group.add_user(user, GroupMember::OWNER)
+
+        user.update_two_factor_requirement
+      end
+
+      it 'does not require 2FA' do
+        expect(user.require_two_factor_authentication).to be false
+      end
+
+      it 'falls back to the default grace period' do
+        expect(user.two_factor_grace_period).to be 48
+      end
+    end
+  end
 end
