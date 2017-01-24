@@ -4,7 +4,7 @@ describe Gitlab::Template::IssueTemplate do
   subject { described_class }
 
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:file_path_1) { '.gitlab/issue_templates/bug.md' }
   let(:file_path_2) { '.gitlab/issue_templates/template_test.md' }
   let(:file_path_3) { '.gitlab/issue_templates/feature_proposal.md' }

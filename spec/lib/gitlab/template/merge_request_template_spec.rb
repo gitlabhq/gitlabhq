@@ -4,7 +4,7 @@ describe Gitlab::Template::MergeRequestTemplate do
   subject { described_class }
 
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:file_path_1) { '.gitlab/merge_request_templates/bug.md' }
   let(:file_path_2) { '.gitlab/merge_request_templates/template_test.md' }
   let(:file_path_3) { '.gitlab/merge_request_templates/feature_proposal.md' }
