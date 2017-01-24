@@ -34,7 +34,7 @@
           class="fa fa-spinner fa-spin"
           v-if="loading"></i>
         <ul
-          class="list-unstyled"
+          class="add-issues-list-columns list-unstyled"
           v-if="!loading">
           <li
             class="card"

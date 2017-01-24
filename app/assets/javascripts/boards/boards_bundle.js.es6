@@ -13,7 +13,7 @@
 //= require ./components/board
 //= require ./components/board_sidebar
 //= require ./components/new_list_dropdown
-//= require ./components/modal
+//= require ./components/modal/modal
 //= require ./vue_resource_interceptor
 
 $(() => {
