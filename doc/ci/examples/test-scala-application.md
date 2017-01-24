@@ -1,11 +1,11 @@
-## Test a Scala application
+# Test and deploy to Heroku a Scala application
 
 This example demonstrates the integration of Gitlab CI with Scala
 applications using SBT. Checkout the example
 [project](https://gitlab.com/gitlab-examples/scala-sbt) and
 [build status](https://gitlab.com/gitlab-examples/scala-sbt/builds).
 
-### Add `.gitlab-ci.yml` file to project
+## Add `.gitlab-ci.yml` file to project
 
 The following `.gitlab-ci.yml` should be added in the root of your
 repository to trigger CI:
@@ -13,10 +13,14 @@ repository to trigger CI:
 ``` yaml
 image: java:8
 
+stages:
+  - test
+  - deploy
+
 before_script:
   - apt-get update -y
   - apt-get install apt-transport-https -y
-  # Install SBT
+  ## Install SBT
   - echo "deb http://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list
   - apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 642AC823
   - apt-get update -y
@@ -24,8 +28,17 @@ before_script:
   - sbt sbt-version
 
 test:
+  stage: test
   script:
     - sbt clean coverage test coverageReport
+
+deploy:
+  stage: deploy
+  script:
+    - apt-get update -yq
+    - apt-get install rubygems ruby-dev -y
+    - gem install dpl
+    - dpl --provider=heroku --app=gitlab-play-sample-app --api-key=$HEROKU_API_KEY
 ```
 
 The `before_script` installs [SBT](http://www.scala-sbt.org/) and
@@ -33,15 +46,31 @@ displays the version that is being used. The `test` stage executes SBT
 to compile and test the project.
 [scoverage](https://github.com/scoverage/sbt-scoverage) is used as an SBT
 plugin to measure test coverage.
+The `deploy` stage automatically deploys the project to Heroku using dpl.
 
 You can use other versions of Scala and SBT by defining them in
 `build.sbt`.
 
-### Display test coverage in build
+## Display test coverage in build
 
 Add the `Coverage was \[\d+.\d+\%\]` regular expression in the
-**Settings > Edit Project > Test coverage parsing** project setting to
-retrieve the test coverage rate from the build trace and have it
+**Settings ➔ Edit Project ➔ Test coverage parsing** project setting to
+retrieve the [test coverage] rate from the build trace and have it
 displayed with your builds.
 
 **Builds** must be enabled for this option to appear.
+
+## Heroku application
+
+A Heroku application is required. You can create one through the
+[Dashboard](https://dashboard.heroku.com/). Substitute `gitlab-play-sample-app`
+in the `.gitlab-ci.yml` file with your application's name.
+
+## Heroku API key
+
+You can look up your Heroku API key in your
+[account](https://dashboard.heroku.com/account). Add a secure [variable] with
+this value in **Project ➔ Variables** with key `HEROKU_API_KEY`.
+
+[variable]: ../variables/README.md#user-defined-variables-secure-variables
+[test coverage]: ../../user/project/pipelines/settings.md#test-coverage-report-badge

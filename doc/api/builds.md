@@ -45,7 +45,7 @@ Example of response
       "ref": "master",
       "sha": "0ff3ae198f8601a285adcf5c0fff204ee6fba5fd",
       "status": "pending"
-    }
+    },
     "ref": "master",
     "runner": null,
     "stage": "test",
@@ -89,7 +89,7 @@ Example of response
       "ref": "master",
       "sha": "0ff3ae198f8601a285adcf5c0fff204ee6fba5fd",
       "status": "pending"
-    }
+    },
     "ref": "master",
     "runner": null,
     "stage": "test",
@@ -163,7 +163,7 @@ Example of response
       "ref": "master",
       "sha": "0ff3ae198f8601a285adcf5c0fff204ee6fba5fd",
       "status": "pending"
-    }
+    },
     "ref": "master",
     "runner": null,
     "stage": "test",
@@ -193,7 +193,7 @@ Example of response
       "ref": "master",
       "sha": "0ff3ae198f8601a285adcf5c0fff204ee6fba5fd",
       "status": "pending"
-    }
+    },
     "ref": "master",
     "runner": null,
     "stage": "test",
@@ -260,7 +260,7 @@ Example of response
     "ref": "master",
     "sha": "0ff3ae198f8601a285adcf5c0fff204ee6fba5fd",
     "status": "pending"
-  }
+  },
   "ref": "master",
   "runner": null,
   "stage": "test",

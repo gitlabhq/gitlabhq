@@ -12,7 +12,7 @@ module BuildsHelper
       build_url: namespace_project_build_url(@project.namespace, @project, @build, :json),
       build_status: @build.status,
       build_stage: @build.stage,
-      state1: @build.trace_with_state[:state]
+      log_state: @build.trace_with_state[:state].to_s
     }
   end
 end

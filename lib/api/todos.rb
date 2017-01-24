@@ -1,10 +1,11 @@
 module API
-  # Todos API
   class Todos < Grape::API
+    include PaginationParams
+
     before { authenticate! }
 
     ISSUABLE_TYPES = {
-      'merge_requests' => ->(id) { user_project.merge_requests.find(id) },
+      'merge_requests' => ->(id) { find_merge_request_with_access(id) },
       'issues' => ->(id) { find_project_issue(id) }
     }
 
@@ -44,10 +45,11 @@ module API
       desc 'Get a todo list' do
         success Entities::Todo
       end
+      params do
+        use :pagination
+      end
       get do
-        todos = find_todos
-
-        present paginate(todos), with: Entities::Todo, current_user: current_user
+        present paginate(find_todos), with: Entities::Todo, current_user: current_user
       end
 
       desc 'Mark a todo as done' do

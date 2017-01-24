@@ -1,5 +1,4 @@
-- left_align = local_assigns[:left_align]
-%ul.dropdown-menu.dropdown-menu-no-wrap.dropdown-menu-selectable.dropdown-menu-large{ role: "menu", class: [notifications_menu_identifier("dropdown", notification_setting), ("dropdown-menu-align-right" unless left_align)] }
+%ul.dropdown-menu.dropdown-menu-no-wrap.dropdown-menu-selectable.dropdown-menu-large{ role: "menu", class: [notifications_menu_identifier("dropdown", notification_setting)] }
   - NotificationSetting.levels.each_key do |level|
     - next if level == "custom"
     - next if level == "global" && notification_setting.source.nil?

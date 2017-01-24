@@ -5,42 +5,23 @@ namespace :gitlab do
       warn_user_is_not_gitlab
 
       default_version = Gitlab::Shell.version_required
-      default_version_tag = 'v' + default_version
-      args.with_defaults(tag: default_version_tag, repo: "https://gitlab.com/gitlab-org/gitlab-shell.git")
+      default_version_tag = "v#{default_version}"
+      args.with_defaults(tag: default_version_tag, repo: 'https://gitlab.com/gitlab-org/gitlab-shell.git')
 
-      user = Gitlab.config.gitlab.user
-      home_dir = Rails.env.test? ? Rails.root.join('tmp/tests') : Gitlab.config.gitlab.user_home
       gitlab_url = Gitlab.config.gitlab.url
       # gitlab-shell requires a / at the end of the url
       gitlab_url += '/' unless gitlab_url.end_with?('/')
       target_dir = Gitlab.config.gitlab_shell.path
 
-      # Clone if needed
-      if File.directory?(target_dir)
-        Dir.chdir(target_dir) do
-          system(*%W(Gitlab.config.git.bin_path} fetch --tags --quiet))
-          system(*%W(Gitlab.config.git.bin_path} checkout --quiet #{default_version_tag}))
-        end
-      else
-        system(*%W(#{Gitlab.config.git.bin_path} clone -- #{args.repo} #{target_dir}))
-      end
+      checkout_or_clone_tag(tag: default_version_tag, repo: args.repo, target_dir: target_dir)
 
       # Make sure we're on the right tag
       Dir.chdir(target_dir) do
-        # First try to checkout without fetching
-        # to avoid stalling tests if the Internet is down.
-        reseted = reset_to_commit(args)
-
-        unless reseted
-          system(*%W(#{Gitlab.config.git.bin_path} fetch origin))
-          reset_to_commit(args)
-        end
-
         config = {
-          user: user,
+          user: Gitlab.config.gitlab.user,
           gitlab_url: gitlab_url,
           http_settings: {self_signed_cert: false}.stringify_keys,
-          auth_file: File.join(home_dir, ".ssh", "authorized_keys"),
+          auth_file: File.join(user_home, ".ssh", "authorized_keys"),
           redis: {
             bin: %x{which redis-cli}.chomp,
             namespace: "resque:gitlab"
@@ -74,7 +55,7 @@ namespace :gitlab do
       # be an issue since it is more than likely that there are no "normal"
       # user accounts on a gitlab server). The alternative is for the admin to
       # install a ruby (1.9.3+) in the global path.
-      File.open(File.join(home_dir, ".ssh", "environment"), "w+") do |f|
+      File.open(File.join(user_home, ".ssh", "environment"), "w+") do |f|
         f.puts "PATH=#{ENV['PATH']}"
       end
 
@@ -141,16 +122,5 @@ namespace :gitlab do
   rescue Gitlab::TaskAbortedByUserError
     puts "Quitting...".color(:red)
     exit 1
-  end
-
-  def reset_to_commit(args)
-    tag, status = Gitlab::Popen.popen(%W(#{Gitlab.config.git.bin_path} describe -- #{args.tag}))
-
-    unless status.zero?
-      tag, status = Gitlab::Popen.popen(%W(#{Gitlab.config.git.bin_path} describe -- origin/#{args.tag}))
-    end
-
-    tag = tag.strip
-    system(*%W(#{Gitlab.config.git.bin_path} reset --hard #{tag}))
   end
 end

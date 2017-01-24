@@ -43,12 +43,6 @@ class Event < ActiveRecord::Base
   scope :for_milestone_id, ->(milestone_id) { where(target_type: "Milestone", target_id: milestone_id) }
 
   class << self
-    def reset_event_cache_for(target)
-      Event.where(target_id: target.id, target_type: target.class.to_s).
-        order('id DESC').limit(100).
-        update_all(updated_at: Time.now)
-    end
-
     # Update Gitlab::ContributionsCalendar#activity_dates if this changes
     def contributions
       where("action = ? OR (target_type in (?) AND action in (?))",
@@ -62,7 +56,7 @@ class Event < ActiveRecord::Base
   end
 
   def visible_to_user?(user = nil)
-    if push?
+    if push? || commit_note?
       Ability.allowed?(user, :download_code, project)
     elsif membership_changed?
       true
@@ -283,7 +277,7 @@ class Event < ActiveRecord::Base
   end
 
   def commit_note?
-    target.for_commit?
+    note? && target && target.for_commit?
   end
 
   def issue_note?
@@ -295,7 +289,7 @@ class Event < ActiveRecord::Base
   end
 
   def project_snippet_note?
-    target.for_snippet?
+    note? && target && target.for_snippet?
   end
 
   def note_target
@@ -351,6 +345,10 @@ class Event < ActiveRecord::Base
     Project.unscoped.where(id: project_id).
       where('last_activity_at <= ?', RESET_PROJECT_ACTIVITY_INTERVAL.ago).
       update_all(last_activity_at: created_at)
+  end
+
+  def authored_by?(user)
+    user ? author_id == user.id : false
   end
 
   private

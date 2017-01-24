@@ -45,9 +45,15 @@ module Ci
         return error('No builds for this pipeline.')
       end
 
-      pipeline.save
-      pipeline.process!
-      pipeline
+      Ci::Pipeline.transaction do
+        pipeline.save
+
+        Ci::CreatePipelineBuildsService
+          .new(project, current_user)
+          .execute(pipeline)
+      end
+
+      pipeline.tap(&:process!)
     end
 
     private

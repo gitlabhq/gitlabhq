@@ -1,11 +1,12 @@
 require "spec_helper"
 
-describe API::API, api: true  do
+describe API::Services, api: true  do
   include ApiHelpers
+
   let(:user) { create(:user) }
   let(:admin) { create(:admin) }
   let(:user2) { create(:user) }
-  let(:project) {create(:project, creator_id: user.id, namespace: user.namespace) }
+  let(:project) { create(:empty_project, creator_id: user.id, namespace: user.namespace) }
 
   Service.available_services_names.each do |service|
     describe "PUT /projects/:id/services/#{service.dasherize}" do
@@ -15,6 +16,15 @@ describe API::API, api: true  do
         put api("/projects/#{project.id}/services/#{dashed_service}", user), service_attrs
 
         expect(response).to have_http_status(200)
+
+        current_service = project.services.first
+        event = current_service.event_names.empty? ? "foo" : current_service.event_names.first
+        state = current_service[event] || false
+
+        put api("/projects/#{project.id}/services/#{dashed_service}?#{event}=#{!state}", user), service_attrs
+
+        expect(response).to have_http_status(200)
+        expect(project.services.first[event]).not_to eq(state) unless event == "foo"
       end
 
       it "returns if required fields missing" do
@@ -56,8 +66,7 @@ describe API::API, api: true  do
 
       # inject some properties into the service
       before do
-        project.build_missing_services
-        service_object = project.send(service_method)
+        service_object = project.find_or_initialize_service(service)
         service_object.properties = service_attrs
         service_object.save
       end
@@ -86,6 +95,84 @@ describe API::API, api: true  do
         get api("/projects/#{project.id}/services/#{dashed_service}", user2)
 
         expect(response).to have_http_status(403)
+      end
+    end
+  end
+
+  describe 'POST /projects/:id/services/:slug/trigger' do
+    let!(:project) { create(:empty_project) }
+
+    describe 'Mattermost Service' do
+      let(:service_name) { 'mattermost_slash_commands' }
+
+      context 'no service is available' do
+        it 'returns a not found message' do
+          post api("/projects/#{project.id}/services/idonotexist/trigger")
+
+          expect(response).to have_http_status(404)
+          expect(json_response["error"]).to eq("404 Not Found")
+        end
+      end
+
+      context 'the service exists' do
+        let(:params) { { token: 'token' } }
+
+        context 'the service is not active' do
+          before do
+            project.create_mattermost_slash_commands_service(
+              active: false,
+              properties: params
+            )
+          end
+
+          it 'when the service is inactive' do
+            post api("/projects/#{project.id}/services/#{service_name}/trigger"), params
+
+            expect(response).to have_http_status(404)
+          end
+        end
+
+        context 'the service is active' do
+          before do
+            project.create_mattermost_slash_commands_service(
+              active: true,
+              properties: params
+            )
+          end
+
+          it 'returns status 200' do
+            post api("/projects/#{project.id}/services/#{service_name}/trigger"), params
+
+            expect(response).to have_http_status(200)
+          end
+        end
+
+        context 'when the project can not be found' do
+          it 'returns a generic 404' do
+            post api("/projects/404/services/#{service_name}/trigger"), params
+
+            expect(response).to have_http_status(404)
+            expect(json_response["message"]).to eq("404 Service Not Found")
+          end
+        end
+      end
+    end
+
+    describe 'Slack Service' do
+      let(:service_name) { 'slack_slash_commands' }
+
+      before do
+        project.create_slack_slash_commands_service(
+          active: true,
+          properties: { token: 'token' }
+        )
+      end
+
+      it 'returns status 200' do
+        post api("/projects/#{project.id}/services/#{service_name}/trigger"), token: 'token', text: 'help'
+
+        expect(response).to have_http_status(200)
+        expect(json_response['response_type']).to eq("ephemeral")
       end
     end
   end

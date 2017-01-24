@@ -5,10 +5,7 @@ module Ci
     def execute(pipeline)
       @pipeline = pipeline
 
-      # This method will ensure that our pipeline does have all builds for all stages created
-      if created_builds.empty?
-        create_builds!
-      end
+      ensure_created_builds! # TODO, remove me in 9.0
 
       new_builds =
         stage_indexes_of_created_builds.map do |index|
@@ -21,10 +18,6 @@ module Ci
     end
 
     private
-
-    def create_builds!
-      Ci::CreatePipelineBuildsService.new(project, current_user).execute(pipeline)
-    end
 
     def process_stage(index)
       current_status = status_for_prior_stages(index)
@@ -51,11 +44,11 @@ module Ci
     def valid_statuses_for_when(value)
       case value
       when 'on_success'
-        %w[success]
+        %w[success skipped]
       when 'on_failure'
         %w[failed]
       when 'always'
-        %w[success failed]
+        %w[success failed skipped]
       else
         []
       end
@@ -75,6 +68,19 @@ module Ci
 
     def created_builds
       pipeline.builds.created
+    end
+
+    # This method is DEPRECATED and should be removed in 9.0.
+    #
+    # We need it to maintain backwards compatibility with  previous versions
+    # when builds were not created within one transaction with the pipeline.
+    #
+    def ensure_created_builds!
+      return if created_builds.any?
+
+      Ci::CreatePipelineBuildsService
+        .new(project, current_user)
+        .execute(pipeline)
     end
   end
 end

@@ -1,8 +1,8 @@
 .block.due_date
   .title
     Due date
-    = icon("spinner spin", class: "block-loading")
     - if can?(current_user, :admin_issue, @project)
+      = icon("spinner spin", class: "block-loading")
       = link_to "Edit", "#", class: "edit-link pull-right"
   .value
     .value-content

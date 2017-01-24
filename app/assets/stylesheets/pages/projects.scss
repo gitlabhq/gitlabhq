@@ -6,33 +6,27 @@
   }
 }
 
-.no-ssh-key-message,
-.project-limit-message {
-  background-color: #f28d35;
-  margin-bottom: 0;
-}
-
 .new_project,
 .edit-project {
 
-  fieldset {
+  .sharing-and-permissions {
+    .header {
+      padding-top: $gl-vert-padding;
+    }
 
-    &.features {
+    .label-light {
+      margin-bottom: 0;
+    }
 
-      .label-light {
-        margin-bottom: 0;
-      }
-
-      .help-block {
-        margin-top: 0;
-      }
+    .help-block {
+      margin-top: 0;
     }
 
     .form-group {
       margin-bottom: 5px;
     }
 
-    &> .form-group {
+    & > .form-group {
       padding-left: 0;
     }
   }
@@ -76,17 +70,18 @@
     &.static-namespace {
       height: 35px;
       border-radius: 3px;
-      border: 1px solid #e5e5e5;
+      border: 1px solid $border-color;
     }
 
-    &+ .select2 a {
+    & + .select2 a {
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
     }
   }
 }
 
-.project-home-panel {
+.project-home-panel,
+.group-home-panel {
   padding-top: 24px;
   padding-bottom: 24px;
 
@@ -94,17 +89,18 @@
     border-bottom: 1px solid $border-color;
   }
 
-  .project-avatar {
+  .project-avatar,
+  .group-avatar {
     float: none;
     margin: 0 auto;
-    border: none;
 
     &.identicon {
       border-radius: 50%;
     }
   }
 
-  .project-title {
+  .project-title,
+  .group-title {
     margin-top: 10px;
     margin-bottom: 10px;
     font-size: 24px;
@@ -118,10 +114,11 @@
     }
   }
 
-  .project-home-desc {
+  .project-home-desc,
+  .group-home-desc {
     margin-left: auto;
     margin-right: auto;
-    margin-bottom: 15px;
+    margin-bottom: 0;
     max-width: 700px;
 
     > p {
@@ -141,12 +138,19 @@
   }
 }
 
-.project-repo-buttons {
-  font-size: 0;
+.nav > .project-repo-buttons {
+  margin-top: 0;
+}
 
+.project-repo-buttons,
+.group-buttons {
   .btn {
     @include btn-gray;
     padding: 3px 10px;
+
+    &:last-child {
+      margin-left: 0;
+    }
 
     .fa {
       color: $layout-link-gray;
@@ -168,22 +172,33 @@
     }
   }
 
-  .project-repo-btn-group,
-  .notification-dropdown,
-  .project-dropdown {
-    margin-left: 10px;
+  .project-action-button {
+    margin: 15px 5px 0;
+    vertical-align: top;
+  }
+
+  .notification-dropdown .dropdown-menu {
+    @extend .dropdown-menu-align-right;
+  }
+
+  .download-button {
+    @media (max-width: $screen-md-max) {
+      margin-left: 0;
+    }
   }
 
   .count-buttons {
     display: inline-block;
     vertical-align: top;
+    margin-top: 15px;
   }
 
   .project-clone-holder {
     display: inline-block;
+    margin: 15px 5px 0 0;
 
     input {
-      height: 29px;
+      height: 27px;
     }
   }
 
@@ -205,7 +220,7 @@
         left: 0;
         margin-top: -6px;
         border-width: 7px 5px 7px 0;
-        border-right-color: #dce0e5;
+        border-right-color: $count-arrow-border;
         pointer-events: none;
       }
 
@@ -220,7 +235,7 @@
         left: 1px;
         margin-top: -9px;
         border-width: 10px 7px 10px 0;
-        border-right-color: #fff;
+        border-right-color: $white-light;
         pointer-events: none;
       }
     }
@@ -228,7 +243,7 @@
     .count {
       @include btn-gray;
       display: inline-block;
-      background: white;
+      background: $white-light;
       border-radius: 2px;
       border-width: 1px;
       border-style: solid;
@@ -237,7 +252,7 @@
       line-height: 13px;
       padding: $gl-vert-padding $gl-padding;
       letter-spacing: .4px;
-      padding: 7px 14px;
+      padding: 6px 14px;
       text-align: center;
       vertical-align: middle;
       touch-action: manipulation;
@@ -250,7 +265,7 @@
       }
 
       &:hover {
-        background: #fff;
+        background: $white-light;
       }
     }
   }
@@ -277,12 +292,12 @@
     .option-title {
       font-weight: normal;
       display: inline-block;
-      color: $gl-gray-dark;
+      color: $gl-text-color;
     }
 
     .option-descr {
       margin-left: 29px;
-      color: #54565b;
+      color: $project-option-descr-color;
     }
   }
 }
@@ -290,7 +305,7 @@
 .save-project-loader {
   margin-top: 50px;
   margin-bottom: 50px;
-  color: #555;
+  color: $save-project-loader-color;
 }
 
 .transfer-project .select2-container {
@@ -316,7 +331,7 @@
 a.deploy-project-label {
   padding: 5px;
   margin-right: 5px;
-  color: $gl-gray;
+  color: $gl-text-color;
   background-color: $row-hover;
 
   &:hover {
@@ -353,11 +368,11 @@ a.deploy-project-label {
 
   > li + li::before {
     padding: 0 3px;
-    color: #999;
+    color: $project-breadcrumb-color;
   }
 
   a {
-    color: $gl-dark-link-color;
+    color: $gl-text-color;
   }
 
   .dropdown-menu {
@@ -396,13 +411,13 @@ a.deploy-project-label {
         width: 100px;
         height: 100px;
         background-color: $gray-light;
-        border: 1px solid $gray-dark;
+        border: 1px solid $white-normal;
         margin: 0 auto;
         border-radius: 50%;
 
         i {
           font-size: 100px;
-          color: $gray-dark;
+          color: $white-normal;
         }
       }
 
@@ -411,7 +426,7 @@ a.deploy-project-label {
         width: 100%;
         height: 100%;
         padding-top: $gl-padding;
-        color: $gl-gray;
+        color: $gl-text-color;
 
         .caption {
           min-height: 30px;
@@ -458,8 +473,23 @@ a.deploy-project-label {
   }
 }
 
+.page-sidebar-pinned {
+  .project-stats .nav > li.right {
+    @media (min-width: $screen-lg-min) {
+      float: none;
+    }
+  }
+
+  .download-button {
+    @media (min-width: $screen-lg-min) {
+      margin-left: 0;
+    }
+  }
+}
+
 .project-stats {
   font-size: 0;
+  text-align: center;
   border-bottom: 1px solid $border-color;
 
   .nav {
@@ -474,12 +504,12 @@ a.deploy-project-label {
       margin-right: $gl-padding;
     }
 
-    &.project-repo-buttons-right {
-      margin-top: 10px;
+    &.right {
+      vertical-align: top;
+      margin-top: 0;
 
-      @media (min-width: $screen-md-min) {
+      @media (min-width: $screen-lg-min) {
         float: right;
-        margin-top: 0;
       }
     }
   }
@@ -487,7 +517,7 @@ a.deploy-project-label {
   .nav > li > a {
     padding: 0;
     background-color: transparent;
-    font-size: 15px;
+    font-size: 14px;
     line-height: 29px;
     color: $notes-light-color;
 
@@ -498,7 +528,7 @@ a.deploy-project-label {
   }
 
   li.missing {
-    border: 1px dashed $border-gray-light;
+    border: 1px dashed $border-gray-normal;
     border-radius: $border-radius-default;
 
     a {
@@ -515,20 +545,20 @@ a.deploy-project-label {
 }
 
 pre.light-well {
-  border-color: #f1f1f1;
+  border-color: $well-light-border;
 }
 
 .git-empty {
   margin: 0 7px 7px;
 
   h5 {
-    color: #5c5d5e;
+    color: $gl-text-color;
   }
 
   .light-well {
     border-radius: 2px;
 
-    color: #5b6169;
+    color: $well-light-text-color;
     font-size: 13px;
     line-height: 1.6em;
   }
@@ -553,14 +583,24 @@ pre.light-well {
   @include basic-list;
 
   .project-row {
-    border-color: $table-border-color;
+    border-color: $white-normal;
 
     .project-full-name {
       @include str-truncated;
+
+      @media (max-width: $screen-xs-max) {
+        max-width: 50%;
+      }
     }
 
     .controls {
       line-height: $list-text-height;
+
+      .badge {
+        @media (max-width: $screen-xs-max) {
+          display: none;
+        }
+      }
 
       a:hover {
         text-decoration: none;
@@ -573,6 +613,12 @@ pre.light-well {
       svg {
         position: relative;
         top: 2px;
+      }
+    }
+
+    .description p {
+      @media (max-width: $screen-xs-max) {
+        max-width: 50%;
       }
     }
   }
@@ -588,12 +634,17 @@ pre.light-well {
   margin: 0;
 }
 
-
 .activity-filter-block {
   .controls {
     padding-bottom: 7px;
     margin-top: 8px;
     border-bottom: 1px solid $border-color;
+  }
+}
+
+.commits-search-form {
+  .input-short {
+    min-width: 200px;
   }
 }
 
@@ -605,7 +656,7 @@ pre.light-well {
   &.container-fluid {
     padding-top: 12px;
     padding-bottom: 12px;
-    background-color: $background-color;
+    background-color: $gray-light;
     border: 1px solid $border-color;
     border-right-width: 0;
     border-left-width: 0;
@@ -627,7 +678,7 @@ pre.light-well {
   }
 
   .commit-row-message {
-    color: $gl-gray;
+    color: $gl-text-color;
   }
 
   .commit_short_id {
@@ -682,7 +733,7 @@ pre.light-well {
 
   .form-control {
     @extend .monospace;
-    background: #fff;
+    background: $white-light;
     font-size: 14px;
     margin-left: -1px;
     cursor: auto;
@@ -692,17 +743,17 @@ pre.light-well {
 
 .cannot-be-merged,
 .cannot-be-merged:hover {
-  color: #e62958;
+  color: $error-exclamation-point;
   margin-top: 2px;
 }
 
 .private-forks-notice .private-fork-icon {
   i:nth-child(1) {
-    color: #2aa056;
+    color: $project-private-forks-notice-odd;
   }
 
   i:nth-child(2) {
-    color: #fff;
+    color: $white-light;
   }
 }
 
@@ -715,7 +766,7 @@ pre.light-well {
 
 .protected-branches-list {
   a {
-    color: $gl-gray;
+    color: $gl-text-color;
 
     &:hover {
       color: $gl-link-color;
@@ -775,7 +826,31 @@ pre.light-well {
 
 .compare-form-group {
   .dropdown-menu {
-    width: 300px;
+    width: 100%;
+
+    @media (min-width: $screen-sm-min) {
+      width: 300px;
+    }
+  }
+
+  + .compare-ellipsis {
+    width: 100%;
+    vertical-align: middle;
+    text-align: center;
+    margin-top: -20px;
+
+    @media (min-width: $screen-sm-min) {
+      margin-top: 0;
+      width: auto;
+    }
+  }
+
+  .inline-input-group {
+    width: 100%;
+
+    @media (min-width: $screen-sm-min) {
+      width: 250px;
+    }
   }
 }
 
@@ -830,9 +905,17 @@ pre.light-well {
   }
 }
 
-.project-feature-nested {
+.project-feature {
+  padding-top: 10px;
+
   @media (min-width: $screen-sm-min) {
     padding-left: 45px;
+  }
+
+  &.nested {
+    @media (min-width: $screen-sm-min) {
+      padding-left: 90px;
+    }
   }
 }
 
@@ -840,5 +923,33 @@ pre.light-well {
   &.disabled {
     opacity: 0.5;
     pointer-events: none;
+  }
+}
+
+.variables-table {
+  table-layout: fixed;
+
+  .variable-key {
+    width: 30%;
+  }
+}
+
+.services-installation-info .row {
+  margin-bottom: 10px;
+}
+
+.service-installation {
+  padding: 32px;
+  margin: 32px;
+  border-radius: 3px;
+  background-color: $white-light;
+
+  h3 {
+    margin-top: 0;
+  }
+
+  hr {
+    margin: 32px 0;
+    border-color: $border-color;
   }
 }

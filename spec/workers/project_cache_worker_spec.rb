@@ -1,63 +1,77 @@
 require 'spec_helper'
 
 describe ProjectCacheWorker do
+  let(:worker) { described_class.new }
   let(:project) { create(:project) }
+  let(:statistics) { project.statistics }
 
-  subject { described_class.new }
-
-  describe '.perform_async' do
-    it 'schedules the job when no lease exists' do
-      allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:exists?).
-        and_return(false)
-
-      expect_any_instance_of(described_class).to receive(:perform)
-
-      described_class.perform_async(project.id)
+  describe '#perform' do
+    before do
+      allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).
+        and_return(true)
     end
 
-    it 'does not schedule the job when a lease exists' do
-      allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:exists?).
-        and_return(true)
+    context 'with a non-existing project' do
+      it 'does nothing' do
+        expect(worker).not_to receive(:update_statistics)
 
-      expect_any_instance_of(described_class).not_to receive(:perform)
+        worker.perform(-1)
+      end
+    end
 
-      described_class.perform_async(project.id)
+    context 'with an existing project without a repository' do
+      it 'does nothing' do
+        allow_any_instance_of(Repository).to receive(:exists?).and_return(false)
+
+        expect(worker).not_to receive(:update_statistics)
+
+        worker.perform(project.id)
+      end
+    end
+
+    context 'with an existing project' do
+      it 'updates the project statistics' do
+        expect(worker).to receive(:update_statistics)
+          .with(kind_of(Project), %i(repository_size))
+          .and_call_original
+
+        worker.perform(project.id, [], %w(repository_size))
+      end
+
+      it 'refreshes the method caches' do
+        expect_any_instance_of(Repository).to receive(:refresh_method_caches).
+          with(%i(readme)).
+          and_call_original
+
+        worker.perform(project.id, %w(readme))
+      end
     end
   end
 
-  describe '#perform' do
-    context 'when an exclusive lease can be obtained' do
-      before do
-        allow(subject).to receive(:try_obtain_lease_for).with(project.id).
-          and_return(true)
-      end
+  describe '#update_statistics' do
+    context 'when a lease could not be obtained' do
+      it 'does not update the repository size' do
+        allow(worker).to receive(:try_obtain_lease_for).
+          with(project.id, :update_statistics).
+          and_return(false)
 
-      it 'updates project cache data' do
-        expect_any_instance_of(Repository).to receive(:size)
-        expect_any_instance_of(Repository).to receive(:commit_count)
+        expect(statistics).not_to receive(:refresh!)
 
-        expect_any_instance_of(Project).to receive(:update_repository_size)
-        expect_any_instance_of(Project).to receive(:update_commit_count)
-
-        subject.perform(project.id)
-      end
-
-      it 'handles missing repository data' do
-        expect_any_instance_of(Repository).to receive(:exists?).and_return(false)
-        expect_any_instance_of(Repository).not_to receive(:size)
-
-        subject.perform(project.id)
+        worker.update_statistics(project)
       end
     end
 
-    context 'when an exclusive lease can not be obtained' do
-      it 'does nothing' do
-        allow(subject).to receive(:try_obtain_lease_for).with(project.id).
-          and_return(false)
+    context 'when a lease could be obtained' do
+      it 'updates the project statistics' do
+        allow(worker).to receive(:try_obtain_lease_for).
+          with(project.id, :update_statistics).
+          and_return(true)
 
-        expect(subject).not_to receive(:update_caches)
+        expect(statistics).to receive(:refresh!)
+          .with(only: %i(repository_size))
+          .and_call_original
 
-        subject.perform(project.id)
+        worker.update_statistics(project, %i(repository_size))
       end
     end
   end

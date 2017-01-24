@@ -26,6 +26,7 @@ class Label < ActiveRecord::Base
   # Don't allow ',' for label titles
   validates :title, presence: true, format: { with: /\A[^,]+\z/ }
   validates :title, uniqueness: { scope: [:group_id, :project_id] }
+  validates :title, length: { maximum: 255 }
 
   default_scope { order(title: :asc) }
 
@@ -144,18 +145,19 @@ class Label < ActiveRecord::Base
   #
   # Examples:
   #
-  #   Label.first.to_reference                     # => "~1"
-  #   Label.first.to_reference(format: :name)      # => "~\"bug\""
-  #   Label.first.to_reference(project1, project2) # => "gitlab-org/gitlab-ce~1"
+  #   Label.first.to_reference                                     # => "~1"
+  #   Label.first.to_reference(format: :name)                      # => "~\"bug\""
+  #   Label.first.to_reference(project, target_project: same_namespace_project)    # => "gitlab-ce~1"
+  #   Label.first.to_reference(project, target_project: another_namespace_project) # => "gitlab-org/gitlab-ce~1"
   #
   # Returns a String
   #
-  def to_reference(source_project = nil, target_project = nil, format: :id)
+  def to_reference(from_project = nil, target_project: nil, format: :id, full: false)
     format_reference = label_format_reference(format)
     reference = "#{self.class.reference_prefix}#{format_reference}"
 
-    if cross_project_reference?(source_project, target_project)
-      source_project.to_reference + reference
+    if from_project
+      "#{from_project.to_reference(target_project, full: full)}#{reference}"
     else
       reference
     end
@@ -168,10 +170,6 @@ class Label < ActiveRecord::Base
   end
 
   private
-
-  def cross_project_reference?(source_project, target_project)
-    source_project && target_project && source_project != target_project
-  end
 
   def issues_count(user, params = {})
     params.merge!(subject_foreign_key => subject.id, label_name: title, scope: 'all')

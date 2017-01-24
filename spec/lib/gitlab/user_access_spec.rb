@@ -66,7 +66,8 @@ describe Gitlab::UserAccess, lib: true do
     end
 
     describe 'push to protected branch' do
-      let(:branch) { create :protected_branch, project: project }
+      let(:branch) { create :protected_branch, project: project, name: "test" }
+      let(:not_existing_branch) { create :protected_branch, :developers_can_merge, project: project }
 
       it 'returns true if user is a master' do
         project.team << [user, :master]
@@ -84,6 +85,12 @@ describe Gitlab::UserAccess, lib: true do
         project.team << [user, :reporter]
 
         expect(access.can_push_to_branch?(branch.name)).to be_falsey
+      end
+
+      it 'returns true if branch does not exist and user has permission to merge' do
+        project.team << [user, :developer]
+
+        expect(access.can_push_to_branch?(not_existing_branch.name)).to be_truthy
       end
     end
 

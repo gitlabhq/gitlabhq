@@ -3,6 +3,28 @@ require 'spec_helper'
 describe SnippetsController do
   let(:user) { create(:user) }
 
+  describe 'GET #new' do
+    context 'when signed in' do
+      before do
+        sign_in(user)
+      end
+
+      it 'responds with status 200' do
+        get :new
+
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when not signed in' do
+      it 'redirects to the sign in page' do
+        get :new
+
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+  end
+
   describe 'GET #show' do
     context 'when the personal snippet is private' do
       let(:personal_snippet) { create(:personal_snippet, :private, author: user) }

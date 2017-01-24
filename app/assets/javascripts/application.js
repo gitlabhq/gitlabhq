@@ -1,4 +1,11 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, no-var, quotes, consistent-return, prefer-arrow-callback, comma-dangle, object-shorthand, no-new, max-len */
+/* global bp */
+/* global Cookies */
+/* global Flash */
+/* global ConfirmDangerModal */
+/* global AwardsHandler */
+/* global Aside */
+
 // This is a manifest file that'll be compiled into including all the files listed below.
 // Add new JavaScript code in separate files in this directory and they'll automatically
 // be included in the compiled file accessible from http://example.com/assets/application.js
@@ -51,20 +58,24 @@
 /*= require_directory ./extensions */
 /*= require_directory ./lib/utils */
 /*= require_directory ./u2f */
+/*= require_directory ./droplab */
 /*= require_directory . */
 /*= require fuzzaldrin-plus */
+/*= require es6-promise.auto */
 
 (function () {
-  document.addEventListener('page:fetch', gl.utils.cleanupBeforeFetch);
-  window.addEventListener('hashchange', gl.utils.shiftWindow);
+  document.addEventListener('page:fetch', function () {
+    // Unbind scroll events
+    $(document).off('scroll');
+    // Close any open tooltips
+    $('.has-tooltip, [data-toggle="tooltip"]').tooltip('destroy');
+  });
 
-  window.onload = function () {
-    // Scroll the window to avoid the topnav bar
-    // https://github.com/twitter/bootstrap/issues/1768
-    if (location.hash) {
-      return setTimeout(gl.utils.shiftWindow, 100);
-    }
-  };
+  window.addEventListener('hashchange', gl.utils.handleLocationHash);
+  window.addEventListener('load', function onLoad() {
+    window.removeEventListener('load', onLoad, false);
+    gl.utils.handleLocationHash();
+  }, false);
 
   $(function () {
     var $body = $('body');
@@ -79,7 +90,23 @@
     // Set the default path for all cookies to GitLab's root directory
     Cookies.defaults.path = gon.relative_url_root || '/';
 
-    gl.utils.preventDisabledButtons();
+    // `hashchange` is not triggered when link target is already in window.location
+    $body.on('click', 'a[href^="#"]', function() {
+      var href = this.getAttribute('href');
+      if (href.substr(1) === gl.utils.getLocationHash()) {
+        setTimeout(gl.utils.handleLocationHash, 1);
+      }
+    });
+
+    // prevent default action for disabled buttons
+    $('.btn').click(function(e) {
+      if ($(this).hasClass('disabled')) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        return false;
+      }
+    });
+
     $('.nav-sidebar').niceScroll({
       cursoropacitymax: '0.4',
       cursorcolor: '#FFF',

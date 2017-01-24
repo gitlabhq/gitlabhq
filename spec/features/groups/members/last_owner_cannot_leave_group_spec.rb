@@ -10,7 +10,7 @@ feature 'Groups > Members > Last owner cannot leave group', feature: true do
     visit group_path(group)
   end
 
-  scenario 'user does not see a "Leave Group" link' do
-    expect(page).not_to have_content 'Leave Group'
+  scenario 'user does not see a "Leave group" link' do
+    expect(page).not_to have_content 'Leave group'
   end
 end

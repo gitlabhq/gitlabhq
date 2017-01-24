@@ -17,7 +17,7 @@ module Issues
     # allowed to close the given issue.
     def close_issue(issue, commit: nil, notifications: true, system_note: true)
       if project.jira_tracker? && project.jira_service.active
-        project.jira_service.execute(commit, issue)
+        project.jira_service.close_issue(commit, issue)
         todo_service.close_issue(issue, current_user)
         return issue
       end

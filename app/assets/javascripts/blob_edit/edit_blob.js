@@ -1,6 +1,9 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, camelcase, no-param-reassign, quotes, prefer-template, no-new, comma-dangle, one-var, one-var-declaration-per-line, prefer-arrow-callback, no-else-return, no-unused-vars, max-len */
+/* global ace */
+/* global BlobGitignoreSelectors */
+
 (function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
 
   this.EditBlob = (function() {
     function EditBlob(assets_path, ace_mode) {
@@ -33,6 +36,9 @@
       new gl.BlobCiYamlSelectors({
         editor: this.editor
       });
+      new gl.BlobDockerfileSelectors({
+        editor: this.editor
+      });
     }
 
     EditBlob.prototype.initModePanesAndLinks = function() {
@@ -57,7 +63,7 @@
           content: this.editor.getValue()
         }, function(response) {
           currentPane.empty().append(response);
-          return currentPane.syntaxHighlight();
+          return currentPane.renderGFM();
         });
       } else {
         this.$toggleButton.show();
@@ -78,7 +84,5 @@
     };
 
     return EditBlob;
-
   })();
-
 }).call(this);

@@ -2,13 +2,24 @@ module Ci
   class Build < CommitStatus
     include TokenAuthenticatable
     include AfterCommitQueue
+    include Presentable
 
     belongs_to :runner
     belongs_to :trigger_request
     belongs_to :erased_by, class_name: 'User'
 
+    has_many :deployments, as: :deployable
+
+    # The "environment" field for builds is a String, and is the unexpanded name
+    def persisted_environment
+      @persisted_environment ||= Environment.find_by(
+        name: expanded_environment_name,
+        project_id: gl_project_id
+      )
+    end
+
     serialize :options
-    serialize :yaml_variables
+    serialize :yaml_variables, Gitlab::Serialize::Ci::Variables
 
     validates :coverage, numericality: true, allow_blank: true
     validates_presence_of :ref
@@ -33,6 +44,8 @@ module Ci
     before_destroy { project }
 
     after_create :execute_hooks
+    after_save :update_project_statistics, if: :artifacts_size_changed?
+    after_destroy :update_project_statistics
 
     class << self
       def first_pending
@@ -68,13 +81,23 @@ module Ci
           environment: build.environment,
           status_event: 'enqueue'
         )
-        MergeRequests::AddTodoWhenBuildFailsService.new(build.project, nil).close(new_build)
+
+        MergeRequests::AddTodoWhenBuildFailsService
+          .new(build.project, nil)
+          .close(new_build)
+
         build.pipeline.mark_as_processable_after_stage(build.stage_idx)
         new_build
       end
     end
 
     state_machine :status do
+      after_transition any => [:pending] do |build|
+        build.run_after_commit do
+          BuildQueueWorker.perform_async(id)
+        end
+      end
+
       after_transition pending: :running do |build|
         build.run_after_commit do
           BuildHooksWorker.perform_async(id)
@@ -92,6 +115,12 @@ module Ci
           BuildSuccessWorker.perform_async(id)
         end
       end
+    end
+
+    def detailed_status(current_user)
+      Gitlab::Ci::Status::Build::Factory
+        .new(self, current_user)
+        .fabricate!
     end
 
     def manual?
@@ -117,12 +146,45 @@ module Ci
       end
     end
 
+    def cancelable?
+      active?
+    end
+
     def retryable?
-      project.builds_enabled? && commands.present? && complete?
+      project.builds_enabled? && commands.present? &&
+        (success? || failed? || canceled?)
     end
 
     def retried?
       !self.pipeline.statuses.latest.include?(self)
+    end
+
+    def expanded_environment_name
+      ExpandVariables.expand(environment, simple_variables) if environment
+    end
+
+    def has_environment?
+      environment.present?
+    end
+
+    def starts_environment?
+      has_environment? && self.environment_action == 'start'
+    end
+
+    def stops_environment?
+      has_environment? && self.environment_action == 'stop'
+    end
+
+    def environment_action
+      self.options.fetch(:environment, {}).fetch(:action, 'start') if self.options
+    end
+
+    def outdated_deployment?
+      success? && !last_deployment.try(:last?)
+    end
+
+    def last_deployment
+      deployments.last
     end
 
     def depends_on_builds
@@ -150,16 +212,36 @@ module Ci
       project.build_timeout
     end
 
-    def variables
+    # A slugified version of the build ref, suitable for inclusion in URLs and
+    # domain names. Rules:
+    #
+    #   * Lowercased
+    #   * Anything not matching [a-z0-9-] is replaced with a -
+    #   * Maximum length is 63 bytes
+    def ref_slug
+      slugified = ref.to_s.downcase
+      slugified.gsub(/[^a-z0-9]/, '-')[0..62]
+    end
+
+    # Variables whose value does not depend on other variables
+    def simple_variables
       variables = predefined_variables
       variables += project.predefined_variables
       variables += pipeline.predefined_variables
       variables += runner.predefined_variables if runner
       variables += project.container_registry_variables
+      variables += project.deployment_variables if has_environment?
       variables += yaml_variables
       variables += user_variables
       variables += project.secret_variables
       variables += trigger_request.user_variables if trigger_request
+      variables
+    end
+
+    # All variables, including those dependent on other variables
+    def variables
+      variables = simple_variables
+      variables += persisted_environment.predefined_variables if persisted_environment.present?
       variables
     end
 
@@ -169,7 +251,7 @@ module Ci
                                    .reorder(iid: :asc)
 
       merge_requests.find do |merge_request|
-        merge_request.commits.any? { |ci| ci.id == pipeline.sha }
+        merge_request.commits_sha.include?(pipeline.sha)
       end
     end
 
@@ -271,6 +353,7 @@ module Ci
 
     def append_trace(trace_part, offset)
       recreate_trace_dir
+      touch if needs_touch?
 
       trace_part = hide_secrets(trace_part)
 
@@ -278,6 +361,10 @@ module Ci
       File.open(path_to_trace, 'ab') do |f|
         f.write(trace_part)
       end
+    end
+
+    def needs_touch?
+      Time.now - updated_at > 15.minutes.to_i
     end
 
     def trace_file_path
@@ -427,6 +514,10 @@ module Ci
         end
     end
 
+    def has_expiring_artifacts?
+      artifacts_expire_at.present?
+    end
+
     def keep_artifacts!
       self.update(artifacts_expire_at: nil)
     end
@@ -446,6 +537,10 @@ module Ci
         { key: 'GITLAB_USER_ID', value: user.id.to_s, public: true },
         { key: 'GITLAB_USER_EMAIL', value: user.email, public: true }
       ]
+    end
+
+    def credentials
+      Gitlab::Ci::Build::Credentials::Factory.new(self).create!
     end
 
     private
@@ -475,6 +570,7 @@ module Ci
         { key: 'CI_BUILD_REF', value: sha, public: true },
         { key: 'CI_BUILD_BEFORE_SHA', value: before_sha, public: true },
         { key: 'CI_BUILD_REF_NAME', value: ref, public: true },
+        { key: 'CI_BUILD_REF_SLUG', value: ref_slug, public: true },
         { key: 'CI_BUILD_NAME', value: name, public: true },
         { key: 'CI_BUILD_STAGE', value: stage, public: true },
         { key: 'CI_SERVER_NAME', value: 'GitLab', public: true },
@@ -500,6 +596,10 @@ module Ci
       Ci::MaskSecret.mask!(trace, project.runners_token) if project
       Ci::MaskSecret.mask!(trace, token)
       trace
+    end
+
+    def update_project_statistics
+      ProjectCacheWorker.perform_async(project_id, [], [:build_artifacts_size])
     end
   end
 end

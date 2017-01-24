@@ -1,6 +1,6 @@
-/* eslint-disable */
-((global) => {
+/* eslint-disable comma-dangle, no-return-assign, one-var, no-var, no-underscore-dangle, one-var-declaration-per-line, no-unused-vars, no-cond-assign, consistent-return, object-shorthand, prefer-arrow-callback, func-names, space-before-function-paren, prefer-template, quotes, class-methods-use-this, no-unused-expressions, no-sequences, wrap-iife, no-lonely-if, no-else-return, no-param-reassign, vars-on-top, max-len */
 
+((global) => {
   const KEYCODE = {
     ESCAPE: 27,
     BACKSPACE: 8,
@@ -104,7 +104,7 @@
         data = [];
         // List results
         firstCategory = true;
-        for (i = 0, len = response.length; i < len; i++) {
+        for (i = 0, len = response.length; i < len; i += 1) {
           suggestion = response[i];
           // Add group header before list each group
           if (lastCategory !== suggestion.category) {
@@ -141,8 +141,9 @@
     }
 
     getCategoryContents() {
-      var dashboardOptions, groupOptions, issuesPath, items, mrPath, name, options, projectOptions, userId, utils;
+      var dashboardOptions, groupOptions, issuesPath, items, mrPath, name, options, projectOptions, userId, userName, utils;
       userId = gon.current_user_id;
+      userName = gon.current_username;
       utils = gl.utils, projectOptions = gl.projectOptions, groupOptions = gl.groupOptions, dashboardOptions = gl.dashboardOptions;
       if (utils.isInGroupsPage() && groupOptions) {
         options = groupOptions[utils.getGroupSlug()];
@@ -157,10 +158,10 @@
           header: "" + name
         }, {
           text: 'Issues assigned to me',
-          url: issuesPath + "/?assignee_id=" + userId
+          url: issuesPath + "/?assignee_username=" + userName
         }, {
           text: "Issues I've created",
-          url: issuesPath + "/?author_id=" + userId
+          url: issuesPath + "/?author_username=" + userName
         }, 'separator', {
           text: 'Merge requests assigned to me',
           url: mrPath + "/?assignee_id=" + userId
@@ -214,7 +215,7 @@
         this.dropdown.addClass('open').trigger('shown.bs.dropdown');
         return this.searchInput.removeClass('disabled');
       }
-    };
+    }
 
       // Saves last length of the entered text
     onSearchInputKeyDown() {
@@ -278,12 +279,12 @@
       return this.searchInput.val();
     }
 
-   onClearInputClick(e) {
+    onClearInputClick(e) {
       e.preventDefault();
       return this.searchInput.val('').focus();
     }
 
-   onSearchInputBlur(e) {
+    onSearchInputBlur(e) {
       this.isFocused = false;
       this.wrap.removeClass('search-active');
       // If input is blank then restore state
@@ -303,12 +304,12 @@
 
     hasLocationBadge() {
       return this.wrap.is('.has-location-badge');
-    };
+    }
 
     restoreOriginalState() {
       var i, input, inputs, len;
       inputs = Object.keys(this.originalState);
-      for (i = 0, len = inputs.length; i < len; i++) {
+      for (i = 0, len = inputs.length; i < len; i += 1) {
         input = inputs[i];
         this.getElement("#" + input).val(this.originalState[input]);
       }
@@ -329,7 +330,7 @@
       var i, input, inputs, len, results;
       inputs = Object.keys(this.originalState);
       results = [];
-      for (i = 0, len = inputs.length; i < len; i++) {
+      for (i = 0, len = inputs.length; i < len; i += 1) {
         input = inputs[i];
         // _location isnt a input
         if (input === '_location') {
@@ -359,7 +360,7 @@
       var html;
       html = "<ul> <li><a class='dropdown-menu-empty-link is-focused'>Loading...</a></li> </ul>";
       return this.dropdownContent.html(html);
-    };
+    }
 
     onClick(item, $el, e) {
       if (location.pathname.indexOf(item.url) !== -1) {
@@ -382,8 +383,7 @@
         this.disableAutocomplete();
         return this.searchInput.val('').focus();
       }
-    };
-
+    }
   }
 
   global.SearchAutocomplete = SearchAutocomplete;
@@ -424,5 +424,4 @@
       };
     }
   });
-
 })(window.gl || (window.gl = {}));

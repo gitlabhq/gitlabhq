@@ -1,0 +1,58 @@
+.info-well {
+  background: $gray-light;
+  color: $gl-text-color;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-default;
+
+  .well-segment {
+    padding: $gl-padding;
+
+    &:not(:last-of-type) {
+      border-bottom: 1px solid $well-inner-border;
+    }
+
+    &.branch-info {
+      .monospace,
+      .commit-info {
+        margin-left: 4px;
+      }
+    }
+  }
+
+  .icon-container {
+    display: inline-block;
+    margin-right: 8px;
+
+    svg {
+      position: relative;
+      top: 2px;
+      height: 16px;
+      width: 16px;
+    }
+
+    &.commit-icon {
+      svg {
+        path {
+          fill: $gl-text-color;
+        }
+      }
+    }
+  }
+
+  .label.label-gray {
+    background-color: $well-expand-item;
+  }
+}
+
+.light-well {
+  background-color: $gray-light;
+  padding: 15px;
+}
+
+.well-centered {
+  h1 {
+    font-weight: normal;
+    text-align: center;
+    font-size: 48px;
+  }
+}

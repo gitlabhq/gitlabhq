@@ -19,10 +19,12 @@ Commit Author: <%= commit.author_name %>
 Pipeline #<%= @pipeline.id %> ( <%= pipeline_url(@pipeline) %> ) had <%= failed.size %> failed <%= 'build'.pluralize(failed.size) %>.
 
 <% failed.each do |build| -%>
-Build #<%= build.id %> ( <%= pipeline_build_url(@pipeline, build) %> )
+<%= render "notify/links/#{build.to_partial_path}", pipeline: @pipeline, build: build %>
 Stage: <%= build.stage %>
 Name: <%= build.name %>
+<% if build.has_trace? -%>
 Trace: <%= build.trace_with_state(last_lines: 10)[:text] %>
+<% end -%>
 
 <% end -%>
 

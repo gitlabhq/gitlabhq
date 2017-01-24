@@ -2,7 +2,7 @@
 
 - if @error
   .alert.alert-danger
-    %button{ type: "button", class: "close", "data-dismiss" => "alert"} &times;
+    %button.close{ type: "button", "data-dismiss" => "alert" } &times;
     = @error
 
 %h3.page-title
@@ -23,7 +23,7 @@
     = label_tag :message, nil, class: 'control-label'
     .col-sm-10
       = text_area_tag :message, nil, required: false, tabindex: 3, class: 'form-control', rows: 5
-      .help-block Optionally, enter a message to create an annotated tag.
+      .help-block Optionally, add a message to the tag.
   %hr
   .form-group
     = label_tag :release_description, 'Release notes', class: 'control-label'

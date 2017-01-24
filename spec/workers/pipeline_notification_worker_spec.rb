@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe PipelineNotificationWorker do
+  include EmailHelpers
+
   let(:pipeline) do
     create(:ci_pipeline,
            project: project,
@@ -9,7 +11,7 @@ describe PipelineNotificationWorker do
            status: status)
   end
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, public_builds: false) }
   let(:user) { create(:user) }
   let(:pusher) { user }
   let(:watcher) { pusher }

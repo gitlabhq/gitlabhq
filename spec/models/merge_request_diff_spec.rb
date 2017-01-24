@@ -76,25 +76,40 @@ describe MergeRequestDiff, models: true do
     end
   end
 
+  describe '#save_diffs' do
+    it 'saves collected state' do
+      mr_diff = create(:merge_request).merge_request_diff
+
+      expect(mr_diff.collected?).to be_truthy
+    end
+
+    it 'saves overflow state' do
+      allow(Commit).to receive(:max_diff_options)
+        .and_return(max_lines: 0, max_files: 0)
+
+      mr_diff = create(:merge_request).merge_request_diff
+
+      expect(mr_diff.overflow?).to be_truthy
+    end
+
+    it 'saves empty state' do
+      allow_any_instance_of(MergeRequestDiff).to receive(:commits)
+        .and_return([])
+
+      mr_diff = create(:merge_request).merge_request_diff
+
+      expect(mr_diff.empty?).to be_truthy
+    end
+  end
+
   describe '#commits_sha' do
-    shared_examples 'returning all commits SHA' do
-      it 'returns all commits SHA' do
-        commits_sha = subject.commits_sha
+    it 'returns all commits SHA using serialized commits' do
+      subject.st_commits = [
+        { id: 'sha1' },
+        { id: 'sha2' }
+      ]
 
-        expect(commits_sha).to eq(subject.commits.map(&:sha))
-      end
-    end
-
-    context 'when commits were loaded' do
-      before do
-        subject.commits
-      end
-
-      it_behaves_like 'returning all commits SHA'
-    end
-
-    context 'when commits were not loaded' do
-      it_behaves_like 'returning all commits SHA'
+      expect(subject.commits_sha).to eq(['sha1', 'sha2'])
     end
   end
 
@@ -111,6 +126,17 @@ describe MergeRequestDiff, models: true do
       diffs = subject.compare_with('0b4bc9a49b562e85de7cc9e834518ea6828729b9').diffs
 
       expect(diffs.size).to eq(3)
+    end
+  end
+
+  describe '#commits_count' do
+    it 'returns number of commits using serialized commits' do
+      subject.st_commits = [
+        { id: 'sha1' },
+        { id: 'sha2' }
+      ]
+
+      expect(subject.commits_count).to eq 2
     end
   end
 end

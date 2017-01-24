@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-describe API::API, api: true  do
+describe API::Environments, api: true  do
   include ApiHelpers
 
   let(:user)          { create(:user) }
   let(:non_member)    { create(:user) }
-  let(:project)       { create(:project, :private, namespace: user.namespace) }
+  let(:project)       { create(:empty_project, :private, namespace: user.namespace) }
   let!(:environment)  { create(:environment, project: project) }
 
   before do
@@ -46,6 +46,7 @@ describe API::API, api: true  do
 
         expect(response).to have_http_status(201)
         expect(json_response['name']).to eq('mepmep')
+        expect(json_response['slug']).to eq('mepmep')
         expect(json_response['external']).to be nil
       end
 
@@ -59,6 +60,13 @@ describe API::API, api: true  do
         post api("/projects/#{project.id}/environments", user), name: environment.name
 
         expect(response).to have_http_status(400)
+      end
+
+      it 'returns a 400 if slug is specified' do
+        post api("/projects/#{project.id}/environments", user), name: "foo", slug: "foo"
+
+        expect(response).to have_http_status(400)
+        expect(json_response["error"]).to eq("slug is automatically generated and cannot be changed")
       end
     end
 
@@ -84,6 +92,15 @@ describe API::API, api: true  do
       expect(response).to have_http_status(200)
       expect(json_response['name']).to eq('Mepmep')
       expect(json_response['external_url']).to eq(url)
+    end
+
+    it "won't allow slug to be changed" do
+      slug = environment.slug
+      api_url = api("/projects/#{project.id}/environments/#{environment.id}", user)
+      put api_url, slug: slug + "-foo"
+
+      expect(response).to have_http_status(400)
+      expect(json_response["error"]).to eq("slug is automatically generated and cannot be changed")
     end
 
     it "won't update the external_url if only the name is passed" do

@@ -19,11 +19,16 @@ class Projects::SnippetsController < Projects::ApplicationController
   respond_to :html
 
   def index
-    @snippets = SnippetsFinder.new.execute(current_user, {
+    @snippets = SnippetsFinder.new.execute(
+      current_user,
       filter: :by_project,
-      project: @project
-    })
+      project: @project,
+      scope: params[:scope]
+    )
     @snippets = @snippets.page(params[:page])
+    if @snippets.out_of_range? && @snippets.total_pages != 0
+      redirect_to namespace_project_snippets_path(page: @snippets.total_pages)
+    end
   end
 
   def new

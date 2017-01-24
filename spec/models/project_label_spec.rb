@@ -105,14 +105,14 @@ describe ProjectLabel, models: true do
       context 'using name' do
         it 'returns cross reference with label name' do
           expect(label.to_reference(project, format: :name))
-            .to eq %Q(#{label.project.to_reference}~"#{label.name}")
+            .to eq %Q(#{label.project.path_with_namespace}~"#{label.name}")
         end
       end
 
       context 'using id' do
         it 'returns cross reference with label id' do
           expect(label.to_reference(project, format: :id))
-            .to eq %Q(#{label.project.to_reference}~#{label.id})
+            .to eq %Q(#{label.project.path_with_namespace}~#{label.id})
         end
       end
     end

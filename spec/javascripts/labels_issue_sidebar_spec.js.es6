@@ -1,4 +1,7 @@
-/* eslint-disable */
+/* eslint-disable no-new */
+/* global IssuableContext */
+/* global LabelsSelect */
+
 //= require lib/utils/type_utility
 //= require jquery
 //= require bootstrap
@@ -14,27 +17,27 @@
 (() => {
   let saveLabelCount = 0;
   describe('Issue dropdown sidebar', () => {
-    fixture.preload('issue_sidebar_label.html');
+    preloadFixtures('static/issue_sidebar_label.html.raw');
 
     beforeEach(() => {
-      fixture.load('issue_sidebar_label.html');
+      loadFixtures('static/issue_sidebar_label.html.raw');
       new IssuableContext('{"id":1,"name":"Administrator","username":"root"}');
       new LabelsSelect();
 
       spyOn(jQuery, 'ajax').and.callFake((req) => {
         const d = $.Deferred();
-        let LABELS_DATA = []
+        let LABELS_DATA = [];
 
         if (req.url === '/root/test/labels.json') {
-          for (let i = 0; i < 10; i++) {
-            LABELS_DATA.push({id: i, title: `test ${i}`, color: '#5CB85C'});
+          for (let i = 0; i < 10; i += 1) {
+            LABELS_DATA.push({ id: i, title: `test ${i}`, color: '#5CB85C' });
           }
         } else if (req.url === '/root/test/issues/2.json') {
-          let tmp = []
-          for (let i = 0; i < saveLabelCount; i++) {
-            tmp.push({id: i, title: `test ${i}`, color: '#5CB85C'});
+          const tmp = [];
+          for (let i = 0; i < saveLabelCount; i += 1) {
+            tmp.push({ id: i, title: `test ${i}`, color: '#5CB85C' });
           }
-          LABELS_DATA = {labels: tmp};
+          LABELS_DATA = { labels: tmp };
         }
 
         d.resolve(LABELS_DATA);

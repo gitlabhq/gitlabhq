@@ -3,7 +3,7 @@
 
 %div
   - if @user.errors.any?
-    %div.alert.alert-danger
+    .alert.alert-danger
       %ul
         - @user.errors.full_messages.each do |msg|
           %li= msg
@@ -30,7 +30,7 @@
       %br
       .clearfix
       .form-group.pull-left.global-notification-setting
-        = render 'shared/notifications/button', notification_setting: @global_notification_setting, left_align: true
+        = render 'shared/notifications/button', notification_setting: @global_notification_setting
 
       .clearfix
 

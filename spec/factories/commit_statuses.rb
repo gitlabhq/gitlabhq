@@ -19,6 +19,10 @@ FactoryGirl.define do
       status 'canceled'
     end
 
+    trait :skipped do
+      status 'skipped'
+    end
+
     trait :running do
       status 'running'
     end

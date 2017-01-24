@@ -7,11 +7,11 @@
   .example {
     &::before {
       content: "Example";
-      color: #bbb;
+      color: $ui-dev-kit-example-color;
     }
 
     padding: 15px;
-    border: 1px dashed #ddd;
+    border: 1px dashed $ui-dev-kit-example-border;
     margin-bottom: 15px;
   }
 }

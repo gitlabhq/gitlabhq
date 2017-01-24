@@ -23,6 +23,12 @@ resource :profile, only: [:show, :update] do
     resource :preferences, only: [:show, :update]
     resources :keys, only: [:index, :show, :new, :create, :destroy]
     resources :emails, only: [:index, :create, :destroy]
+    resources :chat_names, only: [:index, :new, :create, :destroy] do
+      collection do
+        delete :deny
+      end
+    end
+
     resource :avatar, only: [:destroy]
 
     resources :personal_access_tokens, only: [:index, :create] do

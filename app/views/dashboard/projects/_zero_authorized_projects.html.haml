@@ -4,6 +4,18 @@
     Welcome to GitLab
   %p.blank-state-text
     Code, test, and deploy together
+
+- if current_user.can_create_group?
+  .blank-state
+    .blank-state-icon
+      = custom_icon("group", size: 50)
+    %h3.blank-state-title
+      You can create a group for several dependent projects.
+    %p.blank-state-text
+      Groups are the best way to manage projects and members.
+    = link_to new_group_path, class: "btn btn-new" do
+      New group
+
 .blank-state
   .blank-state-icon
     = custom_icon("project", size: 50)
@@ -21,18 +33,7 @@
     = link_to new_project_path, class: "btn btn-new" do
       New project
 
-- if current_user.can_create_group?
-  .blank-state
-    .blank-state-icon
-      = custom_icon("group", size: 50)
-    %h3.blank-state-title
-      You can create a group for several dependent projects.
-    %p.blank-state-text
-      Groups are the best way to manage projects and members.
-    = link_to new_group_path, class: "btn btn-new" do
-      New group
-
--if publicish_project_count > 0
+- if publicish_project_count > 0
   .blank-state
     .blank-state-icon
       = icon("globe")

@@ -26,6 +26,7 @@ describe Members::DestroyService, services: true do
     context 'when the given member is an access requester' do
       before do
         source.members.find_by(user_id: member_user).destroy
+        source.update_attributes(request_access_enabled: true)
         source.request_access(member_user)
       end
       let(:access_requester) { source.requesters.find_by(user_id: member_user) }

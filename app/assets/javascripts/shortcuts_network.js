@@ -1,4 +1,6 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, max-len, no-var, one-var, no-restricted-syntax, vars-on-top, no-use-before-define, no-param-reassign, new-cap, no-underscore-dangle, wrap-iife, max-len */
+/* global Mousetrap */
+/* global ShortcutsNavigation */
 
 /*= require shortcuts_navigation */
 
@@ -22,7 +24,5 @@
     }
 
     return ShortcutsNetwork;
-
   })(ShortcutsNavigation);
-
 }).call(this);

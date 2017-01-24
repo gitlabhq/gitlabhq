@@ -5,5 +5,6 @@ FactoryGirl.define do
     name { FFaker::Product.brand }
     revoked false
     expires_at { 5.days.from_now }
+    scopes ['api']
   end
 end

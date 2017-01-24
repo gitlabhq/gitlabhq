@@ -1,4 +1,6 @@
-/* eslint-disable */
+/* eslint-disable arrow-parens, class-methods-use-this, no-param-reassign */
+/* global Cookies */
+
 ((global) => {
   let singleton;
 
@@ -92,5 +94,4 @@
   }
 
   global.Sidebar = Sidebar;
-
 })(window.gl || (window.gl = {}));

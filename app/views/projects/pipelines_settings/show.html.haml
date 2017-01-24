@@ -86,6 +86,9 @@
               %li
                 tap --coverage-report=text-summary (NodeJS) -
                 %code ^Statements\s*:\s*([^%]+)
+              %li
+                excoveralls (Elixir) -
+                %code \[TOTAL\]\s+(\d+\.\d+)%
 
         = f.submit 'Save changes', class: "btn btn-save"
 

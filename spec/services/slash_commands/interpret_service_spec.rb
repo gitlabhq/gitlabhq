@@ -1,12 +1,13 @@
 require 'spec_helper'
 
 describe SlashCommands::InterpretService, services: true do
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
   let(:developer) { create(:user) }
   let(:issue) { create(:issue, project: project) }
   let(:milestone) { create(:milestone, project: project, title: '9.10') }
   let(:inprogress) { create(:label, project: project, title: 'In Progress') }
   let(:bug) { create(:label, project: project, title: 'Bug') }
+  let(:note) { build(:note, commit_id: merge_request.diff_head_sha) }
 
   before do
     project.team << [developer, :developer]
@@ -169,7 +170,7 @@ describe SlashCommands::InterpretService, services: true do
 
     shared_examples 'unsubscribe command' do
       it 'populates subscription_event: "unsubscribe" if content contains /unsubscribe' do
-        issuable.subscribe(developer)
+        issuable.subscribe(developer, project)
         _, updates = service.execute(content, issuable)
 
         expect(updates).to eq(subscription_event: 'unsubscribe')
@@ -210,11 +211,59 @@ describe SlashCommands::InterpretService, services: true do
       end
     end
 
+    shared_examples 'estimate command' do
+      it 'populates time_estimate: 3600 if content contains /estimate 1h' do
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(time_estimate: 3600)
+      end
+    end
+
+    shared_examples 'spend command' do
+      it 'populates spend_time: 3600 if content contains /spend 1h' do
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(spend_time: { duration: 3600, user: developer })
+      end
+    end
+
+    shared_examples 'spend command with negative time' do
+      it 'populates spend_time: -1800 if content contains /spend -30m' do
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(spend_time: { duration: -1800, user: developer })
+      end
+    end
+
+    shared_examples 'remove_estimate command' do
+      it 'populates time_estimate: 0 if content contains /remove_estimate' do
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(time_estimate: 0)
+      end
+    end
+
+    shared_examples 'remove_time_spent command' do
+      it 'populates spend_time: :reset if content contains /remove_time_spent' do
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(spend_time: { duration: :reset, user: developer })
+      end
+    end
+
     shared_examples 'empty command' do
       it 'populates {} if content contains an unsupported command' do
         _, updates = service.execute(content, issuable)
 
         expect(updates).to be_empty
+      end
+    end
+
+    shared_examples 'merge command' do
+      it 'runs merge command if content contains /merge' do
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(merge: merge_request.diff_head_sha)
       end
     end
 
@@ -236,6 +285,64 @@ describe SlashCommands::InterpretService, services: true do
     it_behaves_like 'close command' do
       let(:content) { '/close' }
       let(:issuable) { merge_request }
+    end
+
+    context 'merge command' do
+      let(:service) { described_class.new(project, developer, { merge_request_diff_head_sha: merge_request.diff_head_sha }) }
+
+      it_behaves_like 'merge command' do
+        let(:content) { '/merge' }
+        let(:issuable) { merge_request }
+      end
+
+      context 'can not be merged when logged user does not have permissions' do
+        let(:service) { described_class.new(project, create(:user)) }
+
+        it_behaves_like 'empty command' do
+          let(:content) { "/merge" }
+          let(:issuable) { merge_request }
+        end
+      end
+
+      context 'can not be merged when sha does not match' do
+        let(:service) { described_class.new(project, developer, { merge_request_diff_head_sha: 'othersha' }) }
+
+        it_behaves_like 'empty command' do
+          let(:content) { "/merge" }
+          let(:issuable) { merge_request }
+        end
+      end
+
+      context 'when sha is missing' do
+        let(:service) { described_class.new(project, developer, {}) }
+
+        it 'precheck passes and returns merge command' do
+          _, updates = service.execute('/merge', merge_request)
+
+          expect(updates).to eq(merge: nil)
+        end
+      end
+
+      context 'issue can not be merged' do
+        it_behaves_like 'empty command' do
+          let(:content) { "/merge" }
+          let(:issuable) { issue }
+        end
+      end
+
+      context 'non persisted merge request  cant be merged' do
+        it_behaves_like 'empty command' do
+          let(:content) { "/merge" }
+          let(:issuable) { build(:merge_request) }
+        end
+      end
+
+      context 'not persisted merge request can not be merged' do
+        it_behaves_like 'empty command' do
+          let(:content) { "/merge" }
+          let(:issuable) { build(:merge_request, source_project: project) }
+        end
+      end
     end
 
     it_behaves_like 'title command' do
@@ -321,7 +428,7 @@ describe SlashCommands::InterpretService, services: true do
     it_behaves_like 'multiple label with same argument' do
       let(:content) { %(/label ~"#{inprogress.title}" \n/label ~#{inprogress.title}) }
       let(:issuable) { issue }
-    end	
+    end
 
     it_behaves_like 'unlabel command' do
       let(:content) { %(/unlabel ~"#{inprogress.title}") }
@@ -449,6 +556,51 @@ describe SlashCommands::InterpretService, services: true do
     it_behaves_like 'empty command' do
       let(:content) { '/remove_due_date' }
       let(:issuable) { merge_request }
+    end
+
+    it_behaves_like 'estimate command' do
+      let(:content) { '/estimate 1h' }
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'empty command' do
+      let(:content) { '/estimate' }
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'empty command' do
+      let(:content) { '/estimate abc' }
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'spend command' do
+      let(:content) { '/spend 1h' }
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'spend command with negative time' do
+      let(:content) { '/spend -30m' }
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'empty command' do
+      let(:content) { '/spend' }
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'empty command' do
+      let(:content) { '/spend abc' }
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'remove_estimate command' do
+      let(:content) { '/remove_estimate' }
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'remove_time_spent command' do
+      let(:content) { '/remove_time_spent' }
+      let(:issuable) { issue }
     end
 
     context 'when current_user cannot :admin_issue' do

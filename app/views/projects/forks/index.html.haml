@@ -1,7 +1,7 @@
 .top-area
   .nav-text
     - full_count_title = "#{@public_forks_count} public and #{@private_forks_count} private"
-    == #{pluralize(@total_forks_count, 'fork')}: #{full_count_title}
+    = "#{pluralize(@total_forks_count, 'fork')}: #{full_count_title}"
 
   .nav-controls
     = form_tag request.original_url, method: :get, class: 'project-filter-form', id: 'project-filter-form' do |f|
@@ -9,13 +9,13 @@
         spellcheck: false, data: { 'filter-selector' => 'span.namespace-name' }
 
     .dropdown
-      %button.dropdown-toggle.btn.sort-forks{type: 'button', 'data-toggle' => 'dropdown'}
+      %button.dropdown-toggle{ type: 'button', 'data-toggle' => 'dropdown' }
         %span.light sort:
         - if @sort.present?
           = sort_options_hash[@sort]
         - else
           = sort_title_recently_created
-        = icon('caret-down')
+        = icon('chevron-down')
       %ul.dropdown-menu.dropdown-menu-align-right
         %li
           - excluded_filters = [:state, :scope, :label_name, :milestone_id, :assignee_id, :author_id]

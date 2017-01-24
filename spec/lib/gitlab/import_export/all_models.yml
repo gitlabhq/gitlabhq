@@ -15,6 +15,7 @@ issues:
 - events
 - merge_requests_closing_issues
 - metrics
+- timelogs
 events:
 - author
 - project
@@ -77,6 +78,7 @@ merge_requests:
 - events
 - merge_requests_closing_issues
 - metrics
+- timelogs
 merge_request_diff:
 - merge_request
 pipelines:
@@ -116,6 +118,7 @@ project:
 - base_tags
 - tag_taggings
 - tags
+- chat_services
 - creator
 - group
 - namespace
@@ -127,6 +130,8 @@ project:
 - emails_on_push_service
 - builds_email_service
 - pipelines_email_service
+- mattermost_slash_commands_service
+- slack_slash_commands_service
 - irker_service
 - pivotaltracker_service
 - hipchat_service
@@ -135,6 +140,7 @@ project:
 - asana_service
 - gemnasium_service
 - slack_service
+- mattermost_service
 - buildkite_service
 - bamboo_service
 - teamcity_service
@@ -145,6 +151,7 @@ project:
 - bugzilla_service
 - gitlab_issue_tracker_service
 - external_wiki_service
+- kubernetes_service
 - forked_project_link
 - forked_from_project
 - forked_project_links
@@ -184,8 +191,15 @@ project:
 - environments
 - deployments
 - project_feature
+- authorized_users
+- project_authorizations
+- route
+- statistics
 award_emoji:
 - awardable
 - user
 priorities:
 - label
+timelogs:
+- trackable
+- user

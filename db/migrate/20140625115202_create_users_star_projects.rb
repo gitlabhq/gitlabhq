@@ -1,10 +1,12 @@
 # rubocop:disable all
 class CreateUsersStarProjects < ActiveRecord::Migration
+  DOWNTIME = false
+
   def change
     create_table :users_star_projects do |t|
       t.integer :project_id, null: false
       t.integer :user_id, null: false
-      t.timestamps
+      t.timestamps null: true
     end
     add_index :users_star_projects, :user_id
     add_index :users_star_projects, :project_id

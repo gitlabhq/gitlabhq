@@ -1,6 +1,5 @@
-- left_align = local_assigns[:left_align]
 - if notification_setting
-  .dropdown.notification-dropdown.pull-right
+  .js-notification-dropdown.notification-dropdown.project-action-button.dropdown.inline
     = form_for notification_setting, remote: true, html: { class: "inline notification-form" } do |f|
       = hidden_setting_source_input(notification_setting)
       = f.hidden_field :level, class: "notification_setting_level"
@@ -19,7 +18,7 @@
               = notification_title(notification_setting.level)
               = icon("caret-down")
 
-          = render "shared/notifications/notification_dropdown", notification_setting: notification_setting, left_align: left_align
+          = render "shared/notifications/notification_dropdown", notification_setting: notification_setting
 
           = content_for :scripts_body do
             = render "shared/notifications/custom_notifications", notification_setting: notification_setting

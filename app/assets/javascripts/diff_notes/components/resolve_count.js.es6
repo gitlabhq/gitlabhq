@@ -1,4 +1,8 @@
-/* eslint-disable */
+/* eslint-disable comma-dangle, object-shorthand, func-names, no-param-reassign */
+/* global Vue */
+/* global DiscussionMixins */
+/* global CommentsStore */
+
 ((w) => {
   w.ResolveCount = Vue.extend({
     mixins: [DiscussionMixins],
@@ -13,6 +17,9 @@
     computed: {
       allResolved: function () {
         return this.resolvedDiscussionCount === this.discussionCount;
+      },
+      resolvedCountText() {
+        return this.discussionCount === 1 ? 'discussion' : 'discussions';
       }
     }
   });

@@ -1,4 +1,7 @@
-/* eslint-disable */
+/* eslint-disable comma-dangle, object-shorthand, no-param-reassign, camelcase, no-nested-ternary, no-continue, max-len */
+/* global Cookies */
+/* global Vue */
+
 ((global) => {
   global.mergeConflicts = global.mergeConflicts || {};
 
@@ -37,7 +40,6 @@
         commitMessage: data.commit_message,
         sourceBranch: data.source_branch,
         targetBranch: data.target_branch,
-        commitMessage: data.commit_message,
         shortCommitSha: data.commit_sha.slice(0, 7),
       };
     },
@@ -86,7 +88,7 @@
 
           this.decorateLineForInlineView(line, id, conflict);
           file.inlineLines.push(line);
-        })
+        });
 
         if (conflict) {
           file.inlineLines.push(this.getOriginHeaderLine(id));
@@ -118,7 +120,7 @@
           } else {
             const lineType = type || 'context';
 
-            linesObj.left.push (this.getLineForParallelView(line, id, lineType));
+            linesObj.left.push(this.getLineForParallelView(line, id, lineType));
             linesObj.right.push(this.getLineForParallelView(line, id, lineType, true));
           }
         });
@@ -126,7 +128,7 @@
         this.checkLineLengths(linesObj);
       });
 
-      for (let i = 0, len = linesObj.left.length; i < len; i++) {
+      for (let i = 0, len = linesObj.left.length; i < len; i += 1) {
         file.parallelLines.push([
           linesObj.right[i],
           linesObj.left[i]
@@ -159,11 +161,11 @@
         if (file.type === CONFLICT_TYPES.TEXT) {
           file.sections.forEach((section) => {
             if (section.conflict) {
-              count++;
+              count += 1;
             }
           });
         } else {
-          count++;
+          count += 1;
         }
       });
 
@@ -249,17 +251,17 @@
     },
 
     checkLineLengths(linesObj) {
-      let { left, right } = linesObj;
+      const { left, right } = linesObj;
 
       if (left.length !== right.length) {
         if (left.length > right.length) {
           const diff = left.length - right.length;
-          for (let i = 0; i < diff; i++) {
+          for (let i = 0; i < diff; i += 1) {
             right.push({ lineType: 'emptyLine', richText: '' });
           }
         } else {
           const diff = right.length - left.length;
-          for (let i = 0; i < diff; i++) {
+          for (let i = 0; i < diff; i += 1) {
             left.push({ lineType: 'emptyLine', richText: '' });
           }
         }
@@ -313,32 +315,31 @@
       const hasCommitMessage = $.trim(this.state.conflictsData.commitMessage).length;
       let unresolved = 0;
 
-      for (let i = 0, l = files.length; i < l; i++) {
-        let file = files[i];
+      for (let i = 0, l = files.length; i < l; i += 1) {
+        const file = files[i];
 
         if (file.resolveMode === INTERACTIVE_RESOLVE_MODE) {
           let numberConflicts = 0;
-          let resolvedConflicts = Object.keys(file.resolutionData).length
+          const resolvedConflicts = Object.keys(file.resolutionData).length;
 
           // We only check for conflicts type 'text'
           // since conflicts `text_editor` can´t be resolved in interactive mode
           if (file.type === CONFLICT_TYPES.TEXT) {
-            for (let j = 0, k = file.sections.length; j < k; j++) {
+            for (let j = 0, k = file.sections.length; j < k; j += 1) {
               if (file.sections[j].conflict) {
-                numberConflicts++;
+                numberConflicts += 1;
               }
             }
 
             if (resolvedConflicts !== numberConflicts) {
-              unresolved++;
+              unresolved += 1;
             }
           }
         } else if (file.resolveMode === EDIT_RESOLVE_MODE) {
-
           // Unlikely to happen since switching to Edit mode saves content automatically.
           // Checking anyway in case the save strategy changes in the future
           if (!file.content) {
-            unresolved++;
+            unresolved += 1;
             continue;
           }
         }
@@ -363,15 +364,12 @@
       };
 
       this.state.conflictsData.files.forEach((file) => {
-        let addFile;
-
-        addFile = {
+        const addFile = {
           old_path: file.old_path,
           new_path: file.new_path
         };
 
         if (file.type === CONFLICT_TYPES.TEXT) {
-
           // Submit only one data for type of editing
           if (file.resolveMode === INTERACTIVE_RESOLVE_MODE) {
             addFile.sections = file.resolutionData;
@@ -432,5 +430,4 @@
       return this.state.conflictsData.files.some(f => f.type === CONFLICT_TYPES.TEXT);
     }
   };
-
 })(window.gl || (window.gl = {}));

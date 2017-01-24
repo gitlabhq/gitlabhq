@@ -30,10 +30,7 @@ module API
         conflict!('Label already exists') if label
 
         priority = params.delete(:priority)
-        label_params = declared(params,
-                                include_parent_namespaces: false,
-                                include_missing: false).to_h
-        label = user_project.labels.create(label_params)
+        label = user_project.labels.create(declared_params(include_missing: false))
 
         if label.valid?
           label.prioritize!(user_project, priority) if priority
@@ -77,11 +74,9 @@ module API
 
         update_priority = params.key?(:priority)
         priority = params.delete(:priority)
-        label_params = declared(params,
-                                include_parent_namespaces: false,
-                                include_missing: false).to_h
+        label_params = declared_params(include_missing: false)
         # Rename new name to the actual label attribute name
-        label_params[:name] = label_params.delete('new_name') if label_params.key?('new_name')
+        label_params[:name] = label_params.delete(:new_name) if label_params.key?(:new_name)
 
         render_validation_error!(label) unless label.update(label_params)
 

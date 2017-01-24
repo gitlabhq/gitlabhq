@@ -2,8 +2,6 @@ require 'spec_helper'
 
 describe Members::RequestAccessService, services: true do
   let(:user) { create(:user) }
-  let(:project) { create(:project, :private) }
-  let(:group) { create(:group, :private) }
 
   shared_examples 'a service raising Gitlab::Access::AccessDeniedError' do
     it 'raises Gitlab::Access::AccessDeniedError' do
@@ -31,27 +29,26 @@ describe Members::RequestAccessService, services: true do
   end
 
   context 'when current user cannot request access to the project' do
-    it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError' do
-      let(:source) { project }
+    %i[project group].each do |source_type|
+      it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError' do
+        let(:source) { create(source_type, :private) }
+      end
     end
+  end
 
-    it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError' do
-      let(:source) { group }
+  context 'when access requests are disabled' do
+    %i[project group].each do |source_type|
+      it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError' do
+        let(:source) { create(source_type, :public) }
+      end
     end
   end
 
   context 'when current user can request access to the project' do
-    before do
-      project.update(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
-      group.update(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
-    end
-
-    it_behaves_like 'a service creating a access request' do
-      let(:source) { project }
-    end
-
-    it_behaves_like 'a service creating a access request' do
-      let(:source) { group }
+    %i[project group].each do |source_type|
+      it_behaves_like 'a service creating a access request' do
+        let(:source) { create(source_type, :public, :access_requestable) }
+      end
     end
   end
 end

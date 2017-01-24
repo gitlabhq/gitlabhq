@@ -5,15 +5,11 @@ module SidekiqHelper
     (?<mem>[\d\.,]+)\s+
     (?<state>[DRSTWXZNLsl\+<]+)\s+
     (?<start>.+)\s+
-    (?<command>sidekiq.*\])\s*
+    (?<command>sidekiq.*\])
     \z/x
 
   def parse_sidekiq_ps(line)
-    match = line.match(SIDEKIQ_PS_REGEXP)
-    if match
-      match[1..6]
-    else
-      %w[? ? ? ? ? ?]
-    end
+    match = line.strip.match(SIDEKIQ_PS_REGEXP)
+    match ? match[1..6] : Array.new(6, '?')
   end
 end

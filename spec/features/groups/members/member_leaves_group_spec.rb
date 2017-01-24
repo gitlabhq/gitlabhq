@@ -13,7 +13,7 @@ feature 'Groups > Members > Member leaves group', feature: true do
   end
 
   scenario 'user leaves group' do
-    click_link 'Leave Group'
+    click_link 'Leave group'
 
     expect(current_path).to eq(dashboard_groups_path)
     expect(group.users.exists?(user.id)).to be_falsey

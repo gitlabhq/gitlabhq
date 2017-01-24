@@ -31,8 +31,16 @@ class SessionsController < Devise::SessionsController
         resource.update_attributes(reset_password_token: nil,
                                    reset_password_sent_at: nil)
       end
+      # hide the signed-in notification
+      flash[:notice] = nil
       log_audit_event(current_user, with: authentication_method)
     end
+  end
+
+  def destroy
+    super
+    # hide the signed_out notice
+    flash[:notice] = nil
   end
 
   private
@@ -106,7 +114,7 @@ class SessionsController < Devise::SessionsController
 
   def valid_otp_attempt?(user)
     user.validate_and_consume_otp!(user_params[:otp_attempt]) ||
-    user.invalidate_otp_backup_code!(user_params[:otp_attempt])
+      user.invalidate_otp_backup_code!(user_params[:otp_attempt])
   end
 
   def log_audit_event(user, options = {})

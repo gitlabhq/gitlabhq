@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, one-var, one-var-declaration-per-line, no-useless-escape, max-len */
 (function() {
   this.ProjectAvatar = (function() {
     function ProjectAvatar() {
@@ -16,7 +16,5 @@
     }
 
     return ProjectAvatar;
-
   })();
-
 }).call(this);

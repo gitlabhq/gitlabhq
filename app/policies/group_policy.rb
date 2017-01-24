@@ -4,7 +4,7 @@ class GroupPolicy < BasePolicy
     return unless @user
 
     globally_viewable = @subject.public? || (@subject.internal? && !@user.external?)
-    member = @subject.users.include?(@user)
+    member = @subject.users_with_parents.include?(@user)
     owner = @user.admin? || @subject.has_owner?(@user)
     master = owner || @subject.has_master?(@user)
 
@@ -33,6 +33,8 @@ class GroupPolicy < BasePolicy
     if globally_viewable && @subject.request_access_enabled && !member
       can! :request_access
     end
+
+    additional_rules!(master)
   end
 
   def can_read_group?
@@ -42,5 +44,9 @@ class GroupPolicy < BasePolicy
     return true if @subject.users.include?(@user)
 
     GroupProjectsFinder.new(@subject).execute(@user).any?
+  end
+
+  def additional_rules!(master)
+    # This is meant to be overriden in EE
   end
 end

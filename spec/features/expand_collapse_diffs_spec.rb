@@ -4,10 +4,10 @@ feature 'Expand and collapse diffs', js: true, feature: true do
   include WaitForAjax
 
   let(:branch) { 'expand-collapse-diffs' }
+  let(:project) { create(:project) }
 
   before do
     login_as :admin
-    project = create(:project)
 
     # Ensure that undiffable.md is in .gitattributes
     project.repository.copy_gitattributes(branch)
@@ -29,6 +29,33 @@ feature 'Expand and collapse diffs', js: true, feature: true do
 
   files.each do |file|
     define_method(file.split('.').first) { file_container(file) }
+  end
+
+  it 'should show the diff content with a highlighted line when linking to line' do
+    expect(large_diff).not_to have_selector('.code')
+    expect(large_diff).to have_selector('.nothing-here-block')
+
+    visit namespace_project_commit_path(project.namespace, project, project.commit(branch), anchor: "#{large_diff[:id]}_0_1")
+    execute_script('window.location.reload()')
+
+    wait_for_ajax
+
+    expect(large_diff).to have_selector('.code')
+    expect(large_diff).not_to have_selector('.nothing-here-block')
+    expect(large_diff).to have_selector('.hll')
+  end
+
+  it 'should show the diff content when linking to file' do
+    expect(large_diff).not_to have_selector('.code')
+    expect(large_diff).to have_selector('.nothing-here-block')
+
+    visit namespace_project_commit_path(project.namespace, project, project.commit(branch), anchor: large_diff[:id])
+    execute_script('window.location.reload()')
+
+    wait_for_ajax
+
+    expect(large_diff).to have_selector('.code')
+    expect(large_diff).not_to have_selector('.nothing-here-block')
   end
 
   context 'visiting a commit with collapsed diffs' do
@@ -180,6 +207,20 @@ feature 'Expand and collapse diffs', js: true, feature: true do
         it 'does not make a new HTTP request' do
           expect(evaluate_script('ajaxUris')).not_to include(a_string_matching('small_diff.md'))
         end
+      end
+    end
+
+    context 'expanding a diff when symlink was converted to a regular file' do
+      let(:branch) { 'symlink-expand-diff' }
+
+      it 'shows the content of the regular file' do
+        expect(page).to have_content('This diff is collapsed')
+        expect(page).to have_no_content('No longer a symlink')
+
+        find('.click-to-expand').click
+        wait_for_ajax
+
+        expect(page).to have_content('No longer a symlink')
       end
     end
   end

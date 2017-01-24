@@ -1,7 +1,7 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, no-var, one-var, prefer-rest-params, max-len, vars-on-top, wrap-iife, consistent-return, comma-dangle, one-var-declaration-per-line, quotes, no-return-assign, prefer-arrow-callback, prefer-template, no-shadow, no-else-return, max-len */
 (function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
-    indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; },
+    indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i += 1) { if (i in this && this[i] === item) return i; } return -1; };
 
   this.NewBranchForm = (function() {
     function NewBranchForm(form, availableRefs) {
@@ -99,7 +99,5 @@
     };
 
     return NewBranchForm;
-
   })();
-
 }).call(this);

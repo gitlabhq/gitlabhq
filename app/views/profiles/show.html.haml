@@ -18,7 +18,8 @@
             or change it at #{link_to Gitlab.config.gravatar.host, "http://" + Gitlab.config.gravatar.host}
     .col-lg-9
       .clearfix.avatar-image.append-bottom-default
-        = image_tag avatar_icon(@user, 160), alt: '', class: 'avatar s160'
+        = link_to avatar_icon(@user, 400), target: '_blank' do
+          = image_tag avatar_icon(@user, 160), alt: '', class: 'avatar s160'
       %h5.prepend-top-0
         Upload new avatar
       .prepend-top-5.append-bottom-10
@@ -30,7 +31,7 @@
         The maximum file size allowed is 200KB.
       - if @user.avatar?
         %hr
-        = link_to 'Remove avatar', profile_avatar_path, data: { confirm: "Avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-gray"
+        = link_to 'Remove avatar', profile_avatar_path, data: { confirm: "Avatar will be removed. Are you sure?" }, method: :delete, class: "btn btn-gray"
   %hr
   .row
     .col-lg-3.profile-settings-sidebar
@@ -69,7 +70,7 @@
             %span.help-block We also use email for avatar detection if no avatar is uploaded.
       .form-group
         = f.label :public_email, class: "label-light"
-        = f.select :public_email, options_for_select(@user.all_emails, selected: @user.public_email), {include_blank: 'Do not show on profile'}, class: "select2"
+        = f.select :public_email, options_for_select(@user.all_emails, selected: @user.public_email), { include_blank: 'Do not show on profile' }, class: "select2"
         %span.help-block This email will be displayed on your public profile.
       .form-group
         = f.label :skype, class: "label-light"
@@ -101,14 +102,14 @@
   .modal-dialog
     .modal-content
       .modal-header
-        %button.close{:type => "button", :'data-dismiss' => "modal"}
+        %button.close{ :type => "button", :'data-dismiss' => "modal" }
           %span
             &times;
         %h4.modal-title
           Position and size your new avatar
       .modal-body
         .profile-crop-image-container
-          %img.modal-profile-crop-image
+          %img.modal-profile-crop-image{ alt: "Avatar cropper" }
         .crop-controls
           .btn-group
             %button.btn.btn-primary{ data: { method: "zoom", option: "0.1" } }
@@ -116,5 +117,5 @@
             %button.btn.btn-primary{ data: { method: "zoom", option: "-0.1" } }
               %span.fa.fa-search-minus
       .modal-footer
-        %button.btn.btn-primary.js-upload-user-avatar{:type => "button"}
+        %button.btn.btn-primary.js-upload-user-avatar{ :type => "button" }
           Set new profile picture

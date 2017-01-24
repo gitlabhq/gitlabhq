@@ -7,5 +7,5 @@
       %ul.clearfix.emoji-menu-list
         - emojis.each do |emoji|
           %li.pull-left.text-center.emoji-menu-list-item
-            %button.emoji-menu-btn.text-center.js-emoji-btn{type: "button"}
+            %button.emoji-menu-btn.text-center.js-emoji-btn{ type: "button" }
               = emoji_icon(emoji["name"], emoji["unicode"], emoji["aliases"])

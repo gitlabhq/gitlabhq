@@ -1,9 +1,10 @@
-/* eslint-disable */
+/* eslint-disable arrow-parens, no-param-reassign, no-new, comma-dangle */
+
 (global => {
-  global.gl = global.gl || {};
+  global.gl = global.gl || {};
 
   gl.ProtectedBranchEditList = class {
-    constructor() {
+    constructor() {
       this.$wrap = $('.protected-branches-list');
 
       // Build edit forms
@@ -13,6 +14,5 @@
         });
       });
     }
-  }
-
+  };
 })(window);

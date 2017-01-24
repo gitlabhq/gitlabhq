@@ -7,8 +7,8 @@ describe API::Runners, api: true  do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
 
-  let(:project) { create(:project, creator_id: user.id) }
-  let(:project2) { create(:project, creator_id: user.id) }
+  let(:project) { create(:empty_project, creator_id: user.id) }
+  let(:project2) { create(:empty_project, creator_id: user.id) }
 
   let!(:shared_runner) { create(:ci_runner, :shared) }
   let!(:unused_specific_runner) { create(:ci_runner) }
@@ -226,7 +226,7 @@ describe API::Runners, api: true  do
     context 'authorized user' do
       context 'when runner is shared' do
         it 'does not update runner' do
-          put api("/runners/#{shared_runner.id}", user)
+          put api("/runners/#{shared_runner.id}", user), description: 'test'
 
           expect(response).to have_http_status(403)
         end
@@ -234,7 +234,7 @@ describe API::Runners, api: true  do
 
       context 'when runner is not shared' do
         it 'does not update runner without access to it' do
-          put api("/runners/#{specific_runner.id}", user2)
+          put api("/runners/#{specific_runner.id}", user2), description: 'test'
 
           expect(response).to have_http_status(403)
         end

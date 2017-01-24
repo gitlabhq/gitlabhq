@@ -1,5 +1,3 @@
-require_relative "base_service"
-
 module Files
   class CreateService < Files::BaseService
     def commit

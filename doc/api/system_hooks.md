@@ -108,8 +108,7 @@ Example response:
 
 ## Delete system hook
 
-Deletes a system hook. It returns `200 OK` if the hooks is deleted and
-`404 Not Found` if the hook is not found.
+Deletes a system hook.
 
 ---
 

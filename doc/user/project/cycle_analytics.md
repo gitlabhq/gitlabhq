@@ -1,10 +1,7 @@
 # Cycle Analytics
 
-> [Introduced][ce-5986] in GitLab 8.12.
->
-> **Note:**
-There are more changes coming to Cycle Analytics, you can follow the following
-issue to track the changes to this feature: [#20975][ce-20975].
+> [Introduced][ce-5986] in GitLab 8.12. Further features were added in GitLab
+  8.14.
 
 Cycle Analytics measures the time it takes to go from an [idea to production] for
 each project you have. This is achieved by not only indicating the total time it
@@ -16,7 +13,7 @@ calculates a separate median for each stage.
 
 ## Overview
 
-You can find the Cycle Analytics page under your project's **Pipelines > Cycle
+You can find the Cycle Analytics page under your project's **Pipelines ➔ Cycle
 Analytics** tab.
 
 ![Cycle Analytics landing page](img/cycle_analytics_landing_page.png)
@@ -53,7 +50,7 @@ exception of the staging and production stages, where only data deployed to
 production are measured.
 
 Specifically, if your CI is not set up and you have not defined a `production`
-[environment], then you will not have any data for those stages.
+or `production/*` [environment], then you will not have any data for those stages.
 
 Below you can see in more detail what the various stages of Cycle Analytics mean.
 
@@ -64,7 +61,7 @@ Below you can see in more detail what the various stages of Cycle Analytics mean
 | Code      | Measures the median time between pushing a first commit (previous stage) and creating a merge request (MR) related to that commit. The key to keep the process tracked is to include the [issue closing pattern] to the description of the merge request (for example, `Closes #xxx`, where `xxx` is the number of the issue related to this merge request). If the issue closing pattern is not present in the merge request description, the MR is not considered to the measurement time of the stage. |
 | Test      | Measures the median time to run the entire pipeline for that project. It's related to the time GitLab CI takes to run every job for the commits pushed to that merge request defined in the previous stage. It is basically the start->finish time for all pipelines. `master` is not excluded. It does not attempt to track time for any particular stages. |
 | Review    | Measures the median time taken to review the merge request, between its creation and until it's merged. |
-| Staging   | Measures the median time between merging the merge request until the very first deployment to production. It's tracked by the [environment] set to `production` (case-sensitive, `Production` won't work) in your GitLab CI configuration. If there isn't a `production` environment, this is not tracked. |
+| Staging   | Measures the median time between merging the merge request until the very first deployment to production. It's tracked by the [environment] set to `production` or matching `production/*` (case-sensitive, `Production` won't work) in your GitLab CI configuration. If there isn't a production environment, this is not tracked. |
 | Production| The sum of all time (medians) taken to run the entire process, from issue creation to deploying the code to production. |
 
 ---
@@ -82,10 +79,13 @@ Here's a little explanation of how this works behind the scenes:
    etc.
 
 To sum up, anything that doesn't follow the [GitLab flow] won't be tracked at all.
-So, if a merge request doesn't close an issue or an issue is not labeled with a
-label present in the Issue Board or assigned a milestone or a project has no
-`production` environment (for staging and production stages), the Cycle Analytics
-dashboard won't present any data at all.
+So, the Cycle Analytics dashboard won't present any data:
+- For merge requests that do not close an issue.
+- For issues not labeled with a label present in the Issue Board.
+- For issues not assigned a milestone.
+- For staging and production stages, if the project has no `production` or `production/*`
+  environment.
+
 
 ## Example workflow
 

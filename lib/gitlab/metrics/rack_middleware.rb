@@ -70,8 +70,19 @@ module Gitlab
 
       def tag_endpoint(trans, env)
         endpoint = env[ENDPOINT_KEY]
-        path = endpoint_paths_cache[endpoint.route.route_method][endpoint.route.route_path]
-        trans.action = "Grape##{endpoint.route.route_method} #{path}"
+
+        begin
+          route = endpoint.route
+        rescue
+          # endpoint.route is calling env[Grape::Env::GRAPE_ROUTING_ARGS][:route_info]
+          # but env[Grape::Env::GRAPE_ROUTING_ARGS] is nil in the case of a 405 response
+          # so we're rescuing exceptions and bailing out
+        end
+
+        if route
+          path = endpoint_paths_cache[route.request_method][route.path]
+          trans.action = "Grape##{route.request_method} #{path}"
+        end
       end
 
       private

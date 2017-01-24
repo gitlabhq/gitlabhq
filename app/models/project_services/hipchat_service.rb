@@ -8,8 +8,8 @@ class HipchatService < Service
     ul ol li dl dt dd
   ]
 
-  prop_accessor :token, :room, :server, :notify, :color, :api_version
-  boolean_accessor :notify_only_broken_builds
+  prop_accessor :token, :room, :server, :color, :api_version
+  boolean_accessor :notify_only_broken_builds, :notify
   validates :token, presence: true, if: :activated?
 
   def initialize_properties
@@ -27,7 +27,7 @@ class HipchatService < Service
     'Private group chat and IM'
   end
 
-  def to_param
+  def self.to_param
     'hipchat'
   end
 
@@ -45,7 +45,7 @@ class HipchatService < Service
     ]
   end
 
-  def supported_events
+  def self.supported_events
     %w(push issue confidential_issue merge_request note tag_push build)
   end
 
@@ -75,7 +75,7 @@ class HipchatService < Service
   end
 
   def message_options(data = nil)
-    { notify: notify.present? && notify == '1', color: message_color(data) }
+    { notify: notify.present? && Gitlab::Utils.to_boolean(notify), color: message_color(data) }
   end
 
   def create_message(data)

@@ -1,4 +1,7 @@
-/* eslint-disable */
+/* eslint-disable one-var, quote-props, comma-dangle, space-before-function-paren */
+/* global Vue */
+/* global BoardService */
+
 //= require vue
 //= require vue-resource
 //= require Sortable
@@ -13,14 +16,16 @@
 //= require ./vue_resource_interceptor
 
 $(() => {
-  const $boardApp = document.getElementById('board-app'),
-        Store = gl.issueBoards.BoardsStore;
+  const $boardApp = document.getElementById('board-app');
+  const Store = gl.issueBoards.BoardsStore;
 
   window.gl = window.gl || {};
 
   if (gl.IssueBoardsApp) {
     gl.IssueBoardsApp.$destroy(true);
   }
+
+  Store.create();
 
   gl.IssueBoardsApp = new Vue({
     el: $boardApp,
@@ -37,16 +42,15 @@ $(() => {
       issueLinkBase: $boardApp.dataset.issueLinkBase,
       detailIssue: Store.detail
     },
-    init: Store.create.bind(Store),
     computed: {
       detailIssueVisible () {
         return Object.keys(this.detailIssue.issue).length;
-      }
+      },
     },
     created () {
       gl.boardService = new BoardService(this.endpoint, this.boardId);
     },
-    ready () {
+    mounted () {
       Store.disabled = this.disabled;
       gl.boardService.all()
         .then((resp) => {
@@ -60,6 +64,8 @@ $(() => {
             }
           });
 
+          this.state.lists = _.sortBy(this.state.lists, 'position');
+
           Store.addBlankState();
           this.loading = false;
         });
@@ -67,9 +73,12 @@ $(() => {
   });
 
   gl.IssueBoardsSearch = new Vue({
-    el: '#js-boards-seach',
+    el: '#js-boards-search',
     data: {
       filters: Store.state.filters
+    },
+    mounted () {
+      gl.issueBoards.newListDropdownInit();
     }
   });
 });

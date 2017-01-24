@@ -42,17 +42,17 @@ module MergeRequests
       end
 
       if merge_request.source_project == merge_request.target_project &&
-         merge_request.target_branch == merge_request.source_branch
+          merge_request.target_branch == merge_request.source_branch
 
         messages << 'You must select different branches'
       end
 
       # See if source and target branches exist
-      unless merge_request.source_project.commit(merge_request.source_branch)
+      if merge_request.source_branch.present? && !merge_request.source_project.commit(merge_request.source_branch)
         messages << "Source branch \"#{merge_request.source_branch}\" does not exist"
       end
 
-      unless merge_request.target_project.commit(merge_request.target_branch)
+      if merge_request.target_branch.present? && !merge_request.target_project.commit(merge_request.target_branch)
         messages << "Target branch \"#{merge_request.target_branch}\" does not exist"
       end
 
@@ -81,7 +81,7 @@ module MergeRequests
         commit = commits.first
         merge_request.title = commit.title
         merge_request.description ||= commit.description.try(:strip)
-      elsif iid && (issue = merge_request.target_project.get_issue(iid)) && !issue.try(:confidential?)
+      elsif iid && issue = merge_request.target_project.get_issue(iid, current_user)
         case issue
         when Issue
           merge_request.title = "Resolve \"#{issue.title}\""

@@ -2,7 +2,9 @@
 
 ## List project repository tags
 
-Get a list of repository tags from a project, sorted by name in reverse alphabetical order.
+Get a list of repository tags from a project, sorted by name in reverse
+alphabetical order. This endpoint can be accessed without authentication if the
+repository is publicly accessible.
 
 ```
 GET /projects/:id/repository/tags
@@ -40,9 +42,8 @@ Parameters:
 
 ## Get a single repository tag
 
-Get a specific repository tag determined by its name. It returns `200` together
-with the tag information if the tag exists. It returns `404` if the tag does not
-exist.
+Get a specific repository tag determined by its name. This endpoint can be
+accessed without authentication if the repository is publicly accessible.
 
 ```
 GET /projects/:id/repository/tags/:tag_name
@@ -124,14 +125,12 @@ Parameters:
 The message will be `nil` when creating a lightweight tag otherwise
 it will contain the annotation.
 
-It returns 201 if the operation succeed. In case of an error,
-405 with an explaining error message is returned.
+In case of an error,
+status code `405` with an explaining error message is returned.
 
 ## Delete a tag
 
-Deletes a tag of a repository with given name. On success, this API method
-returns 200 with the name of the deleted tag. If the tag does not exist, the
-API returns 404.
+Deletes a tag of a repository with given name.
 
 ```
 DELETE /projects/:id/repository/tags/:tag_name
@@ -150,9 +149,8 @@ Parameters:
 
 ## Create a new release
 
-Add release notes to the existing git tag. It returns 201 if the release is
-created successfully. If the tag does not exist, 404 is returned. If there
-already exists a release for the given tag, 409 is returned.
+Add release notes to the existing git tag. If there
+already exists a release for the given tag, status code `409` is returned.
 
 ```
 POST /projects/:id/repository/tags/:tag_name/release
@@ -173,9 +171,7 @@ Parameters:
 
 ## Update a release
 
-Updates the release notes of a given release. It returns 200 if the release is
-successfully updated. If the tag or the release does not exist, it returns 404
-with a proper error message.
+Updates the release notes of a given release.
 
 ```
 PUT /projects/:id/repository/tags/:tag_name/release

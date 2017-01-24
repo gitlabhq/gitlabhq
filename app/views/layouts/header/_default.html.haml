@@ -1,10 +1,11 @@
 %header.navbar.navbar-fixed-top.navbar-gitlab{ class: nav_header_class }
-  %div{ class: "container-fluid" }
+  %a.sr-only.gl-accessibility{ href: "#content-body", tabindex: "1" } Skip to content
+  .container-fluid
     .header-content
       %button.side-nav-toggle{ type: 'button', "aria-label" => "Toggle global navigation" }
         %span.sr-only Toggle navigation
         = icon('bars')
-      %button.navbar-toggle{type: 'button'}
+      %button.navbar-toggle{ type: 'button' }
         %span.sr-only Toggle navigation
         = icon('ellipsis-v')
 
@@ -43,7 +44,7 @@
                   %li
                     = link_to "Profile", current_user, class: 'profile-link', aria: { label: "Profile" }, data: { user: current_user.username }
                   %li
-                    = link_to "Profile Settings", profile_path, aria: { label: "Profile Settings" }
+                    = link_to "Settings", profile_path, aria: { label: "Settings" }
                   %li
                     = link_to "Help", help_path, aria: { label: "Help" }
                   %li.divider

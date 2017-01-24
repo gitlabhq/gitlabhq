@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::API::API do
+describe Ci::API::Triggers do
   include ApiHelpers
 
   describe 'POST /projects/:project_id/refs/:ref/trigger' do

@@ -22,14 +22,14 @@
           %p.build-detail-row
             The artifacts were removed
             #{time_ago_with_tooltip(@build.artifacts_expire_at)}
-        - elsif @build.artifacts_expire_at
+        - elsif @build.has_expiring_artifacts?
           %p.build-detail-row
             The artifacts will be removed in
             %span.js-artifacts-remove= @build.artifacts_expire_at
 
         - if @build.artifacts?
           .btn-group.btn-group-justified{ role: :group }
-            - if @build.artifacts_expire_at
+            - if @build.has_expiring_artifacts? && can?(current_user, :update_build, @build)
               = link_to keep_namespace_project_build_artifacts_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-default', method: :post do
                 Keep
 
@@ -111,28 +111,29 @@
           %span.label.label-primary
             = tag
 
-    - if @build.pipeline.stages.many?
+    - if @build.pipeline.stages_count > 1
       .dropdown.build-dropdown
         .title Stage
-        %button.dropdown-menu-toggle{type: 'button', 'data-toggle' => 'dropdown'}
+        %button.dropdown-menu-toggle{ type: 'button', 'data-toggle' => 'dropdown' }
           %span.stage-selection More
-          = icon('caret-down')
+          = icon('chevron-down')
         %ul.dropdown-menu
           - @build.pipeline.stages.each do |stage|
             %li
-              %a.stage-item= stage
+              %a.stage-item= stage.name
 
   .builds-container
     - HasStatus::ORDERED_STATUSES.each do |build_status|
       - builds.select{|build| build.status == build_status}.each do |build|
-        .build-job{class: sidebar_build_class(build, @build), data: {stage: build.stage}}
+        .build-job{ class: sidebar_build_class(build, @build), data: { stage: build.stage } }
           = link_to namespace_project_build_path(@project.namespace, @project, build) do
             = icon('arrow-right')
-            = ci_icon_for_status(build.status)
+            %span{ class: "ci-status-icon-#{build.status}" }
+              = ci_icon_for_status(build.status)
             %span
               - if build.name
                 = build.name
               - else
                 = build.id
             - if build.retried?
-              %i.fa.fa-refresh.has-tooltip{data: { container: 'body', placement: 'bottom' }, title: 'Build was retried'}
+              %i.fa.fa-refresh.has-tooltip{ data: { container: 'body', placement: 'bottom' }, title: 'Build was retried' }

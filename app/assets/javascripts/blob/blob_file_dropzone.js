@@ -1,4 +1,6 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, one-var, no-var, one-var-declaration-per-line, camelcase, object-shorthand, quotes, comma-dangle, prefer-arrow-callback, no-unused-vars, prefer-template, no-useless-escape, no-alert, max-len */
+/* global Dropzone */
+
 (function() {
   this.BlobFileDropzone = (function() {
     function BlobFileDropzone(form, method) {
@@ -60,7 +62,5 @@
     }
 
     return BlobFileDropzone;
-
   })();
-
 }).call(this);

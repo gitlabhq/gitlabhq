@@ -1,8 +1,10 @@
-/* eslint-disable */
-(function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, one-var, vars-on-top, one-var-declaration-per-line, comma-dangle, object-shorthand, no-else-return, prefer-template, quotes, prefer-arrow-callback, no-param-reassign, no-cond-assign, max-len */
+/* global Api */
 
-  this.NamespaceSelect = (function() {
+(function() {
+  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
+
+  window.NamespaceSelect = (function() {
     function NamespaceSelect(opts) {
       this.onSelectItem = bind(this.onSelectItem, this);
       var fieldName, showAny;
@@ -61,10 +63,9 @@
     };
 
     return NamespaceSelect;
-
   })();
 
-  this.NamespaceSelects = (function() {
+  window.NamespaceSelects = (function() {
     function NamespaceSelects(opts) {
       var ref;
       if (opts == null) {
@@ -74,14 +75,12 @@
       this.$dropdowns.each(function(i, dropdown) {
         var $dropdown;
         $dropdown = $(dropdown);
-        return new NamespaceSelect({
+        return new window.NamespaceSelect({
           dropdown: $dropdown
         });
       });
     }
 
     return NamespaceSelects;
-
   })();
-
 }).call(this);

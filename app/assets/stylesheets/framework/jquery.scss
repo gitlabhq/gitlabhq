@@ -4,13 +4,13 @@
 
   &.ui-datepicker,
   &.ui-datepicker-inline {
-    border: 1px solid #ddd;
+    border: 1px solid $jq-ui-border;
     padding: 10px;
     width: 270px;
 
     .ui-datepicker-header {
-      background: #fff;
-      border-color: #ddd;
+      background: $white-light;
+      border-color: $jq-ui-border;
 
       .ui-datepicker-prev,
       .ui-datepicker-next {
@@ -39,7 +39,7 @@
   }
 
   &.ui-autocomplete {
-    border-color: #ddd;
+    border-color: $jq-ui-border;
     padding: 0;
     margin-top: 2px;
     z-index: 1001;
@@ -50,9 +50,9 @@
   }
 
   .ui-state-default {
-    border: 1px solid #fff;
-    background: #fff;
-    color: #777;
+    border: 1px solid $white-light;
+    background: $white-light;
+    color: $jq-ui-default-color;
   }
 
   .ui-state-highlight {
@@ -66,7 +66,7 @@
     .ui-state-focus {
       border: 1px solid $gl-primary;
       background: $gl-primary;
-      color: #fff;
+      color: $white-light;
     }
   }
 }

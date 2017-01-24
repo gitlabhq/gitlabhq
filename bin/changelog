@@ -84,12 +84,15 @@ class ChangelogEntry
     end
   end
 
+  private
+
   def contents
-    YAML.dump(
+    yaml_content = YAML.dump(
       'title'         => title,
       'merge_request' => options.merge_request,
       'author'        => options.author
     )
+    remove_trailing_whitespace(yaml_content)
   end
 
   def write
@@ -100,8 +103,6 @@ class ChangelogEntry
     %x{git add #{file_path}}
     exec("git commit --amend")
   end
-
-  private
 
   def fail_with(message)
     $stderr.puts "\e[31merror\e[0m #{message}"
@@ -158,7 +159,11 @@ class ChangelogEntry
   end
 
   def branch_name
-    @branch_name ||= %x{git symbolic-ref HEAD}.strip.sub(%r{\Arefs/heads/}, '')
+    @branch_name ||= %x{git symbolic-ref --short HEAD}.strip
+  end
+
+  def remove_trailing_whitespace(yaml_content)
+    yaml_content.gsub(/ +$/, '')
   end
 end
 

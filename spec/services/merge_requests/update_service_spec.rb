@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe MergeRequests::UpdateService, services: true do
+  include EmailHelpers
+
   let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
@@ -79,31 +81,31 @@ describe MergeRequests::UpdateService, services: true do
       end
 
       it 'creates system note about merge_request reassign' do
-        note = find_note('Reassigned to')
+        note = find_note('assigned to')
 
         expect(note).not_to be_nil
-        expect(note.note).to include "Reassigned to \@#{user2.username}"
+        expect(note.note).to include "assigned to #{user2.to_reference}"
       end
 
       it 'creates system note about merge_request label edit' do
-        note = find_note('Added ~')
+        note = find_note('added ~')
 
         expect(note).not_to be_nil
-        expect(note.note).to include "Added ~#{label.id} label"
+        expect(note.note).to include "added #{label.to_reference} label"
       end
 
       it 'creates system note about title change' do
-        note = find_note('Changed title:')
+        note = find_note('changed title')
 
         expect(note).not_to be_nil
-        expect(note.note).to eq 'Changed title: **{-Old-} title** → **{+New+} title**'
+        expect(note.note).to eq 'changed title from **{-Old-} title** to **{+New+} title**'
       end
 
       it 'creates system note about branch change' do
-        note = find_note('Target')
+        note = find_note('changed target')
 
         expect(note).not_to be_nil
-        expect(note.note).to eq 'Target branch changed from `master` to `target`'
+        expect(note.note).to eq 'changed target branch from `master` to `target`'
       end
 
       context 'when not including source branch removal options' do
@@ -116,6 +118,99 @@ describe MergeRequests::UpdateService, services: true do
 
           expect(@merge_request.merge_params["force_remove_source_branch"]).to eq("1")
         end
+      end
+    end
+
+    context 'merge' do
+      let(:opts) do
+        {
+          merge: merge_request.diff_head_sha
+        }
+      end
+
+      let(:service) { MergeRequests::UpdateService.new(project, user, opts) }
+
+      context 'without pipeline' do
+        before do
+          merge_request.merge_error = 'Error'
+
+          perform_enqueued_jobs do
+            service.execute(merge_request)
+            @merge_request = MergeRequest.find(merge_request.id)
+          end
+        end
+
+        it { expect(@merge_request).to be_valid }
+        it { expect(@merge_request.state).to eq('merged') }
+        it { expect(@merge_request.merge_error).to be_nil }
+      end
+
+      context 'with finished pipeline' do
+        before do
+          create(:ci_pipeline_with_one_job,
+            project: project,
+            ref:     merge_request.source_branch,
+            sha:     merge_request.diff_head_sha,
+            status:  :success)
+
+          perform_enqueued_jobs do
+            @merge_request = service.execute(merge_request)
+            @merge_request = MergeRequest.find(merge_request.id)
+          end
+        end
+
+        it { expect(@merge_request).to be_valid }
+        it { expect(@merge_request.state).to eq('merged') }
+      end
+
+      context 'with active pipeline' do
+        before do
+          service_mock = double
+          create(:ci_pipeline_with_one_job,
+            project: project,
+            ref:     merge_request.source_branch,
+            sha:     merge_request.diff_head_sha)
+
+          expect(MergeRequests::MergeWhenPipelineSucceedsService).to receive(:new).with(project, user).
+            and_return(service_mock)
+          expect(service_mock).to receive(:execute).with(merge_request)
+        end
+
+        it { service.execute(merge_request) }
+      end
+
+      context 'with a non-authorised user' do
+        let(:visitor) { create(:user) }
+        let(:service) { MergeRequests::UpdateService.new(project, visitor, opts) }
+
+        before do
+          merge_request.update_attribute(:merge_error, 'Error')
+
+          perform_enqueued_jobs do
+            @merge_request = service.execute(merge_request)
+            @merge_request = MergeRequest.find(merge_request.id)
+          end
+        end
+
+        it { expect(@merge_request.state).to eq('opened') }
+        it { expect(@merge_request.merge_error).not_to be_nil }
+      end
+
+      context 'MR can not be merged when note sha != MR sha' do
+        let(:opts) do
+          {
+            merge: 'other_commit'
+          }
+        end
+
+        before do
+          perform_enqueued_jobs do
+            @merge_request = service.execute(merge_request)
+            @merge_request = MergeRequest.find(merge_request.id)
+          end
+        end
+
+        it { expect(@merge_request.state).to eq('opened') }
       end
     end
 
@@ -199,7 +294,7 @@ describe MergeRequests::UpdateService, services: true do
 
     context 'when the issue is relabeled' do
       let!(:non_subscriber) { create(:user) }
-      let!(:subscriber) { create(:user).tap { |u| label.toggle_subscription(u) } }
+      let!(:subscriber) { create(:user) { |u| label.toggle_subscription(u, project) } }
 
       before do
         project.team << [non_subscriber, :developer]
@@ -258,8 +353,8 @@ describe MergeRequests::UpdateService, services: true do
         before { update_merge_request({ description: "- [x] Task 1\n- [X] Task 2" }) }
 
         it 'creates system note about task status change' do
-          note1 = find_note('Marked the task **Task 1** as completed')
-          note2 = find_note('Marked the task **Task 2** as completed')
+          note1 = find_note('marked the task **Task 1** as completed')
+          note2 = find_note('marked the task **Task 2** as completed')
 
           expect(note1).not_to be_nil
           expect(note2).not_to be_nil
@@ -273,8 +368,8 @@ describe MergeRequests::UpdateService, services: true do
         end
 
         it 'creates system note about task status change' do
-          note1 = find_note('Marked the task **Task 1** as incomplete')
-          note2 = find_note('Marked the task **Task 2** as incomplete')
+          note1 = find_note('marked the task **Task 1** as incomplete')
+          note2 = find_note('marked the task **Task 2** as incomplete')
 
           expect(note1).not_to be_nil
           expect(note2).not_to be_nil
@@ -317,6 +412,11 @@ describe MergeRequests::UpdateService, services: true do
         issue_ids = MergeRequestsClosingIssues.where(merge_request: merge_request).pluck(:issue_id)
         expect(issue_ids).to be_empty
       end
+    end
+
+    include_examples 'issuable update service' do
+      let(:open_issuable) { merge_request }
+      let(:closed_issuable) { create(:closed_merge_request, source_project: project) }
     end
   end
 end

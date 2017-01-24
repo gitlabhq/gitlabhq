@@ -23,6 +23,10 @@ module Gitlab
       settings || fake_application_settings
     end
 
+    def sidekiq_throttling_enabled?
+      current_application_settings.sidekiq_throttling_enabled?
+    end
+
     def fake_application_settings
       OpenStruct.new(
         default_projects_limit: Settings.gitlab['default_projects_limit'],
@@ -31,6 +35,7 @@ module Gitlab
         signin_enabled: Settings.gitlab['signin_enabled'],
         gravatar_enabled: Settings.gravatar['enabled'],
         koding_enabled: false,
+        plantuml_enabled: false,
         sign_in_text: nil,
         after_sign_up_text: nil,
         help_page_text: nil,
@@ -41,7 +46,7 @@ module Gitlab
         default_project_visibility: Settings.gitlab.default_projects_features['visibility_level'],
         default_snippet_visibility: Settings.gitlab.default_projects_features['visibility_level'],
         domain_whitelist: Settings.gitlab['domain_whitelist'],
-        import_sources: %w[github bitbucket gitlab google_code fogbugz git gitlab_project],
+        import_sources: %w[gitea github bitbucket gitlab google_code fogbugz git gitlab_project],
         shared_runners_enabled: Settings.gitlab_ci['shared_runners_enabled'],
         max_artifacts_size: Settings.artifacts['max_size'],
         require_two_factor_authentication: false,
@@ -50,6 +55,7 @@ module Gitlab
         repository_checks_enabled: true,
         container_registry_token_expire_delay: 5,
         user_default_external: false,
+        sidekiq_throttling_enabled: false,
       )
     end
 

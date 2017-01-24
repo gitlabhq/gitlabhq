@@ -125,7 +125,9 @@ describe 'Issue Boards', feature: true, js: true do
         first('.card').click
       end
 
-      page.within('.assignee') do
+      page.within(find('.assignee')) do
+        expect(page).to have_content('No assignee')
+
         click_link 'assign yourself'
 
         wait_for_vue_resource
@@ -304,8 +306,8 @@ describe 'Issue Boards', feature: true, js: true do
 
       page.within('.subscription') do
         click_button 'Subscribe'
-
-        expect(page).to have_content("You're receiving notifications because you're subscribed to this thread.")
+        wait_for_ajax
+        expect(page).to have_content("Unsubscribe")
       end
     end
   end

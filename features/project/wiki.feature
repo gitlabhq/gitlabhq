@@ -49,7 +49,6 @@ Feature: Project Wiki
   Scenario: View all pages
     Given I have an existing wiki page
     And I browse to that Wiki page
-    And I click on the "Pages" button
     Then I should see the existing page in the pages list
 
   Scenario: File exists in wiki repo
@@ -72,13 +71,11 @@ Feature: Project Wiki
   @javascript
   Scenario: New Wiki page that has a path
     Given I create a New page with paths
-    And I click on the "Pages" button
     Then I should see non-escaped link in the pages list
 
   @javascript
   Scenario: Edit Wiki page that has a path
     Given I create a New page with paths
-    And I click on the "Pages" button
     And I edit the Wiki page with a path
     Then I should see a non-escaped path
     And I should see the Editing page
@@ -88,7 +85,6 @@ Feature: Project Wiki
   @javascript
   Scenario: View the page history of a Wiki page that has a path
     Given I create a New page with paths
-    And I click on the "Pages" button
     And I view the page history of a Wiki page that has a path
     Then I should see a non-escaped path
     And I should see the page history
@@ -96,7 +92,6 @@ Feature: Project Wiki
   @javascript
   Scenario: View an old page version of a Wiki page
     Given I create a New page with paths
-    And I click on the "Pages" button
     And I edit the Wiki page with a path
     Then I should see a non-escaped path
     And I should see the Editing page

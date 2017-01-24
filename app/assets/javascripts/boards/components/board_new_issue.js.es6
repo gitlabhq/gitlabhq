@@ -1,4 +1,7 @@
-/* eslint-disable */
+/* eslint-disable comma-dangle, no-unused-vars */
+/* global Vue */
+/* global ListIssue */
+
 (() => {
   const Store = gl.issueBoards.BoardsStore;
 
@@ -7,18 +10,12 @@
   gl.issueBoards.BoardNewIssue = Vue.extend({
     props: {
       list: Object,
-      showIssueForm: Boolean
     },
     data() {
       return {
         title: '',
         error: false
       };
-    },
-    watch: {
-      showIssueForm () {
-        this.$els.input.focus();
-      }
     },
     methods: {
       submit(e) {
@@ -37,28 +34,30 @@
         this.list.newIssue(issue)
           .then((data) => {
             // Need this because our jQuery very kindly disables buttons on ALL form submissions
-            $(this.$els.submitButton).enable();
+            $(this.$refs.submitButton).enable();
 
             Store.detail.issue = issue;
           })
           .catch(() => {
             // Need this because our jQuery very kindly disables buttons on ALL form submissions
-            $(this.$els.submitButton).enable();
+            $(this.$refs.submitButton).enable();
 
             // Remove the issue
             this.list.removeIssue(issue);
 
             // Show error message
             this.error = true;
-            this.showIssueForm = true;
           });
 
         this.cancel();
       },
       cancel() {
-        this.showIssueForm = false;
         this.title = '';
+        this.$parent.showIssueForm = false;
       }
-    }
+    },
+    mounted() {
+      this.$refs.input.focus();
+    },
   });
 })();

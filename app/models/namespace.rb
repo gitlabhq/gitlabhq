@@ -4,35 +4,52 @@ class Namespace < ActiveRecord::Base
   include CacheMarkdownField
   include Sortable
   include Gitlab::ShellAdapter
+  include Routable
 
   cache_markdown_field :description, pipeline: :description
 
   has_many :projects, dependent: :destroy
+  has_many :project_statistics
   belongs_to :owner, class_name: "User"
+
+  belongs_to :parent, class_name: "Namespace"
+  has_many :children, class_name: "Namespace", foreign_key: :parent_id
 
   validates :owner, presence: true, unless: ->(n) { n.type == "Group" }
   validates :name,
-    length: { within: 0..255 },
-    namespace_name: true,
     presence: true,
-    uniqueness: true
+    uniqueness: { scope: :parent_id },
+    length: { maximum: 255 },
+    namespace_name: true
 
-  validates :description, length: { within: 0..255 }
+  validates :description, length: { maximum: 255 }
   validates :path,
-    length: { within: 1..255 },
-    namespace: true,
     presence: true,
-    uniqueness: { case_sensitive: false }
+    length: { maximum: 255 },
+    namespace: true
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
 
   after_update :move_dir, if: :path_changed?
+  after_commit :refresh_access_of_projects_invited_groups, on: :update, if: -> { previous_changes.key?('share_with_group_lock') }
 
   # Save the storage paths before the projects are destroyed to use them on after destroy
   before_destroy(prepend: true) { @old_repository_storage_paths = repository_storage_paths }
   after_destroy :rm_dir
 
   scope :root, -> { where('type IS NULL') }
+
+  scope :with_statistics, -> do
+    joins('LEFT JOIN project_statistics ps ON ps.namespace_id = namespaces.id')
+      .group('namespaces.id')
+      .select(
+        'namespaces.*',
+        'COALESCE(SUM(ps.storage_size), 0) AS storage_size',
+        'COALESCE(SUM(ps.repository_size), 0) AS repository_size',
+        'COALESCE(SUM(ps.lfs_objects_size), 0) AS lfs_objects_size',
+        'COALESCE(SUM(ps.build_artifacts_size), 0) AS build_artifacts_size',
+      )
+  end
 
   class << self
     def by_path(path)
@@ -85,7 +102,7 @@ class Namespace < ActiveRecord::Base
   end
 
   def to_param
-    path
+    full_path
   end
 
   def human_name
@@ -94,7 +111,7 @@ class Namespace < ActiveRecord::Base
 
   def move_dir
     if any_project_has_container_registry_tags?
-      raise Exception.new('Namespace cannot be moved, because at least one project has tags in container registry')
+      raise Gitlab::UpdatePathError.new('Namespace cannot be moved, because at least one project has tags in container registry')
     end
 
     # Move the namespace directory in all storages paths used by member projects
@@ -103,13 +120,17 @@ class Namespace < ActiveRecord::Base
       gitlab_shell.add_namespace(repository_storage_path, path_was)
 
       unless gitlab_shell.mv_namespace(repository_storage_path, path_was, path)
+        Rails.logger.error "Exception moving path #{repository_storage_path} from #{path_was} to #{path}"
+
         # if we cannot move namespace directory we should rollback
         # db changes in order to prevent out of sync between db and fs
-        raise Exception.new('namespace directory cannot be moved')
+        raise Gitlab::UpdatePathError.new('namespace directory cannot be moved')
       end
     end
 
     Gitlab::UploadsTransfer.new.rename_namespace(path_was, path)
+
+    remove_exports!
 
     # If repositories moved successfully we need to
     # send update instructions to users.
@@ -147,6 +168,27 @@ class Namespace < ActiveRecord::Base
     Gitlab.config.lfs.enabled
   end
 
+  def full_path
+    if parent
+      parent.full_path + '/' + path
+    else
+      path
+    end
+  end
+
+  def full_name
+    @full_name ||=
+      if parent
+        parent.full_name + ' / ' + name
+      else
+        name
+      end
+  end
+
+  def parents
+    @parents ||= parent ? parent.parents + [parent] : []
+  end
+
   private
 
   def repository_storage_paths
@@ -173,6 +215,35 @@ class Namespace < ActiveRecord::Base
         # GitLab has time to remove all projects first
         GitlabShellWorker.perform_in(5.minutes, :rm_namespace, repository_storage_path, new_path)
       end
+    end
+
+    remove_exports!
+  end
+
+  def refresh_access_of_projects_invited_groups
+    Group.
+      joins(project_group_links: :project).
+      where(projects: { namespace_id: id }).
+      find_each(&:refresh_members_authorized_projects)
+  end
+
+  def full_path_changed?
+    path_changed? || parent_id_changed?
+  end
+
+  def remove_exports!
+    Gitlab::Popen.popen(%W(find #{export_path} -not -path #{export_path} -delete))
+  end
+
+  def export_path
+    File.join(Gitlab::ImportExport.storage_path, full_path_was)
+  end
+
+  def full_path_was
+    if parent
+      parent.full_path + '/' + path_was
+    else
+      path_was
     end
   end
 end

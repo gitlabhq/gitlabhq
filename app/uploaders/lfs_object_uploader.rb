@@ -1,4 +1,4 @@
-class LfsObjectUploader < CarrierWave::Uploader::Base
+class LfsObjectUploader < GitlabUploader
   storage :file
 
   def store_dir
@@ -7,14 +7,6 @@ class LfsObjectUploader < CarrierWave::Uploader::Base
 
   def cache_dir
     "#{Gitlab.config.lfs.storage_path}/tmp/cache"
-  end
-
-  def move_to_cache
-    true
-  end
-
-  def move_to_store
-    true
   end
 
   def exists?

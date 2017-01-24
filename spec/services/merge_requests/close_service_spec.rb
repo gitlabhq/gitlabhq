@@ -42,7 +42,7 @@ describe MergeRequests::CloseService, services: true do
 
       it 'creates system note about merge_request reassign' do
         note = @merge_request.notes.last
-        expect(note.note).to include 'Status changed to closed'
+        expect(note.note).to include 'closed'
       end
 
       it 'marks todos as done' do

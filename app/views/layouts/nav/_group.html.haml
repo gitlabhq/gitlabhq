@@ -31,7 +31,7 @@
       = link_to merge_requests_group_path(@group), title: 'Merge Requests' do
         %span
           Merge Requests
-          - merge_requests = MergeRequestsFinder.new(current_user, group_id: @group.id, state: 'opened').execute
+          - merge_requests = MergeRequestsFinder.new(current_user, group_id: @group.id, state: 'opened', non_archived: true).execute
           %span.badge.count= number_with_delimiter(merge_requests.count)
     = nav_link(controller: [:group_members]) do
       = link_to group_group_members_path(@group), title: 'Members' do

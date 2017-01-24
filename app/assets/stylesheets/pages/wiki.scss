@@ -4,3 +4,128 @@
   margin-right: auto;
   padding-right: 7px;
 }
+
+.wiki-page-header {
+  @extend .top-area;
+  position: relative;
+
+  .wiki-page-title {
+    margin: 0;
+    font-size: 22px;
+  }
+
+  .wiki-last-edit-by {
+    color: $gl-text-color-secondary;
+
+    strong {
+      color: $gl-text-color;
+    }
+  }
+
+  .light {
+    font-weight: normal;
+    color: $gl-text-color-secondary;
+  }
+
+  .git-access-header {
+    padding: 16px 40px 11px 0;
+    line-height: 28px;
+    font-size: 18px;
+  }
+
+  .git-clone-holder {
+    width: 100%;
+    padding-bottom: 40px;
+  }
+
+  button.sidebar-toggle {
+    position: absolute;
+    right: 0;
+    top: 11px;
+    display: block;
+  }
+
+  @media (min-width: $screen-sm-min) {
+    &.has-sidebar-toggle {
+      padding-right: 40px;
+    }
+
+    .git-clone-holder {
+      width: 480px;
+    }
+
+    .nav-controls {
+      width: auto;
+      min-width: 50%;
+      white-space: nowrap;
+    }
+  }
+
+  @media (min-width: $screen-md-min) {
+    &.has-sidebar-toggle {
+      padding-right: 0;
+    }
+
+    button.sidebar-toggle {
+      display: none;
+    }
+  }
+}
+
+.wiki-git-access {
+  margin: $gl-padding 0;
+
+  h3 {
+    font-size: 22px;
+    font-weight: normal;
+    margin-top: 1.4em;
+  }
+}
+
+.right-sidebar.wiki-sidebar {
+  padding: $gl-padding 0;
+
+  &.right-sidebar-collapsed {
+    display: none;
+  }
+
+  .blocks-container {
+    padding: 0 $gl-padding;
+  }
+
+  .block {
+    width: 100%;
+  }
+
+  a {
+    color: $layout-link-gray;
+
+    &:hover,
+    &.active {
+      color: $black;
+    }
+  }
+
+  .active > a {
+    color: $black;
+  }
+
+  ul.wiki-pages,
+  ul.wiki-pages li {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  ul.wiki-pages li {
+    margin: 5px 0 10px;
+  }
+
+  .wiki-sidebar-header {
+    padding: 0 $gl-padding $gl-padding;
+
+    .gutter-toggle {
+      margin-top: 0;
+    }
+  }
+}

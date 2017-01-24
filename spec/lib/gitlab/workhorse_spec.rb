@@ -37,6 +37,42 @@ describe Gitlab::Workhorse, lib: true do
     end
   end
 
+  describe '.terminal_websocket' do
+    def terminal(ca_pem: nil)
+      out = {
+        subprotocols: ['foo'],
+        url: 'wss://example.com/terminal.ws',
+        headers: { 'Authorization' => ['Token x'] }
+      }
+      out[:ca_pem] = ca_pem if ca_pem
+      out
+    end
+
+    def workhorse(ca_pem: nil)
+      out = {
+        'Terminal' => {
+          'Subprotocols' => ['foo'],
+          'Url' => 'wss://example.com/terminal.ws',
+          'Header' => { 'Authorization' => ['Token x'] }
+        }
+      }
+      out['Terminal']['CAPem'] = ca_pem if ca_pem
+      out
+    end
+
+    context 'without ca_pem' do
+      subject { Gitlab::Workhorse.terminal_websocket(terminal) }
+
+      it { is_expected.to eq(workhorse) }
+    end
+
+    context 'with ca_pem' do
+      subject { Gitlab::Workhorse.terminal_websocket(terminal(ca_pem: "foo")) }
+
+      it { is_expected.to eq(workhorse(ca_pem: "foo")) }
+    end
+  end
+
   describe '.send_git_diff' do
     let(:diff_refs) { double(base_sha: "base", head_sha: "head") }
     subject { described_class.send_git_patch(repository, diff_refs) }
@@ -136,6 +172,29 @@ describe Gitlab::Workhorse, lib: true do
 
     def call_verify(headers)
       described_class.verify_api_request!(headers)
+    end
+  end
+
+  describe '.git_http_ok' do
+    let(:user) { create(:user) }
+
+    subject { described_class.git_http_ok(repository, user) }
+
+    it { expect(subject).to eq({ GL_ID: "user-#{user.id}", RepoPath: repository.path_to_repo }) }
+
+    context 'when Gitaly socket path is present' do
+      let(:gitaly_socket_path) { '/tmp/gitaly.sock' }
+
+      before do
+        allow(Gitlab.config.gitaly).to receive(:socket_path).and_return(gitaly_socket_path)
+      end
+
+      it 'includes Gitaly params in the returned value' do
+        expect(subject).to include({
+          GitalyResourcePath: "/projects/#{repository.project.id}/git-http/info-refs",
+          GitalySocketPath: gitaly_socket_path,
+        })
+      end
     end
   end
 end

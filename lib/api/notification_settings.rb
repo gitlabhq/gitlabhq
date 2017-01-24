@@ -33,10 +33,9 @@ module API
         begin
           notification_setting.transaction do
             new_notification_email = params.delete(:notification_email)
-            declared_params = declared(params, include_missing: false).to_h
 
             current_user.update(notification_email: new_notification_email) if new_notification_email
-            notification_setting.update(declared_params)
+            notification_setting.update(declared_params(include_missing: false))
           end
         rescue ArgumentError => e # catch level enum error
           render_api_error! e.to_s, 400
@@ -81,9 +80,7 @@ module API
           notification_setting = current_user.notification_settings_for(source)
 
           begin
-            declared_params = declared(params, include_missing: false).to_h
-
-            notification_setting.update(declared_params)
+            notification_setting.update(declared_params(include_missing: false))
           rescue ArgumentError => e # catch level enum error
             render_api_error! e.to_s, 400
           end

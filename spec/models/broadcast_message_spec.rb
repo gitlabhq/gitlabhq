@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe BroadcastMessage, models: true do
-  subject { create(:broadcast_message) }
+  subject { build(:broadcast_message) }
 
   it { is_expected.to be_valid }
 

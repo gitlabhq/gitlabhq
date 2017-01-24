@@ -15,6 +15,28 @@
       "type": "ProjectLabel",
       "priorities": [
       ]
+    },
+    {
+      "id": 3,
+      "title": "test3",
+      "color": "#428bca",
+      "group_id": 8,
+      "created_at": "2016-07-22T08:55:44.161Z",
+      "updated_at": "2016-07-22T08:55:44.161Z",
+      "template": false,
+      "description": "",
+      "project_id": null,
+      "type": "GroupLabel",
+      "priorities": [
+        {
+          "id": 1,
+          "project_id": 5,
+          "label_id": 1,
+          "priority": 1,
+          "created_at": "2016-10-18T09:35:43.338Z",
+          "updated_at": "2016-10-18T09:35:43.338Z"
+        }
+      ]
     }
   ],
   "issues": [
@@ -2517,7 +2539,7 @@
       "merge_params": {
         "force_remove_source_branch": null
       },
-      "merge_when_build_succeeds": false,
+      "merge_when_build_succeeds": true,
       "merge_user_id": null,
       "merge_commit_sha": null,
       "deleted_at": null,
@@ -6548,7 +6570,9 @@
             "url": null
           },
           "erased_by_id": null,
-          "erased_at": null
+          "erased_at": null,
+          "type": "Ci::Build",
+          "token": "abcd"
         },
         {
           "id": 72,
@@ -7409,6 +7433,28 @@
       "category": "common",
       "default": false,
       "wiki_page_events": true
+    },
+    {
+      "id": 101,
+      "title": "JenkinsDeprecated",
+      "project_id": 5,
+      "created_at": "2016-06-14T15:01:51.031Z",
+      "updated_at": "2016-06-14T15:01:51.031Z",
+      "active": false,
+      "properties": {
+
+      },
+      "template": false,
+      "push_events": true,
+      "issues_events": true,
+      "merge_requests_events": true,
+      "tag_push_events": true,
+      "note_events": true,
+      "build_events": true,
+      "category": "common",
+      "default": false,
+      "wiki_page_events": true,
+      "type": "JenkinsDeprecatedService"
     }
   ],
   "hooks": [

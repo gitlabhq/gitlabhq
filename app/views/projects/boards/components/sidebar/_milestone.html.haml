@@ -1,8 +1,8 @@
 .block.milestone
   .title
     Milestone
-    = icon("spinner spin", class: "block-loading")
     - if can?(current_user, :admin_issue, @project)
+      = icon("spinner spin", class: "block-loading")
       = link_to "Edit", "#", class: "edit-link pull-right"
   .value
     %span.no-value{ "v-if" => "!issue.milestone" }

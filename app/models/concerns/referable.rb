@@ -17,7 +17,7 @@ module Referable
   #   Issue.last.to_reference(other_project) # => "cross-project#1"
   #
   # Returns a String
-  def to_reference(_from_project = nil)
+  def to_reference(_from_project = nil, full:)
     ''
   end
 
@@ -70,19 +70,6 @@ module Referable
           (?<anchor>\#[a-z0-9_-]+)?
         )
       }x
-    end
-  end
-
-  private
-
-  # Check if a reference is being done cross-project
-  #
-  # from_project - Refering Project object
-  def cross_project_reference?(from_project)
-    if self.is_a?(Project)
-      self != from_project
-    else
-      from_project && self.project && self.project != from_project
     end
   end
 end

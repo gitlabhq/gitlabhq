@@ -1,8 +1,8 @@
-%li.user-row
+%li.flex-row
   .user-avatar
     = image_tag avatar_icon(user), class: "avatar", alt: ''
-  .user-details
-    .user-name
+  .row-main-content
+    .user-name.row-title.str-truncated-100
       = link_to user.name, [:admin, user]
     - if user.blocked?
       %span.label.label-danger blocked
@@ -12,13 +12,13 @@
       %span.label.label-default External
     - if user == current_user
       %span It's you!
-    .user-email
+    .row-second-line.str-truncated-100
       = mail_to user.email, user.email
   .controls
     = link_to 'Edit', edit_admin_user_path(user), id: "edit_#{dom_id(user)}", class: 'btn'
     - unless user == current_user
       .dropdown.inline
-        %a.dropdown-new.btn.btn-default#project-settings-button{href: '#', data: { toggle: 'dropdown' } }
+        %a.dropdown-new.btn.btn-default#project-settings-button{ href: '#', data: { toggle: 'dropdown' } }
           = icon('cog')
           = icon('caret-down')
         %ul.dropdown-menu.dropdown-menu-align-right

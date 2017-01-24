@@ -1,4 +1,7 @@
-/* eslint-disable */
+/* eslint-disable comma-dangle, space-before-function-paren, one-var, no-shadow, dot-notation, max-len */
+/* global Cookies */
+/* global List */
+
 (() => {
   window.gl = window.gl || {};
   window.gl.issueBoards = window.gl.issueBoards || {};
@@ -30,8 +33,8 @@
       return list;
     },
     new (listObj) {
-      const list = this.addList(listObj),
-            backlogList = this.findList('type', 'backlog', 'backlog');
+      const list = this.addList(listObj);
+      const backlogList = this.findList('type', 'backlog', 'backlog');
 
       list
         .save()
@@ -39,6 +42,8 @@
           // Remove any new issues from the backlog
           // as they will be visible in the new list
           list.issues.forEach(backlogList.removeIssue.bind(backlogList));
+
+          this.state.lists = _.sortBy(this.state.lists, 'position');
         });
       this.removeBlankState();
     },
@@ -47,7 +52,7 @@
     },
     shouldAddBlankState () {
       // Decide whether to add the blank state
-      return !(this.state.lists.filter( list => list.type !== 'backlog' && list.type !== 'done' )[0]);
+      return !(this.state.lists.filter(list => list.type !== 'backlog' && list.type !== 'done')[0]);
     },
     addBlankState () {
       if (!this.shouldAddBlankState() || this.welcomeIsHidden() || this.disabled) return;
@@ -58,6 +63,8 @@
         title: 'Welcome to your Issue Board!',
         position: 0
       });
+
+      this.state.lists = _.sortBy(this.state.lists, 'position');
     },
     removeBlankState () {
       this.removeList('blank');
@@ -75,30 +82,30 @@
 
       if (!list) return;
 
-      this.state.lists = this.state.lists.filter( list => list.id !== id );
+      this.state.lists = this.state.lists.filter(list => list.id !== id);
     },
     moveList (listFrom, orderLists) {
       orderLists.forEach((id, i) => {
-        const list = this.findList('id', parseInt(id));
+        const list = this.findList('id', parseInt(id, 10));
 
         list.position = i;
       });
       listFrom.update();
     },
-    moveIssueToList (listFrom, listTo, issue) {
-      const issueTo = listTo.findIssue(issue.id),
-            issueLists = issue.getLists(),
-            listLabels = issueLists.map( listIssue => listIssue.label );
+    moveIssueToList (listFrom, listTo, issue, newIndex) {
+      const issueTo = listTo.findIssue(issue.id);
+      const issueLists = issue.getLists();
+      const listLabels = issueLists.map(listIssue => listIssue.label);
 
       // Add to new lists issues if it doesn't already exist
       if (!issueTo) {
-        listTo.addIssue(issue, listFrom);
+        listTo.addIssue(issue, listFrom, newIndex);
       }
 
       if (listTo.type === 'done' && listFrom.type !== 'backlog') {
         issueLists.forEach((list) => {
           list.removeIssue(issue);
-        })
+        });
         issue.removeLabels(listLabels);
       } else {
         listFrom.removeIssue(issue);

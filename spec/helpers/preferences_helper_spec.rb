@@ -85,4 +85,45 @@ describe PreferencesHelper do
         and_return(double('user', messages))
     end
   end
+
+  describe '#default_project_view' do
+    context 'user not signed in' do
+      before do
+        helper.instance_variable_set(:@project, project)
+        stub_user
+      end
+
+      context 'when repository is empty' do
+        let(:project) { create(:project_empty_repo, :public) }
+
+        it 'returns activity if user has repository access' do
+          allow(helper).to receive(:can?).with(nil, :download_code, project).and_return(true)
+
+          expect(helper.default_project_view).to eq('activity')
+        end
+
+        it 'returns activity if user does not have repository access' do
+          allow(helper).to receive(:can?).with(nil, :download_code, project).and_return(false)
+
+          expect(helper.default_project_view).to eq('activity')
+        end
+      end
+
+      context 'when repository is not empty' do
+        let(:project) { create(:project, :public) }
+
+        it 'returns readme if user has repository access' do
+          allow(helper).to receive(:can?).with(nil, :download_code, project).and_return(true)
+
+          expect(helper.default_project_view).to eq('readme')
+        end
+
+        it 'returns activity if user does not have repository access' do
+          allow(helper).to receive(:can?).with(nil, :download_code, project).and_return(false)
+
+          expect(helper.default_project_view).to eq('activity')
+        end
+      end
+    end
+  end
 end

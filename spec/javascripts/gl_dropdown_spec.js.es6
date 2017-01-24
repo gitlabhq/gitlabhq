@@ -1,4 +1,6 @@
-/* eslint-disable */
+/* eslint-disable comma-dangle, no-param-reassign, no-unused-expressions, max-len */
+/* global Turbolinks */
+
 /*= require jquery */
 /*= require gl_dropdown */
 /*= require turbolinks */
@@ -20,7 +22,7 @@
 
   let remoteCallback;
 
-  let navigateWithKeys = function navigateWithKeys(direction, steps, cb, i) {
+  const navigateWithKeys = function navigateWithKeys(direction, steps, cb, i) {
     i = i || 0;
     if (!i) direction = direction.toUpperCase();
     $('body').trigger({
@@ -28,7 +30,7 @@
       which: ARROW_KEYS[direction],
       keyCode: ARROW_KEYS[direction]
     });
-    i++;
+    i += 1;
     if (i <= steps) {
       navigateWithKeys(direction, steps, cb, i);
     } else {
@@ -36,19 +38,21 @@
     }
   };
 
-  let remoteMock = function remoteMock(data, term, callback) {
+  const remoteMock = function remoteMock(data, term, callback) {
     remoteCallback = callback.bind({}, data);
-  }
+  };
 
   describe('Dropdown', function describeDropdown() {
-    fixture.preload('gl_dropdown.html');
-    fixture.preload('projects.json');
+    preloadFixtures('static/gl_dropdown.html.raw');
 
     function initDropDown(hasRemote, isFilterable) {
       this.dropdownButtonElement = $('#js-project-dropdown', this.dropdownContainerElement).glDropdown({
         selectable: true,
         filterable: isFilterable,
         data: hasRemote ? remoteMock.bind({}, this.projectsData) : this.projectsData,
+        search: {
+          fields: ['name']
+        },
         text: (project) => {
           (project.name_with_namespace || project.name);
         },
@@ -59,10 +63,10 @@
     }
 
     beforeEach(() => {
-      fixture.load('gl_dropdown.html');
+      loadFixtures('static/gl_dropdown.html.raw');
       this.dropdownContainerElement = $('.dropdown.inline');
       this.$dropdownMenuElement = $('.dropdown-menu', this.dropdownContainerElement);
-      this.projectsData = fixture.load('projects.json')[0];
+      this.projectsData = getJSONFixture('projects.json');
     });
 
     afterEach(() => {
@@ -85,7 +89,7 @@
 
       it('should select a following item on DOWN keypress', () => {
         expect($(FOCUSED_ITEM_SELECTOR, this.$dropdownMenuElement).length).toBe(0);
-        let randomIndex = (Math.floor(Math.random() * (this.projectsData.length - 1)) + 0);
+        const randomIndex = (Math.floor(Math.random() * (this.projectsData.length - 1)) + 0);
         navigateWithKeys('down', randomIndex, () => {
           expect($(FOCUSED_ITEM_SELECTOR, this.$dropdownMenuElement).length).toBe(1);
           expect($(`${ITEM_SELECTOR}:eq(${randomIndex}) a`, this.$dropdownMenuElement)).toHaveClass('is-focused');
@@ -96,7 +100,7 @@
         expect($(FOCUSED_ITEM_SELECTOR, this.$dropdownMenuElement).length).toBe(0);
         navigateWithKeys('down', (this.projectsData.length - 1), () => {
           expect($(FOCUSED_ITEM_SELECTOR, this.$dropdownMenuElement).length).toBe(1);
-          let randomIndex = (Math.floor(Math.random() * (this.projectsData.length - 2)) + 0);
+          const randomIndex = (Math.floor(Math.random() * (this.projectsData.length - 2)) + 0);
           navigateWithKeys('up', randomIndex, () => {
             expect($(FOCUSED_ITEM_SELECTOR, this.$dropdownMenuElement).length).toBe(1);
             expect($(`${ITEM_SELECTOR}:eq(${((this.projectsData.length - 2) - randomIndex)}) a`, this.$dropdownMenuElement)).toHaveClass('is-focused');
@@ -105,15 +109,15 @@
       });
 
       it('should click the selected item on ENTER keypress', () => {
-        expect(this.dropdownContainerElement).toHaveClass('open')
-        let randomIndex = Math.floor(Math.random() * (this.projectsData.length - 1)) + 0
+        expect(this.dropdownContainerElement).toHaveClass('open');
+        const randomIndex = Math.floor(Math.random() * (this.projectsData.length - 1)) + 0;
         navigateWithKeys('down', randomIndex, () => {
           spyOn(Turbolinks, 'visit').and.stub();
           navigateWithKeys('enter', null, () => {
             expect(this.dropdownContainerElement).not.toHaveClass('open');
-            let link = $(`${ITEM_SELECTOR}:eq(${randomIndex}) a`, this.$dropdownMenuElement);
+            const link = $(`${ITEM_SELECTOR}:eq(${randomIndex}) a`, this.$dropdownMenuElement);
             expect(link).toHaveClass('is-active');
-            let linkedLocation = link.attr('href');
+            const linkedLocation = link.attr('href');
             if (linkedLocation && linkedLocation !== '#') expect(Turbolinks.visit).toHaveBeenCalledWith(linkedLocation);
           });
         });
@@ -136,18 +140,18 @@
         this.dropdownButtonElement.click();
       });
 
-      it('should not focus search input while remote task is not complete', ()=> {
+      it('should not focus search input while remote task is not complete', () => {
         expect($(document.activeElement)).not.toEqual($(SEARCH_INPUT_SELECTOR));
         remoteCallback();
         expect($(document.activeElement)).toEqual($(SEARCH_INPUT_SELECTOR));
       });
 
-      it('should focus search input after remote task is complete', ()=> {
+      it('should focus search input after remote task is complete', () => {
         remoteCallback();
         expect($(document.activeElement)).toEqual($(SEARCH_INPUT_SELECTOR));
       });
 
-      it('should focus on input when opening for the second time', ()=> {
+      it('should focus on input when opening for the second time', () => {
         remoteCallback();
         this.dropdownContainerElement.trigger({
           type: 'keyup',
@@ -160,11 +164,26 @@
     });
 
     describe('input focus with array data', () => {
-      it('should focus input when passing array data to drop down', ()=> {
+      it('should focus input when passing array data to drop down', () => {
         initDropDown.call(this, false, true);
         this.dropdownButtonElement.click();
         expect($(document.activeElement)).toEqual($(SEARCH_INPUT_SELECTOR));
       });
+    });
+
+    it('should still have input value on close and restore', () => {
+      const $searchInput = $(SEARCH_INPUT_SELECTOR);
+      initDropDown.call(this, false, true);
+      $searchInput
+        .trigger('focus')
+        .val('g')
+        .trigger('input');
+      expect($searchInput.val()).toEqual('g');
+      this.dropdownButtonElement.trigger('hidden.bs.dropdown');
+      $searchInput
+        .trigger('blur')
+        .trigger('focus');
+      expect($searchInput.val()).toEqual('g');
     });
   });
 })();

@@ -6,6 +6,7 @@ class Snippet < ActiveRecord::Base
   include Referable
   include Sortable
   include Awardable
+  include Mentionable
 
   cache_markdown_field :title, pipeline: :single_line
   cache_markdown_field :content
@@ -26,9 +27,9 @@ class Snippet < ActiveRecord::Base
   delegate :name, :email, to: :author, prefix: true, allow_nil: true
 
   validates :author, presence: true
-  validates :title, presence: true, length: { within: 0..255 }
+  validates :title, presence: true, length: { maximum: 255 }
   validates :file_name,
-    length: { within: 0..255 },
+    length: { maximum: 255 },
     format: { with: Gitlab::Regex.file_name_regex,
               message: Gitlab::Regex.file_name_regex_message }
 
@@ -63,14 +64,14 @@ class Snippet < ActiveRecord::Base
     @link_reference_pattern ||= super("snippets", /(?<snippet>\d+)/)
   end
 
-  def to_reference(from_project = nil)
+  def to_reference(from_project = nil, full: false)
     reference = "#{self.class.reference_prefix}#{id}"
 
-    if cross_project_reference?(from_project)
-      reference = project.to_reference + reference
+    if project.present?
+      "#{project.to_reference(from_project, full: full)}#{reference}"
+    else
+      reference
     end
-
-    reference
   end
 
   def self.content_types
@@ -91,6 +92,10 @@ class Snippet < ActiveRecord::Base
 
   def size
     0
+  end
+
+  def file_name
+    super.to_s
   end
 
   # alias for compatibility with blobs and highlighting

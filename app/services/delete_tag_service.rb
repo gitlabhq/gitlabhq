@@ -1,5 +1,3 @@
-require_relative 'base_service'
-
 class DeleteTagService < BaseService
   def execute(tag_name)
     repository = project.repository

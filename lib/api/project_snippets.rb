@@ -1,8 +1,12 @@
 module API
-  # Projects API
   class ProjectSnippets < Grape::API
+    include PaginationParams
+
     before { authenticate! }
 
+    params do
+      requires :id, type: String, desc: 'The ID of a project'
+    end
     resource :projects do
       helpers do
         def handle_project_member_errors(errors)
@@ -18,111 +22,111 @@ module API
         end
       end
 
-      # Get a project snippets
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      # Example Request:
-      #   GET /projects/:id/snippets
+      desc 'Get all project snippets' do
+        success Entities::ProjectSnippet
+      end
+      params do
+        use :pagination
+      end
       get ":id/snippets" do
         present paginate(snippets_for_current_user), with: Entities::ProjectSnippet
       end
 
-      # Get a project snippet
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   snippet_id (required) - The ID of a project snippet
-      # Example Request:
-      #   GET /projects/:id/snippets/:snippet_id
+      desc 'Get a single project snippet' do
+        success Entities::ProjectSnippet
+      end
+      params do
+        requires :snippet_id, type: Integer, desc: 'The ID of a project snippet'
+      end
       get ":id/snippets/:snippet_id" do
-        @snippet = snippets_for_current_user.find(params[:snippet_id])
-        present @snippet, with: Entities::ProjectSnippet
+        snippet = snippets_for_current_user.find(params[:snippet_id])
+        present snippet, with: Entities::ProjectSnippet
       end
 
-      # Create a new project snippet
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   title (required) - The title of a snippet
-      #   file_name (required) - The name of a snippet file
-      #   code (required) - The content of a snippet
-      #   visibility_level (required) - The snippet's visibility
-      # Example Request:
-      #   POST /projects/:id/snippets
+      desc 'Create a new project snippet' do
+        success Entities::ProjectSnippet
+      end
+      params do
+        requires :title, type: String, desc: 'The title of the snippet'
+        requires :file_name, type: String, desc: 'The file name of the snippet'
+        requires :code, type: String, desc: 'The content of the snippet'
+        requires :visibility_level, type: Integer,
+                                    values: [Gitlab::VisibilityLevel::PRIVATE,
+                                             Gitlab::VisibilityLevel::INTERNAL,
+                                             Gitlab::VisibilityLevel::PUBLIC],
+                                    desc: 'The visibility level of the snippet'
+      end
       post ":id/snippets" do
         authorize! :create_project_snippet, user_project
-        required_attributes! [:title, :file_name, :code, :visibility_level]
+        snippet_params = declared_params
+        snippet_params[:content] = snippet_params.delete(:code)
 
-        attrs = attributes_for_keys [:title, :file_name, :visibility_level]
-        attrs[:content] = params[:code] if params[:code].present?
-        @snippet = CreateSnippetService.new(user_project, current_user,
-                                            attrs).execute
+        snippet = CreateSnippetService.new(user_project, current_user, snippet_params).execute
 
-        if @snippet.errors.any?
-          render_validation_error!(@snippet)
+        if snippet.persisted?
+          present snippet, with: Entities::ProjectSnippet
         else
-          present @snippet, with: Entities::ProjectSnippet
+          render_validation_error!(snippet)
         end
       end
 
-      # Update an existing project snippet
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   snippet_id (required) - The ID of a project snippet
-      #   title (optional) - The title of a snippet
-      #   file_name (optional) - The name of a snippet file
-      #   code (optional) - The content of a snippet
-      #   visibility_level (optional) - The snippet's visibility
-      # Example Request:
-      #   PUT /projects/:id/snippets/:snippet_id
+      desc 'Update an existing project snippet' do
+        success Entities::ProjectSnippet
+      end
+      params do
+        requires :snippet_id, type: Integer, desc: 'The ID of a project snippet'
+        optional :title, type: String, desc: 'The title of the snippet'
+        optional :file_name, type: String, desc: 'The file name of the snippet'
+        optional :code, type: String, desc: 'The content of the snippet'
+        optional :visibility_level, type: Integer,
+                                    values: [Gitlab::VisibilityLevel::PRIVATE,
+                                             Gitlab::VisibilityLevel::INTERNAL,
+                                             Gitlab::VisibilityLevel::PUBLIC],
+                                    desc: 'The visibility level of the snippet'
+        at_least_one_of :title, :file_name, :code, :visibility_level
+      end
       put ":id/snippets/:snippet_id" do
-        @snippet = snippets_for_current_user.find(params[:snippet_id])
-        authorize! :update_project_snippet, @snippet
+        snippet = snippets_for_current_user.find_by(id: params.delete(:snippet_id))
+        not_found!('Snippet') unless snippet
 
-        attrs = attributes_for_keys [:title, :file_name, :visibility_level]
-        attrs[:content] = params[:code] if params[:code].present?
+        authorize! :update_project_snippet, snippet
 
-        UpdateSnippetService.new(user_project, current_user, @snippet,
-                                 attrs).execute
-        if @snippet.errors.any?
-          render_validation_error!(@snippet)
+        snippet_params = declared_params(include_missing: false)
+        snippet_params[:content] = snippet_params.delete(:code) if snippet_params[:code].present?
+
+        UpdateSnippetService.new(user_project, current_user, snippet,
+                                 snippet_params).execute
+
+        if snippet.persisted?
+          present snippet, with: Entities::ProjectSnippet
         else
-          present @snippet, with: Entities::ProjectSnippet
+          render_validation_error!(snippet)
         end
       end
 
-      # Delete a project snippet
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   snippet_id (required) - The ID of a project snippet
-      # Example Request:
-      #   DELETE /projects/:id/snippets/:snippet_id
+      desc 'Delete a project snippet'
+      params do
+        requires :snippet_id, type: Integer, desc: 'The ID of a project snippet'
+      end
       delete ":id/snippets/:snippet_id" do
-        begin
-          @snippet = snippets_for_current_user.find(params[:snippet_id])
-          authorize! :update_project_snippet, @snippet
-          @snippet.destroy
-        rescue
-          not_found!('Snippet')
-        end
+        snippet = snippets_for_current_user.find_by(id: params[:snippet_id])
+        not_found!('Snippet') unless snippet
+
+        authorize! :admin_project_snippet, snippet
+        snippet.destroy
       end
 
-      # Get a raw project snippet
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   snippet_id (required) - The ID of a project snippet
-      # Example Request:
-      #   GET /projects/:id/snippets/:snippet_id/raw
+      desc 'Get a raw project snippet'
+      params do
+        requires :snippet_id, type: Integer, desc: 'The ID of a project snippet'
+      end
       get ":id/snippets/:snippet_id/raw" do
-        @snippet = snippets_for_current_user.find(params[:snippet_id])
+        snippet = snippets_for_current_user.find_by(id: params[:snippet_id])
+        not_found!('Snippet') unless snippet
 
         env['api.format'] = :txt
         content_type 'text/plain'
-        present @snippet.content
+        present snippet.content
       end
     end
   end

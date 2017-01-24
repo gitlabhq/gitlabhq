@@ -27,13 +27,9 @@ describe EnvironmentSerializer do
     let(:deployable) { create(:ci_build) }
     let(:resource) { deployment.environment }
 
-    it 'it generates payload for single object' do
-      expect(json).to be_an_instance_of Hash
-    end
-
     it 'contains important elements of environment' do
       expect(json)
-        .to include(:name, :external_url, :environment_url, :last_deployment)
+        .to include(:name, :external_url, :environment_path, :last_deployment)
     end
 
     it 'contains relevant information about last deployment' do

@@ -3,7 +3,7 @@ require 'spec_helper'
 feature 'Projects > Members > User requests access', feature: true do
   let(:user) { create(:user) }
   let(:master) { create(:user) }
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:project, :public, :access_requestable) }
 
   background do
     project.team << [master, :master]
@@ -39,7 +39,7 @@ feature 'Projects > Members > User requests access', feature: true do
     open_project_settings_menu
     click_link 'Members'
 
-    visit namespace_project_project_members_path(project.namespace, project)
+    visit namespace_project_settings_members_path(project.namespace, project)
     page.within('.content') do
       expect(page).not_to have_content(user.name)
     end

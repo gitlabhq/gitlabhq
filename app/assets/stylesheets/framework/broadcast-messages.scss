@@ -1,0 +1,21 @@
+.broadcast-message {
+  @extend .alert-warning;
+  padding: 10px;
+  text-align: center;
+
+  div,
+  p {
+    display: inline;
+    margin: 0;
+
+    a {
+      color: inherit;
+      text-decoration: underline;
+    }
+  }
+}
+
+.broadcast-message-preview {
+  @extend .broadcast-message;
+  margin-bottom: 20px;
+}

@@ -1,11 +1,13 @@
-- blob = parse_search_result(blob)
+- file_name, blob = blob
 .blob-result
   .file-holder
     .file-title
-      - blob_link = namespace_project_blob_path(@project.namespace, @project, tree_join(blob.ref, blob.filename))
+      - ref = @search_results.repository_ref
+      - blob_link = namespace_project_blob_path(@project.namespace, @project, tree_join(ref, file_name))
       = link_to blob_link do
         %i.fa.fa-file
         %strong
-          = blob.filename
-    .file-content.code.term
-      = render 'shared/file_highlight', blob: blob, first_line_number: blob.startline, blob_link: blob_link
+          = file_name
+    - if blob
+      .file-content.code.term
+        = render 'shared/file_highlight', blob: blob, first_line_number: blob.startline, blob_link: blob_link

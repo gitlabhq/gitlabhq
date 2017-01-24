@@ -17,7 +17,7 @@ describe LabelsFinder do
     let!(:project_label_4) { create(:label, project: project_4, title: 'Label 4') }
     let!(:project_label_5) { create(:label, project: project_5, title: 'Label 5') }
 
-    let!(:group_label_1) { create(:group_label, group: group_1, title: 'Label 1') }
+    let!(:group_label_1) { create(:group_label, group: group_1, title: 'Label 1 (group)') }
     let!(:group_label_2) { create(:group_label, group: group_1, title: 'Group Label 2') }
     let!(:group_label_3) { create(:group_label, group: group_2, title: 'Group Label 3') }
 
@@ -63,6 +63,21 @@ describe LabelsFinder do
         finder = described_class.new(user, project_id: project_1.id)
 
         expect(finder.execute).to eq [group_label_2, project_label_1, group_label_1]
+      end
+
+      context 'as an administrator' do
+        it 'does not return labels from another project' do
+          # Purposefully creating a project with _nothing_ associated to it
+          isolated_project = create(:empty_project)
+          admin = create(:admin)
+
+          # project_3 has a label associated to it, which we don't want coming
+          # back when we ask for the isolated project's labels
+          project_3.team << [admin, :reporter]
+          finder = described_class.new(admin, project_id: isolated_project.id)
+
+          expect(finder.execute).to be_empty
+        end
       end
     end
 

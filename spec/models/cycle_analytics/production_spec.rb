@@ -35,7 +35,7 @@ describe 'CycleAnalytics#production', feature: true do
         deploy_master
       end
 
-      expect(subject.production).to be_nil
+      expect(subject[:production].median).to be_nil
     end
   end
 
@@ -48,7 +48,7 @@ describe 'CycleAnalytics#production', feature: true do
         deploy_master(environment: 'staging')
       end
 
-      expect(subject.production).to be_nil
+      expect(subject[:production].median).to be_nil
     end
   end
 end

@@ -27,6 +27,7 @@
 .new-note,
 .note-edit-form {
   .note-form-actions {
+    position: relative;
     margin-top: $gl-padding;
   }
 
@@ -44,7 +45,7 @@
 .note-textarea {
   display: block;
   padding: 10px 0;
-  color: $gl-gray;
+  color: $gl-text-color;
   font-family: $regular_font;
   border: 0;
 
@@ -62,7 +63,7 @@
 .common-note-form {
   .md-area {
     padding: $gl-padding-top $gl-padding;
-    border: 1px solid $note-form-border-color;
+    border: 1px solid $border-color;
     border-radius: $border-radius-base;
     transition: border-color ease-in-out 0.15s,
                 box-shadow ease-in-out 0.15s;
@@ -109,9 +110,9 @@
   margin: auto;
   margin-top: 0;
   text-align: center;
-  font-size: 13px;
+  font-size: 12px;
 
-  @media (max-width: $screen-md-min) {
+  @media (max-width: $screen-sm-max) {
     // On smaller devices the warning becomes the fourth item in the list,
     // rather than centering, and grows to span the full width of the
     // comment area.
@@ -129,10 +130,10 @@
 
 .note-edit-form {
   display: none;
-  font-size: 15px;
+  font-size: 14px;
 
   .md-area {
-    background-color: #fff;
+    background-color: $white-light;
   }
 }
 
@@ -204,7 +205,7 @@
 
 .comment-toolbar {
   padding-top: $gl-padding-top;
-  color: $note-toolbar-color;
+  color: $gl-text-color-secondary;
   border-top: 1px solid $border-color;
 }
 
@@ -263,5 +264,20 @@
         margin-bottom: 10px;
       }
     }
+  }
+}
+
+.note-edit-warning.settings-message {
+  display: none;
+  padding: 5px 10px;
+  position: absolute;
+  left: 127px;
+  top: 2px;
+
+  @media (max-width: $screen-xs-max) {
+    position: relative;
+    top: 0;
+    left: 0;
+    margin-bottom: 10px;
   }
 }

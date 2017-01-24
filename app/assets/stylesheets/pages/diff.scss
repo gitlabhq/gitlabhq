@@ -11,10 +11,10 @@
 
   .diff-header {
     position: relative;
-    background: $background-color;
+    background: $gray-light;
     border-bottom: 1px solid $border-color;
     padding: 10px 16px;
-    color: #555;
+    color: $gl-text-color;
     z-index: 10;
     border-radius: 3px 3px 0 0;
 
@@ -24,7 +24,7 @@
       display: block;
 
       .file-mode {
-        color: #777;
+        color: $file-mode-changed;
       }
     }
 
@@ -38,7 +38,7 @@
     cursor: pointer;
 
     &:hover {
-      background-color: $dark-background-color;
+      background-color: $gray-normal;
     }
 
     .diff-toggle-caret {
@@ -49,8 +49,8 @@
   .diff-content {
     overflow: auto;
     overflow-y: hidden;
-    background: #fff;
-    color: #333;
+    background: $white-light;
+    color: $gl-text-color;
     border-radius: 0 0 3px 3px;
 
     .unfold {
@@ -59,7 +59,7 @@
 
     .file-mode-changed {
       padding: 10px;
-      color: #777;
+      color: $file-mode-changed;
     }
 
     .suppressed-container {
@@ -92,20 +92,6 @@
 
         &.noteable_line {
           position: relative;
-
-          &.old {
-            &::before {
-              content: '-';
-              position: absolute;
-            }
-          }
-
-          &.new {
-            &::before {
-              content: '+';
-              position: absolute;
-            }
-          }
         }
 
         span {
@@ -151,14 +137,31 @@
     .line_content {
       display: block;
       margin: 0;
-      padding: 0 0.5em;
+      padding: 0 1.5em;
       border: none;
+      position: relative;
 
       &.parallel {
         display: table-cell;
 
         span {
           word-break: break-all;
+        }
+      }
+
+      &.old {
+        &::before {
+          content: '-';
+          position: absolute;
+          left: 0.5em;
+        }
+      }
+
+      &.new {
+        &::before {
+          content: '+';
+          position: absolute;
+          left: 0.5em;
         }
       }
     }
@@ -169,7 +172,7 @@
   }
 
   .image {
-    background: #ddd;
+    background: $diff-image-bg;
     text-align: center;
     padding: 30px;
 
@@ -179,13 +182,13 @@
 
     .frame {
       display: inline-block;
-      background-color: #fff;
+      background-color: $white-light;
       line-height: 0;
 
       img {
-        border: 1px solid #fff;
-        background-image: linear-gradient(45deg, #e5e5e5 25%, transparent 25%, transparent 75%, #e5e5e5 75%, #e5e5e5 100%),
-        linear-gradient(45deg, #e5e5e5 25%, transparent 25%, transparent 75%, #e5e5e5 75%, #e5e5e5 100%);
+        border: 1px solid $white-light;
+        background-image: linear-gradient(45deg, $border-color 25%, transparent 25%, transparent 75%, $border-color 75%, $border-color 100%),
+        linear-gradient(45deg, $border-color 25%, transparent 25%, transparent 75%, $border-color 75%, $border-color 100%);
         background-size: 10px 10px;
         background-position: 0 0, 5px 5px;
         max-width: 100%;
@@ -203,7 +206,7 @@
     .image-info {
       font-size: 12px;
       margin: 5px 0 0;
-      color: grey;
+      color: $diff-image-info-color;
     }
 
     .view.swipe {
@@ -217,7 +220,7 @@
 
       .swipe-wrap {
         overflow: hidden;
-        border-left: 1px solid #999;
+        border-left: 1px solid $diff-swipe-border;
         position: absolute;
         display: block;
         top: 13px;
@@ -347,7 +350,7 @@
   .view-modes {
     padding: 10px;
     text-align: center;
-    background: #eee;
+    background: $gray-darker;
 
     ul,
     li {
@@ -358,8 +361,8 @@
     }
 
     li {
-      color: grey;
-      border-left: 1px solid #c1c1c1;
+      color: $diff-view-modes-color;
+      border-left: 1px solid $diff-view-modes-border;
       padding: 0 12px 0 16px;
       cursor: pointer;
 
@@ -377,7 +380,7 @@
         }
 
         cursor: default;
-        color: #333;
+        color: $gl-text-color;
       }
 
       &.disabled {

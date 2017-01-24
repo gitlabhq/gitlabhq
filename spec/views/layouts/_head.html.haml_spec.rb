@@ -1,10 +1,6 @@
 require 'spec_helper'
 
 describe 'layouts/_head' do
-  before do
-    stub_template 'layouts/_user_styles.html.haml' => ''
-  end
-
   it 'escapes HTML-safe strings in page_title' do
     stub_helper_with_safe_string(:page_title)
 

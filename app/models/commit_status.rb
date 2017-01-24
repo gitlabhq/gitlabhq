@@ -31,18 +31,13 @@ class CommitStatus < ActiveRecord::Base
   end
 
   scope :exclude_ignored, -> do
-    quoted_when = connection.quote_column_name('when')
     # We want to ignore failed_but_allowed jobs
     where("allow_failure = ? OR status IN (?)",
-      false, all_state_names - [:failed, :canceled]).
-      # We want to ignore skipped manual jobs
-      where("#{quoted_when} <> ? OR status <> ?", 'manual', 'skipped').
-      # We want to ignore skipped on_failure
-      where("#{quoted_when} <> ? OR status <> ?", 'on_failure', 'skipped')
+      false, all_state_names - [:failed, :canceled])
   end
 
-  scope :latest_ci_stages, -> { latest.ordered.includes(project: :namespace) }
-  scope :retried_ci_stages, -> { retried.ordered.includes(project: :namespace) }
+  scope :latest_ordered, -> { latest.ordered.includes(project: :namespace) }
+  scope :retried_ordered, -> { retried.ordered.includes(project: :namespace) }
 
   state_machine :status do
     event :enqueue do
@@ -117,33 +112,35 @@ class CommitStatus < ActiveRecord::Base
     name.gsub(/\d+[\s:\/\\]+\d+\s*/, '').strip
   end
 
-  def self.stages
-    # We group by stage name, but order stages by theirs' index
-    unscoped.from(all, :sg).group('stage').order('max(stage_idx)', 'stage').pluck('sg.stage')
-  end
-
-  def self.stages_status
-    # We execute subquery for each stage to calculate a stage status
-    statuses = unscoped.from(all, :sg).group('stage').pluck('sg.stage', all.where('stage=sg.stage').status_sql)
-    statuses.inject({}) do |h, k|
-      h[k.first] = k.last
-      h
-    end
-  end
-
   def failed_but_allowed?
     allow_failure? && (failed? || canceled?)
-  end
-
-  def playable?
-    false
   end
 
   def duration
     calculate_duration
   end
 
+  def playable?
+    false
+  end
+
   def stuck?
     false
+  end
+
+  def has_trace?
+    false
+  end
+
+  def detailed_status(current_user)
+    Gitlab::Ci::Status::Factory
+      .new(self, current_user)
+      .fabricate!
+  end
+
+  def sortable_name
+    name.split(/(\d+)/).map do |v|
+      v =~ /\d+/ ? v.to_i : v
+    end
   end
 end

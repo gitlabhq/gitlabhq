@@ -1,8 +1,6 @@
 class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
-  before_action :load_personal_access_tokens, only: :index
-
   def index
-    @personal_access_token = current_user.personal_access_tokens.build
+    set_index_vars
   end
 
   def create
@@ -12,7 +10,7 @@ class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
       flash[:personal_access_token] = @personal_access_token.token
       redirect_to profile_personal_access_tokens_path, notice: "Your new personal access token has been created."
     else
-      load_personal_access_tokens
+      set_index_vars
       render :index
     end
   end
@@ -32,10 +30,12 @@ class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
   private
 
   def personal_access_token_params
-    params.require(:personal_access_token).permit(:name, :expires_at)
+    params.require(:personal_access_token).permit(:name, :expires_at, scopes: [])
   end
 
-  def load_personal_access_tokens
+  def set_index_vars
+    @personal_access_token ||= current_user.personal_access_tokens.build
+    @scopes = Gitlab::Auth::SCOPES
     @active_personal_access_tokens = current_user.personal_access_tokens.active.order(:expires_at)
     @inactive_personal_access_tokens = current_user.personal_access_tokens.inactive
   end

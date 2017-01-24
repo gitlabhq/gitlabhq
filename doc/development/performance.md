@@ -37,7 +37,7 @@ graphs/dashboards.
 GitLab provides built-in tools to aid the process of improving performance:
 
 * [Sherlock](profiling.md#sherlock)
-* [GitLab Performance Monitoring](../administration/monitoring/performance/monitoring.md)
+* [GitLab Performance Monitoring](../administration/monitoring/performance/introduction.md)
 * [Request Profiling](../administration/monitoring/performance/request_profiling.md)
 
 GitLab employees can use GitLab.com's performance monitoring systems located at
@@ -100,6 +100,116 @@ In short:
    (unless your performance monitoring systems are not set up correctly).
 5. If you must write a benchmark use the benchmark-ips Gem instead of Ruby's
    `Benchmark` module.
+
+## Profiling
+
+By collecting snapshots of process state at regular intervals, profiling allows
+you to see where time is spent in a process. The [StackProf](https://github.com/tmm1/stackprof)
+gem is included in GitLab's development environment, allowing you to investigate
+the behaviour of suspect code in detail.
+
+It's important to note that profiling an application *alters its performance*,
+and will generally be done *in an unrepresentative environment*. In particular,
+a method is not necessarily troublesome just because it is executed many times,
+or takes a long time to execute. Profiles are tools you can use to better
+understand what is happening in an application - using that information wisely
+is up to you!
+
+Keeping that in mind, to create a profile, identify (or create) a spec that
+exercises the troublesome code path, then run it using the `bin/rspec-stackprof`
+helper, e.g.:
+
+```
+$ LIMIT=10 bin/rspec-stackprof spec/policies/project_policy_spec.rb
+8/8 |====== 100 ======>| Time: 00:00:18
+
+Finished in 18.19 seconds (files took 4.8 seconds to load)
+8 examples, 0 failures
+
+==================================
+ Mode: wall(1000)
+ Samples: 17033 (5.59% miss rate)
+ GC: 1901 (11.16%)
+==================================
+    TOTAL    (pct)     SAMPLES    (pct)     FRAME
+     6000  (35.2%)        2566  (15.1%)     Sprockets::Cache::FileStore#get
+     2018  (11.8%)         888   (5.2%)     ActiveRecord::ConnectionAdapters::PostgreSQLAdapter#exec_no_cache
+     1338   (7.9%)         640   (3.8%)     ActiveRecord::ConnectionAdapters::PostgreSQL::DatabaseStatements#execute
+     3125  (18.3%)         394   (2.3%)     Sprockets::Cache::FileStore#safe_open
+      913   (5.4%)         301   (1.8%)     ActiveRecord::ConnectionAdapters::PostgreSQLAdapter#exec_cache
+      288   (1.7%)         288   (1.7%)     ActiveRecord::Attribute#initialize
+      246   (1.4%)         246   (1.4%)     Sprockets::Cache::FileStore#safe_stat
+      295   (1.7%)         193   (1.1%)     block (2 levels) in class_attribute
+      187   (1.1%)         187   (1.1%)     block (4 levels) in class_attribute
+```
+
+You can limit the specs that are run by passing any arguments `rspec` would
+normally take.
+
+The output is sorted by the `Samples` column by default. This is the number of
+samples taken where the method is the one currently being executed. The `Total`
+column shows the number of samples taken where the method, or any of the methods
+it calls, were being executed.
+
+To create a graphical view of the call stack:
+
+```shell
+$ stackprof tmp/project_policy_spec.rb.dump --graphviz > project_policy_spec.dot
+$ dot -Tsvg project_policy_spec.dot > project_policy_spec.svg
+```
+
+To load the profile in [kcachegrind](https://kcachegrind.github.io/):
+
+```
+$ stackprof tmp/project_policy_spec.dump --callgrind > project_policy_spec.callgrind
+$ kcachegrind project_policy_spec.callgrind # Linux
+$ qcachegrind project_policy_spec.callgrind # Mac
+```
+
+It may be useful to zoom in on a specific method, e.g.:
+
+```
+$ stackprof tmp/project_policy_spec.rb.dump --method warm_asset_cache
+TestEnv#warm_asset_cache (/Users/lupine/dev/gitlab.com/gitlab-org/gitlab-development-kit/gitlab/spec/support/test_env.rb:164)
+  samples:     0 self (0.0%)  /   6288 total (36.9%)
+  callers:
+    6288  (  100.0%)  block (2 levels) in <top (required)>
+  callees (6288 total):
+    6288  (  100.0%)  Capybara::RackTest::Driver#visit
+  code:
+                                  |   164  |   def warm_asset_cache
+                                  |   165  |     return if warm_asset_cache?
+                                  |   166  |     return unless defined?(Capybara)
+                                  |   167  |
+ 6288   (36.9%)                   |   168  |     Capybara.current_session.driver.visit '/'
+                                  |   169  |   end
+$ stackprof tmp/project_policy_spec.rb.dump --method BasePolicy#abilities
+BasePolicy#abilities (/Users/lupine/dev/gitlab.com/gitlab-org/gitlab-development-kit/gitlab/app/policies/base_policy.rb:79)
+  samples:     0 self (0.0%)  /     50 total (0.3%)
+  callers:
+      25  (   50.0%)  BasePolicy.abilities
+      25  (   50.0%)  BasePolicy#collect_rules
+  callees (50 total):
+      25  (   50.0%)  ProjectPolicy#rules
+      25  (   50.0%)  BasePolicy#collect_rules
+  code:
+                                  |    79  |   def abilities
+                                  |    80  |     return RuleSet.empty if @user && @user.blocked?
+                                  |    81  |     return anonymous_abilities if @user.nil?
+   50    (0.3%)                   |    82  |     collect_rules { rules }
+                                  |    83  |   end
+```
+
+Since the profile includes the work done by the test suite as well as the
+application code, these profiles can be used to investigate slow tests as well.
+However, for smaller runs (like this example), this means that the cost of
+setting up the test suite will tend to dominate.
+
+It's also possible to modify the application code in-place to output profiles
+whenever a particular code path is triggered without going through the test
+suite first. See the
+[StackProf documentation](https://github.com/tmm1/stackprof/blob/master/README.md)
+for details.
 
 ## Importance of Changes
 

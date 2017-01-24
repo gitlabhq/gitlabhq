@@ -3,11 +3,11 @@ require 'rails_helper'
 describe SentNotificationsController, type: :controller do
   let(:user) { create(:user) }
   let(:project) { create(:empty_project) }
-  let(:sent_notification) { create(:sent_notification, noteable: issue, recipient: user) }
+  let(:sent_notification) { create(:sent_notification, project: project, noteable: issue, recipient: user) }
 
   let(:issue) do
     create(:issue, project: project, author: user) do |issue|
-      issue.subscriptions.create(user: user, subscribed: true)
+      issue.subscriptions.create(user: user, project: project, subscribed: true)
     end
   end
 
@@ -17,7 +17,7 @@ describe SentNotificationsController, type: :controller do
         before { get(:unsubscribe, id: sent_notification.reply_key, force: true) }
 
         it 'unsubscribes the user' do
-          expect(issue.subscribed?(user)).to be_falsey
+          expect(issue.subscribed?(user, project)).to be_falsey
         end
 
         it 'sets the flash message' do
@@ -33,7 +33,7 @@ describe SentNotificationsController, type: :controller do
         before { get(:unsubscribe, id: sent_notification.reply_key) }
 
         it 'does not unsubscribe the user' do
-          expect(issue.subscribed?(user)).to be_truthy
+          expect(issue.subscribed?(user, project)).to be_truthy
         end
 
         it 'does not set the flash message' do
@@ -53,7 +53,7 @@ describe SentNotificationsController, type: :controller do
         before { get(:unsubscribe, id: sent_notification.reply_key.reverse) }
 
         it 'does not unsubscribe the user' do
-          expect(issue.subscribed?(user)).to be_truthy
+          expect(issue.subscribed?(user, project)).to be_truthy
         end
 
         it 'does not set the flash message' do
@@ -69,7 +69,7 @@ describe SentNotificationsController, type: :controller do
         before { get(:unsubscribe, id: sent_notification.reply_key, force: true) }
 
         it 'unsubscribes the user' do
-          expect(issue.subscribed?(user)).to be_falsey
+          expect(issue.subscribed?(user, project)).to be_falsey
         end
 
         it 'sets the flash message' do
@@ -85,14 +85,14 @@ describe SentNotificationsController, type: :controller do
       context 'when the force param is not passed' do
         let(:merge_request) do
           create(:merge_request, source_project: project, author: user) do |merge_request|
-            merge_request.subscriptions.create(user: user, subscribed: true)
+            merge_request.subscriptions.create(user: user, project: project, subscribed: true)
           end
         end
-        let(:sent_notification) { create(:sent_notification, noteable: merge_request, recipient: user) }
+        let(:sent_notification) { create(:sent_notification, project: project, noteable: merge_request, recipient: user) }
         before { get(:unsubscribe, id: sent_notification.reply_key) }
 
         it 'unsubscribes the user' do
-          expect(merge_request.subscribed?(user)).to be_falsey
+          expect(merge_request.subscribed?(user, project)).to be_falsey
         end
 
         it 'sets the flash message' do

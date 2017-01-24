@@ -26,7 +26,7 @@ class JwtController < ApplicationController
       @authentication_result = Gitlab::Auth.find_for_git_client(login, password, project: nil, ip: request.ip)
 
       render_unauthorized unless @authentication_result.success? &&
-        (@authentication_result.actor.nil? || @authentication_result.actor.is_a?(User))
+          (@authentication_result.actor.nil? || @authentication_result.actor.is_a?(User))
     end
   rescue Gitlab::Auth::MissingPersonalTokenError
     render_missing_personal_token

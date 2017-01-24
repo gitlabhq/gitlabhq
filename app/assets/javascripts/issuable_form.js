@@ -1,6 +1,11 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, no-use-before-define, no-useless-escape, no-new, quotes, object-shorthand, no-unused-vars, comma-dangle, no-alert, consistent-return, no-else-return, prefer-template, one-var, one-var-declaration-per-line, curly, max-len */
+/* global GitLab */
+/* global UsersSelect */
+/* global ZenMode */
+/* global Autosave */
+
 (function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
 
   this.IssuableForm = (function() {
     IssuableForm.prototype.issueMoveConfirmMsg = 'Are you sure you want to move this issue to another project?';
@@ -14,7 +19,7 @@
       this.renderWipExplanation = bind(this.renderWipExplanation, this);
       this.resetAutosave = bind(this.resetAutosave, this);
       this.handleSubmit = bind(this.handleSubmit, this);
-      GitLab.GfmAutoComplete.setup();
+      gl.GfmAutoComplete.setup();
       new UsersSelect();
       new ZenMode();
       this.titleField = this.form.find("input[name*='[title]']");
@@ -46,7 +51,7 @@
 
     IssuableForm.prototype.handleSubmit = function() {
       var fieldId = (this.issueMoveField != null) ? this.issueMoveField.val() : null;
-      if ((parseInt(fieldId) || 0) > 0) {
+      if ((parseInt(fieldId, 10) || 0) > 0) {
         if (!confirm(this.issueMoveConfirmMsg)) {
           return false;
         }
@@ -145,7 +150,5 @@
     };
 
     return IssuableForm;
-
   })();
-
 }).call(this);

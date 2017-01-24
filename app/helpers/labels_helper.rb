@@ -68,14 +68,6 @@ module LabelsHelper
     end
   end
 
-  def toggle_subscription_data(label)
-    return unless label.is_a?(ProjectLabel)
-
-    {
-      url: toggle_subscription_namespace_project_label_path(label.project.namespace, label.project, label)
-    }
-  end
-
   def render_colored_label(label, label_suffix = '', tooltip: true)
     label_color = label.color || Label::DEFAULT_COLOR
     text_color = text_color_for_bg(label_color)
@@ -88,12 +80,6 @@ module LabelsHelper
       %(#{escape_once(label.name)}#{label_suffix}</span>)
 
     span.html_safe
-  end
-
-  def render_colored_cross_project_label(label, source_project = nil, tooltip: true)
-    label_suffix = source_project ? source_project.name_with_namespace : label.project.name_with_namespace
-    label_suffix = " <i>in #{escape_once(label_suffix)}</i>"
-    render_colored_label(label, label_suffix, tooltip: tooltip)
   end
 
   def suggested_colors
@@ -148,18 +134,22 @@ module LabelsHelper
     end
   end
 
-  def label_subscription_status(label)
-    case label
-    when GroupLabel then 'Subscribing to group labels is currently not supported.'
-    when ProjectLabel then label.subscribed?(current_user) ? 'subscribed' : 'unsubscribed'
+  def label_subscription_status(label, project)
+    return 'project-level' if label.subscribed?(current_user, project)
+    return 'group-level' if label.subscribed?(current_user)
+
+    'unsubscribed'
+  end
+
+  def group_label_unsubscribe_path(label, project)
+    case label_subscription_status(label, project)
+    when 'project-level' then toggle_subscription_namespace_project_label_path(@project.namespace, @project, label)
+    when 'group-level' then toggle_subscription_group_label_path(label.group, label)
     end
   end
 
-  def label_subscription_toggle_button_text(label)
-    case label
-    when GroupLabel then 'Subscribing to group labels is currently not supported.'
-    when ProjectLabel then label.subscribed?(current_user) ? 'Unsubscribe' : 'Subscribe'
-    end
+  def label_subscription_toggle_button_text(label, project)
+    label.subscribed?(current_user, project) ? 'Unsubscribe' : 'Subscribe'
   end
 
   def label_deletion_confirm_text(label)
@@ -170,6 +160,5 @@ module LabelsHelper
   end
 
   # Required for Banzai::Filter::LabelReferenceFilter
-  module_function :render_colored_label, :render_colored_cross_project_label,
-                  :text_color_for_bg, :escape_once
+  module_function :render_colored_label, :text_color_for_bg, :escape_once
 end

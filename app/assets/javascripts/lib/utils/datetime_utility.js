@@ -1,4 +1,10 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-param-reassign, no-cond-assign, comma-dangle, no-unused-expressions, prefer-template, max-len */
+/* global timeago */
+/* global dateFormat */
+
+/*= require timeago */
+/*= require date.format */
+
 (function() {
   (function(w) {
     var base;
@@ -23,7 +29,7 @@
         setTimeago = true;
       }
 
-      $timeagoEls.each(function() {
+      $timeagoEls.filter(':not([data-timeago-rendered])').each(function() {
         var $el = $(this);
         $el.attr('title', gl.utils.formatDate($el.attr('datetime')));
 
@@ -33,6 +39,8 @@
             template: '<div class="tooltip local-timeago" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>'
           });
         }
+
+        $el.attr('data-timeago-rendered', true);
         gl.utils.renderTimeago($el);
       });
     };
@@ -89,7 +97,5 @@
 
       return Math.floor((date2 - date1) / millisecondsPerDay);
     };
-
   })(window);
-
 }).call(this);

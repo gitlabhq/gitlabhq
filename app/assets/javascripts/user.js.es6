@@ -1,4 +1,6 @@
-/* eslint-disable */
+/* eslint-disable class-methods-use-this, comma-dangle, arrow-parens, no-param-reassign */
+/* global Cookies */
+
 ((global) => {
   global.User = class {
     constructor({ action }) {
@@ -28,5 +30,5 @@
         $(this).parents('.project-limit-message').remove();
       });
     }
-  }
+  };
 })(window.gl || (window.gl = {}));

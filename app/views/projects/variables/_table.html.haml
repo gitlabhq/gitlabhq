@@ -12,8 +12,8 @@
       - @project.variables.order_key_asc.each do |variable|
         - if variable.id?
           %tr
-            %td= variable.key
-            %td= variable.value
+            %td.variable-key= variable.key
+            %td.variable-value{ "data-value" => variable.value }******
             %td
               = link_to namespace_project_variable_path(@project.namespace, @project, variable), class: "btn btn-transparent btn-variable-edit" do
                 %span.sr-only

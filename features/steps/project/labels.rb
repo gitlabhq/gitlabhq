@@ -2,9 +2,7 @@ class Spinach::Features::Labels < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedIssuable
   include SharedProject
-  include SharedNote
   include SharedPaths
-  include SharedMarkdown
 
   step 'And I visit project "Shop" labels page' do
     visit namespace_project_labels_path(project.namespace, project)

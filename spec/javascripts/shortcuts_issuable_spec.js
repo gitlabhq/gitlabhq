@@ -1,12 +1,15 @@
-/* eslint-disable */
+/* eslint-disable space-before-function-paren, no-return-assign, no-var, quotes */
+/* global ShortcutsIssuable */
 
 /*= require shortcuts_issuable */
 
 (function() {
   describe('ShortcutsIssuable', function() {
-    fixture.preload('issuable.html');
+    var fixtureName = 'issues/open-issue.html.raw';
+    preloadFixtures(fixtureName);
     beforeEach(function() {
-      fixture.load('issuable.html');
+      loadFixtures(fixtureName);
+      document.querySelector('.js-new-note-form').classList.add('js-main-target-form');
       return this.shortcut = new ShortcutsIssuable();
     });
     return describe('#replyWithSelectedText', function() {
@@ -72,5 +75,4 @@
       });
     });
   });
-
 }).call(this);

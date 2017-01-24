@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::API::API do
+describe Ci::API::Runners do
   include ApiHelpers
   include StubGitlabCalls
 

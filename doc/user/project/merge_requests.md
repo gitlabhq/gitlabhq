@@ -19,14 +19,14 @@ in a merged merge requests or a commit.
 
 [Learn more about cherry-picking changes.](merge_requests/cherry_pick_changes.md)
 
-## Merge when build succeeds
+## Merge when pipeline succeeds
 
 When reviewing a merge request that looks ready to merge but still has one or
-more CI builds running, you can set it to be merged automatically when all
-builds succeed. This way, you don't have to wait for the builds to finish and
-remember to merge the request manually.
+more CI builds running, you can set it to be merged automatically when CI
+pipeline succeeds. This way, you don't have to wait for the pipeline to finish
+and remember to merge the request manually.
 
-[Learn more about merging when build succeeds.](merge_requests/merge_when_build_succeeds.md)
+[Learn more about merging when pipeline succeeds.](merge_requests/merge_when_pipeline_succeeds.md)
 
 ## Resolve discussion comments in merge requests reviews
 

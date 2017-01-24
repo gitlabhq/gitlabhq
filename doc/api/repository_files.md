@@ -6,7 +6,9 @@
 
 ## Get file from repository
 
-Allows you to receive information about file in repository like name, size, content. Note that file content is Base64 encoded.
+Allows you to receive information about file in repository like name, size,
+content. Note that file content is Base64 encoded. This endpoint can be accessed
+without authentication if the repository is publicly accessible.
 
 ```
 GET /projects/:id/repository/files
@@ -60,7 +62,7 @@ Parameters:
 
 - `file_path` (required) - Full path to new file. Ex. lib/class.rb
 - `branch_name` (required) - The name of branch
-- `encoding` (optional) - 'text' or 'base64'. Text is default.
+- `encoding` (optional) - Change encoding to 'base64'. Default is text.
 - `author_email` (optional) - Specify the commit author's email address
 - `author_name` (optional) - Specify the commit author's name
 - `content` (required) - File content
@@ -89,7 +91,7 @@ Parameters:
 
 - `file_path` (required) - Full path to file. Ex. lib/class.rb
 - `branch_name` (required) - The name of branch
-- `encoding` (optional) - 'text' or 'base64'. Text is default.
+- `encoding` (optional) - Change encoding to 'base64'. Default is text.
 - `author_email` (optional) - Specify the commit author's email address
 - `author_name` (optional) - Specify the commit author's name
 - `content` (required) - New file content

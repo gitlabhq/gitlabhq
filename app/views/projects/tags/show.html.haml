@@ -3,29 +3,32 @@
 = render "projects/commits/head"
 
 %div{ class: container_class }
-  .sub-header-block
-    .pull-right.tag-buttons
-      - if can?(current_user, :push_code, @project)
-        = link_to edit_namespace_project_tag_release_path(@project.namespace, @project, @tag.name), class: 'btn has-tooltip', title: 'Edit release notes' do
-          = icon("pencil")
-      = link_to namespace_project_tree_path(@project.namespace, @project, @tag.name), class: 'btn has-tooltip', title: 'Browse files' do
-        = icon('files-o')
-      = link_to namespace_project_commits_path(@project.namespace, @project, @tag.name), class: 'btn has-tooltip', title: 'Browse commits' do
-        = icon('history')
-      = render 'projects/buttons/download', project: @project, ref: @tag.name
-      - if can?(current_user, :admin_project, @project)
-        .pull-right
-          = link_to namespace_project_tag_path(@project.namespace, @project, @tag.name), class: 'btn btn-remove remove-row grouped has-tooltip', title: "Delete tag", method: :delete, data: { confirm: "Deleting the '#{@tag.name}' tag cannot be undone. Are you sure?" } do
-            %i.fa.fa-trash-o
-    .tag-info.append-bottom-10
+  .top-area.multi-line
+    .nav-text
       .title
         %span.item-title= @tag.name
       - if @commit
         = render 'projects/branches/commit', commit: @commit, project: @project
       - else
         Cant find HEAD commit for this tag
+
+    .nav-controls.controls-flex
+      - if can?(current_user, :push_code, @project)
+        = link_to edit_namespace_project_tag_release_path(@project.namespace, @project, @tag.name), class: 'btn controls-item has-tooltip', title: 'Edit release notes' do
+          = icon("pencil")
+      = link_to namespace_project_tree_path(@project.namespace, @project, @tag.name), class: 'btn controls-item has-tooltip', title: 'Browse files' do
+        = icon('files-o')
+      = link_to namespace_project_commits_path(@project.namespace, @project, @tag.name), class: 'btn controls-item has-tooltip', title: 'Browse commits' do
+        = icon('history')
+      .btn-container.controls-item
+        = render 'projects/buttons/download', project: @project, ref: @tag.name
+      - if can?(current_user, :admin_project, @project)
+        .btn-container.controls-item-full
+          = link_to namespace_project_tag_path(@project.namespace, @project, @tag.name), class: 'btn btn-remove remove-row has-tooltip', title: "Delete tag", method: :delete, data: { confirm: "Deleting the '#{@tag.name}' tag cannot be undone. Are you sure?" } do
+            %i.fa.fa-trash-o
+
     - if @tag.message.present?
-      %pre.body
+      %pre.wrap
         = strip_gpg_signature(@tag.message)
 
   .append-bottom-default.prepend-top-default

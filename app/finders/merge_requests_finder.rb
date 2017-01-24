@@ -14,6 +14,7 @@
 #     search: string
 #     label_name: string
 #     sort: string
+#     non_archived: boolean
 #
 class MergeRequestsFinder < IssuableFinder
   def klass

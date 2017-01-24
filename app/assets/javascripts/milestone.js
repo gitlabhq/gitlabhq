@@ -1,4 +1,6 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-use-before-define, camelcase, quotes, object-shorthand, no-shadow, no-unused-vars, comma-dangle, no-var, prefer-template, no-underscore-dangle, consistent-return, one-var, one-var-declaration-per-line, default-case, prefer-arrow-callback, max-len */
+/* global Flash */
+
 (function() {
   this.Milestone = (function() {
     Milestone.updateIssue = function(li, issue_url, data) {
@@ -191,7 +193,5 @@
     };
 
     return Milestone;
-
   })();
-
 }).call(this);

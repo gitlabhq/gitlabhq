@@ -23,9 +23,9 @@ describe Gitlab::GithubImport::IssueFormatter, lib: true do
     }
   end
 
-  subject(:issue) { described_class.new(project, raw_data)}
+  subject(:issue) { described_class.new(project, raw_data) }
 
-  describe '#attributes' do
+  shared_examples 'Gitlab::GithubImport::IssueFormatter#attributes' do
     context 'when issue is open' do
       let(:raw_data) { double(base_data.merge(state: 'open')) }
 
@@ -83,7 +83,7 @@ describe Gitlab::GithubImport::IssueFormatter, lib: true do
     end
 
     context 'when it has a milestone' do
-      let(:milestone) { double(number: 45) }
+      let(:milestone) { double(id: 42, number: 42) }
       let(:raw_data) { double(base_data.merge(milestone: milestone)) }
 
       it 'returns nil when milestone does not exist' do
@@ -91,7 +91,7 @@ describe Gitlab::GithubImport::IssueFormatter, lib: true do
       end
 
       it 'returns milestone when it exists' do
-        milestone = create(:milestone, project: project, iid: 45)
+        milestone = create(:milestone, project: project, iid: 42)
 
         expect(issue.attributes.fetch(:milestone)).to eq milestone
       end
@@ -118,6 +118,28 @@ describe Gitlab::GithubImport::IssueFormatter, lib: true do
     end
   end
 
+  shared_examples 'Gitlab::GithubImport::IssueFormatter#number' do
+    let(:raw_data) { double(base_data.merge(number: 1347)) }
+
+    it 'returns issue number' do
+      expect(issue.number).to eq 1347
+    end
+  end
+
+  context 'when importing a GitHub project' do
+    it_behaves_like 'Gitlab::GithubImport::IssueFormatter#attributes'
+    it_behaves_like 'Gitlab::GithubImport::IssueFormatter#number'
+  end
+
+  context 'when importing a Gitea project' do
+    before do
+      project.update(import_type: 'gitea')
+    end
+
+    it_behaves_like 'Gitlab::GithubImport::IssueFormatter#attributes'
+    it_behaves_like 'Gitlab::GithubImport::IssueFormatter#number'
+  end
+
   describe '#has_comments?' do
     context 'when number of comments is greater than zero' do
       let(:raw_data) { double(base_data.merge(comments: 1)) }
@@ -136,28 +158,20 @@ describe Gitlab::GithubImport::IssueFormatter, lib: true do
     end
   end
 
-  describe '#number' do
-    let(:raw_data) { double(base_data.merge(number: 1347)) }
-
-    it 'returns pull request number' do
-      expect(issue.number).to eq 1347
-    end
-  end
-
-  describe '#valid?' do
+  describe '#pull_request?' do
     context 'when mention a pull request' do
       let(:raw_data) { double(base_data.merge(pull_request: double)) }
 
-      it 'returns false' do
-        expect(issue.valid?).to eq false
+      it 'returns true' do
+        expect(issue.pull_request?).to eq true
       end
     end
 
     context 'when does not mention a pull request' do
       let(:raw_data) { double(base_data.merge(pull_request: nil)) }
 
-      it 'returns true' do
-        expect(issue.valid?).to eq true
+      it 'returns false' do
+        expect(issue.pull_request?).to eq false
       end
     end
   end

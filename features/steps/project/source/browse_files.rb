@@ -6,7 +6,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   include RepoHelpers
 
   step "I don't have write access" do
-    @project = create(:project, name: "Other Project", path: "other-project")
+    @project = create(:project, :repository, name: "Other Project", path: "other-project")
     @project.team << [@user, :reporter]
     visit namespace_project_tree_path(@project.namespace, @project, root_ref)
   end

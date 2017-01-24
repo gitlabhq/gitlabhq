@@ -1,4 +1,6 @@
-/* eslint-disable */
+/* eslint-disable space-before-function-paren, comma-dangle, no-param-reassign, camelcase, max-len, no-unused-vars */
+/* global Vue */
+
 class BoardService {
   constructor (root, boardId) {
     this.lists = Vue.resource(`${root}/${boardId}/lists{/id}`, {}, {
@@ -45,7 +47,7 @@ class BoardService {
   }
 
   getIssuesForList (id, filter = {}) {
-    let data = { id };
+    const data = { id };
     Object.keys(filter).forEach((key) => { data[key] = filter[key]; });
 
     return this.issues.get(data);
@@ -63,4 +65,6 @@ class BoardService {
       issue
     });
   }
-};
+}
+
+window.BoardService = BoardService;

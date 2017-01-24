@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe BuildEmailWorker do
+  include EmailHelpers
   include RepoHelpers
 
   let(:build) { create(:ci_build) }

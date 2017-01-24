@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-describe API::API, api: true do
+describe API::NotificationSettings, api: true do
   include ApiHelpers
 
   let(:user) { create(:user) }
   let!(:group) { create(:group) }
-  let!(:project) { create(:project, :public, creator_id: user.id, namespace: group) }
+  let!(:project) { create(:empty_project, :public, creator_id: user.id, namespace: group) }
 
   describe "GET /notification_settings" do
     it "returns global notification settings for the current user" do

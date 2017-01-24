@@ -1,10 +1,13 @@
-/* eslint-disable */
-(function() {
+/* eslint-disable no-param-reassign, func-names, no-var, camelcase, no-unused-vars, object-shorthand, space-before-function-paren, no-return-assign, comma-dangle, consistent-return, one-var, one-var-declaration-per-line, quotes, prefer-template, prefer-arrow-callback, wrap-iife, max-len */
+/* global Issuable */
+/* global Turbolinks */
+
+((global) => {
   var issuable_created;
 
   issuable_created = false;
 
-  this.Issuable = {
+  global.Issuable = {
     init: function() {
       Issuable.initTemplates();
       Issuable.initSearch();
@@ -31,7 +34,6 @@
         e.preventDefault();
         debouncedExecSearch(e);
       });
-
     },
     initSearchState: function($searchInput) {
       const currentSearchVal = $searchInput.val();
@@ -108,7 +110,11 @@
     filterResults: (function(_this) {
       return function(form) {
         var formAction, formData, issuesUrl;
-        formData = form.serialize();
+        formData = form.serializeArray();
+        formData = formData.filter(function(data) {
+          return data.value !== '';
+        });
+        formData = $.param(formData);
         formAction = form.attr('action');
         issuesUrl = formAction;
         issuesUrl += "" + (formAction.indexOf('?') < 0 ? '?' : '&');
@@ -141,8 +147,11 @@
       const $issuesOtherFilters = $('.issues-other-filters');
       const $issuesBulkUpdate = $('.issues_bulk_update');
 
+      this.issuableBulkActions.willUpdateLabels = false;
+      this.issuableBulkActions.setOriginalDropdownData();
+
       if ($checkedIssues.length > 0) {
-        let ids = $.map($checkedIssues, function(value) {
+        const ids = $.map($checkedIssues, function(value) {
           return $(value).data('id');
         });
         $updateIssuesIds.val(ids);
@@ -152,7 +161,6 @@
         $updateIssuesIds.val([]);
         $issuesBulkUpdate.hide();
         $issuesOtherFilters.show();
-        this.issuableBulkActions.willUpdateLabels = false;
       }
       return true;
     },
@@ -178,5 +186,4 @@
       });
     }
   };
-
-}).call(this);
+})(window);

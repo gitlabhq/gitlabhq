@@ -22,35 +22,21 @@ describe Issue, models: true do
     it { is_expected.to have_db_index(:deleted_at) }
   end
 
-  describe '.visible_to_user' do
-    let(:user) { create(:user) }
-    let(:authorized_user) { create(:user) }
-    let(:project) { create(:project, namespace: authorized_user.namespace) }
-    let!(:public_issue) { create(:issue, project: project) }
-    let!(:confidential_issue) { create(:issue, project: project, confidential: true) }
-
-    it 'returns non confidential issues for nil user' do
-      expect(Issue.visible_to_user(nil).count).to be(1)
-    end
-
-    it 'returns non confidential issues for user not authorized for the issues projects' do
-      expect(Issue.visible_to_user(user).count).to be(1)
-    end
-
-    it 'returns all issues for user authorized for the issues projects' do
-      expect(Issue.visible_to_user(authorized_user).count).to be(2)
-    end
-  end
-
   describe '#to_reference' do
+    let(:project) { build(:empty_project, name: 'sample-project') }
+    let(:issue) { build(:issue, iid: 1, project: project) }
+
     it 'returns a String reference to the object' do
-      expect(subject.to_reference).to eq "##{subject.iid}"
+      expect(issue.to_reference).to eq "#1"
+    end
+
+    it 'returns a String reference with the full path' do
+      expect(issue.to_reference(full: true)).to eq(project.path_with_namespace + '#1')
     end
 
     it 'supports a cross-project reference' do
-      cross = double('project')
-      expect(subject.to_reference(cross)).
-        to eq "#{subject.project.to_reference}##{subject.iid}"
+      another_project = build(:project, name: 'another-project', namespace: project.namespace)
+      expect(issue.to_reference(another_project)).to eq "sample-project#1"
     end
   end
 
@@ -331,7 +317,7 @@ describe Issue, models: true do
     end
 
     context 'with a user' do
-      let(:user) { build(:user) }
+      let(:user) { create(:user) }
       let(:issue) { build(:issue) }
 
       it 'returns true when the issue is readable' do

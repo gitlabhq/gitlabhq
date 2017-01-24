@@ -39,6 +39,8 @@ class Issue < ActiveRecord::Base
 
   scope :created_after, -> (datetime) { where("created_at >= ?", datetime) }
 
+  scope :include_associations, -> { includes(:assignee, :labels, project: :namespace) }
+
   attr_spammable :title, spam_title: true
   attr_spammable :description, spam_description: true
 
@@ -58,61 +60,6 @@ class Issue < ActiveRecord::Base
 
   def hook_attrs
     attributes
-  end
-
-  class << self
-    private
-
-    # Returns the project that the current scope belongs to if any, nil otherwise.
-    #
-    # Examples:
-    # - my_project.issues.without_due_date.owner_project => my_project
-    # - Issue.all.owner_project => nil
-    def owner_project
-      # No owner if we're not being called from an association
-      return unless all.respond_to?(:proxy_association)
-
-      owner = all.proxy_association.owner
-
-      # Check if the association is or belongs to a project
-      if owner.is_a?(Project)
-        owner
-      else
-        begin
-          owner.association(:project).target
-        rescue ActiveRecord::AssociationNotFoundError
-          nil
-        end
-      end
-    end
-  end
-
-  def self.visible_to_user(user)
-    return where('issues.confidential IS NULL OR issues.confidential IS FALSE') if user.blank?
-    return all if user.admin?
-
-    # Check if we are scoped to a specific project's issues
-    if owner_project
-      if owner_project.authorized_for_user?(user, Gitlab::Access::REPORTER)
-        # If the project is authorized for the user, they can see all issues in the project
-        return all
-      else
-        # else only non confidential and authored/assigned to them
-        return where('issues.confidential IS NULL OR issues.confidential IS FALSE
-          OR issues.author_id = :user_id OR issues.assignee_id = :user_id',
-          user_id: user.id)
-      end
-    end
-
-    where('
-      issues.confidential IS NULL
-      OR issues.confidential IS FALSE
-      OR (issues.confidential = TRUE
-        AND (issues.author_id = :user_id
-          OR issues.assignee_id = :user_id
-          OR issues.project_id IN(:project_ids)))',
-      user_id: user.id,
-      project_ids: user.authorized_projects(Gitlab::Access::REPORTER).select(:id))
   end
 
   def self.reference_prefix
@@ -150,14 +97,10 @@ class Issue < ActiveRecord::Base
     end
   end
 
-  def to_reference(from_project = nil)
+  def to_reference(from_project = nil, full: false)
     reference = "#{self.class.reference_prefix}#{iid}"
 
-    if cross_project_reference?(from_project)
-      reference = project.to_reference + reference
-    end
-
-    reference
+    "#{project.to_reference(from_project, full: full)}#{reference}"
   end
 
   def referenced_merge_requests(current_user = nil)
@@ -180,18 +123,6 @@ class Issue < ActiveRecord::Base
     branches_with_merge_request = self.referenced_merge_requests(current_user).map(&:source_branch)
 
     branches_with_iid - branches_with_merge_request
-  end
-
-  # Reset issue events cache
-  #
-  # Since we do cache @event we need to reset cache in special cases:
-  # * when an issue is updated
-  # Events cache stored like  events/23-20130109142513.
-  # The cache key includes updated_at timestamp.
-  # Thus it will automatically generate a new fragment
-  # when the event is updated because the key changes.
-  def reset_events_cache
-    Event.reset_event_cache_for(self)
   end
 
   # To allow polymorphism with MergeRequest.
@@ -266,7 +197,7 @@ class Issue < ActiveRecord::Base
 
   def as_json(options = {})
     super(options).tap do |json|
-      json[:subscribed] = subscribed?(options[:user]) if options.has_key?(:user)
+      json[:subscribed] = subscribed?(options[:user], project) if options.has_key?(:user) && options[:user]
 
       if options.has_key?(:labels)
         json[:labels] = labels.as_json(

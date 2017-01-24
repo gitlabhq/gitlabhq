@@ -15,6 +15,6 @@ describe DeploymentEntity do
 
   it 'exposes nested information about branch' do
     expect(subject[:ref][:name]).to eq 'master'
-    expect(subject[:ref][:ref_url]).not_to be_empty
+    expect(subject[:ref][:ref_path]).not_to be_empty
   end
 end

@@ -38,24 +38,18 @@ module MergeRequests
 
     private
 
-    def filter_params
-      super(:merge_request)
-    end
-
-    def merge_requests_for(branch)
-      origin_merge_requests = @project.origin_merge_requests
-        .opened.where(source_branch: branch).to_a
-
-      fork_merge_requests = @project.fork_merge_requests
-        .opened.where(source_branch: branch).to_a
-
-      (origin_merge_requests + fork_merge_requests)
-        .uniq.select(&:source_project)
+    # Returns all origin and fork merge requests from `@project` satisfying passed arguments.
+    def merge_requests_for(source_branch, mr_states: [:opened])
+      MergeRequest
+        .with_state(mr_states)
+        .where(source_branch: source_branch, source_project_id: @project.id)
+        .preload(:source_project) # we don't need a #includes since we're just preloading for the #select
+        .select(&:source_project)
     end
 
     def pipeline_merge_requests(pipeline)
       merge_requests_for(pipeline.ref).each do |merge_request|
-        next unless pipeline == merge_request.pipeline
+        next unless pipeline == merge_request.head_pipeline
 
         yield merge_request
       end
@@ -63,7 +57,7 @@ module MergeRequests
 
     def commit_status_merge_requests(commit_status)
       merge_requests_for(commit_status.ref).each do |merge_request|
-        pipeline = merge_request.pipeline
+        pipeline = merge_request.head_pipeline
 
         next unless pipeline
         next unless pipeline.sha == commit_status.sha

@@ -1,8 +1,9 @@
 require 'mime/types'
 
 module API
-  # Projects commits API
   class Commits < Grape::API
+    include PaginationParams
+
     before { authenticate! }
     before { authorize! :download_code, user_project }
 
@@ -43,17 +44,16 @@ module API
         detail 'This feature was introduced in GitLab 8.13'
       end
       params do
-        requires :id, type: Integer, desc: 'The project ID'
         requires :branch_name, type: String, desc: 'The name of branch'
         requires :commit_message, type: String, desc: 'Commit message'
-        requires :actions, type: Array, desc: 'Actions to perform in commit'
+        requires :actions, type: Array[Hash], desc: 'Actions to perform in commit'
         optional :author_email, type: String, desc: 'Author email for commit'
         optional :author_name, type: String, desc: 'Author name for commit'
       end
       post ":id/repository/commits" do
         authorize! :push_code, user_project
 
-        attrs = declared(params)
+        attrs = declared_params
         attrs[:source_branch] = attrs[:branch_name]
         attrs[:target_branch] = attrs[:branch_name]
         attrs[:actions].map! do |action|
@@ -107,9 +107,8 @@ module API
         failure [[404, 'Not Found']]
       end
       params do
+        use :pagination
         requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag'
-        optional :per_page, type: Integer, desc: 'The amount of items per page for paginaion'
-        optional :page, type: Integer, desc: 'The page number for pagination'
       end
       get ':id/repository/commits/:sha/comments' do
         commit = user_project.commit(params[:sha])
@@ -118,6 +117,41 @@ module API
         notes = Note.where(commit_id: commit.id).order(:created_at)
 
         present paginate(notes), with: Entities::CommitNote
+      end
+
+      desc 'Cherry pick commit into a branch' do
+        detail 'This feature was introduced in GitLab 8.15'
+        success Entities::RepoCommit
+      end
+      params do
+        requires :sha, type: String, desc: 'A commit sha to be cherry picked'
+        requires :branch, type: String, desc: 'The name of the branch'
+      end
+      post ':id/repository/commits/:sha/cherry_pick' do
+        authorize! :push_code, user_project
+
+        commit = user_project.commit(params[:sha])
+        not_found!('Commit') unless commit
+
+        branch = user_project.repository.find_branch(params[:branch])
+        not_found!('Branch') unless branch
+
+        commit_params = {
+          commit: commit,
+          create_merge_request: false,
+          source_project: user_project,
+          source_branch: commit.cherry_pick_branch_name,
+          target_branch: params[:branch]
+        }
+
+        result = ::Commits::CherryPickService.new(user_project, current_user, commit_params).execute
+
+        if result[:status] == :success
+          branch = user_project.repository.find_branch(params[:branch])
+          present user_project.repository.commit(branch.dereferenced_target), with: Entities::RepoCommit
+        else
+          render_api_error!(result[:message], 400)
+        end
       end
 
       desc 'Post comment to commit' do

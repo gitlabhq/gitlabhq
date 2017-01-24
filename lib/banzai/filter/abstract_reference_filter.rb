@@ -33,7 +33,7 @@ module Banzai
       # Returns a String replaced with the return of the block.
       def self.references_in(text, pattern = object_class.reference_pattern)
         text.gsub(pattern) do |match|
-          yield match, $~[object_sym].to_i, $~[:project], $~
+          yield match, $~[object_sym].to_i, $~[:project], $~[:namespace], $~
         end
       end
 
@@ -145,8 +145,9 @@ module Banzai
       # Returns a String with references replaced with links. All links
       # have `gfm` and `gfm-OBJECT_NAME` class names attached for styling.
       def object_link_filter(text, pattern, link_content: nil)
-        references_in(text, pattern) do |match, id, project_ref, matches|
-          project = project_from_ref_cached(project_ref)
+        references_in(text, pattern) do |match, id, project_ref, namespace_ref, matches|
+          project_path = full_project_path(namespace_ref, project_ref)
+          project = project_from_ref_cached(project_path)
 
           if project && object = find_object_cached(project, id)
             title = object_link_title(object)
@@ -217,10 +218,9 @@ module Banzai
 
           nodes.each do |node|
             node.to_html.scan(regex) do
-              project = $~[:project] || current_project_path
+              project_path = full_project_path($~[:namespace], $~[:project])
               symbol = $~[object_sym]
-
-              refs[project] << symbol if object_class.reference_valid?(symbol)
+              refs[project_path] << symbol if object_class.reference_valid?(symbol)
             end
           end
 
@@ -248,21 +248,32 @@ module Banzai
       end
 
       def projects_relation_for_paths(paths)
-        Project.where_paths_in(paths).includes(:namespace)
+        Project.where_full_path_in(paths).includes(:namespace)
       end
 
       # Returns projects for the given paths.
       def find_projects_for_paths(paths)
         if RequestStore.active?
-          to_query = paths - project_refs_cache.keys
+          cache = project_refs_cache
+          to_query = paths - cache.keys
 
           unless to_query.empty?
-            projects_relation_for_paths(to_query).each do |project|
-              get_or_set_cache(project_refs_cache, project.path_with_namespace) { project }
+            projects = projects_relation_for_paths(to_query)
+
+            found = []
+            projects.each do |project|
+              ref = project.path_with_namespace
+              get_or_set_cache(cache, ref) { project }
+              found << ref
+            end
+
+            not_found = to_query - found
+            not_found.each do |ref|
+              get_or_set_cache(cache, ref) { nil }
             end
           end
 
-          project_refs_cache.slice(*paths).values
+          cache.slice(*paths).values.compact
         else
           projects_relation_for_paths(paths)
         end
@@ -272,7 +283,18 @@ module Banzai
         @current_project_path ||= project.path_with_namespace
       end
 
+      def current_project_namespace_path
+        @current_project_namespace_path ||= project.namespace.path
+      end
+
       private
+
+      def full_project_path(namespace, project_ref)
+        return current_project_path unless project_ref
+
+        namespace_ref = namespace || current_project_namespace_path
+        "#{namespace_ref}/#{project_ref}"
+      end
 
       def project_refs_cache
         RequestStore[:banzai_project_refs] ||= {}

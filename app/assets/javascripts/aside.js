@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, quotes, prefer-arrow-callback, no-var, one-var, one-var-declaration-per-line, no-else-return, max-len */
 (function() {
   this.Aside = (function() {
     function Aside() {
@@ -21,7 +21,5 @@
     }
 
     return Aside;
-
   })();
-
 }).call(this);

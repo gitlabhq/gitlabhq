@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-param-reassign, no-cond-assign, one-var, one-var-declaration-per-line, no-void, guard-for-in, no-restricted-syntax, prefer-template, quotes, max-len */
 (function() {
   (function(w) {
     var base;
@@ -22,7 +22,7 @@
         if (sParameterName[0] === sParam) {
           values.push(sParameterName[1].replace(/\+/g, ' '));
         }
-        i++;
+        i += 1;
       }
       return values;
     };
@@ -57,7 +57,7 @@
       return ((function() {
         var j, len, results;
         results = [];
-        for (j = 0, len = urlVariables.length; j < len; j++) {
+        for (j = 0, len = urlVariables.length; j < len; j += 1) {
           variables = urlVariables[j];
           if (variables.indexOf(param) === -1) {
             results.push(variables);
@@ -77,5 +77,4 @@
       return hashIndex === -1 ? null : url.substring(hashIndex + 1);
     };
   })(window);
-
 }).call(this);

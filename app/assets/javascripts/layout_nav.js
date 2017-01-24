@@ -1,4 +1,5 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, no-var, prefer-arrow-callback, no-unused-vars, one-var, one-var-declaration-per-line, vars-on-top, max-len */
+
 (function() {
   var hideEndFade;
 
@@ -27,10 +28,10 @@
     });
 
     $scrollingTabs.each(function () {
-      var $this = $(this),
-          scrollingTabWidth = $this.width(),
-          $active = $this.find('.active'),
-          activeWidth = $active.width();
+      var $this = $(this);
+      var scrollingTabWidth = $this.width();
+      var $active = $this.find('.active');
+      var activeWidth = $active.width();
 
       if ($active.length) {
         var offset = $active.offset().left + activeWidth;
@@ -43,5 +44,4 @@
       }
     });
   });
-
 }).call(this);

@@ -1,13 +1,12 @@
-/* eslint-disable */
+/* eslint-disable space-before-function-paren, no-var */
 /*= require header */
 /*= require lib/utils/text_utility */
 /*= require jquery */
 
 (function() {
-
   describe('Header', function() {
     var todosPendingCount = '.todos-pending-count';
-    var fixtureTemplate = 'header.html';
+    var fixtureTemplate = 'static/header.html.raw';
 
     function isTodosCountHidden() {
       return $(todosPendingCount).hasClass('hidden');
@@ -17,9 +16,9 @@
       $(document).trigger('todo:toggle', newCount);
     }
 
-    fixture.preload(fixtureTemplate);
+    preloadFixtures(fixtureTemplate);
     beforeEach(function() {
-      fixture.load(fixtureTemplate);
+      loadFixtures(fixtureTemplate);
     });
 
     it('should update todos-pending-count after receiving the todo:toggle event', function() {
@@ -51,5 +50,4 @@
       });
     });
   });
-
 }).call(this);

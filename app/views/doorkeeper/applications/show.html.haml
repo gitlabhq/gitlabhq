@@ -2,7 +2,7 @@
 %h3.page-title
   Application: #{@application.name}
 
-.table-holder
+.table-holder.oauth-application-show
   %table.table
     %tr
       %td
@@ -22,6 +22,9 @@
         - @application.redirect_uri.split.each do |uri|
           %div
             %span.monospace= uri
+
+    = render "shared/tokens/scopes_list", token: @application
+
 .form-actions
   = link_to 'Edit', edit_oauth_application_path(@application), class: 'btn btn-primary wide pull-left'
   = render 'delete_form', application: @application, submit_btn_css: 'btn btn-danger prepend-left-10'

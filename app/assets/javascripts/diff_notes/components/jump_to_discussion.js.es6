@@ -1,6 +1,10 @@
-/* eslint-disable */
+/* eslint-disable comma-dangle, object-shorthand, func-names, no-else-return, guard-for-in, no-restricted-syntax, one-var, space-before-function-paren, no-lonely-if, no-continue, brace-style, max-len, quotes */
+/* global Vue */
+/* global DiscussionMixins */
+/* global CommentsStore */
+
 (() => {
-  JumpToDiscussion = Vue.extend({
+  const JumpToDiscussion = Vue.extend({
     mixins: [DiscussionMixins],
     props: {
       discussionId: String
@@ -42,13 +46,13 @@
     },
     methods: {
       jumpToNextUnresolvedDiscussion: function () {
-        let discussionsSelector,
-            discussionIdsInScope,
-            firstUnresolvedDiscussionId,
-            nextUnresolvedDiscussionId,
-            activeTab = window.mrTabs.currentAction,
-            hasDiscussionsToJumpTo = true,
-            jumpToFirstDiscussion = !this.discussionId;
+        let discussionsSelector;
+        let discussionIdsInScope;
+        let firstUnresolvedDiscussionId;
+        let nextUnresolvedDiscussionId;
+        let activeTab = window.mrTabs.currentAction;
+        let hasDiscussionsToJumpTo = true;
+        let jumpToFirstDiscussion = !this.discussionId;
 
         const discussionIdsForElements = function(elements) {
           return elements.map(function() {
@@ -64,11 +68,11 @@
 
           let unresolvedDiscussionCount = 0;
 
-          for (let i = 0; i < discussionIdsInScope.length; i++) {
+          for (let i = 0; i < discussionIdsInScope.length; i += 1) {
             const discussionId = discussionIdsInScope[i];
             const discussion = discussions[discussionId];
             if (discussion && !discussion.isResolved()) {
-              unresolvedDiscussionCount++;
+              unresolvedDiscussionCount += 1;
             }
           }
 
@@ -105,7 +109,7 @@
         }
 
         let currentDiscussionFound = false;
-        for (let i = 0; i < discussionIdsInScope.length; i++) {
+        for (let i = 0; i < discussionIdsInScope.length; i += 1) {
           const discussionId = discussionIdsInScope[i];
           const discussion = discussions[discussionId];
 
@@ -152,7 +156,7 @@
 
           // If the next discussion is closed, toggle it open.
           if ($target.find('.js-toggle-content').is(':hidden')) {
-            $target.find('.js-toggle-button i').trigger('click')
+            $target.find('.js-toggle-button i').trigger('click');
           }
         } else if (activeTab === 'diffs') {
           // Resolved discussions are hidden in the diffs tab by default.
@@ -166,7 +170,7 @@
           // If we are on the diffs tab, we don't scroll to the discussion itself, but to
           // 4 diff lines above it: the line the discussion was in response to + 3 context
           let prevEl;
-          for (let i = 0; i < 4; i++) {
+          for (let i = 0; i < 4; i += 1) {
             prevEl = $target.prev();
 
             // If the discussion doesn't have 4 lines above it, we'll have to do with fewer.

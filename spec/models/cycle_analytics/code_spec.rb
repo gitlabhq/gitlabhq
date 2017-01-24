@@ -16,10 +16,10 @@ describe 'CycleAnalytics#code', feature: true do
                                -> (context, data) do
                                  context.create_commit_referencing_issue(data[:issue])
                                end]],
-      end_time_conditions:   [["merge request that closes issue is created",
-                               -> (context, data) do
-                                 context.create_merge_request_closing_issue(data[:issue])
-                               end]],
+      end_time_conditions: [["merge request that closes issue is created",
+                             -> (context, data) do
+                               context.create_merge_request_closing_issue(data[:issue])
+                             end]],
       post_fn: -> (context, data) do
         context.merge_merge_requests_closing_issue(data[:issue])
         context.deploy_master
@@ -37,7 +37,7 @@ describe 'CycleAnalytics#code', feature: true do
           deploy_master
         end
 
-        expect(subject.code).to be_nil
+        expect(subject[:code].median).to be_nil
       end
     end
   end
@@ -50,10 +50,10 @@ describe 'CycleAnalytics#code', feature: true do
                                -> (context, data) do
                                  context.create_commit_referencing_issue(data[:issue])
                                end]],
-      end_time_conditions:   [["merge request that closes issue is created",
-                               -> (context, data) do
-                                 context.create_merge_request_closing_issue(data[:issue])
-                               end]],
+      end_time_conditions: [["merge request that closes issue is created",
+                             -> (context, data) do
+                               context.create_merge_request_closing_issue(data[:issue])
+                             end]],
       post_fn: -> (context, data) do
         context.merge_merge_requests_closing_issue(data[:issue])
       end)
@@ -69,7 +69,7 @@ describe 'CycleAnalytics#code', feature: true do
           merge_merge_requests_closing_issue(issue)
         end
 
-        expect(subject.code).to be_nil
+        expect(subject[:code].median).to be_nil
       end
     end
   end

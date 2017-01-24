@@ -41,7 +41,8 @@ Example of response
     "started_at": null,
     "finished_at": null,
     "committed_at": null,
-    "duration": null
+    "duration": null,
+    "coverage": "30.0"
   },
   {
     "id": 48,
@@ -64,7 +65,8 @@ Example of response
     "started_at": null,
     "finished_at": null,
     "committed_at": null,
-    "duration": null
+    "duration": null,
+    "coverage": null
   }
 ]
 ```
@@ -110,7 +112,54 @@ Example of response
   "started_at": null,
   "finished_at": "2016-08-11T11:32:35.145Z",
   "committed_at": null,
-  "duration": null
+  "duration": null,
+  "coverage": "30.0"
+}
+```
+
+## Create a new pipeline
+
+> [Introduced][ce-7209] in GitLab 8.14
+
+```
+POST /projects/:id/pipeline
+```
+
+| Attribute  | Type    | Required | Description         |
+|------------|---------|----------|---------------------|
+| `id`       | integer | yes      | The ID of a project |
+| `ref`       | string | yes      | Reference to commit |
+
+```
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/pipeline?ref=master"
+```
+
+Example of response
+
+```json
+{
+  "id": 61,
+  "sha": "384c444e840a515b23f21915ee5766b87068a70d",
+  "ref": "master",
+  "status": "pending",
+  "before_sha": "0000000000000000000000000000000000000000",
+  "tag": false,
+  "yaml_errors": null,
+  "user": {
+    "name": "Administrator",
+    "username": "root",
+    "id": 1,
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+    "web_url": "http://localhost:3000/root"
+  },
+  "created_at": "2016-11-04T09:36:13.747Z",
+  "updated_at": "2016-11-04T09:36:13.977Z",
+  "started_at": null,
+  "finished_at": null,
+  "committed_at": null,
+  "duration": null,
+  "coverage": null
 }
 ```
 
@@ -155,7 +204,8 @@ Response:
   "started_at": null,
   "finished_at": "2016-08-11T11:32:35.145Z",
   "committed_at": null,
-  "duration": null
+  "duration": null,
+  "coverage": null
 }
 ```
 
@@ -200,8 +250,10 @@ Response:
   "started_at": null,
   "finished_at": "2016-08-11T11:32:35.145Z",
   "committed_at": null,
-  "duration": null
+  "duration": null,
+  "coverage": null
 }
 ```
 
 [ce-5837]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5837
+[ce-7209]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7209

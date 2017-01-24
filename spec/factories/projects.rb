@@ -24,6 +24,18 @@ FactoryGirl.define do
       visibility_level Gitlab::VisibilityLevel::PRIVATE
     end
 
+    trait :archived do
+      archived true
+    end
+
+    trait :access_requestable do
+      request_access_enabled true
+    end
+
+    trait :repository do
+      # no-op... for now!
+    end
+
     trait :empty_repo do
       after(:create) do |project|
         project.create_repository
@@ -35,6 +47,12 @@ FactoryGirl.define do
         project.create_repository
 
         FileUtils.rm_r(File.join(project.repository_storage_path, "#{project.path_with_namespace}.git", 'refs'))
+      end
+    end
+
+    trait :test_repo do
+      after :create do |project|
+        TestEnv.copy_repo(project)
       end
     end
 
@@ -87,9 +105,7 @@ FactoryGirl.define do
   factory :project, parent: :empty_project do
     path { 'gitlabhq' }
 
-    after :create do |project|
-      TestEnv.copy_repo(project)
-    end
+    test_repo
   end
 
   factory :forked_project_with_submodules, parent: :empty_project do
@@ -125,6 +141,19 @@ FactoryGirl.define do
           title: 'JIRA tracker',
           url: 'http://jira.example.net',
           project_key: 'JIRA'
+        }
+      )
+    end
+  end
+
+  factory :kubernetes_project, parent: :empty_project do
+    after :create do |project|
+      project.create_kubernetes_service(
+        active: true,
+        properties: {
+          namespace: project.path,
+          api_url: 'https://kubernetes.example.com',
+          token: 'a' * 40,
         }
       )
     end

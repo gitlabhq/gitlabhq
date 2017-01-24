@@ -4,7 +4,7 @@
 .abuse-reports
   - if @abuse_reports.present?
     .table-holder
-      %table.table
+      %table.table.responsive-table
         %thead.hidden-sm.hidden-xs
           %tr
             %th User
@@ -13,8 +13,6 @@
             %th Action
         = render @abuse_reports
   - else
-    .no-reports
-      %span.pull-left
-        There are no abuse reports!
-      .pull-left
-        = emoji_icon 'tada'
+    .empty-state
+      .text-center
+        %h4 There are no abuse reports! #{emoji_icon 'tada'}

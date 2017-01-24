@@ -1,16 +1,23 @@
 require 'spec_helper'
 
 describe UserUrlConstrainer, lib: true do
-  let!(:username) { create(:user, username: 'dz') }
+  let!(:user) { create(:user, username: 'dz') }
 
   describe '#matches?' do
-    it { expect(subject.matches?(request '/dz')).to be_truthy }
-    it { expect(subject.matches?(request '/dz.atom')).to be_truthy }
-    it { expect(subject.matches?(request '/dz/projects')).to be_falsey }
-    it { expect(subject.matches?(request '/gitlab')).to be_falsey }
+    context 'valid request' do
+      let(:request) { build_request(user.username) }
+
+      it { expect(subject.matches?(request)).to be_truthy }
+    end
+
+    context 'invalid request' do
+      let(:request) { build_request('foo') }
+
+      it { expect(subject.matches?(request)).to be_falsey }
+    end
   end
 
-  def request(path)
-    double(:request, path: path)
+  def build_request(username)
+    double(:request, params: { username: username })
   end
 end

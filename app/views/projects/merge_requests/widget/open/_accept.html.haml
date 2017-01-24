@@ -1,3 +1,6 @@
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_tag('merge_request_widget/ci_bundle.js')
+
 - status_class = @pipeline ? " ci-#{@pipeline.status}" : nil
 
 = form_for [:merge, @project.namespace.becomes(Namespace), @project, @merge_request], remote: true, method: :post, html: { class: 'accept-mr-form js-quick-submit js-requires-input' } do |f|
@@ -9,7 +12,7 @@
         - if @pipeline && @pipeline.active?
           %span.btn-group
             = button_tag class: "btn btn-create js-merge-button merge_when_build_succeeds" do
-              Merge When Build Succeeds
+              Merge When Pipeline Succeeds
             - unless @project.only_allow_merge_if_build_succeeds?
               = button_tag class: "btn btn-success dropdown-toggle", 'data-toggle' => 'dropdown' do
                 = icon('caret-down')
@@ -19,7 +22,7 @@
                 %li
                   = link_to "#", class: "merge_when_build_succeeds" do
                     = icon('check fw')
-                    Merge When Build Succeeds
+                    Merge When Pipeline Succeeds
                 %li
                   = link_to "#", class: "accept_merge_request" do
                     = icon('warning fw')
@@ -41,25 +44,9 @@
           Modify commit message
     .js-toggle-content.hide.prepend-top-default
       = render 'shared/commit_message_container', params: params,
+          message_with_description: @merge_request.merge_commit_message(include_description: true),
+          message_without_description: @merge_request.merge_commit_message,
           text: @merge_request.merge_commit_message,
           rows: 14, hint: true
 
     = hidden_field_tag :merge_when_build_succeeds, "", autocomplete: "off"
-
-  :javascript
-    $('.accept-mr-form').on('ajax:send', function() {
-      $(".accept-mr-form :input").disable();
-    });
-
-    $('.accept_merge_request').on('click', function() {
-      $('.js-merge-button').html("<i class='fa fa-spinner fa-spin'></i> Merge in progress");
-    });
-
-    $('.merge_when_build_succeeds').on('click', function() {
-      $("#merge_when_build_succeeds").val("1");
-    });
-
-    $('.js-merge-dropdown a').on('click', function(e) {
-      e.preventDefault();
-      $(this).closest("form").submit();
-    });

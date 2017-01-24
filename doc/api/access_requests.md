@@ -18,8 +18,6 @@
 
 Gets a list of access requests viewable by the authenticated user.
 
-Returns `200` if the request succeeds.
-
 ```
 GET /groups/:id/access_requests
 GET /projects/:id/access_requests
@@ -61,8 +59,6 @@ Example response:
 
 Requests access for the authenticated user to a group or project.
 
-Returns `201` if the request succeeds.
-
 ```
 POST /groups/:id/access_requests
 POST /projects/:id/access_requests
@@ -93,8 +89,6 @@ Example response:
 ## Approve an access request
 
 Approves an access request for the given user.
-
-Returns `201` if the request succeeds.
 
 ```
 PUT /groups/:id/access_requests/:user_id/approve
@@ -128,8 +122,6 @@ Example response:
 ## Deny an access request
 
 Denies an access request for the given user.
-
-Returns `200` if the request succeeds.
 
 ```
 DELETE /groups/:id/access_requests/:user_id

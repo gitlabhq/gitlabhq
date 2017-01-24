@@ -1,6 +1,9 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, camelcase, vars-on-top, object-shorthand, comma-dangle, eqeqeq, no-mixed-operators, no-return-assign, newline-per-chained-call, prefer-arrow-callback, consistent-return, one-var, one-var-declaration-per-line, prefer-template, quotes, no-unused-vars, no-else-return, max-len */
+/* global d3 */
+/* global dateFormat */
+
 (function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
 
   this.Calendar = (function() {
     function Calendar(timestamps, calendar_activities_path) {
@@ -17,7 +20,7 @@
       this.timestampsTmp = [];
       var group = 0;
 
-      var today = new Date()
+      var today = new Date();
       today.setHours(0, 0, 0, 0, 0);
 
       var oneYearAgo = new Date(today);
@@ -25,7 +28,7 @@
 
       var days = gl.utils.getDayDifference(oneYearAgo, today);
 
-      for(var i = 0; i <= days; i++) {
+      for (var i = 0; i <= days; i += 1) {
         var date = new Date(oneYearAgo);
         date.setDate(date.getDate() + i);
 
@@ -36,7 +39,7 @@
         // or if is first object
         if ((day === 0 && i !== 0) || i === 0) {
           this.timestampsTmp.push([]);
-          group++;
+          group += 1;
         }
 
         var innerArray = this.timestampsTmp[group - 1];
@@ -71,7 +74,7 @@
       }
 
       return extraWidthPadding;
-    }
+    };
 
     Calendar.prototype.renderSvg = function(group) {
       var width = (group + 1) * this.daySizeWithSpace + this.getExtraWidthPadding(group);
@@ -206,6 +209,7 @@
           }
         });
       } else {
+        this.currentSelectedDate = '';
         return $('.user-calendar-activities').html('');
       }
     };
@@ -217,7 +221,5 @@
     };
 
     return Calendar;
-
   })();
-
 }).call(this);

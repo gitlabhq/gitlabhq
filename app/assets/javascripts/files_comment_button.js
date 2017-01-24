@@ -1,6 +1,8 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, max-len, one-var, one-var-declaration-per-line, quotes, prefer-template, newline-per-chained-call, comma-dangle, new-cap, no-else-return, consistent-return */
+/* global FilesCommentButton */
+
 (function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
 
   this.FilesCommentButton = (function() {
     var COMMENT_BUTTON_CLASS, COMMENT_BUTTON_TEMPLATE, DEBOUNCE_TIMEOUT_DURATION, EMPTY_CELL_CLASS, LINE_COLUMN_CLASSES, LINE_CONTENT_CLASS, LINE_HOLDER_CLASS, LINE_NUMBER_CLASS, OLD_LINE_CLASS, TEXT_FILE_SELECTOR, UNFOLDABLE_LINE_CLASS;
@@ -130,7 +132,6 @@
     };
 
     return FilesCommentButton;
-
   })();
 
   $.fn.filesCommentButton = function() {
@@ -143,5 +144,4 @@
       }
     });
   };
-
 }).call(this);

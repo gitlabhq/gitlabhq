@@ -6,12 +6,4 @@
 - else
   = render 'explore/head'
 
-.row-content-block
-  - if current_user
-    = link_to new_snippet_path, class: "btn btn-new btn-wide-on-sm pull-right", title: "New snippet" do
-      New snippet
-
-  .oneline
-    Public snippets created by you and other users are listed here
-
-= render 'snippets/snippets'
+= render partial: 'snippets/snippets', locals: { link_project: true }

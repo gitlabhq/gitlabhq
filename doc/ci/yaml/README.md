@@ -406,14 +406,20 @@ except master.
 ### job variables
 
 It is possible to define build variables using a `variables` keyword on a job
-level. It works basically the same way as its global-level equivalent but
-allows you to define job-specific build variables.
+level. It works basically the same way as its [global-level equivalent](#variables)
+but allows you to define job-specific build variables.
 
 When the `variables` keyword is used on a job level, it overrides global YAML
-build variables and predefined variables.
+build variables and predefined variables. To turn off global defined variables
+in your job, define an empty array:
 
-Build variables priority is defined in
-[variables documentation](../variables/README.md).
+```yaml
+job_name:
+  variables: []
+```
+
+Build variables priority is defined in the
+[variables documentation][variables].
 
 ### tags
 
@@ -541,6 +547,8 @@ same manual action multiple times.
 
 An example usage of manual actions is deployment to production.
 
+Read more at the [environments documentation][env-manual].
+
 ### environment
 
 > Introduced in GitLab 8.9.
@@ -551,6 +559,28 @@ An example usage of manual actions is deployment to production.
 `environment` is used to define that a job deploys to a specific environment.
 If `environment` is specified and no environment under that name exists, a new
 one will be created automatically.
+
+In its simplest form, the `environment` keyword can be defined like:
+
+```
+deploy to production:
+  stage: deploy
+  script: git push production HEAD:master
+  environment:
+    name: production
+```
+
+In the above example, the `deploy to production` job will be marked as doing a
+deployment to the `production` environment.
+
+#### environment:name
+
+> Introduced in GitLab 8.11.
+
+>**Note:**
+Before GitLab 8.11, the name of an environment could be defined as a string like
+`environment: production`. The recommended way now is to define it under the
+`name` keyword.
 
 The `environment` name can contain:
 
@@ -566,27 +596,6 @@ The `environment` name can contain:
 
 Common names are `qa`, `staging`, and `production`, but you can use whatever
 name works with your workflow.
-
-In its simplest form, the `environment` keyword can be defined like:
-
-```
-deploy to production:
-  stage: deploy
-  script: git push production HEAD:master
-  environment: production
-```
-
-In the above example, the `deploy to production` job will be marked as doing a
-deployment to the `production` environment.
-
-#### environment:name
-
-> Introduced in GitLab 8.11.
-
->**Note:**
-Before GitLab 8.11, the name of an environment could be defined as a string like
-`environment: production`. The recommended way now is to define it under the
-`name` keyword.
 
 Instead of defining the name of the environment right after the `environment`
 keyword, it is also possible to define it as a separate value. For that, use
@@ -626,7 +635,12 @@ deploy to production:
 
 #### environment:on_stop
 
-> [Introduced][ce-6669] in GitLab 8.13.
+>
+**Notes:**
+- [Introduced][ce-6669] in GitLab 8.13.
+- Starting with GitLab 8.14, when you have an environment that has a stop action
+  defined, GitLab will automatically trigger a stop action when the associated
+  branch is deleted.
 
 Closing (stoping) environments can be achieved with the `on_stop` keyword defined under
 `environment`. It declares a different job that runs in order to close
@@ -676,6 +690,7 @@ The `stop_review_app` job is **required** to have the following keywords defined
 #### dynamic environments
 
 > [Introduced][ce-6323] in GitLab 8.12 and GitLab Runner 1.6.
+  `$CI_ENVIRONMENT_SLUG` was [introduced][ce-7983] in GitLab 8.15
 
 `environment` can also represent a configuration hash with `name` and `url`.
 These parameters can use any of the defined [CI variables](#variables)
@@ -688,15 +703,17 @@ deploy as review app:
   stage: deploy
   script: make deploy
   environment:
-    name: review-apps/$CI_BUILD_REF_NAME
-    url: https://$CI_BUILD_REF_NAME.review.example.com/
+    name: review/$CI_BUILD_REF_NAME
+    url: https://$CI_ENVIRONMENT_SLUG.example.com/
 ```
 
 The `deploy as review app` job will be marked as deployment to dynamically
-create the `review-apps/$CI_BUILD_REF_NAME` environment, which `$CI_BUILD_REF_NAME`
-is an [environment variable][variables] set by the Runner. If for example the
-`deploy as review app` job was run in a branch named `pow`, this environment
-should be accessible under `https://pow.review.example.com/`.
+create the `review/$CI_BUILD_REF_NAME` environment, where `$CI_BUILD_REF_NAME`
+is an [environment variable][variables] set by the Runner. The
+`$CI_ENVIRONMENT_SLUG` variable is based on the environment name, but suitable
+for inclusion in URLs. In this case, if the `deploy as review app` job was run
+in a branch named `pow`, this environment would be accessible with an URL like
+`https://review-pow-aaaaaa.example.com/`.
 
 This of course implies that the underlying server which hosts the application
 is properly configured.
@@ -743,6 +760,15 @@ artifacts:
   untracked: true
   paths:
   - binaries/
+```
+
+To disable artifact passing, define the job with empty [dependencies](#dependencies):
+
+```yaml
+job:
+  stage: build
+  script: make build
+  dependencies: []
 ```
 
 You may want to create artifacts only for tagged releases to avoid filling the
@@ -1008,6 +1034,66 @@ variables:
   GIT_STRATEGY: none
 ```
 
+## Git Submodule Strategy
+
+> Requires GitLab Runner v1.10+.
+
+The `GIT_SUBMODULE_STRATEGY` variable is used to control if / how Git
+submodules are included when fetching the code before a build. Like
+`GIT_STRATEGY`, it can be set in either the global [`variables`](#variables)
+section or the [`variables`](#job-variables) section for individual jobs.
+
+There are three posible values: `none`, `normal`, and `recursive`:
+
+- `none` means that submodules will not be included when fetching the project
+  code. This is the default, which matches the pre-v1.10 behavior.
+
+- `normal` means that only the top-level submodules will be included. It is
+  equivalent to:
+    ```
+    $ git submodule sync
+    $ git submodule update --init
+    ```
+
+- `recursive` means that all submodules (including submodules of submodules)
+  will be included. It is equivalent to:
+    ```
+    $ git submodule sync --recursive
+    $ git submodule update --init --recursive
+    ```
+
+Note that for this feature to work correctly, the submodules must be configured
+(in `.gitmodules`) with either:
+- the HTTP(S) URL of a publicly-accessible repository, or
+- a relative path to another repository on the same GitLab server. See the
+  [Git submodules](../git_submodules.md) documentation.
+
+
+## Build stages attempts
+
+> Introduced in GitLab, it requires GitLab Runner v1.9+.
+
+You can set the number for attempts the running build will try to execute each
+of the following stages:
+
+| Variable                | Description |
+|-------------------------|-------------|
+| **GET_SOURCES_ATTEMPTS** | Number of attempts to fetch sources running a build |
+| **ARTIFACT_DOWNLOAD_ATTEMPTS** | Number of attempts to download artifacts running a build |
+| **RESTORE_CACHE_ATTEMPTS** | Number of attempts to restore the cache running a build |
+
+The default is one single attempt.
+
+Example:
+
+```
+variables:
+  GET_SOURCES_ATTEMPTS: "3"
+```
+
+You can set them in the global [`variables`](#variables) section or the [`variables`](#job-variables)
+section for individual jobs.
+
 ## Shallow cloning
 
 > Introduced in GitLab 8.9 as an experimental feature. May change in future
@@ -1210,8 +1296,10 @@ capitalization, the commit will be created but the builds will be skipped.
 Visit the [examples README][examples] to see a list of examples using GitLab
 CI with various languages.
 
+[env-manual]: ../environments.md#manually-deploying-to-environments
 [examples]: ../examples/README.md
 [ce-6323]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/6323
 [environment]: ../environments.md
 [ce-6669]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/6669
 [variables]: ../variables/README.md
+[ce-7983]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7983

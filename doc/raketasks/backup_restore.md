@@ -9,6 +9,9 @@ This archive will be saved in `backup_path`, which is specified in the
 The filename will be `[TIMESTAMP]_gitlab_backup.tar`, where `TIMESTAMP`
 identifies the time at which each backup was created.
 
+> In GitLab 8.15 we changed the timestamp format from `EPOCH` (`1393513186`)
+> to `EPOCH_YYYY_MM_DD` (`1393513186_2014_02_27`)
+
 You can only restore a backup to exactly the same version of GitLab on which it
 was created.  The best way to migrate your repositories from one server to
 another is through backup restore.
@@ -32,7 +35,7 @@ sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
 ```
 If you are running GitLab within a Docker container, you can run the backup from the host:
 ```
-docker -t exec <container name> gitlab-rake gitlab:backup:create
+docker exec -t <container name> gitlab-rake gitlab:backup:create
 ```
 
 You can specify that portions of the application data be skipped using the
@@ -88,10 +91,10 @@ It uses the [Fog library](http://fog.io/) to perform the upload.
 In the example below we use Amazon S3 for storage, but Fog also lets you use
 [other storage providers](http://fog.io/storage/). GitLab
 [imports cloud drivers](https://gitlab.com/gitlab-org/gitlab-ce/blob/30f5b9a5b711b46f1065baf755e413ceced5646b/Gemfile#L88)
-for AWS, Azure, Google, OpenStack Swift and Rackspace as well. A local driver is
+for AWS, Google, OpenStack Swift and Rackspace as well. A local driver is
 [also available](#uploading-to-locally-mounted-shares).
 
-For omnibus packages:
+For omnibus packages, add the following to `/etc/gitlab/gitlab.rb`:
 
 ```ruby
 gitlab_rails['backup_upload_connection'] = {
@@ -105,6 +108,8 @@ gitlab_rails['backup_upload_connection'] = {
 }
 gitlab_rails['backup_upload_remote_directory'] = 'my.s3.bucket'
 ```
+
+Make sure to run `sudo gitlab-ctl reconfigure` after editing `/etc/gitlab/gitlab.rb` to reflect the changes.
 
 For installations from source:
 
@@ -223,7 +228,8 @@ For installations from source:
 
 ## Backup archive permissions
 
-The backup archives created by GitLab (123456_gitlab_backup.tar) will have owner/group git:git and 0600 permissions by default.
+The backup archives created by GitLab (`1393513186_2014_02_27_gitlab_backup.tar`)
+will have owner/group git:git and 0600 permissions by default.
 This is meant to avoid other system users reading GitLab's data.
 If you need the backup archives to have different permissions you can use the 'archive_permissions' setting.
 
@@ -335,7 +341,7 @@ First make sure your backup tar file is in the backup directory described in the
 `/var/opt/gitlab/backups`.
 
 ```shell
-sudo cp 1393513186_gitlab_backup.tar /var/opt/gitlab/backups/
+sudo cp 1393513186_2014_02_27_gitlab_backup.tar /var/opt/gitlab/backups/
 ```
 
 Stop the processes that are connected to the database.  Leave the rest of GitLab
@@ -353,7 +359,7 @@ restore:
 
 ```shell
 # This command will overwrite the contents of your GitLab database!
-sudo gitlab-rake gitlab:backup:restore BACKUP=1393513186
+sudo gitlab-rake gitlab:backup:restore BACKUP=1393513186_2014_02_27
 ```
 
 Restart and check GitLab:

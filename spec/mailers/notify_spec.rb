@@ -50,7 +50,7 @@ describe Notify do
 
           context 'when enabled email_author_in_body' do
             before do
-              allow_any_instance_of(ApplicationSetting).to receive(:email_author_in_body).and_return(true)
+              stub_application_setting(email_author_in_body: true)
             end
 
             it 'contains a link to note author' do
@@ -229,7 +229,7 @@ describe Notify do
 
           context 'when enabled email_author_in_body' do
             before do
-              allow_any_instance_of(ApplicationSetting).to receive(:email_author_in_body).and_return(true)
+              stub_application_setting(email_author_in_body: true)
             end
 
             it 'contains a link to note author' do
@@ -401,7 +401,12 @@ describe Notify do
 
     describe 'project access requested' do
       context 'for a project in a user namespace' do
-        let(:project) { create(:project, :public).tap { |p| p.team << [p.owner, :master, p.owner] } }
+        let(:project) do
+          create(:empty_project, :public, :access_requestable) do |project|
+            project.team << [project.owner, :master, project.owner]
+          end
+        end
+
         let(:user) { create(:user) }
         let(:project_member) do
           project.request_access(user)
@@ -428,7 +433,7 @@ describe Notify do
       context 'for a project in a group' do
         let(:group_owner) { create(:user) }
         let(:group) { create(:group).tap { |g| g.add_owner(group_owner) } }
-        let(:project) { create(:project, :public, namespace: group) }
+        let(:project) { create(:empty_project, :public, :access_requestable, namespace: group) }
         let(:user) { create(:user) }
         let(:project_member) do
           project.request_access(user)
@@ -454,7 +459,7 @@ describe Notify do
     end
 
     describe 'project access denied' do
-      let(:project) { create(:project) }
+      let(:project) { create(:empty_project, :public, :access_requestable) }
       let(:user) { create(:user) }
       let(:project_member) do
         project.request_access(user)
@@ -474,7 +479,7 @@ describe Notify do
     end
 
     describe 'project access changed' do
-      let(:project) { create(:project) }
+      let(:project) { create(:empty_project, :public, :access_requestable) }
       let(:user) { create(:user) }
       let(:project_member) { create(:project_member, project: project, user: user) }
       subject { Notify.member_access_granted_email('project', project_member.id) }
@@ -602,7 +607,7 @@ describe Notify do
 
         context 'when enabled email_author_in_body' do
           before do
-            allow_any_instance_of(ApplicationSetting).to receive(:email_author_in_body).and_return(true)
+            stub_application_setting(email_author_in_body: true)
           end
 
           it 'contains a link to note author' do
@@ -681,11 +686,84 @@ describe Notify do
         end
       end
     end
+
+    context 'items that are noteable, emails for a note on a diff' do
+      let(:note_author) { create(:user, name: 'author_name') }
+
+      before :each do
+        allow(Note).to receive(:find).with(note.id).and_return(note)
+      end
+
+      shared_examples 'a note email on a diff' do  |model|
+        let(:note) { create(model, project: project, author: note_author) }
+
+        it "includes diffs with character-level highlighting" do
+          is_expected.to have_body_text /<span class=\"p\">}<\/span><\/span>/
+        end
+
+        it 'contains a link to the diff file' do
+          is_expected.to have_body_text /#{note.diff_file.file_path}/
+        end
+
+        it_behaves_like 'it should have Gmail Actions links'
+
+        it 'is sent as the author' do
+          sender = subject.header[:from].addrs[0]
+          expect(sender.display_name).to eq(note_author.name)
+          expect(sender.address).to eq(gitlab_sender)
+        end
+
+        it 'is sent to the given recipient' do
+          is_expected.to deliver_to recipient.notification_email
+        end
+
+        it 'contains the message from the note' do
+          is_expected.to have_body_text /#{note.note}/
+        end
+
+        it 'does not contain note author' do
+          is_expected.not_to have_body_text /wrote\:/
+        end
+
+        context 'when enabled email_author_in_body' do
+          before do
+            stub_application_setting(email_author_in_body: true)
+          end
+
+          it 'contains a link to note author' do
+            is_expected.to have_body_text note.author_name
+            is_expected.to have_body_text /wrote\:/
+          end
+        end
+      end
+
+      describe 'on a commit' do
+        let(:commit) { project.commit }
+        let(:note) { create(:diff_note_on_commit) }
+
+        subject { Notify.note_commit_email(recipient.id, note.id) }
+
+        it_behaves_like 'a note email on a diff', :diff_note_on_commit
+        it_behaves_like 'it should show Gmail Actions View Commit link'
+        it_behaves_like 'a user cannot unsubscribe through footer link'
+      end
+
+      describe 'on a merge request' do
+        let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+        let(:note) { create(:diff_note_on_merge_request) }
+
+        subject { Notify.note_merge_request_email(recipient.id, note.id) }
+
+        it_behaves_like 'a note email on a diff', :diff_note_on_merge_request
+        it_behaves_like 'it should show Gmail Actions View Merge request link'
+        it_behaves_like 'an unsubscribeable thread'
+      end
+    end
   end
 
   context 'for a group' do
     describe 'group access requested' do
-      let(:group) { create(:group) }
+      let(:group) { create(:group, :public, :access_requestable) }
       let(:user) { create(:user) }
       let(:group_member) do
         group.request_access(user)
@@ -1092,6 +1170,40 @@ describe Notify do
 
     it 'contains a link to the diff' do
       is_expected.to have_body_text /#{diff_path}/
+    end
+  end
+
+  describe 'HTML emails setting' do
+    let(:project) { create(:project) }
+    let(:user) { create(:user) }
+    let(:multipart_mail) { Notify.project_was_moved_email(project.id, user.id, "gitlab/gitlab") }
+
+    context 'when disabled' do
+      it 'only sends the text template' do
+        stub_application_setting(html_emails_enabled: false)
+
+        EmailTemplateInterceptor.delivering_email(multipart_mail)
+
+        expect(multipart_mail).to have_part_with('text/plain')
+        expect(multipart_mail).not_to have_part_with('text/html')
+      end
+    end
+
+    context 'when enabled' do
+      it 'sends a multipart message' do
+        stub_application_setting(html_emails_enabled: true)
+
+        EmailTemplateInterceptor.delivering_email(multipart_mail)
+
+        expect(multipart_mail).to have_part_with('text/plain')
+        expect(multipart_mail).to have_part_with('text/html')
+      end
+    end
+
+    matcher :have_part_with do |expected|
+      match do |actual|
+        actual.body.parts.any? { |part| part.content_type.try(:match, %r(#{expected})) }
+      end
     end
   end
 end

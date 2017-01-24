@@ -39,50 +39,22 @@ module API
       end
     end
 
-    # Get Sidekiq Queue metrics
-    #
-    # Parameters:
-    #   None
-    #
-    # Example:
-    #   GET /sidekiq/queue_metrics
-    #
+    desc 'Get the Sidekiq queue metrics'
     get 'sidekiq/queue_metrics' do
       { queues: queue_metrics }
     end
 
-    # Get Sidekiq Process metrics
-    #
-    # Parameters:
-    #   None
-    #
-    # Example:
-    #   GET /sidekiq/process_metrics
-    #
+    desc 'Get the Sidekiq process metrics'
     get 'sidekiq/process_metrics' do
       { processes: process_metrics }
     end
 
-    # Get Sidekiq Job statistics
-    #
-    # Parameters:
-    #   None
-    #
-    # Example:
-    #   GET /sidekiq/job_stats
-    #
+    desc 'Get the Sidekiq job statistics'
     get 'sidekiq/job_stats' do
       { jobs: job_stats }
     end
 
-    # Get Sidekiq Compound metrics. Includes all previous metrics
-    #
-    # Parameters:
-    #   None
-    #
-    # Example:
-    #   GET /sidekiq/compound_metrics
-    #
+    desc 'Get the Sidekiq Compound metrics. Includes queue, process, and job statistics'
     get 'sidekiq/compound_metrics' do
       { queues: queue_metrics, processes: process_metrics, jobs: job_stats }
     end

@@ -3,8 +3,8 @@
 #
 production:
   adapter: mysql2
-  encoding: utf8
-  collation: utf8_general_ci
+  encoding: utf8mb4
+  collation: utf8mb4_general_ci
   reconnect: false
   database: gitlabhq_production
   pool: 10
@@ -18,8 +18,8 @@ production:
 #
 development:
   adapter: mysql2
-  encoding: utf8
-  collation: utf8_general_ci
+  encoding: utf8mb4
+  collation: utf8mb4_general_ci
   reconnect: false
   database: gitlabhq_development
   pool: 5
@@ -32,8 +32,8 @@ development:
 # Do not set this db to the same as development or production.
 test: &test
   adapter: mysql2
-  encoding: utf8
-  collation: utf8_general_ci
+  encoding: utf8mb4
+  collation: utf8mb4_general_ci
   reconnect: false
   database: gitlabhq_test
   pool: 5

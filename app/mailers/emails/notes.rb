@@ -4,6 +4,7 @@ module Emails
       setup_note_mail(note_id, recipient_id)
 
       @commit = @note.noteable
+      @discussion = @note.to_discussion if @note.diff_note?
       @target_url = namespace_project_commit_url(*note_target_url_options)
 
       mail_answer_thread(@commit,
@@ -24,6 +25,7 @@ module Emails
       setup_note_mail(note_id, recipient_id)
 
       @merge_request = @note.noteable
+      @discussion = @note.to_discussion if @note.diff_note?
       @target_url = namespace_project_merge_request_url(*note_target_url_options)
       mail_answer_thread(@merge_request, note_thread_options(recipient_id))
     end

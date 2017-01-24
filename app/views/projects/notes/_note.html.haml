@@ -5,15 +5,18 @@
 %li.timeline-entry{ id: dom_id(note), class: ["note", "note-row-#{note.id}", ('system-note' if note.system)], data: {author_id: note.author.id, editable: note_editable} }
   .timeline-entry-inner
     .timeline-icon
-      %a{href: user_path(note.author)}
+      %a{ href: user_path(note.author) }
         = image_tag avatar_icon(note.author), alt: '', class: 'avatar s40'
     .timeline-content
       .note-header
         = link_to_member(note.project, note.author, avatar: false)
-        .inline.note-headline-light
+        .note-headline-light
           = note.author.to_reference
           - unless note.system
             commented
+          - if note.system
+            %span.system-note-message
+              = note.redacted_note_html
           %a{ href: "##{dom_id(note)}" }
             = time_ago_with_tooltip(note.created_at, placement: 'bottom', html_class: 'note-created-ago')
         - unless note.system?
@@ -32,7 +35,7 @@
                   "resolved-by" => "#{note.resolved_by.try(:name)}",
                   "v-show" => "#{can_resolve || note.resolved?}",
                   "inline-template" => true,
-                  "v-ref:note_#{note.id}" => true }
+                  "ref" => "note_#{note.id}" }
 
                 .note-action-button
                   = icon("spin spinner", "v-show" => "loading")
@@ -43,7 +46,7 @@
                       "@click" => "resolve",
                       ":title" => "buttonText",
                       "v-show" => "!loading",
-                      "v-el:button" => true }
+                      ":ref" => "'button'" }
 
                     = render "shared/icons/icon_status_success.svg"
 
@@ -58,16 +61,20 @@
                   = icon('pencil', class: 'link-highlight')
                 = link_to namespace_project_note_path(note.project.namespace, note.project, note), title: 'Remove comment', method: :delete, data: { confirm: 'Are you sure you want to remove this comment?' }, remote: true, class: 'note-action-button hidden-xs js-note-delete danger' do
                   = icon('trash-o', class: 'danger-highlight')
-      .note-body{class: note_editable ? 'js-task-list-container' : ''}
+      .note-body{ class: note_editable ? 'js-task-list-container' : '' }
         .note-text.md
           = preserve do
             = note.redacted_note_html
-          = edited_time_ago_with_tooltip(note, placement: 'bottom', html_class: 'note_edited_ago', include_author: true)
+        = edited_time_ago_with_tooltip(note, placement: 'bottom', html_class: 'note_edited_ago', include_author: true)
         - if note_editable
-          = render 'projects/notes/edit_form', note: note
+          .original-note-content.hidden{ data: { post_url: namespace_project_note_path(@project.namespace, @project, note), target_id: note.noteable.id, target_type: note.noteable.class.name.underscore } }
+            #{note.note}
+          %textarea.hidden.js-task-list-field.original-task-list #{note.note}
         .note-awards
           = render 'award_emoji/awards_block', awardable: note, inline: false
-
+        - if note.system
+          .system-note-commit-list-toggler
+            Toggle commit list
       - if note.attachment.url
         .note-attachment
           - if note.attachment.image?

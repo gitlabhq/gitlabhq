@@ -22,8 +22,9 @@ Example response:
 [
   {
     "id": 1,
-    "name": "Env1",
-    "external_url": "https://env1.example.gitlab.com"
+    "name": "review/fix-foo",
+    "slug": "review-fix-foo-dfjre3",
+    "external_url": "https://review-fix-foo-dfjre3.example.gitlab.com"
   }
 ]
 ```
@@ -54,6 +55,7 @@ Example response:
 {
   "id": 1,
   "name": "deploy",
+  "slug": "deploy",
   "external_url": "https://deploy.example.gitlab.com"
 }
 ```
@@ -85,6 +87,7 @@ Example response:
 {
   "id": 1,
   "name": "staging",
+  "slug": "staging",
   "external_url": "https://staging.example.gitlab.com"
 }
 ```
@@ -112,6 +115,7 @@ Example response:
 {
   "id": 1,
   "name": "deploy",
+  "slug": "deploy",
   "external_url": "https://deploy.example.gitlab.com"
 }
 ```

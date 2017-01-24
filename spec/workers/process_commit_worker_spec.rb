@@ -11,31 +11,25 @@ describe ProcessCommitWorker do
     it 'does not process the commit when the project does not exist' do
       expect(worker).not_to receive(:close_issues)
 
-      worker.perform(-1, user.id, commit.id)
+      worker.perform(-1, user.id, commit.to_hash)
     end
 
     it 'does not process the commit when the user does not exist' do
       expect(worker).not_to receive(:close_issues)
 
-      worker.perform(project.id, -1, commit.id)
-    end
-
-    it 'does not process the commit when the commit no longer exists' do
-      expect(worker).not_to receive(:close_issues)
-
-      worker.perform(project.id, user.id, 'this-should-does-not-exist')
+      worker.perform(project.id, -1, commit.to_hash)
     end
 
     it 'processes the commit message' do
       expect(worker).to receive(:process_commit_message).and_call_original
 
-      worker.perform(project.id, user.id, commit.id)
+      worker.perform(project.id, user.id, commit.to_hash)
     end
 
     it 'updates the issue metrics' do
       expect(worker).to receive(:update_issue_metrics).and_call_original
 
-      worker.perform(project.id, user.id, commit.id)
+      worker.perform(project.id, user.id, commit.to_hash)
     end
   end
 
@@ -104,6 +98,21 @@ describe ProcessCommitWorker do
       metric = Issue::Metrics.first
 
       expect(metric.first_mentioned_in_commit_at).to eq(commit.committed_date)
+    end
+  end
+
+  describe '#build_commit' do
+    it 'returns a Commit' do
+      commit = worker.build_commit(project, id: '123')
+
+      expect(commit).to be_an_instance_of(Commit)
+    end
+
+    it 'parses date strings into Time instances' do
+      commit = worker.
+        build_commit(project, id: '123', authored_date: Time.now.to_s)
+
+      expect(commit.authored_date).to be_an_instance_of(Time)
     end
   end
 end

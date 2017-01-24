@@ -3,7 +3,7 @@ class Projects::LabelsController < Projects::ApplicationController
 
   before_action :module_enabled
   before_action :label, only: [:edit, :update, :destroy]
-  before_action :find_labels, only: [:index, :set_priorities, :remove_priority]
+  before_action :find_labels, only: [:index, :set_priorities, :remove_priority, :toggle_subscription]
   before_action :authorize_read_label!
   before_action :authorize_admin_labels!, only: [:new, :create, :edit, :update,
                                                  :generate, :destroy, :remove_priority,
@@ -123,7 +123,10 @@ class Projects::LabelsController < Projects::ApplicationController
   def label
     @label ||= @project.labels.find(params[:id])
   end
-  alias_method :subscribable_resource, :label
+
+  def subscribable_resource
+    @available_labels.find(params[:id])
+  end
 
   def find_labels
     @available_labels ||= LabelsFinder.new(current_user, project_id: @project.id).execute

@@ -20,7 +20,7 @@ module Gitlab
         # Extracted method to highlight in the same iteration to the diff_collection.
         def decorate_diff!(diff)
           diff_file = super
-          cache_highlight!(diff_file) if cacheable?
+          cache_highlight!(diff_file) if cacheable?(diff_file)
           diff_file
         end
 
@@ -39,7 +39,7 @@ module Gitlab
         # hashes that represent serialized diff lines.
         #
         def cache_highlight!(diff_file)
-          item_key = diff_file.cache_key
+          item_key = diff_file.file_identifier
 
           if highlight_cache[item_key]
             highlight_diff_file_from_cache!(diff_file, highlight_cache[item_key])
@@ -60,8 +60,11 @@ module Gitlab
           Rails.cache.write(cache_key, highlight_cache) if @highlight_cache_was_empty
         end
 
-        def cacheable?
-          @merge_request_diff.present?
+        def cacheable?(diff_file)
+          @merge_request_diff.present? &&
+            diff_file.blob &&
+            diff_file.blob.text? &&
+            @project.repository.diffable?(diff_file.blob)
         end
 
         def cache_key

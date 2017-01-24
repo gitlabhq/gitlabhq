@@ -7,7 +7,6 @@ module IssuesAction
 
     @issues = issues_collection
               .non_archived
-              .preload(:author, :project)
               .page(params[:page])
 
     respond_to do |format|

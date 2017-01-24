@@ -1,10 +1,11 @@
 module HasStatus
   extend ActiveSupport::Concern
 
+  DEFAULT_STATUS = 'created'
   AVAILABLE_STATUSES = %w[created pending running success failed canceled skipped]
   STARTED_STATUSES = %w[running success failed skipped]
   ACTIVE_STATUSES = %w[pending running]
-  COMPLETED_STATUSES = %w[success failed canceled]
+  COMPLETED_STATUSES = %w[success failed canceled skipped]
   ORDERED_STATUSES = %w[failed pending running canceled success skipped]
 
   class_methods do
@@ -23,9 +24,10 @@ module HasStatus
       canceled = scope.canceled.select('count(*)').to_sql
 
       "(CASE
+        WHEN (#{builds})=(#{skipped}) THEN 'skipped'
         WHEN (#{builds})=(#{success}) THEN 'success'
         WHEN (#{builds})=(#{created}) THEN 'created'
-        WHEN (#{builds})=(#{success})+(#{skipped}) THEN 'skipped'
+        WHEN (#{builds})=(#{success})+(#{skipped}) THEN 'success'
         WHEN (#{builds})=(#{success})+(#{skipped})+(#{canceled}) THEN 'canceled'
         WHEN (#{builds})=(#{created})+(#{skipped})+(#{pending}) THEN 'pending'
         WHEN (#{running})+(#{pending})+(#{created})>0 THEN 'running'
@@ -73,6 +75,11 @@ module HasStatus
     scope :skipped, -> { where(status: 'skipped')  }
     scope :running_or_pending, -> { where(status: [:running, :pending]) }
     scope :finished, -> { where(status: [:success, :failed, :canceled]) }
+    scope :failed_or_canceled, -> { where(status: [:failed, :canceled]) }
+
+    scope :cancelable, -> do
+      where(status: [:running, :pending, :created])
+    end
   end
 
   def started?

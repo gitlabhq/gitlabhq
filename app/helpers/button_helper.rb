@@ -16,7 +16,7 @@ module ButtonHelper
   # See http://clipboardjs.com/#usage
   def clipboard_button(data = {})
     css_class = data[:class] || 'btn-clipboard btn-transparent'
-    title = data[:title] || 'Copy to Clipboard'
+    title = data[:title] || 'Copy to clipboard'
     data = { toggle: 'tooltip', placement: 'bottom', container: 'body' }.merge(data)
     content_tag :button,
       icon('clipboard'),

@@ -1,13 +1,13 @@
 - if current_user
   .dropdown
-    %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
+    %button.dropdown-toggle{ href: '#', "data-toggle" => "dropdown" }
       = icon('globe')
       %span.light Visibility:
       - if params[:visibility_level].present?
         = visibility_level_label(params[:visibility_level].to_i)
       - else
         Any
-      = icon('caret-down')
+      = icon('chevron-down')
     %ul.dropdown-menu.dropdown-menu-align-right
       %li
         = link_to filter_projects_path(visibility_level: nil) do
@@ -20,14 +20,14 @@
 
 - if @tags.present?
   .dropdown
-    %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
+    %button.dropdown-toggle{ href: '#', "data-toggle" => "dropdown" }
       = icon('tags')
       %span.light Tags:
       - if params[:tag].present?
         = params[:tag]
       - else
         Any
-      = icon('caret-down')
+      = icon('chevron-down')
     %ul.dropdown-menu.dropdown-menu-align-right
       %li
         = link_to filter_projects_path(tag: nil) do

@@ -1,8 +1,8 @@
-#modal-shortcuts.modal{tabindex: -1}
+#modal-shortcuts.modal{ tabindex: -1 }
   .modal-dialog
     .modal-content
       .modal-header
-        %a.close{href: "#", "data-dismiss" => "modal"} ×
+        %a.close{ href: "#", "data-dismiss" => "modal" } ×
         %h4
           Keyboard Shortcuts
           %small
@@ -82,7 +82,7 @@
 
           .col-lg-4
             %table.shortcut-mappings
-              %tbody{ class: 'hidden-shortcut project', style: 'display:none' }
+              %tbody.hidden-shortcut.project{ style: 'display:none' }
                 %tr
                   %th
                   %th Global Dashboard
@@ -190,7 +190,7 @@
                   %td New issue
           .col-lg-4
             %table.shortcut-mappings
-              %tbody{ class: 'hidden-shortcut network', style: 'display:none' }
+              %tbody.hidden-shortcut.network{ style: 'display:none' }
                 %tr
                   %th
                   %th Network Graph
@@ -240,7 +240,7 @@
                     .key
                       shift j
                   %td Scroll to bottom
-              %tbody{ class: 'hidden-shortcut issues', style: 'display:none' }
+              %tbody.hidden-shortcut.issues{ style: 'display:none' }
                 %tr
                   %th
                   %th Issues
@@ -264,7 +264,7 @@
                   %td.shortcut
                     .key l
                   %td Change Label
-              %tbody{ class: 'hidden-shortcut merge_requests', style: 'display:none' }
+              %tbody.hidden-shortcut.merge_requests{ style: 'display:none' }
                 %tr
                   %th
                   %th Merge Requests
