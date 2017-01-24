@@ -13,6 +13,21 @@ feature 'Project edit', feature: true, js: true do
     visit edit_namespace_project_path(project.namespace, project)
   end
 
+  it 'does not have visibility radio buttons' do
+    expect(page).not_to have_selector('#project_visibility_level_0')
+    expect(page).not_to have_selector('#project_visibility_level_10')
+    expect(page).not_to have_selector('#project_visibility_level_20')
+  end
+
+  it 'allows user to change request access settings' do
+    find('#project_request_access_enabled').set(true)
+
+    click_button 'Save changes'
+    wait_for_ajax
+
+    expect(find('#project_request_access_enabled')).to be_checked
+  end
+
   context 'feature visibility' do
     context 'merge requests select' do
       it 'hides merge requests section' do
