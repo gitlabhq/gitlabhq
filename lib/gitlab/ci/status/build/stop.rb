@@ -14,7 +14,7 @@ module Gitlab
           end
 
           def icon
-            'icon_status_manual'
+            'icon_action_stop_borderless'
           end
 
           def group

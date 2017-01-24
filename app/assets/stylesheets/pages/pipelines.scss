@@ -821,10 +821,22 @@
 
     &:hover,
     &:focus {
-      text-decoration: none;
-      color: $gl-text-color;
       background-color: $stage-hover-bg;
       border: 1px solid transparent;
+    }
+
+    svg {
+      width: 22px;
+      height: 22px;
+      left: -6px;
+      position: relative;
+      top: -3px;
+      fill: $action-icon-color;
+    }
+
+    &:hover svg,
+    &:focus svg {
+      fill: $gl-text-color;
     }
   }
 

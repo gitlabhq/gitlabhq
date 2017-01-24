@@ -26,7 +26,7 @@ module Gitlab
           end
 
           def action_icon
-            'play'
+            'icon_action_play_borderless'
           end
 
           def action_title
