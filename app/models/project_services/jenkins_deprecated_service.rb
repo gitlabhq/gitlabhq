@@ -33,7 +33,7 @@ class JenkinsDeprecatedService < CiService
     'is deprecated. Use "Jenkins CI" service instead.'
   end
 
-  def to_param
+  def self.to_param
     'jenkins_deprecated'
   end
 

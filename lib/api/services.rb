@@ -609,6 +609,8 @@ module API
       SlackService,
       MattermostService,
       TeamcityService,
+      JenkinsService,
+      JenkinsDeprecatedService
     ].freeze
 
     trigger_services = {

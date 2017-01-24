@@ -52,7 +52,7 @@ class JenkinsService < CiService
     File.join(jenkins_url, "project/#{project_name}").to_s
   end
 
-  def supported_events
+  def self.supported_events
     %w(push merge_request tag_push)
   end
 
@@ -68,7 +68,7 @@ class JenkinsService < CiService
     'You must have installed the Git Plugin and GitLab Plugin in Jenkins'
   end
 
-  def to_param
+  def self.to_param
     'jenkins'
   end
 
