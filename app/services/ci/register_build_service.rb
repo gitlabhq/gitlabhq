@@ -29,10 +29,10 @@ module Ci
         build.run!
       end
 
-      build
+      [build, true]
 
     rescue StateMachines::InvalidTransition, ActiveRecord::StaleObjectError
-      nil
+      [nil, false]
     end
 
     private
