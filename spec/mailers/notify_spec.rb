@@ -403,6 +403,16 @@ describe Notify do
             is_expected.to have_body_text /#{merge_request.assignee.name}/
             is_expected.to have_body_text /#{last_approver.name}/
           end
+
+          context 'when merge request has no assignee' do
+            before do
+              merge_request.update(assignee: nil)
+            end
+
+            it 'does not show the assignee' do
+              is_expected.not_to have_body_text 'Assignee'
+            end
+          end
         end
 
         describe 'that are unapproved' do
