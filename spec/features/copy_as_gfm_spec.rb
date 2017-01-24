@@ -18,60 +18,67 @@ describe 'Copy as GFM', feature: true, js: true do
   # To make sure these filters and handlers are properly aligned, this spec tests the GFM-to-HTML-to-GFM cycle
   # by verifying (`html_to_gfm(gfm_to_html(gfm)) == gfm`) for a number of examples of GFM for every filter, using the `verify` helper.
 
-  it 'supports nesting' do
-    verify '> 1. [x] **[$`2 + 2`$ {-=-}{+=+} 2^2 ~~:thumbsup:~~](http://google.com)**'
-  end
-
-  it 'supports a real world example from the gitlab-ce README' do
-    verify <<-GFM.strip_heredoc
-      # GitLab
-
-      [![Build status](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/build.svg)](https://gitlab.com/gitlab-org/gitlab-ce/commits/master)
-      [![CE coverage report](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/coverage.svg?job=coverage)](https://gitlab-org.gitlab.io/gitlab-ce/coverage-ruby)
-      [![Code Climate](https://codeclimate.com/github/gitlabhq/gitlabhq.svg)](https://codeclimate.com/github/gitlabhq/gitlabhq)
-      [![Core Infrastructure Initiative Best Practices](https://bestpractices.coreinfrastructure.org/projects/42/badge)](https://bestpractices.coreinfrastructure.org/projects/42)
-
-      ## Canonical source
-
-      The canonical source of GitLab Community Edition is [hosted on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ce/).
-
-      ## Open source software to collaborate on code
-
-      To see how GitLab looks please see the [features page on our website](https://about.gitlab.com/features/).
-
-
-      - Manage Git repositories with fine grained access controls that keep your code secure
-
-      - Perform code reviews and enhance collaboration with merge requests
-
-      - Complete continuous integration (CI) and CD pipelines to builds, test, and deploy your applications
-
-      - Each project can also have an issue tracker, issue board, and a wiki
-
-      - Used by more than 100,000 organizations, GitLab is the most popular solution to manage Git repositories on-premises
-
-      - Completely free and open source (MIT Expat license)
-    GFM
-  end
-
-  it 'supports InlineDiffFilter' do
+  # These are all in a single `it` for performance reasons.
+  it 'works', :aggregate_failures do
     verify(
+      'nesting',
+
+      '> 1. [x] **[$`2 + 2`$ {-=-}{+=+} 2^2 ~~:thumbsup:~~](http://google.com)**'
+    )
+
+    verify(
+      'a real world example from the gitlab-ce README',
+
+      <<-GFM.strip_heredoc
+        # GitLab
+
+        [![Build status](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/build.svg)](https://gitlab.com/gitlab-org/gitlab-ce/commits/master)
+        [![CE coverage report](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/coverage.svg?job=coverage)](https://gitlab-org.gitlab.io/gitlab-ce/coverage-ruby)
+        [![Code Climate](https://codeclimate.com/github/gitlabhq/gitlabhq.svg)](https://codeclimate.com/github/gitlabhq/gitlabhq)
+        [![Core Infrastructure Initiative Best Practices](https://bestpractices.coreinfrastructure.org/projects/42/badge)](https://bestpractices.coreinfrastructure.org/projects/42)
+
+        ## Canonical source
+
+        The canonical source of GitLab Community Edition is [hosted on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ce/).
+
+        ## Open source software to collaborate on code
+
+        To see how GitLab looks please see the [features page on our website](https://about.gitlab.com/features/).
+
+
+        - Manage Git repositories with fine grained access controls that keep your code secure
+
+        - Perform code reviews and enhance collaboration with merge requests
+
+        - Complete continuous integration (CI) and CD pipelines to builds, test, and deploy your applications
+
+        - Each project can also have an issue tracker, issue board, and a wiki
+
+        - Used by more than 100,000 organizations, GitLab is the most popular solution to manage Git repositories on-premises
+
+        - Completely free and open source (MIT Expat license)
+      GFM
+    )
+
+    verify(
+      'InlineDiffFilter',
+
       '{-Deleted text-}',
       '{+Added text+}'
     )
-  end
 
-  it 'supports TaskListFilter' do
     verify(
+      'TaskListFilter',
+
       '- [ ] Unchecked task',
       '- [x] Checked task',
       '1. [ ] Unchecked numbered task',
       '1. [x] Checked numbered task'
     )
-  end
 
-  it 'supports ReferenceFilter' do
     verify(
+      'ReferenceFilter',
+
       # issue reference
       @feat.issue.to_reference,
       # full issue reference
@@ -85,43 +92,51 @@ describe 'Copy as GFM', feature: true, js: true do
       # issue link with note anchor
       "[Issue](#{namespace_project_issue_url(@project.namespace, @project, @feat.issue, anchor: 'note_123')})",
     )
-  end
 
-  it 'supports AutolinkFilter' do
-    verify 'https://example.com'
-  end
+    verify(
+      'AutolinkFilter',
 
-  it 'supports TableOfContentsFilter' do
-    verify '[[_TOC_]]'
-  end
+      'https://example.com'
+    )
 
-  it 'supports EmojiFilter' do
-    verify ':thumbsup:'
-  end
+    verify(
+      'TableOfContentsFilter',
 
-  it 'supports ImageLinkFilter' do
-    verify '![Image](https://example.com/image.png)'
-  end
+      '[[_TOC_]]'
+    )
 
-  it 'supports VideoLinkFilter' do
-    verify '![Video](https://example.com/video.mp4)'
-  end
+    verify(
+      'EmojiFilter',
 
-  context 'MathFilter' do
-    it 'supports math as converted from GFM to HTML' do
-      verify(
-        '$`c = \pm\sqrt{a^2 + b^2}`$',
+      ':thumbsup:'
+    )
 
-        # math block
-        <<-GFM.strip_heredoc
-          ```math
-          c = \pm\sqrt{a^2 + b^2}
-          ```
-        GFM
-      )
-    end
+    verify(
+      'ImageLinkFilter',
 
-    it 'supports math as transformed from HTML to KaTeX' do
+      '![Image](https://example.com/image.png)'
+    )
+
+    verify(
+      'VideoLinkFilter',
+
+      '![Video](https://example.com/video.mp4)'
+    )
+
+    verify(
+      'MathFilter: math as converted from GFM to HTML',
+
+      '$`c = \pm\sqrt{a^2 + b^2}`$',
+
+      # math block
+      <<-GFM.strip_heredoc
+        ```math
+        c = \pm\sqrt{a^2 + b^2}
+        ```
+      GFM
+    )
+
+    aggregate_failures('MathFilter: math as transformed from HTML to KaTeX') do
       gfm = '$`c = \pm\sqrt{a^2 + b^2}`$'
 
       html = <<-HTML.strip_heredoc
@@ -231,10 +246,10 @@ describe 'Copy as GFM', feature: true, js: true do
       output_gfm = html_to_gfm(html)
       expect(output_gfm.strip).to eq(gfm.strip)
     end
-  end
 
-  it 'supports SanitizationFilter' do
     verify(
+      'SanitizationFilter',
+
       <<-GFM.strip_heredoc
       <sub>sub</sub>
 
@@ -260,10 +275,10 @@ describe 'Copy as GFM', feature: true, js: true do
       <abbr>abbr</abbr>
       GFM
     )
-  end
 
-  it 'supports SyntaxHighlightFilter' do
     verify(
+      'SanitizationFilter',
+
       <<-GFM.strip_heredoc,
         ```
         Plain text
@@ -280,7 +295,7 @@ describe 'Copy as GFM', feature: true, js: true do
 
       <<-GFM.strip_heredoc
         Foo
-        
+
             This is an example of GFM
 
             ```js
@@ -288,10 +303,10 @@ describe 'Copy as GFM', feature: true, js: true do
             ```
       GFM
     )
-  end
 
-  it 'supports MarkdownFilter' do
     verify(
+      'MarkdownFilter',
+
       "Line with two spaces at the end  \nto insert a linebreak",
 
       '`code`',
@@ -400,8 +415,8 @@ describe 'Copy as GFM', feature: true, js: true do
     page.evaluate_script(js)
   end
 
-  def verify(*gfms)
-    aggregate_failures do
+  def verify(label, *gfms)
+    aggregate_failures(label) do
       gfms.each do |gfm|
         html = gfm_to_html(gfm)
         output_gfm = html_to_gfm(html)
