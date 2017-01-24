@@ -34,7 +34,7 @@ stages:
 # Predefined scopes
 .dedicated-runner: &dedicated-runner
   tags:
-    - gce
+    - east-c
 
 .knapsack-state: &knapsack-state
   services: []
