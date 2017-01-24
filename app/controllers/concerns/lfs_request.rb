@@ -122,7 +122,7 @@ module LfsRequest
     def render_size_error
       render(
         json: {
-          message: Gitlab::RepositorySizeError.new(project).push_error,
+          message: Gitlab::RepositorySizeError.new(project).push_error(@exceeded_limit),
           documentation_url: help_url,
         },
         content_type: "application/vnd.git-lfs+json",
@@ -134,9 +134,11 @@ module LfsRequest
       return false unless project.size_limit_enabled?
       return @limit_exceeded if defined?(@limit_exceeded)
 
-      size_of_objects = objects.sum { |o| o[:size] }
+      lfs_push_size = objects.sum { |o| o[:size] }
+      size_with_lfs_push = project.repository_and_lfs_size + lfs_push_size
 
-      @limit_exceeded = (project.repository_and_lfs_size + size_of_objects) > project.actual_size_limit
+      @exceeded_limit = size_with_lfs_push - project.actual_size_limit
+      @limit_exceeded = @exceeded_limit > 0
     end
   end
 
