@@ -1,6 +1,6 @@
 .page-content-header
   .header-main-content
-    = render 'ci/status/badge', status: @pipeline.detailed_status(current_user)
+    = render 'ci/status/badge_link', status: @pipeline.detailed_status(current_user)
     %strong Pipeline ##{@commit.pipelines.last.id}
     triggered #{time_ago_with_tooltip(@commit.authored_date)} by
     = author_avatar(@commit, size: 24)

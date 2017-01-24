@@ -91,7 +91,7 @@
               %strong ##{build.id}
 
           %td.status
-            = render 'ci/status/badge', status: build.detailed_status(current_user)
+            = render 'ci/status/badge_link', status: build.detailed_status(current_user)
 
           %td.status
             - if project
