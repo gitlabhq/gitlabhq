@@ -2,10 +2,8 @@ module ProtectedBranches
   class CreateService < BaseService
     attr_reader :protected_branch
 
-    def execute(skip_authorization: false)
-      unless skip_authorization || can?(current_user, :admin_project, project)
-        raise Gitlab::Access::AccessDeniedError
-      end
+    def execute
+      raise Gitlab::Access::AccessDeniedError unless can?(current_user, :admin_project, project)
 
       project.protected_branches.create(params)
     end
