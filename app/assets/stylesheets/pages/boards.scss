@@ -390,10 +390,16 @@
   .top-area {
     margin-bottom: 10px;
   }
+
+  .form-control {
+    margin-bottom: 10px;
+  }
 }
 
 .add-issues-list {
   flex: 1;
+  margin-left: -$gl-vert-padding;
+  margin-right: -$gl-vert-padding;
   overflow-y: scroll;
 }
 
@@ -406,8 +412,12 @@
 }
 
 .add-issues-list-columns {
-  padding-left: 5px;
-  padding-right: 5px;
-  margin-left: -5px;
-  margin-right: -5px;
+  .card-parent {
+    width: (100% / 3);
+    padding: 0 $gl-vert-padding ($gl-vert-padding * 2);
+  }
+
+  .card {
+    cursor: pointer;
+  }
 }

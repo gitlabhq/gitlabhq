@@ -14,7 +14,7 @@
     },
     modal: {
       issues: [],
-      showAddIssuesModal: false,
+      showAddIssuesModal: true,
       activeTab: 'all',
     },
     moving: {

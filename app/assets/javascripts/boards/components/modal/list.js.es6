@@ -10,10 +10,38 @@
     data() {
       return Store.modal;
     },
+    watch: {
+      activeTab() {
+        this.$nextTick(() => {
+          this.destroyMasonry();
+          this.initMasonry();
+        });
+      },
+    },
     computed: {
       loading() {
         return this.issues.length === 0;
       },
+    },
+    methods: {
+      toggleIssue(issue) {
+        issue.selected = !issue.selected;
+      },
+      showIssue(issue) {
+        if (this.activeTab === 'all') return true;
+
+        return issue.selected;
+      },
+      initMasonry() {
+        listMasonry = new Masonry(this.$refs.list, {
+          transitionDuration: 0,
+        });
+      },
+      destroyMasonry() {
+        if (listMasonry) {
+          listMasonry.destroy();
+        }
+      }
     },
     mounted() {
       gl.boardService.getBacklog()
@@ -23,7 +51,15 @@
           data.forEach((issueObj) => {
             this.issues.push(new ListIssue(issueObj));
           });
+
+          this.$nextTick(() => {
+            this.initMasonry();
+          });
         });
+    },
+    destroyed() {
+      this.issues = [];
+      this.destroyMasonry();
     },
     components: {
       'issue-card-inner': gl.issueBoards.IssueCardInner,
@@ -33,18 +69,25 @@
         <i
           class="fa fa-spinner fa-spin"
           v-if="loading"></i>
-        <ul
+        <div
           class="add-issues-list-columns list-unstyled"
-          v-if="!loading">
-          <li
-            class="card"
-            v-for="issue in issues">
-            <issue-card-inner
-              :issue="issue"
-              :issue-link-base="'/'">
-            </issue-card-inner>
-          </li>
-        </ul>
+          ref="list"
+          v-show="!loading">
+          <div
+            v-for="issue in issues"
+            v-if="showIssue(issue)"
+            class="card-parent">
+            <div
+              class="card"
+              :class="{ 'is-active': issue.selected }"
+              @click="toggleIssue(issue)">
+              <issue-card-inner
+                :issue="issue"
+                :issue-link-base="'/'">
+              </issue-card-inner>
+            </div>
+          </div>
+        </div>
       </section>
     `,
   });

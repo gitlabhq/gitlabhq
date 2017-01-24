@@ -14,6 +14,19 @@
         this.activeTab = tab;
       },
     },
+    computed: {
+      selectedCount() {
+        let count = 0;
+
+        this.issues.forEach((issue) => {
+          if (issue.selected) {
+            count += 1;
+          }
+        });
+
+        return count;
+      },
+    },
     template: `
       <div class="top-area">
         <ul class="nav-links issues-state-filters">
@@ -35,7 +48,7 @@
               @click.prevent="changeTab('selected')">
               <span>Selected issues</span>
               <span class="badge">
-                0
+                {{ selectedCount }}
               </span>
             </a>
           </li>

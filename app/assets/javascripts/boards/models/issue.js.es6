@@ -12,6 +12,7 @@ class ListIssue {
     this.dueDate = obj.due_date;
     this.subscribed = obj.subscribed;
     this.labels = [];
+    this.selected = false;
 
     if (obj.assignee) {
       this.assignee = new ListUser(obj.assignee);
