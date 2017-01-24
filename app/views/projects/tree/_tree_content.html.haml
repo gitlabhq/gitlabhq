@@ -7,10 +7,15 @@
           %th.hidden-xs
             .pull-left Last commit
             .last-commit.hidden-sm.pull-left
+              &nbsp;
+              %i.fa.fa-angle-right
+              &nbsp;
               %small.light
-                = clipboard_button(clipboard_text: @commit.id, title: "Copy commit SHA to clipboard")
                 = link_to @commit.short_id, namespace_project_commit_path(@project.namespace, @project, @commit), class: "monospace"
+                = clipboard_button(clipboard_text: @commit.id, title: "Copy commit SHA to clipboard")
                 = time_ago_with_tooltip(@commit.committed_date)
+                :plain
+                   -
                 = @commit.full_title
             %small.commit-history-link-spacer &#124;
             = link_to 'History', namespace_project_commits_path(@project.namespace, @project, @id), class: 'commit-history-link'
