@@ -1,0 +1,4 @@
+---
+title: Don't try to show assignee in approved_merge_request_email if there's no assignee
+merge_request:
+author:
