@@ -9,9 +9,12 @@
   = render "head"
 
 %div{ class: container_class }
-  .row-content-block.second-block.content-component-block
+  .row-content-block.second-block.content-component-block.flex-container-block
     .tree-ref-holder
       = render 'shared/ref_switcher', destination: 'commits'
+
+    %ul.breadcrumb.repo-breadcrumb
+      = commits_breadcrumbs
 
     .block-controls.hidden-xs.hidden-sm
       - if @merge_request.present?
@@ -30,8 +33,6 @@
         .control
           = link_to namespace_project_commits_path(@project.namespace, @project, @ref, { format: :atom, private_token: current_user.private_token }), title: "Commits Feed", class: 'btn' do
             = icon("rss")
-    %ul.breadcrumb.repo-breadcrumb
-      = commits_breadcrumbs
 
   %div{ id: dom_id(@project) }
     %ol#commits-list.list-unstyled.content_list
