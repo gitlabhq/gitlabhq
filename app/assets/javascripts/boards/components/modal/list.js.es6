@@ -19,6 +19,16 @@
           this.initMasonry();
         });
       },
+      issues: {
+        handler() {
+          if (this.activeTab === 'selected') {
+            this.$nextTick(() => {
+              listMasonry.layout();
+            });
+          }
+        },
+        deep: true,
+      }
     },
     computed: {
       loading() {

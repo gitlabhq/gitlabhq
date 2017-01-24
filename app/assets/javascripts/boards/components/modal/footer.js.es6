@@ -7,9 +7,10 @@
 
   gl.issueBoards.ModalFooter = Vue.extend({
     data() {
-      return Object.assign({}, Store.modal, {
+      return {
+        store: Store.modal,
         disabled: false,
-      });
+      };
     },
     computed: {
       submitDisabled() {
@@ -25,10 +26,10 @@
     },
     methods: {
       hideModal() {
-        this.showAddIssuesModal = false;
+        this.store.showAddIssuesModal = false;
       },
       addIssues() {
-        const issueIds = this.issues.filter(issue => issue.selected).map(issue => issue.id);
+        const issueIds = this.store.issues.filter(issue => issue.selected).map(issue => issue.id);
 
         this.disabled = true;
       },
