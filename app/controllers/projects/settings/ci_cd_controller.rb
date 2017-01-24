@@ -5,7 +5,7 @@ module Projects
 
       def show
         define_runners_variables
-        define_project_variables_variables
+        define_secret_variables
         define_triggers_variables
         define_badges_variables
       end
@@ -20,7 +20,7 @@ module Projects
         @shared_runners_count = @shared_runners.count(:all)
       end
 
-      def define_project_variables_variables
+      def define_secret_variables
         @variable = Ci::Variable.new
       end
 

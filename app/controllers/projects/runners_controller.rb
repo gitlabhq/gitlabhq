@@ -4,6 +4,10 @@ class Projects::RunnersController < Projects::ApplicationController
 
   layout 'project_settings'
 
+  def index
+    redirect_to namespace_project_settings_ci_cd_path(@project.namespace, @project)
+  end
+
   def edit
   end
 
