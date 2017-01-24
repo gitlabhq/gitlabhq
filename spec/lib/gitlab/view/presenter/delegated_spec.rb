@@ -17,10 +17,9 @@ describe Gitlab::View::Presenter::Delegated do
       expect(presenter.current_user).to eq('Jane Doe')
     end
 
-    it 'does not override the presentee attributes' do
-      presenter = presenter_class.new(project, user: 'Jane Doe')
-
-      expect(presenter.user).to eq('John Doe')
+    it 'raise an error if the presentee already respond to method' do
+      expect { presenter_class.new(project, user: 'Jane Doe') }.
+        to raise_error Gitlab::View::Presenter::CannotOverrideMethodError
     end
   end
 
