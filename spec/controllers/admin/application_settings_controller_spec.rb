@@ -1,10 +1,16 @@
 require 'spec_helper'
 
 describe Admin::ApplicationSettingsController do
+  include StubENV
+
   let(:group) { create(:group) }
   let(:project) { create(:project, namespace: group) }
   let(:admin) { create(:admin) }
   let(:user) { create(:user)}
+
+  before do
+    stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
+  end
 
   describe 'PUT #update' do
     before do

@@ -1,7 +1,10 @@
 require 'spec_helper'
 
 describe "Admin Runners" do
+  include StubENV
+
   before do
+    stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
     login_as :admin
   end
 
