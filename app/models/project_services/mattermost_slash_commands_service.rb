@@ -15,7 +15,7 @@ class MattermostSlashCommandsService < ChatSlashCommandsService
     "Perform common operations on GitLab in Mattermost"
   end
 
-  def to_param
+  def self.to_param
     'mattermost_slash_commands'
   end
 

@@ -25,6 +25,7 @@
     }
 
     bindEvents() {
+      this.handleFormSubmit = this.handleFormSubmit.bind(this);
       this.setDropdownWrapper = this.dropdownManager.setDropdown.bind(this.dropdownManager);
       this.toggleClearSearchButtonWrapper = this.toggleClearSearchButton.bind(this);
       this.checkForEnterWrapper = this.checkForEnter.bind(this);
@@ -32,6 +33,7 @@
       this.checkForBackspaceWrapper = this.checkForBackspace.bind(this);
       this.tokenChange = this.tokenChange.bind(this);
 
+      this.filteredSearchInput.form.addEventListener('submit', this.handleFormSubmit);
       this.filteredSearchInput.addEventListener('input', this.setDropdownWrapper);
       this.filteredSearchInput.addEventListener('input', this.toggleClearSearchButtonWrapper);
       this.filteredSearchInput.addEventListener('keydown', this.checkForEnterWrapper);
@@ -42,6 +44,7 @@
     }
 
     unbindEvents() {
+      this.filteredSearchInput.form.removeEventListener('submit', this.handleFormSubmit);
       this.filteredSearchInput.removeEventListener('input', this.setDropdownWrapper);
       this.filteredSearchInput.removeEventListener('input', this.toggleClearSearchButtonWrapper);
       this.filteredSearchInput.removeEventListener('keydown', this.checkForEnterWrapper);
@@ -86,6 +89,11 @@
       this.clearSearchButton.classList.add('hidden');
 
       this.dropdownManager.resetDropdowns();
+    }
+
+    handleFormSubmit(e) {
+      e.preventDefault();
+      this.search();
     }
 
     loadSearchParamsFromURL() {

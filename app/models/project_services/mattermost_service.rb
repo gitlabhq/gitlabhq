@@ -7,7 +7,7 @@ class MattermostService < ChatNotificationService
     'Receive event notifications in Mattermost'
   end
 
-  def to_param
+  def self.to_param
     'mattermost'
   end
 
@@ -36,6 +36,6 @@ class MattermostService < ChatNotificationService
   end
 
   def default_channel_placeholder
-    "#town-square"
+    "town-square"
   end
 end

@@ -20,6 +20,9 @@
       if (selected.tagName === 'LI') {
         if (selected.hasAttribute('data-value')) {
           this.dismissDropdown();
+        } else if (selected.getAttribute('data-action') === 'submit') {
+          this.dismissDropdown();
+          this.dispatchFormSubmitEvent();
         } else {
           const token = selected.querySelector('.js-filter-hint').innerText.trim();
           const tag = selected.querySelector('.js-filter-tag').innerText.trim();

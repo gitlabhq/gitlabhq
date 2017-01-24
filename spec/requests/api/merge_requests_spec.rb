@@ -687,6 +687,17 @@ describe API::MergeRequests, api: true  do
       expect(json_response.first['title']).to eq(issue.title)
       expect(json_response.first['id']).to eq(issue.id)
     end
+
+    it 'returns 403 if the user has no access to the merge request' do
+      project = create(:empty_project, :private)
+      merge_request = create(:merge_request, :simple, source_project: project)
+      guest = create(:user)
+      project.team << [guest, :guest]
+
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/closes_issues", guest)
+
+      expect(response).to have_http_status(403)
+    end
   end
 
   describe 'POST :id/merge_requests/:merge_request_id/subscription' do
@@ -708,6 +719,15 @@ describe API::MergeRequests, api: true  do
 
       expect(response).to have_http_status(404)
     end
+
+    it 'returns 403 if user has no access to read code' do
+      guest = create(:user)
+      project.team << [guest, :guest]
+
+      post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/subscription", guest)
+
+      expect(response).to have_http_status(403)
+    end
   end
 
   describe 'DELETE :id/merge_requests/:merge_request_id/subscription' do
@@ -728,6 +748,15 @@ describe API::MergeRequests, api: true  do
       post api("/projects/#{project.id}/merge_requests/123/subscription", user)
 
       expect(response).to have_http_status(404)
+    end
+
+    it 'returns 403 if user has no access to read code' do
+      guest = create(:user)
+      project.team << [guest, :guest]
+
+      delete api("/projects/#{project.id}/merge_requests/#{merge_request.id}/subscription", guest)
+
+      expect(response).to have_http_status(403)
     end
   end
 

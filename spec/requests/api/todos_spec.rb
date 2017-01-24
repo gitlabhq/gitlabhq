@@ -183,12 +183,25 @@ describe API::Todos, api: true do
 
       expect(response.status).to eq(404)
     end
+
+    it 'returns an error if the issuable is not accessible' do
+      guest = create(:user)
+      project_1.team << [guest, :guest]
+
+      post api("/projects/#{project_1.id}/#{issuable_type}/#{issuable.id}/todo", guest)
+
+      if issuable_type == 'merge_requests'
+        expect(response).to have_http_status(403)
+      else
+        expect(response).to have_http_status(404)
+      end
+    end
   end
 
   describe 'POST :id/issuable_type/:issueable_id/todo' do
     context 'for an issue' do
       it_behaves_like 'an issuable', 'issues' do
-        let(:issuable) { create(:issue, author: author_1, project: project_1) }
+        let(:issuable) { create(:issue, :confidential, author: author_1, project: project_1) }
       end
     end
 

@@ -7,7 +7,7 @@ class SlackService < ChatNotificationService
     'Receive event notifications in Slack'
   end
 
-  def to_param
+  def self.to_param
     'slack'
   end
 

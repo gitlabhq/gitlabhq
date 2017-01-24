@@ -66,11 +66,19 @@
       const word = `${tokenName}:${tokenValue}`;
 
       // Get the string to replace
-      const selectionStart = input.selectionStart;
+      let newCaretPosition = input.selectionStart;
       const { left, right } = gl.DropdownUtils.getInputSelectionPosition(input);
 
       input.value = `${inputValue.substr(0, left)}${word}${inputValue.substr(right)}`;
-      gl.FilteredSearchDropdownManager.updateInputCaretPosition(selectionStart, input);
+
+      // If we have added a tokenValue at the end of the input,
+      // add a space and set selection to the end
+      if (right >= inputValue.length && tokenValue !== '') {
+        input.value += ' ';
+        newCaretPosition = input.value.length;
+      }
+
+      gl.FilteredSearchDropdownManager.updateInputCaretPosition(newCaretPosition, input);
     }
 
     static updateInputCaretPosition(selectionStart, input) {

@@ -539,7 +539,7 @@ describe 'Filter issues', js: true, feature: true do
         click_button user2.username
       end
 
-      expect(filtered_search.value).to eq("author:@#{user2.username}")
+      expect(filtered_search.value).to eq("author:@#{user2.username} ")
     end
 
     it 'changes label' do
@@ -551,7 +551,7 @@ describe 'Filter issues', js: true, feature: true do
         click_button label.name
       end
 
-      expect(filtered_search.value).to eq("author:@#{user.username} label:~#{label.name}")
+      expect(filtered_search.value).to eq("author:@#{user.username} label:~#{label.name} ")
     end
 
     it 'changes label correctly space is in previous label' do
@@ -563,7 +563,7 @@ describe 'Filter issues', js: true, feature: true do
         click_button label.name
       end
 
-      expect(filtered_search.value).to eq("label:~#{label.name}")
+      expect(filtered_search.value).to eq("label:~#{label.name} ")
     end
   end
 
