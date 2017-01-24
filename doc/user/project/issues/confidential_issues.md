@@ -1,6 +1,6 @@
 # Confidential issues
 
-> Introduced in GitLab 8.6.
+> [Introduced][ce-3282] in GitLab 8.6.
 
 Confidential issues are issues visible only to members of a project with
 [sufficient permissions](#permissions-and-access-to-confidential-issues).
@@ -65,3 +65,4 @@ project's search results respectively.
 | ![Confidential issues search master](img/confidential_issues_search_master.png) | ![Confidential issues search guest](img/confidential_issues_search_guest.png) |
 
 [permissions]: ../../permissions.md#project
+[ce-3282]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3282
