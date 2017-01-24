@@ -70,21 +70,27 @@ module API
           required_attributes! [:body]
 
           opts = {
-           note: params[:body],
-           noteable_type: noteables_str.classify,
-           noteable_id: params[:noteable_id]
+            note: params[:body],
+            noteable_type: noteables_str.classify,
+            noteable_id: params[:noteable_id]
           }
 
-          if params[:created_at] && (current_user.is_admin? || user_project.owner == current_user)
-            opts[:created_at] = params[:created_at]
-          end
+          noteable = user_project.send(noteables_str.to_sym).find(params[:noteable_id])
 
-          note = ::Notes::CreateService.new(user_project, current_user, opts).execute
+          if can?(current_user, noteable_read_ability_name(noteable), noteable)
+            if params[:created_at] && (current_user.is_admin? || user_project.owner == current_user)
+              opts[:created_at] = params[:created_at]
+            end
 
-          if note.valid?
-            present note, with: Entities::const_get(note.class.name)
+            note = ::Notes::CreateService.new(user_project, current_user, opts).execute
+
+            if note.valid?
+              present note, with: Entities::const_get(note.class.name)
+            else
+              not_found!("Note #{note.errors.messages}")
+            end
           else
-            not_found!("Note #{note.errors.messages}")
+            not_found!("Note")
           end
         end
 
