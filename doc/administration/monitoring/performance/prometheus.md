@@ -49,7 +49,7 @@ After you have [enabled Prometheus](#configuring-prometheus), you can visit
 `<your_domain_name>:9090` for the dashboard that Prometheus offers by default.
 
 >**Note:**
-Currently if SSL has been enabled, you will not be able to access Prometheus on the same hostname as GitLab due to HSTS. Accessing via another method with a different hostname like SSH should be possible.
+Currently if SSL has been enabled, you will not be able to access Prometheus on the same hostname as GitLab due to HSTS. This configuration will be supported in a future release.
 
 The performance data collected by Prometheus can be viewed directly in the
 Prometheus console or through a compatible dashboard tool.
