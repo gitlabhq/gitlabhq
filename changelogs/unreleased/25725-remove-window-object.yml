@@ -1,4 +1,0 @@
----
-title: Removes unneeded `window` declaration in environments related code
-merge_request: 8456
-author:

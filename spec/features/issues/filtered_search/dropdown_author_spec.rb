@@ -121,14 +121,14 @@ describe 'Dropdown author', js: true, feature: true do
       click_author(user_jacob.name)
 
       expect(page).to have_css(js_dropdown_author, visible: false)
-      expect(filtered_search.value).to eq("author:@#{user_jacob.username}")
+      expect(filtered_search.value).to eq("author:@#{user_jacob.username} ")
     end
 
     it 'fills in the author username when the author has been filtered' do
       click_author(user.name)
 
       expect(page).to have_css(js_dropdown_author, visible: false)
-      expect(filtered_search.value).to eq("author:@#{user.username}")
+      expect(filtered_search.value).to eq("author:@#{user.username} ")
     end
   end
 

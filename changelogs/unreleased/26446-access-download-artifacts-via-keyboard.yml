@@ -1,5 +1,0 @@
----
-title: Made download artifacts button accessible via keyboard by changing it from
-  an anchor tag to an actual button
-merge_request:
-author: Ryan Harris

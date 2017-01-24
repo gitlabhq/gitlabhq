@@ -25,7 +25,7 @@ You can create a Personal Access Token here:
 http://app.asana.com/-/account_api'
   end
 
-  def to_param
+  def self.to_param
     'asana'
   end
 
@@ -44,7 +44,7 @@ http://app.asana.com/-/account_api'
     ]
   end
 
-  def supported_events
+  def self.supported_events
     %w(push)
   end
 

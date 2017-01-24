@@ -11,7 +11,7 @@ module Taskable
   INCOMPLETE   = 'incomplete'.freeze
   ITEM_PATTERN = /
     ^
-    (?:\s*[-+*]|(?:\d+\.))? # optional list prefix
+    \s*(?:[-+*]|(?:\d+\.))? # optional list prefix
     \s*                     # optional whitespace prefix
     (\[\s\]|\[[xX]\])       # checkbox
     (\s.+)                  # followed by whitespace and some text.

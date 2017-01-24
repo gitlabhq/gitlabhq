@@ -15,10 +15,8 @@ module API
       end
 
       get ":id/merge_requests/:merge_request_id/versions" do
-        merge_request = user_project.merge_requests.
-          find(params[:merge_request_id])
+        merge_request = find_merge_request_with_access(params[:merge_request_id])
 
-        authorize! :read_merge_request, merge_request
         present merge_request.merge_request_diffs, with: Entities::MergeRequestDiff
       end
 
@@ -34,10 +32,8 @@ module API
       end
 
       get ":id/merge_requests/:merge_request_id/versions/:version_id" do
-        merge_request = user_project.merge_requests.
-          find(params[:merge_request_id])
+        merge_request = find_merge_request_with_access(params[:merge_request_id])
 
-        authorize! :read_merge_request, merge_request
         present merge_request.merge_request_diffs.find(params[:version_id]), with: Entities::MergeRequestDiffFull
       end
     end
