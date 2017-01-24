@@ -266,6 +266,8 @@ constraints(ProjectUrlConstrainer.new) do
       end
 
       resources :boards, only: [:index, :show] do
+        get :backlog, on: :member
+        
         scope module: :boards do
           resources :issues, only: [:update]
 

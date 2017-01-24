@@ -1,7 +1,7 @@
 class Projects::BoardsController < Projects::ApplicationController
   include IssuableCollections
 
-  before_action :authorize_read_board!, only: [:index, :show]
+  # before_action :authorize_read_board!, only: [:index, :show, :backlog]
 
   def index
     @boards = ::Boards::ListService.new(project, current_user).execute
@@ -23,6 +23,27 @@ class Projects::BoardsController < Projects::ApplicationController
         render json: serialize_as_json(@board)
       end
     end
+  end
+
+  def backlog
+    board = project.boards.find(params[:id])
+
+    @issues = issues_collection
+    @issues = @issues.where.not(
+      LabelLink.where("label_links.target_type = 'Issue' AND label_links.target_id = issues.id")
+               .where(label_id: board.lists.movable.pluck(:label_id)).limit(1).arel.exists
+    )
+    @issues = @issues.page(params[:page])
+
+    render json: @issues.as_json(
+      labels: true,
+      only: [:iid, :title, :confidential, :due_date],
+      include: {
+        assignee: { only: [:id, :name, :username], methods: [:avatar_url] },
+        milestone: { only: [:id, :title] }
+      },
+      user: current_user
+    )
   end
 
   private

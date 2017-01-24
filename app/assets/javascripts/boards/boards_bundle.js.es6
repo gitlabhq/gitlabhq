@@ -13,6 +13,7 @@
 //= require ./components/board
 //= require ./components/board_sidebar
 //= require ./components/new_list_dropdown
+//= require ./components/modal
 //= require ./vue_resource_interceptor
 
 $(() => {
@@ -31,7 +32,8 @@ $(() => {
     el: $boardApp,
     components: {
       'board': gl.issueBoards.Board,
-      'board-sidebar': gl.issueBoards.BoardSidebar
+      'board-sidebar': gl.issueBoards.BoardSidebar,
+      'board-add-issues-modal': gl.issueBoards.IssuesModal,
     },
     data: {
       state: Store.state,
@@ -55,12 +57,12 @@ $(() => {
       gl.boardService.all()
         .then((resp) => {
           resp.json().forEach((board) => {
+            if (board.list_type === 'backlog') return;
+
             const list = Store.addList(board);
 
             if (list.type === 'done') {
               list.position = Infinity;
-            } else if (list.type === 'backlog') {
-              list.position = -1;
             }
           });
 
@@ -81,4 +83,13 @@ $(() => {
       gl.issueBoards.newListDropdownInit();
     }
   });
+
+  // This element is outside the Vue app
+  $(document)
+    .off('click', '.js-show-add-issues')
+    .on('click', '.js-show-add-issues', (e) => {
+      e.preventDefault();
+
+      Store.modal.showAddIssuesModal = true;
+    });
 });

@@ -250,11 +250,12 @@
 }
 
 .issue-boards-search {
-  width: 290px;
+  width: 395px;
 
   .form-control {
     display: inline-block;
     width: 210px;
+    margin-right: 10px
   }
 }
 
@@ -353,4 +354,53 @@
     padding-left: 0;
     padding-right: 0;
   }
+}
+
+.add-issues-modal {
+  display: flex;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba($black, .3);
+  z-index: 9999;
+}
+
+.add-issues-container {
+  display: flex;
+  flex-direction: column;
+  width: 90vw;
+  height: 85vh;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 25px 15px 0;
+  background-color: $white-light;
+  border-radius: $border-radius-default;
+  box-shadow: 0 2px 12px rgba($black, .5);
+}
+
+.add-issues-header {
+  > h2 {
+    margin: 0;
+    font-size: 18px;
+  }
+
+  .top-area {
+    margin-bottom: 10px;
+  }
+}
+
+.add-issues-list {
+  flex: 1;
+  overflow-y: scroll;
+}
+
+.add-issues-footer {
+  margin-top: auto;
+  margin-left: -15px;
+  margin-right: -15px;
+  padding-left: 15px;
+  padding-right: 15px;
 }

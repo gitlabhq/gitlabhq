@@ -12,6 +12,11 @@
     detail: {
       issue: {}
     },
+    modal: {
+      issues: [],
+      showAddIssuesModal: false,
+      activeTab: 'all',
+    },
     moving: {
       issue: {},
       list: {}

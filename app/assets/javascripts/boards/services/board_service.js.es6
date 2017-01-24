@@ -3,6 +3,12 @@
 
 class BoardService {
   constructor (root, boardId) {
+    this.boards = Vue.resource(`${root}{/id}.json`, {}, {
+      backlog: {
+        method: 'GET',
+        url: `${root}/${boardId}/backlog.json`
+      }
+    });
     this.lists = Vue.resource(`${root}/${boardId}/lists{/id}`, {}, {
       generate: {
         method: 'POST',
@@ -64,6 +70,10 @@ class BoardService {
     return this.issues.save({ id }, {
       issue
     });
+  }
+
+  getBacklog() {
+    return this.boards.backlog();
   }
 }
 
