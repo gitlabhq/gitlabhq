@@ -927,10 +927,11 @@ pre.light-well {
 }
 
 .variables-table {
+  table-layout: fixed;
+
   &.table-responsive {
     border: none;
   }
-  table-layout: fixed;
 
   .variable-key {
     width: 300px;
