@@ -88,10 +88,11 @@ In all of the below cases, the notification will be sent to:
 | Close merge request    | |
 | Reopen merge request   | |
 | Merge merge request    | |
+| Approved merge request | |
+| Unapproved merge request | |
 | New comment            | The above, plus anyone mentioned by `@username` in the comment, with notification level "Mention" or higher |
 | Failed pipeline        | The above, plus the author of the pipeline |
 | Successful pipeline    | The above, plus the author of the pipeline |
-
 
 In addition, if the title or description of an Issue or Merge Request is
 changed, notifications will be sent to any **new** mentions by `@username` as

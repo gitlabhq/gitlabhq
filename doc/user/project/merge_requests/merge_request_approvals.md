@@ -68,6 +68,16 @@ assign several users with one action. One possible scenario would be to to assig
 a group of approvers at the project level and change them later when creating
 or editing the merge request.
 
+## Removing approval
+
+A designated approver can remove their approval at any time. If, when an approver
+removes their approval, the number of approvals given falls below the number of
+required approvals, the merge request cannot be accepted.
+
+If, on the other hand, an approver removes their approval but the number of approvals
+given stays at or above the number of required approvals, the merge request can still be
+accepted.
+
 ## Using approvals
 
 After configuring approvals, you will be able to change the default set of
@@ -93,3 +103,7 @@ will be decreased by one.
 ![Merge request approval](img/approvals_mr_approved.png)
 
 [ee-743]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/743
+
+To remove approval, just press the **Remove your approval** button
+
+![Merge request remove approval](img/remove_approval_mr.png)
