@@ -6,6 +6,7 @@
   them yourself. Over subsequent releases additional GitLab metrics will be
   captured.
 - Prometheus services are off by default but will be on starting with GitLab 9.0.
+- Prometheus and it's exporters do not authenticate users, and will be available to anyone who can access them.
 
 [Prometheus] is a powerful time-series monitoring service, providing a flexible
 platform for monitoring GitLab and other software products.
@@ -21,8 +22,9 @@ connect directly to Prometheus or utilize a dashboard tool like [Grafana].
 ## Configuring Prometheus
 
 >**Note:**
-Available since Omnibus GitLab 8.16. For installations from source you'll
+- Available since Omnibus GitLab 8.16. For installations from source you'll
 have to install and configure it yourself.
+- Prometheus and it's exporters do not authenticate users, and will be available for anyone who can access them.
 
 To enable Prometheus:
 
@@ -45,6 +47,9 @@ Prometheus.
 
 After you have [enabled Prometheus](#configuring-prometheus), you can visit
 `<your_domain_name>:9090` for the dashboard that Prometheus offers by default.
+
+>**Note:**
+Currently if SSL has been enabled, you will not be able to access Prometheus on the same hostname as GitLab due to HSTS. Accessing via another method with a different hostname like SSH should be possible.
 
 The performance data collected by Prometheus can be viewed directly in the
 Prometheus console or through a compatible dashboard tool.
