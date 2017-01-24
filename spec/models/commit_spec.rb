@@ -351,4 +351,22 @@ eos
       expect(commit).not_to be_work_in_progress
     end
   end
+
+  describe '.valid_hash?' do
+    it 'checks hash contents' do
+      expect(described_class.valid_hash?('abcdef01239ABCDEF')).to be true
+      expect(described_class.valid_hash?("abcdef01239ABCD\nEF")).to be false
+      expect(described_class.valid_hash?(' abcdef01239ABCDEF ')).to be false
+      expect(described_class.valid_hash?('Gabcdef01239ABCDEF')).to be false
+      expect(described_class.valid_hash?('gabcdef01239ABCDEF')).to be false
+      expect(described_class.valid_hash?('-abcdef01239ABCDEF')).to be false
+    end
+
+    it 'checks hash length' do
+      expect(described_class.valid_hash?('a' * 6)).to be false
+      expect(described_class.valid_hash?('a' * 7)).to be true
+      expect(described_class.valid_hash?('a' * 40)).to be true
+      expect(described_class.valid_hash?('a' * 41)).to be false
+    end
+  end
 end
