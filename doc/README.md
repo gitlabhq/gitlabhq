@@ -6,7 +6,7 @@
 
 ## User documentation
 
-- [Account Security](user/account/security.md) Securing your account via two-factor authentication, etc.
+- [Account Security](user/profile/account/two_factor_authentication.md) Securing your account via two-factor authentication, etc.
 - [API](api/README.md) Automate GitLab via a simple and powerful API.
 - [CI/CD](ci/README.md) GitLab Continuous Integration (CI) and Continuous Delivery (CD) getting started, `.gitlab-ci.yml` options, and examples.
 - [GitLab as OAuth2 authentication service provider](integration/oauth_provider.md). It allows you to login to other applications from GitLab.
