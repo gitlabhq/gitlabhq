@@ -18,6 +18,7 @@ module Ci
 
           if current_runner.is_runner_queue_value_latest?(params[:last_update])
             header 'X-GitLab-Last-Update', params[:last_update]
+            Gitlab::Metrics.add_event(:build_not_found_cached)
             return build_not_found!
           end
 

@@ -171,7 +171,7 @@ module Ci
       end
 
       def execute(runner)
-        described_class.new(runner).execute
+        described_class.new(runner).execute.first
       end
     end
   end
