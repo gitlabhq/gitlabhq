@@ -7,12 +7,11 @@ class Projects::DeployKeysController < Projects::ApplicationController
   layout "project_settings"
 
   def index
-    @key = DeployKey.new
-    set_index_vars
+    redirect_to namespace_project_settings_repository_path(@project.namespace, @project)
   end
 
   def new
-    redirect_to namespace_project_deploy_keys_path(@project.namespace, @project)
+    redirect_to namespace_project_settings_repository_path(@project.namespace, @project)
   end
 
   def create
@@ -20,7 +19,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
     set_index_vars
 
     if @key.valid? && @project.deploy_keys << @key
-      redirect_to namespace_project_deploy_keys_path(@project.namespace, @project)
+      redirect_to namespace_project_settings_repository_path(@project.namespace, @project)
     else
       render "index"
     end
@@ -29,7 +28,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
   def enable
     Projects::EnableDeployKeyService.new(@project, current_user, params).execute
 
-    redirect_to namespace_project_deploy_keys_path(@project.namespace, @project)
+    redirect_to namespace_project_settings_repository_path(@project.namespace, @project)
   end
 
   def disable
