@@ -39,7 +39,6 @@ project_tree:
       - :author
       - :events
     - :statuses
-  - :variables
   - :triggers
   - :deploy_keys
   - :services

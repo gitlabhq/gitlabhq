@@ -197,6 +197,20 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
           expect(restored_project_json).to be true
         end
       end
+
+      context 'tokens are regenerated' do
+        before do
+          restored_project_json
+        end
+
+        it 'has a new CI triggers token' do
+          expect(Ci::Trigger.where(token: 'cdbfasdf44a5958c83654733449e585')).to be_empty
+        end
+
+        it 'has a new CI triggers token' do
+          expect(Ci::Build.where(token: 'abcd')).to be_empty
+        end
+      end
     end
   end
 end
