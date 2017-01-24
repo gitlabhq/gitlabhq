@@ -203,11 +203,11 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
           restored_project_json
         end
 
-        it 'has a new CI triggers token' do
+        it 'has a new CI trigger token' do
           expect(Ci::Trigger.where(token: 'cdbfasdf44a5958c83654733449e585')).to be_empty
         end
 
-        it 'has a new CI triggers token' do
+        it 'has a new CI build token' do
           expect(Ci::Build.where(token: 'abcd')).to be_empty
         end
       end

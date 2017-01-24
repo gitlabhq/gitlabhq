@@ -23,7 +23,7 @@ module Gitlab
 
       EXISTING_OBJECT_CHECK = %i[milestone milestones label labels project_label project_labels group_label group_labels].freeze
 
-      TOKEN_RESET_MODELS = %w[Ci::Trigger Ci::Build ProjectHook]
+      TOKEN_RESET_MODELS = %w[Ci::Trigger Ci::Build ProjectHook].freeze
 
       def self.create(*args)
         new(*args).create
