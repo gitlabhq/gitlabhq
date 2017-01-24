@@ -359,13 +359,6 @@ describe API::Projects, api: true  do
       expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PUBLIC)
     end
 
-    it 'sets a project as public using :public' do
-      project = attributes_for(:project, { public: true })
-      post api('/projects', user), project
-      expect(json_response['public']).to be_truthy
-      expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PUBLIC)
-    end
-
     it 'sets a project as internal' do
       project = attributes_for(:project, :internal)
       post api('/projects', user), project
@@ -373,22 +366,8 @@ describe API::Projects, api: true  do
       expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::INTERNAL)
     end
 
-    it 'sets a project as internal overriding :public' do
-      project = attributes_for(:project, :internal, { public: true })
-      post api('/projects', user), project
-      expect(json_response['public']).to be_falsey
-      expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::INTERNAL)
-    end
-
     it 'sets a project as private' do
       project = attributes_for(:project, :private)
-      post api('/projects', user), project
-      expect(json_response['public']).to be_falsey
-      expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PRIVATE)
-    end
-
-    it 'sets a project as private using :public' do
-      project = attributes_for(:project, { public: false })
       post api('/projects', user), project
       expect(json_response['public']).to be_falsey
       expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PRIVATE)
@@ -431,13 +410,14 @@ describe API::Projects, api: true  do
     end
 
     context 'when a visibility level is restricted' do
+      let(:project_param) { attributes_for(:project, :public) }
+
       before do
-        @project = attributes_for(:project, { public: true })
         stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
       end
 
       it 'does not allow a non-admin to use a restricted visibility level' do
-        post api('/projects', user), @project
+        post api('/projects', user), project_param
 
         expect(response).to have_http_status(400)
         expect(json_response['message']['visibility_level'].first).to(
@@ -446,7 +426,8 @@ describe API::Projects, api: true  do
       end
 
       it 'allows an admin to override restricted visibility settings' do
-        post api('/projects', admin), @project
+        post api('/projects', admin), project_param
+
         expect(json_response['public']).to be_truthy
         expect(json_response['visibility_level']).to(
           eq(Gitlab::VisibilityLevel::PUBLIC)
@@ -499,15 +480,6 @@ describe API::Projects, api: true  do
       expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PUBLIC)
     end
 
-    it 'sets a project as public using :public' do
-      project = attributes_for(:project, { public: true })
-      post api("/projects/user/#{user.id}", admin), project
-
-      expect(response).to have_http_status(201)
-      expect(json_response['public']).to be_truthy
-      expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PUBLIC)
-    end
-
     it 'sets a project as internal' do
       project = attributes_for(:project, :internal)
       post api("/projects/user/#{user.id}", admin), project
@@ -517,23 +489,8 @@ describe API::Projects, api: true  do
       expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::INTERNAL)
     end
 
-    it 'sets a project as internal overriding :public' do
-      project = attributes_for(:project, :internal, { public: true })
-      post api("/projects/user/#{user.id}", admin), project
-      expect(response).to have_http_status(201)
-      expect(json_response['public']).to be_falsey
-      expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::INTERNAL)
-    end
-
     it 'sets a project as private' do
       project = attributes_for(:project, :private)
-      post api("/projects/user/#{user.id}", admin), project
-      expect(json_response['public']).to be_falsey
-      expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PRIVATE)
-    end
-
-    it 'sets a project as private using :public' do
-      project = attributes_for(:project, { public: false })
       post api("/projects/user/#{user.id}", admin), project
       expect(json_response['public']).to be_falsey
       expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PRIVATE)
@@ -1124,7 +1081,7 @@ describe API::Projects, api: true  do
 
       it 'updates visibility_level from public to private' do
         project3.update_attributes({ visibility_level: Gitlab::VisibilityLevel::PUBLIC })
-        project_param = { public: false }
+        project_param = { visibility_level: 0 }
         put api("/projects/#{project3.id}", user), project_param
         expect(response).to have_http_status(200)
         project_param.each_pair do |k, v|
