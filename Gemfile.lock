@@ -362,8 +362,14 @@ GEM
       rake
     grape-swagger (0.27.3)
       grape (>= 0.16.2)
+    grape-swagger-entity (0.2.3)
+      grape-entity (>= 0.5.0)
+      grape-swagger (>= 0.20.4)
     grape-swagger-rails (0.3.0)
       railties (>= 3.2.12)
+    grape-swagger-representable (0.1.5)
+      grape-swagger (>= 0.20.4)
+      representable
     grape_logging (1.7.0)
       grape
     grpc (1.4.5)
@@ -1060,7 +1066,9 @@ DEPENDENCIES
   grape-entity (~> 0.6.0)
   grape-route-helpers (~> 2.1.0)
   grape-swagger
+  grape-swagger-entity
   grape-swagger-rails
+  grape-swagger-representable
   grape_logging (~> 1.7)
   haml_lint (~> 0.26.0)
   hamlit (~> 2.6.1)

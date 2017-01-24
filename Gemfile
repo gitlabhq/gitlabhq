@@ -80,6 +80,8 @@ gem 'grape', '~> 1.0'
 gem 'grape-entity', '~> 0.6.0'
 gem 'grape-swagger'
 gem 'grape-swagger-rails'
+gem 'grape-swagger-entity'
+gem 'grape-swagger-representable'
 gem 'rack-cors',    '~> 0.4.0', require: 'rack/cors'
 
 # Disable strong_params so that Mash does not respond to :permitted?
