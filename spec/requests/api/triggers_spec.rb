@@ -15,7 +15,7 @@ describe API::Triggers do
   let!(:trigger_request) { create(:ci_trigger_request, trigger: trigger, created_at: '2015-01-01 12:13:14') }
 
   describe 'POST /projects/:project_id/trigger' do
-    let!(:project2) { create(:empty_project) }
+    let!(:project2) { create(:project) }
     let(:options) do
       {
         token: trigger_token

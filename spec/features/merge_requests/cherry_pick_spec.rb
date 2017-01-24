@@ -2,7 +2,8 @@ require 'spec_helper'
 
 describe 'Cherry-pick Merge Requests' do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:group) { create(:group) }
+  let(:project) { create(:project, namespace: group) }
   let(:merge_request) { create(:merge_request_with_diffs, source_project: project, author: user) }
 
   before do

@@ -9,7 +9,7 @@ class SlackSlashCommandsService < ChatSlashCommandsService
     "Perform common operations on GitLab in Slack"
   end
 
-  def to_param
+  def self.to_param
     'slack_slash_commands'
   end
 

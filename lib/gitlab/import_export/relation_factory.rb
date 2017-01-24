@@ -14,7 +14,7 @@ module Gitlab
                     priorities: :label_priorities,
                     label: :project_label }.freeze
 
-      USER_REFERENCES = %w[author_id assignee_id updated_by_id user_id created_by_id merge_user_id].freeze
+      USER_REFERENCES = %w[author_id assignee_id updated_by_id user_id created_by_id merge_user_id resolved_by_id].freeze
 
       PROJECT_REFERENCES = %w[project_id source_project_id gl_project_id target_project_id].freeze
 
@@ -80,17 +80,13 @@ module Gitlab
       # is left.
       def set_note_author
         old_author_id = @relation_hash['author_id']
-
-        # Users with admin access can map users
-        @relation_hash['author_id'] = admin_user? ? @members_mapper.map[old_author_id] : @members_mapper.default_user_id
-
         author = @relation_hash.delete('author')
 
-        update_note_for_missing_author(author['name']) if missing_author?(old_author_id)
+        update_note_for_missing_author(author['name']) unless has_author?(old_author_id)
       end
 
-      def missing_author?(old_author_id)
-        !admin_user? || @members_mapper.missing_author_ids.include?(old_author_id)
+      def has_author?(old_author_id)
+        admin_user? && @members_mapper.map.keys.include?(old_author_id)
       end
 
       def missing_author_note(updated_at, author_name)

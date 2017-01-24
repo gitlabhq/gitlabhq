@@ -12,7 +12,7 @@ class CampfireService < Service
     'Simple web-based real-time group chat'
   end
 
-  def to_param
+  def self.to_param
     'campfire'
   end
 
@@ -24,7 +24,7 @@ class CampfireService < Service
     ]
   end
 
-  def supported_events
+  def self.supported_events
     %w(push)
   end
 

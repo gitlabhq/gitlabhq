@@ -8,14 +8,10 @@
     = link_to namespace_project_deploy_keys_path(@project.namespace, @project), title: 'Deploy Keys' do
       %span
         Deploy Keys
-  = nav_link(controller: :hooks) do
-    = link_to namespace_project_hooks_path(@project.namespace, @project), title: 'Webhooks' do
+  = nav_link(controller: :integrations) do
+    = link_to namespace_project_settings_integrations_path(@project.namespace, @project), title: 'Integrations' do
       %span
-        Webhooks
-  = nav_link(controller: :services) do
-    = link_to namespace_project_services_path(@project.namespace, @project), title: 'Services' do
-      %span
-        Services
+        Integrations
   = nav_link(controller: :protected_branches) do
     = link_to namespace_project_protected_branches_path(@project.namespace, @project), title: 'Protected Branches' do
       %span
