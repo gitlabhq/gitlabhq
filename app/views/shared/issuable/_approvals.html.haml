@@ -4,16 +4,14 @@
 - return unless issuable.is_a?(MergeRequest)
 - return unless issuable.requires_approve?
 
-- approvals_required = issuable.target_project.approvals_before_merge
-
 .form-group
   = form.label :approvals_before_merge, class: 'control-label' do
     Approvals required
   .col-sm-10
-    = form.number_field :approvals_before_merge, class: 'form-control', value: approvals_required
+    = form.number_field :approvals_before_merge, class: 'form-control', value: issuable.approvals_required
     .help-block
       Number of users who need to approve this merge request before it can be accepted.
-      If this isn't greater than the project default (#{pluralize(approvals_required, 'user')}),
+      If this isn't greater than the project default (#{pluralize(issuable.target_project.approvals_before_merge, 'user')}),
       then it will be ignored and the project default will be used.
 .form-group
   = form.label :approver_ids, class: 'control-label' do

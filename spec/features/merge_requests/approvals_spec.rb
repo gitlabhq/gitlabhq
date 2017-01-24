@@ -153,6 +153,36 @@ feature 'Merge request approvals', js: true, feature: true do
         find('.approvals-components')
         expect(page).to have_content("Requires 1 more approval (from #{approver.name})")
       end
+
+      it 'allows changing approvals number' do
+        create_list :approver, 3, target: project
+
+        visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+
+        # project setting in the beginning on the show MR page
+        find('.approvals-components')
+        expect(page).to have_content("Requires 1 more approval")
+
+        find('.merge-request').click_on 'Edit'
+
+        # project setting in the beginning on the edit MR page
+        expect(find('#merge_request_approvals_before_merge').value).to eq('1')
+        expect(find('#merge_request_approvals_before_merge ~ .help-block')).to have_content('1 user')
+
+        fill_in 'merge_request_approvals_before_merge', with: '3'
+
+        click_on('Save changes')
+
+        # new MR setting on the show MR page
+        find('.approvals-components')
+        expect(page).to have_content("Requires 3 more approvals")
+
+        find('.merge-request').click_on 'Edit'
+
+        # new MR setting on the edit MR page
+        expect(find('#merge_request_approvals_before_merge').value).to eq('3')
+        expect(find('#merge_request_approvals_before_merge ~ .help-block')).to have_content('1 user')
+      end
     end
   end
 
