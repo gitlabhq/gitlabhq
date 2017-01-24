@@ -37,18 +37,20 @@ describe API::Runners, api: true  do
     context 'authorized user' do
       it 'returns user available runners' do
         get api('/runners', user)
-        shared = json_response.any?{ |r| r['is_shared'] }
 
+        shared = json_response.any?{ |r| r['is_shared'] }
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(shared).to be_falsey
       end
 
       it 'filters runners by scope' do
         get api('/runners?scope=active', user)
-        shared = json_response.any?{ |r| r['is_shared'] }
 
+        shared = json_response.any?{ |r| r['is_shared'] }
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(shared).to be_falsey
       end
@@ -73,9 +75,10 @@ describe API::Runners, api: true  do
       context 'with admin privileges' do
         it 'returns all runners' do
           get api('/runners/all', admin)
-          shared = json_response.any?{ |r| r['is_shared'] }
 
+          shared = json_response.any?{ |r| r['is_shared'] }
           expect(response).to have_http_status(200)
+          expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(shared).to be_truthy
         end
@@ -91,9 +94,10 @@ describe API::Runners, api: true  do
 
       it 'filters runners by scope' do
         get api('/runners/all?scope=specific', admin)
-        shared = json_response.any?{ |r| r['is_shared'] }
 
+        shared = json_response.any?{ |r| r['is_shared'] }
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(shared).to be_falsey
       end
@@ -335,9 +339,10 @@ describe API::Runners, api: true  do
     context 'authorized user with master privileges' do
       it "returns project's runners" do
         get api("/projects/#{project.id}/runners", user)
-        shared = json_response.any?{ |r| r['is_shared'] }
 
+        shared = json_response.any?{ |r| r['is_shared'] }
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(shared).to be_truthy
       end

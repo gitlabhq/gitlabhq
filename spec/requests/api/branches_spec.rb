@@ -18,7 +18,9 @@ describe API::Branches, api: true  do
       project.repository.expire_all_method_caches
 
       get api("/projects/#{project.id}/repository/branches", user), per_page: 100
+
       expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       branch_names = json_response.map { |x| x['name'] }
       expect(branch_names).to match_array(project.repository.branch_names)

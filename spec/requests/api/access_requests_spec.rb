@@ -48,6 +48,7 @@ describe API::AccessRequests, api: true  do
           get api("/#{source_type.pluralize}/#{source.id}/access_requests", master)
 
           expect(response).to have_http_status(200)
+          expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.size).to eq(1)
         end
