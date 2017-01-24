@@ -2,9 +2,9 @@ module EE
   # Namespace EE mixin
   #
   # This module is intended to encapsulate EE-specific model logic
-  # and be included in the `Namespace` model
+  # and be prepended in the `Namespace` model
   module Namespace
-    extend ::Prependable
+    extend ActiveSupport::Concern
 
     prepended do
       has_one :namespace_statistics, dependent: :destroy

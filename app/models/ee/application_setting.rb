@@ -2,9 +2,9 @@ module EE
   # ApplicationSetting EE mixin
   #
   # This module is intended to encapsulate EE-specific model logic
-  # and be included in the `ApplicationSetting` model
+  # and be prepended in the `ApplicationSetting` model
   module ApplicationSetting
-    extend ::Prependable
+    extend ActiveSupport::Concern
 
     prepended do
       validates :shared_runners_minutes,
