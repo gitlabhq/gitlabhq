@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Conflict::File, lib: true do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:rugged) { repository.rugged }
   let(:their_commit) { rugged.branches['conflict-start'].target }

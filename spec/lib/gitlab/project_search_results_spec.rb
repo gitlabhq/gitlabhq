@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::ProjectSearchResults, lib: true do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:empty_project) }
   let(:query) { 'hello world' }
 
   describe 'initialize with empty ref' do
@@ -22,6 +22,7 @@ describe Gitlab::ProjectSearchResults, lib: true do
   end
 
   describe 'blob search' do
+    let(:project) { create(:project, :repository) }
     let(:results) { described_class.new(user, project, 'files').objects('blobs') }
 
     it 'finds by name' do
@@ -75,6 +76,7 @@ describe Gitlab::ProjectSearchResults, lib: true do
   end
 
   describe 'confidential issues' do
+    let(:project) { create(:empty_project) }
     let(:query) { 'issue' }
     let(:author) { create(:user) }
     let(:assignee) { create(:user) }

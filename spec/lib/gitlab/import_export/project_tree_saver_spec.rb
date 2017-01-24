@@ -151,6 +151,7 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
 
     project = create(:project,
                      :public,
+                     :repository,
                      issues: [issue],
                      snippets: [snippet],
                      releases: [release],
