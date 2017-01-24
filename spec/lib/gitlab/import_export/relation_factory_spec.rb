@@ -55,8 +55,8 @@ describe Gitlab::ImportExport::RelationFactory, lib: true do
       expect(created_object.project_id).to eq(project.id)
     end
 
-    it 'has a token' do
-      expect(created_object.token).to eq(token)
+    it 'has a nil token' do
+      expect(created_object.token).to eq(nil)
     end
 
     context 'original service exists' do
