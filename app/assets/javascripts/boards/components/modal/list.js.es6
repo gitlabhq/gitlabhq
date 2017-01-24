@@ -1,6 +1,8 @@
 /* global Vue */
 /* global ListIssue */
+/* global Masonry */
 (() => {
+  let listMasonry;
   const Store = gl.issueBoards.BoardsStore;
 
   window.gl = window.gl || {};
@@ -22,9 +24,14 @@
       loading() {
         return this.issues.length === 0;
       },
+      selectedCount() {
+        return Store.modalSelectedCount();
+      },
     },
     methods: {
-      toggleIssue(issue) {
+      toggleIssue(issueObj) {
+        const issue = issueObj;
+
         issue.selected = !issue.selected;
       },
       showIssue(issue) {
@@ -41,7 +48,7 @@
         if (listMasonry) {
           listMasonry.destroy();
         }
-      }
+      },
     },
     mounted() {
       gl.boardService.getBacklog()
@@ -66,9 +73,11 @@
     },
     template: `
       <section class="add-issues-list">
-        <i
-          class="fa fa-spinner fa-spin"
-          v-if="loading"></i>
+        <div
+          class="add-issues-list-loading"
+          v-if="loading">
+          <i class="fa fa-spinner fa-spin"></i>
+        </div>
         <div
           class="add-issues-list-columns list-unstyled"
           ref="list"
@@ -85,9 +94,19 @@
                 :issue="issue"
                 :issue-link-base="'/'">
               </issue-card-inner>
+              <span
+                v-if="issue.selected"
+                class="issue-card-selected">
+                <i class="fa fa-check"></i>
+              </span>
             </div>
           </div>
         </div>
+        <p
+          class="all-issues-selected-empty"
+          v-if="activeTab == 'selected' && selectedCount == 0">
+          You don't have any issues selected, <a href="#" @click="activeTab = 'all'">select some</a>.
+        </p>
       </section>
     `,
   });

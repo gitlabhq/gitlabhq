@@ -390,17 +390,32 @@
   .top-area {
     margin-bottom: 10px;
   }
+}
 
-  .form-control {
-    margin-bottom: 10px;
+.add-issues-search {
+  display: flex;
+  margin-bottom: 10px;
+
+  .btn {
+    margin-left: 10px;
   }
 }
 
 .add-issues-list {
+  display: flex;
   flex: 1;
   margin-left: -$gl-vert-padding;
   margin-right: -$gl-vert-padding;
   overflow-y: scroll;
+}
+
+.add-issues-list-loading {
+  align-self: center;
+  width: 100%;
+  padding-left: $gl-vert-padding;
+  padding-right: $gl-vert-padding;
+  font-size: 35px;
+  text-align: center;
 }
 
 .add-issues-footer {
@@ -412,6 +427,9 @@
 }
 
 .add-issues-list-columns {
+  width: 100%;
+  padding-top: 3px;
+
   .card-parent {
     width: (100% / 3);
     padding: 0 $gl-vert-padding ($gl-vert-padding * 2);
@@ -420,4 +438,23 @@
   .card {
     cursor: pointer;
   }
+}
+
+.all-issues-selected-empty {
+  align-self: center;
+  margin-bottom: 0;
+}
+
+.issue-card-selected {
+  position: absolute;
+  right: -3px;
+  top: -3px;
+  width: 20px;
+  height: 20px;
+  background-color: $blue-dark;
+  color: $white-light;
+  font-size: 12px;
+  text-align: center;
+  line-height: 20px;
+  border-radius: 50%;
 }

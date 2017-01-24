@@ -16,16 +16,11 @@
     },
     computed: {
       selectedCount() {
-        let count = 0;
-
-        this.issues.forEach((issue) => {
-          if (issue.selected) {
-            count += 1;
-          }
-        });
-
-        return count;
+        return Store.modalSelectedCount();
       },
+    },
+    destroyed() {
+      this.activeTab = 'all';
     },
     template: `
       <div class="top-area">

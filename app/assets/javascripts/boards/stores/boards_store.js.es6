@@ -125,6 +125,17 @@
     },
     updateFiltersUrl () {
       history.pushState(null, null, `?${$.param(this.state.filters)}`);
-    }
+    },
+    modalSelectedCount() {
+      let count = 0;
+
+      this.modal.issues.forEach((issue) => {
+        if (issue.selected) {
+          count += 1;
+        }
+      });
+
+      return count;
+    },
   };
 })();
