@@ -82,11 +82,11 @@
   }
 
   .block-controls {
-    display: -webkit-box;
+    display: -webkit-flex;
     display: flex;
-    -webkit-box-pack: end;
+    -webkit-justify-content: flex-end;
     justify-content: flex-end;
-    -webkit-box-flex: 1;
+    -webkit-flex: 1;
     flex: 1;
 
     .control {
