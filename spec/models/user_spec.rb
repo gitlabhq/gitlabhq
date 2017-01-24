@@ -797,14 +797,14 @@ describe User, models: true do
   describe '#avatar_type' do
     let(:user) { create(:user) }
 
-    it "is true if avatar is image" do
+    it 'is true if avatar is image' do
       user.update_attribute(:avatar, 'uploads/avatar.png')
       expect(user.avatar_type).to be_truthy
     end
 
-    it "is false if avatar is html page" do
+    it 'is false if avatar is html page' do
       user.update_attribute(:avatar, 'uploads/avatar.html')
-      expect(user.avatar_type).to eq(["only images allowed"])
+      expect(user.avatar_type).to eq(['only images allowed'])
     end
   end
 
@@ -926,8 +926,8 @@ describe User, models: true do
     end
   end
 
-  describe "#starred?" do
-    it "determines if user starred a project" do
+  describe '#starred?' do
+    it 'determines if user starred a project' do
       user = create :user
       project1 = create(:empty_project, :public)
       project2 = create(:empty_project, :public)
@@ -953,8 +953,8 @@ describe User, models: true do
     end
   end
 
-  describe "#toggle_star" do
-    it "toggles stars" do
+  describe '#toggle_star' do
+    it 'toggles stars' do
       user = create :user
       project = create(:empty_project, :public)
 
@@ -966,31 +966,44 @@ describe User, models: true do
     end
   end
 
-  describe "#sort" do
+  describe '#sort' do
     before do
       User.delete_all
       @user = create :user, created_at: Date.today, last_sign_in_at: Date.today, name: 'Alpha'
       @user1 = create :user, created_at: Date.today - 1, last_sign_in_at: Date.today - 1, name: 'Omega'
+      @user2 = create :user, created_at: Date.today - 2, last_sign_in_at: nil, name: 'Beta'
     end
 
-    it "sorts users by the recent sign-in time" do
-      expect(User.sort('recent_sign_in').first).to eq(@user)
+    context 'when sort by recent_sign_in' do
+      it 'sorts users by the recent sign-in time' do
+        expect(User.sort('recent_sign_in').first).to eq(@user)
+      end
+
+      it 'pushes users who never signed in to the end' do
+        expect(User.sort('recent_sign_in').third).to eq(@user2)
+      end
     end
 
-    it "sorts users by the oldest sign-in time" do
-      expect(User.sort('oldest_sign_in').first).to eq(@user1)
+    context 'when sort by oldest_sign_in' do
+      it 'sorts users by the oldest sign-in time' do
+        expect(User.sort('oldest_sign_in').first).to eq(@user1)
+      end
+
+      it 'pushes users who never signed in to the end' do
+        expect(User.sort('oldest_sign_in').third).to eq(@user2)
+      end
     end
 
-    it "sorts users in descending order by their creation time" do
+    it 'sorts users in descending order by their creation time' do
       expect(User.sort('created_desc').first).to eq(@user)
     end
 
-    it "sorts users in ascending order by their creation time" do
-      expect(User.sort('created_asc').first).to eq(@user1)
+    it 'sorts users in ascending order by their creation time' do
+      expect(User.sort('created_asc').first).to eq(@user2)
     end
 
-    it "sorts users by id in descending order when nil is passed" do
-      expect(User.sort(nil).first).to eq(@user1)
+    it 'sorts users by id in descending order when nil is passed' do
+      expect(User.sort(nil).first).to eq(@user2)
     end
   end
 
