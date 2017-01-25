@@ -35,6 +35,7 @@ class Project < ActiveRecord::Base
   default_value_for :container_registry_enabled, gitlab_config_features.container_registry
   default_value_for(:repository_storage) { current_application_settings.pick_repository_storage }
   default_value_for(:shared_runners_enabled) { current_application_settings.shared_runners_enabled }
+  default_value_for (:sync_time) { current_application_settings.default_mirror_sync_time }
   default_value_for :issues_enabled, gitlab_config_features.issues
   default_value_for :merge_requests_enabled, gitlab_config_features.merge_requests
   default_value_for :builds_enabled, gitlab_config_features.builds
@@ -214,6 +215,10 @@ class Project < ActiveRecord::Base
 
   validates :repository_size_limit,
             numericality: { only_integer: true, greater_than_or_equal_to: 0, allow_nil: true }
+
+  validates :sync_time,
+    presence: true,
+    inclusion: { in: Gitlab::Mirror.mirror_options.values }
 
   with_options if: :mirror? do |project|
     project.validates :import_url, presence: true
