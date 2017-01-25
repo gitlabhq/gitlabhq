@@ -28,7 +28,7 @@ describe NotesFinder do
     end
 
     it "excludes notes on commits the author can't download" do
-      project = create(:project, :private)
+      project = create(:project, :private, :repository)
       note = create(:note_on_commit, project: project)
       params = { target_type: 'commit', target_id: note.noteable.id }
 
@@ -76,7 +76,7 @@ describe NotesFinder do
     end
 
     context 'for target' do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :repository) }
       let(:note1) { create :note_on_commit, project: project }
       let(:note2) { create :note_on_commit, project: project }
       let(:commit) { note1.noteable }
