@@ -66,8 +66,8 @@ describe 'Pipeline', :feature, :js do
       context 'when pipeline has running builds' do
         it 'shows a running icon and a cancel action for the running build' do
           page.within('#ci-badge-deploy') do
-            expect(page).to have_selector('.ci-status-icon-running')
-            expect(page).to have_selector('.ci-action-icon-container .fa-ban')
+            expect(page).to have_selector('.js-ci-status-icon-running')
+            expect(page).to have_selector('.js-icon_action_cancel')
             expect(page).to have_content('deploy')
           end
         end
@@ -82,12 +82,12 @@ describe 'Pipeline', :feature, :js do
       context 'when pipeline has successful builds' do
         it 'shows the success icon and a retry action for the successful build' do
           page.within('#ci-badge-build') do
-            expect(page).to have_selector('.ci-status-icon-success')
+            expect(page).to have_selector('.js-ci-status-icon-success')
             expect(page).to have_content('build')
           end
 
           page.within('#ci-badge-build .ci-action-icon-container') do
-            expect(page).to have_selector('.ci-action-icon-container .fa-refresh')
+            expect(page).to have_selector('.js-icon_action_retry')
           end
         end
 
@@ -101,12 +101,12 @@ describe 'Pipeline', :feature, :js do
       context 'when pipeline has failed builds' do
         it 'shows the failed icon and a retry action for the failed build' do
           page.within('#ci-badge-test') do
-            expect(page).to have_selector('.ci-status-icon-failed')
+            expect(page).to have_selector('.js-ci-status-icon-failed')
             expect(page).to have_content('test')
           end
 
           page.within('#ci-badge-test .ci-action-icon-container') do
-            expect(page).to have_selector('.ci-action-icon-container .fa-refresh')
+            expect(page).to have_selector('.js-icon_action_retry')
           end
         end
 
@@ -120,12 +120,12 @@ describe 'Pipeline', :feature, :js do
       context 'when pipeline has manual builds' do
         it 'shows the skipped icon and a play action for the manual build' do
           page.within('#ci-badge-manual-build') do
-            expect(page).to have_selector('.ci-status-icon-manual')
+            expect(page).to have_selector('.js-ci-status-icon-manual')
             expect(page).to have_content('manual')
           end
 
           page.within('#ci-badge-manual-build .ci-action-icon-container') do
-            expect(page).to have_selector('.ci-action-icon-container .fa-play')
+            expect(page).to have_selector('.js-icon_action_play')
           end
         end
 
@@ -138,7 +138,7 @@ describe 'Pipeline', :feature, :js do
 
       context 'when pipeline has external build' do
         it 'shows the success icon and the generic comit status build' do
-          expect(page).to have_selector('.ci-status-icon-success')
+          expect(page).to have_selector('.js-ci-status-icon-success')
           expect(page).to have_content('jenkins')
           expect(page).to have_link('jenkins', href: 'http://gitlab.com/status')
         end
