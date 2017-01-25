@@ -20,8 +20,8 @@ module Gitlab
       "This merge request cannot be merged, #{base_message}"
     end
 
-    def push_error
-      "Your push has been rejected, #{base_message}. #{more_info_message}"
+    def push_error(exceeded_limit = nil)
+      "Your push has been rejected, #{base_message(exceeded_limit)}. #{more_info_message}"
     end
 
     def new_changes_error
@@ -38,8 +38,8 @@ module Gitlab
 
     private
 
-    def base_message
-      "because this repository has exceeded its size limit of #{limit} by #{size_to_remove}"
+    def base_message(exceeded_limit = nil)
+      "because this repository has exceeded its size limit of #{limit} by #{size_to_remove(exceeded_limit)}"
     end
 
     def current_size
@@ -50,8 +50,8 @@ module Gitlab
       format_number(project.actual_size_limit)
     end
 
-    def size_to_remove
-      format_number(project.size_to_remove)
+    def size_to_remove(exceeded_limit = nil)
+      format_number(exceeded_limit || project.size_to_remove)
     end
 
     def format_number(number)

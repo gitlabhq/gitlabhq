@@ -32,8 +32,22 @@ describe Gitlab::RepositorySizeError, lib: true do
     end
 
     describe '#push_error' do
-      it 'returns the correct message' do
-        expect(message.push_error).to eq("Your push has been rejected, #{base_message}. #{message.more_info_message}")
+      context 'with exceeded_limit value' do
+        let(:rejection_message) do
+          'because this repository has exceeded its size limit of 10 MB by 15 MB'
+        end
+
+        it 'returns the correct message' do
+          expect(message.push_error(15.megabytes))
+            .to eq("Your push has been rejected, #{rejection_message}. #{message.more_info_message}")
+        end
+      end
+
+      context 'without exceeded_limit value' do
+        it 'returns the correct message' do
+          expect(message.push_error)
+            .to eq("Your push has been rejected, #{base_message}. #{message.more_info_message}")
+        end
       end
     end
 
