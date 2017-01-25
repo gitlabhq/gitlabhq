@@ -130,7 +130,9 @@ for its feature/integration tests in September 2012.
 
 As of March 2016, we are [trying to avoid adding new Spinach
 tests](https://gitlab.com/gitlab-org/gitlab-ce/issues/14121) going forward,
-opting for [RSpec feature](#features-integration) specs.
+opting for [RSpec feature specs] as [described above](#features-integration).
+
+[RSpec feature specs]: https://github.com/rspec/rspec-rails#feature-specs
 
 Adding new Spinach scenarios is acceptable _only if_ the new scenario requires
 no more than one new `step` definition. If more than that is required, the
