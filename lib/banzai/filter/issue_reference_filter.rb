@@ -62,7 +62,7 @@ module Banzai
         end
       end
 
-      def data_attributes_for(text, project, object)
+      def data_attributes_for(text, project, object, link: false)
         if object.is_a?(ExternalIssue)
           data_attribute(
             project: project.id,
