@@ -30,12 +30,20 @@ describe Issue, "Mentionable" do
   describe '#mentioned_users' do
     let!(:user) { create(:user, username: 'stranger') }
     let!(:user2) { create(:user, username: 'john') }
-    let!(:issue) { create(:issue, description: "#{user.to_reference} mentioned") }
+    let!(:user3) { create(:user, username: 'jim') }
+    let(:issue) { create(:issue, description: "#{user.to_reference} mentioned") }
 
     subject { issue.mentioned_users }
 
-    it { is_expected.to include(user) }
-    it { is_expected.not_to include(user2) }
+    it { expect(subject).to contain_exactly(user) }
+
+    context 'when a note on personal snippet' do
+      let!(:note) { create(:note_on_personal_snippet, note: "#{user.to_reference} mentioned #{user3.to_reference}") }
+
+      subject { note.mentioned_users }
+
+      it { expect(subject).to contain_exactly(user, user3) }
+    end
   end
 
   describe '#referenced_mentionables' do
@@ -137,6 +145,16 @@ describe Issue, "Mentionable" do
 
         issue.update_attributes(description: issues[1].to_reference)
         issue.create_new_cross_references!
+      end
+
+      it 'notifies new references from project snippet note' do
+        snippet = create(:snippet, project: project)
+        note = create(:note, note: issues[0].to_reference, noteable: snippet, project: project, author: author)
+
+        expect(SystemNoteService).to receive(:cross_reference).with(issues[1], any_args)
+
+        note.update_attributes(note: issues[1].to_reference)
+        note.create_new_cross_references!
       end
     end
 
