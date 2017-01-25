@@ -13,7 +13,11 @@ class BoardService {
       generate: {
         method: 'POST',
         url: `${root}/${boardId}/lists/generate.json`
-      }
+      },
+      multiple: {
+        method: 'POST',
+        url: `${root}/${boardId}/lists{/id}/multiple`
+      },
     });
     this.issue = Vue.resource(`${root}/${boardId}/issues{/id}`, {});
     this.issues = Vue.resource(`${root}/${boardId}/lists{/id}/issues`, {});
@@ -74,6 +78,12 @@ class BoardService {
 
   getBacklog() {
     return this.boards.backlog();
+  }
+
+  addMultipleIssues(list, issue_ids) {
+    return this.lists.multiple(list.id, {
+      issue_ids,
+    });
   }
 }
 

@@ -21,11 +21,11 @@
       },
       issues: {
         handler() {
-          if (this.activeTab === 'selected') {
-            this.$nextTick(() => {
+          this.$nextTick(() => {
+            if (this.activeTab === 'selected') {
               listMasonry.layout();
-            });
-          }
+            }
+          });
         },
         deep: true,
       }
@@ -61,18 +61,7 @@
       },
     },
     mounted() {
-      gl.boardService.getBacklog()
-        .then((res) => {
-          const data = res.json();
-
-          data.forEach((issueObj) => {
-            this.issues.push(new ListIssue(issueObj));
-          });
-
-          this.$nextTick(() => {
-            this.initMasonry();
-          });
-        });
+      this.initMasonry();
     },
     destroyed() {
       this.issues = [];
@@ -83,11 +72,6 @@
     },
     template: `
       <section class="add-issues-list">
-        <div
-          class="add-issues-list-loading"
-          v-if="loading">
-          <i class="fa fa-spinner fa-spin"></i>
-        </div>
         <div
           class="add-issues-list-columns list-unstyled"
           ref="list"
@@ -112,11 +96,6 @@
             </div>
           </div>
         </div>
-        <p
-          class="all-issues-selected-empty"
-          v-if="activeTab == 'selected' && selectedCount == 0">
-          You don't have any issues selected, <a href="#" @click="activeTab = 'all'">select some</a>.
-        </p>
       </section>
     `,
   });

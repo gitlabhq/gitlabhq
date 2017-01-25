@@ -383,6 +383,10 @@
 }
 
 .add-issues-header {
+  margin: -25px -15px -5px;
+  border-top: 0;
+  border-bottom: 1px solid $border-color;
+
   > h2 {
     margin: 0;
     font-size: 18px;
@@ -396,6 +400,7 @@
 .add-issues-search {
   display: flex;
   margin-bottom: 10px;
+  margin-top: 10px;
 
   .btn {
     margin-left: 10px;

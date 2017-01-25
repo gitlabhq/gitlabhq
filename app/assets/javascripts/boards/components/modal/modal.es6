@@ -12,6 +12,16 @@
     data() {
       return Store.modal;
     },
+    mounted() {
+      gl.boardService.getBacklog()
+        .then((res) => {
+          const data = res.json();
+
+          data.forEach((issueObj) => {
+            this.issues.push(new ListIssue(issueObj));
+          });
+        });
+    },
     components: {
       'modal-header': gl.issueBoards.IssuesModalHeader,
       'modal-list': gl.issueBoards.ModalList,
@@ -23,7 +33,14 @@
         v-if="showAddIssuesModal">
         <div class="add-issues-container">
           <modal-header></modal-header>
-          <modal-list></modal-list>
+          <modal-list v-if="issues.length"></modal-list>
+          <section
+            class="add-issues-list"
+            v-if="issues.length == 0">
+            <div class="add-issues-list-loading">
+              <i class="fa fa-spinner fa-spin"></i>
+            </div>
+          </section>
           <modal-footer></modal-footer>
         </div>
       </div>

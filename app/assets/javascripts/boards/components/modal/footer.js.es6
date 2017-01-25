@@ -10,13 +10,10 @@
     data() {
       return {
         store: Store.modal,
-        disabled: false,
       };
     },
     computed: {
       submitDisabled() {
-        if (this.disabled) return true;
-
         return !Store.modalSelectedCount();
       },
       submitText() {
@@ -30,15 +27,19 @@
         this.store.showAddIssuesModal = false;
       },
       addIssues() {
+        const list = this.store.selectedList;
         const issueIds = this.store.issues.filter(issue => issue.selected).map(issue => issue.id);
 
+        // Post the data to the backend
+        gl.boardService.addMultipleIssues(list, issueIds);
+
+        // Add the issues on the frontend
         issueIds.forEach((id) => {
           const issue = this.store.issues.filter(issue => issue.id == id)[0];
-          this.store.selectedList.addIssue(issue);
-          this.store.selectedList.issuesSize += 1;
+          list.addIssue(issue);
+          list.issuesSize += 1;
         });
 
-        this.disabled = true;
         this.hideModal();
       },
     },

@@ -18,14 +18,16 @@
       'modal-search': gl.issueBoards.ModalSearch,
     },
     template: `
-      <header class="add-issues-header">
-        <h2>
-          Add issues to board
-          <modal-dismiss></modal-dismiss>
-        </h2>
-        <modal-tabs></modal-tabs>
-        <modal-search></modal-search>
-      </header>
+      <div>
+        <header class="add-issues-header form-actions">
+          <h2>
+            Add issues
+            <modal-dismiss></modal-dismiss>
+          </h2>
+        </header>
+        <modal-tabs v-if="issues.length"></modal-tabs>
+        <modal-search v-if="issues.length"></modal-search>
+      </div>
     `,
   });
 })();

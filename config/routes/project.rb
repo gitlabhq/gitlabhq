@@ -267,13 +267,14 @@ constraints(ProjectUrlConstrainer.new) do
 
       resources :boards, only: [:index, :show] do
         get :backlog, on: :member
-        
+
         scope module: :boards do
           resources :issues, only: [:update]
 
           resources :lists, only: [:index, :create, :update, :destroy] do
             collection do
               post :generate
+              post :multiple
             end
 
             resources :issues, only: [:index, :create]

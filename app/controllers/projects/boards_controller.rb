@@ -33,7 +33,7 @@ class Projects::BoardsController < Projects::ApplicationController
       LabelLink.where("label_links.target_type = 'Issue' AND label_links.target_id = issues.id")
                .where(label_id: board.lists.movable.pluck(:label_id)).limit(1).arel.exists
     )
-    @issues = @issues.page(params[:page])
+    @issues = @issues.page(params[:page]).per(50)
 
     render json: @issues.as_json(
       labels: true,
