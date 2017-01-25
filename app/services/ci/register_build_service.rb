@@ -6,6 +6,8 @@ module Ci
 
     attr_reader :runner
 
+    Result = Struct.new(:build, :valid?)
+
     def initialize(runner)
       @runner = runner
     end
@@ -29,10 +31,10 @@ module Ci
         build.run!
       end
 
-      [build, true]
+      Result.new(build, true)
 
     rescue StateMachines::InvalidTransition, ActiveRecord::StaleObjectError
-      [nil, false]
+      Result.new(build, false)
     end
 
     private
