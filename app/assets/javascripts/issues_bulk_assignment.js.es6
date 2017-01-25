@@ -61,7 +61,6 @@
       return labels;
     }
 
-
     /**
      * Will return only labels that were marked previously and the user has unmarked
      * @return {Array} Label IDs
@@ -79,7 +78,6 @@
 
       return result;
     }
-
 
     /**
      * Simple form serialization, it will return just what we need
