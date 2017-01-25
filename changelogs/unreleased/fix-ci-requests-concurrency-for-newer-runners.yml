@@ -1,3 +1,0 @@
----
-title: 'Fix CI requests concurrency for newer runners that prevents from picking pending builds (from 1.9.0-rc5)'
-merge_request: 8760
