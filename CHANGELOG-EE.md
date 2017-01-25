@@ -1,5 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 8.16.1 (2017-01-23)
+
+- No changes.
+
 ## 8.16.0 (2017-02-22)
 
 - Allow to limit shared runners minutes quota for group. !965
