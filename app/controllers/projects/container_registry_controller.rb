@@ -9,31 +9,37 @@ class Projects::ContainerRegistryController < Projects::ApplicationController
   end
 
   def destroy
-    url = namespace_project_container_registry_index_path(project.namespace, project)
-
     if tag
-      delete_tag(url)
+      delete_tag
     else
-      if image.destroy
-        redirect_to url
-      else
-        redirect_to url, alert: 'Failed to remove image'
-      end
+      delete_image
     end
   end
 
   private
 
+  def registry_url
+    @registry_url ||= namespace_project_container_registry_index_path(project.namespace, project)
+  end
+
   def verify_registry_enabled
     render_404 unless Gitlab.config.registry.enabled
   end
 
-  def delete_tag(url)
+  def delete_image
+    if image.destroy
+      redirect_to registry_url
+    else
+      redirect_to registry_url, alert: 'Failed to remove image'
+    end
+  end
+
+  def delete_tag
     if tag.delete
       image.destroy if image.tags.empty?
-      redirect_to url
+      redirect_to registry_url
     else
-      redirect_to url, alert: 'Failed to remove tag'
+      redirect_to registry_url, alert: 'Failed to remove tag'
     end
   end
 
