@@ -46,7 +46,7 @@ describe 'Dropdown label', js: true, feature: true do
 
       filtered_search.native.send_keys(:down, :down, :enter)
 
-      expect(filtered_search.value).to eq("label:~#{special_label.name}")
+      expect(filtered_search.value).to eq("label:~#{special_label.name} ")
     end
   end
 
