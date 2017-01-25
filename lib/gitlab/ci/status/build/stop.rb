@@ -14,7 +14,7 @@ module Gitlab
           end
 
           def icon
-            'icon_action_stop_borderless'
+            'icon_status_manual'
           end
 
           def group
@@ -26,7 +26,7 @@ module Gitlab
           end
 
           def action_icon
-            'stop'
+            'icon_action_stop'
           end
 
           def action_title

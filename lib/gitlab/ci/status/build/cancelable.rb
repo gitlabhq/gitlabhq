@@ -10,7 +10,7 @@ module Gitlab
           end
 
           def action_icon
-            'icon_action_cancel_borderless'
+            'icon_action_cancel'
           end
 
           def action_path
