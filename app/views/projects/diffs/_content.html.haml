@@ -15,7 +15,9 @@
         %a.click-to-expand
           Click to expand it.
     - elsif diff_file.diff_lines.length > 0
-      - total_lines = blob.lines.last.chomp == '' ? blob.lines.size - 1 : blob.lines.size
+      - total_lines = 0
+      - if blob.lines.any?
+        - total_lines = blob.lines.last.chomp == '' ? blob.lines.size - 1 : blob.lines.size
       - if diff_view == :parallel
         = render "projects/diffs/parallel_view", diff_file: diff_file, total_lines: total_lines
       - else
