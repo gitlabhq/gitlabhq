@@ -373,6 +373,7 @@
   flex-direction: column;
   width: 90vw;
   height: 85vh;
+  min-height: 500px;
   margin-left: auto;
   margin-right: auto;
   padding: 25px 15px 0;
@@ -431,11 +432,20 @@
   padding-top: 3px;
 
   .card-parent {
-    width: (100% / 3);
+    width: 100%;
     padding: 0 $gl-vert-padding ($gl-vert-padding * 2);
+
+    @media (min-width: $screen-sm-min) {
+      width: 50%;
+    }
+
+    @media (min-width: $screen-md-min) {
+      width: (100% / 3);
+    }
   }
 
   .card {
+    border: 1px solid $border-gray-dark;
     cursor: pointer;
   }
 }
