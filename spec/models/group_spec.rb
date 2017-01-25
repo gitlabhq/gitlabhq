@@ -81,13 +81,19 @@ describe Group, models: true do
     describe 'public_only' do
       subject { described_class.public_only.to_a }
 
-      it{ is_expected.to eq([group]) }
+      it { is_expected.to eq([group]) }
     end
 
     describe 'public_and_internal_only' do
       subject { described_class.public_and_internal_only.to_a }
 
-      it{ is_expected.to match_array([group, internal_group]) }
+      it { is_expected.to match_array([group, internal_group]) }
+    end
+
+    describe 'non_public_only' do
+      subject { described_class.non_public_only.to_a }
+
+      it { is_expected.to match_array([private_group, internal_group]) }
     end
   end
 
