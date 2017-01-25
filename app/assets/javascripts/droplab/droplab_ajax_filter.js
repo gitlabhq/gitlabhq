@@ -93,6 +93,7 @@ require('../window')(function(w){
           self.hook.list.setData.call(self.hook.list, data);
         }
         self.notLoading();
+        self.hook.list.currentIndex = 0;
       });
     },
 
