@@ -439,6 +439,15 @@ class User < ActiveRecord::Base
     Group.where("namespaces.id IN (#{union.to_sql})")
   end
 
+  def nested_groups
+    Group.member_descendants(id)
+  end
+
+  def nested_projects
+    Project.joins(:namespace).where('namespaces.parent_id IS NOT NULL').
+      member_descendants(id)
+  end
+
   def refresh_authorized_projects
     Users::RefreshAuthorizedProjectsService.new(self).execute
   end
