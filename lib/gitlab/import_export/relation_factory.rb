@@ -62,7 +62,7 @@ module Gitlab
         update_project_references
 
         handle_group_label if group_label?
-        reset_ci_tokens!
+        reset_tokens!
 
         @relation_hash['data'].deep_symbolize_keys! if @relation_name == :events && @relation_hash['data']
         set_st_diffs if @relation_name == :merge_request_diff
@@ -142,7 +142,7 @@ module Gitlab
         end
       end
 
-      def reset_ci_tokens!
+      def reset_tokens!
         return unless Gitlab::ImportExport.reset_tokens? && TOKEN_RESET_MODELS.include?(@relation_name.to_s)
 
         # If we import/export a project to the same instance, tokens will have to be reset.
