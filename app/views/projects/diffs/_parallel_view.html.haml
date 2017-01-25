@@ -14,7 +14,7 @@
             - left_line_code = diff_file.line_code(left)
             - left_position = diff_file.position(left)
             %td.old_line.diff-line-num{ id: left_line_code, class: left.type, data: { linenumber: left.old_pos } }
-              %a{ href: "##{left_line_code}" }= raw(left.old_pos)
+              %a{ href: "##{left_line_code}", data: { linenumber: left.old_pos } }
             %td.line_content.parallel.noteable_line{ class: left.type, data: diff_view_line_data(left_line_code, left_position, 'old') }= diff_line_content(left.text)
         - else
           %td.old_line.diff-line-num.empty-cell
@@ -27,7 +27,7 @@
             - right_line_code = diff_file.line_code(right)
             - right_position = diff_file.position(right)
             %td.new_line.diff-line-num{ id: right_line_code, class: right.type, data: { linenumber: right.new_pos } }
-              %a{ href: "##{right_line_code}" }= raw(right.new_pos)
+              %a{ href: "##{right_line_code}", data: { linenumber: right.new_pos } }
             %td.line_content.parallel.noteable_line{ class: right.type, data: diff_view_line_data(right_line_code, right_position, 'new') }= diff_line_content(right.text)
         - else
           %td.old_line.diff-line-num.empty-cell
