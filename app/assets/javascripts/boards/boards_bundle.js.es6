@@ -14,12 +14,13 @@
 //= require ./components/board
 //= require ./components/board_sidebar
 //= require ./components/new_list_dropdown
-//= require ./components/modal/modal
+//= require ./components/modal/index
 //= require ./vue_resource_interceptor
 
 $(() => {
   const $boardApp = document.getElementById('board-app');
   const Store = gl.issueBoards.BoardsStore;
+  const ModalStore = gl.issueBoards.ModalStore;
 
   window.gl = window.gl || {};
 
@@ -73,10 +74,8 @@ $(() => {
           this.loading = false;
 
           if (this.state.lists.length > 0) {
-            Store.modal.selectedList = this.state.lists[0];
+            ModalStore.store.selectedList = this.state.lists[0];
           }
-
-          Store.modal.showAddIssuesModal = true;
         });
     }
   });
@@ -97,6 +96,6 @@ $(() => {
     .on('click', '.js-show-add-issues', (e) => {
       e.preventDefault();
 
-      Store.modal.showAddIssuesModal = true;
+      ModalStore.store.showAddIssuesModal = true;
     });
 });

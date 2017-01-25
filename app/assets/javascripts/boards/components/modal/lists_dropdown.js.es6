@@ -1,5 +1,6 @@
 /* global Vue */
 (() => {
+  const ModalStore = gl.issueBoards.ModalStore;
   const Store = gl.issueBoards.BoardsStore;
 
   window.gl = window.gl || {};
@@ -8,7 +9,7 @@
   gl.issueBoards.ModalFooterListsDropdown = Vue.extend({
     data() {
       return {
-        modal: Store.modal,
+        modal: ModalStore.store,
         state: Store.state,
       };
     },

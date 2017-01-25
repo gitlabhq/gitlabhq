@@ -8,7 +8,7 @@
 
   gl.issueBoards.ModalFooter = Vue.extend({
     data() {
-      return ModalStore.globalStore;
+      return ModalStore.store;
     },
     computed: {
       submitDisabled() {

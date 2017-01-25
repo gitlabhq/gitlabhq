@@ -12,15 +12,6 @@
     detail: {
       issue: {}
     },
-    modal: {
-      issues: [],
-      selectedIssues: [],
-      showAddIssuesModal: false,
-      activeTab: 'all',
-      selectedList: {},
-      searchTerm: '',
-      loading: false,
-    },
     moving: {
       issue: {},
       list: {}

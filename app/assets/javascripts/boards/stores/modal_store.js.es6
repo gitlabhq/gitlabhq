@@ -4,11 +4,19 @@
 
   class ModalStore {
     constructor() {
-      this.globalStore = gl.issueBoards.BoardsStore.modal;
+      this.store = {
+        issues: [],
+        selectedIssues: [],
+        showAddIssuesModal: false,
+        activeTab: 'all',
+        selectedList: {},
+        searchTerm: '',
+        loading: false,
+      };
     }
 
     selectedCount() {
-      return this.globalStore.selectedIssues.length;
+      return this.store.selectedIssues.length;
     }
 
     toggleIssue(issueObj) {
@@ -23,9 +31,9 @@
     }
 
     toggleAll() {
-      const select = this.selectedCount() !== this.globalStore.issues.length;
+      const select = this.selectedCount() !== this.store.issues.length;
 
-      this.globalStore.issues.forEach((issue) => {
+      this.store.issues.forEach((issue) => {
         const issueUpdate = issue;
 
         if (issueUpdate.selected !== select) {
@@ -41,20 +49,20 @@
     }
 
     addSelectedIssue(issue) {
-      this.globalStore.selectedIssues.push(issue);
+      this.store.selectedIssues.push(issue);
     }
 
     removeSelectedIssue(issue) {
       const index = this.selectedIssueIndex(issue);
-      this.globalStore.selectedIssues.splice(index, 1);
+      this.store.selectedIssues.splice(index, 1);
     }
 
     selectedIssueIndex(issue) {
-      return this.globalStore.selectedIssues.indexOf(issue);
+      return this.store.selectedIssues.indexOf(issue);
     }
 
     findSelectedIssue(issue) {
-      return this.globalStore.selectedIssues
+      return this.store.selectedIssues
         .filter(filteredIssue => filteredIssue.id === issue.id)[0];
     }
   }

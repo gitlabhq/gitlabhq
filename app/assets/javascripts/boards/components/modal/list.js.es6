@@ -10,7 +10,7 @@
 
   gl.issueBoards.ModalList = Vue.extend({
     data() {
-      return ModalStore.globalStore;
+      return ModalStore.store;
     },
     watch: {
       activeTab() {

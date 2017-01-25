@@ -7,7 +7,7 @@
 
   gl.issueBoards.DismissModal = Vue.extend({
     data() {
-      return ModalStore.globalStore;
+      return ModalStore.store;
     },
     methods: {
       toggleModal(toggle) {

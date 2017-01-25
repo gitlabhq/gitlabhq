@@ -7,7 +7,7 @@
 
   gl.issueBoards.ModalTabs = Vue.extend({
     data() {
-      return ModalStore.globalStore;
+      return ModalStore.store;
     },
     methods: {
       changeTab(tab) {

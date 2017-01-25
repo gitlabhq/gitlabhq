@@ -1,7 +1,7 @@
-//= require ./dismiss
-//= require ./tabs
-//= require ./search
 /* global Vue */
+//= require ./tabs
+//= require ./dismiss
+//= require ./search
 (() => {
   const ModalStore = gl.issueBoards.ModalStore;
 
@@ -10,7 +10,7 @@
 
   gl.issueBoards.IssuesModalHeader = Vue.extend({
     data() {
-      return ModalStore.globalStore;
+      return ModalStore.store;
     },
     components: {
       'modal-dismiss': gl.issueBoards.DismissModal,

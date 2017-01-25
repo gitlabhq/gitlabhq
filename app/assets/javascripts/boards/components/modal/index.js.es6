@@ -1,7 +1,7 @@
+/* global Vue */
 //= require ./header
 //= require ./list
 //= require ./footer
-/* global Vue */
 (() => {
   const ModalStore = gl.issueBoards.ModalStore;
 
@@ -10,7 +10,7 @@
 
   gl.issueBoards.IssuesModal = Vue.extend({
     data() {
-      return ModalStore.globalStore;
+      return ModalStore.store;
     },
     watch: {
       searchTerm() {
