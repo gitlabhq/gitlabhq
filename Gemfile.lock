@@ -1002,7 +1002,7 @@ DEPENDENCIES
   sanitize (~> 2.0)
   sass-rails (~> 5.0.6)
   scss_lint (~> 0.47.0)
-  secure_headers (~> 3.6)
+  secure_headers (~> 3.6.0)
   seed-fu (~> 2.3.5)
   select2-rails (~> 3.5.9)
   sentry-raven (~> 2.4.0)

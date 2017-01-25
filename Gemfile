@@ -366,4 +366,4 @@ gem 'gitaly', '~> 0.5.0'
 gem 'toml-rb', '~> 0.3.15', require: false
 
 # Secure headers for Content Security Policy
-gem 'secure_headers', '~> 3.6'
+gem 'secure_headers', '~> 3.6.0'
