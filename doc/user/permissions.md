@@ -67,17 +67,9 @@ The following table depicts the various user permission levels in a project.
 | Switch visibility level               |         |            |             |          | ✓      |
 | Transfer project to another namespace |         |            |             |          | ✓      |
 | Remove project                        |         |            |             |          | ✓      |
-<<<<<<< HEAD
-| Force push to protected branches [^2] |         |            |             |          |        |
-| Remove protected branches [^2]        |         |            |             |          |        |
-| Remove pages                          |         |            |             |          | ✓      |
-
-[^1]: If **Public pipelines** is enabled in **Project Settings > CI/CD Pipelines**
-[^2]: Not allowed for Guest, Reporter, Developer, Master, or Owner
-=======
 | Force push to protected branches [^3] |         |            |             |          |        |
 | Remove protected branches [^3]        |         |            |             |          |        |
->>>>>>> ce/master
+| Remove pages                          |         |            |             |          | ✓      |
 
 ## Group
 

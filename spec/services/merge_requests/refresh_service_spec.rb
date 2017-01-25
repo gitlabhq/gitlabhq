@@ -133,18 +133,12 @@ describe MergeRequests::RefreshService, services: true do
 
         it { expect(@merge_request.notes).to be_empty }
         it { expect(@merge_request).to be_open }
-<<<<<<< HEAD
         it { expect(@merge_request.approvals).not_to be_empty }
-=======
->>>>>>> ce/master
         it { expect(@fork_merge_request.notes.last.note).to include('added 28 commits') }
         it { expect(@fork_merge_request).to be_open }
         it { expect(@build_failed_todo).to be_pending }
         it { expect(@fork_build_failed_todo).to be_pending }
-<<<<<<< HEAD
         it { expect(@fork_merge_request.approvals).to be_empty }
-=======
->>>>>>> ce/master
       end
 
       context 'closed fork merge request' do
@@ -161,18 +155,12 @@ describe MergeRequests::RefreshService, services: true do
 
         it { expect(@merge_request.notes).to be_empty }
         it { expect(@merge_request).to be_open }
-<<<<<<< HEAD
         it { expect(@merge_request.approvals).not_to be_empty }
-=======
->>>>>>> ce/master
         it { expect(@fork_merge_request.notes).to be_empty }
         it { expect(@fork_merge_request).to be_closed }
         it { expect(@build_failed_todo).to be_pending }
         it { expect(@fork_build_failed_todo).to be_pending }
-<<<<<<< HEAD
         it { expect(@fork_merge_request.approvals).to be_empty }
-=======
->>>>>>> ce/master
       end
     end
 

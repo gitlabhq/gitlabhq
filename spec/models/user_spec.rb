@@ -1009,7 +1009,6 @@ describe User, models: true do
     end
   end
 
-<<<<<<< HEAD
   describe "#existing_member?" do
     it "returns true for exisitng user" do
       create :user, email: "bruno@example.com"
@@ -1031,10 +1030,7 @@ describe User, models: true do
     end
   end
 
-  describe "#sort" do
-=======
   describe '#sort' do
->>>>>>> ce/master
     before do
       User.delete_all
       @user = create :user, created_at: Date.today, last_sign_in_at: Date.today, name: 'Alpha'

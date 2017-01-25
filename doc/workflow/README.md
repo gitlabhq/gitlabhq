@@ -7,21 +7,17 @@
 - [Feature branch workflow](workflow.md)
 - [GitLab Flow](gitlab_flow.md)
 - [Groups](groups.md)
-<<<<<<< HEAD
-- [Importing to GitLab](doc/importing/README.md)
-=======
 - Issues - The GitLab Issue Tracker is an advanced and complete tool for
   tracking the evolution of a new idea or the process of solving a problem.
   - [Confidential issues](../user/project/issues/confidential_issues.md)
   - [Due date for issues](../user/project/issues/due_dates.md)
->>>>>>> ce/master
 - [Issue Board](../user/project/issue_board.md)
 - [Keyboard shortcuts](shortcuts.md)
 - [File finder](file_finder.md)
-- [File lock](../user/project/file_lock.md)
+- (EE) [File lock](../user/project/file_lock.md)
 - [Labels](../user/project/labels.md)
-- [Issue weight](issue_weight.md)
-- [Manage large binaries with git annex](git_annex.md)
+- (EE) [Issue weight](issue_weight.md)
+- (EE) [Manage large binaries with git annex](git_annex.md)
 - [Notification emails](notifications.md)
 - [Project Features](project_features.md)
 - [Project forking workflow](forking_workflow.md)
@@ -44,7 +40,7 @@
   - [Merge requests versions](../user/project/merge_requests/versions.md)
   - ["Work In Progress" merge requests](../user/project/merge_requests/work_in_progress_merge_requests.md)
   - (EE) [Merge Request Approvals](../user/project/merge_requests/merge_request_approvals.md)
-- [Repository Mirroring](repository_mirroring.md)
+- (EE) [Repository Mirroring](repository_mirroring.md)
 - [Manage large binaries with Git LFS](lfs/manage_large_binaries_with_git_lfs.md)
 - [Importing from SVN, GitHub, Bitbucket, etc](importing/README.md)
 - [Todos](todos.md)
