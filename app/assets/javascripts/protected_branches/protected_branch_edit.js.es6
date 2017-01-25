@@ -53,7 +53,6 @@
       this.hasChanges = true;
     }
 
-
     onDropdownHide() {
       if (!this.hasChanges) return;
 
