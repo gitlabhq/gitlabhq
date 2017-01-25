@@ -706,8 +706,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     target_project = @project.forked_from_project if @project.id.to_s != mr_params[:target_project_id]
     target_project ||= @project
 
+    # If the number of approvals is not greater than the project default, set to nil,
+    # so that we fall back to the project default.
     if mr_params[:approvals_before_merge].to_i <= target_project.approvals_before_merge
-      mr_params.delete(:approvals_before_merge)
+      mr_params[:approvals_before_merge] = nil
     end
 
     mr_params
