@@ -215,5 +215,19 @@
       const matchingNodes = parentNode.querySelectorAll(selector);
       return Array.prototype.indexOf.call(matchingNodes, node) !== -1;
     };
+
+    /**
+      this will take in the headers from an API response and normalize them
+      this way we don't run into production issues when nginx gives us lowercased header keys
+    */
+    w.gl.utils.normalizeHeaders = (headers) => {
+      const upperCaseHeaders = {};
+
+      Object.keys(headers).forEach((e) => {
+        upperCaseHeaders[e.toUpperCase()] = headers[e];
+      });
+
+      return upperCaseHeaders;
+    };
   })(window);
 }).call(this);

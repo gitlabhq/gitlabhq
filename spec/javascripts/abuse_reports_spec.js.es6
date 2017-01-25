@@ -21,7 +21,6 @@
       messages = $('.abuse-reports .message');
     });
 
-
     it('should truncate long messages', () => {
       const $longMessage = findMessage('LONG MESSAGE');
       expect($longMessage.data('original-message')).toEqual(jasmine.anything());

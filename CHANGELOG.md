@@ -2,6 +2,14 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 8.16.1 (2017-01-23)
+
+- Ensure export files are removed after a namespace is deleted.
+- Don't allow project guests to subscribe to merge requests through the API. (Robert Schilling)
+- Prevent users from creating notes on resources they can't access.
+- Prevent users from deleting system deploy keys via the project deploy key API.
+- Upgrade omniauth gem to 1.3.2.
+
 ## 8.16.0 (2017-02-22)
 
 - Add LDAP Rake task to rename a provider. !2181

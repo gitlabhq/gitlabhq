@@ -3,7 +3,6 @@
 //= require ./components/environment
 //= require ./vue_resource_interceptor
 
-
 $(() => {
   window.gl = window.gl || {};
 

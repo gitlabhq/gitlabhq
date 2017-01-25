@@ -3,9 +3,10 @@ module Notes
     def execute
       merge_request_diff_head_sha = params.delete(:merge_request_diff_head_sha)
 
-      note = project.notes.new(params)
-      note.author = current_user
-      note.system = false
+      note = Note.new(params)
+      note.project = project
+      note.author  = current_user
+      note.system  = false
 
       if note.award_emoji?
         noteable = note.noteable
