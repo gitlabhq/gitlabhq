@@ -3,14 +3,14 @@
 //= require ./footer
 /* global Vue */
 (() => {
-  const Store = gl.issueBoards.BoardsStore;
+  const ModalStore = gl.issueBoards.ModalStore;
 
   window.gl = window.gl || {};
   window.gl.issueBoards = window.gl.issueBoards || {};
 
   gl.issueBoards.IssuesModal = Vue.extend({
     data() {
-      return Store.modal;
+      return ModalStore.globalStore;
     },
     watch: {
       searchTerm() {
@@ -38,8 +38,7 @@
           this.issues = [];
           data.forEach((issueObj) => {
             const issue = new ListIssue(issueObj);
-            const foundSelectedIssue = this.selectedIssues
-              .filter(filteredIssue => filteredIssue.id === issue.id)[0];
+            const foundSelectedIssue = ModalStore.findSelectedIssue(issue);
             issue.selected = foundSelectedIssue !== undefined;
 
             this.issues.push(issue);

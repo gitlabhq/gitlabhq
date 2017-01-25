@@ -1,17 +1,17 @@
 /* global Vue */
 (() => {
-  const Store = gl.issueBoards.BoardsStore;
+  const ModalStore = gl.issueBoards.ModalStore;
 
   window.gl = window.gl || {};
   window.gl.issueBoards = window.gl.issueBoards || {};
 
   gl.issueBoards.ModalSearch = Vue.extend({
     data() {
-      return Store.modal;
+      return ModalStore.globalStore;
     },
     computed: {
       selectAllText() {
-        if (Store.modalSelectedCount() !== this.issues.length || this.issues.length === 0) {
+        if (ModalStore.selectedCount() !== this.issues.length || this.issues.length === 0) {
           return 'Select all';
         }
 
@@ -19,24 +19,7 @@
       },
     },
     methods: {
-      toggleAll() {
-        const select = Store.modalSelectedCount() !== this.issues.length;
-
-        this.issues.forEach((issue) => {
-          const issueUpdate = issue;
-
-          if (issueUpdate.selected !== select) {
-            issueUpdate.selected = select;
-
-            if (select) {
-              this.selectedIssues.push(issueUpdate);
-            } else {
-              const index = this.selectedIssues.indexOf(issue);
-              this.selectedIssues.splice(index, 1);
-            }
-          }
-        });
-      },
+      toggleAll: ModalStore.toggleAll.bind(ModalStore),
     },
     template: `
       <div

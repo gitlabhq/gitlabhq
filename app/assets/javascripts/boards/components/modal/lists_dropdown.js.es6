@@ -10,7 +10,7 @@
       return {
         modal: Store.modal,
         state: Store.state,
-      }
+      };
     },
     computed: {
       selected() {

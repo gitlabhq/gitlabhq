@@ -3,14 +3,14 @@
 //= require ./search
 /* global Vue */
 (() => {
-  const Store = gl.issueBoards.BoardsStore;
+  const ModalStore = gl.issueBoards.ModalStore;
 
   window.gl = window.gl || {};
   window.gl.issueBoards = window.gl.issueBoards || {};
 
   gl.issueBoards.IssuesModalHeader = Vue.extend({
     data() {
-      return Store.modal;
+      return ModalStore.globalStore;
     },
     components: {
       'modal-dismiss': gl.issueBoards.DismissModal,

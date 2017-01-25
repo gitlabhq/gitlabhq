@@ -1,41 +1,39 @@
 //= require ./lists_dropdown
 /* global Vue */
 (() => {
-  const Store = gl.issueBoards.BoardsStore;
+  const ModalStore = gl.issueBoards.ModalStore;
 
   window.gl = window.gl || {};
   window.gl.issueBoards = window.gl.issueBoards || {};
 
   gl.issueBoards.ModalFooter = Vue.extend({
     data() {
-      return {
-        store: Store.modal,
-      };
+      return ModalStore.globalStore;
     },
     computed: {
       submitDisabled() {
-        return !Store.modalSelectedCount();
+        return !ModalStore.selectedCount();
       },
       submitText() {
-        const count = Store.modalSelectedCount();
+        const count = ModalStore.selectedCount();
 
         return `Add ${count} issue${count > 1 || !count ? 's' : ''}`;
       },
     },
     methods: {
       hideModal() {
-        this.store.showAddIssuesModal = false;
+        this.showAddIssuesModal = false;
       },
       addIssues() {
-        const list = this.store.selectedList;
-        const issueIds = this.store.selectedIssues.map(issue => issue.id);
+        const list = this.selectedList;
+        const issueIds = this.selectedIssues.map(issue => issue.id);
 
         // Post the data to the backend
         gl.boardService.addMultipleIssues(list, issueIds);
 
         // Add the issues on the frontend
         issueIds.forEach((id) => {
-          const issue = this.store.issues.filter(issue => issue.id == id)[0];
+          const issue = this.issues.filter(fIssue => fIssue.id === id)[0];
           list.addIssue(issue);
           list.issuesSize += 1;
         });

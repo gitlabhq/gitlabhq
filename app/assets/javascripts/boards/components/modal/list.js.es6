@@ -3,38 +3,27 @@
 /* global Masonry */
 (() => {
   let listMasonry;
-  const Store = gl.issueBoards.BoardsStore;
+  const ModalStore = gl.issueBoards.ModalStore;
 
   window.gl = window.gl || {};
   window.gl.issueBoards = window.gl.issueBoards || {};
 
   gl.issueBoards.ModalList = Vue.extend({
     data() {
-      return Store.modal;
+      return ModalStore.globalStore;
     },
     watch: {
       activeTab() {
-        this.$nextTick(() => {
-          this.destroyMasonry();
-          this.initMasonry();
-        });
+        this.initMasonry();
       },
       issues: {
         handler() {
-          this.$nextTick(() => {
-            listMasonry.layout();
-          });
+          this.initMasonry();
         },
         deep: true,
-      }
+      },
     },
     computed: {
-      loading() {
-        return this.issues.length === 0;
-      },
-      selectedCount() {
-        return Store.modalSelectedCount();
-      },
       loopIssues() {
         if (this.activeTab === 'all') {
           return this.issues;
@@ -44,31 +33,24 @@
       },
     },
     methods: {
-      toggleIssue(issueObj) {
-        const issue = issueObj;
-        issue.selected = !issue.selected;
-
-        if (issue.selected) {
-          this.selectedIssues.push(issue);
-        } else {
-          // Remove this issue
-          const index = this.selectedIssues.indexOf(issue);
-          this.selectedIssues.splice(index, 1);
-        }
-      },
+      toggleIssue: ModalStore.toggleIssue.bind(ModalStore),
       showIssue(issue) {
         if (this.activeTab === 'all') return true;
 
         return issue.selected;
       },
       initMasonry() {
-        listMasonry = new Masonry(this.$refs.list, {
-          transitionDuration: 0,
+        this.$nextTick(() => {
+          this.destroyMasonry();
+          listMasonry = new Masonry(this.$refs.list, {
+            transitionDuration: 0,
+          });
         });
       },
       destroyMasonry() {
         if (listMasonry) {
           listMasonry.destroy();
+          listMasonry = undefined;
         }
       },
     },

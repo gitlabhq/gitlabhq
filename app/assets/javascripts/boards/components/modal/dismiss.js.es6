@@ -1,13 +1,13 @@
 /* global Vue */
 (() => {
-  const Store = gl.issueBoards.BoardsStore;
+  const ModalStore = gl.issueBoards.ModalStore;
 
   window.gl = window.gl || {};
   window.gl.issueBoards = window.gl.issueBoards || {};
 
   gl.issueBoards.DismissModal = Vue.extend({
     data() {
-      return Store.modal;
+      return ModalStore.globalStore;
     },
     methods: {
       toggleModal(toggle) {
