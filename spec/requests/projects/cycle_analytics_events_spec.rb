@@ -13,7 +13,12 @@ describe 'cycle analytics events' do
 
       allow_any_instance_of(Gitlab::ReferenceExtractor).to receive(:issues).and_return([issue])
 
-      3.times { create_cycle }
+      3.times do |count|
+        Timecop.freeze(Time.now + count.days) do
+          create_cycle
+        end
+      end
+
       deploy_master
 
       login_as(user)
