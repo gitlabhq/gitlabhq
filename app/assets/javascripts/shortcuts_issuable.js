@@ -61,7 +61,7 @@
       replyField.val(function(_, current) {
         return current + separator + quote.join('') + "\n";
       });
-      
+
       // Trigger autosave
       replyField.trigger('input');
 

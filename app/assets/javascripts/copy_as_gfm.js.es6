@@ -3,7 +3,6 @@
 
 /*= require lib/utils/common_utils */
 
-
 (() => {
   const gfmRules = {
     // The filters referenced in lib/banzai/pipeline/gfm_pipeline.rb convert
@@ -96,11 +95,11 @@
         let lines = text.trim().split('\n');
         // Add two spaces to the front of subsequent list items lines,
         // or leave the line entirely blank.
-        lines = lines.map((s) => {
-          s = s.trim();
-          if (s.length === 0) return '';
+        lines = lines.map((l) => {
+          const line = l.trim();
+          if (line.length === 0) return '';
 
-          return `  ${s}`;
+          return `  ${line}`;
         });
 
         return `<dl>\n${lines.join('\n')}\n</dl>`;
@@ -111,20 +110,21 @@
       },
     },
     SyntaxHighlightFilter: {
-      'pre.code.highlight'(el, text) {
+      'pre.code.highlight'(el, t) {
+        const text = t.trim();
+
         let lang = el.getAttribute('lang');
         if (lang === 'plaintext') {
           lang = '';
         }
-        text = text.trim();
 
-          // Prefixes lines with 4 spaces if the code contains triple backticks
+        // Prefixes lines with 4 spaces if the code contains triple backticks
         if (lang === '' && text.match(/^```/gm)) {
-          return text.split('\n').map((s) => {
-            s = s.trim();
-            if (s.length === 0) return '';
+          return text.split('\n').map((l) => {
+            const line = l.trim();
+            if (line.length === 0) return '';
 
-            return `    ${s}`;
+            return `    ${line}`;
           }).join('\n');
         }
 
