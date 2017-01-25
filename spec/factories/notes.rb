@@ -15,10 +15,16 @@ FactoryGirl.define do
     factory :note_on_project_snippet,    traits: [:on_project_snippet]
     factory :system_note,                traits: [:system]
 
-    factory :legacy_diff_note_on_commit, traits: [:on_commit, :legacy_diff_note], class: LegacyDiffNote
-    factory :legacy_diff_note_on_merge_request, traits: [:on_merge_request, :legacy_diff_note], class: LegacyDiffNote
+    factory :legacy_diff_note_on_commit, traits: [:on_commit, :legacy_diff_note], class: LegacyDiffNote do
+      association :project, :repository
+    end
+
+    factory :legacy_diff_note_on_merge_request, traits: [:on_merge_request, :legacy_diff_note], class: LegacyDiffNote do
+      association :project, :repository
+    end
 
     factory :diff_note_on_merge_request, traits: [:on_merge_request], class: DiffNote do
+      association :project, :repository
       position do
         Gitlab::Diff::Position.new(
           old_path: "files/ruby/popen.rb",
@@ -49,6 +55,7 @@ FactoryGirl.define do
     end
 
     trait :on_commit do
+      association :project, :repository
       noteable nil
       noteable_type 'Commit'
       noteable_id nil
