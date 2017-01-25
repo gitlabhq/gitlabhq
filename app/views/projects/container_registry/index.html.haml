@@ -15,9 +15,9 @@
       %br
       Then you are free to create and upload a container image with build and push commands:
       %pre
-        docker build -t #{escape_once(@project.container_registry_url)} .
+        docker build -t #{escape_once(@project.container_registry_url)}/image .
         %br
-        docker push #{escape_once(@project.container_registry_url)}
+        docker push #{escape_once(@project.container_registry_url)}/image
 
   - if @images.blank?
     .nothing-here-block No container images in Container Registry for this project.

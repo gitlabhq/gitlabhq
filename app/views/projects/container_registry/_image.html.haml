@@ -8,7 +8,7 @@
         = icon("chevron-down")
 
       = escape_once(image.name)
-      = clipboard_button(clipboard_text: "docker pull #{image.path}")
+    = clipboard_button(clipboard_text: "docker pull #{image.path}")
     .controls.hidden-xs.pull-right
       = link_to namespace_project_container_registry_path(@project.namespace, @project, image.id), class: 'btn btn-remove has-tooltip', title: "Remove image", data: { confirm: "Are you sure?" }, method: :delete do
         = icon("trash cred")
@@ -24,8 +24,8 @@
         %table.table.tags
           %thead
             %tr
-              %th Name
-              %th Image ID
+              %th Tag
+              %th Tag ID
               %th Size
               %th Created
               - if can?(current_user, :update_container_image, @project)
