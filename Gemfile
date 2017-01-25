@@ -364,3 +364,6 @@ gem 'sys-filesystem', '~> 1.1.6'
 gem 'gitaly', '~> 0.5.0'
 
 gem 'toml-rb', '~> 0.3.15', require: false
+
+# Secure headers for Content Security Policy
+gem 'secure_headers', '~> 3.6'
