@@ -70,7 +70,7 @@ module Gitlab
     #
     # Returns the PID of the started process.
     def self.start_sidekiq(queues, env, directory = Dir.pwd)
-      switches = queues.map { |q| "-q #{q},1" }
+      switches = queues.map { |q| "-q#{q},1" }
 
       pid = Process.spawn(
         { 'ENABLE_SIDEKIQ_CLUSTER' => '1' },
