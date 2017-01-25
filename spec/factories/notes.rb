@@ -4,7 +4,7 @@ include ActionDispatch::TestProcess
 
 FactoryGirl.define do
   factory :note do
-    project
+    project factory: :empty_project
     note "Note"
     author
     on_issue
@@ -36,6 +36,7 @@ FactoryGirl.define do
     end
 
     factory :diff_note_on_commit, traits: [:on_commit], class: DiffNote do
+      association :project, :repository
       position do
         Gitlab::Diff::Position.new(
           old_path: "files/ruby/popen.rb",

@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :event do
-    project
+    project factory: :empty_project
     author factory: :user
 
     factory :closed_issue_event do
