@@ -24,7 +24,17 @@
 
         this.issues.forEach((issue) => {
           const issueUpdate = issue;
-          issueUpdate.selected = select;
+
+          if (issueUpdate.selected !== select) {
+            issueUpdate.selected = select;
+
+            if (select) {
+              this.selectedIssues.push(issueUpdate);
+            } else {
+              const index = this.selectedIssues.indexOf(issue);
+              this.selectedIssues.splice(index, 1);
+            }
+          }
         });
       },
     },
@@ -35,7 +45,8 @@
         <input
           placeholder="Search issues..."
           class="form-control"
-          type="search" />
+          type="search"
+          v-model="searchTerm" />
         <button
           type="button"
           class="btn btn-success btn-inverted"

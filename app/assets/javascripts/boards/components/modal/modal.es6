@@ -12,15 +12,40 @@
     data() {
       return Store.modal;
     },
+    watch: {
+      searchTerm() {
+        this.searchOperation();
+      },
+    },
     mounted() {
-      gl.boardService.getBacklog()
-        .then((res) => {
+      this.loading = true;
+
+      this.loadIssues()
+        .then(() => {
+          this.loading = false;
+        });
+    },
+    methods: {
+      searchOperation: _.debounce(function() {
+        this.loadIssues();
+      }, 500),
+      loadIssues() {
+        return gl.boardService.getBacklog({
+          search: this.searchTerm,
+        }).then((res) => {
           const data = res.json();
 
+          this.issues = [];
           data.forEach((issueObj) => {
-            this.issues.push(new ListIssue(issueObj));
+            const issue = new ListIssue(issueObj);
+            const foundSelectedIssue = this.selectedIssues
+              .filter(filteredIssue => filteredIssue.id === issue.id)[0];
+            issue.selected = foundSelectedIssue !== undefined;
+
+            this.issues.push(issue);
           });
         });
+      },
     },
     components: {
       'modal-header': gl.issueBoards.IssuesModalHeader,
@@ -33,10 +58,10 @@
         v-if="showAddIssuesModal">
         <div class="add-issues-container">
           <modal-header></modal-header>
-          <modal-list v-if="issues.length"></modal-list>
+          <modal-list v-if="!loading"></modal-list>
           <section
             class="add-issues-list"
-            v-if="issues.length == 0">
+            v-if="loading">
             <div class="add-issues-list-loading">
               <i class="fa fa-spinner fa-spin"></i>
             </div>

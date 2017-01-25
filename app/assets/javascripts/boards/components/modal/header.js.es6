@@ -25,8 +25,8 @@
             <modal-dismiss></modal-dismiss>
           </h2>
         </header>
-        <modal-tabs v-if="issues.length"></modal-tabs>
-        <modal-search v-if="issues.length"></modal-search>
+        <modal-tabs v-if="!loading"></modal-tabs>
+        <modal-search v-if="!loading"></modal-search>
       </div>
     `,
   });

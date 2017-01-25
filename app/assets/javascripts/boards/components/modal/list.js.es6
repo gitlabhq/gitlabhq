@@ -22,9 +22,7 @@
       issues: {
         handler() {
           this.$nextTick(() => {
-            if (this.activeTab === 'selected') {
-              listMasonry.layout();
-            }
+            listMasonry.layout();
           });
         },
         deep: true,
@@ -37,12 +35,26 @@
       selectedCount() {
         return Store.modalSelectedCount();
       },
+      loopIssues() {
+        if (this.activeTab === 'all') {
+          return this.issues;
+        }
+
+        return this.selectedIssues;
+      },
     },
     methods: {
       toggleIssue(issueObj) {
         const issue = issueObj;
-
         issue.selected = !issue.selected;
+
+        if (issue.selected) {
+          this.selectedIssues.push(issue);
+        } else {
+          // Remove this issue
+          const index = this.selectedIssues.indexOf(issue);
+          this.selectedIssues.splice(index, 1);
+        }
       },
       showIssue(issue) {
         if (this.activeTab === 'all') return true;
@@ -64,7 +76,6 @@
       this.initMasonry();
     },
     destroyed() {
-      this.issues = [];
       this.destroyMasonry();
     },
     components: {
@@ -77,7 +88,7 @@
           ref="list"
           v-show="!loading">
           <div
-            v-for="issue in issues"
+            v-for="issue in loopIssues"
             v-if="showIssue(issue)"
             class="card-parent">
             <div

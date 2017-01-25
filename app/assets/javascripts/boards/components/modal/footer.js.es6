@@ -28,7 +28,7 @@
       },
       addIssues() {
         const list = this.store.selectedList;
-        const issueIds = this.store.issues.filter(issue => issue.selected).map(issue => issue.id);
+        const issueIds = this.store.selectedIssues.map(issue => issue.id);
 
         // Post the data to the backend
         gl.boardService.addMultipleIssues(list, issueIds);

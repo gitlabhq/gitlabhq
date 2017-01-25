@@ -76,8 +76,8 @@ class BoardService {
     });
   }
 
-  getBacklog() {
-    return this.boards.backlog();
+  getBacklog(data) {
+    return this.boards.backlog(data);
   }
 
   addMultipleIssues(list, issue_ids) {

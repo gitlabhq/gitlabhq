@@ -14,9 +14,12 @@
     },
     modal: {
       issues: [],
+      selectedIssues: [],
       showAddIssuesModal: false,
       activeTab: 'all',
-      selectedList: {}
+      selectedList: {},
+      searchTerm: '',
+      loading: false,
     },
     moving: {
       issue: {},
@@ -40,15 +43,10 @@
     },
     new (listObj) {
       const list = this.addList(listObj);
-      const backlogList = this.findList('type', 'backlog', 'backlog');
 
       list
         .save()
         .then(() => {
-          // Remove any new issues from the backlog
-          // as they will be visible in the new list
-          list.issues.forEach(backlogList.removeIssue.bind(backlogList));
-
           this.state.lists = _.sortBy(this.state.lists, 'position');
         });
       this.removeBlankState();
@@ -58,7 +56,7 @@
     },
     shouldAddBlankState () {
       // Decide whether to add the blank state
-      return !(this.state.lists.filter(list => list.type !== 'backlog' && list.type !== 'done')[0]);
+      return !(this.state.lists.filter(list => list.type !== 'done')[0]);
     },
     addBlankState () {
       if (!this.shouldAddBlankState() || this.welcomeIsHidden() || this.disabled) return;
@@ -108,7 +106,7 @@
         listTo.addIssue(issue, listFrom, newIndex);
       }
 
-      if (listTo.type === 'done' && listFrom.type !== 'backlog') {
+      if (listTo.type === 'done') {
         issueLists.forEach((list) => {
           list.removeIssue(issue);
         });
@@ -128,15 +126,7 @@
       history.pushState(null, null, `?${$.param(this.state.filters)}`);
     },
     modalSelectedCount() {
-      let count = 0;
-
-      this.modal.issues.forEach((issue) => {
-        if (issue.selected) {
-          count += 1;
-        }
-      });
-
-      return count;
+      return this.modal.selectedIssues.length;
     },
   };
 })();
