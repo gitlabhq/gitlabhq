@@ -108,11 +108,19 @@ $white-gc-bg: #eaf2f5;
       &.old {
         background-color: $line-number-old;
         border-color: $line-removed-dark;
+
+        a {
+          color: scale-color($line-number-old,$red: -30%, $green: -30%, $blue: -30%);
+        }
       }
 
       &.new {
         background-color: $line-number-new;
         border-color: $line-added-dark;
+
+        a {
+          color: scale-color($line-number-new,$red: -30%, $green: -30%, $blue: -30%);
+        }
       }
 
       &.hll:not(.empty-cell) {
@@ -125,6 +133,10 @@ $white-gc-bg: #eaf2f5;
       &.old {
         background-color: $line-removed;
 
+        &::before {
+          color: scale-color($line-number-old,$red: -30%, $green: -30%, $blue: -30%);
+        }
+
         span.idiff {
           background-color: $line-removed-dark;
         }
@@ -132,6 +144,10 @@ $white-gc-bg: #eaf2f5;
 
       &.new {
         background-color: $line-added;
+
+        &::before {
+          color: scale-color($line-number-new,$red: -30%, $green: -30%, $blue: -30%);
+        }
 
         span.idiff {
           background-color: $line-added-dark;
