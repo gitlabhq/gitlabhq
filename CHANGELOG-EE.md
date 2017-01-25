@@ -1,5 +1,12 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 8.16.2 (2017-01-25)
+
+- Track Mattermost usage in usage ping. !1071
+- Fix count of required approvals displayed on MR edit form. !1082
+- Fix updating approvals count when editing an MR. !1106
+- Don't try to show assignee in approved_merge_request_email if there's no assignee.
+
 ## 8.16.1 (2017-01-23)
 
 - No changes.
