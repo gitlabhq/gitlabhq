@@ -403,6 +403,14 @@ entry.
 - Whitelist next project names: help, ci, admin, search. !8227
 - Adds back CSS for progress-bars. !8237
 
+## 8.14.8 (2017-01-25)
+
+- Accept environment variables from the `pre-receive` script. !7967
+- Milestoneish SQL performance partially improved and memoized. !8146
+- Fix N+1 queries on milestone show pages. !8185
+- Speed up group milestone index by passing group_id to IssuesFinder. !8363
+- Ensure issuable state changes only fire webhooks once.
+
 ## 8.14.6 (2017-01-10)
 
 - Update the gitlab-markup gem to the version 1.5.1. !8509
