@@ -68,8 +68,12 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
 
   def access_levels_options
     {
-      push_access_levels: ProtectedBranch::PushAccessLevel.human_access_levels.map { |id, text| { id: id, text: text, before_divider: true } },
-      merge_access_levels: ProtectedBranch::MergeAccessLevel.human_access_levels.map { |id, text| { id: id, text: text, before_divider: true } }
+      push_access_levels: {
+        "Roles" => ProtectedBranch::PushAccessLevel.human_access_levels.map { |id, text| { id: id, text: text, before_divider: true } },
+      },
+      merge_access_levels: {
+        "Roles" => ProtectedBranch::MergeAccessLevel.human_access_levels.map { |id, text| { id: id, text: text, before_divider: true } }
+      }
     }
   end
 
