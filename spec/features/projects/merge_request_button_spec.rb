@@ -34,6 +34,20 @@ feature 'Merge Request button', feature: true do
           expect(page).to have_link(label, href: href)
         end
       end
+
+      context 'merge requests are disabled' do
+        before do
+          project.project_feature.update!(merge_requests_access_level: ProjectFeature::DISABLED)
+        end
+
+        it 'does not show Create Merge Request button' do
+          visit url
+
+          within("#content-body") do
+            expect(page).not_to have_link(label)
+          end
+        end
+      end
     end
 
     context 'logged in as non-member' do
