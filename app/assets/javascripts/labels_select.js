@@ -336,7 +336,11 @@
                 .removeClass('is-active')
             }
 
-            if ($dropdown.hasClass('js-filter-bulk-update') || $dropdown.hasClass('js-issuable-form-dropdown')) {
+            if ($dropdown.hasClass('js-issuable-form-dropdown')) {
+              return;
+            }
+
+            if ($dropdown.hasClass('js-filter-bulk-update')) {
               _this.enableBulkLabelDropdown();
               _this.setDropdownData($dropdown, isMarking, this.id(label));
               return;
