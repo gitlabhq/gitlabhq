@@ -203,6 +203,10 @@
       position: relative;
       margin-right: 6px;
 
+      .tooltip {
+        white-space: nowrap;
+      }
+
       .tooltip-inner {
         padding: 3px 4px;
       }
