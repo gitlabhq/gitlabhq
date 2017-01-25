@@ -1,0 +1,4 @@
+---
+title: Fix access to the wiki code via HTTP when repository feature disabled
+merge_request: 8758
+author:
