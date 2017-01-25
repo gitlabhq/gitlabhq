@@ -57,6 +57,10 @@ module Gitlab
         @milestones_count ||= milestones.total_count
       end
 
+      def single_commit_result?
+        false
+      end
+
       def self.parse_search_result(result)
         ref = result["_source"]["blob"]["commit_sha"]
         filename = result["_source"]["blob"]["path"]
