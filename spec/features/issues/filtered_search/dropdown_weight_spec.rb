@@ -62,28 +62,28 @@ describe 'Dropdown weight', js: true, feature: true do
       click_weight(1)
 
       expect(page).to have_css(js_dropdown_weight, visible: false)
-      expect(filtered_search.value).to eq("weight:1")
+      expect(filtered_search.value).to eq("weight:1 ")
     end
 
     it 'fills in weight 2' do
       click_weight(2)
 
       expect(page).to have_css(js_dropdown_weight, visible: false)
-      expect(filtered_search.value).to eq("weight:2")
+      expect(filtered_search.value).to eq("weight:2 ")
     end
 
     it 'fills in weight 3' do
       click_weight(3)
 
       expect(page).to have_css(js_dropdown_weight, visible: false)
-      expect(filtered_search.value).to eq("weight:3")
+      expect(filtered_search.value).to eq("weight:3 ")
     end
 
     it 'fills in `no weight`' do
       click_static_weight('No Weight')
 
       expect(page).to have_css(js_dropdown_weight, visible: false)
-      expect(filtered_search.value).to eq("weight:none")
+      expect(filtered_search.value).to eq("weight:none ")
     end
   end
 
