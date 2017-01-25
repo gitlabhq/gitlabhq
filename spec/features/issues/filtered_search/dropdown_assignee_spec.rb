@@ -134,14 +134,14 @@ describe 'Dropdown assignee', js: true, feature: true do
         click_button 'Assigned to me'
       end
 
-      expect(filtered_search.value).to eq("assignee:#{user.to_reference}")
+      expect(filtered_search.value).to eq("assignee:#{user.to_reference} ")
     end
 
     it 'fills in the assignee username when the assignee has not been filtered' do
       click_assignee(user_jacob.name)
 
       expect(page).to have_css(js_dropdown_assignee, visible: false)
-      expect(filtered_search.value).to eq("assignee:@#{user_jacob.username}")
+      expect(filtered_search.value).to eq("assignee:@#{user_jacob.username} ")
     end
 
     it 'fills in the assignee username when the assignee has been filtered' do
@@ -149,14 +149,14 @@ describe 'Dropdown assignee', js: true, feature: true do
       click_assignee(user.name)
 
       expect(page).to have_css(js_dropdown_assignee, visible: false)
-      expect(filtered_search.value).to eq("assignee:@#{user.username}")
+      expect(filtered_search.value).to eq("assignee:@#{user.username} ")
     end
 
     it 'selects `no assignee`' do
       find('#js-dropdown-assignee .filter-dropdown-item', text: 'No Assignee').click
 
       expect(page).to have_css(js_dropdown_assignee, visible: false)
-      expect(filtered_search.value).to eq("assignee:none")
+      expect(filtered_search.value).to eq("assignee:none ")
     end
   end
 

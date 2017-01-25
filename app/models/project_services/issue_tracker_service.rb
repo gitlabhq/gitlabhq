@@ -61,7 +61,7 @@ class IssueTrackerService < Service
     end
   end
 
-  def supported_events
+  def self.supported_events
     %w(push)
   end
 

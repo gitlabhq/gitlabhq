@@ -128,16 +128,21 @@ module Ci
     end
 
     def stages
+      # TODO, this needs refactoring, see gitlab-ce#26481.
+
+      stages_query = statuses
+        .group('stage').select(:stage).order('max(stage_idx)')
+
       status_sql = statuses.latest.where('stage=sg.stage').status_sql
 
-      stages_query = statuses.group('stage').select(:stage)
-                       .order('max(stage_idx)')
+      warnings_sql = statuses.latest.select('COUNT(*) > 0')
+        .where('stage=sg.stage').failed_but_allowed.to_sql
 
-      stages_with_statuses = CommitStatus.from(stages_query, :sg).
-        pluck('sg.stage', status_sql)
+      stages_with_statuses = CommitStatus.from(stages_query, :sg)
+        .pluck('sg.stage', status_sql, "(#{warnings_sql})")
 
       stages_with_statuses.map do |stage|
-        Ci::Stage.new(self, name: stage.first, status: stage.last)
+        Ci::Stage.new(self, Hash[%i[name status warnings].zip(stage)])
       end
     end
 

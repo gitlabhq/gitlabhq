@@ -119,8 +119,8 @@ module API
           success Entities::MergeRequest
         end
         get path do
-          merge_request = find_project_merge_request(params[:merge_request_id])
-          authorize! :read_merge_request, merge_request
+          merge_request = find_merge_request_with_access(params[:merge_request_id])
+
           present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
         end
 
@@ -128,8 +128,8 @@ module API
           success Entities::RepoCommit
         end
         get "#{path}/commits" do
-          merge_request = find_project_merge_request(params[:merge_request_id])
-          authorize! :read_merge_request, merge_request
+          merge_request = find_merge_request_with_access(params[:merge_request_id])
+
           present merge_request.commits, with: Entities::RepoCommit
         end
 
@@ -137,8 +137,8 @@ module API
           success Entities::MergeRequestChanges
         end
         get "#{path}/changes" do
-          merge_request = find_project_merge_request(params[:merge_request_id])
-          authorize! :read_merge_request, merge_request
+          merge_request = find_merge_request_with_access(params[:merge_request_id])
+
           present merge_request, with: Entities::MergeRequestChanges, current_user: current_user
         end
 
@@ -156,8 +156,7 @@ module API
                           :remove_source_branch
         end
         put path do
-          merge_request = find_project_merge_request(params.delete(:merge_request_id))
-          authorize! :update_merge_request, merge_request
+          merge_request = find_merge_request_with_access(params.delete(:merge_request_id), :update_merge_request)
 
           mr_params = declared_params(include_missing: false)
           mr_params[:force_remove_source_branch] = mr_params.delete(:remove_source_branch) if mr_params[:remove_source_branch].present?
@@ -236,10 +235,7 @@ module API
           use :pagination
         end
         get "#{path}/comments" do
-          merge_request = find_project_merge_request(params[:merge_request_id])
-
-          authorize! :read_merge_request, merge_request
-
+          merge_request = find_merge_request_with_access(params[:merge_request_id])
           present paginate(merge_request.notes.fresh), with: Entities::MRNote
         end
 
@@ -251,8 +247,7 @@ module API
           requires :note, type: String, desc: 'The text of the comment'
         end
         post "#{path}/comments" do
-          merge_request = find_project_merge_request(params[:merge_request_id])
-          authorize! :create_note, merge_request
+          merge_request = find_merge_request_with_access(params[:merge_request_id], :create_note)
 
           opts = {
             note: params[:note],
@@ -276,7 +271,7 @@ module API
           use :pagination
         end
         get "#{path}/closes_issues" do
-          merge_request = find_project_merge_request(params[:merge_request_id])
+          merge_request = find_merge_request_with_access(params[:merge_request_id])
           issues = ::Kaminari.paginate_array(merge_request.closes_issues(current_user))
           present paginate(issues), with: issue_entity(user_project), current_user: current_user
         end

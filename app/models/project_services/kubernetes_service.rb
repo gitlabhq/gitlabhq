@@ -52,7 +52,7 @@ class KubernetesService < DeploymentService
     'deployments with `app=$CI_ENVIRONMENT_SLUG`'
   end
 
-  def to_param
+  def self.to_param
     'kubernetes'
   end
 

@@ -10,7 +10,7 @@ describe "Admin::Projects", feature: true  do
   end
 
   describe "GET /admin/projects" do
-    let!(:archived_project) { create :project, :public, archived: true }
+    let!(:archived_project) { create :project, :public, :archived }
 
     before do
       visit admin_projects_path

@@ -24,10 +24,6 @@ class BuildkiteService < CiService
     hook.save
   end
 
-  def supported_events
-    %w(push)
-  end
-
   def execute(data)
     return unless supported_events.include?(data[:object_kind])
 
@@ -54,7 +50,7 @@ class BuildkiteService < CiService
     'Continuous integration and deployments'
   end
 
-  def to_param
+  def self.to_param
     'buildkite'
   end
 

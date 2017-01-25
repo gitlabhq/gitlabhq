@@ -127,7 +127,7 @@ describe 'Dropdown milestone', js: true, feature: true do
       click_milestone(milestone.title)
 
       expect(page).to have_css(js_dropdown_milestone, visible: false)
-      expect(filtered_search.value).to eq("milestone:%#{milestone.title}")
+      expect(filtered_search.value).to eq("milestone:%#{milestone.title} ")
     end
 
     it 'fills in the milestone name when the milestone is partially filled' do
@@ -135,56 +135,56 @@ describe 'Dropdown milestone', js: true, feature: true do
       click_milestone(milestone.title)
 
       expect(page).to have_css(js_dropdown_milestone, visible: false)
-      expect(filtered_search.value).to eq("milestone:%#{milestone.title}")
+      expect(filtered_search.value).to eq("milestone:%#{milestone.title} ")
     end
 
     it 'fills in the milestone name that contains multiple words' do
       click_milestone(two_words_milestone.title)
 
       expect(page).to have_css(js_dropdown_milestone, visible: false)
-      expect(filtered_search.value).to eq("milestone:%\"#{two_words_milestone.title}\"")
+      expect(filtered_search.value).to eq("milestone:%\"#{two_words_milestone.title}\" ")
     end
 
     it 'fills in the milestone name that contains multiple words and is very long' do
       click_milestone(long_milestone.title)
 
       expect(page).to have_css(js_dropdown_milestone, visible: false)
-      expect(filtered_search.value).to eq("milestone:%\"#{long_milestone.title}\"")
+      expect(filtered_search.value).to eq("milestone:%\"#{long_milestone.title}\" ")
     end
 
     it 'fills in the milestone name that contains double quotes' do
       click_milestone(wont_fix_milestone.title)
 
       expect(page).to have_css(js_dropdown_milestone, visible: false)
-      expect(filtered_search.value).to eq("milestone:%'#{wont_fix_milestone.title}'")
+      expect(filtered_search.value).to eq("milestone:%'#{wont_fix_milestone.title}' ")
     end
 
     it 'fills in the milestone name with the correct capitalization' do
       click_milestone(uppercase_milestone.title)
 
       expect(page).to have_css(js_dropdown_milestone, visible: false)
-      expect(filtered_search.value).to eq("milestone:%#{uppercase_milestone.title}")
+      expect(filtered_search.value).to eq("milestone:%#{uppercase_milestone.title} ")
     end
 
     it 'fills in the milestone name with special characters' do
       click_milestone(special_milestone.title)
 
       expect(page).to have_css(js_dropdown_milestone, visible: false)
-      expect(filtered_search.value).to eq("milestone:%#{special_milestone.title}")
+      expect(filtered_search.value).to eq("milestone:%#{special_milestone.title} ")
     end
 
     it 'selects `no milestone`' do
       click_static_milestone('No Milestone')
 
       expect(page).to have_css(js_dropdown_milestone, visible: false)
-      expect(filtered_search.value).to eq("milestone:none")
+      expect(filtered_search.value).to eq("milestone:none ")
     end
 
     it 'selects `upcoming milestone`' do
       click_static_milestone('Upcoming')
 
       expect(page).to have_css(js_dropdown_milestone, visible: false)
-      expect(filtered_search.value).to eq("milestone:upcoming")
+      expect(filtered_search.value).to eq("milestone:upcoming ")
     end
   end
 

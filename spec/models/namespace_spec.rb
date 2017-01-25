@@ -117,6 +117,7 @@ describe Namespace, models: true do
       new_path = @namespace.path + "_new"
       allow(@namespace).to receive(:path_was).and_return(@namespace.path)
       allow(@namespace).to receive(:path).and_return(new_path)
+      expect(@namespace).to receive(:remove_exports!)
       expect(@namespace.move_dir).to be_truthy
     end
 
@@ -151,10 +152,16 @@ describe Namespace, models: true do
     let!(:project) { create(:project, namespace: namespace) }
     let!(:path) { File.join(Gitlab.config.repositories.storages.default, namespace.path) }
 
-    before { namespace.destroy }
-
     it "removes its dirs when deleted" do
+      namespace.destroy
+
       expect(File.exist?(path)).to be(false)
+    end
+
+    it 'removes the exports folder' do
+      expect(namespace).to receive(:remove_exports!)
+
+      namespace.destroy
     end
   end
 
