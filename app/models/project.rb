@@ -226,6 +226,7 @@ class Project < ActiveRecord::Base
 
   scope :with_project_feature, -> { joins('LEFT JOIN project_features ON projects.id = project_features.project_id') }
   scope :with_statistics, -> { includes(:statistics) }
+  scope :with_shared_runners, -> { where(shared_runners_enabled: true) }
 
   # "enabled" here means "not disabled". It includes private features!
   scope :with_feature_enabled, ->(feature) {
@@ -1098,12 +1099,20 @@ class Project < ActiveRecord::Base
     project_feature.update_attribute(:builds_access_level, ProjectFeature::ENABLED)
   end
 
+  def shared_runners_available?
+    shared_runners_enabled?
+  end
+
+  def shared_runners
+    shared_runners_available? ? Ci::Runner.shared : Ci::Runner.none
+  end
+
   def any_runners?(&block)
     if runners.active.any?(&block)
       return true
     end
 
-    shared_runners_enabled? && Ci::Runner.shared.active.any?(&block)
+    shared_runners.active.any?(&block)
   end
 
   def valid_runners_token?(token)
