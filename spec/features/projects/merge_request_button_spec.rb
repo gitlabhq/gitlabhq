@@ -3,14 +3,16 @@ require 'spec_helper'
 feature 'Merge Request button', feature: true do
   shared_examples 'Merge Request button only shown when allowed' do
     let(:user) { create(:user) }
-    let(:project) { create(:project) }
-    let(:forked_project) { create(:project, forked_from_project: project) }
+    let(:project) { create(:project, :public) }
+    let(:forked_project) { create(:project, :public, forked_from_project: project) }
 
     context 'not logged in' do
       it 'does not show Create Merge Request button' do
         visit url
 
-        expect(page).not_to have_link(label)
+        within("#content-body") do
+          expect(page).not_to have_link(label)
+        end
       end
     end
 
@@ -28,7 +30,9 @@ feature 'Merge Request button', feature: true do
 
         visit url
 
-        expect(page).to have_link(label, href: href)
+        within("#content-body") do
+          expect(page).to have_link(label, href: href)
+        end
       end
     end
 
@@ -40,7 +44,9 @@ feature 'Merge Request button', feature: true do
       it 'does not show Create Merge Request button' do
         visit url
 
-        expect(page).not_to have_link(label)
+        within("#content-body") do
+          expect(page).not_to have_link(label)
+        end
       end
 
       context 'on own fork of project' do
@@ -54,7 +60,9 @@ feature 'Merge Request button', feature: true do
 
           visit fork_url
 
-          expect(page).to have_link(label, href: href)
+          within("#content-body") do
+            expect(page).to have_link(label, href: href)
+          end
         end
       end
     end
