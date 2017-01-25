@@ -276,7 +276,7 @@ module Ci
 
     def update_coverage
       coverage = extract_coverage(trace, coverage_regex)
-      update_attributes(coverage: coverage) if coverage.is_a?(Numeric)
+      update_attributes(coverage: coverage) if coverage.present?
     end
 
     def extract_coverage(text, regex)
