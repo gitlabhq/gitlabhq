@@ -2,13 +2,10 @@ module ApplicationSettings
   class UpdateService < ApplicationSettings::BaseService
     def execute
       # Repository size limit comes as MB from the view
-      assign_repository_size_limit_as_bytes(application_setting)
+      limit = @params.delete(:repository_size_limit)
+      @application_setting.repository_size_limit = (limit.to_i.megabytes if limit.present?)
 
-      if application_setting.update(params)
-        success
-      else
-        error('Application settings could not be updated')
-      end
+      @application_setting.update(@params)
     end
   end
 end

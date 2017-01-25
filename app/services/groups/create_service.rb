@@ -13,7 +13,8 @@ module Groups
       end
 
       # Repository size limit comes as MB from the view
-      assign_repository_size_limit_as_bytes(@group)
+      limit = params.delete(:repository_size_limit)
+      @group.repository_size_limit = (limit.to_i.megabytes if limit.present?)
 
       if @group.parent && !can?(current_user, :admin_group, @group.parent)
         @group.parent = nil
