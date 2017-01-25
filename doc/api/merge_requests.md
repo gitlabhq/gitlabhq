@@ -10,8 +10,7 @@ The pagination parameters `page` and `per_page` can be used to restrict the list
 GET /projects/:id/merge_requests
 GET /projects/:id/merge_requests?state=opened
 GET /projects/:id/merge_requests?state=all
-GET /projects/:id/merge_requests?iid=42
-GET /projects/:id/merge_requests?iid[]=42&iid[]=43
+GET /projects/:id/merge_requests?iids[]=42&iids[]=43
 ```
 
 Parameters:

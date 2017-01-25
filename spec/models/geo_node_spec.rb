@@ -9,6 +9,7 @@ describe GeoNode, type: :model do
 
   let(:dummy_url) { 'https://localhost:3000/gitlab' }
   let(:url_helpers) { Gitlab::Application.routes.url_helpers }
+  let(:api_version) { API::API.version }
 
   context 'associations' do
     it { is_expected.to belong_to(:geo_node_key).dependent(:destroy) }
@@ -158,7 +159,7 @@ describe GeoNode, type: :model do
   end
 
   describe '#notify_projects_url' do
-    let(:refresh_url) { 'https://localhost:3000/gitlab/api/v3/geo/refresh_projects' }
+    let(:refresh_url) { "https://localhost:3000/gitlab/api/#{api_version}/geo/refresh_projects" }
 
     it 'returns api url based on node uri' do
       expect(new_node.notify_projects_url).to eq(refresh_url)
@@ -166,7 +167,7 @@ describe GeoNode, type: :model do
   end
 
   describe '#notify_wikis_url' do
-    let(:refresh_url) { 'https://localhost:3000/gitlab/api/v3/geo/refresh_wikis' }
+    let(:refresh_url) { "https://localhost:3000/gitlab/api/#{api_version}/geo/refresh_wikis" }
 
     it 'returns api url based on node uri' do
       expect(new_node.notify_wikis_url).to eq(refresh_url)
@@ -174,7 +175,7 @@ describe GeoNode, type: :model do
   end
 
   describe '#geo_events_url' do
-    let(:events_url) { 'https://localhost:3000/gitlab/api/v3/geo/receive_events' }
+    let(:events_url) { "https://localhost:3000/gitlab/api/#{api_version}/geo/receive_events" }
 
     it 'returns api url based on node uri' do
       expect(new_node.geo_events_url).to eq(events_url)
