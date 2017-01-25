@@ -155,7 +155,8 @@ ul.content-list {
       }
 
       > .btn,
-      > .btn-group {
+      > .btn-group,
+      > .dropdown.inline {
         margin-right: $gl-padding-top;
         display: inline-block;
         margin-top: 3px;
