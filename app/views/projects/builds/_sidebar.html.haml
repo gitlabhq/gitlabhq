@@ -2,7 +2,7 @@
 
 %aside.right-sidebar.right-sidebar-expanded.build-sidebar.js-build-sidebar
   .block.build-sidebar-header.visible-xs-block.visible-sm-block.append-bottom-default
-    Build
+    Job
     %strong ##{@build.id}
     %a.gutter-toggle.pull-right.js-sidebar-build-toggle{ href: "#" }
       = icon('angle-double-right')
@@ -17,7 +17,7 @@
     - if can?(current_user, :read_build, @project) && (@build.artifacts? || @build.artifacts_expired?)
       .block{ class: ("block-first" if !@build.coverage) }
         .title
-          Build artifacts
+          Job artifacts
         - if @build.artifacts_expired?
           %p.build-detail-row
             The artifacts were removed
@@ -42,7 +42,7 @@
 
     .block{ class: ("block-first" if !@build.coverage && !(can?(current_user, :read_build, @project) && (@build.artifacts? || @build.artifacts_expired?))) }
       .title
-        Build details
+        Job details
         - if can?(current_user, :update_build, @build) && @build.retryable?
           = link_to "Retry build", retry_namespace_project_build_path(@project.namespace, @project, @build), class: 'pull-right retry-link', method: :post
       - if @build.merge_request
@@ -136,4 +136,4 @@
               - else
                 = build.id
             - if build.retried?
-              %i.fa.fa-refresh.has-tooltip{ data: { container: 'body', placement: 'bottom' }, title: 'Build was retried' }
+              %i.fa.fa-refresh.has-tooltip{ data: { container: 'body', placement: 'bottom' }, title: 'Job was retried' }

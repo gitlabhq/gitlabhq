@@ -1,7 +1,7 @@
 .content-block.build-header
   .header-content
     = render 'ci/status/badge', status: @build.detailed_status(current_user), link: false
-    Build
+    Job
     %strong.js-build-id ##{@build.id}
     in pipeline
     = link_to pipeline_path(@build.pipeline) do
