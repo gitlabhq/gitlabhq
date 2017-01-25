@@ -1,3 +1,4 @@
+//= require ./lists_dropdown
 /* global Vue */
 (() => {
   const Store = gl.issueBoards.BoardsStore;
@@ -31,18 +32,34 @@
       addIssues() {
         const issueIds = this.store.issues.filter(issue => issue.selected).map(issue => issue.id);
 
+        issueIds.forEach((id) => {
+          const issue = this.store.issues.filter(issue => issue.id == id)[0];
+          this.store.selectedList.addIssue(issue);
+          this.store.selectedList.issuesSize += 1;
+        });
+
         this.disabled = true;
+        this.hideModal();
       },
+    },
+    components: {
+      'lists-dropdown': gl.issueBoards.ModalFooterListsDropdown,
     },
     template: `
       <footer class="form-actions add-issues-footer">
-        <button
-          class="btn btn-success pull-left"
-          type="button"
-          :disabled="submitDisabled"
-          @click="addIssues">
-          {{ submitText }}
-        </button>
+        <div class="pull-left">
+          <button
+            class="btn btn-success"
+            type="button"
+            :disabled="submitDisabled"
+            @click="addIssues">
+            {{ submitText }}
+          </button>
+          <span class="add-issues-footer-to-list">
+            to list
+          </span>
+          <lists-dropdown></lists-dropdown>
+        </div>
         <button
           class="btn btn-default pull-right"
           type="button"

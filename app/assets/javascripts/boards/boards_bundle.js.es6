@@ -71,6 +71,12 @@ $(() => {
 
           Store.addBlankState();
           this.loading = false;
+
+          if (this.state.lists.length > 0) {
+            Store.modal.selectedList = this.state.lists[0];
+          }
+
+          Store.modal.showAddIssuesModal = true;
         });
     }
   });
