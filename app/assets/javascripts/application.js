@@ -248,14 +248,6 @@
     $window.off('resize.app').on('resize.app', function () {
       return fitSidebarForSize();
     });
-    window.addEventListener('beforeunload', function() {
-      // collapsed_gutter cookie hides the sidebar
-      var bpBreakpoint = bp.getBreakpointSize();
-      if (bpBreakpoint === 'xs' || bpBreakpoint === 'sm') {
-        Cookies.set('collapsed_gutter', true);
-      }
-    });
-
     gl.awardsHandler = new AwardsHandler();
     new Aside();
     // bind sidebar events
