@@ -4,19 +4,15 @@
 
 ((gl) => {
   const pageValues = (headers) => {
-    const normalizedHeaders = {};
-
-    Object.keys(headers).forEach((e) => {
-      normalizedHeaders[e.toUpperCase()] = headers[e];
-    });
+    const normalized = gl.utils.normalizeHeaders(headers);
 
     const paginationInfo = {
-      perPage: +normalizedHeaders['X-PER-PAGE'],
-      page: +normalizedHeaders['X-PAGE'],
-      total: +normalizedHeaders['X-TOTAL'],
-      totalPages: +normalizedHeaders['X-TOTAL-PAGES'],
-      nextPage: +normalizedHeaders['X-NEXT-PAGE'],
-      previousPage: +normalizedHeaders['X-PREV-PAGE'],
+      perPage: +normalized['X-PER-PAGE'],
+      page: +normalized['X-PAGE'],
+      total: +normalized['X-TOTAL'],
+      totalPages: +normalized['X-TOTAL-PAGES'],
+      nextPage: +normalized['X-NEXT-PAGE'],
+      previousPage: +normalized['X-PREV-PAGE'],
     };
 
     return paginationInfo;

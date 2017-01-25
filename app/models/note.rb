@@ -43,7 +43,8 @@ class Note < ActiveRecord::Base
   delegate :name, :email, to: :author, prefix: true
   delegate :title, to: :noteable, allow_nil: true
 
-  validates :note, :project, presence: true
+  validates :note, presence: true
+  validates :project, presence: true, unless: :for_personal_snippet?
 
   # Attachments are deprecated and are handled by Markdown uploader
   validates :attachment, file_size: { maximum: :max_attachment_size }
@@ -53,7 +54,7 @@ class Note < ActiveRecord::Base
   validates :commit_id, presence: true, if: :for_commit?
   validates :author, presence: true
 
-  validate unless: [:for_commit?, :importing?] do |note|
+  validate unless: [:for_commit?, :importing?, :for_personal_snippet?] do |note|
     unless note.noteable.try(:project) == note.project
       errors.add(:invalid_project, 'Note and noteable project mismatch')
     end
@@ -83,7 +84,7 @@ class Note < ActiveRecord::Base
   after_initialize :ensure_discussion_id
   before_validation :nullify_blank_type, :nullify_blank_line_code
   before_validation :set_discussion_id
-  after_save :keep_around_commit
+  after_save :keep_around_commit, unless: :for_personal_snippet?
 
   class << self
     def model_name
@@ -165,6 +166,14 @@ class Note < ActiveRecord::Base
     noteable_type == "Snippet"
   end
 
+  def for_personal_snippet?
+    noteable.is_a?(PersonalSnippet)
+  end
+
+  def skip_project_check?
+    for_personal_snippet?
+  end
+
   # override to return commits, which are not active record
   def noteable
     if for_commit?
@@ -218,6 +227,10 @@ class Note < ActiveRecord::Base
 
   def award_emoji_name
     note.match(Banzai::Filter::EmojiFilter.emoji_pattern)[1]
+  end
+
+  def to_ability_name
+    for_personal_snippet? ? 'personal_snippet' : noteable_type.underscore
   end
 
   private

@@ -186,6 +186,6 @@
             - if @user.solo_owned_groups.present?
               %p
                 This user is currently an owner in these groups:
-                %strong #{@user.solo_owned_groups.map(&:name).join(', ')}
+                %strong= @user.solo_owned_groups.map(&:name).join(', ')
               %p
                 You must transfer ownership or delete these groups before you can delete this user.

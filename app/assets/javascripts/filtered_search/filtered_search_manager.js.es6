@@ -25,6 +25,7 @@
     }
 
     bindEvents() {
+      this.handleFormSubmit = this.handleFormSubmit.bind(this);
       this.setDropdownWrapper = this.dropdownManager.setDropdown.bind(this.dropdownManager);
       this.toggleClearSearchButtonWrapper = this.toggleClearSearchButton.bind(this);
       this.checkForEnterWrapper = this.checkForEnter.bind(this);
@@ -32,6 +33,7 @@
       this.checkForBackspaceWrapper = this.checkForBackspace.bind(this);
       this.tokenChange = this.tokenChange.bind(this);
 
+      this.filteredSearchInput.form.addEventListener('submit', this.handleFormSubmit);
       this.filteredSearchInput.addEventListener('input', this.setDropdownWrapper);
       this.filteredSearchInput.addEventListener('input', this.toggleClearSearchButtonWrapper);
       this.filteredSearchInput.addEventListener('keydown', this.checkForEnterWrapper);
@@ -42,6 +44,7 @@
     }
 
     unbindEvents() {
+      this.filteredSearchInput.form.removeEventListener('submit', this.handleFormSubmit);
       this.filteredSearchInput.removeEventListener('input', this.setDropdownWrapper);
       this.filteredSearchInput.removeEventListener('input', this.toggleClearSearchButtonWrapper);
       this.filteredSearchInput.removeEventListener('keydown', this.checkForEnterWrapper);
@@ -61,13 +64,26 @@
     }
 
     checkForEnter(e) {
+      if (e.keyCode === 38 || e.keyCode === 40) {
+        const selectionStart = this.filteredSearchInput.selectionStart;
+
+        e.preventDefault();
+        this.filteredSearchInput.setSelectionRange(selectionStart, selectionStart);
+      }
+
       if (e.keyCode === 13) {
+        const dropdown = this.dropdownManager.mapping[this.dropdownManager.currentDropdown];
+        const dropdownEl = dropdown.element;
+        const activeElements = dropdownEl.querySelectorAll('.dropdown-active');
+
         e.preventDefault();
 
-        // Prevent droplab from opening dropdown
-        this.dropdownManager.destroyDroplab();
+        if (!activeElements.length) {
+          // Prevent droplab from opening dropdown
+          this.dropdownManager.destroyDroplab();
 
-        this.search();
+          this.search();
+        }
       }
     }
 
@@ -86,6 +102,11 @@
       this.clearSearchButton.classList.add('hidden');
 
       this.dropdownManager.resetDropdowns();
+    }
+
+    handleFormSubmit(e) {
+      e.preventDefault();
+      this.search();
     }
 
     loadSearchParamsFromURL() {

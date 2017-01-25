@@ -96,6 +96,11 @@ module Participable
 
     participants.merge(ext.users)
 
-    Ability.users_that_can_read_project(participants.to_a, project)
+    case self
+    when PersonalSnippet
+      Ability.users_that_can_read_personal_snippet(participants.to_a, self)
+    else
+      Ability.users_that_can_read_project(participants.to_a, project)
+    end
   end
 end

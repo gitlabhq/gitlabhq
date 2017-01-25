@@ -2,6 +2,14 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 8.16.1 (2017-01-23)
+
+- Ensure export files are removed after a namespace is deleted.
+- Don't allow project guests to subscribe to merge requests through the API. (Robert Schilling)
+- Prevent users from creating notes on resources they can't access.
+- Prevent users from deleting system deploy keys via the project deploy key API.
+- Upgrade omniauth gem to 1.3.2.
+
 ## 8.16.0 (2017-02-22)
 
 - Add LDAP Rake task to rename a provider. !2181
@@ -394,6 +402,14 @@ entry.
 - Rename groups with .git in the end of the path. !8199
 - Whitelist next project names: help, ci, admin, search. !8227
 - Adds back CSS for progress-bars. !8237
+
+## 8.14.8 (2017-01-25)
+
+- Accept environment variables from the `pre-receive` script. !7967
+- Milestoneish SQL performance partially improved and memoized. !8146
+- Fix N+1 queries on milestone show pages. !8185
+- Speed up group milestone index by passing group_id to IssuesFinder. !8363
+- Ensure issuable state changes only fire webhooks once.
 
 ## 8.14.6 (2017-01-10)
 
