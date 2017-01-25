@@ -139,6 +139,8 @@ module Issuable
                when 'downvotes_desc' then order_downvotes_desc
                when 'upvotes_desc' then order_upvotes_desc
                when 'priority' then order_labels_priority(excluded_labels: excluded_labels)
+               when 'comments_desc' then order_most_comments
+               when 'comments_asc' then order_least_comments
                else
                  order_by(method)
                end
@@ -188,6 +190,29 @@ module Issuable
 
     def to_ability_name
       model_name.singular
+    end
+
+    def order_most_comments
+      order_comments('DESC')
+    end
+
+    def order_least_comments
+      order_comments('ASC')
+    end
+
+    def order_comments(comments_order)
+      issuable_table = self.arel_table
+      note_table = Note.arel_table
+
+      join_clause = issuable_table.join(note_table, Arel::Nodes::OuterJoin).on(
+        note_table[:noteable_id].eq(issuable_table[:id]).and(
+          note_table[:noteable_type].eq(self.name).and(
+            note_table[:system].eq(false)
+          )
+        )
+      ).join_sources
+
+      joins(join_clause).group(issuable_table[:id]).reorder("COUNT(notes.id) " + comments_order)
     end
   end
 

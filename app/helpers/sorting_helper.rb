@@ -16,7 +16,9 @@ module SortingHelper
       sort_value_oldest_signin => sort_title_oldest_signin,
       sort_value_downvotes => sort_title_downvotes,
       sort_value_upvotes => sort_title_upvotes,
-      sort_value_priority => sort_title_priority
+      sort_value_priority => sort_title_priority,
+      sort_value_most_comments => sort_title_most_comments,
+      sort_value_least_comments => sort_title_least_comments
     }
   end
 
@@ -137,6 +139,14 @@ module SortingHelper
     'Name, descending'
   end
 
+  def sort_title_most_comments
+    'Most comments'
+  end
+
+  def sort_title_least_comments
+    'Least comments'
+  end
+
   def sort_value_last_joined
     'last_joined'
   end
@@ -219,5 +229,13 @@ module SortingHelper
 
   def sort_value_upvotes
     'upvotes_desc'
+  end
+
+  def sort_value_most_comments
+    'comments_desc'
+  end
+
+  def sort_value_least_comments
+    'comments_asc'
   end
 end
