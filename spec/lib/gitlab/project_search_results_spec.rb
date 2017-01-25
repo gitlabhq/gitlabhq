@@ -179,4 +179,119 @@ describe Gitlab::ProjectSearchResults, lib: true do
       expect(results.objects('notes')).not_to include note
     end
   end
+
+  # Examples for commit access level test
+  #
+  # params:
+  # * search_phrase
+  # * commit
+  #
+  shared_examples 'access restricted commits' do
+    context 'when project is internal' do
+      let(:project) { create(:project, :internal) }
+
+      it 'does not search if user is not authenticated' do
+        commits = described_class.new(nil, project, search_phrase).objects('commits')
+
+        expect(commits).to be_empty
+      end
+
+      it 'searches if user is authenticated' do
+        commits = described_class.new(user, project, search_phrase).objects('commits')
+
+        expect(commits).to contain_exactly commit
+      end
+    end
+
+    context 'when project is private' do
+      let!(:creator) { create(:user, username: 'private-project-author') }
+      let!(:private_project) { create(:project, :private, creator: creator, namespace: creator.namespace) }
+      let(:team_master) do
+        user = create(:user, username: 'private-project-master')
+        private_project.team << [user, :master]
+        user
+      end
+      let(:team_reporter) do
+        user = create(:user, username: 'private-project-reporter')
+        private_project.team << [user, :reporter]
+        user
+      end
+
+      it 'does not show commit to stranger' do
+        commits = described_class.new(nil, private_project, search_phrase).objects('commits')
+
+        expect(commits).to be_empty
+      end
+
+      context 'team access' do
+        it 'shows commit to creator' do
+          commits = described_class.new(creator, private_project, search_phrase).objects('commits')
+
+          expect(commits).to contain_exactly commit
+        end
+
+        it 'shows commit to master' do
+          commits = described_class.new(team_master, private_project, search_phrase).objects('commits')
+
+          expect(commits).to contain_exactly commit
+        end
+
+        it 'shows commit to reporter' do
+          commits = described_class.new(team_reporter, private_project, search_phrase).objects('commits')
+
+          expect(commits).to contain_exactly commit
+        end
+      end
+    end
+  end
+
+  describe 'commit search' do
+    context 'by commit message' do
+      let(:project) { create(:project, :public) }
+      let(:commit) { project.repository.commit('59e29889be61e6e0e5e223bfa9ac2721d31605b8') }
+      let(:message) { 'Sorry, I did a mistake' }
+
+      it 'finds commit by message' do
+        commits = described_class.new(user, project, message).objects('commits')
+
+        expect(commits).to contain_exactly commit
+      end
+
+      it 'handles when no commit match' do
+        commits = described_class.new(user, project, 'not really an existing description').objects('commits')
+
+        expect(commits).to be_empty
+      end
+
+      it_behaves_like 'access restricted commits' do
+        let(:search_phrase) { message }
+        let(:commit) { project.repository.commit('59e29889be61e6e0e5e223bfa9ac2721d31605b8') }
+      end
+    end
+
+    context 'by commit hash' do
+      let(:project) { create(:project, :public) }
+      let(:commit) { project.repository.commit('0b4bc9a') }
+      commit_hashes = { short: '0b4bc9a', full: '0b4bc9a49b562e85de7cc9e834518ea6828729b9' }
+
+      commit_hashes.each do |type, commit_hash|
+        it "shows commit by #{type} hash id" do
+          commits = described_class.new(user, project, commit_hash).objects('commits')
+
+          expect(commits).to contain_exactly commit
+        end
+      end
+
+      it 'handles not existing commit hash correctly' do
+        commits = described_class.new(user, project, 'deadbeef').objects('commits')
+
+        expect(commits).to be_empty
+      end
+
+      it_behaves_like 'access restricted commits' do
+        let(:search_phrase) { '0b4bc9a49' }
+        let(:commit) { project.repository.commit('0b4bc9a') }
+      end
+    end
+  end
 end

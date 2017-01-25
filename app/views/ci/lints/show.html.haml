@@ -13,7 +13,7 @@
           .file-holder
             .file-title.clearfix
               Content of .gitlab-ci.yml
-            #ci-editor.ci-editor #{@content}
+            #ci-editor.ci-editor= @content
           = text_area_tag(:content, @content, class: 'hidden form-control span1', rows: 7, require: true)
       .col-sm-12
         .pull-left.prepend-top-10

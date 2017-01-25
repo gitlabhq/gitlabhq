@@ -245,7 +245,7 @@ class Group < Namespace
   end
 
   def members_with_parents
-    GroupMember.where(requested_at: nil, source_id: parents.map(&:id).push(id))
+    GroupMember.where(requested_at: nil, source_id: ancestors.map(&:id).push(id))
   end
 
   def users_with_parents

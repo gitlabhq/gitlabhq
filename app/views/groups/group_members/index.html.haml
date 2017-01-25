@@ -27,7 +27,7 @@
   .panel.panel-default
     .panel-heading
       Users with access to
-      %strong #{@group.name}
+      %strong= @group.name
       %span.badge= @members.total_count
     %ul.content-list
       = render partial: 'shared/members/member', collection: @members, as: :member

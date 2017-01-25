@@ -21,6 +21,9 @@ class Commit
   DIFF_HARD_LIMIT_FILES = 1000
   DIFF_HARD_LIMIT_LINES = 50000
 
+  # The SHA can be between 7 and 40 hex characters.
+  COMMIT_SHA_PATTERN = '\h{7,40}'
+
   class << self
     def decorate(commits, project)
       commits.map do |commit|
@@ -52,6 +55,10 @@ class Commit
     def from_hash(hash, project)
       new(Gitlab::Git::Commit.new(hash), project)
     end
+
+    def valid_hash?(key)
+      !!(/\A#{COMMIT_SHA_PATTERN}\z/ =~ key)
+    end
   end
 
   attr_accessor :raw
@@ -77,8 +84,6 @@ class Commit
 
   # Pattern used to extract commit references from text
   #
-  # The SHA can be between 7 and 40 hex characters.
-  #
   # This pattern supports cross-project references.
   def self.reference_pattern
     @reference_pattern ||= %r{
@@ -88,7 +93,7 @@ class Commit
   end
 
   def self.link_reference_pattern
-    @link_reference_pattern ||= super("commit", /(?<commit>\h{7,40})/)
+    @link_reference_pattern ||= super("commit", /(?<commit>#{COMMIT_SHA_PATTERN})/)
   end
 
   def to_reference(from_project = nil, full: false)

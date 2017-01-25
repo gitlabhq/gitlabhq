@@ -25,7 +25,7 @@
                         latest version
                       - else
                         version #{version_index(merge_request_diff)}
-                    .monospace #{short_sha(merge_request_diff.head_commit_sha)}
+                    .monospace= short_sha(merge_request_diff.head_commit_sha)
                     %small
                       #{number_with_delimiter(merge_request_diff.commits_count)} #{'commit'.pluralize(merge_request_diff.commits_count)},
                       = time_ago_with_tooltip(merge_request_diff.created_at)
@@ -55,14 +55,14 @@
                           latest version
                         - else
                           version #{version_index(merge_request_diff)}
-                      .monospace #{short_sha(merge_request_diff.head_commit_sha)}
+                      .monospace= short_sha(merge_request_diff.head_commit_sha)
                       %small
                         = time_ago_with_tooltip(merge_request_diff.created_at)
                 %li
                   = link_to merge_request_version_path(@project, @merge_request, @merge_request_diff), class: ('is-active' unless @start_sha) do
                     %strong
                       #{@merge_request.target_branch} (base)
-                    .monospace #{short_sha(@merge_request_diff.base_commit_sha)}
+                    .monospace= short_sha(@merge_request_diff.base_commit_sha)
 
     - if different_base?(@start_version, @merge_request_diff)
       .content-block
@@ -72,7 +72,7 @@
         = link_to namespace_project_compare_path(@project.namespace, @project, from: @start_version.base_commit_sha, to: @merge_request_diff.base_commit_sha) do
           new commits
         from
-        %code #{@merge_request.target_branch}
+        %code= @merge_request.target_branch
 
     - unless @merge_request_diff.latest? && !@start_sha
       .comments-disabled-notif.content-block

@@ -46,6 +46,8 @@ class SearchController < ApplicationController
       end
 
     @search_objects = @search_results.objects(@scope, params[:page])
+
+    check_single_commit_result
   end
 
   def autocomplete
@@ -59,5 +61,17 @@ class SearchController < ApplicationController
     @ref = params[:project_ref] if params[:project_ref].present?
 
     render json: search_autocomplete_opts(term).to_json
+  end
+
+  private
+
+  def check_single_commit_result
+    if @search_results.single_commit_result?
+      only_commit = @search_results.objects('commits').first
+      query = params[:search].strip.downcase
+      found_by_commit_sha = Commit.valid_hash?(query) && only_commit.sha.start_with?(query)
+
+      redirect_to namespace_project_commit_path(@project.namespace, @project, only_commit) if found_by_commit_sha
+    end
   end
 end

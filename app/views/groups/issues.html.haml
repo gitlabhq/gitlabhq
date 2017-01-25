@@ -18,7 +18,7 @@
 
   .row-content-block.second-block
     Only issues from the
-    %strong #{@group.name}
+    %strong= @group.name
     group are listed here.
     - if current_user
       To see all issues you should visit #{link_to 'dashboard', issues_dashboard_path} page.

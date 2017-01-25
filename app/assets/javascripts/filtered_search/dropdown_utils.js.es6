@@ -84,7 +84,7 @@
       let inputValue = input.value;
       // Replace all spaces inside quote marks with underscores
       // This helps with matching the beginning & end of a token:key
-      inputValue = inputValue.replace(/"(.*?)"/g, str => str.replace(/\s/g, '_'));
+      inputValue = inputValue.replace(/("(.*?)"|:\s+)/g, str => str.replace(/\s/g, '_'));
 
       // Get the right position for the word selected
       // Regex matches first space

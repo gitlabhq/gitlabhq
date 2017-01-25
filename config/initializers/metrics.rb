@@ -107,6 +107,7 @@ def instrument_classes(instrumentation)
   instrumentation.instrument_methods(Gitlab::Highlight)
   instrumentation.instrument_instance_methods(Gitlab::Highlight)
 
+<<<<<<< HEAD
   instrumentation.instrument_methods(Elasticsearch::Git::Repository)
   instrumentation.instrument_instance_methods(Elasticsearch::Git::Repository)
 
@@ -129,6 +130,8 @@ def instrument_classes(instrumentation)
   instrumentation.instrument_instance_methods(Elastic::SnippetsSearch)
   instrumentation.instrument_instance_methods(Elastic::WikiRepositoriesSearch)
 
+=======
+>>>>>>> ce/master
   # This is a Rails scope so we have to instrument it manually.
   instrumentation.instrument_method(Project, :visible_to_user)
 end

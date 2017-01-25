@@ -55,6 +55,7 @@ class ApplicationSetting < ActiveRecord::Base
     user_default_external: false
   }
 
+<<<<<<< HEAD
   DEFAULTS_EE = {
     elasticsearch_host: ENV['ELASTIC_HOST'] || 'localhost',
     elasticsearch_port: ENV['ELASTIC_PORT'] || '9200',
@@ -62,6 +63,9 @@ class ApplicationSetting < ActiveRecord::Base
   }
 
   DEFAULTS = DEFAULTS_CE.merge(DEFAULTS_EE)
+=======
+  DEFAULTS = DEFAULTS_CE
+>>>>>>> ce/master
 
   serialize :restricted_visibility_levels
   serialize :import_sources
@@ -226,10 +230,13 @@ class ApplicationSetting < ActiveRecord::Base
 
   def self.create_from_defaults
     create(DEFAULTS)
+<<<<<<< HEAD
   end
 
   def elasticsearch_host
     read_attribute(:elasticsearch_host).split(',').map(&:strip)
+=======
+>>>>>>> ce/master
   end
 
   def home_page_url_column_exist

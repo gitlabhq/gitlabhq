@@ -3,7 +3,7 @@ class CreateTimelogsCe < ActiveRecord::Migration
 
   DOWNTIME = false
 
-  def change
+  def up
     unless table_exists?(:timelogs)
       create_table :timelogs do |t|
         t.integer :time_spent, null: false
@@ -16,5 +16,9 @@ class CreateTimelogsCe < ActiveRecord::Migration
       add_index :timelogs, [:trackable_type, :trackable_id]
       add_index :timelogs, :user_id
     end
+  end
+
+  def down
+    drop_table :timelogs if table_exists?(:timelogs)
   end
 end

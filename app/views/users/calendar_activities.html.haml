@@ -1,6 +1,6 @@
 %h4.prepend-top-20
   Contributions for
-  %strong #{@calendar_date.to_s(:short)}
+  %strong= @calendar_date.to_s(:short)
 
 - if @events.any?
   %ul.bordered-list
