@@ -2,9 +2,9 @@ module EE
   # Project EE mixin
   #
   # This module is intended to encapsulate EE-specific model logic
-  # and be included in the `Project` model
+  # and be prepended in the `Project` model
   module Project
-    extend ::Prependable
+    extend ActiveSupport::Concern
 
     prepended do
       scope :with_shared_runners_limit_enabled, -> { with_shared_runners.non_public_only }

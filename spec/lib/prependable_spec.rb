@@ -24,7 +24,7 @@ describe Prependable do
   end
 
   module Foo
-    extend Prependable
+    extend ActiveSupport::Concern
 
     prepended do
       def self.class_value
