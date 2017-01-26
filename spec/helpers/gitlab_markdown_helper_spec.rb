@@ -56,8 +56,7 @@ describe GitlabMarkdownHelper do
 
   describe '#link_to_gfm' do
     let(:link)    { '/commits/0a1b2c3d' }
-    let(:issues)  { create_list(:issue, 2) }
-    let(:project) { issues.first.project }
+    let(:issues)  { create_list(:issue, 2, project: project) }
 
     it 'handles references nested in links with all the text' do
       actual = helper.link_to_gfm("This should finally fix #{issues[0].to_reference} and #{issues[1].to_reference} for real", link)
