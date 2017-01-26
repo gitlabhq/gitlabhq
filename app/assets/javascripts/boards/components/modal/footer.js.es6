@@ -32,8 +32,7 @@
         gl.boardService.addMultipleIssues(list, issueIds);
 
         // Add the issues on the frontend
-        issueIds.forEach((id) => {
-          const issue = this.issues.filter(fIssue => fIssue.id === id)[0];
+        this.selectedIssues.forEach((issue) => {
           list.addIssue(issue);
           list.issuesSize += 1;
         });
@@ -54,7 +53,7 @@
             @click="addIssues">
             {{ submitText }}
           </button>
-          <span class="add-issues-footer-to-list">
+          <span class="inline add-issues-footer-to-list">
             to list
           </span>
           <lists-dropdown></lists-dropdown>

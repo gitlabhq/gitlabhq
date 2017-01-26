@@ -9,11 +9,6 @@
     data() {
       return ModalStore.store;
     },
-    methods: {
-      changeTab(tab) {
-        this.activeTab = tab;
-      },
-    },
     computed: {
       selectedCount() {
         return ModalStore.selectedCount();
@@ -23,13 +18,13 @@
       this.activeTab = 'all';
     },
     template: `
-      <div class="top-area">
+      <div class="top-area prepend-top-10">
         <ul class="nav-links issues-state-filters">
           <li :class="{ 'active': activeTab == 'all' }">
             <a
               href="#"
               role="button"
-              @click.prevent="changeTab('all')">
+              @click.prevent="activeTab = 'all'">
               <span>All issues</span>
               <span class="badge">
                 {{ issues.length }}
@@ -40,7 +35,7 @@
             <a
               href="#"
               role="button"
-              @click.prevent="changeTab('selected')">
+              @click.prevent="activeTab = 'selected'">
               <span>Selected issues</span>
               <span class="badge">
                 {{ selectedCount }}

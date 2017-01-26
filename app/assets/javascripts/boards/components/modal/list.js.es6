@@ -64,32 +64,30 @@
       'issue-card-inner': gl.issueBoards.IssueCardInner,
     },
     template: `
-      <section class="add-issues-list">
+      <div
+        class="add-issues-list add-issues-list-columns"
+        ref="list"
+        v-show="!loading">
         <div
-          class="add-issues-list-columns list-unstyled"
-          ref="list"
-          v-show="!loading">
+          v-for="issue in loopIssues"
+          v-if="showIssue(issue)"
+          class="card-parent">
           <div
-            v-for="issue in loopIssues"
-            v-if="showIssue(issue)"
-            class="card-parent">
-            <div
-              class="card"
-              :class="{ 'is-active': issue.selected }"
-              @click="toggleIssue(issue)">
-              <issue-card-inner
-                :issue="issue"
-                :issue-link-base="'/'">
-              </issue-card-inner>
-              <span
-                v-if="issue.selected"
-                class="issue-card-selected">
-                <i class="fa fa-check"></i>
-              </span>
-            </div>
+            class="card"
+            :class="{ 'is-active': issue.selected }"
+            @click="toggleIssue(issue)">
+            <issue-card-inner
+              :issue="issue"
+              :issue-link-base="'/'">
+            </issue-card-inner>
+            <span
+              v-if="issue.selected"
+              class="issue-card-selected text-center">
+              <i class="fa fa-check"></i>
+            </span>
           </div>
         </div>
-      </section>
+      </div>
     `,
   });
 })();

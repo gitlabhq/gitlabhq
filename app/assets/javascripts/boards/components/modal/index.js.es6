@@ -16,14 +16,16 @@
       searchTerm() {
         this.searchOperation();
       },
-    },
-    mounted() {
-      this.loading = true;
+      showAddIssuesModal() {
+        if (this.showAddIssuesModal && !this.issues.length) {
+          this.loading = true;
 
-      this.loadIssues()
-        .then(() => {
-          this.loading = false;
-        });
+          this.loadIssues()
+            .then(() => {
+              this.loading = false;
+            });
+        }
+      },
     },
     methods: {
       searchOperation: _.debounce(function() {
@@ -59,7 +61,7 @@
           <modal-header></modal-header>
           <modal-list v-if="!loading"></modal-list>
           <section
-            class="add-issues-list"
+            class="add-issues-list text-center"
             v-if="loading">
             <div class="add-issues-list-loading">
               <i class="fa fa-spinner fa-spin"></i>

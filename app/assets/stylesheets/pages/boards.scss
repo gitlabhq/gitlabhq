@@ -358,7 +358,6 @@
 
 .add-issues-modal {
   display: flex;
-  align-items: center;
   position: fixed;
   top: 0;
   right: 0;
@@ -374,8 +373,7 @@
   width: 90vw;
   height: 85vh;
   min-height: 500px;
-  margin-left: auto;
-  margin-right: auto;
+  margin: auto;
   padding: 25px 15px 0;
   background-color: $white-light;
   border-radius: $border-radius-default;
@@ -391,57 +389,19 @@
     margin: 0;
     font-size: 18px;
   }
-
-  .top-area {
-    margin-bottom: 10px;
-  }
 }
 
 .add-issues-search {
   display: flex;
-  margin-bottom: 10px;
-  margin-top: 10px;
-
-  .btn {
-    margin-left: 10px;
-  }
 }
 
 .add-issues-list {
   display: flex;
   flex: 1;
+  padding-top: 3px;
   margin-left: -$gl-vert-padding;
   margin-right: -$gl-vert-padding;
   overflow-y: scroll;
-}
-
-.add-issues-list-loading {
-  align-self: center;
-  width: 100%;
-  padding-left: $gl-vert-padding;
-  padding-right: $gl-vert-padding;
-  font-size: 35px;
-  text-align: center;
-}
-
-.add-issues-footer {
-  margin-top: auto;
-  margin-left: -15px;
-  margin-right: -15px;
-  padding-left: 15px;
-  padding-right: 15px;
-}
-
-.add-issues-footer-to-list {
-  display: inline-block;
-  padding-left: 6px;
-  padding-right: 6px;
-  line-height: 34px;
-}
-
-.add-issues-list-columns {
-  width: 100%;
-  padding-top: 3px;
 
   .card-parent {
     width: 100%;
@@ -462,9 +422,26 @@
   }
 }
 
-.all-issues-selected-empty {
+.add-issues-list-loading {
   align-self: center;
-  margin-bottom: 0;
+  width: 100%;
+  padding-left: $gl-vert-padding;
+  padding-right: $gl-vert-padding;
+  font-size: 35px;
+}
+
+.add-issues-footer {
+  margin-top: auto;
+  margin-left: -15px;
+  margin-right: -15px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.add-issues-footer-to-list {
+  padding-left: $gl-vert-padding;
+  padding-right: $gl-vert-padding;
+  line-height: 34px;
 }
 
 .issue-card-selected {
@@ -472,11 +449,9 @@
   right: -3px;
   top: -3px;
   width: 20px;
-  height: 20px;
   background-color: $blue-dark;
   color: $white-light;
   font-size: 12px;
-  text-align: center;
   line-height: 20px;
   border-radius: 50%;
 }
