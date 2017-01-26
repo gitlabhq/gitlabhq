@@ -1,6 +1,6 @@
 - content_for :header do
   %h1{ style: "background: #38CF5B; color: #FFF; font: normal 20px Helvetica, Arial, sans-serif; margin: 0; padding: 5px 10px; line-height: 32px; font-size: 16px;" }
-    GitLab (build successful)
+    GitLab (job successful)
 
 %h3
   Project:
@@ -21,4 +21,4 @@
   Message: #{@build.pipeline.git_commit_message}
 
 %p
-  Build details: #{link_to "Build #{@build.id}", namespace_project_build_url(@build.project.namespace, @build.project, @build)}
+  Job details: #{link_to "Job #{@build.id}", namespace_project_build_url(@build.project.namespace, @build.project, @build)}

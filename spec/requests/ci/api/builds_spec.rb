@@ -288,7 +288,7 @@ describe Ci::API::Builds do
         expect(build.reload.trace).to eq 'BUILD TRACE'
       end
 
-      context 'build has been erased' do
+      context 'job has been erased' do
         let(:build) { create(:ci_build, runner_id: runner.id, erased_at: Time.now) }
 
         it 'responds with forbidden' do
