@@ -378,6 +378,18 @@
   background-color: $white-light;
   border-radius: $border-radius-default;
   box-shadow: 0 2px 12px rgba($black, .5);
+
+  .empty-state {
+    display: flex;
+    flex: 1;
+    margin-top: 0;
+
+    > .row {
+      width: 100%;
+      margin-top: auto;
+      margin-bottom: auto;
+    }
+  }
 }
 
 .add-issues-header {

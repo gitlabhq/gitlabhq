@@ -26,4 +26,5 @@
       ":issue-link-base" => "issueLinkBase",
       ":key" => "_uid" }
   = render "projects/boards/components/sidebar"
-  %board-add-issues-modal
+  %board-add-issues-modal{ "blank-state-image" => render('shared/empty_states/icons/issues.svg'),
+    "new-issue-path" => new_namespace_project_issue_path(@project.namespace, @project) }

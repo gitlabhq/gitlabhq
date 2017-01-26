@@ -66,8 +66,7 @@
     template: `
       <div
         class="add-issues-list add-issues-list-columns"
-        ref="list"
-        v-show="!loading">
+        ref="list">
         <div
           v-for="issue in loopIssues"
           v-if="showIssue(issue)"

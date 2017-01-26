@@ -18,7 +18,7 @@
       this.activeTab = 'all';
     },
     template: `
-      <div class="top-area prepend-top-10">
+      <div class="top-area prepend-top-10 append-bottom-10">
         <ul class="nav-links issues-state-filters">
           <li :class="{ 'active': activeTab == 'all' }">
             <a

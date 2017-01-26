@@ -44,7 +44,8 @@
       'lists-dropdown': gl.issueBoards.ModalFooterListsDropdown,
     },
     template: `
-      <footer class="form-actions add-issues-footer">
+      <footer
+        class="form-actions add-issues-footer">
         <div class="pull-left">
           <button
             class="btn btn-success"

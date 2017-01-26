@@ -2,6 +2,7 @@
 //= require ./header
 //= require ./list
 //= require ./footer
+//= require ./empty_state
 (() => {
   const ModalStore = gl.issueBoards.ModalStore;
 
@@ -9,6 +10,9 @@
   window.gl.issueBoards = window.gl.issueBoards || {};
 
   gl.issueBoards.IssuesModal = Vue.extend({
+    props: [
+      'blankStateImage', 'newIssuePath',
+    ],
     data() {
       return ModalStore.store;
     },
@@ -48,10 +52,20 @@
         });
       },
     },
+    computed: {
+      showList() {
+        if (this.activeTab === 'selected') {
+          return this.selectedIssues.length > 0;
+        }
+
+        return this.issues.length > 0;
+      },
+    },
     components: {
       'modal-header': gl.issueBoards.IssuesModalHeader,
       'modal-list': gl.issueBoards.ModalList,
       'modal-footer': gl.issueBoards.ModalFooter,
+      'empty-state': gl.issueBoards.ModalEmptyState,
     },
     template: `
       <div
@@ -59,7 +73,11 @@
         v-if="showAddIssuesModal">
         <div class="add-issues-container">
           <modal-header></modal-header>
-          <modal-list v-if="!loading"></modal-list>
+          <modal-list v-if="!loading && showList"></modal-list>
+          <empty-state
+            v-if="(!loading && issues.length === 0) || (activeTab === 'selected' && selectedIssues.length === 0)"
+            :image="blankStateImage"
+            :new-issue-path="newIssuePath"></empty-state>
           <section
             class="add-issues-list text-center"
             v-if="loading">
