@@ -74,8 +74,9 @@
       // If not done this way, the line number anchor will sometimes keep its
       // active state even when the event is cancelled, resulting in an ugly border
       // around the link and/or a persisted underline text decoration.
-      return $('#blob-content-holder').on('click', 'a[data-line-number]', function(event) {
-        return event.preventDefault();
+      $('#blob-content-holder').on('click', 'a[data-line-number]', function(event) {
+        event.preventDefault();
+        event.stopPropagation();
       });
     };
 
