@@ -107,8 +107,6 @@ class GitOperationService
   end
 
   def with_hooks(ref, newrev, oldrev)
-    result = nil
-
     GitHooksService.new.execute(
       user,
       repository.path_to_repo,
@@ -116,10 +114,8 @@ class GitOperationService
       newrev,
       ref) do |service|
 
-      result = yield(service) if block_given?
+      yield(service)
     end
-
-    result
   end
 
   def update_ref(ref, newrev, oldrev)
