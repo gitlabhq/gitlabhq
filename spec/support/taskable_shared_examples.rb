@@ -72,6 +72,25 @@ shared_examples 'a Taskable' do
     end
   end
 
+  describe 'with tasks that are not formatted correctly' do
+    before do
+      subject.description = <<-EOT.strip_heredoc
+        [ ] task 1
+        [ ] task 2
+
+        - [ ]task 1
+        -[ ] task 2
+      EOT
+    end
+
+    it 'returns the correct task status' do
+      expect(subject.task_status).to match('0 of')
+      expect(subject.task_status).to match('0 tasks completed')
+      expect(subject.task_status_short).to match('0/')
+      expect(subject.task_status_short).to match('0 task')
+    end
+  end
+
   describe 'with a complete task' do
     before do
       subject.description = <<-EOT.strip_heredoc
