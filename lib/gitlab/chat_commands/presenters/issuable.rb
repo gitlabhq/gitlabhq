@@ -1,9 +1,7 @@
 module Gitlab
   module ChatCommands
     module Presenters
-      class Issuable < Presenters::Base
-        private
-
+      module Issuable
         def color(issuable)
           issuable.open? ? '#38ae67' : '#d22852'
         end

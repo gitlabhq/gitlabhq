@@ -13,7 +13,7 @@ module Gitlab
         issue = find_by_iid(match[:iid])
 
         if issue
-          Gitlab::ChatCommands::Presenters::ShowIssue.new(issue).present
+          Gitlab::ChatCommands::Presenters::IssueShow.new(issue).present
         else
           Gitlab::ChatCommands::Presenters::Access.new.not_found
         end

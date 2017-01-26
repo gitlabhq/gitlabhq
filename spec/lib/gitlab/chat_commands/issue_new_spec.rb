@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::ChatCommands::IssueCreate, service: true do
+describe Gitlab::ChatCommands::IssueNew, service: true do
   describe '#execute' do
     let(:project) { create(:empty_project) }
     let(:user) { create(:user) }

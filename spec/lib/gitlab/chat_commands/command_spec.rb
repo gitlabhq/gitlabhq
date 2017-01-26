@@ -94,7 +94,7 @@ describe Gitlab::ChatCommands::Command, service: true do
     context 'IssueCreate is triggered' do
       let(:params) { { text: 'issue create my title' } }
 
-      it { is_expected.to eq(Gitlab::ChatCommands::IssueCreate) }
+      it { is_expected.to eq(Gitlab::ChatCommands::IssueNew) }
     end
 
     context 'IssueSearch is triggered' do

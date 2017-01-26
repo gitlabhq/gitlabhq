@@ -3,7 +3,7 @@ module Gitlab
     class Command < BaseCommand
       COMMANDS = [
         Gitlab::ChatCommands::IssueShow,
-        Gitlab::ChatCommands::IssueCreate,
+        Gitlab::ChatCommands::IssueNew,
         Gitlab::ChatCommands::IssueSearch,
         Gitlab::ChatCommands::Deploy,
       ].freeze

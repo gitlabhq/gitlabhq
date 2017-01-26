@@ -15,14 +15,6 @@ module Gitlab
         def too_many_actions
           ephemeral_response(text: "Too many actions defined")
         end
-
-        private
-
-        def resource_url
-          polymorphic_url(
-            [ @resource.project.namespace.becomes(Namespace), @resource.project, @resource]
-          )
-        end
       end
     end
   end

@@ -1,14 +1,16 @@
 module Gitlab
   module ChatCommands
     module Presenters
-      class NewIssue < Presenters::Issuable
+      class IssueNew < Presenters::Base
+        include Presenters::Issuable
+
         def present
-          in_channel_response(show_issue)
+          in_channel_response(new_issue)
         end
 
         private
 
-        def show_issue
+        def new_issue 
           {
             attachments: [
               {
@@ -31,6 +33,10 @@ module Gitlab
 
         def pretext
           "I opened an issue on behalf on #{author_profile_link}: *#{@resource.to_reference}* from #{project.name_with_namespace}"
+        end
+
+        def project_link
+          "[#{project.name_with_namespace}](#{url_for(project)})"
         end
 
         def author_profile_link
