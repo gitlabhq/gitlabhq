@@ -6,6 +6,4 @@
     = custom_icon(status.icon)
     = status.text
 - else
-  %span{ class: css_classes }
-    = custom_icon(status.icon)
-    = status.text
+  = render "ci/status/badge", status: status

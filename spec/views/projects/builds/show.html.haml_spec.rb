@@ -28,6 +28,10 @@ describe 'projects/builds/show', :view do
       expect(rendered).to have_css('.ci-status.ci-success', text: 'passed')
     end
 
+    it 'does not render a link to the build' do
+      expect(rendered).not_to have_link('passed')
+    end
+
     it 'shows build id' do
       expect(rendered).to have_css('.js-build-id', text: build.id)
     end
