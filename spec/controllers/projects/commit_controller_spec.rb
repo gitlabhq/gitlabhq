@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Projects::CommitController do
-  let(:project)  { create(:project) }
+  let(:project)  { create(:project, :repository) }
   let(:user)     { create(:user) }
   let(:commit)   { project.commit("master") }
   let(:pipeline) { create(:ci_pipeline, project: project, commit: commit) }

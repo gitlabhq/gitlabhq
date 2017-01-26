@@ -41,7 +41,7 @@ describe UploadsController do
     end
 
     context "when viewing a project avatar" do
-      let!(:project) { create(:project, avatar: fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "image/png")) }
+      let!(:project) { create(:empty_project, avatar: fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "image/png")) }
 
       context "when the project is public" do
         before do

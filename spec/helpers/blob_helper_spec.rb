@@ -70,7 +70,7 @@ describe BlobHelper do
 
   describe "#edit_blob_link" do
     let(:namespace) { create(:namespace, name: 'gitlab' )}
-    let(:project) { create(:project, namespace: namespace) }
+    let(:project) { create(:project, :repository, namespace: namespace) }
 
     before do
       allow(self).to receive(:current_user).and_return(double)

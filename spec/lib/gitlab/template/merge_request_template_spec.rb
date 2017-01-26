@@ -7,6 +7,7 @@ describe Gitlab::Template::MergeRequestTemplate do
 
   let(:project) do
     create(:project,
+      :repository,
       create_template: {
         user: user,
         access: Gitlab::Access::MASTER,

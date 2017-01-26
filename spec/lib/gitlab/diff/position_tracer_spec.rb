@@ -51,7 +51,7 @@ describe Gitlab::Diff::PositionTracer, lib: true do
 
   include RepoHelpers
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:current_user) { project.owner }
   let(:repository) { project.repository }
   let(:file_name) { "test-file" }

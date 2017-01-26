@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::GitAccess, lib: true do
   let(:access) { Gitlab::GitAccess.new(actor, project, 'web', authentication_abilities: authentication_abilities) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:actor) { user }
   let(:authentication_abilities) do
@@ -88,7 +88,7 @@ describe Gitlab::GitAccess, lib: true do
       end
 
       context 'when project is public' do
-        let(:public_project) { create(:project, :public) }
+        let(:public_project) { create(:project, :public, :repository) }
         let(:guest_access) { Gitlab::GitAccess.new(nil, public_project, 'web', authentication_abilities: []) }
         subject { guest_access.check('git-upload-pack', '_any') }
 
@@ -124,19 +124,19 @@ describe Gitlab::GitAccess, lib: true do
 
         context 'when unauthorized' do
           context 'from public project' do
-            let(:project) { create(:project, :public) }
+            let(:project) { create(:project, :public, :repository) }
 
             it { expect(subject).to be_allowed }
           end
 
           context 'from internal project' do
-            let(:project) { create(:project, :internal) }
+            let(:project) { create(:project, :internal, :repository) }
 
             it { expect(subject).not_to be_allowed }
           end
 
           context 'from private project' do
-            let(:project) { create(:project, :private) }
+            let(:project) { create(:project, :private, :repository) }
 
             it { expect(subject).not_to be_allowed }
           end
@@ -148,7 +148,7 @@ describe Gitlab::GitAccess, lib: true do
       let(:authentication_abilities) { build_authentication_abilities }
 
       describe 'owner' do
-        let(:project) { create(:project, namespace: user.namespace) }
+        let(:project) { create(:project, :repository, namespace: user.namespace) }
 
         context 'pull code' do
           it { expect(subject).to be_allowed }
@@ -370,19 +370,19 @@ describe Gitlab::GitAccess, lib: true do
 
     context 'when unauthorized' do
       context 'to public project' do
-        let(:project) { create(:project, :public) }
+        let(:project) { create(:project, :public, :repository) }
 
         it { expect(subject).not_to be_allowed }
       end
 
       context 'to internal project' do
-        let(:project) { create(:project, :internal) }
+        let(:project) { create(:project, :internal, :repository) }
 
         it { expect(subject).not_to be_allowed }
       end
 
       context 'to private project' do
-        let(:project) { create(:project) }
+        let(:project) { create(:project, :private, :repository) }
 
         it { expect(subject).not_to be_allowed }
       end

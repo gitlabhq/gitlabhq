@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :file_uploader do
-    project
+    project factory: :empty_project
     secret nil
 
     transient do

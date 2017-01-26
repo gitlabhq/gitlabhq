@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Projects::TemplatesController do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:file_path_1) { '.gitlab/issue_templates/bug.md' }
