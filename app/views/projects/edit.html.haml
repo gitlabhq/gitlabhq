@@ -6,6 +6,7 @@
     .col-lg-9
       .project-edit-errors
       = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "edit-project" }, authenticity_token: true do |f|
+        = form_errors(@project)
         %fieldset.append-bottom-0
           .row
             .form-group.col-md-9
