@@ -10,7 +10,7 @@ describe Gitlab::Email::Handler::UnsubscribeHandler, lib: true do
   end
 
   let(:email_raw) { fixture_file('emails/valid_reply.eml').gsub(mail_key, "#{mail_key}+unsubscribe") }
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:empty_project, :public) }
   let(:user) { create(:user) }
   let(:noteable) { create(:issue, project: project) }
 

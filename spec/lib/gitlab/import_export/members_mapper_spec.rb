@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Gitlab::ImportExport::MembersMapper, services: true do
   describe 'map members' do
     let(:user) { create(:admin, authorized_projects_populated: true) }
-    let(:project) { create(:project, :public, name: 'searchable_project') }
+    let(:project) { create(:empty_project, :public, name: 'searchable_project') }
     let(:user2) { create(:user, authorized_projects_populated: true) }
     let(:exported_user_id) { 99 }
     let(:exported_members) do

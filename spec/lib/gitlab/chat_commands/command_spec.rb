@@ -11,7 +11,7 @@ describe Gitlab::ChatCommands::Command, service: true do
 
     context 'when no command is available' do
       let(:params) { { text: 'issue show 1' } }
-      let(:project) { create(:project, has_external_issue_tracker: true) }
+      let(:project) { create(:empty_project, has_external_issue_tracker: true) }
 
       it 'displays 404 messages' do
         expect(subject[:response_type]).to be(:ephemeral)

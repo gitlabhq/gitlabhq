@@ -11,7 +11,7 @@ describe Gitlab::Email::Handler::CreateNoteHandler, lib: true do
   end
 
   let(:email_raw) { fixture_file('emails/valid_reply.eml') }
-  let(:project)   { create(:project, :public) }
+  let(:project)   { create(:project, :public, :repository) }
   let(:user)      { create(:user) }
   let(:note)      { create(:diff_note_on_merge_request, project: project) }
   let(:noteable)  { note.noteable }

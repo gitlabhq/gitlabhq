@@ -52,7 +52,7 @@ describe Gitlab::BitbucketImport::Importer, lib: true do
 
   let(:project) do
     create(
-      :project,
+      :empty_project,
       import_source: project_identifier,
       import_data: ProjectImportData.new(credentials: data)
     )

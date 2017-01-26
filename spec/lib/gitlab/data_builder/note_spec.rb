@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::DataBuilder::Note, lib: true do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:data) { described_class.build(note, user) }
   let(:fixed_time) { Time.at(1425600000) } # Avoid time precision errors
