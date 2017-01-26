@@ -37,7 +37,7 @@ class Projects::BoardsController < Projects::ApplicationController
 
     render json: @issues.as_json(
       labels: true,
-      only: [:iid, :title, :confidential, :due_date],
+      only: [:id, :iid, :title, :confidential, :due_date],
       include: {
         assignee: { only: [:id, :name, :username], methods: [:avatar_url] },
         milestone: { only: [:id, :title] }

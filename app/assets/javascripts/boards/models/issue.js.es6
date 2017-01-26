@@ -6,6 +6,7 @@
 
 class ListIssue {
   constructor (obj) {
+    this._id = obj.id;
     this.id = obj.iid;
     this.title = obj.title;
     this.confidential = obj.confidential;

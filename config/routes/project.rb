@@ -274,7 +274,6 @@ constraints(ProjectUrlConstrainer.new) do
           resources :lists, only: [:index, :create, :update, :destroy] do
             collection do
               post :generate
-              post :multiple
             end
 
             resources :issues, only: [:index, :create]

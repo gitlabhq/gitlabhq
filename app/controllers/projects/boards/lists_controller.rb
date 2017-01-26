@@ -50,10 +50,6 @@ module Projects
         end
       end
 
-      def multiple
-        head :ok
-      end
-
       private
 
       def authorize_admin_list!

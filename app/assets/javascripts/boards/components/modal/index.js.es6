@@ -9,7 +9,7 @@
 
   gl.issueBoards.IssuesModal = Vue.extend({
     props: [
-      'blankStateImage', 'newIssuePath',
+      'blankStateImage', 'newIssuePath', 'bulkUpdatePath',
     ],
     data() {
       return ModalStore.store;
@@ -86,7 +86,7 @@
               <i class="fa fa-spinner fa-spin"></i>
             </div>
           </section>
-          <modal-footer></modal-footer>
+          <modal-footer :bulk-update-path="bulkUpdatePath"></modal-footer>
         </div>
       </div>
     `,
