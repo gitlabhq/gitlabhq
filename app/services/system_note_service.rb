@@ -118,16 +118,18 @@ module SystemNoteService
   #
   # Example Note text:
   #
-  #   "Changed estimate of this issue to 3d 5h"
+  #   "removed time estimate on this issue"
+  #
+  #   "changed time estimate of this issue to 3d 5h"
   #
   # Returns the created Note object
 
   def change_time_estimate(noteable, project, author)
     parsed_time = Gitlab::TimeTrackingFormatter.output(noteable.time_estimate)
     body = if noteable.time_estimate == 0
-             "Removed time estimate on this #{noteable.human_class_name}"
+             "removed time estimate on this #{noteable.human_class_name}"
            else
-             "Changed time estimate of this #{noteable.human_class_name} to #{parsed_time}"
+             "changed time estimate of this #{noteable.human_class_name} to #{parsed_time}"
            end
 
     create_note(noteable: noteable, project: project, author: author, note: body)
@@ -142,7 +144,9 @@ module SystemNoteService
   #
   # Example Note text:
   #
-  #   "Added 2h 30m of time spent on this issue"
+  #   "removed time spent on this issue"
+  #
+  #   "added 2h 30m of time spent on this issue"
   #
   # Returns the created Note object
 
@@ -150,10 +154,10 @@ module SystemNoteService
     time_spent = noteable.time_spent
 
     if time_spent == :reset
-      body = "Removed time spent on this #{noteable.human_class_name}"
+      body = "removed time spent on this #{noteable.human_class_name}"
     else
       parsed_time = Gitlab::TimeTrackingFormatter.output(time_spent.abs)
-      action = time_spent > 0 ? 'Added' : 'Subtracted'
+      action = time_spent > 0 ? 'added' : 'subtracted'
       body = "#{action} #{parsed_time} of time spent on this #{noteable.human_class_name}"
     end
 
@@ -221,7 +225,7 @@ module SystemNoteService
   end
 
   def discussion_continued_in_issue(discussion, project, author, issue)
-    body = "Added #{issue.to_reference} to continue this discussion"
+    body = "created #{issue.to_reference} to continue this discussion"
     note_attributes = discussion.reply_attributes.merge(project: project, author: author, note: body)
     note_attributes[:type] = note_attributes.delete(:note_type)
 
@@ -260,7 +264,7 @@ module SystemNoteService
   #
   # Example Note text:
   #
-  # "made the issue confidential"
+  #   "made the issue confidential"
   #
   # Returns the created Note object
   def change_issue_confidentiality(issue, project, author)
