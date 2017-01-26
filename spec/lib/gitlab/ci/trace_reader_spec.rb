@@ -11,25 +11,13 @@ describe Gitlab::Ci::TraceReader do
       last_lines = random_lines
 
       expected = lines.last(last_lines).join
-      result = subject.read(last_lines: last_lines)
 
-      expect(result).to eq(expected)
-      expect(result.encoding).to eq(Encoding.default_external)
+      expect(subject.read(last_lines: last_lines)).to eq(expected)
     end
   end
 
   it 'returns everything if trying to get too many lines' do
-    result = build_subject.read(last_lines: lines.size * 2)
-
-    expect(result).to eq(lines.join)
-    expect(result.encoding).to eq(Encoding.default_external)
-  end
-
-  it 'returns all contents if last_lines is not specified' do
-    result = build_subject.read
-
-    expect(result).to eq(lines.join)
-    expect(result.encoding).to eq(Encoding.default_external)
+    expect(build_subject.read(last_lines: lines.size * 2)).to eq(lines.join)
   end
 
   it 'raises an error if not passing an integer for last_lines' do

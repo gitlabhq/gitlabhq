@@ -42,7 +42,6 @@ module Gitlab
           end
 
           chunks.join.lines.last(max_lines).join
-            .force_encoding(Encoding.default_external)
         end
       end
     end
