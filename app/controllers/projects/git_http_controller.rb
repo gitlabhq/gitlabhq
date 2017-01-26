@@ -105,12 +105,11 @@ class Projects::GitHttpController < Projects::GitHttpClientController
     access_check.allowed?
   end
 
-<<<<<<< HEAD
   def log_user_activity
     Users::ActivityService.new(user, 'pull').execute
-=======
+  end
+
   def access_klass
     @access_klass ||= wiki? ? Gitlab::GitAccessWiki : Gitlab::GitAccess
->>>>>>> ce/master
   end
 end

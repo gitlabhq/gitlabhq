@@ -427,7 +427,6 @@ entry.
 - Speed up group milestone index by passing group_id to IssuesFinder. !8363
 - Ensure issuable state changes only fire webhooks once.
 
-<<<<<<< HEAD
 ## 8.14.7 (2017-01-21)
 
 - Ensure export files are removed after a namespace is deleted.
@@ -436,8 +435,6 @@ entry.
 - Prevent users from deleting system deploy keys via the project deploy key API.
 - Upgrade omniauth gem to 1.3.2.
 
-=======
->>>>>>> ce/master
 ## 8.14.6 (2017-01-10)
 
 - Update the gitlab-markup gem to the version 1.5.1. !8509

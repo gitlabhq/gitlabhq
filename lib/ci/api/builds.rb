@@ -24,11 +24,7 @@ module Ci
 
           new_update = current_runner.ensure_runner_queue_value
 
-<<<<<<< HEAD
-          build = Ci::RegisterBuildService.new(current_runner).execute
-=======
           result = Ci::RegisterBuildService.new(current_runner).execute
->>>>>>> ce/master
 
           if result.valid?
             if result.build
