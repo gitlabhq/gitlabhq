@@ -19,7 +19,6 @@
 /* global UsersSelect */
 /* global GroupAvatar */
 /* global LineHighlighter */
-/* global ShortcutsBlob */
 /* global ProjectFork */
 /* global BuildArtifacts */
 /* global GroupsSelect */
@@ -35,6 +34,8 @@
 /* global ProjectShow */
 /* global Labels */
 /* global Shortcuts */
+
+const ShortcutsBlob = require('./shortcuts_blob');
 
 (function() {
   var Dispatcher;
@@ -225,7 +226,12 @@
         case 'projects:blame:show':
           new LineHighlighter();
           shortcut_handler = new ShortcutsNavigation();
-          new ShortcutsBlob(true);
+          const fileBlobPermalinkUrlElement = document.querySelector('.js-data-file-blob-permalink-url');
+          const fileBlobPermalinkUrl = fileBlobPermalinkUrlElement && fileBlobPermalinkUrlElement.getAttribute('href');
+          new ShortcutsBlob({
+            skipResetBindings: true,
+            fileBlobPermalinkUrl,
+          });
           break;
         case 'groups:labels:new':
         case 'groups:labels:edit':
