@@ -101,7 +101,6 @@ module CreatesCommit
   def set_commit_variables
     if can?(current_user, :push_code, @project)
       # Edit file in this project
-      @tree_edit_project = @project
       @mr_source_project = @project
 
       if @project.forked?
@@ -114,10 +113,8 @@ module CreatesCommit
         @mr_target_branch = @ref || @target_branch
       end
     else
-      # Edit file in fork
-      @tree_edit_project = current_user.fork_of(@project)
       # Merge request from fork to this project
-      @mr_source_project = @tree_edit_project
+      @mr_source_project = current_user.fork_of(@project)
       @mr_target_project = @project
       @mr_target_branch = @ref || @target_branch
     end
