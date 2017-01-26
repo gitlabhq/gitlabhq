@@ -3,7 +3,7 @@ require 'spec_helper'
 describe API::CommitStatuses, api: true do
   include ApiHelpers
 
-  let!(:project) { create(:project) }
+  let!(:project) { create(:project, :repository) }
   let(:commit) { project.repository.commit }
   let(:commit_status) { create(:commit_status, pipeline: pipeline) }
   let(:guest) { create_user(:guest) }

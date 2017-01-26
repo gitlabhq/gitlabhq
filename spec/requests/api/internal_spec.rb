@@ -4,7 +4,7 @@ describe API::Internal, api: true  do
   include ApiHelpers
   let(:user) { create(:user) }
   let(:key) { create(:key, user: user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:secret_token) { Gitlab::Shell.secret_token }
 
   describe "GET /internal/check", no_db: true do
