@@ -85,7 +85,7 @@
         },
         success: (data) => {
           $target.remove();
-          $('.prepend-top-default').html('<div class="nothing-here-block">You\'re all done!</div>');
+          $('.js-todos-all').html('<div class="nothing-here-block">You\'re all done!</div>');
           return this.updateBadges(data);
         }
       });
