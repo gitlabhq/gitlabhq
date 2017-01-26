@@ -218,6 +218,9 @@ class ApplicationSetting < ActiveRecord::Base
 
   def self.expire
     Rails.cache.delete(CACHE_KEY)
+  rescue
+    # Gracefully handle when Redis is not available. For example,
+    # omnibus may fail here during assets:precompile.
   end
 
   def self.cached
