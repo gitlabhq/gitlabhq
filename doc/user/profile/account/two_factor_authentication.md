@@ -207,8 +207,12 @@ after the administrator disables it.
 
 ## Note to GitLab administrators
 
-You need to take special care to that 2FA keeps working after
-[restoring a GitLab backup](../../../raketasks/backup_restore.md).
+- You need to take special care to that 2FA keeps working after
+[restoring a GitLab backup](../raketasks/backup_restore.md).
+
+- To ensure 2FA authorizes correctly with TOTP server, you may want to ensure
+your GitLab server's time is synchronized via a service like NTP.  Otherwise,
+you may have cases where authorization always fails because of time differences.
 
 [Google Authenticator]: https://support.google.com/accounts/answer/1066447?hl=en
 [FreeOTP]: https://fedorahosted.org/freeotp/
