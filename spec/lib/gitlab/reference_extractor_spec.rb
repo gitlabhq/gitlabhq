@@ -1,9 +1,11 @@
 require 'spec_helper'
 
 describe Gitlab::ReferenceExtractor, lib: true do
-  let(:project) { create(:project) }
+  let(:project) { create(:empty_project) }
 
-  before { project.team << [project.creator, :developer] }
+  before do
+    project.team << [project.creator, :developer]
+  end
 
   subject { Gitlab::ReferenceExtractor.new(project, project.creator) }
 
@@ -78,22 +80,27 @@ describe Gitlab::ReferenceExtractor, lib: true do
   end
 
   it 'accesses valid commits' do
+    project = create(:project, :repository) { |p| p.add_developer(p.creator) }
     commit = project.commit('master')
 
-    subject.analyze("this references commits #{commit.sha[0..6]} and 012345")
-    extracted = subject.commits
+    extractor = described_class.new(project, project.creator)
+    extractor.analyze("this references commits #{commit.sha[0..6]} and 012345")
+    extracted = extractor.commits
+
     expect(extracted.size).to eq(1)
     expect(extracted[0].sha).to eq(commit.sha)
     expect(extracted[0].message).to eq(commit.message)
   end
 
   it 'accesses valid commit ranges' do
+    project = create(:project, :repository) { |p| p.add_developer(p.creator) }
     commit = project.commit('master')
     earlier_commit = project.commit('master~2')
 
-    subject.analyze("this references commits #{earlier_commit.sha[0..6]}...#{commit.sha[0..6]}")
+    extractor = described_class.new(project, project.creator)
+    extractor.analyze("this references commits #{earlier_commit.sha[0..6]}...#{commit.sha[0..6]}")
+    extracted = extractor.commit_ranges
 
-    extracted = subject.commit_ranges
     expect(extracted.size).to eq(1)
     expect(extracted.first).to be_kind_of(CommitRange)
     expect(extracted.first.commit_from).to eq earlier_commit
@@ -102,7 +109,6 @@ describe Gitlab::ReferenceExtractor, lib: true do
 
   context 'with an external issue tracker' do
     let(:project) { create(:jira_project) }
-    subject { described_class.new(project, project.creator) }
 
     it 'returns JIRA issues for a JIRA-integrated project' do
       subject.analyze('JIRA-123 and FOOBAR-4567')
@@ -112,7 +118,7 @@ describe Gitlab::ReferenceExtractor, lib: true do
   end
 
   context 'with a project with an underscore' do
-    let(:other_project) { create(:project, path: 'test_project') }
+    let(:other_project) { create(:empty_project, path: 'test_project') }
     let(:issue) { create(:issue, project: other_project) }
 
     before do

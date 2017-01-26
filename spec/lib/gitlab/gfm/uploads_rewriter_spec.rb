@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe Gitlab::Gfm::UploadsRewriter do
   let(:user) { create(:user) }
-  let(:old_project) { create(:project) }
-  let(:new_project) { create(:project) }
+  let(:old_project) { create(:empty_project) }
+  let(:new_project) { create(:empty_project) }
   let(:rewriter) { described_class.new(text, old_project, user) }
 
   context 'text contains links to uploads' do
