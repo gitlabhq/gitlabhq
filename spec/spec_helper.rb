@@ -7,7 +7,6 @@ ENV["IN_MEMORY_APPLICATION_SETTINGS"] = 'true'
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
 require 'shoulda/matchers'
-require 'sidekiq/testing/inline'
 require 'rspec/retry'
 
 if ENV['CI'] && !ENV['NO_KNAPSACK']

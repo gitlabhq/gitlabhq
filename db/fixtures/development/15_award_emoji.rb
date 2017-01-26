@@ -1,3 +1,5 @@
+require './spec/support/sidekiq'
+
 Gitlab::Seeder.quiet do
   emoji = Gitlab::AwardEmoji.emojis.keys
 
