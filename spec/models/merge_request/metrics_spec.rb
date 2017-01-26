@@ -1,9 +1,7 @@
 require 'spec_helper'
 
 describe MergeRequest::Metrics, models: true do
-  let(:project) { create(:project) }
-
-  subject { create(:merge_request, source_project: project) }
+  subject { create(:merge_request) }
 
   describe "when recording the default set of metrics on merge request save" do
     it "records the merge time" do

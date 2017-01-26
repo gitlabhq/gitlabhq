@@ -24,7 +24,7 @@ describe GemnasiumService, models: true do
 
   describe "Execute" do
     let(:user)    { create(:user) }
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
 
     before do
       @gemnasium_service = GemnasiumService.new
