@@ -118,18 +118,18 @@ module SystemNoteService
   #
   # Example Note text:
   #
-  #   "removed time estimate on this issue"
+  #   "removed time estimate"
   #
-  #   "changed time estimate of this issue to 3d 5h"
+  #   "changed time estimate to 3d 5h"
   #
   # Returns the created Note object
 
   def change_time_estimate(noteable, project, author)
     parsed_time = Gitlab::TimeTrackingFormatter.output(noteable.time_estimate)
     body = if noteable.time_estimate == 0
-             "removed time estimate on this #{noteable.human_class_name}"
+             "removed time estimate"
            else
-             "changed time estimate of this #{noteable.human_class_name} to #{parsed_time}"
+             "changed time estimate to #{parsed_time}"
            end
 
     create_note(noteable: noteable, project: project, author: author, note: body)
@@ -144,9 +144,9 @@ module SystemNoteService
   #
   # Example Note text:
   #
-  #   "removed time spent on this issue"
+  #   "removed time spent"
   #
-  #   "added 2h 30m of time spent on this issue"
+  #   "added 2h 30m of time spent"
   #
   # Returns the created Note object
 
@@ -154,11 +154,11 @@ module SystemNoteService
     time_spent = noteable.time_spent
 
     if time_spent == :reset
-      body = "removed time spent on this #{noteable.human_class_name}"
+      body = "removed time spent"
     else
       parsed_time = Gitlab::TimeTrackingFormatter.output(time_spent.abs)
       action = time_spent > 0 ? 'added' : 'subtracted'
-      body = "#{action} #{parsed_time} of time spent on this #{noteable.human_class_name}"
+      body = "#{action} #{parsed_time} of time spent"
     end
 
     create_note(noteable: noteable, project: project, author: author, note: body)
