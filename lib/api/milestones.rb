@@ -22,14 +22,18 @@ module API
       params do
         optional :state, type: String, values: %w[active closed all], default: 'all',
                          desc: 'Return "active", "closed", or "all" milestones'
-        optional :iids, type: Array[Integer], desc: 'The IIDs of the milestones'
+        optional :iid, type: Array[Integer], desc: 'The IID of the milestone'
         optional :search, type: String, desc: 'The search criteria for the title or description of the milestone'
+        optional :sort_by, type: String, values: %w[due_date start_date created_at updated_at], default: 'due_date',
+                           desc: 'Return issues ordered by `created_at` or `updated_at` fields.'
+        optional :sort_direction, type: String, values: %w[asc desc], default: 'desc',
+                                  desc: 'Return issues sorted in `asc` or `desc` order.'
         use :pagination
       end
       get ":id/milestones" do
         authorize! :read_milestone, user_project
 
-        milestones = MilestonesFinder.new.execute(user_project, declared_params(include_missing: false))
+        milestones = MilestonesFinder.new(declared_params(include_missing: false)).execute(user_project)
 
         present paginate(milestones), with: Entities::Milestone
       end
@@ -150,7 +154,7 @@ module API
       get ":id/milestones/:milestone_id/merge_requests" do
         authorize! :read_milestone, user_project
 
-        milestone = MilestonesFinder.new.execute(user_project, state: 'all').find_by(id: params[:milestone_id])
+        milestone = MilestonesFinder.new(state: 'all').execute(user_project).find_by(id: params[:milestone_id])
         not_found!('Milestone') unless milestone
 
         finder_params = {

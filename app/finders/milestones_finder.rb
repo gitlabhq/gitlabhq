@@ -1,14 +1,26 @@
 class MilestonesFinder
-  def execute(projects, params)
+
+  attr_accessor :params
+
+  def initialize(params)
+    @params = params
+  end
+
+  def execute(projects)
     milestones = Milestone.of_projects(projects)
     milestones = by_state(milestones)
     milestones = by_iid(milestones, params[:iid])
     milestones = by_search(milestones, params[:search])
+
     sort(milestones)
   end
 
   def sort(milestones)
-    milestones.reorder(due_date: :asc)
+    if params[:sort_by].present? && params[:sort_direction].present?
+      milestones.reorder(params[:sort_by] => params[:sort_direction])
+    else
+      milestones.reorder(due_date: :asc)
+    end
   end
 
   def by_state(milestones)
@@ -22,8 +34,8 @@ class MilestonesFinder
     end
   end
 
-  def by_iid(milestones, iid)
-    iid.present? ? milestones.where(iid: iid) : milestones
+  def by_iid(milestones)
+    params[:iid].present? ? milestones.where(iid: params[:iid]) : milestones
   end
 
   def by_search(milestones, search)

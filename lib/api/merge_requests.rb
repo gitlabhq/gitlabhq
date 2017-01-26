@@ -50,6 +50,8 @@ module API
 
           args[:milestone_title] = args.delete(:milestone)
           args[:label_name] = args.delete(:labels)
+          args[:sort_by] = args.delete(:order_by)
+          args[:sort_direction] = args.delete(:sort)
 
           merge_requests = MergeRequestsFinder.new(current_user, args).execute.inc_notes_with_associations
 

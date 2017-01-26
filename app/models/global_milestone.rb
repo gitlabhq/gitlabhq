@@ -11,7 +11,7 @@ class GlobalMilestone
   end
 
   def self.build_collection(projects, params)
-    child_milestones = MilestonesFinder.new.execute(projects, params)
+    child_milestones = MilestonesFinder.new(params).execute(projects)
 
     milestones = child_milestones.select(:id, :title).group_by(&:title).map do |title, grouped|
       milestones_relation = Milestone.where(id: grouped.map(&:id))
