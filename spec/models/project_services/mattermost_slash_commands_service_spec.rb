@@ -113,7 +113,7 @@ describe MattermostSlashCommandsService, :models do
         end
 
         it 'shows error messages' do
-          expect(subject).to eq([])
+          expect(subject).to eq([[], "Failed to get team list."])
         end
       end
     end

@@ -27,11 +27,11 @@ module Mattermost
     end
 
     def json_response(response)
+      json_response = JSON.parse(response.body)
+
       unless response.success?
         raise Mattermost::ClientError.new(json_response['message'] || 'Undefined error')
       end
-
-      json_response = JSON.parse(response.body)
 
       json_response
     rescue JSON::JSONError

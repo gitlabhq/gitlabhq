@@ -1,5 +1,6 @@
-= content_for :flash_message do
-  .alert.alert-danger= @teams if @teams.is_a?(String)
+- if @teams_error_message
+  = content_for :flash_message do
+    .alert.alert-danger= @teams_error_message
 
 %p
   You aren’t a member of any team on the Mattermost instance at
