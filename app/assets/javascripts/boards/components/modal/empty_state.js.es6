@@ -28,7 +28,7 @@
         }
 
         return obj;
-      }
+      },
     },
     template: `
       <div class="empty-state">

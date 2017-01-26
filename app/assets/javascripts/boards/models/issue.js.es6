@@ -13,6 +13,7 @@ class ListIssue {
     this.subscribed = obj.subscribed;
     this.labels = [];
     this.selected = false;
+    this.assignee = false;
 
     if (obj.assignee) {
       this.assignee = new ListUser(obj.assignee);

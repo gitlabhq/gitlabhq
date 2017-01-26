@@ -1,4 +1,5 @@
 /* global Vue */
+/* global ListIssue */
 //= require ./header
 //= require ./list
 //= require ./footer
@@ -32,7 +33,7 @@
       },
     },
     methods: {
-      searchOperation: _.debounce(function() {
+      searchOperation: _.debounce(function searchOperationDebounce() {
         this.loadIssues();
       }, 500),
       loadIssues() {

@@ -2,6 +2,9 @@
 (() => {
   const Store = gl.issueBoards.BoardsStore;
 
+  window.gl = window.gl || {};
+  window.gl.issueBoards = window.gl.issueBoards || {};
+
   gl.issueBoards.IssueCardInner = Vue.extend({
     props: [
       'issue', 'issueLinkBase', 'list',
@@ -57,7 +60,7 @@
             #{{issue.id}}
           </span>
           <a
-            class="has-tooltip"
+            class="card-assignee has-tooltip"
             :href="issue.assignee.username"
             :title="'Assigned to ' + issue.assignee.name"
             v-if="issue.assignee"
