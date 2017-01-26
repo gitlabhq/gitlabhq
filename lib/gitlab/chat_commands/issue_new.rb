@@ -1,6 +1,6 @@
 module Gitlab
   module ChatCommands
-    class IssueCreate < IssueCommand
+    class IssueNew < IssueCommand
       def self.match(text)
         # we can not match \n with the dot by passing the m modifier as than
         # the title and description are not seperated
@@ -21,10 +21,10 @@ module Gitlab
 
         issue = create_issue(title: title, description: description)
 
-        if issue.errors.any?
-          presenter(issue).display_errors
-        else
+        if issue.persisted?
           presenter(issue).present
+        else
+          presenter(issue).display_errors
         end
       end
 
@@ -35,7 +35,7 @@ module Gitlab
       end
 
       def presenter(issue)
-        Gitlab::ChatCommands::Presenters::NewIssue.new(issue)
+        Gitlab::ChatCommands::Presenters::IssueNew.new(issue)
       end
     end
   end

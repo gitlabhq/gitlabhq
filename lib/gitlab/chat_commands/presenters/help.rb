@@ -9,10 +9,10 @@ module Gitlab
         private
 
         def help_message(trigger)
-          if @resource.none?
-            "No commands available :thinking_face:"
-          else
+          if @resource.present?
             header_with_list("Available commands", full_commands(trigger))
+          else
+            "No commands available :thinking_face:"
           end
         end
 

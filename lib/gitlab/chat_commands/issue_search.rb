@@ -12,12 +12,10 @@ module Gitlab
       def execute(match)
         issues = collection.search(match[:query]).limit(QUERY_LIMIT)
 
-        if issues.none?
-          Presenters::Access.new(issues).not_found
-        elsif issues.one?
-          Presenters::ShowIssue.new(issues.first).present
+        if issues.present?
+          Presenters::IssueSearch.new(issues).present
         else
-          Presenters::ListIssues.new(issues).present
+          Presenters::Access.new(issues).not_found
         end
       end
     end

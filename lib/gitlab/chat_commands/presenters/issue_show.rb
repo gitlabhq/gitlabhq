@@ -1,7 +1,9 @@
 module Gitlab
   module ChatCommands
     module Presenters
-      class ShowIssue < Presenters::Issuable
+      class IssueShow < Presenters::Base
+        include Presenters::Issuable
+
         def present
           in_channel_response(show_issue)
         end
@@ -16,7 +18,7 @@ module Gitlab
                 title_link:   resource_url,
                 author_name:  author.name,
                 author_icon:  author.avatar_url,
-                fallback:     "New issue #{@resource.to_reference}: #{@resource.title}",
+                fallback:     "Issue #{@resource.to_reference}: #{@resource.title}",
                 pretext:      pretext,
                 text:         text,
                 color:        color(@resource),
