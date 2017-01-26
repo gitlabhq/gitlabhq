@@ -1,28 +1,35 @@
 module Gitlab
   module Mirror
 
-    QUARTER = 15
-    HOUR = 60
-    DAY = 1440
+    FIFTEEN = 15
+    HOURLY  = 60
+    DAYLY   = 1440
 
     class << self
-      def mirror_options
+      def sync_time_options
         {
-          "Update every 15 minutes": QUARTER,
-          "Update hourly": HOUR,
-          "Update every day": DAY,
+          "Update every 15 minutes" => FIFTEEN,
+          "Update hourly" => HOURLY,
+          "Update every day" => DAYLY,
         }
       end
 
-      def to_cron(sync_time)
-        case sync_time
-        when QUARTER
-          "*/15 * * * *"
-        when HOUR
-          "0 * * * *"
-        when DAY
-          "0 0 * * *"
-        end
+      def sync_times
+        sync_times = [FIFTEEN]
+        sync_times << DAYLY  if at_beginning_of_day?
+        sync_times << HOURLY if at_beginning_of_hour?
+
+        return sync_times
+      end
+
+      def at_beginning_of_day?
+        beginning_of_day = DateTime.now.at_beginning_of_day
+        DateTime.now >= beginning_of_day && DateTime.now <= beginning_of_day + 14.minutes
+      end
+
+      def at_beginning_of_hour?
+        beginning_of_hour = DateTime.now.at_beginning_of_hour
+        DateTime.now >= beginning_of_hour && DateTime.now <= beginning_of_hour + 14.minutes
       end
     end
   end

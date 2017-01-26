@@ -9,8 +9,8 @@ class UpdateAllMirrorsWorker
 
     fail_stuck_mirrors!
 
-    Project.mirror.find_each(batch_size: 200) do |project|
-      RepositoryUpdateMirrorDispatchWorker.perform_in(rand(30.minutes), project.id)
+    mirrors_to_sync.find_each(batch_size: 200) do |project|
+      RepositoryUpdateMirrorDispatchWorker.perform_in(rand(project.sync_time / 2), project.id)
     end
   end
 
@@ -25,6 +25,10 @@ class UpdateAllMirrorsWorker
   end
 
   private
+
+  def mirrors_to_sync
+    Project.where(mirror: true, sync_time: Gitlab::Mirror.sync_times)
+  end
 
   def try_obtain_lease
     # Using 30 minutes timeout based on the 95th percent of timings (currently max of 10 minutes)

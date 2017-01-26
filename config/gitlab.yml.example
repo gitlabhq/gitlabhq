@@ -212,7 +212,7 @@ production: &base
 
     # Update mirrored repositories
     update_all_mirrors_worker:
-      cron: "0 * * * *"
+      cron: "*/15 * * * *"
 
     # Update remote mirrors
     update_all_remote_mirrors_worker:
