@@ -22,7 +22,7 @@
               = node.primary ? icon('star fw') : icon('globe fw')
             %strong= node.url
             %p
-              %span.help-block #{node.primary ? 'Primary node' : 'Secondary node'}
+              %span.help-block= node.primary ? 'Primary node' : 'Secondary node'
 
           .pull-right
             - if Gitlab::Geo.license_allows?

@@ -4,7 +4,7 @@
   = link_to icon('question-circle'), help_page_path("user/admin_area/settings/continuous_integration", anchor: "shared-runners-build-minutes-quota"), target: '_blank'
 %p.light
   Monthly build minutes usage across shared Runners for the
-  %strong #{@group.name}
+  %strong= @group.name
   group
 
 .pipeline-quota.container-fluid
