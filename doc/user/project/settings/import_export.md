@@ -47,6 +47,7 @@ The following items will NOT be exported:
 
 - Build traces and artifacts
 - LFS objects
+- Container registry images
 
 ## Exporting a project and its data
 
