@@ -30,7 +30,7 @@ module Gitlab
     end
 
     def in_memory_application_settings
-      @in_memory_application_settings ||= ::ApplicationSetting.new(::ApplicationSetting::DEFAULTS)
+      @in_memory_application_settings ||= ::ApplicationSetting.new(::ApplicationSetting.defaults)
     # In case migrations the application_settings table is not created yet,
     # we fallback to a simple OpenStruct
     rescue ActiveRecord::StatementInvalid, ActiveRecord::UnknownAttributeError
@@ -38,7 +38,7 @@ module Gitlab
     end
 
     def fake_application_settings
-      OpenStruct.new(::ApplicationSetting::DEFAULTS)
+      OpenStruct.new(::ApplicationSetting.defaults)
     end
 
     private
