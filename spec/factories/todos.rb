@@ -28,6 +28,10 @@ FactoryGirl.define do
       action { Todo::APPROVAL_REQUIRED }
     end
 
+    trait :unmergeable do
+      action { Todo::UNMERGEABLE }
+    end
+
     trait :done do
       state :done
     end

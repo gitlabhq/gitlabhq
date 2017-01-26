@@ -13,6 +13,7 @@ FactoryGirl.define do
     factory :note_on_issue,              traits: [:on_issue], aliases: [:votable_note]
     factory :note_on_merge_request,      traits: [:on_merge_request]
     factory :note_on_project_snippet,    traits: [:on_project_snippet]
+    factory :note_on_personal_snippet,   traits: [:on_personal_snippet]
     factory :system_note,                traits: [:system]
 
     factory :legacy_diff_note_on_commit, traits: [:on_commit, :legacy_diff_note], class: LegacyDiffNote
@@ -68,6 +69,11 @@ FactoryGirl.define do
 
     trait :on_project_snippet do
       noteable { create(:project_snippet, project: project) }
+    end
+
+    trait :on_personal_snippet do
+      noteable { create(:personal_snippet) }
+      project nil
     end
 
     trait :system do

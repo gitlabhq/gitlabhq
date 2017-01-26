@@ -1,9 +1,8 @@
-/* eslint-disable padded-blocks, class-methods-use-this, no-new, func-names, prefer-template, no-unneeded-ternary, object-shorthand, space-before-function-paren, comma-dangle, quote-props, consistent-return, no-else-return, semi, no-param-reassign, max-len */
+/* eslint-disable class-methods-use-this, no-new, func-names, prefer-template, no-unneeded-ternary, object-shorthand, space-before-function-paren, comma-dangle, quote-props, consistent-return, no-else-return, no-param-reassign, max-len */
 /* global UsersSelect */
 /* global Turbolinks */
 
 ((global) => {
-
   class Todos {
     constructor({ el } = {}) {
       this.allDoneClicked = this.allDoneClicked.bind(this);
@@ -49,7 +48,7 @@
         clicked: function() {
           return $dropdown.closest('form.filter-form').submit();
         }
-      })
+      });
     }
 
     doneClicked(e) {

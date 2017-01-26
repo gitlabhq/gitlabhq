@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, space-before-function-paren, one-var, indent, radix */
+/* eslint-disable comma-dangle, space-before-function-paren, one-var */
 /* global Vue */
 /* global Sortable */
 
@@ -45,14 +45,28 @@
           const issue = this.list.findIssue(this.detailIssue.issue.id);
 
           if (issue) {
+            const offsetLeft = this.$el.offsetLeft;
             const boardsList = document.querySelectorAll('.boards-list')[0];
-            const right = (this.$el.offsetLeft + this.$el.offsetWidth) - boardsList.offsetWidth;
-            const left = boardsList.scrollLeft - this.$el.offsetLeft;
+            const left = boardsList.scrollLeft - offsetLeft;
+            let right = (offsetLeft + this.$el.offsetWidth);
+
+            if (window.innerWidth > 768 && boardsList.classList.contains('is-compact')) {
+              // -290 here because width of boardsList is animating so therefore
+              // getting the width here is incorrect
+              // 290 is the width of the sidebar
+              right -= (boardsList.offsetWidth - 290);
+            } else {
+              right -= boardsList.offsetWidth;
+            }
 
             if (right - boardsList.scrollLeft > 0) {
-              boardsList.scrollLeft = right;
+              $(boardsList).animate({
+                scrollLeft: right
+              }, this.sortableOptions.animation);
             } else if (left > 0) {
-              boardsList.scrollLeft = this.$el.offsetLeft;
+              $(boardsList).animate({
+                scrollLeft: offsetLeft
+              }, this.sortableOptions.animation);
             }
           }
         },
@@ -65,7 +79,7 @@
       }
     },
     mounted () {
-      const options = gl.issueBoards.getBoardSortableDefaultOptions({
+      this.sortableOptions = gl.issueBoards.getBoardSortableDefaultOptions({
         disabled: this.disabled,
         group: 'boards',
         draggable: '.is-draggable',
@@ -74,8 +88,8 @@
           gl.issueBoards.onEnd();
 
           if (e.newIndex !== undefined && e.oldIndex !== e.newIndex) {
-            const order = this.sortable.toArray(),
-                  list = Store.findList('id', parseInt(e.item.dataset.id));
+            const order = this.sortable.toArray();
+            const list = Store.findList('id', parseInt(e.item.dataset.id, 10));
 
             this.$nextTick(() => {
               Store.moveList(list, order);
@@ -84,7 +98,7 @@
         }
       });
 
-      this.sortable = Sortable.create(this.$el.parentNode, options);
+      this.sortable = Sortable.create(this.$el.parentNode, this.sortableOptions);
     },
   });
 })();

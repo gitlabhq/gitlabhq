@@ -7,6 +7,10 @@
 - [Feature branch workflow](workflow.md)
 - [GitLab Flow](gitlab_flow.md)
 - [Groups](groups.md)
+- Issues - The GitLab Issue Tracker is an advanced and complete tool for
+  tracking the evolution of a new idea or the process of solving a problem.
+  - [Confidential issues](../user/project/issues/confidential_issues.md)
+  - [Due date for issues](../user/project/issues/due_dates.md)
 - [Issue Board](../user/project/issue_board.md)
 - [Keyboard shortcuts](shortcuts.md)
 - [File finder](file_finder.md)
@@ -19,6 +23,7 @@
 - [Slash commands](../user/project/slash_commands.md)
 - [Sharing a project with a group](share_with_group.md)
 - [Share projects with other groups](share_projects_with_other_groups.md)
+- [Time tracking](time_tracking.md)
 - [Web Editor](../user/project/repository/web_editor.md)
 - [Releases](releases.md)
 - [Milestones](milestones.md)

@@ -25,8 +25,9 @@ class ProjectStatistics < ActiveRecord::Base
     self.commit_count = project.repository.commit_count
   end
 
+  # Repository#size needs to be converted from MB to Byte.
   def update_repository_size
-    self.repository_size = project.repository.size
+    self.repository_size = project.repository.size * 1.megabyte
   end
 
   def update_lfs_objects_size

@@ -33,10 +33,12 @@ describe CommitEntity do
 
   it 'contains path to commit' do
     expect(subject).to include(:commit_path)
+    expect(subject[:commit_path]).to include "commit/#{commit.id}"
   end
 
   it 'contains URL to commit' do
     expect(subject).to include(:commit_url)
+    expect(subject[:commit_path]).to include "commit/#{commit.id}"
   end
 
   it 'needs to receive project in the request' do
@@ -44,5 +46,9 @@ describe CommitEntity do
       .and_return(project)
 
     subject
+  end
+
+  it 'exposes gravatar url that belongs to author' do
+    expect(subject.fetch(:author_gravatar_url)).to match /gravatar/
   end
 end

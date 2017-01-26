@@ -16,10 +16,12 @@ gem 'default_value_for', '~> 3.0.0'
 gem 'mysql2', '~> 0.3.16', group: :mysql
 gem 'pg', '~> 0.18.2', group: :postgres
 
+gem 'rugged', '~> 0.24.0'
+
 # Authentication libraries
 gem 'devise',                 '~> 4.2'
 gem 'doorkeeper',             '~> 4.2.0'
-gem 'omniauth',               '~> 1.3.1'
+gem 'omniauth',               '~> 1.3.2'
 gem 'omniauth-auth0',         '~> 1.4.1'
 gem 'omniauth-azure-oauth2',  '~> 0.0.6'
 gem 'omniauth-cas3',          '~> 1.1.2'
@@ -48,10 +50,6 @@ gem 'u2f', '~> 0.2.1'
 
 # Browser detection
 gem 'browser', '~> 2.2'
-
-# Extracting information from a git repository
-# Provide access to Gitlab::Git library
-gem 'gitlab_git', '~> 10.7.0'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
@@ -86,9 +84,13 @@ gem 'dropzonejs-rails', '~> 0.7.1'
 # for backups
 gem 'fog-aws', '~> 0.9'
 gem 'fog-core', '~> 1.40'
+gem 'fog-google', '~> 0.5'
 gem 'fog-local', '~> 0.3'
 gem 'fog-openstack', '~> 0.1'
 gem 'fog-rackspace', '~> 0.1.1'
+
+# for Google storage
+gem 'google-api-client', '~> 0.8.6'
 
 # for aws storage
 gem 'unf', '~> 0.1.4'
@@ -97,18 +99,19 @@ gem 'unf', '~> 0.1.4'
 gem 'seed-fu', '~> 2.3.5'
 
 # Markdown and HTML processing
-gem 'html-pipeline',      '~> 1.11.0'
-gem 'deckar01-task_list', '1.0.6', require: 'task_list/railtie'
-gem 'gitlab-markup',      '~> 1.5.0'
-gem 'redcarpet',          '~> 3.3.3'
-gem 'RedCloth',           '~> 4.3.2'
-gem 'rdoc',               '~> 4.2'
-gem 'org-ruby',           '~> 0.9.12'
-gem 'creole',             '~> 0.5.0'
-gem 'wikicloth',          '0.8.1'
-gem 'asciidoctor',        '~> 1.5.2'
-gem 'rouge',              '~> 2.0'
-gem 'truncato',           '~> 0.7.8'
+gem 'html-pipeline',        '~> 1.11.0'
+gem 'deckar01-task_list',   '1.0.6', require: 'task_list/railtie'
+gem 'gitlab-markup',        '~> 1.5.1'
+gem 'redcarpet',            '~> 3.3.3'
+gem 'RedCloth',             '~> 4.3.2'
+gem 'rdoc',                 '~> 4.2'
+gem 'org-ruby',             '~> 0.9.12'
+gem 'creole',               '~> 0.5.0'
+gem 'wikicloth',            '0.8.1'
+gem 'asciidoctor',          '~> 1.5.2'
+gem 'asciidoctor-plantuml', '0.0.6'
+gem 'rouge',                '~> 2.0'
+gem 'truncato',             '~> 0.7.8'
 
 # See https://groups.google.com/forum/#!topic/ruby-security-ann/aSbgDiwb24s
 # and https://groups.google.com/forum/#!topic/ruby-security-ann/Dy7YiKb_pMM
@@ -219,8 +222,7 @@ gem 'chronic_duration', '~> 0.10.6'
 gem 'sass-rails', '~> 5.0.6'
 gem 'coffee-rails', '~> 4.1.0'
 gem 'uglifier', '~> 2.7.2'
-gem 'turbolinks', '~> 2.5.0'
-gem 'jquery-turbolinks', '~> 2.1.0'
+gem 'gitlab-turbolinks-classic', '~> 2.5', '>= 2.5.6'
 
 gem 'addressable',        '~> 2.3.8'
 gem 'bootstrap-sass',     '~> 3.3.0'
@@ -250,10 +252,9 @@ end
 
 group :development do
   gem 'foreman', '~> 0.78.0'
-  gem 'brakeman', '~> 3.3.0', require: false
+  gem 'brakeman', '~> 3.4.0', require: false
 
   gem 'letter_opener_web', '~> 1.3.0'
-  gem 'rerun', '~> 0.11.0'
   gem 'bullet', '~> 5.2.0', require: false
   gem 'rblineprof', '~> 0.3.6', platform: :mri, require: false
   gem 'web-console', '~> 2.0'
@@ -284,7 +285,7 @@ group :development, :test do
   gem 'minitest', '~> 5.7.0'
 
   # Generate Fake data
-  gem 'ffaker', '~> 2.0.0'
+  gem 'ffaker', '~> 2.4'
 
   gem 'capybara',            '~> 2.6.2'
   gem 'capybara-screenshot', '~> 1.0.0'
@@ -298,8 +299,8 @@ group :development, :test do
   gem 'spring-commands-spinach',  '~> 1.1.0'
   gem 'spring-commands-teaspoon', '~> 0.0.2'
 
-  gem 'rubocop', '~> 0.43.0', require: false
-  gem 'rubocop-rspec', '~> 1.5.0', require: false
+  gem 'rubocop', '~> 0.46.0', require: false
+  gem 'rubocop-rspec', '~> 1.9.1', require: false
   gem 'scss_lint', '~> 0.47.0', require: false
   gem 'haml_lint', '~> 0.18.2', require: false
   gem 'simplecov', '0.12.0', require: false
@@ -321,7 +322,7 @@ group :test do
   gem 'email_spec', '~> 1.6.0'
   gem 'json-schema', '~> 2.6.2'
   gem 'webmock', '~> 1.21.0'
-  gem 'test_after_commit', '~> 0.4.2'
+  gem 'test_after_commit', '~> 1.1'
   gem 'sham_rack', '~> 1.3.6'
   gem 'timecop', '~> 0.8.0'
 end

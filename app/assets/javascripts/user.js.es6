@@ -1,4 +1,4 @@
-/* eslint-disable class-methods-use-this, comma-dangle, arrow-parens, no-param-reassign, semi */
+/* eslint-disable class-methods-use-this, comma-dangle, arrow-parens, no-param-reassign */
 /* global Cookies */
 
 ((global) => {
@@ -30,5 +30,5 @@
         $(this).parents('.project-limit-message').remove();
       });
     }
-  }
+  };
 })(window.gl || (window.gl = {}));

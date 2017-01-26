@@ -37,7 +37,6 @@
         %i.clear-icon.js-clear-input
     - if can_admin_member
       = link_to namespace_project_group_link_path(@project.namespace, @project, group_link),
-        remote: true,
         method: :delete,
         data: { confirm: "Are you sure you want to remove #{group.name}?" },
         class: 'btn btn-remove prepend-left-10' do

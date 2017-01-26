@@ -44,7 +44,6 @@ module API
         detail 'This feature was introduced in GitLab 8.13'
       end
       params do
-        requires :id, type: Integer, desc: 'The project ID'
         requires :branch_name, type: String, desc: 'The name of branch'
         requires :commit_message, type: String, desc: 'Commit message'
         requires :actions, type: Array[Hash], desc: 'Actions to perform in commit'

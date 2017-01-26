@@ -196,22 +196,5 @@ describe Gitlab::Ci::Config::Entry::Environment do
         end
       end
     end
-
-    context 'when invalid URL is used' do
-      let(:config) { { name: 'test', url: 'invalid-example.gitlab.com' } }
-
-      describe '#valid?' do
-        it 'is not valid' do
-          expect(entry).not_to be_valid
-        end
-      end
-
-      describe '#errors?' do
-        it 'contains error about invalid URL' do
-          expect(entry.errors)
-            .to include "environment url must be a valid url"
-        end
-      end
-    end
   end
 end

@@ -22,17 +22,7 @@ module Projects
         return @project
       end
 
-      # Set project name from path
-      if @project.name.present? && @project.path.present?
-        # if both name and path set - everything is ok
-      elsif @project.path.present?
-        # Set project name from path
-        @project.name = @project.path.dup
-      elsif @project.name.present?
-        # For compatibility - set path from name
-        # TODO: remove this in 8.0
-        @project.path = @project.name.dup.parameterize
-      end
+      set_project_name_from_path
 
       # get namespace id
       namespace_id = params[:namespace_id]
@@ -142,6 +132,20 @@ module Projects
       Service.where(template: true, active: true).each do |template|
         service = Service.build_from_template(project.id, template)
         service.save!
+      end
+    end
+
+    def set_project_name_from_path
+      # Set project name from path
+      if @project.name.present? && @project.path.present?
+        # if both name and path set - everything is ok
+      elsif @project.path.present?
+        # Set project name from path
+        @project.name = @project.path.dup
+      elsif @project.name.present?
+        # For compatibility - set path from name
+        # TODO: remove this in 8.0
+        @project.path = @project.name.dup.parameterize
       end
     end
   end

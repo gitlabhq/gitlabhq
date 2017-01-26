@@ -2,10 +2,10 @@
 //= require environments/components/environment_actions
 
 describe('Actions Component', () => {
-  fixture.preload('environments/element.html');
+  preloadFixtures('static/environments/element.html.raw');
 
   beforeEach(() => {
-    fixture.load('environments/element.html');
+    loadFixtures('static/environments/element.html.raw');
   });
 
   it('should render a dropdown with the provided actions', () => {

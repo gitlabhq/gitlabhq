@@ -7,9 +7,11 @@ describe Gitlab::LDAP::Person do
 
   before do
     stub_ldap_config(
-      attributes: {
-        name: 'cn',
-        email: %w(mail email userPrincipalName)
+      options: {
+        'attributes' => {
+          'name' => 'cn',
+          'email' => %w(mail email userPrincipalName)
+        }
       }
     )
   end
@@ -30,7 +32,7 @@ describe Gitlab::LDAP::Person do
       entry['mail'] = mail
       person = Gitlab::LDAP::Person.new(entry, 'ldapmain')
 
-      expect(person.email).to eq(mail)
+      expect(person.email).to eq([mail])
     end
 
     it 'returns the value of userPrincipalName, if mail and email are not present' do
@@ -38,7 +40,7 @@ describe Gitlab::LDAP::Person do
       entry['userPrincipalName'] = user_principal_name
       person = Gitlab::LDAP::Person.new(entry, 'ldapmain')
 
-      expect(person.email).to eq(user_principal_name)
+      expect(person.email).to eq([user_principal_name])
     end
   end
 end

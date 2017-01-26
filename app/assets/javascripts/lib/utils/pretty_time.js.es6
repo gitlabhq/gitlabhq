@@ -4,13 +4,13 @@
    * stringifyTime condensed or non-condensed, abbreviateTimelengths)
    * */
 
-  class PrettyTime {
-
+  const utils = window.gl.utils = gl.utils || {};
+  const prettyTime = utils.prettyTime = {
     /*
      * Accepts seconds and returns a timeObject { weeks: #, days: #, hours: #, minutes: # }
      * Seconds can be negative or positive, zero or non-zero.
     */
-    static parseSeconds(seconds) {
+    parseSeconds(seconds) {
       const DAYS_PER_WEEK = 5;
       const HOURS_PER_DAY = 8;
       const MINUTES_PER_HOUR = 60;
@@ -24,7 +24,7 @@
         minutes: 1,
       };
 
-      let unorderedMinutes = PrettyTime.secondsToMinutes(seconds);
+      let unorderedMinutes = prettyTime.secondsToMinutes(seconds);
 
       return _.mapObject(timePeriodConstraints, (minutesPerPeriod) => {
         const periodCount = Math.floor(unorderedMinutes / minutesPerPeriod);
@@ -33,35 +33,33 @@
 
         return periodCount;
       });
-    }
+    },
 
     /*
     * Accepts a timeObject and returns a condensed string representation of it
     * (e.g. '1w 2d 3h 1m' or '1h 30m'). Zero value units are not included.
     */
 
-    static stringifyTime(timeObject) {
+    stringifyTime(timeObject) {
       const reducedTime = _.reduce(timeObject, (memo, unitValue, unitName) => {
         const isNonZero = !!unitValue;
         return isNonZero ? `${memo} ${unitValue}${unitName.charAt(0)}` : memo;
       }, '').trim();
       return reducedTime.length ? reducedTime : '0m';
-    }
+    },
 
     /*
     * Accepts a time string of any size (e.g. '1w 2d 3h 5m' or '1w 2d') and returns
     *  the first non-zero unit/value pair.
     */
 
-    static abbreviateTime(timeStr) {
+    abbreviateTime(timeStr) {
       return timeStr.split(' ')
         .filter(unitStr => unitStr.charAt(0) !== '0')[0];
-    }
+    },
 
-    static secondsToMinutes(seconds) {
+    secondsToMinutes(seconds) {
       return Math.abs(seconds / 60);
-    }
-  }
-
-  gl.PrettyTime = PrettyTime;
+    },
+  };
 })(window.gl || (window.gl = {}));

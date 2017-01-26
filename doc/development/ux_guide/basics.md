@@ -58,6 +58,13 @@ GitLab uses Font Awesome icons throughout our interface.
 | ![Red](img/color-red.png) | Closed | Delete and other destructive commands |
 | ![Grey](img/color-grey.png) | Neutral | Neutral secondary commands |
 
+### Text colors
+
+|||
+| :---: | :--- |
+| ![Text primary](img/color-textprimary.png) | Used for primary body text, such as issue description and comment |
+| ![Text secondary](img/color-textsecondary.png) | Used for secondary body text, such as username and date |
+
 > TODO: Establish a perspective for color in terms of our personality and rationalize with Marketing usage.
 
 ---

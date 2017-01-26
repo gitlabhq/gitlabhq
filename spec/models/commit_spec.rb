@@ -323,4 +323,50 @@ eos
       expect(new_commit.message).to eq(commit.message)
     end
   end
+
+  describe '#work_in_progress?' do
+    ['squash! ', 'fixup! ', 'wip: ', 'WIP: ', '[WIP] '].each do |wip_prefix|
+      it "detects the '#{wip_prefix}' prefix" do
+        commit.message = "#{wip_prefix}#{commit.message}"
+
+        expect(commit).to be_work_in_progress
+      end
+    end
+
+    it "detects WIP for a commit just saying 'wip'" do
+      commit.message = "wip"
+
+      expect(commit).to be_work_in_progress
+    end
+
+    it "doesn't detect WIP for a commit that begins with 'FIXUP! '" do
+      commit.message = "FIXUP! #{commit.message}"
+
+      expect(commit).not_to be_work_in_progress
+    end
+
+    it "doesn't detect WIP for words starting with WIP" do
+      commit.message = "Wipout #{commit.message}"
+
+      expect(commit).not_to be_work_in_progress
+    end
+  end
+
+  describe '.valid_hash?' do
+    it 'checks hash contents' do
+      expect(described_class.valid_hash?('abcdef01239ABCDEF')).to be true
+      expect(described_class.valid_hash?("abcdef01239ABCD\nEF")).to be false
+      expect(described_class.valid_hash?(' abcdef01239ABCDEF ')).to be false
+      expect(described_class.valid_hash?('Gabcdef01239ABCDEF')).to be false
+      expect(described_class.valid_hash?('gabcdef01239ABCDEF')).to be false
+      expect(described_class.valid_hash?('-abcdef01239ABCDEF')).to be false
+    end
+
+    it 'checks hash length' do
+      expect(described_class.valid_hash?('a' * 6)).to be false
+      expect(described_class.valid_hash?('a' * 7)).to be true
+      expect(described_class.valid_hash?('a' * 40)).to be true
+      expect(described_class.valid_hash?('a' * 41)).to be false
+    end
+  end
 end

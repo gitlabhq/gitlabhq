@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, prefer-arrow-callback, no-else-return, quotes, quote-props, comma-dangle, one-var, one-var-declaration-per-line, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, prefer-arrow-callback, no-else-return, quotes, quote-props, comma-dangle, one-var, one-var-declaration-per-line, max-len */
 /* global u2f */
 /* global U2FError */
 /* global U2FUtil */
@@ -10,7 +10,7 @@
 (function() {
   const global = window.gl || (window.gl = {});
 
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
 
   global.U2FAuthenticate = (function() {
     function U2FAuthenticate(container, form, u2fParams, fallbackButton, fallbackUI) {
@@ -57,7 +57,7 @@
         return function(response) {
           var error;
           if (response.errorCode) {
-            error = new U2FError(response.errorCode);
+            error = new U2FError(response.errorCode, 'authenticate');
             return _this.renderError(error);
           } else {
             return _this.renderAuthenticated(JSON.stringify(response));
@@ -114,7 +114,5 @@
     };
 
     return U2FAuthenticate;
-
   })();
-
 })();

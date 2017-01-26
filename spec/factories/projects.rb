@@ -24,8 +24,16 @@ FactoryGirl.define do
       visibility_level Gitlab::VisibilityLevel::PRIVATE
     end
 
+    trait :archived do
+      archived true
+    end
+
     trait :access_requestable do
       request_access_enabled true
+    end
+
+    trait :repository do
+      # no-op... for now!
     end
 
     trait :empty_repo do

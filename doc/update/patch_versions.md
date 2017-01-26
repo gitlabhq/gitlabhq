@@ -14,6 +14,7 @@ user on the database version)
 
 ```bash
 cd /home/git/gitlab
+
 sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
 ```
 
@@ -32,28 +33,13 @@ current version with `cat VERSION`).
 
 ```bash
 cd /home/git/gitlab
+
 sudo -u git -H git fetch --all
 sudo -u git -H git checkout -- Gemfile.lock db/schema.rb
 sudo -u git -H git checkout LATEST_TAG -b LATEST_TAG
 ```
 
-### 3. Update gitlab-shell to the corresponding version
-
-```bash
-cd /home/git/gitlab-shell
-sudo -u git -H git fetch
-sudo -u git -H git checkout v`cat /home/git/gitlab/GITLAB_SHELL_VERSION` -b v`cat /home/git/gitlab/GITLAB_SHELL_VERSION`
-```
-
-### 4. Update gitlab-workhorse to the corresponding version
-
-```bash
-cd /home/git/gitlab
-
-sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse]" RAILS_ENV=production
-```
-
-### 5. Install libs, migrations, etc.
+### 3. Install libs, migrations, etc.
 
 ```bash
 cd /home/git/gitlab
@@ -74,6 +60,23 @@ sudo -u git -H bundle exec rake db:migrate RAILS_ENV=production
 sudo -u git -H bundle exec rake assets:clean assets:precompile cache:clear RAILS_ENV=production
 ```
 
+### 4. Update gitlab-workhorse to the corresponding version
+
+```bash
+cd /home/git/gitlab
+
+sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse]" RAILS_ENV=production
+```
+
+### 5. Update gitlab-shell to the corresponding version
+
+```bash
+cd /home/git/gitlab-shell
+
+sudo -u git -H git fetch --all --tags
+sudo -u git -H git checkout v`cat /home/git/gitlab/GITLAB_SHELL_VERSION` -b v`cat /home/git/gitlab/GITLAB_SHELL_VERSION`
+```
+
 ### 6. Start application
 
 ```bash
@@ -86,6 +89,8 @@ sudo service nginx restart
 Check if GitLab and its environment are configured correctly:
 
 ```bash
+cd /home/git/gitlab
+
 sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production
 ```
 

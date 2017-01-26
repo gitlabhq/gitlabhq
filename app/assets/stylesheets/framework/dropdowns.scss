@@ -201,7 +201,7 @@
     }
 
     .icon-play {
-      fill: $gl-gray-light;
+      fill: $gl-text-color-secondary;
       margin-right: 6px;
       height: 12px;
       width: 11px;
@@ -209,7 +209,7 @@
   }
 
   .dropdown-header {
-    color: $gl-gray-light;
+    color: $gl-text-color-secondary;
     font-size: 13px;
     line-height: 22px;
     padding: 0 10px;
@@ -222,7 +222,7 @@
   .unclickable {
     cursor: not-allowed;
     padding: 5px 8px;
-    color: $gl-gray-light;
+    color: $gl-text-color-secondary;
   }
 }
 
@@ -592,7 +592,7 @@
     }
 
     .ui-datepicker-title {
-      color: $gl-gray;
+      color: $gl-text-color;
       font-size: 14px;
       line-height: 1;
       font-weight: normal;
@@ -614,17 +614,17 @@
 
 .dropdown-menu-inner-title {
   display: block;
-  color: $gl-title-color;
+  color: $gl-text-color;
   font-weight: 600;
 }
 
 .dropdown-menu-inner-content {
   display: block;
-  color: $gl-gray-light;
+  color: $gl-text-color-secondary;
 }
 
 .dropdown-toggle-text {
   &.is-default {
-    color: $gl-gray-light;
+    color: $gl-text-color-secondary;
   }
 }

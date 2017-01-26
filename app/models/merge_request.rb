@@ -91,6 +91,10 @@ class MergeRequest < ActiveRecord::Base
     around_transition do |merge_request, transition, block|
       Gitlab::Timeless.timeless(merge_request, &block)
     end
+
+    after_transition unchecked: :cannot_be_merged do |merge_request, transition|
+      TodoService.new.merge_request_became_unmergeable(merge_request)
+    end
   end
 
   validates :source_project, presence: true, unless: [:allow_broken, :importing?, :closed_without_fork?]
@@ -221,7 +225,7 @@ class MergeRequest < ActiveRecord::Base
   # true base commit, so we can't simply have `#diff_base_commit` fall back on
   # this method.
   def likely_diff_base_commit
-    first_commit.parent || first_commit
+    first_commit.try(:parent) || first_commit
   end
 
   def diff_start_commit
@@ -861,9 +865,11 @@ class MergeRequest < ActiveRecord::Base
       paths: paths
     )
 
-    active_diff_notes.each do |note|
-      service.execute(note)
-      Gitlab::Timeless.timeless(note, &:save)
+    transaction do
+      active_diff_notes.each do |note|
+        service.execute(note)
+        Gitlab::Timeless.timeless(note, &:save)
+      end
     end
   end
 
@@ -898,10 +904,22 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def has_commits?
-    commits_count > 0
+    merge_request_diff && commits_count > 0
   end
 
   def has_no_commits?
     !has_commits?
+  end
+
+  def mergeable_with_slash_command?(current_user, autocomplete_precheck: false, last_diff_sha: nil)
+    return false unless can_be_merged_by?(current_user)
+
+    return true if autocomplete_precheck
+
+    return false unless mergeable?(skip_ci_check: true)
+    return false if head_pipeline && !(head_pipeline.success? || head_pipeline.active?)
+    return false if last_diff_sha != diff_head_sha
+
+    true
   end
 end

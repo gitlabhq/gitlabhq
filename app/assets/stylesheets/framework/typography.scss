@@ -1,5 +1,5 @@
 @mixin md-typography {
-  color: $md-text-color;
+  color: $gl-text-color;
   word-wrap: break-word;
 
   a {
@@ -10,7 +10,7 @@
     max-width: 100%;
   }
 
-  *:first-child {
+  *:first-child:not(.katex-display) {
     margin-top: 0;
   }
 
@@ -50,14 +50,14 @@
     margin: 16px 0 10px;
     padding: 0 0 0.3em;
     border-bottom: 1px solid $white-dark;
-    color: $gl-gray-dark;
+    color: $gl-text-color;
   }
 
   h2 {
     font-size: 1.5em;
     font-weight: 600;
     margin: 16px 0 10px;
-    color: $gl-gray-dark;
+    color: $gl-text-color;
   }
 
   h3 {
@@ -100,7 +100,7 @@
   }
 
   p {
-    color: $gl-text-color-dark;
+    color: $gl-text-color;
     margin: 6px 0 0;
   }
 
@@ -108,7 +108,7 @@
     @extend .table;
     @extend .table-bordered;
     margin: 12px 0;
-    color: $gl-text-color-dark;
+    color: $gl-text-color;
 
     th {
       background: $label-gray-bg;
@@ -230,7 +230,7 @@ h3,
 h4,
 h5,
 h6 {
-  color: $gl-title-color;
+  color: $gl-text-color;
   font-weight: 600;
 }
 
@@ -292,7 +292,7 @@ h2,
 h3,
 h4 {
   small {
-    color: $gl-gray;
+    color: $gl-text-color;
   }
 }
 

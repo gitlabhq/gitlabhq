@@ -1,4 +1,4 @@
-/* eslint-disable space-before-function-paren, new-parens, quotes, no-var, one-var, one-var-declaration-per-line, comma-dangle, padded-blocks, max-len */
+/* eslint-disable space-before-function-paren, new-parens, quotes, no-var, one-var, one-var-declaration-per-line, comma-dangle, max-len */
 /* global MockU2FDevice */
 /* global U2FRegister */
 
@@ -10,8 +10,10 @@
 
 (function() {
   describe('U2FRegister', function() {
-    fixture.load('u2f/register');
+    preloadFixtures('u2f/register.html.raw');
+
     beforeEach(function() {
+      loadFixtures('u2f/register.html.raw');
       this.u2fDevice = new MockU2FDevice;
       this.container = $("#js-register-u2f");
       this.component = new U2FRegister(this.container, $("#js-register-u2f-templates"), {}, "token");
@@ -72,5 +74,4 @@
       });
     });
   });
-
 }).call(this);

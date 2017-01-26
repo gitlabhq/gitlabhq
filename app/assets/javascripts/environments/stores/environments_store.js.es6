@@ -10,6 +10,8 @@
       this.state.environments = [];
       this.state.stoppedCounter = 0;
       this.state.availableCounter = 0;
+      this.state.visibility = 'available';
+      this.state.filteredEnvironments = [];
 
       return this;
     },
@@ -59,7 +61,7 @@
 
           if (occurs.length) {
             acc[acc.indexOf(occurs[0])].children.push(environment);
-            acc[acc.indexOf(occurs[0])].children.sort(this.sortByName);
+            acc[acc.indexOf(occurs[0])].children.slice().sort(this.sortByName);
           } else {
             acc.push({
               name: environment.environment_type,
@@ -73,11 +75,68 @@
         }
 
         return acc;
-      }, []).sort(this.sortByName);
+      }, []).slice().sort(this.sortByName);
 
       this.state.environments = environmentsTree;
 
+      this.filterEnvironmentsByVisibility(this.state.environments);
+
       return environmentsTree;
+    },
+
+    storeVisibility(visibility) {
+      this.state.visibility = visibility;
+    },
+    /**
+     * Given the visibility prop provided by the url query parameter and which
+     * changes according to the active tab we need to filter which environments
+     * should be visible.
+     *
+     * The environments array is a recursive tree structure and we need to filter
+     * both root level environments and children environments.
+     *
+     * In order to acomplish that, both `filterState` and `filterEnvironmentsByVisibility`
+     * functions work together.
+     * The first one works as the filter that verifies if the given environment matches
+     * the given state.
+     * The second guarantees both root level and children elements are filtered as well.
+     *
+     * Given array of environments will return only
+     * the environments that match the state stored.
+     *
+     * @param {Array} array
+     * @return {Array}
+     */
+    filterEnvironmentsByVisibility(arr) {
+      const filteredEnvironments = arr.map((item) => {
+        if (item.children) {
+          const filteredChildren = this.filterEnvironmentsByVisibility(
+            item.children,
+          ).filter(Boolean);
+
+          if (filteredChildren.length) {
+            item.children = filteredChildren;
+            return item;
+          }
+        }
+
+        return this.filterState(this.state.visibility, item);
+      }).filter(Boolean);
+
+      this.state.filteredEnvironments = filteredEnvironments;
+      return filteredEnvironments;
+    },
+
+    /**
+     * Given the state and the environment,
+     * returns only if the environment state matches the one provided.
+     *
+     * @param  {String} state
+     * @param  {Object} environment
+     * @return {Object}
+     */
+    filterState(state, environment) {
+      return environment.state === state && environment;
     },
 
     /**

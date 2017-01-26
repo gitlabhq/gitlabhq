@@ -268,6 +268,13 @@ module API
       end
     end
 
+    class IssuableTimeStats < Grape::Entity
+      expose :time_estimate
+      expose :total_time_spent
+      expose :human_time_estimate
+      expose :human_total_time_spent
+    end
+
     class ExternalIssue < Grape::Entity
       expose :title
       expose :id
@@ -565,6 +572,8 @@ module API
       expose :repository_storages
       expose :koding_enabled
       expose :koding_url
+      expose :plantuml_enabled
+      expose :plantuml_url
     end
 
     class Release < Grape::Entity

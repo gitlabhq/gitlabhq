@@ -29,6 +29,7 @@
   - [email_receiver, 2]
   - [emails_on_push, 2]
   - [mailers, 2]
+  - [use_key, 1]
   - [repository_fork, 1]
   - [repository_import, 1]
   - [project_service, 1]

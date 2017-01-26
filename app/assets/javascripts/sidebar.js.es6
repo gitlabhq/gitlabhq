@@ -1,4 +1,4 @@
-/* eslint-disable arrow-parens, class-methods-use-this, no-param-reassign, padded-blocks */
+/* eslint-disable arrow-parens, class-methods-use-this, no-param-reassign */
 /* global Cookies */
 
 ((global) => {
@@ -94,5 +94,4 @@
   }
 
   global.Sidebar = Sidebar;
-
 })(window.gl || (window.gl = {}));

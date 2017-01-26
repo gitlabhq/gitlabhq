@@ -6,7 +6,7 @@ describe 'CycleAnalytics#staging', feature: true do
   let(:project) { create(:project) }
   let(:from_date) { 10.days.ago }
   let(:user) { create(:user, :admin) }
-  subject { CycleAnalytics.new(project, user, from: from_date) }
+  subject { CycleAnalytics.new(project, from: from_date) }
 
   generate_cycle_analytics_spec(
     phase: :staging,
@@ -45,7 +45,7 @@ describe 'CycleAnalytics#staging', feature: true do
         deploy_master
       end
 
-      expect(subject.staging).to be_nil
+      expect(subject[:staging].median).to be_nil
     end
   end
 
@@ -58,7 +58,7 @@ describe 'CycleAnalytics#staging', feature: true do
         deploy_master(environment: 'staging')
       end
 
-      expect(subject.staging).to be_nil
+      expect(subject[:staging].median).to be_nil
     end
   end
 end

@@ -195,10 +195,10 @@ ul.notes {
     }
 
     .note-body {
-      overflow: auto;
+      overflow-x: auto;
+      overflow-y: hidden;
 
       .note-text {
-        overflow: auto;
         word-wrap: break-word;
         @include md-typography;
         // Reset ul style types since we're nested inside a ul already
@@ -345,7 +345,7 @@ ul.notes {
   }
 
   .author_link {
-    color: $gl-gray;
+    color: $gl-text-color;
   }
 }
 
@@ -515,7 +515,6 @@ ul.notes {
 
 .line-resolve-all-container {
   .btn-group {
-    margin-top: -1px;
     margin-left: -4px;
   }
 
@@ -526,8 +525,9 @@ ul.notes {
 }
 
 .line-resolve-all {
+  vertical-align: middle;
   display: inline-block;
-  padding: 5px 10px;
+  padding: 6px 10px;
   background-color: $gray-light;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
@@ -535,16 +535,12 @@ ul.notes {
   &.has-next-btn {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
+    border-right: 0;
   }
 
   .line-resolve-btn {
-    vertical-align: middle;
     margin-right: 5px;
   }
-}
-
-.line-resolve-text {
-  vertical-align: middle;
 }
 
 .line-resolve-btn {
@@ -588,13 +584,11 @@ ul.notes {
 
 // Merge request notes in diffs
 .diff-file {
-
   // Diff is side by side
   .notes_content.parallel .note-header .note-headline-light {
     display: block;
     position: relative;
   }
-
   // Diff is inline
   .notes_content .note-header .note-headline-light {
     display: inline-block;

@@ -102,12 +102,16 @@
     margin-top: 7px;
 
     .issuable-number {
-      color: $gl-gray-light;
+      color: $gl-text-color-secondary;
       margin-right: 5px;
     }
 
     .avatar {
       float: none;
+    }
+
+    > a:not(:last-of-type) {
+      margin-right: 5px;
     }
   }
 }

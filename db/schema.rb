@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161227192806) do
+ActiveRecord::Schema.define(version: 20170121130655) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -107,6 +107,8 @@ ActiveRecord::Schema.define(version: 20161227192806) do
     t.integer "housekeeping_full_repack_period", default: 50, null: false
     t.integer "housekeeping_gc_period", default: 200, null: false
     t.boolean "html_emails_enabled", default: true
+    t.string "plantuml_url"
+    t.boolean "plantuml_enabled"
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -222,6 +224,7 @@ ActiveRecord::Schema.define(version: 20161227192806) do
   add_index "ci_builds", ["gl_project_id"], name: "index_ci_builds_on_gl_project_id", using: :btree
   add_index "ci_builds", ["project_id"], name: "index_ci_builds_on_project_id", using: :btree
   add_index "ci_builds", ["runner_id"], name: "index_ci_builds_on_runner_id", using: :btree
+  add_index "ci_builds", ["status", "type", "runner_id"], name: "index_ci_builds_on_status_and_type_and_runner_id", using: :btree
   add_index "ci_builds", ["status"], name: "index_ci_builds_on_status", using: :btree
   add_index "ci_builds", ["token"], name: "index_ci_builds_on_token", unique: true, using: :btree
 
@@ -325,6 +328,7 @@ ActiveRecord::Schema.define(version: 20161227192806) do
     t.boolean "locked", default: false, null: false
   end
 
+  add_index "ci_runners", ["is_shared"], name: "index_ci_runners_on_is_shared", using: :btree
   add_index "ci_runners", ["locked"], name: "index_ci_runners_on_locked", using: :btree
   add_index "ci_runners", ["token"], name: "index_ci_runners_on_token", using: :btree
 
@@ -504,6 +508,7 @@ ActiveRecord::Schema.define(version: 20161227192806) do
     t.integer "lock_version"
     t.text "title_html"
     t.text "description_html"
+    t.integer "time_estimate"
   end
 
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
@@ -528,6 +533,7 @@ ActiveRecord::Schema.define(version: 20161227192806) do
     t.string "fingerprint"
     t.boolean "public", default: false, null: false
     t.boolean "can_push", default: false, null: false
+    t.datetime "last_used_at"
   end
 
   add_index "keys", ["fingerprint"], name: "index_keys_on_fingerprint", unique: true, using: :btree
@@ -682,6 +688,7 @@ ActiveRecord::Schema.define(version: 20161227192806) do
     t.integer "lock_version"
     t.text "title_html"
     t.text "description_html"
+    t.integer "time_estimate"
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
@@ -861,7 +868,7 @@ ActiveRecord::Schema.define(version: 20161227192806) do
   add_index "personal_access_tokens", ["token"], name: "index_personal_access_tokens_on_token", unique: true, using: :btree
   add_index "personal_access_tokens", ["user_id"], name: "index_personal_access_tokens_on_user_id", using: :btree
 
-  create_table "project_authorizations", force: :cascade do |t|
+  create_table "project_authorizations", id: false, force: :cascade do |t|
     t.integer "user_id"
     t.integer "project_id"
     t.integer "access_level"
@@ -1124,6 +1131,18 @@ ActiveRecord::Schema.define(version: 20161227192806) do
   end
 
   add_index "tags", ["name"], name: "index_tags_on_name", unique: true, using: :btree
+
+  create_table "timelogs", force: :cascade do |t|
+    t.integer "time_spent", null: false
+    t.integer "trackable_id"
+    t.string "trackable_type"
+    t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "timelogs", ["trackable_type", "trackable_id"], name: "index_timelogs_on_trackable_type_and_trackable_id", using: :btree
+  add_index "timelogs", ["user_id"], name: "index_timelogs_on_user_id", using: :btree
 
   create_table "todos", force: :cascade do |t|
     t.integer "user_id", null: false

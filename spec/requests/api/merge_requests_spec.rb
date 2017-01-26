@@ -6,7 +6,7 @@ describe API::MergeRequests, api: true  do
   let(:user)        { create(:user) }
   let(:admin)       { create(:user, :admin) }
   let(:non_member)  { create(:user) }
-  let!(:project)    { create(:project, creator_id: user.id, namespace: user.namespace) }
+  let!(:project)    { create(:project, :public, creator_id: user.id, namespace: user.namespace) }
   let!(:merge_request) { create(:merge_request, :simple, author: user, assignee: user, source_project: project, target_project: project, title: "Test", created_at: base_time) }
   let!(:merge_request_closed) { create(:merge_request, state: "closed", author: user, assignee: user, source_project: project, target_project: project, title: "Closed test", created_at: base_time + 1.second) }
   let!(:merge_request_merged) { create(:merge_request, state: "merged", author: user, assignee: user, source_project: project, target_project: project, title: "Merged test", created_at: base_time + 2.seconds, merge_commit_sha: '9999999999999999999999999999999999999999') }
@@ -308,8 +308,8 @@ describe API::MergeRequests, api: true  do
 
     context 'forked projects' do
       let!(:user2) { create(:user) }
-      let!(:fork_project) { create(:project, forked_from_project: project,  namespace: user2.namespace, creator_id: user2.id) }
-      let!(:unrelated_project) { create(:project,  namespace: create(:user).namespace, creator_id: user2.id) }
+      let!(:fork_project) { create(:empty_project, forked_from_project: project,  namespace: user2.namespace, creator_id: user2.id) }
+      let!(:unrelated_project) { create(:empty_project,  namespace: create(:user).namespace, creator_id: user2.id) }
 
       before :each do |each|
         fork_project.team << [user2, :reporter]
@@ -627,6 +627,17 @@ describe API::MergeRequests, api: true  do
       expect(json_response.first['title']).to eq(issue.title)
       expect(json_response.first['id']).to eq(issue.id)
     end
+
+    it 'returns 403 if the user has no access to the merge request' do
+      project = create(:empty_project, :private)
+      merge_request = create(:merge_request, :simple, source_project: project)
+      guest = create(:user)
+      project.team << [guest, :guest]
+
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/closes_issues", guest)
+
+      expect(response).to have_http_status(403)
+    end
   end
 
   describe 'POST :id/merge_requests/:merge_request_id/subscription' do
@@ -647,6 +658,15 @@ describe API::MergeRequests, api: true  do
       post api("/projects/#{project.id}/merge_requests/123/subscription", user)
 
       expect(response).to have_http_status(404)
+    end
+
+    it 'returns 403 if user has no access to read code' do
+      guest = create(:user)
+      project.team << [guest, :guest]
+
+      post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/subscription", guest)
+
+      expect(response).to have_http_status(403)
     end
   end
 
@@ -669,6 +689,21 @@ describe API::MergeRequests, api: true  do
 
       expect(response).to have_http_status(404)
     end
+
+    it 'returns 403 if user has no access to read code' do
+      guest = create(:user)
+      project.team << [guest, :guest]
+
+      delete api("/projects/#{project.id}/merge_requests/#{merge_request.id}/subscription", guest)
+
+      expect(response).to have_http_status(403)
+    end
+  end
+
+  describe 'Time tracking' do
+    let(:issuable) { merge_request }
+
+    include_examples 'time tracking endpoints', 'merge_request'
   end
 
   def mr_with_later_created_and_updated_at_time

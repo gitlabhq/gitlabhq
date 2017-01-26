@@ -202,4 +202,8 @@ class Milestone < ActiveRecord::Base
       errors.add(:start_date, "Can't be greater than due date")
     end
   end
+
+  def issues_finder_params
+    { project_id: project_id }
+  end
 end

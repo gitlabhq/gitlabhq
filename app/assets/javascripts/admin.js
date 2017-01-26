@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, one-var, no-var, one-var-declaration-per-line, no-unused-vars, no-else-return, prefer-arrow-callback, camelcase, quotes, comma-dangle, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, one-var, no-var, one-var-declaration-per-line, no-unused-vars, no-else-return, prefer-arrow-callback, camelcase, quotes, comma-dangle, max-len */
 /* global Turbolinks */
 
 (function() {
@@ -61,7 +61,5 @@
     }
 
     return Admin;
-
   })();
-
 }).call(this);

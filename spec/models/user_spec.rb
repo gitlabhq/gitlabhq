@@ -48,7 +48,7 @@ describe User, models: true do
     describe '#project_members' do
       it 'does not include project memberships for which user is a requester' do
         user = create(:user)
-        project = create(:project, :public, :access_requestable)
+        project = create(:empty_project, :public, :access_requestable)
         project.request_access(user)
 
         expect(user.project_members).to be_empty
@@ -386,13 +386,15 @@ describe User, models: true do
 
   describe 'projects' do
     before do
-      @user = create :user
-      @project = create :project, namespace: @user.namespace
-      @project_2 = create :project, group: create(:group) # Grant MASTER access to the user
-      @project_3 = create :project, group: create(:group) # Grant DEVELOPER access to the user
+      @user = create(:user)
 
-      @project_2.team << [@user, :master]
-      @project_3.team << [@user, :developer]
+      @project = create(:empty_project, namespace: @user.namespace)
+      @project_2 = create(:empty_project, group: create(:group)) do |project|
+        project.add_master(@user)
+      end
+      @project_3 = create(:empty_project, group: create(:group)) do |project|
+        project.add_developer(@user)
+      end
     end
 
     it { expect(@user.authorized_projects).to include(@project) }
@@ -435,7 +437,7 @@ describe User, models: true do
   describe 'namespaced' do
     before do
       @user = create :user
-      @project = create :project, namespace: @user.namespace
+      @project = create(:empty_project, namespace: @user.namespace)
     end
 
     it { expect(@user.several_namespaces?).to be_falsey }
@@ -517,7 +519,7 @@ describe User, models: true do
     before do
       User.delete_all
       @user = create :user
-      @project = create :project
+      @project = create(:empty_project)
     end
 
     it { expect(User.not_in_project(@project)).to include(@user, @project.owner) }
@@ -795,14 +797,14 @@ describe User, models: true do
   describe '#avatar_type' do
     let(:user) { create(:user) }
 
-    it "is true if avatar is image" do
+    it 'is true if avatar is image' do
       user.update_attribute(:avatar, 'uploads/avatar.png')
       expect(user.avatar_type).to be_truthy
     end
 
-    it "is false if avatar is html page" do
+    it 'is false if avatar is html page' do
       user.update_attribute(:avatar, 'uploads/avatar.html')
-      expect(user.avatar_type).to eq(["only images allowed"])
+      expect(user.avatar_type).to eq(['only images allowed'])
     end
   end
 
@@ -924,11 +926,11 @@ describe User, models: true do
     end
   end
 
-  describe "#starred?" do
-    it "determines if user starred a project" do
+  describe '#starred?' do
+    it 'determines if user starred a project' do
       user = create :user
-      project1 = create :project, :public
-      project2 = create :project, :public
+      project1 = create(:empty_project, :public)
+      project2 = create(:empty_project, :public)
 
       expect(user.starred?(project1)).to be_falsey
       expect(user.starred?(project2)).to be_falsey
@@ -951,10 +953,10 @@ describe User, models: true do
     end
   end
 
-  describe "#toggle_star" do
-    it "toggles stars" do
+  describe '#toggle_star' do
+    it 'toggles stars' do
       user = create :user
-      project = create :project, :public
+      project = create(:empty_project, :public)
 
       expect(user.starred?(project)).to be_falsey
       user.toggle_star(project)
@@ -964,39 +966,52 @@ describe User, models: true do
     end
   end
 
-  describe "#sort" do
+  describe '#sort' do
     before do
       User.delete_all
       @user = create :user, created_at: Date.today, last_sign_in_at: Date.today, name: 'Alpha'
       @user1 = create :user, created_at: Date.today - 1, last_sign_in_at: Date.today - 1, name: 'Omega'
+      @user2 = create :user, created_at: Date.today - 2, last_sign_in_at: nil, name: 'Beta'
     end
 
-    it "sorts users by the recent sign-in time" do
-      expect(User.sort('recent_sign_in').first).to eq(@user)
+    context 'when sort by recent_sign_in' do
+      it 'sorts users by the recent sign-in time' do
+        expect(User.sort('recent_sign_in').first).to eq(@user)
+      end
+
+      it 'pushes users who never signed in to the end' do
+        expect(User.sort('recent_sign_in').third).to eq(@user2)
+      end
     end
 
-    it "sorts users by the oldest sign-in time" do
-      expect(User.sort('oldest_sign_in').first).to eq(@user1)
+    context 'when sort by oldest_sign_in' do
+      it 'sorts users by the oldest sign-in time' do
+        expect(User.sort('oldest_sign_in').first).to eq(@user1)
+      end
+
+      it 'pushes users who never signed in to the end' do
+        expect(User.sort('oldest_sign_in').third).to eq(@user2)
+      end
     end
 
-    it "sorts users in descending order by their creation time" do
+    it 'sorts users in descending order by their creation time' do
       expect(User.sort('created_desc').first).to eq(@user)
     end
 
-    it "sorts users in ascending order by their creation time" do
-      expect(User.sort('created_asc').first).to eq(@user1)
+    it 'sorts users in ascending order by their creation time' do
+      expect(User.sort('created_asc').first).to eq(@user2)
     end
 
-    it "sorts users by id in descending order when nil is passed" do
-      expect(User.sort(nil).first).to eq(@user1)
+    it 'sorts users by id in descending order when nil is passed' do
+      expect(User.sort(nil).first).to eq(@user2)
     end
   end
 
   describe "#contributed_projects" do
     subject { create(:user) }
-    let!(:project1) { create(:project) }
-    let!(:project2) { create(:project, forked_from_project: project3) }
-    let!(:project3) { create(:project) }
+    let!(:project1) { create(:empty_project) }
+    let!(:project2) { create(:empty_project, forked_from_project: project3) }
+    let!(:project3) { create(:empty_project) }
     let!(:merge_request) { create(:merge_request, source_project: project2, target_project: project3, author: subject) }
     let!(:push_event) { create(:event, action: Event::PUSHED, project: project1, target: project1, author: subject) }
     let!(:merge_event) { create(:event, action: Event::CREATED, project: project3, target: merge_request, author: subject) }
@@ -1038,8 +1053,8 @@ describe User, models: true do
 
   describe "#recent_push" do
     subject { create(:user) }
-    let!(:project1) { create(:project) }
-    let!(:project2) { create(:project, forked_from_project: project1) }
+    let!(:project1) { create(:project, :repository) }
+    let!(:project2) { create(:project, :repository, forked_from_project: project1) }
     let!(:push_data) do
       Gitlab::DataBuilder::Push.build_sample(project2, subject)
     end
@@ -1113,7 +1128,7 @@ describe User, models: true do
 
     it "includes user's personal projects" do
       user    = create(:user)
-      project = create(:project, :private, namespace: user.namespace)
+      project = create(:empty_project, :private, namespace: user.namespace)
 
       expect(user.authorized_projects).to include(project)
     end
@@ -1121,7 +1136,7 @@ describe User, models: true do
     it "includes personal projects user has been given access to" do
       user1   = create(:user)
       user2   = create(:user)
-      project = create(:project, :private, namespace: user1.namespace)
+      project = create(:empty_project, :private, namespace: user1.namespace)
 
       project.team << [user2, Gitlab::Access::DEVELOPER]
 
@@ -1130,7 +1145,7 @@ describe User, models: true do
 
     it "includes projects of groups user has been added to" do
       group   = create(:group)
-      project = create(:project, group: group)
+      project = create(:empty_project, group: group)
       user    = create(:user)
 
       group.add_developer(user)
@@ -1140,7 +1155,7 @@ describe User, models: true do
 
     it "does not include projects of groups user has been removed from" do
       group   = create(:group)
-      project = create(:project, group: group)
+      project = create(:empty_project, group: group)
       user    = create(:user)
 
       member = group.add_developer(user)
@@ -1152,7 +1167,7 @@ describe User, models: true do
 
     it "includes projects shared with user's group" do
       user    = create(:user)
-      project = create(:project, :private)
+      project = create(:empty_project, :private)
       group   = create(:group)
 
       group.add_reporter(user)
@@ -1164,7 +1179,7 @@ describe User, models: true do
     it "does not include destroyed projects user had access to" do
       user1   = create(:user)
       user2   = create(:user)
-      project = create(:project, :private, namespace: user1.namespace)
+      project = create(:empty_project, :private, namespace: user1.namespace)
 
       project.team << [user2, Gitlab::Access::DEVELOPER]
       expect(user2.authorized_projects).to include(project)
@@ -1175,7 +1190,7 @@ describe User, models: true do
 
     it "does not include projects of destroyed groups user had access to" do
       group   = create(:group)
-      project = create(:project, namespace: group)
+      project = create(:empty_project, namespace: group)
       user    = create(:user)
 
       group.add_developer(user)
@@ -1190,14 +1205,9 @@ describe User, models: true do
     let(:user) { create(:user) }
 
     it 'includes projects for which the user access level is above or equal to reporter' do
-      create(:project)
-      reporter_project = create(:project)
-      developer_project = create(:project)
-      master_project = create(:project)
-
-      reporter_project.team << [user, :reporter]
-      developer_project.team << [user, :developer]
-      master_project.team << [user, :master]
+      reporter_project  = create(:empty_project) { |p| p.add_reporter(user) }
+      developer_project = create(:empty_project) { |p| p.add_developer(user) }
+      master_project    = create(:empty_project) { |p| p.add_master(user) }
 
       expect(user.projects_where_can_admin_issues.to_a).to eq([master_project, developer_project, reporter_project])
       expect(user.can?(:admin_issue, master_project)).to eq(true)
@@ -1206,10 +1216,8 @@ describe User, models: true do
     end
 
     it 'does not include for which the user access level is below reporter' do
-      project = create(:project)
-      guest_project = create(:project)
-
-      guest_project.team << [user, :guest]
+      project = create(:empty_project)
+      guest_project = create(:empty_project) { |p| p.add_guest(user) }
 
       expect(user.projects_where_can_admin_issues.to_a).to be_empty
       expect(user.can?(:admin_issue, guest_project)).to eq(false)
@@ -1217,15 +1225,14 @@ describe User, models: true do
     end
 
     it 'does not include archived projects' do
-      project = create(:project)
-      project.update_attributes(archived: true)
+      project = create(:empty_project, :archived)
 
       expect(user.projects_where_can_admin_issues.to_a).to be_empty
       expect(user.can?(:admin_issue, project)).to eq(false)
     end
 
     it 'does not include projects for which issues are disabled' do
-      project = create(:project, issues_access_level: ProjectFeature::DISABLED)
+      project = create(:empty_project, issues_access_level: ProjectFeature::DISABLED)
 
       expect(user.projects_where_can_admin_issues.to_a).to be_empty
       expect(user.can?(:admin_issue, project)).to eq(false)
@@ -1241,7 +1248,7 @@ describe User, models: true do
     end
 
     context 'without any projects' do
-      let(:project) { create(:project) }
+      let(:project) { create(:empty_project) }
 
       it 'does not load' do
         expect(user.ci_authorized_runners).to be_empty
@@ -1250,7 +1257,7 @@ describe User, models: true do
 
     context 'with personal projects runners' do
       let(:namespace) { create(:namespace, owner: user) }
-      let(:project) { create(:project, namespace: namespace) }
+      let(:project) { create(:empty_project, namespace: namespace) }
 
       it 'loads' do
         expect(user.ci_authorized_runners).to contain_exactly(runner)
@@ -1281,7 +1288,7 @@ describe User, models: true do
 
     context 'with groups projects runners' do
       let(:group) { create(:group) }
-      let(:project) { create(:project, group: group) }
+      let(:project) { create(:empty_project, group: group) }
 
       def add_user(access)
         group.add_user(user, access)
@@ -1291,7 +1298,7 @@ describe User, models: true do
     end
 
     context 'with other projects runners' do
-      let(:project) { create(:project) }
+      let(:project) { create(:empty_project) }
 
       def add_user(access)
         project.team << [user, access]
@@ -1321,8 +1328,8 @@ describe User, models: true do
   end
 
   describe '#projects_with_reporter_access_limited_to' do
-    let(:project1) { create(:project) }
-    let(:project2) { create(:project) }
+    let(:project1) { create(:empty_project) }
+    let(:project2) { create(:empty_project) }
     let(:user) { create(:user) }
 
     before do
@@ -1354,6 +1361,39 @@ describe User, models: true do
 
       expect(projects).to be_empty
     end
+  end
+
+  describe '#nested_groups' do
+    let!(:user) { create(:user) }
+    let!(:group) { create(:group) }
+    let!(:nested_group) { create(:group, parent: group) }
+
+    before do
+      group.add_owner(user)
+
+      # Add more data to ensure method does not include wrong groups
+      create(:group).add_owner(create(:user))
+    end
+
+    it { expect(user.nested_groups).to eq([nested_group]) }
+  end
+
+  describe '#nested_projects' do
+    let!(:user) { create(:user) }
+    let!(:group) { create(:group) }
+    let!(:nested_group) { create(:group, parent: group) }
+    let!(:project) { create(:project, namespace: group) }
+    let!(:nested_project) { create(:project, namespace: nested_group) }
+
+    before do
+      group.add_owner(user)
+
+      # Add more data to ensure method does not include wrong projects
+      other_project = create(:project, namespace: create(:group, :nested))
+      other_project.add_developer(create(:user))
+    end
+
+    it { expect(user.nested_projects).to eq([nested_project]) }
   end
 
   describe '#refresh_authorized_projects', redis: true do

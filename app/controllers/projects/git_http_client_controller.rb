@@ -109,12 +109,14 @@ class Projects::GitHttpClientController < Projects::ApplicationController
   end
 
   def repository
+    wiki? ? project.wiki.repository : project.repository
+  end
+
+  def wiki?
+    return @wiki if defined?(@wiki)
+
     _, suffix = project_id_with_suffix
-    if suffix == '.wiki.git'
-      project.wiki.repository
-    else
-      project.repository
-    end
+    @wiki = suffix == '.wiki.git'
   end
 
   def render_not_found

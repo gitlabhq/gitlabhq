@@ -1,8 +1,7 @@
-/* eslint-disable padded-blocks, no-param-reassign, comma-dangle */
+/* eslint-disable no-param-reassign, comma-dangle */
 /* global Vue */
 
 ((global) => {
-
   global.mergeConflicts = global.mergeConflicts || {};
 
   global.mergeConflicts.inlineConflictLines = Vue.extend({
@@ -11,5 +10,4 @@
     },
     mixins: [global.mergeConflicts.utils, global.mergeConflicts.actions],
   });
-
 })(window.gl || (window.gl = {}));

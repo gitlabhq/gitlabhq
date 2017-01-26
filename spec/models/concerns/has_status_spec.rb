@@ -219,4 +219,10 @@ describe HasStatus do
       end
     end
   end
+
+  describe '::DEFAULT_STATUS' do
+    it 'is a status created' do
+      expect(described_class::DEFAULT_STATUS).to eq 'created'
+    end
+  end
 end

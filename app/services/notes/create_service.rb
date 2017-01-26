@@ -1,9 +1,12 @@
 module Notes
   class CreateService < BaseService
     def execute
-      note = project.notes.new(params)
-      note.author = current_user
-      note.system = false
+      merge_request_diff_head_sha = params.delete(:merge_request_diff_head_sha)
+
+      note = Note.new(params)
+      note.project = project
+      note.author  = current_user
+      note.system  = false
 
       if note.award_emoji?
         noteable = note.noteable
@@ -19,7 +22,8 @@ module Notes
       slash_commands_service = SlashCommandsService.new(project, current_user)
 
       if slash_commands_service.supported?(note)
-        content, command_params = slash_commands_service.extract_commands(note)
+        options = { merge_request_diff_head_sha: merge_request_diff_head_sha }
+        content, command_params = slash_commands_service.extract_commands(note, options)
 
         only_commands = content.empty?
 

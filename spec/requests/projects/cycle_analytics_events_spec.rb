@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe 'cycle analytics events' do
+  include ApiHelpers
+
   let(:user) { create(:user) }
   let(:project) { create(:project, public_builds: false) }
   let(:issue) {  create(:issue, project: project, created_at: 2.days.ago) }
@@ -11,7 +13,12 @@ describe 'cycle analytics events' do
 
       allow_any_instance_of(Gitlab::ReferenceExtractor).to receive(:issues).and_return([issue])
 
-      3.times { create_cycle }
+      3.times do |count|
+        Timecop.freeze(Time.now + count.days) do
+          create_cycle
+        end
+      end
+
       deploy_master
 
       login_as(user)
@@ -20,19 +27,19 @@ describe 'cycle analytics events' do
     it 'lists the issue events' do
       get namespace_project_cycle_analytics_issue_path(project.namespace, project, format: :json)
 
+      first_issue_iid = project.issues.sort(:created_desc).pluck(:iid).first.to_s
+
       expect(json_response['events']).not_to be_empty
-
-      first_issue_iid = Issue.order(created_at: :desc).pluck(:iid).first.to_s
-
       expect(json_response['events'].first['iid']).to eq(first_issue_iid)
     end
 
     it 'lists the plan events' do
       get namespace_project_cycle_analytics_plan_path(project.namespace, project, format: :json)
 
-      expect(json_response['events']).not_to be_empty
+      first_mr_short_sha = project.merge_requests.sort(:created_asc).first.commits.first.short_id
 
-      expect(json_response['events'].first['short_sha']).to eq(MergeRequest.last.commits.first.short_id)
+      expect(json_response['events']).not_to be_empty
+      expect(json_response['events'].first['short_sha']).to eq(first_mr_short_sha)
     end
 
     it 'lists the code events' do
@@ -40,7 +47,7 @@ describe 'cycle analytics events' do
 
       expect(json_response['events']).not_to be_empty
 
-      first_mr_iid = project.merge_requests.order(id: :desc).pluck(:iid).first.to_s
+      first_mr_iid = project.merge_requests.sort(:created_desc).pluck(:iid).first.to_s
 
       expect(json_response['events'].first['iid']).to eq(first_mr_iid)
     end
@@ -49,17 +56,15 @@ describe 'cycle analytics events' do
       get namespace_project_cycle_analytics_test_path(project.namespace, project, format: :json)
 
       expect(json_response['events']).not_to be_empty
-
       expect(json_response['events'].first['date']).not_to be_empty
     end
 
     it 'lists the review events' do
       get namespace_project_cycle_analytics_review_path(project.namespace, project, format: :json)
 
+      first_mr_iid = project.merge_requests.sort(:created_desc).pluck(:iid).first.to_s
+
       expect(json_response['events']).not_to be_empty
-
-      first_mr_iid = MergeRequest.order(created_at: :desc).pluck(:iid).first.to_s
-
       expect(json_response['events'].first['iid']).to eq(first_mr_iid)
     end
 
@@ -67,35 +72,32 @@ describe 'cycle analytics events' do
       get namespace_project_cycle_analytics_staging_path(project.namespace, project, format: :json)
 
       expect(json_response['events']).not_to be_empty
-
       expect(json_response['events'].first['date']).not_to be_empty
     end
 
     it 'lists the production events' do
       get namespace_project_cycle_analytics_production_path(project.namespace, project, format: :json)
 
+      first_issue_iid = project.issues.sort(:created_desc).pluck(:iid).first.to_s
+
       expect(json_response['events']).not_to be_empty
-
-      first_issue_iid = Issue.order(created_at: :desc).pluck(:iid).first.to_s
-
       expect(json_response['events'].first['iid']).to eq(first_issue_iid)
     end
 
     context 'specific branch' do
       it 'lists the test events' do
-        branch = MergeRequest.first.source_branch
+        branch = project.merge_requests.first.source_branch
 
         get namespace_project_cycle_analytics_test_path(project.namespace, project, format: :json, branch: branch)
 
         expect(json_response['events']).not_to be_empty
-
         expect(json_response['events'].first['date']).not_to be_empty
       end
     end
 
     context 'with private project and builds' do
       before do
-        ProjectMember.first.update(access_level: Gitlab::Access::GUEST)
+        project.members.first.update(access_level: Gitlab::Access::GUEST)
       end
 
       it 'does not list the test events' do
@@ -116,10 +118,6 @@ describe 'cycle analytics events' do
         expect(response).to have_http_status(:ok)
       end
     end
-  end
-
-  def json_response
-    JSON.parse(response.body)
   end
 
   def create_cycle
