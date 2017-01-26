@@ -238,6 +238,24 @@ feature 'Merge request approvals', js: true, feature: true do
         expect(page).to have_no_css('.approver-avatar')
       end
     end
+
+    context 'when CI is running but no approval given', js: true do
+      before do
+        create :approver_group, group: group, target: merge_request
+        create(:ci_empty_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch)
+        visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+      end
+
+      it 'I am unable to set Merge When Pipeline Succeeds' do
+        # before approval status is loaded
+        expect(page).to have_button('Merge When Pipeline Succeeds', disabled: true)
+
+        wait_for_ajax
+
+        # after approval status is loaded
+        expect(page).to have_button('Merge When Pipeline Succeeds', disabled: true)
+      end
+    end
   end
 end
 
