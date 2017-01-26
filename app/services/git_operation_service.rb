@@ -82,12 +82,7 @@ class GitOperationService
     end
 
     branch = repository.find_branch(branch_name)
-    oldrev = if branch
-               # This could verify we're not losing commits
-               repository.rugged.merge_base(newrev, branch.target)
-             else
-               Gitlab::Git::BLANK_SHA
-             end
+    oldrev = find_oldrev_from_branch(newrev, branch)
 
     ref = Gitlab::Git::BRANCH_REF_PREFIX + branch_name
     update_ref_in_hooks(ref, newrev, oldrev)
@@ -98,6 +93,18 @@ class GitOperationService
       was_empty || Gitlab::Git.blank_ref?(oldrev)
 
     newrev
+  end
+
+  def find_oldrev_from_branch(newrev, branch)
+    return Gitlab::Git::BLANK_SHA unless branch
+
+    oldrev = branch.target
+
+    if oldrev == repository.rugged.merge_base(newrev, branch.target)
+      oldrev
+    else
+      raise Repository::CommitError.new('Branch diverged')
+    end
   end
 
   def update_ref_in_hooks(ref, newrev, oldrev)
