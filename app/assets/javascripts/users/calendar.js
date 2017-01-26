@@ -88,7 +88,7 @@
             var lastMonth, lastMonthX, month, x;
             if (a === 0 && stamp.day === 0) {
               month = stamp.date.getMonth();
-              x = (_this.daySizeWithSpace * i + 41) + _this.daySizeWithSpace;
+              x = (_this.daySizeWithSpace * i + 1) + _this.daySizeWithSpace;
               lastMonth = _.last(_this.months);
               if (lastMonth != null) {
                 lastMonthX = lastMonth.x;
@@ -158,7 +158,7 @@
     };
 
     Calendar.prototype.renderMonths = function() {
-      return this.svg.append('g').selectAll('text').data(this.months).enter().append('text').attr('x', function(date) {
+      return this.svg.append('g').attr('direction', 'ltr').selectAll('text').data(this.months).enter().append('text').attr('x', function(date) {
         return date.x;
       }).attr('y', 10).attr('class', 'user-contrib-text').text((function(_this) {
         return function(date) {
