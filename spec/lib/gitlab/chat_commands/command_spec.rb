@@ -5,7 +5,19 @@ describe Gitlab::ChatCommands::Command, service: true do
   let(:user) { create(:user) }
 
   describe '#execute' do
-    subject { described_class.new(project, user, params).execute }
+    subject do
+      described_class.new(project, user, params).execute
+    end
+
+    context 'when no command is available' do
+      let(:params) { { text: 'issue show 1' } }
+      let(:project) { create(:empty_project, has_external_issue_tracker: true) }
+
+      it 'displays 404 messages' do
+        expect(subject[:response_type]).to be(:ephemeral)
+        expect(subject[:text]).to start_with('404 not found')
+      end
+    end
 
     context 'when an unknown command is triggered' do
       let(:params) { { command: '/gitlab', text: "unknown command 123" } }

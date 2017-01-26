@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::DataBuilder::Push, lib: true do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 
   describe '.build_sample' do

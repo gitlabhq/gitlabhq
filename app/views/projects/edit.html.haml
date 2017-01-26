@@ -7,10 +7,17 @@
       .project-edit-errors
       = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "edit-project" }, authenticity_token: true do |f|
         %fieldset.append-bottom-0
-          .form-group
-            = f.label :name, class: 'label-light' do
-              Project name
-            = f.text_field :name, class: "form-control", id: "project_name_edit"
+          .row
+            .form-group.col-md-9
+              = f.label :name, class: 'label-light' do
+                Project name
+              = f.text_field :name, class: "form-control", id: "project_name_edit"
+
+            .form-group.col-md-3
+              = f.label :id, class: 'label-light' do
+                Project ID
+              = f.text_field :id, class: 'form-control', readonly: true
+
           .form-group
             = f.label :description, class: 'label-light' do
               Project description

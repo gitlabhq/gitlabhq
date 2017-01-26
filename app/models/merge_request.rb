@@ -865,9 +865,11 @@ class MergeRequest < ActiveRecord::Base
       paths: paths
     )
 
-    active_diff_notes.each do |note|
-      service.execute(note)
-      Gitlab::Timeless.timeless(note, &:save)
+    transaction do
+      active_diff_notes.each do |note|
+        service.execute(note)
+        Gitlab::Timeless.timeless(note, &:save)
+      end
     end
   end
 

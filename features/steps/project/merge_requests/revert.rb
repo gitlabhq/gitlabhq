@@ -30,14 +30,13 @@ class Spinach::Features::RevertMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I am signed in as a developer of the project' do
+    @user = create(:user) { |u| @project.add_developer(u) }
     login_as(@user)
   end
 
   step 'There is an open Merge Request' do
-    @user = create(:user)
-    @project = create(:project, :public, :repository)
-    @project_member = create(:project_member, :developer, user: @user, project: @project)
-    @merge_request = create(:merge_request, :with_diffs, :simple, source_project: @project)
+    @merge_request = create(:merge_request, :with_diffs, :simple)
+    @project = @merge_request.source_project
   end
 
   step 'I should see a revert error' do

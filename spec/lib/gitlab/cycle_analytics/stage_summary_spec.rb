@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::CycleAnalytics::StageSummary, models: true do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:from) { 1.day.ago }
   let(:user) { create(:user, :admin) }
   subject { described_class.new(project, from: Time.now, current_user: user).data }
@@ -15,7 +15,7 @@ describe Gitlab::CycleAnalytics::StageSummary, models: true do
     end
 
     it "doesn't find issues from other projects" do
-      Timecop.freeze(5.days.from_now) { create(:issue, project: create(:project)) }
+      Timecop.freeze(5.days.from_now) { create(:issue, project: create(:empty_project)) }
 
       expect(subject.first[:value]).to eq(0)
     end
@@ -30,7 +30,7 @@ describe Gitlab::CycleAnalytics::StageSummary, models: true do
     end
 
     it "doesn't find commits from other projects" do
-      Timecop.freeze(5.days.from_now) { create_commit("Test message", create(:project), user, 'master') }
+      Timecop.freeze(5.days.from_now) { create_commit("Test message", create(:project, :repository), user, 'master') }
 
       expect(subject.second[:value]).to eq(0)
     end
@@ -51,7 +51,9 @@ describe Gitlab::CycleAnalytics::StageSummary, models: true do
     end
 
     it "doesn't find commits from other projects" do
-      Timecop.freeze(5.days.from_now) { create(:deployment, project: create(:project)) }
+      Timecop.freeze(5.days.from_now) do
+        create(:deployment, project: create(:project, :repository))
+      end
 
       expect(subject.third[:value]).to eq(0)
     end

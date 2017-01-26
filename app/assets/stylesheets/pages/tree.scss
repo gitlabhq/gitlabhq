@@ -32,6 +32,10 @@
       .last-commit {
         @include str-truncated(506px);
 
+        .fa-angle-right {
+          margin-left: 5px;
+        }
+
         @media (min-width: $screen-md-min) and (max-width: $screen-md-max) {
           @include str-truncated(450px);
         }

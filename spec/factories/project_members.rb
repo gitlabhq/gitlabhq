@@ -1,7 +1,7 @@
 FactoryGirl.define do
   factory :project_member do
     user
-    project
+    project factory: :empty_project
     master
 
     trait(:guest)     { access_level ProjectMember::GUEST }

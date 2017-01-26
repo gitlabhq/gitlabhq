@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::GithubImport::CommentFormatter, lib: true do
-  let(:project) { create(:project) }
+  let(:project) { create(:empty_project) }
   let(:octocat) { double(id: 123456, login: 'octocat') }
   let(:created_at) { DateTime.strptime('2013-04-10T20:09:31Z') }
   let(:updated_at) { DateTime.strptime('2014-03-03T18:58:10Z') }

@@ -64,13 +64,26 @@
     }
 
     checkForEnter(e) {
+      if (e.keyCode === 38 || e.keyCode === 40) {
+        const selectionStart = this.filteredSearchInput.selectionStart;
+
+        e.preventDefault();
+        this.filteredSearchInput.setSelectionRange(selectionStart, selectionStart);
+      }
+
       if (e.keyCode === 13) {
+        const dropdown = this.dropdownManager.mapping[this.dropdownManager.currentDropdown];
+        const dropdownEl = dropdown.element;
+        const activeElements = dropdownEl.querySelectorAll('.dropdown-active');
+
         e.preventDefault();
 
-        // Prevent droplab from opening dropdown
-        this.dropdownManager.destroyDroplab();
+        if (!activeElements.length) {
+          // Prevent droplab from opening dropdown
+          this.dropdownManager.destroyDroplab();
 
-        this.search();
+          this.search();
+        }
       }
     }
 

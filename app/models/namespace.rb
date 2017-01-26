@@ -4,6 +4,7 @@ class Namespace < ActiveRecord::Base
   include CacheMarkdownField
   include Sortable
   include Gitlab::ShellAdapter
+  include Gitlab::CurrentSettings
   include Routable
 
   cache_markdown_field :description, pipeline: :description
@@ -176,6 +177,10 @@ class Namespace < ActiveRecord::Base
     end
   end
 
+  def shared_runners_enabled?
+    projects.with_shared_runners.any?
+  end
+
   def full_name
     @full_name ||=
       if parent
@@ -185,8 +190,26 @@ class Namespace < ActiveRecord::Base
       end
   end
 
-  def parents
-    @parents ||= parent ? parent.parents + [parent] : []
+  # Scopes the model on ancestors of the record
+  def ancestors
+    if parent_id
+      path = route.path
+      paths = []
+
+      until path.blank?
+        path = path.rpartition('/').first
+        paths << path
+      end
+
+      self.class.joins(:route).where('routes.path IN (?)', paths).reorder('routes.path ASC')
+    else
+      self.class.none
+    end
+  end
+
+  # Scopes the model on direct and indirect children of the record
+  def descendants
+    self.class.joins(:route).where('routes.path LIKE ?', "#{route.path}/%").reorder('routes.path ASC')
   end
 
   private

@@ -4,6 +4,6 @@ class UserProjectAccessChangedService
   end
 
   def execute
-    AuthorizedProjectsWorker.bulk_perform_async(@user_ids.map { |id| [id] })
+    AuthorizedProjectsWorker.bulk_perform_and_wait(@user_ids.map { |id| [id] })
   end
 end

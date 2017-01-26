@@ -203,6 +203,10 @@
       position: relative;
       margin-right: 6px;
 
+      .tooltip {
+        white-space: nowrap;
+      }
+
       .tooltip-inner {
         padding: 3px 4px;
       }
@@ -287,6 +291,10 @@
           width: 12px;
         }
       }
+    }
+
+    .tooltip {
+      white-space: nowrap;
     }
   }
 

@@ -1,9 +1,15 @@
 require 'spec_helper'
 
 describe HealthCheckController do
+  include StubENV
+
   let(:token) { current_application_settings.health_check_access_token }
   let(:json_response) { JSON.parse(response.body) }
   let(:xml_response) { Hash.from_xml(response.body)['hash'] }
+
+  before do
+    stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
+  end
 
   describe 'GET #index' do
     context 'when services are up but NO access token' do

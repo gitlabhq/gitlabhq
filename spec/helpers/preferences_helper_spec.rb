@@ -110,7 +110,7 @@ describe PreferencesHelper do
       end
 
       context 'when repository is not empty' do
-        let(:project) { create(:project, :public) }
+        let(:project) { create(:project, :public, :repository) }
 
         it 'returns readme if user has repository access' do
           allow(helper).to receive(:can?).with(nil, :download_code, project).and_return(true)

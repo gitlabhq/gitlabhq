@@ -55,6 +55,28 @@ describe 'Git HTTP requests', lib: true do
           expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
         end
       end
+
+      context 'but the repo is disabled' do
+        let(:project) { create(:project, repository_access_level: ProjectFeature::DISABLED, wiki_access_level: ProjectFeature::ENABLED) }
+        let(:wiki) { ProjectWiki.new(project) }
+        let(:path) { "/#{wiki.repository.path_with_namespace}.git" }
+
+        before do
+          project.team << [user, :developer]
+        end
+
+        it 'allows clones' do
+          download(path, user: user.username, password: user.password) do |response|
+            expect(response).to have_http_status(200)
+          end
+        end
+
+        it 'allows pushes' do
+          upload(path, user: user.username, password: user.password) do |response|
+            expect(response).to have_http_status(200)
+          end
+        end
+      end
     end
 
     context "when the project exists" do

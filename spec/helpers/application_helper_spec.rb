@@ -55,7 +55,7 @@ describe ApplicationHelper do
 
   describe 'project_icon' do
     it 'returns an url for the avatar' do
-      project = create(:project, avatar: File.open(uploaded_image_temp_path))
+      project = create(:empty_project, avatar: File.open(uploaded_image_temp_path))
 
       avatar_url = "http://#{Gitlab.config.gitlab.host}/uploads/project/avatar/#{project.id}/banana_sample.gif"
       expect(helper.project_icon("#{project.namespace.to_param}/#{project.to_param}").to_s).
@@ -63,7 +63,7 @@ describe ApplicationHelper do
     end
 
     it 'gives uploaded icon when present' do
-      project = create(:project)
+      project = create(:empty_project)
 
       allow_any_instance_of(Project).to receive(:avatar_in_git).and_return(true)
 

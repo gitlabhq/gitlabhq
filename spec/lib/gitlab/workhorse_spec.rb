@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Workhorse, lib: true do
-  let(:project)    { create(:project) }
+  let(:project)    { create(:project, :repository) }
   let(:repository) { project.repository }
 
   def decode_workhorse_header(array)

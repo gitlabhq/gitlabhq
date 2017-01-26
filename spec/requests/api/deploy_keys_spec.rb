@@ -73,19 +73,14 @@ describe API::DeployKeys, api: true  do
       post api("/projects/#{project.id}/deploy_keys", admin), { title: 'invalid key' }
 
       expect(response).to have_http_status(400)
-      expect(json_response['message']['key']).to eq([
-        'can\'t be blank',
-        'is invalid'
-      ])
+      expect(json_response['error']).to eq('key is missing')
     end
 
     it 'should not create a key without title' do
       post api("/projects/#{project.id}/deploy_keys", admin), key: 'some key'
 
       expect(response).to have_http_status(400)
-      expect(json_response['message']['title']).to eq([
-        'can\'t be blank'
-      ])
+      expect(json_response['error']).to eq('title is missing')
     end
 
     it 'should create new ssh key' do

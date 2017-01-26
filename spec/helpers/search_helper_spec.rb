@@ -42,7 +42,7 @@ describe SearchHelper do
       end
 
       it "includes the user's projects" do
-        project = create(:project, namespace: create(:namespace, owner: user))
+        project = create(:empty_project, namespace: create(:namespace, owner: user))
         expect(search_autocomplete_opts(project.name).size).to eq(1)
       end
 
@@ -52,7 +52,9 @@ describe SearchHelper do
       end
 
       context "with a current project" do
-        before { @project = create(:project) }
+        before do
+          @project = create(:project, :repository)
+        end
 
         it "includes project-specific sections" do
           expect(search_autocomplete_opts("Files").size).to eq(1)

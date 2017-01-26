@@ -1,3 +1,1 @@
-# Account Security
-
-- [Two-Factor Authentication](two_factor_authentication.md)
+This document was moved to [profile](../profile/index.md#security).
