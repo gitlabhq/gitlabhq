@@ -1,5 +1,5 @@
 FactoryGirl.define do
   factory :service do
-    project
+    project factory: :empty_project
   end
 end
