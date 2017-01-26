@@ -33,10 +33,6 @@ module Gitlab
             'Play'
           end
 
-          def action_class
-            'ci-play-icon'
-          end
-
           def action_path
             play_namespace_project_build_path(subject.project.namespace,
                                               subject.project,
