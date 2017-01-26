@@ -16,10 +16,9 @@
         Open
     .header-text-content
       %span.identifier
-        Milestone ##{@milestone.iid}
+        %strong
+          Milestone %#{@milestone.iid}
       - if @milestone.due_date || @milestone.start_date
-        %span.creator
-          &middot;
         = milestone_date_range(@milestone)
     .milestone-buttons
       - if can?(current_user, :admin_milestone, @project)
