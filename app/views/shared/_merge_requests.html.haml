@@ -1,5 +1,5 @@
 - if @merge_requests.to_a.any?
-  .panel.panel-default.panel-small
+  .panel.panel-default.panel-small.panel-without-border
     %ul.content-list.mr-list
       = render partial: 'projects/merge_requests/merge_request', collection: @merge_requests
 
