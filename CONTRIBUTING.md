@@ -286,14 +286,6 @@ request is as follows:
 1. For tests that use Capybara or PhantomJS, see this [article on how
    to write reliable asynchronous tests](https://robots.thoughtbot.com/write-reliable-asynchronous-integration-tests-with-capybara).
 
-The **official merge window** is in the beginning of the month from the 1st to
-the 7th day of the month. This is the best time to submit an MR and get
-feedback fast. Before this time the GitLab Inc. team is still dealing with work
-that is created by the monthly release such as regressions requiring patch
-releases. After the 7th it is already getting closer to the release date of the
-next version. This means there is less time to fix the issues created by
-merging large new features.
-
 Please keep the change in a single MR **as small as possible**. If you want to
 contribute a large feature think very hard what the minimum viable change is.
 Can you split the functionality? Can you only submit the backend/API code? Can
