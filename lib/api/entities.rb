@@ -93,6 +93,7 @@ module API
       expose :avatar_url
       expose :star_count, :forks_count
       expose :open_issues_count, if: lambda { |project, options| project.feature_available?(:issues, options[:current_user]) && project.default_issues_tracker? }
+      expose :license
       expose :runners_token, if: lambda { |_project, options| options[:user_can_admin_project] }
       expose :public_builds
       expose :shared_with_groups do |project, options|

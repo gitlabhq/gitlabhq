@@ -1328,6 +1328,14 @@ class Project < ActiveRecord::Base
   alias_method :human_name, :full_name
   alias_method :path_with_namespace, :full_path
 
+  def license
+    return 'LICENSE' if @repository.license_key.nil?
+
+    license = Licensee::License.new(@repository.license_key)
+
+    license.nickname || license.name
+  end
+
   private
 
   def cross_namespace_reference?(from)

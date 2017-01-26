@@ -90,7 +90,8 @@ Parameters:
     "shared_with_groups": [],
     "only_allow_merge_if_build_succeeds": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
-    "request_access_enabled": false
+    "request_access_enabled": false,
+    "license": "MIT License"
   },
   {
     "id": 6,
@@ -151,7 +152,8 @@ Parameters:
     "shared_with_groups": [],
     "only_allow_merge_if_build_succeeds": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
-    "request_access_enabled": false
+    "request_access_enabled": false,
+    "license": "MIT License"
   }
 ]
 ```
@@ -243,7 +245,8 @@ Parameters:
   ],
   "only_allow_merge_if_build_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
-  "request_access_enabled": false
+  "request_access_enabled": false,
+  "license": "MIT License"
 }
 ```
 
@@ -598,7 +601,8 @@ Example response:
   "shared_with_groups": [],
   "only_allow_merge_if_build_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
-  "request_access_enabled": false
+  "request_access_enabled": false,
+  "license": "MIT License"
 }
 ```
 
@@ -664,7 +668,8 @@ Example response:
   "shared_with_groups": [],
   "only_allow_merge_if_build_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
-  "request_access_enabled": false
+  "request_access_enabled": false,
+  "license": "MIT License"
 }
 ```
 
@@ -747,7 +752,8 @@ Example response:
   "shared_with_groups": [],
   "only_allow_merge_if_build_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
-  "request_access_enabled": false
+  "request_access_enabled": false,
+  "license": "MIT License"
 }
 ```
 
@@ -830,7 +836,8 @@ Example response:
   "shared_with_groups": [],
   "only_allow_merge_if_build_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
-  "request_access_enabled": false
+  "request_access_enabled": false,
+  "license": "MIT License"
 }
 ```
 
