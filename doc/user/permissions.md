@@ -19,10 +19,12 @@ The following table depicts the various user permission levels in a project.
 | Action                                | Guest   | Reporter   | Developer   | Master   | Owner  |
 |---------------------------------------|---------|------------|-------------|----------|--------|
 | Create new issue                      | ✓       | ✓          | ✓           | ✓        | ✓      |
+| Create confidential issue             | ✓       | ✓          | ✓           | ✓        | ✓      |
+| View confidential issues              | (✓) [^1] | ✓          | ✓           | ✓        | ✓      |
 | Leave comments                        | ✓       | ✓          | ✓           | ✓        | ✓      |
-| See a list of builds                  | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
-| See a build log                       | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
-| Download and browse build artifacts   | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
+| See a list of builds                  | ✓ [^2]  | ✓          | ✓           | ✓        | ✓      |
+| See a build log                       | ✓ [^2]  | ✓          | ✓           | ✓        | ✓      |
+| Download and browse build artifacts   | ✓ [^2]  | ✓          | ✓           | ✓        | ✓      |
 | View wiki pages                       | ✓       | ✓          | ✓           | ✓        | ✓      |
 | Pull project code                     |         | ✓          | ✓           | ✓        | ✓      |
 | Download project                      |         | ✓          | ✓           | ✓        | ✓      |
@@ -65,12 +67,9 @@ The following table depicts the various user permission levels in a project.
 | Switch visibility level               |         |            |             |          | ✓      |
 | Transfer project to another namespace |         |            |             |          | ✓      |
 | Remove project                        |         |            |             |          | ✓      |
-| Force push to protected branches [^2] |         |            |             |          |        |
-| Remove protected branches [^2]        |         |            |             |          |        |
+| Force push to protected branches [^3] |         |            |             |          |        |
+| Remove protected branches [^3]        |         |            |             |          |        |
 | Remove pages                          |         |            |             |          | ✓      |
-
-[^1]: If **Public pipelines** is enabled in **Project Settings > CI/CD Pipelines**
-[^2]: Not allowed for Guest, Reporter, Developer, Master, or Owner
 
 ## Group
 
@@ -159,17 +158,20 @@ users:
 | Run CI build                                |                 | ✓           | ✓        | ✓      |
 | Clone source and LFS from current project   |                 | ✓           | ✓        | ✓      |
 | Clone source and LFS from public projects   |                 | ✓           | ✓        | ✓      |
-| Clone source and LFS from internal projects |                 | ✓ [^3]      | ✓ [^3]   | ✓      |
-| Clone source and LFS from private projects  |                 | ✓ [^4]      | ✓ [^4]   | ✓ [^4] |
+| Clone source and LFS from internal projects |                 | ✓ [^4]      | ✓ [^4]   | ✓      |
+| Clone source and LFS from private projects  |                 | ✓ [^5]      | ✓ [^5]   | ✓ [^5] |
 | Push source and LFS                         |                 |             |          |        |
 | Pull container images from current project  |                 | ✓           | ✓        | ✓      |
 | Pull container images from public projects  |                 | ✓           | ✓        | ✓      |
-| Pull container images from internal projects|                 | ✓ [^3]      | ✓ [^3]   | ✓      |
-| Pull container images from private projects |                 | ✓ [^4]      | ✓ [^4]   | ✓ [^4] |
+| Pull container images from internal projects|                 | ✓ [^4]      | ✓ [^4]   | ✓      |
+| Pull container images from private projects |                 | ✓ [^5]      | ✓ [^5]   | ✓ [^5] |
 | Push container images to current project    |                 | ✓           | ✓        | ✓      |
 | Push container images to other projects     |                 |             |          |        |
 
-[^3]: Only if user is not external one.
-[^4]: Only if user is a member of the project.
+[^1]: Guest users can only view the confidential issues they created themselves
+[^2]: If **Public pipelines** is enabled in **Project Settings > CI/CD Pipelines**
+[^3]: Not allowed for Guest, Reporter, Developer, Master, or Owner
+[^4]: Only if user is not external one.
+[^5]: Only if user is a member of the project.
 [ce-18994]: https://gitlab.com/gitlab-org/gitlab-ce/issues/18994
 [new-mod]: project/new_ci_build_permissions_model.md

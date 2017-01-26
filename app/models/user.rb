@@ -192,8 +192,8 @@ class User < ActiveRecord::Base
     joins(:identities).where(identities: { provider: provider })
   end
   scope :todo_authors, ->(user_id, state) { where(id: Todo.where(user_id: user_id, state: state).select(:author_id)) }
-  scope :order_recent_sign_in, -> { reorder(last_sign_in_at: :desc) }
-  scope :order_oldest_sign_in, -> { reorder(last_sign_in_at: :asc) }
+  scope :order_recent_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('last_sign_in_at', 'DESC')) }
+  scope :order_oldest_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('last_sign_in_at', 'ASC')) }
 
   def self.with_two_factor
     joins("LEFT OUTER JOIN u2f_registrations AS u2f ON u2f.user_id = users.id").
@@ -459,6 +459,15 @@ class User < ActiveRecord::Base
       new([groups.select(:id), authorized_projects.select(:namespace_id)])
 
     Group.where("namespaces.id IN (#{union.to_sql})")
+  end
+
+  def nested_groups
+    Group.member_descendants(id)
+  end
+
+  def nested_projects
+    Project.joins(:namespace).where('namespaces.parent_id IS NOT NULL').
+      member_descendants(id)
   end
 
   def refresh_authorized_projects

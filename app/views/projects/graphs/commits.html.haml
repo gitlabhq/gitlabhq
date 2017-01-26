@@ -11,7 +11,7 @@
 
   %p.lead
     Commit statistics for
-    %strong #{@ref}
+    %strong= @ref
     #{@commits_graph.start_date.strftime('%b %d')} - #{@commits_graph.end_date.strftime('%b %d')}
 
   .row
@@ -19,19 +19,19 @@
       %ul
         %li
           %p.lead
-            %strong #{@commits_graph.commits.size}
+            %strong= @commits_graph.commits.size
             commits during
-            %strong #{@commits_graph.duration}
+            %strong= @commits_graph.duration
             days
         %li
           %p.lead
             Average
-            %strong #{@commits_graph.commit_per_day}
+            %strong= @commits_graph.commit_per_day
             commits per day
         %li
           %p.lead
             Contributed by
-            %strong #{@commits_graph.authors}
+            %strong= @commits_graph.authors
             authors
     .col-md-6
       %div

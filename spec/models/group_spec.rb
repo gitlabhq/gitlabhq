@@ -305,6 +305,12 @@ describe Group, models: true do
     it 'returns the canonical URL' do
       expect(group.web_url).to include("groups/#{group.name}")
     end
+
+    context 'nested group' do
+      let(:nested_group) { create(:group, :nested) }
+
+      it { expect(nested_group.web_url).to include("groups/#{nested_group.full_path}") }
+    end
   end
 
   describe 'nested group' do

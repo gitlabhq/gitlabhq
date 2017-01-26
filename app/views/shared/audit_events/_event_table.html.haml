@@ -16,8 +16,7 @@
             - else
               (removed)
           %td
-            %span
-              #{raw human_text(event.details)}
-          %td #{event.details[:target_details]}
-          %td #{event.created_at}
+            %span= raw human_text(event.details)
+          %td= event.details[:target_details]
+          %td= event.created_at
   = paginate events, theme: "gitlab"

@@ -264,6 +264,9 @@
         case 'projects:artifacts:browse':
           new BuildArtifacts();
           break;
+        case 'help:index':
+          gl.VersionCheckImage.bindErrorEvent($('img.js-version-status-badge'));
+          break;
         case 'search:show':
           new Search();
           break;

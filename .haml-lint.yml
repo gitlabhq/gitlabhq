@@ -46,7 +46,7 @@ linters:
     max: 80
 
   MultilinePipe:
-    enabled: false
+    enabled: true
 
   MultilineScript:
     enabled: true
@@ -77,7 +77,7 @@ linters:
       - Style/WhileUntilModifier
 
   RubyComments:
-    enabled: false
+    enabled: true
 
   SpaceBeforeScript:
     enabled: true
@@ -97,7 +97,7 @@ linters:
     enabled: true
 
   UnnecessaryInterpolation:
-    enabled: false
+    enabled: true
 
   UnnecessaryStringOutput:
-    enabled: false
+    enabled: true

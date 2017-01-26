@@ -43,6 +43,10 @@ module Gitlab
       @milestones_count ||= milestones.count
     end
 
+    def single_commit_result?
+      false
+    end
+
     private
 
     def projects

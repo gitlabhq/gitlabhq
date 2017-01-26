@@ -962,8 +962,32 @@ a.allowed-to-push {
 .variables-table {
   table-layout: fixed;
 
+  &.table-responsive {
+    border: none;
+  }
+
   .variable-key {
-    width: 30%;
+    width: 300px;
+    max-width: 300px;
+    overflow: hidden;
+    word-wrap: break-word;
+
+    // override bootstrap
+    white-space: normal!important;
+
+    @media (max-width: $screen-sm-max) {
+      width: 150px;
+      max-width: 150px;
+    }
+  }
+
+  .variable-value {
+    @media(max-width: $screen-xs-max) {
+      width: 150px;
+      max-width: 150px;
+      overflow: hidden;
+      word-wrap: break-word;
+    }
   }
 }
 

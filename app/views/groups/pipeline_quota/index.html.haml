@@ -4,7 +4,7 @@
   = link_to icon('question-circle'), help_page_path("user/admin_area/settings/continuous_integration", anchor: "shared-runners-build-minutes-quota"), target: '_blank'
 %p.light
   Monthly build minutes usage across shared Runners for the
-  %strong #{@group.name}
+  %strong= @group.name
   group
 
 .pipeline-quota.container-fluid
@@ -22,7 +22,7 @@
         minutes
     .col-sm-6.right
       - if @group.shared_runners_minutes_limit_enabled?
-        = "#{group_shared_runner_limits_percent_used(@group)}% used"
+        #{group_shared_runner_limits_percent_used(@group)}% used
       - else
         Unlimited
       = group_shared_runner_limits_progress_bar(@group)
