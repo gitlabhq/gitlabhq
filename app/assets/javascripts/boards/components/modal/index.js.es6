@@ -6,9 +6,6 @@
 (() => {
   const ModalStore = gl.issueBoards.ModalStore;
 
-  window.gl = window.gl || {};
-  window.gl.issueBoards = window.gl.issueBoards || {};
-
   gl.issueBoards.IssuesModal = Vue.extend({
     props: [
       'blankStateImage', 'newIssuePath',
@@ -28,6 +25,9 @@
             .then(() => {
               this.loading = false;
             });
+        } else if (!this.showAddIssuesModal) {
+          this.issues = [];
+          this.selectedIssues = [];
         }
       },
     },

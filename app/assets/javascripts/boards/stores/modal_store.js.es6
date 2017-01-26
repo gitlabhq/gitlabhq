@@ -1,7 +1,4 @@
 (() => {
-  window.gl = window.gl || {};
-  window.gl.issueBoards = window.gl.issueBoards || {};
-
   class ModalStore {
     constructor() {
       this.store = {

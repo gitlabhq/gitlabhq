@@ -1,26 +1,17 @@
 /* global Vue */
 (() => {
   const ModalStore = gl.issueBoards.ModalStore;
-  const Store = gl.issueBoards.BoardsStore;
-
-  window.gl = window.gl || {};
-  window.gl.issueBoards = window.gl.issueBoards || {};
 
   gl.issueBoards.ModalFooterListsDropdown = Vue.extend({
     data() {
       return {
         modal: ModalStore.store,
-        state: Store.state,
+        state: gl.issueBoards.BoardsStore.state,
       };
     },
     computed: {
       selected() {
         return this.modal.selectedList;
-      },
-    },
-    methods: {
-      selectList(list) {
-        this.modal.selectedList = list;
       },
     },
     template: `
@@ -46,7 +37,7 @@
                 href="#"
                 role="button"
                 :class="{ 'is-active': list.id == selected.id }"
-                @click="selectList(list)">
+                @click="modal.selectedList = list">
                 <span
                   class="dropdown-label-box"
                   :style="{ backgroundColor: list.label.color }">

@@ -3,9 +3,6 @@
 (() => {
   const ModalStore = gl.issueBoards.ModalStore;
 
-  window.gl = window.gl || {};
-  window.gl.issueBoards = window.gl.issueBoards || {};
-
   gl.issueBoards.ModalFooter = Vue.extend({
     data() {
       return ModalStore.store;
