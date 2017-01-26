@@ -1,4 +1,9 @@
 module LicenseHelper
+  include ActionView::Helpers::AssetTagHelper
+  include ActionView::Helpers::UrlHelper
+
+  delegate :new_admin_license_path, to: 'Gitlab::Routing.url_helpers'
+
   def current_active_user_count
     User.active.count
   end
@@ -12,28 +17,24 @@ module LicenseHelper
       if License.current
         yes_license_message(signed_in, is_admin)
       else
-        no_license_message(signed_in, is_admin)
+        no_license_message(is_admin)
       end
   end
 
   private
 
-  def no_license_message(signed_in, is_admin)
+  def no_license_message(is_admin)
     message = []
-
-    message << "No GitLab Enterprise Edition license has been provided yet."
-    message << "Pushing code and creation of issues and merge requests has been disabled."
-
+    message << 'No GitLab Enterprise Edition license has been provided yet.'
+    message << 'Pushing code and creation of issues and merge requests has been disabled.'
     message <<
       if is_admin
-        "#{link_to('Upload a license', new_admin_license_path)} in the admin area"
+        "#{link_to('Upload a license', new_admin_license_path)} in the admin area to activate this functionality."
       else
-        "Ask an admin to upload a license"
+        'Ask an admin to upload a license to activate this functionality.'
       end
 
-    message << "to activate this functionality."
-
-    content_tag(:p, message.join(" ").html_safe)
+    content_tag(:p, message.join(' ').html_safe)
   end
 
   def yes_license_message(signed_in, is_admin)
@@ -45,33 +46,33 @@ module LicenseHelper
 
     message = []
 
-    message << "The GitLab Enterprise Edition license"
-    message << (license.expired? ? "expired" : "will expire")
+    message << 'The GitLab Enterprise Edition license'
+    message << (license.expired? ? 'expired' : 'will expire')
     message << "on #{license.expires_at}."
 
     if license.expired? && license.will_block_changes?
-      message << "Pushing code and creation of issues and merge requests"
+      message << 'Pushing code and creation of issues and merge requests'
 
       message <<
         if license.block_changes?
-          "has been disabled."
+          'has been disabled.'
         else
           "will be disabled on #{license.block_changes_at}."
         end
 
       message <<
         if is_admin
-          "Upload a new license in the admin area"
+          'Upload a new license in the admin area'
         else
-          "Ask an admin to upload a new license"
+          'Ask an admin to upload a new license'
         end
 
-      message << "to"
-      message << (license.block_changes? ? "restore" : "ensure uninterrupted")
-      message << "service."
+      message << 'to'
+      message << (license.block_changes? ? 'restore' : 'ensure uninterrupted')
+      message << 'service.'
     end
 
-    message.join(" ")
+    message.join(' ')
   end
 
   extend self
