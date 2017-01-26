@@ -11,10 +11,10 @@ module Taskable
   INCOMPLETE   = 'incomplete'.freeze
   ITEM_PATTERN = /
     ^
-    \s*(?:[-+*]|(?:\d+\.))? # optional list prefix
-    \s*                     # optional whitespace prefix
-    (\[\s\]|\[[xX]\])       # checkbox
-    (\s.+)                  # followed by whitespace and some text.
+    \s*(?:[-+*]|(?:\d+\.)) # list prefix required - task item has to be always in a list
+    \s+                       # whitespace prefix has to be always presented for a list item
+    (\[\s\]|\[[xX]\])         # checkbox
+    (\s.+)                    # followed by whitespace and some text.
   /x
 
   def self.get_tasks(content)

@@ -2,7 +2,7 @@ FactoryGirl.define do
   factory :merge_request do
     title
     author
-    source_project factory: :project
+    association :source_project, :repository, factory: :project
     target_project { source_project }
 
     # $ git log --pretty=oneline feature..master

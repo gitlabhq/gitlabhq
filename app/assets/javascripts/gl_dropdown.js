@@ -651,18 +651,14 @@
         isMarking = false;
         el.removeClass(ACTIVE_CLASS);
         if (field && field.length) {
-          if (isInput) {
-            field.val('');
-          } else {
-            field.remove();
-          }
+          this.clearField(field, isInput);
         }
       } else if (el.hasClass(INDETERMINATE_CLASS)) {
         isMarking = true;
         el.addClass(ACTIVE_CLASS);
         el.removeClass(INDETERMINATE_CLASS);
         if (field && field.length && value == null) {
-          field.remove();
+          this.clearField(field, isInput);
         }
         if ((!field || !field.length) && fieldName) {
           this.addInput(fieldName, value, selectedObject);
@@ -676,7 +672,7 @@
           }
         }
         if (field && field.length && value == null) {
-          field.remove();
+          this.clearField(field, isInput);
         }
         // Toggle active class for the tick mark
         el.addClass(ACTIVE_CLASS);
@@ -824,6 +820,10 @@
         instance = null;
       }
       return $(this.el).find(".dropdown-toggle-text").text(this.options.toggleLabel(selected, el, instance));
+    };
+
+    GitLabDropdown.prototype.clearField = function(field, isInput) {
+      return isInput ? field.val('') : field.remove();
     };
 
     return GitLabDropdown;

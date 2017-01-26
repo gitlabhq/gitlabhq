@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe PipelinesFinder do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
 
   let!(:tag_pipeline)    { create(:ci_pipeline, project: project, ref: 'v1.0.0') }
   let!(:branch_pipeline) { create(:ci_pipeline, project: project) }

@@ -80,6 +80,22 @@ describe 'New/edit issue', feature: true, js: true do
         end
       end
     end
+
+    it 'correctly updates the dropdown toggle when removing a label' do
+      click_button 'Labels'
+
+      page.within '.dropdown-menu-labels' do
+        click_link label.title
+      end
+
+      expect(find('.js-label-select')).to have_content(label.title)
+
+      page.within '.dropdown-menu-labels' do
+        click_link label.title
+      end
+
+      expect(find('.js-label-select')).to have_content('Labels')
+    end
   end
 
   context 'edit issue' do

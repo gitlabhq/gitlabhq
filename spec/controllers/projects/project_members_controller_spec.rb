@@ -143,7 +143,7 @@ describe Projects::ProjectMembersController do
       end
 
       context 'and is an owner' do
-        let(:project) { create(:project, namespace: user.namespace) }
+        let(:project) { create(:empty_project, namespace: user.namespace) }
 
         before { project.team << [user, :master] }
 
@@ -234,7 +234,7 @@ describe Projects::ProjectMembersController do
   end
 
   describe 'POST apply_import' do
-    let(:another_project) { create(:project, :private) }
+    let(:another_project) { create(:empty_project, :private) }
     let(:member) { create(:user) }
 
     before do

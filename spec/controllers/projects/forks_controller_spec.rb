@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Projects::ForksController do
   let(:user) { create(:user) }
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:project, :public, :repository) }
   let(:forked_project) { Projects::ForkService.new(project, user).execute }
   let(:group) { create(:group, owner: forked_project.creator) }
 

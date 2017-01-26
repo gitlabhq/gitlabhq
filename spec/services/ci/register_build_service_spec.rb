@@ -171,7 +171,11 @@ module Ci
       end
 
       def execute(runner)
+<<<<<<< HEAD
         described_class.new(runner).execute
+=======
+        described_class.new(runner).execute.build
+>>>>>>> ce/master
       end
     end
   end

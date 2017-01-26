@@ -16,7 +16,10 @@ class ProjectGroupLink < ActiveRecord::Base
   validates :group_access, inclusion: { in: Gitlab::Access.values }, presence: true
   validate :different_group
 
+<<<<<<< HEAD
   before_destroy :delete_branch_protection
+=======
+>>>>>>> ce/master
   after_commit :refresh_group_members_authorized_projects
 
   def self.access_options

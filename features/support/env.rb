@@ -14,7 +14,11 @@ if ENV['CI']
   Knapsack::Adapters::SpinachAdapter.bind
 end
 
+<<<<<<< HEAD
 %w(select2_helper test_env repo_helpers license wait_for_ajax sidekiq).each do |f|
+=======
+%w(select2_helper test_env repo_helpers wait_for_ajax sidekiq).each do |f|
+>>>>>>> ce/master
   require Rails.root.join('spec', 'support', f)
 end
 

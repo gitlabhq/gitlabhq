@@ -13,6 +13,9 @@ $solarized-light-pre-bg: #002b36;
 $solarized-light-pre-bg: #fdf6e3;
 $solarized-light-pre-color: #586e75;
 $solarized-light-line-bg: #fdf6e3;
+$solarized-light-line-color: rgba(0, 0, 0, 0.3);
+$solarized-light-line-color-new: #a1a080;
+$solarized-light-line-color-old: #ad9186;
 $solarized-light-highlight: #eee8d5;
 $solarized-light-hll-bg: #ddd8c5;
 $solarized-light-c: #93a1a1;
@@ -98,7 +101,7 @@ $solarized-light-il: #2aa198;
 
   .diff-line-num,
   .diff-line-num a {
-    color: $black-transparent;
+    color: $solarized-light-line-color;
   }
 
   // Code itself
@@ -130,11 +133,21 @@ $solarized-light-il: #2aa198;
     .line_content.new {
       @include diff_background($solarized-light-new-bg,
       $solarized-light-new-idiff, $solarized-light-border);
+
+      &::before,
+      a {
+        color: $solarized-light-line-color-new;
+      }
     }
 
     .diff-line-num.old,
     .line_content.old {
       @include diff_background($solarized-light-old-bg, $solarized-light-old-idiff, $solarized-light-border);
+
+      &::before,
+      a {
+        color: $solarized-light-line-color-old;
+      }
     }
 
     .line_content.match {

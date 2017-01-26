@@ -217,7 +217,7 @@ describe Issue, models: true do
   end
 
   it_behaves_like 'an editable mentionable' do
-    subject { create(:issue) }
+    subject { create(:issue, project: create(:project, :repository)) }
 
     let(:backref_text) { "issue #{subject.to_reference}" }
     let(:set_mentionable_text) { ->(txt){ subject.description = txt } }

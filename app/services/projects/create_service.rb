@@ -22,9 +22,12 @@ module Projects
         return @project
       end
 
+<<<<<<< HEAD
       # Repository size limit comes as MB from the view
       set_repository_size_limit_as_bytes
 
+=======
+>>>>>>> ce/master
       set_project_name_from_path
 
       # get namespace id
@@ -145,11 +148,14 @@ module Projects
       end
     end
 
+<<<<<<< HEAD
     def set_repository_size_limit_as_bytes
       limit = params.delete(:repository_size_limit)
       @project.repository_size_limit = (limit.to_i.megabytes if limit.present?)
     end
 
+=======
+>>>>>>> ce/master
     def set_project_name_from_path
       # Set project name from path
       if @project.name.present? && @project.path.present?

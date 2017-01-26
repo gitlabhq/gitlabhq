@@ -3,10 +3,18 @@ module Ci
   # proper pending build to runner on runner API request
   class RegisterBuildService
     include Gitlab::CurrentSettings
+<<<<<<< HEAD
     prepend EE::Ci::RegisterBuildService
 
     attr_reader :runner
 
+=======
+
+    attr_reader :runner
+
+    Result = Struct.new(:build, :valid?)
+
+>>>>>>> ce/master
     def initialize(runner)
       @runner = runner
     end
@@ -30,10 +38,10 @@ module Ci
         build.run!
       end
 
-      build
+      Result.new(build, true)
 
     rescue StateMachines::InvalidTransition, ActiveRecord::StaleObjectError
-      nil
+      Result.new(build, false)
     end
 
     private

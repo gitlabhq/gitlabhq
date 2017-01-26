@@ -91,6 +91,20 @@ describe Ci::API::Builds do
           expect { register_builds }.to change { runner.reload.contacted_at }
         end
 
+        context 'when concurrently updating build' do
+          before do
+            expect_any_instance_of(Ci::Build).to receive(:run!).
+              and_raise(ActiveRecord::StaleObjectError.new(nil, nil))
+          end
+
+          it 'returns a conflict' do
+            register_builds info: { platform: :darwin }
+
+            expect(response).to have_http_status(409)
+            expect(response.headers).not_to have_key('X-GitLab-Last-Update')
+          end
+        end
+
         context 'registry credentials' do
           let(:registry_credentials) do
             { 'type' => 'registry',
