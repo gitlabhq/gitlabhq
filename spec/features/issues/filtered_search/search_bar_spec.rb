@@ -98,7 +98,10 @@ describe 'Search bar', js: true, feature: true do
       filtered_search.click
 
       expect(page.all('#js-dropdown-hint .filter-dropdown .filter-dropdown-item').size).to be > 0
+      puts "left:#{get_left_style(page.find('#js-dropdown-hint')['style'])}"
+      puts "original:#{hint_offset}"
       expect(get_left_style(page.find('#js-dropdown-hint')['style'])).to eq(hint_offset)
+      expect(true).to eq(false)
     end
   end
 end
