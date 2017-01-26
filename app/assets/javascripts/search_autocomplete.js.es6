@@ -69,10 +69,15 @@
         search: {
           fields: ['text']
         },
+        id: this.getSearchText,
         data: this.getData.bind(this),
         selectable: true,
         clicked: this.onClick.bind(this)
       });
+    }
+
+    getSearchText(selectedObject, el) {
+      return selectedObject.id ? selectedObject.text : '';
     }
 
     getData(term, callback) {
@@ -364,7 +369,7 @@
 
     onClick(item, $el, e) {
       if (location.pathname.indexOf(item.url) !== -1) {
-        e.preventDefault();
+        if (!e.metaKey) e.preventDefault();
         if (!this.badgePresent) {
           if (item.category === 'Projects') {
             this.projectInputEl.val(item.id);

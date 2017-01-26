@@ -13,6 +13,8 @@ $solarized-dark-pre-color: #93a1a1;
 $solarized-dark-pre-border: #113b46;
 $solarized-dark-line-bg: #002b36;
 $solarized-dark-line-color: rgba(255, 255, 255, 0.3);
+$solarized-dark-line-color-new: #5a766c;
+$solarized-dark-line-color-old: #7a6c71;
 $solarized-dark-highlight: #094554;
 $solarized-dark-hll-bg: #174652;
 $solarized-dark-c: #586e75;
@@ -124,11 +126,21 @@ $solarized-dark-il: #2aa198;
     .diff-line-num.new,
     .line_content.new {
       @include diff_background($solarized-dark-new-bg, $solarized-dark-new-idiff, $solarized-dark-border);
+
+      &::before,
+      a {
+        color: $solarized-dark-line-color-new;
+      }
     }
 
     .diff-line-num.old,
     .line_content.old {
       @include diff_background($solarized-dark-old-bg, $solarized-dark-old-idiff, $solarized-dark-border);
+
+      &::before,
+      a {
+        color: $solarized-dark-line-color-old;
+      }
     }
 
     .line_content.match {

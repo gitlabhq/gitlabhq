@@ -1,7 +1,7 @@
 FactoryGirl.define do
   factory :milestone do
     title
-    project
+    project factory: :empty_project
 
     trait :active do
       state "active"

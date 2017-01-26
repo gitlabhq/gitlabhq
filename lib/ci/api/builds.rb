@@ -18,24 +18,31 @@ module Ci
 
           if current_runner.is_runner_queue_value_latest?(params[:last_update])
             header 'X-GitLab-Last-Update', params[:last_update]
+            Gitlab::Metrics.add_event(:build_not_found_cached)
             return build_not_found!
           end
 
           new_update = current_runner.ensure_runner_queue_value
 
-          build = Ci::RegisterBuildService.new(current_runner).execute
+          result = Ci::RegisterBuildService.new(current_runner).execute
 
-          if build
-            Gitlab::Metrics.add_event(:build_found,
-                                      project: build.project.path_with_namespace)
+          if result.valid?
+            if result.build
+              Gitlab::Metrics.add_event(:build_found,
+                                        project: result.build.project.path_with_namespace)
 
-            present build, with: Entities::BuildDetails
+              present result.build, with: Entities::BuildDetails
+            else
+              Gitlab::Metrics.add_event(:build_not_found)
+
+              header 'X-GitLab-Last-Update', new_update
+
+              build_not_found!
+            end
           else
-            Gitlab::Metrics.add_event(:build_not_found)
-
-            header 'X-GitLab-Last-Update', new_update
-
-            build_not_found!
+            # We received build that is invalid due to concurrency conflict
+            Gitlab::Metrics.add_event(:build_invalid)
+            conflict!
           end
         end
 
