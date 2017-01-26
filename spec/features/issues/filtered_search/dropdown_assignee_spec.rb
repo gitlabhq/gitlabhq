@@ -43,14 +43,6 @@ describe 'Dropdown assignee', js: true, feature: true do
       expect(page).to have_css(js_dropdown_assignee, visible: true)
     end
 
-    it 'shows assigned to me link' do
-      filtered_search.set('assignee:')
-
-      page.within js_dropdown_assignee do
-        expect(page).to have_content('Assigned to me')
-      end
-    end
-
     it 'closes when the search bar is unfocused' do
       find('body').click()
 
@@ -127,14 +119,6 @@ describe 'Dropdown assignee', js: true, feature: true do
   describe 'selecting from dropdown' do
     before do
       filtered_search.set('assignee:')
-    end
-
-    it 'filters by current user' do
-      page.within js_dropdown_assignee do
-        click_button 'Assigned to me'
-      end
-
-      expect(filtered_search.value).to eq("assignee:#{user.to_reference} ")
     end
 
     it 'fills in the assignee username when the assignee has not been filtered' do
