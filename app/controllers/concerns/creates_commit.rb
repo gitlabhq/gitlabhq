@@ -93,8 +93,10 @@ module CreatesCommit
 
   def create_merge_request?
     # XXX: Even if the field is set, if we're checking the same branch
-    # as the target branch, we don't want to create a merge request.
-    params[:create_merge_request].present? && @ref != @target_branch
+    # as the target branch in the same project,
+    # we don't want to create a merge request.
+    params[:create_merge_request].present? &&
+      (different_project? || @ref != @target_branch)
   end
 
   # TODO: We should really clean this up
