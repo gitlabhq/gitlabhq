@@ -1,0 +1,122 @@
+#!/bin/bash
+
+source "/opt/kubernetes-deploy/src/common.bash"
+
+export GITLAB_REVIEW_APP_IMAGE=ayufan/gitlab-development-kit
+
+if [[ -z "$CI_ENVIRONMENT_URL" ]]; then
+  echo "Reading CI_ENVIRONMENT_URL from .gitlab-ci.yml..."
+  CI_ENVIRONMENT_URL="$(ruby -ryaml -e 'puts YAML.load_file(".gitlab-ci.yml")[ENV["CI_BUILD_NAME"]]["environment"]["url"]')"
+  CI_ENVIRONMENT_URL="$(eval echo "$CI_ENVIRONMENT_URL")"
+  echo "CI_ENVIRONMENT_URL: $CI_ENVIRONMENT_URL"
+fi
+
+ensure_deploy_variables
+create_kubeconfig
+
+CI_ENVIRONMENT_HOSTNAME="${CI_ENVIRONMENT_URL}"
+CI_ENVIRONMENT_HOSTNAME="${CI_ENVIRONMENT_HOSTNAME/http:\/\//}"
+CI_ENVIRONMENT_HOSTNAME="${CI_ENVIRONMENT_HOSTNAME/https:\/\//}"
+
+cat <<EOF | kubectl apply -f -
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: $KUBE_NAMESPACE
+EOF
+
+cat <<EOF | kubectl apply -n $KUBE_NAMESPACE -f -
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: $CI_ENVIRONMENT_SLUG
+  namespace: $KUBE_NAMESPACE
+  labels:
+    app: $CI_ENVIRONMENT_SLUG
+    sha: "$CI_BUILD_REF"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: $CI_ENVIRONMENT_SLUG
+        app: $CI_ENVIRONMENT_SLUG
+    spec:
+      containers:
+      - name: app
+        image: $GITLAB_REVIEW_APP_IMAGE
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "2048Mi"
+            cpu: "1"
+          limits:
+            memory: "4096Mi"
+            cpu: "4"
+        env:
+        - name: CI_PIPELINE_ID
+          value: "$CI_PIPELINE_ID"
+        - name: CI_BUILD_ID
+          value: "$CI_BUILD_ID"
+        - name: CI_CHECKOUT_SHA
+          value: "$CI_BUILD_REF"
+        ports:
+        - name: web
+          containerPort: 5000
+        livenessProbe:
+          httpGet:
+            path: /help
+            port: 5000
+          initialDelaySeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 200
+        readinessProbe:
+          httpGet:
+            path: /help
+            port: 5000
+          initialDelaySeconds: 5
+          timeoutSeconds: 3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: $CI_ENVIRONMENT_SLUG
+  namespace: $KUBE_NAMESPACE
+  labels:
+    app: $CI_ENVIRONMENT_SLUG
+spec:
+  ports:
+    - name: web
+      port: 5000
+      targetPort: web
+  selector:
+    name: $CI_ENVIRONMENT_SLUG
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: $CI_ENVIRONMENT_SLUG
+  namespace: $KUBE_NAMESPACE
+  labels:
+    app: $CI_ENVIRONMENT_SLUG
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  tls:
+  - hosts:
+    - $CI_ENVIRONMENT_HOSTNAME
+    secretName: ${CI_ENVIRONMENT_SLUG}-tls
+  rules:
+  - host: $CI_ENVIRONMENT_HOSTNAME
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: $CI_ENVIRONMENT_SLUG
+          servicePort: 5000
+EOF
+
+echo "Deployment of your review app started."
+echo "Application should be accessible at: ${CI_ENVIRONMENT_URL} within a couple of minutes"
+echo ""

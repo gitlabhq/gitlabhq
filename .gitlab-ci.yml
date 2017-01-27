@@ -17,6 +17,9 @@ variables:
   PHANTOMJS_VERSION: "2.1.1"
   GET_SOURCES_ATTEMPTS: "3"
 
+  # Review apps deployment domain
+  KUBE_DOMAIN: gitlab-review-apps.ayucloud.ovh
+
 before_script:
   - source ./scripts/prepare_build.sh
   - cp config/gitlab.yml.example config/gitlab.yml
@@ -27,6 +30,7 @@ before_script:
 
 stages:
 - prepare
+- review
 - test
 - post-test
 - pages
@@ -232,7 +236,7 @@ spinach 9 10 ruby21: *spinach-knapsack-ruby21
   script:
     - bundle exec $CI_BUILD_NAME
 
-rubocop: 
+rubocop:
   <<: *ruby-static-analysis
   <<: *dedicated-runner
   stage: test
@@ -473,3 +477,35 @@ cache gems:
       - vendor/cache
   only:
     - master@gitlab-org/gitlab-ce
+
+### REVIEW APPS
+
+review:
+  image: registry.gitlab.com/gitlab-examples/kubernetes-deploy
+  stage: prepare
+  before_script: []
+  cache: {}
+  script:
+    - scripts/deploy-review
+  environment:
+    name: review/$CI_BUILD_REF_NAME
+    url: http://$CI_ENVIRONMENT_SLUG.$KUBE_DOMAIN
+    on_stop: stop_review
+  only:
+    - branches@gitlab-org/gitlab-ce
+
+stop_review:
+  image: registry.gitlab.com/gitlab-examples/kubernetes-deploy
+  stage: review
+  variables:
+    GIT_STRATEGY: none
+  before_script: []
+  cache: {}
+  script:
+    - command destroy
+  environment:
+    name: review/$CI_BUILD_REF_NAME
+    action: stop
+  when: manual
+  only:
+    - branches@gitlab-org/gitlab-ce
