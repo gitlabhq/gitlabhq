@@ -1,7 +1,8 @@
 require 'rails_helper'
 
 feature 'Issue Sidebar', feature: true do
-  include WaitForAjax, MobileHelpers
+  include WaitForAjax
+  include MobileHelpers
 
   let(:project) { create(:project, :public) }
   let(:issue) { create(:issue, project: project) }
@@ -67,19 +68,12 @@ feature 'Issue Sidebar', feature: true do
         # Make sure the sidebar is collapsed
         expect(page).to have_css(sidebar_selector)
         # Once is collapsed let's open the sidebard and reload
-        page.within(sidebar_selector) do
-          find('.js-sidebar-toggle').click
-          # we wait a bit so the sidebar finishes it's animation
-          sleep 1
-        end
+        open_issue_sidebar
         refresh
         expect(page).to have_css(sidebar_selector)
         # Restore the window size as it was including the sidebar
         restore_window_size
-        page.within(sidebar_selector) do
-          find('.js-sidebar-toggle').click
-          sleep 1
-        end
+        open_issue_sidebar
       end
     end
 
@@ -132,5 +126,12 @@ feature 'Issue Sidebar', feature: true do
 
   def visit_issue(project, issue)
     visit namespace_project_issue_path(project.namespace, project, issue)
+  end
+
+  def open_issue_sidebar
+    page.within('aside.right-sidebar.right-sidebar-collapsed') do
+      find('.js-sidebar-toggle').click
+      sleep 1
+    end
   end
 end
