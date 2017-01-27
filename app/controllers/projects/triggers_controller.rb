@@ -8,15 +8,16 @@ class Projects::TriggersController < Projects::ApplicationController
     @trigger.save
 
     if @trigger.valid?
-      redirect_to namespace_project_settings_ci_cd_path(@project.namespace, @project)
+      flash[:notice] = "Trigger has been created successfully"
     else
       @triggers = project.triggers.select(&:persisted?)
-      render :index
     end
+    redirect_to namespace_project_settings_ci_cd_path(@project.namespace, @project)
   end
 
   def destroy
     trigger.destroy
+    flash[:alert] = "Trigger removed"
 
     redirect_to namespace_project_settings_ci_cd_path(@project.namespace, @project)
   end
