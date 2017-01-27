@@ -15,6 +15,9 @@
       return ModalStore.store;
     },
     watch: {
+      page() {
+        this.loadIssues();
+      },
       searchTerm() {
         this.searchOperation();
       },
@@ -34,15 +37,17 @@
     },
     methods: {
       searchOperation: _.debounce(function searchOperationDebounce() {
+        this.issues = [];
         this.loadIssues();
       }, 500),
       loadIssues() {
         return gl.boardService.getBacklog({
           search: this.searchTerm,
+          page: this.page,
+          per: this.perPage,
         }).then((res) => {
           const data = res.json();
 
-          this.issues = [];
           data.forEach((issueObj) => {
             const issue = new ListIssue(issueObj);
             const foundSelectedIssue = ModalStore.findSelectedIssue(issue);
@@ -50,6 +55,8 @@
 
             this.issues.push(issue);
           });
+
+          this.loadingNewPage = false;
         });
       },
     },

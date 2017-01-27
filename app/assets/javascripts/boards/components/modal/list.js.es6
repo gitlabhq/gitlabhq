@@ -14,10 +14,8 @@
         this.initMasonry();
       },
       issues: {
-        handler(issues, oldIssues) {
-          if (this.activeTab === 'selected' || issues.length !== oldIssues.length) {
-            this.initMasonry();
-          }
+        handler() {
+          this.initMasonry();
         },
         deep: true,
       },
@@ -33,6 +31,15 @@
     },
     methods: {
       toggleIssue: ModalStore.toggleIssue.bind(ModalStore),
+      listHeight () {
+        return this.$refs.list.getBoundingClientRect().height;
+      },
+      scrollHeight () {
+        return this.$refs.list.scrollHeight;
+      },
+      scrollTop () {
+        return this.$refs.list.scrollTop + this.listHeight();
+      },
       showIssue(issue) {
         if (this.activeTab === 'all') return true;
 
@@ -59,6 +66,15 @@
     },
     mounted() {
       this.initMasonry();
+
+      this.$refs.list.onscroll = () => {
+        const currentPage = Math.floor(this.issues.length / this.perPage);
+
+        if ((this.scrollTop() > this.scrollHeight() - 100) && !this.loadingNewPage && currentPage === this.page) {
+          this.loadingNewPage = true;
+          this.page += 1;
+        }
+      };
     },
     destroyed() {
       this.destroyMasonry();

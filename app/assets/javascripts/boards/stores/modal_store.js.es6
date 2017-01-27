@@ -12,6 +12,9 @@
         selectedList: {},
         searchTerm: '',
         loading: false,
+        loadingNewPage: false,
+        page: 1,
+        perPage: 50,
       };
     }
 

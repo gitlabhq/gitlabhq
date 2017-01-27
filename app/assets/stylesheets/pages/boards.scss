@@ -372,6 +372,7 @@
   flex-direction: column;
   width: 90vw;
   height: 85vh;
+  max-width: 1100px;
   min-height: 500px;
   margin: auto;
   padding: 25px 15px 0;
@@ -396,6 +397,8 @@
   margin: -25px -15px -5px;
   border-top: 0;
   border-bottom: 1px solid $border-color;
+  border-top-right-radius: $border-radius-default;
+  border-top-left-radius: $border-radius-default;
 
   > h2 {
     margin: 0;
@@ -448,6 +451,8 @@
   margin-right: -15px;
   padding-left: 15px;
   padding-right: 15px;
+  border-bottom-right-radius: $border-radius-default;
+  border-bottom-left-radius: $border-radius-default;
 }
 
 .add-issues-footer-to-list {
