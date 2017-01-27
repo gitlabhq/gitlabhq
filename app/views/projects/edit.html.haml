@@ -8,7 +8,7 @@
       = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "edit-project" }, authenticity_token: true do |f|
         %fieldset.append-bottom-0
           .form-group
-            = f.label :name, class: 'label-light' do
+            = f.label :name, class: 'label-light', for: 'project_name_edit' do
               Project name
             = f.text_field :name, class: "form-control", id: "project_name_edit"
           .form-group
