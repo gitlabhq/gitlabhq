@@ -3,7 +3,6 @@
     location.href = "#{edit_namespace_project_path(@project.namespace, @project)}";
 - else
   :plain
-    $(".project-edit-errors").html("#{escape_javascript(render('errors'))}");
     $('.save-project-loader').hide();
     $('.project-edit-container').show();
     $('.edit-project .btn-save').enable();
