@@ -668,7 +668,38 @@ describe Projects::MergeRequestsController do
   end
 
   describe 'GET pipelines' do
-    it_behaves_like "loads labels", :pipelines
+    before do
+      create(:ci_pipeline, project: merge_request.source_project,
+                           ref: merge_request.source_branch,
+                           sha: merge_request.diff_head_sha)
+    end
+
+    context 'when using HTML format' do
+      it_behaves_like "loads labels", :pipelines
+    end
+
+    context 'when using JSON format' do
+      before do
+        get :pipelines,
+            namespace_id: project.namespace.to_param,
+            project_id: project.to_param,
+            id: merge_request.iid,
+            format: :json
+      end
+
+      let(:json_response) { JSON.parse(response.body) }
+
+      it 'responds with a rendered HTML partial' do
+        expect(response)
+          .to render_template('projects/merge_requests/show/_pipelines')
+        expect(json_response).to have_key 'html'
+      end
+
+      it 'responds with serialized pipelines' do
+        expect(json_response).to have_key 'pipelines'
+        expect(json_response['pipelines']).not_to be_empty
+      end
+    end
   end
 
   describe 'GET conflicts' do
