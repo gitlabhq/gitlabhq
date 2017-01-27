@@ -13,14 +13,9 @@ describe Boards::Issues::ListService, services: true do
     let(:p2) { create(:label, title: 'P2', project: project, priority: 2) }
     let(:p3) { create(:label, title: 'P3', project: project, priority: 3) }
 
-    let!(:backlog) { create(:backlog_list, board: board) }
     let!(:list1)   { create(:list, board: board, label: development, position: 0) }
     let!(:list2)   { create(:list, board: board, label: testing, position: 1) }
     let!(:done)    { create(:done_list, board: board) }
-
-    let!(:opened_issue1) { create(:labeled_issue, project: project, labels: [bug]) }
-    let!(:opened_issue2) { create(:labeled_issue, project: project, labels: [p2]) }
-    let!(:reopened_issue1) { create(:issue, :reopened, project: project) }
 
     let!(:list1_issue1) { create(:labeled_issue, project: project, labels: [p2, development]) }
     let!(:list1_issue2) { create(:labeled_issue, project: project, labels: [development]) }
@@ -45,14 +40,6 @@ describe Boards::Issues::ListService, services: true do
     end
 
     context 'sets default order to priority' do
-      it 'returns opened issues when listing issues from Backlog' do
-        params = { board_id: board.id, id: backlog.id }
-
-        issues = described_class.new(project, user, params).execute
-
-        expect(issues).to eq [opened_issue2, reopened_issue1, opened_issue1]
-      end
-
       it 'returns closed issues when listing issues from Done' do
         params = { board_id: board.id, id: done.id }
 
