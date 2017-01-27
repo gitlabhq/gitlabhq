@@ -33,6 +33,8 @@ module Projects
       if project.update_attributes(params)
         if project.previous_changes.include?('path')
           project.rename_repo
+        else
+          system_hook_service.execute_hooks_for(project, :update)
         end
 
         success

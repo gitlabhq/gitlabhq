@@ -7,7 +7,7 @@ describe Milestone, 'Milestoneish' do
   let(:member) { create(:user) }
   let(:guest) { create(:user) }
   let(:admin) { create(:admin) }
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:empty_project, :public) }
   let(:milestone) { create(:milestone, project: project) }
   let!(:issue) { create(:issue, project: project, milestone: milestone) }
   let!(:security_issue_1) { create(:issue, :confidential, project: project, author: author, milestone: milestone) }

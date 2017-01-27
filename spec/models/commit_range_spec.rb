@@ -7,7 +7,7 @@ describe CommitRange, models: true do
     it { is_expected.to include_module(Referable) }
   end
 
-  let!(:project) { create(:project, :public) }
+  let!(:project) { create(:project, :public, :repository) }
   let!(:commit1) { project.commit("HEAD~2") }
   let!(:commit2) { project.commit }
 

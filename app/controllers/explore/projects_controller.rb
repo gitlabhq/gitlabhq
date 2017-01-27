@@ -22,6 +22,7 @@ class Explore::ProjectsController < Explore::ApplicationController
 
   def trending
     @projects = filter_projects(Project.trending)
+    @projects = @projects.sort(@sort = params[:sort])
     @projects = @projects.page(params[:page])
 
     respond_to do |format|

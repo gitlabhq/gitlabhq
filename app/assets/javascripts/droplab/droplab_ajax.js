@@ -9,6 +9,7 @@ require('../window')(function(w){
 
   w.droplabAjax = {
     _loadUrlData: function _loadUrlData(url) {
+      var self = this;
       return new Promise(function(resolve, reject) {
         var xhr = new XMLHttpRequest;
         xhr.open('GET', url, true);
@@ -16,6 +17,7 @@ require('../window')(function(w){
           if(xhr.readyState === XMLHttpRequest.DONE) {
             if (xhr.status === 200) {
               var data = JSON.parse(xhr.responseText);
+              self.cache[url] = data;
               return resolve(data);
             } else {
               return reject([xhr.responseText, xhr.status]);
@@ -26,8 +28,21 @@ require('../window')(function(w){
       });
     },
 
+    _loadData: function _loadData(data, config, self) {
+      if (config.loadingTemplate) {
+        var dataLoadingTemplate = self.hook.list.list.querySelector('[data-loading-template]');
+
+        if (dataLoadingTemplate) {
+          dataLoadingTemplate.outerHTML = self.listTemplate;
+        }
+      }
+
+      self.hook.list[config.method].call(self.hook.list, data);
+    },
+
     init: function init(hook) {
       var self = this;
+      self.cache = self.cache || {};
       var config = hook.config.droplabAjax;
       this.hook = hook;
 
@@ -50,22 +65,16 @@ require('../window')(function(w){
         dynamicList.outerHTML = loadingTemplate.outerHTML;
       }
 
-      this._loadUrlData(config.endpoint)
-        .then(function(d) {
-          if (config.loadingTemplate) {
-            var dataLoadingTemplate = self.hook.list.list.querySelector('[data-loading-template]');
-
-            if (dataLoadingTemplate) {
-              dataLoadingTemplate.outerHTML = self.listTemplate;
-            }
-          }
-
-          if (!self.hook.list.hidden) {
-            self.hook.list[config.method].call(self.hook.list, d);
-          }
-        }).catch(function(e) {
-          throw new droplabAjaxException(e.message || e);
-        });
+      if (self.cache[config.endpoint]) {
+        self._loadData(self.cache[config.endpoint], config, self);
+      } else {
+        this._loadUrlData(config.endpoint)
+          .then(function(d) {
+            self._loadData(d, config, self);
+          }).catch(function(e) {
+            throw new droplabAjaxException(e.message || e);
+          });
+      }
     },
 
     destroy: function() {

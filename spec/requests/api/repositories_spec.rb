@@ -8,7 +8,7 @@ describe API::Repositories, api: true  do
 
   let(:user) { create(:user) }
   let(:guest) { create(:user).tap { |u| create(:project_member, :guest, user: u, project: project) } }
-  let!(:project) { create(:project, creator_id: user.id) }
+  let!(:project) { create(:project, :repository, creator: user) }
   let!(:master) { create(:project_member, :master, user: user, project: project) }
 
   describe "GET /projects/:id/repository/tree" do
@@ -74,7 +74,7 @@ describe API::Repositories, api: true  do
 
     context 'when unauthenticated', 'and project is public' do
       it_behaves_like 'repository tree' do
-        let(:project) { create(:project, :public) }
+        let(:project) { create(:project, :public, :repository) }
         let(:current_user) { nil }
       end
     end
@@ -144,7 +144,7 @@ describe API::Repositories, api: true  do
 
       context 'when unauthenticated', 'and project is public' do
         it_behaves_like 'repository blob' do
-          let(:project) { create(:project, :public) }
+          let(:project) { create(:project, :public, :repository) }
           let(:current_user) { nil }
         end
       end
@@ -198,7 +198,7 @@ describe API::Repositories, api: true  do
 
     context 'when unauthenticated', 'and project is public' do
       it_behaves_like 'repository raw blob' do
-        let(:project) { create(:project, :public) }
+        let(:project) { create(:project, :public, :repository) }
         let(:current_user) { nil }
       end
     end
@@ -273,7 +273,7 @@ describe API::Repositories, api: true  do
 
     context 'when unauthenticated', 'and project is public' do
       it_behaves_like 'repository archive' do
-        let(:project) { create(:project, :public) }
+        let(:project) { create(:project, :public, :repository) }
         let(:current_user) { nil }
       end
     end
@@ -347,7 +347,7 @@ describe API::Repositories, api: true  do
 
     context 'when unauthenticated', 'and project is public' do
       it_behaves_like 'repository compare' do
-        let(:project) { create(:project, :public) }
+        let(:project) { create(:project, :public, :repository) }
         let(:current_user) { nil }
       end
     end
@@ -394,7 +394,7 @@ describe API::Repositories, api: true  do
 
     context 'when unauthenticated', 'and project is public' do
       it_behaves_like 'repository contributors' do
-        let(:project) { create(:project, :public) }
+        let(:project) { create(:project, :public, :repository) }
         let(:current_user) { nil }
       end
     end

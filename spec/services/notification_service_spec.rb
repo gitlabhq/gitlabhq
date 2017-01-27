@@ -33,6 +33,49 @@ describe NotificationService, services: true do
     end
   end
 
+  # Next shared examples are intended to test notifications of "participants"
+  #
+  # they take the following parameters:
+  # * issuable
+  # * notification trigger
+  # * participant
+  #
+  shared_examples 'participating by note notification' do
+    it 'emails the participant' do
+      create(:note_on_issue, noteable: issuable, project_id: project.id, note: 'anything', author: participant)
+
+      notification_trigger
+
+      should_email(participant)
+    end
+  end
+
+  shared_examples 'participating by assignee notification' do
+    it 'emails the participant' do
+      issuable.update_attribute(:assignee, participant)
+
+      notification_trigger
+
+      should_email(participant)
+    end
+  end
+
+  shared_examples 'participating by author notification' do
+    it 'emails the participant' do
+      issuable.author = participant
+
+      notification_trigger
+
+      should_email(participant)
+    end
+  end
+
+  shared_examples_for 'participating notifications' do
+    it_should_behave_like 'participating by note notification'
+    it_should_behave_like 'participating by author notification'
+    it_should_behave_like 'participating by assignee notification'
+  end
+
   describe 'Keys' do
     describe '#new_key' do
       let!(:key) { create(:personal_key) }
@@ -588,32 +631,10 @@ describe NotificationService, services: true do
         should_not_email(@u_lazy_participant)
       end
 
-      context 'participating' do
-        context 'by assignee' do
-          before do
-            issue.update_attribute(:assignee, @u_lazy_participant)
-            notification.reassigned_issue(issue, @u_disabled)
-          end
-
-          it { should_email(@u_lazy_participant) }
-        end
-
-        context 'by note' do
-          let!(:note) { create(:note_on_issue, noteable: issue, project_id: issue.project_id, note: 'anything', author: @u_lazy_participant) }
-
-          before { notification.reassigned_issue(issue, @u_disabled) }
-
-          it { should_email(@u_lazy_participant) }
-        end
-
-        context 'by author' do
-          before do
-            issue.author = @u_lazy_participant
-            notification.reassigned_issue(issue, @u_disabled)
-          end
-
-          it { should_email(@u_lazy_participant) }
-        end
+      it_behaves_like 'participating notifications' do
+        let(:participant) { create(:user, username: 'user-participant') }
+        let(:issuable) { issue }
+        let(:notification_trigger) { notification.reassigned_issue(issue, @u_disabled) }
       end
     end
 
@@ -720,32 +741,10 @@ describe NotificationService, services: true do
         should_not_email(@u_lazy_participant)
       end
 
-      context 'participating' do
-        context 'by assignee' do
-          before do
-            issue.update_attribute(:assignee, @u_lazy_participant)
-            notification.close_issue(issue, @u_disabled)
-          end
-
-          it { should_email(@u_lazy_participant) }
-        end
-
-        context 'by note' do
-          let!(:note) { create(:note_on_issue, noteable: issue, project_id: issue.project_id, note: 'anything', author: @u_lazy_participant) }
-
-          before { notification.close_issue(issue, @u_disabled) }
-
-          it { should_email(@u_lazy_participant) }
-        end
-
-        context 'by author' do
-          before do
-            issue.author = @u_lazy_participant
-            notification.close_issue(issue, @u_disabled)
-          end
-
-          it { should_email(@u_lazy_participant) }
-        end
+      it_behaves_like 'participating notifications' do
+        let(:participant) { create(:user, username: 'user-participant') }
+        let(:issuable) { issue }
+        let(:notification_trigger) { notification.close_issue(issue, @u_disabled) }
       end
     end
 
@@ -772,32 +771,10 @@ describe NotificationService, services: true do
         should_not_email(@u_lazy_participant)
       end
 
-      context 'participating' do
-        context 'by assignee' do
-          before do
-            issue.update_attribute(:assignee, @u_lazy_participant)
-            notification.reopen_issue(issue, @u_disabled)
-          end
-
-          it { should_email(@u_lazy_participant) }
-        end
-
-        context 'by note' do
-          let!(:note) { create(:note_on_issue, noteable: issue, project_id: issue.project_id, note: 'anything', author: @u_lazy_participant) }
-
-          before { notification.reopen_issue(issue, @u_disabled) }
-
-          it { should_email(@u_lazy_participant) }
-        end
-
-        context 'by author' do
-          before do
-            issue.author = @u_lazy_participant
-            notification.reopen_issue(issue, @u_disabled)
-          end
-
-          it { should_email(@u_lazy_participant) }
-        end
+      it_behaves_like 'participating notifications' do
+        let(:participant) { create(:user, username: 'user-participant') }
+        let(:issuable) { issue }
+        let(:notification_trigger) { notification.reopen_issue(issue, @u_disabled) }
       end
     end
   end
@@ -893,31 +870,28 @@ describe NotificationService, services: true do
       end
 
       context 'participating' do
-        context 'by assignee' do
-          before do
-            merge_request.update_attribute(:assignee, @u_lazy_participant)
-            notification.new_merge_request(merge_request, @u_disabled)
-          end
-
-          it { should_email(@u_lazy_participant) }
+        it_should_behave_like 'participating by assignee notification' do
+          let(:participant) { create(:user, username: 'user-participant')}
+          let(:issuable) { merge_request }
+          let(:notification_trigger) { notification.new_merge_request(merge_request, @u_disabled) }
         end
 
-        context 'by note' do
-          let!(:note) { create(:note_on_issue, noteable: merge_request, project_id: project.id, note: 'anything', author: @u_lazy_participant) }
-
-          before { notification.new_merge_request(merge_request, @u_disabled) }
-
-          it { should_email(@u_lazy_participant) }
+        it_should_behave_like 'participating by note notification' do
+          let(:participant) { create(:user, username: 'user-participant')}
+          let(:issuable) { merge_request }
+          let(:notification_trigger) { notification.new_merge_request(merge_request, @u_disabled) }
         end
 
         context 'by author' do
+          let(:participant) { create(:user, username: 'user-participant')}
+
           before do
-            merge_request.author = @u_lazy_participant
+            merge_request.author = participant
             merge_request.save
             notification.new_merge_request(merge_request, @u_disabled)
           end
 
-          it { should_not_email(@u_lazy_participant) }
+          it { should_not_email(participant) }
         end
       end
     end
@@ -952,33 +926,10 @@ describe NotificationService, services: true do
         should_not_email(@u_lazy_participant)
       end
 
-      context 'participating' do
-        context 'by assignee' do
-          before do
-            merge_request.update_attribute(:assignee, @u_lazy_participant)
-            notification.reassigned_merge_request(merge_request, @u_disabled)
-          end
-
-          it { should_email(@u_lazy_participant) }
-        end
-
-        context 'by note' do
-          let!(:note) { create(:note_on_issue, noteable: merge_request, project_id: project.id, note: 'anything', author: @u_lazy_participant) }
-
-          before { notification.reassigned_merge_request(merge_request, @u_disabled) }
-
-          it { should_email(@u_lazy_participant) }
-        end
-
-        context 'by author' do
-          before do
-            merge_request.author = @u_lazy_participant
-            merge_request.save
-            notification.reassigned_merge_request(merge_request, @u_disabled)
-          end
-
-          it { should_email(@u_lazy_participant) }
-        end
+      it_behaves_like 'participating notifications' do
+        let(:participant) { create(:user, username: 'user-participant') }
+        let(:issuable) { merge_request }
+        let(:notification_trigger) { notification.reassigned_merge_request(merge_request, @u_disabled) }
       end
     end
 
@@ -1049,33 +1000,10 @@ describe NotificationService, services: true do
         should_not_email(@u_lazy_participant)
       end
 
-      context 'participating' do
-        context 'by assignee' do
-          before do
-            merge_request.update_attribute(:assignee, @u_lazy_participant)
-            notification.close_mr(merge_request, @u_disabled)
-          end
-
-          it { should_email(@u_lazy_participant) }
-        end
-
-        context 'by note' do
-          let!(:note) { create(:note_on_issue, noteable: merge_request, project_id: project.id, note: 'anything', author: @u_lazy_participant) }
-
-          before { notification.close_mr(merge_request, @u_disabled) }
-
-          it { should_email(@u_lazy_participant) }
-        end
-
-        context 'by author' do
-          before do
-            merge_request.author = @u_lazy_participant
-            merge_request.save
-            notification.close_mr(merge_request, @u_disabled)
-          end
-
-          it { should_email(@u_lazy_participant) }
-        end
+      it_behaves_like 'participating notifications' do
+        let(:participant) { create(:user, username: 'user-participant') }
+        let(:issuable) { merge_request }
+        let(:notification_trigger) { notification.close_mr(merge_request, @u_disabled) }
       end
     end
 
@@ -1116,33 +1044,10 @@ describe NotificationService, services: true do
         should_not_email(@u_watcher)
       end
 
-      context 'participating' do
-        context 'by assignee' do
-          before do
-            merge_request.update_attribute(:assignee, @u_lazy_participant)
-            notification.merge_mr(merge_request, @u_disabled)
-          end
-
-          it { should_email(@u_lazy_participant) }
-        end
-
-        context 'by note' do
-          let!(:note) { create(:note_on_issue, noteable: merge_request, project_id: project.id, note: 'anything', author: @u_lazy_participant) }
-
-          before { notification.merge_mr(merge_request, @u_disabled) }
-
-          it { should_email(@u_lazy_participant) }
-        end
-
-        context 'by author' do
-          before do
-            merge_request.author = @u_lazy_participant
-            merge_request.save
-            notification.merge_mr(merge_request, @u_disabled)
-          end
-
-          it { should_email(@u_lazy_participant) }
-        end
+      it_behaves_like 'participating notifications' do
+        let(:participant) { create(:user, username: 'user-participant') }
+        let(:issuable) { merge_request }
+        let(:notification_trigger) { notification.merge_mr(merge_request, @u_disabled) }
       end
     end
 
@@ -1169,33 +1074,10 @@ describe NotificationService, services: true do
         should_not_email(@u_lazy_participant)
       end
 
-      context 'participating' do
-        context 'by assignee' do
-          before do
-            merge_request.update_attribute(:assignee, @u_lazy_participant)
-            notification.reopen_mr(merge_request, @u_disabled)
-          end
-
-          it { should_email(@u_lazy_participant) }
-        end
-
-        context 'by note' do
-          let!(:note) { create(:note_on_issue, noteable: merge_request, project_id: project.id, note: 'anything', author: @u_lazy_participant) }
-
-          before { notification.reopen_mr(merge_request, @u_disabled) }
-
-          it { should_email(@u_lazy_participant) }
-        end
-
-        context 'by author' do
-          before do
-            merge_request.author = @u_lazy_participant
-            merge_request.save
-            notification.reopen_mr(merge_request, @u_disabled)
-          end
-
-          it { should_email(@u_lazy_participant) }
-        end
+      it_behaves_like 'participating notifications' do
+        let(:participant) { create(:user, username: 'user-participant') }
+        let(:issuable) { merge_request }
+        let(:notification_trigger) { notification.reopen_mr(merge_request, @u_disabled) }
       end
     end
 
@@ -1215,33 +1097,10 @@ describe NotificationService, services: true do
         should_not_email(@u_lazy_participant)
       end
 
-      context 'participating' do
-        context 'by assignee' do
-          before do
-            merge_request.update_attribute(:assignee, @u_lazy_participant)
-            notification.resolve_all_discussions(merge_request, @u_disabled)
-          end
-
-          it { should_email(@u_lazy_participant) }
-        end
-
-        context 'by note' do
-          let!(:note) { create(:note_on_issue, noteable: merge_request, project_id: project.id, note: 'anything', author: @u_lazy_participant) }
-
-          before { notification.resolve_all_discussions(merge_request, @u_disabled) }
-
-          it { should_email(@u_lazy_participant) }
-        end
-
-        context 'by author' do
-          before do
-            merge_request.author = @u_lazy_participant
-            merge_request.save
-            notification.resolve_all_discussions(merge_request, @u_disabled)
-          end
-
-          it { should_email(@u_lazy_participant) }
-        end
+      it_behaves_like 'participating notifications' do
+        let(:participant) { create(:user, username: 'user-participant') }
+        let(:issuable) { merge_request }
+        let(:notification_trigger) { notification.resolve_all_discussions(merge_request, @u_disabled) }
       end
     end
   end

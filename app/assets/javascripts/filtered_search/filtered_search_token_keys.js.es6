@@ -26,6 +26,15 @@
     symbol: '',
   }];
 
+  const alternativeTokenKeys = [{
+    key: 'label',
+    type: 'string',
+    param: 'name',
+    symbol: '~',
+  }];
+
+  const tokenKeysWithAlternative = tokenKeys.concat(alternativeTokenKeys);
+
   const conditions = [{
     url: 'assignee_id=0',
     tokenKey: 'assignee',
@@ -57,6 +66,10 @@
       return tokenKeys;
     }
 
+    static getAlternatives() {
+      return alternativeTokenKeys;
+    }
+
     static getConditions() {
       return conditions;
     }
@@ -70,7 +83,7 @@
     }
 
     static searchByKeyParam(keyParam) {
-      return tokenKeys.find((tokenKey) => {
+      return tokenKeysWithAlternative.find((tokenKey) => {
         let tokenKeyParam = tokenKey.key;
 
         if (tokenKey.param) {

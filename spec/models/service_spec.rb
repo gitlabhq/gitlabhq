@@ -12,7 +12,7 @@ describe Service, models: true do
     end
 
     describe "Testable" do
-      let(:project) { create :project }
+      let(:project) { create(:project, :repository) }
 
       before do
         allow(@service).to receive(:project).and_return(project)
@@ -35,7 +35,7 @@ describe Service, models: true do
     end
 
     describe "With commits" do
-      let(:project) { create :project }
+      let(:project) { create(:project, :repository) }
 
       before do
         allow(@service).to receive(:project).and_return(project)
@@ -64,7 +64,7 @@ describe Service, models: true do
             api_key: '123456789'
           })
       end
-      let(:project) { create(:project) }
+      let(:project) { create(:empty_project) }
 
       describe 'is prefilled for projects pushover service' do
         it "has all fields prefilled" do
@@ -83,7 +83,7 @@ describe Service, models: true do
   describe "{property}_changed?" do
     let(:service) do
       BambooService.create(
-        project: create(:project),
+        project: create(:empty_project),
         properties: {
           bamboo_url: 'http://gitlab.com',
           username: 'mic',
@@ -123,7 +123,7 @@ describe Service, models: true do
   describe "{property}_touched?" do
     let(:service) do
       BambooService.create(
-        project: create(:project),
+        project: create(:empty_project),
         properties: {
           bamboo_url: 'http://gitlab.com',
           username: 'mic',
@@ -163,7 +163,7 @@ describe Service, models: true do
   describe "{property}_was" do
     let(:service) do
       BambooService.create(
-        project: create(:project),
+        project: create(:empty_project),
         properties: {
           bamboo_url: 'http://gitlab.com',
           username: 'mic',
@@ -203,7 +203,7 @@ describe Service, models: true do
   describe 'initialize service with no properties' do
     let(:service) do
       GitlabIssueTrackerService.create(
-        project: create(:project),
+        project: create(:empty_project),
         title: 'random title'
       )
     end
@@ -218,7 +218,7 @@ describe Service, models: true do
   end
 
   describe "callbacks" do
-    let(:project) { create(:project) }
+    let(:project) { create(:empty_project) }
     let!(:service) do
       RedmineService.new(
         project: project,

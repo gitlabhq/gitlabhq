@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe ProjectFeature do
-  let(:project) { create(:project) }
+  let(:project) { create(:empty_project) }
   let(:user) { create(:user) }
 
   describe '#feature_available?' do
@@ -35,7 +35,7 @@ describe ProjectFeature do
 
       it "returns true when user is a member of project group" do
         group = create(:group)
-        project = create(:project, namespace: group)
+        project = create(:empty_project, namespace: group)
         group.add_developer(user)
 
         features.each do |feature|

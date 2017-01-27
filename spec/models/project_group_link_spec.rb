@@ -17,7 +17,7 @@ describe ProjectGroupLink do
 
   describe "destroying a record", truncate: true do
     it "refreshes group users' authorized projects" do
-      project     = create(:project, :private)
+      project     = create(:empty_project, :private)
       group       = create(:group)
       reporter    = create(:user)
       group_users = group.users

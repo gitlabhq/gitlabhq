@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe Todo, models: true do
-  let(:project) { create(:project) }
-  let(:commit) { project.commit }
   let(:issue) { create(:issue) }
 
   describe 'relationships' do
@@ -82,6 +80,9 @@ describe Todo, models: true do
 
   describe '#target' do
     context 'for commits' do
+      let(:project) { create(:project, :repository) }
+      let(:commit) { project.commit }
+
       it 'returns an instance of Commit when exists' do
         subject.project = project
         subject.target_type = 'Commit'
@@ -109,6 +110,9 @@ describe Todo, models: true do
 
   describe '#target_reference' do
     it 'returns the short commit id for commits' do
+      project = create(:project, :repository)
+      commit = project.commit
+
       subject.project = project
       subject.target_type = 'Commit'
       subject.commit_id = commit.id

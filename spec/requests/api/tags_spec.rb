@@ -7,7 +7,7 @@ describe API::Tags, api: true  do
 
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
-  let!(:project) { create(:project, creator_id: user.id) }
+  let!(:project) { create(:project, :repository, creator: user) }
   let!(:master) { create(:project_member, :master, user: user, project: project) }
   let!(:guest) { create(:project_member, :guest, user: user2, project: project) }
 
@@ -29,7 +29,7 @@ describe API::Tags, api: true  do
 
     context 'when unauthenticated' do
       it_behaves_like 'repository tags' do
-        let(:project) { create(:project, :public) }
+        let(:project) { create(:project, :public, :repository) }
         let(:current_user) { nil }
       end
     end
@@ -88,7 +88,7 @@ describe API::Tags, api: true  do
 
     context 'when unauthenticated' do
       it_behaves_like 'repository tag' do
-        let(:project) { create(:project, :public) }
+        let(:project) { create(:project, :public, :repository) }
         let(:current_user) { nil }
       end
     end

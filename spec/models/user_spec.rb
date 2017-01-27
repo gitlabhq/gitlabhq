@@ -1446,14 +1446,14 @@ describe User, models: true do
     let!(:user) { create(:user) }
     let!(:group) { create(:group) }
     let!(:nested_group) { create(:group, parent: group) }
-    let!(:project) { create(:project, namespace: group) }
-    let!(:nested_project) { create(:project, namespace: nested_group) }
+    let!(:project) { create(:empty_project, namespace: group) }
+    let!(:nested_project) { create(:empty_project, namespace: nested_group) }
 
     before do
       group.add_owner(user)
 
       # Add more data to ensure method does not include wrong projects
-      other_project = create(:project, namespace: create(:group, :nested))
+      other_project = create(:empty_project, namespace: create(:group, :nested))
       other_project.add_developer(create(:user))
     end
 

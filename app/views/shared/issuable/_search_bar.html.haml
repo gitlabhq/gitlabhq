@@ -47,10 +47,6 @@
               %li.filter-dropdown-item{ 'data-value' => 'none' }
                 %button.btn.btn-link
                   No Assignee
-              - if current_user
-                %li.filter-dropdown-item{ 'data-value' => current_user.to_reference }
-                  %button.btn.btn-link
-                    Assigned to me
               %li.divider
             %ul.filter-dropdown{ 'data-dynamic' => true, 'data-dropdown' => true }
               %li.filter-dropdown-item
