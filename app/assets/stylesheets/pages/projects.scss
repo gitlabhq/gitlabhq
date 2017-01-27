@@ -198,7 +198,7 @@
     margin: 15px 5px 0 0;
 
     input {
-      height: 27px;
+      height: 28px;
     }
   }
 
@@ -523,7 +523,7 @@ a.deploy-project-label {
 
     &:hover,
     &:focus {
-      color: darken($notes-light-color, 15%);
+      color: $gl-text-color;
     }
   }
 
