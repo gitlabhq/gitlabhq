@@ -26,7 +26,7 @@
       },
       addIssues() {
         const list = this.selectedList;
-        const issueIds = this.selectedIssues.map(issue => issue._id);
+        const issueIds = this.selectedIssues.map(issue => issue.globalId);
 
         // Post the data to the backend
         this.$http.post(this.bulkUpdatePath, {

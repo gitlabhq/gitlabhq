@@ -31,13 +31,13 @@
     },
     methods: {
       toggleIssue: ModalStore.toggleIssue.bind(ModalStore),
-      listHeight () {
+      listHeight() {
         return this.$refs.list.getBoundingClientRect().height;
       },
-      scrollHeight () {
+      scrollHeight() {
         return this.$refs.list.scrollHeight;
       },
-      scrollTop () {
+      scrollTop() {
         return this.$refs.list.scrollTop + this.listHeight();
       },
       showIssue(issue) {
@@ -70,7 +70,8 @@
       this.$refs.list.onscroll = () => {
         const currentPage = Math.floor(this.issues.length / this.perPage);
 
-        if ((this.scrollTop() > this.scrollHeight() - 100) && !this.loadingNewPage && currentPage === this.page) {
+        if ((this.scrollTop() > this.scrollHeight() - 100) && !this.loadingNewPage
+          && currentPage === this.page) {
           this.loadingNewPage = true;
           this.page += 1;
         }
