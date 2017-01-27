@@ -16,10 +16,11 @@ describe Profiles::NotificationsController do
       user = create_user
       sign_in(user)
 
-      put :update, user: { notification_email: 'new@example.com', admin: true }
+      put :update, user: { notification_email: 'new@example.com', notified_of_own_activity: true, admin: true }
 
       user.reload
       expect(user.notification_email).to eq('new@example.com')
+      expect(user.notified_of_own_activity).to eq(true)
       expect(user.admin).to eq(false)
       expect(controller).to set_flash[:notice].to('Notification settings saved')
     end
