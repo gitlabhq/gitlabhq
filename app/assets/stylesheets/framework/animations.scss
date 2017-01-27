@@ -116,11 +116,15 @@ a {
   @include transition(background-color, color, border);
 }
 
-.tree-table td,
-.well-list > li {
-  @include transition(background-color, border-color);
-}
+// .tree-table td,
+// .well-list > li {
+//   @include transition(background-color, border-color);
+// }
 
 .stage-nav-item {
   @include transition(background-color, box-shadow);
+}
+
+.nav-sidebar a {
+  transition: none;
 }
