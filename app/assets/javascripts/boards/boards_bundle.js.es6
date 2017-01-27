@@ -59,8 +59,6 @@ $(() => {
       gl.boardService.all()
         .then((resp) => {
           resp.json().forEach((board) => {
-            if (board.list_type === 'backlog') return;
-
             const list = Store.addList(board);
 
             if (list.type === 'done') {
