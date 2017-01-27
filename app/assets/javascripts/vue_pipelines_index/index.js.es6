@@ -1,5 +1,5 @@
 /* global Vue, VueResource, gl */
-/*= require vue_common_component/commit */
+/*= require vue_shared/components/commit */
 /*= require vue_pagination/index */
 /*= require vue-resource
 /*= require boards/vue_resource_interceptor */

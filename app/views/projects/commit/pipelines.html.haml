@@ -2,4 +2,29 @@
 
 = render 'commit_box'
 = render 'ci_menu'
-= render 'pipelines_list', pipelines: @pipelines
+
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_tag("commit/pipelines_bundle.js")
+
+#commit-pipeline-table-view{ data: { pipelines_data: pipelines_namespace_project_commit_path(@project.namespace, @project, @commit.id)}}
+.pipeline-svgs{ data: { "commit_icon_svg" => custom_icon("icon_commit"),
+  "icon_status_canceled" => custom_icon("icon_status_canceled"),
+  "icon_status_running" => custom_icon("icon_status_running"),
+  "icon_status_skipped" => custom_icon("icon_status_skipped"),
+  "icon_status_created" => custom_icon("icon_status_created"),
+  "icon_status_pending" => custom_icon("icon_status_pending"),
+  "icon_status_success" => custom_icon("icon_status_success"),
+  "icon_status_failed" => custom_icon("icon_status_failed"),
+  "icon_status_warning" => custom_icon("icon_status_warning"),
+  "stage_icon_status_canceled" => custom_icon("icon_status_canceled_borderless"),
+  "stage_icon_status_running" => custom_icon("icon_status_running_borderless"),
+  "stage_icon_status_skipped" => custom_icon("icon_status_skipped_borderless"),
+  "stage_icon_status_created" => custom_icon("icon_status_created_borderless"),
+  "stage_icon_status_pending" => custom_icon("icon_status_pending_borderless"),
+  "stage_icon_status_success" => custom_icon("icon_status_success_borderless"),
+  "stage_icon_status_failed" => custom_icon("icon_status_failed_borderless"),
+  "stage_icon_status_warning" => custom_icon("icon_status_warning_borderless"),
+  "icon_play" => custom_icon("icon_play"),
+  "icon_timer" => custom_icon("icon_timer"),
+  "icon_status_manual" => custom_icon("icon_status_manual"),
+} }
