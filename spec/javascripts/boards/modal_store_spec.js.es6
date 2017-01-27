@@ -81,6 +81,7 @@ describe('Modal store', () => {
   });
 
   it('adds issue to selected array', () => {
+    issue.selected = true;
     Store.addSelectedIssue(issue);
 
     expect(Store.selectedCount()).toBe(1);
@@ -111,5 +112,23 @@ describe('Modal store', () => {
 
   it('does not find a selected issue', () => {
     expect(Store.findSelectedIssue(issue)).toBe(undefined);
+  });
+
+  it('does not remove from selected issue if tab is not all', () => {
+    Store.store.activeTab = 'selected';
+
+    Store.toggleIssue(issue);
+    Store.toggleIssue(issue);
+
+    expect(Store.store.selectedIssues.length).toBe(1);
+    expect(Store.selectedCount()).toBe(0);
+  });
+
+  it('gets selected issue array with only selected issues', () => {
+    Store.toggleIssue(issue);
+    Store.toggleIssue(issue2);
+    Store.toggleIssue(issue2);
+
+    expect(Store.getSelectedIssues().length).toBe(1);
   });
 });

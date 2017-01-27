@@ -255,7 +255,6 @@
   .form-control {
     display: inline-block;
     width: 210px;
-    margin-right: 10px;
   }
 }
 
@@ -387,8 +386,11 @@
 
     > .row {
       width: 100%;
-      margin-top: auto;
-      margin-bottom: auto;
+      margin: auto 0;
+    }
+
+    .svg-content {
+      margin-top: -40px;
     }
   }
 }
@@ -420,7 +422,7 @@
 
   .card-parent {
     width: 100%;
-    padding: 0 $gl-vert-padding ($gl-vert-padding * 2);
+    padding: 0 5px 5px;
 
     @media (min-width: $screen-sm-min) {
       width: 50%;
@@ -433,6 +435,7 @@
 
   .card {
     border: 1px solid $border-gray-dark;
+    box-shadow: 0 1px 2px rgba($issue-boards-card-shadow, .3);
     cursor: pointer;
   }
 }
@@ -446,9 +449,7 @@
 }
 
 .add-issues-footer {
-  margin-top: auto;
-  margin-left: -15px;
-  margin-right: -15px;
+  margin: auto -15px 0;
   padding-left: 15px;
   padding-right: 15px;
   border-bottom-right-radius: $border-radius-default;
@@ -465,10 +466,11 @@
   position: absolute;
   right: -3px;
   top: -3px;
-  width: 20px;
-  background-color: $blue-dark;
+  width: 17px;
+  background-color: $blue-light;
   color: $white-light;
-  font-size: 12px;
-  line-height: 20px;
+  border: 1px solid $border-blue-light;
+  font-size: 9px;
+  line-height: 17px;
   border-radius: 50%;
 }

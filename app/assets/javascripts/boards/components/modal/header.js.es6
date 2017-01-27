@@ -17,7 +17,11 @@
       },
     },
     methods: {
-      toggleAll: ModalStore.toggleAll.bind(ModalStore),
+      toggleAll() {
+        this.$refs.selectAllBtn.blur();
+
+        ModalStore.toggleAll();
+      }
     },
     components: {
       'modal-tabs': gl.issueBoards.ModalTabs,
@@ -49,6 +53,7 @@
           <button
             type="button"
             class="btn btn-success btn-inverted prepend-left-10"
+            ref="selectAllBtn"
             @click="toggleAll">
             {{ selectAllText }}
           </button>

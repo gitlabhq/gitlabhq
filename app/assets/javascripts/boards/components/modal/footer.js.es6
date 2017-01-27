@@ -17,7 +17,7 @@
       submitText() {
         const count = ModalStore.selectedCount();
 
-        return `Add ${count} issue${count > 1 || !count ? 's' : ''}`;
+        return `Add ${count > 0 ? count : ''} issue${count > 1 || !count ? 's' : ''}`;
       },
     },
     methods: {
@@ -26,7 +26,9 @@
       },
       addIssues() {
         const list = this.selectedList;
-        const issueIds = this.selectedIssues.map(issue => issue.globalId);
+        const selectedIssues = ModalStore.getSelectedIssues();
+        const issueIds = selectedIssues.filter(issue => issue.selected)
+          .map(issue => issue.globalId);
 
         // Post the data to the backend
         this.$http.post(this.bulkUpdatePath, {
@@ -37,7 +39,7 @@
         });
 
         // Add the issues on the frontend
-        this.selectedIssues.forEach((issue) => {
+        selectedIssues.forEach((issue) => {
           list.addIssue(issue);
           list.issuesSize += 1;
         });

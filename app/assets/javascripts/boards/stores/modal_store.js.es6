@@ -19,7 +19,7 @@
     }
 
     selectedCount() {
-      return this.store.selectedIssues.length;
+      return this.store.selectedIssues.filter(issue => issue.selected).length;
     }
 
     toggleIssue(issueObj) {
@@ -51,13 +51,31 @@
       });
     }
 
-    addSelectedIssue(issue) {
-      this.store.selectedIssues.push(issue);
+    getSelectedIssues() {
+      return this.store.selectedIssues.filter(issue => issue.selected);
     }
 
-    removeSelectedIssue(issue) {
+    addSelectedIssue(issue) {
       const index = this.selectedIssueIndex(issue);
-      this.store.selectedIssues.splice(index, 1);
+
+      if (index === -1) {
+        this.store.selectedIssues.push(issue);
+      }
+    }
+
+    removeSelectedIssue(issue, forcePurge = false) {
+      if (this.store.activeTab === 'all' || forcePurge) {
+        const index = this.selectedIssueIndex(issue);
+        this.store.selectedIssues.splice(index, 1);
+      }
+    }
+
+    purgeUnselectedIssues() {
+      this.store.selectedIssues.forEach((issue) => {
+        if (!issue.selected) {
+          this.removeSelectedIssue(issue, true);
+        }
+      });
     }
 
     selectedIssueIndex(issue) {

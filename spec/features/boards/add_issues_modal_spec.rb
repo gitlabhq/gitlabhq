@@ -10,6 +10,7 @@ describe 'Issue Boards add issue modal', :feature, :js do
   let!(:planning) { create(:label, project: project, name: 'Planning') }
   let!(:label) { create(:label, project: project) }
   let!(:list1) { create(:list, board: board, label: planning, position: 0) }
+  let!(:list2) { create(:list, board: board, label: label, position: 1) }
   let!(:issue) { create(:issue, project: project) }
   let!(:issue2) { create(:issue, project: project) }
 
@@ -172,7 +173,7 @@ describe 'Issue Boards add issue modal', :feature, :js do
 
           first('.card').click
 
-          expect(page).not_to have_selector('.card')
+          expect(page).not_to have_selector('.is-active')
         end
       end
     end

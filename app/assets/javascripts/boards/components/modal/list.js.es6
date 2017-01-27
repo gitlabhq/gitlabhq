@@ -12,6 +12,10 @@
     watch: {
       activeTab() {
         this.initMasonry();
+
+        if (this.activeTab === 'all') {
+          ModalStore.purgeUnselectedIssues();
+        }
       },
       issues: {
         handler() {
@@ -43,7 +47,9 @@
       showIssue(issue) {
         if (this.activeTab === 'all') return true;
 
-        return issue.selected;
+        const index = ModalStore.selectedIssueIndex(issue);
+
+        return index !== -1;
       },
       initMasonry() {
         const listScrollTop = this.$refs.list.scrollTop;

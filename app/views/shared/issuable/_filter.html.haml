@@ -38,10 +38,10 @@
             #js-boards-search.issue-boards-search
               %input.pull-left.form-control{ type: "search", placeholder: "Filter by name...", "v-model" => "filters.search", "debounce" => "250" }
               - if can?(current_user, :admin_list, @project)
-                %button.btn.btn-create.btn-inverted.js-show-add-issues{ type: "button" }
+                %button.btn.btn-create.pull-right.prepend-left-10.js-show-add-issues{ type: "button" }
                   Add issues
                 .dropdown.pull-right
-                  %button.btn.btn-create.js-new-board-list{ type: "button", data: { toggle: "dropdown", labels: labels_filter_path, namespace_path: @project.try(:namespace).try(:path), project_path: @project.try(:path) } }
+                  %button.btn.btn-create.btn-inverted.js-new-board-list{ type: "button", data: { toggle: "dropdown", labels: labels_filter_path, namespace_path: @project.try(:namespace).try(:path), project_path: @project.try(:path) } }
                     Add list
                   .dropdown-menu.dropdown-menu-paging.dropdown-menu-align-right.dropdown-menu-issues-board-new.dropdown-menu-selectable
                     = render partial: "shared/issuable/label_page_default", locals: { show_footer: true, show_create: true, show_boards_content: true, title: "Add list" }

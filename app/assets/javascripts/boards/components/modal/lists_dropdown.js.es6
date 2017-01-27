@@ -21,11 +21,11 @@
           type="button"
           data-toggle="dropdown"
           aria-expanded="false">
-          {{ selected.title }}
           <span
-            class="dropdown-label-box pull-right"
+            class="dropdown-label-box"
             :style="{ backgroundColor: selected.label.color }">
           </span>
+          {{ selected.title }}
           <i class="fa fa-chevron-down"></i>
         </button>
         <div class="dropdown-menu dropdown-menu-selectable">
