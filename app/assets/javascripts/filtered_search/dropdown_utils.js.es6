@@ -28,7 +28,12 @@
       if (lastToken !== searchToken) {
         const title = updatedItem.title.toLowerCase();
         let value = lastToken.value.toLowerCase();
-        value = value.replace(/"(.*?)"/g, str => str.slice(1).slice(0, -1));
+
+        // Removes the first character if it is a quotation so that we can search
+        // with multiple words
+        if ((value[0] === '"' || value[0] === '\'') && title.indexOf(' ') !== -1) {
+          value = value.slice(1);
+        }
 
         // Eg. filterSymbol = ~ for labels
         const matchWithoutSymbol = lastToken.symbol === filterSymbol && title.indexOf(value) !== -1;
@@ -83,8 +88,9 @@
       const selectionStart = input.selectionStart;
       let inputValue = input.value;
       // Replace all spaces inside quote marks with underscores
+      // (will continue to match entire string until an end quote is found if any)
       // This helps with matching the beginning & end of a token:key
-      inputValue = inputValue.replace(/("(.*?)"|:\s+)/g, str => str.replace(/\s/g, '_'));
+      inputValue = inputValue.replace(/(('[^']*'{0,1})|("[^"]*"{0,1})|:\s+)/g, str => str.replace(/\s/g, '_'));
 
       // Get the right position for the word selected
       // Regex matches first space
