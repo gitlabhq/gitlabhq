@@ -297,7 +297,7 @@ deploy_review:
     - echo "Deploy a review app"
   environment:
     name: review/$CI_BUILD_REF_NAME
-    url: https://$CI_ENVIRONMENT_SLUG.review.example.com
+    url: https://$CI_ENVIRONMENT_SLUG.example.com
   only:
     - branches
   except:
@@ -318,15 +318,15 @@ also contain `/`, or other characters that would be invalid in a domain name or
 URL, we use `$CI_ENVIRONMENT_SLUG` in the `environment:url` so that the
 environment can get a specific and distinct URL for each branch. In this case,
 given a `$CI_BUILD_REF_NAME` of `100-Do-The-Thing`, the URL will be something
-like `https://review-100-do-the-4f99a2.example.com`. Again, the way you set up
+like `https://100-do-the-4f99a2.example.com`. Again, the way you set up
 the web server to serve these requests is based on your setup.
 
 You could also use `$CI_BUILD_REF_SLUG` in `environment:url`, e.g.:
-`https://$CI_BUILD_REF_SLUG.review.example.com`. We use `$CI_ENVIRONMENT_SLUG`
+`https://$CI_BUILD_REF_SLUG.example.com`. We use `$CI_ENVIRONMENT_SLUG`
 here because it is guaranteed to be unique, but if you're using a workflow like
 [GitLab Flow][gitlab-flow], collisions are very unlikely, and you may prefer
 environment names to be more closely based on the branch name - the example
-above would give you an URL like `https://100-do-the-thing.review.example.com`
+above would give you an URL like `https://100-do-the-thing.example.com`
 
 Last but not least, we tell the job to run [`only`][only] on branches
 [`except`][only] master.
