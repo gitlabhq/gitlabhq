@@ -25,6 +25,7 @@ class Projects::IssuesController < Projects::ApplicationController
   def index
     @collection_type    = "Issue"
     @issues             = issues_collection
+    @issues_count       = @issues.count
 
     if !request.format.csv?
       @issues = @issues.page(params[:page])

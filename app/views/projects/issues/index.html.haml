@@ -14,6 +14,7 @@
     = auto_discovery_link_tag(:atom, url_for(params.merge(format: :atom, private_token: current_user.private_token)), title: "#{@project.name} issues")
 
 - if project_issues(@project).exists?
+  = render "projects/issues/export_issues/csv_download"
   %div{ class: (container_class) }
     .top-area
       = render 'shared/issuable/nav', type: :issues
@@ -21,7 +22,7 @@
         - if current_user
           = link_to url_for(params.merge(format: :atom, private_token: current_user.private_token)), class: 'btn append-right-10 has-tooltip', title: 'Subscribe' do
             = icon('rss')
-          = link_to namespace_project_issues_path(@project.namespace, @project, params.permit(IssuableFinder::VALID_PARAMS).merge(format: :csv)), class: 'btn append-right-10 has-tooltip', title: 'Download CSV' do
+          %button.csv_download_link.btn.append-right-10{ title: 'Download CSV' }
             = icon('download')
         - if can? current_user, :create_issue, @project
           = link_to new_namespace_project_issue_path(@project.namespace,

@@ -1,0 +1,30 @@
+.issues-export-modal.modal
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %a.close{ href: "#", "data-dismiss" => "modal" } ×
+        .export-svg.pull-right
+          = render "projects/issues/export_issues/export_issues_list.svg"
+        %h3
+          Export issues list
+      .modal-header
+        = icon('check', { class: 'export-checkmark' })
+        %strong
+          #{@issues_count} issues selected
+      .modal-body
+        %div
+          After we finish preparing your .csv export, we'll email it to
+          %strong= @current_user.email
+      .modal-footer
+        = link_to 'Request export', namespace_project_issues_path(@project.namespace, @project, params.permit(IssuableFinder::VALID_PARAMS).merge(format: :csv)), class: "btn btn-success pull-left", title: "Request export"
+
+:javascript
+  $(function(){
+    var modal = $('.issues-export-modal').modal({modal: true, show:false});
+    $('.csv_download_link').bind("click", function(){
+      modal.show();
+    });
+    $('.modal-header .close').bind("click", function(){
+      modal.hide();
+    })
+  })
