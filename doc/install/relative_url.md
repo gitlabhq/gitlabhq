@@ -118,7 +118,7 @@ Make sure to follow all steps below:
 
     ```
     cd /home/git/gitlab
-    sudo -u git -H bundle exec rake assets:clean assets:precompile RAILS_ENV=production
+    sudo -u git -H bundle exec rake gitlab:assets:clean gitlab:assets:compile RAILS_ENV=production
     ```
 
 1. [Restart GitLab][] for the changes to take effect.
