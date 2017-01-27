@@ -47,7 +47,7 @@ module Projects
     end
 
     def pages_update_file
-      File.join(Settings.pages.path, '.update')
+      File.join(::Settings.pages.path, '.update')
     end
 
     def update_file(file, data)
