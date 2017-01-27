@@ -45,7 +45,7 @@
       <div>
         <h4 class="card-title">
           <i
-            class="fa fa-eye-flash"
+            class="fa fa-eye-slash confidential-icon"
             v-if="issue.confidential"></i>
           <a
             :href="issueLinkBase + '/' + issue.id"
