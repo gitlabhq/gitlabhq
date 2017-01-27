@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170204181513) do
+ActiveRecord::Schema.define(version: 20170206071414) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1102,6 +1102,7 @@ ActiveRecord::Schema.define(version: 20170204181513) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "submitted_as_ham", default: false, null: false
+    t.boolean "recaptcha_verified", default: false, null: false
   end
 
   create_table "subscriptions", force: :cascade do |t|
