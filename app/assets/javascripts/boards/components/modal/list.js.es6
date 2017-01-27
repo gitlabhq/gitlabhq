@@ -14,8 +14,10 @@
         this.initMasonry();
       },
       issues: {
-        handler() {
-          this.initMasonry();
+        handler(issues, oldIssues) {
+          if (this.activeTab === 'selected' || issues.length !== oldIssues.length) {
+            this.initMasonry();
+          }
         },
         deep: true,
       },
@@ -37,11 +39,15 @@
         return issue.selected;
       },
       initMasonry() {
+        const listScrollTop = this.$refs.list.scrollTop;
+
         this.$nextTick(() => {
           this.destroyMasonry();
           listMasonry = new Masonry(this.$refs.list, {
             transitionDuration: 0,
           });
+
+          this.$refs.list.scrollTop = listScrollTop;
         });
       },
       destroyMasonry() {
