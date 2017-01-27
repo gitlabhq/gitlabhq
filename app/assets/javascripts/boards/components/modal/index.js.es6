@@ -48,7 +48,7 @@
         }).then((res) => {
           const data = res.json();
 
-          data.forEach((issueObj) => {
+          data.issues.forEach((issueObj) => {
             const issue = new ListIssue(issueObj);
             const foundSelectedIssue = ModalStore.findSelectedIssue(issue);
             issue.selected = foundSelectedIssue !== undefined;

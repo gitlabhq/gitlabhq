@@ -4,9 +4,9 @@
 class BoardService {
   constructor (root, boardId) {
     this.boards = Vue.resource(`${root}{/id}.json`, {}, {
-      backlog: {
+      issues: {
         method: 'GET',
-        url: `${root}/${boardId}/backlog.json`
+        url: `${root}/${boardId}/issues.json`
       }
     });
     this.lists = Vue.resource(`${root}/${boardId}/lists{/id}`, {}, {
@@ -73,7 +73,7 @@ class BoardService {
   }
 
   getBacklog(data) {
-    return this.boards.backlog(data);
+    return this.boards.issues(data);
   }
 }
 
