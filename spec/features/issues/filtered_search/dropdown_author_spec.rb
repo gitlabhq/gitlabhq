@@ -157,4 +157,22 @@ describe 'Dropdown author', js: true, feature: true do
       expect(page).to have_css(js_dropdown_author, visible: true)
     end
   end
+
+  describe 'caching requests' do
+    it 'caches requests after the first load' do
+      filtered_search.set('author')
+      send_keys_to_filtered_search(':')
+      initial_size = dropdown_author_size
+
+      expect(initial_size).to be > 0
+
+      new_user = create(:user)
+      project.team << [new_user, :master]
+      find('.filtered-search-input-container .clear-search').click
+      filtered_search.set('author')
+      send_keys_to_filtered_search(':')
+
+      expect(dropdown_author_size).to eq(initial_size)
+    end
+  end
 end

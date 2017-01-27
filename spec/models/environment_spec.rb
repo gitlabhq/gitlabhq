@@ -32,7 +32,7 @@ describe Environment, models: true do
   end
 
   describe '#includes_commit?' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
 
     context 'without a last deployment' do
       it "returns false" do
@@ -81,7 +81,7 @@ describe Environment, models: true do
   end
 
   describe '#first_deployment_for' do
-    let(:project)       { create(:project) }
+    let(:project)       { create(:project, :repository) }
     let!(:deployment)   { create(:deployment, environment: environment, ref: commit.parent.id) }
     let!(:deployment1)  { create(:deployment, environment: environment, ref: commit.id) }
     let(:head_commit)   { project.commit }

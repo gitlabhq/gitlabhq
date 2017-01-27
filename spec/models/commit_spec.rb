@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Commit, models: true do
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:project, :public, :repository) }
   let(:commit)  { project.commit }
 
   describe 'modules' do
@@ -34,7 +34,7 @@ describe Commit, models: true do
   end
 
   describe '#to_reference' do
-    let(:project) { create(:project, path: 'sample-project') }
+    let(:project) { create(:project, :repository, path: 'sample-project') }
     let(:commit)  { project.commit }
 
     it 'returns a String reference to the object' do
@@ -42,13 +42,13 @@ describe Commit, models: true do
     end
 
     it 'supports a cross-project reference' do
-      another_project = build(:project, name: 'another-project', namespace: project.namespace)
+      another_project = build(:project, :repository, name: 'another-project', namespace: project.namespace)
       expect(commit.to_reference(another_project)).to eq "sample-project@#{commit.id}"
     end
   end
 
   describe '#reference_link_text' do
-    let(:project) { create(:project, path: 'sample-project') }
+    let(:project) { create(:project, :repository, path: 'sample-project') }
     let(:commit)  { project.commit }
 
     it 'returns a String reference to the object' do
@@ -56,7 +56,7 @@ describe Commit, models: true do
     end
 
     it 'supports a cross-project reference' do
-      another_project = build(:project, name: 'another-project', namespace: project.namespace)
+      another_project = build(:project, :repository, name: 'another-project', namespace: project.namespace)
       expect(commit.reference_link_text(another_project)).to eq "sample-project@#{commit.short_id}"
     end
   end
@@ -131,7 +131,7 @@ eos
 
   describe '#closes_issues' do
     let(:issue) { create :issue, project: project }
-    let(:other_project) { create :project, :public }
+    let(:other_project) { create(:empty_project, :public) }
     let(:other_issue) { create :issue, project: other_project }
     let(:commiter) { create :user }
 
@@ -154,7 +154,7 @@ eos
   end
 
   it_behaves_like 'a mentionable' do
-    subject { create(:project).commit }
+    subject { create(:project, :repository).commit }
 
     let(:author) { create(:user, email: subject.author_email) }
     let(:backref_text) { "commit #{subject.id}" }
