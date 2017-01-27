@@ -4,14 +4,17 @@ describe 'Issue Boards', feature: true, js: true do
   include WaitForAjax
   include WaitForVueResource
 
-  let(:project)     { create(:empty_project, :public) }
-  let(:board)       { create(:board, project: project) }
-  let(:user)        { create(:user) }
-  let!(:label)      { create(:label, project: project) }
-  let!(:label2)     { create(:label, project: project) }
-  let!(:milestone)  { create(:milestone, project: project) }
-  let!(:issue2)     { create(:labeled_issue, project: project, assignee: user, milestone: milestone, labels: [label]) }
-  let!(:issue)      { create(:issue, project: project) }
+  let(:user)         { create(:user) }
+  let(:project)      { create(:empty_project, :public) }
+  let!(:milestone)   { create(:milestone, project: project) }
+  let!(:development) { create(:label, project: project, name: 'Development') }
+  let!(:bug)         { create(:label, project: project, name: 'Bug') }
+  let!(:regression)  { create(:label, project: project, name: 'Regression') }
+  let!(:stretch)     { create(:label, project: project, name: 'Stretch') }
+  let!(:issue1)      { create(:labeled_issue, project: project, assignee: user, milestone: milestone, labels: [development]) }
+  let!(:issue2)      { create(:labeled_issue, project: project, labels: [development, stretch]) }
+  let(:board)        { create(:board, project: project) }
+  let!(:list)        { create(:list, board: board, label: development, position: 0) }
 
   before do
     project.team << [user, :master]
@@ -62,8 +65,8 @@ describe 'Issue Boards', feature: true, js: true do
     end
 
     page.within('.issue-boards-sidebar') do
-      expect(page).to have_content(issue.title)
-      expect(page).to have_content(issue.to_reference)
+      expect(page).to have_content(issue2.title)
+      expect(page).to have_content(issue2.to_reference)
     end
   end
 
@@ -244,22 +247,22 @@ describe 'Issue Boards', feature: true, js: true do
 
         wait_for_ajax
 
-        click_link label.title
+        click_link bug.title
 
         wait_for_vue_resource
 
         find('.dropdown-menu-close-icon').click
 
         page.within('.value') do
-          expect(page).to have_selector('.label', count: 1)
-          expect(page).to have_content(label.title)
+          expect(page).to have_selector('.label', count: 3)
+          expect(page).to have_content(bug.title)
         end
       end
 
       page.within(first('.board')) do
         page.within(first('.card')) do
-          expect(page).to have_selector('.label', count: 1)
-          expect(page).to have_content(label.title)
+          expect(page).to have_selector('.label', count: 2)
+          expect(page).to have_content(bug.title)
         end
       end
     end
@@ -274,32 +277,32 @@ describe 'Issue Boards', feature: true, js: true do
 
         wait_for_ajax
 
-        click_link label.title
-        click_link label2.title
+        click_link bug.title
+        click_link regression.title
 
         wait_for_vue_resource
 
         find('.dropdown-menu-close-icon').click
 
         page.within('.value') do
-          expect(page).to have_selector('.label', count: 2)
-          expect(page).to have_content(label.title)
-          expect(page).to have_content(label2.title)
+          expect(page).to have_selector('.label', count: 4)
+          expect(page).to have_content(bug.title)
+          expect(page).to have_content(regression.title)
         end
       end
 
       page.within(first('.board')) do
         page.within(first('.card')) do
-          expect(page).to have_selector('.label', count: 2)
-          expect(page).to have_content(label.title)
-          expect(page).to have_content(label2.title)
+          expect(page).to have_selector('.label', count: 3)
+          expect(page).to have_content(bug.title)
+          expect(page).to have_content(regression.title)
         end
       end
     end
 
     it 'removes a label' do
       page.within(first('.board')) do
-        find('.card:nth-child(2)').click
+        first('.card').click
       end
 
       page.within('.labels') do
@@ -307,22 +310,22 @@ describe 'Issue Boards', feature: true, js: true do
 
         wait_for_ajax
 
-        click_link label.title
+        click_link stretch.title
 
         wait_for_vue_resource
 
         find('.dropdown-menu-close-icon').click
 
         page.within('.value') do
-          expect(page).to have_selector('.label', count: 0)
-          expect(page).not_to have_content(label.title)
+          expect(page).to have_selector('.label', count: 1)
+          expect(page).not_to have_content(stretch.title)
         end
       end
 
       page.within(first('.board')) do
-        page.within(find('.card:nth-child(2)')) do
-          expect(page).not_to have_selector('.label', count: 1)
-          expect(page).not_to have_content(label.title)
+        page.within(first('.card')) do
+          expect(page).not_to have_selector('.label')
+          expect(page).not_to have_content(stretch.title)
         end
       end
     end
