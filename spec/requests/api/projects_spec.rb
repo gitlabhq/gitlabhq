@@ -822,7 +822,7 @@ describe API::Projects, api: true  do
     it 'creates a new project snippet' do
       post api("/projects/#{project.id}/snippets", user),
         title: 'api test', file_name: 'sample.rb', code: 'test',
-        visibility_level: '0'
+        visibility_level: Gitlab::VisibilityLevel::PRIVATE
       expect(response).to have_http_status(201)
       expect(json_response['title']).to eq('api test')
     end
@@ -1071,7 +1071,7 @@ describe API::Projects, api: true  do
       end
 
       it 'updates visibility_level' do
-        project_param = { visibility_level: 20 }
+        project_param = { visibility_level: Gitlab::VisibilityLevel::PUBLIC }
         put api("/projects/#{project3.id}", user), project_param
         expect(response).to have_http_status(200)
         project_param.each_pair do |k, v|
@@ -1081,7 +1081,7 @@ describe API::Projects, api: true  do
 
       it 'updates visibility_level from public to private' do
         project3.update_attributes({ visibility_level: Gitlab::VisibilityLevel::PUBLIC })
-        project_param = { visibility_level: 0 }
+        project_param = { visibility_level: Gitlab::VisibilityLevel::PRIVATE }
         put api("/projects/#{project3.id}", user), project_param
         expect(response).to have_http_status(200)
         project_param.each_pair do |k, v|
@@ -1154,7 +1154,7 @@ describe API::Projects, api: true  do
       end
 
       it 'does not update visibility_level' do
-        project_param = { visibility_level: 20 }
+        project_param = { visibility_level: Gitlab::VisibilityLevel::PUBLIC }
         put api("/projects/#{project3.id}", user4), project_param
         expect(response).to have_http_status(403)
       end
