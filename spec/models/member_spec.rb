@@ -481,7 +481,7 @@ describe Member, models: true do
 
   describe "destroying a record", truncate: true do
     it "refreshes user's authorized projects" do
-      project = create(:project, :private)
+      project = create(:empty_project, :private)
       user    = create(:user)
       member  = project.team << [user, :reporter]
 

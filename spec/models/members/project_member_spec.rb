@@ -83,8 +83,8 @@ describe ProjectMember, models: true do
 
   describe '.import_team' do
     before do
-      @project_1 = create :project
-      @project_2 = create :project
+      @project_1 = create(:empty_project)
+      @project_2 = create(:empty_project)
 
       @user_1 = create :user
       @user_2 = create :user
@@ -131,8 +131,8 @@ describe ProjectMember, models: true do
 
   describe '.truncate_teams' do
     before do
-      @project_1 = create :project
-      @project_2 = create :project
+      @project_1 = create(:empty_project)
+      @project_2 = create(:empty_project)
 
       @user_1 = create :user
       @user_2 = create :user

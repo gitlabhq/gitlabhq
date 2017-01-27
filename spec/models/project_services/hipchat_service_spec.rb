@@ -22,8 +22,8 @@ describe HipchatService, models: true do
 
   describe "Execute" do
     let(:hipchat) { HipchatService.new }
-    let(:user)    { create(:user, username: 'username') }
-    let(:project) { create(:project, name: 'project') }
+    let(:user)    { create(:user) }
+    let(:project) { create(:project, :repository) }
     let(:api_url) { 'https://hipchat.example.com/v2/room/123456/notification?auth_token=verySecret' }
     let(:project_name) { project.name_with_namespace.gsub(/\s/, '') }
     let(:token) { 'verySecret' }
@@ -165,7 +165,7 @@ describe HipchatService, models: true do
 
     context "Note events" do
       let(:user) { create(:user) }
-      let(:project) { create(:project, creator_id: user.id) }
+      let(:project) { create(:project, :repository, creator: user) }
 
       context 'when commit comment event triggered' do
         let(:commit_note) do

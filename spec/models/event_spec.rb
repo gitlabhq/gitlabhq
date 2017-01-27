@@ -27,7 +27,7 @@ describe Event, models: true do
   end
 
   describe "Push event" do
-    let(:project) { create(:project, :private) }
+    let(:project) { create(:empty_project, :private) }
     let(:user) { project.owner }
     let(:event) { create_event(project, user) }
 
@@ -187,7 +187,7 @@ describe Event, models: true do
     end
 
     context 'merge request diff note event' do
-      let(:project) { create(:project, :public) }
+      let(:project) { create(:empty_project, :public) }
       let(:merge_request) { create(:merge_request, source_project: project, author: author, assignee: assignee) }
       let(:note_on_merge_request) { create(:legacy_diff_note_on_merge_request, noteable: merge_request, project: project) }
       let(:target) { note_on_merge_request }
@@ -202,7 +202,7 @@ describe Event, models: true do
       end
 
       context 'private project' do
-        let(:project) { create(:project, :private) }
+        let(:project) { create(:empty_project, :private) }
 
         it do
           expect(event.visible_to_user?(non_member)).to eq false

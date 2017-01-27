@@ -54,7 +54,7 @@ module CycleAnalyticsHelpers
             end
 
             context "when the data belongs to another project" do
-              let(:other_project) { create(:project) }
+              let(:other_project) { create(:project, :repository) }
 
               it "returns nil" do
                 # Use a stub to "trick" the data/condition functions
