@@ -24,7 +24,6 @@ connect directly to Prometheus or utilize a dashboard tool like [Grafana].
 >**Note:**
 - Available since Omnibus GitLab 8.16. For installations from source you'll
 have to install and configure it yourself.
-- Prometheus and it's exporters do not authenticate users, and will be available for anyone who can access them.
 
 To enable Prometheus:
 
@@ -39,17 +38,17 @@ To enable Prometheus:
    take effect
 
 By default, Prometheus will run as the `gitlab-prometheus` user and listen on
-TCP port `9090` under localhost. If the [node exporter](#node-exporter) service
+TCP port `9090`. If the [node exporter](#node-exporter) service
 has been enabled, it will automatically be set up as a monitoring target for
 Prometheus.
 
 ## Viewing Performance Metrics
 
 After you have [enabled Prometheus](#configuring-prometheus), you can visit
-`<your_domain_name>:9090` for the dashboard that Prometheus offers by default.
+`http://<your_domain_name>:9090` for the dashboard that Prometheus offers by default.
 
 >**Note:**
-Currently if SSL has been enabled, you will not be able to access Prometheus on the same hostname as GitLab due to HSTS. This configuration will be supported in a future release.
+If SSL has been enabled, you will not be able to access Prometheus on the same hostname as GitLab due to [HSTS](https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security). We recommend setting up a new DNS entry for Prometheus to access the console, for example `http://prometheus.example.com:9090/`. 
 
 The performance data collected by Prometheus can be viewed directly in the
 Prometheus console or through a compatible dashboard tool.
@@ -57,6 +56,12 @@ The Prometheus interface provides a [flexible query language][prom-query] to wor
 with the collected data where you can visualize their output.
 For a more fully featured dashboard, Grafana can be used and has
 [official support for Prometheus][prom-grafana].
+
+Sample Prometheus Queries:
+* % Memory Used: `(1 - ((node_memory_MemFree + node_memory_Cached) / node_memory_MemTotal)) * 100`
+* % CPU Load: `1 - rate(node_cpu{mode="idle"}[5m])`
+* Data Transmitted: `irate(node_network_transmit_bytes[5m])`
+* Data Received: `irate(node_network_receive_bytes[5m])`
 
 ## Prometheus exporters
 
