@@ -28,7 +28,7 @@
           {{ selected.title }}
           <i class="fa fa-chevron-down"></i>
         </button>
-        <div class="dropdown-menu dropdown-menu-selectable">
+        <div class="dropdown-menu dropdown-menu-selectable dropdown-menu-drop-up">
           <ul>
             <li
               v-for="list in state.lists"
