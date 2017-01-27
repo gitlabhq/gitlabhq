@@ -90,6 +90,30 @@ describe Repository, models: true do
 
         it { is_expected.to eq(['v1.1.0', 'v1.0.0']) }
       end
+
+      context 'annotated tag pointing to a blob' do
+        let(:annotated_tag_name) { 'annotated-tag' }
+
+        subject { repository.tags_sorted_by('updated_asc').map(&:name) }
+
+        before do
+          options = { message: 'test tag message\n',
+                      tagger: { name: 'John Smith', email: 'john@gmail.com' } }
+          repository.rugged.tags.create(annotated_tag_name, 'a48e4fc218069f68ef2e769dd8dfea3991362175', options)
+
+          double_first = double(committed_date: Time.now - 1.second)
+          double_last = double(committed_date: Time.now)
+
+          allow(tag_a).to receive(:dereferenced_target).and_return(double_last)
+          allow(tag_b).to receive(:dereferenced_target).and_return(double_first)
+        end
+
+        it { is_expected.to eq(['v1.1.0', 'v1.0.0', annotated_tag_name]) }
+
+        after do
+          repository.rugged.tags.delete(annotated_tag_name)
+        end
+      end
     end
   end
 
