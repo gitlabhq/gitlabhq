@@ -1,6 +1,6 @@
 .content-block.build-header
   .header-content
-    = render 'ci/status/badge', status: @build.detailed_status(current_user)
+    = render 'ci/status/badge', status: @build.detailed_status(current_user), link: false
     Build
     %strong.js-build-id ##{@build.id}
     in pipeline

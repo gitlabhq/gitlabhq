@@ -1,4 +1,4 @@
 ---
-title: Add new ci status partial to render a badge without a link
+title: Add link verification to badge partial in order to render a badge without a link
 merge_request: 8740
 author:

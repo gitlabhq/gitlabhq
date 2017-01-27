@@ -4,7 +4,7 @@
 
 %tr.commit
   %td.commit-link
-    = render 'ci/status/badge_link', status: pipeline.detailed_status(current_user)
+    = render 'ci/status/badge', status: pipeline.detailed_status(current_user)
 
   %td
     = link_to namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline.id) do
