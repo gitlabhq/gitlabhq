@@ -1,19 +1,21 @@
-# Fast-forward merge
+# Fast-forward merge requests
 
-GitLab Enterprise Edition offers a way to accept merge requests without creating
-merge commits. If you prefer a linear git history, this might be a good feature
-for you.
+> Included in [GitLab Enterprise Edition Starter][products].
 
-You can configure this on a per-project basis by navigating to the project
-settings page and selecting the **Only fast-forward merging** checkbox.
+If you prefer a linear Git history and a way to accept merge requests without
+creating merge commits, you can configure this on a per-project basis.
+
+Navigate to the project's settings, select the **Fast-forward merge**
+option and hit **Save changes** for the changes to take effect.
 
 ![Fast forward merge in project settings](img/ff_merge.png)
 
-Now, when you visit the merge request page, you will be able to **accept it only
-if a fast-forward merge is possible**.
+Now, when you visit the merge request page, you will be able to accept it
+**only if a fast-forward merge is possible**.
+
+![Fast forward merge request](img/ff_merge_mr.png)
 
 If the target branch is ahead of the source branch, you need to rebase the
 source branch before you will be able to do a fast-forward merge.
 
-For simple rebase operations, you can use the
-[rebase before merge](rebase_before_merge.md) feature.
+[products]: https://about.gitlab.com/products/ "GitLab products page"

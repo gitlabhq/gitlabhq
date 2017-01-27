@@ -69,12 +69,23 @@ have been marked as a **Work In Progress**.
 
 ## Merge request approvals
 
+> Included in [GitLab Enterprise Edition Starter][products].
+
 If you want to make sure every merge request is approved by one or more people,
 you can enforce this workflow by using merge request approvals. Merge request
 approvals allow you to set the number of necessary approvals and predefine a
 list of approvers that will need to approve every merge request in a project.
 
 [Read more about merge request approvals.](merge_requests/merge_request_approvals.md)
+
+## Fast-forward merge requests
+
+> Included in [GitLab Enterprise Edition Starter][products].
+
+If you prefer a linear Git history and a way to accept merge requests without
+creating merge commits, you can configure this on a per-project basis.
+
+[Read more about fast-forward merge requests.](merge_requests/fast_forward_merge.md)
 
 ## Ignore whitespace changes in Merge Request diff view
 
@@ -175,4 +186,5 @@ And to check out a particular merge request:
 git checkout origin/merge-requests/1
 ```
 
+[products]: https://about.gitlab.com/products/ "GitLab products page"
 [protected branches]: protected_branches.md
