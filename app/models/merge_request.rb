@@ -91,6 +91,10 @@ class MergeRequest < ActiveRecord::Base
     around_transition do |merge_request, transition, block|
       Gitlab::Timeless.timeless(merge_request, &block)
     end
+
+    after_transition unchecked: :cannot_be_merged do |merge_request, transition|
+      TodoService.new.merge_request_became_unmergeable(merge_request)
+    end
   end
 
   validates :source_project, presence: true, unless: [:allow_broken, :importing?, :closed_without_fork?]
@@ -861,9 +865,11 @@ class MergeRequest < ActiveRecord::Base
       paths: paths
     )
 
-    active_diff_notes.each do |note|
-      service.execute(note)
-      Gitlab::Timeless.timeless(note, &:save)
+    transaction do
+      active_diff_notes.each do |note|
+        service.execute(note)
+        Gitlab::Timeless.timeless(note, &:save)
+      end
     end
   end
 

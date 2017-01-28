@@ -90,6 +90,12 @@ module API
       MergeRequestsFinder.new(current_user, project_id: user_project.id).find(id)
     end
 
+    def find_merge_request_with_access(id, access_level = :read_merge_request)
+      merge_request = user_project.merge_requests.find(id)
+      authorize! access_level, merge_request
+      merge_request
+    end
+
     def authenticate!
       unauthorized! unless current_user
     end
@@ -226,7 +232,7 @@ module API
     end
 
     def render_api_error!(message, status)
-      error!({ 'message' => message }, status)
+      error!({ 'message' => message }, status, header)
     end
 
     def handle_api_exception(exception)

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Projects::BlobController do
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:project, :public, :repository) }
   let(:user)    { create(:user) }
 
   before do

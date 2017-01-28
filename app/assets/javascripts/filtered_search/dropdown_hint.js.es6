@@ -9,7 +9,7 @@ require('./filtered_search_dropdown');
       this.config = {
         droplabFilter: {
           template: 'hint',
-          filterFunction: gl.DropdownUtils.filterHint,
+          filterFunction: gl.DropdownUtils.filterHint.bind(null, input),
         },
       };
     }
@@ -20,6 +20,9 @@ require('./filtered_search_dropdown');
       if (selected.tagName === 'LI') {
         if (selected.hasAttribute('data-value')) {
           this.dismissDropdown();
+        } else if (selected.getAttribute('data-action') === 'submit') {
+          this.dismissDropdown();
+          this.dispatchFormSubmitEvent();
         } else {
           const token = selected.querySelector('.js-filter-hint').innerText.trim();
           const tag = selected.querySelector('.js-filter-tag').innerText.trim();

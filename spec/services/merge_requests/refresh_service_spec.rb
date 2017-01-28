@@ -106,23 +106,46 @@ describe MergeRequests::RefreshService, services: true do
 
     context 'push to fork repo source branch' do
       let(:refresh_service) { service.new(@fork_project, @user) }
-      before do
-        allow(refresh_service).to receive(:execute_hooks)
-        refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
-        reload_mrs
+
+      context 'open fork merge request' do
+        before do
+          allow(refresh_service).to receive(:execute_hooks)
+          refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
+          reload_mrs
+        end
+
+        it 'executes hooks with update action' do
+          expect(refresh_service).to have_received(:execute_hooks).
+            with(@fork_merge_request, 'update', @oldrev)
+        end
+
+        it { expect(@merge_request.notes).to be_empty }
+        it { expect(@merge_request).to be_open }
+        it { expect(@fork_merge_request.notes.last.note).to include('added 28 commits') }
+        it { expect(@fork_merge_request).to be_open }
+        it { expect(@build_failed_todo).to be_pending }
+        it { expect(@fork_build_failed_todo).to be_pending }
       end
 
-      it 'executes hooks with update action' do
-        expect(refresh_service).to have_received(:execute_hooks).
-          with(@fork_merge_request, 'update', @oldrev)
-      end
+      context 'closed fork merge request' do
+        before do
+          @fork_merge_request.close!
+          allow(refresh_service).to receive(:execute_hooks)
+          refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
+          reload_mrs
+        end
 
-      it { expect(@merge_request.notes).to be_empty }
-      it { expect(@merge_request).to be_open }
-      it { expect(@fork_merge_request.notes.last.note).to include('added 28 commits') }
-      it { expect(@fork_merge_request).to be_open }
-      it { expect(@build_failed_todo).to be_pending }
-      it { expect(@fork_build_failed_todo).to be_pending }
+        it 'do not execute hooks with update action' do
+          expect(refresh_service).not_to have_received(:execute_hooks)
+        end
+
+        it { expect(@merge_request.notes).to be_empty }
+        it { expect(@merge_request).to be_open }
+        it { expect(@fork_merge_request.notes).to be_empty }
+        it { expect(@fork_merge_request).to be_closed }
+        it { expect(@build_failed_todo).to be_pending }
+        it { expect(@fork_build_failed_todo).to be_pending }
+      end
     end
 
     context 'push to fork repo target branch' do
@@ -234,6 +257,70 @@ describe MergeRequests::RefreshService, services: true do
           issue_ids = MergeRequestsClosingIssues.where(merge_request: merge_request).pluck(:issue_id)
           expect(issue_ids).to eq([issue.id])
         end
+      end
+    end
+
+    context 'marking the merge request as work in progress' do
+      let(:refresh_service) { service.new(@project, @user) }
+      before do
+        allow(refresh_service).to receive(:execute_hooks)
+      end
+
+      it 'marks the merge request as work in progress from fixup commits' do
+        fixup_merge_request = create(:merge_request,
+                                     source_project: @project,
+                                     source_branch: 'wip',
+                                     target_branch: 'master',
+                                     target_project: @project)
+        commits = fixup_merge_request.commits
+        oldrev = commits.last.id
+        newrev = commits.first.id
+
+        refresh_service.execute(oldrev, newrev, 'refs/heads/wip')
+        fixup_merge_request.reload
+
+        expect(fixup_merge_request.work_in_progress?).to eq(true)
+        expect(fixup_merge_request.notes.last.note).to match(
+          /marked as a \*\*Work In Progress\*\* from #{Commit.reference_pattern}/
+        )
+      end
+
+      it 'references the commit that caused the Work in Progress status' do
+        refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
+
+        allow(refresh_service).to receive(:find_new_commits)
+        refresh_service.instance_variable_set("@commits", [
+          instance_double(
+            Commit,
+            id: 'aaaaaaa',
+            short_id: 'aaaaaaa',
+            title: 'Fix issue',
+            work_in_progress?: false
+          ),
+          instance_double(
+            Commit,
+            id: 'bbbbbbb',
+            short_id: 'bbbbbbb',
+            title: 'fixup! Fix issue',
+            work_in_progress?: true,
+            to_reference: 'bbbbbbb'
+          ),
+          instance_double(
+            Commit,
+            id: 'ccccccc',
+            short_id: 'ccccccc',
+            title: 'fixup! Fix issue',
+            work_in_progress?: true,
+            to_reference: 'ccccccc'
+          ),
+        ])
+
+        refresh_service.execute(@oldrev, @newrev, 'refs/heads/wip')
+        reload_mrs
+
+        expect(@merge_request.notes.last.note).to eq(
+          "marked as a **Work In Progress** from bbbbbbb"
+        )
       end
     end
 

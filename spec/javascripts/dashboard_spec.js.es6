@@ -1,4 +1,4 @@
-/* eslint-disable no-new, padded-blocks */
+/* eslint-disable no-new */
 
 require('~/sidebar');
 require('~/lib/utils/text_utility');
@@ -34,5 +34,4 @@ require('~/lib/utils/text_utility');
       expect(todosCountText()).toEqual('1,000,000');
     });
   });
-
 })(window.gl);

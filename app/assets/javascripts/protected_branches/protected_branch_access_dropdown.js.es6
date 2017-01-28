@@ -1,7 +1,7 @@
-/* eslint-disable arrow-parens, no-param-reassign, no-irregular-whitespace, object-shorthand, no-else-return, comma-dangle, semi, padded-blocks, max-len */
+/* eslint-disable arrow-parens, no-param-reassign, object-shorthand, no-else-return, comma-dangle, max-len */
 
 (global => {
-  global.gl = global.gl || {};
+  global.gl = global.gl || {};
 
   gl.ProtectedBranchAccessDropdown = class {
     constructor(options) {
@@ -25,6 +25,5 @@
         }
       });
     }
-  }
-
+  };
 })(window);

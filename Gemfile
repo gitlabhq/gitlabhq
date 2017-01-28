@@ -21,7 +21,7 @@ gem 'rugged', '~> 0.24.0'
 # Authentication libraries
 gem 'devise',                 '~> 4.2'
 gem 'doorkeeper',             '~> 4.2.0'
-gem 'omniauth',               '~> 1.3.1'
+gem 'omniauth',               '~> 1.3.2'
 gem 'omniauth-auth0',         '~> 1.4.1'
 gem 'omniauth-azure-oauth2',  '~> 0.0.6'
 gem 'omniauth-cas3',          '~> 1.1.2'
@@ -220,7 +220,7 @@ gem 'chronic', '~> 0.10.2'
 gem 'chronic_duration', '~> 0.10.6'
 
 gem 'webpack-rails', '~> 0.9.9'
-gem 'sassc-rails', '~> 1.3.0'
+gem 'sass-rails', '~> 5.0.6'
 gem 'coffee-rails', '~> 4.1.0'
 gem 'uglifier', '~> 2.7.2'
 gem 'gitlab-turbolinks-classic', '~> 2.5', '>= 2.5.6'
@@ -253,7 +253,7 @@ end
 
 group :development do
   gem 'foreman', '~> 0.78.0'
-  gem 'brakeman', '~> 3.3.0', require: false
+  gem 'brakeman', '~> 3.4.0', require: false
 
   gem 'letter_opener_web', '~> 1.3.0'
   gem 'bullet', '~> 5.2.0', require: false
@@ -319,7 +319,7 @@ group :test do
   gem 'email_spec', '~> 1.6.0'
   gem 'json-schema', '~> 2.6.2'
   gem 'webmock', '~> 1.21.0'
-  gem 'test_after_commit', '~> 0.4.2'
+  gem 'test_after_commit', '~> 1.1'
   gem 'sham_rack', '~> 1.3.6'
   gem 'timecop', '~> 0.8.0'
 end

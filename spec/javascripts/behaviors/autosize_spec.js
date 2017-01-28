@@ -1,4 +1,4 @@
-/* eslint-disable space-before-function-paren, no-var, comma-dangle, no-return-assign, padded-blocks, max-len */
+/* eslint-disable space-before-function-paren, no-var, comma-dangle, no-return-assign, max-len */
 
 require('~/behaviors/autosize');
 
@@ -18,5 +18,4 @@ require('~/behaviors/autosize');
       return $(document).trigger('page:load');
     };
   });
-
 }).call(this);

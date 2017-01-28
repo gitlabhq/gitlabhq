@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::GithubImport::ReleaseFormatter, lib: true do
-  let!(:project) { create(:project, namespace: create(:namespace, path: 'octocat')) }
+  let!(:project) { create(:empty_project, namespace: create(:namespace, path: 'octocat')) }
   let(:octocat) { double(id: 123456, login: 'octocat') }
   let(:created_at) { DateTime.strptime('2011-01-26T19:01:12Z') }
 

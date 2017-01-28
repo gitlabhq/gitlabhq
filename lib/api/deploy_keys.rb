@@ -38,26 +38,25 @@ module API
           present key, with: Entities::SSHKey
         end
 
-        # TODO: for 9.0 we should check if params are there with the params block
-        # grape provides, at this point we'd change behaviour so we can't
-        # Behaviour now if you don't provide all required params: it renders a
-        # validation error or two.
         desc 'Add new deploy key to currently authenticated user' do
           success Entities::SSHKey
         end
+        params do
+          requires :key, type: String, desc: 'The new deploy key'
+          requires :title, type: String, desc: 'The name of the deploy key'
+        end
         post ":id/#{path}" do
-          attrs = attributes_for_keys [:title, :key]
-          attrs[:key].strip! if attrs[:key]
+          params[:key].strip!
 
           # Check for an existing key joined to this project
-          key = user_project.deploy_keys.find_by(key: attrs[:key])
+          key = user_project.deploy_keys.find_by(key: params[:key])
           if key
             present key, with: Entities::SSHKey
             break
           end
 
           # Check for available deploy keys in other projects
-          key = current_user.accessible_deploy_keys.find_by(key: attrs[:key])
+          key = current_user.accessible_deploy_keys.find_by(key: params[:key])
           if key
             user_project.deploy_keys << key
             present key, with: Entities::SSHKey
@@ -65,7 +64,7 @@ module API
           end
 
           # Create a new deploy key
-          key = DeployKey.new attrs
+          key = DeployKey.new(declared_params(include_missing: false))
           if key.valid? && user_project.deploy_keys << key
             present key, with: Entities::SSHKey
           else
@@ -105,15 +104,19 @@ module API
           present key.deploy_key, with: Entities::SSHKey
         end
 
-        desc 'Delete existing deploy key of currently authenticated user' do
+        desc 'Delete deploy key for a project' do
           success Key
         end
         params do
           requires :key_id, type: Integer, desc: 'The ID of the deploy key'
         end
         delete ":id/#{path}/:key_id" do
-          key = user_project.deploy_keys.find(params[:key_id])
-          key.destroy
+          key = user_project.deploy_keys_projects.find_by(deploy_key_id: params[:key_id])
+          if key
+            key.destroy
+          else
+            not_found!('Deploy Key')
+          end
         end
       end
     end

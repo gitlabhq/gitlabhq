@@ -125,7 +125,8 @@
   top: 100%;
   left: 0;
   z-index: 9;
-  width: 240px;
+  max-width: 280px;
+  min-width: 240px;
   margin-top: 2px;
   margin-bottom: 0;
   font-size: 14px;

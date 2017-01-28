@@ -1,12 +1,10 @@
-/* eslint-disable no-new, guard-for-in, no-restricted-syntax, no-continue, padded-blocks, no-param-reassign, max-len */
+/* eslint-disable no-new, guard-for-in, no-restricted-syntax, no-continue, no-param-reassign, max-len */
 
 require('./lib/utils/bootstrap_linked_tabs');
 
 ((global) => {
-
   class Pipelines {
     constructor(options = {}) {
-
       if (options.initTabs && options.tabsOptions) {
         new global.LinkedTabs(options.tabsOptions);
       }
@@ -37,5 +35,4 @@ require('./lib/utils/bootstrap_linked_tabs');
   }
 
   global.Pipelines = Pipelines;
-
 })(window.gl || (window.gl = {}));

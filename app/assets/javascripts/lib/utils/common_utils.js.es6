@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-unused-expressions, no-param-reassign, no-else-return, quotes, object-shorthand, comma-dangle, camelcase, one-var, vars-on-top, one-var-declaration-per-line, no-return-assign, consistent-return, padded-blocks, max-len, prefer-template */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-unused-expressions, no-param-reassign, no-else-return, quotes, object-shorthand, comma-dangle, camelcase, one-var, vars-on-top, one-var-declaration-per-line, no-return-assign, consistent-return, max-len, prefer-template */
 (function() {
   (function(w) {
     var base;
@@ -160,6 +160,74 @@
       return decodeURIComponent(results[2].replace(/\+/g, ' '));
     };
 
-  })(window);
+    w.gl.utils.getSelectedFragment = () => {
+      const selection = window.getSelection();
+      const documentFragment = selection.getRangeAt(0).cloneContents();
+      if (documentFragment.textContent.length === 0) return null;
 
+      return documentFragment;
+    };
+
+    w.gl.utils.insertText = (target, text) => {
+      // Firefox doesn't support `document.execCommand('insertText', false, text)` on textareas
+
+      const selectionStart = target.selectionStart;
+      const selectionEnd = target.selectionEnd;
+      const value = target.value;
+
+      const textBefore = value.substring(0, selectionStart);
+      const textAfter = value.substring(selectionEnd, value.length);
+      const newText = textBefore + text + textAfter;
+
+      target.value = newText;
+      target.selectionStart = target.selectionEnd = selectionStart + text.length;
+
+      // Trigger autosave
+      $(target).trigger('input');
+
+      // Trigger autosize
+      var event = document.createEvent('Event');
+      event.initEvent('autosize:update', true, false);
+      target.dispatchEvent(event);
+    };
+
+    w.gl.utils.nodeMatchesSelector = (node, selector) => {
+      const matches = Element.prototype.matches ||
+        Element.prototype.matchesSelector ||
+        Element.prototype.mozMatchesSelector ||
+        Element.prototype.msMatchesSelector ||
+        Element.prototype.oMatchesSelector ||
+        Element.prototype.webkitMatchesSelector;
+
+      if (matches) {
+        return matches.call(node, selector);
+      }
+
+      // IE11 doesn't support `node.matches(selector)`
+
+      let parentNode = node.parentNode;
+      if (!parentNode) {
+        parentNode = document.createElement('div');
+        node = node.cloneNode(true);
+        parentNode.appendChild(node);
+      }
+
+      const matchingNodes = parentNode.querySelectorAll(selector);
+      return Array.prototype.indexOf.call(matchingNodes, node) !== -1;
+    };
+
+    /**
+      this will take in the headers from an API response and normalize them
+      this way we don't run into production issues when nginx gives us lowercased header keys
+    */
+    w.gl.utils.normalizeHeaders = (headers) => {
+      const upperCaseHeaders = {};
+
+      Object.keys(headers).forEach((e) => {
+        upperCaseHeaders[e.toUpperCase()] = headers[e];
+      });
+
+      return upperCaseHeaders;
+    };
+  })(window);
 }).call(this);

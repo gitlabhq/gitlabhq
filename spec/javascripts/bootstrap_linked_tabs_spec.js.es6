@@ -3,7 +3,12 @@ require('~/lib/utils/bootstrap_linked_tabs');
 (() => {
   // TODO: remove this hack!
   // PhantomJS causes spyOn to panic because replaceState isn't "writable"
-  const phantomjs = !Object.getOwnPropertyDescriptor(window.history, 'replaceState').writable;
+  let phantomjs;
+  try {
+    phantomjs = !Object.getOwnPropertyDescriptor(window.history, 'replaceState').writable;
+  } catch (err) {
+    phantomjs = false;
+  }
 
   describe('Linked Tabs', () => {
     preloadFixtures('static/linked_tabs.html.raw');

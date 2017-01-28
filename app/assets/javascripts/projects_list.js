@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, object-shorthand, quotes, no-var, one-var, one-var-declaration-per-line, prefer-arrow-callback, consistent-return, no-unused-vars, camelcase, prefer-template, comma-dangle, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, object-shorthand, quotes, no-var, one-var, one-var-declaration-per-line, prefer-arrow-callback, consistent-return, no-unused-vars, camelcase, prefer-template, comma-dangle, max-len */
 
 (function() {
   window.ProjectsList = {
@@ -47,5 +47,4 @@
       });
     }
   };
-
 }).call(this);

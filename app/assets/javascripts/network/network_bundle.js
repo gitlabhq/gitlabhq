@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, prefer-arrow-callback, quotes, no-var, vars-on-top, camelcase, comma-dangle, consistent-return, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, prefer-arrow-callback, quotes, no-var, vars-on-top, camelcase, comma-dangle, consistent-return, max-len */
 /* global Network */
 /* global ShortcutsNetwork */
 
@@ -19,5 +19,4 @@ requireAll(require.context('.', false, /^\.\/(?!network_bundle).*\.(js|es6)$/));
     });
     return new ShortcutsNetwork(network_graph.branch_graph);
   });
-
 }).call(this);

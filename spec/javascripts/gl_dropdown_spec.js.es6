@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, prefer-const, no-param-reassign, no-plusplus, semi, no-unused-expressions, arrow-spacing, max-len */
+/* eslint-disable comma-dangle, no-param-reassign, no-unused-expressions, max-len */
 /* global Turbolinks */
 
 require('~/gl_dropdown');
@@ -20,7 +20,7 @@ require('~/lib/utils/type_utility');
 
   let remoteCallback;
 
-  let navigateWithKeys = function navigateWithKeys(direction, steps, cb, i) {
+  const navigateWithKeys = function navigateWithKeys(direction, steps, cb, i) {
     i = i || 0;
     if (!i) direction = direction.toUpperCase();
     $('body').trigger({
@@ -28,7 +28,7 @@ require('~/lib/utils/type_utility');
       which: ARROW_KEYS[direction],
       keyCode: ARROW_KEYS[direction]
     });
-    i++;
+    i += 1;
     if (i <= steps) {
       navigateWithKeys(direction, steps, cb, i);
     } else {
@@ -36,9 +36,9 @@ require('~/lib/utils/type_utility');
     }
   };
 
-  let remoteMock = function remoteMock(data, term, callback) {
+  const remoteMock = function remoteMock(data, term, callback) {
     remoteCallback = callback.bind({}, data);
-  }
+  };
 
   describe('Dropdown', function describeDropdown() {
     preloadFixtures('static/gl_dropdown.html.raw');
@@ -88,7 +88,7 @@ require('~/lib/utils/type_utility');
 
       it('should select a following item on DOWN keypress', () => {
         expect($(FOCUSED_ITEM_SELECTOR, this.$dropdownMenuElement).length).toBe(0);
-        let randomIndex = (Math.floor(Math.random() * (this.projectsData.length - 1)) + 0);
+        const randomIndex = (Math.floor(Math.random() * (this.projectsData.length - 1)) + 0);
         navigateWithKeys('down', randomIndex, () => {
           expect($(FOCUSED_ITEM_SELECTOR, this.$dropdownMenuElement).length).toBe(1);
           expect($(`${ITEM_SELECTOR}:eq(${randomIndex}) a`, this.$dropdownMenuElement)).toHaveClass('is-focused');
@@ -99,7 +99,7 @@ require('~/lib/utils/type_utility');
         expect($(FOCUSED_ITEM_SELECTOR, this.$dropdownMenuElement).length).toBe(0);
         navigateWithKeys('down', (this.projectsData.length - 1), () => {
           expect($(FOCUSED_ITEM_SELECTOR, this.$dropdownMenuElement).length).toBe(1);
-          let randomIndex = (Math.floor(Math.random() * (this.projectsData.length - 2)) + 0);
+          const randomIndex = (Math.floor(Math.random() * (this.projectsData.length - 2)) + 0);
           navigateWithKeys('up', randomIndex, () => {
             expect($(FOCUSED_ITEM_SELECTOR, this.$dropdownMenuElement).length).toBe(1);
             expect($(`${ITEM_SELECTOR}:eq(${((this.projectsData.length - 2) - randomIndex)}) a`, this.$dropdownMenuElement)).toHaveClass('is-focused');
@@ -108,15 +108,15 @@ require('~/lib/utils/type_utility');
       });
 
       it('should click the selected item on ENTER keypress', () => {
-        expect(this.dropdownContainerElement).toHaveClass('open')
-        let randomIndex = Math.floor(Math.random() * (this.projectsData.length - 1)) + 0
+        expect(this.dropdownContainerElement).toHaveClass('open');
+        const randomIndex = Math.floor(Math.random() * (this.projectsData.length - 1)) + 0;
         navigateWithKeys('down', randomIndex, () => {
           spyOn(Turbolinks, 'visit').and.stub();
           navigateWithKeys('enter', null, () => {
             expect(this.dropdownContainerElement).not.toHaveClass('open');
-            let link = $(`${ITEM_SELECTOR}:eq(${randomIndex}) a`, this.$dropdownMenuElement);
+            const link = $(`${ITEM_SELECTOR}:eq(${randomIndex}) a`, this.$dropdownMenuElement);
             expect(link).toHaveClass('is-active');
-            let linkedLocation = link.attr('href');
+            const linkedLocation = link.attr('href');
             if (linkedLocation && linkedLocation !== '#') expect(Turbolinks.visit).toHaveBeenCalledWith(linkedLocation);
           });
         });
@@ -139,18 +139,18 @@ require('~/lib/utils/type_utility');
         this.dropdownButtonElement.click();
       });
 
-      it('should not focus search input while remote task is not complete', ()=> {
+      it('should not focus search input while remote task is not complete', () => {
         expect($(document.activeElement)).not.toEqual($(SEARCH_INPUT_SELECTOR));
         remoteCallback();
         expect($(document.activeElement)).toEqual($(SEARCH_INPUT_SELECTOR));
       });
 
-      it('should focus search input after remote task is complete', ()=> {
+      it('should focus search input after remote task is complete', () => {
         remoteCallback();
         expect($(document.activeElement)).toEqual($(SEARCH_INPUT_SELECTOR));
       });
 
-      it('should focus on input when opening for the second time', ()=> {
+      it('should focus on input when opening for the second time', () => {
         remoteCallback();
         this.dropdownContainerElement.trigger({
           type: 'keyup',
@@ -163,16 +163,15 @@ require('~/lib/utils/type_utility');
     });
 
     describe('input focus with array data', () => {
-      it('should focus input when passing array data to drop down', ()=> {
+      it('should focus input when passing array data to drop down', () => {
         initDropDown.call(this, false, true);
         this.dropdownButtonElement.click();
         expect($(document.activeElement)).toEqual($(SEARCH_INPUT_SELECTOR));
       });
     });
 
-
     it('should still have input value on close and restore', () => {
-      let $searchInput = $(SEARCH_INPUT_SELECTOR);
+      const $searchInput = $(SEARCH_INPUT_SELECTOR);
       initDropDown.call(this, false, true);
       $searchInput
         .trigger('focus')

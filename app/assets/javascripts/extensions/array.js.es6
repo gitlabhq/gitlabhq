@@ -1,14 +1,14 @@
-/* eslint-disable no-extend-native, func-names, space-before-function-paren, semi, space-infix-ops, strict, max-len */
+/* eslint-disable no-extend-native, func-names, space-before-function-paren, space-infix-ops, strict, max-len */
 
 'use strict';
 
 Array.prototype.first = function() {
   return this[0];
-}
+};
 
 Array.prototype.last = function() {
   return this[this.length-1];
-}
+};
 
 Array.prototype.find = Array.prototype.find || function(predicate, ...args) {
   if (!this) throw new TypeError('Array.prototype.find called on null or undefined');

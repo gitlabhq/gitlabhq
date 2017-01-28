@@ -1,6 +1,7 @@
-/* eslint-disable space-before-function-paren, no-return-assign, no-var, quotes, padded-blocks */
+/* eslint-disable space-before-function-paren, no-return-assign, no-var, quotes */
 /* global ShortcutsIssuable */
 
+require('~/copy_as_gfm');
 require('~/shortcuts_issuable');
 
 (function() {
@@ -14,10 +15,12 @@ require('~/shortcuts_issuable');
     });
     return describe('#replyWithSelectedText', function() {
       var stubSelection;
-      // Stub window.getSelection to return the provided String.
-      stubSelection = function(text) {
-        return window.getSelection = function() {
-          return text;
+      // Stub window.gl.utils.getSelectedFragment to return a node with the provided HTML.
+      stubSelection = function(html) {
+        window.gl.utils.getSelectedFragment = function() {
+          var node = document.createElement('div');
+          node.innerHTML = html;
+          return node;
         };
       };
       beforeEach(function() {
@@ -32,13 +35,13 @@ require('~/shortcuts_issuable');
       });
       describe('with any selection', function() {
         beforeEach(function() {
-          return stubSelection('Selected text.');
+          return stubSelection('<p>Selected text.</p>');
         });
         it('leaves existing input intact', function() {
           $(this.selector).val('This text was already here.');
           expect($(this.selector).val()).toBe('This text was already here.');
           this.shortcut.replyWithSelectedText();
-          return expect($(this.selector).val()).toBe("This text was already here.\n> Selected text.\n\n");
+          return expect($(this.selector).val()).toBe("This text was already here.\n\n> Selected text.\n\n");
         });
         it('triggers `input`', function() {
           var triggered;
@@ -56,19 +59,18 @@ require('~/shortcuts_issuable');
       });
       describe('with a one-line selection', function() {
         return it('quotes the selection', function() {
-          stubSelection('This text has been selected.');
+          stubSelection('<p>This text has been selected.</p>');
           this.shortcut.replyWithSelectedText();
           return expect($(this.selector).val()).toBe("> This text has been selected.\n\n");
         });
       });
       return describe('with a multi-line selection', function() {
         return it('quotes the selected lines as a group', function() {
-          stubSelection("Selected line one.\n\nSelected line two.\nSelected line three.\n");
+          stubSelection("<p>Selected line one.</p>\n\n<p>Selected line two.</p>\n\n<p>Selected line three.</p>");
           this.shortcut.replyWithSelectedText();
-          return expect($(this.selector).val()).toBe("> Selected line one.\n> Selected line two.\n> Selected line three.\n\n");
+          return expect($(this.selector).val()).toBe("> Selected line one.\n>\n> Selected line two.\n>\n> Selected line three.\n\n");
         });
       });
     });
   });
-
 }).call(this);

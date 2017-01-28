@@ -33,7 +33,6 @@ describe('Rollback Component', () => {
     expect(component.$el.querySelector('span').textContent).toContain('Re-deploy');
   });
 
-
   it('Should render Rollback label when isLastDeployment is false', () => {
     const component = new window.gl.environmentsList.RollbackComponent({
       el: document.querySelector('.test-dom-element'),

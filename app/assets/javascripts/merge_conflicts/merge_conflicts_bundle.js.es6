@@ -1,4 +1,4 @@
-/* eslint-disable new-cap, comma-dangle, no-new, semi */
+/* eslint-disable new-cap, comma-dangle, no-new */
 /* global Vue */
 /* global Flash */
 
@@ -29,10 +29,10 @@ $(() => {
       'parallel-conflict-lines': gl.mergeConflicts.parallelConflictLines
     },
     computed: {
-      conflictsCountText() { return mergeConflictsStore.getConflictsCountText() },
-      readyToCommit() { return mergeConflictsStore.isReadyToCommit() },
-      commitButtonText() { return mergeConflictsStore.getCommitButtonText() },
-      showDiffViewTypeSwitcher() { return mergeConflictsStore.fileTextTypePresent() }
+      conflictsCountText() { return mergeConflictsStore.getConflictsCountText(); },
+      readyToCommit() { return mergeConflictsStore.isReadyToCommit(); },
+      commitButtonText() { return mergeConflictsStore.getCommitButtonText(); },
+      showDiffViewTypeSwitcher() { return mergeConflictsStore.fileTextTypePresent(); }
     },
     created() {
       mergeConflictsService
@@ -88,5 +88,5 @@ $(() => {
           });
       }
     }
-  })
+  });
 });

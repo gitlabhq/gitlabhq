@@ -16,6 +16,7 @@
   ],
   "rules": {
     "filenames/match-regex": [2, "^[a-z0-9_]+(.js)?$"],
+    "no-multiple-empty-lines": ["error", { "max": 1 }],
     "import/no-extraneous-dependencies": "off",
     "import/no-unresolved": "off"
   }

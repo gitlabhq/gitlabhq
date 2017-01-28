@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-new, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-new, max-len */
 /* global GitLab */
 /* global DropzoneInput */
 /* global autosize */
@@ -60,7 +60,5 @@ var autosize = require('vendor/autosize');
     };
 
     return GLForm;
-
   })();
-
 }).call(this);

@@ -1,5 +1,5 @@
 - if !project.empty_repo? && can?(current_user, :download_code, project)
-  .project-action-button.dropdown.inline
+  .project-action-button.dropdown.inline>
     %button.btn{ 'data-toggle' => 'dropdown' }
       = icon('download')
       = icon("caret-down")

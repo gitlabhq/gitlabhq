@@ -1,8 +1,7 @@
-/* eslint-disable comma-dangle, no-unused-vars, class-methods-use-this, quotes, consistent-return, func-names, prefer-arrow-callback, space-before-function-paren, max-len, padded-blocks */
+/* eslint-disable comma-dangle, no-unused-vars, class-methods-use-this, quotes, consistent-return, func-names, prefer-arrow-callback, space-before-function-paren, max-len */
 /* global Flash */
 
 ((global) => {
-
   class Profile {
     constructor({ form } = {}) {
       this.onSubmitForm = this.onSubmitForm.bind(this);
@@ -37,6 +36,7 @@
     }
 
     onSubmitForm(e) {
+      e.preventDefault();
       return this.saveForm();
     }
 
@@ -95,5 +95,4 @@
       return new Profile();
     }
   });
-
 })(window.gl || (window.gl = {}));

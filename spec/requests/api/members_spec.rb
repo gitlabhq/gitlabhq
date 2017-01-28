@@ -9,7 +9,7 @@ describe API::Members, api: true  do
   let(:stranger) { create(:user) }
 
   let(:project) do
-    create(:project, :public, :access_requestable, creator_id: master.id, namespace: master.namespace) do |project|
+    create(:empty_project, :public, :access_requestable, creator_id: master.id, namespace: master.namespace) do |project|
       project.team << [developer, :developer]
       project.team << [master, :master]
       project.request_access(access_requester)

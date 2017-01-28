@@ -3,7 +3,7 @@ require_relative '../email_shared_blocks'
 
 describe Gitlab::Email::Handler::CreateNoteHandler, lib: true do
   include_context :email_shared_context
-  it_behaves_like :email_shared_examples
+  it_behaves_like :reply_processing_shared_examples
 
   before do
     stub_incoming_email_setting(enabled: true, address: "reply+%{key}@appmail.adventuretime.ooo")
@@ -11,7 +11,7 @@ describe Gitlab::Email::Handler::CreateNoteHandler, lib: true do
   end
 
   let(:email_raw) { fixture_file('emails/valid_reply.eml') }
-  let(:project)   { create(:project, :public) }
+  let(:project)   { create(:project, :public, :repository) }
   let(:user)      { create(:user) }
   let(:note)      { create(:diff_note_on_merge_request, project: project) }
   let(:noteable)  { note.noteable }

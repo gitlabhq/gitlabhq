@@ -129,12 +129,7 @@ module API
         end
       end
 
-      # Delete all merged branches
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      # Example Request:
-      #   DELETE /projects/:id/repository/branches/delete_merged
+      desc 'Delete all merged branches'
       delete ":id/repository/merged_branches" do
         DeleteMergedBranchesService.new(user_project, current_user).async_execute
 

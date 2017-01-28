@@ -1,4 +1,4 @@
-/* eslint-disable space-before-function-paren, arrow-body-style, indent, padded-blocks */
+/* eslint-disable space-before-function-paren, arrow-body-style */
 
 require('~/gl_field_errors');
 
@@ -27,7 +27,7 @@ require('~/gl_field_errors');
       expect(customErrorElem.length).toBe(1);
 
       const customErrors = this.fieldErrors.state.inputs.filter((input) => {
-       return input.inputElement.hasClass(customErrorFlag);
+        return input.inputElement.hasClass(customErrorFlag);
       });
       expect(customErrors.length).toBe(0);
     });
@@ -106,7 +106,5 @@ require('~/gl_field_errors');
       expect(noTitleErrorElem.text()).toBe('This field is required.');
       expect(hasTitleErrorElem.text()).toBe('Please provide a valid email address.');
     });
-
   });
-
 })(window.gl || (window.gl = {}));

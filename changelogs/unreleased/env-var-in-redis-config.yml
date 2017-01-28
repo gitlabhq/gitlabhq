@@ -1,4 +1,0 @@
----
-title: Allow to use ENV variables in redis config
-merge_request: 8073
-author: Semyon Pupkov

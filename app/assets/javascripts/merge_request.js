@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, quotes, no-underscore-dangle, one-var, one-var-declaration-per-line, consistent-return, dot-notation, quote-props, comma-dangle, object-shorthand, padded-blocks, max-len, prefer-arrow-callback */
+/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, quotes, no-underscore-dangle, one-var, one-var-declaration-per-line, consistent-return, dot-notation, quote-props, comma-dangle, object-shorthand, max-len, prefer-arrow-callback */
 /* global MergeRequestTabs */
 
 require('vendor/jquery.waitforimages');
@@ -6,7 +6,7 @@ require('vendor/task_list');
 require('./merge_request_tabs');
 
 (function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
 
   this.MergeRequest = (function() {
     function MergeRequest(opts) {
@@ -130,7 +130,5 @@ require('./merge_request_tabs');
     };
 
     return MergeRequest;
-
   })();
-
 }).call(this);

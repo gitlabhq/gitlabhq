@@ -58,10 +58,12 @@ var CustomEvent = require('./custom_event_polyfill');
 var utils = require('./utils');
 
 var DropDown = function(list) {
+  this.currentIndex = 0;
   this.hidden = true;
   this.list = list;
   this.items = [];
   this.getItems();
+  this.initTemplateString();
   this.addEvents();
   this.initialState = list.innerHTML;
 };
@@ -70,6 +72,17 @@ Object.assign(DropDown.prototype, {
   getItems: function() {
     this.items = [].slice.call(this.list.querySelectorAll('li'));
     return this.items;
+  },
+
+  initTemplateString: function() {
+    var items = this.items || this.getItems();
+
+    var templateString = '';
+    if(items.length > 0) {
+      templateString = items[items.length - 1].outerHTML;
+    }
+    this.templateString = templateString;
+    return this.templateString;
   },
 
   clickEvent: function(e) {
@@ -111,30 +124,21 @@ Object.assign(DropDown.prototype, {
 
   addData: function(data) {
     this.data = (this.data || []).concat(data);
-    this.render(data);
+    this.render(this.data);
   },
 
   // call render manually on data;
   render: function(data){
     // debugger
     // empty the list first
-    var sampleItem;
+    var templateString = this.templateString;
     var newChildren = [];
     var toAppend;
 
-    for(var i = 0; i < this.items.length; i++) {
-      var item = this.items[i];
-      sampleItem = item;
-      if(item.parentNode && item.parentNode.dataset.hasOwnProperty('dynamic')) {
-        item.parentNode.removeChild(item);  
-      }
-    }
-
-    newChildren = this.data.map(function(dat){
-      var html = utils.t(sampleItem.outerHTML, dat);
+    newChildren = (data ||[]).map(function(dat){
+      var html = utils.t(templateString, dat);
       var template = document.createElement('div');
       template.innerHTML = html;
-      // console.log(template.content)
 
       // Help set the image src template
       var imageTags = template.querySelectorAll('img[data-src]');
@@ -156,27 +160,30 @@ Object.assign(DropDown.prototype, {
     if(toAppend) {
       toAppend.innerHTML = newChildren.join('');
     } else {
-      this.list.innerHTML = newChildren.join('');  
+      this.list.innerHTML = newChildren.join('');
     }
   },
 
   show: function() {
-    // debugger
-    this.list.style.display = 'block';
-    this.hidden = false;
+    if (this.hidden) {
+      // debugger
+      this.list.style.display = 'block';
+      this.currentIndex = 0;
+      this.hidden = false;
+    }
   },
 
   hide: function() {
-    // debugger
-    this.list.style.display = 'none';
-    this.hidden = true;
+    if (!this.hidden) {
+      // debugger
+      this.list.style.display = 'none';
+      this.currentIndex = 0;
+      this.hidden = true;
+    }
   },
 
   destroy: function() {
-    if (!this.hidden) {
-      this.hide();
-    }
-
+    this.hide();
     this.list.removeEventListener('click', this.clickWrapper);
   }
 });
@@ -278,7 +285,7 @@ require('./window')(function(w){
             self.hooks[i].list.hide();
           }
         }.bind(this);
-        w.addEventListener('click', this.windowClickedWrapper);
+        document.addEventListener('click', this.windowClickedWrapper);
       },
 
       removeEvents: function(){
@@ -307,7 +314,7 @@ require('./window')(function(w){
         if(!list){
           list = document.querySelector(hook.dataset[utils.toDataCamelCase(DATA_TRIGGER)]);
         }
-        
+
         if(hook) {
           if(hook.tagName === 'A' || hook.tagName === 'BUTTON') {
             this.hooks.push(new HookButton(hook, list, plugins, config));
@@ -462,6 +469,8 @@ Object.assign(HookInput.prototype, {
     var self = this;
 
     this.mousedown = function mousedown(e) {
+      if(self.hasRemovedEvents) return;
+
       var mouseEvent = new CustomEvent('mousedown.dl', {
         detail: {
           hook: self,
@@ -474,6 +483,10 @@ Object.assign(HookInput.prototype, {
     }
 
     this.input = function input(e) {
+      if(self.hasRemovedEvents) return;
+
+      self.list.show();
+
       var inputEvent = new CustomEvent('input.dl', {
         detail: {
           hook: self,
@@ -483,18 +496,23 @@ Object.assign(HookInput.prototype, {
         cancelable: true
       });
       e.target.dispatchEvent(inputEvent);
-      self.list.show();
     }
 
     this.keyup = function keyup(e) {
+      if(self.hasRemovedEvents) return;
+
       keyEvent(e, 'keyup.dl');
     }
 
     this.keydown = function keydown(e) {
+      if(self.hasRemovedEvents) return;
+
       keyEvent(e, 'keydown.dl');
     }
 
     function keyEvent(e, keyEventName){
+      self.list.show();
+
       var keyEvent = new CustomEvent(keyEventName, {
         detail: {
           hook: self,
@@ -506,7 +524,6 @@ Object.assign(HookInput.prototype, {
         cancelable: true
       });
       e.target.dispatchEvent(keyEvent);
-      self.list.show();
     }
 
     this.events = this.events || {};
@@ -520,7 +537,8 @@ Object.assign(HookInput.prototype, {
     this.trigger.addEventListener('keydown', this.keydown);
   },
 
-  removeEvents: function(){
+  removeEvents: function() {
+    this.hasRemovedEvents = true;
     this.trigger.removeEventListener('mousedown', this.mousedown);
     this.trigger.removeEventListener('input', this.input);
     this.trigger.removeEventListener('keyup', this.keyup);
@@ -563,24 +581,43 @@ require('./window')(function(w){
   module.exports = function(){
     var currentKey;
     var currentFocus;
-    var currentIndex = 0;
     var isUpArrow = false;
     var isDownArrow = false;
     var removeHighlight = function removeHighlight(list) {
-      var listItems = list.list.querySelectorAll('li');
+      var listItems = Array.prototype.slice.call(list.list.querySelectorAll('li:not(.divider)'), 0);
+      var listItemsTmp = [];
       for(var i = 0; i < listItems.length; i++) {
-        listItems[i].classList.remove('dropdown-active');
+        var listItem = listItems[i];
+        listItem.classList.remove('dropdown-active');
+
+        if (listItem.style.display !== 'none') {
+          listItemsTmp.push(listItem);
+        }
       }
-      return listItems;
+      return listItemsTmp;
     };
 
     var setMenuForArrows = function setMenuForArrows(list) {
       var listItems = removeHighlight(list);
-      if(currentIndex>0){
-        if(!listItems[currentIndex-1]){
-          currentIndex = currentIndex-1; 
+      if(list.currentIndex>0){
+        if(!listItems[list.currentIndex-1]){
+          list.currentIndex = list.currentIndex-1;
         }
-        listItems[currentIndex-1].classList.add('dropdown-active');
+
+        if (listItems[list.currentIndex-1]) {
+          var el = listItems[list.currentIndex-1];
+          var filterDropdownEl = el.closest('.filter-dropdown');
+          el.classList.add('dropdown-active');
+
+          if (filterDropdownEl) {
+            var filterDropdownBottom = filterDropdownEl.offsetHeight;
+            var elOffsetTop = el.offsetTop - 30;
+
+            if (elOffsetTop > filterDropdownBottom) {
+              filterDropdownEl.scrollTop = elOffsetTop - filterDropdownBottom;
+            }
+          }
+        }
       }
     };
 
@@ -588,13 +625,13 @@ require('./window')(function(w){
       var list = e.detail.hook.list;
       removeHighlight(list);
       list.show();
-      currentIndex = 0;
+      list.currentIndex = 0;
       isUpArrow = false;
       isDownArrow = false;
     };
     var selectItem = function selectItem(list) {
       var listItems = removeHighlight(list);
-      var currentItem = listItems[currentIndex-1];
+      var currentItem = listItems[list.currentIndex-1];
       var listEvent = new CustomEvent('click.dl', {
         detail: {
           list: list,
@@ -608,6 +645,8 @@ require('./window')(function(w){
 
     var keydown = function keydown(e){
       var typedOn = e.target;
+      var list = e.detail.hook.list;
+      var currentIndex = list.currentIndex;
       isUpArrow = false;
       isDownArrow = false;
 
@@ -630,7 +669,7 @@ require('./window')(function(w){
           return;
         }
         if(currentKey === 'ArrowUp') {
-          isUpArrow = true; 
+          isUpArrow = true;
         }
         if(currentKey === 'ArrowDown') {
           isDownArrow = true;
@@ -639,6 +678,7 @@ require('./window')(function(w){
       if(isUpArrow){ currentIndex--; }
       if(isDownArrow){ currentIndex++; }
       if(currentIndex < 0){ currentIndex = 0; }
+      list.currentIndex = currentIndex;
       setMenuForArrows(e.detail.hook.list);
     };
 
@@ -668,16 +708,16 @@ var camelize = function(str) {
 };
 
 var closest = function(thisTag, stopTag) {
-  while(thisTag.tagName !== stopTag && thisTag.tagName !== 'HTML'){
+  while(thisTag && thisTag.tagName !== stopTag && thisTag.tagName !== 'HTML'){
     thisTag = thisTag.parentNode;
   }
   return thisTag;
 };
 
 var isDropDownParts = function(target) {
-  if(target.tagName === 'HTML') { return false; }
+  if(!target || target.tagName === 'HTML') { return false; }
   return (
-    target.hasAttribute(DATA_TRIGGER) || 
+    target.hasAttribute(DATA_TRIGGER) ||
       target.hasAttribute(DATA_DROPDOWN)
   );
 };

@@ -203,6 +203,10 @@
       position: relative;
       margin-right: 6px;
 
+      .tooltip {
+        white-space: nowrap;
+      }
+
       .tooltip-inner {
         padding: 3px 4px;
       }
@@ -210,9 +214,9 @@
       &:not(:last-child) {
         &::after {
           content: '';
-          width: 8px;
+          width: 7px;
           position: absolute;
-          right: -8px;
+          right: -7px;
           top: 10px;
           border-bottom: 2px solid $border-color;
         }
@@ -287,6 +291,10 @@
           width: 12px;
         }
       }
+    }
+
+    .tooltip {
+      white-space: nowrap;
     }
   }
 

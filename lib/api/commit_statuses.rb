@@ -78,6 +78,8 @@ module API
           description: params[:description]
         )
 
+        render_validation_error!(status) if status.invalid?
+
         begin
           case params[:state]
           when 'pending'

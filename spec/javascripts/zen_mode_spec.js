@@ -1,4 +1,4 @@
-/* eslint-disable space-before-function-paren, no-var, one-var, one-var-declaration-per-line, object-shorthand, comma-dangle, no-return-assign, new-cap, padded-blocks, max-len */
+/* eslint-disable space-before-function-paren, no-var, one-var, one-var-declaration-per-line, object-shorthand, comma-dangle, no-return-assign, new-cap, max-len */
 /* global Dropzone */
 /* global Mousetrap */
 /* global ZenMode */
@@ -76,5 +76,4 @@ require('~/zen_mode');
       keyCode: 27
     }));
   };
-
 }).call(this);

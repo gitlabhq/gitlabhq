@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 
 const environmentsList = [
   {
@@ -136,3 +135,19 @@ const environmentsList = [
 ];
 
 window.environmentsList = environmentsList;
+
+const environment = {
+  id: 4,
+  name: 'production',
+  state: 'available',
+  external_url: 'http://production.',
+  environment_type: null,
+  last_deployment: {},
+  'stoppable?': false,
+  environment_path: '/root/review-app/environments/4',
+  stop_path: '/root/review-app/environments/4/stop',
+  created_at: '2016-12-16T11:51:04.690Z',
+  updated_at: '2016-12-16T12:04:51.133Z',
+};
+
+window.environment = environment;

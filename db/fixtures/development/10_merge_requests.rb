@@ -1,3 +1,5 @@
+require './spec/support/sidekiq'
+
 Gitlab::Seeder.quiet do
   # Limit the number of merge requests per project to avoid long seeds
   MAX_NUM_MERGE_REQUESTS = 10

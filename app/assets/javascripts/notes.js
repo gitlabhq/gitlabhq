@@ -1,4 +1,4 @@
-/* eslint-disable no-restricted-properties, func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, no-use-before-define, camelcase, no-unused-expressions, quotes, max-len, one-var, one-var-declaration-per-line, default-case, prefer-template, consistent-return, no-alert, no-return-assign, no-param-reassign, prefer-arrow-callback, no-else-return, comma-dangle, no-new, brace-style, no-lonely-if, vars-on-top, no-unused-vars, semi, indent, no-sequences, no-shadow, newline-per-chained-call, no-useless-escape, radix, padded-blocks */
+/* eslint-disable no-restricted-properties, func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, no-use-before-define, camelcase, no-unused-expressions, quotes, max-len, one-var, one-var-declaration-per-line, default-case, prefer-template, consistent-return, no-alert, no-return-assign, no-param-reassign, prefer-arrow-callback, no-else-return, comma-dangle, no-new, brace-style, no-lonely-if, vars-on-top, no-unused-vars, no-sequences, no-shadow, newline-per-chained-call, no-useless-escape */
 /* global Flash */
 /* global GLForm */
 /* global Autosave */
@@ -15,7 +15,7 @@ require('vendor/jquery.atwho');
 require('vendor/task_list');
 
 (function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
 
   this.Notes = (function() {
     const MAX_VISIBLE_COMMIT_LIST_COUNT = 3;
@@ -221,7 +221,6 @@ require('vendor/task_list');
       })(this));
     };
 
-
     /*
     Increase @pollingInterval up to 120 seconds on every function call,
     if `shouldReset` has a truthy value, 'null' or 'undefined' the variable
@@ -244,7 +243,6 @@ require('vendor/task_list');
       }
       return this.initRefresh();
     };
-
 
     Notes.prototype.handleCreateChanges = function(note) {
       if (typeof note === 'undefined') {
@@ -295,7 +293,6 @@ require('vendor/task_list');
       }
     };
 
-
     /*
     Check if note does not exists on page
      */
@@ -307,7 +304,6 @@ require('vendor/task_list');
     Notes.prototype.isParallelView = function() {
       return this.view === 'parallel';
     };
-
 
     /*
     Render note in discussion area.
@@ -359,7 +355,6 @@ require('vendor/task_list');
       return this.updateNotesCount(1);
     };
 
-
     /*
     Called in response the main target form has been successfully submitted.
 
@@ -391,7 +386,6 @@ require('vendor/task_list');
       return form.find(".js-note-text").trigger("input");
     };
 
-
     /*
     Shows the main form and does some setup on it.
 
@@ -416,7 +410,6 @@ require('vendor/task_list');
       return this.parentTimeline = form.parents('.timeline');
     };
 
-
     /*
     General note form setup.
 
@@ -433,7 +426,6 @@ require('vendor/task_list');
       return new Autosave(textarea, ["Note", form.find("#note_noteable_type").val(), form.find("#note_noteable_id").val(), form.find("#note_commit_id").val(), form.find("#note_type").val(), form.find("#note_line_code").val(), form.find("#note_position").val()]);
     };
 
-
     /*
     Called in response to the new note form being submitted
 
@@ -448,7 +440,6 @@ require('vendor/task_list');
     Notes.prototype.addNoteError = function(xhr, note, status) {
       return new Flash('Your comment could not be submitted! Please check your network connection and try again.', 'alert', this.parentTimeline);
     };
-
 
     /*
     Called in response to the new note form being submitted
@@ -474,7 +465,6 @@ require('vendor/task_list');
       this.removeDiscussionNoteForm($form);
     };
 
-
     /*
     Called in response to the edit note form being submitted
 
@@ -499,7 +489,6 @@ require('vendor/task_list');
       }
     };
 
-
     Notes.prototype.checkContentToAllowEditing = function($el) {
       var initialContent = $el.find('.original-note-content').text().trim();
       var currentContent = $el.find('.note-textarea').val();
@@ -521,8 +510,7 @@ require('vendor/task_list');
       }
 
       return isAllowed;
-    }
-
+    };
 
     /*
     Called in response to clicking the edit note link
@@ -551,7 +539,6 @@ require('vendor/task_list');
       $note.addClass('is-editting');
       this.putEditFormInPlace($target);
     };
-
 
     /*
     Called in response to clicking the edit note link
@@ -597,7 +584,6 @@ require('vendor/task_list');
       return form.find('.js-note-text').val(form.find('form.edit-note').data('original-note'));
     };
 
-
     /*
     Called in response to deleting a note of any kind.
 
@@ -637,7 +623,6 @@ require('vendor/task_list');
       return this.updateNotesCount(-1);
     };
 
-
     /*
     Called in response to clicking the delete attachment link
 
@@ -653,7 +638,6 @@ require('vendor/task_list');
       note.find(".note-header").show();
       return note.find(".current-note-edit-form").remove();
     };
-
 
     /*
     Called when clicking on the "reply" button for a diff line.
@@ -673,7 +657,6 @@ require('vendor/task_list');
       // show the form
       return this.setupDiscussionNoteForm(replyLink, form);
     };
-
 
     /*
     Shows the diff or discussion form and does some setup on it.
@@ -715,7 +698,6 @@ require('vendor/task_list');
         .removeClass('js-main-target-form')
         .addClass("discussion-form js-discussion-note-form");
     };
-
 
     /*
     Called when clicking on the "add a comment" button on the side of a diff line.
@@ -773,7 +755,6 @@ require('vendor/task_list');
       }
     };
 
-
     /*
     Called in response to "cancel" on a diff note form.
 
@@ -807,7 +788,6 @@ require('vendor/task_list');
       return this.removeDiscussionNoteForm(form);
     };
 
-
     /*
     Called after an attachment file has been selected.
 
@@ -821,7 +801,6 @@ require('vendor/task_list');
       filename = $(this).val().replace(/^.*[\\\/]/, "");
       return form.find(".js-attachment-filename").text(filename);
     };
-
 
     /*
     Called when the tab visibility changes
@@ -916,7 +895,7 @@ require('vendor/task_list');
       $editForm.find('.js-note-text').focus().val(originalContent);
       $editForm.find('.js-md-write-button').trigger('click');
       $editForm.find('.referenced-users').hide();
-    }
+    };
 
     Notes.prototype.updateTaskList = function(e) {
       var $target = $(e.target);
@@ -930,7 +909,7 @@ require('vendor/task_list');
     };
 
     Notes.prototype.updateNotesCount = function(updateCount) {
-      return this.notesCountBadge.text(parseInt(this.notesCountBadge.text()) + updateCount);
+      return this.notesCountBadge.text(parseInt(this.notesCountBadge.text(), 10) + updateCount);
     };
 
     Notes.prototype.resolveDiscussion = function() {
@@ -975,7 +954,5 @@ require('vendor/task_list');
     };
 
     return Notes;
-
   })();
-
 }).call(this);

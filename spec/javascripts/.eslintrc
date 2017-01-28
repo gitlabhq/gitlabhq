@@ -23,6 +23,8 @@
   "plugins": ["jasmine"],
   "rules": {
     "func-names": 0,
+    "jasmine/no-suite-dupes": [1, "branch"],
+    "jasmine/no-spec-dupes": [1, "branch"],
     "no-console": 0,
     "prefer-arrow-callback": 0
   }

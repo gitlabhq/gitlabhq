@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Ci::ProjectsController do
   let(:visibility) { :public }
-  let!(:project) { create(:project, visibility, ci_id: 1) }
+  let!(:project) { create(:empty_project, visibility, ci_id: 1) }
   let(:ci_id) { project.ci_id }
 
   describe '#index' do

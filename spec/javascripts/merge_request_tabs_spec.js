@@ -8,7 +8,12 @@ require('vendor/jquery.scrollTo');
 (function () {
   // TODO: remove this hack!
   // PhantomJS causes spyOn to panic because replaceState isn't "writable"
-  const phantomjs = !Object.getOwnPropertyDescriptor(window.history, 'replaceState').writable;
+  var phantomjs;
+  try {
+    phantomjs = !Object.getOwnPropertyDescriptor(window.history, 'replaceState').writable;
+  } catch (err) {
+    phantomjs = false;
+  }
 
   describe('MergeRequestTabs', function () {
     var stubLocation = {};

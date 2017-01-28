@@ -62,7 +62,7 @@
             %span.help-block
               Please click the link in the confirmation email before continuing. It was sent to
               = succeed "." do
-                %strong #{@user.unconfirmed_email}
+                %strong= @user.unconfirmed_email
               %p
               = link_to "Resend confirmation e-mail", user_confirmation_path(user: { email: @user.unconfirmed_email }), method: :post
 

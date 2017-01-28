@@ -12,7 +12,6 @@ class Projects::CommitController < Projects::ApplicationController
   before_action :authorize_read_pipeline!, only: [:pipelines]
   before_action :commit
   before_action :define_commit_vars, only: [:show, :diff_for_path, :pipelines]
-  before_action :define_status_vars, only: [:show, :pipelines]
   before_action :define_note_vars, only: [:show, :diff_for_path]
   before_action :authorize_edit_tree!, only: [:revert, :cherry_pick]
 
@@ -104,10 +103,6 @@ class Projects::CommitController < Projects::ApplicationController
       noteable_type: 'Commit',
       commit_id: @commit.id
     }
-  end
-
-  def define_status_vars
-    @ci_pipelines = project.pipelines.where(sha: commit.sha)
   end
 
   def assign_change_commit_vars(mr_source_branch)

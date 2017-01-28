@@ -8,8 +8,8 @@ describe API::Projects, api: true  do
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
   let(:admin) { create(:admin) }
-  let(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }
-  let(:project2) { create(:project, path: 'project2', creator_id: user.id, namespace: user.namespace) }
+  let(:project) { create(:empty_project, creator_id: user.id, namespace: user.namespace) }
+  let(:project2) { create(:empty_project, path: 'project2', creator_id: user.id, namespace: user.namespace) }
   let(:snippet) { create(:project_snippet, :public, author: user, project: project, title: 'example') }
   let(:project_member) { create(:project_member, :master, user: user, project: project) }
   let(:project_member2) { create(:project_member, :developer, user: user3, project: project) }
@@ -17,6 +17,7 @@ describe API::Projects, api: true  do
   let(:project3) do
     create(:project,
     :private,
+    :repository,
     name: 'second_project',
     path: 'second_project',
     creator_id: user.id,
@@ -32,7 +33,7 @@ describe API::Projects, api: true  do
     access_level: ProjectMember::MASTER)
   end
   let(:project4) do
-    create(:project,
+    create(:empty_project,
     name: 'third_project',
     path: 'third_project',
     creator_id: user4.id,
@@ -252,7 +253,7 @@ describe API::Projects, api: true  do
       end
     end
 
-    let!(:public_project) { create(:project, :public) }
+    let!(:public_project) { create(:empty_project, :public) }
     before do
       project
       project2
@@ -283,7 +284,7 @@ describe API::Projects, api: true  do
   end
 
   describe 'GET /projects/starred' do
-    let(:public_project) { create(:project, :public) }
+    let(:public_project) { create(:empty_project, :public) }
 
     before do
       project_member2
@@ -583,7 +584,7 @@ describe API::Projects, api: true  do
   describe 'GET /projects/:id' do
     context 'when unauthenticated' do
       it 'returns the public projects' do
-        public_project = create(:project, :public)
+        public_project = create(:empty_project, :public)
 
         get api("/projects/#{public_project.id}")
 
@@ -665,7 +666,7 @@ describe API::Projects, api: true  do
 
       it 'handles users with dots' do
         dot_user = create(:user, username: 'dot.user')
-        project = create(:project, creator_id: dot_user.id, namespace: dot_user.namespace)
+        project = create(:empty_project, creator_id: dot_user.id, namespace: dot_user.namespace)
 
         get api("/projects/#{dot_user.namespace.name}%2F#{project.path}", dot_user)
         expect(response).to have_http_status(200)
@@ -711,7 +712,7 @@ describe API::Projects, api: true  do
         end
 
         context 'group project' do
-          let(:project2) { create(:project, group: create(:group)) }
+          let(:project2) { create(:empty_project, group: create(:group)) }
 
           before { project2.group.add_owner(user) }
 
@@ -756,7 +757,7 @@ describe API::Projects, api: true  do
 
     context 'when unauthenticated' do
       it_behaves_like 'project events response' do
-        let(:project) { create(:project, :public) }
+        let(:project) { create(:empty_project, :public) }
         let(:current_user) { nil }
       end
     end
@@ -807,7 +808,7 @@ describe API::Projects, api: true  do
 
     context 'when unauthenticated' do
       it_behaves_like 'project users response' do
-        let(:project) { create(:project, :public) }
+        let(:project) { create(:empty_project, :public) }
         let(:current_user) { nil }
       end
     end
@@ -921,11 +922,11 @@ describe API::Projects, api: true  do
   end
 
   describe :fork_admin do
-    let(:project_fork_target) { create(:project) }
-    let(:project_fork_source) { create(:project, :public) }
+    let(:project_fork_target) { create(:empty_project) }
+    let(:project_fork_source) { create(:empty_project, :public) }
 
     describe 'POST /projects/:id/fork/:forked_from_id' do
-      let(:new_project_fork_source) { create(:project, :public) }
+      let(:new_project_fork_source) { create(:empty_project, :public) }
 
       it "is not available for non admin users" do
         post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", user)
@@ -966,7 +967,7 @@ describe API::Projects, api: true  do
       end
 
       context 'when users belong to project group' do
-        let(:project_fork_target) { create(:project, group: create(:group)) }
+        let(:project_fork_target) { create(:empty_project, group: create(:group)) }
 
         before do
           project_fork_target.group.add_owner user
@@ -1121,7 +1122,6 @@ describe API::Projects, api: true  do
       it_behaves_like 'project search response', query: 'one.dot.two', results: 1 do
         let(:current_user) { user }
       end
-      
     end
 
     context 'when authenticated as a different user' do

@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, no-template-curly-in-string, comma-dangle, object-shorthand, quotes, dot-notation, no-else-return, one-var, no-var, no-underscore-dangle, one-var-declaration-per-line, no-param-reassign, no-useless-escape, prefer-template, consistent-return, wrap-iife, prefer-arrow-callback, camelcase, no-unused-vars, no-useless-return, padded-blocks, vars-on-top, indent, no-extra-semi, no-multi-spaces, semi, max-len */
+/* eslint-disable func-names, space-before-function-paren, no-template-curly-in-string, comma-dangle, object-shorthand, quotes, dot-notation, no-else-return, one-var, no-var, no-underscore-dangle, one-var-declaration-per-line, no-param-reassign, no-useless-escape, prefer-template, consistent-return, wrap-iife, prefer-arrow-callback, camelcase, no-unused-vars, no-useless-return, vars-on-top, max-len */
 
 // Creates the variables for setting up GFM auto-completion
 (function() {
@@ -48,8 +48,9 @@
     },
     DefaultOptions: {
       sorter: function(query, items, searchKey) {
-        this.setting.highlightFirst = query.length > 0;
+        this.setting.highlightFirst = this.setting.alwaysHighlightFirst || query.length > 0;
         if (gl.GfmAutoComplete.isLoading(items)) {
+          this.setting.highlightFirst = false;
           return items;
         }
         return $.fn.atwho["default"].callbacks.sorter(query, items, searchKey);
@@ -153,7 +154,7 @@
 
               return {
                 username: m.username,
-                avatarTag: autoCompleteAvatar.length === 1 ?  txtAvatar : imgAvatar,
+                avatarTag: autoCompleteAvatar.length === 1 ? txtAvatar : imgAvatar,
                 title: sanitize(title),
                 search: sanitize(m.username + " " + m.name)
               };
@@ -334,7 +335,7 @@
             });
           },
           matcher: function(flag, subtext, should_startWithSpace, acceptSpaceBar) {
-            var regexp = /(?:^|\n)\/([A-Za-z_]*)$/gi
+            var regexp = /(?:^|\n)\/([A-Za-z_]*)$/gi;
             var match = regexp.exec(subtext);
             if (match) {
               return match[1];
@@ -366,10 +367,14 @@
       return $input.trigger('keyup');
     },
     isLoading(data) {
-      if (!data || !data.length) return false;
-      if (Array.isArray(data)) data = data[0];
-      return data === this.defaultLoadingData[0] || data.name === this.defaultLoadingData[0];
+      var dataToInspect = data;
+      if (data && data.length > 0) {
+        dataToInspect = data[0];
+      }
+
+      var loadingState = this.defaultLoadingData[0];
+      return dataToInspect &&
+        (dataToInspect === loadingState || dataToInspect.name === loadingState);
     }
   };
-
 }).call(this);

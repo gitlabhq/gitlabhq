@@ -4,6 +4,7 @@ class Namespace < ActiveRecord::Base
   include CacheMarkdownField
   include Sortable
   include Gitlab::ShellAdapter
+  include Gitlab::CurrentSettings
   include Routable
 
   cache_markdown_field :description, pipeline: :description
@@ -130,6 +131,8 @@ class Namespace < ActiveRecord::Base
 
     Gitlab::UploadsTransfer.new.rename_namespace(path_was, path)
 
+    remove_exports!
+
     # If repositories moved successfully we need to
     # send update instructions to users.
     # However we cannot allow rollback since we moved namespace dir
@@ -174,6 +177,10 @@ class Namespace < ActiveRecord::Base
     end
   end
 
+  def shared_runners_enabled?
+    projects.with_shared_runners.any?
+  end
+
   def full_name
     @full_name ||=
       if parent
@@ -183,8 +190,26 @@ class Namespace < ActiveRecord::Base
       end
   end
 
-  def parents
-    @parents ||= parent ? parent.parents + [parent] : []
+  # Scopes the model on ancestors of the record
+  def ancestors
+    if parent_id
+      path = route.path
+      paths = []
+
+      until path.blank?
+        path = path.rpartition('/').first
+        paths << path
+      end
+
+      self.class.joins(:route).where('routes.path IN (?)', paths).reorder('routes.path ASC')
+    else
+      self.class.none
+    end
+  end
+
+  # Scopes the model on direct and indirect children of the record
+  def descendants
+    self.class.joins(:route).where('routes.path LIKE ?', "#{route.path}/%").reorder('routes.path ASC')
   end
 
   private
@@ -214,6 +239,8 @@ class Namespace < ActiveRecord::Base
         GitlabShellWorker.perform_in(5.minutes, :rm_namespace, repository_storage_path, new_path)
       end
     end
+
+    remove_exports!
   end
 
   def refresh_access_of_projects_invited_groups
@@ -225,5 +252,21 @@ class Namespace < ActiveRecord::Base
 
   def full_path_changed?
     path_changed? || parent_id_changed?
+  end
+
+  def remove_exports!
+    Gitlab::Popen.popen(%W(find #{export_path} -not -path #{export_path} -delete))
+  end
+
+  def export_path
+    File.join(Gitlab::ImportExport.storage_path, full_path_was)
+  end
+
+  def full_path_was
+    if parent
+      parent.full_path + '/' + path_was
+    else
+      path_was
+    end
   end
 end

@@ -27,6 +27,7 @@ Ruby Version:     2.1.5p273
 Gem Version:      2.4.3
 Bundler Version:  1.7.6
 Rake Version:     10.3.2
+Redis Version:    3.2.5
 Sidekiq Version:  2.17.8
 
 GitLab information

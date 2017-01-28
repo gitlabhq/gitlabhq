@@ -4,7 +4,7 @@ describe API::Internal, api: true  do
   include ApiHelpers
   let(:user) { create(:user) }
   let(:key) { create(:key, user: user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:secret_token) { Gitlab::Shell.secret_token }
 
   describe "GET /internal/check", no_db: true do
@@ -239,7 +239,7 @@ describe API::Internal, api: true  do
     end
 
     context "blocked user" do
-      let(:personal_project) { create(:project, namespace: user.namespace) }
+      let(:personal_project) { create(:empty_project, namespace: user.namespace) }
 
       before do
         user.block
@@ -265,7 +265,7 @@ describe API::Internal, api: true  do
     end
 
     context "archived project" do
-      let(:personal_project) { create(:project, namespace: user.namespace) }
+      let(:personal_project) { create(:empty_project, namespace: user.namespace) }
 
       before do
         project.team << [user, :developer]
@@ -337,8 +337,7 @@ describe API::Internal, api: true  do
 
     context 'ssh access has been disabled' do
       before do
-        settings = ::ApplicationSetting.create_from_defaults
-        settings.update_attribute(:enabled_git_access_protocol, 'http')
+        stub_application_setting(enabled_git_access_protocol: 'http')
       end
 
       it 'rejects the SSH push' do
@@ -360,8 +359,7 @@ describe API::Internal, api: true  do
 
     context 'http access has been disabled' do
       before do
-        settings = ::ApplicationSetting.create_from_defaults
-        settings.update_attribute(:enabled_git_access_protocol, 'ssh')
+        stub_application_setting(enabled_git_access_protocol: 'ssh')
       end
 
       it 'rejects the HTTP push' do
@@ -383,8 +381,7 @@ describe API::Internal, api: true  do
 
     context 'web actions are always allowed' do
       it 'allows WEB push' do
-        settings = ::ApplicationSetting.create_from_defaults
-        settings.update_attribute(:enabled_git_access_protocol, 'ssh')
+        stub_application_setting(enabled_git_access_protocol: 'ssh')
         project.team << [user, :developer]
         push(key, project, 'web')
 

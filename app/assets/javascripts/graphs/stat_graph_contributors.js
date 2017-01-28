@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, one-var, camelcase, one-var-declaration-per-line, quotes, no-param-reassign, quote-props, comma-dangle, prefer-template, max-len, no-return-assign, padded-blocks */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, one-var, camelcase, one-var-declaration-per-line, quotes, no-param-reassign, quote-props, comma-dangle, prefer-template, max-len, no-return-assign */
 /* global ContributorsGraph */
 /* global ContributorsAuthorGraph */
 /* global ContributorsMasterGraph */
@@ -112,7 +112,5 @@ window.d3 = require('d3');
     };
 
     return ContributorsStatGraph;
-
   })();
-
 }).call(this);

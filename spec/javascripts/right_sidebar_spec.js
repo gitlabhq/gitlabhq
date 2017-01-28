@@ -1,4 +1,4 @@
-/* eslint-disable space-before-function-paren, no-var, one-var, one-var-declaration-per-line, new-parens, no-return-assign, new-cap, vars-on-top, semi, padded-blocks, max-len */
+/* eslint-disable space-before-function-paren, no-var, one-var, one-var-declaration-per-line, new-parens, no-return-assign, new-cap, vars-on-top, max-len */
 /* global Sidebar */
 
 require('~/right_sidebar');
@@ -77,7 +77,6 @@ require('~/extensions/jquery.js');
       $('.js-issuable-todo').click();
 
       expect(todoToggleSpy.calls.count()).toEqual(1);
-    })
+    });
   });
-
 }).call(this);
