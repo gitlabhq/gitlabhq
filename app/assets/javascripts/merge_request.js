@@ -110,9 +110,8 @@ require('./merge_request_tabs');
     };
 
     MergeRequest.prototype.initCommitMessageListeners = function() {
-      var textarea = $('textarea.js-commit-message');
-
-      $('a.js-with-description-link').on('click', function(e) {
+      $(document).on('click', 'a.js-with-description-link', function(e) {
+        var textarea = $('textarea.js-commit-message');
         e.preventDefault();
 
         textarea.val(textarea.data('messageWithDescription'));
@@ -120,7 +119,8 @@ require('./merge_request_tabs');
         $('p.js-without-description-hint').show();
       });
 
-      $('a.js-without-description-link').on('click', function(e) {
+      $(document).on('click', 'a.js-without-description-link', function(e) {
+        var textarea = $('textarea.js-commit-message');
         e.preventDefault();
 
         textarea.val(textarea.data('messageWithoutDescription'));
