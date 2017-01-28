@@ -4,7 +4,7 @@
 = render 'ci_menu'
 
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_tag("commit/pipelines_bundle.js")
+  = page_specific_javascript_tag("commit/pipelines/pipelines_bundle.js")
 
 #commit-pipeline-table-view{ data: { pipelines_data: pipelines_namespace_project_commit_path(@project.namespace, @project, @commit.id)}}
 .pipeline-svgs{ data: { "commit_icon_svg" => custom_icon("icon_commit"),

@@ -105,7 +105,7 @@ module Gitlab
     config.assets.precompile << "merge_conflicts/merge_conflicts_bundle.js"
     config.assets.precompile << "boards/test_utils/simulate_drag.js"
     config.assets.precompile << "environments/environments_bundle.js"
-    config.assets.precompile << "commit/pipelines_bundle.js"
+    config.assets.precompile << "commit/pipelines/pipelines_bundle.js"
     config.assets.precompile << "blob_edit/blob_edit_bundle.js"
     config.assets.precompile << "snippet/snippet_bundle.js"
     config.assets.precompile << "terminal/terminal_bundle.js"
