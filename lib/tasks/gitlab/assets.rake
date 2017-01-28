@@ -3,6 +3,7 @@ namespace :gitlab do
     desc 'GitLab | Assets | Compile all frontend assets'
     task :compile do
       Rake::Task['assets:precompile'].invoke
+      Rake::Task['webpack:compile'].invoke
       Rake::Task['gitlab:assets:fix_urls'].invoke
     end
 
