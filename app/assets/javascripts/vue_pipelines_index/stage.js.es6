@@ -14,9 +14,8 @@
         type: Object,
         required: true,
       },
-      //FIXME: DOMStringMap is non standard, let's use a plain object.
       svgs: {
-        type: DOMStringMap,
+        type: Object,
         required: true,
       },
       match: {

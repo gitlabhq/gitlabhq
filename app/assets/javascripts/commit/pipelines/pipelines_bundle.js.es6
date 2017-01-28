@@ -1,4 +1,4 @@
-/* eslint-disable no-new */
+/* eslint-disable no-new, no-param-reassign */
 /* global Vue, CommitsPipelineStore, PipelinesService, Flash */
 
 //= require vue
@@ -10,8 +10,10 @@
 
 /**
  * Commits View > Pipelines Tab > Pipelines Table.
+ * Merge Request View > Pipelines Tab > Pipelines Table.
  *
  * Renders Pipelines table in pipelines tab in the commits show view.
+ * Renders Pipelines table in pipelines tab in the merge request show view.
  *
  * Uses `pipelines-table-component` to render Pipelines table with an API call.
  * Endpoint is provided in HTML and passed as scope.
@@ -20,6 +22,7 @@
  * Necessary SVG in the table are provided as props. This should be refactored
  * as soon as we have Webpack and can load them directly into JS files.
  */
+
 $(() => {
   window.gl = window.gl || {};
   gl.commits = gl.commits || {};
@@ -55,11 +58,12 @@ $(() => {
       }, {});
 
       return {
-        endpoint: pipelinesTableData.pipelinesData,
+        endpoint: pipelinesTableData.endpoint,
         svgs: svgsObject,
         store,
         state: store.state,
         isLoading: false,
+        error: false,
       };
     },
 
@@ -82,7 +86,9 @@ $(() => {
         .then((json) => {
           this.store.store(json);
           this.isLoading = false;
+          this.error = false;
         }).catch(() => {
+          this.error = true;
           this.isLoading = false;
           new Flash('An error occurred while fetching the pipelines.', 'alert');
         });
@@ -95,14 +101,15 @@ $(() => {
         </div>
 
         <div class="blank-state blank-state-no-icon"
-          v-if="!isLoading && state.pipelines.length === 0">
+          v-if="!isLoading && !error && state.pipelines.length === 0">
           <h2 class="blank-state-title js-blank-state-title">
             You don't have any pipelines.
           </h2>
-          Put get started with pipelines button here!!!
         </div>
 
-        <div class="table-holder" v-if='!isLoading && state.pipelines.length > 0'>
+        <div
+          class="table-holder pipelines"
+          v-if='!isLoading && state.pipelines.length > 0'>
           <pipelines-table-component
             :pipelines='state.pipelines'
             :svgs='svgs'>

@@ -25,7 +25,6 @@
               <button
                 v-if='actions'
                 class="dropdown-toggle btn btn-default has-tooltip js-pipeline-dropdown-manual-actions"
-                data-toggle="dropdown"
                 title="Manual build"
                 data-placement="top"
                 aria-label="Manual build"
@@ -50,7 +49,6 @@
               <button
                 v-if='artifacts'
                 class="dropdown-toggle btn btn-default build-artifacts has-tooltip js-pipeline-dropdown-download"
-                data-toggle="dropdown"
                 title="Artifacts"
                 data-placement="top"
                 aria-label="Artifacts"
@@ -72,7 +70,7 @@
             </div>
           </div>
           <div class="cancel-retry-btns inline">
-            <a
+            <button
               v-if='pipeline.flags.retryable'
               class="btn has-tooltip"
               title="Retry"
@@ -81,11 +79,10 @@
               data-placement="top"
               data-toggle="dropdown"
               :href='pipeline.retry_path'
-              aria-label="Retry"
-            >
+              aria-label="Retry">
               <i class="fa fa-repeat" aria-hidden="true"></i>
             </a>
-            <a
+            <button
               v-if='pipeline.flags.cancelable'
               class="btn btn-remove has-tooltip"
               title="Cancel"
@@ -94,8 +91,7 @@
               data-placement="top"
               data-toggle="dropdown"
               :href='pipeline.cancel_path'
-              aria-label="Cancel"
-            >
+              aria-label="Cancel">
               <i class="fa fa-remove" aria-hidden="true"></i>
             </a>
           </div>

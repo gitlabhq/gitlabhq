@@ -1,7 +1,3 @@
-/* global gl, Flash */
-/* eslint-disable no-param-reassign, no-underscore-dangle */
-/*= require vue_realtime_listener/index.js */
-
 /**
  * Pipelines' Store for commits view.
  *

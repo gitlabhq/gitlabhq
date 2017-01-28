@@ -61,7 +61,6 @@
 
     constructor({ action, setUrl, stubLocation } = {}) {
       this.diffsLoaded = false;
-      this.pipelinesLoaded = false;
       this.commitsLoaded = false;
       this.fixedLayoutPref = null;
 
@@ -116,10 +115,6 @@
         $.scrollTo('.merge-request-details .merge-request-tabs', {
           offset: -navBarHeight,
         });
-      } else if (action === 'pipelines') {
-        this.loadPipelines($target.attr('href'));
-        this.expandView();
-        this.resetViewContainer();
       } else {
         this.expandView();
         this.resetViewContainer();
@@ -239,25 +234,6 @@
 
           new gl.Diff();
           this.scrollToElement('#diffs');
-        },
-      });
-    }
-
-    loadPipelines(source) {
-      if (this.pipelinesLoaded) {
-        return;
-      }
-      this.ajaxGet({
-        url: `${source}.json`,
-        success: (data) => {
-          $('#pipelines').html(data.html);
-          gl.utils.localTimeAgo($('.js-timeago', '#pipelines'));
-          this.pipelinesLoaded = true;
-          this.scrollToElement('#pipelines');
-
-          new gl.MiniPipelineGraph({
-            container: '.js-pipeline-table',
-          });
         },
       });
     }

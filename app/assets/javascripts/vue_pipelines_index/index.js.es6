@@ -1,31 +1,32 @@
+/* eslint-disable no-param-reassign */
 /* global Vue, VueResource, gl */
-/*= require vue_shared/components/commit */
-/*= require vue_pagination/index */
+
+//= require vue
 /*= require vue-resource
 /*= require vue_shared/vue_resource_interceptor */
-/*= require ./status.js.es6 */
-/*= require ./store.js.es6 */
-/*= require ./pipeline_url.js.es6 */
-/*= require ./stage.js.es6 */
-/*= require ./stages.js.es6 */
-/*= require ./pipeline_actions.js.es6 */
-/*= require ./time_ago.js.es6 */
 /*= require ./pipelines.js.es6 */
 
-(() => {
-  const project = document.querySelector('.pipelines');
-  const entry = document.querySelector('.vue-pipelines-index');
-  const svgs = document.querySelector('.pipeline-svgs');
-
+$(() => {
   Vue.use(VueResource);
 
-  if (!entry) return null;
   return new Vue({
-    el: entry,
-    data: {
-      scope: project.dataset.url,
-      store: new gl.PipelineStore(),
-      svgs: svgs.dataset,
+    el: document.querySelector('.vue-pipelines-index'),
+
+    data() {
+      const project = document.querySelector('.pipelines');
+      const svgs = document.querySelector('.pipeline-svgs').dataset;
+
+      // Transform svgs DOMStringMap to a plain Object.
+      const svgsObject = Object.keys(svgs).reduce((acc, element) => {
+        acc[element] = svgs[element];
+        return acc;
+      }, {});
+
+      return {
+        scope: project.dataset.url,
+        store: new gl.PipelineStore(),
+        svgs: svgsObject,
+      };
     },
     components: {
       'vue-pipelines': gl.VuePipelines,
@@ -39,4 +40,4 @@
       </vue-pipelines>
     `,
   });
-})();
+});

@@ -38,6 +38,7 @@
       pipelineUrl: gl.VuePipelineUrl,
       pipelineHead: gl.VuePipelineHead,
       statusScope: gl.VueStatusScope,
+      'time-ago': gl.VueTimeAgo,
     },
 
     computed: {
@@ -45,16 +46,48 @@
        * If provided, returns the commit tag.
        * Needed to render the commit component column.
        *
+       * TODO: Document this logic, need to ask @grzesiek and @selfup
+       *
        * @returns {Object|Undefined}
        */
       commitAuthor() {
+        if (!this.pipeline.commit) {
+          return { avatar_url: '', web_url: '', username: '' };
+        }
+
         if (this.pipeline &&
           this.pipeline.commit &&
           this.pipeline.commit.author) {
           return this.pipeline.commit.author;
         }
 
+        if (this.pipeline &&
+          this.pipeline.commit &&
+          this.pipeline.commit.author_gravatar_url &&
+          this.pipeline.commit.author_name &&
+          this.pipeline.commit.author_email) {
+          return {
+            avatar_url: this.pipeline.commit.author_gravatar_url,
+            web_url: `mailto:${this.pipeline.commit.author_email}`,
+            username: this.pipeline.commit.author_name,
+          };
+        }
+
         return undefined;
+      },
+
+      /**
+       * Figure this out!
+       * Needed to render the commit component column.
+       */
+      author(pipeline) {
+        if (!pipeline.commit) return { avatar_url: '', web_url: '', username: '' };
+        if (pipeline.commit.author) return pipeline.commit.author;
+        return {
+          avatar_url: pipeline.commit.author_gravatar_url,
+          web_url: `mailto:${pipeline.commit.author_email}`,
+          username: pipeline.commit.author_name,
+        };
       },
 
       /**
@@ -64,10 +97,10 @@
        * @returns {String|Undefined}
        */
       commitTag() {
-        // if (this.model.last_deployment &&
-        //   this.model.last_deployment.tag) {
-        //   return this.model.last_deployment.tag;
-        // }
+        if (this.pipeline.ref &&
+          this.pipeline.ref.tag) {
+          return this.pipeline.ref.tag;
+        }
         return undefined;
       },
 
@@ -132,20 +165,6 @@
           return this.pipeline.commit.title;
         }
         return undefined;
-      },
-
-      /**
-       * Figure this out!
-       * Needed to render the commit component column.
-       */
-      author(pipeline) {
-        if (!pipeline.commit) return { avatar_url: '', web_url: '', username: '' };
-        if (pipeline.commit.author) return pipeline.commit.author;
-        return {
-          avatar_url: pipeline.commit.author_gravatar_url,
-          web_url: `mailto:${pipeline.commit.author_email}`,
-          username: pipeline.commit.author_name,
-        };
       },
     },
 

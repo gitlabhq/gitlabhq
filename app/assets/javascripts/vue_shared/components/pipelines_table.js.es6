@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 /* global Vue */
 
-//=require ./pipelines_table_row
+//= require ./pipelines_table_row
 
 /**
  * Pipelines Table Component
