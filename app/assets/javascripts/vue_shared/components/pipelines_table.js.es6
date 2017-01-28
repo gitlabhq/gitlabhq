@@ -19,10 +19,13 @@
     props: {
 
       /**
-       * Stores the Pipelines to render.
+       * Object used to store the Pipelines to render.
        * It's passed as a prop to allow different stores to use this Component.
        * Different API calls can result in different responses, using a custom
        * store allows us to use the same pipeline component.
+       *
+       * Note: All provided stores need to have a `storePipelines` method.
+       * Find a better way to do this.
        */
       store: {
         type: Object,

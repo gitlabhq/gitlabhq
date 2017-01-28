@@ -2,7 +2,7 @@
 /*= require vue_shared/components/commit */
 /*= require vue_pagination/index */
 /*= require vue-resource
-/*= require boards/vue_resource_interceptor */
+/*= require vue_shared/vue_resource_interceptor */
 /*= require ./status.js.es6 */
 /*= require ./store.js.es6 */
 /*= require ./pipeline_url.js.es6 */
