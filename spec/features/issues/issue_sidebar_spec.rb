@@ -2,6 +2,7 @@ require 'rails_helper'
 
 feature 'Issue Sidebar', feature: true do
   include WaitForAjax
+  include MobileHelpers
 
   let(:project) { create(:project, :public) }
   let(:issue) { create(:issue, project: project) }
@@ -59,6 +60,23 @@ feature 'Issue Sidebar', feature: true do
       end
     end
 
+    context 'sidebar', js: true do
+      it 'changes size when the screen size is smaller' do
+        sidebar_selector = 'aside.right-sidebar.right-sidebar-collapsed'
+        # Resize the window
+        resize_screen_sm
+        # Make sure the sidebar is collapsed
+        expect(page).to have_css(sidebar_selector)
+        # Once is collapsed let's open the sidebard and reload
+        open_issue_sidebar
+        refresh
+        expect(page).to have_css(sidebar_selector)
+        # Restore the window size as it was including the sidebar
+        restore_window_size
+        open_issue_sidebar
+      end
+    end
+
     context 'creating a new label', js: true do
       it 'shows option to crate a new label is present' do
         page.within('.block.labels') do
@@ -108,5 +126,12 @@ feature 'Issue Sidebar', feature: true do
 
   def visit_issue(project, issue)
     visit namespace_project_issue_path(project.namespace, project, issue)
+  end
+
+  def open_issue_sidebar
+    page.within('aside.right-sidebar.right-sidebar-collapsed') do
+      find('.js-sidebar-toggle').click
+      sleep 1
+    end
   end
 end

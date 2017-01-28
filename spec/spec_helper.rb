@@ -9,6 +9,10 @@ require 'rspec/rails'
 require 'shoulda/matchers'
 require 'rspec/retry'
 
+if ENV['RSPEC_PROFILING_POSTGRES_URL'] || ENV['RSPEC_PROFILING']
+  require 'rspec_profiling/rspec'
+end
+
 if ENV['CI'] && !ENV['NO_KNAPSACK']
   require 'knapsack'
   Knapsack::Adapters::RSpecAdapter.bind

@@ -419,10 +419,4 @@ if Rails.env.test?
 end
 
 # Force a refresh of application settings at startup
-begin
-  ApplicationSetting.expire
-  Ci::ApplicationSetting.expire
-rescue
-  # Gracefully handle when Redis is not available. For example,
-  # omnibus may fail here during assets:precompile.
-end
+ApplicationSetting.expire
