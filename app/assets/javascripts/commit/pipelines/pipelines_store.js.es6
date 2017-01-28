@@ -6,12 +6,14 @@
  * Pipelines' Store for commits view.
  *
  * Used to store the Pipelines rendered in the commit view in the pipelines table.
- *
- * TODO: take care of timeago instances in here
  */
 
 (() => {
-  const CommitPipelineStore = {
+  window.gl = window.gl || {};
+  gl.commits = gl.commits || {};
+  gl.commits.pipelines = gl.commits.pipelines || {};
+
+  gl.commits.pipelines.PipelinesStore = {
     state: {},
 
     create() {
@@ -20,11 +22,9 @@
       return this;
     },
 
-    storePipelines(pipelines = []) {
+    store(pipelines = []) {
       this.state.pipelines = pipelines;
       return pipelines;
     },
   };
-
-  return CommitPipelineStore;
 })();
