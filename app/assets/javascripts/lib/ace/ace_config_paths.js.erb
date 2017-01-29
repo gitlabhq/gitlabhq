@@ -15,11 +15,13 @@ end
 
   // configure paths for all worker modules
 <% ace_workers.each do |worker| %>
-  ace.config.setModuleUrl('ace/mode/<%= worker %>_worker', basePath + '/worker-<%= worker %>.js');
+  <% filename = File.basename(asset_path("ace/worker-#{worker}.js")) %>
+  ace.config.setModuleUrl('ace/mode/<%= worker %>_worker', basePath + '/<%= filename %>');
 <% end %>
 
   // configure paths for all mode modules
 <% ace_modes.each do |mode| %>
-  ace.config.setModuleUrl('ace/mode/<%= mode %>', basePath + '/mode-<%= mode %>.js');
+  <% filename = File.basename(asset_path("ace/mode-#{mode}.js")) %>
+  ace.config.setModuleUrl('ace/mode/<%= mode %>', basePath + '/<%= filename %>');
 <% end %>
 })();
