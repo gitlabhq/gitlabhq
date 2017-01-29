@@ -185,8 +185,7 @@ class Environment < ActiveRecord::Base
     public_path = project.public_path_for_source_path(path, commit_sha)
     return unless public_path
 
-    # TODO: Verify this can't be used for XSS
-    URI.join(external_url, public_path).to_s
+    [external_url, public_path].join('/')
   end
 
   private
