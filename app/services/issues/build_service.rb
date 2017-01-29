@@ -44,7 +44,15 @@ module Issues
     end
 
     def issue_params
-      @issue_params ||= issue_params_with_info_from_merge_request.merge(params.slice(:title, :description))
+      @issue_params ||= issue_params_with_info_from_merge_request.merge(whitelisted_issue_params)
+    end
+
+    def whitelisted_issue_params
+      if can?(current_user, :admin_issue, project)
+        params.slice(:title, :description, :milestone_id)
+      else
+        params.slice(:title, :description)
+      end
     end
   end
 end
