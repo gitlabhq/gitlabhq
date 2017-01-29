@@ -1,6 +1,6 @@
 .btn-group
   = view_on_environment_btn(@commit.sha, @path, @environment) if @environment
-  
+
 .btn-group.tree-btn-group
   = link_to 'Raw', namespace_project_raw_path(@project.namespace, @project, @id),
       class: 'btn btn-sm', target: '_blank'

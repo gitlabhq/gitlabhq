@@ -1312,7 +1312,7 @@ class Project < ActiveRecord::Base
         deployments_query = with_tags ? 'ref = ? OR tag IS TRUE' : 'ref = ?'
         deployments.where(deployments_query, ref.to_s)
       elsif commit
-        deps = deployments.where(sha: commit.sha)
+        deployments.where(sha: commit.sha)
       else
         Deployment.none
       end
@@ -1348,13 +1348,9 @@ class Project < ActiveRecord::Base
         data = repository.route_map_file(sha)
         next unless data
 
-        # TODO: Validate
-        YAML.safe_load(data).map do |mapping|
-          {
-            source: Regexp.new("^#{mapping['source'][1...-1]}$"),
-            public: mapping['public']
-          }
-        end
+        Gitlab::RouteMap.new(data)
+      rescue Gitlab::RouteMap::FormatError
+        nil
       end
     end
 
@@ -1365,10 +1361,7 @@ class Project < ActiveRecord::Base
     map = route_map_for_commit(commit_sha)
     return unless map
 
-    mapping = map.find { |mapping| path =~ mapping[:source] }
-    return unless mapping
-
-    path.sub(mapping[:source], mapping[:public])
+    map.public_path_for_source_path(path)
   end
 
   private
