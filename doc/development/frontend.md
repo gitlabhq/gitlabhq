@@ -364,7 +364,11 @@ For our currently-supported browsers, see our [requirements][requirements].
 [state-management]: https://vuejs.org/v2/guide/state-management.html#Simple-State-Management-from-Scratch
 [vue-resource-repo]: https://github.com/pagekit/vue-resource
 [issue-boards-service]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/javascripts/boards/services/board_service.js.es6
-
+[virtualbox]:https://www.virtualbox.org/wiki/Downloads
+[vmwarefusion]: https://my.vmware.com/en/web/vmware/info/slug/desktop_end_user_computing/vmware_fusion/8_0
+[ubuntu]:https://www.ubuntu.com/download/desktop
+[ie-vm]: https://developer.microsoft.com/en-us/microsoft-edge/tools/vms/
+[unarchiver]: http://unarchiver.c3.cx/unarchiver
 ## Gotchas
 
 ### Spec errors due to use of ES6 features in `.js` files
@@ -438,3 +442,65 @@ Scenario: Developer can approve merge request
     Then I should see approved merge request "Bug NS-04"
 
 ```
+## Setup Virtual Machine to test in different browsers
+First we need a Virtual Machine, there are some solutions:
+
+### Virtualbox
+This Virtual Machine is free.
+
+1. Download Virtualbox in [here][virtualbox].
+2. Click in the binary of your operative system and wait for the download to be completed. If you have a MacOS click in `OS X hosts`.
+3. Install:
+
+  **In MacOS**
+  * Double click the downloaded file and follow the instructions that will
+    appear in your screen.
+  * Once you see "The installation was successful" you can close the installer.
+  * Open Virtualbox from you application folder.
+
+4. To run Windows see Microsoft Edge and versions of IE8 through IE11 section.
+5. To run Ubuntu see Ubuntu section.
+
+### VMware Fusion
+You need a license for this Virtual Machine, please ping Allison or Jacob.
+
+1. Download VMware Fusion in [here][vmwarefusion]
+2. Setup:
+
+#### Ubuntu
+In order to test browsers on Ubuntu we need to download it.
+_This step assumes you already have a virtual machine installed_
+1. Download the latest version in [here][ubuntu]
+2. Once the download has finished we can setup our machine.
+3. Setup:
+  **MacOS**
+    **Virtualbox**
+    * Open Virtualbox from you application's folder.
+    * Click in 'New'
+      - Choose the name of your Machine
+      - Choose 'Linux' in 'Type'
+      - Choose 'Ubuntu (64-bit)' in 'Version'
+      Click Continue
+    * Memory size
+      - Choose 1024 MB and click Continue
+    * Hard disk
+      - Choose 'Create a virtual hard disk now' and click Create
+    *
+
+#### Microsoft Edge and versions of IE8 through IE11
+_This step assumes you already have a virtual machine installed_
+
+_This machines expire after 90 days._
+
+1. Download the virtual machine you need in [here][ie-vm]
+2. Once the download has finished, we need to unzip the file.
+  > Mac Users: You need to use a tool that supports zip64 like [The Unarchiver][unarchiver] to unzip the files.
+
+3. Setup
+  **MacOs**
+  Double click the unzziped file, it should be a `.ova` file.
+
+    **Virtualbox**
+    Virtualbox will open.
+    * Click 'Import' button
+    *
