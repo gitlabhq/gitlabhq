@@ -1,3 +1,4 @@
+- environment = local_assigns.fetch(:environment, nil)
 - show_whitespace_toggle = local_assigns.fetch(:show_whitespace_toggle, true)
 - can_create_note = !@diff_notes_disabled && can?(current_user, :create_note, diffs.project)
 - diff_files = diffs.diff_files
@@ -30,4 +31,4 @@
     - file_hash = hexdigest(diff_file.file_path)
 
     = render 'projects/diffs/file', file_hash: file_hash, project: diffs.project,
-      diff_file: diff_file, diff_commit: diff_commit, blob: blob
+      diff_file: diff_file, diff_commit: diff_commit, blob: blob, environment: environment

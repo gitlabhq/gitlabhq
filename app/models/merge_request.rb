@@ -729,6 +729,12 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
+  def latest_environment
+    return @latest_environment if defined?(@latest_environment)
+
+    @latest_environment = Environment.latest_for_commit(environments, diff_head_commit)
+  end
+
   def state_human_name
     if merged?
       "Merged"

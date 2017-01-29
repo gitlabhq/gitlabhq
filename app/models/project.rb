@@ -1307,10 +1307,17 @@ class Project < ActiveRecord::Base
   end
 
   def environments_for(ref, commit: nil, with_tags: false)
-    deployments_query = with_tags ? 'ref = ? OR tag IS TRUE' : 'ref = ?'
+    deps =
+      if ref
+        deployments_query = with_tags ? 'ref = ? OR tag IS TRUE' : 'ref = ?'
+        deployments.where(deployments_query, ref.to_s)
+      elsif commit
+        deps = deployments.where(sha: commit.sha)
+      else
+        Deployment.none
+      end
 
-    environment_ids = deployments
-      .where(deployments_query, ref.to_s)
+    environment_ids = deps
       .group(:environment_id)
       .select(:environment_id)
 
@@ -1324,10 +1331,44 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def latest_environment_for(commit, ref: nil)
+    environments = environments_for(ref, commit: commit)
+    Environment.latest_for_commit(environments, commit)
+  end
+
   def environments_recently_updated_on_branch(branch)
     environments_for(branch).select do |environment|
       environment.recently_updated_on_branch?(branch)
     end
+  end
+
+  def route_map_for_commit(commit_sha)
+    @route_maps_by_commit ||= Hash.new do |h, sha|
+      h[sha] = begin
+        data = repository.route_map_file(sha)
+        next unless data
+
+        # TODO: Validate
+        YAML.safe_load(data).map do |mapping|
+          {
+            source: Regexp.new("^#{mapping['source'][1...-1]}$"),
+            public: mapping['public']
+          }
+        end
+      end
+    end
+
+    @route_maps_by_commit[commit_sha]
+  end
+
+  def public_path_for_source_path(path, commit_sha)
+    map = route_map_for_commit(commit_sha)
+    return unless map
+
+    mapping = map.find { |mapping| path =~ mapping[:source] }
+    return unless mapping
+
+    path.sub(mapping[:source], mapping[:public])
   end
 
   private

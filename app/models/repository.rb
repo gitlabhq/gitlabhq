@@ -35,6 +35,9 @@ class Repository
     avatar: :avatar
   }
 
+  ROUTE_MAP_PATH = '.gitlab/route-map.yml'
+  GITLAB_CI_YML_PATH = '.gitlab-ci.yml'
+
   # Wraps around the given method and caches its output in Redis and an instance
   # variable.
   #
@@ -1182,6 +1185,20 @@ class Repository
       raise Gitlab::Git::Repository::InvalidBlobName.new(
         "Directory already exists")
     end
+  end
+
+  def route_map_file(sha)
+    blob = blob_at(sha, ROUTE_MAP_PATH)
+    return unless blob
+    blob.load_all_data!(self)
+    blob.data
+  end
+
+  def ci_yaml_file(sha)
+    blob = blob_at(sha, GITLAB_CI_YML_PATH)
+    return unless blob
+    blob.load_all_data!(self)
+    blob.data
   end
 
   private

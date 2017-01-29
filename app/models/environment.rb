@@ -51,6 +51,14 @@ class Environment < ActiveRecord::Base
     state :stopped
   end
 
+  def self.latest_for_commit(environments, commit)
+    environments.sort_by do |environment|
+      deployment = environment.first_deployment_for(commit)
+
+      deployment.try(:created_at) || DateTime.parse('1970-01-01')
+    end.last
+  end
+
   def predefined_variables
     [
       { key: 'CI_ENVIRONMENT_NAME', value: name, public: true },
@@ -169,6 +177,16 @@ class Environment < ActiveRecord::Base
     end
 
     self.slug = slugified
+  end
+
+  def external_url_for(path, commit_sha)
+    return unless self.external_url
+
+    public_path = project.public_path_for_source_path(path, commit_sha)
+    return unless public_path
+
+    # TODO: Verify this can't be used for XSS
+    URI.join(external_url, public_path).to_s
   end
 
   private

@@ -57,6 +57,10 @@ class Projects::CompareController < Projects::ApplicationController
 
       @diffs = @compare.diffs(diff_options)
 
+      branch_name = @head_ref if @repository.branch_exists?(@head_ref)
+      @environment = @project.latest_environment_for(@commit, ref: branch_name)
+      @environment = nil unless can?(current_user, :read_environment, @environment)
+
       @diff_notes_disabled = true
       @grouped_diff_discussions = {}
     end
