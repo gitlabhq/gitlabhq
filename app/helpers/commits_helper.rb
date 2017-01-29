@@ -205,6 +205,17 @@ module CommitsHelper
     end
   end
 
+  def view_on_environment_btn(commit_sha, diff_new_path, environment)
+    return unless environment && commit_sha
+
+    external_url = environment.external_url_for(diff_new_path, commit_sha)
+    return unless external_url
+
+    link_to(external_url, class: 'btn btn-file-option has-tooltip', target: '_blank', title: "View on #{environment.formatted_external_url}", data: { container: 'body' }) do
+      icon('external-link')
+    end
+  end
+
   def truncate_sha(sha)
     Commit.truncate_sha(sha)
   end

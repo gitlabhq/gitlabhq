@@ -106,6 +106,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       end
     end
 
+    @environment = @merge_request.latest_environment
+    @environment = nil unless can?(current_user, :read_environment, @environment)
+
     respond_to do |format|
       format.html { define_discussion_vars }
       format.json do
@@ -248,7 +251,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
                  end
         @diff_notes_disabled = true
 
-        render json: { html: view_to_html_string('projects/merge_requests/_new_diffs', diffs: @diffs) }
+        @environment = @merge_request.latest_environment
+        @environment = nil unless can?(current_user, :read_environment, @environment)
+
+        render json: { html: view_to_html_string('projects/merge_requests/_new_diffs', diffs: @diffs, environment: @environment) }
       end
     end
   end
