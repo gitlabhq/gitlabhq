@@ -534,6 +534,10 @@ production: &base
       # Ban an IP for one hour (3600s) after too many auth attempts
       # bantime: 3600
 
+  # Gitaly settings
+  # gitaly:
+  #   socket_path: /home/git/gitaly/gitaly.socket
+
 development:
   <<: *base
 
