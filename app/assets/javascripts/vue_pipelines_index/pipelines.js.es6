@@ -1,7 +1,7 @@
 /* global Vue, Turbolinks, gl */
 /* eslint-disable no-param-reassign */
 
-//= require vue_pagination/index
+//= require vue_shared/components/table_pagination
 //= require ./store.js.es6
 //= require vue_shared/components/pipelines_table
 
@@ -9,7 +9,7 @@
   gl.VuePipelines = Vue.extend({
 
     components: {
-      glPagination: gl.VueGlPagination,
+      'gl-pagination': gl.VueGlPagination,
       'pipelines-table-component': gl.pipelines.PipelinesTableComponent,
     },
 

@@ -4,10 +4,9 @@
 //= require ./pipelines_table_row
 
 /**
- * Pipelines Table Component
+ * Pipelines Table Component.
  *
- * Given an array of pipelines, renders a table.
- *
+ * Given an array of objects, renders a table.
  */
 
 (() => {
@@ -20,11 +19,11 @@
       pipelines: {
         type: Array,
         required: true,
-        default: [],
+        default: () => ([]),
       },
 
       /**
-       * Remove this. Find a better way to do this. don't want to provide this 3 times.
+       * TODO: Remove this when we have webpack.
        */
       svgs: {
         type: Object,
@@ -41,19 +40,18 @@
       <table class="table ci-table">
         <thead>
           <tr>
-            <th class="pipeline-status">Status</th>
-            <th class="pipeline-info">Pipeline</th>
-            <th class="pipeline-commit">Commit</th>
-            <th class="pipeline-stages">Stages</th>
-            <th class="pipeline-date"></th>
-            <th class="pipeline-actions hidden-xs"></th>
+            <th class="js-pipeline-status pipeline-status">Status</th>
+            <th class="js-pipeline-info pipeline-info">Pipeline</th>
+            <th class="js-pipeline-commit pipeline-commit">Commit</th>
+            <th class="js-pipeline-stages pipeline-stages">Stages</th>
+            <th class="js-pipeline-date pipeline-date"></th>
+            <th class="js-pipeline-actions pipeline-actions hidden-xs"></th>
           </tr>
         </thead>
         <tbody>
           <template v-for="model in pipelines"
             v-bind:model="model">
-            <tr
-              is="pipelines-table-row-component"
+            <tr is="pipelines-table-row-component"
               :pipeline="model"
               :svgs="svgs"></tr>
           </template>

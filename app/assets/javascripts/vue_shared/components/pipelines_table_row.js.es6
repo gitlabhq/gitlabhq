@@ -7,6 +7,12 @@
 //= require vue_shared/components/commit
 //= require vue_pipelines_index/pipeline_actions
 //= require vue_pipelines_index/time_ago
+
+/**
+ * Pipeline table row.
+ *
+ * Given the received object renders a table row in the pipelines' table.
+ */
 (() => {
   window.gl = window.gl || {};
   gl.pipelines = gl.pipelines || {};
@@ -21,7 +27,7 @@
       },
 
       /**
-       * Remove this. Find a better way to do this. don't want to provide this 3 times.
+       * TODO: Remove this when we have webpack;
        */
       svgs: {
         type: Object,
@@ -32,12 +38,10 @@
 
     components: {
       'commit-component': gl.CommitComponent,
-      runningPipeline: gl.VueRunningPipeline,
-      pipelineActions: gl.VuePipelineActions,
-      'vue-stage': gl.VueStage,
-      pipelineUrl: gl.VuePipelineUrl,
-      pipelineHead: gl.VuePipelineHead,
-      statusScope: gl.VueStatusScope,
+      'pipeline-actions': gl.VuePipelineActions,
+      'dropdown-stage': gl.VueStage,
+      'pipeline-url': gl.VuePipelineUrl,
+      'status-scope': gl.VueStatusScope,
       'time-ago': gl.VueTimeAgo,
     },
 
@@ -46,48 +50,48 @@
        * If provided, returns the commit tag.
        * Needed to render the commit component column.
        *
-       * TODO: Document this logic, need to ask @grzesiek and @selfup
+       * This field needs a lot of verification, because of different possible cases:
+       *
+       * 1. person who is an author of a commit might be a GitLab user
+       * 2. if person who is an author of a commit is a GitLab user he/she can have a GitLab avatar
+       * 3. If GitLab user does not have avatar he/she might have a Gravatar
+       * 4. If committer is not a GitLab User he/she can have a Gravatar
+       * 5. We do not have consistent API object in this case
+       * 6. We should improve API and the code
        *
        * @returns {Object|Undefined}
        */
       commitAuthor() {
-        if (!this.pipeline.commit) {
-          return { avatar_url: '', web_url: '', username: '' };
-        }
+        let commitAuthorInformation;
 
+        // 1. person who is an author of a commit might be a GitLab user
         if (this.pipeline &&
           this.pipeline.commit &&
           this.pipeline.commit.author) {
-          return this.pipeline.commit.author;
+          // 2. if person who is an author of a commit is a GitLab user
+          // he/she can have a GitLab avatar
+          if (this.pipeline.commit.author.avatar_url) {
+            commitAuthorInformation = this.pipeline.commit.author;
+
+            // 3. If GitLab user does not have avatar he/she might have a Gravatar
+          } else if (this.pipeline.commit.author_gravatar_url) {
+            commitAuthorInformation = Object.assign({}, this.pipeline.commit.author, {
+              avatar_url: this.pipeline.commit.author_gravatar_url,
+            });
+          }
         }
 
+        // 4. If committer is not a GitLab User he/she can have a Gravatar
         if (this.pipeline &&
-          this.pipeline.commit &&
-          this.pipeline.commit.author_gravatar_url &&
-          this.pipeline.commit.author_name &&
-          this.pipeline.commit.author_email) {
-          return {
+          this.pipeline.commit) {
+          commitAuthorInformation = {
             avatar_url: this.pipeline.commit.author_gravatar_url,
             web_url: `mailto:${this.pipeline.commit.author_email}`,
             username: this.pipeline.commit.author_name,
           };
         }
 
-        return undefined;
-      },
-
-      /**
-       * Figure this out!
-       * Needed to render the commit component column.
-       */
-      author(pipeline) {
-        if (!pipeline.commit) return { avatar_url: '', web_url: '', username: '' };
-        if (pipeline.commit.author) return pipeline.commit.author;
-        return {
-          avatar_url: pipeline.commit.author_gravatar_url,
-          web_url: `mailto:${pipeline.commit.author_email}`,
-          username: pipeline.commit.author_name,
-        };
+        return commitAuthorInformation;
       },
 
       /**
@@ -107,6 +111,9 @@
       /**
        * If provided, returns the commit ref.
        * Needed to render the commit component column.
+       *
+       * Matched `url` prop sent in the API to `path` prop needed
+       * in the commit component.
        *
        * @returns {Object|Undefined}
        */
@@ -169,6 +176,17 @@
     },
 
     methods: {
+      /**
+       * FIXME: This should not be in this component but in the components that
+       * need this function.
+       *
+       * Used to render SVGs in the following components:
+       * - status-scope
+       * - dropdown-stage
+       *
+       * @param  {String} string
+       * @return {String}
+       */
       match(string) {
         return string.replace(/_([a-z])/g, (m, w) => w.toUpperCase());
       },
@@ -177,12 +195,12 @@
     template: `
       <tr class="commit">
         <status-scope
-          :pipeline='pipeline'
-          :svgs='svgs'
+          :pipeline="pipeline"
+          :svgs="svgs"
           :match="match">
         </status-scope>
 
-        <pipeline-url :pipeline='pipeline'></pipeline-url>
+        <pipeline-url :pipeline="pipeline"></pipeline-url>
 
         <td>
           <commit-component
@@ -197,14 +215,20 @@
         </td>
 
         <td class="stage-cell">
-          <div class="stage-container dropdown js-mini-pipeline-graph" v-for='stage in pipeline.details.stages'>
-            <vue-stage :stage='stage' :svgs='svgs' :match='match'></vue-stage>
+          <div class="stage-container dropdown js-mini-pipeline-graph"
+            v-if="pipeline.details.stages.length > 0"
+            v-for="stage in pipeline.details.stages">
+            <dropdown-stage
+              :stage="stage"
+              :svgs="svgs"
+              :match="match">
+            </dropdown-stage>
           </div>
         </td>
 
-        <time-ago :pipeline='pipeline' :svgs='svgs'></time-ago>
+        <time-ago :pipeline="pipeline" :svgs="svgs"></time-ago>
 
-        <pipeline-actions :pipeline='pipeline' :svgs='svgs'></pipeline-actions>
+        <pipeline-actions :pipeline="pipeline" :svgs="svgs"></pipeline-actions>
       </tr>
     `,
   });

@@ -1,6 +1,8 @@
 /* global Vue, gl */
 /* eslint-disable no-param-reassign */
 
+//= require lib/utils/datetime_utility
+
 ((gl) => {
   gl.VueTimeAgo = Vue.extend({
     data() {

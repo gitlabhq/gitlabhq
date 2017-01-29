@@ -44,9 +44,9 @@
         = render "projects/merge_requests/show/commits"
       #diffs.diffs.tab-pane
         -# This tab is always loaded via AJAX
-      #pipelines.pipelines.tab-pane
-        //TODO: This needs to make a new request every time is opened!
-        = render "projects/merge_requests/show/pipelines", endpoint: link_to url_for(params)
+      - if @pipelines.any?
+        #pipelines.pipelines.tab-pane
+          = render "projects/merge_requests/show/pipelines", endpoint: link_to url_for(params)
 
   .mr-loading-status
     = spinner

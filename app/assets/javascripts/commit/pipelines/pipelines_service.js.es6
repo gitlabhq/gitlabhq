@@ -32,3 +32,8 @@ class PipelinesService {
     return this.pipelines.get();
   }
 }
+
+window.gl = window.gl || {};
+gl.commits = gl.commits || {};
+gl.commits.pipelines = gl.commits.pipelines || {};
+gl.commits.pipelines.PipelinesService = PipelinesService;
