@@ -34,6 +34,10 @@ class WikiPage
       flatten
   end
 
+  def self.unhyphenize(name)
+    name.gsub(/-+/, ' ')
+  end
+
   def to_key
     [:slug]
   end
@@ -78,7 +82,7 @@ class WikiPage
   # The formatted title of this page.
   def title
     if @attributes[:title]
-      @attributes[:title].gsub(/-+/, ' ')
+      self.class.unhyphenize(@attributes[:title])
     else
       ""
     end

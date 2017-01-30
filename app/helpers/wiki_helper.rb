@@ -7,7 +7,7 @@ module WikiHelper
   # capitalized name of the page itself.
   def breadcrumb(page_slug)
     page_slug.split('/').
-      map { |dir_or_page| dir_or_page.gsub(/-+/, ' ').capitalize }.
+      map { |dir_or_page| WikiPage.unhyphenize(dir_or_page).capitalize }.
       join(' / ')
   end
 end

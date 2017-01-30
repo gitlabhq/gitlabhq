@@ -68,6 +68,14 @@ describe WikiPage, models: true do
     end
   end
 
+  describe '.unhyphenize' do
+    it 'removes hyphens from a name' do
+      name = 'a-name--with-hyphens'
+
+      expect(WikiPage.unhyphenize(name)).to eq('a name with hyphens')
+    end
+  end
+
   describe "#initialize" do
     context "when initialized with an existing gollum page" do
       before do
