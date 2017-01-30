@@ -100,7 +100,7 @@ feature 'Setup Mattermost slash commands', feature: true do
     end
 
     it 'shows an error alert with the error message if there is an error requesting teams' do
-      allow_any_instance_of(MattermostSlashCommandsService).to receive(:list_teams) { 'test mattermost error message' }
+      allow_any_instance_of(MattermostSlashCommandsService).to receive(:list_teams) { [[], 'test mattermost error message'] }
 
       click_link 'Add to Mattermost'
 
