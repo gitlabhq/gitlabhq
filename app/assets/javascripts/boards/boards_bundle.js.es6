@@ -88,12 +88,25 @@ $(() => {
     }
   });
 
-  // This element is outside the Vue app
-  $(document)
-    .off('click', '.js-show-add-issues')
-    .on('click', '.js-show-add-issues', (e) => {
-      e.preventDefault();
-
-      ModalStore.store.showAddIssuesModal = true;
-    });
+  gl.IssueBoardsModalAddBtn = new Vue({
+    el: '#js-add-issues-btn',
+    data: {
+      modal: ModalStore.store,
+      store: Store.state,
+    },
+    computed: {
+      disabled() {
+        return Store.shouldAddBlankState();
+      },
+    },
+    template: `
+      <button
+        class="btn btn-create pull-right prepend-left-10 has-tooltip"
+        type="button"
+        :disabled="disabled"
+        @click="modal.showAddIssuesModal = true">
+        Add issues
+      </button>
+    `,
+  });
 });

@@ -7,7 +7,7 @@ module Projects
 
       def index
         issues = ::Boards::Issues::ListService.new(project, current_user, filter_params).execute
-        issues = issues.page(params[:page])
+        issues = issues.page(params[:page]).per(params[:per] || 20)
 
         render json: {
           issues: serialize_as_json(issues),
