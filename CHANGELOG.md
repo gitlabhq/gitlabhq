@@ -18,7 +18,7 @@ entry.
 - Prevent users from deleting system deploy keys via the project deploy key API.
 - Upgrade omniauth gem to 1.3.2.
 
-## 8.16.0 (2017-02-22)
+## 8.16.0 (2017-01-22)
 
 - Add LDAP Rake task to rename a provider. !2181
 - Validate label's title length. !5767 (Tomáš Kukrál)
