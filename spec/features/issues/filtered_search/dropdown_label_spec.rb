@@ -92,10 +92,8 @@ describe 'Dropdown label', js: true, feature: true do
       init_label_search
     end
 
-    # TODO: Remove this temporary disable before merging visual tokens MR
     it 'filters by case-insensitive name with or without symbol' do
-      pending('Fix this after clear button is fixed')
-      search_for_label('b')
+      filtered_search.send_keys('b')
 
       expect(filter_dropdown.find('.filter-dropdown-item', text: bug_label.title)).to be_visible
       expect(filter_dropdown.find('.filter-dropdown-item', text: uppercase_label.title)).to be_visible
@@ -104,16 +102,14 @@ describe 'Dropdown label', js: true, feature: true do
       clear_search_field
       init_label_search
 
-      search_for_label('~bu')
+      filtered_search.send_keys('~bu')
 
       expect(filter_dropdown.find('.filter-dropdown-item', text: bug_label.title)).to be_visible
       expect(filter_dropdown.find('.filter-dropdown-item', text: uppercase_label.title)).to be_visible
       expect(dropdown_label_size).to eq(2)
     end
 
-    # TODO: Remove this temporary disable before merging visual tokens MR
     it 'filters by multiple words with or without symbol' do
-      pending('Fix this after clear button is fixed')
       filtered_search.send_keys('Hig')
 
       expect(filter_dropdown.find('.filter-dropdown-item', text: two_words_label.title)).to be_visible
@@ -128,9 +124,7 @@ describe 'Dropdown label', js: true, feature: true do
       expect(dropdown_label_size).to eq(1)
     end
 
-    # TODO: Remove this temporary disable before merging visual tokens MR
     it 'filters by multiple words containing single quotes with or without symbol' do
-      pending('Fix this after clear button is fixed')
       filtered_search.send_keys('won\'t')
 
       expect(filter_dropdown.find('.filter-dropdown-item', text: wont_fix_single_label.title)).to be_visible
@@ -145,9 +139,7 @@ describe 'Dropdown label', js: true, feature: true do
       expect(dropdown_label_size).to eq(1)
     end
 
-    # TODO: Remove this temporary disable before merging visual tokens MR
     it 'filters by multiple words containing double quotes with or without symbol' do
-      pending('Fix this after clear button is fixed')
       filtered_search.send_keys('won"t')
 
       expect(filter_dropdown.find('.filter-dropdown-item', text: wont_fix_label.title)).to be_visible
@@ -162,9 +154,7 @@ describe 'Dropdown label', js: true, feature: true do
       expect(dropdown_label_size).to eq(1)
     end
 
-    # TODO: Remove this temporary disable before merging visual tokens MR
     it 'filters by special characters with or without symbol' do
-      pending('Fix this after clear button is fixed')
       filtered_search.send_keys('^+')
 
       expect(filter_dropdown.find('.filter-dropdown-item', text: special_label.title)).to be_visible
@@ -287,7 +277,6 @@ describe 'Dropdown label', js: true, feature: true do
 
   describe 'caching requests' do
     it 'caches requests after the first load' do
-      pending('Fix this after clear button is fixed')
       create(:label, project: project, title: 'bug-label')
       init_label_search
 

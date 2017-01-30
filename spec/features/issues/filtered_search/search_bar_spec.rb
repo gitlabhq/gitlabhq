@@ -88,7 +88,6 @@ describe 'Search bar', js: true, feature: true do
     end
 
     it 'resets the dropdown filters' do
-      pending('Fix this after clear button is fixed')
       filtered_search.set('a')
       hint_style = page.find('#js-dropdown-hint')['style']
       hint_offset = get_left_style(hint_style)

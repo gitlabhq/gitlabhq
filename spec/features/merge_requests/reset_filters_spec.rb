@@ -23,7 +23,6 @@ feature 'Merge requests filter clear button', feature: true, js: true do
 
   context 'when a milestone filter has been applied' do
     it 'resets the milestone filter' do
-      pending('Fix this after clear button is fixed')
       visit_merge_requests(project, milestone_title: milestone.title)
       expect(page).to have_css(merge_request_css, count: 1)
 
@@ -34,7 +33,6 @@ feature 'Merge requests filter clear button', feature: true, js: true do
 
   context 'when a label filter has been applied' do
     it 'resets the label filter' do
-      pending('Fix this after clear button is fixed')
       visit_merge_requests(project, label_name: bug.name)
       expect(page).to have_css(merge_request_css, count: 1)
 
@@ -55,7 +53,6 @@ feature 'Merge requests filter clear button', feature: true, js: true do
 
   context 'when author filter has been applied' do
     it 'resets the author filter' do
-      pending('Fix this after clear button is fixed')
       visit_merge_requests(project, author_username: user.username)
       expect(page).to have_css(merge_request_css, count: 1)
 
@@ -66,7 +63,6 @@ feature 'Merge requests filter clear button', feature: true, js: true do
 
   context 'when assignee filter has been applied' do
     it 'resets the assignee filter' do
-      pending('Fix this after clear button is fixed')
       visit_merge_requests(project, assignee_username: user.username)
       expect(page).to have_css(merge_request_css, count: 1)
 
@@ -77,7 +73,6 @@ feature 'Merge requests filter clear button', feature: true, js: true do
 
   context 'when all filters have been applied' do
     it 'clears all filters' do
-      pending('Fix this after clear button is fixed')
       visit_merge_requests(project, assignee_username: user.username, author_username: user.username, milestone_title: milestone.title, label_name: bug.name, search: 'Bug')
       expect(page).to have_css(merge_request_css, count: 0)
 

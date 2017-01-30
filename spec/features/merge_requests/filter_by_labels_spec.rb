@@ -86,7 +86,6 @@ feature 'Issue filtering by Labels', feature: true, js: true do
     end
 
     it 'allows user to remove filtered labels' do
-      pending('Fix this after clear button is fixed')
       first('.clear-search').click
       filtered_search.send_keys(:enter)
 

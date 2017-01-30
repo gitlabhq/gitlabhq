@@ -89,11 +89,15 @@
       }
     }
 
-    toggleClearSearchButton(e) {
-      if (e.target.value) {
-        this.clearSearchButton.classList.remove('hidden');
-      } else {
-        this.clearSearchButton.classList.add('hidden');
+    toggleClearSearchButton() {
+      const query = gl.DropdownUtils.getSearchQuery();
+      const hidden = 'hidden';
+      const hasHidden = this.clearSearchButton.classList.contains(hidden);
+
+      if (query.length === 0 && !hasHidden) {
+        this.clearSearchButton.classList.add(hidden);
+      } else if (query.length && hasHidden) {
+        this.clearSearchButton.classList.remove(hidden);
       }
     }
 
@@ -101,6 +105,7 @@
       e.preventDefault();
 
       this.filteredSearchInput.value = '';
+      this.filteredSearchInput.parentElement.querySelector('.tokens-container').innerHTML = '';
       this.clearSearchButton.classList.add('hidden');
 
       this.dropdownManager.resetDropdowns();
@@ -156,7 +161,7 @@
     loadSearchParamsFromURL() {
       const params = gl.utils.getUrlParamsArray();
       const usernameParams = this.getUsernameParams();
-      const inputValues = [];
+      let hasFilteredSearch = false;
 
       params.forEach((p) => {
         const split = p.split('=');
@@ -167,6 +172,7 @@
         const condition = this.filteredSearchTokenKeys.searchByConditionUrl(p);
 
         if (condition) {
+          hasFilteredSearch = true;
           gl.FilteredSearchVisualTokens.addFilterVisualToken(condition.tokenKey, condition.value);
         } else {
           // Sanitize value since URL converts spaces into +
@@ -185,27 +191,28 @@
               quotationsToUse = sanitizedValue.indexOf('"') === -1 ? '"' : '\'';
             }
 
+            hasFilteredSearch = true;
             gl.FilteredSearchVisualTokens.addFilterVisualToken(sanitizedKey, `${symbol}${quotationsToUse}${sanitizedValue}${quotationsToUse}`);
           } else if (!match && keyParam === 'assignee_id') {
             const id = parseInt(value, 10);
             if (usernameParams[id]) {
+              hasFilteredSearch = true;
               gl.FilteredSearchVisualTokens.addFilterVisualToken('assignee', `@${usernameParams[id]}`);
             }
           } else if (!match && keyParam === 'author_id') {
             const id = parseInt(value, 10);
             if (usernameParams[id]) {
+              hasFilteredSearch = true;
               gl.FilteredSearchVisualTokens.addFilterVisualToken('author', `@${usernameParams[id]}`);
             }
           } else if (!match && keyParam === 'search') {
-            inputValues.push(sanitizedValue);
+            hasFilteredSearch = true;
+            this.filteredSearchInput.value = sanitizedValue;
           }
         }
       });
 
-      // Trim the last space value
-      this.filteredSearchInput.value = inputValues.join(' ');
-
-      if (inputValues.length > 0) {
+      if (hasFilteredSearch) {
         this.clearSearchButton.classList.remove('hidden');
       }
     }

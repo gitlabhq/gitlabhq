@@ -163,7 +163,6 @@ describe 'Dropdown author', js: true, feature: true do
 
   describe 'caching requests' do
     it 'caches requests after the first load' do
-      pending('Fix this after clear button is fixed')
       filtered_search.set('author')
       send_keys_to_filtered_search(':')
       initial_size = dropdown_author_size
