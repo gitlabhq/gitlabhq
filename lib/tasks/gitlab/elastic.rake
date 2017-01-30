@@ -9,50 +9,26 @@ namespace :gitlab do
       Rake::Task["gitlab:elastic:index_database"].invoke
     end
 
+    desc "GitLab | Elasticsearch | Index project repositories in the background"
+    task index_repositories_async: :environment do
+      print "Enqueuing project repositories in batches of #{batch_size}"
+
+      project_id_batches do |start, finish|
+        ElasticBatchProjectIndexerWorker.perform_async(start, finish, ENV['UPDATE_INDEX'])
+        print "."
+      end
+
+      puts "OK"
+    end
+
     desc "GitLab | Elasticsearch | Index project repositories"
     task index_repositories: :environment  do
-      projects = if ENV['UPDATE_INDEX']
-                   Project
-                 else
-                   Project.includes(:index_status).
-                           where("index_statuses.id IS NULL").
-                           references(:index_statuses)
-                 end
+      print "Indexing project repositories..."
 
-      projects = apply_project_filters(projects)
-
-      indexer = Gitlab::Elastic::Indexer.new
-
-      projects.find_each(batch_size: 300) do |project|
-        repository = project.repository
-
-        if repository.exists? && !repository.empty?
-          puts "Indexing #{project.name_with_namespace} (ID=#{project.id})..."
-
-          index_status = IndexStatus.find_or_create_by(project: project)
-
-          begin
-            head_commit = repository.commit
-
-            if !head_commit || index_status.last_commit == head_commit.sha
-              puts "Skipped".color(:yellow)
-              next
-            end
-
-            indexer.run(
-              project.id,
-              repository.path_to_repo,
-              index_status.last_commit
-            )
-
-            # During indexing the new commits can be pushed,
-            # the last_commit parameter only indicates that at least this commit is in index
-            index_status.update(last_commit: head_commit.sha, indexed_at: DateTime.now)
-            puts "Done!".color(:green)
-          rescue StandardError => e
-            puts "#{e.message}, trace - #{e.backtrace}"
-          end
-        end
+      Sidekiq::Logging.logger = Logger.new(STDOUT)
+      project_id_batches do |start, finish|
+        puts [start, finish].inspect
+        ElasticBatchProjectIndexerWorker.new.perform(start, finish, ENV['UPDATE_INDEX'])
       end
     end
 
@@ -114,6 +90,23 @@ namespace :gitlab do
     task recreate_index: :environment do
       Gitlab::Elastic::Helper.create_empty_index
       puts "Index recreated".color(:green)
+    end
+
+    def batch_size
+      ENV.fetch('BATCH', 300).to_i
+    end
+
+    def project_id_batches(&blk)
+      relation = Project
+
+      if ENV['UPDATE_INDEX']
+        relation = relation.includes(:index_status).where('index_statuses.id IS NULL').references(:index_statuses)
+      end
+
+      relation.all.in_batches(of: batch_size, start: ENV['ID_FROM'], finish: ENV['ID_TO']) do |relation|
+        ids = relation.reorder(:id).pluck(:id)
+        yield ids[0], ids[-1]
+      end
     end
 
     def apply_project_filters(projects)
