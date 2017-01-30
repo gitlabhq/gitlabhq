@@ -3,7 +3,7 @@
 
 (function() {
   this.CommitsList = (function() {
-    function CommitsList() {}
+    var CommitsList = {};
 
     CommitsList.timer = null;
 
@@ -20,6 +20,7 @@
       });
       this.content = $("#commits-list");
       this.searchField = $("#commits-search");
+      this.lastSearch = this.searchField.val();
       return this.initSearch();
     };
 
@@ -37,6 +38,7 @@
       var commitsUrl, form, search;
       form = $(".commits-search-form");
       search = CommitsList.searchField.val();
+      if (search === CommitsList.lastSearch) return;
       commitsUrl = form.attr("action") + '?' + form.serialize();
       CommitsList.content.fadeTo('fast', 0.5);
       return $.ajax({
@@ -47,11 +49,15 @@
           return CommitsList.content.fadeTo('fast', 1.0);
         },
         success: function(data) {
+          CommitsList.lastSearch = search;
           CommitsList.content.html(data.html);
           return history.replaceState({
             page: commitsUrl
           // Change url so if user reload a page - search results are saved
           }, document.title, commitsUrl);
+        },
+        error: function() {
+          CommitsList.lastSearch = null;
         },
         dataType: "json"
       });
