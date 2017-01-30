@@ -71,13 +71,7 @@ class Projects::LabelsController < Projects::ApplicationController
     @label.destroy
     @labels = find_labels
 
-    respond_to do |format|
-      format.html do
-        redirect_to(namespace_project_labels_path(@project.namespace, @project),
-                    notice: 'Label was removed')
-      end
-      format.js
-    end
+    redirect_to(namespace_project_labels_path(@project.namespace, @project), notice: 'Label was removed')
   end
 
   def remove_priority
