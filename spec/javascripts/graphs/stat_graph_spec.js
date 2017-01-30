@@ -1,7 +1,7 @@
 /* eslint-disable quotes */
 /* global StatGraph */
 
-//= require graphs/stat_graph
+require('~/graphs/stat_graph');
 
 describe("StatGraph", function () {
   describe("#get_log", function () {

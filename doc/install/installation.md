@@ -451,7 +451,7 @@ Check if GitLab and its environment are configured correctly:
 
 ### Compile Assets
 
-    sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production
+    sudo -u git -H bundle exec rake gitlab:assets:compile RAILS_ENV=production
 
 ### Start Your GitLab Instance
 

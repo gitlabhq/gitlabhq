@@ -1,6 +1,8 @@
 /* global Vue, gl */
 /* eslint-disable no-param-reassign, no-plusplus */
 
+window.Vue = require('vue');
+
 ((gl) => {
   const PAGINATION_UI_BUTTON_LIMIT = 4;
   const UI_LIMIT = 6;

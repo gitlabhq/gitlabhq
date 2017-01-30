@@ -1,3 +1,6 @@
-//= require ./approvals_store
-//= require ./approvals_api
-//= require_directory ./components
+function requireAll(context) { return context.keys().map(context); }
+
+require('./approvals_store');
+require('./approvals_api');
+
+requireAll(require.context('./components', true, /^\.\/.*\.(js|es6)$/));

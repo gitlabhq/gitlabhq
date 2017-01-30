@@ -1,8 +1,6 @@
-/* global Vue eslint-disable fixture */
-//= require vue
-//= require underscore
-//= require jquery
-//= require merge_request_widget/approvals/components/approvals_footer
+/* global Vue */
+
+require('~/merge_request_widget/approvals/components/approvals_footer');
 
 (() => {
   gl.ApprovalsStore = {
@@ -15,7 +13,7 @@
   };
 
   function initApprovalsFooterComponent() {
-    fixture.set(`
+    setFixtures(`
       <div>
         <div id="mock-container"></div>
       </div>
@@ -69,4 +67,3 @@
     });
   });
 })(window.gl || (window.gl = {}));
-

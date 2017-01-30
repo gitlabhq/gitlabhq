@@ -1,6 +1,7 @@
 /* global Vue */
-//= require ./widget_store
-//= require ./approvals/approvals_bundle
+
+require('./widget_store');
+require('./approvals/approvals_bundle');
 
 (() => {
   $(() => {

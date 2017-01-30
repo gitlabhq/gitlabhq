@@ -7,7 +7,6 @@ gem 'rails-deprecated_sanitizer', '~> 1.0.3'
 gem 'responders', '~> 2.0'
 
 gem 'sprockets', '~> 3.7.0'
-gem 'sprockets-es6', '~> 0.9.2'
 
 # Default values for AR models
 gem 'default_value_for', '~> 3.0.0'
@@ -229,6 +228,7 @@ gem 'oj', '~> 2.17.4'
 gem 'chronic', '~> 0.10.2'
 gem 'chronic_duration', '~> 0.10.6'
 
+gem 'webpack-rails', '~> 0.9.9'
 gem 'sass-rails', '~> 5.0.6'
 gem 'coffee-rails', '~> 4.1.0'
 gem 'uglifier', '~> 2.7.2'
@@ -291,6 +291,7 @@ group :development, :test do
   gem 'rspec-retry',        '~> 0.4.5'
   gem 'spinach-rails',      '~> 0.2.1'
   gem 'spinach-rerun-reporter', '~> 0.0.2'
+  gem 'rspec_profiling'
 
   # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
   gem 'minitest', '~> 5.7.0'
@@ -302,13 +303,9 @@ group :development, :test do
   gem 'capybara-screenshot', '~> 1.0.0'
   gem 'poltergeist',         '~> 1.9.0'
 
-  gem 'teaspoon', '~> 1.1.0'
-  gem 'teaspoon-jasmine', '~> 2.2.0'
-
   gem 'spring',                   '~> 1.7.0'
   gem 'spring-commands-rspec',    '~> 1.0.4'
   gem 'spring-commands-spinach',  '~> 1.1.0'
-  gem 'spring-commands-teaspoon', '~> 0.0.2'
 
   gem 'rubocop', '~> 0.46.0', require: false
   gem 'rubocop-rspec', '~> 1.9.1', require: false

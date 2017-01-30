@@ -1,5 +1,7 @@
-/* global Vue, Flash */
-//= require ./approvals_store
+/* global Vue */
+/* global Flash */
+
+require('./approvals_store');
 
 (() => {
   class ApprovalsApi {

@@ -196,7 +196,8 @@
       });
 
       if (searchToken) {
-        paths.push(`search=${encodeURIComponent(searchToken)}`);
+        const sanitized = searchToken.split(' ').map(t => encodeURIComponent(t)).join('+');
+        paths.push(`search=${sanitized}`);
       }
 
       Turbolinks.visit(`?scope=all&utf8=✓&${paths.join('&')}`);

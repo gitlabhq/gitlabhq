@@ -109,11 +109,13 @@ setup-test-env:
   <<: *dedicated-runner
   stage: prepare
   script:
-    - bundle exec rake assets:precompile 2>/dev/null
+    - npm install
+    - bundle exec rake gitlab:assets:compile
     - bundle exec ruby -Ispec -e 'require "spec_helper" ; TestEnv.init'
   artifacts:
     expire_in: 7d
     paths:
+      - node_modules
       - public/assets
       - tmp/tests
 
@@ -234,7 +236,7 @@ spinach 9 10 ruby21: *spinach-knapsack-ruby21
   script:
     - bundle exec $CI_BUILD_NAME
 
-rubocop: 
+rubocop:
   <<: *ruby-static-analysis
   <<: *dedicated-runner
   stage: test
@@ -273,18 +275,17 @@ rake db:seed_fu:
     paths:
       - log/development.log
 
-teaspoon:
+karma:
   cache:
     paths:
       - vendor/ruby
-      - node_modules/
+      - node_modules
   stage: test
   <<: *use-db
   <<: *dedicated-runner
   script:
-    - npm install
     - npm link istanbul
-    - rake teaspoon
+    - rake karma
   artifacts:
     name: coverage-javascript
     expire_in: 31d
@@ -426,7 +427,7 @@ pages:
   <<: *dedicated-runner
   dependencies:
     - coverage
-    - teaspoon
+    - karma
     - lint:javascript:report
   script:
     - mv public/ .public/

@@ -1,8 +1,7 @@
 /* global Issuable */
 /* global Turbolinks */
 
-//= require issuable
-//= require turbolinks
+require('~/issuable');
 
 (() => {
   const BASE_URL = '/user/project/issues?scope=all&state=closed';

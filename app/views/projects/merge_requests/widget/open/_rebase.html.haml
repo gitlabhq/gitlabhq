@@ -1,5 +1,5 @@
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_tag('merge_request_widget/ci_bundle.js')
+  = page_specific_javascript_bundle_tag('merge_request_widget')
 
 - if @merge_request.rebase_in_progress? || (defined?(rebase_in_progress) && rebase_in_progress)
   %h4.rebase-in-progress

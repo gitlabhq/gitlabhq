@@ -5,19 +5,14 @@
 /* global List */
 /* global listObj */
 
-//= require jquery
-//= require jquery_ujs
-//= require js.cookie
-//= require vue
-//= require vue-resource
-//= require lib/utils/url_utility
-//= require boards/models/issue
-//= require boards/models/label
-//= require boards/models/list
-//= require boards/models/user
-//= require boards/services/board_service
-//= require boards/stores/boards_store
-//= require ./mock_data
+require('~/lib/utils/url_utility');
+require('~/boards/models/issue');
+require('~/boards/models/label');
+require('~/boards/models/list');
+require('~/boards/models/user');
+require('~/boards/services/board_service');
+require('~/boards/stores/boards_store');
+require('./mock_data');
 
 describe('List model', () => {
   let list;

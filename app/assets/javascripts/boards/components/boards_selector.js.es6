@@ -1,5 +1,6 @@
-/* eslint-disable */
-//= require ./board_new_form
+/* global Vue */
+
+require('./board_new_form');
 
 (() => {
   window.gl = window.gl || {};

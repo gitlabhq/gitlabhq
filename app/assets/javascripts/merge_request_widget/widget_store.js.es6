@@ -1,4 +1,4 @@
-//= require ./approvals/approvals_store
+require('./approvals/approvals_store');
 
 (() => {
   let singleton;

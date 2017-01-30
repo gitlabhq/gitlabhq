@@ -1,4 +1,5 @@
-/* eslint-disable */
+/* global Vue */
+
 (() => {
   window.gl = window.gl || {};
   window.gl.issueBoards = window.gl.issueBoards || {};

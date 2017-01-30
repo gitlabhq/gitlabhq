@@ -1,6 +1,7 @@
-/* global modal Vue */
-//= require vue
-//= require ./components/geo_clone_dialog
+/* global Vue */
+
+window.Vue = require('vue');
+require('./components/geo_clone_dialog');
 
 $(document).ready(() => {
   window.gl = window.gl || {};

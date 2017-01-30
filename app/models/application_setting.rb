@@ -171,7 +171,7 @@ class ApplicationSetting < ActiveRecord::Base
     Rails.cache.delete(CACHE_KEY)
   rescue
     # Gracefully handle when Redis is not available. For example,
-    # omnibus may fail here during assets:precompile.
+    # omnibus may fail here during gitlab:assets:compile.
   end
 
   def self.cached

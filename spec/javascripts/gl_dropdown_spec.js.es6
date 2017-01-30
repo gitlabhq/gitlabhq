@@ -1,11 +1,9 @@
 /* eslint-disable comma-dangle, no-param-reassign, no-unused-expressions, max-len */
 /* global Turbolinks */
 
-/*= require jquery */
-/*= require gl_dropdown */
-/*= require turbolinks */
-/*= require lib/utils/common_utils */
-/*= require lib/utils/type_utility */
+require('~/gl_dropdown');
+require('~/lib/utils/common_utils');
+require('~/lib/utils/type_utility');
 
 (() => {
   const NON_SELECTABLE_CLASSES = '.divider, .separator, .dropdown-header, .dropdown-menu-empty-link';
@@ -44,6 +42,7 @@
 
   describe('Dropdown', function describeDropdown() {
     preloadFixtures('static/gl_dropdown.html.raw');
+    loadJSONFixtures('projects.json');
 
     function initDropDown(hasRemote, isFilterable) {
       this.dropdownButtonElement = $('#js-project-dropdown', this.dropdownContainerElement).glDropdown({

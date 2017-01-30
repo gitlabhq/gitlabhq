@@ -1,6 +1,7 @@
 /* global Vue */
-//= require ../approvals_store
-//= require ../approvals_api
+
+require('../approvals_store');
+require('../approvals_api');
 
 (() => {
   Vue.component('approvals-body', {

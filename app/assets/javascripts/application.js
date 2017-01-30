@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, quotes, consistent-return, prefer-arrow-callback, comma-dangle, object-shorthand, no-new, max-len */
+/* eslint-disable func-names, space-before-function-paren, no-var, quotes, consistent-return, prefer-arrow-callback, comma-dangle, object-shorthand, no-new, max-len, no-multi-spaces, import/newline-after-import */
 /* global bp */
 /* global Cookies */
 /* global Flash */
@@ -6,64 +6,61 @@
 /* global AwardsHandler */
 /* global Aside */
 
-// This is a manifest file that'll be compiled into including all the files listed below.
-// Add new JavaScript code in separate files in this directory and they'll automatically
-// be included in the compiled file accessible from http://example.com/assets/application.js
-// It's not advisable to add code directly here, but if you do, it'll appear at the bottom of the
-// the compiled file.
-//
-/*= require jquery2 */
-/*= require jquery-ui/autocomplete */
-/*= require jquery-ui/datepicker */
-/*= require jquery-ui/draggable */
-/*= require jquery-ui/effect-highlight */
-/*= require jquery-ui/sortable */
-/*= require jquery_ujs */
-/*= require jquery.endless-scroll */
-/*= require jquery.highlight */
-/*= require jquery.waitforimages */
-/*= require jquery.atwho */
-/*= require jquery.scrollTo */
-/*= require jquery.turbolinks */
-/*= require jquery.tablesorter */
-/*= require js.cookie */
-/*= require turbolinks */
-/*= require autosave */
-/*= require bootstrap/affix */
-/*= require bootstrap/alert */
-/*= require bootstrap/button */
-/*= require bootstrap/collapse */
-/*= require bootstrap/dropdown */
-/*= require bootstrap/modal */
-/*= require bootstrap/scrollspy */
-/*= require bootstrap/tab */
-/*= require bootstrap/transition */
-/*= require bootstrap/tooltip */
-/*= require bootstrap/popover */
-/*= require select2 */
-/*= require underscore */
-/*= require dropzone */
-/*= require mousetrap */
-/*= require mousetrap/pause */
-/*= require shortcuts */
-/*= require shortcuts_navigation */
-/*= require shortcuts_dashboard_navigation */
-/*= require shortcuts_issuable */
-/*= require shortcuts_network */
-/*= require jquery.nicescroll */
-/*= require date.format */
-/*= require geo/geo_bundle */
-/*= require_directory ./behaviors */
-/*= require_directory ./blob */
-/*= require_directory ./templates */
-/*= require_directory ./commit */
-/*= require_directory ./extensions */
-/*= require_directory ./lib/utils */
-/*= require_directory ./u2f */
-/*= require_directory ./droplab */
-/*= require_directory . */
-/*= require fuzzaldrin-plus */
-/*= require es6-promise.auto */
+function requireAll(context) { return context.keys().map(context); }
+
+window.$ = window.jQuery = require('jquery');
+require('jquery-ui/ui/autocomplete');
+require('jquery-ui/ui/datepicker');
+require('jquery-ui/ui/draggable');
+require('jquery-ui/ui/effect-highlight');
+require('jquery-ui/ui/sortable');
+require('jquery-ujs');
+require('vendor/jquery.endless-scroll');
+require('vendor/jquery.highlight');
+require('vendor/jquery.waitforimages');
+require('vendor/jquery.caret');
+require('vendor/jquery.atwho');
+require('vendor/jquery.scrollTo');
+require('vendor/jquery.turbolinks');
+require('vendor/jquery.tablesorter');
+window.Cookies = require('vendor/js.cookie');
+require('vendor/turbolinks');
+require('./autosave');
+require('bootstrap/js/affix');
+require('bootstrap/js/alert');
+require('bootstrap/js/button');
+require('bootstrap/js/collapse');
+require('bootstrap/js/dropdown');
+require('bootstrap/js/modal');
+require('bootstrap/js/scrollspy');
+require('bootstrap/js/tab');
+require('bootstrap/js/transition');
+require('bootstrap/js/tooltip');
+require('bootstrap/js/popover');
+require('select2/select2.js');
+window._ = require('underscore');
+window.Dropzone = require('dropzone');
+require('mousetrap');
+require('mousetrap/plugins/pause/mousetrap-pause');
+require('./shortcuts');
+require('./shortcuts_navigation');
+require('./shortcuts_dashboard_navigation');
+require('./shortcuts_issuable');
+require('./shortcuts_network');
+require('vendor/jquery.nicescroll');
+require('./geo/geo_bundle');
+requireAll(require.context('./behaviors',  false, /^\.\/.*\.(js|es6)$/));
+requireAll(require.context('./blob',       false, /^\.\/.*\.(js|es6)$/));
+requireAll(require.context('./templates',  false, /^\.\/.*\.(js|es6)$/));
+requireAll(require.context('./commit',     false, /^\.\/.*\.(js|es6)$/));
+requireAll(require.context('./extensions', false, /^\.\/.*\.(js|es6)$/));
+requireAll(require.context('./lib/utils',  false, /^\.\/.*\.(js|es6)$/));
+requireAll(require.context('./u2f',        false, /^\.\/.*\.(js|es6)$/));
+requireAll(require.context('./droplab',    false, /^\.\/.*\.(js|es6)$/));
+requireAll(require.context('.',            false, /^\.\/(?!application).*\.(js|es6)$/));
+require('vendor/fuzzaldrin-plus');
+window.ES6Promise = require('vendor/es6-promise.auto');
+window.ES6Promise.polyfill();
 
 (function () {
   document.addEventListener('page:fetch', function () {
@@ -86,7 +83,6 @@
     var $sidebarGutterToggle = $('.js-sidebar-toggle');
     var $flash = $('.flash-container');
     var bootstrapBreakpoint = bp.getBreakpointSize();
-    var checkInitialSidebarSize;
     var fitSidebarForSize;
 
     // Set the default path for all cookies to GitLab's root directory
@@ -251,19 +247,11 @@
         return $document.trigger('breakpoint:change', [bootstrapBreakpoint]);
       }
     };
-    checkInitialSidebarSize = function () {
-      bootstrapBreakpoint = bp.getBreakpointSize();
-      if (bootstrapBreakpoint === 'xs' || 'sm') {
-        return $document.trigger('breakpoint:change', [bootstrapBreakpoint]);
-      }
-    };
     $window.off('resize.app').on('resize.app', function () {
       return fitSidebarForSize();
     });
     gl.awardsHandler = new AwardsHandler();
-    checkInitialSidebarSize();
     new Aside();
-
     // bind sidebar events
     new gl.Sidebar();
   });

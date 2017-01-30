@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this, object-shorthand, no-unused-vars, no-use-before-define, no-new, max-len, no-restricted-syntax, guard-for-in, no-continue */
 /* jshint esversion: 6 */
 
-/*= require lib/utils/common_utils */
+require('./lib/utils/common_utils');
 
 (() => {
   const gfmRules = {
