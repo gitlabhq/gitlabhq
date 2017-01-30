@@ -61,18 +61,6 @@ describe('Store', () => {
       expect(list).toBeDefined();
     });
 
-    it('finds list limited by type', () => {
-      gl.issueBoards.BoardsStore.addList({
-        id: 1,
-        position: 0,
-        title: 'Test',
-        list_type: 'backlog'
-      });
-      const list = gl.issueBoards.BoardsStore.findList('id', 1, 'backlog');
-
-      expect(list).toBeDefined();
-    });
-
     it('gets issue when new list added', (done) => {
       gl.issueBoards.BoardsStore.addList(listObj);
       const list = gl.issueBoards.BoardsStore.findList('id', 1);
@@ -117,10 +105,7 @@ describe('Store', () => {
       expect(gl.issueBoards.BoardsStore.shouldAddBlankState()).toBe(false);
     });
 
-    it('check for blank state adding when backlog & done list exist', () => {
-      gl.issueBoards.BoardsStore.addList({
-        list_type: 'backlog'
-      });
+    it('check for blank state adding when done list exist', () => {
       gl.issueBoards.BoardsStore.addList({
         list_type: 'done'
       });

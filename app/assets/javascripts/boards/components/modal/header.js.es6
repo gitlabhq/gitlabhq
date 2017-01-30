@@ -21,7 +21,7 @@
         this.$refs.selectAllBtn.blur();
 
         ModalStore.toggleAll();
-      }
+      },
     },
     components: {
       'modal-tabs': gl.issueBoards.ModalTabs,

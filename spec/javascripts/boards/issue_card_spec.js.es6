@@ -93,7 +93,7 @@ describe('Issue card component', () => {
 
     setTimeout(() => {
       expect(
-        component.$el.querySelector('.fa-eye-flash'),
+        component.$el.querySelector('.confidential-icon'),
       ).not.toBeNull();
       done();
     }, 0);
