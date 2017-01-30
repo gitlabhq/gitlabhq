@@ -50,6 +50,7 @@
             Store.detail.issue = {};
           } else {
             Store.detail.issue = this.issue;
+            Store.detail.list = this.list;
           }
         }
       }

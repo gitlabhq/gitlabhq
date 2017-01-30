@@ -70,6 +70,38 @@ describe 'Issue Boards', feature: true, js: true do
     end
   end
 
+  it 'removes card from board when clicking remove button' do
+    page.within(first('.board')) do
+      first('.card').click
+    end
+
+    page.within('.issue-boards-sidebar') do
+      click_button 'Remove from board'
+    end
+
+    page.within(first('.board')) do
+      expect(page).to have_selector('.card', count: 1)
+    end
+  end
+
+  it 'does not show remove issue button when issue is closed' do
+    page.within(first('.board')) do
+      first('.card').click
+    end
+
+    page.within('.issue-boards-sidebar') do
+      click_button 'Remove from board'
+    end
+
+    page.within(find('.board:nth-child(2)')) do
+      first('.card').click
+    end
+
+    page.within('.issue-boards-sidebar') do
+      expect(page).not_to have_button 'Remove from board'
+    end
+  end
+
   context 'assignee' do
     it 'updates the issues assignee' do
       page.within(first('.board')) do
