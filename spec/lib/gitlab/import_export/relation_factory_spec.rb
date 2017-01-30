@@ -185,7 +185,7 @@ describe Gitlab::ImportExport::RelationFactory, lib: true do
       create(:ci_variable).as_json
     end
 
-    it 'maps the right author to the imported note' do
+    it 'has no value for the encrypted attribute' do
       expect(created_object.value).to be_nil
     end
   end
