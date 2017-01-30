@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Projects::MergeRequestsController do
+  include ApiHelpers
+
   let(:project) { create(:project) }
   let(:user)    { create(:user) }
   let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
@@ -455,7 +457,7 @@ describe Projects::MergeRequestsController do
 
         it 'renders the diffs template to a string' do
           expect(response).to render_template('projects/merge_requests/show/_diffs')
-          expect(JSON.parse(response.body)).to have_key('html')
+          expect(json_response).to have_key('html')
         end
       end
 
@@ -494,7 +496,7 @@ describe Projects::MergeRequestsController do
 
         it 'renders the diffs template to a string' do
           expect(response).to render_template('projects/merge_requests/show/_diffs')
-          expect(JSON.parse(response.body)).to have_key('html')
+          expect(json_response).to have_key('html')
         end
       end
     end
@@ -662,7 +664,7 @@ describe Projects::MergeRequestsController do
         go format: 'json'
 
         expect(response).to render_template('projects/merge_requests/show/_commits')
-        expect(JSON.parse(response.body)).to have_key('html')
+        expect(json_response).to have_key('html')
       end
     end
   end
@@ -687,8 +689,6 @@ describe Projects::MergeRequestsController do
             format: :json
       end
 
-      let(:json_response) { JSON.parse(response.body) }
-
       it 'responds with a rendered HTML partial' do
         expect(response)
           .to render_template('projects/merge_requests/show/_pipelines')
@@ -703,8 +703,6 @@ describe Projects::MergeRequestsController do
   end
 
   describe 'GET conflicts' do
-    let(:json_response) { JSON.parse(response.body) }
-
     context 'when the conflicts cannot be resolved in the UI' do
       before do
         allow_any_instance_of(Gitlab::Conflict::Parser).
@@ -801,8 +799,6 @@ describe Projects::MergeRequestsController do
   end
 
   describe 'GET conflict_for_path' do
-    let(:json_response) { JSON.parse(response.body) }
-
     def conflict_for_path(path)
       get :conflict_for_path,
           namespace_id: merge_request_with_conflicts.project.namespace.to_param,
@@ -857,7 +853,6 @@ describe Projects::MergeRequestsController do
   end
 
   context 'POST resolve_conflicts' do
-    let(:json_response) { JSON.parse(response.body) }
     let!(:original_head_sha) { merge_request_with_conflicts.diff_head_sha }
 
     def resolve_conflicts(files)
@@ -1055,7 +1050,6 @@ describe Projects::MergeRequestsController do
       let!(:forked)       { create(:project) }
       let!(:environment)  { create(:environment, project: forked) }
       let!(:deployment)   { create(:deployment, environment: environment, sha: forked.commit.id, ref: 'master') }
-      let(:json_response) { JSON.parse(response.body) }
       let(:admin)         { create(:admin) }
 
       let(:merge_request) do
