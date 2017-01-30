@@ -154,7 +154,7 @@ module Gitlab
       end
 
       def remove_encrypted_attributes!
-        return if relation_class.encrypted_attributes.empty?
+        return unless relation_class.respond_to?(:encrypted_attributes) && relation_class.encrypted_attributes.any?
 
         relation_class.encrypted_attributes.each_key do |key|
           @relation_hash[key.to_s] = nil
