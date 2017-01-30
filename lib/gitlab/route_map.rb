@@ -2,6 +2,8 @@ module Gitlab
   class RouteMap
     class FormatError < StandardError; end
 
+    attr_reader :map
+
     def initialize(data)
       begin
         entries = YAML.safe_load(data)

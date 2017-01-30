@@ -1766,6 +1766,53 @@ describe Project, models: true do
           .to contain_exactly(environment)
       end
     end
+
+    context 'commit deployment' do
+      before do
+        create(:deployment, environment: environment, ref: 'master', sha: project.commit.id)
+      end
+
+      it 'returns environment' do
+        expect(project.environments_for(nil, commit: project.commit))
+          .to contain_exactly(environment)
+      end
+    end
+  end
+
+  describe '#latest_environment_for' do
+    let(:project) { create(:project) }
+    let!(:environment1) { create(:environment, project: project) }
+    let!(:environment2) { create(:environment, project: project) }
+    let!(:environment3) { create(:environment, project: project) }
+    let!(:deployment1) { create(:deployment, environment: environment1, ref: 'master', sha: commit.id) }
+    let!(:deployment2) { create(:deployment, environment: environment2, ref: 'feature', sha: commit.id) }
+    let(:commit) { project.commit }
+
+    before do
+      allow(environment1).to receive(:first_deployment_for).with(commit).and_return(deployment1)
+      allow(environment2).to receive(:first_deployment_for).with(commit).and_return(deployment2)
+      allow(environment3).to receive(:first_deployment_for).with(commit).and_return(nil)
+    end
+
+    context 'when specifying a ref' do
+      before do
+        allow(project).to receive(:environments_for).with('master', commit: commit).and_return([environment1])
+      end
+
+      it 'returns the environment that the commit was last deployed to from that ref' do
+        expect(project.latest_environment_for(commit, ref: 'master')).to eq(environment1)
+      end
+    end
+
+    context 'when not specifying a ref' do
+      before do
+        allow(project).to receive(:environments_for).with(nil, commit: commit).and_return([environment1, environment2])
+      end
+
+      it 'returns the environment that the commit was last deployed to' do
+        expect(project.latest_environment_for(commit)).to eq(environment2)
+      end
+    end
   end
 
   describe '#environments_recently_updated_on_branch' do
@@ -1856,6 +1903,82 @@ describe Project, models: true do
     let!(:path) { project1.namespace.path }
 
     it { expect(Project.inside_path(path)).to eq([project1]) }
+  end
+
+  describe '#route_map_for' do
+    let(:project) { create(:project) }
+    let(:route_map) do
+      <<-MAP.strip_heredoc
+      - source: /source/(.*)/
+        public: '\\1'
+      MAP
+    end
+
+    before do
+      project.repository.commit_file(User.last, '.gitlab/route-map.yml', route_map, 'Add .gitlab/route-map.yml', 'master', false)
+    end
+
+    context 'when there is a .gitlab/route-map.yml at the commit' do
+      context 'when the route map is valid' do
+        it 'returns a route map' do
+          map = project.route_map_for(project.commit.sha)
+          expect(map).to be_a_kind_of(Gitlab::RouteMap)
+        end
+      end
+
+      context 'when the route map is invalid' do
+        let(:route_map) { 'INVALID' }
+
+        it 'returns nil' do
+          expect(project.route_map_for(project.commit.sha)).to be_nil
+        end
+      end
+    end
+
+    context 'when there is no .gitlab/route-map.yml at the commit' do
+      it 'returns nil' do
+        expect(project.route_map_for(project.commit.parent.sha)).to be_nil
+      end
+    end
+  end
+
+  describe '#public_path_for_source_path' do
+    let(:project) { create(:project) }
+    let(:route_map) do
+      Gitlab::RouteMap.new(<<-MAP.strip_heredoc)
+        - source: /source/(.*)/
+          public: '\\1'
+      MAP
+    end
+    let(:sha) { project.commit.id }
+
+    context 'when there is a route map' do
+      before do
+        allow(project).to receive(:route_map_for).with(sha).and_return(route_map)
+      end
+
+      context 'when the source path is mapped' do
+        it 'returns the public path' do
+          expect(project.public_path_for_source_path('source/file.html', sha)).to eq('file.html')
+        end
+      end
+
+      context 'when the source path is not mapped' do
+        it 'returns nil' do
+          expect(project.public_path_for_source_path('file.html', sha)).to be_nil
+        end
+      end
+    end
+
+    context 'when there is no route map' do
+      before do
+        allow(project).to receive(:route_map_for).with(sha).and_return(nil)
+      end
+
+      it 'returns nil' do
+        expect(project.public_path_for_source_path('source/file.html', sha)).to be_nil
+      end
+    end
   end
 
   def enable_lfs

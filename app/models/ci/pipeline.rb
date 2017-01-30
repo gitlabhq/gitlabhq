@@ -283,7 +283,7 @@ module Ci
     def ci_yaml_file
       return @ci_yaml_file if defined?(@ci_yaml_file)
 
-      @ci_yaml_file ||= project.repository.ci_yaml_file(sha)
+      @ci_yaml_file ||= project.repository.gitlab_ci_yml_for(sha)
     end
 
     def has_yaml_errors?
