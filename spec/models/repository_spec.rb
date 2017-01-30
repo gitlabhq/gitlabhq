@@ -1926,6 +1926,42 @@ describe Repository, models: true do
     end
   end
 
+  describe '#gitlab_ci_yml_for' do
+    before do
+      repository.commit_file(User.last, '.gitlab-ci.yml', 'CONTENT', 'Add .gitlab-ci.yml', 'master', false)
+    end
+
+    context 'when there is a .gitlab-ci.yml at the commit' do
+      it 'returns the content' do
+        expect(repository.gitlab_ci_yml_for(repository.commit.sha)).to eq('CONTENT')
+      end
+    end
+
+    context 'when there is no .gitlab-ci.yml at the commit' do
+      it 'returns nil' do
+        expect(repository.gitlab_ci_yml_for(repository.commit.parent.sha)).to be_nil
+      end
+    end
+  end
+
+  describe '#route_map_for' do
+    before do
+      repository.commit_file(User.last, '.gitlab/route-map.yml', 'CONTENT', 'Add .gitlab/route-map.yml', 'master', false)
+    end
+
+    context 'when there is a .gitlab/route-map.yml at the commit' do
+      it 'returns the content' do
+        expect(repository.route_map_for(repository.commit.sha)).to eq('CONTENT')
+      end
+    end
+
+    context 'when there is no .gitlab/route-map.yml at the commit' do
+      it 'returns nil' do
+        expect(repository.route_map_for(repository.commit.parent.sha)).to be_nil
+      end
+    end
+  end
+
   def create_remote_branch(remote_name, branch_name, target)
     rugged = repository.rugged
     rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", target.id)

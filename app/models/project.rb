@@ -1579,10 +1579,10 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def route_map_for_commit(commit_sha)
+  def route_map_for(commit_sha)
     @route_maps_by_commit ||= Hash.new do |h, sha|
       h[sha] = begin
-        data = repository.route_map_file(sha)
+        data = repository.route_map_for(sha)
         next unless data
 
         Gitlab::RouteMap.new(data)
@@ -1595,7 +1595,7 @@ class Project < ActiveRecord::Base
   end
 
   def public_path_for_source_path(path, commit_sha)
-    map = route_map_for_commit(commit_sha)
+    map = route_map_for(commit_sha)
     return unless map
 
     map.public_path_for_source_path(path)
