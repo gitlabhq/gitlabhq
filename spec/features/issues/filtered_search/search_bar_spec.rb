@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 describe 'Search bar', js: true, feature: true do
+  include FilteredSearchHelpers
   include WaitForAjax
 
   let!(:project) { create(:empty_project) }
@@ -32,7 +33,8 @@ describe 'Search bar', js: true, feature: true do
     it 'selects item' do
       filtered_search.native.send_keys(:down, :down, :enter)
 
-      expect(filtered_search.value).to eq('author:')
+      expect_tokens([{ name: 'author' }])
+      expect_filtered_search_input_empty
     end
   end
 
