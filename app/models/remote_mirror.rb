@@ -18,8 +18,10 @@ class RemoteMirror < ActiveRecord::Base
   default_value_for :remote_sync_time, gitlab_config_features.sync_time
 
   validates :url, presence: true, url: { protocols: %w(ssh git http https), allow_blank: true }
-  validates :remote_sync_time, presence: true,
-            inclusion: { in: Gitlab::Mirror.sync_time_options.values }
+  validates :remote_sync_time,
+    presence: true,
+    inclusion: { in: Gitlab::Mirror.sync_time_options.values }
+
   validate  :url_availability, if: -> (mirror) { mirror.url_changed? || mirror.enabled? }
 
   after_save :refresh_remote, if: :mirror_url_changed?

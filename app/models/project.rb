@@ -35,7 +35,7 @@ class Project < ActiveRecord::Base
   default_value_for :container_registry_enabled, gitlab_config_features.container_registry
   default_value_for(:repository_storage) { current_application_settings.pick_repository_storage }
   default_value_for(:shared_runners_enabled) { current_application_settings.shared_runners_enabled }
-  default_value_for(:sync_time) { gitlab_config_features.sync_time }
+  default_value_for :sync_time, gitlab_config_features.sync_time
   default_value_for :issues_enabled, gitlab_config_features.issues
   default_value_for :merge_requests_enabled, gitlab_config_features.merge_requests
   default_value_for :builds_enabled, gitlab_config_features.builds

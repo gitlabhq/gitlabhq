@@ -1,9 +1,10 @@
 module Gitlab
   module Mirror
-
     FIFTEEN = 15
     HOURLY  = 60
     DAYLY   = 1440
+
+    PRECRON = 14.minutes
 
     class << self
       def sync_time_options
@@ -23,13 +24,22 @@ module Gitlab
       end
 
       def at_beginning_of_day?
-        beginning_of_day = DateTime.now.at_beginning_of_day
-        DateTime.now >= beginning_of_day && DateTime.now <= beginning_of_day + 14.minutes
+        start_at = DateTime.now.at_beginning_of_day
+        end_at = start_at + PRECRON
+
+        include_with_range?(start_at, end_at)
       end
 
       def at_beginning_of_hour?
-        beginning_of_hour = DateTime.now.at_beginning_of_hour
-        DateTime.now >= beginning_of_hour && DateTime.now <= beginning_of_hour + 14.minutes
+        start_at = DateTime.now.at_beginning_of_hour
+        end_at = start_at + PRECRON
+
+        include_with_range?(start_at, end_at)
+      end
+
+      def include_with_range?(start_at, end_at)
+        window = start_at...end_at
+        window.include?(DateTime.now)
       end
     end
   end
