@@ -16,8 +16,8 @@ module Gitlab
         true
       end
 
-      def execute(commands)
-        Gitlab::ChatCommands::Presenters::Help.new(commands).present(trigger)
+      def execute(commands, text)
+        Gitlab::ChatCommands::Presenters::Help.new(commands).present(trigger, text)
       end
 
       def trigger

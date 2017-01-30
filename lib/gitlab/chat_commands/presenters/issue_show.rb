@@ -5,7 +5,11 @@ module Gitlab
         include Presenters::Issuable
 
         def present
-          in_channel_response(show_issue)
+          if @resource.confidential?
+            ephemeral_response(show_issue)
+          else
+            in_channel_response(show_issue)
+          end
         end
 
         private
@@ -25,7 +29,8 @@ module Gitlab
                 fields:       fields,
                 mrkdwn_in: [
                   :pretext,
-                  :text
+                  :text,
+                  :fields
                 ]
               }
             ]
@@ -48,7 +53,7 @@ module Gitlab
         end
 
         def pretext
-          "Issue *#{@resource.to_reference} from #{project.name_with_namespace}"
+          "Issue *#{@resource.to_reference}* from #{project.name_with_namespace}"
         end
       end
     end

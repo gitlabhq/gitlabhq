@@ -18,7 +18,7 @@ module Gitlab
             Gitlab::ChatCommands::Presenters::Access.new.access_denied
           end
         else
-          Gitlab::ChatCommands::Help.new(project, current_user, params).execute(available_commands)
+          Gitlab::ChatCommands::Help.new(project, current_user, params).execute(available_commands, params[:text])
         end
       end
 

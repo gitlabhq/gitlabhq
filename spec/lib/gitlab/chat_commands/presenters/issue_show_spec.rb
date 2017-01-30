@@ -21,7 +21,17 @@ describe Gitlab::ChatCommands::Presenters::IssueShow do
     end
 
     it 'shows the upvote count' do
+      expect(subject[:response_type]).to be(:in_channel)
       expect(attachment[:text]).to start_with("**Open** · :+1: 1")
+    end
+  end
+
+  context 'confidential issue' do
+    let(:issue) { create(:issue, project: project) }
+
+    it 'shows an ephemeral response' do
+      expect(subject[:response_type]).to be(:in_channel)
+      expect(attachment[:text]).to start_with("**Open**")
     end
   end
 end

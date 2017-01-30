@@ -24,7 +24,9 @@ module Gitlab
                 fields:       fields,
                 mrkdwn_in: [
                   :title,
-                  :text
+                  :pretext,
+                  :text,
+                  :fields
                 ]
               }
             ]

@@ -7,6 +7,8 @@ module Gitlab
         def present
           text = if @resource.count >= 5
                    "Here are the first 5 issues I found:"
+                 elsif @resource.one?
+                   "Here is the only issue I found:"
                  else
                    "Here are the #{@resource.count} issues I found:"
                  end
@@ -26,7 +28,7 @@ module Gitlab
               text: "#{url} · #{issue.title} (#{status_text(issue)})",
 
               mrkdwn_in: [
-                "text"
+                :text
               ]
             }
           end

@@ -20,6 +20,20 @@ module Gitlab
 
           ephemeral_response(text: message)
         end
+
+        def unknown_command(commands)
+          ephemeral_response(text: help_message(trigger))
+        end
+
+        private
+
+        def help_message(trigger)
+          header_with_list("Command not found, these are the commands you can use", full_commands(trigger))
+        end
+
+        def full_commands(trigger)
+          @resource.map { |command| "#{trigger} #{command.help_message}" }
+        end
       end
     end
   end

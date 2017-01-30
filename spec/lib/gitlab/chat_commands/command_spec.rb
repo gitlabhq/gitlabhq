@@ -5,7 +5,6 @@ describe Gitlab::ChatCommands::Command, service: true do
   let(:user) { create(:user) }
 
   describe '#execute' do
-<<<<<<< HEAD
     subject do
       described_class.new(project, user, params).execute
     end
@@ -19,16 +18,13 @@ describe Gitlab::ChatCommands::Command, service: true do
         expect(subject[:text]).to start_with('404 not found')
       end
     end
-=======
-    subject { described_class.new(project, user, params).execute }
->>>>>>> Chat Commands have presenters
 
     context 'when an unknown command is triggered' do
       let(:params) { { command: '/gitlab', text: "unknown command 123" } }
 
       it 'displays the help message' do
         expect(subject[:response_type]).to be(:ephemeral)
-        expect(subject[:text]).to start_with('Available commands')
+        expect(subject[:text]).to start_with('Unknown command')
         expect(subject[:text]).to match('/gitlab issue show')
       end
     end
