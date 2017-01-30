@@ -80,6 +80,9 @@
           = rm_form.label :url, "Git repository URL", class: "label-light"
           = rm_form.text_field :url, class: "form-control", placeholder: 'https://username:password@gitlab.company.com/group/project.git'
           = render "instructions"
+        .form-group
+          = rm_form.label :remote_sync_time, "Remote Mirror synchronisation time", class: "label-light append-bottom-0"
+          = rm_form.select :remote_sync_time, options_for_select(Gitlab::Mirror.sync_time_options, @remote_mirror.remote_sync_time), {}, class: 'form-control'
     .col-sm-12.text-center
       %hr
       = f.submit 'Save changes', class: 'btn btn-create', name: 'update_remote_mirror'

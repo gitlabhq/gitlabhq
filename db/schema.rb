@@ -1206,6 +1206,7 @@ ActiveRecord::Schema.define(version: 20170204181513) do
     t.string "encrypted_credentials_salt"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "remote_sync_time", default: 60, null: false
   end
 
   add_index "remote_mirrors", ["project_id"], name: "index_remote_mirrors_on_project_id", using: :btree

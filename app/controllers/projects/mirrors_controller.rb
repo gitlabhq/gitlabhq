@@ -48,6 +48,6 @@ class Projects::MirrorsController < Projects::ApplicationController
   def mirror_params
     params.require(:project).permit(:mirror, :import_url, :mirror_user_id,
                                     :mirror_trigger_builds, :sync_time,
-                                    remote_mirrors_attributes: [:url, :id, :enabled])
+                                    remote_mirrors_attributes: [:url, :id, :enabled, :remote_sync_time])
   end
 end
