@@ -40,12 +40,11 @@
         calendar = new Pikaday({
           field: $issuableDueDate.get(0),
           theme: 'gitlab-theme',
-          format: 'yyyy-mm-dd',
+          format: 'YYYY-MM-DD',
           onSelect: function(dateText) {
             $issuableDueDate.val(dateFormat(new Date(dateText), 'yyyy-mm-dd'));
           }
         });
-        calendar.setDate(new Date($issuableDueDate.val()));
       }
     }
 

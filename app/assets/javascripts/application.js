@@ -34,7 +34,7 @@ require('bootstrap/js/transition');
 require('bootstrap/js/tooltip');
 require('bootstrap/js/popover');
 require('select2/select2.js');
-require('pikaday');
+window.Pikaday = require('pikaday');
 window._ = require('underscore');
 window.Dropzone = require('dropzone');
 require('mousetrap');

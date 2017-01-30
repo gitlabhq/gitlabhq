@@ -19,7 +19,7 @@
       const calendar = new Pikaday({
         field: $input.get(0),
         theme: 'gitlab-theme',
-        format: 'yyyy-mm-dd',
+        format: 'YYYY-MM-DD',
         minDate: new Date(),
         onSelect(dateText) {
           $input.val(dateFormat(new Date(dateText), 'yyyy-mm-dd'));
@@ -29,8 +29,6 @@
           toggleClearInput.call($input);
         },
       });
-
-      calendar.setDate(new Date($input.val()));
 
       $input.data('pikaday', calendar);
     });

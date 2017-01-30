@@ -48,7 +48,7 @@
       const calendar = new Pikaday({
         field: $dueDateInput.get(0),
         theme: 'gitlab-theme',
-        format: 'yyyy-mm-dd',
+        format: 'YYYY-MM-DD',
         onSelect: (dateText) => {
           const formattedDate = dateFormat(new Date(dateText), 'yyyy-mm-dd');
 
@@ -62,8 +62,6 @@
           }
         }
       });
-
-      calendar.setDate(new Date($dueDateInput.val()));
 
       this.$datePicker.append(calendar.el);
       this.$datePicker.data('pikaday', calendar);
@@ -171,12 +169,11 @@
         const calendar = new Pikaday({
           field: $datePicker.get(0),
           theme: 'gitlab-theme',
-          format: 'yyyy-mm-dd',
+          format: 'YYYY-MM-DD',
           onSelect(dateText) {
             $datePicker.val(dateFormat(new Date(dateText), 'yyyy-mm-dd'));
           }
         });
-        calendar.setDate(new Date($datePicker.val()));
 
         $datePicker.data('pikaday', calendar);
       });
