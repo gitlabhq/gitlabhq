@@ -17,8 +17,9 @@ module Banzai
 
           next unless content.include?(':') || node.text.match(emoji_unicode_pattern)
 
-          html = emoji_name_image_filter(content)
-          html = emoji_unicode_image_filter(html)
+          puts "html #{html}"
+          #html = emoji_name_image_filter(content)
+          #html = emoji_unicode_image_filter(html)
 
           next if html == content
 
@@ -51,6 +52,7 @@ module Banzai
       end
 
       def emoji_image_tag(emoji_name, emoji_url)
+        puts "emoji_image_tag #{emoji_name}"
         "<img class='emoji' title=':#{emoji_name}:' alt=':#{emoji_name}:' src='#{emoji_url}' height='20' width='20' align='absmiddle' />"
       end
 

@@ -1,6 +1,7 @@
 module Banzai
   module Renderer
     module_function
+    CACHE_ENABLED = false
 
     # Convert a Markdown String into an HTML-safe String of HTML
     #
@@ -20,13 +21,14 @@ module Banzai
       cache_key = context.delete(:cache_key)
       cache_key = full_cache_key(cache_key, context[:pipeline])
 
-      if cache_key
+      if cache_key && CACHE_ENABLED
         Gitlab::Metrics.measure(:banzai_cached_render) do
           Rails.cache.fetch(cache_key) do
             cacheless_render(text, context)
           end
         end
       else
+        puts "render #{text}"
         cacheless_render(text, context)
       end
     end
@@ -90,7 +92,7 @@ module Banzai
         item[:cache_key] = cache_key if cache_key
       end
 
-      cacheable_items, non_cacheable_items = items_collection.partition { |item| item.key?(:cache_key) }
+      cacheable_items, non_cacheable_items = items_collection.partition { |item| item.key?(:cache_key) && CACHE_ENABLED }
 
       items_in_cache = []
       items_not_in_cache = []
@@ -108,6 +110,7 @@ module Banzai
         Rails.cache.write(item[:cache_key], item[:rendered]) if item[:cache_key]
       end
 
+      items_collection.map { |item| puts "item[:rendered] #{item[:rendered]}" }
       items_collection.map { |item| item[:rendered] }
     end
 
