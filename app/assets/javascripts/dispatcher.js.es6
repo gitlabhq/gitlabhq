@@ -64,17 +64,6 @@
           new UsernameValidator();
           new ActiveTabMemoizer();
           break;
-        case 'sessions:create':
-          if (!gon.u2f) break;
-          window.gl.u2fAuthenticate = new gl.U2FAuthenticate(
-            $("#js-authenticate-u2f"),
-            '#js-login-u2f-form',
-            gon.u2f,
-            document.querySelector('#js-login-2fa-device'),
-            document.querySelector('.js-2fa-form'),
-          );
-          window.gl.u2fAuthenticate.start();
-          break;
         case 'projects:boards:show':
         case 'projects:boards:index':
           shortcut_handler = new ShortcutsNavigation();
@@ -281,6 +270,17 @@
           break;
       }
       switch (path.first()) {
+        case 'sessions':
+        case 'omniauth_callbacks':
+          if (!gon.u2f) break;
+          gl.u2fAuthenticate = new gl.U2FAuthenticate(
+            $('#js-authenticate-u2f'),
+            '#js-login-u2f-form',
+            gon.u2f,
+            document.querySelector('#js-login-2fa-device'),
+            document.querySelector('.js-2fa-form'),
+          );
+          gl.u2fAuthenticate.start();
         case 'admin':
           new Admin();
           switch (path[1]) {
@@ -358,7 +358,7 @@
       }
       // If we haven't installed a custom shortcut handler, install the default one
       if (!shortcut_handler) {
-        return new Shortcuts();
+        new Shortcuts();
       }
     };
 
