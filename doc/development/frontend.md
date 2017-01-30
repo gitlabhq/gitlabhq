@@ -445,10 +445,10 @@ Scenario: Developer can approve merge request
 ## Setup Virtual Machine to test in different browsers
 First we need a Virtual Machine, there are some solutions:
 
-### Virtualbox
+### VirtualBox
 This Virtual Machine is free.
 
-1. Download Virtualbox in [here][virtualbox].
+1. Download VirtualBox in [here][virtualbox].
 2. Click in the binary of your operative system and wait for the download to be completed. If you have a MacOS click in `OS X hosts`.
 3. Install:
 
@@ -456,7 +456,7 @@ This Virtual Machine is free.
   * Double click the downloaded file and follow the instructions that will
     appear in your screen.
   * Once you see "The installation was successful" you can close the installer.
-  * Open Virtualbox from you application folder.
+  * Open VirtualBox from you application folder.
 
 4. To run Windows see Microsoft Edge and versions of IE8 through IE11 section.
 5. To run Ubuntu see Ubuntu section.
@@ -465,7 +465,12 @@ This Virtual Machine is free.
 You need a license for this Virtual Machine, please ping Allison or Jacob.
 
 1. Download VMware Fusion in [here][vmwarefusion]
-2. Setup:
+2. Open the downloaded file and follow instructions.
+3. Open VMware Fusion form your application's folder.
+4. To run Windows see Microsoft Edge and versions of IE8 through IE11 section.
+5. To run Ubuntu see Ubuntu section.
+
+
 
 #### Ubuntu
 In order to test browsers on Ubuntu we need to download it.
@@ -474,18 +479,29 @@ _This step assumes you already have a virtual machine installed_
 2. Once the download has finished we can setup our machine.
 3. Setup:
   **MacOS**
-    **Virtualbox**
-    * Open Virtualbox from you application's folder.
-    * Click in 'New'
-      - Choose the name of your Machine
-      - Choose 'Linux' in 'Type'
-      - Choose 'Ubuntu (64-bit)' in 'Version'
-      Click Continue
-    * Memory size
-      - Choose 1024 MB and click Continue
-    * Hard disk
-      - Choose 'Create a virtual hard disk now' and click Create
-    *
+    **VirtualBox**
+    * Open VirtualBox from you application's folder.
+    * Click in 'New', a new windown will appear.
+    * Choose your guest OS (Linux) and architecture (32 vs 64 bit, Ubuntu) and click Continue.
+    * Memory size, choose 1024 MB and click Continue.
+    * Hard disk, choose 'Create a virtual hard disk now' and click Create.
+    * Hard disk file type, choose 'VDI (VirtualBox Disk image)' and click Continue.
+    * Storage on physical hard disk, choose 'Dynamically allocated' and click Continue
+    * File location and size, everything should be already filled, click 'Create'.
+      You should be able to see a new entry in the left sidebar menu of the VirtualBox home screen.
+    * Double click the Virtual machine you just created.
+    * Choose the unzipped file that you download earlier and click 'Start'.
+    * You will see the Ubuntu installation screen, choose 'Install Ubuntu', follow the instructions and click 'Install now'
+    * You will be asked to restart the machine.
+    * After a successful installation we have to remove our installation .iso image from the virtual optical drive before we reboot. This can be done from the "Devices" menu in VirtualBox, choose Devices > Optical Drives > Remove disk from virtual drive
+
+
+    **VMware fusion**
+    * Open VMware fusion from your application's folder.
+    * Select 'Create a custom virtual machine' and click 'Continue'.
+    * Choose Operating System, Linux, Ubuntu and click 'Continue'.
+    * Choose 'Create a new virtual disk' and click 'Continue'.
+    * Verify your choices and click 'Finish', you will see the boot screen after you save your machine.
 
 #### Microsoft Edge and versions of IE8 through IE11
 _This step assumes you already have a virtual machine installed_
