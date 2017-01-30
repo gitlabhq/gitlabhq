@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 describe 'Dropdown assignee', js: true, feature: true do
+  include FilteredSearchHelpers
   include WaitForAjax
 
   let!(:project) { create(:empty_project) }
@@ -125,7 +126,8 @@ describe 'Dropdown assignee', js: true, feature: true do
       click_assignee(user_jacob.name)
 
       expect(page).to have_css(js_dropdown_assignee, visible: false)
-      expect(filtered_search.value).to eq("assignee:@#{user_jacob.username} ")
+      expect_tokens([{ 'Name' => 'assignee', 'Value' => "@#{user_jacob.username}" }])
+      expect_filtered_search_input_empty()
     end
 
     it 'fills in the assignee username when the assignee has been filtered' do
@@ -133,14 +135,16 @@ describe 'Dropdown assignee', js: true, feature: true do
       click_assignee(user.name)
 
       expect(page).to have_css(js_dropdown_assignee, visible: false)
-      expect(filtered_search.value).to eq("assignee:@#{user.username} ")
+      expect_tokens([{ 'Name' => 'assignee', 'Value' => "@#{user.username}" }])
+      expect_filtered_search_input_empty()
     end
 
     it 'selects `no assignee`' do
       find('#js-dropdown-assignee .filter-dropdown-item', text: 'No Assignee').click
 
       expect(page).to have_css(js_dropdown_assignee, visible: false)
-      expect(filtered_search.value).to eq("assignee:none ")
+      expect_tokens([{ 'Name' => 'assignee', 'Value' => 'none' }])
+      expect_filtered_search_input_empty()
     end
   end
 
@@ -172,6 +176,7 @@ describe 'Dropdown assignee', js: true, feature: true do
 
   describe 'caching requests' do
     it 'caches requests after the first load' do
+      pending('Fix this after clear button is fixed')
       filtered_search.set('assignee')
       send_keys_to_filtered_search(':')
       initial_size = dropdown_assignee_size

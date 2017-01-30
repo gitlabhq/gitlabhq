@@ -22,38 +22,40 @@
 
     static filterWithSymbol(filterSymbol, input, item) {
       const updatedItem = item;
-      const query = gl.DropdownUtils.getSearchInput(input);
-      const { lastToken, searchToken } = gl.FilteredSearchTokenizer.processTokens(query);
+      const searchInput = gl.DropdownUtils.getSearchInput(input);
 
-      if (lastToken !== searchToken) {
-        const title = updatedItem.title.toLowerCase();
-        let value = lastToken.value.toLowerCase();
+      const title = updatedItem.title.toLowerCase();
+      let value = searchInput.toLowerCase();
+      let symbol = '';
 
-        // Removes the first character if it is a quotation so that we can search
-        // with multiple words
-        if ((value[0] === '"' || value[0] === '\'') && title.indexOf(' ') !== -1) {
-          value = value.slice(1);
-        }
-
-        // Eg. filterSymbol = ~ for labels
-        const matchWithoutSymbol = lastToken.symbol === filterSymbol && title.indexOf(value) !== -1;
-        const match = title.indexOf(`${lastToken.symbol}${value}`) !== -1;
-
-        updatedItem.droplab_hidden = !match && !matchWithoutSymbol;
-      } else {
-        updatedItem.droplab_hidden = false;
+      // Remove the symbol for filter
+      if (value[0] === filterSymbol) {
+        symbol = value[0];
+        value = value.slice(1);
       }
+
+      // Removes the first character if it is a quotation so that we can search
+      // with multiple words
+      if ((value[0] === '"' || value[0] === '\'') && title.indexOf(' ') !== -1) {
+        value = value.slice(1);
+      }
+
+      // Eg. filterSymbol = ~ for labels
+      const matchWithoutSymbol = symbol === filterSymbol && title.indexOf(value) !== -1;
+      const match = title.indexOf(`${symbol}${value}`) !== -1;
+
+      updatedItem.droplab_hidden = !match && !matchWithoutSymbol;
 
       return updatedItem;
     }
 
     static filterHint(input, item) {
       const updatedItem = item;
-      const query = gl.DropdownUtils.getSearchInput(input);
-      let { lastToken } = gl.FilteredSearchTokenizer.processTokens(query);
+      const searchInput = gl.DropdownUtils.getSearchInput(input);
+      let { lastToken } = gl.FilteredSearchTokenizer.processTokens(searchInput);
       lastToken = lastToken.key || lastToken || '';
 
-      if (!lastToken || query.split('').last() === ' ') {
+      if (!lastToken || searchInput.split('').last() === ' ') {
         updatedItem.droplab_hidden = false;
       } else if (lastToken) {
         const split = lastToken.split(':');
@@ -75,6 +77,33 @@
 
       // Return boolean based on whether it was set
       return dataValue !== null;
+    }
+
+    static getSearchQuery() {
+      const tokensContainer = document.querySelector('.tokens-container');
+      const values = [];
+
+      [].forEach.call(tokensContainer.querySelectorAll('.js-visual-token'), (token) => {
+        const name = token.querySelector('.name');
+        const value = token.querySelector('.value');
+        const symbol = value && value.dataset.symbol ? value.dataset.symbol : '';
+        let valueText = '';
+
+        if (value && value.innerText) {
+          valueText = value.innerText;
+        }
+
+        if (token.className.indexOf('filtered-search-token') !== -1) {
+          values.push(`${name.innerText.toLowerCase()}:${symbol}${valueText}`);
+        } else {
+          values.push(name.innerText);
+        }
+      });
+
+      const inputValue = document.querySelector('.filtered-search').value;
+      values.push(inputValue);
+
+      return values.join(' ');
     }
 
     static getSearchInput(filteredSearchInput) {

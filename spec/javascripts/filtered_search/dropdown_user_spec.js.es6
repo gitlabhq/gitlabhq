@@ -18,9 +18,7 @@ require('~/filtered_search/dropdown_user');
 
       it('should not return the double quote found in value', () => {
         spyOn(gl.FilteredSearchTokenizer, 'processTokens').and.returnValue({
-          lastToken: {
-            value: '"johnny appleseed',
-          },
+          lastToken: '"johnny appleseed',
         });
 
         expect(dropdownUser.getSearchInput()).toBe('johnny appleseed');
@@ -28,9 +26,7 @@ require('~/filtered_search/dropdown_user');
 
       it('should not return the single quote found in value', () => {
         spyOn(gl.FilteredSearchTokenizer, 'processTokens').and.returnValue({
-          lastToken: {
-            value: '\'larry boy',
-          },
+          lastToken: '\'larry boy',
         });
 
         expect(dropdownUser.getSearchInput()).toBe('larry boy');

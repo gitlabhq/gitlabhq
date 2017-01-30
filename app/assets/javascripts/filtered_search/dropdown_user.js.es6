@@ -39,7 +39,12 @@ require('./filtered_search_dropdown');
     getSearchInput() {
       const query = gl.DropdownUtils.getSearchInput(this.input);
       const { lastToken } = gl.FilteredSearchTokenizer.processTokens(query);
-      let value = lastToken.value || '';
+
+      let value = lastToken || '';
+
+      if (value[0] === '@') {
+        value = value.slice(1);
+      }
 
       // Removes the first character if it is a quotation so that we can search
       // with multiple words

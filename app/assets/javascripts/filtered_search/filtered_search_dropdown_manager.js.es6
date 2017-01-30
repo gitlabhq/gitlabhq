@@ -60,23 +60,15 @@
 
     static addWordToInput(tokenName, tokenValue = '') {
       const input = document.querySelector('.filtered-search');
-      const inputValue = input.value;
-      const word = `${tokenName}:${tokenValue}`;
+
+      gl.FilteredSearchVisualTokens.addFilterVisualToken(tokenName, tokenValue);
+      input.value = '';
 
       // Get the string to replace
-      let newCaretPosition = input.selectionStart;
-      const { left, right } = gl.DropdownUtils.getInputSelectionPosition(input);
+      // let newCaretPosition = input.selectionStart;
+      // const { left, right } = gl.DropdownUtils.getInputSelectionPosition(input);
 
-      input.value = `${inputValue.substr(0, left)}${word}${inputValue.substr(right)}`;
-
-      // If we have added a tokenValue at the end of the input,
-      // add a space and set selection to the end
-      if (right >= inputValue.length && tokenValue !== '') {
-        input.value += ' ';
-        newCaretPosition = input.value.length;
-      }
-
-      gl.FilteredSearchDropdownManager.updateInputCaretPosition(newCaretPosition, input);
+      // gl.FilteredSearchDropdownManager.updateInputCaretPosition(newCaretPosition, input);
     }
 
     static updateInputCaretPosition(selectionStart, input) {
@@ -98,20 +90,8 @@
         this.font = window.getComputedStyle(this.filteredSearchInput).font;
       }
 
-      const input = this.filteredSearchInput;
-      const inputText = input.value.slice(0, input.selectionStart);
-      const filterIconPadding = 27;
-      let offset = gl.text.getTextWidth(inputText, this.font) + filterIconPadding;
-
-      const currentDropdownWidth = this.mapping[key].element.clientWidth === 0 ? 200 :
-      this.mapping[key].element.clientWidth;
-      const offsetMaxWidth = this.filteredSearchInput.clientWidth - currentDropdownWidth;
-
-      if (offsetMaxWidth < offset) {
-        offset = offsetMaxWidth;
-      }
-
-      this.mapping[key].reference.setOffset(offset);
+      // Temporarily anchor the dropdown offset
+      this.mapping[key].reference.setOffset(0);
     }
 
     load(key, firstLoad = false) {
@@ -164,8 +144,8 @@
     }
 
     setDropdown() {
-      const { lastToken, searchToken } = this.tokenizer
-        .processTokens(gl.DropdownUtils.getSearchInput(this.filteredSearchInput));
+      const query = gl.DropdownUtils.getSearchQuery();
+      const { lastToken, searchToken } = this.tokenizer.processTokens(query);
 
       if (this.currentDropdown) {
         this.updateCurrentDropdownOffset();

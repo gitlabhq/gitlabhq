@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 describe 'Dropdown hint', js: true, feature: true do
+  include FilteredSearchHelpers
   include WaitForAjax
 
   let!(:project) { create(:empty_project) }
@@ -66,7 +67,8 @@ describe 'Dropdown hint', js: true, feature: true do
 
       expect(page).to have_css(js_dropdown_hint, visible: false)
       expect(page).to have_css('#js-dropdown-author', visible: true)
-      expect(filtered_search.value).to eq('author:')
+      expect_tokens([{ 'Name' => 'author' }])
+      expect_filtered_search_input_empty()
     end
 
     it 'opens the assignee dropdown when you click on assignee' do
@@ -74,7 +76,8 @@ describe 'Dropdown hint', js: true, feature: true do
 
       expect(page).to have_css(js_dropdown_hint, visible: false)
       expect(page).to have_css('#js-dropdown-assignee', visible: true)
-      expect(filtered_search.value).to eq('assignee:')
+      expect_tokens([{ 'Name' => 'assignee' }])
+      expect_filtered_search_input_empty()
     end
 
     it 'opens the milestone dropdown when you click on milestone' do
@@ -82,7 +85,8 @@ describe 'Dropdown hint', js: true, feature: true do
 
       expect(page).to have_css(js_dropdown_hint, visible: false)
       expect(page).to have_css('#js-dropdown-milestone', visible: true)
-      expect(filtered_search.value).to eq('milestone:')
+      expect_tokens([{ 'Name' => 'milestone' }])
+      expect_filtered_search_input_empty()
     end
 
     it 'opens the label dropdown when you click on label' do
@@ -90,7 +94,8 @@ describe 'Dropdown hint', js: true, feature: true do
 
       expect(page).to have_css(js_dropdown_hint, visible: false)
       expect(page).to have_css('#js-dropdown-label', visible: true)
-      expect(filtered_search.value).to eq('label:')
+      expect_tokens([{ 'Name' => 'label' }])
+      expect_filtered_search_input_empty()
     end
   end
 
@@ -101,7 +106,8 @@ describe 'Dropdown hint', js: true, feature: true do
 
       expect(page).to have_css(js_dropdown_hint, visible: false)
       expect(page).to have_css('#js-dropdown-author', visible: true)
-      expect(filtered_search.value).to eq('author:')
+      expect_tokens([{ 'Name' => 'author' }])
+      expect_filtered_search_input_empty()
     end
 
     it 'opens the assignee dropdown when you click on assignee' do
@@ -110,7 +116,8 @@ describe 'Dropdown hint', js: true, feature: true do
 
       expect(page).to have_css(js_dropdown_hint, visible: false)
       expect(page).to have_css('#js-dropdown-assignee', visible: true)
-      expect(filtered_search.value).to eq('assignee:')
+      expect_tokens([{ 'Name' => 'assignee' }])
+      expect_filtered_search_input_empty()
     end
 
     it 'opens the milestone dropdown when you click on milestone' do
@@ -119,7 +126,8 @@ describe 'Dropdown hint', js: true, feature: true do
 
       expect(page).to have_css(js_dropdown_hint, visible: false)
       expect(page).to have_css('#js-dropdown-milestone', visible: true)
-      expect(filtered_search.value).to eq('milestone:')
+      expect_tokens([{ 'Name' => 'milestone' }])
+      expect_filtered_search_input_empty()
     end
 
     it 'opens the label dropdown when you click on label' do
@@ -128,7 +136,8 @@ describe 'Dropdown hint', js: true, feature: true do
 
       expect(page).to have_css(js_dropdown_hint, visible: false)
       expect(page).to have_css('#js-dropdown-label', visible: true)
-      expect(filtered_search.value).to eq('label:')
+      expect_tokens([{ 'Name' => 'label' }])
+      expect_filtered_search_input_empty()
     end
   end
 end

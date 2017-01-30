@@ -27,6 +27,7 @@
       this.handleFormSubmit = this.handleFormSubmit.bind(this);
       this.setDropdownWrapper = this.dropdownManager.setDropdown.bind(this.dropdownManager);
       this.toggleClearSearchButtonWrapper = this.toggleClearSearchButton.bind(this);
+      this.handleInputVisualTokenWrapper = this.handleInputVisualToken.bind(this);
       this.checkForEnterWrapper = this.checkForEnter.bind(this);
       this.clearSearchWrapper = this.clearSearch.bind(this);
       this.checkForBackspaceWrapper = this.checkForBackspace.bind(this);
@@ -35,6 +36,7 @@
       this.filteredSearchInput.form.addEventListener('submit', this.handleFormSubmit);
       this.filteredSearchInput.addEventListener('input', this.setDropdownWrapper);
       this.filteredSearchInput.addEventListener('input', this.toggleClearSearchButtonWrapper);
+      this.filteredSearchInput.addEventListener('input', this.handleInputVisualTokenWrapper);
       this.filteredSearchInput.addEventListener('keydown', this.checkForEnterWrapper);
       this.filteredSearchInput.addEventListener('keyup', this.checkForBackspaceWrapper);
       this.filteredSearchInput.addEventListener('click', this.tokenChange);
@@ -46,6 +48,7 @@
       this.filteredSearchInput.form.removeEventListener('submit', this.handleFormSubmit);
       this.filteredSearchInput.removeEventListener('input', this.setDropdownWrapper);
       this.filteredSearchInput.removeEventListener('input', this.toggleClearSearchButtonWrapper);
+      this.filteredSearchInput.removeEventListener('input', this.handleInputVisualTokenWrapper);
       this.filteredSearchInput.removeEventListener('keydown', this.checkForEnterWrapper);
       this.filteredSearchInput.removeEventListener('keyup', this.checkForBackspaceWrapper);
       this.filteredSearchInput.removeEventListener('click', this.tokenChange);
@@ -103,6 +106,48 @@
       this.dropdownManager.resetDropdowns();
     }
 
+    handleInputVisualToken() {
+      const input = this.filteredSearchInput;
+      const { tokens, searchToken }
+        = gl.FilteredSearchTokenizer.processTokens(input.value);
+      const { isLastVisualTokenValid }
+        = gl.FilteredSearchVisualTokens.getLastVisualToken();
+
+      if (isLastVisualTokenValid) {
+        tokens.forEach((t) => {
+          input.value = input.value.replace(`${t.key}:${t.symbol}${t.value}`, '');
+          gl.FilteredSearchVisualTokens.addFilterVisualToken(t.key, `${t.symbol}${t.value}`);
+        });
+
+        const fragments = searchToken.split(':');
+        if (fragments.length > 1) {
+          const inputValues = fragments[0].split(' ');
+          const tokenKey = inputValues.last();
+
+          if (inputValues.length > 1) {
+            inputValues.pop();
+            const searchTerms = inputValues.join(' ');
+
+            input.value = input.value.replace(searchTerms, '');
+            gl.FilteredSearchVisualTokens.addSearchVisualToken(searchTerms);
+          }
+
+          gl.FilteredSearchVisualTokens.addFilterVisualToken(tokenKey);
+          input.value = input.value.replace(`${tokenKey}:`, '');
+        }
+      } else {
+        // Keep listening to token until we determine that the user is done typing the token value
+        const valueCompletedRegex = /([~%@]{0,1}".+")|([~%@]{0,1}'.+')|^((?![~%@]')(?![~%@]")(?!')(?!")).*/g;
+
+        if (searchToken.match(valueCompletedRegex) && input.value[input.value.length - 1] === ' ') {
+          gl.FilteredSearchVisualTokens.addFilterVisualToken(searchToken);
+
+          // Trim the last space as seen in the if statement above
+          input.value = input.value.replace(searchToken, '').trim();
+        }
+      }
+    }
+
     handleFormSubmit(e) {
       e.preventDefault();
       this.search();
@@ -122,7 +167,7 @@
         const condition = this.filteredSearchTokenKeys.searchByConditionUrl(p);
 
         if (condition) {
-          inputValues.push(`${condition.tokenKey}:${condition.value}`);
+          gl.FilteredSearchVisualTokens.addFilterVisualToken(condition.tokenKey, condition.value);
         } else {
           // Sanitize value since URL converts spaces into +
           // Replace before decode so that we know what was originally + versus the encoded +
@@ -140,16 +185,16 @@
               quotationsToUse = sanitizedValue.indexOf('"') === -1 ? '"' : '\'';
             }
 
-            inputValues.push(`${sanitizedKey}:${symbol}${quotationsToUse}${sanitizedValue}${quotationsToUse}`);
+            gl.FilteredSearchVisualTokens.addFilterVisualToken(sanitizedKey, `${symbol}${quotationsToUse}${sanitizedValue}${quotationsToUse}`);
           } else if (!match && keyParam === 'assignee_id') {
             const id = parseInt(value, 10);
             if (usernameParams[id]) {
-              inputValues.push(`assignee:@${usernameParams[id]}`);
+              gl.FilteredSearchVisualTokens.addFilterVisualToken('assignee', `@${usernameParams[id]}`);
             }
           } else if (!match && keyParam === 'author_id') {
             const id = parseInt(value, 10);
             if (usernameParams[id]) {
-              inputValues.push(`author:@${usernameParams[id]}`);
+              gl.FilteredSearchVisualTokens.addFilterVisualToken('author', `@${usernameParams[id]}`);
             }
           } else if (!match && keyParam === 'search') {
             inputValues.push(sanitizedValue);
@@ -167,7 +212,8 @@
 
     search() {
       const paths = [];
-      const { tokens, searchToken } = this.tokenizer.processTokens(this.filteredSearchInput.value);
+      const { tokens, searchToken }
+        = this.tokenizer.processTokens(gl.DropdownUtils.getSearchQuery());
       const currentState = gl.utils.getParameterByName('state') || 'opened';
       paths.push(`state=${currentState}`);
 

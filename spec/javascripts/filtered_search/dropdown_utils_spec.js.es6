@@ -45,7 +45,7 @@ require('~/filtered_search/filtered_search_dropdown_manager');
       });
 
       it('should filter without symbol', () => {
-        input.value = ':roo';
+        input.value = 'roo';
 
         const updatedItem = gl.DropdownUtils.filterWithSymbol('@', input, item);
         expect(updatedItem.droplab_hidden).toBe(false);
@@ -58,69 +58,62 @@ require('~/filtered_search/filtered_search_dropdown_manager');
         expect(updatedItem.droplab_hidden).toBe(false);
       });
 
-      it('should filter with colon', () => {
-        input.value = 'roo';
-
-        const updatedItem = gl.DropdownUtils.filterWithSymbol('@', input, item);
-        expect(updatedItem.droplab_hidden).toBe(false);
-      });
-
       describe('filters multiple word title', () => {
         const multipleWordItem = {
           title: 'Community Contributions',
         };
 
         it('should filter with double quote', () => {
-          input.value = 'label:"';
+          input.value = '"';
 
           const updatedItem = gl.DropdownUtils.filterWithSymbol('~', input, multipleWordItem);
           expect(updatedItem.droplab_hidden).toBe(false);
         });
 
         it('should filter with double quote and symbol', () => {
-          input.value = 'label:~"';
+          input.value = '~"';
 
           const updatedItem = gl.DropdownUtils.filterWithSymbol('~', input, multipleWordItem);
           expect(updatedItem.droplab_hidden).toBe(false);
         });
 
         it('should filter with double quote and multiple words', () => {
-          input.value = 'label:"community con';
+          input.value = '"community con';
 
           const updatedItem = gl.DropdownUtils.filterWithSymbol('~', input, multipleWordItem);
           expect(updatedItem.droplab_hidden).toBe(false);
         });
 
         it('should filter with double quote, symbol and multiple words', () => {
-          input.value = 'label:~"community con';
+          input.value = '~"community con';
 
           const updatedItem = gl.DropdownUtils.filterWithSymbol('~', input, multipleWordItem);
           expect(updatedItem.droplab_hidden).toBe(false);
         });
 
         it('should filter with single quote', () => {
-          input.value = 'label:\'';
+          input.value = '\'';
 
           const updatedItem = gl.DropdownUtils.filterWithSymbol('~', input, multipleWordItem);
           expect(updatedItem.droplab_hidden).toBe(false);
         });
 
         it('should filter with single quote and symbol', () => {
-          input.value = 'label:~\'';
+          input.value = '~\'';
 
           const updatedItem = gl.DropdownUtils.filterWithSymbol('~', input, multipleWordItem);
           expect(updatedItem.droplab_hidden).toBe(false);
         });
 
         it('should filter with single quote and multiple words', () => {
-          input.value = 'label:\'community con';
+          input.value = '\'community con';
 
           const updatedItem = gl.DropdownUtils.filterWithSymbol('~', input, multipleWordItem);
           expect(updatedItem.droplab_hidden).toBe(false);
         });
 
         it('should filter with single quote, symbol and multiple words', () => {
-          input.value = 'label:~\'community con';
+          input.value = '~\'community con';
 
           const updatedItem = gl.DropdownUtils.filterWithSymbol('~', input, multipleWordItem);
           expect(updatedItem.droplab_hidden).toBe(false);
