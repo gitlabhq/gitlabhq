@@ -225,6 +225,7 @@ class Project < ActiveRecord::Base
   scope :with_project_feature, -> { joins('LEFT JOIN project_features ON projects.id = project_features.project_id') }
   scope :with_statistics, -> { includes(:statistics) }
   scope :with_shared_runners, -> { where(shared_runners_enabled: true) }
+  scope :inside_path, ->(path) { joins(:route).where('routes.path LIKE ?', "#{path}/%") }
 
   # "enabled" here means "not disabled". It includes private features!
   scope :with_feature_enabled, ->(feature) {
