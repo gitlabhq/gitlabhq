@@ -86,7 +86,6 @@
     var $sidebarGutterToggle = $('.js-sidebar-toggle');
     var $flash = $('.flash-container');
     var bootstrapBreakpoint = bp.getBreakpointSize();
-    var checkInitialSidebarSize;
     var fitSidebarForSize;
 
     // Set the default path for all cookies to GitLab's root directory
@@ -251,19 +250,11 @@
         return $document.trigger('breakpoint:change', [bootstrapBreakpoint]);
       }
     };
-    checkInitialSidebarSize = function () {
-      bootstrapBreakpoint = bp.getBreakpointSize();
-      if (bootstrapBreakpoint === 'xs' || 'sm') {
-        return $document.trigger('breakpoint:change', [bootstrapBreakpoint]);
-      }
-    };
     $window.off('resize.app').on('resize.app', function () {
       return fitSidebarForSize();
     });
     gl.awardsHandler = new AwardsHandler();
-    checkInitialSidebarSize();
     new Aside();
-
     // bind sidebar events
     new gl.Sidebar();
   });

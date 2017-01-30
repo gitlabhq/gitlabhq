@@ -113,14 +113,6 @@ Make sure to follow all steps below:
     If you are using a custom init script, make sure to edit the above
     gitlab-workhorse setting as needed.
 
-1.  After all the above changes recompile the assets. This is an important task
-    and will take some time to complete depending on the server resources:
-
-    ```
-    cd /home/git/gitlab
-    sudo -u git -H bundle exec rake assets:clean assets:precompile RAILS_ENV=production
-    ```
-
 1. [Restart GitLab][] for the changes to take effect.
 
 ### Disable relative URL in GitLab

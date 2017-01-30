@@ -158,7 +158,7 @@
     };
 
     Calendar.prototype.renderMonths = function() {
-      return this.svg.append('g').selectAll('text').data(this.months).enter().append('text').attr('x', function(date) {
+      return this.svg.append('g').attr('direction', 'ltr').selectAll('text').data(this.months).enter().append('text').attr('x', function(date) {
         return date.x;
       }).attr('y', 10).attr('class', 'user-contrib-text').text((function(_this) {
         return function(date) {

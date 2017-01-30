@@ -420,10 +420,6 @@
 .merge-request-tabs-holder {
   background-color: $white-light;
 
-  .container-limited {
-    max-width: $limited-layout-width;
-  }
-
   &.affix {
     top: 100px;
     left: 0;
@@ -433,11 +429,27 @@
     @media (max-width: $screen-xs-max) {
       right: 0;
     }
-  }
 
-  &:not(.affix) .container-fluid {
-    padding-left: 0;
-    padding-right: 0;
+    .merge-request-tabs-container {
+      padding-left: $gl-padding;
+      padding-right: $gl-padding;
+    }
+  }
+}
+
+.limit-container-width {
+  .merge-request-tabs-container {
+    max-width: $limited-layout-width;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+.limit-container-width:not(.container-limited) {
+  .merge-request-tabs-holder:not(.affix) {
+    .merge-request-tabs-container {
+      max-width: $limited-layout-width - ($gl-padding * 2);
+    }
   }
 }
 
