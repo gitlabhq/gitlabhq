@@ -11,8 +11,7 @@ module Search
       projects = ProjectsFinder.new.execute(current_user)
 
       if group
-        ids = group.descendants.push(group.id)
-        projects = projects.in_namespace(ids)
+        projects = projects.inside_path(group.full_path)
       end
 
       Gitlab::SearchResults.new(current_user, projects, params[:search])

@@ -1833,6 +1833,14 @@ describe Project, models: true do
     end
   end
 
+  describe 'inside_path' do
+    let!(:project1) { create(:empty_project) }
+    let!(:project2) { create(:empty_project) }
+    let!(:path) { project1.namespace.path }
+
+    it { expect(Project.inside_path(path)).to eq([project1]) }
+  end
+
   def enable_lfs
     allow(Gitlab.config.lfs).to receive(:enabled).and_return(true)
   end
