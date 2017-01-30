@@ -10,7 +10,7 @@ module API
     resource :projects do
       desc 'Get all Pipelines of the project' do
         detail 'This feature was introduced in GitLab 8.11.'
-        success Entities::Pipeline
+        success Entities::PipelineBasic
       end
       params do
         use :pagination
@@ -21,7 +21,7 @@ module API
         authorize! :read_pipeline, user_project
 
         pipelines = PipelinesFinder.new(user_project).execute(scope: params[:scope])
-        present paginate(pipelines), with: Entities::Pipeline
+        present paginate(pipelines), with: Entities::PipelineBasic
       end
 
       desc 'Create a new pipeline' do

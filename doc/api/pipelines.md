@@ -24,49 +24,13 @@ Example of response
     "id": 47,
     "status": "pending",
     "ref": "new-pipeline",
-    "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
-    "before_sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
-    "tag": false,
-    "yaml_errors": null,
-    "user": {
-      "name": "Administrator",
-      "username": "root",
-      "id": 1,
-      "state": "active",
-      "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-      "web_url": "http://localhost:3000/root"
-    },
-    "created_at": "2016-08-16T10:23:19.007Z",
-    "updated_at": "2016-08-16T10:23:19.216Z",
-    "started_at": null,
-    "finished_at": null,
-    "committed_at": null,
-    "duration": null,
-    "coverage": "30.0"
+    "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a"
   },
   {
     "id": 48,
     "status": "pending",
     "ref": "new-pipeline",
-    "sha": "eb94b618fb5865b26e80fdd8ae531b7a63ad851a",
-    "before_sha": "eb94b618fb5865b26e80fdd8ae531b7a63ad851a",
-    "tag": false,
-    "yaml_errors": null,
-    "user": {
-      "name": "Administrator",
-      "username": "root",
-      "id": 1,
-      "state": "active",
-      "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-      "web_url": "http://localhost:3000/root"
-    },
-    "created_at": "2016-08-16T10:23:21.184Z",
-    "updated_at": "2016-08-16T10:23:21.314Z",
-    "started_at": null,
-    "finished_at": null,
-    "committed_at": null,
-    "duration": null,
-    "coverage": null
+    "sha": "eb94b618fb5865b26e80fdd8ae531b7a63ad851a"
   }
 ]
 ```
