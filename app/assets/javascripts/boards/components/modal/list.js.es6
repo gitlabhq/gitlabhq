@@ -6,6 +6,9 @@
   const ModalStore = gl.issueBoards.ModalStore;
 
   gl.issueBoards.ModalList = Vue.extend({
+    props: [
+      'issueLinkBase',
+    ],
     data() {
       return ModalStore.store;
     },
@@ -34,7 +37,11 @@
       },
     },
     methods: {
-      toggleIssue: ModalStore.toggleIssue.bind(ModalStore),
+      toggleIssue(e, issue) {
+        if (e.target.tagName !== 'A') {
+          ModalStore.toggleIssue(issue);
+        }
+      },
       listHeight() {
         return this.$refs.list.getBoundingClientRect().height;
       },
@@ -100,10 +107,10 @@
           <div
             class="card"
             :class="{ 'is-active': issue.selected }"
-            @click="toggleIssue(issue)">
+            @click="toggleIssue($event, issue)">
             <issue-card-inner
               :issue="issue"
-              :issue-link-base="'/'">
+              :issue-link-base="issueLinkBase">
             </issue-card-inner>
             <span
               v-if="issue.selected"

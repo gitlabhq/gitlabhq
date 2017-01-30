@@ -9,7 +9,7 @@
 
   gl.issueBoards.IssuesModal = Vue.extend({
     props: [
-      'blankStateImage', 'newIssuePath', 'bulkUpdatePath',
+      'blankStateImage', 'newIssuePath', 'bulkUpdatePath', 'issueLinkBase',
     ],
     data() {
       return ModalStore.store;
@@ -81,7 +81,9 @@
         v-if="showAddIssuesModal">
         <div class="add-issues-container">
           <modal-header></modal-header>
-          <modal-list v-if="!loading && showList"></modal-list>
+          <modal-list
+            :issue-link-base="issueLinkBase"
+            v-if="!loading && showList"></modal-list>
           <empty-state
             v-if="(!loading && issues.length === 0) || (activeTab === 'selected' && selectedIssues.length === 0)"
             :image="blankStateImage"
