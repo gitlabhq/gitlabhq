@@ -3,7 +3,6 @@
 /* global IssuableContext */
 /* global MilestoneSelect */
 /* global LabelsSelect */
-/* global Sidebar */
 
 (() => {
   const Store = gl.issueBoards.BoardsStore;
@@ -58,7 +57,7 @@
       new MilestoneSelect();
       new gl.DueDateSelectors();
       new LabelsSelect();
-      new Sidebar();
+      new gl.RightSidebar();
       gl.Subscription.bindAll('.subscription');
     }
   });

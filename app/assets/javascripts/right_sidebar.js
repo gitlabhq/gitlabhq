@@ -2,17 +2,18 @@
 /* global Cookies */
 
 (function() {
+  var global = window.gl || (window.gl = {});
   var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
 
-  this.Sidebar = (function() {
-    function Sidebar(currentUser) {
+  global.RightSidebar = (function() {
+    function RightSidebar(currentUser) {
       this.toggleTodo = bind(this.toggleTodo, this);
       this.sidebar = $('aside');
       this.removeListeners();
       this.addEventListeners();
     }
 
-    Sidebar.prototype.removeListeners = function () {
+    RightSidebar.prototype.removeListeners = function () {
       this.sidebar.off('click', '.sidebar-collapsed-icon');
       $('.dropdown').off('hidden.gl.dropdown');
       $('.dropdown').off('loading.gl.dropdown');
@@ -20,7 +21,7 @@
       $(document).off('click', '.js-sidebar-toggle');
     };
 
-    Sidebar.prototype.addEventListeners = function() {
+    RightSidebar.prototype.addEventListeners = function() {
       this.sidebar.on('click', '.sidebar-collapsed-icon', this, this.sidebarCollapseClicked);
       $('.dropdown').on('hidden.gl.dropdown', this, this.onSidebarDropdownHidden);
       $('.dropdown').on('loading.gl.dropdown', this.sidebarDropdownLoading);
@@ -47,7 +48,7 @@
       return $(document).off('click', '.js-issuable-todo').on('click', '.js-issuable-todo', this.toggleTodo);
     };
 
-    Sidebar.prototype.toggleTodo = function(e) {
+    RightSidebar.prototype.toggleTodo = function(e) {
       var $btnText, $this, $todoLoading, ajaxType, url;
       $this = $(e.currentTarget);
       $todoLoading = $('.js-issuable-todo-loading');
@@ -78,12 +79,12 @@
       })(this));
     };
 
-    Sidebar.prototype.beforeTodoSend = function($btn, $todoLoading) {
+    RightSidebar.prototype.beforeTodoSend = function($btn, $todoLoading) {
       $btn.disable();
       return $todoLoading.removeClass('hidden');
     };
 
-    Sidebar.prototype.todoUpdateDone = function(data, $btn, $btnText, $todoLoading) {
+    RightSidebar.prototype.todoUpdateDone = function(data, $btn, $btnText, $todoLoading) {
       $(document).trigger('todo:toggle', data.count);
 
       $btn.enable();
@@ -98,7 +99,7 @@
       }
     };
 
-    Sidebar.prototype.sidebarDropdownLoading = function(e) {
+    RightSidebar.prototype.sidebarDropdownLoading = function(e) {
       var $loading, $sidebarCollapsedIcon, i, img;
       $sidebarCollapsedIcon = $(this).closest('.block').find('.sidebar-collapsed-icon');
       img = $sidebarCollapsedIcon.find('img');
@@ -113,7 +114,7 @@
       }
     };
 
-    Sidebar.prototype.sidebarDropdownLoaded = function(e) {
+    RightSidebar.prototype.sidebarDropdownLoaded = function(e) {
       var $sidebarCollapsedIcon, i, img;
       $sidebarCollapsedIcon = $(this).closest('.block').find('.sidebar-collapsed-icon');
       img = $sidebarCollapsedIcon.find('img');
@@ -126,7 +127,7 @@
       }
     };
 
-    Sidebar.prototype.sidebarCollapseClicked = function(e) {
+    RightSidebar.prototype.sidebarCollapseClicked = function(e) {
       var $block, sidebar;
       if ($(e.currentTarget).hasClass('dont-change-state')) {
         return;
@@ -137,7 +138,7 @@
       return sidebar.openDropdown($block);
     };
 
-    Sidebar.prototype.openDropdown = function(blockOrName) {
+    RightSidebar.prototype.openDropdown = function(blockOrName) {
       var $block;
       $block = _.isString(blockOrName) ? this.getBlock(blockOrName) : blockOrName;
       $block.find('.edit-link').trigger('click');
@@ -147,12 +148,13 @@
       }
     };
 
-    Sidebar.prototype.setCollapseAfterUpdate = function($block) {
+    RightSidebar.prototype.setCollapseAfterUpdate = function($block) {
       $block.addClass('collapse-after-update');
+      $block.data('before-update', $('input', $block).val());
       return $('.page-with-sidebar').addClass('with-overlay');
     };
 
-    Sidebar.prototype.onSidebarDropdownHidden = function(e) {
+    RightSidebar.prototype.onSidebarDropdownHidden = function(e) {
       var $block, sidebar;
       sidebar = e.data;
       e.preventDefault();
@@ -160,19 +162,19 @@
       return sidebar.sidebarDropdownHidden($block);
     };
 
-    Sidebar.prototype.sidebarDropdownHidden = function($block) {
-      if ($block.hasClass('collapse-after-update')) {
+    RightSidebar.prototype.sidebarDropdownHidden = function($block) {
+      if ($block.hasClass('collapse-after-update') && $('input', $block).val() !== $block.data('before-update')) {
         $block.removeClass('collapse-after-update');
         $('.page-with-sidebar').removeClass('with-overlay');
         return this.toggleSidebar('hide');
       }
     };
 
-    Sidebar.prototype.triggerOpenSidebar = function() {
+    RightSidebar.prototype.triggerOpenSidebar = function() {
       return this.sidebar.find('.js-sidebar-toggle').trigger('click');
     };
 
-    Sidebar.prototype.toggleSidebar = function(action) {
+    RightSidebar.prototype.toggleSidebar = function(action) {
       if (action == null) {
         action = 'toggle';
       }
@@ -191,14 +193,14 @@
       }
     };
 
-    Sidebar.prototype.isOpen = function() {
+    RightSidebar.prototype.isOpen = function() {
       return this.sidebar.is('.right-sidebar-expanded');
     };
 
-    Sidebar.prototype.getBlock = function(name) {
+    RightSidebar.prototype.getBlock = function(name) {
       return this.sidebar.find(".block." + name);
     };
 
-    return Sidebar;
+    return RightSidebar;
   })();
 }).call(this);

@@ -39,7 +39,7 @@
     preloadFixtures(fixtureName);
     beforeEach(function() {
       loadFixtures(fixtureName);
-      this.sidebar = new Sidebar;
+      this.sidebar = new gl.RightSidebar();
       $aside = $('.right-sidebar');
       $page = $('.page-with-sidebar');
       $icon = $aside.find('i');
