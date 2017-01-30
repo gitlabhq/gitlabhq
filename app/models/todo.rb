@@ -103,9 +103,9 @@ class Todo < ActiveRecord::Base
 
   def target_reference
     if for_commit?
-      target.short_id
+      target.reference_link_text(full: true)
     else
-      target.to_reference
+      target.to_reference(full: true)
     end
   end
 

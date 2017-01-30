@@ -591,10 +591,11 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def to_reference(from_project = nil, full: false)
-    if full || cross_namespace_reference?(from_project)
+  # `from` argument can be a Namespace or Project.
+  def to_reference(from = nil, full: false)
+    if full || cross_namespace_reference?(from)
       path_with_namespace
-    elsif cross_project_reference?(from_project)
+    elsif cross_project_reference?(from)
       path
     end
   end
@@ -1291,19 +1292,24 @@ class Project < ActiveRecord::Base
 
   private
 
+  def cross_namespace_reference?(from)
+    case from
+    when Project
+      namespace != from.namespace
+    when Namespace
+      namespace != from
+    end
+  end
+
   # Check if a reference is being done cross-project
-  #
-  # from_project - Refering Project object
-  def cross_project_reference?(from_project)
-    from_project && self != from_project
+  def cross_project_reference?(from)
+    return true if from.is_a?(Namespace)
+
+    from && self != from
   end
 
   def pushes_since_gc_redis_key
     "projects/#{id}/pushes_since_gc"
-  end
-
-  def cross_namespace_reference?(from_project)
-    from_project && namespace != from_project.namespace
   end
 
   def default_branch_protected?
