@@ -198,6 +198,12 @@ describe User, models: true do
         end
       end
     end
+
+    it 'does not allow a user to be both an auditor and an admin' do
+      user = build(:user, :admin, :auditor)
+
+      expect(user).to be_invalid
+    end
   end
 
   describe "non_ldap" do
@@ -1415,7 +1421,7 @@ describe User, models: true do
 
     it 'returns the projects when using an ActiveRecord relation' do
       projects = user.
-        projects_with_reporter_access_limited_to(Project.select(:id))
+                   projects_with_reporter_access_limited_to(Project.select(:id))
 
       expect(projects).to eq([project1])
     end

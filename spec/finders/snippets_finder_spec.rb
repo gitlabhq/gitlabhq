@@ -127,5 +127,17 @@ describe SnippetsFinder do
       snippets = SnippetsFinder.new.execute(user, filter: :by_project, project: project1, scope: "are_private")
       expect(snippets).to include(@snippet1)
     end
+
+    it "returns all snippets for admin users" do
+      user = create(:user, :admin)
+      snippets = SnippetsFinder.new.execute(user, filter: :by_project, project: project1)
+      expect(snippets).to include(@snippet1, @snippet2, @snippet3)
+    end
+
+    it "returns all snippets for auditor users" do
+      user = create(:user, :auditor)
+      snippets = SnippetsFinder.new.execute(user, filter: :by_project, project: project1)
+      expect(snippets).to include(@snippet1, @snippet2, @snippet3)
+    end
   end
 end
