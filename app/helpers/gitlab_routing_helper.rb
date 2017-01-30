@@ -206,4 +206,13 @@ module GitlabRoutingHelper
       file_namespace_project_build_artifacts_path(*args)
     end
   end
+
+  # Settings
+  def project_settings_integrations_path(project, *args)
+    namespace_project_settings_integrations_path(project.namespace, project, *args)
+  end
+  
+  def project_settings_members_path(project, *args)
+    namespace_project_settings_members_path(project.namespace, project, *args)
+  end
 end

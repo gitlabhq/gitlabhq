@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::GithubImport::BranchFormatter, lib: true do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:commit) { create(:commit, project: project) }
   let(:repo) { double }
   let(:raw) do

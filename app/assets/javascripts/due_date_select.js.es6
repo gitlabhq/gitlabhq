@@ -1,4 +1,4 @@
-/* eslint-disable wrap-iife, func-names, space-before-function-paren, comma-dangle, prefer-template, consistent-return, class-methods-use-this, arrow-body-style, prefer-const, padded-blocks, no-unused-vars, no-underscore-dangle, no-new, max-len, semi, no-sequences, no-unused-expressions, no-param-reassign */
+/* eslint-disable wrap-iife, func-names, space-before-function-paren, comma-dangle, prefer-template, consistent-return, class-methods-use-this, arrow-body-style, no-unused-vars, no-underscore-dangle, no-new, max-len, no-sequences, no-unused-expressions, no-param-reassign */
 
 (function(global) {
   class DueDateSelect {
@@ -16,7 +16,7 @@
       this.$sidebarValue = $('.js-due-date-sidebar-value', $block);
       this.fieldName = $dropdown.data('field-name'),
       this.abilityName = $dropdown.data('ability-name'),
-      this.issueUpdateURL = $dropdown.data('issue-update')
+      this.issueUpdateURL = $dropdown.data('issue-update');
 
       this.rawSelectedDate = null;
       this.displayedDate = null;
@@ -80,9 +80,12 @@
     }
 
     parseSelectedDate() {
-      this.rawSelectedDate = $("input[name='" + this.fieldName + "']").val();
+      this.rawSelectedDate = $(`input[name='${this.fieldName}']`).val();
+
       if (this.rawSelectedDate.length) {
-        let dateObj = new Date(this.rawSelectedDate);
+        // Construct Date object manually to avoid buggy dateString support within Date constructor
+        const dateArray = this.rawSelectedDate.split('-').map(v => parseInt(v, 10));
+        const dateObj = new Date(dateArray[0], dateArray[1] - 1, dateArray[2]);
         this.displayedDate = $.datepicker.formatDate('M d, yy', dateObj);
       } else {
         this.displayedDate = 'No due date';
@@ -132,7 +135,6 @@
           return selectedDateValue.length ?
             $('.js-remove-due-date-holder').removeClass('hidden') :
             $('.js-remove-due-date-holder').addClass('hidden');
-
         }
       }).done((data) => {
         if (isDropdown) {
@@ -176,5 +178,4 @@
   }
 
   global.DueDateSelectors = DueDateSelectors;
-
 })(window.gl || (window.gl = {}));

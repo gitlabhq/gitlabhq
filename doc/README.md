@@ -1,8 +1,12 @@
 # GitLab Community Edition documentation
 
+## University
+
+[University](university/README.md) contain guides to learn Git and GitLab through courses and videos.
+
 ## User documentation
 
-- [Account Security](user/account/security.md) Securing your account via two-factor authentication, etc.
+- [Account Security](user/profile/account/two_factor_authentication.md) Securing your account via two-factor authentication, etc.
 - [API](api/README.md) Automate GitLab via a simple and powerful API.
 - [CI/CD](ci/README.md) GitLab Continuous Integration (CI) and Continuous Delivery (CD) getting started, `.gitlab-ci.yml` options, and examples.
 - [GitLab as OAuth2 authentication service provider](integration/oauth_provider.md). It allows you to login to other applications from GitLab.
@@ -19,7 +23,6 @@
 - [SSH](ssh/README.md) Setup your ssh keys and deploy keys for secure access to your projects.
 - [Webhooks](web_hooks/web_hooks.md) Let GitLab notify you when new code has been pushed to your project.
 - [Workflow](workflow/README.md) Using GitLab functionality and importing projects from GitHub and SVN.
-- [University](university/README.md) Learn Git and GitLab through videos and courses.
 - [Git Attributes](user/project/git_attributes.md) Managing Git attributes using a `.gitattributes` file.
 - [Git cheatsheet](https://gitlab.com/gitlab-com/marketing/raw/master/design/print/git-cheatsheet/print-pdf/git-cheatsheet.pdf) Download a PDF describing the most used Git operations.
 
@@ -41,7 +44,7 @@
 - [Operations](administration/operations.md) Keeping GitLab up and running.
 - [Raketasks](raketasks/README.md) Backups, maintenance, automatic webhook setup and the importing of projects.
 - [Repository checks](administration/repository_checks.md) Periodic Git repository checks.
-- [Repository storages](administration/repository_storages.md) Manage the paths used to store repositories.
+- [Repository storage paths](administration/repository_storage_paths.md) Manage the paths used to store repositories.
 - [Security](security/README.md) Learn what you can do to further secure your GitLab instance.
 - [System hooks](system_hooks/system_hooks.md) Notifications when users, projects and keys are changed.
 - [Update](update/README.md) Update guides to upgrade your installation.
@@ -50,14 +53,14 @@
 - [Migrate GitLab CI to CE/EE](migrate_ci_to_ce/README.md) Follow this guide to migrate your existing GitLab CI data to GitLab CE/EE.
 - [Git LFS configuration](workflow/lfs/lfs_administration.md)
 - [Housekeeping](administration/housekeeping.md) Keep your Git repository tidy and fast.
-- [GitLab Performance Monitoring](administration/monitoring/performance/introduction.md) Configure GitLab and InfluxDB for measuring performance metrics.
+- [GitLab performance monitoring with InfluxDB](administration/monitoring/performance/introduction.md) Configure GitLab and InfluxDB for measuring performance metrics.
+- [GitLab performance monitoring with Prometheus](administration/monitoring/performance/prometheus.md) Configure GitLab and Prometheus for measuring performance metrics.
 - [Request Profiling](administration/monitoring/performance/request_profiling.md) Get a detailed profile on slow requests.
 - [Monitoring uptime](user/admin_area/monitoring/health_check.md) Check the server status using the health check endpoint.
 - [Debugging Tips](administration/troubleshooting/debug.md) Tips to debug problems when things go wrong
 - [Sidekiq Troubleshooting](administration/troubleshooting/sidekiq.md) Debug when Sidekiq appears hung and is not processing jobs.
 - [High Availability](administration/high_availability/README.md) Configure multiple servers for scaling or high availability.
 - [Container Registry](administration/container_registry.md) Configure Docker Registry with GitLab.
-- [Multiple mountpoints for the repositories storage](administration/repository_storages.md) Define multiple repository storage paths to distribute the storage load.
 
 ## Contributor documentation
 

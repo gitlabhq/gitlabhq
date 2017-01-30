@@ -124,7 +124,7 @@ Download Ruby and compile it:
 
     mkdir /tmp/ruby && cd /tmp/ruby
     curl --remote-name --progress https://cache.ruby-lang.org/pub/ruby/2.3/ruby-2.3.3.tar.gz
-    echo 'a8db9ce7f9110320f33b8325200e3ecfbd2b534b ruby-2.3.3.tar.gz' | shasum -c - && tar xzf ruby-2.3.3.tar.gz
+    echo '1014ee699071aa2ddd501907d18cbe15399c997d ruby-2.3.3.tar.gz' | shasum -c - && tar xzf ruby-2.3.3.tar.gz
     cd ruby-2.3.3
     ./configure --disable-install-rdoc
     make
@@ -271,9 +271,9 @@ sudo usermod -aG redis git
 ### Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-15-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-16-stable gitlab
 
-**Note:** You can change `8-15-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `8-16-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 
@@ -400,15 +400,9 @@ GitLab-Workhorse uses [GNU Make](https://www.gnu.org/software/make/). The
 following command-line will install GitLab-Workhorse in `/home/git/gitlab-workhorse`
 which is the recommended location.
 
-    cd /home/git/gitlab
-
     sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse]" RAILS_ENV=production
 
 ### Initialize Database and Activate Advanced Features
-
-    # Go to GitLab installation folder
-
-    cd /home/git/gitlab
 
     sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production
 
@@ -454,7 +448,7 @@ Check if GitLab and its environment are configured correctly:
 
 ### Compile Assets
 
-    sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production
+    sudo -u git -H bundle exec rake gitlab:assets:compile RAILS_ENV=production
 
 ### Start Your GitLab Instance
 
@@ -606,6 +600,12 @@ If you want to connect the Redis server via socket, then use the "unix:" URL sch
     # example
     production:
       url: unix:/path/to/redis/socket
+
+Also you can use environment variables in the `config/resque.yml` file:
+
+    # example
+    production:
+      url: <%= ENV.fetch('GITLAB_REDIS_URL') %>
 
 ### Custom SSH Connection
 

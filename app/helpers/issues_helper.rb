@@ -58,13 +58,13 @@ module IssuesHelper
   end
 
   def status_box_class(item)
-    if item.respond_to?(:expired?) && item.expired?
+    if item.try(:expired?)
       'status-box-expired'
-    elsif item.respond_to?(:merged?) && item.merged?
+    elsif item.try(:merged?)
       'status-box-merged'
     elsif item.closed?
       'status-box-closed'
-    elsif item.respond_to?(:upcoming?) && item.upcoming?
+    elsif item.try(:upcoming?)
       'status-box-upcoming'
     else
       'status-box-open'
@@ -128,8 +128,10 @@ module IssuesHelper
     names.to_sentence
   end
 
-  def award_active_class(awards, current_user)
-    if current_user && awards.find { |a| a.user_id == current_user.id }
+  def award_state_class(awards, current_user)
+    if !current_user
+      "disabled"
+    elsif current_user && awards.find { |a| a.user_id == current_user.id }
       "active"
     else
       ""

@@ -73,7 +73,7 @@ class User < ActiveRecord::Base
   has_many :created_projects,         foreign_key: :creator_id, class_name: 'Project'
   has_many :users_star_projects, dependent: :destroy
   has_many :starred_projects, through: :users_star_projects, source: :project
-  has_many :project_authorizations, dependent: :destroy
+  has_many :project_authorizations
   has_many :authorized_projects, through: :project_authorizations, source: :project
 
   has_many :snippets,                 dependent: :destroy, foreign_key: :author_id
@@ -99,6 +99,7 @@ class User < ActiveRecord::Base
   #
   # Note: devise :validatable above adds validations for :email and :password
   validates :name, presence: true
+  validates_confirmation_of :email
   validates :notification_email, presence: true
   validates :notification_email, email: true, if: ->(user) { user.notification_email != user.email }
   validates :public_email, presence: true, uniqueness: true, email: true, allow_blank: true
@@ -178,8 +179,8 @@ class User < ActiveRecord::Base
   scope :not_in_project, ->(project) { project.users.present? ? where("id not in (:ids)", ids: project.users.map(&:id) ) : all }
   scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM members WHERE user_id IS NOT NULL AND requested_at IS NULL)') }
   scope :todo_authors, ->(user_id, state) { where(id: Todo.where(user_id: user_id, state: state).select(:author_id)) }
-  scope :order_recent_sign_in, -> { reorder(last_sign_in_at: :desc) }
-  scope :order_oldest_sign_in, -> { reorder(last_sign_in_at: :asc) }
+  scope :order_recent_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('last_sign_in_at', 'DESC')) }
+  scope :order_oldest_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('last_sign_in_at', 'ASC')) }
 
   def self.with_two_factor
     joins("LEFT OUTER JOIN u2f_registrations AS u2f ON u2f.user_id = users.id").
@@ -332,7 +333,7 @@ class User < ActiveRecord::Base
     username
   end
 
-  def to_reference(_from_project = nil, _target_project = nil)
+  def to_reference(_from_project = nil, target_project: nil, full: nil)
     "#{self.class.reference_prefix}#{username}"
   end
 
@@ -438,12 +439,21 @@ class User < ActiveRecord::Base
     Group.where("namespaces.id IN (#{union.to_sql})")
   end
 
+  def nested_groups
+    Group.member_descendants(id)
+  end
+
+  def nested_projects
+    Project.joins(:namespace).where('namespaces.parent_id IS NOT NULL').
+      member_descendants(id)
+  end
+
   def refresh_authorized_projects
     Users::RefreshAuthorizedProjectsService.new(self).execute
   end
 
   def remove_project_authorizations(project_ids)
-    project_authorizations.where(id: project_ids).delete_all
+    project_authorizations.where(project_id: project_ids).delete_all
   end
 
   def set_authorized_projects_column

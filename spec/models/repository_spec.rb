@@ -4,7 +4,7 @@ describe Repository, models: true do
   include RepoHelpers
   TestBlob = Struct.new(:name)
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:user) { create(:user) }
 
@@ -89,6 +89,30 @@ describe Repository, models: true do
         end
 
         it { is_expected.to eq(['v1.1.0', 'v1.0.0']) }
+      end
+
+      context 'annotated tag pointing to a blob' do
+        let(:annotated_tag_name) { 'annotated-tag' }
+
+        subject { repository.tags_sorted_by('updated_asc').map(&:name) }
+
+        before do
+          options = { message: 'test tag message\n',
+                      tagger: { name: 'John Smith', email: 'john@gmail.com' } }
+          repository.rugged.tags.create(annotated_tag_name, 'a48e4fc218069f68ef2e769dd8dfea3991362175', options)
+
+          double_first = double(committed_date: Time.now - 1.second)
+          double_last = double(committed_date: Time.now)
+
+          allow(tag_a).to receive(:dereferenced_target).and_return(double_last)
+          allow(tag_b).to receive(:dereferenced_target).and_return(double_first)
+        end
+
+        it { is_expected.to eq(['v1.1.0', 'v1.0.0', annotated_tag_name]) }
+
+        after do
+          repository.rugged.tags.delete(annotated_tag_name)
+        end
       end
     end
   end
@@ -1150,6 +1174,24 @@ describe Repository, models: true do
     end
   end
 
+  describe '#after_change_head' do
+    it 'flushes the readme cache' do
+      expect(repository).to receive(:expire_method_caches).with([
+        :readme,
+        :changelog,
+        :license,
+        :contributing,
+        :version,
+        :gitignore,
+        :koding,
+        :gitlab_ci,
+        :avatar
+      ])
+
+      repository.after_change_head
+    end
+  end
+
   describe '#before_push_tag' do
     it 'flushes the cache' do
       expect(repository).to receive(:expire_statistics_caches)
@@ -1510,14 +1552,6 @@ describe Repository, models: true do
         with(Repository::CACHED_METHODS)
 
       repository.expire_all_method_caches
-    end
-  end
-
-  describe '#expire_avatar_cache' do
-    it 'expires the cache' do
-      expect(repository).to receive(:expire_method_caches).with(%i(avatar))
-
-      repository.expire_avatar_cache
     end
   end
 

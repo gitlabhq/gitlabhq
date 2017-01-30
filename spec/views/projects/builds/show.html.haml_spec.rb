@@ -15,6 +15,36 @@ describe 'projects/builds/show', :view do
     allow(view).to receive(:can?).and_return(true)
   end
 
+  describe 'build information in header' do
+    let(:build) do
+      create(:ci_build, :success, environment: 'staging')
+    end
+
+    before do
+      render
+    end
+
+    it 'shows status name' do
+      expect(rendered).to have_css('.ci-status.ci-success', text: 'passed')
+    end
+
+    it 'does not render a link to the build' do
+      expect(rendered).not_to have_link('passed')
+    end
+
+    it 'shows build id' do
+      expect(rendered).to have_css('.js-build-id', text: build.id)
+    end
+
+    it 'shows a link to the pipeline' do
+      expect(rendered).to have_link(build.pipeline.id)
+    end
+
+    it 'shows a link to the commit' do
+      expect(rendered).to have_link(build.pipeline.short_sha)
+    end
+  end
+
   describe 'environment info in build view' do
     context 'build with latest deployment' do
       let(:build) do

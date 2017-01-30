@@ -2,6 +2,7 @@ module Ci
   class Build < CommitStatus
     include TokenAuthenticatable
     include AfterCommitQueue
+    include Presentable
 
     belongs_to :runner
     belongs_to :trigger_request
@@ -91,6 +92,12 @@ module Ci
     end
 
     state_machine :status do
+      after_transition any => [:pending] do |build|
+        build.run_after_commit do
+          BuildQueueWorker.perform_async(id)
+        end
+      end
+
       after_transition pending: :running do |build|
         build.run_after_commit do
           BuildHooksWorker.perform_async(id)
@@ -505,6 +512,10 @@ module Ci
         if value
           Time.now + ChronicDuration.parse(value)
         end
+    end
+
+    def has_expiring_artifacts?
+      artifacts_expire_at.present?
     end
 
     def keep_artifacts!

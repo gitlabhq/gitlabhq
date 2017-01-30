@@ -343,10 +343,6 @@ Style/ParenthesesAroundCondition:
 Style/RedundantParentheses:
   Enabled: true
 
-# Don't use return where it's not required.
-Style/RedundantReturn:
-  Enabled: true
-
 # Don't use semicolons to terminate expressions.
 Style/Semicolon:
   Enabled: true

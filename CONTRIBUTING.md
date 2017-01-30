@@ -80,11 +80,9 @@ the remaining issues on the GitHub issue tracker.
 ## I want to contribute!
 
 If you want to contribute to GitLab, but are not sure where to start,
-look for [issues with the label `up-for-grabs`][up-for-grabs]. These issues
-will be of reasonable size and challenge, for anyone to start contributing to
-GitLab.
-
-This was inspired by [an article by Kent C. Dodds][medium-up-for-grabs].
+look for [issues with the label `Accepting Merge Requests` and weight < 5][accepting-mrs-weight].
+These issues will be of reasonable size and challenge, for anyone to start
+contributing to GitLab.
 
 ## Implement design & UI elements
 
@@ -214,16 +212,19 @@ associated with in the description of the issue.
 ## Merge requests
 
 We welcome merge requests with fixes and improvements to GitLab code, tests,
-and/or documentation. The features we would really like a merge request for are
-listed with the label [`Accepting Merge Requests` on our issue tracker for CE][accepting-mrs-ce]
-and [EE][accepting-mrs-ee] but other improvements are also welcome. Please note
-that if an issue is marked for the current milestone either before or while you
-are working on it, a team member may take over the merge request in order to
-ensure the work is finished before the release date.
+and/or documentation. The issues that are specifically suitable for
+community contributions are listed with the label
+[`Accepting Merge Requests` on our issue tracker for CE][accepting-mrs-ce]
+and [EE][accepting-mrs-ee], but you are free to contribute to any other issue
+you want.
+
+Please note that if an issue is marked for the current milestone either before
+or while you are working on it, a team member may take over the merge request
+in order to ensure the work is finished before the release date.
 
 If you want to add a new feature that is not labeled it is best to first create
 a feedback issue (if there isn't one already) and leave a comment asking for it
-to be marked as `Accepting merge requests`. Please include screenshots or
+to be marked as `Accepting Merge Requests`. Please include screenshots or
 wireframes if the feature will also change the UI.
 
 Merge requests should be opened at [GitLab.com][gitlab-mr-tracker].
@@ -284,14 +285,6 @@ request is as follows:
    guidelines](doc/development/merge_request_performance_guidelines.md).
 1. For tests that use Capybara or PhantomJS, see this [article on how
    to write reliable asynchronous tests](https://robots.thoughtbot.com/write-reliable-asynchronous-integration-tests-with-capybara).
-
-The **official merge window** is in the beginning of the month from the 1st to
-the 7th day of the month. This is the best time to submit an MR and get
-feedback fast. Before this time the GitLab Inc. team is still dealing with work
-that is created by the monthly release such as regressions requiring patch
-releases. After the 7th it is already getting closer to the release date of the
-next version. This means there is less time to fix the issues created by
-merging large new features.
 
 Please keep the change in a single MR **as small as possible**. If you want to
 contribute a large feature think very hard what the minimum viable change is.
@@ -450,8 +443,7 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 [core team]: https://about.gitlab.com/core-team/
 [getting-help]: https://about.gitlab.com/getting-help/
 [codetriage]: http://www.codetriage.com/gitlabhq/gitlabhq
-[up-for-grabs]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name=up-for-grabs
-[medium-up-for-grabs]: https://medium.com/@kentcdodds/first-timers-only-78281ea47455
+[accepting-mrs-weight]: https://gitlab.com/gitlab-org/gitlab-ce/issues?assignee_id=0&label_name[]=Accepting%20Merge%20Requests&sort=weight_asc
 [ce-tracker]: https://gitlab.com/gitlab-org/gitlab-ce/issues
 [ee-tracker]: https://gitlab.com/gitlab-org/gitlab-ee/issues
 [google-group]: https://groups.google.com/forum/#!forum/gitlabhq

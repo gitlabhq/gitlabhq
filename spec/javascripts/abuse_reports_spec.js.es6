@@ -13,14 +13,13 @@
       (index, element) => element.innerText.indexOf(searchText) > -1,
     ).first();
 
-    fixture.preload(FIXTURE);
+    preloadFixtures(FIXTURE);
 
     beforeEach(function () {
-      fixture.load(FIXTURE);
+      loadFixtures(FIXTURE);
       this.abuseReports = new global.AbuseReports();
       messages = $('.abuse-reports .message');
     });
-
 
     it('should truncate long messages', () => {
       const $longMessage = findMessage('LONG MESSAGE');

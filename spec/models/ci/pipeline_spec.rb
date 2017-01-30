@@ -122,55 +122,80 @@ describe Ci::Pipeline, models: true do
     end
   end
 
-  describe '#stages' do
+  describe 'pipeline stages' do
     before do
-      create(:commit_status, pipeline: pipeline, stage: 'build', name: 'linux', stage_idx: 0, status: 'success')
-      create(:commit_status, pipeline: pipeline, stage: 'build', name: 'mac', stage_idx: 0, status: 'failed')
-      create(:commit_status, pipeline: pipeline, stage: 'deploy', name: 'staging', stage_idx: 2, status: 'running')
-      create(:commit_status, pipeline: pipeline, stage: 'test', name: 'rspec', stage_idx: 1, status: 'success')
+      create(:commit_status, pipeline: pipeline,
+                             stage: 'build',
+                             name: 'linux',
+                             stage_idx: 0,
+                             status: 'success')
+
+      create(:commit_status, pipeline: pipeline,
+                             stage: 'build',
+                             name: 'mac',
+                             stage_idx: 0,
+                             status: 'failed')
+
+      create(:commit_status, pipeline: pipeline,
+                             stage: 'deploy',
+                             name: 'staging',
+                             stage_idx: 2,
+                             status: 'running')
+
+      create(:commit_status, pipeline: pipeline,
+                             stage: 'test',
+                             name: 'rspec',
+                             stage_idx: 1,
+                             status: 'success')
     end
 
-    subject { pipeline.stages }
+    describe '#stages' do
+      subject { pipeline.stages }
 
-    context 'stages list' do
-      it 'returns ordered list of stages' do
-        expect(subject.map(&:name)).to eq(%w[build test deploy])
-      end
-    end
-
-    it 'returns a valid number of stages' do
-      expect(pipeline.stages_count).to eq(3)
-    end
-
-    it 'returns a valid names of stages' do
-      expect(pipeline.stages_name).to eq(['build', 'test', 'deploy'])
-    end
-
-    context 'stages with statuses' do
-      let(:statuses) do
-        subject.map do |stage|
-          [stage.name, stage.status]
+      context 'stages list' do
+        it 'returns ordered list of stages' do
+          expect(subject.map(&:name)).to eq(%w[build test deploy])
         end
       end
 
-      it 'returns list of stages with statuses' do
-        expect(statuses).to eq([['build', 'failed'],
-                                ['test', 'success'],
-                                ['deploy', 'running']
-                               ])
-      end
-
-      context 'when build is retried' do
-        before do
-          create(:commit_status, pipeline: pipeline, stage: 'build', name: 'mac', stage_idx: 0, status: 'success')
+      context 'stages with statuses' do
+        let(:statuses) do
+          subject.map { |stage| [stage.name, stage.status] }
         end
 
-        it 'ignores the previous state' do
-          expect(statuses).to eq([['build', 'success'],
+        it 'returns list of stages with correct statuses' do
+          expect(statuses).to eq([['build', 'failed'],
                                   ['test', 'success'],
-                                  ['deploy', 'running']
-                                 ])
+                                  ['deploy', 'running']])
         end
+
+        context 'when commit status  is retried' do
+          before do
+            create(:commit_status, pipeline: pipeline,
+                                   stage: 'build',
+                                   name: 'mac',
+                                   stage_idx: 0,
+                                   status: 'success')
+          end
+
+          it 'ignores the previous state' do
+            expect(statuses).to eq([['build', 'success'],
+                                    ['test', 'success'],
+                                    ['deploy', 'running']])
+          end
+        end
+      end
+    end
+
+    describe '#stages_count' do
+      it 'returns a valid number of stages' do
+        expect(pipeline.stages_count).to eq(3)
+      end
+    end
+
+    describe '#stages_name' do
+      it 'returns a valid names of stages' do
+        expect(pipeline.stages_name).to eq(['build', 'test', 'deploy'])
       end
     end
   end
@@ -259,7 +284,7 @@ describe Ci::Pipeline, models: true do
     end
 
     describe 'merge request metrics' do
-      let(:project) { FactoryGirl.create :project }
+      let(:project) { create(:project, :repository) }
       let(:pipeline) { FactoryGirl.create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master', sha: project.repository.commit('master').id) }
       let!(:merge_request) { create(:merge_request, source_project: project, source_branch: pipeline.ref) }
 
@@ -314,7 +339,7 @@ describe Ci::Pipeline, models: true do
   end
 
   context 'with non-empty project' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
 
     let(:pipeline) do
       create(:ci_pipeline,
@@ -865,7 +890,7 @@ describe Ci::Pipeline, models: true do
   end
 
   describe "#merge_requests" do
-    let(:project) { FactoryGirl.create :project }
+    let(:project) { create(:project, :repository) }
     let(:pipeline) { FactoryGirl.create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master', sha: project.repository.commit('master').id) }
 
     it "returns merge requests whose `diff_head_sha` matches the pipeline's SHA" do
@@ -888,8 +913,50 @@ describe Ci::Pipeline, models: true do
     end
   end
 
+  describe '#stuck?' do
+    before do
+      create(:ci_build, :pending, pipeline: pipeline)
+    end
+
+    context 'when pipeline is stuck' do
+      it 'is stuck' do
+        expect(pipeline).to be_stuck
+      end
+    end
+
+    context 'when pipeline is not stuck' do
+      before { create(:ci_runner, :shared, :online) }
+
+      it 'is not stuck' do
+        expect(pipeline).not_to be_stuck
+      end
+    end
+  end
+
+  describe '#has_yaml_errors?' do
+    context 'when pipeline has errors' do
+      let(:pipeline) do
+        create(:ci_pipeline, config: { rspec: nil })
+      end
+
+      it 'contains yaml errors' do
+        expect(pipeline).to have_yaml_errors
+      end
+    end
+
+    context 'when pipeline does not have errors' do
+      let(:pipeline) do
+        create(:ci_pipeline, config: { rspec: { script: 'rake test' } })
+      end
+
+      it 'does not containyaml errors' do
+        expect(pipeline).not_to have_yaml_errors
+      end
+    end
+  end
+
   describe 'notifications when pipeline success or failed' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
 
     let(:pipeline) do
       create(:ci_pipeline,

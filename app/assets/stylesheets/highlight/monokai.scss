@@ -7,6 +7,8 @@ $monokai-bg: #272822;
 $monokai-border: #555;
 $monokai-text-color: #f8f8f2;
 $monokai-line-num-color: rgba(255, 255, 255, 0.3);
+$monokai-line-num-color-new: #707565;
+$monokai-line-num-color-old: #7e736f;
 $monokai-line-empty-bg: #49483e;
 $monokai-line-empty-border: darken($monokai-line-empty-bg, 15%);
 $monokai-diff-border: #808080;
@@ -120,11 +122,21 @@ $monokai-gi: #a6e22e;
     .diff-line-num.new,
     .line_content.new {
       @include diff_background($monokai-new-bg, $monokai-new-idiff, $monokai-diff-border);
+
+      &::before,
+      a {
+        color: $monokai-line-num-color-new;
+      }
     }
 
     .diff-line-num.old,
     .line_content.old {
       @include diff_background($monokai-old-bg, $monokai-old-idiff, $monokai-diff-border);
+
+      &::before,
+      a {
+        color: $monokai-line-num-color-old;
+      }
     }
 
     .line_content.match {

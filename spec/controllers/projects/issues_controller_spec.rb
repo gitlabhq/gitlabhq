@@ -98,7 +98,7 @@ describe Projects::IssuesController do
       end
 
       it 'fills in an issue for a merge request' do
-        project_with_repository = create(:project)
+        project_with_repository = create(:project, :repository)
         project_with_repository.team << [user, :developer]
         mr = create(:merge_request_with_diff_notes, source_project: project_with_repository)
 
@@ -124,7 +124,7 @@ describe Projects::IssuesController do
 
   describe 'PUT #update' do
     context 'when moving issue to another private project' do
-      let(:another_project) { create(:project, :private) }
+      let(:another_project) { create(:empty_project, :private) }
 
       before do
         sign_in(user)
@@ -326,6 +326,20 @@ describe Projects::IssuesController do
   end
 
   describe 'POST #create' do
+    def post_new_issue(attrs = {})
+      sign_in(user)
+      project = create(:empty_project, :public)
+      project.team << [user, :developer]
+
+      post :create, {
+        namespace_id: project.namespace.to_param,
+        project_id: project.to_param,
+        issue: { title: 'Title', description: 'Description' }.merge(attrs)
+      }
+
+      project.issues.first
+    end
+
     context 'resolving discussions in MergeRequest' do
       let(:discussion) { Discussion.for_diff_notes([create(:diff_note_on_merge_request)]).first }
       let(:merge_request) { discussion.noteable }
@@ -369,13 +383,7 @@ describe Projects::IssuesController do
       end
 
       def post_spam_issue
-        sign_in(user)
-        spam_project = create(:empty_project, :public)
-        post :create, {
-          namespace_id: spam_project.namespace.to_param,
-          project_id: spam_project.to_param,
-          issue: { title: 'Spam Title', description: 'Spam lives here' }
-        }
+        post_new_issue(title: 'Spam Title', description: 'Spam lives here')
       end
 
       it 'rejects an issue recognized as spam' do
@@ -396,18 +404,26 @@ describe Projects::IssuesController do
         request.env['action_dispatch.remote_ip'] = '127.0.0.1'
       end
 
-      def post_new_issue
-        sign_in(user)
-        project = create(:empty_project, :public)
-        post :create, {
-          namespace_id: project.namespace.to_param,
-          project_id: project.to_param,
-          issue: { title: 'Title', description: 'Description' }
-        }
-      end
-
       it 'creates a user agent detail' do
         expect{ post_new_issue }.to change(UserAgentDetail, :count).by(1)
+      end
+    end
+
+    context 'when description has slash commands' do
+      before do
+        sign_in(user)
+      end
+
+      it 'can add spent time' do
+        issue = post_new_issue(description: '/spend 1h')
+
+        expect(issue.total_time_spent).to eq(3600)
+      end
+
+      it 'can set the time estimate' do
+        issue = post_new_issue(description: '/estimate 2h')
+
+        expect(issue.time_estimate).to eq(7200)
       end
     end
   end
@@ -450,7 +466,7 @@ describe Projects::IssuesController do
     context "when the user is owner" do
       let(:owner)     { create(:user) }
       let(:namespace) { create(:namespace, owner: owner) }
-      let(:project)   { create(:project, namespace: namespace) }
+      let(:project)   { create(:empty_project, namespace: namespace) }
 
       before { sign_in(owner) }
 

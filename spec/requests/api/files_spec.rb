@@ -3,8 +3,8 @@ require 'spec_helper'
 describe API::Files, api: true  do
   include ApiHelpers
   let(:user) { create(:user) }
-  let!(:project) { create(:project, namespace: user.namespace ) }
-  let(:guest) { create(:user).tap { |u| create(:project_member, :guest, user: u, project: project) } }
+  let!(:project) { create(:project, :repository, namespace: user.namespace ) }
+  let(:guest) { create(:user) { |u| project.add_guest(u) } }
   let(:file_path) { 'files/ruby/popen.rb' }
   let(:params) do
     {

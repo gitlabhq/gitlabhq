@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, one-var, no-var, one-var-declaration-per-line, quotes, no-shadow, prefer-arrow-callback, prefer-template, consistent-return, padded-blocks, no-return-assign, new-parens, no-param-reassign, max-len */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, one-var, no-var, one-var-declaration-per-line, quotes, no-shadow, prefer-arrow-callback, prefer-template, consistent-return, no-return-assign, new-parens, no-param-reassign, max-len */
 
 (function() {
   var Breakpoints = (function() {
@@ -52,7 +52,6 @@
       };
 
       return BreakpointInstance;
-
     })();
 
     Breakpoints.get = function() {
@@ -60,7 +59,6 @@
     };
 
     return Breakpoints;
-
   })();
 
   $((function(_this) {

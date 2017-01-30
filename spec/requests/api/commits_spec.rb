@@ -5,7 +5,7 @@ describe API::Commits, api: true  do
   include ApiHelpers
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
-  let!(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }
+  let!(:project) { create(:project, :repository, creator: user, namespace: user.namespace) }
   let!(:master) { create(:project_member, :master, user: user, project: project) }
   let!(:guest) { create(:project_member, :guest, user: user2, project: project) }
   let!(:note) { create(:note_on_commit, author: user, project: project, commit_id: project.repository.commit.id, note: 'a comment on a commit') }
@@ -145,6 +145,16 @@ describe API::Commits, api: true  do
         post api(url, user), invalid_c_params
 
         expect(response).to have_http_status(400)
+      end
+
+      context 'with project path in URL' do
+        let(:url) { "/projects/#{project.namespace.path}%2F#{project.path}/repository/commits" }
+
+        it 'a new file in project repo' do
+          post api(url, user), valid_c_params
+
+          expect(response).to have_http_status(201)
+        end
       end
     end
 

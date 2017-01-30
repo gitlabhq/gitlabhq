@@ -10,9 +10,9 @@ describe API::Groups, api: true  do
   let(:admin) { create(:admin) }
   let!(:group1) { create(:group, avatar: File.open(uploaded_image_temp_path)) }
   let!(:group2) { create(:group, :private) }
-  let!(:project1) { create(:project, namespace: group1) }
-  let!(:project2) { create(:project, namespace: group2) }
-  let!(:project3) { create(:project, namespace: group1, path: 'test', visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
+  let!(:project1) { create(:empty_project, namespace: group1) }
+  let!(:project2) { create(:empty_project, namespace: group2) }
+  let!(:project3) { create(:empty_project, namespace: group1, path: 'test', visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
 
   before do
     group1.add_owner(user1)
@@ -23,6 +23,7 @@ describe API::Groups, api: true  do
     context "when unauthenticated" do
       it "returns authentication error" do
         get api("/groups")
+
         expect(response).to have_http_status(401)
       end
     end
@@ -30,6 +31,7 @@ describe API::Groups, api: true  do
     context "when authenticated as user" do
       it "normal user: returns an array of groups of user1" do
         get api("/groups", user1)
+
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
@@ -48,6 +50,7 @@ describe API::Groups, api: true  do
     context "when authenticated as admin" do
       it "admin: returns an array of all groups" do
         get api("/groups", admin)
+
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(2)
@@ -94,6 +97,7 @@ describe API::Groups, api: true  do
 
       it "returns all groups you have access to" do
         public_group = create :group, :public
+
         get api("/groups", user1), all_available: true
 
         expect(response).to have_http_status(200)
@@ -140,6 +144,7 @@ describe API::Groups, api: true  do
     context 'when unauthenticated' do
       it 'returns authentication error' do
         get api('/groups/owned')
+
         expect(response).to have_http_status(401)
       end
     end
@@ -147,6 +152,7 @@ describe API::Groups, api: true  do
     context 'when authenticated as group owner' do
       it 'returns an array of groups the user owns' do
         get api('/groups/owned', user2)
+
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.first['name']).to eq(group2.name)
@@ -157,7 +163,7 @@ describe API::Groups, api: true  do
   describe "GET /groups/:id" do
     context "when authenticated as user" do
       it "returns one of user1's groups" do
-        project = create(:project, namespace: group2, path: 'Foo')
+        project = create(:empty_project, namespace: group2, path: 'Foo')
         create(:project_group_link, project: project, group: group1)
 
         get api("/groups/#{group1.id}", user1)
@@ -179,6 +185,7 @@ describe API::Groups, api: true  do
 
       it "does not return a non existing group" do
         get api("/groups/1328", user1)
+
         expect(response).to have_http_status(404)
       end
 
@@ -192,12 +199,14 @@ describe API::Groups, api: true  do
     context "when authenticated as admin" do
       it "returns any existing group" do
         get api("/groups/#{group2.id}", admin)
+
         expect(response).to have_http_status(200)
         expect(json_response['name']).to eq(group2.name)
       end
 
       it "does not return a non existing group" do
         get api("/groups/1328", admin)
+
         expect(response).to have_http_status(404)
       end
     end
@@ -205,12 +214,14 @@ describe API::Groups, api: true  do
     context 'when using group path in URL' do
       it 'returns any existing group' do
         get api("/groups/#{group1.path}", admin)
+
         expect(response).to have_http_status(200)
         expect(json_response['name']).to eq(group1.name)
       end
 
       it 'does not return a non existing group' do
         get api('/groups/unknown', admin)
+
         expect(response).to have_http_status(404)
       end
 
@@ -276,7 +287,7 @@ describe API::Groups, api: true  do
         expect(json_response.length).to eq(2)
         project_names = json_response.map { |proj| proj['name' ] }
         expect(project_names).to match_array([project1.name, project3.name])
-        expect(json_response.first['default_branch']).to be_present
+        expect(json_response.first['visibility_level']).to be_present
       end
 
       it "returns the group's projects with simple representation" do
@@ -286,11 +297,11 @@ describe API::Groups, api: true  do
         expect(json_response.length).to eq(2)
         project_names = json_response.map { |proj| proj['name' ] }
         expect(project_names).to match_array([project1.name, project3.name])
-        expect(json_response.first['default_branch']).not_to be_present
+        expect(json_response.first['visibility_level']).not_to be_present
       end
 
       it 'filters the groups projects' do
-        public_project = create(:project, :public, path: 'test1', group: group1)
+        public_project = create(:empty_project, :public, path: 'test1', group: group1)
 
         get api("/groups/#{group1.id}/projects", user1), visibility: 'public'
 
@@ -302,6 +313,7 @@ describe API::Groups, api: true  do
 
       it "does not return a non existing group" do
         get api("/groups/1328/projects", user1)
+
         expect(response).to have_http_status(404)
       end
 
@@ -325,6 +337,7 @@ describe API::Groups, api: true  do
     context "when authenticated as admin" do
       it "should return any existing group" do
         get api("/groups/#{group2.id}/projects", admin)
+
         expect(response).to have_http_status(200)
         expect(json_response.length).to eq(1)
         expect(json_response.first['name']).to eq(project2.name)
@@ -332,6 +345,7 @@ describe API::Groups, api: true  do
 
       it "should not return a non existing group" do
         get api("/groups/1328/projects", admin)
+
         expect(response).to have_http_status(404)
       end
     end
@@ -347,6 +361,7 @@ describe API::Groups, api: true  do
 
       it 'does not return a non existing group' do
         get api('/groups/unknown/projects', admin)
+
         expect(response).to have_http_status(404)
       end
 
@@ -362,6 +377,7 @@ describe API::Groups, api: true  do
     context "when authenticated as user without group permissions" do
       it "does not create group" do
         post api("/groups", user1), attributes_for(:group)
+
         expect(response).to have_http_status(403)
       end
     end
@@ -371,6 +387,7 @@ describe API::Groups, api: true  do
         group = attributes_for(:group, { request_access_enabled: false })
 
         post api("/groups", user3), group
+
         expect(response).to have_http_status(201)
 
         expect(json_response["name"]).to eq(group[:name])
@@ -380,17 +397,20 @@ describe API::Groups, api: true  do
 
       it "does not create group, duplicate" do
         post api("/groups", user3), { name: 'Duplicate Test', path: group2.path }
+
         expect(response).to have_http_status(400)
         expect(response.message).to eq("Bad Request")
       end
 
       it "returns 400 bad request error if name not given" do
         post api("/groups", user3), { path: group2.path }
+
         expect(response).to have_http_status(400)
       end
 
       it "returns 400 bad request error if path not given" do
         post api("/groups", user3), { name: 'test' }
+
         expect(response).to have_http_status(400)
       end
     end
@@ -400,18 +420,22 @@ describe API::Groups, api: true  do
     context "when authenticated as user" do
       it "removes group" do
         delete api("/groups/#{group1.id}", user1)
+
         expect(response).to have_http_status(200)
       end
 
       it "does not remove a group if not an owner" do
         user4 = create(:user)
         group1.add_master(user4)
+
         delete api("/groups/#{group1.id}", user3)
+
         expect(response).to have_http_status(403)
       end
 
       it "does not remove a non existing group" do
         delete api("/groups/1328", user1)
+
         expect(response).to have_http_status(404)
       end
 
@@ -425,27 +449,31 @@ describe API::Groups, api: true  do
     context "when authenticated as admin" do
       it "removes any existing group" do
         delete api("/groups/#{group2.id}", admin)
+
         expect(response).to have_http_status(200)
       end
 
       it "does not remove a non existing group" do
         delete api("/groups/1328", admin)
+
         expect(response).to have_http_status(404)
       end
     end
   end
 
   describe "POST /groups/:id/projects/:project_id" do
-    let(:project) { create(:project) }
+    let(:project) { create(:empty_project) }
+    let(:project_path) { "#{project.namespace.path}%2F#{project.path}" }
+
     before(:each) do
       allow_any_instance_of(Projects::TransferService).
         to receive(:execute).and_return(true)
-      allow(Project).to receive(:find).and_return(project)
     end
 
     context "when authenticated as user" do
       it "does not transfer project to group" do
         post api("/groups/#{group1.id}/projects/#{project.id}", user2)
+
         expect(response).to have_http_status(403)
       end
     end
@@ -453,7 +481,44 @@ describe API::Groups, api: true  do
     context "when authenticated as admin" do
       it "transfers project to group" do
         post api("/groups/#{group1.id}/projects/#{project.id}", admin)
+
         expect(response).to have_http_status(201)
+      end
+
+      context 'when using project path in URL' do
+        context 'with a valid project path' do
+          it "transfers project to group" do
+            post api("/groups/#{group1.id}/projects/#{project_path}", admin)
+
+            expect(response).to have_http_status(201)
+          end
+        end
+
+        context 'with a non-existent project path' do
+          it "does not transfer project to group" do
+            post api("/groups/#{group1.id}/projects/nogroup%2Fnoproject", admin)
+
+            expect(response).to have_http_status(404)
+          end
+        end
+      end
+
+      context 'when using a group path in URL' do
+        context 'with a valid group path' do
+          it "transfers project to group" do
+            post api("/groups/#{group1.path}/projects/#{project_path}", admin)
+
+            expect(response).to have_http_status(201)
+          end
+        end
+
+        context 'with a non-existent group path' do
+          it "does not transfer project to group" do
+            post api("/groups/noexist/projects/#{project_path}", admin)
+
+            expect(response).to have_http_status(404)
+          end
+        end
       end
     end
   end

@@ -29,12 +29,12 @@
   gl.environmentsList.EnvironmentItem = Vue.component('environment-item', {
 
     components: {
-      'commit-component': window.gl.CommitComponent,
-      'actions-component': window.gl.environmentsList.ActionsComponent,
-      'external-url-component': window.gl.environmentsList.ExternalUrlComponent,
-      'stop-component': window.gl.environmentsList.StopComponent,
-      'rollback-component': window.gl.environmentsList.RollbackComponent,
-      'terminal-button-component': window.gl.environmentsList.TerminalButtonComponent,
+      'commit-component': gl.CommitComponent,
+      'actions-component': gl.environmentsList.ActionsComponent,
+      'external-url-component': gl.environmentsList.ExternalUrlComponent,
+      'stop-component': gl.environmentsList.StopComponent,
+      'rollback-component': gl.environmentsList.RollbackComponent,
+      'terminal-button-component': gl.environmentsList.TerminalButtonComponent,
     },
 
     props: {
@@ -183,7 +183,7 @@
        * @returns {String}
        */
       createdDate() {
-        return window.gl.environmentsList.timeagoInstance.format(
+        return gl.environmentsList.timeagoInstance.format(
           this.model.last_deployment.deployable.created_at,
         );
       },

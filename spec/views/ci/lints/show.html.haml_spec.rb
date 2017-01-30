@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'ci/lints/show' do
-  include Devise::TestHelpers
+  include Devise::Test::ControllerHelpers
 
   describe 'XSS protection' do
     let(:config_processor) { Ci::GitlabCiYamlProcessor.new(YAML.dump(content)) }

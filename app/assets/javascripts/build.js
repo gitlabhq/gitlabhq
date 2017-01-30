@@ -1,10 +1,11 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, no-use-before-define, no-param-reassign, quotes, yoda, no-else-return, consistent-return, comma-dangle, semi, object-shorthand, prefer-template, one-var, one-var-declaration-per-line, no-unused-vars, max-len, vars-on-top, padded-blocks */
+/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, no-use-before-define, no-param-reassign, quotes, yoda, no-else-return, consistent-return, comma-dangle, object-shorthand, prefer-template, one-var, one-var-declaration-per-line, no-unused-vars, max-len, vars-on-top */
 /* global Breakpoints */
 /* global Turbolinks */
 
 (function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
   var AUTO_SCROLL_OFFSET = 75;
+  var DOWN_BUILD_TRACE = '#down-build-trace';
 
   this.Build = (function() {
     Build.interval = null;
@@ -26,7 +27,7 @@
       this.$autoScrollStatus = $('#autoscroll-status');
       this.$autoScrollStatusText = this.$autoScrollStatus.find('.status-text');
       this.$upBuildTrace = $('#up-build-trace');
-      this.$downBuildTrace = $('#down-build-trace');
+      this.$downBuildTrace = $(DOWN_BUILD_TRACE);
       this.$scrollTopBtn = $('#scroll-top');
       this.$scrollBottomBtn = $('#scroll-bottom');
       this.$buildRefreshAnimation = $('.js-build-refresh');
@@ -69,7 +70,7 @@
       this.$sidebar = $('.js-build-sidebar');
       this.sidebarTranslationLimits = {
         min: $('.navbar-gitlab').outerHeight() + $('.layout-nav').outerHeight()
-      }
+      };
       this.sidebarTranslationLimits.max = this.sidebarTranslationLimits.min + $('.scrolling-tabs-container').outerHeight();
       this.$sidebar.css({
         top: this.sidebarTranslationLimits.max
@@ -84,13 +85,16 @@
     };
 
     Build.prototype.getInitialBuildTrace = function() {
-      var removeRefreshStatuses = ['success', 'failed', 'canceled', 'skipped']
+      var removeRefreshStatuses = ['success', 'failed', 'canceled', 'skipped'];
 
       return $.ajax({
         url: this.buildUrl,
         dataType: 'json',
         success: function(buildData) {
           $('.js-build-output').html(buildData.trace_html);
+          if (window.location.hash === DOWN_BUILD_TRACE) {
+            $("html,body").scrollTop(this.$buildTrace.height());
+          }
           if (removeRefreshStatuses.indexOf(buildData.status) >= 0) {
             this.$buildRefreshAnimation.remove();
             return this.initScrollMonitor();
@@ -105,6 +109,8 @@
         dataType: "json",
         success: (function(_this) {
           return function(log) {
+            var pageUrl;
+
             if (log.state) {
               _this.state = log.state;
             }
@@ -116,7 +122,12 @@
               }
               return _this.checkAutoscroll();
             } else if (log.status !== _this.buildStatus) {
-              return Turbolinks.visit(_this.pageUrl);
+              pageUrl = _this.pageUrl;
+              if (_this.$autoScrollStatus.data('state') === 'enabled') {
+                pageUrl += DOWN_BUILD_TRACE;
+              }
+
+              return Turbolinks.visit(pageUrl);
             }
           };
         })(this)
@@ -142,7 +153,7 @@
       this.$scrollTopBtn.hide();
       this.$scrollBottomBtn.hide();
       this.$autoScrollContainer.hide();
-    }
+    };
 
     // Page scroll listener to detect if user has scrolling page
     // and handle following cases
@@ -280,7 +291,5 @@
     };
 
     return Build;
-
   })();
-
 }).call(this);

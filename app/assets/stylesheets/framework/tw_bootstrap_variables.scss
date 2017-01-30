@@ -65,11 +65,11 @@ $legend-color: $text-color;
 //
 //##
 
-$pagination-color: $gl-gray;
+$pagination-color: $gl-text-color;
 $pagination-bg: $white-light;
 $pagination-border: $border-color;
 
-$pagination-hover-color: $gl-gray;
+$pagination-hover-color: $gl-text-color;
 $pagination-hover-bg: $row-hover;
 $pagination-hover-border: $border-color;
 
@@ -121,6 +121,9 @@ $panel-default-heading-bg: $gray-light;
 $panel-footer-bg: $gray-light;
 $panel-inner-border: $border-color;
 
+$badge-bg: $badge-bg;
+$badge-color: $badge-color;
+
 //== Wells
 //
 //##
@@ -154,7 +157,7 @@ $nav-link-padding: 13px $gl-padding;
 //
 //##
 $pre-bg: $gray-light !default;
-$pre-color: $gl-gray !default;
+$pre-color: $gl-text-color !default;
 $pre-border-color: $border-color;
 
 $table-bg-accent: $gray-light;

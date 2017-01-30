@@ -1,10 +1,9 @@
 require 'spec_helper'
 
-describe API::API, api: true  do
+describe API::Projects, api: true  do
   include ApiHelpers
   let(:user)  { create(:user) }
   let(:user2) { create(:user) }
-  let(:user3) { create(:user) }
   let(:admin) { create(:admin) }
   let(:group) { create(:group) }
   let(:group2) do
@@ -13,17 +12,14 @@ describe API::API, api: true  do
     group
   end
 
-  let(:project) do
-    create(:project, creator_id: user.id, namespace: user.namespace)
-  end
-
-  let(:project_user2) do
-    create(:project_member, :reporter, user: user2, project: project)
-  end
-
   describe 'POST /projects/fork/:id' do
-    before { project_user2 }
-    before { user3 }
+    let(:project) do
+      create(:project, :repository, creator: user, namespace: user.namespace)
+    end
+
+    before do
+      project.add_reporter(user2)
+    end
 
     context 'when authenticated' do
       it 'forks if user has sufficient access to project' do
@@ -49,7 +45,8 @@ describe API::API, api: true  do
       end
 
       it 'fails on missing project access for the project to fork' do
-        post api("/projects/fork/#{project.id}", user3)
+        new_user = create(:user)
+        post api("/projects/fork/#{project.id}", new_user)
 
         expect(response).to have_http_status(404)
         expect(json_response['message']).to eq('404 Project Not Found')

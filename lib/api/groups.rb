@@ -156,12 +156,12 @@ module API
         success Entities::GroupDetail
       end
       params do
-        requires :project_id, type: String, desc: 'The ID of the project'
+        requires :project_id, type: String, desc: 'The ID or path of the project'
       end
       post ":id/projects/:project_id" do
         authenticated_as_admin!
-        group = Group.find_by(id: params[:id])
-        project = Project.find(params[:project_id])
+        group = find_group!(params[:id])
+        project = find_project!(params[:project_id])
         result = ::Projects::TransferService.new(project, current_user).execute(group)
 
         if result

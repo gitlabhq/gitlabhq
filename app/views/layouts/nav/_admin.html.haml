@@ -31,7 +31,7 @@
       = link_to admin_abuse_reports_path, title: "Abuse Reports" do
         %span
           Abuse Reports
-          %span.badge.badge-dark.count= number_with_delimiter(AbuseReport.count(:all))
+          %span.badge.count= number_with_delimiter(AbuseReport.count(:all))
 
     - if askimet_enabled?
       = nav_link(controller: :spam_logs) do

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Dashboard::TodosController do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:empty_project) }
   let(:todo_service) { TodoService.new }
 
   describe 'GET #index' do
@@ -12,7 +12,7 @@ describe Dashboard::TodosController do
     end
 
     context 'when using pagination' do
-      let(:last_page) { user.todos.page().total_pages }
+      let(:last_page) { user.todos.page.total_pages }
       let!(:issues) { create_list(:issue, 2, project: project, assignee: user) }
 
       before do

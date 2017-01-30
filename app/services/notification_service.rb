@@ -178,8 +178,15 @@ class NotificationService
     recipients = []
 
     mentioned_users = note.mentioned_users
+
+    ability, subject = if note.for_personal_snippet?
+                         [:read_personal_snippet, note.noteable]
+                       else
+                         [:read_project, note.project]
+                       end
+
     mentioned_users.select! do |user|
-      user.can?(:read_project, note.project)
+      user.can?(ability, subject)
     end
 
     # Add all users participating in the thread (author, assignee, comment authors)
@@ -192,11 +199,13 @@ class NotificationService
 
     recipients = recipients.concat(participants)
 
-    # Merge project watchers
-    recipients = add_project_watchers(recipients, note.project)
+    unless note.for_personal_snippet?
+      # Merge project watchers
+      recipients = add_project_watchers(recipients, note.project)
 
-    # Merge project with custom notification
-    recipients = add_custom_notifications(recipients, note.project, :new_note)
+      # Merge project with custom notification
+      recipients = add_custom_notifications(recipients, note.project, :new_note)
+    end
 
     # Reject users with Mention notification level, except those mentioned in _this_ note.
     recipients = reject_mention_users(recipients - mentioned_users, note.project)
@@ -211,8 +220,7 @@ class NotificationService
     recipients.delete(note.author)
     recipients = recipients.uniq
 
-    # build notify method like 'note_commit_email'
-    notify_method = "note_#{note.noteable_type.underscore}_email".to_sym
+    notify_method = "note_#{note.to_ability_name}_email".to_sym
 
     recipients.each do |recipient|
       mailer.send(notify_method, recipient.id, note.id).deliver_later
@@ -591,7 +599,10 @@ class NotificationService
     custom_action = build_custom_key(action, target)
 
     recipients = target.participants(current_user)
-    recipients = add_project_watchers(recipients, project)
+
+    unless NotificationSetting::EXCLUDED_WATCHER_EVENTS.include?(custom_action)
+      recipients = add_project_watchers(recipients, project)
+    end
 
     recipients = add_custom_notifications(recipients, project, custom_action)
     recipients = reject_mention_users(recipients, project)

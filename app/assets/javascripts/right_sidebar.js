@@ -1,8 +1,8 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, no-unused-vars, semi, consistent-return, one-var, one-var-declaration-per-line, quotes, prefer-template, object-shorthand, comma-dangle, no-else-return, no-param-reassign, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, no-unused-vars, consistent-return, one-var, one-var-declaration-per-line, quotes, prefer-template, object-shorthand, comma-dangle, no-else-return, no-param-reassign, max-len */
 /* global Cookies */
 
 (function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
 
   this.Sidebar = (function() {
     function Sidebar(currentUser) {
@@ -18,7 +18,7 @@
       $('.dropdown').off('loading.gl.dropdown');
       $('.dropdown').off('loaded.gl.dropdown');
       $(document).off('click', '.js-sidebar-toggle');
-    }
+    };
 
     Sidebar.prototype.addEventListeners = function() {
       this.sidebar.on('click', '.sidebar-collapsed-icon', this, this.sidebarCollapseClicked);
@@ -200,7 +200,5 @@
     };
 
     return Sidebar;
-
   })();
-
 }).call(this);

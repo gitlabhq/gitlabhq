@@ -86,7 +86,7 @@ used for time of the build. The configuration of this feature is covered in
 ### before_script
 
 `before_script` is used to define the command that should be run before all
-builds, including deploy builds. This can be an array or a multi-line string.
+builds, including deploy builds, but after the restoration of artifacts. This can be an array or a multi-line string.
 
 ### after_script
 
@@ -1033,6 +1033,41 @@ rely on files brought into the project workspace from cache or artifacts.
 variables:
   GIT_STRATEGY: none
 ```
+
+## Git Submodule Strategy
+
+> Requires GitLab Runner v1.10+.
+
+The `GIT_SUBMODULE_STRATEGY` variable is used to control if / how Git
+submodules are included when fetching the code before a build. Like
+`GIT_STRATEGY`, it can be set in either the global [`variables`](#variables)
+section or the [`variables`](#job-variables) section for individual jobs.
+
+There are three posible values: `none`, `normal`, and `recursive`:
+
+- `none` means that submodules will not be included when fetching the project
+  code. This is the default, which matches the pre-v1.10 behavior.
+
+- `normal` means that only the top-level submodules will be included. It is
+  equivalent to:
+    ```
+    $ git submodule sync
+    $ git submodule update --init
+    ```
+
+- `recursive` means that all submodules (including submodules of submodules)
+  will be included. It is equivalent to:
+    ```
+    $ git submodule sync --recursive
+    $ git submodule update --init --recursive
+    ```
+
+Note that for this feature to work correctly, the submodules must be configured
+(in `.gitmodules`) with either:
+- the HTTP(S) URL of a publicly-accessible repository, or
+- a relative path to another repository on the same GitLab server. See the
+  [Git submodules](../git_submodules.md) documentation.
+
 
 ## Build stages attempts
 

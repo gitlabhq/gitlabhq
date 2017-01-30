@@ -1,8 +1,7 @@
 .page-content-header
   .header-main-content
-    %strong
-    = clipboard_button(clipboard_text: @commit.id)
-    = @commit.short_id
+    %strong Commit #{@commit.short_id}
+    = clipboard_button(clipboard_text: @commit.id, title: "Copy commit SHA to clipboard")
     %span.hidden-xs authored
     #{time_ago_with_tooltip(@commit.authored_date)}
     %span by

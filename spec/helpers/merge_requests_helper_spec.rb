@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe MergeRequestsHelper do
   describe 'ci_build_details_path' do
-    let(:project) { create :project }
+    let(:project) { create(:empty_project) }
     let(:merge_request) { MergeRequest.new }
     let(:ci_service) { CiService.new }
     let(:last_commit) { Ci::Pipeline.new({}) }
@@ -30,7 +30,7 @@ describe MergeRequestsHelper do
     it { is_expected.to eq('#1, #2, and #3') }
 
     context 'for JIRA issues' do
-      let(:project) { create(:project) }
+      let(:project) { create(:empty_project) }
       let(:issues) do
         [
           ExternalIssue.new('JIRA-123', project),
@@ -52,14 +52,29 @@ describe MergeRequestsHelper do
     end
 
     describe 'within different projects' do
-      let(:project) { create(:project) }
-      let(:fork_project) { create(:project, forked_from_project: project) }
+      let(:project) { create(:empty_project) }
+      let(:fork_project) { create(:empty_project, forked_from_project: project) }
       let(:merge_request) { create(:merge_request, source_project: fork_project, target_project: project) }
       subject { format_mr_branch_names(merge_request) }
       let(:source_title) { "#{fork_project.path_with_namespace}:#{merge_request.source_branch}" }
       let(:target_title) { "#{project.path_with_namespace}:#{merge_request.target_branch}" }
 
       it { is_expected.to eq([source_title, target_title]) }
+    end
+  end
+
+  describe 'mr_widget_refresh_url' do
+    let(:project)       { create(:empty_project) }
+    let(:merge_request) { create(:merge_request, source_project: project) }
+
+    it 'returns correct url for MR' do
+      expected_url = "#{project.path_with_namespace}/merge_requests/#{merge_request.iid}/merge_widget_refresh"
+
+      expect(mr_widget_refresh_url(merge_request)).to end_with(expected_url)
+    end
+
+    it 'returns empty string for nil' do
+      expect(mr_widget_refresh_url(nil)).to end_with('')
     end
   end
 end

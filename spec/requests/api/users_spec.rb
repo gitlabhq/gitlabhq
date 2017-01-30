@@ -137,6 +137,15 @@ describe API::Users, api: true  do
       expect(new_user.can_create_group).to eq(true)
     end
 
+    it "creates user with optional attributes" do
+      optional_attributes = { confirm: true }
+      attributes = attributes_for(:user).merge(optional_attributes)
+
+      post api('/users', admin), attributes
+
+      expect(response).to have_http_status(201)
+    end
+
     it "creates non-admin user" do
       post api('/users', admin), attributes_for(:user, admin: false, can_create_group: false)
       expect(response).to have_http_status(201)
@@ -265,6 +274,14 @@ describe API::Users, api: true  do
         expect(response).to have_http_status(409)
         expect(json_response['message']).to eq('Username has already been taken')
       end
+
+      it 'creates user with new identity' do
+        post api("/users", admin), attributes_for(:user, provider: 'github', extern_uid: '67890')
+
+        expect(response).to have_http_status(201)
+        expect(json_response['identities'].first['extern_uid']).to eq('67890')
+        expect(json_response['identities'].first['provider']).to eq('github')
+      end
     end
   end
 
@@ -317,9 +334,9 @@ describe API::Users, api: true  do
     end
 
     it 'updates user with new identity' do
-      put api("/users/#{user.id}", admin), provider: 'github', extern_uid: '67890'
+      put api("/users/#{user.id}", admin), provider: 'github', extern_uid: 'john'
       expect(response).to have_http_status(200)
-      expect(user.reload.identities.first.extern_uid).to eq('67890')
+      expect(user.reload.identities.first.extern_uid).to eq('john')
       expect(user.reload.identities.first.provider).to eq('github')
     end
 

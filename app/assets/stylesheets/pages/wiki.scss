@@ -29,7 +29,7 @@
 
   .wiki-last-edit-by {
     display: block;
-    color: $gl-gray-light;
+    color: $gl-text-color-secondary;
 
     strong {
       color: $gl-text-color;
@@ -38,7 +38,7 @@
 
   .light {
     font-weight: normal;
-    color: $gl-gray-light;
+    color: $gl-text-color-secondary;
   }
 
   .git-access-header {

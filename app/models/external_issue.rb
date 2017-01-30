@@ -38,7 +38,7 @@ class ExternalIssue
     @reference_pattern ||= %r{(?<issue>\b([A-Z][A-Z0-9_]+-)\d+)}
   end
 
-  def to_reference(_from_project = nil)
+  def to_reference(_from_project = nil, full: nil)
     id
   end
 

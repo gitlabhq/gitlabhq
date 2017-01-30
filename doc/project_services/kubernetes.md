@@ -8,7 +8,7 @@ the [configuration](#configuration) section.
 
 If you have a single cluster that you want to use for all your projects,
 you can pre-fill the settings page with a default template. To configure the
-template, see the [Services Templates](services-templates.md) document.
+template, see the [Services Templates](services_templates.md) document.
 
 ## Configuration
 

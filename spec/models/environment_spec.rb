@@ -32,7 +32,7 @@ describe Environment, models: true do
   end
 
   describe '#includes_commit?' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
 
     context 'without a last deployment' do
       it "returns false" do
@@ -63,8 +63,25 @@ describe Environment, models: true do
     end
   end
 
+  describe '#update_merge_request_metrics?' do
+    { 'production' => true,
+      'production/eu' => true,
+      'production/www.gitlab.com' => true,
+      'productioneu' => false,
+      'Production' => false,
+      'Production/eu' => false,
+      'test-production' => false
+    }.each do |name, expected_value|
+      it "returns #{expected_value} for #{name}" do
+        env = create(:environment, name: name)
+
+        expect(env.update_merge_request_metrics?).to eq(expected_value)
+      end
+    end
+  end
+
   describe '#first_deployment_for' do
-    let(:project)       { create(:project) }
+    let(:project)       { create(:project, :repository) }
     let!(:deployment)   { create(:deployment, environment: environment, ref: commit.parent.id) }
     let!(:deployment1)  { create(:deployment, environment: environment, ref: commit.id) }
     let(:head_commit)   { project.commit }

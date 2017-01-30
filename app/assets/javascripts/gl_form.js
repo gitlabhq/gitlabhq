@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-new, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-new, max-len */
 /* global GitLab */
 /* global DropzoneInput */
 /* global autosize */
@@ -35,8 +35,8 @@
         autosize(this.textarea);
         // form and textarea event listeners
         this.addEventListeners();
-        gl.text.init(this.form);
       }
+      gl.text.init(this.form);
       // hide discard button
       this.form.find('.js-note-discard').hide();
       return this.form.show();
@@ -58,7 +58,5 @@
     };
 
     return GLForm;
-
   })();
-
 }).call(this);

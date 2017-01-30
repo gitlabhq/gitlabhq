@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, one-var, one-var-declaration-per-line, object-shorthand, prefer-arrow-callback, comma-dangle, prefer-template, quotes, no-else-return, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, one-var, one-var-declaration-per-line, object-shorthand, prefer-arrow-callback, comma-dangle, prefer-template, quotes, no-else-return, max-len */
 /* global Api */
 
 (function() {
@@ -12,6 +12,9 @@
         selectable: true,
         filterable: true,
         fieldName: 'group_id',
+        search: {
+          fields: ['name']
+        },
         data: function(term, callback) {
           return Api.groups(term, {}, function(data) {
             data.unshift({
@@ -40,6 +43,9 @@
         selectable: true,
         filterable: true,
         fieldName: 'project_id',
+        search: {
+          fields: ['name']
+        },
         data: function(term, callback) {
           return Api.projects(term, 'id', function(data) {
             data.unshift({
@@ -90,7 +96,5 @@
     };
 
     return Search;
-
   })();
-
 }).call(this);

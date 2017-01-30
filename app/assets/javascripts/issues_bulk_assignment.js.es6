@@ -1,9 +1,8 @@
-/* eslint-disable comma-dangle, quotes, consistent-return, func-names, array-callback-return, space-before-function-paren, prefer-arrow-callback, radix, max-len, padded-blocks, no-unused-expressions, no-sequences, no-underscore-dangle, no-unused-vars, no-param-reassign */
+/* eslint-disable comma-dangle, quotes, consistent-return, func-names, array-callback-return, space-before-function-paren, prefer-arrow-callback, max-len, no-unused-expressions, no-sequences, no-underscore-dangle, no-unused-vars, no-param-reassign */
 /* global Issuable */
 /* global Flash */
 
 ((global) => {
-
   class IssuableBulkActions {
     constructor({ container, form, issues, prefixId } = {}) {
       this.prefixId = prefixId || 'issue_';
@@ -62,7 +61,6 @@
       return labels;
     }
 
-
     /**
      * Will return only labels that were marked previously and the user has unmarked
      * @return {Array} Label IDs
@@ -80,7 +78,6 @@
 
       return result;
     }
-
 
     /**
      * Simple form serialization, it will return just what we need
@@ -163,5 +160,4 @@
   }
 
   global.IssuableBulkActions = IssuableBulkActions;
-
 })(window.gl || (window.gl = {}));

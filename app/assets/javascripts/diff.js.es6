@@ -1,5 +1,7 @@
 /* eslint-disable class-methods-use-this */
 
+//= require lib/utils/url_utility */
+
 (() => {
   const UNFOLD_COUNT = 20;
 
@@ -20,7 +22,7 @@
         .on('click', '.js-unfold', this.handleClickUnfold.bind(this))
         .on('click', '.diff-line-num a', this.handleClickLineNum.bind(this));
 
-      this.highlighSelectedLine();
+      this.openAnchoredDiff();
     }
 
     handleClickUnfold(e) {
@@ -61,13 +63,22 @@
       $.get(link, params, response => $target.parent().replaceWith(response));
     }
 
-    openAnchoredDiff(anchoredDiff, cb) {
-      const diffTitle = $(`#file-path-${anchoredDiff}`);
+    openAnchoredDiff(cb) {
+      const locationHash = gl.utils.getLocationHash();
+      const anchoredDiff = locationHash && locationHash.split('_')[0];
+
+      if (!anchoredDiff) return;
+
+      const diffTitle = $(`#${anchoredDiff}`);
       const diffFile = diffTitle.closest('.diff-file');
       const nothingHereBlock = $('.nothing-here-block:visible', diffFile);
       if (nothingHereBlock.length) {
-        diffFile.singleFileDiff(true, cb);
-      } else {
+        const clickTarget = $('.file-title, .click-to-expand', diffFile);
+        diffFile.data('singleFileDiff').toggleDiff(clickTarget, () => {
+          this.highlighSelectedLine();
+          if (cb) cb();
+        });
+      } else if (cb) {
         cb();
       }
     }
@@ -95,11 +106,11 @@
     }
 
     highlighSelectedLine() {
+      const hash = gl.utils.getLocationHash();
       const $diffFiles = $('.diff-file');
       $diffFiles.find('.hll').removeClass('hll');
 
-      if (window.location.hash !== '') {
-        const hash = window.location.hash.replace('#', '');
+      if (hash) {
         $diffFiles
           .find(`tr#${hash}:not(.match) td, td#${hash}, td[data-line-code="${hash}"]`)
           .addClass('hll');

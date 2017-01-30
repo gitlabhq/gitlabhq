@@ -35,7 +35,6 @@ stages:
 .dedicated-runner: &dedicated-runner
   tags:
     - gitlab-org
-    - 2gb
 
 .knapsack-state: &knapsack-state
   services: []
@@ -108,7 +107,7 @@ setup-test-env:
   <<: *dedicated-runner
   stage: prepare
   script:
-    - bundle exec rake assets:precompile 2>/dev/null
+    - bundle exec rake gitlab:assets:compile 2>/dev/null
     - bundle exec ruby -Ispec -e 'require "spec_helper" ; TestEnv.init'
   artifacts:
     expire_in: 7d
@@ -233,7 +232,13 @@ spinach 9 10 ruby21: *spinach-knapsack-ruby21
   script:
     - bundle exec $CI_BUILD_NAME
 
-rubocop: *exec
+rubocop: 
+  <<: *ruby-static-analysis
+  <<: *dedicated-runner
+  stage: test
+  script:
+    - bundle exec "rubocop --require rubocop-rspec"
+
 rake haml_lint: *exec
 rake scss_lint: *exec
 rake brakeman: *exec

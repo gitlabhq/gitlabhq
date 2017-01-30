@@ -1,4 +1,4 @@
-/* eslint-disable space-before-function-paren, no-unused-expressions, no-var, object-shorthand, comma-dangle, semi, padded-blocks, max-len */
+/* eslint-disable space-before-function-paren, no-unused-expressions, no-var, object-shorthand, comma-dangle, max-len */
 /* global Notes */
 
 /*= require notes */
@@ -12,13 +12,14 @@
   gl.utils = gl.utils || {};
 
   describe('Notes', function() {
-    var commentsTemplate = 'issues/issue_with_comment.raw';
-    fixture.preload(commentsTemplate);
+    var commentsTemplate = 'issues/issue_with_comment.html.raw';
+    preloadFixtures(commentsTemplate);
 
     beforeEach(function () {
-      fixture.load(commentsTemplate);
+      loadFixtures(commentsTemplate);
       gl.utils.disableButtonIfEmptyField = _.noop;
       window.project_uploads_path = 'http://test.host/uploads';
+      $('body').data('page', 'projects:issues:show');
     });
 
     describe('task lists', function() {
@@ -71,8 +72,7 @@
 
         $('.js-comment-button').click();
         expect(this.autoSizeSpy).toHaveBeenTriggered();
-      })
+      });
     });
   });
-
 }).call(this);

@@ -16,7 +16,7 @@ module API
           optional :website_url, type: String, desc: 'The website of the user'
           optional :organization, type: String, desc: 'The organization of the user'
           optional :projects_limit, type: Integer, desc: 'The number of projects a user can create'
-          optional :extern_uid, type: Integer, desc: 'The external authentication provider UID'
+          optional :extern_uid, type: String, desc: 'The external authentication provider UID'
           optional :provider, type: String, desc: 'The external provider'
           optional :bio, type: String, desc: 'The biography of the user'
           optional :location, type: String, desc: 'The location of the user'
@@ -91,10 +91,11 @@ module API
         authenticated_as_admin!
 
         # Filter out params which are used later
-        identity_attrs = params.slice(:provider, :extern_uid)
-        confirm = params.delete(:confirm)
+        user_params = declared_params(include_missing: false)
+        identity_attrs = user_params.slice(:provider, :extern_uid)
+        confirm = user_params.delete(:confirm)
 
-        user = User.new(declared_params(include_missing: false))
+        user = User.new(user_params.except(:extern_uid, :provider))
         user.skip_confirmation! unless confirm
 
         if identity_attrs.any?
@@ -159,11 +160,7 @@ module API
           end
         end
 
-        # Delete already handled parameters
-        user_params.delete(:extern_uid)
-        user_params.delete(:provider)
-
-        if user.update_attributes(user_params)
+        if user.update_attributes(user_params.except(:extern_uid, :provider))
           present user, with: Entities::UserPublic
         else
           render_validation_error!(user)

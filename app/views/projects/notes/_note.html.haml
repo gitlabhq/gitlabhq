@@ -67,7 +67,9 @@
             = note.redacted_note_html
         = edited_time_ago_with_tooltip(note, placement: 'bottom', html_class: 'note_edited_ago', include_author: true)
         - if note_editable
-          = render 'projects/notes/edit_form', note: note
+          .original-note-content.hidden{ data: { post_url: namespace_project_note_path(@project.namespace, @project, note), target_id: note.noteable.id, target_type: note.noteable.class.name.underscore } }
+            #{note.note}
+          %textarea.hidden.js-task-list-field.original-task-list= note.note
         .note-awards
           = render 'award_emoji/awards_block', awardable: note, inline: false
         - if note.system

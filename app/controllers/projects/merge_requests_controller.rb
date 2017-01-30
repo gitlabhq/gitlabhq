@@ -98,7 +98,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       @start_version = @comparable_diffs.find { |diff| diff.head_commit_sha == @start_sha }
 
       unless @start_version
-        render_404
+        @start_sha = @merge_request_diff.head_commit_sha
+        @start_version = @merge_request_diff
       end
     end
 
@@ -346,6 +347,16 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     end
   end
 
+  def merge_widget_refresh
+    if merge_request.in_progress_merge_commit_sha || merge_request.state == 'merged'
+      @status = :success
+    elsif merge_request.merge_when_build_succeeds
+      @status = :merge_when_build_succeeds
+    end
+
+    render 'merge'
+  end
+
   def branch_from
     # This is always source
     @source_project = @merge_request.nil? ? @project : @merge_request.source_project
@@ -408,10 +419,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     else
       ci_service = @merge_request.source_project.try(:ci_service)
       status = ci_service.commit_status(merge_request.diff_head_sha, merge_request.source_branch) if ci_service
-
-      if ci_service.respond_to?(:commit_coverage)
-        coverage = ci_service.commit_coverage(merge_request.diff_head_sha, merge_request.source_branch)
-      end
     end
 
     response = {

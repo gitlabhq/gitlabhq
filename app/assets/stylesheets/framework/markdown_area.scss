@@ -73,7 +73,7 @@
 }
 
 .referenced-users {
-  color: $gl-header-color;
+  color: $gl-text-color;
   padding-top: 10px;
 }
 
@@ -135,7 +135,7 @@
 .toolbar-btn {
   float: left;
   padding: 0 5px;
-  color: $gl-gray-light;
+  color: $gl-text-color-secondary;
   background: transparent;
   border: 0;
   outline: 0;

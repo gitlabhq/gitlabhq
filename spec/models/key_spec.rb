@@ -28,6 +28,34 @@ describe Key, models: true do
         expect(build(:key, user: user).publishable_key).to include("#{user.name} (#{Gitlab.config.gitlab.host})")
       end
     end
+
+    describe "#update_last_used_at" do
+      let(:key) { create(:key) }
+
+      context 'when key was not updated during the last day' do
+        before do
+          allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).
+            and_return('000000')
+        end
+
+        it 'enqueues a UseKeyWorker job' do
+          expect(UseKeyWorker).to receive(:perform_async).with(key.id)
+          key.update_last_used_at
+        end
+      end
+
+      context 'when key was updated during the last day' do
+        before do
+          allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).
+            and_return(false)
+        end
+
+        it 'does not enqueue a UseKeyWorker job' do
+          expect(UseKeyWorker).not_to receive(:perform_async)
+          key.update_last_used_at
+        end
+      end
+    end
   end
 
   context "validation of uniqueness (based on fingerprint uniqueness)" do

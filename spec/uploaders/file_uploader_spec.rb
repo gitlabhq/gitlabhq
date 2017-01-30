@@ -17,7 +17,7 @@ describe FileUploader do
   describe '#image_or_video?' do
     context 'given an image file' do
       before do
-        @uploader.store!(File.new(Rails.root.join('spec', 'fixtures', 'rails_sample.jpg')))
+        @uploader.store!(fixture_file_upload(Rails.root.join('spec', 'fixtures', 'rails_sample.jpg')))
       end
 
       it 'detects an image based on file extension' do
@@ -27,7 +27,7 @@ describe FileUploader do
 
     context 'given an video file' do
       before do
-        video_file = File.new(Rails.root.join('spec', 'fixtures', 'video_sample.mp4'))
+        video_file = fixture_file_upload(Rails.root.join('spec', 'fixtures', 'video_sample.mp4'))
         @uploader.store!(video_file)
       end
 
@@ -37,7 +37,7 @@ describe FileUploader do
     end
 
     it 'does not return image_or_video? for other types' do
-      @uploader.store!(File.new(Rails.root.join('spec', 'fixtures', 'doc_sample.txt')))
+      @uploader.store!(fixture_file_upload(Rails.root.join('spec', 'fixtures', 'doc_sample.txt')))
 
       expect(@uploader.image_or_video?).to be false
     end

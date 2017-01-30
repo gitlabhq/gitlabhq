@@ -80,7 +80,7 @@ class Group < Namespace
     end
   end
 
-  def to_reference(_from_project = nil)
+  def to_reference(_from_project = nil, full: nil)
     "#{self.class.reference_prefix}#{name}"
   end
 
@@ -201,7 +201,7 @@ class Group < Namespace
   end
 
   def members_with_parents
-    GroupMember.where(requested_at: nil, source_id: parents.map(&:id).push(id))
+    GroupMember.where(requested_at: nil, source_id: ancestors.map(&:id).push(id))
   end
 
   def users_with_parents

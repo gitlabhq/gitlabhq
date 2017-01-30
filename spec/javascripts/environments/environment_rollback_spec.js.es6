@@ -1,12 +1,12 @@
 //= require vue
 //= require environments/components/environment_rollback
 describe('Rollback Component', () => {
-  fixture.preload('environments/element.html');
+  preloadFixtures('static/environments/element.html.raw');
 
   const retryURL = 'https://gitlab.com/retry';
 
   beforeEach(() => {
-    fixture.load('environments/element.html');
+    loadFixtures('static/environments/element.html.raw');
   });
 
   it('Should link to the provided retryUrl', () => {
@@ -32,7 +32,6 @@ describe('Rollback Component', () => {
 
     expect(component.$el.querySelector('span').textContent).toContain('Re-deploy');
   });
-
 
   it('Should render Rollback label when isLastDeployment is false', () => {
     const component = new window.gl.environmentsList.RollbackComponent({

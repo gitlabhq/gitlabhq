@@ -25,7 +25,7 @@ describe IrkerService, models: true do
   describe 'Execute' do
     let(:irker) { IrkerService.new }
     let(:user) { create(:user) }
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     let(:sample_data) do
       Gitlab::DataBuilder::Push.build_sample(project, user)
     end

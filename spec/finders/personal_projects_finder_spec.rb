@@ -4,14 +4,14 @@ describe PersonalProjectsFinder do
   let(:source_user)     { create(:user) }
   let(:current_user)    { create(:user) }
   let(:finder)          { described_class.new(source_user) }
-  let!(:public_project) { create(:project, :public, namespace: source_user.namespace) }
+  let!(:public_project) { create(:empty_project, :public, namespace: source_user.namespace) }
 
   let!(:private_project) do
-    create(:project, :private, namespace: source_user.namespace, path: 'mepmep')
+    create(:empty_project, :private, namespace: source_user.namespace, path: 'mepmep')
   end
 
   let!(:internal_project) do
-    create(:project, :internal, namespace: source_user.namespace, path: 'C')
+    create(:empty_project, :internal, namespace: source_user.namespace, path: 'C')
   end
 
   before do

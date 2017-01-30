@@ -5,28 +5,36 @@ module API
     before { authenticate! }
 
     helpers do
-      def filter_issues_state(issues, state)
-        case state
-        when 'opened' then issues.opened
-        when 'closed' then issues.closed
-        else issues
+      def find_issues(args = {})
+        args = params.merge(args)
+
+        args.delete(:id)
+        args[:milestone_title] = args.delete(:milestone)
+
+        match_all_labels = args.delete(:match_all_labels)
+        labels = args.delete(:labels)
+        args[:label_name] = labels if match_all_labels
+
+        args[:search] = "#{Issue.reference_prefix}#{args.delete(:iid)}" if args.key?(:iid)
+
+        issues = IssuesFinder.new(current_user, args).execute.inc_notes_with_associations
+
+        # TODO: Remove in 9.0  pass `label_name: args.delete(:labels)` to IssuesFinder
+        if !match_all_labels && labels.present?
+          issues = issues.includes(:labels).where('labels.title' => labels.split(','))
         end
-      end
 
-      def filter_issues_labels(issues, labels)
-        issues.includes(:labels).where('labels.title' => labels.split(','))
-      end
-
-      def filter_issues_milestone(issues, milestone)
-        issues.includes(:milestone).where('milestones.title' => milestone)
+        issues.reorder(args[:order_by] => args[:sort])
       end
 
       params :issues_params do
         optional :labels, type: String, desc: 'Comma-separated list of label names'
+        optional :milestone, type: String, desc: 'Milestone title'
         optional :order_by, type: String, values: %w[created_at updated_at], default: 'created_at',
                             desc: 'Return issues ordered by `created_at` or `updated_at` fields.'
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
                         desc: 'Return issues sorted in `asc` or `desc` order.'
+        optional :milestone, type: String, desc: 'Return issues for a specific milestone'
         use :pagination
       end
 
@@ -50,10 +58,7 @@ module API
         use :issues_params
       end
       get do
-        issues = current_user.issues.inc_notes_with_associations
-        issues = filter_issues_state(issues, params[:state])
-        issues = filter_issues_labels(issues, params[:labels]) unless params[:labels].nil?
-        issues = issues.reorder(params[:order_by] => params[:sort])
+        issues = find_issues(scope: 'authored')
 
         present paginate(issues), with: Entities::Issue, current_user: current_user
       end
@@ -72,15 +77,10 @@ module API
         use :issues_params
       end
       get ":id/issues" do
-        group = find_group!(params.delete(:id))
+        group = find_group!(params[:id])
 
-        params[:group_id] = group.id
-        params[:milestone_title] = params.delete(:milestone)
-        params[:label_name] = params.delete(:labels)
+        issues = find_issues(group_id: group.id, state: params[:state] || 'opened', match_all_labels: true)
 
-        issues = IssuesFinder.new(current_user, params).execute
-
-        issues = issues.reorder(params[:order_by] => params[:sort])
         present paginate(issues), with: Entities::Issue, current_user: current_user
       end
     end
@@ -89,26 +89,22 @@ module API
       requires :id, type: String, desc: 'The ID of a project'
     end
     resource :projects do
+      include TimeTrackingEndpoints
+
       desc 'Get a list of project issues' do
         success Entities::Issue
       end
       params do
         optional :state, type: String, values: %w[opened closed all], default: 'all',
                          desc: 'Return opened, closed, or all issues'
-        optional :iid, type: Integer, desc: 'The IID of the issue'
+        optional :iid, type: Integer, desc: 'Return the issue having the given `iid`'
         use :issues_params
       end
       get ":id/issues" do
-        issues = IssuesFinder.new(current_user, project_id: user_project.id).execute.inc_notes_with_associations
-        issues = filter_issues_state(issues, params[:state])
-        issues = filter_issues_labels(issues, params[:labels]) unless params[:labels].nil?
-        issues = filter_by_iid(issues, params[:iid]) unless params[:iid].nil?
+        project = find_project(params[:id])
 
-        unless params[:milestone].nil?
-          issues = filter_issues_milestone(issues, params[:milestone])
-        end
+        issues = find_issues(project_id: project.id)
 
-        issues = issues.reorder(params[:order_by] => params[:sort])
         present paginate(issues), with: Entities::Issue, current_user: current_user, project: user_project
       end
 

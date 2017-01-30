@@ -21,13 +21,23 @@ describe 'Edit Project Settings', feature: true do
       expect(page).to have_content "Name can contain only letters, digits, emojis, '_', '.', dash, space. It must start with letter, digit, emoji or '_'."
       expect(page).to have_button 'Save changes'
     end
+
+    scenario 'shows a successful notice when the project is updated' do
+      visit edit_namespace_project_path(project.namespace, project)
+
+      fill_in 'project_name_edit', with: 'hello world'
+
+      click_button 'Save changes'
+
+      expect(page).to have_content "Project 'hello world' was successfully updated."
+    end
   end
 
   describe 'Rename repository' do
     it 'shows errors for invalid project path/name' do
       visit edit_namespace_project_path(project.namespace, project)
 
-      fill_in 'Project name', with: 'foo&bar'
+      fill_in 'project_name', with: 'foo&bar'
       fill_in 'Path', with: 'foo&bar'
 
       click_button 'Rename project'
@@ -43,7 +53,7 @@ describe 'Edit Project Settings', feature: true do
     it 'shows error for invalid project name' do
       visit edit_namespace_project_path(project.namespace, project)
 
-      fill_in 'Project name', with: '🚀 foo bar ☁️'
+      fill_in 'project_name', with: '🚀 foo bar ☁️'
 
       click_button 'Rename project'
 

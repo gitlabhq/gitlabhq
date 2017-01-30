@@ -99,7 +99,7 @@ describe Gitlab::UrlBuilder, lib: true do
 
       context 'on another object' do
         it 'returns a proper URL' do
-          project = build_stubbed(:project)
+          project = build_stubbed(:empty_project)
 
           expect { described_class.build(project) }.
             to raise_error(NotImplementedError, 'No URL builder defined for Project')
