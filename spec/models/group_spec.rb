@@ -300,4 +300,18 @@ describe Group, models: true do
       expect(group.members_with_parents).to include(master)
     end
   end
+
+  describe '#expire_path_cache' do
+    let(:nested_group) { create(:group, :nested, parent: group) }
+
+    before { group.path = 'wow' }
+
+    it 'clears cache for subgroups too' do
+      expect(nested_group.full_path).to eq("#{group.full_path}/#{nested_group.path}")
+
+      group.expire_path_cache
+
+      expect(nested_group.full_path).to eq("wow/#{nested_group.path}")
+    end
+  end
 end

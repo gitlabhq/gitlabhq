@@ -6,6 +6,8 @@ class Namespace < ActiveRecord::Base
   include Gitlab::ShellAdapter
   include Gitlab::CurrentSettings
   include Routable
+  include FullName
+  include FullPath
 
   cache_markdown_field :description, pipeline: :description
 
@@ -169,25 +171,8 @@ class Namespace < ActiveRecord::Base
     Gitlab.config.lfs.enabled
   end
 
-  def full_path
-    if parent
-      parent.full_path + '/' + path
-    else
-      path
-    end
-  end
-
   def shared_runners_enabled?
     projects.with_shared_runners.any?
-  end
-
-  def full_name
-    @full_name ||=
-      if parent
-        parent.full_name + ' / ' + name
-      else
-        name
-      end
   end
 
   # Scopes the model on ancestors of the record
@@ -210,6 +195,22 @@ class Namespace < ActiveRecord::Base
   # Scopes the model on direct and indirect children of the record
   def descendants
     self.class.joins(:route).where('routes.path LIKE ?', "#{route.path}/%").reorder('routes.path ASC')
+  end
+
+  def parent_changed?
+    parent_id_changed?
+  end
+
+  def expire_path_cache
+    super
+
+    children.each(&:expire_path_cache)
+  end
+
+  def expire_name_cache
+    super
+
+    children.each(&:expire_name_cache)
   end
 
   private
@@ -248,10 +249,6 @@ class Namespace < ActiveRecord::Base
       joins(project_group_links: :project).
       where(projects: { namespace_id: id }).
       find_each(&:refresh_members_authorized_projects)
-  end
-
-  def full_path_changed?
-    path_changed? || parent_id_changed?
   end
 
   def remove_exports!

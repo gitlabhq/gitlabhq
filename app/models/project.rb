@@ -16,6 +16,8 @@ class Project < ActiveRecord::Base
   include ProjectFeaturesCompatibility
   include SelectForProjectAuthorization
   include Routable
+  include FullName
+  include FullPath
 
   extend Gitlab::ConfigHelper
 
@@ -811,26 +813,6 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def name_with_namespace
-    @name_with_namespace ||= begin
-                               if namespace
-                                 namespace.human_name + ' / ' + name
-                               else
-                                 name
-                               end
-                             end
-  end
-  alias_method :human_name, :name_with_namespace
-
-  def full_path
-    if namespace && path
-      namespace.full_path + '/' + path
-    else
-      path
-    end
-  end
-  alias_method :path_with_namespace, :full_path
-
   def execute_hooks(data, hooks_scope = :push_hooks)
     hooks.send(hooks_scope).each do |hook|
       hook.async_execute(data, hooks_scope.to_s)
@@ -1291,6 +1273,18 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def parent
+    namespace
+  end
+
+  def parent_changed?
+    namespace_id_changed?
+  end
+
+  alias_method :name_with_namespace, :full_name
+  alias_method :human_name, :full_name
+  alias_method :path_with_namespace, :full_path
+
   private
 
   def cross_namespace_reference?(from)
@@ -1327,10 +1321,6 @@ class Project < ActiveRecord::Base
   # than the number of permitted boards per project it won't fail.
   def validate_board_limit(board)
     raise BoardLimitExceeded, 'Number of permitted boards exceeded' if boards.size >= NUMBER_OF_PERMITTED_BOARDS
-  end
-
-  def full_path_changed?
-    path_changed? || namespace_id_changed?
   end
 
   def update_project_statistics

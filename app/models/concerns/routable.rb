@@ -1,5 +1,5 @@
 # Store object full path in separate table for easy lookup and uniq validation
-# Object must have path db field and respond to full_path and full_path_changed? methods.
+# Object must have path db field and respond to _uncached_full_path and full_path_changed? methods.
 module Routable
   extend ActiveSupport::Concern
 
@@ -81,6 +81,6 @@ module Routable
 
   def update_route_path
     route || build_route(source: self)
-    route.path = full_path
+    route.path = _uncached_full_path
   end
 end
