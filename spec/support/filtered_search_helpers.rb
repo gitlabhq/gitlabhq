@@ -52,4 +52,12 @@ module FilteredSearchHelpers
       end
     end
   end
+
+  def default_placeholder
+    'Search or filter results...'
+  end
+
+  def get_filtered_search_placeholder
+    find('.filtered-search')['placeholder']
+  end
 end

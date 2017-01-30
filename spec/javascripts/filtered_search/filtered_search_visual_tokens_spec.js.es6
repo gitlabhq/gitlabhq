@@ -12,7 +12,7 @@ require('~/filtered_search/filtered_search_visual_tokens');
     });
 
     afterEach(() => {
-      document.querySelector('.tokens-container').innerHTML = '';
+      tokensContainer.innerHTML = '';
     });
 
     describe('getLastVisualToken', () => {

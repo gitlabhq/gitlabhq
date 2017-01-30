@@ -27,6 +27,7 @@
       this.handleFormSubmit = this.handleFormSubmit.bind(this);
       this.setDropdownWrapper = this.dropdownManager.setDropdown.bind(this.dropdownManager);
       this.toggleClearSearchButtonWrapper = this.toggleClearSearchButton.bind(this);
+      this.handleInputPlaceholderWrapper = this.handleInputPlaceholder.bind(this);
       this.handleInputVisualTokenWrapper = this.handleInputVisualToken.bind(this);
       this.checkForEnterWrapper = this.checkForEnter.bind(this);
       this.clearSearchWrapper = this.clearSearch.bind(this);
@@ -36,6 +37,7 @@
       this.filteredSearchInput.form.addEventListener('submit', this.handleFormSubmit);
       this.filteredSearchInput.addEventListener('input', this.setDropdownWrapper);
       this.filteredSearchInput.addEventListener('input', this.toggleClearSearchButtonWrapper);
+      this.filteredSearchInput.addEventListener('input', this.handleInputPlaceholderWrapper);
       this.filteredSearchInput.addEventListener('input', this.handleInputVisualTokenWrapper);
       this.filteredSearchInput.addEventListener('keydown', this.checkForEnterWrapper);
       this.filteredSearchInput.addEventListener('keyup', this.checkForBackspaceWrapper);
@@ -48,6 +50,7 @@
       this.filteredSearchInput.form.removeEventListener('submit', this.handleFormSubmit);
       this.filteredSearchInput.removeEventListener('input', this.setDropdownWrapper);
       this.filteredSearchInput.removeEventListener('input', this.toggleClearSearchButtonWrapper);
+      this.filteredSearchInput.removeEventListener('input', this.handleInputPlaceholderWrapper);
       this.filteredSearchInput.removeEventListener('input', this.handleInputVisualTokenWrapper);
       this.filteredSearchInput.removeEventListener('keydown', this.checkForEnterWrapper);
       this.filteredSearchInput.removeEventListener('keyup', this.checkForBackspaceWrapper);
@@ -101,12 +104,25 @@
       }
     }
 
+    handleInputPlaceholder() {
+      const query = gl.DropdownUtils.getSearchQuery();
+      const placeholder = 'Search or filter results...';
+      const currentPlaceholder = this.filteredSearchInput.placeholder;
+
+      if (query.length === 0 && currentPlaceholder !== placeholder) {
+        this.filteredSearchInput.placeholder = placeholder;
+      } else if (query.length > 0 && currentPlaceholder !== '') {
+        this.filteredSearchInput.placeholder = '';
+      }
+    }
+
     clearSearch(e) {
       e.preventDefault();
 
       this.filteredSearchInput.value = '';
       this.filteredSearchInput.parentElement.querySelector('.tokens-container').innerHTML = '';
       this.clearSearchButton.classList.add('hidden');
+      this.handleInputPlaceholder();
 
       this.dropdownManager.resetDropdowns();
     }
@@ -214,6 +230,7 @@
 
       if (hasFilteredSearch) {
         this.clearSearchButton.classList.remove('hidden');
+        this.handleInputPlaceholder();
       }
     }
 
