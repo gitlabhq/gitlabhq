@@ -77,7 +77,7 @@
 
   - elsif current_user.todos.any?
     .todos-all-done
-      = render "shared/empty_states/todos_all_done.svg"
+      = render "shared/empty_states/icons/todos_all_done.svg"
       - if todos_filter_empty?
         %h4.text-center
           = Gitlab.config.gitlab.no_todos_messages.sample
@@ -94,7 +94,7 @@
   - else
     .todos-empty
       .todos-empty-hero
-        = render "shared/empty_states/todos_empty.svg"
+        = render "shared/empty_states/icons/todos_empty.svg"
       .todos-empty-content
         %h4
           Todos let you see what you should do next.
