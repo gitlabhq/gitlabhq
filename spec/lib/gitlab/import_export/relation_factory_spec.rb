@@ -178,4 +178,15 @@ describe Gitlab::ImportExport::RelationFactory, lib: true do
       expect(created_object.author).to eq(new_user)
     end
   end
+
+  context 'encrypted attributes' do
+    let(:relation_sym) { 'Ci::Variable' }
+    let(:relation_hash) do
+      create(:ci_variable).as_json
+    end
+
+    it 'maps the right author to the imported note' do
+      expect(created_object.value).to be_nil
+    end
+  end
 end

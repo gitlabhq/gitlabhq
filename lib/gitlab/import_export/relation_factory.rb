@@ -63,6 +63,7 @@ module Gitlab
 
         handle_group_label if group_label?
         reset_tokens!
+        remove_encrypted_attributes!
 
         @relation_hash['data'].deep_symbolize_keys! if @relation_name == :events && @relation_hash['data']
         set_st_diffs if @relation_name == :merge_request_diff
@@ -149,6 +150,14 @@ module Gitlab
         # We also have to reset them to avoid issues when the gitlab secrets file cannot be copied across.
         relation_class.attribute_names.select { |name| name.include?('token') }.each do |token|
           @relation_hash[token] = nil
+        end
+      end
+
+      def remove_encrypted_attributes!
+        return if relation_class.encrypted_attributes.empty?
+
+        relation_class.encrypted_attributes.each_key do |key|
+          @relation_hash[key.to_s] = nil
         end
       end
 
