@@ -1,4 +1,0 @@
----
-title: Fix Error 500 when repositories contain annotated tags pointing to blobs
-merge_request:
-author:
