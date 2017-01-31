@@ -50,6 +50,7 @@ describe('Issue card component', () => {
           list,
           issue,
           issueLinkBase: '/test',
+          rootPath: '/',
         };
       },
       components: {
@@ -59,7 +60,8 @@ describe('Issue card component', () => {
         <issue-card
           :issue="issue"
           :list="list"
-          :issue-link-base="issueLinkBase"></issue-card>
+          :issue-link-base="issueLinkBase"
+          :root-path="rootPath"></issue-card>
       `,
     });
   });
@@ -136,7 +138,7 @@ describe('Issue card component', () => {
       it('sets users path', () => {
         expect(
           component.$el.querySelector('.card-assignee').getAttribute('href'),
-        ).toBe('test');
+        ).toBe('/test');
       });
 
       it('renders avatar', () => {
