@@ -10,7 +10,7 @@ class UpdateAllMirrorsWorker
     fail_stuck_mirrors!
 
     mirrors_to_sync.find_each(batch_size: 200) do |project|
-      RepositoryUpdateMirrorDispatchWorker.perform_in(rand(project.sync_time / 2), project.id)
+      RepositoryUpdateMirrorDispatchWorker.perform_in(rand((project.sync_time / 2).minutes), project.id)
     end
   end
 
@@ -27,7 +27,7 @@ class UpdateAllMirrorsWorker
   private
 
   def mirrors_to_sync
-    Project.where(mirror: true, sync_time: Gitlab::Mirror.sync_times)
+    Project.mirror.where(sync_time: Gitlab::Mirror.sync_times)
   end
 
   def try_obtain_lease

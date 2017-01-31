@@ -1,6 +1,33 @@
 require 'spec_helper'
 
 describe Projects::MirrorsController do
+  let(:sync_times) { [Gitlab::Mirror::FIFTEEN, Gitlab::Mirror::HOURLY, Gitlab::Mirror::DAYLY] }
+
+  describe 'setting up a mirror' do
+    context 'when the current project is a mirror' do
+      before do
+        @project = create(:project, :mirror)
+        sign_in(@project.owner)
+      end
+
+      context 'sync_time update' do
+        it 'allows sync_time update with valid time' do
+          sync_times.each do |sync_time|
+            expect do
+              do_put(@project, sync_time: sync_time)
+            end.to change { Project.mirror.where(sync_time: sync_time).count }.by(1)
+          end
+        end
+
+        it 'fails to update sync_time with invalid time' do
+          expect do
+            do_put(@project, sync_time: 1000)
+          end.not_to change { @project.sync_time }
+        end
+      end
+    end
+  end
+
   describe 'setting up a remote mirror' do
     context 'when the current project is a mirror' do
       before do
@@ -12,6 +39,24 @@ describe Projects::MirrorsController do
         expect do
           do_put(@project, remote_mirrors_attributes: { '0' => { 'enabled' => 1, 'url' => 'http://foo.com' } })
         end.to change { RemoteMirror.count }.to(1)
+      end
+
+      context 'sync_time update' do
+        it 'allows sync_time update with valid time' do
+          sync_times.each do |sync_time|
+            expect do
+              do_put(@project, remote_mirrors_attributes: { '0' => { 'enabled' => 1, 'url' => 'http://foo.com', 'sync_time' => sync_time } })
+            end.to change { RemoteMirror.where(sync_time: sync_time).count }.by(1)
+          end
+        end
+
+        it 'fails to update sync_time with invalid time' do
+          expect(@project.remote_mirrors.count).to eq(0)
+
+          expect do
+            do_put(@project, remote_mirrors_attributes: { '0' => { 'enabled' => 1, 'url' => 'http://foo.com', 'sync_time' => 1000 } })
+          end.not_to change { @project.remote_mirrors.count }
+        end
       end
 
       context 'when remote mirror has the same URL' do

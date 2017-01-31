@@ -17,6 +17,6 @@ class UpdateAllRemoteMirrorsWorker
   private
 
   def remote_mirrors_to_sync
-    RemoteMirror.where(remote_sync_time: Gitlab::Mirror.sync_times)
+    RemoteMirror.where(sync_time: Gitlab::Mirror.sync_times)
   end
 end

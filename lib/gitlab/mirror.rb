@@ -4,7 +4,7 @@ module Gitlab
     HOURLY  = 60
     DAYLY   = 1440
 
-    PRECRON = 14.minutes
+    INTERVAL_BEFORE_FIFTEEN = 14.minutes
 
     class << self
       def sync_time_options
@@ -20,26 +20,21 @@ module Gitlab
         sync_times << DAYLY  if at_beginning_of_day?
         sync_times << HOURLY if at_beginning_of_hour?
 
-        return sync_times
+        sync_times
       end
 
       def at_beginning_of_day?
         start_at = DateTime.now.at_beginning_of_day
-        end_at = start_at + PRECRON
+        end_at = start_at + INTERVAL_BEFORE_FIFTEEN
 
-        include_with_range?(start_at, end_at)
+        DateTime.now.between?(start_at, end_at)
       end
 
       def at_beginning_of_hour?
         start_at = DateTime.now.at_beginning_of_hour
-        end_at = start_at + PRECRON
+        end_at = start_at + INTERVAL_BEFORE_FIFTEEN
 
-        include_with_range?(start_at, end_at)
-      end
-
-      def include_with_range?(start_at, end_at)
-        window = start_at...end_at
-        window.include?(DateTime.now)
+        DateTime.now.between?(start_at, end_at)
       end
     end
   end
