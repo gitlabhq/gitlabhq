@@ -4,10 +4,12 @@ Git is a distributed version control system, which means you can work locally
 but you can also share or "push" your changes to other servers.
 Before you can push your changes to a GitLab server
 you need a secure communication channel for sharing information.
-GitLab uses Public-key or asymmetric cryptography
-which encrypts a communication channel by locking it with your "private key"
-and allows trusted parties to unlock it with your "public key".
-If someone does not have your public key they cannot access the unencrypted message.
+
+The SSH protocol provides this security and allows you to authenticate to the
+GitLab remote server without supplying your username or password each time.
+
+For a more detailed explanation of how the SSH protocol works, we advise you to
+read [this nice tutorial by DigitalOcean](https://www.digitalocean.com/community/tutorials/understanding-the-ssh-encryption-and-connection-process).
 
 ## Locating an existing SSH key pair
 
