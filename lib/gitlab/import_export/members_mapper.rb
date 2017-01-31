@@ -41,6 +41,10 @@ module Gitlab
       end
 
       def ensure_default_member!
+        @project.project_members.each do |member|
+          member.destroy
+        end
+
         ProjectMember.create!(user: @user, access_level: ProjectMember::MASTER, source_id: @project.id, importing: true)
       end
 
