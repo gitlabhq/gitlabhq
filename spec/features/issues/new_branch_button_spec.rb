@@ -52,7 +52,7 @@ feature 'Start new branch from an issue', feature: true, js: true do
     end
   end
 
-  context "for visiters" do
+  context 'for visitors' do
     it 'shows no buttons' do
       visit namespace_project_issue_path(project.namespace, project, issue)
 
