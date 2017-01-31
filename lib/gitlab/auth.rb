@@ -2,9 +2,14 @@ module Gitlab
   module Auth
     MissingPersonalTokenError = Class.new(StandardError)
 
-    SCOPES = [:api, :read_user, :openid, :profile, :email].freeze
+    # Scopes used for GitLab API access
+    API_SCOPES = [:api, :read_user].freeze
+
+    # Scopes used by doorkeeper-openid_connect
+    OPENID_SCOPES = [:openid].freeze
+
     DEFAULT_SCOPES = [:api].freeze
-    OPTIONAL_SCOPES = SCOPES - DEFAULT_SCOPES
+    OPTIONAL_SCOPES = (API_SCOPES + OPENID_SCOPES - DEFAULT_SCOPES).freeze
 
     class << self
       def find_for_git_client(login, password, project:, ip:)
