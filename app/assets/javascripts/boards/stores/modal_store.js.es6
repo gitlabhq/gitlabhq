@@ -65,8 +65,9 @@
 
     removeSelectedIssue(issue, forcePurge = false) {
       if (this.store.activeTab === 'all' || forcePurge) {
-        const index = this.selectedIssueIndex(issue);
-        this.store.selectedIssues.splice(index, 1);
+        this.store.selectedIssues = this.store.selectedIssues.filter((fIssue) => {
+          return fIssue.id !== issue.id;
+        });
       }
     }
 
