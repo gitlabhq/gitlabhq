@@ -22,22 +22,17 @@ describe Environment, models: true do
   it { is_expected.to validate_length_of(:external_url).is_at_most(255) }
   it { is_expected.to validate_uniqueness_of(:external_url).scoped_to(:project_id) }
 
-  describe '.latest_for_commit' do
+  describe '.order_by_last_deployed_at' do
+    let(:project) { create(:project) }
     let!(:environment1) { create(:environment, project: project) }
     let!(:environment2) { create(:environment, project: project) }
     let!(:environment3) { create(:environment, project: project) }
-    let!(:deployment1) { create(:deployment, environment: environment1) }
     let!(:deployment2) { create(:deployment, environment: environment2) }
-    let(:commit) { RepoHelpers.sample_commit }
+    let!(:deployment1) { create(:deployment, environment: environment1) }
 
-    before do
-      allow(environment1).to receive(:first_deployment_for).with(commit).and_return(deployment1)
-      allow(environment2).to receive(:first_deployment_for).with(commit).and_return(deployment2)
-      allow(environment3).to receive(:first_deployment_for).with(commit).and_return(nil)
-    end
-
-    it 'returns the environment that the commit was last deployed to' do
-      expect(Environment.latest_for_commit([environment1, environment2, environment3], commit)).to be(environment2)
+    it 'returns the environments in order of having been last deployed' do
+      # byebug
+      expect(project.environments.order_by_last_deployed_at.to_a).to eq([environment3, environment2, environment1])
     end
   end
 

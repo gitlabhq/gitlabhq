@@ -106,7 +106,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       end
     end
 
-    @environment = @merge_request.latest_environment
+    @environment = @merge_request.environments.last
     @environment = nil unless can?(current_user, :read_environment, @environment)
 
     respond_to do |format|
@@ -251,7 +251,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
                  end
         @diff_notes_disabled = true
 
-        @environment = @merge_request.latest_environment
+        @environment = @merge_request.environments.last
         @environment = nil unless can?(current_user, :read_environment, @environment)
 
         render json: { html: view_to_html_string('projects/merge_requests/_new_diffs', diffs: @diffs, environment: @environment) }

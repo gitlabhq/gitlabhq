@@ -1326,30 +1326,6 @@ describe MergeRequest, models: true do
     end
   end
 
-  describe '#latest_environment' do
-    let(:project) { subject.project }
-    let!(:environment1) { create(:environment, project: project) }
-    let!(:environment2) { create(:environment, project: project) }
-    let!(:environment3) { create(:environment, project: project) }
-    let!(:deployment1) { create(:deployment, environment: environment1, ref: 'master', sha: commit.id) }
-    let!(:deployment2) { create(:deployment, environment: environment2, ref: 'feature', sha: commit.id) }
-    let(:commit) { subject.diff_head_commit }
-
-    before do
-      allow(environment1).to receive(:first_deployment_for).with(commit).and_return(deployment1)
-      allow(environment2).to receive(:first_deployment_for).with(commit).and_return(deployment2)
-      allow(environment3).to receive(:first_deployment_for).with(commit).and_return(nil)
-    end
-
-    before do
-      allow(subject).to receive(:environments).and_return([environment1, environment2, environment3])
-    end
-
-    it 'returns the environment that the commit was last deployed to' do
-      expect(subject.latest_environment).to eq(environment2)
-    end
-  end
-
   describe "#reload_diff" do
     let(:note) { create(:diff_note_on_merge_request, project: subject.project, noteable: subject) }
 
