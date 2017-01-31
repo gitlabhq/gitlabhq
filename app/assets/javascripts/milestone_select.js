@@ -116,7 +116,9 @@
               e.preventDefault();
               return;
             }
-            if ($('html').hasClass('issue-boards-page') && !$dropdown.hasClass('js-issue-board-sidebar')) {
+            if ($el.closest('.add-issues-modal').length) {
+              gl.issueBoards.ModalStore.store.filter[$dropdown.data('field-name')] = selected.name;
+            } else if ($('html').hasClass('issue-boards-page') && !$dropdown.hasClass('js-issue-board-sidebar')) {
               gl.issueBoards.BoardsStore.state.filters[$dropdown.data('field-name')] = selected.name;
               gl.issueBoards.BoardsStore.updateFiltersUrl();
               e.preventDefault();

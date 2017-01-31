@@ -50,17 +50,26 @@
           this.issuesCount = false;
         }
       },
+      filter: {
+        handler() {
+          this.issues = [];
+          this.loadIssues();
+        },
+        deep: true,
+      }
     },
     methods: {
       searchOperation: _.debounce(function searchOperationDebounce() {
         this.loadIssues(true);
       }, 500),
       loadIssues(clearIssues = false) {
-        return gl.boardService.getBacklog({
+        const data = Object.assign({}, this.filter, {
           search: this.searchTerm,
           page: this.page,
           per: this.perPage,
-        }).then((res) => {
+        });
+
+        return gl.boardService.getBacklog(data).then((res) => {
           const data = res.json();
 
           if (clearIssues) {
