@@ -356,6 +356,7 @@
 }
 
 .add-issues-modal {
+  display: -webkit-flex;
   display: flex;
   position: fixed;
   top: 0;
@@ -367,7 +368,9 @@
 }
 
 .add-issues-container {
+  display: -webkit-flex;
   display: flex;
+  -webkit-flex-direction: column;
   flex-direction: column;
   width: 90vw;
   height: 85vh;
@@ -380,7 +383,9 @@
   box-shadow: 0 2px 12px rgba($black, .5);
 
   .empty-state {
+    display: -webkit-flex;
     display: flex;
+    -webkit-flex: 1;
     flex: 1;
     margin-top: 0;
 
@@ -409,11 +414,14 @@
 }
 
 .add-issues-search {
+  display: -webkit-flex;
   display: flex;
 }
 
 .add-issues-list {
+  display: -webkit-flex;
   display: flex;
+  -webkit-flex: 1;
   flex: 1;
   padding-top: 3px;
   margin-left: -$gl-vert-padding;
@@ -441,6 +449,7 @@
 }
 
 .add-issues-list-loading {
+  -webkit-align-self: center;
   align-self: center;
   width: 100%;
   padding-left: $gl-vert-padding;
