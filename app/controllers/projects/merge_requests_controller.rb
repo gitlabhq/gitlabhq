@@ -214,7 +214,16 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
         render 'show'
       end
-      format.json { render json: { html: view_to_html_string('projects/merge_requests/show/_pipelines') } }
+
+      format.json do
+        render json: {
+          html: view_to_html_string('projects/merge_requests/show/_pipelines'),
+          pipelines: PipelineSerializer
+            .new(project: @project, user: @current_user)
+            .with_pagination(request, response)
+            .represent(@pipelines)
+        }
+      end
     end
   end
 
