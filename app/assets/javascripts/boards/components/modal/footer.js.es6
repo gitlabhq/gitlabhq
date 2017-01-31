@@ -27,8 +27,7 @@
       addIssues() {
         const list = this.selectedList;
         const selectedIssues = ModalStore.getSelectedIssues();
-        const issueIds = selectedIssues.filter(issue => issue.selected)
-          .map(issue => issue.globalId);
+        const issueIds = selectedIssues.map(issue => issue.globalId);
 
         // Post the data to the backend
         this.$http.post(this.bulkUpdatePath, {

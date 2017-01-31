@@ -90,6 +90,7 @@ describe 'Issue Boards add issue modal', :feature, :js do
           find('.form-control').native.send_keys('testing search')
 
           expect(page).not_to have_selector('.card')
+          expect(page).not_to have_content("You haven't added any issues to your project yet")
         end
       end
     end

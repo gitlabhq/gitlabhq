@@ -10,6 +10,7 @@
   gl.issueBoards.IssuesModal = Vue.extend({
     props: [
       'blankStateImage', 'newIssuePath', 'bulkUpdatePath', 'issueLinkBase',
+      'rootPath',
     ],
     data() {
       return ModalStore.store;
@@ -57,6 +58,10 @@
           });
 
           this.loadingNewPage = false;
+
+          if (!this.issuesCount) {
+            this.issuesCount = this.issues.length;
+          }
         });
       },
     },
@@ -66,7 +71,7 @@
           return this.selectedIssues.length > 0;
         }
 
-        return this.issues.length > 0;
+        return this.issuesCount > 0;
       },
     },
     components: {
@@ -83,9 +88,10 @@
           <modal-header></modal-header>
           <modal-list
             :issue-link-base="issueLinkBase"
+            :root-path="rootPath"
             v-if="!loading && showList"></modal-list>
           <empty-state
-            v-if="(!loading && issues.length === 0) || (activeTab === 'selected' && selectedIssues.length === 0)"
+            v-if="(!loading && issuesCount === 0) || (activeTab === 'selected' && selectedIssues.length === 0)"
             :image="blankStateImage"
             :new-issue-path="newIssuePath"></empty-state>
           <section

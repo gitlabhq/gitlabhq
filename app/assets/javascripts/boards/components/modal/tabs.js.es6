@@ -24,7 +24,7 @@
               @click.prevent="activeTab = 'all'">
               <span>All issues</span>
               <span class="badge">
-                {{ issues.length }}
+                {{ issuesCount }}
               </span>
             </a>
           </li>

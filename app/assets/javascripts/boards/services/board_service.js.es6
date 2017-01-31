@@ -13,7 +13,7 @@ class BoardService {
       generate: {
         method: 'POST',
         url: `${root}/${boardId}/lists/generate.json`
-      },
+      }
     });
     this.issue = Vue.resource(`${root}/${boardId}/issues{/id}`, {});
     this.issues = Vue.resource(`${root}/${boardId}/lists{/id}/issues`, {});

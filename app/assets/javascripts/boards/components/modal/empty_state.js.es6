@@ -31,10 +31,10 @@
       },
     },
     template: `
-      <div class="empty-state">
+      <section class="empty-state">
         <div class="row">
           <div class="col-xs-12 col-sm-6 col-sm-push-6">
-            <div class="svg-content" v-html="image"></div>
+            <aside class="svg-content" v-html="image"></aside>
           </div>
           <div class="col-xs-12 col-sm-6 col-sm-pull-6">
             <div class="text-content">
@@ -56,7 +56,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </section>
     `,
   });
 })();

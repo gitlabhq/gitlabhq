@@ -115,9 +115,6 @@
     },
     updateFiltersUrl () {
       history.pushState(null, null, `?${$.param(this.state.filters)}`);
-    },
-    modalSelectedCount() {
-      return this.modal.selectedIssues.length;
-    },
+    }
   };
 })();

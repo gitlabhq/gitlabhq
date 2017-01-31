@@ -24,9 +24,11 @@
       ":list" => "list",
       ":disabled" => "disabled",
       ":issue-link-base" => "issueLinkBase",
+      ":root-path" => "rootPath",
       ":key" => "_uid" }
   = render "projects/boards/components/sidebar"
   %board-add-issues-modal{ "blank-state-image" => render('shared/empty_states/icons/issues.svg'),
     "new-issue-path" => new_namespace_project_issue_path(@project.namespace, @project),
     "bulk-update-path" => bulk_update_namespace_project_issues_path(@project.namespace, @project),
-    ":issue-link-base" => "issueLinkBase" }
+    ":issue-link-base" => "issueLinkBase",
+    ":root-path" => "rootPath" }

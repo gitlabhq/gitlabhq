@@ -6,6 +6,7 @@
     constructor() {
       this.store = {
         issues: [],
+        issuesCount: false,
         selectedIssues: [],
         showAddIssuesModal: false,
         activeTab: 'all',
@@ -19,7 +20,7 @@
     }
 
     selectedCount() {
-      return this.store.selectedIssues.filter(issue => issue.selected).length;
+      return this.getSelectedIssues().length;
     }
 
     toggleIssue(issueObj) {

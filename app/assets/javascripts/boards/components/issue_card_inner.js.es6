@@ -7,7 +7,7 @@
 
   gl.issueBoards.IssueCardInner = Vue.extend({
     props: [
-      'issue', 'issueLinkBase', 'list',
+      'issue', 'issueLinkBase', 'list', 'rootPath',
     ],
     methods: {
       showLabel(label) {
@@ -57,11 +57,11 @@
           <span
             class="card-number"
             v-if="issue.id">
-            #{{issue.id}}
+            #{{ issue.id }}
           </span>
           <a
             class="card-assignee has-tooltip"
-            :href="issue.assignee.username"
+            :href="rootPath + issue.assignee.username"
             :title="'Assigned to ' + issue.assignee.name"
             v-if="issue.assignee"
             data-container="body">
@@ -69,7 +69,8 @@
               class="avatar avatar-inline s20"
               :src="issue.assignee.avatar"
               width="20"
-              height="20" />
+              height="20"
+              :alt="'Avatar for ' + issue.assignee.name" />
           </a>
           <button
             class="label color-label has-tooltip"

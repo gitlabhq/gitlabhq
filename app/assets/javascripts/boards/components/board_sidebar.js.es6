@@ -65,7 +65,7 @@
       gl.Subscription.bindAll('.subscription');
     },
     components: {
-      'remove-btn': gl.issueBoards.RemoveIssueBtn,
+      removeBtn: gl.issueBoards.RemoveIssueBtn,
     },
   });
 })();

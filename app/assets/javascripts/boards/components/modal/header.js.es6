@@ -41,10 +41,10 @@
             </button>
           </h2>
         </header>
-        <modal-tabs v-if="!loading && issues.length > 0"></modal-tabs>
+        <modal-tabs v-if="!loading && issuesCount > 0"></modal-tabs>
         <div
           class="add-issues-search append-bottom-10"
-          v-if="activeTab == 'all' && !loading && issues.length > 0">
+          v-if="activeTab == 'all' && !loading && issuesCount > 0">
           <input
             placeholder="Search issues..."
             class="form-control"

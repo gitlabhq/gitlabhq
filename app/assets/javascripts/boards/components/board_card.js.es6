@@ -18,7 +18,8 @@
       issue: Object,
       issueLinkBase: String,
       disabled: Boolean,
-      index: Number
+      index: Number,
+      rootPath: String,
     },
     data () {
       return {

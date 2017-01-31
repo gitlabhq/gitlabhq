@@ -44,6 +44,7 @@ $(() => {
       boardId: $boardApp.dataset.boardId,
       disabled: $boardApp.dataset.disabled === 'true',
       issueLinkBase: $boardApp.dataset.issueLinkBase,
+      rootPath: $boardApp.dataset.rootPath,
       detailIssue: Store.detail
     },
     computed: {

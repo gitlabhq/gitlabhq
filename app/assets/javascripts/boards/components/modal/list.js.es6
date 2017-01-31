@@ -7,7 +7,7 @@
 
   gl.issueBoards.ModalList = Vue.extend({
     props: [
-      'issueLinkBase',
+      'issueLinkBase', 'rootPath',
     ],
     data() {
       return ModalStore.store;
@@ -97,7 +97,7 @@
       issueCardInner: gl.issueBoards.IssueCardInner,
     },
     template: `
-      <div
+      <section
         class="add-issues-list add-issues-list-columns"
         ref="list">
         <div
@@ -110,16 +110,19 @@
             @click="toggleIssue($event, issue)">
             <issue-card-inner
               :issue="issue"
-              :issue-link-base="issueLinkBase">
+              :issue-link-base="issueLinkBase"
+              :root-path="rootPath">
             </issue-card-inner>
             <span
+              :aria-label="'Issue #' + issue.id + ' selected'"
+              aria-checked="true"
               v-if="issue.selected"
               class="issue-card-selected text-center">
               <i class="fa fa-check"></i>
             </span>
           </div>
         </div>
-      </div>
+      </section>
     `,
   });
 })();
