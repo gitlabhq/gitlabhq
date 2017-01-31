@@ -77,7 +77,7 @@ describe GroupProjectsFinder do
   end
 
   describe 'with an admin current user' do
-    let(:current_user) { create(:user, :admin) }
+    let(:current_user) { create(:admin) }
 
     context "only shared" do
       subject { described_class.new(group, only_shared: true).execute(current_user) }

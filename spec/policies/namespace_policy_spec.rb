@@ -7,12 +7,7 @@ describe NamespacePolicy, models: true do
   let(:admin) { create(:admin) }
   let(:namespace) { create(:namespace, owner: owner) }
 
-  let(:owner_permissions) do
-    [
-      :create_projects,
-      :admin_namespace
-    ]
-  end
+  let(:owner_permissions) { [:create_projects, :admin_namespace] }
 
   let(:admin_permissions) { owner_permissions }
 
@@ -21,40 +16,30 @@ describe NamespacePolicy, models: true do
   context 'with no user' do
     let(:current_user) { nil }
 
-    it do
-      is_expected.to be_empty
-    end
+    it { is_expected.to be_empty }
   end
 
   context 'regular user' do
     let(:current_user) { user }
 
-    it do
-      is_expected.to be_empty
-    end
+    it { is_expected.to be_empty }
   end
 
   context 'owner' do
     let(:current_user) { owner }
 
-    it do
-      is_expected.to include(*owner_permissions)
-    end
+    it { is_expected.to include(*owner_permissions) }
   end
 
   context 'auditor' do
     let(:current_user) { auditor }
 
-    it do
-      is_expected.to be_empty
-    end
+    it { is_expected.to be_empty }
   end
 
   context 'admin' do
     let(:current_user) { admin }
 
-    it do
-      is_expected.to include(*owner_permissions)
-    end
+    it { is_expected.to include(*owner_permissions) }
   end
 end

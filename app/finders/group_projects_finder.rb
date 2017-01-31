@@ -18,7 +18,7 @@ class GroupProjectsFinder < UnionFinder
     projects = []
 
     if current_user
-      if @group.users.include?(current_user) || current_user.admin? || current_user.auditor?
+      if @group.users.include?(current_user) || current_user.admin_or_auditor?
         projects << @group.projects unless only_shared
         projects << @group.shared_projects unless only_owned
       else

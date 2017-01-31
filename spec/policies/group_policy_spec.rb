@@ -177,6 +177,7 @@ describe GroupPolicy, models: true do
 
       it do
         is_expected.to include(:read_group)
+        is_expected.to all(start_with("read"))
         is_expected.not_to include(*master_permissions)
         is_expected.not_to include(*owner_permissions)
       end

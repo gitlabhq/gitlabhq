@@ -258,7 +258,7 @@ describe IssuesFinder do
 
   describe '.not_restricted_by_confidentiality' do
     let(:authorized_user) { create(:user) }
-    let(:admin_user) { create(:user, :admin) }
+    let(:admin_user) { create(:admin) }
     let(:auditor_user) { create(:user, :auditor) }
     let(:project) { create(:empty_project, namespace: authorized_user.namespace) }
     let!(:public_issue) { create(:issue, project: project) }

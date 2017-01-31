@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe ProjectSnippetPolicy, models: true do
+  let(:current_user) { create(:user) }
+
   let(:author_permissions) do
     [
       :update_project_snippet,
@@ -23,8 +25,6 @@ describe ProjectSnippetPolicy, models: true do
     end
 
     context 'regular user' do
-      let(:current_user) { create(:user) }
-
       it do
         is_expected.to include(:read_project_snippet)
         is_expected.not_to include(*author_permissions)
@@ -45,8 +45,6 @@ describe ProjectSnippetPolicy, models: true do
     end
 
     context 'regular user' do
-      let(:current_user) { create(:user) }
-
       it do
         is_expected.to include(:read_project_snippet)
         is_expected.not_to include(*author_permissions)
@@ -76,8 +74,6 @@ describe ProjectSnippetPolicy, models: true do
     end
 
     context 'regular user' do
-      let(:current_user) { create(:user) }
-
       it do
         is_expected.not_to include(:read_project_snippet)
         is_expected.not_to include(*author_permissions)
@@ -85,7 +81,6 @@ describe ProjectSnippetPolicy, models: true do
     end
 
     context 'snippet author' do
-      let(:current_user) { create(:user) }
       let(:project_snippet) { create(:project_snippet, :private, author: current_user) }
 
       it do
@@ -95,7 +90,6 @@ describe ProjectSnippetPolicy, models: true do
     end
 
     context 'project team member' do
-      let(:current_user) { create(:user) }
       before { project_snippet.project.team << [current_user, :developer] }
 
       it do
@@ -114,7 +108,7 @@ describe ProjectSnippetPolicy, models: true do
     end
 
     context 'admin user' do
-      let(:current_user) { create(:user, :admin) }
+      let(:current_user) { create(:admin) }
 
       it do
         is_expected.to include(:read_project_snippet)
