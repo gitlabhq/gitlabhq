@@ -70,10 +70,10 @@
       },
     },
     components: {
-      'modal-header': gl.issueBoards.IssuesModalHeader,
-      'modal-list': gl.issueBoards.ModalList,
-      'modal-footer': gl.issueBoards.ModalFooter,
-      'empty-state': gl.issueBoards.ModalEmptyState,
+      modalHeader: gl.issueBoards.IssuesModalHeader,
+      modalList: gl.issueBoards.ModalList,
+      modalFooter: gl.issueBoards.ModalFooter,
+      emptyState: gl.issueBoards.ModalEmptyState,
     },
     template: `
       <div

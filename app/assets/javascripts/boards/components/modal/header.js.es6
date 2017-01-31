@@ -24,7 +24,7 @@
       },
     },
     components: {
-      'modal-tabs': gl.issueBoards.ModalTabs,
+      modalTabs: gl.issueBoards.ModalTabs,
     },
     template: `
       <div>

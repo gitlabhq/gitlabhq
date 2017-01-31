@@ -94,7 +94,7 @@
       this.destroyMasonry();
     },
     components: {
-      'issue-card-inner': gl.issueBoards.IssueCardInner,
+      issueCardInner: gl.issueBoards.IssueCardInner,
     },
     template: `
       <div
