@@ -27,11 +27,11 @@ describe Environment, models: true do
     let!(:environment1) { create(:environment, project: project) }
     let!(:environment2) { create(:environment, project: project) }
     let!(:environment3) { create(:environment, project: project) }
-    let!(:deployment2) { create(:deployment, environment: environment2) }
     let!(:deployment1) { create(:deployment, environment: environment1) }
+    let!(:deployment2) { create(:deployment, environment: environment2) }
+    let!(:deployment3) { create(:deployment, environment: environment1) }
 
     it 'returns the environments in order of having been last deployed' do
-      # byebug
       expect(project.environments.order_by_last_deployed_at.to_a).to eq([environment3, environment2, environment1])
     end
   end
