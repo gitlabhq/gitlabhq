@@ -40,6 +40,7 @@
           = render 'shared/projects/dropdown'
           = link_to new_project_path, class: 'btn btn-new' do
             New Project
+          = button_tag "Search", class: "btn btn-primary btn-search hide"
 
     %ul.nav-links
       - opts = params[:visibility_level].present? ? {} : { page: admin_projects_path }
