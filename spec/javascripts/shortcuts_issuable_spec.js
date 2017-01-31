@@ -27,10 +27,18 @@
         return this.selector = 'form.js-main-target-form textarea#note_note';
       });
       describe('with empty selection', function() {
-        return it('does nothing', function() {
-          stubSelection('');
+        it('does not return an error', function() {
           this.shortcut.replyWithSelectedText();
           return expect($(this.selector).val()).toBe('');
+        });
+        return it('triggers `input`', function() {
+          var focused;
+          focused = false;
+          $(this.selector).on('focus', function() {
+            return focused = true;
+          });
+          this.shortcut.replyWithSelectedText();
+          return expect(focused).toBe(true);
         });
       });
       describe('with any selection', function() {
