@@ -149,7 +149,7 @@
     };
 
     RightSidebar.prototype.setCollapseAfterUpdate = function($block) {
-      $block.addClass('collapse-after-update');
+      $block.closest('.right-sidebar').addClass('collapse-after-update');
       $block.data('before-update', $('input', $block).val());
       return $('.page-with-sidebar').addClass('with-overlay');
     };
@@ -163,11 +163,11 @@
     };
 
     RightSidebar.prototype.sidebarDropdownHidden = function($block) {
-      if ($block.hasClass('collapse-after-update') && $('input', $block).val() !== $block.data('before-update')) {
-        $block.removeClass('collapse-after-update');
-        $('.page-with-sidebar').removeClass('with-overlay');
-        return this.toggleSidebar('hide');
-      }
+      if (!$block.closest('.right-sidebar').hasClass('collapse-after-update') ||
+        $('input', $block).val() === $block.data('before-update')) return;
+      $block.closest('.right-sidebar').removeClass('collapse-after-update');
+      $('.page-with-sidebar').removeClass('with-overlay');
+      return this.toggleSidebar('hide');
     };
 
     RightSidebar.prototype.triggerOpenSidebar = function() {
