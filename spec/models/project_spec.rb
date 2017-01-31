@@ -282,13 +282,22 @@ describe Project, models: true do
   end
 
   describe '#to_reference' do
-    let(:owner) { create(:user, name: 'Gitlab') }
+    let(:owner)     { create(:user, name: 'Gitlab') }
     let(:namespace) { create(:namespace, path: 'sample-namespace', owner: owner) }
-    let(:project) { create(:empty_project, path: 'sample-project', namespace: namespace) }
+    let(:project)   { create(:empty_project, path: 'sample-project', namespace: namespace) }
+    let(:group)     { create(:group, name: 'Group', path: 'sample-group', owner: owner) }
 
     context 'when nil argument' do
       it 'returns nil' do
         expect(project.to_reference).to be_nil
+      end
+    end
+
+    context 'when full is true' do
+      it 'returns complete path to the project' do
+        expect(project.to_reference(full: true)).to          eq 'sample-namespace/sample-project'
+        expect(project.to_reference(project, full: true)).to eq 'sample-namespace/sample-project'
+        expect(project.to_reference(group, full: true)).to   eq 'sample-namespace/sample-project'
       end
     end
 
@@ -309,8 +318,31 @@ describe Project, models: true do
     context 'when same namespace / cross-project argument' do
       let(:another_project) { create(:empty_project, namespace: namespace) }
 
-      it 'returns complete path to the project' do
+      it 'returns path to the project' do
         expect(project.to_reference(another_project)).to eq 'sample-project'
+      end
+    end
+
+    context 'when different namespace / cross-project argument' do
+      let(:another_namespace) { create(:namespace, path: 'another-namespace', owner: owner) }
+      let(:another_project)   { create(:empty_project, path: 'another-project', namespace: another_namespace) }
+
+      it 'returns full path to the project' do
+        expect(project.to_reference(another_project)).to eq 'sample-namespace/sample-project'
+      end
+    end
+
+    context 'when argument is a namespace' do
+      context 'with same project path' do
+        it 'returns path to the project' do
+          expect(project.to_reference(namespace)).to eq 'sample-project'
+        end
+      end
+
+      context 'with different project path' do
+        it 'returns full path to the project' do
+          expect(project.to_reference(group)).to eq 'sample-namespace/sample-project'
+        end
       end
     end
   end
@@ -1799,6 +1831,14 @@ describe Project, models: true do
 
       expect(project.statistics.namespace_id).to eq namespace.id
     end
+  end
+
+  describe 'inside_path' do
+    let!(:project1) { create(:empty_project) }
+    let!(:project2) { create(:empty_project) }
+    let!(:path) { project1.namespace.path }
+
+    it { expect(Project.inside_path(path)).to eq([project1]) }
   end
 
   def enable_lfs

@@ -11,7 +11,7 @@ feature 'Merge Requests > User uses slash commands', feature: true, js: true do
 
   it_behaves_like 'issuable record that supports slash commands in its description and notes', :merge_request do
     let(:issuable) { create(:merge_request, source_project: project) }
-    let(:new_url_opts) { { merge_request: { source_branch: 'feature' } } }
+    let(:new_url_opts) { { merge_request: { source_branch: 'feature', target_branch: 'master' } } }
   end
 
   describe 'merge-request-only commands' do

@@ -10,7 +10,7 @@ module Gitlab
           end
 
           def action_icon
-            'refresh'
+            'icon_action_retry'
           end
 
           def action_title

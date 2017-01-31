@@ -2,7 +2,6 @@
 /* global autosize */
 
 var autosize = require('vendor/autosize');
-require('vendor/jquery.ba-resize');
 
 (function() {
   $(function() {

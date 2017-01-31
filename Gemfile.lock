@@ -375,7 +375,7 @@ GEM
     json (1.8.3)
     json-schema (2.6.2)
       addressable (~> 2.3.8)
-    jwt (1.5.4)
+    jwt (1.5.6)
     kaminari (0.17.0)
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
@@ -900,7 +900,7 @@ DEPENDENCIES
   jquery-rails (~> 4.1.0)
   jquery-ui-rails (~> 5.0.0)
   json-schema (~> 2.6.2)
-  jwt
+  jwt (~> 1.5.6)
   kaminari (~> 0.17.0)
   knapsack (~> 1.11.0)
   kubeclient (~> 2.2.0)
@@ -1007,4 +1007,4 @@ DEPENDENCIES
   wikicloth (= 0.8.1)
 
 BUNDLED WITH
-   1.13.7
+   1.14.2

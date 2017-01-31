@@ -220,6 +220,7 @@ constraints(ProjectUrlConstrainer.new) do
         end
 
         member do
+          post :promote
           post :toggle_subscription
           delete :remove_priority
         end

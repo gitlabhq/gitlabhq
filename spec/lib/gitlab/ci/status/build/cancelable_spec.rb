@@ -62,7 +62,7 @@ describe Gitlab::Ci::Status::Build::Cancelable do
     end
 
     describe '#action_icon' do
-      it { expect(subject.action_icon).to eq 'ban' }
+      it { expect(subject.action_icon).to eq 'icon_action_cancel' }
     end
 
     describe '#action_title' do

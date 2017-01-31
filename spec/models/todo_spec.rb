@@ -109,7 +109,7 @@ describe Todo, models: true do
   end
 
   describe '#target_reference' do
-    it 'returns the short commit id for commits' do
+    it 'returns commit full reference with short id' do
       project = create(:project, :repository)
       commit = project.commit
 
@@ -117,12 +117,12 @@ describe Todo, models: true do
       subject.target_type = 'Commit'
       subject.commit_id = commit.id
 
-      expect(subject.target_reference).to eq commit.short_id
+      expect(subject.target_reference).to eq commit.reference_link_text(full: true)
     end
 
-    it 'returns reference for issuables' do
+    it 'returns full reference for issuables' do
       subject.target = issue
-      expect(subject.target_reference).to eq issue.to_reference
+      expect(subject.target_reference).to eq issue.to_reference(full: true)
     end
   end
 end

@@ -36,7 +36,7 @@
           %li
             = link_to 'Edit', edit_label_path(label)
           %li
-            = link_to 'Delete', destroy_label_path(label), title: 'Delete', method: :delete, remote: true, data: {confirm: 'Remove this label? Are you sure?'}
+            = link_to 'Delete', destroy_label_path(label), title: 'Delete', method: :delete, data: {confirm: 'Remove this label? Are you sure?'}
 
   .pull-right.hidden-xs.hidden-sm.hidden-md
     = link_to_label(label, subject: subject, type: :merge_request, css_class: 'btn btn-transparent btn-action') do
@@ -66,11 +66,15 @@
                 %a.js-subscribe-button{ data: { url: toggle_subscription_group_label_path(label.group, label) } }
                   Group level
 
+    - if label.is_a?(ProjectLabel) && label.project.group && can?(current_user, :admin_group, label.project.group)
+      = link_to promote_namespace_project_label_path(label.project.namespace, label.project, label), title: "Promote to Group Label", class: 'btn btn-transparent btn-action', data: {confirm: "Promoting this label will make this label available to all projects inside this group. Existing project labels with the same name will be merged. Are you sure?", toggle: "tooltip"}, method: :post do
+        %span.sr-only Promote to Group
+        = icon('level-up')
     - if can?(current_user, :admin_label, label)
       = link_to edit_label_path(label), title: "Edit", class: 'btn btn-transparent btn-action', data: {toggle: "tooltip"} do
         %span.sr-only Edit
         = icon('pencil-square-o')
-      = link_to destroy_label_path(label), title: "Delete", class: 'btn btn-transparent btn-action remove-row', method: :delete, remote: true, data: {confirm: label_deletion_confirm_text(label), toggle: "tooltip"} do
+      = link_to destroy_label_path(label), title: "Delete", class: 'btn btn-transparent btn-action remove-row', method: :delete, data: {confirm: label_deletion_confirm_text(label), toggle: "tooltip"} do
         %span.sr-only Delete
         = icon('trash-o')
 
