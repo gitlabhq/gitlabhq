@@ -1726,17 +1726,17 @@ describe Project, models: true do
       end
 
       it 'returns environment when with_tags is set' do
-        expect(project.environments_for('master', commit: project.commit, with_tags: true))
+        expect(project.environments_for(ref: 'master', commit: project.commit, with_tags: true))
           .to contain_exactly(environment)
       end
 
       it 'does not return environment when no with_tags is set' do
-        expect(project.environments_for('master', commit: project.commit))
+        expect(project.environments_for(ref: 'master', commit: project.commit))
           .to be_empty
       end
 
       it 'does not return environment when commit is not part of deployment' do
-        expect(project.environments_for('master', commit: project.commit('feature')))
+        expect(project.environments_for(ref: 'master', commit: project.commit('feature')))
           .to be_empty
       end
     end
@@ -1747,22 +1747,22 @@ describe Project, models: true do
       end
 
       it 'returns environment when ref is set' do
-        expect(project.environments_for('master', commit: project.commit))
+        expect(project.environments_for(ref: 'master', commit: project.commit))
           .to contain_exactly(environment)
       end
 
       it 'does not environment when ref is different' do
-        expect(project.environments_for('feature', commit: project.commit))
+        expect(project.environments_for(ref: 'feature', commit: project.commit))
           .to be_empty
       end
 
       it 'does not return environment when commit is not part of deployment' do
-        expect(project.environments_for('master', commit: project.commit('feature')))
+        expect(project.environments_for(ref: 'master', commit: project.commit('feature')))
           .to be_empty
       end
 
       it 'returns environment when commit constraint is not set' do
-        expect(project.environments_for('master'))
+        expect(project.environments_for(ref: 'master'))
           .to contain_exactly(environment)
       end
     end
@@ -1773,44 +1773,8 @@ describe Project, models: true do
       end
 
       it 'returns environment' do
-        expect(project.environments_for(nil, commit: project.commit))
+        expect(project.environments_for(commit: project.commit))
           .to contain_exactly(environment)
-      end
-    end
-  end
-
-  describe '#latest_environment_for' do
-    let(:project) { create(:project) }
-    let!(:environment1) { create(:environment, project: project) }
-    let!(:environment2) { create(:environment, project: project) }
-    let!(:environment3) { create(:environment, project: project) }
-    let!(:deployment1) { create(:deployment, environment: environment1, ref: 'master', sha: commit.id) }
-    let!(:deployment2) { create(:deployment, environment: environment2, ref: 'feature', sha: commit.id) }
-    let(:commit) { project.commit }
-
-    before do
-      allow(environment1).to receive(:first_deployment_for).with(commit).and_return(deployment1)
-      allow(environment2).to receive(:first_deployment_for).with(commit).and_return(deployment2)
-      allow(environment3).to receive(:first_deployment_for).with(commit).and_return(nil)
-    end
-
-    context 'when specifying a ref' do
-      before do
-        allow(project).to receive(:environments_for).with('master', commit: commit).and_return([environment1])
-      end
-
-      it 'returns the environment that the commit was last deployed to from that ref' do
-        expect(project.latest_environment_for(commit, ref: 'master')).to eq(environment1)
-      end
-    end
-
-    context 'when not specifying a ref' do
-      before do
-        allow(project).to receive(:environments_for).with(nil, commit: commit).and_return([environment1, environment2])
-      end
-
-      it 'returns the environment that the commit was last deployed to' do
-        expect(project.latest_environment_for(commit)).to eq(environment2)
       end
     end
   end

@@ -1190,6 +1190,7 @@ class Repository
   def route_map_for(sha)
     blob = blob_at(sha, ROUTE_MAP_PATH)
     return unless blob
+    
     blob.load_all_data!(self)
     blob.data
   end
@@ -1197,6 +1198,7 @@ class Repository
   def gitlab_ci_yml_for(sha)
     blob = blob_at(sha, GITLAB_CI_YML_PATH)
     return unless blob
+
     blob.load_all_data!(self)
     blob.data
   end

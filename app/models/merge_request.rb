@@ -720,19 +720,13 @@ class MergeRequest < ActiveRecord::Base
 
     @environments ||= begin
       target_envs = target_project.environments_for(
-        target_branch, commit: diff_head_commit, with_tags: true)
+        ref: target_branch, commit: diff_head_commit, with_tags: true)
 
       source_envs = source_project.environments_for(
-        source_branch, commit: diff_head_commit) if source_project
+        ref: source_branch, commit: diff_head_commit) if source_project
 
       (target_envs.to_a + source_envs.to_a).uniq
     end
-  end
-
-  def latest_environment
-    return @latest_environment if defined?(@latest_environment)
-
-    @latest_environment = Environment.latest_for_commit(environments, diff_head_commit)
   end
 
   def state_human_name

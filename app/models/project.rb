@@ -1306,7 +1306,7 @@ class Project < ActiveRecord::Base
     Gitlab::Redis.with { |redis| redis.del(pushes_since_gc_redis_key) }
   end
 
-  def environments_for(ref, commit: nil, with_tags: false)
+  def environments_for(ref: nil, commit: nil, with_tags: false)
     deps =
       if ref
         deployments_query = with_tags ? 'ref = ? OR tag IS TRUE' : 'ref = ?'
@@ -1322,22 +1322,17 @@ class Project < ActiveRecord::Base
       .select(:environment_id)
 
     environments_found = environments.available
-      .where(id: environment_ids).to_a
+      .where(id: environment_ids).order_by_last_deployed_at.to_a
 
-    return environments_found unless commit
+    return environments_found unless ref && commit
 
     environments_found.select do |environment|
       environment.includes_commit?(commit)
     end
   end
 
-  def latest_environment_for(commit, ref: nil)
-    environments = environments_for(ref, commit: commit)
-    Environment.latest_for_commit(environments, commit)
-  end
-
   def environments_recently_updated_on_branch(branch)
-    environments_for(branch).select do |environment|
+    environments_for(ref: branch).select do |environment|
       environment.recently_updated_on_branch?(branch)
     end
   end

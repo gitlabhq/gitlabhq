@@ -6,7 +6,8 @@ class Environment < ActiveRecord::Base
 
   belongs_to :project, required: true, validate: true
 
-  has_many :deployments
+  has_many :deployments, dependent: :destroy
+  has_one :last_deployment, -> { order('deployments.id DESC') }, class_name: 'Deployment'
 
   before_validation :nullify_external_url
   before_validation :generate_slug, if: ->(env) { env.slug.blank? }
@@ -37,6 +38,7 @@ class Environment < ActiveRecord::Base
 
   scope :available, -> { with_state(:available) }
   scope :stopped, -> { with_state(:stopped) }
+  scope :order_by_last_deployed_at, -> { order(Gitlab::Database.nulls_first_order('(SELECT MAX(id) FROM deployments WHERE deployments.environment_id = environments.id)', 'ASC')) }
 
   state_machine :state, initial: :available do
     event :start do
@@ -51,14 +53,6 @@ class Environment < ActiveRecord::Base
     state :stopped
   end
 
-  def self.latest_for_commit(environments, commit)
-    environments.sort_by do |environment|
-      deployment = environment.first_deployment_for(commit)
-
-      deployment.try(:created_at) || DateTime.parse('1970-01-01')
-    end.last
-  end
-
   def predefined_variables
     [
       { key: 'CI_ENVIRONMENT_NAME', value: name, public: true },
@@ -68,10 +62,6 @@ class Environment < ActiveRecord::Base
 
   def recently_updated_on_branch?(ref)
     ref.to_s == last_deployment.try(:ref)
-  end
-
-  def last_deployment
-    deployments.last
   end
 
   def nullify_external_url
@@ -93,6 +83,10 @@ class Environment < ActiveRecord::Base
     return false unless last_deployment
 
     last_deployment.includes_commit?(commit)
+  end
+
+  def last_deployed_at
+    last_deployment.try(:created_at)
   end
 
   def update_merge_request_metrics?
