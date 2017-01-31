@@ -6,9 +6,24 @@
   window.gl.issueBoards = window.gl.issueBoards || {};
 
   gl.issueBoards.IssueCardInner = Vue.extend({
-    props: [
-      'issue', 'issueLinkBase', 'list', 'rootPath',
-    ],
+    props: {
+      issue: {
+        type: Object,
+        required: true,
+      },
+      issueLinkBase: {
+        type: String,
+        required: true,
+      },
+      list: {
+        type: Object,
+        required: false,
+      },
+      rootPath: {
+        type: String,
+        required: true,
+      },
+    },
     methods: {
       showLabel(label) {
         if (!this.list) return true;

@@ -41,7 +41,7 @@
       },
     },
     components: {
-      listsDropdown: gl.issueBoards.ModalFooterListsDropdown,
+      'lists-dropdown': gl.issueBoards.ModalFooterListsDropdown,
     },
     template: `
       <footer

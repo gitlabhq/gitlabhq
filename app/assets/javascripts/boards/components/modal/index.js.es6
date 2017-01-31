@@ -8,10 +8,24 @@
   const ModalStore = gl.issueBoards.ModalStore;
 
   gl.issueBoards.IssuesModal = Vue.extend({
-    props: [
-      'blankStateImage', 'newIssuePath', 'issueLinkBase',
-      'rootPath',
-    ],
+    props: {
+      blankStateImage: {
+        type: String,
+        required: true,
+      },
+      newIssuePath: {
+        type: String,
+        required: true,
+      },
+      issueLinkBase: {
+        type: String,
+        required: true,
+      },
+      rootPath: {
+        type: String,
+        required: true,
+      },
+    },
     data() {
       return ModalStore.store;
     },
@@ -76,10 +90,10 @@
       },
     },
     components: {
-      modalHeader: gl.issueBoards.IssuesModalHeader,
-      modalList: gl.issueBoards.ModalList,
-      modalFooter: gl.issueBoards.ModalFooter,
-      emptyState: gl.issueBoards.ModalEmptyState,
+      'modal-header': gl.issueBoards.IssuesModalHeader,
+      'modal-list': gl.issueBoards.ModalList,
+      'modal-footer': gl.issueBoards.ModalFooter,
+      'empty-state': gl.issueBoards.ModalEmptyState,
     },
     template: `
       <div

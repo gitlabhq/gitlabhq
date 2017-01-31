@@ -6,9 +6,16 @@
   const ModalStore = gl.issueBoards.ModalStore;
 
   gl.issueBoards.ModalList = Vue.extend({
-    props: [
-      'issueLinkBase', 'rootPath',
-    ],
+    props: {
+      issueLinkBase: {
+        type: String,
+        required: true,
+      },
+      rootPath: {
+        type: String,
+        required: true,
+      },
+    },
     data() {
       return ModalStore.store;
     },
@@ -94,7 +101,7 @@
       this.destroyMasonry();
     },
     components: {
-      issueCardInner: gl.issueBoards.IssueCardInner,
+      'issue-card-inner': gl.issueBoards.IssueCardInner,
     },
     template: `
       <section

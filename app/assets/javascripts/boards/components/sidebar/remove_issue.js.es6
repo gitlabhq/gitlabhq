@@ -6,9 +6,16 @@
   window.gl.issueBoards = window.gl.issueBoards || {};
 
   gl.issueBoards.RemoveIssueBtn = Vue.extend({
-    props: [
-      'issue', 'list',
-    ],
+    props: {
+      issue: {
+        type: Object,
+        required: true,
+      },
+      list: {
+        type: Object,
+        required: true,
+      },
+    },
     methods: {
       removeIssue() {
         const lists = this.issue.getLists();

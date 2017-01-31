@@ -6,9 +6,16 @@
     data() {
       return ModalStore.store;
     },
-    props: [
-      'image', 'newIssuePath',
-    ],
+    props: {
+      image: {
+        type: String,
+        required: true,
+      },
+      newIssuePath: {
+        type: String,
+        required: true,
+      },
+    },
     computed: {
       contents() {
         const obj = {
