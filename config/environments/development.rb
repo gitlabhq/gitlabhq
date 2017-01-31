@@ -1,6 +1,4 @@
 Rails.application.configure do
-  WEBPACK_DEV_PORT = `cat ../webpack_port 2>/dev/null || echo '3808'`.to_i
-
   # Settings specified here will take precedence over those in config/application.rb
 
   # In the development environment your application's code is reloaded on
@@ -23,11 +21,6 @@ Rails.application.configure do
 
   # Only use best-standards-support built into browsers
   config.action_dispatch.best_standards_support = :builtin
-
-  # Enable webpack dev server
-  config.webpack.dev_server.enabled = true
-  config.webpack.dev_server.port = WEBPACK_DEV_PORT
-  config.webpack.dev_server.manifest_port = WEBPACK_DEV_PORT
 
   # Do not compress assets
   config.assets.compress = false
