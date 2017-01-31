@@ -34,11 +34,11 @@ module Gitlab
         end
 
         def pretext
-          "I opened an issue on behalf on #{author_profile_link}: *#{@resource.to_reference}* from #{project.name_with_namespace}"
+          "I created an issue on #{author_profile_link}'s behalf: **#{@resource.to_reference}** in #{project_link}"
         end
 
         def project_link
-          "[#{project.name_with_namespace}](#{url_for(project)})"
+          "[#{project.name_with_namespace}](#{projects_url(project)})"
         end
 
         def author_profile_link
