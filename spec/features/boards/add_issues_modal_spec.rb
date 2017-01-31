@@ -142,13 +142,13 @@ describe 'Issue Boards add issue modal', :feature, :js do
         end
       end
 
-      it 'un-selects all issues' do
+      it 'deselects all issues' do
         page.within('.add-issues-modal') do
           click_button 'Select all'
 
           expect(page).to have_selector('.is-active', count: 2)
 
-          click_button 'Un-select all'
+          click_button 'Deselect all'
 
           expect(page).not_to have_selector('.is-active')
         end
