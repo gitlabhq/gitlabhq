@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Start new branch from an issue', feature: true do
+feature 'Start new branch from an issue', feature: true, js: true do
   let!(:project)   { create(:project) }
   let!(:issue)     { create(:issue, project: project) }
   let!(:user)      { create(:user)}
@@ -11,7 +11,7 @@ feature 'Start new branch from an issue', feature: true do
       login_as(user)
     end
 
-    it 'shows the new branch button', js: true do
+    it 'shows the new branch button' do
       visit namespace_project_issue_path(project.namespace, project, issue)
 
       expect(page).to have_css('#new-branch .available')
@@ -34,16 +34,26 @@ feature 'Start new branch from an issue', feature: true do
         visit namespace_project_issue_path(project.namespace, project, issue)
       end
 
-      it "hides the new branch button", js: true do
+      it "hides the new branch button" do
         expect(page).to have_css('#new-branch .unavailable')
         expect(page).not_to have_css('#new-branch .available')
         expect(page).to have_content /1 Related Merge Request/
       end
     end
+
+    context 'when issue is confidential' do
+      it 'hides the new branch button' do
+        issue = create(:issue, :confidential, project: project)
+
+        visit namespace_project_issue_path(project.namespace, project, issue)
+
+        expect(page).not_to have_css('#new-branch')
+      end
+    end
   end
 
-  context "for visiters" do
-    it 'shows no buttons', js: true do
+  context 'for visitors' do
+    it 'shows no buttons' do
       visit namespace_project_issue_path(project.namespace, project, issue)
 
       expect(page).not_to have_css('#new-branch')
