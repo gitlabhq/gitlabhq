@@ -4,6 +4,7 @@
   const ModalStore = gl.issueBoards.ModalStore;
 
   gl.issueBoards.IssuesModalHeader = Vue.extend({
+    mixins: [gl.issueBoards.ModalMixins],
     data() {
       return ModalStore.store;
     },
@@ -36,7 +37,7 @@
               class="close"
               data-dismiss="modal"
               aria-label="Close"
-              @click="showAddIssuesModal = false">
+              @click="toggleModal(false)">
               <span aria-hidden="true">×</span>
             </button>
           </h2>

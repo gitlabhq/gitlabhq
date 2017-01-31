@@ -4,6 +4,7 @@
   const ModalStore = gl.issueBoards.ModalStore;
 
   gl.issueBoards.ModalFooter = Vue.extend({
+    mixins: [gl.issueBoards.ModalMixins],
     data() {
       return ModalStore.store;
     },
@@ -18,9 +19,6 @@
       },
     },
     methods: {
-      hideModal() {
-        this.showAddIssuesModal = false;
-      },
       addIssues() {
         const list = this.selectedList;
         const selectedIssues = ModalStore.getSelectedIssues();
@@ -37,7 +35,7 @@
           list.issuesSize += 1;
         });
 
-        this.hideModal();
+        this.toggleModal(false);
       },
     },
     components: {
@@ -62,7 +60,7 @@
         <button
           class="btn btn-default pull-right"
           type="button"
-          @click="hideModal">
+          @click="toggleModal(false)">
           Cancel
         </button>
       </footer>

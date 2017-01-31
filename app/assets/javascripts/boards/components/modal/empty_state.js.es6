@@ -3,6 +3,7 @@
   const ModalStore = gl.issueBoards.ModalStore;
 
   gl.issueBoards.ModalEmptyState = Vue.extend({
+    mixins: [gl.issueBoards.ModalMixins],
     data() {
       return ModalStore.store;
     },
@@ -56,7 +57,7 @@
               <button
                 type="button"
                 class="btn btn-default"
-                @click="activeTab = 'all'"
+                @click="changeTab('all')"
                 v-if="activeTab === 'selected'">
                 All issues
               </button>

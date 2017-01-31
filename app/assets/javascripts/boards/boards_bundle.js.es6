@@ -91,6 +91,7 @@ $(() => {
   });
 
   gl.IssueBoardsModalAddBtn = new Vue({
+    mixins: [gl.issueBoards.ModalMixins],
     el: '#js-add-issues-btn',
     data: {
       modal: ModalStore.store,
@@ -106,7 +107,7 @@ $(() => {
         class="btn btn-create pull-right prepend-left-10 has-tooltip"
         type="button"
         :disabled="disabled"
-        @click="modal.showAddIssuesModal = true">
+        @click="toggleModal(true)">
         Add issues
       </button>
     `,

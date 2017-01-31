@@ -3,6 +3,7 @@
   const ModalStore = gl.issueBoards.ModalStore;
 
   gl.issueBoards.ModalTabs = Vue.extend({
+    mixins: [gl.issueBoards.ModalMixins],
     data() {
       return ModalStore.store;
     },
@@ -21,7 +22,7 @@
             <a
               href="#"
               role="button"
-              @click.prevent="activeTab = 'all'">
+              @click.prevent="changeTab('all')">
               <span>All issues</span>
               <span class="badge">
                 {{ issuesCount }}
@@ -32,7 +33,7 @@
             <a
               href="#"
               role="button"
-              @click.prevent="activeTab = 'selected'">
+              @click.prevent="changeTab('selected')">
               <span>Selected issues</span>
               <span class="badge">
                 {{ selectedCount }}
