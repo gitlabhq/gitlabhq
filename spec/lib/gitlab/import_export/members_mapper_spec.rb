@@ -103,11 +103,7 @@ describe Gitlab::ImportExport::MembersMapper, services: true do
       end
 
       before do
-        GroupMember.add_users_to_group(
-          group,
-          [user, user2],
-          GroupMember::DEVELOPER
-        )
+        group.add_users([user, user2], GroupMember::DEVELOPER)
       end
 
       it 'maps the project member' do
@@ -115,7 +111,7 @@ describe Gitlab::ImportExport::MembersMapper, services: true do
       end
 
       it 'maps the project member if it already exists' do
-        ProjectMember.create!(user: user2, access_level: ProjectMember::MASTER, source_id: project.id)
+        project.add_master(user2)
 
         expect(members_mapper.map[exported_user_id]).to eq(user2.id)
       end
