@@ -33,7 +33,7 @@ enable [Kubernetes service][kubernetes-service].
 created automatically for you.
 
 [mr-8135]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8135
-[project-settings]: https://docs.gitlab.com/ce/api/projects.html#project-visibility-level
+[project-settings]: https://docs.gitlab.com/ce/public_access/public_access.html
 [project-services]: ../../project_services/project_services.md
 [auto-deploy-templates]: https://gitlab.com/gitlab-org/gitlab-ci-yml/tree/master/autodeploy
 [kubernetes-service]: ../../project_services/kubernetes.md
