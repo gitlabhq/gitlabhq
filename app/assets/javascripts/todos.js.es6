@@ -147,13 +147,28 @@
 
     goToTodoUrl(e) {
       const todoLink = $(this).data('url');
+      let targetLink = $(e.target).attr('href');
+
+      if ($(e.target).is('img')) { // See if clicked target was Avatar
+        targetLink = $(e.target).parent().attr('href'); // Parent of Avatar is link
+      }
+
       if (!todoLink) {
         return;
       }
-      // Allow Meta-Click or Mouse3-click to open in a new tab
-      if (e.metaKey || e.which === 2) {
+
+      // Allow Meta-Click (Cmd+Click or Ctrl+Click)
+      // or Mouse3-click (middle-click)
+      // to open in a new tab
+      if (e.metaKey || e.ctrlKey || e.which === 2) {
         e.preventDefault();
-        return window.open(todoLink, '_blank');
+        // Meta-Click on username leads to different URL than todoLink.
+        // Turbolinks can resolve that URL, but window.open requires URL manually.
+        if (targetLink !== todoLink) {
+          return window.open(targetLink, '_blank');
+        } else {
+          return window.open(todoLink, '_blank');
+        }
       } else {
         return gl.utils.visitUrl(todoLink);
       }
