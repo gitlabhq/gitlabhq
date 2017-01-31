@@ -7,6 +7,7 @@
 # For users who haven't customized the setting, we simply delegate to
 # `DashboardController#show`, which is the default.
 class RootController < Dashboard::ProjectsController
+  skip_before_action :authenticate_user!, only: [:index]
   before_action :redirect_to_custom_dashboard, only: [:index]
 
   def index
@@ -16,7 +17,7 @@ class RootController < Dashboard::ProjectsController
   private
 
   def redirect_to_custom_dashboard
-    return unless current_user
+    return redirect_to new_user_session_path unless current_user
 
     case current_user.dashboard
     when 'stars'
