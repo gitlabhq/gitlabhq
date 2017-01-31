@@ -1,5 +1,6 @@
 /* global Vue */
 //= require ./tabs
+//= require ./filters
 (() => {
   const ModalStore = gl.issueBoards.ModalStore;
 
@@ -49,6 +50,7 @@
         <div
           class="add-issues-search append-bottom-10"
           v-if="showSearch">
+          <modal-filters></modal-filters>
           <input
             placeholder="Search issues..."
             class="form-control"

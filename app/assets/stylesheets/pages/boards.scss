@@ -416,6 +416,11 @@
 .add-issues-search {
   display: -webkit-flex;
   display: flex;
+
+  .form-control {
+    max-width: 200px;
+    margin-left: auto;
+  }
 }
 
 .add-issues-list-column {
@@ -485,4 +490,16 @@
   font-size: 9px;
   line-height: 15px;
   border-radius: 50%;
+}
+
+.modal-filters {
+  display: flex;
+
+  > .dropdown {
+    margin-right: 10px;
+  }
+
+  .dropdown-menu-toggle {
+    width: 140px;
+  }
 }
