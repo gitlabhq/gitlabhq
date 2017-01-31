@@ -1,4 +1,0 @@
----
-title: Fix sidekiq cluster mishandling of queue names
-merge_request: 1117
-author:
