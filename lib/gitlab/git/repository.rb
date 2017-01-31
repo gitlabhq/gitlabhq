@@ -828,23 +828,6 @@ module Gitlab
         Rugged::Commit.create(rugged, actual_options)
       end
 
-      def commits_since(from_date)
-        walker = Rugged::Walker.new(rugged)
-        walker.sorting(Rugged::SORT_DATE | Rugged::SORT_REVERSE)
-
-        rugged.references.each("refs/heads/*") do |ref|
-          walker.push(ref.target_id)
-        end
-
-        commits = []
-        walker.each do |commit|
-          break if commit.author[:time].to_date < from_date
-          commits.push(commit)
-        end
-
-        commits
-      end
-
       AUTOCRLF_VALUES = {
         "true" => true,
         "false" => false,
