@@ -13,7 +13,7 @@
           return 'Select all';
         }
 
-        return 'Un-select all';
+        return 'Deselect all';
       },
     },
     methods: {

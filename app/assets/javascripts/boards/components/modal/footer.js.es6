@@ -4,9 +4,6 @@
   const ModalStore = gl.issueBoards.ModalStore;
 
   gl.issueBoards.ModalFooter = Vue.extend({
-    props: [
-      'bulkUpdatePath',
-    ],
     data() {
       return ModalStore.store;
     },
@@ -30,11 +27,8 @@
         const issueIds = selectedIssues.map(issue => issue.globalId);
 
         // Post the data to the backend
-        this.$http.post(this.bulkUpdatePath, {
-          update: {
-            issuable_ids: issueIds.join(','),
-            add_label_ids: [list.label.id],
-          },
+        gl.boardService.bulkUpdate(issueIds, {
+          add_label_ids: [list.label.id],
         });
 
         // Add the issues on the frontend

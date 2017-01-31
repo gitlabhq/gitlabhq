@@ -44,7 +44,7 @@
                 :href="newIssuePath"
                 class="btn btn-success btn-inverted"
                 v-if="activeTab === 'all'">
-                Create issue
+                New issue
               </a>
               <button
                 type="button"

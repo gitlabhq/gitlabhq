@@ -9,7 +9,7 @@
 
   gl.issueBoards.IssuesModal = Vue.extend({
     props: [
-      'blankStateImage', 'newIssuePath', 'bulkUpdatePath', 'issueLinkBase',
+      'blankStateImage', 'newIssuePath', 'issueLinkBase',
       'rootPath',
     ],
     data() {
@@ -33,6 +33,7 @@
         } else if (!this.showAddIssuesModal) {
           this.issues = [];
           this.selectedIssues = [];
+          this.issuesCount = false;
         }
       },
     },
@@ -101,7 +102,7 @@
               <i class="fa fa-spinner fa-spin"></i>
             </div>
           </section>
-          <modal-footer :bulk-update-path="bulkUpdatePath"></modal-footer>
+          <modal-footer></modal-footer>
         </div>
       </div>
     `,

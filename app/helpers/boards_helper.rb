@@ -8,6 +8,7 @@ module BoardsHelper
       disabled: "#{!can?(current_user, :admin_list, @project)}",
       issue_link_base: namespace_project_issues_path(@project.namespace, @project),
       root_path: root_path,
+      bulk_update_path: bulk_update_namespace_project_issues_path(@project.namespace, @project),
     }
   end
 end

@@ -11,9 +11,18 @@
     ],
     methods: {
       removeIssue() {
-        const doneList = Store.findList('type', 'done', false);
+        const lists = this.issue.getLists();
+        const labelIds = lists.map(list => list.label.id);
 
-        Store.moveIssueToList(this.list, doneList, this.issue, 0);
+        // Post the remove data
+        gl.boardService.bulkUpdate([this.issue.globalId], {
+          remove_label_ids: labelIds,
+        });
+
+        // Remove from the frontend store
+        lists.forEach((list) => {
+          list.removeIssue(this.issue);
+        });
 
         Store.detail.issue = {};
       },

@@ -45,6 +45,7 @@ $(() => {
       disabled: $boardApp.dataset.disabled === 'true',
       issueLinkBase: $boardApp.dataset.issueLinkBase,
       rootPath: $boardApp.dataset.rootPath,
+      bulkUpdatePath: $boardApp.dataset.bulkUpdatePath,
       detailIssue: Store.detail
     },
     computed: {
@@ -53,7 +54,7 @@ $(() => {
       },
     },
     created () {
-      gl.boardService = new BoardService(this.endpoint, this.boardId);
+      gl.boardService = new BoardService(this.endpoint, this.bulkUpdatePath, this.boardId);
     },
     mounted () {
       Store.disabled = this.disabled;
