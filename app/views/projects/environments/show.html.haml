@@ -5,7 +5,7 @@
 %div{ class: container_class }
   .top-area.adjust
     .col-md-9
-      %h3.page-title= @environment.name.capitalize
+      %h3.page-title= @environment.name
     .col-md-3
       .nav-controls
         = render 'projects/environments/terminal_button', environment: @environment
