@@ -37,7 +37,7 @@
                 href="#"
                 role="button"
                 :class="{ 'is-active': list.id == selected.id }"
-                @click="modal.selectedList = list">
+                @click.prevent="modal.selectedList = list">
                 <span
                   class="dropdown-label-box"
                   :style="{ backgroundColor: list.label.color }">

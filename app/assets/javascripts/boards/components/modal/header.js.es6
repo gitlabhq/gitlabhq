@@ -3,7 +3,7 @@
 (() => {
   const ModalStore = gl.issueBoards.ModalStore;
 
-  gl.issueBoards.IssuesModalHeader = Vue.extend({
+  gl.issueBoards.ModalHeader = Vue.extend({
     mixins: [gl.issueBoards.ModalMixins],
     data() {
       return ModalStore.store;
@@ -15,6 +15,9 @@
         }
 
         return 'Deselect all';
+      },
+      showSearch() {
+        return this.activeTab === 'all' && !this.loading && this.issuesCount > 0;
       },
     },
     methods: {
@@ -45,7 +48,7 @@
         <modal-tabs v-if="!loading && issuesCount > 0"></modal-tabs>
         <div
           class="add-issues-search append-bottom-10"
-          v-if="activeTab == 'all' && !loading && issuesCount > 0">
+          v-if="showSearch">
           <input
             placeholder="Search issues..."
             class="form-control"

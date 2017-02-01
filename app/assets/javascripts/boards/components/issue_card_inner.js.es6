@@ -33,7 +33,7 @@
       filterByLabel(label, e) {
         let labelToggleText = label.title;
         const labelIndex = Store.state.filters.label_name.indexOf(label.title);
-        $(e.target).tooltip('hide');
+        $(e.currentTarget).tooltip('hide');
 
         if (labelIndex === -1) {
           Store.state.filters.label_name.push(label.title);
@@ -54,6 +54,12 @@
         $('.labels-filter .dropdown-toggle-text').text(labelToggleText);
 
         Store.updateFiltersUrl();
+      },
+      labelStyle(label) {
+        return {
+          backgroundColor: label.color,
+          color: label.textColor,
+        };
       },
     },
     template: `
@@ -93,7 +99,7 @@
             type="button"
             v-if="showLabel(label)"
             @click="filterByLabel(label, $event)"
-            :style="{ backgroundColor: label.color, color: label.textColor }"
+            :style="labelStyle(label)"
             :title="label.description"
             data-container="body">
             {{ label.title }}

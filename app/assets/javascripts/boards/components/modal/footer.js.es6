@@ -1,5 +1,7 @@
+/* eslint-disable no-new */
 //= require ./lists_dropdown
 /* global Vue */
+/* global Flash */
 (() => {
   const ModalStore = gl.issueBoards.ModalStore;
 
@@ -15,7 +17,7 @@
       submitText() {
         const count = ModalStore.selectedCount();
 
-        return `Add ${count > 0 ? count : ''} issue${count > 1 || !count ? 's' : ''}`;
+        return `Add ${count > 0 ? count : ''} ${gl.text.pluralize('issue', count)}`;
       },
     },
     methods: {
@@ -27,6 +29,13 @@
         // Post the data to the backend
         gl.boardService.bulkUpdate(issueIds, {
           add_label_ids: [list.label.id],
+        }).catch(() => {
+          new Flash('Failed to update issues, please try again.', 'alert');
+
+          selectedIssues.forEach((issue) => {
+            list.removeIssue(issue);
+            list.issuesSize -= 1;
+          });
         });
 
         // Add the issues on the frontend

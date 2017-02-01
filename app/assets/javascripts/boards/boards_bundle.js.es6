@@ -5,7 +5,6 @@
 //= require vue
 //= require vue-resource
 //= require Sortable
-//= require masonry
 //= require_tree ./models
 //= require_tree ./stores
 //= require_tree ./services

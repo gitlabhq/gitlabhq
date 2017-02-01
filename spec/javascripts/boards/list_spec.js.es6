@@ -24,7 +24,7 @@ describe('List model', () => {
 
   beforeEach(() => {
     Vue.http.interceptors.push(boardsMockInterceptor);
-    gl.boardService = new BoardService('/test/issue-boards/board', '1');
+    gl.boardService = new BoardService('/test/issue-boards/board', '', '1');
     gl.issueBoards.BoardsStore.create();
 
     list = new List(listObj);

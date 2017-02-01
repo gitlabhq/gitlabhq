@@ -1,4 +1,6 @@
+/* eslint-disable no-new */
 /* global Vue */
+/* global Flash */
 (() => {
   const Store = gl.issueBoards.BoardsStore;
 
@@ -18,17 +20,24 @@
     },
     methods: {
       removeIssue() {
-        const lists = this.issue.getLists();
+        const issue = this.issue;
+        const lists = issue.getLists();
         const labelIds = lists.map(list => list.label.id);
 
         // Post the remove data
-        gl.boardService.bulkUpdate([this.issue.globalId], {
+        gl.boardService.bulkUpdate([issue.globalId], {
           remove_label_ids: labelIds,
+        }).catch(() => {
+          new Flash('Failed to remove issue from board, please try again.', 'alert');
+
+          lists.forEach((list) => {
+            list.addIssue(issue);
+          });
         });
 
         // Remove from the frontend store
         lists.forEach((list) => {
-          list.removeIssue(this.issue);
+          list.removeIssue(issue);
         });
 
         Store.detail.issue = {};

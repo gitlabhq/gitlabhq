@@ -53,10 +53,9 @@
     },
     methods: {
       searchOperation: _.debounce(function searchOperationDebounce() {
-        this.issues = [];
-        this.loadIssues();
+        this.loadIssues(true);
       }, 500),
-      loadIssues() {
+      loadIssues(clearIssues = false) {
         return gl.boardService.getBacklog({
           search: this.searchTerm,
           page: this.page,
@@ -64,10 +63,14 @@
         }).then((res) => {
           const data = res.json();
 
+          if (clearIssues) {
+            this.issues = [];
+          }
+
           data.issues.forEach((issueObj) => {
             const issue = new ListIssue(issueObj);
             const foundSelectedIssue = ModalStore.findSelectedIssue(issue);
-            issue.selected = foundSelectedIssue !== undefined;
+            issue.selected = !!foundSelectedIssue;
 
             this.issues.push(issue);
           });
@@ -75,7 +78,7 @@
           this.loadingNewPage = false;
 
           if (!this.issuesCount) {
-            this.issuesCount = this.issues.length;
+            this.issuesCount = data.size;
           }
         });
       },
@@ -88,9 +91,16 @@
 
         return this.issuesCount > 0;
       },
+      showEmptyState() {
+        if (!this.loading && this.issuesCount === 0) {
+          return true;
+        }
+
+        return this.activeTab === 'selected' && this.selectedIssues.length === 0;
+      },
     },
     components: {
-      'modal-header': gl.issueBoards.IssuesModalHeader,
+      'modal-header': gl.issueBoards.ModalHeader,
       'modal-list': gl.issueBoards.ModalList,
       'modal-footer': gl.issueBoards.ModalFooter,
       'empty-state': gl.issueBoards.ModalEmptyState,
@@ -106,7 +116,7 @@
             :root-path="rootPath"
             v-if="!loading && showList"></modal-list>
           <empty-state
-            v-if="(!loading && issuesCount === 0) || (activeTab === 'selected' && selectedIssues.length === 0)"
+            v-if="showEmptyState"
             :image="blankStateImage"
             :new-issue-path="newIssuePath"></empty-state>
           <section

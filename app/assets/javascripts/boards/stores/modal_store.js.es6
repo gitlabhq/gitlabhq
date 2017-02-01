@@ -5,6 +5,7 @@
   class ModalStore {
     constructor() {
       this.store = {
+        columns: 3,
         issues: [],
         issuesCount: false,
         selectedIssues: [],
@@ -25,9 +26,11 @@
 
     toggleIssue(issueObj) {
       const issue = issueObj;
-      issue.selected = !issue.selected;
+      const selected = issue.selected;
 
-      if (issue.selected) {
+      issue.selected = !selected;
+
+      if (!selected) {
         this.addSelectedIssue(issue);
       } else {
         this.removeSelectedIssue(issue);

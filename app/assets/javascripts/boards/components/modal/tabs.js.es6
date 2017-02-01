@@ -23,7 +23,7 @@
               href="#"
               role="button"
               @click.prevent="changeTab('all')">
-              <span>All issues</span>
+              All issues
               <span class="badge">
                 {{ issuesCount }}
               </span>
@@ -34,7 +34,7 @@
               href="#"
               role="button"
               @click.prevent="changeTab('selected')">
-              <span>Selected issues</span>
+              Selected issues
               <span class="badge">
                 {{ selectedCount }}
               </span>

@@ -1,8 +1,7 @@
 /* global Vue */
 /* global ListIssue */
-/* global Masonry */
+/* global bp */
 (() => {
-  let listMasonry;
   const ModalStore = gl.issueBoards.ModalStore;
 
   gl.issueBoards.ModalList = Vue.extend({
@@ -21,17 +20,9 @@
     },
     watch: {
       activeTab() {
-        this.initMasonry();
-
         if (this.activeTab === 'all') {
           ModalStore.purgeUnselectedIssues();
         }
-      },
-      issues: {
-        handler() {
-          this.initMasonry();
-        },
-        deep: true,
       },
     },
     computed: {
@@ -42,8 +33,31 @@
 
         return this.selectedIssues;
       },
+      groupedIssues() {
+        const groups = [];
+        this.loopIssues.forEach((issue, i) => {
+          const index = i % this.columns;
+
+          if (!groups[index]) {
+            groups.push([]);
+          }
+
+          groups[index].push(issue);
+        });
+
+        return groups;
+      },
     },
     methods: {
+      scrollHandler() {
+        const currentPage = Math.floor(this.issues.length / this.perPage);
+
+        if ((this.scrollTop() > this.scrollHeight() - 100) && !this.loadingNewPage
+          && currentPage === this.page) {
+          this.loadingNewPage = true;
+          this.page += 1;
+        }
+      },
       toggleIssue(e, issue) {
         if (e.target.tagName !== 'A') {
           ModalStore.toggleIssue(issue);
@@ -65,40 +79,29 @@
 
         return index !== -1;
       },
-      initMasonry() {
-        const listScrollTop = this.$refs.list.scrollTop;
+      setColumnCount() {
+        const breakpoint = bp.getBreakpointSize();
 
-        this.$nextTick(() => {
-          this.destroyMasonry();
-          listMasonry = new Masonry(this.$refs.list, {
-            transitionDuration: 0,
-          });
-
-          this.$refs.list.scrollTop = listScrollTop;
-        });
-      },
-      destroyMasonry() {
-        if (listMasonry) {
-          listMasonry.destroy();
-          listMasonry = undefined;
+        if (breakpoint === 'lg' || breakpoint === 'md') {
+          this.columns = 3;
+        } else if (breakpoint === 'sm') {
+          this.columns = 2;
+        } else {
+          this.columns = 1;
         }
       },
     },
     mounted() {
-      this.initMasonry();
+      this.scrollHandlerWrapper = this.scrollHandler.bind(this);
+      this.setColumnCountWrapper = this.setColumnCount.bind(this);
+      this.setColumnCount();
 
-      this.$refs.list.onscroll = () => {
-        const currentPage = Math.floor(this.issues.length / this.perPage);
-
-        if ((this.scrollTop() > this.scrollHeight() - 100) && !this.loadingNewPage
-          && currentPage === this.page) {
-          this.loadingNewPage = true;
-          this.page += 1;
-        }
-      };
+      this.$refs.list.addEventListener('scroll', this.scrollHandlerWrapper);
+      window.addEventListener('resize', this.setColumnCountWrapper);
     },
-    destroyed() {
-      this.destroyMasonry();
+    beforeDestroy() {
+      this.$refs.list.removeEventListener('scroll', this.scrollHandlerWrapper);
+      window.removeEventListener('resize', this.setColumnCountWrapper);
     },
     components: {
       'issue-card-inner': gl.issueBoards.IssueCardInner,
@@ -108,25 +111,29 @@
         class="add-issues-list add-issues-list-columns"
         ref="list">
         <div
-          v-for="issue in loopIssues"
-          v-if="showIssue(issue)"
-          class="card-parent">
+          v-for="group in groupedIssues"
+          class="add-issues-list-column">
           <div
-            class="card"
-            :class="{ 'is-active': issue.selected }"
-            @click="toggleIssue($event, issue)">
-            <issue-card-inner
-              :issue="issue"
-              :issue-link-base="issueLinkBase"
-              :root-path="rootPath">
-            </issue-card-inner>
-            <span
-              :aria-label="'Issue #' + issue.id + ' selected'"
-              aria-checked="true"
-              v-if="issue.selected"
-              class="issue-card-selected text-center">
-              <i class="fa fa-check"></i>
-            </span>
+            v-for="issue in group"
+            v-if="showIssue(issue)"
+            class="card-parent">
+            <div
+              class="card"
+              :class="{ 'is-active': issue.selected }"
+              @click="toggleIssue($event, issue)">
+              <issue-card-inner
+                :issue="issue"
+                :issue-link-base="issueLinkBase"
+                :root-path="rootPath">
+              </issue-card-inner>
+              <span
+                :aria-label="'Issue #' + issue.id + ' selected'"
+                aria-checked="true"
+                v-if="issue.selected"
+                class="issue-card-selected text-center">
+                <i class="fa fa-check"></i>
+              </span>
+            </div>
           </div>
         </div>
       </section>
