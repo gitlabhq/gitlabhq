@@ -118,7 +118,7 @@ module RelativePositioning
   def position_between(pos_before, pos_after)
     pos_before, pos_after = [pos_before, pos_after].sort
 
-    pos_before + (pos_after - pos_before) / 2
+    rand(pos_before.next_float..pos_after.prev_float)
   end
 
   def save_positionable_neighbours
