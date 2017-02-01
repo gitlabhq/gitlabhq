@@ -21,7 +21,9 @@
     = hidden_field_tag :authenticity_token, form_authenticity_token
     .accept-merge-holder.clearfix.js-toggle-container
       .accept-action
-        = f.button class: "btn btn-reopen js-rebase-button" do
+        = f.button class: "btn btn-reopen js-rebase-button", disabled: !@merge_request.approved?, ":disabled" => "disableAcceptance" do
           Rebase onto #{@merge_request.target_branch}
       .accept-control
         Fast-forward merge is not possible. Rebase the source branch onto the target branch or merge target branch into source branch to allow this merge request to be merged.
+        - if @merge_request.requires_approve?
+          %b{ "v-show" => "disableAcceptance" } (Rebasing is disabled until merge request has been approved)

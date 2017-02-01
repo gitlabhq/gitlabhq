@@ -1,9 +1,7 @@
 - content_for :page_specific_javascripts do
   = page_specific_javascript_tag('merge_request_widget/widget_bundle.js')
 
-- approval_pending = @merge_request.requires_approve? && !@merge_request.approved?
-
-#merge-request-widget-app.mr-state-widget{ 'data-endpoint'=> merge_request_path(@merge_request), 'data-approval-pending' => approval_pending }
+#merge-request-widget-app.mr-state-widget{ 'data-endpoint'=> merge_request_path(@merge_request), 'data-approval-pending' => (!@merge_request.approved?).to_s }
   = render 'projects/merge_requests/widget/heading'
   .mr-widget-body
     -# After conflicts are resolved, the user is redirected back to the MR page.

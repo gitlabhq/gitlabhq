@@ -144,8 +144,9 @@
     MergeRequestWidget.prototype.getMergeStatus = function() {
       return $.get(this.opts.merge_check_url, function(data) {
         var $html = $(data);
+
         $('.mr-widget-body').replaceWith($html.find('.mr-widget-body'));
-        $('.mr-widget-footer:not(.mr-approvals-footer)').replaceWith($html.find('.mr-widget-footer:not(.mr-approvals-footer)'));
+        $('.mr-widget-footer').replaceWith($html.find('.mr-widget-footer'));
       });
     };
 

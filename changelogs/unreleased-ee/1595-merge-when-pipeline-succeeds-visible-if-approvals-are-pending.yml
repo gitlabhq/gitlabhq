@@ -1,0 +1,4 @@
+---
+title: Disable all merge acceptance buttons pending MR approval.
+merge_request: !1101
+author:

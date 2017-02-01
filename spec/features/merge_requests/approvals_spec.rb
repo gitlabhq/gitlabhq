@@ -238,6 +238,50 @@ feature 'Merge request approvals', js: true, feature: true do
         expect(page).to have_no_css('.approver-avatar')
       end
     end
+
+    context 'when CI is running but no approval given', js: true do
+      before do
+        create :approver_group, group: group, target: merge_request
+        create(:ci_empty_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch)
+        visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+      end
+
+      it 'I am unable to set Merge When Pipeline Succeeds' do
+        # before approval status is loaded
+        expect(page).to have_button('Merge When Pipeline Succeeds', disabled: true)
+
+        wait_for_ajax
+
+        # after approval status is loaded
+        expect(page).to have_button('Merge When Pipeline Succeeds', disabled: true)
+      end
+    end
+
+    context 'when rebase is needed but no approval given', js: true do
+      let(:project) do
+        create(:project,
+          approvals_before_merge: 1,
+          merge_requests_rebase_enabled: true,
+          merge_requests_ff_only_enabled: true )
+      end
+
+      let(:merge_request) { create(:merge_request, source_project: project, source_branch: 'feature', target_branch: 'wip' ) }
+
+      before do
+        create :approver_group, group: group, target: merge_request
+        visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+      end
+
+      it 'I am unable to rebase the merge request' do
+        # before approval status is loaded
+        expect(page).to have_button('Rebase onto wip', disabled: true)
+
+        wait_for_ajax
+
+        # after approval status is loaded
+        expect(page).to have_button('Rebase onto wip', disabled: true)
+      end
+    end
   end
 end
 

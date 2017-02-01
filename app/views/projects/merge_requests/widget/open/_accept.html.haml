@@ -11,10 +11,10 @@
       .accept-action
         - if @pipeline && @pipeline.active?
           %span.btn-group
-            = button_tag class: "btn btn-create js-merge-button merge_when_build_succeeds" do
+            = button_tag class: "btn btn-create js-merge-button merge_when_build_succeeds", disabled: !@merge_request.approved?, ":disabled" => "disableAcceptance" do
               Merge When Pipeline Succeeds
             - unless @project.only_allow_merge_if_build_succeeds?
-              = button_tag class: "btn btn-success dropdown-toggle", 'data-toggle' => 'dropdown' do
+              = button_tag class: "btn btn-success dropdown-toggle", 'data-toggle' => 'dropdown', disabled: !@merge_request.approved?, ":disabled" => "disableAcceptance" do
                 = icon('caret-down')
                 %span.sr-only
                   Select Merge Moment
@@ -28,7 +28,7 @@
                     = icon('warning fw')
                     Merge Immediately
         - else
-          = f.button class: "btn btn-create btn-grouped js-merge-button accept_merge_request #{status_class}", ':disabled' => 'disableAcceptance' do
+          = f.button class: "btn btn-create btn-grouped js-merge-button accept_merge_request #{status_class}", disabled: !@merge_request.approved?, ":disabled" => "disableAcceptance" do
             Accept Merge Request
       - if @merge_request.force_remove_source_branch?
         .accept-control
