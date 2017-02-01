@@ -4,5 +4,4 @@
 #
 web: RAILS_ENV=development bin/web start_foreground
 worker: RAILS_ENV=development bin/background_jobs start_foreground
-webpack: npm run dev-server
 # mail_room: bundle exec mail_room -q -c config/mail_room.yml
