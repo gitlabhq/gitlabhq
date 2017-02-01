@@ -519,6 +519,8 @@ class Repository
     unless Gitlab::Git.blank_ref?(sha)
       Blob.decorate(Gitlab::Git::Blob.find(self, sha, path))
     end
+  rescue Gitlab::Git::Repository::NoRepository
+    nil
   end
 
   def blob_by_oid(oid)
@@ -1343,7 +1345,7 @@ class Repository
   def route_map_for(sha)
     blob = blob_at(sha, ROUTE_MAP_PATH)
     return unless blob
-    
+
     blob.load_all_data!(self)
     blob.data
   end
