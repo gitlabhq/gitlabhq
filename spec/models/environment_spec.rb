@@ -7,8 +7,6 @@ describe Environment, models: true do
   it { is_expected.to belong_to(:project) }
   it { is_expected.to have_many(:deployments) }
 
-  it { is_expected.to delegate_method(:last_deployment).to(:deployments).as(:last) }
-
   it { is_expected.to delegate_method(:stop_action).to(:last_deployment) }
   it { is_expected.to delegate_method(:manual_actions).to(:last_deployment) }
 
