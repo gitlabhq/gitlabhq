@@ -34,7 +34,13 @@ module Spammable
   end
 
   def check_for_spam
-    self.errors.add(:base, "Your #{self.class.name.underscore} has been recognized as spam and has been discarded.") if spam?
+    if spam?
+      self.errors.add(:base, "Your #{spammable_entity_type} has been recognized as spam and has been discarded.")
+    end
+  end
+
+  def spammable_entity_type
+    self.class.name.underscore
   end
 
   def spam_title
