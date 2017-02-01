@@ -43,6 +43,8 @@
 
 = render 'shared/issuable/form/branch_chooser', issuable: issuable, form: form
 
+= render 'shared/issuable/form/merge_params', issuable: issuable
+
 - if @merge_request_for_resolving_discussions
   .form-group
     .col-sm-10.col-sm-offset-2
