@@ -27,7 +27,7 @@
         expect(gl.text.pluralize('test', 2)).toBe('tests');
       });
 
-      it('returns pluralized', () => {
+      it('returns pluralized when count is 0', () => {
         expect(gl.text.pluralize('test', 0)).toBe('tests');
       });
 
