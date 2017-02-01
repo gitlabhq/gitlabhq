@@ -93,10 +93,6 @@ module VisibilityLevelHelper
     current_application_settings.default_project_visibility
   end
 
-  def default_snippet_visibility
-    current_application_settings.default_snippet_visibility
-  end
-
   def default_group_visibility
     current_application_settings.default_group_visibility
   end
