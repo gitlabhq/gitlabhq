@@ -13,7 +13,7 @@ commits will be visible in the project's activity feed.
 Users with at least [developer access][perms] to the project can also force an
 immediate update with a click of a button.
 
-A few things to consider:
+A few things/limitations to consider:
 
 - The repository must be accessible over `http://`, `https://` or `git://`.
 - If your HTTP repository is not publicly accessible, add authentication
@@ -94,7 +94,20 @@ While mirrors update once an hour, you can force an update (either **push** or
 
 You can adjust the synchronization times for the repository mirroring if you
 have access to the GitLab server. For more information, see
-[the administration documentation](../administration/cron_jobs.md#adjusting-synchronization-times-for-repository-mirroring).
+[the administration documentation][sync-times].
+
+## Using both mirroring methods at the same time
+
+Currently there is no bidirectional support without conflicts. That means that
+if you configure a repository to both pull and push to a second one, there is
+no guarantee that it will update correctly on both remotes. You could
+[adjust the synchronization times][sync-times] to a very low value and hope
+that no conflicts occur during the pull/push window time, but that is not a
+solution to consider on a production environment. Another thing you could try
+is [configuring custom Git hooks][hooks] on the GitLab server.
+
 
 [ee-51]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/51
 [perms]: ../user/permissions.md
+[sync-times]: ../administration/cron_jobs.md#adjusting-synchronization-times-for-repository-mirroring
+[hooks]: https://docs.gitlab.com/ee/administration/custom_hooks.html
