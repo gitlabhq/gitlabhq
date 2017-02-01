@@ -323,6 +323,8 @@ group :development, :test do
   gem 'activerecord_sane_schema_dumper', '0.2'
 
   gem 'stackprof', '~> 0.2.10'
+
+  gem 'rack-proxy', '~> 0.6.0'
 end
 
 group :test do

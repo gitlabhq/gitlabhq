@@ -610,6 +610,16 @@ production: &base
     # Git timeout to read a commit, in seconds
     timeout: 10
 
+  ## Webpack settings
+  # If enabled, this will tell rails to serve frontend assets from the webpack-dev-server running
+  # on a given port instead of serving directly from /assets/webpack. This is only indended for use
+  # in development.
+  webpack:
+    # dev_server:
+    #   enabled: true
+    #   host: localhost
+    #   port: 3808
+
   #
   # 5. Extra customization
   # ==========================
