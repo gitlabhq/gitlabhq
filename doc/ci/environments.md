@@ -442,6 +442,43 @@ and/or `production`) you can see this information in the merge request itself.
 
 ![Environment URLs in merge request](img/environments_link_url_mr.png)
 
+### Go directly from source files to public pages on the environment
+
+To go one step further, we can specify a Route Map to get GitLab to show us "View on [environment URL]" buttons to go directly from a file to that file's representation on the deployed website. It will be exposed in a few places:
+
+| In the diff for a merge request, comparison or commit | In the file view |
+| ------ | ------ |
+| !["View on env" button in merge request diff](img/view_on_env_mr.png) | !["View on env" button in file view](img/view_on_env_blob.png) |
+
+To get this to work, you need to tell GitLab how the paths of files in your repository map to paths of pages on your website, using a so-called Route Map.
+
+The Route Map is a file inside the repository at `.gitlab/route-map.yml`, that contains a YAML array that maps `source` paths (in the repository) to `public` paths (on the website).
+
+This is an example of a route map for [Middleman](https://middlemanapp.com) static websites like [http://about.gitlab.com](https://gitlab.com/gitlab-com/www-gitlab-com):
+
+```yaml
+# Blogposts
+- source: /source\/posts\/([0-9]{4})-([0-9]{2})-([0-9]{2})-(.+?)\..*/ # source/posts/2017-01-30-around-the-world-in-6-releases.html.md.erb
+  public: '\1/\2/\3/\4/' # 2017/01/30/around-the-world-in-6-releases/
+
+# HTML files
+- source: /source\/(.+?\.html).*/ # source/index.html.haml
+  public: '\1' # index.html
+
+# Other files
+- source: /source\/(.*)/ # source/images/blogimages/around-the-world-in-6-releases-cover.png
+  public: '\1' # images/blogimages/around-the-world-in-6-releases-cover.png
+```
+
+Mappings are defined as entries in the root YAML array, and are identified by a `-` prefix. Within an entry, we have a hash map with two keys:
+
+- `source`: a regular expression, starting and ending with `/`. Can include capture groups denoted by `()` that can be referred to in the `public` path. Slashes (`/`) can, but don't have to be, escaped as `\/`.
+- `public`: a string, starting and ending with `'`. Can include `\N` expressions to refer to capture groups in the `source` regular expression in order of their occurence, starting with `\1`.
+
+The public path for a source path is determined by finding the first `source` expression that matches it, and returning the corresponding `public` path, replacing the `\N` expressions with the values of the `()` capture groups.
+
+In the example above, the fact that mappings are evaluated in order of their definition is used to ensure that `source/index.html.haml` will match `/source\/(.+?\.html).*/` instead of `/source\/(.*)/`, and will result in a public path of `index.html`, instead of `index.html.haml`.
+
 ---
 
 We now have a full development cycle, where our app is tested, built, deployed
