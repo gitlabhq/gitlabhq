@@ -7,6 +7,7 @@ describe Profiles::NotificationsController do
       sign_in(user)
 
       get :show
+
       expect(response).to render_template :show
     end
   end
