@@ -30,8 +30,8 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def show
-    branch_name = @ref if @repository.branch_exists?(@ref)
-    @environment = @project.environments_for(commit: @commit, ref: branch_name).last
+    environment_args = @repository.branch_exists?(@ref) ? { ref: @ref } : { commit: @commit }
+    @environment = @project.environments_for(**environment_args).last
     @environment = nil unless can?(current_user, :read_environment, @environment)
   end
 
