@@ -224,7 +224,14 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def new
-    define_new_vars
+    respond_to do |format|
+      format.html { define_new_vars }
+      format.json do
+        render json: { pipelines: PipelineSerializer
+          .new(project: @project, user: @current_user)
+          .represent(@pipelines) }
+      end
+    end
   end
 
   def new_diffs
