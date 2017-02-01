@@ -11,6 +11,14 @@
         type: Number,
         required: true,
       },
+      milestonePath: {
+        type: String,
+        required: true,
+      },
+      labelPath: {
+        type: String,
+        required: true,
+      },
     },
     data() {
       return ModalStore.store;
@@ -58,7 +66,9 @@
           class="add-issues-search append-bottom-10"
           v-if="showSearch">
           <modal-filters
-            :project-id="projectId">
+            :project-id="projectId"
+            :milestone-path="milestonePath"
+            :label-path="labelPath">
           </modal-filters>
           <input
             placeholder="Search issues..."

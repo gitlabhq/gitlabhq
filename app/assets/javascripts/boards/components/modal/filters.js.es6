@@ -9,6 +9,14 @@
         type: Number,
         required: true,
       },
+      milestonePath: {
+        type: String,
+        required: true,
+      },
+      labelPath: {
+        type: String,
+        required: true,
+      },
     },
     components: {
       'user-filter': gl.issueBoards.ModalFilterUser,
@@ -30,8 +38,8 @@
           field-name="assignee_id"
           :null-user="true"
           :project-id="projectId"></user-filter>
-        <milestone-filter></milestone-filter>
-        <label-filter></label-filter>
+        <milestone-filter :milestone-path="milestonePath"></milestone-filter>
+        <label-filter :label-path="labelPath"></label-filter>
       </div>
     `,
   });

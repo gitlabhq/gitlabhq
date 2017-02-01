@@ -2,6 +2,12 @@
 /* global LabelSelect */
 (() => {
   gl.issueBoards.ModalLabelFilter = Vue.extend({
+    props: {
+      labelPath: {
+        type: String,
+        required: true,
+      },
+    },
     mounted() {
       new LabelsSelect(this.$refs.dropdown);
     },
@@ -11,9 +17,9 @@
           class="dropdown-menu-toggle js-label-select js-multiselect js-extra-options"
           type="button"
           data-toggle="dropdown"
-          data-labels="/root/test/labels.json"
           data-show-any="true"
           data-show-no="true"
+          :data-labels="labelPath"
           ref="dropdown">
           <span class="dropdown-toggle-text">
             Label

@@ -2,6 +2,12 @@
 /* global MilestoneSelect */
 (() => {
   gl.issueBoards.ModalFilterMilestone = Vue.extend({
+    props: {
+      milestonePath: {
+        type: String,
+        required: true,
+      },
+    },
     mounted() {
       new MilestoneSelect(null, this.$refs.dropdown);
     },
@@ -14,7 +20,7 @@
           data-show-any="true"
           data-show-upcoming="true"
           data-field-name="milestone_title"
-          :data-milestones="'/root/test/milestones.json'"
+          :data-milestones="milestonePath"
           ref="dropdown">
           <span class="dropdown-toggle-text">
             Milestone

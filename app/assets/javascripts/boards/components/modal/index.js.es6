@@ -29,6 +29,14 @@
         type: Number,
         required: true,
       },
+      milestonePath: {
+        type: String,
+        required: true,
+      },
+      labelPath: {
+        type: String,
+        required: true,
+      },
     },
     data() {
       return ModalStore.store;
@@ -123,7 +131,9 @@
         v-if="showAddIssuesModal">
         <div class="add-issues-container">
           <modal-header
-            :project-id="projectId">
+            :project-id="projectId"
+            :milestone-path="milestonePath"
+            :label-path="labelPath">
           </modal-header>
           <modal-list
             :issue-link-base="issueLinkBase"
