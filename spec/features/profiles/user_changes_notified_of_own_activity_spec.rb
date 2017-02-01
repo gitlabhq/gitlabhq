@@ -12,7 +12,7 @@ feature 'Profile > Notifications > User changes notified_of_own_activity setting
 
     expect(page).not_to have_checked_field('user[notified_of_own_activity]')
 
-    page.find('#user_notified_of_own_activity').set(true)
+    check 'user[notified_of_own_activity]'
 
     expect(page).to have_content('Notification settings saved')
     expect(page).to have_checked_field('user[notified_of_own_activity]')
@@ -24,7 +24,7 @@ feature 'Profile > Notifications > User changes notified_of_own_activity setting
 
     expect(page).to have_checked_field('user[notified_of_own_activity]')
 
-    page.find('#user_notified_of_own_activity').set(false)
+    uncheck 'user[notified_of_own_activity]'
 
     expect(page).to have_content('Notification settings saved')
     expect(page).not_to have_checked_field('user[notified_of_own_activity]')
