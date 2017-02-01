@@ -1,6 +1,7 @@
 module Issues
   class UpdateService < Issues::BaseService
     def execute(issue)
+      handle_move_between_iids(issue)
       update(issue)
     end
 
@@ -45,6 +46,26 @@ module Issues
 
     def close_service
       Issues::CloseService
+    end
+
+    def handle_move_between_iids(issue)
+      if move_between_iids = params.delete(:move_between_iids)
+        before_iid, after_iid = move_between_iids
+
+        issue_before = nil
+        if before_iid
+          issue_before = issue.project.issues.find_by(iid: before_iid)
+          issue_before = nil unless can?(current_user, :update_issue, issue_before)
+        end
+
+        issue_after = nil
+        if after_iid
+          issue_after = issue.project.issues.find_by(iid: after_iid)
+          issue_after = nil unless can?(current_user, :update_issue, issue_after)
+        end
+
+        issue.move_between(issue_before, issue_after)
+      end
     end
 
     private

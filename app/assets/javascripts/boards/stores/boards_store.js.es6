@@ -106,6 +106,9 @@
         listFrom.removeIssue(issue);
       }
     },
+    moveIssueInList (list, issue, oldIndex, newIndex) {
+      list.moveIssue(issue, oldIndex, newIndex);
+    },
     findList (key, val, type = 'label') {
       return this.state.lists.filter((list) => {
         const byType = type ? list['type'] === type : true;

@@ -86,7 +86,7 @@ require('./board_new_issue');
       const options = gl.issueBoards.getBoardSortableDefaultOptions({
         scroll: document.querySelectorAll('.boards-list')[0],
         group: 'issues',
-        sort: false,
+        sort: true,
         disabled: this.disabled,
         filter: '.board-list-count, .is-disabled',
         onStart: (e) => {
@@ -104,6 +104,9 @@ require('./board_new_issue');
           this.$nextTick(() => {
             e.item.remove();
           });
+        },
+        onUpdate: (e) => {
+          gl.issueBoards.BoardsStore.moveIssueInList(this.list, Store.moving.issue, e.oldIndex, e.newIndex);
         },
       });
 

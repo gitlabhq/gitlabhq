@@ -63,7 +63,7 @@ module Projects
       end
 
       def move_params
-        params.permit(:board_id, :id, :from_list_id, :to_list_id)
+        params.permit(:board_id, :id, :from_list_id, :to_list_id, :move_before_iid, :move_after_iid)
       end
 
       def issue_params

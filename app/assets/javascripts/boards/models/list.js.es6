@@ -111,8 +111,16 @@ class List {
 
   addIssue (issue, listFrom, newIndex) {
     if (!this.findIssue(issue.id)) {
+      let moveBeforeIid = null;
+      let moveAfterIid = null;
+
       if (newIndex !== undefined) {
         this.issues.splice(newIndex, 0, issue);
+
+        const issueBefore = this.issues[newIndex - 1];
+        if (issueBefore) moveAfterIid = issueBefore.id;
+        const issueAfter = this.issues[newIndex + 1];
+        if (issueAfter) moveBeforeIid = issueAfter.id;
       } else {
         this.issues.push(issue);
       }
@@ -123,12 +131,27 @@ class List {
 
       if (listFrom) {
         this.issuesSize += 1;
-        gl.boardService.moveIssue(issue.id, listFrom.id, this.id)
+        gl.boardService.moveIssue(issue.id, listFrom.id, this.id, moveAfterIid, moveBeforeIid)
           .then(() => {
             listFrom.getIssues(false);
           });
       }
     }
+  }
+
+  moveIssue (issue, oldIndex, newIndex) {
+    let moveBeforeIid = null;
+    let moveAfterIid = null;
+
+    this.issues.splice(oldIndex, 1);
+    this.issues.splice(newIndex, 0, issue);
+
+    const issueBefore = this.issues[newIndex - 1];
+    if (issueBefore) moveAfterIid = issueBefore.id;
+    const issueAfter = this.issues[newIndex + 1];
+    if (issueAfter) moveBeforeIid = issueAfter.id;
+
+    gl.boardService.moveIssue(issue.id, null, null, moveAfterIid, moveBeforeIid);
   }
 
   findIssue (id) {
