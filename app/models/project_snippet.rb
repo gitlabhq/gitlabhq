@@ -14,4 +14,8 @@ class ProjectSnippet < Snippet
 
   participant :author
   participant :notes_with_associations
+
+  def check_for_spam?
+    super && project.public?
+  end
 end
