@@ -84,6 +84,8 @@ module Gitlab
     config.webpack.config_file = "config/webpack.config.js"
     config.webpack.output_dir  = "public/assets/webpack"
     config.webpack.public_path = "assets/webpack"
+
+    # Webpack dev server configuration is handled in initializers/static_files.rb
     config.webpack.dev_server.enabled = false
 
     # Enable the asset pipeline

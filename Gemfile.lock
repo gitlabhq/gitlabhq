@@ -544,6 +544,8 @@ GEM
       rack (>= 1.1)
     rack-protection (1.5.3)
       rack
+    rack-proxy (0.6.0)
+      rack
     rack-test (0.6.3)
       rack (>= 1.0)
     rails (4.2.7.1)
@@ -943,6 +945,7 @@ DEPENDENCIES
   rack-attack (~> 4.4.1)
   rack-cors (~> 0.4.0)
   rack-oauth2 (~> 1.2.1)
+  rack-proxy (~> 0.6.0)
   rails (= 4.2.7.1)
   rails-deprecated_sanitizer (~> 1.0.3)
   rainbow (~> 2.1.0)
