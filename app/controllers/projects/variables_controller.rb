@@ -25,10 +25,11 @@ class Projects::VariablesController < Projects::ApplicationController
     @variable = Ci::Variable.new(project_params)
 
     if @variable.valid? && @project.variables << @variable
-      redirect_to namespace_project_settings_ci_cd_path(project.namespace, project), notice: 'Variables were successfully updated.'
+      flash[:notice] = 'Variables were successfully updated.'
     else
-      render action: "index"
+      flash[:alert] = @variable.errors.full_messages.join(',').html_safe
     end
+    redirect_to namespace_project_settings_ci_cd_path(project.namespace, project)
   end
 
   def destroy
