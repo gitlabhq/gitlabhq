@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
   describe 'saves the project tree into a json object' do
     let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: project.path_with_namespace) }
-    let(:project_tree_saver) { described_class.new(project: project, shared: shared) }
+    let(:project_tree_saver) { described_class.new(project: project, current_user: user, shared: shared) }
     let(:export_path) { "#{Dir::tmpdir}/project_tree_saver_spec" }
     let(:user) { create(:user) }
     let(:project) { setup_project }
@@ -92,7 +92,7 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
       end
 
       it 'has pipeline builds' do
-        expect(saved_project_json['pipelines'].first['statuses'].count { |hash| hash['type'] == 'Ci::Build'}).to eq(1)
+        expect(saved_project_json['pipelines'].first['statuses'].count { |hash| hash['type'] == 'Ci::Build' }).to eq(1)
       end
 
       it 'has pipeline commits' do
@@ -112,13 +112,13 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
       end
 
       it 'has project and group labels' do
-        label_types = saved_project_json['issues'].first['label_links'].map { |link| link['label']['type']}
+        label_types = saved_project_json['issues'].first['label_links'].map { |link| link['label']['type'] }
 
         expect(label_types).to match_array(['ProjectLabel', 'GroupLabel'])
       end
 
       it 'has priorities associated to labels' do
-        priorities = saved_project_json['issues'].first['label_links'].map { |link| link['label']['priorities']}
+        priorities = saved_project_json['issues'].first['label_links'].map { |link| link['label']['priorities'] }
 
         expect(priorities.flatten).not_to be_empty
       end
@@ -139,6 +139,51 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
         ActiveRecord::Base.connection.execute("UPDATE merge_request_diffs SET st_diffs = '---\n- :diff: !binary |-\n    LS0tIC9kZXYvbnVsbAorKysgYi9pbWFnZXMvbnVjb3IucGRmCkBAIC0wLDAg\n    KzEsMTY3OSBAQAorJVBERi0xLjUNJeLjz9MNCisxIDAgb2JqDTw8L01ldGFk\n    YXR'")
 
         expect(project_tree_saver.save).to be true
+      end
+
+      context 'group members' do
+        let(:user2) { create(:user, email: 'group@member.com') }
+        let(:member_emails) do
+          saved_project_json['project_members'].map do |pm|
+            pm['user']['email']
+          end
+        end
+
+        before do
+          Group.first.add_developer(user2)
+        end
+
+        it 'does not export group members if it has no permission' do
+          Group.first.add_developer(user)
+
+          expect(member_emails).not_to include('group@member.com')
+        end
+
+        it 'does not export group members as master' do
+          Group.first.add_master(user)
+
+          expect(member_emails).not_to include('group@member.com')
+        end
+
+        it 'exports group members as group owner' do
+          Group.first.add_owner(user)
+
+          expect(member_emails).to include('group@member.com')
+        end
+
+        context 'as admin' do
+          let(:user) { create(:admin) }
+
+          it 'exports group members as admin' do
+            expect(member_emails).to include('group@member.com')
+          end
+
+          it 'exports group members as project members' do
+            member_types = saved_project_json['project_members'].map { |pm| pm['source_type'] }
+
+            expect(member_types).to all(eq('Project'))
+          end
+        end
       end
     end
   end
@@ -167,10 +212,10 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
     commit_status = create(:commit_status, project: project)
 
     ci_pipeline = create(:ci_pipeline,
-                       project: project,
-                       sha: merge_request.diff_head_sha,
-                       ref: merge_request.source_branch,
-                       statuses: [commit_status])
+                         project: project,
+                         sha: merge_request.diff_head_sha,
+                         ref: merge_request.source_branch,
+                         statuses: [commit_status])
 
     create(:ci_build, pipeline: ci_pipeline, project: project)
     create(:milestone, project: project)

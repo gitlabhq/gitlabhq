@@ -89,7 +89,7 @@ module Gitlab
       end
 
       def has_author?(old_author_id)
-        admin_user? && @members_mapper.map.keys.include?(old_author_id)
+        admin_user? && @members_mapper.include?(old_author_id)
       end
 
       def missing_author_note(updated_at, author_name)

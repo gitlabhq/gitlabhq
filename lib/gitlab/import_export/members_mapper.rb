@@ -32,6 +32,10 @@ module Gitlab
         @user.id
       end
 
+      def include?(old_author_id)
+        map.keys.include?(old_author_id) && map[old_author_id] != default_user_id
+      end
+
       private
 
       def missing_keys_tracking_hash
