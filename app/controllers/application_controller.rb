@@ -12,7 +12,6 @@ class ApplicationController < ActionController::Base
   before_action :authenticate_user_from_private_token!
   before_action :authenticate_user!
   before_action :validate_user_service_ticket!
-  before_action :reject_blocked!
   before_action :check_password_expiration
   before_action :check_2fa_requirement
   before_action :ldap_security_check
@@ -87,22 +86,8 @@ class ApplicationController < ActionController::Base
     logger.error "\n#{exception.class.name} (#{exception.message}):\n#{application_trace.join}"
   end
 
-  def reject_blocked!
-    if current_user && current_user.blocked?
-      sign_out current_user
-      flash[:alert] = "Your account is blocked. Retry when an admin has unblocked it."
-      redirect_to new_user_session_path
-    end
-  end
-
   def after_sign_in_path_for(resource)
-    if resource.is_a?(User) && resource.respond_to?(:blocked?) && resource.blocked?
-      sign_out resource
-      flash[:alert] = "Your account is blocked. Retry when an admin has unblocked it."
-      new_user_session_path
-    else
-      stored_location_for(:redirect) || stored_location_for(resource) || root_path
-    end
+    stored_location_for(:redirect) || stored_location_for(resource) || root_path
   end
 
   def after_sign_out_path_for(resource)

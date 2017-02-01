@@ -32,6 +32,22 @@ feature 'Login', feature: true do
     end
   end
 
+  describe 'with a blocked account' do
+    it 'prevents the user from logging in' do
+      user = create(:user, :blocked)
+
+      login_with(user)
+
+      expect(page).to have_content('Your account has been blocked.')
+    end
+
+    it 'does not update Devise trackable attributes' do
+      user = create(:user, :blocked)
+
+      expect { login_with(user) }.not_to change { user.reload.sign_in_count }
+    end
+  end
+
   describe 'with two-factor authentication' do
     def enter_code(code)
       fill_in 'user_otp_attempt', with: code
