@@ -22,22 +22,34 @@ describe Projects::MergeRequestsController do
       render_views
 
       let(:fork_project) { create(:forked_project_with_submodules) }
+      before { fork_project.team << [user, :master] }
 
-      before do
-        fork_project.team << [user, :master]
+      context 'when rendering HTML response' do
+        it 'renders new merge request widget template' do
+          submit_new_merge_request
+
+          expect(response).to be_success
+        end
       end
 
-      it 'renders it' do
-        get :new,
-            namespace_id: fork_project.namespace.to_param,
-            project_id: fork_project.to_param,
-            merge_request: {
-              source_branch: 'remove-submodule',
-              target_branch: 'master'
-            }
+      context 'when rendering JSON response' do
+        it 'renders JSON including serialized pipelines' do
+          submit_new_merge_request(format: :json)
 
-        expect(response).to be_success
+          expect(json_response).to have_key('pipelines')
+          expect(response).to be_ok
+        end
       end
+    end
+
+    def submit_new_merge_request(format: :html)
+      get :new,
+          namespace_id: fork_project.namespace.to_param,
+          project_id: fork_project.to_param,
+          merge_request: {
+            source_branch: 'remove-submodule',
+            target_branch: 'master' },
+          format: format
     end
   end
 
