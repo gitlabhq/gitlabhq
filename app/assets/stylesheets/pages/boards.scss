@@ -418,8 +418,11 @@
   display: flex;
 
   .form-control {
-    max-width: 200px;
     margin-left: auto;
+
+    @media (min-width: $screen-sm-min) {
+      max-width: 200px;
+    }
   }
 }
 
@@ -496,10 +499,19 @@
   display: flex;
 
   > .dropdown {
+    display: none;
     margin-right: 10px;
+
+    @media (min-width: $screen-sm-min) {
+      display: block;
+    }
   }
 
   .dropdown-menu-toggle {
-    width: 140px;
+    width: 100px;
+
+    @media (min-width: $screen-md-min) {
+      width: 140px;
+    }
   }
 }
