@@ -25,9 +25,13 @@
         required: false,
         default: false,
       },
+      projectId: {
+        type: Number,
+        required: true,
+      },
     },
     mounted() {
-      new UsersSelect();
+      new UsersSelect(null, this.$refs.dropdown);
     },
     computed: {
       currentUsername() {
@@ -51,9 +55,12 @@
           :data-any-user="'Any ' + toggleLabel"
           :data-null-user="nullUser"
           :data-field-name="fieldName"
-          :data-project-id="12"
-          :data-first-user="currentUsername">
-          {{ toggleLabel }}
+          :data-project-id="projectId"
+          :data-first-user="currentUsername"
+          ref="dropdown">
+          <span class="dropdown-toggle-text">
+            {{ toggleLabel }}
+          </span>
           <i class="fa fa-chevron-down"></i>
         </button>
         <div

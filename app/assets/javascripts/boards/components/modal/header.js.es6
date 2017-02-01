@@ -6,6 +6,12 @@
 
   gl.issueBoards.ModalHeader = Vue.extend({
     mixins: [gl.issueBoards.ModalMixins],
+    props: {
+      projectId: {
+        type: Number,
+        required: true,
+      },
+    },
     data() {
       return ModalStore.store;
     },
@@ -30,6 +36,7 @@
     },
     components: {
       'modal-tabs': gl.issueBoards.ModalTabs,
+      'modal-filters': gl.issueBoards.ModalFilters,
     },
     template: `
       <div>
@@ -50,7 +57,9 @@
         <div
           class="add-issues-search append-bottom-10"
           v-if="showSearch">
-          <modal-filters></modal-filters>
+          <modal-filters
+            :project-id="projectId">
+          </modal-filters>
           <input
             placeholder="Search issues..."
             class="form-control"

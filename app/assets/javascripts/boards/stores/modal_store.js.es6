@@ -21,6 +21,7 @@
           author_id: '',
           assignee_id: '',
           milestone_title: '',
+          label_name: [],
         },
       };
     }

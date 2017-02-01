@@ -25,6 +25,10 @@
         type: String,
         required: true,
       },
+      projectId: {
+        type: Number,
+        required: true,
+      },
     },
     data() {
       return ModalStore.store;
@@ -52,8 +56,7 @@
       },
       filter: {
         handler() {
-          this.issues = [];
-          this.loadIssues();
+          this.loadIssues(true);
         },
         deep: true,
       }
@@ -119,7 +122,9 @@
         class="add-issues-modal"
         v-if="showAddIssuesModal">
         <div class="add-issues-container">
-          <modal-header></modal-header>
+          <modal-header
+            :project-id="projectId">
+          </modal-header>
           <modal-list
             :issue-link-base="issueLinkBase"
             :root-path="rootPath"

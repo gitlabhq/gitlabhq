@@ -1,15 +1,19 @@
 /* global Vue */
-/* global MilestoneSelect */
 //= require_tree ./filters
 (() => {
   const ModalStore = gl.issueBoards.ModalStore;
 
   gl.issueBoards.ModalFilters = Vue.extend({
-    mounted() {
-      new MilestoneSelect();
+    props: {
+      projectId: {
+        type: Number,
+        required: true,
+      },
     },
     components: {
       'user-filter': gl.issueBoards.ModalFilterUser,
+      'milestone-filter': gl.issueBoards.ModalFilterMilestone,
+      'label-filter': gl.issueBoards.ModalLabelFilter,
     },
     template: `
       <div class="modal-filters">
@@ -17,58 +21,17 @@
           dropdown-class-name="dropdown-menu-author"
           toggle-class-name="js-user-search js-author-search"
           toggle-label="Author"
-          field-name="author_id"></user-filter>
+          field-name="author_id"
+          :project-id="projectId"></user-filter>
         <user-filter
           dropdown-class-name="dropdown-menu-author"
           toggle-class-name="js-assignee-search"
           toggle-label="Assignee"
           field-name="assignee_id"
-          :null-user="true"></user-filter>
-        <div class="dropdown">
-          <button
-            class="dropdown-menu-toggle js-milestone-select"
-            type="button"
-            data-toggle="dropdown"
-            data-show-any="true"
-            data-show-upcoming="true"
-            data-field-name="milestone_title"
-            :data-project-id="12"
-            :data-milestones="'/root/test/milestones.json'">
-            Milestone
-            <i class="fa fa-chevron-down"></i>
-          </button>
-          <div class="dropdown-menu dropdown-select dropdown-menu-selectable dropdown-menu-milestone">
-            <div class="dropdown-title">
-              <span>Filter by milestone</span>
-              <button
-                class="dropdown-title-button dropdown-menu-close"
-                aria-label="Close"
-                type="button">
-                <i class="fa fa-times dropdown-menu-close-icon"></i>
-              </button>
-            </div>
-            <div class="dropdown-input">
-              <input
-                type="search"
-                class="dropdown-input-field"
-                placeholder="Search milestones"
-                autocomplete="off" />
-              <i class="fa fa-search dropdown-input-search"></i>
-              <i role="button" class="fa fa-times dropdown-input-clear js-dropdown-input-clear"></i>
-            </div>
-            <div class="dropdown-content"></div>
-            <div class="dropdown-loading"><i class="fa fa-spinner fa-spin"></i></div>
-          </div>
-        </div>
-        <div class="dropdown">
-          <button
-            class="dropdown-menu-toggle js-label-select js-multiselect"
-            type="button"
-            data-toggle="dropdown">
-            Label
-            <i class="fa fa-chevron-down"></i>
-          </button>
-        </div>
+          :null-user="true"
+          :project-id="projectId"></user-filter>
+        <milestone-filter></milestone-filter>
+        <label-filter></label-filter>
       </div>
     `,
   });
