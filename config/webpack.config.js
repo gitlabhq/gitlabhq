@@ -6,18 +6,10 @@ var webpack = require('webpack');
 var StatsPlugin = require('stats-webpack-plugin');
 var CompressionPlugin = require("compression-webpack-plugin");
 
+var ROOT_PATH = path.resolve(__dirname, '..');
 var IS_PRODUCTION = process.env.NODE_ENV === 'production';
 var IS_DEV_SERVER = process.argv[1].indexOf('webpack-dev-server') !== -1;
-var ROOT_PATH = path.resolve(__dirname, '..');
-
-// must match config.webpack.dev_server.port
-var DEV_SERVER_PORT;
-
-try {
-  DEV_SERVER_PORT = parseInt(fs.readFileSync('../webpack_port'), 10);
-} catch (e) {
-  DEV_SERVER_PORT = 3808;
-}
+var DEV_SERVER_PORT = parseInt(process.env.DEV_SERVER_PORT, 10) || 3808;
 
 var config = {
   context: path.join(ROOT_PATH, 'app/assets/javascripts'),
