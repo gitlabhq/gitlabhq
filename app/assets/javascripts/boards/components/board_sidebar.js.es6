@@ -29,6 +29,12 @@
     watch: {
       detail: {
         handler () {
+          if (this.issue.id !== this.detail.issue.id) {
+            $('.js-issue-board-sidebar', this.$el).each((i, el) => {
+              $(el).data('glDropdown').clearMenu();
+            });
+          }
+
           this.issue = this.detail.issue;
         },
         deep: true

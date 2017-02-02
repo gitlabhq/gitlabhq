@@ -1,5 +1,7 @@
 /* eslint-disable class-methods-use-this */
 
+//= require lib/utils/url_utility */
+
 (() => {
   const UNFOLD_COUNT = 20;
 
@@ -104,11 +106,11 @@
     }
 
     highlighSelectedLine() {
+      const hash = gl.utils.getLocationHash();
       const $diffFiles = $('.diff-file');
       $diffFiles.find('.hll').removeClass('hll');
 
-      if (window.location.hash !== '') {
-        const hash = window.location.hash.replace('#', '');
+      if (hash) {
         $diffFiles
           .find(`tr#${hash}:not(.match) td, td#${hash}, td[data-line-code="${hash}"]`)
           .addClass('hll');

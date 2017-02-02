@@ -249,4 +249,21 @@ describe 'Dropdown label', js: true, feature: true do
       expect(page).to have_css(js_dropdown_label, visible: true)
     end
   end
+
+  describe 'caching requests' do
+    it 'caches requests after the first load' do
+      filtered_search.set('label')
+      send_keys_to_filtered_search(':')
+      initial_size = dropdown_label_size
+
+      expect(initial_size).to be > 0
+
+      create(:label, project: project)
+      find('.filtered-search-input-container .clear-search').click
+      filtered_search.set('label')
+      send_keys_to_filtered_search(':')
+
+      expect(dropdown_label_size).to eq(initial_size)
+    end
+  end
 end

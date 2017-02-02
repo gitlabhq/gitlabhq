@@ -52,7 +52,7 @@
       = render 'award_emoji/awards_block', awardable: @merge_request, inline: true
 
     .merge-request-tabs-holder{ class: ("js-tabs-affix" unless ENV['RAILS_ENV'] == 'test') }
-      %div{ class: container_class }
+      .merge-request-tabs-container
         %ul.merge-request-tabs.nav-links.no-top.no-bottom
           %li.notes-tab
             = link_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: 'div#notes', action: 'notes', toggle: 'tab' } do
@@ -115,4 +115,3 @@
   });
 
   var mrRefreshWidgetUrl = "#{mr_widget_refresh_url(@merge_request)}";
-

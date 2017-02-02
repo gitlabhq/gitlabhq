@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170121130655) do
+ActiveRecord::Schema.define(version: 20170130204620) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -215,6 +215,7 @@ ActiveRecord::Schema.define(version: 20170121130655) do
     t.datetime "queued_at"
     t.string "token"
     t.integer "lock_version"
+    t.string "coverage_regex"
   end
 
   add_index "ci_builds", ["commit_id", "stage_idx", "created_at"], name: "index_ci_builds_on_commit_id_and_stage_idx_and_created_at", using: :btree
@@ -874,6 +875,7 @@ ActiveRecord::Schema.define(version: 20170121130655) do
     t.integer "access_level"
   end
 
+  add_index "project_authorizations", ["project_id"], name: "index_project_authorizations_on_project_id", using: :btree
   add_index "project_authorizations", ["user_id", "project_id", "access_level"], name: "index_project_authorizations_on_user_id_project_id_access_level", unique: true, using: :btree
 
   create_table "project_features", force: :cascade do |t|

@@ -278,12 +278,22 @@
     display: inline-block;
   }
 
+  .btn {
+    margin: $btn-side-margin $btn-side-margin 0 0;
+  }
+
   @media(max-width: $screen-xs-max) {
     margin-top: 50px;
     text-align: center;
 
     .btn {
       width: 100%;
+    }
+  }
+
+  @media(min-width: $screen-xs-max) {
+    &.labels .text-content {
+      margin-top: 70px;
     }
   }
 }

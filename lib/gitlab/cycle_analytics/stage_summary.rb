@@ -16,7 +16,7 @@ module Gitlab
       private
 
       def serialize(summary_object)
-        AnalyticsSummarySerializer.new.represent(summary_object).as_json
+        AnalyticsSummarySerializer.new.represent(summary_object)
       end
     end
   end

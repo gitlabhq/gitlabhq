@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'CycleAnalytics#review', feature: true do
   extend CycleAnalyticsHelpers::TestGeneration
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:from_date) { 10.days.ago }
   let(:user) { create(:user, :admin) }
   subject { CycleAnalytics.new(project, from: from_date) }
@@ -23,9 +23,7 @@ describe 'CycleAnalytics#review', feature: true do
 
   context "when a regular merge request (that doesn't close the issue) is created and merged" do
     it "returns nil" do
-      5.times do
-        MergeRequests::MergeService.new(project, user).execute(create(:merge_request))
-      end
+      MergeRequests::MergeService.new(project, user).execute(create(:merge_request))
 
       expect(subject[:review].median).to be_nil
     end

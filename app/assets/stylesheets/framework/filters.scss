@@ -132,6 +132,11 @@
     display: flex;
     -webkit-flex-direction: column;
     flex-direction: column;
+
+    &> span {
+      white-space: normal;
+      word-break: break-all;
+    }
   }
 }
 
@@ -139,10 +144,6 @@
   .btn {
     @extend %filter-dropdown-item-btn-hover;
   }
-}
-
-.hint-dropdown {
-  width: 250px;
 }
 
 .filter-dropdown-loading {

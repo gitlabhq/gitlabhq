@@ -22,13 +22,6 @@ describe Gitlab::View::Presenter::Factory do
   end
 
   describe '#fabricate!' do
-    it 'exposes given params' do
-      presenter = described_class.new(build, user: 'user', foo: 'bar').fabricate!
-
-      expect(presenter.user).to eq('user')
-      expect(presenter.foo).to eq('bar')
-    end
-
     it 'detects the presenter based on the given subject' do
       presenter = described_class.new(build).fabricate!
 

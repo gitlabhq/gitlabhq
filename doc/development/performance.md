@@ -211,6 +211,41 @@ suite first. See the
 [StackProf documentation](https://github.com/tmm1/stackprof/blob/master/README.md)
 for details.
 
+## RSpec profiling
+
+GitLab's development environment also includes the
+[rspec_profiling](https://github.com/foraker/rspec_profiling) gem, which is used
+to collect data on spec execution times. This is useful for analyzing the
+performance of the test suite itself, or seeing how the performance of a spec
+may have changed over time.
+
+To activate profiling in your local environment, run the following:
+
+```
+$ export RSPEC_PROFILING=yes
+$ rake rspec_profiling:install
+```
+
+This creates an SQLite3 database in `tmp/rspec_profiling`, into which statistics
+are saved every time you run specs with the `RSPEC_PROFILING` environment
+variable set.
+
+Ad-hoc investigation of the collected results can be performed in an interactive
+shell:
+
+```
+$ rake rspec_profiling:console
+irb(main):001:0> results.count
+=> 231
+irb(main):002:0> results.last.attributes.keys
+=> ["id", "commit", "date", "file", "line_number", "description", "time", "status", "exception", "query_count", "query_time", "request_count", "request_time", "created_at", "updated_at"]
+irb(main):003:0> results.where(status: "passed").average(:time).to_s
+=> "0.211340155844156"
+```
+These results can also be placed into a PostgreSQL database by setting the
+`RSPEC_PROFILING_POSTGRES_URL` variable. This is used to profile the test suite
+when running in the CI environment.
+
 ## Importance of Changes
 
 When working on performance improvements, it's important to always ask yourself

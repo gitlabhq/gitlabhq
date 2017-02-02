@@ -72,32 +72,22 @@ require('../window')(function(w){
       var params = config.params || {};
       params[config.searchKey] = searchValue;
       var self = this;
-      this._loadUrlData(config.endpoint + this.buildParams(params)).then(function(data) {
-        if (config.loadingTemplate && self.hook.list.data === undefined ||
-          self.hook.list.data.length === 0) {
-          const dataLoadingTemplate = self.hook.list.list.querySelector('[data-loading-template]');
+      self.cache = self.cache || {};
+      var url = config.endpoint + this.buildParams(params);
+      var urlCachedData = self.cache[url];
 
-          if (dataLoadingTemplate) {
-            dataLoadingTemplate.outerHTML = self.listTemplate;
-          }
-        }
-
-        if (!self.destroyed) {
-          var hookListChildren = self.hook.list.list.children;
-          var onlyDynamicList = hookListChildren.length === 1 && hookListChildren[0].hasAttribute('data-dynamic');
-
-          if (onlyDynamicList && data.length === 0) {
-            self.hook.list.hide();
-          }
-
-          self.hook.list.setData.call(self.hook.list, data);
-        }
-        self.notLoading();
-        self.hook.list.currentIndex = 0;
-      });
+      if (urlCachedData) {
+        self._loadData(urlCachedData, config, self);
+      } else {
+        this._loadUrlData(url)
+          .then(function(data) {
+            self._loadData(data, config, self);
+          });
+      }
     },
 
     _loadUrlData: function _loadUrlData(url) {
+      var self = this;
       return new Promise(function(resolve, reject) {
         var xhr = new XMLHttpRequest;
         xhr.open('GET', url, true);
@@ -105,6 +95,7 @@ require('../window')(function(w){
           if(xhr.readyState === XMLHttpRequest.DONE) {
             if (xhr.status === 200) {
               var data = JSON.parse(xhr.responseText);
+              self.cache[url] = data;
               return resolve(data);
             } else {
               return reject([xhr.responseText, xhr.status]);
@@ -113,6 +104,30 @@ require('../window')(function(w){
         };
         xhr.send();
       });
+    },
+
+    _loadData: function _loadData(data, config, self) {
+      if (config.loadingTemplate && self.hook.list.data === undefined ||
+        self.hook.list.data.length === 0) {
+        const dataLoadingTemplate = self.hook.list.list.querySelector('[data-loading-template]');
+
+        if (dataLoadingTemplate) {
+          dataLoadingTemplate.outerHTML = self.listTemplate;
+        }
+      }
+
+      if (!self.destroyed) {
+        var hookListChildren = self.hook.list.list.children;
+        var onlyDynamicList = hookListChildren.length === 1 && hookListChildren[0].hasAttribute('data-dynamic');
+
+        if (onlyDynamicList && data.length === 0) {
+          self.hook.list.hide();
+        }
+
+        self.hook.list.setData.call(self.hook.list, data);
+      }
+      self.notLoading();
+      self.hook.list.currentIndex = 0;
     },
 
     buildParams: function(params) {

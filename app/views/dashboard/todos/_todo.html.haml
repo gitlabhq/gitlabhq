@@ -11,8 +11,11 @@
             = link_to_author(todo)
           - else
             (removed)
-      %span.todo-label
+
+      %span.action-name
         = todo_action_name(todo)
+
+      %span.todo-label
         - if todo.target
           = todo_target_link(todo)
         - else

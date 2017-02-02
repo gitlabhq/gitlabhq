@@ -1,15 +1,14 @@
 require 'spec_helper'
 
 describe EnvironmentSerializer do
-  let(:serializer) do
+  let(:user) { create(:user) }
+  let(:project) { create(:project) }
+
+  let(:json) do
     described_class
       .new(user: user, project: project)
       .represent(resource)
   end
-
-  let(:json) { serializer.as_json }
-  let(:user) { create(:user) }
-  let(:project) { create(:project) }
 
   context 'when there is a single object provided' do
     before do

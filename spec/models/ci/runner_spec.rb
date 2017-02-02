@@ -91,8 +91,7 @@ describe Ci::Runner, models: true do
   end
 
   describe '#can_pick?' do
-    let(:project) { create(:project) }
-    let(:pipeline) { create(:ci_pipeline, project: project) }
+    let(:pipeline) { create(:ci_pipeline) }
     let(:build) { create(:ci_build, pipeline: pipeline) }
     let(:runner) { create(:ci_runner) }
 
@@ -321,8 +320,8 @@ describe Ci::Runner, models: true do
 
   describe '.assignable_for' do
     let(:runner) { create(:ci_runner) }
-    let(:project) { create(:project) }
-    let(:another_project) { create(:project) }
+    let(:project) { create(:empty_project) }
+    let(:another_project) { create(:empty_project) }
 
     before do
       project.runners << runner

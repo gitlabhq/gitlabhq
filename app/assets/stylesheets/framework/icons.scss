@@ -58,3 +58,9 @@
     fill: $gl-text-color;
   }
 }
+
+.icon-link {
+  &:hover {
+    text-decoration: none;
+  }
+}

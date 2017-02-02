@@ -5,7 +5,7 @@ describe API::Builds, api: true do
 
   let(:user) { create(:user) }
   let(:api_user) { user }
-  let!(:project) { create(:project, creator_id: user.id, public_builds: false) }
+  let!(:project) { create(:project, :repository, creator: user, public_builds: false) }
   let!(:developer) { create(:project_member, :developer, user: user, project: project) }
   let(:reporter) { create(:project_member, :reporter, project: project) }
   let(:guest) { create(:project_member, :guest, project: project) }
@@ -67,7 +67,7 @@ describe API::Builds, api: true do
     context 'unauthorized user' do
       let(:api_user) { nil }
 
-      it 'should not return project builds' do
+      it 'does not return project builds' do
         expect(response).to have_http_status(401)
       end
     end

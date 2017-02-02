@@ -5,7 +5,7 @@ describe API::Commits, api: true  do
   include ApiHelpers
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
-  let!(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }
+  let!(:project) { create(:project, :repository, creator: user, namespace: user.namespace) }
   let!(:master) { create(:project_member, :master, user: user, project: project) }
   let!(:guest) { create(:project_member, :guest, user: user2, project: project) }
   let!(:note) { create(:note_on_commit, author: user, project: project, commit_id: project.repository.commit.id, note: 'a comment on a commit') }

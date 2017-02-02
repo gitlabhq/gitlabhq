@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe Gitlab::ChatCommands::IssueSearch, service: true do
   describe '#execute' do
-    let!(:issue) { create(:issue, title: 'find me') }
+    let!(:issue) { create(:issue, project: project, title: 'find me') }
     let!(:confidential) { create(:issue, :confidential, project: project, title: 'mepmep find') }
-    let(:project) { issue.project }
+    let(:project) { create(:empty_project) }
     let(:user) { issue.author }
     let(:regex_match) { described_class.match("issue search find") }
 
@@ -14,7 +14,8 @@ describe Gitlab::ChatCommands::IssueSearch, service: true do
 
     context 'when the user has no access' do
       it 'only returns the open issues' do
-        expect(subject).not_to include(confidential)
+        expect(subject[:response_type]).to be(:ephemeral)
+        expect(subject[:text]).to match("not found")
       end
     end
 
@@ -24,13 +25,14 @@ describe Gitlab::ChatCommands::IssueSearch, service: true do
       end
 
       it 'returns all results' do
-        expect(subject).to include(confidential, issue)
+        expect(subject).to have_key(:attachments)
+        expect(subject[:text]).to eq("Here are the 2 issues I found:")
       end
     end
 
     context 'without hits on the query' do
       it 'returns an empty collection' do
-        expect(subject).to be_empty
+        expect(subject[:text]).to match("not found")
       end
     end
   end

@@ -92,5 +92,29 @@ describe Gitlab::ImportExport::MembersMapper, services: true do
         expect(members_mapper.map[exported_user_id]).to eq(user2.id)
       end
     end
+
+    context 'importer same as group member' do
+      let(:user2) { create(:admin, authorized_projects_populated: true) }
+      let(:group) { create(:group) }
+      let(:project) { create(:empty_project, :public, name: 'searchable_project', namespace: group) }
+      let(:members_mapper) do
+        described_class.new(
+          exported_members: exported_members, user: user2, project: project)
+      end
+
+      before do
+        group.add_users([user, user2], GroupMember::DEVELOPER)
+      end
+
+      it 'maps the project member' do
+        expect(members_mapper.map[exported_user_id]).to eq(user2.id)
+      end
+
+      it 'maps the project member if it already exists' do
+        project.add_master(user2)
+
+        expect(members_mapper.map[exported_user_id]).to eq(user2.id)
+      end
+    end
   end
 end
