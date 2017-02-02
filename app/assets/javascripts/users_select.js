@@ -25,7 +25,7 @@
       $els = $(els);
 
       if (!els) {
-        $els = $('.js-label-select');
+        $els = $('.js-user-search');
       }
 
       $els.each((function(_this) {
