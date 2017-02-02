@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'mime/types'
 
-describe API::Commits, api: true  do
+describe API::V3::Commits, api: true do
   include ApiHelpers
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
@@ -19,7 +19,7 @@ describe API::Commits, api: true  do
 
       it "returns project commits" do
         commit = project.repository.commit
-        get api("/projects/#{project.id}/repository/commits", user)
+        get v3_api("/projects/#{project.id}/repository/commits", user)
 
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
@@ -31,7 +31,7 @@ describe API::Commits, api: true  do
 
     context "unauthorized user" do
       it "does not return project commits" do
-        get api("/projects/#{project.id}/repository/commits")
+        get v3_api("/projects/#{project.id}/repository/commits")
         expect(response).to have_http_status(401)
       end
     end
@@ -41,7 +41,7 @@ describe API::Commits, api: true  do
         commits = project.repository.commits("master")
         since = commits.second.created_at
 
-        get api("/projects/#{project.id}/repository/commits?since=#{since.utc.iso8601}", user)
+        get v3_api("/projects/#{project.id}/repository/commits?since=#{since.utc.iso8601}", user)
 
         expect(json_response.size).to eq 2
         expect(json_response.first["id"]).to eq(commits.first.id)
@@ -54,7 +54,7 @@ describe API::Commits, api: true  do
         commits = project.repository.commits("master")
         before = commits.second.created_at
 
-        get api("/projects/#{project.id}/repository/commits?until=#{before.utc.iso8601}", user)
+        get v3_api("/projects/#{project.id}/repository/commits?until=#{before.utc.iso8601}", user)
 
         if commits.size >= 20
           expect(json_response.size).to eq(20)
@@ -69,7 +69,7 @@ describe API::Commits, api: true  do
 
     context "invalid xmlschema date parameters" do
       it "returns an invalid parameter error message" do
-        get api("/projects/#{project.id}/repository/commits?since=invalid-date", user)
+        get v3_api("/projects/#{project.id}/repository/commits?since=invalid-date", user)
 
         expect(response).to have_http_status(400)
         expect(json_response['error']).to eq('since is invalid')
@@ -80,7 +80,7 @@ describe API::Commits, api: true  do
       it "returns project commits matching provided path parameter" do
         path = 'files/ruby/popen.rb'
 
-        get api("/projects/#{project.id}/repository/commits?path=#{path}", user)
+        get v3_api("/projects/#{project.id}/repository/commits?path=#{path}", user)
 
         expect(json_response.size).to eq(3)
         expect(json_response.first["id"]).to eq("570e7b2abdd848b95f2f578043fc23bd6f6fd24d")
@@ -92,13 +92,13 @@ describe API::Commits, api: true  do
     let!(:url) { "/projects/#{project.id}/repository/commits" }
 
     it 'returns a 403 unauthorized for user without permissions' do
-      post api(url, user2)
+      post v3_api(url, user2)
 
       expect(response).to have_http_status(403)
     end
 
     it 'returns a 400 bad request if no params are given' do
-      post api(url, user)
+      post v3_api(url, user)
 
       expect(response).to have_http_status(400)
     end
@@ -107,7 +107,7 @@ describe API::Commits, api: true  do
       let(:message) { 'Created file' }
       let!(:invalid_c_params) do
         {
-          branch: 'master',
+          branch_name: 'master',
           commit_message: message,
           actions: [
             {
@@ -120,7 +120,7 @@ describe API::Commits, api: true  do
       end
       let!(:valid_c_params) do
         {
-          branch: 'master',
+          branch_name: 'master',
           commit_message: message,
           actions: [
             {
@@ -133,7 +133,7 @@ describe API::Commits, api: true  do
       end
 
       it 'a new file in project repo' do
-        post api(url, user), valid_c_params
+        post v3_api(url, user), valid_c_params
 
         expect(response).to have_http_status(201)
         expect(json_response['title']).to eq(message)
@@ -142,7 +142,7 @@ describe API::Commits, api: true  do
       end
 
       it 'returns a 400 bad request if file exists' do
-        post api(url, user), invalid_c_params
+        post v3_api(url, user), invalid_c_params
 
         expect(response).to have_http_status(400)
       end
@@ -151,7 +151,7 @@ describe API::Commits, api: true  do
         let(:url) { "/projects/#{project.namespace.path}%2F#{project.path}/repository/commits" }
 
         it 'a new file in project repo' do
-          post api(url, user), valid_c_params
+          post v3_api(url, user), valid_c_params
 
           expect(response).to have_http_status(201)
         end
@@ -162,7 +162,7 @@ describe API::Commits, api: true  do
       let(:message) { 'Deleted file' }
       let!(:invalid_d_params) do
         {
-          branch: 'markdown',
+          branch_name: 'markdown',
           commit_message: message,
           actions: [
             {
@@ -174,7 +174,7 @@ describe API::Commits, api: true  do
       end
       let!(:valid_d_params) do
         {
-          branch: 'markdown',
+          branch_name: 'markdown',
           commit_message: message,
           actions: [
             {
@@ -186,14 +186,14 @@ describe API::Commits, api: true  do
       end
 
       it 'an existing file in project repo' do
-        post api(url, user), valid_d_params
+        post v3_api(url, user), valid_d_params
 
         expect(response).to have_http_status(201)
         expect(json_response['title']).to eq(message)
       end
 
       it 'returns a 400 bad request if file does not exist' do
-        post api(url, user), invalid_d_params
+        post v3_api(url, user), invalid_d_params
 
         expect(response).to have_http_status(400)
       end
@@ -203,7 +203,7 @@ describe API::Commits, api: true  do
       let(:message) { 'Moved file' }
       let!(:invalid_m_params) do
         {
-          branch: 'feature',
+          branch_name: 'feature',
           commit_message: message,
           actions: [
             {
@@ -217,7 +217,7 @@ describe API::Commits, api: true  do
       end
       let!(:valid_m_params) do
         {
-          branch: 'feature',
+          branch_name: 'feature',
           commit_message: message,
           actions: [
             {
@@ -231,14 +231,14 @@ describe API::Commits, api: true  do
       end
 
       it 'an existing file in project repo' do
-        post api(url, user), valid_m_params
+        post v3_api(url, user), valid_m_params
 
         expect(response).to have_http_status(201)
         expect(json_response['title']).to eq(message)
       end
 
       it 'returns a 400 bad request if file does not exist' do
-        post api(url, user), invalid_m_params
+        post v3_api(url, user), invalid_m_params
 
         expect(response).to have_http_status(400)
       end
@@ -248,7 +248,7 @@ describe API::Commits, api: true  do
       let(:message) { 'Updated file' }
       let!(:invalid_u_params) do
         {
-          branch: 'master',
+          branch_name: 'master',
           commit_message: message,
           actions: [
             {
@@ -261,7 +261,7 @@ describe API::Commits, api: true  do
       end
       let!(:valid_u_params) do
         {
-          branch: 'master',
+          branch_name: 'master',
           commit_message: message,
           actions: [
             {
@@ -274,14 +274,14 @@ describe API::Commits, api: true  do
       end
 
       it 'an existing file in project repo' do
-        post api(url, user), valid_u_params
+        post v3_api(url, user), valid_u_params
 
         expect(response).to have_http_status(201)
         expect(json_response['title']).to eq(message)
       end
 
       it 'returns a 400 bad request if file does not exist' do
-        post api(url, user), invalid_u_params
+        post v3_api(url, user), invalid_u_params
 
         expect(response).to have_http_status(400)
       end
@@ -291,7 +291,7 @@ describe API::Commits, api: true  do
       let(:message) { 'Multiple actions' }
       let!(:invalid_mo_params) do
         {
-          branch: 'master',
+          branch_name: 'master',
           commit_message: message,
           actions: [
             {
@@ -301,7 +301,7 @@ describe API::Commits, api: true  do
             },
             {
               action: 'delete',
-              file_path: 'doc/api/projects.md'
+              file_path: 'doc/v3_api/projects.md'
             },
             {
               action: 'move',
@@ -319,7 +319,7 @@ describe API::Commits, api: true  do
       end
       let!(:valid_mo_params) do
         {
-          branch: 'master',
+          branch_name: 'master',
           commit_message: message,
           actions: [
             {
@@ -347,14 +347,14 @@ describe API::Commits, api: true  do
       end
 
       it 'are commited as one in project repo' do
-        post api(url, user), valid_mo_params
+        post v3_api(url, user), valid_mo_params
 
         expect(response).to have_http_status(201)
         expect(json_response['title']).to eq(message)
       end
 
       it 'return a 400 bad request if there are any issues' do
-        post api(url, user), invalid_mo_params
+        post v3_api(url, user), invalid_mo_params
 
         expect(response).to have_http_status(400)
       end
@@ -364,33 +364,23 @@ describe API::Commits, api: true  do
   describe "Get a single commit" do
     context "authorized user" do
       it "returns a commit by sha" do
-        get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
+        get v3_api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
 
         expect(response).to have_http_status(200)
-        commit = project.repository.commit
-        expect(json_response['id']).to eq(commit.id)
-        expect(json_response['short_id']).to eq(commit.short_id)
-        expect(json_response['title']).to eq(commit.title)
-        expect(json_response['message']).to eq(commit.safe_message)
-        expect(json_response['author_name']).to eq(commit.author_name)
-        expect(json_response['author_email']).to eq(commit.author_email)
-        expect(json_response['authored_date']).to eq(commit.authored_date.iso8601(3))
-        expect(json_response['committer_name']).to eq(commit.committer_name)
-        expect(json_response['committer_email']).to eq(commit.committer_email)
-        expect(json_response['committed_date']).to eq(commit.committed_date.iso8601(3))
-        expect(json_response['parent_ids']).to eq(commit.parent_ids)
-        expect(json_response['stats']['additions']).to eq(commit.stats.additions)
-        expect(json_response['stats']['deletions']).to eq(commit.stats.deletions)
-        expect(json_response['stats']['total']).to eq(commit.stats.total)
+        expect(json_response['id']).to eq(project.repository.commit.id)
+        expect(json_response['title']).to eq(project.repository.commit.title)
+        expect(json_response['stats']['additions']).to eq(project.repository.commit.stats.additions)
+        expect(json_response['stats']['deletions']).to eq(project.repository.commit.stats.deletions)
+        expect(json_response['stats']['total']).to eq(project.repository.commit.stats.total)
       end
 
       it "returns a 404 error if not found" do
-        get api("/projects/#{project.id}/repository/commits/invalid_sha", user)
+        get v3_api("/projects/#{project.id}/repository/commits/invalid_sha", user)
         expect(response).to have_http_status(404)
       end
 
       it "returns nil for commit without CI" do
-        get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
+        get v3_api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
 
         expect(response).to have_http_status(200)
         expect(json_response['status']).to be_nil
@@ -400,7 +390,7 @@ describe API::Commits, api: true  do
         pipeline = project.ensure_pipeline('master', project.repository.commit.sha)
         pipeline.update(status: 'success')
 
-        get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
+        get v3_api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
 
         expect(response).to have_http_status(200)
         expect(json_response['status']).to eq(pipeline.status)
@@ -409,7 +399,7 @@ describe API::Commits, api: true  do
       it "returns status for CI when pipeline is created" do
         project.ensure_pipeline('master', project.repository.commit.sha)
 
-        get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
+        get v3_api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
 
         expect(response).to have_http_status(200)
         expect(json_response['status']).to eq("created")
@@ -418,7 +408,7 @@ describe API::Commits, api: true  do
 
     context "unauthorized user" do
       it "does not return the selected commit" do
-        get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}")
+        get v3_api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}")
         expect(response).to have_http_status(401)
       end
     end
@@ -429,7 +419,7 @@ describe API::Commits, api: true  do
       before { project.team << [user2, :reporter] }
 
       it "returns the diff of the selected commit" do
-        get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/diff", user)
+        get v3_api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/diff", user)
         expect(response).to have_http_status(200)
 
         expect(json_response).to be_an Array
@@ -438,14 +428,14 @@ describe API::Commits, api: true  do
       end
 
       it "returns a 404 error if invalid commit" do
-        get api("/projects/#{project.id}/repository/commits/invalid_sha/diff", user)
+        get v3_api("/projects/#{project.id}/repository/commits/invalid_sha/diff", user)
         expect(response).to have_http_status(404)
       end
     end
 
     context "unauthorized user" do
       it "does not return the diff of the selected commit" do
-        get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/diff")
+        get v3_api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/diff")
         expect(response).to have_http_status(401)
       end
     end
@@ -454,9 +444,8 @@ describe API::Commits, api: true  do
   describe 'Get the comments of a commit' do
     context 'authorized user' do
       it 'returns merge_request comments' do
-        get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/comments", user)
+        get v3_api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/comments", user)
         expect(response).to have_http_status(200)
-        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(2)
         expect(json_response.first['note']).to eq('a comment on a commit')
@@ -464,29 +453,15 @@ describe API::Commits, api: true  do
       end
 
       it 'returns a 404 error if merge_request_id not found' do
-        get api("/projects/#{project.id}/repository/commits/1234ab/comments", user)
+        get v3_api("/projects/#{project.id}/repository/commits/1234ab/comments", user)
         expect(response).to have_http_status(404)
       end
     end
 
     context 'unauthorized user' do
       it 'does not return the diff of the selected commit' do
-        get api("/projects/#{project.id}/repository/commits/1234ab/comments")
+        get v3_api("/projects/#{project.id}/repository/commits/1234ab/comments")
         expect(response).to have_http_status(401)
-      end
-    end
-
-    context 'when the commit is present on two projects' do
-      let(:forked_project) { create(:project, :repository, creator: user2, namespace: user2.namespace) }
-      let!(:forked_project_note) { create(:note_on_commit, author: user2, project: forked_project, commit_id: forked_project.repository.commit.id, note: 'a comment on a commit for fork') }
-
-      it 'returns the comments for the target project' do
-        get api("/projects/#{forked_project.id}/repository/commits/#{forked_project.repository.commit.id}/comments", user2)
-
-        expect(response).to have_http_status(200)
-        expect(json_response.length).to eq(1)
-        expect(json_response.first['note']).to eq('a comment on a commit for fork')
-        expect(json_response.first['author']['id']).to eq(user2.id)
       end
     end
   end
@@ -496,7 +471,7 @@ describe API::Commits, api: true  do
 
     context 'authorized user' do
       it 'cherry picks a commit' do
-        post api("/projects/#{project.id}/repository/commits/#{master_pickable_commit.id}/cherry_pick", user), branch: 'master'
+        post v3_api("/projects/#{project.id}/repository/commits/#{master_pickable_commit.id}/cherry_pick", user), branch: 'master'
 
         expect(response).to have_http_status(201)
         expect(json_response['title']).to eq(master_pickable_commit.title)
@@ -506,7 +481,7 @@ describe API::Commits, api: true  do
       end
 
       it 'returns 400 if commit is already included in the target branch' do
-        post api("/projects/#{project.id}/repository/commits/#{master_pickable_commit.id}/cherry_pick", user), branch: 'markdown'
+        post v3_api("/projects/#{project.id}/repository/commits/#{master_pickable_commit.id}/cherry_pick", user), branch: 'markdown'
 
         expect(response).to have_http_status(400)
         expect(json_response['message']).to eq('Sorry, we cannot cherry-pick this commit automatically.
@@ -517,35 +492,35 @@ describe API::Commits, api: true  do
         project.team << [user2, :developer]
         protected_branch = create(:protected_branch, project: project, name: 'feature')
 
-        post api("/projects/#{project.id}/repository/commits/#{master_pickable_commit.id}/cherry_pick", user2), branch: protected_branch.name
+        post v3_api("/projects/#{project.id}/repository/commits/#{master_pickable_commit.id}/cherry_pick", user2), branch: protected_branch.name
 
         expect(response).to have_http_status(400)
         expect(json_response['message']).to eq('You are not allowed to push into this branch')
       end
 
       it 'returns 400 for missing parameters' do
-        post api("/projects/#{project.id}/repository/commits/#{master_pickable_commit.id}/cherry_pick", user)
+        post v3_api("/projects/#{project.id}/repository/commits/#{master_pickable_commit.id}/cherry_pick", user)
 
         expect(response).to have_http_status(400)
         expect(json_response['error']).to eq('branch is missing')
       end
 
       it 'returns 404 if commit is not found' do
-        post api("/projects/#{project.id}/repository/commits/abcd0123/cherry_pick", user), branch: 'master'
+        post v3_api("/projects/#{project.id}/repository/commits/abcd0123/cherry_pick", user), branch: 'master'
 
         expect(response).to have_http_status(404)
         expect(json_response['message']).to eq('404 Commit Not Found')
       end
 
       it 'returns 404 if branch is not found' do
-        post api("/projects/#{project.id}/repository/commits/#{master_pickable_commit.id}/cherry_pick", user), branch: 'foo'
+        post v3_api("/projects/#{project.id}/repository/commits/#{master_pickable_commit.id}/cherry_pick", user), branch: 'foo'
 
         expect(response).to have_http_status(404)
         expect(json_response['message']).to eq('404 Branch Not Found')
       end
 
       it 'returns 400 for missing parameters' do
-        post api("/projects/#{project.id}/repository/commits/#{master_pickable_commit.id}/cherry_pick", user)
+        post v3_api("/projects/#{project.id}/repository/commits/#{master_pickable_commit.id}/cherry_pick", user)
 
         expect(response).to have_http_status(400)
         expect(json_response['error']).to eq('branch is missing')
@@ -554,7 +529,7 @@ describe API::Commits, api: true  do
 
     context 'unauthorized user' do
       it 'does not cherry pick the commit' do
-        post api("/projects/#{project.id}/repository/commits/#{master_pickable_commit.id}/cherry_pick"), branch: 'master'
+        post v3_api("/projects/#{project.id}/repository/commits/#{master_pickable_commit.id}/cherry_pick"), branch: 'master'
 
         expect(response).to have_http_status(401)
       end
@@ -564,7 +539,7 @@ describe API::Commits, api: true  do
   describe 'Post comment to commit' do
     context 'authorized user' do
       it 'returns comment' do
-        post api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/comments", user), note: 'My comment'
+        post v3_api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/comments", user), note: 'My comment'
         expect(response).to have_http_status(201)
         expect(json_response['note']).to eq('My comment')
         expect(json_response['path']).to be_nil
@@ -573,7 +548,7 @@ describe API::Commits, api: true  do
       end
 
       it 'returns the inline comment' do
-        post api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/comments", user), note: 'My comment', path: project.repository.commit.raw_diffs.first.new_path, line: 1, line_type: 'new'
+        post v3_api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/comments", user), note: 'My comment', path: project.repository.commit.raw_diffs.first.new_path, line: 1, line_type: 'new'
 
         expect(response).to have_http_status(201)
         expect(json_response['note']).to eq('My comment')
@@ -583,19 +558,19 @@ describe API::Commits, api: true  do
       end
 
       it 'returns 400 if note is missing' do
-        post api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/comments", user)
+        post v3_api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/comments", user)
         expect(response).to have_http_status(400)
       end
 
       it 'returns 404 if note is attached to non existent commit' do
-        post api("/projects/#{project.id}/repository/commits/1234ab/comments", user), note: 'My comment'
+        post v3_api("/projects/#{project.id}/repository/commits/1234ab/comments", user), note: 'My comment'
         expect(response).to have_http_status(404)
       end
     end
 
     context 'unauthorized user' do
       it 'does not return the diff of the selected commit' do
-        post api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/comments")
+        post v3_api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/comments")
         expect(response).to have_http_status(401)
       end
     end

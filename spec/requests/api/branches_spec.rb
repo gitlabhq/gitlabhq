@@ -272,7 +272,7 @@ describe API::Branches, api: true  do
   describe "POST /projects/:id/repository/branches" do
     it "creates a new branch" do
       post api("/projects/#{project.id}/repository/branches", user),
-           branch_name: 'feature1',
+           branch: 'feature1',
            ref: branch_sha
 
       expect(response).to have_http_status(201)
@@ -283,14 +283,14 @@ describe API::Branches, api: true  do
 
     it "denies for user without push access" do
       post api("/projects/#{project.id}/repository/branches", user2),
-           branch_name: branch_name,
+           branch: branch_name,
            ref: branch_sha
       expect(response).to have_http_status(403)
     end
 
     it 'returns 400 if branch name is invalid' do
       post api("/projects/#{project.id}/repository/branches", user),
-           branch_name: 'new design',
+           branch: 'new design',
            ref: branch_sha
       expect(response).to have_http_status(400)
       expect(json_response['message']).to eq('Branch name is invalid')
@@ -298,12 +298,12 @@ describe API::Branches, api: true  do
 
     it 'returns 400 if branch already exists' do
       post api("/projects/#{project.id}/repository/branches", user),
-           branch_name: 'new_design1',
+           branch: 'new_design1',
            ref: branch_sha
       expect(response).to have_http_status(201)
 
       post api("/projects/#{project.id}/repository/branches", user),
-           branch_name: 'new_design1',
+           branch: 'new_design1',
            ref: branch_sha
       expect(response).to have_http_status(400)
       expect(json_response['message']).to eq('Branch already exists')
@@ -311,7 +311,7 @@ describe API::Branches, api: true  do
 
     it 'returns 400 if ref name is invalid' do
       post api("/projects/#{project.id}/repository/branches", user),
-           branch_name: 'new_design3',
+           branch: 'new_design3',
            ref: 'foo'
       expect(response).to have_http_status(400)
       expect(json_response['message']).to eq('Invalid reference name')
@@ -326,14 +326,14 @@ describe API::Branches, api: true  do
     it "removes branch" do
       delete api("/projects/#{project.id}/repository/branches/#{branch_name}", user)
       expect(response).to have_http_status(200)
-      expect(json_response['branch_name']).to eq(branch_name)
+      expect(json_response['branch']).to eq(branch_name)
     end
 
     it "removes a branch with dots in the branch name" do
       delete api("/projects/#{project.id}/repository/branches/with.1.2.3", user)
 
       expect(response).to have_http_status(200)
-      expect(json_response['branch_name']).to eq("with.1.2.3")
+      expect(json_response['branch']).to eq("with.1.2.3")
     end
 
     it 'returns 404 if branch not exists' do
