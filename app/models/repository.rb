@@ -1002,8 +1002,12 @@ class Repository
     raise "Invalid merge target" if our_commit.nil?
     raise "Invalid merge source" if their_commit.nil?
 
-    update_branch_with_hooks(user, target_branch) do
-      merge_request.update(in_progress_merge_commit_sha: their_commit.oid) if merge_request
+    GitOperationService.new(user, self).with_branch(
+      target_branch) do |start_commit|
+      if merge_request
+        merge_request.update(in_progress_merge_commit_sha: their_commit.oid)
+      end
+
       their_commit.oid
     end
   end
