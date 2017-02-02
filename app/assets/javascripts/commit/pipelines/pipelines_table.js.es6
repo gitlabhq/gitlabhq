@@ -5,6 +5,7 @@
 //= require vue-resource
 //= require vue_shared/vue_resource_interceptor
 //= require vue_shared/components/pipelines_table
+//= require vue_realtime_listener/index
 
 /**
  *
@@ -71,10 +72,12 @@
         .then(response => response.json())
         .then((json) => {
           this.store.store(json);
+          this.store.startTimeAgoLoops.call(this, Vue);
           this.isLoading = false;
-        }).catch(() => {
+        })
+        .catch(() => {
           this.isLoading = false;
-          new Flash('An error occurred while fetching the pipelines.', 'alert');
+          new Flash('An error occurred while fetching the pipelines, please reload the page again.', 'alert');
         });
     },
 

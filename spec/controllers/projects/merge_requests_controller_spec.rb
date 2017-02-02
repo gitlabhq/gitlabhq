@@ -701,15 +701,8 @@ describe Projects::MergeRequestsController do
             format: :json
       end
 
-      it 'responds with a rendered HTML partial' do
-        expect(response)
-          .to render_template('projects/merge_requests/show/_pipelines')
-        expect(json_response).to have_key 'html'
-      end
-
       it 'responds with serialized pipelines' do
-        expect(json_response).to have_key 'pipelines'
-        expect(json_response['pipelines']).not_to be_empty
+        expect(json_response).not_to be_empty
       end
     end
   end

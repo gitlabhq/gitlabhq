@@ -64,4 +64,5 @@
 
       .vue-pipelines-index
 
-= page_specific_javascript_tag('vue_pipelines_index/index.js')
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_tag('vue_pipelines_index/index.js')
