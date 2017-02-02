@@ -8,5 +8,5 @@
       '@click' => "onClickResolveModeButton(file, 'edit')",
       type: 'button' }
       Edit inline
-  %a.btn.view-file.btn-file-option{ ":href" => "file.blobPath" }
+  %a.btn.view-file{ ":href" => "file.blobPath" }
     View file @{{conflictsData.shortCommitSha}}
