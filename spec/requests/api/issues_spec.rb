@@ -425,7 +425,7 @@ describe API::Issues, api: true  do
     end
 
     it 'returns no issues when user has access to project but not issues' do
-      restricted_project = create(:empty_project, :public, issues_access_level: ProjectFeature::PRIVATE)
+      restricted_project = create(:empty_project, :public, :issues_private)
       create(:issue, project: restricted_project)
 
       get api("/projects/#{restricted_project.id}/issues", non_member)

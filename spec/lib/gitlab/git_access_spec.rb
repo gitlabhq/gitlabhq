@@ -94,8 +94,6 @@ describe Gitlab::GitAccess, lib: true do
 
         context 'when repository is enabled' do
           it 'give access to download code' do
-            public_project.project_feature.update_attribute(:repository_access_level, ProjectFeature::ENABLED)
-
             expect(subject.allowed?).to be_truthy
           end
         end
