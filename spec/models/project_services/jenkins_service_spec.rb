@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe JenkinsService do
-  describe "Associations" do
+  describe 'Associations' do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
   end
@@ -13,6 +13,8 @@ describe JenkinsService do
       active: true,
       project: project,
       properties: {
+        password: 'pas$ word',
+        username: 'u$er name%2520',
         jenkins_url: 'http://jenkins.example.com/',
         project_name: 'my_project'
       }
@@ -62,25 +64,54 @@ describe JenkinsService do
   end
 
   describe '#hook_url' do
-    before do
-      @jenkins_service = JenkinsService.create(
+    let(:username) { nil }
+    let(:password) { nil }
+    let(:jenkins_service) do
+      JenkinsService.new(
         project: project,
         properties: {
           jenkins_url: jenkins_url,
-          project_name: 'my_project'
+          project_name: 'my_project',
+          username: username,
+          password: password,
         }
       )
     end
-    subject { @jenkins_service.hook_url }
+
+    subject { jenkins_service.hook_url }
 
     context 'when the jenkins_url has no relative path' do
       let(:jenkins_url) { 'http://jenkins.example.com/' }
+
       it { is_expected.to eq('http://jenkins.example.com/project/my_project') }
     end
 
     context 'when the jenkins_url has relative path' do
       let(:jenkins_url) { 'http://organization.example.com/jenkins' }
+
       it { is_expected.to eq('http://organization.example.com/jenkins/project/my_project') }
+    end
+
+    context 'userinfo is missing and username and password are set' do
+      let(:jenkins_url) { 'http://organization.example.com/jenkins' }
+      let(:username) { 'u$ername' }
+      let(:password) { 'pas$ word' }
+
+      it { is_expected.to eq('http://u%24ername:pas%24%20word@organization.example.com/jenkins/project/my_project') }
+    end
+
+    context 'userinfo is provided and username and password are set' do
+      let(:jenkins_url) { 'http://u:p@organization.example.com/jenkins' }
+      let(:username) { 'username' }
+      let(:password) { 'password' }
+
+      it { is_expected.to eq('http://username:password@organization.example.com/jenkins/project/my_project') }
+    end
+
+    context 'userinfo is provided username and password are not set' do
+      let(:jenkins_url) { 'http://u:p@organization.example.com/jenkins' }
+
+      it { is_expected.to eq('http://u:p@organization.example.com/jenkins/project/my_project') }
     end
   end
 
@@ -111,6 +142,20 @@ describe JenkinsService do
       expect(
         a_request(:post, jenkins_service.hook_url)
           .with(headers: { 'X-Gitlab-Event' => 'Push Hook' })
+      ).to have_been_made.once
+    end
+
+    it 'request url contains properly serialized username and password' do
+      user = create(:user, username: 'username')
+      project = create(:project, name: 'project')
+      push_sample_data = Gitlab::DataBuilder::Push.build_sample(project, user)
+      jenkins_service = described_class.create(jenkins_params)
+      stub_request(:post, jenkins_service.hook_url)
+
+      jenkins_service.execute(push_sample_data)
+
+      expect(
+        a_request(:post, 'http://u%24er%20name%252520:pas%24%20word@jenkins.example.com/project/my_project')
       ).to have_been_made.once
     end
   end
