@@ -55,7 +55,7 @@ requireAll(require.context('./extensions', false, /^\.\/.*\.(js|es6)$/));
 requireAll(require.context('./lib/utils',  false, /^\.\/.*\.(js|es6)$/));
 requireAll(require.context('./u2f',        false, /^\.\/.*\.(js|es6)$/));
 requireAll(require.context('./droplab',    false, /^\.\/.*\.(js|es6)$/));
-requireAll(require.context('.',            false, /^\.\/(?!application).*\.(js|es6)$/));
+requireAll(require.context('.',            false, /^\.\/(?!application\.js).*\.(js|es6)$/));
 require('vendor/fuzzaldrin-plus');
 window.ES6Promise = require('vendor/es6-promise.auto');
 window.ES6Promise.polyfill();
