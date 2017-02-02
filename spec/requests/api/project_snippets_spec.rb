@@ -23,7 +23,7 @@ describe API::ProjectSnippets, api: true do
     let(:user) { create(:user) }
 
     it 'returns all snippets available to team member' do
-      project.team << [user, :developer]
+      project.add_developer(user)
       public_snippet = create(:project_snippet, :public, project: project)
       internal_snippet = create(:project_snippet, :internal, project: project)
       private_snippet = create(:project_snippet, :private, project: project)
@@ -76,7 +76,7 @@ describe API::ProjectSnippets, api: true do
 
     context 'when the snippet is spam' do
       def create_snippet(project, snippet_params = {})
-        project.team << [user, :developer]
+        project.add_developer(user)
 
         post api("/projects/#{project.id}/snippets", user), params.merge(snippet_params)
       end
