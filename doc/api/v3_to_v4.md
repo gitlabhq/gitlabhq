@@ -22,4 +22,5 @@ changes are in V4:
   - `/gitignores/:key`
   - `/gitlab_ci_ymls/:key`
   - `/dockerfiles/:key`
+- Moved `/projects/fork/:id` to `/projects/:id/fork`
 
