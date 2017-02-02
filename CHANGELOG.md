@@ -2,6 +2,21 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 8.16.4 (2017-02-02)
+
+- Support non-ASCII characters in GFM autocomplete. !8729
+- Fix search bar search param encoding. !8753
+- Fix project name label's for reference in project settings. !8795
+- Fix filtering with multiple words. !8830
+- Fixed services form cancel not redirecting back the integrations settings view. !8843
+- Fix filtering usernames with multiple words. !8851
+- Improve performance of slash commands. !8876
+- Remove old project members when retrying an export.
+- Fix permalink discussion note being collapsed.
+- Add project ID index to `project_authorizations` table to optimize queries.
+- Check public snippets for spam.
+- 19164 Add settings dropdown to mobile screens.
+
 ## 8.16.3 (2017-01-27)
 
 - Add caching of droplab ajax requests. !8725
