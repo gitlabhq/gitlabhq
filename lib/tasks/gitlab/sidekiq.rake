@@ -7,7 +7,7 @@ namespace :gitlab do
       unless args.project.present?
         abort "Please specify the project you want to drop PostReceive jobs for:\n  rake gitlab:sidekiq:drop_post_receive[group/project]"
       end
-      project_path = Project.find_with_namespace(args.project).repository.path_to_repo
+      project_path = Project.find_by_full_path(args.project).repository.path_to_repo
 
       Sidekiq.redis do |redis|
         unless redis.exists(QUEUE)

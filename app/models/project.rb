@@ -369,10 +369,6 @@ class Project < ActiveRecord::Base
     def group_ids
       joins(:namespace).where(namespaces: { type: 'Group' }).select(:namespace_id)
     end
-
-    # Add alias for Routable method for compatibility with old code.
-    # In future all calls `find_with_namespace` should be replaced with `find_by_full_path`
-    alias_method :find_with_namespace, :find_by_full_path
   end
 
   def lfs_enabled?
@@ -1345,6 +1341,6 @@ class Project < ActiveRecord::Base
   def pending_delete_twin
     return false unless path
 
-    Project.unscoped.where(pending_delete: true).find_with_namespace(path_with_namespace)
+    Project.unscoped.where(pending_delete: true).find_by_full_path(path_with_namespace)
   end
 end
