@@ -29,10 +29,10 @@ describe 'CycleAnalytics#staging', feature: true do
                                sha = context.project.repository.commit_file(
                                  context.user,
                                  context.random_git_name,
-                                 "content",
-                                 "commit message",
-                                 'master',
-                                 false)
+                                 'content',
+                                 message: 'commit message',
+                                 branch_name: 'master',
+                                 update: false)
                                context.project.repository.commit(sha)
 
                                context.deploy_master

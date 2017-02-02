@@ -16,11 +16,12 @@ module MergeRequests
       messages = validate_branches(merge_request)
       return build_failed(merge_request, messages) unless messages.empty?
 
-      compare = CompareService.new.execute(
+      compare = CompareService.new(
         merge_request.source_project,
-        merge_request.source_branch,
+        merge_request.source_branch
+      ).execute(
         merge_request.target_project,
-        merge_request.target_branch,
+        merge_request.target_branch
       )
 
       merge_request.compare_commits = compare.commits
