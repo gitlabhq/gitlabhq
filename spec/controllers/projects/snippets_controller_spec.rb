@@ -6,8 +6,8 @@ describe Projects::SnippetsController do
   let(:user2)   { create(:user) }
 
   before do
-    project.team << [user, :master]
-    project.team << [user2, :master]
+    project.add_master(user)
+    project.add_master(user2)
   end
 
   describe 'GET #index' do
@@ -73,7 +73,7 @@ describe Projects::SnippetsController do
     def create_snippet(project, snippet_params = {})
       sign_in(user)
 
-      project.team << [user, :developer]
+      project.add_developer(user)
 
       post :create, {
         namespace_id: project.namespace.to_param,
@@ -133,7 +133,7 @@ describe Projects::SnippetsController do
     def mark_as_spam
       admin = create(:admin)
       create(:user_agent_detail, subject: snippet)
-      project.team << [admin, :master]
+      project.add_master(admin)
       sign_in(admin)
 
       post :mark_as_spam,
