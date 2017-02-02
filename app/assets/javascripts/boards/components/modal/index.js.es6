@@ -74,6 +74,8 @@
         this.loadIssues(true);
       }, 500),
       loadIssues(clearIssues = false) {
+        if (!this.showAddIssuesModal) return;
+        
         const data = Object.assign({}, this.filter, {
           search: this.searchTerm,
           page: this.page,

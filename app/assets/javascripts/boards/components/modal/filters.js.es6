@@ -18,6 +18,9 @@
         required: true,
       },
     },
+    destroyed() {
+      ModalStore.setDefaultFilter();
+    },
     components: {
       'user-filter': gl.issueBoards.ModalFilterUser,
       'milestone-filter': gl.issueBoards.ModalFilterMilestone,

@@ -16,6 +16,32 @@ describe 'Issue Boards add issue modal filtering', :feature, :js do
     login_as(user)
   end
 
+  it 'restores filters when closing' do
+    visit_board
+
+    page.within('.add-issues-modal') do
+      click_button 'Milestone'
+
+      wait_for_ajax
+
+      click_link 'Upcoming'
+
+      wait_for_vue_resource
+
+      expect(page).to have_selector('.card', count: 0)
+
+      click_button 'Cancel'
+    end
+
+    click_button('Add issues')
+
+    page.within('.add-issues-modal') do
+      wait_for_vue_resource
+
+      expect(page).to have_selector('.card', count: 1)
+    end
+  end
+
   context 'author' do
     let!(:issue) { create(:issue, project: project, author: user2) }
 

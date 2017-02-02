@@ -17,12 +17,17 @@
         loadingNewPage: false,
         page: 1,
         perPage: 50,
-        filter: {
-          author_id: '',
-          assignee_id: '',
-          milestone_title: '',
-          label_name: [],
-        },
+      };
+
+      this.setDefaultFilter();
+    }
+
+    setDefaultFilter() {
+      this.store.filter = {
+        author_id: '',
+        assignee_id: '',
+        milestone_title: '',
+        label_name: [],
       };
     }
 
