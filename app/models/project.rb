@@ -113,6 +113,7 @@ class Project < ActiveRecord::Base
   has_one :gitlab_issue_tracker_service, dependent: :destroy, inverse_of: :project
   has_one :external_wiki_service, dependent: :destroy
   has_one :kubernetes_service, dependent: :destroy, inverse_of: :project
+  has_one :prometheus_service, dependent: :destroy, inverse_of: :project
 
   has_one  :forked_project_link,  dependent: :destroy, foreign_key: "forked_to_project_id"
   has_one  :forked_from_project,  through:   :forked_project_link
@@ -767,6 +768,14 @@ class Project < ActiveRecord::Base
 
   def deployment_service
     @deployment_service ||= deployment_services.reorder(nil).find_by(active: true)
+  end
+
+  def monitoring_services
+    services.where(category: :monitoring)
+  end
+
+  def monitoring_service
+    @monitoring_service ||= monitoring_services.reorder(nil).find_by(active: true)
   end
 
   def jira_tracker?
