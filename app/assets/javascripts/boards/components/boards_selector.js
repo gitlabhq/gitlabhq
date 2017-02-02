@@ -15,8 +15,14 @@ require('./board_new_form');
       'board-selector-form': gl.issueBoards.BoardSelectorForm,
     },
     props: {
-      currentBoard: Object,
-      endpoint: String,
+      currentBoard: {
+        type: Object,
+        required: true,
+      },
+      milestonePath: {
+        type: String,
+        required: true,
+      },
     },
     data() {
       return {

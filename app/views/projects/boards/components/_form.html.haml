@@ -5,6 +5,25 @@
     %input.form-control{ type: "text",
       id: "board-new-name",
       "v-model" => "board.name" }
+    %label.label-light{ for: "board-milestone" }
+      Board milestone
+    %input{ type: "hidden",
+      id: "board-milestone",
+      "v-model.number" => "board.milestone_id" }
+    .dropdown{ ":class" => "{ open: milestoneDropdownOpen }" }
+      %button.dropdown-menu-toggle.wide{ type: "button",
+        "@click.stop.prevent" => "loadMilestones" }
+        {{ milestoneToggleText }}
+        = icon("chevron-down")
+      .dropdown-menu.dropdown-menu-selectable{ "v-if" => "milestoneDropdownOpen" }
+        .dropdown-content
+          %ul
+            %li{ "v-for" => "milestone in milestones" }
+              %a{ href: "#",
+                ":class" => "{ 'is-active': milestone.id === board.milestone_id }",
+                "@click.stop.prevent" => "selectMilestone(milestone)" }
+                {{ milestone.title }}
+        = dropdown_loading
     .clearfix.prepend-top-10
       %button.btn.btn-primary.pull-left{ type: "submit",
         ":disabled" => "board.name === ''",

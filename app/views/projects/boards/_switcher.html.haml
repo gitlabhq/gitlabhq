@@ -1,5 +1,6 @@
 %boards-selector{ "inline-template" => true,
-  ":current-board" => board.to_json }
+  ":current-board" => current_board_json,
+  "milestone-path" => namespace_project_milestones_path(board.project.namespace, board.project, :json) }
   .dropdown
     %button.dropdown-menu-toggle{ "@click" => "loadBoards",
       data: { toggle: "dropdown" } }
@@ -25,6 +26,7 @@
         = icon("spin spinner")
       - if can?(current_user, :admin_board, @project)
         %board-selector-form{ "inline-template" => true,
+          ":milestone-path" => "milestonePath",
           "v-if" => "currentPage === 'new' || currentPage === 'edit'" }
           = render "projects/boards/components/form"
         .dropdown-content.board-selector-page-two{ "v-if" => "currentPage === 'delete'" }
