@@ -159,14 +159,14 @@ describe GroupsController do
         expect(response).to have_http_status(404)
       end
 
-      it 'does not allow an auditor with "can_create_group" set to true to create a group' do
+      it 'allows an auditor with "can_create_group" set to true to create a group' do
         sign_in(create(:user, :auditor, can_create_group: true))
 
         expect do
           post :create, group: { name: 'new_group', path: "new_group" }
-        end.not_to change { Group.count }
+        end.to change { Group.count }.by(1)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_http_status(302)
       end
     end
   end

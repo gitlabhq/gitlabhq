@@ -34,7 +34,15 @@ describe NamespacePolicy, models: true do
   context 'auditor' do
     let(:current_user) { auditor }
 
-    it { is_expected.to be_empty }
+    context 'owner' do
+      let(:namespace) { create(:namespace, owner: auditor) }
+
+      it { is_expected.to include(*owner_permissions) }
+    end
+
+    context 'non-owner' do
+      it { is_expected.to be_empty }
+    end
   end
 
   context 'admin' do
