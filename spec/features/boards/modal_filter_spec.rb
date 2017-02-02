@@ -16,6 +16,18 @@ describe 'Issue Boards add issue modal filtering', :feature, :js do
     login_as(user)
   end
 
+  it 'shows empty state when no results found' do
+    visit_board
+
+    page.within('.add-issues-modal') do
+      find('.form-control').native.send_keys('testing empty state')
+
+      wait_for_vue_resource
+
+      expect(page).to have_content('There are no issues to show.')
+    end
+  end
+
   it 'restores filters when closing' do
     visit_board
 

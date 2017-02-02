@@ -389,6 +389,12 @@
     flex: 1;
     margin-top: 0;
 
+    &.add-issues-empty-state-filter {
+      -webkit-flex-direction: column;
+      flex-direction: column;
+      margin-top: 50px;
+    }
+
     > .row {
       width: 100%;
       margin: auto 0;

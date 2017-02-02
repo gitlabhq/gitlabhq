@@ -75,7 +75,7 @@
       }, 500),
       loadIssues(clearIssues = false) {
         if (!this.showAddIssuesModal) return;
-        
+
         const data = Object.assign({}, this.filter, {
           search: this.searchTerm,
           page: this.page,
@@ -138,6 +138,7 @@
             :label-path="labelPath">
           </modal-header>
           <modal-list
+            :image="blankStateImage"
             :issue-link-base="issueLinkBase"
             :root-path="rootPath"
             v-if="!loading && showList"></modal-list>
