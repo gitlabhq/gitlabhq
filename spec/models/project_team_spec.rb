@@ -265,10 +265,10 @@ describe ProjectTeam, models: true do
     let(:group) { create(:group) }
     let(:developer) { create(:user) }
     let(:master) { create(:user) }
-    let(:personal_project) { create(:project, namespace: developer.namespace) }
-    let(:group_project) { create(:project, namespace: group) }
-    let(:members_project) { create(:project) }
-    let(:shared_project) { create(:project) }
+    let(:personal_project) { create(:empty_project, namespace: developer.namespace) }
+    let(:group_project) { create(:empty_project, namespace: group) }
+    let(:members_project) { create(:empty_project) }
+    let(:shared_project) { create(:empty_project) }
 
     before do
       group.add_master(master)
@@ -330,7 +330,7 @@ describe ProjectTeam, models: true do
         reporter = create(:user)
         promoted_guest = create(:user)
         guest = create(:user)
-        project = create(:project)
+        project = create(:empty_project)
 
         project.add_master(master)
         project.add_reporter(reporter)

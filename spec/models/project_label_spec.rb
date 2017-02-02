@@ -100,7 +100,7 @@ describe ProjectLabel, models: true do
     end
 
     context 'cross project reference' do
-      let(:project) { create(:project) }
+      let(:project) { create(:empty_project) }
 
       context 'using name' do
         it 'returns cross reference with label name' do

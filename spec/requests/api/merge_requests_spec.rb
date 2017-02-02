@@ -6,12 +6,10 @@ describe API::MergeRequests, api: true  do
   let(:user)        { create(:user) }
   let(:admin)       { create(:user, :admin) }
   let(:non_member)  { create(:user) }
-  let!(:project)    { create(:project, :public, creator_id: user.id, namespace: user.namespace) }
-  let!(:merge_request) { create(:merge_request, :simple, author: user, assignee: user, source_project: project, target_project: project, title: "Test", created_at: base_time) }
-  let!(:merge_request_closed) { create(:merge_request, state: "closed", author: user, assignee: user, source_project: project, target_project: project, title: "Closed test", created_at: base_time + 1.second) }
-  let!(:merge_request_merged) { create(:merge_request, state: "merged", author: user, assignee: user, source_project: project, target_project: project, title: "Merged test", created_at: base_time + 2.seconds, merge_commit_sha: '9999999999999999999999999999999999999999') }
-  let!(:note)       { create(:note_on_merge_request, author: user, project: project, noteable: merge_request, note: "a comment on a MR") }
-  let!(:note2)      { create(:note_on_merge_request, author: user, project: project, noteable: merge_request, note: "another comment on a MR") }
+  let!(:project)    { create(:project, :public, :repository, creator: user, namespace: user.namespace) }
+  let!(:merge_request) { create(:merge_request, :simple, author: user, assignee: user, source_project: project, title: "Test", created_at: base_time) }
+  let!(:merge_request_closed) { create(:merge_request, state: "closed", author: user, assignee: user, source_project: project, title: "Closed test", created_at: base_time + 1.second) }
+  let!(:merge_request_merged) { create(:merge_request, state: "merged", author: user, assignee: user, source_project: project, title: "Merged test", created_at: base_time + 2.seconds, merge_commit_sha: '9999999999999999999999999999999999999999') }
   let(:milestone)   { create(:milestone, title: '1.0.0', project: project) }
 
   before do
@@ -556,11 +554,12 @@ describe API::MergeRequests, api: true  do
       original_count = merge_request.notes.size
 
       post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/comments", user), note: "My comment"
+
       expect(response).to have_http_status(201)
       expect(json_response['note']).to eq('My comment')
       expect(json_response['author']['name']).to eq(user.name)
       expect(json_response['author']['username']).to eq(user.username)
-      expect(merge_request.notes.size).to eq(original_count + 1)
+      expect(merge_request.reload.notes.size).to eq(original_count + 1)
     end
 
     it "returns 400 if note is missing" do
@@ -576,6 +575,9 @@ describe API::MergeRequests, api: true  do
   end
 
   describe "GET :id/merge_requests/:merge_request_id/comments" do
+    let!(:note)  { create(:note_on_merge_request, author: user, project: project, noteable: merge_request, note: "a comment on a MR") }
+    let!(:note2) { create(:note_on_merge_request, author: user, project: project, noteable: merge_request, note: "another comment on a MR") }
+
     it "returns merge_request comments ordered by created_at" do
       get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/comments", user)
       expect(response).to have_http_status(200)

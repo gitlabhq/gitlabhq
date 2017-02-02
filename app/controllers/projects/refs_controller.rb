@@ -32,12 +32,6 @@ class Projects::RefsController < Projects::ApplicationController
 
         redirect_to new_path
       end
-      format.js do
-        @ref = params[:ref]
-        define_tree_vars
-        tree
-        render "tree"
-      end
     end
   end
 

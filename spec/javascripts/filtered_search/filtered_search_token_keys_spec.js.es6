@@ -72,6 +72,12 @@
         const result = gl.FilteredSearchTokenKeys.searchByKeyParam(`${tokenKeys[0].key}_${tokenKeys[0].param}`);
         expect(result).toEqual(tokenKeys[0]);
       });
+
+      it('should return alternative tokenKey when found by key param', () => {
+        const tokenKeys = gl.FilteredSearchTokenKeys.getAlternatives();
+        const result = gl.FilteredSearchTokenKeys.searchByKeyParam(`${tokenKeys[0].key}_${tokenKeys[0].param}`);
+        expect(result).toEqual(tokenKeys[0]);
+      });
     });
 
     describe('searchByConditionUrl', () => {

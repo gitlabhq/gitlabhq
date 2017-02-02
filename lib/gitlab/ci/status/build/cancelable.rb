@@ -10,7 +10,7 @@ module Gitlab
           end
 
           def action_icon
-            'ban'
+            'icon_action_cancel'
           end
 
           def action_path

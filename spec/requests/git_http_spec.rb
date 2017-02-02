@@ -12,7 +12,7 @@ describe 'Git HTTP requests', lib: true do
 
   describe "User with no identities" do
     let(:user)    { create(:user) }
-    let(:project) { create(:project, path: 'project.git-project') }
+    let(:project) { create(:project, :repository, path: 'project.git-project') }
 
     context "when the project doesn't exist" do
       context "when no authentication is provided" do

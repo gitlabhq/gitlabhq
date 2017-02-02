@@ -17,6 +17,7 @@ describe API::Projects, api: true  do
   let(:project3) do
     create(:project,
     :private,
+    :repository,
     name: 'second_project',
     path: 'second_project',
     creator_id: user.id,

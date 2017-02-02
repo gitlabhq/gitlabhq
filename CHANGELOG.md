@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 8.16.3 (2017-01-27)
+
+- Add caching of droplab ajax requests. !8725
+- Fix access to the wiki code via HTTP when repository feature disabled. !8758
+- Revert 3f17f29a. !8785
+- Fix race conditions for AuthorizedProjectsWorker.
+- Fix autocomplete initial undefined state.
+- Fix Error 500 when repositories contain annotated tags pointing to blobs.
+- Fix /explore sorting.
+- Fixed label dropdown toggle text not correctly updating.
+
 ## 8.16.2 (2017-01-25)
 
 - allow issue filter bar to be operated with mouse only. !8681
@@ -18,7 +29,7 @@ entry.
 - Prevent users from deleting system deploy keys via the project deploy key API.
 - Upgrade omniauth gem to 1.3.2.
 
-## 8.16.0 (2017-02-22)
+## 8.16.0 (2017-01-22)
 
 - Add LDAP Rake task to rename a provider. !2181
 - Validate label's title length. !5767 (Tomáš Kukrál)

@@ -32,7 +32,7 @@ describe Environment, models: true do
   end
 
   describe '#includes_commit?' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
 
     context 'without a last deployment' do
       it "returns false" do
@@ -81,7 +81,7 @@ describe Environment, models: true do
   end
 
   describe '#first_deployment_for' do
-    let(:project)       { create(:project) }
+    let(:project)       { create(:project, :repository) }
     let!(:deployment)   { create(:deployment, environment: environment, ref: commit.parent.id) }
     let!(:deployment1)  { create(:deployment, environment: environment, ref: commit.id) }
     let(:head_commit)   { project.commit }
@@ -288,6 +288,11 @@ describe Environment, models: true do
       "1-foo"                     => "env-1-foo" + SUFFIX,
       "1/foo"                     => "env-1-foo" + SUFFIX,
       "foo-"                      => "foo" + SUFFIX,
+      "foo--bar"                  => "foo-bar" + SUFFIX,
+      "foo**bar"                  => "foo-bar" + SUFFIX,
+      "*-foo"                     => "env-foo" + SUFFIX,
+      "staging-12345678-"         => "staging-12345678" + SUFFIX,
+      "staging-12345678-01234567" => "staging-12345678" + SUFFIX,
     }.each do |name, matcher|
       it "returns a slug matching #{matcher}, given #{name}" do
         slug = described_class.new(name: name).generate_slug

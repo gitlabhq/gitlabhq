@@ -773,7 +773,7 @@ describe 'Filter issues', js: true, feature: true do
   describe 'RSS feeds' do
     it 'updates atom feed link for project issues' do
       visit namespace_project_issues_path(project.namespace, project, milestone_title: milestone.title, assignee_id: user.id)
-      link = find('.nav-controls a', text: 'Subscribe')
+      link = find_link('Subscribe')
       params = CGI.parse(URI.parse(link[:href]).query)
       auto_discovery_link = find('link[type="application/atom+xml"]', visible: false)
       auto_discovery_params = CGI.parse(URI.parse(auto_discovery_link[:href]).query)

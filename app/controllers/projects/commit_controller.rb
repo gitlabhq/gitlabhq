@@ -30,6 +30,17 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def pipelines
+    @pipelines = @commit.pipelines.order(id: :desc)
+
+    respond_to do |format|
+      format.html
+      format.json do
+        render json: PipelineSerializer
+          .new(project: @project, user: @current_user)
+          .with_pagination(request, response)
+          .represent(@pipelines)
+      end
+    end
   end
 
   def branches

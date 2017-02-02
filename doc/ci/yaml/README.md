@@ -86,7 +86,7 @@ used for time of the build. The configuration of this feature is covered in
 ### before_script
 
 `before_script` is used to define the command that should be run before all
-builds, including deploy builds. This can be an array or a multi-line string.
+builds, including deploy builds, but after the restoration of artifacts. This can be an array or a multi-line string.
 
 ### after_script
 

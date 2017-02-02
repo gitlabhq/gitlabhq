@@ -141,6 +141,36 @@ describe 'Issue Boards', feature: true, js: true do
         end
       end
     end
+
+    it 'resets assignee dropdown' do
+      page.within(first('.board')) do
+        first('.card').click
+      end
+
+      page.within('.assignee') do
+        click_link 'Edit'
+
+        wait_for_ajax
+
+        page.within('.dropdown-menu-user') do
+          click_link user.name
+
+          wait_for_vue_resource
+        end
+
+        expect(page).to have_content(user.name)
+      end
+
+      page.within(first('.board')) do
+        find('.card:nth-child(2)').click
+      end
+
+      page.within('.assignee') do
+        click_link 'Edit'
+
+        expect(page).not_to have_selector('.is-active')
+      end
+    end
   end
 
   context 'milestone' do

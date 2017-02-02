@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Ci::Build, :models do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:build) { create(:ci_build, pipeline: pipeline) }
   let(:test_trace) { 'This is a test' }
 

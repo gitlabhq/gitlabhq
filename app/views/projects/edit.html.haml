@@ -9,7 +9,7 @@
         %fieldset.append-bottom-0
           .row
             .form-group.col-md-9
-              = f.label :name, class: 'label-light' do
+              = f.label :name, class: 'label-light', for: 'project_name_edit' do
                 Project name
               = f.text_field :name, class: "form-control", id: "project_name_edit"
 
@@ -183,6 +183,8 @@
             %li Build traces and artifacts
             %li LFS objects
             %li Container registry images
+            %li CI variables
+            %li Any encrypted tokens
   %hr
   - if can? current_user, :archive_project, @project
     .row.prepend-top-default
