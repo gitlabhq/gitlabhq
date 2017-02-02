@@ -15,17 +15,19 @@ if app.config.serve_static_files
 
   # If webpack-dev-server is configured, proxy webpack's public directory
   # instead of looking for static assets
-  if Gitlab.config.webpack.dev_server.enabled
-    dev_server = {
+  dev_server = Gitlab.config.webpack.dev_server
+
+  if dev_server.enabled
+    settings = {
       enabled: true,
-      host: Gitlab.config.webpack.dev_server.host,
-      port: Gitlab.config.webpack.dev_server.port,
-      manifest_host: Gitlab.config.webpack.dev_server.host,
-      manifest_port: Gitlab.config.webpack.dev_server.port,
+      host: dev_server.host,
+      port: dev_server.port,
+      manifest_host: dev_server.host,
+      manifest_port: dev_server.port,
     }
 
     if Rails.env.development?
-      dev_server.merge!(
+      settings.merge!(
         host: Gitlab.config.gitlab.host,
         port: Gitlab.config.gitlab.port,
         https: Gitlab.config.gitlab.https,
@@ -34,11 +36,11 @@ if app.config.serve_static_files
         Gitlab::Middleware::Static,
         Gitlab::Middleware::WebpackProxy,
         proxy_path: app.config.webpack.public_path,
-        proxy_host: Gitlab.config.webpack.dev_server.host,
-        proxy_port: Gitlab.config.webpack.dev_server.port,
+        proxy_host: dev_server.host,
+        proxy_port: dev_server.port,
       )
     end
 
-    app.config.webpack.dev_server.merge!(dev_server)
+    app.config.webpack.dev_server.merge!(settings)
   end
 end
