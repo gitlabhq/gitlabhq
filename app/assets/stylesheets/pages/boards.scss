@@ -392,7 +392,8 @@
     &.add-issues-empty-state-filter {
       -webkit-flex-direction: column;
       flex-direction: column;
-      margin-top: 50px;
+      -webkit-justify-content: center;
+      justify-content: center;
     }
 
     > .row {

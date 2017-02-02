@@ -1,5 +1,6 @@
+/* eslint-disable no-new */
 /* global Vue */
-/* global LabelSelect */
+/* global LabelsSelect */
 (() => {
   gl.issueBoards.ModalLabelFilter = Vue.extend({
     props: {

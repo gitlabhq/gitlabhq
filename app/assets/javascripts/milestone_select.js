@@ -6,7 +6,7 @@
 (function() {
   this.MilestoneSelect = (function() {
     function MilestoneSelect(currentProject, els) {
-      var _this;
+      var _this, $els;
       if (currentProject != null) {
         _this = this;
         this.currentProject = JSON.parse(currentProject);
@@ -18,7 +18,7 @@
         $els = $('.js-label-select');
       }
 
-      $('.js-milestone-select').each(function(i, dropdown) {
+      $els.each(function(i, dropdown) {
         var $block, $dropdown, $loading, $selectbox, $sidebarCollapsedValue, $value, abilityName, collapsedSidebarLabelTemplate, defaultLabel, issuableId, issueUpdateURL, milestoneLinkNoneTemplate, milestoneLinkTemplate, milestonesUrl, projectId, selectedMilestone, showAny, showNo, showUpcoming, useId, showMenuAbove;
         $dropdown = $(dropdown);
         projectId = $dropdown.data('project-id');

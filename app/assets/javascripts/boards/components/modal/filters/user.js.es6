@@ -1,3 +1,4 @@
+/* eslint-disable no-new */
 /* global Vue */
 /* global UsersSelect */
 (() => {

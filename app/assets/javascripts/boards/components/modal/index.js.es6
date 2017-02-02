@@ -67,22 +67,22 @@
           this.loadIssues(true);
         },
         deep: true,
-      }
+      },
     },
     methods: {
       searchOperation: _.debounce(function searchOperationDebounce() {
         this.loadIssues(true);
       }, 500),
       loadIssues(clearIssues = false) {
-        if (!this.showAddIssuesModal) return;
+        if (!this.showAddIssuesModal) return false;
 
-        const data = Object.assign({}, this.filter, {
+        const queryData = Object.assign({}, this.filter, {
           search: this.searchTerm,
           page: this.page,
           per: this.perPage,
         });
 
-        return gl.boardService.getBacklog(data).then((res) => {
+        return gl.boardService.getBacklog(queryData).then((res) => {
           const data = res.json();
 
           if (clearIssues) {
