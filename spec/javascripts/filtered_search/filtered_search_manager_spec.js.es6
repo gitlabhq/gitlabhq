@@ -22,6 +22,7 @@ require('~/filtered_search/filtered_search_manager');
         `);
 
         spyOn(gl.FilteredSearchManager.prototype, 'bindEvents').and.callFake(() => {});
+        spyOn(gl.FilteredSearchManager.prototype, 'cleanup').and.callFake(() => {});
         spyOn(gl.FilteredSearchManager.prototype, 'loadSearchParamsFromURL').and.callFake(() => {});
         spyOn(gl.FilteredSearchDropdownManager.prototype, 'setDropdown').and.callFake(() => {});
         spyOn(gl.utils, 'getParameterByName').and.returnValue(null);

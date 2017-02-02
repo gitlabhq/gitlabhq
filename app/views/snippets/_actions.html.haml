@@ -8,6 +8,8 @@
   - if current_user
     = link_to new_snippet_path, class: "btn btn-grouped btn-inverted btn-create", title: "New snippet" do
       New snippet
+  - if @snippet.submittable_as_spam? && current_user.admin?
+    = link_to 'Submit as spam', mark_as_spam_snippet_path(@snippet), method: :post, class: 'btn btn-grouped btn-spam', title: 'Submit as spam'
 - if current_user
   .visible-xs-block.dropdown
     %button.btn.btn-default.btn-block.append-bottom-0.prepend-top-5{ data: { toggle: "dropdown" } }
@@ -26,3 +28,6 @@
           %li
             = link_to edit_snippet_path(@snippet) do
               Edit
+        - if @snippet.submittable_as_spam? && current_user.admin?
+          %li
+            = link_to 'Submit as spam', mark_as_spam_snippet_path(@snippet), method: :post

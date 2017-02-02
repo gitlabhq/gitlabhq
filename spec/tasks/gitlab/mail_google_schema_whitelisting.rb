@@ -20,7 +20,7 @@ describe 'gitlab:mail_google_schema_whitelisting rake task' do
       Rake.application.invoke_task "gitlab:mail_google_schema_whitelisting"
     end
 
-    it 'should run the task without errors' do
+    it 'runs the task without errors' do
       expect { run_rake_task }.not_to raise_error
     end
   end

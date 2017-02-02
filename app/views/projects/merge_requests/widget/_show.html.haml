@@ -24,6 +24,10 @@
       preparing: "{{status}} build",
       normal: "Build {{status}}"
     },
+    ci_sha: "#{@merge_request.head_pipeline ? @merge_request.head_pipeline.short_sha : ''}",
+    ci_pipeline: #{@merge_request.head_pipeline.try(:id).to_json},
+    commits_path: "#{project_commits_path(@project)}",
+    pipeline_path: "#{project_pipelines_path(@project)}",
     pipelines_path: "#{pipelines_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)}"
   };
 

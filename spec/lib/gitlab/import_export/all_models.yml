@@ -52,6 +52,7 @@ snippets:
 - project
 - notes
 - award_emoji
+- user_agent_detail
 releases:
 - project
 project_members:

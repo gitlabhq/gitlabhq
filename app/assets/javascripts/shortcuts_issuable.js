@@ -39,17 +39,20 @@ require('./shortcuts_navigation');
     }
 
     ShortcutsIssuable.prototype.replyWithSelectedText = function() {
-      var quote, replyField, documentFragment, selected, separator;
+      var quote, documentFragment, selected, separator;
+      var replyField = $('.js-main-target-form #note_note');
 
       documentFragment = window.gl.utils.getSelectedFragment();
-      if (!documentFragment) return;
+      if (!documentFragment) {
+        replyField.focus();
+        return;
+      }
 
       // If the documentFragment contains more than just Markdown, don't copy as GFM.
       if (documentFragment.querySelector('.md, .wiki')) return;
 
       selected = window.gl.CopyAsGFM.nodeToGFM(documentFragment);
 
-      replyField = $('.js-main-target-form #note_note');
       if (selected.trim() === "") {
         return;
       }

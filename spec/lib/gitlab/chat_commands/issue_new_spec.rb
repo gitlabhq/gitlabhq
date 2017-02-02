@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::ChatCommands::IssueCreate, service: true do
+describe Gitlab::ChatCommands::IssueNew, service: true do
   describe '#execute' do
     let(:project) { create(:empty_project) }
     let(:user) { create(:user) }
@@ -18,7 +18,7 @@ describe Gitlab::ChatCommands::IssueCreate, service: true do
       it 'creates the issue' do
         expect { subject }.to change { project.issues.count }.by(1)
 
-        expect(subject.title).to eq('bird is the word')
+        expect(subject[:response_type]).to be(:in_channel)
       end
     end
 
@@ -39,6 +39,16 @@ describe Gitlab::ChatCommands::IssueCreate, service: true do
 
       it 'creates the issue' do
         expect { subject }.to change { project.issues.count }.by(1)
+      end
+    end
+
+    context 'issue cannot be created' do
+      let!(:issue)  { create(:issue, project: project, title: 'bird is the word') }
+      let(:regex_match) { described_class.match("issue create #{'a' * 512}}") }
+
+      it 'displays the errors' do
+        expect(subject[:response_type]).to be(:ephemeral)
+        expect(subject[:text]).to match("- Title is too long")
       end
     end
   end
