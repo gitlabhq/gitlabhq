@@ -4,7 +4,7 @@ var fs = require('fs');
 var path = require('path');
 var webpack = require('webpack');
 var StatsPlugin = require('stats-webpack-plugin');
-var CompressionPlugin = require("compression-webpack-plugin");
+var CompressionPlugin = require('compression-webpack-plugin');
 
 var ROOT_PATH = path.resolve(__dirname, '..');
 var IS_PRODUCTION = process.env.NODE_ENV === 'production';
@@ -54,10 +54,10 @@ var config = {
         exclude: /node_modules/,
         loader: 'babel-loader',
         query: {
-          // "use strict" was broken in sprockets-es6 due to sprockets concatination method.
+          // 'use strict' was broken in sprockets-es6 due to sprockets concatination method.
           // many es5 strict errors which were never caught ended up in our es6 assets as a result.
           // this hack is necessary until they can be fixed.
-          blacklist: ["useStrict"]
+          blacklist: ['useStrict']
         }
       },
       {
