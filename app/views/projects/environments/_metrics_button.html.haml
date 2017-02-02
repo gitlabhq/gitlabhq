@@ -1,0 +1,3 @@
+- if environment.has_metrics? && can?(current_user, :read_environment, @project)
+  = link_to metrics_namespace_project_environment_path(@project.namespace, @project, environment), class: 'btn metrics-button' do
+    = icon('metrics')
