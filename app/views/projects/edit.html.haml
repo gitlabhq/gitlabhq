@@ -185,8 +185,8 @@
             %li Container registry images
             %li CI variables
             %li Any encrypted tokens
-  %hr
   - if can? current_user, :archive_project, @project
+    %hr
     .row.prepend-top-default
       .col-lg-3
         %h4.warning-title.prepend-top-0
