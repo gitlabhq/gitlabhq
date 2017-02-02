@@ -561,9 +561,9 @@ describe Gitlab::Elastic::SearchResults, lib: true do
             user,
             'test-file',
             'search test',
-            'search test',
-            'master',
-            false
+            message: 'search test',
+            branch_name: 'master',
+            update: false
           )
 
           project.repository.index_commits
@@ -594,9 +594,9 @@ describe Gitlab::Elastic::SearchResults, lib: true do
             user,
             'test-file',
             'tesla',
-            'search test',
-            'master',
-            false
+            message: 'search test',
+            branch_name: 'master',
+            update: false
           )
 
           project.repository.index_blobs
