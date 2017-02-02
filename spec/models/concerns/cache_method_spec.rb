@@ -38,6 +38,7 @@ describe CacheMethod, caching: true do
   describe 'expire_method_caches' do
     it 'expires cache and returns new value' do
       subject.expire_method_caches(%w(time))
+
       expect(subject.time).not_to eq(time)
     end
   end
