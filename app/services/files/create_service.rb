@@ -1,7 +1,17 @@
 module Files
   class CreateService < Files::BaseService
     def commit
-      repository.commit_file(current_user, @file_path, @file_content, @commit_message, @target_branch, false, author_email: @author_email, author_name: @author_name)
+      repository.commit_file(
+        current_user,
+        @file_path,
+        @file_content,
+        message: @commit_message,
+        branch_name: @target_branch,
+        update: false,
+        author_email: @author_email,
+        author_name: @author_name,
+        start_project: @start_project,
+        start_branch_name: @start_branch)
     end
 
     def validate
@@ -24,7 +34,7 @@ module Files
       unless project.empty_repo?
         @file_path.slice!(0) if @file_path.start_with?('/')
 
-        blob = repository.blob_at_branch(@source_branch, @file_path)
+        blob = repository.blob_at_branch(@start_branch, @file_path)
 
         if blob
           raise_error('Your changes could not be committed because a file with the same name already exists')
