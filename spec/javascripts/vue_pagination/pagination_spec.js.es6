@@ -1,7 +1,6 @@
 //= require vue
 //= require lib/utils/common_utils
 //= require vue_pagination/index
-/* global fixture, gl */
 
 describe('Pagination component', () => {
   let component;
@@ -17,7 +16,7 @@ describe('Pagination component', () => {
   };
 
   it('should render and start at page 1', () => {
-    fixture.set('<div class="test-pagination-container"></div>');
+    setFixtures('<div class="test-pagination-container"></div>');
 
     component = new window.gl.VueGlPagination({
       el: document.querySelector('.test-pagination-container'),
@@ -40,7 +39,7 @@ describe('Pagination component', () => {
   });
 
   it('should go to the previous page', () => {
-    fixture.set('<div class="test-pagination-container"></div>');
+    setFixtures('<div class="test-pagination-container"></div>');
 
     component = new window.gl.VueGlPagination({
       el: document.querySelector('.test-pagination-container'),
@@ -61,7 +60,7 @@ describe('Pagination component', () => {
   });
 
   it('should go to the next page', () => {
-    fixture.set('<div class="test-pagination-container"></div>');
+    setFixtures('<div class="test-pagination-container"></div>');
 
     component = new window.gl.VueGlPagination({
       el: document.querySelector('.test-pagination-container'),
@@ -82,7 +81,7 @@ describe('Pagination component', () => {
   });
 
   it('should go to the last page', () => {
-    fixture.set('<div class="test-pagination-container"></div>');
+    setFixtures('<div class="test-pagination-container"></div>');
 
     component = new window.gl.VueGlPagination({
       el: document.querySelector('.test-pagination-container'),
@@ -103,7 +102,7 @@ describe('Pagination component', () => {
   });
 
   it('should go to the first page', () => {
-    fixture.set('<div class="test-pagination-container"></div>');
+    setFixtures('<div class="test-pagination-container"></div>');
 
     component = new window.gl.VueGlPagination({
       el: document.querySelector('.test-pagination-container'),
@@ -124,7 +123,7 @@ describe('Pagination component', () => {
   });
 
   it('should do nothing', () => {
-    fixture.set('<div class="test-pagination-container"></div>');
+    setFixtures('<div class="test-pagination-container"></div>');
 
     component = new window.gl.VueGlPagination({
       el: document.querySelector('.test-pagination-container'),
