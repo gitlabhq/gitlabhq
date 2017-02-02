@@ -712,7 +712,7 @@ Parameters:
 Forks a project into the user namespace of the authenticated user or the one provided.
 
 ```
-POST /projects/fork/:id
+POST /projects/:id/fork
 ```
 
 Parameters:

@@ -13,3 +13,14 @@ changes are in V4:
 - Project snippets do not return deprecated field `expires_at`
 - Endpoints under `projects/:id/keys` have been removed (use `projects/:id/deploy_keys`)
 - Status 409 returned for POST `project/:id/members` when a member already exists
+- Removed the following deprecated Templates endpoints (these are still accessible with `/templates` prefix)
+  - `/licences`
+  - `/licences/:key`
+  - `/gitignores`
+  - `/gitlab_ci_ymls`
+  - `/dockerfiles`
+  - `/gitignores/:key`
+  - `/gitlab_ci_ymls/:key`
+  - `/dockerfiles/:key`
+- Moved `/projects/fork/:id` to `/projects/:id/fork`
+

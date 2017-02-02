@@ -224,7 +224,7 @@ module API
       params do
         optional :namespace, type: String, desc: 'The ID or name of the namespace that the project will be forked into'
       end
-      post 'fork/:id' do
+      post ':id/fork' do
         fork_params = declared_params(include_missing: false)
         namespace_id = fork_params[:namespace]
 
