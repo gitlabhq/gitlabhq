@@ -28,7 +28,6 @@
                 data-toggle="dropdown"
                 title="Manual build"
                 data-placement="top"
-                data-toggle="dropdown"
                 aria-label="Manual build"
               >
                 <span v-html='svgs.iconPlay' aria-hidden="true"></span>
@@ -54,7 +53,6 @@
                 data-toggle="dropdown"
                 title="Artifacts"
                 data-placement="top"
-                data-toggle="dropdown"
                 aria-label="Artifacts"
               >
                 <i class="fa fa-download" aria-hidden="true"></i>
