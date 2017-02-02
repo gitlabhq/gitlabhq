@@ -782,6 +782,7 @@ ActiveRecord::Schema.define(version: 20170121130655) do
     t.text "title_html"
     t.text "description_html"
     t.integer "time_estimate"
+    t.boolean "squash", default: false, null: false
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree

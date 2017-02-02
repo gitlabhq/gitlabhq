@@ -6,7 +6,7 @@ module MergeRequests
   # Executed when you do merge via GitLab UI
   #
   class MergeService < MergeRequests::BaseService
-    attr_reader :merge_request
+    attr_reader :merge_request, :source
 
     def execute(merge_request)
       if project.merge_requests_ff_only_enabled && !self.is_a?(FfMergeService)
@@ -23,6 +23,10 @@ module MergeRequests
         @merge_request.update(merge_error: message)
         return error(message)
       end
+
+      @source = find_merge_source
+
+      return log_merge_error('No source for merge', true) unless @source
 
       merge_request.in_locked_state do
         if commit
@@ -64,7 +68,7 @@ module MergeRequests
         committer: committer
       }
 
-      commit_id = repository.merge(current_user, merge_request, options)
+      commit_id = repository.merge(current_user, source, merge_request, options)
 
       if commit_id
         merge_request.update(merge_commit_sha: commit_id)
@@ -103,9 +107,21 @@ module MergeRequests
     end
 
     def merge_request_info
-      project = merge_request.project
+      merge_request.to_reference(full: true)
+    end
 
-      "#{project.to_reference}#{merge_request.to_reference}"
+    def find_merge_source
+      return merge_request.diff_head_sha unless merge_request.squash
+
+      squash_result = SquashService.new(project, current_user, params).execute(merge_request)
+
+      if squash_result[:status] == :success
+        squash_result[:squash_sha]
+      else
+        log_merge_error("Squashing #{merge_request_info} failed")
+
+        nil
+      end
     end
   end
 end

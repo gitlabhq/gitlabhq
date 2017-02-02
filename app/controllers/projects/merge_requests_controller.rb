@@ -338,7 +338,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       return
     end
 
-    @merge_request.update(merge_error: nil)
+    @merge_request.update(merge_error: nil, squash: merge_params[:squash])
 
     if params[:merge_when_build_succeeds].present?
       unless @merge_request.head_pipeline
@@ -699,6 +699,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       approvals_before_merge
       approver_group_ids
       approver_ids
+      squash
     ]
   end
 
@@ -716,7 +717,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def merge_params
-    params.permit(:should_remove_source_branch, :commit_message)
+    params.permit(:should_remove_source_branch, :commit_message, :squash)
   end
 
   # Make sure merge requests created before 8.0

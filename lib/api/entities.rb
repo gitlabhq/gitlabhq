@@ -326,6 +326,7 @@ module API
       expose :approvals_before_merge
       expose :should_remove_source_branch?, as: :should_remove_source_branch
       expose :force_remove_source_branch?, as: :force_remove_source_branch
+      expose :squash
 
       expose :web_url do |merge_request, options|
         Gitlab::UrlBuilder.build(merge_request)

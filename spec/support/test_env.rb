@@ -37,7 +37,8 @@ module TestEnv
     'conflict-non-utf8'                  => 'd0a293c',
     'conflict-too-large'                 => '39fa04f',
     'deleted-image-test'                 => '6c17798',
-    'wip'                                => 'b9238ee'
+    'wip'                                => 'b9238ee',
+    'csv'                                => '3dd0896'
   }
 
   # gitlab-test-fork is a fork of gitlab-fork, but we don't necessarily

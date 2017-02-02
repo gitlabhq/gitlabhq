@@ -492,6 +492,7 @@ describe Projects::MergeRequestsController do
         namespace_id: project.namespace.path,
         project_id: project.path,
         id: merge_request.iid,
+        squash: false,
         format: 'raw'
       }
     end
@@ -529,8 +530,26 @@ describe Projects::MergeRequestsController do
     end
 
     context 'when the sha parameter matches the source SHA' do
-      def merge_with_sha
-        post :merge, base_params.merge(sha: merge_request.diff_head_sha)
+      def merge_with_sha(params = {})
+        post :merge, base_params.merge(sha: merge_request.diff_head_sha).merge(params)
+      end
+
+      context 'when squash is passed as 1' do
+        it 'updates the squash attribute on the MR to true' do
+          merge_request.update(squash: false)
+          merge_with_sha(squash: '1')
+
+          expect(merge_request.reload.squash).to be_truthy
+        end
+      end
+
+      context 'when squash is passed as 1' do
+        it 'updates the squash attribute on the MR to false' do
+          merge_request.update(squash: true)
+          merge_with_sha(squash: '0')
+
+          expect(merge_request.reload.squash).to be_falsey
+        end
       end
 
       it 'returns :success' do

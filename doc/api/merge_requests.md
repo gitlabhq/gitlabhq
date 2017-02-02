@@ -75,6 +75,7 @@ Parameters:
     "approvals_before_merge": null
     "should_remove_source_branch": true,
     "force_remove_source_branch": false,
+    "squash": false,
     "web_url": "http://example.com/example/example/merge_requests/1"
   }
 ]
@@ -145,6 +146,7 @@ Parameters:
   "approvals_before_merge": null
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
+  "squash": false,
   "web_url": "http://example.com/example/example/merge_requests/1"
 }
 ```
@@ -251,6 +253,7 @@ Parameters:
   "approvals_before_merge": null,
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
+  "squash": false,
   "web_url": "http://example.com/example/example/merge_requests/1",
   "changes": [
     {
@@ -287,6 +290,7 @@ POST /projects/:id/merge_requests
 | `milestone_id` | integer  | no | The ID of a milestone |
 | `remove_source_branch` | boolean  | no | Flag indicating if a merge request should remove the source branch when merging |
 | `approvals_before_merge` | integer| no | Number of approvals required before this can be merged (see below) |
+| `squash` | boolean| no | Squash commits into a single commit when merging |
 
 If `approvals_before_merge` is not provided, it inherits the value from the
 target project. If it is provided, then the following conditions must hold in
@@ -349,6 +353,7 @@ order for it to take effect:
   "approvals_before_merge": null
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
+  "squash": false,
   "web_url": "http://example.com/example/example/merge_requests/1"
 }
 ```
@@ -374,6 +379,7 @@ PUT /projects/:id/merge_requests/:merge_request_id
 | `labels` | string  | no | Labels for MR as a comma-separated list |
 | `milestone_id` | integer  | no | The ID of a milestone |
 | `remove_source_branch` | boolean  | no | Flag indicating if a merge request should remove the source branch when merging |
+| `squash` | boolean| no | Squash commits into a single commit when merging |
 
 ```json
 {
@@ -426,6 +432,7 @@ PUT /projects/:id/merge_requests/:merge_request_id
   "approvals_before_merge": null
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
+  "squash": false,
   "web_url": "http://example.com/example/example/merge_requests/1"
 }
 ```
@@ -471,7 +478,19 @@ Parameters:
 - `merge_commit_message` (optional)         - Custom merge commit message
 - `should_remove_source_branch` (optional)  - if `true` removes the source branch
 - `merge_when_build_succeeds` (optional)    - if `true` the MR is merged when the build succeeds
-- `sha` (optional)                          - if present, then this SHA must match the HEAD of the source branch, otherwise the merge will fail
+- `sha` (optional)                          - if present, then this SHA must
+
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | string | yes | The ID of a project |
+| `merge_request_id` | integer | yes | The ID of the merge request |
+| `merge_commit_message` | string | no | Custom merge commit message |
+| `should_remove_source_branch` | boolean | no | Remove the source branch after merge |
+| `merge_when_build_succeeds` | boolean | no | Merge when build succeeds, rather than immediately |
+| `sha` | string | no  | If present, then this SHA must match the HEAD of the source branch, otherwise the merge will fail |
+| `squash` | boolean | no | Squash the merge request into a single commit |
+
 
 ```json
 {
@@ -525,6 +544,7 @@ Parameters:
   "approvals_before_merge": null
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
+  "squash": false,
   "web_url": "http://example.com/example/example/merge_requests/1"
 }
 ```
@@ -698,6 +718,7 @@ Parameters:
   "approvals_before_merge": null
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
+  "squash": false,
   "web_url": "http://example.com/example/example/merge_requests/1"
 }
 ```
@@ -1021,6 +1042,7 @@ Example response:
     "user_notes_count": 7,
     "should_remove_source_branch": true,
     "force_remove_source_branch": false,
+    "squash": true,
     "web_url": "http://example.com/example/example/merge_requests/1"
   },
   "target_url": "https://gitlab.example.com/gitlab-org/gitlab-ci/merge_requests/7",

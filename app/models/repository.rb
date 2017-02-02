@@ -1027,9 +1027,9 @@ class Repository
     end
   end
 
-  def merge(user, merge_request, options = {})
+  def merge(user, source, merge_request, options = {})
     our_commit = rugged.branches[merge_request.target_branch].target
-    their_commit = rugged.lookup(merge_request.diff_head_sha)
+    their_commit = rugged.lookup(source)
 
     raise "Invalid merge target" if our_commit.nil?
     raise "Invalid merge source" if their_commit.nil?
