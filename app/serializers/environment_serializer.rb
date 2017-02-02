@@ -7,12 +7,20 @@ class EnvironmentSerializer < BaseSerializer
     tap { @itemize = true }
   end
 
+  def with_pagination(request, response)
+    tap { @paginator = Paginator.new(request, response) }
+  end
+
   def itemized?
     @itemize
   end
 
+  def paginated?
+    defined?(@paginator)
+  end
+
   def represent(resource, opts = {})
-    # resource = paginate(resource) if paginated?
+    resource = @paginator.paginate(resource) if paginated?
 
     if itemized?
       itemize(resource).map do |item|
