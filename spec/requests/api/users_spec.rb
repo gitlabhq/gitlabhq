@@ -306,9 +306,10 @@ describe API::Users, api: true  do
     end
 
     it "updates user with new password and forces reset on next login" do
-      put api("/users/#{user.id}", admin), { password: '12345678' }
+      put api("/users/#{user.id}", admin), password: '12345678'
+
       expect(response).to have_http_status(200)
-      expect(user.reload.password_expires_at).to be < Time.now
+      expect(user.reload.password_expires_at).to be <= Time.now
     end
 
     it "updates user with organization" do
