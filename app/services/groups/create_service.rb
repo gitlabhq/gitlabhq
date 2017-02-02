@@ -22,6 +22,11 @@ module Groups
       @group.name ||= @group.path.dup
       @group.save
       @group.add_owner(current_user)
+
+      if params[:create_chat_team] && Gitlab.config.mattermost.enabled
+        Mattermost::CreateTeamWorker.perform_async(@group.id, current_user.id)
+      end
+
       @group
     end
   end
