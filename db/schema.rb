@@ -61,7 +61,6 @@ ActiveRecord::Schema.define(version: 20170130204620) do
     t.boolean "shared_runners_enabled", default: true, null: false
     t.integer "max_artifacts_size", default: 100, null: false
     t.string "runners_registration_token"
-    t.integer  "max_pages_size", default: 100,   null: false
     t.boolean "require_two_factor_authentication", default: false
     t.integer "two_factor_grace_period", default: 48
     t.boolean "metrics_enabled", default: false
@@ -99,17 +98,18 @@ ActiveRecord::Schema.define(version: 20170130204620) do
     t.text "help_page_text_html"
     t.text "shared_runners_text_html"
     t.text "after_sign_up_text_html"
-    t.boolean "sidekiq_throttling_enabled", default: false
-    t.string "sidekiq_throttling_queues"
-    t.decimal "sidekiq_throttling_factor"
     t.boolean "housekeeping_enabled", default: true, null: false
     t.boolean "housekeeping_bitmaps_enabled", default: true, null: false
     t.integer "housekeeping_incremental_repack_period", default: 10, null: false
     t.integer "housekeeping_full_repack_period", default: 50, null: false
     t.integer "housekeeping_gc_period", default: 200, null: false
+    t.boolean "sidekiq_throttling_enabled", default: false
+    t.string "sidekiq_throttling_queues"
+    t.decimal "sidekiq_throttling_factor"
     t.boolean "html_emails_enabled", default: true
     t.string "plantuml_url"
     t.boolean "plantuml_enabled"
+    t.integer "max_pages_size", default: 100, null: false
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -857,11 +857,11 @@ ActiveRecord::Schema.define(version: 20170130204620) do
 
   create_table "pages_domains", force: :cascade do |t|
     t.integer "project_id"
-    t.text    "certificate"
-    t.text    "encrypted_key"
-    t.string  "encrypted_key_iv"
-    t.string  "encrypted_key_salt"
-    t.string  "domain"
+    t.text "certificate"
+    t.text "encrypted_key"
+    t.string "encrypted_key_iv"
+    t.string "encrypted_key_salt"
+    t.string "domain"
   end
 
   add_index "pages_domains", ["domain"], name: "index_pages_domains_on_domain", unique: true, using: :btree
