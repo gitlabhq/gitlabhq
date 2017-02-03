@@ -15,7 +15,7 @@
       $els = $(els);
 
       if (!els) {
-        $els = $('.js-label-select');
+        $els = $('.js-milestone-select');
       }
 
       $els.each(function(i, dropdown) {
