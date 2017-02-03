@@ -111,7 +111,6 @@ require('vendor/jquery.scrollTo');
         newState = this.subject('commits');
         if (!phantomjs) {
           expect(this.spies.history).toHaveBeenCalledWith({
-            turbolinks: true,
             url: newState
           }, document.title, newState);
         }

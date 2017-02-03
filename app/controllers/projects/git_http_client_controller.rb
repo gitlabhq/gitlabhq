@@ -79,7 +79,7 @@ class Projects::GitHttpClientController < Projects::ApplicationController
     if project_id.blank?
       @project = nil
     else
-      @project = Project.find_with_namespace("#{params[:namespace_id]}/#{project_id}")
+      @project = Project.find_by_full_path("#{params[:namespace_id]}/#{project_id}")
     end
   end
 

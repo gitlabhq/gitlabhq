@@ -163,7 +163,7 @@ require('~/smart_interval');
         const interval = this.smartInterval;
 
         setTimeout(() => {
-          $(document).trigger('page:before-unload');
+          $(document).triggerHandler('beforeunload');
           expect(interval.state.intervalId).toBeUndefined();
           expect(interval.getCurrentInterval()).toBe(interval.cfg.startingInterval);
           done();

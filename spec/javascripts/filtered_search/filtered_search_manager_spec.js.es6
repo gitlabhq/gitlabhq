@@ -1,5 +1,4 @@
-/* global Turbolinks */
-
+require('~/lib/utils/url_utility');
 require('~/lib/utils/common_utils');
 require('~/filtered_search/filtered_search_token_keys');
 require('~/filtered_search/filtered_search_tokenizer');
@@ -37,7 +36,7 @@ require('~/filtered_search/filtered_search_manager');
       it('should search with a single word', () => {
         getInput().value = 'searchTerm';
 
-        spyOn(Turbolinks, 'visit').and.callFake((url) => {
+        spyOn(gl.utils, 'visitUrl').and.callFake((url) => {
           expect(url).toEqual(`${defaultParams}&search=searchTerm`);
         });
 
@@ -47,7 +46,7 @@ require('~/filtered_search/filtered_search_manager');
       it('should search with multiple words', () => {
         getInput().value = 'awesome search terms';
 
-        spyOn(Turbolinks, 'visit').and.callFake((url) => {
+        spyOn(gl.utils, 'visitUrl').and.callFake((url) => {
           expect(url).toEqual(`${defaultParams}&search=awesome+search+terms`);
         });
 
@@ -57,7 +56,7 @@ require('~/filtered_search/filtered_search_manager');
       it('should search with special characters', () => {
         getInput().value = '~!@#$%^&*()_+{}:<>,.?/';
 
-        spyOn(Turbolinks, 'visit').and.callFake((url) => {
+        spyOn(gl.utils, 'visitUrl').and.callFake((url) => {
           expect(url).toEqual(`${defaultParams}&search=~!%40%23%24%25%5E%26*()_%2B%7B%7D%3A%3C%3E%2C.%3F%2F`);
         });
 

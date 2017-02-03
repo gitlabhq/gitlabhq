@@ -305,6 +305,13 @@ describe API::Users, api: true  do
       expect(user.reload.bio).to eq('new test bio')
     end
 
+    it "updates user with new password and forces reset on next login" do
+      put api("/users/#{user.id}", admin), password: '12345678'
+
+      expect(response).to have_http_status(200)
+      expect(user.reload.password_expires_at).to be <= Time.now
+    end
+
     it "updates user with organization" do
       put api("/users/#{user.id}", admin), { organization: 'GitLab' }
 

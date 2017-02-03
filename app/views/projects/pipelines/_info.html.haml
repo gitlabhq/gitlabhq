@@ -25,7 +25,7 @@
     .well-segment.pipeline-info
       .icon-container
         = icon('clock-o')
-      = pluralize @pipeline.statuses.count(:id), "build"
+      = pluralize @pipeline.statuses.count(:id), "job"
       - if @pipeline.ref
         from
         = link_to @pipeline.ref, namespace_project_commits_path(@project.namespace, @project, @pipeline.ref), class: "monospace"

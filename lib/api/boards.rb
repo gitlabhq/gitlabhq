@@ -37,7 +37,7 @@ module API
         end
 
         desc 'Get the lists of a project board' do
-          detail 'Does not include `backlog` and `done` lists. This feature was introduced in 8.13'
+          detail 'Does not include `done` list. This feature was introduced in 8.13'
           success Entities::List
         end
         get '/lists' do

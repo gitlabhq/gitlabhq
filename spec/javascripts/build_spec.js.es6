@@ -1,8 +1,8 @@
 /* eslint-disable no-new */
 /* global Build */
-/* global Turbolinks */
 
 require('~/lib/utils/datetime_utility');
+require('~/lib/utils/url_utility');
 require('~/build');
 require('~/breakpoints');
 require('vendor/jquery.nicescroll');
@@ -166,7 +166,7 @@ describe('Build', () => {
       });
 
       it('reloads the page when the build is done', () => {
-        spyOn(Turbolinks, 'visit');
+        spyOn(gl.utils, 'visitUrl');
 
         jasmine.clock().tick(4001);
         const [{ success, context }] = $.ajax.calls.argsFor(1);
@@ -176,7 +176,7 @@ describe('Build', () => {
           append: true,
         });
 
-        expect(Turbolinks.visit).toHaveBeenCalledWith(BUILD_URL);
+        expect(gl.utils.visitUrl).toHaveBeenCalledWith(BUILD_URL);
       });
     });
   });

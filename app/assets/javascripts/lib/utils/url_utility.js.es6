@@ -76,5 +76,11 @@
       hashIndex = url.indexOf('#');
       return hashIndex === -1 ? null : url.substring(hashIndex + 1);
     };
+
+    w.gl.utils.refreshCurrentPage = () => gl.utils.visitUrl(document.location.href);
+
+    w.gl.utils.visitUrl = (url) => {
+      document.location.href = url;
+    };
   })(window);
 }).call(this);

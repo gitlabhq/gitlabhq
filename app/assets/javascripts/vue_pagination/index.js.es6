@@ -15,6 +15,8 @@ window.Vue = require('vue');
   gl.VueGlPagination = Vue.extend({
     props: {
 
+      // TODO: Consider refactoring in light of turbolinks removal.
+
       /**
         This function will take the information given by the pagination component
         And make a new Turbolinks call
@@ -22,7 +24,7 @@ window.Vue = require('vue');
         Here is an example `change` method:
 
         change(pagenum, apiScope) {
-          Turbolinks.visit(`?scope=${apiScope}&p=${pagenum}`);
+          gl.utils.visitUrl(`?scope=${apiScope}&p=${pagenum}`);
         },
       */
 

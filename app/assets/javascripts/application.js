@@ -21,9 +21,7 @@ require('vendor/jquery.waitforimages');
 require('vendor/jquery.caret');
 require('vendor/jquery.atwho');
 require('vendor/jquery.scrollTo');
-require('vendor/jquery.turbolinks');
 window.Cookies = require('vendor/js.cookie');
-require('vendor/turbolinks');
 require('./autosave');
 require('bootstrap/js/affix');
 require('bootstrap/js/alert');
@@ -61,7 +59,7 @@ window.ES6Promise = require('vendor/es6-promise.auto');
 window.ES6Promise.polyfill();
 
 (function () {
-  document.addEventListener('page:fetch', function () {
+  document.addEventListener('beforeunload', function () {
     // Unbind scroll events
     $(document).off('scroll');
     // Close any open tooltips

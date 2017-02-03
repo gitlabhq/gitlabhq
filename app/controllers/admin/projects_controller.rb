@@ -45,7 +45,7 @@ class Admin::ProjectsController < Admin::ApplicationController
   protected
 
   def project
-    @project = Project.find_with_namespace(
+    @project = Project.find_by_full_path(
       [params[:namespace_id], '/', params[:id]].join('')
     )
     @project || render_404

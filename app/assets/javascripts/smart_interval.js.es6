@@ -89,7 +89,7 @@
     destroy() {
       this.cancel();
       document.removeEventListener('visibilitychange', this.handleVisibilityChange);
-      $(document).off('visibilitychange').off('page:before-unload');
+      $(document).off('visibilitychange').off('beforeunload');
     }
 
     /* private */
@@ -111,8 +111,9 @@
     }
 
     initPageUnloadHandling() {
+      // TODO: Consider refactoring in light of turbolinks removal.
       // prevent interval continuing after page change, when kept in cache by Turbolinks
-      $(document).on('page:before-unload', () => this.cancel());
+      $(document).on('beforeunload', () => this.cancel());
     }
 
     handleVisibilityChange(e) {
