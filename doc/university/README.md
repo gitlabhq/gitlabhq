@@ -189,10 +189,10 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 #### 3.9. Integrations
 
 1. [How to Integrate JIRA and Jenkins with GitLab - Video](https://gitlabmeetings.webex.com/gitlabmeetings/ldr.php?RCID=44b548147a67ab4d8a62274047146415)
-1. [How to Integrate Jira with GitLab](https://docs.gitlab.com/ee/integration/jira.html)
+1. [How to Integrate Jira with GitLab](https://docs.gitlab.com/ce/user/project/integrations/jira.html)
 1. [How to Integrate Jenkins with GitLab](https://docs.gitlab.com/ee/integration/jenkins.html)
-1. [How to Integrate Bamboo with GitLab](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/project_services/bamboo.md)
-1. [How to Integrate Slack with GitLab](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/integration/slack.md)
+1. [How to Integrate Bamboo with GitLab](https://docs.gitlab.com/ce/user/project/integrations/bamboo.html)
+1. [How to Integrate Slack with GitLab](https://docs.gitlab.com/ce/user/project/integrations/slack.html)
 1. [How to Integrate Convox with GitLab](https://about.gitlab.com/2016/06/09/continuous-delivery-with-gitlab-and-convox/)
 1. [Getting Started with GitLab and Shippable CI](https://about.gitlab.com/2016/05/05/getting-started-gitlab-and-shippable/)
 

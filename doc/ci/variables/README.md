@@ -157,14 +157,14 @@ Once you set them, they will be available for all subsequent builds.
 >**Note:**
 This feature requires GitLab CI 8.15 or higher.
 
-[Project services](../../project_services/project_services.md) that are
+[Project services](../../user/project/integrations/project_services.md) that are
 responsible for deployment configuration may define their own variables that
 are set in the build environment. These variables are only defined for
 [deployment builds](../environments.md). Please consult the documentation of
 the project services that you are using to learn which variables they define.
 
 An example project service that defines deployment variables is
-[Kubernetes Service](../../project_services/kubernetes.md).
+[Kubernetes Service](../../user/project/integrations/kubernetes.md).
 
 ## Debug tracing
 
