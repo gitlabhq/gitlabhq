@@ -50,8 +50,8 @@
   - [reactive_caching, 1]
   - [cronjob, 1]
   - [default, 1]
-  # EE specific queues
   - [pages, 1]
+  # EE specific queues
   - [elasticsearch, 1]
   - [geo, 1]
   - [project_mirror, 1]
