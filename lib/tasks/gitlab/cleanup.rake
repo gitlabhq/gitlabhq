@@ -58,7 +58,7 @@ namespace :gitlab do
               sub(%r{^/*}, '').
               chomp('.git').
               chomp('.wiki')
-            next if Project.find_with_namespace(repo_with_namespace)
+            next if Project.find_by_full_path(repo_with_namespace)
             new_path = path + move_suffix
             puts path.inspect + ' -> ' + new_path.inspect
             File.rename(path, new_path)

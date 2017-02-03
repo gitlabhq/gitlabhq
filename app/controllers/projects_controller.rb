@@ -231,12 +231,16 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def refs
+    branches = BranchesFinder.new(@repository, params).execute.map(&:name)
+
     options = {
-      'Branches' => @repository.branch_names,
+      'Branches' => branches.take(100),
     }
 
     unless @repository.tag_count.zero?
-      options['Tags'] = VersionSorter.rsort(@repository.tag_names)
+      tags = TagsFinder.new(@repository, params).execute.map(&:name)
+
+      options['Tags'] = tags.take(100)
     end
 
     # If reference is commit id - we should add it to branch/tag selectbox

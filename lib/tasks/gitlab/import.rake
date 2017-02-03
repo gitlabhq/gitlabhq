@@ -29,7 +29,7 @@ namespace :gitlab do
             next
           end
 
-          project = Project.find_with_namespace(path)
+          project = Project.find_by_full_path(path)
 
           if project
             puts " * #{project.name} (#{repo_path}) exists"
