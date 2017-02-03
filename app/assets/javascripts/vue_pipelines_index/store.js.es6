@@ -20,6 +20,7 @@
 
   gl.PipelineStore = class {
     fetchDataLoop(Vue, pageNum, url, apiScope) {
+      this.pageRequest = true;
       const updatePipelineNums = (count) => {
         const { all } = count;
         const running = count.running_or_pending;
@@ -41,7 +42,7 @@
             this.pageRequest = false;
           }, () => {
             this.pageRequest = false;
-            return new Flash('Something went wrong on our end.');
+            return new Flash('An error occurred while fetching the pipelines, please reload the page again.');
           });
 
       goFetch();

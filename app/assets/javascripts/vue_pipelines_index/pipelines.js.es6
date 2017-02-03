@@ -40,20 +40,26 @@
     },
     template: `
       <div>
-        <div class="pipelines realtime-loading" v-if='pipelines.length < 1'>
+        <div class="pipelines realtime-loading" v-if='pageRequest'>
           <i class="fa fa-spinner fa-spin"></i>
         </div>
-        <div class="table-holder" v-if='pipelines.length'>
+
+        <div class="blank-state blank-state-no-icon"
+          v-if="!pageRequest && pipelines.length === 0">
+          <h2 class="blank-state-title js-blank-state-title">
+            No pipelines to show
+          </h2>
+        </div>
+
+        <div class="table-holder" v-if='!pageRequest && pipelines.length'>
           <pipelines-table-component
             :pipelines='pipelines'
             :svgs='svgs'>
           </pipelines-table-component>
         </div>
-        <div class="pipelines realtime-loading" v-if='pageRequest'>
-          <i class="fa fa-spinner fa-spin"></i>
-        </div>
+
         <gl-pagination
-          v-if='pageInfo.total > pageInfo.perPage'
+          v-if='!pageRequest && pipelines.length && pageInfo.total > pageInfo.perPage'
           :pagenum='pagenum'
           :change='change'
           :count='count.all'
