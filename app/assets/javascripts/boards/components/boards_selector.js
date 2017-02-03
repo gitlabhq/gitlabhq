@@ -90,7 +90,14 @@ require('./board_new_form');
       },
     },
     created() {
+      const $milestoneDropdown = $('.dropdown-menu-milestone');
+
       this.state.currentBoard = this.currentBoard;
+
+      if (this.currentBoard.milestone_id) {
+        $milestoneDropdown.find('.dropdown-input').hide();
+        $milestoneDropdown.find('.dropdown-footer').hide();
+      }
     },
   });
 })();
