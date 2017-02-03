@@ -42,6 +42,7 @@ class EnvironmentSerializer < BaseSerializer
              'MAX(id) AS last_environment_id')
 
     environments = resource.where(id: items.map(&:last))
+      .order('COALESCE(environment_type, name) ASC')
 
     items.zip(environments).map do |item|
       Struct::Item.new(*item.flatten)
