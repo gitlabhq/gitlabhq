@@ -69,12 +69,10 @@ require('./environment_item');
      * Toggles loading property.
      */
     created() {
-      gl.environmentsService = new EnvironmentsService(this.endpoint);
+      const scope = this.$options.getQueryParameter('scope') || this.visibility;
+      const endpoint = `${this.endpoint}?scope=${scope}`;
 
-      const scope = this.$options.getQueryParameter('scope');
-      if (scope) {
-        this.store.storeVisibility(scope);
-      }
+      gl.environmentsService = new EnvironmentsService(endpoint);
 
       this.isLoading = true;
 
@@ -82,6 +80,8 @@ require('./environment_item');
         .then(resp => resp.json())
         .then((json) => {
           this.store.storeEnvironments(json);
+        })
+        .then(() => {
           this.isLoading = false;
         })
         .catch(() => {
@@ -165,8 +165,7 @@ require('./environment_item');
               </a>
             </p>
 
-            <a
-              v-if="canCreateEnvironmentParsed"
+            <a v-if="canCreateEnvironmentParsed"
               :href="newEnvironmentPath"
               class="btn btn-create js-new-environment-button">
               New Environment
@@ -174,7 +173,7 @@ require('./environment_item');
           </div>
 
           <div class="table-holder"
-            v-if="!isLoading && state.filteredEnvironments.length > 0">
+            v-if="!isLoading && state.environments.length > 0">
             <table class="table ci-table environments">
               <thead>
                 <tr>
@@ -187,31 +186,15 @@ require('./environment_item');
                 </tr>
               </thead>
               <tbody>
-                <template v-for="model in state.filteredEnvironments"
+                <template v-for="model in state.environments"
                   v-bind:model="model">
-
-                  <tr
-                    is="environment-item"
+                  <tr is="environment-item"
                     :model="model"
-                    :toggleRow="toggleRow.bind(model)"
                     :can-create-deployment="canCreateDeploymentParsed"
                     :can-read-environment="canReadEnvironmentParsed"
                     :play-icon-svg="playIconSvg"
                     :terminal-icon-svg="terminalIconSvg"
                     :commit-icon-svg="commitIconSvg"></tr>
-
-                  <tr v-if="model.isOpen && model.children && model.children.length > 0"
-                    is="environment-item"
-                    v-for="children in model.children"
-                    :model="children"
-                    :toggleRow="toggleRow.bind(children)"
-                    :can-create-deployment="canCreateDeploymentParsed"
-                    :can-read-environment="canReadEnvironmentParsed"
-                    :play-icon-svg="playIconSvg"
-                    :terminal-icon-svg="terminalIconSvg"
-                    :commit-icon-svg="commitIconSvg">
-                    </tr>
-
                 </template>
               </tbody>
             </table>

@@ -15,12 +15,7 @@ require('./environment_terminal_button');
   /**
    * Envrionment Item Component
    *
-   * Used in a hierarchical structure to show folders with children
-   * in a table.
-   * Recursive component based on [Tree View](https://vuejs.org/examples/tree-view.html)
-   *
-   * See this [issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/22539)
-   * for more information.15
+   * Renders a table row for each environment.
    */
 
   window.gl = window.gl || {};
@@ -43,11 +38,6 @@ require('./environment_terminal_button');
         type: Object,
         required: true,
         default: () => ({}),
-      },
-
-      toggleRow: {
-        type: Function,
-        required: false,
       },
 
       canCreateDeployment: {
@@ -76,50 +66,9 @@ require('./environment_terminal_button');
         type: String,
         required: false,
       },
-
-    },
-
-    data() {
-      return {
-        rowClass: {
-          'children-row': this.model['vue-isChildren'],
-        },
-      };
     },
 
     computed: {
-
-      /**
-       * If an item has a `children` entry it means it is a folder.
-       * Folder items have different behaviours - it is possible to toggle
-       * them and show their children.
-       *
-       * @returns {Boolean|Undefined}
-       */
-      isFolder() {
-        return this.model.children && this.model.children.length > 0;
-      },
-
-      /**
-       * If an item is inside a folder structure will return true.
-       * Used for css purposes.
-       *
-       * @returns {Boolean|undefined}
-       */
-      isChildren() {
-        return this.model['vue-isChildren'];
-      },
-
-      /**
-       * Counts the number of environments in each folder.
-       * Used to show a badge with the counter.
-       *
-       * @returns {Number|Undefined}  The number of environments for the current folder.
-       */
-      childrenCounter() {
-        return this.model.children && this.model.children.length;
-      },
-
       /**
        * Verifies if `last_deployment` key exists in the current Envrionment.
        * This key is required to render most of the html - this method works has
@@ -128,8 +77,8 @@ require('./environment_terminal_button');
        * @returns {Boolean}
        */
       hasLastDeploymentKey() {
-        if (this.model.last_deployment &&
-          !this.$options.isObjectEmpty(this.model.last_deployment)) {
+        if (this.model.latest.last_deployment &&
+          !this.$options.isObjectEmpty(this.model.latest.last_deployment)) {
           return true;
         }
         return false;
@@ -142,8 +91,9 @@ require('./environment_terminal_button');
        * @returns {Boolean|Undefined}
        */
       hasManualActions() {
-        return this.model.last_deployment && this.model.last_deployment.manual_actions &&
-          this.model.last_deployment.manual_actions.length > 0;
+        return this.model.latest.last_deployment &&
+          this.model.latest.last_deployment.manual_actions &&
+          this.model.latest.last_deployment.manual_actions.length > 0;
       },
 
       /**
@@ -163,8 +113,8 @@ require('./environment_terminal_button');
        */
       canRetry() {
         return this.hasLastDeploymentKey &&
-          this.model.last_deployment &&
-          this.model.last_deployment.deployable;
+          this.model.latest.last_deployment &&
+          this.model.latest.last_deployment.deployable;
       },
 
       /**
@@ -173,9 +123,9 @@ require('./environment_terminal_button');
        * @returns {Boolean|Undefined}
        */
       canShowDate() {
-        return this.model.last_deployment &&
-          this.model.last_deployment.deployable &&
-          this.model.last_deployment.deployable !== undefined;
+        return this.model.latest.last_deployment &&
+          this.model.latest.last_deployment.deployable &&
+          this.model.latest.last_deployment.deployable !== undefined;
       },
 
       /**
@@ -185,7 +135,7 @@ require('./environment_terminal_button');
        */
       createdDate() {
         return gl.environmentsList.timeagoInstance.format(
-          this.model.last_deployment.deployable.created_at,
+          this.model.latest.last_deployment.deployable.created_at,
         );
       },
 
@@ -196,7 +146,7 @@ require('./environment_terminal_button');
        */
       manualActions() {
         if (this.hasManualActions) {
-          return this.model.last_deployment.manual_actions.map((action) => {
+          return this.model.latest.last_deployment.manual_actions.map((action) => {
             const parsedAction = {
               name: gl.text.humanize(action.name),
               play_path: action.play_path,
@@ -213,10 +163,10 @@ require('./environment_terminal_button');
        * @returns {String}
        */
       userImageAltDescription() {
-        if (this.model.last_deployment &&
-          this.model.last_deployment.user &&
-          this.model.last_deployment.user.username) {
-          return `${this.model.last_deployment.user.username}'s avatar'`;
+        if (this.model.latest.last_deployment &&
+          this.model.latest.last_deployment.user &&
+          this.model.latest.last_deployment.user.username) {
+          return `${this.model.latest.last_deployment.user.username}'s avatar'`;
         }
         return '';
       },
@@ -227,9 +177,9 @@ require('./environment_terminal_button');
        * @returns {String|Undefined}
        */
       commitTag() {
-        if (this.model.last_deployment &&
-          this.model.last_deployment.tag) {
-          return this.model.last_deployment.tag;
+        if (this.model.latest.last_deployment &&
+          this.model.latest.last_deployment.tag) {
+          return this.model.latest.last_deployment.tag;
         }
         return undefined;
       },
@@ -240,8 +190,9 @@ require('./environment_terminal_button');
        * @returns {Object|Undefined}
        */
       commitRef() {
-        if (this.model.last_deployment && this.model.last_deployment.ref) {
-          return this.model.last_deployment.ref;
+        if (this.model.latest.last_deployment &&
+          this.model.latest.last_deployment.ref) {
+          return this.model.latest.last_deployment.ref;
         }
         return undefined;
       },
@@ -252,10 +203,10 @@ require('./environment_terminal_button');
        * @returns {String|Undefined}
        */
       commitUrl() {
-        if (this.model.last_deployment &&
-          this.model.last_deployment.commit &&
-          this.model.last_deployment.commit.commit_path) {
-          return this.model.last_deployment.commit.commit_path;
+        if (this.model.latest.last_deployment &&
+          this.model.latest.last_deployment.commit &&
+          this.model.latest.last_deployment.commit.commit_path) {
+          return this.model.latest.last_deployment.commit.commit_path;
         }
         return undefined;
       },
@@ -266,10 +217,10 @@ require('./environment_terminal_button');
        * @returns {String|Undefined}
        */
       commitShortSha() {
-        if (this.model.last_deployment &&
-          this.model.last_deployment.commit &&
-          this.model.last_deployment.commit.short_id) {
-          return this.model.last_deployment.commit.short_id;
+        if (this.model.latest.last_deployment &&
+          this.model.latest.last_deployment.commit &&
+          this.model.latest.last_deployment.commit.short_id) {
+          return this.model.latest.last_deployment.commit.short_id;
         }
         return undefined;
       },
@@ -280,10 +231,10 @@ require('./environment_terminal_button');
        * @returns {String|Undefined}
        */
       commitTitle() {
-        if (this.model.last_deployment &&
-          this.model.last_deployment.commit &&
-          this.model.last_deployment.commit.title) {
-          return this.model.last_deployment.commit.title;
+        if (this.model.latest.last_deployment &&
+          this.model.latest.last_deployment.commit &&
+          this.model.latest.last_deployment.commit.title) {
+          return this.model.latest.last_deployment.commit.title;
         }
         return undefined;
       },
@@ -294,10 +245,10 @@ require('./environment_terminal_button');
        * @returns {Object|Undefined}
        */
       commitAuthor() {
-        if (this.model.last_deployment &&
-          this.model.last_deployment.commit &&
-          this.model.last_deployment.commit.author) {
-          return this.model.last_deployment.commit.author;
+        if (this.model.latest.last_deployment &&
+          this.model.latest.last_deployment.commit &&
+          this.model.latest.last_deployment.commit.author) {
+          return this.model.latest.last_deployment.commit.author;
         }
 
         return undefined;
@@ -309,10 +260,10 @@ require('./environment_terminal_button');
        * @returns {String|Undefined}
        */
       retryUrl() {
-        if (this.model.last_deployment &&
-          this.model.last_deployment.deployable &&
-          this.model.last_deployment.deployable.retry_path) {
-          return this.model.last_deployment.deployable.retry_path;
+        if (this.model.latest.last_deployment &&
+          this.model.latest.last_deployment.deployable &&
+          this.model.latest.last_deployment.deployable.retry_path) {
+          return this.model.latest.last_deployment.deployable.retry_path;
         }
         return undefined;
       },
@@ -323,7 +274,8 @@ require('./environment_terminal_button');
        * @returns {Boolean|Undefined}
        */
       isLastDeployment() {
-        return this.model.last_deployment && this.model.last_deployment['last?'];
+        return this.model.latest.last_deployment &&
+          this.model.latest.last_deployment['last?'];
       },
 
       /**
@@ -332,9 +284,9 @@ require('./environment_terminal_button');
        * @returns {String}
        */
       buildName() {
-        if (this.model.last_deployment &&
-          this.model.last_deployment.deployable) {
-          return `${this.model.last_deployment.deployable.name} #${this.model.last_deployment.deployable.id}`;
+        if (this.model.latest.last_deployment &&
+          this.model.latest.last_deployment.deployable) {
+          return `${this.model.latest.last_deployment.deployable.name} #${this.model.latest.last_deployment.deployable.id}`;
         }
         return '';
       },
@@ -345,9 +297,9 @@ require('./environment_terminal_button');
        * @returns {String}
        */
       deploymentInternalId() {
-        if (this.model.last_deployment &&
-          this.model.last_deployment.iid) {
-          return `#${this.model.last_deployment.iid}`;
+        if (this.model.latest.last_deployment &&
+          this.model.latest.last_deployment.iid) {
+          return `#${this.model.latest.last_deployment.iid}`;
         }
         return '';
       },
@@ -358,8 +310,8 @@ require('./environment_terminal_button');
        * @returns {Boolean}
        */
       deploymentHasUser() {
-        return !this.$options.isObjectEmpty(this.model.last_deployment) &&
-          !this.$options.isObjectEmpty(this.model.last_deployment.user);
+        return !this.$options.isObjectEmpty(this.model.latest.last_deployment) &&
+          !this.$options.isObjectEmpty(this.model.latest.last_deployment.user);
       },
 
       /**
@@ -369,9 +321,9 @@ require('./environment_terminal_button');
        * @returns {Object}
        */
       deploymentUser() {
-        if (!this.$options.isObjectEmpty(this.model.last_deployment) &&
-          !this.$options.isObjectEmpty(this.model.last_deployment.user)) {
-          return this.model.last_deployment.user;
+        if (!this.$options.isObjectEmpty(this.model.latest.last_deployment) &&
+          !this.$options.isObjectEmpty(this.model.latest.last_deployment.user)) {
+          return this.model.latest.last_deployment.user;
         }
         return {};
       },
@@ -384,9 +336,9 @@ require('./environment_terminal_button');
        * @returns {Boolean}
        */
       shouldRenderBuildName() {
-        return !this.isFolder &&
-          !this.$options.isObjectEmpty(this.model.last_deployment) &&
-          !this.$options.isObjectEmpty(this.model.last_deployment.deployable);
+        return !this.model.isFolder &&
+          !this.$options.isObjectEmpty(this.model.latest.last_deployment) &&
+          !this.$options.isObjectEmpty(this.model.latest.last_deployment.deployable);
       },
 
       /**
@@ -397,9 +349,9 @@ require('./environment_terminal_button');
        * @returns {Boolean}
        */
       shouldRenderDeploymentID() {
-        return !this.isFolder &&
-          !this.$options.isObjectEmpty(this.model.last_deployment) &&
-          this.model.last_deployment.iid !== undefined;
+        return !this.model.isFolder &&
+          !this.$options.isObjectEmpty(this.model.latest.last_deployment) &&
+          this.model.latest.last_deployment.iid !== undefined;
       },
     },
 
@@ -420,16 +372,16 @@ require('./environment_terminal_button');
 
     template: `
       <tr>
-        <td v-bind:class="{ 'children-row': isChildren}">
-          <a v-if="!isFolder"
+        <td>
+          <a v-if="!model.isFolder"
             class="environment-name"
-            :href="model.environment_path">
+            :href="model.latest.environment_path">
             {{model.name}}
           </a>
-          <span v-else v-on:click="toggleRow(model)" class="folder-name">
+          <a v-else class="folder-name">
             <span class="folder-icon">
-              <i v-show="model.isOpen" class="fa fa-caret-down"></i>
-              <i v-show="!model.isOpen" class="fa fa-caret-right"></i>
+              <i class="fa fa-caret-right" aria-hidden="true"></i>
+              <i class="fa fa-folder" aria-hidden="true"></i>
             </span>
 
             <span>
@@ -437,9 +389,9 @@ require('./environment_terminal_button');
             </span>
 
             <span class="badge">
-              {{childrenCounter}}
+              {{model.size}}
             </span>
-          </span>
+          </a>
         </td>
 
         <td class="deployment-column">
@@ -447,7 +399,7 @@ require('./environment_terminal_button');
             {{deploymentInternalId}}
           </span>
 
-          <span v-if="!isFolder && deploymentHasUser">
+          <span v-if="!model.isFolder && deploymentHasUser">
             by
             <a :href="deploymentUser.web_url" class="js-deploy-user-container">
               <img class="avatar has-tooltip s20"
@@ -461,13 +413,13 @@ require('./environment_terminal_button');
         <td class="environments-build-cell">
           <a v-if="shouldRenderBuildName"
             class="build-link"
-            :href="model.last_deployment.deployable.build_path">
+            :href="model.latest.last_deployment.deployable.build_path">
             {{buildName}}
           </a>
         </td>
 
         <td>
-          <div v-if="!isFolder && hasLastDeploymentKey" class="js-commit-component">
+          <div v-if="!model.isFolder && hasLastDeploymentKey" class="js-commit-component">
             <commit-component
               :tag="commitTag"
               :commit-ref="commitRef"
@@ -478,21 +430,20 @@ require('./environment_terminal_button');
               :commit-icon-svg="commitIconSvg">
             </commit-component>
           </div>
-          <p v-if="!isFolder && !hasLastDeploymentKey" class="commit-title">
+          <p v-if="!model.isFolder && !hasLastDeploymentKey" class="commit-title">
             No deployments yet
           </p>
         </td>
 
         <td>
-          <span
-            v-if="!isFolder && canShowDate"
+          <span v-if="!model.isFolder && canShowDate"
             class="environment-created-date-timeago">
             {{createdDate}}
           </span>
         </td>
 
         <td class="hidden-xs">
-          <div v-if="!isFolder">
+          <div v-if="!model.isFolder">
             <div v-if="hasManualActions && canCreateDeployment"
               class="inline js-manual-actions-container">
               <actions-component
@@ -501,25 +452,25 @@ require('./environment_terminal_button');
               </actions-component>
             </div>
 
-            <div v-if="model.external_url && canReadEnvironment"
+            <div v-if="model.latest.external_url && canReadEnvironment"
               class="inline js-external-url-container">
               <external-url-component
-                :external-url="model.external_url">
+                :external-url="model.latest.external_url">
               </external-url-component>
             </div>
 
             <div v-if="hasStopAction && canCreateDeployment"
               class="inline js-stop-component-container">
               <stop-component
-                :stop-url="model.stop_path">
+                :stop-url="model.latest.stop_path">
               </stop-component>
             </div>
 
-            <div v-if="model.terminal_path"
+            <div v-if="model.latest.terminal_path"
               class="inline js-terminal-button-container">
               <terminal-button-component
                 :terminal-icon-svg="terminalIconSvg"
-                :terminal-path="model.terminal_path">
+                :terminal-path="model.latest.terminal_path">
               </terminal-button-component>
             </div>
 

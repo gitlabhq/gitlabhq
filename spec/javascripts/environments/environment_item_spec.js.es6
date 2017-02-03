@@ -14,33 +14,13 @@ describe('Environment item', () => {
     beforeEach(() => {
       mockItem = {
         name: 'review',
-        children: [
-          {
-            name: 'review-app',
-            id: 1,
-            state: 'available',
-            external_url: '',
-            last_deployment: {},
-            created_at: '2016-11-07T11:11:16.525Z',
-            updated_at: '2016-11-10T15:55:58.778Z',
-          },
-          {
-            name: 'production',
-            id: 2,
-            state: 'available',
-            external_url: '',
-            last_deployment: {},
-            created_at: '2016-11-07T11:11:16.525Z',
-            updated_at: '2016-11-10T15:55:58.778Z',
-          },
-        ],
+        size: 3
       };
 
       component = new window.gl.environmentsList.EnvironmentItem({
         el: document.querySelector('tr#environment-row'),
         propsData: {
           model: mockItem,
-          toggleRow: () => {},
           canCreateDeployment: false,
           canReadEnvironment: true,
         },
@@ -53,7 +33,7 @@ describe('Environment item', () => {
     });
 
     it('Should render the number of children in a badge', () => {
-      expect(component.$el.querySelector('.folder-name .badge').textContent).toContain(mockItem.children.length);
+      expect(component.$el.querySelector('.folder-name .badge').textContent).toContain(mockItem.size);
     });
   });
 
@@ -63,38 +43,23 @@ describe('Environment item', () => {
 
     beforeEach(() => {
       environment = {
-        id: 31,
         name: 'production',
-        state: 'stopped',
-        external_url: 'http://external.com',
-        environment_type: null,
-        last_deployment: {
-          id: 66,
-          iid: 6,
-          sha: '500aabcb17c97bdcf2d0c410b70cb8556f0362dd',
-          ref: {
-            name: 'master',
-            ref_path: 'root/ci-folders/tree/master',
-          },
-          tag: true,
-          'last?': true,
-          user: {
-            name: 'Administrator',
-            username: 'root',
-            id: 1,
-            state: 'active',
-            avatar_url: 'http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon',
-            web_url: 'http://localhost:3000/root',
-          },
-          commit: {
-            id: '500aabcb17c97bdcf2d0c410b70cb8556f0362dd',
-            short_id: '500aabcb',
-            title: 'Update .gitlab-ci.yml',
-            author_name: 'Administrator',
-            author_email: 'admin@example.com',
-            created_at: '2016-11-07T18:28:13.000+00:00',
-            message: 'Update .gitlab-ci.yml',
-            author: {
+        size: 1,
+        latest: {
+          state: 'stopped',
+          external_url: 'http://external.com',
+          environment_type: null,
+          last_deployment: {
+            id: 66,
+            iid: 6,
+            sha: '500aabcb17c97bdcf2d0c410b70cb8556f0362dd',
+            ref: {
+              name: 'master',
+              ref_path: 'root/ci-folders/tree/master',
+            },
+            tag: true,
+            'last?': true,
+            user: {
               name: 'Administrator',
               username: 'root',
               id: 1,
@@ -102,34 +67,50 @@ describe('Environment item', () => {
               avatar_url: 'http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon',
               web_url: 'http://localhost:3000/root',
             },
-            commit_path: '/root/ci-folders/tree/500aabcb17c97bdcf2d0c410b70cb8556f0362dd',
-          },
-          deployable: {
-            id: 1279,
-            name: 'deploy',
-            build_path: '/root/ci-folders/builds/1279',
-            retry_path: '/root/ci-folders/builds/1279/retry',
-            created_at: '2016-11-29T18:11:58.430Z',
-            updated_at: '2016-11-29T18:11:58.430Z',
-          },
-          manual_actions: [
-            {
-              name: 'action',
-              play_path: '/play',
+            commit: {
+              id: '500aabcb17c97bdcf2d0c410b70cb8556f0362dd',
+              short_id: '500aabcb',
+              title: 'Update .gitlab-ci.yml',
+              author_name: 'Administrator',
+              author_email: 'admin@example.com',
+              created_at: '2016-11-07T18:28:13.000+00:00',
+              message: 'Update .gitlab-ci.yml',
+              author: {
+                name: 'Administrator',
+                username: 'root',
+                id: 1,
+                state: 'active',
+                avatar_url: 'http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon',
+                web_url: 'http://localhost:3000/root',
+              },
+              commit_path: '/root/ci-folders/tree/500aabcb17c97bdcf2d0c410b70cb8556f0362dd',
             },
-          ],
+            deployable: {
+              id: 1279,
+              name: 'deploy',
+              build_path: '/root/ci-folders/builds/1279',
+              retry_path: '/root/ci-folders/builds/1279/retry',
+              created_at: '2016-11-29T18:11:58.430Z',
+              updated_at: '2016-11-29T18:11:58.430Z',
+            },
+            manual_actions: [
+              {
+                name: 'action',
+                play_path: '/play',
+              },
+            ],
+          },
+          'stop_action?': true,
+          environment_path: 'root/ci-folders/environments/31',
+          created_at: '2016-11-07T11:11:16.525Z',
+          updated_at: '2016-11-10T15:55:58.778Z',
         },
-        'stop_action?': true,
-        environment_path: 'root/ci-folders/environments/31',
-        created_at: '2016-11-07T11:11:16.525Z',
-        updated_at: '2016-11-10T15:55:58.778Z',
       };
 
       component = new window.gl.environmentsList.EnvironmentItem({
         el: document.querySelector('tr#environment-row'),
         propsData: {
           model: environment,
-          toggleRow: () => {},
           canCreateDeployment: true,
           canReadEnvironment: true,
         },
@@ -144,7 +125,7 @@ describe('Environment item', () => {
       it('should render deployment internal id', () => {
         expect(
           component.$el.querySelector('.deployment-column span').textContent,
-        ).toContain(environment.last_deployment.iid);
+        ).toContain(environment.latest.last_deployment.iid);
 
         expect(
           component.$el.querySelector('.deployment-column span').textContent,
@@ -154,7 +135,7 @@ describe('Environment item', () => {
       it('should render last deployment date', () => {
         const timeagoInstance = new timeago(); // eslint-disable-line
         const formatedDate = timeagoInstance.format(
-          environment.last_deployment.deployable.created_at,
+          environment.latest.last_deployment.deployable.created_at,
         );
 
         expect(
@@ -166,7 +147,7 @@ describe('Environment item', () => {
         it('should render user avatar with link to profile', () => {
           expect(
             component.$el.querySelector('.js-deploy-user-container').getAttribute('href'),
-          ).toEqual(environment.last_deployment.user.web_url);
+          ).toEqual(environment.latest.last_deployment.user.web_url);
         });
       });
 
@@ -174,13 +155,13 @@ describe('Environment item', () => {
         it('Should link to build url provided', () => {
           expect(
             component.$el.querySelector('.build-link').getAttribute('href'),
-          ).toEqual(environment.last_deployment.deployable.build_path);
+          ).toEqual(environment.latest.last_deployment.deployable.build_path);
         });
 
         it('Should render deployable name and id', () => {
           expect(
             component.$el.querySelector('.build-link').getAttribute('href'),
-          ).toEqual(environment.last_deployment.deployable.build_path);
+          ).toEqual(environment.latest.last_deployment.deployable.build_path);
         });
       });
 
