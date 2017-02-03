@@ -79,8 +79,8 @@ describe PostReceive do
     end
 
     it "triggers wiki index update" do
-      expect(Project).to receive(:find_with_namespace).with("#{project.path_with_namespace}.wiki").and_return(nil)
-      expect(Project).to receive(:find_with_namespace).with(project.path_with_namespace).and_return(project)
+      expect(Project).to receive(:find_by_full_path).with("#{project.full_path}.wiki").and_return(nil)
+      expect(Project).to receive(:find_by_full_path).with(project.full_path).and_return(project)
       stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
       expect_any_instance_of(ProjectWiki).to receive(:index_blobs)
 
