@@ -190,6 +190,18 @@ describe API::Users, api: true  do
       expect(new_user.external).to be_truthy
     end
 
+    it "creates user with reset password" do
+      post api('/users', admin), attributes_for(:user, reset_password: true).except(:password)
+
+      expect(response).to have_http_status(201)
+
+      user_id = json_response['id']
+      new_user = User.find(user_id)
+
+      expect(new_user).not_to eq(nil)
+      expect(new_user.recently_sent_password_reset?).to eq(true)
+    end
+
     it "does not create user with invalid email" do
       post api('/users', admin),
         email: 'invalid email',
