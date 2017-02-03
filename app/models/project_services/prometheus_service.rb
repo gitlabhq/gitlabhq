@@ -74,7 +74,8 @@ class PrometheusService < MonitoringService
         memory_current: query("go_goroutines{app=\"#{environment}\"}"),
         cpu_values: query_range("go_goroutines{app=\"#{environment}\"}", 8.hours.ago),
         cpu_current: query("go_goroutines{app=\"#{environment}\"}"),
-      }
+      },
+      last_update: Time.now.utc,
     }
 
   rescue ::Gitlab::PrometheusError => err
