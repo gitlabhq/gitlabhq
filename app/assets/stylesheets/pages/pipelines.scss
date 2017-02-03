@@ -201,7 +201,8 @@
     .stage-container {
       display: inline-block;
       position: relative;
-      margin-right: 6px;
+      height: 22px;
+      margin: 3px 6px 3px 0;
 
       .tooltip {
         white-space: nowrap;
