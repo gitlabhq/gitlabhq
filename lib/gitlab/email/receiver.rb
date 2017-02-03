@@ -56,7 +56,9 @@ module Gitlab
       end
 
       def key_from_additional_headers(mail)
-        find_key_from_references(ensure_references_array(mail.references))
+        references = ensure_references_array(mail.references)
+
+        find_key_from_references(references)
       end
 
       def ensure_references_array(references)
