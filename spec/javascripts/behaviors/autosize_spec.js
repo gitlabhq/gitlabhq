@@ -15,7 +15,7 @@
       });
     });
     return load = function() {
-      return $(document).trigger('page:load');
+      return $(document).trigger('load');
     };
   });
 }).call(this);

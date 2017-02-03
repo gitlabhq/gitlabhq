@@ -1,5 +1,4 @@
 /* eslint-disable func-names, space-before-function-paren, wrap-iife, one-var, no-var, one-var-declaration-per-line, no-unused-vars, no-else-return, prefer-arrow-callback, camelcase, quotes, comma-dangle, max-len */
-/* global Turbolinks */
 
 (function() {
   this.Admin = (function() {
@@ -42,10 +41,10 @@
         return $('.change-owner-link').show();
       });
       $('li.project_member').bind('ajax:success', function() {
-        return Turbolinks.visit(location.href);
+        return gl.utils.refreshCurrentPage();
       });
       $('li.group_member').bind('ajax:success', function() {
-        return Turbolinks.visit(location.href);
+        return gl.utils.refreshCurrentPage();
       });
       showBlacklistType = function() {
         if ($("input[name='blacklist_type']:checked").val() === 'file') {

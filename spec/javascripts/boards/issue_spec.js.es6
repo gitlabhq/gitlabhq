@@ -20,7 +20,7 @@ describe('Issue model', () => {
   let issue;
 
   beforeEach(() => {
-    gl.boardService = new BoardService('/test/issue-boards/board', '1');
+    gl.boardService = new BoardService('/test/issue-boards/board', '', '1');
     gl.issueBoards.BoardsStore.create();
 
     issue = new ListIssue({

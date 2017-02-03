@@ -161,6 +161,9 @@
     gl.text.humanize = function(string) {
       return string.charAt(0).toUpperCase() + string.replace(/_/g, ' ').slice(1);
     };
+    gl.text.pluralize = function(str, count) {
+      return str + (count > 1 || count === 0 ? 's' : '');
+    };
     return gl.text.truncate = function(string, maxLength) {
       return string.substr(0, (maxLength - 3)) + '...';
     };

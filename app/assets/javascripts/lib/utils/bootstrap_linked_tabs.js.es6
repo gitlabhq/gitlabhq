@@ -95,7 +95,6 @@
       const newState = `${copySource}${this.currentLocation.search}${this.currentLocation.hash}`;
 
       history.replaceState({
-        turbolinks: true,
         url: newState,
       }, document.title, newState);
       return newState;

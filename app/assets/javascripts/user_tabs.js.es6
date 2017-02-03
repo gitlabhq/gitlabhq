@@ -149,7 +149,6 @@ content on the Users#show page.
       new_state = new_state.replace(/\/+$/, '');
       new_state += this._location.search + this._location.hash;
       history.replaceState({
-        turbolinks: true,
         url: new_state
       }, document.title, new_state);
       return new_state;

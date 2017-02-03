@@ -179,12 +179,13 @@
       // Ensure parameters and hash come along for the ride
       newState += location.search + location.hash;
 
+      // TODO: Consider refactoring in light of turbolinks removal.
+
       // Replace the current history state with the new one without breaking
       // Turbolinks' history.
       //
       // See https://github.com/rails/turbolinks/issues/363
       window.history.replaceState({
-        turbolinks: true,
         url: newState,
       }, document.title, newState);
 

@@ -266,8 +266,6 @@ GEM
       mime-types (>= 1.16, < 3)
       posix-spawn (~> 0.3)
     gitlab-markup (1.5.1)
-    gitlab-turbolinks-classic (2.5.6)
-      coffee-rails
     gitlab_omniauth-ldap (1.2.1)
       net-ldap (~> 0.9)
       omniauth (~> 1.0)
@@ -891,7 +889,6 @@ DEPENDENCIES
   github-linguist (~> 4.7.0)
   gitlab-flowdock-git-hook (~> 1.0.1)
   gitlab-markup (~> 1.5.1)
-  gitlab-turbolinks-classic (~> 2.5, >= 2.5.6)
   gitlab_omniauth-ldap (~> 1.2.1)
   gollum-lib (~> 4.2)
   gollum-rugged_adapter (~> 0.4.2)

@@ -1,4 +1,4 @@
-/* global Vue, Turbolinks, gl */
+/* global Vue, gl */
 /* eslint-disable no-param-reassign */
 
 //= require vue_shared/components/table_pagination
@@ -35,7 +35,7 @@
     },
     methods: {
       change(pagenum, apiScope) {
-        Turbolinks.visit(`?scope=${apiScope}&p=${pagenum}`);
+        gl.utils.visitUrl(`?scope=${apiScope}&p=${pagenum}`);
       },
     },
     template: `

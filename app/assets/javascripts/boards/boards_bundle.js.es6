@@ -14,10 +14,12 @@
 //= require ./components/board_sidebar
 //= require ./components/new_list_dropdown
 //= require vue_shared/vue_resource_interceptor
+//= require ./components/modal/index
 
 $(() => {
   const $boardApp = document.getElementById('board-app');
   const Store = gl.issueBoards.BoardsStore;
+  const ModalStore = gl.issueBoards.ModalStore;
 
   window.gl = window.gl || {};
 
@@ -31,7 +33,8 @@ $(() => {
     el: $boardApp,
     components: {
       'board': gl.issueBoards.Board,
-      'board-sidebar': gl.issueBoards.BoardSidebar
+      'board-sidebar': gl.issueBoards.BoardSidebar,
+      'board-add-issues-modal': gl.issueBoards.IssuesModal,
     },
     data: {
       state: Store.state,
@@ -40,6 +43,8 @@ $(() => {
       boardId: $boardApp.dataset.boardId,
       disabled: $boardApp.dataset.disabled === 'true',
       issueLinkBase: $boardApp.dataset.issueLinkBase,
+      rootPath: $boardApp.dataset.rootPath,
+      bulkUpdatePath: $boardApp.dataset.bulkUpdatePath,
       detailIssue: Store.detail
     },
     computed: {
@@ -48,7 +53,7 @@ $(() => {
       },
     },
     created () {
-      gl.boardService = new BoardService(this.endpoint, this.boardId);
+      gl.boardService = new BoardService(this.endpoint, this.bulkUpdatePath, this.boardId);
     },
     mounted () {
       Store.disabled = this.disabled;
@@ -59,8 +64,6 @@ $(() => {
 
             if (list.type === 'done') {
               list.position = Infinity;
-            } else if (list.type === 'backlog') {
-              list.position = -1;
             }
           });
 
@@ -80,5 +83,28 @@ $(() => {
     mounted () {
       gl.issueBoards.newListDropdownInit();
     }
+  });
+
+  gl.IssueBoardsModalAddBtn = new Vue({
+    mixins: [gl.issueBoards.ModalMixins],
+    el: '#js-add-issues-btn',
+    data: {
+      modal: ModalStore.store,
+      store: Store.state,
+    },
+    computed: {
+      disabled() {
+        return Store.shouldAddBlankState();
+      },
+    },
+    template: `
+      <button
+        class="btn btn-create pull-right prepend-left-10 has-tooltip"
+        type="button"
+        :disabled="disabled"
+        @click="toggleModal(true)">
+        Add issues
+      </button>
+    `,
   });
 });
