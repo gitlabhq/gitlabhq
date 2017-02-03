@@ -1,7 +1,11 @@
 class PrometheusService < MonitoringService
+  include Gitlab::Prometheus
   include ReactiveCaching
 
   self.reactive_cache_key = ->(service) { [ service.class.model_name.singular, service.project_id ] }
+  self.reactive_cache_lease_timeout = 30.seconds
+  self.reactive_cache_refresh_interval = 30.seconds
+  self.reactive_cache_lifetime = 1.minute
 
   #  Access to prometheus is directly through the API
   prop_accessor :api_url
@@ -23,7 +27,7 @@ class PrometheusService < MonitoringService
   end
 
   def description
-    'Prometheus integration'
+    'Prometheus monitoring'
   end
 
   def help
@@ -43,29 +47,37 @@ class PrometheusService < MonitoringService
     ]
   end
 
-  # Check we can connect to the Kubernetes API
+  # Check we can connect to the Prometheus API
   def test(*args)
-    { success: true, result: "Checked API discovery endpoint" }
-  rescue => err
+    self.ping
+
+    { success: true, result: "Checked API endpoint" }
+  rescue ::Gitlab::PrometheusError => err
     { success: false, result: err }
   end
 
-  # Caches all pods in the namespace so other calls don't need to block on
-  # network access.
-  def calculate_reactive_cache
-    return unless active? && project && !project.pending_delete?
-
-    { }
+  def metrics(environment)
+    with_reactive_cache(environment.slug) do |data|
+      data
+    end
   end
 
-  private
+  # Cache metrics for specific environment
+  def calculate_reactive_cache(environment)
+    return unless active? && project && !project.pending_delete?
 
-  def join_api_url(*parts)
-    url = URI.parse(api_url)
-    prefix = url.path.sub(%r{/+\z}, '')
+    # TODO: encode environment
+    {
+      success: true,
+      metrics: {
+        memory_values: query_range("go_goroutines{app=\"#{environment}\"}", 8.hours.ago),
+        memory_current: query("go_goroutines{app=\"#{environment}\"}"),
+        cpu_values: query_range("go_goroutines{app=\"#{environment}\"}", 8.hours.ago),
+        cpu_current: query("go_goroutines{app=\"#{environment}\"}"),
+      }
+    }
 
-    url.path = [ prefix, *parts ].join("/")
-
-    url.to_s
+  rescue ::Gitlab::PrometheusError => err
+    { success: false, result: err }
   end
 end

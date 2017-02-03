@@ -117,7 +117,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        render json: @metrics
+        render json: @metrics, status: @metrics ? 200 : 204
       end
     end
   end
