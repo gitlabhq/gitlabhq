@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe API::V3::Projects, v3_api: true do
+describe API::V3::Projects, api: true do
   include ApiHelpers
   include Gitlab::CurrentSettings
 
