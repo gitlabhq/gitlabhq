@@ -8,7 +8,11 @@ class AddColumnAuditorToUsers < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  def change
+  def up
     add_column_with_default :users, :auditor, :boolean, default: false, allow_null: false
+  end
+
+  def down
+    remove_column :users, :auditor
   end
 end

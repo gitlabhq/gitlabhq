@@ -15,6 +15,8 @@ module AccessMatchers
       logout
     when :admin
       login_as(create(:admin))
+    when :auditor
+      login_as(create(:user, :auditor))
     when :external
       login_as(create(:user, external: true))
     when User

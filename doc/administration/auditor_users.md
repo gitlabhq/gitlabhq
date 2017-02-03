@@ -1,6 +1,6 @@
 # Auditor Users
 
->**Note:** [Introduced][998] in GitLab 8.16.
+>**Note:** [Introduced][998] in GitLab 8.17.
 
 With Gitlab Enterprise Edition Premium, you can create *auditor* users, who 
 are given read-only access to all projects, groups, and other resources on the 
