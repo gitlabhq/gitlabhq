@@ -1,7 +1,6 @@
 # Introduction to environments and deployments
 
->**Note:**
-Introduced in GitLab 8.9.
+> Introduced in GitLab 8.9.
 
 During the development of software, there can be many stages until it's ready
 for public consumption. You sure want to first test your code and then deploy it
@@ -242,7 +241,7 @@ Web terminals were added in GitLab 8.15 and are only available to project
 masters and owners.
 
 If you deploy to your environments with the help of a deployment service (e.g.,
-the [Kubernetes](../project_services/kubernetes.md) service), GitLab can open
+the [Kubernetes service][kubernetes-service], GitLab can open
 a terminal session to your environment! This is a very powerful feature that
 allows you to debug issues without leaving the comfort of your web browser. To
 enable it, just follow the instructions given in the service documentation.
@@ -566,7 +565,7 @@ Below are some links you may find interesting:
 [Pipelines]: pipelines.md
 [jobs]: yaml/README.md#jobs
 [yaml]: yaml/README.md
-[kubernetes-service]: ../project_services/kubernetes.md]
+[kubernetes-service]: ../user/project/integrations/kubernetes.md
 [environments]: #environments
 [deployments]: #deployments
 [permissions]: ../user/permissions.md
