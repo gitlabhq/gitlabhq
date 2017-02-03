@@ -145,7 +145,7 @@ module API
           name: :room,
           type: String,
           desc: 'Campfire room'
-        },
+        }
       ],
       'custom-issue-tracker' => [
         {
@@ -534,7 +534,36 @@ module API
           desc: 'The password of the user'
         }
       ]
-    }.freeze
+    }
+
+    service_classes = [
+      AsanaService,
+      AssemblaService,
+      BambooService,
+      BugzillaService,
+      BuildkiteService,
+      BuildsEmailService,
+      CampfireService,
+      CustomIssueTrackerService,
+      DroneCiService,
+      EmailsOnPushService,
+      ExternalWikiService,
+      FlowdockService,
+      GemnasiumService,
+      HipchatService,
+      IrkerService,
+      JiraService,
+      KubernetesService,
+      MattermostSlashCommandsService,
+      SlackSlashCommandsService,
+      PipelinesEmailService,
+      PivotaltrackerService,
+      PushoverService,
+      RedmineService,
+      SlackService,
+      MattermostService,
+      TeamcityService,
+    ].freeze
 
     trigger_services = {
       'mattermost-slash-commands' => [
@@ -568,6 +597,19 @@ module API
       services.each do |service_slug, settings|
         desc "Set #{service_slug} service for project"
         params do
+          service_classes.each do |service|
+            event_names = service.try(:event_names) || []
+            event_names.each do |event_name|
+              services[service.to_param.tr("_", "-")] << {
+                required: false,
+                name: event_name.to_sym,
+                type: String,
+                desc: ServicesHelper.service_event_description(event_name)
+              }
+            end
+          end
+          services.freeze
+
           settings.each do |setting|
             if setting[:required]
               requires setting[:name], type: setting[:type], desc: setting[:desc]
@@ -581,7 +623,7 @@ module API
           service_params = declared_params(include_missing: false).merge(active: true)
 
           if service.update_attributes(service_params)
-            true
+            present service, with: Entities::ProjectService, include_passwords: current_user.is_admin?
           else
             render_api_error!('400 Bad Request', 400)
           end
@@ -619,6 +661,14 @@ module API
     end
 
     trigger_services.each do |service_slug, settings|
+      helpers do
+        def chat_command_service(project, service_slug, params)
+          project.services.active.where(template: false).find do |service|
+            service.try(:token) == params[:token] && service.to_param == service_slug.underscore
+          end
+        end
+      end
+
       params do
         requires :id, type: String, desc: 'The ID of a project'
       end
@@ -637,9 +687,8 @@ module API
           # This is not accurate, but done to prevent leakage of the project names
           not_found!('Service') unless project
 
-          service = project.find_or_initialize_service(service_slug.underscore)
-
-          result = service.try(:active?) && service.try(:trigger, params)
+          service = chat_command_service(project, service_slug, params)
+          result = service.try(:trigger, params)
 
           if result
             status result[:status] || 200

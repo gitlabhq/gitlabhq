@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::ImportExport, services: true do
   describe 'export filename' do
-    let(:project) { create(:project, :public, path: 'project-path') }
+    let(:project) { create(:empty_project, :public, path: 'project-path') }
 
     it 'contains the project path' do
       expect(described_class.export_filename(project: project)).to include(project.path)

@@ -12,7 +12,7 @@ class JiraService < IssueTrackerService
   # This is confusing, but JiraService does not really support these events.
   # The values here are required to display correct options in the service
   # configuration screen.
-  def supported_events
+  def self.supported_events
     %w(commit merge_request)
   end
 
@@ -60,9 +60,9 @@ class JiraService < IssueTrackerService
   end
 
   def help
-    'You need to configure JIRA before enabling this service. For more details
+    "You need to configure JIRA before enabling this service. For more details
     read the
-    [JIRA service documentation](https://docs.gitlab.com/ce/project_services/jira.html).'
+    [JIRA service documentation](#{help_page_url('project_services/jira')})."
   end
 
   def title
@@ -81,7 +81,7 @@ class JiraService < IssueTrackerService
     end
   end
 
-  def to_param
+  def self.to_param
     'jira'
   end
 

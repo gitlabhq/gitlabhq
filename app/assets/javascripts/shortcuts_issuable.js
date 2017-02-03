@@ -39,29 +39,42 @@
     }
 
     ShortcutsIssuable.prototype.replyWithSelectedText = function() {
-      var quote, replyField, selected, separator;
-      if (window.getSelection) {
-        selected = window.getSelection().toString();
-        replyField = $('.js-main-target-form #note_note');
-        if (selected.trim() === "") {
-          return;
-        }
-        // Put a '>' character before each non-empty line in the selection
-        quote = _.map(selected.split("\n"), function(val) {
-          if (val.trim() !== '') {
-            return "> " + val + "\n";
-          }
-        });
-        // If replyField already has some content, add a newline before our quote
-        separator = replyField.val().trim() !== "" && "\n" || '';
-        replyField.val(function(_, current) {
-          return current + separator + quote.join('') + "\n";
-        });
-        // Trigger autosave for the added text
-        replyField.trigger('input');
-        // Focus the input field
-        return replyField.focus();
+      var quote, documentFragment, selected, separator;
+      var replyField = $('.js-main-target-form #note_note');
+
+      documentFragment = window.gl.utils.getSelectedFragment();
+      if (!documentFragment) {
+        replyField.focus();
+        return;
       }
+
+      // If the documentFragment contains more than just Markdown, don't copy as GFM.
+      if (documentFragment.querySelector('.md, .wiki')) return;
+
+      selected = window.gl.CopyAsGFM.nodeToGFM(documentFragment);
+
+      if (selected.trim() === "") {
+        return;
+      }
+      quote = _.map(selected.split("\n"), function(val) {
+        return ("> " + val).trim() + "\n";
+      });
+      // If replyField already has some content, add a newline before our quote
+      separator = replyField.val().trim() !== "" && "\n\n" || '';
+      replyField.val(function(_, current) {
+        return current + separator + quote.join('') + "\n";
+      });
+
+      // Trigger autosave
+      replyField.trigger('input');
+
+      // Trigger autosize
+      var event = document.createEvent('Event');
+      event.initEvent('autosize:update', true, false);
+      replyField.get(0).dispatchEvent(event);
+
+      // Focus the input field
+      return replyField.focus();
     };
 
     ShortcutsIssuable.prototype.editIssue = function() {

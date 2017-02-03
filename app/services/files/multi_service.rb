@@ -5,11 +5,13 @@ module Files
     def commit
       repository.multi_action(
         user: current_user,
-        branch: @target_branch,
         message: @commit_message,
+        branch_name: @target_branch,
         actions: params[:actions],
         author_email: @author_email,
-        author_name: @author_name
+        author_name: @author_name,
+        start_project: @start_project,
+        start_branch_name: @start_branch
       )
     end
 
@@ -61,7 +63,7 @@ module Files
     end
 
     def last_commit
-      Gitlab::Git::Commit.last_for_path(repository, @source_branch, @file_path)
+      Gitlab::Git::Commit.last_for_path(repository, @start_branch, @file_path)
     end
 
     def regex_check(file)

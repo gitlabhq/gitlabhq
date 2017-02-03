@@ -74,6 +74,9 @@ feature 'Import/Export - project export integration test', feature: true, js: tr
         Otherwise, please add the exception to +safe_list+ in CURRENT_SPEC using #{sensitive_word} as the key and the
         correspondent hash or model as the value.
 
+        Also, if the attribute is a generated unique token, please add it to RelationFactory::TOKEN_RESET_MODELS if it needs to be
+        reset (to prevent duplicate column problems while importing to the same instance).
+
         IMPORT_EXPORT_CONFIG: #{Gitlab::ImportExport.config_file}
         CURRENT_SPEC: #{__FILE__}
       MSG

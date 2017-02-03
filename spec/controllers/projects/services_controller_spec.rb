@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Projects::ServicesController do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:user)    { create(:user) }
   let(:service) { create(:service, project: project) }
 
@@ -54,6 +54,7 @@ describe Projects::ServicesController do
     context 'on successful update' do
       it 'sets the flash' do
         expect(service).to receive(:to_param).and_return('hipchat')
+        expect(service).to receive(:event_names).and_return(HipchatService.event_names)
 
         put :update,
           namespace_id: project.namespace.id,

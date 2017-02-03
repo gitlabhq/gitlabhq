@@ -1,4 +1,0 @@
----
-title: Treat environments matching `production/*` as Production
-merge_request: 8500
-author:

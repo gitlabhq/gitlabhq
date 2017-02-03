@@ -37,6 +37,8 @@
   describe('RightSidebar', function() {
     var fixtureName = 'issues/open-issue.html.raw';
     preloadFixtures(fixtureName);
+    loadJSONFixtures('todos.json');
+
     beforeEach(function() {
       loadFixtures(fixtureName);
       this.sidebar = new Sidebar;

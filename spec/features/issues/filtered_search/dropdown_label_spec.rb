@@ -40,6 +40,16 @@ describe 'Dropdown label', js: true, feature: true do
     visit namespace_project_issues_path(project.namespace, project)
   end
 
+  describe 'keyboard navigation' do
+    it 'selects label' do
+      send_keys_to_filtered_search('label:')
+
+      filtered_search.native.send_keys(:down, :down, :enter)
+
+      expect(filtered_search.value).to eq("label:~#{special_label.name} ")
+    end
+  end
+
   describe 'behavior' do
     it 'opens when the search bar has label:' do
       filtered_search.set('label:')
@@ -159,7 +169,7 @@ describe 'Dropdown label', js: true, feature: true do
       click_label(bug_label.title)
 
       expect(page).to have_css(js_dropdown_label, visible: false)
-      expect(filtered_search.value).to eq("label:~#{bug_label.title}")
+      expect(filtered_search.value).to eq("label:~#{bug_label.title} ")
     end
 
     it 'fills in the label name when the label is partially filled' do
@@ -167,49 +177,49 @@ describe 'Dropdown label', js: true, feature: true do
       click_label(bug_label.title)
 
       expect(page).to have_css(js_dropdown_label, visible: false)
-      expect(filtered_search.value).to eq("label:~#{bug_label.title}")
+      expect(filtered_search.value).to eq("label:~#{bug_label.title} ")
     end
 
     it 'fills in the label name that contains multiple words' do
       click_label(two_words_label.title)
 
       expect(page).to have_css(js_dropdown_label, visible: false)
-      expect(filtered_search.value).to eq("label:~\"#{two_words_label.title}\"")
+      expect(filtered_search.value).to eq("label:~\"#{two_words_label.title}\" ")
     end
 
     it 'fills in the label name that contains multiple words and is very long' do
       click_label(long_label.title)
 
       expect(page).to have_css(js_dropdown_label, visible: false)
-      expect(filtered_search.value).to eq("label:~\"#{long_label.title}\"")
+      expect(filtered_search.value).to eq("label:~\"#{long_label.title}\" ")
     end
 
     it 'fills in the label name that contains double quotes' do
       click_label(wont_fix_label.title)
 
       expect(page).to have_css(js_dropdown_label, visible: false)
-      expect(filtered_search.value).to eq("label:~'#{wont_fix_label.title}'")
+      expect(filtered_search.value).to eq("label:~'#{wont_fix_label.title}' ")
     end
 
     it 'fills in the label name with the correct capitalization' do
       click_label(uppercase_label.title)
 
       expect(page).to have_css(js_dropdown_label, visible: false)
-      expect(filtered_search.value).to eq("label:~#{uppercase_label.title}")
+      expect(filtered_search.value).to eq("label:~#{uppercase_label.title} ")
     end
 
     it 'fills in the label name with special characters' do
       click_label(special_label.title)
 
       expect(page).to have_css(js_dropdown_label, visible: false)
-      expect(filtered_search.value).to eq("label:~#{special_label.title}")
+      expect(filtered_search.value).to eq("label:~#{special_label.title} ")
     end
 
     it 'selects `no label`' do
       find('#js-dropdown-label .filter-dropdown-item', text: 'No Label').click
 
       expect(page).to have_css(js_dropdown_label, visible: false)
-      expect(filtered_search.value).to eq("label:none")
+      expect(filtered_search.value).to eq("label:none ")
     end
   end
 
@@ -237,6 +247,23 @@ describe 'Dropdown label', js: true, feature: true do
     it 'opens label dropdown with existing milestone' do
       filtered_search.set('milestone:%v2.0 label:')
       expect(page).to have_css(js_dropdown_label, visible: true)
+    end
+  end
+
+  describe 'caching requests' do
+    it 'caches requests after the first load' do
+      filtered_search.set('label')
+      send_keys_to_filtered_search(':')
+      initial_size = dropdown_label_size
+
+      expect(initial_size).to be > 0
+
+      create(:label, project: project)
+      find('.filtered-search-input-container .clear-search').click
+      filtered_search.set('label')
+      send_keys_to_filtered_search(':')
+
+      expect(dropdown_label_size).to eq(initial_size)
     end
   end
 end

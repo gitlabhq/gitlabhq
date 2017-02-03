@@ -118,7 +118,8 @@ module Users
         user.personal_projects.select("#{user.id} AS user_id, projects.id AS project_id, #{Gitlab::Access::MASTER} AS access_level"),
         user.groups_projects.select_for_project_authorization,
         user.projects.select_for_project_authorization,
-        user.groups.joins(:shared_projects).select_for_project_authorization
+        user.groups.joins(:shared_projects).select_for_project_authorization,
+        user.nested_projects.select_for_project_authorization
       ]
 
       Gitlab::SQL::Union.new(relations)

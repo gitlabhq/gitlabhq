@@ -4,9 +4,9 @@ describe MergeRequestsFinder do
   let(:user)  { create :user }
   let(:user2) { create :user }
 
-  let(:project1) { create(:project) }
-  let(:project2) { create(:project, forked_from_project: project1) }
-  let(:project3) { create(:project, forked_from_project: project1, archived: true) }
+  let(:project1) { create(:empty_project) }
+  let(:project2) { create(:empty_project, forked_from_project: project1) }
+  let(:project3) { create(:empty_project, :archived, forked_from_project: project1) }
 
   let!(:merge_request1) { create(:merge_request, :simple, author: user, source_project: project2, target_project: project1) }
   let!(:merge_request2) { create(:merge_request, :simple, author: user, source_project: project2, target_project: project1, state: 'closed') }

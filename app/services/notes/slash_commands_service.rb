@@ -12,7 +12,7 @@ module Notes
     def self.supported?(note, current_user)
       noteable_update_service(note) &&
         current_user &&
-        current_user.can?(:"update_#{note.noteable_type.underscore}", note.noteable)
+        current_user.can?(:"update_#{note.to_ability_name}", note.noteable)
     end
 
     def supported?(note)

@@ -4,9 +4,9 @@ describe GlobalMilestone, models: true do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:group) { create(:group) }
-  let(:project1) { create(:project, group: group) }
-  let(:project2) { create(:project, path: 'gitlab-ci', group: group) }
-  let(:project3) { create(:project, path: 'cookbook-gitlab', group: group) }
+  let(:project1) { create(:empty_project, group: group) }
+  let(:project2) { create(:empty_project, path: 'gitlab-ci', group: group) }
+  let(:project3) { create(:empty_project, path: 'cookbook-gitlab', group: group) }
 
   describe '.build_collection' do
     let(:milestone1_due_date) { 2.weeks.from_now.to_date }

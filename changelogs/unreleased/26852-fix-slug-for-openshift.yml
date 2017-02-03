@@ -1,0 +1,4 @@
+---
+title: Avoid repeated dashes in $CI_ENVIRONMENT_SLUG
+merge_request: 8638
+author:

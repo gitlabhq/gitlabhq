@@ -20,6 +20,22 @@ describe 'Search bar', js: true, feature: true do
     left_style.to_s.gsub('left: ', '').to_f
   end
 
+  describe 'keyboard navigation' do
+    it 'makes item active' do
+      filtered_search.native.send_keys(:down)
+
+      page.within '#js-dropdown-hint' do
+        expect(page).to have_selector('.dropdown-active')
+      end
+    end
+
+    it 'selects item' do
+      filtered_search.native.send_keys(:down, :down, :enter)
+
+      expect(filtered_search.value).to eq('author:')
+    end
+  end
+
   describe 'clear search button' do
     it 'clears text' do
       search_text = 'search_text'

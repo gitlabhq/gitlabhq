@@ -52,7 +52,7 @@ describe Import::BitbucketController do
     end
 
     it "assigns variables" do
-      @project = create(:project, import_type: 'bitbucket', creator_id: user.id)
+      @project = create(:empty_project, import_type: 'bitbucket', creator_id: user.id)
       allow_any_instance_of(Bitbucket::Client).to receive(:repos).and_return([@repo])
 
       get :status
@@ -63,7 +63,7 @@ describe Import::BitbucketController do
     end
 
     it "does not show already added project" do
-      @project = create(:project, import_type: 'bitbucket', creator_id: user.id, import_source: 'asd/vim')
+      @project = create(:empty_project, import_type: 'bitbucket', creator_id: user.id, import_source: 'asd/vim')
       allow_any_instance_of(Bitbucket::Client).to receive(:repos).and_return([@repo])
 
       get :status

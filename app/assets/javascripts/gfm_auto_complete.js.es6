@@ -83,12 +83,12 @@
         _a = decodeURI("%C3%80");
         _y = decodeURI("%C3%BF");
 
-        regexp = new RegExp("^(?:\\B|[^a-zA-Z0-9_" + atSymbolsWithoutBar + "]|\\s)" + flag + "(?![" + atSymbolsWithBar + "])([A-Za-z" + _a + "-" + _y + "0-9_\'\.\+\-]*)$", 'gi');
+        regexp = new RegExp("^(?:\\B|[^a-zA-Z0-9_" + atSymbolsWithoutBar + "]|\\s)" + flag + "(?![" + atSymbolsWithBar + "])(([A-Za-z" + _a + "-" + _y + "0-9_\'\.\+\-]|[^\\x00-\\x7a])*)$", 'gi');
 
         match = regexp.exec(subtext);
 
         if (match) {
-          return match[2] || match[1];
+          return (match[1] || match[1] === "") ? match[1] : match[2];
         } else {
           return null;
         }
@@ -367,9 +367,14 @@
       return $input.trigger('keyup');
     },
     isLoading(data) {
-      if (!data || !data.length) return false;
-      if (Array.isArray(data)) data = data[0];
-      return data === this.defaultLoadingData[0] || data.name === this.defaultLoadingData[0];
+      var dataToInspect = data;
+      if (data && data.length > 0) {
+        dataToInspect = data[0];
+      }
+
+      var loadingState = this.defaultLoadingData[0];
+      return dataToInspect &&
+        (dataToInspect === loadingState || dataToInspect.name === loadingState);
     }
   };
 }).call(this);

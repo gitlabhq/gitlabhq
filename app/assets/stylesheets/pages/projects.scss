@@ -198,7 +198,7 @@
     margin: 15px 5px 0 0;
 
     input {
-      height: 27px;
+      height: 28px;
     }
   }
 
@@ -523,7 +523,7 @@ a.deploy-project-label {
 
     &:hover,
     &:focus {
-      color: darken($notes-light-color, 15%);
+      color: $gl-text-color;
     }
   }
 
@@ -929,8 +929,32 @@ pre.light-well {
 .variables-table {
   table-layout: fixed;
 
+  &.table-responsive {
+    border: none;
+  }
+
   .variable-key {
-    width: 30%;
+    width: 300px;
+    max-width: 300px;
+    overflow: hidden;
+    word-wrap: break-word;
+
+    // override bootstrap
+    white-space: normal!important;
+
+    @media (max-width: $screen-sm-max) {
+      width: 150px;
+      max-width: 150px;
+    }
+  }
+
+  .variable-value {
+    @media(max-width: $screen-xs-max) {
+      width: 150px;
+      max-width: 150px;
+      overflow: hidden;
+      word-wrap: break-word;
+    }
   }
 }
 

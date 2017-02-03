@@ -58,7 +58,7 @@ module API
       end
       post ":id/snippets" do
         authorize! :create_project_snippet, user_project
-        snippet_params = declared_params
+        snippet_params = declared_params.merge(request: request, api: true)
         snippet_params[:content] = snippet_params.delete(:code)
 
         snippet = CreateSnippetService.new(user_project, current_user, snippet_params).execute

@@ -19,9 +19,12 @@ describe 'Filter issues', js: true, feature: true do
   let!(:closed_issue) { create(:issue, title: 'bug that is closed', project: project, state: :closed) }
   let(:filtered_search) { find('.filtered-search') }
 
-  def input_filtered_search(search_term)
+  def input_filtered_search(search_term, submit: true)
     filtered_search.set(search_term)
-    filtered_search.send_keys(:enter)
+
+    if submit
+      filtered_search.send_keys(:enter)
+    end
   end
 
   def expect_filtered_search_input(input)
@@ -41,6 +44,10 @@ describe 'Filter issues', js: true, feature: true do
     page.within '.issues-list' do
       expect(page).to have_selector('.issue', count: open_count)
     end
+  end
+
+  def select_search_at_index(pos)
+    evaluate_script("el = document.querySelector('.filtered-search'); el.focus(); el.setSelectionRange(#{pos}, #{pos});")
   end
 
   before do
@@ -522,6 +529,44 @@ describe 'Filter issues', js: true, feature: true do
     end
   end
 
+  describe 'overwrites selected filter' do
+    it 'changes author' do
+      input_filtered_search("author:@#{user.username}", submit: false)
+
+      select_search_at_index(3)
+
+      page.within '#js-dropdown-author' do
+        click_button user2.username
+      end
+
+      expect(filtered_search.value).to eq("author:@#{user2.username} ")
+    end
+
+    it 'changes label' do
+      input_filtered_search("author:@#{user.username} label:~#{bug_label.title}", submit: false)
+
+      select_search_at_index(27)
+
+      page.within '#js-dropdown-label' do
+        click_button label.name
+      end
+
+      expect(filtered_search.value).to eq("author:@#{user.username} label:~#{label.name} ")
+    end
+
+    it 'changes label correctly space is in previous label' do
+      input_filtered_search("label:~\"#{multiple_words_label.title}\"", submit: false)
+
+      select_search_at_index(0)
+
+      page.within '#js-dropdown-label' do
+        click_button label.name
+      end
+
+      expect(filtered_search.value).to eq("label:~#{label.name} ")
+    end
+  end
+
   describe 'filter issues by text' do
     context 'only text' do
       it 'filters issues by searched text' do
@@ -728,7 +773,7 @@ describe 'Filter issues', js: true, feature: true do
   describe 'RSS feeds' do
     it 'updates atom feed link for project issues' do
       visit namespace_project_issues_path(project.namespace, project, milestone_title: milestone.title, assignee_id: user.id)
-      link = find('.nav-controls a', text: 'Subscribe')
+      link = find_link('Subscribe')
       params = CGI.parse(URI.parse(link[:href]).query)
       auto_discovery_link = find('link[type="application/atom+xml"]', visible: false)
       auto_discovery_params = CGI.parse(URI.parse(auto_discovery_link[:href]).query)

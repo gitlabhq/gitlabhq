@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
   include FilterSpecHelper
 
-  let(:project)   { create(:project, :public) }
+  let(:project)   { create(:empty_project, :public) }
   let(:milestone) { create(:milestone, project: project) }
   let(:reference) { milestone.to_reference }
 

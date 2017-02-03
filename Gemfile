@@ -21,7 +21,7 @@ gem 'rugged', '~> 0.24.0'
 # Authentication libraries
 gem 'devise',                 '~> 4.2'
 gem 'doorkeeper',             '~> 4.2.0'
-gem 'omniauth',               '~> 1.3.1'
+gem 'omniauth',               '~> 1.3.2'
 gem 'omniauth-auth0',         '~> 1.4.1'
 gem 'omniauth-azure-oauth2',  '~> 0.0.6'
 gem 'omniauth-cas3',          '~> 1.1.2'
@@ -36,7 +36,7 @@ gem 'omniauth-twitter',       '~> 1.2.0'
 gem 'omniauth_crowd',         '~> 2.2.0'
 gem 'omniauth-authentiq',     '~> 0.2.0'
 gem 'rack-oauth2',            '~> 1.2.1'
-gem 'jwt'
+gem 'jwt',                    '~> 1.5.6'
 
 # Spam and anti-bot protection
 gem 'recaptcha', '~> 3.0', require: 'recaptcha/rails'
@@ -280,6 +280,7 @@ group :development, :test do
   gem 'rspec-retry',        '~> 0.4.5'
   gem 'spinach-rails',      '~> 0.2.1'
   gem 'spinach-rerun-reporter', '~> 0.0.2'
+  gem 'rspec_profiling'
 
   # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
   gem 'minitest', '~> 5.7.0'
@@ -322,7 +323,7 @@ group :test do
   gem 'email_spec', '~> 1.6.0'
   gem 'json-schema', '~> 2.6.2'
   gem 'webmock', '~> 1.21.0'
-  gem 'test_after_commit', '~> 0.4.2'
+  gem 'test_after_commit', '~> 1.1'
   gem 'sham_rack', '~> 1.3.6'
   gem 'timecop', '~> 0.8.0'
 end

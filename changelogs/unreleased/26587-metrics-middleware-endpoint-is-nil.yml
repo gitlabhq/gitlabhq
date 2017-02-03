@@ -1,4 +1,0 @@
----
-title: Check for env[Grape::Env::GRAPE_ROUTING_ARGS] instead of endpoint.route
-merge_request: 8544
-author:

@@ -32,7 +32,7 @@ class DroneCiService < CiService
     true
   end
 
-  def supported_events
+  def self.supported_events
     %w(push merge_request tag_push)
   end
 
@@ -87,7 +87,7 @@ class DroneCiService < CiService
     'Drone is a Continuous Integration platform built on Docker, written in Go'
   end
 
-  def to_param
+  def self.to_param
     'drone_ci'
   end
 

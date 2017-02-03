@@ -11,8 +11,10 @@ namespace :gitlab do
       gem_version = run_command(%W(gem --version))
       # check Bundler version
       bunder_version = run_and_match(%W(bundle --version), /[\d\.]+/).try(:to_s)
-      # check Bundler version
+      # check Rake version
       rake_version = run_and_match(%W(rake --version), /[\d\.]+/).try(:to_s)
+      # check redis version
+      redis_version = run_and_match(%W(redis-cli --version), /redis-cli (\d+\.\d+\.\d+)/).to_a
 
       puts ""
       puts "System information".color(:yellow)
@@ -24,6 +26,7 @@ namespace :gitlab do
       puts "Gem Version:\t#{gem_version || "unknown".color(:red)}"
       puts "Bundler Version:#{bunder_version || "unknown".color(:red)}"
       puts "Rake Version:\t#{rake_version || "unknown".color(:red)}"
+      puts "Redis Version:\t#{redis_version[1] || "unknown".color(:red)}"
       puts "Sidekiq Version:#{Sidekiq::VERSION}"
 
 

@@ -46,7 +46,7 @@ describe MembersHelper do
   end
 
   describe '#leave_confirmation_message' do
-    let(:project) { build_stubbed(:project) }
+    let(:project) { build_stubbed(:empty_project) }
     let(:group) { build_stubbed(:group) }
     let(:user) { build_stubbed(:user) }
 

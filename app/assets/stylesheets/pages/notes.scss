@@ -195,10 +195,10 @@ ul.notes {
     }
 
     .note-body {
-      overflow: auto;
+      overflow-x: auto;
+      overflow-y: hidden;
 
       .note-text {
-        overflow: auto;
         word-wrap: break-word;
         @include md-typography;
         // Reset ul style types since we're nested inside a ul already
@@ -467,7 +467,7 @@ ul.notes {
   }
 
   .add-diff-note {
-    margin-top: -4px;
+    margin-top: -8px;
     border-radius: 40px;
     background: $white-light;
     padding: 4px;

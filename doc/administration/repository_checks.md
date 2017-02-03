@@ -13,12 +13,12 @@ checks failed you can see their output on the admin log page under
 
 ## Periodic checks
 
-GitLab periodically runs a repository check on all project repositories and
-wiki repositories in order to detect data corruption problems. A
-project will be checked no more than once per week. If any projects
+When enabled, GitLab periodically runs a repository check on all project 
+repositories and wiki repositories in order to detect data corruption problems. 
+A project will be checked no more than once per month. If any projects
 fail their repository checks all GitLab administrators will receive an email
-notification of the situation. This notification is sent out no more
-than once a day.
+notification of the situation. This notification is sent out once a week on
+Sunday, by default. 
 
 ## Disabling periodic checks
 

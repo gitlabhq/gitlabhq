@@ -113,7 +113,7 @@ detects the presenter based on the presented subject's class.
 class Projects::LabelsController < Projects::ApplicationController
   def edit
     @label = Gitlab::View::Presenter::Factory
-      .new(@label, user: current_user)
+      .new(@label, current_user: current_user)
       .fabricate!
   end
 end
@@ -132,7 +132,7 @@ and then in the controller:
 ```ruby
 class Projects::LabelsController < Projects::ApplicationController
   def edit
-    @label = @label.present(user: current_user)
+    @label = @label.present(current_user: current_user)
   end
 end
 ```
@@ -147,7 +147,7 @@ end
 You can also present the model in the view:
 
 ```ruby
-- label = @label.present(current_user)
+- label = @label.present(current_user: current_user)
 
 %div{ class: label.text_color }
   = render partial: label, label: label

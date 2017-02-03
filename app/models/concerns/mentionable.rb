@@ -49,7 +49,11 @@ module Mentionable
 
     self.class.mentionable_attrs.each do |attr, options|
       text    = __send__(attr)
-      options = options.merge(cache_key: [self, attr], author: author)
+      options = options.merge(
+        cache_key: [self, attr],
+        author: author,
+        skip_project_check: skip_project_check?
+      )
 
       extractor.analyze(text, options)
     end
@@ -120,5 +124,9 @@ module Mentionable
   # the specified target.
   def cross_reference_exists?(target)
     SystemNoteService.cross_reference_exists?(target, local_reference)
+  end
+
+  def skip_project_check?
+    false
   end
 end

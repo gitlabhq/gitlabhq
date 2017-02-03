@@ -1,5 +1,0 @@
----
-title: Speed up dashboard milestone index by scoping IssuesFinder to user authorized
-  projects
-merge_request: 8524
-author:

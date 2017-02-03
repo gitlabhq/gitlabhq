@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Banzai::Filter::CommitRangeReferenceFilter, lib: true do
   include FilterSpecHelper
 
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:project, :public, :repository) }
   let(:commit1) { project.commit("HEAD~2") }
   let(:commit2) { project.commit }
 
@@ -99,7 +99,7 @@ describe Banzai::Filter::CommitRangeReferenceFilter, lib: true do
   end
 
   context 'cross-project / cross-namespace complete reference' do
-    let(:project2)  { create(:project, :public) }
+    let(:project2)  { create(:project, :public, :repository) }
     let(:reference) { "#{project2.path_with_namespace}@#{commit1.id}...#{commit2.id}" }
 
     it 'links to a valid reference' do
@@ -133,8 +133,8 @@ describe Banzai::Filter::CommitRangeReferenceFilter, lib: true do
 
   context 'cross-project / same-namespace complete reference' do
     let(:namespace)         { create(:namespace) }
-    let(:project)           { create(:project, :public, namespace: namespace) }
-    let(:project2)          { create(:project, :public, path: "same-namespace", namespace: namespace) }
+    let(:project)           { create(:project, :public, :repository, namespace: namespace) }
+    let(:project2)          { create(:project, :public, :repository, path: "same-namespace", namespace: namespace) }
     let(:reference)         { "#{project2.path}@#{commit1.id}...#{commit2.id}" }
 
     it 'links to a valid reference' do
@@ -168,8 +168,8 @@ describe Banzai::Filter::CommitRangeReferenceFilter, lib: true do
 
   context 'cross-project shorthand reference' do
     let(:namespace)         { create(:namespace) }
-    let(:project)           { create(:project, :public, namespace: namespace) }
-    let(:project2)          { create(:project, :public, path: "same-namespace", namespace: namespace) }
+    let(:project)           { create(:project, :public, :repository, namespace: namespace) }
+    let(:project2)          { create(:project, :public, :repository, path: "same-namespace", namespace: namespace) }
     let(:reference)         { "#{project2.path}@#{commit1.id}...#{commit2.id}" }
 
     it 'links to a valid reference' do
@@ -203,7 +203,7 @@ describe Banzai::Filter::CommitRangeReferenceFilter, lib: true do
 
   context 'cross-project URL reference' do
     let(:namespace) { create(:namespace) }
-    let(:project2)  { create(:project, :public, namespace: namespace) }
+    let(:project2)  { create(:project, :public, :repository, namespace: namespace) }
     let(:range)  { CommitRange.new("#{commit1.id}...master", project) }
     let(:reference) { urls.namespace_project_compare_url(project2.namespace, project2, from: commit1.id, to: 'master') }
 
