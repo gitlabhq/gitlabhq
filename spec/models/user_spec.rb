@@ -1492,4 +1492,52 @@ describe User, models: true do
       expect(user.project_authorizations.where(access_level: Gitlab::Access::REPORTER).exists?).to eq(true)
     end
   end
+
+  describe 'the GitLab_Auditor_User add-on' do
+    context 'creating an auditor user' do
+      it "does not allow creating an auditor user if the addon isn't enabled" do
+        allow_any_instance_of(License).to receive(:add_ons).and_return({})
+
+        expect(build(:user, :auditor)).to be_invalid
+      end
+
+      it "does not allow creating an auditor user if no license is present" do
+        allow(License).to receive(:current).and_return nil
+
+        expect(build(:user, :auditor)).to be_invalid
+      end
+
+      it "allows creating an auditor user if the addon is enabled" do
+        allow_any_instance_of(License).to receive(:add_ons).and_return({ 'GitLab_Auditor_User' => 1 })
+
+        expect(build(:user, :auditor)).to be_valid
+      end
+    end
+
+    context '#auditor?' do
+      it "returns true for an auditor user if the addon is enabled" do
+        allow_any_instance_of(License).to receive(:add_ons).and_return({ 'GitLab_Auditor_User' => 1 })
+
+        expect(build(:user, :auditor)).to be_auditor
+      end
+
+      it "returns false for an auditor user if the addon is not enabled" do
+        allow_any_instance_of(License).to receive(:add_ons).and_return({})
+
+        expect(build(:user, :auditor)).not_to be_auditor
+      end
+
+      it "returns false for an auditor user if a license is not present" do
+        allow(License).to receive(:current).and_return nil
+
+        expect(build(:user, :auditor)).not_to be_auditor
+      end
+
+      it "returns false for a non-auditor user even if the addon is present" do
+        allow_any_instance_of(License).to receive(:add_ons).and_return({ 'GitLab_Auditor_User' => 1 })
+
+        expect(build(:user)).not_to be_auditor
+      end
+    end
+  end
 end

@@ -124,6 +124,7 @@ class User < ActiveRecord::Base
   validate :owns_notification_email, if: ->(user) { user.notification_email_changed? }
   validate :owns_public_email, if: ->(user) { user.public_email_changed? }
   validate :cannot_be_admin_and_auditor
+  validate :auditor_requires_license_add_on
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
   before_validation :generate_password, on: :create
@@ -460,6 +461,12 @@ class User < ActiveRecord::Base
     end
   end
 
+  def auditor_requires_license_add_on
+    unless ::License.current && ::License.current.add_on?('GitLab_Auditor_User')
+      errors.add(:auditor, 'user cannot be created without the "GitLab_Auditor_User" addon')
+    end
+  end
+
   # Returns the groups a user has access to
   def authorized_groups
     union = Gitlab::SQL::Union.
@@ -536,6 +543,12 @@ class User < ActiveRecord::Base
 
   def is_admin?
     admin
+  end
+
+  def auditor?
+    @license_allows_auditors ||= (::License.current && ::License.current.add_on?('GitLab_Auditor_User'))
+
+    @license_allows_auditors && self.auditor
   end
 
   def admin_or_auditor?

@@ -6,7 +6,12 @@ FactoryGirl.define do
       { "Name" => FFaker::Name.name }
     end
     restrictions do
-      { add_ons: { 'GitLab_FileLocks' => 1 } }
+      {
+        add_ons: {
+          'GitLab_FileLocks' => 1,
+          'GitLab_Auditor_User' => 1
+        }
+      }
     end
     notify_users_at   { |l| l.expires_at }
     notify_admins_at  { |l| l.expires_at }
