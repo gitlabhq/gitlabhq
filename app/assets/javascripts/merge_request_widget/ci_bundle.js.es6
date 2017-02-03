@@ -50,7 +50,7 @@
       // getMergeStatus replaces the MR widget with new, updated HTML, which means any persistent
       // event management gets clobbered. When the MR is approvable, MR status is already managed
       // and breaks when the DOM is clobbered.
-      merge_request_widget.getMergeStatus();
+      setTimeout(() => merge_request_widget.getMergeStatus(), 200);
     }
   });
 })();
