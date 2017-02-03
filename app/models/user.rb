@@ -351,20 +351,19 @@ class User < ActiveRecord::Base
 
       ghost_user ||
         begin
-          users = Enumerator.new do |y|
-            n = nil
-            loop do
-              user = User.new(
-                username: "ghost#{n}", password: Devise.friendly_token,
-                email: "ghost#{n}@example.com", name: "Ghost User", state: :ghost
-              )
+          uniquify = Uniquify.new
 
-              y.yield(user)
-              n = n ? n.next : 0
-            end
-          end
+          username = uniquify.string("ghost", -> (s) { User.find_by_username(s) })
 
-          users.lazy.select { |user| user.valid? }.first.tap(&:save!)
+          email = uniquify.string(
+            -> (n) { "ghost#{n}@example.com" },
+            -> (s) { User.find_by_email(s) }
+          )
+
+          User.create(
+            username: username, password: Devise.friendly_token,
+            email: email, name: "Ghost User", state: :ghost
+          )
         end
     end
   end

@@ -1513,7 +1513,7 @@ describe User, models: true do
         ghost = User.ghost
 
         expect(ghost).to be_persisted
-        expect(ghost.username).to eq('ghost0')
+        expect(ghost.username).to eq('ghost1')
       end
     end
 
@@ -1523,7 +1523,7 @@ describe User, models: true do
         ghost = User.ghost
 
         expect(ghost).to be_persisted
-        expect(ghost.email).to eq('ghost0@example.com')
+        expect(ghost.email).to eq('ghost1@example.com')
       end
     end
   end
