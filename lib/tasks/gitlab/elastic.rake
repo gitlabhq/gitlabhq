@@ -21,13 +21,21 @@ namespace :gitlab do
       puts "OK"
     end
 
+    desc "GitLab | ElasticSearch | Check project repository indexing status"
+    task index_repositories_status: :environment do
+      indexed = IndexStatus.count
+      projects = Project.count
+      percent = (indexed / projects.to_f) * 100.0
+
+      puts "Indexing is %.2f%% complete (%d/%d projects)" % [percent, indexed, projects]
+    end
+
     desc "GitLab | Elasticsearch | Index project repositories"
     task index_repositories: :environment  do
       print "Indexing project repositories..."
 
       Sidekiq::Logging.logger = Logger.new(STDOUT)
       project_id_batches do |start, finish|
-        puts [start, finish].inspect
         ElasticBatchProjectIndexerWorker.new.perform(start, finish, ENV['UPDATE_INDEX'])
       end
     end
@@ -99,7 +107,7 @@ namespace :gitlab do
     def project_id_batches(&blk)
       relation = Project
 
-      if ENV['UPDATE_INDEX']
+      unless ENV['UPDATE_INDEX']
         relation = relation.includes(:index_status).where('index_statuses.id IS NULL').references(:index_statuses)
       end
 

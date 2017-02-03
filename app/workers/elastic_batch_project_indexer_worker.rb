@@ -2,50 +2,37 @@ class ElasticBatchProjectIndexerWorker
   include Sidekiq::Worker
   include Gitlab::CurrentSettings
 
-  sidekiq_options queue: :elasticsearch, retry: 2
+  # Batch indexing is a generally a onetime option, so give finer control over
+  # queuing and concurrency
+  include DedicatedSidekiqQueue
+
+  # This worker is long-running, but idempotent, so retry many times if
+  # necessary
+  sidekiq_options retry: 10
 
   def perform(start, finish, update_index = false)
     projects = build_relation(start, finish, update_index)
-    indexer = Gitlab::Elastic::Indexer.new
 
-    projects.find_each do |project|
-      repository = project.repository
-      next unless repository.exists? && !repository.empty?
+    projects.find_each { |project| run_indexer(project) }
+  end
 
-      begin
-        logger.info "Indexing #{project.name_with_namespace} (ID=#{project.id})..."
+  private
 
-        index_status = project.index_status || project.build_index_status
-        head_commit = repository.commit
+  def run_indexer(project)
+    logger.info "Indexing #{project.name_with_namespace} (ID=#{project.id})..."
 
-        if !head_commit || index_status.last_commit == head_commit.sha
-          logger.info("Skipped".color(:yellow))
-          next
-        end
+    last_commit = project.index_status.try(:last_commit)
+    Gitlab::Elastic::Indexer.new(project).run(last_commit)
 
-        indexer.run(
-          project.id,
-          repository.path_to_repo,
-          index_status.last_commit
-        )
-
-        # During indexing the new commits can be pushed,
-        # the last_commit parameter only indicates that at least this commit is in index
-        index_status.last_commit = head_commit.sha
-        index_status.indexed_at = DateTime.now
-        index_status.save
-
-        logger.info("Done!".color(:green))
-      rescue => err
-        logger.warn("#{err.message}, trace - #{err.backtrace}")
-      end
-    end
+    logger.info "Indexing #{project.name_with_namespace} (ID=#{project.id}) is done!"
+  rescue => err
+    logger.warn("#{err.message} indexing #{project.name_with_namespace} (ID=#{project.id}), trace - #{err.backtrace}")
   end
 
   def build_relation(start, finish, update_index)
     relation = Project.includes(:index_status)
 
-    if update_index
+    unless update_index
       relation = relation.where('index_statuses.id IS NULL').references(:index_statuses)
     end
 
