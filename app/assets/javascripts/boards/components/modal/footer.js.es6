@@ -8,7 +8,10 @@
   gl.issueBoards.ModalFooter = Vue.extend({
     mixins: [gl.issueBoards.ModalMixins],
     data() {
-      return ModalStore.store;
+      return {
+        modal: ModalStore.store,
+        state: gl.issueBoards.BoardsStore.state,
+      };
     },
     computed: {
       submitDisabled() {
@@ -22,7 +25,7 @@
     },
     methods: {
       addIssues() {
-        const list = this.selectedList;
+        const list = this.modal.selectedList || this.state.lists[0];
         const selectedIssues = ModalStore.getSelectedIssues();
         const issueIds = selectedIssues.map(issue => issue.globalId);
 
