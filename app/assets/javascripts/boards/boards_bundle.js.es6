@@ -78,7 +78,7 @@ $(() => {
   });
 
   gl.IssueBoardsSearch = new Vue({
-    el: '#js-boards-search',
+    el: document.getElementById('js-boards-search'),
     data: {
       filters: Store.state.filters
     },
@@ -89,7 +89,7 @@ $(() => {
 
   gl.IssueBoardsModalAddBtn = new Vue({
     mixins: [gl.issueBoards.ModalMixins],
-    el: '#js-add-issues-btn',
+    el: document.getElementById('js-add-issues-btn'),
     data: {
       modal: ModalStore.store,
       store: Store.state,
