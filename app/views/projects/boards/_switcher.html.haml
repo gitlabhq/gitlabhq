@@ -27,7 +27,7 @@
       - if can?(current_user, :admin_board, @project)
         %board-selector-form{ "inline-template" => true,
           ":milestone-path" => "milestonePath",
-          "v-if" => "currentPage === 'new' || currentPage === 'edit'" }
+          "v-if" => "currentPage === 'new' || currentPage === 'edit' || currentPage === 'milestone'" }
           = render "projects/boards/components/form"
         .dropdown-content.board-selector-page-two{ "v-if" => "currentPage === 'delete'" }
           %p
@@ -49,6 +49,9 @@
             %li
               %a{ "href" => "#", "@click.stop.prevent" => "showPage('edit')" }
                 Edit board name
+            %li
+              %a{ "href" => "#", "@click.stop.prevent" => "showPage('milestone')" }
+                Edit board milestone
             %li{ "v-if" => "showDelete" }
               %a.text-danger{ "href" => "#", "@click.stop.prevent" => "showPage('delete')" }
                 Delete board

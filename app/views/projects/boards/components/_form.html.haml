@@ -1,16 +1,18 @@
 .dropdown-content.board-selector-page-two
   %form{ "@submit.prevent" => "submit" }
-    %label.label-light{ for: "board-new-name" }
-      Board name
-    %input.form-control{ type: "text",
-      id: "board-new-name",
-      "v-model" => "board.name" }
-    %label.label-light{ for: "board-milestone" }
-      Board milestone
     %input{ type: "hidden",
       id: "board-milestone",
       "v-model.number" => "board.milestone_id" }
-    .dropdown{ ":class" => "{ open: milestoneDropdownOpen }" }
+    %div{ "v-if" => "currentPage !== 'milestone'" }
+      %label.label-light{ for: "board-new-name" }
+        Board name
+      %input.form-control{ type: "text",
+        id: "board-new-name",
+        "v-model" => "board.name" }
+    .dropdown{ ":class" => "{ open: milestoneDropdownOpen }",
+      "v-if" => "currentPage !== 'edit'" }
+      %label.label-light{ for: "board-milestone" }
+        Board milestone
       %button.dropdown-menu-toggle.wide{ type: "button",
         "@click.stop.prevent" => "loadMilestones" }
         {{ milestoneToggleText }}
@@ -24,6 +26,8 @@
                 "@click.stop.prevent" => "selectMilestone(milestone)" }
                 {{ milestone.title }}
         = dropdown_loading
+      %span
+        Only show issues scheduled for the selected milestone
     .clearfix.prepend-top-10
       %button.btn.btn-primary.pull-left{ type: "submit",
         ":disabled" => "board.name === ''",
