@@ -25,7 +25,7 @@
 - [Public access](public_access/public_access.md) Learn how you can allow public and internal access to projects.
 - [Analytics](analytics/README.md)
 - [SSH](ssh/README.md) Setup your ssh keys and deploy keys for secure access to your projects.
-- [Webhooks](web_hooks/web_hooks.md) Let GitLab notify you when new code has been pushed to your project.
+- [Webhooks](user/project/integrations/webhooks.md) Let GitLab notify you when new code has been pushed to your project.
 - [Workflow](workflow/README.md) Using GitLab functionality and importing projects from GitHub and SVN.
 - [Git Attributes](user/project/git_attributes.md) Managing Git attributes using a `.gitattributes` file.
 - [Git cheatsheet](https://gitlab.com/gitlab-com/marketing/raw/master/design/print/git-cheatsheet/print-pdf/git-cheatsheet.pdf) Download a PDF describing the most used Git operations.
