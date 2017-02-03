@@ -7,6 +7,8 @@ module Gitlab
     OPTIONAL_SCOPES = SCOPES - DEFAULT_SCOPES
 
     class << self
+      prepend EE::Gitlab::Auth
+
       def find_for_git_client(login, password, project:, ip:)
         raise "Must provide an IP for rate limiting" if ip.nil?
 
@@ -26,11 +28,6 @@ module Gitlab
 
       def find_with_user_password(login, password)
         user = User.by_login(login)
-
-        if Devise.omniauth_providers.include?(:kerberos)
-          kerberos_user = Gitlab::Kerberos::Authentication.login(login, password)
-          return kerberos_user if kerberos_user
-        end
 
         # If no user is found, or it's an LDAP server, try LDAP.
         #   LDAP users are only authenticated via LDAP
