@@ -13,7 +13,7 @@
         Pipeline
         = link_to "##{pipeline.id}", namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline.id), class: "monospace"
         with
-        = pluralize pipeline.statuses.count(:id), "build"
+        = pluralize pipeline.statuses.count(:id), "job"
         - if pipeline.ref
           for
           = link_to pipeline.ref, namespace_project_commits_path(pipeline.project.namespace, pipeline.project, pipeline.ref), class: "monospace"
@@ -44,7 +44,7 @@
     %thead
       %tr
         %th Status
-        %th Build ID
+        %th Job ID
         %th Name
         %th
         - if pipeline.project.build_coverage_enabled?

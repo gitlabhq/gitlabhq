@@ -484,11 +484,11 @@ describe Ci::Build, :models do
         let!(:build) { create(:ci_build, :trace, :success, :artifacts) }
         subject { build.erased? }
 
-        context 'build has not been erased' do
+        context 'job has not been erased' do
           it { is_expected.to be_falsey }
         end
 
-        context 'build has been erased' do
+        context 'job has been erased' do
           before do
             build.erase
           end

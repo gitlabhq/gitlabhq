@@ -26,7 +26,7 @@
 
   .bs-callout
     %p
-      A 'Runner' is a process which runs a build.
+      A 'Runner' is a process which runs a job.
       You can setup as many Runners as you need.
       %br
       Runners can be placed on separate users, servers, even on your local machine.
@@ -37,16 +37,16 @@
       %ul
         %li
           %span.label.label-success shared
-          \- Runner runs builds from all unassigned projects
+          \- Runner runs jobs from all unassigned projects
         %li
           %span.label.label-info specific
-          \- Runner runs builds from assigned projects
+          \- Runner runs jobs from assigned projects
         %li
           %span.label.label-warning locked
           \- Runner cannot be assigned to other projects
         %li
           %span.label.label-danger paused
-          \- Runner will not receive any new builds
+          \- Runner will not receive any new jobs
 
   .append-bottom-20.clearfix
     .pull-left
@@ -68,7 +68,7 @@
           %th Runner token
           %th Description
           %th Projects
-          %th Builds
+          %th Jobs
           %th Tags
           %th Last contact
           %th

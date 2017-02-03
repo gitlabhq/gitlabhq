@@ -1,4 +1,4 @@
-%h4 Build charts
+%h4 Pipelines charts
 %p
   &nbsp;
   %span.cgreen
@@ -11,19 +11,19 @@
 
 .prepend-top-default
   %p.light
-    Builds for last week
+    Jobs for last week
     (#{date_from_to(Date.today - 7.days, Date.today)})
   %canvas#weekChart{ height: 200 }
 
 .prepend-top-default
   %p.light
-    Builds for last month
+    Jobs for last month
     (#{date_from_to(Date.today - 30.days, Date.today)})
   %canvas#monthChart{ height: 200 }
 
 .prepend-top-default
   %p.light
-    Builds for last year
+    Jobs for last year
   %canvas#yearChart.padded{ height: 250 }
 
 - [:week, :month, :year].each do |scope|
