@@ -41,7 +41,6 @@
       //   ci_status_url        - String, URL to use to check CI status
       //
       this.opts = opts;
-      this.$widgetBody = $('.mr-widget-body');
       $('#modal_merge_info').modal({
         show: false
       });
@@ -106,7 +105,7 @@
               urlSuffix = deleteSourceBranch ? '?deleted_source_branch=true' : '';
               return window.location.href = window.location.pathname + urlSuffix;
             } else if (data.merge_error) {
-              return _this.$widgetBody.html("<h4>" + data.merge_error + "</h4>");
+              return $('.mr-widget-body').html("<h4>" + data.merge_error + "</h4>");
             } else {
               callback = function() {
                 return merge_request_widget.mergeInProgress(deleteSourceBranch);
@@ -226,7 +225,7 @@
         environment.ci_success_icon = this.$ciSuccessIcon;
         const templateString = _.unescape($template[0].outerHTML);
         const template = _.template(templateString)(environment);
-        this.$widgetBody.before(template);
+        $('.mr-widget-body').before(template);
       }
     };
 

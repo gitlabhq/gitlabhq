@@ -1,5 +1,6 @@
 /* eslint-disable space-before-function-paren, quotes, comma-dangle, dot-notation, quote-props, no-var, max-len */
 
+/*= require smart_interval */
 /*= require merge_request_widget */
 /*= require lib/utils/datetime_utility */
 
@@ -73,7 +74,7 @@
         }
 
         it('should render less than a minute ago text', function() {
-          spyOn(this.class.$widgetBody, 'before').and.callFake(function(template) {
+          spyOn($('.mr-widget-body'), 'before').and.callFake(function(template) {
             expect(getTimeagoText(template)).toBe('less than a minute ago.');
           });
 
@@ -85,7 +86,7 @@
           oneHourAgo.setHours(oneHourAgo.getHours() - 1);
 
           this.environments[0].deployed_at = oneHourAgo.toISOString();
-          spyOn(this.class.$widgetBody, 'before').and.callFake(function(template) {
+          spyOn($('.mr-widget-body'), 'before').and.callFake(function(template) {
             expect(getTimeagoText(template)).toBe('about an hour ago.');
           });
 
@@ -97,7 +98,7 @@
           twoHoursAgo.setHours(twoHoursAgo.getHours() - 2);
 
           this.environments[0].deployed_at = twoHoursAgo.toISOString();
-          spyOn(this.class.$widgetBody, 'before').and.callFake(function(template) {
+          spyOn($('.mr-widget-body'), 'before').and.callFake(function(template) {
             expect(getTimeagoText(template)).toBe('about 2 hours ago.');
           });
 
@@ -108,7 +109,7 @@
 
     describe('mergeInProgress', function() {
       it('should display error with h4 tag', function() {
-        spyOn(this.class.$widgetBody, 'html').and.callFake(function(html) {
+        spyOn($('.mr-widget-body'), 'html').and.callFake(function(html) {
           expect(html).toBe('<h4>Sorry, something went wrong.</h4>');
         });
         spyOn($, 'ajax').and.callFake(function(e) {
