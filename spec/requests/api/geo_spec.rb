@@ -63,6 +63,7 @@ describe API::Geo, api: true do
 
   describe 'POST /geo/receive_events push events' do
     before(:each) { allow_any_instance_of(::Geo::ScheduleRepoUpdateService).to receive(:execute) }
+    before(:each) { allow_any_instance_of(::Geo::ScheduleRepoFetchService).to receive(:execute) }
 
     let(:push_payload) do
       {
