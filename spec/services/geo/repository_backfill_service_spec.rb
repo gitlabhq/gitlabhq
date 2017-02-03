@@ -17,9 +17,10 @@ describe Geo::RepositoryBackfillService, services: true do
       expect(WebMock).to have_requested(:post, geo_node.geo_events_url).with(
         headers: SYSTEM_HOOKS_HEADER,
         body: {
-          event_name: 'push',
+          event_name: 'repository_update',
           project_id: project.id,
-          project: project.hook_attrs
+          project: project.hook_attrs,
+          remote_url: project.ssh_url_to_repo
         }
       ).once
     end
