@@ -14,6 +14,7 @@ describe Projects::VariablesController do
       it 'shows a success flash message' do
         post :create, namespace_id: project.namespace.to_param, project_id: project.to_param,
                       variable: { key: "one", value: "two" }
+
         expect(flash[:notice]).to include 'Variables were successfully updated.'
         expect(response).to redirect_to(namespace_project_settings_ci_cd_path(project.namespace, project))
       end
@@ -23,6 +24,7 @@ describe Projects::VariablesController do
       it 'shows an alert flash message' do
         post :create, namespace_id: project.namespace.to_param, project_id: project.to_param,
                       variable: { key: "..one", value: "two" }
+
         expect(flash[:alert]).to include 'Key can contain only letters, digits and \'_\'.'
         expect(response).to redirect_to(namespace_project_settings_ci_cd_path(project.namespace, project))
       end
@@ -40,16 +42,18 @@ describe Projects::VariablesController do
 
       it 'shows a success flash message' do
         post :update, namespace_id: project.namespace.to_param, project_id: project.to_param,
-          id: variable.id, variable: { key: variable.key, value: 'two' }
-        expect(flash[:notice]).to include 'Variables were successfully updated.'
-        expect(response).to redirect_to(namespace_project_settings_ci_cd_path(project.namespace, project))
+                      id: variable.id, variable: { key: variable.key, value: 'two' }
+
+        expect(flash[:notice]).to include 'Variable was successfully updated.'
+        expect(response).to redirect_to(namespace_project_variables_path(project.namespace, project))
       end
 
-      it 'shows an alert flash message' do
+      it 'renders the action #show if the variable key is invalid' do
         post :update, namespace_id: project.namespace.to_param, project_id: project.to_param,
-          id: variable.id, variable: { key: '?', value: variable.value }
-        expect(flash[:alert]).to include 'Key can contain only letters, digits and \'_\'.'
-        expect(response).to redirect_to(namespace_project_settings_ci_cd_path(project.namespace, project))
+                      id: variable.id, variable: { key: '?', value: variable.value }
+
+        expect(response).to have_http_status(200)
+        expect(response).to render_template :show
       end
     end
   end

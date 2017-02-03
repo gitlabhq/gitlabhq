@@ -15,11 +15,10 @@ class Projects::VariablesController < Projects::ApplicationController
     @variable = @project.variables.find(params[:id])
 
     if @variable.update_attributes(project_params)
-      flash[:notice] = 'Variables were successfully updated.'
+      redirect_to namespace_project_variables_path(project.namespace, project), notice: 'Variable was successfully updated.'
     else
-      flash[:alert] = @variable.errors.full_messages.join(',').html_safe
+      render action: "show"
     end
-    redirect_to namespace_project_settings_ci_cd_path(project.namespace, project)
   end
 
   def create

@@ -12,11 +12,11 @@ class Projects::TriggersController < Projects::ApplicationController
     @trigger.save
 
     if @trigger.valid?
-      flash[:notice] = "Trigger has been created successfully"
+      redirect_to namespace_project_variables_path(project.namespace, project), notice: 'Trigger was created successfully.'
     else
       @triggers = project.triggers.select(&:persisted?)
+      render action: "show"
     end
-    redirect_to namespace_project_settings_ci_cd_path(@project.namespace, @project)
   end
 
   def destroy
