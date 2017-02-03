@@ -36,7 +36,7 @@ feature 'Create New Merge Request', feature: true, js: true do
 
   context 'when approvals are disabled for the target project' do
     it 'does not show approval settings' do
-      visit new_namespace_project_merge_request_path(project.namespace, project, merge_request: { source_branch: 'feature_conflict' })
+      visit new_namespace_project_merge_request_path(project.namespace, project, merge_request: { target_branch: 'master', source_branch: 'feature_conflict' })
 
       expect(page).not_to have_content('Approvers')
     end
@@ -46,7 +46,7 @@ feature 'Create New Merge Request', feature: true, js: true do
     before do
       project.update_attributes(approvals_before_merge: 1)
 
-      visit new_namespace_project_merge_request_path(project.namespace, project, merge_request: { source_branch: 'feature_conflict' })
+      visit new_namespace_project_merge_request_path(project.namespace, project, merge_request: { target_branch: 'master', source_branch: 'feature_conflict' })
     end
 
     it 'shows approval settings' do
