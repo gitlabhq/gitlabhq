@@ -35,12 +35,14 @@ module Gitlab
       end
 
       def key_from_fallback_message_id(mail_id)
-        message_id_regexp = /\Areply\-(.+)@#{Gitlab.config.gitlab.host}\z/
+        message_id_regexp =
+          /\Areply\-(.+)@#{Gitlab.config.gitlab.host}\z/.freeze
 
         mail_id[message_id_regexp, 1]
       end
 
       def scan_fallback_references(references)
+        # It's looking for each <...>
         references.scan(/(?!<)[^<>]+(?=>)/.freeze)
       end
 
