@@ -143,6 +143,7 @@ class GroupsController < Groups::ApplicationController
       :share_with_group_lock,
       :visibility_level,
       :parent_id
+      :create_chat_team
     ]
   end
 

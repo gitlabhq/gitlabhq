@@ -3,26 +3,21 @@ module Mattermost
     include Sidekiq::Worker
     include DedicatedSidekiqQueue
 
-    def perform(group_id, current_user_id, options = {})
-      @group = Group.find(group_id)
-      current_user = User.find(current_user_id)
+    sidekiq_options retry: 5
 
-      options = team_params.merge(options)
-
-      # The user that creates the team will be Team Admin
-      response = Mattermost::Team.new(current_user).create(options)
-
-      ChatTeam.create!(namespace: @group, name: response['name'], team_id: response['id'])
+    # Add 5 seconds so the first retry isn't 1 second later
+    sidekiq_retry_in do |count|
+      5 + 5 ** n
     end
 
-    private
+    def perform(group_id, current_user_id, options = {})
+      group = Group.find(group_id)
+      current_user = User.find(current_user_id)
 
-    def team_params
-      {
-        name: @group.path[0..59],
-        display_name: @group.name[0..59],
-        type: @group.public? ? 'O' : 'I' # Open vs Invite-only
-      }
+      # The user that creates the team will be Team Admin
+      response = Mattermost::Team.new(current_user).create(group, options)
+
+      ChatTeam.create(namespace: group, name: response['name'], team_id: response['id'])
     end
   end
 end
