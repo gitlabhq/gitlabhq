@@ -4,6 +4,8 @@
     %span.cred (Blocked)
   - if @user.admin
     %span.cred (Admin)
+  - if @user.auditor
+    %span.cred (Auditor)
 
   .pull-right
     - unless @user == current_user || @user.blocked?

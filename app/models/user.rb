@@ -957,6 +957,23 @@ class User < ActiveRecord::Base
     Gitlab::UserActivities::ActivitySet.record(self)
   end
 
+  def access_level
+    if admin?
+      :admin
+    elsif auditor?
+      :auditor
+    else
+      :regular
+    end
+  end
+
+  def access_level=(new_level)
+    # new_level can be a symbol or a string
+    new_level = new_level.to_s
+    self.admin = (new_level == :admin)
+    self.auditor = (new_level == :auditor)
+  end
+
   private
 
   def ci_projects_union
