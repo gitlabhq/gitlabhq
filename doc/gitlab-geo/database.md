@@ -32,11 +32,11 @@ and `secondary` as either `slave` or `standby` server (read-only).
 
 The following guide assumes that:
 
-- You are using PostgreSQL 9.1 or later which includes the
-  [`pg_basebackup` tool][pgback]. As of this writing, the latest Omnibus
-  packages (8.5) have version 9.2.
+- You are using PostgreSQL 9.2 or later which includes the
+  [`pg_basebackup` tool][pgback]. If you are using Omnibus it includes the required
+  PostgreSQL version for Geo.
 - You have a primary server already set up (the GitLab server you are
-  replicating from), running PostgreSQL 9.2.x, and you
+  replicating from), running Omnibus' PostgreSQL (or equivalent version), and you
   have a new secondary server set up on the same OS and PostgreSQL version. If
   you are using Omnibus, make sure the GitLab version is the same on all nodes.
 - The IP of the primary server for our examples will be `1.2.3.4`, whereas the
@@ -182,6 +182,7 @@ The following guide assumes that:
     postgresql['max_wal_senders'] = 10
     postgresql['wal_keep_segments'] = 10
     postgresql['hot_standby'] = "on"
+    gitlab_rails['auto_migrate'] = false # prevents migrations to be executed on the secondary server
     ```
 
 1. [Reconfigure GitLab][] for the changes to take effect.
