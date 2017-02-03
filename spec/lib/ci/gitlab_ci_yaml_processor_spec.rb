@@ -4,33 +4,6 @@ module Ci
   describe GitlabCiYamlProcessor, lib: true do
     let(:path) { 'path' }
 
-    describe '#build_attributes' do
-      context 'Coverage entry' do
-        subject { described_class.new(config, path).build_attributes(:rspec) }
-
-        let(:config_base) { { rspec: { script: "rspec" } } }
-        let(:config) { YAML.dump(config_base) }
-
-        context 'when config has coverage set at the global scope' do
-          before do
-            config_base.update(coverage: '/\(\d+\.\d+\) covered/')
-          end
-
-          context "and 'rspec' job doesn't have coverage set" do
-            it { is_expected.to include(coverage_regex: '\(\d+\.\d+\) covered') }
-          end
-
-          context "but 'rspec' job also has coverage set" do
-            before do
-              config_base[:rspec][:coverage] = '/Code coverage: \d+\.\d+/'
-            end
-
-            it { is_expected.to include(coverage_regex: 'Code coverage: \d+\.\d+') }
-          end
-        end
-      end
-    end
-
     describe "#builds_for_ref" do
       let(:type) { 'test' }
 
@@ -48,7 +21,6 @@ module Ci
           stage_idx: 1,
           name: "rspec",
           commands: "pwd\nrspec",
-          coverage_regex: nil,
           tag_list: [],
           options: {},
           allow_failure: false,
@@ -463,7 +435,6 @@ module Ci
           stage_idx: 1,
           name: "rspec",
           commands: "pwd\nrspec",
-          coverage_regex: nil,
           tag_list: [],
           options: {
             image: "ruby:2.1",
@@ -492,7 +463,6 @@ module Ci
           stage_idx: 1,
           name: "rspec",
           commands: "pwd\nrspec",
-          coverage_regex: nil,
           tag_list: [],
           options: {
             image: "ruby:2.5",
@@ -732,7 +702,6 @@ module Ci
           stage_idx: 1,
           name: "rspec",
           commands: "pwd\nrspec",
-          coverage_regex: nil,
           tag_list: [],
           options: {
             image: "ruby:2.1",
@@ -944,7 +913,6 @@ module Ci
             stage_idx: 1,
             name: "normal_job",
             commands: "test",
-            coverage_regex: nil,
             tag_list: [],
             options: {},
             when: "on_success",
@@ -990,7 +958,6 @@ module Ci
             stage_idx: 0,
             name: "job1",
             commands: "execute-script-for-job",
-            coverage_regex: nil,
             tag_list: [],
             options: {},
             when: "on_success",
@@ -1003,7 +970,6 @@ module Ci
             stage_idx: 0,
             name: "job2",
             commands: "execute-script-for-job",
-            coverage_regex: nil,
             tag_list: [],
             options: {},
             when: "on_success",
