@@ -138,7 +138,8 @@ class GroupsController < Groups::ApplicationController
       :public,
       :request_access_enabled,
       :share_with_group_lock,
-      :visibility_level
+      :visibility_level,
+      :create_chat_team
     ]
   end
 

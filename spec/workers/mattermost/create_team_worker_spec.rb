@@ -7,15 +7,30 @@ describe Mattermost::CreateTeamWorker do
   describe '.perform' do
     subject { described_class.new.perform(group.id, admin.id) }
 
-    before do
-      allow_any_instance_of(Mattermost::Team).
-        to receive(:create).
-        with(name: "path", display_name: "name", type: "O").
-        and_return('name' => 'my team', 'id' => 'sjfkdlwkdjfwlkfjwf')
+    context 'succesfull request to mattermost' do
+      before do
+        allow_any_instance_of(Mattermost::Team).
+          to receive(:create).
+          with(group, {}).
+          and_return('name' => 'my team', 'id' => 'sjfkdlwkdjfwlkfjwf')
+      end
+
+      it 'creates a new chat team' do
+        expect { subject }.to change { ChatTeam.count }.from(0).to(1)
+      end
     end
 
-    it 'creates a new chat team' do
-      expect { subject }.to change { ChatTeam.count }.from(0).to(1)
+    context 'connection trouble' do
+      before do
+        allow_any_instance_of(Mattermost::Team).
+          to receive(:create).
+          with(group, {}).
+          and_raise(Mattermost::ClientError.new('Undefined error'))
+      end
+
+      it 'does not rescue the error' do
+        expect { subject }.to raise_error(Mattermost::ClientError)
+      end
     end
   end
 end

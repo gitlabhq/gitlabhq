@@ -5,6 +5,8 @@ module Groups
     end
 
     def execute
+      create_chat_team = params.delete(:create_chat_team)
+
       @group = Group.new(params)
 
       unless Gitlab::VisibilityLevel.allowed_for?(current_user, params[:visibility_level])
@@ -23,7 +25,7 @@ module Groups
       @group.save
       @group.add_owner(current_user)
 
-      if params[:create_chat_team] && Gitlab.config.mattermost.enabled
+      if create_chat_team && Gitlab.config.mattermost.enabled
         Mattermost::CreateTeamWorker.perform_async(@group.id, current_user.id)
       end
 
