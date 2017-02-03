@@ -24,7 +24,7 @@ class Projects::ApplicationController < ApplicationController
       end
 
       project_path = "#{namespace}/#{id}"
-      @project = Project.find_with_namespace(project_path)
+      @project = Project.find_by_full_path(project_path)
 
       if can?(current_user, :read_project, @project) && !@project.pending_delete?
         if @project.path_with_namespace != project_path

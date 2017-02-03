@@ -3,8 +3,8 @@
 > [Introduced][ce-7810] in GitLab 8.16.
 
 When [PlantUML](http://plantuml.com) integration is enabled and configured in
-GitLab we are able to create simple diagrams in AsciiDoc documents created in
-snippets, wikis, and repos.
+GitLab we are able to create simple diagrams in AsciiDoc and Markdown documents
+created in snippets, wikis, and repos.
 
 ## PlantUML Server
 
@@ -54,7 +54,7 @@ that, login with an Admin account and do following:
 ## Creating Diagrams
 
 With PlantUML integration enabled and configured, we can start adding diagrams to
-our AsciiDoc snippets, wikis and repos using blocks:
+our AsciiDoc snippets, wikis and repos using delimited blocks:
 
 ```
 [plantuml, format="png", id="myDiagram", width="200px"]
@@ -64,7 +64,14 @@ Alice -> Bob : Go Away
 --
 ```
 
-The above block will be converted to an HTML img tag with source pointing to the
+And in Markdown using fenced code blocks:
+
+    ```plantuml
+    Bob -> Alice : hello
+    Alice -> Bob : Go Away
+    ```
+
+The above blocks will be converted to an HTML img tag with source pointing to the
 PlantUML instance. If the PlantUML server is correctly configured, this should
 render a nice diagram instead of the block:
 
@@ -77,7 +84,7 @@ Inside the block you can add any of the supported diagrams by PlantUML such as
 and [Object](http://plantuml.com/object-diagram) diagrams. You do not need to use the PlantUML
 diagram delimiters `@startuml`/`@enduml` as these are replaced by the AsciiDoc `plantuml` block.
 
-Some parameters can be added to the block definition:
+Some parameters can be added to the AsciiDoc block definition:
 
  - *format*: Can be either `png` or `svg`. Note that `svg` is not supported by
    all browsers so use with care. The default is `png`.
@@ -85,3 +92,4 @@ Some parameters can be added to the block definition:
  - *width*: Width attribute added to the img tag.
  - *height*: Height attribute added to the img tag.
 
+Markdown does not support any parameters and will always use PNG format.

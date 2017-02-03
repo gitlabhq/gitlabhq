@@ -4,7 +4,8 @@ module Commits
     class ChangeError < StandardError; end
 
     def execute
-      @source_project = params[:source_project] || @project
+      @start_project = params[:start_project] || @project
+      @start_branch = params[:start_branch]
       @target_branch = params[:target_branch]
       @commit = params[:commit]
       @create_merge_request = params[:create_merge_request].present?
@@ -25,13 +26,28 @@ module Commits
     def commit_change(action)
       raise NotImplementedError unless repository.respond_to?(action)
 
-      into = @create_merge_request ? @commit.public_send("#{action}_branch_name") : @target_branch
-      tree_id = repository.public_send("check_#{action}_content", @commit, @target_branch)
+      if @create_merge_request
+        into = @commit.public_send("#{action}_branch_name")
+        tree_branch = @start_branch
+      else
+        into = tree_branch = @target_branch
+      end
+
+      tree_id = repository.public_send(
+        "check_#{action}_content", @commit, tree_branch)
 
       if tree_id
-        create_target_branch(into) if @create_merge_request
+        validate_target_branch(into) if @create_merge_request
 
-        repository.public_send(action, current_user, @commit, into, tree_id)
+        repository.public_send(
+          action,
+          current_user,
+          @commit,
+          into,
+          tree_id,
+          start_project: @start_project,
+          start_branch_name: @start_branch)
+
         success
       else
         error_msg = "Sorry, we cannot #{action.to_s.dasherize} this #{@commit.change_type_title(current_user)} automatically.
@@ -50,12 +66,12 @@ module Commits
       true
     end
 
-    def create_target_branch(new_branch)
+    def validate_target_branch(new_branch)
       # Temporary branch exists and contains the change commit
-      return success if repository.find_branch(new_branch)
+      return if repository.find_branch(new_branch)
 
-      result = CreateBranchService.new(@project, current_user)
-                                  .execute(new_branch, @target_branch, source_project: @source_project)
+      result = ValidateNewBranchService.new(@project, current_user)
+        .execute(new_branch)
 
       if result[:status] == :error
         raise ChangeError, "There was an error creating the source branch: #{result[:message]}"

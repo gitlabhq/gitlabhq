@@ -34,9 +34,9 @@ class Spinach::Features::ProjectGraph < Spinach::FeatureSteps
 
   step 'page should have CI graphs' do
     expect(page).to have_content 'Overall'
-    expect(page).to have_content 'Builds for last week'
-    expect(page).to have_content 'Builds for last month'
-    expect(page).to have_content 'Builds for last year'
+    expect(page).to have_content 'Jobs for last week'
+    expect(page).to have_content 'Jobs for last month'
+    expect(page).to have_content 'Jobs for last year'
     expect(page).to have_content 'Commit duration in minutes for last 30 commits'
   end
 

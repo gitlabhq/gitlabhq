@@ -15,7 +15,7 @@
     - else
       %span.api.monospace API
     - if pipeline.latest?
-      %span.label.label-success.has-tooltip{ title: 'Latest build for this branch' } latest
+      %span.label.label-success.has-tooltip{ title: 'Latest job for this branch' } latest
     - if pipeline.triggered?
       %span.label.label-primary triggered
     - if pipeline.yaml_errors.present?
@@ -78,7 +78,7 @@
         .btn-group.inline
           - if actions.any?
             .btn-group
-              %button.dropdown-toggle.btn.btn-default.has-tooltip.js-pipeline-dropdown-manual-actions{ type: 'button', title: 'Manual build', data: { toggle: 'dropdown', placement: 'top' }, 'aria-label' => 'Manual build' }
+              %button.dropdown-toggle.btn.btn-default.has-tooltip.js-pipeline-dropdown-manual-actions{ type: 'button', title: 'Manual job', data: { toggle: 'dropdown', placement: 'top' }, 'aria-label' => 'Manual job' }
                 = custom_icon('icon_play')
                 = icon('caret-down', 'aria-hidden' => 'true')
               %ul.dropdown-menu.dropdown-menu-align-right

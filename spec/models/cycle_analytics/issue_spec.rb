@@ -33,14 +33,12 @@ describe 'CycleAnalytics#issue', models: true do
 
   context "when a regular label (instead of a list label) is added to the issue" do
     it "returns nil" do
-      5.times do
-        regular_label = create(:label)
-        issue = create(:issue, project: project)
-        issue.update(label_ids: [regular_label.id])
+      regular_label = create(:label)
+      issue = create(:issue, project: project)
+      issue.update(label_ids: [regular_label.id])
 
-        create_merge_request_closing_issue(issue)
-        merge_merge_requests_closing_issue(issue)
-      end
+      create_merge_request_closing_issue(issue)
+      merge_merge_requests_closing_issue(issue)
 
       expect(subject[:issue].median).to be_nil
     end

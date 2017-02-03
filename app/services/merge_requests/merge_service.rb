@@ -6,12 +6,16 @@ module MergeRequests
   # Executed when you do merge via GitLab UI
   #
   class MergeService < MergeRequests::BaseService
-    attr_reader :merge_request
+    attr_reader :merge_request, :source
 
     def execute(merge_request)
       @merge_request = merge_request
 
       return log_merge_error('Merge request is not mergeable', true) unless @merge_request.mergeable?
+
+      @source = find_merge_source
+
+      return log_merge_error('No source for merge', true) unless @source
 
       merge_request.in_locked_state do
         if commit
@@ -34,7 +38,7 @@ module MergeRequests
         committer: committer
       }
 
-      commit_id = repository.merge(current_user, merge_request, options)
+      commit_id = repository.merge(current_user, source, merge_request, options)
 
       if commit_id
         merge_request.update(merge_commit_sha: commit_id)
@@ -73,9 +77,11 @@ module MergeRequests
     end
 
     def merge_request_info
-      project = merge_request.project
+      merge_request.to_reference(full: true)
+    end
 
-      "#{project.to_reference}#{merge_request.to_reference}"
+    def find_merge_source
+      merge_request.diff_head_sha
     end
   end
 end

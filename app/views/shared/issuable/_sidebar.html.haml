@@ -130,7 +130,7 @@
           .value.issuable-show-labels.hide-collapsed{ class: ("has-labels" if selected_labels.any?) }
             - if selected_labels.any?
               - selected_labels.each do |label|
-                = link_to_label(label, type: issuable.to_ability_name)
+                = link_to_label(label, subject: issuable.project, type: issuable.to_ability_name)
             - else
               %span.no-value None
           .selectbox.hide-collapsed
