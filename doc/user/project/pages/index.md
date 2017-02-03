@@ -432,3 +432,4 @@ For a list of known issues, visit GitLab's [public issue tracker].
 [pages-jekyll]: https://gitlab.com/pages/jekyll
 [metarefresh]: https://en.wikipedia.org/wiki/Meta_refresh
 [public issue tracker]: https://gitlab.com/gitlab-org/gitlab-ee/issues?label_name=Pages
+[ce-14605]: https://gitlab.com/gitlab-org/gitlab-ce/issues/14605
