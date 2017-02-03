@@ -7,6 +7,7 @@ window.Vue = require('vue');
 window.Vue.use(require('vue-resource'));
 require('../services/environments_service');
 require('./environment_item');
+require('../../vue_pagination/index');
 
 (() => {
   window.gl = window.gl || {};
@@ -79,7 +80,9 @@ require('./environment_item');
       return gl.environmentsService.all()
         .then(resp => resp.json())
         .then((json) => {
-          this.store.storeEnvironments(json);
+          this.store.storeAvailableCount(json.available_count);
+          this.store.storeStoppedCount(json.stopped_count);
+          this.store.storeEnvironments(json.environments);
         })
         .then(() => {
           this.isLoading = false;
@@ -131,7 +134,8 @@ require('./environment_item');
                   {{state.availableCounter}}
                 </span>
               </a>
-            </li><li v-bind:class="{ 'active' : scope === 'stopped' }">
+            </li>
+            <li v-bind:class="{ 'active' : scope === 'stopped' }">
               <a :href="projectStoppedEnvironmentsPath">
                 Stopped
                 <span class="badge js-stopped-environments-count">

@@ -42,8 +42,26 @@
       return filteredEnvironments;
     },
 
-    storeCounts() {
-      //TODO
+    /**
+     * Stores the number of available environments.
+     *
+     * @param  {Number} count = 0
+     * @return {Number}
+     */
+    storeAvailableCount(count = 0) {
+      this.state.availableCounter = count;
+      return count;
+    },
+
+    /**
+     * Stores the number of closed environments.
+     *
+     * @param  {Number} count = 0
+     * @return {Number}
+     */
+    storeStoppedCount(count = 0) {
+      this.state.stoppedCounter = count;
+      return count;
     },
 
   };

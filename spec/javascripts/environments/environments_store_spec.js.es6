@@ -22,7 +22,7 @@ require('./mock_data');
 
       it('should store environments', () => {
         expect(
-          gl.environmentsList.EnvironmentsStore.state.environments.length
+          gl.environmentsList.EnvironmentsStore.state.environments.length,
         ).toBe(environmentsList.length);
       });
     });
