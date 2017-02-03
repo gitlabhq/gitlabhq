@@ -50,7 +50,6 @@
         secondTab.click();
 
         expect(historySpy).toHaveBeenCalledWith({
-          turbolinks: true,
           url: newState,
         }, document.title, newState);
       });

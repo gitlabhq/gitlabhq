@@ -6,8 +6,6 @@
 /*= require lib/utils/common_utils */
 /*= require lib/utils/type_utility */
 /*= require fuzzaldrin-plus */
-/*= require turbolinks */
-/*= require jquery.turbolinks */
 
 (function() {
   var addBodyAttributes, assertLinks, dashboardIssuesPath, dashboardMRsPath, groupIssuesPath, groupMRsPath, groupName, mockDashboardOptions, mockGroupOptions, mockProjectOptions, projectIssuesPath, projectMRsPath, projectName, userId, widget;

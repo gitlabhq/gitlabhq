@@ -99,7 +99,6 @@
         });
         newState = this.subject('commits');
         expect(this.spies.history).toHaveBeenCalledWith({
-          turbolinks: true,
           url: newState
         }, document.title, newState);
       });
