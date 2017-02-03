@@ -1,5 +1,6 @@
 /* global Vue */
-
+/* eslint-disable */
+//= require ./milestone_select
 (() => {
   window.gl = window.gl || {};
   window.gl.issueBoards = window.gl.issueBoards || {};
@@ -25,8 +26,11 @@
         milestoneDropdownOpen: false,
       };
     },
+    components: {
+      'board-milestone-select': gl.issueBoards.BoardMilestoneSelect,
+    },
     mounted() {
-      if (this.currentBoard && Object.keys(this.currentBoard).length && this.currentPage === 'edit') {
+      if (this.currentBoard && Object.keys(this.currentBoard).length && this.currentPage !== 'new') {
         this.board = Vue.util.extend({}, this.currentBoard);
       }
     },
@@ -45,6 +49,13 @@
 
         return 'Milestone';
       },
+      submitDisabled() {
+        if (this.currentPage !== 'milestone') {
+          return board.name === '';
+        }
+
+        return false;
+      },
     },
     methods: {
       loadMilestones() {
@@ -60,14 +71,12 @@
       submit() {
         gl.boardService.createBoard(this.board)
           .then(() => {
-            if (this.currentBoard && this.currentPage === 'edit') {
+            if (this.currentBoard && this.currentPage !== 'new') {
               this.currentBoard.name = this.board.name;
 
               if (this.board.milestone_id) {
                 this.currentBoard.milestone_id = this.board.milestone_id;
-                this.currentBoard.milestone = {
-                  title: this.board.milestone.title,
-                },
+                this.currentBoard.milestone = this.board.milestone;
 
                 Store.state.filters.milestone_title = this.currentBoard.milestone.title;
               }

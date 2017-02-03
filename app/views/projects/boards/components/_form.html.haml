@@ -10,7 +10,7 @@
         id: "board-new-name",
         "v-model" => "board.name" }
     .dropdown{ ":class" => "{ open: milestoneDropdownOpen }",
-      "v-if" => "currentPage !== 'edit'" }
+      "v-if" => "currentPage === 'new'" }
       %label.label-light{ for: "board-milestone" }
         Board milestone
       %button.dropdown-menu-toggle.wide{ type: "button",
@@ -28,9 +28,12 @@
         = dropdown_loading
       %span
         Only show issues scheduled for the selected milestone
+    %board-milestone-select{ ":milestone-path" => "milestonePath",
+      ":select-milestone" => "selectMilestone",
+      ":board" => "board" }
     .clearfix.prepend-top-10
       %button.btn.btn-primary.pull-left{ type: "submit",
-        ":disabled" => "board.name === ''",
+        ":disabled" => "submitDisabled",
         "ref" => "'submit-btn'" }
         {{ buttonText }}
       %button.btn.btn-default.pull-right{ type: "button",
