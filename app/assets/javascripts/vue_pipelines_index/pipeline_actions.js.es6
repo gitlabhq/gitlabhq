@@ -52,6 +52,7 @@
                 class="dropdown-toggle btn btn-default build-artifacts has-tooltip js-pipeline-dropdown-download"
                 title="Artifacts"
                 data-placement="top"
+                data-toggle="dropdown"
                 aria-label="Artifacts"
               >
                 <i class="fa fa-download" aria-hidden="true"></i>
