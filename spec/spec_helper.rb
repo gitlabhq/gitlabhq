@@ -2,12 +2,16 @@ require './spec/simplecov_env'
 SimpleCovEnv.start!
 
 ENV["RAILS_ENV"] ||= 'test'
+ENV["IN_MEMORY_APPLICATION_SETTINGS"] = 'true'
 
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
 require 'shoulda/matchers'
-require 'sidekiq/testing/inline'
 require 'rspec/retry'
+
+if ENV['RSPEC_PROFILING_POSTGRES_URL'] || ENV['RSPEC_PROFILING']
+  require 'rspec_profiling/rspec'
+end
 
 if ENV['CI'] && !ENV['NO_KNAPSACK']
   require 'knapsack'

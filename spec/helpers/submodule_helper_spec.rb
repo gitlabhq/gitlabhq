@@ -116,7 +116,7 @@ describe SubmoduleHelper do
 
     context 'submodules with relative links' do
       let(:group) { create(:group, name: "Master Project", path: "master-project") }
-      let(:project) { create(:project, group: group) }
+      let(:project) { create(:empty_project, group: group) }
       let(:commit_id) { sample_commit[:id] }
 
       before do
@@ -145,7 +145,7 @@ describe SubmoduleHelper do
 
       context 'personal project' do
         let(:user) { create(:user) }
-        let(:project) { create(:project, namespace: user.namespace) }
+        let(:project) { create(:empty_project, namespace: user.namespace) }
 
         it 'one level down with personal project' do
           result = relative_self_links('../test.git', commit_id)

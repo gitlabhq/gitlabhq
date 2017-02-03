@@ -8,12 +8,12 @@
 //= require ./mock_data
 
 describe('Environment', () => {
-  preloadFixtures('environments/environments');
+  preloadFixtures('static/environments/environments.html.raw');
 
   let component;
 
   beforeEach(() => {
-    loadFixtures('environments/environments');
+    loadFixtures('static/environments/environments.html.raw');
   });
 
   describe('successfull request', () => {

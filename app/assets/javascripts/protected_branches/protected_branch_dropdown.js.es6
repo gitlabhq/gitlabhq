@@ -49,7 +49,7 @@ class ProtectedBranchDropdown {
   onClickCreateWildcard() {
     // Refresh the dropdown's data, which ends up calling `getProtectedBranches`
     this.$dropdown.data('glDropdown').remote.execute();
-    this.$dropdown.data('glDropdown').selectRowAtIndex(0);
+    this.$dropdown.data('glDropdown').selectRowAtIndex();
   }
 
   getProtectedBranches(term, callback) {

@@ -115,6 +115,46 @@ describe IssuablesHelper do
     end
   end
 
+  describe '#issuable_reference' do
+    context 'when show_full_reference truthy' do
+      it 'display issuable full reference' do
+        assign(:show_full_reference, true)
+        issue = build_stubbed(:issue)
+
+        expect(helper.issuable_reference(issue)).to eql(issue.to_reference(full: true))
+      end
+    end
+
+    context 'when show_full_reference falsey' do
+      context 'when @group present' do
+        it 'display issuable reference to @group' do
+          project = build_stubbed(:project)
+
+          assign(:show_full_reference, nil)
+          assign(:group, project.namespace)
+
+          issue = build_stubbed(:issue)
+
+          expect(helper.issuable_reference(issue)).to eql(issue.to_reference(project.namespace))
+        end
+      end
+
+      context 'when @project present' do
+        it 'display issuable reference to @project' do
+          project = build_stubbed(:project)
+
+          assign(:show_full_reference, nil)
+          assign(:group, nil)
+          assign(:project, project)
+
+          issue = build_stubbed(:issue)
+
+          expect(helper.issuable_reference(issue)).to eql(issue.to_reference(project))
+        end
+      end
+    end
+  end
+
   describe '#issuable_filter_present?' do
     it 'returns true when any key is present' do
       allow(helper).to receive(:params).and_return(

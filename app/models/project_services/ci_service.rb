@@ -8,7 +8,7 @@ class CiService < Service
     self.respond_to?(:token) && self.token.present? && ActiveSupport::SecurityUtils.variable_size_secure_compare(token, self.token)
   end
 
-  def supported_events
+  def self.supported_events
     %w(push)
   end
 

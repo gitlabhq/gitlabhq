@@ -1,0 +1,4 @@
+---
+title: Add project ID index to `project_authorizations` table to optimize queries
+merge_request:
+author:

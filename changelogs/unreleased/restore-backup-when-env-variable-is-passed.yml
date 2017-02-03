@@ -1,4 +1,0 @@
----
-title: Restore backup correctly when "BACKUP" environment variable is passed
-merge_request: 8477
-author:

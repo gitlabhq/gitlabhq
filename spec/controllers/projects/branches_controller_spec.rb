@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Projects::BranchesController do
-  let(:project)   { create(:project) }
+  let(:project)   { create(:project, :repository) }
   let(:user)      { create(:user) }
   let(:developer) { create(:user) }
 

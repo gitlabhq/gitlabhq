@@ -62,4 +62,30 @@ describe('GfmAutoComplete', function () {
       });
     });
   });
+
+  describe('isLoading', function () {
+    it('should be true with loading data object item', function () {
+      expect(GfmAutoComplete.isLoading({ name: 'loading' })).toBe(true);
+    });
+
+    it('should be true with loading data array', function () {
+      expect(GfmAutoComplete.isLoading(['loading'])).toBe(true);
+    });
+
+    it('should be true with loading data object array', function () {
+      expect(GfmAutoComplete.isLoading([{ name: 'loading' }])).toBe(true);
+    });
+
+    it('should be false with actual array data', function () {
+      expect(GfmAutoComplete.isLoading([
+        { title: 'Foo' },
+        { title: 'Bar' },
+        { title: 'Qux' },
+      ])).toBe(false);
+    });
+
+    it('should be false with actual data item', function () {
+      expect(GfmAutoComplete.isLoading({ title: 'Foo' })).toBe(false);
+    });
+  });
 });

@@ -67,21 +67,17 @@
                   = sort_title_oldest_created
 
 
-.prepend-top-default
+.js-todos-all
   - if @todos.any?
     .js-todos-options{ data: {per_page: @todos.limit_value, current_page: @todos.current_page, total_pages: @todos.total_pages} }
-    - @todos.group_by(&:project).each do |group|
-      .panel.panel-default.panel-small
-        - project = group[0]
-        .panel-heading
-          = link_to project.name_with_namespace, namespace_project_path(project.namespace, project)
-
+      .panel.panel-default.panel-small.panel-without-border
         %ul.content-list.todos-list
-          = render group[1]
+          = render @todos
     = paginate @todos, theme: "gitlab"
+
   - elsif current_user.todos.any?
     .todos-all-done
-      = render "shared/empty_states/todos_all_done.svg"
+      = render "shared/empty_states/icons/todos_all_done.svg"
       - if todos_filter_empty?
         %h4.text-center
           = Gitlab.config.gitlab.no_todos_messages.sample
@@ -98,7 +94,7 @@
   - else
     .todos-empty
       .todos-empty-hero
-        = render "shared/empty_states/todos_empty.svg"
+        = render "shared/empty_states/icons/todos_empty.svg"
       .todos-empty-content
         %h4
           Todos let you see what you should do next.

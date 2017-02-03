@@ -10,13 +10,16 @@ module Gitlab
       def find_for_git_client(login, password, project:, ip:)
         raise "Must provide an IP for rate limiting" if ip.nil?
 
+        # `user_with_password_for_git` should be the last check
+        # because it's the most expensive, especially when LDAP
+        # is enabled.
         result =
           service_request_check(login, password, project) ||
           build_access_token_check(login, password) ||
-          user_with_password_for_git(login, password) ||
-          oauth_access_token_check(login, password) ||
           lfs_token_check(login, password) ||
+          oauth_access_token_check(login, password) ||
           personal_access_token_check(login, password) ||
+          user_with_password_for_git(login, password) ||
           Gitlab::Auth::Result.new
 
         rate_limit!(ip, success: result.success?, login: login)
@@ -143,7 +146,9 @@ module Gitlab
             read_authentication_abilities
           end
 
-        Result.new(actor, nil, token_handler.type, authentication_abilities) if Devise.secure_compare(token_handler.token, password)
+        if Devise.secure_compare(token_handler.token, password)
+          Gitlab::Auth::Result.new(actor, nil, token_handler.type, authentication_abilities)
+        end
       end
 
       def build_access_token_check(login, password)

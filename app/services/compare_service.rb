@@ -3,23 +3,27 @@ require 'securerandom'
 # Compare 2 branches for one repo or between repositories
 # and return Gitlab::Git::Compare object that responds to commits and diffs
 class CompareService
-  def execute(source_project, source_branch, target_project, target_branch, straight: false)
-    source_commit = source_project.commit(source_branch)
-    return unless source_commit
+  attr_reader :start_project, :start_branch_name
 
-    source_sha = source_commit.sha
+  def initialize(new_start_project, new_start_branch_name)
+    @start_project = new_start_project
+    @start_branch_name = new_start_branch_name
+  end
 
+  def execute(target_project, target_branch, straight: false)
     # If compare with other project we need to fetch ref first
-    unless target_project == source_project
-      random_string = SecureRandom.hex
+    target_project.repository.with_repo_branch_commit(
+      start_project.repository,
+      start_branch_name) do |commit|
+      break unless commit
 
-      target_project.repository.fetch_ref(
-        source_project.repository.path_to_repo,
-        "refs/heads/#{source_branch}",
-        "refs/tmp/#{random_string}/head"
-      )
+      compare(commit.sha, target_project, target_branch, straight)
     end
+  end
 
+  private
+
+  def compare(source_sha, target_project, target_branch, straight)
     raw_compare = Gitlab::Git::Compare.new(
       target_project.repository.raw_repository,
       target_branch,

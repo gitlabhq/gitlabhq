@@ -294,15 +294,17 @@
 
   .container-fluid {
     position: relative;
+
+    .nav-control {
+      @media (max-width: $screen-sm-max) {
+        margin-right: 75px;
+      }
+    }
   }
 
   .controls {
     float: right;
     padding: 7px 0 0;
-
-    @media (max-width: $screen-sm-max) {
-      display: none;
-    }
 
     i {
       color: $layout-link-gray;
@@ -361,6 +363,7 @@
   .fade-left {
     @include fade(right, $gray-light);
     left: -5px;
+    text-align: center;
 
     .fa {
       left: -7px;

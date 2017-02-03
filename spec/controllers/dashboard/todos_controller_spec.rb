@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Dashboard::TodosController do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:empty_project) }
   let(:todo_service) { TodoService.new }
 
   describe 'GET #index' do

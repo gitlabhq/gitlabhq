@@ -17,11 +17,11 @@ class IrkerService < Service
     'gateway.'
   end
 
-  def to_param
+  def self.to_param
     'irker'
   end
 
-  def supported_events
+  def self.supported_events
     %w(push)
   end
 

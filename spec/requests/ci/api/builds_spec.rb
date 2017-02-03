@@ -91,6 +91,20 @@ describe Ci::API::Builds do
           expect { register_builds }.to change { runner.reload.contacted_at }
         end
 
+        context 'when concurrently updating build' do
+          before do
+            expect_any_instance_of(Ci::Build).to receive(:run!).
+              and_raise(ActiveRecord::StaleObjectError.new(nil, nil))
+          end
+
+          it 'returns a conflict' do
+            register_builds info: { platform: :darwin }
+
+            expect(response).to have_http_status(409)
+            expect(response.headers).not_to have_key('X-GitLab-Last-Update')
+          end
+        end
+
         context 'registry credentials' do
           let(:registry_credentials) do
             { 'type' => 'registry',
@@ -274,7 +288,7 @@ describe Ci::API::Builds do
         expect(build.reload.trace).to eq 'BUILD TRACE'
       end
 
-      context 'build has been erased' do
+      context 'job has been erased' do
         let(:build) { create(:ci_build, runner_id: runner.id, erased_at: Time.now) }
 
         it 'responds with forbidden' do
@@ -444,7 +458,7 @@ describe Ci::API::Builds do
       before { build.run! }
 
       describe "POST /builds/:id/artifacts/authorize" do
-        context "should authorize posting artifact to running build" do
+        context "authorizes posting artifact to running build" do
           it "using token as parameter" do
             post authorize_url, { token: build.token }, headers
 
@@ -478,7 +492,7 @@ describe Ci::API::Builds do
           end
         end
 
-        context "should fail to post too large artifact" do
+        context "fails to post too large artifact" do
           it "using token as parameter" do
             stub_application_setting(max_artifacts_size: 0)
 

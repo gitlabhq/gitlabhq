@@ -26,15 +26,11 @@ module Gitlab
           end
 
           def action_icon
-            'play'
+            'icon_action_play'
           end
 
           def action_title
             'Play'
-          end
-
-          def action_class
-            'ci-play-icon'
           end
 
           def action_path

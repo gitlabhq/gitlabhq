@@ -10,9 +10,9 @@
         // IE11 will return a relative pathname while other browsers will return a full pathname.
         // parseUrl uses an anchor element for parsing an url. With relative urls, the anchor
         // element will create an absolute url relative to the current execution context.
-        // The JavaScript test suite is executed at '/teaspoon' which will lead to an absolute
-        // url starting with '/teaspoon'.
-        expect(gl.utils.parseUrl('" test="asf"').pathname).toEqual('/teaspoon/%22%20test=%22asf%22');
+        // The JavaScript test suite is executed at '/' which will lead to an absolute url
+        // starting with '/'.
+        expect(gl.utils.parseUrl('" test="asf"').pathname).toContain('/%22%20test=%22asf%22');
       });
     });
 
@@ -42,14 +42,35 @@
     });
 
     describe('gl.utils.getParameterByName', () => {
+      beforeEach(() => {
+        window.history.pushState({}, null, '?scope=all&p=2');
+      });
+
       it('should return valid parameter', () => {
-        const value = gl.utils.getParameterByName('reporter');
-        expect(value).toBe('Console');
+        const value = gl.utils.getParameterByName('scope');
+        expect(value).toBe('all');
       });
 
       it('should return invalid parameter', () => {
         const value = gl.utils.getParameterByName('fakeParameter');
         expect(value).toBe(null);
+      });
+    });
+
+    describe('gl.utils.normalizedHeaders', () => {
+      it('should upperCase all the header keys to keep them consistent', () => {
+        const apiHeaders = {
+          'X-Something-Workhorse': { workhorse: 'ok' },
+          'x-something-nginx': { nginx: 'ok' },
+        };
+
+        const normalized = gl.utils.normalizeHeaders(apiHeaders);
+
+        const WORKHORSE = 'X-SOMETHING-WORKHORSE';
+        const NGINX = 'X-SOMETHING-NGINX';
+
+        expect(normalized[WORKHORSE].workhorse).toBe('ok');
+        expect(normalized[NGINX].nginx).toBe('ok');
       });
     });
   });

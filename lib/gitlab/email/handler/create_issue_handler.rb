@@ -5,6 +5,7 @@ module Gitlab
   module Email
     module Handler
       class CreateIssueHandler < BaseHandler
+        include ReplyProcessing
         attr_reader :project_path, :incoming_email_token
 
         def initialize(mail, mail_key)
@@ -33,7 +34,7 @@ module Gitlab
         end
 
         def project
-          @project ||= Project.find_with_namespace(project_path)
+          @project ||= Project.find_by_full_path(project_path)
         end
 
         private

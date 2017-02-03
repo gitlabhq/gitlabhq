@@ -16,7 +16,7 @@ module Gitlab
       private
 
       def serialize(event)
-        AnalyticsIssueSerializer.new(project: @project).represent(event).as_json
+        AnalyticsIssueSerializer.new(project: @project).represent(event)
       end
     end
   end

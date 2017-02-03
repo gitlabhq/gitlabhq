@@ -19,6 +19,10 @@ feature 'Environment', :feature do
       visit_environment(environment)
     end
 
+    scenario 'shows environment name' do
+      expect(page).to have_content(environment.name)
+    end
+
     context 'without deployments' do
       scenario 'does show no deployments' do
         expect(page).to have_content('You don\'t have any deployments right now.')

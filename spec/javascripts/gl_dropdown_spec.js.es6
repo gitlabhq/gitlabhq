@@ -44,6 +44,7 @@
 
   describe('Dropdown', function describeDropdown() {
     preloadFixtures('static/gl_dropdown.html.raw');
+    loadJSONFixtures('projects.json');
 
     function initDropDown(hasRemote, isFilterable) {
       this.dropdownButtonElement = $('#js-project-dropdown', this.dropdownContainerElement).glDropdown({

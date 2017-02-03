@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Checks::ChangeAccess, lib: true do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
 
   context "exit code checking" do
     it "does not raise a runtime error if the `popen` call to git returns a zero exit code" do

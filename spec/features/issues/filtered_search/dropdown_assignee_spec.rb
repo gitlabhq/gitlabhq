@@ -125,7 +125,7 @@ describe 'Dropdown assignee', js: true, feature: true do
       click_assignee(user_jacob.name)
 
       expect(page).to have_css(js_dropdown_assignee, visible: false)
-      expect(filtered_search.value).to eq("assignee:@#{user_jacob.username}")
+      expect(filtered_search.value).to eq("assignee:@#{user_jacob.username} ")
     end
 
     it 'fills in the assignee username when the assignee has been filtered' do
@@ -133,14 +133,14 @@ describe 'Dropdown assignee', js: true, feature: true do
       click_assignee(user.name)
 
       expect(page).to have_css(js_dropdown_assignee, visible: false)
-      expect(filtered_search.value).to eq("assignee:@#{user.username}")
+      expect(filtered_search.value).to eq("assignee:@#{user.username} ")
     end
 
     it 'selects `no assignee`' do
       find('#js-dropdown-assignee .filter-dropdown-item', text: 'No Assignee').click
 
       expect(page).to have_css(js_dropdown_assignee, visible: false)
-      expect(filtered_search.value).to eq("assignee:none")
+      expect(filtered_search.value).to eq("assignee:none ")
     end
   end
 
@@ -167,6 +167,24 @@ describe 'Dropdown assignee', js: true, feature: true do
       filtered_search.set('milestone:%v1.0 assignee:')
 
       expect(page).to have_css(js_dropdown_assignee, visible: true)
+    end
+  end
+
+  describe 'caching requests' do
+    it 'caches requests after the first load' do
+      filtered_search.set('assignee')
+      send_keys_to_filtered_search(':')
+      initial_size = dropdown_assignee_size
+
+      expect(initial_size).to be > 0
+
+      new_user = create(:user)
+      project.team << [new_user, :master]
+      find('.filtered-search-input-container .clear-search').click
+      filtered_search.set('assignee')
+      send_keys_to_filtered_search(':')
+
+      expect(dropdown_assignee_size).to eq(initial_size)
     end
   end
 end

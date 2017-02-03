@@ -99,6 +99,15 @@ feature 'Setup Mattermost slash commands', feature: true do
       expect(select_element.all('option').count).to eq(3)
     end
 
+    it 'shows an error alert with the error message if there is an error requesting teams' do
+      allow_any_instance_of(MattermostSlashCommandsService).to receive(:list_teams) { [[], 'test mattermost error message'] }
+
+      click_link 'Add to Mattermost'
+
+      expect(page).to have_selector('.alert')
+      expect(page).to have_content('test mattermost error message')
+    end
+
     def stub_teams(count: 0)
       teams = create_teams(count)
 

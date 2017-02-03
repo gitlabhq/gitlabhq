@@ -1,10 +1,9 @@
 require 'spec_helper'
 
 describe Projects::CommitController do
-  let(:project)  { create(:project) }
+  let(:project)  { create(:project, :repository) }
   let(:user)     { create(:user) }
   let(:commit)   { project.commit("master") }
-  let(:pipeline) { create(:ci_pipeline, project: project, commit: commit) }
   let(:master_pickable_sha) { '7d3b0f7cff5f37573aea97cebfd5692ea1689924' }
   let(:master_pickable_commit)  { project.commit(master_pickable_sha) }
 
@@ -322,11 +321,26 @@ describe Projects::CommitController do
     end
 
     context 'when the commit exists' do
-      context 'when the commit has one or more pipelines' do
-        it 'shows pipelines' do
-          get_pipelines(id: commit.id)
+      context 'when the commit has pipelines' do
+        before do
+          create(:ci_pipeline, project: project, sha: commit.id)
+        end
 
-          expect(response).to be_ok
+        context 'when rendering a HTML format' do
+          it 'shows pipelines' do
+            get_pipelines(id: commit.id)
+
+            expect(response).to be_ok
+          end
+        end
+
+        context 'when rendering a JSON format' do
+          it 'responds with serialized pipelines' do
+            get_pipelines(id: commit.id, format: :json)
+
+            expect(response).to be_ok
+            expect(JSON.parse(response.body)).not_to be_empty
+          end
         end
       end
     end

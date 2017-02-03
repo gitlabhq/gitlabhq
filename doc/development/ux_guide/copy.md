@@ -102,6 +102,12 @@ When using the <kbd>Alt</kbd> keystrokes in Windows, use the numeric keypad, not
 ## Terminology
 Only use the terms in the tables below.
 
+### Projects and Groups
+
+| Term | Use | :no_entry_sign: Don't |
+| ---- | --- | ----- |
+| Members | When discussing the people who are a part of a project or a group. | Don't use `users`. |
+
 ### Issues
 
 #### Adjectives (states)
@@ -117,7 +123,7 @@ Use `5 open issues` and don’t use `5 pending issues`.
 
 #### Verbs (actions)
 
-| Term | Use | Don’t |
+| Term | Use | :no_entry_sign: Don’t |
 | ---- | --- | --- |
 | Add | Add an issue | Don’t use `create` or `new` |
 | View | View an open or closed issue ||
@@ -158,7 +164,7 @@ The form should be titled `Edit issue`. The submit button should be labeled `Sav
 
 #### Verbs (actions)
 
-| Term | Use | Don’t |
+| Term | Use | :no_entry_sign: Don’t |
 | ---- | --- | --- |
 | Add | Add a merge request | Do not use `create` or `new` |
 | View | View an open or merged merge request ||

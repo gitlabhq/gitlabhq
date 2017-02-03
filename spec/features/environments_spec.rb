@@ -194,7 +194,7 @@ feature 'Environments page', :feature, :js do
         end
 
         scenario 'does create a new pipeline' do
-          expect(page).to have_content('Production')
+          expect(page).to have_content('production')
         end
       end
 

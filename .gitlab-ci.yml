@@ -35,7 +35,6 @@ stages:
 .dedicated-runner: &dedicated-runner
   tags:
     - gitlab-org
-    - 2gb
 
 .knapsack-state: &knapsack-state
   services: []
@@ -108,7 +107,7 @@ setup-test-env:
   <<: *dedicated-runner
   stage: prepare
   script:
-    - bundle exec rake assets:precompile 2>/dev/null
+    - bundle exec rake gitlab:assets:compile 2>/dev/null
     - bundle exec ruby -Ispec -e 'require "spec_helper" ; TestEnv.init'
   artifacts:
     expire_in: 7d
@@ -272,7 +271,7 @@ rake db:migrate:reset:
   <<: *use-db
   <<: *dedicated-runner
   script:
-    - rake db:migrate:reset
+    - bundle exec rake db:migrate:reset
 
 rake db:seed_fu:
   stage: test
@@ -303,7 +302,7 @@ teaspoon:
   script:
     - npm install
     - npm link istanbul
-    - rake teaspoon
+    - bundle exec rake teaspoon
   artifacts:
     name: coverage-javascript
     expire_in: 31d
@@ -354,10 +353,10 @@ migration paths:
     - cp config/resque.yml.example config/resque.yml
     - sed -i 's/localhost/redis/g' config/resque.yml
     - bundle install --without postgres production --jobs $(nproc) $FLAGS --retry=3
-    - rake db:drop db:create db:schema:load db:seed_fu
+    - bundle exec rake db:drop db:create db:schema:load db:seed_fu
     - git checkout $CI_BUILD_REF
     - source scripts/prepare_build.sh
-    - rake db:migrate
+    - bundle exec rake db:migrate
 
 coverage:
   stage: post-test

@@ -3,6 +3,20 @@ require 'spec_helper'
 describe Gitlab::Ci::Config::Entry::Job do
   let(:entry) { described_class.new(config, name: :rspec) }
 
+  describe '.nodes' do
+    context 'when filtering all the entry/node names' do
+      subject { described_class.nodes.keys }
+
+      let(:result) do
+        %i[before_script script stage type after_script cache
+           image services only except variables artifacts
+           environment coverage]
+      end
+
+      it { is_expected.to match_array result }
+    end
+  end
+
   describe 'validations' do
     before { entry.compose! }
 

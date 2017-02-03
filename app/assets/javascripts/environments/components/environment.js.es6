@@ -180,9 +180,9 @@
                 <tr>
                   <th class="environments-name">Environment</th>
                   <th class="environments-deploy">Last deployment</th>
-                  <th class="environments-build">Build</th>
+                  <th class="environments-build">Job</th>
                   <th class="environments-commit">Commit</th>
-                  <th class="environments-date">Created</th>
+                  <th class="environments-date">Updated</th>
                   <th class="hidden-xs environments-actions"></th>
                 </tr>
               </thead>

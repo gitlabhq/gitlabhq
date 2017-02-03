@@ -1,6 +1,5 @@
 /* eslint-disable no-restricted-properties, func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, no-use-before-define, camelcase, no-unused-expressions, quotes, max-len, one-var, one-var-declaration-per-line, default-case, prefer-template, consistent-return, no-alert, no-return-assign, no-param-reassign, prefer-arrow-callback, no-else-return, comma-dangle, no-new, brace-style, no-lonely-if, vars-on-top, no-unused-vars, no-sequences, no-shadow, newline-per-chained-call, no-useless-escape */
 /* global Flash */
-/* global GLForm */
 /* global Autosave */
 /* global ResolveService */
 /* global mrRefreshWidgetUrl */
@@ -220,7 +219,6 @@
       })(this));
     };
 
-
     /*
     Increase @pollingInterval up to 120 seconds on every function call,
     if `shouldReset` has a truthy value, 'null' or 'undefined' the variable
@@ -243,7 +241,6 @@
       }
       return this.initRefresh();
     };
-
 
     Notes.prototype.handleCreateChanges = function(note) {
       if (typeof note === 'undefined') {
@@ -294,7 +291,6 @@
       }
     };
 
-
     /*
     Check if note does not exists on page
      */
@@ -306,7 +302,6 @@
     Notes.prototype.isParallelView = function() {
       return this.view === 'parallel';
     };
-
 
     /*
     Render note in discussion area.
@@ -358,7 +353,6 @@
       return this.updateNotesCount(1);
     };
 
-
     /*
     Called in response the main target form has been successfully submitted.
 
@@ -390,7 +384,6 @@
       return form.find(".js-note-text").trigger("input");
     };
 
-
     /*
     Shows the main form and does some setup on it.
 
@@ -415,7 +408,6 @@
       return this.parentTimeline = form.parents('.timeline');
     };
 
-
     /*
     General note form setup.
 
@@ -427,11 +419,10 @@
 
     Notes.prototype.setupNoteForm = function(form) {
       var textarea;
-      new GLForm(form);
+      new gl.GLForm(form);
       textarea = form.find(".js-note-text");
       return new Autosave(textarea, ["Note", form.find("#note_noteable_type").val(), form.find("#note_noteable_id").val(), form.find("#note_commit_id").val(), form.find("#note_type").val(), form.find("#note_line_code").val(), form.find("#note_position").val()]);
     };
-
 
     /*
     Called in response to the new note form being submitted
@@ -447,7 +438,6 @@
     Notes.prototype.addNoteError = function(xhr, note, status) {
       return new Flash('Your comment could not be submitted! Please check your network connection and try again.', 'alert', this.parentTimeline);
     };
-
 
     /*
     Called in response to the new note form being submitted
@@ -473,7 +463,6 @@
       this.removeDiscussionNoteForm($form);
     };
 
-
     /*
     Called in response to the edit note form being submitted
 
@@ -498,7 +487,6 @@
       }
     };
 
-
     Notes.prototype.checkContentToAllowEditing = function($el) {
       var initialContent = $el.find('.original-note-content').text().trim();
       var currentContent = $el.find('.note-textarea').val();
@@ -521,7 +509,6 @@
 
       return isAllowed;
     };
-
 
     /*
     Called in response to clicking the edit note link
@@ -550,7 +537,6 @@
       $note.addClass('is-editting');
       this.putEditFormInPlace($target);
     };
-
 
     /*
     Called in response to clicking the edit note link
@@ -596,7 +582,6 @@
       return form.find('.js-note-text').val(form.find('form.edit-note').data('original-note'));
     };
 
-
     /*
     Called in response to deleting a note of any kind.
 
@@ -636,7 +621,6 @@
       return this.updateNotesCount(-1);
     };
 
-
     /*
     Called in response to clicking the delete attachment link
 
@@ -652,7 +636,6 @@
       note.find(".note-header").show();
       return note.find(".current-note-edit-form").remove();
     };
-
 
     /*
     Called when clicking on the "reply" button for a diff line.
@@ -672,7 +655,6 @@
       // show the form
       return this.setupDiscussionNoteForm(replyLink, form);
     };
-
 
     /*
     Shows the diff or discussion form and does some setup on it.
@@ -714,7 +696,6 @@
         .removeClass('js-main-target-form')
         .addClass("discussion-form js-discussion-note-form");
     };
-
 
     /*
     Called when clicking on the "add a comment" button on the side of a diff line.
@@ -772,7 +753,6 @@
       }
     };
 
-
     /*
     Called in response to "cancel" on a diff note form.
 
@@ -806,7 +786,6 @@
       return this.removeDiscussionNoteForm(form);
     };
 
-
     /*
     Called after an attachment file has been selected.
 
@@ -820,7 +799,6 @@
       filename = $(this).val().replace(/^.*[\\\/]/, "");
       return form.find(".js-attachment-filename").text(filename);
     };
-
 
     /*
     Called when the tab visibility changes
@@ -905,7 +883,7 @@
       var targetId = $originalContentEl.data('target-id');
       var targetType = $originalContentEl.data('target-type');
 
-      new GLForm($editForm.find('form'));
+      new gl.GLForm($editForm.find('form'));
 
       $editForm.find('form')
         .attr('action', postUrl)

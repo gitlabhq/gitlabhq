@@ -24,7 +24,7 @@ describe Milestone, models: true do
     it { is_expected.to have_many(:issues) }
   end
 
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:empty_project, :public) }
   let(:milestone) { create(:milestone, project: project) }
   let(:issue) { create(:issue, project: project) }
   let(:user) { create(:user) }
@@ -44,7 +44,7 @@ describe Milestone, models: true do
     end
 
     it "accepts the same title in another project" do
-      project = build(:project)
+      project = build(:empty_project)
       new_milestone = Milestone.new(project: project, title: milestone.title)
 
       expect(new_milestone).to be_valid
@@ -257,7 +257,7 @@ describe Milestone, models: true do
     end
 
     it 'supports a cross-project reference' do
-      another_project = build(:project, name: 'another-project', namespace: project.namespace)
+      another_project = build(:empty_project, name: 'another-project', namespace: project.namespace)
       expect(milestone.to_reference(another_project)).to eq "sample-project%1"
     end
   end

@@ -3,6 +3,10 @@ module Gitlab
     module Status
       module Stage
         class Factory < Status::Factory
+          def self.extended_statuses
+            [Status::SuccessWarning]
+          end
+
           def self.common_helpers
             Status::Stage::Common
           end

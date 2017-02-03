@@ -201,7 +201,12 @@
     .stage-container {
       display: inline-block;
       position: relative;
-      margin-right: 6px;
+      height: 22px;
+      margin: 3px 6px 3px 0;
+
+      .tooltip {
+        white-space: nowrap;
+      }
 
       .tooltip-inner {
         padding: 3px 4px;
@@ -210,9 +215,9 @@
       &:not(:last-child) {
         &::after {
           content: '';
-          width: 8px;
+          width: 7px;
           position: absolute;
-          right: -8px;
+          right: -7px;
           top: 10px;
           border-bottom: 2px solid $border-color;
         }
@@ -287,6 +292,10 @@
           width: 12px;
         }
       }
+    }
+
+    .tooltip {
+      white-space: nowrap;
     }
   }
 
@@ -486,31 +495,27 @@
 
     // Action Icons in big pipeline-graph nodes
     > .ci-action-icon-container .ci-action-icon-wrapper {
-      i {
-        color: $border-color;
-        border-radius: 100%;
-        border: 1px solid $border-color;
-        padding: 5px 6px;
-        font-size: 13px;
-        background: $white-light;
-        height: 30px;
-        width: 30px;
+      height: 30px;
+      width: 30px;
+      background: $white-light;
+      border: 1px solid $border-color;
+      border-radius: 100%;
+      display: block;
 
-        &::before {
-          position: relative;
-          top: 3px;
-          left: 3px;
-        }
-
-        &:hover {
-          color: $gl-text-color;
-          background-color: $stage-hover-bg;
-          border: 1px solid $stage-hover-bg;
-        }
+      &:hover {
+        background-color: $stage-hover-bg;
+        border: 1px solid $stage-hover-bg;
       }
 
-      .ci-play-icon {
-        padding: 5px 5px 5px 7px;
+      svg {
+        fill: $border-color;
+        position: relative;
+        left: -1px;
+        top: -1px;
+      }
+
+      &:hover svg {
+        fill: $gl-text-color;
       }
     }
 
@@ -649,7 +654,7 @@
   font-weight: 100;
   font-size: 15px;
   position: absolute;
-  right: 5px;
+  right: 13px;
   top: 8px;
 }
 
@@ -817,10 +822,22 @@
 
     &:hover,
     &:focus {
-      text-decoration: none;
-      color: $gl-text-color;
       background-color: $stage-hover-bg;
       border: 1px solid transparent;
+    }
+
+    svg {
+      width: 22px;
+      height: 22px;
+      left: -6px;
+      position: relative;
+      top: -3px;
+      fill: $action-icon-color;
+    }
+
+    &:hover svg,
+    &:focus svg {
+      fill: $gl-text-color;
     }
   }
 

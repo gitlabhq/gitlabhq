@@ -89,7 +89,7 @@ module SearchHelper
       {
         category: "Groups",
         id: group.id,
-        label: "#{search_result_sanitize(group.name)}",
+        label: "#{search_result_sanitize(group.full_name)}",
         url: group_path(group)
       }
     end

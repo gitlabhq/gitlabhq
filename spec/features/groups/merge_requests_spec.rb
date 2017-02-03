@@ -7,7 +7,7 @@ feature 'Group merge requests page', feature: true do
   include_examples 'project features apply to issuables', MergeRequest
 
   context 'archived issuable' do
-    let(:project_archived) { create(:project, group: group, merge_requests_access_level: ProjectFeature::ENABLED, archived: true) }
+    let(:project_archived) { create(:project, :archived, group: group, merge_requests_access_level: ProjectFeature::ENABLED) }
     let(:issuable_archived) { create(:merge_request, source_project: project_archived, target_project: project_archived, title: 'issuable of an archived project') }
     let(:access_level) { ProjectFeature::ENABLED }
     let(:user) { user_in_group }

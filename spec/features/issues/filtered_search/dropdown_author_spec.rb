@@ -121,14 +121,14 @@ describe 'Dropdown author', js: true, feature: true do
       click_author(user_jacob.name)
 
       expect(page).to have_css(js_dropdown_author, visible: false)
-      expect(filtered_search.value).to eq("author:@#{user_jacob.username}")
+      expect(filtered_search.value).to eq("author:@#{user_jacob.username} ")
     end
 
     it 'fills in the author username when the author has been filtered' do
       click_author(user.name)
 
       expect(page).to have_css(js_dropdown_author, visible: false)
-      expect(filtered_search.value).to eq("author:@#{user.username}")
+      expect(filtered_search.value).to eq("author:@#{user.username} ")
     end
   end
 
@@ -155,6 +155,24 @@ describe 'Dropdown author', js: true, feature: true do
       filtered_search.set('milestone:%v1.0 author:')
 
       expect(page).to have_css(js_dropdown_author, visible: true)
+    end
+  end
+
+  describe 'caching requests' do
+    it 'caches requests after the first load' do
+      filtered_search.set('author')
+      send_keys_to_filtered_search(':')
+      initial_size = dropdown_author_size
+
+      expect(initial_size).to be > 0
+
+      new_user = create(:user)
+      project.team << [new_user, :master]
+      find('.filtered-search-input-container .clear-search').click
+      filtered_search.set('author')
+      send_keys_to_filtered_search(':')
+
+      expect(dropdown_author_size).to eq(initial_size)
     end
   end
 end
