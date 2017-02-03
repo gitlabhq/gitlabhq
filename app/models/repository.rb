@@ -9,12 +9,9 @@ class Repository
   attr_accessor :path_with_namespace, :project
 
   CommitError = Class.new(StandardError)
-<<<<<<< HEAD
 
   MIRROR_REMOTE = "upstream"
   MIRROR_GEO = "geo"
-=======
->>>>>>> ce/master
 
   # Methods that cache data from the Git repository.
   #
@@ -73,17 +70,14 @@ class Repository
     @raw_repository ||= Gitlab::Git::Repository.new(path_to_repo)
   end
 
-<<<<<<< HEAD
   def storage_path
     @project.repository_storage_path
   end
 
-=======
->>>>>>> ce/master
   # Return absolute path to repository
   def path_to_repo
     @path_to_repo ||= File.expand_path(
-      File.join(storage_path, path_with_namespace + ".git")
+      File.join(@project.repository_storage_path, path_with_namespace + ".git")
     )
   end
 
@@ -191,13 +185,10 @@ class Repository
     find_branch(branch_name)
   end
 
-<<<<<<< HEAD
   def push_remote_branches(remote, branches)
     gitlab_shell.push_remote_branches(storage_path, path_with_namespace, remote, branches)
   end
 
-=======
->>>>>>> ce/master
   def add_tag(user, tag_name, target, message = nil)
     newrev = commit(target).try(:id)
     options = { message: message, tagger: user_to_committer(user) } if message
@@ -219,13 +210,10 @@ class Repository
     true
   end
 
-<<<<<<< HEAD
   def delete_remote_branches(remote, branches)
     gitlab_shell.delete_remote_branches(storage_path, path_with_namespace, remote, branches)
   end
 
-=======
->>>>>>> ce/master
   def rm_tag(user, tag_name)
     before_remove_tag
     tag = find_tag(tag_name)
@@ -234,7 +222,6 @@ class Repository
 
     after_remove_tag
     true
-<<<<<<< HEAD
   end
 
   def config
@@ -269,8 +256,6 @@ class Repository
     gitlab_shell.list_remote_tags(storage_path, path_with_namespace, remote).map do |name, target|
       Gitlab::Git::Tag.new(raw_repository, name, target)
     end
-=======
->>>>>>> ce/master
   end
 
   def ref_names
@@ -820,7 +805,6 @@ class Repository
 
   alias_method :branches, :local_branches
 
-<<<<<<< HEAD
   def remote_branches(remote_name)
     branches = []
 
@@ -854,25 +838,6 @@ class Repository
         check_tree_entry_for_dir(start_branch_name, path)
     end
 
-=======
-  def tags
-    @tags ||= raw_repository.tags
-  end
-
-  # rubocop:disable Metrics/ParameterLists
-  def commit_dir(
-    user, path,
-    message:, branch_name:,
-    author_email: nil, author_name: nil,
-    start_branch_name: nil, start_project: project)
-    check_tree_entry_for_dir(branch_name, path)
-
-    if start_branch_name
-      start_project.repository.
-        check_tree_entry_for_dir(start_branch_name, path)
-    end
-
->>>>>>> ce/master
     commit_file(
       user,
       "#{path}/.gitkeep",
@@ -1025,7 +990,6 @@ class Repository
     end
   end
 
-<<<<<<< HEAD
   def ff_merge(user, source, target_branch, merge_request: nil)
     our_commit = rugged.branches[target_branch].target
     their_commit =
@@ -1034,18 +998,10 @@ class Repository
       else
         rugged.lookup(source)
       end
-=======
-  def merge(user, source, merge_request, options = {})
-    GitOperationService.new(user, self).with_branch(
-      merge_request.target_branch) do |start_commit|
-      our_commit = start_commit.sha
-      their_commit = source
->>>>>>> ce/master
 
-      raise 'Invalid merge target' unless our_commit
-      raise 'Invalid merge source' unless their_commit
+    raise 'Invalid merge target' if our_commit.nil?
+    raise 'Invalid merge source' if their_commit.nil?
 
-<<<<<<< HEAD
     GitOperationService.new(user, self).with_branch(
       target_branch) do |start_commit|
       if merge_request
@@ -1065,8 +1021,6 @@ class Repository
       raise 'Invalid merge target' unless our_commit
       raise 'Invalid merge source' unless their_commit
 
-=======
->>>>>>> ce/master
       merge_index = rugged.merge_commits(our_commit, their_commit)
       break if merge_index.conflicts?
 
