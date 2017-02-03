@@ -808,5 +808,5 @@ Get JetBrains TeamCity CI service settings for a project.
 GET /projects/:id/services/teamcity
 ```
 
-[jira-doc]: ../project_services/jira.md
+[jira-doc]: ../user/project/integrations/jira.md
 [old-jira-api]: https://gitlab.com/gitlab-org/gitlab-ce/blob/8-13-stable/doc/api/services.md#jira
