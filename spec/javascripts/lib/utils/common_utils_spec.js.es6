@@ -41,6 +41,19 @@ require('~/lib/utils/common_utils');
       });
     });
 
+    describe('gl.utils.handleLocationHash', () => {
+      beforeEach(() => {
+        window.history.pushState({}, null, '#definição');
+      });
+
+      it('decodes hash parameter', () => {
+        spyOn(window.document, 'getElementById').and.callThrough();
+        gl.utils.handleLocationHash();
+        expect(window.document.getElementById).toHaveBeenCalledWith('definição');
+        expect(window.document.getElementById).toHaveBeenCalledWith('user-content-definição');
+      });
+    });
+
     describe('gl.utils.getParameterByName', () => {
       beforeEach(() => {
         window.history.pushState({}, null, '?scope=all&p=2');
