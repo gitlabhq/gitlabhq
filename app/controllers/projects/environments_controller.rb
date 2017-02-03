@@ -16,7 +16,9 @@ class Projects::EnvironmentsController < Projects::ApplicationController
       format.html
       format.json do
         render json: EnvironmentSerializer
-          .new(project: @project, user: current_user)
+          .new(project: @project, user: @current_user)
+          .with_pagination(request, response)
+          .within_folders
           .represent(@environments)
       end
     end

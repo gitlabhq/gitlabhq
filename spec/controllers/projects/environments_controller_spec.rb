@@ -3,9 +3,13 @@ require 'spec_helper'
 describe Projects::EnvironmentsController do
   include ApiHelpers
 
-  let(:environment) { create(:environment) }
-  let(:project)     { environment.project }
-  let(:user)        { create(:user) }
+  let(:user) { create(:user) }
+  let(:project) { create(:empty_project) }
+
+  let(:environment) do
+    create(:environment, name: 'production',
+                         project: project)
+  end
 
   before do
     project.team << [user, :master]
@@ -22,14 +26,20 @@ describe Projects::EnvironmentsController do
       end
     end
 
-    context 'when requesting JSON response' do
+    context 'when requesting JSON response for folders' do
+      before do
+        create(:environment, project: project, name: 'staging/review-1')
+        create(:environment, project: project, name: 'staging/review-2')
+      end
+
       it 'responds with correct JSON' do
         get :index, environment_params(format: :json)
 
-        first_environment = json_response.first
-
-        expect(first_environment).not_to be_empty
-        expect(first_environment['name']). to eq environment.name
+        expect(json_response.count).to eq 2
+        expect(json_response.first['name']).to eq 'production'
+        expect(json_response.second['name']).to eq 'staging'
+        expect(json_response.second['size']).to eq 2
+        expect(json_response.second['latest']['name']).to eq 'staging/review-2'
       end
     end
   end
