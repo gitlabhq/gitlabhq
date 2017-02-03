@@ -51,7 +51,7 @@
       },
       submitDisabled() {
         if (this.currentPage !== 'milestone') {
-          return board.name === '';
+          return this.board.name === '';
         }
 
         return false;

@@ -28,7 +28,8 @@
         = dropdown_loading
       %span
         Only show issues scheduled for the selected milestone
-    %board-milestone-select{ ":milestone-path" => "milestonePath",
+    %board-milestone-select{ "v-if" => "currentPage == 'milestone'",
+      ":milestone-path" => "milestonePath",
       ":select-milestone" => "selectMilestone",
       ":board" => "board" }
     .clearfix.prepend-top-10
