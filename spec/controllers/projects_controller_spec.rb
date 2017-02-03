@@ -213,6 +213,17 @@ describe ProjectsController do
         expect(response.status).to eq 404
       end
     end
+
+    context "redirection from http://someproject.git" do
+      it 'redirects to project page (format.html)' do
+        project = create(:project, :public)
+
+        get :show, namespace_id: project.namespace.path, id: project.path, format: :git
+
+        expect(response).to have_http_status(302)
+        expect(response).to redirect_to(namespace_project_path)
+      end
+    end
   end
 
   describe "#update" do

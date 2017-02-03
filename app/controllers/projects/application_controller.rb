@@ -18,7 +18,7 @@ class Projects::ApplicationController < ApplicationController
       # to
       #   localhost/group/project
       #
-      if id =~ /\.git\Z/
+      if params[:format] == 'git'
         redirect_to request.original_url.gsub(/\.git\/?\Z/, '')
         return
       end
