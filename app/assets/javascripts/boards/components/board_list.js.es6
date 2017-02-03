@@ -23,6 +23,7 @@
       issues: Array,
       loading: Boolean,
       issueLinkBase: String,
+      rootPath: String,
     },
     data () {
       return {
