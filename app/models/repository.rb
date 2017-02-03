@@ -913,11 +913,11 @@ class Repository
     end
   end
 
-  def merge(user, merge_request, options = {})
+  def merge(user, source, merge_request, options = {})
     GitOperationService.new(user, self).with_branch(
       merge_request.target_branch) do |start_commit|
       our_commit = start_commit.sha
-      their_commit = merge_request.diff_head_sha
+      their_commit = source
 
       raise 'Invalid merge target' unless our_commit
       raise 'Invalid merge source' unless their_commit

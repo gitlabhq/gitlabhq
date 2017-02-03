@@ -15,7 +15,12 @@ describe Repository, models: true do
 
   let(:merge_commit) do
     merge_request = create(:merge_request, source_branch: 'feature', target_branch: 'master', source_project: project)
-    merge_commit_id = repository.merge(user, merge_request, commit_options)
+
+    merge_commit_id = repository.merge(user,
+                                       merge_request.diff_head_sha,
+                                       merge_request,
+                                       commit_options)
+
     repository.commit(merge_commit_id)
   end
 
@@ -1082,8 +1087,11 @@ describe Repository, models: true do
 
     it 'sets the `in_progress_merge_commit_sha` flag for the given merge request' do
       merge_request = create(:merge_request, source_branch: 'feature', target_branch: 'master', source_project: project)
-      merge_commit_id = repository.merge(user, merge_request, commit_options)
-      repository.commit(merge_commit_id)
+
+      merge_commit_id = repository.merge(user,
+                                         merge_request.diff_head_sha,
+                                         merge_request,
+                                         commit_options)
 
       expect(merge_request.in_progress_merge_commit_sha).to eq(merge_commit_id)
     end
