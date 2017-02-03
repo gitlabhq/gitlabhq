@@ -52,4 +52,53 @@ describe EnvironmentSerializer do
       expect(json).to be_an_instance_of Array
     end
   end
+
+  context 'when used with pagination' do
+    let(:request) { spy('request') }
+    let(:response) { spy('response') }
+    let(:resource) { Environment.all }
+    let(:pagination) { { page: 1, per_page: 2 } }
+
+    let(:serializer) do
+      described_class.new(project: project)
+        .with_pagination(request, response)
+    end
+
+    before do
+      allow(request).to receive(:query_parameters)
+        .and_return(pagination)
+    end
+
+    subject { serializer.represent(resource) }
+
+    it 'creates a paginated serializer' do
+      expect(serializer).to be_paginated
+    end
+
+    context 'when resource is paginatable relation' do
+      context 'when there is a single environment object in relation' do
+        before { create(:environment) }
+
+        it 'serializes environments' do
+          expect(subject.first).to have_key :id
+        end
+      end
+
+      context 'when multiple environment objects are serialized' do
+        before { create_list(:environment, 3) }
+
+        it 'serializes appropriate number of objects' do
+          expect(subject.count).to be 2
+        end
+
+        it 'appends relevant headers' do
+          expect(response).to receive(:[]=).with('X-Total', '3')
+          expect(response).to receive(:[]=).with('X-Total-Pages', '2')
+          expect(response).to receive(:[]=).with('X-Per-Page', '2')
+
+          subject
+        end
+      end
+    end
+  end
 end
