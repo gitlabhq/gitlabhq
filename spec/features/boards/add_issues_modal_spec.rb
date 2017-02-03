@@ -76,6 +76,27 @@ describe 'Issue Boards add issue modal', :feature, :js do
       end
     end
 
+    context 'list dropdown' do
+      it 'resets after deleting list' do
+        page.within('.add-issues-modal') do
+          expect(find('.add-issues-footer')).to have_button(planning.title)
+
+          click_button 'Cancel'
+        end
+
+        first('.board-delete').click
+
+        click_button('Add issues')
+
+        wait_for_vue_resource
+
+        page.within('.add-issues-modal') do
+          expect(find('.add-issues-footer')).not_to have_button(planning.title)
+          expect(find('.add-issues-footer')).to have_button(label.title)
+        end
+      end
+    end
+
     context 'search' do
       it 'returns issues' do
         page.within('.add-issues-modal') do

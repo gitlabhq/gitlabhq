@@ -11,7 +11,7 @@
         selectedIssues: [],
         showAddIssuesModal: false,
         activeTab: 'all',
-        selectedList: {},
+        selectedList: null,
         searchTerm: '',
         loading: false,
         loadingNewPage: false,

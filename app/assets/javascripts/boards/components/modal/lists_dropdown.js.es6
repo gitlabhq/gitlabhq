@@ -11,8 +11,11 @@
     },
     computed: {
       selected() {
-        return this.modal.selectedList;
+        return this.modal.selectedList || this.state.lists[0];
       },
+    },
+    destroyed() {
+      this.modal.selectedList = null;
     },
     template: `
       <div class="dropdown inline">

@@ -71,10 +71,6 @@ $(() => {
 
           Store.addBlankState();
           this.loading = false;
-
-          if (this.state.lists.length > 0) {
-            ModalStore.store.selectedList = this.state.lists[0];
-          }
         });
     }
   });
