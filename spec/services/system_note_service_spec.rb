@@ -752,13 +752,13 @@ describe SystemNoteService, services: true do
       it 'sets the note text' do
         noteable.update_attribute(:time_estimate, 277200)
 
-        expect(subject.note).to eq "Changed time estimate of this issue to 1w 4d 5h"
+        expect(subject.note).to eq "changed time estimate to 1w 4d 5h"
       end
     end
 
     context 'without a time estimate' do
       it 'sets the note text' do
-        expect(subject.note).to eq "Removed time estimate on this issue"
+        expect(subject.note).to eq "removed time estimate"
       end
     end
   end
@@ -782,7 +782,7 @@ describe SystemNoteService, services: true do
       it 'sets the note text' do
         spend_time!(277200)
 
-        expect(subject.note).to eq "Added 1w 4d 5h of time spent on this merge request"
+        expect(subject.note).to eq "added 1w 4d 5h of time spent"
       end
     end
 
@@ -790,7 +790,7 @@ describe SystemNoteService, services: true do
       it 'sets the note text' do
         spend_time!(-277200)
 
-        expect(subject.note).to eq "Subtracted 1w 4d 5h of time spent on this merge request"
+        expect(subject.note).to eq "subtracted 1w 4d 5h of time spent"
       end
     end
 
@@ -798,7 +798,7 @@ describe SystemNoteService, services: true do
       it 'sets the note text' do
         spend_time!(:reset)
 
-        expect(subject.note).to eq "Removed time spent on this merge request"
+        expect(subject.note).to eq "removed time spent"
       end
     end
 
