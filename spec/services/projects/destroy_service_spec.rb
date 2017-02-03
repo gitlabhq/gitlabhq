@@ -47,8 +47,9 @@ describe Projects::DestroyService, services: true do
     it_behaves_like 'deleting the project'
   end
 
-  context 'delete with pipeline' do # which has optimistic locking
+  context 'delete with pipeline and build' do # which has optimistic locking
     let!(:pipeline) { create(:ci_pipeline, project: project) }
+    let!(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
 
     before do
       expect(project).to receive(:destroy!).and_call_original
