@@ -3,7 +3,7 @@ class EnvironmentSerializer < BaseSerializer
 
   entity EnvironmentEntity
 
-  def with_folders
+  def within_folders
     tap { @itemize = true }
   end
 

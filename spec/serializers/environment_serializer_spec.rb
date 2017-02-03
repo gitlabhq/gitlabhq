@@ -53,6 +53,68 @@ describe EnvironmentSerializer do
     end
   end
 
+  context 'when representing environments within folders' do
+    let(:serializer) do
+      described_class.new(project: project).within_folders
+    end
+
+    let(:resource) { Environment.all }
+
+    subject { serializer.represent(resource) }
+
+    context 'when there is a single environment' do
+      before { create(:environment, name: 'staging') }
+
+      it 'represents one standalone environment' do
+        expect(subject.count).to eq 1
+        expect(subject.first[:name]).to eq 'staging'
+        expect(subject.first[:size]).to eq 1
+        expect(subject.first[:latest][:name]).to eq 'staging'
+      end
+    end
+
+    context 'when there are multiple environments in folder' do
+      before do
+        create(:environment, name: 'staging/my-review-1')
+        create(:environment, name: 'staging/my-review-2')
+      end
+
+      it 'represents one item that is a folder' do
+        expect(subject.count).to eq 1
+        expect(subject.first[:name]).to eq 'staging'
+        expect(subject.first[:size]).to eq 2
+        expect(subject.first[:latest][:name]).to eq 'staging/my-review-2'
+        expect(subject.first[:latest][:environment_type]).to eq 'staging'
+      end
+    end
+
+    context 'when there are multiple folders and standalone environments' do
+      before do
+        create(:environment, name: 'staging/my-review-1')
+        create(:environment, name: 'staging/my-review-2')
+        create(:environment, name: 'production/my-review-3')
+        create(:environment, name: 'testing')
+      end
+
+      it 'represents multiple items grouped within folders' do
+        expect(subject.count).to eq 3
+
+        expect(subject.first[:name]).to eq 'production'
+        expect(subject.first[:size]).to eq 1
+        expect(subject.first[:latest][:name]).to eq 'production/my-review-3'
+        expect(subject.first[:latest][:environment_type]).to eq 'production'
+        expect(subject.second[:name]).to eq 'staging'
+        expect(subject.second[:size]).to eq 2
+        expect(subject.second[:latest][:name]).to eq 'staging/my-review-2'
+        expect(subject.second[:latest][:environment_type]).to eq 'staging'
+        expect(subject.third[:name]).to eq 'testing'
+        expect(subject.third[:size]).to eq 1
+        expect(subject.third[:latest][:name]).to eq 'testing'
+        expect(subject.third[:latest][:environment_type]).to be_nil
+      end
+    end
+  end
+
   context 'when used with pagination' do
     let(:request) { spy('request') }
     let(:response) { spy('response') }
@@ -97,6 +159,27 @@ describe EnvironmentSerializer do
           expect(response).to receive(:[]=).with('X-Per-Page', '2')
 
           subject
+        end
+      end
+
+      context 'when grouping environments within folders' do
+        let(:serializer) do
+          described_class.new(project: project)
+            .with_pagination(request, response)
+            .within_folders
+        end
+
+        before do
+          create(:environment, name: 'staging/review-1')
+          create(:environment, name: 'staging/review-2')
+          create(:environment, name: 'production/deploy-3')
+          create(:environment, name: 'testing')
+        end
+
+        it 'paginates grouped items including ordering' do
+          expect(subject.count).to eq 2
+          expect(subject.first[:name]).to eq 'production'
+          expect(subject.second[:name]).to eq 'staging'
         end
       end
     end
