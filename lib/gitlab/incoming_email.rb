@@ -35,7 +35,9 @@ module Gitlab
       end
 
       def key_from_fallback_message_id(mail_id)
-        mail_id[/\Areply\-(.+)@#{Gitlab.config.gitlab.host}\z/, 1]
+        message_id_regexp = /\Areply\-(.+)@#{Gitlab.config.gitlab.host}\z/
+
+        mail_id[message_id_regexp, 1]
       end
 
       def scan_fallback_references(references)
