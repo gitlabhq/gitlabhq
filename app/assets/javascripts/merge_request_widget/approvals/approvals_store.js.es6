@@ -1,5 +1,6 @@
 /* global Vue */
-//= require ./approvals_api
+
+require('./approvals_api');
 
 (() => {
   let singleton;
@@ -62,4 +63,3 @@
   }
   gl.MergeRequestApprovalsStore = MergeRequestApprovalsStore;
 })(window.gl || (window.gl = {}));
-

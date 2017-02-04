@@ -1,5 +1,6 @@
 /* global Api */
-/*= require blob/template_selector */
+
+require('./template_selector');
 
 (() => {
   const global = window.gl || (window.gl = {});

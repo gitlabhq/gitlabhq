@@ -1,8 +1,8 @@
 /* eslint-disable space-before-function-paren, no-return-assign, no-var, quotes */
 /* global ShortcutsIssuable */
 
-/*= require copy_as_gfm */
-/*= require shortcuts_issuable */
+require('~/copy_as_gfm');
+require('~/shortcuts_issuable');
 
 (function() {
   describe('ShortcutsIssuable', function() {
@@ -53,13 +53,8 @@
           return expect(triggered).toBe(true);
         });
         return it('triggers `focus`', function() {
-          var focused;
-          focused = false;
-          $(this.selector).on('focus', function() {
-            return focused = true;
-          });
           this.shortcut.replyWithSelectedText();
-          return expect(focused).toBe(true);
+          expect(document.activeElement).toBe(document.querySelector(this.selector));
         });
       });
       describe('with a one-line selection', function() {

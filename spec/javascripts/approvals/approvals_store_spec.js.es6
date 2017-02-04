@@ -1,8 +1,8 @@
-//= require es6-promise.auto
-//= require jquery
-//= require vue
-//= require vue-resource
-//= require merge_request_widget/approvals/approvals_store
+/* eslint-disable import/newline-after-import */
+
+window.ES6Promise = require('vendor/es6-promise.auto');
+window.ES6Promise.polyfill();
+require('~/merge_request_widget/approvals/approvals_store');
 
 $.rails = {
   csrfToken() {},

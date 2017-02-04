@@ -1,11 +1,10 @@
 /* global Turbolinks */
 
-//= require turbolinks
-//= require lib/utils/common_utils
-//= require filtered_search/filtered_search_token_keys
-//= require filtered_search/filtered_search_tokenizer
-//= require filtered_search/filtered_search_dropdown_manager
-//= require filtered_search/filtered_search_manager
+require('~/lib/utils/common_utils');
+require('~/filtered_search/filtered_search_token_keys');
+require('~/filtered_search/filtered_search_tokenizer');
+require('~/filtered_search/filtered_search_dropdown_manager');
+require('~/filtered_search/filtered_search_manager');
 
 (() => {
   describe('Filtered Search Manager', () => {

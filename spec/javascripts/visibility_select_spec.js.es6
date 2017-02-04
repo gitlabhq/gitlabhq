@@ -1,4 +1,4 @@
-/*= require visibility_select */
+require('~/visibility_select');
 
 (() => {
   const VisibilitySelect = gl.VisibilitySelect;

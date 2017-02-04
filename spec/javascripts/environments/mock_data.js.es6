@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars */
+
 const environmentsList = [
   {
     id: 31,
@@ -134,6 +134,8 @@ const environmentsList = [
   },
 ];
 
+window.environmentsList = environmentsList;
+
 const environment = {
   id: 4,
   name: 'production',
@@ -147,3 +149,5 @@ const environment = {
   created_at: '2016-12-16T11:51:04.690Z',
   updated_at: '2016-12-16T12:04:51.133Z',
 };
+
+window.environment = environment;

@@ -1,11 +1,20 @@
 /* eslint-disable no-var, comma-dangle, object-shorthand */
 
-/*= require merge_request_tabs */
-//= require breakpoints
-//= require lib/utils/common_utils
-//= require jquery.scrollTo
+require('~/merge_request_tabs');
+require('~/breakpoints');
+require('~/lib/utils/common_utils');
+require('vendor/jquery.scrollTo');
 
 (function () {
+  // TODO: remove this hack!
+  // PhantomJS causes spyOn to panic because replaceState isn't "writable"
+  var phantomjs;
+  try {
+    phantomjs = !Object.getOwnPropertyDescriptor(window.history, 'replaceState').writable;
+  } catch (err) {
+    phantomjs = false;
+  }
+
   describe('MergeRequestTabs', function () {
     var stubLocation = {};
     var setLocation = function (stubs) {
@@ -22,9 +31,11 @@
       this.class = new gl.MergeRequestTabs({ stubLocation: stubLocation });
       setLocation();
 
-      this.spies = {
-        history: spyOn(window.history, 'replaceState').and.callFake(function () {})
-      };
+      if (!phantomjs) {
+        this.spies = {
+          history: spyOn(window.history, 'replaceState').and.callFake(function () {})
+        };
+      }
     });
 
     describe('#activateTab', function () {
@@ -98,10 +109,12 @@
           pathname: '/foo/bar/merge_requests/1'
         });
         newState = this.subject('commits');
-        expect(this.spies.history).toHaveBeenCalledWith({
-          turbolinks: true,
-          url: newState
-        }, document.title, newState);
+        if (!phantomjs) {
+          expect(this.spies.history).toHaveBeenCalledWith({
+            turbolinks: true,
+            url: newState
+          }, document.title, newState);
+        }
       });
       it('treats "show" like "notes"', function () {
         setLocation({

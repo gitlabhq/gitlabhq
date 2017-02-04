@@ -1,11 +1,11 @@
 /* eslint-disable no-new, class-methods-use-this */
 /* global Breakpoints */
 /* global Cookies */
-/* global DiffNotesApp */
 /* global Flash */
 
-/*= require js.cookie */
-/*= require breakpoints */
+require('./breakpoints');
+window.Cookies = require('vendor/js.cookie');
+require('./flash');
 
 /* eslint-disable max-len */
 // MergeRequestTabs

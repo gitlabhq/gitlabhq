@@ -1,5 +1,5 @@
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_tag('merge_request_widget/ci_bundle.js')
+  = page_specific_javascript_bundle_tag('merge_request_widget')
 
 %h4
   Set by #{link_to_member(@project, @merge_request.merge_user, avatar: true)}

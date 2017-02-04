@@ -1,11 +1,11 @@
-/* eslint-disable */
-//= require vue
-//= require jquery
-//= require vue_common_component/link_to_member_avatar
+/* eslint-disable guard-for-in, no-restricted-syntax */
+/* global Vue */
 
-((gl) => {
+require('~/vue_common_component/link_to_member_avatar');
+
+(() => {
   function initComponent(propsData = {}) {
-    fixture.set(`
+    setFixtures(`
       <div>
         <div id="mock-container"></div>
       </div>
@@ -20,28 +20,28 @@
 
     this.$document = $(document);
   }
-  describe('Link To Members Components', function() {
-    describe('Initialization', function() {
-      beforeEach(function() {
-         const propsData = this.propsData = {
-            avatarSize: 32,
-            avatarUrl: 'myavatarurl.com',
-            displayName: 'mydisplayname',
-            extraAvatarClass: 'myextraavatarclass',
-            extraLinkClass: 'myextralinkclass',
-            showTooltip: true,
-          };
-          initComponent.call(this, {
-            propsData
-          });
+  describe('Link To Members Components', function () {
+    describe('Initialization', function () {
+      beforeEach(function () {
+        const propsData = this.propsData = {
+          avatarSize: 32,
+          avatarUrl: 'myavatarurl.com',
+          displayName: 'mydisplayname',
+          extraAvatarClass: 'myextraavatarclass',
+          extraLinkClass: 'myextralinkclass',
+          showTooltip: true,
+        };
+        initComponent.call(this, {
+          propsData,
         });
+      });
 
-      it('should return a defined Vue component', function() {
+      it('should return a defined Vue component', function () {
         expect(this.component).toBeDefined();
         expect(this.component.$data).toBeDefined();
       });
 
-      it('should have <a> and <img> children', function() {
+      it('should have <a> and <img> children', function () {
         const componentLink = this.component.$el.querySelector('a');
         const componentImg = componentLink.querySelector('img');
 
@@ -49,7 +49,7 @@
         expect(componentImg).not.toBeNull();
       });
 
-      it('should correctly compute computed values', function(done) {
+      it('should correctly compute computed values', function (done) {
         const correctVals = {
           disabledClass: '',
           avatarSizeClass: 's32',
@@ -61,7 +61,7 @@
         };
 
         Vue.nextTick(() => {
-          for (var computedKey in correctVals) {
+          for (const computedKey in correctVals) {
             const expectedVal = correctVals[computedKey];
             const actualComputed = this.component[computedKey];
             expect(actualComputed).toBe(expectedVal);
@@ -71,4 +71,4 @@
       });
     });
   });
-})(window.gl || (window.gl = {}));
+})();

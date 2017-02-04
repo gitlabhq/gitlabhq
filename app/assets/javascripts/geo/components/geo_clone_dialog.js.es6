@@ -1,4 +1,5 @@
-/* global modal Vue */
+/* global Vue */
+
 (() => {
   window.gl = window.gl || {};
   window.gl.geo = window.gl.geo || {};

@@ -1,8 +1,6 @@
-/* global Vue eslint-disable fixture */
-//= require vue
-//= require underscore
-//= require jquery
-//= require merge_request_widget/approvals/components/approvals_body
+/* global Vue */
+
+require('~/merge_request_widget/approvals/components/approvals_body');
 
 (() => {
   gl.ApprovalsStore = {
@@ -15,7 +13,7 @@
   };
 
   function initApprovalsBodyComponent() {
-    fixture.set(`
+    setFixtures(`
       <div>
         <div id="mock-container"></div>
       </div>
@@ -128,4 +126,3 @@
     });
   });
 })(window.gl || (window.gl = {}));
-
