@@ -66,7 +66,13 @@ describe MergeRequests::ResolveService do
 
       context 'when the source project is a fork and does not contain the HEAD of the target branch' do
         let!(:target_head) do
-          project.repository.commit_file(user, 'new-file-in-target', '', 'Add new file in target', 'conflict-start', false)
+          project.repository.commit_file(
+            user,
+            'new-file-in-target',
+            '',
+            message: 'Add new file in target',
+            branch_name: 'conflict-start',
+            update: false)
         end
 
         before do

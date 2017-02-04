@@ -80,7 +80,7 @@ describe API::Snippets, api: true do
         title: 'Test Title',
         file_name: 'test.rb',
         content: 'puts "hello world"',
-        visibility_level: Gitlab::VisibilityLevel::PUBLIC
+        visibility_level: Snippet::PUBLIC
       }
     end
 
@@ -100,6 +100,36 @@ describe API::Snippets, api: true do
       post api("/snippets/", user), params
 
       expect(response).to have_http_status(400)
+    end
+
+    context 'when the snippet is spam' do
+      def create_snippet(snippet_params = {})
+        post api('/snippets', user), params.merge(snippet_params)
+      end
+
+      before do
+        allow_any_instance_of(AkismetService).to receive(:is_spam?).and_return(true)
+      end
+
+      context 'when the snippet is private' do
+        it 'creates the snippet' do
+          expect { create_snippet(visibility_level: Snippet::PRIVATE) }.
+            to change { Snippet.count }.by(1)
+        end
+      end
+
+      context 'when the snippet is public' do
+        it 'rejects the shippet' do
+          expect { create_snippet(visibility_level: Snippet::PUBLIC) }.
+            not_to change { Snippet.count }
+          expect(response).to have_http_status(400)
+        end
+
+        it 'creates a spam log' do
+          expect { create_snippet(visibility_level: Snippet::PUBLIC) }.
+            to change { SpamLog.count }.by(1)
+        end
+      end
     end
   end
 

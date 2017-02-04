@@ -34,6 +34,7 @@ module API
           optional :labels, type: String, desc: 'Comma-separated list of label names'
           optional :approvals_before_merge, type: Integer, desc: 'Number of approvals required before this can be merged'
           optional :remove_source_branch, type: Boolean, desc: 'Remove source branch when merging'
+          optional :squash, type: Boolean, desc: 'Squash commits when merging'
         end
       end
 
@@ -153,7 +154,7 @@ module API
           use :optional_params
           at_least_one_of :title, :target_branch, :description, :assignee_id,
                           :milestone_id, :labels, :state_event, :approvals_before_merge,
-                          :remove_source_branch
+                          :remove_source_branch, :squash
         end
         put path do
           merge_request = find_merge_request_with_access(params.delete(:merge_request_id), :update_merge_request)
@@ -180,6 +181,7 @@ module API
           optional :merge_when_build_succeeds, type: Boolean,
                                                desc: 'When true, this merge request will be merged when the pipeline succeeds'
           optional :sha, type: String, desc: 'When present, must have the HEAD SHA of the source branch'
+          optional :squash, type: Boolean, desc: 'When true, the commits will be squashed into a single commit on merge'
         end
         put "#{path}/merge" do
           merge_request = find_project_merge_request(params[:merge_request_id])
@@ -194,6 +196,10 @@ module API
 
           if params[:sha] && merge_request.diff_head_sha != params[:sha]
             render_api_error!("SHA does not match HEAD of source branch: #{merge_request.diff_head_sha}", 409)
+          end
+
+          if params[:squash]
+            merge_request.update(squash: params[:squash])
           end
 
           merge_params = {

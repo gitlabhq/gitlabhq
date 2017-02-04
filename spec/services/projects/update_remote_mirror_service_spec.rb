@@ -152,7 +152,7 @@ describe Projects::UpdateRemoteMirrorService do
           remote_tags = generate_tags(repository, 'v1.0.0', 'v1.1.0')
           allow(repository).to receive(:remote_tags) { remote_tags }
 
-          repository.rm_tag('v1.0.0')
+          repository.rm_tag(create(:user), 'v1.0.0')
 
           expect(repository).to receive(:delete_remote_branches).with(remote_mirror.ref_name, ['v1.0.0'])
 

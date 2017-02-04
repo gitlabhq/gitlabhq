@@ -117,12 +117,12 @@ class ProjectPolicy < BasePolicy
     can! :admin_pipeline
     can! :admin_environment
     can! :admin_deployment
-
-    # EE-only
-    can! :admin_path_locks
     can! :admin_pages
     can! :read_pages
     can! :update_pages
+
+    # EE-only
+    can! :admin_path_locks
   end
 
   def public_access!
@@ -149,8 +149,6 @@ class ProjectPolicy < BasePolicy
     can! :remove_fork_project
     can! :destroy_merge_request
     can! :destroy_issue
-
-    # EE-only
     can! :remove_pages
   end
 

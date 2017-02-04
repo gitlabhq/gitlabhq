@@ -36,6 +36,13 @@ you hide discussions that are no longer relevant.
 
 [Read more about resolving discussion comments in merge requests reviews.](merge_requests/merge_request_discussion_resolution.md)
 
+## Squash and merge
+
+GitLab allows you to squash all changes present in a merge request into a single
+commit when merging, to allow for a neater commit history.
+
+[Learn more about squash and merge.](merge_requests/squash_and_merge)
+
 ## Resolve conflicts
 
 When a merge request has conflicts, GitLab may provide the option to resolve

@@ -23,7 +23,7 @@ require('./approvals/approvals_store');
 
     initWidgetState() {
       this.assignToData('showApprovals', false);
-      this.assignToData('disableAcceptance', Boolean(this.rootEl.dataset.approvalPending));
+      this.assignToData('disableAcceptance', this.rootEl.dataset.approvalPending === 'true');
     }
 
     initApprovals() {

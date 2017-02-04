@@ -11,10 +11,10 @@
       .accept-action
         - if @pipeline && @pipeline.active?
           %span.btn-group
-            = button_tag class: "btn btn-create js-merge-button merge_when_build_succeeds" do
+            = button_tag class: "btn btn-create js-merge-button merge_when_build_succeeds", disabled: !@merge_request.approved?, ":disabled" => "disableAcceptance" do
               Merge When Pipeline Succeeds
             - unless @project.only_allow_merge_if_build_succeeds?
-              = button_tag class: "btn btn-success dropdown-toggle", 'data-toggle' => 'dropdown' do
+              = button_tag class: "btn btn-success dropdown-toggle", 'data-toggle' => 'dropdown', disabled: !@merge_request.approved?, ":disabled" => "disableAcceptance" do
                 = icon('caret-down')
                 %span.sr-only
                   Select Merge Moment
@@ -28,18 +28,24 @@
                     = icon('warning fw')
                     Merge Immediately
         - else
-          = f.button class: "btn btn-create btn-grouped js-merge-button accept_merge_request #{status_class}", ':disabled' => 'disableAcceptance' do
+          = f.button class: "btn btn-create btn-grouped js-merge-button accept_merge_request #{status_class}", disabled: !@merge_request.approved?, ":disabled" => "disableAcceptance" do
             Accept Merge Request
       - if @merge_request.force_remove_source_branch?
         .accept-control
           The source branch will be removed.
       - elsif @merge_request.can_remove_source_branch?(current_user)
         .accept-control.checkbox
-          = label_tag :should_remove_source_branch, class: "remove_source_checkbox" do
+          = label_tag :should_remove_source_branch, class: "merge-param-checkbox" do
             = check_box_tag :should_remove_source_branch
             Remove source branch
+      .accept-control.checkbox
+        = label_tag :squash, class: 'merge-param-checkbox' do
+          = hidden_field_tag :squash, '0', id: nil
+          = check_box_tag :squash, '1', @merge_request.squash
+          Squash commits
+          = link_to icon('question-circle'), help_page_path('user/project/merge_requests/squash_and_merge'), title: 'About this feature', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'}
 
-      .accept-control.right
+      .accept-control
         - if @project.merge_requests_ff_only_enabled
           Fast-forward merge without a merge commit
         - else

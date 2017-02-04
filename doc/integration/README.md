@@ -5,7 +5,7 @@ trackers and external authentication.
 
 See the documentation below for details on how to configure these services.
 
-- [JIRA](../project_services/jira.md) Integrate with the JIRA issue tracker
+- [JIRA](../user/project/integrations/jira.md) Integrate with the JIRA issue tracker
 - [External issue tracker](external-issue-tracker.md) Redmine, JIRA, etc.
 - [LDAP](ldap.md) Set up sign in via LDAP
 - [Jenkins](jenkins.md) Integrate with the Jenkins CI
@@ -20,17 +20,14 @@ See the documentation below for details on how to configure these services.
 - [Koding](../administration/integration/koding.md) Configure Koding to use IDE integration
 - [PlantUML](../administration/integration/plantuml.md) Configure PlantUML to use diagrams in AsciiDoc documents.
 
-GitLab Enterprise Edition contains [advanced Jenkins support][jenkins].
-
-[jenkins]: http://docs.gitlab.com/ee/integration/jenkins.html
-
+> GitLab Enterprise Edition contains [advanced Jenkins support][jenkins].
 
 ## Project services
 
 Integration with services such as Campfire, Flowdock, Gemnasium, HipChat,
 Pivotal Tracker, and Slack are available in the form of a [Project Service][].
 
-[Project Service]: ../project_services/project_services.md
+[Project Service]: ../user/project/integrations/project_services.md
 
 ## SSL certificate errors
 
@@ -66,3 +63,5 @@ After that restart GitLab with:
 ```bash
 sudo gitlab-ctl restart
 ```
+
+[jenkins]: http://docs.gitlab.com/ee/integration/jenkins.html

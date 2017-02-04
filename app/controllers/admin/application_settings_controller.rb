@@ -118,6 +118,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :plantuml_url,
       :max_artifacts_size,
       :max_attachment_size,
+      :max_pages_size,
       :metrics_enabled,
       :metrics_host,
       :metrics_method_call_threshold,
@@ -158,7 +159,6 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   def application_setting_params_ee
     [
       :help_text,
-      :max_pages_size,
       :elasticsearch_host,
       :elasticsearch_indexing,
       :elasticsearch_port,

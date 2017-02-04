@@ -39,11 +39,9 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
-      ## EE-specific
       resource :pages, only: [:show, :destroy] do
         resources :domains, only: [:show, :new, :create, :destroy], controller: 'pages_domains', constraints: { id: /[^\/]+/ }
       end
-      ## EE-specific
 
       resources :compare, only: [:index, :create] do
         collection do
@@ -70,6 +68,7 @@ constraints(ProjectUrlConstrainer.new) do
       resources :snippets, concerns: :awardable, constraints: { id: /\d+/ } do
         member do
           get 'raw'
+          post :mark_as_spam
         end
       end
 

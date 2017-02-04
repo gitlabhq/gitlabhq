@@ -3,6 +3,7 @@
 > **Notes:**
 > - This feature was [introduced][ee-80] in GitLab EE 8.3.
 > - Custom CNAMEs with TLS support were [introduced][ee-173] in GitLab EE 8.5.
+> - GitLab Pages [were ported][ce-14605] to Community Edition in GitLab 8.17.
 > - This document is about the user guide. To learn how to enable GitLab Pages
 >   across your GitLab instance, visit the [administrator documentation](../../../administration/pages/index.md).
 
@@ -431,3 +432,4 @@ For a list of known issues, visit GitLab's [public issue tracker].
 [pages-jekyll]: https://gitlab.com/pages/jekyll
 [metarefresh]: https://en.wikipedia.org/wiki/Meta_refresh
 [public issue tracker]: https://gitlab.com/gitlab-org/gitlab-ee/issues?label_name=Pages
+[ce-14605]: https://gitlab.com/gitlab-org/gitlab-ce/issues/14605

@@ -138,6 +138,65 @@ describe SnippetsController do
     end
   end
 
+  describe 'POST #create' do
+    def create_snippet(snippet_params = {})
+      sign_in(user)
+
+      post :create, {
+        personal_snippet: { title: 'Title', content: 'Content' }.merge(snippet_params)
+      }
+    end
+
+    context 'when the snippet is spam' do
+      before do
+        allow_any_instance_of(AkismetService).to receive(:is_spam?).and_return(true)
+      end
+
+      context 'when the snippet is private' do
+        it 'creates the snippet' do
+          expect { create_snippet(visibility_level: Snippet::PRIVATE) }.
+            to change { Snippet.count }.by(1)
+        end
+      end
+
+      context 'when the snippet is public' do
+        it 'rejects the shippet' do
+          expect { create_snippet(visibility_level: Snippet::PUBLIC) }.
+            not_to change { Snippet.count }
+          expect(response).to render_template(:new)
+        end
+
+        it 'creates a spam log' do
+          expect { create_snippet(visibility_level: Snippet::PUBLIC) }.
+            to change { SpamLog.count }.by(1)
+        end
+      end
+    end
+  end
+
+  describe 'POST #mark_as_spam' do
+    let(:snippet) { create(:personal_snippet, :public, author: user) }
+
+    before do
+      allow_any_instance_of(AkismetService).to receive_messages(submit_spam: true)
+      stub_application_setting(akismet_enabled: true)
+    end
+
+    def mark_as_spam
+      admin = create(:admin)
+      create(:user_agent_detail, subject: snippet)
+      sign_in(admin)
+
+      post :mark_as_spam, id: snippet.id
+    end
+
+    it 'updates the snippet' do
+      mark_as_spam
+
+      expect(snippet.reload).not_to be_submittable_as_spam
+    end
+  end
+
   %w(raw download).each do |action|
     describe "GET #{action}" do
       context 'when the personal snippet is private' do

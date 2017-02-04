@@ -3,9 +3,10 @@ class JenkinsService < CiService
   prop_accessor :jenkins_url, :project_name, :username, :password
 
   before_update :reset_password
-  validates :username,
-            presence: true,
-            if: ->(service) { service.activated? && service.password_touched? }
+
+  validates :jenkins_url, presence: true, url: true, if: :activated?
+  validates :project_name, presence: true, if: :activated?
+  validates :username, presence: true, if: ->(service) { service.activated? && service.password_touched? }
 
   default_value_for :push_events, true
   default_value_for :merge_requests_events, false
@@ -43,13 +44,12 @@ class JenkinsService < CiService
     { success: true, result: message }
   end
 
-  def auth
-    require 'base64'
-    Base64.urlsafe_encode64("#{username}:#{password}")
-  end
-
   def hook_url
-    File.join(jenkins_url, "project/#{project_name}").to_s
+    url = URI.parse(jenkins_url)
+    url.path = File.join(url.path || '/', "project/#{project_name}")
+    url.user = ERB::Util.url_encode(username) unless username.blank?
+    url.password = ERB::Util.url_encode(password) unless password.blank?
+    url.to_s
   end
 
   def self.supported_events

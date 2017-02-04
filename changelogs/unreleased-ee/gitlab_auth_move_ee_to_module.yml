@@ -1,0 +1,4 @@
+---
+title: Pull EE specific Gitlab::Auth code in to its own module
+merge_request: 1112
+author:

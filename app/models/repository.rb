@@ -8,7 +8,7 @@ class Repository
 
   attr_accessor :path_with_namespace, :project
 
-  class CommitError < StandardError; end
+  CommitError = Class.new(StandardError)
 
   MIRROR_REMOTE = "upstream"
   MIRROR_GEO = "geo"
@@ -68,10 +68,6 @@ class Repository
     return nil unless path_with_namespace
 
     @raw_repository ||= Gitlab::Git::Repository.new(path_to_repo)
-  end
-
-  def update_autocrlf_option
-    raw_repository.autocrlf = :input if raw_repository.autocrlf != :input
   end
 
   def storage_path
@@ -178,16 +174,12 @@ class Repository
     tags.find { |tag| tag.name == name }
   end
 
-  def add_branch(user, branch_name, target)
-    oldrev = Gitlab::Git::BLANK_SHA
-    ref    = Gitlab::Git::BRANCH_REF_PREFIX + branch_name
-    target = commit(target).try(:id)
+  def add_branch(user, branch_name, ref)
+    newrev = commit(ref).try(:sha)
 
-    return false unless target
+    return false unless newrev
 
-    GitHooksService.new.execute(user, path_to_repo, oldrev, target, ref) do
-      update_ref!(ref, target, oldrev)
-    end
+    GitOperationService.new(user, self).add_branch(branch_name, newrev)
 
     after_create_branch
     find_branch(branch_name)
@@ -198,33 +190,21 @@ class Repository
   end
 
   def add_tag(user, tag_name, target, message = nil)
-    oldrev = Gitlab::Git::BLANK_SHA
-    ref    = Gitlab::Git::TAG_REF_PREFIX + tag_name
-    target = commit(target).try(:id)
-
-    return false unless target
-
+    newrev = commit(target).try(:id)
     options = { message: message, tagger: user_to_committer(user) } if message
 
-    GitHooksService.new.execute(user, path_to_repo, oldrev, target, ref) do |service|
-      raw_tag = rugged.tags.create(tag_name, target, options)
-      service.newrev = raw_tag.target_id
-    end
+    return false unless newrev
+
+    GitOperationService.new(user, self).add_tag(tag_name, newrev, options)
 
     find_tag(tag_name)
   end
 
   def rm_branch(user, branch_name)
     before_remove_branch
-
     branch = find_branch(branch_name)
-    oldrev = branch.try(:dereferenced_target).try(:id)
-    newrev = Gitlab::Git::BLANK_SHA
-    ref    = Gitlab::Git::BRANCH_REF_PREFIX + branch_name
 
-    GitHooksService.new.execute(user, path_to_repo, oldrev, newrev, ref) do
-      update_ref!(ref, newrev, oldrev)
-    end
+    GitOperationService.new(user, self).rm_branch(branch)
 
     after_remove_branch
     true
@@ -234,15 +214,14 @@ class Repository
     gitlab_shell.delete_remote_branches(storage_path, path_with_namespace, remote, branches)
   end
 
-  def rm_tag(tag_name)
+  def rm_tag(user, tag_name)
     before_remove_tag
+    tag = find_tag(tag_name)
 
-    begin
-      rugged.tags.delete(tag_name)
-      true
-    rescue Rugged::ReferenceError
-      false
-    end
+    GitOperationService.new(user, self).rm_tag(tag)
+
+    after_remove_tag
+    true
   end
 
   def config
@@ -291,21 +270,6 @@ class Repository
     rugged.references.exist?(ref)
   rescue Rugged::ReferenceError
     false
-  end
-
-  def update_ref!(name, newrev, oldrev)
-    # We use 'git update-ref' because libgit2/rugged currently does not
-    # offer 'compare and swap' ref updates. Without compare-and-swap we can
-    # (and have!) accidentally reset the ref to an earlier state, clobbering
-    # commits. See also https://github.com/libgit2/libgit2/issues/1534.
-    command = %W(#{Gitlab.config.git.bin_path} update-ref --stdin -z)
-    _, status = Gitlab::Popen.popen(command, path_to_repo) do |stdin|
-      stdin.write("update #{name}\x00#{newrev}\x00#{oldrev}\x00")
-    end
-
-    return if status.zero?
-
-    raise CommitError.new("Could not update branch #{name.sub('refs/heads/', '')}. Please refresh and try again.")
   end
 
   # Makes sure a commit is kept around when Git garbage collection runs.
@@ -485,6 +449,11 @@ class Repository
     expire_statistics_caches
 
     repository_event(:remove_tag)
+  end
+
+  # Runs code after removing a tag.
+  def after_remove_tag
+    expire_tags_cache
   end
 
   def before_import
@@ -856,121 +825,132 @@ class Repository
     @tags ||= raw_repository.tags
   end
 
-  def commit_dir(user, path, message, branch, author_email: nil, author_name: nil)
-    update_branch_with_hooks(user, branch) do |ref|
-      options = {
-        commit: {
-          branch: ref,
-          message: message,
-          update_ref: false
-        }
-      }
+  # rubocop:disable Metrics/ParameterLists
+  def commit_dir(
+    user, path,
+    message:, branch_name:,
+    author_email: nil, author_name: nil,
+    start_branch_name: nil, start_project: project)
+    check_tree_entry_for_dir(branch_name, path)
 
-      options.merge!(get_committer_and_author(user, email: author_email, name: author_name))
-
-      raw_repository.mkdir(path, options)
+    if start_branch_name
+      start_project.repository.
+        check_tree_entry_for_dir(start_branch_name, path)
     end
+
+    commit_file(
+      user,
+      "#{path}/.gitkeep",
+      '',
+      message: message,
+      branch_name: branch_name,
+      update: false,
+      author_email: author_email,
+      author_name: author_name,
+      start_branch_name: start_branch_name,
+      start_project: start_project)
   end
+  # rubocop:enable Metrics/ParameterLists
 
-  def commit_file(user, path, content, message, branch, update, author_email: nil, author_name: nil)
-    update_branch_with_hooks(user, branch) do |ref|
-      options = {
-        commit: {
-          branch: ref,
-          message: message,
-          update_ref: false
-        },
-        file: {
-          content: content,
-          path: path,
-          update: update
-        }
-      }
+  # rubocop:disable Metrics/ParameterLists
+  def commit_file(
+    user, path, content,
+    message:, branch_name:, update: true,
+    author_email: nil, author_name: nil,
+    start_branch_name: nil, start_project: project)
+    unless update
+      error_message = "Filename already exists; update not allowed"
 
-      options.merge!(get_committer_and_author(user, email: author_email, name: author_name))
+      if tree_entry_at(branch_name, path)
+        raise Gitlab::Git::Repository::InvalidBlobName.new(error_message)
+      end
 
-      Gitlab::Git::Blob.commit(raw_repository, options)
-    end
-  end
-
-  def update_file(user, path, content, branch:, previous_path:, message:, author_email: nil, author_name: nil)
-    update_branch_with_hooks(user, branch) do |ref|
-      options = {
-        commit: {
-          branch: ref,
-          message: message,
-          update_ref: false
-        },
-        file: {
-          content: content,
-          path: path,
-          update: true
-        }
-      }
-
-      options.merge!(get_committer_and_author(user, email: author_email, name: author_name))
-
-      if previous_path && previous_path != path
-        options[:file][:previous_path] = previous_path
-        Gitlab::Git::Blob.rename(raw_repository, options)
-      else
-        Gitlab::Git::Blob.commit(raw_repository, options)
+      if start_branch_name &&
+          start_project.repository.tree_entry_at(start_branch_name, path)
+        raise Gitlab::Git::Repository::InvalidBlobName.new(error_message)
       end
     end
+
+    multi_action(
+      user: user,
+      message: message,
+      branch_name: branch_name,
+      author_email: author_email,
+      author_name: author_name,
+      start_branch_name: start_branch_name,
+      start_project: start_project,
+      actions: [{ action: :create,
+                  file_path: path,
+                  content: content }])
   end
+  # rubocop:enable Metrics/ParameterLists
 
-  def remove_file(user, path, message, branch, author_email: nil, author_name: nil)
-    update_branch_with_hooks(user, branch) do |ref|
-      options = {
-        commit: {
-          branch: ref,
-          message: message,
-          update_ref: false
-        },
-        file: {
-          path: path
-        }
-      }
+  # rubocop:disable Metrics/ParameterLists
+  def update_file(
+    user, path, content,
+    message:, branch_name:, previous_path:,
+    author_email: nil, author_name: nil,
+    start_branch_name: nil, start_project: project)
+    action = if previous_path && previous_path != path
+               :move
+             else
+               :update
+             end
 
-      options.merge!(get_committer_and_author(user, email: author_email, name: author_name))
-
-      Gitlab::Git::Blob.remove(raw_repository, options)
-    end
+    multi_action(
+      user: user,
+      message: message,
+      branch_name: branch_name,
+      author_email: author_email,
+      author_name: author_name,
+      start_branch_name: start_branch_name,
+      start_project: start_project,
+      actions: [{ action: action,
+                  file_path: path,
+                  content: content,
+                  previous_path: previous_path }])
   end
+  # rubocop:enable Metrics/ParameterLists
 
-  def multi_action(user:, branch:, message:, actions:, author_email: nil, author_name: nil)
-    update_branch_with_hooks(user, branch) do |ref|
+  # rubocop:disable Metrics/ParameterLists
+  def remove_file(
+    user, path,
+    message:, branch_name:,
+    author_email: nil, author_name: nil,
+    start_branch_name: nil, start_project: project)
+    multi_action(
+      user: user,
+      message: message,
+      branch_name: branch_name,
+      author_email: author_email,
+      author_name: author_name,
+      start_branch_name: start_branch_name,
+      start_project: start_project,
+      actions: [{ action: :delete,
+                  file_path: path }])
+  end
+  # rubocop:enable Metrics/ParameterLists
+
+  # rubocop:disable Metrics/ParameterLists
+  def multi_action(
+    user:, branch_name:, message:, actions:,
+    author_email: nil, author_name: nil,
+    start_branch_name: nil, start_project: project)
+    GitOperationService.new(user, self).with_branch(
+      branch_name,
+      start_branch_name: start_branch_name,
+      start_project: start_project) do |start_commit|
       index = rugged.index
-      parents = []
-      branch = find_branch(ref)
 
-      if branch
-        last_commit = branch.dereferenced_target
-        index.read_tree(last_commit.raw_commit.tree)
-        parents = [last_commit.sha]
-      end
+      parents = if start_commit
+                  index.read_tree(start_commit.raw_commit.tree)
+                  [start_commit.sha]
+                else
+                  []
+                end
 
-      actions.each do |action|
-        case action[:action]
-        when :create, :update, :move
-          mode =
-            case action[:action]
-            when :update
-              index.get(action[:file_path])[:mode]
-            when :move
-              index.get(action[:previous_path])[:mode]
-            end
-          mode ||= 0o100644
-
-          index.remove(action[:previous_path]) if action[:action] == :move
-
-          content = action[:encoding] == 'base64' ? Base64.decode64(action[:content]) : action[:content]
-          oid = rugged.write(content, :blob)
-
-          index.add(path: action[:file_path], oid: oid, mode: mode)
-        when :delete
-          index.remove(action[:file_path])
-        end
+      actions.each do |act|
+        git_action(index, act)
       end
 
       options = {
@@ -983,6 +963,7 @@ class Repository
       Rugged::Commit.create(rugged, options)
     end
   end
+  # rubocop:enable Metrics/ParameterLists
 
   def get_committer_and_author(user, email: nil, name: nil)
     committer = user_to_committer(user)
@@ -995,7 +976,7 @@ class Repository
   end
 
   def user_to_committer(user)
-    Gitlab::Git::committer_hash(email: user.email, name: user.name)
+    Gitlab::Git.committer_hash(email: user.email, name: user.name)
   end
 
   def can_be_merged?(source_sha, target_branch)
@@ -1021,23 +1002,28 @@ class Repository
     raise "Invalid merge target" if our_commit.nil?
     raise "Invalid merge source" if their_commit.nil?
 
-    update_branch_with_hooks(user, target_branch) do
-      merge_request.update(in_progress_merge_commit_sha: their_commit.oid) if merge_request
+    GitOperationService.new(user, self).with_branch(
+      target_branch) do |start_commit|
+      if merge_request
+        merge_request.update(in_progress_merge_commit_sha: their_commit.oid)
+      end
+
       their_commit.oid
     end
   end
 
-  def merge(user, merge_request, options = {})
-    our_commit = rugged.branches[merge_request.target_branch].target
-    their_commit = rugged.lookup(merge_request.diff_head_sha)
+  def merge(user, source, merge_request, options = {})
+    GitOperationService.new(user, self).with_branch(
+      merge_request.target_branch) do |start_commit|
+      our_commit = start_commit.sha
+      their_commit = source
 
-    raise "Invalid merge target" if our_commit.nil?
-    raise "Invalid merge source" if their_commit.nil?
+      raise 'Invalid merge target' unless our_commit
+      raise 'Invalid merge source' unless their_commit
 
-    merge_index = rugged.merge_commits(our_commit, their_commit)
-    return false if merge_index.conflicts?
+      merge_index = rugged.merge_commits(our_commit, their_commit)
+      break if merge_index.conflicts?
 
-    update_branch_with_hooks(user, merge_request.target_branch) do
       actual_options = options.merge(
         parents: [our_commit, their_commit],
         tree: merge_index.write_tree(rugged),
@@ -1047,34 +1033,48 @@ class Repository
       merge_request.update(in_progress_merge_commit_sha: commit_id)
       commit_id
     end
+  rescue Repository::CommitError # when merge_index.conflicts?
+    false
   end
 
-  def revert(user, commit, base_branch, revert_tree_id = nil)
-    source_sha = find_branch(base_branch).dereferenced_target.sha
-    revert_tree_id ||= check_revert_content(commit, base_branch)
+  def revert(
+    user, commit, branch_name, revert_tree_id = nil,
+    start_branch_name: nil, start_project: project)
+    revert_tree_id ||= check_revert_content(commit, branch_name)
 
     return false unless revert_tree_id
 
-    update_branch_with_hooks(user, base_branch) do
+    GitOperationService.new(user, self).with_branch(
+      branch_name,
+      start_branch_name: start_branch_name,
+      start_project: start_project) do |start_commit|
+
       committer = user_to_committer(user)
-      source_sha = Rugged::Commit.create(rugged,
+
+      Rugged::Commit.create(rugged,
         message: commit.revert_message(user),
         author: committer,
         committer: committer,
         tree: revert_tree_id,
-        parents: [rugged.lookup(source_sha)])
+        parents: [start_commit.sha])
     end
   end
 
-  def cherry_pick(user, commit, base_branch, cherry_pick_tree_id = nil)
-    source_sha = find_branch(base_branch).dereferenced_target.sha
-    cherry_pick_tree_id ||= check_cherry_pick_content(commit, base_branch)
+  def cherry_pick(
+    user, commit, branch_name, cherry_pick_tree_id = nil,
+    start_branch_name: nil, start_project: project)
+    cherry_pick_tree_id ||= check_cherry_pick_content(commit, branch_name)
 
     return false unless cherry_pick_tree_id
 
-    update_branch_with_hooks(user, base_branch) do
+    GitOperationService.new(user, self).with_branch(
+      branch_name,
+      start_branch_name: start_branch_name,
+      start_project: start_project) do |start_commit|
+
       committer = user_to_committer(user)
-      source_sha = Rugged::Commit.create(rugged,
+
+      Rugged::Commit.create(rugged,
         message: commit.message,
         author: {
           email: commit.author_email,
@@ -1083,22 +1083,22 @@ class Repository
         },
         committer: committer,
         tree: cherry_pick_tree_id,
-        parents: [rugged.lookup(source_sha)])
+        parents: [start_commit.sha])
     end
   end
 
-  def resolve_conflicts(user, branch, params)
-    update_branch_with_hooks(user, branch) do
+  def resolve_conflicts(user, branch_name, params)
+    GitOperationService.new(user, self).with_branch(branch_name) do
       committer = user_to_committer(user)
 
       Rugged::Commit.create(rugged, params.merge(author: committer, committer: committer))
     end
   end
 
-  def check_revert_content(commit, base_branch)
-    source_sha = find_branch(base_branch).dereferenced_target.sha
-    args       = [commit.id, source_sha]
-    args << { mainline: 1 } if commit.merge_commit?
+  def check_revert_content(target_commit, branch_name)
+    source_sha = commit(branch_name).sha
+    args       = [target_commit.sha, source_sha]
+    args << { mainline: 1 } if target_commit.merge_commit?
 
     revert_index = rugged.revert_commit(*args)
     return false if revert_index.conflicts?
@@ -1109,10 +1109,10 @@ class Repository
     tree_id
   end
 
-  def check_cherry_pick_content(commit, base_branch)
-    source_sha = find_branch(base_branch).dereferenced_target.sha
-    args       = [commit.id, source_sha]
-    args << 1 if commit.merge_commit?
+  def check_cherry_pick_content(target_commit, branch_name)
+    source_sha = commit(branch_name).sha
+    args       = [target_commit.sha, source_sha]
+    args << 1 if target_commit.merge_commit?
 
     cherry_pick_index = rugged.cherrypick_commit(*args)
     return false if cherry_pick_index.conflicts?
@@ -1218,6 +1218,28 @@ class Repository
     Gitlab::Popen.popen(args, path_to_repo).first.lines.map(&:strip)
   end
 
+  def with_repo_branch_commit(start_repository, start_branch_name)
+    branch_name_or_sha =
+      if start_repository == self
+        start_branch_name
+      else
+        tmp_ref = "refs/tmp/#{SecureRandom.hex}/head"
+
+        fetch_ref(
+          start_repository.path_to_repo,
+          "#{Gitlab::Git::BRANCH_REF_PREFIX}#{start_branch_name}",
+          tmp_ref
+        )
+
+        start_repository.commit(start_branch_name).sha
+      end
+
+    yield(commit(branch_name_or_sha))
+
+  ensure
+    rugged.references.delete(tmp_ref) if tmp_ref
+  end
+
   def fetch_ref(source_path, source_ref, target_ref)
     args = %W(#{Gitlab.config.git.bin_path} fetch --no-tags -f #{source_path} #{source_ref}:#{target_ref})
     Gitlab::Popen.popen(args, path_to_repo)
@@ -1225,39 +1247,6 @@ class Repository
 
   def create_ref(ref, ref_path)
     fetch_ref(path_to_repo, ref, ref_path)
-  end
-
-  def update_branch_with_hooks(current_user, branch)
-    update_autocrlf_option
-
-    ref = Gitlab::Git::BRANCH_REF_PREFIX + branch
-    target_branch = find_branch(branch)
-    was_empty = empty?
-
-    # Make commit
-    newrev = yield(ref)
-
-    unless newrev
-      raise CommitError.new('Failed to create commit')
-    end
-
-    if rugged.lookup(newrev).parent_ids.empty? || target_branch.nil?
-      oldrev = Gitlab::Git::BLANK_SHA
-    else
-      oldrev = rugged.merge_base(newrev, target_branch.dereferenced_target.sha)
-    end
-
-    GitHooksService.new.execute(current_user, path_to_repo, oldrev, newrev, ref) do
-      update_ref!(ref, newrev, oldrev)
-
-      if was_empty || !target_branch
-        # If repo was empty expire cache
-        after_create if was_empty
-        after_create_branch
-      end
-    end
-
-    newrev
   end
 
   def ls_files(ref)
@@ -1324,7 +1313,75 @@ class Repository
     end
   end
 
+  protected
+
+  def tree_entry_at(branch_name, path)
+    branch_exists?(branch_name) &&
+      # tree_entry is private
+      raw_repository.send(:tree_entry, commit(branch_name), path)
+  end
+
+  def check_tree_entry_for_dir(branch_name, path)
+    return unless branch_exists?(branch_name)
+
+    entry = tree_entry_at(branch_name, path)
+
+    return unless entry
+
+    if entry[:type] == :blob
+      raise Gitlab::Git::Repository::InvalidBlobName.new(
+        "Directory already exists as a file")
+    else
+      raise Gitlab::Git::Repository::InvalidBlobName.new(
+        "Directory already exists")
+    end
+  end
+
   private
+
+  def git_action(index, action)
+    path = normalize_path(action[:file_path])
+
+    if action[:action] == :move
+      previous_path = normalize_path(action[:previous_path])
+    end
+
+    case action[:action]
+    when :create, :update, :move
+      mode =
+        case action[:action]
+        when :update
+          index.get(path)[:mode]
+        when :move
+          index.get(previous_path)[:mode]
+        end
+      mode ||= 0o100644
+
+      index.remove(previous_path) if action[:action] == :move
+
+      content = if action[:encoding] == 'base64'
+                  Base64.decode64(action[:content])
+                else
+                  action[:content]
+                end
+
+      oid = rugged.write(content, :blob)
+
+      index.add(path: path, oid: oid, mode: mode)
+    when :delete
+      index.remove(path)
+    end
+  end
+
+  def normalize_path(path)
+    pathname = Gitlab::Git::PathHelper.normalize_path(path)
+
+    if pathname.each_filename.include?('..')
+      raise Gitlab::Git::Repository::InvalidBlobName.new('Invalid path')
+    end
+
+    pathname.to_s
+  end
 
   def refs_directory_exists?
     return false unless path_with_namespace

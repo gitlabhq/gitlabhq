@@ -812,6 +812,10 @@ class MergeRequest < ActiveRecord::Base
     File.join(Gitlab.config.shared.path, 'tmp/rebase', source_project.id.to_s, id.to_s).to_s
   end
 
+  def squash_dir_path
+    File.join(Gitlab.config.shared.path, 'tmp/squash', source_project.id.to_s, id.to_s).to_s
+  end
+
   def rebase_in_progress?
     # The source project can be deleted
     return false unless source_project
@@ -820,10 +824,22 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def clean_stuck_rebase
-    expiration_time = Time.now - 15.minutes
-
-    if File.new(rebase_dir_path).mtime < expiration_time
+    if File.mtime(rebase_dir_path) < 15.minutes.ago
       FileUtils.rm_rf(rebase_dir_path)
+      true
+    end
+  end
+
+  def squash_in_progress?
+    # The source project can be deleted
+    return false unless source_project
+
+    File.exist?(squash_dir_path) && !clean_stuck_squash
+  end
+
+  def clean_stuck_squash
+    if File.mtime(squash_dir_path) < 15.minutes.ago
+      FileUtils.rm_rf(squash_dir_path)
       true
     end
   end

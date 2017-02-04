@@ -181,4 +181,16 @@ module MergeRequestsHelper
   def different_base?(version1, version2)
     version1 && version2 && version1.base_commit_sha != version2.base_commit_sha
   end
+
+  def merge_params(merge_request)
+    {
+      merge_when_build_succeeds: true,
+      should_remove_source_branch: true,
+      sha: merge_request.diff_head_sha
+    }.merge(merge_params_ee(merge_request))
+  end
+
+  def merge_params_ee(merge_request)
+    { squash: merge_request.squash }
+  end
 end

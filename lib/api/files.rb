@@ -5,7 +5,7 @@ module API
       def commit_params(attrs)
         {
           file_path: attrs[:file_path],
-          source_branch: attrs[:branch_name],
+          start_branch: attrs[:branch_name],
           target_branch: attrs[:branch_name],
           commit_message: attrs[:commit_message],
           file_content: attrs[:content],

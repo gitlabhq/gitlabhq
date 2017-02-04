@@ -65,7 +65,7 @@ logins opened on all nodes as we will be moving back and forth.
     sudo -i
     ```
 
-1. Create a new SSH key pair for the primary node. Choose the default location
+1. (Source install only): Create a new SSH key pair for the primary node. Choose the default location
    and leave the password blank by hitting 'Enter' three times:
 
     ```bash
@@ -74,7 +74,7 @@ logins opened on all nodes as we will be moving back and forth.
 
     Read more in [additional info for SSH key pairs](#additional-information-for-the-ssh-key-pairs).
 
-1. Get the contents of `id_rsa.pub` the was just created:
+1. Get the contents of `id_rsa.pub` for the git user:
 
     ```
     # Omnibus GitLab installations
@@ -86,6 +86,7 @@ logins opened on all nodes as we will be moving back and forth.
 
 1. Visit the primary node's **Admin Area ➔ Geo Nodes** (`/admin/geo_nodes`) in
    your browser.
+
 1. Add the primary node by providing its full URL and the public SSH key
    you created previously. Make sure to check the box 'This is a primary node'
    when adding it.

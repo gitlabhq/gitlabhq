@@ -7,7 +7,7 @@ feature 'User wants to edit a file', feature: true do
   let(:user) { create(:user) }
   let(:commit_params) do
     {
-      source_branch: project.default_branch,
+      start_branch: project.default_branch,
       target_branch: project.default_branch,
       commit_message: "Committing First Update",
       file_path: ".gitignore",

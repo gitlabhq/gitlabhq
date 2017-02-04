@@ -1,5 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 8.16.3 (2017-01-27)
+
+- Fix sidekiq cluster mishandling of queue names. !1117
+
 ## 8.16.2 (2017-01-25)
 
 - Track Mattermost usage in usage ping. !1071

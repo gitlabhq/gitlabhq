@@ -55,8 +55,8 @@ describe Gitlab::ImportExport::RelationFactory, lib: true do
       expect(created_object.project_id).to eq(project.id)
     end
 
-    it 'has a token' do
-      expect(created_object.token).to eq(token)
+    it 'has a nil token' do
+      expect(created_object.token).to eq(nil)
     end
 
     context 'original service exists' do
@@ -176,6 +176,17 @@ describe Gitlab::ImportExport::RelationFactory, lib: true do
 
     it 'maps the right author to the imported note' do
       expect(created_object.author).to eq(new_user)
+    end
+  end
+
+  context 'encrypted attributes' do
+    let(:relation_sym) { 'Ci::Variable' }
+    let(:relation_hash) do
+      create(:ci_variable).as_json
+    end
+
+    it 'has no value for the encrypted attribute' do
+      expect(created_object.value).to be_nil
     end
   end
 end

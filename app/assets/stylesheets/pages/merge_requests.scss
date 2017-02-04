@@ -56,14 +56,23 @@
       &.right {
         float: right;
         padding-right: 0;
-
-        a {
-          color: $gl-text-color;
-        }
       }
 
-      .remove_source_checkbox {
+      .modify-merge-commit-link {
+        color: $gl-text-color;
+      }
+
+      .merge-param-checkbox {
         margin: 0;
+      }
+
+      a .fa-question-circle {
+        color: $gl-text-color-secondary;
+
+        &:hover,
+        &:focus {
+          color: $link-hover-color;
+        }
       }
     }
   }

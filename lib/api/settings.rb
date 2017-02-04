@@ -57,6 +57,7 @@ module API
         requires :shared_runners_text, type: String, desc: 'Shared runners text '
       end
       optional :max_artifacts_size, type: Integer, desc: "Set the maximum file size each build's artifacts can have"
+      optional :max_pages_size, type: Integer, desc: 'Maximum size of pages in MB'
       optional :container_registry_token_expire_delay, type: Integer, desc: 'Authorization token duration (minutes)'
       optional :metrics_enabled, type: Boolean, desc: 'Enable the InfluxDB metrics'
       given metrics_enabled: ->(val) { val } do
@@ -109,7 +110,6 @@ module API
       end
       # GitLab-EE specific settings
       optional :help_text, type: String, desc: 'GitLab server administrator information'
-      optional :max_pages_size, type: Integer, desc: 'Maximum size of pages in MB'
       optional :elasticsearch_indexing, type: Boolean, desc: 'Enable Elasticsearch indexing'
       given elasticsearch_indexing: ->(val) { val } do
         optional :elasticsearch_search, type: Boolean, desc: 'Enable Elasticsearch search'
@@ -129,13 +129,13 @@ module API
                       :send_user_confirmation_email, :domain_whitelist, :domain_blacklist_enabled,
                       :after_sign_up_text, :signin_enabled, :require_two_factor_authentication,
                       :home_page_url, :after_sign_out_path, :sign_in_text, :help_page_text,
-                      :shared_runners_enabled, :max_artifacts_size, :container_registry_token_expire_delay,
+                      :shared_runners_enabled, :max_artifacts_size, :max_pages_size, :container_registry_token_expire_delay,
                       :metrics_enabled, :sidekiq_throttling_enabled, :recaptcha_enabled,
                       :akismet_enabled, :admin_notification_email, :sentry_enabled,
                       :repository_checks_enabled, :koding_enabled, :housekeeping_enabled, :plantuml_enabled,
                       :version_check_enabled, :email_author_in_body, :html_emails_enabled,
                       # GitLab-EE specific settings
-                      :help_text, :max_pages_size, :elasticsearch_indexing, :usage_ping_enabled,
+                      :help_text, :elasticsearch_indexing, :usage_ping_enabled,
                       :repository_storage, :repository_storages, :repository_size_limit
     end
     put "application/settings" do

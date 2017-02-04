@@ -4,13 +4,15 @@ module CreatesCommit
   def create_commit(service, success_path:, failure_path:, failure_view: nil, success_notice: nil)
     set_commit_variables
 
+    start_branch = @mr_target_branch unless initial_commit?
     commit_params = @commit_params.merge(
-      source_project: @project,
-      source_branch: @ref,
-      target_branch: @target_branch
+      start_project: @mr_target_project,
+      start_branch: start_branch,
+      target_branch: @mr_source_branch
     )
 
-    result = service.new(@tree_edit_project, current_user, commit_params).execute
+    result = service.new(
+      @mr_source_project, current_user, commit_params).execute
 
     if result[:status] == :success
       update_flash_notice(success_notice)
@@ -89,20 +91,18 @@ module CreatesCommit
     @mr_source_project != @mr_target_project
   end
 
-  def different_branch?
-    @mr_source_branch != @mr_target_branch || different_project?
-  end
-
   def create_merge_request?
-    params[:create_merge_request].present? && different_branch?
+    # XXX: Even if the field is set, if we're checking the same branch
+    # as the target branch in the same project,
+    # we don't want to create a merge request.
+    params[:create_merge_request].present? &&
+      (different_project? || @ref != @target_branch)
   end
 
+  # TODO: We should really clean this up
   def set_commit_variables
-    @mr_source_branch ||= @target_branch
-
     if can?(current_user, :push_code, @project)
       # Edit file in this project
-      @tree_edit_project = @project
       @mr_source_project = @project
 
       if @project.forked?
@@ -112,15 +112,34 @@ module CreatesCommit
       else
         # Merge request to this project
         @mr_target_project = @project
-        @mr_target_branch ||= @ref
+        @mr_target_branch = @ref || @target_branch
       end
     else
-      # Edit file in fork
-      @tree_edit_project = current_user.fork_of(@project)
       # Merge request from fork to this project
-      @mr_source_project = @tree_edit_project
+      @mr_source_project = current_user.fork_of(@project)
       @mr_target_project = @project
-      @mr_target_branch ||= @ref
+      @mr_target_branch = @ref || @target_branch
     end
+
+    @mr_source_branch = guess_mr_source_branch
+  end
+
+  def initial_commit?
+    @mr_target_branch.nil? ||
+      !@mr_target_project.repository.branch_exists?(@mr_target_branch)
+  end
+
+  def guess_mr_source_branch
+    # XXX: Happens when viewing a commit without a branch. In this case,
+    # @target_branch would be the default branch for @mr_source_project,
+    # however we want a generated new branch here. Thus we can't use
+    # @target_branch, but should pass nil to indicate that we want a new
+    # branch instead of @target_branch.
+    return if
+      create_merge_request? &&
+          # XXX: Don't understand why rubocop prefers this indention
+          @mr_source_project.repository.branch_exists?(@target_branch)
+
+    @target_branch
   end
 end
