@@ -6,10 +6,6 @@ describe Boards::Lists::MoveService, services: true do
     let(:board)   { create(:board, project: project) }
     let(:user)    { create(:user) }
 
-<<<<<<< HEAD
-    let!(:backlog)     { board.backlog_list }
-=======
->>>>>>> ce/master
     let!(:planning)    { create(:list, board: board, position: 0) }
     let!(:development) { create(:list, board: board, position: 1) }
     let!(:review)      { create(:list, board: board, position: 2) }

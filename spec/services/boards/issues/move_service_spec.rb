@@ -10,10 +10,6 @@ describe Boards::Issues::MoveService, services: true do
     let(:development) { create(:label, project: project, name: 'Development') }
     let(:testing)  { create(:label, project: project, name: 'Testing') }
 
-<<<<<<< HEAD
-    let!(:backlog) { board1.backlog_list }
-=======
->>>>>>> ce/master
     let!(:list1)   { create(:list, board: board1, label: development, position: 0) }
     let!(:list2)   { create(:list, board: board1, label: testing, position: 1) }
     let!(:done)    { board1.done_list }

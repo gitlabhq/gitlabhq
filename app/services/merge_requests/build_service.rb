@@ -20,17 +20,7 @@ module MergeRequests
 
     private
 
-<<<<<<< HEAD
-      compare = CompareService.new(
-        merge_request.source_project,
-        merge_request.source_branch
-      ).execute(
-        merge_request.target_project,
-        merge_request.target_branch
-      )
-=======
     attr_accessor :merge_request
->>>>>>> ce/master
 
     delegate :target_branch, :source_branch, :source_project, :target_project, :compare_commits, :wip_title, :description, :errors, to: :merge_request
 

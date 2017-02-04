@@ -2,10 +2,6 @@
 /* global Vue */
 
 class BoardService {
-<<<<<<< HEAD
-  constructor (root, boardId) {
-    this.boards = Vue.resource(`${root}{/id}.json`);
-=======
   constructor (root, bulkUpdatePath, boardId) {
     this.boards = Vue.resource(`${root}{/id}.json`, {}, {
       issues: {
@@ -13,7 +9,6 @@ class BoardService {
         url: `${root}/${boardId}/issues.json`
       }
     });
->>>>>>> ce/master
     this.lists = Vue.resource(`${root}/${boardId}/lists{/id}`, {}, {
       generate: {
         method: 'POST',

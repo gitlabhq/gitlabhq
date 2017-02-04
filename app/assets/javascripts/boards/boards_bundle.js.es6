@@ -36,13 +36,9 @@ $(() => {
     el: $boardApp,
     components: {
       'board': gl.issueBoards.Board,
-<<<<<<< HEAD
       'boards-selector': gl.issueBoards.BoardsSelector,
-      'board-sidebar': gl.issueBoards.BoardSidebar
-=======
       'board-sidebar': gl.issueBoards.BoardSidebar,
       'board-add-issues-modal': gl.issueBoards.IssuesModal,
->>>>>>> ce/master
     },
     data: {
       state: Store.state,

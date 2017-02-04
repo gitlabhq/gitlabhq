@@ -38,7 +38,6 @@
           = label_tag :should_remove_source_branch, class: "merge-param-checkbox" do
             = check_box_tag :should_remove_source_branch
             Remove source branch
-<<<<<<< HEAD
       .accept-control.checkbox
         = label_tag :squash, class: 'merge-param-checkbox' do
           = hidden_field_tag :squash, '0', id: nil
@@ -53,7 +52,6 @@
           = link_to "#", class: "modify-merge-commit-link js-toggle-button" do
             = icon('edit')
             Modify commit message
-
     - unless @project.merge_requests_ff_only_enabled
       .js-toggle-content.hide.prepend-top-default
         = render 'shared/commit_message_container', params: params,
@@ -61,17 +59,5 @@
             message_without_description: @merge_request.merge_commit_message,
             text: @merge_request.merge_commit_message,
             rows: 14, hint: true
-=======
-      .accept-control
-        = link_to "#", class: "modify-merge-commit-link js-toggle-button" do
-          = icon('edit')
-          Modify commit message
-    .js-toggle-content.hide.prepend-top-default
-      = render 'shared/commit_message_container', params: params,
-          message_with_description: @merge_request.merge_commit_message(include_description: true),
-          message_without_description: @merge_request.merge_commit_message,
-          text: @merge_request.merge_commit_message,
-          rows: 14, hint: true
->>>>>>> ce/master
 
     = hidden_field_tag :merge_when_build_succeeds, "", autocomplete: "off"

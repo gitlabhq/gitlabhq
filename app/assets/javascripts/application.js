@@ -21,11 +21,7 @@ require('vendor/jquery.waitforimages');
 require('vendor/jquery.caret');
 require('vendor/jquery.atwho');
 require('vendor/jquery.scrollTo');
-<<<<<<< HEAD
-require('vendor/jquery.turbolinks');
 require('vendor/jquery.tablesorter');
-=======
->>>>>>> ce/master
 window.Cookies = require('vendor/js.cookie');
 require('./autosave');
 require('bootstrap/js/affix');
