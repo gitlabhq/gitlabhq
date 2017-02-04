@@ -1,9 +1,17 @@
 require 'spec_helper'
 
 describe Profiles::NotificationsController do
+  let(:user) do
+    create(:user) do |user|
+      user.emails.create(email: 'original@example.com')
+      user.emails.create(email: 'new@example.com')
+      user.update(notification_email: 'original@example.com')
+      user.save!
+    end
+  end
+
   describe 'GET show' do
     it 'renders' do
-      user = create_user
       sign_in(user)
 
       get :show
@@ -14,7 +22,6 @@ describe Profiles::NotificationsController do
 
   describe 'POST update' do
     it 'updates only permitted attributes' do
-      user = create_user
       sign_in(user)
 
       put :update, user: { notification_email: 'new@example.com', notified_of_own_activity: true, admin: true }
@@ -27,22 +34,12 @@ describe Profiles::NotificationsController do
     end
 
     it 'shows an error message if the params are invalid' do
-      user = create_user
       sign_in(user)
 
       put :update, user: { notification_email: '' }
 
       expect(user.reload.notification_email).to eq('original@example.com')
       expect(controller).to set_flash[:alert].to('Failed to save new settings')
-    end
-  end
-
-  def create_user
-    create(:user) do |user|
-      user.emails.create(email: 'original@example.com')
-      user.emails.create(email: 'new@example.com')
-      user.update(notification_email: 'original@example.com')
-      user.save!
     end
   end
 end
