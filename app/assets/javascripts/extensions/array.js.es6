@@ -1,4 +1,7 @@
-/* eslint-disable no-extend-native, func-names, space-before-function-paren, space-infix-ops, max-len */
+/* eslint-disable no-extend-native, func-names, space-before-function-paren, space-infix-ops, strict, max-len */
+
+'use strict';
+
 Array.prototype.first = function() {
   return this[0];
 };

@@ -1,8 +1,8 @@
 /* eslint-disable space-before-function-paren, no-return-assign, no-var, quotes */
 /* global ShortcutsIssuable */
 
-/*= require copy_as_gfm */
-/*= require shortcuts_issuable */
+require('~/copy_as_gfm');
+require('~/shortcuts_issuable');
 
 (function() {
   describe('ShortcutsIssuable', function() {

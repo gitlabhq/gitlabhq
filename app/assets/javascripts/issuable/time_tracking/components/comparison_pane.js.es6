@@ -1,5 +1,5 @@
 /* global Vue */
-//= require lib/utils/pretty_time
+require('../../../lib/utils/pretty_time');
 
 (() => {
   const prettyTime = gl.utils.prettyTime;

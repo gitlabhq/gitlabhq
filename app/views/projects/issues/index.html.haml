@@ -7,7 +7,7 @@
   = render "projects/issues/head"
 
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_tag('filtered_search/filtered_search_bundle.js')
+  = page_specific_javascript_bundle_tag('filtered_search')
 
 = content_for :meta_tags do
   - if current_user

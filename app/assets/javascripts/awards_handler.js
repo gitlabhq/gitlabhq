@@ -1,11 +1,13 @@
 /* eslint-disable func-names, space-before-function-paren, wrap-iife, max-len, no-var, prefer-arrow-callback, consistent-return, one-var, one-var-declaration-per-line, no-unused-vars, no-else-return, prefer-template, quotes, comma-dangle, no-param-reassign, no-void, brace-style, no-underscore-dangle, no-return-assign, camelcase */
 /* global Cookies */
 
+var emojiAliases = require('emoji-aliases');
+
 (function() {
   this.AwardsHandler = (function() {
     var FROM_SENTENCE_REGEX = /(?:, and | and |, )/; // For separating lists produced by ruby's Array#toSentence
     function AwardsHandler() {
-      this.aliases = gl.emojiAliases();
+      this.aliases = emojiAliases;
       $(document).off('click', '.js-add-award').on('click', '.js-add-award', (function(_this) {
         return function(e) {
           e.stopPropagation();

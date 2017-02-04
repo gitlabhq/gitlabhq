@@ -1,10 +1,9 @@
 /* eslint-disable no-param-reassign */
 /* global Vue, VueResource, gl */
-
-//= require vue
-/*= require vue-resource
-/*= require vue_shared/vue_resource_interceptor */
-/*= require ./pipelines.js.es6 */
+window.Vue = require('vue');
+window.Vue.use(require('vue-resource'));
+require('../vue_shared/vue_resource_interceptor');
+require('./pipelines');
 
 $(() => {
   Vue.use(VueResource);

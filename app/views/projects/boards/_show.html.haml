@@ -3,8 +3,8 @@
 - page_title "Boards"
 
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_tag('boards/boards_bundle.js')
-  = page_specific_javascript_tag('boards/test_utils/simulate_drag.js') if Rails.env.test?
+  = page_specific_javascript_bundle_tag('boards')
+  = page_specific_javascript_bundle_tag('boards_test') if Rails.env.test?
 
   %script#js-board-template{ type: "text/x-template" }= render "projects/boards/components/board"
   %script#js-board-list-template{ type: "text/x-template" }= render "projects/boards/components/board_list"

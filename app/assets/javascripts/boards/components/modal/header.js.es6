@@ -1,5 +1,7 @@
 /* global Vue */
-//= require ./tabs
+
+require('./tabs');
+
 (() => {
   const ModalStore = gl.issueBoards.ModalStore;
 

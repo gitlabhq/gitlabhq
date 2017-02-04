@@ -1,4 +1,4 @@
-//= require vue_shared/components/commit
+require('~/vue_shared/components/committ');
 
 describe('Commit component', () => {
   let props;

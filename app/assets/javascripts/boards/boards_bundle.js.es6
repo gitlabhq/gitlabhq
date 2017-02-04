@@ -1,20 +1,22 @@
-/* eslint-disable one-var, quote-props, comma-dangle, space-before-function-paren */
+/* eslint-disable one-var, quote-props, comma-dangle, space-before-function-paren, import/newline-after-import, no-multi-spaces, max-len */
 /* global Vue */
 /* global BoardService */
 
-//= require vue
-//= require vue-resource
-//= require Sortable
-//= require_tree ./models
-//= require_tree ./stores
-//= require_tree ./services
-//= require_tree ./mixins
-//= require_tree ./filters
-//= require ./components/board
-//= require ./components/board_sidebar
-//= require ./components/new_list_dropdown
-//= require vue_shared/vue_resource_interceptor
-//= require ./components/modal/index
+function requireAll(context) { return context.keys().map(context); }
+
+window.Vue = require('vue');
+window.Vue.use(require('vue-resource'));
+window.Sortable = require('vendor/Sortable');
+requireAll(require.context('./models',   true, /^\.\/.*\.(js|es6)$/));
+requireAll(require.context('./stores',   true, /^\.\/.*\.(js|es6)$/));
+requireAll(require.context('./services', true, /^\.\/.*\.(js|es6)$/));
+requireAll(require.context('./mixins',   true, /^\.\/.*\.(js|es6)$/));
+requireAll(require.context('./filters',  true, /^\.\/.*\.(js|es6)$/));
+require('./components/board');
+require('./components/board_sidebar');
+require('./components/new_list_dropdown');
+require('./components/modal/index');
+require('../vue_shared/vue_resource_interceptor');
 
 $(() => {
   const $boardApp = document.getElementById('board-app');
@@ -76,7 +78,7 @@ $(() => {
   });
 
   gl.IssueBoardsSearch = new Vue({
-    el: '#js-boards-search',
+    el: document.getElementById('js-boards-search'),
     data: {
       filters: Store.state.filters
     },
@@ -87,7 +89,7 @@ $(() => {
 
   gl.IssueBoardsModalAddBtn = new Vue({
     mixins: [gl.issueBoards.ModalMixins],
-    el: '#js-add-issues-btn',
+    el: document.getElementById('js-add-issues-btn'),
     data: {
       modal: ModalStore.store,
       store: Store.state,

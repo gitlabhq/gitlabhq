@@ -1,5 +1,5 @@
 /* global Vue */
-//= require lib/utils/pretty_time
+require('../../../lib/utils/pretty_time');
 
 (() => {
   Vue.component('time-tracking-collapsed-state', {
@@ -39,4 +39,3 @@
       `,
   });
 })();
-

@@ -3,8 +3,8 @@
 - page_description     @merge_request.description
 - page_card_attributes @merge_request.card_attributes
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_tag('lib/vue_resource.js')
-  = page_specific_javascript_tag('diff_notes/diff_notes_bundle.js')
+  = page_specific_javascript_bundle_tag('lib_vue')
+  = page_specific_javascript_bundle_tag('diff_notes')
 
 .merge-request{ 'data-url' => merge_request_path(@merge_request) }
   = render "projects/merge_requests/show/mr_title"
