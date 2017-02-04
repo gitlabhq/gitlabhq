@@ -4,7 +4,8 @@
 /* global MilestoneSelect */
 /* global LabelsSelect */
 /* global Sidebar */
-//= require ./sidebar/remove_issue
+
+require('./sidebar/remove_issue');
 
 (() => {
   const Store = gl.issueBoards.BoardsStore;

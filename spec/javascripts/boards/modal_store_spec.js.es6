@@ -1,13 +1,11 @@
 /* global Vue */
 /* global ListIssue */
 
-//= require jquery
-//= require vue
-//= require boards/models/issue
-//= require boards/models/label
-//= require boards/models/list
-//= require boards/models/user
-//= require boards/stores/modal_store
+require('~/boards/models/issue');
+require('~/boards/models/label');
+require('~/boards/models/list');
+require('~/boards/models/user');
+require('~/boards/stores/modal_store');
 
 describe('Modal store', () => {
   let issue;

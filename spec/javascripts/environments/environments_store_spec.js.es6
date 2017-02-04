@@ -1,8 +1,7 @@
 /* global environmentsList */
 
-//= require vue
-//= require environments/stores/environments_store
-//= require ./mock_data
+require('~/environments/stores/environments_store');
+require('./mock_data');
 
 (() => {
   describe('Store', () => {

@@ -1,11 +1,11 @@
 /* eslint-disable no-new */
 /* global Build */
 
-//= require lib/utils/datetime_utility
-//= require lib/utils/url_utility
-//= require build
-//= require breakpoints
-//= require jquery.nicescroll
+require('~/lib/utils/datetime_utility');
+require('~/lib/utils/url_utility');
+require('~/build');
+require('~/breakpoints');
+require('vendor/jquery.nicescroll');
 
 describe('Build', () => {
   const BUILD_URL = `${gl.TEST_HOST}/frontend-fixtures/builds-project/builds/1`;

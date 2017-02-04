@@ -1,6 +1,7 @@
 /* eslint-disable comma-dangle, space-before-function-paren, dot-notation */
-//= require ./issue_card_inner
 /* global Vue */
+
+require('./issue_card_inner');
 
 (() => {
   const Store = gl.issueBoards.BoardsStore;

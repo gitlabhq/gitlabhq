@@ -1,5 +1,5 @@
-//= require extensions/array
-//= require filtered_search/filtered_search_token_keys
+require('~/extensions/array');
+require('~/filtered_search/filtered_search_token_keys');
 
 (() => {
   describe('Filtered Search Token Keys', () => {

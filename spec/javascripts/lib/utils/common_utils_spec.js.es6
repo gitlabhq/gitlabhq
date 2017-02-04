@@ -1,4 +1,4 @@
-//= require lib/utils/common_utils
+require('~/lib/utils/common_utils');
 
 (() => {
   describe('common_utils', () => {

@@ -4,15 +4,13 @@
 /* global listObj */
 /* global ListIssue */
 
-//= require jquery
-//= require vue
-//= require boards/models/issue
-//= require boards/models/label
-//= require boards/models/list
-//= require boards/models/user
-//= require boards/stores/boards_store
-//= require boards/components/issue_card_inner
-//= require ./mock_data
+require('~/boards/models/issue');
+require('~/boards/models/label');
+require('~/boards/models/list');
+require('~/boards/models/user');
+require('~/boards/stores/boards_store');
+require('~/boards/components/issue_card_inner');
+require('./mock_data');
 
 describe('Issue card component', () => {
   const user = new ListUser({
