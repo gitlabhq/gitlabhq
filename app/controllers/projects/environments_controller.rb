@@ -9,17 +9,22 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action :verify_api_request!, only: :terminal_websocket_authorize
 
   def index
-    @scope = params[:scope]
-    @environments = project.environments.includes(:last_deployment)
+    @environments = project.environments
+      .includes(:last_deployment)
+      .with_state(params[:scope] || :available)
 
     respond_to do |format|
       format.html
       format.json do
-        render json: EnvironmentSerializer
-          .new(project: @project, user: @current_user)
-          .with_pagination(request, response)
-          .within_folders
-          .represent(@environments)
+        render json: {
+          environments: EnvironmentSerializer
+            .new(project: @project, user: @current_user)
+            .with_pagination(request, response)
+            .within_folders
+            .represent(@environments),
+          available_count: project.environments.available.count,
+          stopped_count: project.environments.stopped.count
+        }
       end
     end
   end

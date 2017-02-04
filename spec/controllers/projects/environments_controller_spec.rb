@@ -7,8 +7,7 @@ describe Projects::EnvironmentsController do
   let(:project) { create(:empty_project) }
 
   let(:environment) do
-    create(:environment, name: 'production',
-                         project: project)
+    create(:environment, name: 'production', project: project)
   end
 
   before do
@@ -28,18 +27,56 @@ describe Projects::EnvironmentsController do
 
     context 'when requesting JSON response for folders' do
       before do
-        create(:environment, project: project, name: 'staging/review-1')
-        create(:environment, project: project, name: 'staging/review-2')
+        create(:environment, project: project,
+                             name: 'staging/review-1',
+                             state: :available)
+
+        create(:environment, project: project,
+                             name: 'staging/review-2',
+                             state: :available)
+
+        create(:environment, project: project,
+                             name: 'staging/review-3',
+                             state: :stopped)
       end
 
-      it 'responds with correct JSON' do
-        get :index, environment_params(format: :json)
+      let(:environments) { json_response['environments'] }
 
-        expect(json_response.count).to eq 2
-        expect(json_response.first['name']).to eq 'production'
-        expect(json_response.second['name']).to eq 'staging'
-        expect(json_response.second['size']).to eq 2
-        expect(json_response.second['latest']['name']).to eq 'staging/review-2'
+      context 'when requesting available environments scope' do
+        before do
+          get :index, environment_params(format: :json, scope: :available)
+        end
+
+        it 'responds with a payload describing available environments' do
+          expect(environments.count).to eq 2
+          expect(environments.first['name']).to eq 'production'
+          expect(environments.second['name']).to eq 'staging'
+          expect(environments.second['size']).to eq 2
+          expect(environments.second['latest']['name']).to eq 'staging/review-2'
+        end
+
+        it 'contains values describing environment scopes sizes' do
+          expect(json_response['available_count']).to eq 3
+          expect(json_response['stopped_count']).to eq 1
+        end
+      end
+
+      context 'when requesting stopped environments scope' do
+        before do
+          get :index, environment_params(format: :json, scope: :stopped)
+        end
+
+        it 'responds with a payload describing stopped environments' do
+          expect(environments.count).to eq 1
+          expect(environments.first['name']).to eq 'staging'
+          expect(environments.first['size']).to eq 1
+          expect(environments.first['latest']['name']).to eq 'staging/review-3'
+        end
+
+        it 'contains values describing environment scopes sizes' do
+          expect(json_response['available_count']).to eq 3
+          expect(json_response['stopped_count']).to eq 1
+        end
       end
     end
   end
