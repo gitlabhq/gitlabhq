@@ -12,106 +12,54 @@ etc.).
 
 ## Common actions
 
-### Issue team
+### Issue triaging
 
-- Looks for issues without [workflow labels](#how-we-handle-issues) and triages
-  issue
-- Closes invalid issues with a comment (duplicates,
-  [fixed in newer version](#issue-fixed-in-newer-version),
-  [issue report for old version](#issue-report-for-old-version), not a problem
-  in GitLab, etc.)
-- Asks for feedback from issue reporter
-  ([invalid issue reports](#improperly-formatted-issue),
-  [format code](#code-format), etc.)
-- Monitors all issues for feedback (but especially ones commented on since
-  automatically watching them)
-- Closes issues with no feedback from the reporter for two weeks
-
-### Merge marshall & merge request coach
-
-- Responds to merge requests the issue team mentions them in and monitors for
-  new merge requests
-- Provides feedback to the merge request submitter to improve the merge request
-  (style, tests, etc.)
-- Mark merge requests `Ready for Merge` when they meet the
-  [contribution acceptance criteria]
-- Mention developer(s) based on the
-  [list of members and their specialities][team]
-- Closes merge requests with no feedback from the reporter for two weeks
-
-## Priorities of the issue team
-
-1. Mentioning people (critical)
-1. Workflow labels (normal)
-1. Functional labels (minor)
-1. Assigning issues (avoid if possible)
-
-## Mentioning people
+Our issue triage policies are [described in our handbook]. You are very welcome
+to help the GitLab team triage issues. We also organize [issue bash events] once
+every quarter.
 
 The most important thing is making sure valid issues receive feedback from the
 development team. Therefore the priority is mentioning developers that can help
 on those issues. Please select someone with relevant experience from
-[GitLab core team][core-team]. If there is nobody mentioned with that expertise
+[GitLab team][team]. If there is nobody mentioned with that expertise
 look in the commit history for the affected files to find someone. Avoid
 mentioning the lead developer, this is the person that is least likely to give a
 timely response. If the involvement of the lead developer is needed the other
 core team members will mention this person.
 
+[described in our handbook]: https://about.gitlab.com/handbook/engineering/issues/issue-triage-policies/
+[issue bash events]: https://gitlab.com/gitlab-org/gitlab-ce/issues/17815
+
+### Merge request coaching
+
+Several people from the [GitLab team][team] are helping community members to get
+their contributions accepted by meeting our [Definition of done][CONTRIBUTING.md#definition-of-done].
+
+What you can expect from them is described at https://about.gitlab.com/jobs/merge-request-coach/.
+
 ## Workflow labels
 
-Workflow labels are purposely not very detailed since that would be hard to keep
-updated as you would need to re-evaluate them after every comment. We optionally
-use functional labels on demand when we want to group related issues to get an
-overview (for example all issues related to RVM, to tackle them in one go) and
-to add details to the issue.
+Labelling issues is described in the [GitLab Inc engineering workflow].
 
-- ~"Awaiting Feedback" Feedback pending from the reporter
-- ~UX needs help from a UX designer
-- ~Frontend needs help from a Front-end engineer. Please follow the
-  ["Implement design & UI elements" guidelines].
-- ~"Accepting Merge Requests" is a low priority, well-defined issue that we
-  encourage people to contribute to. Not exclusive with other labels.
-- ~"feature proposal" is a proposal for a new feature for GitLab. People are encouraged to vote
-in support or comment for further detail. Do not use `feature request`.
-- ~bug is an issue reporting undesirable or incorrect behavior.
-- ~customer is an issue reported by enterprise subscribers. This label should
-be accompanied by *bug* or *feature proposal* labels.
-
-Example workflow: when a UX designer provided a design but it needs frontend work they remove the UX label and add the frontend label.
-
-## Functional labels
-
-These labels describe what development specialities are involved such as: `CI`,
-`Core`, `Documentation`, `Frontend`, `Issues`, `Merge Requests`, `Omnibus`,
-`Release`, `Repository`, `UX`.
+[GitLab Inc engineering workflow]: https://about.gitlab.com/handbook/engineering/workflow/#labelling-issues
 
 ## Assigning issues
 
 If an issue is complex and needs the attention of a specific person, assignment is a good option but assigning issues might discourage other people from contributing to that issue. We need all the contributions we can get so this should never be discouraged. Also, an assigned person might not have time for a few weeks, so others should feel free to takeover.
-
-## Label colors
-
-- Light orange `#fef2c0`: workflow labels for issue team members (awaiting
-  feedback, awaiting confirmation of fix)
-- Bright orange `#eb6420`: workflow labels for core team members (attached MR,
-  awaiting developer action/feedback)
-- Light blue `#82C5FF`: functional labels
-- Green labels `#009800`: issues that can generally be ignored. For example,
-  issues given the following labels normally can be closed immediately:
-  - Support (see copy & paste response:
-    [Support requests and configuration questions](#support-requests-and-configuration-questions)
 
 ## Be kind
 
 Be kind to people trying to contribute. Be aware that people may be a non-native
 English speaker, they might not understand things or they might be very
 sensitive as to how you word things. Use Emoji to express your feelings (heart,
-star, smile, etc.). Some good tips about giving feedback to merge requests is in
-the [Thoughtbot code review guide].
+star, smile, etc.). Some good tips about code reviews can be found in our
+[Code Review Guidelines].
+
+[Code Review Guidelines]: https://docs.gitlab.com/ce/development/code_review.html
 
 ## Feature Freeze
 
-5 working days before the 22nd the stable branches for the upcoming release will
+On the 7th of each month, the stable branches for the upcoming release will
 be frozen for major changes. Merge requests may still be merged into master
 during this period. By freezing the stable branches prior to a release there's
 no need to worry about last minute merge requests potentially breaking a lot of
@@ -120,10 +68,9 @@ things.
 What is considered to be a major change is determined on a case by case basis as
 this definition depends very much on the context of changes. For example, a 5
 line change might have a big impact on the entire application. Ultimately the
-decision will be made by those reviewing a merge request and the release
-manager.
+decision will be made by the maintainers and the release managers.
 
-During the feature freeze all merge requests that are meant to go into the next
+During the feature freeze all merge requests that are meant to go into the upcoming
 release should have the correct milestone assigned _and_ have the label
 ~"Pick into Stable" set. Merge requests without a milestone and this label will
 not be merged into any stable branches.
@@ -189,7 +136,6 @@ prevent duplication with the GitLab.com issue tracker.
 Since this is an older issue I'll be closing this for now. If you think this is
 still an issue I encourage you to open it on the \[GitLab.com issue tracker\]\(https://gitlab.com/gitlab-org/gitlab-ce/issues).
 
-[core-team]: https://about.gitlab.com/core-team/
 [team]: https://about.gitlab.com/team/
 [contribution acceptance criteria]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#contribution-acceptance-criteria
 ["Implement design & UI elements" guidelines]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#implement-design-ui-elements

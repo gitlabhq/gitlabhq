@@ -116,7 +116,7 @@ require('vendor/fuzzaldrin-plus');
       loadFixtures('static/search_autocomplete.html.raw');
       widget = new gl.SearchAutocomplete;
       // Prevent turbolinks from triggering within gl_dropdown
-      spyOn(window.Turbolinks, 'visit').and.returnValue(true);
+      spyOn(window.gl.utils, 'visitUrl').and.returnValue(true);
     });
     it('should show Dashboard specific dropdown menu', function() {
       var list;

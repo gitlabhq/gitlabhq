@@ -26,9 +26,9 @@
                 v-if='actions'
                 class="dropdown-toggle btn btn-default has-tooltip js-pipeline-dropdown-manual-actions"
                 data-toggle="dropdown"
-                title="Manual build"
+                title="Manual job"
                 data-placement="top"
-                aria-label="Manual build"
+                aria-label="Manual job"
               >
                 <span v-html='svgs.iconPlay' aria-hidden="true"></span>
                 <i class="fa fa-caret-down" aria-hidden="true"></i>

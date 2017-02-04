@@ -7,7 +7,7 @@
   - if can?(current_user, :admin_group_member, @group)
     .project-members-new.append-bottom-default
       %p.clearfix
-        Add new user to
+        Add new member to
         %strong= @group.name
       = render "new_group_member"
 
@@ -17,7 +17,7 @@
 
   .append-bottom-default.clearfix
     %h5.member.existing-title
-      Existing users
+      Existing members
     = form_tag group_group_members_path(@group), method: :get, class: 'form-inline member-search-form'  do
       .form-group
         = search_field_tag :search, params[:search], { placeholder: 'Find existing members by name', class: 'form-control', spellcheck: false }
@@ -26,7 +26,7 @@
         = render 'shared/members/sort_dropdown'
   .panel.panel-default
     .panel-heading
-      Users with access to
+      Members with access to
       %strong= @group.name
       %span.badge= @members.total_count
     %ul.content-list

@@ -5,11 +5,15 @@ describe 'Merge request', :feature, :js do
 
   let(:project) { create(:project) }
   let(:user) { create(:user) }
+<<<<<<< HEAD
   let(:merge_request) { create(:merge_request, source_project: project) }
+=======
+>>>>>>> ce/master
 
   before do
     project.team << [user, :master]
     login_as(user)
+<<<<<<< HEAD
   end
 
   context 'new merge request' do
@@ -53,5 +57,28 @@ describe 'Merge request', :feature, :js do
         expect(find('.js-environment-link')[:href]).to include(environment.formatted_external_url)
       end
     end
+=======
+
+    visit new_namespace_project_merge_request_path(
+      project.namespace,
+      project,
+      merge_request: {
+        source_project_id: project.id,
+        target_project_id: project.id,
+        source_branch: 'feature',
+        target_branch: 'master'
+      }
+    )
+  end
+
+  it 'shows widget status after creating new merge request' do
+    click_button 'Submit merge request'
+
+    expect(find('.mr-state-widget')).to have_content('Checking ability to merge automatically')
+
+    wait_for_ajax
+
+    expect(page).to have_selector('.accept_merge_request')
+>>>>>>> ce/master
   end
 end

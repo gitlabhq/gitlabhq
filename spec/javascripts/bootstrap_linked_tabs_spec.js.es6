@@ -62,7 +62,6 @@ require('~/lib/utils/bootstrap_linked_tabs');
 
         if (historySpy) {
           expect(historySpy).toHaveBeenCalledWith({
-            turbolinks: true,
             url: newState,
           }, document.title, newState);
         }

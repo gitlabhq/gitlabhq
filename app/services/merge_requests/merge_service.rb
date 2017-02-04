@@ -18,12 +18,15 @@ module MergeRequests
 
       return log_merge_error('Merge request is not mergeable', true) unless @merge_request.mergeable?
 
+<<<<<<< HEAD
       if @merge_request.target_project.above_size_limit?
         message = Gitlab::RepositorySizeError.new(@merge_request.target_project).merge_error
         @merge_request.update(merge_error: message)
         return error(message)
       end
 
+=======
+>>>>>>> ce/master
       @source = find_merge_source
 
       return log_merge_error('No source for merge', true) unless @source
@@ -111,6 +114,7 @@ module MergeRequests
     end
 
     def find_merge_source
+<<<<<<< HEAD
       return merge_request.diff_head_sha unless merge_request.squash
 
       squash_result = SquashService.new(project, current_user, params).execute(merge_request)
@@ -122,6 +126,9 @@ module MergeRequests
 
         nil
       end
+=======
+      merge_request.diff_head_sha
+>>>>>>> ce/master
     end
   end
 end

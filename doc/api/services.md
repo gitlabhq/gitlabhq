@@ -809,6 +809,7 @@ GET /projects/:id/services/teamcity
 ```
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ## Jenkins CI
 
 A continuous integration and build server
@@ -880,5 +881,7 @@ Get Jenkins CI (Deprecated) service settings for a project.
 GET /projects/:id/services/jenkins-deprecated
 ```
 
+=======
+>>>>>>> ce/master
 [jira-doc]: ../user/project/integrations/jira.md
 [old-jira-api]: https://gitlab.com/gitlab-org/gitlab-ce/blob/8-13-stable/doc/api/services.md#jira

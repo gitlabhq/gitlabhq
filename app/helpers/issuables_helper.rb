@@ -163,6 +163,10 @@ module IssuablesHelper
     ]
   end
 
+  def issuable_reference(issuable)
+    @show_full_reference ? issuable.to_reference(full: true) : issuable.to_reference(@group || @project)
+  end
+
   def issuable_filter_present?
     issuable_filter_params.any? { |k| params.key?(k) }
   end

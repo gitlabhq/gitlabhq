@@ -33,6 +33,8 @@
   - if content_for?(:page_specific_javascripts)
     = yield :page_specific_javascripts
 
+  = yield :project_javascripts
+
   = csrf_meta_tags
 
   - unless browser.safari?

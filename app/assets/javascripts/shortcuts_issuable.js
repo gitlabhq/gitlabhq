@@ -1,6 +1,5 @@
 /* eslint-disable func-names, space-before-function-paren, max-len, no-var, one-var, no-restricted-syntax, vars-on-top, no-use-before-define, no-param-reassign, new-cap, no-underscore-dangle, wrap-iife, one-var-declaration-per-line, quotes, prefer-arrow-callback, consistent-return, prefer-template, no-mixed-operators */
 /* global Mousetrap */
-/* global Turbolinks */
 /* global ShortcutsNavigation */
 /* global sidebar */
 
@@ -39,17 +38,20 @@ require('./shortcuts_navigation');
     }
 
     ShortcutsIssuable.prototype.replyWithSelectedText = function() {
-      var quote, replyField, documentFragment, selected, separator;
+      var quote, documentFragment, selected, separator;
+      var replyField = $('.js-main-target-form #note_note');
 
       documentFragment = window.gl.utils.getSelectedFragment();
-      if (!documentFragment) return;
+      if (!documentFragment) {
+        replyField.focus();
+        return;
+      }
 
       // If the documentFragment contains more than just Markdown, don't copy as GFM.
       if (documentFragment.querySelector('.md, .wiki')) return;
 
       selected = window.gl.CopyAsGFM.nodeToGFM(documentFragment);
 
-      replyField = $('.js-main-target-form #note_note');
       if (selected.trim() === "") {
         return;
       }
@@ -77,7 +79,7 @@ require('./shortcuts_navigation');
     ShortcutsIssuable.prototype.editIssue = function() {
       var $editBtn;
       $editBtn = $('.issuable-edit');
-      return Turbolinks.visit($editBtn.attr('href'));
+      return gl.utils.visitUrl($editBtn.attr('href'));
     };
 
     ShortcutsIssuable.prototype.openSidebarDropdown = function(name) {

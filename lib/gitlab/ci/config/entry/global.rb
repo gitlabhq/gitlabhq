@@ -33,8 +33,11 @@ module Gitlab
           entry :cache, Entry::Cache,
             description: 'Configure caching between build jobs.'
 
+          entry :coverage, Entry::Coverage,
+               description: 'Coverage configuration for this pipeline.'
+
           helpers :before_script, :image, :services, :after_script,
-                  :variables, :stages, :types, :cache, :jobs
+                  :variables, :stages, :types, :cache, :coverage, :jobs
 
           def compose!(_deps = nil)
             super(self) do

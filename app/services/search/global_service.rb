@@ -10,6 +10,14 @@ module Search
 
     def execute
       group = Group.find_by(id: params[:group_id]) if params[:group_id].present?
+<<<<<<< HEAD
+=======
+      projects = ProjectsFinder.new.execute(current_user)
+
+      if group
+        projects = projects.inside_path(group.full_path)
+      end
+>>>>>>> ce/master
 
       if current_application_settings.elasticsearch_search?
         projects = current_user ? current_user.authorized_projects : Project.none

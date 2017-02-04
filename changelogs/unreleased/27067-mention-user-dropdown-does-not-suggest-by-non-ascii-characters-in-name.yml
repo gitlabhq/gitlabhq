@@ -1,0 +1,4 @@
+---
+title: Support non-ASCII characters in GFM autocomplete
+merge_request: 8729
+author:

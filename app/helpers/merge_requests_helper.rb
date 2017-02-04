@@ -191,6 +191,10 @@ module MergeRequestsHelper
   end
 
   def merge_params_ee(merge_request)
+<<<<<<< HEAD
     { squash: merge_request.squash }
+=======
+    {}
+>>>>>>> ce/master
   end
 end

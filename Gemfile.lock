@@ -54,7 +54,7 @@ GEM
       faraday_middleware-multi_json (~> 0.0)
       oauth2 (~> 1.0)
     asciidoctor (1.5.3)
-    asciidoctor-plantuml (0.0.6)
+    asciidoctor-plantuml (0.0.7)
       asciidoctor (~> 1.5)
     ast (2.3.0)
     attr_encrypted (3.0.3)
@@ -284,8 +284,6 @@ GEM
       posix-spawn (~> 0.3)
     gitlab-license (1.0.0)
     gitlab-markup (1.5.1)
-    gitlab-turbolinks-classic (2.5.6)
-      coffee-rails
     gitlab_omniauth-ldap (1.2.1)
       net-ldap (~> 0.9)
       omniauth (~> 1.0)
@@ -399,7 +397,7 @@ GEM
     json (1.8.3)
     json-schema (2.6.2)
       addressable (~> 2.3.8)
-    jwt (1.5.4)
+    jwt (1.5.6)
     kaminari (0.17.0)
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
@@ -858,7 +856,7 @@ DEPENDENCIES
   allocations (~> 1.0)
   asana (~> 0.4.0)
   asciidoctor (~> 1.5.2)
-  asciidoctor-plantuml (= 0.0.6)
+  asciidoctor-plantuml (= 0.0.7)
   attr_encrypted (~> 3.0.0)
   awesome_print (~> 1.2.0)
   babosa (~> 1.0.2)
@@ -912,7 +910,6 @@ DEPENDENCIES
   gitlab-flowdock-git-hook (~> 1.0.1)
   gitlab-license (~> 1.0)
   gitlab-markup (~> 1.5.1)
-  gitlab-turbolinks-classic (~> 2.5, >= 2.5.6)
   gitlab_omniauth-ldap (~> 1.2.1)
   gollum-lib (~> 4.2)
   gollum-rugged_adapter (~> 0.4.2)
@@ -934,7 +931,7 @@ DEPENDENCIES
   jquery-rails (~> 4.1.0)
   jquery-ui-rails (~> 5.0.0)
   json-schema (~> 2.6.2)
-  jwt
+  jwt (~> 1.5.6)
   kaminari (~> 0.17.0)
   knapsack (~> 1.11.0)
   kubeclient (~> 2.2.0)
@@ -1044,4 +1041,4 @@ DEPENDENCIES
   wikicloth (= 0.8.1)
 
 BUNDLED WITH
-   1.13.7
+   1.14.2

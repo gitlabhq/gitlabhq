@@ -245,6 +245,7 @@ class Project < ActiveRecord::Base
   scope :with_project_feature, -> { joins('LEFT JOIN project_features ON projects.id = project_features.project_id') }
   scope :with_statistics, -> { includes(:statistics) }
   scope :with_shared_runners, -> { where(shared_runners_enabled: true) }
+  scope :inside_path, ->(path) { joins(:route).where('routes.path LIKE ?', "#{path}/%") }
 
   # "enabled" here means "not disabled". It includes private features!
   scope :with_feature_enabled, ->(feature) {
@@ -406,10 +407,6 @@ class Project < ActiveRecord::Base
     def group_ids
       joins(:namespace).where(namespaces: { type: 'Group' }).select(:namespace_id)
     end
-
-    # Add alias for Routable method for compatibility with old code.
-    # In future all calls `find_with_namespace` should be replaced with `find_by_full_path`
-    alias_method :find_with_namespace, :find_by_full_path
   end
 
   def lfs_enabled?
@@ -690,10 +687,11 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def to_reference(from_project = nil, full: false)
-    if full || cross_namespace_reference?(from_project)
+  # `from` argument can be a Namespace or Project.
+  def to_reference(from = nil, full: false)
+    if full || cross_namespace_reference?(from)
       path_with_namespace
-    elsif cross_project_reference?(from_project)
+    elsif cross_project_reference?(from)
       path
     end
   end
@@ -1571,19 +1569,24 @@ class Project < ActiveRecord::Base
 
   private
 
+  def cross_namespace_reference?(from)
+    case from
+    when Project
+      namespace != from.namespace
+    when Namespace
+      namespace != from
+    end
+  end
+
   # Check if a reference is being done cross-project
-  #
-  # from_project - Refering Project object
-  def cross_project_reference?(from_project)
-    from_project && self != from_project
+  def cross_project_reference?(from)
+    return true if from.is_a?(Namespace)
+
+    from && self != from
   end
 
   def pushes_since_gc_redis_key
     "projects/#{id}/pushes_since_gc"
-  end
-
-  def cross_namespace_reference?(from_project)
-    from_project && namespace != from_project.namespace
   end
 
   def default_branch_protected?
@@ -1614,6 +1617,6 @@ class Project < ActiveRecord::Base
   def pending_delete_twin
     return false unless path
 
-    Project.unscoped.where(pending_delete: true).find_with_namespace(path_with_namespace)
+    Project.unscoped.where(pending_delete: true).find_by_full_path(path_with_namespace)
   end
 end

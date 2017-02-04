@@ -161,6 +161,7 @@ module API
       expose :avatar_url
       expose :web_url
       expose :request_access_enabled
+      expose :full_name, :full_path
 
       expose :statistics, if: :statistics do
         with_options format_with: -> (value) { value.to_i } do

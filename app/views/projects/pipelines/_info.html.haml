@@ -23,9 +23,9 @@
 .info-well
   - if @commit.status
     .well-segment.pipeline-info
-      %div{ class: "icon-container ci-status-icon-#{@commit.status}" }
-        = ci_icon_for_status(@commit.status)
-      = pluralize @pipeline.statuses.count(:id), "build"
+      .icon-container
+        = icon('clock-o')
+      = pluralize @pipeline.statuses.count(:id), "job"
       - if @pipeline.ref
         from
         = link_to @pipeline.ref, namespace_project_commits_path(@project.namespace, @project, @pipeline.ref), class: "monospace"

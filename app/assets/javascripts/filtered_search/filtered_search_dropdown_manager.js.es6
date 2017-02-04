@@ -9,7 +9,7 @@
       this.setupMapping();
 
       this.cleanupWrapper = this.cleanup.bind(this);
-      document.addEventListener('page:fetch', this.cleanupWrapper);
+      document.addEventListener('beforeunload', this.cleanupWrapper);
     }
 
     cleanup() {
@@ -20,7 +20,7 @@
 
       this.setupMapping();
 
-      document.removeEventListener('page:fetch', this.cleanupWrapper);
+      document.removeEventListener('beforeunload', this.cleanupWrapper);
     }
 
     setupMapping() {

@@ -72,7 +72,7 @@
 
                 .row
                   .col-md-9.project-feature.nested
-                    = feature_fields.label :builds_access_level, "Builds", class: 'label-light'
+                    = feature_fields.label :builds_access_level, "Pipelines", class: 'label-light'
                     %span.help-block Submit, test and deploy your changes before merge
                   .col-md-3
                     = project_feature_access_select(:builds_access_level)
@@ -191,13 +191,17 @@
           %p
             The following items will NOT be exported:
           %ul
-            %li Build traces and artifacts
+            %li Job traces and artifacts
             %li LFS objects
             %li Container registry images
             %li CI variables
             %li Any encrypted tokens
+<<<<<<< HEAD
   %hr
+=======
+>>>>>>> ce/master
   - if can? current_user, :archive_project, @project
+    %hr
     .row.prepend-top-default
       .col-lg-3
         %h4.warning-title.prepend-top-0

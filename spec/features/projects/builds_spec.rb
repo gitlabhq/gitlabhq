@@ -27,7 +27,7 @@ feature 'Builds', :feature do
         visit namespace_project_builds_path(project.namespace, project, scope: :pending)
       end
 
-      it "shows Pending tab builds" do
+      it "shows Pending tab jobs" do
         expect(page).to have_link 'Cancel running'
         expect(page).to have_selector('.nav-links li.active', text: 'Pending')
         expect(page).to have_content build.short_sha
@@ -42,7 +42,7 @@ feature 'Builds', :feature do
         visit namespace_project_builds_path(project.namespace, project, scope: :running)
       end
 
-      it "shows Running tab builds" do
+      it "shows Running tab jobs" do
         expect(page).to have_selector('.nav-links li.active', text: 'Running')
         expect(page).to have_link 'Cancel running'
         expect(page).to have_content build.short_sha
@@ -57,20 +57,20 @@ feature 'Builds', :feature do
         visit namespace_project_builds_path(project.namespace, project, scope: :finished)
       end
 
-      it "shows Finished tab builds" do
+      it "shows Finished tab jobs" do
         expect(page).to have_selector('.nav-links li.active', text: 'Finished')
-        expect(page).to have_content 'No builds to show'
+        expect(page).to have_content 'No jobs to show'
         expect(page).to have_link 'Cancel running'
       end
     end
 
-    context "All builds" do
+    context "All jobs" do
       before do
         project.builds.running_or_pending.each(&:success)
         visit namespace_project_builds_path(project.namespace, project)
       end
 
-      it "shows All tab builds" do
+      it "shows All tab jobs" do
         expect(page).to have_selector('.nav-links li.active', text: 'All')
         expect(page).to have_content build.short_sha
         expect(page).to have_content build.ref
@@ -98,7 +98,7 @@ feature 'Builds', :feature do
   end
 
   describe "GET /:project/builds/:id" do
-    context "Build from project" do
+    context "Job from project" do
       before do
         visit namespace_project_build_path(project.namespace, project, build)
       end
@@ -111,7 +111,7 @@ feature 'Builds', :feature do
       end
     end
 
-    context "Build from other project" do
+    context "Job from other project" do
       before do
         visit namespace_project_build_path(project.namespace, project, build2)
       end
@@ -149,7 +149,7 @@ feature 'Builds', :feature do
       context 'when expire date is defined' do
         let(:expire_at) { Time.now + 7.days }
 
-        context 'when user has ability to update build' do
+        context 'when user has ability to update job' do
           it 'keeps artifacts when keep button is clicked' do
             expect(page).to have_content 'The artifacts will be removed'
 
@@ -160,7 +160,7 @@ feature 'Builds', :feature do
           end
         end
 
-        context 'when user does not have ability to update build' do
+        context 'when user does not have ability to update job' do
           let(:user_access_level) { :guest }
 
           it 'does not have keep button' do
@@ -197,8 +197,8 @@ feature 'Builds', :feature do
         visit namespace_project_build_path(project.namespace, project, build)
       end
 
-      context 'when build has an initial trace' do
-        it 'loads build trace' do
+      context 'when job has an initial trace' do
+        it 'loads job trace' do
           expect(page).to have_content 'BUILD TRACE'
 
           build.append_trace(' and more trace', 11)
@@ -242,32 +242,32 @@ feature 'Builds', :feature do
       end
     end
 
-    context 'when build starts environment' do
+    context 'when job starts environment' do
       let(:environment) { create(:environment, project: project) }
       let(:pipeline) { create(:ci_pipeline, project: project) }
 
-      context 'build is successfull and has deployment' do
+      context 'job is successfull and has deployment' do
         let(:deployment) { create(:deployment) }
         let(:build) { create(:ci_build, :success, environment: environment.name, deployments: [deployment], pipeline: pipeline) }
 
-        it 'shows a link for the build' do
+        it 'shows a link for the job' do
           visit namespace_project_build_path(project.namespace, project, build)
 
           expect(page).to have_link environment.name
         end
       end
 
-      context 'build is complete and not successfull' do
+      context 'job is complete and not successfull' do
         let(:build) { create(:ci_build, :failed, environment: environment.name, pipeline: pipeline) }
 
-        it 'shows a link for the build' do
+        it 'shows a link for the job' do
           visit namespace_project_build_path(project.namespace, project, build)
 
           expect(page).to have_link environment.name
         end
       end
 
-      context 'build creates a new deployment' do
+      context 'job creates a new deployment' do
         let!(:deployment) { create(:deployment, environment: environment, sha: project.commit.id) }
         let(:build) { create(:ci_build, :success, environment: environment.name, pipeline: pipeline) }
 
@@ -292,7 +292,7 @@ feature 'Builds', :feature do
   end
 
   describe "POST /:project/builds/:id/cancel" do
-    context "Build from project" do
+    context "Job from project" do
       before do
         build.run!
         visit namespace_project_build_path(project.namespace, project, build)
@@ -306,7 +306,7 @@ feature 'Builds', :feature do
       end
     end
 
-    context "Build from other project" do
+    context "Job from other project" do
       before do
         build.run!
         visit namespace_project_build_path(project.namespace, project, build)
@@ -318,13 +318,13 @@ feature 'Builds', :feature do
   end
 
   describe "POST /:project/builds/:id/retry" do
-    context "Build from project" do
+    context "Job from project" do
       before do
         build.run!
         visit namespace_project_build_path(project.namespace, project, build)
         click_link 'Cancel'
         page.within('.build-header') do
-          click_link 'Retry build'
+          click_link 'Retry job'
         end
       end
 

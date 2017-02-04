@@ -1,6 +1,6 @@
 # Auto deploy
 
-> [Introduced][mr-8135] in GitLab 8.15.
+> [Introduced][mr-8135] in GitLab 8.15. Currently requires a [Public project][project-settings].
 
 Auto deploy is an easy way to configure GitLab CI for the deployment of your
 application. GitLab Community maintains a list of `.gitlab-ci.yml`

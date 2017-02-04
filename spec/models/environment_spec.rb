@@ -288,6 +288,11 @@ describe Environment, models: true do
       "1-foo"                     => "env-1-foo" + SUFFIX,
       "1/foo"                     => "env-1-foo" + SUFFIX,
       "foo-"                      => "foo" + SUFFIX,
+      "foo--bar"                  => "foo-bar" + SUFFIX,
+      "foo**bar"                  => "foo-bar" + SUFFIX,
+      "*-foo"                     => "env-foo" + SUFFIX,
+      "staging-12345678-"         => "staging-12345678" + SUFFIX,
+      "staging-12345678-01234567" => "staging-12345678" + SUFFIX,
     }.each do |name, matcher|
       it "returns a slug matching #{matcher}, given #{name}" do
         slug = described_class.new(name: name).generate_slug

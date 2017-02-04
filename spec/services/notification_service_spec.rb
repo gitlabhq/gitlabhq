@@ -443,6 +443,8 @@ describe NotificationService, services: true do
 
     before do
       build_team(issue.project)
+      build_group(issue.project)
+
       add_users_with_subscription(issue.project, issue)
       reset_delivered_emails!
       update_custom_notification(:new_issue, @u_guest_custom, project)
@@ -459,6 +461,8 @@ describe NotificationService, services: true do
         should_email(@u_guest_custom)
         should_email(@u_custom_global)
         should_email(@u_participant_mentioned)
+        should_email(@g_global_watcher)
+        should_email(@g_watcher)
         should_not_email(@u_mentioned)
         should_not_email(@u_participating)
         should_not_email(@u_disabled)
@@ -1253,6 +1257,22 @@ describe NotificationService, services: true do
     project.add_master(@u_custom_global)
   end
 
+  # Users in the project's group but not part of project's team
+  # with different notification settings
+  def build_group(project)
+    group = create(:group, :public)
+    project.group = group
+
+    # Group member: global=disabled, group=watch
+    @g_watcher = create_user_with_notification(:watch, 'group_watcher', project.group)
+    @g_watcher.notification_settings_for(nil).disabled!
+
+    # Group member: global=watch, group=global
+    @g_global_watcher = create_global_setting_for(create(:user), :watch)
+    group.add_users([@g_watcher, @g_global_watcher], :master)
+    group
+  end
+
   def create_global_setting_for(user, level)
     setting = user.global_notification_setting
     setting.level = level
@@ -1261,9 +1281,9 @@ describe NotificationService, services: true do
     user
   end
 
-  def create_user_with_notification(level, username)
+  def create_user_with_notification(level, username, resource = project)
     user = create(:user, username: username)
-    setting = user.notification_settings_for(project)
+    setting = user.notification_settings_for(resource)
     setting.level = level
     setting.save
 

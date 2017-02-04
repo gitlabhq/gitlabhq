@@ -15,7 +15,7 @@ describe 'projects/builds/show', :view do
     allow(view).to receive(:can?).and_return(true)
   end
 
-  describe 'build information in header' do
+  describe 'job information in header' do
     let(:build) do
       create(:ci_build, :success, environment: 'staging')
     end
@@ -28,11 +28,11 @@ describe 'projects/builds/show', :view do
       expect(rendered).to have_css('.ci-status.ci-success', text: 'passed')
     end
 
-    it 'does not render a link to the build' do
+    it 'does not render a link to the job' do
       expect(rendered).not_to have_link('passed')
     end
 
-    it 'shows build id' do
+    it 'shows job id' do
       expect(rendered).to have_css('.js-build-id', text: build.id)
     end
 
@@ -45,8 +45,8 @@ describe 'projects/builds/show', :view do
     end
   end
 
-  describe 'environment info in build view' do
-    context 'build with latest deployment' do
+  describe 'environment info in job view' do
+    context 'job with latest deployment' do
       let(:build) do
         create(:ci_build, :success, environment: 'staging')
       end
@@ -57,7 +57,7 @@ describe 'projects/builds/show', :view do
       end
 
       it 'shows deployment message' do
-        expected_text = 'This build is the most recent deployment'
+        expected_text = 'This job is the most recent deployment'
         render
 
         expect(rendered).to have_css(
@@ -65,7 +65,7 @@ describe 'projects/builds/show', :view do
       end
     end
 
-    context 'build with outdated deployment' do
+    context 'job with outdated deployment' do
       let(:build) do
         create(:ci_build, :success, environment: 'staging', pipeline: pipeline)
       end
@@ -87,7 +87,7 @@ describe 'projects/builds/show', :view do
       end
 
       it 'shows deployment message' do
-        expected_text = 'This build is an out-of-date deployment ' \
+        expected_text = 'This job is an out-of-date deployment ' \
           "to staging.\nView the most recent deployment ##{second_deployment.iid}."
         render
 
@@ -95,7 +95,7 @@ describe 'projects/builds/show', :view do
       end
     end
 
-    context 'build failed to deploy' do
+    context 'job failed to deploy' do
       let(:build) do
         create(:ci_build, :failed, environment: 'staging', pipeline: pipeline)
       end
@@ -105,7 +105,7 @@ describe 'projects/builds/show', :view do
       end
 
       it 'shows deployment message' do
-        expected_text = 'The deployment of this build to staging did not succeed.'
+        expected_text = 'The deployment of this job to staging did not succeed.'
         render
 
         expect(rendered).to have_css(
@@ -113,7 +113,7 @@ describe 'projects/builds/show', :view do
       end
     end
 
-    context 'build will deploy' do
+    context 'job will deploy' do
       let(:build) do
         create(:ci_build, :running, environment: 'staging', pipeline: pipeline)
       end
@@ -124,7 +124,7 @@ describe 'projects/builds/show', :view do
         end
 
         it 'shows deployment message' do
-          expected_text = 'This build is creating a deployment to staging'
+          expected_text = 'This job is creating a deployment to staging'
           render
 
           expect(rendered).to have_css(
@@ -137,7 +137,7 @@ describe 'projects/builds/show', :view do
           end
 
           it 'shows that deployment will be overwritten' do
-            expected_text = 'This build is creating a deployment to staging'
+            expected_text = 'This job is creating a deployment to staging'
             render
 
             expect(rendered).to have_css(
@@ -150,7 +150,7 @@ describe 'projects/builds/show', :view do
 
       context 'when environment does not exist' do
         it 'shows deployment message' do
-          expected_text = 'This build is creating a deployment to staging'
+          expected_text = 'This job is creating a deployment to staging'
           render
 
           expect(rendered).to have_css(
@@ -161,7 +161,7 @@ describe 'projects/builds/show', :view do
       end
     end
 
-    context 'build that failed to deploy and environment has not been created' do
+    context 'job that failed to deploy and environment has not been created' do
       let(:build) do
         create(:ci_build, :failed, environment: 'staging', pipeline: pipeline)
       end
@@ -171,7 +171,7 @@ describe 'projects/builds/show', :view do
       end
 
       it 'shows deployment message' do
-        expected_text = 'The deployment of this build to staging did not succeed'
+        expected_text = 'The deployment of this job to staging did not succeed'
         render
 
         expect(rendered).to have_css(
@@ -179,7 +179,7 @@ describe 'projects/builds/show', :view do
       end
     end
 
-    context 'build that will deploy and environment has not been created' do
+    context 'job that will deploy and environment has not been created' do
       let(:build) do
         create(:ci_build, :running, environment: 'staging', pipeline: pipeline)
       end
@@ -189,7 +189,7 @@ describe 'projects/builds/show', :view do
       end
 
       it 'shows deployment message' do
-        expected_text = 'This build is creating a deployment to staging'
+        expected_text = 'This job is creating a deployment to staging'
         render
 
         expect(rendered).to have_css(
@@ -200,7 +200,7 @@ describe 'projects/builds/show', :view do
     end
   end
 
-  context 'when build is running' do
+  context 'when job is running' do
     before do
       build.run!
       render
@@ -211,7 +211,7 @@ describe 'projects/builds/show', :view do
     end
   end
 
-  context 'when build is not running' do
+  context 'when job is not running' do
     before do
       build.success!
       render

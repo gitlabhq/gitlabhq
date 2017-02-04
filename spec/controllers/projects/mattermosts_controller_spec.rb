@@ -13,13 +13,13 @@ describe Projects::MattermostsController do
     before do
       allow_any_instance_of(MattermostSlashCommandsService).
         to receive(:list_teams).and_return([])
-
-      get(:new,
-          namespace_id: project.namespace.to_param,
-          project_id: project.to_param)
     end
 
     it 'accepts the request' do
+      get(:new,
+          namespace_id: project.namespace.to_param,
+          project_id: project.to_param)
+
       expect(response).to have_http_status(200)
     end
   end

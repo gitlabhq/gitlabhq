@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe Gitlab::ChatCommands::IssueShow, service: true do
   describe '#execute' do
-    let(:issue) { create(:issue) }
-    let(:project) { issue.project }
+    let(:issue) { create(:issue, project: project) }
+    let(:project) { create(:empty_project) }
     let(:user) { issue.author }
     let(:regex_match) { described_class.match("issue show #{issue.iid}") }
 
@@ -16,15 +16,19 @@ describe Gitlab::ChatCommands::IssueShow, service: true do
     end
 
     context 'the issue exists' do
+      let(:title) { subject[:attachments].first[:title] }
+
       it 'returns the issue' do
-        expect(subject.iid).to be issue.iid
+        expect(subject[:response_type]).to be(:in_channel)
+        expect(title).to start_with(issue.title)
       end
 
       context 'when its reference is given' do
         let(:regex_match) { described_class.match("issue show #{issue.to_reference}") }
 
         it 'shows the issue' do
-          expect(subject.iid).to be issue.iid
+          expect(subject[:response_type]).to be(:in_channel)
+          expect(title).to start_with(issue.title)
         end
       end
     end
@@ -32,15 +36,22 @@ describe Gitlab::ChatCommands::IssueShow, service: true do
     context 'the issue does not exist' do
       let(:regex_match) { described_class.match("issue show 2343242") }
 
-      it "returns nil" do
-        expect(subject).to be_nil
+      it "returns not found" do
+        expect(subject[:response_type]).to be(:ephemeral)
+        expect(subject[:text]).to match("not found")
       end
     end
   end
 
-  describe 'self.match' do
+  describe '.match' do
     it 'matches the iid' do
       match = described_class.match("issue show 123")
+
+      expect(match[:iid]).to eq("123")
+    end
+
+    it 'accepts a reference' do
+      match = described_class.match("issue show #{Issue.reference_prefix}123")
 
       expect(match[:iid]).to eq("123")
     end

@@ -185,6 +185,9 @@ describe API::Groups, api: true  do
         expect(json_response['visibility_level']).to eq(group1.visibility_level)
         expect(json_response['avatar_url']).to eq(group1.avatar_url)
         expect(json_response['web_url']).to eq(group1.web_url)
+        expect(json_response['request_access_enabled']).to eq(group1.request_access_enabled)
+        expect(json_response['full_name']).to eq(group1.full_name)
+        expect(json_response['full_path']).to eq(group1.full_path)
         expect(json_response['projects']).to be_an Array
         expect(json_response['projects'].length).to eq(2)
         expect(json_response['shared_projects']).to be_an Array

@@ -23,6 +23,7 @@ require('./board_new_issue');
       issues: Array,
       loading: Boolean,
       issueLinkBase: String,
+      rootPath: String,
     },
     data () {
       return {

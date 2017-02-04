@@ -117,7 +117,7 @@ describe ProjectMember, models: true do
       users = create_list(:user, 2)
 
       described_class.add_users_to_projects(
-        [projects.first.id, projects.second],
+        [projects.first.id, projects.second.id],
         [users.first.id, users.second],
         described_class::MASTER)
 

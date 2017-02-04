@@ -228,7 +228,7 @@
       .col-sm-10
         = f.number_field :max_artifacts_size, class: 'form-control'
         .help-block
-          Set the maximum file size each build's artifacts can have
+          Set the maximum file size each jobs's artifacts can have
           = link_to "(?)", help_page_path("user/admin_area/settings/continuous_integration", anchor: "maximum-artifacts-size")
 
   - if Gitlab.config.registry.enabled

@@ -217,7 +217,16 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
         render 'show'
       end
-      format.json { render json: { html: view_to_html_string('projects/merge_requests/show/_pipelines') } }
+
+      format.json do
+        render json: {
+          html: view_to_html_string('projects/merge_requests/show/_pipelines'),
+          pipelines: PipelineSerializer
+            .new(project: @project, user: @current_user)
+            .with_pagination(request, response)
+            .represent(@pipelines)
+        }
+      end
     end
   end
 
@@ -451,7 +460,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       title: merge_request.title,
       sha: (merge_request.diff_head_commit.short_id if merge_request.diff_head_sha),
       status: status,
-      coverage: coverage
+      coverage: coverage,
+      pipeline: pipeline.try(:id)
     }
 
     render json: response

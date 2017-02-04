@@ -11,12 +11,15 @@ describe Boards::CreateService, services: true do
         expect { service.execute }.to change(project.boards, :count).by(1)
       end
 
+<<<<<<< HEAD
       it "creates board's default lists" do
+=======
+      it 'creates the default lists' do
+>>>>>>> ce/master
         board = service.execute
 
-        expect(board.lists.size).to eq 2
-        expect(board.lists.first).to be_backlog
-        expect(board.lists.last).to be_done
+        expect(board.lists.size).to eq 1
+        expect(board.lists.first).to be_done
       end
     end
 

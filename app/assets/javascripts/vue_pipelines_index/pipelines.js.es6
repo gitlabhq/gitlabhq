@@ -1,4 +1,4 @@
-/* global Vue, Turbolinks, gl */
+/* global Vue, gl */
 /* eslint-disable no-param-reassign */
 
 ((gl) => {
@@ -36,7 +36,7 @@
     },
     methods: {
       change(pagenum, apiScope) {
-        Turbolinks.visit(`?scope=${apiScope}&p=${pagenum}`);
+        gl.utils.visitUrl(`?scope=${apiScope}&p=${pagenum}`);
       },
       author(pipeline) {
         if (!pipeline.commit) return { avatar_url: '', web_url: '', username: '' };

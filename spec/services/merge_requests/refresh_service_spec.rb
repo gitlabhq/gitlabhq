@@ -102,7 +102,10 @@ describe MergeRequests::RefreshService, services: true do
         author = { email: 'test@gitlab.com', time: Time.now, name: "Me" }
         commit_options = { message: 'Test message', committer: author, author: author }
         @project.repository.merge(@user, @merge_request.diff_head_sha, @merge_request, commit_options)
+<<<<<<< HEAD
 
+=======
+>>>>>>> ce/master
         commit = @project.repository.commit('feature')
         service.new(@project, @user).execute(@oldrev, commit.id, 'refs/heads/feature')
         reload_mrs

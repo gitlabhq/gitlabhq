@@ -225,6 +225,7 @@ CommitStatus:
 - queued_at
 - token
 - lock_version
+- coverage_regex
 Ci::Variable:
 - id
 - project_id

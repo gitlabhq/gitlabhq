@@ -1092,6 +1092,7 @@ describe Repository, models: true do
                                          merge_request.diff_head_sha,
                                          merge_request,
                                          commit_options)
+<<<<<<< HEAD
 
       expect(merge_request.in_progress_merge_commit_sha).to eq(merge_commit_id)
     end
@@ -1118,6 +1119,8 @@ describe Repository, models: true do
                                             merge_request.diff_head_sha,
                                             merge_request.target_branch,
                                             merge_request: merge_request)
+=======
+>>>>>>> ce/master
 
       expect(merge_request.in_progress_merge_commit_sha).to eq(merge_commit_id)
     end

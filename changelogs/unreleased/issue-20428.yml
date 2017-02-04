@@ -1,0 +1,4 @@
+---
+title: Add ability to define a coverage regex in the .gitlab-ci.yml
+merge_request: 7447
+author: Leandro Camargo

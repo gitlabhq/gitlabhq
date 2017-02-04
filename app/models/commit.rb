@@ -100,8 +100,8 @@ class Commit
     commit_reference(from_project, id, full: full)
   end
 
-  def reference_link_text(from_project = nil)
-    commit_reference(from_project, short_id)
+  def reference_link_text(from_project = nil, full: false)
+    commit_reference(from_project, short_id, full: full)
   end
 
   def diff_line_count

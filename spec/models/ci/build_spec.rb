@@ -221,6 +221,47 @@ describe Ci::Build, :models do
     end
   end
 
+  describe '#coverage_regex' do
+    subject { build.coverage_regex }
+
+    context 'when project has build_coverage_regex set' do
+      let(:project_regex) { '\(\d+\.\d+\) covered' }
+
+      before do
+        project.build_coverage_regex = project_regex
+      end
+
+      context 'and coverage_regex attribute is not set' do
+        it { is_expected.to eq(project_regex) }
+      end
+
+      context 'but coverage_regex attribute is also set' do
+        let(:build_regex) { 'Code coverage: \d+\.\d+' }
+
+        before do
+          build.coverage_regex = build_regex
+        end
+
+        it { is_expected.to eq(build_regex) }
+      end
+    end
+
+    context 'when neither project nor build has coverage regex set' do
+      it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#update_coverage' do
+    context "regarding coverage_regex's value," do
+      it "saves the correct extracted coverage value" do
+        build.coverage_regex = '\(\d+.\d+\%\) covered'
+        allow(build).to receive(:trace) { 'Coverage 1033 / 1051 LOC (98.29%) covered' }
+        expect(build).to receive(:update_attributes).with(coverage: 98.29) { true }
+        expect(build.update_coverage).to be true
+      end
+    end
+  end
+
   describe 'deployment' do
     describe '#last_deployment' do
       subject { build.last_deployment }
@@ -443,11 +484,11 @@ describe Ci::Build, :models do
         let!(:build) { create(:ci_build, :trace, :success, :artifacts) }
         subject { build.erased? }
 
-        context 'build has not been erased' do
+        context 'job has not been erased' do
           it { is_expected.to be_falsey }
         end
 
-        context 'build has been erased' do
+        context 'job has been erased' do
           before do
             build.erase
           end

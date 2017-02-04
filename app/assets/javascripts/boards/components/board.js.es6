@@ -22,7 +22,8 @@ require('./board_list');
     props: {
       list: Object,
       disabled: Boolean,
-      issueLinkBase: String
+      issueLinkBase: String,
+      rootPath: String,
     },
     data () {
       return {

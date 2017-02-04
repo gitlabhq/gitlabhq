@@ -11,8 +11,6 @@ window.Cookies = require('vendor/js.cookie');
 window.Vue = require('vue');
 window.Vue.use(require('vue-resource'));
 require('jquery-ujs');
-require('vendor/turbolinks');
-require('vendor/jquery.turbolinks');
 require('bootstrap/js/affix');
 require('bootstrap/js/alert');
 require('bootstrap/js/button');
