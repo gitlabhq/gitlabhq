@@ -7,15 +7,15 @@ describe UpdateAllMirrorsWorker do
   end
 
   describe '#perform' do
-    PROJECT_COUNT_WITH_TIME = { DateTime.now.beginning_of_hour + 15.minutes => 1,
+    project_count_with_time = { DateTime.now.beginning_of_hour + 15.minutes => 1,
                                 DateTime.now.beginning_of_hour => 2,
                                 DateTime.now.beginning_of_day => 3
                               }
 
     let!(:mirror1) { create(:empty_project, :mirror, sync_time: Gitlab::Mirror::FIFTEEN) }
     let!(:mirror2) { create(:empty_project, :mirror, sync_time: Gitlab::Mirror::HOURLY) }
-    let!(:mirror3) { create(:empty_project, :mirror, sync_time: Gitlab::Mirror::DAYLY) }
-    let(:mirrors) { Project.where(mirror: true, sync_time: Gitlab::Mirror.sync_times) }
+    let!(:mirror3) { create(:empty_project, :mirror, sync_time: Gitlab::Mirror::DAILY) }
+    let(:mirrors) { Project.mirror.where(sync_time: Gitlab::Mirror.sync_times) }
 
     it 'fails stuck mirrors' do
       worker = described_class.new
@@ -25,7 +25,7 @@ describe UpdateAllMirrorsWorker do
       worker.perform
     end
 
-    PROJECT_COUNT_WITH_TIME.each do |time, project_count|
+    project_count_with_time.each do |time, project_count|
       describe "at #{time}" do
         before do
           allow(DateTime).to receive(:now).and_return(time)

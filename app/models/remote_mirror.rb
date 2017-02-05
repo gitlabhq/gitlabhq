@@ -1,9 +1,5 @@
 class RemoteMirror < ActiveRecord::Base
   include AfterCommitQueue
-  include Gitlab::ConfigHelper
-  include Gitlab::CurrentSettings
-
-  extend Gitlab::ConfigHelper
 
   attr_encrypted :credentials,
                  key: Gitlab::Application.secrets.db_key_base,

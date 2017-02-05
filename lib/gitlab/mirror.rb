@@ -2,7 +2,7 @@ module Gitlab
   module Mirror
     FIFTEEN = 15
     HOURLY  = 60
-    DAYLY   = 1440
+    DAILY = 1440
 
     INTERVAL_BEFORE_FIFTEEN = 14.minutes
 
@@ -11,13 +11,13 @@ module Gitlab
         {
           "Update every 15 minutes" => FIFTEEN,
           "Update hourly" => HOURLY,
-          "Update every day" => DAYLY,
+          "Update every day" => DAILY,
         }
       end
 
       def sync_times
         sync_times = [FIFTEEN]
-        sync_times << DAYLY  if at_beginning_of_day?
+        sync_times << DAILY  if at_beginning_of_day?
         sync_times << HOURLY if at_beginning_of_hour?
 
         sync_times
