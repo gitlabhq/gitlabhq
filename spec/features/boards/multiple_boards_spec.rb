@@ -131,7 +131,7 @@ describe 'Multiple Issue Boards', feature: true, js: true do
 
       wait_for_vue_resource
 
-      expect(page).to have_selector('.board', count: 3)
+      expect(page).to have_selector('.board', count: 2)
 
       click_button board2.name
 
@@ -141,7 +141,7 @@ describe 'Multiple Issue Boards', feature: true, js: true do
 
       wait_for_vue_resource
 
-      expect(page).to have_selector('.board', count: 2)
+      expect(page).to have_selector('.board', count: 1)
     end
   end
 
