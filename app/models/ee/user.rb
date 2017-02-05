@@ -17,10 +17,13 @@ module EE
     end
 
     def access_level=(new_level)
-      # new_level can be a symbol or a string
-      new_level = new_level.to_s
-      self.admin = (new_level == :admin)
-      self.auditor = (new_level == :auditor)
+      new_level = new_level.to_sym
+      return unless [:admin, :auditor, :regular].include?(new_level)
+
+      self.admin = self.auditor = false
+
+      self.admin = true if new_level == :admin
+      self.auditor = true if new_level == :auditor
     end
   end
 end
