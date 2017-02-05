@@ -1,6 +1,6 @@
 - environment = local_assigns.fetch(:environment, nil)
 .diff-file.file-holder{ id: file_hash, data: diff_file_html_data(project, diff_file.file_path, diff_commit.id) }
-  .file-title-flex-parent
+  .js-file-title.file-title-flex-parent
     = render "projects/diffs/file_header", diff_file: diff_file, blob: blob, diff_commit: diff_commit, project: project, url: "##{file_hash}"
 
     - unless diff_file.submodule?

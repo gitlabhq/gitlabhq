@@ -76,7 +76,7 @@ require('./lib/utils/url_utility');
       const diffFile = diffTitle.closest('.diff-file');
       const nothingHereBlock = $('.nothing-here-block:visible', diffFile);
       if (nothingHereBlock.length) {
-        const clickTarget = $('.file-title, .click-to-expand', diffFile);
+        const clickTarget = $('.js-file-title, .click-to-expand', diffFile);
         diffFile.data('singleFileDiff').toggleDiff(clickTarget, () => {
           this.highlighSelectedLine();
           if (cb) cb();
