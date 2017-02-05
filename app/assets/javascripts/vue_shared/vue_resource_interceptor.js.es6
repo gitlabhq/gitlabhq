@@ -13,3 +13,11 @@ Vue.http.interceptors.push((request, next) => {
     Vue.activeResources--;
   });
 });
+
+Vue.http.interceptors.push((request, next) => {
+  // needed in order to not break the tests.
+  if ($.rails) {
+    request.headers['X-CSRF-Token'] = $.rails.csrfToken();
+  }
+  next();
+});
