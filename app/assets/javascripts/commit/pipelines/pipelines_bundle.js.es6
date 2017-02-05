@@ -2,8 +2,6 @@
 /* global Vue, CommitsPipelineStore, PipelinesService, Flash */
 
 window.Vue = require('vue');
-require('./pipelines_store');
-require('./pipelines_service');
 require('./pipelines_table');
 /**
  * Commits View > Pipelines Tab > Pipelines Table.

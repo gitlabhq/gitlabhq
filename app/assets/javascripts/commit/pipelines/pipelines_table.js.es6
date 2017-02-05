@@ -3,9 +3,12 @@
 
 window.Vue = require('vue');
 window.Vue.use(require('vue-resource'));
+require('../../lib/utils/common_utils');
 require('../../vue_shared/vue_resource_interceptor');
 require('../../vue_shared/components/pipelines_table');
-require('../vue_realtime_listener/index');
+require('../../vue_realtime_listener/index');
+require('./pipelines_service');
+require('./pipelines_store');
 
 /**
  *
@@ -62,10 +65,10 @@ require('../vue_realtime_listener/index');
      *
      */
     created() {
-      gl.pipelines.pipelinesService = new PipelinesService(this.endpoint);
+      const pipelinesService = new gl.commits.pipelines.PipelinesService(this.endpoint);
 
       this.isLoading = true;
-      return gl.pipelines.pipelinesService.all()
+      return pipelinesService.all()
         .then(response => response.json())
         .then((json) => {
           this.store.storePipelines(json);

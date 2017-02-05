@@ -18,7 +18,7 @@ class PipelinesService {
    *
    * @return {Promise}
    */
-  get() {
+  all() {
     return this.pipelines.get();
   }
 }

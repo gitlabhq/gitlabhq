@@ -1,7 +1,6 @@
 /* eslint-disable no-param-reassign */
 /* global Vue */
 
-window.Vue = require('vue');
 require('../../vue_pipelines_index/status');
 require('../../vue_pipelines_index/pipeline_url');
 require('../../vue_pipelines_index/stage');
