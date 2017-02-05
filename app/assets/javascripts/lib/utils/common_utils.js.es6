@@ -230,5 +230,13 @@
 
       return upperCaseHeaders;
     };
+
+    /**
+     * Transforms a DOMStringMap into a plain object.
+     */
+    w.gl.utils.DOMStringMapToObject = DOMStringMapObject => Object.keys(DOMStringMapObject).reduce((acc, element) => {
+      acc[element] = DOMStringMapObject[element];
+      return acc;
+    }, {});
   })(window);
 }).call(this);
