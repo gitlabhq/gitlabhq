@@ -132,6 +132,7 @@ class IssuableBaseService < BaseService
 
   def create(issuable)
     merge_quick_actions_into_params!(issuable)
+    handle_wip_event(issuable)
     filter_params(issuable)
 
     params.delete(:state_event)
@@ -310,5 +311,19 @@ class IssuableBaseService < BaseService
 
   def parent
     project
+  end
+
+  def handle_wip_event(issuable)
+    if wip_event = params.delete(:wip_event)
+      case issuable
+      when MergeRequest
+        # We update the title that is provided in the params or we use the mr title
+        title = params[:title] || issuable.title
+        params[:title] = case wip_event
+                         when :wip then MergeRequest.wip_title(title)
+                         when :unwip then MergeRequest.wipless_title(title)
+                         end
+      end
+    end
   end
 end
