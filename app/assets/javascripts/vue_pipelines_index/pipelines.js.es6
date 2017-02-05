@@ -1,9 +1,10 @@
 /* global Vue, gl */
 /* eslint-disable no-param-reassign */
 
-//= require vue_shared/components/table_pagination
-//= require ./store.js.es6
-//= require vue_shared/components/pipelines_table
+window.Vue = require('vue');
+require('../vue_shared/components/table_pagination');
+require('./store');
+require('../vue_shared/components/pipelines_table');
 
 ((gl) => {
   gl.VuePipelines = Vue.extend({

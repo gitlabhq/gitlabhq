@@ -1,8 +1,7 @@
 /* global pipeline */
 
-//= require vue
-//= require vue_shared/components/pipelines_table_row
-//= require commit/pipelines/mock_data
+require('~vue_shared/components/pipelines_table_row');
+require('./mock_data');
 
 describe('Pipelines Table Row', () => {
   let component;

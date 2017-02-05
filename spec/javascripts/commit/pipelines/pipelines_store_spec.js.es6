@@ -1,5 +1,4 @@
-//= require vue
-//= require commit/pipelines/pipelines_store
+require('~commit/pipelines/pipelines_store');
 
 describe('Store', () => {
   const store = gl.commits.pipelines.PipelinesStore;

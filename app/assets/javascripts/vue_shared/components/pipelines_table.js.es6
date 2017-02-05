@@ -1,8 +1,8 @@
 /* eslint-disable no-param-reassign */
 /* global Vue */
 
-//= require ./pipelines_table_row
-
+window.Vue = require('vue');
+require('./pipelines_table_row');
 /**
  * Pipelines Table Component.
  *

@@ -6,8 +6,6 @@ require('../vue_shared/vue_resource_interceptor');
 require('./pipelines');
 
 $(() => {
-  Vue.use(VueResource);
-
   return new Vue({
     el: document.querySelector('.vue-pipelines-index'),
 
