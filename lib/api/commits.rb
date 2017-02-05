@@ -24,7 +24,7 @@ module API
       end
       get ":id/repository/commits" do
         ref = params[:ref_name] || user_project.try(:default_branch) || 'master'
-        offset = params[:page] * params[:per_page]
+        offset = (params[:page] - 1) * params[:per_page]
 
         commits = user_project.repository.commits(ref,
                                                   path: params[:path],
@@ -33,8 +33,7 @@ module API
                                                   after: params[:since],
                                                   before: params[:until])
 
-        commit_count = user_project.repository.commit_count_for_ref(ref)
-        paginated_commits = Kaminari.paginate_array(commits, total_count: commit_count)
+        paginated_commits = Kaminari.paginate_array(commits, total_count: commits.size)
 
         present paginate(paginated_commits), with: Entities::RepoCommit
       end

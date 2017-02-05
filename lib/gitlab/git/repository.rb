@@ -292,7 +292,6 @@ module Gitlab
         }
 
         options = default_options.merge(options)
-        options[:limit] ||= 0
         options[:offset] ||= 0
         actual_ref = options[:ref] || root_ref
         begin
@@ -352,6 +351,16 @@ module Gitlab
         lines = offset_in_ruby ? raw_output.lines.drop(offset) : raw_output.lines
 
         lines.map! { |c| Rugged::Commit.new(rugged, c.strip) }
+      end
+
+      def count_commits(options)
+        cmd = %W(#{Gitlab.config.git.bin_path} --git-dir=#{path} rev-list)
+        cmd += %W(--after=#{options[:after].iso8601}) if options[:after]
+        cmd += %W(--before=#{options[:before].iso8601}) if options[:before]
+        cmd += %W(--count #{options[:ref]})
+        cmd += %W(-- #{options[:path]}) if options[:path].present?
+        raw_output = IO.popen(cmd) {|io| io.read }
+        raw_output.to_i
       end
 
       def sha_from_ref(ref)
