@@ -8,18 +8,8 @@
  * Uses Vue.Resource
  */
 class PipelinesService {
-  constructor(root) {
-    Vue.http.options.root = root;
-
-    this.pipelines = Vue.resource(root);
-
-    Vue.http.interceptors.push((request, next) => {
-      // needed in order to not break the tests.
-      if ($.rails) {
-        request.headers['X-CSRF-Token'] = $.rails.csrfToken();
-      }
-      next();
-    });
+  constructor(endpoint) {
+    this.pipelines = Vue.resource(endpoint);
   }
 
   /**
@@ -28,7 +18,7 @@ class PipelinesService {
    *
    * @return {Promise}
    */
-  all() {
+  get() {
     return this.pipelines.get();
   }
 }

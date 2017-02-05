@@ -5,50 +5,43 @@
  * Used to store the Pipelines rendered in the commit view in the pipelines table.
  */
 
-(() => {
-  window.gl = window.gl || {};
-  gl.commits = gl.commits || {};
-  gl.commits.pipelines = gl.commits.pipelines || {};
+class PipelinesStore {
+  constructor() {
+    this.state = {};
+    this.state.pipelines = [];
+  }
 
-  gl.commits.pipelines.PipelinesStore = {
-    state: {},
+  storePipelines(pipelines = []) {
+    this.state.pipelines = pipelines;
 
-    create() {
-      this.state.pipelines = [];
+    return pipelines;
+  }
 
-      return this;
-    },
+  /**
+   * Once the data is received we will start the time ago loops.
+   *
+   * Everytime a request is made like retry or cancel a pipeline, every 10 seconds we
+   * update the time to show how long as passed.
+   *
+   */
+  startTimeAgoLoops() {
+    const startTimeLoops = () => {
+      this.timeLoopInterval = setInterval(() => {
+        this.$children[0].$children.reduce((acc, component) => {
+          const timeAgoComponent = component.$children.filter(el => el.$options._componentTag === 'time-ago')[0];
+          acc.push(timeAgoComponent);
+          return acc;
+        }, []).forEach(e => e.changeTime());
+      }, 10000);
+    };
 
-    store(pipelines = []) {
-      this.state.pipelines = pipelines;
+    startTimeLoops();
 
-      return pipelines;
-    },
+    const removeIntervals = () => clearInterval(this.timeLoopInterval);
+    const startIntervals = () => startTimeLoops();
 
-    /**
-     * Once the data is received we will start the time ago loops.
-     *
-     * Everytime a request is made like retry or cancel a pipeline, every 10 seconds we
-     * update the time to show how long as passed.
-     *
-     */
-    startTimeAgoLoops() {
-      const startTimeLoops = () => {
-        this.timeLoopInterval = setInterval(() => {
-          this.$children[0].$children.reduce((acc, component) => {
-            const timeAgoComponent = component.$children.filter(el => el.$options._componentTag === 'time-ago')[0];
-            acc.push(timeAgoComponent);
-            return acc;
-          }, []).forEach(e => e.changeTime());
-        }, 10000);
-      };
+    gl.VueRealtimeListener(removeIntervals, startIntervals);
+  }
+}
 
-      startTimeLoops();
-
-      const removeIntervals = () => clearInterval(this.timeLoopInterval);
-      const startIntervals = () => startTimeLoops();
-
-      gl.VueRealtimeListener(removeIntervals, startIntervals);
-    },
-  };
-})();
+return PipelinesStore;
