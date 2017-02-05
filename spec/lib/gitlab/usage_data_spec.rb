@@ -77,7 +77,7 @@ describe Gitlab::UsageData do
       expect(subject[:licensee]).to eq(license.licensee)
       expect(subject[:active_user_count]).to eq(User.active.count)
       expect(subject[:licensee]).to eq(license.licensee)
-      expect(subject[:license_user_count]).to eq(license.user_count)
+      expect(subject[:license_user_count]).to eq(license.restricted_user_count)
       expect(subject[:license_starts_at]).to eq(license.starts_at)
       expect(subject[:license_expires_at]).to eq(license.expires_at)
       expect(subject[:license_add_ons]).to eq(license.add_ons)

@@ -62,7 +62,7 @@ module Gitlab
           usage_data[:license_md5] = Digest::MD5.hexdigest(license.data)
           usage_data[:historical_max_users] = ::HistoricalData.max_historical_user_count
           usage_data[:licensee] = license.licensee
-          usage_data[:license_user_count] = license.user_count
+          usage_data[:license_user_count] = license.restricted_user_count
           usage_data[:license_starts_at] = license.starts_at
           usage_data[:license_expires_at] = license.expires_at
           usage_data[:license_add_ons] = license.add_ons
