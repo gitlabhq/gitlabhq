@@ -276,8 +276,8 @@ class ProjectPolicy < BasePolicy
   private
 
   # A base set of abilities for read-only users, which
-  # is then augmented as necessary for anonymous and auditor
-  # users.
+  # is then augmented as necessary for anonymous and other
+  # read-only users.
   def base_readonly_access!
     can! :read_project
     can! :read_board

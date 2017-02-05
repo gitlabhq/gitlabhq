@@ -1512,6 +1512,12 @@ describe User, models: true do
 
         expect(build(:user, :auditor)).to be_valid
       end
+
+      it "allows creating a regular user if the addon isn't enabled" do
+        allow_any_instance_of(License).to receive(:add_ons).and_return({})
+
+        expect(build(:user)).to be_valid
+      end
     end
 
     context '#auditor?' do

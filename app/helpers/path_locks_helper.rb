@@ -7,10 +7,6 @@ module PathLocksHelper
     @license_allows_file_locks ||= (::License.current && ::License.current.add_on?('GitLab_FileLocks'))
   end
 
-  def license_allows_auditor_user?
-    @license_allows_auditor_user ||= (::License.current && ::License.current.add_on?('GitLab_Auditor_User'))
-  end
-
   def text_label_for_lock(file_lock, path)
     if file_lock.path == path
       "Locked by #{file_lock.user.name}"
