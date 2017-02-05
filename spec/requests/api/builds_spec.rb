@@ -188,6 +188,7 @@ describe API::Builds, api: true do
         it 'returns specific build artifacts' do
           expect(response).to have_http_status(200)
           expect(response.headers).to include(download_headers)
+          expect(response.body).to match_file(build.artifacts_file.file.file)
         end
       end
 
