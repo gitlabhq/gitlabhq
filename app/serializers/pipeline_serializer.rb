@@ -4,7 +4,7 @@ class PipelineSerializer < BaseSerializer
   entity PipelineEntity
 
   def with_pagination(request, response)
-    tap { @paginator = Paginator.new(request, response) }
+    tap { @paginator = Gitlab::Serializer::Pagination.new(request, response) }
   end
 
   def paginated?
