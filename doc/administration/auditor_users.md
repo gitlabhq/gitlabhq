@@ -17,7 +17,7 @@ on the GitLab instance.
 The `auditor` role is _not_ a read-only version of the `admin` role. The auditor will not be
 able to access the project settings pages, or the Admin Area.
 
-A user access level can be set to ‘Auditor’ in the Admin Area
+A user's access level can be set to ‘Auditor’ in the Admin Area
 
 ![Admin Area Form](auditor_access_form.png)
 

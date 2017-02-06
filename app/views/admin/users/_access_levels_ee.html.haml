@@ -9,7 +9,7 @@
     .col-sm-10= f.check_box :can_create_group
 
   .form-group
-    = f.label :admin, class: 'control-label'
+    = f.label :access_level, class: 'control-label'
     .col-sm-10
       = f.radio_button :access_level, :regular, checked: true
       = label_tag :regular do
@@ -19,7 +19,7 @@
       - if license_allows_auditor_user?
         = f.radio_button :access_level, :auditor
         = label_tag :auditor do
-          Audit
+          Auditor
         %p.light
           Auditors have read-only access to all groups, projects and users
       - if current_user == @user
