@@ -1,11 +1,9 @@
 /* global Vue, environment */
 
-//= require vue
-//= require vue-resource
-//= require flash
-//= require environments/stores/environments_store
-//= require environments/components/environment
-//= require ./mock_data
+require('~/flash');
+require('~/environments/stores/environments_store');
+require('~/environments/components/environment');
+require('./mock_data');
 
 describe('Environment', () => {
   preloadFixtures('static/environments/environments.html.raw');

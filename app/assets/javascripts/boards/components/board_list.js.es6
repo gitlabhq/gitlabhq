@@ -2,8 +2,8 @@
 /* global Vue */
 /* global Sortable */
 
-//= require ./board_card
-//= require ./board_new_issue
+require('./board_card');
+require('./board_new_issue');
 
 (() => {
   const Store = gl.issueBoards.BoardsStore;
@@ -23,6 +23,7 @@
       issues: Array,
       loading: Boolean,
       issueLinkBase: String,
+      rootPath: String,
     },
     data () {
       return {

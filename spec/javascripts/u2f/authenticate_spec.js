@@ -2,11 +2,11 @@
 /* global MockU2FDevice */
 /* global U2FAuthenticate */
 
-/*= require u2f/authenticate */
-/*= require u2f/util */
-/*= require u2f/error */
-/*= require u2f */
-/*= require ./mock_u2f_device */
+require('~/u2f/authenticate');
+require('~/u2f/util');
+require('~/u2f/error');
+require('vendor/u2f');
+require('./mock_u2f_device');
 
 (function() {
   describe('U2FAuthenticate', function() {

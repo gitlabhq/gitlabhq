@@ -47,7 +47,7 @@
         $('.js-rebase-button').html("<i class='fa fa-spinner fa-spin'></i> Rebase in progress");
       });
     } else {
-      merge_request_widget.getMergeStatus();
+      setTimeout(() => merge_request_widget.getMergeStatus(), 200);
     }
   });
 })();

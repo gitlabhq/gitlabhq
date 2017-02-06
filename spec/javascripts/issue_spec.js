@@ -1,8 +1,8 @@
 /* eslint-disable space-before-function-paren, no-var, one-var, one-var-declaration-per-line, no-use-before-define, comma-dangle, max-len */
 /* global Issue */
 
-/*= require lib/utils/text_utility */
-/*= require issue */
+require('~/lib/utils/text_utility');
+require('~/issue');
 
 (function() {
   var INVALID_URL = 'http://goesnowhere.nothing/whereami';

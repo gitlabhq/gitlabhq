@@ -2,9 +2,12 @@
 /* global Cookies */
 /* global Flash */
 
-//= require vue
-//= require_tree ./svg
-//= require_tree .
+window.Vue = require('vue');
+window.Cookies = require('vendor/js.cookie');
+
+function requireAll(context) { return context.keys().map(context); }
+requireAll(require.context('./svg', false, /^\.\/.*\.(js|es6)$/));
+requireAll(require.context('.', true, /^\.\/(?!cycle_analytics_bundle).*\.(js|es6)$/));
 
 $(() => {
   const OVERVIEW_DIALOG_COOKIE = 'cycle_analytics_help_dismissed';

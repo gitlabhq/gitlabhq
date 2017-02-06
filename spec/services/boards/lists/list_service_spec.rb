@@ -10,7 +10,7 @@ describe Boards::Lists::ListService, services: true do
 
       service = described_class.new(project, double)
 
-      expect(service.execute(board)).to eq [board.backlog_list, list, board.done_list]
+      expect(service.execute(board)).to eq [list, board.done_list]
     end
   end
 end

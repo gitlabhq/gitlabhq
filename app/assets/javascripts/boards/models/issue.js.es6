@@ -6,12 +6,15 @@
 
 class ListIssue {
   constructor (obj) {
+    this.globalId = obj.id;
     this.id = obj.iid;
     this.title = obj.title;
     this.confidential = obj.confidential;
     this.dueDate = obj.due_date;
     this.subscribed = obj.subscribed;
     this.labels = [];
+    this.selected = false;
+    this.assignee = false;
 
     if (obj.assignee) {
       this.assignee = new ListUser(obj.assignee);

@@ -2,8 +2,8 @@
 /* global timeago */
 /* global dateFormat */
 
-/*= require timeago */
-/*= require date.format */
+window.timeago = require('vendor/timeago');
+window.dateFormat = require('vendor/date.format');
 
 (function() {
   (function(w) {

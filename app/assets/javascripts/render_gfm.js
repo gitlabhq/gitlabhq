@@ -9,7 +9,7 @@
     this.find('.js-render-math').renderMath();
   };
 
-  $(document).on('ready page:load', function() {
+  $(document).on('ready load', function() {
     return $('body').renderGFM();
   });
 }).call(this);

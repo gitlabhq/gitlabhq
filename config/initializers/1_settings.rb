@@ -432,6 +432,15 @@ Settings['gitaly'] ||= Settingslogic.new({})
 Settings.gitaly['socket_path'] ||= ENV['GITALY_SOCKET_PATH']
 
 #
+# Webpack settings
+#
+Settings['webpack'] ||= Settingslogic.new({})
+Settings.webpack['dev_server'] ||= Settingslogic.new({})
+Settings.webpack.dev_server['enabled'] ||= false
+Settings.webpack.dev_server['host']    ||= 'localhost'
+Settings.webpack.dev_server['port']    ||= 3808
+
+#
 # Testing settings
 #
 if Rails.env.test?
