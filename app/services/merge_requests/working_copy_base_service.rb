@@ -6,15 +6,22 @@ module MergeRequests
 
     attr_reader :merge_request
 
+    def git_command(command)
+      [Gitlab.config.git.bin_path] + command
+    end
+
     def run_git_command(command, path, env, message = nil, &block)
-      git_command = [Gitlab.config.git.bin_path] + command
-      output, status = popen(git_command, path, env, &block)
+      run_command(git_command(command), path, env, message, &block)
+    end
+
+    def run_command(command, path, env, message = nil, &block)
+      output, status = popen(command, path, env, &block)
 
       unless status.zero?
         if message
-          log_error("Failed to #{message} with `#{git_command.join(' ')}`:")
+          log_error("Failed to #{message} with `#{command.join(' ')}`:")
         else
-          log_error("`#{git_command.join(' ')}` failed:")
+          log_error("`#{command.join(' ')}` failed:")
         end
 
         log_error(output)

@@ -1,6 +1,6 @@
 # Squash and merge
 
-> [Introduced][ee-1024] in GitLab Enterprise Edition 8.16.
+> [Introduced][ee-1024] in GitLab Enterprise Edition 8.17.
 
 Squashing lets you tidy up the commit history of a branch when accepting a merge
 request. It applies all of the changes in the merge request as a single commit,
