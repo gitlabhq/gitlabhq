@@ -76,7 +76,6 @@ There are a few reserved `keywords` that **cannot** be used as job names:
 | after_script  | no | Define commands that run after each job's script |
 | variables     | no | Define build variables |
 | cache         | no | Define list of files that should be cached between subsequent runs |
-| coverage      | no | Define coverage settings for all jobs |
 
 ### image and services
 
@@ -279,23 +278,6 @@ cache:
   untracked: true
 ```
 
-### coverage
-
-`coverage` allows you to configure how coverage will be filtered out from the
-build outputs. Setting this up globally will make all the jobs to use this
-setting for output filtering and extracting the coverage information from your
-builds.
-
-Regular expressions are the only valid kind of value expected here. So, using
-surrounding `/` is mandatory in order to consistently and explicitly represent
-a regular expression string. You must escape special characters if you want to
-match them literally.
-
-A simple example:
-```yaml
-coverage: /\(\d+\.\d+\) covered\./
-```
-
 ## Jobs
 
 `.gitlab-ci.yml` allows you to specify an unlimited number of jobs. Each job
@@ -337,7 +319,7 @@ job_name:
 | before_script | no | Override a set of commands that are executed before build |
 | after_script  | no | Override a set of commands that are executed after build |
 | environment   | no | Defines a name of environment to which deployment is done by this build |
-| coverage      | no | Define coverage settings for a given job |
+| coverage      | no | Define code coverage settings for a given job |
 
 ### script
 
@@ -1012,24 +994,22 @@ job:
   - execute this after my script
 ```
 
-### job coverage
+### coverage
 
-This entry is pretty much the same as described in the global context in
-[`coverage`](#coverage). The only difference is that, by setting it inside
-the job level, whatever is set in there will take precedence over what has
-been defined in the global level. A quick example of one overriding the
-other would be:
+`coverage` allows you to configure how code coverage will be extracted from the
+job output.
+
+Regular expressions are the only valid kind of value expected here. So, using
+surrounding `/` is mandatory in order to consistently and explicitly represent
+a regular expression string. You must escape special characters if you want to
+match them literally.
+
+A simple example:
 
 ```yaml
-coverage: /\(\d+\.\d+\) covered\./
-
 job1:
   coverage: /Code coverage: \d+\.\d+/
 ```
-
-In the example above, considering the context of the job `job1`, the coverage
-regex that would be used is `/Code coverage: \d+\.\d+/` instead of
-`/\(\d+\.\d+\) covered\./`.
 
 ## Git Strategy
 
