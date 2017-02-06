@@ -8,16 +8,7 @@ class ElasticCommitIndexerWorker
     return true unless current_application_settings.elasticsearch_indexing?
 
     project = Project.find(project_id)
-    repository = project.repository
 
-    return true unless repository.exists?
-
-    indexer = Gitlab::Elastic::Indexer.new
-    indexer.run(
-      project_id,
-      repository.path_to_repo,
-      oldrev,
-      newrev
-    )
+    Gitlab::Elastic::Indexer.new(project).run(oldrev, newrev)
   end
 end

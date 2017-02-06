@@ -22,11 +22,10 @@ searching in:
 - Snippets
 - Wiki
 
-Once the data is added to the database or repository and [Elasticsearch is enabled in the admin area](#enable-elasticsearch) the search index will be updated
-automatically.
-Elasticsearch can be installed on the same machine that GitLab
-is installed or on a separate server.
-
+Once the data is added to the database or repository and [Elasticsearch is
+enabled in the admin area](#enable-elasticsearch) the search index will be
+updated automatically. Elasticsearch can be installed on the same machine as
+GitLab, or on a separate server.
 
 ## Requirements
 
@@ -79,6 +78,37 @@ Then enable Elasticsearch indexing and run repository indexing tasks:
 
 ```
 # Omnibus installations
+sudo gitlab-rake gitlab:elastic:index_repositories_async
+
+# Installations from source
+bundle exec rake gitlab:elastic:index_repositories_async RAILS_ENV=production
+```
+
+This enqueues a number of Sidekiq jobs to index your existing repositories.
+You can view the jobs in the admin panel (they are placed in the `elastic_batch_project_indexer`)
+queue), or you can query indexing status using a rake task:
+
+```
+# Omnibus installations
+sudo gitlab-rake gitlab:elastic:index_repositories_status
+
+# Installations from source
+bundle exec rake gitlab:elastic:index_repositories_status RAILS_ENV=production
+
+Indexing is 65.55% complete (6555/10000 projects)
+```
+
+By default, one job is created for every 300 projects. For large numbers of
+projects, you may wish to increase the batch size, by setting the `BATCH`
+environment variable. You may also wish to consider [throttling](../administration/operations/sidekiq_job_throttling.md)
+the `elastic_batch_project_indexer` queue , as this step can be I/O-intensive.
+
+You can also run the initial indexing synchronously - this is most useful if
+you have a small number of projects, or need finer-grained control over indexing
+than Sidekiq permits:
+
+```
+# Omnibus installations
 sudo gitlab-rake gitlab:elastic:index_repositories
 
 # Installations from source
@@ -103,11 +133,23 @@ ID_FROM=1001 ID_TO=2000 sudo gitlab-rake gitlab:elastic:index_repositories
 ID_FROM=2001 sudo gitlab-rake gitlab:elastic:index_repositories
 ```
 
-Sometimes your repository index process `gitlab:elastic:index_repositories` get interupted due to various reasons, in this case you can safely run it again and it will skip those repositories that already have been indexed. As the indexer stores the last commit SHA of every indexed repository in the database you can run the indexer with the special parameter `UPDATE_INDEX` and it will check every project repository again to make sure that every commit in that repository is indexed, it can be useful in case if your index is outdated:
+Sometimes your repository index process `gitlab:elastic:index_repositories` or
+`gitlab:elastic:index_repositories_async` can get interrupted. This may happen
+for many reasons, but it's always safe to run the indexing job again - it will
+skip those repositories that have already been indexed.
+
+As the indexer stores the last commit SHA of every indexed repository in the
+database, you can run the indexer with the special parameter `UPDATE_INDEX` and
+it will check every project repository again to make sure that every commit in
+that repository is indexed, it can be useful in case if your index is outdated:
 
 ```
 UPDATE_INDEX=true ID_TO=1000 sudo gitlab-rake gitlab:elastic:index_repositories
 ```
+
+You can also use the `gitlab:elastic:clear_index_status` Rake task to force the
+indexer to "forget" all progresss, so retrying the indexing process from the
+start.
 
 To index all wikis:
 
