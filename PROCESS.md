@@ -33,7 +33,7 @@ core team members will mention this person.
 ### Merge request coaching
 
 Several people from the [GitLab team][team] are helping community members to get
-their contributions accepted by meeting our [Definition of done][CONTRIBUTING.md#definition-of-done].
+their contributions accepted by meeting our [Definition of done](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#definition-of-done).
 
 What you can expect from them is described at https://about.gitlab.com/jobs/merge-request-coach/.
 
@@ -79,47 +79,47 @@ not be merged into any stable branches.
 
 ### Improperly formatted issue
 
-Thanks for the issue report. Please reformat your issue to conform to the \[contributing guidelines\]\(https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#issue-tracker-guidelines).
+Thanks for the issue report. Please reformat your issue to conform to the [contributing guidelines](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#issue-tracker-guidelines).
 
 ### Issue report for old version
 
-Thanks for the issue report but we only support issues for the latest stable version of GitLab. I'm closing this issue but if you still experience this problem in the latest stable version, please open a new issue (but also reference the old issue(s)). Make sure to also include the necessary debugging information conforming to the issue tracker guidelines found in our \[contributing guidelines\]\(https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#issue-tracker-guidelines).
+Thanks for the issue report but we only support issues for the latest stable version of GitLab. I'm closing this issue but if you still experience this problem in the latest stable version, please open a new issue (but also reference the old issue(s)). Make sure to also include the necessary debugging information conforming to the issue tracker guidelines found in our [contributing guidelines](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#issue-tracker-guidelines).
 
 ### Support requests and configuration questions
 
 Thanks for your interest in GitLab. We don't use the issue tracker for support
 requests and configuration questions. Please check our
-\[getting help\]\(https://about.gitlab.com/getting-help/) page to see all of the available
-support options. Also, have a look at the \[contribution guidelines\]\(https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md)
+[getting help](https://about.gitlab.com/getting-help/) page to see all of the available
+support options. Also, have a look at the [contribution guidelines](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md)
 for more information.
 
 ### Code format
 
-Please use ``` to format console output, logs, and code as it's very hard to read otherwise.
+Please use \`\`\` to format console output, logs, and code as it's very hard to read otherwise.
 
 ### Issue fixed in newer version
 
-Thanks for the issue report. This issue has already been fixed in newer versions of GitLab. Due to the size of this project and our limited resources we are only able to support the latest stable release as outlined in our \[contributing guidelines\]\(https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#issue-tracker). In order to get this bug fix and enjoy many new features please \[upgrade\]\(https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/update). If you still experience issues at that time please open a new issue following our issue tracker guidelines found in the \[contributing guidelines\]\(https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#issue-tracker-guidelines).
+Thanks for the issue report. This issue has already been fixed in newer versions of GitLab. Due to the size of this project and our limited resources we are only able to support the latest stable release as outlined in our [contributing guidelines](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#issue-tracker). In order to get this bug fix and enjoy many new features please [upgrade](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/update). If you still experience issues at that time please open a new issue following our issue tracker guidelines found in the [contributing guidelines](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#issue-tracker-guidelines).
 
 ### Improperly formatted merge request
 
-Thanks for your interest in improving the GitLab codebase! Please update your merge request according to the \[contributing guidelines\]\(https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#pull-request-guidelines).
+Thanks for your interest in improving the GitLab codebase! Please update your merge request according to the [contributing guidelines](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#pull-request-guidelines).
 
 ### Inactivity close of an issue
 
-It's been at least 2 weeks (and a new release) since we heard from you. I'm closing this issue but if you still experience this problem, please open a new issue (but also reference the old issue(s)). Make sure to also include the necessary debugging information conforming to the issue tracker guidelines found in our \[contributing guidelines\]\(https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#issue-tracker-guidelines).
+It's been at least 2 weeks (and a new release) since we heard from you. I'm closing this issue but if you still experience this problem, please open a new issue (but also reference the old issue(s)). Make sure to also include the necessary debugging information conforming to the issue tracker guidelines found in our [contributing guidelines](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#issue-tracker-guidelines).
 
 ### Inactivity close of a merge request
 
-This merge request has been closed because a request for more information has not been reacted to for more than 2 weeks. If you respond and conform to the merge request guidelines in our \[contributing guidelines\]\(https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#pull-requests) we will reopen this merge request.
+This merge request has been closed because a request for more information has not been reacted to for more than 2 weeks. If you respond and conform to the merge request guidelines in our [contributing guidelines](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#pull-requests) we will reopen this merge request.
 
 ### Accepting merge requests
 
 Is there an issue on the
-\[issue tracker\]\(https://gitlab.com/gitlab-org/gitlab-ce/issues) that is
+[issue tracker](https://gitlab.com/gitlab-org/gitlab-ce/issues) that is
 similar to this? Could you please link it here?
 Please be aware that new functionality that is not marked
-\[accepting merge requests\]\(https://gitlab.com/gitlab-org/gitlab-ce/issues?milestone_id=&scope=all&sort=created_desc&state=opened&utf8=%E2%9C%93&assignee_id=&author_id=&milestone_title=&label_name=Accepting+Merge+Requests)
+[accepting merge requests](https://gitlab.com/gitlab-org/gitlab-ce/issues?milestone_id=&scope=all&sort=created_desc&state=opened&utf8=%E2%9C%93&assignee_id=&author_id=&milestone_title=&label_name=Accepting+Merge+Requests)
 might not make it into GitLab.
 
 ### Only accepting merge requests with green tests
@@ -134,7 +134,7 @@ rebase with master to see if that solves the issue.
 We are currently in the process of closing down the issue tracker on GitHub, to
 prevent duplication with the GitLab.com issue tracker.
 Since this is an older issue I'll be closing this for now. If you think this is
-still an issue I encourage you to open it on the \[GitLab.com issue tracker\]\(https://gitlab.com/gitlab-org/gitlab-ce/issues).
+still an issue I encourage you to open it on the [GitLab.com issue tracker](https://gitlab.com/gitlab-org/gitlab-ce/issues).
 
 [team]: https://about.gitlab.com/team/
 [contribution acceptance criteria]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#contribution-acceptance-criteria
