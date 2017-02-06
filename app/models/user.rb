@@ -11,7 +11,6 @@ class User < ActiveRecord::Base
   include TokenAuthenticatable
   prepend EE::GeoAwareAvatar
   prepend EE::User
-  prepend EE::AuditorUser
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
