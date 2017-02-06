@@ -6,6 +6,8 @@ describe 'Issue Boards add issue modal filtering', :feature, :js do
 
   let(:project) { create(:empty_project, :public) }
   let(:board) { create(:board, project: project) }
+  let(:planning) { create(:label, project: project, name: 'Planning') }
+  let!(:list1) { create(:list, board: board, label: planning, position: 0) }
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let!(:issue1) { create(:issue, project: project) }
