@@ -35,6 +35,8 @@ module Gitlab
         handler.execute
       end
 
+      private
+
       def build_mail
         Mail::Message.new(@raw)
       rescue Encoding::UndefinedConversionError,
@@ -54,7 +56,24 @@ module Gitlab
       end
 
       def key_from_additional_headers(mail)
-        Array(mail.references).find do |mail_id|
+        references = ensure_references_array(mail.references)
+
+        find_key_from_references(references)
+      end
+
+      def ensure_references_array(references)
+        case references
+        when Array
+          references
+        when String
+          # Handle emails from clients which append with commas,
+          # example clients are Microsoft exchange and iOS app
+          Gitlab::IncomingEmail.scan_fallback_references(references)
+        end
+      end
+
+      def find_key_from_references(references)
+        references.find do |mail_id|
           key = Gitlab::IncomingEmail.key_from_fallback_message_id(mail_id)
           break key if key
         end
