@@ -1,6 +1,5 @@
 /* global Vue */
-//= require ./tabs
-//= require ./filters
+require('./tabs');
 (() => {
   const ModalStore = gl.issueBoards.ModalStore;
 
@@ -44,7 +43,7 @@
     },
     components: {
       'modal-tabs': gl.issueBoards.ModalTabs,
-      'modal-filters': gl.issueBoards.ModalFilters,
+      'modal-filters': require('./filters'),
     },
     template: `
       <div>

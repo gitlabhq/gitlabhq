@@ -1,7 +1,7 @@
 /* global Issuable */
 
-//= require lib/utils/url_utility
-//= require issuable
+require('~/lib/utils/url_utility');
+require('~/issuable');
 
 (() => {
   const BASE_URL = '/user/project/issues?scope=all&state=closed';

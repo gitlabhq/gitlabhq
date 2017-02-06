@@ -27,4 +27,4 @@
 
   - if @form.unfold? && @form.bottom? && @form.to < @blob.loc
     %tr.line_holder{ id: @form.to, class: line_class }
-      = diff_match_line @form.to, @form.to, text: @match_line, view: diff_view, bottom: true
+      = diff_match_line @form.to - @form.offset, @form.to, text: @match_line, view: diff_view, bottom: true

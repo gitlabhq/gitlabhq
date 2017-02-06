@@ -1,2 +1,2 @@
-//= require vue
-//= require vue-resource
+window.Vue = require('vue');
+window.Vue.use(require('vue-resource'));

@@ -1,1 +1,1 @@
-//= require ./time_tracking/time_tracking_bundle
+require('./time_tracking/time_tracking_bundle');

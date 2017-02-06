@@ -57,8 +57,8 @@
     };
 
     Project.prototype.initRefSwitcher = function() {
-      var refListItem = document.createElement('li'),
-          refLink = document.createElement('a');
+      var refListItem = document.createElement('li');
+      var refLink = document.createElement('a');
 
       refLink.href = '#';
 

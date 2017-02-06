@@ -1,9 +1,8 @@
 /* eslint-disable no-unused-expressions, no-prototype-builtins, no-new, no-shadow, max-len */
 
-/*= require js.cookie.js */
-/*= require jquery.endless-scroll.js */
-/*= require pager */
-/*= require activities */
+require('vendor/jquery.endless-scroll.js');
+require('~/pager');
+require('~/activities');
 
 (() => {
   window.gon || (window.gon = {});

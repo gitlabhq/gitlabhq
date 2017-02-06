@@ -4,13 +4,14 @@
 /* global ResolveService */
 /* global mrRefreshWidgetUrl */
 
-/*= require autosave */
-/*= require autosize */
-/*= require dropzone */
-/*= require dropzone_input */
-/*= require gfm_auto_complete */
-/*= require jquery.atwho */
-/*= require task_list */
+require('./autosave');
+window.autosize = require('vendor/autosize');
+window.Dropzone = require('dropzone');
+require('./dropzone_input');
+require('./gfm_auto_complete');
+require('vendor/jquery.caret'); // required by jquery.atwho
+require('vendor/jquery.atwho');
+require('vendor/task_list');
 
 (function() {
   var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
