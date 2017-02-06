@@ -1,5 +1,3 @@
-/* global Turbolinks */
-
 (() => {
   class FilteredSearchManager {
     constructor() {
@@ -15,13 +13,13 @@
         this.dropdownManager.setDropdown();
 
         this.cleanupWrapper = this.cleanup.bind(this);
-        document.addEventListener('page:fetch', this.cleanupWrapper);
+        document.addEventListener('beforeunload', this.cleanupWrapper);
       }
     }
 
     cleanup() {
       this.unbindEvents();
-      document.removeEventListener('page:fetch', this.cleanupWrapper);
+      document.removeEventListener('beforeunload', this.cleanupWrapper);
     }
 
     bindEvents() {
@@ -200,7 +198,9 @@
         paths.push(`search=${sanitized}`);
       }
 
-      Turbolinks.visit(`?scope=all&utf8=✓&${paths.join('&')}`);
+      const parameterizedUrl = `?scope=all&utf8=✓&${paths.join('&')}`;
+
+      gl.utils.visitUrl(parameterizedUrl);
     }
 
     getUsernameParams() {

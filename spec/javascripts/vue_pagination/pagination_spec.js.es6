@@ -1,6 +1,5 @@
-//= require vue
-//= require lib/utils/common_utils
-//= require vue_pagination/index
+require('~/lib/utils/common_utils');
+require('~/vue_pagination/index');
 
 describe('Pagination component', () => {
   let component;

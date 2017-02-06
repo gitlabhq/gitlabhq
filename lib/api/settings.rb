@@ -57,6 +57,7 @@ module API
         requires :shared_runners_text, type: String, desc: 'Shared runners text '
       end
       optional :max_artifacts_size, type: Integer, desc: "Set the maximum file size each build's artifacts can have"
+      optional :max_pages_size, type: Integer, desc: 'Maximum size of pages in MB'
       optional :container_registry_token_expire_delay, type: Integer, desc: 'Authorization token duration (minutes)'
       optional :metrics_enabled, type: Boolean, desc: 'Enable the InfluxDB metrics'
       given metrics_enabled: ->(val) { val } do
@@ -107,6 +108,7 @@ module API
         requires :housekeeping_full_repack_period, type: Integer, desc: "Number of Git pushes after which a full 'git repack' is run."
         requires :housekeeping_gc_period, type: Integer, desc: "Number of Git pushes after which 'git gc' is run."
       end
+      optional :terminal_max_session_time, type: Integer, desc: 'Maximum time for web terminal websocket connection (in seconds). Set to 0 for unlimited time.'
       at_least_one_of :default_branch_protection, :default_project_visibility, :default_snippet_visibility,
                       :default_group_visibility, :restricted_visibility_levels, :import_sources,
                       :enabled_git_access_protocol, :gravatar_enabled, :default_projects_limit,
@@ -115,12 +117,12 @@ module API
                       :send_user_confirmation_email, :domain_whitelist, :domain_blacklist_enabled,
                       :after_sign_up_text, :signin_enabled, :require_two_factor_authentication,
                       :home_page_url, :after_sign_out_path, :sign_in_text, :help_page_text,
-                      :shared_runners_enabled, :max_artifacts_size, :container_registry_token_expire_delay,
+                      :shared_runners_enabled, :max_artifacts_size, :max_pages_size, :container_registry_token_expire_delay,
                       :metrics_enabled, :sidekiq_throttling_enabled, :recaptcha_enabled,
                       :akismet_enabled, :admin_notification_email, :sentry_enabled,
                       :repository_storage, :repository_checks_enabled, :koding_enabled, :plantuml_enabled,
                       :version_check_enabled, :email_author_in_body, :html_emails_enabled,
-                      :housekeeping_enabled
+                      :housekeeping_enabled, :terminal_max_session_time
     end
     put "application/settings" do
       if current_settings.update_attributes(declared_params(include_missing: false))

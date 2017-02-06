@@ -1,4 +1,5 @@
 class KubernetesService < DeploymentService
+  include Gitlab::CurrentSettings
   include Gitlab::Kubernetes
   include ReactiveCaching
 
@@ -110,7 +111,7 @@ class KubernetesService < DeploymentService
       pods = data.fetch(:pods, nil)
       filter_pods(pods, app: environment.slug).
         flat_map { |pod| terminals_for_pod(api_url, namespace, pod) }.
-        map { |terminal| add_terminal_auth(terminal, token, ca_pem) }
+        each { |terminal| add_terminal_auth(terminal, terminal_auth) }
     end
   end
 
@@ -169,5 +170,13 @@ class KubernetesService < DeploymentService
     url.path = [ prefix, *parts ].join("/")
 
     url.to_s
+  end
+
+  def terminal_auth
+    {
+      token: token,
+      ca_pem: ca_pem,
+      max_session_time: current_application_settings.terminal_max_session_time
+    }
   end
 end

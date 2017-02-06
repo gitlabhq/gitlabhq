@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170130204620) do
+ActiveRecord::Schema.define(version: 20170204181513) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -98,17 +98,19 @@ ActiveRecord::Schema.define(version: 20170130204620) do
     t.text "help_page_text_html"
     t.text "shared_runners_text_html"
     t.text "after_sign_up_text_html"
-    t.boolean "sidekiq_throttling_enabled", default: false
-    t.string "sidekiq_throttling_queues"
-    t.decimal "sidekiq_throttling_factor"
     t.boolean "housekeeping_enabled", default: true, null: false
     t.boolean "housekeeping_bitmaps_enabled", default: true, null: false
     t.integer "housekeeping_incremental_repack_period", default: 10, null: false
     t.integer "housekeeping_full_repack_period", default: 50, null: false
     t.integer "housekeeping_gc_period", default: 200, null: false
+    t.boolean "sidekiq_throttling_enabled", default: false
+    t.string "sidekiq_throttling_queues"
+    t.decimal "sidekiq_throttling_factor"
     t.boolean "html_emails_enabled", default: true
     t.string "plantuml_url"
     t.boolean "plantuml_enabled"
+    t.integer "max_pages_size", default: 100, null: false
+    t.integer "terminal_max_session_time", default: 0, null: false
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -576,6 +578,7 @@ ActiveRecord::Schema.define(version: 20170130204620) do
   end
 
   add_index "labels", ["group_id", "project_id", "title"], name: "index_labels_on_group_id_and_project_id_and_title", unique: true, using: :btree
+  add_index "labels", ["type", "project_id"], name: "index_labels_on_type_and_project_id", using: :btree
 
   create_table "lfs_objects", force: :cascade do |t|
     t.string "oid", null: false
@@ -854,6 +857,17 @@ ActiveRecord::Schema.define(version: 20170130204620) do
 
   add_index "oauth_applications", ["owner_id", "owner_type"], name: "index_oauth_applications_on_owner_id_and_owner_type", using: :btree
   add_index "oauth_applications", ["uid"], name: "index_oauth_applications_on_uid", unique: true, using: :btree
+
+  create_table "pages_domains", force: :cascade do |t|
+    t.integer "project_id"
+    t.text "certificate"
+    t.text "encrypted_key"
+    t.string "encrypted_key_iv"
+    t.string "encrypted_key_salt"
+    t.string "domain"
+  end
+
+  add_index "pages_domains", ["domain"], name: "index_pages_domains_on_domain", unique: true, using: :btree
 
   create_table "personal_access_tokens", force: :cascade do |t|
     t.integer "user_id", null: false

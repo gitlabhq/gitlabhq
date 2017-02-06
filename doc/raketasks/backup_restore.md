@@ -84,6 +84,29 @@ Deleting tmp directories...[DONE]
 Deleting old backups... [SKIPPING]
 ```
 
+## Exclude specific directories from the backup
+
+You can choose what should be backed up by adding the environment variable `SKIP`.
+The available options are:
+
+* `db`
+* `uploads` (attachments)
+* `repositories`
+* `builds` (CI build output logs)
+* `artifacts` (CI build artifacts)
+* `lfs` (LFS objects)
+* `pages` (pages content)
+
+Use a comma to specify several options at the same time:
+
+```
+# use this command if you've installed GitLab with the Omnibus package
+sudo gitlab-rake gitlab:backup:create SKIP=db,uploads
+
+# if you've installed GitLab from source
+sudo -u git -H bundle exec rake gitlab:backup:create SKIP=db,uploads RAILS_ENV=production
+```
+
 ## Upload backups to remote (cloud) storage
 
 Starting with GitLab 7.4 you can let the backup script upload the '.tar' file it creates.

@@ -35,7 +35,7 @@ module ExportFileHelper
            project: project,
            commit_id: ci_pipeline.sha)
 
-    create(:event, target: milestone, project: project, action: Event::CREATED, author: user)
+    create(:event, :created, target: milestone, project: project, author: user)
     create(:project_member, :master, user: user, project: project)
     create(:ci_variable, project: project)
     create(:ci_trigger, project: project)

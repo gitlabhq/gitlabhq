@@ -1,4 +1,4 @@
-/*= require extensions/element */
+require('~/extensions/element');
 
 (() => {
   describe('Element extensions', function () {

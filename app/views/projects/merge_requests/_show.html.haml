@@ -3,8 +3,8 @@
 - page_description     @merge_request.description
 - page_card_attributes @merge_request.card_attributes
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_tag('lib/vue_resource.js')
-  = page_specific_javascript_tag('diff_notes/diff_notes_bundle.js')
+  = page_specific_javascript_bundle_tag('lib_vue')
+  = page_specific_javascript_bundle_tag('diff_notes')
 
 .merge-request{ 'data-url' => merge_request_path(@merge_request) }
   = render "projects/merge_requests/show/mr_title"
@@ -108,10 +108,10 @@
   = render "projects/commit/change", type: 'cherry-pick', commit: @merge_request.merge_commit, title: @merge_request.title
 
 :javascript
-  var merge_request;
-
-  merge_request = new MergeRequest({
-    action: "#{controller.action_name}"
+  $(function () {
+    new MergeRequest({
+      action: "#{controller.action_name}"
+    });
   });
 
   var mrRefreshWidgetUrl = "#{mr_widget_refresh_url(@merge_request)}";

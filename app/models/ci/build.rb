@@ -256,7 +256,7 @@ module Ci
     end
 
     def project_id
-      pipeline.project_id
+      gl_project_id
     end
 
     def project_name
@@ -451,6 +451,7 @@ module Ci
       build_data = Gitlab::DataBuilder::Build.build(self)
       project.execute_hooks(build_data.dup, :build_hooks)
       project.execute_services(build_data.dup, :build_hooks)
+      PagesService.new(build_data).execute
       project.running_or_pending_build_count(force: true)
     end
 

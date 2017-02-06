@@ -1,23 +1,22 @@
 /* global Vue, VueResource, gl */
-/*= require vue_common_component/commit */
-/*= require vue_pagination/index */
-/*= require vue-resource
-/*= require boards/vue_resource_interceptor */
-/*= require ./status.js.es6 */
-/*= require ./store.js.es6 */
-/*= require ./pipeline_url.js.es6 */
-/*= require ./stage.js.es6 */
-/*= require ./stages.js.es6 */
-/*= require ./pipeline_actions.js.es6 */
-/*= require ./time_ago.js.es6 */
-/*= require ./pipelines.js.es6 */
+window.Vue = require('vue');
+window.Vue.use(require('vue-resource'));
+require('../vue_common_component/commit');
+require('../vue_pagination/index');
+require('../boards/vue_resource_interceptor');
+require('./status');
+require('./store');
+require('./pipeline_url');
+require('./stage');
+require('./stages');
+require('./pipeline_actions');
+require('./time_ago');
+require('./pipelines');
 
 (() => {
   const project = document.querySelector('.pipelines');
   const entry = document.querySelector('.vue-pipelines-index');
   const svgs = document.querySelector('.pipeline-svgs');
-
-  Vue.use(VueResource);
 
   if (!entry) return null;
   return new Vue({

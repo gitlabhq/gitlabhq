@@ -1,7 +1,7 @@
 /* eslint-disable no-new */
 
-//= require flash
-//= require mini_pipeline_graph_dropdown
+require('~/flash');
+require('~/mini_pipeline_graph_dropdown');
 
 (() => {
   describe('Mini Pipeline Graph Dropdown', () => {

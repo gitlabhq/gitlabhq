@@ -5,13 +5,20 @@
 
 (function() {
   this.MilestoneSelect = (function() {
-    function MilestoneSelect(currentProject) {
-      var _this;
+    function MilestoneSelect(currentProject, els) {
+      var _this, $els;
       if (currentProject != null) {
         _this = this;
         this.currentProject = JSON.parse(currentProject);
       }
-      $('.js-milestone-select').each(function(i, dropdown) {
+
+      $els = $(els);
+
+      if (!els) {
+        $els = $('.js-milestone-select');
+      }
+
+      $els.each(function(i, dropdown) {
         var $block, $dropdown, $loading, $selectbox, $sidebarCollapsedValue, $value, abilityName, collapsedSidebarLabelTemplate, defaultLabel, issuableId, issueUpdateURL, milestoneLinkNoneTemplate, milestoneLinkTemplate, milestonesUrl, projectId, selectedMilestone, showAny, showNo, showUpcoming, useId, showMenuAbove;
         $dropdown = $(dropdown);
         projectId = $dropdown.data('project-id');
@@ -108,7 +115,7 @@
           },
           vue: $dropdown.hasClass('js-issue-board-sidebar'),
           clicked: function(selected, $el, e) {
-            var data, isIssueIndex, isMRIndex, page;
+            var data, isIssueIndex, isMRIndex, page, boardsStore;
             page = $('body').data('page');
             isIssueIndex = page === 'projects:issues:index';
             isMRIndex = (page === page && page === 'projects:merge_requests:index');
@@ -116,9 +123,19 @@
               e.preventDefault();
               return;
             }
-            if ($('html').hasClass('issue-boards-page') && !$dropdown.hasClass('js-issue-board-sidebar')) {
-              gl.issueBoards.BoardsStore.state.filters[$dropdown.data('field-name')] = selected.name;
-              gl.issueBoards.BoardsStore.updateFiltersUrl();
+
+            if ($('html').hasClass('issue-boards-page') && !$dropdown.hasClass('js-issue-board-sidebar') &&
+              !$dropdown.closest('.add-issues-modal').length) {
+              boardsStore = gl.issueBoards.BoardsStore.state.filters;
+            } else if ($dropdown.closest('.add-issues-modal').length) {
+              boardsStore = gl.issueBoards.ModalStore.store.filter;
+            }
+
+            if (boardsStore) {
+              boardsStore[$dropdown.data('field-name')] = selected.name;
+              if (!$dropdown.closest('.add-issues-modal').length) {
+                gl.issueBoards.BoardsStore.updateFiltersUrl();
+              }
               e.preventDefault();
             } else if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
               if (selected.name != null) {

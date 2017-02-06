@@ -425,7 +425,7 @@ describe API::Issues, api: true  do
     end
 
     it 'returns no issues when user has access to project but not issues' do
-      restricted_project = create(:empty_project, :public, issues_access_level: ProjectFeature::PRIVATE)
+      restricted_project = create(:empty_project, :public, :issues_private)
       create(:issue, project: restricted_project)
 
       get api("/projects/#{restricted_project.id}/issues", non_member)
@@ -610,23 +610,6 @@ describe API::Issues, api: true  do
       expect(response).to have_http_status(200)
       expect(json_response['title']).to eq(issue.title)
       expect(json_response['iid']).to eq(issue.iid)
-    end
-
-    it 'returns a project issue by iid' do
-      get api("/projects/#{project.id}/issues?iid=#{issue.iid}", user)
-
-      expect(response.status).to eq 200
-      expect(json_response.length).to eq 1
-      expect(json_response.first['title']).to eq issue.title
-      expect(json_response.first['id']).to eq issue.id
-      expect(json_response.first['iid']).to eq issue.iid
-    end
-
-    it 'returns an empty array for an unknown project issue iid' do
-      get api("/projects/#{project.id}/issues?iid=#{issue.iid + 10}", user)
-
-      expect(response.status).to eq 200
-      expect(json_response.length).to eq 0
     end
 
     it "returns 404 if issue id not found" do

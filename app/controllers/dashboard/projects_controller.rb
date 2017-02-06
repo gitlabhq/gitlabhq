@@ -10,10 +10,8 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
     @projects = @projects.sort(@sort = params[:sort])
     @projects = @projects.page(params[:page])
 
-    @last_push = current_user.recent_push
-
     respond_to do |format|
-      format.html
+      format.html { @last_push = current_user.recent_push }
       format.atom do
         event_filter
         load_events

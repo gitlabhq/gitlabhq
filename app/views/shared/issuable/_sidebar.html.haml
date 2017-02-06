@@ -1,6 +1,7 @@
 - todo = issuable_todo(issuable)
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_tag('issuable/issuable_bundle.js')
+  = page_specific_javascript_bundle_tag('issuable')
+
 %aside.right-sidebar{ class: sidebar_gutter_collapsed_class, 'aria-live' => 'polite' }
   .issuable-sidebar
     - can_edit_issuable = can?(current_user, :"admin_#{issuable.to_ability_name}", @project)

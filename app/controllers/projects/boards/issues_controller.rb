@@ -7,7 +7,7 @@ module Projects
 
       def index
         issues = ::Boards::Issues::ListService.new(project, current_user, filter_params).execute
-        issues = issues.page(params[:page])
+        issues = issues.page(params[:page]).per(params[:per] || 20)
 
         render json: {
           issues: serialize_as_json(issues),
@@ -59,7 +59,7 @@ module Projects
       end
 
       def filter_params
-        params.merge(board_id: params[:board_id], id: params[:list_id])
+        params.merge(board_id: params[:board_id], id: params[:list_id]).compact
       end
 
       def move_params
@@ -73,7 +73,7 @@ module Projects
       def serialize_as_json(resource)
         resource.as_json(
           labels: true,
-          only: [:iid, :title, :confidential, :due_date],
+          only: [:id, :iid, :title, :confidential, :due_date],
           include: {
             assignee: { only: [:id, :name, :username], methods: [:avatar_url] },
             milestone: { only: [:id, :title] }

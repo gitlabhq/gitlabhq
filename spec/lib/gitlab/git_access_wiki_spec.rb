@@ -36,8 +36,6 @@ describe Gitlab::GitAccessWiki, lib: true do
 
     context 'when wiki feature is enabled' do
       it 'give access to download wiki code' do
-        project.project_feature.update_attribute(:wiki_access_level, ProjectFeature::ENABLED)
-
         expect(subject.allowed?).to be_truthy
       end
     end
