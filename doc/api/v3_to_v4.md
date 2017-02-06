@@ -7,4 +7,7 @@ changes are in V4:
 ### Changes
 
 - Removed `/projects/:search` (use: `/projects?search=x`)
+- `iid` filter has been removed from `projects/:id/issues`
+- `projects/:id/merge_requests?iid[]=x&iid[]=y` array filter has been renamed to `iids`
+- Endpoints under `projects/merge_request/:id` have been removed (use: `projects/merge_requests/:id`)
 
