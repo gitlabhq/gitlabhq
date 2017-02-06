@@ -7,14 +7,14 @@ class RemoveInactiveDefaultEmailServices < ActiveRecord::Migration
     builds_service = spawn <<-SQL.strip_heredoc
       DELETE FROM services
         WHERE type = 'BuildsEmailService'
-          AND active = #{false_value}
+          AND active IS FALSE
           AND properties = '{"notify_only_broken_builds":true}';
     SQL
 
     pipelines_service = spawn <<-SQL.strip_heredoc
       DELETE FROM services
         WHERE type = 'PipelinesEmailService'
-          AND active = #{false_value}
+          AND active IS FALSE
           AND properties = '{"notify_only_broken_pipelines":true}';
     SQL
 
@@ -25,17 +25,19 @@ class RemoveInactiveDefaultEmailServices < ActiveRecord::Migration
 
   def spawn(query)
     Thread.new do
-      ActiveRecord::Base.connection_pool.with_connection do
-        ActiveRecord::Base.connection.execute(query)
+      with_connection do |connection|
+        connection.execute(query)
       end
     end
   end
 
-  def quote(value)
-    ActiveRecord::Base.connection.quote(value)
-  end
+  def with_connection
+    pool = ActiveRecord::Base.establish_connection
+    connection = pool.connection
 
-  def false_value
-    quote(false)
+    yield(connection)
+
+  ensure
+    connection.close
   end
 end
