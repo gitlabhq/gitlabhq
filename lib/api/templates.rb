@@ -91,7 +91,7 @@ module API
       end
       get "templates/#{template_type}" do
         templates = ::Kaminari.paginate_array(klass.all)
-        present paginate(templates), with: Entities::TemplatesLis
+        present paginate(templates), with: Entities::TemplatesList
       end
 
       desc 'Get the text for a specific template present in local filesystem' do
