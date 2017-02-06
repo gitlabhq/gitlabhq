@@ -25,8 +25,7 @@ describe Projects::VariablesController do
         post :create, namespace_id: project.namespace.to_param, project_id: project.to_param,
                       variable: { key: "..one", value: "two" }
 
-        expect(flash[:alert]).to include 'Key can contain only letters, digits and \'_\'.'
-        expect(response).to redirect_to(namespace_project_settings_ci_cd_path(project.namespace, project))
+        expect(response).to render_template("projects/variables/show")
       end
     end
   end
