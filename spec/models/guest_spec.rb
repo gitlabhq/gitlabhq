@@ -37,8 +37,6 @@ describe Guest, lib: true do
 
       context 'when repository is enabled' do
         it 'allows to pull the repo' do
-          public_project.project_feature.update_attribute(:repository_access_level, ProjectFeature::ENABLED)
-
           expect(Guest.can?(:download_code, public_project)).to eq(true)
         end
       end

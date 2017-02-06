@@ -632,7 +632,7 @@ describe Project, models: true do
   end
 
   describe '#has_wiki?' do
-    let(:no_wiki_project)       { create(:empty_project, wiki_access_level: ProjectFeature::DISABLED, has_external_wiki: false) }
+    let(:no_wiki_project)       { create(:empty_project, :wiki_disabled, has_external_wiki: false) }
     let(:wiki_enabled_project)  { create(:empty_project) }
     let(:external_wiki_project) { create(:empty_project, has_external_wiki: true) }
 

@@ -224,7 +224,7 @@ describe IssuesFinder do
       let(:scope) { nil }
 
       it "doesn't return team-only issues to non team members" do
-        project = create(:empty_project, :public, issues_access_level: ProjectFeature::PRIVATE)
+        project = create(:empty_project, :public, :issues_private)
         issue = create(:issue, project: project)
 
         expect(issues).not_to include(issue)

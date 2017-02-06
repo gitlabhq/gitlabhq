@@ -1232,7 +1232,7 @@ describe User, models: true do
     end
 
     it 'does not include projects for which issues are disabled' do
-      project = create(:empty_project, issues_access_level: ProjectFeature::DISABLED)
+      project = create(:empty_project, :issues_disabled)
 
       expect(user.projects_where_can_admin_issues.to_a).to be_empty
       expect(user.can?(:admin_issue, project)).to eq(false)

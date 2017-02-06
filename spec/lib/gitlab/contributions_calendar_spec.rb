@@ -17,7 +17,7 @@ describe Gitlab::ContributionsCalendar do
   end
 
   let(:feature_project) do
-    create(:empty_project, :public, issues_access_level: ProjectFeature::PRIVATE) do |project|
+    create(:empty_project, :public, :issues_private) do |project|
       create(:project_member, user: contributor, project: project).project
     end
   end
