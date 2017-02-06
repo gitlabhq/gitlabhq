@@ -61,6 +61,42 @@ require('vendor/jquery.scrollTo');
         expect($('#diffs')).toHaveClass('active');
       });
     });
+    describe('#opensInNewTab', function () {
+      it('opens page tab in a new browser tab with Ctrl+Click - Windows/Linux', function () {
+        const commitsLink = '.commits-tab li a';
+        const tabUrl = $(commitsLink).attr('href');
+
+        spyOn($.fn, 'attr').and.returnValue(tabUrl);
+        spyOn(window, 'open').and.callFake(function (url, name) {
+          expect(url).toEqual(tabUrl);
+          expect(name).toEqual('_blank');
+        });
+
+        this.class.clickTab({
+          metaKey: false,
+          ctrlKey: true,
+          which: 1,
+          stopImmediatePropagation: function () {}
+        });
+      });
+      it('opens page tab in a new browser tab with Cmd+Click - Mac', function () {
+        const commitsLink = '.commits-tab li a';
+        const tabUrl = $(commitsLink).attr('href');
+
+        spyOn($.fn, 'attr').and.returnValue(tabUrl);
+        spyOn(window, 'open').and.callFake(function (url, name) {
+          expect(url).toEqual(tabUrl);
+          expect(name).toEqual('_blank');
+        });
+
+        this.class.clickTab({
+          metaKey: true,
+          ctrlKey: false,
+          which: 1,
+          stopImmediatePropagation: function () {}
+        });
+      });
+    });
 
     describe('#setCurrentAction', function () {
       beforeEach(function () {
