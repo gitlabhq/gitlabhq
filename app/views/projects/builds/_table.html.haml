@@ -2,14 +2,14 @@
 
 - if builds.blank?
   %div
-    .nothing-here-block No builds to show
+    .nothing-here-block No jobs to show
 - else
   .table-holder
     %table.table.ci-table.builds-page
       %thead
         %tr
           %th Status
-          %th Build
+          %th Job
           %th Pipeline
           - if admin
             %th Project

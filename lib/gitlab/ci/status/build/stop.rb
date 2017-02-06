@@ -26,7 +26,7 @@ module Gitlab
           end
 
           def action_icon
-            'stop'
+            'icon_action_stop'
           end
 
           def action_title

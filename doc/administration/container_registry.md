@@ -379,6 +379,10 @@ Read more about the individual driver's config options in the
 filesystem. Remember to enable backups with your object storage provider if
 desired.
 
+> **Important** Enabling storage driver other than `filesystem` would mean
+that your Docker client needs to be able to access the storage backend directly.
+So you must use an address that resolves and is accessible outside GitLab server.
+
 ---
 
 **Omnibus GitLab installations**

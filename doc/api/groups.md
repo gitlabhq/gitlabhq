@@ -25,7 +25,14 @@ GET /groups
     "id": 1,
     "name": "Foobar Group",
     "path": "foo-bar",
-    "description": "An interesting group"
+    "description": "An interesting group",
+    "visibility_level": 20,
+    "lfs_enabled": true,
+    "avatar_url": "http://localhost:3000/uploads/group/avatar/1/foo.jpg",
+    "web_url": "http://localhost:3000/groups/foo-bar",
+    "request_access_enabled": false,
+    "full_name": "Foobar Group",
+    "full_path": "foo-bar"
   }
 ]
 ```
@@ -149,6 +156,8 @@ Example response:
   "avatar_url": null,
   "web_url": "https://gitlab.example.com/groups/twitter",
   "request_access_enabled": false,
+  "full_name": "Foobar Group",
+  "full_path": "foo-bar",
   "projects": [
     {
       "id": 7,
@@ -390,6 +399,8 @@ Example response:
   "avatar_url": null,
   "web_url": "http://gitlab.example.com/groups/h5bp",
   "request_access_enabled": false,
+  "full_name": "Foobar Group",
+  "full_path": "foo-bar",
   "projects": [
     {
       "id": 9,

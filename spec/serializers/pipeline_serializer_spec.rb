@@ -7,11 +7,7 @@ describe PipelineSerializer do
     described_class.new(user: user)
   end
 
-  let(:entity) do
-    serializer.represent(resource)
-  end
-
-  subject { entity.as_json }
+  subject { serializer.represent(resource) }
 
   describe '#represent' do
     context 'when used without pagination' do

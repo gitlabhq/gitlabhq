@@ -171,7 +171,6 @@ require('vendor/jquery.scrollTo');
     // This method is stubbed in tests.
     LineHighlighter.prototype.__setLocationHash__ = function(value) {
       return history.pushState({
-        turbolinks: false,
         url: value
       // We're using pushState instead of assigning location.hash directly to
       // prevent the page from scrolling on the hashchange event

@@ -1,6 +1,5 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, one-var, one-var-declaration-per-line, prefer-rest-params, max-len, vars-on-top, wrap-iife, no-unused-vars, quotes, no-shadow, no-cond-assign, prefer-arrow-callback, no-return-assign, no-else-return, camelcase, comma-dangle, no-lonely-if, guard-for-in, no-restricted-syntax, consistent-return, prefer-template, no-param-reassign, no-loop-func, no-mixed-operators */
 /* global fuzzaldrinPlus */
-/* global Turbolinks */
 
 (function() {
   var GitLabDropdown, GitLabDropdownFilter, GitLabDropdownRemote,
@@ -512,12 +511,17 @@
 
     // Append the menu into the dropdown
     GitLabDropdown.prototype.appendMenu = function(html) {
+      return this.clearMenu().append(html);
+    };
+
+    GitLabDropdown.prototype.clearMenu = function() {
       var selector;
       selector = '.dropdown-content';
       if (this.dropdown.find(".dropdown-toggle-page").length) {
         selector = ".dropdown-page-one .dropdown-content";
       }
-      return $(selector, this.dropdown).empty().append(html);
+
+      return $(selector, this.dropdown).empty();
     };
 
     GitLabDropdown.prototype.renderItem = function(data, group, index) {
@@ -718,7 +722,7 @@
       if ($el.length) {
         var href = $el.attr('href');
         if (href && href !== '#') {
-          Turbolinks.visit(href);
+          gl.utils.visitUrl(href);
         } else {
           $el.first().trigger('click');
         }

@@ -1,8 +1,6 @@
 module Ci
   class BuildPolicy < CommitStatusPolicy
     def rules
-      can! :read_build if @subject.project.public_builds?
-
       super
 
       # If we can't read build we should also not have that

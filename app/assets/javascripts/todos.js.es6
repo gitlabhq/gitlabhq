@@ -1,6 +1,5 @@
 /* eslint-disable class-methods-use-this, no-new, func-names, prefer-template, no-unneeded-ternary, object-shorthand, space-before-function-paren, comma-dangle, quote-props, consistent-return, no-else-return, no-param-reassign, max-len */
 /* global UsersSelect */
-/* global Turbolinks */
 
 ((global) => {
   class Todos {
@@ -34,7 +33,7 @@
 
       $('form.filter-form').on('submit', function (event) {
         event.preventDefault();
-        Turbolinks.visit(this.action + '&' + $(this).serialize());
+        gl.utils.visitUrl(this.action + '&' + $(this).serialize());
       });
     }
 
@@ -85,7 +84,7 @@
         },
         success: (data) => {
           $target.remove();
-          $('.prepend-top-default').html('<div class="nothing-here-block">You\'re all done!</div>');
+          $('.js-todos-all').html('<div class="nothing-here-block">You\'re all done!</div>');
           return this.updateBadges(data);
         }
       });
@@ -142,7 +141,7 @@
           };
           url = gl.utils.mergeUrlParams(pageParams, url);
         }
-        return Turbolinks.visit(url);
+        return gl.utils.visitUrl(url);
       }
     }
 
@@ -156,7 +155,7 @@
         e.preventDefault();
         return window.open(todoLink, '_blank');
       } else {
-        return Turbolinks.visit(todoLink);
+        return gl.utils.visitUrl(todoLink);
       }
     }
   }

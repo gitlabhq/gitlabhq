@@ -3,6 +3,9 @@
 - return unless issuable.is_a?(MergeRequest)
 - return if issuable.closed_without_fork?
 
+-# This check is duplicated below, to avoid conflicts with EE.
+- return unless issuable.can_remove_source_branch?(current_user)
+
 .form-group
   .col-sm-10.col-sm-offset-2
     - if issuable.can_remove_source_branch?(current_user)

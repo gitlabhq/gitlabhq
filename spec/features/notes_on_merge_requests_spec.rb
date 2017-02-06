@@ -89,7 +89,7 @@ describe 'Comments', feature: true do
           end
         end
 
-        it 'should reset the edit note form textarea with the original content of the note if cancelled' do
+        it 'resets the edit note form textarea with the original content of the note if cancelled' do
           within('.current-note-edit-form') do
             fill_in 'note[note]', with: 'Some new content'
             find('.btn-cancel').click

@@ -111,7 +111,7 @@ require('./fixtures/emoji_menu');
       });
     });
     describe('::getAwardUrl', function() {
-      return it('should return the url for request', function() {
+      return it('returns the url for request', function() {
         return expect(awardsHandler.getAwardUrl()).toBe('http://test.host/frontend-fixtures/issues-project/issues/1/toggle_award_emoji');
       });
     });

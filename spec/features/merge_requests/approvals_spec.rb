@@ -37,7 +37,7 @@ feature 'Merge request approvals', js: true, feature: true do
       project.team << [other_user, :developer]
 
       login_as(user)
-      visit new_namespace_project_merge_request_path(project.namespace, project, merge_request: { source_branch: 'feature' })
+      visit new_namespace_project_merge_request_path(project.namespace, project, merge_request: { target_branch: 'master', source_branch: 'feature' })
 
       find('#s2id_merge_request_approver_ids .select2-input').click
     end
@@ -66,7 +66,7 @@ feature 'Merge request approvals', js: true, feature: true do
         group = create :group
         group.add_developer(other_user)
 
-        visit new_namespace_project_merge_request_path(project.namespace, project, merge_request: { source_branch: 'feature' })
+        visit new_namespace_project_merge_request_path(project.namespace, project, merge_request: { target_branch: 'master', source_branch: 'feature' })
         find('#s2id_merge_request_approver_group_ids .select2-input').click
 
         wait_for_ajax
@@ -87,7 +87,7 @@ feature 'Merge request approvals', js: true, feature: true do
         create :approver_group, group: group, target: project
         create :approver, user: approver, target: project
 
-        visit new_namespace_project_merge_request_path(project.namespace, project, merge_request: { source_branch: 'feature' })
+        visit new_namespace_project_merge_request_path(project.namespace, project, merge_request: { target_branch: 'master', source_branch: 'feature' })
 
         within('.approver-list li.approver-group') do
           click_on "Remove"

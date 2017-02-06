@@ -2,8 +2,13 @@
 /* global Vue */
 
 class BoardService {
-  constructor (root, boardId) {
-    this.boards = Vue.resource(`${root}{/id}.json`);
+  constructor (root, bulkUpdatePath, boardId) {
+    this.boards = Vue.resource(`${root}{/id}.json`, {}, {
+      issues: {
+        method: 'GET',
+        url: `${root}/${boardId}/issues.json`
+      }
+    });
     this.lists = Vue.resource(`${root}/${boardId}/lists{/id}`, {}, {
       generate: {
         method: 'POST',
@@ -11,7 +16,12 @@ class BoardService {
       }
     });
     this.issue = Vue.resource(`${root}/${boardId}/issues{/id}`, {});
-    this.issues = Vue.resource(`${root}/${boardId}/lists{/id}/issues`, {});
+    this.issues = Vue.resource(`${root}/${boardId}/lists{/id}/issues`, {}, {
+      bulkUpdate: {
+        method: 'POST',
+        url: bulkUpdatePath,
+      },
+    });
 
     Vue.http.interceptors.push((request, next) => {
       request.headers['X-CSRF-Token'] = $.rails.csrfToken();
@@ -77,6 +87,20 @@ class BoardService {
     return this.issues.save({ id }, {
       issue
     });
+  }
+
+  getBacklog(data) {
+    return this.boards.issues(data);
+  }
+
+  bulkUpdate(issueIds, extraData = {}) {
+    const data = {
+      update: Object.assign(extraData, {
+        issuable_ids: issueIds.join(','),
+      }),
+    };
+
+    return this.issues.bulkUpdate(data);
   }
 }
 

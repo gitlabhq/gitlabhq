@@ -77,7 +77,7 @@ class Repository
   # Return absolute path to repository
   def path_to_repo
     @path_to_repo ||= File.expand_path(
-      File.join(storage_path, path_with_namespace + ".git")
+      File.join(@project.repository_storage_path, path_with_namespace + ".git")
     )
   end
 
@@ -999,8 +999,8 @@ class Repository
         rugged.lookup(source)
       end
 
-    raise "Invalid merge target" if our_commit.nil?
-    raise "Invalid merge source" if their_commit.nil?
+    raise 'Invalid merge target' if our_commit.nil?
+    raise 'Invalid merge source' if their_commit.nil?
 
     GitOperationService.new(user, self).with_branch(
       target_branch) do |start_commit|

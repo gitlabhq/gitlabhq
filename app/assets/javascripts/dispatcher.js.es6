@@ -8,7 +8,6 @@
 /* global ShortcutsIssuable */
 /* global ZenMode */
 /* global Milestone */
-/* global GLForm */
 /* global IssuableForm */
 /* global LabelsSelect */
 /* global MilestoneSelect */
@@ -66,17 +65,6 @@
           new UsernameValidator();
           new ActiveTabMemoizer();
           break;
-        case 'sessions:create':
-          if (!gon.u2f) break;
-          window.gl.u2fAuthenticate = new gl.U2FAuthenticate(
-            $("#js-authenticate-u2f"),
-            '#js-login-u2f-form',
-            gon.u2f,
-            document.querySelector('#js-login-2fa-device'),
-            document.querySelector('.js-2fa-form'),
-          );
-          window.gl.u2fAuthenticate.start();
-          break;
         case 'projects:boards:show':
         case 'projects:boards:index':
           shortcut_handler = new ShortcutsNavigation();
@@ -112,7 +100,7 @@
         case 'projects:milestones:edit':
           new ZenMode();
           new gl.DueDateSelectors();
-          new GLForm($('.milestone-form'));
+          new gl.GLForm($('.milestone-form'));
           break;
         case 'groups:milestones:new':
           new ZenMode();
@@ -123,7 +111,7 @@
         case 'projects:issues:new':
         case 'projects:issues:edit':
           shortcut_handler = new ShortcutsNavigation();
-          new GLForm($('.issue-form'));
+          new gl.GLForm($('.issue-form'));
           new IssuableForm($('.issue-form'));
           new LabelsSelect();
           new MilestoneSelect();
@@ -134,7 +122,7 @@
         case 'projects:merge_requests:edit':
           new gl.Diff();
           shortcut_handler = new ShortcutsNavigation();
-          new GLForm($('.merge-request-form'));
+          new gl.GLForm($('.merge-request-form'));
           new IssuableForm($('.merge-request-form'));
           new LabelsSelect();
           new MilestoneSelect();
@@ -142,11 +130,11 @@
           break;
         case 'projects:tags:new':
           new ZenMode();
-          new GLForm($('.tag-form'));
+          new gl.GLForm($('.tag-form'));
           break;
         case 'projects:releases:edit':
           new ZenMode();
-          new GLForm($('.release-form'));
+          new gl.GLForm($('.release-form'));
           break;
         case 'projects:merge_requests:show':
           new gl.Diff();
@@ -290,6 +278,17 @@
           break;
       }
       switch (path.first()) {
+        case 'sessions':
+        case 'omniauth_callbacks':
+          if (!gon.u2f) break;
+          gl.u2fAuthenticate = new gl.U2FAuthenticate(
+            $('#js-authenticate-u2f'),
+            '#js-login-u2f-form',
+            gon.u2f,
+            document.querySelector('#js-login-2fa-device'),
+            document.querySelector('.js-2fa-form'),
+          );
+          gl.u2fAuthenticate.start();
         case 'admin':
           new Admin();
           switch (path[1]) {
@@ -345,7 +344,7 @@
               new gl.Wikis();
               shortcut_handler = new ShortcutsNavigation();
               new ZenMode();
-              new GLForm($('.wiki-form'));
+              new gl.GLForm($('.wiki-form'));
               break;
             case 'snippets':
               shortcut_handler = new ShortcutsNavigation();
@@ -370,7 +369,7 @@
       }
       // If we haven't installed a custom shortcut handler, install the default one
       if (!shortcut_handler) {
-        return new Shortcuts();
+        new Shortcuts();
       }
     };
 

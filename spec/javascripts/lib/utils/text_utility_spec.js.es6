@@ -21,5 +21,19 @@ require('~/lib/utils/text_utility');
         expect(largeFont > regular).toBe(true);
       });
     });
+
+    describe('gl.text.pluralize', () => {
+      it('returns pluralized', () => {
+        expect(gl.text.pluralize('test', 2)).toBe('tests');
+      });
+
+      it('returns pluralized when count is 0', () => {
+        expect(gl.text.pluralize('test', 0)).toBe('tests');
+      });
+
+      it('does not return pluralized', () => {
+        expect(gl.text.pluralize('test', 1)).toBe('test');
+      });
+    });
   });
 })();

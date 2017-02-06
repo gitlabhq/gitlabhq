@@ -1077,8 +1077,8 @@ describe User, models: true do
     let!(:project2) { create(:empty_project, forked_from_project: project3) }
     let!(:project3) { create(:empty_project) }
     let!(:merge_request) { create(:merge_request, source_project: project2, target_project: project3, author: subject) }
-    let!(:push_event) { create(:event, action: Event::PUSHED, project: project1, target: project1, author: subject) }
-    let!(:merge_event) { create(:event, action: Event::CREATED, project: project3, target: merge_request, author: subject) }
+    let!(:push_event) { create(:event, :pushed, project: project1, target: project1, author: subject) }
+    let!(:merge_event) { create(:event, :created, project: project3, target: merge_request, author: subject) }
 
     before do
       project1.team << [subject, :master]
@@ -1122,7 +1122,7 @@ describe User, models: true do
     let!(:push_data) do
       Gitlab::DataBuilder::Push.build_sample(project2, subject)
     end
-    let!(:push_event) { create(:event, action: Event::PUSHED, project: project2, target: project1, author: subject, data: push_data) }
+    let!(:push_event) { create(:event, :pushed, project: project2, target: project1, author: subject, data: push_data) }
 
     before do
       project1.team << [subject, :master]
@@ -1150,7 +1150,7 @@ describe User, models: true do
       expect(subject.recent_push(project2)).to eq(push_event)
 
       push_data1 = Gitlab::DataBuilder::Push.build_sample(project1, subject)
-      push_event1 = create(:event, action: Event::PUSHED, project: project1, target: project1, author: subject, data: push_data1)
+      push_event1 = create(:event, :pushed, project: project1, target: project1, author: subject, data: push_data1)
 
       expect(subject.recent_push([project1, project2])).to eq(push_event1) # Newest
     end

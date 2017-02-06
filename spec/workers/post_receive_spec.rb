@@ -74,13 +74,13 @@ describe PostReceive do
 
   context "webhook" do
     it "fetches the correct project" do
-      expect(Project).to receive(:find_with_namespace).with(project.path_with_namespace).and_return(project)
+      expect(Project).to receive(:find_by_full_path).with(project.path_with_namespace).and_return(project)
       PostReceive.new.perform(pwd(project), key_id, base64_changes)
     end
 
     it "triggers wiki index update" do
-      expect(Project).to receive(:find_with_namespace).with("#{project.path_with_namespace}.wiki").and_return(nil)
-      expect(Project).to receive(:find_with_namespace).with(project.path_with_namespace).and_return(project)
+      expect(Project).to receive(:find_by_full_path).with("#{project.full_path}.wiki").and_return(nil)
+      expect(Project).to receive(:find_by_full_path).with(project.full_path).and_return(project)
       stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
       expect_any_instance_of(ProjectWiki).to receive(:index_blobs)
 
@@ -100,7 +100,7 @@ describe PostReceive do
     end
 
     it "asks the project to trigger all hooks" do
-      allow(Project).to receive(:find_with_namespace).and_return(project)
+      allow(Project).to receive(:find_by_full_path).and_return(project)
       expect(project).to receive(:execute_hooks).twice
       expect(project).to receive(:execute_services).twice
 
@@ -108,7 +108,7 @@ describe PostReceive do
     end
 
     it "enqueues a UpdateMergeRequestsWorker job" do
-      allow(Project).to receive(:find_with_namespace).and_return(project)
+      allow(Project).to receive(:find_by_full_path).and_return(project)
       expect(UpdateMergeRequestsWorker).to receive(:perform_async).with(project.id, project.owner.id, any_args)
 
       PostReceive.new.perform(pwd(project), key_id, base64_changes)

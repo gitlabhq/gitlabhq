@@ -36,7 +36,7 @@ gem 'omniauth_crowd',         '~> 2.2.0'
 gem 'gssapi', group: :kerberos
 gem 'omniauth-authentiq',     '~> 0.2.0'
 gem 'rack-oauth2',            '~> 1.2.1'
-gem 'jwt'
+gem 'jwt',                    '~> 1.5.6'
 
 # Spam and anti-bot protection
 gem 'recaptcha', '~> 3.0', require: 'recaptcha/rails'
@@ -118,7 +118,7 @@ gem 'org-ruby',             '~> 0.9.12'
 gem 'creole',               '~> 0.5.0'
 gem 'wikicloth',            '0.8.1'
 gem 'asciidoctor',          '~> 1.5.2'
-gem 'asciidoctor-plantuml', '0.0.6'
+gem 'asciidoctor-plantuml', '0.0.7'
 gem 'rouge',                '~> 2.0'
 gem 'truncato',             '~> 0.7.8'
 
@@ -234,7 +234,6 @@ gem 'rack-proxy', '~> 0.6.0'
 gem 'sass-rails', '~> 5.0.6'
 gem 'coffee-rails', '~> 4.1.0'
 gem 'uglifier', '~> 2.7.2'
-gem 'gitlab-turbolinks-classic', '~> 2.5', '>= 2.5.6'
 
 gem 'addressable',        '~> 2.3.8'
 gem 'bootstrap-sass',     '~> 3.3.0'

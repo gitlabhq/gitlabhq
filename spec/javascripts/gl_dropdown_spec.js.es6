@@ -1,9 +1,9 @@
 /* eslint-disable comma-dangle, no-param-reassign, no-unused-expressions, max-len */
-/* global Turbolinks */
 
 require('~/gl_dropdown');
 require('~/lib/utils/common_utils');
 require('~/lib/utils/type_utility');
+require('~/lib/utils/url_utility');
 
 (() => {
   const NON_SELECTABLE_CLASSES = '.divider, .separator, .dropdown-header, .dropdown-menu-empty-link';
@@ -111,13 +111,13 @@ require('~/lib/utils/type_utility');
         expect(this.dropdownContainerElement).toHaveClass('open');
         const randomIndex = Math.floor(Math.random() * (this.projectsData.length - 1)) + 0;
         navigateWithKeys('down', randomIndex, () => {
-          spyOn(Turbolinks, 'visit').and.stub();
+          spyOn(gl.utils, 'visitUrl').and.stub();
           navigateWithKeys('enter', null, () => {
             expect(this.dropdownContainerElement).not.toHaveClass('open');
             const link = $(`${ITEM_SELECTOR}:eq(${randomIndex}) a`, this.$dropdownMenuElement);
             expect(link).toHaveClass('is-active');
             const linkedLocation = link.attr('href');
-            if (linkedLocation && linkedLocation !== '#') expect(Turbolinks.visit).toHaveBeenCalledWith(linkedLocation);
+            if (linkedLocation && linkedLocation !== '#') expect(gl.utils.visitUrl).toHaveBeenCalledWith(linkedLocation);
           });
         });
       });

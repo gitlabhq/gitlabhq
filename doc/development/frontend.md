@@ -23,6 +23,69 @@ some ideas with React.js as well as Angular.
 
 To get started with Vue, read through [their documentation][vue-docs].
 
+#### How to build a new feature with Vue.js
+**Components, Stores and Services**
+
+In some features implemented with Vue.js, like the [issue board][issue-boards]
+or [environments table][environments-table]
+you can find a clear separation of concerns:
+
+```
+new_feature
+├── components
+│   └── component.js.es6
+│   └── ...
+├── store
+│  └── new_feature_store.js.es6
+├── service
+│  └── new_feature_service.js.es6
+├── new_feature_bundle.js.es6
+```
+_For consistency purposes, we recommend you to follow the same structure._
+
+Let's look into each of them:
+
+**A `*_bundle.js` file**
+
+This is the index file of your new feature. This is where the root Vue instance
+of the new feature should be.
+
+Don't forget to follow [these steps.][page-specific-javascript]
+
+**A folder for Components**
+
+This folder holds all components that are specific of this new feature.
+If you need to use or create a component that will probably be used somewhere
+else, please refer to `vue_shared/components`.
+
+A good thumb rule to know when you should create a component is to think if
+it will be reusable elsewhere.
+
+For example, tables are used in a quite amount of places across GitLab, a table
+would be a good fit for a component.
+On the other hand, a table cell used only in on table, would not be a good use
+of this pattern.
+
+You can read more about components in Vue.js site, [Component System][component-system]
+
+**A folder for the Store**
+
+The Store is a simple object that allows us to manage the state in a single
+source of truth.
+
+The concept we are trying to follow is better explained by Vue documentation
+itself, please read this guide: [State Management][state-management]
+
+**A folder for the Service**
+
+The Service is used only to communicate with the server.
+It does not store or manipulate any data.
+We use [vue-resource][vue-resource-repo] to
+communicate with the server.
+
+The [issue boards service][issue-boards-service]
+is a good example of this pattern.
+
 ## Performance
 
 ### Resources
@@ -198,8 +261,8 @@ As long as the fixtures don't change, `rake teaspoon:tests` is sufficient
 
 If you need to debug your tests and/or application code while they're
 running, navigate to [localhost:3000/teaspoon](http://localhost:3000/teaspoon)
-in your browser, open DevTools, and run tests for individual files by clicking 
-on them. This is also much faster than setting up and running tests from the 
+in your browser, open DevTools, and run tests for individual files by clicking
+on them. This is also much faster than setting up and running tests from the
 command line.
 
 Please note: Not all of the frontend fixtures are generated. Some are still static
@@ -294,20 +357,27 @@ For our currently-supported browsers, see our [requirements][requirements].
 [xss]: https://en.wikipedia.org/wiki/Cross-site_scripting
 [scss-style-guide]: scss_styleguide.md
 [requirements]: ../install/requirements.md#supported-web-browsers
+[issue-boards]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/app/assets/javascripts/boards
+[environments-table]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/app/assets/javascripts/environments
+[page_specific_javascript]: https://docs.gitlab.com/ce/development/frontend.html#page-specific-javascript
+[component-system]: https://vuejs.org/v2/guide/#Composing-with-Components
+[state-management]: https://vuejs.org/v2/guide/state-management.html#Simple-State-Management-from-Scratch
+[vue-resource-repo]: https://github.com/pagekit/vue-resource
+[issue-boards-service]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/javascripts/boards/services/board_service.js.es6
 
 ## Gotchas
 
 ### Spec errors due to use of ES6 features in `.js` files
 
-If you see very generic JavaScript errors (e.g. `jQuery is undefined`) being 
-thrown in Teaspoon, Spinach, or Rspec tests but can't reproduce them manually, 
-you may have included `ES6`-style JavaScript in files that don't have the 
-`.js.es6` file extension. Either use ES5-friendly JavaScript or rename the file 
-you're working in (`git mv <file.js> <file.js.es6>`). 
+If you see very generic JavaScript errors (e.g. `jQuery is undefined`) being
+thrown in Teaspoon, Spinach, or Rspec tests but can't reproduce them manually,
+you may have included `ES6`-style JavaScript in files that don't have the
+`.js.es6` file extension. Either use ES5-friendly JavaScript or rename the file
+you're working in (`git mv <file.js> <file.js.es6>`).
 
 ### Spec errors due to use of unsupported JavaScript
 
-Similar errors will be thrown if you're using JavaScript features not yet 
+Similar errors will be thrown if you're using JavaScript features not yet
 supported by our test runner's version of webkit, whether or not you've updated
 the file extension. Examples of unsupported JavaScript features are:
 
@@ -322,20 +392,20 @@ the file extension. Examples of unsupported JavaScript features are:
 - Symbol/Symbol.iterator
 - Spread
 
-Until these are polyfilled or transpiled appropriately, they should not be used. 
-Please update this list with additional unsupported features or when any of 
+Until these are polyfilled or transpiled appropriately, they should not be used.
+Please update this list with additional unsupported features or when any of
 these are made usable.
 
 ### Spec errors due to JavaScript not enabled
 
-If, as a result of a change you've made, a feature now depends on JavaScript to 
+If, as a result of a change you've made, a feature now depends on JavaScript to
 run correctly, you need to make sure a JavaScript web driver is enabled when
-specs are run. If you don't you'll see vague error messages from the spec 
-runner, and an explosion of vague console errors in the HTML snapshot. 
+specs are run. If you don't you'll see vague error messages from the spec
+runner, and an explosion of vague console errors in the HTML snapshot.
 
-To enable a JavaScript driver in an `rspec` test, add `js: true` to the 
-individual spec or the context block containing multiple specs that need 
-JavaScript enabled: 
+To enable a JavaScript driver in an `rspec` test, add `js: true` to the
+individual spec or the context block containing multiple specs that need
+JavaScript enabled:
 
 ```ruby
 
@@ -354,8 +424,8 @@ describe "Admin::AbuseReports", js: true do
 end
 ```
 
-In Spinach, the JavaScript driver is enabled differently. In the `*.feature` 
-file for the failing spec, add the `@javascript` flag above the Scenario: 
+In Spinach, the JavaScript driver is enabled differently. In the `*.feature`
+file for the failing spec, add the `@javascript` flag above the Scenario:
 
 ```
 @javascript

@@ -8,6 +8,6 @@ class ProjectUrlConstrainer
       return false
     end
 
-    Project.find_with_namespace(full_path).present?
+    Project.find_by_full_path(full_path).present?
   end
 end

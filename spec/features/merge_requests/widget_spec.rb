@@ -10,31 +10,27 @@ describe 'Merge request', :feature, :js do
   before do
     project.team << [user, :master]
     login_as(user)
+
+    visit new_namespace_project_merge_request_path(
+      project.namespace,
+      project,
+      merge_request: {
+        source_project_id: project.id,
+        target_project_id: project.id,
+        source_branch: 'feature',
+        target_branch: 'master'
+      }
+    )
   end
 
-  context 'new merge request' do
-    before do
-      visit new_namespace_project_merge_request_path(
-        project.namespace,
-        project,
-        merge_request: {
-          source_project_id: project.id,
-          target_project_id: project.id,
-          source_branch: 'feature',
-          target_branch: 'master'
-        }
-      )
-    end
+  it 'shows widget status after creating new merge request' do
+    click_button 'Submit merge request'
 
-    it 'shows widget status after creating new merge request' do
-      click_button 'Submit merge request'
+    expect(find('.mr-state-widget')).to have_content('Checking ability to merge automatically')
 
-      expect(find('.mr-state-widget')).to have_content('Checking ability to merge automatically')
+    wait_for_ajax
 
-      wait_for_ajax
-
-      expect(page).to have_selector('.accept_merge_request')
-    end
+    expect(page).to have_selector('.accept_merge_request')
   end
 
   context 'view merge request' do

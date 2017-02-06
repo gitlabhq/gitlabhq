@@ -43,6 +43,7 @@
       BreakpointInstance.prototype.getBreakpointSize = function() {
         var $visibleDevice;
         $visibleDevice = this.visibleDevice;
+        // TODO: Consider refactoring in light of turbolinks removal.
         // the page refreshed via turbolinks
         if (!$visibleDevice().length) {
           this.setup();
