@@ -6,18 +6,22 @@ class Uniquify
   # If `base` is a function/proc, we expect that calling it with a
   # candidate counter returns a string to test/return.
   def string(base, exists_fn)
+    @base = base
     @counter = nil
 
-    if base.respond_to?(:call)
-      increment_counter! while exists_fn[base.call(@counter)]
-      base.call(@counter)
-    else
-      increment_counter! while exists_fn["#{base}#{@counter}"]
-      "#{base}#{@counter}"
-    end
+    increment_counter! while exists_fn[base_string]
+    base_string
   end
 
   private
+
+  def base_string
+    if @base.respond_to?(:call)
+      @base.call(@counter)
+    else
+      "#{@base}#{@counter}"
+    end
+  end
 
   def increment_counter!
     @counter = @counter ? @counter.next : 1
