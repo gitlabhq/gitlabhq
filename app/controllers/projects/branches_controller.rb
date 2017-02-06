@@ -1,8 +1,10 @@
 class Projects::BranchesController < Projects::ApplicationController
   include ActionView::Helpers::SanitizeHelper
   include SortingHelper
+  include ProjectsHelper
+
   # Authorize
-  before_action :require_non_empty_project
+  before_action :require_non_empty_project, except: :create
   before_action :authorize_download_code!
   before_action :authorize_push_code!, only: [:new, :create, :destroy, :destroy_all_merged]
 
@@ -32,6 +34,8 @@ class Projects::BranchesController < Projects::ApplicationController
     branch_name = sanitize(strip_tags(params[:branch_name]))
     branch_name = Addressable::URI.unescape(branch_name)
 
+    is_redirect_to_autodeploy_needed = project.empty_repo? && project.deployment_services.present?
+
     result = CreateBranchService.new(project, current_user).
         execute(branch_name, ref)
 
@@ -42,8 +46,16 @@ class Projects::BranchesController < Projects::ApplicationController
 
     if result[:status] == :success
       @branch = result[:branch]
-      redirect_to namespace_project_tree_path(@project.namespace, @project,
-                                              @branch.name)
+
+      if is_redirect_to_autodeploy_needed
+        redirect_to(
+          url_to_autodeploy_setup(project, branch_name),
+          notice: "Branch \"#{sanitize(branch_name)}\" was created. To set up auto deploy, \
+            choose a GitLab CI Yaml template and commit your changes. #{view_context.link_to_autodeploy_doc}".html_safe)
+      else
+        redirect_to namespace_project_tree_path(@project.namespace, @project,
+                                                @branch.name)
+      end
     else
       @error = result[:message]
       render action: 'new'
@@ -76,7 +88,7 @@ class Projects::BranchesController < Projects::ApplicationController
       ref_escaped = sanitize(strip_tags(params[:ref]))
       Addressable::URI.unescape(ref_escaped)
     else
-      @project.default_branch
+      @project.default_branch || 'master'
     end
   end
 end

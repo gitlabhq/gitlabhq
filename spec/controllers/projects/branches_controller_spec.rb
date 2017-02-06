@@ -68,7 +68,7 @@ describe Projects::BranchesController do
 
     describe "created from the new branch button on issues" do
       let(:branch) { "1-feature-branch" }
-      let!(:issue) { create(:issue, project: project) }
+      let(:issue) { create(:issue, project: project) }
 
       before do
         sign_in(user)
@@ -93,6 +93,49 @@ describe Projects::BranchesController do
           project_id: project.to_param,
           branch_name: branch,
           issue_iid: issue.iid
+      end
+
+      context 'repository-less project' do
+        let(:project) { create :empty_project }
+
+        it 'redirects to newly created branch' do
+          result = { status: :success, branch: double(name: branch) }
+
+          expect_any_instance_of(CreateBranchService).to receive(:execute).and_return(result)
+          expect(SystemNoteService).to receive(:new_issue_branch).and_return(true)
+
+          post :create,
+            namespace_id: project.namespace.to_param,
+            project_id: project.to_param,
+            branch_name: branch,
+            issue_iid: issue.iid
+
+          expect(response).to redirect_to namespace_project_tree_path(project.namespace, project, branch)
+        end
+
+        it 'redirects to autodeploy setup page' do
+          result = { status: :success, branch: double(name: branch) }
+
+          project.create_kubernetes_service(
+            active: true,
+            properties: {
+              namespace: project.path,
+              api_url: 'https://kubernetes.example.com',
+              token: 'a' * 40,
+            }
+          )
+
+          expect_any_instance_of(CreateBranchService).to receive(:execute).and_return(result)
+          expect(SystemNoteService).to receive(:new_issue_branch).and_return(true)
+
+          post :create,
+            namespace_id: project.namespace.to_param,
+            project_id: project.to_param,
+            branch_name: branch,
+            issue_iid: issue.iid
+
+          expect(response.location).to include(namespace_project_new_blob_path(project.namespace, project, branch))
+        end
       end
 
       context 'without issue feature access' do
