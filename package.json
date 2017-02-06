@@ -27,6 +27,7 @@
     "pikaday": "^1.5.1",
     "select2": "3.5.2-browserify",
     "stats-webpack-plugin": "^0.4.3",
+    "timeago.js": "^2.0.5",
     "underscore": "1.8.3",
     "vue": "2.0.3",
     "vue-resource": "0.9.3",
