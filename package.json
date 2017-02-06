@@ -1,12 +1,14 @@
 {
   "private": true,
   "scripts": {
-    "dev-server": "node_modules/.bin/webpack-dev-server --config config/webpack.config.js",
+    "dev-server": "webpack-dev-server --config config/webpack.config.js",
     "eslint": "eslint --max-warnings 0 --ext .js,.js.es6 .",
     "eslint-fix": "npm run eslint -- --fix",
     "eslint-report": "npm run eslint -- --format html --output-file ./eslint-report.html",
     "karma": "karma start config/karma.config.js --single-run",
-    "karma-start": "karma start config/karma.config.js"
+    "karma-start": "karma start config/karma.config.js",
+    "webpack": "webpack --config config/webpack.config.js",
+    "webpack-prod": "NODE_ENV=production npm run webpack"
   },
   "dependencies": {
     "babel": "^5.8.38",
