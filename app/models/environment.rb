@@ -110,15 +110,15 @@ class Environment < ActiveRecord::Base
     external_url.gsub(/\A.*?:\/\//, '')
   end
 
-  def can_run_stop_action?
+  def stop_action?
     available? && stop_action.present?
   end
 
-  def run_stop!(current_user)
+  def stop_with_action!(current_user)
     return unless available?
 
-    stop
-    stop_action.play(current_user)
+    stop!
+    stop_action.play(current_user) if stop_action
   end
 
   def actions_for(environment)

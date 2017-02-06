@@ -112,8 +112,8 @@ describe Environment, models: true do
     end
   end
 
-  describe '#can_run_stop_action?' do
-    subject { environment.can_run_stop_action? }
+  describe '#stoppable?' do
+    subject { environment.stoppable? }
 
     context 'when no other actions' do
       it { is_expected.to be_falsey }
@@ -142,10 +142,10 @@ describe Environment, models: true do
     end
   end
 
-  describe '#run_stop!' do
+  describe '#stop_with_action!' do
     let(:user) { create(:user) }
 
-    subject { environment.run_stop!(user) }
+    subject { environment.stop_with_action!(user) }
 
     before do
       expect(environment).to receive(:available?).and_call_original

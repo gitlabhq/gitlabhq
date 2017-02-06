@@ -54,7 +54,8 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   def stop
     return render_404 unless @environment.available?
 
-    stop_action = @environment.run_stop!(current_user)
+    stop_action = @environment.stop_with_action!(current_user)
+
     if stop_action
       redirect_to polymorphic_path([project.namespace.becomes(Namespace), project, stop_action])
     else

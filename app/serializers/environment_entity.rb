@@ -7,7 +7,7 @@ class EnvironmentEntity < Grape::Entity
   expose :external_url
   expose :environment_type
   expose :last_deployment, using: DeploymentEntity
-  expose :can_run_stop_action?
+  expose :stoppable?
 
   expose :environment_path do |environment|
     namespace_project_environment_path(
