@@ -1,4 +1,8 @@
 /* global Vue */
+const userFilter = require('./filters/user');
+const milestoneFilter = require('./filters/milestone');
+const labelFilter = require('./filters/label');
+
 module.exports = Vue.extend({
   name: 'modal-filters',
   props: {
@@ -19,9 +23,9 @@ module.exports = Vue.extend({
     gl.issueBoards.ModalStore.setDefaultFilter();
   },
   components: {
-    'user-filter': require('./filters/user'),
-    'milestone-filter': require('./filters/milestone'),
-    'label-filter': require('./filters/label'),
+    userFilter,
+    milestoneFilter,
+    labelFilter,
   },
   template: `
     <div class="modal-filters">
