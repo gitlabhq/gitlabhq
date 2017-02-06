@@ -11,7 +11,7 @@ module Ci
         describe 'code coverage regexp' do
           let(:config) do
             YAML.dump(rspec: { script: 'rspec',
-                               coverage: '/Code coverage: \d+\.\d+/'})
+                               coverage: '/Code coverage: \d+\.\d+/' })
           end
 
           it 'includes coverage regexp in build attributes' do
