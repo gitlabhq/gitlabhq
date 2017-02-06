@@ -15,9 +15,10 @@ module Geo
 
     def hook_data
       {
-        event_name: 'push',
+        event_name: 'repository_update',
         project_id: project.id,
-        project: project.hook_attrs
+        project: project.hook_attrs,
+        remote_url: project.ssh_url_to_repo
       }
     end
   end
