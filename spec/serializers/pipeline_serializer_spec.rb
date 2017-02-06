@@ -58,8 +58,8 @@ describe PipelineSerializer do
           let(:pagination) { { page: 1, per_page: 1 } }
 
           it 'raises error' do
-            expect { subject }
-              .to raise_error(PipelineSerializer::InvalidResourceError)
+            expect { subject }.to raise_error(
+              Gitlab::Serializer::Pagination::InvalidResourceError)
           end
         end
       end

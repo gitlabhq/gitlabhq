@@ -12,10 +12,11 @@ class PipelineSerializer < BaseSerializer
   end
 
   def represent(resource, opts = {})
-    if paginated?
-      raise InvalidResourceError unless resource.respond_to?(:page)
-
+    if resource.is_a?(ActiveRecord::Relation)
       resource = resource.includes(project: :namespace)
+    end
+
+    if paginated?
       super(@paginator.paginate(resource), opts)
     else
       super(resource, opts)
