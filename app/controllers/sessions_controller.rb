@@ -67,10 +67,12 @@ class SessionsController < Devise::SessionsController
   end
 
   def find_user
-    if session[:otp_user_id]
-      User.find(session[:otp_user_id])
-    elsif user_params[:login]
-      User.by_login(user_params[:login])
+    Gitlab::Auth::UniqueIpsLimiter.limit_user! do
+      if session[:otp_user_id]
+        User.find(session[:otp_user_id])
+      elsif user_params[:login]
+        User.by_login(user_params[:login])
+      end
     end
   end
 
