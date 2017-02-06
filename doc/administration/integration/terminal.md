@@ -71,5 +71,15 @@ When these headers are not passed through, Workhorse will return a
 `400 Bad Request` response to users attempting to use a web terminal. In turn,
 they will receive a `Connection failed` message.
 
+## Limiting WebSocket connection time
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8413)
+in GitLab 8.17.
+
+Terminal sessions use long-lived connections; by default, these may last
+forever. You can configure a maximum session time in the Admin area of your
+GitLab instance if you find this undesirable from a scalability or security
+point of view.
+
 [ce-7690]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7690
 [kubservice]: ../../user/project/integrations/kubernetes.md)
