@@ -24,28 +24,28 @@ module API
         end
 
         desc 'Get all project snippets' do
-          success Entities::ProjectSnippetV3
+          success ::API::V3::Entities::ProjectSnippet
         end
         params do
           use :pagination
         end
         get ":id/snippets" do
-          present paginate(snippets_for_current_user), with: Entities::ProjectSnippetV3
+          present paginate(snippets_for_current_user), with: ::API::V3::Entities::ProjectSnippet
         end
 
         desc 'Get a single project snippet' do
-          success Entities::ProjectSnippetV3
+          success ::API::V3::Entities::ProjectSnippet
         end
         params do
           requires :snippet_id, type: Integer, desc: 'The ID of a project snippet'
         end
         get ":id/snippets/:snippet_id" do
           snippet = snippets_for_current_user.find(params[:snippet_id])
-          present snippet, with: Entities::ProjectSnippetV3
+          present snippet, with: ::API::V3::Entities::ProjectSnippet
         end
 
         desc 'Create a new project snippet' do
-          success Entities::ProjectSnippetV3
+          success ::API::V3::Entities::ProjectSnippet
         end
         params do
           requires :title, type: String, desc: 'The title of the snippet'
@@ -65,14 +65,14 @@ module API
           snippet = CreateSnippetService.new(user_project, current_user, snippet_params).execute
 
           if snippet.persisted?
-            present snippet, with: Entities::ProjectSnippetV3
+            present snippet, with: ::API::V3::Entities::ProjectSnippet
           else
             render_validation_error!(snippet)
           end
         end
 
         desc 'Update an existing project snippet' do
-          success Entities::ProjectSnippetV3
+          success ::API::V3::Entities::ProjectSnippet
         end
         params do
           requires :snippet_id, type: Integer, desc: 'The ID of a project snippet'
@@ -99,7 +99,7 @@ module API
                                    snippet_params).execute
 
           if snippet.persisted?
-            present snippet, with: Entities::ProjectSnippetV3
+            present snippet, with: ::API::V3::Entities::ProjectSnippet
           else
             render_validation_error!(snippet)
           end

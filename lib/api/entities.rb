@@ -694,19 +694,5 @@ module API
       expose :id, :message, :starts_at, :ends_at, :color, :font
       expose :active?, as: :active
     end
-
-    # Entities for the deprecated V3 API
-    class ProjectSnippetV3 < Grape::Entity
-      expose :id, :title, :file_name
-      expose :author, using: Entities::UserBasic
-      expose :updated_at, :created_at
-
-      # TODO (rspeicher): Deprecated; remove in 9.0
-      expose(:expires_at) { |snippet| nil }
-
-      expose :web_url do |snippet, options|
-        Gitlab::UrlBuilder.build(snippet)
-      end
-    end
   end
 end
