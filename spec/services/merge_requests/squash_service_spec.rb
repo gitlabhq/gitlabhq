@@ -7,7 +7,7 @@ describe MergeRequests::SquashService do
 
   let(:merge_request) do
     create(:merge_request,
-           source_branch: 'fix', source_project: project,
+           source_branch: 'video', source_project: project,
            target_branch: 'master', target_project: project)
   end
 
@@ -15,13 +15,6 @@ describe MergeRequests::SquashService do
     create(:merge_request,
            source_branch: 'feature.custom-highlighting', source_project: project,
            target_branch: 'master', target_project: project)
-  end
-
-  def git_command(command)
-    a_collection_starting_with([Gitlab.config.git.bin_path, command])
-  end
-
-  shared_examples 'the squashed commit' do
   end
 
   describe '#execute' do
@@ -66,7 +59,9 @@ describe MergeRequests::SquashService do
 
           expect(squash_commit.author_name).to eq(diff_head_commit.author_name)
           expect(squash_commit.author_email).to eq(diff_head_commit.author_email)
-          expect(squash_commit.message).to eq(diff_head_commit.message)
+
+          # The commit message on the 'real' commit doesn't have a trailing newline
+          expect(squash_commit.message.chomp).to eq(diff_head_commit.message)
         end
 
         it 'sets the current user as the committer' do
@@ -87,7 +82,7 @@ describe MergeRequests::SquashService do
 
     stages = {
       'add worktree for squash' => 'worktree',
-      'apply patch' => 'apply',
+      'apply patch' => 'diff --binary',
       'commit squashed changes' => 'commit',
       'get SHA of squashed commit' => 'rev-parse'
     }
@@ -97,8 +92,14 @@ describe MergeRequests::SquashService do
         let(:error) { 'A test error' }
 
         before do
+          git_command = a_collection_containing_exactly(
+            a_string_starting_with("#{Gitlab.config.git.bin_path} #{command}")
+          ).or(
+            a_collection_starting_with([Gitlab.config.git.bin_path, command])
+          )
+
           allow(service).to receive(:popen).and_return(['', 0])
-          allow(service).to receive(:popen).with(git_command(command), anything, anything).and_return([error, 1])
+          allow(service).to receive(:popen).with(git_command, anything, anything).and_return([error, 1])
         end
 
         it 'logs the stage and output' do

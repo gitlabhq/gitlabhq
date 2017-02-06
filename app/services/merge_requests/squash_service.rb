@@ -29,9 +29,15 @@ module MergeRequests
         'add worktree for squash'
       )
 
-      run_git_command(%w(apply --cached), tree_path, git_env, 'apply patch') do |stdin|
-        stdin.puts(merge_request_to_patch)
-      end
+      diff = git_command(%W(diff --binary #{merge_request.diff_start_sha}...#{merge_request.diff_head_sha}))
+      apply = git_command(%w(apply --index))
+
+      run_command(
+        ["#{diff.join(' ')} | #{apply.join(' ')}"],
+        tree_path,
+        git_env,
+        'apply patch'
+      )
 
       run_git_command(
         %W(commit -C #{merge_request.diff_head_sha}),
@@ -60,10 +66,6 @@ module MergeRequests
 
     def tree_path
       @tree_path ||= merge_request.squash_dir_path
-    end
-
-    def merge_request_to_patch
-      @merge_request_to_patch ||= rugged.diff(merge_request.diff_base_sha, merge_request.diff_head_sha).patch
     end
   end
 end
