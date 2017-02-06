@@ -1,6 +1,6 @@
 /* eslint-disable space-before-function-paren, no-var */
 
-/*= require behaviors/requires_input */
+require('~/behaviors/requires_input');
 
 (function() {
   describe('requiresInput', function() {
@@ -33,12 +33,6 @@
       $('#required4').val('input4').change();
       $('#required5').val('1').change();
       return expect($('.submit')).not.toBeDisabled();
-    });
-    return it('is called on page:load event', function() {
-      var spy;
-      spy = spyOn($.fn, 'requiresInput');
-      $(document).trigger('page:load');
-      return expect(spy).toHaveBeenCalled();
     });
   });
 }).call(this);

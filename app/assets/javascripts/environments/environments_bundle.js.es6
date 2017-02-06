@@ -1,7 +1,8 @@
-//= require vue
-//= require_tree ./stores/
-//= require ./components/environment
-//= require ./vue_resource_interceptor
+window.Vue = require('vue');
+
+require('./stores/environments_store');
+require('./components/environment');
+require('./vue_resource_interceptor');
 
 $(() => {
   window.gl = window.gl || {};

@@ -9,7 +9,7 @@ class List {
     this.position = obj.position;
     this.title = obj.title;
     this.type = obj.list_type;
-    this.preset = ['backlog', 'done', 'blank'].indexOf(this.type) > -1;
+    this.preset = ['done', 'blank'].indexOf(this.type) > -1;
     this.filters = gl.issueBoards.BoardsStore.state.filters;
     this.page = 1;
     this.loading = true;

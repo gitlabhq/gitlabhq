@@ -2,17 +2,15 @@
 /* global IssuableContext */
 /* global LabelsSelect */
 
-//= require lib/utils/type_utility
-//= require jquery
-//= require bootstrap
-//= require gl_dropdown
-//= require select2
-//= require jquery.nicescroll
-//= require api
-//= require create_label
-//= require issuable_context
-//= require users_select
-//= require labels_select
+require('~/lib/utils/type_utility');
+require('~/gl_dropdown');
+require('select2');
+require('vendor/jquery.nicescroll');
+require('~/api');
+require('~/create_label');
+require('~/issuable_context');
+require('~/users_select');
+require('~/labels_select');
 
 (() => {
   let saveLabelCount = 0;

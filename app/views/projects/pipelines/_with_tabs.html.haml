@@ -5,7 +5,7 @@
         Pipeline
     %li.js-builds-tab-link
       = link_to builds_namespace_project_pipeline_path(@project.namespace, @project, @pipeline), data: {target: 'div#js-tab-builds', action: 'builds', toggle: 'tab' }, class: 'builds-tab' do
-        Builds
+        Jobs
         %span.badge.js-builds-counter= pipeline.statuses.count
 
 
@@ -33,7 +33,7 @@
         %thead
           %tr
             %th Status
-            %th Build ID
+            %th Job ID
             %th Name
             %th
             - if pipeline.project.build_coverage_enabled?

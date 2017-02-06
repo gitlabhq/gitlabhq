@@ -6,6 +6,7 @@ describe 'Issue Boards new issue', feature: true, js: true do
 
   let(:project) { create(:empty_project, :public) }
   let(:board)   { create(:board, project: project) }
+  let!(:list)   { create(:list, board: board, position: 0) }
   let(:user)    { create(:user) }
 
   context 'authorized user' do
@@ -17,7 +18,7 @@ describe 'Issue Boards new issue', feature: true, js: true do
       visit namespace_project_board_path(project.namespace, project, board)
       wait_for_vue_resource
 
-      expect(page).to have_selector('.board', count: 3)
+      expect(page).to have_selector('.board', count: 2)
     end
 
     it 'displays new issue button' do
@@ -25,7 +26,7 @@ describe 'Issue Boards new issue', feature: true, js: true do
     end
 
     it 'does not display new issue button in done list' do
-      page.within('.board:nth-child(3)') do
+      page.within('.board:nth-child(2)') do
         expect(page).not_to have_selector('.board-issue-count-holder .btn')
       end
     end

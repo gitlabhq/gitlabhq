@@ -1,13 +1,12 @@
 # Web terminals
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7690)
-in GitLab 8.15. Only project masters and owners can access web terminals.
+> [Introduced][ce-7690] in GitLab 8.15. Only project masters and owners can
+  access web terminals.
 
-With the introduction of the [Kubernetes](../../project_services/kubernetes.md)
-project service, GitLab gained the ability to store and use credentials for a
-Kubernetes cluster. One of the things it uses these credentials for is providing
-access to [web terminals](../../ci/environments.html#web-terminals)
-for environments.
+With the introduction of the [Kubernetes project service][kubservice], GitLab
+gained the ability to store and use credentials for a Kubernetes cluster. One
+of the things it uses these credentials for is providing access to
+[web terminals](../../ci/environments.html#web-terminals) for environments.
 
 ## How it works
 
@@ -71,3 +70,6 @@ by the above guides.
 When these headers are not passed through, Workhorse will return a
 `400 Bad Request` response to users attempting to use a web terminal. In turn,
 they will receive a `Connection failed` message.
+
+[ce-7690]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7690
+[kubservice]: ../../user/project/integrations/kubernetes.md)

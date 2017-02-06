@@ -4,6 +4,7 @@ describe API::ProjectSnippets, api: true do
   include ApiHelpers
 
   let(:project) { create(:empty_project, :public) }
+  let(:user) { create(:user) }
   let(:admin) { create(:admin) }
 
   describe 'GET /projects/:project_id/snippets/:id' do
@@ -22,7 +23,7 @@ describe API::ProjectSnippets, api: true do
     let(:user) { create(:user) }
 
     it 'returns all snippets available to team member' do
-      project.team << [user, :developer]
+      project.add_developer(user)
       public_snippet = create(:project_snippet, :public, project: project)
       internal_snippet = create(:project_snippet, :internal, project: project)
       private_snippet = create(:project_snippet, :private, project: project)
@@ -50,7 +51,7 @@ describe API::ProjectSnippets, api: true do
         title: 'Test Title',
         file_name: 'test.rb',
         code: 'puts "hello world"',
-        visibility_level: Gitlab::VisibilityLevel::PUBLIC
+        visibility_level: Snippet::PUBLIC
       }
     end
 
@@ -71,6 +72,51 @@ describe API::ProjectSnippets, api: true do
       post api("/projects/#{project.id}/snippets/", admin), params
 
       expect(response).to have_http_status(400)
+    end
+
+    context 'when the snippet is spam' do
+      def create_snippet(project, snippet_params = {})
+        project.add_developer(user)
+
+        post api("/projects/#{project.id}/snippets", user), params.merge(snippet_params)
+      end
+
+      before do
+        allow_any_instance_of(AkismetService).to receive(:is_spam?).and_return(true)
+      end
+
+      context 'when the project is private' do
+        let(:private_project) { create(:project_empty_repo, :private) }
+
+        context 'when the snippet is public' do
+          it 'creates the snippet' do
+            expect { create_snippet(private_project, visibility_level: Snippet::PUBLIC) }.
+              to change { Snippet.count }.by(1)
+          end
+        end
+      end
+
+      context 'when the project is public' do
+        context 'when the snippet is private' do
+          it 'creates the snippet' do
+            expect { create_snippet(project, visibility_level: Snippet::PRIVATE) }.
+              to change { Snippet.count }.by(1)
+          end
+        end
+
+        context 'when the snippet is public' do
+          it 'rejects the shippet' do
+            expect { create_snippet(project, visibility_level: Snippet::PUBLIC) }.
+              not_to change { Snippet.count }
+            expect(response).to have_http_status(400)
+          end
+
+          it 'creates a spam log' do
+            expect { create_snippet(project, visibility_level: Snippet::PUBLIC) }.
+              to change { SpamLog.count }.by(1)
+          end
+        end
+      end
     end
   end
 

@@ -1,6 +1,6 @@
 /* eslint-disable no-new, guard-for-in, no-restricted-syntax, no-continue, no-param-reassign, max-len */
 
-//= require lib/utils/bootstrap_linked_tabs
+require('./lib/utils/bootstrap_linked_tabs');
 
 ((global) => {
   class Pipelines {

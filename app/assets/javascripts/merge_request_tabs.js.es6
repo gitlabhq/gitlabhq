@@ -1,11 +1,11 @@
 /* eslint-disable no-new, class-methods-use-this */
 /* global Breakpoints */
 /* global Cookies */
-/* global DiffNotesApp */
 /* global Flash */
 
-/*= require js.cookie */
-/*= require breakpoints */
+require('./breakpoints');
+window.Cookies = require('vendor/js.cookie');
+require('./flash');
 
 /* eslint-disable max-len */
 // MergeRequestTabs
@@ -184,12 +184,13 @@
       // Ensure parameters and hash come along for the ride
       newState += location.search + location.hash;
 
+      // TODO: Consider refactoring in light of turbolinks removal.
+
       // Replace the current history state with the new one without breaking
       // Turbolinks' history.
       //
       // See https://github.com/rails/turbolinks/issues/363
       window.history.replaceState({
-        turbolinks: true,
         url: newState,
       }, document.title, newState);
 

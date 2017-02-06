@@ -1,5 +1,6 @@
-/*= require vue */
 /* global Vue */
+
+window.Vue = require('vue');
 
 (() => {
   window.gl = window.gl || {};

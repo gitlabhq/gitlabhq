@@ -2,9 +2,9 @@
 /* global Vue */
 /* global Sortable */
 
-//= require ./board_blank_state
-//= require ./board_delete
-//= require ./board_list
+require('./board_blank_state');
+require('./board_delete');
+require('./board_list');
 
 (() => {
   const Store = gl.issueBoards.BoardsStore;
@@ -22,7 +22,8 @@
     props: {
       list: Object,
       disabled: Boolean,
-      issueLinkBase: String
+      issueLinkBase: String,
+      rootPath: String,
     },
     data () {
       return {

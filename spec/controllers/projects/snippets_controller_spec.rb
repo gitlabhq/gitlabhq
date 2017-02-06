@@ -6,8 +6,8 @@ describe Projects::SnippetsController do
   let(:user2)   { create(:user) }
 
   before do
-    project.team << [user, :master]
-    project.team << [user2, :master]
+    project.add_master(user)
+    project.add_master(user2)
   end
 
   describe 'GET #index' do
@@ -66,6 +66,86 @@ describe Projects::SnippetsController do
           expect(response).to have_http_status(200)
         end
       end
+    end
+  end
+
+  describe 'POST #create' do
+    def create_snippet(project, snippet_params = {})
+      sign_in(user)
+
+      project.add_developer(user)
+
+      post :create, {
+        namespace_id: project.namespace.to_param,
+        project_id: project.to_param,
+        project_snippet: { title: 'Title', content: 'Content' }.merge(snippet_params)
+      }
+    end
+
+    context 'when the snippet is spam' do
+      before do
+        allow_any_instance_of(AkismetService).to receive(:is_spam?).and_return(true)
+      end
+
+      context 'when the project is private' do
+        let(:private_project) { create(:project_empty_repo, :private) }
+
+        context 'when the snippet is public' do
+          it 'creates the snippet' do
+            expect { create_snippet(private_project, visibility_level: Snippet::PUBLIC) }.
+              to change { Snippet.count }.by(1)
+          end
+        end
+      end
+
+      context 'when the project is public' do
+        context 'when the snippet is private' do
+          it 'creates the snippet' do
+            expect { create_snippet(project, visibility_level: Snippet::PRIVATE) }.
+              to change { Snippet.count }.by(1)
+          end
+        end
+
+        context 'when the snippet is public' do
+          it 'rejects the shippet' do
+            expect { create_snippet(project, visibility_level: Snippet::PUBLIC) }.
+              not_to change { Snippet.count }
+            expect(response).to render_template(:new)
+          end
+
+          it 'creates a spam log' do
+            expect { create_snippet(project, visibility_level: Snippet::PUBLIC) }.
+              to change { SpamLog.count }.by(1)
+          end
+        end
+      end
+    end
+  end
+
+  describe 'POST #mark_as_spam' do
+    let(:snippet) { create(:project_snippet, :private, project: project, author: user) }
+
+    before do
+      allow_any_instance_of(AkismetService).to receive_messages(submit_spam: true)
+      stub_application_setting(akismet_enabled: true)
+    end
+
+    def mark_as_spam
+      admin = create(:admin)
+      create(:user_agent_detail, subject: snippet)
+      project.add_master(admin)
+      sign_in(admin)
+
+      post :mark_as_spam,
+           namespace_id: project.namespace.path,
+           project_id: project.path,
+           id: snippet.id
+    end
+
+    it 'updates the snippet' do
+      mark_as_spam
+
+      expect(snippet.reload).not_to be_submittable_as_spam
     end
   end
 

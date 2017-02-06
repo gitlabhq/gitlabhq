@@ -1,19 +1,17 @@
 /* global Vue, environment */
 
-//= require vue
-//= require vue-resource
-//= require flash
-//= require environments/stores/environments_store
-//= require environments/components/environment
-//= require ./mock_data
+require('~/flash');
+require('~/environments/stores/environments_store');
+require('~/environments/components/environment');
+require('./mock_data');
 
 describe('Environment', () => {
-  preloadFixtures('environments/environments');
+  preloadFixtures('static/environments/environments.html.raw');
 
   let component;
 
   beforeEach(() => {
-    loadFixtures('environments/environments');
+    loadFixtures('static/environments/environments.html.raw');
   });
 
   describe('successfull request', () => {
