@@ -159,6 +159,7 @@
   .cur {
     .avatar {
       border: 1px solid $white-light;
+      @include disableAllAnimation;
     }
   }
 }

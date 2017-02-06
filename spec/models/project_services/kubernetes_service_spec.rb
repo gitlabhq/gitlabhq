@@ -181,10 +181,22 @@ describe KubernetesService, models: true, caching: true do
       let(:pod) { kube_pod(app: environment.slug) }
       let(:terminals) { kube_terminals(service, pod) }
 
-      it 'returns terminals' do
-        stub_reactive_cache(service, pods: [ pod, pod, kube_pod(app: "should-be-filtered-out") ])
+      before do
+        stub_reactive_cache(
+          service,
+          pods: [ pod, pod, kube_pod(app: "should-be-filtered-out") ]
+        )
+      end
 
+      it 'returns terminals' do
         is_expected.to eq(terminals + terminals)
+      end
+
+      it 'uses max session time from settings' do
+        stub_application_setting(terminal_max_session_time: 600)
+
+        times = subject.map { |terminal| terminal[:max_session_time] }
+        expect(times).to eq [600, 600, 600, 600]
       end
     end
   end

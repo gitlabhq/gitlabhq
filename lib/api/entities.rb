@@ -575,6 +575,7 @@ module API
       expose :koding_url
       expose :plantuml_enabled
       expose :plantuml_url
+      expose :terminal_max_session_time
     end
 
     class Release < Grape::Entity

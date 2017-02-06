@@ -109,6 +109,7 @@ ActiveRecord::Schema.define(version: 20170204181513) do
     t.boolean "html_emails_enabled", default: true
     t.string "plantuml_url"
     t.boolean "plantuml_enabled"
+    t.integer "terminal_max_session_time", default: 0, null: false
   end
 
   create_table "audit_events", force: :cascade do |t|

@@ -49,8 +49,8 @@ var config = {
   module: {
     loaders: [
       {
-        test: /\.es6$/,
-        exclude: /node_modules/,
+        test: /\.(js|es6)$/,
+        exclude: /(node_modules|vendor\/assets)/,
         loader: 'babel-loader',
         query: {
           // 'use strict' was broken in sprockets-es6 due to sprockets concatination method.

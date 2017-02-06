@@ -111,6 +111,10 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             numericality: { only_integer: true, greater_than: :housekeeping_full_repack_period }
 
+  validates :terminal_max_session_time,
+            presence: true,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
   validates_each :restricted_visibility_levels do |record, attr, value|
     unless value.nil?
       value.each do |level|
@@ -204,7 +208,8 @@ class ApplicationSetting < ActiveRecord::Base
       signin_enabled: Settings.gitlab['signin_enabled'],
       signup_enabled: Settings.gitlab['signup_enabled'],
       two_factor_grace_period: 48,
-      user_default_external: false
+      user_default_external: false,
+      terminal_max_session_time: 0
     }
   end
 

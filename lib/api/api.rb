@@ -1,7 +1,12 @@
 module API
   class API < Grape::API
     include APIGuard
-    version 'v3', using: :path
+
+    version %w(v3 v4), using: :path
+
+    version 'v3', using: :path do
+      mount ::API::V3::Projects
+    end
 
     before { allow_access_with_scope :api }
 
