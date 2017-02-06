@@ -237,8 +237,9 @@ describe "Admin::Users", feature: true do
 
       it "changes account type to be auditor" do
         user.reload
-        expect(user.is_admin?).to be_falsey
-        expect(user.is_auditor?).to be_truthy
+
+        expect(user).not_to be_admin
+        expect(user).to be_auditor
       end
     end
 

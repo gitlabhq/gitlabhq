@@ -40,49 +40,8 @@
           = f.label :password_confirmation, class: 'control-label'
           .col-sm-10= f.password_field :password_confirmation, disabled: f.object.force_random_password, class: 'form-control'
 
-    %fieldset
-      %legend Access
-      .form-group
-        = f.label :projects_limit, class: 'control-label'
-        .col-sm-10= f.number_field :projects_limit, min: 0, class: 'form-control'
+    = render partial: 'access_levels_ee', locals: { f: f }
 
-      .form-group
-        = f.label :can_create_group, class: 'control-label'
-        .col-sm-10= f.check_box :can_create_group
-
-      .form-group
-        = f.label :admin, class: 'control-label'
-        .col-sm-10
-          = f.radio_button :access_level, :regular, checked: true
-          = label_tag :regular do
-            Regular
-          %p.light
-            Regular users have access to their groups and projects
-          - if license_allows_auditor_user?
-            = f.radio_button :access_level, :auditor
-            = label_tag :auditor do
-              Audit
-            %p.light
-              Auditors have read-only access to all groups, projects and users
-          - if current_user == @user
-            = f.radio_button :access_level, :admin
-            = label_tag :admin do
-              Admin
-            %p.light
-              You cannot remove your own admin rights
-          - else
-            = f.radio_button :access_level, :admin
-            = label_tag :admin do
-              Admin
-            %p.light
-              Administrators have access to all groups, projects and users and can manage all features in this installation
-      .form-group
-        = f.label :external, class: 'control-label'
-        .col-sm-10
-          = f.check_box :external do
-            External
-          %p.light
-            External users cannot see internal or private projects unless access is explicitly granted. Also, external users cannot create projects or groups.
     %fieldset
       %legend Profile
       .form-group

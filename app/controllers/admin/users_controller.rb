@@ -175,6 +175,7 @@ class Admin::UsersController < Admin::ApplicationController
 
   def user_params_ce
     [
+      :admin,
       :avatar,
       :bio,
       :can_create_group,
