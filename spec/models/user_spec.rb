@@ -1422,4 +1422,37 @@ describe User, models: true do
       expect(user.project_authorizations.where(access_level: Gitlab::Access::REPORTER).exists?).to eq(true)
     end
   end
+
+  describe '#access_level=' do
+    let(:user) { build(:user) }
+
+    it 'does nothing for an invalid access level' do
+      user.access_level = :invalid_access_level
+
+      expect(user.access_level).to eq(:regular)
+      expect(user.admin).to be false
+    end
+
+    it "assigns the 'admin' access level" do
+      user.access_level = :admin
+
+      expect(user.access_level).to eq(:admin)
+      expect(user.admin).to be true
+    end
+
+    it "doesn't clear existing access levels when an invalid access level is passed in" do
+      user.access_level = :admin
+      user.access_level = :invalid_access_level
+
+      expect(user.access_level).to eq(:admin)
+      expect(user.admin).to be true
+    end
+
+    it "accepts string values in addition to symbols" do
+      user.access_level = 'admin'
+
+      expect(user.access_level).to eq(:admin)
+      expect(user.admin).to be true
+    end
+  end
 end

@@ -11,18 +11,27 @@
   .form-group
     = f.label :access_level, class: 'control-label'
     .col-sm-10
-      = f.radio_button :access_level, :regular, disabled: (current_user == @user && @user.is_admin?)
+      - editing_current_user = (current_user == @user)
+
+      = f.radio_button :access_level, :regular, disabled: editing_current_user
       = label_tag :regular do
         Regular
       %p.light
         Regular users have access to their groups and projects
-      = f.radio_button :access_level, :admin
+
+      = f.radio_button :access_level, :admin, disabled: editing_current_user
       = label_tag :admin do
         Admin
       %p.light
         Administrators have access to all groups, projects and users and can manage all features in this installation
+      - if editing_current_user
+        %p.light
+          You cannot remove your own admin rights.
 
   .form-group
     = f.label :external, class: 'control-label'
-    .col-sm-10= f.check_box :external
-    .col-sm-10 External users cannot see internal or private projects unless access is explicitly granted. Also, external users cannot create projects or groups.
+    .col-sm-10
+      = f.check_box :external do
+        External
+      %p.light
+        External users cannot see internal or private projects unless access is explicitly granted. Also, external users cannot create projects or groups.
