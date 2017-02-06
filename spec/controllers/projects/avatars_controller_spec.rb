@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Projects::AvatarsController do
-  let(:project) { create(:project, avatar: fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "image/png")) }
+  let(:project) { create(:empty_project, avatar: fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "image/png")) }
   let(:user)    { create(:user) }
 
   before do

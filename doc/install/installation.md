@@ -124,7 +124,7 @@ Download Ruby and compile it:
 
     mkdir /tmp/ruby && cd /tmp/ruby
     curl --remote-name --progress https://cache.ruby-lang.org/pub/ruby/2.3/ruby-2.3.3.tar.gz
-    echo '1014ee699071aa2ddd501907d18cbe15399c997d ruby-2.3.3.tar.gz' | shasum -c - && tar xzf ruby-2.3.3.tar.gz
+    echo '1014ee699071aa2ddd501907d18cbe15399c997d  ruby-2.3.3.tar.gz' | shasum -c - && tar xzf ruby-2.3.3.tar.gz
     cd ruby-2.3.3
     ./configure --disable-install-rdoc
     make
@@ -448,7 +448,7 @@ Check if GitLab and its environment are configured correctly:
 
 ### Compile Assets
 
-    sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production
+    sudo -u git -H bundle exec rake gitlab:assets:compile RAILS_ENV=production
 
 ### Start Your GitLab Instance
 

@@ -4,7 +4,7 @@ describe 'cycle analytics events' do
   include ApiHelpers
 
   let(:user) { create(:user) }
-  let(:project) { create(:project, public_builds: false) }
+  let(:project) { create(:project, :repository, public_builds: false) }
   let(:issue) {  create(:issue, project: project, created_at: 2.days.ago) }
 
   describe 'GET /:namespace/:project/cycle_analytics/events/issues' do
@@ -13,7 +13,12 @@ describe 'cycle analytics events' do
 
       allow_any_instance_of(Gitlab::ReferenceExtractor).to receive(:issues).and_return([issue])
 
-      3.times { create_cycle }
+      3.times do |count|
+        Timecop.freeze(Time.now + count.days) do
+          create_cycle
+        end
+      end
+
       deploy_master
 
       login_as(user)

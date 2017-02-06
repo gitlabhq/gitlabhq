@@ -25,6 +25,11 @@ feature 'Login', feature: true do
 
       expect(current_path).to eq root_path
     end
+
+    it 'does not show flash messages when login page' do
+      visit root_path
+      expect(page).not_to have_content('You need to sign in or sign up before continuing.')
+    end
   end
 
   describe 'with two-factor authentication' do

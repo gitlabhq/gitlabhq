@@ -410,6 +410,15 @@ Settings['gitaly'] ||= Settingslogic.new({})
 Settings.gitaly['socket_path'] ||= ENV['GITALY_SOCKET_PATH']
 
 #
+# Webpack settings
+#
+Settings['webpack'] ||= Settingslogic.new({})
+Settings.webpack['dev_server'] ||= Settingslogic.new({})
+Settings.webpack.dev_server['enabled'] ||= false
+Settings.webpack.dev_server['host']    ||= 'localhost'
+Settings.webpack.dev_server['port']    ||= 3808
+
+#
 # Testing settings
 #
 if Rails.env.test?
@@ -419,10 +428,4 @@ if Rails.env.test?
 end
 
 # Force a refresh of application settings at startup
-begin
-  ApplicationSetting.expire
-  Ci::ApplicationSetting.expire
-rescue
-  # Gracefully handle when Redis is not available. For example,
-  # omnibus may fail here during assets:precompile.
-end
+ApplicationSetting.expire

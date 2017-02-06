@@ -1,11 +1,11 @@
 require 'spec_helper'
 
 describe Gitlab::ClosingIssueExtractor, lib: true do
-  let(:project)   { create(:project) }
-  let(:project2)   { create(:project) }
+  let(:project) { create(:empty_project) }
+  let(:project2) { create(:empty_project) }
   let(:forked_project) { Projects::ForkService.new(project, project.creator).execute }
-  let(:issue)     { create(:issue, project: project) }
-  let(:issue2)     { create(:issue, project: project2) }
+  let(:issue) { create(:issue, project: project) }
+  let(:issue2) { create(:issue, project: project2) }
   let(:reference) { issue.to_reference }
   let(:cross_reference) { issue2.to_reference(project) }
   let(:fork_cross_reference) { issue.to_reference(forked_project) }

@@ -45,7 +45,7 @@ module API
       if id =~ /^\d+$/
         Project.find_by(id: id)
       else
-        Project.find_with_namespace(id)
+        Project.find_by_full_path(id)
       end
     end
 
@@ -304,7 +304,7 @@ module API
         header['X-Sendfile'] = path
         body
       else
-        path
+        file path
       end
     end
 

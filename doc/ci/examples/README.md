@@ -14,6 +14,12 @@ Apart from those, here is an collection of tutorials and guides on setting up yo
 - [Test a Phoenix application](test-phoenix-application.md)
 - [Using `dpl` as deployment tool](deployment/README.md)
 - [Example project that shows how to use Review Apps](https://gitlab.com/gitlab-examples/review-apps-nginx/)
+- [Run PHP Composer & NPM scripts then deploy them to a staging server](deployment/composer-npm-deploy.md)
+- Help your favorite programming language and GitLab by sending a merge request
+  with a guide for that language.
+
+## Outside the documentation
+
 - [Blog post about using GitLab CI for iOS projects](https://about.gitlab.com/2016/03/10/setting-up-gitlab-ci-for-ios-projects/)
 - [Repositories with examples for various languages](https://gitlab.com/groups/gitlab-examples)
 - [The .gitlab-ci.yml file for GitLab itself](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.gitlab-ci.yml)

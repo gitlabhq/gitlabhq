@@ -5,6 +5,8 @@ describe Namespace, models: true do
 
   it { is_expected.to have_many :projects }
   it { is_expected.to have_many :project_statistics }
+  it { is_expected.to belong_to :parent }
+  it { is_expected.to have_many :children }
 
   it { is_expected.to validate_presence_of(:name) }
   it { is_expected.to validate_uniqueness_of(:name).scoped_to(:parent_id) }
@@ -105,7 +107,7 @@ describe Namespace, models: true do
   describe '#move_dir' do
     before do
       @namespace = create :namespace
-      @project = create :project, namespace: @namespace
+      @project = create(:empty_project, namespace: @namespace)
       allow(@namespace).to receive(:path_changed?).and_return(true)
     end
 
@@ -137,7 +139,7 @@ describe Namespace, models: true do
   end
 
   describe :rm_dir do
-    let!(:project) { create(:project, namespace: namespace) }
+    let!(:project) { create(:empty_project, namespace: namespace) }
     let!(:path) { File.join(Gitlab.config.repositories.storages.default, namespace.path) }
 
     it "removes its dirs when deleted" do
@@ -189,17 +191,31 @@ describe Namespace, models: true do
     it { expect(nested_group.full_name).to eq("#{group.name} / #{nested_group.name}") }
   end
 
-  describe '#parents' do
+  describe '#ancestors' do
     let(:group) { create(:group) }
     let(:nested_group) { create(:group, parent: group) }
     let(:deep_nested_group) { create(:group, parent: nested_group) }
     let(:very_deep_nested_group) { create(:group, parent: deep_nested_group) }
 
-    it 'returns the correct parents' do
-      expect(very_deep_nested_group.parents).to eq([group, nested_group, deep_nested_group])
-      expect(deep_nested_group.parents).to eq([group, nested_group])
-      expect(nested_group.parents).to eq([group])
-      expect(group.parents).to eq([])
+    it 'returns the correct ancestors' do
+      expect(very_deep_nested_group.ancestors).to eq([group, nested_group, deep_nested_group])
+      expect(deep_nested_group.ancestors).to eq([group, nested_group])
+      expect(nested_group.ancestors).to eq([group])
+      expect(group.ancestors).to eq([])
+    end
+  end
+
+  describe '#descendants' do
+    let!(:group) { create(:group) }
+    let!(:nested_group) { create(:group, parent: group) }
+    let!(:deep_nested_group) { create(:group, parent: nested_group) }
+    let!(:very_deep_nested_group) { create(:group, parent: deep_nested_group) }
+
+    it 'returns the correct descendants' do
+      expect(very_deep_nested_group.descendants.to_a).to eq([])
+      expect(deep_nested_group.descendants.to_a).to eq([very_deep_nested_group])
+      expect(nested_group.descendants.to_a).to eq([deep_nested_group, very_deep_nested_group])
+      expect(group.descendants.to_a).to eq([nested_group, deep_nested_group, very_deep_nested_group])
     end
   end
 end

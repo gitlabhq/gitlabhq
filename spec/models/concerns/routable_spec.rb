@@ -68,4 +68,14 @@ describe Group, 'Routable' do
       end
     end
   end
+
+  describe '.member_descendants' do
+    let!(:user) { create(:user) }
+    let!(:nested_group) { create(:group, parent: group) }
+
+    before { group.add_owner(user) }
+    subject { described_class.member_descendants(user.id) }
+
+    it { is_expected.to eq([nested_group]) }
+  end
 end

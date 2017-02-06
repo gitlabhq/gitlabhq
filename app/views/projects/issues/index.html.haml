@@ -7,7 +7,7 @@
   = render "projects/issues/head"
 
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_tag('filtered_search/filtered_search_bundle.js')
+  = page_specific_javascript_bundle_tag('filtered_search')
 
 = content_for :meta_tags do
   - if current_user
@@ -19,10 +19,8 @@
       = render 'shared/issuable/nav', type: :issues
       .nav-controls
         - if current_user
-          = link_to url_for(params.merge(format: :atom, private_token: current_user.private_token)), class: 'btn append-right-10' do
+          = link_to url_for(params.merge(format: :atom, private_token: current_user.private_token)), class: 'btn append-right-10 has-tooltip', title: 'Subscribe' do
             = icon('rss')
-            %span.icon-label
-              Subscribe
         - if can? current_user, :create_issue, @project
           = link_to new_namespace_project_issue_path(@project.namespace,
                                                      @project,

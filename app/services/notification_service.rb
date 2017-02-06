@@ -178,8 +178,15 @@ class NotificationService
     recipients = []
 
     mentioned_users = note.mentioned_users
+
+    ability, subject = if note.for_personal_snippet?
+                         [:read_personal_snippet, note.noteable]
+                       else
+                         [:read_project, note.project]
+                       end
+
     mentioned_users.select! do |user|
-      user.can?(:read_project, note.project)
+      user.can?(ability, subject)
     end
 
     # Add all users participating in the thread (author, assignee, comment authors)
@@ -192,11 +199,13 @@ class NotificationService
 
     recipients = recipients.concat(participants)
 
-    # Merge project watchers
-    recipients = add_project_watchers(recipients, note.project)
+    unless note.for_personal_snippet?
+      # Merge project watchers
+      recipients = add_project_watchers(recipients, note.project)
 
-    # Merge project with custom notification
-    recipients = add_custom_notifications(recipients, note.project, :new_note)
+      # Merge project with custom notification
+      recipients = add_custom_notifications(recipients, note.project, :new_note)
+    end
 
     # Reject users with Mention notification level, except those mentioned in _this_ note.
     recipients = reject_mention_users(recipients - mentioned_users, note.project)
@@ -211,8 +220,7 @@ class NotificationService
     recipients.delete(note.author)
     recipients = recipients.uniq
 
-    # build notify method like 'note_commit_email'
-    notify_method = "note_#{note.noteable_type.underscore}_email".to_sym
+    notify_method = "note_#{note.to_ability_name}_email".to_sym
 
     recipients.each do |recipient|
       mailer.send(notify_method, recipient.id, note.id).deliver_later
@@ -357,7 +365,7 @@ class NotificationService
     users = users_with_global_level_watch([users_with_project_level_global, users_with_group_level_global].flatten.uniq)
 
     users_with_project_setting = select_project_member_setting(project, users_with_project_level_global, users)
-    users_with_group_setting = select_group_member_setting(project, project_members, users_with_group_level_global, users)
+    users_with_group_setting = select_group_member_setting(project.group, project_members, users_with_group_level_global, users)
 
     User.where(id: users_with_project_setting.concat(users_with_group_setting).uniq).to_a
   end
@@ -407,8 +415,8 @@ class NotificationService
   end
 
   # Build a list of users based on group notification settings
-  def select_group_member_setting(project, project_members, global_setting, users_global_level_watch)
-    uids = notification_settings_for(project, :watch)
+  def select_group_member_setting(group, project_members, global_setting, users_global_level_watch)
+    uids = notification_settings_for(group, :watch)
 
     # Group setting is watch, add to users list if user is not project member
     users = []
@@ -465,7 +473,7 @@ class NotificationService
 
       setting = user.notification_settings_for(project)
 
-      if !setting && project.group
+      if project.group && (setting.nil? || setting.global?)
         setting = user.notification_settings_for(project.group)
       end
 

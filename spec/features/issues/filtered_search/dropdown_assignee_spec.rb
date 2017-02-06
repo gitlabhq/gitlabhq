@@ -43,14 +43,6 @@ describe 'Dropdown assignee', js: true, feature: true do
       expect(page).to have_css(js_dropdown_assignee, visible: true)
     end
 
-    it 'shows assigned to me link' do
-      filtered_search.set('assignee:')
-
-      page.within js_dropdown_assignee do
-        expect(page).to have_content('Assigned to me')
-      end
-    end
-
     it 'closes when the search bar is unfocused' do
       find('body').click()
 
@@ -129,14 +121,6 @@ describe 'Dropdown assignee', js: true, feature: true do
       filtered_search.set('assignee:')
     end
 
-    it 'filters by current user' do
-      page.within js_dropdown_assignee do
-        click_button 'Assigned to me'
-      end
-
-      expect(filtered_search.value).to eq("assignee:#{user.to_reference} ")
-    end
-
     it 'fills in the assignee username when the assignee has not been filtered' do
       click_assignee(user_jacob.name)
 
@@ -183,6 +167,24 @@ describe 'Dropdown assignee', js: true, feature: true do
       filtered_search.set('milestone:%v1.0 assignee:')
 
       expect(page).to have_css(js_dropdown_assignee, visible: true)
+    end
+  end
+
+  describe 'caching requests' do
+    it 'caches requests after the first load' do
+      filtered_search.set('assignee')
+      send_keys_to_filtered_search(':')
+      initial_size = dropdown_assignee_size
+
+      expect(initial_size).to be > 0
+
+      new_user = create(:user)
+      project.team << [new_user, :master]
+      find('.filtered-search-input-container .clear-search').click
+      filtered_search.set('assignee')
+      send_keys_to_filtered_search(':')
+
+      expect(dropdown_assignee_size).to eq(initial_size)
     end
   end
 end

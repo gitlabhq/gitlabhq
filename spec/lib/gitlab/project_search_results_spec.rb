@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::ProjectSearchResults, lib: true do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:empty_project) }
   let(:query) { 'hello world' }
 
   describe 'initialize with empty ref' do
@@ -22,6 +22,7 @@ describe Gitlab::ProjectSearchResults, lib: true do
   end
 
   describe 'blob search' do
+    let(:project) { create(:project, :repository) }
     let(:results) { described_class.new(user, project, 'files').objects('blobs') }
 
     it 'finds by name' do
@@ -74,6 +75,7 @@ describe Gitlab::ProjectSearchResults, lib: true do
   end
 
   describe 'confidential issues' do
+    let(:project) { create(:empty_project) }
     let(:query) { 'issue' }
     let(:author) { create(:user) }
     let(:assignee) { create(:user) }
@@ -187,7 +189,7 @@ describe Gitlab::ProjectSearchResults, lib: true do
   #
   shared_examples 'access restricted commits' do
     context 'when project is internal' do
-      let(:project) { create(:project, :internal) }
+      let(:project) { create(:project, :internal, :repository) }
 
       it 'does not search if user is not authenticated' do
         commits = described_class.new(nil, project, search_phrase).objects('commits')
@@ -204,7 +206,7 @@ describe Gitlab::ProjectSearchResults, lib: true do
 
     context 'when project is private' do
       let!(:creator) { create(:user, username: 'private-project-author') }
-      let!(:private_project) { create(:project, :private, creator: creator, namespace: creator.namespace) }
+      let!(:private_project) { create(:project, :private, :repository, creator: creator, namespace: creator.namespace) }
       let(:team_master) do
         user = create(:user, username: 'private-project-master')
         private_project.team << [user, :master]
@@ -246,7 +248,7 @@ describe Gitlab::ProjectSearchResults, lib: true do
 
   describe 'commit search' do
     context 'by commit message' do
-      let(:project) { create(:project, :public) }
+      let(:project) { create(:project, :public, :repository) }
       let(:commit) { project.repository.commit('59e29889be61e6e0e5e223bfa9ac2721d31605b8') }
       let(:message) { 'Sorry, I did a mistake' }
 
@@ -269,7 +271,7 @@ describe Gitlab::ProjectSearchResults, lib: true do
     end
 
     context 'by commit hash' do
-      let(:project) { create(:project, :public) }
+      let(:project) { create(:project, :public, :repository) }
       let(:commit) { project.repository.commit('0b4bc9a') }
       commit_hashes = { short: '0b4bc9a', full: '0b4bc9a49b562e85de7cc9e834518ea6828729b9' }
 

@@ -162,6 +162,10 @@
       }
     }
   }
+
+  &.panel-without-border {
+    border: 0;
+  }
 }
 
 .panel-succes .panel-heading,

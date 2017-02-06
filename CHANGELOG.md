@@ -2,7 +2,34 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
-## 8.16.0 (2017-02-22)
+## 8.16.3 (2017-01-27)
+
+- Add caching of droplab ajax requests. !8725
+- Fix access to the wiki code via HTTP when repository feature disabled. !8758
+- Revert 3f17f29a. !8785
+- Fix race conditions for AuthorizedProjectsWorker.
+- Fix autocomplete initial undefined state.
+- Fix Error 500 when repositories contain annotated tags pointing to blobs.
+- Fix /explore sorting.
+- Fixed label dropdown toggle text not correctly updating.
+
+## 8.16.2 (2017-01-25)
+
+- allow issue filter bar to be operated with mouse only. !8681
+- Fix CI requests concurrency for newer runners that prevents from picking pending builds (from 1.9.0-rc5). !8760
+- Add some basic fixes for IE11/Edge.
+- Remove blue border from comment box hover.
+- Fixed bug where links in merge dropdown wouldn't work.
+
+## 8.16.1 (2017-01-23)
+
+- Ensure export files are removed after a namespace is deleted.
+- Don't allow project guests to subscribe to merge requests through the API. (Robert Schilling)
+- Prevent users from creating notes on resources they can't access.
+- Prevent users from deleting system deploy keys via the project deploy key API.
+- Upgrade omniauth gem to 1.3.2.
+
+## 8.16.0 (2017-01-22)
 
 - Add LDAP Rake task to rename a provider. !2181
 - Validate label's title length. !5767 (Tomáš Kukrál)
@@ -394,6 +421,14 @@ entry.
 - Rename groups with .git in the end of the path. !8199
 - Whitelist next project names: help, ci, admin, search. !8227
 - Adds back CSS for progress-bars. !8237
+
+## 8.14.8 (2017-01-25)
+
+- Accept environment variables from the `pre-receive` script. !7967
+- Milestoneish SQL performance partially improved and memoized. !8146
+- Fix N+1 queries on milestone show pages. !8185
+- Speed up group milestone index by passing group_id to IssuesFinder. !8363
+- Ensure issuable state changes only fire webhooks once.
 
 ## 8.14.6 (2017-01-10)
 

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Git::RevList, lib: true do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
 
   context "validations" do
     described_class::ALLOWED_VARIABLES.each do |var|

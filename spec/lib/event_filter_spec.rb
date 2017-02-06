@@ -3,17 +3,17 @@ require 'spec_helper'
 describe EventFilter, lib: true do
   describe '#apply_filter' do
     let(:source_user) { create(:user) }
-    let!(:public_project) { create(:project, :public) }
+    let!(:public_project) { create(:empty_project, :public) }
 
-    let!(:push_event) { create(:event, action: Event::PUSHED, project: public_project, target: public_project, author: source_user) }
-    let!(:merged_event) { create(:event, action: Event::MERGED, project: public_project, target: public_project, author: source_user) }
-    let!(:created_event) { create(:event, action: Event::CREATED, project: public_project, target: public_project, author: source_user) }
-    let!(:updated_event) { create(:event, action: Event::UPDATED, project: public_project, target: public_project, author: source_user) }
-    let!(:closed_event) { create(:event, action: Event::CLOSED, project: public_project, target: public_project, author: source_user) }
-    let!(:reopened_event) { create(:event, action: Event::REOPENED, project: public_project, target: public_project, author: source_user) }
-    let!(:comments_event) { create(:event, action: Event::COMMENTED, project: public_project, target: public_project, author: source_user) }
-    let!(:joined_event) { create(:event, action: Event::JOINED, project: public_project, target: public_project, author: source_user) }
-    let!(:left_event) { create(:event, action: Event::LEFT, project: public_project, target: public_project, author: source_user) }
+    let!(:push_event)     { create(:event, :pushed,    project: public_project, target: public_project, author: source_user) }
+    let!(:merged_event)   { create(:event, :merged,    project: public_project, target: public_project, author: source_user) }
+    let!(:created_event)  { create(:event, :created,   project: public_project, target: public_project, author: source_user) }
+    let!(:updated_event)  { create(:event, :updated,   project: public_project, target: public_project, author: source_user) }
+    let!(:closed_event)   { create(:event, :closed,    project: public_project, target: public_project, author: source_user) }
+    let!(:reopened_event) { create(:event, :reopened,  project: public_project, target: public_project, author: source_user) }
+    let!(:comments_event) { create(:event, :commented, project: public_project, target: public_project, author: source_user) }
+    let!(:joined_event)   { create(:event, :joined,    project: public_project, target: public_project, author: source_user) }
+    let!(:left_event)     { create(:event, :left,      project: public_project, target: public_project, author: source_user) }
 
     it 'applies push filter' do
       events = EventFilter.new(EventFilter.push).apply_filter(Event.all)

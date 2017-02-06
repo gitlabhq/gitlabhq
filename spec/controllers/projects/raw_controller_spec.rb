@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Projects::RawController do
-  let(:public_project) { create(:project, :public) }
+  let(:public_project) { create(:project, :public, :repository) }
 
   describe "#show" do
     context 'regular filename' do

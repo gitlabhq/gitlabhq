@@ -1,5 +1,5 @@
-//= require vue
-//= require environments/components/environment_rollback
+require('~/environments/components/environment_rollback');
+
 describe('Rollback Component', () => {
   preloadFixtures('static/environments/element.html.raw');
 
@@ -32,7 +32,6 @@ describe('Rollback Component', () => {
 
     expect(component.$el.querySelector('span').textContent).toContain('Re-deploy');
   });
-
 
   it('Should render Rollback label when isLastDeployment is false', () => {
     const component = new window.gl.environmentsList.RollbackComponent({

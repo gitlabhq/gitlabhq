@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :todo do
-    project
+    project factory: :empty_project
     author
     user
     target factory: :issue

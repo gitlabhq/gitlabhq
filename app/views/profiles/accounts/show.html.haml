@@ -82,7 +82,7 @@
               = link_to unlink_profile_account_path(provider: provider), method: :delete, class: 'provider-btn' do
                 Disconnect
           - else
-            = link_to omniauth_authorize_path(:user, provider), method: :post, class: 'provider-btn not-active', "data-no-turbolink" => "true" do
+            = link_to omniauth_authorize_path(:user, provider), method: :post, class: 'provider-btn not-active' do
               Connect
   %hr
 - if current_user.can_change_username?
@@ -102,7 +102,7 @@
             = f.text_field :username, required: true, class: 'form-control'
         .help-block
           Current path:
-          = "#{root_url}#{current_user.username}"
+          #{root_url}#{current_user.username}
         .prepend-top-default
           = f.button class: "btn btn-warning", type: "submit" do
             = icon "spinner spin", class: "hidden loading-username"
@@ -128,7 +128,7 @@
         - if @user.solo_owned_groups.present?
           %p
             Your account is currently an owner in these groups:
-            %strong #{@user.solo_owned_groups.map(&:name).join(', ')}
+            %strong= @user.solo_owned_groups.map(&:name).join(', ')
           %p
             You must transfer ownership or delete these groups before you can delete your account.
 .append-bottom-default

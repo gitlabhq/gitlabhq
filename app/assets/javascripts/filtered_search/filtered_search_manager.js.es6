@@ -1,5 +1,3 @@
-/* global Turbolinks */
-
 (() => {
   class FilteredSearchManager {
     constructor() {
@@ -15,13 +13,13 @@
         this.dropdownManager.setDropdown();
 
         this.cleanupWrapper = this.cleanup.bind(this);
-        document.addEventListener('page:fetch', this.cleanupWrapper);
+        document.addEventListener('beforeunload', this.cleanupWrapper);
       }
     }
 
     cleanup() {
       this.unbindEvents();
-      document.removeEventListener('page:fetch', this.cleanupWrapper);
+      document.removeEventListener('beforeunload', this.cleanupWrapper);
     }
 
     bindEvents() {
@@ -64,13 +62,26 @@
     }
 
     checkForEnter(e) {
+      if (e.keyCode === 38 || e.keyCode === 40) {
+        const selectionStart = this.filteredSearchInput.selectionStart;
+
+        e.preventDefault();
+        this.filteredSearchInput.setSelectionRange(selectionStart, selectionStart);
+      }
+
       if (e.keyCode === 13) {
+        const dropdown = this.dropdownManager.mapping[this.dropdownManager.currentDropdown];
+        const dropdownEl = dropdown.element;
+        const activeElements = dropdownEl.querySelectorAll('.dropdown-active');
+
         e.preventDefault();
 
-        // Prevent droplab from opening dropdown
-        this.dropdownManager.destroyDroplab();
+        if (!activeElements.length) {
+          // Prevent droplab from opening dropdown
+          this.dropdownManager.destroyDroplab();
 
-        this.search();
+          this.search();
+        }
       }
     }
 
@@ -183,10 +194,13 @@
       });
 
       if (searchToken) {
-        paths.push(`search=${encodeURIComponent(searchToken)}`);
+        const sanitized = searchToken.split(' ').map(t => encodeURIComponent(t)).join('+');
+        paths.push(`search=${sanitized}`);
       }
 
-      Turbolinks.visit(`?scope=all&utf8=✓&${paths.join('&')}`);
+      const parameterizedUrl = `?scope=all&utf8=✓&${paths.join('&')}`;
+
+      gl.utils.visitUrl(parameterizedUrl);
     }
 
     getUsernameParams() {

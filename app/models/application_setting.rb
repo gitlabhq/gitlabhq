@@ -111,6 +111,10 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             numericality: { only_integer: true, greater_than: :housekeeping_full_repack_period }
 
+  validates :terminal_max_session_time,
+            presence: true,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
   validates_each :restricted_visibility_levels do |record, attr, value|
     unless value.nil?
       value.each do |level|
@@ -156,53 +160,65 @@ class ApplicationSetting < ActiveRecord::Base
 
   def self.expire
     Rails.cache.delete(CACHE_KEY)
+  rescue
+    # Gracefully handle when Redis is not available. For example,
+    # omnibus may fail here during gitlab:assets:compile.
   end
 
   def self.cached
     Rails.cache.fetch(CACHE_KEY)
   end
 
-  def self.create_from_defaults
-    create(
-      default_projects_limit: Settings.gitlab['default_projects_limit'],
-      default_branch_protection: Settings.gitlab['default_branch_protection'],
-      signup_enabled: Settings.gitlab['signup_enabled'],
-      signin_enabled: Settings.gitlab['signin_enabled'],
-      gravatar_enabled: Settings.gravatar['enabled'],
-      sign_in_text: nil,
+  def self.defaults_ce
+    {
       after_sign_up_text: nil,
-      help_page_text: nil,
-      shared_runners_text: nil,
-      restricted_visibility_levels: Settings.gitlab['restricted_visibility_levels'],
-      max_attachment_size: Settings.gitlab['max_attachment_size'],
-      session_expire_delay: Settings.gitlab['session_expire_delay'],
-      default_project_visibility: Settings.gitlab.default_projects_features['visibility_level'],
-      default_snippet_visibility: Settings.gitlab.default_projects_features['visibility_level'],
-      domain_whitelist: Settings.gitlab['domain_whitelist'],
-      import_sources: Gitlab::ImportSources.values,
-      shared_runners_enabled: Settings.gitlab_ci['shared_runners_enabled'],
-      max_artifacts_size: Settings.artifacts['max_size'],
-      require_two_factor_authentication: false,
-      two_factor_grace_period: 48,
-      recaptcha_enabled: false,
       akismet_enabled: false,
-      koding_enabled: false,
-      koding_url: nil,
-      plantuml_enabled: false,
-      plantuml_url: nil,
-      repository_checks_enabled: true,
-      disabled_oauth_sign_in_sources: [],
-      send_user_confirmation_email: false,
       container_registry_token_expire_delay: 5,
-      repository_storages: ['default'],
-      user_default_external: false,
-      sidekiq_throttling_enabled: false,
-      housekeeping_enabled: true,
+      default_branch_protection: Settings.gitlab['default_branch_protection'],
+      default_project_visibility: Settings.gitlab.default_projects_features['visibility_level'],
+      default_projects_limit: Settings.gitlab['default_projects_limit'],
+      default_snippet_visibility: Settings.gitlab.default_projects_features['visibility_level'],
+      disabled_oauth_sign_in_sources: [],
+      domain_whitelist: Settings.gitlab['domain_whitelist'],
+      gravatar_enabled: Settings.gravatar['enabled'],
+      help_page_text: nil,
       housekeeping_bitmaps_enabled: true,
-      housekeeping_incremental_repack_period: 10,
+      housekeeping_enabled: true,
       housekeeping_full_repack_period: 50,
       housekeeping_gc_period: 200,
-    )
+      housekeeping_incremental_repack_period: 10,
+      import_sources: Gitlab::ImportSources.values,
+      koding_enabled: false,
+      koding_url: nil,
+      max_artifacts_size: Settings.artifacts['max_size'],
+      max_attachment_size: Settings.gitlab['max_attachment_size'],
+      plantuml_enabled: false,
+      plantuml_url: nil,
+      recaptcha_enabled: false,
+      repository_checks_enabled: true,
+      repository_storages: ['default'],
+      require_two_factor_authentication: false,
+      restricted_visibility_levels: Settings.gitlab['restricted_visibility_levels'],
+      session_expire_delay: Settings.gitlab['session_expire_delay'],
+      send_user_confirmation_email: false,
+      shared_runners_enabled: Settings.gitlab_ci['shared_runners_enabled'],
+      shared_runners_text: nil,
+      sidekiq_throttling_enabled: false,
+      sign_in_text: nil,
+      signin_enabled: Settings.gitlab['signin_enabled'],
+      signup_enabled: Settings.gitlab['signup_enabled'],
+      two_factor_grace_period: 48,
+      user_default_external: false,
+      terminal_max_session_time: 0
+    }
+  end
+
+  def self.defaults
+    defaults_ce
+  end
+
+  def self.create_from_defaults
+    create(defaults)
   end
 
   def home_page_url_column_exist

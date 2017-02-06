@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Projects::NotesController do
   let(:user)    { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:empty_project) }
   let(:issue)   { create(:issue, project: project) }
   let(:note)    { create(:note, noteable: issue, project: project) }
 
@@ -16,6 +16,7 @@ describe Projects::NotesController do
 
   describe 'POST create' do
     let(:merge_request) { create(:merge_request) }
+    let(:project) { merge_request.source_project }
     let(:request_params) do
       {
         note: { note: 'some note', noteable_id: merge_request.id, noteable_type: 'MergeRequest' },
@@ -88,6 +89,7 @@ describe Projects::NotesController do
   end
 
   describe "resolving and unresolving" do
+    let(:project) { create(:project, :repository) }
     let(:merge_request) { create(:merge_request, source_project: project) }
     let(:note) { create(:diff_note_on_merge_request, noteable: merge_request, project: project) }
 

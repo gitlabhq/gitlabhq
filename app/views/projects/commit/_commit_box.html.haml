@@ -1,8 +1,7 @@
 .page-content-header
   .header-main-content
-    %strong
+    %strong Commit #{@commit.short_id}
     = clipboard_button(clipboard_text: @commit.id, title: "Copy commit SHA to clipboard")
-    = @commit.short_id
     %span.hidden-xs authored
     #{time_ago_with_tooltip(@commit.authored_date)}
     %span by
@@ -64,9 +63,10 @@
   - if @commit.status
     .well-segment.pipeline-info
       %div{ class: "icon-container ci-status-icon-#{@commit.status}" }
-        = ci_icon_for_status(@commit.status)
+        = link_to namespace_project_pipeline_path(@project.namespace, @project, @commit.pipelines.last.id) do
+          = ci_icon_for_status(@commit.status)
       Pipeline
-      = link_to "##{@commit.pipelines.last.id}", pipelines_namespace_project_commit_path(@project.namespace, @project, @commit.id), class: "monospace"
+      = link_to "##{@commit.pipelines.last.id}", namespace_project_pipeline_path(@project.namespace, @project, @commit.pipelines.last.id), class: "monospace"
       for
       = link_to @commit.short_id, namespace_project_commit_path(@project.namespace, @project, @commit), class: "monospace"
       %span.ci-status-label

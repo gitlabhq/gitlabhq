@@ -36,7 +36,7 @@ class Projects::UploadsController < Projects::ApplicationController
     namespace = params[:namespace_id]
     id = params[:project_id]
 
-    file_project = Project.find_with_namespace("#{namespace}/#{id}")
+    file_project = Project.find_by_full_path("#{namespace}/#{id}")
 
     if file_project.nil?
       @uploader = nil

@@ -245,6 +245,8 @@ describe SystemNoteService, services: true do
   end
 
   describe '.change_title' do
+    let(:noteable) { create(:issue, project: project, title: 'Lorem ipsum') }
+
     subject { described_class.change_title(noteable, project, author, 'Old title') }
 
     context 'when noteable responds to `title`' do
@@ -252,7 +254,7 @@ describe SystemNoteService, services: true do
 
       it 'sets the note text' do
         expect(subject.note).
-          to eq "changed title from **{-Old title-}** to **{+#{noteable.title}+}**"
+          to eq "changed title from **{-Old title-}** to **{+Lorem ipsum+}**"
       end
     end
   end

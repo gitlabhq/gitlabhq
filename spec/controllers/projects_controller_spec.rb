@@ -1,11 +1,11 @@
 require('spec_helper')
 
 describe ProjectsController do
-  let(:project) { create(:project) }
-  let(:public_project) { create(:project, :public) }
-  let(:user)    { create(:user) }
-  let(:jpg)     { fixture_file_upload(Rails.root + 'spec/fixtures/rails_sample.jpg', 'image/jpg') }
-  let(:txt)     { fixture_file_upload(Rails.root + 'spec/fixtures/doc_sample.txt', 'text/plain') }
+  let(:project) { create(:empty_project) }
+  let(:public_project) { create(:empty_project, :public) }
+  let(:user) { create(:user) }
+  let(:jpg) { fixture_file_upload(Rails.root + 'spec/fixtures/rails_sample.jpg', 'image/jpg') }
+  let(:txt) { fixture_file_upload(Rails.root + 'spec/fixtures/doc_sample.txt', 'text/plain') }
 
   describe 'GET index' do
     context 'as a user' do
@@ -32,7 +32,7 @@ describe ProjectsController do
       before { sign_in(user) }
 
       context "user does not have access to project" do
-        let(:private_project) { create(:project, :private) }
+        let(:private_project) { create(:empty_project, :private) }
 
         it "does not initialize notification setting" do
           get :show, namespace_id: private_project.namespace.path, id: private_project.path
@@ -146,6 +146,8 @@ describe ProjectsController do
     end
 
     context "rendering default project view" do
+      let(:public_project) { create(:project, :public, :repository) }
+
       render_views
 
       it "renders the activity view" do
@@ -190,25 +192,11 @@ describe ProjectsController do
           expect(assigns(:project)).to eq(public_project)
           expect(response).to redirect_to("/#{public_project.path_with_namespace}")
         end
-
-        # MySQL queries are case insensitive by default, so this spec would fail.
-        if Gitlab::Database.postgresql?
-          context "when there is also a match with the same casing" do
-            let!(:other_project) { create(:project, :public, namespace: public_project.namespace, path: public_project.path.upcase) }
-
-            it "loads the exactly matched project" do
-              get :show, namespace_id: public_project.namespace.path, id: public_project.path.upcase
-
-              expect(assigns(:project)).to eq(other_project)
-              expect(response).to have_http_status(200)
-            end
-          end
-        end
       end
     end
 
     context "when the url contains .atom" do
-      let(:public_project_with_dot_atom) { build(:project, :public, name: 'my.atom', path: 'my.atom') }
+      let(:public_project_with_dot_atom) { build(:empty_project, :public, name: 'my.atom', path: 'my.atom') }
 
       it 'expects an error creating the project' do
         expect(public_project_with_dot_atom).not_to be_valid
@@ -217,12 +205,23 @@ describe ProjectsController do
 
     context 'when the project is pending deletions' do
       it 'renders a 404 error' do
-        project = create(:project, pending_delete: true)
+        project = create(:empty_project, pending_delete: true)
         sign_in(user)
 
         get :show, namespace_id: project.namespace.path, id: project.path
 
         expect(response.status).to eq 404
+      end
+    end
+
+    context "redirection from http://someproject.git" do
+      it 'redirects to project page (format.html)' do
+        project = create(:project, :public)
+
+        get :show, namespace_id: project.namespace.path, id: project.path, format: :git
+
+        expect(response).to have_http_status(302)
+        expect(response).to redirect_to(namespace_project_path)
       end
     end
   end
@@ -233,6 +232,7 @@ describe ProjectsController do
     let(:admin) { create(:admin) }
 
     it "sets the repository to the right path after a rename" do
+      project = create(:project, :repository)
       new_path = 'renamed_path'
       project_params = { path: new_path }
       controller.instance_variable_set(:@project, project)
@@ -384,6 +384,8 @@ describe ProjectsController do
   end
 
   describe "GET refs" do
+    let(:public_project) { create(:project, :public) }
+
     it "gets a list of branches and tags" do
       get :refs, namespace_id: public_project.namespace.path, id: public_project.path
 

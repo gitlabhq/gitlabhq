@@ -64,6 +64,7 @@ constraints(ProjectUrlConstrainer.new) do
       resources :snippets, concerns: :awardable, constraints: { id: /\d+/ } do
         member do
           get 'raw'
+          post :mark_as_spam
         end
       end
 
@@ -220,6 +221,7 @@ constraints(ProjectUrlConstrainer.new) do
         end
 
         member do
+          post :promote
           post :toggle_subscription
           delete :remove_priority
         end
@@ -265,7 +267,7 @@ constraints(ProjectUrlConstrainer.new) do
 
       resources :boards, only: [:index, :show] do
         scope module: :boards do
-          resources :issues, only: [:update]
+          resources :issues, only: [:index, :update]
 
           resources :lists, only: [:index, :create, :update, :destroy] do
             collection do

@@ -3,7 +3,7 @@ require 'spec_helper'
 describe GitlabMarkdownHelper do
   include ApplicationHelper
 
-  let!(:project) { create(:project) }
+  let!(:project) { create(:project, :repository) }
 
   let(:user)          { create(:user, username: 'gfm') }
   let(:commit)        { project.commit }
@@ -55,18 +55,18 @@ describe GitlabMarkdownHelper do
   end
 
   describe '#link_to_gfm' do
-    let(:commit_path) { namespace_project_commit_path(project.namespace, project, commit) }
-    let(:issues)      { create_list(:issue, 2, project: project) }
+    let(:link)    { '/commits/0a1b2c3d' }
+    let(:issues)  { create_list(:issue, 2, project: project) }
 
     it 'handles references nested in links with all the text' do
-      actual = helper.link_to_gfm("This should finally fix #{issues[0].to_reference} and #{issues[1].to_reference} for real", commit_path)
+      actual = helper.link_to_gfm("This should finally fix #{issues[0].to_reference} and #{issues[1].to_reference} for real", link)
       doc = Nokogiri::HTML.parse(actual)
 
       # Make sure we didn't create invalid markup
       expect(doc.errors).to be_empty
 
       # Leading commit link
-      expect(doc.css('a')[0].attr('href')).to eq commit_path
+      expect(doc.css('a')[0].attr('href')).to eq link
       expect(doc.css('a')[0].text).to eq 'This should finally fix '
 
       # First issue link
@@ -75,7 +75,7 @@ describe GitlabMarkdownHelper do
       expect(doc.css('a')[1].text).to eq issues[0].to_reference
 
       # Internal commit link
-      expect(doc.css('a')[2].attr('href')).to eq commit_path
+      expect(doc.css('a')[2].attr('href')).to eq link
       expect(doc.css('a')[2].text).to eq ' and '
 
       # Second issue link
@@ -84,12 +84,12 @@ describe GitlabMarkdownHelper do
       expect(doc.css('a')[3].text).to eq issues[1].to_reference
 
       # Trailing commit link
-      expect(doc.css('a')[4].attr('href')).to eq commit_path
+      expect(doc.css('a')[4].attr('href')).to eq link
       expect(doc.css('a')[4].text).to eq ' for real'
     end
 
     it 'forwards HTML options' do
-      actual = helper.link_to_gfm("Fixed in #{commit.id}", commit_path, class: 'foo')
+      actual = helper.link_to_gfm("Fixed in #{commit.id}", link, class: 'foo')
       doc = Nokogiri::HTML.parse(actual)
 
       expect(doc.css('a')).to satisfy do |v|
@@ -100,7 +100,7 @@ describe GitlabMarkdownHelper do
 
     it "escapes HTML passed in as the body" do
       actual = "This is a <h1>test</h1> - see #{issues[0].to_reference}"
-      expect(helper.link_to_gfm(actual, commit_path)).
+      expect(helper.link_to_gfm(actual, link)).
         to match('&lt;h1&gt;test&lt;/h1&gt;')
     end
 

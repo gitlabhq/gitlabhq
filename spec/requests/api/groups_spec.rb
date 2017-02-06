@@ -176,6 +176,9 @@ describe API::Groups, api: true  do
         expect(json_response['visibility_level']).to eq(group1.visibility_level)
         expect(json_response['avatar_url']).to eq(group1.avatar_url)
         expect(json_response['web_url']).to eq(group1.web_url)
+        expect(json_response['request_access_enabled']).to eq(group1.request_access_enabled)
+        expect(json_response['full_name']).to eq(group1.full_name)
+        expect(json_response['full_path']).to eq(group1.full_path)
         expect(json_response['projects']).to be_an Array
         expect(json_response['projects'].length).to eq(2)
         expect(json_response['shared_projects']).to be_an Array
@@ -323,7 +326,7 @@ describe API::Groups, api: true  do
         expect(response).to have_http_status(404)
       end
 
-      it "should only return projects to which user has access" do
+      it "only returns projects to which user has access" do
         project3.team << [user3, :developer]
 
         get api("/groups/#{group1.id}/projects", user3)
@@ -335,7 +338,7 @@ describe API::Groups, api: true  do
     end
 
     context "when authenticated as admin" do
-      it "should return any existing group" do
+      it "returns any existing group" do
         get api("/groups/#{group2.id}/projects", admin)
 
         expect(response).to have_http_status(200)
@@ -343,7 +346,7 @@ describe API::Groups, api: true  do
         expect(json_response.first['name']).to eq(project2.name)
       end
 
-      it "should not return a non existing group" do
+      it "does not return a non existing group" do
         get api("/groups/1328/projects", admin)
 
         expect(response).to have_http_status(404)
@@ -351,7 +354,7 @@ describe API::Groups, api: true  do
     end
 
     context 'when using group path in URL' do
-      it 'should return any existing group' do
+      it 'returns any existing group' do
         get api("/groups/#{group1.path}/projects", admin)
 
         expect(response).to have_http_status(200)

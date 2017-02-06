@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Admin::ProjectsController do
-  let!(:project) { create(:project, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
+  let!(:project) { create(:empty_project, :public) }
 
   before do
     sign_in(create(:admin))

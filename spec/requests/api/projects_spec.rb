@@ -17,6 +17,7 @@ describe API::Projects, api: true  do
   let(:project3) do
     create(:project,
     :private,
+    :repository,
     name: 'second_project',
     path: 'second_project',
     creator_id: user.id,
@@ -458,7 +459,7 @@ describe API::Projects, api: true  do
     before { project }
     before { admin }
 
-    it 'should create new project without path and return 201' do
+    it 'creates new project without path and return 201' do
       expect { post api("/projects/user/#{user.id}", admin), name: 'foo' }.to change {Project.count}.by(1)
       expect(response).to have_http_status(201)
     end
@@ -1081,52 +1082,6 @@ describe API::Projects, api: true  do
       delete api("/projects/123/share/1234", user)
 
       expect(response).to have_http_status(404)
-    end
-  end
-
-  describe 'GET /projects/search/:query' do
-    let!(:query)            { 'query'}
-    let!(:search)           { create(:empty_project, name: query, creator_id: user.id, namespace: user.namespace) }
-    let!(:pre)              { create(:empty_project, name: "pre_#{query}", creator_id: user.id, namespace: user.namespace) }
-    let!(:post)             { create(:empty_project, name: "#{query}_post", creator_id: user.id, namespace: user.namespace) }
-    let!(:pre_post)         { create(:empty_project, name: "pre_#{query}_post", creator_id: user.id, namespace: user.namespace) }
-    let!(:unfound)          { create(:empty_project, name: 'unfound', creator_id: user.id, namespace: user.namespace) }
-    let!(:internal)         { create(:empty_project, :internal, name: "internal #{query}") }
-    let!(:unfound_internal) { create(:empty_project, :internal, name: 'unfound internal') }
-    let!(:public)           { create(:empty_project, :public, name: "public #{query}") }
-    let!(:unfound_public)   { create(:empty_project, :public, name: 'unfound public') }
-    let!(:one_dot_two)      { create(:empty_project, :public, name: "one.dot.two") }
-
-    shared_examples_for 'project search response' do |args = {}|
-      it 'returns project search responses' do
-        get api("/projects/search/#{args[:query]}", current_user)
-
-        expect(response).to have_http_status(200)
-        expect(json_response).to be_an Array
-        expect(json_response.size).to eq(args[:results])
-        json_response.each { |project| expect(project['name']).to match(args[:match_regex] || /.*#{args[:query]}.*/) }
-      end
-    end
-
-    context 'when unauthenticated' do
-      it_behaves_like 'project search response', query: 'query', results: 1 do
-        let(:current_user) { nil }
-      end
-    end
-
-    context 'when authenticated' do
-      it_behaves_like 'project search response', query: 'query', results: 6 do
-        let(:current_user) { user }
-      end
-      it_behaves_like 'project search response', query: 'one.dot.two', results: 1 do
-        let(:current_user) { user }
-      end
-    end
-
-    context 'when authenticated as a different user' do
-      it_behaves_like 'project search response', query: 'query', results: 2, match_regex: /(internal|public) query/ do
-        let(:current_user) { user2 }
-      end
     end
   end
 

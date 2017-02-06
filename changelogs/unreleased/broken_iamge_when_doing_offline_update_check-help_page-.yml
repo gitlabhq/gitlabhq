@@ -1,0 +1,4 @@
+---
+title: Hide version check image if there is no internet connection
+merge_request: 8355
+author: Ken Ding

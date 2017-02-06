@@ -159,5 +159,76 @@
       if (!results[2]) return '';
       return decodeURIComponent(results[2].replace(/\+/g, ' '));
     };
+
+    w.gl.utils.getSelectedFragment = () => {
+      const selection = window.getSelection();
+      if (selection.rangeCount === 0) return null;
+      const documentFragment = selection.getRangeAt(0).cloneContents();
+      if (documentFragment.textContent.length === 0) return null;
+
+      return documentFragment;
+    };
+
+    w.gl.utils.insertText = (target, text) => {
+      // Firefox doesn't support `document.execCommand('insertText', false, text)` on textareas
+
+      const selectionStart = target.selectionStart;
+      const selectionEnd = target.selectionEnd;
+      const value = target.value;
+
+      const textBefore = value.substring(0, selectionStart);
+      const textAfter = value.substring(selectionEnd, value.length);
+      const newText = textBefore + text + textAfter;
+
+      target.value = newText;
+      target.selectionStart = target.selectionEnd = selectionStart + text.length;
+
+      // Trigger autosave
+      $(target).trigger('input');
+
+      // Trigger autosize
+      var event = document.createEvent('Event');
+      event.initEvent('autosize:update', true, false);
+      target.dispatchEvent(event);
+    };
+
+    w.gl.utils.nodeMatchesSelector = (node, selector) => {
+      const matches = Element.prototype.matches ||
+        Element.prototype.matchesSelector ||
+        Element.prototype.mozMatchesSelector ||
+        Element.prototype.msMatchesSelector ||
+        Element.prototype.oMatchesSelector ||
+        Element.prototype.webkitMatchesSelector;
+
+      if (matches) {
+        return matches.call(node, selector);
+      }
+
+      // IE11 doesn't support `node.matches(selector)`
+
+      let parentNode = node.parentNode;
+      if (!parentNode) {
+        parentNode = document.createElement('div');
+        node = node.cloneNode(true);
+        parentNode.appendChild(node);
+      }
+
+      const matchingNodes = parentNode.querySelectorAll(selector);
+      return Array.prototype.indexOf.call(matchingNodes, node) !== -1;
+    };
+
+    /**
+      this will take in the headers from an API response and normalize them
+      this way we don't run into production issues when nginx gives us lowercased header keys
+    */
+    w.gl.utils.normalizeHeaders = (headers) => {
+      const upperCaseHeaders = {};
+
+      Object.keys(headers).forEach((e) => {
+        upperCaseHeaders[e.toUpperCase()] = headers[e];
+      });
+
+      return upperCaseHeaders;
+    };
   })(window);
 }).call(this);

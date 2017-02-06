@@ -1,6 +1,6 @@
-//= require gfm_auto_complete
-//= require jquery
-//= require jquery.atwho
+require('~/gfm_auto_complete');
+require('vendor/jquery.caret');
+require('vendor/jquery.atwho');
 
 const global = window.gl || (window.gl = {});
 const GfmAutoComplete = global.GfmAutoComplete;
@@ -60,6 +60,32 @@ describe('GfmAutoComplete', function () {
 
         expect($.fn.atwho.default.callbacks.sorter).toHaveBeenCalledWith(query, items, searchKey);
       });
+    });
+  });
+
+  describe('isLoading', function () {
+    it('should be true with loading data object item', function () {
+      expect(GfmAutoComplete.isLoading({ name: 'loading' })).toBe(true);
+    });
+
+    it('should be true with loading data array', function () {
+      expect(GfmAutoComplete.isLoading(['loading'])).toBe(true);
+    });
+
+    it('should be true with loading data object array', function () {
+      expect(GfmAutoComplete.isLoading([{ name: 'loading' }])).toBe(true);
+    });
+
+    it('should be false with actual array data', function () {
+      expect(GfmAutoComplete.isLoading([
+        { title: 'Foo' },
+        { title: 'Bar' },
+        { title: 'Qux' },
+      ])).toBe(false);
+    });
+
+    it('should be false with actual data item', function () {
+      expect(GfmAutoComplete.isLoading({ title: 'Foo' })).toBe(false);
     });
   });
 });

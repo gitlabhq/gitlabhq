@@ -93,7 +93,7 @@ describe NotificationSettingsController do
     end
 
     context 'not authorized' do
-      let(:private_project) { create(:project, :private) }
+      let(:private_project) { create(:empty_project, :private) }
       before { sign_in(user) }
 
       it 'returns 404' do

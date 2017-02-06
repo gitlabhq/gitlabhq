@@ -61,7 +61,7 @@ module Gitlab
         "Switch to new version" => %W(#{Gitlab.config.git.bin_path} checkout v#{latest_version}),
         "Install gems" => %W(bundle),
         "Migrate DB" => %W(bundle exec rake db:migrate),
-        "Recompile assets" => %W(bundle exec rake assets:clean assets:precompile),
+        "Recompile assets" => %W(bundle exec rake gitlab:assets:clean gitlab:assets:compile),
         "Clear cache" => %W(bundle exec rake cache:clear)
       }
     end

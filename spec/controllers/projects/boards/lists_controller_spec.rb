@@ -27,7 +27,7 @@ describe Projects::Boards::ListsController do
       parsed_response = JSON.parse(response.body)
 
       expect(response).to match_response_schema('lists')
-      expect(parsed_response.length).to eq 3
+      expect(parsed_response.length).to eq 2
     end
 
     context 'with unauthorized user' do

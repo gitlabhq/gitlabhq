@@ -2,7 +2,7 @@ require 'rails_helper'
 
 feature 'GFM autocomplete', feature: true, js: true do
   include WaitForAjax
-  let(:user)    { create(:user, username: 'someone.special') }
+  let(:user)    { create(:user, name: '💃speciąl someone💃', username: 'someone.special') }
   let(:project) { create(:project) }
   let(:label) { create(:label, project: project, title: 'special+') }
   let(:issue)   { create(:issue, project: project) }
@@ -57,6 +57,19 @@ feature 'GFM autocomplete', feature: true, js: true do
     wait_for_ajax
 
     expect(find('#at-view-64')).to have_selector('.cur:first-of-type')
+  end
+
+  it 'includes items for assignee dropdowns with non-ASCII characters in name' do
+    page.within '.timeline-content-form' do
+      find('#note_note').native.send_keys('')
+      find('#note_note').native.send_keys("@#{user.name[0...8]}")
+    end
+
+    expect(page).to have_selector('.atwho-container')
+
+    wait_for_ajax
+
+    expect(find('#at-view-64')).to have_content(user.name)
   end
 
   it 'selects the first item for non-assignee dropdowns if a query is entered' do

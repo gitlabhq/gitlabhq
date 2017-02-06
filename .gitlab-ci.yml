@@ -107,11 +107,13 @@ setup-test-env:
   <<: *dedicated-runner
   stage: prepare
   script:
-    - bundle exec rake assets:precompile 2>/dev/null
+    - npm install
+    - bundle exec rake gitlab:assets:compile
     - bundle exec ruby -Ispec -e 'require "spec_helper" ; TestEnv.init'
   artifacts:
     expire_in: 7d
     paths:
+      - node_modules
       - public/assets
       - tmp/tests
 
@@ -232,7 +234,7 @@ spinach 9 10 ruby21: *spinach-knapsack-ruby21
   script:
     - bundle exec $CI_BUILD_NAME
 
-rubocop: 
+rubocop:
   <<: *ruby-static-analysis
   <<: *dedicated-runner
   stage: test
@@ -271,7 +273,7 @@ rake db:migrate:reset:
   <<: *use-db
   <<: *dedicated-runner
   script:
-    - rake db:migrate:reset
+    - bundle exec rake db:migrate:reset
 
 rake db:seed_fu:
   stage: test
@@ -291,18 +293,17 @@ rake db:seed_fu:
     paths:
       - log/development.log
 
-teaspoon:
+karma:
   cache:
     paths:
       - vendor/ruby
-      - node_modules/
+      - node_modules
   stage: test
   <<: *use-db
   <<: *dedicated-runner
   script:
-    - npm install
     - npm link istanbul
-    - rake teaspoon
+    - bundle exec rake karma
   artifacts:
     name: coverage-javascript
     expire_in: 31d
@@ -353,10 +354,10 @@ migration paths:
     - cp config/resque.yml.example config/resque.yml
     - sed -i 's/localhost/redis/g' config/resque.yml
     - bundle install --without postgres production --jobs $(nproc) $FLAGS --retry=3
-    - rake db:drop db:create db:schema:load db:seed_fu
+    - bundle exec rake db:drop db:create db:schema:load db:seed_fu
     - git checkout $CI_BUILD_REF
     - source scripts/prepare_build.sh
-    - rake db:migrate
+    - bundle exec rake db:migrate
 
 coverage:
   stage: post-test
@@ -444,7 +445,7 @@ pages:
   <<: *dedicated-runner
   dependencies:
     - coverage
-    - teaspoon
+    - karma
     - lint:javascript:report
   script:
     - mv public/ .public/

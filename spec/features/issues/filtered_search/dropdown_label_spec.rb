@@ -40,6 +40,16 @@ describe 'Dropdown label', js: true, feature: true do
     visit namespace_project_issues_path(project.namespace, project)
   end
 
+  describe 'keyboard navigation' do
+    it 'selects label' do
+      send_keys_to_filtered_search('label:')
+
+      filtered_search.native.send_keys(:down, :down, :enter)
+
+      expect(filtered_search.value).to eq("label:~#{special_label.name} ")
+    end
+  end
+
   describe 'behavior' do
     it 'opens when the search bar has label:' do
       filtered_search.set('label:')
@@ -237,6 +247,23 @@ describe 'Dropdown label', js: true, feature: true do
     it 'opens label dropdown with existing milestone' do
       filtered_search.set('milestone:%v2.0 label:')
       expect(page).to have_css(js_dropdown_label, visible: true)
+    end
+  end
+
+  describe 'caching requests' do
+    it 'caches requests after the first load' do
+      filtered_search.set('label')
+      send_keys_to_filtered_search(':')
+      initial_size = dropdown_label_size
+
+      expect(initial_size).to be > 0
+
+      create(:label, project: project)
+      find('.filtered-search-input-container .clear-search').click
+      filtered_search.set('label')
+      send_keys_to_filtered_search(':')
+
+      expect(dropdown_label_size).to eq(initial_size)
     end
   end
 end

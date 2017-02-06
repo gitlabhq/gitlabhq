@@ -79,7 +79,7 @@ class Projects::GitHttpClientController < Projects::ApplicationController
     if project_id.blank?
       @project = nil
     else
-      @project = Project.find_with_namespace("#{params[:namespace_id]}/#{project_id}")
+      @project = Project.find_by_full_path("#{params[:namespace_id]}/#{project_id}")
     end
   end
 
@@ -109,12 +109,14 @@ class Projects::GitHttpClientController < Projects::ApplicationController
   end
 
   def repository
+    wiki? ? project.wiki.repository : project.repository
+  end
+
+  def wiki?
+    return @wiki if defined?(@wiki)
+
     _, suffix = project_id_with_suffix
-    if suffix == '.wiki.git'
-      project.wiki.repository
-    else
-      project.repository
-    end
+    @wiki = suffix == '.wiki.git'
   end
 
   def render_not_found

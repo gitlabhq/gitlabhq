@@ -125,7 +125,8 @@
   top: 100%;
   left: 0;
   z-index: 9;
-  width: 240px;
+  max-width: 280px;
+  min-width: 240px;
   margin-top: 2px;
   margin-bottom: 0;
   font-size: 14px;
@@ -224,6 +225,11 @@
     padding: 5px 8px;
     color: $gl-text-color-secondary;
   }
+}
+
+.dropdown-menu-drop-up {
+  top: auto;
+  bottom: 100%;
 }
 
 .dropdown-menu-large {

@@ -6,6 +6,7 @@
     "confidential"
   ],
   "properties" : {
+    "id": { "type": "integer" },
     "iid": { "type": "integer" },
     "title": { "type": "string" },
     "confidential": { "type": "boolean" },

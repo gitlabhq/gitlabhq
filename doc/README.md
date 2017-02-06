@@ -18,10 +18,10 @@
 - [Migrating from SVN](workflow/importing/migrating_from_svn.md) Convert a SVN repository to Git and GitLab.
 - [Permissions](user/permissions.md) Learn what each role in a project (external/guest/reporter/developer/master/owner) can do.
 - [Profile Settings](profile/README.md)
-- [Project Services](project_services/project_services.md) Integrate a project with external services, such as CI and chat.
+- [Project Services](user/project/integrations//project_services.md) Integrate a project with external services, such as CI and chat.
 - [Public access](public_access/public_access.md) Learn how you can allow public and internal access to projects.
 - [SSH](ssh/README.md) Setup your ssh keys and deploy keys for secure access to your projects.
-- [Webhooks](web_hooks/web_hooks.md) Let GitLab notify you when new code has been pushed to your project.
+- [Webhooks](user/project/integrations/webhooks.md) Let GitLab notify you when new code has been pushed to your project.
 - [Workflow](workflow/README.md) Using GitLab functionality and importing projects from GitHub and SVN.
 - [Git Attributes](user/project/git_attributes.md) Managing Git attributes using a `.gitattributes` file.
 - [Git cheatsheet](https://gitlab.com/gitlab-com/marketing/raw/master/design/print/git-cheatsheet/print-pdf/git-cheatsheet.pdf) Download a PDF describing the most used Git operations.
@@ -44,7 +44,7 @@
 - [Operations](administration/operations.md) Keeping GitLab up and running.
 - [Raketasks](raketasks/README.md) Backups, maintenance, automatic webhook setup and the importing of projects.
 - [Repository checks](administration/repository_checks.md) Periodic Git repository checks.
-- [Repository storages](administration/repository_storages.md) Manage the paths used to store repositories.
+- [Repository storage paths](administration/repository_storage_paths.md) Manage the paths used to store repositories.
 - [Security](security/README.md) Learn what you can do to further secure your GitLab instance.
 - [System hooks](system_hooks/system_hooks.md) Notifications when users, projects and keys are changed.
 - [Update](update/README.md) Update guides to upgrade your installation.
@@ -61,7 +61,6 @@
 - [Sidekiq Troubleshooting](administration/troubleshooting/sidekiq.md) Debug when Sidekiq appears hung and is not processing jobs.
 - [High Availability](administration/high_availability/README.md) Configure multiple servers for scaling or high availability.
 - [Container Registry](administration/container_registry.md) Configure Docker Registry with GitLab.
-- [Multiple mountpoints for the repositories storage](administration/repository_storages.md) Define multiple repository storage paths to distribute the storage load.
 
 ## Contributor documentation
 

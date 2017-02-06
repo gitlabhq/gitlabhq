@@ -7,7 +7,7 @@
     .oneline
       .title
         Release notes for tag
-        %strong #{@tag.name}
+        %strong= @tag.name
 
 
   = form_for(@release, method: :put, url: namespace_project_tag_release_path(@project.namespace, @project, @tag.name), html: { class: 'form-horizontal common-note-form release-form js-quick-submit' }) do |f|

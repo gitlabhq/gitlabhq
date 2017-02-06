@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Workhorse, lib: true do
-  let(:project)    { create(:project) }
+  let(:project)    { create(:project, :repository) }
   let(:repository) { project.repository }
 
   def decode_workhorse_header(array)
@@ -42,7 +42,8 @@ describe Gitlab::Workhorse, lib: true do
       out = {
         subprotocols: ['foo'],
         url: 'wss://example.com/terminal.ws',
-        headers: { 'Authorization' => ['Token x'] }
+        headers: { 'Authorization' => ['Token x'] },
+        max_session_time: 600
       }
       out[:ca_pem] = ca_pem if ca_pem
       out
@@ -53,7 +54,8 @@ describe Gitlab::Workhorse, lib: true do
         'Terminal' => {
           'Subprotocols' => ['foo'],
           'Url' => 'wss://example.com/terminal.ws',
-          'Header' => { 'Authorization' => ['Token x'] }
+          'Header' => { 'Authorization' => ['Token x'] },
+          'MaxSessionTime' => 600
         }
       }
       out['Terminal']['CAPem'] = ca_pem if ca_pem

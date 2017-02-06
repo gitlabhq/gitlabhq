@@ -1,8 +1,8 @@
 .content-block.build-header
   .header-content
-    = render 'ci/status/badge', status: @build.detailed_status(current_user)
-    Build
-    %strong ##{@build.id}
+    = render 'ci/status/badge', status: @build.detailed_status(current_user), link: false
+    Job
+    %strong.js-build-id ##{@build.id}
     in pipeline
     = link_to pipeline_path(@build.pipeline) do
       %strong ##{@build.pipeline.id}
@@ -17,6 +17,6 @@
       = render "user"
     = time_ago_with_tooltip(@build.created_at)
   - if can?(current_user, :update_build, @build) && @build.retryable?
-    = link_to "Retry build", retry_namespace_project_build_path(@project.namespace, @project, @build), class: 'btn btn-inverted-secondary pull-right', method: :post
+    = link_to "Retry job", retry_namespace_project_build_path(@project.namespace, @project, @build), class: 'btn btn-inverted-secondary pull-right', method: :post
   %button.btn.btn-default.pull-right.visible-xs-block.visible-sm-block.build-gutter-toggle.js-sidebar-build-toggle{ role: "button", type: "button" }
     = icon('angle-double-left')

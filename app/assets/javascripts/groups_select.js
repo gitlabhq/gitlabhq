@@ -59,11 +59,11 @@
       } else {
         avatar = gon.default_avatar_url;
       }
-      return "<div class='group-result'> <div class='group-name'>" + group.name + "</div> <div class='group-path'>" + group.path + "</div> </div>";
+      return "<div class='group-result'> <div class='group-name'>" + group.full_name + "</div> <div class='group-path'>" + group.full_path + "</div> </div>";
     };
 
     GroupsSelect.prototype.formatSelection = function(group) {
-      return group.name;
+      return group.full_name;
     };
 
     return GroupsSelect;
