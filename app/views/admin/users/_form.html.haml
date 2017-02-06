@@ -70,7 +70,7 @@
               Admin
             %p.light
               You cannot remove your own admin rights
-          -else
+          - else
             = f.radio_button :access_level, :admin
             = label_tag :admin do
               Admin

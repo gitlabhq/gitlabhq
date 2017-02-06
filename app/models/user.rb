@@ -533,6 +533,10 @@ class User < ActiveRecord::Base
     admin
   end
 
+  def is_auditor?
+    auditor
+  end
+
   def require_ssh_key?
     keys.count == 0 && Gitlab::ProtocolAccess.allowed?('ssh')
   end
