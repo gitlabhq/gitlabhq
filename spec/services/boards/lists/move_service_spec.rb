@@ -6,7 +6,6 @@ describe Boards::Lists::MoveService, services: true do
     let(:board)   { create(:board, project: project) }
     let(:user)    { create(:user) }
 
-    let!(:backlog)     { create(:backlog_list, board: board) }
     let!(:planning)    { create(:list, board: board, position: 0) }
     let!(:development) { create(:list, board: board, position: 1) }
     let!(:review)      { create(:list, board: board, position: 2) }
@@ -85,14 +84,6 @@ describe Boards::Lists::MoveService, services: true do
 
         expect(current_list_positions).to eq [0, 2, 3, 1]
       end
-    end
-
-    it 'keeps position of lists when list type is backlog' do
-      service = described_class.new(project, user, position: 2)
-
-      service.execute(backlog)
-
-      expect(current_list_positions).to eq [0, 1, 2, 3]
     end
 
     it 'keeps position of lists when list type is done' do

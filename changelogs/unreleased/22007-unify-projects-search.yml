@@ -1,0 +1,4 @@
+---
+title: Unify projects search by removing /projects/:search endpoint
+merge_request: 8877
+author:

@@ -1,5 +1,5 @@
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_tag('merge_request_widget/ci_bundle.js')
+  = page_specific_javascript_bundle_tag('merge_request_widget')
 
 - status_class = @pipeline ? " ci-#{@pipeline.status}" : nil
 
@@ -35,10 +35,10 @@
           The source branch will be removed.
       - elsif @merge_request.can_remove_source_branch?(current_user)
         .accept-control.checkbox
-          = label_tag :should_remove_source_branch, class: "remove_source_checkbox" do
+          = label_tag :should_remove_source_branch, class: "merge-param-checkbox" do
             = check_box_tag :should_remove_source_branch
             Remove source branch
-      .accept-control.right
+      .accept-control
         = link_to "#", class: "modify-merge-commit-link js-toggle-button" do
           = icon('edit')
           Modify commit message

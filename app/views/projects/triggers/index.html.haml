@@ -67,7 +67,7 @@
           In the
           %code .gitlab-ci.yml
           of another project, include the following snippet.
-          The project will be rebuilt at the end of the build.
+          The project will be rebuilt at the end of the job.
 
         %pre
           :plain
@@ -86,12 +86,12 @@
           :plain
              #{builds_trigger_url(@project.id, ref: 'REF_NAME')}?token=TOKEN
         %h5.prepend-top-default
-          Pass build variables
+          Pass job variables
 
         %p.light
           Add
           %code variables[VARIABLE]=VALUE
-          to an API request. Variable values can be used to distinguish between triggered builds and normal builds.
+          to an API request. Variable values can be used to distinguish between triggered jobs and normal jobs.
 
           With cURL:
 

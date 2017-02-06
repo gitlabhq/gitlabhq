@@ -1,5 +1,6 @@
 /* globals Vue */
 /* eslint-disable no-unused-vars, no-param-reassign */
+
 class EnvironmentsService {
 
   constructor(root) {

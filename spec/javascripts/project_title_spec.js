@@ -1,14 +1,12 @@
 /* eslint-disable space-before-function-paren, no-unused-expressions, no-return-assign, no-param-reassign, no-var, new-cap, wrap-iife, no-unused-vars, quotes, jasmine/no-expect-in-setup-teardown, max-len */
-
 /* global Project */
 
-/*= require bootstrap */
-/*= require select2 */
-/*= require lib/utils/type_utility */
-/*= require gl_dropdown */
-/*= require api */
-/*= require project_select */
-/*= require project */
+require('select2/select2.js');
+require('~/lib/utils/type_utility');
+require('~/gl_dropdown');
+require('~/api');
+require('~/project_select');
+require('~/project');
 
 (function() {
   window.gon || (window.gon = {});
@@ -17,6 +15,8 @@
 
   describe('Project Title', function() {
     preloadFixtures('static/project_title.html.raw');
+    loadJSONFixtures('projects.json');
+
     beforeEach(function() {
       loadFixtures('static/project_title.html.raw');
       return this.project = new Project();

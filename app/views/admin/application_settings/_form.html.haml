@@ -204,7 +204,7 @@
       .col-sm-10
         = f.number_field :max_artifacts_size, class: 'form-control'
         .help-block
-          Set the maximum file size each build's artifacts can have
+          Set the maximum file size each jobs's artifacts can have
           = link_to "(?)", help_page_path("user/admin_area/settings/continuous_integration", anchor: "maximum-artifacts-size")
 
   - if Gitlab.config.registry.enabled
@@ -508,6 +508,16 @@
         = f.number_field :housekeeping_gc_period, class: 'form-control'
         .help-block
           Number of Git pushes after which 'git gc' is run.
+
+  %fieldset
+    %legend Web terminal
+    .form-group
+      = f.label :terminal_max_session_time, 'Max session time', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :terminal_max_session_time, class: 'form-control'
+        .help-block
+          Maximum time for web terminal websocket connection (in seconds).
+          Set to 0 for unlimited time.
 
   .form-actions
     = f.submit 'Save', class: 'btn btn-save'

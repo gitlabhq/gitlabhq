@@ -1,8 +1,7 @@
 /* global Issuable */
-/* global Turbolinks */
 
-//= require issuable
-//= require turbolinks
+require('~/lib/utils/url_utility');
+require('~/issuable');
 
 (() => {
   const BASE_URL = '/user/project/issues?scope=all&state=closed';
@@ -42,39 +41,39 @@
       });
 
       it('should contain only the default parameters', () => {
-        spyOn(Turbolinks, 'visit');
+        spyOn(gl.utils, 'visitUrl');
 
         Issuable.filterResults($filtersForm);
 
-        expect(Turbolinks.visit).toHaveBeenCalledWith(BASE_URL + DEFAULT_PARAMS);
+        expect(gl.utils.visitUrl).toHaveBeenCalledWith(BASE_URL + DEFAULT_PARAMS);
       });
 
       it('should filter for the phrase "broken"', () => {
-        spyOn(Turbolinks, 'visit');
+        spyOn(gl.utils, 'visitUrl');
 
         updateForm({ search: 'broken' }, $filtersForm);
         Issuable.filterResults($filtersForm);
         const params = `${DEFAULT_PARAMS}&search=broken`;
 
-        expect(Turbolinks.visit).toHaveBeenCalledWith(BASE_URL + params);
+        expect(gl.utils.visitUrl).toHaveBeenCalledWith(BASE_URL + params);
       });
 
       it('should keep query parameters after modifying filter', () => {
-        spyOn(Turbolinks, 'visit');
+        spyOn(gl.utils, 'visitUrl');
 
         // initial filter
         updateForm({ milestone_title: 'v1.0' }, $filtersForm);
 
         Issuable.filterResults($filtersForm);
         let params = `${DEFAULT_PARAMS}&milestone_title=v1.0`;
-        expect(Turbolinks.visit).toHaveBeenCalledWith(BASE_URL + params);
+        expect(gl.utils.visitUrl).toHaveBeenCalledWith(BASE_URL + params);
 
         // update filter
         updateForm({ label_name: 'Frontend' }, $filtersForm);
 
         Issuable.filterResults($filtersForm);
         params = `${DEFAULT_PARAMS}&milestone_title=v1.0&label_name=Frontend`;
-        expect(Turbolinks.visit).toHaveBeenCalledWith(BASE_URL + params);
+        expect(gl.utils.visitUrl).toHaveBeenCalledWith(BASE_URL + params);
       });
     });
   });
