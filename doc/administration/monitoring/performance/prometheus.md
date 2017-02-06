@@ -1,12 +1,12 @@
 # GitLab Prometheus
 
 >**Notes:**
-- Prometheus and the node exporter are bundled in the Omnibus GitLab package
+- Prometheus and Node Exporter have been bundled in the Omnibus GitLab package
   since GitLab 8.16. For installations from source you will have to install
   them yourself. Over subsequent releases additional GitLab metrics will be
   captured.
-- Prometheus services are off by default but will be on starting with GitLab 9.0.
-- Prometheus and it's exporters do not authenticate users, and will be available to anyone who can access them.
+- Prometheus and its exporters are off by default but will be on starting with GitLab 9.0.
+- Prometheus and its exporters do not authenticate users, and will be available to anyone who can access them.
 
 [Prometheus] is a powerful time-series monitoring service, providing a flexible
 platform for monitoring GitLab and other software products.
@@ -21,10 +21,6 @@ connect directly to Prometheus or utilize a dashboard tool like [Grafana].
 
 ## Configuring Prometheus
 
->**Note:**
-- Available since Omnibus GitLab 8.16. For installations from source you'll
-have to install and configure it yourself.
-
 To enable Prometheus:
 
 1. Edit `/etc/gitlab/gitlab.rb`
@@ -38,17 +34,17 @@ To enable Prometheus:
    take effect
 
 By default, Prometheus will run as the `gitlab-prometheus` user and listen on
-TCP port `9090`. If the [node exporter](#node-exporter) service
+`http://localhost:9090`. If the [node exporter](#node-exporter) service
 has been enabled, it will automatically be set up as a monitoring target for
 Prometheus.
 
 ## Viewing Performance Metrics
 
 After you have [enabled Prometheus](#configuring-prometheus), you can visit
-`http://<your_domain_name>:9090` for the dashboard that Prometheus offers by default.
+`http://localhost:9090` for the dashboard that Prometheus offers by default.
 
 >**Note:**
-If SSL has been enabled, you will not be able to access Prometheus on the same hostname as GitLab due to [HSTS](https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security). We recommend setting up a new DNS entry for Prometheus to access the console, for example `http://prometheus.example.com:9090/`. 
+If SSL has been enabled, you may not be able to access Prometheus on the same browser as GitLab due to [HSTS][hsts]. We plan to [provide access via GitLab][multi-user-prometheus], but in the interim there are some workarounds: using a separate browser for Prometheus, resetting HSTS, or having [nginx proxy it][nginx-custom-config].
 
 The performance data collected by Prometheus can be viewed directly in the
 Prometheus console or through a compatible dashboard tool.
@@ -77,10 +73,6 @@ making it easy to configure and use.
 
 ### Node exporter
 
->**Note:**
-Available since Omnibus GitLab 8.16. For installations from source you'll
-have to install and configure it yourself.
-
 The [node exporter] allows you to measure various machine resources such as
 memory, disk and CPU utilization.
 
@@ -98,7 +90,7 @@ To enable the node exporter:
    take effect
 
 Prometheus it will now automatically begin collecting performance data from
-the node exporter. You can visit `<your_domain_name>:9100/metrics` for a real
+the node exporter. You can visit `http://localhost:9100/metrics` for a real
 time representation of the metrics that are collected. Refresh the page and
 you will see the data change.
 
@@ -110,3 +102,6 @@ you will see the data change.
 [scrape-config]: https://prometheus.io/docs/operating/configuration/#%3Cscrape_config%3E
 [prom-exporters]: https://prometheus.io/docs/instrumenting/exporters/
 [reconfigure]: ../../restart_gitlab.md#omnibus-gitlab-reconfigure
+[hsts]: https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security
+[multi-user-prometheus]: https://gitlab.com/gitlab-org/multi-user-prometheus
+[nginx-custom-config]: https://docs.gitlab.com/omnibus/settings/configuration.html#inserting-custom-nginx-settings-into-the-gitlab-server-block
