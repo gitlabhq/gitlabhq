@@ -1,0 +1,4 @@
+---
+title: Remove global CI/CD setting to preserve backward compatibility
+merge_request: 8981
+author:
