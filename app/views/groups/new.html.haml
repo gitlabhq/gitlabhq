@@ -27,6 +27,12 @@
           = f.check_box :chat_team
           Link the group to a new or existing Mattermost team
 
+- enabled = Gitlab.config.mattermost.enabled
+- if enabled
+  .form-group
+    .col-sm-offset-2.col-sm-10
+      = f.text_field :name, placeholder: 'Mattermost team name', class: 'form-control  mattermost-team-name'
+
   .form-group
     .col-sm-offset-2.col-sm-10
       = render 'shared/group_tips'

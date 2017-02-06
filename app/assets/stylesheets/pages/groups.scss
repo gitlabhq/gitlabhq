@@ -74,8 +74,18 @@
   }
 }
 
-.mattermost-icon svg{
+.mattermost-icon svg {
   width: 16px;
   height: 16px;
   vertical-align: text-bottom;
+}
+
+.mattermost-team-name {
+  color: $gl-text-color-secondary;
+}
+
+.mattermost-info {
+  display: block;
+  color: $gl-text-color-secondary;
+  margin-top: 10px;
 }
