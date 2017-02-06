@@ -53,6 +53,8 @@ class Project < ActiveRecord::Base
     update_column(:last_activity_at, self.created_at)
   end
 
+  after_destroy :remove_pages
+
   # update visibility_level of forks
   after_update :update_forks_visibility_level
   def update_forks_visibility_level
@@ -148,6 +150,7 @@ class Project < ActiveRecord::Base
   has_many :lfs_objects, through: :lfs_objects_projects
   has_many :project_group_links, dependent: :destroy
   has_many :invited_groups, through: :project_group_links, source: :group
+  has_many :pages_domains, dependent: :destroy
   has_many :todos, dependent: :destroy
   has_many :notification_settings, dependent: :destroy, as: :source
 
@@ -955,6 +958,7 @@ class Project < ActiveRecord::Base
     Gitlab::AppLogger.info "Project was renamed: #{old_path_with_namespace} -> #{new_path_with_namespace}"
 
     Gitlab::UploadsTransfer.new.rename_project(path_was, path, namespace.path)
+    Gitlab::PagesTransfer.new.rename_project(path_was, path, namespace.path)
   end
 
   # Expires various caches before a project is renamed.
@@ -1154,6 +1158,45 @@ class Project < ActiveRecord::Base
 
   def runners_token
     ensure_runners_token!
+  end
+
+  def pages_deployed?
+    Dir.exist?(public_pages_path)
+  end
+
+  def pages_url
+    # The hostname always needs to be in downcased
+    # All web servers convert hostname to lowercase
+    host = "#{namespace.path}.#{Settings.pages.host}".downcase
+
+    # The host in URL always needs to be downcased
+    url = Gitlab.config.pages.url.sub(/^https?:\/\//) do |prefix|
+      "#{prefix}#{namespace.path}."
+    end.downcase
+
+    # If the project path is the same as host, we serve it as group page
+    return url if host == path
+
+    "#{url}/#{path}"
+  end
+
+  def pages_path
+    File.join(Settings.pages.path, path_with_namespace)
+  end
+
+  def public_pages_path
+    File.join(pages_path, 'public')
+  end
+
+  def remove_pages
+    # 1. We rename pages to temporary directory
+    # 2. We wait 5 minutes, due to NFS caching
+    # 3. We asynchronously remove pages with force
+    temp_path = "#{path}.#{SecureRandom.hex}.deleted"
+
+    if Gitlab::PagesTransfer.new.rename_project(path, temp_path, namespace.path)
+      PagesWorker.perform_in(5.minutes, :remove, namespace.path, temp_path)
+    end
   end
 
   def wiki

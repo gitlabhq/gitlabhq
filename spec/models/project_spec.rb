@@ -60,6 +60,7 @@ describe Project, models: true do
     it { is_expected.to have_many(:runners) }
     it { is_expected.to have_many(:variables) }
     it { is_expected.to have_many(:triggers) }
+    it { is_expected.to have_many(:pages_domains) }
     it { is_expected.to have_many(:labels).class_name('ProjectLabel').dependent(:destroy) }
     it { is_expected.to have_many(:users_star_projects).dependent(:destroy) }
     it { is_expected.to have_many(:environments).dependent(:destroy) }
@@ -1067,6 +1068,22 @@ describe Project, models: true do
     end
   end
 
+  describe '#pages_deployed?' do
+    let(:project) { create :empty_project }
+
+    subject { project.pages_deployed? }
+
+    context 'if public folder does exist' do
+      before { allow(Dir).to receive(:exist?).with(project.public_pages_path).and_return(true) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context "if public folder doesn't exist" do
+      it { is_expected.to be_falsey }
+    end
+  end
+
   describe '.search' do
     let(:project) { create(:empty_project, description: 'kitten mittens') }
 
@@ -1843,5 +1860,32 @@ describe Project, models: true do
 
   def enable_lfs
     allow(Gitlab.config.lfs).to receive(:enabled).and_return(true)
+  end
+
+  describe '#pages_url' do
+    let(:group) { create :group, name: group_name }
+    let(:project) { create :empty_project, namespace: group, name: project_name }
+    let(:domain) { 'Example.com' }
+
+    subject { project.pages_url }
+
+    before do
+      allow(Settings.pages).to receive(:host).and_return(domain)
+      allow(Gitlab.config.pages).to receive(:url).and_return('http://example.com')
+    end
+
+    context 'group page' do
+      let(:group_name) { 'Group' }
+      let(:project_name) { 'group.example.com' }
+
+      it { is_expected.to eq("http://group.example.com") }
+    end
+
+    context 'project page' do
+      let(:group_name) { 'Group' }
+      let(:project_name) { 'Project' }
+
+      it { is_expected.to eq("http://group.example.com/project") }
+    end
   end
 end
