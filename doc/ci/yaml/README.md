@@ -1008,7 +1008,8 @@ match them literally.
 A simple example:
 
 ```yaml
-coverage: /\(\d+\.\d+\) covered\./
+job1:
+  coverage: /Code coverage: \d+\.\d+/
 ```
 
 ## Git Strategy
