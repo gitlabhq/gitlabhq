@@ -1,6 +1,8 @@
 /* global Vue, gl */
 /* eslint-disable no-param-reassign, no-plusplus */
 
+window.Vue = require('vue');
+
 ((gl) => {
   const PAGINATION_UI_BUTTON_LIMIT = 4;
   const UI_LIMIT = 6;
@@ -13,6 +15,8 @@
   gl.VueGlPagination = Vue.extend({
     props: {
 
+      // TODO: Consider refactoring in light of turbolinks removal.
+
       /**
         This function will take the information given by the pagination component
         And make a new Turbolinks call
@@ -20,7 +24,7 @@
         Here is an example `change` method:
 
         change(pagenum, apiScope) {
-          Turbolinks.visit(`?scope=${apiScope}&p=${pagenum}`);
+          gl.utils.visitUrl(`?scope=${apiScope}&p=${pagenum}`);
         },
       */
 

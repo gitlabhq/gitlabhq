@@ -91,10 +91,10 @@ describe 'Pipeline', :feature, :js do
           end
         end
 
-        it 'should be possible to retry the success build' do
+        it 'should be possible to retry the success job' do
           find('#ci-badge-build .ci-action-icon-container').trigger('click')
 
-          expect(page).not_to have_content('Retry build')
+          expect(page).not_to have_content('Retry job')
         end
       end
 
@@ -113,11 +113,11 @@ describe 'Pipeline', :feature, :js do
         it 'should be possible to retry the failed build' do
           find('#ci-badge-test .ci-action-icon-container').trigger('click')
 
-          expect(page).not_to have_content('Retry build')
+          expect(page).not_to have_content('Retry job')
         end
       end
 
-      context 'when pipeline has manual builds' do
+      context 'when pipeline has manual jobs' do
         it 'shows the skipped icon and a play action for the manual build' do
           page.within('#ci-badge-manual-build') do
             expect(page).to have_selector('.js-ci-status-icon-manual')
@@ -129,14 +129,14 @@ describe 'Pipeline', :feature, :js do
           end
         end
 
-        it 'should be possible to play the manual build' do
+        it 'should be possible to play the manual job' do
           find('#ci-badge-manual-build .ci-action-icon-container').trigger('click')
 
-          expect(page).not_to have_content('Play build')
+          expect(page).not_to have_content('Play job')
         end
       end
 
-      context 'when pipeline has external build' do
+      context 'when pipeline has external job' do
         it 'shows the success icon and the generic comit status build' do
           expect(page).to have_selector('.js-ci-status-icon-success')
           expect(page).to have_content('jenkins')
@@ -146,12 +146,12 @@ describe 'Pipeline', :feature, :js do
     end
 
     context 'page tabs' do
-      it 'shows Pipeline and Builds tabs with link' do
+      it 'shows Pipeline and Jobs tabs with link' do
         expect(page).to have_link('Pipeline')
-        expect(page).to have_link('Builds')
+        expect(page).to have_link('Jobs')
       end
 
-      it 'shows counter in Builds tab' do
+      it 'shows counter in Jobs tab' do
         expect(page.find('.js-builds-counter').text).to eq(pipeline.statuses.count.to_s)
       end
 
@@ -160,7 +160,7 @@ describe 'Pipeline', :feature, :js do
       end
     end
 
-    context 'retrying builds' do
+    context 'retrying jobs' do
       it { expect(page).not_to have_content('retried') }
 
       context 'when retrying' do
@@ -170,7 +170,7 @@ describe 'Pipeline', :feature, :js do
       end
     end
 
-    context 'canceling builds' do
+    context 'canceling jobs' do
       it { expect(page).not_to have_selector('.ci-canceled') }
 
       context 'when canceling' do
@@ -191,7 +191,7 @@ describe 'Pipeline', :feature, :js do
       visit builds_namespace_project_pipeline_path(project.namespace, project, pipeline)
     end
 
-    it 'shows a list of builds' do
+    it 'shows a list of jobs' do
       expect(page).to have_content('Test')
       expect(page).to have_content(build_passed.id)
       expect(page).to have_content('Deploy')
@@ -203,26 +203,26 @@ describe 'Pipeline', :feature, :js do
       expect(page).to have_link('Play')
     end
 
-    it 'shows Builds tab pane as active' do
+    it 'shows jobs tab pane as active' do
       expect(page).to have_css('#js-tab-builds.active')
     end
 
     context 'page tabs' do
-      it 'shows Pipeline and Builds tabs with link' do
+      it 'shows Pipeline and Jobs tabs with link' do
         expect(page).to have_link('Pipeline')
-        expect(page).to have_link('Builds')
+        expect(page).to have_link('Jobs')
       end
 
-      it 'shows counter in Builds tab' do
+      it 'shows counter in Jobs tab' do
         expect(page.find('.js-builds-counter').text).to eq(pipeline.statuses.count.to_s)
       end
 
-      it 'shows Builds tab as active' do
+      it 'shows Jobs tab as active' do
         expect(page).to have_css('li.js-builds-tab-link.active')
       end
     end
 
-    context 'retrying builds' do
+    context 'retrying jobs' do
       it { expect(page).not_to have_content('retried') }
 
       context 'when retrying' do
@@ -233,7 +233,7 @@ describe 'Pipeline', :feature, :js do
       end
     end
 
-    context 'canceling builds' do
+    context 'canceling jobs' do
       it { expect(page).not_to have_selector('.ci-canceled') }
 
       context 'when canceling' do
@@ -244,7 +244,7 @@ describe 'Pipeline', :feature, :js do
       end
     end
 
-    context 'playing manual build' do
+    context 'playing manual job' do
       before do
         within '.pipeline-holder' do
           click_link('Play')

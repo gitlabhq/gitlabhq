@@ -3,7 +3,7 @@
 = render "projects/pipelines/head"
 
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_tag("environments/environments_bundle.js")
+  = page_specific_javascript_bundle_tag("environments")
 
 #environments-list-view{ data: { environments_data: environments_list_data,
   "can-create-deployment" => can?(current_user, :create_deployment, @project).to_s,

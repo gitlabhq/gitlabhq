@@ -10,6 +10,7 @@ module Banzai
       def self.filters
         @filters ||= FilterArray[
           Filter::SyntaxHighlightFilter,
+          Filter::PlantumlFilter,
           Filter::SanitizationFilter,
 
           Filter::MathFilter,

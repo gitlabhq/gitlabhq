@@ -3,9 +3,9 @@ module Files
     class ValidationError < StandardError; end
 
     def execute
-      @source_project = params[:source_project] || @project
-      @source_branch = params[:source_branch]
-      @target_branch  = params[:target_branch]
+      @start_project = params[:start_project] || @project
+      @start_branch = params[:start_branch]
+      @target_branch = params[:target_branch]
 
       @commit_message = params[:commit_message]
       @file_path      = params[:file_path]
@@ -22,10 +22,8 @@ module Files
       # Validate parameters
       validate
 
-      # Create new branch if it different from source_branch
-      if different_branch?
-        create_target_branch
-      end
+      # Create new branch if it different from start_branch
+      validate_target_branch if different_branch?
 
       result = commit
       if result
@@ -40,7 +38,7 @@ module Files
     private
 
     def different_branch?
-      @source_branch != @target_branch || @source_project != @project
+      @start_branch != @target_branch || @start_project != @project
     end
 
     def file_has_changed?
@@ -61,22 +59,23 @@ module Files
       end
 
       unless project.empty_repo?
-        unless @source_project.repository.branch_names.include?(@source_branch)
+        unless @start_project.repository.branch_exists?(@start_branch)
           raise_error('You can only create or edit files when you are on a branch')
         end
 
         if different_branch?
-          if repository.branch_names.include?(@target_branch)
+          if repository.branch_exists?(@target_branch)
             raise_error('Branch with such name already exists. You need to switch to this branch in order to make changes')
           end
         end
       end
     end
 
-    def create_target_branch
-      result = CreateBranchService.new(project, current_user).execute(@target_branch, @source_branch, source_project: @source_project)
+    def validate_target_branch
+      result = ValidateNewBranchService.new(project, current_user).
+        execute(@target_branch)
 
-      unless result[:status] == :success
+      if result[:status] == :error
         raise_error("Something went wrong when we tried to create #{@target_branch} for you: #{result[:message]}")
       end
     end

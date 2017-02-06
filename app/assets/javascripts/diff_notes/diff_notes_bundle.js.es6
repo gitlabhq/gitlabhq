@@ -1,12 +1,13 @@
-/* eslint-disable func-names, comma-dangle, new-cap, no-new */
+/* eslint-disable func-names, comma-dangle, new-cap, no-new, import/newline-after-import, no-multi-spaces, max-len */
 /* global Vue */
 /* global ResolveCount */
 
-//= require_directory ./models
-//= require_directory ./stores
-//= require_directory ./services
-//= require_directory ./mixins
-//= require_directory ./components
+function requireAll(context) { return context.keys().map(context); }
+requireAll(require.context('./models',     false, /^\.\/.*\.(js|es6)$/));
+requireAll(require.context('./stores',     false, /^\.\/.*\.(js|es6)$/));
+requireAll(require.context('./services',   false, /^\.\/.*\.(js|es6)$/));
+requireAll(require.context('./mixins',     false, /^\.\/.*\.(js|es6)$/));
+requireAll(require.context('./components', false, /^\.\/.*\.(js|es6)$/));
 
 $(() => {
   const COMPONENT_SELECTOR = 'resolve-btn, resolve-discussion-btn, jump-to-discussion, comment-and-resolve-btn';

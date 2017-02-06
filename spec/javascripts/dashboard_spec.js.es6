@@ -1,9 +1,7 @@
 /* eslint-disable no-new */
 
-/*= require sidebar */
-/*= require jquery */
-/*= require js.cookie */
-/*= require lib/utils/text_utility */
+require('~/sidebar');
+require('~/lib/utils/text_utility');
 
 ((global) => {
   describe('Dashboard', () => {

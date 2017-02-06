@@ -11,9 +11,9 @@
 
         - if project_nav_tab? :builds
           = nav_link(controller: %w(builds)) do
-            = link_to project_builds_path(@project), title: 'Builds', class: 'shortcuts-builds' do
+            = link_to project_builds_path(@project), title: 'Jobs', class: 'shortcuts-builds' do
               %span
-                Builds
+                Jobs
 
         - if project_nav_tab? :environments
           = nav_link(controller: %w(environments)) do

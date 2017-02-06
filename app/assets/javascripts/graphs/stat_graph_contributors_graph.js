@@ -2,7 +2,7 @@
 /* global d3 */
 /* global ContributorsGraph */
 
-/*= require d3 */
+window.d3 = require('d3');
 
 (function() {
   var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; },

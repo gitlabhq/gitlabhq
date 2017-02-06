@@ -3,10 +3,10 @@
 /* global EnvironmentsService */
 /* global Flash */
 
-//= require vue
-//= require vue-resource
-//= require_tree ../services/
-//= require ./environment_item
+window.Vue = require('vue');
+window.Vue.use(require('vue-resource'));
+require('../services/environments_service');
+require('./environment_item');
 
 (() => {
   window.gl = window.gl || {};
@@ -180,7 +180,7 @@
                 <tr>
                   <th class="environments-name">Environment</th>
                   <th class="environments-deploy">Last deployment</th>
-                  <th class="environments-build">Build</th>
+                  <th class="environments-build">Job</th>
                   <th class="environments-commit">Commit</th>
                   <th class="environments-date">Updated</th>
                   <th class="hidden-xs environments-actions"></th>

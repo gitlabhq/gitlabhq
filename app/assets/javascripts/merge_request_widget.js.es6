@@ -2,7 +2,8 @@
 /* global notify */
 /* global notifyPermissions */
 /* global merge_request_widget */
-/* global Turbolinks */
+
+require('./smart_interval');
 
 ((global) => {
   var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i += 1) { if (i in this && this[i] === item) return i; } return -1; };
@@ -69,13 +70,13 @@
     }
 
     MergeRequestWidget.prototype.clearEventListeners = function() {
-      return $(document).off('page:change.merge_request');
+      return $(document).off('DOMContentLoaded');
     };
 
     MergeRequestWidget.prototype.addEventListeners = function() {
       var allowedPages;
       allowedPages = ['show', 'commits', 'pipelines', 'changes'];
-      $(document).on('page:change.merge_request', (function(_this) {
+      $(document).on('DOMContentLoaded', (function(_this) {
         return function() {
           var page;
           page = $('body').data('page').split(':').last();

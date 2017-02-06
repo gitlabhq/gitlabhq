@@ -1,8 +1,8 @@
 /* eslint-disable space-before-function-paren, quotes, comma-dangle, dot-notation, quote-props, no-var, max-len */
 
-/*= require merge_request_widget */
-/*= require smart_interval */
-/*= require lib/utils/datetime_utility */
+require('~/merge_request_widget');
+require('~/smart_interval');
+require('~/lib/utils/datetime_utility');
 
 (function() {
   describe('MergeRequestWidget', function() {

@@ -1,6 +1,6 @@
-//= require gfm_auto_complete
-//= require jquery
-//= require jquery.atwho
+require('~/gfm_auto_complete');
+require('vendor/jquery.caret');
+require('vendor/jquery.atwho');
 
 const global = window.gl || (window.gl = {});
 const GfmAutoComplete = global.GfmAutoComplete;

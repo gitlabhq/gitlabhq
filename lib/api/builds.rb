@@ -209,7 +209,7 @@ module API
 
         build = get_build!(params[:build_id])
 
-        bad_request!("Unplayable Build") unless build.playable?
+        bad_request!("Unplayable Job") unless build.playable?
 
         build.play(current_user)
 

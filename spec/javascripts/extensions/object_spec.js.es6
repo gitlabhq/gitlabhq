@@ -1,4 +1,4 @@
-/*= require extensions/object */
+require('~/extensions/object');
 
 describe('Object extensions', () => {
   describe('assign', () => {

@@ -10,8 +10,8 @@ feature 'toggler_behavior', js: true, feature: true do
   before do
     login_as :admin
     project = merge_request.source_project
-    visit "#{namespace_project_merge_request_path(project.namespace, project, merge_request)}#{fragment_id}"
     page.current_window.resize_to(1000, 300)
+    visit "#{namespace_project_merge_request_path(project.namespace, project, merge_request)}#{fragment_id}"
   end
 
   describe 'scroll position' do

@@ -1,9 +1,10 @@
 /* eslint-disable class-methods-use-this */
 
-//= require lib/utils/url_utility */
+require('./lib/utils/url_utility');
 
 (() => {
   const UNFOLD_COUNT = 20;
+  let isBound = false;
 
   class Diff {
     constructor() {
@@ -17,10 +18,12 @@
         $('.content-wrapper .container-fluid').removeClass('container-limited');
       }
 
-      $(document)
-        .off('click', '.js-unfold, .diff-line-num a')
-        .on('click', '.js-unfold', this.handleClickUnfold.bind(this))
-        .on('click', '.diff-line-num a', this.handleClickLineNum.bind(this));
+      if (!isBound) {
+        $(document)
+          .on('click', '.js-unfold', this.handleClickUnfold.bind(this))
+          .on('click', '.diff-line-num a', this.handleClickLineNum.bind(this));
+        isBound = true;
+      }
 
       this.openAnchoredDiff();
     }
