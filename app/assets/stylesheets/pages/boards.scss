@@ -389,6 +389,13 @@
     flex: 1;
     margin-top: 0;
 
+    &.add-issues-empty-state-filter {
+      -webkit-flex-direction: column;
+      flex-direction: column;
+      -webkit-justify-content: center;
+      justify-content: center;
+    }
+
     > .row {
       width: 100%;
       margin: auto 0;
@@ -416,6 +423,14 @@
 .add-issues-search {
   display: -webkit-flex;
   display: flex;
+
+  .form-control {
+    margin-left: auto;
+
+    @media (min-width: $screen-sm-min) {
+      max-width: 200px;
+    }
+  }
 }
 
 .add-issues-list-column {
@@ -485,4 +500,25 @@
   font-size: 9px;
   line-height: 15px;
   border-radius: 50%;
+}
+
+.modal-filters {
+  display: flex;
+
+  > .dropdown {
+    display: none;
+    margin-right: 10px;
+
+    @media (min-width: $screen-sm-min) {
+      display: block;
+    }
+  }
+
+  .dropdown-menu-toggle {
+    width: 100px;
+
+    @media (min-width: $screen-md-min) {
+      width: 140px;
+    }
+  }
 }
