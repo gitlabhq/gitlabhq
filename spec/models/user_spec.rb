@@ -208,6 +208,20 @@ describe User, models: true do
         end
       end
     end
+
+    describe 'ghost users' do
+      it 'does not allow a non-blocked ghost user' do
+        user = build(:user, :ghost, state: :active)
+
+        expect(user).to be_invalid
+      end
+
+      it 'allows a blocked ghost user' do
+        user = build(:user, :ghost, state: :blocked)
+
+        expect(user).to be_valid
+      end
+    end
   end
 
   describe "scopes" do
