@@ -996,9 +996,8 @@ job:
 
 ### coverage
 
-`coverage` allows you to configure how coverage will be filtered out from the
-build outputs. Setting this in the job context will define how the output
-filtering and extracting the coverage information from your builds will work.
+`coverage` allows you to configure how code coverage will be extracted from the
+job output.
 
 Regular expressions are the only valid kind of value expected here. So, using
 surrounding `/` is mandatory in order to consistently and explicitly represent
