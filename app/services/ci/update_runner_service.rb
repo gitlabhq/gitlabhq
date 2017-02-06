@@ -7,8 +7,8 @@ module Ci
     end
 
     def update(params)
-      runner.update(params).tap do
-        runner.tick_runner_queue
+      runner.update(params).tap do |updated|
+        runner.tick_runner_queue if updated
       end
     end
   end
