@@ -483,7 +483,6 @@ class NotificationService
 
     users = users.to_a.compact.uniq
     users = users.reject(&:blocked?)
-    users = users.reject(&:ghost?)
 
     users.reject do |user|
       global_notification_setting = user.global_notification_setting

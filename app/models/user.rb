@@ -135,6 +135,7 @@ class User < ActiveRecord::Base
   validate :unique_email, if: ->(user) { user.email_changed? }
   validate :owns_notification_email, if: ->(user) { user.notification_email_changed? }
   validate :owns_public_email, if: ->(user) { user.public_email_changed? }
+  validate :ghost_users_must_be_blocked
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
   before_validation :generate_password, on: :create
@@ -196,8 +197,6 @@ class User < ActiveRecord::Base
           "administrator if you think this is an error."
       end
     end
-
-    state :ghost
   end
 
   mount_uploader :avatar, AvatarUploader
@@ -372,7 +371,7 @@ class User < ActiveRecord::Base
     # Return (create if necessary) the ghost user. The ghost user
     # owns records previously belonging to deleted users.
     def ghost
-      ghost_user = User.with_state(:ghost).first
+      ghost_user = User.find_by_ghost(true)
 
       ghost_user ||
         begin
@@ -384,7 +383,7 @@ class User < ActiveRecord::Base
           # Recheck if a ghost user is already present (one might have been)
           # added between the time we last checked (first line of this method)
           # and the time we acquired the lock.
-          ghost_user = User.with_state(:ghost).first
+          ghost_user = User.find_by_ghost(true)
           return ghost_user if ghost_user.present?
 
           uniquify = Uniquify.new
@@ -398,7 +397,7 @@ class User < ActiveRecord::Base
 
           User.create(
             username: username, password: Devise.friendly_token,
-            email: email, name: "Ghost User", state: :ghost
+            email: email, name: "Ghost User", state: :blocked, ghost: true
           )
         ensure
           advisory_lock.unlock
@@ -500,6 +499,12 @@ class User < ActiveRecord::Base
     return if public_email.blank?
 
     errors.add(:public_email, "is not an email you own") unless all_emails.include?(public_email)
+  end
+
+  def ghost_users_must_be_blocked
+    if ghost? && !blocked?
+      errors.add(:ghost, 'cannot be enabled for a user who is not blocked.')
+    end
   end
 
   def update_emails_with_primary_email
