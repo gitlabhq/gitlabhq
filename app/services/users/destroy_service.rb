@@ -37,12 +37,12 @@ module Users
     end
 
     private
-
+    
     def move_issues_to_ghost_user(user)
       ghost_user = User.ghost
 
       Issue.transaction do
-        user.issues.each { |issue| issue.update!(author: ghost_user) }
+        user.issues.update_all(author_id: ghost_user.id)
       end
 
       user.reload

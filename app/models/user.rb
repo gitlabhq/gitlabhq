@@ -376,6 +376,17 @@ class User < ActiveRecord::Base
 
       ghost_user ||
         begin
+          # Since we only want a single ghost user in an instance, we use an
+          # advisory lock to ensure than this block is never run concurrently.
+          advisory_lock = Gitlab::Database::AdvisoryLocking.new(:ghost_user)
+          advisory_lock.lock
+
+          # Recheck if a ghost user is already present (one might have been)
+          # added between the time we last checked (first line of this method)
+          # and the time we acquired the lock.
+          ghost_user = User.with_state(:ghost).first
+          return ghost_user if ghost_user.present?
+
           uniquify = Uniquify.new
 
           username = uniquify.string("ghost", -> (s) { User.find_by_username(s) })
@@ -389,6 +400,8 @@ class User < ActiveRecord::Base
             username: username, password: Devise.friendly_token,
             email: email, name: "Ghost User", state: :ghost
           )
+        ensure
+          advisory_lock.unlock
         end
     end
   end
