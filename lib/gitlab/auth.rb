@@ -5,10 +5,13 @@ module Gitlab
     # Scopes used for GitLab API access
     API_SCOPES = [:api, :read_user].freeze
 
-    # Scopes used by doorkeeper-openid_connect
+    # Scopes used for OpenID Connect
     OPENID_SCOPES = [:openid].freeze
 
+    # Default scopes for OAuth applications that don't define their own
     DEFAULT_SCOPES = [:api].freeze
+
+    # Other available scopes
     OPTIONAL_SCOPES = (API_SCOPES + OPENID_SCOPES - DEFAULT_SCOPES).freeze
 
     class << self

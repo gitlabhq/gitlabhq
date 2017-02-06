@@ -9,7 +9,8 @@ class PersonalAccessToken < ActiveRecord::Base
   scope :active, -> { where(revoked: false).where("expires_at >= NOW() OR expires_at IS NULL") }
   scope :inactive, -> { where("revoked = true OR expires_at < NOW()") }
 
-  validate :validate_scopes
+  validates :scopes, presence: true
+  validate :validate_api_scopes
 
   def self.generate(params)
     personal_access_token = self.new(params)
@@ -24,8 +25,8 @@ class PersonalAccessToken < ActiveRecord::Base
 
   protected
 
-  def validate_scopes
-    unless Set.new(scopes.map(&:to_sym)).subset?(Set.new(Gitlab::Auth::API_SCOPES))
+  def validate_api_scopes
+    unless scopes.all? { |scope| Gitlab::Auth::API_SCOPES.include?(scope.to_sym) }
       errors.add :scopes, "can only contain API scopes"
     end
   end
