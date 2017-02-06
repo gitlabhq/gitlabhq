@@ -50,7 +50,8 @@ describe RemoteMirror do
 
         mirror.update_attribute(:url, 'http://foo:baz@test.com')
 
-        expect(repo.config["remote.#{mirror.ref_name}.url"]).to eq('http://foo:baz@test.com')
+        config = repo.raw_repository.rugged.config
+        expect(config["remote.#{mirror.ref_name}.url"]).to eq('http://foo:baz@test.com')
       end
     end
   end
