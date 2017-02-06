@@ -20,7 +20,7 @@ require('vendor/jquery.waitforimages');
 require('vendor/jquery.caret');
 require('vendor/jquery.atwho');
 require('vendor/jquery.scrollTo');
-window.Cookies = require('vendor/js.cookie');
+window.Cookies = require('js-cookie');
 require('./autosave');
 require('bootstrap/js/affix');
 require('bootstrap/js/alert');
