@@ -26,10 +26,10 @@ class Projects::VariablesController < Projects::ApplicationController
 
     if @variable.valid? && @project.variables << @variable
       flash[:notice] = 'Variables were successfully updated.'
+      redirect_to namespace_project_settings_ci_cd_path(project.namespace, project)
     else
-      flash[:alert] = @variable.errors.full_messages.join(',').html_safe
+      render "show"
     end
-    redirect_to namespace_project_settings_ci_cd_path(project.namespace, project)
   end
 
   def destroy
