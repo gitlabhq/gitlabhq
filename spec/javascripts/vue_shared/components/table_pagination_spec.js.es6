@@ -1,5 +1,5 @@
 require('~/lib/utils/common_utils');
-require('~/vue_pagination/index');
+require('~/vue_shared/components/table_pagination');
 
 describe('Pagination component', () => {
   let component;
