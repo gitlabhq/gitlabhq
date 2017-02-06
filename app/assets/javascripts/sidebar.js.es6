@@ -72,6 +72,8 @@
       const diff = $navHeight - $('body').scrollTop();
       if (diff > 0) {
         $('.right-sidebar').outerHeight($(window).height() - diff);
+      } else {
+        $('.right-sidebar').outerHeight('100%');
       }
     }
 
