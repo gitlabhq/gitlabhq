@@ -76,8 +76,28 @@ The following guide assumes that:
     ```
 
     Where `1.2.3.4` is the public IP address of the primary server, and `5.6.7.8`
-    the public IP address of the secondary one. If you want to add another
-    secondary, the relevant setting would look like:
+    the public IP address of the secondary one.
+
+    For security reasons, PostgreSQL by default only listens on the local
+    interface (e.g. 127.0.0.1). However, GitLab Geo needs to communicate
+    between the primary and secondary nodes over a common network, such as a
+    corporate LAN or the public Internet.
+
+    The `listen_address` option opens PostgreSQL up to external connections with the
+    specifying. See [the PostgreSQL documentation](https://www.postgresql.org/docs/9.6/static/runtime-config-connection.html)
+    for more details.
+
+    Note that if you are running GitLab Geo with a cloud provider (e.g. Amazon
+    Web Services), the internal interface IP (as provided by `ifconfig`) may
+    be different from the public IP address. For example, suppose you have a
+    node with the following configuration:
+
+* Internal IP: 10.1.5.3
+* External IP: 54.193.124.100
+
+    In this case, use the internal IP for the PostgreSQL configuration above.
+
+    If you want to add another secondary, the relevant setting would look like:
 
     ```ruby
     postgresql['md5_auth_cidr_addresses'] = ['5.6.7.8/32','11.22.33.44/32']
@@ -85,6 +105,8 @@ The following guide assumes that:
 
     Edit the `wal` values as you see fit.
 
+1. Check to make sure your firewall rules are set so that the secondary nodes
+   can access port 5432 on the primary node.
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
 1. Now that the PostgreSQL server is set up to accept remote connections, run
    `netstat -plnt` to make sure that PostgreSQL is listening to the server's
@@ -118,6 +140,8 @@ The following guide assumes that:
     wal_keep_segments = 10
     hot_standby = on
     ```
+
+    See the Omnibus notes above for more details of `listen_address`.
 
     Edit the `wal` values as you see fit.
 
