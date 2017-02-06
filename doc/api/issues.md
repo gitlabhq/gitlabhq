@@ -183,7 +183,6 @@ GET /projects/:id/issues?labels=foo,bar
 GET /projects/:id/issues?labels=foo,bar&state=opened
 GET /projects/:id/issues?milestone=1.0.0
 GET /projects/:id/issues?milestone=1.0.0&state=opened
-GET /projects/:id/issues?iid=42
 ```
 
 | Attribute | Type | Required | Description |
