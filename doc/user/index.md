@@ -1,0 +1,21 @@
+# User documentation
+
+- [Account Security](user/profile/account/two_factor_authentication.md) Securing your account via two-factor authentication, etc.
+- [API](api/README.md) Automate GitLab via a simple and powerful API.
+- [CI/CD](ci/README.md) GitLab Continuous Integration (CI) and Continuous Delivery (CD) getting started, `.gitlab-ci.yml` options, and examples.
+- [GitLab as OAuth2 authentication service provider](integration/oauth_provider.md). It allows you to login to other applications from GitLab.
+- [Container Registry](user/project/container_registry.md) Learn how to use GitLab Container Registry.
+- [GitLab basics](gitlab-basics/README.md) Find step by step how to start working on your commandline and on GitLab.
+- [Importing to GitLab](workflow/importing/README.md) Import your projects from GitHub, Bitbucket, GitLab.com, FogBugz and SVN into GitLab.
+- [Importing and exporting projects between instances](user/project/settings/import_export.md).
+- [Markdown](user/markdown.md) GitLab's advanced formatting system.
+- [Migrating from SVN](workflow/importing/migrating_from_svn.md) Convert a SVN repository to Git and GitLab.
+- [Permissions](user/permissions.md) Learn what each role in a project (external/guest/reporter/developer/master/owner) can do.
+- [Profile Settings](profile/README.md)
+- [Project Services](user/project/integrations//project_services.md) Integrate a project with external services, such as CI and chat.
+- [Public access](public_access/public_access.md) Learn how you can allow public and internal access to projects.
+- [SSH](ssh/README.md) Setup your ssh keys and deploy keys for secure access to your projects.
+- [Webhooks](user/project/integrations/webhooks.md) Let GitLab notify you when new code has been pushed to your project.
+- [Workflow](workflow/README.md) Using GitLab functionality and importing projects from GitHub and SVN.
+- [Git Attributes](user/project/git_attributes.md) Managing Git attributes using a `.gitattributes` file.
+- [Git cheatsheet](https://gitlab.com/gitlab-com/marketing/raw/master/design/print/git-cheatsheet/print-pdf/git-cheatsheet.pdf) Download a PDF describing the most used Git operations.
