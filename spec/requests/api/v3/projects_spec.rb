@@ -1,9 +1,9 @@
-# -*- coding: utf-8 -*-
 require 'spec_helper'
 
-describe API::Projects, api: true  do
+describe API::V3::Projects, api: true do
   include ApiHelpers
   include Gitlab::CurrentSettings
+
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
@@ -45,14 +45,14 @@ describe API::Projects, api: true  do
 
     context 'when unauthenticated' do
       it 'returns authentication error' do
-        get api('/projects')
+        get v3_api('/projects')
         expect(response).to have_http_status(401)
       end
     end
 
     context 'when authenticated as regular user' do
       it 'returns an array of projects' do
-        get api('/projects', user)
+        get v3_api('/projects', user)
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.first['name']).to eq(project.name)
@@ -60,14 +60,14 @@ describe API::Projects, api: true  do
       end
 
       it 'includes the project labels as the tag_list' do
-        get api('/projects', user)
+        get v3_api('/projects', user)
         expect(response.status).to eq 200
         expect(json_response).to be_an Array
         expect(json_response.first.keys).to include('tag_list')
       end
 
       it 'includes open_issues_count' do
-        get api('/projects', user)
+        get v3_api('/projects', user)
         expect(response.status).to eq 200
         expect(json_response).to be_an Array
         expect(json_response.first.keys).to include('open_issues_count')
@@ -76,7 +76,7 @@ describe API::Projects, api: true  do
       it 'does not include open_issues_count' do
         project.project_feature.update_attribute(:issues_access_level, ProjectFeature::DISABLED)
 
-        get api('/projects', user)
+        get v3_api('/projects', user)
         expect(response.status).to eq 200
         expect(json_response).to be_an Array
         expect(json_response.first.keys).not_to include('open_issues_count')
@@ -86,7 +86,7 @@ describe API::Projects, api: true  do
         it 'returns a simplified version of all the projects' do
           expected_keys = ["id", "http_url_to_repo", "web_url", "name", "name_with_namespace", "path", "path_with_namespace"]
 
-          get api('/projects?simple=true', user)
+          get v3_api('/projects?simple=true', user)
 
           expect(response).to have_http_status(200)
           expect(json_response).to be_an Array
@@ -96,7 +96,7 @@ describe API::Projects, api: true  do
 
       context 'and using search' do
         it 'returns searched project' do
-          get api('/projects', user), { search: project.name }
+          get v3_api('/projects', user), { search: project.name }
           expect(response).to have_http_status(200)
           expect(json_response).to be_an Array
           expect(json_response.length).to eq(1)
@@ -105,21 +105,21 @@ describe API::Projects, api: true  do
 
       context 'and using the visibility filter' do
         it 'filters based on private visibility param' do
-          get api('/projects', user), { visibility: 'private' }
+          get v3_api('/projects', user), { visibility: 'private' }
           expect(response).to have_http_status(200)
           expect(json_response).to be_an Array
           expect(json_response.length).to eq(user.namespace.projects.where(visibility_level: Gitlab::VisibilityLevel::PRIVATE).count)
         end
 
         it 'filters based on internal visibility param' do
-          get api('/projects', user), { visibility: 'internal' }
+          get v3_api('/projects', user), { visibility: 'internal' }
           expect(response).to have_http_status(200)
           expect(json_response).to be_an Array
           expect(json_response.length).to eq(user.namespace.projects.where(visibility_level: Gitlab::VisibilityLevel::INTERNAL).count)
         end
 
         it 'filters based on public visibility param' do
-          get api('/projects', user), { visibility: 'public' }
+          get v3_api('/projects', user), { visibility: 'public' }
           expect(response).to have_http_status(200)
           expect(json_response).to be_an Array
           expect(json_response.length).to eq(user.namespace.projects.where(visibility_level: Gitlab::VisibilityLevel::PUBLIC).count)
@@ -133,7 +133,7 @@ describe API::Projects, api: true  do
         end
 
         it 'returns the correct order when sorted by id' do
-          get api('/projects', user), { order_by: 'id', sort: 'desc' }
+          get v3_api('/projects', user), { order_by: 'id', sort: 'desc' }
           expect(response).to have_http_status(200)
           expect(json_response).to be_an Array
           expect(json_response.first['id']).to eq(project3.id)
@@ -147,21 +147,21 @@ describe API::Projects, api: true  do
 
     context 'when unauthenticated' do
       it 'returns authentication error' do
-        get api('/projects/all')
+        get v3_api('/projects/all')
         expect(response).to have_http_status(401)
       end
     end
 
     context 'when authenticated as regular user' do
       it 'returns authentication error' do
-        get api('/projects/all', user)
+        get v3_api('/projects/all', user)
         expect(response).to have_http_status(403)
       end
     end
 
     context 'when authenticated as admin' do
       it 'returns an array of all projects' do
-        get api('/projects/all', admin)
+        get v3_api('/projects/all', admin)
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
 
@@ -175,7 +175,7 @@ describe API::Projects, api: true  do
       end
 
       it "does not include statistics by default" do
-        get api('/projects/all', admin)
+        get v3_api('/projects/all', admin)
 
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
@@ -183,7 +183,7 @@ describe API::Projects, api: true  do
       end
 
       it "includes statistics if requested" do
-        get api('/projects/all', admin), statistics: true
+        get v3_api('/projects/all', admin), statistics: true
 
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
@@ -200,14 +200,14 @@ describe API::Projects, api: true  do
 
     context 'when unauthenticated' do
       it 'returns authentication error' do
-        get api('/projects/owned')
+        get v3_api('/projects/owned')
         expect(response).to have_http_status(401)
       end
     end
 
     context 'when authenticated as project owner' do
       it 'returns an array of projects the user owns' do
-        get api('/projects/owned', user4)
+        get v3_api('/projects/owned', user4)
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.first['name']).to eq(project4.name)
@@ -215,7 +215,7 @@ describe API::Projects, api: true  do
       end
 
       it "does not include statistics by default" do
-        get api('/projects/owned', user4)
+        get v3_api('/projects/owned', user4)
 
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
@@ -233,7 +233,7 @@ describe API::Projects, api: true  do
 
         project4.statistics.update!(attributes)
 
-        get api('/projects/owned', user4), statistics: true
+        get v3_api('/projects/owned', user4), statistics: true
 
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
@@ -245,7 +245,7 @@ describe API::Projects, api: true  do
   describe 'GET /projects/visible' do
     shared_examples_for 'visible projects response' do
       it 'returns the visible projects' do
-        get api('/projects/visible', current_user)
+        get v3_api('/projects/visible', current_user)
 
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
@@ -292,7 +292,7 @@ describe API::Projects, api: true  do
     end
 
     it 'returns the starred projects viewable by the user' do
-      get api('/projects/starred', user3)
+      get v3_api('/projects/starred', user3)
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.map { |project| project['id'] }).to contain_exactly(project.id, public_project.id)
@@ -303,26 +303,26 @@ describe API::Projects, api: true  do
     context 'maximum number of projects reached' do
       it 'does not create new project and respond with 403' do
         allow_any_instance_of(User).to receive(:projects_limit_left).and_return(0)
-        expect { post api('/projects', user2), name: 'foo' }.
+        expect { post v3_api('/projects', user2), name: 'foo' }.
           to change {Project.count}.by(0)
         expect(response).to have_http_status(403)
       end
     end
 
     it 'creates new project without path and return 201' do
-      expect { post api('/projects', user), name: 'foo' }.
+      expect { post v3_api('/projects', user), name: 'foo' }.
         to change { Project.count }.by(1)
       expect(response).to have_http_status(201)
     end
 
     it 'creates last project before reaching project limit' do
       allow_any_instance_of(User).to receive(:projects_limit_left).and_return(1)
-      post api('/projects', user2), name: 'foo'
+      post v3_api('/projects', user2), name: 'foo'
       expect(response).to have_http_status(201)
     end
 
     it 'does not create new project without name and return 400' do
-      expect { post api('/projects', user) }.not_to change { Project.count }
+      expect { post v3_api('/projects', user) }.not_to change { Project.count }
       expect(response).to have_http_status(400)
     end
 
@@ -338,7 +338,7 @@ describe API::Projects, api: true  do
         only_allow_merge_if_all_discussions_are_resolved: false
       })
 
-      post api('/projects', user), project
+      post v3_api('/projects', user), project
 
       project.each_pair do |k, v|
         next if %i[has_external_issue_tracker issues_enabled merge_requests_enabled wiki_enabled].include?(k)
@@ -354,62 +354,62 @@ describe API::Projects, api: true  do
 
     it 'sets a project as public' do
       project = attributes_for(:project, :public)
-      post api('/projects', user), project
+      post v3_api('/projects', user), project
       expect(json_response['public']).to be_truthy
       expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PUBLIC)
     end
 
     it 'sets a project as public using :public' do
       project = attributes_for(:project, { public: true })
-      post api('/projects', user), project
+      post v3_api('/projects', user), project
       expect(json_response['public']).to be_truthy
       expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PUBLIC)
     end
 
     it 'sets a project as internal' do
       project = attributes_for(:project, :internal)
-      post api('/projects', user), project
+      post v3_api('/projects', user), project
       expect(json_response['public']).to be_falsey
       expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::INTERNAL)
     end
 
     it 'sets a project as internal overriding :public' do
       project = attributes_for(:project, :internal, { public: true })
-      post api('/projects', user), project
+      post v3_api('/projects', user), project
       expect(json_response['public']).to be_falsey
       expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::INTERNAL)
     end
 
     it 'sets a project as private' do
       project = attributes_for(:project, :private)
-      post api('/projects', user), project
+      post v3_api('/projects', user), project
       expect(json_response['public']).to be_falsey
       expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PRIVATE)
     end
 
     it 'sets a project as private using :public' do
       project = attributes_for(:project, { public: false })
-      post api('/projects', user), project
+      post v3_api('/projects', user), project
       expect(json_response['public']).to be_falsey
       expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PRIVATE)
     end
 
     it 'sets a project as allowing merge even if build fails' do
       project = attributes_for(:project, { only_allow_merge_if_build_succeeds: false })
-      post api('/projects', user), project
+      post v3_api('/projects', user), project
       expect(json_response['only_allow_merge_if_build_succeeds']).to be_falsey
     end
 
     it 'sets a project as allowing merge only if build succeeds' do
       project = attributes_for(:project, { only_allow_merge_if_build_succeeds: true })
-      post api('/projects', user), project
+      post v3_api('/projects', user), project
       expect(json_response['only_allow_merge_if_build_succeeds']).to be_truthy
     end
 
     it 'sets a project as allowing merge even if discussions are unresolved' do
       project = attributes_for(:project, { only_allow_merge_if_all_discussions_are_resolved: false })
 
-      post api('/projects', user), project
+      post v3_api('/projects', user), project
 
       expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to be_falsey
     end
@@ -417,7 +417,7 @@ describe API::Projects, api: true  do
     it 'sets a project as allowing merge if only_allow_merge_if_all_discussions_are_resolved is nil' do
       project = attributes_for(:project, only_allow_merge_if_all_discussions_are_resolved: nil)
 
-      post api('/projects', user), project
+      post v3_api('/projects', user), project
 
       expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to be_falsey
     end
@@ -425,7 +425,7 @@ describe API::Projects, api: true  do
     it 'sets a project as allowing merge only if all discussions are resolved' do
       project = attributes_for(:project, { only_allow_merge_if_all_discussions_are_resolved: true })
 
-      post api('/projects', user), project
+      post v3_api('/projects', user), project
 
       expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to be_truthy
     end
@@ -437,7 +437,7 @@ describe API::Projects, api: true  do
       end
 
       it 'does not allow a non-admin to use a restricted visibility level' do
-        post api('/projects', user), @project
+        post v3_api('/projects', user), @project
 
         expect(response).to have_http_status(400)
         expect(json_response['message']['visibility_level'].first).to(
@@ -446,7 +446,7 @@ describe API::Projects, api: true  do
       end
 
       it 'allows an admin to override restricted visibility settings' do
-        post api('/projects', admin), @project
+        post v3_api('/projects', admin), @project
         expect(json_response['public']).to be_truthy
         expect(json_response['visibility_level']).to(
           eq(Gitlab::VisibilityLevel::PUBLIC)
@@ -459,13 +459,13 @@ describe API::Projects, api: true  do
     before { project }
     before { admin }
 
-    it 'creates new project without path and return 201' do
-      expect { post api("/projects/user/#{user.id}", admin), name: 'foo' }.to change {Project.count}.by(1)
+    it 'should create new project without path and return 201' do
+      expect { post v3_api("/projects/user/#{user.id}", admin), name: 'foo' }.to change {Project.count}.by(1)
       expect(response).to have_http_status(201)
     end
 
     it 'responds with 400 on failure and not project' do
-      expect { post api("/projects/user/#{user.id}", admin) }.
+      expect { post v3_api("/projects/user/#{user.id}", admin) }.
         not_to change { Project.count }
 
       expect(response).to have_http_status(400)
@@ -481,7 +481,7 @@ describe API::Projects, api: true  do
         request_access_enabled: true
       })
 
-      post api("/projects/user/#{user.id}", admin), project
+      post v3_api("/projects/user/#{user.id}", admin), project
 
       expect(response).to have_http_status(201)
       project.each_pair do |k, v|
@@ -492,7 +492,7 @@ describe API::Projects, api: true  do
 
     it 'sets a project as public' do
       project = attributes_for(:project, :public)
-      post api("/projects/user/#{user.id}", admin), project
+      post v3_api("/projects/user/#{user.id}", admin), project
 
       expect(response).to have_http_status(201)
       expect(json_response['public']).to be_truthy
@@ -501,7 +501,7 @@ describe API::Projects, api: true  do
 
     it 'sets a project as public using :public' do
       project = attributes_for(:project, { public: true })
-      post api("/projects/user/#{user.id}", admin), project
+      post v3_api("/projects/user/#{user.id}", admin), project
 
       expect(response).to have_http_status(201)
       expect(json_response['public']).to be_truthy
@@ -510,7 +510,7 @@ describe API::Projects, api: true  do
 
     it 'sets a project as internal' do
       project = attributes_for(:project, :internal)
-      post api("/projects/user/#{user.id}", admin), project
+      post v3_api("/projects/user/#{user.id}", admin), project
 
       expect(response).to have_http_status(201)
       expect(json_response['public']).to be_falsey
@@ -519,7 +519,7 @@ describe API::Projects, api: true  do
 
     it 'sets a project as internal overriding :public' do
       project = attributes_for(:project, :internal, { public: true })
-      post api("/projects/user/#{user.id}", admin), project
+      post v3_api("/projects/user/#{user.id}", admin), project
       expect(response).to have_http_status(201)
       expect(json_response['public']).to be_falsey
       expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::INTERNAL)
@@ -527,34 +527,34 @@ describe API::Projects, api: true  do
 
     it 'sets a project as private' do
       project = attributes_for(:project, :private)
-      post api("/projects/user/#{user.id}", admin), project
+      post v3_api("/projects/user/#{user.id}", admin), project
       expect(json_response['public']).to be_falsey
       expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PRIVATE)
     end
 
     it 'sets a project as private using :public' do
       project = attributes_for(:project, { public: false })
-      post api("/projects/user/#{user.id}", admin), project
+      post v3_api("/projects/user/#{user.id}", admin), project
       expect(json_response['public']).to be_falsey
       expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PRIVATE)
     end
 
     it 'sets a project as allowing merge even if build fails' do
       project = attributes_for(:project, { only_allow_merge_if_build_succeeds: false })
-      post api("/projects/user/#{user.id}", admin), project
+      post v3_api("/projects/user/#{user.id}", admin), project
       expect(json_response['only_allow_merge_if_build_succeeds']).to be_falsey
     end
 
     it 'sets a project as allowing merge only if build succeeds' do
       project = attributes_for(:project, { only_allow_merge_if_build_succeeds: true })
-      post api("/projects/user/#{user.id}", admin), project
+      post v3_api("/projects/user/#{user.id}", admin), project
       expect(json_response['only_allow_merge_if_build_succeeds']).to be_truthy
     end
 
     it 'sets a project as allowing merge even if discussions are unresolved' do
       project = attributes_for(:project, { only_allow_merge_if_all_discussions_are_resolved: false })
 
-      post api("/projects/user/#{user.id}", admin), project
+      post v3_api("/projects/user/#{user.id}", admin), project
 
       expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to be_falsey
     end
@@ -562,7 +562,7 @@ describe API::Projects, api: true  do
     it 'sets a project as allowing merge only if all discussions are resolved' do
       project = attributes_for(:project, { only_allow_merge_if_all_discussions_are_resolved: true })
 
-      post api("/projects/user/#{user.id}", admin), project
+      post v3_api("/projects/user/#{user.id}", admin), project
 
       expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to be_truthy
     end
@@ -572,7 +572,7 @@ describe API::Projects, api: true  do
     before { project }
 
     it "uploads the file and returns its info" do
-      post api("/projects/#{project.id}/uploads", user), file: fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "image/png")
+      post v3_api("/projects/#{project.id}/uploads", user), file: fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "image/png")
 
       expect(response).to have_http_status(201)
       expect(json_response['alt']).to eq("dk")
@@ -586,7 +586,7 @@ describe API::Projects, api: true  do
       it 'returns the public projects' do
         public_project = create(:empty_project, :public)
 
-        get api("/projects/#{public_project.id}")
+        get v3_api("/projects/#{public_project.id}")
 
         expect(response).to have_http_status(200)
         expect(json_response['id']).to eq(public_project.id)
@@ -605,7 +605,7 @@ describe API::Projects, api: true  do
         group = create(:group)
         link = create(:project_group_link, project: project, group: group)
 
-        get api("/projects/#{project.id}", user)
+        get v3_api("/projects/#{project.id}", user)
 
         expect(response).to have_http_status(200)
         expect(json_response['id']).to eq(project.id)
@@ -647,20 +647,20 @@ describe API::Projects, api: true  do
       end
 
       it 'returns a project by path name' do
-        get api("/projects/#{project.id}", user)
+        get v3_api("/projects/#{project.id}", user)
         expect(response).to have_http_status(200)
         expect(json_response['name']).to eq(project.name)
       end
 
       it 'returns a 404 error if not found' do
-        get api('/projects/42', user)
+        get v3_api('/projects/42', user)
         expect(response).to have_http_status(404)
         expect(json_response['message']).to eq('404 Project Not Found')
       end
 
       it 'returns a 404 error if user is not a member' do
         other_user = create(:user)
-        get api("/projects/#{project.id}", other_user)
+        get v3_api("/projects/#{project.id}", other_user)
         expect(response).to have_http_status(404)
       end
 
@@ -668,13 +668,13 @@ describe API::Projects, api: true  do
         dot_user = create(:user, username: 'dot.user')
         project = create(:empty_project, creator_id: dot_user.id, namespace: dot_user.namespace)
 
-        get api("/projects/#{dot_user.namespace.name}%2F#{project.path}", dot_user)
+        get v3_api("/projects/#{dot_user.namespace.name}%2F#{project.path}", dot_user)
         expect(response).to have_http_status(200)
         expect(json_response['name']).to eq(project.name)
       end
 
       it 'exposes namespace fields' do
-        get api("/projects/#{project.id}", user)
+        get v3_api("/projects/#{project.id}", user)
 
         expect(response).to have_http_status(200)
         expect(json_response['namespace']).to eq({
@@ -690,7 +690,7 @@ describe API::Projects, api: true  do
           before { project.team << [user, :master] }
 
           it 'contains permission information' do
-            get api("/projects", user)
+            get v3_api("/projects", user)
 
             expect(response).to have_http_status(200)
             expect(json_response.first['permissions']['project_access']['access_level']).
@@ -702,7 +702,7 @@ describe API::Projects, api: true  do
         context 'personal project' do
           it 'sets project access and returns 200' do
             project.team << [user, :master]
-            get api("/projects/#{project.id}", user)
+            get v3_api("/projects/#{project.id}", user)
 
             expect(response).to have_http_status(200)
             expect(json_response['permissions']['project_access']['access_level']).
@@ -717,7 +717,7 @@ describe API::Projects, api: true  do
           before { project2.group.add_owner(user) }
 
           it 'sets the owner and return 200' do
-            get api("/projects/#{project2.id}", user)
+            get v3_api("/projects/#{project2.id}", user)
 
             expect(response).to have_http_status(200)
             expect(json_response['permissions']['project_access']).to be_nil
@@ -737,7 +737,7 @@ describe API::Projects, api: true  do
         note = create(:note_on_issue, note: 'What an awesome day!', project: project)
         EventCreateService.new.leave_note(note, note.author)
 
-        get api("/projects/#{project.id}/events", current_user)
+        get v3_api("/projects/#{project.id}/events", current_user)
 
         expect(response).to have_http_status(200)
 
@@ -770,7 +770,7 @@ describe API::Projects, api: true  do
       end
 
       it 'returns a 404 error if not found' do
-        get api('/projects/42/events', user)
+        get v3_api('/projects/42/events', user)
 
         expect(response).to have_http_status(404)
         expect(json_response['message']).to eq('404 Project Not Found')
@@ -779,7 +779,7 @@ describe API::Projects, api: true  do
       it 'returns a 404 error if user is not a member' do
         other_user = create(:user)
 
-        get api("/projects/#{project.id}/events", other_user)
+        get v3_api("/projects/#{project.id}/events", other_user)
 
         expect(response).to have_http_status(404)
       end
@@ -792,7 +792,7 @@ describe API::Projects, api: true  do
         member = create(:user)
         create(:project_member, :developer, user: member, project: project)
 
-        get api("/projects/#{project.id}/users", current_user)
+        get v3_api("/projects/#{project.id}/users", current_user)
 
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
@@ -821,7 +821,7 @@ describe API::Projects, api: true  do
       end
 
       it 'returns a 404 error if not found' do
-        get api('/projects/42/users', user)
+        get v3_api('/projects/42/users', user)
 
         expect(response).to have_http_status(404)
         expect(json_response['message']).to eq('404 Project Not Found')
@@ -830,7 +830,7 @@ describe API::Projects, api: true  do
       it 'returns a 404 error if user is not a member' do
         other_user = create(:user)
 
-        get api("/projects/#{project.id}/users", other_user)
+        get v3_api("/projects/#{project.id}/users", other_user)
 
         expect(response).to have_http_status(404)
       end
@@ -841,7 +841,7 @@ describe API::Projects, api: true  do
     before { snippet }
 
     it 'returns an array of project snippets' do
-      get api("/projects/#{project.id}/snippets", user)
+      get v3_api("/projects/#{project.id}/snippets", user)
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.first['title']).to eq(snippet.title)
@@ -850,35 +850,35 @@ describe API::Projects, api: true  do
 
   describe 'GET /projects/:id/snippets/:snippet_id' do
     it 'returns a project snippet' do
-      get api("/projects/#{project.id}/snippets/#{snippet.id}", user)
+      get v3_api("/projects/#{project.id}/snippets/#{snippet.id}", user)
       expect(response).to have_http_status(200)
       expect(json_response['title']).to eq(snippet.title)
     end
 
     it 'returns a 404 error if snippet id not found' do
-      get api("/projects/#{project.id}/snippets/1234", user)
+      get v3_api("/projects/#{project.id}/snippets/1234", user)
       expect(response).to have_http_status(404)
     end
   end
 
   describe 'POST /projects/:id/snippets' do
     it 'creates a new project snippet' do
-      post api("/projects/#{project.id}/snippets", user),
-        title: 'api test', file_name: 'sample.rb', code: 'test',
+      post v3_api("/projects/#{project.id}/snippets", user),
+        title: 'v3_api test', file_name: 'sample.rb', code: 'test',
         visibility_level: '0'
       expect(response).to have_http_status(201)
-      expect(json_response['title']).to eq('api test')
+      expect(json_response['title']).to eq('v3_api test')
     end
 
     it 'returns a 400 error if invalid snippet is given' do
-      post api("/projects/#{project.id}/snippets", user)
+      post v3_api("/projects/#{project.id}/snippets", user)
       expect(status).to eq(400)
     end
   end
 
   describe 'PUT /projects/:id/snippets/:snippet_id' do
     it 'updates an existing project snippet' do
-      put api("/projects/#{project.id}/snippets/#{snippet.id}", user),
+      put v3_api("/projects/#{project.id}/snippets/#{snippet.id}", user),
         code: 'updated code'
       expect(response).to have_http_status(200)
       expect(json_response['title']).to eq('example')
@@ -886,10 +886,10 @@ describe API::Projects, api: true  do
     end
 
     it 'updates an existing project snippet with new title' do
-      put api("/projects/#{project.id}/snippets/#{snippet.id}", user),
-        title: 'other api test'
+      put v3_api("/projects/#{project.id}/snippets/#{snippet.id}", user),
+        title: 'other v3_api test'
       expect(response).to have_http_status(200)
-      expect(json_response['title']).to eq('other api test')
+      expect(json_response['title']).to eq('other v3_api test')
     end
   end
 
@@ -898,25 +898,25 @@ describe API::Projects, api: true  do
 
     it 'deletes existing project snippet' do
       expect do
-        delete api("/projects/#{project.id}/snippets/#{snippet.id}", user)
+        delete v3_api("/projects/#{project.id}/snippets/#{snippet.id}", user)
       end.to change { Snippet.count }.by(-1)
       expect(response).to have_http_status(200)
     end
 
     it 'returns 404 when deleting unknown snippet id' do
-      delete api("/projects/#{project.id}/snippets/1234", user)
+      delete v3_api("/projects/#{project.id}/snippets/1234", user)
       expect(response).to have_http_status(404)
     end
   end
 
   describe 'GET /projects/:id/snippets/:snippet_id/raw' do
     it 'gets a raw project snippet' do
-      get api("/projects/#{project.id}/snippets/#{snippet.id}/raw", user)
+      get v3_api("/projects/#{project.id}/snippets/#{snippet.id}/raw", user)
       expect(response).to have_http_status(200)
     end
 
     it 'returns a 404 error if raw project snippet not found' do
-      get api("/projects/#{project.id}/snippets/5555/raw", user)
+      get v3_api("/projects/#{project.id}/snippets/5555/raw", user)
       expect(response).to have_http_status(404)
     end
   end
@@ -929,13 +929,13 @@ describe API::Projects, api: true  do
       let(:new_project_fork_source) { create(:empty_project, :public) }
 
       it "is not available for non admin users" do
-        post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", user)
+        post v3_api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", user)
         expect(response).to have_http_status(403)
       end
 
       it 'allows project to be forked from an existing project' do
         expect(project_fork_target.forked?).not_to be_truthy
-        post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", admin)
+        post v3_api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", admin)
         expect(response).to have_http_status(201)
         project_fork_target.reload
         expect(project_fork_target.forked_from_project.id).to eq(project_fork_source.id)
@@ -944,15 +944,15 @@ describe API::Projects, api: true  do
       end
 
       it 'fails if forked_from project which does not exist' do
-        post api("/projects/#{project_fork_target.id}/fork/9999", admin)
+        post v3_api("/projects/#{project_fork_target.id}/fork/9999", admin)
         expect(response).to have_http_status(404)
       end
 
       it 'fails with 409 if already forked' do
-        post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", admin)
+        post v3_api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", admin)
         project_fork_target.reload
         expect(project_fork_target.forked_from_project.id).to eq(project_fork_source.id)
-        post api("/projects/#{project_fork_target.id}/fork/#{new_project_fork_source.id}", admin)
+        post v3_api("/projects/#{project_fork_target.id}/fork/#{new_project_fork_source.id}", admin)
         expect(response).to have_http_status(409)
         project_fork_target.reload
         expect(project_fork_target.forked_from_project.id).to eq(project_fork_source.id)
@@ -962,7 +962,7 @@ describe API::Projects, api: true  do
 
     describe 'DELETE /projects/:id/fork' do
       it "is not visible to users outside group" do
-        delete api("/projects/#{project_fork_target.id}/fork", user)
+        delete v3_api("/projects/#{project_fork_target.id}/fork", user)
         expect(response).to have_http_status(404)
       end
 
@@ -975,16 +975,16 @@ describe API::Projects, api: true  do
         end
 
         it 'is forbidden to non-owner users' do
-          delete api("/projects/#{project_fork_target.id}/fork", user2)
+          delete v3_api("/projects/#{project_fork_target.id}/fork", user2)
           expect(response).to have_http_status(403)
         end
 
         it 'makes forked project unforked' do
-          post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", admin)
+          post v3_api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", admin)
           project_fork_target.reload
           expect(project_fork_target.forked_from_project).not_to be_nil
           expect(project_fork_target.forked?).to be_truthy
-          delete api("/projects/#{project_fork_target.id}/fork", admin)
+          delete v3_api("/projects/#{project_fork_target.id}/fork", admin)
           expect(response).to have_http_status(200)
           project_fork_target.reload
           expect(project_fork_target.forked_from_project).to be_nil
@@ -993,7 +993,7 @@ describe API::Projects, api: true  do
 
         it 'is idempotent if not forked' do
           expect(project_fork_target.forked_from_project).to be_nil
-          delete api("/projects/#{project_fork_target.id}/fork", admin)
+          delete v3_api("/projects/#{project_fork_target.id}/fork", admin)
           expect(response).to have_http_status(304)
           expect(project_fork_target.reload.forked_from_project).to be_nil
         end
@@ -1008,7 +1008,7 @@ describe API::Projects, api: true  do
       expires_at = 10.days.from_now.to_date
 
       expect do
-        post api("/projects/#{project.id}/share", user), group_id: group.id, group_access: Gitlab::Access::DEVELOPER, expires_at: expires_at
+        post v3_api("/projects/#{project.id}/share", user), group_id: group.id, group_access: Gitlab::Access::DEVELOPER, expires_at: expires_at
       end.to change { ProjectGroupLink.count }.by(1)
 
       expect(response).to have_http_status(201)
@@ -1018,37 +1018,37 @@ describe API::Projects, api: true  do
     end
 
     it "returns a 400 error when group id is not given" do
-      post api("/projects/#{project.id}/share", user), group_access: Gitlab::Access::DEVELOPER
+      post v3_api("/projects/#{project.id}/share", user), group_access: Gitlab::Access::DEVELOPER
       expect(response).to have_http_status(400)
     end
 
     it "returns a 400 error when access level is not given" do
-      post api("/projects/#{project.id}/share", user), group_id: group.id
+      post v3_api("/projects/#{project.id}/share", user), group_id: group.id
       expect(response).to have_http_status(400)
     end
 
     it "returns a 400 error when sharing is disabled" do
       project.namespace.update(share_with_group_lock: true)
-      post api("/projects/#{project.id}/share", user), group_id: group.id, group_access: Gitlab::Access::DEVELOPER
+      post v3_api("/projects/#{project.id}/share", user), group_id: group.id, group_access: Gitlab::Access::DEVELOPER
       expect(response).to have_http_status(400)
     end
 
     it 'returns a 404 error when user cannot read group' do
       private_group = create(:group, :private)
 
-      post api("/projects/#{project.id}/share", user), group_id: private_group.id, group_access: Gitlab::Access::DEVELOPER
+      post v3_api("/projects/#{project.id}/share", user), group_id: private_group.id, group_access: Gitlab::Access::DEVELOPER
 
       expect(response).to have_http_status(404)
     end
 
     it 'returns a 404 error when group does not exist' do
-      post api("/projects/#{project.id}/share", user), group_id: 1234, group_access: Gitlab::Access::DEVELOPER
+      post v3_api("/projects/#{project.id}/share", user), group_id: 1234, group_access: Gitlab::Access::DEVELOPER
 
       expect(response).to have_http_status(404)
     end
 
     it "returns a 400 error when wrong params passed" do
-      post api("/projects/#{project.id}/share", user), group_id: group.id, group_access: 1234
+      post v3_api("/projects/#{project.id}/share", user), group_id: group.id, group_access: 1234
 
       expect(response).to have_http_status(400)
       expect(json_response['error']).to eq 'group_access does not have a valid value'
@@ -1060,28 +1060,74 @@ describe API::Projects, api: true  do
       group = create(:group, :public)
       create(:project_group_link, group: group, project: project)
 
-      delete api("/projects/#{project.id}/share/#{group.id}", user)
+      delete v3_api("/projects/#{project.id}/share/#{group.id}", user)
 
       expect(response).to have_http_status(204)
       expect(project.project_group_links).to be_empty
     end
 
     it 'returns a 400 when group id is not an integer' do
-      delete api("/projects/#{project.id}/share/foo", user)
+      delete v3_api("/projects/#{project.id}/share/foo", user)
 
       expect(response).to have_http_status(400)
     end
 
     it 'returns a 404 error when group link does not exist' do
-      delete api("/projects/#{project.id}/share/1234", user)
+      delete v3_api("/projects/#{project.id}/share/1234", user)
 
       expect(response).to have_http_status(404)
     end
 
     it 'returns a 404 error when project does not exist' do
-      delete api("/projects/123/share/1234", user)
+      delete v3_api("/projects/123/share/1234", user)
 
       expect(response).to have_http_status(404)
+    end
+  end
+
+  describe 'GET /projects/search/:query' do
+    let!(:query)            { 'query'}
+    let!(:search)           { create(:empty_project, name: query, creator_id: user.id, namespace: user.namespace) }
+    let!(:pre)              { create(:empty_project, name: "pre_#{query}", creator_id: user.id, namespace: user.namespace) }
+    let!(:post)             { create(:empty_project, name: "#{query}_post", creator_id: user.id, namespace: user.namespace) }
+    let!(:pre_post)         { create(:empty_project, name: "pre_#{query}_post", creator_id: user.id, namespace: user.namespace) }
+    let!(:unfound)          { create(:empty_project, name: 'unfound', creator_id: user.id, namespace: user.namespace) }
+    let!(:internal)         { create(:empty_project, :internal, name: "internal #{query}") }
+    let!(:unfound_internal) { create(:empty_project, :internal, name: 'unfound internal') }
+    let!(:public)           { create(:empty_project, :public, name: "public #{query}") }
+    let!(:unfound_public)   { create(:empty_project, :public, name: 'unfound public') }
+    let!(:one_dot_two)      { create(:empty_project, :public, name: "one.dot.two") }
+
+    shared_examples_for 'project search response' do |args = {}|
+      it 'returns project search responses' do
+        get v3_api("/projects/search/#{args[:query]}", current_user)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.size).to eq(args[:results])
+        json_response.each { |project| expect(project['name']).to match(args[:match_regex] || /.*#{args[:query]}.*/) }
+      end
+    end
+
+    context 'when unauthenticated' do
+      it_behaves_like 'project search response', query: 'query', results: 1 do
+        let(:current_user) { nil }
+      end
+    end
+
+    context 'when authenticated' do
+      it_behaves_like 'project search response', query: 'query', results: 6 do
+        let(:current_user) { user }
+      end
+      it_behaves_like 'project search response', query: 'one.dot.two', results: 1 do
+        let(:current_user) { user }
+      end
+    end
+
+    context 'when authenticated as a different user' do
+      it_behaves_like 'project search response', query: 'query', results: 2, match_regex: /(internal|public) query/ do
+        let(:current_user) { user2 }
+      end
     end
   end
 
@@ -1098,7 +1144,7 @@ describe API::Projects, api: true  do
     context 'when unauthenticated' do
       it 'returns authentication error' do
         project_param = { name: 'bar' }
-        put api("/projects/#{project.id}"), project_param
+        put v3_api("/projects/#{project.id}"), project_param
         expect(response).to have_http_status(401)
       end
     end
@@ -1106,7 +1152,7 @@ describe API::Projects, api: true  do
     context 'when authenticated as project owner' do
       it 'updates name' do
         project_param = { name: 'bar' }
-        put api("/projects/#{project.id}", user), project_param
+        put v3_api("/projects/#{project.id}", user), project_param
         expect(response).to have_http_status(200)
         project_param.each_pair do |k, v|
           expect(json_response[k.to_s]).to eq(v)
@@ -1115,7 +1161,7 @@ describe API::Projects, api: true  do
 
       it 'updates visibility_level' do
         project_param = { visibility_level: 20 }
-        put api("/projects/#{project3.id}", user), project_param
+        put v3_api("/projects/#{project3.id}", user), project_param
         expect(response).to have_http_status(200)
         project_param.each_pair do |k, v|
           expect(json_response[k.to_s]).to eq(v)
@@ -1125,7 +1171,7 @@ describe API::Projects, api: true  do
       it 'updates visibility_level from public to private' do
         project3.update_attributes({ visibility_level: Gitlab::VisibilityLevel::PUBLIC })
         project_param = { public: false }
-        put api("/projects/#{project3.id}", user), project_param
+        put v3_api("/projects/#{project3.id}", user), project_param
         expect(response).to have_http_status(200)
         project_param.each_pair do |k, v|
           expect(json_response[k.to_s]).to eq(v)
@@ -1135,7 +1181,7 @@ describe API::Projects, api: true  do
 
       it 'does not update name to existing name' do
         project_param = { name: project3.name }
-        put api("/projects/#{project.id}", user), project_param
+        put v3_api("/projects/#{project.id}", user), project_param
         expect(response).to have_http_status(400)
         expect(json_response['message']['name']).to eq(['has already been taken'])
       end
@@ -1143,7 +1189,7 @@ describe API::Projects, api: true  do
       it 'updates request_access_enabled' do
         project_param = { request_access_enabled: false }
 
-        put api("/projects/#{project.id}", user), project_param
+        put v3_api("/projects/#{project.id}", user), project_param
 
         expect(response).to have_http_status(200)
         expect(json_response['request_access_enabled']).to eq(false)
@@ -1151,7 +1197,7 @@ describe API::Projects, api: true  do
 
       it 'updates path & name to existing path & name in different namespace' do
         project_param = { path: project4.path, name: project4.name }
-        put api("/projects/#{project3.id}", user), project_param
+        put v3_api("/projects/#{project3.id}", user), project_param
         expect(response).to have_http_status(200)
         project_param.each_pair do |k, v|
           expect(json_response[k.to_s]).to eq(v)
@@ -1162,7 +1208,7 @@ describe API::Projects, api: true  do
     context 'when authenticated as project master' do
       it 'updates path' do
         project_param = { path: 'bar' }
-        put api("/projects/#{project3.id}", user4), project_param
+        put v3_api("/projects/#{project3.id}", user4), project_param
         expect(response).to have_http_status(200)
         project_param.each_pair do |k, v|
           expect(json_response[k.to_s]).to eq(v)
@@ -1176,7 +1222,7 @@ describe API::Projects, api: true  do
                           merge_requests_enabled: true,
                           description: 'new description' }
 
-        put api("/projects/#{project3.id}", user4), project_param
+        put v3_api("/projects/#{project3.id}", user4), project_param
         expect(response).to have_http_status(200)
         project_param.each_pair do |k, v|
           expect(json_response[k.to_s]).to eq(v)
@@ -1185,20 +1231,20 @@ describe API::Projects, api: true  do
 
       it 'does not update path to existing path' do
         project_param = { path: project.path }
-        put api("/projects/#{project3.id}", user4), project_param
+        put v3_api("/projects/#{project3.id}", user4), project_param
         expect(response).to have_http_status(400)
         expect(json_response['message']['path']).to eq(['has already been taken'])
       end
 
       it 'does not update name' do
         project_param = { name: 'bar' }
-        put api("/projects/#{project3.id}", user4), project_param
+        put v3_api("/projects/#{project3.id}", user4), project_param
         expect(response).to have_http_status(403)
       end
 
       it 'does not update visibility_level' do
         project_param = { visibility_level: 20 }
-        put api("/projects/#{project3.id}", user4), project_param
+        put v3_api("/projects/#{project3.id}", user4), project_param
         expect(response).to have_http_status(403)
       end
     end
@@ -1212,7 +1258,7 @@ describe API::Projects, api: true  do
                           merge_requests_enabled: true,
                           description: 'new description',
                           request_access_enabled: true }
-        put api("/projects/#{project.id}", user3), project_param
+        put v3_api("/projects/#{project.id}", user3), project_param
         expect(response).to have_http_status(403)
       end
     end
@@ -1221,7 +1267,7 @@ describe API::Projects, api: true  do
   describe 'POST /projects/:id/archive' do
     context 'on an unarchived project' do
       it 'archives the project' do
-        post api("/projects/#{project.id}/archive", user)
+        post v3_api("/projects/#{project.id}/archive", user)
 
         expect(response).to have_http_status(201)
         expect(json_response['archived']).to be_truthy
@@ -1234,7 +1280,7 @@ describe API::Projects, api: true  do
       end
 
       it 'remains archived' do
-        post api("/projects/#{project.id}/archive", user)
+        post v3_api("/projects/#{project.id}/archive", user)
 
         expect(response).to have_http_status(201)
         expect(json_response['archived']).to be_truthy
@@ -1247,7 +1293,7 @@ describe API::Projects, api: true  do
       end
 
       it 'rejects the action' do
-        post api("/projects/#{project.id}/archive", user3)
+        post v3_api("/projects/#{project.id}/archive", user3)
 
         expect(response).to have_http_status(403)
       end
@@ -1257,7 +1303,7 @@ describe API::Projects, api: true  do
   describe 'POST /projects/:id/unarchive' do
     context 'on an unarchived project' do
       it 'remains unarchived' do
-        post api("/projects/#{project.id}/unarchive", user)
+        post v3_api("/projects/#{project.id}/unarchive", user)
 
         expect(response).to have_http_status(201)
         expect(json_response['archived']).to be_falsey
@@ -1270,7 +1316,7 @@ describe API::Projects, api: true  do
       end
 
       it 'unarchives the project' do
-        post api("/projects/#{project.id}/unarchive", user)
+        post v3_api("/projects/#{project.id}/unarchive", user)
 
         expect(response).to have_http_status(201)
         expect(json_response['archived']).to be_falsey
@@ -1283,7 +1329,7 @@ describe API::Projects, api: true  do
       end
 
       it 'rejects the action' do
-        post api("/projects/#{project.id}/unarchive", user3)
+        post v3_api("/projects/#{project.id}/unarchive", user3)
 
         expect(response).to have_http_status(403)
       end
@@ -1293,7 +1339,7 @@ describe API::Projects, api: true  do
   describe 'POST /projects/:id/star' do
     context 'on an unstarred project' do
       it 'stars the project' do
-        expect { post api("/projects/#{project.id}/star", user) }.to change { project.reload.star_count }.by(1)
+        expect { post v3_api("/projects/#{project.id}/star", user) }.to change { project.reload.star_count }.by(1)
 
         expect(response).to have_http_status(201)
         expect(json_response['star_count']).to eq(1)
@@ -1307,7 +1353,7 @@ describe API::Projects, api: true  do
       end
 
       it 'does not modify the star count' do
-        expect { post api("/projects/#{project.id}/star", user) }.not_to change { project.reload.star_count }
+        expect { post v3_api("/projects/#{project.id}/star", user) }.not_to change { project.reload.star_count }
 
         expect(response).to have_http_status(304)
       end
@@ -1322,7 +1368,7 @@ describe API::Projects, api: true  do
       end
 
       it 'unstars the project' do
-        expect { delete api("/projects/#{project.id}/star", user) }.to change { project.reload.star_count }.by(-1)
+        expect { delete v3_api("/projects/#{project.id}/star", user) }.to change { project.reload.star_count }.by(-1)
 
         expect(response).to have_http_status(200)
         expect(json_response['star_count']).to eq(0)
@@ -1331,7 +1377,7 @@ describe API::Projects, api: true  do
 
     context 'on an unstarred project' do
       it 'does not modify the star count' do
-        expect { delete api("/projects/#{project.id}/star", user) }.not_to change { project.reload.star_count }
+        expect { delete v3_api("/projects/#{project.id}/star", user) }.not_to change { project.reload.star_count }
 
         expect(response).to have_http_status(304)
       end
@@ -1341,36 +1387,36 @@ describe API::Projects, api: true  do
   describe 'DELETE /projects/:id' do
     context 'when authenticated as user' do
       it 'removes project' do
-        delete api("/projects/#{project.id}", user)
+        delete v3_api("/projects/#{project.id}", user)
         expect(response).to have_http_status(200)
       end
 
       it 'does not remove a project if not an owner' do
         user3 = create(:user)
         project.team << [user3, :developer]
-        delete api("/projects/#{project.id}", user3)
+        delete v3_api("/projects/#{project.id}", user3)
         expect(response).to have_http_status(403)
       end
 
       it 'does not remove a non existing project' do
-        delete api('/projects/1328', user)
+        delete v3_api('/projects/1328', user)
         expect(response).to have_http_status(404)
       end
 
       it 'does not remove a project not attached to user' do
-        delete api("/projects/#{project.id}", user2)
+        delete v3_api("/projects/#{project.id}", user2)
         expect(response).to have_http_status(404)
       end
     end
 
     context 'when authenticated as admin' do
       it 'removes any existing project' do
-        delete api("/projects/#{project.id}", admin)
+        delete v3_api("/projects/#{project.id}", admin)
         expect(response).to have_http_status(200)
       end
 
       it 'does not remove a non existing project' do
-        delete api('/projects/1328', admin)
+        delete v3_api('/projects/1328', admin)
         expect(response).to have_http_status(404)
       end
     end
