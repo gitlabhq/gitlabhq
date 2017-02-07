@@ -104,11 +104,7 @@ require('./flash');
     clickTab(e) {
       if (e.target) {
         const targetLink = e.target.getAttribute('href');
-        // Allow following special clicks to make link open in new tab
-        // 1) Cmd + Click on Mac (e.metaKey)
-        // 2) Ctrl + Click on PC (e.ctrlKey)
-        // 3) Middle-click or Mouse Wheel Click (e.which is 2)
-        if (e.metaKey || e.ctrlKey || e.which === 2) {
+        if (gl.utils.isMetaClick(e)) {
           e.stopImmediatePropagation();
           window.open(targetLink, '_blank');
         }
