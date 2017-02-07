@@ -7,15 +7,14 @@ describe UpdateAllMirrorsWorker do
   end
 
   describe '#perform' do
-    project_count_with_time = { DateTime.now.beginning_of_hour + 15.minutes => 1,
-                                DateTime.now.beginning_of_hour => 2,
-                                DateTime.now.beginning_of_day => 3
+    project_count_with_time = { DateTime.now.beginning_of_hour + 15.minutes => 2,
+                                DateTime.now.beginning_of_hour => 3,
+                                DateTime.now.beginning_of_day => 4
                               }
 
     let!(:mirror1) { create(:empty_project, :mirror, sync_time: Gitlab::Mirror::FIFTEEN) }
     let!(:mirror2) { create(:empty_project, :mirror, sync_time: Gitlab::Mirror::HOURLY) }
     let!(:mirror3) { create(:empty_project, :mirror, sync_time: Gitlab::Mirror::DAILY) }
-    let(:mirrors) { Project.mirror.where(sync_time: Gitlab::Mirror.sync_times) }
 
     it 'fails stuck mirrors' do
       worker = described_class.new
@@ -27,8 +26,11 @@ describe UpdateAllMirrorsWorker do
 
     project_count_with_time.each do |time, project_count|
       describe "at #{time}" do
+        let!(:mirror4) { create(:empty_project, :mirror, sync_time: Gitlab::Mirror::DAILY, mirror_last_successful_update_at: time - (Gitlab::Mirror::DAILY + 5).minutes }
+        let(:mirrors) { Project.mirror.where("mirror_last_successful_update_at + #{Gitlab::Database.minute_interval('sync_time')} <= ? OR sync_time IN (?)", time, Gitlab::Mirror.sync_times) }
+
         before do
-          allow(DateTime).to receive(:now).and_return(time)
+          Timecop.freeze(time)
         end
 
         it 'enqueues a job on mirrored Projects' do

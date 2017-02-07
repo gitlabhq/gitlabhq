@@ -53,6 +53,10 @@ module Gitlab
       Gitlab::Database.postgresql? ? "RANDOM()" : "RAND()"
     end
 
+    def self.minute_interval(value)
+      Gitlab::Database.postgresql? ? "#{value} * '1 minute'::interval" : "INTERVAL #{value} MINUTE"
+    end
+
     def true_value
       if Gitlab::Database.postgresql?
         "'t'"

@@ -17,6 +17,6 @@ class UpdateAllRemoteMirrorsWorker
   private
 
   def remote_mirrors_to_sync
-    RemoteMirror.where(sync_time: Gitlab::Mirror.sync_times)
+    RemoteMirror.where("last_successful_update_at + #{Gitlab::Database.minute_interval('sync_time')} <= ? OR sync_time IN (?)", DateTime.now, Gitlab::Mirror.sync_times)
   end
 end
