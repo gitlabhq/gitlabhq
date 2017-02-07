@@ -7,8 +7,6 @@ namespace :grape do
   end
 
   def route_description(options)
-    if options[:settings][:description]
-      options[:settings][:description][:description]
-    end || ''
+    options[:settings][:description][:description] if options[:settings][:description]
   end
 end
