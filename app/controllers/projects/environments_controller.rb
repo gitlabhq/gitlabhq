@@ -28,6 +28,24 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     end
   end
 
+  def folder
+    @environments = project.environments
+      .where(environment_type: params[:id])
+      .with_state(params[:scope] || :available)
+
+    respond_to do |format|
+      format.html
+      format.json do
+        render json: {
+          environments: EnvironmentSerializer
+            .new(project: @project, user: @current_user)
+            .with_pagination(request, response)
+            .represent(@environments),
+        }
+      end
+    end
+  end
+
   def show
     @deployments = environment.deployments.order(id: :desc).page(params[:page])
   end
