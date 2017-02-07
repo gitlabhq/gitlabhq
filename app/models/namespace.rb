@@ -213,6 +213,10 @@ class Namespace < ActiveRecord::Base
     self.class.joins(:route).where('routes.path LIKE ?', "#{route.path}/%").reorder('routes.path ASC')
   end
 
+  def user_ids_for_project_authorizations
+    [owner_id]
+  end
+
   private
 
   def repository_storage_paths

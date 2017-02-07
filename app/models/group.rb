@@ -197,7 +197,12 @@ class Group < Namespace
   end
 
   def refresh_members_authorized_projects
-    UserProjectAccessChangedService.new(users_with_parents.pluck(:id)).execute
+    UserProjectAccessChangedService.new(user_ids_for_project_authorizations).
+      execute
+  end
+
+  def user_ids_for_project_authorizations
+    users_with_parents.pluck(:id)
   end
 
   def members_with_parents

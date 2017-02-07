@@ -218,4 +218,11 @@ describe Namespace, models: true do
       expect(group.descendants.to_a).to eq([nested_group, deep_nested_group, very_deep_nested_group])
     end
   end
+
+  describe '#user_ids_for_project_authorizations' do
+    it 'returns the user IDs for which to refresh authorizations' do
+      expect(namespace.user_ids_for_project_authorizations).
+        to eq([namespace.owner_id])
+    end
+  end
 end
