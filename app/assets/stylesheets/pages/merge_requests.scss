@@ -80,6 +80,10 @@
   .ci_widget {
     border-bottom: 1px solid $well-inner-border;
     color: $gl-text-color;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
 
     svg {
       margin-right: 4px;
@@ -88,11 +92,19 @@
       overflow: visible;
     }
 
+    &> span {
+      padding-right: 4px;
+    }
+
     &.ci-success_with_warnings {
 
       i {
         color: $gl-warning;
       }
+    }
+
+    @media (max-width: $screen-xs-max) {
+      flex-wrap: wrap;
     }
   }
 
@@ -100,6 +112,37 @@
   .ci_widget,
   .mr-widget-footer {
     padding: $gl-padding;
+  }
+
+  .mr-widget-pipeline-graph {
+    flex-shrink: 0;
+
+    .dropdown-menu {
+      margin-top: 11px;
+    }
+
+    .ci-action-icon-wrapper {
+      line-height: 16px;
+    }
+
+    @media (max-width: $screen-xs-max) {
+      order: 1;
+      margin-top: $gl-padding-top;
+      border-radius: 3px;
+      background-color: $white-light;
+      border: 1px solid $gray-darker;
+      width: 100%;
+      text-align: center;
+
+      .dropdown-menu {
+        margin-left: -97.5px;
+      }
+
+      .arrow-up::before,
+      .arrow-up::after, {
+        margin-left: 97.5px;
+      }
+    }
   }
 
   .normal {

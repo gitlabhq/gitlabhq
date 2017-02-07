@@ -21,8 +21,6 @@
       this.container = opts.container || '';
       this.dropdownListSelector = '.js-builds-dropdown-container';
       this.getBuildsList = this.getBuildsList.bind(this);
-
-      this.bindEvents();
     }
 
     /**

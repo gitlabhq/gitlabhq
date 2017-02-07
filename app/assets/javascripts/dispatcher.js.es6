@@ -160,6 +160,11 @@ const ShortcutsBlob = require('./shortcuts_blob');
           new ZenMode();
           shortcut_handler = new ShortcutsNavigation();
           break;
+        case 'projects:commit:pipelines':
+          new gl.MiniPipelineGraph({
+            container: '.js-pipeline-table',
+          }).bindEvents();
+          break;
         case 'projects:commits:show':
         case 'projects:activity':
           shortcut_handler = new ShortcutsNavigation();
