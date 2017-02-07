@@ -1,7 +1,8 @@
-require "spec_helper"
+require 'spec_helper'
 
 describe StuckCiBuildsWorker do
-  let!(:build) { create :ci_build }
+  let!(:runner) { create :ci_runner }
+  let!(:build) { create :ci_build, runner: runner }
   let(:worker) { described_class.new }
 
   subject do
@@ -9,47 +10,88 @@ describe StuckCiBuildsWorker do
     build.status
   end
 
-  %w(pending running).each do |status|
-    context "#{status} build" do
-      before do
-        build.update!(status: status)
+  before { build.update!(status: status, updated_at: updated_at) }
+
+  shared_examples 'build is dropped' do
+    it 'changes status' do
+      worker.perform
+      is_expected.to eq('failed')
+    end
+  end
+
+  shared_examples 'build is unchanged' do
+    it "doesn't change status" do
+      worker.perform
+      is_expected.to eq(status)
+    end
+  end
+
+  context 'when build is pending' do
+    let(:status) { 'pending' }
+
+    context 'when build is not stuck' do
+      before { allow_any_instance_of(Ci::Build).to receive(:stuck?).and_return(false) }
+
+      context 'when build was not updated for more than 1 day ago' do
+        let(:updated_at) { 2.days.ago }
+        it_behaves_like 'build is dropped'
       end
 
-      it 'gets dropped if it was updated over 2 days ago' do
-        build.update!(updated_at: 2.days.ago)
-        worker.perform
-        is_expected.to eq('failed')
+      context 'when build was updated in less than 1 day ago' do
+        let(:updated_at) { 6.hours.ago }
+        it_behaves_like 'build is unchanged'
       end
 
-      it "is still #{status}" do
-        build.update!(updated_at: 1.minute.ago)
-        worker.perform
-        is_expected.to eq(status)
+      context 'when build was not updated for more than 1 hour ago' do
+        let(:updated_at) { 2.hours.ago }
+        it_behaves_like 'build is unchanged'
+      end
+    end
+
+    context 'when build is stuck' do
+      before { allow_any_instance_of(Ci::Build).to receive(:stuck?).and_return(true) }
+
+      context 'when build was not updated for more than 1 hour ago' do
+        let(:updated_at) { 2.hours.ago }
+        it_behaves_like 'build is dropped'
+      end
+
+      context 'when build was updated in less than 1 hour ago' do
+        let(:updated_at) { 30.minutes.ago }
+        it_behaves_like 'build is unchanged'
       end
     end
   end
 
-  %w(success failed canceled).each do |status|
-    context "#{status} build" do
-      before do
-        build.update!(status: status)
-      end
+  context 'when build is running' do
+    let(:status) { 'running' }
 
-      it "is still #{status}" do
-        build.update!(updated_at: 2.days.ago)
-        worker.perform
-        is_expected.to eq(status)
-      end
+    context 'when build was not updated for more than 1 hour ago' do
+      let(:updated_at) { 2.hours.ago }
+      it_behaves_like 'build is dropped'
+    end
+
+    context 'when build was updated in less than 1 hour ago' do
+      let(:updated_at) { 30.minutes.ago }
+      it_behaves_like 'build is unchanged'
     end
   end
 
-  context "for deleted project" do
-    before do
-      build.update!(status: :running, updated_at: 2.days.ago)
-      build.project.update(pending_delete: true)
+  %w(success skipped failed canceled).each do |status|
+    context "when build is #{status}" do
+      let(:status) { status }
+      let(:updated_at) { 2.days.ago }
+      it_behaves_like 'build is unchanged'
     end
+  end
 
-    it "does not drop build" do
+  context 'for deleted project' do
+    let(:status) { 'running' }
+    let(:updated_at) { 2.days.ago }
+
+    before { build.project.update(pending_delete: true) }
+
+    it 'does not drop build' do
       expect_any_instance_of(Ci::Build).not_to receive(:drop)
       worker.perform
     end
