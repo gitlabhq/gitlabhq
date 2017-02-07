@@ -53,9 +53,11 @@ the administrator console.
 
 ### Step 2. Open the Mattermost slash commands service in GitLab
 
-1. Open a new tab for GitLab and go to your project's settings
-   **Services ➔ Mattermost command**. A screen will appear with all the values you
-   need to copy in Mattermost as described in the next step. Leave the window open.
+1. Open a new tab for GitLab, go to your project's
+   [Integrations page](project_services.md#accessing-the-project-services)
+   and select the **Mattermost command** service to configure it.
+   A screen will appear with all the values you need to copy in Mattermost as
+   described in the next step. Leave the window open.
 
     >**Note:**
     GitLab will propose some values for the Mattermost settings. The only one
