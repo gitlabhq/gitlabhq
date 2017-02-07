@@ -715,18 +715,22 @@ class MergeRequest < ActiveRecord::Base
     !head_pipeline || head_pipeline.success? || head_pipeline.skipped?
   end
 
-  def environments
+  def environments_for(current_user)
     return [] unless diff_head_commit
 
-    @environments ||= begin
-      target_envs = target_project.environments_for(
-        target_branch, commit: diff_head_commit, with_tags: true)
+    @environments ||= Hash.new do |h, current_user|
+      envs = EnvironmentsFinder.new(target_project, current_user,
+        ref: target_branch, commit: diff_head_commit, with_tags: true).execute
 
-      source_envs = source_project.environments_for(
-        source_branch, commit: diff_head_commit) if source_project
+      if source_project
+        envs.concat EnvironmentsFinder.new(source_project, current_user,
+          ref: source_branch, commit: diff_head_commit).execute
+      end
 
-      (target_envs.to_a + source_envs.to_a).uniq
+      h[current_user] = envs.uniq
     end
+
+    @environments[current_user]
   end
 
   def state_human_name

@@ -1782,4 +1782,40 @@ describe Repository, models: true do
       repository.refresh_method_caches(%i(readme license))
     end
   end
+
+  describe '#gitlab_ci_yml_for' do
+    before do
+      repository.commit_file(User.last, '.gitlab-ci.yml', 'CONTENT', message: 'Add .gitlab-ci.yml', branch_name: 'master', update: false)
+    end
+
+    context 'when there is a .gitlab-ci.yml at the commit' do
+      it 'returns the content' do
+        expect(repository.gitlab_ci_yml_for(repository.commit.sha)).to eq('CONTENT')
+      end
+    end
+
+    context 'when there is no .gitlab-ci.yml at the commit' do
+      it 'returns nil' do
+        expect(repository.gitlab_ci_yml_for(repository.commit.parent.sha)).to be_nil
+      end
+    end
+  end
+
+  describe '#route_map_for' do
+    before do
+      repository.commit_file(User.last, '.gitlab/route-map.yml', 'CONTENT', message: 'Add .gitlab/route-map.yml', branch_name: 'master', update: false)
+    end
+
+    context 'when there is a .gitlab/route-map.yml at the commit' do
+      it 'returns the content' do
+        expect(repository.route_map_for(repository.commit.sha)).to eq('CONTENT')
+      end
+    end
+
+    context 'when there is no .gitlab/route-map.yml at the commit' do
+      it 'returns nil' do
+        expect(repository.route_map_for(repository.commit.parent.sha)).to be_nil
+      end
+    end
+  end
 end

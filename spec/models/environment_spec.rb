@@ -7,8 +7,6 @@ describe Environment, models: true do
   it { is_expected.to belong_to(:project) }
   it { is_expected.to have_many(:deployments) }
 
-  it { is_expected.to delegate_method(:last_deployment).to(:deployments).as(:last) }
-
   it { is_expected.to delegate_method(:stop_action).to(:last_deployment) }
   it { is_expected.to delegate_method(:manual_actions).to(:last_deployment) }
 
@@ -21,6 +19,20 @@ describe Environment, models: true do
 
   it { is_expected.to validate_length_of(:external_url).is_at_most(255) }
   it { is_expected.to validate_uniqueness_of(:external_url).scoped_to(:project_id) }
+
+  describe '.order_by_last_deployed_at' do
+    let(:project) { create(:project) }
+    let!(:environment1) { create(:environment, project: project) }
+    let!(:environment2) { create(:environment, project: project) }
+    let!(:environment3) { create(:environment, project: project) }
+    let!(:deployment1) { create(:deployment, environment: environment1) }
+    let!(:deployment2) { create(:deployment, environment: environment2) }
+    let!(:deployment3) { create(:deployment, environment: environment1) }
+
+    it 'returns the environments in order of having been last deployed' do
+      expect(project.environments.order_by_last_deployed_at.to_a).to eq([environment3, environment2, environment1])
+    end
+  end
 
   describe '#nullify_external_url' do
     it 'replaces a blank url with nil' do
@@ -320,6 +332,35 @@ describe Environment, models: true do
         slug = described_class.new(name: name).generate_slug
 
         expect(slug).to match(/\A#{matcher}\z/)
+      end
+    end
+  end
+
+  describe '#external_url_for' do
+    let(:source_path) { 'source/file.html' }
+    let(:sha) { RepoHelpers.sample_commit.id }
+
+    before do
+      environment.external_url = 'http://example.com'
+    end
+
+    context 'when the public path is not known' do
+      before do
+        allow(project).to receive(:public_path_for_source_path).with(source_path, sha).and_return(nil)
+      end
+
+      it 'returns nil' do
+        expect(environment.external_url_for(source_path, sha)).to be_nil
+      end
+    end
+
+    context 'when the public path is known' do
+      before do
+        allow(project).to receive(:public_path_for_source_path).with(source_path, sha).and_return('file.html')
+      end
+
+      it 'returns the full external URL' do
+        expect(environment.external_url_for(source_path, sha)).to eq('http://example.com/file.html')
       end
     end
   end

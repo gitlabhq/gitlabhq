@@ -103,6 +103,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       end
     end
 
+    @environment = @merge_request.environments_for(current_user).last
+
     respond_to do |format|
       format.html { define_discussion_vars }
       format.json do
@@ -248,7 +250,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
                  end
         @diff_notes_disabled = true
 
-        render json: { html: view_to_html_string('projects/merge_requests/_new_diffs', diffs: @diffs) }
+        @environment = @merge_request.environments_for(current_user).last
+
+        render json: { html: view_to_html_string('projects/merge_requests/_new_diffs', diffs: @diffs, environment: @environment) }
       end
     end
   end
@@ -447,9 +451,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def ci_environments_status
     environments =
       begin
-        @merge_request.environments.map do |environment|
-          next unless can?(current_user, :read_environment, environment)
-
+        @merge_request.environments_for(current_user).map do |environment|
           project = environment.project
           deployment = environment.first_deployment_for(@merge_request.diff_head_commit)
 

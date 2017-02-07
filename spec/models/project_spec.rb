@@ -1716,100 +1716,6 @@ describe Project, models: true do
     end
   end
 
-  describe '#environments_for' do
-    let(:project) { create(:project, :repository) }
-    let(:environment) { create(:environment, project: project) }
-
-    context 'tagged deployment' do
-      before do
-        create(:deployment, environment: environment, ref: '1.0', tag: true, sha: project.commit.id)
-      end
-
-      it 'returns environment when with_tags is set' do
-        expect(project.environments_for('master', commit: project.commit, with_tags: true))
-          .to contain_exactly(environment)
-      end
-
-      it 'does not return environment when no with_tags is set' do
-        expect(project.environments_for('master', commit: project.commit))
-          .to be_empty
-      end
-
-      it 'does not return environment when commit is not part of deployment' do
-        expect(project.environments_for('master', commit: project.commit('feature')))
-          .to be_empty
-      end
-    end
-
-    context 'branch deployment' do
-      before do
-        create(:deployment, environment: environment, ref: 'master', sha: project.commit.id)
-      end
-
-      it 'returns environment when ref is set' do
-        expect(project.environments_for('master', commit: project.commit))
-          .to contain_exactly(environment)
-      end
-
-      it 'does not environment when ref is different' do
-        expect(project.environments_for('feature', commit: project.commit))
-          .to be_empty
-      end
-
-      it 'does not return environment when commit is not part of deployment' do
-        expect(project.environments_for('master', commit: project.commit('feature')))
-          .to be_empty
-      end
-
-      it 'returns environment when commit constraint is not set' do
-        expect(project.environments_for('master'))
-          .to contain_exactly(environment)
-      end
-    end
-  end
-
-  describe '#environments_recently_updated_on_branch' do
-    let(:project) { create(:project, :repository) }
-    let(:environment) { create(:environment, project: project) }
-
-    context 'when last deployment to environment is the most recent one' do
-      before do
-        create(:deployment, environment: environment, ref: 'feature')
-      end
-
-      it 'finds recently updated environment' do
-        expect(project.environments_recently_updated_on_branch('feature'))
-          .to contain_exactly(environment)
-      end
-    end
-
-    context 'when last deployment to environment is not the most recent' do
-      before do
-        create(:deployment, environment: environment, ref: 'feature')
-        create(:deployment, environment: environment, ref: 'master')
-      end
-
-      it 'does not find environment' do
-        expect(project.environments_recently_updated_on_branch('feature'))
-          .to be_empty
-      end
-    end
-
-    context 'when there are two environments that deploy to the same branch' do
-      let(:second_environment) { create(:environment, project: project) }
-
-      before do
-        create(:deployment, environment: environment, ref: 'feature')
-        create(:deployment, environment: second_environment, ref: 'feature')
-      end
-
-      it 'finds both environments' do
-        expect(project.environments_recently_updated_on_branch('feature'))
-          .to contain_exactly(environment, second_environment)
-      end
-    end
-  end
-
   describe '#deployment_variables' do
     context 'when project has no deployment service' do
       let(:project) { create(:empty_project) }
@@ -1856,6 +1762,82 @@ describe Project, models: true do
     let!(:path) { project1.namespace.path }
 
     it { expect(Project.inside_path(path)).to eq([project1]) }
+  end
+
+  describe '#route_map_for' do
+    let(:project) { create(:project) }
+    let(:route_map) do
+      <<-MAP.strip_heredoc
+      - source: /source/(.*)/
+        public: '\\1'
+      MAP
+    end
+
+    before do
+      project.repository.commit_file(User.last, '.gitlab/route-map.yml', route_map, message: 'Add .gitlab/route-map.yml', branch_name: 'master', update: false)
+    end
+
+    context 'when there is a .gitlab/route-map.yml at the commit' do
+      context 'when the route map is valid' do
+        it 'returns a route map' do
+          map = project.route_map_for(project.commit.sha)
+          expect(map).to be_a_kind_of(Gitlab::RouteMap)
+        end
+      end
+
+      context 'when the route map is invalid' do
+        let(:route_map) { 'INVALID' }
+
+        it 'returns nil' do
+          expect(project.route_map_for(project.commit.sha)).to be_nil
+        end
+      end
+    end
+
+    context 'when there is no .gitlab/route-map.yml at the commit' do
+      it 'returns nil' do
+        expect(project.route_map_for(project.commit.parent.sha)).to be_nil
+      end
+    end
+  end
+
+  describe '#public_path_for_source_path' do
+    let(:project) { create(:project) }
+    let(:route_map) do
+      Gitlab::RouteMap.new(<<-MAP.strip_heredoc)
+        - source: /source/(.*)/
+          public: '\\1'
+      MAP
+    end
+    let(:sha) { project.commit.id }
+
+    context 'when there is a route map' do
+      before do
+        allow(project).to receive(:route_map_for).with(sha).and_return(route_map)
+      end
+
+      context 'when the source path is mapped' do
+        it 'returns the public path' do
+          expect(project.public_path_for_source_path('source/file.html', sha)).to eq('file.html')
+        end
+      end
+
+      context 'when the source path is not mapped' do
+        it 'returns nil' do
+          expect(project.public_path_for_source_path('file.html', sha)).to be_nil
+        end
+      end
+    end
+
+    context 'when there is no route map' do
+      before do
+        allow(project).to receive(:route_map_for).with(sha).and_return(nil)
+      end
+
+      it 'returns nil' do
+        expect(project.public_path_for_source_path('source/file.html', sha)).to be_nil
+      end
+    end
   end
 
   def enable_lfs

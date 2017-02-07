@@ -1005,9 +1005,15 @@ describe MergeRequest, models: true do
     end
   end
 
-  describe "#environments" do
+  describe "#environments_for" do
     let(:project)       { create(:project, :repository) }
+    let(:user)          { project.creator }
     let(:merge_request) { create(:merge_request, source_project: project) }
+
+    before do
+      merge_request.source_project.add_master(user)
+      merge_request.target_project.add_master(user)
+    end
 
     context 'with multiple environments' do
       let(:environments) { create_list(:environment, 3, project: project) }
@@ -1018,7 +1024,7 @@ describe MergeRequest, models: true do
       end
 
       it 'selects deployed environments' do
-        expect(merge_request.environments).to contain_exactly(environments.first)
+        expect(merge_request.environments_for(user)).to contain_exactly(environments.first)
       end
     end
 
@@ -1042,7 +1048,7 @@ describe MergeRequest, models: true do
       end
 
       it 'selects deployed environments' do
-        expect(merge_request.environments).to contain_exactly(source_environment)
+        expect(merge_request.environments_for(user)).to contain_exactly(source_environment)
       end
 
       context 'with environments on target project' do
@@ -1053,7 +1059,7 @@ describe MergeRequest, models: true do
         end
 
         it 'selects deployed environments' do
-          expect(merge_request.environments).to contain_exactly(source_environment, target_environment)
+          expect(merge_request.environments_for(user)).to contain_exactly(source_environment, target_environment)
         end
       end
     end
@@ -1064,7 +1070,7 @@ describe MergeRequest, models: true do
       end
 
       it 'returns an empty array' do
-        expect(merge_request.environments).to be_empty
+        expect(merge_request.environments_for(user)).to be_empty
       end
     end
   end
