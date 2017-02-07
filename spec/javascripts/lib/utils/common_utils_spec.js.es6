@@ -43,14 +43,35 @@ require('~/lib/utils/common_utils');
 
     describe('gl.utils.handleLocationHash', () => {
       beforeEach(() => {
-        window.history.pushState({}, null, '#definição');
+        spyOn(window.document, 'getElementById').and.callThrough();
       });
 
+      function expectGetElementIdToHaveBeenCalledWith(elementId) {
+        expect(window.document.getElementById).toHaveBeenCalledWith(elementId);
+      }
+
       it('decodes hash parameter', () => {
-        spyOn(window.document, 'getElementById').and.callThrough();
+        window.history.pushState({}, null, '#random-hash');
         gl.utils.handleLocationHash();
-        expect(window.document.getElementById).toHaveBeenCalledWith('definição');
-        expect(window.document.getElementById).toHaveBeenCalledWith('user-content-definição');
+
+        expectGetElementIdToHaveBeenCalledWith('random-hash');
+        expectGetElementIdToHaveBeenCalledWith('user-content-random-hash');
+      });
+
+      it('decodes cyrillic hash parameter', () => {
+        window.history.pushState({}, null, '#definição');
+        gl.utils.handleLocationHash();
+
+        expectGetElementIdToHaveBeenCalledWith('definição');
+        expectGetElementIdToHaveBeenCalledWith('user-content-definição');
+      });
+
+      it('decodes encoded cyrillic hash parameter', () => {
+        window.history.pushState({}, null, '#defini%C3%A7%C3%A3o');
+        gl.utils.handleLocationHash();
+
+        expectGetElementIdToHaveBeenCalledWith('definição');
+        expectGetElementIdToHaveBeenCalledWith('user-content-definição');
       });
     });
 
