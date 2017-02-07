@@ -88,3 +88,5 @@ const pipeline = {
   created_at: '2017-01-16T17:13:59.800Z',
   updated_at: '2017-01-25T00:00:17.132Z',
 };
+
+module.exports = pipeline;

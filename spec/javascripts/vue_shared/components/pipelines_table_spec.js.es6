@@ -1,8 +1,6 @@
-/* global pipeline */
-
-require('~vue_shared/components/pipelines_table');
-require('~lib/utils/datetime_utility');
-require('./mock_data');
+require('~/vue_shared/components/pipelines_table');
+require('~/lib/utils/datetime_utility');
+const pipeline = require('../../commit/pipelines/mock_data');
 
 describe('Pipelines Table', () => {
   preloadFixtures('static/environments/element.html.raw');
