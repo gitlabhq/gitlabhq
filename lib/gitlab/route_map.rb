@@ -35,7 +35,7 @@ module Gitlab
         source_pattern = source_pattern[1...-1].gsub('\/', '/')
 
         begin
-          source_pattern = Regexp.new("^#{source_pattern}$")
+          source_pattern = /\A#{source_pattern}\z/
         rescue RegexpError => e
           raise FormatError, "Route map entry source is not a valid regular expression: #{e}"
         end
