@@ -13,17 +13,9 @@ module.exports = function(config) {
       { pattern: 'spec/javascripts/fixtures/**/*@(.json|.html|.html.raw)', included: false },
     ],
     preprocessors: {
-      'spec/javascripts/**/*.js?(.es6)': ['webpack', 'sourcemap', 'coverage'],
+      'spec/javascripts/**/*.js?(.es6)': ['webpack', 'sourcemap'],
     },
-    reporters: ['progress', 'coverage'],
     webpack: webpackConfig,
     webpackMiddleware: { stats: 'errors-only' },
-    coverageReporter: {
-      dir: './coverage-javascript',
-      reporters: [
-        { type: 'html', subdir: 'default' },
-        { type: 'text-summary' }
-      ],
-    }
   });
 };
