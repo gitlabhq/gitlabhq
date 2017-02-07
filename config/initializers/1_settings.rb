@@ -309,7 +309,7 @@ Settings.gravatar['host']         = Settings.host_without_www(Settings.gravatar[
 #
 Settings['cron_jobs'] ||= Settingslogic.new({})
 Settings.cron_jobs['stuck_ci_builds_worker'] ||= Settingslogic.new({})
-Settings.cron_jobs['stuck_ci_builds_worker']['cron'] ||= '0 0 * * *'
+Settings.cron_jobs['stuck_ci_builds_worker']['cron'] ||= '0 * * * *'
 Settings.cron_jobs['stuck_ci_builds_worker']['job_class'] = 'StuckCiBuildsWorker'
 Settings.cron_jobs['expire_build_artifacts_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['expire_build_artifacts_worker']['cron'] ||= '50 * * * *'
