@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe DroneCiService, models: true, caching: true do
+describe DroneCiService, :models, :caching do
   include ReactiveCachingHelpers
 
   describe 'associations' do

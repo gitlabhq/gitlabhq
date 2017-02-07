@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Dropdown milestone', js: true, feature: true do
+describe 'Dropdown milestone', :feature, :js do
   include WaitForAjax
 
   let!(:project) { create(:empty_project) }

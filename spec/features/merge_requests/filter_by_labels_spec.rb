@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Issue filtering by Labels', feature: true, js: true do
+feature 'Issue filtering by Labels', :feature, :js do
   include WaitForAjax
 
   let(:project) { create(:project, :public) }

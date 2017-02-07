@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Milestone draggable', feature: true, js: true do
+describe 'Milestone draggable', :feature, :js do
   include WaitForAjax
 
   let(:milestone) { create(:milestone, project: project, title: 8.14) }

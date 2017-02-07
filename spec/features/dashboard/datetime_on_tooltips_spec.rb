@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Tooltips on .timeago dates', feature: true, js: true do
+feature 'Tooltips on .timeago dates', :feature, :js do
   include WaitForAjax
 
   let(:user)            { create(:user) }

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Widget Deployments Header', feature: true, js: true do
+feature 'Widget Deployments Header', :feature, :js do
   include WaitForAjax
 
   describe 'when deployed to an environment' do

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Dropdown assignee', js: true, feature: true do
+describe 'Dropdown assignee', :feature, :js do
   include WaitForAjax
 
   let!(:project) { create(:empty_project) }

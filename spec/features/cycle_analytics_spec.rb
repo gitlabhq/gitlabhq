@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Cycle Analytics', feature: true, js: true do
+feature 'Cycle Analytics', :feature, :js do
   include WaitForAjax
 
   let(:user) { create(:user) }

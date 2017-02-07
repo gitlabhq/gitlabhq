@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Issues filter reset button', feature: true, js: true do
+feature 'Issues filter reset button', :feature, :js do
   include WaitForAjax
   include IssueHelpers
 

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Diffs URL', js: true, feature: true do
+feature 'Diffs URL', :feature, :js do
   before do
     login_as :admin
     @merge_request = create(:merge_request)

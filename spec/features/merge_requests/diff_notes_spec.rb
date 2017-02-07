@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Diff notes', js: true, feature: true do
+feature 'Diff notes', :feature, :js do
   include WaitForAjax
 
   before do

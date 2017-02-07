@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe BambooService, models: true, caching: true do
+describe BambooService, :models, :caching do
   include ReactiveCachingHelpers
 
   let(:bamboo_url) { 'http://gitlab.com/bamboo' }

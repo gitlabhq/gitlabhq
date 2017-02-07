@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Contributions Calendar', js: true, feature: true do
+feature 'Contributions Calendar', :feature, :js do
   include WaitForAjax
 
   let(:contributed_project) { create(:project, :public) }

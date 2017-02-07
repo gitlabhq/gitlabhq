@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Merge Requests > User uses slash commands', feature: true, js: true do
+feature 'Merge Requests > User uses slash commands', :feature, :js do
   include SlashCommandsHelpers
   include WaitForAjax
 

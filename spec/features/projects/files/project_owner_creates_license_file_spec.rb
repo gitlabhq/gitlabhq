@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'project owner creates a license file', feature: true, js: true do
+feature 'project owner creates a license file', :feature, :js do
   include WaitForAjax
 
   let(:project_master) { create(:user) }

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Issues > User uses slash commands', feature: true, js: true do
+feature 'Issues > User uses slash commands', :feature, :js do
   include SlashCommandsHelpers
   include WaitForAjax
 

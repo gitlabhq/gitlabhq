@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Dashboard > User filters todos', feature: true, js: true do
+describe 'Dashboard > User filters todos', :feature, :js do
   include WaitForAjax
 
   let(:user_1)    { create(:user, username: 'user_1', name: 'user_1') }

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Dropdown hint', js: true, feature: true do
+describe 'Dropdown hint', :feature, :js do
   include WaitForAjax
 
   let!(:project) { create(:empty_project) }

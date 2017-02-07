@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Projects > Members > Master adds member with expiration date', feature: true, js: true do
+feature 'Projects > Members > Master adds member with expiration date', :feature, :js do
   include WaitForAjax
   include Select2Helper
   include ActiveSupport::Testing::TimeHelpers

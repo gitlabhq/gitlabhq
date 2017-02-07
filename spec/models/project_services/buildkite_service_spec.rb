@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe BuildkiteService, models: true, caching: true do
+describe BuildkiteService, :models, :caching do
   include ReactiveCachingHelpers
 
   let(:project) { create(:empty_project) }

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Start new branch from an issue', feature: true, js: true do
+feature 'Start new branch from an issue', :feature, :js do
   let!(:project)   { create(:project) }
   let!(:issue)     { create(:issue, project: project) }
   let!(:user)      { create(:user)}

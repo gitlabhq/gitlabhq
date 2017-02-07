@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Search bar', js: true, feature: true do
+describe 'Search bar', :feature, :js do
   include WaitForAjax
 
   let!(:project) { create(:empty_project) }

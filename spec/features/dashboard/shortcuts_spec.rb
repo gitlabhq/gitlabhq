@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Dashboard shortcuts', feature: true, js: true do
+feature 'Dashboard shortcuts', :feature, :js do
   before do
     login_as :user
     visit dashboard_projects_path

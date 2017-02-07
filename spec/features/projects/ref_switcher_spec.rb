@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Ref switcher', feature: true, js: true do
+feature 'Ref switcher', :feature, :js do
   include WaitForAjax
   let(:user)      { create(:user) }
   let(:project)   { create(:project, :public) }

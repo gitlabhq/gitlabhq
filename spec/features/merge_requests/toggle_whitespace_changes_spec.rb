@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Toggle Whitespace Changes', js: true, feature: true do
+feature 'Toggle Whitespace Changes', :feature, :js do
   before do
     login_as :admin
     merge_request = create(:merge_request)

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe TeamcityService, models: true, caching: true do
+describe TeamcityService, :models, :caching do
   include ReactiveCachingHelpers
 
   let(:teamcity_url) { 'http://gitlab.com/teamcity' }

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Editing file blob', feature: true, js: true do
+feature 'Editing file blob', :feature, :js do
   include WaitForAjax
 
   given(:user) { create(:user) }

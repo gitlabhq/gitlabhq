@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Projects > Members > Anonymous user sees members', feature: true, js: true do
+feature 'Projects > Members > Anonymous user sees members', :feature, :js do
   include WaitForAjax
 
   let(:user) { create(:user) }

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'New/edit issue', feature: true, js: true do
+describe 'New/edit issue', :feature, :js do
   let!(:project)   { create(:project) }
   let!(:user)      { create(:user)}
   let!(:milestone) { create(:milestone, project: project) }

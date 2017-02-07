@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'issuable templates', feature: true, js: true do
+feature 'issuable templates', :feature, :js do
   include WaitForAjax
 
   let(:user) { create(:user) }

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Copy as GFM', feature: true, js: true do
+describe 'Copy as GFM', :feature, :js do
   include GitlabMarkdownHelper
   include ActionView::Helpers::JavaScriptHelper
 

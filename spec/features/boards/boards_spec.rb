@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Issue Boards', feature: true, js: true do
+describe 'Issue Boards', :feature, :js do
   include WaitForAjax
   include WaitForVueResource
 

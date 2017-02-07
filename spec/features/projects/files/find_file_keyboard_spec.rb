@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Find file keyboard shortcuts', feature: true, js: true do
+feature 'Find file keyboard shortcuts', :feature, :js do
   include WaitForAjax
 
   let(:user) { create(:user) }

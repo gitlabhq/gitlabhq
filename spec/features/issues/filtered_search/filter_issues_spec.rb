@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Filter issues', js: true, feature: true do
+describe 'Filter issues', :feature, :js do
   include WaitForAjax
 
   let!(:group) { create(:group) }

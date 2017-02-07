@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Dashboard Issues filtering", feature: true, js: true do
+describe "Dashboard Issues filtering", :feature, :js do
   let(:user)      { create(:user) }
   let(:project)   { create(:project) }
   let(:milestone) { create(:milestone, project: project) }

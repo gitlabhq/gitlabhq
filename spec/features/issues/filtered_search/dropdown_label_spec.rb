@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Dropdown label', js: true, feature: true do
+describe 'Dropdown label', :feature, :js do
   let(:project) { create(:empty_project) }
   let(:user) { create(:user) }
   let(:filtered_search) { find('.filtered-search') }

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Issue Boards shortcut', feature: true, js: true do
+describe 'Issue Boards shortcut', :feature, :js do
   include WaitForVueResource
 
   let(:project) { create(:empty_project) }

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Expand and collapse diffs', js: true, feature: true do
+feature 'Expand and collapse diffs', :feature, :js do
   include WaitForAjax
 
   let(:branch) { 'expand-collapse-diffs' }

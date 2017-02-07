@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Navigation bar counter', feature: true, js: true, caching: true do
+describe 'Navigation bar counter', :feature, :js, :caching do
   let(:user) { create(:user) }
   let(:project) { create(:empty_project, namespace: user.namespace) }
   let(:issue) { create(:issue, project: project) }

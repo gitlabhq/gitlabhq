@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Project member activity', feature: true, js: true do
+feature 'Project member activity', :feature, :js do
   include WaitForAjax
 
   let(:user)            { create(:user) }

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'GFM autocomplete loading', feature: true, js: true do
+describe 'GFM autocomplete loading', :feature, :js do
   let(:project)   { create(:project) }
 
   before do

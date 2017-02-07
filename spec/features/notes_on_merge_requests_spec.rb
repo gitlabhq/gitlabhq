@@ -4,7 +4,7 @@ describe 'Comments', feature: true do
   include RepoHelpers
   include WaitForAjax
 
-  describe 'On a merge request', js: true, feature: true do
+  describe 'On a merge request', :feature, :js do
     let!(:project) { create(:project) }
     let!(:merge_request) do
       create(:merge_request, source_project: project, target_project: project)
@@ -149,7 +149,7 @@ describe 'Comments', feature: true do
     end
   end
 
-  describe 'Handles cross-project system notes', js: true, feature: true do
+  describe 'Handles cross-project system notes', :feature, :js do
     let(:user) { create(:user) }
     let(:project) { create(:project, :public) }
     let(:project2) { create(:project, :private) }
@@ -171,7 +171,7 @@ describe 'Comments', feature: true do
     end
   end
 
-  describe 'On a merge request diff', js: true, feature: true do
+  describe 'On a merge request diff', :feature, :js do
     let(:merge_request) { create(:merge_request) }
     let(:project) { merge_request.source_project }
 
