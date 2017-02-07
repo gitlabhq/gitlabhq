@@ -1,10 +1,6 @@
 require "spec_helper"
 
-<<<<<<< HEAD
-describe API::MergeRequests, v3_api: true  do
-=======
 describe API::MergeRequests, api: true  do
->>>>>>> ce/master
   include ApiHelpers
   let(:base_time)   { Time.now }
   let(:user)        { create(:user) }
@@ -43,10 +39,7 @@ describe API::MergeRequests, api: true  do
         expect(json_response.first['sha']).to eq(merge_request_merged.diff_head_sha)
         expect(json_response.first['merge_commit_sha']).not_to be_nil
         expect(json_response.first['merge_commit_sha']).to eq(merge_request_merged.merge_commit_sha)
-<<<<<<< HEAD
         expect(json_response.first['squash']).to eq(merge_request_merged.squash)
-=======
->>>>>>> ce/master
       end
 
       it "returns an array of all merge_requests" do
@@ -241,22 +234,15 @@ describe API::MergeRequests, api: true  do
              author: user,
              labels: 'label, label2',
              milestone_id: milestone.id,
-<<<<<<< HEAD
              remove_source_branch: true,
              squash: true
-=======
-             remove_source_branch: true
->>>>>>> ce/master
 
         expect(response).to have_http_status(201)
         expect(json_response['title']).to eq('Test merge_request')
         expect(json_response['labels']).to eq(['label', 'label2'])
         expect(json_response['milestone']['id']).to eq(milestone.id)
         expect(json_response['force_remove_source_branch']).to be_truthy
-<<<<<<< HEAD
         expect(json_response['squash']).to be_truthy
-=======
->>>>>>> ce/master
       end
 
       it "returns 422 when source_branch equals target_branch" do
@@ -395,7 +381,6 @@ describe API::MergeRequests, api: true  do
         expect(response).to have_http_status(201)
       end
     end
-<<<<<<< HEAD
 
     context 'the approvals_before_merge param' do
       def create_merge_request(approvals_before_merge)
@@ -456,8 +441,6 @@ describe API::MergeRequests, api: true  do
         end
       end
     end
-=======
->>>>>>> ce/master
   end
 
   describe "DELETE /projects/:id/merge_requests/:merge_request_id" do
@@ -546,7 +529,6 @@ describe API::MergeRequests, api: true  do
       expect(response).to have_http_status(200)
     end
 
-<<<<<<< HEAD
     it "updates the MR's squash attribute" do
       expect do
         put v3_api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user), squash: true
@@ -555,8 +537,6 @@ describe API::MergeRequests, api: true  do
       expect(response).to have_http_status(200)
     end
 
-=======
->>>>>>> ce/master
     it "enables merge when pipeline succeeds if the pipeline is active" do
       allow_any_instance_of(MergeRequest).to receive(:head_pipeline).and_return(pipeline)
       allow(pipeline).to receive(:active?).and_return(true)
@@ -597,7 +577,6 @@ describe API::MergeRequests, api: true  do
       expect(json_response['milestone']['id']).to eq(milestone.id)
     end
 
-<<<<<<< HEAD
     it "updates squash and returns merge_request" do
       put v3_api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), squash: true
 
@@ -605,8 +584,6 @@ describe API::MergeRequests, api: true  do
       expect(json_response['squash']).to be_truthy
     end
 
-=======
->>>>>>> ce/master
     it "returns merge_request with renamed target_branch" do
       put v3_api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), target_branch: "wiki"
       expect(response).to have_http_status(200)
@@ -803,7 +780,6 @@ describe API::MergeRequests, api: true  do
     end
   end
 
-<<<<<<< HEAD
   describe 'GET :id/merge_requests/:merge_request_id/approvals' do
     it 'retrieves the approval status' do
       approver = create :user
@@ -882,8 +858,6 @@ describe API::MergeRequests, api: true  do
     end
   end
 
-=======
->>>>>>> ce/master
   describe 'Time tracking' do
     let(:issuable) { merge_request }
 

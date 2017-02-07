@@ -1238,7 +1238,6 @@ describe Project, models: true do
     end
   end
 
-<<<<<<< HEAD
   describe '#pages_url' do
     let(:group) { create :group, name: group_name }
     let(:project) { create :empty_project, namespace: group, name: project_name }
@@ -1266,8 +1265,6 @@ describe Project, models: true do
     end
   end
 
-=======
->>>>>>> ce/master
   describe '.search' do
     let(:project) { create(:empty_project, description: 'kitten mittens') }
 

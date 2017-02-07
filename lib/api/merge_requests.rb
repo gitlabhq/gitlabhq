@@ -145,7 +145,6 @@ module API
         use :optional_params
         at_least_one_of :title, :target_branch, :description, :assignee_id,
                         :milestone_id, :labels, :state_event,
-<<<<<<< HEAD
                         :remove_source_branch, :squash
       end
       put ':id/merge_requests/:merge_request_id' do
@@ -188,26 +187,8 @@ module API
 
         if params[:sha] && merge_request.diff_head_sha != params[:sha]
           render_api_error!("SHA does not match HEAD of source branch: #{merge_request.diff_head_sha}", 409)
-=======
-                        :remove_source_branch
-      end
-      put ':id/merge_requests/:merge_request_id' do
-        merge_request = find_merge_request_with_access(params.delete(:merge_request_id), :update_merge_request)
-
-        mr_params = declared_params(include_missing: false)
-        mr_params[:force_remove_source_branch] = mr_params.delete(:remove_source_branch) if mr_params[:remove_source_branch].present?
-
-        merge_request = ::MergeRequests::UpdateService.new(user_project, current_user, mr_params).execute(merge_request)
-
-        if merge_request.valid?
-          present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
-        else
-          handle_merge_request_errors! merge_request.errors
->>>>>>> ce/master
         end
-      end
 
-<<<<<<< HEAD
         if params[:squash]
           merge_request.update(squash: params[:squash])
         end
@@ -335,98 +316,6 @@ module API
           .execute(merge_request)
 
         present merge_request, with: Entities::MergeRequestApprovals, current_user: current_user
-=======
-      desc 'Merge a merge request' do
-        success Entities::MergeRequest
-      end
-      params do
-        optional :merge_commit_message, type: String, desc: 'Custom merge commit message'
-        optional :should_remove_source_branch, type: Boolean,
-                                               desc: 'When true, the source branch will be deleted if possible'
-        optional :merge_when_build_succeeds, type: Boolean,
-                                             desc: 'When true, this merge request will be merged when the pipeline succeeds'
-        optional :sha, type: String, desc: 'When present, must have the HEAD SHA of the source branch'
-      end
-      put ':id/merge_requests/:merge_request_id/merge' do
-        merge_request = find_project_merge_request(params[:merge_request_id])
-
-        # Merge request can not be merged
-        # because user dont have permissions to push into target branch
-        unauthorized! unless merge_request.can_be_merged_by?(current_user)
-
-        not_allowed! unless merge_request.mergeable_state?
-
-        render_api_error!('Branch cannot be merged', 406) unless merge_request.mergeable?
-
-        if params[:sha] && merge_request.diff_head_sha != params[:sha]
-          render_api_error!("SHA does not match HEAD of source branch: #{merge_request.diff_head_sha}", 409)
-        end
-
-        merge_params = {
-          commit_message: params[:merge_commit_message],
-          should_remove_source_branch: params[:should_remove_source_branch]
-        }
-
-        if params[:merge_when_build_succeeds] && merge_request.head_pipeline && merge_request.head_pipeline.active?
-          ::MergeRequests::MergeWhenPipelineSucceedsService
-            .new(merge_request.target_project, current_user, merge_params)
-            .execute(merge_request)
-        else
-          ::MergeRequests::MergeService
-            .new(merge_request.target_project, current_user, merge_params)
-            .execute(merge_request)
-        end
-
-        present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
-      end
-
-      desc 'Cancel merge if "Merge When Pipeline Succeeds" is enabled' do
-        success Entities::MergeRequest
-      end
-      post ':id/merge_requests/:merge_request_id/cancel_merge_when_build_succeeds' do
-        merge_request = find_project_merge_request(params[:merge_request_id])
-
-        unauthorized! unless merge_request.can_cancel_merge_when_build_succeeds?(current_user)
-
-        ::MergeRequest::MergeWhenPipelineSucceedsService
-          .new(merge_request.target_project, current_user)
-          .cancel(merge_request)
-      end
-
-      desc 'Get the comments of a merge request' do
-        success Entities::MRNote
-      end
-      params do
-        use :pagination
-      end
-      get ':id/merge_requests/:merge_request_id/comments' do
-        merge_request = find_merge_request_with_access(params[:merge_request_id])
-        present paginate(merge_request.notes.fresh), with: Entities::MRNote
-      end
-
-      desc 'Post a comment to a merge request' do
-        success Entities::MRNote
-      end
-      params do
-        requires :note, type: String, desc: 'The text of the comment'
-      end
-      post ':id/merge_requests/:merge_request_id/comments' do
-        merge_request = find_merge_request_with_access(params[:merge_request_id], :create_note)
-
-        opts = {
-          note: params[:note],
-          noteable_type: 'MergeRequest',
-          noteable_id: merge_request.id
-        }
-
-        note = ::Notes::CreateService.new(user_project, current_user, opts).execute
-
-        if note.save
-          present note, with: Entities::MRNote
-        else
-          render_api_error!("Failed to save note #{note.errors.messages}", 400)
-        end
->>>>>>> ce/master
       end
 
       desc 'List issues that will be closed on merge' do
