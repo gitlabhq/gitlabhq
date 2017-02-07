@@ -2,6 +2,7 @@
 # class return an instance of `GitlabAccessStatus`
 module Gitlab
   class GitAccess
+    include ActionView::Helpers::SanitizeHelper
     include PathLocksHelper
     UnauthorizedError = Class.new(StandardError)
 
@@ -148,7 +149,7 @@ module Gitlab
 
       if ::License.block_changes?
         message = ::LicenseHelper.license_message(signed_in: true, is_admin: (user && user.is_admin?))
-        raise UnauthorizedError, message
+        raise UnauthorizedError, strip_tags(message)
       end
 
       check_change_access!(changes)

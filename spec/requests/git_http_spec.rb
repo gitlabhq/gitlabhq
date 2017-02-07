@@ -283,6 +283,24 @@ describe 'Git HTTP requests', lib: true do
         end
       end
 
+      context 'when license is not provided' do
+        let(:env) { { user: user.username, password: user.password } }
+
+        before do
+          project.team << [user, :master]
+        end
+
+        it 'responds with status 403' do
+          msg = 'No GitLab Enterprise Edition license has been provided yet. Pushing code and creation of issues and merge requests has been disabled. Ask an admin to upload a license to activate this functionality.'
+          allow(License).to receive(:current).and_return(false)
+
+          upload(path, env) do |response|
+            expect(response).to have_http_status(403)
+            expect(response.body).to eq(msg)
+          end
+        end
+      end
+
       context "when the project is private" do
         before do
           project.update_attribute(:visibility_level, Project::PRIVATE)

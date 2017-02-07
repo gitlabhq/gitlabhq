@@ -76,7 +76,7 @@ class Projects::GitHttpController < Projects::GitHttpClientController
   end
 
   def access_denied_message
-    project.above_size_limit? ? access_check.message : 'Access denied'
+    access_check.message || 'Access denied'
   end
 
   def upload_pack_allowed?
