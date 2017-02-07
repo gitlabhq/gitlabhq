@@ -23,7 +23,7 @@ module Ci
 
     def environments
       @environments ||=
-        EnvironmentsFinder.new(project, nil, ref: @ref, recently_updated: true).execute(skip_authorization: true)
+        EnvironmentsFinder.new(project, current_user, ref: @ref, recently_updated: true).execute
     end
   end
 end
