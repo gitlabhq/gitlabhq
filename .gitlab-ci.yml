@@ -397,7 +397,7 @@ lint:javascript:report:
   before_script:
     - npm install
   script:
-    - find app/ spec/ -name '*.js' -or -name '*.js.es6' -exec sed --in-place 's|/\* eslint-disable .*\*/||' {} \; # run report over all files
+    - find app/ spec/ -name '*.js' -exec sed --in-place 's|/\* eslint-disable .*\*/||' {} \; # run report over all files
     - npm --silent run eslint-report || true # ignore exit code
   artifacts:
     name: eslint-report

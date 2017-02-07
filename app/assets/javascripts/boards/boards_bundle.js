@@ -7,11 +7,11 @@ function requireAll(context) { return context.keys().map(context); }
 window.Vue = require('vue');
 window.Vue.use(require('vue-resource'));
 window.Sortable = require('vendor/Sortable');
-requireAll(require.context('./models',   true, /^\.\/.*\.(js|es6)$/));
-requireAll(require.context('./stores',   true, /^\.\/.*\.(js|es6)$/));
-requireAll(require.context('./services', true, /^\.\/.*\.(js|es6)$/));
-requireAll(require.context('./mixins',   true, /^\.\/.*\.(js|es6)$/));
-requireAll(require.context('./filters',  true, /^\.\/.*\.(js|es6)$/));
+requireAll(require.context('./models',   true, /^\.\/.*\.js$/));
+requireAll(require.context('./stores',   true, /^\.\/.*\.js$/));
+requireAll(require.context('./services', true, /^\.\/.*\.js$/));
+requireAll(require.context('./mixins',   true, /^\.\/.*\.js$/));
+requireAll(require.context('./filters',  true, /^\.\/.*\.js$/));
 require('./components/board');
 require('./components/board_sidebar');
 require('./components/new_list_dropdown');

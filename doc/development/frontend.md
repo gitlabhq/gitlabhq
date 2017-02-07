@@ -33,13 +33,13 @@ you can find a clear separation of concerns:
 ```
 new_feature
 ├── components
-│   └── component.js.es6
+│   └── component.js
 │   └── ...
 ├── store
-│  └── new_feature_store.js.es6
+│  └── new_feature_store.js
 ├── service
-│  └── new_feature_service.js.es6
-├── new_feature_bundle.js.es6
+│  └── new_feature_service.js
+├── new_feature_bundle.js
 ```
 _For consistency purposes, we recommend you to follow the same structure._
 
@@ -366,14 +366,6 @@ For our currently-supported browsers, see our [requirements][requirements].
 [issue-boards-service]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/javascripts/boards/services/board_service.js.es6
 
 ## Gotchas
-
-### Spec errors due to use of ES6 features in `.js` files
-
-If you see very generic JavaScript errors (e.g. `jQuery is undefined`) being
-thrown in Teaspoon, Spinach, or Rspec tests but can't reproduce them manually,
-you may have included `ES6`-style JavaScript in files that don't have the
-`.js.es6` file extension. Either use ES5-friendly JavaScript or rename the file
-you're working in (`git mv <file.js> <file.js.es6>`).
 
 ### Spec errors due to use of unsupported JavaScript
 

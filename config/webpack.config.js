@@ -50,7 +50,7 @@ var config = {
   module: {
     loaders: [
       {
-        test: /\.(js|es6)$/,
+        test: /\.js$/,
         exclude: /(node_modules|vendor\/assets)/,
         loader: 'babel-loader',
         query: {
@@ -61,7 +61,7 @@ var config = {
         }
       },
       {
-        test: /\.(js|es6)$/,
+        test: /\.js$/,
         loader: 'imports-loader',
         query: 'this=>window'
       },
@@ -88,7 +88,7 @@ var config = {
   ],
 
   resolve: {
-    extensions: ['', '.js', '.es6', '.js.es6'],
+    extensions: ['', '.js'],
     alias: {
       '~':              path.join(ROOT_PATH, 'app/assets/javascripts'),
       'bootstrap/js':   'bootstrap-sass/assets/javascripts/bootstrap',

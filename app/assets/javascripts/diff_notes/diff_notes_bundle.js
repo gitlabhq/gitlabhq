@@ -3,11 +3,11 @@
 /* global ResolveCount */
 
 function requireAll(context) { return context.keys().map(context); }
-requireAll(require.context('./models',     false, /^\.\/.*\.(js|es6)$/));
-requireAll(require.context('./stores',     false, /^\.\/.*\.(js|es6)$/));
-requireAll(require.context('./services',   false, /^\.\/.*\.(js|es6)$/));
-requireAll(require.context('./mixins',     false, /^\.\/.*\.(js|es6)$/));
-requireAll(require.context('./components', false, /^\.\/.*\.(js|es6)$/));
+requireAll(require.context('./models',     false, /^\.\/.*\.js$/));
+requireAll(require.context('./stores',     false, /^\.\/.*\.js$/));
+requireAll(require.context('./services',   false, /^\.\/.*\.js$/));
+requireAll(require.context('./mixins',     false, /^\.\/.*\.js$/));
+requireAll(require.context('./components', false, /^\.\/.*\.js$/));
 
 $(() => {
   const COMPONENT_SELECTOR = 'resolve-btn, resolve-discussion-btn, jump-to-discussion, comment-and-resolve-btn';

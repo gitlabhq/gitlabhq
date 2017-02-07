@@ -13,7 +13,7 @@ module.exports = function(config) {
       { pattern: 'spec/javascripts/fixtures/**/*@(.json|.html|.html.raw)', included: false },
     ],
     preprocessors: {
-      'spec/javascripts/**/*.js?(.es6)': ['webpack', 'sourcemap'],
+      'spec/javascripts/**/*.js': ['webpack', 'sourcemap'],
     },
     webpack: webpackConfig,
     webpackMiddleware: { stats: 'errors-only' },
