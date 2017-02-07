@@ -154,6 +154,11 @@ module ProjectsHelper
     link_to 'About auto deploy', help_page_path('ci/autodeploy/index'), target: '_blank'
   end
 
+  def autodeploy_flash_notice(branch_name)
+    "Branch <strong>#{truncate(sanitize(branch_name))}</strong> was created. To set up auto deploy, \
+      choose a GitLab CI Yaml template and commit your changes. #{link_to_autodeploy_doc}".html_safe
+  end
+
   private
 
   def repo_children_classes(field)
@@ -269,18 +274,6 @@ module ProjectsHelper
       commit_message: commit_message || "Add #{file_name.downcase}",
       target_branch: target_branch,
       context: context
-    )
-  end
-
-  def url_to_autodeploy_setup(project, branch_name)
-    namespace_project_new_blob_path(
-      project.namespace,
-      project,
-      branch_name,
-      file_name: '.gitlab-ci.yml',
-      commit_message: 'Set up auto deploy',
-      target_branch: branch_name,
-      context: 'autodeploy'
     )
   end
 

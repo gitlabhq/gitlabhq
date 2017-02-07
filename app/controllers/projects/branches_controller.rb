@@ -1,7 +1,6 @@
 class Projects::BranchesController < Projects::ApplicationController
   include ActionView::Helpers::SanitizeHelper
   include SortingHelper
-  include ProjectsHelper
 
   # Authorize
   before_action :require_non_empty_project, except: :create
@@ -34,7 +33,7 @@ class Projects::BranchesController < Projects::ApplicationController
     branch_name = sanitize(strip_tags(params[:branch_name]))
     branch_name = Addressable::URI.unescape(branch_name)
 
-    is_redirect_to_autodeploy_needed = project.empty_repo? && project.deployment_services.present?
+    redirect_to_autodeploy = project.empty_repo? && project.deployment_services.present?
 
     result = CreateBranchService.new(project, current_user).
         execute(branch_name, ref)
@@ -47,11 +46,10 @@ class Projects::BranchesController < Projects::ApplicationController
     if result[:status] == :success
       @branch = result[:branch]
 
-      if is_redirect_to_autodeploy_needed
+      if redirect_to_autodeploy
         redirect_to(
           url_to_autodeploy_setup(project, branch_name),
-          notice: "Branch \"#{sanitize(branch_name)}\" was created. To set up auto deploy, \
-            choose a GitLab CI Yaml template and commit your changes. #{view_context.link_to_autodeploy_doc}".html_safe)
+          notice: view_context.autodeploy_flash_notice(branch_name))
       else
         redirect_to namespace_project_tree_path(@project.namespace, @project,
                                                 @branch.name)
@@ -90,5 +88,17 @@ class Projects::BranchesController < Projects::ApplicationController
     else
       @project.default_branch || 'master'
     end
+  end
+
+  def url_to_autodeploy_setup(project, branch_name)
+    namespace_project_new_blob_path(
+      project.namespace,
+      project,
+      branch_name,
+      file_name: '.gitlab-ci.yml',
+      commit_message: 'Set up auto deploy',
+      target_branch: branch_name,
+      context: 'autodeploy'
+    )
   end
 end

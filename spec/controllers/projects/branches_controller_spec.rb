@@ -116,14 +116,7 @@ describe Projects::BranchesController do
         it 'redirects to autodeploy setup page' do
           result = { status: :success, branch: double(name: branch) }
 
-          project.create_kubernetes_service(
-            active: true,
-            properties: {
-              namespace: project.path,
-              api_url: 'https://kubernetes.example.com',
-              token: 'a' * 40,
-            }
-          )
+          project.services << build(:kubernetes_service)
 
           expect_any_instance_of(CreateBranchService).to receive(:execute).and_return(result)
           expect(SystemNoteService).to receive(:new_issue_branch).and_return(true)
@@ -135,6 +128,7 @@ describe Projects::BranchesController do
             issue_iid: issue.iid
 
           expect(response.location).to include(namespace_project_new_blob_path(project.namespace, project, branch))
+          expect(response).to have_http_status(302)
         end
       end
 
