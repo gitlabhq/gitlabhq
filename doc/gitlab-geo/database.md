@@ -92,13 +92,15 @@ The following guide assumes that:
     Note that if you are running GitLab Geo with a cloud provider (e.g. Amazon
     Web Services), the internal interface IP (as provided by `ifconfig`) may
     be different from the public IP address. For example, suppose you have a
-    node with the following configuration:
+    nodes with the following configuration:
 
-* Internal IP: 10.1.5.3
-* External IP: 54.193.124.100
+|Node Type|Internal IP|External IP|
+|---------|-----------|-----------|
+|Primary|10.1.5.3|54.193.124.100|
+|Secondary|10.1.10.5|54.193.100.155|
 
-    In this case, use the internal IP for `1.2.3.4` and the external IP for
-    `5.6.7.8`.
+    In this case, for `1.2.3.4` use the internal IP of the primary node: 10.1.5.3.
+    For `5.6.7.8`, use the external of the secondary node: 54.193.100.155.
 
     If you want to add another secondary, the relevant setting would look like:
 
