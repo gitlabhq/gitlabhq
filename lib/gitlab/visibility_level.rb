@@ -13,7 +13,19 @@ module Gitlab
       scope :public_and_internal_only,  -> { where(visibility_level: [PUBLIC, INTERNAL] ) }
       scope :non_public_only,           -> { where.not(visibility_level: PUBLIC) }
 
-      scope :public_to_user, -> (user) { user && !user.external ? public_and_internal_only : public_only }
+      scope :public_to_user, -> (user) do
+        if user
+          if user.admin?
+            all
+          elsif !user.external?
+            public_and_internal_only
+          else
+            public_only
+          end
+        else
+          public_only
+        end
+      end
     end
 
     PRIVATE  = 0 unless const_defined?(:PRIVATE)

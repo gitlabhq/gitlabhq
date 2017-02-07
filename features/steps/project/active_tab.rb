@@ -35,6 +35,10 @@ class Spinach::Features::ProjectActiveTab < Spinach::FeatureSteps
     click_link('Deploy Keys')
   end
 
+  step 'I click the "Pages" tab' do
+    click_link('Pages')
+  end
+
   step 'the active sub nav should be Members' do
     ensure_active_sub_nav('Members')
   end
@@ -45,6 +49,10 @@ class Spinach::Features::ProjectActiveTab < Spinach::FeatureSteps
 
   step 'the active sub nav should be Deploy Keys' do
     ensure_active_sub_nav('Deploy Keys')
+  end
+
+  step 'the active sub nav should be Pages' do
+    ensure_active_sub_nav('Pages')
   end
 
   # Sub Tabs: Commits

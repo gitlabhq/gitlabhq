@@ -19,6 +19,7 @@ var config = {
     boards:               './boards/boards_bundle.js',
     boards_test:          './boards/test_utils/simulate_drag.js',
     cycle_analytics:      './cycle_analytics/cycle_analytics_bundle.js',
+    commit_pipelines:     './commit/pipelines/pipelines_bundle.js',
     diff_notes:           './diff_notes/diff_notes_bundle.js',
     environments:         './environments/environments_bundle.js',
     filtered_search:      './filtered_search/filtered_search_bundle.js',
@@ -49,8 +50,8 @@ var config = {
   module: {
     loaders: [
       {
-        test: /\.es6$/,
-        exclude: /node_modules/,
+        test: /\.(js|es6)$/,
+        exclude: /(node_modules|vendor\/assets)/,
         loader: 'babel-loader',
         query: {
           // 'use strict' was broken in sprockets-es6 due to sprockets concatination method.

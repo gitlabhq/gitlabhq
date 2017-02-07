@@ -202,7 +202,7 @@ describe Gitlab::GithubImport::Importer, lib: true do
     end
   end
 
-  let(:project) { create(:project, import_url: "#{repo_root}/octocat/Hello-World.git", wiki_access_level: ProjectFeature::DISABLED) }
+  let(:project) { create(:project, :wiki_disabled, import_url: "#{repo_root}/octocat/Hello-World.git") }
   let(:credentials) { { user: 'joe' } }
 
   context 'when importing a GitHub project' do

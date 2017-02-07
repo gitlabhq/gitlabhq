@@ -27,7 +27,7 @@
             = icon("search", class: "search-icon")
 
           .dropdown
-            - toggle_text = 'Search for Namespace'
+            - toggle_text = 'Namespace'
             - if params[:namespace_id].present?
               - namespace = Namespace.find(params[:namespace_id])
               - toggle_text = "#{namespace.kind}: #{namespace.path}"
@@ -37,8 +37,10 @@
               = dropdown_filter("Search for Namespace")
               = dropdown_content
               = dropdown_loading
-
-          = button_tag "Search", class: "btn btn-primary btn-search"
+          = render 'shared/projects/dropdown'
+          = link_to new_project_path, class: 'btn btn-new' do
+            New Project
+          = button_tag "Search", class: "btn btn-primary btn-search hide"
 
     %ul.nav-links
       - opts = params[:visibility_level].present? ? {} : { page: admin_projects_path }
@@ -55,11 +57,6 @@
       = nav_link(html_options: { class: params[:visibility_level] == Gitlab::VisibilityLevel::PUBLIC.to_s ? 'active' : '' }) do
         = link_to admin_projects_path(visibility_level: Gitlab::VisibilityLevel::PUBLIC) do
           Public
-
-    .nav-controls
-      = render 'shared/projects/dropdown'
-      = link_to new_project_path, class: 'btn btn-new' do
-        New Project
 
   .projects-list-holder
     - if @projects.any?

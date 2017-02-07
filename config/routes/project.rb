@@ -39,6 +39,10 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
+      resource :pages, only: [:show, :destroy] do
+        resources :domains, only: [:show, :new, :create, :destroy], controller: 'pages_domains', constraints: { id: /[^\/]+/ }
+      end
+
       resources :compare, only: [:index, :create] do
         collection do
           get :diff_for_path
@@ -311,6 +315,7 @@ constraints(ProjectUrlConstrainer.new) do
       end
       namespace :settings do
         resource :members, only: [:show]
+        resource :ci_cd, only: [:show], controller: 'ci_cd'
         resource :integrations, only: [:show]
       end
 

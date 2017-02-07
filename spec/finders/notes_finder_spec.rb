@@ -9,8 +9,6 @@ describe NotesFinder do
   end
 
   describe '#execute' do
-    it 'finds notes on snippets when project is public and user isnt a member'
-
     it 'finds notes on merge requests' do
       create(:note_on_merge_request, project: project)
 
@@ -45,9 +43,11 @@ describe NotesFinder do
 
     context 'on restricted projects' do
       let(:project) do
-        create(:empty_project, :public, issues_access_level: ProjectFeature::PRIVATE,
-                                        snippets_access_level: ProjectFeature::PRIVATE,
-                                        merge_requests_access_level: ProjectFeature::PRIVATE)
+        create(:empty_project,
+               :public,
+               :issues_private,
+               :snippets_private,
+               :merge_requests_private)
       end
 
       it 'publicly excludes notes on merge requests' do

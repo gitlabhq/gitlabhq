@@ -8,7 +8,8 @@
     slice = [].slice;
 
   this.UsersSelect = (function() {
-    function UsersSelect(currentUser) {
+    function UsersSelect(currentUser, els) {
+      var $els;
       this.users = bind(this.users, this);
       this.user = bind(this.user, this);
       this.usersPath = "/autocomplete/users.json";
@@ -20,7 +21,14 @@
           this.currentUser = JSON.parse(currentUser);
         }
       }
-      $('.js-user-search').each((function(_this) {
+
+      $els = $(els);
+
+      if (!els) {
+        $els = $('.js-user-search');
+      }
+
+      $els.each((function(_this) {
         return function(i, dropdown) {
           var options = {};
           var $block, $collapsedSidebar, $dropdown, $loading, $selectbox, $value, abilityName, assignTo, assigneeTemplate, collapsedAssigneeTemplate, defaultLabel, firstUser, issueURL, selectedId, showAnyUser, showNullUser, showMenuAbove;
@@ -193,7 +201,9 @@
                 selectedId = user.id;
                 return;
               }
-              if ($('html').hasClass('issue-boards-page') && !$dropdown.hasClass('js-issue-board-sidebar')) {
+              if ($el.closest('.add-issues-modal').length) {
+                gl.issueBoards.ModalStore.store.filter[$dropdown.data('field-name')] = user.id;
+              } else if ($('html').hasClass('issue-boards-page') && !$dropdown.hasClass('js-issue-board-sidebar')) {
                 selectedId = user.id;
                 gl.issueBoards.BoardsStore.state.filters[$dropdown.data('field-name')] = user.id;
                 gl.issueBoards.BoardsStore.updateFiltersUrl();

@@ -216,19 +216,22 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       end
 
       format.json do
-        render json: {
-          html: view_to_html_string('projects/merge_requests/show/_pipelines'),
-          pipelines: PipelineSerializer
-            .new(project: @project, user: @current_user)
-            .with_pagination(request, response)
-            .represent(@pipelines)
-        }
+        render json: PipelineSerializer
+          .new(project: @project, user: @current_user)
+          .represent(@pipelines)
       end
     end
   end
 
   def new
-    define_new_vars
+    respond_to do |format|
+      format.html { define_new_vars }
+      format.json do
+        render json: { pipelines: PipelineSerializer
+          .new(project: @project, user: @current_user)
+          .represent(@pipelines) }
+      end
+    end
   end
 
   def new_diffs

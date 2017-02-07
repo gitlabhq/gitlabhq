@@ -4,8 +4,7 @@ class Projects::TriggersController < Projects::ApplicationController
   layout 'project_settings'
 
   def index
-    @triggers = project.triggers
-    @trigger = Ci::Trigger.new
+    redirect_to namespace_project_settings_ci_cd_path(@project.namespace, @project)
   end
 
   def create
@@ -13,17 +12,18 @@ class Projects::TriggersController < Projects::ApplicationController
     @trigger.save
 
     if @trigger.valid?
-      redirect_to namespace_project_triggers_path(@project.namespace, @project)
+      redirect_to namespace_project_variables_path(project.namespace, project), notice: 'Trigger was created successfully.'
     else
       @triggers = project.triggers.select(&:persisted?)
-      render :index
+      render action: "show"
     end
   end
 
   def destroy
     trigger.destroy
+    flash[:alert] = "Trigger removed"
 
-    redirect_to namespace_project_triggers_path(@project.namespace, @project)
+    redirect_to namespace_project_settings_ci_cd_path(@project.namespace, @project)
   end
 
   private

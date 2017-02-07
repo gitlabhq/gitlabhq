@@ -4,7 +4,7 @@
 window.Vue = require('vue');
 window.timeago = require('vendor/timeago');
 require('../../lib/utils/text_utility');
-require('../../vue_common_component/commit');
+require('../../vue_shared/components/commit');
 require('./environment_actions');
 require('./environment_external_url');
 require('./environment_stop');

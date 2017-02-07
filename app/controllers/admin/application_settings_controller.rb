@@ -109,6 +109,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :plantuml_url,
       :max_artifacts_size,
       :max_attachment_size,
+      :max_pages_size,
       :metrics_enabled,
       :metrics_host,
       :metrics_method_call_threshold,
@@ -137,6 +138,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :user_default_external,
       :user_oauth_applications,
       :version_check_enabled,
+      :terminal_max_session_time,
 
       disabled_oauth_sign_in_sources: [],
       import_sources: [],

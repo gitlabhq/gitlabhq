@@ -152,6 +152,9 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
     project = create(:project,
                      :public,
                      :repository,
+                     :issues_disabled,
+                     :wiki_enabled,
+                     :builds_private,
                      issues: [issue],
                      snippets: [snippet],
                      releases: [release],
@@ -184,10 +187,6 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
 
     create(:event, :created, target: milestone, project: project, author: user)
     create(:service, project: project, type: 'CustomIssueTrackerService', category: 'issue_tracker')
-
-    project.project_feature.update_attribute(:issues_access_level, ProjectFeature::DISABLED)
-    project.project_feature.update_attribute(:wiki_access_level, ProjectFeature::ENABLED)
-    project.project_feature.update_attribute(:builds_access_level, ProjectFeature::PRIVATE)
 
     project
   end

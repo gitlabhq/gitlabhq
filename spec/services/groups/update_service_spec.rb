@@ -51,7 +51,7 @@ describe Groups::UpdateService, services: true do
   end
 
   context 'rename group' do
-    let!(:service) { described_class.new(internal_group, user, path: 'new_path') }
+    let!(:service) { described_class.new(internal_group, user, path: SecureRandom.hex) }
 
     before do
       internal_group.add_user(user, Gitlab::Access::MASTER)
