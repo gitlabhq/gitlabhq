@@ -11,6 +11,11 @@ module Gitlab
         super(app, opts)
       end
 
+      def rewrite_env(env)
+        env["rack.ssl_verify_none"] = true
+        env
+      end
+
       def perform_request(env)
         unless @proxy_path && env['PATH_INFO'].start_with?("/#{@proxy_path}")
           return @app.call(env)
