@@ -431,12 +431,22 @@ describe 'project routing' do
     end
   end
 
-  #         project_notes GET    /:project_id/notes(.:format)         notes#index
-  #                       POST   /:project_id/notes(.:format)         notes#create
-  #          project_note DELETE /:project_id/notes/:id(.:format)     notes#destroy
+  # project_noteable_notes GET    /:project_id/noteable/:target_type/:target_id/notes notes#index
+  #                        POST   /:project_id/notes(.:format)                        notes#create
+  #           project_note DELETE /:project_id/notes/:id(.:format)                    notes#destroy
   describe Projects::NotesController, 'routing' do
+    it 'to #index' do
+      expect(get('/gitlab/gitlabhq/noteable/issue/1/notes')).to route_to(
+        'projects/notes#index',
+        namespace_id: 'gitlab',
+        project_id: 'gitlabhq',
+        target_type: 'issue',
+        target_id: '1'
+      )
+    end
+
     it_behaves_like 'RESTful project resources' do
-      let(:actions)    { [:index, :create, :destroy] }
+      let(:actions)    { [:create, :destroy] }
       let(:controller) { 'notes' }
     end
   end

@@ -200,4 +200,31 @@ describe Projects::NotesController do
       end
     end
   end
+
+  describe 'GET index' do
+    let(:last_fetched_at) { '1487756246' }
+    let(:request_params) do
+      {
+        namespace_id: project.namespace,
+        project_id: project,
+        target_type: 'issue',
+        target_id: issue.id
+      }
+    end
+
+    before do
+      sign_in(user)
+      project.team << [user, :developer]
+    end
+
+    it 'passes last_fetched_at from headers to NotesFinder' do
+      request.headers['X-Last-Fetched-At'] = last_fetched_at
+
+      expect(NotesFinder).to receive(:new)
+        .with(anything, anything, hash_including(last_fetched_at: last_fetched_at))
+        .and_call_original
+
+      get :index, request_params
+    end
+  end
 end

@@ -198,7 +198,7 @@ require('./task_list');
       this.refreshing = true;
       return $.ajax({
         url: this.notes_url,
-        data: "last_fetched_at=" + this.last_fetched_at,
+        headers: { "X-Last-Fetched-At": this.last_fetched_at },
         dataType: "json",
         success: (function(_this) {
           return function(data) {
