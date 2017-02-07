@@ -64,10 +64,6 @@ feature 'Environment', :feature do
           expect(page).to have_link('Re-deploy')
         end
 
-        scenario 'does not show stop button' do
-          expect(page).not_to have_link('Stop')
-        end
-
         scenario 'does not show terminal button' do
           expect(page).not_to have_terminal_button
         end
@@ -116,26 +112,42 @@ feature 'Environment', :feature do
             end
           end
 
-          context 'with stop action' do
-            given(:manual) { create(:ci_build, :manual, pipeline: pipeline, name: 'close_app') }
-            given(:deployment) { create(:deployment, environment: environment, deployable: build, on_stop: 'close_app') }
+          context 'when environment is available' do
+            context 'with stop action' do
+              given(:manual) { create(:ci_build, :manual, pipeline: pipeline, name: 'close_app') }
+              given(:deployment) { create(:deployment, environment: environment, deployable: build, on_stop: 'close_app') }
 
-            scenario 'does show stop button' do
-              expect(page).to have_link('Stop')
-            end
-
-            scenario 'does allow to stop environment' do
-              click_link('Stop')
-
-              expect(page).to have_content('close_app')
-            end
-
-            context 'for reporter' do
-              let(:role) { :reporter }
-
-              scenario 'does not show stop button' do
-                expect(page).not_to have_link('Stop')
+              scenario 'does show stop button' do
+                expect(page).to have_link('Stop')
               end
+
+              scenario 'does allow to stop environment' do
+                click_link('Stop')
+
+                expect(page).to have_content('close_app')
+              end
+
+              context 'for reporter' do
+                let(:role) { :reporter }
+
+                scenario 'does not show stop button' do
+                  expect(page).not_to have_link('Stop')
+                end
+              end
+            end
+
+            context 'without stop action' do
+              scenario 'does allow to stop environment' do
+                click_link('Stop')
+              end
+            end
+          end
+
+          context 'when environment is stopped' do
+            given(:environment) { create(:environment, project: project, state: :stopped) }
+
+            scenario 'does not show stop button' do
+              expect(page).not_to have_link('Stop')
             end
           end
         end

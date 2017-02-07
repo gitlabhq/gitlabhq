@@ -252,5 +252,7 @@ window.ES6Promise.polyfill();
     new Aside();
     // bind sidebar events
     new gl.Sidebar();
+
+    gl.utils.initTimeagoTimeout();
   });
 }).call(this);

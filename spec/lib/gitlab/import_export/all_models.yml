@@ -221,5 +221,6 @@ award_emoji:
 priorities:
 - label
 timelogs:
-- trackable
+- issue
+- merge_request
 - user

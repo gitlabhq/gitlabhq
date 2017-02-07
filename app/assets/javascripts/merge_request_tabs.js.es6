@@ -82,17 +82,31 @@ require('./flash');
       $(document)
         .on('shown.bs.tab', '.merge-request-tabs a[data-toggle="tab"]', this.tabShown)
         .on('click', '.js-show-tab', this.showTab);
+
+      $('.merge-request-tabs a[data-toggle="tab"]')
+        .on('click', this.clickTab);
     }
 
     unbindEvents() {
       $(document)
         .off('shown.bs.tab', '.merge-request-tabs a[data-toggle="tab"]', this.tabShown)
         .off('click', '.js-show-tab', this.showTab);
+
+      $('.merge-request-tabs a[data-toggle="tab"]')
+        .off('click', this.clickTab);
     }
 
     showTab(e) {
       e.preventDefault();
       this.activateTab($(e.target).data('action'));
+    }
+
+    clickTab(e) {
+      if (e.target && gl.utils.isMetaClick(e)) {
+        const targetLink = e.target.getAttribute('href');
+        e.stopImmediatePropagation();
+        window.open(targetLink, '_blank');
+      }
     }
 
     tabShown(e) {
