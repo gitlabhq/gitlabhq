@@ -202,4 +202,11 @@ describe Namespace, models: true do
       expect(group.parents).to eq([])
     end
   end
+
+  describe '#user_ids_for_project_authorizations' do
+    it 'returns the user IDs for which to refresh authorizations' do
+      expect(namespace.user_ids_for_project_authorizations).
+        to eq([namespace.owner_id])
+    end
+  end
 end

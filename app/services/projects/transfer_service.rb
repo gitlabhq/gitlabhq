@@ -25,9 +25,10 @@ module Projects
     end
 
     def transfer(project, new_namespace)
+      old_namespace = project.namespace
+
       Project.transaction do
         old_path = project.path_with_namespace
-        old_namespace = project.namespace
         old_group = project.group
         new_path = File.join(new_namespace.try(:path) || '', project.path)
 
@@ -67,8 +68,11 @@ module Projects
         project.old_path_with_namespace = old_path
 
         SystemHooksService.new.execute_hooks_for(project, :transfer)
-        true
       end
+
+      refresh_permissions(old_namespace, new_namespace)
+
+      true
     end
 
     def allowed_transfer?(current_user, project, namespace)
@@ -76,6 +80,15 @@ module Projects
         can?(current_user, :change_namespace, project) &&
         namespace.id != project.namespace_id &&
         current_user.can?(:create_projects, namespace)
+    end
+
+    def refresh_permissions(old_namespace, new_namespace)
+      # This ensures we only schedule 1 job for every user that has access to
+      # the namespaces.
+      user_ids = old_namespace.user_ids_for_project_authorizations |
+        new_namespace.user_ids_for_project_authorizations
+
+      UserProjectAccessChangedService.new(user_ids).execute
     end
   end
 end

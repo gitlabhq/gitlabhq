@@ -81,4 +81,30 @@ describe Projects::TransferService, services: true do
       transfer_project(project, user, group)
     end
   end
+
+  describe 'refreshing project authorizations' do
+    let(:group) { create(:group) }
+    let(:owner) { project.namespace.owner }
+    let(:group_member) { create(:user) }
+
+    before do
+      group.add_user(owner, GroupMember::MASTER)
+      group.add_user(group_member, GroupMember::DEVELOPER)
+    end
+
+    it 'refreshes the permissions of the old and new namespace' do
+      transfer_project(project, owner, group)
+
+      expect(group_member.authorized_projects).to include(project)
+      expect(owner.authorized_projects).to include(project)
+    end
+
+    it 'only schedules a single job for every user' do
+      expect(UserProjectAccessChangedService).to receive(:new).
+        with([owner.id, group_member.id]).
+        and_call_original
+
+      transfer_project(project, owner, group)
+    end
+  end
 end

@@ -294,4 +294,17 @@ describe Group, models: true do
       expect(group.members_with_parents).to include(master)
     end
   end
+
+  describe '#user_ids_for_project_authorizations' do
+    it 'returns the user IDs for which to refresh authorizations' do
+      master = create(:user)
+      developer = create(:user)
+
+      group.add_user(master, GroupMember::MASTER)
+      group.add_user(developer, GroupMember::DEVELOPER)
+
+      expect(group.user_ids_for_project_authorizations).
+        to include(master.id, developer.id)
+    end
+  end
 end
