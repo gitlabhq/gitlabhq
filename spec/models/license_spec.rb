@@ -88,6 +88,74 @@ describe License do
           expect(license).to be_valid
         end
       end
+
+      context 'with true-up info' do
+        def set_restrictions(opts)
+          gl_license.restrictions = {
+            active_user_count: opts[:restricted_user_count],
+            previous_user_count: opts[:previous_user_count],
+            trueup_quantity: opts[:trueup_quantity],
+            trueup_from: (Date.today - 1.year).to_s,
+            trueup_to: Date.today.to_s
+          }
+        end
+
+        context 'when quantity is ok' do
+          before do
+            set_restrictions(restricted_user_count: 5, trueup_quantity: 10)
+          end
+
+          it 'is valid' do
+            expect(license).to be_valid
+          end
+
+          context 'but active users exceeds restricted user count' do
+            it 'is invalid' do
+              6.times { create(:user) }
+
+              expect(license).not_to be_valid
+            end
+          end
+        end
+
+        context 'when quantity is wrong' do
+          it 'is invalid' do
+            set_restrictions(restricted_user_count: 5, trueup_quantity: 8)
+
+            expect(license).not_to be_valid
+          end
+        end
+
+        context 'when previous user count is not present' do
+          before do
+            set_restrictions(restricted_user_count: 5, trueup_quantity: 7)
+          end
+
+          it 'uses current active user count to calculate the expected true-up' do
+            3.times { create(:user) }
+
+            expect(license).to be_valid
+          end
+
+          context 'with wrong true-up quantity' do
+            it 'is invalid' do
+              2.times { create(:user) }
+
+              expect(license).not_to be_valid
+            end
+          end
+        end
+
+        context 'when previous user count is present' do
+          before do
+            set_restrictions(restricted_user_count: 5, trueup_quantity: 6, previous_user_count: 4)
+          end
+
+          it 'uses it to calculate the expected true-up' do
+            expect(license).to be_valid
+          end
+        end
+      end
     end
 
     describe "Not expired" do
