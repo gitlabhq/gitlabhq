@@ -3,7 +3,7 @@
 - page_description     @issue.description
 - page_card_attributes @issue.card_attributes
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_tag('lib/vue_resource.js')
+  = page_specific_javascript_bundle_tag('lib_vue')
 
 .clearfix.detail-page-header
   .issuable-header

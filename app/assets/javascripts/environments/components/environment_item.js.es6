@@ -1,14 +1,15 @@
 /* global Vue */
 /* global timeago */
 
-/*= require timeago */
-/*= require lib/utils/text_utility */
-/*= require vue_common_component/commit */
-/*= require ./environment_actions */
-/*= require ./environment_external_url */
-/*= require ./environment_stop */
-/*= require ./environment_rollback */
-/*= require ./environment_terminal_button */
+window.Vue = require('vue');
+window.timeago = require('vendor/timeago');
+require('../../lib/utils/text_utility');
+require('../../vue_shared/components/commit');
+require('./environment_actions');
+require('./environment_external_url');
+require('./environment_stop');
+require('./environment_rollback');
+require('./environment_terminal_button');
 
 (() => {
   /**

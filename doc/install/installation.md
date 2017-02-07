@@ -124,7 +124,7 @@ Download Ruby and compile it:
 
     mkdir /tmp/ruby && cd /tmp/ruby
     curl --remote-name --progress https://cache.ruby-lang.org/pub/ruby/2.3/ruby-2.3.3.tar.gz
-    echo '1014ee699071aa2ddd501907d18cbe15399c997d ruby-2.3.3.tar.gz' | shasum -c - && tar xzf ruby-2.3.3.tar.gz
+    echo '1014ee699071aa2ddd501907d18cbe15399c997d  ruby-2.3.3.tar.gz' | shasum -c - && tar xzf ruby-2.3.3.tar.gz
     cd ruby-2.3.3
     ./configure --disable-install-rdoc
     make
@@ -313,6 +313,9 @@ sudo usermod -aG redis git
     # Change the permissions of the directory where CI artifacts are stored
     sudo chmod -R u+rwX shared/artifacts/
 
+    # Change the permissions of the directory where GitLab Pages are stored
+    sudo chmod -R ug+rwX shared/pages/
+
     # Copy the example Unicorn config
     sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
 
@@ -483,6 +486,10 @@ Make sure to edit the config file to match your setup. Also, ensure that you mat
     # either remove the default_server from the listen line
     # or else sudo rm -f /etc/nginx/sites-enabled/default
     sudo editor /etc/nginx/sites-available/gitlab
+
+If you intend to enable GitLab pages, there is a separate Nginx config you need
+to use. Read all about the needed configuration at the
+[GitLab Pages administration guide](../administration/pages/index.md).
 
 **Note:** If you want to use HTTPS, replace the `gitlab` Nginx config with `gitlab-ssl`. See [Using HTTPS](#using-https) for HTTPS configuration details.
 

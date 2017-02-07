@@ -319,6 +319,7 @@ job_name:
 | before_script | no | Override a set of commands that are executed before build |
 | after_script  | no | Override a set of commands that are executed after build |
 | environment   | no | Defines a name of environment to which deployment is done by this build |
+| coverage      | no | Define code coverage settings for a given job |
 
 ### script
 
@@ -993,6 +994,23 @@ job:
   - execute this after my script
 ```
 
+### coverage
+
+`coverage` allows you to configure how code coverage will be extracted from the
+job output.
+
+Regular expressions are the only valid kind of value expected here. So, using
+surrounding `/` is mandatory in order to consistently and explicitly represent
+a regular expression string. You must escape special characters if you want to
+match them literally.
+
+A simple example:
+
+```yaml
+job1:
+  coverage: /Code coverage: \d+\.\d+/
+```
+
 ## Git Strategy
 
 > Introduced in GitLab 8.9 as an experimental feature.  May change or be removed
@@ -1280,6 +1298,35 @@ Triggers can be used to force a rebuild of a specific branch, tag or commit,
 with an API call.
 
 [Read more in the triggers documentation.](../triggers/README.md)
+
+### pages
+
+`pages` is a special job that is used to upload static content to GitLab that
+can be used to serve your website. It has a special syntax, so the two
+requirements below must be met:
+
+1. Any static content must be placed under a `public/` directory
+1. `artifacts` with a path to the `public/` directory must be defined
+
+The example below simply moves all files from the root of the project to the
+`public/` directory. The `.public` workaround is so `cp` doesn't also copy
+`public/` to itself in an infinite loop:
+
+```
+pages:
+  stage: deploy
+  script:
+  - mkdir .public
+  - cp -r * .public
+  - mv .public public
+  artifacts:
+    paths:
+    - public
+  only:
+  - master
+```
+
+Read more on [GitLab Pages user documentation](../../pages/README.md).
 
 ## Validate the .gitlab-ci.yml
 

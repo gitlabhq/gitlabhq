@@ -34,3 +34,7 @@
       = link_to namespace_project_pipelines_settings_path(@project.namespace, @project), title: 'CI/CD Pipelines' do
         %span
           CI/CD Pipelines
+  = nav_link(controller: :pages) do
+    = link_to namespace_project_pages_path(@project.namespace, @project), title: 'Pages', data: {placement: 'right'} do
+      %span
+        Pages

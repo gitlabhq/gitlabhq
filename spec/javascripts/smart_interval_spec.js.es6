@@ -1,5 +1,4 @@
-//= require jquery
-//= require smart_interval
+require('~/smart_interval');
 
 (() => {
   const DEFAULT_MAX_INTERVAL = 100;
@@ -164,7 +163,7 @@
         const interval = this.smartInterval;
 
         setTimeout(() => {
-          $(document).trigger('page:before-unload');
+          $(document).triggerHandler('beforeunload');
           expect(interval.state.intervalId).toBeUndefined();
           expect(interval.getCurrentInterval()).toBe(interval.cfg.startingInterval);
           done();

@@ -304,6 +304,18 @@ module SlashCommands
     params '@user'
     command :cc
 
+    desc 'Defines target branch for MR'
+    params '<Local branch name>'
+    condition do
+      issuable.respond_to?(:target_branch) &&
+        (current_user.can?(:"update_#{issuable.to_ability_name}", issuable) ||
+          issuable.new_record?)
+    end
+    command :target_branch do |target_branch_param|
+      branch_name = target_branch_param.strip
+      @updates[:target_branch] = branch_name if project.repository.branch_names.include?(branch_name)
+    end
+
     def find_label_ids(labels_param)
       label_ids_by_reference = extract_references(labels_param, :label).map(&:id)
       labels_ids_by_name = LabelsFinder.new(current_user, project_id: project.id, name: labels_param.split).execute.select(:id)

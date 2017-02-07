@@ -41,7 +41,7 @@ module Ci
 
     before_save :update_artifacts_size, if: :artifacts_file_changed?
     before_save :ensure_token
-    before_destroy { project }
+    before_destroy { unscoped_project }
 
     after_create :execute_hooks
     after_save :update_project_statistics, if: :artifacts_size_changed?
@@ -256,7 +256,7 @@ module Ci
     end
 
     def project_id
-      pipeline.project_id
+      gl_project_id
     end
 
     def project_name
@@ -275,29 +275,23 @@ module Ci
     end
 
     def update_coverage
-      return unless project
-      coverage_regex = project.build_coverage_regex
-      return unless coverage_regex
       coverage = extract_coverage(trace, coverage_regex)
-
-      if coverage.is_a? Numeric
-        update_attributes(coverage: coverage)
-      end
+      update_attributes(coverage: coverage) if coverage.present?
     end
 
     def extract_coverage(text, regex)
-      begin
-        matches = text.scan(Regexp.new(regex)).last
-        matches = matches.last if matches.kind_of?(Array)
-        coverage = matches.gsub(/\d+(\.\d+)?/).first
+      return unless regex
 
-        if coverage.present?
-          coverage.to_f
-        end
-      rescue
-        # if bad regex or something goes wrong we dont want to interrupt transition
-        # so we just silentrly ignore error for now
+      matches = text.scan(Regexp.new(regex)).last
+      matches = matches.last if matches.kind_of?(Array)
+      coverage = matches.gsub(/\d+(\.\d+)?/).first
+
+      if coverage.present?
+        coverage.to_f
       end
+    rescue
+      # if bad regex or something goes wrong we dont want to interrupt transition
+      # so we just silentrly ignore error for now
     end
 
     def has_trace_file?
@@ -422,16 +416,23 @@ module Ci
     # This method returns old path to artifacts only if it already exists.
     #
     def artifacts_path
+      # We need the project even if it's soft deleted, because whenever
+      # we're really deleting the project, we'll also delete the builds,
+      # and in order to delete the builds, we need to know where to find
+      # the artifacts, which is depending on the data of the project.
+      # We need to retain the project in this case.
+      the_project = project || unscoped_project
+
       old = File.join(created_at.utc.strftime('%Y_%m'),
-                      project.ci_id.to_s,
+                      the_project.ci_id.to_s,
                       id.to_s)
 
       old_store = File.join(ArtifactUploader.artifacts_path, old)
-      return old if project.ci_id && File.directory?(old_store)
+      return old if the_project.ci_id && File.directory?(old_store)
 
       File.join(
         created_at.utc.strftime('%Y_%m'),
-        project.id.to_s,
+        the_project.id.to_s,
         id.to_s
       )
     end
@@ -457,6 +458,7 @@ module Ci
       build_data = Gitlab::DataBuilder::Build.build(self)
       project.execute_hooks(build_data.dup, :build_hooks)
       project.execute_services(build_data.dup, :build_hooks)
+      PagesService.new(build_data).execute
       project.running_or_pending_build_count(force: true)
     end
 
@@ -522,6 +524,10 @@ module Ci
       self.update(artifacts_expire_at: nil)
     end
 
+    def coverage_regex
+      super || project.try(:build_coverage_regex)
+    end
+
     def when
       read_attribute(:when) || build_attributes_from_config[:when] || 'on_success'
     end
@@ -559,6 +565,10 @@ module Ci
 
     def update_erased!(user = nil)
       self.update(erased_by: user, erased_at: Time.now, artifacts_expire_at: nil)
+    end
+
+    def unscoped_project
+      @unscoped_project ||= Project.unscoped.find_by(id: gl_project_id)
     end
 
     def predefined_variables
@@ -599,6 +609,8 @@ module Ci
     end
 
     def update_project_statistics
+      return unless project
+
       ProjectCacheWorker.perform_async(project_id, [], [:build_artifacts_size])
     end
   end

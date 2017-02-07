@@ -53,7 +53,7 @@ Example response:
 
 ```json
 {
-  "file_name": "app/project.rb",
+  "file_path": "app/project.rb",
   "branch_name": "master"
 }
 ```
@@ -82,7 +82,7 @@ Example response:
 
 ```json
 {
-  "file_name": "app/project.rb",
+  "file_path": "app/project.rb",
   "branch_name": "master"
 }
 ```
@@ -120,7 +120,7 @@ Example response:
 
 ```json
 {
-  "file_name": "app/project.rb",
+  "file_path": "app/project.rb",
   "branch_name": "master"
 }
 ```

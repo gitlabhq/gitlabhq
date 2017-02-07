@@ -1,5 +1,6 @@
 class SnippetsController < ApplicationController
   include ToggleAwardEmoji
+  include SpammableActions
 
   before_action :snippet, only: [:show, :edit, :destroy, :update, :raw, :download]
 
@@ -40,8 +41,8 @@ class SnippetsController < ApplicationController
   end
 
   def create
-    @snippet = CreateSnippetService.new(nil, current_user,
-                                        snippet_params).execute
+    create_params = snippet_params.merge(request: request)
+    @snippet = CreateSnippetService.new(nil, current_user, create_params).execute
 
     respond_with @snippet.becomes(Snippet)
   end
@@ -96,6 +97,7 @@ class SnippetsController < ApplicationController
                  end
   end
   alias_method :awardable, :snippet
+  alias_method :spammable, :snippet
 
   def authorize_read_snippet!
     authenticate_user! unless can?(current_user, :read_personal_snippet, @snippet)

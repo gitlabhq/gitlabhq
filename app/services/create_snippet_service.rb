@@ -1,5 +1,8 @@
 class CreateSnippetService < BaseService
   def execute
+    request = params.delete(:request)
+    api = params.delete(:api)
+
     snippet = if project
                 project.snippets.build(params)
               else
@@ -12,8 +15,12 @@ class CreateSnippetService < BaseService
     end
 
     snippet.author = current_user
+    snippet.spam = SpamService.new(snippet, request).check(api)
 
-    snippet.save
+    if snippet.save
+      UserAgentDetailService.new(snippet, request).create
+    end
+
     snippet
   end
 end

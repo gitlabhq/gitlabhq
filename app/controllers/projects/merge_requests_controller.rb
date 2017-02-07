@@ -216,19 +216,22 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       end
 
       format.json do
-        render json: {
-          html: view_to_html_string('projects/merge_requests/show/_pipelines'),
-          pipelines: PipelineSerializer
-            .new(project: @project, user: @current_user)
-            .with_pagination(request, response)
-            .represent(@pipelines)
-        }
+        render json: PipelineSerializer
+          .new(project: @project, user: @current_user)
+          .represent(@pipelines)
       end
     end
   end
 
   def new
-    define_new_vars
+    respond_to do |format|
+      format.html { define_new_vars }
+      format.json do
+        render json: { pipelines: PipelineSerializer
+          .new(project: @project, user: @current_user)
+          .represent(@pipelines) }
+      end
+    end
   end
 
   def new_diffs
@@ -434,7 +437,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       title: merge_request.title,
       sha: (merge_request.diff_head_commit.short_id if merge_request.diff_head_sha),
       status: status,
-      coverage: coverage
+      coverage: coverage,
+      pipeline: pipeline.try(:id)
     }
 
     render json: response

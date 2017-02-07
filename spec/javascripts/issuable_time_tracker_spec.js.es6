@@ -1,10 +1,11 @@
 /* eslint-disable */
-//= require jquery
-//= require vue
-//= require issuable/time_tracking/components/time_tracker
+
+require('jquery');
+require('vue');
+require('~/issuable/time_tracking/components/time_tracker');
 
 function initTimeTrackingComponent(opts) {
-  fixture.set(`
+  setFixtures(`
     <div>
       <div id="mock-container"></div>
     </div>

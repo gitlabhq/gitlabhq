@@ -39,6 +39,10 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
+      resource :pages, only: [:show, :destroy] do
+        resources :domains, only: [:show, :new, :create, :destroy], controller: 'pages_domains', constraints: { id: /[^\/]+/ }
+      end
+
       resources :compare, only: [:index, :create] do
         collection do
           get :diff_for_path
@@ -64,6 +68,7 @@ constraints(ProjectUrlConstrainer.new) do
       resources :snippets, concerns: :awardable, constraints: { id: /\d+/ } do
         member do
           get 'raw'
+          post :mark_as_spam
         end
       end
 
@@ -266,7 +271,7 @@ constraints(ProjectUrlConstrainer.new) do
 
       resources :boards, only: [:index, :show] do
         scope module: :boards do
-          resources :issues, only: [:update]
+          resources :issues, only: [:index, :update]
 
           resources :lists, only: [:index, :create, :update, :destroy] do
             collection do

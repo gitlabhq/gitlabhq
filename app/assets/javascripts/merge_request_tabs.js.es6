@@ -1,11 +1,11 @@
 /* eslint-disable no-new, class-methods-use-this */
 /* global Breakpoints */
 /* global Cookies */
-/* global DiffNotesApp */
 /* global Flash */
 
-/*= require js.cookie */
-/*= require breakpoints */
+require('./breakpoints');
+window.Cookies = require('vendor/js.cookie');
+require('./flash');
 
 /* eslint-disable max-len */
 // MergeRequestTabs
@@ -61,7 +61,6 @@
 
     constructor({ action, setUrl, stubLocation } = {}) {
       this.diffsLoaded = false;
-      this.pipelinesLoaded = false;
       this.commitsLoaded = false;
       this.fixedLayoutPref = null;
 
@@ -116,10 +115,6 @@
         $.scrollTo('.merge-request-details .merge-request-tabs', {
           offset: -navBarHeight,
         });
-      } else if (action === 'pipelines') {
-        this.loadPipelines($target.attr('href'));
-        this.expandView();
-        this.resetViewContainer();
       } else {
         this.expandView();
         this.resetViewContainer();
@@ -184,12 +179,13 @@
       // Ensure parameters and hash come along for the ride
       newState += location.search + location.hash;
 
+      // TODO: Consider refactoring in light of turbolinks removal.
+
       // Replace the current history state with the new one without breaking
       // Turbolinks' history.
       //
       // See https://github.com/rails/turbolinks/issues/363
       window.history.replaceState({
-        turbolinks: true,
         url: newState,
       }, document.title, newState);
 
@@ -239,25 +235,6 @@
 
           new gl.Diff();
           this.scrollToElement('#diffs');
-        },
-      });
-    }
-
-    loadPipelines(source) {
-      if (this.pipelinesLoaded) {
-        return;
-      }
-      this.ajaxGet({
-        url: `${source}.json`,
-        success: (data) => {
-          $('#pipelines').html(data.html);
-          gl.utils.localTimeAgo($('.js-timeago', '#pipelines'));
-          this.pipelinesLoaded = true;
-          this.scrollToElement('#pipelines');
-
-          new gl.MiniPipelineGraph({
-            container: '.js-pipeline-table',
-          });
         },
       });
     }

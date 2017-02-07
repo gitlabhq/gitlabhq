@@ -17,6 +17,7 @@ AllCops:
   # Exclude some GitLab files
   Exclude:
     - 'vendor/**/*'
+    - 'node_modules/**/*'
     - 'db/*'
     - 'db/fixtures/**/*'
     - 'tmp/**/*'

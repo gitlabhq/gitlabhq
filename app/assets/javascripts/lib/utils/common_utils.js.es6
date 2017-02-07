@@ -162,6 +162,7 @@
 
     w.gl.utils.getSelectedFragment = () => {
       const selection = window.getSelection();
+      if (selection.rangeCount === 0) return null;
       const documentFragment = selection.getRangeAt(0).cloneContents();
       if (documentFragment.textContent.length === 0) return null;
 
@@ -229,5 +230,16 @@
 
       return upperCaseHeaders;
     };
+
+    /**
+     * Transforms a DOMStringMap into a plain object.
+     *
+     * @param {DOMStringMap} DOMStringMapObject
+     * @returns {Object}
+     */
+    w.gl.utils.DOMStringMapToObject = DOMStringMapObject => Object.keys(DOMStringMapObject).reduce((acc, element) => {
+      acc[element] = DOMStringMapObject[element];
+      return acc;
+    }, {});
   })(window);
 }).call(this);

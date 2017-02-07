@@ -7,19 +7,28 @@ ace_modes = Dir[ace_gem_path + '/vendor/assets/javascripts/ace/mode-*.js'].sort.
   File.basename(file, '.js').sub(/^mode-/, '')
 end
 %>
-
+// Lazy-load configuration when ace.edit is called
 (function() {
-  window.gon = window.gon || {};
-  var basePath = (window.gon.relative_url_root || '').replace(/\/$/, '') + '/assets/ace';
-  ace.config.set('basePath', basePath);
+  var basePath;
+  var ace = window.ace;
+  var edit = ace.edit;
+  ace.edit = function() {
+    window.gon = window.gon || {};
+    basePath = (window.gon.relative_url_root || '').replace(/\/$/, '') + '/assets/ace';
+    ace.config.set('basePath', basePath);
 
-  // configure paths for all worker modules
+    // configure paths for all worker modules
 <% ace_workers.each do |worker| %>
-  ace.config.setModuleUrl('ace/mode/<%= worker %>_worker', basePath + '/worker-<%= worker %>.js');
+    ace.config.setModuleUrl('ace/mode/<%= worker %>_worker', basePath + '/<%= File.basename(asset_path("ace/worker-#{worker}.js")) %>');
 <% end %>
 
-  // configure paths for all mode modules
+    // configure paths for all mode modules
 <% ace_modes.each do |mode| %>
-  ace.config.setModuleUrl('ace/mode/<%= mode %>', basePath + '/mode-<%= mode %>.js');
+    ace.config.setModuleUrl('ace/mode/<%= mode %>', basePath + '/<%= File.basename(asset_path("ace/mode-#{mode}.js")) %>');
 <% end %>
+
+    // restore original method
+    ace.edit = edit;
+    return ace.edit.apply(ace, arguments);
+  };
 })();

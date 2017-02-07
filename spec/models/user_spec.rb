@@ -23,9 +23,9 @@ describe User, models: true do
     it { is_expected.to have_many(:recent_events).class_name('Event') }
     it { is_expected.to have_many(:issues).dependent(:destroy) }
     it { is_expected.to have_many(:notes).dependent(:destroy) }
-    it { is_expected.to have_many(:assigned_issues).dependent(:destroy) }
+    it { is_expected.to have_many(:assigned_issues).dependent(:nullify) }
     it { is_expected.to have_many(:merge_requests).dependent(:destroy) }
-    it { is_expected.to have_many(:assigned_merge_requests).dependent(:destroy) }
+    it { is_expected.to have_many(:assigned_merge_requests).dependent(:nullify) }
     it { is_expected.to have_many(:identities).dependent(:destroy) }
     it { is_expected.to have_one(:abuse_report) }
     it { is_expected.to have_many(:spam_logs).dependent(:destroy) }
@@ -1013,8 +1013,8 @@ describe User, models: true do
     let!(:project2) { create(:empty_project, forked_from_project: project3) }
     let!(:project3) { create(:empty_project) }
     let!(:merge_request) { create(:merge_request, source_project: project2, target_project: project3, author: subject) }
-    let!(:push_event) { create(:event, action: Event::PUSHED, project: project1, target: project1, author: subject) }
-    let!(:merge_event) { create(:event, action: Event::CREATED, project: project3, target: merge_request, author: subject) }
+    let!(:push_event) { create(:event, :pushed, project: project1, target: project1, author: subject) }
+    let!(:merge_event) { create(:event, :created, project: project3, target: merge_request, author: subject) }
 
     before do
       project1.team << [subject, :master]
@@ -1058,7 +1058,7 @@ describe User, models: true do
     let!(:push_data) do
       Gitlab::DataBuilder::Push.build_sample(project2, subject)
     end
-    let!(:push_event) { create(:event, action: Event::PUSHED, project: project2, target: project1, author: subject, data: push_data) }
+    let!(:push_event) { create(:event, :pushed, project: project2, target: project1, author: subject, data: push_data) }
 
     before do
       project1.team << [subject, :master]
@@ -1086,7 +1086,7 @@ describe User, models: true do
       expect(subject.recent_push(project2)).to eq(push_event)
 
       push_data1 = Gitlab::DataBuilder::Push.build_sample(project1, subject)
-      push_event1 = create(:event, action: Event::PUSHED, project: project1, target: project1, author: subject, data: push_data1)
+      push_event1 = create(:event, :pushed, project: project1, target: project1, author: subject, data: push_data1)
 
       expect(subject.recent_push([project1, project2])).to eq(push_event1) # Newest
     end
@@ -1232,7 +1232,7 @@ describe User, models: true do
     end
 
     it 'does not include projects for which issues are disabled' do
-      project = create(:empty_project, issues_access_level: ProjectFeature::DISABLED)
+      project = create(:empty_project, :issues_disabled)
 
       expect(user.projects_where_can_admin_issues.to_a).to be_empty
       expect(user.can?(:admin_issue, project)).to eq(false)
@@ -1420,6 +1420,39 @@ describe User, models: true do
     it 'stores the correct access levels' do
       expect(user.project_authorizations.where(access_level: Gitlab::Access::GUEST).exists?).to eq(true)
       expect(user.project_authorizations.where(access_level: Gitlab::Access::REPORTER).exists?).to eq(true)
+    end
+  end
+
+  describe '#access_level=' do
+    let(:user) { build(:user) }
+
+    it 'does nothing for an invalid access level' do
+      user.access_level = :invalid_access_level
+
+      expect(user.access_level).to eq(:regular)
+      expect(user.admin).to be false
+    end
+
+    it "assigns the 'admin' access level" do
+      user.access_level = :admin
+
+      expect(user.access_level).to eq(:admin)
+      expect(user.admin).to be true
+    end
+
+    it "doesn't clear existing access levels when an invalid access level is passed in" do
+      user.access_level = :admin
+      user.access_level = :invalid_access_level
+
+      expect(user.access_level).to eq(:admin)
+      expect(user.admin).to be true
+    end
+
+    it "accepts string values in addition to symbols" do
+      user.access_level = 'admin'
+
+      expect(user.access_level).to eq(:admin)
+      expect(user.admin).to be true
     end
   end
 end

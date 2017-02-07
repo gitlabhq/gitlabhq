@@ -5,6 +5,8 @@
 /* global LabelsSelect */
 /* global Sidebar */
 
+require('./sidebar/remove_issue');
+
 (() => {
   const Store = gl.issueBoards.BoardsStore;
 
@@ -18,7 +20,8 @@
     data() {
       return {
         detail: Store.detail,
-        issue: {}
+        issue: {},
+        list: {},
       };
     },
     computed: {
@@ -36,6 +39,7 @@
           }
 
           this.issue = this.detail.issue;
+          this.list = this.detail.list;
         },
         deep: true
       },
@@ -60,6 +64,9 @@
       new LabelsSelect();
       new Sidebar();
       gl.Subscription.bindAll('.subscription');
-    }
+    },
+    components: {
+      removeBtn: gl.issueBoards.RemoveIssueBtn,
+    },
   });
 })();

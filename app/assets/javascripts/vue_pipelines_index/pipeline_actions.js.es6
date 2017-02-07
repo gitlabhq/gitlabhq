@@ -26,10 +26,9 @@
                 v-if='actions'
                 class="dropdown-toggle btn btn-default has-tooltip js-pipeline-dropdown-manual-actions"
                 data-toggle="dropdown"
-                title="Manual build"
+                title="Manual job"
                 data-placement="top"
-                data-toggle="dropdown"
-                aria-label="Manual build"
+                aria-label="Manual job"
               >
                 <span v-html='svgs.iconPlay' aria-hidden="true"></span>
                 <i class="fa fa-caret-down" aria-hidden="true"></i>
@@ -51,7 +50,6 @@
               <button
                 v-if='artifacts'
                 class="dropdown-toggle btn btn-default build-artifacts has-tooltip js-pipeline-dropdown-download"
-                data-toggle="dropdown"
                 title="Artifacts"
                 data-placement="top"
                 data-toggle="dropdown"
@@ -83,8 +81,7 @@
               data-placement="top"
               data-toggle="dropdown"
               :href='pipeline.retry_path'
-              aria-label="Retry"
-            >
+              aria-label="Retry">
               <i class="fa fa-repeat" aria-hidden="true"></i>
             </a>
             <a
@@ -96,8 +93,7 @@
               data-placement="top"
               data-toggle="dropdown"
               :href='pipeline.cancel_path'
-              aria-label="Cancel"
-            >
+              aria-label="Cancel">
               <i class="fa fa-remove" aria-hidden="true"></i>
             </a>
           </div>

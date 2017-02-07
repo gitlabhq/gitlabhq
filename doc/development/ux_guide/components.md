@@ -96,6 +96,20 @@ Since secondary buttons only have a border on their resting state, their hover a
 | Background: `$color-light` <br> Border: `$border-color-light` | ![](img/button-success-secondary--hover.png) | ![](img/button-close--hover.png) | ![](img/button-spam--hover.png) |
 | Background: `$color-normal` <br> Border: `$border-color-normal` | ![](img/button-success-secondary--active.png) | ![](img/button-close--active.png) | ![](img/button-spam--active.png) |
 
+### Placement
+
+When there are a group of buttons in a dialog or a form, we need to be consistent with the placement.
+
+#### Dismissive actions on the left
+The dismissive action returns the user to the previous state.
+
+> Example: Cancel
+
+#### Affirmative actions on the right
+Affirmative actions continue to progress towards the user goal that triggered the dialog or form.
+
+> Example: Submit, Ok, Delete
+
 ---
 
 

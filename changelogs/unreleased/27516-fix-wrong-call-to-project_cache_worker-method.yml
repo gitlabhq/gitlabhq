@@ -1,0 +1,4 @@
+---
+title: Fix wrong call to ProjectCacheWorker.perform
+merge_request: 8910
+author:

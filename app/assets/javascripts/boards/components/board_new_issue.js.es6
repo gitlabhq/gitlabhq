@@ -37,6 +37,7 @@
             $(this.$refs.submitButton).enable();
 
             Store.detail.issue = issue;
+            Store.detail.list = this.list;
           })
           .catch(() => {
             // Need this because our jQuery very kindly disables buttons on ALL form submissions

@@ -1,4 +1,4 @@
-/*= require filtered_search/filtered_search_dropdown */
+require('./filtered_search_dropdown');
 
 /* global droplabAjaxFilter */
 
@@ -8,7 +8,7 @@
       super(droplab, dropdown, input, filter);
       this.config = {
         droplabAjaxFilter: {
-          endpoint: '/autocomplete/users.json',
+          endpoint: `${gon.relative_url_root || ''}/autocomplete/users.json`,
           searchKey: 'search',
           params: {
             per_page: 20,
@@ -39,8 +39,15 @@
     getSearchInput() {
       const query = gl.DropdownUtils.getSearchInput(this.input);
       const { lastToken } = gl.FilteredSearchTokenizer.processTokens(query);
+      let value = lastToken.value || '';
 
-      return lastToken.value || '';
+      // Removes the first character if it is a quotation so that we can search
+      // with multiple words
+      if (value[0] === '"' || value[0] === '\'') {
+        value = value.slice(1);
+      }
+
+      return value;
     }
 
     init() {

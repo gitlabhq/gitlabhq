@@ -1,11 +1,8 @@
 /* eslint-disable space-before-function-paren, no-var, one-var, one-var-declaration-per-line, new-parens, no-return-assign, new-cap, vars-on-top, max-len */
 /* global Sidebar */
 
-/*= require right_sidebar */
-/*= require jquery */
-/*= require js.cookie */
-
-/*= require extensions/jquery.js */
+require('~/right_sidebar');
+require('~/extensions/jquery.js');
 
 (function() {
   var $aside, $icon, $labelsIcon, $page, $toggle, assertSidebarState;
@@ -37,6 +34,8 @@
   describe('RightSidebar', function() {
     var fixtureName = 'issues/open-issue.html.raw';
     preloadFixtures(fixtureName);
+    loadJSONFixtures('todos.json');
+
     beforeEach(function() {
       loadFixtures(fixtureName);
       this.sidebar = new Sidebar;
