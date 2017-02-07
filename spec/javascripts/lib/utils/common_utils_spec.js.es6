@@ -41,6 +41,19 @@
       });
     });
 
+    describe('gl.utils.handleLocationHash', () => {
+      beforeEach(() => {
+        window.history.pushState({}, null, '#definição');
+      });
+
+      it('decodes hash parameter', () => {
+        spyOn(window.document, 'getElementById').and.callThrough();
+        gl.utils.handleLocationHash();
+        expect(window.document.getElementById).toHaveBeenCalledWith('definição');
+        expect(window.document.getElementById).toHaveBeenCalledWith('user-content-definição');
+      });
+    });
+
     describe('gl.utils.getParameterByName', () => {
       it('should return valid parameter', () => {
         const value = gl.utils.getParameterByName('reporter');
