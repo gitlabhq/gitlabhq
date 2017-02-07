@@ -266,8 +266,14 @@
 
 .mr-list {
   .merge-request {
-    padding: 10px 15px;
+    padding: 10px  0 10px 15px;
     position: relative;
+
+    .issue-info-container {
+      @media (max-width: $screen-xs-max) {
+        width: 88%;
+      }
+    }
 
     .merge-request-title {
       margin-bottom: 2px;
