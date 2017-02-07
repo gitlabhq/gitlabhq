@@ -37,13 +37,6 @@ describe Gitlab::RouteMap, lib: true do
       end
     end
 
-    context 'when an entry source does not start and end with a slash' do
-      it 'raises an error' do
-        expect { described_class.new(YAML.dump([{ 'source' => 'index.html', 'public' => 'index.html' }])) }.
-          to raise_error(Gitlab::RouteMap::FormatError, /a slash/)
-      end
-    end
-
     context 'when an entry source is not a valid regex' do
       it 'raises an error' do
         expect { described_class.new(YAML.dump([{ 'source' => '/[/', 'public' => 'index.html' }])) }.
@@ -53,9 +46,10 @@ describe Gitlab::RouteMap, lib: true do
 
     context 'when all is good' do
       it 'returns a route map' do
-        route_map = described_class.new(YAML.dump([{ 'source' => '/index\.html/', 'public' => 'index.html' }]))
-        
-        expect(route_map.public_path_for_source_path('index.html')).to eq('index.html')
+        route_map = described_class.new(YAML.dump([{ 'source' => 'index.haml', 'public' => 'index.html' }, { 'source' => '/(.*)\.md/', 'public' => '\1.html' }]))
+
+        expect(route_map.public_path_for_source_path('index.haml')).to eq('index.html')
+        expect(route_map.public_path_for_source_path('foo.md')).to eq('foo.html')
       end
     end
   end
@@ -63,6 +57,10 @@ describe Gitlab::RouteMap, lib: true do
   describe '#public_path_for_source_path' do
     subject do
       described_class.new(<<-'MAP'.strip_heredoc)
+        # Team data
+        - source: 'data/team.yml'
+          public: 'team/'
+
         # Blogposts
         - source: /source/posts/([0-9]{4})-([0-9]{2})-([0-9]{2})-(.+?)\..*/ # source/posts/2017-01-30-around-the-world-in-6-releases.html.md.erb
           public: '\1/\2/\3/\4/' # 2017/01/30/around-the-world-in-6-releases/
@@ -78,6 +76,8 @@ describe Gitlab::RouteMap, lib: true do
     end
 
     it 'returns the public path for a provided source path' do
+      expect(subject.public_path_for_source_path('data/team.yml')).to eq('team/')
+
       expect(subject.public_path_for_source_path('source/posts/2017-01-30-around-the-world-in-6-releases.html.md.erb')).to eq('2017/01/30/around-the-world-in-6-releases/')
 
       expect(subject.public_path_for_source_path('source/index.html.haml')).to eq('index.html')

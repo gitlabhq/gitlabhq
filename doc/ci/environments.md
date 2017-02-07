@@ -459,6 +459,10 @@ A Route Map is a file inside the repository at `.gitlab/route-map.yml`, which co
 This is an example of a route map for [Middleman](https://middlemanapp.com) static websites like [http://about.gitlab.com](https://gitlab.com/gitlab-com/www-gitlab-com):
 
 ```yaml
+# Team data
+- source: 'data/team.yml' # data/team.yml
+  public: 'team/' # team/
+
 # Blogposts
 - source: /source\/posts\/([0-9]{4})-([0-9]{2})-([0-9]{2})-(.+?)\..*/ # source/posts/2017-01-30-around-the-world-in-6-releases.html.md.erb
   public: '\1/\2/\3/\4/' # 2017/01/30/around-the-world-in-6-releases/
@@ -474,10 +478,18 @@ This is an example of a route map for [Middleman](https://middlemanapp.com) stat
 
 Mappings are defined as entries in the root YAML array, and are identified by a `-` prefix. Within an entry, we have a hash map with two keys:
 
-- `source`: a regular expression, starting and ending with `/`. Can include capture groups denoted by `()` that can be referred to in the `public` path. Slashes (`/`) can, but don't have to be, escaped as `\/`.
-- `public`: a string, starting and ending with `'`. Can include `\N` expressions to refer to capture groups in the `source` regular expression in order of their occurence, starting with `\1`.
+- `source`
+    - a string, starting and ending with `'`, for an exact match
+    - a regular expression, starting and ending with `/`, for a pattern match
+      - The regular expression needs to match the entire source path - `^` and `$` anchors are implied.
+      - Can include capture groups denoted by `()` that can be referred to in the `public` path.
+      - Slashes (`/`) can, but don't have to, be escaped as `\/`.
+      - Literal periods (`.`) should be escaped as `\.`.
+- `public`
+    - a string, starting and ending with `'`.
+      - Can include `\N` expressions to refer to capture groups in the `source` regular expression in order of their occurence, starting with `\1`.
 
-The public path for a source path is determined by finding the first `source` expression that matches it, and returning the corresponding `public` path, replacing the `\N` expressions with the values of the `()` capture groups.
+The public path for a source path is determined by finding the first `source` expression that matches it, and returning the corresponding `public` path, replacing the `\N` expressions with the values of the `()` capture groups if appropriate.
 
 In the example above, the fact that mappings are evaluated in order of their definition is used to ensure that `source/index.html.haml` will match `/source\/(.+?\.html).*/` instead of `/source\/(.*)/`, and will result in a public path of `index.html`, instead of `index.html.haml`.
 
