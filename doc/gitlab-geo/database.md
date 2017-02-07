@@ -94,10 +94,10 @@ The following guide assumes that:
     be different from the public IP address. For example, suppose you have a
     nodes with the following configuration:
 
-|Node Type|Internal IP|External IP|
-|---------|-----------|-----------|
-|Primary|10.1.5.3|54.193.124.100|
-|Secondary|10.1.10.5|54.193.100.155|
+    |Node Type|Internal IP|External IP|
+    |---------|-----------|-----------|
+    |Primary|10.1.5.3|54.193.124.100|
+    |Secondary|10.1.10.5|54.193.100.155|
 
     In this case, for `1.2.3.4` use the internal IP of the primary node: 10.1.5.3.
     For `5.6.7.8`, use the external of the secondary node: 54.193.100.155.
