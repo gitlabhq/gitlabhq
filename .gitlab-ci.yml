@@ -303,7 +303,6 @@ karma:
   <<: *use-db
   <<: *dedicated-runner
   script:
-    - npm link istanbul
     - bundle exec rake karma
   artifacts:
     name: coverage-javascript
