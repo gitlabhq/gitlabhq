@@ -13,10 +13,11 @@
       <div>
         <div class="events-description">
           {{ stage.description }}
-          <span class="pull-right has-tooltip"
-                title="Limited to a maximum of 50 events"
-                data-placement="top">
-            Showing {{ items.length }} events
+          <span v-if="items.length <= 50" class="pull-right">
+            <i class="fa fa-warning has-tooltip"
+              title="Limited to showing 50 events at most"
+              data-placement="top"></i>
+            Showing 50 events
           </span>
         </div>
         <ul class="stage-event-list">
