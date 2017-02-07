@@ -13,7 +13,3 @@ e-mail notifications about each build's status.
 
 If you enable the _Notify only broken builds_ option, e-mail notifications will
 be sent only for failed builds.
-
----
-
-![Builds emails service settings](img/builds_emails_service.png)
