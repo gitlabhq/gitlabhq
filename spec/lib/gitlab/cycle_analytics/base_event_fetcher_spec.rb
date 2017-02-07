@@ -6,10 +6,11 @@ describe Gitlab::CycleAnalytics::BaseEventFetcher do
   let(:user) { create(:user, :admin) }
   let(:start_time_attrs) { Issue.arel_table[:created_at] }
   let(:end_time_attrs) { [Issue::Metrics.arel_table[:first_associated_with_milestone_at]] }
-  let(:options) { { start_time_attrs: start_time_attrs,
-                    end_time_attrs: end_time_attrs,
-                    from: 30.days.ago } }
-
+  let(:options) do 
+    { start_time_attrs: start_time_attrs,
+      end_time_attrs: end_time_attrs,
+      from: 30.days.ago } 
+  end
 
   subject do
     described_class.new(project: project,
