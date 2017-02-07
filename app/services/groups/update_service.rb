@@ -1,6 +1,11 @@
 module Groups
   class UpdateService < Groups::BaseService
     def execute
+      if params.delete(:create_chat_team) == '1'
+        chat_name = params[:chat_team_name]
+        options = chat_name ? { name: chat_name } : {}
+      end
+
       # check that user is allowed to set specified visibility_level
       new_visibility = params[:visibility_level]
       if new_visibility && new_visibility.to_i != group.visibility_level

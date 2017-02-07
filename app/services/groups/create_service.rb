@@ -6,6 +6,7 @@ module Groups
 
     def execute
       create_chat_team = params.delete(:create_chat_team)
+      team_name = params.delete(:chat_team_name)
 
       @group = Group.new(params)
 
@@ -26,7 +27,8 @@ module Groups
       @group.add_owner(current_user)
 
       if create_chat_team && Gitlab.config.mattermost.enabled
-        Mattermost::CreateTeamWorker.perform_async(@group.id, current_user.id)
+        options = team_name ? { name: team_name } : {}
+        Mattermost::CreateTeamWorker.perform_async(@group.id, current_user.id, options)
       end
 
       @group

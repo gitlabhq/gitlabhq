@@ -16,22 +16,7 @@
 
   = render 'shared/visibility_level', f: f, visibility_level: default_group_visibility, can_change_visibility_level: true, form_model: @group
 
-  .form-group
-    = f.label :create_chat_team, class: 'control-label' do
-      %span.mattermost-icon
-        = custom_icon('icon_mattermost')
-      Mattermost
-    .col-sm-10
-      .checkbox
-        = f.label :chat_team do
-          = f.check_box :chat_team
-          Link the group to a new or existing Mattermost team
-
-- enabled = Gitlab.config.mattermost.enabled
-- if enabled
-  .form-group
-    .col-sm-offset-2.col-sm-10
-      = f.text_field :name, placeholder: 'Mattermost team name', class: 'form-control mattermost-team-name'
+  = render 'create_chat_team', f: f if Gitlab.config.mattermost.enabled
 
   .form-group
     .col-sm-offset-2.col-sm-10
