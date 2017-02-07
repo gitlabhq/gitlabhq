@@ -13,6 +13,11 @@
       <div>
         <div class="events-description">
           {{ stage.description }}
+          <span class="pull-right has-tooltip"
+                title="Limited to a maximum of 50 events"
+                data-placement="top">
+            Showing {{ items.length }} events
+          </span>
         </div>
         <ul class="stage-event-list">
           <li v-for="commit in items" class="stage-event-item">
