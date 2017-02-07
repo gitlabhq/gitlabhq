@@ -146,20 +146,21 @@
     }
 
     goToTodoUrl(e) {
-      const todoLink = $(this).data('url');
-      let targetLink = $(e.target).attr('href');
+      const todoLink = this.dataset.url;
+      let targetLink = e.target.getAttribute('href');
 
-      if ($(e.target).is('img')) { // See if clicked target was Avatar
-        targetLink = $(e.target).parent().attr('href'); // Parent of Avatar is link
+      if (e.target.tagName === 'IMG') { // See if clicked target was Avatar
+        targetLink = e.target.parentElement.getAttribute('href'); // Parent of Avatar is link
       }
 
       if (!todoLink) {
         return;
       }
 
-      // Allow Meta-Click (Cmd+Click or Ctrl+Click)
-      // or Mouse3-click (middle-click)
-      // to open in a new tab
+      // Allow following special clicks to make link open in new tab
+      // 1) Cmd + Click on Mac (e.metaKey)
+      // 2) Ctrl + Click on PC (e.ctrlKey)
+      // 3) Middle-click or Mouse Wheel Click (e.which is 2)
       if (e.metaKey || e.ctrlKey || e.which === 2) {
         e.preventDefault();
         // Meta-Click on username leads to different URL than todoLink.
