@@ -8,7 +8,7 @@ class PipelineSerializer < BaseSerializer
   end
 
   def paginated?
-    defined?(@paginator)
+    @paginator.present?
   end
 
   def represent(resource, opts = {})
