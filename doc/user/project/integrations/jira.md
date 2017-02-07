@@ -90,8 +90,9 @@ password as they will be needed when configuring GitLab in the next section.
   the configuration options you have to enter. If you are using an older version,
   [follow this documentation][jira-repo-old-docs].
 
-To enable JIRA integration in a project, navigate to your project's
-**Services ➔ JIRA** and fill in the required details on the page as described
+To enable JIRA integration in a project, navigate to the
+[Integrations page](project_services.md#accessing-the-project-services), click
+the **JIRA** service, and fill in the required details on the page as described
 in the table below.
 
 | Field | Description |
