@@ -1547,28 +1547,26 @@ class Project < ActiveRecord::Base
        size_in_bytes + repository_and_lfs_size > actual_size_limit)
   end
 
-  def environments_for(ref, commit: nil, with_tags: false)
-    deployments_query = with_tags ? 'ref = ? OR tag IS TRUE' : 'ref = ?'
+  def route_map_for(commit_sha)
+    @route_maps_by_commit ||= Hash.new do |h, sha|
+      h[sha] = begin
+        data = repository.route_map_for(sha)
+        next unless data
 
-    environment_ids = deployments
-      .where(deployments_query, ref.to_s)
-      .group(:environment_id)
-      .select(:environment_id)
-
-    environments_found = environments.available
-      .where(id: environment_ids).to_a
-
-    return environments_found unless commit
-
-    environments_found.select do |environment|
-      environment.includes_commit?(commit)
+        Gitlab::RouteMap.new(data)
+      rescue Gitlab::RouteMap::FormatError
+        nil
+      end
     end
+
+    @route_maps_by_commit[commit_sha]
   end
 
-  def environments_recently_updated_on_branch(branch)
-    environments_for(branch).select do |environment|
-      environment.recently_updated_on_branch?(branch)
-    end
+  def public_path_for_source_path(path, commit_sha)
+    map = route_map_for(commit_sha)
+    return unless map
+
+    map.public_path_for_source_path(path)
   end
 
   private
