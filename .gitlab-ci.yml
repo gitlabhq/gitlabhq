@@ -450,9 +450,9 @@ pages:
   script:
     - mv public/ .public/
     - mkdir public/
-    - mv coverage public/coverage-ruby
-    - mv coverage-javascript/default/ public/coverage-javascript/
-    - mv eslint-report.html public/
+    - mv coverage/ public/coverage-ruby/ || true
+    - mv coverage-javascript/default/ public/coverage-javascript/ || true
+    - mv eslint-report.html public/ || true
   artifacts:
     paths:
       - public
