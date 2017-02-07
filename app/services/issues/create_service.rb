@@ -3,6 +3,8 @@ module Issues
     def execute
       @request = params.delete(:request)
       @api = params.delete(:api)
+      @recaptcha_verified = params.delete(:recaptcha_verified)
+      @spam_log_id = params.delete(:spam_log_id)
 
       issue_attributes = params.merge(merge_request_for_resolving_discussions: merge_request_for_resolving_discussions)
       @issue = BuildService.new(project, current_user, issue_attributes).execute
@@ -11,7 +13,13 @@ module Issues
     end
 
     def before_create(issuable)
-      issuable.spam = spam_service.check(@api)
+      if @recaptcha_verified
+        spam_log = current_user.spam_logs.find_by(id: @spam_log_id, title: issuable.title)
+        spam_log.update!(recaptcha_verified: true) if spam_log
+      else
+        issuable.spam = spam_service.check(@api)
+        issuable.spam_log = spam_service.spam_log
+      end
     end
 
     def after_create(issuable)
@@ -35,7 +43,7 @@ module Issues
     private
 
     def spam_service
-      SpamService.new(@issue, @request)
+      @spam_service ||= SpamService.new(@issue, @request)
     end
 
     def user_agent_detail_service
