@@ -100,7 +100,9 @@ class License < ActiveRecord::Base
   end
 
   def validate_with_trueup?
-    restricted_attr(:trueup_info).present?
+    [restricted_attr(:trueup_quantity),
+     restricted_attr(:trueup_from),
+     restricted_attr(:trueup_to)].all?(&:present?)
   end
 
   private
@@ -125,11 +127,14 @@ class License < ActiveRecord::Base
     self.errors.add(:base, "The license key is invalid. Make sure it is exactly as you received it from GitLab Inc.")
   end
 
+  def historical_max(from, to)
+    HistoricalData.during(from..to).maximum(:active_user_count) || 0
+  end
+
   def active_user_count
     return unless restricted_user_count
 
-    date_range            = (self.starts_at - 1.year)..self.starts_at
-    historical_user_count = HistoricalData.during(date_range).maximum(:active_user_count) || 0
+    historical_user_count = historical_max((starts_at - 1.year), starts_at)
     overage               = historical_user_count - restricted_user_count
 
     return if historical_user_count <= restricted_user_count
@@ -138,11 +143,11 @@ class License < ActiveRecord::Base
   end
 
   def check_trueup
-    trueup_qty, trueup_from, trueup_to = restrictions[:trueup_info].values_at(*%w(quantity from to))
-
+    trueup_qty          = restrictions[:trueup_quantity]
+    trueup_from         = Date.parse(restrictions[:trueup_from]) rescue (starts_at - 1.year)
+    trueup_to           = Date.parse(restrictions[:trueup_to]) rescue starts_at
     active_user_count   = User.active.count
-    date_range          = Date.parse(trueup_from)..Date.parse(trueup_to)
-    max_historical      = HistoricalData.during(date_range).maximum(:active_user_count)
+    max_historical      = historical_max(trueup_from, trueup_to)
     overage             = active_user_count - restricted_user_count
     expected_trueup_qty = if previous_user_count
                             max_historical - previous_user_count
@@ -155,20 +160,21 @@ class License < ActiveRecord::Base
         add_limit_error(trueup: true, user_count: active_user_count, restricted_user_count: restricted_user_count, overage: overage)
       end
     else
-      message = "You have applied a True-up for #{trueup_qty} #{"user".pluralize(trueup_qty)} but you need one for #{expected_trueup_qty} users. "
+      message = "You have applied a True-up for #{trueup_qty} #{"user".pluralize(trueup_qty)} "
+      message << "but you need one for #{expected_trueup_qty} #{"user".pluralize(expected_trueup_qty)}. "
       message << "Please contact sales at renewals@gitlab.com"
 
       self.errors.add(:base, message)
     end
   end
 
-  def add_limit_error(opts)
-    message =  opts[:trueup] ? "This GitLab installation currently has " : "During the year before this license started, this GitLab installation had "
-    message << "#{number_with_delimiter opts[:user_count]} active #{"user".pluralize(opts[:user_count])}, "
-    message << "exceeding this license's limit of #{number_with_delimiter opts[:restricted_user_count]} by "
-    message << "#{number_with_delimiter opts[:overage]} #{"user".pluralize(opts[:overage])}. "
+  def add_limit_error(trueup: false, user_count:, restricted_user_count:, overage:)
+    message =  trueup ? "This GitLab installation currently has " : "During the year before this license started, this GitLab installation had "
+    message << "#{number_with_delimiter(user_count)} active #{"user".pluralize(user_count)}, "
+    message << "exceeding this license's limit of #{number_with_delimiter(restricted_user_count)} by "
+    message << "#{number_with_delimiter(overage)} #{"user".pluralize(overage)}. "
     message << "Please upload a license for at least "
-    message << "#{number_with_delimiter opts[:user_count]} #{"user".pluralize(opts[:user_count])} or contact sales at renewals@gitlab.com"
+    message << "#{number_with_delimiter(user_count)} #{"user".pluralize(user_count)} or contact sales at renewals@gitlab.com"
 
     self.errors.add(:base, message)
   end

@@ -94,7 +94,9 @@ describe License do
           gl_license.restrictions = {
             active_user_count: opts[:restricted_user_count],
             previous_user_count: opts[:previous_user_count],
-            trueup_info: { quantity: opts[:trueup_quantity], from: (Date.today - 1.year).to_s, to: Date.today.to_s }
+            trueup_quantity: opts[:trueup_quantity],
+            trueup_from: (Date.today - 1.year).to_s,
+            trueup_to: Date.today.to_s
           }
         end
 
