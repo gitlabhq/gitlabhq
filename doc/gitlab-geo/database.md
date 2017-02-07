@@ -81,10 +81,12 @@ The following guide assumes that:
     For security reasons, PostgreSQL by default only listens on the local
     interface (e.g. 127.0.0.1). However, GitLab Geo needs to communicate
     between the primary and secondary nodes over a common network, such as a
-    corporate LAN or the public Internet.
+    corporate LAN or the public Internet. For this reason, we need to
+    configure PostgreSQL to listen on more interfaces.
 
-    The `listen_address` option opens PostgreSQL up to external connections with the
-    specifying. See [the PostgreSQL documentation](https://www.postgresql.org/docs/9.6/static/runtime-config-connection.html)
+    The `listen_address` option opens PostgreSQL up to external connections
+    with the interface corresponding to the given IP. See [the PostgreSQL
+    documentation](https://www.postgresql.org/docs/9.6/static/runtime-config-connection.html)
     for more details.
 
     Note that if you are running GitLab Geo with a cloud provider (e.g. Amazon
