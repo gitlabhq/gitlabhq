@@ -47,6 +47,8 @@ class StuckCiBuildsWorker
 
   def drop_build(type, build, status, timeout)
     Rails.logger.info "#{self.class}: Dropping #{type} build #{build.id} for runner #{build.runner_id} (status: #{status}, timeout: #{timeout})"
-    build.drop
+    Gitlab::OptimisticLocking.retry_lock(build, 3) do |b|
+      b.drop
+    end
   end
 end
