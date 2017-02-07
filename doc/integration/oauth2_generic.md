@@ -1,6 +1,7 @@
 # Sign into Gitlab with (almost) any OAuth2 provider
 
-The `omniauth-oauth2-generic` gem allows Single Sign On between Gitlab and your own OAuth2 provider (or any simple OAuth2 provider compatible with this gem) 
+The `omniauth-oauth2-generic` gem allows Single Sign On between Gitlab and your own OAuth2 provider
+(or any OAuth2 provider compatible with this gem) 
 
 This strategy is designed to allow configuration of the simple OmniAuth SSO process outlined below:
 
@@ -11,50 +12,54 @@ This strategy is designed to allow configuration of the simple OmniAuth SSO proc
 1. Strategy parses user information from the response, using a **configurable** format
 1. Gitlab finds or creates the returned user and logs them in
 
-**Limitations of this Strategy:**
+### Limitations of this Strategy:
 
-- It can only be used for Single Sign on, and will not provide any other access granted by any OAuth provider (such as importing projects or users, etc).
+- It can only be used for Single Sign on, and will not provide any other access granted by any OAuth provider
+  (importing projects or users, etc)
 - It only supports the Authorization Grant flow (most common for client-server applications, like Gitlab)
 - It is not able to fetch user information from more than one URL
 - It has not been tested with user information formats other than JSON
 
 ### Config Instructions
-1. To enable the OAuth2 generic strategy you must register your application in the OAuth2 provider you wish to authenticate with. 
-   That provider should generate an ID and secret key for you to use with this strategy.
+1. Register your application in the OAuth2 provider you wish to authenticate with.
 
    The redirect URI you provide when registering the application should be:
 
-    ```
-    http://your-gitlab.host.com/users/auth/oauth2_generic/callback
-    ```
+   ```
+   http://your-gitlab.host.com/users/auth/oauth2_generic/callback
+   ```
 
-1.  You should now be able to get a Client ID and Client Secret.  Where this shows up will differ for each provider.
-    This may also be called Application ID and Secret.
+1. You should now be able to get a Client ID and Client Secret.
+   Where this shows up will differ for each provider.
+   This may also be called Application ID and Secret
 
-1.  On your GitLab server, open the configuration file.
+1. On your GitLab server, open the configuration file.
 
-    For omnibus package:
+   For omnibus package:
 
-    ```sh
-      sudo editor /etc/gitlab/gitlab.rb
-    ```
+   ```sh
+     sudo editor /etc/gitlab/gitlab.rb
+   ```
 
-    For installations from source:
+   For installations from source:
 
-    ```sh
-      cd /home/git/gitlab
+   ```sh
+     cd /home/git/gitlab
 
-      sudo -u git -H editor config/gitlab.yml
-    ```
+     sudo -u git -H editor config/gitlab.yml
+   ```
 
-1.  See [Initial OmniAuth Configuration](omniauth.md#initial-omniauth-configuration) for initial settings.
+1. See [Initial OmniAuth Configuration](omniauth.md#initial-omniauth-configuration) for initial settings
 
-1.  Add the provider-specific configuration for your provider, as [described in the gem's README](https://gitlab.com/satorix/omniauth-oauth2-generic#gitlab-config-example)
+1. Add the provider-specific configuration for your provider, as [described in the gem's README][1]
 
-1.  Save the configuration file.
+1. Save the configuration file
 
-1.  Restart GitLab for the changes to take effect.
+1. Restart GitLab for the changes to take effect
 
 On the sign in page there should now be a new button below the regular sign in form. 
-Click the button to begin your provider's authentication process. This will direct the browser to your OAuth2 Provider's authentication page.
-If everything goes well the user will be returned to your GitLab instance and will be signed in.
+Click the button to begin your provider's authentication process. This will direct
+the browser to your OAuth2 Provider's authentication page. If everything goes well
+the user will be returned to your GitLab instance and will be signed in.
+
+[1]: https://gitlab.com/satorix/omniauth-oauth2-generic#gitlab-config-example
