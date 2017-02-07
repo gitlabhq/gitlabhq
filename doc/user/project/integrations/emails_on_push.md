@@ -1,4 +1,4 @@
-## Enabling emails on push
+# Enabling emails on push
 
 By enabling this service, you will be able to receive email notifications for
 every change that is pushed to your project.

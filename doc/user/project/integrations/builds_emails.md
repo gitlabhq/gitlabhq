@@ -1,4 +1,4 @@
-## Enabling build emails
+# Enabling build emails
 
 By enabling this service, you will be able to receive e-mail notifications about
 the result status of your builds.
