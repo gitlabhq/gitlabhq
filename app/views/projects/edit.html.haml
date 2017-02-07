@@ -144,6 +144,7 @@
               %hr
               = link_to 'Remove avatar', namespace_project_avatar_path(@project.namespace, @project), data: { confirm: "Project avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-sm remove-avatar"
         = f.submit 'Save changes', class: "btn btn-save"
+
   .row.prepend-top-default
   %hr
   .row.prepend-top-default

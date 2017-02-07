@@ -163,6 +163,7 @@ namespace :gitlab do
 
     namespace :pages do
       task create: :environment do
+<<<<<<< HEAD
         $progress.puts "Dumping pages ... ".color(:blue)
 
         if ENV["SKIP"] && ENV["SKIP"].include?("pages")
@@ -170,13 +171,28 @@ namespace :gitlab do
         else
           Backup::Pages.new.dump
           $progress.puts "done".color(:green)
+=======
+        $progress.puts "Dumping pages ... ".blue
+
+        if ENV["SKIP"] && ENV["SKIP"].include?("pages")
+          $progress.puts "[SKIPPED]".cyan
+        else
+          Backup::Pages.new.dump
+          $progress.puts "done".green
+>>>>>>> ce/master
         end
       end
 
       task restore: :environment do
+<<<<<<< HEAD
         $progress.puts "Restoring pages ... ".color(:blue)
         Backup::Pages.new.restore
         $progress.puts "done".color(:green)
+=======
+        $progress.puts "Restoring pages ... ".blue
+        Backup::Pages.new.restore
+        $progress.puts "done".green
+>>>>>>> ce/master
       end
     end
 

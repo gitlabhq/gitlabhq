@@ -7,6 +7,8 @@ module API
     version 'v3', using: :path do
       mount ::API::V3::Issues
       mount ::API::V3::MergeRequests
+      mount ::API::V3::Projects
+      mount ::API::V3::ProjectSnippets
     end
 
     before { allow_access_with_scope :api }

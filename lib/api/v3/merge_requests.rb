@@ -33,14 +33,23 @@ module API
             optional :assignee_id, type: Integer, desc: 'The ID of a user to assign the merge request'
             optional :milestone_id, type: Integer, desc: 'The ID of a milestone to assign the merge request'
             optional :labels, type: String, desc: 'Comma-separated list of label names'
+<<<<<<< HEAD
             optional :approvals_before_merge, type: Integer, desc: 'Number of approvals required before this can be merged'
             optional :remove_source_branch, type: Boolean, desc: 'Remove source branch when merging'
             optional :squash, type: Boolean, desc: 'Squash commits when merging'
+=======
+            optional :remove_source_branch, type: Boolean, desc: 'Remove source branch when merging'
+>>>>>>> ce/master
           end
         end
 
         desc 'List merge requests' do
+<<<<<<< HEAD
           success Entities::MergeRequest
+=======
+          detail 'iid filter is deprecated have been removed on V4'
+          success ::API::Entities::MergeRequest
+>>>>>>> ce/master
         end
         params do
           optional :state, type: String, values: %w[opened closed merged all], default: 'all',
@@ -67,11 +76,19 @@ module API
             end
 
           merge_requests = merge_requests.reorder(params[:order_by] => params[:sort])
+<<<<<<< HEAD
           present paginate(merge_requests), with: Entities::MergeRequest, current_user: current_user, project: user_project
         end
 
         desc 'Create a merge request' do
           success Entities::MergeRequest
+=======
+          present paginate(merge_requests), with: ::API::Entities::MergeRequest, current_user: current_user, project: user_project
+        end
+
+        desc 'Create a merge request' do
+          success ::API::Entities::MergeRequest
+>>>>>>> ce/master
         end
         params do
           requires :title, type: String, desc: 'The title of the merge request'
@@ -90,7 +107,11 @@ module API
           merge_request = ::MergeRequests::CreateService.new(user_project, current_user, mr_params).execute
 
           if merge_request.valid?
+<<<<<<< HEAD
             present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
+=======
+            present merge_request, with: ::API::Entities::MergeRequest, current_user: current_user, project: user_project
+>>>>>>> ce/master
           else
             handle_merge_request_errors! merge_request.errors
           end
@@ -107,9 +128,12 @@ module API
           merge_request.destroy
         end
 
+<<<<<<< HEAD
         # Routing "merge_request/:merge_request_id/..." is DEPRECATED and WILL BE REMOVED in version 9.0
         # Use "merge_requests/:merge_request_id/..." instead.
         #
+=======
+>>>>>>> ce/master
         params do
           requires :merge_request_id, type: Integer, desc: 'The ID of a merge request'
         end
@@ -118,34 +142,62 @@ module API
             if status == :deprecated
               detail DEPRECATION_MESSAGE
             end
+<<<<<<< HEAD
             success Entities::MergeRequest
+=======
+            success ::API::Entities::MergeRequest
+>>>>>>> ce/master
           end
           get path do
             merge_request = find_merge_request_with_access(params[:merge_request_id])
 
+<<<<<<< HEAD
             present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
           end
 
           desc 'Get the commits of a merge request' do
             success Entities::RepoCommit
+=======
+            present merge_request, with: ::API::Entities::MergeRequest, current_user: current_user, project: user_project
+          end
+
+          desc 'Get the commits of a merge request' do
+            success ::API::Entities::RepoCommit
+>>>>>>> ce/master
           end
           get "#{path}/commits" do
             merge_request = find_merge_request_with_access(params[:merge_request_id])
 
+<<<<<<< HEAD
             present merge_request.commits, with: Entities::RepoCommit
           end
 
           desc 'Show the merge request changes' do
             success Entities::MergeRequestChanges
+=======
+            present merge_request.commits, with: ::API::Entities::RepoCommit
+          end
+
+          desc 'Show the merge request changes' do
+            success ::API::Entities::MergeRequestChanges
+>>>>>>> ce/master
           end
           get "#{path}/changes" do
             merge_request = find_merge_request_with_access(params[:merge_request_id])
 
+<<<<<<< HEAD
             present merge_request, with: Entities::MergeRequestChanges, current_user: current_user
           end
 
           desc 'Update a merge request' do
             success Entities::MergeRequest
+=======
+            present merge_request, with: ::API::Entities::MergeRequestChanges, current_user: current_user
+          end
+
+          desc 'Update a merge request' do
+            success ::API::Entities::MergeRequest
+>>>>>>> ce/master
           end
           params do
             optional :title, type: String, allow_blank: false, desc: 'The title of the merge request'
@@ -154,8 +206,13 @@ module API
                                    desc: 'Status of the merge request'
             use :optional_params
             at_least_one_of :title, :target_branch, :description, :assignee_id,
+<<<<<<< HEAD
                             :milestone_id, :labels, :state_event, :approvals_before_merge,
                             :remove_source_branch, :squash
+=======
+                            :milestone_id, :labels, :state_event,
+                            :remove_source_branch
+>>>>>>> ce/master
           end
           put path do
             merge_request = find_merge_request_with_access(params.delete(:merge_request_id), :update_merge_request)
@@ -166,14 +223,22 @@ module API
             merge_request = ::MergeRequests::UpdateService.new(user_project, current_user, mr_params).execute(merge_request)
 
             if merge_request.valid?
+<<<<<<< HEAD
               present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
+=======
+              present merge_request, with: ::API::Entities::MergeRequest, current_user: current_user, project: user_project
+>>>>>>> ce/master
             else
               handle_merge_request_errors! merge_request.errors
             end
           end
 
           desc 'Merge a merge request' do
+<<<<<<< HEAD
             success Entities::MergeRequest
+=======
+            success ::API::Entities::MergeRequest
+>>>>>>> ce/master
           end
           params do
             optional :merge_commit_message, type: String, desc: 'Custom merge commit message'
@@ -182,7 +247,10 @@ module API
             optional :merge_when_build_succeeds, type: Boolean,
                                                  desc: 'When true, this merge request will be merged when the pipeline succeeds'
             optional :sha, type: String, desc: 'When present, must have the HEAD SHA of the source branch'
+<<<<<<< HEAD
             optional :squash, type: Boolean, desc: 'When true, the commits will be squashed into a single commit on merge'
+=======
+>>>>>>> ce/master
           end
           put "#{path}/merge" do
             merge_request = find_project_merge_request(params[:merge_request_id])
@@ -199,10 +267,13 @@ module API
               render_api_error!("SHA does not match HEAD of source branch: #{merge_request.diff_head_sha}", 409)
             end
 
+<<<<<<< HEAD
             if params[:squash]
               merge_request.update(squash: params[:squash])
             end
 
+=======
+>>>>>>> ce/master
             merge_params = {
               commit_message: params[:merge_commit_message],
               should_remove_source_branch: params[:should_remove_source_branch]
@@ -218,11 +289,19 @@ module API
                 .execute(merge_request)
             end
 
+<<<<<<< HEAD
             present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
           end
 
           desc 'Cancel merge if "Merge When Pipeline Succeeds" is enabled' do
             success Entities::MergeRequest
+=======
+            present merge_request, with: ::API::Entities::MergeRequest, current_user: current_user, project: user_project
+          end
+
+          desc 'Cancel merge if "Merge When Pipeline Succeeds" is enabled' do
+            success ::API::Entities::MergeRequest
+>>>>>>> ce/master
           end
           post "#{path}/cancel_merge_when_build_succeeds" do
             merge_request = find_project_merge_request(params[:merge_request_id])
@@ -235,20 +314,34 @@ module API
           end
 
           desc 'Get the comments of a merge request' do
+<<<<<<< HEAD
             detail 'Duplicate. DEPRECATED and WILL BE REMOVED in 9.0'
             success Entities::MRNote
+=======
+            detail 'Duplicate. DEPRECATED and HAS BEEN REMOVED in V4'
+            success ::API::Entities::MRNote
+>>>>>>> ce/master
           end
           params do
             use :pagination
           end
           get "#{path}/comments" do
             merge_request = find_merge_request_with_access(params[:merge_request_id])
+<<<<<<< HEAD
             present paginate(merge_request.notes.fresh), with: Entities::MRNote
           end
 
           desc 'Post a comment to a merge request' do
             detail 'Duplicate. DEPRECATED and WILL BE REMOVED in 9.0'
             success Entities::MRNote
+=======
+            present paginate(merge_request.notes.fresh), with: ::API::Entities::MRNote
+          end
+
+          desc 'Post a comment to a merge request' do
+            detail 'Duplicate. DEPRECATED and HAS BEEN REMOVED in V4'
+            success ::API::Entities::MRNote
+>>>>>>> ce/master
           end
           params do
             requires :note, type: String, desc: 'The text of the comment'
@@ -265,14 +358,22 @@ module API
             note = ::Notes::CreateService.new(user_project, current_user, opts).execute
 
             if note.save
+<<<<<<< HEAD
               present note, with: Entities::MRNote
+=======
+              present note, with: ::API::Entities::MRNote
+>>>>>>> ce/master
             else
               render_api_error!("Failed to save note #{note.errors.messages}", 400)
             end
           end
 
           desc 'List issues that will be closed on merge' do
+<<<<<<< HEAD
             success Entities::MRNote
+=======
+            success ::API::Entities::MRNote
+>>>>>>> ce/master
           end
           params do
             use :pagination
@@ -282,6 +383,7 @@ module API
             issues = ::Kaminari.paginate_array(merge_request.closes_issues(current_user))
             present paginate(issues), with: issue_entity(user_project), current_user: current_user
           end
+<<<<<<< HEAD
 
           # Get the status of the merge request's approvals
           #
@@ -329,6 +431,8 @@ module API
 
             present merge_request, with: Entities::MergeRequestApprovals, current_user: current_user
           end
+=======
+>>>>>>> ce/master
         end
       end
     end

@@ -1,4 +1,6 @@
 class CreatePagesDomain < ActiveRecord::Migration
+  DOWNTIME = false
+
   def change
     create_table :pages_domains do |t|
       t.integer :project_id

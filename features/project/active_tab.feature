@@ -57,7 +57,9 @@ Feature: Project Active Tab
     Given I visit my project's settings page
     And I click the "Pages" tab
     Then the active sub nav should be Pages
-  
+    And no other sub navs should be active
+    And the active main tab should be Settings
+
   Scenario: On Project Members
     Given I visit my project's members page
     Then the active sub nav should be Members

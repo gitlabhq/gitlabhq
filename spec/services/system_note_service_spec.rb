@@ -418,6 +418,45 @@ describe SystemNoteService, services: true do
           to be_truthy
       end
     end
+
+    context 'when noteable is an Issue' do
+      let(:issue) { create(:issue, project: project) }
+
+      it 'is truthy when issue is closed' do
+        issue.close
+
+        expect(described_class.cross_reference_disallowed?(issue, project.commit)).
+          to be_truthy
+      end
+
+      it 'is falsey when issue is open' do
+        expect(described_class.cross_reference_disallowed?(issue, project.commit)).
+          to be_falsy
+      end
+    end
+
+    context 'when noteable is a Merge Request' do
+      let(:merge_request) { create(:merge_request, :simple, source_project: project) }
+
+      it 'is truthy when merge request is closed' do
+        allow(merge_request).to receive(:closed?).and_return(:true)
+
+        expect(described_class.cross_reference_disallowed?(merge_request, project.commit)).
+          to be_truthy
+      end
+
+      it 'is truthy when merge request is merged' do
+        allow(merge_request).to receive(:closed?).and_return(:true)
+
+        expect(described_class.cross_reference_disallowed?(merge_request, project.commit)).
+          to be_truthy
+      end
+
+      it 'is falsey when merge request is open' do
+        expect(described_class.cross_reference_disallowed?(merge_request, project.commit)).
+          to be_falsy
+      end
+    end
   end
 
   describe '.cross_reference_exists?' do
@@ -837,13 +876,13 @@ describe SystemNoteService, services: true do
       it 'sets the note text' do
         noteable.update_attribute(:time_estimate, 277200)
 
-        expect(subject.note).to eq "Changed time estimate of this issue to 1w 4d 5h"
+        expect(subject.note).to eq "changed time estimate to 1w 4d 5h"
       end
     end
 
     context 'without a time estimate' do
       it 'sets the note text' do
-        expect(subject.note).to eq "Removed time estimate on this issue"
+        expect(subject.note).to eq "removed time estimate"
       end
     end
   end
@@ -867,7 +906,7 @@ describe SystemNoteService, services: true do
       it 'sets the note text' do
         spend_time!(277200)
 
-        expect(subject.note).to eq "Added 1w 4d 5h of time spent on this merge request"
+        expect(subject.note).to eq "added 1w 4d 5h of time spent"
       end
     end
 
@@ -875,7 +914,7 @@ describe SystemNoteService, services: true do
       it 'sets the note text' do
         spend_time!(-277200)
 
-        expect(subject.note).to eq "Subtracted 1w 4d 5h of time spent on this merge request"
+        expect(subject.note).to eq "subtracted 1w 4d 5h of time spent"
       end
     end
 
@@ -883,7 +922,7 @@ describe SystemNoteService, services: true do
       it 'sets the note text' do
         spend_time!(:reset)
 
-        expect(subject.note).to eq "Removed time spent on this merge request"
+        expect(subject.note).to eq "removed time spent"
       end
     end
 

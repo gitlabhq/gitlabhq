@@ -116,5 +116,27 @@ describe Gitlab::ImportExport::MembersMapper, services: true do
         expect(members_mapper.map[exported_user_id]).to eq(user2.id)
       end
     end
+
+    context 'importing group members' do
+      let(:group) { create(:group) }
+      let(:project) { create(:empty_project, namespace: group) }
+      let(:members_mapper) do
+        described_class.new(
+          exported_members: exported_members, user: user, project: project)
+      end
+
+      before do
+        group.add_users([user, user2], GroupMember::DEVELOPER)
+        user.update(email: 'invite@test.com')
+      end
+
+      it 'maps the importer' do
+        expect(members_mapper.map[-1]).to eq(user.id)
+      end
+
+      it 'maps the group member' do
+        expect(members_mapper.map[exported_user_id]).to eq(user2.id)
+      end
+    end
   end
 end

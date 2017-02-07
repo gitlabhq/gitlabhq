@@ -50,7 +50,11 @@ module API
 
       resource :issues do
         desc "Get currently authenticated user's issues" do
+<<<<<<< HEAD
           success Entities::Issue
+=======
+          success ::API::Entities::Issue
+>>>>>>> ce/master
         end
         params do
           optional :state, type: String, values: %w[opened closed all], default: 'all',
@@ -60,7 +64,11 @@ module API
         get do
           issues = find_issues(scope: 'authored')
 
+<<<<<<< HEAD
           present paginate(issues), with: Entities::Issue, current_user: current_user
+=======
+          present paginate(issues), with: ::API::Entities::Issue, current_user: current_user
+>>>>>>> ce/master
         end
       end
 
@@ -69,7 +77,11 @@ module API
       end
       resource :groups do
         desc 'Get a list of group issues' do
+<<<<<<< HEAD
           success Entities::Issue
+=======
+          success ::API::Entities::Issue
+>>>>>>> ce/master
         end
         params do
           optional :state, type: String, values: %w[opened closed all], default: 'opened',
@@ -81,7 +93,11 @@ module API
 
           issues = find_issues(group_id: group.id, state: params[:state] || 'opened', match_all_labels: true)
 
+<<<<<<< HEAD
           present paginate(issues), with: Entities::Issue, current_user: current_user
+=======
+          present paginate(issues), with: ::API::Entities::Issue, current_user: current_user
+>>>>>>> ce/master
         end
       end
 
@@ -93,7 +109,11 @@ module API
 
         desc 'Get a list of project issues' do
           detail 'iid filter is deprecated have been removed on V4'
+<<<<<<< HEAD
           success Entities::Issue
+=======
+          success ::API::Entities::Issue
+>>>>>>> ce/master
         end
         params do
           optional :state, type: String, values: %w[opened closed all], default: 'all',
@@ -106,22 +126,38 @@ module API
 
           issues = find_issues(project_id: project.id)
 
+<<<<<<< HEAD
           present paginate(issues), with: Entities::Issue, current_user: current_user, project: user_project
         end
 
         desc 'Get a single project issue' do
           success Entities::Issue
+=======
+          present paginate(issues), with: ::API::Entities::Issue, current_user: current_user, project: user_project
+        end
+
+        desc 'Get a single project issue' do
+          success ::API::Entities::Issue
+>>>>>>> ce/master
         end
         params do
           requires :issue_id, type: Integer, desc: 'The ID of a project issue'
         end
         get ":id/issues/:issue_id" do
           issue = find_project_issue(params[:issue_id])
+<<<<<<< HEAD
           present issue, with: Entities::Issue, current_user: current_user, project: user_project
         end
 
         desc 'Create a new project issue' do
           success Entities::Issue
+=======
+          present issue, with: ::API::Entities::Issue, current_user: current_user, project: user_project
+        end
+
+        desc 'Create a new project issue' do
+          success ::API::Entities::Issue
+>>>>>>> ce/master
         end
         params do
           requires :title, type: String, desc: 'The title of an issue'
@@ -153,14 +189,22 @@ module API
           end
 
           if issue.valid?
+<<<<<<< HEAD
             present issue, with: Entities::Issue, current_user: current_user, project: user_project
+=======
+            present issue, with: ::API::Entities::Issue, current_user: current_user, project: user_project
+>>>>>>> ce/master
           else
             render_validation_error!(issue)
           end
         end
 
         desc 'Update an existing issue' do
+<<<<<<< HEAD
           success Entities::Issue
+=======
+          success ::API::Entities::Issue
+>>>>>>> ce/master
         end
         params do
           requires :issue_id, type: Integer, desc: 'The ID of a project issue'
@@ -186,14 +230,22 @@ module API
                                               declared_params(include_missing: false)).execute(issue)
 
           if issue.valid?
+<<<<<<< HEAD
             present issue, with: Entities::Issue, current_user: current_user, project: user_project
+=======
+            present issue, with: ::API::Entities::Issue, current_user: current_user, project: user_project
+>>>>>>> ce/master
           else
             render_validation_error!(issue)
           end
         end
 
         desc 'Move an existing issue' do
+<<<<<<< HEAD
           success Entities::Issue
+=======
+          success ::API::Entities::Issue
+>>>>>>> ce/master
         end
         params do
           requires :issue_id, type: Integer, desc: 'The ID of a project issue'
@@ -208,7 +260,11 @@ module API
 
           begin
             issue = ::Issues::MoveService.new(user_project, current_user).execute(issue, new_project)
+<<<<<<< HEAD
             present issue, with: Entities::Issue, current_user: current_user, project: user_project
+=======
+            present issue, with: ::API::Entities::Issue, current_user: current_user, project: user_project
+>>>>>>> ce/master
           rescue ::Issues::MoveService::MoveError => error
             render_api_error!(error.message, 400)
           end

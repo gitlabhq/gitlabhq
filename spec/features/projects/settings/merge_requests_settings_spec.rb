@@ -12,13 +12,8 @@ feature 'Project settings > Merge Requests', feature: true, js: true do
   end
 
   context 'when Merge Request and Pipelines are initially enabled' do
-    before do
-      project.project_feature.update_attribute('merge_requests_access_level', ProjectFeature::ENABLED)
-    end
-
     context 'when Pipelines are initially enabled' do
       before do
-        project.project_feature.update_attribute('builds_access_level', ProjectFeature::ENABLED)
         visit edit_project_path(project)
       end
 

@@ -5,7 +5,7 @@ describe RepositoryCheck::SingleRepositoryWorker do
   subject { described_class.new }
 
   it 'passes when the project has no push events' do
-    project = create(:project_empty_repo, wiki_access_level: ProjectFeature::DISABLED)
+    project = create(:project_empty_repo, :wiki_disabled)
     project.events.destroy_all
     break_repo(project)
 
@@ -25,7 +25,7 @@ describe RepositoryCheck::SingleRepositoryWorker do
   end
 
   it 'fails if the wiki repository is broken' do
-    project = create(:project_empty_repo, wiki_access_level: ProjectFeature::ENABLED)
+    project = create(:project_empty_repo, :wiki_enabled)
     project.create_wiki
 
     # Test sanity: everything should be fine before the wiki repo is broken
@@ -39,7 +39,7 @@ describe RepositoryCheck::SingleRepositoryWorker do
   end
 
   it 'skips wikis when disabled' do
-    project = create(:project_empty_repo, wiki_access_level: ProjectFeature::DISABLED)
+    project = create(:project_empty_repo, :wiki_disabled)
     # Make sure the test would fail if the wiki repo was checked
     break_wiki(project)
 
@@ -49,7 +49,7 @@ describe RepositoryCheck::SingleRepositoryWorker do
   end
 
   it 'creates missing wikis' do
-    project = create(:project_empty_repo, wiki_access_level: ProjectFeature::ENABLED)
+    project = create(:project_empty_repo, :wiki_enabled)
     FileUtils.rm_rf(wiki_path(project))
 
     subject.perform(project.id)

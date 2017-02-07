@@ -55,6 +55,7 @@ class Project < ActiveRecord::Base
 
   after_destroy :remove_pages
 
+  # update visibility_level of forks
   after_update :update_forks_visibility_level
   after_update :remove_mirror_repository_reference,
                if: ->(project) { project.mirror? && project.import_url_updated? }
