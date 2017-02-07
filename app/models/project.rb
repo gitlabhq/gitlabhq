@@ -1563,21 +1563,6 @@ class Project < ActiveRecord::Base
     @route_maps_by_commit[commit_sha]
   end
 
-  def route_map_for(commit_sha)
-    @route_maps_by_commit ||= Hash.new do |h, sha|
-      h[sha] = begin
-        data = repository.route_map_for(sha)
-        next unless data
-
-        Gitlab::RouteMap.new(data)
-      rescue Gitlab::RouteMap::FormatError
-        nil
-      end
-    end
-
-    @route_maps_by_commit[commit_sha]
-  end
-
   def public_path_for_source_path(path, commit_sha)
     map = route_map_for(commit_sha)
     return unless map
