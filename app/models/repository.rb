@@ -5,6 +5,7 @@ require 'forwardable'
 class Repository
   include Gitlab::ShellAdapter
   include Elastic::RepositoriesSearch
+  include RepositoryMirroring
 
   attr_accessor :path_with_namespace, :project
 
@@ -68,10 +69,6 @@ class Repository
     return nil unless path_with_namespace
 
     @raw_repository ||= Gitlab::Git::Repository.new(path_to_repo)
-  end
-
-  def storage_path
-    @project.repository_storage_path
   end
 
   # Return absolute path to repository
@@ -185,10 +182,6 @@ class Repository
     find_branch(branch_name)
   end
 
-  def push_remote_branches(remote, branches)
-    gitlab_shell.push_remote_branches(storage_path, path_with_namespace, remote, branches)
-  end
-
   def add_tag(user, tag_name, target, message = nil)
     newrev = commit(target).try(:id)
     options = { message: message, tagger: user_to_committer(user) } if message
@@ -210,10 +203,6 @@ class Repository
     true
   end
 
-  def delete_remote_branches(remote, branches)
-    gitlab_shell.delete_remote_branches(storage_path, path_with_namespace, remote, branches)
-  end
-
   def rm_tag(user, tag_name)
     before_remove_tag
     tag = find_tag(tag_name)
@@ -222,40 +211,6 @@ class Repository
 
     after_remove_tag
     true
-  end
-
-  def config
-    raw_repository.rugged.config
-  end
-
-  def add_remote(name, url)
-    raw_repository.remote_add(name, url)
-  rescue Rugged::ConfigError
-    raw_repository.remote_update(name, url: url)
-  end
-
-  def remove_remote(name)
-    raw_repository.remote_delete(name)
-    true
-  rescue Rugged::ConfigError
-    false
-  end
-
-  def set_remote_as_mirror(name)
-    # This is used by Gitlab Geo to define repository as equivalent as "git clone --mirror"
-    config["remote.#{name}.fetch"] = 'refs/*:refs/*'
-    config["remote.#{name}.mirror"] = true
-    config["remote.#{name}.prune"] = true
-  end
-
-  def fetch_remote(remote, forced: false, no_tags: false)
-    gitlab_shell.fetch_remote(storage_path, path_with_namespace, remote, forced: forced, no_tags: no_tags)
-  end
-
-  def remote_tags(remote)
-    gitlab_shell.list_remote_tags(storage_path, path_with_namespace, remote).map do |name, target|
-      Gitlab::Git::Tag.new(raw_repository, name, target)
-    end
   end
 
   def ref_names
@@ -806,22 +761,6 @@ class Repository
   end
 
   alias_method :branches, :local_branches
-
-  def remote_branches(remote_name)
-    branches = []
-
-    rugged.references.each("refs/remotes/#{remote_name}/*").map do |ref|
-      name = ref.name.sub(/\Arefs\/remotes\/#{remote_name}\//, '')
-
-      begin
-        branches << Gitlab::Git::Branch.new(raw_repository, name, ref.target)
-      rescue Rugged::ReferenceError
-        # Omit invalid branch
-      end
-    end
-
-    branches
-  end
 
   def tags
     @tags ||= raw_repository.tags

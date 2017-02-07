@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170206101030) do
+ActiveRecord::Schema.define(version: 20170207150212) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1130,6 +1130,7 @@ ActiveRecord::Schema.define(version: 20170206101030) do
   add_index "projects", ["pending_delete"], name: "index_projects_on_pending_delete", using: :btree
   add_index "projects", ["runners_token"], name: "index_projects_on_runners_token", using: :btree
   add_index "projects", ["star_count"], name: "index_projects_on_star_count", using: :btree
+  add_index "projects", ["sync_time"], name: "index_projects_on_sync_time", using: :btree
   add_index "projects", ["visibility_level"], name: "index_projects_on_visibility_level", using: :btree
 
   create_table "protected_branch_merge_access_levels", force: :cascade do |t|
@@ -1212,6 +1213,7 @@ ActiveRecord::Schema.define(version: 20170206101030) do
   end
 
   add_index "remote_mirrors", ["project_id"], name: "index_remote_mirrors_on_project_id", using: :btree
+  add_index "remote_mirrors", ["sync_time"], name: "index_remote_mirrors_on_sync_time", using: :btree
 
   create_table "routes", force: :cascade do |t|
     t.integer "source_id", null: false

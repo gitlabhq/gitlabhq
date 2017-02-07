@@ -15,7 +15,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 - No changes.
 
-## 8.16.0 (2017-02-22)
+## 8.16.0 (2017-01-22)
 
 - Allow to limit shared runners minutes quota for group. !965
 - About GitLab link in sidebar that links to help page. !1008
