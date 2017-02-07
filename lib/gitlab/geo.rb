@@ -3,7 +3,7 @@ module Gitlab
     class OauthApplicationUndefinedError < StandardError; end
 
     def self.current_node
-      RequestStore.store[:geo_node_current] ||= begin
+      self.cache_value(:geo_node_current) do
         GeoNode.find_by(host: Gitlab.config.gitlab.host,
                         port: Gitlab.config.gitlab.port,
                         relative_url_root: Gitlab.config.gitlab.relative_url_root)
@@ -11,15 +11,15 @@ module Gitlab
     end
 
     def self.primary_node
-      RequestStore.store[:geo_primary_node] ||= GeoNode.find_by(primary: true)
+      self.cache_value(:geo_primary_node) { GeoNode.find_by(primary: true) }
     end
 
     def self.secondary_nodes
-      RequestStore.store[:geo_secondary_nodes] ||= GeoNode.where(primary: false)
+      self.cache_value(:geo_secondary_nodes) { GeoNode.where(primary: false) }
     end
 
     def self.enabled?
-      RequestStore.store[:geo_node_enabled] ||= GeoNode.exists?
+      self.cache_value(:geo_node_enabled) { GeoNode.exists? }
     end
 
     def self.license_allows?
@@ -27,11 +27,11 @@ module Gitlab
     end
 
     def self.primary?
-      RequestStore.store[:geo_node_primary?] ||= self.enabled? && self.current_node && self.current_node.primary?
+      self.cache_value(:geo_node_primary) { self.enabled? && self.current_node && self.current_node.primary? }
     end
 
     def self.secondary?
-      RequestStore.store[:geo_node_secondary] ||= self.enabled? && self.current_node && !self.current_node.primary?
+      self.cache_value(:geo_node_secondary) { self.enabled? && self.current_node && !self.current_node.primary? }
     end
 
     def self.geo_node?(host:, port:)
@@ -49,8 +49,15 @@ module Gitlab
     def self.oauth_authentication
       return false unless Gitlab::Geo.secondary?
 
-      RequestStore.store[:geo_oauth_application] ||=
+      self.cache_value(:geo_oauth_application) do
         Gitlab::Geo.current_node.oauth_application or raise OauthApplicationUndefinedError
+      end
+    end
+
+    def self.cache_value(key, &block)
+      return yield unless RequestStore.active?
+
+      RequestStore.fetch(key) { yield }
     end
   end
 end

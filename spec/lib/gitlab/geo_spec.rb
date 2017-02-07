@@ -37,6 +37,23 @@ describe Gitlab::Geo, lib: true do
         expect(described_class.enabled?).to be_falsey
       end
     end
+
+    context 'with RequestStore enabled' do
+      before do
+        RequestStore.begin!
+      end
+
+      after do
+        RequestStore.end!
+        RequestStore.clear!
+      end
+
+      it 'return false when no GeoNode exists' do
+        expect(GeoNode).to receive(:exists?).once.and_call_original
+
+        2.times { expect(described_class.enabled?).to be_falsey }
+      end
+    end
   end
 
   describe 'readonly?' do
