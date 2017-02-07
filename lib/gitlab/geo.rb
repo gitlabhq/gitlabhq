@@ -19,7 +19,7 @@ module Gitlab
     end
 
     def self.enabled?
-      RequestStore.store[:geo_node_enabled] ||= GeoNode.exists?
+      self.cache_boolean(:geo_node_enabled) { GeoNode.exists? }
     end
 
     def self.license_allows?
@@ -27,11 +27,11 @@ module Gitlab
     end
 
     def self.primary?
-      RequestStore.store[:geo_node_primary?] ||= self.enabled? && self.current_node && self.current_node.primary?
+      self.cache_boolean(:geo_node_primary) { self.enabled? && self.current_node && self.current_node.primary? }
     end
 
     def self.secondary?
-      RequestStore.store[:geo_node_secondary] ||= self.enabled? && self.current_node && !self.current_node.primary?
+      self.cache_boolean(:geo_node_secondary) { self.enabled? && self.current_node && !self.current_node.primary? }
     end
 
     def self.geo_node?(host:, port:)
@@ -51,6 +51,15 @@ module Gitlab
 
       RequestStore.store[:geo_oauth_application] ||=
         Gitlab::Geo.current_node.oauth_application or raise OauthApplicationUndefinedError
+    end
+
+    def self.cache_boolean(key, &block)
+      return yield unless RequestStore.active?
+
+      val = RequestStore.store[key]
+      return val unless val.nil?
+
+      RequestStore[key] = yield
     end
   end
 end
