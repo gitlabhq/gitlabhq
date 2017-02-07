@@ -3,11 +3,14 @@ require 'spec_helper'
 describe Gitlab::Serializer::Pagination do
   let(:request) { spy('request') }
   let(:response) { spy('response') }
+  let(:headers) { spy('headers') }
 
   before do
-    allow(request)
-      .to receive(:query_parameters)
+    allow(request).to receive(:query_parameters)
       .and_return(params)
+
+    allow(response).to receive(:headers)
+      .and_return(headers)
   end
 
   let(:pagination) { described_class.new(request, response) }
@@ -26,9 +29,9 @@ describe Gitlab::Serializer::Pagination do
       end
 
       it 'appends relevant headers' do
-        expect(response).to receive(:[]=).with('X-Total', '3')
-        expect(response).to receive(:[]=).with('X-Total-Pages', '2')
-        expect(response).to receive(:[]=).with('X-Per-Page', '2')
+        expect(headers).to receive(:[]=).with('X-Total', '3')
+        expect(headers).to receive(:[]=).with('X-Total-Pages', '2')
+        expect(headers).to receive(:[]=).with('X-Per-Page', '2')
 
         subject
       end
