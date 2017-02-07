@@ -8,7 +8,7 @@
       super(droplab, dropdown, input, filter);
       this.config = {
         droplabAjaxFilter: {
-          endpoint: '/autocomplete/users.json',
+          endpoint: `${gon.relative_url_root || ''}/autocomplete/users.json`,
           searchKey: 'search',
           params: {
             per_page: 20,

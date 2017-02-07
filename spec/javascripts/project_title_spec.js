@@ -11,17 +11,18 @@
 /*= require project */
 
 (function() {
-  window.gon || (window.gon = {});
-
-  window.gon.api_version = 'v3';
-
   describe('Project Title', function() {
     preloadFixtures('static/project_title.html.raw');
     beforeEach(function() {
       loadFixtures('static/project_title.html.raw');
+
+      window.gon = {};
+      window.gon.api_version = 'v3';
+
       return this.project = new Project();
     });
-    return describe('project list', function() {
+
+    describe('project list', function() {
       var fakeAjaxResponse = function fakeAjaxResponse(req) {
         var d;
         expect(req.url).toBe('/api/v3/projects.json?simple=true');
@@ -47,6 +48,10 @@
         $(".dropdown-menu-close-icon").click();
         return expect($('.header-content').hasClass('open')).toBe(false);
       });
+    });
+
+    afterEach(() => {
+      window.gon = {};
     });
   });
 
