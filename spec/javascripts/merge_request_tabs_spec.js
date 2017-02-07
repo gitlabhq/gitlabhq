@@ -62,17 +62,21 @@ require('vendor/jquery.scrollTo');
       });
     });
     describe('#opensInNewTab', function () {
+      var commitsLink;
+      var tabUrl;
+
       beforeEach(function () {
-        const commitsLink = '.commits-tab li a';
-        const tabUrl = $(commitsLink).attr('href');
+        commitsLink = '.commits-tab li a';
+        tabUrl = $(commitsLink).attr('href');
 
         spyOn($.fn, 'attr').and.returnValue(tabUrl);
+      });
+      it('opens page tab in a new browser tab with Ctrl+Click - Windows/Linux', function () {
         spyOn(window, 'open').and.callFake(function (url, name) {
           expect(url).toEqual(tabUrl);
           expect(name).toEqual('_blank');
         });
-      });
-      it('opens page tab in a new browser tab with Ctrl+Click - Windows/Linux', function () {
+
         this.class.clickTab({
           metaKey: false,
           ctrlKey: true,
@@ -81,6 +85,11 @@ require('vendor/jquery.scrollTo');
         });
       });
       it('opens page tab in a new browser tab with Cmd+Click - Mac', function () {
+        spyOn(window, 'open').and.callFake(function (url, name) {
+          expect(url).toEqual(tabUrl);
+          expect(name).toEqual('_blank');
+        });
+
         this.class.clickTab({
           metaKey: true,
           ctrlKey: false,
@@ -89,6 +98,11 @@ require('vendor/jquery.scrollTo');
         });
       });
       it('opens page tab in a new browser tab with Middle-click - Mac/PC', function () {
+        spyOn(window, 'open').and.callFake(function (url, name) {
+          expect(url).toEqual(tabUrl);
+          expect(name).toEqual('_blank');
+        });
+
         this.class.clickTab({
           metaKey: false,
           ctrlKey: false,
