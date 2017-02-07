@@ -13,7 +13,7 @@
           = image_tag avatar_icon(current_user), alt: current_user.to_reference, class: 'avatar s40'
       .timeline-content.timeline-content-form
         = render "projects/notes/form", view: diff_view
-    - else
+    - elsif !current_user
       .disabled-comment.text-center
         .disabled-comment-text.inline
           Please

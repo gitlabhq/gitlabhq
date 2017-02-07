@@ -3,10 +3,14 @@ class ProjectSnippetPolicy < BasePolicy
     can! :read_project_snippet if @subject.public?
     return unless @user
 
-    if @user && @subject.author == @user || @user.admin?
+    if @user && (@subject.author == @user || @user.admin?)
       can! :read_project_snippet
       can! :update_project_snippet
       can! :admin_project_snippet
+    end
+
+    if @user.auditor?
+      can! :read_project_snippet
     end
 
     if @subject.internal? && !@user.external?

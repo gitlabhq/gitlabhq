@@ -14,6 +14,10 @@ FactoryGirl.define do
       admin true
     end
 
+    trait :auditor do
+      auditor true
+    end
+
     trait :external do
       external true
     end

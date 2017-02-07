@@ -425,4 +425,26 @@ describe ProjectsController do
       expect(parsed_body["Commits"]).to include("123456")
     end
   end
+
+  describe 'GET edit' do
+    it 'does not allow an auditor user to access the page' do
+      sign_in(create(:user, :auditor))
+
+      get :edit,
+          namespace_id: project.namespace.path,
+          id: project.path
+
+      expect(response).to have_http_status(404)
+    end
+
+    it 'allows an admin user to access the page' do
+      sign_in(create(:user, :admin))
+
+      get :edit,
+          namespace_id: project.namespace.path,
+          id: project.path
+
+      expect(response).to have_http_status(200)
+    end
+  end
 end

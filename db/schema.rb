@@ -1454,6 +1454,7 @@ ActiveRecord::Schema.define(version: 20170204181513) do
     t.string "incoming_email_token"
     t.string "organization"
     t.boolean "authorized_projects_populated"
+    t.boolean "auditor", default: false, null: false
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree

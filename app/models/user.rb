@@ -10,6 +10,7 @@ class User < ActiveRecord::Base
   include CaseSensitivity
   include TokenAuthenticatable
   prepend EE::GeoAwareAvatar
+  prepend EE::User
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
@@ -931,6 +932,24 @@ class User < ActiveRecord::Base
 
   def record_activity
     Gitlab::UserActivities::ActivitySet.record(self)
+  end
+
+  def access_level
+    if admin?
+      :admin
+    elsif auditor?
+      :auditor
+    else
+      :regular
+    end
+  end
+
+  def access_level=(new_level)
+    new_level = new_level.to_s
+    return unless %w(admin auditor regular).include?(new_level)
+
+    self.admin = (new_level == 'admin')
+    self.auditor = (new_level == 'auditor')
   end
 
   private

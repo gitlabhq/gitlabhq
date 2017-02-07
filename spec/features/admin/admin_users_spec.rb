@@ -211,7 +211,7 @@ describe "Admin::Users", feature: true do
         fill_in "user_email", with: "bigbang@mail.com"
         fill_in "user_password", with: "AValidPassword1"
         fill_in "user_password_confirmation", with: "AValidPassword1"
-        check "user_admin"
+        choose "user_access_level_admin"
         click_button "Save changes"
       end
 
@@ -225,6 +225,21 @@ describe "Admin::Users", feature: true do
         expect(user.name).to eq('Big Bang')
         expect(user.is_admin?).to be_truthy
         expect(user.password_expires_at).to be <= Time.now
+      end
+    end
+
+    describe "Update user account type" do
+      before do
+        allow_any_instance_of(AuditorUserHelper).to receive(:license_allows_auditor_user?).and_return(true)
+        choose "user_access_level_auditor"
+        click_button "Save changes"
+      end
+
+      it "changes account type to be auditor" do
+        user.reload
+
+        expect(user).not_to be_admin
+        expect(user).to be_auditor
       end
     end
 

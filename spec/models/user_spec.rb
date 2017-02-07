@@ -198,6 +198,12 @@ describe User, models: true do
         end
       end
     end
+
+    it 'does not allow a user to be both an auditor and an admin' do
+      user = build(:user, :admin, :auditor)
+
+      expect(user).to be_invalid
+    end
   end
 
   describe "non_ldap" do
@@ -1415,7 +1421,7 @@ describe User, models: true do
 
     it 'returns the projects when using an ActiveRecord relation' do
       projects = user.
-        projects_with_reporter_access_limited_to(Project.select(:id))
+                   projects_with_reporter_access_limited_to(Project.select(:id))
 
       expect(projects).to eq([project1])
     end
@@ -1484,6 +1490,143 @@ describe User, models: true do
     it 'stores the correct access levels' do
       expect(user.project_authorizations.where(access_level: Gitlab::Access::GUEST).exists?).to eq(true)
       expect(user.project_authorizations.where(access_level: Gitlab::Access::REPORTER).exists?).to eq(true)
+    end
+  end
+
+  describe '#access_level=' do
+    let(:user) { build(:user) }
+
+    before do
+      # `auditor?` returns true only when the user is an auditor _and_ the auditor license
+      # add-on is present. We aren't testing this here, so we can assume that the add-on exists.
+      allow_any_instance_of(License).to receive(:add_on?).with('GitLab_Auditor_User') { true }
+    end
+
+    it 'does nothing for an invalid access level' do
+      user.access_level = :invalid_access_level
+
+      expect(user.access_level).to eq(:regular)
+      expect(user.admin).to be false
+      expect(user.auditor).to be false
+    end
+
+    it "assigns the 'admin' access level" do
+      user.access_level = :admin
+
+      expect(user.access_level).to eq(:admin)
+      expect(user.admin).to be true
+      expect(user.auditor).to be false
+    end
+
+    it "assigns the 'auditor' access level" do
+      user.access_level = :auditor
+
+      expect(user.access_level).to eq(:auditor)
+      expect(user.admin).to be false
+      expect(user.auditor).to be true
+    end
+
+    it "assigns the 'auditor' access level" do
+      user.access_level = :regular
+
+      expect(user.access_level).to eq(:regular)
+      expect(user.admin).to be false
+      expect(user.auditor).to be false
+    end
+
+    it "clears the 'admin' access level when a user is made an auditor" do
+      user.access_level = :admin
+      user.access_level = :auditor
+
+      expect(user.access_level).to eq(:auditor)
+      expect(user.admin).to be false
+      expect(user.auditor).to be true
+    end
+
+    it "clears the 'auditor' access level when a user is made an admin" do
+      user.access_level = :auditor
+      user.access_level = :admin
+
+      expect(user.access_level).to eq(:admin)
+      expect(user.admin).to be true
+      expect(user.auditor).to be false
+    end
+
+    it "doesn't clear existing access levels when an invalid access level is passed in" do
+      user.access_level = :admin
+      user.access_level = :invalid_access_level
+
+      expect(user.access_level).to eq(:admin)
+      expect(user.admin).to be true
+      expect(user.auditor).to be false
+    end
+
+    it "accepts string values in addition to symbols" do
+      user.access_level = 'admin'
+
+      expect(user.access_level).to eq(:admin)
+      expect(user.admin).to be true
+      expect(user.auditor).to be false
+    end
+  end
+
+  describe 'the GitLab_Auditor_User add-on' do
+    let(:license) { build(:license) }
+
+    before do
+      allow(::License).to receive(:current).and_return(license)
+    end
+
+    context 'creating an auditor user' do
+      it "does not allow creating an auditor user if the addon isn't enabled" do
+        allow_any_instance_of(License).to receive(:add_on?).with('GitLab_Auditor_User') { false }
+
+        expect(build(:user, :auditor)).to be_invalid
+      end
+
+      it "does not allow creating an auditor user if no license is present" do
+        allow(License).to receive(:current).and_return nil
+
+        expect(build(:user, :auditor)).to be_invalid
+      end
+
+      it "allows creating an auditor user if the addon is enabled" do
+        allow_any_instance_of(License).to receive(:add_on?).with('GitLab_Auditor_User') { true }
+
+        expect(build(:user, :auditor)).to be_valid
+      end
+
+      it "allows creating a regular user if the addon isn't enabled" do
+        allow_any_instance_of(License).to receive(:add_on?).with('GitLab_Auditor_User') { false }
+
+        expect(build(:user)).to be_valid
+      end
+    end
+
+    context '#auditor?' do
+      it "returns true for an auditor user if the addon is enabled" do
+        allow_any_instance_of(License).to receive(:add_on?).with('GitLab_Auditor_User') { true }
+
+        expect(build(:user, :auditor)).to be_auditor
+      end
+
+      it "returns false for an auditor user if the addon is not enabled" do
+        allow_any_instance_of(License).to receive(:add_on?).with('GitLab_Auditor_User') { false }
+
+        expect(build(:user, :auditor)).not_to be_auditor
+      end
+
+      it "returns false for an auditor user if a license is not present" do
+        allow_any_instance_of(License).to receive(:add_on?).with('GitLab_Auditor_User') { false }
+
+        expect(build(:user, :auditor)).not_to be_auditor
+      end
+
+      it "returns false for a non-auditor user even if the addon is present" do
+        allow_any_instance_of(License).to receive(:add_on?).with('GitLab_Auditor_User') { true }
+
+        expect(build(:user)).not_to be_auditor
+      end
     end
   end
 end

@@ -15,12 +15,14 @@ describe SnippetsFinder do
 
     it "returns all private and internal snippets" do
       snippets = SnippetsFinder.new.execute(user, filter: :all)
+
       expect(snippets).to include(snippet2, snippet3)
       expect(snippets).not_to include(snippet1)
     end
 
     it "returns all public snippets" do
       snippets = SnippetsFinder.new.execute(nil, filter: :all)
+
       expect(snippets).to include(snippet3)
       expect(snippets).not_to include(snippet1, snippet2)
     end
@@ -46,6 +48,7 @@ describe SnippetsFinder do
 
     it "returns all public and internal snippets" do
       snippets = SnippetsFinder.new.execute(user1, filter: :by_user, user: user)
+
       expect(snippets).to include(snippet2, snippet3)
       expect(snippets).not_to include(snippet1)
     end
@@ -58,23 +61,27 @@ describe SnippetsFinder do
 
     it "returns private snippets" do
       snippets = SnippetsFinder.new.execute(user, filter: :by_user, user: user, scope: "are_private")
+
       expect(snippets).to include(snippet1)
       expect(snippets).not_to include(snippet2, snippet3)
     end
 
     it "returns public snippets" do
       snippets = SnippetsFinder.new.execute(user, filter: :by_user, user: user, scope: "are_public")
+
       expect(snippets).to include(snippet3)
       expect(snippets).not_to include(snippet1, snippet2)
     end
 
     it "returns all snippets" do
       snippets = SnippetsFinder.new.execute(user, filter: :by_user, user: user)
+
       expect(snippets).to include(snippet1, snippet2, snippet3)
     end
 
     it "returns only public snippets if unauthenticated user" do
       snippets = SnippetsFinder.new.execute(nil, filter: :by_user, user: user)
+
       expect(snippets).to include(snippet3)
       expect(snippets).not_to include(snippet2, snippet1)
     end
@@ -89,43 +96,68 @@ describe SnippetsFinder do
 
     it "returns public snippets for unauthorized user" do
       snippets = SnippetsFinder.new.execute(nil, filter: :by_project, project: project1)
+
       expect(snippets).to include(@snippet3)
       expect(snippets).not_to include(@snippet1, @snippet2)
     end
 
     it "returns public and internal snippets for non project members" do
       snippets = SnippetsFinder.new.execute(user, filter: :by_project, project: project1)
+
       expect(snippets).to include(@snippet2, @snippet3)
       expect(snippets).not_to include(@snippet1)
     end
 
     it "returns public snippets for non project members" do
       snippets = SnippetsFinder.new.execute(user, filter: :by_project, project: project1, scope: "are_public")
+
       expect(snippets).to include(@snippet3)
       expect(snippets).not_to include(@snippet1, @snippet2)
     end
 
     it "returns internal snippets for non project members" do
       snippets = SnippetsFinder.new.execute(user, filter: :by_project, project: project1, scope: "are_internal")
+
       expect(snippets).to include(@snippet2)
       expect(snippets).not_to include(@snippet1, @snippet3)
     end
 
     it "does not return private snippets for non project members" do
       snippets = SnippetsFinder.new.execute(user, filter: :by_project, project: project1, scope: "are_private")
+
       expect(snippets).not_to include(@snippet1, @snippet2, @snippet3)
     end
 
     it "returns all snippets for project members" do
       project1.team << [user, :developer]
+
       snippets = SnippetsFinder.new.execute(user, filter: :by_project, project: project1)
+
       expect(snippets).to include(@snippet1, @snippet2, @snippet3)
     end
 
     it "returns private snippets for project members" do
       project1.team << [user, :developer]
+
       snippets = SnippetsFinder.new.execute(user, filter: :by_project, project: project1, scope: "are_private")
+
       expect(snippets).to include(@snippet1)
+    end
+
+    it "returns all snippets for admin users" do
+      user = create(:user, :admin)
+
+      snippets = SnippetsFinder.new.execute(user, filter: :by_project, project: project1)
+
+      expect(snippets).to include(@snippet1, @snippet2, @snippet3)
+    end
+
+    it "returns all snippets for auditor users" do
+      user = create(:user, :auditor)
+
+      snippets = SnippetsFinder.new.execute(user, filter: :by_project, project: project1)
+
+      expect(snippets).to include(@snippet1, @snippet2, @snippet3)
     end
   end
 end
