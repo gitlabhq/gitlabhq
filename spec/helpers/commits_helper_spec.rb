@@ -27,7 +27,7 @@ describe CommitsHelper do
     end
   end
 
-  describe '#view_on_environment_btn' do
+  describe '#view_on_environment_button' do
     let(:project) { create(:empty_project) }
     let(:environment) { create(:environment, external_url: 'http://example.com') }
     let(:path) { 'source/file.html' }
@@ -38,7 +38,7 @@ describe CommitsHelper do
     end
 
     it 'returns a link tag linking to the file in the environment' do
-      html = helper.view_on_environment_btn(sha, path, environment)
+      html = helper.view_on_environment_button(sha, path, environment)
       node = Nokogiri::HTML.parse(html).at_css('a')
 
       expect(node[:title]).to eq('View on example.com')

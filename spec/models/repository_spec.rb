@@ -1785,7 +1785,7 @@ describe Repository, models: true do
 
   describe '#gitlab_ci_yml_for' do
     before do
-      repository.commit_file(User.last, '.gitlab-ci.yml', 'CONTENT', 'Add .gitlab-ci.yml', 'master', false)
+      repository.commit_file(User.last, '.gitlab-ci.yml', 'CONTENT', message: 'Add .gitlab-ci.yml', branch_name: 'master', update: false)
     end
 
     context 'when there is a .gitlab-ci.yml at the commit' do
@@ -1803,7 +1803,7 @@ describe Repository, models: true do
 
   describe '#route_map_for' do
     before do
-      repository.commit_file(User.last, '.gitlab/route-map.yml', 'CONTENT', 'Add .gitlab/route-map.yml', 'master', false)
+      repository.commit_file(User.last, '.gitlab/route-map.yml', 'CONTENT', message: 'Add .gitlab/route-map.yml', branch_name: 'master', update: false)
     end
 
     context 'when there is a .gitlab/route-map.yml at the commit' do

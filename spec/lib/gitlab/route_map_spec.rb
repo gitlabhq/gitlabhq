@@ -54,7 +54,8 @@ describe Gitlab::RouteMap, lib: true do
     context 'when all is good' do
       it 'returns a route map' do
         route_map = described_class.new(YAML.dump([{ 'source' => '/index\.html/', 'public' => 'index.html' }]))
-        expect(route_map.map).to eq([{ source: /^index\.html$/, public: 'index.html' }])
+        
+        expect(route_map.public_path_for_source_path('index.html')).to eq('index.html')
       end
     end
   end
