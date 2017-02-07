@@ -15,8 +15,9 @@ Slack:
 
 After you set up Slack, it's time to set up GitLab.
 
-Go to your project's **Settings > Integrations > Slack Notifications** and you will see a
-checkbox with the following events that can be triggered:
+Navigate to the [Integrations page](project_services.md#accessing-the-project-services)
+and select the **Slack notifications** service to configure it.
+There, you will see a checkbox with the following events that can be triggered:
 
 - Push
 - Issue

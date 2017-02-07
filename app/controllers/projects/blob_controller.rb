@@ -30,6 +30,8 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def show
+    environment_params = @repository.branch_exists?(@ref) ? { ref: @ref } : { commit: @commit }
+    @environment = EnvironmentsFinder.new(@project, current_user, environment_params).execute.last
   end
 
   def edit

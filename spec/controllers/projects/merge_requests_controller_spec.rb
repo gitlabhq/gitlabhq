@@ -33,11 +33,17 @@ describe Projects::MergeRequestsController do
       end
 
       context 'when rendering JSON response' do
+        before do
+          create(:ci_pipeline, sha: fork_project.commit('remove-submodule').id,
+                               ref: 'remove-submodule',
+                               project: fork_project)
+        end
+
         it 'renders JSON including serialized pipelines' do
           submit_new_merge_request(format: :json)
 
-          expect(json_response).to have_key('pipelines')
           expect(response).to be_ok
+          expect(json_response).not_to be_empty
         end
       end
     end

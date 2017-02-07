@@ -10,7 +10,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   def index
     @scope = params[:scope]
-    @environments = project.environments
+    @environments = project.environments.includes(:last_deployment)
 
     respond_to do |format|
       format.html

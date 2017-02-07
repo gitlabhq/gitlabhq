@@ -12,6 +12,9 @@ template, see the [Services Templates](services_templates.md) document.
 
 ## Configuration
 
+Navigate to the [Integrations page](project_services.md#accessing-the-project-services)
+of your project and select the **Kubernetes** service to configure it.
+
 ![Kubernetes configuration settings](img/kubernetes_configuration.png)
 
 The Kubernetes service takes the following arguments:

@@ -6,7 +6,8 @@ class Environment < ActiveRecord::Base
 
   belongs_to :project, required: true, validate: true
 
-  has_many :deployments
+  has_many :deployments, dependent: :destroy
+  has_one :last_deployment, -> { order('deployments.id DESC') }, class_name: 'Deployment'
 
   before_validation :nullify_external_url
   before_validation :generate_slug, if: ->(env) { env.slug.blank? }
@@ -37,6 +38,13 @@ class Environment < ActiveRecord::Base
 
   scope :available, -> { with_state(:available) }
   scope :stopped, -> { with_state(:stopped) }
+  scope :order_by_last_deployed_at, -> do
+    max_deployment_id_sql =
+      Deployment.select(Deployment.arel_table[:id].maximum).
+      where(Deployment.arel_table[:environment_id].eq(arel_table[:id])).
+      to_sql
+    order(Gitlab::Database.nulls_first_order("(#{max_deployment_id_sql})", 'ASC'))
+  end
 
   state_machine :state, initial: :available do
     event :start do
@@ -62,10 +70,6 @@ class Environment < ActiveRecord::Base
     ref.to_s == last_deployment.try(:ref)
   end
 
-  def last_deployment
-    deployments.last
-  end
-
   def nullify_external_url
     self.external_url = nil if self.external_url.blank?
   end
@@ -85,6 +89,10 @@ class Environment < ActiveRecord::Base
     return false unless last_deployment
 
     last_deployment.includes_commit?(commit)
+  end
+
+  def last_deployed_at
+    last_deployment.try(:created_at)
   end
 
   def update_merge_request_metrics?
@@ -169,6 +177,15 @@ class Environment < ActiveRecord::Base
     end
 
     self.slug = slugified
+  end
+
+  def external_url_for(path, commit_sha)
+    return unless self.external_url
+
+    public_path = project.public_path_for_source_path(path, commit_sha)
+    return unless public_path
+
+    [external_url, public_path].join('/')
   end
 
   private

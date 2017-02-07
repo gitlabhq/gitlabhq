@@ -1,27 +1,30 @@
-# Project Services
+# Project services
 
-Project services allow you to integrate GitLab with other applications. Below
-is list of the currently supported ones.
+Project services allow you to integrate GitLab with other applications. They
+are a bit like plugins in that they allow a lot of freedom in adding
+functionality to GitLab.
 
-You can find these within GitLab in the Services page under Project Settings if
-you are at least a master on the project.
-Project Services are a bit like plugins in that they allow a lot of freedom in
-adding functionality to GitLab. For example there is also a service that can
-send an email every time someone pushes new commits.
+## Accessing the project services
 
-Because GitLab is open source we can ship with the code and tests for all
-plugins. This allows the community to keep the plugins up to date so that they
-always work in newer GitLab versions.
+You can find the available services under the **Integrations** page in your
+project's settings.
 
-For an overview of what projects services are available without logging in,
-please see the [project_services directory][projects-code].
+1. Navigate to the cog icon in the upper right corner of your project. You need
+   to have at least [master permission][permissions] on the project.
 
-[projects-code]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/app/models/project_services
+    ![Accessing the services](img/accessing_integrations.png)
 
-Click on the service links to see
-further configuration instructions and details. Contributions are welcome.
+1. There are more than 20 services to integrate with. Click on the one that you
+   want to configure.
+
+    ![Project services list](img/project_services.png)
+
+Below, you will find a list of the currently supported ones accompanied with
+comprehensive documentation.
 
 ## Services
+
+Click on the service links to see further configuration instructions and details.
 
 | Service |	Description |
 | ------- | ----------- |
@@ -51,9 +54,23 @@ further configuration instructions and details. Contributions are welcome.
 | Pushover | Pushover makes it easy to get real-time notifications on your Android device, iPhone, iPad, and Desktop |
 | [Redmine](redmine.md) | Redmine issue tracker |
 
-## Services Templates
+## Services templates
 
 Services templates is a way to set some predefined values in the Service of
 your liking which will then be pre-filled on each project's Service.
 
-Read more about [Services Templates in this document](services_templates.md).
+Read more about [Services templates in this document](services_templates.md).
+
+## Contributing to project services
+
+Because GitLab is open source we can ship with the code and tests for all
+plugins. This allows the community to keep the plugins up to date so that they
+always work in newer GitLab versions.
+
+For an overview of what projects services are available, please see the
+[project_services source directory][projects-code].
+
+Contributions are welcome!
+
+[projects-code]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/app/models/project_services
+[permissions]: ../../permissions.md

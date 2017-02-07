@@ -1,7 +1,10 @@
-## Enabling build emails
+# Enabling build emails
 
-To receive e-mail notifications about the result status of your builds, visit
-your project's **Settings > Services > Builds emails** and activate the service.
+By enabling this service, you will be able to receive e-mail notifications about
+the result status of your builds.
+
+Navigate to the [Integrations page](project_services.md#accessing-the-project-services)
+and select the **Builds emails** service to configure it.
 
 In the _Recipients_ area, provide a list of e-mails separated by comma.
 
@@ -10,7 +13,3 @@ e-mail notifications about each build's status.
 
 If you enable the _Notify only broken builds_ option, e-mail notifications will
 be sent only for failed builds.
-
----
-
-![Builds emails service settings](img/builds_emails_service.png)

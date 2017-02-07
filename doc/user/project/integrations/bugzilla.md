@@ -1,7 +1,8 @@
 # Bugzilla Service
 
-Go to your project's **Settings > Services > Bugzilla** and fill in the required
-details as described in the table below.
+Navigate to the [Integrations page](project_services.md#accessing-the-project-services),
+select the **Bugzilla** service and fill in the required details as described
+in the table below.
 
 | Field | Description |
 | ----- | ----------- |
