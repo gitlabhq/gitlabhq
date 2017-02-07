@@ -97,7 +97,8 @@ The following guide assumes that:
 * Internal IP: 10.1.5.3
 * External IP: 54.193.124.100
 
-    In this case, use the internal IP for the PostgreSQL configuration above.
+    In this case, use the internal IP for `1.2.3.4` and the external IP for
+    `5.6.7.8`.
 
     If you want to add another secondary, the relevant setting would look like:
 
