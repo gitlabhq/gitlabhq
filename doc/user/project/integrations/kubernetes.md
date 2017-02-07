@@ -40,7 +40,7 @@ the `ca.crt` contents as the `Custom CA bundle`.
 ## Deployment variables
 
 The Kubernetes service exposes following
-[deployment variables](../ci/variables/README.md#deployment-variables) in the
+[deployment variables](../../../ci/variables/README.md#deployment-variables) in the
 GitLab CI build environment:
 
 - `KUBE_URL` - equal to the API URL
@@ -55,7 +55,7 @@ Added in GitLab 8.15. You must be the project owner or have `master` permissions
 to use terminals. Support is currently limited to the first container in the
 first pod of your environment.
 
-When enabled, the Kubernetes service adds [web terminal](../ci/environments.md#web-terminals)
+When enabled, the Kubernetes service adds [web terminal](../../../ci/environments.md#web-terminals)
 support to your environments. This is based on the `exec` functionality found in
 Docker and Kubernetes, so you get a new shell session within your existing
 containers. To use this integration, you should deploy to Kubernetes using
