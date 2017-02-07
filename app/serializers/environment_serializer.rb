@@ -1,5 +1,5 @@
 class EnvironmentSerializer < BaseSerializer
-  Struct.new('Item', :name, :size, :id, :latest)
+  Item = Struct.new(:name, :size, :latest)
 
   entity EnvironmentEntity
 
@@ -41,11 +41,10 @@ class EnvironmentSerializer < BaseSerializer
              'COUNT(*) AS environments_count',
              'MAX(id) AS last_environment_id')
 
-    environments = resource.where(id: items.map(&:last))
-      .order('COALESCE(environment_type, name) ASC')
+    environments = resource.where(id: items.map(&:last)).index_by(&:id)
 
-    items.zip(environments).map do |item|
-      Struct::Item.new(*item.flatten)
+    items.map do |name, size, id|
+      Item.new(name, size, environments[id])
     end
   end
 end
