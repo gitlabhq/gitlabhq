@@ -382,9 +382,7 @@ module API
       expose :author, using: Entities::UserBasic, if: ->(event, options) { event.author }
 
       expose :author_username do |event, options|
-        if event.author
-          event.author.username
-        end
+        event.author&.username
       end
     end
 

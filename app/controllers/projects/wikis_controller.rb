@@ -83,7 +83,7 @@ class Projects::WikisController < Projects::ApplicationController
 
   def destroy
     @page = @project_wiki.find_page(params[:id])
-    @page.delete if @page
+    @page&.delete
 
     redirect_to(
       namespace_project_wiki_path(@project.namespace, @project, :home),
