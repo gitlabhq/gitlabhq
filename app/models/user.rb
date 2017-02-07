@@ -904,6 +904,21 @@ class User < ActiveRecord::Base
     end
   end
 
+  def access_level
+    if admin?
+      :admin
+    else
+      :regular
+    end
+  end
+
+  def access_level=(new_level)
+    new_level = new_level.to_s
+    return unless %w(admin regular).include?(new_level)
+
+    self.admin = (new_level == 'admin')
+  end
+
   private
 
   def ci_projects_union
