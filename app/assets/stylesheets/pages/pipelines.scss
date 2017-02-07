@@ -229,6 +229,7 @@
   .finished-at {
     color: $gl-text-color-secondary;
     margin: 4px 0;
+    white-space: nowrap;
 
     .fa {
       font-size: 12px;
