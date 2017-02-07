@@ -73,5 +73,37 @@ require('~/lib/utils/common_utils');
         expect(normalized[NGINX].nginx).toBe('ok');
       });
     });
+
+    describe('gl.utils.isMetaClick', () => {
+      it('should identify meta click on Windows/Linux', () => {
+        const e = {
+          metaKey: false,
+          ctrlKey: true,
+          which: 1,
+        };
+
+        expect(gl.utils.isMetaClick(e)).toBe(true);
+      });
+
+      it('should identify meta click on macOS', () => {
+        const e = {
+          metaKey: true,
+          ctrlKey: false,
+          which: 1,
+        };
+
+        expect(gl.utils.isMetaClick(e)).toBe(true);
+      });
+
+      it('should identify as meta click on middle-click or Mouse-wheel click', () => {
+        const e = {
+          metaKey: false,
+          ctrlKey: false,
+          which: 2,
+        };
+
+        expect(gl.utils.isMetaClick(e)).toBe(true);
+      });
+    });
   });
 })();
