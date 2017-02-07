@@ -284,6 +284,13 @@ Additional pagination headers are also sent back.
 | `X-Next-Page`   | The index of the next page |
 | `X-Prev-Page`   | The index of the previous page |
 
+## Project ID vs Project string
+
+When in this documentation a reference is made to the project id, one could also use NAMESPACE/PROJECT_NAME.
+If using namespaced projects call make sure that the NAMESPACE/PROJECT_NAME is URL-encoded, eg. `/api/v3/projects/diaspora%2Fdiaspora`
+(where `/` is represented by `%2F`).
+
+
 ## `id` vs `iid`
 
 When you work with the API, you may notice two similar fields in API entities:

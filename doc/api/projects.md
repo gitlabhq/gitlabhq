@@ -351,8 +351,8 @@ Parameters:
 ### Get single project
 
 Get a specific project, identified by project ID or NAMESPACE/PROJECT_NAME, which is owned by the authenticated user.
-If using namespaced projects call make sure that the NAMESPACE/PROJECT_NAME is URL-encoded, eg. `/api/v3/projects/diaspora%2Fdiaspora` (where `/` is represented by `%2F`). This endpoint can be accessed without authentication if
-the project is publicly accessible.
+If using namespaced projects call make sure that the NAMESPACE/PROJECT_NAME is URL-encoded, eg. `/api/v3/projects/diaspora%2Fdiaspora`
+(where `/` is represented by `%2F`). This endpoint can be accessed without authentication if the project is publicly accessible.
 
 ```
 GET /projects/:id
