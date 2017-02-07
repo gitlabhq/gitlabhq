@@ -134,6 +134,14 @@
       return e.metaKey || e.ctrlKey || e.altKey || e.shiftKey;
     };
 
+    gl.utils.isMetaClick = function(e) {
+      // Identify following special clicks
+      // 1) Cmd + Click on Mac (e.metaKey)
+      // 2) Ctrl + Click on PC (e.ctrlKey)
+      // 3) Middle-click or Mouse Wheel Click (e.which is 2)
+      return e.metaKey || e.ctrlKey || e.which === 2;
+    };
+
     gl.utils.scrollToElement = function($el) {
       var top = $el.offset().top;
       gl.navBarHeight = gl.navBarHeight || $('.navbar-gitlab').height();
