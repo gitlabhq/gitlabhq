@@ -84,15 +84,32 @@ require('vendor/jquery.scrollTo');
         const tabUrl = $(commitsLink).attr('href');
 
         spyOn($.fn, 'attr').and.returnValue(tabUrl);
-        spyOn(window, 'open').and.callFake(function (url, name) {
+        spyOn(window, 'open').and.callFake(function (url, target) {
           expect(url).toEqual(tabUrl);
-          expect(name).toEqual('_blank');
+          expect(target).toEqual('_blank');
         });
 
         this.class.clickTab({
           metaKey: true,
           ctrlKey: false,
           which: 1,
+          stopImmediatePropagation: function () {}
+        });
+      });
+      it('opens page tab in a new browser tab with Middle-click - Mac/PC', function () {
+        const commitsLink = '.commits-tab li a';
+        const tabUrl = $(commitsLink).attr('href');
+
+        spyOn($.fn, 'attr').and.returnValue(tabUrl);
+        spyOn(window, 'open').and.callFake(function (url, target) {
+          expect(url).toEqual(tabUrl);
+          expect(target).toEqual('_blank');
+        });
+
+        this.class.clickTab({
+          metaKey: false,
+          ctrlKey: false,
+          which: 2,
           stopImmediatePropagation: function () {}
         });
       });
