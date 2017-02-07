@@ -107,7 +107,7 @@ setup-test-env:
   <<: *dedicated-runner
   stage: prepare
   script:
-    - npm install
+    - yarn install
     - bundle exec rake gitlab:assets:compile
     - bundle exec ruby -Ispec -e 'require "spec_helper" ; TestEnv.init'
   artifacts:
@@ -326,7 +326,7 @@ lint:javascript:
   stage: test
   image: "node:7.1"
   script:
-    - npm --silent run eslint
+    - yarn run eslint
 
 lint:javascript:report:
   <<: *dedicated-runner
@@ -337,7 +337,7 @@ lint:javascript:report:
   image: "node:7.1"
   script:
     - find app/ spec/ -name '*.js' -or -name '*.js.es6' -exec sed --in-place 's|/\* eslint-disable .*\*/||' {} \; # run report over all files
-    - npm --silent run eslint-report || true # ignore exit code
+    - yarn run eslint-report || true # ignore exit code
   artifacts:
     name: eslint-report
     expire_in: 31d
