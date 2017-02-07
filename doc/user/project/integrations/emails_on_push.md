@@ -1,7 +1,10 @@
-## Enabling emails on push
+# Enabling emails on push
 
-To receive email notifications for every change that is pushed to the project, visit
-your project's **Settings > Services > Emails on push** and activate the service.
+By enabling this service, you will be able to receive email notifications for
+every change that is pushed to your project.
+
+Navigate to the [Integrations page](project_services.md#accessing-the-project-services)
+and select the **Emails on push** service to configure it.
 
 In the _Recipients_ area, provide a list of emails separated by commas.
 

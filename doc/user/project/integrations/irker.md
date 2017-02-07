@@ -23,11 +23,10 @@ from the GitLab service.
 If the Irker server runs on the same machine, you are done. If not, you will
 need to follow the firsts steps of the next section.
 
-## Complete these steps in GitLab:
+## Complete these steps in GitLab
 
 1. Navigate to the project you want to configure for notifications.
-1. Select "Settings" in the top navigation.
-1. Select "Services" in the left navigation.
+1. Navigate to the [Integrations page](project_services.md#accessing-the-project-services)
 1. Click "Irker".
 1. Select the "Active" checkbox.
 1. Enter the server host address where `irkerd` runs (defaults to `localhost`)
