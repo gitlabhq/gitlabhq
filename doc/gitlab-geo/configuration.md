@@ -139,10 +139,10 @@ sensitive data in the database. Any secondary node must have the
 
      ```
      # Omnibus GitLab installations
-     cat /etc/gitlab/gitlab-secrets.json
+     cat /etc/gitlab/gitlab-secrets.json | grep db_key_base
 
      # Installations from source
-     cat /home/git/gitlab/config/secrets.yml
+     cat /home/git/gitlab/config/secrets.yml | grep db_key_base
      ```
 
 1. SSH into the **secondary** node and login as root:
