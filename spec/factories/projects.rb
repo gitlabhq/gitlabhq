@@ -59,6 +59,18 @@ FactoryGirl.define do
       end
     end
 
+    trait :remote_mirror do
+      transient do
+        sync_time Gitlab::Mirror::HOURLY
+        url "http://foo.com"
+        enabled true
+      end
+
+      after(:create) do |project, evaluator|
+        project.remote_mirrors.create!(url: evaluator.url, enabled: evaluator.enabled, sync_time: evaluator.sync_time)
+      end
+    end
+
     trait :read_only_repository do
       repository_read_only true
     end

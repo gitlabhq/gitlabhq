@@ -7,7 +7,7 @@ There are two kinds of repository mirroring features supported by GitLab:
 to another location, whereas the **pull** method mirrors an external repository
 in one in GitLab.
 
-Mirror repositories are updated every hour, and all new branches, tags, and
+By default mirror repositories are updated every hour, and all new branches, tags, and
 commits will be visible in the project's activity feed.
 
 Users with at least [developer access][perms] to the project can also force an
@@ -51,8 +51,8 @@ whether you want to trigger builds for mirror updates.
 Since the repository on GitLab functions as a mirror of the upstream repository,
 you are advised not to push commits directly to the repository on GitLab.
 Instead, any commits should be pushed to the upstream repository, and will end
-up in the GitLab repository automatically within an hour, or when a
-[forced update](#forcing-an-update) is initiated.
+up in the GitLab repository automatically within your project's configured
+synchronization time, or when a [forced update](#forcing-an-update) is initiated.
 
 If you do manually update a branch in the GitLab repository, the branch will
 become diverged from upstream, and GitLab will no longer automatically update
@@ -72,8 +72,8 @@ repository to push to. Hit **Save changes** for the changes to take effect.
 Similarly to the pull mirroring, since the upstream repository functions as a
 mirror to the repository in GitLab, you are advised not to push commits directly
 to the mirrored repository. Instead, any commits should be pushed to GitLab,
-and will end up in the mirrored repository automatically within an hour, or when
-a [forced update](#forcing-an-update) is initiated.
+and will end up in the mirrored repository automatically within the configured time,
+or when a [forced update](#forcing-an-update) is initiated.
 
 In case of a diverged branch, you will see an error indicated at the
 **Mirror repository** settings.
@@ -82,7 +82,7 @@ In case of a diverged branch, you will see an error indicated at the
 
 ## Forcing an update
 
-While mirrors update once an hour, you can force an update (either **push** or
+While mirrors update at a pre-configured time (hourly by default), you can always force an update (either **push** or
 **pull**) by using the **Update now** button which is exposed in various places:
 
 - in the commits page
@@ -92,22 +92,24 @@ While mirrors update once an hour, you can force an update (either **push** or
 
 ## Adjusting synchronization times
 
-You can adjust the synchronization times for the repository mirroring if you
-have access to the GitLab server. For more information, see
-[the administration documentation][sync-times].
+Your repository's default synchronization time is hourly.
+However, you can adjust it by visiting the **Mirror repository** page
+under the wheel icon in the upper right corner.
+Check the Synchronization time section where you can choose to have your mirror
+be updated once every fifteen minutes, hourly or daily and then hit **Save changes**
+at the bottom.
 
 ## Using both mirroring methods at the same time
 
 Currently there is no bidirectional support without conflicts. That means that
 if you configure a repository to both pull and push to a second one, there is
 no guarantee that it will update correctly on both remotes. You could
-[adjust the synchronization times][sync-times] to a very low value and hope
-that no conflicts occur during the pull/push window time, but that is not a
-solution to consider on a production environment. Another thing you could try
-is [configuring custom Git hooks][hooks] on the GitLab server.
+adjust the synchronization times on the mirror settings page
+to a very low value and hope that no conflicts occur during
+the pull/push window time, but that is not a solution to consider on a
+production environment. Another thing you could try is [configuring custom Git hooks][hooks] on the GitLab server.
 
 
 [ee-51]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/51
 [perms]: ../user/permissions.md
-[sync-times]: ../administration/cron_jobs.md#adjusting-synchronization-times-for-repository-mirroring
 [hooks]: https://docs.gitlab.com/ee/administration/custom_hooks.html

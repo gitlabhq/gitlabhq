@@ -215,6 +215,10 @@ class Project < ActiveRecord::Base
   validates :repository_size_limit,
             numericality: { only_integer: true, greater_than_or_equal_to: 0, allow_nil: true }
 
+  validates :sync_time,
+    presence: true,
+    inclusion: { in: Gitlab::Mirror.sync_time_options.values }
+
   with_options if: :mirror? do |project|
     project.validates :import_url, presence: true
     project.validates :mirror_user, presence: true

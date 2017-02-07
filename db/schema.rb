@@ -1112,6 +1112,7 @@ ActiveRecord::Schema.define(version: 20170204181513) do
     t.text "description_html"
     t.boolean "only_allow_merge_if_all_discussions_are_resolved"
     t.integer "repository_size_limit", limit: 8
+    t.integer "sync_time", default: 60, null: false
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
@@ -1205,6 +1206,7 @@ ActiveRecord::Schema.define(version: 20170204181513) do
     t.string "encrypted_credentials_salt"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "sync_time", default: 60, null: false
   end
 
   add_index "remote_mirrors", ["project_id"], name: "index_remote_mirrors_on_project_id", using: :btree

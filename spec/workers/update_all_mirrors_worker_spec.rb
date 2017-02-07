@@ -7,6 +7,16 @@ describe UpdateAllMirrorsWorker do
   end
 
   describe '#perform' do
+    project_count_with_time = { DateTime.now.beginning_of_hour + 15.minutes => 1,
+                                DateTime.now.beginning_of_hour => 2,
+                                DateTime.now.beginning_of_day => 3
+                              }
+
+    let!(:mirror1) { create(:empty_project, :mirror, sync_time: Gitlab::Mirror::FIFTEEN) }
+    let!(:mirror2) { create(:empty_project, :mirror, sync_time: Gitlab::Mirror::HOURLY) }
+    let!(:mirror3) { create(:empty_project, :mirror, sync_time: Gitlab::Mirror::DAILY) }
+    let(:mirrors) { Project.mirror.where(sync_time: Gitlab::Mirror.sync_times) }
+
     it 'fails stuck mirrors' do
       worker = described_class.new
 
@@ -15,16 +25,24 @@ describe UpdateAllMirrorsWorker do
       worker.perform
     end
 
-    it 'enqueue a job on all mirrored Projects' do
-      worker = described_class.new
+    project_count_with_time.each do |time, project_count|
+      describe "at #{time}" do
+        before do
+          allow(DateTime).to receive(:now).and_return(time)
+        end
 
-      mirror = create(:empty_project, :mirror)
-      create(:empty_project)
+        it 'enqueues a job on mirrored Projects' do
+          worker = described_class.new
 
-      expect(worker).to receive(:rand).with(30.minutes).and_return(10)
-      expect(RepositoryUpdateMirrorDispatchWorker).to receive(:perform_in).with(10, mirror.id)
+          expect(mirrors.count).to eq(project_count)
+          mirrors.each do |mirror|
+            expect(worker).to receive(:rand).with((mirror.sync_time / 2).minutes).and_return(mirror.sync_time / 2)
+            expect(RepositoryUpdateMirrorDispatchWorker).to receive(:perform_in).with(mirror.sync_time / 2, mirror.id)
+          end
 
-      worker.perform
+          worker.perform
+        end
+      end
     end
 
     it 'does not execute if cannot get the lease' do

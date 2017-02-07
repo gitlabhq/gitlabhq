@@ -2,15 +2,15 @@ class UpdateAllMirrorsWorker
   include Sidekiq::Worker
   include CronjobQueue
 
-  LEASE_TIMEOUT = 3600
+  LEASE_TIMEOUT = 840
 
   def perform
     return unless try_obtain_lease
 
     fail_stuck_mirrors!
 
-    Project.mirror.find_each(batch_size: 200) do |project|
-      RepositoryUpdateMirrorDispatchWorker.perform_in(rand(30.minutes), project.id)
+    mirrors_to_sync.find_each(batch_size: 200) do |project|
+      RepositoryUpdateMirrorDispatchWorker.perform_in(rand((project.sync_time / 2).minutes), project.id)
     end
   end
 
@@ -26,8 +26,11 @@ class UpdateAllMirrorsWorker
 
   private
 
+  def mirrors_to_sync
+    Project.mirror.where(sync_time: Gitlab::Mirror.sync_times)
+  end
+
   def try_obtain_lease
-    # Using 30 minutes timeout based on the 95th percent of timings (currently max of 10 minutes)
     lease = ::Gitlab::ExclusiveLease.new("update_all_mirrors", timeout: LEASE_TIMEOUT)
     lease.try_obtain
   end

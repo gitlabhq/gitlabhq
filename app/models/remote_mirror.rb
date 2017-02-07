@@ -12,6 +12,10 @@ class RemoteMirror < ActiveRecord::Base
   belongs_to :project, inverse_of: :remote_mirrors
 
   validates :url, presence: true, url: { protocols: %w(ssh git http https), allow_blank: true }
+  validates :sync_time,
+    presence: true,
+    inclusion: { in: Gitlab::Mirror.sync_time_options.values }
+
   validate  :url_availability, if: -> (mirror) { mirror.url_changed? || mirror.enabled? }
 
   after_save :refresh_remote, if: :mirror_url_changed?

@@ -210,14 +210,6 @@ production: &base
     historical_data_worker:
       cron: "0 12 * * *"
 
-    # Update mirrored repositories
-    update_all_mirrors_worker:
-      cron: "0 * * * *"
-
-    # Update remote mirrors
-    update_all_remote_mirrors_worker:
-      cron: "30 * * * *"
-
     # In addition to refreshing users when they log in,
     # periodically refresh LDAP users membership.
     # NOTE: This will only take effect if LDAP is enabled
