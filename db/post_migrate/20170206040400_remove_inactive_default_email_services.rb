@@ -3,38 +3,27 @@ class RemoveInactiveDefaultEmailServices < ActiveRecord::Migration
 
   DOWNTIME = false
 
+  disable_ddl_transaction!
+
   def up
-    builds_service = spawn <<-SQL.strip_heredoc
-      DELETE FROM services
-        WHERE type = 'BuildsEmailService'
-          AND active IS FALSE
-          AND properties = '{"notify_only_broken_builds":true}';
-    SQL
+    Gitlab::Database::ThreadedConnectionPool.with_pool(2) do |pool|
+      pool.execute_async <<-SQL.strip_heredoc
+        DELETE FROM services
+          WHERE type = 'BuildsEmailService'
+            AND active IS FALSE
+            AND properties = '{"notify_only_broken_builds":true}';
+      SQL
 
-    pipelines_service = spawn <<-SQL.strip_heredoc
-      DELETE FROM services
-        WHERE type = 'PipelinesEmailService'
-          AND active IS FALSE
-          AND properties = '{"notify_only_broken_pipelines":true}';
-    SQL
-
-    [builds_service, pipelines_service].each(&:join)
-  end
-
-  private
-
-  def spawn(query)
-    Thread.new do
-      with_connection do |connection|
-        connection.execute(query)
-      end
+      pool.execute_async <<-SQL.strip_heredoc
+        DELETE FROM services
+          WHERE type = 'PipelinesEmailService'
+            AND active IS FALSE
+            AND properties = '{"notify_only_broken_pipelines":true}';
+      SQL
     end
   end
 
-  def with_connection(&block)
-    pool = ActiveRecord::Base.establish_connection
-    pool.with_connection(&block)
-  ensure
-    pool.disconnect!
+  def down
+    # Nothing can be done to restore the records
   end
 end
