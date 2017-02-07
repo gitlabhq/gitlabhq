@@ -1,6 +1,8 @@
 /*= require vue_common_component/bs_dropdown_menu */
 /* global Vue */
 
+require('../../../vue_common_component/bs_dropdown_menu');
+
 (() => {
   window.gl = window.gl || {};
   window.gl.issueBoards = window.gl.issueBoards || {};

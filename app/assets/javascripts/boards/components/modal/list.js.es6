@@ -1,6 +1,8 @@
 /* global Vue */
 /* global ListIssue */
 /* global bp */
+const issueCardInner = require('../issue_card_inner');
+
 (() => {
   const ModalStore = gl.issueBoards.ModalStore;
 
@@ -108,7 +110,7 @@
       window.removeEventListener('resize', this.setColumnCountWrapper);
     },
     components: {
-      'issue-card-inner': gl.issueBoards.IssueCardInner,
+      issueCardInner,
     },
     template: `
       <section
