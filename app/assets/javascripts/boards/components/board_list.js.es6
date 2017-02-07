@@ -56,11 +56,6 @@ require('./board_new_issue');
         });
       }
     },
-    computed: {
-      orderedIssues () {
-        return _.sortBy(this.issues, 'priority');
-      },
-    },
     methods: {
       listHeight () {
         return this.$refs.list.getBoundingClientRect().height;
@@ -86,9 +81,9 @@ require('./board_new_issue');
       const options = gl.issueBoards.getBoardSortableDefaultOptions({
         scroll: document.querySelectorAll('.boards-list')[0],
         group: 'issues',
-        sort: true,
         disabled: this.disabled,
         filter: '.board-list-count, .is-disabled',
+        dataIdAttr: 'data-issue-id',
         onStart: (e) => {
           const card = this.$refs.issue[e.oldIndex];
 
@@ -106,7 +101,7 @@ require('./board_new_issue');
           });
         },
         onUpdate: (e) => {
-          gl.issueBoards.BoardsStore.moveIssueInList(this.list, Store.moving.issue, e.oldIndex, e.newIndex);
+          gl.issueBoards.BoardsStore.moveIssueInList(this.list, Store.moving.issue, this.sortable.toArray(), e.newIndex);
         },
       });
 

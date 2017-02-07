@@ -110,17 +110,15 @@ class List {
   }
 
   addIssue (issue, listFrom, newIndex) {
-    if (!this.findIssue(issue.id)) {
-      let moveBeforeIid = null;
-      let moveAfterIid = null;
+    let moveBeforeIid;
+    let moveAfterIid;
 
-      if (newIndex !== undefined) {
+    if (!this.findIssue(issue.id)) {
+      if (newIndex) {
         this.issues.splice(newIndex, 0, issue);
 
-        const issueBefore = this.issues[newIndex - 1];
-        if (issueBefore) moveAfterIid = issueBefore.id;
-        const issueAfter = this.issues[newIndex + 1];
-        if (issueAfter) moveBeforeIid = issueAfter.id;
+        moveBeforeIid = this.issues[newIndex - 1].id || null;
+        moveAfterIid = this.issues[newIndex + 1].id || null;
       } else {
         this.issues.push(issue);
       }
@@ -139,18 +137,7 @@ class List {
     }
   }
 
-  moveIssue (issue, oldIndex, newIndex) {
-    let moveBeforeIid = null;
-    let moveAfterIid = null;
-
-    this.issues.splice(oldIndex, 1);
-    this.issues.splice(newIndex, 0, issue);
-
-    const issueBefore = this.issues[newIndex - 1];
-    if (issueBefore) moveAfterIid = issueBefore.id;
-    const issueAfter = this.issues[newIndex + 1];
-    if (issueAfter) moveBeforeIid = issueAfter.id;
-
+  moveIssue (issue, moveBeforeIid, moveAfterIid) {
     gl.boardService.moveIssue(issue.id, null, null, moveAfterIid, moveBeforeIid);
   }
 

@@ -15,6 +15,7 @@ class ListIssue {
     this.labels = [];
     this.selected = false;
     this.assignee = false;
+    this.position = obj.relative_position || Infinity;
 
     if (obj.assignee) {
       this.assignee = new ListUser(obj.assignee);
@@ -27,10 +28,6 @@ class ListIssue {
     obj.labels.forEach((label) => {
       this.labels.push(new ListLabel(label));
     });
-
-    this.priority = this.labels.reduce((max, label) => {
-      return (label.priority < max) ? label.priority : max;
-    }, Infinity);
   }
 
   addLabel (label) {

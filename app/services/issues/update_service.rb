@@ -50,7 +50,7 @@ module Issues
 
     def handle_move_between_iids(issue)
       if move_between_iids = params.delete(:move_between_iids)
-        before_iid, after_iid = move_between_iids
+        after_iid, before_iid = move_between_iids
 
         issue_before = nil
         if before_iid

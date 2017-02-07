@@ -69,7 +69,7 @@ class BoardService {
       from_list_id,
       to_list_id,
       move_before_iid,
-      move_after_iid
+      move_after_iid,
     });
   }
 

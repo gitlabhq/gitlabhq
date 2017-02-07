@@ -106,8 +106,11 @@
         listFrom.removeIssue(issue);
       }
     },
-    moveIssueInList (list, issue, oldIndex, newIndex) {
-      list.moveIssue(issue, oldIndex, newIndex);
+    moveIssueInList (list, issue, idArray, index) {
+      const beforeId = parseInt(idArray[index - 1], 10) || null;
+      const afterId = parseInt(idArray[index + 1], 10) || null;
+
+      list.moveIssue(issue, beforeId, afterId);
     },
     findList (key, val, type = 'label') {
       return this.state.lists.filter((list) => {

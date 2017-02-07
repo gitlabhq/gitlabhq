@@ -28,7 +28,7 @@
     "v-show" => "!loading",
     ":data-board" => "list.id",
     ":class" => '{ "is-smaller": showIssueForm }' }
-    %board-card{ "v-for" => "(issue, index) in orderedIssues",
+    %board-card{ "v-for" => "(issue, index) in issues",
       "ref" => "issue",
       ":index" => "index",
       ":list" => "list",

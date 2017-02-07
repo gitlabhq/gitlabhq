@@ -78,7 +78,7 @@ module RelativePositioning
   def move_before(after)
     pos_after = after.relative_position
     if pos_after
-      self.relative_position = position_between(after.prev_relative_position, pos_after)
+      self.relative_position = position_between(MIN_POSITION, pos_after)
     else
       move_to_end
       after.move_after(self)
@@ -89,7 +89,7 @@ module RelativePositioning
   def move_after(before)
     pos_before = before.relative_position
     if pos_before
-      self.relative_position = position_between(pos_before, before.next_relative_position)
+      self.relative_position = position_between(pos_before, MAX_POSITION)
     else
       move_to_end
       before.move_before(self)
