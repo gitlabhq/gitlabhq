@@ -254,7 +254,7 @@
           new gl.ProtectedBranchCreate();
           new gl.ProtectedBranchEditList();
           break;
-        case 'projects:variables:index':
+        case 'projects:ci_cd:show':
           new gl.ProjectVariables();
           break;
         case 'ci:lints:create':

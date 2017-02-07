@@ -1,5 +1,3 @@
-- page_title "Runners"
-
 .light.prepend-top-default
   %p
     A 'Runner' is a process which runs a job.
@@ -22,6 +20,6 @@
 %p.lead To start serving your jobs you can either add specific Runners to your project or use shared Runners
 .row
   .col-sm-6
-    = render 'specific_runners'
+    = render 'projects/runners/specific_runners'
   .col-sm-6
-    = render 'shared_runners'
+    = render 'projects/runners/shared_runners'

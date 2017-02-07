@@ -1,9 +1,7 @@
-- page_title "CI/CD Pipelines"
-
 .row.prepend-top-default
   .col-lg-3.profile-settings-sidebar
     %h4.prepend-top-0
-      = page_title
+      CI/CD Pipelines
   .col-lg-9
     = form_for @project, url: namespace_project_pipelines_settings_path(@project.namespace.becomes(Namespace), @project) do |f|
       %fieldset.builds-feature
@@ -95,4 +93,4 @@
 %hr
 
 .row.prepend-top-default
-  = render partial: 'badge', collection: @badges
+  = render partial: 'projects/pipelines_settings/badge', collection: @badges
