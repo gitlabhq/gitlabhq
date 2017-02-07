@@ -16,17 +16,17 @@ describe EnvironmentsFinder do
       end
 
       it 'returns environment when with_tags is set' do
-        expect(EnvironmentsFinder.new(project, user, ref: 'master', commit: project.commit, with_tags: true).execute)
+        expect(described_class.new(project, user, ref: 'master', commit: project.commit, with_tags: true).execute)
           .to contain_exactly(environment)
       end
 
       it 'does not return environment when no with_tags is set' do
-        expect(EnvironmentsFinder.new(project, user, ref: 'master', commit: project.commit).execute)
+        expect(described_class.new(project, user, ref: 'master', commit: project.commit).execute)
           .to be_empty
       end
 
       it 'does not return environment when commit is not part of deployment' do
-        expect(EnvironmentsFinder.new(project, user, ref: 'master', commit: project.commit('feature')).execute)
+        expect(described_class.new(project, user, ref: 'master', commit: project.commit('feature')).execute)
           .to be_empty
       end
     end
@@ -37,22 +37,22 @@ describe EnvironmentsFinder do
       end
 
       it 'returns environment when ref is set' do
-        expect(EnvironmentsFinder.new(project, user, ref: 'master', commit: project.commit).execute)
+        expect(described_class.new(project, user, ref: 'master', commit: project.commit).execute)
           .to contain_exactly(environment)
       end
 
       it 'does not environment when ref is different' do
-        expect(EnvironmentsFinder.new(project, user, ref: 'feature', commit: project.commit).execute)
+        expect(described_class.new(project, user, ref: 'feature', commit: project.commit).execute)
           .to be_empty
       end
 
       it 'does not return environment when commit is not part of deployment' do
-        expect(EnvironmentsFinder.new(project, user, ref: 'master', commit: project.commit('feature')).execute)
+        expect(described_class.new(project, user, ref: 'master', commit: project.commit('feature')).execute)
           .to be_empty
       end
 
       it 'returns environment when commit constraint is not set' do
-        expect(EnvironmentsFinder.new(project, user, ref: 'master').execute)
+        expect(described_class.new(project, user, ref: 'master').execute)
           .to contain_exactly(environment)
       end
     end
@@ -63,7 +63,7 @@ describe EnvironmentsFinder do
       end
 
       it 'returns environment' do
-        expect(EnvironmentsFinder.new(project, user, commit: project.commit).execute)
+        expect(described_class.new(project, user, commit: project.commit).execute)
           .to contain_exactly(environment)
       end
     end
@@ -75,7 +75,7 @@ describe EnvironmentsFinder do
         end
 
         it 'finds recently updated environment' do
-          expect(EnvironmentsFinder.new(project, user, ref: 'feature', recently_updated: true).execute)
+          expect(described_class.new(project, user, ref: 'feature', recently_updated: true).execute)
             .to contain_exactly(environment)
         end
       end
@@ -87,7 +87,7 @@ describe EnvironmentsFinder do
         end
 
         it 'does not find environment' do
-          expect(EnvironmentsFinder.new(project, user, ref: 'feature', recently_updated: true).execute)
+          expect(described_class.new(project, user, ref: 'feature', recently_updated: true).execute)
             .to be_empty
         end
       end
@@ -101,7 +101,7 @@ describe EnvironmentsFinder do
         end
 
         it 'finds both environments' do
-          expect(EnvironmentsFinder.new(project, user, ref: 'feature', recently_updated: true).execute)
+          expect(described_class.new(project, user, ref: 'feature', recently_updated: true).execute)
             .to contain_exactly(environment, second_environment)
         end
       end
