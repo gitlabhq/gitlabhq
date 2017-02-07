@@ -7,7 +7,9 @@ class StuckCiBuildsWorker
   BUILD_PENDING_STUCK_TIMEOUT = 1.hour
 
   def perform
-    Rails.logger.info 'Cleaning stuck builds'
+    return unless try_obtain_lease
+
+    Rails.logger.info "#{self.class}: Cleaning stuck builds"
 
     drop       :running, BUILD_RUNNING_OUTDATED_TIMEOUT
     drop       :pending, BUILD_PENDING_OUTDATED_TIMEOUT
@@ -15,6 +17,13 @@ class StuckCiBuildsWorker
   end
 
   private
+
+  def try_obtain_lease
+    Gitlab::ExclusiveLease.new(
+      'stuck_ci_builds_worker_lease',
+      timeout: 30.minutes
+    ).try_obtain
+  end
 
   def drop(status, timeout)
     search(status, timeout) do |build|
@@ -37,7 +46,7 @@ class StuckCiBuildsWorker
   end
 
   def drop_build(type, build, status, timeout)
-    Rails.logger.info "#{self.class}: Dropping #{type.to_s} build #{build.id} for runner #{build.runner_id} (status: #{status}, timeout: #{timeout})"
+    Rails.logger.info "#{self.class}: Dropping #{type} build #{build.id} for runner #{build.runner_id} (status: #{status}, timeout: #{timeout})"
     build.drop
   end
 end

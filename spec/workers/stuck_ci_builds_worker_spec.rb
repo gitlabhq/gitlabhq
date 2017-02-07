@@ -10,7 +10,10 @@ describe StuckCiBuildsWorker do
     build.status
   end
 
-  before { build.update!(status: status, updated_at: updated_at) }
+  before do
+    build.update!(status: status, updated_at: updated_at)
+    allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).and_return(true)
+  end
 
   shared_examples 'build is dropped' do
     it 'changes status' do
@@ -93,6 +96,18 @@ describe StuckCiBuildsWorker do
 
     it 'does not drop build' do
       expect_any_instance_of(Ci::Build).not_to receive(:drop)
+      worker.perform
+    end
+  end
+
+  describe 'exclusive lease' do
+    let(:status) { 'running' }
+    let(:updated_at) { 2.days.ago }
+
+    it 'is guard by exclusive lease' do
+      worker.perform
+      allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).and_return(false)
+      expect(worker).not_to receive(:drop)
       worker.perform
     end
   end
