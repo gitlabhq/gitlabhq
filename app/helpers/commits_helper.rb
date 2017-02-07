@@ -194,7 +194,7 @@ module CommitsHelper
     end
   end
 
-  def view_file_btn(commit_sha, diff_new_path, project)
+  def view_file_button(commit_sha, diff_new_path, project)
     link_to(
       namespace_project_blob_path(project.namespace, project,
                                   tree_join(commit_sha, diff_new_path)),
@@ -205,7 +205,7 @@ module CommitsHelper
     end
   end
 
-  def view_on_environment_btn(commit_sha, diff_new_path, environment)
+  def view_on_environment_button(commit_sha, diff_new_path, environment)
     return unless environment && commit_sha
 
     external_url = environment.external_url_for(diff_new_path, commit_sha)

@@ -95,9 +95,8 @@ class Projects::CommitController < Projects::ApplicationController
 
     @diffs = commit.diffs(opts)
     @notes_count = commit.notes.count
-
-    @environment = @project.environments_for(commit: @commit).last
-    @environment = nil unless can?(current_user, :read_environment, @environment)
+    
+    @environment = EnvironmentsFinder.new(@project, current_user, commit: @commit).execute.last
   end
 
   def define_note_vars

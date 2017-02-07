@@ -5,11 +5,11 @@ describe 'View on environment', js: true do
 
   let(:branch_name) { 'feature' }
   let(:file_path) { 'files/ruby/feature.rb' }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:user) { project.creator }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
   end
 
   context 'when the branch has a route map' do
@@ -24,7 +24,7 @@ describe 'View on environment', js: true do
       Files::CreateService.new(
         project,
         user,
-        source_branch: branch_name,
+        start_branch: branch_name,
         target_branch: branch_name,
         commit_message: "Add .gitlab/route-map.yml",
         file_path: '.gitlab/route-map.yml',
@@ -35,7 +35,7 @@ describe 'View on environment', js: true do
       Files::UpdateService.new(
         project,
         user,
-        source_branch: branch_name,
+        start_branch: branch_name,
         target_branch: branch_name,
         commit_message: "Update feature",
         file_path: file_path,

@@ -41,9 +41,6 @@ class Repository
     avatar: :avatar
   }
 
-  ROUTE_MAP_PATH = '.gitlab/route-map.yml'
-  GITLAB_CI_YML_PATH = '.gitlab-ci.yml'
-
   # Wraps around the given method and caches its output in Redis and an instance
   # variable.
   #
@@ -1318,6 +1315,14 @@ class Repository
     end
   end
 
+  def route_map_for(sha)
+    blob_data_at(sha, '.gitlab/route-map.yml')
+  end
+
+  def gitlab_ci_yml_for(sha)
+    blob_data_at(sha, '.gitlab-ci.yml')
+  end
+
   protected
 
   def tree_entry_at(branch_name, path)
@@ -1342,23 +1347,15 @@ class Repository
     end
   end
 
-  def route_map_for(sha)
-    blob = blob_at(sha, ROUTE_MAP_PATH)
-    return unless blob
-
-    blob.load_all_data!(self)
-    blob.data
-  end
-
-  def gitlab_ci_yml_for(sha)
-    blob = blob_at(sha, GITLAB_CI_YML_PATH)
-    return unless blob
-
-    blob.load_all_data!(self)
-    blob.data
-  end
-
   private
+
+  def blob_data_at(sha, path)
+    blob = blob_at(sha, path)
+    return unless blob
+
+    blob.load_all_data!(self)
+    blob.data
+  end
 
   def git_action(index, action)
     path = normalize_path(action[:file_path])

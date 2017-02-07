@@ -22,8 +22,8 @@ module Ci
     end
 
     def environments
-      @environments ||= project
-        .environments_recently_updated_on_branch(@ref)
+      @environments ||=
+        EnvironmentsFinder.new(project, nil, ref: @ref, recently_updated: true).execute(skip_authorization: true)
     end
   end
 end

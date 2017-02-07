@@ -14,7 +14,7 @@
             = edit_blob_link(@merge_request.source_project, @merge_request.source_branch, diff_file.new_path,
                              blob: blob, link_opts: link_opts)
 
-        = view_file_btn(diff_commit.id, diff_file.new_path, project)
-        = view_on_environment_btn(diff_commit.id, diff_file.new_path, environment) if environment
+        = view_file_button(diff_commit.id, diff_file.new_path, project)
+        = view_on_environment_button(diff_commit.id, diff_file.new_path, environment) if environment
 
   = render 'projects/diffs/content', diff_file: diff_file, diff_commit: diff_commit, blob: blob, project: project

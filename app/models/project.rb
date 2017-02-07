@@ -1543,37 +1543,6 @@ class Project < ActiveRecord::Base
        size_in_bytes + repository_and_lfs_size > actual_size_limit)
   end
 
-  def environments_for(ref: nil, commit: nil, with_tags: false)
-    deps =
-      if ref
-        deployments_query = with_tags ? 'ref = ? OR tag IS TRUE' : 'ref = ?'
-        deployments.where(deployments_query, ref.to_s)
-      elsif commit
-        deployments.where(sha: commit.sha)
-      else
-        Deployment.none
-      end
-
-    environment_ids = deps
-      .group(:environment_id)
-      .select(:environment_id)
-
-    environments_found = environments.available
-      .where(id: environment_ids).order_by_last_deployed_at.to_a
-
-    return environments_found unless ref && commit
-
-    environments_found.select do |environment|
-      environment.includes_commit?(commit)
-    end
-  end
-
-  def environments_recently_updated_on_branch(branch)
-    environments_for(ref: branch).select do |environment|
-      environment.recently_updated_on_branch?(branch)
-    end
-  end
-
   def route_map_for(commit_sha)
     @route_maps_by_commit ||= Hash.new do |h, sha|
       h[sha] = begin
