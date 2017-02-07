@@ -56,10 +56,8 @@ feature 'Environments page', :feature, :js do
       context 'for available environment' do
         given(:environment) { create(:environment, project: project, state: :available) }
 
-        scenario 'does allow to stop environment' do
-          click_link('Stop')
-
-          expect(page).to have_content(environment.name.titleize)
+        scenario 'does not shows stop button' do
+          expect(page).not_to have_selector('.stop-env-link')
         end
       end
 
@@ -67,7 +65,7 @@ feature 'Environments page', :feature, :js do
         given(:environment) { create(:environment, project: project, state: :stopped) }
 
         scenario 'does not shows stop button' do
-          expect(page).not_to have_link('Stop')
+          expect(page).not_to have_selector('.stop-env-link')
         end
       end
     end
@@ -184,14 +182,6 @@ feature 'Environments page', :feature, :js do
 
             scenario 'does not show terminal button' do
               expect(page).not_to have_terminal_button
-            end
-          end
-
-          context 'whitout stop action' do
-            scenario 'does allow to stop environment' do
-              click_link('Stop')
-
-              expect(page).to have_content(environment.name.capitalize)
             end
           end
         end
