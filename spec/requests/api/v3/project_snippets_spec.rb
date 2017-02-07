@@ -7,6 +7,18 @@ describe API::ProjectSnippets, api: true do
   let(:user) { create(:user) }
   let(:admin) { create(:admin) }
 
+  describe 'GET /projects/:project_id/snippets/:id' do
+    # TODO (rspeicher): Deprecated; remove in 9.0
+    it 'always exposes expires_at as nil' do
+      snippet = create(:project_snippet, author: admin)
+
+      get v3_api("/projects/#{snippet.project.id}/snippets/#{snippet.id}", admin)
+
+      expect(json_response).to have_key('expires_at')
+      expect(json_response['expires_at']).to be_nil
+    end
+  end
+
   describe 'GET /projects/:project_id/snippets/' do
     let(:user) { create(:user) }
 
@@ -16,7 +28,7 @@ describe API::ProjectSnippets, api: true do
       internal_snippet = create(:project_snippet, :internal, project: project)
       private_snippet = create(:project_snippet, :private, project: project)
 
-      get api("/projects/#{project.id}/snippets/", user)
+      get v3_api("/projects/#{project.id}/snippets/", user)
 
       expect(response).to have_http_status(200)
       expect(json_response.size).to eq(3)
@@ -27,7 +39,7 @@ describe API::ProjectSnippets, api: true do
     it 'hides private snippets from regular user' do
       create(:project_snippet, :private, project: project)
 
-      get api("/projects/#{project.id}/snippets/", user)
+      get v3_api("/projects/#{project.id}/snippets/", user)
       expect(response).to have_http_status(200)
       expect(json_response.size).to eq(0)
     end
@@ -44,7 +56,7 @@ describe API::ProjectSnippets, api: true do
     end
 
     it 'creates a new snippet' do
-      post api("/projects/#{project.id}/snippets/", admin), params
+      post v3_api("/projects/#{project.id}/snippets/", admin), params
 
       expect(response).to have_http_status(201)
       snippet = ProjectSnippet.find(json_response['id'])
@@ -57,7 +69,7 @@ describe API::ProjectSnippets, api: true do
     it 'returns 400 for missing parameters' do
       params.delete(:title)
 
-      post api("/projects/#{project.id}/snippets/", admin), params
+      post v3_api("/projects/#{project.id}/snippets/", admin), params
 
       expect(response).to have_http_status(400)
     end
@@ -66,7 +78,7 @@ describe API::ProjectSnippets, api: true do
       def create_snippet(project, snippet_params = {})
         project.add_developer(user)
 
-        post api("/projects/#{project.id}/snippets", user), params.merge(snippet_params)
+        post v3_api("/projects/#{project.id}/snippets", user), params.merge(snippet_params)
       end
 
       before do
@@ -114,7 +126,7 @@ describe API::ProjectSnippets, api: true do
     it 'updates snippet' do
       new_content = 'New content'
 
-      put api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/", admin), code: new_content
+      put v3_api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/", admin), code: new_content
 
       expect(response).to have_http_status(200)
       snippet.reload
@@ -122,14 +134,14 @@ describe API::ProjectSnippets, api: true do
     end
 
     it 'returns 404 for invalid snippet id' do
-      put api("/projects/#{snippet.project.id}/snippets/1234", admin), title: 'foo'
+      put v3_api("/projects/#{snippet.project.id}/snippets/1234", admin), title: 'foo'
 
       expect(response).to have_http_status(404)
       expect(json_response['message']).to eq('404 Snippet Not Found')
     end
 
     it 'returns 400 for missing parameters' do
-      put api("/projects/#{project.id}/snippets/1234", admin)
+      put v3_api("/projects/#{project.id}/snippets/1234", admin)
 
       expect(response).to have_http_status(400)
     end
@@ -142,13 +154,13 @@ describe API::ProjectSnippets, api: true do
       admin = create(:admin)
       snippet = create(:project_snippet, author: admin)
 
-      delete api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/", admin)
+      delete v3_api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/", admin)
 
       expect(response).to have_http_status(200)
     end
 
     it 'returns 404 for invalid snippet id' do
-      delete api("/projects/#{snippet.project.id}/snippets/1234", admin)
+      delete v3_api("/projects/#{snippet.project.id}/snippets/1234", admin)
 
       expect(response).to have_http_status(404)
       expect(json_response['message']).to eq('404 Snippet Not Found')
@@ -159,7 +171,7 @@ describe API::ProjectSnippets, api: true do
     let(:snippet) { create(:project_snippet, author: admin) }
 
     it 'returns raw text' do
-      get api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/raw", admin)
+      get v3_api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/raw", admin)
 
       expect(response).to have_http_status(200)
       expect(response.content_type).to eq 'text/plain'
@@ -167,7 +179,7 @@ describe API::ProjectSnippets, api: true do
     end
 
     it 'returns 404 for invalid snippet id' do
-      delete api("/projects/#{snippet.project.id}/snippets/1234", admin)
+      delete v3_api("/projects/#{snippet.project.id}/snippets/1234", admin)
 
       expect(response).to have_http_status(404)
       expect(json_response['message']).to eq('404 Snippet Not Found')
