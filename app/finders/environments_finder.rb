@@ -24,6 +24,10 @@ class EnvironmentsFinder
     environments = project.environments.available
       .where(id: environment_ids).order_by_last_deployed_at.to_a
 
+    environments.select! do |environment|
+      Ability.allowed?(current_user, :read_environment, environment)
+    end
+
     if ref && commit
       environments.select! do |environment|
         environment.includes_commit?(commit)
@@ -36,9 +40,7 @@ class EnvironmentsFinder
       end
     end
 
-    environments.select do |environment|
-      Ability.allowed?(current_user, :read_environment, environment)
-    end
+    environments
   end
 
   private
