@@ -1,18 +1,17 @@
 /* global pipeline, Vue */
 
-require('vue-resource');
-require('flash');
+require('~/flash');
 require('~/commit/pipelines/pipelines_store');
 require('~/commit/pipelines/pipelines_service');
 require('~/commit/pipelines/pipelines_table');
-require('~vue_shared/vue_resource_interceptor');
-require('./mock_data');
+require('~/vue_shared/vue_resource_interceptor');
+const pipeline = require('./mock_data');
 
 describe('Pipelines table in Commits and Merge requests', () => {
-  preloadFixtures('pipelines_table');
+  preloadFixtures('static/pipelines_table.html.raw');
 
   beforeEach(() => {
-    loadFixtures('pipelines_table');
+    loadFixtures('static/pipelines_table.html.raw');
   });
 
   describe('successfull request', () => {
