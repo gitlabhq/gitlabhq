@@ -72,4 +72,4 @@ When these headers are not passed through, Workhorse will return a
 they will receive a `Connection failed` message.
 
 [ce-7690]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7690
-[kubservice]: ../../user/project/integrations/kubernetes.md)
+[kubservice]: ../../user/project/integrations/kubernetes.md

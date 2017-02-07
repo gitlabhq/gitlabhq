@@ -206,7 +206,7 @@ Sign in and re-enable two-factor authentication as soon as possible.
 ## Note to GitLab administrators
 
 - You need to take special care to that 2FA keeps working after
-[restoring a GitLab backup](../raketasks/backup_restore.md).
+[restoring a GitLab backup](../../../raketasks/backup_restore.md).
 
 - To ensure 2FA authorizes correctly with TOTP server, you may want to ensure
 your GitLab server's time is synchronized via a service like NTP.  Otherwise,
