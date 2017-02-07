@@ -9,7 +9,7 @@
         = image_tag avatar_icon(note.author), alt: '', class: 'avatar s40'
     .timeline-content
       .note-header
-        %a{ href: user_path(note.author), class: 'visible-xs' }
+        %a.visible-xs{ href: user_path(note.author) }
           = note.author.to_reference
         = link_to_member(note.project, note.author, avatar: false, extra_class: 'hidden-xs')
         .note-headline-light
