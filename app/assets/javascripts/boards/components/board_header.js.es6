@@ -1,3 +1,4 @@
+/* global Vue */
 const boardDelete = require('./board_delete');
 
 module.exports = Vue.extend({
@@ -48,11 +49,11 @@ module.exports = Vue.extend({
     boardDelete,
   },
   props: [
-    'disabled', 'list', 'canAdminList', 'canAdminIssue'
+    'disabled', 'list', 'canAdminList', 'canAdminIssue',
   ],
   methods: {
     showNewIssueForm() {
       this.$parent.$refs['board-list'].showIssueForm = !this.$parent.$refs['board-list'].showIssueForm;
-    }
+    },
   },
 });

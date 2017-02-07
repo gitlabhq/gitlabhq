@@ -5,6 +5,7 @@
 const boardBlankState = require('./board_blank_state');
 const boardList = require('./board_list');
 const boardHeader = require('./board_header');
+
 const Store = gl.issueBoards.BoardsStore;
 
 module.exports = Vue.extend({

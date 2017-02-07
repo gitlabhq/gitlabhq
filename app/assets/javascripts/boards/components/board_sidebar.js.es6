@@ -7,6 +7,7 @@
 
 const removeBtn = require('./sidebar/remove_issue');
 require('./sidebar/assignee');
+
 const Store = gl.issueBoards.BoardsStore;
 
 module.exports = Vue.extend({

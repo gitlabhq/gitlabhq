@@ -4,6 +4,7 @@
 
 const boardCard = require('./board_card');
 const boardNewIssue = require('./board_new_issue');
+
 const Store = gl.issueBoards.BoardsStore;
 
 module.exports = Vue.extend({

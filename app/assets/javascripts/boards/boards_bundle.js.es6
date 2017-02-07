@@ -12,7 +12,7 @@ requireAll(require.context('./stores',   true, /^\.\/.*\.(js|es6)$/));
 requireAll(require.context('./services', true, /^\.\/.*\.(js|es6)$/));
 requireAll(require.context('./mixins',   true, /^\.\/.*\.(js|es6)$/));
 requireAll(require.context('./filters',  true, /^\.\/.*\.(js|es6)$/));
-const board = require('./components/board');
+const boardComponent = require('./components/board');
 const boardSidebar = require('./components/board_sidebar');
 require('./components/new_list_dropdown');
 require('./components/modal/index');
@@ -34,7 +34,7 @@ $(() => {
   gl.IssueBoardsApp = new Vue({
     el: $boardApp,
     components: {
-      board,
+      board: boardComponent,
       boardSidebar,
       'board-add-issues-modal': gl.issueBoards.IssuesModal,
     },

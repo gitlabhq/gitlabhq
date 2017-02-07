@@ -90,7 +90,7 @@ require('../../../vue_common_component/bs_dropdown_menu');
     ],
     computed: {
       assigneeUrl() {
-        return `${gon.relative_url_root}/${this.issue.assignee.username}`
+        return `${gon.relative_url_root}/${this.issue.assignee.username}`;
       },
       currentUsername() {
         return this.currentUser.username || false;

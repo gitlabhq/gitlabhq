@@ -2,6 +2,7 @@
 /* global Vue */
 
 const issueCardInner = require('./issue_card_inner');
+
 const Store = gl.issueBoards.BoardsStore;
 
 module.exports = Vue.extend({

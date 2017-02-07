@@ -1,3 +1,4 @@
+/* global Vue */
 (() => {
   Vue.component('bs-dropdown-menu', {
     props: {
@@ -69,5 +70,5 @@
         return classNamesObject;
       },
     },
-  })
+  });
 })();
