@@ -1,12 +1,8 @@
 class AddColumnGhostToUsers < ActiveRecord::Migration
-  include Gitlab::Database::MigrationHelpers
-
   DOWNTIME = false
 
-  disable_ddl_transaction!
-
   def up
-    add_column_with_default :users, :ghost, :boolean, default: false, allow_null: false
+    add_column :users, :ghost, :boolean
   end
 
   def down
