@@ -69,6 +69,9 @@
       var hash = w.gl.utils.getLocationHash();
       if (!hash) return;
 
+      // This is required to handle non-unicode characters in hash
+      hash = decodeURIComponent(hash);
+
       var navbar = document.querySelector('.navbar-gitlab');
       var subnav = document.querySelector('.layout-nav');
       var fixedTabs = document.querySelector('.js-tabs-affix');
