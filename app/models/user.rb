@@ -912,11 +912,11 @@ class User < ActiveRecord::Base
   end
 
   def access_level=(new_level)
-   new_level = new_level.to_s
-   return unless %w(admin regular).include?(new_level)
+    new_level = new_level.to_s
+    return unless %w(admin regular).include?(new_level)
 
-   self.admin = (new_level == 'admin')
- end
+    self.admin = (new_level == 'admin')
+  end
 
   private
 
