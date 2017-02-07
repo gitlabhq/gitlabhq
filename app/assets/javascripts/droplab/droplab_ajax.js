@@ -78,8 +78,8 @@ require('../window')(function(w){
     },
 
     destroy: function() {
-      if (this.listTemplate) {
-        var dynamicList = this.hook.list.list.querySelector('[data-dynamic]');
+      var dynamicList = this.hook.list.list.querySelector('[data-dynamic]');
+      if (this.listTemplate && dynamicList) {
         dynamicList.outerHTML = this.listTemplate;
       }
     }
