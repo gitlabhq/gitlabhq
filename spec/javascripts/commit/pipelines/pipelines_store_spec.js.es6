@@ -1,10 +1,10 @@
-require('~commit/pipelines/pipelines_store');
+require('~/commit/pipelines/pipelines_store');
 
 describe('Store', () => {
-  const store = gl.commits.pipelines.PipelinesStore;
+  let store;
 
   beforeEach(() => {
-    store.create();
+    store = new gl.commits.pipelines.PipelinesStore();
   });
 
   it('should start with a blank state', () => {
@@ -23,7 +23,7 @@ describe('Store', () => {
       },
     ];
 
-    store.store(pipelines);
+    store.storePipelines(pipelines);
 
     expect(store.state.pipelines.length).toBe(pipelines.length);
   });
