@@ -5,7 +5,7 @@ class EnvironmentsFinder
     @project, @current_user, @params = project, current_user, params
   end
 
-  def execute(skip_authorization: false)
+  def execute
     deployments = project.deployments
     deployments =
       if ref
@@ -36,13 +36,9 @@ class EnvironmentsFinder
       end
     end
 
-    unless skip_authorization
-      environments.select! do |environment|
-        Ability.allowed?(current_user, :read_environment, environment)
-      end
+    environments.select do |environment|
+      Ability.allowed?(current_user, :read_environment, environment)
     end
-
-    environments
   end
 
   private
