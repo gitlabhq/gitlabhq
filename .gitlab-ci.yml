@@ -246,7 +246,6 @@ karma:
   <<: *use-db
   <<: *dedicated-runner
   script:
-    - npm link istanbul
     - bundle exec rake karma
   artifacts:
     name: coverage-javascript
@@ -326,8 +325,6 @@ lint:javascript:
       - node_modules/
   stage: test
   image: "node:7.1"
-  before_script:
-    - npm install
   script:
     - npm --silent run eslint
 
@@ -338,8 +335,6 @@ lint:javascript:report:
       - node_modules/
   stage: post-test
   image: "node:7.1"
-  before_script:
-    - npm install
   script:
     - find app/ spec/ -name '*.js' -or -name '*.js.es6' -exec sed --in-place 's|/\* eslint-disable .*\*/||' {} \; # run report over all files
     - npm --silent run eslint-report || true # ignore exit code
