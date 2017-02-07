@@ -102,12 +102,10 @@ require('./flash');
     }
 
     clickTab(e) {
-      if (e.target) {
+      if (e.target && gl.utils.isMetaClick(e)) {
         const targetLink = e.target.getAttribute('href');
-        if (gl.utils.isMetaClick(e)) {
-          e.stopImmediatePropagation();
-          window.open(targetLink, '_blank');
-        }
+        e.stopImmediatePropagation();
+        window.open(targetLink, '_blank');
       }
     }
 
