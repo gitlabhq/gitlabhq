@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170206071414) do
+ActiveRecord::Schema.define(version: 20170206101030) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1341,8 +1341,8 @@ ActiveRecord::Schema.define(version: 20170206071414) do
   add_foreign_key "protected_branch_merge_access_levels", "protected_branches"
   add_foreign_key "protected_branch_push_access_levels", "protected_branches"
   add_foreign_key "subscriptions", "projects", on_delete: :cascade
-  add_foreign_key "timelogs", "issues", on_delete: :cascade
-  add_foreign_key "timelogs", "merge_requests", on_delete: :cascade
+  add_foreign_key "timelogs", "issues", name: "fk_timelogs_issues_issue_id", on_delete: :cascade
+  add_foreign_key "timelogs", "merge_requests", name: "fk_timelogs_merge_requests_merge_request_id", on_delete: :cascade
   add_foreign_key "trending_projects", "projects", on_delete: :cascade
   add_foreign_key "u2f_registrations", "users"
 end
