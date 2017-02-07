@@ -112,8 +112,8 @@ describe Environment, models: true do
     end
   end
 
-  describe '#stoppable?' do
-    subject { environment.stoppable? }
+  describe '#stop_action?' do
+    subject { environment.stop_action? }
 
     context 'when no other actions' do
       it { is_expected.to be_falsey }
