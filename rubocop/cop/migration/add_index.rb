@@ -5,7 +5,7 @@ module RuboCop
       class AddIndex < RuboCop::Cop::Cop
         include MigrationHelpers
 
-        MSG = 'add_index requires downtime, use add_concurrent_index instead'
+        MSG = '`add_index` requires downtime, use `add_concurrent_index` instead'
 
         def on_def(node)
           return unless in_migration?(node)
