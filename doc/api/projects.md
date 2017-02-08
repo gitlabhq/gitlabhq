@@ -644,7 +644,6 @@ Parameters:
 | `snippets_enabled` | boolean | no | Enable snippets for this project |
 | `container_registry_enabled` | boolean | no | Enable container registry for this project |
 | `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
-| `public` | boolean | no | If `true`, the same as setting `visibility_level` to 20 |
 | `visibility_level` | integer | no | See [project visibility level](#project-visibility-level) |
 | `import_url` | string | no | URL to import repository from |
 | `public_builds` | boolean | no | If `true`, builds can be viewed by non-project-members |
@@ -679,7 +678,6 @@ Parameters:
 | `snippets_enabled` | boolean | no | Enable snippets for this project |
 | `container_registry_enabled` | boolean | no | Enable container registry for this project |
 | `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
-| `public` | boolean | no | If `true`, the same as setting `visibility_level` to 20 |
 | `visibility_level` | integer | no | See [project visibility level](#project-visibility-level) |
 | `import_url` | string | no | URL to import repository from |
 | `public_builds` | boolean | no | If `true`, builds can be viewed by non-project-members |
@@ -714,7 +712,6 @@ Parameters:
 | `snippets_enabled` | boolean | no | Enable snippets for this project |
 | `container_registry_enabled` | boolean | no | Enable container registry for this project |
 | `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
-| `public` | boolean | no | If `true`, the same as setting `visibility_level` to 20 |
 | `visibility_level` | integer | no | See [project visibility level](#project-visibility-level) |
 | `import_url` | string | no | URL to import repository from |
 | `public_builds` | boolean | no | If `true`, builds can be viewed by non-project-members |

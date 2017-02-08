@@ -16,7 +16,6 @@ module API
         optional :shared_runners_enabled, type: Boolean, desc: 'Flag indication if shared runners are enabled for that project'
         optional :container_registry_enabled, type: Boolean, desc: 'Flag indication if the container registry is enabled for that project'
         optional :lfs_enabled, type: Boolean, desc: 'Flag indication if Git LFS is enabled for that project'
-        optional :public, type: Boolean, desc: 'Create a public project. The same as visibility_level = 20.'
         optional :visibility_level, type: Integer, values: [
           Gitlab::VisibilityLevel::PRIVATE,
           Gitlab::VisibilityLevel::INTERNAL,
@@ -29,16 +28,6 @@ module API
         # EE-specific
         optional :repository_storage, type: String, desc: 'Which storage shard the repository is on. Available only to admins'
         optional :approvals_before_merge, type: Integer, desc: 'How many approvers should approve merge request by default'
-      end
-
-      def map_public_to_visibility_level(attrs)
-        publik = attrs.delete(:public)
-        if !publik.nil? && !attrs[:visibility_level].present?
-          # Since setting the public attribute to private could mean either
-          # private or internal, use the more conservative option, private.
-          attrs[:visibility_level] = (publik == true) ? Gitlab::VisibilityLevel::PUBLIC : Gitlab::VisibilityLevel::PRIVATE
-        end
-        attrs
       end
     end
 
@@ -165,7 +154,7 @@ module API
         use :create_params
       end
       post do
-        attrs = map_public_to_visibility_level(declared_params(include_missing: false))
+        attrs = declared_params(include_missing: false)
         project = ::Projects::CreateService.new(current_user, attrs).execute
 
         if project.saved?
@@ -194,7 +183,7 @@ module API
         user = User.find_by(id: params.delete(:user_id))
         not_found!('User') unless user
 
-        attrs = map_public_to_visibility_level(declared_params(include_missing: false))
+        attrs = declared_params(include_missing: false)
         project = ::Projects::CreateService.new(user, attrs).execute
 
         if project.saved?
@@ -272,7 +261,7 @@ module API
         at_least_one_of :name, :description, :issues_enabled, :merge_requests_enabled,
                         :wiki_enabled, :builds_enabled, :snippets_enabled,
                         :shared_runners_enabled, :container_registry_enabled,
-                        :lfs_enabled, :public, :visibility_level, :public_builds,
+                        :lfs_enabled, :visibility_level, :public_builds,
                         :request_access_enabled, :only_allow_merge_if_build_succeeds,
                         :only_allow_merge_if_all_discussions_are_resolved, :path,
                         :default_branch,
@@ -281,7 +270,7 @@ module API
       end
       put ':id' do
         authorize_admin_project
-        attrs = map_public_to_visibility_level(declared_params(include_missing: false))
+        attrs = declared_params(include_missing: false)
         authorize! :rename_project, user_project if attrs[:name].present?
         authorize! :change_visibility_level, user_project if attrs[:visibility_level].present?
 

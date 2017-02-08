@@ -14,5 +14,16 @@
     window.addEventListener('focus', startIntervals);
     window.addEventListener('blur', removeIntervals);
     document.addEventListener('beforeunload', removeAll);
+
+    // add removeAll methods to stack
+    const stack = gl.VueRealtimeListener.reset;
+    gl.VueRealtimeListener.reset = () => {
+      gl.VueRealtimeListener.reset = stack;
+      removeAll();
+      stack();
+    };
   };
+
+  // remove all event listeners and intervals
+  gl.VueRealtimeListener.reset = () => undefined; // noop
 })(window.gl || (window.gl = {}));
