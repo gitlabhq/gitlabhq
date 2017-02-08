@@ -546,7 +546,7 @@ class MergeRequest < ActiveRecord::Base
   # Calculating this information for a number of merge requests requires
   # running `ReferenceExtractor` on each of them separately.
   # This optimization does not apply to issues from external sources.
-  def cache_merge_request_closes_issues!(current_user = self.author)
+  def cache_merge_request_closes_issues!(current_user)
     return if project.has_external_issue_tracker?
 
     transaction do
@@ -556,10 +556,6 @@ class MergeRequest < ActiveRecord::Base
         self.merge_requests_closing_issues.create!(issue: issue)
       end
     end
-  end
-
-  def closes_issue?(issue)
-    closes_issues.include?(issue)
   end
 
   # Return the set of issues that will be closed if this merge request is accepted.
@@ -575,13 +571,13 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
-  def issues_mentioned_but_not_closing(current_user = self.author)
+  def issues_mentioned_but_not_closing(current_user)
     return [] unless target_branch == project.default_branch
 
     ext = Gitlab::ReferenceExtractor.new(project, current_user)
     ext.analyze(description)
 
-    ext.issues - closes_issues
+    ext.issues - closes_issues(current_user)
   end
 
   def target_project_path

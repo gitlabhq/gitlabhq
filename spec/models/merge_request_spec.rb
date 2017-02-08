@@ -97,7 +97,7 @@ describe MergeRequest, models: true do
       commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
       allow(subject).to receive(:commits).and_return([commit])
 
-      expect { subject.cache_merge_request_closes_issues! }.to change(subject.merge_requests_closing_issues, :count).by(1)
+      expect { subject.cache_merge_request_closes_issues!(subject.author) }.to change(subject.merge_requests_closing_issues, :count).by(1)
     end
 
     it 'does not cache issues from external trackers' do
@@ -106,7 +106,7 @@ describe MergeRequest, models: true do
       commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
       allow(subject).to receive(:commits).and_return([commit])
 
-      expect { subject.cache_merge_request_closes_issues! }.not_to change(subject.merge_requests_closing_issues, :count)
+      expect { subject.cache_merge_request_closes_issues!(subject.author) }.not_to change(subject.merge_requests_closing_issues, :count)
     end
   end
 
@@ -300,7 +300,7 @@ describe MergeRequest, models: true do
       allow(subject.project).to receive(:default_branch).
         and_return(subject.target_branch)
 
-      expect(subject.issues_mentioned_but_not_closing).to match_array([mentioned_issue])
+      expect(subject.issues_mentioned_but_not_closing(subject.author)).to match_array([mentioned_issue])
     end
   end
 
