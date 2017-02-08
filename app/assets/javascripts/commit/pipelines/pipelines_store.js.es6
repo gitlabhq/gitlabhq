@@ -26,7 +26,7 @@ class PipelinesStore {
    */
   startTimeAgoLoops() {
     const startTimeLoops = () => {
-      this.timeLoopInterval = setInterval(function timeloopInterval() {
+      this.timeLoopInterval = setInterval(() => {
         this.$children[0].$children.reduce((acc, component) => {
           const timeAgoComponent = component.$children.filter(el => el.$options._componentTag === 'time-ago')[0];
           acc.push(timeAgoComponent);
