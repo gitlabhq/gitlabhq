@@ -53,8 +53,7 @@ require('./task_list');
       this.setupMainTargetNoteForm();
       this.taskList = new gl.TaskList({
         dataType: 'note',
-        selector: '.notes',
-        update: this.updateTaskList.bind(this)
+        selector: '.notes'
       });
       this.collapseLongCommitList();
 
@@ -887,17 +886,6 @@ require('./task_list');
       $editForm.find('.js-note-text').focus().val(originalContent);
       $editForm.find('.js-md-write-button').trigger('click');
       $editForm.find('.referenced-users').hide();
-    };
-
-    Notes.prototype.updateTaskList = function(e) {
-      var $target = $(e.target);
-      var $list = $target.closest('.js-task-list-container');
-      var $editForm = $(this.getEditFormSelector($target));
-      var $note = $list.closest('.note');
-
-      this.putEditFormInPlace($list);
-      $editForm.find('#note_note').val($note.find('.original-task-list').val());
-      $('form', $list).submit();
     };
 
     Notes.prototype.updateNotesCount = function(updateCount) {

@@ -7,7 +7,7 @@ class TaskList {
   constructor(options = {}) {
     this.selector = options.selector;
     this.dataType = options.dataType;
-    this.update = options.update || this.update.bind(this);
+    this.onSuccess = options.onSuccess || () => null;
     this.init();
   }
 
@@ -15,7 +15,7 @@ class TaskList {
     // Prevent duplicate event bindings
     this.disable();
     $(`${this.selector} .js-task-list-container`).taskList('enable');
-    $(document).on('tasklist:changed', `${this.selector} .js-task-list-container`, this.update);
+    $(document).on('tasklist:changed', `${this.selector} .js-task-list-container`, this.update.bind(this));
   }
 
   disable() {
@@ -24,18 +24,16 @@ class TaskList {
   }
 
   update(e) {
+    const $target = $(e.target);
     const patchData = {};
     patchData[this.dataType] = {
-      description: $(e.target).val(),
+      description: $target.val(),
     };
     return $.ajax({
       type: 'PATCH',
-      url: $('form.js-issuable-update').attr('action'),
+      url: $target.data('update-url') || $('form.js-issuable-update').attr('action'),
       data: patchData,
-      success: (result) => {
-        document.querySelector('#task_status').innerText = result.task_status;
-        document.querySelector('#task_status_short').innerText = result.task_status_short;
-      },
+      success: this.onSuccess,
     });
   }
 }

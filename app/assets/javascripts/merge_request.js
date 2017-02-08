@@ -29,7 +29,11 @@ require('./merge_request_tabs');
       if ($("a.btn-close").length) {
         this.taskList = new gl.TaskList({
           dataType: 'merge_request',
-          selector: '.detail-page-description'
+          selector: '.detail-page-description',
+          onSuccess: (result) => {
+            document.querySelector('#task_status').innerText = result.task_status;
+            document.querySelector('#task_status_short').innerText = result.task_status_short;
+          }
         });
       }
     }
