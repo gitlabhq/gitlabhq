@@ -801,4 +801,26 @@ describe 'Filter issues', js: true, feature: true do
       expect(auto_discovery_params).to include('assignee_id' => [user.id.to_s])
     end
   end
+
+  context 'URL has a trailing slash' do
+    before do
+      visit "#{namespace_project_issues_path(project.namespace, project)}/"
+    end
+
+    it 'milestone dropdown loads milestones' do
+      input_filtered_search("milestone:", submit: false)
+
+      within('#js-dropdown-milestone') do
+        expect(page).to have_selector('.filter-dropdown .filter-dropdown-item', count: 2)
+      end
+    end
+
+    it 'label dropdown load labels' do
+      input_filtered_search("label:", submit: false)
+
+      within('#js-dropdown-label') do
+        expect(page).to have_selector('.filter-dropdown .filter-dropdown-item', count: 5)
+      end
+    end
+  end
 end
