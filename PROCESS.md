@@ -62,7 +62,7 @@ star, smile, etc.). Some good tips about code reviews can be found in our
 On the 7th of each month, RC1 of the upcoming release is created and deployed to GitLab.com and the stable branch for this release is frozen, which means master is no longer merged into it.
 Merge requests may still be merged into master during this period,
 but they will go into the _next_ release, unless they are manually cherry-picked into the stable branch.
-By freezing the stable branches 2 weeks prior to a release, we reduce the risk of a last minute merge request potentially breaking a lot of things.
+By freezing the stable branches 2 weeks prior to a release, we reduce the risk of a last minute merge request potentially breaking things.
 
 Once the stable branch is frozen, only fixes for regressions (bugs introduced in that same release)
 and security issues will be cherry-picked into the stable branch.
@@ -70,7 +70,13 @@ Any merge requests cherry-picked into the stable branch for a previous release w
 These fixes will be released in the next RC (before the 22nd) or patch release (after the 22nd).
 
 If you think a merge request should go into the upcoming release even though it does not meet these requirements,
-you can ask for an exception to be made. Exceptions require sign-off from 3 people besides the developer: a Release Manager (1), a relevant Engineering Lead (2), and an Engineering Director, VP of Engineering, or CTO (3).
+you can ask for an exception to be made. Exceptions require sign-off from 3 people besides the developer:
+
+1. a Release Manager
+2. an Engineering Lead
+3. an Engineering Director, the VP of Engineering, or the CTO
+
+You can find who is who on the [team page](https://about.gitlab.com/team/).
 
 Whether an exception is made is determined by weighing the benefit and urgency of the change
 (how important it is to the company that this is released _right now_ instead of in a month)
