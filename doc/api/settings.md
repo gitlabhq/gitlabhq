@@ -46,7 +46,8 @@ Example response:
    "koding_enabled": false,
    "koding_url": null,
    "plantuml_enabled": false,
-   "plantuml_url": null
+   "plantuml_url": null,
+   "terminal_max_session_time": 0
 }
 ```
 
@@ -91,6 +92,7 @@ PUT /application/settings
 | `repository_size_limit` | integer | no | Size limit per repository (MB) |
 | `plantuml_enabled` | boolean | no | Enable PlantUML integration. Default is `false`. |
 | `plantuml_url` | string | yes (if `plantuml_enabled` is `true`) |  The PlantUML instance URL for integration. |
+| `terminal_max_session_time` | integer | no | Maximum time for web terminal websocket connection (in seconds). Set to 0 for unlimited time. |
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/application/settings?signup_enabled=false&default_project_visibility=1
@@ -125,6 +127,7 @@ Example response:
   "koding_enabled": false,
   "koding_url": null,
   "plantuml_enabled": false,
-  "plantuml_url": null
+  "plantuml_url": null,
+  "terminal_max_session_time": 0
 }
 ```

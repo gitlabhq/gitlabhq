@@ -6,16 +6,16 @@ module Gitlab
       begin
         entries = YAML.safe_load(data)
       rescue
-        raise FormatError, 'Route map needs to be valid YAML'
+        raise FormatError, 'Route map is not valid YAML'
       end
 
-      raise FormatError, 'Route map needs to be an array' unless entries.is_a?(Array)
+      raise FormatError, 'Route map is not an array' unless entries.is_a?(Array)
 
       @map = entries.map { |entry| parse_entry(entry) }
     end
 
     def public_path_for_source_path(path)
-      mapping = @map.find { |mapping| path =~ mapping[:source] }
+      mapping = @map.find { |mapping| mapping[:source] === path }
       return unless mapping
 
       path.sub(mapping[:source], mapping[:public])
@@ -24,27 +24,25 @@ module Gitlab
     private
 
     def parse_entry(entry)
-      raise FormatError, 'Route map entry needs to be a hash' unless entry.is_a?(Hash)
-      raise FormatError, 'Route map entry requires a source key' unless entry.has_key?('source')
-      raise FormatError, 'Route map entry requires a public key' unless entry.has_key?('public')
+      raise FormatError, 'Route map entry is not a hash' unless entry.is_a?(Hash)
+      raise FormatError, 'Route map entry does not have a source key' unless entry.has_key?('source')
+      raise FormatError, 'Route map entry does not have a public key' unless entry.has_key?('public')
 
-      source_regexp = entry['source']
+      source_pattern = entry['source']
       public_path = entry['public']
 
-      unless source_regexp.start_with?('/') && source_regexp.end_with?('/')
-        raise FormatError, 'Route map entry source needs to start and end in a slash (/)'
-      end
+      if source_pattern.start_with?('/') && source_pattern.end_with?('/')
+        source_pattern = source_pattern[1...-1].gsub('\/', '/')
 
-      source_regexp = source_regexp[1...-1].gsub('\/', '/')
-
-      begin
-        source_regexp = Regexp.new("^#{source_regexp}$")
-      rescue RegexpError => e
-        raise FormatError, "Route map entry source needs to be a valid regular expression: #{e}"
+        begin
+          source_pattern = /\A#{source_pattern}\z/
+        rescue RegexpError => e
+          raise FormatError, "Route map entry source is not a valid regular expression: #{e}"
+        end
       end
 
       {
-        source: source_regexp,
+        source: source_pattern,
         public: public_path
       }
     end

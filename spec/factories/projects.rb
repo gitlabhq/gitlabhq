@@ -89,6 +89,25 @@ FactoryGirl.define do
       end
     end
 
+    trait(:wiki_enabled)            { wiki_access_level ProjectFeature::ENABLED }
+    trait(:wiki_disabled)           { wiki_access_level ProjectFeature::DISABLED }
+    trait(:wiki_private)            { wiki_access_level ProjectFeature::PRIVATE }
+    trait(:builds_enabled)          { builds_access_level ProjectFeature::ENABLED }
+    trait(:builds_disabled)         { builds_access_level ProjectFeature::DISABLED }
+    trait(:builds_private)          { builds_access_level ProjectFeature::PRIVATE }
+    trait(:snippets_enabled)        { snippets_access_level ProjectFeature::ENABLED }
+    trait(:snippets_disabled)       { snippets_access_level ProjectFeature::DISABLED }
+    trait(:snippets_private)        { snippets_access_level ProjectFeature::PRIVATE }
+    trait(:issues_disabled)         { issues_access_level ProjectFeature::DISABLED }
+    trait(:issues_enabled)          { issues_access_level ProjectFeature::ENABLED }
+    trait(:issues_private)          { issues_access_level ProjectFeature::PRIVATE }
+    trait(:merge_requests_enabled)  { merge_requests_access_level ProjectFeature::ENABLED }
+    trait(:merge_requests_disabled) { merge_requests_access_level ProjectFeature::DISABLED }
+    trait(:merge_requests_private)  { merge_requests_access_level ProjectFeature::PRIVATE }
+    trait(:repository_enabled)      { repository_access_level ProjectFeature::ENABLED }
+    trait(:repository_disabled)     { repository_access_level ProjectFeature::DISABLED }
+    trait(:repository_private)      { repository_access_level ProjectFeature::PRIVATE }
+
     # Nest Project Feature attributes
     transient do
       wiki_access_level ProjectFeature::ENABLED

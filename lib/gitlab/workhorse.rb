@@ -107,7 +107,8 @@ module Gitlab
           'Terminal' => {
             'Subprotocols' => terminal[:subprotocols],
             'Url' => terminal[:url],
-            'Header' => terminal[:headers]
+            'Header' => terminal[:headers],
+            'MaxSessionTime' => terminal[:max_session_time],
           }
         }
         details['Terminal']['CAPem'] = terminal[:ca_pem] if terminal.has_key?(:ca_pem)

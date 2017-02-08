@@ -1,0 +1,4 @@
+---
+title: 'API: Remove deprecated ''expires_at'' from project snippets'
+merge_request: 8723
+author: Robert Schilling

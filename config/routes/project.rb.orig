@@ -354,14 +354,11 @@ constraints(ProjectUrlConstrainer.new) do
           end
         end
       end
-<<<<<<< HEAD
 
       ## EE-specific
       resources :audit_events, only: [:index]
       ## EE-specific
 
-=======
->>>>>>> 9f0d794513... Moved the webhooks and services gear options to a single one called integrations
       namespace :settings do
         resource :members, only: [:show]
         resource :integrations, only: [:show]

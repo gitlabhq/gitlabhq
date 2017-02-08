@@ -4,7 +4,7 @@
 window.Vue = require('vue');
 window.timeago = require('vendor/timeago');
 require('../../lib/utils/text_utility');
-require('../../vue_common_component/commit');
+require('../../vue_shared/components/commit');
 require('./environment_actions');
 require('./environment_external_url');
 require('./environment_stop');
@@ -147,12 +147,12 @@ require('./environment_terminal_button');
       },
 
       /**
-       * Returns the value of the `stoppable?` key provided in the response.
+       * Returns the value of the `stop_action?` key provided in the response.
        *
        * @returns {Boolean}
        */
-      isStoppable() {
-        return this.model['stoppable?'];
+      hasStopAction() {
+        return this.model['stop_action?'];
       },
 
       /**
@@ -508,7 +508,7 @@ require('./environment_terminal_button');
               </external-url-component>
             </div>
 
-            <div v-if="isStoppable && canCreateDeployment"
+            <div v-if="hasStopAction && canCreateDeployment"
               class="inline js-stop-component-container">
               <stop-component
                 :stop-url="model.stop_path">

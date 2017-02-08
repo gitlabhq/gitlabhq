@@ -237,9 +237,6 @@ module API
       expose :author, using: Entities::UserBasic
       expose :updated_at, :created_at
 
-      # TODO (rspeicher): Deprecated; remove in 9.0
-      expose(:expires_at) { |snippet| nil }
-
       expose :web_url do |snippet, options|
         Gitlab::UrlBuilder.build(snippet)
       end
@@ -628,6 +625,7 @@ module API
       expose :koding_url
       expose :plantuml_enabled
       expose :plantuml_url
+      expose :terminal_max_session_time
     end
 
     class Release < Grape::Entity

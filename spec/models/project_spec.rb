@@ -739,7 +739,7 @@ describe Project, models: true do
   end
 
   describe '#has_wiki?' do
-    let(:no_wiki_project)       { create(:empty_project, wiki_access_level: ProjectFeature::DISABLED, has_external_wiki: false) }
+    let(:no_wiki_project)       { create(:empty_project, :wiki_disabled, has_external_wiki: false) }
     let(:wiki_enabled_project)  { create(:empty_project) }
     let(:external_wiki_project) { create(:empty_project, has_external_wiki: true) }
 
@@ -2193,5 +2193,32 @@ describe Project, models: true do
 
   def enable_lfs
     allow(Gitlab.config.lfs).to receive(:enabled).and_return(true)
+  end
+
+  describe '#pages_url' do
+    let(:group) { create :group, name: group_name }
+    let(:project) { create :empty_project, namespace: group, name: project_name }
+    let(:domain) { 'Example.com' }
+
+    subject { project.pages_url }
+
+    before do
+      allow(Settings.pages).to receive(:host).and_return(domain)
+      allow(Gitlab.config.pages).to receive(:url).and_return('http://example.com')
+    end
+
+    context 'group page' do
+      let(:group_name) { 'Group' }
+      let(:project_name) { 'group.example.com' }
+
+      it { is_expected.to eq("http://group.example.com") }
+    end
+
+    context 'project page' do
+      let(:group_name) { 'Group' }
+      let(:project_name) { 'Project' }
+
+      it { is_expected.to eq("http://group.example.com/project") }
+    end
   end
 end

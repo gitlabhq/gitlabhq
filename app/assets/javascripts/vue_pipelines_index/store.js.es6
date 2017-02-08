@@ -20,6 +20,7 @@ require('../vue_realtime_listener');
 
   gl.PipelineStore = class {
     fetchDataLoop(Vue, pageNum, url, apiScope) {
+      this.pageRequest = true;
       const updatePipelineNums = (count) => {
         const { all } = count;
         const running = count.running_or_pending;
@@ -41,16 +42,18 @@ require('../vue_realtime_listener');
             this.pageRequest = false;
           }, () => {
             this.pageRequest = false;
-            return new Flash('Something went wrong on our end.');
+            return new Flash('An error occurred while fetching the pipelines, please reload the page again.');
           });
 
       goFetch();
 
       const startTimeLoops = () => {
         this.timeLoopInterval = setInterval(() => {
-          this.$children
-            .filter(e => e.$options._componentTag === 'time-ago')
-            .forEach(e => e.changeTime());
+          this.$children[0].$children.reduce((acc, component) => {
+            const timeAgoComponent = component.$children.filter(el => el.$options._componentTag === 'time-ago')[0];
+            acc.push(timeAgoComponent);
+            return acc;
+          }, []).forEach(e => e.changeTime());
         }, 10000);
       };
 

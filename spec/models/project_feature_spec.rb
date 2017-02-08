@@ -66,7 +66,6 @@ describe ProjectFeature do
     context 'when feature is enabled for everyone' do
       it "returns true" do
         features.each do |feature|
-          project.project_feature.update_attribute("#{feature}_access_level".to_sym, ProjectFeature::ENABLED)
           expect(project.feature_available?(:issues, user)).to eq(true)
         end
       end
@@ -113,7 +112,6 @@ describe ProjectFeature do
 
     it "returns true when feature is enabled for everyone" do
       features.each do |feature|
-        project.project_feature.update_attribute("#{feature}_access_level".to_sym, ProjectFeature::ENABLED)
         expect(project.public_send("#{feature}_enabled?")).to eq(true)
       end
     end

@@ -15,7 +15,7 @@
         required: true,
       },
       svgs: {
-        type: DOMStringMap,
+        type: Object,
         required: true,
       },
       match: {

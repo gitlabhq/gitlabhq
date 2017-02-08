@@ -8,10 +8,9 @@ module Ci
       return unless has_ref?
 
       environments.each do |environment|
-        next unless environment.stoppable?
         next unless can?(current_user, :create_deployment, project)
 
-        environment.stop!(current_user)
+        environment.stop_with_action!(current_user)
       end
     end
 

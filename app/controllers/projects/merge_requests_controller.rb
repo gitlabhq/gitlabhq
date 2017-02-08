@@ -221,19 +221,24 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       end
 
       format.json do
-        render json: {
-          html: view_to_html_string('projects/merge_requests/show/_pipelines'),
-          pipelines: PipelineSerializer
-            .new(project: @project, user: @current_user)
-            .with_pagination(request, response)
-            .represent(@pipelines)
-        }
+        render json: PipelineSerializer
+          .new(project: @project, user: @current_user)
+          .represent(@pipelines)
       end
     end
   end
 
   def new
-    define_new_vars
+    respond_to do |format|
+      format.html { define_new_vars }
+      format.json do
+        define_pipelines_vars
+
+        render json: PipelineSerializer
+          .new(project: @project, user: @current_user)
+          .represent(@pipelines)
+      end
+    end
   end
 
   def new_diffs
@@ -479,7 +484,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
           deployment = environment.first_deployment_for(@merge_request.diff_head_commit)
 
           stop_url =
-            if environment.stoppable? && can?(current_user, :create_deployment, environment)
+            if environment.stop_action? && can?(current_user, :create_deployment, environment)
               stop_namespace_project_environment_path(project.namespace, project, environment)
             end
 

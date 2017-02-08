@@ -103,6 +103,9 @@ class User < ActiveRecord::Base
   has_many :protected_branch_merge_access_levels, dependent: :destroy, class_name: ProtectedBranch::MergeAccessLevel
   has_many :protected_branch_push_access_levels, dependent: :destroy, class_name: ProtectedBranch::PushAccessLevel
 
+  has_many :assigned_issues,          dependent: :nullify, foreign_key: :assignee_id, class_name: "Issue"
+  has_many :assigned_merge_requests,  dependent: :nullify, foreign_key: :assignee_id, class_name: "MergeRequest"
+
   #
   # Validations
   #

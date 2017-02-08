@@ -1,3 +1,5 @@
+- return unless current_user
+
 .hidden-xs
   - if can?(current_user, :update_project_snippet, @snippet)
     = link_to edit_namespace_project_snippet_path(@project.namespace, @project, @snippet), class: "btn btn-grouped" do

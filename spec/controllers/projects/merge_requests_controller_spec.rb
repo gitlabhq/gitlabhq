@@ -22,22 +22,40 @@ describe Projects::MergeRequestsController do
       render_views
 
       let(:fork_project) { create(:forked_project_with_submodules) }
+      before { fork_project.team << [user, :master] }
 
-      before do
-        fork_project.team << [user, :master]
+      context 'when rendering HTML response' do
+        it 'renders new merge request widget template' do
+          submit_new_merge_request
+
+          expect(response).to be_success
+        end
       end
 
-      it 'renders it' do
-        get :new,
-            namespace_id: fork_project.namespace.to_param,
-            project_id: fork_project.to_param,
-            merge_request: {
-              source_branch: 'remove-submodule',
-              target_branch: 'master'
-            }
+      context 'when rendering JSON response' do
+        before do
+          create(:ci_pipeline, sha: fork_project.commit('remove-submodule').id,
+                               ref: 'remove-submodule',
+                               project: fork_project)
+        end
 
-        expect(response).to be_success
+        it 'renders JSON including serialized pipelines' do
+          submit_new_merge_request(format: :json)
+
+          expect(response).to be_ok
+          expect(json_response).not_to be_empty
+        end
       end
+    end
+
+    def submit_new_merge_request(format: :html)
+      get :new,
+          namespace_id: fork_project.namespace.to_param,
+          project_id: fork_project.to_param,
+          merge_request: {
+            source_branch: 'remove-submodule',
+            target_branch: 'master' },
+          format: format
     end
   end
 
@@ -961,15 +979,8 @@ describe Projects::MergeRequestsController do
             format: :json
       end
 
-      it 'responds with a rendered HTML partial' do
-        expect(response)
-          .to render_template('projects/merge_requests/show/_pipelines')
-        expect(json_response).to have_key 'html'
-      end
-
       it 'responds with serialized pipelines' do
-        expect(json_response).to have_key 'pipelines'
-        expect(json_response['pipelines']).not_to be_empty
+        expect(json_response).not_to be_empty
       end
     end
   end

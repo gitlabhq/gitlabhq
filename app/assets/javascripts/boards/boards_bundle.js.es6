@@ -17,7 +17,7 @@ require('./components/boards_selector');
 require('./components/board_sidebar');
 require('./components/new_list_dropdown');
 require('./components/modal/index');
-require('./vue_resource_interceptor');
+require('../vue_shared/vue_resource_interceptor');
 
 $(() => {
   const $boardApp = document.getElementById('board-app');

@@ -362,6 +362,7 @@ constraints(ProjectUrlConstrainer.new) do
 
       namespace :settings do
         resource :members, only: [:show]
+        resource :ci_cd, only: [:show], controller: 'ci_cd'
         resource :integrations, only: [:show]
       end
 

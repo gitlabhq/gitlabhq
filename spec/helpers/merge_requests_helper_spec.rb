@@ -63,9 +63,11 @@ describe MergeRequestsHelper do
     end
   end
 
-  describe 'mr_widget_refresh_url' do
-    let(:project)       { create(:empty_project) }
-    let(:merge_request) { create(:merge_request, source_project: project) }
+  describe '#mr_widget_refresh_url' do
+    let(:guest)         { create(:user) }
+    let(:project)       { create(:project, :public) }
+    let(:project_fork)  { Projects::ForkService.new(project, guest).execute }
+    let(:merge_request) { create(:merge_request, source_project: project_fork, target_project: project) }
 
     it 'returns correct url for MR' do
       expected_url = "#{project.path_with_namespace}/merge_requests/#{merge_request.iid}/merge_widget_refresh"
@@ -74,7 +76,7 @@ describe MergeRequestsHelper do
     end
 
     it 'returns empty string for nil' do
-      expect(mr_widget_refresh_url(nil)).to end_with('')
+      expect(mr_widget_refresh_url(nil)).to eq('')
     end
   end
 end

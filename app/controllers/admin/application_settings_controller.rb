@@ -147,6 +147,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :user_default_external,
       :user_oauth_applications,
       :version_check_enabled,
+      :terminal_max_session_time,
 
       disabled_oauth_sign_in_sources: [],
       import_sources: [],

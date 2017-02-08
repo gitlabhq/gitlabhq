@@ -23,9 +23,9 @@ describe User, models: true do
     it { is_expected.to have_many(:recent_events).class_name('Event') }
     it { is_expected.to have_many(:issues).dependent(:destroy) }
     it { is_expected.to have_many(:notes).dependent(:destroy) }
-    it { is_expected.to have_many(:assigned_issues).dependent(:destroy) }
+    it { is_expected.to have_many(:assigned_issues).dependent(:nullify) }
     it { is_expected.to have_many(:merge_requests).dependent(:destroy) }
-    it { is_expected.to have_many(:assigned_merge_requests).dependent(:destroy) }
+    it { is_expected.to have_many(:assigned_merge_requests).dependent(:nullify) }
     it { is_expected.to have_many(:identities).dependent(:destroy) }
     it { is_expected.to have_one(:abuse_report) }
     it { is_expected.to have_many(:spam_logs).dependent(:destroy) }
@@ -1302,7 +1302,7 @@ describe User, models: true do
     end
 
     it 'does not include projects for which issues are disabled' do
-      project = create(:empty_project, issues_access_level: ProjectFeature::DISABLED)
+      project = create(:empty_project, :issues_disabled)
 
       expect(user.projects_where_can_admin_issues.to_a).to be_empty
       expect(user.can?(:admin_issue, project)).to eq(false)

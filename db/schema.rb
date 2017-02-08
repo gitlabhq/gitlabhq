@@ -119,6 +119,8 @@ ActiveRecord::Schema.define(version: 20170207150212) do
     t.boolean "plantuml_enabled"
     t.integer "shared_runners_minutes", default: 0, null: false
     t.integer "repository_size_limit", limit: 8, default: 0
+    t.integer "max_pages_size", default: 100, null: false
+    t.integer "terminal_max_session_time", default: 0, null: false
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -1296,6 +1298,7 @@ ActiveRecord::Schema.define(version: 20170207150212) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "submitted_as_ham", default: false, null: false
+    t.boolean "recaptcha_verified", default: false, null: false
   end
 
   create_table "subscriptions", force: :cascade do |t|
@@ -1332,14 +1335,15 @@ ActiveRecord::Schema.define(version: 20170207150212) do
 
   create_table "timelogs", force: :cascade do |t|
     t.integer "time_spent", null: false
-    t.integer "trackable_id"
-    t.string "trackable_type"
     t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "issue_id"
+    t.integer "merge_request_id"
   end
 
-  add_index "timelogs", ["trackable_type", "trackable_id"], name: "index_timelogs_on_trackable_type_and_trackable_id", using: :btree
+  add_index "timelogs", ["issue_id"], name: "index_timelogs_on_issue_id", using: :btree
+  add_index "timelogs", ["merge_request_id"], name: "index_timelogs_on_merge_request_id", using: :btree
   add_index "timelogs", ["user_id"], name: "index_timelogs_on_user_id", using: :btree
 
   create_table "todos", force: :cascade do |t|
@@ -1534,6 +1538,8 @@ ActiveRecord::Schema.define(version: 20170207150212) do
   add_foreign_key "protected_branch_push_access_levels", "users"
   add_foreign_key "remote_mirrors", "projects"
   add_foreign_key "subscriptions", "projects", on_delete: :cascade
+  add_foreign_key "timelogs", "issues", name: "fk_timelogs_issues_issue_id", on_delete: :cascade
+  add_foreign_key "timelogs", "merge_requests", name: "fk_timelogs_merge_requests_merge_request_id", on_delete: :cascade
   add_foreign_key "trending_projects", "projects", on_delete: :cascade
   add_foreign_key "u2f_registrations", "users"
 end

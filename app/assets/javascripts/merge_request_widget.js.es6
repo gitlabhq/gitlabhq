@@ -50,6 +50,8 @@ require('./smart_interval');
       this.getCIStatus(false);
       this.retrieveSuccessIcon();
 
+      this.initMiniPipelineGraph();
+
       this.ciStatusInterval = new global.SmartInterval({
         callback: this.getCIStatus.bind(this, true),
         startingInterval: 10000,
@@ -65,6 +67,7 @@ require('./smart_interval');
         incrementByFactorOf: 15000,
         immediateExecution: true,
       });
+
       notifyPermissions();
     }
 
@@ -253,17 +256,20 @@ require('./smart_interval');
           case "failed":
           case "canceled":
           case "not_found":
-            return this.setMergeButtonClass('btn-danger');
+            this.setMergeButtonClass('btn-danger');
+            break;
           case "running":
-            return this.setMergeButtonClass('btn-info');
+            this.setMergeButtonClass('btn-info');
+            break;
           case "success":
           case "success_with_warnings":
-            return this.setMergeButtonClass('btn-create');
+            this.setMergeButtonClass('btn-create');
         }
       } else {
         $('.ci_widget.ci-error').show();
-        return this.setMergeButtonClass('btn-danger');
+        this.setMergeButtonClass('btn-danger');
       }
+      this.initMiniPipelineGraph();
     };
 
     MergeRequestWidget.prototype.showCICoverage = function(coverage) {
@@ -284,6 +290,12 @@ require('./smart_interval');
     MergeRequestWidget.prototype.updateCommitUrls = function(id) {
       const commitsUrl = this.opts.commits_path;
       $('.js-commit-link').text(`#${id}`).attr('href', [commitsUrl, id].join('/'));
+    };
+
+    MergeRequestWidget.prototype.initMiniPipelineGraph = function() {
+      new gl.MiniPipelineGraph({
+        container: '.js-pipeline-inline-mr-widget-graph:visible',
+      }).bindEvents();
     };
 
     return MergeRequestWidget;

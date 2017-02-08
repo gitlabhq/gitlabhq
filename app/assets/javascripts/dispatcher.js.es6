@@ -166,7 +166,7 @@ const ShortcutsBlob = require('./shortcuts_blob');
         case 'projects:commit:pipelines':
           new gl.MiniPipelineGraph({
             container: '.js-pipeline-table',
-          });
+          }).bindEvents();
           break;
         case 'projects:commits:show':
         case 'projects:activity':
@@ -275,7 +275,7 @@ const ShortcutsBlob = require('./shortcuts_blob');
           new gl.ProtectedBranchCreate();
           new gl.ProtectedBranchEditList();
           break;
-        case 'projects:variables:index':
+        case 'projects:ci_cd:show':
           new gl.ProjectVariables();
           break;
         case 'ci:lints:create':

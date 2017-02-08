@@ -155,22 +155,6 @@ module API
         present_projects Project.all, with: Entities::ProjectWithAccess, statistics: params[:statistics]
       end
 
-      desc 'Search for projects the current user has access to' do
-        success Entities::Project
-      end
-      params do
-        requires :query, type: String, desc: 'The project name to be searched'
-        use :sort_params
-        use :pagination
-      end
-      get "/search/:query", requirements: { query: /[^\/]+/ } do
-        search_service = Search::GlobalService.new(current_user, search: params[:query]).execute
-        projects = search_service.objects('projects', params[:page])
-        projects = projects.reorder(params[:order_by] => params[:sort])
-
-        present paginate(projects), with: Entities::Project
-      end
-
       desc 'Create new project' do
         success Entities::Project
       end

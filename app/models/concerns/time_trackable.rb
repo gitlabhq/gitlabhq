@@ -18,7 +18,7 @@ module TimeTrackable
     validates :time_estimate, numericality: { message: 'has an invalid format' }, allow_nil: false
     validate  :check_negative_time_spent
 
-    has_many :timelogs, as: :trackable, dependent: :destroy
+    has_many :timelogs, dependent: :destroy
   end
 
   def spend_time(options)

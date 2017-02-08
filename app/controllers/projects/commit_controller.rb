@@ -37,7 +37,6 @@ class Projects::CommitController < Projects::ApplicationController
       format.json do
         render json: PipelineSerializer
           .new(project: @project, user: @current_user)
-          .with_pagination(request, response)
           .represent(@pipelines)
       end
     end

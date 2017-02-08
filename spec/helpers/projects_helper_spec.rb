@@ -212,7 +212,6 @@ describe ProjectsHelper do
 
     context "when project moves from public to private" do
       before do
-        project.project_feature.update_attributes(issues_access_level: ProjectFeature::ENABLED)
         project.update_attributes(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
       end
 

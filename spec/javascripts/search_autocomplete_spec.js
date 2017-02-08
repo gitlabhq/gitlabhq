@@ -14,11 +14,6 @@ require('vendor/fuzzaldrin-plus');
 
   userId = 1;
 
-  window.gon || (window.gon = {});
-
-  window.gon.current_user_id = userId;
-  window.gon.current_username = userName;
-
   dashboardIssuesPath = '/dashboard/issues';
 
   dashboardMRsPath = '/dashboard/merge_requests';
@@ -117,6 +112,16 @@ require('vendor/fuzzaldrin-plus');
       widget = new gl.SearchAutocomplete;
       // Prevent turbolinks from triggering within gl_dropdown
       spyOn(window.gl.utils, 'visitUrl').and.returnValue(true);
+
+      window.gon = {};
+      window.gon.current_user_id = userId;
+      window.gon.current_username = userName;
+
+      return widget = new gl.SearchAutocomplete;
+    });
+
+    afterEach(function() {
+      window.gon = {};
     });
     it('should show Dashboard specific dropdown menu', function() {
       var list;

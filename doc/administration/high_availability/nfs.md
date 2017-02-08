@@ -47,13 +47,13 @@ When using default Omnibus configuration you will need to share 5 data locations
 between all GitLab cluster nodes. No other locations should be shared. The
 following are the 5 locations you need to mount:
 
-| Location | Description |
-| -------- | ----------- |
-| `/var/opt/gitlab/git-data` | Git repository data. This will account for a large portion of your data
-| `/var/opt/gitlab/.ssh` | SSH `authorized_keys` file and keys used to import repositories from some other Git services
-| `/var/opt/gitlab/gitlab-rails/uploads` | User uploaded attachments
-| `/var/opt/gitlab/gitlab-rails/shared` | Build artifacts, GitLab Pages, LFS objects, temp files, etc. If you're using LFS this may also account for a large portion of your data
-| `/var/opt/gitlab/gitlab-ci/builds` | GitLab CI build traces
+| Location | Description | Default configuration |
+| -------- | ----------- | --------------------- |
+| `/var/opt/gitlab/git-data` | Git repository data. This will account for a large portion of your data | `git_data_dirs({"default" => "/var/opt/gitlab/git-data"})`
+| `/var/opt/gitlab/.ssh` | SSH `authorized_keys` file and keys used to import repositories from some other Git services | `user['home'] = '/var/opt/gitlab/'`
+| `/var/opt/gitlab/gitlab-rails/uploads` | User uploaded attachments | `gitlab_rails['uploads_directory'] = '/var/opt/gitlab/gitlab-rails/uploads'`
+| `/var/opt/gitlab/gitlab-rails/shared` | Build artifacts, GitLab Pages, LFS objects, temp files, etc. If you're using LFS this may also account for a large portion of your data | `gitlab_rails['shared_path'] = '/var/opt/gitlab/gitlab-rails/shared'`
+| `/var/opt/gitlab/gitlab-ci/builds` | GitLab CI build traces | `gitlab_ci['builds_directory'] = '/var/opt/gitlab/gitlab-ci/builds'`
 
 Other GitLab directories should not be shared between nodes. They contain
 node-specific files and GitLab code that does not need to be shared. To ship
@@ -73,10 +73,10 @@ as subdirectories. Mount `/gitlab-data` then use the following Omnibus
 configuration to move each data location to a subdirectory:
 
 ```ruby
+git_data_dirs({"default" => "/gitlab-data/git-data"})
 user['home'] = '/gitlab-data/home'
-git_data_dir '/gitlab-data/git-data'
-gitlab_rails['shared_path'] = '/gitlab-data/shared'
 gitlab_rails['uploads_directory'] = '/gitlab-data/uploads'
+gitlab_rails['shared_path'] = '/gitlab-data/shared'
 gitlab_ci['builds_directory'] = '/gitlab-data/builds'
 ```
 

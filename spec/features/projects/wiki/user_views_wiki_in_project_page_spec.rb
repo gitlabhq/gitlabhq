@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe 'Projects > Wiki > User views wiki in project page', feature: true do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
 
   before do
     project.team << [user, :master]
@@ -10,12 +9,11 @@ describe 'Projects > Wiki > User views wiki in project page', feature: true do
   end
 
   context 'when repository is disabled for project' do
-    before do
-      project.project_feature.update!(
-        repository_access_level: ProjectFeature::DISABLED,
-        merge_requests_access_level: ProjectFeature::DISABLED,
-        builds_access_level: ProjectFeature::DISABLED
-      )
+    let(:project) do
+      create(:empty_project,
+             :repository_disabled,
+             :merge_requests_disabled,
+             :builds_disabled)
     end
 
     context 'when wiki homepage contains a link' do

@@ -8,11 +8,11 @@ class MattermostSlashCommandsService < ChatSlashCommandsService
   end
 
   def title
-    'Mattermost Command'
+    'Mattermost slash commands'
   end
 
   def description
-    "Perform common operations on GitLab in Mattermost"
+    "Perform common operations in Mattermost"
   end
 
   def self.to_param

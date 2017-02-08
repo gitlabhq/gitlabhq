@@ -40,7 +40,8 @@ module API
         end
 
         desc 'List merge requests' do
-          success Entities::MergeRequest
+          detail 'iid filter is deprecated have been removed on V4'
+          success ::API::Entities::MergeRequest
         end
         params do
           optional :state, type: String, values: %w[opened closed merged all], default: 'all',
@@ -67,11 +68,12 @@ module API
             end
 
           merge_requests = merge_requests.reorder(params[:order_by] => params[:sort])
-          present paginate(merge_requests), with: Entities::MergeRequest, current_user: current_user, project: user_project
+
+          present paginate(merge_requests), with: ::API::Entities::MergeRequest, current_user: current_user, project: user_project
         end
 
         desc 'Create a merge request' do
-          success Entities::MergeRequest
+          success ::API::Entities::MergeRequest
         end
         params do
           requires :title, type: String, desc: 'The title of the merge request'
@@ -90,7 +92,7 @@ module API
           merge_request = ::MergeRequests::CreateService.new(user_project, current_user, mr_params).execute
 
           if merge_request.valid?
-            present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
+            present merge_request, with: ::API::Entities::MergeRequest, current_user: current_user, project: user_project
           else
             handle_merge_request_errors! merge_request.errors
           end
@@ -107,9 +109,6 @@ module API
           merge_request.destroy
         end
 
-        # Routing "merge_request/:merge_request_id/..." is DEPRECATED and WILL BE REMOVED in version 9.0
-        # Use "merge_requests/:merge_request_id/..." instead.
-        #
         params do
           requires :merge_request_id, type: Integer, desc: 'The ID of a merge request'
         end
@@ -118,34 +117,34 @@ module API
             if status == :deprecated
               detail DEPRECATION_MESSAGE
             end
-            success Entities::MergeRequest
+            success ::API::Entities::MergeRequest
           end
           get path do
             merge_request = find_merge_request_with_access(params[:merge_request_id])
 
-            present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
+            present merge_request, with: ::API::Entities::MergeRequest, current_user: current_user, project: user_project
           end
 
           desc 'Get the commits of a merge request' do
-            success Entities::RepoCommit
+            success ::API::Entities::RepoCommit
           end
           get "#{path}/commits" do
             merge_request = find_merge_request_with_access(params[:merge_request_id])
 
-            present merge_request.commits, with: Entities::RepoCommit
+            present merge_request.commits, with: ::API::Entities::RepoCommit
           end
 
           desc 'Show the merge request changes' do
-            success Entities::MergeRequestChanges
+            success ::API::Entities::MergeRequestChanges
           end
           get "#{path}/changes" do
             merge_request = find_merge_request_with_access(params[:merge_request_id])
 
-            present merge_request, with: Entities::MergeRequestChanges, current_user: current_user
+            present merge_request, with: ::API::Entities::MergeRequestChanges, current_user: current_user
           end
 
           desc 'Update a merge request' do
-            success Entities::MergeRequest
+            success ::API::Entities::MergeRequest
           end
           params do
             optional :title, type: String, allow_blank: false, desc: 'The title of the merge request'
@@ -166,14 +165,14 @@ module API
             merge_request = ::MergeRequests::UpdateService.new(user_project, current_user, mr_params).execute(merge_request)
 
             if merge_request.valid?
-              present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
+              present merge_request, with: ::API::Entities::MergeRequest, current_user: current_user, project: user_project
             else
               handle_merge_request_errors! merge_request.errors
             end
           end
 
           desc 'Merge a merge request' do
-            success Entities::MergeRequest
+            success ::API::Entities::MergeRequest
           end
           params do
             optional :merge_commit_message, type: String, desc: 'Custom merge commit message'
@@ -218,11 +217,11 @@ module API
                 .execute(merge_request)
             end
 
-            present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
+            present merge_request, with: ::API::Entities::MergeRequest, current_user: current_user, project: user_project
           end
 
           desc 'Cancel merge if "Merge When Pipeline Succeeds" is enabled' do
-            success Entities::MergeRequest
+            success ::API::Entities::MergeRequest
           end
           post "#{path}/cancel_merge_when_build_succeeds" do
             merge_request = find_project_merge_request(params[:merge_request_id])
@@ -235,20 +234,20 @@ module API
           end
 
           desc 'Get the comments of a merge request' do
-            detail 'Duplicate. DEPRECATED and WILL BE REMOVED in 9.0'
-            success Entities::MRNote
+            detail 'Duplicate. DEPRECATED and HAS BEEN REMOVED in V4'
+            success ::API::Entities::MRNote
           end
           params do
             use :pagination
           end
           get "#{path}/comments" do
             merge_request = find_merge_request_with_access(params[:merge_request_id])
-            present paginate(merge_request.notes.fresh), with: Entities::MRNote
+            present paginate(merge_request.notes.fresh), with: ::API::Entities::MRNote
           end
 
           desc 'Post a comment to a merge request' do
-            detail 'Duplicate. DEPRECATED and WILL BE REMOVED in 9.0'
-            success Entities::MRNote
+            detail 'Duplicate. DEPRECATED and HAS BEEN REMOVED in V4'
+            success ::API::Entities::MRNote
           end
           params do
             requires :note, type: String, desc: 'The text of the comment'
@@ -265,14 +264,14 @@ module API
             note = ::Notes::CreateService.new(user_project, current_user, opts).execute
 
             if note.save
-              present note, with: Entities::MRNote
+              present note, with: ::API::Entities::MRNote
             else
               render_api_error!("Failed to save note #{note.errors.messages}", 400)
             end
           end
 
           desc 'List issues that will be closed on merge' do
-            success Entities::MRNote
+            success ::API::Entities::MRNote
           end
           params do
             use :pagination
@@ -295,7 +294,7 @@ module API
             merge_request = user_project.merge_requests.find(params[:merge_request_id])
 
             authorize! :read_merge_request, merge_request
-            present merge_request, with: Entities::MergeRequestApprovals, current_user: current_user
+            present merge_request, with: ::API::Entities::MergeRequestApprovals, current_user: current_user
           end
 
           # Approve a merge request
@@ -315,7 +314,7 @@ module API
               .new(user_project, current_user)
               .execute(merge_request)
 
-            present merge_request, with: Entities::MergeRequestApprovals, current_user: current_user
+            present merge_request, with: ::API::Entities::MergeRequestApprovals, current_user: current_user
           end
 
           delete "#{path}/unapprove" do
@@ -327,7 +326,7 @@ module API
               .new(user_project, current_user)
               .execute(merge_request)
 
-            present merge_request, with: Entities::MergeRequestApprovals, current_user: current_user
+            present merge_request, with: ::API::Entities::MergeRequestApprovals, current_user: current_user
           end
         end
       end
