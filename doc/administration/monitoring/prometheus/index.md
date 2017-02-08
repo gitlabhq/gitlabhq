@@ -1,8 +1,9 @@
 # GitLab Prometheus
 
 >**Notes:**
-- Prometheus and the node exporter are bundled in the Omnibus GitLab package
-  since GitLab 8.16. For installations from source you will have to install
+- Prometheus and the various exporters listed in this page are bundled in the
+  Omnibus GitLab package. Check each exporter's documentation for the timeline
+  they got added. For installations from source you will have to install
   them yourself. Over subsequent releases additional GitLab metrics will be
   captured.
 - Prometheus services are off by default but will be on starting with GitLab 9.0.
@@ -15,8 +16,10 @@ access to high quality time-series monitoring of GitLab services.
 ## Overview
 
 Prometheus works by periodically connecting to data sources and collecting their
-performance metrics. To view and work with the monitoring data, you can either
-connect directly to Prometheus or utilize a dashboard tool like [Grafana].
+performance metrics via the [various exporters](#prometheus-exporters). To view
+and work with the monitoring data, you can either
+[connect directly to Prometheus](#viewing-performance-metrics) or utilize a
+dashboard tool like [Grafana].
 
 ## Configuring Prometheus
 
@@ -41,7 +44,7 @@ TCP port `9090` under localhost. If the [node exporter](#node-exporter) service
 has been enabled, it will automatically be set up as a monitoring target for
 Prometheus.
 
-## Viewing Performance Metrics
+## Viewing performance metrics
 
 After you have [enabled Prometheus](#configuring-prometheus), you can visit
 `<your_domain_name>:9090` for the dashboard that Prometheus offers by default.
@@ -59,7 +62,7 @@ There are a number of libraries and servers which help in exporting existing
 metrics from third-party systems as Prometheus metrics. This is useful for cases
 where it is not feasible to instrument a given system with Prometheus metrics
 directly (for example, HAProxy or Linux system stats). You can read more in the
-[Prometheus exporters and integrations documentation][prom-exporters].
+[Prometheus exporters and integrations upstream documentation][prom-exporters].
 
 While you can use any exporter you like with your GitLab installation, the
 following ones documented here are bundled in the Omnibus GitLab packages
@@ -67,33 +70,12 @@ making it easy to configure and use.
 
 ### Node exporter
 
->**Note:**
-Available since Omnibus GitLab 8.16. For installations from source you'll
-have to install and configure it yourself.
-
-The [node exporter] allows you to measure various machine resources such as
+The node exporter allows you to measure various machine resources such as
 memory, disk and CPU utilization.
 
-To enable the node exporter:
-
-1. [Enable Prometheus](#configuring-prometheus)
-1. Edit `/etc/gitlab/gitlab.rb`
-1. Find and uncomment the following line, making sure it's set to `true`:
-
-    ```ruby
-    node_exporter['enable'] = true
-    ```
-
-1. Save the file and [reconfigure GitLab][reconfigure] for the changes to
-   take effect
-
-Prometheus it will now automatically begin collecting performance data from
-the node exporter. You can visit `<your_domain_name>:9100/metrics` for a real
-time representation of the metrics that are collected. Refresh the page and
-you will see the data change.
+[➔ Read more about the node exporter.](node_exporter.md)
 
 [grafana]: https://grafana.net
-[node exporter]: https://github.com/prometheus/node_exporter
 [prometheus]: https://prometheus.io
 [prom-query]: https://prometheus.io/docs/querying/basics
 [prom-grafana]: https://prometheus.io/docs/visualization/grafana/
