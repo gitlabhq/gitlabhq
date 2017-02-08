@@ -102,4 +102,13 @@ describe Gitlab::Geo, lib: true do
       expect(described_class.license_allows?).to be_falsey
     end
   end
+
+  describe '.generate_access_keys' do
+    it 'returns a public and secret access key' do
+      keys = described_class.generate_access_keys
+
+      expect(keys[:access_key].length).to eq(20)
+      expect(keys[:secret_access_key].length).to eq(40)
+    end
+  end
 end
