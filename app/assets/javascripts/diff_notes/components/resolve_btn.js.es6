@@ -3,6 +3,7 @@
 /* global CommentsStore */
 /* global ResolveService */
 /* global Flash */
+const Vue = require('vue');
 
 (() => {
   const ResolveBtn = Vue.extend({
@@ -16,6 +17,7 @@
     },
     data: function () {
       return {
+        note: {},
         discussions: CommentsStore.state,
         loading: false
       };
@@ -29,13 +31,6 @@
     computed: {
       discussion: function () {
         return this.discussions[this.discussionId];
-      },
-      note: function () {
-        if (this.discussion) {
-          return this.discussion.getNote(this.noteId);
-        } else {
-          return undefined;
-        }
       },
       buttonText: function () {
         if (this.isResolved) {
@@ -106,6 +101,8 @@
     },
     created: function () {
       CommentsStore.create(this.discussionId, this.noteId, this.canResolve, this.resolved, this.resolvedBy);
+
+      this.note = this.discussion.getNote(this.noteId);
     }
   });
 
