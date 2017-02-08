@@ -476,17 +476,17 @@ module SystemNoteService
   #
   # Example Note text:
   #
-  #   "Approved this merge request"
+  #   "approved this merge request"
   #
   # Returns the created Note object
   def approve_mr(noteable, user)
-    body = "Approved this merge request"
+    body = "approved this merge request"
 
     create_note(noteable: noteable, project: noteable.project, author: user, note: body)
   end
 
   def unapprove_mr(noteable, user)
-    body = "Unapproved this merge request"
+    body = "unapproved this merge request"
     create_note(noteable: noteable, project: noteable.project, author: user, note: body)
   end
 
