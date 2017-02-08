@@ -76,7 +76,7 @@ You and they should weigh the benefit and urgency of the change (how important i
 against the potential negative impact (things breaking without enough time to comfortably find them and fix them before the release on the 22nd).
 When in doubt, we err on the side of _not_ cherry-picking.
 
-For example, an exception may be made for a trivial 1-5 line performance improvement
+For example, it is likely that an exception will be made for a trivial 1-5 line performance improvement
 (e.g. adding an index or adding `includes` to a query), but not for a new feature, no matter how relatively small or thoroughly tested.
 
 During the feature freeze all merge requests that are meant to go into the upcoming
