@@ -62,6 +62,7 @@ var config = {
       },
       {
         test: /\.(js|es6)$/,
+        exclude: /node_modules/,
         loader: 'imports-loader',
         query: 'this=>window'
       },
