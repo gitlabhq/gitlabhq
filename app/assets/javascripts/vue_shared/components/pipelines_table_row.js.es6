@@ -111,7 +111,7 @@ require('./commit');
        * If provided, returns the commit ref.
        * Needed to render the commit component column.
        *
-       * Matched `url` prop sent in the API to `path` prop needed
+       * Matches `path` prop sent in the API to `ref_url` prop needed
        * in the commit component.
        *
        * @returns {Object|Undefined}
@@ -119,8 +119,8 @@ require('./commit');
       commitRef() {
         if (this.pipeline.ref) {
           return Object.keys(this.pipeline.ref).reduce((accumulator, prop) => {
-            if (prop === 'url') {
-              accumulator.path = this.pipeline.ref[prop];
+            if (prop === 'path') {
+              accumulator.ref_url = this.pipeline.ref[prop];
             } else {
               accumulator[prop] = this.pipeline.ref[prop];
             }
