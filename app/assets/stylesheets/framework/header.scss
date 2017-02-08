@@ -222,6 +222,10 @@ header {
       float: right;
       border-top: none;
 
+      @media (min-width: $screen-md-min) {
+        padding: 0;
+      }
+
       @media (max-width: $screen-xs-max) {
         float: none;
       }
