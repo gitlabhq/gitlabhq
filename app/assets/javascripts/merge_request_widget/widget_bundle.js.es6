@@ -12,9 +12,5 @@ $(() => {
   gl.MergeRequestWidgetApp = new Vue({
     el: rootEl,
     data: widgetSharedStore.data,
-    mounted() {
-      // re-init the MiniPipelineGraph because of Vue is messing with the element
-      merge_request_widget.initMiniPipelineGraph();
-    },
   });
 });
