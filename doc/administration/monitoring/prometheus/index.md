@@ -81,6 +81,12 @@ The Redis exporter allows you to measure various Redis metrics.
 
 [➔ Read more about the Redis exporter.](redis_exporter.md)
 
+### Postgres exporter
+
+The Postgres exporter allows you to measure various PostgreSQL metrics.
+
+[➔ Read more about the Postgres exporter.](postgres_exporter.md)
+
 [grafana]: https://grafana.net
 [prometheus]: https://prometheus.io
 [prom-query]: https://prometheus.io/docs/querying/basics
