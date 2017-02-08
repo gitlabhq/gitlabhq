@@ -1,9 +1,7 @@
 /* eslint-disable arrow-parens, class-methods-use-this, no-param-reassign */
 /* global Cookies */
 
-((global) => {
-  let singleton;
-
+(() => {
   const pinnedStateCookie = 'pin_nav';
   const sidebarBreakpoint = 1024;
 
@@ -23,11 +21,12 @@
 
   class Sidebar {
     constructor() {
-      if (!singleton) {
-        singleton = this;
-        singleton.init();
+      if (!Sidebar.singleton) {
+        Sidebar.singleton = this;
+        Sidebar.singleton.init();
       }
-      return singleton;
+
+      return Sidebar.singleton;
     }
 
     init() {
@@ -39,7 +38,7 @@
       $(document)
         .on('click', sidebarToggleSelector, () => this.toggleSidebar())
         .on('click', pinnedToggleSelector, () => this.togglePinnedState())
-        .on('click', 'html, body', (e) => this.handleClickEvent(e))
+        .on('click', 'html, body, a, button', (e) => this.handleClickEvent(e))
         .on('DOMContentLoaded', () => this.renderState())
         .on('todo:toggle', (e, count) => this.updateTodoCount(count));
       this.renderState();
@@ -88,10 +87,12 @@
       $pinnedToggle.attr('title', tooltipText).tooltip('fixTitle').tooltip(tooltipState);
 
       if (this.isExpanded) {
-        setTimeout(() => $(sidebarContentSelector).niceScroll().updateScrollBar(), 200);
+        const sidebarContent = $(sidebarContentSelector);
+        setTimeout(() => { sidebarContent.niceScroll().updateScrollBar(); }, 200);
       }
     }
   }
 
-  global.Sidebar = Sidebar;
-})(window.gl || (window.gl = {}));
+  window.gl = window.gl || {};
+  gl.Sidebar = Sidebar;
+})();
