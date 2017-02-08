@@ -125,7 +125,7 @@ module API
       delete ":id" do
         group = find_group!(params[:id])
         authorize! :admin_group, group
-        DestroyGroupService.new(group, current_user).execute
+        ::Groups::DestroyService.new(group, current_user).execute
       end
 
       desc 'Get a list of projects in this group.' do

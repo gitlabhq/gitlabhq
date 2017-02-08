@@ -293,7 +293,7 @@ module API
         user = User.find_by(id: params[:id])
         not_found!('User') unless user
 
-        DeleteUserService.new(current_user).execute(user)
+        ::Users::DestroyService.new(current_user).execute(user)
       end
 
       desc 'Block a user. Available only for admins.'

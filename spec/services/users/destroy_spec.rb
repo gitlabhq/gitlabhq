@@ -1,15 +1,16 @@
 require 'spec_helper'
 
-describe DeleteUserService, services: true do
+describe Users::DestroyService, services: true do
   describe "Deletes a user and all their personal projects" do
     let!(:user)         { create(:user) }
     let!(:current_user) { create(:user) }
     let!(:namespace)    { create(:namespace, owner: user) }
     let!(:project)      { create(:project, namespace: namespace) }
+    let(:service)       { described_class.new(current_user) }
 
     context 'no options are given' do
       it 'deletes the user' do
-        user_data = DeleteUserService.new(current_user).execute(user)
+        user_data = service.execute(user)
 
         expect { user_data['email'].to eq(user.email) }
         expect { User.find(user.id) }.to raise_error(ActiveRecord::RecordNotFound)
@@ -19,7 +20,7 @@ describe DeleteUserService, services: true do
       it 'will delete the project in the near future' do
         expect_any_instance_of(Projects::DestroyService).to receive(:async_execute).once
 
-        DeleteUserService.new(current_user).execute(user)
+        service.execute(user)
       end
     end
 
@@ -30,7 +31,7 @@ describe DeleteUserService, services: true do
 
       before do
         solo_owned.group_members = [member]
-        DeleteUserService.new(current_user).execute(user)
+        service.execute(user)
       end
 
       it 'does not delete the user' do
@@ -45,7 +46,7 @@ describe DeleteUserService, services: true do
 
       before do
         solo_owned.group_members = [member]
-        DeleteUserService.new(current_user).execute(user, delete_solo_owned_groups: true)
+        service.execute(user, delete_solo_owned_groups: true)
       end
 
       it 'deletes solo owned groups' do
