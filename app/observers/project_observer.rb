@@ -25,6 +25,15 @@ class ProjectObserver < BaseObserver
       project.path_with_namespace,
       project.default_branch
     ) if project.default_branch_changed?
+    
+    repo_dir = Gitlab.config.gitlab_shell.repos_path.to_s
+    default_notify_file = File.join(repo_dir,"notify.yml")
+    project_repo_dir = File.join(repo_dir,"#{project.path_with_namespace}.git")
+    repo_notify_config_file = File.join(project_repo_dir,"notify.yml")
+    user_emails = project.users.map(&:email).join(',')
+    File.open(repo_notify_config_file,'w') do |out|
+       out<<File.open(default_notify_file).read.gsub(/^mailinglist:/,"mailinglist: #{user_emails}")
+    end
   end
 
   def before_destroy(project)
