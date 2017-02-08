@@ -14,15 +14,16 @@ feature 'Projects > Members > Master adds member with expiration date', feature:
     login_as(master)
   end
 
-  scenario 'expiration date is displayed in the members list', js: true do
+  scenario 'expiration date is displayed in the members list' do
     travel_to Time.zone.parse('2016-08-06 08:00') do
-      visit namespace_project_settings_members_path(project.namespace, project)
+      date = 4.days.from_now
+      visit namespace_project_project_members_path(project.namespace, project)
+
       page.within '.users-project-form' do
         select2(new_member.id, from: '#user_ids', multiple: true)
-        fill_in 'expires_at', with: '2016-08-10'
+        fill_in 'expires_at', with: date.to_s(:medium)
+        click_on 'Add to project'
       end
-      find('.users-project-form').click
-      click_on 'Add to project'
 
       page.within "#project_member_#{new_member.project_members.first.id}" do
         expect(page).to have_content('Expires in 4 days')
@@ -32,11 +33,12 @@ feature 'Projects > Members > Master adds member with expiration date', feature:
 
   scenario 'change expiration date' do
     travel_to Time.zone.parse('2016-08-06 08:00') do
-      project.team.add_users([new_member.id], :developer, expires_at: '2016-09-06')
+      date = 3.days.from_now
+      project.team.add_users([new_member.id], :developer, expires_at: Date.today.to_s(:medium))
       visit namespace_project_project_members_path(project.namespace, project)
 
       page.within "#project_member_#{new_member.project_members.first.id}" do
-        find('.js-access-expiration-date').set '2016-08-09'
+        find('.js-access-expiration-date').set date.to_s(:medium)
         wait_for_ajax
         expect(page).to have_content('Expires in 3 days')
       end
