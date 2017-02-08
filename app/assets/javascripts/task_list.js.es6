@@ -7,7 +7,7 @@ class TaskList {
   constructor(options = {}) {
     this.selector = options.selector;
     this.dataType = options.dataType;
-    this.onSuccess = options.onSuccess || () => null;
+    this.onSuccess = options.onSuccess || (() => {});
     this.init();
   }
 
