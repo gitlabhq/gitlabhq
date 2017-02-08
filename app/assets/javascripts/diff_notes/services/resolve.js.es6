@@ -88,5 +88,5 @@ window.Vue.use(require('vue-resource'));
         discussionId
       }, {});
     }
-  }
+  };
 })();

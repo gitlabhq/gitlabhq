@@ -56,7 +56,7 @@ const Vue = require('vue');
     created: function () {
       CommentsStore.createDiscussion(this.discussionId, this.canResolve);
 
-      this.discussion = this.discussions[this.discussionId]
+      this.discussion = this.discussions[this.discussionId];
     }
   });
 

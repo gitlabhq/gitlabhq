@@ -1,6 +1,7 @@
 /* eslint-disable func-names, comma-dangle, new-cap, no-new, import/newline-after-import, no-multi-spaces, max-len */
 /* global Vue */
 /* global ResolveCount */
+/* global ResolveServiceClass */
 
 function requireAll(context) { return context.keys().map(context); }
 const Vue = require('vue');
