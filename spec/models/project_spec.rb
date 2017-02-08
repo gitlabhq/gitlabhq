@@ -275,13 +275,6 @@ describe Project, models: true do
     it { is_expected.to delegate_method(:add_master).to(:team) }
   end
 
-  describe '#name_with_namespace' do
-    let(:project) { build_stubbed(:empty_project) }
-
-    it { expect(project.name_with_namespace).to eq "#{project.namespace.human_name} / #{project.name}" }
-    it { expect(project.human_name).to eq project.name_with_namespace }
-  end
-
   describe '#to_reference' do
     let(:owner)     { create(:user, name: 'Gitlab') }
     let(:namespace) { create(:namespace, path: 'sample-namespace', owner: owner) }
@@ -1838,6 +1831,20 @@ describe Project, models: true do
         expect(project.public_path_for_source_path('source/file.html', sha)).to be_nil
       end
     end
+  end
+
+  describe '#parent' do
+    let(:project) { create(:empty_project) }
+
+    it { expect(project.parent).to eq(project.namespace) }
+  end
+
+  describe '#parent_changed?' do
+    let(:project) { create(:empty_project) }
+
+    before { project.namespace_id = 7 }
+
+    it { expect(project.parent_changed?).to be_truthy }
   end
 
   def enable_lfs

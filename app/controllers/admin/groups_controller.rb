@@ -2,7 +2,7 @@ class Admin::GroupsController < Admin::ApplicationController
   before_action :group, only: [:edit, :update, :destroy, :project_update, :members_update]
 
   def index
-    @groups = Group.with_statistics
+    @groups = Group.with_statistics.with_route
     @groups = @groups.sort(@sort = params[:sort])
     @groups = @groups.search(params[:name]) if params[:name].present?
     @groups = @groups.page(params[:page])
