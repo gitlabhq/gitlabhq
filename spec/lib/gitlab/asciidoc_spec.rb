@@ -37,6 +37,29 @@ module Gitlab
           render(input, context, asciidoc_opts)
         end
       end
+      
+      context "XSS" do
+        links = {
+          'links' => {
+            input: 'link:mylink"onmouseover="alert(1)[Click Here]',
+            output: "<div>\n<p><a href=\"mylink\">Click Here</a></p>\n</div>"
+          },
+          'images' => {
+            input: 'image:https://localhost.com/image.png[Alt text" onerror="alert(7)]',
+            output: "<div>\n<p><span><img src=\"https://localhost.com/image.png\" alt=\"Alt text\"></span></p>\n</div>"
+          },
+          'pre' => {
+            input: '```mypre"><script>alert(3)</script>',
+            output: "<div>\n<div>\n<pre lang=\"mypre\">\"&gt;<code></code></pre>\n</div>\n</div>"
+          }
+        }
+
+        links.each do |name, data|
+          it "does not convert dangerous #{name} into HTML" do
+            expect(render(data[:input], context)).to eql data[:output]
+          end
+        end
+      end
     end
 
     def render(*args)
