@@ -14,29 +14,28 @@ class TaskList {
   init() {
     // Prevent duplicate event bindings
     this.disable();
-    $(this.selector + ' .js-task-list-container').taskList('enable');
-    $(document).on('tasklist:changed', this.selector + ' .js-task-list-container', this.update);
+    $(`${this.selector} .js-task-list-container`).taskList('enable');
+    $(document).on('tasklist:changed', `${this.selector} .js-task-list-container`, this.update);
   }
 
   disable() {
-    $(this.selector + ' .js-task-list-container').taskList('disable');
-    return $(document).off('tasklist:changed', this.selector + ' .js-task-list-container');
+    $(`${this.selector} .js-task-list-container`).taskList('disable');
+    return $(document).off('tasklist:changed', `${this.selector} .js-task-list-container`);
   }
 
   update(e) {
-    var patchData;
-    patchData = {};
+    const patchData = {};
     patchData[this.dataType] = {
-      'description': $(e.target).val()
+      description: $(e.target).val(),
     };
     return $.ajax({
       type: 'PATCH',
       url: $('form.js-issuable-update').attr('action'),
       data: patchData,
-      success: function(result) {
+      success: (result) => {
         document.querySelector('#task_status').innerText = result.task_status;
         document.querySelector('#task_status_short').innerText = result.task_status_short;
-      }
+      },
     });
   }
 }
