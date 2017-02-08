@@ -285,10 +285,10 @@
     .events-description {
       line-height: 65px;
       padding: 0 $gl-padding;
+    }
 
-      span {
-        color: $gl-text-color-secondary;
-      }
+    .events-info {
+      color: $gl-text-color-secondary;
     }
   }
 
