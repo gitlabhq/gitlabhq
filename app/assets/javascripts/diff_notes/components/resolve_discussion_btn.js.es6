@@ -14,13 +14,11 @@ const Vue = require('vue');
     },
     data: function() {
       return {
-        discussions: CommentsStore.state
+        discussions: CommentsStore.state,
+        discussion: {},
       };
     },
     computed: {
-      discussion: function () {
-        return this.discussions[this.discussionId];
-      },
       showButton: function () {
         if (this.discussion) {
           return this.discussion.isResolvable();
@@ -57,6 +55,8 @@ const Vue = require('vue');
     },
     created: function () {
       CommentsStore.createDiscussion(this.discussionId, this.canResolve);
+
+      this.discussion = this.discussions[this.discussionId]
     }
   });
 

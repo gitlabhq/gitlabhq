@@ -3,20 +3,21 @@
 /* global Flash */
 /* global CommentsStore */
 
-((w) => {
-  class ResolveServiceClass {
-    constructor() {
-      this.noteResource = Vue.resource('notes{/noteId}/resolve');
-      this.discussionResource = Vue.resource('merge_requests{/mergeRequestId}/discussions{/discussionId}/resolve');
+window.Vue.use(require('vue-resource'));
+
+(() => {
+  window.ResolveServiceClass = class ResolveServiceClass {
+    constructor(rootPath) {
+      this.noteResource = Vue.resource(`${rootPath}/notes{/noteId}/resolve`);
+      this.discussionResource = Vue.resource(`${rootPath}/merge_requests{/mergeRequestId}/discussions{/discussionId}/resolve`);
     }
 
     setCSRF() {
       Vue.http.headers.common['X-CSRF-Token'] = $.rails.csrfToken();
     }
 
-    prepareRequest(root) {
+    prepareRequest() {
       this.setCSRF();
-      Vue.http.options.root = root;
     }
 
     resolve(projectPath, noteId) {
@@ -88,6 +89,4 @@
       }, {});
     }
   }
-
-  w.ResolveService = new ResolveServiceClass();
-})(window);
+})();
