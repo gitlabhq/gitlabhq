@@ -127,6 +127,7 @@
   z-index: 9;
   max-width: 280px;
   min-width: 240px;
+  max-height: 250px;
   margin-top: 2px;
   margin-bottom: 0;
   font-size: 14px;
@@ -136,6 +137,7 @@
   border: 1px solid $dropdown-border-color;
   border-radius: $border-radius-base;
   box-shadow: 0 2px 4px $dropdown-shadow-color;
+  overflow-y: auto;
 
   &.is-loading {
     .dropdown-content {
