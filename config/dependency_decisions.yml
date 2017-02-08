@@ -308,3 +308,15 @@
     :why: https://github.com/substack/node-wordwrap/blob/0.0.3/LICENSE
     :versions: []
     :when: 2017-02-08 20:17:13.084968000 Z
+- - :approve
+  - spdx-expression-parse
+  - :who: Mike Greiling
+    :why: https://github.com/kemitchell/spdx-expression-parse.js/blob/v1.0.4/LICENSE
+    :versions: []
+    :when: 2017-02-08 22:33:01.806977000 Z
+- - :approve
+  - spdx-license-ids
+  - :who: Mike Greiling
+    :why: https://github.com/shinnn/spdx-license-ids/blob/v1.2.2/LICENSE
+    :versions: []
+    :when: 2017-02-08 22:35:00.225232000 Z
