@@ -33,6 +33,9 @@ module Gitlab
 
       html = Banzai.post_process(html, context)
 
+      filter = Banzai::Filter::SanitizationFilter.new(html)
+      html = filter.call.to_s
+
       html.html_safe
     end
 
