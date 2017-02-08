@@ -62,22 +62,24 @@ star, smile, etc.). Some good tips about code reviews can be found in our
 On the 7th of each month, RC1 of the upcoming release is created and deployed to GitLab.com and the stable branch for this release is frozen, which means master is no longer merged into it.
 Merge requests may still be merged into master during this period,
 but they will go into the _next_ release, unless they are manually cherry-picked into the stable branch.
-By freezing the stable branches prior to a release there's no need to worry
-about last minute merge requests potentially breaking a lot of
-things.
+By freezing the stable branches 2 weeks prior to a release, we reduce the risk of a last minute merge request potentially breaking a lot of things.
 
-Once the stable branch is frozen, only fixes for regressions (bugs introduced in that same release) and security issues will be cherry-picked into the stable branch, and released in the next RC (before the 22nd) or patch release (after the 22nd).
+Once the stable branch is frozen, only fixes for regressions (bugs introduced in that same release)
+and security issues will be cherry-picked into the stable branch.
+Any merge requests cherry-picked into the stable branch for a previous release will also be picked into the latest stable branch.
+These fixes will be released in the next RC (before the 22nd) or patch release (after the 22nd).
 
-If your merge request does not meet that requirement but you still think it should go into the upcoming release,
-you can ask for an exception to be made.
-To make sure the advantages and disadvantages are well considered, exceptions require sign-off from 3 people besides the developer: a Release Manager, the relevant engineering lead, and an engineering director, VP, or CTO.
+If you think a merge request should go into the upcoming release even though it does not meet these requirements,
+you can ask for an exception to be made. Exceptions require sign-off from 3 people besides the developer: a Release Manager (1), a relevant Engineering Lead (2), and an Engineering Director, VP of Engineering, or CTO (3).
 
-You and they should weigh the benefit and urgency of the change (how important it is to the company that this is released _right now_ instead of in a month)
-against the potential negative impact (things breaking without enough time to comfortably find them and fix them before the release on the 22nd).
+Whether an exception is made is determined by weighing the benefit and urgency of the change
+(how important it is to the company that this is released _right now_ instead of in a month)
+against the potential negative impact
+(things breaking without enough time to comfortably find and fix them before the release on the 22nd).
 When in doubt, we err on the side of _not_ cherry-picking.
 
 For example, it is likely that an exception will be made for a trivial 1-5 line performance improvement
-(e.g. adding an index or adding `includes` to a query), but not for a new feature, no matter how relatively small or thoroughly tested.
+(e.g. adding a database index or adding `includes` to a query), but not for a new feature, no matter how relatively small or thoroughly tested.
 
 During the feature freeze all merge requests that are meant to go into the upcoming
 release should have the correct milestone assigned _and_ have the label
