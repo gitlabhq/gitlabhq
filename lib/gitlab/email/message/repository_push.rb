@@ -46,7 +46,7 @@ module Gitlab
         end
 
         def diffs_count
-          diffs.size if diffs
+          diffs&.size
         end
 
         def compare
@@ -58,7 +58,7 @@ module Gitlab
         end
 
         def compare_timeout
-          diffs.overflow? if diffs
+          diffs&.overflow?
         end
 
         def reverse_compare?

@@ -95,7 +95,7 @@ class GeoNode < ActiveRecord::Base
   end
 
   def update_dependents_attributes
-    self.geo_node_key.title = "Geo node: #{self.url}" if self.geo_node_key
+    self.geo_node_key&.title = "Geo node: #{self.url}"
 
     if self.primary?
       self.oauth_application = nil

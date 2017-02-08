@@ -107,7 +107,7 @@ module Projects
         project.push_rule = push_rule
       end
 
-      @project.group.refresh_members_authorized_projects if @project.group
+      @project.group&.refresh_members_authorized_projects
     end
 
     def skip_wiki?
