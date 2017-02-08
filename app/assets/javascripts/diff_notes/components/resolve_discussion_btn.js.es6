@@ -2,6 +2,7 @@
 /* global Vue */
 /* global CommentsStore */
 /* global ResolveService */
+const Vue = require('vue');
 
 (() => {
   const ResolveDiscussionBtn = Vue.extend({

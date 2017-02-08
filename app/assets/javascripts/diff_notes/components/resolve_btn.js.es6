@@ -3,6 +3,7 @@
 /* global CommentsStore */
 /* global ResolveService */
 /* global Flash */
+const Vue = require('vue');
 
 (() => {
   const ResolveBtn = Vue.extend({

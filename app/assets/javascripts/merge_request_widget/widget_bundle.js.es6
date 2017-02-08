@@ -1,3 +1,4 @@
+/* global merge_request_widget */
 const Vue = require('vue');
 require('./widget_store');
 require('./approvals/approvals_bundle');

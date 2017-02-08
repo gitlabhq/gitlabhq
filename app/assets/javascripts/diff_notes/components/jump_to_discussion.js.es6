@@ -2,6 +2,7 @@
 /* global Vue */
 /* global DiscussionMixins */
 /* global CommentsStore */
+const Vue = require('vue');
 
 (() => {
   const JumpToDiscussion = Vue.extend({
