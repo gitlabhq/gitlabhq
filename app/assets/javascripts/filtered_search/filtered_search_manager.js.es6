@@ -6,7 +6,7 @@
 
       if (this.filteredSearchInput) {
         this.tokenizer = gl.FilteredSearchTokenizer;
-        this.dropdownManager = new gl.FilteredSearchDropdownManager();
+        this.dropdownManager = new gl.FilteredSearchDropdownManager(this.filteredSearchInput.getAttribute('data-base-endpoint') || '');
 
         this.bindEvents();
         this.loadSearchParamsFromURL();

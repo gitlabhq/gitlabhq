@@ -11,7 +11,7 @@
             class: "check_all_issues left"
       .issues-other-filters.filtered-search-container
         .filtered-search-input-container
-          %input.form-control.filtered-search{ placeholder: 'Search or filter results...', 'data-id' => 'filtered-search', 'data-project-id' => @project.id, 'data-username-params' => @users.to_json(only: [:id, :username]) }
+          %input.form-control.filtered-search{ placeholder: 'Search or filter results...', 'data-id' => 'filtered-search', 'data-project-id' => @project.id, 'data-username-params' => @users.to_json(only: [:id, :username]), 'data-base-endpoint' => namespace_project_path(@project.namespace, @project) }
           = icon('filter')
           %button.clear-search.hidden{ type: 'button' }
             = icon('times')
