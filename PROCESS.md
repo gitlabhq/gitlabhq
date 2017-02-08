@@ -59,20 +59,30 @@ star, smile, etc.). Some good tips about code reviews can be found in our
 
 ## Feature Freeze
 
-On the 7th of each month, the stable branches for the upcoming release will
-be frozen for major changes. Merge requests may still be merged into master
-during this period. By freezing the stable branches prior to a release there's
-no need to worry about last minute merge requests potentially breaking a lot of
+On the 7th of each month, RC1 of the upcoming release is released and the stable branch for this release is frozen, which means master is no longer merged into it.
+Merge requests may still be merged into master during this period,
+but they will go into the _next_ release, unless they are manually cherry-picked into the stable branch.
+By freezing the stable branches prior to a release there's no need to worry
+about last minute merge requests potentially breaking a lot of
 things.
 
-What is considered to be a major change is determined on a case by case basis as
-this definition depends very much on the context of changes. For example, a 5
-line change might have a big impact on the entire application. Ultimately the
-decision will be made by the maintainers and the release managers.
+Once the stable branch is frozen, only fixes for regressions (bugs introduced in that same release) and security issues will be cherry-picked into the stable branch, and released in the next RC (before the 22nd) or patch release (after the 22nd).
+
+If your merge request does not meet that requirement but you still think it should go into the upcoming release,
+you can ask for an exception to be made.
+To make sure the advantages and disadvantages are well considered, exceptions require sign-off from 3 people besides the developer: a Release Manager, the relevant engineering lead, and an engineering director, VP, or CTO.
+
+You and they should weigh the benefit and urgency of the change (how important it is to the company that this is released _right now_ instead of in a month)
+against the potential negative impact (things breaking without enough time to comfortably find them and fix them before the release on the 22nd).
+When in doubt, we err on the side of _not_ cherry-picking.
+
+For example, an exception may be made for a trivial 1-5 line performance improvement
+(e.g. adding an index or adding `includes` to a query), but not for a new feature, no matter how relatively small or thoroughly tested.
 
 During the feature freeze all merge requests that are meant to go into the upcoming
 release should have the correct milestone assigned _and_ have the label
-~"Pick into Stable" set. Merge requests without a milestone and this label will
+~"Pick into Stable" set, so that release managers can find and pick them.
+Merge requests without a milestone and this label will
 not be merged into any stable branches.
 
 ## Copy & paste responses
