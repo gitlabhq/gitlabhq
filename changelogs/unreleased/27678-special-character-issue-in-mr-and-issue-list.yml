@@ -1,4 +1,4 @@
 ---
-title: Fixes special charater issue for MR and issue title in list page
+title: Fixes html escaping issue in MR and Issue title
 merge_request: 9027
 author:
