@@ -600,6 +600,7 @@ describe 'Git LFS API and storage' do
             expect(json_response).to eq('objects' => [
               { 'oid' => sample_oid,
                 'size' => sample_size,
+                'authenticated' => true,
                 'actions' => {
                   'download' => {
                     'href' => "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}",
