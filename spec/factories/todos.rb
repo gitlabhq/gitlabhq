@@ -24,6 +24,10 @@ FactoryGirl.define do
       target factory: :merge_request
     end
 
+    trait :marked do
+      action { Todo::MARKED }
+    end
+
     trait :approval_required do
       action { Todo::APPROVAL_REQUIRED }
     end

@@ -86,7 +86,9 @@ module TodosHelper
     [
       { id: '', text: 'Any Action' },
       { id: Todo::ASSIGNED, text: 'Assigned' },
-      { id: Todo::MENTIONED, text: 'Mentioned' }
+      { id: Todo::MENTIONED, text: 'Mentioned' },
+      { id: Todo::MARKED, text: 'Added' },
+      { id: Todo::BUILD_FAILED, text: 'Pipelines' }
     ]
   end
 
