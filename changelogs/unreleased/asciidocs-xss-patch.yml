@@ -1,0 +1,4 @@
+---
+title: Patch Asciidocs rendering to block XSS
+merge_request:
+author:
