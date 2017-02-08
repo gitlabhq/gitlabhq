@@ -1,6 +1,4 @@
-function requireAll(context) { return context.keys().map(context); }
-
 require('./approvals_store');
 require('./approvals_api');
-
-requireAll(require.context('./components', true, /^\.\/.*\.(js|es6)$/));
+require('./components/approvals_body');
+require('./components/approvals_footer');
