@@ -40,7 +40,7 @@ describe Gitlab::ChatCommands::Presenters::IssueShow do
     let(:weight_attachment) { subject[:attachments].first[:fields].find { |a| a[:title] == "Weight" } }
 
     it 'shows the weight' do
-      expect(weight_attachment).not_to eq(nil)
+      expect(weight_attachment).not_to be_nil
       expect(weight_attachment[:value]).to be(3)
     end
   end
