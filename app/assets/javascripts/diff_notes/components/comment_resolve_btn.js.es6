@@ -1,5 +1,4 @@
 /* eslint-disable comma-dangle, object-shorthand, func-names, no-else-return, quotes, no-lonely-if, max-len */
-/* global Vue */
 /* global CommentsStore */
 const Vue = require('vue');
 
@@ -10,13 +9,11 @@ const Vue = require('vue');
     },
     data() {
       return {
-        textareaIsEmpty: true
+        textareaIsEmpty: true,
+        discussion: {},
       };
     },
     computed: {
-      discussion: function () {
-        return CommentsStore.state[this.discussionId];
-      },
       showButton: function () {
         if (this.discussion) {
           return this.discussion.isResolvable();
@@ -42,6 +39,9 @@ const Vue = require('vue');
           }
         }
       }
+    },
+    created() {
+      this.discussion = CommentsStore.state[this.discussionId];
     },
     mounted: function () {
       const $textarea = $(`#new-discussion-note-form-${this.discussionId} .note-textarea`);
