@@ -1,3 +1,5 @@
+require_relative '../../migration_helpers'
+
 module RuboCop
   module Cop
     module Migration
