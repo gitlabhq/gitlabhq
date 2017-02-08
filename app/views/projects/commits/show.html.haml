@@ -22,9 +22,7 @@
           = link_to "View Open Merge Request", namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: 'btn'
       - elsif create_mr_button?(@repository.root_ref, @ref)
         .control
-          = link_to create_mr_path(@repository.root_ref, @ref), class: 'btn btn-success' do
-            = icon('plus')
-            Create Merge Request
+          = link_to "Create Merge Request", create_mr_path(@repository.root_ref, @ref), class: 'btn btn-success'
 
       .control
         = form_tag(namespace_project_commits_path(@project.namespace, @project, @id), method: :get, class: 'commits-search-form') do
