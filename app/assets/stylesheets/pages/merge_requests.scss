@@ -268,11 +268,12 @@
   .merge-request {
     padding: 10px  0 10px 15px;
     position: relative;
+    display: -webkit-flex;
+    display: flex;
 
     .issue-info-container {
-      @media (max-width: $screen-xs-max) {
-        width: 88%;
-      }
+      -webkit-flex: 1;
+      flex: 1;
     }
 
     .merge-request-title {

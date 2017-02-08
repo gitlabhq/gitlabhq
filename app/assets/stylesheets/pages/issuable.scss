@@ -461,17 +461,19 @@
 
 .issuable-list {
   li {
-    .issue-info-container {
-      display: inline-block;
-      width: 96.5%;
 
-      @media (max-width: $screen-md-max) {
-        width: 95%;
-      }
+    .issue-box {
+      display: -webkit-flex;
+      display: flex;
+    }
+
+    .issue-info-container {
+      -webkit-flex: 1;
+      flex: 1;
+      padding-right: $gl-padding;
     }
 
     .issue-check {
-      float: left;
       padding-right: $gl-padding;
       margin-bottom: 10px;
       min-width: 15px;
