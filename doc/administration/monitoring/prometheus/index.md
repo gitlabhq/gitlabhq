@@ -87,6 +87,12 @@ The Postgres exporter allows you to measure various PostgreSQL metrics.
 
 [➔ Read more about the Postgres exporter.](postgres_exporter.md)
 
+### GitLab monitor exporter
+
+The GitLab monitor exporter allows you to measure various GitLab metrics.
+
+[➔ Read more about the GitLab monitor exporter.](gitlab_monitor_exporter.md)
+
 [grafana]: https://grafana.net
 [prometheus]: https://prometheus.io
 [prom-query]: https://prometheus.io/docs/querying/basics
