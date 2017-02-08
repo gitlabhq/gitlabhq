@@ -809,7 +809,6 @@ describe 'Filter issues', js: true, feature: true do
 
     it 'milestone dropdown loads milestones' do
       input_filtered_search("milestone:", submit: false)
-      sleep 1
 
       within('#js-dropdown-milestone') do
         expect(page).to have_selector('.filter-dropdown .filter-dropdown-item', count: 2)
@@ -818,7 +817,6 @@ describe 'Filter issues', js: true, feature: true do
 
     it 'label dropdown load labels' do
       input_filtered_search("label:", submit: false)
-      sleep 1
 
       within('#js-dropdown-label') do
         expect(page).to have_selector('.filter-dropdown .filter-dropdown-item', count: 5)
