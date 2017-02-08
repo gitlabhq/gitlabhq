@@ -29,8 +29,6 @@ describe 'Merge request', :feature, :js do
     it 'shows widget status after creating new merge request' do
       click_button 'Submit merge request'
 
-      expect(find('.mr-state-widget')).to have_content('Checking ability to merge automatically')
-
       wait_for_ajax
 
       expect(page).to have_selector('.accept_merge_request')
