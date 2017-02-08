@@ -75,6 +75,12 @@ memory, disk and CPU utilization.
 
 [➔ Read more about the node exporter.](node_exporter.md)
 
+### Redis exporter
+
+The Redis exporter allows you to measure various Redis metrics.
+
+[➔ Read more about the Redis exporter.](redis_exporter.md)
+
 [grafana]: https://grafana.net
 [prometheus]: https://prometheus.io
 [prom-query]: https://prometheus.io/docs/querying/basics
