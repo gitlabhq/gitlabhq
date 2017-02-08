@@ -5,7 +5,7 @@
 
   .merge-request-title.title
     %span.merge-request-title-text
-      = link_to sanitize(merge_request.title), merge_request_path(merge_request)
+      = link_to merge_request.title, merge_request_path(merge_request)
     %ul.controls
       - if merge_request.merged?
         %li

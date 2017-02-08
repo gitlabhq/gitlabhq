@@ -58,7 +58,7 @@
 .issue-details.issuable-details
   .detail-page-description.content-block{ class: ('hide-bottom-border' unless @issue.description.present? ) }
     %h2.title
-      = markdown_field(@issue, :title)
+      = @issue.title
     - if @issue.description.present?
       .description{ class: can?(current_user, :update_issue, @issue) ? 'js-task-list-container' : '' }
         .wiki

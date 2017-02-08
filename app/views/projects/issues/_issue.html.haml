@@ -6,7 +6,7 @@
   .issue-title.title
     %span.issue-title-text
       = confidential_icon(issue)
-      = link_to sanitize(issue.title), issue_path(issue)
+      = link_to issue.title, issue_path(issue)
     %ul.controls
       - if issue.closed?
         %li

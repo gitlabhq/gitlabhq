@@ -1,6 +1,6 @@
 .detail-page-description.content-block
   %h2.title
-    = markdown_field(@merge_request, :title)
+    = @merge_request.title
 
   %div
     - if @merge_request.description.present?
