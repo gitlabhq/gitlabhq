@@ -6,7 +6,7 @@
   .col-sm-10
     .checkbox
       = f.label :create_chat_team do
-        = f.check_box :create_chat_team, checked: @group.chat_team
+        = f.check_box(:create_chat_team, { checked: @group.chat_team }, 'true', 'false')
         Link the group to a new Mattermost team
 
 .form-group
