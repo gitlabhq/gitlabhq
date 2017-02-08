@@ -37,6 +37,7 @@ require('bootstrap/js/popover');
 require('select2/select2.js');
 window._ = require('underscore');
 window.Dropzone = require('dropzone');
+window.Sortable = require('vendor/Sortable');
 require('mousetrap');
 require('mousetrap/plugins/pause/mousetrap-pause');
 require('./shortcuts');
