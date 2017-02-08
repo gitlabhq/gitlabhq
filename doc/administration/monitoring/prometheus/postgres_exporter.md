@@ -13,7 +13,7 @@ To enable the postgres exporter:
 1. Add or find and uncomment the following line, making sure it's set to `true`:
 
     ```ruby
-    postgres-exporter['enable'] = true
+    postgres_exporter['enable'] = true
     ```
 
 1. Save the file and [reconfigure GitLab][reconfigure] for the changes to

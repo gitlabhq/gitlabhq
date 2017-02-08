@@ -14,7 +14,7 @@ To enable the Redis exporter:
 1. Find and uncomment the following line, making sure it's set to `true`:
 
     ```ruby
-    redis-exporter['enable'] = true
+    redis_exporter['enable'] = true
     ```
 
 1. Save the file and [reconfigure GitLab][reconfigure] for the changes to
