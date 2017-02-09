@@ -130,7 +130,7 @@ class User < ActiveRecord::Base
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
   before_validation :generate_password, on: :create
-  before_validation :signup_domain_valid?, on: :create
+  before_validation :signup_domain_valid?, on: :create, if: ->(user) { !user.created_by_id }
   before_validation :sanitize_attrs
   before_validation :set_notification_email, if: ->(user) { user.email_changed? }
   before_validation :set_public_email, if: ->(user) { user.public_email_changed? }

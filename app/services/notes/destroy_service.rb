@@ -1,5 +1,5 @@
 module Notes
-  class DeleteService < BaseService
+  class DestroyService < BaseService
     def execute(note)
       note.destroy
     end

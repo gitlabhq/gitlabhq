@@ -32,7 +32,8 @@ GET /groups
     "web_url": "http://localhost:3000/groups/foo-bar",
     "request_access_enabled": false,
     "full_name": "Foobar Group",
-    "full_path": "foo-bar"
+    "full_path": "foo-bar",
+    "parent_id": null
   }
 ]
 ```
@@ -156,8 +157,9 @@ Example response:
   "avatar_url": null,
   "web_url": "https://gitlab.example.com/groups/twitter",
   "request_access_enabled": false,
-  "full_name": "Foobar Group",
-  "full_path": "foo-bar",
+  "full_name": "Twitter",
+  "full_path": "twitter",
+  "parent_id": null,
   "projects": [
     {
       "id": 7,
@@ -350,6 +352,7 @@ Parameters:
 - `visibility_level` (optional) - The group's visibility. 0 for private, 10 for internal, 20 for public.
 - `lfs_enabled` (optional)      - Enable/disable Large File Storage (LFS) for the projects in this group
 - `request_access_enabled` (optional) - Allow users to request member access.
+- `parent_id` (optional) - The parent group id for creating nested group.
 
 ## Transfer project to group
 
@@ -401,6 +404,7 @@ Example response:
   "request_access_enabled": false,
   "full_name": "Foobar Group",
   "full_path": "foo-bar",
+  "parent_id": null,
   "projects": [
     {
       "id": 9,

@@ -24,10 +24,13 @@ module API
         optional :request_access_enabled, type: Boolean, desc: 'Allow users to request member access'
         optional :only_allow_merge_if_build_succeeds, type: Boolean, desc: 'Only allow to merge if builds succeed'
         optional :only_allow_merge_if_all_discussions_are_resolved, type: Boolean, desc: 'Only allow to merge if all discussions are resolved'
+<<<<<<< HEAD
 
         # EE-specific
         optional :repository_storage, type: String, desc: 'Which storage shard the repository is on. Available only to admins'
         optional :approvals_before_merge, type: Integer, desc: 'How many approvers should approve merge request by default'
+=======
+>>>>>>> ce/master
       end
     end
 

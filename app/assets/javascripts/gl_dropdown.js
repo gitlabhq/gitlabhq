@@ -437,7 +437,7 @@
       }
     };
 
-    GitLabDropdown.prototype.opened = function() {
+    GitLabDropdown.prototype.opened = function(e) {
       var contentHtml;
       this.resetRows();
       this.addArrowKeyEvent();
@@ -455,6 +455,10 @@
 
       if (this.options.showMenuAbove) {
         this.positionMenuAbove();
+      }
+
+      if (this.options.opened) {
+        this.options.opened.call(this, e);
       }
 
       return this.dropdown.trigger('shown.gl.dropdown');

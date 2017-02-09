@@ -1,3 +1,5 @@
+/* global Pikaday */
+/* global dateFormat */
 (() => {
   // Add datepickers to all `js-access-expiration-date` elements. If those elements are
   // children of an element with the `clearable-input` class, and have a sibling
@@ -11,21 +13,34 @@
     }
     const inputs = $(selector);
 
-    inputs.datepicker({
-      dateFormat: 'yy-mm-dd',
-      minDate: 1,
-      onSelect: function onSelect() {
-        $(this).trigger('change');
-        toggleClearInput.call(this);
-      },
+    inputs.each((i, el) => {
+      const $input = $(el);
+
+      const calendar = new Pikaday({
+        field: $input.get(0),
+        theme: 'gitlab-theme',
+        format: 'YYYY-MM-DD',
+        minDate: new Date(),
+        onSelect(dateText) {
+          $input.val(dateFormat(new Date(dateText), 'yyyy-mm-dd'));
+
+          $input.trigger('change');
+
+          toggleClearInput.call($input);
+        },
+      });
+
+      $input.data('pikaday', calendar);
     });
 
     inputs.next('.js-clear-input').on('click', function clicked(event) {
       event.preventDefault();
 
       const input = $(this).closest('.clearable-input').find(selector);
-      input.datepicker('setDate', null)
-        .trigger('change');
+      const calendar = input.data('pikaday');
+
+      calendar.setDate(null);
+      input.trigger('change');
       toggleClearInput.call(input);
     });
 

@@ -241,7 +241,7 @@ describe 'Issue Boards', feature: true, js: true do
       page.within('.due_date') do
         click_link 'Edit'
 
-        click_link Date.today.day
+        click_button Date.today.day
 
         wait_for_vue_resource
 

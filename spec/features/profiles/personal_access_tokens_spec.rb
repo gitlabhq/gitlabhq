@@ -34,7 +34,7 @@ describe 'Profile > Personal Access Tokens', feature: true, js: true do
 
       # Set date to 1st of next month
       find_field("Expires at").trigger('focus')
-      find("a[title='Next']").click
+      find(".pika-next").click
       click_on "1"
 
       # Scopes

@@ -1,5 +1,6 @@
 /* eslint-disable comma-dangle, class-methods-use-this, no-underscore-dangle, no-param-reassign, no-unused-vars, consistent-return, func-names, space-before-function-paren, max-len */
 /* global Flash */
+/* global Sortable */
 
 ((global) => {
   class LabelManager {
@@ -9,11 +10,12 @@
       this.otherLabels = otherLabels || $('.js-other-labels');
       this.errorMessage = 'Unable to update label prioritization at this time';
       this.emptyState = document.querySelector('#js-priority-labels-empty-state');
-      this.prioritizedLabels.sortable({
-        items: 'li',
-        placeholder: 'list-placeholder',
-        axis: 'y',
-        update: this.onPrioritySortUpdate.bind(this)
+      this.sortable = Sortable.create(this.prioritizedLabels.get(0), {
+        filter: '.empty-message',
+        forceFallback: true,
+        fallbackClass: 'is-dragging',
+        dataIdAttr: 'data-id',
+        onUpdate: this.onPrioritySortUpdate.bind(this),
       });
       this.bindEvents();
     }
@@ -51,13 +53,13 @@
         $target = this.otherLabels;
         $from = this.prioritizedLabels;
       }
-      if ($from.find('li').length === 1) {
+      $label.detach().appendTo($target);
+      if ($from.find('li').length) {
         $from.find('.empty-message').removeClass('hidden');
       }
-      if (!$target.find('li').length) {
+      if ($target.find('> li:not(.empty-message)').length) {
         $target.find('.empty-message').addClass('hidden');
       }
-      $label.detach().appendTo($target);
       // Return if we are not persisting state
       if (!persistState) {
         return;
@@ -101,8 +103,12 @@
 
     getSortedLabelsIds() {
       const sortedIds = [];
-      this.prioritizedLabels.find('li').each(function() {
-        sortedIds.push($(this).data('id'));
+      this.prioritizedLabels.find('> li').each(function() {
+        const id = $(this).data('id');
+
+        if (id) {
+          sortedIds.push(id);
+        }
       });
       return sortedIds;
     }

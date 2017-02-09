@@ -99,6 +99,7 @@ const ShortcutsBlob = require('./shortcuts_blob');
           break;
         case 'projects:milestones:new':
         case 'projects:milestones:edit':
+        case 'projects:milestones:update':
           new ZenMode();
           new gl.DueDateSelectors();
           new gl.GLForm($('.milestone-form'));
