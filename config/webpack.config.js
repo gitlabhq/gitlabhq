@@ -80,9 +80,6 @@ var config = {
       modules: false,
       assets: true
     }),
-    new CompressionPlugin({
-      asset: '[path].gz[query]',
-    }),
     new webpack.IgnorePlugin(/moment/, /pikaday/),
   ],
 
@@ -112,7 +109,10 @@ if (IS_PRODUCTION) {
     }),
     new webpack.DefinePlugin({
       'process.env': { NODE_ENV: JSON.stringify('production') }
-    })
+    }),
+    new CompressionPlugin({
+      asset: '[path].gz[query]',
+    }),
   );
 }
 
