@@ -69,6 +69,9 @@
       var hash = w.gl.utils.getLocationHash();
       if (!hash) return;
 
+      // This is required to handle non-unicode characters in hash
+      hash = decodeURIComponent(hash);
+
       // scroll to user-generated markdown anchor if we cannot find a match
       if (document.getElementById(hash) === null) {
         var target = document.getElementById('user-content-' + hash);

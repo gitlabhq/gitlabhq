@@ -71,9 +71,9 @@
       const $navHeight = $('.navbar-gitlab').outerHeight() + $('.layout-nav').outerHeight();
       const diff = $navHeight - $('body').scrollTop();
       if (diff > 0) {
-        $('.right-sidebar').outerHeight($(window).height() - diff);
+        $('.js-right-sidebar').outerHeight($(window).height() - diff);
       } else {
-        $('.right-sidebar').outerHeight('100%');
+        $('.js-right-sidebar').outerHeight('100%');
       }
     }
 
