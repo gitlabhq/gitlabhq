@@ -214,7 +214,13 @@ module Ci
     def cancel_running
       Gitlab::OptimisticLocking.retry_lock(
         statuses.cancelable) do |cancelable|
-          cancelable.each(&:cancel)
+          cancelable.each do |status|
+            if status.created?
+              status.skip
+            elsif status.active?
+              status.cancel
+            end
+          end
         end
     end
 
