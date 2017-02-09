@@ -728,7 +728,7 @@ describe Ci::Pipeline, models: true do
   describe '#cancel_running' do
     let(:latest_status) { pipeline.statuses.pluck(:status) }
 
-    context 'when there is a running external job and created build' do
+    context 'when there is a running external job and a regular job' do
       before do
         create(:ci_build, :running, pipeline: pipeline)
         create(:generic_commit_status, :running, pipeline: pipeline)
@@ -741,7 +741,7 @@ describe Ci::Pipeline, models: true do
       end
     end
 
-    context 'when builds are in different stages' do
+    context 'when jobs are in different stages' do
       before do
         create(:ci_build, :running, stage_idx: 0, pipeline: pipeline)
         create(:ci_build, :running, stage_idx: 1, pipeline: pipeline)
@@ -751,6 +751,19 @@ describe Ci::Pipeline, models: true do
 
       it 'cancels both jobs' do
         expect(latest_status).to contain_exactly('canceled', 'canceled')
+      end
+    end
+
+    context 'when there are created builds present in the pipeline' do
+      before do
+        create(:ci_build, :running, stage_idx: 0, pipeline: pipeline)
+        create(:ci_build, :created, stage_idx: 1, pipeline: pipeline)
+
+        pipeline.cancel_running
+      end
+
+      it 'skips created builds' do
+        expect(latest_status).to eq ['canceled', 'skipped']
       end
     end
   end
