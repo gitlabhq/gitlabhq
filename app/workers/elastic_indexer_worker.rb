@@ -1,5 +1,3 @@
-require 'gitlab/elastic/delete_by_query'
-
 class ElasticIndexerWorker
   include Sidekiq::Worker
   include Elasticsearch::Model::Client::ClassMethods
@@ -66,7 +64,7 @@ class ElasticIndexerWorker
   end
 
   def remove_documents_by_project_id(record_id)
-    client.gitlab_delete_by_query({
+    client.delete_by_query({
       index: Project.__elasticsearch__.index_name,
       body: {
         query: {
@@ -77,7 +75,7 @@ class ElasticIndexerWorker
   end
 
   def remove_children_documents(document_type, parent_record_id)
-    client.gitlab_delete_by_query({
+    client.delete_by_query({
       index: Project.__elasticsearch__.index_name,
       body: {
         query: {

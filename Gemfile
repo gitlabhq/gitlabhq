@@ -106,7 +106,8 @@ gem 'seed-fu', '~> 2.3.5'
 # Search
 gem 'elasticsearch-model', '~> 0.1.9'
 gem 'elasticsearch-rails', '~> 0.1.9'
-gem 'gitlab-elasticsearch-git', '~> 1.1', require: "elasticsearch/git"
+gem 'elasticsearch-api',   '5.0.3'
+gem 'gitlab-elasticsearch-git', '1.1.1', require: "elasticsearch/git"
 
 # Markdown and HTML processing
 gem 'html-pipeline',        '~> 1.11.0'
