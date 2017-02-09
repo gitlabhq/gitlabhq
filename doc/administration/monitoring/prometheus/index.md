@@ -136,7 +136,7 @@ The GitLab monitor exporter allows you to measure various GitLab metrics.
 [grafana]: https://grafana.net
 [hsts]: https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security
 [multi-user-prometheus]: https://gitlab.com/gitlab-org/multi-user-prometheus
-[nginx-custom-config]: https://docs.gitlab.com/omnibus/settings/configuration.html#inserting-custom-nginx-settings-into-the-gitlab-server-block
+[nginx-custom-config]: https://docs.gitlab.com/omnibus/settings/nginx.html#inserting-custom-nginx-settings-into-the-gitlab-server-block
 [prometheus]: https://prometheus.io
 [prom-exporters]: https://prometheus.io/docs/instrumenting/exporters/
 [prom-query]: https://prometheus.io/docs/querying/basics
