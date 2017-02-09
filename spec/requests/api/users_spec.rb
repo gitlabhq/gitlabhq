@@ -11,6 +11,7 @@ describe API::Users, api: true  do
   let(:ldap_user) { create(:omniauth_user, provider: 'ldapmain') }
   let(:ldap_blocked_user) { create(:omniauth_user, provider: 'ldapmain', state: 'ldap_blocked') }
   let(:not_existing_user_id) { (User.maximum('id') || 0 ) + 10 }
+  let(:not_existing_pat_id) { (PersonalAccessToken.maximum('id') || 0 ) + 10 }
 
   describe "GET /users" do
     context "when unauthenticated" do
@@ -1268,7 +1269,47 @@ describe API::Users, api: true  do
     end
   end
 
-  describe 'DELETE /users/:id/personal_access_tokens/:personal_access_token_id' do
+  describe 'GET /users/:user_id/personal_access_tokens/:personal_access_token_id' do
+    let!(:personal_access_token) { create(:personal_access_token, user: user, revoked: false) }
+    let!(:impersonation_token) { create(:impersonation_personal_access_token, user: user, revoked: false) }
+
+    it 'returns 404 error if user not found' do
+      get api("/users/#{not_existing_user_id}/personal_access_tokens/1", admin)
+
+      expect(response).to have_http_status(404)
+      expect(json_response['message']).to eq('404 User Not Found')
+    end
+
+    it 'returns a 404 error if personal access token not found' do
+      get api("/users/#{user.id}/personal_access_tokens/#{not_existing_pat_id}", admin)
+
+      expect(response).to have_http_status(404)
+      expect(json_response['message']).to eq('404 PersonalAccessToken Not Found')
+    end
+
+    it 'returns a 403 error when authenticated as normal user' do
+      get api("/users/#{user.id}/personal_access_tokens/#{personal_access_token.id}", user)
+
+      expect(response).to have_http_status(403)
+      expect(json_response['message']).to eq('403 Forbidden')
+    end
+
+    it 'returns a personal access token' do
+      get api("/users/#{user.id}/personal_access_tokens/#{personal_access_token.id}", admin)
+
+      expect(response).to have_http_status(200)
+      expect(json_response['token']).to be_present
+    end
+
+    it 'returns an impersonation token' do
+      get api("/users/#{user.id}/personal_access_tokens/#{impersonation_token.id}", admin)
+
+      expect(response).to have_http_status(200)
+      expect(json_response['impersonation']).to eq(true)
+    end
+  end
+
+  describe 'DELETE /users/:user_id/personal_access_tokens/:personal_access_token_id' do
     let!(:personal_access_token) { create(:personal_access_token, user: user, revoked: false) }
     let!(:impersonation_token) { create(:impersonation_personal_access_token, user: user, revoked: false) }
 
@@ -1280,7 +1321,7 @@ describe API::Users, api: true  do
     end
 
     it 'returns a 404 error if personal access token not found' do
-      delete api("/users/#{user.id}/personal_access_tokens/42", admin)
+      delete api("/users/#{user.id}/personal_access_tokens/#{not_existing_pat_id}", admin)
 
       expect(response).to have_http_status(404)
       expect(json_response['message']).to eq('404 PersonalAccessToken Not Found')
@@ -1296,20 +1337,17 @@ describe API::Users, api: true  do
     it 'revokes a personal access token' do
       delete api("/users/#{user.id}/personal_access_tokens/#{personal_access_token.id}", admin)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(204)
       expect(personal_access_token.revoked).to eq(false)
       expect(personal_access_token.reload.revoked).to eq(true)
-      expect(json_response['revoked']).to eq(true)
-      expect(json_response['token']).to be_present
     end
 
     it 'revokes an impersonation token' do
       delete api("/users/#{user.id}/personal_access_tokens/#{impersonation_token.id}", admin)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(204)
       expect(impersonation_token.revoked).to eq(false)
       expect(impersonation_token.reload.revoked).to eq(true)
-      expect(json_response['revoked']).to eq(true)
     end
   end
 end

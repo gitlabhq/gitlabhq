@@ -4,6 +4,7 @@ describe API::PersonalAccessTokens, api: true  do
   include ApiHelpers
 
   let(:user)  { create(:user) }
+  let(:not_found_token) { (PersonalAccessToken.maximum('id') || 0) + 10 }
 
   describe "GET /personal_access_tokens" do
     let!(:active_personal_access_token) { create(:personal_access_token, user: user) }
@@ -76,12 +77,38 @@ describe API::PersonalAccessTokens, api: true  do
     end
   end
 
+  describe 'GET /personal_access_tokens/:personal_access_token_id' do
+    let!(:personal_access_token) { create(:personal_access_token, user: user, revoked: false) }
+    let!(:personal_access_token_of_another_user) { create(:personal_access_token, revoked: false) }
+
+    it 'returns a 404 error if personal access token not found' do
+      get api("/personal_access_tokens/#{not_found_token}", user)
+
+      expect(response).to have_http_status(404)
+      expect(json_response['message']).to eq('404 PersonalAccessToken Not Found')
+    end
+
+    it 'returns a 404 error if personal access token exists but it is a personal access tokens of another user' do
+      get api("/personal_access_tokens/#{personal_access_token_of_another_user.id}", user)
+
+      expect(response).to have_http_status(404)
+      expect(json_response['message']).to eq('404 PersonalAccessToken Not Found')
+    end
+
+    it 'returns a personal access token and does not expose token in the json response' do
+      get api("/personal_access_tokens/#{personal_access_token.id}", user)
+
+      expect(response).to have_http_status(200)
+      expect(json_response['token']).not_to be_present
+    end
+  end
+
   describe 'DELETE /personal_access_tokens/:personal_access_token_id' do
     let!(:personal_access_token) { create(:personal_access_token, user: user, revoked: false) }
     let!(:personal_access_token_of_another_user) { create(:personal_access_token, revoked: false) }
 
     it 'returns a 404 error if personal access token not found' do
-      delete api("/personal_access_tokens/42", user)
+      delete api("/personal_access_tokens/#{not_found_token}", user)
 
       expect(response).to have_http_status(404)
       expect(json_response['message']).to eq('404 PersonalAccessToken Not Found')
@@ -97,11 +124,9 @@ describe API::PersonalAccessTokens, api: true  do
     it 'revokes a personal access token and does not expose token in the json response' do
       delete api("/personal_access_tokens/#{personal_access_token.id}", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(204)
       expect(personal_access_token.revoked).to eq(false)
       expect(personal_access_token.reload.revoked).to eq(true)
-      expect(json_response['revoked']).to eq(true)
-      expect(json_response['token']).not_to be_present
     end
   end
 end

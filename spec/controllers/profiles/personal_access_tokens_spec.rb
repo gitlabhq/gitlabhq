@@ -52,21 +52,17 @@ describe Profiles::PersonalAccessTokensController do
     let!(:inactive_personal_access_token) { create(:revoked_personal_access_token, user: user) }
     let!(:impersonation_personal_access_token) { create(:impersonation_personal_access_token, user: user) }
 
-    it "retrieves active personal access tokens" do
-      get :index
+    before { get :index }
 
+    it "retrieves active personal access tokens" do
       expect(assigns(:active_personal_access_tokens)).to include(active_personal_access_token)
     end
 
     it "retrieves inactive personal access tokens" do
-      get :index
-
       expect(assigns(:inactive_personal_access_tokens)).to include(inactive_personal_access_token)
     end
 
     it "does not retrieve impersonation personal access tokens" do
-      get :index
-
       expect(assigns(:active_personal_access_tokens)).not_to include(impersonation_personal_access_token)
       expect(assigns(:inactive_personal_access_tokens)).not_to include(impersonation_personal_access_token)
     end

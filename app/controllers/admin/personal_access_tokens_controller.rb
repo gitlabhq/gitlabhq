@@ -6,7 +6,8 @@ class Admin::PersonalAccessTokensController < Admin::ApplicationController
   end
 
   def create
-    @personal_access_token = user.personal_access_tokens.generate(personal_access_token_params)
+    # We never want to non-impersonate a user
+    @personal_access_token = user.personal_access_tokens.generate(personal_access_token_params.merge(impersonation: true))
 
     if @personal_access_token.save
       flash[:personal_access_token] = @personal_access_token.token

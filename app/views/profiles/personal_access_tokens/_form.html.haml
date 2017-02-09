@@ -1,7 +1,7 @@
 - personal_access_token = local_assigns.fetch(:personal_access_token)
 - scopes = local_assigns.fetch(:scopes)
 
-= form_for [:profile, personal_access_token], method: :post, html: { class: 'js-requires-input' } do |f|
+= form_for [user, personal_access_token], method: :post, html: { class: 'js-requires-input' } do |f|
 
   = form_errors(personal_access_token)
 

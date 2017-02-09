@@ -363,71 +363,97 @@ module API
         present paginate(events), with: Entities::Event
       end
 
-      desc 'Retrieve personal access tokens. Available only for admins.'
-      params do
-        requires :user_id, type: Integer
-        optional :state, type: String, default: 'all', values: %w[all active inactive], desc: 'Filters (all|active|inactive) personal_access_tokens'
-        optional :impersonation, type: Boolean, default: false, desc: 'Filters only impersonation personal_access_token'
-      end
-      get ':user_id/personal_access_tokens' do
-        authenticated_as_admin!
-
-        user = User.find_by(id: params[:user_id])
-        not_found!('User') unless user
-
-        personal_access_tokens = PersonalAccessToken.and_impersonation_tokens.where(user_id: user.id)
-        personal_access_tokens = personal_access_tokens.impersonation if params[:impersonation]
-
-        case params[:state]
-        when "active"
-          personal_access_tokens = personal_access_tokens.active
-        when "inactive"
-          personal_access_tokens = personal_access_tokens.inactive
-        end
-
-        present personal_access_tokens, with: Entities::PersonalAccessToken
-      end
-
-      desc 'Create a personal access token. Available only for admins.'
       params do
         requires :user_id, type: Integer, desc: 'The ID of the user'
-        requires :name, type: String, desc: 'The name of the personal access token'
-        optional :expires_at, type: Date, desc: 'The expiration date in the format YEAR-MONTH-DAY of the personal access token'
-        optional :scopes, type: Array, desc: 'The array of scopes of the personal access token'
-        optional :impersonation, type: Boolean, default: false, desc: 'The impersonation flag of the personal access token'
       end
-      post ':user_id/personal_access_tokens' do
-        authenticated_as_admin!
+      segment ':user_id' do
+        resource :personal_access_tokens do
+          before { authenticated_as_admin! }
 
-        user = User.find_by(id: params[:user_id])
-        not_found!('User') unless user
+          desc 'Retrieve personal access tokens. Available only for admins.' do
+            detail 'This feature was introduced in GitLab 9.0'
+            success Entities::PersonalAccessToken
+          end
+          params do
+            optional :state, type: String, default: 'all', values: %w[all active inactive], desc: 'Filters (all|active|inactive) personal_access_tokens'
+            optional :impersonation, type: Boolean, default: false, desc: 'Filters only impersonation personal_access_tokens'
+          end
+          get do
+            user = User.find_by(id: params[:user_id])
+            not_found!('User') unless user
 
-        personal_access_token = PersonalAccessToken.generate(declared_params(include_missing: false))
+            personal_access_tokens = PersonalAccessToken.and_impersonation_tokens.where(user_id: user.id)
+            personal_access_tokens = personal_access_tokens.impersonation if params[:impersonation]
 
-        if personal_access_token.save
-          present personal_access_token, with: Entities::PersonalAccessToken
-        else
-          render_validation_error!(personal_access_token)
+            case params[:state]
+            when "active"
+              personal_access_tokens = personal_access_tokens.active
+            when "inactive"
+              personal_access_tokens = personal_access_tokens.inactive
+            end
+
+            present personal_access_tokens, with: Entities::PersonalAccessToken
+          end
+
+          desc 'Create a personal access token. Available only for admins.' do
+            detail 'This feature was introduced in GitLab 9.0'
+            success Entities::PersonalAccessToken
+          end
+          params do
+            requires :name, type: String, desc: 'The name of the personal access token'
+            optional :expires_at, type: Date, desc: 'The expiration date in the format YEAR-MONTH-DAY of the personal access token'
+            optional :scopes, type: Array, desc: 'The array of scopes of the personal access token'
+            optional :impersonation, type: Boolean, default: false, desc: 'The impersonation flag of the personal access token'
+          end
+          post do
+            user = User.find_by(id: params[:user_id])
+            not_found!('User') unless user
+
+            personal_access_token = PersonalAccessToken.generate(declared_params(include_missing: false, include_parent_namespaces: true))
+
+            if personal_access_token.save
+              present personal_access_token, with: Entities::PersonalAccessToken
+            else
+              render_validation_error!(personal_access_token)
+            end
+          end
+
+          desc 'Retrieve personal access token. Available only for admins.' do
+            detail 'This feature was introduced in GitLab 9.0'
+            success Entities::PersonalAccessToken
+          end
+          params do
+            requires :personal_access_token_id, type: Integer, desc: 'The ID of the personal access token'
+          end
+          get '/:personal_access_token_id' do
+            user = User.find_by(id: params[:user_id])
+            not_found!('User') unless user
+
+            personal_access_token = PersonalAccessToken.and_impersonation_tokens.find_by(user_id: user.id, id: params[:personal_access_token_id])
+            not_found!('PersonalAccessToken') unless personal_access_token
+
+            present personal_access_token, with: Entities::PersonalAccessToken
+          end
+
+          desc 'Revoke a personal access token. Available only for admins.' do
+            detail 'This feature was introduced in GitLab 9.0'
+            success Entities::PersonalAccessToken
+          end
+          params do
+            requires :personal_access_token_id, type: Integer, desc: 'The ID of the personal access token'
+          end
+          delete '/:personal_access_token_id' do
+            user = User.find_by(id: params[:user_id])
+            not_found!('User') unless user
+
+            personal_access_token = PersonalAccessToken.and_impersonation_tokens.find_by(user_id: user.id, id: params[:personal_access_token_id])
+            not_found!('PersonalAccessToken') unless personal_access_token
+
+            personal_access_token.revoke!
+
+            no_content!
+          end
         end
-      end
-
-      desc 'Revoke a personal access token. Available only for admins.'
-      params do
-        requires :user_id, type: Integer, desc: 'The ID of the user'
-        requires :personal_access_token_id, type: Integer, desc: 'The ID of the personal access token'
-      end
-      delete ':user_id/personal_access_tokens/:personal_access_token_id' do
-        authenticated_as_admin!
-
-        user = User.find_by(id: params[:user_id])
-        not_found!('User') unless user
-
-        personal_access_token = PersonalAccessToken.and_impersonation_tokens.find_by(user_id: user.id, id: params[:personal_access_token_id])
-        not_found!('PersonalAccessToken') unless personal_access_token
-
-        personal_access_token.revoke!
-
-        present personal_access_token, with: Entities::PersonalAccessToken
       end
     end
 

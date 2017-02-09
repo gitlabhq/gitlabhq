@@ -3,7 +3,10 @@ module API
     before { authenticate! }
 
     resource :personal_access_tokens do
-      desc 'Retrieve personal access tokens'
+      desc 'Retrieve personal access tokens' do
+        detail 'This feature was introduced in GitLab 9.0'
+        success Entities::BasicPersonalAccessToken
+      end
       params do
         optional :state, type: String, default: 'all', values: %w[all active inactive], desc: 'Filters (all|active|inactive) personal_access_tokens'
       end
@@ -20,7 +23,24 @@ module API
         present personal_access_tokens, with: Entities::BasicPersonalAccessToken
       end
 
-      desc 'Create a personal access token'
+      desc 'Retrieve personal access token' do
+        detail 'This feature was introduced in GitLab 9.0'
+        success Entities::BasicPersonalAccessToken
+      end
+      params do
+        requires :personal_access_token_id, type: Integer, desc: 'The ID of the personal access token'
+      end
+      get ':personal_access_token_id' do
+        personal_access_token = PersonalAccessToken.find_by(id: params[:personal_access_token_id], user_id: current_user.id)
+        not_found!('PersonalAccessToken') unless personal_access_token
+
+        present personal_access_token, with: Entities::BasicPersonalAccessToken
+      end
+
+      desc 'Create a personal access token' do
+        detail 'This feature was introduced in GitLab 9.0'
+        success Entities::BasicPersonalAccessToken
+      end
       params do
         requires :name, type: String, desc: 'The name of the personal access token'
         optional :expires_at, type: Date, desc: 'The expiration date in the format YEAR-MONTH-DAY of the personal access token'
@@ -39,7 +59,10 @@ module API
         end
       end
 
-      desc 'Revoke a personal access token'
+      desc 'Revoke a personal access token' do
+        detail 'This feature was introduced in GitLab 9.0'
+        success Entities::BasicPersonalAccessToken
+      end
       params do
         requires :personal_access_token_id, type: Integer, desc: 'The ID of the personal access token'
       end
@@ -49,7 +72,7 @@ module API
 
         personal_access_token.revoke!
 
-        present personal_access_token, with: Entities::BasicPersonalAccessToken
+        no_content!
       end
     end
   end

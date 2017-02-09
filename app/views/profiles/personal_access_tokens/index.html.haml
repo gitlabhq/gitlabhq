@@ -29,7 +29,7 @@
     %p.profile-settings-content
       Pick a name for the application, and we'll give you a unique token.
 
-    = render "form", personal_access_token: @personal_access_token, scopes: @scopes
+    = render "form", user: :profile, personal_access_token: @personal_access_token, scopes: @scopes
 
     %hr
 

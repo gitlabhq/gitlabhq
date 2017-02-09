@@ -858,7 +858,7 @@ An example:
 ]
 ```
 
-In addition, you can filter users based on state: `all`, `active` and `inactive`
+In addition, you can filter tokens based on state: `all`, `active` and `inactive`
 
 ```
 GET /users/:user_id/personal_access_tokens?state=all
@@ -878,12 +878,27 @@ Finally, you can filter based on impersonation: `true` or `false`.
 GET /users/:user_id/personal_access_tokens?impersonation=true
 ```
 
+## Show a user personal access token
+
+It shows a user's personal access token. Note that only administrators can do this.
+
+```
+GET /users/:user_id/personal_access_tokens/:personal_access_token_id
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `user_id` | integer | yes | The ID of the user |
+| `personal_access_token_id` | integer | yes | The ID of the personal access token |
+
 ## Create a personal access token
 
 It creates a new personal access token. Note that only administrators can do this.
-If you set the impersonation flag to true, you can impersonate the user and
-performing both API calls and Git reads and writes. The user will not see these
-tokens in his profile settings.
+You are only able to create impersonation tokens to impersonate the user and perform
+both API calls and Git reads and writes. The user will not see these tokens in his profile
+settings page.
 
 ```
 POST /users/:user_id/personal_access_tokens
