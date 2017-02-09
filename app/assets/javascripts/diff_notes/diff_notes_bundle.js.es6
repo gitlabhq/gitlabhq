@@ -18,7 +18,7 @@ $(() => {
   window.gl = window.gl || {};
   window.gl.diffNoteApps = {};
 
-  window.ResolveService = new ResolveServiceClass(projectPath);
+  window.ResolveService = new gl.DiffNotesResolveServiceClass(projectPath);
 
   gl.diffNotesCompileComponents = () => {
     const $components = $(COMPONENT_SELECTOR).filter(function () {

@@ -1,5 +1,4 @@
 /* eslint-disable comma-dangle, object-shorthand, func-names, no-param-reassign */
-/* global Vue */
 /* global DiscussionMixins */
 /* global CommentsStore */
 const Vue = require('vue');

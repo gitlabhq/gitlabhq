@@ -1,5 +1,4 @@
 /* eslint-disable comma-dangle, object-shorthand, func-names, quote-props, no-else-return, camelcase, no-new, max-len */
-/* global Vue */
 /* global CommentsStore */
 /* global ResolveService */
 /* global Flash */
@@ -11,15 +10,14 @@ const Vue = require('vue');
       noteId: Number,
       discussionId: String,
       resolved: Boolean,
-      projectPath: String,
       canResolve: Boolean,
       resolvedBy: String
     },
     data: function () {
       return {
-        note: {},
         discussions: CommentsStore.state,
-        loading: false
+        loading: false,
+        note: {},
       };
     },
     watch: {
@@ -68,10 +66,10 @@ const Vue = require('vue');
 
         if (this.isResolved) {
           promise = ResolveService
-            .unresolve(this.projectPath, this.noteId);
+            .unresolve(this.noteId);
         } else {
           promise = ResolveService
-            .resolve(this.projectPath, this.noteId);
+            .resolve(this.noteId);
         }
 
         promise.then((response) => {

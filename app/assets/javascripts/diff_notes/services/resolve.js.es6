@@ -1,46 +1,37 @@
 /* eslint-disable class-methods-use-this, one-var, camelcase, no-new, comma-dangle, no-param-reassign, max-len */
-/* global Vue */
 /* global Flash */
 /* global CommentsStore */
 
+const Vue = window.Vue = require('vue');
 window.Vue.use(require('vue-resource'));
+require('../../vue_shared/vue_resource_interceptor');
 
 (() => {
-  window.ResolveServiceClass = class ResolveServiceClass {
-    constructor(rootPath) {
-      this.noteResource = Vue.resource(`${rootPath}/notes{/noteId}/resolve`);
-      this.discussionResource = Vue.resource(`${rootPath}/merge_requests{/mergeRequestId}/discussions{/discussionId}/resolve`);
+  window.gl = window.gl || {};
+
+  class ResolveServiceClass {
+    constructor(root) {
+      this.noteResource = Vue.resource(`${root}/notes{/noteId}/resolve`);
+      this.discussionResource = Vue.resource(`${root}/merge_requests{/mergeRequestId}/discussions{/discussionId}/resolve`);
     }
 
-    setCSRF() {
-      Vue.http.headers.common['X-CSRF-Token'] = $.rails.csrfToken();
-    }
-
-    prepareRequest() {
-      this.setCSRF();
-    }
-
-    resolve(projectPath, noteId) {
-      this.prepareRequest(projectPath);
-
+    resolve(noteId) {
       return this.noteResource.save({ noteId }, {});
     }
 
-    unresolve(projectPath, noteId) {
-      this.prepareRequest(projectPath);
-
+    unresolve(noteId) {
       return this.noteResource.delete({ noteId }, {});
     }
 
-    toggleResolveForDiscussion(projectPath, mergeRequestId, discussionId) {
+    toggleResolveForDiscussion(mergeRequestId, discussionId) {
       const discussion = CommentsStore.state[discussionId];
       const isResolved = discussion.isResolved();
       let promise;
 
       if (isResolved) {
-        promise = this.unResolveAll(projectPath, mergeRequestId, discussionId);
+        promise = this.unResolveAll(mergeRequestId, discussionId);
       } else {
-        promise = this.resolveAll(projectPath, mergeRequestId, discussionId);
+        promise = this.resolveAll(mergeRequestId, discussionId);
       }
 
       promise.then((response) => {
@@ -63,10 +54,8 @@ window.Vue.use(require('vue-resource'));
       });
     }
 
-    resolveAll(projectPath, mergeRequestId, discussionId) {
+    resolveAll(mergeRequestId, discussionId) {
       const discussion = CommentsStore.state[discussionId];
-
-      this.prepareRequest(projectPath);
 
       discussion.loading = true;
 
@@ -76,10 +65,8 @@ window.Vue.use(require('vue-resource'));
       }, {});
     }
 
-    unResolveAll(projectPath, mergeRequestId, discussionId) {
+    unResolveAll(mergeRequestId, discussionId) {
       const discussion = CommentsStore.state[discussionId];
-
-      this.prepareRequest(projectPath);
 
       discussion.loading = true;
 
@@ -88,5 +75,7 @@ window.Vue.use(require('vue-resource'));
         discussionId
       }, {});
     }
-  };
+  }
+
+  gl.DiffNotesResolveServiceClass = ResolveServiceClass;
 })();

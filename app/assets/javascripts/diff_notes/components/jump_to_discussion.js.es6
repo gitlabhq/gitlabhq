@@ -1,5 +1,4 @@
 /* eslint-disable comma-dangle, object-shorthand, func-names, no-else-return, guard-for-in, no-restricted-syntax, one-var, space-before-function-paren, no-lonely-if, no-continue, brace-style, max-len, quotes */
-/* global Vue */
 /* global DiscussionMixins */
 /* global CommentsStore */
 const Vue = require('vue');
@@ -13,12 +12,10 @@ const Vue = require('vue');
     data: function () {
       return {
         discussions: CommentsStore.state,
+        discussion: {},
       };
     },
     computed: {
-      discussion: function () {
-        return this.discussions[this.discussionId];
-      },
       allResolved: function () {
         return this.unresolvedDiscussionCount === 0;
       },
@@ -187,7 +184,10 @@ const Vue = require('vue');
           offset: -($('.navbar-gitlab').outerHeight() + $('.layout-nav').outerHeight())
         });
       }
-    }
+    },
+    created() {
+      this.discussion = this.discussions[this.discussionId];
+    },
   });
 
   Vue.component('jump-to-discussion', JumpToDiscussion);
