@@ -302,3 +302,9 @@
     :why: https://github.com/dchest/tweetnacl-js/blob/master/LICENSE
     :versions: []
     :when: 2017-01-14 20:10:57.812077000 Z
+- - :approve
+  - wordwrap
+  - :who: Mike Greiling
+    :why: https://github.com/substack/node-wordwrap/blob/0.0.3/LICENSE
+    :versions: []
+    :when: 2017-02-08 20:17:13.084968000 Z
