@@ -117,7 +117,7 @@ feature 'Expand and collapse diffs', js: true, feature: true do
         # Wait for diffs
         find('.js-file-title', match: :first)
         # Click `large_diff.md` title
-        all('.js-file-title')[1].click
+        all('.diff-toggle-caret')[1].click
         wait_for_ajax
       end
 
@@ -161,7 +161,7 @@ feature 'Expand and collapse diffs', js: true, feature: true do
               # Wait for diffs
               find('.js-file-title', match: :first)
               # Click `large_diff.md` title
-              all('.js-file-title')[1].click
+              all('.diff-toggle-caret')[1].click
               wait_for_ajax
             end
 
@@ -183,7 +183,7 @@ feature 'Expand and collapse diffs', js: true, feature: true do
         # Wait for diffs
         find('.js-file-title', match: :first)
         # Click `small_diff.md` title
-        all('.js-file-title')[3].click
+        all('.diff-toggle-caret')[3].click
       end
 
       it 'hides the diff content' do
@@ -196,7 +196,7 @@ feature 'Expand and collapse diffs', js: true, feature: true do
           # Wait for diffs
           find('.js-file-title', match: :first)
           # Click `small_diff.md` title
-          all('.js-file-title')[3].click
+          all('.diff-toggle-caret')[3].click
         end
 
         it 'shows the diff content' do
@@ -292,7 +292,7 @@ feature 'Expand and collapse diffs', js: true, feature: true do
         # Wait for diffs
         find('.js-file-title', match: :first)
         # Click `small_diff.md` title
-        all('.js-file-title')[3].click
+        all('.diff-toggle-caret')[3].click
       end
 
       it 'hides the diff content' do
@@ -305,7 +305,7 @@ feature 'Expand and collapse diffs', js: true, feature: true do
           # Wait for diffs
           find('.js-file-title', match: :first)
           # Click `small_diff.md` title
-          all('.js-file-title')[3].click
+          all('.diff-toggle-caret')[3].click
         end
 
         it 'shows the diff content' do
