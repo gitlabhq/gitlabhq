@@ -107,6 +107,14 @@ You can filter by author, assignee, milestone and label.
 
 ![Bulk adding issues to lists](img/issue_boards_add_issues_modal.png)
 
+## Removing issue from list
+
+Removing an issue from a list can be done by clicking the issue card and then
+clicking the **Remove from board** in the sidebar. Doing this keeps the issue
+open buts removes it from that list.
+
+![Remove issue from list](img/issue_boards_remove_issue.png)
+
 ## Filtering issues
 
 You should be able to use the filters on top of your Issue Board to show only
