@@ -5,9 +5,9 @@ require('~/behaviors/quick_submit');
 (function() {
   describe('Quick Submit behavior', function() {
     var keydownEvent;
-    preloadFixtures('static/behaviors/quick_submit.html.raw');
+    preloadFixtures('issues/open-issue.html.raw');
     beforeEach(function() {
-      loadFixtures('static/behaviors/quick_submit.html.raw');
+      loadFixtures('issues/open-issue.html.raw');
       $('form').submit(function(e) {
         // Prevent a form submit from moving us off the testing page
         return e.preventDefault();
@@ -37,10 +37,18 @@ require('~/behaviors/quick_submit');
       }));
       return expect(this.spies.submit).not.toHaveBeenTriggered();
     });
-    it('disables submit buttons', function() {
+    it('disables input of type submit', function() {
+      const submitButton = $('.js-quick-submit input[type=submit]');
       this.textarea.trigger(keydownEvent());
-      expect($('input[type=submit]')).toBeDisabled();
-      return expect($('button[type=submit]')).toBeDisabled();
+      expect(submitButton).toBeDisabled();
+    });
+    it('disables button of type submit', function() {
+      // button doesn't exist in fixture, add it manually
+      const submitButton = $('<button type="submit">Submit it</button>');
+      submitButton.insertAfter(this.textarea);
+
+      this.textarea.trigger(keydownEvent());
+      expect(submitButton).toBeDisabled();
     });
     // We cannot stub `navigator.userAgent` for CI's `rake karma` task, so we'll
     // only run the tests that apply to the current platform
