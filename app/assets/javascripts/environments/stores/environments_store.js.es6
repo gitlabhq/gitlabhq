@@ -1,3 +1,4 @@
+require('~/lib/utils/common_utils');
 /**
  * Environments Store.
  *
@@ -10,6 +11,7 @@ class EnvironmentsStore {
     this.state.environments = [];
     this.state.stoppedCounter = 0;
     this.state.availableCounter = 0;
+    this.state.paginationInformation = {};
 
     return this;
   }
@@ -39,6 +41,17 @@ class EnvironmentsStore {
     this.state.environments = filteredEnvironments;
 
     return filteredEnvironments;
+  }
+
+  storePagination(pagination = {}) {
+    const normalizedHeaders = gl.utils.normalizedHeaders(pagination);
+
+    const paginationInformation = {
+
+    };
+
+    this.paginationInformation = paginationInformation;
+    return paginationInformation;
   }
 
   /**

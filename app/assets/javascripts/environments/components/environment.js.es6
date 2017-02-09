@@ -6,11 +6,13 @@ Vue.use(require('vue-resource'));
 const EnvironmentsService = require('../services/environments_service');
 const EnvironmentItem = require('./environment_item');
 const Store = require('../stores/environments_store');
+require('../../vue_shared/components/table_pagination');
 
 module.exports = Vue.component('environment-component', {
 
   components: {
     'environment-item': EnvironmentItem,
+    'table-pagination': gl.VueGlPagination,
   },
 
   data() {
@@ -34,6 +36,10 @@ module.exports = Vue.component('environment-component', {
       commitIconSvg: environmentsData.commitIconSvg,
       playIconSvg: environmentsData.playIconSvg,
       terminalIconSvg: environmentsData.terminalIconSvg,
+
+      // Pagination Properties,
+      paginationInformation: {},
+      pageNumber: 1,
     };
   },
 
@@ -61,14 +67,18 @@ module.exports = Vue.component('environment-component', {
    */
   created() {
     const scope = this.$options.getQueryParameter('scope') || this.visibility;
-    const endpoint = `${this.endpoint}?scope=${scope}`;
+    const pageNumber = this.$options.getQueryParameter('page') || this.pageNumber;
+    const endpoint = `${this.endpoint}?scope=${scope}&page=${pageNumber}`;
 
     const service = new EnvironmentsService(endpoint);
 
     this.isLoading = true;
 
     return service.all()
-      .then(resp => resp.json())
+      .then((resp) => {
+        debugger;
+        return resp.json();
+      })
       .then((json) => {
         this.store.storeAvailableCount(json.available_count);
         this.store.storeStoppedCount(json.stopped_count);
@@ -110,6 +120,10 @@ module.exports = Vue.component('environment-component', {
   methods: {
     toggleRow(model) {
       return this.store.toggleFolder(model.name);
+    },
+
+    changePage(pageNumber, scope) {
+      gl.utils.visitUrl(`?scope=${scope}&p=${pageNumber}`);
     },
   },
 
@@ -192,6 +206,13 @@ module.exports = Vue.component('environment-component', {
               </template>
             </tbody>
           </table>
+
+          <table-pagination v-if="!isLoading && state.environments.length"
+            :pagenum="1"
+            :count="2"
+            :change="changePage"
+            :pageInfo="paginationInformation">
+          </table-pagination>
         </div>
       </div>
     </div>
