@@ -111,4 +111,4 @@ Click the icon to begin the authentication process. GitHub will ask the user to 
 If everything goes well the user will be returned to GitLab and will be signed in.
 
 [reconfigure]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
-[restart]: ../administration/restart_gitlab.md#installations-from-source
+[restart GitLab]: ../administration/restart_gitlab.md#installations-from-source

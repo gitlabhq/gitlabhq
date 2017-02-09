@@ -89,4 +89,4 @@ user to sign in and authorize the GitLab application. If everything goes well
 the user will be returned to GitLab and will be signed in.
 
 [reconfigure]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
-[restart]: ../administration/restart_gitlab.md#installations-from-source
+[restart GitLab]: ../administration/restart_gitlab.md#installations-from-source

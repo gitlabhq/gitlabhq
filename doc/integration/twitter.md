@@ -80,4 +80,4 @@ To enable the Twitter OmniAuth provider you must register your application with 
 On the sign in page there should now be a Twitter icon below the regular sign in form. Click the icon to begin the authentication process. Twitter will ask the user to sign in and authorize the GitLab application. If everything goes well the user will be returned to GitLab and will be signed in.
 
 [reconfigure]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
-[restart]: ../administration/restart_gitlab.md#installations-from-source
+[restart GitLab]: ../administration/restart_gitlab.md#installations-from-source
