@@ -10,7 +10,6 @@ class EnvironmentsStore {
     this.state.environments = [];
     this.state.stoppedCounter = 0;
     this.state.availableCounter = 0;
-    this.state.filteredEnvironments = [];
 
     return this;
   }

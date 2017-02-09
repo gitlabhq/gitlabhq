@@ -1,7 +1,7 @@
 window.timeago = require('vendor/timeago');
 require('~/environments/components/environment_item');
 
-describe('Environment item', () => {
+fdescribe('Environment item', () => {
   preloadFixtures('static/environments/table.html.raw');
   beforeEach(() => {
     loadFixtures('static/environments/table.html.raw');
@@ -14,7 +14,11 @@ describe('Environment item', () => {
     beforeEach(() => {
       mockItem = {
         name: 'review',
-        size: 3
+        size: 3,
+        isFolder: true,
+        latest: {
+          environment_path: 'url',
+        },
       };
 
       component = new window.gl.environmentsList.EnvironmentItem({

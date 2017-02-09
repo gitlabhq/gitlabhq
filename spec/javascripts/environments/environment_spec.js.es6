@@ -1,9 +1,8 @@
 /* global Vue, environment */
 
 require('~/flash');
-require('~/environments/stores/environments_store');
 require('~/environments/components/environment');
-require('./mock_data');
+const { environment } = require('./mock_data');
 
 describe('Environment', () => {
   preloadFixtures('static/environments/environments.html.raw');
@@ -35,9 +34,6 @@ describe('Environment', () => {
       it('should render the empty state', (done) => {
         component = new gl.environmentsList.EnvironmentsComponent({
           el: document.querySelector('#environments-list-view'),
-          propsData: {
-            store: gl.environmentsList.EnvironmentsStore.create(),
-          },
         });
 
         setTimeout(() => {
@@ -56,7 +52,11 @@ describe('Environment', () => {
 
     describe('with environments', () => {
       const environmentsResponseInterceptor = (request, next) => {
-        next(request.respondWith(JSON.stringify([environment]), {
+        next(request.respondWith(JSON.stringify({
+          environments: [environment],
+          stopped_count: 1,
+          available_count: 0,
+        }), {
           status: 200,
         }));
       };
@@ -74,9 +74,6 @@ describe('Environment', () => {
       it('should render a table with environments', (done) => {
         component = new gl.environmentsList.EnvironmentsComponent({
           el: document.querySelector('#environments-list-view'),
-          propsData: {
-            store: gl.environmentsList.EnvironmentsStore.create(),
-          },
         });
 
         setTimeout(() => {
@@ -109,9 +106,6 @@ describe('Environment', () => {
     it('should render empty state', (done) => {
       component = new gl.environmentsList.EnvironmentsComponent({
         el: document.querySelector('#environments-list-view'),
-        propsData: {
-          store: gl.environmentsList.EnvironmentsStore.create(),
-        },
       });
 
       setTimeout(() => {

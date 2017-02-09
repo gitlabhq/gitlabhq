@@ -1,30 +1,33 @@
-/* global environmentsList */
-
-require('~/environments/stores/environments_store');
-require('./mock_data');
+const Store = require('~/environments/stores/environments_store');
+const { environmentsList } = require('./mock_data');
 
 (() => {
   describe('Store', () => {
+    let store;
+
     beforeEach(() => {
-      gl.environmentsList.EnvironmentsStore.create();
+      store = new Store();
     });
 
     it('should start with a blank state', () => {
-      expect(gl.environmentsList.EnvironmentsStore.state.environments.length).toBe(0);
-      expect(gl.environmentsList.EnvironmentsStore.state.stoppedCounter).toBe(0);
-      expect(gl.environmentsList.EnvironmentsStore.state.availableCounter).toBe(0);
+      expect(store.state.environments.length).toBe(0);
+      expect(store.state.stoppedCounter).toBe(0);
+      expect(store.state.availableCounter).toBe(0);
     });
 
-    describe('store environments', () => {
-      beforeEach(() => {
-        gl.environmentsList.EnvironmentsStore.storeEnvironments(environmentsList);
-      });
+    it('should store environments', () => {
+      store.storeEnvironments(environmentsList);
+      expect(store.state.environments.length).toBe(environmentsList.length);
+    });
 
-      it('should store environments', () => {
-        expect(
-          gl.environmentsList.EnvironmentsStore.state.environments.length,
-        ).toBe(environmentsList.length);
-      });
+    it('should store available count', () => {
+      store.storeAvailableCount(2);
+      expect(store.state.availableCounter).toBe(2);
+    });
+
+    it('should store stopped count', () => {
+      store.storeStoppedCount(2);
+      expect(store.state.stoppedCounter).toBe(2);
     });
   });
 })();

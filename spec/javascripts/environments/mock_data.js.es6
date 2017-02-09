@@ -1,4 +1,3 @@
-
 const environmentsList = [
   {
     name: 'DEV',
@@ -36,8 +35,6 @@ const environmentsList = [
   },
 ];
 
-window.environmentsList = environmentsList;
-
 const environment = {
   name: 'DEV',
   size: 1,
@@ -56,4 +53,7 @@ const environment = {
   },
 };
 
-window.environment = environment;
+module.exports = {
+  environmentsList,
+  environment
+};
