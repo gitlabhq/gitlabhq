@@ -32,7 +32,7 @@ have to install and configure it yourself.
 To enable Prometheus:
 
 1. Edit `/etc/gitlab/gitlab.rb`
-1. Find and uncomment the following line, making sure it's set to `true`:
+1. Add or find and uncomment the following line, making sure it's set to `true`:
 
     ```ruby
     prometheus['enable'] = true
@@ -57,7 +57,7 @@ server. Proceed at your own risk.
 To change the address/port that Prometheus listens on:
 
 1. Edit `/etc/gitlab/gitlab.rb`
-1. Find and add/uncomment the following line:
+1. Add or find and uncomment the following line:
 
     ```ruby
     prometheus['listen_address'] = 'localhost:9090'
