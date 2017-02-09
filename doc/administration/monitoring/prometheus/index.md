@@ -7,6 +7,8 @@
   them yourself. Over subsequent releases additional GitLab metrics will be
   captured.
 - Prometheus services are off by default but will be on starting with GitLab 9.0.
+- Prometheus and its exporters do not authenticate users, and will be available
+  to anyone who can access them.
 
 [Prometheus] is a powerful time-series monitoring service, providing a flexible
 platform for monitoring GitLab and other software products.
@@ -40,14 +42,21 @@ To enable Prometheus:
    take effect
 
 By default, Prometheus will run as the `gitlab-prometheus` user and listen on
-TCP port `9090` under localhost. If the [node exporter](#node-exporter) service
+`http://localhost:9090`. If the [node exporter](#node-exporter) service
 has been enabled, it will automatically be set up as a monitoring target for
 Prometheus.
 
 ## Viewing performance metrics
 
 After you have [enabled Prometheus](#configuring-prometheus), you can visit
-`<your_domain_name>:9090` for the dashboard that Prometheus offers by default.
+`http://localhost:9090` for the dashboard that Prometheus offers by default.
+
+>**Note:**
+If SSL has been enabled on your GitLab instance, you may not be able to access
+Prometheus on the same browser as GitLab due to [HSTS][hsts]. We plan to
+[provide access via GitLab][multi-user-prometheus], but in the interim there are
+some workarounds: using a separate browser for Prometheus, resetting HSTS, or
+having [Nginx proxy it][nginx-custom-config].
 
 The performance data collected by Prometheus can be viewed directly in the
 Prometheus console or through a compatible dashboard tool.
@@ -55,6 +64,13 @@ The Prometheus interface provides a [flexible query language][prom-query] to wor
 with the collected data where you can visualize their output.
 For a more fully featured dashboard, Grafana can be used and has
 [official support for Prometheus][prom-grafana].
+
+Sample Prometheus queries:
+
+- **% Memory used:** `(1 - ((node_memory_MemFree + node_memory_Cached) / node_memory_MemTotal)) * 100`
+- **% CPU load:** `1 - rate(node_cpu{mode="idle"}[5m])`
+- **Data transmitted:** `irate(node_network_transmit_bytes[5m])`
+- **Data received:** `irate(node_network_receive_bytes[5m])`
 
 ## Prometheus exporters
 
@@ -94,9 +110,12 @@ The GitLab monitor exporter allows you to measure various GitLab metrics.
 [➔ Read more about the GitLab monitor exporter.](gitlab_monitor_exporter.md)
 
 [grafana]: https://grafana.net
+[hsts]: https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security
+[multi-user-prometheus]: https://gitlab.com/gitlab-org/multi-user-prometheus
+[nginx-custom-config]: https://docs.gitlab.com/omnibus/settings/configuration.html#inserting-custom-nginx-settings-into-the-gitlab-server-block
 [prometheus]: https://prometheus.io
+[prom-exporters]: https://prometheus.io/docs/instrumenting/exporters/
 [prom-query]: https://prometheus.io/docs/querying/basics
 [prom-grafana]: https://prometheus.io/docs/visualization/grafana/
 [scrape-config]: https://prometheus.io/docs/operating/configuration/#%3Cscrape_config%3E
-[prom-exporters]: https://prometheus.io/docs/instrumenting/exporters/
 [reconfigure]: ../../restart_gitlab.md#omnibus-gitlab-reconfigure
