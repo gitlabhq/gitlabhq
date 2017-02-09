@@ -5,6 +5,8 @@ module Projects
 
       before_action :authorize_admin_project!
       before_action :load_protected_branches, only: [:show]
+      before_action :push_rule, only: [:show]
+      before_action :remote_mirror, only: [:show]
 
       def show
         @deploy_keys = DeployKeysPresenter
@@ -21,7 +23,15 @@ module Projects
 
       def define_protected_branches_controller
         @protected_branch = @project.protected_branches.new
-        load_gon_index(@project)
+        load_gon_index
+      end
+
+      def push_rule
+        @push_rule ||= PushRule.find_or_create_by(is_sample: true)
+      end
+
+      def remote_mirror
+        @remote_mirror = @project.remote_mirrors.first_or_initialize
       end
     end
   end

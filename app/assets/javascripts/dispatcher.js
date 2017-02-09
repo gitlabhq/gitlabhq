@@ -392,7 +392,7 @@ const UserCallout = require('./user_callout');
             case 'builds':
             case 'hooks':
             case 'services':
-            case 'protected_branches':
+            case 'repository':
               shortcut_handler = new ShortcutsNavigation();
           }
       }

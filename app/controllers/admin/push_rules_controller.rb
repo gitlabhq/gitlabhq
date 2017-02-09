@@ -4,6 +4,7 @@ class Admin::PushRulesController < Admin::ApplicationController
   respond_to :html
 
   def show
+    redirect_to namespace_project_settings_repository_path(@project.namespace, @project)
   end
 
   def update

@@ -2,11 +2,12 @@ class Projects::MirrorsController < Projects::ApplicationController
   # Authorize
   before_action :authorize_admin_project!, except: [:update_now]
   before_action :authorize_push_code!, only: [:update_now]
-  before_action :remote_mirror, only: [:show, :update]
+  before_action :remote_mirror, only: [:update]
 
   layout "project_settings"
 
   def show
+    redirect_to namespace_project_settings_repository_path(@project.namespace, @project)
   end
 
   def update

@@ -18,14 +18,6 @@
       = link_to namespace_project_settings_ci_cd_path(@project.namespace, @project), title: 'CI/CD Pipelines' do
         %span
           CI/CD Pipelines
-  = nav_link(controller: :push_rules) do
-    = link_to namespace_project_push_rules_path(@project.namespace, @project), title: "Push Rules" do
-      %span
-        Push Rules
-  = nav_link(controller: :mirrors) do
-    = link_to namespace_project_mirror_path(@project.namespace, @project), title: 'Mirror Repository', data: {placement: 'right'} do
-      %span
-        Mirror Repository
   = nav_link(controller: :pages) do
     = link_to namespace_project_pages_path(@project.namespace, @project), title: 'Pages', data: {placement: 'right'} do
       %span
