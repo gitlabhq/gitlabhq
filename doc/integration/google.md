@@ -90,4 +90,4 @@ At this point, when users first try to authenticate to your GitLab installation 
 1. Add any additional information as you wish - homepage, logo, privacy policy, etc. None of this is required, but it may help your users.
 
 [reconfigure]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
-[restart]: ../administration/restart_gitlab.md#installations-from-source
+[restart GitLab]: ../administration/restart_gitlab.md#installations-from-source

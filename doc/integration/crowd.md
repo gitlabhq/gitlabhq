@@ -59,5 +59,5 @@ To enable the Crowd OmniAuth provider you must register your application with Cr
 On the sign in page there should now be a Crowd tab in the sign in form.
 
 [reconfigure]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
-[restart]: ../administration/restart_gitlab.md#installations-from-source
+[restart GitLab]: ../administration/restart_gitlab.md#installations-from-source
 

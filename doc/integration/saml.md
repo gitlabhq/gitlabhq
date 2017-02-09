@@ -317,4 +317,4 @@ Make sure that one of the above described scenarios is valid, or the requests wi
 fail with one of the mentioned errors.
 
 [reconfigure]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
-[restart]: ../administration/restart_gitlab.md#installations-from-source
+[restart GitLab]: ../administration/restart_gitlab.md#installations-from-source
