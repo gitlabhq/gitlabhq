@@ -9,7 +9,7 @@
  */
 class PipelinesService {
   constructor(endpoint) {
-    this.pipelines = Vue.resource(endpoint);
+    this.pipelines = Vue.resource(`${endpoint}.json`);
   }
 
   /**
