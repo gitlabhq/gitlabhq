@@ -56,7 +56,8 @@ If SSL has been enabled on your GitLab instance, you may not be able to access
 Prometheus on the same browser as GitLab due to [HSTS][hsts]. We plan to
 [provide access via GitLab][multi-user-prometheus], but in the interim there are
 some workarounds: using a separate browser for Prometheus, resetting HSTS, or
-having [Nginx proxy it][nginx-custom-config].
+having [Nginx proxy it][nginx-custom-config]. Follow issue [#27069] for more
+information.
 
 The performance data collected by Prometheus can be viewed directly in the
 Prometheus console or through a compatible dashboard tool.
@@ -119,3 +120,4 @@ The GitLab monitor exporter allows you to measure various GitLab metrics.
 [prom-grafana]: https://prometheus.io/docs/visualization/grafana/
 [scrape-config]: https://prometheus.io/docs/operating/configuration/#%3Cscrape_config%3E
 [reconfigure]: ../../restart_gitlab.md#omnibus-gitlab-reconfigure
+[#27069]: https://gitlab.com/gitlab-org/gitlab-ce/issues/27069
