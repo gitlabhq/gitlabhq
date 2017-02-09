@@ -6,7 +6,7 @@ Vue.http.interceptors.push((request, next) => {
   Vue.activeResources = Vue.activeResources ? Vue.activeResources + 1 : 1;
 
   next((response) => {
-    if (typeof response.data === 'string') {
+    if (typeof response.data === 'string' && response.status !== 500) {
       response.data = JSON.parse(response.data);
     }
 

@@ -10,7 +10,6 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   def index
     @environments = project.environments
-      .includes(:last_deployment)
       .with_state(params[:scope] || :available)
 
     respond_to do |format|
