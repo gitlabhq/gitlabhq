@@ -5,7 +5,7 @@
 
 window.Vue = require('vue');
 window.Vue.use(require('vue-resource'));
-require('../services/environments_service');
+const EnvironmentsService = require('../services/environments_service');
 require('./environment_item');
 const Store = require('../stores/environments_store');
 
@@ -68,11 +68,11 @@ const Store = require('../stores/environments_store');
       const scope = this.$options.getQueryParameter('scope') || this.visibility;
       const endpoint = `${this.endpoint}?scope=${scope}`;
 
-      gl.environmentsService = new EnvironmentsService(endpoint);
+      const service = new EnvironmentsService(endpoint);
 
       this.isLoading = true;
 
-      return gl.environmentsService.all()
+      return service.all()
         .then(resp => resp.json())
         .then((json) => {
           this.store.storeAvailableCount(json.available_count);
