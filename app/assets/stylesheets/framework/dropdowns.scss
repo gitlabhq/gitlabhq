@@ -136,7 +136,7 @@
   border-radius: $border-radius-base;
   box-shadow: 0 2px 4px $dropdown-shadow-color;
 
-  @media (min-width: $screen-md-min) {
+  .filtered-search-input-container & {
     max-width: 280px;
   }
 
