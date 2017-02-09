@@ -7,18 +7,12 @@ window.Vue = require('vue');
 window.Vue.use(require('vue-resource'));
 require('../services/environments_service');
 require('./environment_item');
+const Store = require('../stores/environments_store');
 
 (() => {
   window.gl = window.gl || {};
 
   gl.environmentsList.EnvironmentsComponent = Vue.component('environment-component', {
-    props: {
-      store: {
-        type: Object,
-        required: true,
-        default: () => ({}),
-      },
-    },
 
     components: {
       'environment-item': gl.environmentsList.EnvironmentItem,
@@ -26,9 +20,11 @@ require('./environment_item');
 
     data() {
       const environmentsData = document.querySelector('#environments-list-view').dataset;
+      const store = new Store();
 
       return {
-        state: this.store.state,
+        store,
+        state: store.state,
         visibility: 'available',
         isLoading: false,
         cssContainerClass: environmentsData.cssClass,
