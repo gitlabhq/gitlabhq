@@ -1,25 +1,22 @@
 /* eslint-disable object-shorthand, func-names, space-before-function-paren, comma-dangle, no-else-return, quotes, max-len */
-/* global Vue */
 /* global CommentsStore */
 /* global ResolveService */
+
+const Vue = require('vue');
 
 (() => {
   const ResolveDiscussionBtn = Vue.extend({
     props: {
       discussionId: String,
       mergeRequestId: Number,
-      projectPath: String,
       canResolve: Boolean,
     },
     data: function() {
       return {
-        discussions: CommentsStore.state
+        discussion: {},
       };
     },
     computed: {
-      discussion: function () {
-        return this.discussions[this.discussionId];
-      },
       showButton: function () {
         if (this.discussion) {
           return this.discussion.isResolvable();
@@ -51,11 +48,13 @@
     },
     methods: {
       resolve: function () {
-        ResolveService.toggleResolveForDiscussion(this.projectPath, this.mergeRequestId, this.discussionId);
+        ResolveService.toggleResolveForDiscussion(this.mergeRequestId, this.discussionId);
       }
     },
     created: function () {
       CommentsStore.createDiscussion(this.discussionId, this.canResolve);
+
+      this.discussion = CommentsStore.state[this.discussionId];
     }
   });
 
