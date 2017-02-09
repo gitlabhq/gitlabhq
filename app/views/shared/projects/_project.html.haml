@@ -1,22 +1,16 @@
 - avatar = true unless local_assigns[:avatar] == false
 - stars = true unless local_assigns[:stars] == false
 - forks = false unless local_assigns[:forks] == true
-- ci = false unless local_assigns[:ci] == true
 - skip_namespace = false unless local_assigns[:skip_namespace] == true
 - css_class = '' unless local_assigns[:css_class]
-- show_last_commit_as_description = false unless local_assigns[:show_last_commit_as_description] == true && project.commit
 - css_class += " no-description" if project.description.blank? && !show_last_commit_as_description
 - cache_key = [project.namespace, project, controller.controller_name, controller.action_name, current_application_settings, 'v2.3']
-- cache_key.push(project.commit.status) if project.commit.try(:status)
 
 %li.project-row{ class: css_class }
   = cache(cache_key) do
     .controls
       - if project.archived
         %span.label.label-warning archived
-      - if project.commit.try(:status)
-        %span
-          = render_commit_status(project.commit)
       - if forks
         %span
           = icon('code-fork')
@@ -45,10 +39,6 @@
           %span.project-name.filter-title
             = project.name
 
-    - if show_last_commit_as_description
-      .description
-        = link_to_gfm project.commit.title, namespace_project_commit_path(project.namespace, project, project.commit),
-          class: "commit-row-message"
-    - elsif project.description.present?
+    - if project.description.present?
       .description
         = markdown_field(project, :description)
