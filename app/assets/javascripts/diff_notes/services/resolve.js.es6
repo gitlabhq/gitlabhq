@@ -4,6 +4,7 @@
 
 const Vue = window.Vue = require('vue');
 window.Vue.use(require('vue-resource'));
+require('../../vue_shared/vue_resource_interceptor');
 
 (() => {
   window.gl = window.gl || {};
@@ -12,13 +13,6 @@ window.Vue.use(require('vue-resource'));
     constructor(root) {
       this.noteResource = Vue.resource(`${root}/notes{/noteId}/resolve`);
       this.discussionResource = Vue.resource(`${root}/merge_requests{/mergeRequestId}/discussions{/discussionId}/resolve`);
-
-      Vue.http.interceptors.push((request, next) => {
-        if ($.rails) {
-          request.headers['X-CSRF-Token'] = $.rails.csrfToken();
-        }
-        next();
-      });
     }
 
     resolve(noteId) {
