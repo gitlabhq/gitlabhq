@@ -203,7 +203,11 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def diff_size
-    opts = diff_options || {}
+    # The `#diffs` method ends up at an instance of a class inheriting from
+    # `Gitlab::Diff::FileCollection::Base`, so use those options as defaults
+    # here too, to get the same diff size without performing highlighting.
+    #
+    opts = Gitlab::Diff::FileCollection::Base.default_options.merge(diff_options || {})
 
     raw_diffs(opts).size
   end
