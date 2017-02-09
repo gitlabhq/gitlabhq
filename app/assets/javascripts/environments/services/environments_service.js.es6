@@ -1,4 +1,4 @@
-const Vue = window.Vue = require('vue');
+const Vue = require('vue');
 
 class EnvironmentsService {
   constructor(endpoint) {

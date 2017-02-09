@@ -1,5 +1,4 @@
-window.Vue = require('vue');
-require('./components/environment');
+const EnvironmentsComponent = require('./components/environment');
 require('../vue_shared/vue_resource_interceptor');
 
 $(() => {
@@ -9,7 +8,7 @@ $(() => {
     gl.EnvironmentsListApp.$destroy(true);
   }
 
-  gl.EnvironmentsListApp = new gl.environmentsList.EnvironmentsComponent({
+  gl.EnvironmentsListApp = new EnvironmentsComponent({
     el: document.querySelector('#environments-list-view'),
   });
 });

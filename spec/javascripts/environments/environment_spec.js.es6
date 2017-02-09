@@ -1,7 +1,6 @@
-/* global Vue, environment */
-
+const Vue = require('vue');
 require('~/flash');
-require('~/environments/components/environment');
+const EnvironmentsComponent = require('~/environments/components/environment');
 const { environment } = require('./mock_data');
 
 describe('Environment', () => {
@@ -32,7 +31,7 @@ describe('Environment', () => {
       });
 
       it('should render the empty state', (done) => {
-        component = new gl.environmentsList.EnvironmentsComponent({
+        component = new EnvironmentsComponent({
           el: document.querySelector('#environments-list-view'),
         });
 
@@ -72,7 +71,7 @@ describe('Environment', () => {
       });
 
       it('should render a table with environments', (done) => {
-        component = new gl.environmentsList.EnvironmentsComponent({
+        component = new EnvironmentsComponent({
           el: document.querySelector('#environments-list-view'),
         });
 
@@ -104,7 +103,7 @@ describe('Environment', () => {
     });
 
     it('should render empty state', (done) => {
-      component = new gl.environmentsList.EnvironmentsComponent({
+      component = new EnvironmentsComponent({
         el: document.querySelector('#environments-list-view'),
       });
 

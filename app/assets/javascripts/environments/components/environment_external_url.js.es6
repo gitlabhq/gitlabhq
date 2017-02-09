@@ -1,23 +1,19 @@
-/* global Vue */
+/**
+ * Renders the external url link in environments table.
+ */
+const Vue = require('vue');
 
-window.Vue = require('vue');
-
-(() => {
-  window.gl = window.gl || {};
-  window.gl.environmentsList = window.gl.environmentsList || {};
-
-  gl.environmentsList.ExternalUrlComponent = Vue.component('external-url-component', {
-    props: {
-      externalUrl: {
-        type: String,
-        default: '',
-      },
+module.exports = Vue.component('external-url-component', {
+  props: {
+    externalUrl: {
+      type: String,
+      default: '',
     },
+  },
 
-    template: `
-      <a class="btn external_url" :href="externalUrl" target="_blank">
-        <i class="fa fa-external-link"></i>
-      </a>
-    `,
-  });
-})();
+  template: `
+    <a class="btn external_url" :href="externalUrl" target="_blank">
+      <i class="fa fa-external-link"></i>
+    </a>
+  `,
+});

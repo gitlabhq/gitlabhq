@@ -1,7 +1,7 @@
 window.timeago = require('vendor/timeago');
-require('~/environments/components/environment_item');
+const EnvironmentItem = require('~/environments/components/environment_item');
 
-fdescribe('Environment item', () => {
+describe('Environment item', () => {
   preloadFixtures('static/environments/table.html.raw');
   beforeEach(() => {
     loadFixtures('static/environments/table.html.raw');
@@ -21,7 +21,7 @@ fdescribe('Environment item', () => {
         },
       };
 
-      component = new window.gl.environmentsList.EnvironmentItem({
+      component = new EnvironmentItem({
         el: document.querySelector('tr#environment-row'),
         propsData: {
           model: mockItem,
@@ -111,7 +111,7 @@ fdescribe('Environment item', () => {
         },
       };
 
-      component = new window.gl.environmentsList.EnvironmentItem({
+      component = new EnvironmentItem({
         el: document.querySelector('tr#environment-row'),
         propsData: {
           model: environment,

@@ -1,489 +1,481 @@
-/* global Vue */
-/* global timeago */
 
-window.Vue = require('vue');
-window.timeago = require('vendor/timeago');
+const Vue = require('vue');
+const Timeago = require('vendor/timeago');
 require('../../lib/utils/text_utility');
 require('../../vue_shared/components/commit');
-require('./environment_actions');
-require('./environment_external_url');
-require('./environment_stop');
-require('./environment_rollback');
-require('./environment_terminal_button');
+const ActionsComponent = require('./environment_actions');
+const ExternalUrlComponent = require('./environment_external_url');
+const StopComponent = require('./environment_stop');
+const RollbackComponent = require('./environment_rollback');
+const TerminalButtonComponent = require('./environment_terminal_button');
 
-(() => {
-  /**
-   * Envrionment Item Component
-   *
-   * Renders a table row for each environment.
-   */
+/**
+ * Envrionment Item Component
+ *
+ * Renders a table row for each environment.
+ */
 
-  window.gl = window.gl || {};
-  window.gl.environmentsList = window.gl.environmentsList || {};
-  window.gl.environmentsList.timeagoInstance = new timeago(); // eslint-disable-line
+const timeagoInstance = new Timeago();
 
-  gl.environmentsList.EnvironmentItem = Vue.component('environment-item', {
+module.exports = Vue.component('environment-item', {
 
-    components: {
-      'commit-component': gl.CommitComponent,
-      'actions-component': gl.environmentsList.ActionsComponent,
-      'external-url-component': gl.environmentsList.ExternalUrlComponent,
-      'stop-component': gl.environmentsList.StopComponent,
-      'rollback-component': gl.environmentsList.RollbackComponent,
-      'terminal-button-component': gl.environmentsList.TerminalButtonComponent,
+  components: {
+    'commit-component': gl.CommitComponent,
+    'actions-component': ActionsComponent,
+    'external-url-component': ExternalUrlComponent,
+    'stop-component': StopComponent,
+    'rollback-component': RollbackComponent,
+    'terminal-button-component': TerminalButtonComponent,
+  },
+
+  props: {
+    model: {
+      type: Object,
+      required: true,
+      default: () => ({}),
     },
 
-    props: {
-      model: {
-        type: Object,
-        required: true,
-        default: () => ({}),
-      },
-
-      canCreateDeployment: {
-        type: Boolean,
-        required: false,
-        default: false,
-      },
-
-      canReadEnvironment: {
-        type: Boolean,
-        required: false,
-        default: false,
-      },
-
-      commitIconSvg: {
-        type: String,
-        required: false,
-      },
-
-      playIconSvg: {
-        type: String,
-        required: false,
-      },
-
-      terminalIconSvg: {
-        type: String,
-        required: false,
-      },
+    canCreateDeployment: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
 
-    computed: {
-      /**
-       * Verifies if `last_deployment` key exists in the current Envrionment.
-       * This key is required to render most of the html - this method works has
-       * an helper.
-       *
-       * @returns {Boolean}
-       */
-      hasLastDeploymentKey() {
-        if (this.model.latest.last_deployment &&
-          !this.$options.isObjectEmpty(this.model.latest.last_deployment)) {
-          return true;
-        }
-        return false;
-      },
+    canReadEnvironment: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
 
-      /**
-       * Verifies is the given environment has manual actions.
-       * Used to verify if we should render them or nor.
-       *
-       * @returns {Boolean|Undefined}
-       */
-      hasManualActions() {
-        return this.model.latest.last_deployment &&
-          this.model.latest.last_deployment.manual_actions &&
-          this.model.latest.last_deployment.manual_actions.length > 0;
-      },
+    commitIconSvg: {
+      type: String,
+      required: false,
+    },
 
-      /**
-       * Returns the value of the `stop_action?` key provided in the response.
-       *
-       * @returns {Boolean}
-       */
-      hasStopAction() {
-        return this.model['stop_action?'];
-      },
+    playIconSvg: {
+      type: String,
+      required: false,
+    },
 
-      /**
-       * Verifies if the `deployable` key is present in `last_deployment` key.
-       * Used to verify whether we should or not render the rollback partial.
-       *
-       * @returns {Boolean|Undefined}
-       */
-      canRetry() {
-        return this.hasLastDeploymentKey &&
-          this.model.latest.last_deployment &&
-          this.model.latest.last_deployment.deployable;
-      },
+    terminalIconSvg: {
+      type: String,
+      required: false,
+    },
+  },
 
-      /**
-       * Verifies if the date to be shown is present.
-       *
-       * @returns {Boolean|Undefined}
-       */
-      canShowDate() {
-        return this.model.latest.last_deployment &&
-          this.model.latest.last_deployment.deployable &&
-          this.model.latest.last_deployment.deployable !== undefined;
-      },
-
-      /**
-       * Human readable date.
-       *
-       * @returns {String}
-       */
-      createdDate() {
-        return gl.environmentsList.timeagoInstance.format(
-          this.model.latest.last_deployment.deployable.created_at,
-        );
-      },
-
-      /**
-       * Returns the manual actions with the name parsed.
-       *
-       * @returns {Array.<Object>|Undefined}
-       */
-      manualActions() {
-        if (this.hasManualActions) {
-          return this.model.latest.last_deployment.manual_actions.map((action) => {
-            const parsedAction = {
-              name: gl.text.humanize(action.name),
-              play_path: action.play_path,
-            };
-            return parsedAction;
-          });
-        }
-        return [];
-      },
-
-      /**
-       * Builds the string used in the user image alt attribute.
-       *
-       * @returns {String}
-       */
-      userImageAltDescription() {
-        if (this.model.latest.last_deployment &&
-          this.model.latest.last_deployment.user &&
-          this.model.latest.last_deployment.user.username) {
-          return `${this.model.latest.last_deployment.user.username}'s avatar'`;
-        }
-        return '';
-      },
-
-      /**
-       * If provided, returns the commit tag.
-       *
-       * @returns {String|Undefined}
-       */
-      commitTag() {
-        if (this.model.latest.last_deployment &&
-          this.model.latest.last_deployment.tag) {
-          return this.model.latest.last_deployment.tag;
-        }
-        return undefined;
-      },
-
-      /**
-       * If provided, returns the commit ref.
-       *
-       * @returns {Object|Undefined}
-       */
-      commitRef() {
-        if (this.model.latest.last_deployment &&
-          this.model.latest.last_deployment.ref) {
-          return this.model.latest.last_deployment.ref;
-        }
-        return undefined;
-      },
-
-      /**
-       * If provided, returns the commit url.
-       *
-       * @returns {String|Undefined}
-       */
-      commitUrl() {
-        if (this.model.latest.last_deployment &&
-          this.model.latest.last_deployment.commit &&
-          this.model.latest.last_deployment.commit.commit_path) {
-          return this.model.latest.last_deployment.commit.commit_path;
-        }
-        return undefined;
-      },
-
-      /**
-       * If provided, returns the commit short sha.
-       *
-       * @returns {String|Undefined}
-       */
-      commitShortSha() {
-        if (this.model.latest.last_deployment &&
-          this.model.latest.last_deployment.commit &&
-          this.model.latest.last_deployment.commit.short_id) {
-          return this.model.latest.last_deployment.commit.short_id;
-        }
-        return undefined;
-      },
-
-      /**
-       * If provided, returns the commit title.
-       *
-       * @returns {String|Undefined}
-       */
-      commitTitle() {
-        if (this.model.latest.last_deployment &&
-          this.model.latest.last_deployment.commit &&
-          this.model.latest.last_deployment.commit.title) {
-          return this.model.latest.last_deployment.commit.title;
-        }
-        return undefined;
-      },
-
-      /**
-       * If provided, returns the commit tag.
-       *
-       * @returns {Object|Undefined}
-       */
-      commitAuthor() {
-        if (this.model.latest.last_deployment &&
-          this.model.latest.last_deployment.commit &&
-          this.model.latest.last_deployment.commit.author) {
-          return this.model.latest.last_deployment.commit.author;
-        }
-
-        return undefined;
-      },
-
-      /**
-       * Verifies if the `retry_path` key is present and returns its value.
-       *
-       * @returns {String|Undefined}
-       */
-      retryUrl() {
-        if (this.model.latest.last_deployment &&
-          this.model.latest.last_deployment.deployable &&
-          this.model.latest.last_deployment.deployable.retry_path) {
-          return this.model.latest.last_deployment.deployable.retry_path;
-        }
-        return undefined;
-      },
-
-      /**
-       * Verifies if the `last?` key is present and returns its value.
-       *
-       * @returns {Boolean|Undefined}
-       */
-      isLastDeployment() {
-        return this.model.latest.last_deployment &&
-          this.model.latest.last_deployment['last?'];
-      },
-
-      /**
-       * Builds the name of the builds needed to display both the name and the id.
-       *
-       * @returns {String}
-       */
-      buildName() {
-        if (this.model.latest.last_deployment &&
-          this.model.latest.last_deployment.deployable) {
-          return `${this.model.latest.last_deployment.deployable.name} #${this.model.latest.last_deployment.deployable.id}`;
-        }
-        return '';
-      },
-
-      /**
-       * Builds the needed string to show the internal id.
-       *
-       * @returns {String}
-       */
-      deploymentInternalId() {
-        if (this.model.latest.last_deployment &&
-          this.model.latest.last_deployment.iid) {
-          return `#${this.model.latest.last_deployment.iid}`;
-        }
-        return '';
-      },
-
-      /**
-       * Verifies if the user object is present under last_deployment object.
-       *
-       * @returns {Boolean}
-       */
-      deploymentHasUser() {
-        return !this.$options.isObjectEmpty(this.model.latest.last_deployment) &&
-          !this.$options.isObjectEmpty(this.model.latest.last_deployment.user);
-      },
-
-      /**
-       * Returns the user object nested with the last_deployment object.
-       * Used to render the template.
-       *
-       * @returns {Object}
-       */
-      deploymentUser() {
-        if (!this.$options.isObjectEmpty(this.model.latest.last_deployment) &&
-          !this.$options.isObjectEmpty(this.model.latest.last_deployment.user)) {
-          return this.model.latest.last_deployment.user;
-        }
-        return {};
-      },
-
-      /**
-       * Verifies if the build name column should be rendered by verifing
-       * if all the information needed is present
-       * and if the environment is not a folder.
-       *
-       * @returns {Boolean}
-       */
-      shouldRenderBuildName() {
-        return !this.model.isFolder &&
-          !this.$options.isObjectEmpty(this.model.latest.last_deployment) &&
-          !this.$options.isObjectEmpty(this.model.latest.last_deployment.deployable);
-      },
-
-      /**
-       * Verifies if deplyment internal ID should be rendered by verifing
-       * if all the information needed is present
-       * and if the environment is not a folder.
-       *
-       * @returns {Boolean}
-       */
-      shouldRenderDeploymentID() {
-        return !this.model.isFolder &&
-          !this.$options.isObjectEmpty(this.model.latest.last_deployment) &&
-          this.model.latest.last_deployment.iid !== undefined;
-      },
+  computed: {
+    /**
+     * Verifies if `last_deployment` key exists in the current Envrionment.
+     * This key is required to render most of the html - this method works has
+     * an helper.
+     *
+     * @returns {Boolean}
+     */
+    hasLastDeploymentKey() {
+      if (this.model.latest.last_deployment &&
+        !this.$options.isObjectEmpty(this.model.latest.last_deployment)) {
+        return true;
+      }
+      return false;
     },
 
     /**
-     * Helper to verify if certain given object are empty.
-     * Should be replaced by lodash _.isEmpty - https://lodash.com/docs/4.17.2#isEmpty
-     * @param  {Object} object
-     * @returns {Bollean}
+     * Verifies is the given environment has manual actions.
+     * Used to verify if we should render them or nor.
+     *
+     * @returns {Boolean|Undefined}
      */
-    isObjectEmpty(object) {
-      for (const key in object) { // eslint-disable-line
-        if (hasOwnProperty.call(object, key)) {
-          return false;
-        }
-      }
-      return true;
+    hasManualActions() {
+      return this.model.latest.last_deployment &&
+        this.model.latest.last_deployment.manual_actions &&
+        this.model.latest.last_deployment.manual_actions.length > 0;
     },
 
-    template: `
-      <tr>
-        <td>
-          <a v-if="!model.isFolder"
-            class="environment-name"
-            :href="model.latest.environment_path">
+    /**
+     * Returns the value of the `stop_action?` key provided in the response.
+     *
+     * @returns {Boolean}
+     */
+    hasStopAction() {
+      return this.model['stop_action?'];
+    },
+
+    /**
+     * Verifies if the `deployable` key is present in `last_deployment` key.
+     * Used to verify whether we should or not render the rollback partial.
+     *
+     * @returns {Boolean|Undefined}
+     */
+    canRetry() {
+      return this.hasLastDeploymentKey &&
+        this.model.latest.last_deployment &&
+        this.model.latest.last_deployment.deployable;
+    },
+
+    /**
+     * Verifies if the date to be shown is present.
+     *
+     * @returns {Boolean|Undefined}
+     */
+    canShowDate() {
+      return this.model.latest.last_deployment &&
+        this.model.latest.last_deployment.deployable &&
+        this.model.latest.last_deployment.deployable !== undefined;
+    },
+
+    /**
+     * Human readable date.
+     *
+     * @returns {String}
+     */
+    createdDate() {
+      return timeagoInstance.format(this.model.latest.last_deployment.deployable.created_at);
+    },
+
+    /**
+     * Returns the manual actions with the name parsed.
+     *
+     * @returns {Array.<Object>|Undefined}
+     */
+    manualActions() {
+      if (this.hasManualActions) {
+        return this.model.latest.last_deployment.manual_actions.map((action) => {
+          const parsedAction = {
+            name: gl.text.humanize(action.name),
+            play_path: action.play_path,
+          };
+          return parsedAction;
+        });
+      }
+      return [];
+    },
+
+    /**
+     * Builds the string used in the user image alt attribute.
+     *
+     * @returns {String}
+     */
+    userImageAltDescription() {
+      if (this.model.latest.last_deployment &&
+        this.model.latest.last_deployment.user &&
+        this.model.latest.last_deployment.user.username) {
+        return `${this.model.latest.last_deployment.user.username}'s avatar'`;
+      }
+      return '';
+    },
+
+    /**
+     * If provided, returns the commit tag.
+     *
+     * @returns {String|Undefined}
+     */
+    commitTag() {
+      if (this.model.latest.last_deployment &&
+        this.model.latest.last_deployment.tag) {
+        return this.model.latest.last_deployment.tag;
+      }
+      return undefined;
+    },
+
+    /**
+     * If provided, returns the commit ref.
+     *
+     * @returns {Object|Undefined}
+     */
+    commitRef() {
+      if (this.model.latest.last_deployment &&
+        this.model.latest.last_deployment.ref) {
+        return this.model.latest.last_deployment.ref;
+      }
+      return undefined;
+    },
+
+    /**
+     * If provided, returns the commit url.
+     *
+     * @returns {String|Undefined}
+     */
+    commitUrl() {
+      if (this.model.latest.last_deployment &&
+        this.model.latest.last_deployment.commit &&
+        this.model.latest.last_deployment.commit.commit_path) {
+        return this.model.latest.last_deployment.commit.commit_path;
+      }
+      return undefined;
+    },
+
+    /**
+     * If provided, returns the commit short sha.
+     *
+     * @returns {String|Undefined}
+     */
+    commitShortSha() {
+      if (this.model.latest.last_deployment &&
+        this.model.latest.last_deployment.commit &&
+        this.model.latest.last_deployment.commit.short_id) {
+        return this.model.latest.last_deployment.commit.short_id;
+      }
+      return undefined;
+    },
+
+    /**
+     * If provided, returns the commit title.
+     *
+     * @returns {String|Undefined}
+     */
+    commitTitle() {
+      if (this.model.latest.last_deployment &&
+        this.model.latest.last_deployment.commit &&
+        this.model.latest.last_deployment.commit.title) {
+        return this.model.latest.last_deployment.commit.title;
+      }
+      return undefined;
+    },
+
+    /**
+     * If provided, returns the commit tag.
+     *
+     * @returns {Object|Undefined}
+     */
+    commitAuthor() {
+      if (this.model.latest.last_deployment &&
+        this.model.latest.last_deployment.commit &&
+        this.model.latest.last_deployment.commit.author) {
+        return this.model.latest.last_deployment.commit.author;
+      }
+
+      return undefined;
+    },
+
+    /**
+     * Verifies if the `retry_path` key is present and returns its value.
+     *
+     * @returns {String|Undefined}
+     */
+    retryUrl() {
+      if (this.model.latest.last_deployment &&
+        this.model.latest.last_deployment.deployable &&
+        this.model.latest.last_deployment.deployable.retry_path) {
+        return this.model.latest.last_deployment.deployable.retry_path;
+      }
+      return undefined;
+    },
+
+    /**
+     * Verifies if the `last?` key is present and returns its value.
+     *
+     * @returns {Boolean|Undefined}
+     */
+    isLastDeployment() {
+      return this.model.latest.last_deployment &&
+        this.model.latest.last_deployment['last?'];
+    },
+
+    /**
+     * Builds the name of the builds needed to display both the name and the id.
+     *
+     * @returns {String}
+     */
+    buildName() {
+      if (this.model.latest.last_deployment &&
+        this.model.latest.last_deployment.deployable) {
+        return `${this.model.latest.last_deployment.deployable.name} #${this.model.latest.last_deployment.deployable.id}`;
+      }
+      return '';
+    },
+
+    /**
+     * Builds the needed string to show the internal id.
+     *
+     * @returns {String}
+     */
+    deploymentInternalId() {
+      if (this.model.latest.last_deployment &&
+        this.model.latest.last_deployment.iid) {
+        return `#${this.model.latest.last_deployment.iid}`;
+      }
+      return '';
+    },
+
+    /**
+     * Verifies if the user object is present under last_deployment object.
+     *
+     * @returns {Boolean}
+     */
+    deploymentHasUser() {
+      return !this.$options.isObjectEmpty(this.model.latest.last_deployment) &&
+        !this.$options.isObjectEmpty(this.model.latest.last_deployment.user);
+    },
+
+    /**
+     * Returns the user object nested with the last_deployment object.
+     * Used to render the template.
+     *
+     * @returns {Object}
+     */
+    deploymentUser() {
+      if (!this.$options.isObjectEmpty(this.model.latest.last_deployment) &&
+        !this.$options.isObjectEmpty(this.model.latest.last_deployment.user)) {
+        return this.model.latest.last_deployment.user;
+      }
+      return {};
+    },
+
+    /**
+     * Verifies if the build name column should be rendered by verifing
+     * if all the information needed is present
+     * and if the environment is not a folder.
+     *
+     * @returns {Boolean}
+     */
+    shouldRenderBuildName() {
+      return !this.model.isFolder &&
+        !this.$options.isObjectEmpty(this.model.latest.last_deployment) &&
+        !this.$options.isObjectEmpty(this.model.latest.last_deployment.deployable);
+    },
+
+    /**
+     * Verifies if deplyment internal ID should be rendered by verifing
+     * if all the information needed is present
+     * and if the environment is not a folder.
+     *
+     * @returns {Boolean}
+     */
+    shouldRenderDeploymentID() {
+      return !this.model.isFolder &&
+        !this.$options.isObjectEmpty(this.model.latest.last_deployment) &&
+        this.model.latest.last_deployment.iid !== undefined;
+    },
+  },
+
+  /**
+   * Helper to verify if certain given object are empty.
+   * Should be replaced by lodash _.isEmpty - https://lodash.com/docs/4.17.2#isEmpty
+   * @param  {Object} object
+   * @returns {Bollean}
+   */
+  isObjectEmpty(object) {
+    for (const key in object) { // eslint-disable-line
+      if (hasOwnProperty.call(object, key)) {
+        return false;
+      }
+    }
+    return true;
+  },
+
+  template: `
+    <tr>
+      <td>
+        <a v-if="!model.isFolder"
+          class="environment-name"
+          :href="model.latest.environment_path">
+          {{model.name}}
+        </a>
+        <a v-else class="folder-name">
+          <span class="folder-icon">
+            <i class="fa fa-caret-right" aria-hidden="true"></i>
+            <i class="fa fa-folder" aria-hidden="true"></i>
+          </span>
+
+          <span>
             {{model.name}}
-          </a>
-          <a v-else class="folder-name">
-            <span class="folder-icon">
-              <i class="fa fa-caret-right" aria-hidden="true"></i>
-              <i class="fa fa-folder" aria-hidden="true"></i>
-            </span>
-
-            <span>
-              {{model.name}}
-            </span>
-
-            <span class="badge">
-              {{model.size}}
-            </span>
-          </a>
-        </td>
-
-        <td class="deployment-column">
-          <span v-if="shouldRenderDeploymentID">
-            {{deploymentInternalId}}
           </span>
 
-          <span v-if="!model.isFolder && deploymentHasUser">
-            by
-            <a :href="deploymentUser.web_url" class="js-deploy-user-container">
-              <img class="avatar has-tooltip s20"
-                :src="deploymentUser.avatar_url"
-                :alt="userImageAltDescription"
-                :title="deploymentUser.username" />
-            </a>
+          <span class="badge">
+            {{model.size}}
           </span>
-        </td>
+        </a>
+      </td>
 
-        <td class="environments-build-cell">
-          <a v-if="shouldRenderBuildName"
-            class="build-link"
-            :href="model.latest.last_deployment.deployable.build_path">
-            {{buildName}}
+      <td class="deployment-column">
+        <span v-if="shouldRenderDeploymentID">
+          {{deploymentInternalId}}
+        </span>
+
+        <span v-if="!model.isFolder && deploymentHasUser">
+          by
+          <a :href="deploymentUser.web_url" class="js-deploy-user-container">
+            <img class="avatar has-tooltip s20"
+              :src="deploymentUser.avatar_url"
+              :alt="userImageAltDescription"
+              :title="deploymentUser.username" />
           </a>
-        </td>
+        </span>
+      </td>
 
-        <td>
-          <div v-if="!model.isFolder && hasLastDeploymentKey" class="js-commit-component">
-            <commit-component
-              :tag="commitTag"
-              :commit-ref="commitRef"
-              :commit-url="commitUrl"
-              :short-sha="commitShortSha"
-              :title="commitTitle"
-              :author="commitAuthor"
-              :commit-icon-svg="commitIconSvg">
-            </commit-component>
+      <td class="environments-build-cell">
+        <a v-if="shouldRenderBuildName"
+          class="build-link"
+          :href="model.latest.last_deployment.deployable.build_path">
+          {{buildName}}
+        </a>
+      </td>
+
+      <td>
+        <div v-if="!model.isFolder && hasLastDeploymentKey" class="js-commit-component">
+          <commit-component
+            :tag="commitTag"
+            :commit-ref="commitRef"
+            :commit-url="commitUrl"
+            :short-sha="commitShortSha"
+            :title="commitTitle"
+            :author="commitAuthor"
+            :commit-icon-svg="commitIconSvg">
+          </commit-component>
+        </div>
+        <p v-if="!model.isFolder && !hasLastDeploymentKey" class="commit-title">
+          No deployments yet
+        </p>
+      </td>
+
+      <td>
+        <span v-if="!model.isFolder && canShowDate"
+          class="environment-created-date-timeago">
+          {{createdDate}}
+        </span>
+      </td>
+
+      <td class="hidden-xs">
+        <div v-if="!model.isFolder">
+          <div v-if="hasManualActions && canCreateDeployment"
+            class="inline js-manual-actions-container">
+            <actions-component
+              :play-icon-svg="playIconSvg"
+              :actions="manualActions">
+            </actions-component>
           </div>
-          <p v-if="!model.isFolder && !hasLastDeploymentKey" class="commit-title">
-            No deployments yet
-          </p>
-        </td>
 
-        <td>
-          <span v-if="!model.isFolder && canShowDate"
-            class="environment-created-date-timeago">
-            {{createdDate}}
-          </span>
-        </td>
-
-        <td class="hidden-xs">
-          <div v-if="!model.isFolder">
-            <div v-if="hasManualActions && canCreateDeployment"
-              class="inline js-manual-actions-container">
-              <actions-component
-                :play-icon-svg="playIconSvg"
-                :actions="manualActions">
-              </actions-component>
-            </div>
-
-            <div v-if="model.latest.external_url && canReadEnvironment"
-              class="inline js-external-url-container">
-              <external-url-component
-                :external-url="model.latest.external_url">
-              </external-url-component>
-            </div>
-
-            <div v-if="hasStopAction && canCreateDeployment"
-              class="inline js-stop-component-container">
-              <stop-component
-                :stop-url="model.latest.stop_path">
-              </stop-component>
-            </div>
-
-            <div v-if="model.latest.terminal_path"
-              class="inline js-terminal-button-container">
-              <terminal-button-component
-                :terminal-icon-svg="terminalIconSvg"
-                :terminal-path="model.latest.terminal_path">
-              </terminal-button-component>
-            </div>
-
-            <div v-if="canRetry && canCreateDeployment"
-              class="inline js-rollback-component-container">
-              <rollback-component
-                :is-last-deployment="isLastDeployment"
-                :retry-url="retryUrl">
-                </rollback-component>
-            </div>
+          <div v-if="model.latest.external_url && canReadEnvironment"
+            class="inline js-external-url-container">
+            <external-url-component
+              :external-url="model.latest.external_url">
+            </external-url-component>
           </div>
-        </td>
-      </tr>
-    `,
-  });
-})();
+
+          <div v-if="hasStopAction && canCreateDeployment"
+            class="inline js-stop-component-container">
+            <stop-component
+              :stop-url="model.latest.stop_path">
+            </stop-component>
+          </div>
+
+          <div v-if="model.latest.terminal_path"
+            class="inline js-terminal-button-container">
+            <terminal-button-component
+              :terminal-icon-svg="terminalIconSvg"
+              :terminal-path="model.latest.terminal_path">
+            </terminal-button-component>
+          </div>
+
+          <div v-if="canRetry && canCreateDeployment"
+            class="inline js-rollback-component-container">
+            <rollback-component
+              :is-last-deployment="isLastDeployment"
+              :retry-url="retryUrl">
+              </rollback-component>
+          </div>
+        </div>
+      </td>
+    </tr>
+  `,
+});
