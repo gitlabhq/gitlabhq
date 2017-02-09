@@ -1,6 +1,3 @@
-/* eslint-disable class-methods-use-this, no-new, func-names, prefer-template, no-unneeded-ternary, object-shorthand, space-before-function-paren, comma-dangle, quote-props, consistent-return, no-else-return, no-param-reassign, max-len */
-/* global UsersSelect */
-
 require('vendor/task_list');
 
 class TaskList {
@@ -20,7 +17,7 @@ class TaskList {
 
   disable() {
     $(`${this.selector} .js-task-list-container`).taskList('disable');
-    return $(document).off('tasklist:changed', `${this.selector} .js-task-list-container`);
+    $(document).off('tasklist:changed', `${this.selector} .js-task-list-container`);
   }
 
   update(e) {
