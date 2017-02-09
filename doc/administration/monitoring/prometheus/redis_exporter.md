@@ -11,7 +11,7 @@ To enable the Redis exporter:
 
 1. [Enable Prometheus](index.md#configuring-prometheus)
 1. Edit `/etc/gitlab/gitlab.rb`
-1. Find and uncomment the following line, making sure it's set to `true`:
+1. Add or find and uncomment the following line, making sure it's set to `true`:
 
     ```ruby
     redis_exporter['enable'] = true
