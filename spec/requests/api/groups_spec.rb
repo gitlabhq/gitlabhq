@@ -179,6 +179,7 @@ describe API::Groups, api: true  do
         expect(json_response['request_access_enabled']).to eq(group1.request_access_enabled)
         expect(json_response['full_name']).to eq(group1.full_name)
         expect(json_response['full_path']).to eq(group1.full_path)
+        expect(json_response['parent_id']).to eq(group1.parent_id)
         expect(json_response['projects']).to be_an Array
         expect(json_response['projects'].length).to eq(2)
         expect(json_response['shared_projects']).to be_an Array
@@ -396,6 +397,19 @@ describe API::Groups, api: true  do
         expect(json_response["name"]).to eq(group[:name])
         expect(json_response["path"]).to eq(group[:path])
         expect(json_response["request_access_enabled"]).to eq(group[:request_access_enabled])
+      end
+
+      it "creates a nested group" do
+        parent = create(:group)
+        parent.add_owner(user3)
+        group = attributes_for(:group, { parent_id: parent.id })
+
+        post api("/groups", user3), group
+
+        expect(response).to have_http_status(201)
+
+        expect(json_response["full_path"]).to eq("#{parent.path}/#{group[:path]}")
+        expect(json_response["parent_id"]).to eq(parent.id)
       end
 
       it "does not create group, duplicate" do
