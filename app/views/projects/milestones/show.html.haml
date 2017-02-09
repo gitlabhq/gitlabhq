@@ -3,6 +3,9 @@
 - page_description @milestone.description
 = render "projects/issues/head"
 
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_bundle_tag('simulate_drag') if Rails.env.test?
+
 %div{ class: container_class }
   .detail-page-header.milestone-page-header
     .status-box{ class: status_box_class(@milestone) }

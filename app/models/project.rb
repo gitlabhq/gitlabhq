@@ -250,7 +250,12 @@ class Project < ActiveRecord::Base
   scope :with_project_feature, -> { joins('LEFT JOIN project_features ON projects.id = project_features.project_id') }
   scope :with_statistics, -> { includes(:statistics) }
   scope :with_shared_runners, -> { where(shared_runners_enabled: true) }
-  scope :inside_path, ->(path) { joins(:route).where('routes.path LIKE ?', "#{path}/%") }
+  scope :inside_path, ->(path) do
+    # We need routes alias rs for JOIN so it does not conflict with
+    # includes(:route) which we use in ProjectsFinder.
+    joins("INNER JOIN routes rs ON rs.source_id = projects.id AND rs.source_type = 'Project'").
+      where('rs.path LIKE ?', "#{path}/%")
+  end
 
   # "enabled" here means "not disabled". It includes private features!
   scope :with_feature_enabled, ->(feature) {
@@ -915,26 +920,6 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def name_with_namespace
-    @name_with_namespace ||= begin
-                               if namespace
-                                 namespace.human_name + ' / ' + name
-                               else
-                                 name
-                               end
-                             end
-  end
-  alias_method :human_name, :name_with_namespace
-
-  def full_path
-    if namespace && path
-      namespace.full_path + '/' + path
-    else
-      path
-    end
-  end
-  alias_method :path_with_namespace, :full_path
-
   def execute_hooks(data, hooks_scope = :push_hooks)
     hooks.send(hooks_scope).each do |hook|
       hook.async_execute(data, hooks_scope.to_s)
@@ -1570,6 +1555,18 @@ class Project < ActiveRecord::Base
     map.public_path_for_source_path(path)
   end
 
+  def parent
+    namespace
+  end
+
+  def parent_changed?
+    namespace_id_changed?
+  end
+
+  alias_method :name_with_namespace, :full_name
+  alias_method :human_name, :full_name
+  alias_method :path_with_namespace, :full_path
+
   private
 
   def cross_namespace_reference?(from)
@@ -1597,8 +1594,15 @@ class Project < ActiveRecord::Base
       current_application_settings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_MERGE
   end
 
-  def full_path_changed?
-    path_changed? || namespace_id_changed?
+  # Similar to the normal callbacks that hook into the life cycle of an
+  # Active Record object, you can also define callbacks that get triggered
+  # when you add an object to an association collection. If any of these
+  # callbacks throw an exception, the object will not be added to the
+  # collection. Before you add a new board to the boards collection if you
+  # already have 1, 2, or n it will fail, but it if you have 0 that is lower
+  # than the number of permitted boards per project it won't fail.
+  def validate_board_limit(board)
+    raise BoardLimitExceeded, 'Number of permitted boards exceeded' if boards.size >= NUMBER_OF_PERMITTED_BOARDS
   end
 
   def update_project_statistics

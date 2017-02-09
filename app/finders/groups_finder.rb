@@ -2,7 +2,7 @@ class GroupsFinder < UnionFinder
   def execute(current_user = nil)
     segments = all_groups(current_user)
 
-    find_union(segments, Group).order_id_desc
+    find_union(segments, Group).with_route.order_id_desc
   end
 
   private

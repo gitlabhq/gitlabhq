@@ -1221,6 +1221,7 @@ ActiveRecord::Schema.define(version: 20170207150212) do
     t.string "path", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string "name"
   end
 
   add_index "routes", ["path"], name: "index_routes_on_path", unique: true, using: :btree

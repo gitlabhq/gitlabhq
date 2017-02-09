@@ -45,6 +45,23 @@ feature 'Group', feature: true do
     end
   end
 
+  describe 'create a nested group' do
+    let(:group) { create(:group, path: 'foo') }
+
+    before do
+      visit subgroups_group_path(group)
+      click_link 'New Subgroup'
+    end
+
+    it 'creates a nested group' do
+      fill_in 'Group path', with: 'bar'
+      click_button 'Create group'
+
+      expect(current_path).to eq(group_path('foo/bar'))
+      expect(page).to have_content("Group 'bar' was successfully created.")
+    end
+  end
+
   describe 'group edit' do
     let(:group) { create(:group) }
     let(:path)  { edit_group_path(group) }
@@ -117,7 +134,7 @@ feature 'Group', feature: true do
       visit path
       click_link 'Subgroups'
 
-      expect(page).to have_content(nested_group.full_name)
+      expect(page).to have_content(nested_group.name)
     end
   end
 end

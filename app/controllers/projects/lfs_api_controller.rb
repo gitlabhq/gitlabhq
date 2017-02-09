@@ -48,6 +48,10 @@ class Projects::LfsApiController < Projects::GitHttpClientController
     objects.each do |object|
       if existing_oids.include?(object[:oid])
         object[:actions] = download_actions(object)
+
+        if Guest.can?(:download_code, project)
+          object[:authenticated] = true
+        end
       else
         object[:error] = {
           code: 404,

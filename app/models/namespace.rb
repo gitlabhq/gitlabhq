@@ -8,6 +8,11 @@ class Namespace < ActiveRecord::Base
   include Gitlab::CurrentSettings
   include Routable
 
+  # Prevent users from creating unreasonably deep level of nesting.
+  # The number 20 was taken based on maximum nesting level of
+  # Android repo (15) + some extra backup.
+  NUMBER_OF_ANCESTORS_ALLOWED = 20
+
   cache_markdown_field :description, pipeline: :description
 
   has_many :projects, dependent: :destroy
@@ -29,6 +34,8 @@ class Namespace < ActiveRecord::Base
     presence: true,
     length: { maximum: 255 },
     namespace: true
+
+  validate :nesting_level_allowed
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
 
@@ -175,31 +182,14 @@ class Namespace < ActiveRecord::Base
     current_application_settings.repository_size_limit
   end
 
-  def full_path
-    if parent
-      parent.full_path + '/' + path
-    else
-      path
-    end
-  end
-
   def shared_runners_enabled?
     projects.with_shared_runners.any?
-  end
-
-  def full_name
-    @full_name ||=
-      if parent
-        parent.full_name + ' / ' + name
-      else
-        name
-      end
   end
 
   # Scopes the model on ancestors of the record
   def ancestors
     if parent_id
-      path = route.path
+      path = route ? route.path : full_path
       paths = []
 
       until path.blank?
@@ -220,6 +210,10 @@ class Namespace < ActiveRecord::Base
 
   def user_ids_for_project_authorizations
     [owner_id]
+  end
+
+  def parent_changed?
+    parent_id_changed?
   end
 
   private
@@ -260,10 +254,6 @@ class Namespace < ActiveRecord::Base
       find_each(&:refresh_members_authorized_projects)
   end
 
-  def full_path_changed?
-    path_changed? || parent_id_changed?
-  end
-
   def remove_exports!
     Gitlab::Popen.popen(%W(find #{export_path} -not -path #{export_path} -delete))
   end
@@ -277,6 +267,12 @@ class Namespace < ActiveRecord::Base
       parent.full_path + '/' + path_was
     else
       path_was
+    end
+  end
+
+  def nesting_level_allowed
+    if ancestors.count > Group::NUMBER_OF_ANCESTORS_ALLOWED
+      errors.add(:parent_id, "has too deep level of nesting")
     end
   end
 end

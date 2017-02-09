@@ -1,15 +1,17 @@
+require_relative '../../migration_helpers'
+
 module RuboCop
   module Cop
     module Migration
       # Cop that checks if columns are added in a way that doesn't require
       # downtime.
-      class ColumnWithDefault < RuboCop::Cop::Cop
+      class AddColumn < RuboCop::Cop::Cop
         include MigrationHelpers
 
         WHITELISTED_TABLES = [:application_settings]
 
-        MSG = 'add_column with a default value requires downtime, ' \
-          'use add_column_with_default instead'
+        MSG = '`add_column` with a default value requires downtime, ' \
+          'use `add_column_with_default` instead'
 
         def on_send(node)
           return unless in_migration?(node)

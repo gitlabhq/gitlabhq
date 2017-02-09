@@ -1,5 +1,5 @@
 module Gitlab
-  module Serialize
+  module Serializer
     module Ci
       # This serializer could make sure our YAML variables' keys and values
       # are always strings. This is more for legacy build data because

@@ -43,3 +43,56 @@
   float: right;
   font-size: 12px;
 }
+
+.pika-single.gitlab-theme {
+  .pika-label {
+    color: $gl-text-color-secondary;
+    font-size: 14px;
+    font-weight: normal;
+  }
+
+  th {
+    padding: 2px 0;
+    color: $note-disabled-comment-color;
+    font-weight: normal;
+    text-transform: lowercase;
+    border-top: 1px solid $calendar-border-color;
+  }
+
+  abbr {
+    cursor: default;
+  }
+
+  td {
+    border: 1px solid $calendar-border-color;
+
+    &:first-child {
+      border-left: 0;
+    }
+
+    &:last-child {
+      border-right: 0;
+    }
+  }
+
+  .pika-day {
+    border-radius: 0;
+    background-color: $white-light;
+    text-align: center;
+  }
+
+  .is-today {
+    .pika-day {
+      color: inherit;
+      font-weight: normal;
+    }
+  }
+
+  .is-selected .pika-day,
+  .pika-day:hover,
+  .is-today .pika-day:hover {
+    background: $gl-primary;
+    color: $white-light;
+    box-shadow: none;
+  }
+}

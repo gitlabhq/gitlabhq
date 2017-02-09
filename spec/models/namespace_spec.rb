@@ -3,21 +3,32 @@ require 'spec_helper'
 describe Namespace, models: true do
   let!(:namespace) { create(:namespace) }
 
-  it { is_expected.to have_many :projects }
-  it { is_expected.to have_many :project_statistics }
-  it { is_expected.to belong_to :parent }
-  it { is_expected.to have_many :children }
+  describe 'associations' do
+    it { is_expected.to have_many :projects }
+    it { is_expected.to have_many :project_statistics }
+    it { is_expected.to belong_to :parent }
+    it { is_expected.to have_many :children }
+  end
 
-  it { is_expected.to validate_presence_of(:name) }
-  it { is_expected.to validate_uniqueness_of(:name).scoped_to(:parent_id) }
-  it { is_expected.to validate_length_of(:name).is_at_most(255) }
+  describe 'validations' do
+    it { is_expected.to validate_presence_of(:name) }
+    it { is_expected.to validate_uniqueness_of(:name).scoped_to(:parent_id) }
+    it { is_expected.to validate_length_of(:name).is_at_most(255) }
+    it { is_expected.to validate_length_of(:description).is_at_most(255) }
+    it { is_expected.to validate_presence_of(:path) }
+    it { is_expected.to validate_length_of(:path).is_at_most(255) }
+    it { is_expected.to validate_presence_of(:owner) }
 
-  it { is_expected.to validate_length_of(:description).is_at_most(255) }
+    it 'does not allow too deep nesting' do
+      ancestors = (1..21).to_a
+      nested = build(:namespace, parent: namespace)
 
-  it { is_expected.to validate_presence_of(:path) }
-  it { is_expected.to validate_length_of(:path).is_at_most(255) }
+      allow(nested).to receive(:ancestors).and_return(ancestors)
 
-  it { is_expected.to validate_presence_of(:owner) }
+      expect(nested).not_to be_valid
+      expect(nested.errors[:parent_id].first).to eq('has too deep level of nesting')
+    end
+  end
 
   describe "Respond to" do
     it { is_expected.to respond_to(:human_name) }
@@ -185,22 +196,6 @@ describe Namespace, models: true do
       expect(Namespace.clean_path("-john+gitlab-ETC%.git@gmail.com")).to eq("johngitlab-ETC2")
       expect(Namespace.clean_path("--%+--valid_*&%name=.git.%.atom.atom.@email.com")).to eq("valid_name")
     end
-  end
-
-  describe '#full_path' do
-    let(:group) { create(:group) }
-    let(:nested_group) { create(:group, parent: group) }
-
-    it { expect(group.full_path).to eq(group.path) }
-    it { expect(nested_group.full_path).to eq("#{group.path}/#{nested_group.path}") }
-  end
-
-  describe '#full_name' do
-    let(:group) { create(:group) }
-    let(:nested_group) { create(:group, parent: group) }
-
-    it { expect(group.full_name).to eq(group.name) }
-    it { expect(nested_group.full_name).to eq("#{group.name} / #{nested_group.name}") }
   end
 
   describe '#ancestors' do

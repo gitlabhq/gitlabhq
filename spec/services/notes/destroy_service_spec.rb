@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Notes::DeleteService, services: true do
+describe Notes::DestroyService, services: true do
   describe '#execute' do
     it 'deletes a note' do
       project = create(:empty_project)

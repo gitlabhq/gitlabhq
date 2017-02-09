@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-describe DestroyGroupService, services: true do
+describe Groups::DestroyService, services: true do
   include DatabaseConnectionHelpers
 
-  let!(:user) { create(:user) }
-  let!(:group) { create(:group) }
-  let!(:project) { create(:project, namespace: group) }
+  let!(:user)         { create(:user) }
+  let!(:group)        { create(:group) }
+  let!(:project)      { create(:project, namespace: group) }
   let!(:gitlab_shell) { Gitlab::Shell.new }
-  let!(:remove_path) { group.path + "+#{group.id}+deleted" }
+  let!(:remove_path)  { group.path + "+#{group.id}+deleted" }
 
   shared_examples 'group destruction' do |async|
     context 'database records' do
@@ -43,9 +43,9 @@ describe DestroyGroupService, services: true do
 
     def destroy_group(group, user, async)
       if async
-        DestroyGroupService.new(group, user).async_execute
+        Groups::DestroyService.new(group, user).async_execute
       else
-        DestroyGroupService.new(group, user).execute
+        Groups::DestroyService.new(group, user).execute
       end
     end
   end
@@ -84,7 +84,7 @@ describe DestroyGroupService, services: true do
 
           # Kick off the initial group destroy in a new thread, so that
           # it doesn't share this spec's database transaction.
-          Thread.new { DestroyGroupService.new(group, user).async_execute }.join(5)
+          Thread.new { Groups::DestroyService.new(group, user).async_execute }.join(5)
 
           group_record = run_with_new_database_connection do |conn|
             conn.execute("SELECT * FROM namespaces WHERE id = #{group.id}").first

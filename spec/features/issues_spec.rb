@@ -78,8 +78,8 @@ describe 'Issues', feature: true do
         fill_in 'issue_description', with: 'bug description'
         find('#issuable-due-date').click
 
-        page.within '.ui-datepicker' do
-          click_link date.day
+        page.within '.pika-single' do
+          click_button date.day
         end
 
         expect(find('#issuable-due-date').value).to eq date.to_s
@@ -110,8 +110,8 @@ describe 'Issues', feature: true do
         fill_in 'issue_description', with: 'bug description'
         find('#issuable-due-date').click
 
-        page.within '.ui-datepicker' do
-          click_link date.day
+        page.within '.pika-single' do
+          click_button date.day
         end
 
         expect(find('#issuable-due-date').value).to eq date.to_s
@@ -645,8 +645,8 @@ describe 'Issues', feature: true do
         page.within '.due_date' do
           click_link 'Edit'
 
-          page.within '.ui-datepicker-calendar' do
-            click_link date.day
+          page.within '.pika-single' do
+            click_button date.day
           end
 
           wait_for_ajax
@@ -656,11 +656,13 @@ describe 'Issues', feature: true do
       end
 
       it 'removes due date from issue' do
+        date = Date.today.at_beginning_of_month + 2.days
+        
         page.within '.due_date' do
           click_link 'Edit'
 
-          page.within '.ui-datepicker-calendar' do
-            first('.ui-state-default').click
+          page.within '.pika-single' do
+            click_button date.day
           end
 
           wait_for_ajax
