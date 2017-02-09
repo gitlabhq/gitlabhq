@@ -27,14 +27,14 @@ describe API::Members, api: true  do
   shared_examples 'GET /:sources/:id/members' do |source_type|
     context "with :sources == #{source_type.pluralize}" do
       it_behaves_like 'a 404 response when source is private' do
-        let(:route) { get api("/#{source_type.pluralize}/#{source.id}/members", stranger) }
+        let(:route) { get v3_api("/#{source_type.pluralize}/#{source.id}/members", stranger) }
       end
 
       %i[master developer access_requester stranger].each do |type|
         context "when authenticated as a #{type}" do
           it 'returns 200' do
             user = public_send(type)
-            get api("/#{source_type.pluralize}/#{source.id}/members", user)
+            get v3_api("/#{source_type.pluralize}/#{source.id}/members", user)
 
             expect(response).to have_http_status(200)
             expect(json_response.size).to eq(2)
@@ -46,7 +46,7 @@ describe API::Members, api: true  do
       it 'does not return invitees' do
         create(:"#{source_type}_member", invite_token: '123', invite_email: 'test@abc.com', source: source, user: nil)
 
-        get api("/#{source_type.pluralize}/#{source.id}/members", developer)
+        get v3_api("/#{source_type.pluralize}/#{source.id}/members", developer)
 
         expect(response).to have_http_status(200)
         expect(json_response.size).to eq(2)
@@ -54,7 +54,7 @@ describe API::Members, api: true  do
       end
 
       it 'finds members with query string' do
-        get api("/#{source_type.pluralize}/#{source.id}/members", developer), query: master.username
+        get v3_api("/#{source_type.pluralize}/#{source.id}/members", developer), query: master.username
 
         expect(response).to have_http_status(200)
         expect(json_response.count).to eq(1)
@@ -66,7 +66,7 @@ describe API::Members, api: true  do
   shared_examples 'GET /:sources/:id/members/:user_id' do |source_type|
     context "with :sources == #{source_type.pluralize}" do
       it_behaves_like 'a 404 response when source is private' do
-        let(:route) { get api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", stranger) }
+        let(:route) { get v3_api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", stranger) }
       end
 
       context 'when authenticated as a non-member' do
@@ -74,7 +74,7 @@ describe API::Members, api: true  do
           context "as a #{type}" do
             it 'returns 200' do
               user = public_send(type)
-              get api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", user)
+              get v3_api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", user)
 
               expect(response).to have_http_status(200)
               # User attributes
@@ -98,7 +98,7 @@ describe API::Members, api: true  do
     context "with :sources == #{source_type.pluralize}" do
       it_behaves_like 'a 404 response when source is private' do
         let(:route) do
-          post api("/#{source_type.pluralize}/#{source.id}/members", stranger),
+          post v3_api("/#{source_type.pluralize}/#{source.id}/members", stranger),
                user_id: access_requester.id, access_level: Member::MASTER
         end
       end
@@ -108,7 +108,7 @@ describe API::Members, api: true  do
           context "as a #{type}" do
             it 'returns 403' do
               user = public_send(type)
-              post api("/#{source_type.pluralize}/#{source.id}/members", user),
+              post v3_api("/#{source_type.pluralize}/#{source.id}/members", user),
                    user_id: access_requester.id, access_level: Member::MASTER
 
               expect(response).to have_http_status(403)
@@ -121,7 +121,7 @@ describe API::Members, api: true  do
         context 'and new member is already a requester' do
           it 'transforms the requester into a proper member' do
             expect do
-              post api("/#{source_type.pluralize}/#{source.id}/members", master),
+              post v3_api("/#{source_type.pluralize}/#{source.id}/members", master),
                    user_id: access_requester.id, access_level: Member::MASTER
 
               expect(response).to have_http_status(201)
@@ -134,7 +134,7 @@ describe API::Members, api: true  do
 
         it 'creates a new member' do
           expect do
-            post api("/#{source_type.pluralize}/#{source.id}/members", master),
+            post v3_api("/#{source_type.pluralize}/#{source.id}/members", master),
                  user_id: stranger.id, access_level: Member::DEVELOPER, expires_at: '2016-08-05'
 
             expect(response).to have_http_status(201)
@@ -145,29 +145,29 @@ describe API::Members, api: true  do
         end
       end
 
-      it "returns 409 if member already exists" do
-        post api("/#{source_type.pluralize}/#{source.id}/members", master),
+      it "returns #{source_type == 'project' ? 201 : 409} if member already exists" do
+        post v3_api("/#{source_type.pluralize}/#{source.id}/members", master),
              user_id: master.id, access_level: Member::MASTER
 
-        expect(response).to have_http_status(409)
+        expect(response).to have_http_status(source_type == 'project' ? 201 : 409)
       end
 
       it 'returns 400 when user_id is not given' do
-        post api("/#{source_type.pluralize}/#{source.id}/members", master),
+        post v3_api("/#{source_type.pluralize}/#{source.id}/members", master),
              access_level: Member::MASTER
 
         expect(response).to have_http_status(400)
       end
 
       it 'returns 400 when access_level is not given' do
-        post api("/#{source_type.pluralize}/#{source.id}/members", master),
+        post v3_api("/#{source_type.pluralize}/#{source.id}/members", master),
              user_id: stranger.id
 
         expect(response).to have_http_status(400)
       end
 
       it 'returns 422 when access_level is not valid' do
-        post api("/#{source_type.pluralize}/#{source.id}/members", master),
+        post v3_api("/#{source_type.pluralize}/#{source.id}/members", master),
              user_id: stranger.id, access_level: 1234
 
         expect(response).to have_http_status(422)
@@ -175,28 +175,11 @@ describe API::Members, api: true  do
     end
   end
 
-  ## EE specific
-  shared_examples 'POST /projects/:id/members with the project group membership locked' do
-    context 'project in a group' do
-      it 'returns a 405 method not allowed error when group membership lock is enabled' do
-        group_with_membership_locked = create(:group, membership_lock: true)
-        project = create(:project, group: group_with_membership_locked)
-        project.group.add_owner(master)
-
-        post api("/projects/#{project.id}/members", master),
-             user_id: developer.id, access_level: Member::MASTER
-
-        expect(response.status).to eq 405
-      end
-    end
-  end
-  ## EE specific
-
   shared_examples 'PUT /:sources/:id/members/:user_id' do |source_type|
     context "with :sources == #{source_type.pluralize}" do
       it_behaves_like 'a 404 response when source is private' do
         let(:route) do
-          put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", stranger),
+          put v3_api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", stranger),
               access_level: Member::MASTER
         end
       end
@@ -206,7 +189,7 @@ describe API::Members, api: true  do
           context "as a #{type}" do
             it 'returns 403' do
               user = public_send(type)
-              put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", user),
+              put v3_api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", user),
                   access_level: Member::MASTER
 
               expect(response).to have_http_status(403)
@@ -217,7 +200,7 @@ describe API::Members, api: true  do
 
       context 'when authenticated as a master/owner' do
         it 'updates the member' do
-          put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", master),
+          put v3_api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", master),
               access_level: Member::MASTER, expires_at: '2016-08-05'
 
           expect(response).to have_http_status(200)
@@ -228,20 +211,20 @@ describe API::Members, api: true  do
       end
 
       it 'returns 409 if member does not exist' do
-        put api("/#{source_type.pluralize}/#{source.id}/members/123", master),
+        put v3_api("/#{source_type.pluralize}/#{source.id}/members/123", master),
             access_level: Member::MASTER
 
         expect(response).to have_http_status(404)
       end
 
       it 'returns 400 when access_level is not given' do
-        put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", master)
+        put v3_api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", master)
 
         expect(response).to have_http_status(400)
       end
 
       it 'returns 422 when access level is not valid' do
-        put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", master),
+        put v3_api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", master),
             access_level: 1234
 
         expect(response).to have_http_status(422)
@@ -252,7 +235,7 @@ describe API::Members, api: true  do
   shared_examples 'DELETE /:sources/:id/members/:user_id' do |source_type|
     context "with :sources == #{source_type.pluralize}" do
       it_behaves_like 'a 404 response when source is private' do
-        let(:route) { delete api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", stranger) }
+        let(:route) { delete v3_api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", stranger) }
       end
 
       context 'when authenticated as a non-member or member with insufficient rights' do
@@ -260,7 +243,7 @@ describe API::Members, api: true  do
           context "as a #{type}" do
             it 'returns 403' do
               user = public_send(type)
-              delete api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", user)
+              delete v3_api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", user)
 
               expect(response).to have_http_status(403)
             end
@@ -271,7 +254,7 @@ describe API::Members, api: true  do
       context 'when authenticated as a member and deleting themself' do
         it 'deletes the member' do
           expect do
-            delete api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", developer)
+            delete v3_api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", developer)
 
             expect(response).to have_http_status(200)
           end.to change { source.members.count }.by(-1)
@@ -282,7 +265,7 @@ describe API::Members, api: true  do
         context 'and member is a requester' do
           it "returns #{source_type == 'project' ? 200 : 404}" do
             expect do
-              delete api("/#{source_type.pluralize}/#{source.id}/members/#{access_requester.id}", master)
+              delete v3_api("/#{source_type.pluralize}/#{source.id}/members/#{access_requester.id}", master)
 
               expect(response).to have_http_status(source_type == 'project' ? 200 : 404)
             end.not_to change { source.requesters.count }
@@ -291,7 +274,7 @@ describe API::Members, api: true  do
 
         it 'deletes the member' do
           expect do
-            delete api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", master)
+            delete v3_api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", master)
 
             expect(response).to have_http_status(200)
           end.to change { source.members.count }.by(-1)
@@ -299,7 +282,7 @@ describe API::Members, api: true  do
       end
 
       it "returns #{source_type == 'project' ? 200 : 404} if member does not exist" do
-        delete api("/#{source_type.pluralize}/#{source.id}/members/123", master)
+        delete v3_api("/#{source_type.pluralize}/#{source.id}/members/123", master)
 
         expect(response).to have_http_status(source_type == 'project' ? 200 : 404)
       end
@@ -326,10 +309,6 @@ describe API::Members, api: true  do
     let(:source) { project }
   end
 
-  ## EE specific
-  it_behaves_like 'POST /projects/:id/members with the project group membership locked'
-  ## EE specific
-
   it_behaves_like 'POST /:sources/:id/members', 'group' do
     let(:source) { group }
   end
@@ -353,7 +332,7 @@ describe API::Members, api: true  do
   context 'Adding owner to project' do
     it 'returns 403' do
       expect do
-        post api("/projects/#{project.id}/members", master),
+        post v3_api("/projects/#{project.id}/members", master),
              user_id: stranger.id, access_level: Member::OWNER
 
         expect(response).to have_http_status(422)

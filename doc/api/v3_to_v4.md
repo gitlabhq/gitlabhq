@@ -12,3 +12,4 @@ changes are in V4:
 - Endpoints under `projects/merge_request/:id` have been removed (use: `projects/merge_requests/:id`)
 - Project snippets do not return deprecated field `expires_at`
 - Endpoints under `projects/:id/keys` have been removed (use `projects/:id/deploy_keys`)
+- Status 409 returned for POST `project/:id/members` when a member already exists
