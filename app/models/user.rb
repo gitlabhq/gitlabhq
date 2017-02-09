@@ -178,6 +178,15 @@ class User < ActiveRecord::Base
       def blocked?
         true
       end
+
+      def active_for_authentication?
+        false
+      end
+
+      def inactive_message
+        "Your account has been blocked. Please contact your GitLab " \
+          "administrator if you think this is an error."
+      end
     end
   end
 

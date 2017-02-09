@@ -18,6 +18,10 @@ FactoryGirl.define do
       auditor true
     end
 
+    trait :blocked do
+      after(:build) { |user, _| user.block! }
+    end
+
     trait :external do
       external true
     end
