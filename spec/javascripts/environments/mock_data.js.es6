@@ -55,5 +55,5 @@ const environment = {
 
 module.exports = {
   environmentsList,
-  environment
+  environment,
 };

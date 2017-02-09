@@ -97,7 +97,7 @@ module.exports = Vue.component('environment-item', {
      * @returns {Boolean}
      */
     hasStopAction() {
-      return this.model['stop_action?'];
+      return this.model.latest['stop_action?'];
     },
 
     /**
