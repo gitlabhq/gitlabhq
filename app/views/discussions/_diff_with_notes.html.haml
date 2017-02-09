@@ -2,7 +2,7 @@
 - blob = discussion.blob
 
 .diff-file.file-holder
-  .file-title
+  .js-file-title.file-title
     = render "projects/diffs/file_header", diff_file: diff_file, blob: blob, diff_commit: diff_file.content_commit, project: discussion.project, url: discussion_diff_path(discussion)
 
   .diff-content.code.js-syntax-highlight
