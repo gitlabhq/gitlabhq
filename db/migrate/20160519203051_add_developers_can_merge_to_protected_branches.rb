@@ -3,7 +3,11 @@ class AddDevelopersCanMergeToProtectedBranches < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  def change
+  def up
     add_column_with_default :protected_branches, :developers_can_merge, :boolean, default: false, allow_null: false
+  end
+
+  def down
+    remove_column :protected_branches, :developers_can_merge
   end
 end
