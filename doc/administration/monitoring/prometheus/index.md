@@ -46,6 +46,29 @@ By default, Prometheus will run as the `gitlab-prometheus` user and listen on
 has been enabled, it will automatically be set up as a monitoring target for
 Prometheus.
 
+## Changing the port Prometheus listens on
+
+>**Note:**
+The following change was added in [GitLab Omnibus 8.17][1261]. Although possible,
+it's not recommended to change the default address and port Prometheus listens
+on as this might affect or conflict with other services running on the GitLab
+server. Proceed at your own risk.
+
+To change the address/port that Prometheus listens on:
+
+1. Edit `/etc/gitlab/gitlab.rb`
+1. Find and add/uncomment the following line:
+
+    ```ruby
+    prometheus['listen_address'] = 'localhost:9090'
+    ```
+
+    Replace `localhost:9090` with the address/port you want Prometheus to
+    listen on.
+
+1. Save the file and [reconfigure GitLab][reconfigure] for the changes to
+   take effect
+
 ## Viewing performance metrics
 
 After you have [enabled Prometheus](#configuring-prometheus), you can visit
@@ -121,3 +144,4 @@ The GitLab monitor exporter allows you to measure various GitLab metrics.
 [scrape-config]: https://prometheus.io/docs/operating/configuration/#%3Cscrape_config%3E
 [reconfigure]: ../../restart_gitlab.md#omnibus-gitlab-reconfigure
 [#27069]: https://gitlab.com/gitlab-org/gitlab-ce/issues/27069
+[1261]: https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests/1261
