@@ -65,8 +65,8 @@ class CommitStatus < ActiveRecord::Base
     end
 
     event :cancel do
-      transition [:pending, :running] => :canceled
       transition [:created] => :skipped
+      transition [:pending, :running] => :canceled
     end
 
     before_transition created: [:pending, :running] do |commit_status|

@@ -503,7 +503,9 @@ describe Ci::Pipeline, models: true do
   end
 
   describe '#status' do
-    let!(:build) { create(:ci_build, :created, pipeline: pipeline, name: 'test') }
+    let(:build) do
+      create(:ci_build, :created, pipeline: pipeline, name: 'test')
+    end
 
     subject { pipeline.reload.status }
 
@@ -545,7 +547,13 @@ describe Ci::Pipeline, models: true do
         build.cancel
       end
 
-      it { is_expected.to eq('canceled') }
+      context 'when build is pending' do
+        let(:build) do
+          create(:ci_build, :pending, pipeline: pipeline)
+        end
+
+        it { is_expected.to eq('canceled') }
+      end
     end
 
     context 'on failure and build retry' do
