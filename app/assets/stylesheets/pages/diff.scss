@@ -34,8 +34,13 @@
     }
   }
 
-  .file-title {
+  .file-title,
+  .file-title-flex-parent {
     cursor: pointer;
+
+    a:hover {
+      text-decoration: none;
+    }
 
     &:hover {
       background-color: $gray-normal;
