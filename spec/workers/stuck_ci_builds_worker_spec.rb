@@ -4,6 +4,7 @@ describe StuckCiBuildsWorker do
   let!(:runner) { create :ci_runner }
   let!(:build) { create :ci_build, runner: runner }
   let(:worker) { described_class.new }
+  let(:exclusive_lease_uuid) { SecureRandom.uuid }
 
   subject do
     build.reload
@@ -12,7 +13,7 @@ describe StuckCiBuildsWorker do
 
   before do
     build.update!(status: status, updated_at: updated_at)
-    allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).and_return(true)
+    allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).and_return(exclusive_lease_uuid)
   end
 
   shared_examples 'build is dropped' do
@@ -103,11 +104,25 @@ describe StuckCiBuildsWorker do
   describe 'exclusive lease' do
     let(:status) { 'running' }
     let(:updated_at) { 2.days.ago }
+    let(:worker2) { described_class.new }
 
-    it 'is guard by exclusive lease' do
+    it 'is guard by exclusive lease when executed concurrently' do
+      expect(worker).to receive(:drop).at_least(:once)
+      expect(worker2).not_to receive(:drop)
       worker.perform
       allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).and_return(false)
-      expect(worker).not_to receive(:drop)
+      worker2.perform
+    end
+
+    it 'can be executed in sequence' do
+      expect(worker).to receive(:drop).at_least(:once)
+      expect(worker2).to receive(:drop).at_least(:once)
+      worker.perform
+      worker2.perform
+    end
+
+    it 'cancels exclusive lease after worker perform' do
+      expect(Gitlab::ExclusiveLease).to receive(:cancel).with(described_class::EXCLUSIVE_LEASE_KEY, exclusive_lease_uuid)
       worker.perform
     end
   end

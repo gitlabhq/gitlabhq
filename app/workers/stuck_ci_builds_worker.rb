@@ -2,6 +2,8 @@ class StuckCiBuildsWorker
   include Sidekiq::Worker
   include CronjobQueue
 
+  EXCLUSIVE_LEASE_KEY = 'stuck_ci_builds_worker_lease'
+
   BUILD_RUNNING_OUTDATED_TIMEOUT = 1.hour
   BUILD_PENDING_OUTDATED_TIMEOUT = 1.day
   BUILD_PENDING_STUCK_TIMEOUT = 1.hour
@@ -11,18 +13,24 @@ class StuckCiBuildsWorker
 
     Rails.logger.info "#{self.class}: Cleaning stuck builds"
 
-    drop       :running, BUILD_RUNNING_OUTDATED_TIMEOUT
-    drop       :pending, BUILD_PENDING_OUTDATED_TIMEOUT
+    drop :running, BUILD_RUNNING_OUTDATED_TIMEOUT
+    drop :pending, BUILD_PENDING_OUTDATED_TIMEOUT
     drop_stuck :pending, BUILD_PENDING_STUCK_TIMEOUT
+
+    remove_lease
   end
 
   private
 
   def try_obtain_lease
-    Gitlab::ExclusiveLease.new(
-      'stuck_ci_builds_worker_lease',
-      timeout: 30.minutes
+    @uuid = Gitlab::ExclusiveLease.new(
+        EXCLUSIVE_LEASE_KEY,
+        timeout: 30.minutes
     ).try_obtain
+  end
+
+  def remove_lease
+    Gitlab::ExclusiveLease.cancel(EXCLUSIVE_LEASE_KEY, @uuid)
   end
 
   def drop(status, timeout)
