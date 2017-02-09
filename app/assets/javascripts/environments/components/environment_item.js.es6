@@ -355,6 +355,18 @@ module.exports = Vue.component('environment-item', {
         !this.$options.isObjectEmpty(this.model.latest.last_deployment.deployable);
     },
 
+    buildPath(){
+      return this.model.latest &&
+        this.model.latest.last_deployment &&
+        this.model.latest.last_deployment.deployable &&
+        this.model.latest.last_deployment.deployable.build_path ||
+        '';
+    },
+
+    externalURL() {
+      return this.model.latest && this.model.latest.external_url || '';
+    },
+
     /**
      * Verifies the presence of all the keys needed to render the buil_path.
      *
