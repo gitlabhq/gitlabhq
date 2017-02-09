@@ -1594,10 +1594,6 @@ class Project < ActiveRecord::Base
       current_application_settings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_MERGE
   end
 
-<<<<<<< HEAD
-  def full_path_changed?
-    path_changed? || namespace_id_changed?
-=======
   # Similar to the normal callbacks that hook into the life cycle of an
   # Active Record object, you can also define callbacks that get triggered
   # when you add an object to an association collection. If any of these
@@ -1607,7 +1603,6 @@ class Project < ActiveRecord::Base
   # than the number of permitted boards per project it won't fail.
   def validate_board_limit(board)
     raise BoardLimitExceeded, 'Number of permitted boards exceeded' if boards.size >= NUMBER_OF_PERMITTED_BOARDS
->>>>>>> ce/master
   end
 
   def update_project_statistics

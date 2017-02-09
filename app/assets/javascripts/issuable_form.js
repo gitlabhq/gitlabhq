@@ -3,12 +3,9 @@
 /* global UsersSelect */
 /* global ZenMode */
 /* global Autosave */
-<<<<<<< HEAD
 /* global GroupsSelect */
-=======
 /* global dateFormat */
 /* global Pikaday */
->>>>>>> ce/master
 
 (function() {
   var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
