@@ -116,6 +116,21 @@ describe "Internal Project Access", feature: true  do
     it { is_expected.to be_denied_for(:external) }
   end
 
+  describe "GET /:project_path/settings/repository" do
+    subject { namespace_project_settings_repository_path(project.namespace, project) }
+
+    it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_denied_for(:auditor) }
+    it { is_expected.to be_allowed_for(:owner).of(project) }
+    it { is_expected.to be_allowed_for(:master).of(project) }
+    it { is_expected.to be_denied_for(:developer).of(project) }
+    it { is_expected.to be_denied_for(:reporter).of(project) }
+    it { is_expected.to be_denied_for(:guest).of(project) }
+    it { is_expected.to be_denied_for(:user) }
+    it { is_expected.to be_denied_for(:visitor) }
+    it { is_expected.to be_denied_for(:external) }
+  end
+
   describe "GET /:project_path/blob" do
     let(:commit) { project.repository.commit }
     subject { namespace_project_blob_path(project.namespace, project, File.join(commit.id, '.gitignore')) }
@@ -484,7 +499,7 @@ describe "Internal Project Access", feature: true  do
       it { is_expected.to be_denied_for(:visitor) }
     end
   end
-  
+
   describe "GET /:project_path/container_registry" do
     before do
       stub_container_registry_tags('latest')
