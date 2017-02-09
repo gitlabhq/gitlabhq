@@ -355,6 +355,11 @@ module.exports = Vue.component('environment-item', {
         !this.$options.isObjectEmpty(this.model.latest.last_deployment.deployable);
     },
 
+    /**
+     * Verifies the presence of all the keys needed to render the buil_path.
+     *
+     * @return {String}
+     */
     buildPath(){
       return this.model.latest &&
         this.model.latest.last_deployment &&
@@ -363,8 +368,17 @@ module.exports = Vue.component('environment-item', {
         '';
     },
 
+    /**
+     * Verifies the presence of all the keys needed to render the external_url.
+     *
+     * @return {String}
+     */
     externalURL() {
-      return this.model.latest && this.model.latest.external_url || '';
+      if (this.model.latest && this.model.latest.external_url) {
+        return this.model.latest.external_url;
+      }
+
+      return '';
     },
 
     /**

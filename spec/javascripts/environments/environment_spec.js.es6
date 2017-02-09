@@ -49,7 +49,7 @@ describe('Environment', () => {
       });
     });
 
-    describe('with environments', () => {
+    describe('with paginated environments', () => {
       const environmentsResponseInterceptor = (request, next) => {
         next(request.respondWith(JSON.stringify({
           environments: [environment],
@@ -57,11 +57,22 @@ describe('Environment', () => {
           available_count: 0,
         }), {
           status: 200,
+          headers: {
+            'X-Next-Page': '2',
+            'X-Page': '1',
+            'X-Per-Page': '1',
+            'X-Prev-Page': '',
+            'X-Total': '37',
+            'X-Total-Pages': '2',
+          },
         }));
       };
 
       beforeEach(() => {
         Vue.http.interceptors.push(environmentsResponseInterceptor);
+        component = new EnvironmentsComponent({
+          el: document.querySelector('#environments-list-view'),
+        });
       });
 
       afterEach(() => {
@@ -71,16 +82,23 @@ describe('Environment', () => {
       });
 
       it('should render a table with environments', (done) => {
-        component = new EnvironmentsComponent({
-          el: document.querySelector('#environments-list-view'),
-        });
-
         setTimeout(() => {
           expect(
             component.$el.querySelectorAll('table tbody tr').length,
           ).toEqual(1);
           done();
         }, 0);
+      });
+
+      describe('pagination', () => {
+        it('should render pagination', (done) => {
+          setTimeout(() => {
+            expect(
+              component.$el.querySelectorAll('.gl-pagination li').length,
+            ).toEqual(5);
+            done();
+          }, 0);
+        });
       });
     });
   });

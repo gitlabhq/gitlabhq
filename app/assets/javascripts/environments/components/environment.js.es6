@@ -59,6 +59,7 @@ module.exports = Vue.component('environment-component', {
     canCreateEnvironmentParsed() {
       return this.$options.convertPermissionToBoolean(this.canCreateEnvironment);
     },
+
   },
 
   /**
@@ -68,6 +69,7 @@ module.exports = Vue.component('environment-component', {
   created() {
     const scope = this.$options.getQueryParameter('scope') || this.visibility;
     const pageNumber = this.$options.getQueryParameter('page') || this.pageNumber;
+
     const endpoint = `${this.endpoint}?scope=${scope}&page=${pageNumber}`;
 
     const service = new EnvironmentsService(endpoint);
@@ -75,14 +77,15 @@ module.exports = Vue.component('environment-component', {
     this.isLoading = true;
 
     return service.all()
-      .then((resp) => {
-        debugger;
-        return resp.json();
-      })
-      .then((json) => {
-        this.store.storeAvailableCount(json.available_count);
-        this.store.storeStoppedCount(json.stopped_count);
-        this.store.storeEnvironments(json.environments);
+      .then(resp => ({
+        headers: resp.headers,
+        body: resp.json(),
+      }))
+      .then((response) => {
+        this.store.storeAvailableCount(response.body.available_count);
+        this.store.storeStoppedCount(response.body.stopped_count);
+        this.store.storeEnvironments(response.body.environments);
+        this.store.storePagination(response.headers);
       })
       .then(() => {
         this.isLoading = false;
@@ -122,8 +125,14 @@ module.exports = Vue.component('environment-component', {
       return this.store.toggleFolder(model.name);
     },
 
-    changePage(pageNumber, scope) {
-      gl.utils.visitUrl(`?scope=${scope}&p=${pageNumber}`);
+    /**
+     * Will change the page number and update the URL.
+     *
+     * @param  {Number} pageNumber desired page to go to.
+     */
+    changePage(pageNumber) {
+      const param = window.location.search.replace(/page=\d/g, `page=${pageNumber}`);
+      gl.utils.visitUrl(param);
     },
   },
 
@@ -131,7 +140,7 @@ module.exports = Vue.component('environment-component', {
     <div :class="cssContainerClass">
       <div class="top-area">
         <ul v-if="!isLoading" class="nav-links">
-          <li v-bind:class="{ 'active': scope === undefined }">
+          <li v-bind:class="{ 'active': scope === undefined || scope === 'available' }">
             <a :href="projectEnvironmentsPath">
               Available
               <span class="badge js-available-environments-count">
@@ -207,11 +216,9 @@ module.exports = Vue.component('environment-component', {
             </tbody>
           </table>
 
-          <table-pagination v-if="!isLoading && state.environments.length"
-            :pagenum="1"
-            :count="2"
+          <table-pagination v-if="state.paginationInformation && state.paginationInformation.totalPages > 1"
             :change="changePage"
-            :pageInfo="paginationInformation">
+            :pageInfo="state.paginationInformation">
           </table-pagination>
         </div>
       </div>

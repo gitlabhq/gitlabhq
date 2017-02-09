@@ -36,6 +36,7 @@ require('../vue_shared/components/pipelines_table');
     },
     methods: {
       change(pagenum, apiScope) {
+        if (!apiScope) apiScope = 'all';
         gl.utils.visitUrl(`?scope=${apiScope}&p=${pagenum}`);
       },
     },

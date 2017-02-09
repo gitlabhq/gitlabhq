@@ -44,13 +44,17 @@ class EnvironmentsStore {
   }
 
   storePagination(pagination = {}) {
-    const normalizedHeaders = gl.utils.normalizedHeaders(pagination);
-
+    const normalizedHeaders = gl.utils.normalizeHeaders(pagination);
     const paginationInformation = {
-
+      perPage: parseInt(normalizedHeaders['X-PER-PAGE'], 10),
+      page: parseInt(normalizedHeaders['X-PAGE'], 10),
+      total: parseInt(normalizedHeaders['X-TOTAL'], 10),
+      totalPages: parseInt(normalizedHeaders['X-TOTAL-PAGES'], 10),
+      nextPage: parseInt(normalizedHeaders['X-NEXT-PAGE'], 10),
+      previousPage: parseInt(normalizedHeaders['X-PREV-PAGE'], 10),
     };
 
-    this.paginationInformation = paginationInformation;
+    this.state.paginationInformation = paginationInformation;
     return paginationInformation;
   }
 
