@@ -7,7 +7,6 @@ window.Vue = require('vue');
 window.Vue.use(require('vue-resource'));
 require('../services/environments_service');
 require('./environment_item');
-require('../../vue_pagination/index');
 
 (() => {
   window.gl = window.gl || {};
