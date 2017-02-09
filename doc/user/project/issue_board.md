@@ -100,8 +100,8 @@ add these issues to the selected list. By default the first list is selected,
 but this can be changed in the dropdown menu next to the **Add issues** button
 in the modal.
 
-Within this modal you can also issues. This is done by using the filters at the
-top of the modal.
+Within this modal you can also filter issues. This is done by using the filters
+at the top of the modal.
 
 You can filter by author, assignee, milestone and label.
 
