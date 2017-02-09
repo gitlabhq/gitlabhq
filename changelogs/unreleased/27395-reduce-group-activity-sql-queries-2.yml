@@ -1,0 +1,4 @@
+---
+title: Include :author, :project, and :target in Event.with_associations
+merge_request:
+author:
