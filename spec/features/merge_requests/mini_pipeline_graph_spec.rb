@@ -66,7 +66,7 @@ feature 'Mini Pipeline Graph', :js, :feature do
     end
 
     it 'should close when toggle is clicked again' do
-      toggle.click
+      toggle.trigger('click')
 
       expect(toggle.find(:xpath, '..')).not_to have_selector('.mini-pipeline-graph-dropdown-menu')
     end
