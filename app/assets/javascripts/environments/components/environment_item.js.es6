@@ -72,7 +72,8 @@ module.exports = Vue.component('environment-item', {
      * @returns {Boolean}
      */
     hasLastDeploymentKey() {
-      if (this.model.latest && this.model.latest.last_deployment &&
+      if (this.model.latest &&
+        this.model.latest.last_deployment &&
         !this.$options.isObjectEmpty(this.model.latest.last_deployment)) {
         return true;
       }
@@ -86,7 +87,8 @@ module.exports = Vue.component('environment-item', {
      * @returns {Boolean|Undefined}
      */
     hasManualActions() {
-      return this.model.latest && this.model.latest.last_deployment &&
+      return this.model.latest &&
+        this.model.latest.last_deployment &&
         this.model.latest.last_deployment.manual_actions &&
         this.model.latest.last_deployment.manual_actions.length > 0;
     },

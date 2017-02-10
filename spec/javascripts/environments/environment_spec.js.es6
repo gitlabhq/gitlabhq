@@ -58,11 +58,11 @@ describe('Environment', () => {
         }), {
           status: 200,
           headers: {
-            'X-Next-Page': '2',
-            'X-Page': '1',
+            'X-nExt-pAge': '2',
+            'x-page': '1',
             'X-Per-Page': '1',
             'X-Prev-Page': '',
-            'X-Total': '37',
+            'X-TOTAL': '37',
             'X-Total-Pages': '2',
           },
         }));
