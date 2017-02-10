@@ -1,4 +1,3 @@
-/* global Cookies */
 const Vue = require('vue');
 const checkmarkIcon = require('../icons/checkmark');
 
@@ -9,16 +8,6 @@ module.exports = Vue.extend({
   mixins: [gl.issueBoards.ModalMixins],
   data() {
     return ModalStore.store;
-  },
-  methods: {
-    closeHelp(openModal) {
-      Store.state.helpHidden = true;
-      Cookies.set('boards_backlog_help_hidden', true);
-
-      if (openModal) {
-        this.toggleModal(true);
-      }
-    },
   },
   computed: {
     disabled() {
@@ -34,7 +23,7 @@ module.exports = Vue.extend({
           type="button"
           class="close"
           aria-label="Close backlog help"
-          @click="closeHelp(false)">
+          @click="toggleModal(false)">
           <i class="fa fa-times"></i>
         </button>
       </h4>
@@ -50,7 +39,7 @@ module.exports = Vue.extend({
           class="btn btn-success"
           type="button"
           :disabled="disabled"
-          @click="closeHelp(true)">
+          @click="toggleModal(true)">
           Add issues
         </button>
       </div>
