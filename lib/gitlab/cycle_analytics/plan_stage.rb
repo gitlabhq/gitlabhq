@@ -14,10 +14,6 @@ module Gitlab
         :plan
       end
 
-      def legend
-        "Related Commits"
-      end
-
       def description
         "Time before an issue starts implementation"
       end
