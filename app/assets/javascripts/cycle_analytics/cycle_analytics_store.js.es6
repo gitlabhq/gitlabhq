@@ -1,8 +1,4 @@
 /* eslint-disable no-param-reassign */
-
-require('../lib/utils/text_utility');
-const DEFAULT_EVENT_OBJECTS = require('./default_event_objects');
-
 ((global) => {
   global.cycleAnalytics = global.cycleAnalytics || {};
 
@@ -38,12 +34,11 @@ const DEFAULT_EVENT_OBJECTS = require('./default_event_objects');
       });
 
       newData.stages.forEach((item) => {
-        const stageSlug = gl.text.dasherize(item.title.toLowerCase());
+        const stageName = item.title.toLowerCase();
         item.active = false;
-        item.isUserAllowed = data.permissions[stageSlug];
-        item.emptyStageText = EMPTY_STAGE_TEXTS[stageSlug];
-        item.component = `stage-${stageSlug}-component`;
-        item.slug = stageSlug;
+        item.isUserAllowed = data.permissions[stageName];
+        item.emptyStageText = EMPTY_STAGE_TEXTS[stageName];
+        item.component = `stage-${stageName}-component`;
       });
       newData.analytics = data;
       return newData;
@@ -63,33 +58,31 @@ const DEFAULT_EVENT_OBJECTS = require('./default_event_objects');
       this.deactivateAllStages();
       stage.active = true;
     },
-    setStageEvents(events, stage) {
-      this.state.events = this.decorateEvents(events, stage);
+    setStageEvents(events) {
+      this.state.events = this.decorateEvents(events);
     },
-    decorateEvents(events, stage) {
+    decorateEvents(events) {
       const newEvents = [];
 
       events.forEach((item) => {
         if (!item) return;
 
-        const eventItem = Object.assign({}, DEFAULT_EVENT_OBJECTS[stage.slug], item);
+        item.totalTime = item.total_time;
+        item.author.webUrl = item.author.web_url;
+        item.author.avatarUrl = item.author.avatar_url;
 
-        eventItem.totalTime = eventItem.total_time;
-        eventItem.author.webUrl = eventItem.author.web_url;
-        eventItem.author.avatarUrl = eventItem.author.avatar_url;
+        if (item.created_at) item.createdAt = item.created_at;
+        if (item.short_sha) item.shortSha = item.short_sha;
+        if (item.commit_url) item.commitUrl = item.commit_url;
 
-        if (eventItem.created_at) eventItem.createdAt = eventItem.created_at;
-        if (eventItem.short_sha) eventItem.shortSha = eventItem.short_sha;
-        if (eventItem.commit_url) eventItem.commitUrl = eventItem.commit_url;
+        delete item.author.web_url;
+        delete item.author.avatar_url;
+        delete item.total_time;
+        delete item.created_at;
+        delete item.short_sha;
+        delete item.commit_url;
 
-        delete eventItem.author.web_url;
-        delete eventItem.author.avatar_url;
-        delete eventItem.total_time;
-        delete eventItem.created_at;
-        delete eventItem.short_sha;
-        delete eventItem.commit_url;
-
-        newEvents.push(eventItem);
+        newEvents.push(item);
       });
 
       return newEvents;
