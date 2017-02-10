@@ -2,7 +2,6 @@ class AnalyticsStageEntity < Grape::Entity
   include EntityDateHelper
 
   expose :title
-  expose :legend
   expose :description
 
   expose :median, as: :value do |stage|
