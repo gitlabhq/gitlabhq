@@ -662,7 +662,7 @@ GEM
     rspec-retry (0.4.5)
       rspec-core
     rspec-support (3.5.0)
-    rspec_profiling (0.0.4)
+    rspec_profiling (0.0.5)
       activerecord
       pg
       rails
@@ -762,7 +762,7 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
-    sqlite3 (1.3.11)
+    sqlite3 (1.3.13)
     stackprof (0.2.10)
     state_machines (0.4.0)
     state_machines-activemodel (0.4.0)
@@ -992,7 +992,7 @@ DEPENDENCIES
   rqrcode-rails3 (~> 0.1.7)
   rspec-rails (~> 3.5.0)
   rspec-retry (~> 0.4.5)
-  rspec_profiling
+  rspec_profiling (~> 0.0.5)
   rubocop (~> 0.46.0)
   rubocop-rspec (~> 1.9.1)
   ruby-fogbugz (~> 0.2.1)
@@ -1041,4 +1041,4 @@ DEPENDENCIES
   wikicloth (= 0.8.1)
 
 BUNDLED WITH
-   1.14.2
+   1.14.3

@@ -135,7 +135,7 @@ describe JiraService, models: true do
             url: "#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/commit/#{merge_request.diff_head_sha}",
             title: "GitLab: Solved by commit #{merge_request.diff_head_sha}.",
             icon: { title: "GitLab", url16x16: "https://gitlab.com/favicon.ico" },
-            status: { resolved: true, icon: { url16x16: "http://www.openwebgraphics.com/resources/data/1768/16x16_apply.png", title: "Closed" } }
+            status: { resolved: true }
           }
         )
       ).once

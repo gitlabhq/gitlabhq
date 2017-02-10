@@ -125,7 +125,6 @@
   top: 100%;
   left: 0;
   z-index: 9;
-  max-width: 280px;
   min-width: 240px;
   margin-top: 2px;
   margin-bottom: 0;
@@ -136,6 +135,10 @@
   border: 1px solid $dropdown-border-color;
   border-radius: $border-radius-base;
   box-shadow: 0 2px 4px $dropdown-shadow-color;
+
+  .filtered-search-input-container & {
+    max-width: 280px;
+  }
 
   &.is-loading {
     .dropdown-content {
