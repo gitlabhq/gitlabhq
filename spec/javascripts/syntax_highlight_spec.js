@@ -41,4 +41,4 @@ require('~/syntax_highlight');
       });
     });
   });
-}).call(this);
+}).call(window);

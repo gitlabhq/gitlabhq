@@ -229,4 +229,4 @@ require('./fixtures/emoji_menu');
       });
     });
   });
-}).call(this);
+}).call(window);
