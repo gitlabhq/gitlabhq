@@ -1,7 +1,7 @@
 module Gitlab
   module ChatCommands
     module Presenters
-      module Issuable
+      module IssueBase
         def color(issuable)
           issuable.open? ? '#38ae67' : '#d22852'
         end
