@@ -137,6 +137,7 @@
   box-shadow: 0 2px 4px $dropdown-shadow-color;
 
   .filtered-search-input-container & {
+    min-width: 240px;
     max-width: 280px;
   }
 
