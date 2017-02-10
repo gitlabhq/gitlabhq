@@ -83,6 +83,10 @@ var config = {
       assets: true
     }),
     new webpack.IgnorePlugin(/moment/, /pikaday/),
+    // use deterministic module ids in all environments
+    IS_PRODUCTION ?
+      new webpack.HashedModuleIdsPlugin() :
+      new webpack.NamedModulesPlugin(),
   ],
 
   resolve: {
