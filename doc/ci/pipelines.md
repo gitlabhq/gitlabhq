@@ -33,7 +33,7 @@ Pipelines accommodate several development workflows:
 
 Example continuous delivery flow:
 
-![](img/pipelines-goal.svg)
+![CD Flow](img/pipelines-goal.svg)
 
 ## Builds
 
