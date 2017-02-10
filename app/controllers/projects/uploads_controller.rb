@@ -1,6 +1,6 @@
 class Projects::UploadsController < Projects::ApplicationController
-  skip_before_action :reject_blocked!, :project,
-    :repository, if: -> { action_name == 'show' && image_or_video? }
+  skip_before_action :project, :repository,
+    if: -> { action_name == 'show' && image_or_video? }
 
   before_action :authorize_upload_file!, only: [:create]
 
