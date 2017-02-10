@@ -32,6 +32,7 @@ class RemoveInactiveDefaultEmailServices < ActiveRecord::Migration
     end
 
     threads.each(&:join)
+    pool.disconnect!
   end
 
   def down
