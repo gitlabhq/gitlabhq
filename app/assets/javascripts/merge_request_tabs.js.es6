@@ -125,9 +125,8 @@ require('./flash');
         if (this.diffViewType() === 'parallel') {
           this.expandViewContainer();
         }
-        const navBarHeight = $('.navbar-gitlab').outerHeight();
         $.scrollTo('.merge-request-details .merge-request-tabs', {
-          offset: -navBarHeight,
+          offset: 0,
         });
       } else {
         this.expandView();
@@ -140,11 +139,7 @@ require('./flash');
 
     scrollToElement(container) {
       if (location.hash) {
-        const offset = 0 - (
-          $('.navbar-gitlab').outerHeight() +
-          $('.layout-nav').outerHeight() +
-          $('.js-tabs-affix').outerHeight()
-        );
+        const offset = -$('.js-tabs-affix').outerHeight();
         const $el = $(`${container} ${location.hash}:not(.match)`);
         if ($el.length) {
           $.scrollTo($el[0], { offset });
@@ -330,14 +325,12 @@ require('./flash');
       if (Breakpoints.get().getBreakpointSize() === 'xs' || !$tabs.length) return;
 
       const $diffTabs = $('#diff-notes-app');
-      const $fixedNav = $('.navbar-fixed-top');
-      const $layoutNav = $('.layout-nav');
 
       $tabs.off('affix.bs.affix affix-top.bs.affix')
         .affix({
           offset: {
             top: () => (
-              $diffTabs.offset().top - $tabs.height() - $fixedNav.height() - $layoutNav.height()
+              $diffTabs.offset().top - $tabs.height()
             ),
           },
         })

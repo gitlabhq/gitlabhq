@@ -6,7 +6,7 @@
   const sidebarBreakpoint = 1024;
 
   const pageSelector = '.page-with-sidebar';
-  const navbarSelector = '.navbar-fixed-top';
+  const navbarSelector = '.navbar-gitlab';
   const sidebarWrapperSelector = '.sidebar-wrapper';
   const sidebarContentSelector = '.nav-sidebar';
 
@@ -35,13 +35,16 @@
         window.innerWidth >= sidebarBreakpoint &&
         $(pageSelector).hasClass(expandedPageClass)
       );
+      $(window).on('resize', () => this.setSidebarHeight());
       $(document)
         .on('click', sidebarToggleSelector, () => this.toggleSidebar())
         .on('click', pinnedToggleSelector, () => this.togglePinnedState())
         .on('click', 'html, body, a, button', (e) => this.handleClickEvent(e))
         .on('DOMContentLoaded', () => this.renderState())
+        .on('scroll', () => this.setSidebarHeight())
         .on('todo:toggle', (e, count) => this.updateTodoCount(count));
       this.renderState();
+      this.setSidebarHeight();
     }
 
     handleClickEvent(e) {
@@ -62,6 +65,16 @@
     toggleSidebar() {
       this.isExpanded = !this.isExpanded;
       this.renderState();
+    }
+
+    setSidebarHeight() {
+      const $navHeight = $('.navbar-gitlab').outerHeight() + $('.layout-nav').outerHeight();
+      const diff = $navHeight - $('body').scrollTop();
+      if (diff > 0) {
+        $('.js-right-sidebar').outerHeight($(window).height() - diff);
+      } else {
+        $('.js-right-sidebar').outerHeight('100%');
+      }
     }
 
     togglePinnedState() {
