@@ -14,7 +14,7 @@
   - snippet_path = reliable_snippet_path(snippet)
   = link_to snippet_path do
     .file-holder
-      .file-title
+      .js-file-title.file-title
         %i.fa.fa-file
         %strong= snippet.file_name
       - if markup?(snippet.file_name)

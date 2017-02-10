@@ -6,13 +6,13 @@
 
 (How one can reproduce the issue - this is very important)
 
-### Expected behavior
-
-(What you should see instead)
-
-### Actual behavior
+### What is the current *bug* behavior?
 
 (What actually happens)
+
+### What is the expected *correct* behavior?
+
+(What you should see instead)
 
 ### Relevant logs and/or screenshots
 
@@ -23,6 +23,14 @@ logs, and code as it's very hard to read otherwise.)
 
 (If you are reporting a bug on GitLab.com, write: This bug happens on GitLab.com)
 
+#### Results of GitLab environment info
+
+(For installations with omnibus-gitlab package run and paste the output of:
+`sudo gitlab-rake gitlab:env:info`)
+
+(For installations from source run and paste the output of:
+`sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production`)
+
 #### Results of GitLab application Check
 
 (For installations with omnibus-gitlab package run and paste the output of:
@@ -32,14 +40,6 @@ logs, and code as it's very hard to read otherwise.)
 `sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production SANITIZE=true`)
 
 (we will only investigate if the tests are passing)
-
-#### Results of GitLab environment info
-
-(For installations with omnibus-gitlab package run and paste the output of:
-`sudo gitlab-rake gitlab:env:info`)
-
-(For installations from source run and paste the output of:
-`sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production`)
 
 ### Possible fixes
 

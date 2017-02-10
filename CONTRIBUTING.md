@@ -15,7 +15,7 @@
         - [Issue weight](#issue-weight)
         - [Regression issues](#regression-issues)
         - [Technical debt](#technical-debt)
-        - [Stewardship][#stewardship]
+        - [Stewardship](#stewardship)
     - [Merge requests](#merge-requests)
         - [Merge request guidelines](#merge-request-guidelines)
         - [Contribution acceptance criteria](#contribution-acceptance-criteria)
