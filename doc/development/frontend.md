@@ -50,7 +50,7 @@ Let's look into each of them:
 This is the index file of your new feature. This is where the root Vue instance
 of the new feature should be.
 
-Don't forget to follow [these steps.][page-specific-javascript]
+Don't forget to follow [these steps.][page_specific_javascript]
 
 **A folder for Components**
 
