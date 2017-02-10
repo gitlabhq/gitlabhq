@@ -50,7 +50,7 @@ Let's look into each of them:
 This is the index file of your new feature. This is where the root Vue instance
 of the new feature should be.
 
-Don't forget to follow [these steps.][page-specific-javascript]
+Don't forget to follow [these steps.][page_specific_javascript]
 
 **A folder for Components**
 
@@ -323,47 +323,6 @@ gl.MyThing = MyThing;
 
 For our currently-supported browsers, see our [requirements][requirements].
 
-[rails]: http://rubyonrails.org/
-[haml]: http://haml.info/
-[hamlit]: https://github.com/k0kubun/hamlit
-[hamlit-limits]: https://github.com/k0kubun/hamlit/blob/master/REFERENCE.md#limitations
-[scss]: http://sass-lang.com/
-[es6]: https://babeljs.io/
-[sprockets]: https://github.com/rails/sprockets
-[jquery]: https://jquery.com/
-[vue]: http://vuejs.org/
-[vue-docs]: http://vuejs.org/guide/index.html
-[web-page-test]: http://www.webpagetest.org/
-[pagespeed-insights]: https://developers.google.com/speed/pagespeed/insights/
-[google-devtools-profiling]: https://developers.google.com/web/tools/chrome-devtools/profile/?hl=en
-[browser-diet]: https://browserdiet.com/
-[d3]: https://d3js.org/
-[chartjs]: http://www.chartjs.org/
-[page-specific-js-example]: https://gitlab.com/gitlab-org/gitlab-ce/blob/13bb9ed77f405c5f6ee4fdbc964ecf635c9a223f/app/views/projects/graphs/_head.html.haml#L6-8
-[chrome-accessibility-developer-tools]: https://github.com/GoogleChrome/accessibility-developer-tools
-[audit-rules]: https://github.com/GoogleChrome/accessibility-developer-tools/wiki/Audit-Rules
-[observatory-cli]: https://github.com/mozilla/http-observatory-cli
-[qualys-ssl]: https://www.ssllabs.com/ssltest/analyze.html
-[secure_headers]: https://github.com/twitter/secureheaders
-[mdn-csp]: https://developer.mozilla.org/en-US/docs/Web/Security/CSP
-[github-eng-csp]: http://githubengineering.com/githubs-csp-journey/
-[dropbox-csp-1]: https://blogs.dropbox.com/tech/2015/09/on-csp-reporting-and-filtering/
-[dropbox-csp-2]: https://blogs.dropbox.com/tech/2015/09/unsafe-inline-and-nonce-deployment/
-[dropbox-csp-3]: https://blogs.dropbox.com/tech/2015/09/csp-the-unexpected-eval/
-[dropbox-csp-4]: https://blogs.dropbox.com/tech/2015/09/csp-third-party-integrations-and-privilege-separation/
-[mdn-sri]: https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity
-[github-eng-sri]: http://githubengineering.com/subresource-integrity/
-[sprockets-sri]: https://github.com/rails/sprockets-rails#sri-support
-[xss]: https://en.wikipedia.org/wiki/Cross-site_scripting
-[scss-style-guide]: scss_styleguide.md
-[requirements]: ../install/requirements.md#supported-web-browsers
-[issue-boards]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/app/assets/javascripts/boards
-[environments-table]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/app/assets/javascripts/environments
-[page_specific_javascript]: https://docs.gitlab.com/ce/development/frontend.html#page-specific-javascript
-[component-system]: https://vuejs.org/v2/guide/#Composing-with-Components
-[state-management]: https://vuejs.org/v2/guide/state-management.html#Simple-State-Management-from-Scratch
-[vue-resource-repo]: https://github.com/pagekit/vue-resource
-[issue-boards-service]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/javascripts/boards/services/board_service.js.es6
 
 ## Gotchas
 
@@ -438,3 +397,46 @@ Scenario: Developer can approve merge request
     Then I should see approved merge request "Bug NS-04"
 
 ```
+
+
+[rails]: http://rubyonrails.org/
+[haml]: http://haml.info/
+[hamlit]: https://github.com/k0kubun/hamlit
+[hamlit-limits]: https://github.com/k0kubun/hamlit/blob/master/REFERENCE.md#limitations
+[scss]: http://sass-lang.com/
+[es6]: https://babeljs.io/
+[sprockets]: https://github.com/rails/sprockets
+[jquery]: https://jquery.com/
+[vue]: http://vuejs.org/
+[vue-docs]: http://vuejs.org/guide/index.html
+[web-page-test]: http://www.webpagetest.org/
+[pagespeed-insights]: https://developers.google.com/speed/pagespeed/insights/
+[google-devtools-profiling]: https://developers.google.com/web/tools/chrome-devtools/profile/?hl=en
+[browser-diet]: https://browserdiet.com/
+[d3]: https://d3js.org/
+[chartjs]: http://www.chartjs.org/
+[page-specific-js-example]: https://gitlab.com/gitlab-org/gitlab-ce/blob/13bb9ed77f405c5f6ee4fdbc964ecf635c9a223f/app/views/projects/graphs/_head.html.haml#L6-8
+[chrome-accessibility-developer-tools]: https://github.com/GoogleChrome/accessibility-developer-tools
+[audit-rules]: https://github.com/GoogleChrome/accessibility-developer-tools/wiki/Audit-Rules
+[observatory-cli]: https://github.com/mozilla/http-observatory-cli
+[qualys-ssl]: https://www.ssllabs.com/ssltest/analyze.html
+[secure_headers]: https://github.com/twitter/secureheaders
+[mdn-csp]: https://developer.mozilla.org/en-US/docs/Web/Security/CSP
+[github-eng-csp]: http://githubengineering.com/githubs-csp-journey/
+[dropbox-csp-1]: https://blogs.dropbox.com/tech/2015/09/on-csp-reporting-and-filtering/
+[dropbox-csp-2]: https://blogs.dropbox.com/tech/2015/09/unsafe-inline-and-nonce-deployment/
+[dropbox-csp-3]: https://blogs.dropbox.com/tech/2015/09/csp-the-unexpected-eval/
+[dropbox-csp-4]: https://blogs.dropbox.com/tech/2015/09/csp-third-party-integrations-and-privilege-separation/
+[mdn-sri]: https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity
+[github-eng-sri]: http://githubengineering.com/subresource-integrity/
+[sprockets-sri]: https://github.com/rails/sprockets-rails#sri-support
+[xss]: https://en.wikipedia.org/wiki/Cross-site_scripting
+[scss-style-guide]: scss_styleguide.md
+[requirements]: ../install/requirements.md#supported-web-browsers
+[issue-boards]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/app/assets/javascripts/boards
+[environments-table]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/app/assets/javascripts/environments
+[page_specific_javascript]: https://docs.gitlab.com/ce/development/frontend.html#page-specific-javascript
+[component-system]: https://vuejs.org/v2/guide/#Composing-with-Components
+[state-management]: https://vuejs.org/v2/guide/state-management.html#Simple-State-Management-from-Scratch
+[vue-resource-repo]: https://github.com/pagekit/vue-resource
+[issue-boards-service]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/javascripts/boards/services/board_service.js.es6
