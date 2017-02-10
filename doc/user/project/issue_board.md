@@ -94,11 +94,11 @@ list view that is removed. You can always add it back later if you need.
 
 ## Adding issues to lists
 
-You can bulk add issues to a list by clicking the **Add issues** button.
-This opens up a modal window where you can select multiple issues and then
-add these issues to the selected list. By default the first list is selected,
-but this can be changed in the dropdown menu next to the **Add issues** button
-in the modal.
+Add issues to a list by clicking the **Add issues** button. This opens up a
+modal window where you can see all the issues that do not belong to any list.
+Select one or more issues and then add these issues to the selected list.
+By default the first list is selected, but this can be changed in the dropdown
+menu next to the **Add issues** button in the modal.
 
 Within this modal you can also filter issues. This is done by using the filters
 at the top of the modal.
@@ -146,7 +146,7 @@ A typical workflow of using the Issue Board would be:
    and gets automatically closed.
 
 For instance you can create a list based on the label of 'Frontend' and one for
-'Backend'. A designer can start working on an issue by dragging adding it to the
+'Backend'. A designer can start working on an issue by adding it to the
 'Frontend' list. That way, everyone knows that this issue is now being
 worked on by the designers. Then, once they're done, all they have to do is
 drag it over to the next list, 'Backend', where a backend developer can
