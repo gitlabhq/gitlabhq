@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170206101030) do
+ActiveRecord::Schema.define(version: 20170210075922) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -366,6 +366,8 @@ ActiveRecord::Schema.define(version: 20170206101030) do
     t.datetime "updated_at"
     t.integer "commit_id"
   end
+
+  add_index "ci_trigger_requests", ["commit_id"], name: "index_ci_trigger_requests_on_commit_id", using: :btree
 
   create_table "ci_triggers", force: :cascade do |t|
     t.string "token"
