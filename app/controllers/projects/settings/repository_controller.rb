@@ -21,7 +21,7 @@ module Projects
 
       def define_protected_branches_controller
         @protected_branch = @project.protected_branches.new
-        load_gon_index(@project)
+        load_gon_index
       end
     end
   end
