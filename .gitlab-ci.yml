@@ -252,7 +252,7 @@ karma:
     name: coverage-javascript
     expire_in: 31d
     paths:
-    - coverage-javascript/default/
+    - coverage-javascript/
 
 lint-doc:
   stage: test
@@ -395,7 +395,7 @@ pages:
     - mv public/ .public/
     - mkdir public/
     - mv coverage/ public/coverage-ruby/ || true
-    - mv coverage-javascript/default/ public/coverage-javascript/ || true
+    - mv coverage-javascript/ public/coverage-javascript/ || true
     - mv eslint-report.html public/ || true
   artifacts:
     paths:

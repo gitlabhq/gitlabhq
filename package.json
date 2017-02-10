@@ -36,6 +36,7 @@
     "webpack-dev-server": "^2.3.0"
   },
   "devDependencies": {
+    "babel-plugin-istanbul": "^4.0.0",
     "eslint": "^3.10.1",
     "eslint-config-airbnb-base": "^10.0.1",
     "eslint-plugin-filenames": "^1.1.0",
@@ -45,9 +46,18 @@
     "jasmine-core": "^2.5.2",
     "jasmine-jquery": "^2.1.1",
     "karma": "^1.4.1",
+    "karma-coverage-istanbul-reporter": "^0.2.0",
     "karma-jasmine": "^1.1.0",
     "karma-phantomjs-launcher": "^1.0.2",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^2.0.2"
+  },
+  "nyc": {
+    "exclude": [
+      "spec/javascripts/test_bundle.js",
+      "spec/javascripts/**/*_spec.js",
+      "spec/javascripts/**/*_spec.js.es6",
+      "app/assets/javascripts/droplab/**/*"
+    ]
   }
 }
