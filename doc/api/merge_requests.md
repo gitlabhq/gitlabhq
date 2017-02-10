@@ -369,16 +369,17 @@ PUT /projects/:id/merge_requests/:merge_request_id
 | --------- | ---- | -------- | ----------- |
 | `id`            | string  | yes | The ID of a project |
 | `merge_request_id` | integer  | yes | The ID of a merge request |
-| `source_branch` | string  | yes | The source branch |
-| `target_branch` | string  | yes | The target branch |
-| `title`         | string  | yes | Title of MR |
+| `target_branch` | string  | no | The target branch |
+| `title`         | string  | no | Title of MR |
 | `assignee_id`   | integer | no  | Assignee user ID |
 | `description`   | string  | no  | Description of MR |
-| `target_project_id` | integer  | no | The target project (numeric id) |
+| `state_event` | string  | no | New state (close/reopen) |
 | `labels` | string  | no | Labels for MR as a comma-separated list |
 | `milestone_id` | integer  | no | The ID of a milestone |
 | `remove_source_branch` | boolean  | no | Flag indicating if a merge request should remove the source branch when merging |
 | `squash` | boolean| no | Squash commits into a single commit when merging |
+
+Must include at least one non-required attribute from above.
 
 ```json
 {
