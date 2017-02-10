@@ -9,12 +9,6 @@ require('vendor/jquery.nicescroll');
 
 describe('Build', () => {
   const BUILD_URL = `${gl.TEST_HOST}/frontend-fixtures/builds-project/builds/1`;
-  // see spec/factories/ci/builds.rb
-  const BUILD_TRACE = 'BUILD TRACE';
-  // see lib/ci/ansi2html.rb
-  const INITIAL_BUILD_TRACE_STATE = window.btoa(JSON.stringify({
-    offset: BUILD_TRACE.length, n_open_tags: 0, fg_color: null, bg_color: null, style_mask: 0,
-  }));
 
   preloadFixtures('builds/build-with-artifacts.html.raw');
 
@@ -42,7 +36,7 @@ describe('Build', () => {
         expect(this.build.buildUrl).toBe(`${BUILD_URL}.json`);
         expect(this.build.buildStatus).toBe('success');
         expect(this.build.buildStage).toBe('test');
-        expect(this.build.state).toBe(INITIAL_BUILD_TRACE_STATE);
+        expect(this.build.state).toBe('');
       });
 
       it('only shows the jobs matching the current stage', () => {
@@ -108,7 +102,7 @@ describe('Build', () => {
         expect($.ajax.calls.count()).toBe(2);
         let [{ url, dataType, success, context }] = $.ajax.calls.argsFor(1);
         expect(url).toBe(
-          `${BUILD_URL}/trace.json?state=${encodeURIComponent(INITIAL_BUILD_TRACE_STATE)}`,
+          `${BUILD_URL}/trace.json?state=`,
         );
         expect(dataType).toBe('json');
         expect(success).toEqual(jasmine.any(Function));
