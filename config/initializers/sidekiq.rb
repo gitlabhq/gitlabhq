@@ -1,3 +1,6 @@
+require 'gitlab/current_settings'
+include Gitlab::CurrentSettings
+
 # Custom Redis configuration
 redis_config_hash = Gitlab::Redis.params
 redis_config_hash[:namespace] = Gitlab::Redis::SIDEKIQ_NAMESPACE
@@ -34,9 +37,7 @@ Sidekiq.configure_server do |config|
   end
   Sidekiq::Cron::Job.load_from_hash! cron_jobs
 
-  # These jobs should not be allowed to be configured in gitlab.yml
-  Sidekiq::Cron::Job.create(name: 'update_all_remote_mirrors_worker', cron: '*/15 * * * *', class: 'UpdateAllRemoteMirrorsWorker')
-  Sidekiq::Cron::Job.create(name: 'update_all_mirrors_worker', cron: '*/15 * * * *', class: 'UpdateAllMirrorsWorker')
+  Gitlab::Mirror.configure_cron_jobs!
 
   # Gitlab Geo: enable bulk notify job only on primary node
   Gitlab::Geo.bulk_notify_job.disable! unless Gitlab::Geo.primary?
