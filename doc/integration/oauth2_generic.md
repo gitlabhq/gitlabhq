@@ -1,22 +1,22 @@
-# Sign into Gitlab with (almost) any OAuth2 provider
+# Sign into GitLab with (almost) any OAuth2 provider
 
-The `omniauth-oauth2-generic` gem allows Single Sign On between Gitlab and your own OAuth2 provider
+The `omniauth-oauth2-generic` gem allows Single Sign On between GitLab and your own OAuth2 provider
 (or any OAuth2 provider compatible with this gem) 
 
 This strategy is designed to allow configuration of the simple OmniAuth SSO process outlined below:
 
 1. Strategy directs client to your authorization URL (**configurable**), with specified ID and key
 1. OAuth provider handles authentication of request, user, and (optionally) authorization to access user's profile
-1. OAuth provider directs client back to Gitlab where Strategy handles retrieval of access token
+1. OAuth provider directs client back to GitLab where Strategy handles retrieval of access token
 1. Strategy requests user information from a **configurable** "user profile" URL (using the access token)
 1. Strategy parses user information from the response, using a **configurable** format
-1. Gitlab finds or creates the returned user and logs them in
+1. GitLab finds or creates the returned user and logs them in
 
 ### Limitations of this Strategy:
 
 - It can only be used for Single Sign on, and will not provide any other access granted by any OAuth provider
   (importing projects or users, etc)
-- It only supports the Authorization Grant flow (most common for client-server applications, like Gitlab)
+- It only supports the Authorization Grant flow (most common for client-server applications, like GitLab)
 - It is not able to fetch user information from more than one URL
 - It has not been tested with user information formats other than JSON
 
@@ -35,7 +35,7 @@ This strategy is designed to allow configuration of the simple OmniAuth SSO proc
 
 1. On your GitLab server, open the configuration file.
 
-   For omnibus package:
+   For Omnibus package:
 
    ```sh
      sudo editor /etc/gitlab/gitlab.rb
