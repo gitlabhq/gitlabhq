@@ -1,5 +1,6 @@
 /* global Cookies */
 const Vue = require('vue');
+const checkmarkIcon = require('../icons/checkmark');
 
 const Store = gl.issueBoards.BoardsStore;
 const ModalStore = gl.issueBoards.ModalStore;
@@ -26,9 +27,9 @@ module.exports = Vue.extend({
     },
   },
   template: `
-    <div class="boards-backlog-help">
+    <div class="boards-backlog-help text-center">
       <h4>
-        We removed the Backlog
+        We moved the Backlog
         <button
           type="button"
           class="close"
@@ -37,16 +38,18 @@ module.exports = Vue.extend({
           <i class="fa fa-times"></i>
         </button>
       </h4>
+      <div class="backlog-help-icon">${checkmarkIcon}</div>
       <p>
-        <a href="http://docs.gitlab.com/ce/user/project/issue_board.html">Read the docs</a> to find out why
+        <a href="http://docs.gitlab.com/ce/user/project/issue_board.html">Read the docs</a> for more details
       </p>
       <p>
-        You can populate your board using this button
+        Populate the board using this button
       </p>
       <div class="text-center">
         <button
           class="btn btn-success"
           type="button"
+          :disabled="disabled"
           @click="closeHelp(true)">
           Add issues
         </button>
