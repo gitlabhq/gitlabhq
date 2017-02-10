@@ -36,7 +36,7 @@
               method: :delete do
               Delete
             %button.btn.btn-default.pull-right{ type: "button",
-              "@click.stop.prevent" => "currentPage = ''" }
+              "@click.stop.prevent" => "showPage('')" }
               Cancel
       - if can?(current_user, :admin_board, @project)
         .dropdown-footer{ "v-if" => "currentPage === ''" }
