@@ -100,4 +100,4 @@
 
     return NewBranchForm;
   })();
-}).call(this);
+}).call(window);

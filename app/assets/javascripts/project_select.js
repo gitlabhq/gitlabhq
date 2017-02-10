@@ -101,4 +101,4 @@
 
     return ProjectSelect;
   })();
-}).call(this);
+}).call(window);

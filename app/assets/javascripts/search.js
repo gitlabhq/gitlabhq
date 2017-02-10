@@ -97,4 +97,4 @@
 
     return Search;
   })();
-}).call(this);
+}).call(window);

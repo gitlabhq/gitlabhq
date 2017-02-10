@@ -59,4 +59,4 @@ require('../extensions/jquery');
       return hideOrShowHelpBlock($form);
     });
   });
-}).call(this);
+}).call(window);

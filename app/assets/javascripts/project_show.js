@@ -6,6 +6,6 @@
 
     return ProjectShow;
   })();
-}).call(this);
+}).call(window);
 
 // I kept class for future

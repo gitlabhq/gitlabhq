@@ -216,4 +216,4 @@ require('./preview_markdown');
 
     return DropzoneInput;
   })();
-}).call(this);
+}).call(window);

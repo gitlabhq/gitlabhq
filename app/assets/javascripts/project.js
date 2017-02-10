@@ -126,4 +126,4 @@
 
     return Project;
   })();
-}).call(this);
+}).call(window);

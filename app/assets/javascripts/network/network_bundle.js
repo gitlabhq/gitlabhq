@@ -19,4 +19,4 @@ requireAll(require.context('.', false, /^\.\/(?!network_bundle).*\.(js|es6)$/));
     });
     return new ShortcutsNetwork(network_graph.branch_graph);
   });
-}).call(this);
+}).call(window);
