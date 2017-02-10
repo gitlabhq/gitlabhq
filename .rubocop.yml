@@ -572,6 +572,10 @@ Lint/ElseLayout:
 Lint/EmptyEnsure:
   Enabled: true
 
+# Checks for the presence of `when` branches without a body.
+Lint/EmptyWhen:
+  Enabled: true
+
 # Align ends correctly.
 Lint/EndAlignment:
   Enabled: true

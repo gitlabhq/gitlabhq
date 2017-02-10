@@ -21,10 +21,6 @@ Lint/AmbiguousRegexpLiteral:
 Lint/AssignmentInCondition:
   Enabled: false
 
-# Offense count: 1
-Lint/EmptyWhen:
-  Enabled: false
-
 # Offense count: 20
 Lint/HandleExceptions:
   Enabled: false
