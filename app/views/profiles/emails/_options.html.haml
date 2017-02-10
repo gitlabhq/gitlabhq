@@ -1,0 +1,16 @@
+- if email != current_user.email or email != current_user.public_email && email != current_user.notification_email
+  .dropdown.inline.prepend-left-10
+    %button.dropdown-toggle.btn.btn-sm{ 'data-toggle' => 'dropdown' }
+      %span.light
+        Options
+      = icon('chevron-down')
+    %ul.dropdown-menu.dropdown-menu-align-right
+      - if email.email != current_user.email
+        %li
+          = link_to 'Make primary email', profile_email_path(email), method: :put
+      - if email.email != current_user.public_email
+        %li
+          = link_to 'Make public email', profile_email_path(email), method: :put
+      - if email.email != current_user.notification_email
+        %li
+          = link_to 'Make notification email', profile_email_path(email), method: :put

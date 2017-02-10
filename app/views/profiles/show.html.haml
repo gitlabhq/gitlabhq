@@ -57,7 +57,20 @@
           - if @user.temp_oauth_email?
             = f.text_field :email, class: "form-control", required: true, value: nil
           - else
-            = f.text_field :email, class: "form-control", required: true
+            - if @user.all_emails.length <= 1
+              = f.text_field :email, class: "form-control", required: true, readonly: true
+            - else
+              .dropdown
+                %button.dropdown-toggle.form-control{ 'data-toggle' => 'dropdown' }
+                  %span.light
+                    = @user.email
+                  = icon('chevron-down')
+                %ul.dropdown-menu
+                  - @user.all_emails.each do |email|
+                    %li
+                      = link_to email, profile_email_path(email), method: :put
+                  %li
+                    = link_to 'Manage', profile_emails_path()
           - if @user.unconfirmed_email.present?
             %span.help-block
               Please click the link in the confirmation email before continuing. It was sent to
