@@ -250,23 +250,17 @@ information.
 
 ### Running frontend tests
 
-`rake teaspoon` runs the frontend-only (JavaScript) tests.
+`rake karma` runs the frontend-only (JavaScript) tests.
 It consists of two subtasks:
 
-- `rake teaspoon:fixtures` (re-)generates fixtures
-- `rake teaspoon:tests` actually executes the tests
+- `rake karma:fixtures` (re-)generates fixtures
+- `rake karma:tests` actually executes the tests
 
-As long as the fixtures don't change, `rake teaspoon:tests` is sufficient
+As long as the fixtures don't change, `rake karma:tests` is sufficient
 (and saves you some time).
 
-If you need to debug your tests and/or application code while they're
-running, navigate to [localhost:3000/teaspoon](http://localhost:3000/teaspoon)
-in your browser, open DevTools, and run tests for individual files by clicking
-on them. This is also much faster than setting up and running tests from the
-command line.
-
 Please note: Not all of the frontend fixtures are generated. Some are still static
-files. These will not be touched by `rake teaspoon:fixtures`.
+files. These will not be touched by `rake karma:fixtures`.
 
 ## Design Patterns
 
@@ -370,7 +364,7 @@ For our currently-supported browsers, see our [requirements][requirements].
 ### Spec errors due to use of ES6 features in `.js` files
 
 If you see very generic JavaScript errors (e.g. `jQuery is undefined`) being
-thrown in Teaspoon, Spinach, or Rspec tests but can't reproduce them manually,
+thrown in Karma, Spinach, or Rspec tests but can't reproduce them manually,
 you may have included `ES6`-style JavaScript in files that don't have the
 `.js.es6` file extension. Either use ES5-friendly JavaScript or rename the file
 you're working in (`git mv <file.js> <file.js.es6>`).
