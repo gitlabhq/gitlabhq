@@ -23,6 +23,7 @@ module Banzai
           Filter::ExternalLinkFilter,
 
           Filter::UserReferenceFilter,
+          Filter::GroupReferenceFilter,
           Filter::IssueReferenceFilter,
           Filter::ExternalIssueReferenceFilter,
           Filter::MergeRequestReferenceFilter,

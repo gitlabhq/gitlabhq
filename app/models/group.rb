@@ -62,7 +62,12 @@ class Group < Namespace
     end
 
     def reference_pattern
-      User.reference_pattern
+      x = Gitlab::Regex::FULL_PATH_REGEX_STR
+
+      %r{
+        #{Regexp.escape(reference_prefix)}
+        (?<group>#{x})
+      }x
     end
 
     def visible_to_user(user)
@@ -81,7 +86,7 @@ class Group < Namespace
   end
 
   def to_reference(_from_project = nil, full: nil)
-    "#{self.class.reference_prefix}#{name}"
+    "#{self.class.reference_prefix}#{full_path}"
   end
 
   def web_url

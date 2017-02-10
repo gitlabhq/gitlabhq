@@ -6,6 +6,10 @@ module Banzai
     class UserReferenceFilter < ReferenceFilter
       self.reference_type = :user
 
+      def self.reference_pattern
+        User.reference_pattern
+      end
+
       # Public: Find `@user` user references in text
       #
       #   UserReferenceFilter.references_in(text) do |match, username|
@@ -18,15 +22,15 @@ module Banzai
       #
       # Returns a String replaced with the return of the block.
       def self.references_in(text)
-        text.gsub(User.reference_pattern) do |match|
-          yield match, $~[:user]
+        text.gsub(reference_pattern) do |match|
+          yield match, $~[reference_type]
         end
       end
 
       def call
         return doc if project.nil? && !skip_project_check?
 
-        ref_pattern = User.reference_pattern
+        ref_pattern = self.class.reference_pattern
         ref_pattern_start = /\A#{ref_pattern}\z/
 
         nodes.each do |node|
@@ -60,23 +64,23 @@ module Banzai
         self.class.references_in(text) do |match, username|
           if username == 'all' && !skip_project_check?
             link_to_all(link_content: link_content)
-          elsif namespace = namespaces[username]
-            link_to_namespace(namespace, link_content: link_content) || match
+          elsif user = users[username]
+            link_to_user(user, link_content: link_content) || match
           else
             match
           end
         end
       end
 
-      # Returns a Hash containing all Namespace objects for the username
+      # Returns a Hash containing all User objects for the username
       # references in the current document.
       #
-      # The keys of this Hash are the namespace paths, the values the
-      # corresponding Namespace objects.
-      def namespaces
-        @namespaces ||=
-          Namespace.where(path: usernames).each_with_object({}) do |row, hash|
-            hash[row.path] = row
+      # The keys of this Hash are the user paths, the values the
+      # corresponding User objects.
+      def users
+        @users ||=
+          User.where(username: usernames).each_with_object({}) do |row, hash|
+            hash[row.username] = row
           end
       end
 
@@ -85,8 +89,8 @@ module Banzai
         refs = Set.new
 
         nodes.each do |node|
-          node.to_html.scan(User.reference_pattern) do
-            refs << $~[:user]
+          node.to_html.scan(self.class.reference_pattern) do
+            refs << $~[self.class.reference_type]
           end
         end
 
@@ -120,28 +124,12 @@ module Banzai
         end
       end
 
-      def link_to_namespace(namespace, link_content: nil)
-        if namespace.is_a?(Group)
-          link_to_group(namespace.path, namespace, link_content: link_content)
-        else
-          link_to_user(namespace.path, namespace, link_content: link_content)
-        end
-      end
-
-      def link_to_group(group, namespace, link_content: nil)
-        url = urls.group_url(group, only_path: context[:only_path])
-        data = data_attribute(group: namespace.id)
-        content = link_content || Group.reference_prefix + group
-
-        link_tag(url, data, content, namespace.name)
-      end
-
-      def link_to_user(user, namespace, link_content: nil)
+      def link_to_user(user, link_content: nil)
         url = urls.user_url(user, only_path: context[:only_path])
-        data = data_attribute(user: namespace.owner_id)
-        content = link_content || User.reference_prefix + user
+        data = data_attribute(user: user.id)
+        content = link_content || User.reference_prefix + user.username
 
-        link_tag(url, data, content, namespace.owner_name)
+        link_tag(url, data, content, user.name)
       end
 
       def link_tag(url, data, link_content, title)

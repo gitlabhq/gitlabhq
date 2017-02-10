@@ -62,7 +62,8 @@ module Mentionable
   end
 
   def mentioned_users(current_user = nil)
-    all_references(current_user).users
+    refs = all_references(current_user)
+    refs.users + refs.groups
   end
 
   # Extract GFM references to other Mentionables from this Mentionable. Always excludes its #local_reference.

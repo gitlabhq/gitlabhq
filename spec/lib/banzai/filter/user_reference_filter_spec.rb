@@ -92,26 +92,6 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
     end
   end
 
-  context 'mentioning a group' do
-    it_behaves_like 'a reference containing an element node'
-
-    let(:group)     { create(:group) }
-    let(:reference) { group.to_reference }
-
-    it 'links to the Group' do
-      doc = reference_filter("Hey #{reference}")
-      expect(doc.css('a').first.attr('href')).to eq urls.group_url(group)
-    end
-
-    it 'includes a data-group attribute' do
-      doc = reference_filter("Hey #{reference}")
-      link = doc.css('a').first
-
-      expect(link).to have_attribute('data-group')
-      expect(link.attr('data-group')).to eq group.id.to_s
-    end
-  end
-
   it 'links with adjacent text' do
     doc = reference_filter("Mention me (#{reference}.)")
     expect(doc.to_html).to match(/\(<a.+>#{reference}<\/a>\.\)/)
@@ -176,13 +156,12 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
     end
   end
 
-  describe '#namespaces' do
+  describe '#users' do
     it 'returns a Hash containing all Namespaces' do
       document = Nokogiri::HTML.fragment("<p>#{user.to_reference}</p>")
       filter = described_class.new(document, project: project)
-      ns = user.namespace
 
-      expect(filter.namespaces).to eq({ ns.path => ns })
+      expect(filter.users).to eq({ user.username => user })
     end
   end
 

@@ -9,6 +9,7 @@ module Gitlab
     # `NAMESPACE_REGEX_STR`, with the negative lookbehind assertion removed. This means that the client-side validation
     # will pass for usernames ending in `.atom` and `.git`, but will be caught by the server-side validation.
     PATH_REGEX_STR = '[a-zA-Z0-9_\.][a-zA-Z0-9_\-\.]*'.freeze
+    FULL_PATH_REGEX_STR = '[a-zA-Z0-9_\.][a-zA-Z0-9_\-\.\/]*'.freeze
     NAMESPACE_REGEX_STR_SIMPLE = PATH_REGEX_STR + '[a-zA-Z0-9_\-]|[a-zA-Z0-9_]'.freeze
     NAMESPACE_REGEX_STR = '(?:' + NAMESPACE_REGEX_STR_SIMPLE + ')(?<!\.git|\.atom)'.freeze
     PROJECT_REGEX_STR = PATH_REGEX_STR + '(?<!\.git|\.atom)'.freeze
