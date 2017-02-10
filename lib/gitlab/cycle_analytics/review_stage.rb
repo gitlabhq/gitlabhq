@@ -13,6 +13,10 @@ module Gitlab
         :review
       end
 
+      def legend
+        "Relative Merged Requests"
+      end
+
       def description
         "Time between merge request creation and merge/close"
       end
