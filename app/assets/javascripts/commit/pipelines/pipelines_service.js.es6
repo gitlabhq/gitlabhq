@@ -8,8 +8,23 @@
  * Uses Vue.Resource
  */
 class PipelinesService {
-  constructor(endpoint) {
-    this.pipelines = Vue.resource(`${endpoint}.json`);
+
+  /**
+   * FIXME: The url provided to request the pipelines in the new merge request
+   * page already has `.json`.
+   * This should be fixed when the endpoint is improved.
+   *
+   * @param  {String} root
+   */
+  constructor(root) {
+    let endpoint;
+
+    if (root.indexOf('.json') === -1) {
+      endpoint = `${root}.json`;
+    } else {
+      endpoint = root;
+    }
+    this.pipelines = Vue.resource(endpoint);
   }
 
   /**
