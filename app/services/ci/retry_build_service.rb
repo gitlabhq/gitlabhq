@@ -1,5 +1,7 @@
 module Ci
   class RetryBuildService
+    include Gitlab::Allowable
+
     def initialize(build, user)
       @build = build
       @user = user
@@ -7,6 +9,10 @@ module Ci
     end
 
     def retry!
+      unless can?(@user, :update_build, @build)
+        raise Gitlab::Access::AccessDeniedError
+      end
+
       clone_build.tap do |new_build|
         new_build.enqueue!
 
