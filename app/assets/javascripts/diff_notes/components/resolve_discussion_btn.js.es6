@@ -3,8 +3,6 @@
 /* global ResolveService */
 const Vue = require('vue');
 
-const Vue = require('vue');
-
 (() => {
   const ResolveDiscussionBtn = Vue.extend({
     props: {
