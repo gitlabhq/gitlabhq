@@ -38,12 +38,13 @@
           = label_tag :should_remove_source_branch, class: "merge-param-checkbox" do
             = check_box_tag :should_remove_source_branch
             Remove source branch
-      .accept-control.checkbox
-        = label_tag :squash, class: 'merge-param-checkbox' do
-          = hidden_field_tag :squash, '0', id: nil
-          = check_box_tag :squash, '1', @merge_request.squash
-          Squash commits
-          = link_to icon('question-circle'), help_page_path('user/project/merge_requests/squash_and_merge'), title: 'About this feature', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'}
+      = hidden_field_tag :squash, '0', id: nil
+      - if @merge_request.commits_count > 1
+        .accept-control.checkbox
+          = label_tag :squash, class: 'merge-param-checkbox' do
+            = check_box_tag :squash, '1', @merge_request.squash
+            Squash commits
+            = link_to icon('question-circle'), help_page_path('user/project/merge_requests/squash_and_merge'), title: 'About this feature', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'}
 
       .accept-control
         - if @project.merge_requests_ff_only_enabled
