@@ -855,7 +855,9 @@ namespace :gitlab do
       warn_user_is_not_gitlab
       start_checking 'Geo'
 
+      check_geo_license
       check_geo_enabled
+      check_nodes_http_connection
 
       finished_checking 'Geo'
     end
@@ -863,7 +865,7 @@ namespace :gitlab do
     # Checks
     ########################
 
-    def check_geo_enabled
+    def check_geo_license
       print 'GitLab Geo is available ... '
       if Gitlab::Geo.license_allows?
         puts 'yes'.color(:green)
@@ -875,6 +877,37 @@ namespace :gitlab do
         )
 
         for_more_information(see_geo_features_page)
+      end
+    end
+
+    def check_geo_enabled
+      print 'GitLab Geo is enabled ... '
+      if Gitlab::Geo.enabled?
+        puts 'yes'.color(:green)
+      else
+        puts 'no'.color(:red)
+
+        try_fixing_it(
+          'Follow Geo Setup instructions to configure primary and secondary nodes'
+        )
+
+        for_more_information(see_geo_docs)
+      end
+    end
+
+    def check_nodes_http_connection
+      return unless Gitlab::Geo.enabled?
+
+      if Gitlab::Geo.primary?
+        Gitlab::Geo.secondary_nodes.each do |node|
+          print "Can connect to secondary node: '#{node.url}' ... "
+          check_gitlab_geo_node(node)
+        end
+      end
+
+      if Gitlab::Geo.secondary?
+        print 'Can connect to the primary node ... '
+        check_gitlab_geo_node(Gitlab::Geo.primary_node)
       end
     end
   end
@@ -911,6 +944,10 @@ namespace :gitlab do
 
   def see_geo_features_page
     'https://about.gitlab.com/features/gitlab-geo/'
+  end
+
+  def see_geo_docs
+    'doc/gitlab-geo/README.md'
   end
 
   def sudo_gitlab(command)
@@ -1057,6 +1094,45 @@ namespace :gitlab do
       puts "yes".color(:green)
     else
       puts "no".color(:red)
+    end
+  end
+
+  def check_gitlab_geo_node(node)
+    begin
+      response = Net::HTTP.start(node.uri.host, node.uri.port) do |http|
+        http.request(Net::HTTP::Get.new(node.uri))
+      end
+
+      if response.code_type == Net::HTTPFound
+        puts 'yes'.color(:green)
+      else
+        puts 'no'.color(:red)
+      end
+    rescue Errno::ECONNREFUSED => e
+      puts 'no'.color(:red)
+      puts '  Reason:'.color(:blue)
+      puts "  #{e.message}"
+      try_fixing_it(
+        'Check if the machine is online and GitLab is running',
+        'Check your firewall rules and make sure this machine can reach target machine',
+        "Make sure port and protocol are correct: '#{node.url}', or change it in Admin > Geo Nodes"
+      )
+    rescue SocketError => e
+      puts 'no'.color(:red)
+      puts '  Reason:'.color(:blue)
+      puts "  #{e.message}"
+
+      if e.cause && e.cause.message.starts_with?('getaddrinfo')
+        try_fixing_it(
+          'Check if your machine can connect to a DSN server',
+          "Check if your machine can resolve DNS for: '#{node.uri.host}'",
+          'If machine host is incorrect, change it in Admin > Geo Nodes'
+        )
+      end
+    rescue Exception => e
+      puts 'no'.color(:red)
+      puts '  Reason:'.color(:blue)
+      puts "  #{e.message}"
     end
   end
 end
