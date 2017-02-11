@@ -21,7 +21,7 @@ require('vendor/jquery.caret');
 require('vendor/jquery.atwho');
 require('vendor/jquery.scrollTo');
 require('vendor/jquery.tablesorter');
-window.Cookies = require('vendor/js.cookie');
+window.Cookies = require('js-cookie');
 require('./autosave');
 require('bootstrap/js/affix');
 require('bootstrap/js/alert');

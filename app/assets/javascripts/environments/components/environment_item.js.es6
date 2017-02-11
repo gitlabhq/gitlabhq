@@ -2,7 +2,7 @@
 /* global timeago */
 
 window.Vue = require('vue');
-window.timeago = require('vendor/timeago');
+window.timeago = require('timeago.js');
 require('../../lib/utils/text_utility');
 require('../../vue_shared/components/commit');
 require('./environment_actions');

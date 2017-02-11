@@ -7,7 +7,7 @@ jasmine.getJSONFixtures().fixturesPath = 'base/spec/javascripts/fixtures';
 // include common libraries
 window.$ = window.jQuery = require('jquery');
 window._ = require('underscore');
-window.Cookies = require('vendor/js.cookie');
+window.Cookies = require('js-cookie');
 window.Vue = require('vue');
 window.Vue.use(require('vue-resource'));
 require('jquery-ujs');

@@ -4,7 +4,7 @@
 /* global Flash */
 
 require('./breakpoints');
-window.Cookies = require('vendor/js.cookie');
+window.Cookies = require('js-cookie');
 require('./flash');
 
 /* eslint-disable max-len */
