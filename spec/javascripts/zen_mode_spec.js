@@ -76,4 +76,4 @@ require('~/zen_mode');
       keyCode: 27
     }));
   };
-}).call(this);
+}).call(window);

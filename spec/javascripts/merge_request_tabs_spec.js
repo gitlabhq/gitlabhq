@@ -181,4 +181,4 @@ require('vendor/jquery.scrollTo');
       });
     });
   });
-}).call(this);
+}).call(window);

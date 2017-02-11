@@ -12,4 +12,4 @@
       return (obj != null) && (obj.constructor === Object);
     };
   })(window);
-}).call(this);
+}).call(window);

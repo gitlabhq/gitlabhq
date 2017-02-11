@@ -395,4 +395,4 @@ const ShortcutsBlob = require('./shortcuts_blob');
 
     return Dispatcher;
   })();
-}).call(this);
+}).call(window);

@@ -48,4 +48,4 @@
 
     inputs.each(toggleClearInput);
   };
-}).call(this);
+}).call(window);

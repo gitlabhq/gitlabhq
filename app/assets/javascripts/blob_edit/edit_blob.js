@@ -85,4 +85,4 @@
 
     return EditBlob;
   })();
-}).call(this);
+}).call(window);

@@ -157,4 +157,4 @@
 
     return IssuableForm;
   })();
-}).call(this);
+}).call(window);

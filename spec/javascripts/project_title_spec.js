@@ -54,4 +54,4 @@ require('~/project');
       window.gon = {};
     });
   });
-}).call(this);
+}).call(window);

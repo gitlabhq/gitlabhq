@@ -11,4 +11,4 @@
 
     return Commit;
   })();
-}).call(this);
+}).call(window);

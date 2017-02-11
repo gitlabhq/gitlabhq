@@ -65,4 +65,4 @@
 
     return CommitsList;
   })();
-}).call(this);
+}).call(window);

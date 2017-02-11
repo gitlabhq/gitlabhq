@@ -256,4 +256,4 @@ window.ES6Promise.polyfill();
 
     gl.utils.initTimeagoTimeout();
   });
-}).call(this);
+}).call(window);

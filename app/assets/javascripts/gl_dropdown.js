@@ -844,4 +844,4 @@
       }
     });
   };
-}).call(this);
+}).call(window);

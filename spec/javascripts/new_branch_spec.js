@@ -166,4 +166,4 @@ require('~/new_branch_form');
       });
     });
   });
-}).call(this);
+}).call(window);

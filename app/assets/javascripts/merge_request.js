@@ -131,4 +131,4 @@ require('./merge_request_tabs');
 
     return MergeRequest;
   })();
-}).call(this);
+}).call(window);

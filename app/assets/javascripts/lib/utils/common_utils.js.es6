@@ -253,4 +253,4 @@
       return acc;
     }, {});
   })(window);
-}).call(this);
+}).call(window);

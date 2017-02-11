@@ -60,12 +60,6 @@ var config = {
             'stage-2'
           ]
         }
-      },
-      {
-        test: /\.(js|es6)$/,
-        exclude: /node_modules/,
-        loader: 'imports-loader',
-        options: 'this=>window'
       }
     ]
   },

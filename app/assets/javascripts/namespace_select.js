@@ -83,4 +83,4 @@
 
     return NamespaceSelects;
   })();
-}).call(this);
+}).call(window);

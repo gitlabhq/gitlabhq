@@ -421,4 +421,4 @@
       y: h
     });
   };
-}).call(this);
+}).call(window);

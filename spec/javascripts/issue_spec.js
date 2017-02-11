@@ -161,4 +161,4 @@ require('~/issue');
       expect($btnReopen).toHaveProp('disabled', false);
     });
   });
-}).call(this);
+}).call(window);

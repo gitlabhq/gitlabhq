@@ -190,4 +190,4 @@ require('~/lib/utils/datetime_utility');
       });
     });
   });
-}).call(this);
+}).call(window);

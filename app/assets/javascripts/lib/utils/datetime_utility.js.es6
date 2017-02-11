@@ -123,4 +123,4 @@ window.dateFormat = require('vendor/date.format');
       return Math.floor((date2 - date1) / millisecondsPerDay);
     };
   })(window);
-}).call(this);
+}).call(window);
