@@ -849,6 +849,36 @@ namespace :gitlab do
     end
   end
 
+  namespace :geo do
+    desc 'GitLab | Check Geo configuration and dependencies'
+    task check: :environment do
+      warn_user_is_not_gitlab
+      start_checking 'Geo'
+
+      check_geo_enabled
+
+      finished_checking 'Geo'
+    end
+
+    # Checks
+    ########################
+
+    def check_geo_enabled
+      print 'GitLab Geo is available ... '
+      if Gitlab::Geo.license_allows?
+        puts 'yes'.color(:green)
+      else
+        puts 'no'.color(:red)
+
+        try_fixing_it(
+          'Upload a new license that includes GitLab Geo feature'
+        )
+
+        for_more_information(see_geo_features_page)
+      end
+    end
+  end
+
   # Helper methods
   ##########################
 
@@ -877,6 +907,10 @@ namespace :gitlab do
 
   def see_installation_guide_section(section)
     "doc/install/installation.md in section \"#{section}\""
+  end
+
+  def see_geo_features_page
+    'https://about.gitlab.com/features/gitlab-geo/'
   end
 
   def sudo_gitlab(command)
