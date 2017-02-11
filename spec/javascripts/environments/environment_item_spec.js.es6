@@ -1,4 +1,4 @@
-window.timeago = require('vendor/timeago');
+window.timeago = require('timeago.js');
 require('~/environments/components/environment_item');
 
 describe('Environment item', () => {
