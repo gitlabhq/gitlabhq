@@ -950,6 +950,10 @@ namespace :gitlab do
     'doc/gitlab-geo/README.md'
   end
 
+  def see_custom_certificate_doc
+    'https://docs.gitlab.com/omnibus/common_installation_problems/README.html#using-self-signed-certificate-or-custom-certificate-authorities'
+  end
+
   def sudo_gitlab(command)
     "sudo -u #{gitlab_user} -H #{command}"
   end
@@ -1098,8 +1102,14 @@ namespace :gitlab do
   end
 
   def check_gitlab_geo_node(node)
+    display_error = Proc.new do |e|
+      puts 'no'.color(:red)
+      puts '  Reason:'.color(:blue)
+      puts "  #{e.message}"
+    end
+
     begin
-      response = Net::HTTP.start(node.uri.host, node.uri.port) do |http|
+      response = Net::HTTP.start(node.uri.host, node.uri.port, use_ssl: (node.uri.scheme == 'https')) do |http|
         http.request(Net::HTTP::Get.new(node.uri))
       end
 
@@ -1109,18 +1119,15 @@ namespace :gitlab do
         puts 'no'.color(:red)
       end
     rescue Errno::ECONNREFUSED => e
-      puts 'no'.color(:red)
-      puts '  Reason:'.color(:blue)
-      puts "  #{e.message}"
+      display_error.call(e)
+
       try_fixing_it(
         'Check if the machine is online and GitLab is running',
         'Check your firewall rules and make sure this machine can reach target machine',
         "Make sure port and protocol are correct: '#{node.url}', or change it in Admin > Geo Nodes"
       )
     rescue SocketError => e
-      puts 'no'.color(:red)
-      puts '  Reason:'.color(:blue)
-      puts "  #{e.message}"
+      display_error.call(e)
 
       if e.cause && e.cause.message.starts_with?('getaddrinfo')
         try_fixing_it(
@@ -1129,10 +1136,19 @@ namespace :gitlab do
           'If machine host is incorrect, change it in Admin > Geo Nodes'
         )
       end
+    rescue OpenSSL::SSL::SSLError => e
+      display_error.call(e)
+
+      try_fixing_it(
+        'If you have a self-signed CA or certificate you need to whitelist in Omnibus',
+      )
+      for_more_information(see_custom_certificate_doc)
+
+      try_fixing_it(
+        'If you have a valid certificate make sure you have the full certificate chain in the pem file'
+      )
     rescue Exception => e
-      puts 'no'.color(:red)
-      puts '  Reason:'.color(:blue)
-      puts "  #{e.message}"
+      display_error.call(e)
     end
   end
 end
