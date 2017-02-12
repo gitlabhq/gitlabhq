@@ -72,7 +72,7 @@ module.exports = Vue.component('environment-item', {
      * @returns {Boolean}
      */
     hasLastDeploymentKey() {
-      if (this.model.lastest && this.model.latest.last_deployment &&
+      if (this.model.latest && this.model.latest.last_deployment &&
         !this.$options.isObjectEmpty(this.model.latest.last_deployment)) {
         return true;
       }
@@ -86,7 +86,7 @@ module.exports = Vue.component('environment-item', {
      * @returns {Boolean|Undefined}
      */
     hasManualActions() {
-      return this.model.lastest && this.model.latest.last_deployment &&
+      return this.model.latest && this.model.latest.last_deployment &&
         this.model.latest.last_deployment.manual_actions &&
         this.model.latest.last_deployment.manual_actions.length > 0;
     },
@@ -107,7 +107,7 @@ module.exports = Vue.component('environment-item', {
      * @returns {Boolean|Undefined}
      */
     canRetry() {
-      return this.model.lastest &&
+      return this.model.latest &&
         this.hasLastDeploymentKey &&
         this.model.latest.last_deployment &&
         this.model.latest.last_deployment.deployable;
@@ -119,7 +119,7 @@ module.exports = Vue.component('environment-item', {
      * @returns {Boolean|Undefined}
      */
     canShowDate() {
-      return this.model.lastest &&
+      return this.model.latest &&
         this.model.latest.last_deployment &&
         this.model.latest.last_deployment.deployable &&
         this.model.latest.last_deployment.deployable !== undefined;
@@ -131,9 +131,9 @@ module.exports = Vue.component('environment-item', {
      * @returns {String}
      */
     createdDate() {
-      if (this.model.lastest &&
+      if (this.model.latest &&
         this.model.latest.last_deployment &&
-        this.model.lastest.last_deployment.deployable &&
+        this.model.latest.last_deployment.deployable &&
         this.model.latest.last_deployment.deployable.created_at) {
         return timeagoInstance.format(this.model.latest.last_deployment.deployable.created_at);
       }
@@ -350,7 +350,7 @@ module.exports = Vue.component('environment-item', {
      */
     shouldRenderBuildName() {
       return !this.model.isFolder &&
-        this.model.lastest &&
+        this.model.latest &&
         !this.$options.isObjectEmpty(this.model.latest.last_deployment) &&
         !this.$options.isObjectEmpty(this.model.latest.last_deployment.deployable);
     },
@@ -362,10 +362,10 @@ module.exports = Vue.component('environment-item', {
      */
     buildPath() {
       if (this.model.latest &&
-        this.model.lastest.last_deployment &&
+        this.model.latest.last_deployment &&
         this.model.latest.last_deployment.deployable &&
-        this.model.lastest.last_deployment.deployable.build_path) {
-        return this.model.lastest.last_deployment.deployable.build_path;
+        this.model.latest.last_deployment.deployable.build_path) {
+        return this.model.latest.last_deployment.deployable.build_path;
       }
 
       return '';
@@ -392,13 +392,13 @@ module.exports = Vue.component('environment-item', {
      */
     shouldRenderDeploymentID() {
       return !this.model.isFolder &&
-        this.model.lastest &&
+        this.model.latest &&
         !this.$options.isObjectEmpty(this.model.latest.last_deployment) &&
         this.model.latest.last_deployment.iid !== undefined;
     },
 
     environmentPath() {
-      if (this.model && this.model.lastest && this.model.latest.environment_path) {
+      if (this.model && this.model.latest && this.model.latest.environment_path) {
         return this.model.latest.environment_path;
       }
 
