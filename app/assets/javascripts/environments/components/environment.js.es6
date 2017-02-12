@@ -4,14 +4,14 @@
 const Vue = require('vue');
 Vue.use(require('vue-resource'));
 const EnvironmentsService = require('../services/environments_service');
-const EnvironmentItem = require('./environment_item');
+const EnvironmentTable = require('./environments_table');
 const Store = require('../stores/environments_store');
 require('../../vue_shared/components/table_pagination');
 
 module.exports = Vue.component('environment-component', {
 
   components: {
-    'environment-item': EnvironmentItem,
+    'environment-table': EnvironmentTable,
     'table-pagination': gl.VueGlPagination,
   },
 
@@ -209,30 +209,15 @@ module.exports = Vue.component('environment-component', {
 
         <div class="table-holder"
           v-if="!isLoading && state.environments.length > 0">
-          <table class="table ci-table environments">
-            <thead>
-              <tr>
-                <th class="environments-name">Environment</th>
-                <th class="environments-deploy">Last deployment</th>
-                <th class="environments-build">Job</th>
-                <th class="environments-commit">Commit</th>
-                <th class="environments-date">Updated</th>
-                <th class="hidden-xs environments-actions"></th>
-              </tr>
-            </thead>
-            <tbody>
-              <template v-for="model in state.environments"
-                v-bind:model="model">
-                <tr is="environment-item"
-                  :model="model"
-                  :can-create-deployment="canCreateDeploymentParsed"
-                  :can-read-environment="canReadEnvironmentParsed"
-                  :play-icon-svg="playIconSvg"
-                  :terminal-icon-svg="terminalIconSvg"
-                  :commit-icon-svg="commitIconSvg"></tr>
-              </template>
-            </tbody>
-          </table>
+
+          <environment-table
+            :environments="state.environments"
+            :can-create-deployment="canCreateDeploymentParsed"
+            :can-read-environment="canReadEnvironmentParsed"
+            :play-icon-svg="playIconSvg"
+            :terminal-icon-svg="terminalIconSvg"
+            :commit-icon-svg="commitIconSvg">
+          </environment-table>
 
           <table-pagination v-if="state.paginationInformation && state.paginationInformation.totalPages > 1"
             :change="changePage"
