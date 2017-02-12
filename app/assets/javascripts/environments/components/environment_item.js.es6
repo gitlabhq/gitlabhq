@@ -362,32 +362,6 @@ module.exports = Vue.component('environment-item', {
      *
      * @return {String}
      */
-    buildPath(){
-      return this.model.latest &&
-        this.model.latest.last_deployment &&
-        this.model.latest.last_deployment.deployable &&
-        this.model.latest.last_deployment.deployable.build_path ||
-        '';
-    },
-
-    /**
-     * Verifies the presence of all the keys needed to render the external_url.
-     *
-     * @return {String}
-     */
-    externalURL() {
-      if (this.model.latest && this.model.latest.external_url) {
-        return this.model.latest.external_url;
-      }
-
-      return '';
-    },
-
-    /**
-     * Verifies the presence of all the keys needed to render the buil_path.
-     *
-     * @return {String}
-     */
     buildPath() {
       if (this.model.latest &&
         this.model.latest.last_deployment &&
@@ -398,6 +372,7 @@ module.exports = Vue.component('environment-item', {
 
       return '';
     },
+
     /**
      * Verifies the presence of all the keys needed to render the external_url.
      *

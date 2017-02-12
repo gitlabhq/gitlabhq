@@ -128,11 +128,29 @@ module.exports = Vue.component('environment-component', {
     /**
      * Will change the page number and update the URL.
      *
+     * If no search params are present, we'll add param for page
+     * If param for page is already present, we'll update it
+     * If there are params but none for page, we'll add it at the end.
+     *
      * @param  {Number} pageNumber desired page to go to.
      */
     changePage(pageNumber) {
-      const param = window.location.search.replace(/page=\d/g, `page=${pageNumber}`);
+      let param;
+      if (window.location.search.length === 0) {
+        param = `?page=${pageNumber}`;
+      }
+
+      if (window.location.search.indexOf('page') !== -1) {
+        param = window.location.search.replace(/page=\d/g, `page=${pageNumber}`);
+      }
+
+      if (window.location.search.length &&
+        window.location.search.indexOf('page') === -1) {
+        param = `${window.location.search}&page=${pageNumber}`;
+      }
+
       gl.utils.visitUrl(param);
+      return param;
     },
   },
 
