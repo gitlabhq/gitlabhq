@@ -2,7 +2,7 @@ module Gitlab
   module ChatCommands
     module Presenters
       class IssueSearch < Presenters::Base
-        include Presenters::Issuable
+        include Presenters::IssueBase
 
         def present
           text = if @resource.count >= 5

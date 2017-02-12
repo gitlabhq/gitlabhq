@@ -72,27 +72,18 @@
       // This is required to handle non-unicode characters in hash
       hash = decodeURIComponent(hash);
 
-      var navbar = document.querySelector('.navbar-gitlab');
-      var subnav = document.querySelector('.layout-nav');
-      var fixedTabs = document.querySelector('.js-tabs-affix');
-
-      var adjustment = 0;
-      if (navbar) adjustment -= navbar.offsetHeight;
-      if (subnav) adjustment -= subnav.offsetHeight;
-
       // scroll to user-generated markdown anchor if we cannot find a match
       if (document.getElementById(hash) === null) {
         var target = document.getElementById('user-content-' + hash);
         if (target && target.scrollIntoView) {
           target.scrollIntoView(true);
-          window.scrollBy(0, adjustment);
         }
       } else {
         // only adjust for fixedTabs when not targeting user-generated content
+        var fixedTabs = document.querySelector('.js-tabs-affix');
         if (fixedTabs) {
-          adjustment -= fixedTabs.offsetHeight;
+          window.scrollBy(0, -fixedTabs.offsetHeight);
         }
-        window.scrollBy(0, adjustment);
       }
     };
 
@@ -147,12 +138,10 @@
 
     gl.utils.scrollToElement = function($el) {
       var top = $el.offset().top;
-      gl.navBarHeight = gl.navBarHeight || $('.navbar-gitlab').height();
-      gl.navLinksHeight = gl.navLinksHeight || $('.nav-links').height();
       gl.mrTabsHeight = gl.mrTabsHeight || $('.merge-request-tabs').height();
 
       return $('body, html').animate({
-        scrollTop: top - (gl.navBarHeight + gl.navLinksHeight + gl.mrTabsHeight)
+        scrollTop: top - (gl.mrTabsHeight)
       }, 200);
     };
 

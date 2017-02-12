@@ -96,13 +96,6 @@
       padding-right: 4px;
     }
 
-    &.ci-success_with_warnings {
-
-      i {
-        color: $gl-warning;
-      }
-    }
-
     @media (max-width: $screen-xs-max) {
       flex-wrap: wrap;
     }
@@ -272,8 +265,15 @@
 
 .mr-list {
   .merge-request {
-    padding: 10px 15px;
+    padding: 10px  0 10px 15px;
     position: relative;
+    display: -webkit-flex;
+    display: flex;
+
+    .issue-info-container {
+      -webkit-flex: 1;
+      flex: 1;
+    }
 
     .merge-request-title {
       margin-bottom: 2px;
@@ -479,7 +479,7 @@
   background-color: $white-light;
 
   &.affix {
-    top: 100px;
+    top: 0;
     left: 0;
     z-index: 10;
     transition: right .15s;

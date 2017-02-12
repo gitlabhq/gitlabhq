@@ -231,3 +231,46 @@ span.idiff {
     }
   }
 }
+
+.file-title-flex-parent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: $gray-light;
+  border-bottom: 1px solid $border-color;
+  padding: 5px $gl-padding;
+  margin: 0;
+  border-radius: 3px 3px 0 0;
+
+  .file-header-content {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 30px;
+    position: relative;
+  }
+
+  .btn-clipboard {
+    position: absolute;
+    right: 0;
+  }
+
+  a {
+    color: $gl-text-color;
+  }
+
+  small {
+    margin: 0 10px 0 0;
+  }
+
+  .file-actions {
+    white-space: nowrap;
+
+    .btn {
+      padding: 0 10px;
+      font-size: 13px;
+      line-height: 28px;
+      display: inline-block;
+    }
+  }
+}

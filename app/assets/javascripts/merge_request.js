@@ -115,8 +115,8 @@ require('./merge_request_tabs');
         e.preventDefault();
 
         textarea.val(textarea.data('messageWithDescription'));
-        $('p.js-with-description-hint').hide();
-        $('p.js-without-description-hint').show();
+        $('.js-with-description-hint').hide();
+        $('.js-without-description-hint').show();
       });
 
       $(document).on('click', 'a.js-without-description-link', function(e) {
@@ -124,8 +124,8 @@ require('./merge_request_tabs');
         e.preventDefault();
 
         textarea.val(textarea.data('messageWithoutDescription'));
-        $('p.js-with-description-hint').show();
-        $('p.js-without-description-hint').hide();
+        $('.js-with-description-hint').show();
+        $('.js-without-description-hint').hide();
       });
     };
 

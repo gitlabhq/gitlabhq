@@ -9,8 +9,9 @@
           Pipeline
           = link_to "##{@pipeline.id}", namespace_project_pipeline_path(@pipeline.project.namespace, @pipeline.project, @pipeline.id), class: 'pipeline'
           = ci_label_for_status(status)
-        .mr-widget-pipeline-graph
-          = render 'shared/mini_pipeline_graph', pipeline: @pipeline, klass: 'js-pipeline-inline-mr-widget-graph'
+        - if @pipeline.stages.any?
+          .mr-widget-pipeline-graph
+            = render 'shared/mini_pipeline_graph', pipeline: @pipeline, klass: 'js-pipeline-inline-mr-widget-graph'
         %span
           for
           = succeed "." do

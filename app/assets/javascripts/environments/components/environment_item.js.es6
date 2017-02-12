@@ -1,6 +1,6 @@
-
 const Vue = require('vue');
-const Timeago = require('vendor/timeago');
+const Timeago = require('timeago.j');
+
 require('../../lib/utils/text_utility');
 require('../../vue_shared/components/commit');
 const ActionsComponent = require('./environment_actions');
