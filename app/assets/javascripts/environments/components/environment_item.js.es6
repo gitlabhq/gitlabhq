@@ -407,6 +407,16 @@ module.exports = Vue.component('environment-item', {
 
       return '';
     },
+
+    /**
+     * Constructs folder URL based on the current location and the folder id.
+     *
+     * @return {String}
+     */
+    folderUrl() {
+      return `${window.location.pathname}/folders/${this.model.latest.id}`;
+    },
+
   },
 
   /**
@@ -432,7 +442,7 @@ module.exports = Vue.component('environment-item', {
           :href="environmentPath">
           {{model.name}}
         </a>
-        <a v-else class="folder-name">
+        <a v-else class="folder-name" :href="folderUrl">
           <span class="folder-icon">
             <i class="fa fa-caret-right" aria-hidden="true"></i>
             <i class="fa fa-folder" aria-hidden="true"></i>

@@ -4,9 +4,8 @@
 const Vue = require('vue');
 Vue.use(require('vue-resource'));
 const EnvironmentsService = require('../services/environments_service');
-const EnvironmentTable = require('./environments_table');
-const Store = require('../stores/environments_folder_store');
-require('../../vue_shared/components/table_pagination');
+const EnvironmentTable = require('../components/environments_table');
+const Store = require('../stores/environments_store');
 
 module.exports = Vue.component('environment-folder-view', {
 
@@ -15,32 +14,53 @@ module.exports = Vue.component('environment-folder-view', {
     'table-pagination': gl.VueGlPagination,
   },
 
-  props: {
-    endpoint: {
-      type: String,
-      required: true,
-      default: '',
-    },
-
-    folderName: {
-      type: String,
-      required: true,
-      default: '',
-    },
-  },
-
   data() {
+    const environmentsData = document.querySelector('#environments-folder-list-view').dataset;
     const store = new Store();
+    const endpoint = `${window.location.pathname}.json`;
 
     return {
       store,
+      endpoint,
       state: store.state,
+      visibility: 'available',
       isLoading: false,
+      cssContainerClass: environmentsData.cssClass,
+      canCreateDeployment: environmentsData.canCreateDeployment,
+      canReadEnvironment: environmentsData.canReadEnvironment,
+
+      // svgs
+      commitIconSvg: environmentsData.commitIconSvg,
+      playIconSvg: environmentsData.playIconSvg,
+      terminalIconSvg: environmentsData.terminalIconSvg,
 
       // Pagination Properties,
       paginationInformation: {},
       pageNumber: 1,
     };
+  },
+
+  computed: {
+    scope() {
+      return this.$options.getQueryParameter('scope');
+    },
+
+    canReadEnvironmentParsed() {
+      return this.$options.convertPermissionToBoolean(this.canReadEnvironment);
+    },
+
+    canCreateDeploymentParsed() {
+      return this.$options.convertPermissionToBoolean(this.canCreateDeployment);
+    },
+
+    stoppedPath() {
+      return `${window.location.pathname}?scope=stopped`;
+    },
+
+    availablePath() {
+      return window.location.pathname;
+    },
+
   },
 
   /**
@@ -123,9 +143,12 @@ module.exports = Vue.component('environment-folder-view', {
   template: `
     <div :class="cssContainerClass">
       <div class="top-area">
+
+        <h3>FOLDER NAME</h3>
+
         <ul v-if="!isLoading" class="nav-links">
           <li v-bind:class="{ 'active': scope === undefined || scope === 'available' }">
-            <a :href="projectEnvironmentsPath">
+            <a :href="availablePath">
               Available
               <span class="badge js-available-environments-count">
                 {{state.availableCounter}}
@@ -133,7 +156,7 @@ module.exports = Vue.component('environment-folder-view', {
             </a>
           </li>
           <li v-bind:class="{ 'active' : scope === 'stopped' }">
-            <a :href="projectStoppedEnvironmentsPath">
+            <a :href="stoppedPath">
               Stopped
               <span class="badge js-stopped-environments-count">
                 {{state.stoppedCounter}}
@@ -141,36 +164,11 @@ module.exports = Vue.component('environment-folder-view', {
             </a>
           </li>
         </ul>
-        <div v-if="canCreateEnvironmentParsed && !isLoading" class="nav-controls">
-          <a :href="newEnvironmentPath" class="btn btn-create">
-            New environment
-          </a>
-        </div>
       </div>
 
       <div class="environments-container">
         <div class="environments-list-loading text-center" v-if="isLoading">
           <i class="fa fa-spinner fa-spin"></i>
-        </div>
-
-        <div class="blank-state blank-state-no-icon"
-          v-if="!isLoading && state.environments.length === 0">
-          <h2 class="blank-state-title js-blank-state-title">
-            You don't have any environments right now.
-          </h2>
-          <p class="blank-state-text">
-            Environments are places where code gets deployed, such as staging or production.
-            <br />
-            <a :href="helpPagePath">
-              Read more about environments
-            </a>
-          </p>
-
-          <a v-if="canCreateEnvironmentParsed"
-            :href="newEnvironmentPath"
-            class="btn btn-create js-new-environment-button">
-            New Environment
-          </a>
         </div>
 
         <div class="table-holder"
