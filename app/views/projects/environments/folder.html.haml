@@ -1,0 +1,8 @@
+- @no_container = true
+- page_title "Environments"
+= render "projects/pipelines/head"
+
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_bundle_tag("environments_folder")
+
+#environments-folder-list-view
