@@ -848,10 +848,12 @@ namespace :gitlab do
   # Helper methods
   ##########################
 
+  # @deprecated Please use SystemChecks
   def fix_and_rerun
     puts "  Please fix the error above and rerun the checks.".color(:red)
   end
 
+  # @deprecated Please use SystemChecks
   def for_more_information(*sources)
     sources = sources.shift if sources.first.is_a?(Array)
 
@@ -861,6 +863,7 @@ namespace :gitlab do
     end
   end
 
+  # @deprecated Please use SystemChecks
   def finished_checking(component)
     puts ""
     puts "Checking #{component.color(:yellow)} ... #{"Finished".color(:green)}"
@@ -883,11 +886,13 @@ namespace :gitlab do
     Gitlab.config.gitlab.user
   end
 
+  # @deprecated Please use SystemChecks
   def start_checking(component)
     puts "Checking #{component.color(:yellow)} ..."
     puts ""
   end
 
+  # @deprecated Please use SystemChecks
   def try_fixing_it(*steps)
     steps = steps.shift if steps.first.is_a?(Array)
 
