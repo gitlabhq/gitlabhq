@@ -15,9 +15,16 @@ module SystemCheck
       raise ArgumentError, 'Invalid executor'
     end
 
+    prepare(component, checks, executor_klass).execute
+  end
+
+  def self.prepare(component, checks = [], executor_klass = SimpleExecutor)
     executor = executor_klass.new(component)
     checks.each do |check|
       executor << check
     end
+
+    executor
   end
+  private_class_method :prepare
 end
