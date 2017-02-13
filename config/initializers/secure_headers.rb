@@ -13,9 +13,15 @@ else
   CSP_REPORT_URI = ''
 end
 
+# Get the GitLab URI without the scheme so it can have wss:// prepended.
 GITLAB_WS_URI = Gitlab.config.gitlab['url'].sub(%r{^https?:(//|\\\\)(www\.)?}i, '')
-uri2 = URI.parse(Gitlab.config.gitlab['url'])
-WEBPACK_CONNECT_URI = "#{uri.scheme}://#{uri.host}:3808}"
+
+# Determine current host, connect through port 3808 for Webpack. Development-only.
+if Rails.env.development?
+  uri2 = URI.parse(Gitlab.config.gitlab['url'])
+  WEBPACK_CONNECT_URI = "#{uri2.scheme}://#{uri2.host}:3808"
+  WEBPACK_CONNECT_WS_URI = "ws://#{uri2.host}:3808"
+end
 
 # Content Security Policy Headers
 # For more information on CSP see:
@@ -82,6 +88,7 @@ SecureHeaders::Configuration.default do |config|
     config.csp[:upgrade_insecure_requests] = false
     # Allow Webpack's dev server
     config.csp[:connect_src] << "#{WEBPACK_CONNECT_URI}"
+    config.csp[:connect_src] << "#{WEBPACK_CONNECT_WS_URI}"
   end
 
   # reCAPTCHA
