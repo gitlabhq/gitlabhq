@@ -6,6 +6,7 @@ describe 'Issue Boards', :feature, :js do
   let(:project) { create(:empty_project, :public) }
   let(:board) { create(:board, project: project) }
   let(:user) { create(:user) }
+  let!(:issue) { create(:issue, project: project) }
   let!(:planning) { create(:label, project: project, name: 'Planning') }
   let!(:list1) { create(:list, board: board, label: planning, position: 0) }
 
@@ -30,17 +31,15 @@ describe 'Issue Boards', :feature, :js do
     expect(page).not_to have_selector('.boards-backlog-help')
   end
 
-  it 'closes backlog help box when clicking add issues button inside box' do
+  it 'closes backlog help box after adding issues' do
     page.within '.boards-backlog-help' do
       click_button 'Add issues'
     end
 
-    expect(page).not_to have_selector('.boards-backlog-help')
-  end
+    page.within('.add-issues-modal') do
+      find('.card').click
 
-  it 'closes backlog help box when clicking add issues button' do
-    page.within '.issue-boards-search' do
-      click_button 'Add issues'
+      click_button 'Add 1 issue'
     end
 
     expect(page).not_to have_selector('.boards-backlog-help')
