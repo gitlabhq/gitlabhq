@@ -41,6 +41,40 @@ require('~/lib/utils/common_utils');
       });
     });
 
+    describe('gl.utils.handleLocationHash', () => {
+      beforeEach(() => {
+        spyOn(window.document, 'getElementById').and.callThrough();
+      });
+
+      function expectGetElementIdToHaveBeenCalledWith(elementId) {
+        expect(window.document.getElementById).toHaveBeenCalledWith(elementId);
+      }
+
+      it('decodes hash parameter', () => {
+        window.history.pushState({}, null, '#random-hash');
+        gl.utils.handleLocationHash();
+
+        expectGetElementIdToHaveBeenCalledWith('random-hash');
+        expectGetElementIdToHaveBeenCalledWith('user-content-random-hash');
+      });
+
+      it('decodes cyrillic hash parameter', () => {
+        window.history.pushState({}, null, '#definição');
+        gl.utils.handleLocationHash();
+
+        expectGetElementIdToHaveBeenCalledWith('definição');
+        expectGetElementIdToHaveBeenCalledWith('user-content-definição');
+      });
+
+      it('decodes encoded cyrillic hash parameter', () => {
+        window.history.pushState({}, null, '#defini%C3%A7%C3%A3o');
+        gl.utils.handleLocationHash();
+
+        expectGetElementIdToHaveBeenCalledWith('definição');
+        expectGetElementIdToHaveBeenCalledWith('user-content-definição');
+      });
+    });
+
     describe('gl.utils.getParameterByName', () => {
       beforeEach(() => {
         window.history.pushState({}, null, '?scope=all&p=2');
@@ -71,6 +105,38 @@ require('~/lib/utils/common_utils');
 
         expect(normalized[WORKHORSE].workhorse).toBe('ok');
         expect(normalized[NGINX].nginx).toBe('ok');
+      });
+    });
+
+    describe('gl.utils.isMetaClick', () => {
+      it('should identify meta click on Windows/Linux', () => {
+        const e = {
+          metaKey: false,
+          ctrlKey: true,
+          which: 1,
+        };
+
+        expect(gl.utils.isMetaClick(e)).toBe(true);
+      });
+
+      it('should identify meta click on macOS', () => {
+        const e = {
+          metaKey: true,
+          ctrlKey: false,
+          which: 1,
+        };
+
+        expect(gl.utils.isMetaClick(e)).toBe(true);
+      });
+
+      it('should identify as meta click on middle-click or Mouse-wheel click', () => {
+        const e = {
+          metaKey: false,
+          ctrlKey: false,
+          which: 2,
+        };
+
+        expect(gl.utils.isMetaClick(e)).toBe(true);
       });
     });
   });

@@ -1,21 +1,25 @@
-- pretty_name = defined?(@project) ? @project.name_with_namespace : "namespace / path"
-- run_actions_text = "Perform common operations on this project: #{pretty_name}"
+- pretty_name = defined?(@project) ? @project.name_with_namespace : 'namespace / path'
+- run_actions_text = "Perform common operations on GitLab project: #{pretty_name}"
 
 .well
-  This service allows GitLab users to perform common operations on this
-  project by entering slash commands in Slack.
-  %br
-  See list of available commands in Slack after setting up this service,
-  by entering
-  %code /&lt;command&gt; help
-  %br
-  %br
+  %p
+    This service allows users to perform common operations on this
+    project by entering slash commands in Slack.
+    = link_to help_page_path('user/project/integrations/slack_slash_commands.md'), target: '_blank', ref: 'noreferrer nofollow noopener' do
+      View documentation
+      = icon('external-link')
+  %p.inline
+    See list of available commands in Slack after setting up this service,
+    by entering
+  %kbd.inline /&lt;command&gt; help
   - unless @service.template?
-    To setup this service:
-    %ul.list-unstyled
+    %p To setup this service:
+    %ul.list-unstyled.indent-list
       %li
         1.
-        = link_to 'Add a slash command', 'https://my.slack.com/services/new/slash-commands'
+        = link_to 'https://my.slack.com/services/new/slash-commands', target: '_blank', rel: 'noreferrer noopener nofollow' do
+          Add a slash command
+          = icon('external-link')
         in your Slack team with these options:
 
     %hr
@@ -82,7 +86,7 @@
 
     %hr
 
-    %ul.list-unstyled
+    %ul.list-unstyled.indent-list
       %li
         2. Paste the
         %strong Token

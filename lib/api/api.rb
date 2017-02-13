@@ -5,9 +5,13 @@ module API
     version %w(v3 v4), using: :path
 
     version 'v3', using: :path do
+      mount ::API::V3::DeployKeys
       mount ::API::V3::Issues
+      mount ::API::V3::Members
       mount ::API::V3::MergeRequests
       mount ::API::V3::Projects
+      mount ::API::V3::ProjectSnippets
+      mount ::API::V3::Templates
     end
 
     before { allow_access_with_scope :api }

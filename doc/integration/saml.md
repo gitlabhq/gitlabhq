@@ -109,7 +109,8 @@ in your SAML IdP:
 1.  Change the value of `issuer` to a unique name, which will identify the application
     to the IdP.
 
-1.  Restart GitLab for the changes to take effect.
+1.  [Reconfigure][] or [restart GitLab][] for the changes to take effect if you
+    installed GitLab via Omnibus or from source respectively.
 
 1.  Register the GitLab SP in your SAML 2.0 IdP, using the application name specified
     in `issuer`.
@@ -314,3 +315,6 @@ For this you need take the following into account:
 
 Make sure that one of the above described scenarios is valid, or the requests will
 fail with one of the mentioned errors.
+
+[reconfigure]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
+[restart GitLab]: ../administration/restart_gitlab.md#installations-from-source

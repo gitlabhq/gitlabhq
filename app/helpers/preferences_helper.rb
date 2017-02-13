@@ -23,7 +23,7 @@ module PreferencesHelper
 
     if defined.size != DASHBOARD_CHOICES.size
       # Ensure that anyone adding new options updates this method too
-      raise RuntimeError, "`User` defines #{defined.size} dashboard choices," +
+      raise "`User` defines #{defined.size} dashboard choices," \
         " but `DASHBOARD_CHOICES` defined #{DASHBOARD_CHOICES.size}."
     else
       defined.map do |key, _|

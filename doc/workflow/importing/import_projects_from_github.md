@@ -28,7 +28,7 @@ still be able to import their GitHub repositories with a
 When issues/pull requests are being imported, the GitHub importer tries to find
 the GitHub author/assignee in GitLab's database using the GitHub ID. For this
 to work, the GitHub author/assignee should have signed in beforehand in GitLab
-and [**associated their GitHub account**][social sign-in]. If the user is not
+and **associated their GitHub account**. If the user is not
 found in GitLab's database, the project creator (most of the times the current
 user that started the import process) is set as the author, but a reference on
 the issue about the original GitHub author is kept.

@@ -2,42 +2,6 @@
   font-family: $regular_font;
   font-size: $font-size-base;
 
-  &.ui-datepicker,
-  &.ui-datepicker-inline {
-    border: 1px solid $jq-ui-border;
-    padding: 10px;
-    width: 270px;
-
-    .ui-datepicker-header {
-      background: $white-light;
-      border-color: $jq-ui-border;
-
-      .ui-datepicker-prev,
-      .ui-datepicker-next {
-        top: 4px;
-      }
-
-      .ui-datepicker-prev {
-        left: 2px;
-      }
-
-      .ui-datepicker-next {
-        right: 2px;
-      }
-
-      .ui-state-hover {
-        background: transparent;
-        border: 0;
-        cursor: pointer;
-      }
-    }
-
-    .ui-datepicker-calendar td a {
-      padding: 5px;
-      text-align: center;
-    }
-  }
-
   &.ui-autocomplete {
     border-color: $jq-ui-border;
     padding: 0;
@@ -58,26 +22,5 @@
   .ui-state-highlight {
     border: 0;
     background: transparent;
-  }
-
-  .ui-datepicker-calendar {
-    .ui-state-active,
-    .ui-state-hover,
-    .ui-state-focus {
-      border: 1px solid $gl-primary;
-      background: $gl-primary;
-      color: $white-light;
-    }
-  }
-}
-
-.ui-sortable-handle {
-  cursor: move;
-  cursor: -webkit-grab;
-  cursor: -moz-grab;
-
-  &:active {
-    cursor: -webkit-grabbing;
-    cursor: -moz-grabbing;
   }
 }

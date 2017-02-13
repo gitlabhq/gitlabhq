@@ -31,9 +31,8 @@ GitLab uses [factory_girl] as a test fixture replacement.
 
 ## JavaScript
 
-GitLab uses [Teaspoon] to run its [Jasmine] JavaScript specs. They can be run on
-the command line via `bundle exec teaspoon`, or via a web browser at
-`http://localhost:3000/teaspoon` when the Rails server is running.
+GitLab uses [Karma] to run its [Jasmine] JavaScript specs. They can be run on
+the command line via `bundle exec karma`.
 
 - JavaScript tests live in `spec/javascripts/`, matching the folder structure of
   `app/assets/javascripts/`: `app/assets/javascripts/behaviors/autosize.js.es6` has a corresponding
@@ -51,7 +50,7 @@ the command line via `bundle exec teaspoon`, or via a web browser at
   [`Notification`](https://developer.mozilla.org/en-US/docs/Web/API/notification),
   which will have to be stubbed.
 
-[Teaspoon]: https://github.com/modeset/teaspoon
+[Karma]: https://github.com/karma-runner/karma
 [Jasmine]: https://github.com/jasmine/jasmine
 
 ## RSpec

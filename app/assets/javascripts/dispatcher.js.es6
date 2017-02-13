@@ -19,7 +19,6 @@
 /* global UsersSelect */
 /* global GroupAvatar */
 /* global LineHighlighter */
-/* global ShortcutsBlob */
 /* global ProjectFork */
 /* global BuildArtifacts */
 /* global GroupsSelect */
@@ -35,6 +34,8 @@
 /* global ProjectShow */
 /* global Labels */
 /* global Shortcuts */
+
+const ShortcutsBlob = require('./shortcuts_blob');
 
 (function() {
   var Dispatcher;
@@ -96,6 +97,7 @@
           break;
         case 'projects:milestones:new':
         case 'projects:milestones:edit':
+        case 'projects:milestones:update':
           new ZenMode();
           new gl.DueDateSelectors();
           new gl.GLForm($('.milestone-form'));
@@ -159,6 +161,11 @@
           new ZenMode();
           shortcut_handler = new ShortcutsNavigation();
           break;
+        case 'projects:commit:pipelines':
+          new gl.MiniPipelineGraph({
+            container: '.js-pipeline-table',
+          }).bindEvents();
+          break;
         case 'projects:commits:show':
         case 'projects:activity':
           shortcut_handler = new ShortcutsNavigation();
@@ -220,7 +227,12 @@
         case 'projects:blame:show':
           new LineHighlighter();
           shortcut_handler = new ShortcutsNavigation();
-          new ShortcutsBlob(true);
+          const fileBlobPermalinkUrlElement = document.querySelector('.js-data-file-blob-permalink-url');
+          const fileBlobPermalinkUrl = fileBlobPermalinkUrlElement && fileBlobPermalinkUrlElement.getAttribute('href');
+          new ShortcutsBlob({
+            skipResetBindings: true,
+            fileBlobPermalinkUrl,
+          });
           break;
         case 'groups:labels:new':
         case 'groups:labels:edit':
@@ -254,7 +266,7 @@
           new gl.ProtectedBranchCreate();
           new gl.ProtectedBranchEditList();
           break;
-        case 'projects:variables:index':
+        case 'projects:ci_cd:show':
           new gl.ProjectVariables();
           break;
         case 'ci:lints:create':

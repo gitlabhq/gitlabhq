@@ -77,8 +77,8 @@ describe Deployment, models: true do
     end
   end
 
-  describe '#stoppable?' do
-    subject { deployment.stoppable? }
+  describe '#stop_action?' do
+    subject { deployment.stop_action? }
 
     context 'when no other actions' do
       let(:deployment) { build(:deployment) }

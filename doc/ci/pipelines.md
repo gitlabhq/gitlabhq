@@ -75,5 +75,5 @@ respective link in the [Pipelines settings] page.
 [builds]: #builds
 [jobs]: yaml/README.md#jobs
 [stages]: yaml/README.md#stages
-[runners]: runners/READM
+[runners]: runners/README.html
 [pipelines settings]: ../user/project/pipelines/settings.md

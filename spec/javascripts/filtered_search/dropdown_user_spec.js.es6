@@ -9,7 +9,7 @@ require('~/filtered_search/dropdown_user');
       let dropdownUser;
 
       beforeEach(() => {
-        spyOn(gl.FilteredSearchDropdown.prototype, 'constructor').and.callFake(() => {});
+        spyOn(gl.DropdownUser.prototype, 'bindEvents').and.callFake(() => {});
         spyOn(gl.DropdownUser.prototype, 'getProjectId').and.callFake(() => {});
         spyOn(gl.DropdownUtils, 'getSearchInput').and.callFake(() => {});
 
@@ -39,7 +39,7 @@ require('~/filtered_search/dropdown_user');
 
     describe('config droplabAjaxFilter\'s endpoint', () => {
       beforeEach(() => {
-        spyOn(gl.FilteredSearchDropdown.prototype, 'constructor').and.callFake(() => {});
+        spyOn(gl.DropdownUser.prototype, 'bindEvents').and.callFake(() => {});
         spyOn(gl.DropdownUser.prototype, 'getProjectId').and.callFake(() => {});
       });
 

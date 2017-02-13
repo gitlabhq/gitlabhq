@@ -1,5 +1,5 @@
 # Store object full path in separate table for easy lookup and uniq validation
-# Object must have path db field and respond to full_path and full_path_changed? methods.
+# Object must have name and path db fields and respond to parent and parent_changed? methods.
 module Routable
   extend ActiveSupport::Concern
 
@@ -9,7 +9,13 @@ module Routable
     validates_associated :route
     validates :route, presence: true
 
-    before_validation :update_route_path, if: :full_path_changed?
+    scope :with_route, -> { includes(:route) }
+
+    before_validation do
+      if full_path_changed? || full_name_changed?
+        prepare_route
+      end
+    end
   end
 
   class_methods do
@@ -77,10 +83,62 @@ module Routable
     end
   end
 
+  def full_name
+    if route && route.name.present?
+      @full_name ||= route.name
+    else
+      update_route if persisted?
+
+      build_full_name
+    end
+  end
+
+  def full_path
+    if route && route.path.present?
+      @full_path ||= route.path
+    else
+      update_route if persisted?
+
+      build_full_path
+    end
+  end
+
   private
 
-  def update_route_path
+  def full_name_changed?
+    name_changed? || parent_changed?
+  end
+
+  def full_path_changed?
+    path_changed? || parent_changed?
+  end
+
+  def build_full_name
+    if parent && name
+      parent.human_name + ' / ' + name
+    else
+      name
+    end
+  end
+
+  def build_full_path
+    if parent && path
+      parent.full_path + '/' + path
+    else
+      path
+    end
+  end
+
+  def update_route
+    prepare_route
+    route.save
+  end
+
+  def prepare_route
     route || build_route(source: self)
-    route.path = full_path
+    route.path = build_full_path
+    route.name = build_full_name
+    @full_path = nil
+    @full_name = nil
   end
 end

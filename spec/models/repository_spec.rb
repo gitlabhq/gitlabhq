@@ -351,6 +351,17 @@ describe Repository, models: true do
       expect(blob.data).to eq('Changelog!')
     end
 
+    it 'respects the autocrlf setting' do
+      repository.commit_file(user, 'hello.txt', "Hello,\r\nWorld",
+                             message: 'Add hello world',
+                             branch_name: 'master',
+                             update: true)
+
+      blob = repository.blob_at('master', 'hello.txt')
+
+      expect(blob.data).to eq("Hello,\nWorld")
+    end
+
     context "when an author is specified" do
       it "uses the given email/name to set the commit's author" do
         expect do
@@ -1780,6 +1791,42 @@ describe Repository, models: true do
       expect(repository).to receive(:license_key)
 
       repository.refresh_method_caches(%i(readme license))
+    end
+  end
+
+  describe '#gitlab_ci_yml_for' do
+    before do
+      repository.commit_file(User.last, '.gitlab-ci.yml', 'CONTENT', message: 'Add .gitlab-ci.yml', branch_name: 'master', update: false)
+    end
+
+    context 'when there is a .gitlab-ci.yml at the commit' do
+      it 'returns the content' do
+        expect(repository.gitlab_ci_yml_for(repository.commit.sha)).to eq('CONTENT')
+      end
+    end
+
+    context 'when there is no .gitlab-ci.yml at the commit' do
+      it 'returns nil' do
+        expect(repository.gitlab_ci_yml_for(repository.commit.parent.sha)).to be_nil
+      end
+    end
+  end
+
+  describe '#route_map_for' do
+    before do
+      repository.commit_file(User.last, '.gitlab/route-map.yml', 'CONTENT', message: 'Add .gitlab/route-map.yml', branch_name: 'master', update: false)
+    end
+
+    context 'when there is a .gitlab/route-map.yml at the commit' do
+      it 'returns the content' do
+        expect(repository.route_map_for(repository.commit.sha)).to eq('CONTENT')
+      end
+    end
+
+    context 'when there is no .gitlab/route-map.yml at the commit' do
+      it 'returns nil' do
+        expect(repository.route_map_for(repository.commit.parent.sha)).to be_nil
+      end
     end
   end
 end

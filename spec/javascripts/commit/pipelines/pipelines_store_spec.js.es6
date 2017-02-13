@@ -1,11 +1,14 @@
-require('~commit/pipelines/pipelines_store');
+require('~/commit/pipelines/pipelines_store');
 
 describe('Store', () => {
-  const store = gl.commits.pipelines.PipelinesStore;
+  let store;
 
   beforeEach(() => {
-    store.create();
+    store = new gl.commits.pipelines.PipelinesStore();
   });
+
+  // unregister intervals and event handlers
+  afterEach(() => gl.VueRealtimeListener.reset());
 
   it('should start with a blank state', () => {
     expect(store.state.pipelines.length).toBe(0);
@@ -23,7 +26,7 @@ describe('Store', () => {
       },
     ];
 
-    store.store(pipelines);
+    store.storePipelines(pipelines);
 
     expect(store.state.pipelines.length).toBe(pipelines.length);
   });

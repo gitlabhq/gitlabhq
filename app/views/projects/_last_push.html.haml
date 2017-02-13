@@ -10,6 +10,7 @@
             - if @project && event.project != @project
               %span at
               %strong= link_to_project event.project
+            = clipboard_button(clipboard_text: event.ref_name, class: 'btn-clipboard btn-transparent', title: 'Copy branch to clipboard')
             #{time_ago_with_tooltip(event.created_at)}
 
           .pull-right

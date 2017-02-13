@@ -14,6 +14,8 @@
   %td
     = spam_log.via_api? ? 'Y' : 'N'
   %td
+    = spam_log.recaptcha_verified ? 'Y' : 'N'
+  %td
     = spam_log.noteable_type
   %td
     = spam_log.title

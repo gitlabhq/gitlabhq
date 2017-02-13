@@ -72,13 +72,10 @@ Parameters:
     "last_activity_at": "2013-09-30T13:46:02Z",
     "creator_id": 3,
     "namespace": {
-      "created_at": "2013-09-30T13:46:02Z",
-      "description": "",
       "id": 3,
       "name": "Diaspora",
-      "owner_id": 1,
       "path": "diaspora",
-      "updated_at": "2013-09-30T13:46:02Z"
+      "kind": "group"
     },
     "archived": false,
     "avatar_url": "http://example.com/uploads/project/avatar/4/uploads/avatar.png",
@@ -125,13 +122,10 @@ Parameters:
     "last_activity_at": "2013-09-30T13:46:02Z",
     "creator_id": 3,
     "namespace": {
-      "created_at": "2013-09-30T13:46:02Z",
-      "description": "",
       "id": 4,
       "name": "Brightbox",
-      "owner_id": 1,
       "path": "brightbox",
-      "updated_at": "2013-09-30T13:46:02Z"
+      "kind": "group"
     },
     "permissions": {
       "project_access": {
@@ -210,13 +204,10 @@ Parameters:
     "last_activity_at": "2013-09-30T13:46:02Z",
     "creator_id": 3,
     "namespace": {
-      "created_at": "2013-09-30T13:46:02Z",
-      "description": "",
       "id": 3,
       "name": "Diaspora",
-      "owner_id": 1,
       "path": "diaspora",
-      "updated_at": "2013-09-30T13:46:02Z"
+      "kind": "group"
     },
     "archived": false,
     "avatar_url": "http://example.com/uploads/project/avatar/4/uploads/avatar.png",
@@ -260,13 +251,10 @@ Parameters:
     "last_activity_at": "2013-09-30T13:46:02Z",
     "creator_id": 3,
     "namespace": {
-      "created_at": "2013-09-30T13:46:02Z",
-      "description": "",
       "id": 4,
       "name": "Brightbox",
-      "owner_id": 1,
       "path": "brightbox",
-      "updated_at": "2013-09-30T13:46:02Z"
+      "kind": "group"
     },
     "permissions": {
       "project_access": {
@@ -398,13 +386,10 @@ Parameters:
   "last_activity_at": "2013-09-30T13:46:02Z",
   "creator_id": 3,
   "namespace": {
-    "created_at": "2013-09-30T13:46:02Z",
-    "description": "",
     "id": 3,
     "name": "Diaspora",
-    "owner_id": 1,
     "path": "diaspora",
-    "updated_at": "2013-09-30T13:46:02Z"
+    "kind": "group"
   },
   "permissions": {
     "project_access": {
@@ -642,7 +627,6 @@ Parameters:
 | `snippets_enabled` | boolean | no | Enable snippets for this project |
 | `container_registry_enabled` | boolean | no | Enable container registry for this project |
 | `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
-| `public` | boolean | no | If `true`, the same as setting `visibility_level` to 20 |
 | `visibility_level` | integer | no | See [project visibility level](#project-visibility-level) |
 | `import_url` | string | no | URL to import repository from |
 | `public_builds` | boolean | no | If `true`, builds can be viewed by non-project-members |
@@ -676,7 +660,6 @@ Parameters:
 | `snippets_enabled` | boolean | no | Enable snippets for this project |
 | `container_registry_enabled` | boolean | no | Enable container registry for this project |
 | `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
-| `public` | boolean | no | If `true`, the same as setting `visibility_level` to 20 |
 | `visibility_level` | integer | no | See [project visibility level](#project-visibility-level) |
 | `import_url` | string | no | URL to import repository from |
 | `public_builds` | boolean | no | If `true`, builds can be viewed by non-project-members |
@@ -709,7 +692,6 @@ Parameters:
 | `snippets_enabled` | boolean | no | Enable snippets for this project |
 | `container_registry_enabled` | boolean | no | Enable container registry for this project |
 | `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
-| `public` | boolean | no | If `true`, the same as setting `visibility_level` to 20 |
 | `visibility_level` | integer | no | See [project visibility level](#project-visibility-level) |
 | `import_url` | string | no | URL to import repository from |
 | `public_builds` | boolean | no | If `true`, builds can be viewed by non-project-members |
@@ -782,13 +764,10 @@ Example response:
   "last_activity_at": "2013-09-30T13:46:02Z",
   "creator_id": 3,
   "namespace": {
-    "created_at": "2013-09-30T13:46:02Z",
-    "description": "",
     "id": 3,
     "name": "Diaspora",
-    "owner_id": 1,
     "path": "diaspora",
-    "updated_at": "2013-09-30T13:46:02Z"
+    "kind": "group"
   },
   "archived": true,
   "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png",
@@ -850,13 +829,10 @@ Example response:
   "last_activity_at": "2013-09-30T13:46:02Z",
   "creator_id": 3,
   "namespace": {
-    "created_at": "2013-09-30T13:46:02Z",
-    "description": "",
     "id": 3,
     "name": "Diaspora",
-    "owner_id": 1,
     "path": "diaspora",
-    "updated_at": "2013-09-30T13:46:02Z"
+    "kind": "group"
   },
   "archived": true,
   "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png",
@@ -924,13 +900,10 @@ Example response:
   "last_activity_at": "2013-09-30T13:46:02Z",
   "creator_id": 3,
   "namespace": {
-    "created_at": "2013-09-30T13:46:02Z",
-    "description": "",
     "id": 3,
     "name": "Diaspora",
-    "owner_id": 1,
     "path": "diaspora",
-    "updated_at": "2013-09-30T13:46:02Z"
+    "kind": "group"
   },
   "permissions": {
     "project_access": {
@@ -1009,13 +982,10 @@ Example response:
   "last_activity_at": "2013-09-30T13:46:02Z",
   "creator_id": 3,
   "namespace": {
-    "created_at": "2013-09-30T13:46:02Z",
-    "description": "",
     "id": 3,
     "name": "Diaspora",
-    "owner_id": 1,
     "path": "diaspora",
-    "updated_at": "2013-09-30T13:46:02Z"
+    "kind": "group"
   },
   "permissions": {
     "project_access": {

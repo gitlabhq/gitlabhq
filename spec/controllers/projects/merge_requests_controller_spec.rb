@@ -33,11 +33,17 @@ describe Projects::MergeRequestsController do
       end
 
       context 'when rendering JSON response' do
+        before do
+          create(:ci_pipeline, sha: fork_project.commit('remove-submodule').id,
+                               ref: 'remove-submodule',
+                               project: fork_project)
+        end
+
         it 'renders JSON including serialized pipelines' do
           submit_new_merge_request(format: :json)
 
-          expect(json_response).to have_key('pipelines')
           expect(response).to be_ok
+          expect(json_response).not_to be_empty
         end
       end
     end
@@ -141,12 +147,16 @@ describe Projects::MergeRequestsController do
   end
 
   describe 'GET index' do
+    let!(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
+
     def get_merge_requests(page = nil)
       get :index,
           namespace_id: project.namespace.to_param,
           project_id: project.to_param,
           state: 'opened', page: page.to_param
     end
+
+    it_behaves_like "issuables list meta-data", :merge_request
 
     context 'when page param' do
       let(:last_page) { project.merge_requests.page().total_pages }

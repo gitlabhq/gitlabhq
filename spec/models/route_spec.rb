@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Route, models: true do
-  let!(:group) { create(:group, path: 'gitlab') }
+  let!(:group) { create(:group, path: 'gitlab', name: 'gitlab') }
   let!(:route) { group.route }
 
   describe 'relationships' do
@@ -15,17 +15,42 @@ describe Route, models: true do
   end
 
   describe '#rename_descendants' do
-    let!(:nested_group) { create(:group, path: "test", parent: group) }
-    let!(:deep_nested_group) { create(:group, path: "foo", parent: nested_group) }
-    let!(:similar_group) { create(:group, path: 'gitlab-org') }
+    let!(:nested_group) { create(:group, path: 'test', name: 'test', parent: group) }
+    let!(:deep_nested_group) { create(:group, path: 'foo', name: 'foo', parent: nested_group) }
+    let!(:similar_group) { create(:group, path: 'gitlab-org', name: 'gitlab-org') }
 
-    before { route.update_attributes(path: 'bar') }
+    context 'path update' do
+      context 'when route name is set' do
+        before { route.update_attributes(path: 'bar') }
 
-    it "updates children routes with new path" do
-      expect(described_class.exists?(path: 'bar')).to be_truthy
-      expect(described_class.exists?(path: 'bar/test')).to be_truthy
-      expect(described_class.exists?(path: 'bar/test/foo')).to be_truthy
-      expect(described_class.exists?(path: 'gitlab-org')).to be_truthy
+        it "updates children routes with new path" do
+          expect(described_class.exists?(path: 'bar')).to be_truthy
+          expect(described_class.exists?(path: 'bar/test')).to be_truthy
+          expect(described_class.exists?(path: 'bar/test/foo')).to be_truthy
+          expect(described_class.exists?(path: 'gitlab-org')).to be_truthy
+        end
+      end
+
+      context 'when route name is nil' do
+        before do
+          route.update_column(:name, nil)
+        end
+
+        it "does not fail" do
+          expect(route.update_attributes(path: 'bar')).to be_truthy
+        end
+      end
+    end
+
+    context 'name update' do
+      before { route.update_attributes(name: 'bar') }
+
+      it "updates children routes with new path" do
+        expect(described_class.exists?(name: 'bar')).to be_truthy
+        expect(described_class.exists?(name: 'bar / test')).to be_truthy
+        expect(described_class.exists?(name: 'bar / test / foo')).to be_truthy
+        expect(described_class.exists?(name: 'gitlab-org')).to be_truthy
+      end
     end
   end
 end

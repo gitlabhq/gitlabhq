@@ -69,27 +69,21 @@
       var hash = w.gl.utils.getLocationHash();
       if (!hash) return;
 
-      var navbar = document.querySelector('.navbar-gitlab');
-      var subnav = document.querySelector('.layout-nav');
-      var fixedTabs = document.querySelector('.js-tabs-affix');
-
-      var adjustment = 0;
-      if (navbar) adjustment -= navbar.offsetHeight;
-      if (subnav) adjustment -= subnav.offsetHeight;
+      // This is required to handle non-unicode characters in hash
+      hash = decodeURIComponent(hash);
 
       // scroll to user-generated markdown anchor if we cannot find a match
       if (document.getElementById(hash) === null) {
         var target = document.getElementById('user-content-' + hash);
         if (target && target.scrollIntoView) {
           target.scrollIntoView(true);
-          window.scrollBy(0, adjustment);
         }
       } else {
         // only adjust for fixedTabs when not targeting user-generated content
+        var fixedTabs = document.querySelector('.js-tabs-affix');
         if (fixedTabs) {
-          adjustment -= fixedTabs.offsetHeight;
+          window.scrollBy(0, -fixedTabs.offsetHeight);
         }
-        window.scrollBy(0, adjustment);
       }
     };
 
@@ -134,14 +128,20 @@
       return e.metaKey || e.ctrlKey || e.altKey || e.shiftKey;
     };
 
+    gl.utils.isMetaClick = function(e) {
+      // Identify following special clicks
+      // 1) Cmd + Click on Mac (e.metaKey)
+      // 2) Ctrl + Click on PC (e.ctrlKey)
+      // 3) Middle-click or Mouse Wheel Click (e.which is 2)
+      return e.metaKey || e.ctrlKey || e.which === 2;
+    };
+
     gl.utils.scrollToElement = function($el) {
       var top = $el.offset().top;
-      gl.navBarHeight = gl.navBarHeight || $('.navbar-gitlab').height();
-      gl.navLinksHeight = gl.navLinksHeight || $('.nav-links').height();
       gl.mrTabsHeight = gl.mrTabsHeight || $('.merge-request-tabs').height();
 
       return $('body, html').animate({
-        scrollTop: top - (gl.navBarHeight + gl.navLinksHeight + gl.mrTabsHeight)
+        scrollTop: top - (gl.mrTabsHeight)
       }, 200);
     };
 

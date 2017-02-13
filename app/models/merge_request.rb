@@ -546,7 +546,7 @@ class MergeRequest < ActiveRecord::Base
   # Calculating this information for a number of merge requests requires
   # running `ReferenceExtractor` on each of them separately.
   # This optimization does not apply to issues from external sources.
-  def cache_merge_request_closes_issues!(current_user = self.author)
+  def cache_merge_request_closes_issues!(current_user)
     return if project.has_external_issue_tracker?
 
     transaction do
@@ -558,14 +558,10 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
-  def closes_issue?(issue)
-    closes_issues.include?(issue)
-  end
-
   # Return the set of issues that will be closed if this merge request is accepted.
   def closes_issues(current_user = self.author)
     if target_branch == project.default_branch
-      messages = [description]
+      messages = [title, description]
       messages.concat(commits.map(&:safe_message)) if merge_request_diff
 
       Gitlab::ClosingIssueExtractor.new(project, current_user).
@@ -575,13 +571,13 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
-  def issues_mentioned_but_not_closing(current_user = self.author)
+  def issues_mentioned_but_not_closing(current_user)
     return [] unless target_branch == project.default_branch
 
     ext = Gitlab::ReferenceExtractor.new(project, current_user)
-    ext.analyze(description)
+    ext.analyze("#{title}\n#{description}")
 
-    ext.issues - closes_issues
+    ext.issues - closes_issues(current_user)
   end
 
   def target_project_path
@@ -715,18 +711,22 @@ class MergeRequest < ActiveRecord::Base
     !head_pipeline || head_pipeline.success? || head_pipeline.skipped?
   end
 
-  def environments
+  def environments_for(current_user)
     return [] unless diff_head_commit
 
-    @environments ||= begin
-      target_envs = target_project.environments_for(
-        target_branch, commit: diff_head_commit, with_tags: true)
+    @environments ||= Hash.new do |h, current_user|
+      envs = EnvironmentsFinder.new(target_project, current_user,
+        ref: target_branch, commit: diff_head_commit, with_tags: true).execute
 
-      source_envs = source_project.environments_for(
-        source_branch, commit: diff_head_commit) if source_project
+      if source_project
+        envs.concat EnvironmentsFinder.new(source_project, current_user,
+          ref: source_branch, commit: diff_head_commit).execute
+      end
 
-      (target_envs.to_a + source_envs.to_a).uniq
+      h[current_user] = envs.uniq
     end
+
+    @environments[current_user]
   end
 
   def state_human_name

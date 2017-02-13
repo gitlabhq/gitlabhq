@@ -2,6 +2,7 @@ require 'spec_helper'
 
 feature 'Prioritize labels', feature: true do
   include WaitForAjax
+  include DragTo
 
   let(:user)     { create(:user) }
   let(:group)    { create(:group) }
@@ -99,7 +100,7 @@ feature 'Prioritize labels', feature: true do
       expect(page).to have_content 'wontfix'
 
       # Sort labels
-      find("#project_label_#{bug.id}").drag_to find("#group_label_#{feature.id}")
+      drag_to(selector: '.js-prioritized-labels', from_index: 1, to_index: 2)
 
       page.within('.prioritized-labels') do
         expect(first('li')).to have_content('feature')

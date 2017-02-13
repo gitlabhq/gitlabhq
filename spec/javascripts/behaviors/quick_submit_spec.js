@@ -40,7 +40,7 @@ require('~/behaviors/quick_submit');
       expect($('input[type=submit]')).toBeDisabled();
       return expect($('button[type=submit]')).toBeDisabled();
     });
-    // We cannot stub `navigator.userAgent` for CI's `rake teaspoon` task, so we'll
+    // We cannot stub `navigator.userAgent` for CI's `rake karma` task, so we'll
     // only run the tests that apply to the current platform
     if (navigator.userAgent.match(/Macintosh/)) {
       it('responds to Meta+Enter', function() {

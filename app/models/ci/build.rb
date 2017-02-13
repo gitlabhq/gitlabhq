@@ -9,6 +9,7 @@ module Ci
     belongs_to :erased_by, class_name: 'User'
 
     has_many :deployments, as: :deployable
+    has_one :last_deployment, -> { order('deployments.id DESC') }, as: :deployable, class_name: 'Deployment'
 
     # The "environment" field for builds is a String, and is the unexpanded name
     def persisted_environment
@@ -19,7 +20,7 @@ module Ci
     end
 
     serialize :options
-    serialize :yaml_variables, Gitlab::Serialize::Ci::Variables
+    serialize :yaml_variables, Gitlab::Serializer::Ci::Variables
 
     validates :coverage, numericality: true, allow_blank: true
     validates_presence_of :ref
@@ -181,10 +182,6 @@ module Ci
 
     def outdated_deployment?
       success? && !last_deployment.try(:last?)
-    end
-
-    def last_deployment
-      deployments.last
     end
 
     def depends_on_builds

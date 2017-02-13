@@ -23,7 +23,7 @@
         = f.password_field :password, class: "form-control bottom", required: true, pattern: ".{#{@minimum_password_length},}", title: "Minimum length is #{@minimum_password_length} characters."
         %p.gl-field-hint Minimum length is #{@minimum_password_length} characters
       %div
-      - if current_application_settings.recaptcha_enabled
+      - if Gitlab::Recaptcha.enabled?
         = recaptcha_tags
       %div
         = f.submit "Register", class: "btn-register btn"

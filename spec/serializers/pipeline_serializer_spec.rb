@@ -52,14 +52,14 @@ describe PipelineSerializer do
         expect(serializer).to be_paginated
       end
 
-      context 'when resource does is not paginatable' do
+      context 'when resource is not paginatable' do
         context 'when a single pipeline object is being serialized' do
           let(:resource) { create(:ci_empty_pipeline) }
           let(:pagination) { { page: 1, per_page: 1 } }
 
           it 'raises error' do
-            expect { subject }
-              .to raise_error(PipelineSerializer::InvalidResourceError)
+            expect { subject }.to raise_error(
+              Gitlab::Serializer::Pagination::InvalidResourceError)
           end
         end
       end

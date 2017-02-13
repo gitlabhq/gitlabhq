@@ -1,6 +1,6 @@
 .issues-list {
   .issue {
-    padding: 10px $gl-padding;
+    padding: 10px 0 10px $gl-padding;
     position: relative;
 
     .title {
@@ -147,4 +147,8 @@ ul.related-merge-requests > li {
     background-color: $gray-light;
     border: 1px solid $border-gray-normal;
   }
+}
+
+.recaptcha {
+  margin-bottom: 30px;
 }

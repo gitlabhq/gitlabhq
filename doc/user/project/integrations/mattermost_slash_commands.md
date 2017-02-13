@@ -17,7 +17,7 @@ in it. All you have to do is configure it. Read more in the
 ## Automated Configuration
 
 If Mattermost is installed on the same server as GitLab, the configuration process can be
-done for you by GitLab. 
+done for you by GitLab.
 
 Go to the Mattermost Slash Command service on your project and click the 'Add to Mattermost' button.
 
@@ -29,7 +29,7 @@ commands in Mattermost and then enable the service in GitLab.
 ### Step 1. Enable custom slash commands in Mattermost
 
 This step is only required when using a source install, omnibus installs will be
-preconfigured with the right settings. 
+preconfigured with the right settings.
 
 The first thing to do in Mattermost is to enable custom slash commands from
 the administrator console.
@@ -41,8 +41,8 @@ the administrator console.
 
     ---
 
-1. Click **Custom integrations** and set **Enable Custom Slash Commands**, 
-   **Enable custom integrations to override usernames**, and **Override 
+1. Click **Custom integrations** and set **Enable Custom Slash Commands**,
+   **Enable custom integrations to override usernames**, and **Override
    custom integrations to override profile picture icons** to true
 
     ![Mattermost console](img/mattermost_console_integrations.png)
@@ -53,9 +53,11 @@ the administrator console.
 
 ### Step 2. Open the Mattermost slash commands service in GitLab
 
-1. Open a new tab for GitLab and go to your project's settings
-   **Services ➔ Mattermost command**. A screen will appear with all the values you
-   need to copy in Mattermost as described in the next step. Leave the window open.
+1. Open a new tab for GitLab, go to your project's
+   [Integrations page](project_services.md#accessing-the-project-services)
+   and select the **Mattermost command** service to configure it.
+   A screen will appear with all the values you need to copy in Mattermost as
+   described in the next step. Leave the window open.
 
     >**Note:**
     GitLab will propose some values for the Mattermost settings. The only one
@@ -149,15 +151,14 @@ trigger word followed by <kbd>help</kbd>. Example: <samp>/gitlab help</samp>
 
 ## Permissions
 
-The permissions to run the [available commands](#available-commands) derive from
-the [permissions you have on the project](../user/permissions.md#project).
+The permissions to run the [available commands](#available-slash-commands) derive from
+the [permissions you have on the project](../../permissions.md#project).
 
 ## Further reading
 
 - [Mattermost slash commands documentation][mmslashdocs]
 - [Omnibus GitLab Mattermost][omnimmdocs]
 
-
 [omnimmdocs]: https://docs.gitlab.com/omnibus/gitlab-mattermost/
 [mmslashdocs]: https://docs.mattermost.com/developer/slash-commands.html
-[ciyaml]: ../ci/yaml/README.md
+[ciyaml]: ../../../ci/yaml/README.md

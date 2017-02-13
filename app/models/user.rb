@@ -119,7 +119,7 @@ class User < ActiveRecord::Base
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
   before_validation :generate_password, on: :create
-  before_validation :signup_domain_valid?, on: :create
+  before_validation :signup_domain_valid?, on: :create, if: ->(user) { !user.created_by_id }
   before_validation :sanitize_attrs
   before_validation :set_notification_email, if: ->(user) { user.email_changed? }
   before_validation :set_public_email, if: ->(user) { user.public_email_changed? }
@@ -166,6 +166,15 @@ class User < ActiveRecord::Base
     state :blocked, :ldap_blocked do
       def blocked?
         true
+      end
+
+      def active_for_authentication?
+        false
+      end
+
+      def inactive_message
+        "Your account has been blocked. Please contact your GitLab " \
+          "administrator if you think this is an error."
       end
     end
   end
@@ -305,7 +314,7 @@ class User < ActiveRecord::Base
 
     def find_by_personal_access_token(token_string)
       personal_access_token = PersonalAccessToken.active.find_by_token(token_string) if token_string
-      personal_access_token.user if personal_access_token
+      personal_access_token&.user
     end
 
     # Returns a user for the given SSH key.

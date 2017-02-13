@@ -3,6 +3,7 @@
 /* global ResolveCount */
 
 function requireAll(context) { return context.keys().map(context); }
+const Vue = require('vue');
 requireAll(require.context('./models',     false, /^\.\/.*\.(js|es6)$/));
 requireAll(require.context('./stores',     false, /^\.\/.*\.(js|es6)$/));
 requireAll(require.context('./services',   false, /^\.\/.*\.(js|es6)$/));
@@ -10,10 +11,13 @@ requireAll(require.context('./mixins',     false, /^\.\/.*\.(js|es6)$/));
 requireAll(require.context('./components', false, /^\.\/.*\.(js|es6)$/));
 
 $(() => {
+  const projectPath = document.querySelector('.merge-request').dataset.projectPath;
   const COMPONENT_SELECTOR = 'resolve-btn, resolve-discussion-btn, jump-to-discussion, comment-and-resolve-btn';
 
   window.gl = window.gl || {};
   window.gl.diffNoteApps = {};
+
+  window.ResolveService = new gl.DiffNotesResolveServiceClass(projectPath);
 
   gl.diffNotesCompileComponents = () => {
     const $components = $(COMPONENT_SELECTOR).filter(function () {

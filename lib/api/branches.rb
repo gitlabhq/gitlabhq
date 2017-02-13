@@ -84,7 +84,7 @@ module API
         branch = user_project.repository.find_branch(params[:branch])
         not_found!("Branch") unless branch
         protected_branch = user_project.protected_branches.find_by(name: branch.name)
-        protected_branch.destroy if protected_branch
+        protected_branch&.destroy
 
         present branch, with: Entities::RepoBranch, project: user_project
       end
