@@ -15,7 +15,7 @@ describe 'projects/_home_panel', :view do
     allow(view).to receive(:can?).and_return(false)
   end
 
-  context 'user is signed in' do
+  context 'when user is signed in' do
     let(:user) { create(:user) }
 
     it 'makes it possible to set notification level' do
@@ -26,7 +26,7 @@ describe 'projects/_home_panel', :view do
     end
   end
 
-  context 'user is signed out' do
+  context 'when user is signed out' do
     let(:user) { nil }
 
     it 'is not possible to set notification level' do
