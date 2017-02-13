@@ -12,6 +12,32 @@ class WikiPage
     ActiveModel::Name.new(self, nil, 'wiki')
   end
 
+  # Sorts and groups pages by directory.
+  #
+  # pages - an array of WikiPage objects.
+  #
+  # Returns an array of WikiPage and WikiDirectory objects. The entries are
+  # sorted by alphabetical order (directories and pages inside each directory).
+  # Pages at the root level come before everything.
+  def self.group_by_directory(pages)
+    return [] if pages.blank?
+
+    pages.sort_by { |page| [page.directory, page.slug] }.
+      group_by(&:directory).
+      map do |dir, pages|
+        if dir.present?
+          WikiDirectory.new(dir, pages)
+        else
+          pages
+        end
+      end.
+      flatten
+  end
+
+  def self.unhyphenize(name)
+    name.gsub(/-+/, ' ')
+  end
+
   def to_key
     [:slug]
   end
@@ -56,7 +82,7 @@ class WikiPage
   # The formatted title of this page.
   def title
     if @attributes[:title]
-      @attributes[:title].gsub(/-+/, ' ')
+      self.class.unhyphenize(@attributes[:title])
     else
       ""
     end
@@ -70,6 +96,11 @@ class WikiPage
   # The raw content of this page.
   def content
     @attributes[:content] ||= @page&.text_data
+  end
+
+  # The hierarchy of the directory this page is contained in.
+  def directory
+    wiki.page_title_and_dir(slug).last
   end
 
   # The processed/formatted content of this page.
@@ -168,6 +199,12 @@ class WikiPage
     else
       false
     end
+  end
+
+  # Relative path to the partial to be used when rendering collections
+  # of this object.
+  def to_partial_path
+    'projects/wikis/wiki_page'
   end
 
   private

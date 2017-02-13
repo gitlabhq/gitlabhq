@@ -8,6 +8,7 @@ class Projects::WikisController < Projects::ApplicationController
 
   def pages
     @wiki_pages = Kaminari.paginate_array(@project_wiki.pages).page(params[:page])
+    @wiki_entries = WikiPage.group_by_directory(@wiki_pages)
   end
 
   def show
@@ -116,7 +117,7 @@ class Projects::WikisController < Projects::ApplicationController
     # Call #wiki to make sure the Wiki Repo is initialized
     @project_wiki.wiki
 
-    @sidebar_wiki_pages = @project_wiki.pages.first(15)
+    @sidebar_wiki_entries = WikiPage.group_by_directory(@project_wiki.pages.first(15))
   rescue ProjectWiki::CouldNotCreateWikiError
     flash[:notice] = "Could not create Wiki Repository at this time. Please try again later."
     redirect_to project_path(@project)
