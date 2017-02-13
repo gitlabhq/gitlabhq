@@ -21,6 +21,7 @@ This strategy is designed to allow configuration of the simple OmniAuth SSO proc
 - It has not been tested with user information formats other than JSON
 
 ### Config Instructions
+
 1. Register your application in the OAuth2 provider you wish to authenticate with.
 
    The redirect URI you provide when registering the application should be:
@@ -38,15 +39,14 @@ This strategy is designed to allow configuration of the simple OmniAuth SSO proc
    For Omnibus package:
 
    ```sh
-     sudo editor /etc/gitlab/gitlab.rb
+   sudo editor /etc/gitlab/gitlab.rb
    ```
 
    For installations from source:
 
    ```sh
-     cd /home/git/gitlab
-
-     sudo -u git -H editor config/gitlab.yml
+   cd /home/git/gitlab
+   sudo -u git -H editor config/gitlab.yml
    ```
 
 1. See [Initial OmniAuth Configuration](omniauth.md#initial-omniauth-configuration) for initial settings
