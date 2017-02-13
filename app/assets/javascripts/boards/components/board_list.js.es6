@@ -101,7 +101,7 @@ require('./board_new_issue');
           });
         },
         onUpdate: (e) => {
-          gl.issueBoards.BoardsStore.moveIssueInList(this.list, Store.moving.issue, this.sortable.toArray(), e.newIndex);
+          gl.issueBoards.BoardsStore.moveIssueInList(this.list, Store.moving.issue, e.oldIndex, e.newIndex, this.sortable.toArray());
         },
       });
 

@@ -106,11 +106,11 @@
         listFrom.removeIssue(issue);
       }
     },
-    moveIssueInList (list, issue, idArray, index) {
-      const beforeId = parseInt(idArray[index - 1], 10) || null;
-      const afterId = parseInt(idArray[index + 1], 10) || null;
+    moveIssueInList (list, issue, oldIndex, newIndex, idArray) {
+      const beforeId = parseInt(idArray[newIndex - 1], 10) || null;
+      const afterId = parseInt(idArray[newIndex + 1], 10) || null;
 
-      list.moveIssue(issue, beforeId, afterId);
+      list.moveIssue(issue, oldIndex, newIndex, beforeId, afterId);
     },
     findList (key, val, type = 'label') {
       return this.state.lists.filter((list) => {

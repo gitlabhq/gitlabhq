@@ -142,7 +142,10 @@ class List {
     }
   }
 
-  moveIssue (issue, moveBeforeIid, moveAfterIid) {
+  moveIssue (issue, oldIndex, newIndex, moveBeforeIid, moveAfterIid) {
+    this.issues.splice(oldIndex, 1);
+    this.issues.splice(newIndex, 0, issue);
+
     gl.boardService.moveIssue(issue.id, null, null, moveAfterIid, moveBeforeIid);
   }
 

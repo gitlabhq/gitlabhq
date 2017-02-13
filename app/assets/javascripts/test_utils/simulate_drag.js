@@ -55,6 +55,13 @@
     );
   }
 
+  function isLast(target) {
+    var el = typeof target.el === 'string' ? document.getElementById(target.el.substr(1)) : target.el;
+    var children = el.children;
+
+    return children.length - 1 === target.index;
+  }
+
   function getRect(el) {
     var rect = el.getBoundingClientRect();
     var width = rect.right - rect.left;
@@ -87,6 +94,10 @@
     simulateEvent(fromEl, 'mousedown', { button: 0 });
     options.ontap && options.ontap();
     window.SIMULATE_DRAG_ACTIVE = 1;
+
+    if (isLast(options.to)) {
+      toRect.cy += 100;
+    }
 
     var dragInterval = setInterval(function loop() {
       var progress = (new Date().getTime() - startTime) / duration;
