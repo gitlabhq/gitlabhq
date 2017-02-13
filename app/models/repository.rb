@@ -1230,6 +1230,14 @@ class Repository
                   action[:content]
                 end
 
+      detect = CharlockHolmes::EncodingDetector.new.detect(content) if content
+
+      unless detect && detect[:type] == :binary
+        # When writing to the repo directly as we are doing here,
+        # the `core.autocrlf` config isn't taken into account.
+        content.gsub!("\r\n", "\n") if self.autocrlf
+      end
+
       oid = rugged.write(content, :blob)
 
       index.add(path: path, oid: oid, mode: mode)
