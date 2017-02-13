@@ -58,6 +58,17 @@
 
       %h1.title= title
 
+      .dropdown
+        %button.global-dropdown-toggle{ href: '#', 'data-toggle' => 'dropdown' }
+          %span.sr-only Toggle navigation
+          = icon('bars')
+        .dropdown-menu-nav
+          %ul
+            - if current_user
+              = render 'layouts/nav/dashboard'
+            - else
+              = render 'layouts/nav/explore'
+
       .header-logo
         = link_to root_path, class: 'home', title: 'Dashboard', id: 'logo' do
           = brand_header_logo
