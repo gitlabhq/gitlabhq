@@ -13,6 +13,10 @@ else
   CSP_REPORT_URI = ''
 end
 
+GITLAB_WS_URI = Gitlab.config.gitlab['url'].sub(%r{^https?:(//|\\\\)(www\.)?}i, '')
+uri2 = URI.parse(Gitlab.config.gitlab['url'])
+WEBPACK_CONNECT_URI = "#{uri.scheme}://#{uri.host}:3808}"
+
 # Content Security Policy Headers
 # For more information on CSP see:
 # - https://gitlab.com/gitlab-org/gitlab-ce/issues/18231
@@ -26,7 +30,7 @@ SecureHeaders::Configuration.default do |config|
       strict: true 
     }
   }
-  config.csp_report_only = {
+  config.csp = {
     # "Meta" values.
     preserve_schemes: true,
 
@@ -36,7 +40,8 @@ SecureHeaders::Configuration.default do |config|
     # (Deprecated) Don't allow iframes.
     frame_src: %w('self'),
     # Only allow XMLHTTPRequests from the GitLab instance itself.
-    connect_src: %w('self' 'wss://gitlab.com'),
+    # Only allow WebSockets connections from the GitLab instance itself.
+    connect_src: %W('self' "wss://#{GITLAB_WS_URI}"),
     # Only load local fonts.
     font_src: %w('self'),
     # Load local images, any external image available over HTTP.
@@ -67,36 +72,40 @@ SecureHeaders::Configuration.default do |config|
 
   # Reports are sent to Sentry if it's enabled.
   if current_application_settings.sentry_enabled
-    config.csp_report_only[:report_uri] = %W(#{CSP_REPORT_URI})
+    config.csp[:report_uri] = %W(#{CSP_REPORT_URI})
   end
 
-  # Allow Bootstrap Linter in development mode.
   if Rails.env.development?
-    config.csp_report_only[:script_src] << "maxcdn.bootstrapcdn.com"
+    # Allow Bootstrap Linter in development mode.
+    config.csp[:script_src] << "maxcdn.bootstrapcdn.com"
+    # Disable upgrade_insecure_requests so we don't need an SSL cert in development.
+    config.csp[:upgrade_insecure_requests] = false
+    # Allow Webpack's dev server
+    config.csp[:connect_src] << "#{WEBPACK_CONNECT_URI}"
   end
 
   # reCAPTCHA
   if current_application_settings.recaptcha_enabled
-    config.csp_report_only[:script_src] << "https://www.google.com/recaptcha/"
-    config.csp_report_only[:script_src] << "https://www.gstatic.com/recaptcha/"
-    config.csp_report_only[:frame_src] << "https://www.google.com/recaptcha/"
+    config.csp[:script_src] << "https://www.google.com/recaptcha/"
+    config.csp[:script_src] << "https://www.gstatic.com/recaptcha/"
+    config.csp[:frame_src] << "https://www.google.com/recaptcha/"
   end
 
   # Gravatar
   if current_application_settings.gravatar_enabled?
-    config.csp_report_only[:img_src] << "www.gravatar.com"
-    config.csp_report_only[:img_src] << "secure.gravatar.com"
-    config.csp_report_only[:img_src] << Gitlab.config.gravatar.host
+    config.csp[:img_src] << "www.gravatar.com"
+    config.csp[:img_src] << "secure.gravatar.com"
+    config.csp[:img_src] << Gitlab.config.gravatar.host
   end
 
   # Piwik
   if Gitlab.config.extra.has_key?('piwik_url') && Gitlab.config.extra.has_key?('piwik_site_id')
-    config.csp_report_only[:script_src] << Gitlab.config.extra.piwik_url
-    config.csp_report_only[:img_src] << Gitlab.config.extra.piwik_url
+    config.csp[:script_src] << Gitlab.config.extra.piwik_url
+    config.csp[:img_src] << Gitlab.config.extra.piwik_url
   end
 
   # Google Analytics
   if Gitlab.config.extra.has_key?('google_analytics_id')
-    config.csp_report_only[:script_src] << "https://www.google-analytics.com"
+    config.csp[:script_src] << "https://www.google-analytics.com"
   end
 end
