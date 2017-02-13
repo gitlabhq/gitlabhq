@@ -27,7 +27,7 @@ describe Ci::RetryBuildService, :services do
       end
 
       it 'resolves todos for old build that failed' do
-       expect(MergeRequests::AddTodoWhenBuildFailsService)
+        expect(MergeRequests::AddTodoWhenBuildFailsService)
           .to receive_message_chain(:new, :close)
 
         service.retry!

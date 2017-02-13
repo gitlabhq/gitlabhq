@@ -62,8 +62,8 @@ module Ci
         new_build.save
       end
 
-      def retry(build, user = nil)
-        Ci::RetryBuildService.new(build, user).retry!
+      def retry(build, current_user)
+        Ci::RetryBuildService.new(build, current_user).retry!
       end
     end
 
@@ -111,7 +111,7 @@ module Ci
       project.builds_enabled? && commands.present? && manual? && skipped?
     end
 
-    def play(current_user = nil)
+    def play(current_user)
       # Try to queue a current build
       if self.enqueue
         self.update(user: current_user)

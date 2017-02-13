@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe Ci::Build, :models do
+  let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:build) { create(:ci_build, pipeline: pipeline) }
   let(:test_trace) { 'This is a test' }
@@ -207,14 +208,16 @@ describe Ci::Build, :models do
     end
 
     it 'expects to have retried builds instead the original ones' do
-      retried_rspec = Ci::Build.retry(rspec_test)
-      expect(staging.depends_on_builds.map(&:id)).to contain_exactly(build.id, retried_rspec.id, rubocop_test.id)
+      project.team << [user, :developer]
+
+      retried_rspec = Ci::Build.retry(rspec_test, user)
+
+      expect(staging.depends_on_builds.map(&:id))
+        .to contain_exactly(build.id, retried_rspec.id, rubocop_test.id)
     end
   end
 
   describe '#detailed_status' do
-    let(:user) { create(:user) }
-
     it 'returns a detailed status' do
       expect(build.detailed_status(user))
         .to be_a Gitlab::Ci::Status::Build::Cancelable
@@ -813,12 +816,16 @@ describe Ci::Build, :models do
 
     subject { build.other_actions }
 
+    before do
+      project.team << [user, :developer]
+    end
+
     it 'returns other actions' do
       is_expected.to contain_exactly(other_build)
     end
 
     context 'when build is retried' do
-      let!(:new_build) { Ci::Build.retry(build) }
+      let!(:new_build) { Ci::Build.retry(build, user) }
 
       it 'does not return any of them' do
         is_expected.not_to include(build, new_build)
@@ -826,7 +833,7 @@ describe Ci::Build, :models do
     end
 
     context 'when other build is retried' do
-      let!(:retried_build) { Ci::Build.retry(other_build) }
+      let!(:retried_build) { Ci::Build.retry(other_build, user) }
 
       it 'returns a retried build' do
         is_expected.to contain_exactly(retried_build)
@@ -857,21 +864,29 @@ describe Ci::Build, :models do
   describe '#play' do
     let(:build) { create(:ci_build, :manual, pipeline: pipeline) }
 
-    subject { build.play }
-
-    it 'enqueues a build' do
-      is_expected.to be_pending
-      is_expected.to eq(build)
+    before do
+      project.team << [user, :developer]
     end
 
-    context 'for successful build' do
+    context 'when build is manual' do
+      it 'enqueues a build' do
+        new_build = build.play(user)
+
+        expect(new_build).to be_pending
+        expect(new_build).to eq(build)
+      end
+    end
+
+    context 'when build is passed' do
       before do
         build.update(status: 'success')
       end
 
       it 'creates a new build' do
-        is_expected.to be_pending
-        is_expected.not_to eq(build)
+        new_build = build.play(user)
+
+        expect(new_build).to be_pending
+        expect(new_build).not_to eq(build)
       end
     end
   end
@@ -1246,12 +1261,9 @@ describe Ci::Build, :models do
     end
 
     context 'when build has user' do
-      let(:user) { create(:user, username: 'starter') }
       let(:user_variables) do
-        [
-          { key: 'GITLAB_USER_ID',    value: user.id.to_s, public: true },
-          { key: 'GITLAB_USER_EMAIL', value: user.email,   public: true }
-        ]
+        [ { key: 'GITLAB_USER_ID',    value: user.id.to_s, public: true },
+          { key: 'GITLAB_USER_EMAIL', value: user.email,   public: true } ]
       end
 
       before do
