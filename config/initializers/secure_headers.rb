@@ -16,13 +16,6 @@ end
 # Get the GitLab URI without the scheme so it can have wss:// prepended.
 GITLAB_WS_URI = Gitlab.config.gitlab['url'].sub(%r{^https?:(//|\\\\)(www\.)?}i, '')
 
-# Determine current host, connect through port 3808 for Webpack. Development-only.
-if Rails.env.development?
-  uri2 = URI.parse(Gitlab.config.gitlab['url'])
-  WEBPACK_CONNECT_URI = "#{uri2.scheme}://#{uri2.host}:3808"
-  WEBPACK_CONNECT_WS_URI = "ws://#{uri2.host}:3808"
-end
-
 # Content Security Policy Headers
 # For more information on CSP see:
 # - https://gitlab.com/gitlab-org/gitlab-ce/issues/18231
@@ -87,6 +80,12 @@ SecureHeaders::Configuration.default do |config|
     # Disable upgrade_insecure_requests so we don't need an SSL cert in development.
     config.csp[:upgrade_insecure_requests] = false
     # Allow Webpack's dev server
+
+    # Determine current host, connect through port 3808 for Webpack.
+    uri = URI.parse(Gitlab.config.gitlab['url'])
+    WEBPACK_CONNECT_URI = "#{uri.scheme}://#{uri.host}:3808"
+    WEBPACK_CONNECT_WS_URI = "ws://#{uri.host}:3808"
+
     config.csp[:connect_src] << "#{WEBPACK_CONNECT_URI}"
     config.csp[:connect_src] << "#{WEBPACK_CONNECT_WS_URI}"
   end
