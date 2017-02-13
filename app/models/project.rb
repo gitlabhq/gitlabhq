@@ -469,7 +469,7 @@ class Project < ActiveRecord::Base
   def reset_cache_and_import_attrs
     ProjectCacheWorker.perform_async(self.id)
 
-    self.import_data.destroy if self.import_data
+    self.import_data&.destroy
   end
 
   def import_url=(value)
