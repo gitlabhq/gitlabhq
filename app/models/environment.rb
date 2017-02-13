@@ -126,7 +126,7 @@ class Environment < ActiveRecord::Base
     return unless available?
 
     stop!
-    stop_action.play(current_user) if stop_action
+    stop_action&.play(current_user)
   end
 
   def actions_for(environment)
