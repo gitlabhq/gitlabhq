@@ -8,7 +8,7 @@ require('~/new_branch_form');
   describe('Branch', function() {
     return describe('create a new branch', function() {
       var expectToHaveError, fillNameWith;
-      preloadFixtures('static/new_branch.html.raw');
+      preloadFixtures('branches/new_branch.html.raw');
       fillNameWith = function(value) {
         return $('.js-branch-name').val(value).trigger('blur');
       };
@@ -16,7 +16,7 @@ require('~/new_branch_form');
         return expect($('.js-branch-name-error span').text()).toEqual(error);
       };
       beforeEach(function() {
-        loadFixtures('static/new_branch.html.raw');
+        loadFixtures('branches/new_branch.html.raw');
         $('form').on('submit', function(e) {
           return e.preventDefault();
         });
