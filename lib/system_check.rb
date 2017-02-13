@@ -11,7 +11,7 @@ module SystemCheck
   # @param [Array<BaseCheck>] checks classes of corresponding checks to be executed in the same order
   # @param [BaseExecutor] executor_klass optionally specifiy a different executor class
   def self.run(component, checks = [], executor_klass = SimpleExecutor)
-    unless executor_klass.is_a? BaseExecutor
+    unless executor_klass < BaseExecutor
       raise ArgumentError, 'Invalid executor'
     end
 
