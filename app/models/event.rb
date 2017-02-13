@@ -39,7 +39,7 @@ class Event < ActiveRecord::Base
     where(project_id: projects).recent
   end
 
-  scope :with_associations, -> { includes(:author, :project, :target, project: :namespace) }
+  scope :with_associations, -> { includes(:author, :project, project: :namespace).preload(:target) }
   scope :for_milestone_id, ->(milestone_id) { where(target_type: "Milestone", target_id: milestone_id) }
   scope :issues, -> { where(target_type: 'Issue') }
   scope :merge_requests, -> { where(target_type: 'MergeRequest') }
