@@ -1,6 +1,8 @@
 # Issue board
 
-> [Introduced][ce-5554] in GitLab 8.11.
+>**Notes:**
+- [Introduced][ce-5554] in GitLab 8.11.
+- The Backlog column was replaced by the **Add issues** button in GitLab 8.17.
 
 The GitLab Issue Board is a software project management tool used to plan,
 organize, and visualize a workflow for a feature or product release.
@@ -28,12 +30,11 @@ Below is a table of the definitions used for GitLab's Issue Board.
 | **List**        | Each label that exists in the issue tracker can have its own dedicated list. Every list is named after the label it is based on and is represented by a column which contains all the issues associated with that label. You can think of a list like the results you get when you filter the issues by a label in your issue tracker. |
 | **Card**        | Every card represents an issue and it is shown under the list for which it has a label. The information you can see on a card consists of the issue number, the issue title, the assignee and the labels associated with it. You can drag cards around from one list to another. Issues inside lists are [ordered by priority](labels.md#prioritize-labels). |
 
-There are three types of lists, the ones you create based on your labels, and
-two default:
+There are two types of lists, the ones you create based on your labels, and
+one default:
 
-- **Done** (default): shows all closed issues. Always appears on the very right.
-Label list: a list based on a label. It shows all issues with that label.
 - Label list: a list based on a label. It shows all opened issues with that label.
+- **Done** (default): shows all closed issues. Always appears on the very right.
 
 ![GitLab Issue Board](img/issue_board.png)
 
@@ -54,9 +55,9 @@ In short, here's a list of actions you can take in an Issue Board:
 If you are not able to perform one or more of the things above, make sure you
 have the right [permissions](#permissions).
 
-## First time using the Issue Board
+## First time using the issue board
 
-The first time you navigate to your Issue Board, you will be presented with the
+The first time you navigate to your Issue Board, you will be presented with
 a default list (**Done**) and a welcoming message that gives
 you two options. You can either create a predefined set of labels and create
 their corresponding lists to the Issue Board or opt-out and use your own lists.
@@ -92,26 +93,24 @@ in the list's heading. A confirmation dialog will appear for you to confirm.
 Deleting a list doesn't have any effect in issues and labels, it's just the
 list view that is removed. You can always add it back later if you need.
 
-## Adding issues to lists
+## Adding issues to a list
 
-Add issues to a list by clicking the **Add issues** button. This opens up a
-modal window where you can see all the issues that do not belong to any list.
-Select one or more issues and then add these issues to the selected list.
-By default the first list is selected, but this can be changed in the dropdown
-menu next to the **Add issues** button in the modal.
+You can add issues to a list by clicking the **Add issues** button that is
+present in the upper right corner of the issue board. This will open up a modal
+window where you can see all the issues that do not belong to any list.
 
-Within this modal you can also filter issues. This is done by using the filters
-at the top of the modal.
-
-You can filter by author, assignee, milestone and label.
+Select one or more issues by clicking on the cards and then click **Add issues**
+to add them to the selected list. You can limit the issues you want to add to
+the list by filtering by author, assignee, milestone and label.
 
 ![Bulk adding issues to lists](img/issue_boards_add_issues_modal.png)
 
-## Removing issue from list
+## Removing an issue from a list
 
-Removing an issue from a list can be done by clicking the issue card and then
-clicking the **Remove from board** in the sidebar. Doing this keeps the issue
-open buts removes it from that list.
+Removing an issue from a list can be done by clicking on the issue card and then
+clicking the **Remove from board** button in the sidebar. Under the hood, the
+respective label is removed, and as such it's also removed from the list and the
+board itself.
 
 ![Remove issue from list](img/issue_boards_remove_issue.png)
 
