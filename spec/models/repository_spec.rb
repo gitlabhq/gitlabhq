@@ -351,6 +351,17 @@ describe Repository, models: true do
       expect(blob.data).to eq('Changelog!')
     end
 
+    it 'respects the autocrlf setting' do
+      repository.commit_file(user, 'hello.txt', "Hello,\r\nWorld",
+                             message: 'Add hello world',
+                             branch_name: 'master',
+                             update: true)
+
+      blob = repository.blob_at('master', 'hello.txt')
+
+      expect(blob.data).to eq("Hello,\nWorld")
+    end
+
     context "when an author is specified" do
       it "uses the given email/name to set the commit's author" do
         expect do
