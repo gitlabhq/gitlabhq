@@ -37,15 +37,19 @@
             return flash;
           });
       },
+      /**
+       * When the user right clicks or cmd/ctrl + click in the job name or action icon,
+       * the dropdown should not be closed and the link should open in another tab.
+       * If the target is a svg we stop propagation in order to prevent
+       * the default behavior of the dropdown.
+       */
       keepGraph(e) {
         const { target } = e;
+        const svgClassName = target.getAttribute('class');
+        const svgParentClassName = target.parentElement && target.parentElement.getAttribute('class');
 
-        if (target.className.indexOf('js-ci-action-icon') >= 0) return null;
-
-        if (
-          target.parentElement &&
-          (target.parentElement.className.indexOf('js-ci-action-icon') >= 0)
-        ) return null;
+        if (svgClassName && svgClassName.indexOf('js-ci-action-icon') >= 0) return null;
+        if (svgParentClassName && svgParentClassName.indexOf('js-ci-action-icon') >= 0) return null;
 
         return e.stopPropagation();
       },
