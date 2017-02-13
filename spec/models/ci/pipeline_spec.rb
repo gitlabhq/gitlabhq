@@ -3,8 +3,12 @@ require 'spec_helper'
 describe Ci::Pipeline, models: true do
   include EmailHelpers
 
-  let(:project) { FactoryGirl.create :empty_project }
-  let(:pipeline) { FactoryGirl.create :ci_empty_pipeline, status: 'created', project: project }
+  let(:user) { create(:user) }
+  let(:project) { create(:empty_project) }
+
+  let(:pipeline) do
+    create(:ci_empty_pipeline, status: :created, project: project)
+  end
 
   it { is_expected.to belong_to(:project) }
   it { is_expected.to belong_to(:user) }
@@ -559,7 +563,9 @@ describe Ci::Pipeline, models: true do
     context 'on failure and build retry' do
       before do
         build.drop
-        Ci::Build.retry(build)
+        project.team << [user, :developer]
+
+        Ci::Build.retry(build, user)
       end
 
       # We are changing a state: created > failed > running
@@ -571,8 +577,6 @@ describe Ci::Pipeline, models: true do
   end
 
   describe '#detailed_status' do
-    let(:user) { create(:user) }
-
     subject { pipeline.detailed_status(user) }
 
     context 'when pipeline is created' do
@@ -771,12 +775,16 @@ describe Ci::Pipeline, models: true do
   describe '#retry_failed' do
     let(:latest_status) { pipeline.statuses.latest.pluck(:status) }
 
+    before do
+      project.team << [user, :developer]
+    end
+
     context 'when there is a failed build and failed external status' do
       before do
         create(:ci_build, :failed, name: 'build', pipeline: pipeline)
         create(:generic_commit_status, :failed, name: 'jenkins', pipeline: pipeline)
 
-        pipeline.retry_failed(create(:user))
+        pipeline.retry_failed(user)
       end
 
       it 'retries only build' do
@@ -789,7 +797,7 @@ describe Ci::Pipeline, models: true do
         create(:ci_build, :failed, name: 'build', stage_idx: 0, pipeline: pipeline)
         create(:ci_build, :failed, name: 'jenkins', stage_idx: 1, pipeline: pipeline)
 
-        pipeline.retry_failed(create(:user))
+        pipeline.retry_failed(user)
       end
 
       it 'retries both builds' do
@@ -802,7 +810,7 @@ describe Ci::Pipeline, models: true do
         create(:ci_build, :failed, name: 'build', stage_idx: 0, pipeline: pipeline)
         create(:ci_build, :canceled, name: 'jenkins', stage_idx: 1, pipeline: pipeline)
 
-        pipeline.retry_failed(create(:user))
+        pipeline.retry_failed(user)
       end
 
       it 'retries both builds' do
