@@ -24,7 +24,10 @@ module.exports = Vue.extend({
           class="close"
           aria-label="Close backlog help"
           @click="toggleModal(false)">
-          <i class="fa fa-times"></i>
+          <i
+            class="fa fa-times"
+            aria-hidden="true">
+          </i>
         </button>
       </h4>
       <div class="backlog-help-icon">${checkmarkIcon}</div>
@@ -39,7 +42,7 @@ module.exports = Vue.extend({
           class="btn btn-success"
           type="button"
           :disabled="disabled"
-          @click="toggleModal(true)">
+          @click="toggleModal(true, false)">
           Add issues
         </button>
       </div>

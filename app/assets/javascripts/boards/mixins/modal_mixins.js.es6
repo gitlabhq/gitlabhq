@@ -5,10 +5,12 @@
 
   gl.issueBoards.ModalMixins = {
     methods: {
-      toggleModal(toggleModal) {
-        Cookies.set('boards_backlog_help_hidden', true);
+      toggleModal(toggleModal, setCookie = true) {
+        if (setCookie) {
+          Cookies.set('boards_backlog_help_hidden', true);
+          Store.state.helpHidden = true;
+        }
 
-        Store.state.helpHidden = true;
         ModalStore.store.showAddIssuesModal = toggleModal;
       },
       changeTab(tab) {

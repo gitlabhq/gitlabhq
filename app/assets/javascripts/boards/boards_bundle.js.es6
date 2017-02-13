@@ -111,7 +111,7 @@ $(() => {
         class="btn btn-create pull-right prepend-left-10 has-tooltip"
         type="button"
         :disabled="disabled"
-        @click="toggleModal(true)">
+        @click="toggleModal(true, false)">
         Add issues
       </button>
     `,
