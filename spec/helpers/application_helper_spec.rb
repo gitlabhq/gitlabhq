@@ -193,8 +193,8 @@ describe ApplicationHelper do
   describe 'time_ago_with_tooltip' do
     def element(*arguments)
       Time.zone = 'UTC'
-      time = Time.zone.parse('2015-07-02 08:23')
-      element = helper.time_ago_with_tooltip(time, *arguments)
+      @time = Time.zone.parse('2015-07-02 08:23')
+      element = helper.time_ago_with_tooltip(@time, *arguments)
 
       Nokogiri::HTML::DocumentFragment.parse(element).first_element_child
     end
@@ -204,7 +204,7 @@ describe ApplicationHelper do
     end
 
     it 'includes the date string' do
-      expect(element.text).to eq '2015-07-02 08:23:00 UTC'
+      expect(element.text).to eq @time.strftime("%b %d, %Y")
     end
 
     it 'has a datetime attribute' do
