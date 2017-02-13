@@ -110,15 +110,20 @@ class List {
   }
 
   addIssue (issue, listFrom, newIndex) {
-    let moveBeforeIid;
-    let moveAfterIid;
+    let moveBeforeIid = null;
+    let moveAfterIid = null;
 
     if (!this.findIssue(issue.id)) {
-      if (newIndex) {
+      if (newIndex !== undefined) {
         this.issues.splice(newIndex, 0, issue);
 
-        moveBeforeIid = this.issues[newIndex - 1].id || null;
-        moveAfterIid = this.issues[newIndex + 1].id || null;
+        if (this.issues[newIndex - 1]) {
+          moveBeforeIid = this.issues[newIndex - 1].id;
+        }
+
+        if (this.issues[newIndex + 1]) {
+          moveAfterIid = this.issues[newIndex + 1].id
+        }
       } else {
         this.issues.push(issue);
       }
