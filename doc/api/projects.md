@@ -72,13 +72,10 @@ Parameters:
     "last_activity_at": "2013-09-30T13:46:02Z",
     "creator_id": 3,
     "namespace": {
-      "created_at": "2013-09-30T13:46:02Z",
-      "description": "",
       "id": 3,
       "name": "Diaspora",
-      "owner_id": 1,
       "path": "diaspora",
-      "updated_at": "2013-09-30T13:46:02Z"
+      "kind": "group"
     },
     "archived": false,
     "avatar_url": "http://example.com/uploads/project/avatar/4/uploads/avatar.png",
@@ -125,13 +122,10 @@ Parameters:
     "last_activity_at": "2013-09-30T13:46:02Z",
     "creator_id": 3,
     "namespace": {
-      "created_at": "2013-09-30T13:46:02Z",
-      "description": "",
       "id": 4,
       "name": "Brightbox",
-      "owner_id": 1,
       "path": "brightbox",
-      "updated_at": "2013-09-30T13:46:02Z"
+      "kind": "group"
     },
     "permissions": {
       "project_access": {
@@ -210,13 +204,10 @@ Parameters:
     "last_activity_at": "2013-09-30T13:46:02Z",
     "creator_id": 3,
     "namespace": {
-      "created_at": "2013-09-30T13:46:02Z",
-      "description": "",
       "id": 3,
       "name": "Diaspora",
-      "owner_id": 1,
       "path": "diaspora",
-      "updated_at": "2013-09-30T13:46:02Z"
+      "kind": "group"
     },
     "archived": false,
     "avatar_url": "http://example.com/uploads/project/avatar/4/uploads/avatar.png",
@@ -260,13 +251,10 @@ Parameters:
     "last_activity_at": "2013-09-30T13:46:02Z",
     "creator_id": 3,
     "namespace": {
-      "created_at": "2013-09-30T13:46:02Z",
-      "description": "",
       "id": 4,
       "name": "Brightbox",
-      "owner_id": 1,
       "path": "brightbox",
-      "updated_at": "2013-09-30T13:46:02Z"
+      "kind": "group"
     },
     "permissions": {
       "project_access": {
@@ -398,13 +386,10 @@ Parameters:
   "last_activity_at": "2013-09-30T13:46:02Z",
   "creator_id": 3,
   "namespace": {
-    "created_at": "2013-09-30T13:46:02Z",
-    "description": "",
     "id": 3,
     "name": "Diaspora",
-    "owner_id": 1,
     "path": "diaspora",
-    "updated_at": "2013-09-30T13:46:02Z"
+    "kind": "group"
   },
   "permissions": {
     "project_access": {
@@ -786,13 +771,10 @@ Example response:
   "last_activity_at": "2013-09-30T13:46:02Z",
   "creator_id": 3,
   "namespace": {
-    "created_at": "2013-09-30T13:46:02Z",
-    "description": "",
     "id": 3,
     "name": "Diaspora",
-    "owner_id": 1,
     "path": "diaspora",
-    "updated_at": "2013-09-30T13:46:02Z"
+    "kind": "group"
   },
   "archived": true,
   "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png",
@@ -854,13 +836,10 @@ Example response:
   "last_activity_at": "2013-09-30T13:46:02Z",
   "creator_id": 3,
   "namespace": {
-    "created_at": "2013-09-30T13:46:02Z",
-    "description": "",
     "id": 3,
     "name": "Diaspora",
-    "owner_id": 1,
     "path": "diaspora",
-    "updated_at": "2013-09-30T13:46:02Z"
+    "kind": "group"
   },
   "archived": true,
   "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png",
@@ -928,13 +907,10 @@ Example response:
   "last_activity_at": "2013-09-30T13:46:02Z",
   "creator_id": 3,
   "namespace": {
-    "created_at": "2013-09-30T13:46:02Z",
-    "description": "",
     "id": 3,
     "name": "Diaspora",
-    "owner_id": 1,
     "path": "diaspora",
-    "updated_at": "2013-09-30T13:46:02Z"
+    "kind": "group"
   },
   "permissions": {
     "project_access": {
@@ -1013,13 +989,10 @@ Example response:
   "last_activity_at": "2013-09-30T13:46:02Z",
   "creator_id": 3,
   "namespace": {
-    "created_at": "2013-09-30T13:46:02Z",
-    "description": "",
     "id": 3,
     "name": "Diaspora",
-    "owner_id": 1,
     "path": "diaspora",
-    "updated_at": "2013-09-30T13:46:02Z"
+    "kind": "group"
   },
   "permissions": {
     "project_access": {

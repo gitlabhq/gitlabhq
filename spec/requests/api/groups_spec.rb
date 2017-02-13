@@ -36,15 +36,21 @@ describe API::Groups, api: true  do
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
-        expect(json_response.first['name']).to eq(group1.name)
+        expect(json_response)
+          .to satisfy_one { |group| group['name'] == group1.name }
 
-        expect(json_response.first['ldap_cn']).to eq(group1.ldap_cn)
-        expect(json_response.first['ldap_access']).to eq(group1.ldap_access)
+        expect(json_response)
+          .to satisfy_one { |group| group['ldap_cn'] == group1.ldap_cn }
+        expect(json_response)
+          .to satisfy_one { |group| group['ldap_access'] == group1.ldap_access }
 
-        ldap_group_link = json_response.first['ldap_group_links'].first
-        expect(ldap_group_link['cn']).to eq(group1.ldap_cn)
-        expect(ldap_group_link['group_access']).to eq(group1.ldap_access)
-        expect(ldap_group_link['provider']).to eq('ldap')
+        expect(json_response).to satisfy_one do |group|
+          ldap_group_link = group['ldap_group_links'].first
+
+          ldap_group_link['cn'] == group1.ldap_cn &&
+            ldap_group_link['group_access'] == group1.ldap_access &&
+            ldap_group_link['provider'] == 'ldap'
+        end
       end
 
       it "does not include statistics" do
@@ -79,7 +85,7 @@ describe API::Groups, api: true  do
           repository_size: 123,
           lfs_objects_size: 234,
           build_artifacts_size: 345,
-        }
+        }.stringify_keys
 
         project1.statistics.update!(attributes)
 
@@ -87,7 +93,8 @@ describe API::Groups, api: true  do
 
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
-        expect(json_response.find { |r| r['id'] == group1.id }['statistics']).to eq attributes.stringify_keys
+        expect(json_response)
+          .to satisfy_one { |group| group['statistics'] == attributes }
       end
     end
 
