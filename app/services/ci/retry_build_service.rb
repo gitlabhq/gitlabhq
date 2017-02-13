@@ -9,11 +9,7 @@ module Ci
     end
 
     def retry!
-      unless can?(@user, :update_build, @build)
-        raise Gitlab::Access::AccessDeniedError
-      end
-
-      clone_build.tap do |new_build|
+      reprocess!.tap do |new_build|
         new_build.enqueue!
 
         MergeRequests::AddTodoWhenBuildFailsService
@@ -24,9 +20,11 @@ module Ci
       end
     end
 
-    private
+    def reprocess!
+      unless can?(@user, :update_build, @build)
+        raise Gitlab::Access::AccessDeniedError
+      end
 
-    def clone_build
       Ci::Build.create(
         ref: @build.ref,
         tag: @build.tag,

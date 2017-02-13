@@ -21,6 +21,51 @@ describe Ci::RetryPipelineService, '#execute', :services do
 
         expect(build('rspec 2')).to be_pending
         expect(build('rspec 3')).to be_pending
+        expect(pipeline.reload).to be_running
+      end
+    end
+
+    context 'when there are failed or canceled builds in the first stage' do
+      before do
+        create_build(name: 'rspec 1', status: :failed, stage_num: 0)
+        create_build(name: 'rspec 2', status: :canceled, stage_num: 0)
+        create_build(name: 'rspec 3', status: :skipped, stage_num: 1)
+        create_build(name: 'deploy 1', status: :skipped, stage_num: 2)
+      end
+
+      it 'retries builds failed builds and marks subsequent for processing' do
+        service.execute
+
+        expect(build('rspec 1')).to be_pending
+        expect(build('rspec 2')).to be_pending
+        expect(build('rspec 3')).to be_created
+        expect(build('deploy 1')).to be_created
+        expect(pipeline.reload).to be_running
+      end
+    end
+
+    context 'when there is failed build present which was run on failure' do
+      before do
+        create_build(name: 'rspec 1', status: :failed, stage_num: 0)
+        create_build(name: 'rspec 2', status: :canceled, stage_num: 0)
+        create_build(name: 'rspec 3', status: :skipped, stage_num: 1)
+        create_build(name: 'report 1', status: :failed, stage_num: 2)
+      end
+
+      it 'retries builds failed builds and marks subsequent for processing' do
+        service.execute
+
+        expect(build('rspec 1')).to be_pending
+        expect(build('rspec 2')).to be_pending
+        expect(build('rspec 3')).to be_created
+        expect(build('report 1')).to be_created
+        expect(pipeline.reload).to be_running
+      end
+
+      it 'creates a new job for report job in this case' do
+        service.execute
+
+        expect(statuses.where(name: 'report 1').count).to eq 2
       end
     end
   end
@@ -32,8 +77,12 @@ describe Ci::RetryPipelineService, '#execute', :services do
     end
   end
 
+  def statuses
+    pipeline.reload.statuses
+  end
+
   def build(name)
-    pipeline.statuses.find_by(name: name)
+    statuses.latest.find_by(name: name)
   end
 
   def create_build(name:, status:, stage_num:)
