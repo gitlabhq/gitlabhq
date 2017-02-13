@@ -69,7 +69,7 @@ experience, refactors the existing code). Then:
   someone else would be confused by it as well.
 - After a round of line notes, it can be helpful to post a summary note such as
   "LGTM :thumbsup:", or "Just a couple things to address."
-- Avoid accepting a merge request before the build succeeds. Of course, "Merge
+- Avoid accepting a merge request before the job succeeds. Of course, "Merge
   When Pipeline Succeeds" (MWPS) is fine.
 - If you set the MR to "Merge When Pipeline Succeeds", you should take over
   subsequent revisions for anything that would be spotted after that.

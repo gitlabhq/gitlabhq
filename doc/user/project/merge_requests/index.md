@@ -22,7 +22,7 @@ in a merged merge requests or a commit.
 ## Merge when pipeline succeeds
 
 When reviewing a merge request that looks ready to merge but still has one or
-more CI builds running, you can set it to be merged automatically when CI
+more CI jobs running, you can set it to be merged automatically when CI
 pipeline succeeds. This way, you don't have to wait for the pipeline to finish
 and remember to merge the request manually.
 

@@ -11,10 +11,10 @@ API.
 
 ---
 
-As of GitLab 8.2, GitLab CI is mainly exposed via the `/builds` page of a
-project. Disabling GitLab CI in a project does not delete any previous builds.
-In fact, the `/builds` page can still be accessed, although it's hidden from
-the left sidebar menu.
+GitLab CI is exposed via the `/pipelines` and `/builds` pages of a project.
+Disabling GitLab CI in a project does not delete any previous jobs.
+In fact, the `/pipelines` and `/builds` pages can still be accessed, although
+it's hidden from the left sidebar menu.
 
 GitLab CI is enabled by default on new installations and can be disabled either
 individually under each project's settings, or site-wide by modifying the
