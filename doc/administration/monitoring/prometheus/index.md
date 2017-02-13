@@ -2,8 +2,8 @@
 
 >**Notes:**
 - Prometheus and the various exporters listed in this page are bundled in the
-  Omnibus GitLab package. Check each exporter's documentation for the timeline
-  they got added. For installations from source you will have to install
+  Omnibus GitLab package. Check each exporter's documentation for the release
+  that they were added. For installations from source you will have to install
   them yourself. Over subsequent releases additional GitLab metrics will be
   captured.
 - Prometheus services are off by default but will be on starting with GitLab 9.0.
@@ -42,15 +42,14 @@ To enable Prometheus:
    take effect
 
 By default, Prometheus will run as the `gitlab-prometheus` user and listen on
-`http://localhost:9090`. If the [node exporter](#node-exporter) service
-has been enabled, it will automatically be set up as a monitoring target for
+`http://localhost:9090`. If an exporter has been enabled, it will automatically be set up as a monitoring target for
 Prometheus.
 
-## Changing the port Prometheus listens on
+## Changing the host and port Prometheus listens on
 
 >**Note:**
 The following change was added in [GitLab Omnibus 8.17][1261]. Although possible,
-it's not recommended to change the default address and port Prometheus listens
+it's not recommended to change the default host and port Prometheus listens
 on as this might affect or conflict with other services running on the GitLab
 server. Proceed at your own risk.
 
@@ -63,7 +62,7 @@ To change the address/port that Prometheus listens on:
     prometheus['listen_address'] = 'localhost:9090'
     ```
 
-    Replace `localhost:9090` with the address/port you want Prometheus to
+    Replace `localhost:9090` with the host and port you want Prometheus to
     listen on.
 
 1. Save the file and [reconfigure GitLab][reconfigure] for the changes to
@@ -129,7 +128,7 @@ The Postgres exporter allows you to measure various PostgreSQL metrics.
 
 ### GitLab monitor exporter
 
-The GitLab monitor exporter allows you to measure various GitLab metrics.
+The GitLab monitor exporter allows you to measure various GitLab metrics, such as SSH push/pull timings.
 
 [➔ Read more about the GitLab monitor exporter.](gitlab_monitor_exporter.md)
 
