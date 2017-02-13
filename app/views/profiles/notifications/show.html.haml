@@ -24,7 +24,23 @@
       = form_for @user, url: profile_notifications_path, method: :put, html: { class: 'update-notifications prepend-top-default' } do |f|
         .form-group
           = f.label :notification_email, class: "label-light"
-          = f.select :notification_email, @user.all_emails, { include_blank: false }, class: "select2"
+          - if @user.all_emails.length <= 1
+            .account-well.account-well-flex
+              %span= @user.notification_email
+              = link_to 'Manage', profile_emails_path()
+          - else
+            .dropdown
+              %button.dropdown-toggle.wide{ 'data-toggle' => 'dropdown' }
+                %span.light
+                  = @user.email
+                = icon('chevron-down')
+              %ul.dropdown-menu.dropdown-menu-full-width
+                - @user.all_emails.each do |email|
+                  %li
+                    = link_to email, profile_email_path(email), method: :put
+                %li.separator
+                %li
+                  = link_to 'Manage', profile_emails_path()
 
       = label_tag :global_notification_level, "Global notification level", class: "label-light"
       %br

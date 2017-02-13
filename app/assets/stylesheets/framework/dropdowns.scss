@@ -41,6 +41,7 @@
   border: 1px solid $border-color;
   border-radius: $border-radius-base;
   white-space: nowrap;
+  position: relative;
 
   &[disabled] {
     background-color: $input-bg-disabled;
@@ -79,8 +80,9 @@
   .fa-chevron-down {
     font-size: $dropdown-chevron-size;
     position: relative;
-    top: -3px;
-    margin-left: 5px;
+    top: calc(50% - 0.5em);
+    right: 1em;
+    position: absolute;
   }
 
   &:hover {

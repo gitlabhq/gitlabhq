@@ -58,17 +58,20 @@
             = f.text_field :email, class: "form-control", required: true, value: nil
           - else
             - if @user.all_emails.length <= 1
-              = f.text_field :email, class: "form-control", required: true, readonly: true
+              .account-well.account-well-flex
+                %span= @user.email
+                = link_to 'Manage', profile_emails_path()
             - else
               .dropdown
-                %button.dropdown-toggle.form-control{ 'data-toggle' => 'dropdown' }
+                %button.dropdown-toggle.wide{ 'data-toggle' => 'dropdown' }
                   %span.light
                     = @user.email
                   = icon('chevron-down')
-                %ul.dropdown-menu
+                %ul.dropdown-menu.dropdown-menu-full-width
                   - @user.all_emails.each do |email|
                     %li
                       = link_to email, profile_email_path(email), method: :put
+                  %li.separator
                   %li
                     = link_to 'Manage', profile_emails_path()
           - if @user.unconfirmed_email.present?
@@ -83,7 +86,20 @@
             %span.help-block We also use email for avatar detection if no avatar is uploaded.
       .form-group
         = f.label :public_email, class: "label-light"
-        = f.select :public_email, options_for_select(@user.all_emails, selected: @user.public_email), { include_blank: 'Do not show on profile' }, class: "select2"
+        .dropdown
+          %button.dropdown-toggle.wide{ 'data-toggle' => 'dropdown' }
+            %span.light
+              = 'Do not show on profile'
+            = icon('chevron-down')
+          %ul.dropdown-menu.dropdown-menu-full-width
+            %li
+              = link_to 'Do not show on profile', profile_email_path(''), method: :put
+            - @user.all_emails.each do |email|
+              %li
+                = link_to email, profile_email_path(email), method: :put
+            %li.separator
+            %li
+              = link_to 'Manage', profile_emails_path()
         %span.help-block This email will be displayed on your public profile.
       .form-group
         = f.label :skype, class: "label-light"

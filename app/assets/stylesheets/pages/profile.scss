@@ -70,6 +70,20 @@
   }
 }
 
+.account-well-flex {
+  display: -webkit-flex;
+  display: flex;
+
+  *:first-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  *:last-child {
+    margin-left: auto;
+  }
+}
+
 .profile-link-holder {
   display: inline;
 
