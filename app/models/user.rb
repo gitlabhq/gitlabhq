@@ -334,7 +334,7 @@ class User < ActiveRecord::Base
 
     def find_by_personal_access_token(token_string)
       personal_access_token = PersonalAccessToken.active.find_by_token(token_string) if token_string
-      personal_access_token.user if personal_access_token
+      personal_access_token&.user
     end
 
     # Returns a user for the given SSH key.

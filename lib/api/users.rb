@@ -84,7 +84,9 @@ module API
       end
       params do
         requires :email, type: String, desc: 'The email of the user'
-        requires :password, type: String, desc: 'The password of the new user'
+        optional :password, type: String, desc: 'The password of the new user'
+        optional :reset_password, type: Boolean, desc: 'Flag indicating the user will be sent a password reset token'
+        at_least_one_of :password, :reset_password
         requires :name, type: String, desc: 'The name of the user'
         requires :username, type: String, desc: 'The username of the user'
         use :optional_attributes
@@ -96,8 +98,18 @@ module API
         user_params = declared_params(include_missing: false)
         identity_attrs = user_params.slice(:provider, :extern_uid)
         confirm = user_params.delete(:confirm)
+        user = User.new(user_params.except(:extern_uid, :provider, :reset_password))
 
-        user = User.new(user_params.except(:extern_uid, :provider))
+        if user_params.delete(:reset_password)
+          user.attributes = {
+            force_random_password: true,
+            password_expires_at: nil,
+            created_by_id: current_user.id
+          }
+          user.generate_password
+          user.generate_reset_token
+        end
+
         user.skip_confirmation! unless confirm
 
         if identity_attrs.any?

@@ -112,7 +112,7 @@ module Gitlab
     def self.tag_transaction(name, value)
       trans = current_transaction
 
-      trans.add_tag(name, value) if trans
+      trans&.add_tag(name, value)
     end
 
     # Sets the action of the current transaction (if any)
@@ -121,7 +121,7 @@ module Gitlab
     def self.action=(action)
       trans = current_transaction
 
-      trans.action = action if trans
+      trans&.action = action
     end
 
     # Tracks an event.
@@ -130,7 +130,7 @@ module Gitlab
     def self.add_event(*args)
       trans = current_transaction
 
-      trans.add_event(*args) if trans
+      trans&.add_event(*args)
     end
 
     # Returns the prefix to use for the name of a series.

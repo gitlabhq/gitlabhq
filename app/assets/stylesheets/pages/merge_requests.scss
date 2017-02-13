@@ -96,13 +96,6 @@
       padding-right: 4px;
     }
 
-    &.ci-success_with_warnings {
-
-      i {
-        color: $gl-warning;
-      }
-    }
-
     @media (max-width: $screen-xs-max) {
       flex-wrap: wrap;
     }
@@ -486,7 +479,7 @@
   background-color: $white-light;
 
   &.affix {
-    top: 100px;
+    top: 0;
     left: 0;
     z-index: 10;
     transition: right .15s;

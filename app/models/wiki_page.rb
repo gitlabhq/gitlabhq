@@ -69,16 +69,12 @@ class WikiPage
 
   # The raw content of this page.
   def content
-    @attributes[:content] ||= if @page
-                                @page.text_data
-                              end
+    @attributes[:content] ||= @page&.text_data
   end
 
   # The processed/formatted content of this page.
   def formatted_content
-    @attributes[:formatted_content] ||= if @page
-                                          @page.formatted_data
-                                        end
+    @attributes[:formatted_content] ||= @page&.formatted_data
   end
 
   # The markup format for the page.

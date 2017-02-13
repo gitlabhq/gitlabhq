@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170207150212) do
+ActiveRecord::Schema.define(version: 20170210075922) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -119,7 +119,6 @@ ActiveRecord::Schema.define(version: 20170207150212) do
     t.boolean "plantuml_enabled"
     t.integer "shared_runners_minutes", default: 0, null: false
     t.integer "repository_size_limit", limit: 8, default: 0
-    t.integer "max_pages_size", default: 100, null: false
     t.integer "terminal_max_session_time", default: 0, null: false
   end
 
@@ -406,6 +405,8 @@ ActiveRecord::Schema.define(version: 20170207150212) do
     t.datetime "updated_at"
     t.integer "commit_id"
   end
+
+  add_index "ci_trigger_requests", ["commit_id"], name: "index_ci_trigger_requests_on_commit_id", using: :btree
 
   create_table "ci_triggers", force: :cascade do |t|
     t.string "token"

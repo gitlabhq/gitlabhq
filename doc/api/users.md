@@ -218,7 +218,7 @@ Parameters:
 
 ## User creation
 
-Creates a new user. Note only administrators can create new users.
+Creates a new user. Note only administrators can create new users. Either `password` or `reset_password` should be specified (`reset_password` takes priority).
 
 ```
 POST /users
@@ -227,7 +227,8 @@ POST /users
 Parameters:
 
 - `email` (required)            - Email
-- `password` (required)         - Password
+- `password` (optional)         - Password
+- `reset_password` (optional)   - Send user password reset link - true or false(default)
 - `username` (required)         - Username
 - `name` (required)             - Name
 - `skype` (optional)            - Skype ID

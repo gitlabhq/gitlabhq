@@ -181,7 +181,7 @@ const Vue = require('vue');
         }
 
         $.scrollTo($target, {
-          offset: -($('.navbar-gitlab').outerHeight() + $('.layout-nav').outerHeight())
+          offset: 0
         });
       }
     },

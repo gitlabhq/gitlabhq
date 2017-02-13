@@ -129,31 +129,25 @@ class ApplicationSetting < ActiveRecord::Base
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates_each :restricted_visibility_levels do |record, attr, value|
-    unless value.nil?
-      value.each do |level|
-        unless Gitlab::VisibilityLevel.options.has_value?(level)
-          record.errors.add(attr, "'#{level}' is not a valid visibility level")
-        end
+    value&.each do |level|
+      unless Gitlab::VisibilityLevel.options.has_value?(level)
+        record.errors.add(attr, "'#{level}' is not a valid visibility level")
       end
     end
   end
 
   validates_each :import_sources do |record, attr, value|
-    unless value.nil?
-      value.each do |source|
-        unless Gitlab::ImportSources.options.has_value?(source)
-          record.errors.add(attr, "'#{source}' is not a import source")
-        end
+    value&.each do |source|
+      unless Gitlab::ImportSources.options.has_value?(source)
+        record.errors.add(attr, "'#{source}' is not a import source")
       end
     end
   end
 
   validates_each :disabled_oauth_sign_in_sources do |record, attr, value|
-    unless value.nil?
-      value.each do |source|
-        unless Devise.omniauth_providers.include?(source.to_sym)
-          record.errors.add(attr, "'#{source}' is not an OAuth sign-in source")
-        end
+    value&.each do |source|
+      unless Devise.omniauth_providers.include?(source.to_sym)
+        record.errors.add(attr, "'#{source}' is not an OAuth sign-in source")
       end
     end
   end
@@ -255,11 +249,11 @@ class ApplicationSetting < ActiveRecord::Base
   end
 
   def domain_whitelist_raw
-    self.domain_whitelist.join("\n") unless self.domain_whitelist.nil?
+    self.domain_whitelist&.join("\n")
   end
 
   def domain_blacklist_raw
-    self.domain_blacklist.join("\n") unless self.domain_blacklist.nil?
+    self.domain_blacklist&.join("\n")
   end
 
   def domain_whitelist_raw=(values)

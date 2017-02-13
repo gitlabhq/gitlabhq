@@ -17,22 +17,7 @@
             %li
               = link_to_member(@project, issue.assignee, name: false, title: "Assigned to :name")
 
-          - upvotes, downvotes = issue.upvotes, issue.downvotes
-          - if upvotes > 0
-            %li
-              = icon('thumbs-up')
-              = upvotes
-
-          - if downvotes > 0
-            %li
-              = icon('thumbs-down')
-              = downvotes
-
-          - note_count = issue.notes.user.count
-          %li
-            = link_to issue_path(issue, anchor: 'notes'), class: ('no-comments' if note_count.zero?) do
-              = icon('comments')
-              = note_count
+          = render 'shared/issuable_meta_data', issuable: issue
 
       .issue-info
         #{issuable_reference(issue)} &middot;

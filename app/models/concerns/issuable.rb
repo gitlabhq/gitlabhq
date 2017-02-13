@@ -15,6 +15,11 @@ module Issuable
   include Taskable
   include TimeTrackable
 
+  # This object is used to gather issuable meta data for displaying
+  # upvotes, downvotes and notes count for issues and merge requests
+  # lists avoiding n+1 queries and improving performance.
+  IssuableMeta = Struct.new(:upvotes, :downvotes, :notes_count)
+
   included do
     cache_markdown_field :title, pipeline: :single_line
     cache_markdown_field :description
@@ -98,8 +103,8 @@ module Issuable
     def update_assignee_cache_counts
       # make sure we flush the cache for both the old *and* new assignees(if they exist)
       previous_assignee = User.find_by_id(assignee_id_was) if assignee_id_was
-      previous_assignee.update_cache_counts if previous_assignee
-      assignee.update_cache_counts if assignee
+      previous_assignee&.update_cache_counts
+      assignee&.update_cache_counts
     end
 
     # We want to use optimistic lock for cases when only title or description are involved

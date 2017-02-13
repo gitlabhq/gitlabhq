@@ -48,6 +48,7 @@ class Member < ActiveRecord::Base
   scope :invite, -> { where.not(invite_token: nil) }
   scope :non_invite, -> { where(invite_token: nil) }
   scope :request, -> { where.not(requested_at: nil) }
+  scope :non_request, -> { where(requested_at: nil) }
 
   scope :has_access, -> { active.where('access_level > 0') }
 
