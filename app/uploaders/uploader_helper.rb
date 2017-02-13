@@ -1,12 +1,15 @@
 # Extra methods for uploader
 module UploaderHelper
-  IMAGE_EXT = %w[png jpg jpeg gif bmp tiff svg]
+  IMAGE_EXT = %w[png jpg jpeg gif bmp tiff]
   # We recommend using the .mp4 format over .mov. Videos in .mov format can
   # still be used but you really need to make sure they are served with the
   # proper MIME type video/mp4 and not video/quicktime or your videos won't play
   # on IE >= 9.
   # http://archive.sublimevideo.info/20150912/docs.sublimevideo.net/troubleshooting.html
   VIDEO_EXT = %w[mp4 m4v mov webm ogv]
+  # These extension types can contain dangerous code and should only be embedded inline with
+  # proper filtering. They should always be tagged as "Content-Disposition: attachment", not "inline".
+  DANGEROUS_EXT = %w[svg]
 
   def image?
     extension_match?(IMAGE_EXT)
@@ -18,6 +21,10 @@ module UploaderHelper
 
   def image_or_video?
     image? || video?
+  end
+
+  def dangerous?
+    extension_match?(DANGEROUS_EXT)
   end
 
   def extension_match?(extensions)

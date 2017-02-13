@@ -1,0 +1,4 @@
+---
+title: Fix XSS vulnerability in SVG attachments
+merge_request:
+author:
