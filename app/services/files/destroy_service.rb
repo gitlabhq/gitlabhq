@@ -1,5 +1,5 @@
 module Files
-  class DeleteService < Files::BaseService
+  class DestroyService < Files::BaseService
     def commit
       repository.remove_file(
         current_user,
