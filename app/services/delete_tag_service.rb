@@ -9,7 +9,7 @@ class DeleteTagService < BaseService
 
     if repository.rm_tag(current_user, tag_name)
       release = project.releases.find_by(tag: tag_name)
-      release.destroy if release
+      release&.destroy
 
       push_data = build_push_data(tag)
       EventCreateService.new.push(project, current_user, push_data)

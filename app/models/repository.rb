@@ -945,9 +945,7 @@ class Repository
 
     GitOperationService.new(user, self).with_branch(
       target_branch) do |start_commit|
-      if merge_request
-        merge_request.update(in_progress_merge_commit_sha: their_commit.oid)
-      end
+      merge_request&.update(in_progress_merge_commit_sha: their_commit.oid)
 
       their_commit.oid
     end

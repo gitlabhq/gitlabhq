@@ -16,6 +16,6 @@ class AuthorizedProjectsWorker
   def perform(user_id)
     user = User.find_by(id: user_id)
 
-    user.refresh_authorized_projects if user
+    user&.refresh_authorized_projects
   end
 end
