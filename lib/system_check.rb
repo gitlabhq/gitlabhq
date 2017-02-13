@@ -1,12 +1,23 @@
+# Library to perform System Checks
+#
+# Every Check is implemented as its own class inherited from SystemCheck::BaseCheck
+# Execution coordination and boilerplate output is done by the SystemCheck::SimpleExecutor
+#
+# This structure decouples checks from Rake tasks and facilitates unit-testing
 module SystemCheck
-  def self.run(component, checks = {}, executor_klass = SimpleExecutor)
+  # Executes a bunch of checks for specified component
+  #
+  # @param [String] component name of the component relative to the checks being executed
+  # @param [Array<BaseCheck>] checks classes of corresponding checks to be executed in the same order
+  # @param [BaseExecutor] executor_klass optionally specifiy a different executor class
+  def self.run(component, checks = [], executor_klass = SimpleExecutor)
     unless executor_klass.is_a? BaseExecutor
       raise ArgumentError, 'Invalid executor'
     end
 
     executor = executor_klass.new(component)
-    executor.checks = checks.map do |check|
-      raise ArgumentError unless check.is_a? BaseCheck
+    checks.each do |check|
+      executor << check
     end
   end
 end
