@@ -7,6 +7,9 @@ module UploaderHelper
   # on IE >= 9.
   # http://archive.sublimevideo.info/20150912/docs.sublimevideo.net/troubleshooting.html
   VIDEO_EXT = %w[mp4 m4v mov webm ogv]
+  # These extension types can contain dangerous code and should only be embedded inline with
+  # proper filtering. They should always be tagged as "Content-Disposition: attachment", not "inline".
+  DANGEROUS_EXT = %w[svg]
 
   def image?
     extension_match?(IMAGE_EXT)
@@ -18,6 +21,10 @@ module UploaderHelper
 
   def image_or_video?
     image? || video?
+  end
+
+  def dangerous?
+    extension_match?(DANGEROUS_EXT)
   end
 
   def extension_match?(extensions)
