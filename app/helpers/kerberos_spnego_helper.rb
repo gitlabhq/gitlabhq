@@ -46,7 +46,7 @@ module KerberosSpnegoHelper
     return unless krb_principal
 
     identity = ::Identity.find_by(provider: :kerberos, extern_uid: krb_principal)
-    identity.user if identity
+    identity&.user
   end
 
   # The Kerberos backend will translate spnego_token into a Kerberos

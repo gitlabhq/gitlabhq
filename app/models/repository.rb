@@ -943,11 +943,8 @@ class Repository
     raise 'Invalid merge target' if our_commit.nil?
     raise 'Invalid merge source' if their_commit.nil?
 
-    GitOperationService.new(user, self).with_branch(
-      target_branch) do |start_commit|
-      if merge_request
-        merge_request.update(in_progress_merge_commit_sha: their_commit.oid)
-      end
+    GitOperationService.new(user, self).with_branch(target_branch) do |start_commit|
+      merge_request&.update(in_progress_merge_commit_sha: their_commit.oid)
 
       their_commit.oid
     end
