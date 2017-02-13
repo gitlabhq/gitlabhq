@@ -6,6 +6,7 @@ Vue.use(require('vue-resource'));
 const EnvironmentsService = require('../services/environments_service');
 const EnvironmentTable = require('../components/environments_table');
 const Store = require('../stores/environments_store');
+require('../../lib/utils/common_utils');
 
 module.exports = Vue.component('environment-folder-view', {
 
@@ -42,7 +43,7 @@ module.exports = Vue.component('environment-folder-view', {
 
   computed: {
     scope() {
-      return this.$options.getQueryParameter('scope');
+      return gl.utils.getParameterByName('scope');
     },
 
     canReadEnvironmentParsed() {
@@ -68,8 +69,8 @@ module.exports = Vue.component('environment-folder-view', {
    * Toggles loading property.
    */
   created() {
-    const scope = this.$options.getQueryParameter('scope') || this.visibility;
-    const pageNumber = this.$options.getQueryParameter('page') || this.pageNumber;
+    const scope = gl.utils.getParameterByName('scope') || this.visibility;
+    const pageNumber = gl.utils.getParameterByName('page') || this.pageNumber;
 
     const endpoint = `${this.endpoint}?scope=${scope}&page=${pageNumber}`;
 

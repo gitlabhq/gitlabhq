@@ -7,6 +7,7 @@ const EnvironmentsService = require('../services/environments_service');
 const EnvironmentTable = require('./environments_table');
 const Store = require('../stores/environments_store');
 require('../../vue_shared/components/table_pagination');
+require('../../lib/utils/common_utils');
 
 module.exports = Vue.component('environment-component', {
 
@@ -45,7 +46,7 @@ module.exports = Vue.component('environment-component', {
 
   computed: {
     scope() {
-      return this.$options.getQueryParameter('scope');
+      return gl.utils.getParameterByName('scope');
     },
 
     canReadEnvironmentParsed() {
@@ -67,8 +68,8 @@ module.exports = Vue.component('environment-component', {
    * Toggles loading property.
    */
   created() {
-    const scope = this.$options.getQueryParameter('scope') || this.visibility;
-    const pageNumber = this.$options.getQueryParameter('page') || this.pageNumber;
+    const scope = gl.utils.getParameterByName('scope') || this.visibility;
+    const pageNumber = gl.utils.getParameterByName('page') || this.pageNumber;
 
     const endpoint = `${this.endpoint}?scope=${scope}&page=${pageNumber}`;
 
@@ -94,21 +95,6 @@ module.exports = Vue.component('environment-component', {
         this.isLoading = false;
         new Flash('An error occurred while fetching the environments.', 'alert');
       });
-  },
-
-  /**
-   * Transforms the url parameter into an object and
-   * returns the one requested.
-   *
-   * @param  {String} param
-   * @returns {String}       The value of the requested parameter.
-   */
-  getQueryParameter(parameter) {
-    return window.location.search.substring(1).split('&').reduce((acc, param) => {
-      const paramSplited = param.split('=');
-      acc[paramSplited[0]] = paramSplited[1];
-      return acc;
-    }, {})[parameter];
   },
 
   /**
@@ -158,7 +144,7 @@ module.exports = Vue.component('environment-component', {
     <div :class="cssContainerClass">
       <div class="top-area">
         <ul v-if="!isLoading" class="nav-links">
-          <li v-bind:class="{ 'active': scope === undefined || scope === 'available' }">
+          <li v-bind:class="{ 'active': scope === null || scope === 'available' }">
             <a :href="projectEnvironmentsPath">
               Available
               <span class="badge js-available-environments-count">
