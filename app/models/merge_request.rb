@@ -230,23 +230,19 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def diff_start_commit
-    if persisted?
-      merge_request_diff.start_commit
-    else
-      target_branch_head
-    end
+    project.commit(diff_start_sha)
   end
 
   def diff_head_commit
-    if persisted?
-      merge_request_diff.head_commit
-    else
-      source_branch_head
-    end
+    project.commit(diff_head_sha)
   end
 
   def diff_start_sha
-    diff_start_commit.try(:sha)
+    if persisted?
+      merge_request_diff.start_commit_sha
+    else
+      target_branch_sha
+    end
   end
 
   def diff_base_sha
@@ -254,7 +250,11 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def diff_head_sha
-    diff_head_commit.try(:sha)
+    if persisted?
+      merge_request_diff.head_commit_sha
+    else
+      source_branch_sha
+    end
   end
 
   # When importing a pull request from GitHub, the old and new branches may no
@@ -283,11 +283,11 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def target_branch_sha
-    @target_branch_sha || target_branch_head.try(:sha)
+    @target_branch_sha || project.repository.find_branch(target_branch).try(:target)
   end
 
   def source_branch_sha
-    @source_branch_sha || source_branch_head.try(:sha)
+    @source_branch_sha || project.repository.find_branch(source_branch).try(:target)
   end
 
   def diff_refs

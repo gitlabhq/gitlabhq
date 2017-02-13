@@ -12,10 +12,6 @@ module Gitlab
       # when tag reference on other tag it can be tag sha
       attr_reader :target
 
-      # Dereferenced target
-      # Commit object to which the Ref points to
-      attr_reader :dereferenced_target
-
       # Extract branch name from full ref path
       #
       # Ex.
@@ -33,7 +29,7 @@ module Gitlab
       def initialize(repository, name, target)
         encode! name
         @name = name.gsub(/\Arefs\/(tags|heads)\//, '')
-        @dereferenced_target = Gitlab::Git::Commit.find(repository, target)
+        @repository = repository
         @target = if target.respond_to?(:oid)
                     target.oid
                   elsif target.respond_to?(:name)
@@ -43,6 +39,12 @@ module Gitlab
                   else
                     nil
                   end
+      end
+
+      # Dereferenced target
+      # Commit object to which the Ref points to
+      def dereferenced_target
+        @dereferenced_target ||= Gitlab::Git::Commit.find(@repository, target)
       end
     end
   end

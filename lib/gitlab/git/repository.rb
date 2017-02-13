@@ -81,7 +81,7 @@ module Gitlab
         reload_rugged if force_reload
 
         rugged_ref = rugged.branches[name]
-        Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target) if rugged_ref
+        Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target_id) if rugged_ref
       end
 
       def local_branches
