@@ -183,6 +183,7 @@ describe API::Runners, api: true  do
         it 'updates runner' do
           description = shared_runner.description
           active = shared_runner.active
+          runner_queue_value = shared_runner.ensure_runner_queue_value
 
           update_runner(shared_runner.id, admin, description: "#{description}_updated",
                                                  active: !active,
@@ -197,18 +198,24 @@ describe API::Runners, api: true  do
           expect(shared_runner.tag_list).to include('ruby2.1', 'pgsql', 'mysql')
           expect(shared_runner.run_untagged?).to be(false)
           expect(shared_runner.locked?).to be(true)
+          expect(shared_runner.ensure_runner_queue_value)
+            .not_to eq(runner_queue_value)
         end
       end
 
       context 'when runner is not shared' do
         it 'updates runner' do
           description = specific_runner.description
+          runner_queue_value = specific_runner.ensure_runner_queue_value
+
           update_runner(specific_runner.id, admin, description: 'test')
           specific_runner.reload
 
           expect(response).to have_http_status(200)
           expect(specific_runner.description).to eq('test')
           expect(specific_runner.description).not_to eq(description)
+          expect(specific_runner.ensure_runner_queue_value)
+            .not_to eq(runner_queue_value)
         end
       end
 
