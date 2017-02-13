@@ -122,7 +122,7 @@ class List {
         }
 
         if (this.issues[newIndex + 1]) {
-          moveAfterIid = this.issues[newIndex + 1].id
+          moveAfterIid = this.issues[newIndex + 1].id;
         }
       } else {
         this.issues.push(issue);
