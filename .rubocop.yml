@@ -339,6 +339,10 @@ Style/OpMethod:
 Style/ParenthesesAroundCondition:
   Enabled: true
 
+# Checks for an obsolete RuntimeException argument in raise/fail.
+Style/RedundantException:
+  Enabled: true
+
 # Checks for parentheses that seem not to serve any purpose.
 Style/RedundantParentheses:
   Enabled: true
@@ -568,6 +572,10 @@ Lint/ElseLayout:
 Lint/EmptyEnsure:
   Enabled: true
 
+# Checks for the presence of `when` branches without a body.
+Lint/EmptyWhen:
+  Enabled: true
+
 # Align ends correctly.
 Lint/EndAlignment:
   Enabled: true
@@ -769,6 +777,10 @@ Rails/ScopeArgs:
 RSpec/AnyInstance:
   Enabled: false
 
+# Check for expectations where `be(...)` can replace `eql(...)`.
+RSpec/BeEql:
+  Enabled: false
+
 # Check that the first argument to the top level describe is the tested class or
 # module.
 RSpec/DescribeClass:
@@ -796,6 +808,10 @@ RSpec/ExampleWording:
     have: has
     not: does not
   IgnoredWords: []
+
+# Checks for `expect(...)` calls containing literal values.
+RSpec/ExpectActual:
+  Enabled: true
 
 # Checks the file and folder naming of the spec file.
 RSpec/FilePath:
