@@ -1279,6 +1279,7 @@ ActiveRecord::Schema.define(version: 20170210075922) do
     t.string "organization"
     t.string "incoming_email_token"
     t.boolean "authorized_projects_populated"
+    t.boolean "notified_of_own_activity", default: false, null: false
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree

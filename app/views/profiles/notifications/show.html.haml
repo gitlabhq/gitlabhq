@@ -34,6 +34,11 @@
 
       .clearfix
 
+      = form_for @user, url: profile_notifications_path, method: :put do |f|
+        %label{ for: 'user_notified_of_own_activity' }
+          = f.check_box :notified_of_own_activity
+          %span Receive notifications about your own activity
+
       %hr
       %h5
         Groups (#{@group_notifications.count})
