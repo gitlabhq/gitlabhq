@@ -1,6 +1,6 @@
 # Variables
 
-When receiving a build from GitLab CI, the [Runner] prepares the build environment.
+When receiving a job from GitLab CI, the [Runner] prepares the build environment.
 It starts by setting a list of **predefined variables** (environment variables)
 and a list of **user-defined variables**.
 
@@ -29,22 +29,22 @@ version of Runner required.
 
 | Variable                | GitLab | Runner | Description |
 |-------------------------|--------|--------|-------------|
-| **CI**                  | all    | 0.4    | Mark that build is executed in CI environment |
-| **GITLAB_CI**           | all    | all    | Mark that build is executed in GitLab CI environment |
-| **CI_SERVER**           | all    | all    | Mark that build is executed in CI environment |
-| **CI_SERVER_NAME**      | all    | all    | The name of CI server that is used to coordinate builds |
-| **CI_SERVER_VERSION**   | all    | all    | GitLab version that is used to schedule builds |
-| **CI_SERVER_REVISION**  | all    | all    | GitLab revision that is used to schedule builds |
-| **CI_BUILD_ID**         | all    | all    | The unique id of the current build that GitLab CI uses internally |
+| **CI**                  | all    | 0.4    | Mark that job is executed in CI environment |
+| **GITLAB_CI**           | all    | all    | Mark that job is executed in GitLab CI environment |
+| **CI_SERVER**           | all    | all    | Mark that job is executed in CI environment |
+| **CI_SERVER_NAME**      | all    | all    | The name of CI server that is used to coordinate jobs |
+| **CI_SERVER_VERSION**   | all    | all    | GitLab version that is used to schedule jobs |
+| **CI_SERVER_REVISION**  | all    | all    | GitLab revision that is used to schedule jobs |
+| **CI_BUILD_ID**         | all    | all    | The unique id of the current job that GitLab CI uses internally |
 | **CI_BUILD_REF**        | all    | all    | The commit revision for which project is built |
 | **CI_BUILD_TAG**        | all    | 0.5    | The commit tag name. Present only when building tags. |
-| **CI_BUILD_NAME**       | all    | 0.5    | The name of the build as defined in `.gitlab-ci.yml` |
+| **CI_BUILD_NAME**       | all    | 0.5    | The name of the job as defined in `.gitlab-ci.yml` |
 | **CI_BUILD_STAGE**      | all    | 0.5    | The name of the stage as defined in `.gitlab-ci.yml` |
 | **CI_BUILD_REF_NAME**   | all    | all    | The branch or tag name for which project is built |
 | **CI_BUILD_REF_SLUG**   | 8.15   | all    | `$CI_BUILD_REF_NAME` lowercased, shortened to 63 bytes, and with everything except `0-9` and `a-z` replaced with `-`. Use in URLs and domain names. |
 | **CI_BUILD_REPO**       | all    | all    | The URL to clone the Git repository |
-| **CI_BUILD_TRIGGERED**  | all    | 0.5    | The flag to indicate that build was [triggered] |
-| **CI_BUILD_MANUAL**     | 8.12   | all    | The flag to indicate that build was manually started |
+| **CI_BUILD_TRIGGERED**  | all    | 0.5    | The flag to indicate that job was [triggered] |
+| **CI_BUILD_MANUAL**     | 8.12   | all    | The flag to indicate that job was manually started |
 | **CI_BUILD_TOKEN**      | all    | 1.2    | Token used for authenticating with the GitLab Container Registry |
 | **CI_PIPELINE_ID**      | 8.10   | 0.5    | The unique id of the current pipeline that GitLab CI uses internally |
 | **CI_PROJECT_ID**       | all    | all    | The unique id of the current project that GitLab CI uses internally |
@@ -52,8 +52,8 @@ version of Runner required.
 | **CI_PROJECT_NAMESPACE**| 8.10   | 0.5    | The project namespace (username or groupname) that is currently being built |
 | **CI_PROJECT_PATH**     | 8.10   | 0.5    | The namespace with project name |
 | **CI_PROJECT_URL**      | 8.10   | 0.5    | The HTTP address to access project |
-| **CI_PROJECT_DIR**      | all    | all    | The full path where the repository is cloned and where the build is run |
-| **CI_ENVIRONMENT_NAME** | 8.15   | all    | The name of the environment for this build |
+| **CI_PROJECT_DIR**      | all    | all    | The full path where the repository is cloned and where the job is run |
+| **CI_ENVIRONMENT_NAME** | 8.15   | all    | The name of the environment for this job |
 | **CI_ENVIRONMENT_SLUG** | 8.15   | all    | A simplified version of the environment name, suitable for inclusion in DNS, URLs, Kubernetes labels, etc. |
 | **CI_REGISTRY**         | 8.10   | 0.5    | If the Container Registry is enabled it returns the address of GitLab's Container Registry |
 | **CI_REGISTRY_IMAGE**   | 8.10   | 0.5    | If the Container Registry is enabled for the project it returns the address of the registry tied to the specific project |
@@ -61,11 +61,11 @@ version of Runner required.
 | **CI_RUNNER_DESCRIPTION** | 8.10 | 0.5    | The description of the runner as saved in GitLab |
 | **CI_RUNNER_TAGS**      | 8.10   | 0.5    | The defined runner tags |
 | **CI_DEBUG_TRACE**      | all    | 1.7    | Whether [debug tracing](#debug-tracing) is enabled |
-| **GET_SOURCES_ATTEMPTS** | 8.15    | 1.9    | Number of attempts to fetch sources running a build |
-| **ARTIFACT_DOWNLOAD_ATTEMPTS** | 8.15    | 1.9    | Number of attempts to download artifacts running a build |
-| **RESTORE_CACHE_ATTEMPTS** | 8.15    | 1.9    | Number of attempts to restore the cache running a build |
-| **GITLAB_USER_ID**      | 8.12   | all    | The id of the user who started the build |
-| **GITLAB_USER_EMAIL**   | 8.12   | all    | The email of the user who started the build |
+| **GET_SOURCES_ATTEMPTS** | 8.15    | 1.9    | Number of attempts to fetch sources running a job |
+| **ARTIFACT_DOWNLOAD_ATTEMPTS** | 8.15    | 1.9    | Number of attempts to download artifacts running a job |
+| **RESTORE_CACHE_ATTEMPTS** | 8.15    | 1.9    | Number of attempts to restore the cache running a job |
+| **GITLAB_USER_ID**      | 8.12   | all    | The id of the user who started the job |
+| **GITLAB_USER_EMAIL**   | 8.12   | all    | The email of the user who started the job |
 
 
 Example values:
@@ -136,7 +136,7 @@ job_name:
 >**Notes:**
 - This feature requires GitLab Runner 0.4.0 or higher.
 - Be aware that secret variables are not masked, and their values can be shown
-  in the build logs if explicitly asked to do so. If your project is public or
+  in the job logs if explicitly asked to do so. If your project is public or
   internal, you can set the pipelines private from your project's Pipelines
   settings. Follow the discussion in issue [#13784][ce-13784] for masking the
   secret variables.
@@ -150,7 +150,7 @@ storing things like passwords, secret keys and credentials.
 Secret variables can be added by going to your project's
 **Settings ➔ Variables ➔ Add variable**.
 
-Once you set them, they will be available for all subsequent builds.
+Once you set them, they will be available for all subsequent jobs.
 
 ## Deployment variables
 
@@ -160,7 +160,7 @@ This feature requires GitLab CI 8.15 or higher.
 [Project services](../../user/project/integrations/project_services.md) that are
 responsible for deployment configuration may define their own variables that
 are set in the build environment. These variables are only defined for
-[deployment builds](../environments.md). Please consult the documentation of
+[deployment jobs](../environments.md). Please consult the documentation of
 the project services that you are using to learn which variables they define.
 
 An example project service that defines deployment variables is
@@ -173,21 +173,21 @@ An example project service that defines deployment variables is
 > **WARNING:** Enabling debug tracing can have severe security implications. The
   output **will** contain the content of all your secret variables and any other
   secrets! The output **will** be uploaded to the GitLab server and made visible
-  in build traces!
+  in job traces!
 
 By default, GitLab Runner hides most of the details of what it is doing when
-processing a job. This behaviour keeps build traces short, and prevents secrets
+processing a job. This behaviour keeps job traces short, and prevents secrets
 from being leaked into the trace unless your script writes them to the screen.
 
 If a job isn't working as expected, this can make the problem difficult to
 investigate; in these cases, you can enable debug tracing in `.gitlab-ci.yml`.
 Available on GitLab Runner v1.7+, this feature enables the shell's execution
-trace, resulting in a verbose build trace listing all commands that were run,
+trace, resulting in a verbose job trace listing all commands that were run,
 variables that were set, etc.
 
-Before enabling this, you should ensure builds are visible to
+Before enabling this, you should ensure jobs are visible to
 [team members only](../../user/permissions.md#project-features). You should
-also [erase](../pipelines.md#seeing-build-status) all generated build traces
+also [erase](../pipelines.md#seeing-build-status) all generated job traces
 before making them visible again.
 
 To enable debug traces, set the `CI_DEBUG_TRACE` variable to `true`:
@@ -320,7 +320,7 @@ MIIFQzCCBCugAwIBAgIRAL/ElDjuf15xwja1ZnCocWAwDQYJKoZIhvcNAQELBQAw'
 
 All variables are set as environment variables in the build environment, and
 they are accessible with normal methods that are used to access such variables.
-In most cases `bash` or `sh` is used to execute the build script.
+In most cases `bash` or `sh` is used to execute the job script.
 
 To access the variables (predefined and user-defined) in a `bash`/`sh` environment,
 prefix the variable name with the dollar sign (`$`):
@@ -328,12 +328,12 @@ prefix the variable name with the dollar sign (`$`):
 ```
 job_name:
   script:
-    - echo $CI_BUILD_ID
+    - echo $CI_job_ID
 ```
 
 You can also list all environment variables with the `export` command,
 but be aware that this will also expose the values of all the secret variables
-you set, in the build log:
+you set, in the job log:
 
 ```
 job_name:
@@ -344,4 +344,4 @@ job_name:
 [ce-13784]: https://gitlab.com/gitlab-org/gitlab-ce/issues/13784
 [runner]: https://docs.gitlab.com/runner/
 [triggered]: ../triggers/README.md
-[triggers]: ../triggers/README.md#pass-build-variables-to-a-trigger
+[triggers]: ../triggers/README.md#pass-job-variables-to-a-trigger

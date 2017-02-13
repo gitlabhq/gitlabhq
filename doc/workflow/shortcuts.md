@@ -45,7 +45,7 @@ You can see GitLab's keyboard shortcuts by using 'shift + ?'
 | <kbd>g</kbd> + <kbd>e</kbd> | Go to the project's activity feed |
 | <kbd>g</kbd> + <kbd>f</kbd> | Go to files |
 | <kbd>g</kbd> + <kbd>c</kbd> | Go to commits |
-| <kbd>g</kbd> + <kbd>b</kbd> | Go to builds |
+| <kbd>g</kbd> + <kbd>b</kbd> | Go to jobs |
 | <kbd>g</kbd> + <kbd>n</kbd> | Go to network graph |
 | <kbd>g</kbd> + <kbd>g</kbd> | Go to graphs |
 | <kbd>g</kbd> + <kbd>i</kbd> | Go to issues |

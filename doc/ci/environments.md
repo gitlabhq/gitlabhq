@@ -75,7 +75,7 @@ We have defined 3 [stages](yaml/README.md#stages):
 - deploy
 
 The jobs assigned to these stages will run in this order. If a job fails, then
-the builds that are assigned to the next stage won't run, rendering the pipeline
+the jobs that are assigned to the next stage won't run, rendering the pipeline
 as failed. In our case, the `test` job will run first, then the `build` and
 lastly the `deploy_staging`. With this, we ensure that first the tests pass,
 then our app is able to be built successfully, and lastly we deploy to the
@@ -119,7 +119,7 @@ There's a bunch of information there, specifically you can see:
 
 - The environment's name with a link to its deployments
 - The last deployment ID number and who performed it
-- The build ID of the last deployment with its respective job name
+- The job ID of the last deployment with its respective job name
 - The commit information of the last deployment such as who committed, to what
   branch and the Git SHA of the commit
 - The exact time the last deployment was performed
@@ -219,9 +219,9 @@ deploy_prod:
 
 The `when: manual` action exposes a play button in GitLab's UI and the
 `deploy_prod` job will only be triggered if and when we click that play button.
-You can find it in the pipeline, build, environment, and deployment views.
+You can find it in the pipeline, job, environment, and deployment views.
 
-| Pipelines | Single pipeline | Environments | Deployments | Builds |
+| Pipelines | Single pipeline | Environments | Deployments | jobs |
 | --------- | ----------------| ------------ | ----------- | -------|
 | ![Pipelines manual action](img/environments_manual_action_pipelines.png) | ![Pipelines manual action](img/environments_manual_action_single_pipeline.png) | ![Environments manual action](img/environments_manual_action_environments.png) | ![Deployments manual action](img/environments_manual_action_deployments.png) | ![Builds manual action](img/environments_manual_action_builds.png) |
 
@@ -419,7 +419,7 @@ Behind the scenes:
 - GitLab Runner picks up the changes and starts running the jobs
 - The jobs run sequentially as defined in `stages`
   - First, the tests pass
-  - Then, the build begins and successfully also passes
+  - Then, the job begins and successfully also passes
   - Lastly, the app is deployed to an environment with a name specific to the
     branch
 
