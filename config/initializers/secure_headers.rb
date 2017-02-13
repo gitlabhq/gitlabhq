@@ -26,11 +26,6 @@ SecureHeaders::Configuration.default do |config|
       strict: true 
     }
   }
-  config.x_content_type_options = "nosniff"
-  config.x_xss_protection = "1; mode=block"
-  config.x_download_options = "noopen"
-  config.x_permitted_cross_domain_policies = "none"
-  config.referrer_policy = "origin-when-cross-origin"
   config.csp_report_only = {
     # "Meta" values.
     preserve_schemes: true,
@@ -41,7 +36,7 @@ SecureHeaders::Configuration.default do |config|
     # (Deprecated) Don't allow iframes.
     frame_src: %w('self'),
     # Only allow XMLHTTPRequests from the GitLab instance itself.
-    connect_src: %w('self'),
+    connect_src: %w('self' 'wss://gitlab.com'),
     # Only load local fonts.
     font_src: %w('self'),
     # Load local images, any external image available over HTTP.
@@ -85,7 +80,6 @@ SecureHeaders::Configuration.default do |config|
     config.csp_report_only[:script_src] << "https://www.google.com/recaptcha/"
     config.csp_report_only[:script_src] << "https://www.gstatic.com/recaptcha/"
     config.csp_report_only[:frame_src] << "https://www.google.com/recaptcha/"
-    config.x_frame_options = "SAMEORIGIN"
   end
 
   # Gravatar
