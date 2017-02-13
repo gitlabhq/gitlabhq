@@ -284,7 +284,11 @@
 
     .events-description {
       line-height: 65px;
-      padding-left: $gl-padding;
+      padding: 0 $gl-padding;
+    }
+
+    .events-info {
+      color: $gl-text-color-secondary;
     }
   }
 
