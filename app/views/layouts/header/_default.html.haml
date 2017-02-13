@@ -6,12 +6,11 @@
         %button.global-dropdown-toggle{ type: 'button', 'data-toggle' => 'dropdown' }
           %span.sr-only Toggle navigation
           = icon('bars')
-        .dropdown-menu-nav
-          %ul
-            - if current_user
-              = render 'layouts/nav/dashboard'
-            - else
-              = render 'layouts/nav/explore'
+        .dropdown-menu-nav.global-dropdown-menu
+          - if current_user
+            = render 'layouts/nav/dashboard'
+          - else
+            = render 'layouts/nav/explore'
       %button.navbar-toggle{ type: 'button' }
         %span.sr-only Toggle navigation
         = icon('ellipsis-v')
