@@ -87,13 +87,14 @@ class Projects::WikisController < Projects::ApplicationController
 
   def destroy
     @page = @project_wiki.find_page(params[:id])
+
     if @page
       @page.delete
 
       # Triggers repository update on secondary nodes when Geo is enabled
       Gitlab::Geo.notify_wiki_update(@project) if Gitlab::Geo.primary?
     end
-    
+
     redirect_to(
       namespace_project_wiki_path(@project.namespace, @project, :home),
       notice: "Page was successfully deleted"

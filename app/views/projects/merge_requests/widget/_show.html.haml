@@ -17,11 +17,11 @@
     ci_status: "#{@merge_request.head_pipeline ? @merge_request.head_pipeline.status : ''}",
     ci_message: {
       normal: "Pipeline {{status}} for \"{{title}}\"",
-      preparing: "{{status}} job for \"{{title}}\""
+      preparing: "{{status}} pipeline for \"{{title}}\""
     },
     ci_enable: #{@project.ci_service ? "true" : "false"},
     ci_title: {
-      preparing: "{{status}} job",
+      preparing: "{{status}} pipeline",
       normal: "Pipeline {{status}}"
     },
     ci_sha: "#{@merge_request.head_pipeline ? @merge_request.head_pipeline.short_sha : ''}",

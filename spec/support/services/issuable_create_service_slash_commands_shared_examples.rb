@@ -58,7 +58,7 @@ shared_examples 'new issuable record that supports slash commands' do
     let(:example_params) do
       {
         assignee: create(:user),
-        milestone_id: double(:milestone),
+        milestone_id: 1,
         description: %(/assign @#{assignee.username}\n/milestone %"#{milestone.name}")
       }
     end

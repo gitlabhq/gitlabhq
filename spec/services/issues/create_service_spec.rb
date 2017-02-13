@@ -46,6 +46,7 @@ describe Issues::CreateService, services: true do
 
           expect(issue).to be_persisted
           expect(issue.title).to eq('Awesome issue')
+          expect(issue.description).to eq('please fix')
           expect(issue.assignee).to be_nil
           expect(issue.labels).to be_empty
           expect(issue.milestone).to be_nil

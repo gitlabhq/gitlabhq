@@ -15,6 +15,11 @@ module Issuable
   include Taskable
   include TimeTrackable
 
+  # This object is used to gather issuable meta data for displaying
+  # upvotes, downvotes and notes count for issues and merge requests
+  # lists avoiding n+1 queries and improving performance.
+  IssuableMeta = Struct.new(:upvotes, :downvotes, :notes_count)
+
   included do
     cache_markdown_field :title, pipeline: :single_line
     cache_markdown_field :description

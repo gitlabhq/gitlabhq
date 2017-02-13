@@ -20,9 +20,9 @@ class AddGroupIdColumnsToProtectedBranchAccessLevels < ActiveRecord::Migration
 
   def change
     add_column :protected_branch_merge_access_levels, :group_id, :integer
-    add_foreign_key :protected_branch_merge_access_levels, :namespaces, column: :group_id
+    add_foreign_key :protected_branch_merge_access_levels, :namespaces, column: :group_id # rubocop: disable Migration/AddConcurrentForeignKey
 
     add_column :protected_branch_push_access_levels, :group_id, :integer
-    add_foreign_key :protected_branch_push_access_levels, :namespaces, column: :group_id
+    add_foreign_key :protected_branch_push_access_levels, :namespaces, column: :group_id # rubocop: disable Migration/AddConcurrentForeignKey
   end
 end

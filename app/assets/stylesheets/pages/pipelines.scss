@@ -94,6 +94,10 @@
       padding: 10px 8px;
     }
 
+    td.stage-cell {
+      padding: 10px 0;
+    }
+
     .commit-link {
       padding: 9px 8px 10px;
     }
@@ -291,12 +295,14 @@
     height: 22px;
     margin: 3px 6px 3px 0;
 
-    .tooltip {
-      white-space: nowrap;
+    // Hack to show a button tooltip inline
+    button.has-tooltip + .tooltip {
+      min-width: 105px;
     }
 
-    .tooltip-inner {
-      padding: 3px 4px;
+    // Bootstrap way of showing the content inline for anchors.
+    a.has-tooltip {
+      white-space: nowrap;
     }
 
     &:not(:last-child) {

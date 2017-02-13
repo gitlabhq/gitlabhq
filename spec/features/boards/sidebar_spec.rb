@@ -54,7 +54,7 @@ describe 'Issue Boards', feature: true, js: true do
 
     expect(page).to have_selector('.issue-boards-sidebar')
 
-    find('.gutter-toggle').click
+    find('.gutter-toggle').trigger('click')
 
     expect(page).not_to have_selector('.issue-boards-sidebar')
   end
