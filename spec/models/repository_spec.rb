@@ -355,7 +355,7 @@ describe Repository, models: true do
       repository.commit_file(user, 'hello.txt', "Hello,\r\nWorld",
                              message: 'Add hello world',
                              branch_name: 'master',
-                             update: true)
+                             update: false)
 
       blob = repository.blob_at('master', 'hello.txt')
 

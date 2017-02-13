@@ -768,43 +768,15 @@ class Repository
     message:, branch_name:,
     author_email: nil, author_name: nil,
     start_branch_name: nil, start_project: project)
-    check_tree_entry_for_dir(branch_name, path)
 
-    if start_branch_name
-      start_project.repository.
-        check_tree_entry_for_dir(start_branch_name, path)
-    end
-
-    commit_file(
-      user,
-      "#{path}/.gitkeep",
-      '',
-      message: message,
-      branch_name: branch_name,
-      update: false,
-      author_email: author_email,
-      author_name: author_name,
-      start_branch_name: start_branch_name,
-      start_project: start_project)
-  end
-  # rubocop:enable Metrics/ParameterLists
-
-  # rubocop:disable Metrics/ParameterLists
-  def commit_file(
-    user, path, content,
-    message:, branch_name:, update: true,
-    author_email: nil, author_name: nil,
-    start_branch_name: nil, start_project: project)
-    unless update
-      error_message = "Filename already exists; update not allowed"
-
-      if tree_entry_at(branch_name, path)
-        raise Gitlab::Git::Repository::InvalidBlobName.new(error_message)
-      end
-
-      if start_branch_name &&
-          start_project.repository.tree_entry_at(start_branch_name, path)
-        raise Gitlab::Git::Repository::InvalidBlobName.new(error_message)
+    entry = tree_entry_at(start_branch_name || branch_name, path)
+    if entry
+      if entry[:type] == :blob
+        raise Gitlab::Git::Repository::InvalidBlobName.new(
+          "Directory already exists as a file")
+      else
+        raise Gitlab::Git::Repository::InvalidBlobName.new(
+          "Directory already exists")
       end
     end
 
@@ -816,7 +788,29 @@ class Repository
       author_name: author_name,
       start_branch_name: start_branch_name,
       start_project: start_project,
-      actions: [{ action: :create,
+      actions: [{ action: :create_dir,
+                  file_path: path }])
+  end
+  # rubocop:enable Metrics/ParameterLists
+
+  # rubocop:disable Metrics/ParameterLists
+  def commit_file(
+    user, path, content,
+    message:, branch_name:, update: true,
+    author_email: nil, author_name: nil,
+    start_branch_name: nil, start_project: project)
+
+    action = update ? :update : :create
+
+    multi_action(
+      user: user,
+      message: message,
+      branch_name: branch_name,
+      author_email: author_email,
+      author_name: author_name,
+      start_branch_name: start_branch_name,
+      start_project: start_project,
+      actions: [{ action: action,
                   file_path: path,
                   content: content }])
   end
@@ -855,6 +849,7 @@ class Repository
     message:, branch_name:,
     author_email: nil, author_name: nil,
     start_branch_name: nil, start_project: project)
+
     multi_action(
       user: user,
       message: message,
@@ -877,21 +872,22 @@ class Repository
       branch_name,
       start_branch_name: start_branch_name,
       start_project: start_project) do |start_commit|
-      index = rugged.index
 
-      parents = if start_commit
-                  index.read_tree(start_commit.raw_commit.tree)
-                  [start_commit.sha]
-                else
-                  []
-                end
+      index = Gitlab::Git::Index.new(raw_repository)
 
-      actions.each do |act|
-        git_action(index, act)
+      if start_commit
+        index.read_tree(start_commit.raw_commit.tree)
+        parents = [start_commit.sha]
+      else
+        parents = []
+      end
+
+      actions.each do |options|
+        index.__send__(options.delete(:action), options)
       end
 
       options = {
-        tree: index.write_tree(rugged),
+        tree: index.write_tree,
         message: message,
         parents: parents
       }
@@ -1263,22 +1259,6 @@ class Repository
       raw_repository.send(:tree_entry, commit(branch_name), path)
   end
 
-  def check_tree_entry_for_dir(branch_name, path)
-    return unless branch_exists?(branch_name)
-
-    entry = tree_entry_at(branch_name, path)
-
-    return unless entry
-
-    if entry[:type] == :blob
-      raise Gitlab::Git::Repository::InvalidBlobName.new(
-        "Directory already exists as a file")
-    else
-      raise Gitlab::Git::Repository::InvalidBlobName.new(
-        "Directory already exists")
-    end
-  end
-
   private
 
   def blob_data_at(sha, path)
@@ -1287,58 +1267,6 @@ class Repository
 
     blob.load_all_data!(self)
     blob.data
-  end
-
-  def git_action(index, action)
-    path = normalize_path(action[:file_path])
-
-    if action[:action] == :move
-      previous_path = normalize_path(action[:previous_path])
-    end
-
-    case action[:action]
-    when :create, :update, :move
-      mode =
-        case action[:action]
-        when :update
-          index.get(path)[:mode]
-        when :move
-          index.get(previous_path)[:mode]
-        end
-      mode ||= 0o100644
-
-      index.remove(previous_path) if action[:action] == :move
-
-      content = if action[:encoding] == 'base64'
-                  Base64.decode64(action[:content])
-                else
-                  action[:content]
-                end
-
-      detect = CharlockHolmes::EncodingDetector.new.detect(content) if content
-
-      unless detect && detect[:type] == :binary
-        # When writing to the repo directly as we are doing here,
-        # the `core.autocrlf` config isn't taken into account.
-        content.gsub!("\r\n", "\n") if self.autocrlf
-      end
-
-      oid = rugged.write(content, :blob)
-
-      index.add(path: path, oid: oid, mode: mode)
-    when :delete
-      index.remove(path)
-    end
-  end
-
-  def normalize_path(path)
-    pathname = Gitlab::Git::PathHelper.normalize_path(path)
-
-    if pathname.each_filename.include?('..')
-      raise Gitlab::Git::Repository::InvalidBlobName.new('Invalid path')
-    end
-
-    pathname.to_s
   end
 
   def refs_directory_exists?

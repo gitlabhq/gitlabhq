@@ -2,6 +2,8 @@ module Files
   class MultiService < Files::BaseService
     class FileChangedError < StandardError; end
 
+    ACTIONS = %w[create update delete move].freeze
+
     def commit
       repository.multi_action(
         user: current_user,
@@ -19,14 +21,22 @@ module Files
 
     def validate
       super
-
       params[:actions].each_with_index do |action, index|
         unless action[:file_path].present?
           raise_error("You must specify a file_path.")
         end
 
+        action[:file_path].slice!(0) if action[:file_path] && action[:file_path].start_with?('/')
+        action[:previous_path].slice!(0) if action[:previous_path] && action[:previous_path].start_with?('/')
+
         regex_check(action[:file_path])
         regex_check(action[:previous_path]) if action[:previous_path]
+
+        if ACTIONS.include?(action[:action].to_s)
+          action[:action] = action[:action].to_sym
+        else
+          raise_error("Unknown action type `#{action[:action]}`.")
+        end
 
         if project.empty_repo? && action[:action] != :create
           raise_error("No files to #{action[:action]}.")
@@ -43,8 +53,6 @@ module Files
           validate_delete(action)
         when :move
           validate_move(action, index)
-        else
-          raise_error("Unknown action type `#{action[:action]}`.")
         end
       end
     end
