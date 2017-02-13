@@ -21,10 +21,6 @@ Lint/AmbiguousRegexpLiteral:
 Lint/AssignmentInCondition:
   Enabled: false
 
-# Offense count: 1
-Lint/EmptyWhen:
-  Enabled: false
-
 # Offense count: 20
 Lint/HandleExceptions:
   Enabled: false
@@ -80,17 +76,9 @@ Performance/RedundantMatch:
 Performance/RedundantMerge:
   Enabled: false
 
-# Offense count: 7
-RSpec/BeEql:
-  Enabled: false
-
 # Offense count: 15
 # Configuration parameters: CustomIncludeMethods.
 RSpec/EmptyExampleGroup:
-  Enabled: false
-
-# Offense count: 24
-RSpec/ExpectActual:
   Enabled: false
 
 # Offense count: 58
@@ -422,11 +410,6 @@ Style/RaiseArgs:
 # Offense count: 4
 # Cop supports --auto-correct.
 Style/RedundantBegin:
-  Enabled: false
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/RedundantException:
   Enabled: false
 
 # Offense count: 29
