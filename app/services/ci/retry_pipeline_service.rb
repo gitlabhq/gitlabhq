@@ -29,7 +29,6 @@ module Ci
       resume_stage.builds.failed_or_canceled.find_each do |build|
         Ci::Build.retry(build, @user)
       end
-
     end
 
     private
