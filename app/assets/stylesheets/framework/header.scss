@@ -101,9 +101,12 @@ header {
       }
     }
 
-    .global-dropdown-toggle {
+    .global-dropdown {
       position: absolute;
       left: -10px;
+    }
+
+    .global-dropdown-toggle {
       margin: 7px 0;
       font-size: 18px;
       padding: 6px 10px;

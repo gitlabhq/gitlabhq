@@ -2,9 +2,16 @@
   %a.sr-only.gl-accessibility{ href: "#content-body", tabindex: "1" } Skip to content
   .container-fluid
     .header-content
-      %button.side-nav-toggle{ type: 'button', "aria-label" => "Toggle global navigation" }
-        %span.sr-only Toggle navigation
-        = icon('bars')
+      .dropdown.global-dropdown
+        %button.global-dropdown-toggle{ type: 'button', 'data-toggle' => 'dropdown' }
+          %span.sr-only Toggle navigation
+          = icon('bars')
+        .dropdown-menu-nav
+          %ul
+            - if current_user
+              = render 'layouts/nav/dashboard'
+            - else
+              = render 'layouts/nav/explore'
       %button.navbar-toggle{ type: 'button' }
         %span.sr-only Toggle navigation
         = icon('ellipsis-v')
@@ -55,19 +62,7 @@
               %div
                 = link_to "Sign in", new_session_path(:user, redirect_to_referer: 'yes'), class: 'btn btn-sign-in btn-success'
 
-
       %h1.title= title
-
-      .dropdown
-        %button.global-dropdown-toggle{ href: '#', 'data-toggle' => 'dropdown' }
-          %span.sr-only Toggle navigation
-          = icon('bars')
-        .dropdown-menu-nav
-          %ul
-            - if current_user
-              = render 'layouts/nav/dashboard'
-            - else
-              = render 'layouts/nav/explore'
 
       .header-logo
         = link_to root_path, class: 'home', title: 'Dashboard', id: 'logo' do
