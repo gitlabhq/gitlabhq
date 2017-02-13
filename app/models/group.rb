@@ -81,7 +81,7 @@ class Group < Namespace
   end
 
   def to_reference(_from_project = nil, full: nil)
-    "#{self.class.reference_prefix}#{name}"
+    "#{self.class.reference_prefix}#{full_path}"
   end
 
   def web_url
