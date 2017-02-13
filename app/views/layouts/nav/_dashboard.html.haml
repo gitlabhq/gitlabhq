@@ -1,4 +1,4 @@
-%ul.nav
+%ul
   = nav_link(path: ['root#index', 'projects#trending', 'projects#starred', 'dashboard/projects#index'], html_options: {class: "#{project_tab_class} home"}) do
     = link_to dashboard_projects_path, title: 'Projects', class: 'dashboard-shortcuts-projects' do
       %span
