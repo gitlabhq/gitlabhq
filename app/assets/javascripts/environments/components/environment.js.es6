@@ -50,15 +50,15 @@ module.exports = Vue.component('environment-component', {
     },
 
     canReadEnvironmentParsed() {
-      return this.$options.convertPermissionToBoolean(this.canReadEnvironment);
+      return gl.utils.convertPermissionToBoolean(this.canReadEnvironment);
     },
 
     canCreateDeploymentParsed() {
-      return this.$options.convertPermissionToBoolean(this.canCreateDeployment);
+      return gl.utils.convertPermissionToBoolean(this.canCreateDeployment);
     },
 
     canCreateEnvironmentParsed() {
-      return this.$options.convertPermissionToBoolean(this.canCreateEnvironment);
+      return gl.utils.convertPermissionToBoolean(this.canCreateEnvironment);
     },
 
   },
@@ -97,15 +97,6 @@ module.exports = Vue.component('environment-component', {
       });
   },
 
-  /**
-   * Converts permission provided as strings to booleans.
-   * @param  {String} string
-   * @returns {Boolean}
-   */
-  convertPermissionToBoolean(string) {
-    return string === 'true';
-  },
-
   methods: {
     toggleRow(model) {
       return this.store.toggleFolder(model.name);
@@ -114,26 +105,11 @@ module.exports = Vue.component('environment-component', {
     /**
      * Will change the page number and update the URL.
      *
-     * If no search params are present, we'll add param for page
-     * If param for page is already present, we'll update it
-     * If there are params but none for page, we'll add it at the end.
-     *
      * @param  {Number} pageNumber desired page to go to.
+     * @return {String}
      */
     changePage(pageNumber) {
-      let param;
-      if (window.location.search.length === 0) {
-        param = `?page=${pageNumber}`;
-      }
-
-      if (window.location.search.indexOf('page') !== -1) {
-        param = window.location.search.replace(/page=\d/g, `page=${pageNumber}`);
-      }
-
-      if (window.location.search.length &&
-        window.location.search.indexOf('page') === -1) {
-        param = `${window.location.search}&page=${pageNumber}`;
-      }
+      const param = gl.utils.setParamInURL('page', pageNumber);
 
       gl.utils.visitUrl(param);
       return param;

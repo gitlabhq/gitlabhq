@@ -241,5 +241,45 @@
       acc[element] = DOMStringMapObject[element];
       return acc;
     }, {});
+
+    /**
+     * Updates the search parameter of a URL given the parameter and values provided.
+     *
+     * If no search params are present we'll add it.
+     * If param for page is already present, we'll update it
+     * If there are params but not for the given one, we'll add it at the end.
+     * Returns the new search parameters.
+     *
+     * @param {String} param
+     * @param {Number|String|Undefined|Null} value
+     * @return {String}
+     */
+    w.gl.utils.setParamInURL = (param, value) => {
+      let search;
+
+      if (window.location.search.length === 0) {
+        search = `?${param}=${value}`;
+      }
+
+      if (window.location.search.indexOf(param) !== -1) {
+        const regex = new RegExp(param + '=\\d');
+        search = window.location.search.replace(regex, `${param}=${value}`);
+      }
+
+      if (window.location.search.length &&
+        window.location.search.indexOf(param) === -1) {
+        search = `${window.location.search}&${param}=${value}`;
+      }
+
+      return search;
+    };
+
+    /**
+     * Converts permission provided as strings to booleans.
+     *
+     * @param  {String} string
+     * @returns {Boolean}
+     */
+    w.gl.utils.convertPermissionToBoolean = permission => permission === 'true';
   })(window);
 }).call(this);

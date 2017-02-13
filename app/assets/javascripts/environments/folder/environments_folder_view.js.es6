@@ -6,6 +6,7 @@ Vue.use(require('vue-resource'));
 const EnvironmentsService = require('../services/environments_service');
 const EnvironmentTable = require('../components/environments_table');
 const Store = require('../stores/environments_store');
+require('../../vue_shared/components/table_pagination');
 require('../../lib/utils/common_utils');
 
 module.exports = Vue.component('environment-folder-view', {
@@ -19,9 +20,11 @@ module.exports = Vue.component('environment-folder-view', {
     const environmentsData = document.querySelector('#environments-folder-list-view').dataset;
     const store = new Store();
     const endpoint = `${window.location.pathname}.json`;
+    const folderName = window.location.pathname.substr(window.location.pathname.lastIndexOf('/') + 1);
 
     return {
       store,
+      folderName,
       endpoint,
       state: store.state,
       visibility: 'available',
@@ -47,21 +50,30 @@ module.exports = Vue.component('environment-folder-view', {
     },
 
     canReadEnvironmentParsed() {
-      return this.$options.convertPermissionToBoolean(this.canReadEnvironment);
+      return gl.utils.convertPermissionToBoolean(this.canReadEnvironment);
     },
 
     canCreateDeploymentParsed() {
-      return this.$options.convertPermissionToBoolean(this.canCreateDeployment);
+      return gl.utils.convertPermissionToBoolean(this.canCreateDeployment);
     },
 
+    /**
+     * URL to link in the stopped tab.
+     *
+     * @return {String}
+     */
     stoppedPath() {
       return `${window.location.pathname}?scope=stopped`;
     },
 
+    /**
+     * URL to link in the available tab.
+     *
+     * @return {String}
+     */
     availablePath() {
       return window.location.pathname;
     },
-
   },
 
   /**
@@ -84,6 +96,8 @@ module.exports = Vue.component('environment-folder-view', {
         body: resp.json(),
       }))
       .then((response) => {
+        this.store.storeAvailableCount(response.body.available_count);
+        this.store.storeStoppedCount(response.body.stopped_count);
         this.store.storeEnvironments(response.body.environments);
         this.store.storePagination(response.headers);
       })
@@ -96,45 +110,14 @@ module.exports = Vue.component('environment-folder-view', {
       });
   },
 
-  /**
-   * Transforms the url parameter into an object and
-   * returns the one requested.
-   *
-   * @param  {String} param
-   * @returns {String}       The value of the requested parameter.
-   */
-  getQueryParameter(parameter) {
-    return window.location.search.substring(1).split('&').reduce((acc, param) => {
-      const paramSplited = param.split('=');
-      acc[paramSplited[0]] = paramSplited[1];
-      return acc;
-    }, {})[parameter];
-  },
-
   methods: {
     /**
      * Will change the page number and update the URL.
      *
-     * If no search params are present, we'll add param for page
-     * If param for page is already present, we'll update it
-     * If there are params but none for page, we'll add it at the end.
-     *
      * @param  {Number} pageNumber desired page to go to.
      */
     changePage(pageNumber) {
-      let param;
-      if (window.location.search.length === 0) {
-        param = `?page=${pageNumber}`;
-      }
-
-      if (window.location.search.indexOf('page') !== -1) {
-        param = window.location.search.replace(/page=\d/g, `page=${pageNumber}`);
-      }
-
-      if (window.location.search.length &&
-        window.location.search.indexOf('page') === -1) {
-        param = `${window.location.search}&page=${pageNumber}`;
-      }
+      const param = gl.utils.setParamInURL('page', pageNumber);
 
       gl.utils.visitUrl(param);
       return param;
@@ -143,13 +126,15 @@ module.exports = Vue.component('environment-folder-view', {
 
   template: `
     <div :class="cssContainerClass">
-      <div class="top-area">
+      <div class="top-area" v-if="!isLoading">
 
-        <h3>FOLDER NAME</h3>
+        <h4 class="js-folder-name environments-folder-name">
+          Environments / <b>{{folderName}}</b>
+        </h4>
 
-        <ul v-if="!isLoading" class="nav-links">
-          <li v-bind:class="{ 'active': scope === undefined || scope === 'available' }">
-            <a :href="availablePath">
+        <ul class="nav-links">
+          <li v-bind:class="{ 'active': scope === null || scope === 'available' }">
+            <a :href="availablePath" class="js-available-environments-folder-tab">
               Available
               <span class="badge js-available-environments-count">
                 {{state.availableCounter}}
@@ -157,7 +142,7 @@ module.exports = Vue.component('environment-folder-view', {
             </a>
           </li>
           <li v-bind:class="{ 'active' : scope === 'stopped' }">
-            <a :href="stoppedPath">
+            <a :href="stoppedPath" class="js-stopped-environments-folder-tab">
               Stopped
               <span class="badge js-stopped-environments-count">
                 {{state.stoppedCounter}}

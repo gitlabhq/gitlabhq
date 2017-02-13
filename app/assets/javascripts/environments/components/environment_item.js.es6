@@ -99,7 +99,7 @@ module.exports = Vue.component('environment-item', {
      * @returns {Boolean}
      */
     hasStopAction() {
-      return this.model.latest['stop_action?'];
+      return this.model.latest && this.model.latest['stop_action?'];
     },
 
     /**
@@ -414,7 +414,7 @@ module.exports = Vue.component('environment-item', {
      * @return {String}
      */
     folderUrl() {
-      return `${window.location.pathname}/folders/${this.model.latest.id}`;
+      return `${window.location.pathname}/folders/${this.model.name}`;
     },
 
   },

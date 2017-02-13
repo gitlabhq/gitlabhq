@@ -10,6 +10,11 @@
   font-size: 34px;
 }
 
+.environments-folder-name {
+  font-weight: normal;
+  padding-top: 20px;
+}
+
 @media (max-width: $screen-xs-max) {
   .environments-container {
     width: 100%;
