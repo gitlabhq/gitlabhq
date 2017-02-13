@@ -52,27 +52,28 @@ describe Gitlab::Database::ConnectionPool, lib: true do
 
   describe '#execute_async' do
     it 'runs the right query' do
-      subject.execute_async('SELECT 1+2 AS value;')
+      subject.execute_async('SELECT 1+2 AS value;', method: :exec_query)
+      result = convert_result_to_hash(subject.join)
 
-      expect(subject.join.map(&:to_a)).to eq([[{ 'value' => '3' }]])
+      expect(result).to eq([[{ 'value' => 3 }]])
     end
   end
 
   describe '#join' do
     before do
       2.times.map do |n|
-        subject.execute_async("SELECT #{n} AS value;")
+        subject.execute_async("SELECT #{n} AS value;", method: :exec_query)
       end
     end
 
     it 'joins the threads and give respective values, and clear workers' do
-      result = subject.join
+      result = convert_result_to_hash(subject.join)
 
       expected = 2.times.map do |n|
-        [{ 'value' => n.to_s }]
+        [{ 'value' => n }]
       end
 
-      expect(result.map(&:to_a)).to eq(expected)
+      expect(result).to eq(expected)
       expect(subject.workers).to be_empty
     end
   end
@@ -89,6 +90,15 @@ describe Gitlab::Database::ConnectionPool, lib: true do
       subject.close
 
       expect(subject).to be_closed
+    end
+  end
+
+  def convert_result_to_hash(values)
+    values.map do |result|
+      result.map do |row|
+        ActiveRecord::AttributeSet::Builder.new({})
+          .build_from_database(row, result.column_types).to_h
+      end
     end
   end
 end

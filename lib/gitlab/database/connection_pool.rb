@@ -23,11 +23,13 @@ module Gitlab
         @ar_pool.spec.config[:pool]
       end
 
-      def execute_async(sql)
+      # Pass `method: :exec_query` if we want unified result from query
+      # across PostgreSQL and MySQL
+      def execute_async(sql, method: :execute)
         @mutex.synchronize do
           @workers << Thread.new do
             @ar_pool.with_connection do |connection|
-              connection.execute(sql)
+              connection.public_send(method, sql)
             end
           end
         end
