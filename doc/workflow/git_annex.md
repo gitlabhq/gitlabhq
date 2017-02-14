@@ -1,5 +1,9 @@
 # Git annex
 
+**Warning:** GitLab is deprecating git-annex support
+from GitLab 8.17 (2017/02/22) on. It will be [completely
+removed][deprecate-annex-issue] in GitLab 9.0 (2017/03/22).
+
 The biggest limitation of Git, compared to some older centralized version
 control systems, has been the maximum size of the repositories.
 
@@ -165,6 +169,7 @@ ok
 push origin
 ```
 
+[deprecate-annex-issue]: https://gitlab.com/gitlab-org/gitlab-ee/issues/1648
 [gitlab shell]: https://gitlab.com/gitlab-org/gitlab-shell "GitLab Shell repository"
 [issue]: https://git-annex.branchable.com/forum/Error_from_git-annex-shell_on_creation_of_gcrypt_special_remote/ "git-annex issue"
 [git-annex]: https://git-annex.branchable.com/ "git-annex website"
