@@ -630,6 +630,7 @@ describe Ci::API::Builds do
 
           context 'with an expire date' do
             let!(:artifacts) { file_upload }
+            let(:default_artifacts_expiration) { 0 }
 
             let(:post_data) do
               { 'file.path' => artifacts.path,
@@ -638,7 +639,8 @@ describe Ci::API::Builds do
             end
 
             before do
-              stub_application_setting(default_artifacts_expiration: 0)
+              stub_application_setting(
+                default_artifacts_expiration: default_artifacts_expiration)
 
               post(post_url, post_data, headers_with_token)
             end
@@ -650,7 +652,8 @@ describe Ci::API::Builds do
                 build.reload
                 expect(response).to have_http_status(201)
                 expect(json_response['artifacts_expire_at']).not_to be_empty
-                expect(build.artifacts_expire_at).to be_within(5.minutes).of(Time.now + 7.days)
+                expect(build.artifacts_expire_at).
+                  to be_within(5.minutes).of(7.days.from_now)
               end
             end
 
@@ -662,6 +665,18 @@ describe Ci::API::Builds do
                 expect(response).to have_http_status(201)
                 expect(json_response['artifacts_expire_at']).to be_nil
                 expect(build.artifacts_expire_at).to be_nil
+              end
+
+              context 'with application default' do
+                let(:default_artifacts_expiration) { 5 }
+
+                it 'sets to application default' do
+                  build.reload
+                  expect(response).to have_http_status(201)
+                  expect(json_response['artifacts_expire_at']).not_to be_empty
+                  expect(build.artifacts_expire_at).
+                    to be_within(5.minutes).of(5.days.from_now)
+                end
               end
             end
           end
