@@ -518,7 +518,8 @@ module Ci
         if expire_in
           expire_in
         else
-          ApplicationSetting.current.default_artifacts_expire_in
+          Gitlab::CurrentSettings.current_application_settings
+            .default_artifacts_expire_in
         end
 
       self.artifacts_expire_in = value

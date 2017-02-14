@@ -638,6 +638,8 @@ describe Ci::API::Builds do
             end
 
             before do
+              stub_application_setting(default_artifacts_expiration: 0)
+
               post(post_url, post_data, headers_with_token)
             end
 
