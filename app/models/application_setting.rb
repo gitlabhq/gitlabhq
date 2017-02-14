@@ -298,7 +298,8 @@ class ApplicationSetting < ActiveRecord::Base
   end
 
   def check_default_artifacts_expire_in
-    ChronicDuration.parse(default_artifacts_expire_in)
+    ChronicDuration.parse(default_artifacts_expire_in) if
+      default_artifacts_expire_in
     true
   rescue ChronicDuration::DurationParseError => e
     errors.add(:default_artifacts_expire_in, ": #{e.message}")
