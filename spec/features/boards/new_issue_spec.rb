@@ -18,6 +18,10 @@ describe 'Issue Boards new issue', feature: true, js: true do
       visit namespace_project_board_path(project.namespace, project, board)
       wait_for_vue_resource
 
+      page.within('.boards-backlog-help') do
+        find('.close').click
+      end
+
       expect(page).to have_selector('.board', count: 2)
     end
 

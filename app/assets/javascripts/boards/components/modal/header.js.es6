@@ -57,7 +57,7 @@ const modalFilters = require('./filters');
               class="close"
               data-dismiss="modal"
               aria-label="Close"
-              @click="toggleModal(false)">
+              @click="toggleModal(false, false)">
               <span aria-hidden="true">×</span>
             </button>
           </h2>

@@ -522,3 +522,39 @@
     }
   }
 }
+
+.boards-backlog-help {
+  display: inline-block;
+  width: 260px;
+  padding: 15px;
+  border: 1px solid $border-color;
+  border-radius: 2px;
+  white-space: normal;
+
+  > h4 {
+    margin-top: 0;
+    font-size: 14px;
+  }
+
+  .close {
+    padding: 2px 0;
+    font-size: 12px;
+    line-height: 0;
+  }
+}
+
+.backlog-help-icon {
+  display: -webkit-flex;
+  display: flex;
+  margin: 15px auto;
+  width: 60px;
+  height: 60px;
+  border: 1px solid $blue-normal;
+  border-radius: 50%;
+
+  > svg {
+    width: 35px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}

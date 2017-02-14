@@ -25,6 +25,7 @@
         label_name: gl.utils.getParameterValues('label_name[]'),
         search: ''
       };
+      this.state.helpHidden = Cookies.get('boards_backlog_help_hidden') === 'true';
     },
     addList (listObj) {
       const list = new List(listObj);

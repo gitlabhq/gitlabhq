@@ -25,13 +25,13 @@ describe 'Issue Boards add issue modal', :feature, :js do
 
   context 'modal interaction' do
     it 'opens modal' do
-      click_button('Add issues')
+      click_add_issues
 
       expect(page).to have_selector('.add-issues-modal')
     end
 
     it 'closes modal' do
-      click_button('Add issues')
+      click_add_issues
 
       page.within('.add-issues-modal') do
         find('.close').click
@@ -41,7 +41,7 @@ describe 'Issue Boards add issue modal', :feature, :js do
     end
 
     it 'closes modal if cancel button clicked' do
-      click_button('Add issues')
+      click_add_issues
 
       page.within('.add-issues-modal') do
         click_button 'Cancel'
@@ -53,7 +53,7 @@ describe 'Issue Boards add issue modal', :feature, :js do
 
   context 'issues list' do
     before do
-      click_button('Add issues')
+      click_add_issues
 
       wait_for_vue_resource
     end
@@ -86,7 +86,7 @@ describe 'Issue Boards add issue modal', :feature, :js do
 
         first('.board-delete').click
 
-        click_button('Add issues')
+        click_add_issues
 
         wait_for_vue_resource
 
@@ -228,6 +228,12 @@ describe 'Issue Boards add issue modal', :feature, :js do
           expect(page).to have_selector('.card')
         end
       end
+    end
+  end
+
+  def click_add_issues
+    page.within('.issue-boards-search') do
+      click_button('Add issues')
     end
   end
 end
