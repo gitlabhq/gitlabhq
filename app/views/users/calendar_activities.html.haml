@@ -13,8 +13,10 @@
           #{event.action_name} #{event.ref_type} #{event.ref_name}
         - else
           = event_action_name(event)
-          - if event.target
-            %strong= link_to "#{event.target.to_reference}", [event.project.namespace.becomes(Namespace), event.project, event.target]
+          - if event.note?
+            %strong= link_to event.note_target.to_reference, event_note_target_path(event)
+          - elsif event.target
+            %strong= link_to event.target.to_reference, [event.project.namespace.becomes(Namespace), event.project, event.target]
 
         at
         %strong

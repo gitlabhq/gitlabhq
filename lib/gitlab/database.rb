@@ -6,7 +6,7 @@ module Gitlab
     MAX_INT_VALUE = 2147483647
 
     def self.adapter_name
-      connection.adapter_name
+      ActiveRecord::Base.configurations[Rails.env]['adapter']
     end
 
     def self.mysql?
@@ -67,6 +67,31 @@ module Gitlab
       else
         0
       end
+    end
+
+    def self.with_connection_pool(pool_size)
+      pool = create_connection_pool(pool_size)
+
+      begin
+        yield(pool)
+      ensure
+        pool.disconnect!
+      end
+    end
+
+    def self.create_connection_pool(pool_size)
+      # See activerecord-4.2.7.1/lib/active_record/connection_adapters/connection_specification.rb
+      env = Rails.env
+      original_config = ActiveRecord::Base.configurations
+      env_config = original_config[env].merge('pool' => pool_size)
+      config = original_config.merge(env => env_config)
+
+      spec =
+        ActiveRecord::
+          ConnectionAdapters::
+          ConnectionSpecification::Resolver.new(config).spec(env.to_sym)
+
+      ActiveRecord::ConnectionAdapters::ConnectionPool.new(spec)
     end
 
     def self.connection

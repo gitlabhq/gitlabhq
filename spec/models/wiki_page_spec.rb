@@ -318,6 +318,19 @@ describe WikiPage, models: true do
     end
   end
 
+  describe '#==' do
+    let(:original_wiki_page) { create(:wiki_page) }
+
+    it 'returns true for identical wiki page' do
+      expect(original_wiki_page).to eq(original_wiki_page)
+    end
+
+    it 'returns false for updated wiki page' do
+      updated_wiki_page = original_wiki_page.update("Updated content")
+      expect(original_wiki_page).not_to eq(updated_wiki_page)
+    end
+  end
+
   private
 
   def remove_temp_repo(path)
