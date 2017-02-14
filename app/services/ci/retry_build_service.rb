@@ -2,14 +2,13 @@ module Ci
   class RetryBuildService < ::BaseService
     def execute(build)
       reprocess(build).tap do |new_build|
+        build.pipeline.mark_as_processable_after_stage(build.stage_idx)
+
         new_build.enqueue!
 
         MergeRequests::AddTodoWhenBuildFailsService
           .new(build.project, current_user)
           .close(new_build)
-
-        build.pipeline
-          .mark_as_processable_after_stage(build.stage_idx)
       end
     end
 
