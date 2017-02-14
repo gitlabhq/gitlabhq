@@ -165,6 +165,9 @@ module API
                         desc: 'Return projects sorted in ascending and descending order'
         optional :simple, type: Boolean, default: false,
                           desc: 'Return only the ID, URL, name, and path of each project'
+        optional :owned, type: Boolean, default: false, desc: 'Limit by owned by authenticated user'
+        optional :starred, type: Boolean, default: false, desc: 'Limit by starred status'
+
         use :pagination
       end
       get ":id/projects" do
