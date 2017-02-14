@@ -69,6 +69,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Geo: Enables nodes to be removed even without proper license. !978
 - Update validates_hostname to 1.0.6 to fix a bug in parsing hexadecimal-looking domain names. !982
 
+## 8.14.9 (2017-02-14)
+
+- No changes.
+
 ## 8.14.8 (2017-01-25)
 
 - No changes.
