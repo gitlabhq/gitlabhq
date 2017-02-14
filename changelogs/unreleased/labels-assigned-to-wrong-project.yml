@@ -1,0 +1,4 @@
+---
+title: Prevent the GitHub importer from assigning labels and comments to merge requests or issues belonging to other projects.
+merge_request:
+author:
