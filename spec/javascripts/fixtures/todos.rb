@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Dashboard::TodosController, '(JavaScript fixtures)', type: :controller do
+describe 'Todos (JavaScript fixtures)' do
   include JavaScriptFixturesHelpers
 
   let(:admin) { create(:admin) }
@@ -11,20 +11,42 @@ describe Dashboard::TodosController, '(JavaScript fixtures)', type: :controller 
   let(:issue_2) { create(:issue, title: 'issue_2', project: project) }
   let!(:todo_2) { create(:todo, :done, user: admin, project: project, target: issue_2, created_at: 50.hours.ago) }
 
-  render_views
-
   before(:all) do
     clean_frontend_fixtures('todos/')
   end
 
-  before(:each) do
-    sign_in(admin)
+  describe Dashboard::TodosController, '(JavaScript fixtures)', type: :controller do
+    render_views
+
+    before(:each) do
+      sign_in(admin)
+    end
+
+    it 'todos/todos.html.raw' do |example|
+      get :index
+
+      expect(response).to be_success
+      store_frontend_fixture(response, example.description)
+    end
   end
 
-  it 'todos/todos.html.raw' do |example|
-    get :index
+  describe Projects::TodosController, '(JavaScript fixtures)', type: :controller do
+    render_views
 
-    expect(response).to be_success
-    store_frontend_fixture(response, example.description)
+    before(:each) do
+      sign_in(admin)
+    end
+
+    it 'todos/todos.json' do |example|
+      post :create,
+        namespace_id: namespace.path,
+        project_id: project.path,
+        issuable_type: 'issue',
+        issuable_id: issue_2.id,
+        format: 'json'
+
+      expect(response).to be_success
+      store_frontend_fixture(response, example.description)
+    end
   end
 end
