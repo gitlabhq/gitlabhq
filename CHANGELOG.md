@@ -4,6 +4,7 @@ entry.
 
 ## 8.16.5 (2017-02-14)
 
+- No changes.
 - Patch Asciidocs rendering to block XSS.
 - Fix XSS vulnerability in SVG attachments.
 - Prevent the GitHub importer from assigning labels and comments to merge requests or issues belonging to other projects.
