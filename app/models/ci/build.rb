@@ -513,6 +513,17 @@ module Ci
         end
     end
 
+    def set_artifacts_expire_in(expire_in)
+      value =
+        if expire_in
+          expire_in
+        else
+          ApplicationSetting.current.default_artifacts_expire_in
+        end
+
+      self.artifacts_expire_in = value
+    end
+
     def has_expiring_artifacts?
       artifacts_expire_at.present?
     end

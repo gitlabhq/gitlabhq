@@ -212,8 +212,15 @@
       .col-sm-10
         = f.number_field :max_artifacts_size, class: 'form-control'
         .help-block
-          Set the maximum file size each jobs's artifacts can have
+          Set the maximum file size for each job's artifacts
           = link_to "(?)", help_page_path("user/admin_area/settings/continuous_integration", anchor: "maximum-artifacts-size")
+    .form-group
+      = f.label :default_artifacts_expiration, 'Default artifacts expiration (days)', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :default_artifacts_expiration, class: 'form-control'
+        .help-block
+          Set the default expiration time for each job's artifacts (0 as never expired)
+          = link_to "(?)", help_page_path("user/admin_area/settings/continuous_integration", anchor: "default-artifacts-expiration")
 
   - if Gitlab.config.registry.enabled
     %fieldset
