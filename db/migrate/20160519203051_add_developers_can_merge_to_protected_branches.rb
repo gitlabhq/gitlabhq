@@ -1,7 +1,7 @@
 class AddDevelopersCanMergeToProtectedBranches < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
-  DOWNTIME=false
+  DOWNTIME = false
 
   disable_ddl_transaction!
 
