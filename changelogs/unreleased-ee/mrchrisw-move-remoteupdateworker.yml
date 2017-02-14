@@ -1,0 +1,4 @@
+---
+title: Move RepositoryUpdateRemoteMirrorWorker jobs to project_mirror Sidekiq queue
+merge_request: 1234
+author:

@@ -4,7 +4,7 @@ class RepositoryUpdateRemoteMirrorWorker
   include Sidekiq::Worker
   include Gitlab::ShellAdapter
 
-  sidekiq_options queue: :gitlab_shell
+  sidekiq_options queue: :project_mirror, retry: false
 
   def perform(remote_mirror_id)
     begin
