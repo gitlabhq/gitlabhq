@@ -34,9 +34,9 @@ module Gitlab
         update_all_mirrors_worker_job = Sidekiq::Cron::Job.find("update_all_mirrors_worker")
         update_all_remote_mirrors_worker_job = Sidekiq::Cron::Job.find("update_all_remote_mirrors_worker")
 
-        if update_all_mirrors_worker && update_all_remote_mirrors_worker
-          update_all_mirrors_worker.destroy
-          update_all_remote_mirrors_worker.destroy
+        if update_all_mirrors_worker_job && update_all_remote_mirrors_worker_job
+          update_all_mirrors_worker_job.destroy
+          update_all_remote_mirrors_worker_job.destroy
         end
 
         Sidekiq::Cron::Job.create(

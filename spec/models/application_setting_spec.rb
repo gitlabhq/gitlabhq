@@ -20,6 +20,12 @@ describe ApplicationSetting, models: true do
     it { is_expected.to allow_value(https).for(:after_sign_out_path) }
     it { is_expected.not_to allow_value(ftp).for(:after_sign_out_path) }
 
+    it { is_expected.to allow_value(Gitlab::Mirror::FIFTEEN).for(:minimum_mirror_sync_time) }
+    it { is_expected.to allow_value(Gitlab::Mirror::HOURLY).for(:minimum_mirror_sync_time) }
+    it { is_expected.to allow_value(Gitlab::Mirror::DAILY).for(:minimum_mirror_sync_time) }
+    it { is_expected.not_to allow_value(nil).for(:minimum_mirror_sync_time) }
+    it { is_expected.not_to allow_value(61).for(:minimum_mirror_sync_time) }
+
     describe 'disabled_oauth_sign_in_sources validations' do
       before do
         allow(Devise).to receive(:omniauth_providers).and_return([:github])
@@ -39,6 +45,24 @@ describe ApplicationSetting, models: true do
 
     it_behaves_like 'an object with email-formated attributes', :admin_notification_email do
       subject { setting }
+    end
+
+    context "update minimum_mirror_cron_jobs" do
+      let(:daily_cron)  { Gitlab::Mirror::SYNC_TIME_TO_CRON[Gitlab::Mirror::DAILY] }
+      let(:hourly_cron) { Gitlab::Mirror::SYNC_TIME_TO_CRON[Gitlab::Mirror::HOURLY] }
+
+      before do
+        Gitlab::Mirror.configure_cron_jobs!
+        allow_any_instance_of(Gitlab::CurrentSettings).to receive(:current_application_settings).and_return(setting)
+      end
+
+      it "changes update_all_mirrors_worker cron" do
+        expect { setting.update_attributes(minimum_mirror_sync_time: Gitlab::Mirror::DAILY) }.to change { Sidekiq::Cron::Job.find("update_all_mirrors_worker").cron }.from(hourly_cron).to(daily_cron)
+      end
+
+      it "changes update_all_remote_mirrors_worker cron" do
+        expect { setting.update_attributes(minimum_mirror_sync_time: Gitlab::Mirror::DAILY) }.to change { Sidekiq::Cron::Job.find("update_all_remote_mirrors_worker").cron }.from(hourly_cron).to(daily_cron)
+      end
     end
 
     # Upgraded databases will have this sort of content

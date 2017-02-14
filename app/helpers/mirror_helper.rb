@@ -7,7 +7,7 @@ module MirrorHelper
 
   def mirror_sync_time_options
     Gitlab::Mirror.sync_time_options.select do |key, value|
-      value < current_application_settings.minimum_mirror_sync_time
+      value >= current_application_settings.minimum_mirror_sync_time
     end
   end
 end
