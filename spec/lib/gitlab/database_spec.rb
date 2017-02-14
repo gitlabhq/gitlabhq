@@ -5,6 +5,12 @@ class MigrationTest
 end
 
 describe Gitlab::Database, lib: true do
+  describe '.adapter_name' do
+    it 'returns the name of the adapter' do
+      expect(described_class.adapter_name).to be_an_instance_of(String)
+    end
+  end
+
   # These are just simple smoke tests to check if the methods work (regardless
   # of what they may return).
   describe '.mysql?' do

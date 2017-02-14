@@ -6,7 +6,7 @@ module Gitlab
     MAX_INT_VALUE = 2147483647
 
     def self.adapter_name
-      connection.adapter_name
+      ActiveRecord::Base.configurations[Rails.env]['adapter']
     end
 
     def self.mysql?
