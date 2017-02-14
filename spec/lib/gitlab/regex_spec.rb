@@ -50,4 +50,16 @@ describe Gitlab::Regex, lib: true do
     it { is_expected.not_to match('9foo') }
     it { is_expected.not_to match('foo-') }
   end
+
+  describe 'NAMESPACE_REF_REGEX_STR' do
+    subject { %r{\A#{Gitlab::Regex::NAMESPACE_REF_REGEX_STR}\z} }
+
+    it { is_expected.to match('gitlab.org') }
+    it { is_expected.to match('gitlab.org/gitlab-git') }
+    it { is_expected.not_to match('gitlab.org.') }
+    it { is_expected.not_to match('gitlab.org/') }
+    it { is_expected.not_to match('/gitlab.org') }
+    it { is_expected.not_to match('gitlab.git') }
+    it { is_expected.not_to match('gitlab git') }
+  end
 end
