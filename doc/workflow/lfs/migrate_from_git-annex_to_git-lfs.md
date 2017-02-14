@@ -53,7 +53,7 @@ directory:
     $ git annex sync --content
     ```
 
-By doing so, **git-annex** would record the tracked files
+By doing so, **git-annex** will record the tracked files
 in the `.git/config` file in your repository root.
 
 You will also find a new directory at `.git/annex/`.
@@ -74,7 +74,7 @@ you'll notice that there are more branches created by
 the `annex sync` command.
 
 Use `git annex info` to retrieve the information about
-that repository.
+the local copy of your repository.
 
 ### Disabling **git-annex**
 
@@ -140,15 +140,6 @@ changes on the remote repo:
 
 ```bash
 $ git add .
-$ git status
-On branch master
-Your branch is ahead of 'origin/master' by 1 commit.
-  (use "git push" to publish your local commits)
-Changes to be committed:
-  (use "git reset HEAD <file>..." to unstage)
-
-  new file:   images/01.png
-  new file:   images/02.png
 $ git commit -m "annex uninit"
 [master 46d5de1] annex uninit
  2 files changed, 0 insertions(+), 0 deletions(-)
