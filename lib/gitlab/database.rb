@@ -72,10 +72,11 @@ module Gitlab
     def self.with_connection_pool(pool_size)
       pool = create_connection_pool(pool_size)
 
-      yield(pool)
-
-    ensure
-      pool.disconnect!
+      begin
+        yield(pool)
+      ensure
+        pool.disconnect!
+      end
     end
 
     def self.create_connection_pool(pool_size)
