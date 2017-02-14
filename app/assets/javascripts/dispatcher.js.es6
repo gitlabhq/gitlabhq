@@ -118,6 +118,7 @@ const ShortcutsBlob = require('./shortcuts_blob');
           new gl.IssuableTemplateSelectors();
           break;
         case 'projects:merge_requests:new':
+        case 'projects:merge_requests:new_diffs':
         case 'projects:merge_requests:edit':
           new gl.Diff();
           shortcut_handler = new ShortcutsNavigation();
