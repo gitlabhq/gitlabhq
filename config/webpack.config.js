@@ -5,6 +5,7 @@ var path = require('path');
 var webpack = require('webpack');
 var StatsPlugin = require('stats-webpack-plugin');
 var CompressionPlugin = require('compression-webpack-plugin');
+var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 var ROOT_PATH = path.resolve(__dirname, '..');
 var IS_PRODUCTION = process.env.NODE_ENV === 'production';
@@ -123,6 +124,10 @@ if (IS_DEV_SERVER) {
     stats: 'errors-only',
   };
   config.output.publicPath = '//localhost:' + DEV_SERVER_PORT + config.output.publicPath;
+}
+
+if (process.env.ANALYZE) {
+  config.plugins.push(new BundleAnalyzerPlugin());
 }
 
 module.exports = config;
