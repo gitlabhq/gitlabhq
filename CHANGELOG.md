@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 8.14.9 (2017-02-14)
+
+- Patch Asciidocs rendering to block XSS.
+- Fix XSS vulnerability in SVG attachments.
+- Prevent the GitHub importer from assigning labels and comments to merge requests or issues belonging to other projects.
+- Patch XSS vulnerability in RDOC support.
+
 ## 8.14.8 (2017-01-25)
 
 - Accept environment variables from the `pre-receive` script. !7967
