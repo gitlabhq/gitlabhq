@@ -234,9 +234,7 @@ module Ci
     end
 
     def mark_as_processable_after_stage(stage_idx)
-      builds.skipped
-        .where('stage_idx > ?', stage_idx)
-        .find_each(&:process)
+      builds.skipped.after_stage(stage_idx).find_each(&:process)
     end
 
     def latest?

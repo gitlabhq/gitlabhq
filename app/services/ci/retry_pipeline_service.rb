@@ -11,12 +11,17 @@ module Ci
       # Reprocess builds in subsequent stages
       #
       pipeline.builds
-        .where('stage_idx > ?', resume_stage.index)
+        .after_stage(resume_stage.index)
         .failed_or_canceled.find_each do |build|
           Ci::RetryBuildService
             .new(project, current_user)
             .reprocess(build)
         end
+
+      ##
+      # Mark skipped builds as processable again
+      #
+      pipeline.mark_as_processable_after_stage(resume_stage.index)
 
       ##
       # Retry builds in the first unsuccessful stage
@@ -26,11 +31,6 @@ module Ci
           .new(project, current_user)
           .retry(build)
       end
-
-      ##
-      # Mark skipped builds as processable again
-      #
-      pipeline.mark_as_processable_after_stage(resume_stage.index)
     end
 
     private
