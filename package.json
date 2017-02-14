@@ -19,6 +19,7 @@
     "compression-webpack-plugin": "^0.3.2",
     "d3": "3.5.11",
     "dropzone": "4.2.0",
+    "es6-promise": "^4.0.5",
     "imports-loader": "^0.6.5",
     "jquery": "2.2.1",
     "jquery-ui": "github:jquery/jquery-ui#1.11.4",
