@@ -79,13 +79,13 @@ SecureHeaders::Configuration.default do |config|
     config.csp[:script_src] << "maxcdn.bootstrapcdn.com"
     # Disable upgrade_insecure_requests so we don't need an SSL cert in development.
     config.csp[:upgrade_insecure_requests] = false
-    # Allow Webpack's dev server
-
+    
     # Determine current host, connect through port 3808 for Webpack.
     uri = URI.parse(Gitlab.config.gitlab['url'])
     WEBPACK_CONNECT_URI = "#{uri.scheme}://#{uri.host}:3808"
     WEBPACK_CONNECT_WS_URI = "ws://#{uri.host}:3808"
 
+    # Allow Webpack's dev server
     config.csp[:connect_src] << "#{WEBPACK_CONNECT_URI}"
     config.csp[:connect_src] << "#{WEBPACK_CONNECT_WS_URI}"
   end
