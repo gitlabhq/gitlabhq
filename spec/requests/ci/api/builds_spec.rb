@@ -630,7 +630,7 @@ describe Ci::API::Builds do
 
           context 'with an expire date' do
             let!(:artifacts) { file_upload }
-            let(:default_artifacts_expiration) { 0 }
+            let(:default_artifacts_expire_in) {}
 
             let(:post_data) do
               { 'file.path' => artifacts.path,
@@ -640,7 +640,7 @@ describe Ci::API::Builds do
 
             before do
               stub_application_setting(
-                default_artifacts_expiration: default_artifacts_expiration)
+                default_artifacts_expire_in: default_artifacts_expire_in)
 
               post(post_url, post_data, headers_with_token)
             end
@@ -668,7 +668,7 @@ describe Ci::API::Builds do
               end
 
               context 'with application default' do
-                let(:default_artifacts_expiration) { 5 }
+                let(:default_artifacts_expire_in) { '5 days' }
 
                 it 'sets to application default' do
                   build.reload

@@ -5,7 +5,7 @@ class AddDefaultArtifactsExpirationToApplicationSettings < ActiveRecord::Migrati
 
   def change
     add_column :application_settings,
-      :default_artifacts_expiration,
-      :integer, default: 0, null: false
+      :default_artifacts_expire_in,
+      :string, null: true
   end
 end

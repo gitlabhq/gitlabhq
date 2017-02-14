@@ -80,9 +80,7 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }
 
-  validates :default_artifacts_expiration,
-            presence: true,
-            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validate  :check_default_artifacts_expire_in
 
   validates :container_registry_token_expire_delay,
             presence: true,
@@ -176,7 +174,7 @@ class ApplicationSetting < ActiveRecord::Base
       after_sign_up_text: nil,
       akismet_enabled: false,
       container_registry_token_expire_delay: 5,
-      default_artifacts_expiration: 30,
+      default_artifacts_expire_in: '30 days',
       default_branch_protection: Settings.gitlab['default_branch_protection'],
       default_project_visibility: Settings.gitlab.default_projects_features['visibility_level'],
       default_projects_limit: Settings.gitlab['default_projects_limit'],
@@ -291,17 +289,19 @@ class ApplicationSetting < ActiveRecord::Base
     sidekiq_throttling_enabled
   end
 
-  def default_artifacts_expire_in
-    if default_artifacts_expiration.nonzero?
-      "#{default_artifacts_expiration} days"
-    end
-  end
-
   private
 
   def check_repository_storages
     invalid = repository_storages - Gitlab.config.repositories.storages.keys
     errors.add(:repository_storages, "can't include: #{invalid.join(", ")}") unless
       invalid.empty?
+  end
+
+  def check_default_artifacts_expire_in
+    ChronicDuration.parse(default_artifacts_expire_in)
+    true
+  rescue ChronicDuration::DurationParseError => e
+    errors.add(:default_artifacts_expire_in, ": #{e.message}")
+    false
   end
 end
