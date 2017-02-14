@@ -269,6 +269,14 @@ class ApplicationSetting < ActiveRecord::Base
     self.repository_storages = [value]
   end
 
+  def default_artifacts_expire_in=(value)
+    if value.present?
+      super(value.strip)
+    else
+      super(nil)
+    end
+  end
+
   # Choose one of the available repository storage options. Currently all have
   # equal weighting.
   def pick_repository_storage

@@ -30,8 +30,14 @@ describe API::Settings, 'Settings', api: true  do
 
       it "updates application settings" do
         put api("/application/settings", admin),
-          default_projects_limit: 3, signin_enabled: false, repository_storage: 'custom', koding_enabled: true, koding_url: 'http://koding.example.com',
-          plantuml_enabled: true, plantuml_url: 'http://plantuml.example.com'
+          default_projects_limit: 3,
+          signin_enabled: false,
+          repository_storage: 'custom',
+          koding_enabled: true,
+          koding_url: 'http://koding.example.com',
+          plantuml_enabled: true,
+          plantuml_url: 'http://plantuml.example.com',
+          default_artifacts_expire_in: '2 days'
         expect(response).to have_http_status(200)
         expect(json_response['default_projects_limit']).to eq(3)
         expect(json_response['signin_enabled']).to be_falsey
@@ -41,6 +47,7 @@ describe API::Settings, 'Settings', api: true  do
         expect(json_response['koding_url']).to eq('http://koding.example.com')
         expect(json_response['plantuml_enabled']).to be_truthy
         expect(json_response['plantuml_url']).to eq('http://plantuml.example.com')
+        expect(json_response['default_artifacts_expire_in']).to eq('2 days')
       end
     end
 
