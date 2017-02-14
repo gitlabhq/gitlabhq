@@ -183,6 +183,13 @@ entry.
 - Add margin to markdown math blocks.
 - Add hover state to MR comment reply button.
 
+## 8.15.6 (2017-02-14)
+
+- Patch Asciidocs rendering to block XSS.
+- Fix XSS vulnerability in SVG attachments.
+- Prevent the GitHub importer from assigning labels and comments to merge requests or issues belonging to other projects.
+- Patch XSS vulnerability in RDOC support.
+
 ## 8.15.4 (2017-01-09)
 
 - Make successful pipeline emails off for watchers. !8176
