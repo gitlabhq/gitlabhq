@@ -1,0 +1,50 @@
+/**
+ * An instance in deploy boards is represented by a square in this mockup:
+ * https://gitlab.com/gitlab-org/gitlab-ce/uploads/2f655655c0eadf655d0ae7467b53002a/environments__deploy-graphic.png
+ *
+ * Each instance has a state an a tooltip.
+ * The state needs to be represented in different colors,
+ * see more information about this in https://gitlab.com/gitlab-org/gitlab-ee/uploads/5fff049fd88336d9ee0c6ef77b1ba7e3/monitoring__deployboard--key.png
+ *
+ */
+
+const Vue = require('vue');
+
+module.exports = Vue.component('deploy_board_instance_component', {
+
+  props: {
+
+    /**
+     * Represents the state of the pod. Each state is represented with a different
+     * color.
+     * It should be one of the following:
+     * finished || deploying || failed || ready || preparing || waiting
+     */
+    state: {
+      type: String,
+      required: true,
+      default: 'finished',
+    },
+
+    tooltipText: {
+      type: String,
+      required: false,
+      default: '',
+    },
+
+    computed: {
+      cssClass() {
+        return `js-deploy-board-instance deploy-board-instance deploy-board-instance-${this.state} has-tooltip`;
+      },
+    },
+
+    template: `
+      <div
+        class="cssClass"
+        data-title="tooltipText"
+        data-toggle="tooltip"
+        data-placement="top">
+      </div>
+    `,
+  },
+});
