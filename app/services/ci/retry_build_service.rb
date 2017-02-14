@@ -1,21 +1,15 @@
 module Ci
   class RetryBuildService < ::BaseService
     def execute(build)
-      # return unless build.retryable?
+      reprocess(build).tap do |new_build|
+        new_build.enqueue!
 
-      self.retry(build).tap do |new_build|
         MergeRequests::AddTodoWhenBuildFailsService
           .new(build.project, current_user)
           .close(new_build)
 
         build.pipeline
           .mark_as_processable_after_stage(build.stage_idx)
-      end
-    end
-
-    def retry(build)
-      self.reprocess(build).tap do |new_build|
-        new_build.enqueue!
       end
     end
 
