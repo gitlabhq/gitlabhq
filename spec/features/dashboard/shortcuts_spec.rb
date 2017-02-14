@@ -24,6 +24,7 @@ feature 'Dashboard shortcuts', feature: true, js: true do
   end
 
   def ensure_active_main_tab(content)
-    expect(find('.nav-sidebar li.active')).to have_content(content)
+    find('.global-dropdown-toggle').trigger('click')
+    expect(find('.global-dropdown-menu li.active')).to have_content(content)
   end
 end

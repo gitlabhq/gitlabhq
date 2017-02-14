@@ -5,7 +5,7 @@ class RemoveThemeIdFromUsers < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   # Set this constant to true if this migration requires downtime.
-  DOWNTIME = true
+  DOWNTIME = false
 
   # When a migration requires downtime you **must** uncomment the following
   # constant and define a short and easy to understand explanation as to why the
