@@ -50,6 +50,8 @@ module API
           optional :visibility, type: String, values: %w[public internal private],
                                 desc: 'Limit by visibility'
           optional :search, type: String, desc: 'Return list of authorized projects matching the search criteria'
+          optional :owned, type: Boolean, default: false, desc: 'Limit by owned by authenticated user'
+          optional :starred, type: Boolean, default: false, desc: 'Limit by starred status'
         end
 
         params :statistics_params do
@@ -82,62 +84,9 @@ module API
       params do
         use :collection_params
       end
-      get '/visible' do
-        entity = current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails
-        present_projects ProjectsFinder.new.execute(current_user), with: entity
-      end
-
-      desc 'Get a projects list for authenticated user' do
-        success Entities::BasicProjectDetails
-      end
-      params do
-        use :collection_params
-      end
       get do
-        authenticate!
-
-        present_projects current_user.authorized_projects,
-          with: Entities::ProjectWithAccess
-      end
-
-      desc 'Get an owned projects list for authenticated user' do
-        success Entities::BasicProjectDetails
-      end
-      params do
-        use :collection_params
-        use :statistics_params
-      end
-      get '/owned' do
-        authenticate!
-
-        present_projects current_user.owned_projects,
-          with: Entities::ProjectWithAccess,
-          statistics: params[:statistics]
-      end
-
-      desc 'Gets starred project for the authenticated user' do
-        success Entities::BasicProjectDetails
-      end
-      params do
-        use :collection_params
-      end
-      get '/starred' do
-        authenticate!
-
-        present_projects current_user.viewable_starred_projects
-      end
-
-      desc 'Get all projects for admin user' do
-        success Entities::BasicProjectDetails
-      end
-      params do
-        use :collection_params
-        use :statistics_params
-      end
-      get '/all' do
-        authenticated_as_admin!
-
-        present_projects Project.all, with: Entities::ProjectWithAccess, statistics: params[:statistics]
+        entity = current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails
+        present_projects ProjectsFinder.new.execute(current_user), with: entity, statistics: params[:statistics]
       end
 
       desc 'Create new project' do
