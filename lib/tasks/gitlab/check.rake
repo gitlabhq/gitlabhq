@@ -1123,7 +1123,7 @@ namespace :gitlab do
 
       try_fixing_it(
         'Check if the machine is online and GitLab is running',
-        'Check your firewall rules and make sure this machine can reach target machine',
+        'Check your firewall rules and make sure this machine can reach the target machine',
         "Make sure port and protocol are correct: '#{node.url}', or change it in Admin > Geo Nodes"
       )
     rescue SocketError => e
@@ -1131,7 +1131,7 @@ namespace :gitlab do
 
       if e.cause && e.cause.message.starts_with?('getaddrinfo')
         try_fixing_it(
-          'Check if your machine can connect to a DSN server',
+          'Check if your machine can connect to a DNS server',
           "Check if your machine can resolve DNS for: '#{node.uri.host}'",
           'If machine host is incorrect, change it in Admin > Geo Nodes'
         )
@@ -1140,7 +1140,7 @@ namespace :gitlab do
       display_error.call(e)
 
       try_fixing_it(
-        'If you have a self-signed CA or certificate you need to whitelist in Omnibus',
+        'If you have a self-signed CA or certificate you need to whitelist it in Omnibus',
       )
       for_more_information(see_custom_certificate_doc)
 
