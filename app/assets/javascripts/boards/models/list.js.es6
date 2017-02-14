@@ -134,7 +134,7 @@ class List {
 
       if (listFrom) {
         this.issuesSize += 1;
-        gl.boardService.moveIssue(issue.id, listFrom.id, this.id, moveAfterIid, moveBeforeIid)
+        gl.boardService.moveIssue(issue.id, listFrom.id, this.id, moveBeforeIid, moveAfterIid)
           .then(() => {
             listFrom.getIssues(false);
           });
@@ -146,7 +146,7 @@ class List {
     this.issues.splice(oldIndex, 1);
     this.issues.splice(newIndex, 0, issue);
 
-    gl.boardService.moveIssue(issue.id, null, null, moveAfterIid, moveBeforeIid);
+    gl.boardService.moveIssue(issue.id, null, null, moveBeforeIid, moveAfterIid);
   }
 
   findIssue (id) {

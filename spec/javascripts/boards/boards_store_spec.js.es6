@@ -1,3 +1,5 @@
+window.ES6Promise = require('vendor/es6-promise.auto');
+window.ES6Promise.polyfill();
 /* eslint-disable comma-dangle, one-var, no-unused-vars */
 /* global Vue */
 /* global BoardService */
@@ -20,6 +22,12 @@ describe('Store', () => {
     Vue.http.interceptors.push(boardsMockInterceptor);
     gl.boardService = new BoardService('/test/issue-boards/board', '', '1');
     gl.issueBoards.BoardsStore.create();
+
+    spyOn(gl.boardService, 'moveIssue').and.callFake(() => {
+      return new Promise((resolve) => {
+        resolve();
+      });
+    });
 
     Cookies.set('issue_board_welcome_hidden', 'false', {
       expires: 365 * 10,
@@ -153,6 +161,75 @@ describe('Store', () => {
 
         done();
       }, 0);
+    });
+
+    it('moves issue to top of another list', (done) => {
+      const listOne = gl.issueBoards.BoardsStore.addList(listObj);
+      const listTwo = gl.issueBoards.BoardsStore.addList(listObjDuplicate);
+
+      expect(gl.issueBoards.BoardsStore.state.lists.length).toBe(2);
+
+      setTimeout(() => {
+        listOne.issues[0].id = 2;
+
+        expect(listOne.issues.length).toBe(1);
+        expect(listTwo.issues.length).toBe(1);
+
+        gl.issueBoards.BoardsStore.moveIssueToList(listOne, listTwo, listOne.findIssue(2), 0);
+
+        expect(listOne.issues.length).toBe(0);
+        expect(listTwo.issues.length).toBe(2);
+        expect(listTwo.issues[0].id).toBe(2);
+        expect(gl.boardService.moveIssue).toHaveBeenCalledWith(2, listOne.id, listTwo.id, null, 1);
+
+        done();
+      }, 0);
+    });
+
+    it('moves issue to bottom of another list', (done) => {
+      const listOne = gl.issueBoards.BoardsStore.addList(listObj);
+      const listTwo = gl.issueBoards.BoardsStore.addList(listObjDuplicate);
+
+      expect(gl.issueBoards.BoardsStore.state.lists.length).toBe(2);
+
+      setTimeout(() => {
+        listOne.issues[0].id = 2;
+
+        expect(listOne.issues.length).toBe(1);
+        expect(listTwo.issues.length).toBe(1);
+
+        gl.issueBoards.BoardsStore.moveIssueToList(listOne, listTwo, listOne.findIssue(2), 1);
+
+        expect(listOne.issues.length).toBe(0);
+        expect(listTwo.issues.length).toBe(2);
+        expect(listTwo.issues[1].id).toBe(2);
+        expect(gl.boardService.moveIssue).toHaveBeenCalledWith(2, listOne.id, listTwo.id, 1, null);
+
+        done();
+      }, 0);
+    });
+
+    it('moves issue in list', (done) => {
+      const issue = new ListIssue({
+        title: 'Testing',
+        iid: 2,
+        confidential: false,
+        labels: []
+      });
+      const list = gl.issueBoards.BoardsStore.addList(listObj);
+
+      setTimeout(() => {
+        list.addIssue(issue);
+
+        expect(list.issues.length).toBe(2);
+
+        gl.issueBoards.BoardsStore.moveIssueInList(list, issue, 0, 1, [1, 2]);
+
+        expect(list.issues[0].id).toBe(2);
+        expect(gl.boardService.moveIssue).toHaveBeenCalledWith(2, null, null, 1, null);
+
+        done();
+      });
     });
   });
 });

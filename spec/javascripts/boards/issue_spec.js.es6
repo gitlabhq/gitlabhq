@@ -79,4 +79,20 @@ describe('Issue model', () => {
     issue.removeLabels([issue.labels[0], issue.labels[1]]);
     expect(issue.labels.length).toBe(0);
   });
+
+  it('sets position to infinity if no position is stored', () => {
+    expect(issue.position).toBe(Infinity);
+  });
+
+  it('sets position', () => {
+    const relativePositionIssue = new ListIssue({
+      title: 'Testing',
+      iid: 1,
+      confidential: false,
+      relative_position: 1,
+      labels: []
+    });
+
+    expect(relativePositionIssue.position).toBe(1);
+  });
 });
