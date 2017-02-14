@@ -64,6 +64,7 @@
 - [Downgrade back to CE](downgrade_ee_to_ce/README.md) Follow this guide if you need to downgrade from EE to CE.
 - [git-annex configuration](workflow/git_annex.md#configuration)
 - [Git LFS configuration](workflow/lfs/lfs_administration.md)
+- [Git-Annex to Git-LFS Migration Guide](workflow/lfs/migrate_from_git-annex_to_git-lfs.html)
 - [Housekeeping](administration/housekeeping.md) Keep your Git repository tidy and fast.
 - [GitLab Pages configuration](administration/pages/index.md) Configure GitLab Pages.
 - [Elasticsearch](integration/elasticsearch.md) Enable Elasticsearch.
