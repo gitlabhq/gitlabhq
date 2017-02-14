@@ -10,7 +10,7 @@ module NamespacesHelper
     data_attr_users = { 'data-options-parent' => 'users' }
 
     group_opts = [
-      "Groups", groups.sort_by(&:human_name).map { |g| [display_path ? g.path : g.human_name, g.id, data_attr_group] }
+      "Groups", groups.sort_by(&:human_name).map { |g| [display_path ? g.full_path : g.human_name, g.id, data_attr_group] }
     ]
 
     users_opts = [
