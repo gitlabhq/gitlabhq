@@ -52,6 +52,7 @@ module API
     mount ::API::Branches
     mount ::API::BroadcastMessages
     mount ::API::Builds
+    mount ::API::Ci
     mount ::API::Commits
     mount ::API::CommitStatuses
     mount ::API::DeployKeys
