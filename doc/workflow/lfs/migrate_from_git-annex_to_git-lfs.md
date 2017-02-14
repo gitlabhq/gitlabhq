@@ -133,7 +133,6 @@ ok
 ok
 indirect  ok
 ok
-$
 ```
 
 Now, we can add, commit, and push to reflect the
@@ -158,7 +157,7 @@ $ git commit -m "annex uninit"
 $ git push origin master
 ```
 
-For keeping your repo clean, let's remove all
+To keep your repo clean, let's remove all
 **git-annex** related branches from your repository.
 
 - On GitLab, navigate to your project's **Repository** > **Branches**
@@ -216,7 +215,6 @@ Example:
 $ git lfs track images/*
 Tracking images/01.png
 Tracking images/02.png
-$
 ```
 
 Once you do that, run `git status` and you'll see
