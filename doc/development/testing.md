@@ -116,12 +116,20 @@ Here are some things to keep in mind regarding test performance:
 
 ### Features / Integration
 
+GitLab uses [rspec-rails feature specs] to test features in a browser
+environment. These are [capybara] specs running on the headless [poltergeist]
+driver.
+
 - Feature specs live in `spec/features/` and should be named
   `ROLE_ACTION_spec.rb`, such as `user_changes_password_spec.rb`.
 - Use only one `feature` block per feature spec file.
 - Use scenario titles that describe the success and failure paths.
 - Avoid scenario titles that add no information, such as "successfully."
 - Avoid scenario titles that repeat the feature title.
+
+[rspec-rails feature specs]: https://github.com/rspec/rspec-rails#feature-specs
+[capybara]: https://github.com/teamcapybara/capybara
+[poltergeist]: https://github.com/teampoltergeist/poltergeist
 
 ## Spinach (feature) tests
 
@@ -130,9 +138,7 @@ for its feature/integration tests in September 2012.
 
 As of March 2016, we are [trying to avoid adding new Spinach
 tests](https://gitlab.com/gitlab-org/gitlab-ce/issues/14121) going forward,
-opting for [RSpec feature specs] as [described above](#features-integration).
-
-[RSpec feature specs]: https://github.com/rspec/rspec-rails#feature-specs
+opting for [RSpec feature](#features-integration) specs.
 
 Adding new Spinach scenarios is acceptable _only if_ the new scenario requires
 no more than one new `step` definition. If more than that is required, the
