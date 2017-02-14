@@ -1,6 +1,8 @@
 module Ci
   class RetryBuildService < ::BaseService
     def execute(build)
+      # return unless build.retryable?
+
       self.retry(build).tap do |new_build|
         MergeRequests::AddTodoWhenBuildFailsService
           .new(build.project, current_user)

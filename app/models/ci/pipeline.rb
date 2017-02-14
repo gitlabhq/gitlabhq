@@ -224,13 +224,9 @@ module Ci
         end
     end
 
-    def retry_failed(user)
-      Gitlab::OptimisticLocking.retry_lock(
-        builds.latest.failed_or_canceled) do |failed_or_canceled|
-          failed_or_canceled.select(&:retryable?).each do |build|
-            Ci::Build.retry(build, user)
-          end
-        end
+    def retry_failed(current_user)
+      Ci::RetryPipelineService.new(project, current_user)
+        .execute(self)
     end
 
     def mark_as_processable_after_stage(stage_idx)
