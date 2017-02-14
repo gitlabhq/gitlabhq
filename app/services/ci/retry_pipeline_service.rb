@@ -1,34 +1,36 @@
 module Ci
-  class RetryPipelineService
-    include Gitlab::Allowable
-
-    def initialize(pipeline, user)
+  class RetryPipelineService < ::BaseService
+    def execute(pipeline)
       @pipeline = pipeline
-      @user = user
-    end
 
-    def execute
-      unless can?(@user, :update_pipeline, @pipeline)
+      unless can?(current_user, :update_pipeline, pipeline)
         raise Gitlab::Access::AccessDeniedError
       end
 
       ##
-      # Reprocess builds in subsequent stages if any
+      # Reprocess builds in subsequent stages
       #
-      # TODO, refactor.
-      #
-      @pipeline.builds
+      pipeline.builds
         .where('stage_idx > ?', resume_stage.index)
         .failed_or_canceled.find_each do |build|
-          Ci::RetryBuildService.new(build, @user).reprocess!
+          Ci::RetryBuildService
+            .new(project, current_user)
+            .reprocess(build)
         end
 
       ##
       # Retry builds in the first unsuccessful stage
       #
       resume_stage.builds.failed_or_canceled.find_each do |build|
-        Ci::Build.retry(build, @user)
+        Ci::RetryBuildService
+          .new(project, current_user)
+          .retry(build)
       end
+
+      ##
+      # Mark skipped builds as processable again
+      #
+      pipeline.mark_as_processable_after_stage(resume_stage.index)
     end
 
     private

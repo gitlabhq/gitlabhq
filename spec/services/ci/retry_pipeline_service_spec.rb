@@ -4,7 +4,7 @@ describe Ci::RetryPipelineService, '#execute', :services do
   let(:user) { create(:user) }
   let(:project) { create(:empty_project) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
-  let(:service) { described_class.new(pipeline, user) }
+  let(:service) { described_class.new(project, user) }
 
   context 'when user has ability to modify pipeline' do
     let(:user) { create(:admin) }
@@ -17,7 +17,7 @@ describe Ci::RetryPipelineService, '#execute', :services do
       end
 
       it 'enqueues all builds in the last stage' do
-        service.execute
+        service.execute(pipeline)
 
         expect(build('rspec 2')).to be_pending
         expect(build('rspec 3')).to be_pending
@@ -34,7 +34,7 @@ describe Ci::RetryPipelineService, '#execute', :services do
       end
 
       it 'retries builds failed builds and marks subsequent for processing' do
-        service.execute
+        service.execute(pipeline)
 
         expect(build('rspec 1')).to be_pending
         expect(build('rspec 2')).to be_pending
@@ -53,7 +53,7 @@ describe Ci::RetryPipelineService, '#execute', :services do
       end
 
       it 'retries builds failed builds and marks subsequent for processing' do
-        service.execute
+        service.execute(pipeline)
 
         expect(build('rspec 1')).to be_pending
         expect(build('rspec 2')).to be_pending
@@ -63,7 +63,7 @@ describe Ci::RetryPipelineService, '#execute', :services do
       end
 
       it 'creates a new job for report job in this case' do
-        service.execute
+        service.execute(pipeline)
 
         expect(statuses.where(name: 'report 1').count).to eq 2
       end
@@ -72,7 +72,7 @@ describe Ci::RetryPipelineService, '#execute', :services do
 
   context 'when user is not allowed to retry pipeline' do
     it 'raises an error' do
-      expect { service.execute }
+      expect { service.execute(pipeline) }
         .to raise_error Gitlab::Access::AccessDeniedError
     end
   end

@@ -63,7 +63,9 @@ module Ci
       end
 
       def retry(build, current_user)
-        Ci::RetryBuildService.new(build, current_user).retry!
+        Ci::RetryBuildService
+          .new(build.project, current_user)
+          .execute(build)
       end
     end
 

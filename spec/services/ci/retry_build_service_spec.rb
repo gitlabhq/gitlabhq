@@ -7,13 +7,13 @@ describe Ci::RetryBuildService, :services do
   let(:build) { create(:ci_build, pipeline: pipeline) }
 
   let(:service) do
-    described_class.new(build, user)
+    described_class.new(project, user)
   end
 
-  describe '#retry!' do
-    let(:new_build) { service.retry! }
+  describe '#execute' do
+    let(:new_build) { service.execute(build) }
 
-    context 'when user has ability to retry build' do
+    context 'when user has ability to execute build' do
       before do
         project.team << [user, :developer]
       end
@@ -30,7 +30,7 @@ describe Ci::RetryBuildService, :services do
         expect(MergeRequests::AddTodoWhenBuildFailsService)
           .to receive_message_chain(:new, :close)
 
-        service.retry!
+        service.execute(build)
       end
 
       context 'when there are subsequent builds that are skipped' do
@@ -39,16 +39,16 @@ describe Ci::RetryBuildService, :services do
         end
 
         it 'resumes pipeline processing in subsequent stages' do
-          service.retry!
+          service.execute(build)
 
           expect(subsequent_build.reload).to be_created
         end
       end
     end
 
-    context 'when user does not have ability to retry build' do
+    context 'when user does not have ability to execute build' do
       it 'raises an error' do
-        expect { service.retry! }
+        expect { service.execute(build) }
           .to raise_error Gitlab::Access::AccessDeniedError
       end
     end
