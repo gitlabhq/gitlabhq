@@ -20,6 +20,28 @@ in your [local environment][install-annex-local].
 On GitLab.com, **git-annex** was enabled, and you had
 only to install it locally.
 
+### TL;DR
+
+If you want to skip the reading and go straight to the point,
+this is what you need to do:
+
+```bash
+# Enable git-annex (what we expect you to have done so far)
+$ git annex init
+$ git annex add <files>
+$ git commit -m "commit message"
+$ git annex sync --content
+# Disable git-annex
+$ git annex direct
+$ git annex uninit
+$ git annex indirect
+$ git add .
+$ git commit -m "commit message"
+$ git push
+# Enable git-lfs
+$ git lfs track <files>
+```
+
 ### Enabling Annex
 
 This step is only important to remind you how did
@@ -231,21 +253,20 @@ size after pushing it again.
 - (GitLab Doc) [Git Annex][doc-1]
 - (GitLab Doc) [Git LFS][doc-2]
 
-[post-1]: https://about.gitlab.com/2017/01/30/getting-started-with-git-lfs-tutorial/
-[post-2]: https://about.gitlab.com/2015/11/23/announcing-git-lfs-support-in-gitlab/
-[post-3]: https://about.gitlab.com/2015/02/17/gitlab-annex-solves-the-problem-of-versioning-large-binaries-with-git/
-[doc-1]: https://docs.gitlab.com/ee/workflow/git_annex.html
-[doc-2]: https://docs.gitlab.com/ee/workflow/lfs/manage_large_binaries_with_git_lfs.html
-
 [annex-ee]: https://docs.gitlab.com/ee/workflow/git_annex.html
 [annex-vs-lfs]: https://workingconcept.com/blog/git-annex-vs-git-lfs
 [bkp-ext-drive]: https://www.thomas-krenn.com/en/wiki/Git-annex_Repository_on_an_External_Hard_Drive
+[doc-1]: https://docs.gitlab.com/ee/workflow/git_annex.html
+[doc-2]: https://docs.gitlab.com/ee/workflow/lfs/manage_large_binaries_with_git_lfs.html
 [Git Annex]: http://git-annex.branchable.com/
 [Git LFS]: https://git-lfs.github.com/
 [install-annex-local]: https://git-annex.branchable.com/install/
 [install-lfs]: https://git-lfs.github.com/
 [issue-remove-annex]: https://gitlab.com/gitlab-org/gitlab-ee/issues/1648
 [lfs-track]: https://about.gitlab.com/2017/01/30/getting-started-with-git-lfs-tutorial/#tracking-files-with-lfs
+[post-1]: https://about.gitlab.com/2017/01/30/getting-started-with-git-lfs-tutorial/
+[post-2]: https://about.gitlab.com/2015/11/23/announcing-git-lfs-support-in-gitlab/
+[post-3]: https://about.gitlab.com/2015/02/17/gitlab-annex-solves-the-problem-of-versioning-large-binaries-with-git/
 [post-intro-annex]: https://about.gitlab.com/2015/02/17/gitlab-annex-solves-the-problem-of-versioning-large-binaries-with-git/
 [stackoverflow-1]: http://stackoverflow.com/questions/24447047/remove-git-annex-repository-from-file-tree
 [uninit]: https://git-annex.branchable.com/git-annex-uninit/
