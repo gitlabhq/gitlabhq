@@ -766,8 +766,8 @@ describe Ci::Pipeline, models: true do
         pipeline.cancel_running
       end
 
-      it 'skips created builds' do
-        expect(latest_status).to eq ['canceled', 'skipped']
+      it 'cancels created builds' do
+        expect(latest_status).to eq ['canceled', 'canceled']
       end
     end
   end
@@ -801,7 +801,7 @@ describe Ci::Pipeline, models: true do
       end
 
       it 'retries both builds' do
-        expect(latest_status).to contain_exactly('pending', 'pending')
+        expect(latest_status).to contain_exactly('pending', 'created')
       end
     end
 
@@ -814,7 +814,7 @@ describe Ci::Pipeline, models: true do
       end
 
       it 'retries both builds' do
-        expect(latest_status).to contain_exactly('pending', 'pending')
+        expect(latest_status).to contain_exactly('pending', 'created')
       end
     end
   end

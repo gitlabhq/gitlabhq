@@ -11,9 +11,9 @@ describe Ci::RetryPipelineService, '#execute', :services do
 
     context 'when there are failed builds in the last stage' do
       before do
-        create_build(name: 'rspec 1', status: :success, stage_num: 0)
-        create_build(name: 'rspec 2', status: :failed, stage_num: 1)
-        create_build(name: 'rspec 3', status: :canceled, stage_num: 1)
+        create_build('rspec 1', :success, 0)
+        create_build('rspec 2', :failed, 1)
+        create_build('rspec 3', :canceled, 1)
       end
 
       it 'enqueues all builds in the last stage' do
@@ -27,10 +27,10 @@ describe Ci::RetryPipelineService, '#execute', :services do
 
     context 'when there are failed or canceled builds in the first stage' do
       before do
-        create_build(name: 'rspec 1', status: :failed, stage_num: 0)
-        create_build(name: 'rspec 2', status: :canceled, stage_num: 0)
-        create_build(name: 'rspec 3', status: :skipped, stage_num: 1)
-        create_build(name: 'deploy 1', status: :skipped, stage_num: 2)
+        create_build('rspec 1', :failed, 0)
+        create_build('rspec 2', :canceled, 0)
+        create_build('rspec 3', :canceled, 1)
+        create_build('deploy 1', :canceled, 2)
       end
 
       it 'retries builds failed builds and marks subsequent for processing' do
@@ -46,10 +46,10 @@ describe Ci::RetryPipelineService, '#execute', :services do
 
     context 'when there is failed build present which was run on failure' do
       before do
-        create_build(name: 'rspec 1', status: :failed, stage_num: 0)
-        create_build(name: 'rspec 2', status: :canceled, stage_num: 0)
-        create_build(name: 'rspec 3', status: :skipped, stage_num: 1)
-        create_build(name: 'report 1', status: :failed, stage_num: 2)
+        create_build('rspec 1', :failed, 0)
+        create_build('rspec 2', :canceled, 0)
+        create_build('rspec 3', :canceled, 1)
+        create_build('report 1', :failed, 2)
       end
 
       it 'retries builds failed builds and marks subsequent for processing' do
@@ -65,7 +65,25 @@ describe Ci::RetryPipelineService, '#execute', :services do
       it 'creates a new job for report job in this case' do
         service.execute(pipeline)
 
+        # TODO, expect to be_retried
         expect(statuses.where(name: 'report 1').count).to eq 2
+      end
+    end
+
+    context 'when there is canceled manual build in first stage' do
+      before do
+        create_build('rspec 1', :failed, 0)
+        create_build('staging', :canceled, 0, :manual)
+        create_build('rspec 2', :canceled, 1)
+      end
+
+      it 'retries builds failed builds and marks subsequent for processing' do
+        service.execute(pipeline)
+
+        expect(build('rspec 1')).to be_pending
+        expect(build('staging')).to be_skipped
+        expect(build('rspec 2')).to be_created
+        expect(pipeline.reload).to be_running
       end
     end
   end
@@ -85,11 +103,12 @@ describe Ci::RetryPipelineService, '#execute', :services do
     statuses.latest.find_by(name: name)
   end
 
-  def create_build(name:, status:, stage_num:)
+  def create_build(name, status, stage_num, on = 'on_success')
     create(:ci_build, name: name,
                       status: status,
                       stage: "stage_#{stage_num}",
                       stage_idx: stage_num,
+                      when: on,
                       pipeline: pipeline) do |build|
       pipeline.update_status
     end
