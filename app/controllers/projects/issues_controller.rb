@@ -27,13 +27,11 @@ class Projects::IssuesController < Projects::ApplicationController
     @issues             = issues_collection
     @issues_count       = @issues.count
 
-    if !request.format.csv?
-      @issues = @issues.page(params[:page])
-      @issuable_meta_data = issuable_meta_data(@issues)
+    @issues = @issues.page(params[:page])
+    @issuable_meta_data = issuable_meta_data(@issues)
 
-      if @issues.out_of_range? && @issues.total_pages != 0
-        return redirect_to url_for(params.merge(page: @issues.total_pages))
-      end
+    if @issues.out_of_range? && @issues.total_pages != 0
+      return redirect_to url_for(params.merge(page: @issues.total_pages))
     end
 
     if params[:label_name].present?
@@ -55,9 +53,6 @@ class Projects::IssuesController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.atom { render layout: false }
-      format.csv do
-        render text: Issues::ExportCsvService.new(@issues).render
-      end
       format.json do
         render json: {
           html: view_to_html_string("projects/issues/_issues"),
@@ -150,6 +145,13 @@ class Projects::IssuesController < Projects::ApplicationController
   rescue ActiveRecord::StaleObjectError
     @conflict = true
     render :edit
+  end
+
+  def export_csv
+    ExportCsvWorker.perform_async(@current_user.id, @project.id, filter_params)
+
+    index_path = namespace_project_issues_path(@project.namespace, @project)
+    redirect_to(index_path, notice: "CSV export queued")
   end
 
   def referenced_merge_requests

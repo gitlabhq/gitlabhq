@@ -9,6 +9,11 @@ module Issues
       csv_builder.render
     end
 
+    def email(user, project)
+      content = render
+      Notify.issues_csv_email(user, project, content, @issues.count).deliver_now
+    end
+
     private
 
     def csv_builder
