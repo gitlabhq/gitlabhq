@@ -4,7 +4,7 @@
 Available since [Omnibus GitLab 8.17][1132]. For installations from source
 you'll have to install and configure it yourself.
 
-The [GitLab monitor exporter] allows you to measure various GitLab metrics.
+The [GitLab monitor exporter] allows you to measure various GitLab metrics, such as Sidekiq jobs and SSH push/pull timings.
 
 To enable the GitLab monitor exporter:
 
