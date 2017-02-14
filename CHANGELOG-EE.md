@@ -1,5 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 8.16.5 (2017-02-14)
+
+- No changes.
+
 ## 8.16.4 (2017-02-02)
 
 - Disable all merge acceptance buttons pending MR approval.
