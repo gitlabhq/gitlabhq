@@ -232,6 +232,20 @@ to the remote.
 Though the image has 32KB, the repo remains the same
 size after pushing it again.
 
+### Further Reading
+
+- (Blog Post) [Getting Started with Git FLS][post-1]
+- (Blog Post) [Announcing LFS Support in GitLab][post-2]
+- (Blog Post) [GitLab Annex Solves the Problem of Versioning Large Binaries with Git][post-3]
+- (GitLab Doc) [Git Annex][doc-1]
+- (GitLab Doc) [Git LFS][doc-2]
+
+[post-1]: https://about.gitlab.com/2017/01/30/getting-started-with-git-lfs-tutorial/
+[post-2]: https://about.gitlab.com/2015/11/23/announcing-git-lfs-support-in-gitlab/
+[post-3]: https://about.gitlab.com/2015/02/17/gitlab-annex-solves-the-problem-of-versioning-large-binaries-with-git/
+[doc-1]: https://docs.gitlab.com/ee/workflow/git_annex.html
+[doc-2]: https://docs.gitlab.com/ee/workflow/lfs/manage_large_binaries_with_git_lfs.html
+
 [annex-ee]: https://docs.gitlab.com/ee/workflow/git_annex.html
 [annex-vs-lfs]: https://workingconcept.com/blog/git-annex-vs-git-lfs
 [bkp-ext-drive]: https://www.thomas-krenn.com/en/wiki/Git-annex_Repository_on_an_External_Hard_Drive
