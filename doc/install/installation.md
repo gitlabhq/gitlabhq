@@ -39,6 +39,7 @@ The GitLab installation consists of setting up the following components:
 1. Packages / Dependencies
 1. Ruby
 1. Go
+1. Node
 1. System Users
 1. Database
 1. Redis
@@ -63,7 +64,7 @@ up-to-date and install it.
 
 Install the required packages (needed to compile Ruby and native extensions to Ruby gems):
 
-    sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl openssh-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev logrotate python-docutils pkg-config cmake nodejs
+    sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl openssh-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev logrotate python-docutils pkg-config cmake
 
 If you want to use Kerberos for user authentication, then install libkrb5-dev:
 
@@ -151,13 +152,26 @@ page](https://golang.org/dl).
     sudo ln -sf /usr/local/go/bin/{go,godoc,gofmt} /usr/local/bin/
     rm go1.5.3.linux-amd64.tar.gz
 
-## 4. System Users
+## 4. Node
+
+Since GitLab 8.17, GitLab requires the use of node >= v4.3.0 to compile
+javascript assets. In many distros the version provided by the official package
+repositories is out of date, so we'll need to install through the following
+commands:
+
+    # install node v7.x
+    curl --location https://deb.nodesource.com/setup_7.x | bash -
+    sudo apt-get install -y nodejs
+
+Visit the official website for [node](https://nodejs.org/en/download/package-manager/) if you have any trouble with this step.
+
+## 5. System Users
 
 Create a `git` user for GitLab:
 
     sudo adduser --disabled-login --gecos 'GitLab' git
 
-## 5. Database
+## 6. Database
 
 We recommend using a PostgreSQL database. For MySQL check the
 [MySQL setup guide](database_mysql.md).
@@ -218,7 +232,7 @@ We recommend using a PostgreSQL database. For MySQL check the
     gitlabhq_production> \q
     ```
 
-## 6. Redis
+## 7. Redis
 
 GitLab requires at least Redis 2.8.
 
@@ -263,7 +277,7 @@ sudo service redis-server restart
 sudo usermod -aG redis git
 ```
 
-## 7. GitLab
+## 8. GitLab
 
     # We'll install GitLab into home directory of the user "git"
     cd /home/git
@@ -451,7 +465,8 @@ Check if GitLab and its environment are configured correctly:
 
 ### Compile Assets
 
-    sudo -u git -H bundle exec rake gitlab:assets:compile RAILS_ENV=production
+    sudo -u git -H npm install --production
+    sudo -u git -H bundle exec rake gitlab:assets:compile RAILS_ENV=production NODE_ENV=production
 
 ### Start Your GitLab Instance
 
@@ -459,7 +474,7 @@ Check if GitLab and its environment are configured correctly:
     # or
     sudo /etc/init.d/gitlab restart
 
-## 8. Nginx
+## 9. Nginx
 
 **Note:** Nginx is the officially supported web server for GitLab. If you cannot or do not want to use Nginx as your web server, have a look at the [GitLab recipes](https://gitlab.com/gitlab-org/gitlab-recipes/).
 
