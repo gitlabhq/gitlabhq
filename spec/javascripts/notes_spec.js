@@ -41,7 +41,7 @@ require('~/lib/utils/text_utility');
           expect(req.url).toBe('http://test.host/frontend-fixtures/issues-project/notes/1');
           return expect(req.data.note).not.toBe(null);
         });
-        return $('.js-task-list-field').trigger('tasklist:changed');
+        $('.js-task-list-field').trigger('tasklist:changed');
       });
     });
 
