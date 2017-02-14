@@ -19,10 +19,6 @@ module Ci
       name
     end
 
-    def index
-      statuses.first.stage_idx
-    end
-
     def statuses_count
       @statuses_count ||= statuses.count
     end
@@ -47,14 +43,6 @@ module Ci
 
     def success?
       status.to_s == 'success'
-    end
-
-    def failed?
-      status.to_s == 'failed'
-    end
-
-    def canceled?
-      status.to_s == 'canceled'
     end
 
     def has_warnings?
