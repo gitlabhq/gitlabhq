@@ -1,5 +1,7 @@
 # rubocop:disable all
 class MoveSlackServiceToWebhook < ActiveRecord::Migration
+  DOWNTIME = false
+
   def change
     SlackService.all.each do |slack_service|
       if ["token", "subdomain"].all? { |property| slack_service.properties.key? property }
