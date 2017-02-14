@@ -53,4 +53,29 @@ describe Ci::RetryBuildService, :services do
       end
     end
   end
+
+  describe '#reprocess' do
+    let(:new_build) { service.reprocess(build) }
+
+    context 'when user has ability to execute build' do
+      before do
+        project.team << [user, :developer]
+      end
+
+      it 'creates a new build that represents the old one' do
+        expect(new_build.name).to eq build.name
+      end
+
+      it 'does not enqueue the new build' do
+        expect(new_build).to be_created
+      end
+    end
+
+    context 'when user does not have ability to execute build' do
+      it 'raises an error' do
+        expect { service.reprocess(build) }
+          .to raise_error Gitlab::Access::AccessDeniedError
+      end
+    end
+  end
 end

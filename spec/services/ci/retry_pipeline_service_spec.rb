@@ -30,7 +30,7 @@ describe Ci::RetryPipelineService, '#execute', :services do
         create_build('rspec 1', :failed, 0)
         create_build('rspec 2', :canceled, 0)
         create_build('rspec 3', :canceled, 1)
-        create_build('deploy 1', :canceled, 2)
+        create_build('spinach 1', :canceled, 2)
       end
 
       it 'retries builds failed builds and marks subsequent for processing' do
@@ -39,7 +39,7 @@ describe Ci::RetryPipelineService, '#execute', :services do
         expect(build('rspec 1')).to be_pending
         expect(build('rspec 2')).to be_pending
         expect(build('rspec 3')).to be_created
-        expect(build('deploy 1')).to be_created
+        expect(build('spinach 1')).to be_created
         expect(pipeline.reload).to be_running
       end
     end
@@ -52,7 +52,7 @@ describe Ci::RetryPipelineService, '#execute', :services do
         create_build('report 1', :failed, 2)
       end
 
-      it 'retries builds failed builds and marks subsequent for processing' do
+      it 'retries builds only in the first stage' do
         service.execute(pipeline)
 
         expect(build('rspec 1')).to be_pending
@@ -65,25 +65,71 @@ describe Ci::RetryPipelineService, '#execute', :services do
       it 'creates a new job for report job in this case' do
         service.execute(pipeline)
 
-        # TODO, expect to be_retried
-        expect(statuses.where(name: 'report 1').count).to eq 2
+        expect(statuses.where(name: 'report 1').first).to be_retried
       end
     end
 
-    context 'when there is canceled manual build in first stage' do
-      before do
-        create_build('rspec 1', :failed, 0)
-        create_build('staging', :canceled, 0, :manual)
-        create_build('rspec 2', :canceled, 1)
+    context 'when pipeline contains manual actions' do
+      context 'when there is a canceled manual action in first stage' do
+        before do
+          create_build('rspec 1', :failed, 0)
+          create_build('staging', :canceled, 0, :manual)
+          create_build('rspec 2', :canceled, 1)
+        end
+
+        it 'retries builds failed builds and marks subsequent for processing' do
+          service.execute(pipeline)
+
+          expect(build('rspec 1')).to be_pending
+          expect(build('staging')).to be_skipped
+          expect(build('rspec 2')).to be_created
+          expect(pipeline.reload).to be_running
+        end
       end
 
-      it 'retries builds failed builds and marks subsequent for processing' do
-        service.execute(pipeline)
+      context 'when there is a skipped manual action in last stage' do
+        before do
+          create_build('rspec 1', :canceled, 0)
+          create_build('staging', :skipped, 1, :manual)
+        end
 
-        expect(build('rspec 1')).to be_pending
-        expect(build('staging')).to be_skipped
-        expect(build('rspec 2')).to be_created
-        expect(pipeline.reload).to be_running
+        it 'retries canceled job and skips manual action' do
+          service.execute(pipeline)
+
+          expect(build('rspec 1')).to be_pending
+          expect(build('staging')).to be_skipped
+          expect(pipeline.reload).to be_running
+        end
+      end
+
+      context 'when there is a created manual action in the last stage' do
+        before do
+          create_build('rspec 1', :canceled, 0)
+          create_build('staging', :created, 1, :manual)
+        end
+
+        it 'retries canceled job and does not update the manual action' do
+          service.execute(pipeline)
+
+          expect(build('rspec 1')).to be_pending
+          expect(build('staging')).to be_created
+          expect(pipeline.reload).to be_running
+        end
+      end
+
+      context 'when there is a created manual action in the first stage' do
+        before do
+          create_build('rspec 1', :canceled, 0)
+          create_build('staging', :created, 0, :manual)
+        end
+
+        it 'retries canceled job and skipps the manual action' do
+          service.execute(pipeline)
+
+          expect(build('rspec 1')).to be_pending
+          expect(build('staging')).to be_skipped
+          expect(pipeline.reload).to be_running
+        end
       end
     end
   end
