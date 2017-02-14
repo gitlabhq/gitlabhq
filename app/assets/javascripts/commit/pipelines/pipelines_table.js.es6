@@ -56,15 +56,14 @@ require('./pipelines_store');
     },
 
     /**
-     * When the component is created the service to fetch the data will be
-     * initialized with the correct endpoint.
+     * When the component is about to be mounted, tell the service to fetch the data
      *
      * A request to fetch the pipelines will be made.
      * In case of a successfull response we will store the data in the provided
      * store, in case of a failed response we need to warn the user.
      *
      */
-    created() {
+    beforeMount() {
       const pipelinesService = new gl.commits.pipelines.PipelinesService(this.endpoint);
 
       this.isLoading = true;
