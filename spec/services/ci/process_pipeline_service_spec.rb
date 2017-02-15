@@ -9,7 +9,7 @@ describe Ci::ProcessPipelineService, :services do
   end
 
   before do
-    project.team << [user, :developer]
+    project.add_developer(user)
   end
 
   describe '#execute' do

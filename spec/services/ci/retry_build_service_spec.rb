@@ -15,7 +15,7 @@ describe Ci::RetryBuildService, :services do
 
     context 'when user has ability to execute build' do
       before do
-        project.team << [user, :developer]
+        project.add_developer(user)
       end
 
       it 'creates a new build that represents the old one' do
@@ -59,7 +59,7 @@ describe Ci::RetryBuildService, :services do
 
     context 'when user has ability to execute build' do
       before do
-        project.team << [user, :developer]
+        project.add_developer(user)
       end
 
       it 'creates a new build that represents the old one' do

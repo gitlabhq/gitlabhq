@@ -235,7 +235,7 @@ describe CreateDeploymentService, services: true do
       context 'when build is retried' do
         it_behaves_like 'does create environment and deployment' do
           before do
-            project.team << [user, :developer]
+            project.add_developer(user)
           end
 
           let(:deployable) { Ci::Build.retry(build, user) }

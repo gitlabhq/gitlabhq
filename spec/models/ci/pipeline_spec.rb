@@ -563,7 +563,7 @@ describe Ci::Pipeline, models: true do
     context 'on failure and build retry' do
       before do
         build.drop
-        project.team << [user, :developer]
+        project.add_developer(user)
 
         Ci::Build.retry(build, user)
       end
@@ -776,7 +776,7 @@ describe Ci::Pipeline, models: true do
     let(:latest_status) { pipeline.statuses.latest.pluck(:status) }
 
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
     end
 
     context 'when there is a failed build and failed external status' do

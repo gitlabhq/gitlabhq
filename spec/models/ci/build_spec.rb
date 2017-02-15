@@ -208,7 +208,7 @@ describe Ci::Build, :models do
     end
 
     it 'expects to have retried builds instead the original ones' do
-      project.team << [user, :developer]
+      project.add_developer(user)
 
       retried_rspec = Ci::Build.retry(rspec_test, user)
 
@@ -817,7 +817,7 @@ describe Ci::Build, :models do
     subject { build.other_actions }
 
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
     end
 
     it 'returns other actions' do
@@ -865,7 +865,7 @@ describe Ci::Build, :models do
     let(:build) { create(:ci_build, :manual, pipeline: pipeline) }
 
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
     end
 
     context 'when build is manual' do
