@@ -1,8 +1,8 @@
 unless Rails.env.production?
   desc "GitLab | Run ESLint"
   task eslint: ['yarn:check'] do
-    sh "yarn run eslint" do |ok, res|
-      abort('rake eslint failed') unless ok
+    unless system('yarn run eslint')
+      abort('rake eslint failed')
     end
   end
 end
