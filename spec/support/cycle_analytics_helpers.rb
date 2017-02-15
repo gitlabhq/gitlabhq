@@ -9,7 +9,7 @@ module CycleAnalyticsHelpers
     commit_shas = Array.new(count) do |index|
       filename = random_git_name
 
-      commit_sha = project.repository.commit_file(user, filename, "content", message: message, branch_name: branch_name)
+      commit_sha = project.repository.create_file(user, filename, "content", message: message, branch_name: branch_name)
       project.repository.commit(commit_sha)
 
       commit_sha
@@ -28,13 +28,12 @@ module CycleAnalyticsHelpers
       project.repository.add_branch(user, source_branch, 'master')
     end
 
-    sha = project.repository.commit_file(
+    sha = project.repository.create_file(
       user,
       random_git_name,
       'content',
       message: 'commit message',
-      branch_name: source_branch,
-      update: false)
+      branch_name: source_branch)
     project.repository.commit(sha)
 
     opts = {
