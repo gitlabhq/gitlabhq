@@ -35,7 +35,7 @@ module PageLayoutHelper
   end
 
   def favicon
-    Rails.env.development? ? 'favicon-purple.ico' : 'favicon.ico'
+    Rails.env.development? ? 'favicon-blue.ico' : 'favicon.ico'
   end
 
   def page_image
