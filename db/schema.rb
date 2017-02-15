@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170213172852) do
+ActiveRecord::Schema.define(version: 20170215200045) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -580,9 +580,9 @@ ActiveRecord::Schema.define(version: 20170213172852) do
   end
 
   add_index "labels", ["group_id", "project_id", "title"], name: "index_labels_on_group_id_and_project_id_and_title", unique: true, using: :btree
-  add_index "labels", ["type", "project_id"], name: "index_labels_on_type_and_project_id", using: :btree
   add_index "labels", ["project_id"], name: "index_labels_on_project_id", using: :btree
   add_index "labels", ["title"], name: "index_labels_on_title", using: :btree
+  add_index "labels", ["type", "project_id"], name: "index_labels_on_type_and_project_id", using: :btree
 
   create_table "lfs_objects", force: :cascade do |t|
     t.string "oid", null: false
