@@ -1201,7 +1201,6 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `query` | string | yes | A string contained in the project name |
 | `order_by` | string | no | Return requests ordered by `id`, `name`, `created_at` or `last_activity_at` fields |
-<<<<<<< HEAD
 | `sort` | string | no | Return requests sorted in `asc` or `desc` order |
 
 ## Push Rules (EE only)
@@ -1291,6 +1290,3 @@ Parameters:
 
 Note the JSON response differs if the push rule is available or not. If the project push rule
 is available before it is returned in the JSON response or an empty response is returned.
-=======
-| `sort` | string | no | Return requests sorted in `asc` or `desc` order |
->>>>>>> ce/master

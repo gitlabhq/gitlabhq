@@ -188,7 +188,6 @@ entry.
 - Prevent the GitHub importer from assigning labels and comments to merge requests or issues belonging to other projects.
 - Patch XSS vulnerability in RDOC support.
 
-<<<<<<< HEAD
 ## 8.15.5 (2017-01-20)
 
 - Ensure export files are removed after a namespace is deleted.
@@ -197,8 +196,6 @@ entry.
 - Prevent users from deleting system deploy keys via the project deploy key API.
 - Upgrade omniauth gem to 1.3.2.
 
-=======
->>>>>>> ce/master
 ## 8.15.4 (2017-01-09)
 
 - Make successful pipeline emails off for watchers. !8176

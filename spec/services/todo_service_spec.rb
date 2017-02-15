@@ -480,7 +480,25 @@ describe TodoService, services: true do
         should_not_create_todo(user: non_member, target: mr_assigned, action: Todo::MENTIONED)
       end
 
-<<<<<<< HEAD
+      it 'creates a todo for each valid user based on the type of mention' do
+        mr_assigned.update(description: directly_addressed_and_mentioned)
+
+        service.new_merge_request(mr_assigned, author)
+
+        should_create_todo(user: member, target: mr_assigned, action: Todo::DIRECTLY_ADDRESSED)
+        should_create_todo(user: admin, target: mr_assigned, action: Todo::MENTIONED)
+      end
+
+      it 'creates a directly addressed todo for each valid addressed user' do
+        service.new_merge_request(addressed_mr_assigned, author)
+
+        should_create_todo(user: member, target: addressed_mr_assigned, action: Todo::DIRECTLY_ADDRESSED)
+        should_not_create_todo(user: guest, target: addressed_mr_assigned, action: Todo::DIRECTLY_ADDRESSED)
+        should_create_todo(user: author, target: addressed_mr_assigned, action: Todo::DIRECTLY_ADDRESSED)
+        should_not_create_todo(user: john_doe, target: addressed_mr_assigned, action: Todo::DIRECTLY_ADDRESSED)
+        should_not_create_todo(user: non_member, target: addressed_mr_assigned, action: Todo::DIRECTLY_ADDRESSED)
+      end
+
       context 'when the merge request has approvers' do
         let(:approver_1) { create(:user) }
         let(:approver_2) { create(:user) }
@@ -509,25 +527,6 @@ describe TodoService, services: true do
           should_create_todo(user: john_doe, target: mr_approvers, action: Todo::MENTIONED)
           should_not_create_todo(user: approver_1, target: mr_approvers, action: Todo::MENTIONED)
         end
-=======
-      it 'creates a todo for each valid user based on the type of mention' do
-        mr_assigned.update(description: directly_addressed_and_mentioned)
-
-        service.new_merge_request(mr_assigned, author)
-
-        should_create_todo(user: member, target: mr_assigned, action: Todo::DIRECTLY_ADDRESSED)
-        should_create_todo(user: admin, target: mr_assigned, action: Todo::MENTIONED)
-      end
-
-      it 'creates a directly addressed todo for each valid addressed user' do
-        service.new_merge_request(addressed_mr_assigned, author)
-
-        should_create_todo(user: member, target: addressed_mr_assigned, action: Todo::DIRECTLY_ADDRESSED)
-        should_not_create_todo(user: guest, target: addressed_mr_assigned, action: Todo::DIRECTLY_ADDRESSED)
-        should_create_todo(user: author, target: addressed_mr_assigned, action: Todo::DIRECTLY_ADDRESSED)
-        should_not_create_todo(user: john_doe, target: addressed_mr_assigned, action: Todo::DIRECTLY_ADDRESSED)
-        should_not_create_todo(user: non_member, target: addressed_mr_assigned, action: Todo::DIRECTLY_ADDRESSED)
->>>>>>> ce/master
       end
     end
 
@@ -725,7 +724,7 @@ describe TodoService, services: true do
         should_create_todo(user: admin, author: admin, target: mr_unassigned, action: Todo::UNMERGEABLE)
       end
     end
-    
+
     describe '#mark_todo' do
       it 'creates a todo from a merge request' do
         service.mark_todo(mr_unassigned, author)
