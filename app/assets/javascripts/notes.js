@@ -926,6 +926,7 @@ require('vendor/task_list');
       const $element = $(e.target);
       const $closestSystemCommitList = $element.siblings('.system-note-commit-list');
 
+      $element.find('.fa').toggleClass('fa-angle-down').toggleClass('fa-angle-up');
       $closestSystemCommitList.toggleClass('hide-shade');
     };
 
