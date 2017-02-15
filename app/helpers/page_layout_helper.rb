@@ -34,6 +34,10 @@ module PageLayoutHelper
     end
   end
 
+  def favicon
+    Rails.env.development? ? 'favicon-purple.ico' : 'favicon.ico'
+  end
+
   def page_image
     default = image_url('gitlab_logo.png')
 
