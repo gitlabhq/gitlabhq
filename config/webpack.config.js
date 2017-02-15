@@ -10,6 +10,7 @@ var ROOT_PATH = path.resolve(__dirname, '..');
 var IS_PRODUCTION = process.env.NODE_ENV === 'production';
 var IS_DEV_SERVER = process.argv[1].indexOf('webpack-dev-server') !== -1;
 var DEV_SERVER_PORT = parseInt(process.env.DEV_SERVER_PORT, 10) || 3808;
+var DEV_SERVER_LIVERELOAD = process.env.DEV_SERVER_LIVERELOAD !== 'false';
 
 var config = {
   context: path.join(ROOT_PATH, 'app/assets/javascripts'),
@@ -120,6 +121,7 @@ if (IS_DEV_SERVER) {
     port: DEV_SERVER_PORT,
     headers: { 'Access-Control-Allow-Origin': '*' },
     stats: 'errors-only',
+    inline: DEV_SERVER_LIVERELOAD
   };
   config.output.publicPath = '//localhost:' + DEV_SERVER_PORT + config.output.publicPath;
 }
