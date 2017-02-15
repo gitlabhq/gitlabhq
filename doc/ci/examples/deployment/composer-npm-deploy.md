@@ -65,7 +65,7 @@ In order, this means that:
 1. We check if the `ssh-agent` is available and we install it if it's not;
 2. We create the `~/.ssh` folder;
 3. We make sure we're running bash;
-4. We disable host checking (we don't ask for user accept when we first connect to a server; and since every build will equal a first connect, we kind of need this)
+4. We disable host checking (we don't ask for user accept when we first connect to a server; and since every job will equal a first connect, we kind of need this)
 
 And this is basically all you need in the `before_script` section.
 

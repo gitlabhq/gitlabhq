@@ -11,7 +11,7 @@ a new issue is created. You can configure webhooks to listen for specific events
 like pushes, issues or merge requests. GitLab will send a POST request with data
 to the webhook URL.
 
-Webhooks can be used to update an external issue tracker, trigger CI builds,
+Webhooks can be used to update an external issue tracker, trigger CI jobs,
 update a backup mirror, or even deploy to your production server.
 
 Navigate to the webhooks page by going to the **Integrations** page from your

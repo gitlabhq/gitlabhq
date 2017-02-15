@@ -8,7 +8,7 @@ run applications in independent "containers" that are run within a single Linux
 instance. [Docker Hub][hub] has a rich database of pre-built images that can be
 used to test and build your applications.
 
-Docker, when used with GitLab CI, runs each build in a separate and isolated
+Docker, when used with GitLab CI, runs each job in a separate and isolated
 container using the predefined image that is set up in
 [`.gitlab-ci.yml`](../yaml/README.md).
 
@@ -45,12 +45,12 @@ can be found at [Docker Hub][hub]. For more information about images and Docker
 Hub please read the [Docker Fundamentals][] documentation.
 
 In short, with `image` we refer to the docker image, which will be used to
-create a container on which your build will run.
+create a container on which your job will run.
 
 ## What is a service
 
 The `services` keyword defines just another docker image that is run during
-your build and is linked to the docker image that the `image` keyword defines.
+your job and is linked to the docker image that the `image` keyword defines.
 This allows you to access the service image during build time.
 
 The service image can run any application, but the most common use case is to
@@ -61,13 +61,13 @@ time the project is built.
 You can see some widely used services examples in the relevant documentation of
 [CI services examples](../services/README.md).
 
-### How services are linked to the build
+### How services are linked to the job
 
 To better understand how the container linking works, read
 [Linking containers together][linking-containers].
 
 To summarize, if you add `mysql` as service to your application, the image will
-then be used to create a container that is linked to the build container.
+then be used to create a container that is linked to the job container.
 
 The service container for MySQL will be accessible under the hostname `mysql`.
 So, in order to access your database service you have to connect to the host
@@ -133,7 +133,7 @@ Look for the `[runners.docker]` section:
   services = ["mysql:latest", "postgres:latest"]
 ```
 
-The image and services defined this way will be added to all builds run by
+The image and services defined this way will be added to all job run by
 that runner.
 
 ## Define an image from a private Docker registry
@@ -167,7 +167,7 @@ services:
 - tutum/wordpress:latest
 ```
 
-When the build is run, `tutum/wordpress` will be started and you will have
+When the job is run, `tutum/wordpress` will be started and you will have
 access to it from your build container under the hostname `tutum__wordpress`.
 
 The alias hostname for the service is made from the image name following these
@@ -202,21 +202,21 @@ See the specific documentation for
 
 ## How Docker integration works
 
-Below is a high level overview of the steps performed by docker during build
+Below is a high level overview of the steps performed by docker during job
 time.
 
 1. Create any service container: `mysql`, `postgresql`, `mongodb`, `redis`.
 1. Create cache container to store all volumes as defined in `config.toml` and
    `Dockerfile` of build image (`ruby:2.1` as in above example).
 1. Create build container and link any service container to build container.
-1. Start build container and send build script to the container.
-1. Run build script.
+1. Start build container and send job script to the container.
+1. Run job script.
 1. Checkout code in: `/builds/group-name/project-name/`.
 1. Run any step defined in `.gitlab-ci.yml`.
 1. Check exit status of build script.
 1. Remove build container and all created service containers.
 
-## How to debug a build locally
+## How to debug a job locally
 
 *Note: The following commands are run without root privileges. You should be
 able to run docker with your regular user account.*
