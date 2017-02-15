@@ -33,6 +33,7 @@ module Ci
         yaml_variables: build.yaml_variables,
         when: build.when,
         environment: build.environment,
+        coverage_regex: build.coverage_regex,
         user: current_user)
     end
   end
