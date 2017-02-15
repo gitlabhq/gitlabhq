@@ -86,10 +86,6 @@ namespace :gitlab do
       end
       puts "Hooks:\t\t#{Gitlab.config.gitlab_shell.hooks_path}"
       puts "Git:\t\t#{Gitlab.config.git.bin_path}"
-
-      puts ""
-      puts "Environment Variables".color(:yellow)
-      puts ENV.map{|k,v| %Q(#{k}="#{v}")}.join("\n")
     end
   end
 end
