@@ -35,12 +35,8 @@
     margin-bottom: 10px;
   }
 
-  .project-path {
-    padding-right: 0;
-
-    .form-control {
-      border-radius: $border-radius-base;
-    }
+  .project-path .form-control {
+    border-radius: $border-radius-base;
   }
 
   .input-group > div {
