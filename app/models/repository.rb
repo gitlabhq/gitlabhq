@@ -763,7 +763,7 @@ class Repository
   end
 
   # rubocop:disable Metrics/ParameterLists
-  def commit_dir(
+  def create_dir(
     user, path,
     message:, branch_name:,
     author_email: nil, author_name: nil,
@@ -794,13 +794,11 @@ class Repository
   # rubocop:enable Metrics/ParameterLists
 
   # rubocop:disable Metrics/ParameterLists
-  def commit_file(
+  def create_file(
     user, path, content,
-    message:, branch_name:, update: true,
+    message:, branch_name:,
     author_email: nil, author_name: nil,
     start_branch_name: nil, start_project: project)
-
-    action = update ? :update : :create
 
     multi_action(
       user: user,
@@ -810,7 +808,7 @@ class Repository
       author_name: author_name,
       start_branch_name: start_branch_name,
       start_project: start_project,
-      actions: [{ action: action,
+      actions: [{ action: :create,
                   file_path: path,
                   content: content }])
   end
@@ -819,7 +817,7 @@ class Repository
   # rubocop:disable Metrics/ParameterLists
   def update_file(
     user, path, content,
-    message:, branch_name:, previous_path:,
+    message:, branch_name:, previous_path: nil,
     author_email: nil, author_name: nil,
     start_branch_name: nil, start_project: project)
     action = if previous_path && previous_path != path
@@ -844,7 +842,7 @@ class Repository
   # rubocop:enable Metrics/ParameterLists
 
   # rubocop:disable Metrics/ParameterLists
-  def remove_file(
+  def delete_file(
     user, path,
     message:, branch_name:,
     author_email: nil, author_name: nil,
