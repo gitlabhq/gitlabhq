@@ -100,7 +100,7 @@ whereas a group's project under `http(s)://groupname.example.io/projectname`.
 
 The key thing about GitLab Pages is the `.gitlab-ci.yml` file, something that
 gives you absolute control over the build process. You can actually watch your
-website being built live by following the CI build traces.
+website being built live by following the CI job traces.
 
 > **Note:**
 > Before reading this section, make sure you familiarize yourself with GitLab CI
@@ -127,7 +127,7 @@ pages:
 ```
 
 When the Runner reaches to build the `pages` job, it executes whatever is
-defined in the `script` parameter and if the build completes with a non-zero
+defined in the `script` parameter and if the job completes with a non-zero
 exit status, it then uploads the `public/` directory to GitLab Pages.
 
 The `public/` directory should contain all the static content of your website.
@@ -211,11 +211,11 @@ pages:                      # the build job must be named pages
 ```
 
 Here, we used the Docker executor and in the first line we specified the base
-image against which our builds will run.
+image against which our jobs will run.
 
 You have to make sure that the generated static files are ultimately placed
 under the `public` directory, that's why in the `script` section we run the
-`jekyll` command that builds the website and puts all content in the `public/`
+`jekyll` command that jobs the website and puts all content in the `public/`
 directory. Depending on the static generator of your choice, this command will
 differ. Search in the documentation of the static generator you will use if
 there is an option to explicitly set the output directory. If there is not
@@ -403,7 +403,7 @@ don't have to create and edit HTML files manually. For example, Jekyll has the
 
 ### Can I download my generated pages?
 
-Sure. All you need to do is download the artifacts archive from the build page.
+Sure. All you need to do is download the artifacts archive from the job page.
 
 ### Can I use GitLab Pages if my project is private?
 

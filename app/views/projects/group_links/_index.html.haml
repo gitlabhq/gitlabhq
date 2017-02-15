@@ -39,7 +39,7 @@
               = icon("folder-open-o", class: "settings-list-icon")
             .pull-left
               = link_to group do
-                = group.name
+                = group.full_name
               %br
               up to #{group_link.human_access}
               - if group_link.expires?

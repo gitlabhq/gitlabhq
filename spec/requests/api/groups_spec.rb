@@ -338,6 +338,26 @@ describe API::Groups, api: true  do
         expect(json_response.length).to eq(1)
         expect(json_response.first['name']).to eq(project3.name)
       end
+
+      it 'only returns the projects owned by user' do
+        project2.group.add_owner(user3)
+
+        get api("/groups/#{project2.group.id}/projects", user3), owned: true
+
+        expect(response).to have_http_status(200)
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['name']).to eq(project2.name)
+      end
+
+      it 'only returns the projects starred by user' do
+        user1.starred_projects = [project1]
+
+        get api("/groups/#{group1.id}/projects", user1), starred: true
+
+        expect(response).to have_http_status(200)
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['name']).to eq(project1.name)
+      end
     end
 
     context "when authenticated as admin" do

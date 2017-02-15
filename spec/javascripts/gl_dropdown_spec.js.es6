@@ -139,6 +139,14 @@ require('~/lib/utils/url_utility');
         this.dropdownButtonElement.click();
       });
 
+      it('should show loading indicator while search results are being fetched by backend', () => {
+        const dropdownMenu = document.querySelector('.dropdown-menu');
+
+        expect(dropdownMenu.className.indexOf('is-loading') !== -1).toEqual(true);
+        remoteCallback();
+        expect(dropdownMenu.className.indexOf('is-loading') !== -1).toEqual(false);
+      });
+
       it('should not focus search input while remote task is not complete', () => {
         expect($(document.activeElement)).not.toEqual($(SEARCH_INPUT_SELECTOR));
         remoteCallback();

@@ -44,8 +44,8 @@ environment variable `SKIP`. You can skip:
 - `db` (database)
 - `uploads` (attachments)
 - `repositories` (Git repositories data)
-- `builds` (CI build output logs)
-- `artifacts` (CI build artifacts)
+- `builds` (CI job output logs)
+- `artifacts` (CI job artifacts)
 - `lfs` (LFS objects)
 - `registry` (Container Registry images)
 

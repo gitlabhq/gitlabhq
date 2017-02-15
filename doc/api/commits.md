@@ -444,6 +444,7 @@ POST /projects/:id/statuses/:sha
 | `name` or `context` | string  | no | The label to differentiate this status from the status of other systems. Default value is `default`
 | `target_url` |  string  | no  | The target URL to associate with this status
 | `description` | string  | no  | The short description of the status
+| `coverage` | float  | no    | The total code coverage
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/17/statuses/18f3e63d05582537db6d183d9d557be09e1f90c8?state=success"
@@ -464,6 +465,7 @@ Example response:
    "name" : "default",
    "sha" : "18f3e63d05582537db6d183d9d557be09e1f90c8",
    "status" : "success",
+   "coverage": 100.0,
    "description" : null,
    "id" : 93,
    "target_url" : null,

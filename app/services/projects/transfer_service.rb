@@ -30,7 +30,7 @@ module Projects
       Project.transaction do
         old_path = project.path_with_namespace
         old_group = project.group
-        new_path = File.join(new_namespace.try(:path) || '', project.path)
+        new_path = File.join(new_namespace.try(:full_path) || '', project.path)
 
         if Project.where(path: project.path, namespace_id: new_namespace.try(:id)).present?
           raise TransferError.new("Project with same path in target namespace already exists")
@@ -63,10 +63,10 @@ module Projects
         Labels::TransferService.new(current_user, old_group, project).execute
 
         # Move uploads
-        Gitlab::UploadsTransfer.new.move_project(project.path, old_namespace.path, new_namespace.path)
+        Gitlab::UploadsTransfer.new.move_project(project.path, old_namespace.full_path, new_namespace.full_path)
 
         # Move pages
-        Gitlab::PagesTransfer.new.move_project(project.path, old_namespace.path, new_namespace.path)
+        Gitlab::PagesTransfer.new.move_project(project.path, old_namespace.full_path, new_namespace.full_path)
 
         project.old_path_with_namespace = old_path
 

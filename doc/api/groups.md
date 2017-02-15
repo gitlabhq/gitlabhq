@@ -73,6 +73,8 @@ Parameters:
 | `sort` | string | no | Return projects sorted in `asc` or `desc` order. Default is `desc` |
 | `search` | string | no | Return list of authorized projects matching the search criteria |
 | `simple` | boolean | no | Return only the ID, URL, name, and path of each project |
+| `owned` | boolean | no | Limit by projects owned by the current user |
+| `starred` | boolean | no | Limit by projects starred by the current user |
 
 Example response:
 
