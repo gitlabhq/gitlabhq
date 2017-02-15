@@ -4,6 +4,7 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
   include SharedNote
   include SharedPaths
   include Select2Helper
+  include WaitForVueResource
 
   step 'I am a member of project "Shop"' do
     @project = ::Project.find_by(name: "Shop")

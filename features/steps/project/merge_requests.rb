@@ -8,6 +8,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   include SharedDiffNote
   include SharedUser
   include WaitForAjax
+  include WaitForVueResource
 
   after do
     wait_for_ajax if javascript_test?
@@ -50,6 +51,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   step 'I should see closed merge request "Bug NS-04"' do
     expect(page).to have_content "Bug NS-04"
     expect(page).to have_content "Closed by"
+    wait_for_vue_resource
   end
 
   step 'I should see merge request "Bug NS-04"' do
@@ -358,6 +360,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I should see a badge of "1" next to the discussion link' do
     expect_discussion_badge_to_have_counter("1")
+    wait_for_vue_resource
   end
 
   step 'I should see a badge of "0" next to the discussion link' do
@@ -369,6 +372,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
       page.should have_content "#{current_user.name} #{current_user.to_reference} started a discussion on commit"
       page.should have_content sample_commit.line_code_path
       page.should have_content "Line is wrong"
+      wait_for_vue_resource
     end
   end
 
@@ -376,16 +380,17 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     page.within(".notes .discussion") do
       page.should have_content "#{current_user.name} #{current_user.to_reference} started a discussion on commit"
       page.should have_content "One comment to rule them all"
+      wait_for_vue_resource
     end
   end
 
   step 'merge request is mergeable' do
-    expect(page).to have_button 'Accept merge request'
+    expect(page).to have_button 'Merge'
   end
 
   step 'I modify merge commit message' do
     click_button "Modify commit message"
-    fill_in 'commit_message', with: 'wow such merge'
+    fill_in 'Commit message', with: 'wow such merge'
   end
 
   step 'merge request "Bug NS-05" is mergeable' do
@@ -394,18 +399,19 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I accept this merge request' do
     page.within '.mr-state-widget' do
-      click_button "Accept merge request"
+      click_button "Merge"
     end
   end
 
   step 'I should see merged request' do
     page.within '.status-box' do
       expect(page).to have_content "Merged"
+      wait_for_vue_resource
     end
   end
 
   step 'I click link "Reopen"' do
-    first(:css, '.reopen-mr-link').click
+    first(:css, '.reopen-mr-link').trigger('click')
   end
 
   step 'I should see reopened merge request "Bug NS-04"' do
@@ -435,6 +441,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   step 'I should see a comment like "Line is wrong" in the third file' do
     page.within '.files>div:nth-child(3) .note-body > .note-text' do
       expect(page).to have_visible_content "Line is wrong"
+      wait_for_vue_resource
     end
   end
 
@@ -518,6 +525,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   step 'I should see comments on the side-by-side diff page' do
     page.within '.files>div:nth-child(2) .parallel .note-body > .note-text' do
       expect(page).to have_visible_content "Line is correct"
+      wait_for_vue_resource
     end
   end
 
@@ -610,13 +618,13 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   step 'I click link "Approve"' do
     page.within '.mr-state-widget' do
       wait_for_ajax
-      click_button 'Approve merge request'
+      click_button 'Approve'
     end
   end
 
   step 'I should see the merge button disabled' do
     page.within '.mr-state-widget' do
-      expect(page).to have_button('Accept merge request', disabled: true)
+      expect(page).to have_button('Merge', disabled: true)
     end
   end
 
@@ -634,7 +642,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I should see approved merge request "Bug NS-04"' do
     page.within '.mr-state-widget' do
-      expect(page).to have_button('Accept merge request', disabled: false)
+      expect(page).to have_button('Merge', disabled: false)
     end
   end
 
@@ -653,6 +661,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   step 'I should see message that MR require an approval' do
     page.within '.mr-state-widget' do
       expect(page).to have_content("Requires 1 more approval")
+      wait_for_vue_resource
     end
   end
 
@@ -699,6 +708,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   step 'I should not see the diverged commits count' do
     page.within ".mr-source-target" do
       expect(page).not_to have_content /([0-9]+ commit[s]? behind)/
+      wait_for_vue_resource
     end
   end
 

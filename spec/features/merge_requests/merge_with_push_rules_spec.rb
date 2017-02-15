@@ -18,10 +18,8 @@ feature 'Merge With Push Rules Validation', feature: true, js: true do
     end
 
     it 'displays error message after merge request is clicked' do
-      click_button 'Accept merge request'
+      click_button 'Merge'
 
-      expect(page).to have_content('Merge in progress')
-      expect(page).to have_content('This merge request failed to be merged automatically')
       expect(page).to have_content("Commit message does not follow the pattern '#{push_rule.commit_message_regex}'")
     end
   end
@@ -35,10 +33,8 @@ feature 'Merge With Push Rules Validation', feature: true, js: true do
     end
 
     it 'displays error message after merge request is clicked' do
-      click_button 'Accept merge request'
+      click_button 'Merge'
 
-      expect(page).to have_content('Merge in progress')
-      expect(page).to have_content('This merge request failed to be merged automatically')
       expect(page).to have_content("Commit author's email '#{user.email}' does not follow the pattern '#{push_rule.author_email_regex}'")
     end
   end

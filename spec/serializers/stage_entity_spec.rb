@@ -14,7 +14,7 @@ describe StageEntity do
   end
 
   before do
-    allow(request).to receive(:user).and_return(user)
+    allow(request).to receive(:current_user).and_return(user)
     create(:ci_build, :success, pipeline: pipeline)
   end
 

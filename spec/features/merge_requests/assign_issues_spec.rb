@@ -18,7 +18,7 @@ feature 'Merge request issue assignment', js: true, feature: true do
   end
 
   context 'logged in as author' do
-    scenario 'updates related issues' do
+    it 'updates related issues' do
       visit_merge_request
       click_link "Assign yourself to these issues"
 
