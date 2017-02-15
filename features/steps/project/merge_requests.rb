@@ -380,12 +380,12 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'merge request is mergeable' do
-    expect(page).to have_button 'Accept merge request'
+    expect(page).to have_button 'Merge'
   end
 
   step 'I modify merge commit message' do
     click_button "Modify commit message"
-    fill_in 'commit_message', with: 'wow such merge'
+    fill_in 'Commit message', with: 'wow such merge'
   end
 
   step 'merge request "Bug NS-05" is mergeable' do
@@ -394,7 +394,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I accept this merge request' do
     page.within '.mr-state-widget' do
-      click_button "Accept merge request"
+      click_button "Merge"
     end
   end
 
@@ -405,7 +405,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click link "Reopen"' do
-    first(:css, '.reopen-mr-link').click
+    first(:css, '.reopen-mr-link').trigger('click')
   end
 
   step 'I should see reopened merge request "Bug NS-04"' do

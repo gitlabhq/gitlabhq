@@ -35,7 +35,7 @@ class Projects::PipelinesController < Projects::ApplicationController
 
         render json: {
           pipelines: PipelineSerializer
-            .new(project: @project, user: @current_user)
+            .new(project: @project, current_user: @current_user)
             .with_pagination(request, response)
             .represent(@pipelines),
           count: {
@@ -82,7 +82,7 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   def status
     render json: PipelineSerializer
-      .new(project: @project, user: @current_user)
+      .new(project: @project, current_user: @current_user)
       .represent_status(@pipeline)
   end
 

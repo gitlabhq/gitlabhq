@@ -26,7 +26,7 @@ class Spinach::Features::RevertMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click on Accept Merge Request' do
-    click_button('Accept merge request')
+    click_button('Merge')
   end
 
   step 'I am signed in as a developer of the project' do

@@ -10,7 +10,7 @@ class MonitoringService < Service
   end
 
   # Environments have a number of metrics
-  def metrics(environment)
+  def metrics(environment, timeframe_start: nil, timeframe_end: nil)
     raise NotImplementedError
   end
 end
