@@ -17,14 +17,14 @@ Note: `db:setup` calls `db:seed` but this does nothing.
 In order to run the test you can use the following commands:
 - `rake spinach` to run the spinach suite
 - `rake spec` to run the rspec suite
-- `rake teaspoon` to run the teaspoon test suite
+- `rake karma` to run the karma test suite
 - `rake gitlab:test` to run all the tests
 
-Note: Both `rake spinach` and `rake spec` takes significant time to pass. 
+Note: Both `rake spinach` and `rake spec` takes significant time to pass.
 Instead of running full test suite locally you can save a lot of time by running
-a single test or directory related to your changes. After you submit merge request 
-CI will run full test suite for you. Green CI status in the merge request means 
-full test suite is passed.  
+a single test or directory related to your changes. After you submit merge request
+CI will run full test suite for you. Green CI status in the merge request means
+full test suite is passed.
 
 Note: You can't run `rspec .` since this will try to run all the `_spec.rb`
 files it can find, also the ones in `/tmp`

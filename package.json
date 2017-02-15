@@ -11,27 +11,26 @@
     "webpack-prod": "NODE_ENV=production npm run webpack"
   },
   "dependencies": {
-    "babel": "^5.8.38",
-    "babel-core": "^5.8.38",
-    "babel-loader": "^5.4.2",
+    "babel-core": "^6.22.1",
+    "babel-loader": "^6.2.10",
+    "babel-preset-es2015": "^6.22.0",
+    "babel-preset-stage-2": "^6.22.0",
     "bootstrap-sass": "3.3.6",
     "compression-webpack-plugin": "^0.3.2",
     "d3": "3.5.11",
     "dropzone": "4.2.0",
-    "exports-loader": "^0.6.3",
     "imports-loader": "^0.6.5",
     "jquery": "2.2.1",
     "jquery-ui": "github:jquery/jquery-ui#1.11.4",
     "jquery-ujs": "1.2.1",
-    "json-loader": "^0.5.4",
     "mousetrap": "1.4.6",
     "select2": "3.5.2-browserify",
-    "stats-webpack-plugin": "^0.4.2",
+    "stats-webpack-plugin": "^0.4.3",
     "underscore": "1.8.3",
     "vue": "2.0.3",
     "vue-resource": "0.9.3",
-    "webpack": "^1.14.0",
-    "webpack-dev-server": "^1.16.2"
+    "webpack": "^2.2.1",
+    "webpack-dev-server": "^2.3.0"
   },
   "devDependencies": {
     "eslint": "^3.10.1",
@@ -42,10 +41,10 @@
     "istanbul": "^0.4.5",
     "jasmine-core": "^2.5.2",
     "jasmine-jquery": "^2.1.1",
-    "karma": "^1.3.0",
+    "karma": "^1.4.1",
     "karma-jasmine": "^1.1.0",
     "karma-phantomjs-launcher": "^1.0.2",
     "karma-sourcemap-loader": "^0.3.7",
-    "karma-webpack": "^1.8.0"
+    "karma-webpack": "^2.0.2"
   }
 }

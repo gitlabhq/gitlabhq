@@ -18,6 +18,7 @@
   .boards-list{ ":class" => "{ 'is-compact': detailIssueVisible }" }
     .boards-app-loading.text-center{ "v-if" => "loading" }
       = icon("spinner spin")
+    %backlog-help{ "v-if" => "hideHelp" }
     %board{ "v-cloak" => true,
       "v-for" => "list in state.lists",
       "ref" => "board",

@@ -1,0 +1,4 @@
+---
+title: Don't perform Devise trackable updates on blocked User records
+merge_request: 8915
+author:

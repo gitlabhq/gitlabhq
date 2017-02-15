@@ -254,6 +254,10 @@ describe 'Issue Boards add issue modal filtering', :feature, :js do
     visit namespace_project_board_path(project.namespace, project, board)
     wait_for_vue_resource
 
+    page.within '.boards-backlog-help' do
+      find('.close').click
+    end
+
     click_button('Add issues')
   end
 end

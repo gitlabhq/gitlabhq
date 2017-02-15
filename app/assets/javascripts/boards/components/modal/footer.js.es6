@@ -74,7 +74,7 @@ require('./lists_dropdown');
         <button
           class="btn btn-default pull-right"
           type="button"
-          @click="toggleModal(false)">
+          @click="toggleModal(false, false)">
           Cancel
         </button>
       </footer>

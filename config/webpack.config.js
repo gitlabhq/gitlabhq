@@ -48,26 +48,23 @@ var config = {
   devtool: 'inline-source-map',
 
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.(js|es6)$/,
         exclude: /(node_modules|vendor\/assets)/,
         loader: 'babel-loader',
-        query: {
-          // 'use strict' was broken in sprockets-es6 due to sprockets concatination method.
-          // many es5 strict errors which were never caught ended up in our es6 assets as a result.
-          // this hack is necessary until they can be fixed.
-          blacklist: ['useStrict']
+        options: {
+          presets: [
+            ["es2015", {"modules": false}],
+            'stage-2'
+          ]
         }
       },
       {
         test: /\.(js|es6)$/,
+        exclude: /node_modules/,
         loader: 'imports-loader',
-        query: 'this=>window'
-      },
-      {
-        test: /\.json$/,
-        loader: 'json-loader'
+        options: 'this=>window'
       }
     ]
   },
@@ -88,7 +85,7 @@ var config = {
   ],
 
   resolve: {
-    extensions: ['', '.js', '.es6', '.js.es6'],
+    extensions: ['.js', '.es6', '.js.es6'],
     alias: {
       '~':              path.join(ROOT_PATH, 'app/assets/javascripts'),
       'bootstrap/js':   'bootstrap-sass/assets/javascripts/bootstrap',
@@ -104,14 +101,16 @@ if (IS_PRODUCTION) {
   config.devtool = 'source-map';
   config.plugins.push(
     new webpack.NoErrorsPlugin(),
+    new webpack.LoaderOptionsPlugin({
+      minimize: true,
+      debug: false
+    }),
     new webpack.optimize.UglifyJsPlugin({
-      compress: { warnings: false }
+      sourceMap: true
     }),
     new webpack.DefinePlugin({
       'process.env': { NODE_ENV: JSON.stringify('production') }
-    }),
-    new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.OccurrenceOrderPlugin()
+    })
   );
 }
 

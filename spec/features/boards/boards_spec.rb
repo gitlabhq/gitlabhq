@@ -80,6 +80,10 @@ describe 'Issue Boards', feature: true, js: true do
 
       wait_for_vue_resource
 
+      page.within('.boards-backlog-help') do
+        find('.close').click
+      end
+
       expect(page).to have_selector('.board', count: 3)
       expect(find('.board:nth-child(1)')).to have_selector('.card')
       expect(find('.board:nth-child(2)')).to have_selector('.card')

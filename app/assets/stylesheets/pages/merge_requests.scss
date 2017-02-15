@@ -85,22 +85,19 @@
     -webkit-align-items: center;
     align-items: center;
 
+    i,
     svg {
-      margin-right: 4px;
+      margin-right: 8px;
+    }
+
+    svg {
       position: relative;
       top: 1px;
       overflow: visible;
     }
 
-    &> span {
+    & > span {
       padding-right: 4px;
-    }
-
-    &.ci-success_with_warnings {
-
-      i {
-        color: $gl-warning;
-      }
     }
 
     @media (max-width: $screen-xs-max) {
@@ -123,6 +120,12 @@
 
     .ci-action-icon-wrapper {
       line-height: 16px;
+    }
+
+    @media (min-width: $screen-sm-min) {
+      .stage-cell {
+        padding: 0 4px;
+      }
     }
 
     @media (max-width: $screen-xs-max) {

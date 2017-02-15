@@ -16,6 +16,7 @@ require('./components/board');
 require('./components/board_sidebar');
 require('./components/new_list_dropdown');
 require('./components/modal/index');
+const backlogHelp = require('./components/boards_backlog_help');
 require('../vue_shared/vue_resource_interceptor');
 
 $(() => {
@@ -37,6 +38,7 @@ $(() => {
       'board': gl.issueBoards.Board,
       'board-sidebar': gl.issueBoards.BoardSidebar,
       'board-add-issues-modal': gl.issueBoards.IssuesModal,
+      backlogHelp,
     },
     data: {
       state: Store.state,
@@ -52,6 +54,11 @@ $(() => {
     computed: {
       detailIssueVisible () {
         return Object.keys(this.detailIssue.issue).length;
+      },
+      hideHelp() {
+        if (this.loading) return false;
+
+        return !this.state.helpHidden;
       },
     },
     created () {
@@ -104,7 +111,7 @@ $(() => {
         class="btn btn-create pull-right prepend-left-10 has-tooltip"
         type="button"
         :disabled="disabled"
-        @click="toggleModal(true)">
+        @click="toggleModal(true, false)">
         Add issues
       </button>
     `,
