@@ -306,9 +306,15 @@ class ApplicationSetting < ActiveRecord::Base
   end
 
   def check_default_artifacts_expire_in
-    ChronicDuration.parse(default_artifacts_expire_in) if
-      default_artifacts_expire_in
-    true
+    return true unless default_artifacts_expire_in
+
+    if ChronicDuration.parse(default_artifacts_expire_in).nil?
+      errors.add(:default_artifacts_expire_in,
+        "can't be 0. Leave it blank for unlimited")
+      false
+    else
+      true
+    end
   rescue ChronicDuration::DurationParseError => e
     errors.add(:default_artifacts_expire_in, ": #{e.message}")
     false

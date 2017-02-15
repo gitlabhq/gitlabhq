@@ -36,6 +36,12 @@ describe ApplicationSetting, models: true do
         expect(setting).to be_invalid
       end
 
+      it 'does not allow 0' do
+        setting.update(default_artifacts_expire_in: '0')
+
+        expect(setting).to be_invalid
+      end
+
       it 'sets the value if it is valid' do
         setting.update(default_artifacts_expire_in: '30 days')
 

@@ -57,7 +57,7 @@ module API
         requires :shared_runners_text, type: String, desc: 'Shared runners text '
       end
       optional :max_artifacts_size, type: Integer, desc: "Set the maximum file size for each job's artifacts"
-      optional :default_artifacts_expire_in, type: Integer, desc: "Set the default expiration time for each job's artifacts"
+      optional :default_artifacts_expire_in, type: String, desc: "Set the default expiration time for each job's artifacts"
       optional :max_pages_size, type: Integer, desc: 'Maximum size of pages in MB'
       optional :container_registry_token_expire_delay, type: Integer, desc: 'Authorization token duration (minutes)'
       optional :metrics_enabled, type: Boolean, desc: 'Enable the InfluxDB metrics'
