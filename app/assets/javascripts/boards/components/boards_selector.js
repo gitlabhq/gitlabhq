@@ -91,6 +91,7 @@ require('./board_new_form');
     },
     created() {
       const $milestoneDropdown = $('.dropdown-menu-milestone');
+      console.log(this.currentBoard);
 
       this.state.currentBoard = this.currentBoard;
 

@@ -1,6 +1,6 @@
 /* global Vue */
 /* eslint-disable */
-//= require ./milestone_select
+const boardMilestoneSelect = require('./milestone_select');
 (() => {
   window.gl = window.gl || {};
   window.gl.issueBoards = window.gl.issueBoards || {};
@@ -19,6 +19,8 @@
         board: {
           id: false,
           name: '',
+          milestone: {},
+          milestone_id: '',
         },
         currentBoard: Store.state.currentBoard,
         currentPage: Store.state.currentPage,
@@ -27,7 +29,7 @@
       };
     },
     components: {
-      'board-milestone-select': gl.issueBoards.BoardMilestoneSelect,
+      boardMilestoneSelect,
     },
     mounted() {
       if (this.currentBoard && Object.keys(this.currentBoard).length && this.currentPage !== 'new') {
@@ -43,11 +45,7 @@
         return 'Save';
       },
       milestoneToggleText() {
-        if (this.board.milestone_id) {
-          return this.board.milestone.title;
-        }
-
-        return 'Milestone';
+        return this.board.milestone.title || 'Milestone';
       },
       submitDisabled() {
         if (this.currentPage !== 'milestone') {

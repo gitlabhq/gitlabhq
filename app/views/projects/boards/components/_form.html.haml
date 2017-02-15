@@ -9,7 +9,7 @@
       %input.form-control{ type: "text",
         id: "board-new-name",
         "v-model" => "board.name" }
-    .dropdown{ ":class" => "{ open: milestoneDropdownOpen }",
+    .dropdown.board-inner-milestone-dropdown{ ":class" => "{ open: milestoneDropdownOpen }",
       "v-if" => "currentPage === 'new'" }
       %label.label-light{ for: "board-milestone" }
         Board milestone

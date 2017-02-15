@@ -554,3 +554,25 @@
   margin-right: 10px;
   border-right: 1px solid $white-dark;
 }
+
+.board-milestone-list {
+  > li {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  a {
+    padding-left: 25px;
+  }
+
+  .fa-check {
+    margin-left: -18px;
+  }
+}
+
+.board-inner-milestone-dropdown {
+  .dropdown-menu {
+    top: 60px;
+    min-width: 100%;
+  }
+}
