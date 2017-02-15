@@ -414,7 +414,7 @@ module API
     end
 
     class Namespace < Grape::Entity
-      expose :id, :name, :path, :kind
+      expose :id, :name, :path, :kind, :full_path
     end
 
     class MemberAccess < Grape::Entity
