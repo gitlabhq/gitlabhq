@@ -891,6 +891,8 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def conflicts_can_be_resolved_by?(user)
+    return false unless source_project
+
     access = ::Gitlab::UserAccess.new(user, project: source_project)
     access.can_push_to_branch?(source_branch)
   end
