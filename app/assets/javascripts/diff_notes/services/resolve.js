@@ -51,6 +51,7 @@ Vue.use(VueResource);
           }
 
           discussion.updateHeadline(data);
+          gl.mrWidget.checkStatus();
         } else {
           new Flash('An error occurred when trying to resolve a discussion. Please try again.', 'alert');
         }

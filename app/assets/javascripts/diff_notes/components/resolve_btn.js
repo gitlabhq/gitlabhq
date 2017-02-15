@@ -85,6 +85,7 @@ import Vue from 'vue';
 
             CommentsStore.update(this.discussionId, this.noteId, !this.isResolved, resolved_by);
             this.discussion.updateHeadline(data);
+            gl.mrWidget.checkStatus();
           } else {
             new Flash('An error occurred when trying to resolve a comment. Please try again.', 'alert');
           }

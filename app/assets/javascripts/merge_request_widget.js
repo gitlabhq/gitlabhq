@@ -43,7 +43,7 @@ import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
       //   ci_status_url        - String, URL to use to check CI status
       //
       this.opts = opts;
-      this.$widgetBody = $('.mr-widget-body');
+      this.$widgetBody = $('.mr-widget-body:eq(0)');
       $('#modal_merge_info').modal({
         show: false
       });
@@ -111,7 +111,7 @@ import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
               urlSuffix = deleteSourceBranch ? '?deleted_source_branch=true' : '';
               return window.location.href = window.location.pathname + urlSuffix;
             } else if (data.merge_error) {
-              return $('.mr-widget-body').html("<h4>" + data.merge_error + "</h4>");
+              return $('.mr-widget-body:eq(0)').html("<h4>" + data.merge_error + "</h4>");
             } else {
               callback = function() {
                 return merge_request_widget.mergeInProgress(deleteSourceBranch);
@@ -130,11 +130,12 @@ import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
     };
 
     MergeRequestWidget.prototype.getMergeStatus = function() {
-      return $.get(this.opts.merge_check_url, (data) => {
+      var that = this;
+      return $.get(this.opts.merge_check_url, function(data) {
         var $html = $(data);
-        this.updateMergeButton(this.status, this.hasCi, $html);
-        $('.mr-widget-body').replaceWith($html.find('.mr-widget-body'));
-        $('.mr-widget-footer').replaceWith($html.find('.mr-widget-footer'));
+        that.updateMergeButton(this.status, this.hasCi, $html);
+        $('.mr-widget-body:eq(0)').replaceWith($html.find('.mr-widget-body'));
+        $('.mr-widget-footer:eq(0)').replaceWith($html.find('.mr-widget-footer'));
       });
     };
 
@@ -159,15 +160,15 @@ import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
           _this.status = data.status;
           _this.hasCi = data.has_ci;
           _this.updateMergeButton(_this.status, _this.hasCi);
+          if (data.coverage) {
+            _this.showCICoverage(data.coverage);
+          }
           if (data.environments && data.environments.length) _this.renderEnvironments(data.environments);
           if (data.status !== _this.opts.ci_status ||
               data.sha !== _this.opts.ci_sha ||
               data.pipeline !== _this.opts.ci_pipeline) {
             _this.opts.ci_status = data.status;
             _this.showCIStatus(data.status);
-            if (data.coverage) {
-              _this.showCICoverage(data.coverage);
-            }
             if (data.pipeline) {
               _this.opts.ci_pipeline = data.pipeline;
               _this.updatePipelineUrls(data.pipeline);
@@ -233,8 +234,8 @@ import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
       if (state == null) {
         return;
       }
-      $('.ci_widget').hide();
-      $('.ci_widget.ci-' + state).show();
+      $('.ci_widget:eq(0)').hide();
+      $('.ci_widget.ci-' + state).eq(0).show();
 
       this.initMiniPipelineGraph();
     };

@@ -377,6 +377,7 @@ require('./task_list');
       }
 
       gl.utils.localTimeAgo($('.js-timeago'), false);
+      gl.mrWidget.checkStatus();
       return this.updateNotesCount(1);
     };
 
@@ -683,6 +684,9 @@ require('./task_list');
           return note.remove();
         };
       })(this));
+
+      gl.mrWidget.checkStatus();
+
       // Decrement the "Discussions" counter only once
       return this.updateNotesCount(-1);
     };

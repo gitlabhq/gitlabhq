@@ -5,7 +5,7 @@ describe PipelineEntity do
   let(:request) { double('request') }
 
   before do
-    allow(request).to receive(:user).and_return(user)
+    allow(request).to receive(:current_user).and_return(user)
   end
 
   let(:entity) do
@@ -19,7 +19,7 @@ describe PipelineEntity do
       let(:pipeline) { create(:ci_empty_pipeline) }
 
       it 'contains required fields' do
-        expect(subject).to include :id, :user, :path
+        expect(subject).to include :id, :user, :path, :coverage
         expect(subject).to include :ref, :commit
         expect(subject).to include :updated_at, :created_at
       end
