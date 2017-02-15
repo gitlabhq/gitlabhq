@@ -112,9 +112,6 @@
     preloadFixtures('static/search_autocomplete.html.raw');
     beforeEach(function() {
       loadFixtures('static/search_autocomplete.html.raw');
-      widget = new gl.SearchAutocomplete;
-      // Prevent turbolinks from triggering within gl_dropdown
-      spyOn(window.gl.utils, 'visitUrl').and.returnValue(true);
 
       window.gon = {};
       window.gon.current_user_id = userId;
