@@ -29,9 +29,8 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   end
 
   def folder
-    @environments = project.environments
-      .where(environment_type: params[:id])
-      .with_state(params[:scope] || :available)
+    folder_environments = project.environments.where(environment_type: params[:id])
+    @environments = folder_environments.with_state(params[:scope] || :available)
 
     respond_to do |format|
       format.html
@@ -41,6 +40,8 @@ class Projects::EnvironmentsController < Projects::ApplicationController
             .new(project: @project, user: @current_user)
             .with_pagination(request, response)
             .represent(@environments),
+          available_count: folder_environments.available.count,
+          stopped_count: folder_environments.stopped.count
         }
       end
     end
