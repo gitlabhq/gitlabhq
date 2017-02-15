@@ -332,6 +332,8 @@ GEM
       multi_json (~> 1.11)
       os (~> 0.9)
       signet (~> 0.7)
+    gpgme (2.0.13)
+      mini_portile2 (~> 2.1)
     grape (0.19.2)
       activesupport
       builder
@@ -983,6 +985,7 @@ DEPENDENCIES
   gollum-rugged_adapter (~> 0.4.4)
   gon (~> 6.1.0)
   google-api-client (~> 0.8.6)
+  gpgme
   grape (~> 0.19.2)
   grape-entity (~> 0.6.0)
   grape-route-helpers (~> 2.0.0)

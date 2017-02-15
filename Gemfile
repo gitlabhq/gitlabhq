@@ -58,6 +58,9 @@ gem 'validates_hostname', '~> 1.0.6'
 # Browser detection
 gem 'browser', '~> 2.2'
 
+# GPG
+gem 'gpgme'
+
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
 # see https://github.com/intridea/omniauth-ldap/compare/master...gitlabhq:master

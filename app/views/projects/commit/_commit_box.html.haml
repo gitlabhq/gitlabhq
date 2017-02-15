@@ -6,6 +6,7 @@
     = clipboard_button(text: @commit.id, title: _("Copy commit SHA to clipboard"))
     %span.hidden-xs authored
     #{time_ago_with_tooltip(@commit.authored_date)}
+    = render partial: 'signature', object: @commit.signature
     %span= s_('ByAuthor|by')
     = author_avatar(@commit, size: 24)
     %strong

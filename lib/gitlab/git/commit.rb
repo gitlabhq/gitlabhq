@@ -319,6 +319,10 @@ module Gitlab
         end
       end
 
+      def extract_signature(repo)
+        Rugged::Commit.extract_signature(repo.rugged, sha)
+      end
+
       def stats
         Gitlab::Git::CommitStats.new(self)
       end

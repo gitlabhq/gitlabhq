@@ -39,6 +39,7 @@
       .commit-actions.flex-row.hidden-xs
         - if commit.status(ref)
           = render_commit_status(commit, ref: ref)
+        = render partial: 'projects/commit/signature', object: commit.signature
         = link_to commit.short_id, project_commit_path(project, commit), class: "commit-sha btn btn-transparent"
         = clipboard_button(text: commit.id, title: _("Copy commit SHA to clipboard"))
         = link_to_browse_code(project, commit)

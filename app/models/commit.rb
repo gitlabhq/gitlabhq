@@ -234,6 +234,18 @@ class Commit
     @statuses[ref] = pipelines.latest_status(ref)
   end
 
+  def signature
+    return @signature if defined?(@signature)
+
+    sig, signed = @raw.extract_signature(project.repository.raw_repository)
+    if sig && signed
+      GPGME::Crypto.new.verify(sig, signed_text: signed) do |sign|
+        @signature = sign
+      end
+    end
+    @signature ||= nil
+  end
+
   def revert_branch_name
     "revert-#{short_id}"
   end
