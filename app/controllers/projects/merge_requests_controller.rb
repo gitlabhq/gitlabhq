@@ -75,10 +75,12 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def show
     respond_to do |format|
-      format.html { define_discussion_vars }
+      format.html do
+        define_discussion_vars
+      end
 
       format.json do
-        render json: MergeRequestSerializer.new.represent(@merge_request)
+        render json: @merge_request_json
       end
 
       format.patch  do
@@ -561,6 +563,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     labels
     define_pipelines_vars
+
+    @merge_request_json = serializer.represent(@merge_request).to_json
   end
 
   # Discussion tab data is rendered on html responses of actions
@@ -708,5 +712,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     if !@merge_request.source_project && @merge_request.open?
       @merge_request.close
     end
+  end
+
+  def serializer
+    MergeRequestSerializer.new(current_user: current_user)
   end
 end

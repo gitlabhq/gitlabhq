@@ -73,63 +73,37 @@ describe Projects::MergeRequestsController do
   end
 
   describe "GET show" do
-    shared_examples "export merge as" do |format|
-      it "does generally work" do
-        get(:show,
-            namespace_id: project.namespace.to_param,
-            project_id: project,
-            id: merge_request.iid,
-            format: format)
+    def go(extra_params = {})
+      params = {
+        namespace_id: project.namespace.to_param,
+        project_id: project,
+        id: merge_request.iid
+      }
+
+      get :show, params.merge(extra_params)
+    end
+
+    it_behaves_like "loads labels", :show
+
+    describe 'as html' do
+      it "renders merge request page" do
+        go(format: :html)
 
         expect(response).to be_success
       end
+    end
 
-      it_behaves_like "loads labels", :show
+    describe 'as json' do
+      it 'renders the merge request in the json format' do
+        go(format: :json)
 
-      it "generates it" do
-        expect_any_instance_of(MergeRequest).to receive(:"to_#{format}")
-
-        get(:show,
-            namespace_id: project.namespace.to_param,
-            project_id: project,
-            id: merge_request.iid,
-            format: format)
-      end
-
-      it "renders it" do
-        get(:show,
-            namespace_id: project.namespace.to_param,
-            project_id: project,
-            id: merge_request.iid,
-            format: format)
-
-        expect(response.body).to eq(merge_request.send(:"to_#{format}").to_s)
-      end
-
-      it "does not escape Html" do
-        allow_any_instance_of(MergeRequest).to receive(:"to_#{format}").
-          and_return('HTML entities &<>" ')
-
-        get(:show,
-            namespace_id: project.namespace.to_param,
-            project_id: project,
-            id: merge_request.iid,
-            format: format)
-
-        expect(response.body).not_to include('&amp;')
-        expect(response.body).not_to include('&gt;')
-        expect(response.body).not_to include('&lt;')
-        expect(response.body).not_to include('&quot;')
+        expect(json_response['iid']).to eq(merge_request.iid)
       end
     end
 
     describe "as diff" do
       it "triggers workhorse to serve the request" do
-        get(:show,
-            namespace_id: project.namespace.to_param,
-            project_id: project,
-            id: merge_request.iid,
-            format: :diff)
+        go(format: :diff)
 
         expect(response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("git-diff:")
       end
@@ -137,11 +111,7 @@ describe Projects::MergeRequestsController do
 
     describe "as patch" do
       it 'triggers workhorse to serve the request' do
-        get(:show,
-            namespace_id: project.namespace.to_param,
-            project_id: project,
-            id: merge_request.iid,
-            format: :patch)
+        go(format: :patch)
 
         expect(response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("git-format-patch:")
       end
