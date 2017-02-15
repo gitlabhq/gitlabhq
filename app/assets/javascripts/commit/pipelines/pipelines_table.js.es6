@@ -81,8 +81,8 @@ require('./pipelines_store');
     },
 
     template: `
-      <div>
-        <div class="pipelines realtime-loading" v-if="isLoading">
+      <div class="pipelines">
+        <div class="realtime-loading" v-if="isLoading">
           <i class="fa fa-spinner fa-spin"></i>
         </div>
 
