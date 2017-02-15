@@ -31,16 +31,16 @@ describe Admin::RunnersController do
 
   describe '#update' do
     it 'updates the runner and ticks the queue' do
-      old_tick = runner.ensure_runner_queue_value
       new_desc = runner.description.swapcase
 
-      post :update, id: runner.id, runner: { description: new_desc }
+      expect do
+        post :update, id: runner.id, runner: { description: new_desc }
+      end.to change { runner.ensure_runner_queue_value }
 
       runner.reload
 
       expect(response).to have_http_status(302)
       expect(runner.description).to eq(new_desc)
-      expect(runner.ensure_runner_queue_value).not_to eq(old_tick)
     end
   end
 
@@ -55,31 +55,31 @@ describe Admin::RunnersController do
 
   describe '#resume' do
     it 'marks the runner as active and ticks the queue' do
-      old_tick = runner.ensure_runner_queue_value
       runner.update(active: false)
 
-      post :resume, id: runner.id
+      expect do
+        post :resume, id: runner.id
+      end.to change { runner.ensure_runner_queue_value }
 
       runner.reload
 
       expect(response).to have_http_status(302)
       expect(runner.active).to eq(true)
-      expect(runner.ensure_runner_queue_value).not_to eq(old_tick)
     end
   end
 
   describe '#pause' do
     it 'marks the runner as inactive and ticks the queue' do
-      old_tick = runner.ensure_runner_queue_value
       runner.update(active: true)
 
-      post :pause, id: runner.id
+      expect do
+        post :pause, id: runner.id
+      end.to change { runner.ensure_runner_queue_value }
 
       runner.reload
 
       expect(response).to have_http_status(302)
       expect(runner.active).to eq(false)
-      expect(runner.ensure_runner_queue_value).not_to eq(old_tick)
     end
   end
 end
