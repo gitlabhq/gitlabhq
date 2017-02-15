@@ -1,19 +1,19 @@
-# Triggering Builds through the API
-
-> [Introduced][ci-229] in GitLab CE 7.14.
+# Triggering jobs through the API
 
 > **Note**:
-GitLab 8.12 has a completely redesigned build permissions system.
-Read all about the [new model and its implications](../../user/project/new_ci_build_permissions_model.md#build-triggers).
+- [Introduced][ci-229] in GitLab CE 7.14.
+- GitLab 8.12 has a completely redesigned job permissions system. Read all
+  about the [new model and its implications](../../user/project/new_ci_build_permissions_model.md#job-triggers).
 
 Triggers can be used to force a rebuild of a specific `ref` (branch or tag)
 with an API call.
 
 ## Add a trigger
 
-You can add a new trigger by going to your project's **Settings > Triggers**.
-The **Add trigger** button will create a new token which you can then use to
-trigger a rebuild of this particular project.
+You can add a new trigger by going to your project's
+**Settings ➔ CI/CD Pipelines ➔ Triggers**. The **Add trigger** button will
+create a new token which you can then use to trigger a rerun of this
+particular project's pipeline.
 
 Every new trigger you create, gets assigned a different token which you can
 then use inside your scripts or `.gitlab-ci.yml`. You also have a nice
@@ -27,13 +27,13 @@ You can revoke a trigger any time by going at your project's
 **Settings > Triggers** and hitting the **Revoke** button. The action is
 irreversible.
 
-## Trigger a build
+## Trigger a job
 
 > **Note**:
 Valid refs are only the branches and tags. If you pass a commit SHA as a ref,
-it will not trigger a build.
+it will not trigger a job.
 
-To trigger a build you need to send a `POST` request to GitLab's API endpoint:
+To trigger a job you need to send a `POST` request to GitLab's API endpoint:
 
 ```
 POST /projects/:id/trigger/builds
@@ -42,31 +42,32 @@ POST /projects/:id/trigger/builds
 The required parameters are the trigger's `token` and the Git `ref` on which
 the trigger will be performed. Valid refs are the branch and the tag. The `:id`
 of a project can be found by [querying the API](../../api/projects.md)
-or by visiting the **Triggers** page which provides self-explanatory examples.
+or by visiting the **CI/CD Pipelines** settings page which provides
+self-explanatory examples.
 
-When a rebuild is triggered, the information is exposed in GitLab's UI under
-the **Builds** page and the builds are marked as `triggered`.
+When a rerun of a pipeline is triggered, the information is exposed in GitLab's
+UI under the **Jobs** page and the jobs are marked as triggered 'by API'.
 
-![Marked rebuilds as triggered on builds page](img/builds_page.png)
+![Marked rebuilds as  on jobs page](img/builds_page.png)
 
 ---
 
-You can see which trigger caused the rebuild by visiting the single build page.
-The token of the trigger is exposed in the UI as you can see from the image
+You can see which trigger caused the rebuild by visiting the single job page.
+A part of the trigger's token is exposed in the UI as you can see from the image
 below.
 
-![Marked rebuilds as triggered on a single build page](img/trigger_single_build.png)
+![Marked rebuilds as triggered on a single job page](img/trigger_single_build.png)
 
 ---
 
 See the [Examples](#examples) section for more details on how to actually
 trigger a rebuild.
 
-## Trigger a build from webhook
+## Trigger a job from webhook
 
 > Introduced in GitLab 8.14.
 
-To trigger a build from webhook of another project you need to add the following
+To trigger a job from webhook of another project you need to add the following
 webhook url for Push and Tag push events:
 
 ```
@@ -78,7 +79,7 @@ https://gitlab.example.com/api/v3/projects/:id/ref/:ref/trigger/builds?token=TOK
   from webhook body that designates the branchref that fired the trigger in the source repository.
 - `ref` should be url encoded if contains slashes.
 
-## Pass build variables to a trigger
+## Pass job variables to a trigger
 
 You can pass any number of arbitrary variables in the trigger API call and they
 will be available in GitLab CI so that they can be used in your `.gitlab-ci.yml`
@@ -90,7 +91,7 @@ variables[key]=value
 
 This information is also exposed in the UI.
 
-![Build variables in UI](img/trigger_variables.png)
+![Job variables in UI](img/trigger_variables.png)
 
 ---
 
@@ -116,7 +117,7 @@ curl --request POST \
     "https://gitlab.example.com/api/v3/projects/9/trigger/builds?token=TOKEN&ref=master"
 ```
 
-### Triggering a build within `.gitlab-ci.yml`
+### Triggering a job within `.gitlab-ci.yml`
 
 You can also benefit by using triggers in your `.gitlab-ci.yml`. Let's say that
 you have two projects, A and B, and you want to trigger a rebuild on the `master`
@@ -132,7 +133,7 @@ build_docs:
   - tags
 ```
 
-Now, whenever a new tag is pushed on project A, the build will run and the
+Now, whenever a new tag is pushed on project A, the job will run and the
 `build_docs` job will be executed, triggering a rebuild of project B. The
 `stage: deploy` ensures that this job will run only after all jobs with
 `stage: test` complete successfully.
@@ -189,18 +190,18 @@ curl --request POST \
   https://gitlab.example.com/api/v3/projects/9/trigger/builds
 ```
 
-### Using webhook to trigger builds
+### Using webhook to trigger job
 
-You can add the following webhook to another project in order to trigger a build:
+You can add the following webhook to another project in order to trigger a job:
 
 ```
 https://gitlab.example.com/api/v3/projects/9/ref/master/trigger/builds?token=TOKEN&variables[UPLOAD_TO_S3]=true
 ```
 
-### Using cron to trigger nightly builds
+### Using cron to trigger nightly jobs
 
-Whether you craft a script or just run cURL directly, you can trigger builds
-in conjunction with cron. The example below triggers a build on the `master`
+Whether you craft a script or just run cURL directly, you can trigger jobs
+in conjunction with cron. The example below triggers a job on the `master`
 branch of project with ID `9` every night at `00:30`:
 
 ```bash

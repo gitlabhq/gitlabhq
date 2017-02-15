@@ -91,7 +91,7 @@ Secure Variables can added by going to `Project > Variables > Add Variable`.
 **This feature requires `gitlab-runner` with version equal or greater than 0.4.0.**
 The variables that are defined in the project settings are sent along with the build script to the runner.
 The secure variables are stored out of the repository. Never store secrets in your projects' .gitlab-ci.yml.
-It is also important that secret's value is hidden in the build log.
+It is also important that secret's value is hidden in the job log.
 
 You access added variable by prefixing it's name with `$` (on non-Windows runners) or `%` (for Windows Batch runners):
 1. `$SECRET_VARIABLE` - use it for non-Windows runners

@@ -1,8 +1,8 @@
 # Merge When Pipeline Succeeds
 
 When reviewing a merge request that looks ready to merge but still has one or
-more CI builds running, you can set it to be merged automatically when the
-builds pipeline succeeds. This way, you don't have to wait for the builds to
+more CI jobs running, you can set it to be merged automatically when the
+jobs pipeline succeeds. This way, you don't have to wait for the jobs to
 finish and remember to merge the request manually.
 
 ![Enable](img/merge_when_build_succeeds_enable.png)
@@ -19,10 +19,10 @@ after all.
 ![Status](img/merge_when_build_succeeds_status.png)
 
 When the pipeline succeeds, the merge request will automatically be merged.
-When the pipeline fails, the author gets a chance to retry any failed builds,
+When the pipeline fails, the author gets a chance to retry any failed jobs,
 or to push new commits to fix the failure.
 
-When the builds are retried and succeed on the second try, the merge request
+When the jobs are retried and succeed on the second try, the merge request
 will automatically be merged after all. When the merge request is updated with
 new commits, the automatic merge is automatically canceled to allow the new
 changes to be reviewed.
@@ -30,7 +30,7 @@ changes to be reviewed.
 ## Only allow merge requests to be merged if the pipeline succeeds
 
 > **Note:**
-You need to have builds configured to enable this feature.
+You need to have jobs configured to enable this feature.
 
 You can prevent merge requests from being merged if their pipeline did not succeed.
 
@@ -41,6 +41,6 @@ hit **Save** for the changes to take effect.
 ![Only allow merge if pipeline succeeds settings](img/merge_when_build_succeeds_only_if_succeeds_settings.png)
 
 From now on, every time the pipeline fails you will not be able to merge the
-merge request from the UI, until you make all relevant builds pass.
+merge request from the UI, until you make all relevant jobs pass.
 
 ![Only allow merge if pipeline succeeds message](img/merge_when_build_succeeds_only_if_succeeds_msg.png)
