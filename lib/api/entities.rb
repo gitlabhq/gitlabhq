@@ -697,5 +697,43 @@ module API
       expose :id, :message, :starts_at, :ends_at, :color, :font
       expose :active?, as: :active
     end
+
+    class ArtifactFile < Grape::Entity
+      expose :filename, :size
+    end
+
+    class JobCredentials < Grape::Entity
+      expose :type, :url, :username, :password
+    end
+
+    class JobResponse < Grape::Entity
+      expose :id, :ref, :tag, :sha, :status
+      expose :name, :token, :stage
+      expose :project_id
+      expose :project_name
+      expose :artifacts_file, using: ArtifactFile, if: ->(build, _) { build.artifacts? }
+    end
+
+    class RequestJobResponse < JobResponse
+      expose :commands
+      expose :repo_url
+      expose :before_sha
+      expose :allow_git_fetch
+      expose :token
+      expose :artifacts_expire_at, if: ->(build, _) { build.artifacts? }
+
+      expose :options do |model|
+        model.options
+      end
+
+      expose :timeout do |model|
+        model.timeout
+      end
+
+      expose :variables
+      expose :depends_on_builds, using: JobResponse
+
+      expose :credentials, using: JobCredentials
+    end
   end
 end

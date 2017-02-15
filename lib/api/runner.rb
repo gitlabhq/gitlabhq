@@ -48,5 +48,44 @@ module API
         Ci::Runner.find_by_token(params[:token]).destroy
       end
     end
+
+    resource :jobs do
+      desc 'Request a job' do
+        success Entities::RequestJobResponse
+      end
+      params do
+        requires :token, type: String, desc: %q(Runner's authentication token)
+      end
+      post '/request' do
+        authenticate_runner!
+        not_found! unless current_runner.active?
+        update_runner_info
+
+        if current_runner.is_runner_queue_value_latest?(params[:last_update])
+          header 'X-GitLab-Last-Update', params[:last_update]
+          Gitlab::Metrics.add_event(:build_not_found_cached)
+          return build_not_found!
+        end
+
+        new_update = current_runner.ensure_runner_queue_value
+        result = ::Ci::RegisterBuildService.new(current_runner).execute
+
+        if result.valid?
+          if result.build
+            Gitlab::Metrics.add_event(:build_found,
+                                      project: result.build.project.path_with_namespace)
+            present result.build, with: Entities::RequestJobResponse
+          else
+            Gitlab::Metrics.add_event(:build_not_found)
+            header 'X-GitLab-Last-Update', new_update
+            build_not_found!
+          end
+        else
+          # We received build that is invalid due to concurrency conflict
+          Gitlab::Metrics.add_event(:build_invalid)
+          conflict!
+        end
+      end
+    end
   end
 end
