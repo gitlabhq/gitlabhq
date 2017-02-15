@@ -277,3 +277,33 @@ table.u2f-registrations {
     padding-left: 18px;
   }
 }
+
+#user-callout {
+  margin: 24px auto 0;
+
+  .bordered-box {
+    border: 1px solid $border-color;
+    border-radius: $border-radius-default;
+  }
+
+  .landing {
+    margin-bottom: $gl-padding;
+    overflow: hidden;
+
+    .dismiss-icon {
+      position: absolute;
+      right: $user-callout-right;
+      cursor: pointer;
+      color: $cycle-analytics-dismiss-icon-color;
+    }
+
+    .svg-container {
+      text-align: center;
+
+      svg {
+        width: 136px;
+        height: 136px;
+      }
+    }
+  }
+}
