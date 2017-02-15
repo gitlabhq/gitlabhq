@@ -1,8 +1,9 @@
 - @sort ||= sort_value_recently_updated
 - personal = params[:personal]
 - archived = params[:archived]
+- shared = params[:shared]
 - namespace_id = params[:namespace_id]
-.dropdown.inline
+.dropdown
   - toggle_text = projects_sort_options_hash[@sort]
   = dropdown_toggle(toggle_text, { toggle: 'dropdown' }, { id: 'sort-projects-dropdown' })
   %ul.dropdown-menu.dropdown-menu-align-right.dropdown-menu-selectable
@@ -28,3 +29,14 @@
       %li
         = link_to filter_projects_path(namespace_id: namespace_id, sort: @sort, personal: true), class: ("is-active" if personal.present?) do
           Owned by me
+      - if @group && @group.shared_projects.present?
+        %li.divider
+        %li
+          = link_to filter_projects_path(namespace_id: namespace_id, sort: @sort, shared: nil), class: ("is-active" unless shared.present?) do
+            All projects
+        %li
+          = link_to filter_projects_path(namespace_id: namespace_id, sort: @sort, shared: 0), class: ("is-active" if shared == '0') do
+            Hide shared projects
+        %li
+          = link_to filter_projects_path(namespace_id: namespace_id, sort: @sort, shared: 1), class: ("is-active" if shared == '1') do
+            Hide group projects

@@ -53,7 +53,7 @@ Example response:
 
 ```json
 {
-  "file_name": "app/project.rb",
+  "file_path": "app/project.rb",
   "branch_name": "master"
 }
 ```
@@ -82,7 +82,7 @@ Example response:
 
 ```json
 {
-  "file_name": "app/project.rb",
+  "file_path": "app/project.rb",
   "branch_name": "master"
 }
 ```
@@ -113,14 +113,14 @@ DELETE /projects/:id/repository/files
 ```
 
 ```bash
-curl --request PUT --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' 'https://gitlab.example.com/api/v3/projects/13083/repository/files?file_path=app/project.rb&branch_name=master&author_email=author%40example.com&author_name=Firstname%20Lastname&commit_message=delete%20file'
+curl --request DELETE --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' 'https://gitlab.example.com/api/v3/projects/13083/repository/files?file_path=app/project.rb&branch_name=master&author_email=author%40example.com&author_name=Firstname%20Lastname&commit_message=delete%20file'
 ```
 
 Example response:
 
 ```json
 {
-  "file_name": "app/project.rb",
+  "file_path": "app/project.rb",
   "branch_name": "master"
 }
 ```

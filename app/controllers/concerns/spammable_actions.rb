@@ -1,6 +1,8 @@
 module SpammableActions
   extend ActiveSupport::Concern
 
+  include Recaptcha::Verify
+
   included do
     before_action :authorize_submit_spammable!, only: :mark_as_spam
   end
@@ -15,11 +17,27 @@ module SpammableActions
 
   private
 
+  def recaptcha_params
+    return {} unless params[:recaptcha_verification] && Gitlab::Recaptcha.load_configurations! && verify_recaptcha
+
+    {
+      recaptcha_verified: true,
+      spam_log_id: params[:spam_log_id]
+    }
+  end
+
   def spammable
     raise NotImplementedError, "#{self.class} does not implement #{__method__}"
   end
 
   def authorize_submit_spammable!
     access_denied! unless current_user.admin?
+  end
+
+  def render_recaptcha?
+    return false if spammable.errors.count > 1 # re-render "new" template in case there are other errors
+    return false unless Gitlab::Recaptcha.enabled?
+
+    spammable.spam
   end
 end

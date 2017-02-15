@@ -73,6 +73,16 @@ describe API::MergeRequests, api: true  do
         expect(json_response.first['title']).to eq(merge_request_merged.title)
       end
 
+      it 'returns merge_request by "iids" array' do
+        get api("/projects/#{project.id}/merge_requests", user), iids: [merge_request.iid, merge_request_closed.iid]
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(2)
+        expect(json_response.first['title']).to eq merge_request_closed.title
+        expect(json_response.first['id']).to eq merge_request_closed.id
+      end
+
       context "with ordering" do
         before do
           @mr_later = mr_with_later_created_and_updated_at_time
@@ -157,24 +167,6 @@ describe API::MergeRequests, api: true  do
       expect(json_response['merge_status']).to eq('can_be_merged')
       expect(json_response['should_close_merge_request']).to be_falsy
       expect(json_response['force_close_merge_request']).to be_falsy
-    end
-
-    it 'returns merge_request by iid' do
-      url = "/projects/#{project.id}/merge_requests?iid=#{merge_request.iid}"
-      get api(url, user)
-      expect(response.status).to eq 200
-      expect(json_response.first['title']).to eq merge_request.title
-      expect(json_response.first['id']).to eq merge_request.id
-    end
-
-    it 'returns merge_request by iid array' do
-      get api("/projects/#{project.id}/merge_requests", user), iid: [merge_request.iid, merge_request_closed.iid]
-
-      expect(response).to have_http_status(200)
-      expect(json_response).to be_an Array
-      expect(json_response.length).to eq(2)
-      expect(json_response.first['title']).to eq merge_request_closed.title
-      expect(json_response.first['id']).to eq merge_request_closed.id
     end
 
     it "returns a 404 error if merge_request_id not found" do

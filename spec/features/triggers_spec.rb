@@ -7,7 +7,7 @@ describe 'Triggers' do
   before do
     @project = FactoryGirl.create :empty_project
     @project.team << [user, :master]
-    visit namespace_project_triggers_path(@project.namespace, @project)
+    visit namespace_project_settings_ci_cd_path(@project.namespace, @project)
   end
 
   context 'create a trigger' do

@@ -52,6 +52,22 @@ feature 'Environments page', :feature, :js do
       scenario 'does show no deployments' do
         expect(page).to have_content('No deployments yet')
       end
+
+      context 'for available environment' do
+        given(:environment) { create(:environment, project: project, state: :available) }
+
+        scenario 'does not shows stop button' do
+          expect(page).not_to have_selector('.stop-env-link')
+        end
+      end
+
+      context 'for stopped environment' do
+        given(:environment) { create(:environment, project: project, state: :stopped) }
+
+        scenario 'does not shows stop button' do
+          expect(page).not_to have_selector('.stop-env-link')
+        end
+      end
     end
 
     context 'with deployments' do

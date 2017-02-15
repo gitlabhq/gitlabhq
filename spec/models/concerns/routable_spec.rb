@@ -14,12 +14,14 @@ describe Group, 'Routable' do
   describe 'Callbacks' do
     it 'creates route record on create' do
       expect(group.route.path).to eq(group.path)
+      expect(group.route.name).to eq(group.name)
     end
 
     it 'updates route record on path change' do
-      group.update_attributes(path: 'wow')
+      group.update_attributes(path: 'wow', name: 'much')
 
       expect(group.route.path).to eq('wow')
+      expect(group.route.name).to eq('much')
     end
 
     it 'ensure route path uniqueness across different objects' do
@@ -77,5 +79,35 @@ describe Group, 'Routable' do
     subject { described_class.member_descendants(user.id) }
 
     it { is_expected.to eq([nested_group]) }
+  end
+
+  describe '#full_path' do
+    let(:group) { create(:group) }
+    let(:nested_group) { create(:group, parent: group) }
+
+    it { expect(group.full_path).to eq(group.path) }
+    it { expect(nested_group.full_path).to eq("#{group.path}/#{nested_group.path}") }
+  end
+
+  describe '#full_name' do
+    let(:group) { create(:group) }
+    let(:nested_group) { create(:group, parent: group) }
+
+    it { expect(group.full_name).to eq(group.name) }
+    it { expect(nested_group.full_name).to eq("#{group.name} / #{nested_group.name}") }
+  end
+end
+
+describe Project, 'Routable' do
+  describe '#full_path' do
+    let(:project) { build_stubbed(:empty_project) }
+
+    it { expect(project.full_path).to eq "#{project.namespace.path}/#{project.path}" }
+  end
+
+  describe '#full_name' do
+    let(:project) { build_stubbed(:empty_project) }
+
+    it { expect(project.full_name).to eq "#{project.namespace.human_name} / #{project.name}" }
   end
 end

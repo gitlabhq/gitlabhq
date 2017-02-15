@@ -36,8 +36,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :authorize_can_resolve_conflicts!, only: [:conflicts, :conflict_for_path, :resolve_conflicts]
 
   def index
-    @merge_requests = merge_requests_collection
-    @merge_requests = @merge_requests.page(params[:page])
+    @collection_type    = "MergeRequest"
+    @merge_requests     = merge_requests_collection
+    @merge_requests     = @merge_requests.page(params[:page])
+    @issuable_meta_data = issuable_meta_data(@merge_requests)
+
     if @merge_requests.out_of_range? && @merge_requests.total_pages != 0
       return redirect_to url_for(params.merge(page: @merge_requests.total_pages))
     end
@@ -102,6 +105,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
         @start_version = @merge_request_diff
       end
     end
+
+    @environment = @merge_request.environments_for(current_user).last
 
     respond_to do |format|
       format.html { define_discussion_vars }
@@ -216,19 +221,24 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       end
 
       format.json do
-        render json: {
-          html: view_to_html_string('projects/merge_requests/show/_pipelines'),
-          pipelines: PipelineSerializer
-            .new(project: @project, user: @current_user)
-            .with_pagination(request, response)
-            .represent(@pipelines)
-        }
+        render json: PipelineSerializer
+          .new(project: @project, user: @current_user)
+          .represent(@pipelines)
       end
     end
   end
 
   def new
-    define_new_vars
+    respond_to do |format|
+      format.html { define_new_vars }
+      format.json do
+        define_pipelines_vars
+
+        render json: PipelineSerializer
+          .new(project: @project, user: @current_user)
+          .represent(@pipelines)
+      end
+    end
   end
 
   def new_diffs
@@ -245,7 +255,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
                  end
         @diff_notes_disabled = true
 
-        render json: { html: view_to_html_string('projects/merge_requests/_new_diffs', diffs: @diffs) }
+        @environment = @merge_request.environments_for(current_user).last
+
+        render json: { html: view_to_html_string('projects/merge_requests/_new_diffs', diffs: @diffs, environment: @environment) }
       end
     end
   end
@@ -444,14 +456,12 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def ci_environments_status
     environments =
       begin
-        @merge_request.environments.map do |environment|
-          next unless can?(current_user, :read_environment, environment)
-
+        @merge_request.environments_for(current_user).map do |environment|
           project = environment.project
           deployment = environment.first_deployment_for(@merge_request.diff_head_commit)
 
           stop_url =
-            if environment.stoppable? && can?(current_user, :create_deployment, environment)
+            if environment.stop_action? && can?(current_user, :create_deployment, environment)
               stop_namespace_project_environment_path(project.namespace, project, environment)
             end
 

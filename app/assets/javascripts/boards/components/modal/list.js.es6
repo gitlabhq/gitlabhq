@@ -14,6 +14,10 @@
         type: String,
         required: true,
       },
+      image: {
+        type: String,
+        required: true,
+      },
     },
     data() {
       return ModalStore.store;
@@ -110,6 +114,19 @@
       <section
         class="add-issues-list add-issues-list-columns"
         ref="list">
+        <div
+          class="empty-state add-issues-empty-state-filter text-center"
+          v-if="issuesCount > 0 && issues.length === 0">
+          <div
+            class="svg-content"
+            v-html="image">
+          </div>
+          <div class="text-content">
+            <h4>
+              There are no issues to show.
+            </h4>
+          </div>
+        </div>
         <div
           v-for="group in groupedIssues"
           class="add-issues-list-column">

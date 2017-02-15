@@ -94,6 +94,10 @@
       padding: 10px 8px;
     }
 
+    td.stage-cell {
+      padding: 10px 0;
+    }
+
     .commit-link {
       padding: 9px 8px 10px;
     }
@@ -183,52 +187,11 @@
     }
   }
 
-  .stage-cell {
-    font-size: 0;
-    padding: 10px 4px;
-
-    > .stage-container > div > button > span > svg,
-    > .stage-container > button > svg {
-      height: 22px;
-      width: 22px;
-      position: absolute;
-      top: -1px;
-      left: -1px;
-      z-index: 2;
-      overflow: visible;
-    }
-
-    .stage-container {
-      display: inline-block;
-      position: relative;
-      height: 22px;
-      margin: 3px 6px 3px 0;
-
-      .tooltip {
-        white-space: nowrap;
-      }
-
-      .tooltip-inner {
-        padding: 3px 4px;
-      }
-
-      &:not(:last-child) {
-        &::after {
-          content: '';
-          width: 7px;
-          position: absolute;
-          right: -7px;
-          top: 10px;
-          border-bottom: 2px solid $border-color;
-        }
-      }
-    }
-  }
-
   .duration,
   .finished-at {
     color: $gl-text-color-secondary;
     margin: 4px 0;
+    white-space: nowrap;
 
     .fa {
       font-size: 12px;
@@ -308,6 +271,50 @@
 
   .btn-group.open .dropdown-toggle {
     box-shadow: none;
+  }
+}
+
+.stage-cell {
+  font-size: 0;
+  padding: 10px 4px;
+
+  > .stage-container > div > button > span > svg,
+  > .stage-container > button > svg {
+    height: 22px;
+    width: 22px;
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    z-index: 2;
+    overflow: visible;
+  }
+
+  .stage-container {
+    display: inline-block;
+    position: relative;
+    height: 22px;
+    margin: 3px 6px 3px 0;
+
+    // Hack to show a button tooltip inline
+    button.has-tooltip + .tooltip {
+      min-width: 105px;
+    }
+
+    // Bootstrap way of showing the content inline for anchors.
+    a.has-tooltip {
+      white-space: nowrap;
+    }
+
+    &:not(:last-child) {
+      &::after {
+        content: '';
+        width: 7px;
+        position: absolute;
+        right: -7px;
+        top: 10px;
+        border-bottom: 2px solid $border-color;
+      }
+    }
   }
 }
 
@@ -666,7 +673,7 @@
   vertical-align: bottom;
   display: inline-block;
   position: relative;
-  font-weight: 200;
+  font-weight: normal;
 }
 
 // Dropdown button in mini pipeline graph
@@ -857,7 +864,7 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-      width: 90px;
+      max-width: 70%;
       color: $gl-text-color-secondary;
       margin-left: 2px;
       display: inline-block;

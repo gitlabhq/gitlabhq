@@ -73,6 +73,7 @@ module API
       params do
         requires :name, type: String, desc: 'The name of the group'
         requires :path, type: String, desc: 'The path of the group'
+        optional :parent_id, type: Integer, desc: 'The parent group id for creating nested group'
         use :optional_params
       end
       post do
@@ -125,7 +126,7 @@ module API
       delete ":id" do
         group = find_group!(params[:id])
         authorize! :admin_group, group
-        DestroyGroupService.new(group, current_user).execute
+        ::Groups::DestroyService.new(group, current_user).execute
       end
 
       desc 'Get a list of projects in this group.' do
@@ -142,6 +143,9 @@ module API
                         desc: 'Return projects sorted in ascending and descending order'
         optional :simple, type: Boolean, default: false,
                           desc: 'Return only the ID, URL, name, and path of each project'
+        optional :owned, type: Boolean, default: false, desc: 'Limit by owned by authenticated user'
+        optional :starred, type: Boolean, default: false, desc: 'Limit by starred status'
+
         use :pagination
       end
       get ":id/projects" do

@@ -91,7 +91,7 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 
 1. [Using any Static Site Generator with GitLab Pages](https://about.gitlab.com/2016/06/17/ssg-overview-gitlab-pages-part-3-examples-ci/)
 1. [Securing GitLab Pages with SSL](https://about.gitlab.com/2016/06/24/secure-gitlab-pages-with-startssl/)
-1. [GitLab Pages Documentation](https://docs.gitlab.com/ee/pages/README.html)
+1. [GitLab Pages Documentation](https://docs.gitlab.com/ce/user/project/pages/)
 
 #### 2.2. GitLab Issues
 

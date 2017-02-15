@@ -192,6 +192,7 @@ project:
 - environments
 - deployments
 - project_feature
+- pages_domains
 - authorized_users
 - project_authorizations
 - route
@@ -202,5 +203,6 @@ award_emoji:
 priorities:
 - label
 timelogs:
-- trackable
+- issue
+- merge_request
 - user

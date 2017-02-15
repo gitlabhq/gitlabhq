@@ -17,8 +17,9 @@ var config = {
     application:          './application.js',
     blob_edit:            './blob_edit/blob_edit_bundle.js',
     boards:               './boards/boards_bundle.js',
-    boards_test:          './boards/test_utils/simulate_drag.js',
+    simulate_drag:        './test_utils/simulate_drag.js',
     cycle_analytics:      './cycle_analytics/cycle_analytics_bundle.js',
+    commit_pipelines:     './commit/pipelines/pipelines_bundle.js',
     diff_notes:           './diff_notes/diff_notes_bundle.js',
     environments:         './environments/environments_bundle.js',
     filtered_search:      './filtered_search/filtered_search_bundle.js',
@@ -47,26 +48,24 @@ var config = {
   devtool: 'inline-source-map',
 
   module: {
-    loaders: [
+    rules: [
       {
-        test: /\.es6$/,
-        exclude: /node_modules/,
+        test: /\.(js|es6)$/,
+        exclude: /(node_modules|vendor\/assets)/,
         loader: 'babel-loader',
-        query: {
-          // 'use strict' was broken in sprockets-es6 due to sprockets concatination method.
-          // many es5 strict errors which were never caught ended up in our es6 assets as a result.
-          // this hack is necessary until they can be fixed.
-          blacklist: ['useStrict']
+        options: {
+          plugins: ['istanbul'],
+          presets: [
+            ["es2015", {"modules": false}],
+            'stage-2'
+          ]
         }
       },
       {
         test: /\.(js|es6)$/,
+        exclude: /node_modules/,
         loader: 'imports-loader',
-        query: 'this=>window'
-      },
-      {
-        test: /\.json$/,
-        loader: 'json-loader'
+        options: 'this=>window'
       }
     ]
   },
@@ -87,7 +86,7 @@ var config = {
   ],
 
   resolve: {
-    extensions: ['', '.js', '.es6', '.js.es6'],
+    extensions: ['.js', '.es6', '.js.es6'],
     alias: {
       '~':              path.join(ROOT_PATH, 'app/assets/javascripts'),
       'bootstrap/js':   'bootstrap-sass/assets/javascripts/bootstrap',
@@ -103,21 +102,24 @@ if (IS_PRODUCTION) {
   config.devtool = 'source-map';
   config.plugins.push(
     new webpack.NoErrorsPlugin(),
+    new webpack.LoaderOptionsPlugin({
+      minimize: true,
+      debug: false
+    }),
     new webpack.optimize.UglifyJsPlugin({
-      compress: { warnings: false }
+      sourceMap: true
     }),
     new webpack.DefinePlugin({
       'process.env': { NODE_ENV: JSON.stringify('production') }
-    }),
-    new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.OccurrenceOrderPlugin()
+    })
   );
 }
 
 if (IS_DEV_SERVER) {
   config.devServer = {
     port: DEV_SERVER_PORT,
-    headers: { 'Access-Control-Allow-Origin': '*' }
+    headers: { 'Access-Control-Allow-Origin': '*' },
+    stats: 'errors-only',
   };
   config.output.publicPath = '//localhost:' + DEV_SERVER_PORT + config.output.publicPath;
 }

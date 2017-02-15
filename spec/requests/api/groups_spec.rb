@@ -35,7 +35,8 @@ describe API::Groups, api: true  do
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
-        expect(json_response.first['name']).to eq(group1.name)
+        expect(json_response)
+          .to satisfy_one { |group| group['name'] == group1.name }
       end
 
       it "does not include statistics" do
@@ -70,7 +71,7 @@ describe API::Groups, api: true  do
           repository_size: 123,
           lfs_objects_size: 234,
           build_artifacts_size: 345,
-        }
+        }.stringify_keys
 
         project1.statistics.update!(attributes)
 
@@ -78,7 +79,8 @@ describe API::Groups, api: true  do
 
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
-        expect(json_response.first['statistics']).to eq attributes.stringify_keys
+        expect(json_response)
+          .to satisfy_one { |group| group['statistics'] == attributes }
       end
     end
 
@@ -179,6 +181,7 @@ describe API::Groups, api: true  do
         expect(json_response['request_access_enabled']).to eq(group1.request_access_enabled)
         expect(json_response['full_name']).to eq(group1.full_name)
         expect(json_response['full_path']).to eq(group1.full_path)
+        expect(json_response['parent_id']).to eq(group1.parent_id)
         expect(json_response['projects']).to be_an Array
         expect(json_response['projects'].length).to eq(2)
         expect(json_response['shared_projects']).to be_an Array
@@ -335,6 +338,26 @@ describe API::Groups, api: true  do
         expect(json_response.length).to eq(1)
         expect(json_response.first['name']).to eq(project3.name)
       end
+
+      it 'only returns the projects owned by user' do
+        project2.group.add_owner(user3)
+
+        get api("/groups/#{project2.group.id}/projects", user3), owned: true
+
+        expect(response).to have_http_status(200)
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['name']).to eq(project2.name)
+      end
+
+      it 'only returns the projects starred by user' do
+        user1.starred_projects = [project1]
+
+        get api("/groups/#{group1.id}/projects", user1), starred: true
+
+        expect(response).to have_http_status(200)
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['name']).to eq(project1.name)
+      end
     end
 
     context "when authenticated as admin" do
@@ -396,6 +419,19 @@ describe API::Groups, api: true  do
         expect(json_response["name"]).to eq(group[:name])
         expect(json_response["path"]).to eq(group[:path])
         expect(json_response["request_access_enabled"]).to eq(group[:request_access_enabled])
+      end
+
+      it "creates a nested group" do
+        parent = create(:group)
+        parent.add_owner(user3)
+        group = attributes_for(:group, { parent_id: parent.id })
+
+        post api("/groups", user3), group
+
+        expect(response).to have_http_status(201)
+
+        expect(json_response["full_path"]).to eq("#{parent.path}/#{group[:path]}")
+        expect(json_response["parent_id"]).to eq(parent.id)
       end
 
       it "does not create group, duplicate" do

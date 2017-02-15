@@ -211,8 +211,12 @@ module GitlabRoutingHelper
   def project_settings_integrations_path(project, *args)
     namespace_project_settings_integrations_path(project.namespace, project, *args)
   end
-  
+
   def project_settings_members_path(project, *args)
     namespace_project_settings_members_path(project.namespace, project, *args)
+  end
+
+  def project_settings_ci_cd_path(project, *args)
+    namespace_project_settings_ci_cd_path(project.namespace, project, *args)
   end
 end

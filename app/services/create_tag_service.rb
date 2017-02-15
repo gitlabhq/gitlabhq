@@ -4,7 +4,7 @@ class CreateTagService < BaseService
     return error('Tag name invalid') unless valid_tag
 
     repository = project.repository
-    message.strip! if message
+    message&.strip!
 
     new_tag = nil
 

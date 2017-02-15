@@ -1,12 +1,26 @@
 /* global Vue */
-
 require('./tabs');
+const modalFilters = require('./filters');
 
 (() => {
   const ModalStore = gl.issueBoards.ModalStore;
 
   gl.issueBoards.ModalHeader = Vue.extend({
     mixins: [gl.issueBoards.ModalMixins],
+    props: {
+      projectId: {
+        type: Number,
+        required: true,
+      },
+      milestonePath: {
+        type: String,
+        required: true,
+      },
+      labelPath: {
+        type: String,
+        required: true,
+      },
+    },
     data() {
       return ModalStore.store;
     },
@@ -31,6 +45,7 @@ require('./tabs');
     },
     components: {
       'modal-tabs': gl.issueBoards.ModalTabs,
+      modalFilters,
     },
     template: `
       <div>
@@ -51,6 +66,11 @@ require('./tabs');
         <div
           class="add-issues-search append-bottom-10"
           v-if="showSearch">
+          <modal-filters
+            :project-id="projectId"
+            :milestone-path="milestonePath"
+            :label-path="labelPath">
+          </modal-filters>
           <input
             placeholder="Search issues..."
             class="form-control"

@@ -10,8 +10,7 @@ The pagination parameters `page` and `per_page` can be used to restrict the list
 GET /projects/:id/merge_requests
 GET /projects/:id/merge_requests?state=opened
 GET /projects/:id/merge_requests?state=all
-GET /projects/:id/merge_requests?iid=42
-GET /projects/:id/merge_requests?iid[]=42&iid[]=43
+GET /projects/:id/merge_requests?iids[]=42&iids[]=43
 ```
 
 Parameters:
@@ -351,15 +350,16 @@ PUT /projects/:id/merge_requests/:merge_request_id
 | --------- | ---- | -------- | ----------- |
 | `id`            | string  | yes | The ID of a project |
 | `merge_request_id` | integer  | yes | The ID of a merge request |
-| `source_branch` | string  | yes | The source branch |
-| `target_branch` | string  | yes | The target branch |
-| `title`         | string  | yes | Title of MR |
+| `target_branch` | string  | no | The target branch |
+| `title`         | string  | no | Title of MR |
 | `assignee_id`   | integer | no  | Assignee user ID |
 | `description`   | string  | no  | Description of MR |
-| `target_project_id` | integer  | no | The target project (numeric id) |
+| `state_event` | string  | no | New state (close/reopen) |
 | `labels` | string  | no | Labels for MR as a comma-separated list |
 | `milestone_id` | integer  | no | The ID of a milestone |
 | `remove_source_branch` | boolean  | no | Flag indicating if a merge request should remove the source branch when merging |
+
+Must include at least one non-required attribute from above.
 
 ```json
 {

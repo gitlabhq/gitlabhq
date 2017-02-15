@@ -27,6 +27,18 @@ require('./empty_state');
         type: String,
         required: true,
       },
+      projectId: {
+        type: Number,
+        required: true,
+      },
+      milestonePath: {
+        type: String,
+        required: true,
+      },
+      labelPath: {
+        type: String,
+        required: true,
+      },
     },
     data() {
       return ModalStore.store;
@@ -52,17 +64,27 @@ require('./empty_state');
           this.issuesCount = false;
         }
       },
+      filter: {
+        handler() {
+          this.loadIssues(true);
+        },
+        deep: true,
+      },
     },
     methods: {
       searchOperation: _.debounce(function searchOperationDebounce() {
         this.loadIssues(true);
       }, 500),
       loadIssues(clearIssues = false) {
-        return gl.boardService.getBacklog({
+        if (!this.showAddIssuesModal) return false;
+
+        const queryData = Object.assign({}, this.filter, {
           search: this.searchTerm,
           page: this.page,
           per: this.perPage,
-        }).then((res) => {
+        });
+
+        return gl.boardService.getBacklog(queryData).then((res) => {
           const data = res.json();
 
           if (clearIssues) {
@@ -112,8 +134,13 @@ require('./empty_state');
         class="add-issues-modal"
         v-if="showAddIssuesModal">
         <div class="add-issues-container">
-          <modal-header></modal-header>
+          <modal-header
+            :project-id="projectId"
+            :milestone-path="milestonePath"
+            :label-path="labelPath">
+          </modal-header>
           <modal-list
+            :image="blankStateImage"
             :issue-link-base="issueLinkBase"
             :root-path="rootPath"
             v-if="!loading && showList"></modal-list>

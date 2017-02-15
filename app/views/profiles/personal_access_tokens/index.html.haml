@@ -85,11 +85,17 @@
 
 
 :javascript
-  var date = $('#personal_access_token_expires_at').val();
+  var $dateField = $('#personal_access_token_expires_at');
+  var date = $dateField.val();
 
-  var datepicker = $(".datepicker").datepicker({
-    dateFormat: "yy-mm-dd",
-    minDate: 0
+  new Pikaday({
+    field: $dateField.get(0),
+    theme: 'gitlab-theme',
+    format: 'YYYY-MM-DD',
+    minDate: new Date(),
+    onSelect: function(dateText) {
+      $dateField.val(dateFormat(new Date(dateText), 'yyyy-mm-dd'));
+    }
   });
 
   $("#created-personal-access-token").click(function() {

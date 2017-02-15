@@ -20,9 +20,9 @@ feature 'Ref switcher', feature: true, js: true do
       input.set 'binary'
       wait_for_ajax
 
-      input.native.send_keys :down
-      input.native.send_keys :down
-      input.native.send_keys :enter
+      page.within '.dropdown-content ul' do
+        input.native.send_keys :enter
+      end
     end
 
     expect(page).to have_title 'binary-encoding'

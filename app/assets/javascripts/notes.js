@@ -455,7 +455,7 @@ require('vendor/task_list');
         var mergeRequestId = $form.data('noteable-iid');
 
         if (ResolveService != null) {
-          ResolveService.toggleResolveForDiscussion(projectPath, mergeRequestId, discussionId);
+          ResolveService.toggleResolveForDiscussion(mergeRequestId, discussionId);
         }
       }
 

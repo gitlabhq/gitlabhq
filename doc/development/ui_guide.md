@@ -20,8 +20,8 @@ The content section contains a header and the content itself. The header describ
 available to the user in this area. Depending on the area (project, group, profile setting) the header name and navigation may change. For example, when the user visits one of the
 project pages the header will contain the project's name and navigation for that project. When the user visits a group page it will contain the group's name and navigation related to this group.
 
-You can see a visual representation of the navigation in GitLab in the GitLab Product Map, which is located in the [Design Repository](gitlab-map-graffle)
-along with [PDF](gitlab-map-pdf) and [PNG](gitlab-map-png) exports.
+You can see a visual representation of the navigation in GitLab in the GitLab Product Map, which is located in the [Design Repository][gitlab-map-graffle]
+along with [PDF][gitlab-map-pdf] and [PNG][gitlab-map-png] exports.
 
 
 ### Adding new tab to header navigation

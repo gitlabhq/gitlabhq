@@ -1,0 +1,5 @@
+---
+title: Fix filtered search user autocomplete for gitlab instances that are hosted
+  on a subdirectory
+merge_request: 8891
+author:

@@ -1,0 +1,4 @@
+---
+title: Fix broken anchor links when special characters are used
+merge_request: 8961
+author: Andrey Krivko

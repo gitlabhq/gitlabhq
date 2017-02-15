@@ -483,6 +483,8 @@ GEM
     omniauth-oauth2 (1.3.1)
       oauth2 (~> 1.0)
       omniauth (~> 1.2)
+    omniauth-oauth2-generic (0.2.2)
+      omniauth-oauth2 (~> 1.0)
     omniauth-saml (1.7.0)
       omniauth (~> 1.3)
       ruby-saml (~> 1.4)
@@ -638,7 +640,7 @@ GEM
     rspec-retry (0.4.5)
       rspec-core
     rspec-support (3.5.0)
-    rspec_profiling (0.0.4)
+    rspec_profiling (0.0.5)
       activerecord
       pg
       rails
@@ -738,7 +740,7 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
-    sqlite3 (1.3.11)
+    sqlite3 (1.3.13)
     stackprof (0.2.10)
     state_machines (0.4.0)
     state_machines-activemodel (0.4.0)
@@ -785,6 +787,9 @@ GEM
       get_process_mem (~> 0)
       unicorn (>= 4, < 6)
     uniform_notifier (1.10.0)
+    validates_hostname (1.0.6)
+      activerecord (>= 3.0)
+      activesupport (>= 3.0)
     version_sorter (2.1.0)
     virtus (1.0.5)
       axiom-types (~> 0.1)
@@ -928,6 +933,7 @@ DEPENDENCIES
   omniauth-gitlab (~> 1.0.2)
   omniauth-google-oauth2 (~> 0.4.1)
   omniauth-kerberos (~> 0.3.0)
+  omniauth-oauth2-generic (~> 0.2.2)
   omniauth-saml (~> 1.7.0)
   omniauth-shibboleth (~> 1.2.0)
   omniauth-twitter (~> 1.2.0)
@@ -959,7 +965,7 @@ DEPENDENCIES
   rqrcode-rails3 (~> 0.1.7)
   rspec-rails (~> 3.5.0)
   rspec-retry (~> 0.4.5)
-  rspec_profiling
+  rspec_profiling (~> 0.0.5)
   rubocop (~> 0.46.0)
   rubocop-rspec (~> 1.9.1)
   ruby-fogbugz (~> 0.2.1)
@@ -998,6 +1004,7 @@ DEPENDENCIES
   unf (~> 0.1.4)
   unicorn (~> 5.1.0)
   unicorn-worker-killer (~> 0.4.4)
+  validates_hostname (~> 1.0.6)
   version_sorter (~> 2.1.0)
   virtus (~> 1.0.1)
   vmstat (~> 2.3.0)
@@ -1007,4 +1014,4 @@ DEPENDENCIES
   wikicloth (= 0.8.1)
 
 BUNDLED WITH
-   1.14.2
+   1.14.3

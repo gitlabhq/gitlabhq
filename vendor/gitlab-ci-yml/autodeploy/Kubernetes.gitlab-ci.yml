@@ -1,4 +1,4 @@
-# Explaination on the scripts:
+# Explanation on the scripts:
 # https://gitlab.com/gitlab-examples/kubernetes-deploy/blob/master/README.md
 image: registry.gitlab.com/gitlab-examples/kubernetes-deploy
 

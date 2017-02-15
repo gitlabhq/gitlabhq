@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170204181513) do
+ActiveRecord::Schema.define(version: 20170210075922) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -98,17 +98,19 @@ ActiveRecord::Schema.define(version: 20170204181513) do
     t.text "help_page_text_html"
     t.text "shared_runners_text_html"
     t.text "after_sign_up_text_html"
-    t.boolean "sidekiq_throttling_enabled", default: false
-    t.string "sidekiq_throttling_queues"
-    t.decimal "sidekiq_throttling_factor"
     t.boolean "housekeeping_enabled", default: true, null: false
     t.boolean "housekeeping_bitmaps_enabled", default: true, null: false
     t.integer "housekeeping_incremental_repack_period", default: 10, null: false
     t.integer "housekeeping_full_repack_period", default: 50, null: false
     t.integer "housekeeping_gc_period", default: 200, null: false
+    t.boolean "sidekiq_throttling_enabled", default: false
+    t.string "sidekiq_throttling_queues"
+    t.decimal "sidekiq_throttling_factor"
     t.boolean "html_emails_enabled", default: true
     t.string "plantuml_url"
     t.boolean "plantuml_enabled"
+    t.integer "max_pages_size", default: 100, null: false
+    t.integer "terminal_max_session_time", default: 0, null: false
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -365,6 +367,8 @@ ActiveRecord::Schema.define(version: 20170204181513) do
     t.integer "commit_id"
   end
 
+  add_index "ci_trigger_requests", ["commit_id"], name: "index_ci_trigger_requests_on_commit_id", using: :btree
+
   create_table "ci_triggers", force: :cascade do |t|
     t.string "token"
     t.integer "project_id"
@@ -577,6 +581,8 @@ ActiveRecord::Schema.define(version: 20170204181513) do
 
   add_index "labels", ["group_id", "project_id", "title"], name: "index_labels_on_group_id_and_project_id_and_title", unique: true, using: :btree
   add_index "labels", ["type", "project_id"], name: "index_labels_on_type_and_project_id", using: :btree
+  add_index "labels", ["project_id"], name: "index_labels_on_project_id", using: :btree
+  add_index "labels", ["title"], name: "index_labels_on_title", using: :btree
 
   create_table "lfs_objects", force: :cascade do |t|
     t.string "oid", null: false
@@ -856,6 +862,17 @@ ActiveRecord::Schema.define(version: 20170204181513) do
   add_index "oauth_applications", ["owner_id", "owner_type"], name: "index_oauth_applications_on_owner_id_and_owner_type", using: :btree
   add_index "oauth_applications", ["uid"], name: "index_oauth_applications_on_uid", unique: true, using: :btree
 
+  create_table "pages_domains", force: :cascade do |t|
+    t.integer "project_id"
+    t.text "certificate"
+    t.text "encrypted_key"
+    t.string "encrypted_key_iv"
+    t.string "encrypted_key_salt"
+    t.string "domain"
+  end
+
+  add_index "pages_domains", ["domain"], name: "index_pages_domains_on_domain", unique: true, using: :btree
+
   create_table "personal_access_tokens", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "token", null: false
@@ -1024,6 +1041,7 @@ ActiveRecord::Schema.define(version: 20170204181513) do
     t.string "path", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string "name"
   end
 
   add_index "routes", ["path"], name: "index_routes_on_path", unique: true, using: :btree
@@ -1101,6 +1119,7 @@ ActiveRecord::Schema.define(version: 20170204181513) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "submitted_as_ham", default: false, null: false
+    t.boolean "recaptcha_verified", default: false, null: false
   end
 
   create_table "subscriptions", force: :cascade do |t|
@@ -1137,14 +1156,15 @@ ActiveRecord::Schema.define(version: 20170204181513) do
 
   create_table "timelogs", force: :cascade do |t|
     t.integer "time_spent", null: false
-    t.integer "trackable_id"
-    t.string "trackable_type"
     t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "issue_id"
+    t.integer "merge_request_id"
   end
 
-  add_index "timelogs", ["trackable_type", "trackable_id"], name: "index_timelogs_on_trackable_type_and_trackable_id", using: :btree
+  add_index "timelogs", ["issue_id"], name: "index_timelogs_on_issue_id", using: :btree
+  add_index "timelogs", ["merge_request_id"], name: "index_timelogs_on_merge_request_id", using: :btree
   add_index "timelogs", ["user_id"], name: "index_timelogs_on_user_id", using: :btree
 
   create_table "todos", force: :cascade do |t|
@@ -1259,6 +1279,7 @@ ActiveRecord::Schema.define(version: 20170204181513) do
     t.string "organization"
     t.string "incoming_email_token"
     t.boolean "authorized_projects_populated"
+    t.boolean "notified_of_own_activity", default: false, null: false
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
@@ -1326,6 +1347,8 @@ ActiveRecord::Schema.define(version: 20170204181513) do
   add_foreign_key "protected_branch_merge_access_levels", "protected_branches"
   add_foreign_key "protected_branch_push_access_levels", "protected_branches"
   add_foreign_key "subscriptions", "projects", on_delete: :cascade
+  add_foreign_key "timelogs", "issues", name: "fk_timelogs_issues_issue_id", on_delete: :cascade
+  add_foreign_key "timelogs", "merge_requests", name: "fk_timelogs_merge_requests_merge_request_id", on_delete: :cascade
   add_foreign_key "trending_projects", "projects", on_delete: :cascade
   add_foreign_key "u2f_registrations", "users"
 end

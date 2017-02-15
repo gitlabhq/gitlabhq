@@ -4,28 +4,29 @@ module Ci
   describe GitlabCiYamlProcessor, lib: true do
     let(:path) { 'path' }
 
+    describe 'our current .gitlab-ci.yml' do
+      let(:config) { File.read("#{Rails.root}/.gitlab-ci.yml") }
+
+      it 'is valid' do
+        error_message = described_class.validation_message(config)
+
+        expect(error_message).to be_nil
+      end
+    end
+
     describe '#build_attributes' do
-      context 'Coverage entry' do
+      describe 'coverage entry' do
         subject { described_class.new(config, path).build_attributes(:rspec) }
 
-        let(:config_base) { { rspec: { script: "rspec" } } }
-        let(:config) { YAML.dump(config_base) }
-
-        context 'when config has coverage set at the global scope' do
-          before do
-            config_base.update(coverage: '/\(\d+\.\d+\) covered/')
+        describe 'code coverage regexp' do
+          let(:config) do
+            YAML.dump(rspec: { script: 'rspec',
+                               coverage: '/Code coverage: \d+\.\d+/' })
           end
 
-          context "and 'rspec' job doesn't have coverage set" do
-            it { is_expected.to include(coverage_regex: '\(\d+\.\d+\) covered') }
-          end
-
-          context "but 'rspec' job also has coverage set" do
-            before do
-              config_base[:rspec][:coverage] = '/Code coverage: \d+\.\d+/'
-            end
-
-            it { is_expected.to include(coverage_regex: 'Code coverage: \d+\.\d+') }
+          it 'includes coverage regexp in build attributes' do
+            expect(subject)
+              .to include(coverage_regex: 'Code coverage: \d+\.\d+')
           end
         end
       end

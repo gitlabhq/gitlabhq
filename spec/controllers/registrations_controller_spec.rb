@@ -44,7 +44,7 @@ describe RegistrationsController do
         post(:create, user_params)
 
         expect(response).to render_template(:new)
-        expect(flash[:alert]).to include 'There was an error with the reCAPTCHA. Please re-solve the reCAPTCHA.'
+        expect(flash[:alert]).to include 'There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.'
       end
 
       it 'redirects to the dashboard when the recaptcha is solved' do

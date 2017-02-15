@@ -1,45 +1,37 @@
 /* eslint-disable class-methods-use-this, one-var, camelcase, no-new, comma-dangle, no-param-reassign, max-len */
-/* global Vue */
 /* global Flash */
 /* global CommentsStore */
 
-((w) => {
+const Vue = window.Vue = require('vue');
+window.Vue.use(require('vue-resource'));
+require('../../vue_shared/vue_resource_interceptor');
+
+(() => {
+  window.gl = window.gl || {};
+
   class ResolveServiceClass {
-    constructor() {
-      this.noteResource = Vue.resource('notes{/noteId}/resolve');
-      this.discussionResource = Vue.resource('merge_requests{/mergeRequestId}/discussions{/discussionId}/resolve');
+    constructor(root) {
+      this.noteResource = Vue.resource(`${root}/notes{/noteId}/resolve`);
+      this.discussionResource = Vue.resource(`${root}/merge_requests{/mergeRequestId}/discussions{/discussionId}/resolve`);
     }
 
-    setCSRF() {
-      Vue.http.headers.common['X-CSRF-Token'] = $.rails.csrfToken();
-    }
-
-    prepareRequest(root) {
-      this.setCSRF();
-      Vue.http.options.root = root;
-    }
-
-    resolve(projectPath, noteId) {
-      this.prepareRequest(projectPath);
-
+    resolve(noteId) {
       return this.noteResource.save({ noteId }, {});
     }
 
-    unresolve(projectPath, noteId) {
-      this.prepareRequest(projectPath);
-
+    unresolve(noteId) {
       return this.noteResource.delete({ noteId }, {});
     }
 
-    toggleResolveForDiscussion(projectPath, mergeRequestId, discussionId) {
+    toggleResolveForDiscussion(mergeRequestId, discussionId) {
       const discussion = CommentsStore.state[discussionId];
       const isResolved = discussion.isResolved();
       let promise;
 
       if (isResolved) {
-        promise = this.unResolveAll(projectPath, mergeRequestId, discussionId);
+        promise = this.unResolveAll(mergeRequestId, discussionId);
       } else {
-        promise = this.resolveAll(projectPath, mergeRequestId, discussionId);
+        promise = this.resolveAll(mergeRequestId, discussionId);
       }
 
       promise.then((response) => {
@@ -62,10 +54,8 @@
       });
     }
 
-    resolveAll(projectPath, mergeRequestId, discussionId) {
+    resolveAll(mergeRequestId, discussionId) {
       const discussion = CommentsStore.state[discussionId];
-
-      this.prepareRequest(projectPath);
 
       discussion.loading = true;
 
@@ -75,10 +65,8 @@
       }, {});
     }
 
-    unResolveAll(projectPath, mergeRequestId, discussionId) {
+    unResolveAll(mergeRequestId, discussionId) {
       const discussion = CommentsStore.state[discussionId];
-
-      this.prepareRequest(projectPath);
 
       discussion.loading = true;
 
@@ -89,5 +77,5 @@
     }
   }
 
-  w.ResolveService = new ResolveServiceClass();
-})(window);
+  gl.DiffNotesResolveServiceClass = ResolveServiceClass;
+})();

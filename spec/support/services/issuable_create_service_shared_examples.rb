@@ -31,8 +31,8 @@ shared_examples 'issuable create service' do
 
     context "when issuable feature is private" do
       before do
-        project.project_feature.update(issues_access_level: ProjectFeature::PRIVATE)
-        project.project_feature.update(merge_requests_access_level: ProjectFeature::PRIVATE)
+        project.project_feature.update(issues_access_level: ProjectFeature::PRIVATE,
+                                       merge_requests_access_level: ProjectFeature::PRIVATE)
       end
 
       levels = [Gitlab::VisibilityLevel::INTERNAL, Gitlab::VisibilityLevel::PUBLIC]

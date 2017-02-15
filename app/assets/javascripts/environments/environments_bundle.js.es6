@@ -1,8 +1,7 @@
 window.Vue = require('vue');
-
 require('./stores/environments_store');
 require('./components/environment');
-require('./vue_resource_interceptor');
+require('../vue_shared/vue_resource_interceptor');
 
 $(() => {
   window.gl = window.gl || {};

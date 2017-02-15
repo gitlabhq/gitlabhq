@@ -12,6 +12,7 @@
 - [GitLab as OAuth2 authentication service provider](integration/oauth_provider.md). It allows you to login to other applications from GitLab.
 - [Container Registry](user/project/container_registry.md) Learn how to use GitLab Container Registry.
 - [GitLab basics](gitlab-basics/README.md) Find step by step how to start working on your commandline and on GitLab.
+- [GitLab Pages](user/project/pages/index.md) Using GitLab Pages.
 - [Importing to GitLab](workflow/importing/README.md) Import your projects from GitHub, Bitbucket, GitLab.com, FogBugz and SVN into GitLab.
 - [Importing and exporting projects between instances](user/project/settings/import_export.md).
 - [Markdown](user/markdown.md) GitLab's advanced formatting system.
@@ -53,8 +54,9 @@
 - [Migrate GitLab CI to CE/EE](migrate_ci_to_ce/README.md) Follow this guide to migrate your existing GitLab CI data to GitLab CE/EE.
 - [Git LFS configuration](workflow/lfs/lfs_administration.md)
 - [Housekeeping](administration/housekeeping.md) Keep your Git repository tidy and fast.
+- [GitLab Pages configuration](administration/pages/index.md) Configure GitLab Pages.
 - [GitLab performance monitoring with InfluxDB](administration/monitoring/performance/introduction.md) Configure GitLab and InfluxDB for measuring performance metrics.
-- [GitLab performance monitoring with Prometheus](administration/monitoring/performance/prometheus.md) Configure GitLab and Prometheus for measuring performance metrics.
+- [GitLab performance monitoring with Prometheus](administration/monitoring/prometheus/index.md) Configure GitLab and Prometheus for measuring performance metrics.
 - [Request Profiling](administration/monitoring/performance/request_profiling.md) Get a detailed profile on slow requests.
 - [Monitoring uptime](user/admin_area/monitoring/health_check.md) Check the server status using the health check endpoint.
 - [Debugging Tips](administration/troubleshooting/debug.md) Tips to debug problems when things go wrong

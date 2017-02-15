@@ -10,7 +10,6 @@ function requireAll(context) { return context.keys().map(context); }
 
 window.$ = window.jQuery = require('jquery');
 require('jquery-ui/ui/autocomplete');
-require('jquery-ui/ui/datepicker');
 require('jquery-ui/ui/draggable');
 require('jquery-ui/ui/effect-highlight');
 require('jquery-ui/ui/sortable');
@@ -21,7 +20,7 @@ require('vendor/jquery.waitforimages');
 require('vendor/jquery.caret');
 require('vendor/jquery.atwho');
 require('vendor/jquery.scrollTo');
-window.Cookies = require('vendor/js.cookie');
+window.Cookies = require('js-cookie');
 require('./autosave');
 require('bootstrap/js/affix');
 require('bootstrap/js/alert');
@@ -35,8 +34,10 @@ require('bootstrap/js/transition');
 require('bootstrap/js/tooltip');
 require('bootstrap/js/popover');
 require('select2/select2.js');
+window.Pikaday = require('pikaday');
 window._ = require('underscore');
 window.Dropzone = require('dropzone');
+window.Sortable = require('vendor/Sortable');
 require('mousetrap');
 require('mousetrap/plugins/pause/mousetrap-pause');
 require('./shortcuts');
@@ -55,8 +56,7 @@ requireAll(require.context('./u2f',        false, /^\.\/.*\.(js|es6)$/));
 requireAll(require.context('./droplab',    false, /^\.\/.*\.(js|es6)$/));
 requireAll(require.context('.',            false, /^\.\/(?!application\.js).*\.(js|es6)$/));
 require('vendor/fuzzaldrin-plus');
-window.ES6Promise = require('vendor/es6-promise.auto');
-window.ES6Promise.polyfill();
+require('es6-promise').polyfill();
 
 (function () {
   document.addEventListener('beforeunload', function () {
@@ -247,5 +247,7 @@ window.ES6Promise.polyfill();
     new Aside();
     // bind sidebar events
     new gl.Sidebar();
+
+    gl.utils.initTimeagoTimeout();
   });
 }).call(this);

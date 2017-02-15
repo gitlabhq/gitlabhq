@@ -2,7 +2,7 @@ module Gitlab
   module ChatCommands
     module Presenters
       class IssueShow < Presenters::Base
-        include Presenters::Issuable
+        include Presenters::IssueBase
 
         def present
           if @resource.confidential?

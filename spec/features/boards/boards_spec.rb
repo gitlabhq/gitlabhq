@@ -3,6 +3,7 @@ require 'rails_helper'
 describe 'Issue Boards', feature: true, js: true do
   include WaitForAjax
   include WaitForVueResource
+  include DragTo
 
   let(:project) { create(:empty_project, :public) }
   let(:board)   { create(:board, project: project) }
@@ -188,7 +189,7 @@ describe 'Issue Boards', feature: true, js: true do
       end
 
       it 'moves issue to done' do
-        drag_to(list_from_index: 0, list_to_index: 2)
+        drag(list_from_index: 0, list_to_index: 2)
 
         wait_for_board_cards(1, 7)
         wait_for_board_cards(2, 2)
@@ -201,7 +202,7 @@ describe 'Issue Boards', feature: true, js: true do
       end
 
       it 'removes all of the same issue to done' do
-        drag_to(list_from_index: 0, list_to_index: 2)
+        drag(list_from_index: 0, list_to_index: 2)
 
         wait_for_board_cards(1, 7)
         wait_for_board_cards(2, 2)
@@ -215,7 +216,7 @@ describe 'Issue Boards', feature: true, js: true do
 
     context 'lists' do
       it 'changes position of list' do
-        drag_to(list_from_index: 1, list_to_index: 0, selector: '.board-header')
+        drag(list_from_index: 1, list_to_index: 0, selector: '.board-header')
 
         wait_for_board_cards(1, 2)
         wait_for_board_cards(2, 8)
@@ -226,7 +227,7 @@ describe 'Issue Boards', feature: true, js: true do
       end
 
       it 'issue moves between lists' do
-        drag_to(list_from_index: 0, card_index: 1, list_to_index: 1)
+        drag(list_from_index: 0, from_index: 1, list_to_index: 1)
 
         wait_for_board_cards(1, 7)
         wait_for_board_cards(2, 2)
@@ -237,7 +238,7 @@ describe 'Issue Boards', feature: true, js: true do
       end
 
       it 'issue moves between lists' do
-        drag_to(list_from_index: 1, list_to_index: 0)
+        drag(list_from_index: 1, list_to_index: 0)
 
         wait_for_board_cards(1, 9)
         wait_for_board_cards(2, 1)
@@ -248,7 +249,7 @@ describe 'Issue Boards', feature: true, js: true do
       end
 
       it 'issue moves from done' do
-        drag_to(list_from_index: 2, list_to_index: 1)
+        drag(list_from_index: 2, list_to_index: 1)
 
         expect(find('.board:nth-child(2)')).to have_content(issue8.title)
 
@@ -615,14 +616,13 @@ describe 'Issue Boards', feature: true, js: true do
     end
   end
 
-  def drag_to(list_from_index: 0, card_index: 0, to_index: 0, list_to_index: 0, selector: '.board-list')
-    evaluate_script("simulateDrag({scrollable: document.getElementById('board-app'), from: {el: $('#{selector}').eq(#{list_from_index}).get(0), index: #{card_index}}, to: {el: $('.board-list').eq(#{list_to_index}).get(0), index: #{to_index}}});")
-
-    Timeout.timeout(Capybara.default_max_wait_time) do
-      loop until page.evaluate_script('window.SIMULATE_DRAG_ACTIVE').zero?
-    end
-
-    wait_for_vue_resource
+  def drag(selector: '.board-list', list_from_index: 0, from_index: 0, to_index: 0, list_to_index: 0)
+    drag_to(selector: selector,
+            scrollable: '#board-app',
+            list_from_index: list_from_index,
+            from_index: from_index,
+            to_index: to_index,
+            list_to_index: list_to_index)
   end
 
   def wait_for_board_cards(board_number, expected_cards)

@@ -16,7 +16,7 @@ HipChat v2 API has tokens that are can be created using the Integrations tab
 in the Group or Room admin page. By design, these are lightweight tokens that
 allow GitLab to send messages only to *one* room.
 
-### Complete these steps in HipChat:
+### Complete these steps in HipChat
 
 1. Go to: https://admin.hipchat.com/admin
 1. Click on "Group Admin" -> "Integrations".
@@ -26,17 +26,16 @@ allow GitLab to send messages only to *one* room.
 see a URL in the format:
 
 ```
-    https://api.hipchat.com/v2/room/<room>/notification?auth_token=<token>
+https://api.hipchat.com/v2/room/<room>/notification?auth_token=<token>
 ```
 
 HipChat is now ready to accept messages from GitLab. Next, set up the HipChat
 service in GitLab.
 
-### Complete these steps in GitLab:
+### Complete these steps in GitLab
 
 1. Navigate to the project you want to configure for notifications.
-1. Select "Settings" in the top navigation.
-1. Select "Services" in the left navigation.
+1. Navigate to the [Integrations page](project_services.md#accessing-the-project-services)
 1. Click "HipChat".
 1. Select the "Active" checkbox.
 1. Insert the `token` field from the URL into the `Token` field on the Web page.
