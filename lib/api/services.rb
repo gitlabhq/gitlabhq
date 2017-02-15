@@ -611,7 +611,20 @@ module API
       TeamcityService,
       JenkinsService,
       JenkinsDeprecatedService
-    ].freeze
+    ]
+
+    if Rails.env.development?
+      services['mock-ci'] = [
+        {
+          required: true,
+          name: :mock_service_url,
+          type: String,
+          desc: 'URL to the mock service'
+        }
+      ]
+
+      service_classes << MockCiService
+    end
 
     trigger_services = {
       'mattermost-slash-commands' => [

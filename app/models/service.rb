@@ -210,7 +210,7 @@ class Service < ActiveRecord::Base
   end
 
   def self.available_services_names
-    %w[
+    service_names = %w[
       asana
       assembla
       bamboo
@@ -240,6 +240,9 @@ class Service < ActiveRecord::Base
       slack
       teamcity
     ]
+    service_names << 'mock_ci' if Rails.env.development?
+
+    service_names.sort_by(&:downcase)
   end
 
   def self.build_from_template(project_id, template)
