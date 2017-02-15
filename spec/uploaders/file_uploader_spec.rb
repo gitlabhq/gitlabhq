@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe FileUploader do
-  let(:uploader) { described_class.new(build_stubbed(:project)) }
+  let(:uploader) { described_class.new(build_stubbed(:empty_project)) }
 
   describe 'initialize' do
     it 'generates a secret if none is provided' do

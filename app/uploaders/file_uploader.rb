@@ -1,5 +1,7 @@
 class FileUploader < GitlabUploader
+  include RecordsUploads
   include UploaderHelper
+
   MARKDOWN_PATTERN = %r{\!?\[.*?\]\(/uploads/(?<secret>[0-9a-f]{32})/(?<file>.*?)\)}
 
   storage :file
@@ -18,6 +20,10 @@ class FileUploader < GitlabUploader
 
   def cache_dir
     File.join(base_dir, 'tmp', @project.path_with_namespace, @secret)
+  end
+
+  def model
+    project
   end
 
   def to_markdown

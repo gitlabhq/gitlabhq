@@ -1,10 +1,14 @@
 require 'rails_helper'
 
 describe UploaderHelper do
-  class ExampleUploader < CarrierWave::Uploader::Base
-    include UploaderHelper
+  let(:uploader) do
+    example_uploader = Class.new(CarrierWave::Uploader::Base) do
+      include UploaderHelper
 
-    storage :file
+      storage :file
+    end
+
+    example_uploader.new
   end
 
   def upload_fixture(filename)
@@ -12,8 +16,6 @@ describe UploaderHelper do
   end
 
   describe '#image_or_video?' do
-    let(:uploader) { ExampleUploader.new }
-
     it 'returns true for an image file' do
       uploader.store!(upload_fixture('dk.png'))
 
