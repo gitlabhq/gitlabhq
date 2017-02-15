@@ -169,10 +169,10 @@
           url: issuesPath + "/?author_username=" + userName
         }, 'separator', {
           text: 'Merge requests assigned to me',
-          url: mrPath + "/?assignee_id=" + userId
+          url: mrPath + "/?assignee_username=" + userName
         }, {
           text: "Merge requests I've created",
-          url: mrPath + "/?author_id=" + userId
+          url: mrPath + "/?author_username=" + userName
         }
       ];
       if (!name) {
