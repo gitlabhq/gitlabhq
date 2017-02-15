@@ -25,6 +25,8 @@
       $('.dropdown').on('hidden.gl.dropdown', this, this.onSidebarDropdownHidden);
       $('.dropdown').on('loading.gl.dropdown', this.sidebarDropdownLoading);
       $('.dropdown').on('loaded.gl.dropdown', this.sidebarDropdownLoaded);
+      $(window).on('resize', () => this.setSidebarHeight());
+      $(document).on('scroll', () => this.setSidebarHeight());
       $(document).on('click', '.js-sidebar-toggle', function(e, triggered) {
         var $allGutterToggleIcons, $this, $thisIcon;
         e.preventDefault();
@@ -188,6 +190,16 @@
         if (this.isOpen()) {
           return this.triggerOpenSidebar();
         }
+      }
+    };
+
+    Sidebar.prototype.setSidebarHeight = function() {
+      const $navHeight = $('.navbar-gitlab').outerHeight() + $('.layout-nav').outerHeight();
+      const diff = $navHeight - $('body').scrollTop();
+      if (diff > 0) {
+        $('.js-right-sidebar').outerHeight($(window).height() - diff);
+      } else {
+        $('.js-right-sidebar').outerHeight('100%');
       }
     };
 

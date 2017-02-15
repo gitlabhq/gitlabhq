@@ -240,8 +240,6 @@ require('es6-promise').polyfill();
     });
     gl.awardsHandler = new AwardsHandler();
     new Aside();
-    // bind sidebar events
-    new gl.Sidebar();
 
     gl.utils.initTimeagoTimeout();
   });
