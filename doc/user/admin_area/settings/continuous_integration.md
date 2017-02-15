@@ -2,9 +2,9 @@
 
 ## Maximum artifacts size
 
-The maximum size of the [build artifacts][art-yml] can be set in the Admin area
+The maximum size of the [job artifacts][art-yml] can be set in the Admin area
 of your GitLab instance. The value is in MB and the default is 100MB. Note that
-this setting is set for each build.
+this setting is set for each job.
 
 1. Go to the **Admin area ➔ Settings** (`/admin/application_settings`).
 
@@ -70,5 +70,5 @@ the group.
 
 ![Group pipelines quota](img/group_pipelines_quota.png)
 
-[art-yml]: ../../../administration/build_artifacts.md
+[art-yml]: ../../../administration/job_artifacts.md
 [ee-1078]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1078
