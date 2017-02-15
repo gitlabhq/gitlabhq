@@ -5,6 +5,7 @@ window.Vue = require('vue');
 require('../vue_shared/components/table_pagination');
 require('./store');
 require('../vue_shared/components/pipelines_table');
+const CommitPipelinesStoreWithTimeAgo = require('../commit/pipelines/pipelines_store');
 
 ((gl) => {
   gl.VuePipelines = Vue.extend({
@@ -32,8 +33,17 @@ require('../vue_shared/components/pipelines_table');
       const scope = gl.utils.getParameterByName('scope');
       if (pagenum) this.pagenum = pagenum;
       if (scope) this.apiScope = scope;
+
       this.store.fetchDataLoop.call(this, Vue, this.pagenum, this.scope, this.apiScope);
     },
+
+    beforeUpdate() {
+      if (this.pipelines.length && this.$children) {
+        debugger;
+        CommitPipelinesStoreWithTimeAgo.startTimeAgoLoops.call(this, Vue);
+      }
+    },
+
     methods: {
       change(pagenum, apiScope) {
         gl.utils.visitUrl(`?scope=${apiScope}&p=${pagenum}`);

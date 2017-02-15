@@ -71,13 +71,18 @@ require('./pipelines_store');
         .then(response => response.json())
         .then((json) => {
           this.store.storePipelines(json);
-          this.store.startTimeAgoLoops.call(this, Vue);
           this.isLoading = false;
         })
         .catch(() => {
           this.isLoading = false;
           new Flash('An error occurred while fetching the pipelines, please reload the page again.', 'alert');
         });
+    },
+
+    beforeUpdate() {
+      if (this.state.pipelines.length && this.$children) {
+        this.store.startTimeAgoLoops.call(this, Vue);
+      }
     },
 
     template: `
