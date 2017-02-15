@@ -4,6 +4,7 @@
  *
  * Used to store the Pipelines rendered in the commit view in the pipelines table.
  */
+require('../../vue_realtime_listener');
 
 class PipelinesStore {
   constructor() {
@@ -44,7 +45,4 @@ class PipelinesStore {
   }
 }
 
-window.gl = window.gl || {};
-gl.commits = gl.commits || {};
-gl.commits.pipelines = gl.commits.pipelines || {};
-gl.commits.pipelines.PipelinesStore = PipelinesStore;
+module.exports = PipelinesStore;

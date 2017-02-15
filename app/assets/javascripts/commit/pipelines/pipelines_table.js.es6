@@ -6,9 +6,8 @@ window.Vue.use(require('vue-resource'));
 require('../../lib/utils/common_utils');
 require('../../vue_shared/vue_resource_interceptor');
 require('../../vue_shared/components/pipelines_table');
-require('../../vue_realtime_listener/index');
 require('./pipelines_service');
-require('./pipelines_store');
+const PipelineStore = require('./pipelines_store');
 
 /**
  *
@@ -41,7 +40,7 @@ require('./pipelines_store');
     data() {
       const pipelinesTableData = document.querySelector('#commit-pipeline-table-view').dataset;
       const svgsData = document.querySelector('.pipeline-svgs').dataset;
-      const store = new gl.commits.pipelines.PipelinesStore();
+      const store = new PipelineStore();
 
       // Transform svgs DOMStringMap to a plain Object.
       const svgsObject = gl.utils.DOMStringMapToObject(svgsData);
@@ -81,7 +80,7 @@ require('./pipelines_store');
 
     beforeUpdate() {
       if (this.state.pipelines.length && this.$children) {
-        this.store.startTimeAgoLoops.call(this, Vue);
+        PipelineStore.startTimeAgoLoops.call(this, Vue);
       }
     },
 

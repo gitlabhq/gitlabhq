@@ -39,7 +39,6 @@ const CommitPipelinesStoreWithTimeAgo = require('../commit/pipelines/pipelines_s
 
     beforeUpdate() {
       if (this.pipelines.length && this.$children) {
-        debugger;
         CommitPipelinesStoreWithTimeAgo.startTimeAgoLoops.call(this, Vue);
       }
     },
