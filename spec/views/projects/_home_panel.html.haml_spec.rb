@@ -4,7 +4,7 @@ describe 'projects/_home_panel', :view do
   let(:project) { create(:empty_project, :public) }
 
   let(:notification_settings) do
-    user.notification_settings_for(project) if user
+    user&.notification_settings_for(project)
   end
 
   before do
