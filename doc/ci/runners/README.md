@@ -8,14 +8,13 @@ A Runner can be specific to a certain project or serve any project
 in GitLab CI. A Runner that serves all projects is called a shared Runner.
 
 Ideally, GitLab Runner should not be installed on the same machine as GitLab.
-Read the [requirements documentation](../../install/requirements.md#gitlab-Runner)
+Read the [requirements documentation](../../install/requirements.md#gitlab-runner)
 for more information.
 
 ## Shared vs. Specific Runners
 
 A Runner that is specific only runs for the specified project. A shared Runner
-can run jobs for every project that has enabled the option
-`Allow shared Runners`.
+can run jobs for every project that has enabled the option **Allow shared Runners**.
 
 **Shared Runners** are useful for jobs that have similar requirements,
 between multiple projects. Rather than having multiple Runners idling for
@@ -44,7 +43,7 @@ A fork does copy the CI settings (jobs, allow shared, etc) of the cloned reposit
 There are several ways to create a Runner. Only after creation, upon
 registration its status as Shared or Specific is determined.
 
-[See the documentation for](https://gitlab.com/gitlab-org/gitlab-ci-multi-Runner/#installation)
+[See the documentation for](https://docs.gitlab.com/runner/install)
 the different methods of installing a Runner instance.
 
 After installing the Runner, you can either register it as `Shared` or as `Specific`.
@@ -55,19 +54,19 @@ You can only register a Shared Runner if you have admin access to the GitLab ins
 You can only register a shared Runner if you are an admin on the linked
 GitLab instance.
 
-Grab the shared-Runner token on the `admin/Runners` page of your GitLab CI
+Grab the shared-Runner token on the `admin/runners` page of your GitLab CI
 instance.
 
-![shared token](shared_Runner.png)
+![shared token](shared_runner.png)
 
 Now simply register the Runner as any Runner:
 
 ```
-sudo gitlab-ci-multi-Runner register
+sudo gitlab-ci-multi-runner register
 ```
 
 Shared Runners are enabled by default as of GitLab 8.2, but can be disabled with the
-`DISABLE SHARED RunnerS` button. Previous versions of GitLab defaulted shared Runners to
+`DISABLE SHARED RUNNERS` button. Previous versions of GitLab defaulted shared Runners to
 disabled.
 
 ## Registering a Specific Runner
@@ -93,7 +92,7 @@ setup a specific Runner for this project.
 To register the Runner, run the command below and follow instructions:
 
 ```
-sudo gitlab-ci-multi-Runner register
+sudo gitlab-ci-multi-runner register
 ```
 
 ###  Lock a specific Runner from being enabled for other projects
@@ -108,7 +107,7 @@ If you are an admin on your GitLab instance,
 you can make any shared Runner a specific Runner, _but you can not
 make a specific Runner a shared Runner_.
 
-To make a shared Runner specific, go to the Runner page (`/admin/Runners`)
+To make a shared Runner specific, go to the Runner page (`/admin/runners`)
 and find your Runner. Add any projects on the left to make this Runner
 run exclusively for these projects, therefore making it a specific Runner.
 

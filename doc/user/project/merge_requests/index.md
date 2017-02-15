@@ -166,4 +166,4 @@ And to check out a particular merge request:
 git checkout origin/merge-requests/1
 ```
 
-[protected branches]: protected_branches.md
+[protected branches]: ../protected_branches.md

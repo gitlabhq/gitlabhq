@@ -1,1 +1,1 @@
-This document was moved to [jobs_artifacts](jobs_artifacts.md).
+This document was moved to [job_artifacts](job_artifacts.md).

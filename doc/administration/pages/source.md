@@ -311,13 +311,13 @@ Pages are part of the [regular backup][backup] so there is nothing to configure.
 You should strongly consider running GitLab pages under a different hostname
 than GitLab to prevent XSS attacks.
 
-[backup]: ../raketasks/backup_restore.md
+[backup]: ../../raketasks/backup_restore.md
 [ee-80]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/80
 [ee-173]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/173
 [gitlab pages daemon]: https://gitlab.com/gitlab-org/gitlab-pages
 [NGINX configs]: https://gitlab.com/gitlab-org/gitlab-ee/tree/8-5-stable-ee/lib/support/nginx
 [pages-readme]: https://gitlab.com/gitlab-org/gitlab-pages/blob/master/README.md
 [pages-userguide]: ../../user/project/pages/index.md
-[reconfigure]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
-[restart]: ../administration/restart_gitlab.md#installations-from-source
+[reconfigure]: ../restart_gitlab.md#omnibus-gitlab-reconfigure
+[restart]: ../restart_gitlab.md#installations-from-source
 [gitlab-pages]: https://gitlab.com/gitlab-org/gitlab-pages/tree/v0.2.4
