@@ -58,7 +58,7 @@ module Gitlab
     end
 
     def true_value
-      if postgresql?
+      if Gitlab::Database.postgresql?
         "'t'"
       else
         1
@@ -66,7 +66,7 @@ module Gitlab
     end
 
     def false_value
-      if postgresql?
+      if Gitlab::Database.postgresql?
         "'f'"
       else
         0

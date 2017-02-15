@@ -1,0 +1,4 @@
+---
+title: Try to update mirrors again after 15 minutes if the previous update failed
+merge_request: 1183
+author:
