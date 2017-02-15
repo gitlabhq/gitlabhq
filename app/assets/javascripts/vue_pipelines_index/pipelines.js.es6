@@ -28,7 +28,7 @@ require('../vue_shared/components/pipelines_table');
     },
     props: ['scope', 'store', 'svgs'],
     created() {
-      const pagenum = gl.utils.getParameterByName('p');
+      const pagenum = gl.utils.getParameterByName('page');
       const scope = gl.utils.getParameterByName('scope');
       if (pagenum) this.pagenum = pagenum;
       if (scope) this.apiScope = scope;
@@ -36,7 +36,7 @@ require('../vue_shared/components/pipelines_table');
     },
     methods: {
       change(pagenum, apiScope) {
-        gl.utils.visitUrl(`?scope=${apiScope}&p=${pagenum}`);
+        gl.utils.visitUrl(`?scope=${apiScope}&page=${pagenum}`);
       },
     },
     template: `

@@ -277,6 +277,28 @@ describe 'Pipelines', :feature, :js do
           end
         end
       end
+
+      context 'with pagination' do
+        before do
+          create_list(:ci_empty_pipeline, 40, project: project)
+        end
+
+        it 'should render pagination' do
+          visit namespace_project_pipelines_path(project.namespace, project)
+          wait_for_vue_resource
+
+          expect(page).to have_css('.gl-pagination')
+          expect(page.find_all('tbody tr').length).to eq(20)
+        end
+
+        it "should render second page of pipelines" do
+          visit namespace_project_pipelines_path(project.namespace, project, page: '2')
+          wait_for_vue_resource
+
+          expect(page).to have_css('.gl-pagination')
+          expect(page.find_all('tbody tr').length).to eq(20)
+        end
+      end
     end
 
     describe 'POST /:project/pipelines' do
