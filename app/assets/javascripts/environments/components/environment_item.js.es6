@@ -72,9 +72,9 @@ module.exports = Vue.component('environment-item', {
      * @returns {Boolean}
      */
     hasLastDeploymentKey() {
-      if (this.model.latest &&
-        this.model.latest.last_deployment &&
-        !this.$options.isObjectEmpty(this.model.latest.last_deployment)) {
+      if (this.model &&
+        this.model.last_deployment &&
+        !this.$options.isObjectEmpty(this.model.last_deployment)) {
         return true;
       }
       return false;
@@ -87,10 +87,10 @@ module.exports = Vue.component('environment-item', {
      * @returns {Boolean|Undefined}
      */
     hasManualActions() {
-      return this.model.latest &&
-        this.model.latest.last_deployment &&
-        this.model.latest.last_deployment.manual_actions &&
-        this.model.latest.last_deployment.manual_actions.length > 0;
+      return this.model &&
+        this.model.last_deployment &&
+        this.model.last_deployment.manual_actions &&
+        this.model.last_deployment.manual_actions.length > 0;
     },
 
     /**
@@ -99,7 +99,7 @@ module.exports = Vue.component('environment-item', {
      * @returns {Boolean}
      */
     hasStopAction() {
-      return this.model.latest && this.model.latest['stop_action?'];
+      return this.model && this.model['stop_action?'];
     },
 
     /**
@@ -109,10 +109,10 @@ module.exports = Vue.component('environment-item', {
      * @returns {Boolean|Undefined}
      */
     canRetry() {
-      return this.model.latest &&
+      return this.model &&
         this.hasLastDeploymentKey &&
-        this.model.latest.last_deployment &&
-        this.model.latest.last_deployment.deployable;
+        this.model.last_deployment &&
+        this.model.last_deployment.deployable;
     },
 
     /**
@@ -121,10 +121,10 @@ module.exports = Vue.component('environment-item', {
      * @returns {Boolean|Undefined}
      */
     canShowDate() {
-      return this.model.latest &&
-        this.model.latest.last_deployment &&
-        this.model.latest.last_deployment.deployable &&
-        this.model.latest.last_deployment.deployable !== undefined;
+      return this.model &&
+        this.model.last_deployment &&
+        this.model.last_deployment.deployable &&
+        this.model.last_deployment.deployable !== undefined;
     },
 
     /**
@@ -133,11 +133,11 @@ module.exports = Vue.component('environment-item', {
      * @returns {String}
      */
     createdDate() {
-      if (this.model.latest &&
-        this.model.latest.last_deployment &&
-        this.model.latest.last_deployment.deployable &&
-        this.model.latest.last_deployment.deployable.created_at) {
-        return timeagoInstance.format(this.model.latest.last_deployment.deployable.created_at);
+      if (this.model &&
+        this.model.last_deployment &&
+        this.model.last_deployment.deployable &&
+        this.model.last_deployment.deployable.created_at) {
+        return timeagoInstance.format(this.model.last_deployment.deployable.created_at);
       }
       return '';
     },
@@ -149,7 +149,7 @@ module.exports = Vue.component('environment-item', {
      */
     manualActions() {
       if (this.hasManualActions) {
-        return this.model.latest.last_deployment.manual_actions.map((action) => {
+        return this.model.last_deployment.manual_actions.map((action) => {
           const parsedAction = {
             name: gl.text.humanize(action.name),
             play_path: action.play_path,
@@ -166,11 +166,11 @@ module.exports = Vue.component('environment-item', {
      * @returns {String}
      */
     userImageAltDescription() {
-      if (this.model.latest &&
-        this.model.latest.last_deployment &&
-        this.model.latest.last_deployment.user &&
-        this.model.latest.last_deployment.user.username) {
-        return `${this.model.latest.last_deployment.user.username}'s avatar'`;
+      if (this.model &&
+        this.model.last_deployment &&
+        this.model.last_deployment.user &&
+        this.model.last_deployment.user.username) {
+        return `${this.model.last_deployment.user.username}'s avatar'`;
       }
       return '';
     },
@@ -181,10 +181,10 @@ module.exports = Vue.component('environment-item', {
      * @returns {String|Undefined}
      */
     commitTag() {
-      if (this.model.latest &&
-        this.model.latest.last_deployment &&
-        this.model.latest.last_deployment.tag) {
-        return this.model.latest.last_deployment.tag;
+      if (this.model &&
+        this.model.last_deployment &&
+        this.model.last_deployment.tag) {
+        return this.model.last_deployment.tag;
       }
       return undefined;
     },
@@ -195,10 +195,10 @@ module.exports = Vue.component('environment-item', {
      * @returns {Object|Undefined}
      */
     commitRef() {
-      if (this.model.latest &&
-        this.model.latest.last_deployment &&
-        this.model.latest.last_deployment.ref) {
-        return this.model.latest.last_deployment.ref;
+      if (this.model &&
+        this.model.last_deployment &&
+        this.model.last_deployment.ref) {
+        return this.model.last_deployment.ref;
       }
       return undefined;
     },
@@ -209,11 +209,11 @@ module.exports = Vue.component('environment-item', {
      * @returns {String|Undefined}
      */
     commitUrl() {
-      if (this.model.latest &&
-        this.model.latest.last_deployment &&
-        this.model.latest.last_deployment.commit &&
-        this.model.latest.last_deployment.commit.commit_path) {
-        return this.model.latest.last_deployment.commit.commit_path;
+      if (this.model &&
+        this.model.last_deployment &&
+        this.model.last_deployment.commit &&
+        this.model.last_deployment.commit.commit_path) {
+        return this.model.last_deployment.commit.commit_path;
       }
       return undefined;
     },
@@ -224,11 +224,11 @@ module.exports = Vue.component('environment-item', {
      * @returns {String|Undefined}
      */
     commitShortSha() {
-      if (this.model.latest &&
-        this.model.latest.last_deployment &&
-        this.model.latest.last_deployment.commit &&
-        this.model.latest.last_deployment.commit.short_id) {
-        return this.model.latest.last_deployment.commit.short_id;
+      if (this.model &&
+        this.model.last_deployment &&
+        this.model.last_deployment.commit &&
+        this.model.last_deployment.commit.short_id) {
+        return this.model.last_deployment.commit.short_id;
       }
       return undefined;
     },
@@ -239,11 +239,11 @@ module.exports = Vue.component('environment-item', {
      * @returns {String|Undefined}
      */
     commitTitle() {
-      if (this.model.latest &&
-        this.model.latest.last_deployment &&
-        this.model.latest.last_deployment.commit &&
-        this.model.latest.last_deployment.commit.title) {
-        return this.model.latest.last_deployment.commit.title;
+      if (this.model &&
+        this.model.last_deployment &&
+        this.model.last_deployment.commit &&
+        this.model.last_deployment.commit.title) {
+        return this.model.last_deployment.commit.title;
       }
       return undefined;
     },
@@ -254,11 +254,11 @@ module.exports = Vue.component('environment-item', {
      * @returns {Object|Undefined}
      */
     commitAuthor() {
-      if (this.model.latest &&
-        this.model.latest.last_deployment &&
-        this.model.latest.last_deployment.commit &&
-        this.model.latest.last_deployment.commit.author) {
-        return this.model.latest.last_deployment.commit.author;
+      if (this.model &&
+        this.model.last_deployment &&
+        this.model.last_deployment.commit &&
+        this.model.last_deployment.commit.author) {
+        return this.model.last_deployment.commit.author;
       }
 
       return undefined;
@@ -270,11 +270,11 @@ module.exports = Vue.component('environment-item', {
      * @returns {String|Undefined}
      */
     retryUrl() {
-      if (this.model.latest &&
-        this.model.latest.last_deployment &&
-        this.model.latest.last_deployment.deployable &&
-        this.model.latest.last_deployment.deployable.retry_path) {
-        return this.model.latest.last_deployment.deployable.retry_path;
+      if (this.model &&
+        this.model.last_deployment &&
+        this.model.last_deployment.deployable &&
+        this.model.last_deployment.deployable.retry_path) {
+        return this.model.last_deployment.deployable.retry_path;
       }
       return undefined;
     },
@@ -285,8 +285,8 @@ module.exports = Vue.component('environment-item', {
      * @returns {Boolean|Undefined}
      */
     isLastDeployment() {
-      return this.model.latest && this.model.latest.last_deployment &&
-        this.model.latest.last_deployment['last?'];
+      return this.model && this.model.last_deployment &&
+        this.model.last_deployment['last?'];
     },
 
     /**
@@ -295,10 +295,10 @@ module.exports = Vue.component('environment-item', {
      * @returns {String}
      */
     buildName() {
-      if (this.model.latest &&
-        this.model.latest.last_deployment &&
-        this.model.latest.last_deployment.deployable) {
-        return `${this.model.latest.last_deployment.deployable.name} #${this.model.latest.last_deployment.deployable.id}`;
+      if (this.model &&
+        this.model.last_deployment &&
+        this.model.last_deployment.deployable) {
+        return `${this.model.last_deployment.deployable.name} #${this.model.last_deployment.deployable.id}`;
       }
       return '';
     },
@@ -309,10 +309,10 @@ module.exports = Vue.component('environment-item', {
      * @returns {String}
      */
     deploymentInternalId() {
-      if (this.model.latest &&
-        this.model.latest.last_deployment &&
-        this.model.latest.last_deployment.iid) {
-        return `#${this.model.latest.last_deployment.iid}`;
+      if (this.model &&
+        this.model.last_deployment &&
+        this.model.last_deployment.iid) {
+        return `#${this.model.last_deployment.iid}`;
       }
       return '';
     },
@@ -323,9 +323,9 @@ module.exports = Vue.component('environment-item', {
      * @returns {Boolean}
      */
     deploymentHasUser() {
-      return this.model.latest &&
-        !this.$options.isObjectEmpty(this.model.latest.last_deployment) &&
-        !this.$options.isObjectEmpty(this.model.latest.last_deployment.user);
+      return this.model &&
+        !this.$options.isObjectEmpty(this.model.last_deployment) &&
+        !this.$options.isObjectEmpty(this.model.last_deployment.user);
     },
 
     /**
@@ -335,10 +335,10 @@ module.exports = Vue.component('environment-item', {
      * @returns {Object}
      */
     deploymentUser() {
-      if (this.model.latest &&
-        !this.$options.isObjectEmpty(this.model.latest.last_deployment) &&
-        !this.$options.isObjectEmpty(this.model.latest.last_deployment.user)) {
-        return this.model.latest.last_deployment.user;
+      if (this.model &&
+        !this.$options.isObjectEmpty(this.model.last_deployment) &&
+        !this.$options.isObjectEmpty(this.model.last_deployment.user)) {
+        return this.model.last_deployment.user;
       }
       return {};
     },
@@ -352,9 +352,8 @@ module.exports = Vue.component('environment-item', {
      */
     shouldRenderBuildName() {
       return !this.model.isFolder &&
-        this.model.latest &&
-        !this.$options.isObjectEmpty(this.model.latest.last_deployment) &&
-        !this.$options.isObjectEmpty(this.model.latest.last_deployment.deployable);
+        !this.$options.isObjectEmpty(this.model.last_deployment) &&
+        !this.$options.isObjectEmpty(this.model.last_deployment.deployable);
     },
 
     /**
@@ -363,11 +362,11 @@ module.exports = Vue.component('environment-item', {
      * @return {String}
      */
     buildPath() {
-      if (this.model.latest &&
-        this.model.latest.last_deployment &&
-        this.model.latest.last_deployment.deployable &&
-        this.model.latest.last_deployment.deployable.build_path) {
-        return this.model.latest.last_deployment.deployable.build_path;
+      if (this.model &&
+        this.model.last_deployment &&
+        this.model.last_deployment.deployable &&
+        this.model.last_deployment.deployable.build_path) {
+        return this.model.last_deployment.deployable.build_path;
       }
 
       return '';
@@ -379,8 +378,8 @@ module.exports = Vue.component('environment-item', {
      * @return {String}
      */
     externalURL() {
-      if (this.model.latest && this.model.latest.external_url) {
-        return this.model.latest.external_url;
+      if (this.model && this.model.external_url) {
+        return this.model.external_url;
       }
 
       return '';
@@ -395,14 +394,13 @@ module.exports = Vue.component('environment-item', {
      */
     shouldRenderDeploymentID() {
       return !this.model.isFolder &&
-        this.model.latest &&
-        !this.$options.isObjectEmpty(this.model.latest.last_deployment) &&
-        this.model.latest.last_deployment.iid !== undefined;
+        !this.$options.isObjectEmpty(this.model.last_deployment) &&
+        this.model.last_deployment.iid !== undefined;
     },
 
     environmentPath() {
-      if (this.model && this.model.latest && this.model.latest.environment_path) {
-        return this.model.latest.environment_path;
+      if (this.model && this.model.environment_path) {
+        return this.model.environment_path;
       }
 
       return '';
@@ -414,7 +412,7 @@ module.exports = Vue.component('environment-item', {
      * @return {String}
      */
     folderUrl() {
-      return `${window.location.pathname}/folders/${this.model.name}`;
+      return `${window.location.pathname}/folders/${this.model.folderName}`;
     },
 
   },
@@ -449,7 +447,7 @@ module.exports = Vue.component('environment-item', {
           </span>
 
           <span>
-            {{model.name}}
+            {{model.folderName}}
           </span>
 
           <span class="badge">
@@ -523,18 +521,18 @@ module.exports = Vue.component('environment-item', {
             </external-url-component>
           </div>
 
-          <div v-if="hasStopAction && canCreateDeployment && model.latest"
+          <div v-if="hasStopAction && canCreateDeployment"
             class="inline js-stop-component-container">
             <stop-component
-              :stop-url="model.latest.stop_path">
+              :stop-url="model.stop_path">
             </stop-component>
           </div>
 
-          <div v-if="model.latest && model.latest.terminal_path"
+          <div v-if="model && model.terminal_path"
             class="inline js-terminal-button-container">
             <terminal-button-component
               :terminal-icon-svg="terminalIconSvg"
-              :terminal-path="model.latest.terminal_path">
+              :terminal-path="model.terminal_path">
             </terminal-button-component>
           </div>
 
