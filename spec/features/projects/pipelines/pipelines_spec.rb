@@ -42,6 +42,41 @@ describe 'Pipelines', :feature, :js do
         end
       end
 
+      context 'header tabs' do
+        before do
+          visit namespace_project_pipelines_path(project.namespace, project)
+          wait_for_vue_resource
+        end
+
+        it 'shows a tab for All pipelines and count' do
+          expect(page.find('.js-pipelines-tab-all a').text).to include('All')
+          expect(page.find('.js-pipelines-tab-all .badge').text).to include('1')
+        end
+
+        it 'shows a tab for Pending pipelines and count' do
+          expect(page.find('.js-pipelines-tab-pending a').text).to include('Pending')
+          expect(page.find('.js-pipelines-tab-pending .badge').text).to include('0')
+        end
+
+        it 'shows a tab for Running pipelines and count' do
+          expect(page.find('.js-pipelines-tab-running a').text).to include('Running')
+          expect(page.find('.js-pipelines-tab-running .badge').text).to include('1')
+        end
+
+        it 'shows a tab for Finished pipelines and count' do
+          expect(page.find('.js-pipelines-tab-finished a').text).to include('Finished')
+          expect(page.find('.js-pipelines-tab-finished .badge').text).to include('0')
+        end
+
+        it 'shows a tab for Branches' do
+          expect(page.find('.js-pipelines-tab-branches a').text).to include('Branches')
+        end
+
+        it 'shows a tab for Tags' do
+          expect(page.find('.js-pipelines-tab-tags a').text).to include('Tags')
+        end
+      end
+
       context 'when pipeline is cancelable' do
         let!(:build) do
           create(:ci_build, pipeline: pipeline,

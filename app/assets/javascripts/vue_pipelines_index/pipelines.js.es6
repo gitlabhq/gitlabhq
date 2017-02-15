@@ -23,7 +23,7 @@ const CommitPipelinesStoreWithTimeAgo = require('../commit/pipelines/pipelines_s
         apiScope: 'all',
         pageInfo: {},
         pagenum: 1,
-        count: { all: 0, running_or_pending: 0 },
+        count: {},
         pageRequest: false,
       };
     },

@@ -25,7 +25,9 @@ describe Projects::PipelinesController do
       expect(json_response).to include('pipelines')
       expect(json_response['pipelines'].count).to eq 2
       expect(json_response['count']['all']).to eq 2
-      expect(json_response['count']['running_or_pending']).to eq 2
+      expect(json_response['count']['running']).to eq 0
+      expect(json_response['count']['pending']).to eq 2
+      expect(json_response['count']['finished']).to eq 0
     end
   end
 
