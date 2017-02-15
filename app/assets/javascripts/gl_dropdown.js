@@ -532,7 +532,16 @@
     };
 
     GitLabDropdown.prototype.renderItem = function(data, group, index) {
-      var field, fieldName, html, selected, text, url, value;
+      var field, fieldName, html, selected, text, url, value, rowHidden;
+
+      value = this.options.id ? this.options.id(data) : data.id;
+
+      if (value) { value = value.toString().replace(/'/g, '\\\''); }
+
+      // Hide element
+      if (this.options.hideRow && this.options.hideRow(value)) {
+        rowHidden = true;
+      }
       if (group == null) {
         group = false;
       }
@@ -541,7 +550,7 @@
         index = false;
       }
       html = document.createElement('li');
-      if (data === 'divider' || data === 'separator') {
+      if ((data === 'divider' || data === 'separator') && !rowHidden) {
         html.className = data;
         return html;
       }
@@ -556,10 +565,7 @@
         html = this.options.renderRow.call(this.options, data, this);
       } else {
         if (!selected) {
-          value = this.options.id ? this.options.id(data) : data.id;
           fieldName = this.options.fieldName;
-
-          if (value) { value = value.toString().replace(/'/g, '\\\''); }
 
           field = this.dropdown.parent().find("input[name='" + fieldName + "'][value='" + value + "']");
           if (field.length) {
@@ -594,6 +600,10 @@
         if (group) {
           link.dataset.group = group;
           link.dataset.index = index;
+        }
+
+        if (rowHidden) {
+          link.style.display = 'none';
         }
 
         html.appendChild(link);

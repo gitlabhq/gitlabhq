@@ -42,6 +42,12 @@ require('./board_new_form');
           this.loadBoards(false);
         }
       },
+      board: {
+        handler() {
+          this.updateMilestoneFilterDropdown();
+        },
+        deep: true,
+      }
     },
     computed: {
       currentPage() {
@@ -88,17 +94,20 @@ require('./board_new_form');
           });
         }
       },
+      updateMilestoneFilterDropdown() {
+        const $milestoneDropdown = $('.dropdown-menu-milestone');
+        const hideElements = this.board.milestone_id === undefined;
+
+        $milestoneDropdown.find('.dropdown-input').toggle(hideElements);
+        $milestoneDropdown.find('.dropdown-footer').toggle(hideElements);
+        $milestoneDropdown.find('.dropdown-content li')
+          .filter((i, el) => $(el).find('.is-active').length === 0)
+          .toggle(hideElements);
+      },
     },
     created() {
-      const $milestoneDropdown = $('.dropdown-menu-milestone');
-      console.log(this.currentBoard);
-
       this.state.currentBoard = this.currentBoard;
-
-      if (this.currentBoard.milestone_id) {
-        $milestoneDropdown.find('.dropdown-input').hide();
-        $milestoneDropdown.find('.dropdown-footer').hide();
-      }
+      this.updateMilestoneFilterDropdown();
     },
   });
 })();
