@@ -29,6 +29,7 @@ require('./merge_request_tabs');
       if ($("a.btn-close").length) {
         this.taskList = new gl.TaskList({
           dataType: 'merge_request',
+          fieldName: 'description',
           selector: '.detail-page-description',
           onSuccess: (result) => {
             document.querySelector('#task_status').innerText = result.task_status;

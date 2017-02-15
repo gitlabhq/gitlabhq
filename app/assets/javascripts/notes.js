@@ -53,6 +53,7 @@ require('./task_list');
       this.setupMainTargetNoteForm();
       this.taskList = new gl.TaskList({
         dataType: 'note',
+        fieldName: 'note',
         selector: '.notes'
       });
       this.collapseLongCommitList();

@@ -14,6 +14,7 @@ require('./task_list');
       if ($('a.btn-close').length) {
         this.taskList = new gl.TaskList({
           dataType: 'issue',
+          fieldName: 'description',
           selector: '.detail-page-description',
           onSuccess: (result) => {
             document.querySelector('#task_status').innerText = result.task_status;

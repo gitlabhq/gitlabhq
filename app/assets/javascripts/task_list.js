@@ -4,6 +4,7 @@ class TaskList {
   constructor(options = {}) {
     this.selector = options.selector;
     this.dataType = options.dataType;
+    this.fieldName = options.fieldName;
     this.onSuccess = options.onSuccess || (() => {});
     this.init();
   }
@@ -24,7 +25,7 @@ class TaskList {
     const $target = $(e.target);
     const patchData = {};
     patchData[this.dataType] = {
-      description: $target.val(),
+      [this.fieldName]: $target.val(),
     };
     return $.ajax({
       type: 'PATCH',
