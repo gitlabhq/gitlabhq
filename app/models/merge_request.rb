@@ -442,7 +442,8 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def can_remove_source_branch?(current_user)
-    !source_project.protected_branch?(source_branch) &&
+    source_project &&
+      !source_project.protected_branch?(source_branch) &&
       !source_project.root_ref?(source_branch) &&
       Ability.allowed?(current_user, :push_code, source_project) &&
       diff_head_commit == source_branch_head
