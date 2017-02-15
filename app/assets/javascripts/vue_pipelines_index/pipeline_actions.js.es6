@@ -50,9 +50,9 @@
               <button
                 v-if='artifacts'
                 class="dropdown-toggle btn btn-default build-artifacts has-tooltip js-pipeline-dropdown-download"
-                data-toggle="dropdown"
                 title="Artifacts"
                 data-placement="top"
+                data-toggle="dropdown"
                 aria-label="Artifacts"
               >
                 <i class="fa fa-download" aria-hidden="true"></i>
@@ -81,8 +81,7 @@
               data-placement="top"
               data-toggle="dropdown"
               :href='pipeline.retry_path'
-              aria-label="Retry"
-            >
+              aria-label="Retry">
               <i class="fa fa-repeat" aria-hidden="true"></i>
             </a>
             <a
@@ -94,8 +93,7 @@
               data-placement="top"
               data-toggle="dropdown"
               :href='pipeline.cancel_path'
-              aria-label="Cancel"
-            >
+              aria-label="Cancel">
               <i class="fa fa-remove" aria-hidden="true"></i>
             </a>
           </div>

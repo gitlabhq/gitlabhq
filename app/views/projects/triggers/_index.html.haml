@@ -1,0 +1,108 @@
+.row.prepend-top-default.append-bottom-default
+  .col-lg-3
+    %h4.prepend-top-0
+      Triggers
+    %p.prepend-top-20
+      Triggers can force a specific branch or tag to get rebuilt with an API call.
+    %p.append-bottom-0
+      = succeed '.' do
+        Learn more in the
+        = link_to 'triggers documentation', help_page_path('ci/triggers/README'), target: '_blank'
+  .col-lg-9
+    .panel.panel-default
+      .panel-heading
+        %h4.panel-title
+          Manage your project's triggers
+      .panel-body
+        - if @triggers.any?
+          .table-responsive
+            %table.table
+              %thead
+                %th
+                  %strong Token
+                %th
+                  %strong Last used
+                %th
+              = render partial: 'projects/triggers/trigger', collection: @triggers, as: :trigger
+        - else
+          %p.settings-message.text-center.append-bottom-default
+            No triggers have been created yet. Add one using the button below.
+
+        = form_for @trigger, url: url_for(controller: '/projects/triggers', action: 'create') do |f|
+          = f.submit "Add trigger", class: 'btn btn-success'
+
+      .panel-footer
+
+        %p
+          In the following examples, you can see the exact API call you need to
+          make in order to rebuild a specific
+          %code ref
+          (branch or tag) with a trigger token.
+        %p
+          All you need to do is replace the
+          %code TOKEN
+          and
+          %code REF_NAME
+          with the trigger token and the branch or tag name respectively.
+
+        %h5.prepend-top-default
+          Use cURL
+
+        %p.light
+          Copy one of the tokens above, set your branch or tag name, and that
+          reference will be rebuilt.
+
+        %pre
+          :plain
+            curl -X POST \
+                 -F token=TOKEN \
+                 -F ref=REF_NAME \
+                 #{builds_trigger_url(@project.id)}
+        %h5.prepend-top-default
+          Use .gitlab-ci.yml
+
+        %p.light
+          In the
+          %code .gitlab-ci.yml
+          of another project, include the following snippet.
+          The project will be rebuilt at the end of the pipeline.
+
+        %pre
+          :plain
+            trigger_build:
+              stage: deploy
+              script:
+                - "curl -X POST -F token=TOKEN -F ref=REF_NAME #{builds_trigger_url(@project.id)}"
+        %h5.prepend-top-default
+          Use webhook
+
+        %p.light
+          Add the following webhook to another project for Push and Tag push events.
+          The project will be rebuilt at the corresponding event.
+
+        %pre
+          :plain
+             #{builds_trigger_url(@project.id, ref: 'REF_NAME')}?token=TOKEN
+        %h5.prepend-top-default
+          Pass job variables
+
+        %p.light
+          Add
+          %code variables[VARIABLE]=VALUE
+          to an API request. Variable values can be used to distinguish between triggered pipelines and normal pipelines.
+
+          With cURL:
+
+        %pre
+          :plain
+            curl -X POST \
+                 -F token=TOKEN \
+                 -F "ref=REF_NAME" \
+                 -F "variables[RUN_NIGHTLY_BUILD]=true" \
+                 #{builds_trigger_url(@project.id)}
+        %p.light
+          With webhook:
+
+        %pre.append-bottom-0
+          :plain
+             #{builds_trigger_url(@project.id, ref: 'REF_NAME')}?token=TOKEN&variables[RUN_NIGHTLY_BUILD]=true

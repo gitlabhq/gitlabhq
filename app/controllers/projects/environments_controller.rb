@@ -10,7 +10,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   def index
     @scope = params[:scope]
-    @environments = project.environments
+    @environments = project.environments.includes(:last_deployment)
 
     respond_to do |format|
       format.html
@@ -52,10 +52,15 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   end
 
   def stop
-    return render_404 unless @environment.stoppable?
+    return render_404 unless @environment.available?
 
-    new_action = @environment.stop!(current_user)
-    redirect_to polymorphic_path([project.namespace.becomes(Namespace), project, new_action])
+    stop_action = @environment.stop_with_action!(current_user)
+
+    if stop_action
+      redirect_to polymorphic_path([project.namespace.becomes(Namespace), project, stop_action])
+    else
+      redirect_to namespace_project_environment_path(project.namespace, project, @environment)
+    end
   end
 
   def terminal

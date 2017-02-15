@@ -98,15 +98,58 @@ describe 'Dashboard > User filters todos', feature: true, js: true do
     expect(find('.todos-list')).not_to have_content merge_request.to_reference
   end
 
-  it 'filters by action' do
-    click_button 'Action'
-    within '.dropdown-menu-action' do
-      click_link 'Assigned'
+  describe 'filter by action' do
+    before do
+      create(:todo, :build_failed, user: user_1, author: user_2, project: project_1)
+      create(:todo, :marked, user: user_1, author: user_2, project: project_1, target: issue)
     end
 
-    wait_for_ajax
+    it 'filters by Assigned' do
+      filter_action('Assigned')
 
-    expect(find('.todos-list')).to     have_content ' assigned you '
-    expect(find('.todos-list')).not_to have_content ' mentioned '
+      expect_to_see_action(:assigned)
+    end
+
+    it 'filters by Mentioned' do
+      filter_action('Mentioned')
+
+      expect_to_see_action(:mentioned)
+    end
+
+    it 'filters by Added' do
+      filter_action('Added')
+
+      expect_to_see_action(:marked)
+    end
+
+    it 'filters by Pipelines' do
+      filter_action('Pipelines')
+
+      expect_to_see_action(:build_failed)
+    end
+
+    def filter_action(name)
+      click_button 'Action'
+      within '.dropdown-menu-action' do
+        click_link name
+      end
+
+      wait_for_ajax
+    end
+
+    def expect_to_see_action(action_name)
+      action_names = {
+        assigned: ' assigned you ',
+        mentioned: ' mentioned ',
+        marked: ' added a todo for ',
+        build_failed: ' build failed for '
+      }
+
+      action_name_text = action_names.delete(action_name)
+      expect(find('.todos-list')).to have_content action_name_text
+      action_names.each_value do |other_action_text|
+        expect(find('.todos-list')).not_to have_content other_action_text
+      end
+    end
   end
 end

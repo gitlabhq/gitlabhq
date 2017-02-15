@@ -1,5 +1,6 @@
 class SpamService
   attr_accessor :spammable, :request, :options
+  attr_reader :spam_log
 
   def initialize(spammable, request = nil)
     @spammable = spammable
@@ -63,7 +64,7 @@ class SpamService
   end
 
   def create_spam_log(api)
-    SpamLog.create(
+    @spam_log = SpamLog.create!(
       {
         user_id: spammable_owner_id,
         title: spammable.spam_title,

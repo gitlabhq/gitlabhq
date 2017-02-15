@@ -91,6 +91,9 @@ require('./lib/utils/common_utils');
       },
     },
     SanitizationFilter: {
+      'a[name]:not([href]):empty'(el, text) {
+        return el.outerHTML;
+      },
       'dl'(el, text) {
         let lines = text.trim().split('\n');
         // Add two spaces to the front of subsequent list items lines,

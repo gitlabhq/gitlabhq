@@ -90,4 +90,19 @@ describe Gitlab::IncomingEmail, lib: true do
       expect(described_class.key_from_fallback_message_id('reply-key@localhost')).to eq('key')
     end
   end
+
+  context 'self.scan_fallback_references' do
+    let(:references) do
+      '<issue_1@localhost>' +
+        ' <reply-59d8df8370b7e95c5a49fbf86aeb2c93@localhost>' +
+        ',<exchange@microsoft.com>'
+    end
+
+    it 'returns reply key' do
+      expect(described_class.scan_fallback_references(references))
+        .to eq(%w[issue_1@localhost
+                  reply-59d8df8370b7e95c5a49fbf86aeb2c93@localhost
+                  exchange@microsoft.com])
+    end
+  end
 end

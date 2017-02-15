@@ -97,7 +97,7 @@ describe MergeRequest, models: true do
       commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
       allow(subject).to receive(:commits).and_return([commit])
 
-      expect { subject.cache_merge_request_closes_issues! }.to change(subject.merge_requests_closing_issues, :count).by(1)
+      expect { subject.cache_merge_request_closes_issues!(subject.author) }.to change(subject.merge_requests_closing_issues, :count).by(1)
     end
 
     it 'does not cache issues from external trackers' do
@@ -106,7 +106,7 @@ describe MergeRequest, models: true do
       commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
       allow(subject).to receive(:commits).and_return([commit])
 
-      expect { subject.cache_merge_request_closes_issues! }.not_to change(subject.merge_requests_closing_issues, :count)
+      expect { subject.cache_merge_request_closes_issues!(subject.author) }.not_to change(subject.merge_requests_closing_issues, :count)
     end
   end
 
@@ -300,7 +300,7 @@ describe MergeRequest, models: true do
       allow(subject.project).to receive(:default_branch).
         and_return(subject.target_branch)
 
-      expect(subject.issues_mentioned_but_not_closing).to match_array([mentioned_issue])
+      expect(subject.issues_mentioned_but_not_closing(subject.author)).to match_array([mentioned_issue])
     end
   end
 
@@ -1005,9 +1005,15 @@ describe MergeRequest, models: true do
     end
   end
 
-  describe "#environments" do
+  describe "#environments_for" do
     let(:project)       { create(:project, :repository) }
+    let(:user)          { project.creator }
     let(:merge_request) { create(:merge_request, source_project: project) }
+
+    before do
+      merge_request.source_project.add_master(user)
+      merge_request.target_project.add_master(user)
+    end
 
     context 'with multiple environments' do
       let(:environments) { create_list(:environment, 3, project: project) }
@@ -1018,7 +1024,7 @@ describe MergeRequest, models: true do
       end
 
       it 'selects deployed environments' do
-        expect(merge_request.environments).to contain_exactly(environments.first)
+        expect(merge_request.environments_for(user)).to contain_exactly(environments.first)
       end
     end
 
@@ -1042,7 +1048,7 @@ describe MergeRequest, models: true do
       end
 
       it 'selects deployed environments' do
-        expect(merge_request.environments).to contain_exactly(source_environment)
+        expect(merge_request.environments_for(user)).to contain_exactly(source_environment)
       end
 
       context 'with environments on target project' do
@@ -1053,7 +1059,7 @@ describe MergeRequest, models: true do
         end
 
         it 'selects deployed environments' do
-          expect(merge_request.environments).to contain_exactly(source_environment, target_environment)
+          expect(merge_request.environments_for(user)).to contain_exactly(source_environment, target_environment)
         end
       end
     end
@@ -1064,7 +1070,7 @@ describe MergeRequest, models: true do
       end
 
       it 'returns an empty array' do
-        expect(merge_request.environments).to be_empty
+        expect(merge_request.environments_for(user)).to be_empty
       end
     end
   end

@@ -129,6 +129,14 @@ describe Member, models: true do
       it { expect(described_class.request).not_to include @accepted_request_member }
     end
 
+    describe '.non_request' do
+      it { expect(described_class.non_request).to include @master }
+      it { expect(described_class.non_request).to include @invited_member }
+      it { expect(described_class.non_request).to include @accepted_invite_member }
+      it { expect(described_class.non_request).not_to include @requested_member }
+      it { expect(described_class.non_request).to include @accepted_request_member }
+    end
+
     describe '.developers' do
       subject { described_class.developers.to_a }
 

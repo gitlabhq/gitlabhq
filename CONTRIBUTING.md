@@ -15,6 +15,7 @@
         - [Issue weight](#issue-weight)
         - [Regression issues](#regression-issues)
         - [Technical debt](#technical-debt)
+        - [Stewardship](#stewardship)
     - [Merge requests](#merge-requests)
         - [Merge request guidelines](#merge-request-guidelines)
         - [Contribution acceptance criteria](#contribution-acceptance-criteria)
@@ -230,6 +231,21 @@ for a release by the appropriate person.
 Make sure to mention the merge request that the `technical debt` issue is
 associated with in the description of the issue.
 
+### Stewardship
+
+For issues related to the open source stewardship of GitLab,
+there is the ~"stewardship" label.
+
+This label is to be used for issues in which the stewardship of GitLab
+is a topic of discussion. For instance if GitLab Inc. is planning to remove
+features from GitLab CE to make exclusive in GitLab EE, related issues
+would be labelled with ~"stewardship".
+
+A recent example of this was the issue for
+[bringing the time tracking API to GitLab CE][time-tracking-issue].
+
+[time-tracking-issue]: https://gitlab.com/gitlab-org/gitlab-ce/issues/25517#note_20019084
+
 ## Merge requests
 
 We welcome merge requests with fixes and improvements to GitLab code, tests,
@@ -414,7 +430,7 @@ merge request:
 1.  [Newlines styleguide][newlines-styleguide]
 1.  [Testing](doc/development/testing.md)
 1.  [JavaScript (ES6)](https://github.com/airbnb/javascript)
-1.  [JavaScript (ES5)](https://github.com/airbnb/javascript/tree/master/es5)
+1.  [JavaScript (ES5)](https://github.com/airbnb/javascript/tree/es5-deprecated/es5)
 1.  [SCSS styleguide][scss-styleguide]
 1.  [Shell commands](doc/development/shell_commands.md) created by GitLab
     contributors to enhance security

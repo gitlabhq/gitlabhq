@@ -35,6 +35,10 @@ describe 'Pipelines', :feature, :js do
           it 'contains pipeline commit short SHA' do
             expect(page).to have_content(pipeline.short_sha)
           end
+
+          it 'contains branch name' do
+            expect(page).to have_content(pipeline.ref)
+          end
         end
       end
 

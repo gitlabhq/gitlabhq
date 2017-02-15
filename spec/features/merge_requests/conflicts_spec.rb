@@ -141,7 +141,7 @@ feature 'Merge request conflict resolution', js: true, feature: true do
 
         click_on 'Changes'
         wait_for_ajax
-        find('.click-to-expand').click
+        click_link 'Expand all'
         wait_for_ajax
 
         expect(page).to have_content('Gregor Samsa woke from troubled dreams')

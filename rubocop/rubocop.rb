@@ -1,4 +1,5 @@
-require_relative 'migration_helpers'
-require_relative 'cop/migration/add_index'
-require_relative 'cop/migration/column_with_default'
 require_relative 'cop/gem_fetcher'
+require_relative 'cop/migration/add_column'
+require_relative 'cop/migration/add_column_with_default'
+require_relative 'cop/migration/add_concurrent_foreign_key'
+require_relative 'cop/migration/add_index'

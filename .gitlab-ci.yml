@@ -107,7 +107,10 @@ setup-test-env:
   <<: *dedicated-runner
   stage: prepare
   script:
-    - npm install
+    - node --version
+    - yarn --version
+    - yarn install --pure-lockfile
+    - yarn check # ensure that yarn.lock matches package.json
     - bundle exec rake gitlab:assets:compile
     - bundle exec ruby -Ispec -e 'require "spec_helper" ; TestEnv.init'
   artifacts:
@@ -163,64 +166,7 @@ spinach 7 10: *spinach-knapsack
 spinach 8 10: *spinach-knapsack
 spinach 9 10: *spinach-knapsack
 
-# Execute all testing suites against Ruby 2.1
-.ruby-21: &ruby-21
-  image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.1-git-2.7-phantomjs-2.1"
-  <<: *use-db
-  only:
-    - master@gitlab-org/gitlab-ce
-    - master@gitlab-org/gitlab-ee
-    - master@gitlab/gitlabhq
-    - master@gitlab/gitlab-ee
-  cache:
-    key: "ruby21"
-    paths:
-      - vendor/ruby
-
-.rspec-knapsack-ruby21: &rspec-knapsack-ruby21
-  <<: *rspec-knapsack
-  <<: *dedicated-runner
-  <<: *ruby-21
-
-.spinach-knapsack-ruby21: &spinach-knapsack-ruby21
-  <<: *spinach-knapsack
-  <<: *dedicated-runner
-  <<: *ruby-21
-
-rspec 0 20 ruby21: *rspec-knapsack-ruby21
-rspec 1 20 ruby21: *rspec-knapsack-ruby21
-rspec 2 20 ruby21: *rspec-knapsack-ruby21
-rspec 3 20 ruby21: *rspec-knapsack-ruby21
-rspec 4 20 ruby21: *rspec-knapsack-ruby21
-rspec 5 20 ruby21: *rspec-knapsack-ruby21
-rspec 6 20 ruby21: *rspec-knapsack-ruby21
-rspec 7 20 ruby21: *rspec-knapsack-ruby21
-rspec 8 20 ruby21: *rspec-knapsack-ruby21
-rspec 9 20 ruby21: *rspec-knapsack-ruby21
-rspec 10 20 ruby21: *rspec-knapsack-ruby21
-rspec 11 20 ruby21: *rspec-knapsack-ruby21
-rspec 12 20 ruby21: *rspec-knapsack-ruby21
-rspec 13 20 ruby21: *rspec-knapsack-ruby21
-rspec 14 20 ruby21: *rspec-knapsack-ruby21
-rspec 15 20 ruby21: *rspec-knapsack-ruby21
-rspec 16 20 ruby21: *rspec-knapsack-ruby21
-rspec 17 20 ruby21: *rspec-knapsack-ruby21
-rspec 18 20 ruby21: *rspec-knapsack-ruby21
-rspec 19 20 ruby21: *rspec-knapsack-ruby21
-
-spinach 0 10 ruby21: *spinach-knapsack-ruby21
-spinach 1 10 ruby21: *spinach-knapsack-ruby21
-spinach 2 10 ruby21: *spinach-knapsack-ruby21
-spinach 3 10 ruby21: *spinach-knapsack-ruby21
-spinach 4 10 ruby21: *spinach-knapsack-ruby21
-spinach 5 10 ruby21: *spinach-knapsack-ruby21
-spinach 6 10 ruby21: *spinach-knapsack-ruby21
-spinach 7 10 ruby21: *spinach-knapsack-ruby21
-spinach 8 10 ruby21: *spinach-knapsack-ruby21
-spinach 9 10 ruby21: *spinach-knapsack-ruby21
-
 # Other generic tests
-
 .ruby-static-analysis: &ruby-static-analysis
   variables:
     SIMPLECOV: "false"
@@ -243,6 +189,7 @@ rubocop:
 
 rake haml_lint: *exec
 rake scss_lint: *exec
+rake config_lint: *exec
 rake brakeman: *exec
 rake flay: *exec
 license_finder: *exec
@@ -302,13 +249,12 @@ karma:
   <<: *use-db
   <<: *dedicated-runner
   script:
-    - npm link istanbul
     - bundle exec rake karma
   artifacts:
     name: coverage-javascript
     expire_in: 31d
     paths:
-    - coverage-javascript/default/
+    - coverage-javascript/
 
 lint-doc:
   stage: test
@@ -381,11 +327,9 @@ lint:javascript:
     paths:
       - node_modules/
   stage: test
-  image: "node:7.1"
-  before_script:
-    - npm install
+  before_script: []
   script:
-    - npm --silent run eslint
+    - yarn run eslint
 
 lint:javascript:report:
   <<: *dedicated-runner
@@ -393,12 +337,10 @@ lint:javascript:report:
     paths:
       - node_modules/
   stage: post-test
-  image: "node:7.1"
-  before_script:
-    - npm install
+  before_script: []
   script:
     - find app/ spec/ -name '*.js' -or -name '*.js.es6' -exec sed --in-place 's|/\* eslint-disable .*\*/||' {} \; # run report over all files
-    - npm --silent run eslint-report || true # ignore exit code
+    - yarn run eslint-report || true # ignore exit code
   artifacts:
     name: eslint-report
     expire_in: 31d
@@ -450,9 +392,9 @@ pages:
   script:
     - mv public/ .public/
     - mkdir public/
-    - mv coverage public/coverage-ruby
-    - mv coverage-javascript/default/ public/coverage-javascript/
-    - mv eslint-report.html public/
+    - mv coverage/ public/coverage-ruby/ || true
+    - mv coverage-javascript/ public/coverage-javascript/ || true
+    - mv eslint-report.html public/ || true
   artifacts:
     paths:
       - public

@@ -3,7 +3,7 @@
 /* global Flash */
 
 window.Vue = require('vue');
-window.Cookies = require('vendor/js.cookie');
+window.Cookies = require('js-cookie');
 
 function requireAll(context) { return context.keys().map(context); }
 requireAll(require.context('./svg', false, /^\.\/.*\.(js|es6)$/));

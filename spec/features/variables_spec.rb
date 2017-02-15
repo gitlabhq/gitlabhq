@@ -10,7 +10,7 @@ describe 'Project variables', js: true do
     project.team << [user, :master]
     project.variables << variable
 
-    visit namespace_project_variables_path(project.namespace, project)
+    visit namespace_project_settings_ci_cd_path(project.namespace, project)
   end
 
   it 'shows list of variables' do

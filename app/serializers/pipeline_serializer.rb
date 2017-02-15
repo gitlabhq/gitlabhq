@@ -1,41 +1,25 @@
 class PipelineSerializer < BaseSerializer
   class InvalidResourceError < StandardError; end
-  include API::Helpers::Pagination
-  Struct.new('Pagination', :request, :response)
 
   entity PipelineEntity
 
-  def represent(resource, opts = {})
-    if paginated?
-      raise InvalidResourceError unless resource.respond_to?(:page)
-
-      super(paginate(resource.includes(project: :namespace)), opts)
-    else
-      super(resource, opts)
-    end
+  def with_pagination(request, response)
+    tap { @paginator = Gitlab::Serializer::Pagination.new(request, response) }
   end
 
   def paginated?
-    defined?(@pagination)
+    @paginator.present?
   end
 
-  def with_pagination(request, response)
-    tap { @pagination = Struct::Pagination.new(request, response) }
-  end
+  def represent(resource, opts = {})
+    if resource.is_a?(ActiveRecord::Relation)
+      resource = resource.includes(project: :namespace)
+    end
 
-  private
-
-  # Methods needed by `API::Helpers::Pagination`
-  #
-  def params
-    @pagination.request.query_parameters
-  end
-
-  def request
-    @pagination.request
-  end
-
-  def header(header, value)
-    @pagination.response.headers[header] = value
+    if paginated?
+      super(@paginator.paginate(resource), opts)
+    else
+      super(resource, opts)
+    end
   end
 end

@@ -51,7 +51,12 @@ class User < ActiveRecord::Base
   has_one :namespace, -> { where type: nil }, dependent: :destroy, foreign_key: :owner_id
 
   # Profile
-  has_many :keys, dependent: :destroy
+  has_many :keys, -> do
+    type = Key.arel_table[:type]
+    where(type.not_eq('DeployKey').or(type.eq(nil)))
+  end, dependent: :destroy
+  has_many :deploy_keys, -> { where(type: 'DeployKey') }, dependent: :destroy
+
   has_many :emails, dependent: :destroy
   has_many :personal_access_tokens, dependent: :destroy
   has_many :identities, dependent: :destroy, autosave: true
@@ -83,8 +88,6 @@ class User < ActiveRecord::Base
   has_many :events,                   dependent: :destroy, foreign_key: :author_id
   has_many :subscriptions,            dependent: :destroy
   has_many :recent_events, -> { order "id DESC" }, foreign_key: :author_id,   class_name: "Event"
-  has_many :assigned_issues,          dependent: :destroy, foreign_key: :assignee_id, class_name: "Issue"
-  has_many :assigned_merge_requests,  dependent: :destroy, foreign_key: :assignee_id, class_name: "MergeRequest"
   has_many :oauth_applications, class_name: 'Doorkeeper::Application', as: :owner, dependent: :destroy
   has_one  :abuse_report,             dependent: :destroy
   has_many :spam_logs,                dependent: :destroy
@@ -93,6 +96,9 @@ class User < ActiveRecord::Base
   has_many :todos,                    dependent: :destroy
   has_many :notification_settings,    dependent: :destroy
   has_many :award_emoji,              dependent: :destroy
+
+  has_many :assigned_issues,          dependent: :nullify, foreign_key: :assignee_id, class_name: "Issue"
+  has_many :assigned_merge_requests,  dependent: :nullify, foreign_key: :assignee_id, class_name: "MergeRequest"
 
   #
   # Validations
@@ -118,7 +124,7 @@ class User < ActiveRecord::Base
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
   before_validation :generate_password, on: :create
-  before_validation :signup_domain_valid?, on: :create
+  before_validation :signup_domain_valid?, on: :create, if: ->(user) { !user.created_by_id }
   before_validation :sanitize_attrs
   before_validation :set_notification_email, if: ->(user) { user.email_changed? }
   before_validation :set_public_email, if: ->(user) { user.public_email_changed? }
@@ -165,6 +171,15 @@ class User < ActiveRecord::Base
     state :blocked, :ldap_blocked do
       def blocked?
         true
+      end
+
+      def active_for_authentication?
+        false
+      end
+
+      def inactive_message
+        "Your account has been blocked. Please contact your GitLab " \
+          "administrator if you think this is an error."
       end
     end
   end
@@ -304,7 +319,7 @@ class User < ActiveRecord::Base
 
     def find_by_personal_access_token(token_string)
       personal_access_token = PersonalAccessToken.active.find_by_token(token_string) if token_string
-      personal_access_token.user if personal_access_token
+      personal_access_token&.user
     end
 
     # Returns a user for the given SSH key.
@@ -320,7 +335,7 @@ class User < ActiveRecord::Base
     def reference_pattern
       %r{
         #{Regexp.escape(reference_prefix)}
-        (?<user>#{Gitlab::Regex::NAMESPACE_REGEX_STR})
+        (?<user>#{Gitlab::Regex::NAMESPACE_REF_REGEX_STR})
       }x
     end
   end
@@ -901,6 +916,21 @@ class User < ActiveRecord::Base
     else
       save(validate: false)
     end
+  end
+
+  def access_level
+    if admin?
+      :admin
+    else
+      :regular
+    end
+  end
+
+  def access_level=(new_level)
+    new_level = new_level.to_s
+    return unless %w(admin regular).include?(new_level)
+
+    self.admin = (new_level == 'admin')
   end
 
   private

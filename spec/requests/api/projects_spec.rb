@@ -41,26 +41,40 @@ describe API::Projects, api: true  do
   end
 
   describe 'GET /projects' do
-    before { project }
+    shared_examples_for 'projects response' do
+      it 'returns an array of projects' do
+        get api('/projects', current_user)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.map { |p| p['id'] }).to contain_exactly(*projects.map(&:id))
+      end
+    end
+
+    let!(:public_project) { create(:empty_project, :public, name: 'public_project') }
+    before do
+      project
+      project2
+      project3
+      project4
+    end
 
     context 'when unauthenticated' do
-      it 'returns authentication error' do
-        get api('/projects')
-        expect(response).to have_http_status(401)
+      it_behaves_like 'projects response' do
+        let(:current_user) { nil }
+        let(:projects) { [public_project] }
       end
     end
 
     context 'when authenticated as regular user' do
-      it 'returns an array of projects' do
-        get api('/projects', user)
-        expect(response).to have_http_status(200)
-        expect(json_response).to be_an Array
-        expect(json_response.first['name']).to eq(project.name)
-        expect(json_response.first['owner']['username']).to eq(user.username)
+      it_behaves_like 'projects response' do
+        let(:current_user) { user }
+        let(:projects) { [public_project, project, project2, project3] }
       end
 
       it 'includes the project labels as the tag_list' do
         get api('/projects', user)
+
         expect(response.status).to eq 200
         expect(json_response).to be_an Array
         expect(json_response.first.keys).to include('tag_list')
@@ -68,21 +82,39 @@ describe API::Projects, api: true  do
 
       it 'includes open_issues_count' do
         get api('/projects', user)
+
         expect(response.status).to eq 200
         expect(json_response).to be_an Array
         expect(json_response.first.keys).to include('open_issues_count')
       end
 
-      it 'does not include open_issues_count' do
+      it 'does not include open_issues_count if issues are disabled' do
         project.project_feature.update_attribute(:issues_access_level, ProjectFeature::DISABLED)
 
         get api('/projects', user)
+
         expect(response.status).to eq 200
         expect(json_response).to be_an Array
-        expect(json_response.first.keys).not_to include('open_issues_count')
+        expect(json_response.find { |hash| hash['id'] == project.id }.keys).not_to include('open_issues_count')
       end
 
-      context 'GET /projects?simple=true' do
+      it "does not include statistics by default" do
+        get api('/projects', user)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.first).not_to include('statistics')
+      end
+
+      it "includes statistics if requested" do
+        get api('/projects', user), statistics: true
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.first).to include 'statistics'
+      end
+
+      context 'and with simple=true' do
         it 'returns a simplified version of all the projects' do
           expected_keys = ["id", "http_url_to_repo", "web_url", "name", "name_with_namespace", "path", "path_with_namespace"]
 
@@ -97,6 +129,7 @@ describe API::Projects, api: true  do
       context 'and using search' do
         it 'returns searched project' do
           get api('/projects', user), { search: project.name }
+
           expect(response).to have_http_status(200)
           expect(json_response).to be_an Array
           expect(json_response.length).to eq(1)
@@ -106,196 +139,109 @@ describe API::Projects, api: true  do
       context 'and using the visibility filter' do
         it 'filters based on private visibility param' do
           get api('/projects', user), { visibility: 'private' }
+
           expect(response).to have_http_status(200)
           expect(json_response).to be_an Array
-          expect(json_response.length).to eq(user.namespace.projects.where(visibility_level: Gitlab::VisibilityLevel::PRIVATE).count)
+          expect(json_response.map { |p| p['id'] }).to contain_exactly(project.id, project2.id, project3.id)
         end
 
         it 'filters based on internal visibility param' do
+          project2.update_attribute(:visibility_level, Gitlab::VisibilityLevel::INTERNAL)
+
           get api('/projects', user), { visibility: 'internal' }
+
           expect(response).to have_http_status(200)
           expect(json_response).to be_an Array
-          expect(json_response.length).to eq(user.namespace.projects.where(visibility_level: Gitlab::VisibilityLevel::INTERNAL).count)
+          expect(json_response.map { |p| p['id'] }).to contain_exactly(project2.id)
         end
 
         it 'filters based on public visibility param' do
           get api('/projects', user), { visibility: 'public' }
+
           expect(response).to have_http_status(200)
           expect(json_response).to be_an Array
-          expect(json_response.length).to eq(user.namespace.projects.where(visibility_level: Gitlab::VisibilityLevel::PUBLIC).count)
+          expect(json_response.map { |p| p['id'] }).to contain_exactly(public_project.id)
         end
       end
 
       context 'and using sorting' do
-        before do
-          project2
-          project3
-        end
-
         it 'returns the correct order when sorted by id' do
           get api('/projects', user), { order_by: 'id', sort: 'desc' }
+
           expect(response).to have_http_status(200)
           expect(json_response).to be_an Array
           expect(json_response.first['id']).to eq(project3.id)
         end
       end
-    end
-  end
 
-  describe 'GET /projects/all' do
-    before { project }
+      context 'and with owned=true' do
+        it 'returns an array of projects the user owns' do
+          get api('/projects', user4), owned: true
 
-    context 'when unauthenticated' do
-      it 'returns authentication error' do
-        get api('/projects/all')
-        expect(response).to have_http_status(401)
-      end
-    end
-
-    context 'when authenticated as regular user' do
-      it 'returns authentication error' do
-        get api('/projects/all', user)
-        expect(response).to have_http_status(403)
-      end
-    end
-
-    context 'when authenticated as admin' do
-      it 'returns an array of all projects' do
-        get api('/projects/all', admin)
-        expect(response).to have_http_status(200)
-        expect(json_response).to be_an Array
-
-        expect(json_response).to satisfy do |response|
-          response.one? do |entry|
-            entry.has_key?('permissions') &&
-              entry['name'] == project.name &&
-              entry['owner']['username'] == user.username
-          end
+          expect(response).to have_http_status(200)
+          expect(json_response).to be_an Array
+          expect(json_response.first['name']).to eq(project4.name)
+          expect(json_response.first['owner']['username']).to eq(user4.username)
         end
       end
 
-      it "does not include statistics by default" do
-        get api('/projects/all', admin)
+      context 'and with starred=true' do
+        let(:public_project) { create(:empty_project, :public) }
 
-        expect(response).to have_http_status(200)
-        expect(json_response).to be_an Array
-        expect(json_response.first).not_to include('statistics')
+        before do
+          project_member2
+          user3.update_attributes(starred_projects: [project, project2, project3, public_project])
+        end
+
+        it 'returns the starred projects viewable by the user' do
+          get api('/projects', user3), starred: true
+
+          expect(response).to have_http_status(200)
+          expect(json_response).to be_an Array
+          expect(json_response.map { |project| project['id'] }).to contain_exactly(project.id, public_project.id)
+        end
       end
 
-      it "includes statistics if requested" do
-        get api('/projects/all', admin), statistics: true
+      context 'and with all query parameters' do
+        # |         | project5 | project6 | project7 | project8 | project9 |
+        # |---------+----------+----------+----------+----------+----------|
+        # | search  | x        |          | x        | x        | x        |
+        # | starred | x        | x        |          | x        | x        |
+        # | public  | x        | x        | x        |          | x        |
+        # | owned   | x        | x        | x        | x        |          |
+        let!(:project5) { create(:empty_project, :public, path: 'gitlab5', namespace: user.namespace) }
+        let!(:project6) { create(:empty_project, :public, path: 'project6', namespace: user.namespace) }
+        let!(:project7) { create(:empty_project, :public, path: 'gitlab7', namespace: user.namespace) }
+        let!(:project8) { create(:empty_project, path: 'gitlab8', namespace: user.namespace) }
+        let!(:project9) { create(:empty_project, :public, path: 'gitlab9') }
 
-        expect(response).to have_http_status(200)
-        expect(json_response).to be_an Array
-        expect(json_response.first).to include 'statistics'
-      end
-    end
-  end
+        before do
+          user.update_attributes(starred_projects: [project5, project6, project8, project9])
+        end
 
-  describe 'GET /projects/owned' do
-    before do
-      project3
-      project4
-    end
+        it 'returns only projects that satify all query parameters' do
+          get api('/projects', user), { visibility: 'public', owned: true, starred: true, search: 'gitlab' }
 
-    context 'when unauthenticated' do
-      it 'returns authentication error' do
-        get api('/projects/owned')
-        expect(response).to have_http_status(401)
-      end
-    end
-
-    context 'when authenticated as project owner' do
-      it 'returns an array of projects the user owns' do
-        get api('/projects/owned', user4)
-        expect(response).to have_http_status(200)
-        expect(json_response).to be_an Array
-        expect(json_response.first['name']).to eq(project4.name)
-        expect(json_response.first['owner']['username']).to eq(user4.username)
-      end
-
-      it "does not include statistics by default" do
-        get api('/projects/owned', user4)
-
-        expect(response).to have_http_status(200)
-        expect(json_response).to be_an Array
-        expect(json_response.first).not_to include('statistics')
-      end
-
-      it "includes statistics if requested" do
-        attributes = {
-          commit_count: 23,
-          storage_size: 702,
-          repository_size: 123,
-          lfs_objects_size: 234,
-          build_artifacts_size: 345,
-        }
-
-        project4.statistics.update!(attributes)
-
-        get api('/projects/owned', user4), statistics: true
-
-        expect(response).to have_http_status(200)
-        expect(json_response).to be_an Array
-        expect(json_response.first['statistics']).to eq attributes.stringify_keys
-      end
-    end
-  end
-
-  describe 'GET /projects/visible' do
-    shared_examples_for 'visible projects response' do
-      it 'returns the visible projects' do
-        get api('/projects/visible', current_user)
-
-        expect(response).to have_http_status(200)
-        expect(json_response).to be_an Array
-        expect(json_response.map { |p| p['id'] }).to contain_exactly(*projects.map(&:id))
-      end
-    end
-
-    let!(:public_project) { create(:empty_project, :public) }
-    before do
-      project
-      project2
-      project3
-      project4
-    end
-
-    context 'when unauthenticated' do
-      it_behaves_like 'visible projects response' do
-        let(:current_user) { nil }
-        let(:projects) { [public_project] }
-      end
-    end
-
-    context 'when authenticated' do
-      it_behaves_like 'visible projects response' do
-        let(:current_user) { user }
-        let(:projects) { [public_project, project, project2, project3] }
+          expect(response).to have_http_status(200)
+          expect(json_response).to be_an Array
+          expect(json_response.size).to eq(1)
+          expect(json_response.first['id']).to eq(project5.id)
+        end
       end
     end
 
     context 'when authenticated as a different user' do
-      it_behaves_like 'visible projects response' do
+      it_behaves_like 'projects response' do
         let(:current_user) { user2 }
         let(:projects) { [public_project] }
       end
     end
-  end
 
-  describe 'GET /projects/starred' do
-    let(:public_project) { create(:empty_project, :public) }
-
-    before do
-      project_member2
-      user3.update_attributes(starred_projects: [project, project2, project3, public_project])
-    end
-
-    it 'returns the starred projects viewable by the user' do
-      get api('/projects/starred', user3)
-      expect(response).to have_http_status(200)
-      expect(json_response).to be_an Array
-      expect(json_response.map { |project| project['id'] }).to contain_exactly(project.id, public_project.id)
+    context 'when authenticated as admin' do
+      it_behaves_like 'projects response' do
+        let(:current_user) { admin }
+        let(:projects) { Project.all }
+      end
     end
   end
 
@@ -359,13 +305,6 @@ describe API::Projects, api: true  do
       expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PUBLIC)
     end
 
-    it 'sets a project as public using :public' do
-      project = attributes_for(:project, { public: true })
-      post api('/projects', user), project
-      expect(json_response['public']).to be_truthy
-      expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PUBLIC)
-    end
-
     it 'sets a project as internal' do
       project = attributes_for(:project, :internal)
       post api('/projects', user), project
@@ -373,22 +312,8 @@ describe API::Projects, api: true  do
       expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::INTERNAL)
     end
 
-    it 'sets a project as internal overriding :public' do
-      project = attributes_for(:project, :internal, { public: true })
-      post api('/projects', user), project
-      expect(json_response['public']).to be_falsey
-      expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::INTERNAL)
-    end
-
     it 'sets a project as private' do
       project = attributes_for(:project, :private)
-      post api('/projects', user), project
-      expect(json_response['public']).to be_falsey
-      expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PRIVATE)
-    end
-
-    it 'sets a project as private using :public' do
-      project = attributes_for(:project, { public: false })
       post api('/projects', user), project
       expect(json_response['public']).to be_falsey
       expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PRIVATE)
@@ -431,13 +356,14 @@ describe API::Projects, api: true  do
     end
 
     context 'when a visibility level is restricted' do
+      let(:project_param) { attributes_for(:project, :public) }
+
       before do
-        @project = attributes_for(:project, { public: true })
         stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
       end
 
       it 'does not allow a non-admin to use a restricted visibility level' do
-        post api('/projects', user), @project
+        post api('/projects', user), project_param
 
         expect(response).to have_http_status(400)
         expect(json_response['message']['visibility_level'].first).to(
@@ -446,7 +372,8 @@ describe API::Projects, api: true  do
       end
 
       it 'allows an admin to override restricted visibility settings' do
-        post api('/projects', admin), @project
+        post api('/projects', admin), project_param
+
         expect(json_response['public']).to be_truthy
         expect(json_response['visibility_level']).to(
           eq(Gitlab::VisibilityLevel::PUBLIC)
@@ -499,15 +426,6 @@ describe API::Projects, api: true  do
       expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PUBLIC)
     end
 
-    it 'sets a project as public using :public' do
-      project = attributes_for(:project, { public: true })
-      post api("/projects/user/#{user.id}", admin), project
-
-      expect(response).to have_http_status(201)
-      expect(json_response['public']).to be_truthy
-      expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PUBLIC)
-    end
-
     it 'sets a project as internal' do
       project = attributes_for(:project, :internal)
       post api("/projects/user/#{user.id}", admin), project
@@ -517,23 +435,8 @@ describe API::Projects, api: true  do
       expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::INTERNAL)
     end
 
-    it 'sets a project as internal overriding :public' do
-      project = attributes_for(:project, :internal, { public: true })
-      post api("/projects/user/#{user.id}", admin), project
-      expect(response).to have_http_status(201)
-      expect(json_response['public']).to be_falsey
-      expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::INTERNAL)
-    end
-
     it 'sets a project as private' do
       project = attributes_for(:project, :private)
-      post api("/projects/user/#{user.id}", admin), project
-      expect(json_response['public']).to be_falsey
-      expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PRIVATE)
-    end
-
-    it 'sets a project as private using :public' do
-      project = attributes_for(:project, { public: false })
       post api("/projects/user/#{user.id}", admin), project
       expect(json_response['public']).to be_falsey
       expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PRIVATE)
@@ -865,7 +768,7 @@ describe API::Projects, api: true  do
     it 'creates a new project snippet' do
       post api("/projects/#{project.id}/snippets", user),
         title: 'api test', file_name: 'sample.rb', code: 'test',
-        visibility_level: '0'
+        visibility_level: Gitlab::VisibilityLevel::PRIVATE
       expect(response).to have_http_status(201)
       expect(json_response['title']).to eq('api test')
     end
@@ -1114,7 +1017,7 @@ describe API::Projects, api: true  do
       end
 
       it 'updates visibility_level' do
-        project_param = { visibility_level: 20 }
+        project_param = { visibility_level: Gitlab::VisibilityLevel::PUBLIC }
         put api("/projects/#{project3.id}", user), project_param
         expect(response).to have_http_status(200)
         project_param.each_pair do |k, v|
@@ -1124,7 +1027,7 @@ describe API::Projects, api: true  do
 
       it 'updates visibility_level from public to private' do
         project3.update_attributes({ visibility_level: Gitlab::VisibilityLevel::PUBLIC })
-        project_param = { public: false }
+        project_param = { visibility_level: Gitlab::VisibilityLevel::PRIVATE }
         put api("/projects/#{project3.id}", user), project_param
         expect(response).to have_http_status(200)
         project_param.each_pair do |k, v|
@@ -1197,7 +1100,7 @@ describe API::Projects, api: true  do
       end
 
       it 'does not update visibility_level' do
-        project_param = { visibility_level: 20 }
+        project_param = { visibility_level: Gitlab::VisibilityLevel::PUBLIC }
         put api("/projects/#{project3.id}", user4), project_param
         expect(response).to have_http_status(403)
       end
@@ -1372,6 +1275,132 @@ describe API::Projects, api: true  do
       it 'does not remove a non existing project' do
         delete api('/projects/1328', admin)
         expect(response).to have_http_status(404)
+      end
+    end
+  end
+
+  describe 'POST /projects/:id/fork' do
+    let(:project) do
+      create(:project, :repository, creator: user, namespace: user.namespace)
+    end
+    let(:group) { create(:group) }
+    let(:group2) do
+      group = create(:group, name: 'group2_name')
+      group.add_owner(user2)
+      group
+    end
+
+    before do
+      project.add_reporter(user2)
+    end
+
+    context 'when authenticated' do
+      it 'forks if user has sufficient access to project' do
+        post api("/projects/#{project.id}/fork", user2)
+
+        expect(response).to have_http_status(201)
+        expect(json_response['name']).to eq(project.name)
+        expect(json_response['path']).to eq(project.path)
+        expect(json_response['owner']['id']).to eq(user2.id)
+        expect(json_response['namespace']['id']).to eq(user2.namespace.id)
+        expect(json_response['forked_from_project']['id']).to eq(project.id)
+      end
+
+      it 'forks if user is admin' do
+        post api("/projects/#{project.id}/fork", admin)
+
+        expect(response).to have_http_status(201)
+        expect(json_response['name']).to eq(project.name)
+        expect(json_response['path']).to eq(project.path)
+        expect(json_response['owner']['id']).to eq(admin.id)
+        expect(json_response['namespace']['id']).to eq(admin.namespace.id)
+        expect(json_response['forked_from_project']['id']).to eq(project.id)
+      end
+
+      it 'fails on missing project access for the project to fork' do
+        new_user = create(:user)
+        post api("/projects/#{project.id}/fork", new_user)
+
+        expect(response).to have_http_status(404)
+        expect(json_response['message']).to eq('404 Project Not Found')
+      end
+
+      it 'fails if forked project exists in the user namespace' do
+        post api("/projects/#{project.id}/fork", user)
+
+        expect(response).to have_http_status(409)
+        expect(json_response['message']['name']).to eq(['has already been taken'])
+        expect(json_response['message']['path']).to eq(['has already been taken'])
+      end
+
+      it 'fails if project to fork from does not exist' do
+        post api('/projects/424242/fork', user)
+
+        expect(response).to have_http_status(404)
+        expect(json_response['message']).to eq('404 Project Not Found')
+      end
+
+      it 'forks with explicit own user namespace id' do
+        post api("/projects/#{project.id}/fork", user2), namespace: user2.namespace.id
+
+        expect(response).to have_http_status(201)
+        expect(json_response['owner']['id']).to eq(user2.id)
+      end
+
+      it 'forks with explicit own user name as namespace' do
+        post api("/projects/#{project.id}/fork", user2), namespace: user2.username
+
+        expect(response).to have_http_status(201)
+        expect(json_response['owner']['id']).to eq(user2.id)
+      end
+
+      it 'forks to another user when admin' do
+        post api("/projects/#{project.id}/fork", admin), namespace: user2.username
+
+        expect(response).to have_http_status(201)
+        expect(json_response['owner']['id']).to eq(user2.id)
+      end
+
+      it 'fails if trying to fork to another user when not admin' do
+        post api("/projects/#{project.id}/fork", user2), namespace: admin.namespace.id
+
+        expect(response).to have_http_status(404)
+      end
+
+      it 'fails if trying to fork to non-existent namespace' do
+        post api("/projects/#{project.id}/fork", user2), namespace: 42424242
+
+        expect(response).to have_http_status(404)
+        expect(json_response['message']).to eq('404 Target Namespace Not Found')
+      end
+
+      it 'forks to owned group' do
+        post api("/projects/#{project.id}/fork", user2), namespace: group2.name
+
+        expect(response).to have_http_status(201)
+        expect(json_response['namespace']['name']).to eq(group2.name)
+      end
+
+      it 'fails to fork to not owned group' do
+        post api("/projects/#{project.id}/fork", user2), namespace: group.name
+
+        expect(response).to have_http_status(404)
+      end
+
+      it 'forks to not owned group when admin' do
+        post api("/projects/#{project.id}/fork", admin), namespace: group.name
+
+        expect(response).to have_http_status(201)
+        expect(json_response['namespace']['name']).to eq(group.name)
+      end
+    end
+
+    context 'when unauthenticated' do
+      it 'returns authentication error' do
+        post api("/projects/#{project.id}/fork")
+
+        expect(response).to have_http_status(401)
+        expect(json_response['message']).to eq('401 Unauthorized')
       end
     end
   end

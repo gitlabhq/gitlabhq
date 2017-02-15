@@ -9,9 +9,24 @@ describe Projects::DestroyService, services: true do
 
   shared_examples 'deleting the project' do
     it 'deletes the project' do
-      expect(Project.all).not_to include(project)
+      expect(Project.unscoped.all).not_to include(project)
       expect(Dir.exist?(path)).to be_falsey
       expect(Dir.exist?(remove_path)).to be_falsey
+    end
+  end
+
+  shared_examples 'deleting the project with pipeline and build' do
+    context 'with pipeline and build' do # which has optimistic locking
+      let!(:pipeline) { create(:ci_pipeline, project: project) }
+      let!(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
+
+      before do
+        perform_enqueued_jobs do
+          destroy_project(project, user, {})
+        end
+      end
+
+      it_behaves_like 'deleting the project'
     end
   end
 
@@ -35,30 +50,24 @@ describe Projects::DestroyService, services: true do
     it { expect(Dir.exist?(remove_path)).to be_truthy }
   end
 
-  context 'async delete of project with private issue visibility' do
-    let!(:async) { true }
+  context 'with async_execute' do
+    let(:async) { true }
 
-    before do
-      project.project_feature.update_attribute("issues_access_level", ProjectFeature::PRIVATE)
-      # Run sidekiq immediately to check that renamed repository will be removed
-      Sidekiq::Testing.inline! { destroy_project(project, user, {}) }
+    context 'async delete of project with private issue visibility' do
+      before do
+        project.project_feature.update_attribute("issues_access_level", ProjectFeature::PRIVATE)
+        # Run sidekiq immediately to check that renamed repository will be removed
+        Sidekiq::Testing.inline! { destroy_project(project, user, {}) }
+      end
+
+      it_behaves_like 'deleting the project'
     end
 
-    it_behaves_like 'deleting the project'
+    it_behaves_like 'deleting the project with pipeline and build'
   end
 
-  context 'delete with pipeline' do # which has optimistic locking
-    let!(:pipeline) { create(:ci_pipeline, project: project) }
-
-    before do
-      expect(project).to receive(:destroy!).and_call_original
-
-      perform_enqueued_jobs do
-        destroy_project(project, user, {})
-      end
-    end
-
-    it_behaves_like 'deleting the project'
+  context 'with execute' do
+    it_behaves_like 'deleting the project with pipeline and build'
   end
 
   context 'container registry' do

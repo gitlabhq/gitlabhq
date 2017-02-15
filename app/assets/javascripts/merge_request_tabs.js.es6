@@ -4,7 +4,7 @@
 /* global Flash */
 
 require('./breakpoints');
-window.Cookies = require('vendor/js.cookie');
+window.Cookies = require('js-cookie');
 require('./flash');
 
 /* eslint-disable max-len */
@@ -61,7 +61,6 @@ require('./flash');
 
     constructor({ action, setUrl, stubLocation } = {}) {
       this.diffsLoaded = false;
-      this.pipelinesLoaded = false;
       this.commitsLoaded = false;
       this.fixedLayoutPref = null;
 
@@ -83,17 +82,31 @@ require('./flash');
       $(document)
         .on('shown.bs.tab', '.merge-request-tabs a[data-toggle="tab"]', this.tabShown)
         .on('click', '.js-show-tab', this.showTab);
+
+      $('.merge-request-tabs a[data-toggle="tab"]')
+        .on('click', this.clickTab);
     }
 
     unbindEvents() {
       $(document)
         .off('shown.bs.tab', '.merge-request-tabs a[data-toggle="tab"]', this.tabShown)
         .off('click', '.js-show-tab', this.showTab);
+
+      $('.merge-request-tabs a[data-toggle="tab"]')
+        .off('click', this.clickTab);
     }
 
     showTab(e) {
       e.preventDefault();
       this.activateTab($(e.target).data('action'));
+    }
+
+    clickTab(e) {
+      if (e.target && gl.utils.isMetaClick(e)) {
+        const targetLink = e.target.getAttribute('href');
+        e.stopImmediatePropagation();
+        window.open(targetLink, '_blank');
+      }
     }
 
     tabShown(e) {
@@ -112,14 +125,9 @@ require('./flash');
         if (this.diffViewType() === 'parallel') {
           this.expandViewContainer();
         }
-        const navBarHeight = $('.navbar-gitlab').outerHeight();
         $.scrollTo('.merge-request-details .merge-request-tabs', {
-          offset: -navBarHeight,
+          offset: 0,
         });
-      } else if (action === 'pipelines') {
-        this.loadPipelines($target.attr('href'));
-        this.expandView();
-        this.resetViewContainer();
       } else {
         this.expandView();
         this.resetViewContainer();
@@ -131,11 +139,7 @@ require('./flash');
 
     scrollToElement(container) {
       if (location.hash) {
-        const offset = 0 - (
-          $('.navbar-gitlab').outerHeight() +
-          $('.layout-nav').outerHeight() +
-          $('.js-tabs-affix').outerHeight()
-        );
+        const offset = -$('.js-tabs-affix').outerHeight();
         const $el = $(`${container} ${location.hash}:not(.match)`);
         if ($el.length) {
           $.scrollTo($el[0], { offset });
@@ -244,25 +248,6 @@ require('./flash');
       });
     }
 
-    loadPipelines(source) {
-      if (this.pipelinesLoaded) {
-        return;
-      }
-      this.ajaxGet({
-        url: `${source}.json`,
-        success: (data) => {
-          $('#pipelines').html(data.html);
-          gl.utils.localTimeAgo($('.js-timeago', '#pipelines'));
-          this.pipelinesLoaded = true;
-          this.scrollToElement('#pipelines');
-
-          new gl.MiniPipelineGraph({
-            container: '.js-pipeline-table',
-          });
-        },
-      });
-    }
-
     // Show or hide the loading spinner
     //
     // status - Boolean, true to show, false to hide
@@ -340,14 +325,12 @@ require('./flash');
       if (Breakpoints.get().getBreakpointSize() === 'xs' || !$tabs.length) return;
 
       const $diffTabs = $('#diff-notes-app');
-      const $fixedNav = $('.navbar-fixed-top');
-      const $layoutNav = $('.layout-nav');
 
       $tabs.off('affix.bs.affix affix-top.bs.affix')
         .affix({
           offset: {
             top: () => (
-              $diffTabs.offset().top - $tabs.height() - $fixedNav.height() - $layoutNav.height()
+              $diffTabs.offset().top - $tabs.height()
             ),
           },
         })

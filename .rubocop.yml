@@ -5,7 +5,7 @@ require:
 inherit_from: .rubocop_todo.yml
 
 AllCops:
-  TargetRubyVersion: 2.1
+  TargetRubyVersion: 2.3
   # Cop names are not d§splayed in offense messages by default. Change behavior
   # by overriding DisplayCopNames, or by giving the -D/--display-cop-names
   # option.
@@ -31,8 +31,7 @@ AllCops:
     - 'lib/gitlab/seeder.rb'
     - 'generator_templates/**/*'
 
-
-##################### Style ##################################
+# Style #######################################################################
 
 # Check indentation of private/protected visibility modifiers.
 Style/AccessModifierIndentation:
@@ -340,6 +339,10 @@ Style/OpMethod:
 Style/ParenthesesAroundCondition:
   Enabled: true
 
+# Checks for an obsolete RuntimeException argument in raise/fail.
+Style/RedundantException:
+  Enabled: true
+
 # Checks for parentheses that seem not to serve any purpose.
 Style/RedundantParentheses:
   Enabled: true
@@ -471,7 +474,7 @@ Style/WhileUntilModifier:
 Style/WordArray:
   Enabled: false
 
-#################### Metrics ################################
+# Metrics #####################################################################
 
 # A calculated magnitude based on number of assignments,
 # branches, and conditions.
@@ -516,8 +519,7 @@ Metrics/PerceivedComplexity:
   Enabled: true
   Max: 18
 
-
-#################### Lint ################################
+# Lint ########################################################################
 
 # Checks for useless access modifiers.
 Lint/UselessAccessModifier:
@@ -568,6 +570,10 @@ Lint/ElseLayout:
 
 # Checks for empty ensure block.
 Lint/EmptyEnsure:
+  Enabled: true
+
+# Checks for the presence of `when` branches without a body.
+Lint/EmptyWhen:
   Enabled: true
 
 # Align ends correctly.
@@ -679,8 +685,7 @@ Lint/UselessSetterCall:
 Lint/Void:
   Enabled: true
 
-
-##################### Performance ############################
+# Performance #################################################################
 
 # Use `casecmp` rather than `downcase ==`.
 Performance/Casecmp:
@@ -718,8 +723,7 @@ Performance/StringReplacement:
 Performance/TimesMap:
   Enabled: true
 
-
-##################### Rails ##################################
+# Rails #######################################################################
 
 # Enables Rails cops.
 Rails:
@@ -767,10 +771,14 @@ Rails/ReadWriteAttribute:
 Rails/ScopeArgs:
   Enabled: true
 
-##################### RSpec ##################################
+# RSpec #######################################################################
 
 # Check that instances are not being stubbed globally.
 RSpec/AnyInstance:
+  Enabled: false
+
+# Check for expectations where `be(...)` can replace `eql(...)`.
+RSpec/BeEql:
   Enabled: false
 
 # Check that the first argument to the top level describe is the tested class or
@@ -801,6 +809,10 @@ RSpec/ExampleWording:
     not: does not
   IgnoredWords: []
 
+# Checks for `expect(...)` calls containing literal values.
+RSpec/ExpectActual:
+  Enabled: true
+
 # Checks the file and folder naming of the spec file.
 RSpec/FilePath:
   Enabled: false
@@ -828,3 +840,9 @@ RSpec/NotToNot:
 # Prefer using verifying doubles over normal doubles.
 RSpec/VerifiedDoubles:
   Enabled: false
+
+# Custom ######################################################################
+
+# Disallow the `git` and `github` arguments in the Gemfile.
+GemFetcher:
+  Enabled: true

@@ -25,7 +25,7 @@ require('vendor/jquery.scrollTo');
       };
       $.extend(stubLocation, defaults, stubs || {});
     };
-    preloadFixtures('static/merge_request_tabs.html.raw');
+    preloadFixtures('merge_requests/merge_request_with_task_list.html.raw');
 
     beforeEach(function () {
       this.class = new gl.MergeRequestTabs({ stubLocation: stubLocation });
@@ -41,7 +41,7 @@ require('vendor/jquery.scrollTo');
     describe('#activateTab', function () {
       beforeEach(function () {
         spyOn($, 'ajax').and.callFake(function () {});
-        loadFixtures('static/merge_request_tabs.html.raw');
+        loadFixtures('merge_requests/merge_request_with_task_list.html.raw');
         this.subject = this.class.activateTab;
       });
       it('shows the first tab when action is show', function () {
@@ -59,6 +59,56 @@ require('vendor/jquery.scrollTo');
       it('shows the diffs tab when action is diffs', function () {
         this.subject('diffs');
         expect($('#diffs')).toHaveClass('active');
+      });
+    });
+    describe('#opensInNewTab', function () {
+      var commitsLink;
+      var tabUrl;
+
+      beforeEach(function () {
+        commitsLink = '.commits-tab li a';
+        tabUrl = $(commitsLink).attr('href');
+
+        spyOn($.fn, 'attr').and.returnValue(tabUrl);
+      });
+      it('opens page tab in a new browser tab with Ctrl+Click - Windows/Linux', function () {
+        spyOn(window, 'open').and.callFake(function (url, name) {
+          expect(url).toEqual(tabUrl);
+          expect(name).toEqual('_blank');
+        });
+
+        this.class.clickTab({
+          metaKey: false,
+          ctrlKey: true,
+          which: 1,
+          stopImmediatePropagation: function () {}
+        });
+      });
+      it('opens page tab in a new browser tab with Cmd+Click - Mac', function () {
+        spyOn(window, 'open').and.callFake(function (url, name) {
+          expect(url).toEqual(tabUrl);
+          expect(name).toEqual('_blank');
+        });
+
+        this.class.clickTab({
+          metaKey: true,
+          ctrlKey: false,
+          which: 1,
+          stopImmediatePropagation: function () {}
+        });
+      });
+      it('opens page tab in a new browser tab with Middle-click - Mac/PC', function () {
+        spyOn(window, 'open').and.callFake(function (url, name) {
+          expect(url).toEqual(tabUrl);
+          expect(name).toEqual('_blank');
+        });
+
+        this.class.clickTab({
+          metaKey: false,
+          ctrlKey: false,
+          which: 2,
+          stopImmediatePropagation: function () {}
+        });
       });
     });
 

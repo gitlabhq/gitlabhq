@@ -1,4 +1,5 @@
 - group_member = local_assigns[:group_member]
+- full_name = true unless local_assigns[:full_name] == false
 - css_class = '' unless local_assigns[:css_class]
 - css_class += " no-description" if group.description.blank?
 
@@ -28,7 +29,10 @@
     = image_tag group_icon(group), class: "avatar s40 hidden-xs"
   .title
     = link_to group, class: 'group-name' do
-      = group.full_name
+      - if full_name
+        = group.full_name
+      - else
+        = group.name
 
     - if group_member
       as

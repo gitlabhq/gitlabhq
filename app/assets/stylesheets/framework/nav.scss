@@ -283,10 +283,7 @@
 }
 
 .layout-nav {
-  position: fixed;
-  top: $header-height;
   width: 100%;
-  z-index: 11;
   background: $gray-light;
   border-bottom: 1px solid $border-color;
   transition: padding $sidebar-transition-duration;
@@ -419,15 +416,20 @@
 }
 
 .page-with-layout-nav {
-  margin-top: $header-height + 2;
-
   .right-sidebar {
     top: ($header-height * 2) + 2;
+  }
+
+  .build-sidebar {
+    top: ($header-height * 3) + 3;
+
+    &.affix {
+      top: 0;
+    }
   }
 }
 
 .activities {
-
   .nav-block {
     border-bottom: 1px solid $border-color;
 

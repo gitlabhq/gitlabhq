@@ -82,4 +82,4 @@ GitLab instance if you find this undesirable from a scalability or security
 point of view.
 
 [ce-7690]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7690
-[kubservice]: ../../user/project/integrations/kubernetes.md)
+[kubservice]: ../../user/project/integrations/kubernetes.md

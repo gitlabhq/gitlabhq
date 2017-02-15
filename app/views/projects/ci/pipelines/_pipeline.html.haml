@@ -15,7 +15,7 @@
     - else
       %span.api.monospace API
     - if pipeline.latest?
-      %span.label.label-success.has-tooltip{ title: 'Latest job for this branch' } latest
+      %span.label.label-success.has-tooltip{ title: 'Latest pipeline for this branch' } latest
     - if pipeline.triggered?
       %span.label.label-primary triggered
     - if pipeline.yaml_errors.present?
@@ -40,25 +40,8 @@
       - else
         Cant find HEAD commit for this branch
 
-  %td.stage-cell
-    - pipeline.stages.each do |stage|
-      - if stage.status
-        - detailed_status = stage.detailed_status(current_user)
-        - icon_status = "#{detailed_status.icon}_borderless"
-        - status_klass = "ci-status-icon ci-status-icon-#{detailed_status.group}"
-
-        .stage-container.dropdown.js-mini-pipeline-graph
-          %button.mini-pipeline-graph-dropdown-toggle.has-tooltip.js-builds-dropdown-button{ class: "ci-status-icon-#{detailed_status.group}", type: 'button', data: { toggle: 'dropdown', title: "#{stage.name}: #{detailed_status.label}", placement: 'top', "stage-endpoint" => stage_namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline, stage: stage.name) } }
-            = custom_icon(icon_status)
-            = icon('caret-down')
-
-          %ul.dropdown-menu.mini-pipeline-graph-dropdown-menu.js-builds-dropdown-container
-            .arrow-up
-            .js-builds-dropdown-list.scrollable-menu
-
-            .js-builds-dropdown-loading.builds-dropdown-loading.hidden
-              %span.fa.fa-spinner.fa-spin
-
+  %td
+    = render 'shared/mini_pipeline_graph', pipeline: pipeline, klass: 'js-mini-pipeline-graph'
 
   %td
     - if pipeline.duration
@@ -78,7 +61,7 @@
         .btn-group.inline
           - if actions.any?
             .btn-group
-              %button.dropdown-toggle.btn.btn-default.has-tooltip.js-pipeline-dropdown-manual-actions{ type: 'button', title: 'Manual job', data: { toggle: 'dropdown', placement: 'top' }, 'aria-label' => 'Manual job' }
+              %button.dropdown-toggle.btn.btn-default.has-tooltip.js-pipeline-dropdown-manual-actions{ type: 'button', title: 'Manual pipeline', data: { toggle: 'dropdown', placement: 'top' }, 'aria-label' => 'Manual pipeline' }
                 = custom_icon('icon_play')
                 = icon('caret-down', 'aria-hidden' => 'true')
               %ul.dropdown-menu.dropdown-menu-align-right

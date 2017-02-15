@@ -1,14 +1,12 @@
 /* eslint-disable arrow-parens, class-methods-use-this, no-param-reassign */
 /* global Cookies */
 
-((global) => {
-  let singleton;
-
+(() => {
   const pinnedStateCookie = 'pin_nav';
   const sidebarBreakpoint = 1024;
 
   const pageSelector = '.page-with-sidebar';
-  const navbarSelector = '.navbar-fixed-top';
+  const navbarSelector = '.navbar-gitlab';
   const sidebarWrapperSelector = '.sidebar-wrapper';
   const sidebarContentSelector = '.nav-sidebar';
 
@@ -23,11 +21,12 @@
 
   class Sidebar {
     constructor() {
-      if (!singleton) {
-        singleton = this;
-        singleton.init();
+      if (!Sidebar.singleton) {
+        Sidebar.singleton = this;
+        Sidebar.singleton.init();
       }
-      return singleton;
+
+      return Sidebar.singleton;
     }
 
     init() {
@@ -36,13 +35,16 @@
         window.innerWidth >= sidebarBreakpoint &&
         $(pageSelector).hasClass(expandedPageClass)
       );
+      $(window).on('resize', () => this.setSidebarHeight());
       $(document)
         .on('click', sidebarToggleSelector, () => this.toggleSidebar())
         .on('click', pinnedToggleSelector, () => this.togglePinnedState())
-        .on('click', 'html, body', (e) => this.handleClickEvent(e))
+        .on('click', 'html, body, a, button', (e) => this.handleClickEvent(e))
         .on('DOMContentLoaded', () => this.renderState())
+        .on('scroll', () => this.setSidebarHeight())
         .on('todo:toggle', (e, count) => this.updateTodoCount(count));
       this.renderState();
+      this.setSidebarHeight();
     }
 
     handleClickEvent(e) {
@@ -63,6 +65,16 @@
     toggleSidebar() {
       this.isExpanded = !this.isExpanded;
       this.renderState();
+    }
+
+    setSidebarHeight() {
+      const $navHeight = $('.navbar-gitlab').outerHeight() + $('.layout-nav').outerHeight();
+      const diff = $navHeight - $('body').scrollTop();
+      if (diff > 0) {
+        $('.js-right-sidebar').outerHeight($(window).height() - diff);
+      } else {
+        $('.js-right-sidebar').outerHeight('100%');
+      }
     }
 
     togglePinnedState() {
@@ -88,10 +100,12 @@
       $pinnedToggle.attr('title', tooltipText).tooltip('fixTitle').tooltip(tooltipState);
 
       if (this.isExpanded) {
-        setTimeout(() => $(sidebarContentSelector).niceScroll().updateScrollBar(), 200);
+        const sidebarContent = $(sidebarContentSelector);
+        setTimeout(() => { sidebarContent.niceScroll().updateScrollBar(); }, 200);
       }
     }
   }
 
-  global.Sidebar = Sidebar;
-})(window.gl || (window.gl = {}));
+  window.gl = window.gl || {};
+  gl.Sidebar = Sidebar;
+})();

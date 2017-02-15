@@ -3,10 +3,9 @@
 - page_description     @merge_request.description
 - page_card_attributes @merge_request.card_attributes
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('lib_vue')
   = page_specific_javascript_bundle_tag('diff_notes')
 
-.merge-request{ 'data-url' => merge_request_path(@merge_request) }
+.merge-request{ 'data-url' => merge_request_path(@merge_request), 'data-project-path' => project_path(@merge_request.project) }
   = render "projects/merge_requests/show/mr_title"
 
   .merge-request-details.issuable-details{ data: { id: @merge_request.project.id } }
@@ -94,7 +93,8 @@
       #commits.commits.tab-pane
         -# This tab is always loaded via AJAX
       #pipelines.pipelines.tab-pane
-        -# This tab is always loaded via AJAX
+        - if @pipelines.any?
+          = render 'projects/commit/pipelines_list', endpoint: pipelines_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
       #diffs.diffs.tab-pane
         -# This tab is always loaded via AJAX
 

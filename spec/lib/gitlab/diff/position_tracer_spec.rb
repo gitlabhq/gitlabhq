@@ -122,7 +122,7 @@ describe Gitlab::Diff::PositionTracer, lib: true do
   end
 
   def delete_file(branch_name, file_name)
-    Files::DeleteService.new(
+    Files::DestroyService.new(
       project,
       current_user,
       start_branch: branch_name,

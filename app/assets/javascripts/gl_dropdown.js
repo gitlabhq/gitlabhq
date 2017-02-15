@@ -47,9 +47,11 @@
           }
           // Only filter asynchronously only if option remote is set
           if (this.options.remote) {
+            $inputContainer.parent().addClass('is-loading');
             clearTimeout(timeout);
             return timeout = setTimeout(function() {
               return this.options.query(this.input.val(), function(data) {
+                $inputContainer.parent().removeClass('is-loading');
                 return this.options.callback(data);
               }.bind(this));
             }.bind(this), 250);
@@ -437,7 +439,7 @@
       }
     };
 
-    GitLabDropdown.prototype.opened = function() {
+    GitLabDropdown.prototype.opened = function(e) {
       var contentHtml;
       this.resetRows();
       this.addArrowKeyEvent();
@@ -455,6 +457,10 @@
 
       if (this.options.showMenuAbove) {
         this.positionMenuAbove();
+      }
+
+      if (this.options.opened) {
+        this.options.opened.call(this, e);
       }
 
       return this.dropdown.trigger('shown.gl.dropdown');

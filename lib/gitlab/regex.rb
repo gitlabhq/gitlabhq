@@ -13,6 +13,10 @@ module Gitlab
     NAMESPACE_REGEX_STR = '(?:' + NAMESPACE_REGEX_STR_SIMPLE + ')(?<!\.git|\.atom)'.freeze
     PROJECT_REGEX_STR = PATH_REGEX_STR + '(?<!\.git|\.atom)'.freeze
 
+    # Same as NAMESPACE_REGEX_STR but allows `/` in the path.
+    # So `group/subgroup` will match this regex but not NAMESPACE_REGEX_STR
+    NAMESPACE_REF_REGEX_STR = '(?:[a-zA-Z0-9_\.][a-zA-Z0-9_\-\.\/]*[a-zA-Z0-9_\-]|[a-zA-Z0-9_])(?<!\.git|\.atom)'.freeze
+
     def namespace_regex
       @namespace_regex ||= /\A#{NAMESPACE_REGEX_STR}\z/.freeze
     end
