@@ -213,6 +213,11 @@ production: &base
     geo_bulk_notify_worker:
       cron: "*/10 * * * * *"
 
+    # Gitlab Geo backfill worker
+    # NOTE: This will only take effect if Geo is enabled
+    geo_backfill_worker:
+      cron: "*/5 * * * *"
+
   registry:
     # enabled: true
     # host: registry.example.com

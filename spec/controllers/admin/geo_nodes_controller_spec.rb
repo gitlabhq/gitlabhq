@@ -115,16 +115,4 @@ describe Admin::GeoNodesController do
 
     it_behaves_like 'unlicensed geo action'
   end
-
-  describe '#backfill_repositories' do
-    let(:geo_node) { create(:geo_node) }
-    subject { post :backfill_repositories, id: geo_node }
-
-    before do
-      allow(Gitlab::Geo).to receive(:license_allows?) { false }
-      subject
-    end
-
-    it_behaves_like 'unlicensed geo action'
-  end
 end

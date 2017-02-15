@@ -34,6 +34,10 @@ module Gitlab
       self.cache_value(:geo_node_secondary) { self.enabled? && self.current_node && !self.current_node.primary? }
     end
 
+    def self.primary_ssh_path_prefix
+      self.cache_value(:geo_primary_ssh_path_prefix) { self.enabled? && self.primary_node && "git@#{self.primary_node.host}:" }
+    end
+
     def self.geo_node?(host:, port:)
       GeoNode.where(host: host, port: port).exists?
     end
@@ -44,6 +48,10 @@ module Gitlab
 
     def self.bulk_notify_job
       Sidekiq::Cron::Job.find('geo_bulk_notify_worker')
+    end
+
+    def self.backfill_job
+      Sidekiq::Cron::Job.find('geo_backfill_worker')
     end
 
     def self.oauth_authentication

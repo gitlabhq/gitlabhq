@@ -1,6 +1,6 @@
 class Admin::GeoNodesController < Admin::ApplicationController
   before_action :check_license, except: [:index, :destroy]
-  before_action :load_node, only: [:destroy, :repair, :backfill_repositories]
+  before_action :load_node, only: [:destroy, :repair]
 
   def index
     @nodes = GeoNode.all
@@ -38,16 +38,6 @@ class Admin::GeoNodesController < Admin::ApplicationController
     end
 
     redirect_to admin_geo_nodes_path
-  end
-
-  def backfill_repositories
-    if @node.primary?
-      redirect_to admin_geo_nodes_path, notice: 'This is the primary node. Please run this action with a secondary node.'
-    else
-      @node.backfill_repositories
-
-      redirect_to admin_geo_nodes_path, notice: 'Backfill scheduled successfully.'
-    end
   end
 
   private
