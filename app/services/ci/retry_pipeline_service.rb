@@ -12,6 +12,10 @@ module Ci
           .reprocess(build)
       end
 
+      MergeRequests::AddTodoWhenBuildFailsService
+        .new(project, current_user)
+        .close_all(pipeline)
+
       pipeline.process!
     end
 

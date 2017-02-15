@@ -132,6 +132,19 @@ describe Ci::RetryPipelineService, '#execute', :services do
         end
       end
     end
+
+    it 'closes all todos about failed jobs for pipeline' do
+      expect(MergeRequests::AddTodoWhenBuildFailsService)
+        .to receive_message_chain(:new, :close_all)
+
+      service.execute(pipeline)
+    end
+
+    it 'reprocesses the pipeline' do
+      expect(pipeline).to receive(:process!)
+
+      service.execute(pipeline)
+    end
   end
 
   context 'when user is not allowed to retry pipeline' do

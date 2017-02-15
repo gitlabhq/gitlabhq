@@ -7,7 +7,7 @@ module Ci
         new_build.enqueue!
 
         MergeRequests::AddTodoWhenBuildFailsService
-          .new(build.project, current_user)
+          .new(project, current_user)
           .close(new_build)
       end
     end
