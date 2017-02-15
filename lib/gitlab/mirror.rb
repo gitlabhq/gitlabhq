@@ -1,5 +1,7 @@
 module Gitlab
   module Mirror
+    include Gitlab::CurrentSettings
+
     FIFTEEN = 15
     HOURLY  = 60
     DAILY = 1440
@@ -31,6 +33,7 @@ module Gitlab
 
       def configure_cron_jobs!
         minimum_mirror_sync_time = current_application_settings.minimum_mirror_sync_time rescue DAILY
+        sync_time = SYNC_TIME_TO_CRON[minimum_mirror_sync_time]
         update_all_mirrors_worker_job = Sidekiq::Cron::Job.find("update_all_mirrors_worker")
         update_all_remote_mirrors_worker_job = Sidekiq::Cron::Job.find("update_all_remote_mirrors_worker")
 
@@ -41,12 +44,12 @@ module Gitlab
 
         Sidekiq::Cron::Job.create(
           name: 'update_all_remote_mirrors_worker',
-          cron: SYNC_TIME_TO_CRON[minimum_mirror_sync_time],
+          cron: sync_time,
           class: 'UpdateAllRemoteMirrorsWorker'
         )
         Sidekiq::Cron::Job.create(
           name: 'update_all_mirrors_worker',
-          cron: SYNC_TIME_TO_CRON[minimum_mirror_sync_time],
+          cron: sync_time,
           class: 'UpdateAllMirrorsWorker'
         )
       end

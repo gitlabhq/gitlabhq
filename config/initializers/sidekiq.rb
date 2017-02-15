@@ -1,6 +1,3 @@
-require 'gitlab/current_settings'
-include Gitlab::CurrentSettings
-
 # Custom Redis configuration
 redis_config_hash = Gitlab::Redis.params
 redis_config_hash[:namespace] = Gitlab::Redis::SIDEKIQ_NAMESPACE
