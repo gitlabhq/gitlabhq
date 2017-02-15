@@ -52,5 +52,5 @@ squashing can itself be considered equivalent to rebasing.
 [squashed-commit]: img/squash_squashed_commit.png
 [squash-edit-form]: img/squash_edit_form.png
 [squash-mr-widget]: img/squash_mr_widget.png
-[ff-merge]: ./fast_forward_merge
-[rebase]: ../../../workflow/rebase_before_merge
+[ff-merge]: fast_forward_merge.md
+[rebase]: ../../../workflow/rebase_before_merge.md

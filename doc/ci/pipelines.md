@@ -21,7 +21,7 @@ There are three types of pipelines that often use the single shorthand of "pipel
 
 1. **CI Pipeline**: Build and test stages defined in `.gitlab-ci.yml`
 2. **Deploy Pipeline**: Deploy stage(s) defined in `.gitlab-ci.yml` The flow of deploying code to servers through various stages: e.g. development to staging to production
-3. **Project Pipeline**: Cross-project CI dependencies [triggered via API]((triggers)), particularly for micro-services, but also for complicated build dependencies: e.g. api -> front-end, ce/ee -> omnibus.
+3. **Project Pipeline**: Cross-project CI dependencies [triggered via API][triggers], particularly for micro-services, but also for complicated build dependencies: e.g. api -> front-end, ce/ee -> omnibus.
 
 ## Development Workflows
 
@@ -99,3 +99,4 @@ respective link in the [Pipelines settings] page.
 [stages]: yaml/README.md#stages
 [runners]: runners/README.html
 [pipelines settings]: ../user/project/pipelines/settings.md
+[triggers]: triggers/README.md
