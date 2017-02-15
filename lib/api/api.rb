@@ -12,6 +12,7 @@ module API
       mount ::API::V3::Projects
       mount ::API::V3::ProjectSnippets
       mount ::API::V3::Templates
+      mount ::API::V3::Triggers
     end
 
     before { allow_access_with_scope :api }

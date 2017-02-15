@@ -6,15 +6,15 @@ module API
       requires :id, type: String, desc: 'The ID of a project'
     end
     resource :projects do
-      desc 'Trigger a GitLab project build' do
-        success Entities::TriggerRequest
+      desc 'Trigger a GitLab project pipeline' do
+        success Entities::Pipeline
       end
       params do
         requires :ref, type: String, desc: 'The commit sha or name of a branch or tag'
         requires :token, type: String, desc: 'The unique token of trigger'
         optional :variables, type: Hash, desc: 'The list of variables to be injected into build'
       end
-      post ":id/(ref/:ref/)trigger/builds" do
+      post ":id/(ref/:ref/)trigger/pipeline" do
         project = find_project(params[:id])
         trigger = Ci::Trigger.find_by_token(params[:token].to_s)
         not_found! unless project && trigger
@@ -34,9 +34,9 @@ module API
         # create request and trigger builds
         trigger_request = Ci::CreateTriggerRequestService.new.execute(project, trigger, params[:ref].to_s, variables)
         if trigger_request
-          present trigger_request, with: Entities::TriggerRequest
+          present trigger_request.pipeline, with: Entities::Pipeline
         else
-          errors = 'No builds created'
+          errors = 'No pipeline created'
           render_api_error!(errors, 400)
         end
       end

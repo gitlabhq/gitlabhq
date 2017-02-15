@@ -591,10 +591,6 @@ module API
       end
     end
 
-    class TriggerRequest < Grape::Entity
-      expose :id, :variables
-    end
-
     class Runner < Grape::Entity
       expose :id
       expose :description
