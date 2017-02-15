@@ -32,9 +32,10 @@ module API
         end
 
         # create request and trigger builds
-        trigger_request = Ci::CreateTriggerRequestService.new.execute(project, trigger, params[:ref].to_s, variables)
-        if trigger_request
-          present trigger_request.pipeline, with: Entities::Pipeline
+        pipeline = Ci::CreatePipelineService.new(project, nil, ref: params[:ref].to_s).
+          execute(ignore_skip_ci: true, trigger: trigger, trigger_variables: variables)
+        if pipeline
+          present pipeline, with: Entities::Pipeline
         else
           errors = 'No pipeline created'
           render_api_error!(errors, 400)
@@ -51,7 +52,7 @@ module API
         authenticate!
         authorize! :admin_build, user_project
 
-        triggers = user_project.triggers.includes(:trigger_requests)
+        triggers = user_project.triggers
 
         present paginate(triggers), with: Entities::Trigger
       end

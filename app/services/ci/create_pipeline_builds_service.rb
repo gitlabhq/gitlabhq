@@ -22,8 +22,7 @@ module Ci
         project: project,
         ref: pipeline.ref,
         tag: pipeline.tag,
-        user: current_user,
-        trigger_request: trigger_request
+        user: current_user
       )
       build = pipeline.builds.create(build_attributes)
 
@@ -42,12 +41,6 @@ module Ci
 
     def existing_build_names
       @existing_build_names ||= pipeline.builds.pluck(:name)
-    end
-
-    def trigger_request
-      return @trigger_request if defined?(@trigger_request)
-
-      @trigger_request ||= pipeline.trigger_requests.first
     end
   end
 end

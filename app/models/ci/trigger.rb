@@ -5,7 +5,7 @@ module Ci
     acts_as_paranoid
 
     belongs_to :project, foreign_key: :gl_project_id
-    has_many :trigger_requests, dependent: :destroy
+    has_many :pipelines, dependent: :destroy
 
     validates_presence_of :token
     validates_uniqueness_of :token
@@ -16,12 +16,12 @@ module Ci
       self.token = SecureRandom.hex(15) if self.token.blank?
     end
 
-    def last_trigger_request
-      trigger_requests.last
+    def last_pipeline
+      pipelines.last
     end
 
     def last_used
-      last_trigger_request.try(:created_at)
+      pipelines.try(:created_at)
     end
 
     def short_token

@@ -69,11 +69,6 @@ module Ci
       class WebHook < Grape::Entity
         expose :id, :project_id, :url
       end
-
-      class TriggerRequest < Grape::Entity
-        expose :id, :variables
-        expose :pipeline, using: Commit, as: :commit
-      end
     end
   end
 end

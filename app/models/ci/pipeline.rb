@@ -9,10 +9,10 @@ module Ci
 
     belongs_to :project, foreign_key: :gl_project_id
     belongs_to :user
+    belongs_to :trigger, foreign_key: :trigger_id
 
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id
     has_many :builds, foreign_key: :commit_id
-    has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id
 
     validates_presence_of :sha, unless: :importing?
     validates_presence_of :ref, unless: :importing?
@@ -20,6 +20,8 @@ module Ci
     validate :valid_commit_sha, unless: :importing?
 
     after_create :keep_around_commits, unless: :importing?
+
+    serialize :trigger_variables
 
     state_machine :status, initial: :created do
       event :enqueue do
@@ -239,7 +241,7 @@ module Ci
     end
 
     def triggered?
-      trigger_requests.any?
+      trigger.any?
     end
 
     def retried
@@ -257,7 +259,7 @@ module Ci
       return [] unless config_processor
 
       config_processor.
-        builds_for_ref(ref, tag?, trigger_requests.first).
+        builds_for_ref(ref, tag?, trigger).
         sort_by { |build| build[:stage_idx] }
     end
 
@@ -365,6 +367,14 @@ module Ci
       Gitlab::Ci::Status::Pipeline::Factory
         .new(self, current_user)
         .fabricate!
+    end
+
+    def trigger_variables
+      return [] unless super
+
+      super.map do |key, value|
+        { key: key, value: value, public: false }
+      end
     end
 
     private

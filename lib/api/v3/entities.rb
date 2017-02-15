@@ -11,10 +11,6 @@ module API
           Gitlab::UrlBuilder.build(snippet)
         end
       end
-
-      class TriggerRequest < Grape::Entity
-        expose :id, :variables
-      end
     end
   end
 end

@@ -2,14 +2,15 @@ module Ci
   class CreatePipelineService < BaseService
     attr_reader :pipeline
 
-    def execute(ignore_skip_ci: false, save_on_errors: true, trigger_request: nil)
+    def execute(ignore_skip_ci: false, save_on_errors: true, trigger: nil, trigger_variables: nil)
       @pipeline = Ci::Pipeline.new(
         project: project,
         ref: ref,
         sha: sha,
         before_sha: before_sha,
         tag: tag?,
-        trigger_requests: Array(trigger_request),
+        trigger: trigger,
+        trigger_variables: trigger_variables,
         user: current_user
       )
 
@@ -17,7 +18,7 @@ module Ci
         return error('Pipeline is disabled')
       end
 
-      unless trigger_request || can?(current_user, :create_pipeline, project)
+      unless trigger || can?(current_user, :create_pipeline, project)
         return error('Insufficient permissions to create a new pipeline')
       end
 

@@ -3,14 +3,12 @@ module Ci
     # Build Trigger API
     class Triggers < Grape::API
       resource :projects do
-        # Trigger a GitLab CI project build
-        #
-        # Parameters:
-        #   id (required) - The ID of a CI project
-        #   ref (required) - The name of project's branch or tag
-        #   token (required) - The uniq token of trigger
-        # Example Request:
-        #   POST /projects/:id/ref/:ref/trigger
+        desc 'Trigger a GitLab CI project build'
+        params do
+          requires :ref, type: String, desc: 'The commit sha or name of a branch or tag'
+          requires :token, type: String, desc: 'The unique token of trigger'
+          optional :variables, type: Hash, desc: 'The list of variables to be injected into build'
+        end
         post ":id/refs/:ref/trigger" do
           required_attributes! [:token]
 
@@ -35,9 +33,11 @@ module Ci
           end
 
           # create request and trigger builds
-          trigger_request = Ci::CreateTriggerRequestService.new.execute(project, trigger, params[:ref].to_s, variables)
-          if trigger_request
-            present trigger_request, with: Entities::TriggerRequest
+          pipeline = Ci::CreatePipelineService.new(project, nil, ref: params[:ref].to_s).
+            execute(ignore_skip_ci: true, trigger: trigger, trigger_variables: variables)
+          if pipeline
+            data = { id: pipeline.trigger_id, variables: pipeline.trigger_variables }
+            present data
           else
             errors = 'No builds created'
             render_api_error!(errors, 400)

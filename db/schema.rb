@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170211073944) do
+ActiveRecord::Schema.define(version: 20170215160655) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -249,10 +249,13 @@ ActiveRecord::Schema.define(version: 20170211073944) do
     t.integer "duration"
     t.integer "user_id"
     t.integer "lock_version"
+    t.integer "trigger_id"
+    t.text "trigger_variables"
   end
 
   add_index "ci_commits", ["gl_project_id", "sha"], name: "index_ci_commits_on_gl_project_id_and_sha", using: :btree
   add_index "ci_commits", ["gl_project_id", "status"], name: "index_ci_commits_on_gl_project_id_and_status", using: :btree
+  add_index "ci_commits", ["gl_project_id", "trigger_id"], name: "index_ci_commits_on_gl_project_id_and_trigger_id", using: :btree
   add_index "ci_commits", ["gl_project_id"], name: "index_ci_commits_on_gl_project_id", using: :btree
   add_index "ci_commits", ["status"], name: "index_ci_commits_on_status", using: :btree
   add_index "ci_commits", ["user_id"], name: "index_ci_commits_on_user_id", using: :btree
@@ -580,9 +583,9 @@ ActiveRecord::Schema.define(version: 20170211073944) do
   end
 
   add_index "labels", ["group_id", "project_id", "title"], name: "index_labels_on_group_id_and_project_id_and_title", unique: true, using: :btree
-  add_index "labels", ["type", "project_id"], name: "index_labels_on_type_and_project_id", using: :btree
   add_index "labels", ["project_id"], name: "index_labels_on_project_id", using: :btree
   add_index "labels", ["title"], name: "index_labels_on_title", using: :btree
+  add_index "labels", ["type", "project_id"], name: "index_labels_on_type_and_project_id", using: :btree
 
   create_table "lfs_objects", force: :cascade do |t|
     t.string "oid", null: false
@@ -1330,6 +1333,7 @@ ActiveRecord::Schema.define(version: 20170211073944) do
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
 
   add_foreign_key "boards", "projects"
+  add_foreign_key "ci_commits", "ci_triggers", column: "trigger_id", on_delete: :cascade
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade
   add_foreign_key "label_priorities", "labels", on_delete: :cascade
   add_foreign_key "label_priorities", "projects", on_delete: :cascade

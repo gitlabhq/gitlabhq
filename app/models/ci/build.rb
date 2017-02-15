@@ -5,7 +5,6 @@ module Ci
     include Presentable
 
     belongs_to :runner
-    belongs_to :trigger_request
     belongs_to :erased_by, class_name: 'User'
 
     has_many :deployments, as: :deployable
@@ -57,7 +56,6 @@ module Ci
         new_build = build.dup
         new_build.status = 'pending'
         new_build.runner_id = nil
-        new_build.trigger_request_id = nil
         new_build.token = nil
         new_build.save
       end
@@ -75,7 +73,6 @@ module Ci
           allow_failure: build.allow_failure,
           stage: build.stage,
           stage_idx: build.stage_idx,
-          trigger_request: build.trigger_request,
           yaml_variables: build.yaml_variables,
           when: build.when,
           user: user,
@@ -231,7 +228,7 @@ module Ci
       variables += yaml_variables
       variables += user_variables
       variables += project.secret_variables
-      variables += trigger_request.user_variables if trigger_request
+      variables += pipeline.trigger_variables
       variables
     end
 
@@ -585,7 +582,7 @@ module Ci
         { key: 'CI_SERVER_REVISION', value: Gitlab::REVISION, public: true }
       ]
       variables << { key: 'CI_BUILD_TAG', value: ref, public: true } if tag?
-      variables << { key: 'CI_BUILD_TRIGGERED', value: 'true', public: true } if trigger_request
+      variables << { key: 'CI_BUILD_TRIGGERED', value: 'true', public: true } if pipeline.trigger
       variables << { key: 'CI_BUILD_MANUAL', value: 'true', public: true } if manual?
       variables
     end

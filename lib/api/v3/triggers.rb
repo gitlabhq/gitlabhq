@@ -5,9 +5,7 @@ module API
         requires :id, type: String, desc: 'The ID of a project'
       end
       resource :projects do
-        desc 'Trigger a GitLab project build' do
-          success V3::Entities::TriggerRequest
-        end
+        desc 'Trigger a GitLab project build'
         params do
           requires :ref, type: String, desc: 'The commit sha or name of a branch or tag'
           requires :token, type: String, desc: 'The unique token of trigger'
@@ -31,9 +29,11 @@ module API
           end
 
           # create request and trigger builds
-          trigger_request = Ci::CreateTriggerRequestService.new.execute(project, trigger, params[:ref].to_s, variables)
-          if trigger_request
-            present trigger_request, with: Entities::TriggerRequest
+          pipeline = Ci::CreatePipelineService.new(project, nil, ref: params[:ref].to_s).
+            execute(ignore_skip_ci: true, trigger: trigger, trigger_variables: variables)
+          if pipeline
+            data = { id: pipeline.trigger_id, variables: pipeline.trigger_variables }
+            present data
           else
             errors = 'No builds created'
             render_api_error!(errors, 400)
