@@ -21,7 +21,11 @@ Lint/AmbiguousRegexpLiteral:
 Lint/AssignmentInCondition:
   Enabled: false
 
+<<<<<<< HEAD
 # Offense count: 22
+=======
+# Offense count: 20
+>>>>>>> ce/master
 Lint/HandleExceptions:
   Enabled: false
 
@@ -76,12 +80,20 @@ Performance/RedundantMatch:
 Performance/RedundantMerge:
   Enabled: false
 
+<<<<<<< HEAD
 # Offense count: 26
+=======
+# Offense count: 15
+>>>>>>> ce/master
 # Configuration parameters: CustomIncludeMethods.
 RSpec/EmptyExampleGroup:
   Enabled: false
 
+<<<<<<< HEAD
 # Offense count: 83
+=======
+# Offense count: 58
+>>>>>>> ce/master
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 # SupportedStyles: implicit, each, example
 RSpec/HookArgument:

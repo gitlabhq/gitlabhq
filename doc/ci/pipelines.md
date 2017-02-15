@@ -13,6 +13,28 @@ executed.
 
 ![Pipelines example](img/pipelines.png)
 
+## Types of Pipelines
+
+There are three types of pipelines that often use the single shorthand of "pipeline". People often talk about them as if each one is "the" pipeline, but really, they're just pieces of a single, comprehensive pipeline.
+
+![Types of Pipelines](img/types-of-pipelines.svg)
+
+1. **CI Pipeline**: Build and test stages defined in `.gitlab-ci.yml`
+2. **Deploy Pipeline**: Deploy stage(s) defined in `.gitlab-ci.yml` The flow of deploying code to servers through various stages: e.g. development to staging to production
+3. **Project Pipeline**: Cross-project CI dependencies [triggered via API]((triggers)), particularly for micro-services, but also for complicated build dependencies: e.g. api -> front-end, ce/ee -> omnibus.
+
+## Development Workflows
+
+Pipelines accommodate several development workflows:
+
+1. **Branch Flow** (e.g. different branch for dev, qa, staging, production)
+2. **Trunk-based Flow** (e.g. feature branches and single master branch, possibly with tags for releases)
+3. **Fork-based Flow** (e.g. merge requests come from forks)
+
+Example continuous delivery flow:
+
+![CD Flow](img/pipelines-goal.svg)
+
 ## Builds
 
 Builds are individual runs of [jobs]. Not to be confused with a `build` job or

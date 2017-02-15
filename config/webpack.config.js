@@ -55,6 +55,7 @@ var config = {
         exclude: /(node_modules|vendor\/assets)/,
         loader: 'babel-loader',
         options: {
+          plugins: ['istanbul'],
           presets: [
             ["es2015", {"modules": false}],
             'stage-2'
@@ -118,7 +119,8 @@ if (IS_PRODUCTION) {
 if (IS_DEV_SERVER) {
   config.devServer = {
     port: DEV_SERVER_PORT,
-    headers: { 'Access-Control-Allow-Origin': '*' }
+    headers: { 'Access-Control-Allow-Origin': '*' },
+    stats: 'errors-only',
   };
   config.output.publicPath = '//localhost:' + DEV_SERVER_PORT + config.output.publicPath;
 }

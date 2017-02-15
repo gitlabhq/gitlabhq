@@ -25,7 +25,7 @@ require('vendor/jquery.scrollTo');
       };
       $.extend(stubLocation, defaults, stubs || {});
     };
-    preloadFixtures('static/merge_request_tabs.html.raw');
+    preloadFixtures('merge_requests/merge_request_with_task_list.html.raw');
 
     beforeEach(function () {
       this.class = new gl.MergeRequestTabs({ stubLocation: stubLocation });
@@ -41,7 +41,7 @@ require('vendor/jquery.scrollTo');
     describe('#activateTab', function () {
       beforeEach(function () {
         spyOn($, 'ajax').and.callFake(function () {});
-        loadFixtures('static/merge_request_tabs.html.raw');
+        loadFixtures('merge_requests/merge_request_with_task_list.html.raw');
         this.subject = this.class.activateTab;
       });
       it('shows the first tab when action is show', function () {

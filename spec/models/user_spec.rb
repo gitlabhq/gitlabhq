@@ -19,6 +19,7 @@ describe User, models: true do
     it { is_expected.to have_many(:project_members).dependent(:destroy) }
     it { is_expected.to have_many(:groups) }
     it { is_expected.to have_many(:keys).dependent(:destroy) }
+    it { is_expected.to have_many(:deploy_keys).dependent(:destroy) }
     it { is_expected.to have_many(:events).dependent(:destroy) }
     it { is_expected.to have_many(:recent_events).class_name('Event') }
     it { is_expected.to have_many(:issues).dependent(:destroy) }
@@ -319,6 +320,34 @@ describe User, models: true do
         expect(external_user.can_create_team).to be_falsey
         expect(external_user.can_create_group).to be_falsey
         expect(external_user.projects_limit).to be 0
+      end
+    end
+  end
+
+  shared_context 'user keys' do
+    let(:user) { create(:user) }
+    let!(:key) { create(:key, user: user) }
+    let!(:deploy_key) { create(:deploy_key, user: user) }
+  end
+
+  describe '#keys' do
+    include_context 'user keys'
+
+    context 'with key and deploy key stored' do
+      it 'returns stored key, but not deploy_key' do
+        expect(user.keys).to include key
+        expect(user.keys).not_to include deploy_key
+      end
+    end
+  end
+
+  describe '#deploy_keys' do
+    include_context 'user keys'
+
+    context 'with key and deploy key stored' do
+      it 'returns stored deploy key, but not normal key' do
+        expect(user.deploy_keys).to include deploy_key
+        expect(user.deploy_keys).not_to include key
       end
     end
   end
