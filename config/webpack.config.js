@@ -83,6 +83,7 @@ var config = {
     new CompressionPlugin({
       asset: '[path].gz[query]',
     }),
+    new webpack.IgnorePlugin(/moment/, /pikaday/),
   ],
 
   resolve: {
