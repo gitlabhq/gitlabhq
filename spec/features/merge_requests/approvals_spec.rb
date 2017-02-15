@@ -265,7 +265,7 @@ feature 'Merge request approvals', js: true, feature: true do
           merge_requests_ff_only_enabled: true )
       end
 
-      let(:merge_request) { create(:merge_request, source_project: project, source_branch: 'feature', target_branch: 'wip' ) }
+      let(:merge_request) { create(:merge_request, source_project: project) }
 
       before do
         create :approver_group, group: group, target: merge_request
@@ -274,12 +274,12 @@ feature 'Merge request approvals', js: true, feature: true do
 
       it 'I am unable to rebase the merge request' do
         # before approval status is loaded
-        expect(page).to have_button('Rebase onto wip', disabled: true)
+        expect(page).to have_button("Rebase onto #{merge_request.target_branch}", disabled: true)
 
         wait_for_ajax
 
         # after approval status is loaded
-        expect(page).to have_button('Rebase onto wip', disabled: true)
+        expect(page).to have_button("Rebase onto #{merge_request.target_branch}", disabled: true)
       end
     end
   end
