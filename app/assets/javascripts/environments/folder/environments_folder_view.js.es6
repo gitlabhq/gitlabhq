@@ -4,12 +4,12 @@
 const Vue = require('vue');
 Vue.use(require('vue-resource'));
 const EnvironmentsService = require('../services/environments_service');
-const EnvironmentTable = require('./environments_table');
+const EnvironmentTable = require('../components/environments_table');
 const EnvironmentsStore = require('../stores/environments_store');
 require('../../vue_shared/components/table_pagination');
 require('../../lib/utils/common_utils');
 
-module.exports = Vue.component('environment-component', {
+module.exports = Vue.component('environment-folder-view', {
 
   components: {
     'environment-table': EnvironmentTable,
@@ -17,23 +17,24 @@ module.exports = Vue.component('environment-component', {
   },
 
   data() {
-    const environmentsData = document.querySelector('#environments-list-view').dataset;
+    const environmentsData = document.querySelector('#environments-folder-list-view').dataset;
     const store = new EnvironmentsStore();
+    const pathname = window.location.pathname;
+    const endpoint = `${pathname}.json`;
+    const folderName = pathname.substr(pathname.lastIndexOf('/') + 1);
 
     return {
       store,
+      folderName,
+      endpoint,
       state: store.state,
       visibility: 'available',
       isLoading: false,
       cssContainerClass: environmentsData.cssClass,
-      endpoint: environmentsData.environmentsDataEndpoint,
       canCreateDeployment: environmentsData.canCreateDeployment,
       canReadEnvironment: environmentsData.canReadEnvironment,
-      canCreateEnvironment: environmentsData.canCreateEnvironment,
-      projectEnvironmentsPath: environmentsData.projectEnvironmentsPath,
-      projectStoppedEnvironmentsPath: environmentsData.projectStoppedEnvironmentsPath,
-      newEnvironmentPath: environmentsData.newEnvironmentPath,
-      helpPagePath: environmentsData.helpPagePath,
+
+      // svgs
       commitIconSvg: environmentsData.commitIconSvg,
       playIconSvg: environmentsData.playIconSvg,
       terminalIconSvg: environmentsData.terminalIconSvg,
@@ -57,10 +58,23 @@ module.exports = Vue.component('environment-component', {
       return gl.utils.convertPermissionToBoolean(this.canCreateDeployment);
     },
 
-    canCreateEnvironmentParsed() {
-      return gl.utils.convertPermissionToBoolean(this.canCreateEnvironment);
+    /**
+     * URL to link in the stopped tab.
+     *
+     * @return {String}
+     */
+    stoppedPath() {
+      return `${window.location.pathname}?scope=stopped`;
     },
 
+    /**
+     * URL to link in the available tab.
+     *
+     * @return {String}
+     */
+    availablePath() {
+      return window.location.pathname;
+    },
   },
 
   /**
@@ -98,15 +112,10 @@ module.exports = Vue.component('environment-component', {
   },
 
   methods: {
-    toggleRow(model) {
-      return this.store.toggleFolder(model.name);
-    },
-
     /**
      * Will change the page number and update the URL.
      *
      * @param  {Number} pageNumber desired page to go to.
-     * @return {String}
      */
     changePage(pageNumber) {
       const param = gl.utils.setParamInURL('page', pageNumber);
@@ -118,10 +127,15 @@ module.exports = Vue.component('environment-component', {
 
   template: `
     <div :class="cssContainerClass">
-      <div class="top-area">
-        <ul v-if="!isLoading" class="nav-links">
+      <div class="top-area" v-if="!isLoading">
+
+        <h4 class="js-folder-name environments-folder-name">
+          Environments / <b>{{folderName}}</b>
+        </h4>
+
+        <ul class="nav-links">
           <li v-bind:class="{ 'active': scope === null || scope === 'available' }">
-            <a :href="projectEnvironmentsPath">
+            <a :href="availablePath" class="js-available-environments-folder-tab">
               Available
               <span class="badge js-available-environments-count">
                 {{state.availableCounter}}
@@ -129,7 +143,7 @@ module.exports = Vue.component('environment-component', {
             </a>
           </li>
           <li v-bind:class="{ 'active' : scope === 'stopped' }">
-            <a :href="projectStoppedEnvironmentsPath">
+            <a :href="stoppedPath" class="js-stopped-environments-folder-tab">
               Stopped
               <span class="badge js-stopped-environments-count">
                 {{state.stoppedCounter}}
@@ -137,36 +151,11 @@ module.exports = Vue.component('environment-component', {
             </a>
           </li>
         </ul>
-        <div v-if="canCreateEnvironmentParsed && !isLoading" class="nav-controls">
-          <a :href="newEnvironmentPath" class="btn btn-create">
-            New environment
-          </a>
-        </div>
       </div>
 
       <div class="environments-container">
         <div class="environments-list-loading text-center" v-if="isLoading">
           <i class="fa fa-spinner fa-spin"></i>
-        </div>
-
-        <div class="blank-state blank-state-no-icon"
-          v-if="!isLoading && state.environments.length === 0">
-          <h2 class="blank-state-title js-blank-state-title">
-            You don't have any environments right now.
-          </h2>
-          <p class="blank-state-text">
-            Environments are places where code gets deployed, such as staging or production.
-            <br />
-            <a :href="helpPagePath">
-              Read more about environments
-            </a>
-          </p>
-
-          <a v-if="canCreateEnvironmentParsed"
-            :href="newEnvironmentPath"
-            class="btn btn-create js-new-environment-button">
-            New Environment
-          </a>
         </div>
 
         <div class="table-holder"
