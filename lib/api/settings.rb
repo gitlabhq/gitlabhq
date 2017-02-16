@@ -115,8 +115,13 @@ module API
       optional :elasticsearch_indexing, type: Boolean, desc: 'Enable Elasticsearch indexing'
       given elasticsearch_indexing: ->(val) { val } do
         optional :elasticsearch_search, type: Boolean, desc: 'Enable Elasticsearch search'
-        requires :elasticsearch_host, type: String, desc: 'The TCP/IP host to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., "host1, host2")'
-        requires :elasticsearch_port, type: Integer, desc: 'The TCP/IP port that Elasticsearch listens to. The default value is 9200'
+        requires :elasticsearch_url, type: String, desc: 'The url to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., "http://localhost:9200, http://localhost:9201")'
+      end
+      optional :elasticsearch_aws, type: Boolean, desc: 'Enable support for AWS hosted elasticsearch'
+      given elasticsearch_aws: ->(val) { val } do
+        requires :elasticsearch_aws_region, type: String, desc: 'The AWS region the elasticsearch domain is configured'
+        optional :elasticsearch_aws_access_key, type: String, desc: 'AWS IAM access key'
+        optional :elasticsearch_aws_secret_access_key, type: String, desc: 'AWS IAM secret access key'
       end
       optional :usage_ping_enabled, type: Boolean, desc: 'Every week GitLab will report license usage back to GitLab, Inc.'
       optional :repository_storages, type: Array[String], desc: 'A list of names of enabled storage paths, taken from `gitlab.yml`. New projects will be created in one of these stores, chosen at random.'

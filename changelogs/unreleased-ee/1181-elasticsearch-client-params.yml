@@ -1,0 +1,4 @@
+---
+title: Expose elasticsearch client params for AWS signing and HTTPS
+merge_request: 1281
+author:

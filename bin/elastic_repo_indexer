@@ -8,6 +8,8 @@ require 'active_support'
 require 'active_support/core_ext'
 require 'benchmark'
 
+load File.join(File.dirname(__FILE__), '..', '/lib/gitlab/elastic/client.rb')
+
 path_to_log_file = File.expand_path('../../log/es-indexer.log', __FILE__)
 LOGGER = Logger.new(path_to_log_file)
 
@@ -20,18 +22,25 @@ RAILS_ENV = ENV['RAILS_ENV']
 LOGGER.info("Has been scheduled for project #{REPO_PATH} with SHA range #{FROM_SHA}:#{TO_SHA}")
 
 elastic_connection_info = JSON.parse ENV['ELASTIC_CONNECTION_INFO']
-ELASTIC_HOST = elastic_connection_info['host']
-ELASTIC_PORT = elastic_connection_info['port']
+ELASTIC_URL = elastic_connection_info['url']
+ELASTIC_AWS = elastic_connection_info['aws']
+ELASTIC_AWS_ACCESS_KEY = elastic_connection_info['aws_access_key']
+ELASTIC_AWS_SECRET_ACCESS_KEY = elastic_connection_info['aws_secret_access_key']
+ELASTIC_AWS_REGION = elastic_connection_info['aws_region']
 
 class Repository
   include Elasticsearch::Git::Repository
+  include Gitlab::Elastic
 
   index_name ['gitlab', RAILS_ENV].compact.join('-')
 
-  self.__elasticsearch__.client = Elasticsearch::Client.new(
-    host: ELASTIC_HOST,
-    port: ELASTIC_PORT
-  )
+  def initialize
+    if ELASTIC_AWS
+      self.__elasticsearch__.client = AWSClient(ELASTIC_URL, ELASTIC_REGION, ELASTIC_AWS_ACCESS_KEY, ELASTIC_AWS_SECRET_ACCESS_KEY).client
+    else
+      self.__elasticsearch__.client = BaseClient.new(ELASTIC_URL).client
+    end
+  end
 
   def client_for_indexing
     self.__elasticsearch__.client

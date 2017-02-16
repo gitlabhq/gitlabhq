@@ -6,8 +6,7 @@ describe ElasticIndexerWorker, elastic: true do
 
   before do
     Elasticsearch::Model.client = Elasticsearch::Client.new(
-      host: current_application_settings.elasticsearch_host,
-      port: current_application_settings.elasticsearch_port
+      url: current_application_settings.elasticsearch_url
     )
 
     Gitlab::Elastic::Helper.create_empty_index

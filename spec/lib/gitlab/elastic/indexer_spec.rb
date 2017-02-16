@@ -5,7 +5,7 @@ describe Gitlab::Elastic::Indexer do
 
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'true')
-    stub_application_setting(es_host: ['elastic-host1', 'elastic-host2'])
+    stub_application_setting(es_url: ['http://localhost:9200', 'http://localhost:9201'])
   end
 
   let(:project)  { create(:project) }
@@ -18,8 +18,7 @@ describe Gitlab::Elastic::Indexer do
 
   let(:elastic_connection_info) do
     {
-      host: current_application_settings.elasticsearch_host,
-      port: current_application_settings.elasticsearch_port,
+      url: current_application_settings.elasticsearch_url
     }
   end
 

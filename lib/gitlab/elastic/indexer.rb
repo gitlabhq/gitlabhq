@@ -14,8 +14,11 @@ module Gitlab
         @project = project
 
         connection_info = {
-          host: current_application_settings.elasticsearch_host,
-          port: current_application_settings.elasticsearch_port
+          url: current_application_settings.elasticsearch_url,
+          aws: current_application_settings.elasticsearch_aws,
+          aws_access_key: current_application_settings.elasticsearch_aws_access_key,
+          aws_secret_access_key: current_application_settings.elasticsearch_aws_secret_access_key,
+          aws_region: current_application_settings.elasticsearch_aws_region
         }.to_json
 
         # We accept any form of settings, including string and array
