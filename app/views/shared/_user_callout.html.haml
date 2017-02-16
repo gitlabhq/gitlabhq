@@ -1,0 +1,13 @@
+#user-callout
+  .bordered-box.landing.content-block
+    = icon("times", class: "dismiss-icon")
+    .row
+      .col-sm-3.col-xs-12.svg-container
+        = custom_icon('icon_customization')
+      .col-sm-8.col-xs-12.inner-content
+        %h4
+          Customize your experience
+        %p
+          Change syntax themes, default project pages, and more in preferences.
+
+        = link_to "Check it out",  profile_preferences_path, class: 'btn user-callout-btn'

@@ -98,19 +98,9 @@
           Snippets
 
   %div{ class: container_class }
-    #user-callout
-      .bordered-box.landing.content-block
-        = icon("times", class: "dismiss-icon")
-        .row
-          .col-sm-3.col-xs-12.svg-container
-            = custom_icon('icon_cycle_analytics_splash')
-          .col-sm-8.col-xs-12.inner-content
-            %h4
-              Customize your experience
-            %p
-              Change syntax themes, default project pages, and more in preferences.
-
-            = link_to "Check it out",  profile_preferences_path, class: 'btn'
+    = render partial: 'shared/user_callout'
+  %div{ class: container_class }
+    .tab-content
       #activity.tab-pane
         .row-content-block.calender-block.white.second-block.hidden-xs
           .user-calendar{ data: { href: user_calendar_path } }

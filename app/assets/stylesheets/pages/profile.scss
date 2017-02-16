@@ -279,6 +279,7 @@ table.u2f-registrations {
 }
 
 #user-callout {
+  display: none;
   margin: 24px auto 0;
 
   .bordered-box {
@@ -291,8 +292,8 @@ table.u2f-registrations {
     overflow: hidden;
 
     .dismiss-icon {
-      position: absolute;
-      right: $user-callout-right;
+      float: right;
+      margin-right: 20px;
       cursor: pointer;
       color: $cycle-analytics-dismiss-icon-color;
     }
@@ -304,6 +305,12 @@ table.u2f-registrations {
         width: 136px;
         height: 136px;
       }
+    }
+  }
+
+  @media(max-width: $screen-xs-max) {
+    .inner-content {
+      padding-left: 30px;
     }
   }
 }

@@ -5,6 +5,8 @@
 - page_title    "Projects"
 - header_title  "Projects", dashboard_projects_path
 
+= render partial: 'shared/user_callout'
+
 - if @projects.any? || params[:filter_projects]
   = render 'dashboard/projects_head'
 
@@ -15,3 +17,6 @@
   = render 'projects'
 - else
   = render "zero_authorized_projects"
+
+:javascript
+  var userCallout = new gl.UserCallout();
