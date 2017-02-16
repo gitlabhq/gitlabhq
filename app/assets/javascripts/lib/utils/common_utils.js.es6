@@ -232,6 +232,21 @@
     };
 
     /**
+     * Parses pagination object string values into numbers.
+     *
+     * @param {Object} paginationInformation
+     * @returns {Object}
+     */
+    w.gl.utils.parseIntPagination = paginationInformation => ({
+      perPage: parseInt(paginationInformation['X-PER-PAGE'], 10),
+      page: parseInt(paginationInformation['X-PAGE'], 10),
+      total: parseInt(paginationInformation['X-TOTAL'], 10),
+      totalPages: parseInt(paginationInformation['X-TOTAL-PAGES'], 10),
+      nextPage: parseInt(paginationInformation['X-NEXT-PAGE'], 10),
+      previousPage: parseInt(paginationInformation['X-PREV-PAGE'], 10),
+    });
+
+    /**
      * Transforms a DOMStringMap into a plain object.
      *
      * @param {DOMStringMap} DOMStringMapObject
