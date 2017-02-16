@@ -130,6 +130,18 @@ For example:
 GET /users?username=jack_smith
 ```
 
+You can also lookup users by external UID and provider:
+
+```
+GET /users?extern_uid=:extern_uid&provider=:provider
+```
+
+For example:
+
+```
+GET /users?extern_uid=1234567&provider=github
+```
+
 You can search for users who are external with: `/users?external=true`
 
 ## Single user
