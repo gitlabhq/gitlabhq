@@ -72,11 +72,11 @@ const boardMilestoneSelect = require('./milestone_select');
             if (this.currentBoard && this.currentPage !== 'new') {
               this.currentBoard.name = this.board.name;
 
-              if (this.board.milestone_id) {
+              if (this.board.milestone) {
                 this.currentBoard.milestone_id = this.board.milestone_id;
                 this.currentBoard.milestone = this.board.milestone;
 
-                Store.state.filters.milestone_title = this.currentBoard.milestone.title;
+                Store.state.filters.milestone_title = this.currentBoard.milestone_id ? this.currentBoard.milestone.title : null;
               }
             }
 

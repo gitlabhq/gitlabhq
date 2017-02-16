@@ -96,7 +96,7 @@ require('./board_new_form');
       },
       updateMilestoneFilterDropdown() {
         const $milestoneDropdown = $('.dropdown-menu-milestone');
-        const hideElements = this.board.milestone_id === null;
+        const hideElements = this.board.milestone_id === null || this.board.milestone_id === -1;
 
         $milestoneDropdown.find('.dropdown-input, .dropdown-footer-list')
           .toggle(hideElements);

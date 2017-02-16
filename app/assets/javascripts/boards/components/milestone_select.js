@@ -18,9 +18,9 @@ module.exports = Vue.extend({
     return {
       loading: false,
       milestones: [],
-      noMilestone: {
-        id: -1,
-        title: 'No Milestone',
+      anyMilestone: {
+        id: null,
+        title: 'Any Milestone',
       },
     };
   },
@@ -45,11 +45,11 @@ module.exports = Vue.extend({
         <li>
           <a
             href="#"
-            @click.prevent.stop="selectMilestone(noMilestone)">
+            @click.prevent.stop="selectMilestone(anyMilestone)">
             <i
               class="fa fa-check"
-              v-if="board.milestone_id === noMilestone.id"></i>
-            {{ noMilestone.title }}
+              v-if="board.milestone_id === anyMilestone.id"></i>
+            {{ anyMilestone.title }}
           </a>
         </li>
         <li class="divider"></li>
