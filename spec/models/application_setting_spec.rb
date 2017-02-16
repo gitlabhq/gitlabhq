@@ -34,12 +34,16 @@ describe ApplicationSetting, models: true do
         setting.update(default_artifacts_expire_in: 'a')
 
         expect(setting).to be_invalid
+        expect(setting.errors.messages)
+          .to have_key(:default_artifacts_expiration)
       end
 
       it 'does not allow 0' do
         setting.update(default_artifacts_expire_in: '0')
 
         expect(setting).to be_invalid
+        expect(setting.errors.messages)
+          .to have_key(:default_artifacts_expiration)
       end
 
       it 'sets the value if it is valid' do
