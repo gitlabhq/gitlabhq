@@ -503,7 +503,7 @@ describe TodoService, services: true do
         let(:approver_1) { create(:user) }
         let(:approver_2) { create(:user) }
         let(:approver_3) { create(:user) }
-        let(:approver_mentions) { [john_doe, approver_1].map(&:to_reference).join(' ') }
+        let(:approver_mentions) { 'FYI: ' + [john_doe, approver_1].map(&:to_reference).join(' ') }
         let(:mr_approvers) { create(:merge_request, source_project: project, author: author, description: approver_mentions) }
 
         before do
