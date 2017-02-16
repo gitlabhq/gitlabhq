@@ -89,7 +89,8 @@ Parameters:
     "shared_with_groups": [],
     "only_allow_merge_if_build_succeeds": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
-    "request_access_enabled": false
+    "request_access_enabled": false,
+    "approvals_before_merge": 0
   },
   {
     "id": 6,
@@ -149,7 +150,8 @@ Parameters:
     "shared_with_groups": [],
     "only_allow_merge_if_build_succeeds": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
-    "request_access_enabled": false
+    "request_access_enabled": false,
+    "approvals_before_merge": 0
   }
 ]
 ```
@@ -241,7 +243,8 @@ Parameters:
   "repository_storage": "default",
   "only_allow_merge_if_build_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
-  "request_access_enabled": false
+  "request_access_enabled": false,
+  "approvals_before_merge": 0
 }
 ```
 
