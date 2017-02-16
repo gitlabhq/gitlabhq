@@ -219,10 +219,11 @@
       .col-sm-10
         = f.text_field :default_artifacts_expire_in, class: 'form-control'
         .help-block
-          Set the default expiration time for each job's artifacts
+          Set the default expiration time for each job's artifacts.
+          0 for unlimited.
           = surround '(', ')' do
             = link_to 'syntax', help_page_path('ci/yaml/README', anchor: 'artifactsexpire_in')
-          = link_to icon('question-circle'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'default-artifacts-expiration-time')
+          = link_to icon('question-circle'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'default-artifacts-expiration')
 
   - if Gitlab.config.registry.enabled
     %fieldset

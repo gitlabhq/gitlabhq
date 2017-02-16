@@ -269,14 +269,6 @@ class ApplicationSetting < ActiveRecord::Base
     self.repository_storages = [value]
   end
 
-  def default_artifacts_expire_in=(value)
-    if value.present?
-      super(value.squish)
-    else
-      super(nil)
-    end
-  end
-
   # Choose one of the available repository storage options. Currently all have
   # equal weighting.
   def pick_repository_storage
@@ -306,10 +298,10 @@ class ApplicationSetting < ActiveRecord::Base
   end
 
   def check_default_artifacts_expire_in
-    if default_artifacts_expire_in &&
-      ChronicDuration.parse(default_artifacts_expire_in).nil?
-      errors.add(:default_artifacts_expiration,
-        "can't be 0. Leave it blank for no expiration")
+    if default_artifacts_expire_in.blank?
+      errors.add(:default_artifacts_expiration, "is not presented")
+    else
+      ChronicDuration.parse(default_artifacts_expire_in)
     end
   rescue ChronicDuration::DurationParseError
     errors.add(:default_artifacts_expiration, "is invalid")

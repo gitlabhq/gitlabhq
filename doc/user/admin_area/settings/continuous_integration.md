@@ -18,13 +18,13 @@ that this setting is set for each job.
 
 [art-yml]: ../../../administration/build_artifacts
 
-## Default artifacts expiration time
+## Default artifacts expiration
 
-The default expiration time of the [build artifacts][art-yml] can be set in
+The default expiration time of the [job artifacts][art-yml] can be set in
 the Admin area of your GitLab instance. The syntax of duration is described
 in [artifacts:expire_in][duration-syntax]. The default is `30 days`. Note that
-this setting is set for each job. Leave it blank if you don't want to set
-default expiration time.
+this setting is set for each job. Set it to 0 if you don't want default
+expiration.
 
 1. Go to **Admin area > Settings** (`/admin/application_settings`).
 

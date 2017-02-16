@@ -166,6 +166,12 @@ describe Ci::Build, :models do
 
       is_expected.to be_nil
     end
+
+    it 'when setting to 0' do
+      build.artifacts_expire_in = '0'
+
+      is_expected.to be_nil
+    end
   end
 
   describe '#commit' do

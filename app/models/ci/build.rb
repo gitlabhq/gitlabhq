@@ -509,7 +509,7 @@ module Ci
     def artifacts_expire_in=(value)
       self.artifacts_expire_at =
         if value
-          Time.now + ChronicDuration.parse(value)
+          ChronicDuration.parse(value)&.seconds&.from_now
         end
     end
 

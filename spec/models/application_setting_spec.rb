@@ -30,20 +30,16 @@ describe ApplicationSetting, models: true do
     end
 
     describe 'default_artifacts_expire_in' do
-      it 'sets an error if it is invalid' do
+      it 'sets an error if it cannot parse' do
         setting.update(default_artifacts_expire_in: 'a')
 
-        expect(setting).to be_invalid
-        expect(setting.errors.messages)
-          .to have_key(:default_artifacts_expiration)
+        expect_invalid
       end
 
-      it 'does not allow 0' do
-        setting.update(default_artifacts_expire_in: '0')
+      it 'sets an error if it is blank' do
+        setting.update(default_artifacts_expire_in: ' ')
 
-        expect(setting).to be_invalid
-        expect(setting.errors.messages)
-          .to have_key(:default_artifacts_expiration)
+        expect_invalid
       end
 
       it 'sets the value if it is valid' do
@@ -53,11 +49,17 @@ describe ApplicationSetting, models: true do
         expect(setting.default_artifacts_expire_in).to eq('30 days')
       end
 
-      it 'does not set it if it is blank' do
-        setting.update(default_artifacts_expire_in: ' ')
+      it 'sets the value if it is 0' do
+        setting.update(default_artifacts_expire_in: '0')
 
         expect(setting).to be_valid
-        expect(setting.default_artifacts_expire_in).to be_nil
+        expect(setting.default_artifacts_expire_in).to eq('0')
+      end
+
+      def expect_invalid
+        expect(setting).to be_invalid
+        expect(setting.errors.messages)
+          .to have_key(:default_artifacts_expiration)
       end
     end
 
