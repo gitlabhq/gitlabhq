@@ -56,7 +56,7 @@ class EnvironmentsStore {
     return filteredEnvironments;
   }
 
-  storePagination(pagination = {}) {
+  setPagination(pagination = {}) {
     const normalizedHeaders = gl.utils.normalizeHeaders(pagination);
     const paginationInformation = {
       perPage: parseInt(normalizedHeaders['X-PER-PAGE'], 10),
