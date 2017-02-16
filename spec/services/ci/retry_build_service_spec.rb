@@ -12,29 +12,33 @@ describe Ci::RetryBuildService, :services do
 
   shared_examples 'build duplication' do
     let(:build) do
-      create(:ci_build, :failed, :artifacts,
-               pipeline: pipeline,
-               coverage: 90.0,
-               coverage_regex: '/(d+)/')
+      create(:ci_build, :failed, :artifacts, :erased, :trace,
+             :queued, :coverage, pipeline: pipeline)
     end
 
-    it 'clones expected attributes' do
-      clone_attributes = %w[ref tag project pipeline options commands tag_list
-                            name allow_failure stage stage_idx trigger_request
-                            yaml_variables when environment coverage_regex]
-
-      clone_attributes.each do |attribute|
-        expect(new_build.send(attribute)).to eq build.send(attribute)
+    describe 'clone attributes' do
+      described_class::CLONE_ATTRIBUTES.each do |attribute|
+        it "clones #{attribute} build attribute" do
+          expect(new_build.send(attribute)).to eq build.send(attribute)
+        end
       end
     end
 
-    it 'does not clone forbidden attributes' do
-      forbidden_attributes = %w[id status token user artifacts_file
-                                artifacts_metadata coverage]
-
-      forbidden_attributes.each do |attribute|
-        expect(new_build.send(attribute)).not_to eq build.send(attribute)
+    describe 'reject attributes' do
+      described_class::REJECT_ATTRIBUTES.each do |attribute|
+        it "does not clone #{attribute} build attribute" do
+          expect(new_build.send(attribute)).not_to eq build.send(attribute)
+        end
       end
+    end
+
+    it 'has correct number of known attributes' do
+      attributes =
+        described_class::CLONE_ATTRIBUTES +
+        described_class::IGNORE_ATTRIBUTES +
+        described_class::REJECT_ATTRIBUTES
+
+      expect(attributes.size).to eq build.attributes.size
     end
   end
 
