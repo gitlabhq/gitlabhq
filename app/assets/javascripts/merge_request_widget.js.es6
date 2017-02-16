@@ -106,7 +106,7 @@
               urlSuffix = deleteSourceBranch ? '?deleted_source_branch=true' : '';
               return window.location.href = window.location.pathname + urlSuffix;
             } else if (data.merge_error) {
-              return _this.$widgetBody.html("<h4>" + data.merge_error + "</h4>");
+              return $('.mr-widget-body').html("<h4>" + data.merge_error + "</h4>");
             } else {
               callback = function() {
                 return merge_request_widget.mergeInProgress(deleteSourceBranch);
