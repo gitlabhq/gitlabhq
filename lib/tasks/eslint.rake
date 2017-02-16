@@ -1,7 +1,7 @@
 unless Rails.env.production?
   desc "GitLab | Run ESLint"
   task :eslint do
-    system("npm", "run", "eslint")
+    system("yarn", "run", "eslint")
   end
 end
 

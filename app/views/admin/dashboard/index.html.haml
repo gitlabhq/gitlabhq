@@ -163,6 +163,6 @@
         - @groups.each do |group|
           %p
             = link_to [:admin, group], class: 'str-truncated-60' do
-              = group.name
+              = group.full_name
             %span.light.pull-right
               #{time_ago_with_tooltip(group.created_at)}

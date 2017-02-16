@@ -115,7 +115,7 @@ module Gitlab
             begin
               issuable =
                 if gh_issue.pull_request?
-                  MergeRequest.find_by_iid(gh_issue.number)
+                  MergeRequest.find_by(target_project_id: project.id, iid: gh_issue.number)
                 else
                   gh_issue.create!
                 end
@@ -212,8 +212,12 @@ module Gitlab
               comment         = CommentFormatter.new(project, raw)
               # GH does not return info about comment's parent, so we guess it by checking its URL!
               *_, parent, iid = URI(raw.html_url).path.split('/')
-              issuable_class = parent == 'issues' ? Issue : MergeRequest
-              issuable       = issuable_class.find_by_iid(iid)
+              if parent == 'issues'
+                issuable = Issue.find_by(project_id: project.id, iid: iid)
+              else
+                issuable = MergeRequest.find_by(target_project_id: project.id, iid: iid)
+              end
+
               next unless issuable
 
               issuable.notes.create!(comment.attributes)

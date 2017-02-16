@@ -864,7 +864,7 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-      width: 90px;
+      max-width: 70%;
       color: $gl-text-color-secondary;
       margin-left: 2px;
       display: inline-block;

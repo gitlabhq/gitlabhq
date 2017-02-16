@@ -72,6 +72,7 @@ ul.notes {
       overflow: hidden;
 
       .system-note-commit-list-toggler {
+        color: $gl-link-color;
         display: none;
         padding: 10px 0 0;
         cursor: pointer;
@@ -105,16 +106,6 @@ ul.notes {
 
           p:first-child {
             display: none;
-          }
-
-          p:last-child {
-            a {
-              color: $gl-text-color;
-
-              &:hover {
-                color: $gl-link-color;
-              }
-            }
           }
 
           &::after {

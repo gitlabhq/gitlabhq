@@ -29,11 +29,15 @@ Example response:
     "title": "Replace sanitize with escape once",
     "author_name": "Dmitriy Zaporozhets",
     "author_email": "dzaporozhets@sphereconsultinginc.com",
+    "authored_date": "2012-09-20T11:50:22+03:00",
     "committer_name": "Administrator",
     "committer_email": "admin@example.com",
+    "committed_date": "2012-09-20T11:50:22+03:00",
     "created_at": "2012-09-20T11:50:22+03:00",
     "message": "Replace sanitize with escape once",
-    "allow_failure": false
+    "parent_ids": [
+      "6104942438c14ec7bd21c6cd5bd995272b3faff6"
+    ]
   },
   {
     "id": "6104942438c14ec7bd21c6cd5bd995272b3faff6",
@@ -45,7 +49,9 @@ Example response:
     "committer_email": "dmitriy.zaporozhets@gmail.com",
     "created_at": "2012-09-20T09:06:12+03:00",
     "message": "Sanitize for network graph",
-    "allow_failure": false
+    "parent_ids": [
+      "ae1d9fb46aa2b07ee9836d49862ec4e2c46fbbba"
+    ]
   }
 ]
 ```
@@ -214,10 +220,16 @@ Example response:
   "title": "Feature added",
   "author_name": "Dmitriy Zaporozhets",
   "author_email": "dmitriy.zaporozhets@gmail.com",
+  "authored_date": "2016-12-12T20:10:39.000+01:00",
   "created_at": "2016-12-12T20:10:39.000+01:00",
   "committer_name": "Administrator",
   "committer_email": "admin@example.com",
-  "message": "Feature added\n\nSigned-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>\n"
+  "committed_date": "2016-12-12T20:10:39.000+01:00",
+  "title": "Feature added",
+  "message": "Feature added\n\nSigned-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>\n",
+  "parent_ids": [
+    "a738f717824ff53aebad8b090c1b79a14f2bd9e8"
+  ]
 }
 ```
 
@@ -444,6 +456,7 @@ POST /projects/:id/statuses/:sha
 | `name` or `context` | string  | no | The label to differentiate this status from the status of other systems. Default value is `default`
 | `target_url` |  string  | no  | The target URL to associate with this status
 | `description` | string  | no  | The short description of the status
+| `coverage` | float  | no    | The total code coverage
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/17/statuses/18f3e63d05582537db6d183d9d557be09e1f90c8?state=success"
@@ -464,6 +477,7 @@ Example response:
    "name" : "default",
    "sha" : "18f3e63d05582537db6d183d9d557be09e1f90c8",
    "status" : "success",
+   "coverage": 100.0,
    "description" : null,
    "id" : 93,
    "target_url" : null,

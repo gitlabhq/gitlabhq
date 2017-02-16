@@ -367,11 +367,21 @@ describe API::Commits, api: true  do
         get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
 
         expect(response).to have_http_status(200)
-        expect(json_response['id']).to eq(project.repository.commit.id)
-        expect(json_response['title']).to eq(project.repository.commit.title)
-        expect(json_response['stats']['additions']).to eq(project.repository.commit.stats.additions)
-        expect(json_response['stats']['deletions']).to eq(project.repository.commit.stats.deletions)
-        expect(json_response['stats']['total']).to eq(project.repository.commit.stats.total)
+        commit = project.repository.commit
+        expect(json_response['id']).to eq(commit.id)
+        expect(json_response['short_id']).to eq(commit.short_id)
+        expect(json_response['title']).to eq(commit.title)
+        expect(json_response['message']).to eq(commit.safe_message)
+        expect(json_response['author_name']).to eq(commit.author_name)
+        expect(json_response['author_email']).to eq(commit.author_email)
+        expect(json_response['authored_date']).to eq(commit.authored_date.iso8601(3))
+        expect(json_response['committer_name']).to eq(commit.committer_name)
+        expect(json_response['committer_email']).to eq(commit.committer_email)
+        expect(json_response['committed_date']).to eq(commit.committed_date.iso8601(3))
+        expect(json_response['parent_ids']).to eq(commit.parent_ids)
+        expect(json_response['stats']['additions']).to eq(commit.stats.additions)
+        expect(json_response['stats']['deletions']).to eq(commit.stats.deletions)
+        expect(json_response['stats']['total']).to eq(commit.stats.total)
       end
 
       it "returns a 404 error if not found" do

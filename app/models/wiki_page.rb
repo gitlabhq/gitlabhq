@@ -207,6 +207,10 @@ class WikiPage
     'projects/wikis/wiki_page'
   end
 
+  def id
+    page.version.to_s
+  end
+
   private
 
   def set_attributes

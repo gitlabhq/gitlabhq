@@ -598,7 +598,7 @@ class MergeRequest < ActiveRecord::Base
 
   def source_project_namespace
     if source_project && source_project.namespace
-      source_project.namespace.path
+      source_project.namespace.full_path
     else
       "(removed)"
     end
@@ -606,7 +606,7 @@ class MergeRequest < ActiveRecord::Base
 
   def target_project_namespace
     if target_project && target_project.namespace
-      target_project.namespace.path
+      target_project.namespace.full_path
     else
       "(removed)"
     end

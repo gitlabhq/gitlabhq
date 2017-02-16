@@ -310,7 +310,7 @@ module Gitlab
           if name == project.import_source
             "##{id}"
           else
-            "#{project.namespace.path}/#{name}##{id}"
+            "#{project.namespace.full_path}/#{name}##{id}"
           end
         text = "~~#{text}~~" if deleted
         text
