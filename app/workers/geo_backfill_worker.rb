@@ -2,7 +2,7 @@ class GeoBackfillWorker
   include Sidekiq::Worker
   include CronjobQueue
 
-  LEASE_TIMEOUT = 24.hours.freeze
+  LEASE_TIMEOUT = 8.hours.freeze
   RUN_TIME      = 5.minutes.to_i.freeze
 
   def perform

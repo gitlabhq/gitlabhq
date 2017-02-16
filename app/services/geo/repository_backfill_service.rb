@@ -2,7 +2,7 @@ module Geo
   class RepositoryBackfillService
     attr_reader :project
 
-    LEASE_TIMEOUT = 24.hours.freeze
+    LEASE_TIMEOUT = 8.hours.freeze
 
     def initialize(project)
       @project = project
