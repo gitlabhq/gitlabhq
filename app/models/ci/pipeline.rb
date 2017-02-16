@@ -91,11 +91,13 @@ module Ci
     scope :latest, ->(ref = nil) do
       max_id = unscope(:select)
         .select("max(#{quoted_table_name}.id)")
-        .where(ref: ref)
         .group(:ref, :sha)
 
-      relation = ref ? where(ref: ref) : self
-      relation.where(id: max_id)
+      if ref
+        where(ref: ref, id: max_id.where(ref: ref))
+      else
+        where(id: max_id)
+      end
     end
 
     def self.latest_status(ref = nil)
