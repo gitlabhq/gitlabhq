@@ -56,7 +56,7 @@ const CommitPipelinesStoreWithTimeAgo = require('../commit/pipelines/pipelines_s
        */
       change(pagenum, apiScope) {
         if (!apiScope) apiScope = 'all';
-        gl.utils.visitUrl(`?scope=${apiScope}&p=${pagenum}`);
+        gl.utils.visitUrl(`?scope=${apiScope}&page=${pagenum}`);
       },
     },
     template: `
