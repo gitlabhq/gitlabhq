@@ -5,16 +5,7 @@ require('../vue_realtime_listener');
 ((gl) => {
   const pageValues = (headers) => {
     const normalized = gl.utils.normalizeHeaders(headers);
-
-    const paginationInfo = {
-      perPage: +normalized['X-PER-PAGE'],
-      page: +normalized['X-PAGE'],
-      total: +normalized['X-TOTAL'],
-      totalPages: +normalized['X-TOTAL-PAGES'],
-      nextPage: +normalized['X-NEXT-PAGE'],
-      previousPage: +normalized['X-PREV-PAGE'],
-    };
-
+    const paginationInfo = gl.utils.normalizeHeaders(normalized);
     return paginationInfo;
   };
 

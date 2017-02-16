@@ -10,6 +10,11 @@
   font-size: 34px;
 }
 
+.environments-folder-name {
+  font-weight: normal;
+  padding-top: 20px;
+}
+
 @media (max-width: $screen-xs-max) {
   .environments-container {
     width: 100%;
@@ -113,6 +118,7 @@
   .folder-icon {
     margin-right: 3px;
     color: $gl-text-color-secondary;
+    display: inline-block;
 
     .fa:nth-child(1) {
       margin-right: 3px;
@@ -122,6 +128,7 @@
   .folder-name {
     cursor: pointer;
     color: $gl-text-color-secondary;
+    display: inline-block;
   }
 }
 
