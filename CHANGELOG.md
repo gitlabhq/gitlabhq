@@ -463,6 +463,10 @@ entry.
 - Whitelist next project names: help, ci, admin, search. !8227
 - Adds back CSS for progress-bars. !8237
 
+## 8.14.10 (2017-02-15)
+
+- No changes.
+
 ## 8.14.9 (2017-02-14)
 
 - Patch Asciidocs rendering to block XSS.
