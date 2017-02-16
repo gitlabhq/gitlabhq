@@ -508,6 +508,35 @@ module Ci
       ]
     end
 
+    def steps
+      [
+          Gitlab::Ci::Build::Response::Step.from_commands(self),
+          Gitlab::Ci::Build::Response::Step.from_after_script(self)
+      ].compact
+    end
+
+    def image
+      image = Gitlab::Ci::Build::Response::Image.new(options[:image])
+      return unless image.valid?
+      image
+    end
+
+    def services
+      services = options[:services].map do |service|
+        Gitlab::Ci::Build::Response::Image.new(service)
+      end
+
+      services.select(&:valid?).compact
+    end
+
+    def artifacts
+      options[:artifacts]
+    end
+
+    def cache
+      options[:cache]
+    end
+
     def credentials
       Gitlab::Ci::Build::Credentials::Factory.new(self).create!
     end

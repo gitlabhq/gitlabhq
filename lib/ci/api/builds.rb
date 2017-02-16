@@ -24,7 +24,7 @@ module Ci
 
           new_update = current_runner.ensure_runner_queue_value
 
-          result = Ci::RegisterBuildService.new(current_runner).execute
+          result = Ci::RegisterJobService.new(current_runner).execute
 
           if result.valid?
             if result.build

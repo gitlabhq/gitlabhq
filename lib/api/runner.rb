@@ -51,7 +51,7 @@ module API
 
     resource :jobs do
       desc 'Request a job' do
-        success Entities::RequestJobResponse
+        success Entities::JobRequest::Response
       end
       params do
         requires :token, type: String, desc: %q(Runner's authentication token)
@@ -68,13 +68,13 @@ module API
         end
 
         new_update = current_runner.ensure_runner_queue_value
-        result = ::Ci::RegisterBuildService.new(current_runner).execute
+        result = ::Ci::RegisterJobService.new(current_runner).execute
 
         if result.valid?
           if result.build
             Gitlab::Metrics.add_event(:build_found,
                                       project: result.build.project.path_with_namespace)
-            present result.build, with: Entities::RequestJobResponse
+            present result.build, with: Entities::JobRequest::Response
           else
             Gitlab::Metrics.add_event(:build_not_found)
             header 'X-GitLab-Last-Update', new_update

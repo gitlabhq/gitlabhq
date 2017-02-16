@@ -152,8 +152,8 @@ describe API::Runner do
   describe '/api/v4/jobs' do
     let(:project) { create(:empty_project, shared_runners_enabled: false) }
     let(:pipeline) { create(:ci_pipeline_without_jobs, project: project, ref: 'master') }
-    let!(:job) { create(:ci_build, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
     let(:runner) { create(:ci_runner) }
+    let!(:job) { create(:ci_build, :artifacts, :extended_options, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0, commands: "ls\ndate") }
 
     before { project.runners << runner }
 
@@ -271,14 +271,44 @@ describe API::Runner do
 
             expect(response).to have_http_status(201)
             expect(response.headers).not_to have_key('X-GitLab-Last-Update')
-            expect(json_response['sha']).to eq(job.sha)
-            expect(json_response['options']).to eq({'image' => 'ruby:2.1', 'services' => ['postgres']})
-            expect(json_response['variables']).to include(
-                                                      {'key' => 'CI_BUILD_NAME', 'value' => 'spinach', 'public' => true},
-                                                      {'key' => 'CI_BUILD_STAGE', 'value' => 'test', 'public' => true},
-                                                      {'key' => 'DB_NAME', 'value' => 'postgres', 'public' => true}
-                                                  )
             expect(runner.reload.platform).to eq('darwin')
+
+            expect(json_response['id']).to eq(job.id)
+            expect(json_response['token']).to eq(job.token)
+            expect(json_response['job_info']).to include({ 'name' => job.name },
+                                                         { 'stage' => job.stage })
+            expect(json_response['git_info']).to include({ 'sha' => job.sha },
+                                                         { 'repo_url' => job.repo_url })
+            expect(json_response['image']).to include({ 'name' => 'ruby:2.1' })
+            expect(json_response['services']).to include({ 'name' => 'postgres' })
+            expect(json_response['steps']).to include({ 'name' => 'after_script',
+                                                        'script' => ['ls', 'date'],
+                                                        'timeout' => job.timeout,
+                                                        'condition' => Gitlab::Ci::Build::Response::Step::CONDITION_ALWAYS,
+                                                        'result' => Gitlab::Ci::Build::Response::Step::RESULT_DOESNT_FAIL_JOB })
+            expect(json_response['variables']).to include({ 'key' => 'CI_BUILD_NAME', 'value' => 'spinach', 'public' => true },
+                                                          { 'key' => 'CI_BUILD_STAGE', 'value' => 'test', 'public' => true },
+                                                          { 'key' => 'DB_NAME', 'value' => 'postgres', 'public' => true })
+            expect(json_response['artifacts']).to include({ 'name' => 'artifacts_file' },
+                                                          { 'paths' => ['out/'] })
+          end
+
+          context 'when job is made for tag' do
+            let!(:job) { create(:ci_build_tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
+
+            it 'sets branch as ref_type' do
+              request_job
+              expect(response).to have_http_status(201)
+              expect(json_response['git_info']['ref_type']).to eq('tag')
+            end
+          end
+
+          context 'when job is made for branch' do
+            it 'sets tag as ref_type' do
+              request_job
+              expect(response).to have_http_status(201)
+              expect(json_response['git_info']['ref_type']).to eq('branch')
+            end
           end
 
           it 'updates runner info' do
@@ -322,8 +352,8 @@ describe API::Runner do
 
               expect(response).to have_http_status(201)
               expect(json_response['id']).to eq(test_job.id)
-              expect(json_response['depends_on_builds'].count).to eq(1)
-              expect(json_response['depends_on_builds'][0]).to include('id' => job.id, 'name' => 'spinach')
+              expect(json_response['dependencies'].count).to eq(1)
+              expect(json_response['dependencies'][0]).to include('id' => job.id, 'name' => 'spinach')
             end
           end
 
@@ -381,6 +411,7 @@ describe API::Runner do
 
               it 'sends registry credentials key' do
                 request_job
+
                 expect(json_response).to have_key('credentials')
                 expect(json_response['credentials']).to include(registry_credentials)
               end
