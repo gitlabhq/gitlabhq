@@ -690,6 +690,8 @@ The `stop_review_app` job is **required** to have the following keywords defined
 - `when` - [reference](#when)
 - `environment:name`
 - `environment:action`
+- `stage` should be the same as the `review_app` in order for the environment
+  to stop automatically when the branch is deleted
 
 #### dynamic environments
 
