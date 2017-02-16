@@ -4,18 +4,19 @@ include ImportExport::CommonUtil
 describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
   describe 'restore project tree' do
     before(:all) do
-      user = create(:user)
+      @user = create(:user)
 
       RSpec::Mocks.with_temporary_scope do
         @shared = Gitlab::ImportExport::Shared.new(relative_path: "", project_path: 'path')
         allow(@shared).to receive(:export_path).and_return('spec/lib/gitlab/import_export/')
-        project = create(:empty_project, :builds_disabled, :issues_disabled, name: 'project', path: 'project')
-        project_tree_restorer = described_class.new(user: user, shared: @shared, project: project)
+        @project = create(:empty_project, :builds_disabled, :issues_disabled, name: 'project', path: 'project')
+        project_tree_restorer = described_class.new(user: @user, shared: @shared, project: @project)
         @restored_project_json = project_tree_restorer.restore
       end
     end
 
-    before do
+    after(:all) do
+      @user.destroy!
     end
 
     context 'JSON' do
@@ -98,7 +99,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
       end
 
       it 'has a project feature' do
-        expect(Project.first.project_feature).not_to be_nil
+        expect(@project.project_feature).not_to be_nil
       end
 
       it 'restores the correct service' do
@@ -106,20 +107,16 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
       end
 
       context 'Merge requests' do
-        before do
-          @restored_project_json
-        end
-
         it 'always has the new project as a target' do
-          expect(MergeRequest.find_by_title('MR1').target_project).to eq(Project.first)
+          expect(MergeRequest.find_by_title('MR1').target_project).to eq(@project)
         end
 
         it 'has the same source project as originally if source/target are the same' do
-          expect(MergeRequest.find_by_title('MR1').source_project).to eq(Project.first)
+          expect(MergeRequest.find_by_title('MR1').source_project).to eq(@project)
         end
 
         it 'has the new project as target if source/target differ' do
-          expect(MergeRequest.find_by_title('MR2').target_project).to eq(Project.first)
+          expect(MergeRequest.find_by_title('MR2').target_project).to eq(@project)
         end
 
         it 'has no source if source/target differ' do
