@@ -111,6 +111,7 @@ ActiveRecord::Schema.define(version: 20170214111112) do
     t.boolean "plantuml_enabled"
     t.integer "max_pages_size", default: 100, null: false
     t.integer "terminal_max_session_time", default: 0, null: false
+    t.string "default_artifacts_expire_in", limit: 255
   end
 
   create_table "audit_events", force: :cascade do |t|
