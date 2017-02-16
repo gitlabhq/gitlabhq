@@ -188,6 +188,10 @@ module API
         expose :projects, using: Entities::Project
         expose :shared_projects, using: Entities::Project
       end
+
+      class Environment < ::API::Entities::EnvironmentBasic
+        expose :project, using: Entities::Project
+      end
     end
   end
 end
