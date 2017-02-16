@@ -18,6 +18,10 @@ module.exports = Vue.extend({
     return {
       loading: false,
       milestones: [],
+      noMilestone: {
+        id: -1,
+        title: 'No Milestone',
+      },
     };
   },
   mounted() {
@@ -38,6 +42,17 @@ module.exports = Vue.extend({
       <ul
         class="board-milestone-list"
         v-if="!loading">
+        <li>
+          <a
+            href="#"
+            @click.prevent.stop="selectMilestone(noMilestone)">
+            <i
+              class="fa fa-check"
+              v-if="board.milestone_id === noMilestone.id"></i>
+            {{ noMilestone.title }}
+          </a>
+        </li>
+        <li class="divider"></li>
         <li v-for="milestone in milestones">
           <a
             href="#"
