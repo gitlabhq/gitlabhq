@@ -54,7 +54,7 @@
 
         setTimeout(() => {
           const currentInterval = interval.getCurrentInterval();
-          expect(currentInterval).toBe(interval.cfg.maxInterval);
+          expect(currentInterval).toBeLessThan(interval.cfg.maxInterval);
 
           done();
         }, DEFAULT_LONG_TIMEOUT);
