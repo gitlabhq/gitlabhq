@@ -74,7 +74,7 @@
     .form-group
       = f.label :minimum_mirror_sync_time, class: 'control-label col-sm-2'
       .col-sm-10
-        = f.select :minimum_mirror_sync_time, options_for_select(Gitlab::Mirror.sync_time_options, @application_setting.minimum_mirror_sync_time), {}, class: 'form-control'
+        = f.select :minimum_mirror_sync_time, options_for_select(Gitlab::Mirror::SYNC_TIME_OPTIONS, @application_setting.minimum_mirror_sync_time), {}, class: 'form-control'
     .form-group
       = f.label :session_expire_delay, 'Session duration (minutes)', class: 'control-label col-sm-2'
       .col-sm-10

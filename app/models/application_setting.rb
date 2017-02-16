@@ -130,7 +130,7 @@ class ApplicationSetting < ActiveRecord::Base
 
   validates :minimum_mirror_sync_time,
             presence: true,
-            inclusion: { in: Gitlab::Mirror.sync_time_options.values }
+            inclusion: { in: Gitlab::Mirror::SYNC_TIME_OPTIONS.values }
 
   validates_each :restricted_visibility_levels do |record, attr, value|
     value&.each do |level|
@@ -231,7 +231,7 @@ class ApplicationSetting < ActiveRecord::Base
       elasticsearch_host: ENV['ELASTIC_HOST'] || 'localhost',
       elasticsearch_port: ENV['ELASTIC_PORT'] || '9200',
       usage_ping_enabled: true,
-      minimum_mirror_sync_time: 60
+      minimum_mirror_sync_time: Gitlab::Mirror::FIFTEEN
     }
   end
 

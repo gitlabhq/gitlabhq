@@ -14,15 +14,13 @@ module Gitlab
       DAILY   => "0 0 * * *"
     }.freeze
 
-    class << self
-      def sync_time_options
-        {
-          "Update every 15 minutes" => FIFTEEN,
-          "Update hourly" => HOURLY,
-          "Update every day" => DAILY,
-        }
-      end
+    SYNC_TIME_OPTIONS = {
+      "Update every 15 minutes" => FIFTEEN,
+      "Update hourly" => HOURLY,
+      "Update every day" => DAILY,
+    }.freeze
 
+    class << self
       def sync_times
         sync_times = [FIFTEEN]
         sync_times << DAILY  if at_beginning_of_day?
@@ -32,7 +30,7 @@ module Gitlab
       end
 
       def configure_cron_jobs!
-        minimum_mirror_sync_time = current_application_settings.minimum_mirror_sync_time rescue DAILY
+        minimum_mirror_sync_time = current_application_settings.minimum_mirror_sync_time rescue FIFTEEN
         sync_time = SYNC_TIME_TO_CRON[minimum_mirror_sync_time]
         update_all_mirrors_worker_job = Sidekiq::Cron::Job.find("update_all_mirrors_worker")
         update_all_remote_mirrors_worker_job = Sidekiq::Cron::Job.find("update_all_remote_mirrors_worker")

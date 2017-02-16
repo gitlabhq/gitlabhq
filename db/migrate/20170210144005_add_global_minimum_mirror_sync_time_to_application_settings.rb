@@ -1,6 +1,3 @@
-# See http://doc.gitlab.com/ce/development/migration_style_guide.html
-# for more information on how to write migrations for GitLab.
-
 class AddGlobalMinimumMirrorSyncTimeToApplicationSettings < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
@@ -12,7 +9,7 @@ class AddGlobalMinimumMirrorSyncTimeToApplicationSettings < ActiveRecord::Migrat
     add_column_with_default :application_settings,
                             :minimum_mirror_sync_time,
                             :integer,
-                            default: 60,
+                            default: 15,
                             allow_null: false
   end
 
