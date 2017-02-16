@@ -47,7 +47,7 @@ require('./board_new_form');
           this.updateMilestoneFilterDropdown();
         },
         deep: true,
-      }
+      },
     },
     computed: {
       currentPage() {
@@ -97,7 +97,6 @@ require('./board_new_form');
       updateMilestoneFilterDropdown() {
         const $milestoneDropdown = $('.dropdown-menu-milestone');
         const hideElements = this.board.milestone_id === null;
-        console.log(hideElements, this.board.milestone_id);
 
         $milestoneDropdown.find('.dropdown-input, .dropdown-footer-list')
           .toggle(hideElements);
