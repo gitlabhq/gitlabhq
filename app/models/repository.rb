@@ -59,7 +59,7 @@ class Repository
   def raw_repository
     return nil unless path_with_namespace
 
-    @raw_repository ||= Gitlab::Git::Repository.new(path_to_repo)
+    @raw_repository ||= create_raw_repository
   end
 
   # Return absolute path to repository
@@ -146,12 +146,7 @@ class Repository
     # may cause the branch to "disappear" erroneously or have the wrong SHA.
     #
     # See: https://github.com/libgit2/libgit2/issues/1534 and https://gitlab.com/gitlab-org/gitlab-ce/issues/15392
-    raw_repo =
-      if fresh_repo
-        Gitlab::Git::Repository.new(path_to_repo)
-      else
-        raw_repository
-      end
+    raw_repo = fresh_repo ? create_raw_repository : raw_repository
 
     raw_repo.find_branch(name)
   end
@@ -505,9 +500,7 @@ class Repository
     end
   end
 
-  def branch_names
-    branches.map(&:name)
-  end
+  delegate :branch_names, to: :raw_repository
   cache_method :branch_names, fallback: []
 
   delegate :tag_names, to: :raw_repository
@@ -1167,5 +1160,9 @@ class Repository
 
   def repository_storage_path
     @project.repository_storage_path
+  end
+
+  def create_raw_repository
+    Gitlab::Git::Repository.new(project.repository_storage, path_with_namespace + '.git')
   end
 end

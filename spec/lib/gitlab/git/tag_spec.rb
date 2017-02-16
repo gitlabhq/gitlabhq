@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe Gitlab::Git::Tag, seed_helper: true do
-  let(:repository) { Gitlab::Git::Repository.new(TEST_REPO_PATH) }
+  let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH) }
 
   describe 'first tag' do
     let(:tag) { repository.tags.first }
