@@ -534,9 +534,13 @@
     GitLabDropdown.prototype.renderItem = function(data, group, index) {
       var field, fieldName, html, selected, text, url, value, rowHidden;
 
-      value = this.options.id ? this.options.id(data) : data.id;
+      if (!this.options.renderRow) {
+        value = this.options.id ? this.options.id(data) : data.id;
 
-      if (value) { value = value.toString().replace(/'/g, '\\\''); }
+        if (value) {
+          value = value.toString().replace(/'/g, '\\\'');
+        }
+      }
 
       // Hide element
       if (this.options.hideRow && this.options.hideRow(value)) {

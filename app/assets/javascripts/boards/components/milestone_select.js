@@ -1,3 +1,4 @@
+/* global BoardService */
 /* global Vue */
 module.exports = Vue.extend({
   props: {

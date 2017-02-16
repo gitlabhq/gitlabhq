@@ -1,5 +1,6 @@
 /* global Vue */
 /* global boardsMockInterceptor */
+/* global boardObj */
 /* global BoardService */
 const MilestoneComp = require('~/boards/components/milestone_select');
 require('~/boards/services/board_service');
@@ -59,7 +60,7 @@ describe('Milestone select component', () => {
         expect(vm.$el.querySelector('.fa-spinner')).toBeNull();
         expect(vm.$el.querySelectorAll('.board-milestone-list li').length).toBe(3);
         expect(
-          vm.$el.querySelectorAll('.board-milestone-list li')[2].textContent
+          vm.$el.querySelectorAll('.board-milestone-list li')[2].textContent,
         ).toContain('test');
       });
 
