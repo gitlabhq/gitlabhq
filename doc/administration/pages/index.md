@@ -1,4 +1,4 @@
-# GitLab Pages Administration
+# GitLab Pages administration
 
 > **Notes:**
 - [Introduced][ee-80] in GitLab EE 8.3.
@@ -6,6 +6,7 @@
 - GitLab Pages [were ported][ce-14605] to Community Edition in GitLab 8.17.
 - This guide is for Omnibus GitLab installations. If you have installed
   GitLab from source, follow the [Pages source installation document](source.md).
+- To learn how to use GitLab Pages, read the [user documentation][pages-userguide].
 
 ---
 
@@ -13,9 +14,6 @@ This document describes how to set up the _latest_ GitLab Pages feature. Make
 sure to read the [changelog](#changelog) if you are upgrading to a new GitLab
 version as it may include new features and changes needed to be made in your
 configuration.
-
-If you are looking for ways to upload your static content in GitLab Pages, you
-probably want to read the [user documentation][pages-userguide].
 
 ## Overview
 
@@ -32,7 +30,7 @@ In the case of custom domains, the Pages daemon needs to listen on ports `80`
 and/or `443`. For that reason, there is some flexibility in the way which you
 can set it up:
 
-1. Run the pages daemon in the same server as GitLab, listening on a secondary IP
+1. Run the pages daemon in the same server as GitLab, listening on a secondary IP.
 1. Run the pages daemon in a separate server. In that case, the
    [Pages path](#change-storage-path) must also be present in the server that
    the pages daemon is installed, so you will have to share it via network.
@@ -64,11 +62,11 @@ you need to add a [wildcard DNS A record][wiki-wildcard-dns] pointing to the
 host that GitLab runs. For example, an entry would look like this:
 
 ```
-*.example.io. 1800 IN A 1.2.3.4
+*.example.io. 1800 IN A 1.1.1.1
 ```
 
 where `example.io` is the domain under which GitLab Pages will be served
-and `1.2.3.4` is the IP address of your GitLab instance.
+and `1.1.1.1` is the IP address of your GitLab instance.
 
 > **Note:**
 You should not use the GitLab domain to serve user pages. For more information
@@ -78,69 +76,44 @@ see the [security section](#security).
 
 ## Configuration
 
-Depending on your needs, you can install GitLab Pages in four different ways.
+Depending on your needs, you can set up GitLab Pages in 4 different ways.
+The following options are listed from the easiest setup to the most
+advanced one. The absolute minimum requirement is to set up the wildcard DNS
+since that is needed in all configurations.
 
-### Option 1. Custom domains with HTTPS support
+### Wildcard domains
 
-| URL scheme | Wildcard certificate | Custom domain with HTTP support | Custom domain with HTTPS support | Secondary IP |
-| --- |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| `https://page.example.io` and `https://page.com` | yes |  redirects to HTTPS | yes | yes |
+>**Requirements:**
+- [Wildcard DNS setup](#dns-configuration)
+>
+>---
+>
+URL scheme: `http://page.example.io`
 
-Pages enabled, daemon is enabled AND pages has external IP support enabled.
-In that case, the pages daemon is running, NGINX still proxies requests to
-the daemon but the daemon is also able to receive requests from the outside
-world. Custom domains and TLS are supported.
+This is the minimum setup that you can use Pages with. It is the base for all
+other setups as described below. Nginx will proxy all requests to the daemon.
+The Pages daemon doesn't listen to the outside world.
 
-1. Edit `/etc/gitlab/gitlab.rb`:
+1. Set the external URL for GitLab Pages in `/etc/gitlab/gitlab.rb`:
 
     ```ruby
-    pages_external_url "https://example.io"
-    nginx['listen_addresses'] = ['1.1.1.1']
-    pages_nginx['enable'] = false
-    gitlab_pages['cert'] = "/etc/gitlab/ssl/example.io.crt"
-    gitlab_pages['cert_key'] = "/etc/gitlab/ssl/example.io.key"
-    gitlab_pages['external_http'] = '1.1.1.2:80'
-    gitlab_pages['external_https'] = '1.1.1.2:443'
+    pages_external_url 'http://example.io'
     ```
-
-    where `1.1.1.1` is the primary IP address that GitLab is listening to and
-    `1.1.1.2` the secondary IP where the GitLab Pages daemon listens to.
 
 1. [Reconfigure GitLab][reconfigure]
 
-### Option 2. Custom domains without HTTPS support
+### Wildcard domains with TLS support
 
-| URL scheme |  Wildcard certificate | Custom domain with HTTP support | Custom domain with HTTPS support | Secondary IP |
-| --- |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| `http://page.example.io` and `http://page.com` | no  |  yes    | no  | yes |
+>**Requirements:**
+- [Wildcard DNS setup](#dns-configuration)
+- Wildcard TLS certificate
+>
+>---
+>
+URL scheme: `https://page.example.io`
 
-Pages enabled, daemon is enabled AND pages has external IP support enabled.
-In that case, the pages daemon is running, NGINX still proxies requests to
-the daemon but the daemon is also able to receive requests from the outside
-world. Custom domains and TLS are supported.
-
-1. Edit `/etc/gitlab/gitlab.rb`:
-
-    ```ruby
-    pages_external_url "http://example.io"
-    nginx['listen_addresses'] = ['1.1.1.1']
-    pages_nginx['enable'] = false
-    gitlab_pages['external_http'] = '1.1.1.2:80'
-    ```
-
-    where `1.1.1.1` is the primary IP address that GitLab is listening to and
-    `1.1.1.2` the secondary IP where the GitLab Pages daemon listens to.
-
-1. [Reconfigure GitLab][reconfigure]
-
-### Option 3. Wildcard HTTPS domain without custom domains
-
-| URL scheme | Wildcard certificate | Custom domain with HTTP support | Custom domain with HTTPS support | Secondary IP |
-| --- |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| `https://page.example.io` | yes |  no | no | no |
-
-Pages enabled, daemon is enabled and NGINX will proxy all requests to the
-daemon. Pages daemon doesn't listen to the outside world.
+Nginx will proxy all requests to the daemon. Pages daemon doesn't listen to the
+outside world.
 
 1. Place the certificate and key inside `/etc/gitlab/ssl`
 1. In `/etc/gitlab/gitlab.rb` specify the following configuration:
@@ -158,20 +131,70 @@ daemon. Pages daemon doesn't listen to the outside world.
 
 1. [Reconfigure GitLab][reconfigure]
 
-### Option 4. Wildcard HTTP domain without custom domains
+## Advanced configuration
 
-| URL scheme | Wildcard certificate | Custom domain with HTTP support | Custom domain with HTTPS support | Secondary IP |
-| --- |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| `http://page.example.io`  | no  |  no | no | no |
+In addition to the wildcard domains, you can also have the option to configure
+GitLab Pages to work with custom domains. Again, there are two options here:
+support custom domains with and without TLS certificates. The easiest setup is
+that without TLS certificates.
 
-Pages enabled, daemon is enabled and NGINX will proxy all requests to the
-daemon. Pages daemon doesn't listen to the outside world.
+### Custom domains
 
-1. Set the external URL for GitLab Pages in `/etc/gitlab/gitlab.rb`:
+>**Requirements:**
+- [Wildcard DNS setup](#dns-configuration)
+- Secondary IP
+>
+---
+>
+URL scheme: `http://page.example.io` and `http://domain.com`
+
+In that case, the pages daemon is running, Nginx still proxies requests to
+the daemon but the daemon is also able to receive requests from the outside
+world. Custom domains are supported, but no TLS.
+
+1. Edit `/etc/gitlab/gitlab.rb`:
 
     ```ruby
-    pages_external_url 'http://example.io'
+    pages_external_url "http://example.io"
+    nginx['listen_addresses'] = ['1.1.1.1']
+    pages_nginx['enable'] = false
+    gitlab_pages['external_http'] = '1.1.1.2:80'
     ```
+
+    where `1.1.1.1` is the primary IP address that GitLab is listening to and
+    `1.1.1.2` the secondary IP where the GitLab Pages daemon listens to.
+
+1. [Reconfigure GitLab][reconfigure]
+
+### Custom domains with TLS support
+
+>**Requirements:**
+- [Wildcard DNS setup](#dns-configuration)
+- Wildcard TLS certificate
+- Secondary IP
+>
+---
+>
+URL scheme: `https://page.example.io` and `https://domain.com`
+
+In that case, the pages daemon is running, Nginx still proxies requests to
+the daemon but the daemon is also able to receive requests from the outside
+world. Custom domains and TLS are supported.
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+    ```ruby
+    pages_external_url "https://example.io"
+    nginx['listen_addresses'] = ['1.1.1.1']
+    pages_nginx['enable'] = false
+    gitlab_pages['cert'] = "/etc/gitlab/ssl/example.io.crt"
+    gitlab_pages['cert_key'] = "/etc/gitlab/ssl/example.io.key"
+    gitlab_pages['external_http'] = '1.1.1.2:80'
+    gitlab_pages['external_https'] = '1.1.1.2:443'
+    ```
+
+    where `1.1.1.1` is the primary IP address that GitLab is listening to and
+    `1.1.1.2` the secondary IP where the GitLab Pages daemon listens to.
 
 1. [Reconfigure GitLab][reconfigure]
 
