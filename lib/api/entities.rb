@@ -132,7 +132,8 @@ module API
     end
 
     class Group < Grape::Entity
-      expose :id, :name, :path, :description, :visibility_level
+      expose :id, :name, :path, :description
+      expose(:visibility) { |group, _options| Gitlab::VisibilityLevel.string_level(group.visibility_level) }
       expose :lfs_enabled?, as: :lfs_enabled
       expose :avatar_url
       expose :web_url
