@@ -442,7 +442,6 @@ module.exports = Vue.component('environment-item', {
         </a>
         <a v-else class="folder-name" :href="folderUrl">
           <span class="folder-icon">
-            <i class="fa fa-caret-right" aria-hidden="true"></i>
             <i class="fa fa-folder" aria-hidden="true"></i>
           </span>
 
