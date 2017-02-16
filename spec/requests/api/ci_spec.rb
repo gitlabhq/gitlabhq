@@ -54,7 +54,7 @@ describe API::Ci do
       context 'when runner description is provided' do
         it 'creates runner' do
           post api('/runners'), token: registration_token,
-               description: 'server.hostname'
+                                description: 'server.hostname'
 
           expect(response).to have_http_status 201
           expect(Ci::Runner.first.description).to eq('server.hostname')
@@ -64,7 +64,7 @@ describe API::Ci do
       context 'when runner tags are provided' do
         it 'creates runner' do
           post api('/runners'), token: registration_token,
-               tag_list: 'tag1, tag2'
+                                tag_list: 'tag1, tag2'
 
           expect(response).to have_http_status 201
           expect(Ci::Runner.first.tag_list.sort).to eq(%w(tag1 tag2))
@@ -75,8 +75,8 @@ describe API::Ci do
         context 'when tags are provided' do
           it 'creates runner' do
             post api('/runners'), token: registration_token,
-                 run_untagged: false,
-                 tag_list: ['tag']
+                                  run_untagged: false,
+                                  tag_list: ['tag']
 
             expect(response).to have_http_status 201
             expect(Ci::Runner.first.run_untagged).to be false
@@ -87,7 +87,7 @@ describe API::Ci do
         context 'when tags are not provided' do
           it 'returns 404 error' do
             post api('/runners'), token: registration_token,
-                 run_untagged: false
+                                  run_untagged: false
 
             expect(response).to have_http_status 404
           end
@@ -97,7 +97,7 @@ describe API::Ci do
       context 'when option for locking Runner is provided' do
         it 'creates runner' do
           post api('/runners'), token: registration_token,
-               locked: true
+                                locked: true
 
           expect(response).to have_http_status 201
           expect(Ci::Runner.first.locked).to be true
@@ -110,7 +110,7 @@ describe API::Ci do
 
           it %q(updates provided Runner's parameter) do
             post api('/runners'), token: registration_token,
-                 info: {param => value}
+                                  info: { param => value }
 
             expect(response).to have_http_status 201
             expect(Ci::Runner.first.read_attribute(param.to_sym)).to eq(value)
