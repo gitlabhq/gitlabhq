@@ -91,6 +91,7 @@ module Ci
     scope :latest, ->(ref = nil) do
       max_id = unscope(:select)
         .select("max(#{quoted_table_name}.id)")
+        .where(ref: ref)
         .group(:ref, :sha)
 
       relation = ref ? where(ref: ref) : self
