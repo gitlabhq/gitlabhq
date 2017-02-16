@@ -371,43 +371,7 @@ class User < ActiveRecord::Base
     # Return (create if necessary) the ghost user. The ghost user
     # owns records previously belonging to deleted users.
     def ghost
-      ghost_user = User.find_by_ghost(true)
-
-      ghost_user ||
-        begin
-          # Since we only want a single ghost user in an instance, we use an
-          # exclusive lease to ensure than this block is never run concurrently.
-          lease_key = "ghost_user_creation"
-          lease = Gitlab::ExclusiveLease.new(lease_key, timeout: 1.minute.to_i)
-
-          until uuid = lease.try_obtain
-            # Keep trying until we obtain the lease. To prevent hammering Redis too
-            # much we'll wait for a bit between retries.
-            sleep(1)
-          end
-
-          # Recheck if a ghost user is already present (one might have been)
-          # added between the time we last checked (first line of this method)
-          # and the time we acquired the lock.
-          ghost_user = User.find_by_ghost(true)
-          return ghost_user if ghost_user.present?
-
-          uniquify = Uniquify.new
-
-          username = uniquify.string("ghost", -> (s) { User.find_by_username(s) })
-
-          email = uniquify.string(
-            -> (n) { "ghost#{n}@example.com" },
-            -> (s) { User.find_by_email(s) }
-          )
-
-          User.create(
-            username: username, password: Devise.friendly_token,
-            email: email, name: "Ghost User", state: :blocked, ghost: true
-          )
-        ensure
-          Gitlab::ExclusiveLease.cancel(lease_key, uuid)
-        end
+      User.find_by_ghost(true) || create_ghost_user
     end
   end
 
@@ -1087,5 +1051,39 @@ class User < ActiveRecord::Base
     else
       super
     end
+  end
+
+  def self.create_ghost_user
+    # Since we only want a single ghost user in an instance, we use an
+    # exclusive lease to ensure than this block is never run concurrently.
+    lease_key = "ghost_user_creation"
+    lease = Gitlab::ExclusiveLease.new(lease_key, timeout: 1.minute.to_i)
+
+    until uuid = lease.try_obtain
+      # Keep trying until we obtain the lease. To prevent hammering Redis too
+      # much we'll wait for a bit between retries.
+      sleep(1)
+    end
+
+    # Recheck if a ghost user is already present. One might have been
+    # added between the time we last checked (first line of this method)
+    # and the time we acquired the lock.
+    ghost_user = User.find_by_ghost(true)
+    return ghost_user if ghost_user.present?
+
+    uniquify = Uniquify.new
+
+    username = uniquify.string("ghost") { |s| User.find_by_username(s) }
+
+    email = uniquify.string(-> (n) { "ghost#{n}@example.com" }) do |s|
+      User.find_by_email(s)
+    end
+
+    User.create(
+      username: username, password: Devise.friendly_token,
+      email: email, name: "Ghost User", state: :blocked, ghost: true
+    )
+  ensure
+    Gitlab::ExclusiveLease.cancel(lease_key, uuid)
   end
 end
