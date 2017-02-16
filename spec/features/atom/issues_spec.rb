@@ -2,10 +2,11 @@ require 'spec_helper'
 
 describe 'Issues Feed', feature: true  do
   describe 'GET /issues' do
-    let!(:user)     { create(:user) }
+    let!(:user)     { create(:user, email: 'private1@example.com', public_email: 'public1@example.com') }
+    let!(:assignee) { create(:user, email: 'private2@example.com', public_email: 'public2@example.com') }
     let!(:group)    { create(:group) }
     let!(:project)  { create(:project) }
-    let!(:issue)    { create(:issue, author: user, project: project) }
+    let!(:issue)    { create(:issue, author: user, assignee: assignee, project: project) }
 
     before do
       project.team << [user, :developer]
@@ -20,7 +21,8 @@ describe 'Issues Feed', feature: true  do
         expect(response_headers['Content-Type']).
           to have_content('application/atom+xml')
         expect(body).to have_selector('title', text: "#{project.name} issues")
-        expect(body).to have_selector('author email', text: issue.author_email)
+        expect(body).to have_selector('author email', text: issue.author_public_email)
+        expect(body).to have_selector('assignee email', text: issue.author_public_email)
         expect(body).to have_selector('entry summary', text: issue.title)
       end
     end
@@ -33,7 +35,8 @@ describe 'Issues Feed', feature: true  do
         expect(response_headers['Content-Type']).
           to have_content('application/atom+xml')
         expect(body).to have_selector('title', text: "#{project.name} issues")
-        expect(body).to have_selector('author email', text: issue.author_email)
+        expect(body).to have_selector('author email', text: issue.author_public_email)
+        expect(body).to have_selector('assignee email', text: issue.author_public_email)
         expect(body).to have_selector('entry summary', text: issue.title)
       end
     end
