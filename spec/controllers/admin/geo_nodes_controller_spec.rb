@@ -115,4 +115,58 @@ describe Admin::GeoNodesController do
 
     it_behaves_like 'unlicensed geo action'
   end
+
+  describe '#toggle' do
+    subject { post :toggle, id: geo_node }
+
+    context 'without add-on license' do
+      let(:geo_node) { create(:geo_node) }
+
+      before do
+        allow(Gitlab::Geo).to receive(:license_allows?).and_return(false)
+        subject
+      end
+
+      it_behaves_like 'unlicensed geo action'
+    end
+
+    context 'with add-on license' do
+      before do
+        allow(Gitlab::Geo).to receive(:license_allows?).and_return(true)
+        subject
+      end
+
+      context 'with a primary node' do
+        let(:geo_node) { create(:geo_node, :primary, enabled: true) }
+
+        it 'does not disable the node' do
+          expect(geo_node.reload).to be_enabled
+        end
+
+        it 'displays a flash message' do
+          expect(controller).to set_flash.now[:alert].to("Primary node can't be disabled.")
+        end
+
+        it 'redirects to the geo nodes page' do
+          expect(response).to redirect_to(admin_geo_nodes_path)
+        end
+      end
+
+      context 'with a secondary node' do
+        let(:geo_node) { create(:geo_node, host: 'example.com', port: 80, enabled: true) }
+
+        it 'disables the node' do
+          expect(geo_node.reload).not_to be_enabled
+        end
+
+        it 'displays a flash message' do
+          expect(controller).to set_flash.now[:notice].to('Node http://example.com/ was successfully disabled.')
+        end
+
+        it 'redirects to the geo nodes page' do
+          expect(response).to redirect_to(admin_geo_nodes_path)
+        end
+      end
+    end
+  end
 end

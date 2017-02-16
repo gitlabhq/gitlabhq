@@ -1,6 +1,6 @@
 class Admin::GeoNodesController < Admin::ApplicationController
   before_action :check_license, except: [:index, :destroy]
-  before_action :load_node, only: [:destroy, :repair]
+  before_action :load_node, only: [:destroy, :repair, :toggle]
 
   def index
     @nodes = GeoNode.all
@@ -35,6 +35,19 @@ class Admin::GeoNodesController < Admin::ApplicationController
       flash[:notice] = 'Node Authentication was successfully repaired.'
     else
       flash[:alert] = 'There was a problem repairing Node Authentication.'
+    end
+
+    redirect_to admin_geo_nodes_path
+  end
+
+  def toggle
+    if @node.primary?
+      flash[:alert] = "Primary node can't be disabled."
+    else
+      @node.toggle!
+
+      new_status = @node.enabled? ? 'enabled' : 'disabled'
+      flash[:notice] = "Node #{@node.url} was successfully #{new_status}."
     end
 
     redirect_to admin_geo_nodes_path
