@@ -54,7 +54,7 @@ Before proceeding with the Pages configuration, you will need to:
 1. Configure a **wildcard DNS record**.
 1. (Optional) Have a **wildcard certificate** for that domain if you decide to
    serve Pages under HTTPS.
-1. (Optional but recommended) Enable [Shared runners](../ci/runners/README.md)
+1. (Optional but recommended) Enable [Shared runners](../../ci/runners/README.md)
    so that your users don't have to bring their own.
 
 ### DNS configuration
@@ -236,7 +236,7 @@ latest previous version.
 [8-3-docs]: https://gitlab.com/gitlab-org/gitlab-ee/blob/8-3-stable-ee/doc/pages/administration.md
 [8-5-docs]: https://gitlab.com/gitlab-org/gitlab-ee/blob/8-5-stable-ee/doc/pages/administration.md
 [8-17-docs]: https://gitlab.com/gitlab-org/gitlab-ce/blob/8-17-stable-ce/doc/administration/pages/index.md
-[backup]: ../raketasks/backup_restore.md
+[backup]: ../../raketasks/backup_restore.md
 [ce-14605]: https://gitlab.com/gitlab-org/gitlab-ce/issues/14605
 [ee-80]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/80
 [ee-173]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/173
@@ -244,6 +244,6 @@ latest previous version.
 [NGINX configs]: https://gitlab.com/gitlab-org/gitlab-ee/tree/8-5-stable-ee/lib/support/nginx
 [pages-readme]: https://gitlab.com/gitlab-org/gitlab-pages/blob/master/README.md
 [pages-userguide]: ../../user/project/pages/index.md
-[reconfigure]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
-[restart]: ../administration/restart_gitlab.md#installations-from-source
+[reconfigure]: ../restart_gitlab.md#omnibus-gitlab-reconfigure
+[restart]: ../restart_gitlab.md#installations-from-source
 [gitlab-pages]: https://gitlab.com/gitlab-org/gitlab-pages/tree/v0.2.4

@@ -4,6 +4,7 @@ var ROOT_PATH = path.resolve(__dirname, '..');
 
 // Karma configuration
 module.exports = function(config) {
+  var progressReporter = process.env.CI ? 'mocha' : 'progress';
   config.set({
     basePath: ROOT_PATH,
     browsers: ['PhantomJS'],
@@ -15,7 +16,7 @@ module.exports = function(config) {
     preprocessors: {
       'spec/javascripts/**/*.js?(.es6)': ['webpack', 'sourcemap'],
     },
-    reporters: ['progress', 'coverage-istanbul'],
+    reporters: [progressReporter, 'coverage-istanbul'],
     coverageIstanbulReporter: {
       reports: ['html', 'text-summary'],
       dir: 'coverage-javascript/',

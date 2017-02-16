@@ -1852,8 +1852,8 @@ describe Project, models: true do
   end
 
   describe '#pages_url' do
-    let(:group) { create :group, name: group_name }
-    let(:project) { create :empty_project, namespace: group, name: project_name }
+    let(:group) { create :group, name: 'Group' }
+    let(:nested_group) { create :group, parent: group }
     let(:domain) { 'Example.com' }
 
     subject { project.pages_url }
@@ -1863,18 +1863,37 @@ describe Project, models: true do
       allow(Gitlab.config.pages).to receive(:url).and_return('http://example.com')
     end
 
-    context 'group page' do
-      let(:group_name) { 'Group' }
-      let(:project_name) { 'group.example.com' }
+    context 'top-level group' do
+      let(:project) { create :empty_project, namespace: group, name: project_name }
 
-      it { is_expected.to eq("http://group.example.com") }
+      context 'group page' do
+        let(:project_name) { 'group.example.com' }
+
+        it { is_expected.to eq("http://group.example.com") }
+      end
+
+      context 'project page' do
+        let(:project_name) { 'Project' }
+
+        it { is_expected.to eq("http://group.example.com/project") }
+      end
     end
 
-    context 'project page' do
-      let(:group_name) { 'Group' }
-      let(:project_name) { 'Project' }
+    context 'nested group' do
+      let(:project) { create :empty_project, namespace: nested_group, name: project_name }
+      let(:expected_url) { "http://group.example.com/#{nested_group.path}/#{project.path}" }
 
-      it { is_expected.to eq("http://group.example.com/project") }
+      context 'group page' do
+        let(:project_name) { 'group.example.com' }
+
+        it { is_expected.to eq(expected_url) }
+      end
+
+      context 'project page' do
+        let(:project_name) { 'Project' }
+
+        it { is_expected.to eq(expected_url) }
+      end
     end
   end
 end

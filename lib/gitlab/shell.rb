@@ -172,7 +172,7 @@ module Gitlab
     #   add_namespace("/path/to/storage", "gitlab")
     #
     def add_namespace(storage, name)
-      FileUtils.mkdir(full_path(storage, name), mode: 0770) unless exists?(storage, name)
+      FileUtils.mkdir_p(full_path(storage, name), mode: 0770) unless exists?(storage, name)
     end
 
     # Remove directory from repositories storage

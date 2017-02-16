@@ -2,9 +2,9 @@
 
 ## Maximum artifacts size
 
-The maximum size of the [build artifacts][art-yml] can be set in the Admin
-area of your GitLab instance. The value is in *MB* and the default is 100MB.
-Note that this setting is set for each job.
+The maximum size of the [job artifacts][art-yml] can be set in the Admin area
+of your GitLab instance. The value is in *MB* and the default is 100MB. Note
+that this setting is set for each job.
 
 1. Go to **Admin area > Settings** (`/admin/application_settings`).
 
@@ -35,5 +35,5 @@ this setting is set for each job. Leave it blank for no default expiration.
 
 1. Hit **Save** for the changes to take effect.
 
-[art-yml]: ../../../administration/build_artifacts
+[art-yml]: ../../../administration/job_artifacts
 [duration-syntax]: ../../../ci/yaml/README#artifactsexpire_in

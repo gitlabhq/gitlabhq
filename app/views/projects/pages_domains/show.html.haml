@@ -17,7 +17,7 @@
         %p
           To access the domain create a new DNS record:
         %pre
-          #{@domain.domain} CNAME #{@domain.project.namespace.path}.#{Settings.pages.host}.
+          #{@domain.domain} CNAME #{@domain.project.pages_subdomain}.#{Settings.pages.host}.
     %tr
       %td
         Certificate
