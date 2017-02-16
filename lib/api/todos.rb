@@ -59,6 +59,7 @@ module API
         requires :id, type: Integer, desc: 'The ID of the todo being marked as done'
       end
       delete ':id' do
+        # should be a post
         todo = current_user.todos.find(params[:id])
         TodoService.new.mark_todos_as_done([todo], current_user)
 
@@ -67,6 +68,7 @@ module API
 
       desc 'Mark all todos as done'
       delete do
+        # should be a post
         todos = find_todos
         TodoService.new.mark_todos_as_done(todos, current_user)
       end

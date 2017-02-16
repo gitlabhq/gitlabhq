@@ -636,6 +636,8 @@ module API
       end
       delete ":id/services/:service_slug" do
         service = user_project.find_or_initialize_service(params[:service_slug].underscore)
+        # Todo: do we really neeed to call find_or_initialize_service?
+        ressource_modified_since(service.updated_at)
 
         attrs = service_attributes(service).inject({}) do |hash, key|
           hash.merge!(key => nil)

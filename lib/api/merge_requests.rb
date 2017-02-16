@@ -99,6 +99,8 @@ module API
         merge_request = find_project_merge_request(params[:merge_request_id])
 
         authorize!(:destroy_merge_request, merge_request)
+        ressource_modified_since(merge_request.updated_at)
+
         merge_request.destroy
       end
 

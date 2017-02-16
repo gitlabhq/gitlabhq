@@ -117,14 +117,12 @@ module API
       delete ":id/repository/branches/:branch", requirements: { branch: /.+/ } do
         authorize_push_project
 
+        # Todo: Branch is not a rails entity, cannot get updated_at
+
         result = DeleteBranchService.new(user_project, current_user).
                  execute(params[:branch])
 
-        if result[:status] == :success
-          {
-            branch_name: params[:branch]
-          }
-        else
+        if result[:status] != :success
           render_api_error!(result[:message], result[:return_code])
         end
       end

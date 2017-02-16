@@ -87,31 +87,30 @@ module API
 
       desc 'Disable a deploy key for a project' do
         detail 'This feature was added in GitLab 8.11'
-        success Entities::SSHKey
       end
       params do
         requires :key_id, type: Integer, desc: 'The ID of the deploy key'
       end
       delete ":id/deploy_keys/:key_id/disable" do
         key = user_project.deploy_keys_projects.find_by(deploy_key_id: params[:key_id])
+        not_found!('Deploy Key') unless key
+
+        ressource_modified_since(key.updated_at)
+
         key.destroy
-
-        present key.deploy_key, with: Entities::SSHKey
       end
 
-      desc 'Delete deploy key for a project' do
-        success Key
-      end
+      desc 'Delete deploy key for a project'
       params do
         requires :key_id, type: Integer, desc: 'The ID of the deploy key'
       end
       delete ":id/deploy_keys/:key_id" do
         key = user_project.deploy_keys_projects.find_by(deploy_key_id: params[:key_id])
-        if key
-          key.destroy
-        else
-          not_found!('Deploy Key')
-        end
+        not_found!('Deploy Key') unless key
+
+        ressource_modified_since(key.updated_at)
+
+        key.destroy
       end
     end
   end

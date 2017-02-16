@@ -73,18 +73,17 @@ module API
         end
       end
 
-      desc 'Delete an existing variable from a project' do
-        success Entities::Variable
-      end
+      desc 'Delete an existing variable from a project'
       params do
         requires :key, type: String, desc: 'The key of the variable'
       end
       delete ':id/variables/:key' do
         variable = user_project.variables.find_by(key: params[:key])
-
         return not_found!('Variable') unless variable
 
-        present variable.destroy, with: Entities::Variable
+        ressource_modified_since(variable.updated_at)
+
+        variable.destroy
       end
     end
   end

@@ -69,7 +69,6 @@ module API
 
       desc 'Deletes an existing environment' do
         detail 'This feature was introduced in GitLab 8.11.'
-        success Entities::Environment
       end
       params do
         requires :environment_id, type: Integer,  desc: 'The environment ID'
@@ -78,8 +77,9 @@ module API
         authorize! :update_environment, user_project
 
         environment = user_project.environments.find(params[:environment_id])
+        ressource_modified_since(environment.updated_at)
 
-        present environment.destroy, with: Entities::Environment
+        environment.destroy
       end
     end
   end

@@ -54,9 +54,7 @@ module API
         data
       end
 
-      desc 'Delete a hook' do
-        success Entities::Hook
-      end
+      desc 'Delete a hook'
       params do
         requires :id, type: Integer, desc: 'The ID of the system hook'
       end
@@ -64,7 +62,9 @@ module API
         hook = SystemHook.find_by(id: params[:id])
         not_found!('System hook') unless hook
 
-        present hook.destroy, with: Entities::Hook
+        ressource_modified_since(hook.updated_at)
+
+        hook.destroy
       end
     end
   end

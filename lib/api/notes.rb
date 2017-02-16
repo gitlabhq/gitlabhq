@@ -120,9 +120,7 @@ module API
           end
         end
 
-        desc 'Delete a +noteable+ note' do
-          success Entities::Note
-        end
+        desc 'Delete a +noteable+ note'
         params do
           requires :noteable_id, type: Integer, desc: 'The ID of the noteable'
           requires :note_id, type: Integer, desc: 'The ID of a note'
@@ -131,9 +129,8 @@ module API
           note = user_project.notes.find(params[:note_id])
           authorize! :admin_note, note
 
+          ressource_modified_since(note.updated_at)
           ::Notes::DestroyService.new(user_project, current_user).execute(note)
-
-          present note, with: Entities::Note
         end
       end
     end

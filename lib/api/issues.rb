@@ -219,6 +219,8 @@ module API
         not_found!('Issue') unless issue
 
         authorize!(:destroy_issue, issue)
+        ressource_modified_since(issue.updated_at)
+        
         issue.destroy
       end
     end

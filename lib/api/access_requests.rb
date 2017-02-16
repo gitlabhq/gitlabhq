@@ -67,6 +67,7 @@ module API
         end
         delete ":id/access_requests/:user_id" do
           source = find_source(source_type, params[:id])
+          ressource_modified_since(source.updated_at)
 
           ::Members::DestroyService.new(source, current_user, params).
             execute(:requesters)

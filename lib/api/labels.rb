@@ -52,7 +52,9 @@ module API
         label = user_project.labels.find_by(title: params[:name])
         not_found!('Label') unless label
 
-        present label.destroy, with: Entities::Label, current_user: current_user, project: user_project
+        ressource_modified_since(label.updated_at)
+
+        label.destroy
       end
 
       desc 'Update an existing label. At least one optional parameter is required.' do

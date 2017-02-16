@@ -267,6 +267,7 @@ module API
         success Entities::Project
       end
       delete ':id/star' do
+        # Todo should be pist
         if current_user.starred?(user_project)
           current_user.toggle_star(user_project)
           user_project.reload
@@ -280,6 +281,8 @@ module API
       desc 'Remove a project'
       delete ":id" do
         authorize! :remove_project, user_project
+        ressource_modified_since(user_project.updated_at)
+
         ::Projects::DestroyService.new(user_project, current_user, {}).async_execute
       end
 

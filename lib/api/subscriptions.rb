@@ -36,6 +36,7 @@ module API
           success entity_class
         end
         delete ":id/#{type}/:subscribable_id/subscription" do
+          # Todo: This should be a post
           resource = instance_exec(params[:subscribable_id], &finder)
 
           if !resource.subscribed?(current_user, user_project)

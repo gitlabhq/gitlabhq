@@ -86,7 +86,7 @@ GEM
       sass (>= 3.3.4)
     brakeman (3.4.1)
     browser (2.2.0)
-    builder (3.2.2)
+    builder (3.2.3)
     bullet (5.2.0)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.10.0)
@@ -305,7 +305,7 @@ GEM
       multi_json (~> 1.11)
       os (~> 0.9)
       signet (~> 0.7)
-    grape (0.18.0)
+    grape (0.19.1)
       activesupport
       builder
       hashie (>= 2.1.0)
@@ -329,7 +329,7 @@ GEM
       temple (~> 0.7.6)
       thor
       tilt
-    hashie (3.4.4)
+    hashie (3.5.3)
     health_check (2.2.1)
       rails (>= 4.0)
     hipchat (1.5.2)
@@ -354,8 +354,8 @@ GEM
       json (~> 1.8)
       multi_xml (>= 0.5.2)
     httpclient (2.8.2)
-    i18n (0.7.0)
-    ice_nine (0.11.1)
+    i18n (0.8.0)
+    ice_nine (0.11.2)
     influxdb (0.2.3)
       cause
       json
@@ -370,7 +370,7 @@ GEM
       thor (>= 0.14, < 2.0)
     jquery-ui-rails (5.0.5)
       railties (>= 3.2.16)
-    json (1.8.3)
+    json (1.8.6)
     json-schema (2.6.2)
       addressable (~> 2.3.8)
     jwt (1.5.6)
@@ -418,7 +418,7 @@ GEM
     minitest (5.7.0)
     mousetrap-rails (1.4.6)
     multi_json (1.12.1)
-    multi_xml (0.5.5)
+    multi_xml (0.6.0)
     multipart-post (2.0.0)
     mustermann (0.4.0)
       tool (~> 0.2)
@@ -889,7 +889,7 @@ DEPENDENCIES
   gollum-rugged_adapter (~> 0.4.2)
   gon (~> 6.1.0)
   google-api-client (~> 0.8.6)
-  grape (~> 0.18.0)
+  grape (~> 0.19.0)
   grape-entity (~> 0.6.0)
   haml_lint (~> 0.18.2)
   hamlit (~> 2.6.1)
@@ -1014,4 +1014,4 @@ DEPENDENCIES
   wikicloth (= 0.8.1)
 
 BUNDLED WITH
-   1.14.3
+   1.14.4

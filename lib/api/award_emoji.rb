@@ -71,18 +71,17 @@ module API
 
           desc 'Delete a +awardables+ award emoji' do
             detail 'This feature was introduced in 8.9'
-            success Entities::AwardEmoji
           end
           params do
             requires :award_id, type: Integer, desc: 'The ID of an award emoji'
           end
           delete "#{endpoint}/:award_id" do
             award = awardable.award_emoji.find(params[:award_id])
+            ressource_modified_since(award.updated_at)
 
             unauthorized! unless award.user == current_user || current_user.admin?
 
             award.destroy
-            present award, with: Entities::AwardEmoji
           end
         end
       end

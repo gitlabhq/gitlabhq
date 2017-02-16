@@ -108,7 +108,6 @@ module API
 
         desc 'Delete a board list' do
           detail 'This feature was introduced in 8.13'
-          success Entities::List
         end
         params do
           requires :list_id, type: Integer, desc: 'The ID of a board list'
@@ -118,11 +117,11 @@ module API
 
           list = board_lists.find(params[:list_id])
 
+          ressource_modified_since(list.updated_at)
+
           service = ::Boards::Lists::DestroyService.new(user_project, current_user)
 
-          if service.execute(list)
-            present list, with: Entities::List
-          else
+          if !service.execute(list)
             render_api_error!({ error: 'List could not be deleted!' }, 400)
           end
         end

@@ -105,6 +105,7 @@ module API
           # This is to ensure back-compatibility but find_by! should be used
           # in that casse in 9.0!
           member = source.members.find_by(user_id: params[:user_id])
+          ressource_modified_since(member.updated_at)
 
           # This is to ensure back-compatibility but this should be removed in
           # favor of find_by! in 9.0!
@@ -116,8 +117,6 @@ module API
             { message: "Access revoked", id: params[:user_id].to_i }
           else
             ::Members::DestroyService.new(source, current_user, declared_params).execute
-
-            present member.user, with: Entities::Member, member: member
           end
         end
       end

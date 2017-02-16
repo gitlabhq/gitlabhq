@@ -113,9 +113,11 @@ module API
       delete ':id' do
         snippet = snippets_for_current_user.find_by(id: params.delete(:id))
         return not_found!('Snippet') unless snippet
+
         authorize! :destroy_personal_snippet, snippet
+        ressource_modified_since(snippet.updated_at)
+
         snippet.destroy
-        no_content!
       end
 
       desc 'Get a raw snippet' do

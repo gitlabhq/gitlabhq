@@ -84,9 +84,7 @@ module API
         present trigger, with: Entities::Trigger
       end
 
-      desc 'Delete a trigger' do
-        success Entities::Trigger
-      end
+      desc 'Delete a trigger'
       params do
         requires :token, type: String, desc: 'The unique token of trigger'
       end
@@ -97,9 +95,9 @@ module API
         trigger = user_project.triggers.find_by(token: params[:token].to_s)
         return not_found!('Trigger') unless trigger
 
-        trigger.destroy
+        ressource_modified_since(trigger.updated_at)
 
-        present trigger, with: Entities::Trigger
+        trigger.destroy
       end
     end
   end

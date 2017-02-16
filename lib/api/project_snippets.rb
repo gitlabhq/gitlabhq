@@ -113,6 +113,8 @@ module API
         not_found!('Snippet') unless snippet
 
         authorize! :admin_project_snippet, snippet
+        ressource_modified_since(snippet.updated_at)
+
         snippet.destroy
       end
 

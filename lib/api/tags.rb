@@ -59,14 +59,12 @@ module API
       delete ":id/repository/tags/:tag_name", requirements: { tag_name: /.+/ } do
         authorize_push_project
 
+        #Todo: Modified since
+
         result = ::Tags::DestroyService.new(user_project, current_user).
           execute(params[:tag_name])
 
-        if result[:status] == :success
-          {
-            tag_name: params[:tag_name]
-          }
-        else
+        if result[:status] != :success
           render_api_error!(result[:message], result[:return_code])
         end
       end

@@ -83,7 +83,6 @@ module API
 
       desc 'Delete a broadcast message' do
         detail 'This feature was introduced in GitLab 8.12.'
-        success Entities::BroadcastMessage
       end
       params do
         requires :id, type: Integer, desc: 'Broadcast message ID'
@@ -91,7 +90,9 @@ module API
       delete ':id' do
         message = find_message
 
-        present message.destroy, with: Entities::BroadcastMessage
+        ressource_modified_since(message.updated_at)
+
+        message.destroy
       end
     end
   end

@@ -180,6 +180,13 @@ module API
       items.where(iid: iid)
     end
 
+    def ressource_modified_since(last_modified)
+      if_unmodified_since = Time.parse(headers['If-Unmodified-Since']) if headers.key?('If-Unmodified-Since') rescue nil
+      if if_unmodified_since && last_modified > if_unmodified_since
+        conflict!('Ressource Modified Since')
+      end
+    end
+
     # error helpers
 
     def forbidden!(reason = nil)

@@ -219,9 +219,7 @@ module API
         present user.keys, with: Entities::SSHKey
       end
 
-      desc 'Delete an existing SSH key from a specified user. Available only for admins.' do
-        success Entities::SSHKey
-      end
+      desc 'Delete an existing SSH key from a specified user. Available only for admins.'
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
         requires :key_id, type: Integer, desc: 'The ID of the SSH key'
@@ -235,7 +233,9 @@ module API
         key = user.keys.find_by(id: params[:key_id])
         not_found!('Key') unless key
 
-        present key.destroy, with: Entities::SSHKey
+        ressource_modified_since(key.updated_at)
+
+        key.destroy
       end
 
       desc 'Add an email address to a specified user. Available only for admins.' do
@@ -290,6 +290,8 @@ module API
         email = user.emails.find_by(id: params[:email_id])
         not_found!('Email') unless email
 
+        ressource_modified_since(email.updated_at)
+
         email.destroy
         user.update_secondary_emails!
       end
@@ -304,6 +306,8 @@ module API
         authenticated_as_admin!
         user = User.find_by(id: params[:id])
         not_found!('User') unless user
+
+        ressource_modified_since(user.updated_at)
 
         ::Users::DestroyService.new(current_user).execute(user)
       end
@@ -407,9 +411,7 @@ module API
         end
       end
 
-      desc 'Delete an SSH key from the currently authenticated user' do
-        success Entities::SSHKey
-      end
+      desc 'Delete an SSH key from the currently authenticated user'
       params do
         requires :key_id, type: Integer, desc: 'The ID of the SSH key'
       end
@@ -417,7 +419,9 @@ module API
         key = current_user.keys.find_by(id: params[:key_id])
         not_found!('Key') unless key
 
-        present key.destroy, with: Entities::SSHKey
+        ressource_modified_since(key.updated_at)
+
+        key.destroy
       end
 
       desc "Get the currently authenticated user's email addresses" do
@@ -464,6 +468,8 @@ module API
       delete "emails/:email_id" do
         email = current_user.emails.find_by(id: params[:email_id])
         not_found!('Email') unless email
+
+        ressource_modified_since(email.updated_at)
 
         email.destroy
         current_user.update_secondary_emails!
