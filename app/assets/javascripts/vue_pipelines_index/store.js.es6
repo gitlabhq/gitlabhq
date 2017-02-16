@@ -4,7 +4,7 @@
 ((gl) => {
   const pageValues = (headers) => {
     const normalized = gl.utils.normalizeHeaders(headers);
-    const paginationInfo = gl.utils.normalizeHeaders(normalized);
+    const paginationInfo = gl.utils.parseIntPagination(normalized);
     return paginationInfo;
   };
 
