@@ -96,13 +96,18 @@ require('./board_new_form');
       },
       updateMilestoneFilterDropdown() {
         const $milestoneDropdown = $('.dropdown-menu-milestone');
-        const hideElements = this.board.milestone_id === undefined;
+        const hideElements = this.board.milestone_id === null;
+        console.log(hideElements, this.board.milestone_id);
 
-        $milestoneDropdown.find('.dropdown-input').toggle(hideElements);
-        $milestoneDropdown.find('.dropdown-footer').toggle(hideElements);
+        $milestoneDropdown.find('.dropdown-input, .dropdown-footer-list')
+          .toggle(hideElements);
+        $milestoneDropdown.find('.js-milestone-footer-content').toggle(!hideElements);
         $milestoneDropdown.find('.dropdown-content li')
           .filter((i, el) => $(el).find('.is-active').length === 0)
           .toggle(hideElements);
+
+        $('.js-milestone-select .dropdown-toggle-text')
+          .text(hideElements ? 'Milestone' : this.board.milestone.title);
       },
     },
     created() {

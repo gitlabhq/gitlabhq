@@ -121,7 +121,7 @@
           vue: $dropdown.hasClass('js-issue-board-sidebar'),
           hideRow: function(milestone) {
             if ($('html').hasClass('issue-boards-page') && !$dropdown.hasClass('js-issue-board-sidebar') &&
-              !$dropdown.closest('.add-issues-modal').length && gl.issueBoards.BoardsStore.state.currentBoard.milestone.title) {
+              !$dropdown.closest('.add-issues-modal').length && gl.issueBoards.BoardsStore.state.currentBoard.milestone_id) {
               return milestone !== gl.issueBoards.BoardsStore.state.currentBoard.milestone.title;
             }
 
@@ -129,7 +129,7 @@
           },
           isSelectable: function() {
             if ($('html').hasClass('issue-boards-page') && !$dropdown.hasClass('js-issue-board-sidebar') &&
-              !$dropdown.closest('.add-issues-modal').length && gl.issueBoards.BoardsStore.state.currentBoard.milestone.title) {
+              !$dropdown.closest('.add-issues-modal').length && gl.issueBoards.BoardsStore.state.currentBoard.milestone_id) {
               return false;
             }
 

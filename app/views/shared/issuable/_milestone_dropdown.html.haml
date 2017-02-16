@@ -26,3 +26,7 @@
             Manage milestones
           - else
             View milestones
+    - if board
+      %p.board-milestone-footer-content.js-milestone-footer-content{ style: "display: none;" }
+        This board's milestone has been set in its configuration.
+        Edit this value under the board menu.
