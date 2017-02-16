@@ -35,6 +35,7 @@ module API
       #   POST /geo/refresh_wikis
       post 'refresh_wikis' do
         authenticated_as_admin!
+        require_node_to_be_enabled!
         required_attributes! [:projects]
         ::Geo::ScheduleWikiRepoUpdateService.new(params[:projects]).execute
       end
@@ -45,6 +46,7 @@ module API
       #   POST /geo/receive_events
       post 'receive_events' do
         authenticate_by_gitlab_geo_token!
+        require_node_to_be_enabled!
         required_attributes! %w(event_name)
 
         case params['event_name']
@@ -73,6 +75,12 @@ module API
           required_attributes! %w(event_name project_id path_with_namespace old_path_with_namespace)
           ::Geo::ScheduleRepoMoveService.new(params).execute
         end
+      end
+    end
+
+    helpers do
+      def require_node_to_be_enabled!
+        forbidden! 'Geo node is disabled.' unless Gitlab::Geo.current_node.enabled?
       end
     end
   end
