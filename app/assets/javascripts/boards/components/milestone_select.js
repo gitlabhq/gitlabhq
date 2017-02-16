@@ -18,19 +18,14 @@ module.exports = Vue.extend({
     return {
       loading: false,
       milestones: [],
-      anyMilestone: {
+      extraMilestones: [{
         id: null,
         title: 'Any Milestone',
-      },
+      }],
     };
   },
   mounted() {
-    this.loading = true;
-    this.$http.get(this.milestonePath)
-      .then((res) => {
-        this.milestones = res.json();
-        this.loading = false;
-      });
+    BoardService.loadMilestones.call(this);
   },
   template: `
     <div>
@@ -42,14 +37,14 @@ module.exports = Vue.extend({
       <ul
         class="board-milestone-list"
         v-if="!loading">
-        <li>
+        <li v-for="milestone in extraMilestones">
           <a
             href="#"
-            @click.prevent.stop="selectMilestone(anyMilestone)">
+            @click.prevent.stop="selectMilestone(milestone)">
             <i
               class="fa fa-check"
-              v-if="board.milestone_id === anyMilestone.id"></i>
-            {{ anyMilestone.title }}
+              v-if="board.milestone_id === milestone.id"></i>
+            {{ milestone.title }}
           </a>
         </li>
         <li class="divider"></li>

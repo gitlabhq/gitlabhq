@@ -58,13 +58,7 @@ const boardMilestoneSelect = require('./milestone_select');
     methods: {
       loadMilestones() {
         this.milestoneDropdownOpen = !this.milestoneDropdownOpen;
-
-        if (!this.milestones.length) {
-          this.$http.get(this.milestonePath)
-            .then((res) => {
-              this.milestones = res.json();
-            });
-        }
+        BoardService.loadMilestones.call(this);
       },
       submit() {
         gl.boardService.createBoard(this.board)
