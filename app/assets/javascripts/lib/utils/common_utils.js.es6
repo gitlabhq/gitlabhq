@@ -256,19 +256,19 @@
      */
     w.gl.utils.setParamInURL = (param, value) => {
       let search;
+      const locationSearch = window.location.search;
 
-      if (window.location.search.length === 0) {
+      if (locationSearch.length === 0) {
         search = `?${param}=${value}`;
       }
 
-      if (window.location.search.indexOf(param) !== -1) {
+      if (locationSearch.indexOf(param) !== -1) {
         const regex = new RegExp(param + '=\\d');
-        search = window.location.search.replace(regex, `${param}=${value}`);
+        search = locationSearch.replace(regex, `${param}=${value}`);
       }
 
-      if (window.location.search.length &&
-        window.location.search.indexOf(param) === -1) {
-        search = `${window.location.search}&${param}=${value}`;
+      if (locationSearch.length && locationSearch.indexOf(param) === -1) {
+        search = `${locationSearch}&${param}=${value}`;
       }
 
       return search;

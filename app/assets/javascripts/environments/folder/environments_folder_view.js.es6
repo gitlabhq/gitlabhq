@@ -5,7 +5,7 @@ const Vue = require('vue');
 Vue.use(require('vue-resource'));
 const EnvironmentsService = require('../services/environments_service');
 const EnvironmentTable = require('../components/environments_table');
-const Store = require('../stores/environments_store');
+const EnvironmentsStore = require('../stores/environments_store');
 require('../../vue_shared/components/table_pagination');
 require('../../lib/utils/common_utils');
 
@@ -18,9 +18,10 @@ module.exports = Vue.component('environment-folder-view', {
 
   data() {
     const environmentsData = document.querySelector('#environments-folder-list-view').dataset;
-    const store = new Store();
-    const endpoint = `${window.location.pathname}.json`;
-    const folderName = window.location.pathname.substr(window.location.pathname.lastIndexOf('/') + 1);
+    const store = new EnvironmentsStore();
+    const pathname = window.location.pathname;
+    const endpoint = `${pathname}.json`;
+    const folderName = pathname.substr(pathname.lastIndexOf('/') + 1);
 
     return {
       store,
@@ -99,7 +100,7 @@ module.exports = Vue.component('environment-folder-view', {
         this.store.storeAvailableCount(response.body.available_count);
         this.store.storeStoppedCount(response.body.stopped_count);
         this.store.storeEnvironments(response.body.environments);
-        this.store.storePagination(response.headers);
+        this.store.setPagination(response.headers);
       })
       .then(() => {
         this.isLoading = false;

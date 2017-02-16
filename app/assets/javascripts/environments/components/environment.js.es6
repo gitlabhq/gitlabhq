@@ -5,7 +5,7 @@ const Vue = require('vue');
 Vue.use(require('vue-resource'));
 const EnvironmentsService = require('../services/environments_service');
 const EnvironmentTable = require('./environments_table');
-const Store = require('../stores/environments_store');
+const EnvironmentsStore = require('../stores/environments_store');
 require('../../vue_shared/components/table_pagination');
 require('../../lib/utils/common_utils');
 
@@ -18,7 +18,7 @@ module.exports = Vue.component('environment-component', {
 
   data() {
     const environmentsData = document.querySelector('#environments-list-view').dataset;
-    const store = new Store();
+    const store = new EnvironmentsStore();
 
     return {
       store,
