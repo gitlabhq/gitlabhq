@@ -271,7 +271,7 @@ class ApplicationSetting < ActiveRecord::Base
 
   def default_artifacts_expire_in=(value)
     if value.present?
-      super(value.strip)
+      super(value.squish)
     else
       super(nil)
     end
