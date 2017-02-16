@@ -218,6 +218,14 @@ describe 'Pipelines', :feature, :js do
 
             expect(page).to have_link(with_artifacts.name)
           end
+
+          it 'has download attribute on download links' do
+            find('.js-pipeline-dropdown-download').click
+            expect(page).to have_selector('a', text: 'Download')
+            page.all('.build-artifacts a', text: 'Download').each do |link|
+              expect(link[:download]).to eq ''
+            end
+          end
         end
 
         context 'with artifacts expired' do

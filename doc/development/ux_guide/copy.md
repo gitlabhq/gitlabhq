@@ -100,7 +100,11 @@ When using the <kbd>Alt</kbd> keystrokes in Windows, use the numeric keypad, not
 ---
 
 ## Terminology
-Only use the terms in the tables below.
+Only use the terms below.
+
+When using verbs or adjectives:
+* If the context clearly refers to the object, use them alone. Example: `Edit` or `Closed`
+* If the context isn’t clear enough, use them with the object. Example: `Edit issue` or `Closed issues`
 
 ### Projects and Groups
 
@@ -112,46 +116,28 @@ Only use the terms in the tables below.
 
 #### Adjectives (states)
 
-| Term |
-| ---- |
-| Open |
-| Closed |
-| Deleted |
-
->**Example:**
-Use `5 open issues` and don’t use `5 pending issues`.
+| Term | :no_entry_sign: Don’t |
+| ---- | --- |
+| Open | Don’t use `Pending` or `Created` |
+| Closed | Don’t use `Archived` |
+| Deleted | Don’t use `Removed` or `Trashed` |
 
 #### Verbs (actions)
 
 | Term | Use | :no_entry_sign: Don’t |
 | ---- | --- | --- |
-| Add | Add an issue | Don’t use `create` or `new` |
-| View | View an open or closed issue ||
-| Edit | Edit an open or closed issue | Don’t use `update` |
-| Close | Close an open issue ||
-| Re-open | Re-open a closed issue | There should never be a need to use `open` as a verb |
-| Delete | Delete an open or closed issue ||
-
-#### Add issue
-
-When viewing a list of issues, there is a button that is labeled `Add`. Given the context in the example, it is clearly referring to issues. If the context were not clear enough, the label could be `Add issue`. Clicking the button will bring you to the `Add issue` form. Other add flows should be similar.
-
-![Add issue button](img/copy-form-addissuebutton.png)
-
-The form should be titled `Add issue`. The submit button should be labeled `Submit`. Don’t use `Add`, `Create`, `New`, or `Save changes`. The cancel button should be labeled `Cancel`. Don’t use `Back`.
-
-![Add issue form](img/copy-form-addissueform.png)
-
-#### Edit issue
-
-When in context of an issue, the affordance to edit it is labeled `Edit`. If the context is not clear enough, `Edit issue` could be considered. Other edit flows should be similar.
-
-![Edit issue button](img/copy-form-editissuebutton.png)
-
-The form should be titled `Edit issue`. The submit button should be labeled `Save`. Don’t use `Edit`, `Update`, `Submit`, or `Save changes`. The cancel button should be labeled `Cancel`. Don’t use `Back`.
-
-![Edit issue form](img/copy-form-editissueform.png)
-
+| New | Although it’s not a verb, `New` is a common standard and used for entering the creation mode of a non-existent issue | Don’t use `Create`, `Open`, or `Add` |
+| Create | Only to indicate when or who created an issue ||
+| Add | Associate an existing issue with an item or a list of items | Don’t use `New` or `Create` |
+| View | Open the detail page of an issue | Don’t use `Open` or `See` |
+| Edit | Enter the editing mode of an issue | Don’t use `Change`, `Modify` or `Update` |
+| Submit | Finalize the *creation* process of an issue | Don’t use `Add`, `Create`, `New`, `Open`, `Save` or `Save changes` |
+| Save | Finalize the *editing* process of an issue | Don’t use `Edit`, `Modify`, `Update`, `Submit`, or `Save changes` |
+| Cancel | Cancel the *creation* or *editing* process of an issue | Don’t use `Back`, `Close`, or `Discard` |
+| Close | Close an open issue | Don’t use `Archive` |
+| Re-open | Re-open a closed issue | Don’t use `Open` |
+| Delete | Permanently remove an issue from the system | Don’t use `Remove` |
+| Remove | Remove the association an issue with an item or a list of items | Don’t use `Delete` |
 
 ### Merge requests
 
