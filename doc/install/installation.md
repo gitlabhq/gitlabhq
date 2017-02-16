@@ -468,6 +468,7 @@ Check if GitLab and its environment are configured correctly:
 
 ### Compile Assets
 
+    sudo -u git -H yarn install --force --pure-lockfile
     sudo -u git -H bundle exec rake gitlab:assets:compile RAILS_ENV=production NODE_ENV=production
 
 ### Start Your GitLab Instance
