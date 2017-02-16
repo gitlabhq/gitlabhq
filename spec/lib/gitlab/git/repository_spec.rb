@@ -546,7 +546,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
           repository.log(options.merge(path: "encoding"))
         end
 
-        it "should not follow renames" do
+        it "does not follow renames" do
           expect(log_commits).to include(commit_with_new_name)
           expect(log_commits).to include(rename_commit)
           expect(log_commits).not_to include(commit_with_old_name)
@@ -554,14 +554,88 @@ describe Gitlab::Git::Repository, seed_helper: true do
       end
 
       context "and 'path' is a file that matches the new filename" do
-        let(:log_commits) do
-          repository.log(options.merge(path: "encoding/CHANGELOG"))
+        context 'without offset' do
+          let(:log_commits) do
+            repository.log(options.merge(path: "encoding/CHANGELOG"))
+          end
+
+          it "follows renames" do
+            expect(log_commits).to include(commit_with_new_name)
+            expect(log_commits).to include(rename_commit)
+            expect(log_commits).to include(commit_with_old_name)
+          end
         end
 
-        it "should follow renames" do
-          expect(log_commits).to include(commit_with_new_name)
-          expect(log_commits).to include(rename_commit)
-          expect(log_commits).to include(commit_with_old_name)
+        context 'with offset=1' do
+          let(:log_commits) do
+            repository.log(options.merge(path: "encoding/CHANGELOG", offset: 1))
+          end
+
+          it "follows renames and skip the latest commit" do
+            expect(log_commits).not_to include(commit_with_new_name)
+            expect(log_commits).to include(rename_commit)
+            expect(log_commits).to include(commit_with_old_name)
+          end
+        end
+
+        context 'with offset=1', 'and limit=1' do
+          let(:log_commits) do
+            repository.log(options.merge(path: "encoding/CHANGELOG", offset: 1, limit: 1))
+          end
+
+          it "follows renames, skip the latest commit and return only one commit" do
+            expect(log_commits).not_to include(commit_with_new_name)
+            expect(log_commits).to include(rename_commit)
+            expect(log_commits).not_to include(commit_with_old_name)
+          end
+        end
+
+        context 'with offset=1', 'and limit=2' do
+          let(:log_commits) do
+            repository.log(options.merge(path: "encoding/CHANGELOG", offset: 1, limit: 2))
+          end
+
+          it "follows renames, skip the latest commit and return only two commits" do
+            expect(log_commits).not_to include(commit_with_new_name)
+            expect(log_commits).to include(rename_commit)
+            expect(log_commits).to include(commit_with_old_name)
+          end
+        end
+
+        context 'with offset=2' do
+          let(:log_commits) do
+            repository.log(options.merge(path: "encoding/CHANGELOG", offset: 2))
+          end
+
+          it "follows renames and skip the latest commit" do
+            expect(log_commits).not_to include(commit_with_new_name)
+            expect(log_commits).not_to include(rename_commit)
+            expect(log_commits).to include(commit_with_old_name)
+          end
+        end
+
+        context 'with offset=2', 'and limit=1' do
+          let(:log_commits) do
+            repository.log(options.merge(path: "encoding/CHANGELOG", offset: 2, limit: 1))
+          end
+
+          it "follows renames, skip the two latest commit and return only one commit" do
+            expect(log_commits).not_to include(commit_with_new_name)
+            expect(log_commits).not_to include(rename_commit)
+            expect(log_commits).to include(commit_with_old_name)
+          end
+        end
+
+        context 'with offset=2', 'and limit=2' do
+          let(:log_commits) do
+            repository.log(options.merge(path: "encoding/CHANGELOG", offset: 2, limit: 2))
+          end
+
+          it "follows renames, skip the two latest commit and return only one commit" do
+            expect(log_commits).not_to include(commit_with_new_name)
+            expect(log_commits).not_to include(rename_commit)
+            expect(log_commits).to include(commit_with_old_name)
+          end
         end
       end
 
@@ -570,17 +644,17 @@ describe Gitlab::Git::Repository, seed_helper: true do
           repository.log(options.merge(path: "CHANGELOG"))
         end
 
-        it "should not follow renames" do
-          expect(log_commits).to include(commit_with_old_name)
-          expect(log_commits).to include(rename_commit)
+        it "does not follow renames" do
           expect(log_commits).not_to include(commit_with_new_name)
+          expect(log_commits).to include(rename_commit)
+          expect(log_commits).to include(commit_with_old_name)
         end
       end
 
       context "unknown ref" do
         let(:log_commits) { repository.log(options.merge(ref: 'unknown')) }
 
-        it "should return empty" do
+        it "return an empty array" do
           expect(log_commits).to eq([])
         end
       end

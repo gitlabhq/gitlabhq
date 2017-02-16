@@ -324,24 +324,30 @@ module Gitlab
       end
 
       def log_by_shell(sha, options)
+        limit = options[:limit].to_i
+        offset = options[:offset].to_i
+        use_follow_flag = options[:follow] && options[:path].present?
+
+        # We will perform the offset in Ruby because --follow doesn't play well with --skip.
+        # See: https://gitlab.com/gitlab-org/gitlab-ce/issues/3574#note_3040520
+        offset_in_ruby = use_follow_flag && options[:offset].present?
+        limit += offset if offset_in_ruby
+
         cmd = %W(#{Gitlab.config.git.bin_path} --git-dir=#{path} log)
-        cmd += %W(-n #{options[:limit].to_i})
+        cmd += %W(-n #{limit})
         cmd += %w(--format=%H)
-        cmd += %W(--skip=#{options[:offset].to_i})
-        cmd += %w(--follow) if options[:follow]
+        cmd += %W(--skip=#{offset}) unless offset_in_ruby
+        cmd += %w(--follow) if use_follow_flag
         cmd += %w(--no-merges) if options[:skip_merges]
         cmd += %W(--after=#{options[:after].iso8601}) if options[:after]
         cmd += %W(--before=#{options[:before].iso8601}) if options[:before]
         cmd += [sha]
         cmd += %W(-- #{options[:path]}) if options[:path].present?
 
-        raw_output = IO.popen(cmd) {|io| io.read }
+        raw_output = IO.popen(cmd) { |io| io.read }
+        lines = offset_in_ruby ? raw_output.lines.drop(offset) : raw_output.lines
 
-        log = raw_output.lines.map do |c|
-          Rugged::Commit.new(rugged, c.strip)
-        end
-
-        log.is_a?(Array) ? log : []
+        lines.map { |c| Rugged::Commit.new(rugged, c.strip) }
       end
 
       def sha_from_ref(ref)

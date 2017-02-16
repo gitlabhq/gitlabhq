@@ -109,9 +109,7 @@ class Repository
       offset: offset,
       after: after,
       before: before,
-      # --follow doesn't play well with --skip. See:
-      # https://gitlab.com/gitlab-org/gitlab-ce/issues/3574#note_3040520
-      follow: false,
+      follow: path.present?,
       skip_merges: skip_merges
     }
 
