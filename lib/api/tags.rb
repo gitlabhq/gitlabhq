@@ -40,7 +40,7 @@ module API
       post ':id/repository/tags' do
         authorize_push_project
 
-        result = CreateTagService.new(user_project, current_user).
+        result = ::Tags::CreateService.new(user_project, current_user).
           execute(params[:tag_name], params[:ref], params[:message], params[:release_description])
 
         if result[:status] == :success
@@ -59,7 +59,7 @@ module API
       delete ":id/repository/tags/:tag_name", requirements: { tag_name: /.+/ } do
         authorize_push_project
 
-        result = DeleteTagService.new(user_project, current_user).
+        result = ::Tags::DestroyService.new(user_project, current_user).
           execute(params[:tag_name])
 
         if result[:status] == :success

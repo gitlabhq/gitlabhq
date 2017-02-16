@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe DeleteTagService, services: true do
+describe Tags::DestroyService, services: true do
   let(:project) { create(:project) }
   let(:repository) { project.repository }
   let(:user) { create(:user) }

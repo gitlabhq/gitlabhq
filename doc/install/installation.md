@@ -307,7 +307,7 @@ sudo usermod -aG redis git
     # now that files in public/uploads are served by gitlab-workhorse
     sudo chmod 0700 public/uploads
 
-    # Change the permissions of the directory where CI build traces are stored
+    # Change the permissions of the directory where CI job traces are stored
     sudo chmod -R u+rwX builds/
 
     # Change the permissions of the directory where CI artifacts are stored

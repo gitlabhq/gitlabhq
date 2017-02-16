@@ -20,7 +20,10 @@ $(() => {
     gl.commits.PipelinesTableBundle.$destroy(true);
   }
 
-  gl.commits.pipelines.PipelinesTableBundle = new gl.commits.pipelines.PipelinesTableView({
-    el: document.querySelector('#commit-pipeline-table-view'),
-  });
+  const pipelineTableViewEl = document.querySelector('#commit-pipeline-table-view');
+  gl.commits.pipelines.PipelinesTableBundle = new gl.commits.pipelines.PipelinesTableView();
+
+  if (pipelineTableViewEl && pipelineTableViewEl.dataset.disableInitialization === undefined) {
+    gl.commits.pipelines.PipelinesTableBundle.$mount(pipelineTableViewEl);
+  }
 });

@@ -22,6 +22,7 @@ var config = {
     commit_pipelines:     './commit/pipelines/pipelines_bundle.js',
     diff_notes:           './diff_notes/diff_notes_bundle.js',
     environments:         './environments/environments_bundle.js',
+    environments_folder:  './environments/folder/environments_folder_bundle.js',
     filtered_search:      './filtered_search/filtered_search_bundle.js',
     graphs:               './graphs/graphs_bundle.js',
     issuable:             './issuable/issuable_bundle.js',
@@ -54,7 +55,6 @@ var config = {
         exclude: /(node_modules|vendor\/assets)/,
         loader: 'babel-loader',
         options: {
-          plugins: ['istanbul'],
           presets: [
             ["es2015", {"modules": false}],
             'stage-2'
@@ -83,6 +83,7 @@ var config = {
     new CompressionPlugin({
       asset: '[path].gz[query]',
     }),
+    new webpack.IgnorePlugin(/moment/, /pikaday/),
   ],
 
   resolve: {

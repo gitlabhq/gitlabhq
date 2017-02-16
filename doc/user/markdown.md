@@ -524,34 +524,11 @@ There are two ways to create links, inline-style and reference-style.
     [1]: http://slashdot.org
     [link text itself]: https://www.reddit.com
 
-[I'm an inline-style link](https://www.google.com)
-
-[I'm a reference-style link][Arbitrary case-insensitive reference text]
-
-[I'm a relative reference to a repository file](LICENSE)[^1]
-
-[I am an absolute reference within the repository](/doc/user/markdown.md)
-
-[I link to the Milestones page](/../milestones)
-
-[You can use numbers for reference-style link definitions][1]
-
-Or leave it empty and use the [link text itself][]
-
-Some text to show that the reference links can follow later.
-
-[arbitrary case-insensitive reference text]: https://www.mozilla.org
-[1]: http://slashdot.org
-[link text itself]: https://www.reddit.com
-
-**Note**
-
-Relative links do not allow referencing project files in a wiki page or wiki page in a project file. The reason for this is that, in GitLab, wiki is always a separate git repository. For example:
-
-`[I'm a reference-style link](style)`
-
+>**Note:**
+Relative links do not allow referencing project files in a wiki page or wiki
+page in a project file. The reason for this is that, in GitLab, wiki is always
+a separate Git repository. For example, `[I'm a reference-style link](style)`
 will point the link to `wikis/style` when the link is inside of a wiki markdown file.
-
 
 ### Images
 

@@ -155,10 +155,27 @@ module API
       expose :shared_projects, using: Entities::Project
     end
 
+    class RepoCommit < Grape::Entity
+      expose :id, :short_id, :title, :created_at
+      expose :parent_ids
+      expose :safe_message, as: :message
+      expose :author_name, :author_email, :authored_date
+      expose :committer_name, :committer_email, :committed_date
+    end
+
+    class RepoCommitStats < Grape::Entity
+      expose :additions, :deletions, :total
+    end
+
+    class RepoCommitDetail < RepoCommit
+      expose :stats, using: Entities::RepoCommitStats
+      expose :status
+    end
+
     class RepoBranch < Grape::Entity
       expose :name
 
-      expose :commit do |repo_branch, options|
+      expose :commit, using: Entities::RepoCommit do |repo_branch, options|
         options[:project].repository.commit(repo_branch.dereferenced_target)
       end
 
@@ -191,22 +208,6 @@ module API
         filemode = "0" + filemode if filemode.length < 6
         filemode
       end
-    end
-
-    class RepoCommit < Grape::Entity
-      expose :id, :short_id, :title, :author_name, :author_email, :created_at
-      expose :committer_name, :committer_email
-      expose :safe_message, as: :message
-    end
-
-    class RepoCommitStats < Grape::Entity
-      expose :additions, :deletions, :total
-    end
-
-    class RepoCommitDetail < RepoCommit
-      expose :parent_ids, :committed_date, :authored_date
-      expose :stats, using: Entities::RepoCommitStats
-      expose :status
     end
 
     class ProjectSnippet < Grape::Entity
@@ -367,7 +368,7 @@ module API
 
     class CommitStatus < Grape::Entity
       expose :id, :sha, :ref, :status, :name, :target_url, :description,
-             :created_at, :started_at, :finished_at, :allow_failure
+             :created_at, :started_at, :finished_at, :allow_failure, :coverage
       expose :author, using: Entities::UserBasic
     end
 
@@ -414,7 +415,7 @@ module API
     end
 
     class Namespace < Grape::Entity
-      expose :id, :name, :path, :kind
+      expose :id, :name, :path, :kind, :full_path
     end
 
     class MemberAccess < Grape::Entity

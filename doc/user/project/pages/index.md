@@ -50,13 +50,13 @@ In brief, this is what you need to upload your website in GitLab Pages:
    (ask your administrator). This is very important, so you should first make
    sure you get that right.
 1. Create a project
-1. Push a [`.gitlab-ci.yml` file](../ci/yaml/README.md) in the root directory
+1. Push a [`.gitlab-ci.yml` file][yaml] in the root directory
    of your repository with a specific job named [`pages`][pages]
 1. Set up a GitLab Runner to build your website
 
 > **Note:**
-> If [shared runners](../ci/runners/README.md) are enabled by your GitLab
-> administrator, you should be able to use them instead of bringing your own.
+If [shared runners](../../../ci/runners/README.md) are enabled by your GitLab
+administrator, you should be able to use them instead of bringing your own.
 
 ### User or group Pages
 
@@ -89,7 +89,7 @@ GitLab Pages for projects can be created by both user and group accounts.
 The steps to create a project page for a user or a group are identical:
 
 1. Create a new project
-1. Push a [`.gitlab-ci.yml` file](../ci/yaml/README.md) in the root directory
+1. Push a [`.gitlab-ci.yml` file][yaml] in the root directory
    of your repository with a specific job named [`pages`][pages].
 1. Set up a GitLab Runner to build your website
 
@@ -100,12 +100,12 @@ whereas a group's project under `http(s)://groupname.example.io/projectname`.
 
 The key thing about GitLab Pages is the `.gitlab-ci.yml` file, something that
 gives you absolute control over the build process. You can actually watch your
-website being built live by following the CI build traces.
+website being built live by following the CI job traces.
 
 > **Note:**
 > Before reading this section, make sure you familiarize yourself with GitLab CI
-> and the specific syntax of[`.gitlab-ci.yml`](../ci/yaml/README.md) by
-> following our [quick start guide](../ci/quick_start/README.md).
+> and the specific syntax of[`.gitlab-ci.yml`][yaml] by
+> following our [quick start guide].
 
 To make use of GitLab Pages, the contents of `.gitlab-ci.yml` must follow the
 rules below:
@@ -127,16 +127,16 @@ pages:
 ```
 
 When the Runner reaches to build the `pages` job, it executes whatever is
-defined in the `script` parameter and if the build completes with a non-zero
+defined in the `script` parameter and if the job completes with a non-zero
 exit status, it then uploads the `public/` directory to GitLab Pages.
 
 The `public/` directory should contain all the static content of your website.
 Depending on how you plan to publish your website, the steps defined in the
-[`script` parameter](../ci/yaml/README.md#script) may differ.
+[`script` parameter](../../../ci/yaml/README.md#script) may differ.
 
 Be aware that Pages are by default branch/tag agnostic and their deployment
 relies solely on what you specify in `.gitlab-ci.yml`. If you don't limit the
-`pages` job with the [`only` parameter](../ci/yaml/README.md#only-and-except),
+`pages` job with the [`only` parameter](../../../ci/yaml/README.md#only-and-except),
 whenever a new commit is pushed to whatever branch or tag, the Pages will be
 overwritten. In the example below, we limit the Pages to be deployed whenever
 a commit is pushed only on the `master` branch:
@@ -211,11 +211,11 @@ pages:                      # the build job must be named pages
 ```
 
 Here, we used the Docker executor and in the first line we specified the base
-image against which our builds will run.
+image against which our jobs will run.
 
 You have to make sure that the generated static files are ultimately placed
 under the `public` directory, that's why in the `script` section we run the
-`jekyll` command that builds the website and puts all content in the `public/`
+`jekyll` command that jobs the website and puts all content in the `public/`
 directory. Depending on the static generator of your choice, this command will
 differ. Search in the documentation of the static generator you will use if
 there is an option to explicitly set the output directory. If there is not
@@ -237,7 +237,7 @@ get you started.
 
 Remember that GitLab Pages are by default branch/tag agnostic and their
 deployment relies solely on what you specify in `.gitlab-ci.yml`. You can limit
-the `pages` job with the [`only` parameter](../ci/yaml/README.md#only-and-except),
+the `pages` job with the [`only` parameter](../../../ci/yaml/README.md#only-and-except),
 whenever a new commit is pushed to a branch that will be used specifically for
 your pages.
 
@@ -403,7 +403,7 @@ don't have to create and edit HTML files manually. For example, Jekyll has the
 
 ### Can I download my generated pages?
 
-Sure. All you need to do is download the artifacts archive from the build page.
+Sure. All you need to do is download the artifacts archive from the job page.
 
 ### Can I use GitLab Pages if my project is private?
 
@@ -426,10 +426,12 @@ For a list of known issues, visit GitLab's [public issue tracker].
 [ee-173]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/173
 [pages-daemon]: https://gitlab.com/gitlab-org/gitlab-pages
 [gitlab ci]: https://about.gitlab.com/gitlab-ci
-[gitlab runner]: https://gitlab.com/gitlab-org/gitlab-ci-multi-runner
-[pages]: ../ci/yaml/README.md#pages
+[gitlab runner]: https://docs.gitlab.com/runner
+[pages]: ../../../ci/yaml/README.md#pages
+[yaml]: ../../../ci/yaml/README.md
 [staticgen]: https://www.staticgen.com/
 [pages-jekyll]: https://gitlab.com/pages/jekyll
 [metarefresh]: https://en.wikipedia.org/wiki/Meta_refresh
 [public issue tracker]: https://gitlab.com/gitlab-org/gitlab-ee/issues?label_name=Pages
 [ce-14605]: https://gitlab.com/gitlab-org/gitlab-ce/issues/14605
+[quick start guide]: ../../../ci/quick_start/README.md

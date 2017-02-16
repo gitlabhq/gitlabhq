@@ -1,50 +1,43 @@
-/* global Vue */
+const Vue = require('vue');
 
-window.Vue = require('vue');
-
-(() => {
-  window.gl = window.gl || {};
-  window.gl.environmentsList = window.gl.environmentsList || {};
-
-  gl.environmentsList.ActionsComponent = Vue.component('actions-component', {
-    props: {
-      actions: {
-        type: Array,
-        required: false,
-        default: () => [],
-      },
-
-      playIconSvg: {
-        type: String,
-        required: false,
-      },
+module.exports = Vue.component('actions-component', {
+  props: {
+    actions: {
+      type: Array,
+      required: false,
+      default: () => [],
     },
 
-    template: `
-      <div class="inline">
-        <div class="dropdown">
-          <a class="dropdown-new btn btn-default" data-toggle="dropdown">
-            <span class="js-dropdown-play-icon-container" v-html="playIconSvg"></span>
-            <i class="fa fa-caret-down"></i>
-          </a>
+    playIconSvg: {
+      type: String,
+      required: false,
+    },
+  },
 
-          <ul class="dropdown-menu dropdown-menu-align-right">
-            <li v-for="action in actions">
-              <a :href="action.play_path"
-                data-method="post"
-                rel="nofollow"
-                class="js-manual-action-link">
+  template: `
+    <div class="inline">
+      <div class="dropdown">
+        <a class="dropdown-new btn btn-default" data-toggle="dropdown">
+          <span class="js-dropdown-play-icon-container" v-html="playIconSvg"></span>
+          <i class="fa fa-caret-down"></i>
+        </a>
 
-                <span class="js-action-play-icon-container" v-html="playIconSvg"></span>
+        <ul class="dropdown-menu dropdown-menu-align-right">
+          <li v-for="action in actions">
+            <a :href="action.play_path"
+              data-method="post"
+              rel="nofollow"
+              class="js-manual-action-link">
 
-                <span>
-                  {{action.name}}
-                </span>
-              </a>
-            </li>
-          </ul>
-        </div>
+              <span class="js-action-play-icon-container" v-html="playIconSvg"></span>
+
+              <span>
+                {{action.name}}
+              </span>
+            </a>
+          </li>
+        </ul>
       </div>
-    `,
-  });
-})();
+    </div>
+  `,
+});
