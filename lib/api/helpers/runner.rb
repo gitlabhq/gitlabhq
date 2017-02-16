@@ -1,6 +1,6 @@
 module API
   module Helpers
-    module Ci
+    module Runner
       def runner_registration_token_valid?
         ActiveSupport::SecurityUtils.variable_size_secure_compare(params[:token],
                                                                   current_application_settings.runners_registration_token)

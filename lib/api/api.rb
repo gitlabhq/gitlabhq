@@ -52,7 +52,6 @@ module API
     mount ::API::Branches
     mount ::API::BroadcastMessages
     mount ::API::Builds
-    mount ::API::Ci
     mount ::API::Commits
     mount ::API::CommitStatuses
     mount ::API::DeployKeys
@@ -77,6 +76,7 @@ module API
     mount ::API::Projects
     mount ::API::ProjectSnippets
     mount ::API::Repositories
+    mount ::API::Runner
     mount ::API::Runners
     mount ::API::Services
     mount ::API::Session

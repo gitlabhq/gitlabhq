@@ -1,6 +1,6 @@
 module API
-  class Ci < Grape::API
-    helpers ::API::Helpers::Ci
+  class Runner < Grape::API
+    helpers ::API::Helpers::Runner
 
     resource :runners do
       desc 'Registers a new Runner' do
@@ -21,7 +21,7 @@ module API
         runner =
           if runner_registration_token_valid?
             # Create shared runner. Requires admin access
-            ::Ci::Runner.create(attributes.merge(is_shared: true))
+            Ci::Runner.create(attributes.merge(is_shared: true))
           elsif project = Project.find_by(runners_token: params[:token])
             # Create a specific runner for project.
             project.runners.create(attributes)
@@ -45,7 +45,7 @@ module API
       end
       delete '/' do
         authenticate_runner!
-        ::Ci::Runner.find_by_token(params[:token]).destroy
+        Ci::Runner.find_by_token(params[:token]).destroy
       end
     end
   end
