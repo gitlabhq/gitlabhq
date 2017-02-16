@@ -21,13 +21,16 @@
     };
 
     Sidebar.prototype.addEventListeners = function() {
+      const $document = $(document);
+      const throttledSetSidebarHeight = _.throttle(this.setSidebarHeight, 10);
+
       this.sidebar.on('click', '.sidebar-collapsed-icon', this, this.sidebarCollapseClicked);
       $('.dropdown').on('hidden.gl.dropdown', this, this.onSidebarDropdownHidden);
       $('.dropdown').on('loading.gl.dropdown', this.sidebarDropdownLoading);
       $('.dropdown').on('loaded.gl.dropdown', this.sidebarDropdownLoaded);
-      $(window).on('resize', () => this.setSidebarHeight());
-      $(document).on('scroll', () => this.setSidebarHeight());
-      $(document).on('click', '.js-sidebar-toggle', function(e, triggered) {
+      $(window).on('resize', () => throttledSetSidebarHeight());
+      $document.on('scroll', () => throttledSetSidebarHeight());
+      $document.on('click', '.js-sidebar-toggle', function(e, triggered) {
         var $allGutterToggleIcons, $this, $thisIcon;
         e.preventDefault();
         $this = $(this);
@@ -195,11 +198,12 @@
 
     Sidebar.prototype.setSidebarHeight = function() {
       const $navHeight = $('.navbar-gitlab').outerHeight() + $('.layout-nav').outerHeight();
+      const $rightSidebar = $('.js-right-sidebar');
       const diff = $navHeight - $('body').scrollTop();
       if (diff > 0) {
-        $('.js-right-sidebar').outerHeight($(window).height() - diff);
+        $rightSidebar.outerHeight($(window).height() - diff);
       } else {
-        $('.js-right-sidebar').outerHeight('100%');
+        $rightSidebar.outerHeight('100%');
       }
     };
 

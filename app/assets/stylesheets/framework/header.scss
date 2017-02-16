@@ -110,15 +110,15 @@ header {
       font-size: 11px;
     }
 
-    li.active {
-      a {
+    li {
+      .active a {
         font-weight: bold;
       }
-    }
 
-    li:hover {
-      .badge {
-        background-color: $white-light;
+      &:hover {
+        .badge {
+          background-color: $white-light;
+        }
       }
     }
   }
