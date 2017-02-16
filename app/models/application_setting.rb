@@ -311,7 +311,7 @@ class ApplicationSetting < ActiveRecord::Base
       errors.add(:default_artifacts_expiration,
         "can't be 0. Leave it blank for no expiration")
     end
-  rescue ChronicDuration::DurationParseError => e
+  rescue ChronicDuration::DurationParseError
     errors.add(:default_artifacts_expiration, "is invalid")
   end
 end
