@@ -2,6 +2,8 @@ module Geo
   class RepositoryBackfillService
     attr_reader :project
 
+    LEASE_TIMEOUT = 24.hours.freeze
+
     def initialize(project)
       @project = project
     end
@@ -40,10 +42,7 @@ module Geo
     end
 
     def try_obtain_lease
-      uuid = Gitlab::ExclusiveLease.new(
-        lease_key,
-        timeout: 24.hours
-      ).try_obtain
+      uuid = Gitlab::ExclusiveLease.new(lease_key, timeout: LEASE_TIMEOUT).try_obtain
 
       return unless uuid
 

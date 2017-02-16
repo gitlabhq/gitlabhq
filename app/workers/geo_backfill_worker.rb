@@ -3,7 +3,7 @@ class GeoBackfillWorker
   include CronjobQueue
 
   LEASE_TIMEOUT = 24.hours.freeze
-  RUN_TIME = 5.minutes.to_i.freeze
+  RUN_TIME      = 5.minutes.to_i.freeze
 
   def perform
     start = Time.now
@@ -32,8 +32,7 @@ class GeoBackfillWorker
   end
 
   def try_obtain_lease
-    uuid = Gitlab::ExclusiveLease.new(lease_key, timeout: LEASE_TIMEOUT)
-                                 .try_obtain
+    uuid = Gitlab::ExclusiveLease.new(lease_key, timeout: LEASE_TIMEOUT).try_obtain
 
     return unless uuid
 
