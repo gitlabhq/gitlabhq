@@ -35,11 +35,23 @@ module Gitlab
     class << self
       delegate :values, to: :options
 
+      def string_values
+        string_options.keys
+      end
+
       def options
         {
           'Private'  => PRIVATE,
           'Internal' => INTERNAL,
           'Public'   => PUBLIC
+        }
+      end
+
+      def string_options
+        {
+          'private'  => PRIVATE,
+          'internal' => INTERNAL,
+          'public'   => PUBLIC
         }
       end
 
@@ -81,6 +93,10 @@ module Gitlab
         end
 
         level_name
+      end
+
+      def string_level(level)
+        string_options.key(level)
       end
     end
 
