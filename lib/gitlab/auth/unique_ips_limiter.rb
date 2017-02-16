@@ -62,7 +62,7 @@ module Gitlab
         rescue TooManyIps => ex
 
           Rails.logger.info ex.message
-          [429, {'Content-Type' => 'text/plain', 'Retry-After' => UniqueIpsLimiter.config.unique_ips_limit_time_window }, ["Retry later\n"]]
+          [429, { 'Content-Type' => 'text/plain', 'Retry-After' => UniqueIpsLimiter.config.unique_ips_limit_time_window }, ["Retry later\n"]]
         end
       end
     end

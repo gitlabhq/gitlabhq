@@ -10,7 +10,6 @@ describe Gitlab::Auth::UniqueIpsLimiter, lib: true do
   end
 
   describe '#count_unique_ips' do
-
     context 'non unique IPs' do
       it 'properly counts them' do
         expect(Gitlab::Auth::UniqueIpsLimiter.count_unique_ips(user.id, '192.168.1.1')).to eq(1)
@@ -38,7 +37,6 @@ describe Gitlab::Auth::UniqueIpsLimiter, lib: true do
       expect(Gitlab::Auth::UniqueIpsLimiter.count_unique_ips(user.id, '192.168.1.5')).to eq(2)
     end
   end
-
 
   describe '#limit_user!' do
     context 'when unique ips limit is enabled' do
