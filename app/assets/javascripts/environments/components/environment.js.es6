@@ -85,7 +85,7 @@ module.exports = Vue.component('environment-component', {
         this.store.storeAvailableCount(response.body.available_count);
         this.store.storeStoppedCount(response.body.stopped_count);
         this.store.storeEnvironments(response.body.environments);
-        this.store.storePagination(response.headers);
+        this.store.setPagination(response.headers);
       })
       .then(() => {
         this.isLoading = false;

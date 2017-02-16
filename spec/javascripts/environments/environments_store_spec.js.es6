@@ -50,7 +50,7 @@ const { environmentsList } = require('./mock_data');
         previousPage: 2,
       };
 
-      store.storePagination(pagination);
+      store.setPagination(pagination);
       expect(store.state.paginationInformation).toEqual(expectedResult);
     });
   });
