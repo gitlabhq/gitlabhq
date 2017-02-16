@@ -99,7 +99,7 @@ var config = {
 if (IS_PRODUCTION) {
   config.devtool = 'source-map';
   config.plugins.push(
-    new webpack.NoErrorsPlugin(),
+    new webpack.NoEmitOnErrorsPlugin(),
     new webpack.LoaderOptionsPlugin({
       minimize: true,
       debug: false
