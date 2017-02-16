@@ -25,7 +25,6 @@
     "jquery-ui": "git+https://github.com/jquery/jquery-ui#1.11.4",
     "jquery-ujs": "1.2.1",
     "js-cookie": "^2.1.3",
-    "karma-mocha-reporter": "^2.2.2",
     "mousetrap": "1.4.6",
     "pikaday": "^1.5.1",
     "select2": "3.5.2-browserify",
@@ -34,8 +33,7 @@
     "underscore": "1.8.3",
     "vue": "2.0.3",
     "vue-resource": "0.9.3",
-    "webpack": "^2.2.1",
-    "webpack-dev-server": "^2.3.0"
+    "webpack": "^2.2.1"
   },
   "devDependencies": {
     "babel-plugin-istanbul": "^4.0.0",
@@ -51,9 +49,11 @@
     "karma": "^1.4.1",
     "karma-coverage-istanbul-reporter": "^0.2.0",
     "karma-jasmine": "^1.1.0",
+    "karma-mocha-reporter": "^2.2.2",
     "karma-phantomjs-launcher": "^1.0.2",
     "karma-sourcemap-loader": "^0.3.7",
-    "karma-webpack": "^2.0.2"
+    "karma-webpack": "^2.0.2",
+    "webpack-dev-server": "^2.3.0"
   },
   "nyc": {
     "exclude": [
