@@ -236,7 +236,6 @@ describe API::Runner do
       end
 
       context 'when valid token is provided' do
-
         context 'when Runner is not active' do
           let(:runner) { create(:ci_runner, :inactive) }
 
@@ -267,7 +266,7 @@ describe API::Runner do
 
         context 'when there is a pending job' do
           it 'starts a job' do
-            request_job info: {platform: :darwin}
+            request_job info: { platform: :darwin }
 
             expect(response).to have_http_status(201)
             expect(response.headers).not_to have_key('X-GitLab-Last-Update')
@@ -320,7 +319,7 @@ describe API::Runner do
               let(:value) { "#{param}_value" }
 
               it %q(updates provided Runner's parameter) do
-                request_job info: {param => value}
+                request_job info: { param => value }
 
                 expect(response).to have_http_status(201)
                 runner.reload
@@ -386,24 +385,22 @@ describe API::Runner do
               request_job
 
               expect(response).to have_http_status(201)
-              expect(json_response['variables']).to include(
-                                                        {'key' => 'CI_BUILD_NAME', 'value' => 'spinach', 'public' => true},
-                                                        {'key' => 'CI_BUILD_STAGE', 'value' => 'test', 'public' => true},
-                                                        {'key' => 'CI_BUILD_TRIGGERED', 'value' => 'true', 'public' => true},
-                                                        {'key' => 'DB_NAME', 'value' => 'postgres', 'public' => true},
-                                                        {'key' => 'SECRET_KEY', 'value' => 'secret_value', 'public' => false},
-                                                        {'key' => 'TRIGGER_KEY_1', 'value' => 'TRIGGER_VALUE_1', 'public' => false},
-                                                    )
+              expect(json_response['variables']).to include({ 'key' => 'CI_BUILD_NAME', 'value' => 'spinach', 'public' => true },
+                                                            { 'key' => 'CI_BUILD_STAGE', 'value' => 'test', 'public' => true },
+                                                            { 'key' => 'CI_BUILD_TRIGGERED', 'value' => 'true', 'public' => true },
+                                                            { 'key' => 'DB_NAME', 'value' => 'postgres', 'public' => true },
+                                                            { 'key' => 'SECRET_KEY', 'value' => 'secret_value', 'public' => false },
+                                                            { 'key' => 'TRIGGER_KEY_1', 'value' => 'TRIGGER_VALUE_1', 'public' => false })
             end
           end
 
           describe 'registry credentials support' do
             let(:registry_url) { 'registry.example.com:5005' }
             let(:registry_credentials) do
-              {'type' => 'registry',
-               'url' => registry_url,
-               'username' => 'gitlab-ci-token',
-               'password' => job.token}
+              { 'type' => 'registry',
+                'url' => registry_url,
+                'username' => 'gitlab-ci-token',
+                'password' => job.token }
             end
 
             context 'when registry is enabled' do
@@ -431,7 +428,7 @@ describe API::Runner do
 
         def request_job(token = runner.token, **params)
           new_params = params.merge(token: token, last_update: last_update)
-          post api('/jobs/request'), new_params, {'User-Agent' => user_agent}
+          post api('/jobs/request'), new_params, { 'User-Agent' => user_agent }
         end
       end
     end

@@ -36,7 +36,7 @@ module API
         contacted_at_max_age = UPDATE_RUNNER_EVERY + Random.rand(UPDATE_RUNNER_EVERY)
 
         current_runner.contacted_at.nil? ||
-            (Time.now - current_runner.contacted_at) >= contacted_at_max_age
+          (Time.now - current_runner.contacted_at) >= contacted_at_max_age
       end
 
       def build_not_found!
