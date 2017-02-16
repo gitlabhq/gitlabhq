@@ -181,6 +181,10 @@ entry.
 - Add margin to markdown math blocks.
 - Add hover state to MR comment reply button.
 
+## 8.15.7 (2017-02-15)
+
+- No changes.
+
 ## 8.15.6 (2017-02-14)
 
 - Patch Asciidocs rendering to block XSS.
