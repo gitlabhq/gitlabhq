@@ -245,9 +245,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       format.json do
         define_pipelines_vars
 
-        render json: PipelineSerializer
+        render json: {
+          pipelines: PipelineSerializer
           .new(project: @project, user: @current_user)
-          .represent(@pipelines)
+          .represent(@pipelines) }
       end
     end
   end
