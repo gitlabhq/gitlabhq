@@ -112,7 +112,7 @@ if (IS_PRODUCTION) {
     }),
     new CompressionPlugin({
       asset: '[path].gz[query]',
-    }),
+    })
   );
 }
 
