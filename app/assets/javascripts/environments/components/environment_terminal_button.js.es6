@@ -1,28 +1,25 @@
-/* global Vue */
+/**
+ * Renders a terminal button to open a web terminal.
+ * Used in environments table.
+ */
+const Vue = require('vue');
 
-window.Vue = require('vue');
-
-(() => {
-  window.gl = window.gl || {};
-  window.gl.environmentsList = window.gl.environmentsList || {};
-
-  gl.environmentsList.TerminalButtonComponent = Vue.component('terminal-button-component', {
-    props: {
-      terminalPath: {
-        type: String,
-        default: '',
-      },
-      terminalIconSvg: {
-        type: String,
-        default: '',
-      },
+module.exports = Vue.component('terminal-button-component', {
+  props: {
+    terminalPath: {
+      type: String,
+      default: '',
     },
+    terminalIconSvg: {
+      type: String,
+      default: '',
+    },
+  },
 
-    template: `
-      <a class="btn terminal-button"
-        :href="terminalPath">
-        <span class="js-terminal-icon-container" v-html="terminalIconSvg"></span>
-      </a>
-    `,
-  });
-})();
+  template: `
+    <a class="btn terminal-button"
+      :href="terminalPath">
+      <span class="js-terminal-icon-container" v-html="terminalIconSvg"></span>
+    </a>
+  `,
+});

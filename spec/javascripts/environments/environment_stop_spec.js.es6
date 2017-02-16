@@ -1,4 +1,4 @@
-require('~/environments/components/environment_stop');
+const StopComponent = require('~/environments/components/environment_stop');
 
 describe('Stop Component', () => {
   preloadFixtures('static/environments/element.html.raw');
@@ -10,7 +10,7 @@ describe('Stop Component', () => {
     loadFixtures('static/environments/element.html.raw');
 
     stopURL = '/stop';
-    component = new window.gl.environmentsList.StopComponent({
+    component = new StopComponent({
       el: document.querySelector('.test-dom-element'),
       propsData: {
         stopUrl: stopURL,

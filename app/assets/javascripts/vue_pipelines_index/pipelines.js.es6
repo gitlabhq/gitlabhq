@@ -35,7 +35,16 @@ require('../vue_shared/components/pipelines_table');
       this.store.fetchDataLoop.call(this, Vue, this.pagenum, this.scope, this.apiScope);
     },
     methods: {
-      change(pagenum, apiScope) {
+
+      /**
+       * Changes the URL according to the pagination component.
+       *
+       * If no scope is provided, 'all' is assumed.
+       *
+       * @param  {Number} pagenum
+       * @param  {String} apiScope = 'all'
+       */
+      change(pagenum, apiScope = 'all') {
         gl.utils.visitUrl(`?scope=${apiScope}&p=${pagenum}`);
       },
     },

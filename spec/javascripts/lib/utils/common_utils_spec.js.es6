@@ -108,6 +108,30 @@ require('~/lib/utils/common_utils');
       });
     });
 
+    describe('gl.utils.parseIntPagination', () => {
+      it('should parse to integers all string values and return pagination object', () => {
+        const pagination = {
+          'X-PER-PAGE': 10,
+          'X-PAGE': 2,
+          'X-TOTAL': 30,
+          'X-TOTAL-PAGES': 3,
+          'X-NEXT-PAGE': 3,
+          'X-PREV-PAGE': 1,
+        };
+
+        const expectedPagination = {
+          perPage: 10,
+          page: 2,
+          total: 30,
+          totalPages: 3,
+          nextPage: 3,
+          previousPage: 1,
+        };
+
+        expect(gl.utils.parseIntPagination(pagination)).toEqual(expectedPagination);
+      });
+    });
+
     describe('gl.utils.isMetaClick', () => {
       it('should identify meta click on Windows/Linux', () => {
         const e = {

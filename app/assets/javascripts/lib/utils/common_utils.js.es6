@@ -232,6 +232,21 @@
     };
 
     /**
+     * Parses pagination object string values into numbers.
+     *
+     * @param {Object} paginationInformation
+     * @returns {Object}
+     */
+    w.gl.utils.parseIntPagination = paginationInformation => ({
+      perPage: parseInt(paginationInformation['X-PER-PAGE'], 10),
+      page: parseInt(paginationInformation['X-PAGE'], 10),
+      total: parseInt(paginationInformation['X-TOTAL'], 10),
+      totalPages: parseInt(paginationInformation['X-TOTAL-PAGES'], 10),
+      nextPage: parseInt(paginationInformation['X-NEXT-PAGE'], 10),
+      previousPage: parseInt(paginationInformation['X-PREV-PAGE'], 10),
+    });
+
+    /**
      * Transforms a DOMStringMap into a plain object.
      *
      * @param {DOMStringMap} DOMStringMapObject
@@ -241,5 +256,45 @@
       acc[element] = DOMStringMapObject[element];
       return acc;
     }, {});
+
+    /**
+     * Updates the search parameter of a URL given the parameter and values provided.
+     *
+     * If no search params are present we'll add it.
+     * If param for page is already present, we'll update it
+     * If there are params but not for the given one, we'll add it at the end.
+     * Returns the new search parameters.
+     *
+     * @param {String} param
+     * @param {Number|String|Undefined|Null} value
+     * @return {String}
+     */
+    w.gl.utils.setParamInURL = (param, value) => {
+      let search;
+      const locationSearch = window.location.search;
+
+      if (locationSearch.length === 0) {
+        search = `?${param}=${value}`;
+      }
+
+      if (locationSearch.indexOf(param) !== -1) {
+        const regex = new RegExp(param + '=\\d');
+        search = locationSearch.replace(regex, `${param}=${value}`);
+      }
+
+      if (locationSearch.length && locationSearch.indexOf(param) === -1) {
+        search = `${locationSearch}&${param}=${value}`;
+      }
+
+      return search;
+    };
+
+    /**
+     * Converts permission provided as strings to booleans.
+     *
+     * @param  {String} string
+     * @returns {Boolean}
+     */
+    w.gl.utils.convertPermissionToBoolean = permission => permission === 'true';
   })(window);
 }).call(this);
