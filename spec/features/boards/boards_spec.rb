@@ -27,6 +27,12 @@ describe 'Issue Boards', feature: true, js: true do
       expect(page).to have_content('Welcome to your Issue Board!')
     end
 
+    it 'disables add issues button by default' do
+      button = page.find('.issue-boards-search button', text: 'Add issues')
+
+      expect(button[:disabled]).to eq true
+    end
+
     it 'hides the blank state when clicking nevermind button' do
       page.within(find('.board-blank-state')) do
         click_button("Nevermind, I'll use my own")
