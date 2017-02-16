@@ -146,6 +146,17 @@ describe 'Issues', feature: true do
       expect(page).to have_content 'foobar'
       expect(page.all('.no-comments').first.text).to eq "0"
     end
+
+    it 'shows weight on issue row' do
+      create(:issue, author: @user, project: project, weight: 2)
+
+      visit namespace_project_issues_path(project.namespace, project)
+
+      page.within(first('.issue-info')) do
+        expect(page).to have_selector('.fa-balance-scale')
+        expect(page).to have_content(2)
+      end
+    end
   end
 
   describe 'Filter issue' do
@@ -657,7 +668,7 @@ describe 'Issues', feature: true do
 
       it 'removes due date from issue' do
         date = Date.today.at_beginning_of_month + 2.days
-        
+
         page.within '.due_date' do
           click_link 'Edit'
 
