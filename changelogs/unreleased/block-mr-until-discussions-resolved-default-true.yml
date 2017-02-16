@@ -1,0 +1,3 @@
+---
+title: 'Only allow merge requests to be merged if all discussions are resolved - Setting default true'
+merge_request: 9289
