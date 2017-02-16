@@ -1,10 +1,10 @@
-require('~/commit/pipelines/pipelines_store');
+const PipelinesStore = require('~/commit/pipelines/pipelines_store');
 
 describe('Store', () => {
   let store;
 
   beforeEach(() => {
-    store = new gl.commits.pipelines.PipelinesStore();
+    store = new PipelinesStore();
   });
 
   // unregister intervals and event handlers
