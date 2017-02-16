@@ -11,18 +11,20 @@ module MergeRequests
     def execute(merge_request)
       @merge_request = merge_request
 
-      return log_merge_error('Merge request is not mergeable', true) unless @merge_request.mergeable?
+      unless @merge_request.mergeable?
+        return log_merge_error('Merge request is not mergeable', save_message_on_model: true)
+      end
 
       @source = find_merge_source
 
-      return log_merge_error('No source for merge', true) unless @source
+      unless @source
+        log_merge_error('No source for merge', save_message_on_model: true)
+      end
 
       merge_request.in_locked_state do
         if commit
           after_merge
           success
-        else
-          log_merge_error('Can not merge changes', true)
         end
       end
     end
@@ -43,11 +45,11 @@ module MergeRequests
       if commit_id
         merge_request.update(merge_commit_sha: commit_id)
       else
-        merge_request.update(merge_error: 'Conflicts detected during merge')
+        log_merge_error('Conflicts detected during merge', save_message_on_model: true)
         false
       end
     rescue GitHooksService::PreReceiveError => e
-      merge_request.update(merge_error: e.message)
+      log_merge_error(e.message, save_message_on_model: true)
       false
     rescue StandardError => e
       merge_request.update(merge_error: "Something went wrong during merge: #{e.message}")
@@ -70,10 +72,10 @@ module MergeRequests
       @merge_request.force_remove_source_branch? ? @merge_request.author : current_user
     end
 
-    def log_merge_error(message, http_error = false)
+    def log_merge_error(message, save_message_on_model: false)
       Rails.logger.error("MergeService ERROR: #{merge_request_info} - #{message}")
 
-      error(message) if http_error
+      @merge_request.update(merge_error: message) if save_message_on_model
     end
 
     def merge_request_info
