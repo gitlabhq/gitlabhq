@@ -7,6 +7,14 @@
 - elsif @merge_request.locked?
   = render 'projects/merge_requests/widget/locked'
 
+.vue-merge-request-widget
+
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_bundle_tag('vue_merge_request_widget')
+
+:javascript
+  gl.mrWidgetData = #{@merge_request_json}
+
 :javascript
   var opts = {
     merge_check_url: "#{merge_check_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)}",
