@@ -1,4 +1,4 @@
-require('~/environments/components/environment_actions');
+const ActionsComponent = require('~/environments/components/environment_actions');
 
 describe('Actions Component', () => {
   preloadFixtures('static/environments/element.html.raw');
@@ -19,7 +19,7 @@ describe('Actions Component', () => {
       },
     ];
 
-    const component = new window.gl.environmentsList.ActionsComponent({
+    const component = new ActionsComponent({
       el: document.querySelector('.test-dom-element'),
       propsData: {
         actions: actionsMock,
@@ -47,7 +47,7 @@ describe('Actions Component', () => {
       },
     ];
 
-    const component = new window.gl.environmentsList.ActionsComponent({
+    const component = new ActionsComponent({
       el: document.querySelector('.test-dom-element'),
       propsData: {
         actions: actionsMock,
