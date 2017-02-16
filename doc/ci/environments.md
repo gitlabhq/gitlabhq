@@ -535,6 +535,7 @@ deploy_review:
     - master
 
 stop_review:
+  stage: deploy
   variables:
     GIT_STRATEGY: none
   script:
@@ -555,7 +556,9 @@ when their associated branch is deleted.
 
 When you have an environment that has a stop action defined (typically when
 the environment describes a review app), GitLab will automatically trigger a
-stop action when the associated branch is deleted.
+stop action when the associated branch is deleted. The `stop_review` job must
+be in the same `stage` as the `deploy_review` one in order for the environment
+to automatically stop.
 
 You can read more in the [`.gitlab-ci.yml` reference][onstop].
 

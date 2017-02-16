@@ -78,7 +78,7 @@
               %ul.dropdown-menu.dropdown-menu-align-right
                 - artifacts.each do |build|
                   %li
-                    = link_to download_namespace_project_build_artifacts_path(pipeline.project.namespace, pipeline.project, build), rel: 'nofollow' do
+                    = link_to download_namespace_project_build_artifacts_path(pipeline.project.namespace, pipeline.project, build), rel: 'nofollow', download: '' do
                       = icon("download")
                       %span Download '#{build.name}' artifacts
 

@@ -62,6 +62,7 @@
                 <li v-for='artifact in pipeline.details.artifacts'>
                   <a
                     rel="nofollow"
+                    download
                     :href='artifact.path'
                   >
                     <i class="fa fa-download" aria-hidden="true"></i>

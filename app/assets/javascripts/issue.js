@@ -54,16 +54,19 @@ require('vendor/task_list');
           success: function(data, textStatus, jqXHR) {
             if ('id' in data) {
               $(document).trigger('issuable:change');
+              const currentTotal = Number($('.issue_counter').text());
               if (isClose) {
                 $('a.btn-close').addClass('hidden');
                 $('a.btn-reopen').removeClass('hidden');
                 $('div.status-box-closed').removeClass('hidden');
                 $('div.status-box-open').addClass('hidden');
+                $('.issue_counter').text(currentTotal - 1);
               } else {
                 $('a.btn-reopen').addClass('hidden');
                 $('a.btn-close').removeClass('hidden');
                 $('div.status-box-closed').addClass('hidden');
                 $('div.status-box-open').removeClass('hidden');
+                $('.issue_counter').text(currentTotal + 1);
               }
             } else {
               new Flash(issueFailMessage, 'alert');

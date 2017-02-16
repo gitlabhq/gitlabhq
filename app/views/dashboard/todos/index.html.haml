@@ -4,15 +4,13 @@
 - if current_user.todos.any?
   .top-area
     %ul.nav-links
-      - todo_pending_active = ('active' if params[:state].blank? || params[:state] == 'pending')
-      %li{ class: "todos-pending #{todo_pending_active}" }>
+      %li.todos-pending{ class: active_when(params[:state].blank? || params[:state] == 'pending') }>
         = link_to todos_filter_path(state: 'pending') do
           %span
             To do
           %span.badge
             = number_with_delimiter(todos_pending_count)
-      - todo_done_active = ('active' if params[:state] == 'done')
-      %li{ class: "todos-done #{todo_done_active}" }>
+      %li.todos-done{ class: active_when(params[:state] == 'done') }>
         = link_to todos_filter_path(state: 'done') do
           %span
             Done
