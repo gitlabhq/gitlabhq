@@ -114,7 +114,7 @@ module API
         commit = user_project.commit(params[:sha])
 
         not_found! 'Commit' unless commit
-        notes = Note.where(commit_id: commit.id).order(:created_at)
+        notes = user_project.notes.where(commit_id: commit.id).order(:created_at)
 
         present paginate(notes), with: Entities::CommitNote
       end

@@ -464,6 +464,20 @@ describe API::Commits, api: true  do
         expect(response).to have_http_status(401)
       end
     end
+
+    context 'when the commit is present on two projects' do
+      let(:forked_project) { create(:project, :repository, creator: user2, namespace: user2.namespace) }
+      let!(:forked_project_note) { create(:note_on_commit, author: user2, project: forked_project, commit_id: forked_project.repository.commit.id, note: 'a comment on a commit for fork') }
+
+      it 'returns the comments for the target project' do
+        get api("/projects/#{forked_project.id}/repository/commits/#{forked_project.repository.commit.id}/comments", user2)
+
+        expect(response).to have_http_status(200)
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['note']).to eq('a comment on a commit for fork')
+        expect(json_response.first['author']['id']).to eq(user2.id)
+      end
+    end
   end
 
   describe 'POST :id/repository/commits/:sha/cherry_pick' do
