@@ -407,7 +407,6 @@ describe Repository, models: true do
 
     context "when an author is specified" do
       it "uses the given email/name to set the commit's author" do
-
         expect do
           repository.update_file(user, 'README', 'Updated README!',
                                  branch_name: 'master',
