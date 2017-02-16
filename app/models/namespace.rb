@@ -99,7 +99,7 @@ class Namespace < ActiveRecord::Base
       path = "blank" if path.blank?
 
       uniquify = Uniquify.new
-      uniquify.string(path, -> (s) { Namespace.find_by_path_or_name(s) })
+      uniquify.string(path) { |s| Namespace.find_by_path_or_name(s) }
     end
   end
 

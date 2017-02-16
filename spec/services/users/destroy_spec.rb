@@ -47,6 +47,10 @@ describe Users::DestroyService, services: true do
 
           expect(migrated_issue.author).to eq(User.ghost)
         end
+
+        it 'blocks the user before migrating issues to the "Ghost User' do
+          expect(user).to be_blocked
+        end
       end
 
       context "for an issue the user was assigned to" do
