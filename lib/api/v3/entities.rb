@@ -164,6 +164,30 @@ module API
           Gitlab::UrlBuilder.build(merge_request)
         end
       end
+
+      class Group < Grape::Entity
+        expose :id, :name, :path, :description, :visibility_level
+        expose :lfs_enabled?, as: :lfs_enabled
+        expose :avatar_url
+        expose :web_url
+        expose :request_access_enabled
+        expose :full_name, :full_path
+        expose :parent_id
+
+        expose :statistics, if: :statistics do
+          with_options format_with: -> (value) { value.to_i } do
+            expose :storage_size
+            expose :repository_size
+            expose :lfs_objects_size
+            expose :build_artifacts_size
+          end
+        end
+      end
+
+      class GroupDetail < Group
+        expose :projects, using: Entities::Project
+        expose :shared_projects, using: Entities::Project
+      end
     end
   end
 end

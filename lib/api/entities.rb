@@ -150,7 +150,8 @@ module API
     end
 
     class Group < Grape::Entity
-      expose :id, :name, :path, :description, :visibility_level
+      expose :id, :name, :path, :description
+      expose(:visibility) { |group, _options| Gitlab::VisibilityLevel.string_level(group.visibility_level) }
 
       expose :ldap_cn, :ldap_access
       expose :ldap_group_links,
