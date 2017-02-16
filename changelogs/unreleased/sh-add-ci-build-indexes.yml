@@ -1,0 +1,4 @@
+---
+title: Add index for slow queries in BuildsController#index
+merge_request:
+author:
