@@ -55,7 +55,6 @@ var config = {
         exclude: /(node_modules|vendor\/assets)/,
         loader: 'babel-loader',
         options: {
-          plugins: IS_PRODUCTION ? [] : ['istanbul'],
           presets: [
             ["es2015", {"modules": false}],
             'stage-2'
