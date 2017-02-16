@@ -1,5 +1,5 @@
 const Store = require('~/environments/stores/environments_store');
-const { environmentsList } = require('./mock_data');
+const { environmentsList, serverData } = require('./mock_data');
 
 (() => {
   describe('Store', () => {
@@ -17,8 +17,9 @@ const { environmentsList } = require('./mock_data');
     });
 
     it('should store environments', () => {
-      store.storeEnvironments(environmentsList);
-      expect(store.state.environments.length).toEqual(environmentsList.length);
+      store.storeEnvironments(serverData);
+      expect(store.state.environments.length).toEqual(serverData.length);
+      expect(store.state.environments[0]).toEqual(environmentsList[0]);
     });
 
     it('should store available count', () => {

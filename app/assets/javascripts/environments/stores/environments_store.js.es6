@@ -38,11 +38,11 @@ class EnvironmentsStore {
       let filtered = {};
 
       if (env.size > 1) {
-        filtered = Object.assign({}, env, { isFolder: true });
+        filtered = Object.assign({}, env, { isFolder: true, folderName: env.name });
       }
 
       if (env.latest) {
-        filtered = Object.assign(filtered, env, env.latest, { folderName: env.name });
+        filtered = Object.assign(filtered, env, env.latest);
         delete filtered.latest;
       } else {
         filtered = Object.assign(filtered, env);

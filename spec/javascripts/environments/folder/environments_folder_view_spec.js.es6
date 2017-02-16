@@ -8,7 +8,7 @@ describe('Environments Folder View', () => {
 
   beforeEach(() => {
     loadFixtures('static/environments/environments_folder_view.html.raw');
-    window.history.pushState({}, null, 'environments/folders/51');
+    window.history.pushState({}, null, 'environments/folders/build');
   });
 
   let component;
@@ -80,12 +80,11 @@ describe('Environments Folder View', () => {
       }, 0);
     });
 
-    // FIX ME:
     it('should render parent folder name', (done) => {
       setTimeout(() => {
         expect(
-          component.$el.querySelector('.js-folder-name'),
-        ).toBe(null);
+          component.$el.querySelector('.js-folder-name').textContent,
+        ).toContain('Environments / build');
         done();
       }, 0);
     });
@@ -196,15 +195,6 @@ describe('Environments Folder View', () => {
         expect(
           component.$el.querySelector('.js-stopped-environments-folder-tab .js-stopped-environments-count').textContent,
         ).toContain('0');
-        done();
-      }, 0);
-    });
-
-    it('should not render parent folder name', (done) => {
-      setTimeout(() => {
-        expect(
-          component.$el.querySelector('.js-folder-name'),
-        ).toBe(null);
         done();
       }, 0);
     });
