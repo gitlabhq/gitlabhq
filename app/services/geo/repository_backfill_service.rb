@@ -8,6 +8,22 @@ module Geo
 
     def execute
       try_obtain_lease do
+        synchronize do |started_at, finished_at|
+          registry = Geo::ProjectRegistry.find_or_create_by(project_id: project.id)
+          registry.last_repository_synced_at = started_at
+          registry.last_repository_successful_sync_at = finished_at if finished_at
+          registry.save
+        end
+      end
+    end
+
+    private
+
+    def synchronize
+      started_at  = DateTime.now
+      finished_at = nil
+
+      begin
         project.create_repository unless project.repository_exists?
         project.repository.after_create if project.empty_repo?
         project.repository.fetch_geo_mirror(ssh_url_to_repo)
@@ -15,16 +31,13 @@ module Geo
         project.repository.expire_branch_cache
         project.repository.expire_content_cache
 
-        # TODO: Check if it was successful or not
-        timestamp = DateTime.now
-        registry = Geo::ProjectRegistry.find_or_create_by(project_id: project.id)
-        registry.last_repository_synced_at = timestamp
-        registry.last_repository_successful_sync_at = timestamp
-        registry.save
+        finished_at = DateTime.now
+      rescue Gitlab::Shell::Error => e
+        Rails.logger.error("Error backfilling repository #{project.path_with_namespace}: #{e}")
       end
-    end
 
-    private
+      yield started_at, finished_at
+    end
 
     def try_obtain_lease
       uuid = Gitlab::ExclusiveLease.new(
