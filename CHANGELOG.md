@@ -2,6 +2,10 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 8.15.7 (2017-02-15)
+
+- No changes.
+
 ## 8.15.6 (2017-02-14)
 
 - Patch Asciidocs rendering to block XSS.
