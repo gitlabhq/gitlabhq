@@ -141,6 +141,18 @@ RSpec.configure do |config|
   config.around(:each, :postgresql) do |example|
     example.run if Gitlab::Database.postgresql?
   end
+
+  config.around(:each, :gpg) do |example|
+    Dir.mktmpdir do |dir|
+      original_dir = GPGME::Engine.dirinfo('homedir')
+
+      GPGME::Engine.home_dir = dir
+
+      example.run
+
+      GPGME::Engine.home_dir = original_dir
+    end
+  end
 end
 
 FactoryGirl::SyntaxRunner.class_eval do

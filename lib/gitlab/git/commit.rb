@@ -319,7 +319,12 @@ module Gitlab
         end
       end
 
-      def extract_signature(repo)
+      # Get the gpg signature of this commit.
+      #
+      # Ex.
+      #   commit.signature(repo)
+      #
+      def signature(repo)
         Rugged::Commit.extract_signature(repo.rugged, sha)
       end
 

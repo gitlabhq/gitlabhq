@@ -414,4 +414,44 @@ eos
       expect(described_class.valid_hash?('a' * 41)).to be false
     end
   end
+
+  describe '#signature' do
+    it 'returns nil if the commit is not signed' do
+      expect(commit.signature).to be_nil
+    end
+
+    context 'signed commit', :gpg do
+      it 'returns a valid signature if the public key is known' do
+        GPGME::Key.import(GpgHelpers.public_key)
+
+        raw_commit = double(:raw_commit, signature: [
+          GpgHelpers.signed_commit_signature,
+          GpgHelpers.signed_commit_base_data
+        ])
+        allow(raw_commit).to receive :save!
+
+        commit = create :commit,
+          git_commit: raw_commit,
+          project: project
+
+        expect(commit.signature).to be_a GPGME::Signature
+        expect(commit.signature.valid?).to be_truthy
+      end
+
+      it 'returns an invalid signature if the public commit is unknown', :gpg do
+        raw_commit = double(:raw_commit, signature: [
+          GpgHelpers.signed_commit_signature,
+          GpgHelpers.signed_commit_base_data
+        ])
+        allow(raw_commit).to receive :save!
+
+        commit = create :commit,
+          git_commit: raw_commit,
+          project: project
+
+        expect(commit.signature).to be_a GPGME::Signature
+        expect(commit.signature.valid?).to be_falsey
+      end
+    end
+  end
 end

@@ -237,7 +237,7 @@ class Commit
   def signature
     return @signature if defined?(@signature)
 
-    sig, signed = @raw.extract_signature(project.repository.raw_repository)
+    sig, signed = @raw.signature(project.repository)
     if sig && signed
       GPGME::Crypto.new.verify(sig, signed_text: signed) do |sign|
         @signature = sign
