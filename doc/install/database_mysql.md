@@ -1,63 +1,66 @@
 # Database MySQL
 
-## Note
-
-We do not recommend using MySQL due to various issues. For example, case [(in)sensitivity](https://dev.mysql.com/doc/refman/5.0/en/case-sensitivity.html) and [problems](https://bugs.mysql.com/bug.php?id=65830) that [suggested](https://bugs.mysql.com/bug.php?id=50909) [fixes](https://bugs.mysql.com/bug.php?id=65830) [have](https://bugs.mysql.com/bug.php?id=63164).
+>**Note:**
+We do not recommend using MySQL due to various issues. For example, case
+[(in)sensitivity](https://dev.mysql.com/doc/refman/5.0/en/case-sensitivity.html)
+and [problems](https://bugs.mysql.com/bug.php?id=65830) that
+[suggested](https://bugs.mysql.com/bug.php?id=50909)
+[fixes](https://bugs.mysql.com/bug.php?id=65830) [have](https://bugs.mysql.com/bug.php?id=63164).
 
 ## Initial database setup
 
-    # Install the database packages
-    sudo apt-get install -y mysql-server mysql-client libmysqlclient-dev
+```
+# Install the database packages
+sudo apt-get install -y mysql-server mysql-client libmysqlclient-dev
 
-    # Ensure you have MySQL version 5.5.14 or later
-    mysql --version
+# Ensure you have MySQL version 5.5.14 or later
+mysql --version
 
-    # Pick a MySQL root password (can be anything), type it and press enter
-    # Retype the MySQL root password and press enter
+# Pick a MySQL root password (can be anything), type it and press enter
+# Retype the MySQL root password and press enter
 
-    # Secure your installation
-    sudo mysql_secure_installation
+# Secure your installation
+sudo mysql_secure_installation
 
-    # Login to MySQL
-    mysql -u root -p
+# Login to MySQL
+mysql -u root -p
 
-    # Type the MySQL root password
+# Type the MySQL root password
 
-    # Create a user for GitLab
-    # do not type the 'mysql>', this is part of the prompt
-    # change $password in the command below to a real password you pick
-    mysql> CREATE USER 'git'@'localhost' IDENTIFIED BY '$password';
+# Create a user for GitLab
+# do not type the 'mysql>', this is part of the prompt
+# change $password in the command below to a real password you pick
+mysql> CREATE USER 'git'@'localhost' IDENTIFIED BY '$password';
 
-    # Ensure you can use the InnoDB engine which is necessary to support long indexes
-    # If this fails, check your MySQL config files (e.g. `/etc/mysql/*.cnf`, `/etc/mysql/conf.d/*`) for the setting "innodb = off"
-    mysql> SET storage_engine=INNODB;
+# Ensure you can use the InnoDB engine which is necessary to support long indexes
+# If this fails, check your MySQL config files (e.g. `/etc/mysql/*.cnf`, `/etc/mysql/conf.d/*`) for the setting "innodb = off"
+mysql> SET storage_engine=INNODB;
 
-    # If you have MySQL < 5.7.7 and want to enable utf8mb4 character set support with your GitLab install, you must set the following NOW:
-    mysql> SET GLOBAL innodb_file_per_table=1, innodb_file_format=Barracuda, innodb_large_prefix=1;
+# If you have MySQL < 5.7.7 and want to enable utf8mb4 character set support with your GitLab install, you must set the following NOW:
+mysql> SET GLOBAL innodb_file_per_table=1, innodb_file_format=Barracuda, innodb_large_prefix=1;
 
-    # Create the GitLab production database
-    mysql> CREATE DATABASE IF NOT EXISTS `gitlabhq_production` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_general_ci`;
+# Create the GitLab production database
+mysql> CREATE DATABASE IF NOT EXISTS `gitlabhq_production` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_general_ci`;
 
-    # Grant the GitLab user necessary permissions on the database
-    mysql> GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, CREATE TEMPORARY TABLES, DROP, INDEX, ALTER, LOCK TABLES, REFERENCES ON `gitlabhq_production`.* TO 'git'@'localhost';
+# Grant the GitLab user necessary permissions on the database
+mysql> GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, CREATE TEMPORARY TABLES, DROP, INDEX, ALTER, LOCK TABLES, REFERENCES ON `gitlabhq_production`.* TO 'git'@'localhost';
 
-    # Quit the database session
-    mysql> \q
+# Quit the database session
+mysql> \q
 
-    # Try connecting to the new database with the new user
-    sudo -u git -H mysql -u git -p -D gitlabhq_production
+# Try connecting to the new database with the new user
+sudo -u git -H mysql -u git -p -D gitlabhq_production
 
-    # Type the password you replaced $password with earlier
+# Type the password you replaced $password with earlier
 
-    # You should now see a 'mysql>' prompt
+# You should now see a 'mysql>' prompt
 
-    # Quit the database session
-    mysql> \q
+# Quit the database session
+mysql> \q
+```
 
-    # You are done installing the database for now and can go back to the rest of the installation.
-
+You are done installing the database for now and can go back to the rest of the installation.
 Please proceed to the rest of the installation before running through the utf8mb4 support section.
-
 
 ### MySQL utf8mb4 support
 

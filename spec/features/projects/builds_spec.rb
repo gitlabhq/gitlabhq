@@ -109,6 +109,10 @@ feature 'Builds', :feature do
         expect(page).to have_content pipeline.git_commit_message
         expect(page).to have_content pipeline.git_author_name
       end
+
+      it 'shows active build' do
+        expect(page).to have_selector('.build-job.active')
+      end
     end
 
     context "Job from other project" do

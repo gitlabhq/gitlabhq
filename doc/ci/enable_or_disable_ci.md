@@ -23,12 +23,12 @@ respectively.
 
 ### Per-project user setting
 
-The setting to enable or disable GitLab CI can be found with the name **Builds**
-under the **Features** area of a project's settings along with **Issues**,
-**Merge Requests**, **Wiki** and **Snippets**. Select or deselect the checkbox
-and hit **Save** for the settings to take effect.
+The setting to enable or disable GitLab CI can be found with the name **Pipelines**
+under the **Sharing & Permissions** area of a project's settings along with
+**Merge Requests**. Choose one of **Disabled**, **Only team members** and
+**Everyone with access** and hit **Save changes** for the settings to take effect.
 
-![Features settings](img/features_settings.png)
+![Sharing & Permissions settings](img/permissions_settings.png)
 
 ---
 

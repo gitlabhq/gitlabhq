@@ -77,7 +77,8 @@ Parameters:
       "id": 3,
       "name": "Diaspora",
       "path": "diaspora",
-      "kind": "group"
+      "kind": "group",
+      "full_path": "diaspora"
     },
     "archived": false,
     "avatar_url": "http://example.com/uploads/project/avatar/4/uploads/avatar.png",
@@ -127,7 +128,8 @@ Parameters:
       "id": 4,
       "name": "Brightbox",
       "path": "brightbox",
-      "kind": "group"
+      "kind": "group",
+      "full_path": "brightbox"
     },
     "permissions": {
       "project_access": {
@@ -207,7 +209,8 @@ Parameters:
     "id": 3,
     "name": "Diaspora",
     "path": "diaspora",
-    "kind": "group"
+    "kind": "group",
+    "full_path": "diaspora"
   },
   "permissions": {
     "project_access": {
@@ -592,7 +595,8 @@ Example response:
     "id": 3,
     "name": "Diaspora",
     "path": "diaspora",
-    "kind": "group"
+    "kind": "group",
+    "full_path": "diaspora"
   },
   "archived": true,
   "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png",
@@ -657,7 +661,8 @@ Example response:
     "id": 3,
     "name": "Diaspora",
     "path": "diaspora",
-    "kind": "group"
+    "kind": "group",
+    "full_path": "diaspora"
   },
   "archived": true,
   "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png",
@@ -728,7 +733,8 @@ Example response:
     "id": 3,
     "name": "Diaspora",
     "path": "diaspora",
-    "kind": "group"
+    "kind": "group",
+    "full_path": "diaspora"
   },
   "permissions": {
     "project_access": {
@@ -810,7 +816,8 @@ Example response:
     "id": 3,
     "name": "Diaspora",
     "path": "diaspora",
-    "kind": "group"
+    "kind": "group",
+    "full_path": "diaspora"
   },
   "permissions": {
     "project_access": {

@@ -50,9 +50,10 @@ class Event < ActiveRecord::Base
   class << self
     # Update Gitlab::ContributionsCalendar#activity_dates if this changes
     def contributions
-      where("action = ? OR (target_type in (?) AND action in (?))",
-            Event::PUSHED, ["MergeRequest", "Issue"],
-            [Event::CREATED, Event::CLOSED, Event::MERGED])
+      where("action = ? OR (target_type IN (?) AND action IN (?)) OR (target_type = ? AND action = ?)",
+            Event::PUSHED,
+            ["MergeRequest", "Issue"], [Event::CREATED, Event::CLOSED, Event::MERGED],
+            "Note", Event::COMMENTED)
     end
 
     def limit_recent(limit = 20, offset = nil)

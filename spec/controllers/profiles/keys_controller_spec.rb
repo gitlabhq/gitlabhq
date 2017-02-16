@@ -42,10 +42,9 @@ describe Profiles::KeysController do
     end
 
     describe "user with keys" do
-      before do
-        user.keys << create(:key)
-        user.keys << create(:another_key)
-      end
+      let!(:key) { create(:key, user: user) }
+      let!(:another_key) { create(:another_key, user: user) }
+      let!(:deploy_key) { create(:deploy_key, user: user) }
 
       it "does generally work" do
         get :get_keys, username: user.username
@@ -53,16 +52,16 @@ describe Profiles::KeysController do
         expect(response).to be_success
       end
 
-      it "renders all keys separated with a new line" do
+      it "renders all non deploy keys separated with a new line" do
         get :get_keys, username: user.username
 
-        expect(response.body).not_to eq("")
+        expect(response.body).not_to eq('')
         expect(response.body).to eq(user.all_ssh_keys.join("\n"))
 
-        # Unique part of key 1
-        expect(response.body).to match(/PWx6WM4lhHNedGfBpPJNPpZ/)
-        # Key 2
-        expect(response.body).to match(/AQDmTillFzNTrrGgwaCKaSj/)
+        expect(response.body).to include(key.key.sub(' dummy@gitlab.com', ''))
+        expect(response.body).to include(another_key.key)
+
+        expect(response.body).not_to include(deploy_key.key)
       end
 
       it "does not render the comment of the key" do

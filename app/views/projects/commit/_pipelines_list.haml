@@ -1,4 +1,7 @@
-#commit-pipeline-table-view{ data: { endpoint: endpoint } }
+- disable_initialization = local_assigns.fetch(:disable_initialization, false)
+#commit-pipeline-table-view{ data: { disable_initialization: disable_initialization,
+  endpoint: endpoint,
+} }
 .pipeline-svgs{ data: { "commit_icon_svg" => custom_icon("icon_commit"),
   "icon_status_canceled" => custom_icon("icon_status_canceled"),
   "icon_status_running" => custom_icon("icon_status_running"),

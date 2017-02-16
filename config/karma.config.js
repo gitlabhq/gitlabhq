@@ -15,6 +15,13 @@ module.exports = function(config) {
     preprocessors: {
       'spec/javascripts/**/*.js?(.es6)': ['webpack', 'sourcemap'],
     },
+    reporters: ['progress', 'coverage-istanbul'],
+    coverageIstanbulReporter: {
+      reports: ['html', 'text-summary'],
+      dir: 'coverage-javascript/',
+      subdir: '.',
+      fixWebpackSourcePaths: true
+    },
     webpack: webpackConfig,
     webpackMiddleware: { stats: 'errors-only' },
   });

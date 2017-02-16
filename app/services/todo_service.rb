@@ -256,6 +256,12 @@ class TodoService
   end
 
   def create_mention_todos(project, target, author, note = nil)
+    # Create Todos for directly addressed users
+    directly_addressed_users = filter_directly_addressed_users(project, note || target, author)
+    attributes = attributes_for_todo(project, target, author, Todo::DIRECTLY_ADDRESSED, note)
+    create_todos(directly_addressed_users, attributes)
+
+    # Create Todos for mentioned users
     mentioned_users = filter_mentioned_users(project, note || target, author)
     attributes = attributes_for_todo(project, target, author, Todo::MENTIONED, note)
     create_todos(mentioned_users, attributes)
@@ -300,10 +306,18 @@ class TodoService
     )
   end
 
+  def filter_todo_users(users, project, target)
+    reject_users_without_access(users, project, target).uniq
+  end
+
   def filter_mentioned_users(project, target, author)
     mentioned_users = target.mentioned_users(author)
-    mentioned_users = reject_users_without_access(mentioned_users, project, target)
-    mentioned_users.uniq
+    filter_todo_users(mentioned_users, project, target)
+  end
+
+  def filter_directly_addressed_users(project, target, author)
+    directly_addressed_users = target.directly_addressed_users(author)
+    filter_todo_users(directly_addressed_users, project, target)
   end
 
   def reject_users_without_access(users, project, target)

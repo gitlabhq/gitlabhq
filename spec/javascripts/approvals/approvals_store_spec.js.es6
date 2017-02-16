@@ -1,7 +1,4 @@
-/* eslint-disable import/newline-after-import */
-
-window.ES6Promise = require('vendor/es6-promise.auto');
-window.ES6Promise.polyfill();
+require('es6-promise').polyfill();
 require('~/merge_request_widget/approvals/approvals_store');
 
 $.rails = {

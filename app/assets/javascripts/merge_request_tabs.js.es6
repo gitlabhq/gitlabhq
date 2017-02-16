@@ -61,6 +61,7 @@ require('./flash');
 
     constructor({ action, setUrl, stubLocation } = {}) {
       this.diffsLoaded = false;
+      this.pipelinesLoaded = false;
       this.commitsLoaded = false;
       this.fixedLayoutPref = null;
 
@@ -128,6 +129,13 @@ require('./flash');
         $.scrollTo('.merge-request-details .merge-request-tabs', {
           offset: 0,
         });
+      } else if (action === 'pipelines') {
+        if (this.pipelinesLoaded) {
+          return;
+        }
+        const pipelineTableViewEl = document.querySelector('#commit-pipeline-table-view');
+        gl.commits.pipelines.PipelinesTableBundle.$mount(pipelineTableViewEl);
+        this.pipelinesLoaded = true;
       } else {
         this.expandView();
         this.resetViewContainer();

@@ -94,7 +94,7 @@
         -# This tab is always loaded via AJAX
       #pipelines.pipelines.tab-pane
         - if @pipelines.any?
-          = render 'projects/commit/pipelines_list', endpoint: pipelines_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
+          = render 'projects/commit/pipelines_list', disable_initialization: true, endpoint: pipelines_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
       #diffs.diffs.tab-pane
         -# This tab is always loaded via AJAX
 

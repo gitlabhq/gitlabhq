@@ -7,6 +7,75 @@ describe WikiPage, models: true do
 
   subject { WikiPage.new(wiki) }
 
+  describe '.group_by_directory' do
+    context 'when there are no pages' do
+      it 'returns an empty array' do
+        expect(WikiPage.group_by_directory(nil)).to eq([])
+        expect(WikiPage.group_by_directory([])).to eq([])
+      end
+    end
+
+    context 'when there are pages' do
+      before do
+        create_page('dir_1/dir_1_1/page_3', 'content')
+        create_page('dir_1/page_2', 'content')
+        create_page('dir_2/page_5', 'content')
+        create_page('dir_2/page_4', 'content')
+        create_page('page_1', 'content')
+      end
+      let(:page_1) { wiki.find_page('page_1') }
+      let(:dir_1) do
+        WikiDirectory.new('dir_1', [wiki.find_page('dir_1/page_2')])
+      end
+      let(:dir_1_1) do
+        WikiDirectory.new('dir_1/dir_1_1', [wiki.find_page('dir_1/dir_1_1/page_3')])
+      end
+      let(:dir_2) do
+        pages = [wiki.find_page('dir_2/page_5'),
+                 wiki.find_page('dir_2/page_4')]
+        WikiDirectory.new('dir_2', pages)
+      end
+
+      it 'returns an array with pages and directories' do
+        expected_grouped_entries = [page_1, dir_1, dir_1_1, dir_2]
+
+        grouped_entries = WikiPage.group_by_directory(wiki.pages)
+
+        grouped_entries.each_with_index do |page_or_dir, i|
+          expected_page_or_dir = expected_grouped_entries[i]
+          expected_slugs = get_slugs(expected_page_or_dir)
+          slugs = get_slugs(page_or_dir)
+
+          expect(slugs).to match_array(expected_slugs)
+        end
+      end
+
+      it 'returns an array sorted by alphabetical position' do
+        # Directories and pages within directories are sorted alphabetically.
+        # Pages at root come before everything.
+        expected_order = ['page_1', 'dir_1/page_2', 'dir_1/dir_1_1/page_3',
+                          'dir_2/page_4', 'dir_2/page_5']
+
+        grouped_entries = WikiPage.group_by_directory(wiki.pages)
+
+        actual_order =
+          grouped_entries.map do |page_or_dir|
+            get_slugs(page_or_dir)
+          end.
+          flatten
+        expect(actual_order).to eq(expected_order)
+      end
+    end
+  end
+
+  describe '.unhyphenize' do
+    it 'removes hyphens from a name' do
+      name = 'a-name--with-hyphens'
+
+      expect(WikiPage.unhyphenize(name)).to eq('a name with hyphens')
+    end
+  end
+
   describe "#initialize" do
     context "when initialized with an existing gollum page" do
       before do
@@ -189,6 +258,26 @@ describe WikiPage, models: true do
     end
   end
 
+  describe '#directory' do
+    context 'when the page is at the root directory' do
+      it 'returns an empty string' do
+        create_page('file', 'content')
+        page = wiki.find_page('file')
+
+        expect(page.directory).to eq('')
+      end
+    end
+
+    context 'when the page is inside an actual directory' do
+      it 'returns the full directory hierarchy' do
+        create_page('dir_1/dir_1_1/file', 'content')
+        page = wiki.find_page('dir_1/dir_1_1/file')
+
+        expect(page.directory).to eq('dir_1/dir_1_1')
+      end
+    end
+  end
+
   describe '#historical?' do
     before do
       create_page('Update', 'content')
@@ -221,6 +310,27 @@ describe WikiPage, models: true do
     end
   end
 
+  describe '#to_partial_path' do
+    it 'returns the relative path to the partial to be used' do
+      page = build(:wiki_page)
+
+      expect(page.to_partial_path).to eq('projects/wikis/wiki_page')
+    end
+  end
+
+  describe '#==' do
+    let(:original_wiki_page) { create(:wiki_page) }
+
+    it 'returns true for identical wiki page' do
+      expect(original_wiki_page).to eq(original_wiki_page)
+    end
+
+    it 'returns false for updated wiki page' do
+      updated_wiki_page = original_wiki_page.update("Updated content")
+      expect(original_wiki_page).not_to eq(updated_wiki_page)
+    end
+  end
+
   private
 
   def remove_temp_repo(path)
@@ -238,5 +348,13 @@ describe WikiPage, models: true do
   def destroy_page(title)
     page = wiki.wiki.paged(title)
     wiki.wiki.delete_page(page, commit_details)
+  end
+
+  def get_slugs(page_or_dir)
+    if page_or_dir.is_a? WikiPage
+      [page_or_dir.slug]
+    else
+      page_or_dir.pages.present? ? page_or_dir.pages.map(&:slug) : []
+    end
   end
 end

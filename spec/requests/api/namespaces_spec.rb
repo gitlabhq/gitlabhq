@@ -5,7 +5,7 @@ describe API::Namespaces, api: true  do
   let(:admin) { create(:admin) }
   let(:user) { create(:user) }
   let!(:group1) { create(:group) }
-  let!(:group2) { create(:group) }
+  let!(:group2) { create(:group, :nested) }
 
   describe "GET /namespaces" do
     context "when unauthenticated" do
@@ -25,11 +25,13 @@ describe API::Namespaces, api: true  do
       end
 
       it "admin: returns an array of matched namespaces" do
-        get api("/namespaces?search=#{group1.name}", admin)
+        get api("/namespaces?search=#{group2.name}", admin)
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
 
         expect(json_response.length).to eq(1)
+        expect(json_response.last['path']).to eq(group2.path)
+        expect(json_response.last['full_path']).to eq(group2.full_path)
       end
     end
 
