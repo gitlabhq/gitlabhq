@@ -245,6 +245,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     respond_to do |format|
       format.html do
         define_new_vars
+        @show_changes_tab = true
         render "new"
       end
       format.json do
@@ -615,6 +616,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       group(:commit_id).count
 
     @labels = LabelsFinder.new(current_user, project_id: @project.id).execute
+
+    @show_changes_tab = params[:show_changes].present?
 
     define_pipelines_vars
   end
