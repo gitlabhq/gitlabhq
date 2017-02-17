@@ -15,6 +15,13 @@ describe GeoRepositoryCreateWorker do
 
       perform!
     end
+
+    it 'does not create the repository when its being imported' do
+      expect(project).to receive(:import?) { true }
+      expect(project).not_to receive(:create_repository)
+
+      perform!
+    end
   end
 
   context 'when repository exists' do
