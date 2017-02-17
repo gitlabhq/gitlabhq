@@ -60,6 +60,10 @@ module API
       error! e.message, e.status, e.headers
     end
 
+    rescue_from Gitlab::Auth::TooManyIps do |e|
+      rack_response({'message'=>'403 Forbidden'}.to_json, 403)
+    end
+
     rescue_from :all do |exception|
       handle_api_exception(exception)
     end
