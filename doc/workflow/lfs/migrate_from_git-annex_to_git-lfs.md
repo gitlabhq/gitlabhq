@@ -1,13 +1,13 @@
 # Migration Guide from Git Annex to Git LFS
 
-Both [Git Annex][] (**git-annex**) and [Git LFS][]
-(**git-lfs**) are tools to manage large files in Git.
-
-GitLab EE is deprecating
+> GitLab EE is deprecating
 [support to **git-annex**][post-intro-annex] from version
 8.17 on (released on 2017/02/22). It
 [will be removed][issue-remove-annex] completely in
 GitLab 9.0 (2017/03/22).
+
+Both [Git Annex][] (**git-annex**) and [Git LFS][]
+(**git-lfs**) are tools to manage large files in Git.
 
 To understand the main differences between **git-annex**
 ang **git-lfs**, read through this [overview][annex-vs-lfs].
