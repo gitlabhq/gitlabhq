@@ -58,27 +58,11 @@ describe Gitlab::Auth, lib: true do
       expect(gl_auth.find_for_git_client(user.username, 'password', project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new(user, nil, :gitlab_or_ldap, full_authentication_abilities))
     end
 
+    include_examples 'user login operation with unique ip limit' do
+      let(:user) { create(:user, password: 'password') }
 
-    context 'unique ip limit is enabled and set to 1', :redis do
-      before do
-        allow(Gitlab::Auth::UniqueIpsLimiter).to receive_message_chain(:config, :unique_ips_limit_enabled).and_return(true)
-        allow(Gitlab::Auth::UniqueIpsLimiter).to receive_message_chain(:config, :unique_ips_limit_time_window).and_return(10)
-        allow(Gitlab::Auth::UniqueIpsLimiter).to receive_message_chain(:config, :unique_ips_limit_per_user).and_return(1)
-      end
-
-      it 'allows user authenticating from the same ip' do
-        user = create(:user, password: 'password')
-        allow(Gitlab::RequestContext).to receive(:client_ip).and_return('ip')
+      def operation
         expect(gl_auth.find_for_git_client(user.username, 'password', project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new(user, nil, :gitlab_or_ldap, full_authentication_abilities))
-        expect(gl_auth.find_for_git_client(user.username, 'password', project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new(user, nil, :gitlab_or_ldap, full_authentication_abilities))
-      end
-
-      it 'blocks user authenticating from two distinct ips' do
-        user = create(:user, password: 'password')
-        allow(Gitlab::RequestContext).to receive(:client_ip).and_return('ip')
-        expect(gl_auth.find_for_git_client(user.username, 'password', project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new(user, nil, :gitlab_or_ldap, full_authentication_abilities))
-        allow(Gitlab::RequestContext).to receive(:client_ip).and_return('ip2')
-        expect { gl_auth.find_for_git_client(user.username, 'password', project: nil, ip: 'ip2') }.to raise_error(Gitlab::Auth::TooManyIps)
       end
     end
 
@@ -218,6 +202,12 @@ describe Gitlab::Auth, lib: true do
     it "does not find user with invalid login" do
       user = 'wrong'
       expect( gl_auth.find_with_user_password(username, password) ).not_to eql user
+    end
+
+    include_examples 'user login operation with unique ip limit' do
+      def operation
+        expect(gl_auth.find_with_user_password(username, password)).to eql user
+      end
     end
 
     context "with ldap enabled" do

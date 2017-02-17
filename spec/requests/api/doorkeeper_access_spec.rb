@@ -1,6 +1,29 @@
 require 'spec_helper'
 
-describe API::API, api: true  do
+shared_examples 'user login request with unique ip limit' do
+  include_context 'limit login to only one ip' do
+    it 'allows user authenticating from the same ip' do
+      change_ip('ip')
+      request
+      expect(response).to have_http_status(200)
+
+      request
+      expect(response).to have_http_status(200)
+    end
+
+    it 'blocks user authenticating from two distinct ips' do
+      change_ip('ip')
+      request
+      expect(response).to have_http_status(200)
+
+      change_ip('ip2')
+      request
+      expect(response).to have_http_status(403)
+    end
+  end
+end
+
+describe API::API, api: true do
   include ApiHelpers
 
   let!(:user) { create(:user) }
@@ -13,22 +36,9 @@ describe API::API, api: true  do
       expect(response).to have_http_status(200)
     end
 
-    include_context 'limit login to only one ip' do
-      it 'allows login twice from the same ip' do
+    include_examples 'user login request with unique ip limit' do
+      def request
         get api('/user'), access_token: token.token
-        expect(response).to have_http_status(200)
-
-        get api('/user'), access_token: token.token
-        expect(response).to have_http_status(200)
-      end
-
-      it 'blocks login from two different ips' do
-        get api('/user'), access_token: token.token
-        expect(response).to have_http_status(200)
-
-        change_ip('ip2')
-        get api('/user'), access_token: token.token
-        expect(response).to have_http_status(403)
       end
     end
   end
@@ -46,22 +56,9 @@ describe API::API, api: true  do
       expect(response).to have_http_status(200)
     end
 
-    include_context 'limit login to only one ip' do
-      it 'allows login twice from the same ip' do
+    include_examples 'user login request with unique ip limit' do
+      def request
         get api('/user', user)
-        expect(response).to have_http_status(200)
-
-        get api('/user', user)
-        expect(response).to have_http_status(200)
-      end
-
-      it 'blocks login from two different ips' do
-        get api('/user', user)
-        expect(response).to have_http_status(200)
-
-        change_ip('ip2')
-        get api('/user', user)
-        expect(response).to have_http_status(403)
       end
     end
   end

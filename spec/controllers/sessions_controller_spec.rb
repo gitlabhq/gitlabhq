@@ -30,29 +30,10 @@ describe SessionsController do
           expect(SecurityEvent.last.details[:with]).to eq('standard')
         end
 
-        context 'unique ip limit is enabled and set to 1', :redis do
-          before do
-            allow(Gitlab::Auth::UniqueIpsLimiter).to receive_message_chain(:config, :unique_ips_limit_enabled).and_return(true)
-            allow(Gitlab::Auth::UniqueIpsLimiter).to receive_message_chain(:config, :unique_ips_limit_time_window).and_return(10)
-            allow(Gitlab::Auth::UniqueIpsLimiter).to receive_message_chain(:config, :unique_ips_limit_per_user).and_return(1)
-          end
-
-          it 'allows user authenticating from the same ip' do
-            allow(Gitlab::RequestContext).to receive(:client_ip).and_return('ip')
+        include_examples 'user login operation with unique ip limit' do
+          def operation
             post(:create, user: { login: user.username, password: user.password })
             expect(subject.current_user).to eq user
-
-            post(:create, user: { login: user.username, password: user.password })
-            expect(subject.current_user).to eq user
-          end
-
-          it 'blocks user authenticating from two distinct ips' do
-            allow(Gitlab::RequestContext).to receive(:client_ip).and_return('ip')
-            post(:create, user: { login: user.username, password: user.password })
-            expect(subject.current_user).to eq user
-
-            allow(Gitlab::RequestContext).to receive(:client_ip).and_return('ip2')
-            expect { post(:create, user: { login: user.username, password: user.password }) }.to raise_error(Gitlab::Auth::TooManyIps)
           end
         end
       end
