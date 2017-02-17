@@ -40,7 +40,7 @@
       }
     },
     "assignee": {
-      "id": { "type": "integet" },
+      "id": { "type": "integer" },
       "name": { "type": "string" },
       "username": { "type": "string" },
       "avatar_url": { "type": "uri" }
