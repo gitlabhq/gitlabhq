@@ -397,7 +397,11 @@ module API
       expose :target_type
 
       expose :target do |todo, options|
-        Entities.const_get(todo.target_type).represent(todo.target, options)
+        if todo.target_type == 'Commit'
+          Entities.const_get('RepoCommit').represent(todo.target, options)
+        else
+          Entities.const_get(todo.target_type).represent(todo.target, options)
+        end
       end
 
       expose :target_url do |todo, options|
