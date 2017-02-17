@@ -111,7 +111,7 @@ header {
     }
 
     li {
-      .active a {
+      &.active a {
         font-weight: bold;
       }
 
