@@ -10,11 +10,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :module_enabled
   before_action :merge_request, only: [
     :edit, :update, :show, :diffs, :commits, :conflicts, :conflict_for_path, :pipelines, :merge, :merge_check,
-    :ci_status, :ci_environments_status, :toggle_subscription, :cancel_merge_when_build_succeeds, :remove_wip, :resolve_conflicts, :assign_related_issues
+    :ci_status, :ci_environments_status, :toggle_subscription, :cancel_merge_when_pipeline_succeeds, :remove_wip, :resolve_conflicts, :assign_related_issues
   ]
   before_action :validates_merge_request, only: [:show, :diffs, :commits, :pipelines]
   before_action :define_show_vars, only: [:show, :diffs, :commits, :conflicts, :conflict_for_path, :builds, :pipelines]
-  before_action :define_widget_vars, only: [:merge, :cancel_merge_when_build_succeeds, :merge_check]
+  before_action :define_widget_vars, only: [:merge, :cancel_merge_when_pipeline_succeeds, :merge_check]
   before_action :define_commit_vars, only: [:diffs]
   before_action :define_diff_comment_vars, only: [:diffs]
   before_action :ensure_ref_fetched, only: [:show, :diffs, :commits, :builds, :conflicts, :conflict_for_path, :pipelines]
@@ -326,8 +326,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     render partial: "projects/merge_requests/widget/show.html.haml", layout: false
   end
 
-  def cancel_merge_when_build_succeeds
-    unless @merge_request.can_cancel_merge_when_build_succeeds?(current_user)
+  def cancel_merge_when_pipeline_succeeds
+    unless @merge_request.can_cancel_merge_when_pipeline_succeeds?(current_user)
       return access_denied!
     end
 
@@ -339,9 +339,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def merge
     return access_denied! unless @merge_request.can_be_merged_by?(current_user)
 
-    # Disable the CI check if merge_when_build_succeeds is enabled since we have
+    # Disable the CI check if merge_when_pipeline_succeeds is enabled since we have
     # to wait until CI completes to know
-    unless @merge_request.mergeable?(skip_ci_check: merge_when_build_succeeds_active?)
+    unless @merge_request.mergeable?(skip_ci_check: merge_when_pipeline_succeeds_active?)
       @status = :failed
       return
     end
@@ -353,7 +353,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     @merge_request.update(merge_error: nil)
 
-    if params[:merge_when_build_succeeds].present?
+    if params[:merge_when_pipeline_succeeds].present?
       unless @merge_request.head_pipeline
         @status = :failed
         return
@@ -364,7 +364,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
           .new(@project, current_user, merge_params)
           .execute(@merge_request)
 
-        @status = :merge_when_build_succeeds
+        @status = :merge_when_pipeline_succeeds
       elsif @merge_request.head_pipeline.success?
         # This can be triggered when a user clicks the auto merge button while
         # the tests finish at about the same time
@@ -381,8 +381,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def merge_widget_refresh
     @status =
-      if merge_request.merge_when_build_succeeds
-        :merge_when_build_succeeds
+      if merge_request.merge_when_pipeline_succeeds
+        :merge_when_pipeline_succeeds
       else
         # Only MRs that can be merged end in this action
         # MR can be already picked up for merge / merged already or can be waiting for worker to be picked up
@@ -672,8 +672,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @merge_request.ensure_ref_fetched
   end
 
-  def merge_when_build_succeeds_active?
-    params[:merge_when_build_succeeds].present? &&
+  def merge_when_pipeline_succeeds_active?
+    params[:merge_when_pipeline_succeeds].present? &&
       @merge_request.head_pipeline && @merge_request.head_pipeline.active?
   end
 

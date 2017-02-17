@@ -168,8 +168,8 @@ module API
         optional :merge_commit_message, type: String, desc: 'Custom merge commit message'
         optional :should_remove_source_branch, type: Boolean,
                                                desc: 'When true, the source branch will be deleted if possible'
-        optional :merge_when_build_succeeds, type: Boolean,
-                                             desc: 'When true, this merge request will be merged when the pipeline succeeds'
+        optional :merge_when_pipeline_succeeds, type: Boolean,
+                                                desc: 'When true, this merge request will be merged when the pipeline succeeds'
         optional :sha, type: String, desc: 'When present, must have the HEAD SHA of the source branch'
       end
       put ':id/merge_requests/:merge_request_id/merge' do
@@ -192,7 +192,7 @@ module API
           should_remove_source_branch: params[:should_remove_source_branch]
         }
 
-        if params[:merge_when_build_succeeds] && merge_request.head_pipeline && merge_request.head_pipeline.active?
+        if params[:merge_when_pipeline_succeeds] && merge_request.head_pipeline && merge_request.head_pipeline.active?
           ::MergeRequests::MergeWhenPipelineSucceedsService
             .new(merge_request.target_project, current_user, merge_params)
             .execute(merge_request)
@@ -208,10 +208,10 @@ module API
       desc 'Cancel merge if "Merge When Pipeline Succeeds" is enabled' do
         success Entities::MergeRequest
       end
-      post ':id/merge_requests/:merge_request_id/cancel_merge_when_build_succeeds' do
+      post ':id/merge_requests/:merge_request_id/cancel_merge_when_pipeline_succeeds' do
         merge_request = find_project_merge_request(params[:merge_request_id])
 
-        unauthorized! unless merge_request.can_cancel_merge_when_build_succeeds?(current_user)
+        unauthorized! unless merge_request.can_cancel_merge_when_pipeline_succeeds?(current_user)
 
         ::MergeRequest::MergeWhenPipelineSucceedsService
           .new(merge_request.target_project, current_user)

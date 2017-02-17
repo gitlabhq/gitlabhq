@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170216141440) do
+ActiveRecord::Schema.define(version: 20170217151947) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -689,7 +689,7 @@ ActiveRecord::Schema.define(version: 20170216141440) do
     t.integer "updated_by_id"
     t.text "merge_error"
     t.text "merge_params"
-    t.boolean "merge_when_build_succeeds", default: false, null: false
+    t.boolean "merge_when_pipeline_succeeds", default: false, null: false
     t.integer "merge_user_id"
     t.string "merge_commit_sha"
     t.datetime "deleted_at"
@@ -972,7 +972,7 @@ ActiveRecord::Schema.define(version: 20170216141440) do
     t.boolean "last_repository_check_failed"
     t.datetime "last_repository_check_at"
     t.boolean "container_registry_enabled"
-    t.boolean "only_allow_merge_if_build_succeeds", default: false, null: false
+    t.boolean "only_allow_merge_if_pipeline_succeeds", default: false, null: false
     t.boolean "has_external_issue_tracker"
     t.string "repository_storage", default: "default", null: false
     t.boolean "request_access_enabled", default: false, null: false

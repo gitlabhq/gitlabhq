@@ -11,7 +11,7 @@ module MergeRequests
       # empty diff during a manual merge
       close_merge_requests
       reload_merge_requests
-      reset_merge_when_build_succeeds
+      reset_merge_when_pipeline_succeeds
       mark_pending_todos_done
       cache_merge_requests_closing_issues
 
@@ -78,8 +78,8 @@ module MergeRequests
       end
     end
 
-    def reset_merge_when_build_succeeds
-      merge_requests_for_source_branch.each(&:reset_merge_when_build_succeeds)
+    def reset_merge_when_pipeline_succeeds
+      merge_requests_for_source_branch.each(&:reset_merge_when_pipeline_succeeds)
     end
 
     def mark_pending_todos_done

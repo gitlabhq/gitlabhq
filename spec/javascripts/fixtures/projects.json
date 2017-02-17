@@ -43,7 +43,7 @@
   "avatar_url": null,
   "star_count": 0,
   "forks_count": 0,
-  "only_allow_merge_if_build_succeeds": false,
+  "only_allow_merge_if_pipeline_succeeds": false,
   "open_issues_count": 0,
   "permissions": {
     "project_access": null,
@@ -88,7 +88,7 @@
   "avatar_url": null,
   "star_count": 0,
   "forks_count": 0,
-  "only_allow_merge_if_build_succeeds": false,
+  "only_allow_merge_if_pipeline_succeeds": false,
   "open_issues_count": 5,
   "permissions": {
     "project_access": {
@@ -139,7 +139,7 @@
   "avatar_url": null,
   "star_count": 0,
   "forks_count": 0,
-  "only_allow_merge_if_build_succeeds": true,
+  "only_allow_merge_if_pipeline_succeeds": true,
   "open_issues_count": 4,
   "permissions": {
     "project_access": null,
@@ -187,7 +187,7 @@
   "avatar_url": null,
   "star_count": 0,
   "forks_count": 0,
-  "only_allow_merge_if_build_succeeds": true,
+  "only_allow_merge_if_pipeline_succeeds": true,
   "open_issues_count": 4,
   "permissions": {
     "project_access": null,
@@ -235,7 +235,7 @@
   "avatar_url": null,
   "star_count": 0,
   "forks_count": 0,
-  "only_allow_merge_if_build_succeeds": false,
+  "only_allow_merge_if_pipeline_succeeds": false,
   "open_issues_count": 5,
   "permissions": {
     "project_access": null,
@@ -283,7 +283,7 @@
   "avatar_url": null,
   "star_count": 0,
   "forks_count": 0,
-  "only_allow_merge_if_build_succeeds": false,
+  "only_allow_merge_if_pipeline_succeeds": false,
   "open_issues_count": 5,
   "permissions": {
     "project_access": {
@@ -334,7 +334,7 @@
   "avatar_url": null,
   "star_count": 0,
   "forks_count": 0,
-  "only_allow_merge_if_build_succeeds": false,
+  "only_allow_merge_if_pipeline_succeeds": false,
   "open_issues_count": 3,
   "permissions": {
     "project_access": null,
@@ -382,7 +382,7 @@
   "avatar_url": null,
   "star_count": 0,
   "forks_count": 0,
-  "only_allow_merge_if_build_succeeds": false,
+  "only_allow_merge_if_pipeline_succeeds": false,
   "open_issues_count": 5,
   "permissions": {
     "project_access": {
@@ -433,7 +433,7 @@
   "avatar_url": null,
   "star_count": 0,
   "forks_count": 0,
-  "only_allow_merge_if_build_succeeds": false,
+  "only_allow_merge_if_pipeline_succeeds": false,
   "open_issues_count": 5,
   "permissions": {
     "project_access": null,
