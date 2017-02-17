@@ -18,18 +18,18 @@ describe 'User Callouts', js: true do
   describe 'user callout should appear in two routes' do
     it 'shows up on the user profile' do
       visit user_path(user)
-      expect(find('#user-callout')).to have_content 'Customize your experience'
+      expect(find('.user-callout')).to have_content 'Customize your experience'
     end
 
     it 'shows up on the dashboard projects' do
       visit dashboard_projects_path
-      expect(find('#user-callout')).to have_content 'Customize your experience'
+      expect(find('.user-callout')).to have_content 'Customize your experience'
     end
   end
 
   it 'hides the user callout when click on the dismiss icon' do
     visit user_path(user)
-    within('#user-callout') do
+    within('.user-callout') do
       find('.dismiss-icon').click
     end
     expect(page).not_to have_selector('#user-callout')

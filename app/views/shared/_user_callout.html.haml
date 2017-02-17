@@ -1,6 +1,7 @@
-#user-callout
+.user-callout
   .bordered-box.landing.content-block
-    = icon("times", class: "dismiss-icon")
+    %button.btn.btn-default.close{ type: "button" }
+      = icon("times", class: "dismiss-icon")
     .row
       .col-sm-3.col-xs-12.svg-container
         = custom_icon('icon_customization')

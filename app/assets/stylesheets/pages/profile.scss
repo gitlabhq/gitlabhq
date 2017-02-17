@@ -278,7 +278,7 @@ table.u2f-registrations {
   }
 }
 
-#user-callout {
+.user-callout {
   display: none;
   margin: 24px auto 0;
 
@@ -289,11 +289,13 @@ table.u2f-registrations {
 
   .landing {
     margin-bottom: $gl-padding;
-    overflow: hidden;
+
+    .close {
+      margin-right: 20px;
+    }
 
     .dismiss-icon {
       float: right;
-      margin-right: 20px;
       cursor: pointer;
       color: $cycle-analytics-dismiss-icon-color;
     }
