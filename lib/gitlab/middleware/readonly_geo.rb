@@ -2,11 +2,12 @@ module Gitlab
   module Middleware
     class ReadonlyGeo
       DISALLOWED_METHODS = %w(POST PATCH PUT DELETE)
-      WHITELISTED = %w(api/v3/internal api/v3/geo/refresh_wikis api/v3/geo/receive_events)
       APPLICATION_JSON = 'application/json'
+      API_VERSIONS = (3..4)
 
       def initialize(app)
         @app = app
+        @whitelisted = internal_routes + geo_routes
       end
 
       def call(env)
@@ -30,6 +31,15 @@ module Gitlab
       end
 
       private
+
+      def internal_routes
+        API_VERSIONS.flat_map { |version| "api/v#{version}/internal" }
+      end
+
+      def geo_routes
+        geo_routes = ['refresh_wikis', 'receive_events']
+        API_VERSIONS.flat_map { |version| geo_routes.map { |route| "api/v#{version}/geo/#{route}" } }
+      end
 
       def disallowed_request?
         DISALLOWED_METHODS.include?(@env['REQUEST_METHOD']) && !whitelisted_routes
@@ -60,7 +70,7 @@ module Gitlab
       end
 
       def whitelisted_routes
-        logout_route || grack_route || WHITELISTED.any? { |path| @request.path.include?(path) } || sidekiq_route
+        logout_route || grack_route || @whitelisted.any? { |path| request.path.include?(path) } || sidekiq_route
       end
 
       def logout_route
