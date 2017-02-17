@@ -1,6 +1,4 @@
 - label_css_id = dom_id(label)
-- open_issues_count = label.open_issues_count(current_user)
-- open_merge_requests_count = label.open_merge_requests_count(current_user)
 - status = label_subscription_status(label, @project).inquiry if current_user
 - subject = local_assigns[:subject]
 
@@ -15,10 +13,10 @@
       %ul
         %li
           = link_to_label(label, subject: subject, type: :merge_request) do
-            = pluralize open_merge_requests_count, 'merge request'
+            view merge requests
         %li
           = link_to_label(label, subject: subject) do
-            = pluralize open_issues_count, 'open issue'
+            view open issues
         - if current_user && defined?(@project)
           %li.label-subscription
             - if label.is_a?(ProjectLabel)
@@ -40,9 +38,9 @@
 
   .pull-right.hidden-xs.hidden-sm.hidden-md
     = link_to_label(label, subject: subject, type: :merge_request, css_class: 'btn btn-transparent btn-action') do
-      = pluralize open_merge_requests_count, 'merge request'
+      view merge requests
     = link_to_label(label, subject: subject, css_class: 'btn btn-transparent btn-action') do
-      = pluralize open_issues_count, 'open issue'
+      view open issues
 
     - if current_user && defined?(@project)
       .label-subscription.inline
