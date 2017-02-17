@@ -64,6 +64,16 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             if: :akismet_enabled
 
+  validates :unique_ips_limit_per_user,
+            numericality: { greater_than_or_equal_to: 1 },
+            presence: true,
+            if: :unique_ips_limit_enabled
+
+  validates :unique_ips_limit_time_window,
+            numericality: { greater_than_or_equal_to: 0 },
+            presence: true,
+            if: :unique_ips_limit_enabled
+
   validates :koding_url,
             presence: true,
             if: :koding_enabled
