@@ -275,7 +275,7 @@ feature 'Builds', :feature do
         let!(:deployment) { create(:deployment, environment: environment, sha: project.commit.id) }
         let(:build) { create(:ci_build, :success, environment: environment.name, pipeline: pipeline) }
 
-        it 'shows a link to lastest deployment' do
+        it 'shows a link to latest deployment' do
           visit namespace_project_build_path(project.namespace, project, build)
 
           expect(page).to have_link('latest deployment')

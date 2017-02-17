@@ -2,7 +2,7 @@
 /* global MergeRequestTabs */
 
 require('vendor/jquery.waitforimages');
-require('vendor/task_list');
+require('./task_list');
 require('./merge_request_tabs');
 
 (function() {
@@ -24,12 +24,18 @@ require('./merge_request_tabs');
         };
       })(this));
       this.initTabs();
-      // Prevent duplicate event bindings
-      this.disableTaskList();
       this.initMRBtnListeners();
       this.initCommitMessageListeners();
       if ($("a.btn-close").length) {
-        this.initTaskList();
+        this.taskList = new gl.TaskList({
+          dataType: 'merge_request',
+          fieldName: 'description',
+          selector: '.detail-page-description',
+          onSuccess: (result) => {
+            document.querySelector('#task_status').innerText = result.task_status;
+            document.querySelector('#task_status_short').innerText = result.task_status_short;
+          }
+        });
       }
     }
 
@@ -48,11 +54,6 @@ require('./merge_request_tabs');
     MergeRequest.prototype.showAllCommits = function() {
       this.$('.first-commits').remove();
       return this.$('.all-commits').removeClass('hide');
-    };
-
-    MergeRequest.prototype.initTaskList = function() {
-      $('.detail-page-description .js-task-list-container').taskList('enable');
-      return $(document).on('tasklist:changed', '.detail-page-description .js-task-list-container', this.updateTaskList);
     };
 
     MergeRequest.prototype.initMRBtnListeners = function() {
@@ -83,30 +84,6 @@ require('./merge_request_tabs');
         $button.data('submitted', true);
         return $button.trigger('click');
       }
-    };
-
-    MergeRequest.prototype.disableTaskList = function() {
-      $('.detail-page-description .js-task-list-container').taskList('disable');
-      return $(document).off('tasklist:changed', '.detail-page-description .js-task-list-container');
-    };
-
-    MergeRequest.prototype.updateTaskList = function() {
-      var patchData;
-      patchData = {};
-      patchData['merge_request'] = {
-        'description': $('.js-task-list-field', this).val()
-      };
-      return $.ajax({
-        type: 'PATCH',
-        url: $('form.js-issuable-update').attr('action'),
-        data: patchData,
-        success: function(mergeRequest) {
-          document.querySelector('#task_status').innerText = mergeRequest.task_status;
-          document.querySelector('#task_status_short').innerText = mergeRequest.task_status_short;
-        }
-      });
-    // TODO (rspeicher): Make the merge request description inline-editable like a
-    // note so that we can re-use its form here
     };
 
     MergeRequest.prototype.initCommitMessageListeners = function() {

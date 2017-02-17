@@ -193,5 +193,5 @@ And to check out a particular merge request:
 git checkout origin/merge-requests/1
 ```
 
-[products]: https://about.gitlab.com/products/ "GitLab products page"
 [protected branches]: ../protected_branches.md
+[products]: https://about.gitlab.com/products/ "GitLab products page"

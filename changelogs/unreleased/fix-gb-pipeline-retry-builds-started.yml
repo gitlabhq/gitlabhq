@@ -1,0 +1,4 @@
+---
+title: Fix CI/CD pipeline retry and take stages order into account
+merge_request: 9021
+author:

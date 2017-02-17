@@ -1,14 +1,11 @@
 class BaseService
+  include Gitlab::Allowable
   include Gitlab::CurrentSettings
 
   attr_accessor :project, :current_user, :params
 
   def initialize(project, user, params = {})
     @project, @current_user, @params = project, user, params.dup
-  end
-
-  def can?(object, action, subject)
-    Ability.allowed?(object, action, subject)
   end
 
   def notification_service

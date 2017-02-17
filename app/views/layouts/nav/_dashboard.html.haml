@@ -1,41 +1,39 @@
-.nav-sidebar
-  %ul.nav
-    = nav_link(path: ['root#index', 'projects#trending', 'projects#starred', 'dashboard/projects#index'], html_options: {class: "#{project_tab_class} home"}) do
-      = link_to dashboard_projects_path, title: 'Projects', class: 'dashboard-shortcuts-projects' do
-        %span
-          Projects
-    = nav_link(path: 'dashboard#activity') do
-      = link_to activity_dashboard_path, class: 'dashboard-shortcuts-activity', title: 'Activity' do
-        %span
-          Activity
-    - if koding_enabled?
-      = nav_link(controller: :koding) do
-        = link_to koding_path, title: 'Koding' do
-          %span
-            Koding
-    = nav_link(controller: [:groups, 'groups/milestones', 'groups/group_members']) do
-      = link_to dashboard_groups_path, title: 'Groups' do
-        %span
-          Groups
-    = nav_link(controller: 'dashboard/milestones') do
-      = link_to dashboard_milestones_path, title: 'Milestones' do
-        %span
-          Milestones
-    = nav_link(path: 'dashboard#issues') do
-      = link_to assigned_issues_dashboard_path, title: 'Issues', class: 'dashboard-shortcuts-issues' do
-        %span
-          Issues
-          %span.count= number_with_delimiter(cached_assigned_issuables_count(current_user, :issues, :opened))
-    = nav_link(path: 'dashboard#merge_requests') do
-      = link_to assigned_mrs_dashboard_path, title: 'Merge Requests', class: 'dashboard-shortcuts-merge_requests' do
-        %span
-          Merge Requests
-          %span.count= number_with_delimiter(cached_assigned_issuables_count(current_user, :merge_requests, :opened))
-    = nav_link(controller: 'dashboard/snippets') do
-      = link_to dashboard_snippets_path, title: 'Snippets' do
-        %span
-          Snippets
-
-    = link_to help_path, title: 'About GitLab EE', class: 'about-gitlab' do
+%ul
+  = nav_link(path: ['root#index', 'projects#trending', 'projects#starred', 'dashboard/projects#index'], html_options: {class: "#{project_tab_class} home"}) do
+    = link_to dashboard_projects_path, title: 'Projects', class: 'dashboard-shortcuts-projects' do
       %span
-        About GitLab EE
+        Projects
+  = nav_link(path: 'dashboard#activity') do
+    = link_to activity_dashboard_path, class: 'dashboard-shortcuts-activity', title: 'Activity' do
+      %span
+        Activity
+  - if koding_enabled?
+    = nav_link(controller: :koding) do
+      = link_to koding_path, title: 'Koding' do
+        %span
+          Koding
+  = nav_link(controller: [:groups, 'groups/milestones', 'groups/group_members']) do
+    = link_to dashboard_groups_path, title: 'Groups' do
+      %span
+        Groups
+  = nav_link(controller: 'dashboard/milestones') do
+    = link_to dashboard_milestones_path, title: 'Milestones' do
+      %span
+        Milestones
+  = nav_link(path: 'dashboard#issues') do
+    = link_to assigned_issues_dashboard_path, title: 'Issues', class: 'dashboard-shortcuts-issues' do
+      %span
+        Issues
+        %span.badge= number_with_delimiter(cached_assigned_issuables_count(current_user, :issues, :opened))
+  = nav_link(path: 'dashboard#merge_requests') do
+    = link_to assigned_mrs_dashboard_path, title: 'Merge Requests', class: 'dashboard-shortcuts-merge_requests' do
+      %span
+        Merge Requests
+        %span.badge= number_with_delimiter(cached_assigned_issuables_count(current_user, :merge_requests, :opened))
+  = nav_link(controller: 'dashboard/snippets') do
+    = link_to dashboard_snippets_path, title: 'Snippets' do
+      %span
+        Snippets
+  %li.divider
+  %li
+    = link_to "About GitLab EE", help_path, title: 'About GitLab EE', class: 'about-gitlab'

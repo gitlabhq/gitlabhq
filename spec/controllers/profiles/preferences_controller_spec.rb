@@ -25,8 +25,7 @@ describe Profiles::PreferencesController do
     def go(params: {}, format: :js)
       params.reverse_merge!(
         color_scheme_id: '1',
-        dashboard: 'stars',
-        theme_id: '1'
+        dashboard: 'stars'
       )
 
       patch :update, user: params, format: format
@@ -41,8 +40,7 @@ describe Profiles::PreferencesController do
       it "changes the user's preferences" do
         prefs = {
           color_scheme_id: '1',
-          dashboard: 'stars',
-          theme_id: '2'
+          dashboard: 'stars'
         }.with_indifferent_access
 
         expect(user).to receive(:update_attributes).with(prefs)

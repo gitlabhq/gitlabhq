@@ -43,7 +43,7 @@ module ChatMessage
     end
 
     def project_link
-      "[#{project_name}](#{project_url})"
+      link(project_name, project_url)
     end
 
     def merge_request_message
@@ -51,7 +51,7 @@ module ChatMessage
     end
 
     def merge_request_link
-      "[merge request !#{merge_request_id}](#{merge_request_url})"
+      link("merge request !#{merge_request_id}", merge_request_url)
     end
 
     def merge_request_url

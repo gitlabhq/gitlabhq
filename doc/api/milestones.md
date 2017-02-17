@@ -103,3 +103,16 @@ Parameters:
 
 - `id` (required) - The ID of a project
 - `milestone_id` (required) - The ID of a project milestone
+
+## Get all merge requests assigned to a single milestone
+
+Gets all merge requests assigned to a single project milestone.
+
+```
+GET /projects/:id/milestones/:milestone_id/merge_requests
+```
+
+Parameters:
+
+- `id` (required) - The ID of a project
+- `milestone_id` (required) - The ID of a project milestone

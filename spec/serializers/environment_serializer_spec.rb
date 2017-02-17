@@ -181,6 +181,17 @@ describe EnvironmentSerializer do
           expect(subject.first[:name]).to eq 'production'
           expect(subject.second[:name]).to eq 'staging'
         end
+
+        it 'appends correct total page count header' do
+          expect(subject).not_to be_empty
+          expect(response).to have_received(:[]=).with('X-Total', '3')
+        end
+
+        it 'appends correct page count headers' do
+          expect(subject).not_to be_empty
+          expect(response).to have_received(:[]=).with('X-Total-Pages', '2')
+          expect(response).to have_received(:[]=).with('X-Per-Page', '2')
+        end
       end
     end
   end

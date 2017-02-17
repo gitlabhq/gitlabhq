@@ -253,11 +253,11 @@
       display: block;
     }
 
-    width: $sidebar_collapsed_width;
+    width: $gutter_collapsed_width;
     padding-top: 0;
 
     .block {
-      width: $sidebar_collapsed_width - 2px;
+      width: $gutter_collapsed_width - 2px;
       margin-left: -19px;
       padding: 15px 0 0;
       border-bottom: none;

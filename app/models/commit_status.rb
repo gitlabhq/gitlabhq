@@ -23,9 +23,6 @@ class CommitStatus < ActiveRecord::Base
     where(id: max_id.group(:name, :commit_id))
   end
 
-  scope :retried, -> { where.not(id: latest) }
-  scope :ordered, -> { order(:name) }
-
   scope :failed_but_allowed, -> do
     where(allow_failure: true, status: [:failed, :canceled])
   end
@@ -36,8 +33,11 @@ class CommitStatus < ActiveRecord::Base
       false, all_state_names - [:failed, :canceled])
   end
 
+  scope :retried, -> { where.not(id: latest) }
+  scope :ordered, -> { order(:name) }
   scope :latest_ordered, -> { latest.ordered.includes(project: :namespace) }
   scope :retried_ordered, -> { retried.ordered.includes(project: :namespace) }
+  scope :after_stage, -> (index) { where('stage_idx > ?', index) }
 
   state_machine :status do
     event :enqueue do

@@ -30,6 +30,7 @@ describe API::Labels, api: true  do
       get api("/projects/#{project.id}/labels", user)
 
       expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.size).to eq(3)
       expect(json_response.first.keys).to match_array expected_keys

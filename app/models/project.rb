@@ -234,6 +234,8 @@ class Project < ActiveRecord::Base
   # Scopes
   default_scope { where(pending_delete: false) }
 
+  scope :with_deleted, -> { unscope(where: :pending_delete) }
+
   scope :sorted_by_activity, -> { reorder(last_activity_at: :desc) }
   scope :sorted_by_stars, -> { reorder('projects.star_count DESC') }
 
