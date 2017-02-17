@@ -43,7 +43,14 @@
     return event;
   }
 
-  function getTraget(target) {
+  function isLast(target) {
+    var el = typeof target.el === 'string' ? document.getElementById(target.el.substr(1)) : target.el;
+    var children = el.children;
+
+    return children.length - 1 === target.index;
+  }
+
+  function getTarget(target) {
     var el = typeof target.el === 'string' ? document.getElementById(target.el.substr(1)) : target.el;
     var children = el.children;
 
@@ -53,13 +60,6 @@
       children[target.index === 'last' ? children.length - 1 : -1] ||
       el
     );
-  }
-
-  function isLast(target) {
-    var el = typeof target.el === 'string' ? document.getElementById(target.el.substr(1)) : target.el;
-    var children = el.children;
-
-    return children.length - 1 === target.index;
   }
 
   function getRect(el) {
@@ -82,12 +82,22 @@
   function simulateDrag(options, callback) {
     options.to.el = options.to.el || options.from.el;
 
-    var fromEl = getTraget(options.from);
-    var toEl = getTraget(options.to);
+    var fromEl = getTarget(options.from);
+    var toEl = getTarget(options.to);
+    var firstEl = getTarget({
+      el: options.to.el,
+      index: 'first'
+    });
+    var lastEl = getTarget({
+      el: options.to.el,
+      index: 'last'
+    });
     var scrollable = options.scrollable;
 
     var fromRect = getRect(fromEl);
     var toRect = getRect(toEl);
+    var firstRect = getRect(firstEl);
+    var lastRect = getRect(lastEl);
 
     var startTime = new Date().getTime();
     var duration = options.duration || 1000;
@@ -95,8 +105,10 @@
     options.ontap && options.ontap();
     window.SIMULATE_DRAG_ACTIVE = 1;
 
-    if (isLast(options.to)) {
-      toRect.cy += 100;
+    if (options.to.index === 0) {
+      toRect.cy = firstRect.y;
+    } else if (isLast(options.to)) {
+      toRect.cy = lastRect.y + lastRect.h + 50;
     }
 
     var dragInterval = setInterval(function loop() {

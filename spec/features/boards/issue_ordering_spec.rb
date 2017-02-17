@@ -9,9 +9,9 @@ describe 'Issue Boards', :feature, :js do
   let(:user) { create(:user) }
   let(:label) { create(:label, project: project) }
   let!(:list1) { create(:list, board: board, label: label, position: 0) }
-  let!(:issue1) { create(:labeled_issue, project: project, labels: [label]) }
-  let!(:issue2) { create(:labeled_issue, project: project, labels: [label]) }
-  let!(:issue3) { create(:labeled_issue, project: project, labels: [label]) }
+  let!(:issue1) { create(:labeled_issue, project: project, title: 'testing 1', labels: [label], relative_position: 3.0) }
+  let!(:issue2) { create(:labeled_issue, project: project, title: 'testing 2', labels: [label], relative_position: 2.0) }
+  let!(:issue3) { create(:labeled_issue, project: project, title: 'testing 3', labels: [label], relative_position: 1.0) }
 
   before do
     project.team << [user, :master]
@@ -32,7 +32,7 @@ describe 'Issue Boards', :feature, :js do
 
       wait_for_vue_resource
 
-      expect(first('.card')).to have_content(issue2.iid)
+      expect(first('.card')).to have_content(issue2.title)
     end
 
     it 'moves from middle to bottom' do
@@ -40,7 +40,7 @@ describe 'Issue Boards', :feature, :js do
 
       wait_for_vue_resource
 
-      expect(all('.card').last).to have_content(issue2.iid)
+      expect(all('.card').last).to have_content(issue2.title)
     end
 
     it 'moves from top to bottom' do
@@ -48,7 +48,7 @@ describe 'Issue Boards', :feature, :js do
 
       wait_for_vue_resource
 
-      expect(all('.card').last).to have_content(issue3.iid)
+      expect(all('.card').last).to have_content(issue3.title)
     end
 
     it 'moves from bottom to top' do
@@ -56,7 +56,7 @@ describe 'Issue Boards', :feature, :js do
 
       wait_for_vue_resource
 
-      expect(first('.card')).to have_content(issue1.iid)
+      expect(first('.card')).to have_content(issue1.title)
     end
 
     it 'moves from top to middle' do
@@ -64,7 +64,7 @@ describe 'Issue Boards', :feature, :js do
 
       wait_for_vue_resource
 
-      expect(first('.card')).to have_content(issue2.iid)
+      expect(first('.card')).to have_content(issue2.title)
     end
 
     it 'moves from bottom to middle' do
@@ -72,16 +72,16 @@ describe 'Issue Boards', :feature, :js do
 
       wait_for_vue_resource
 
-      expect(all('.card').last).to have_content(issue2.iid)
+      expect(all('.card').last).to have_content(issue2.title)
     end
   end
 
   context 'ordering when changing list' do
     let(:label2) { create(:label, project: project) }
     let!(:list2) { create(:list, board: board, label: label2, position: 1) }
-    let!(:issue4) { create(:labeled_issue, project: project, labels: [label2]) }
-    let!(:issue5) { create(:labeled_issue, project: project, labels: [label2]) }
-    let!(:issue6) { create(:labeled_issue, project: project, labels: [label2]) }
+    let!(:issue4) { create(:labeled_issue, project: project, title: 'testing 1', labels: [label2], relative_position: 3.0) }
+    let!(:issue5) { create(:labeled_issue, project: project, title: 'testing 2', labels: [label2], relative_position: 2.0) }
+    let!(:issue6) { create(:labeled_issue, project: project, title: 'testing 3', labels: [label2], relative_position: 1.0) }
 
     before do
       visit namespace_project_board_path(project.namespace, project, board)
@@ -99,7 +99,7 @@ describe 'Issue Boards', :feature, :js do
       expect(all('.board')[1]).to have_selector('.card', count: 4)
 
       page.within(all('.board')[1]) do
-        expect(first('.card')).to have_content(issue3.iid)
+        expect(first('.card')).to have_content(issue3.title)
       end
     end
 
@@ -112,7 +112,7 @@ describe 'Issue Boards', :feature, :js do
       expect(all('.board')[1]).to have_selector('.card', count: 4)
 
       page.within(all('.board')[1]) do
-        expect(all('.card').last).to have_content(issue3.iid)
+        expect(all('.card').last).to have_content(issue3.title)
       end
     end
 
@@ -125,7 +125,7 @@ describe 'Issue Boards', :feature, :js do
       expect(all('.board')[1]).to have_selector('.card', count: 4)
 
       page.within(all('.board')[1]) do
-        expect(all('.card')[1]).to have_content(issue3.iid)
+        expect(all('.card')[1]).to have_content(issue3.title)
       end
     end
   end
