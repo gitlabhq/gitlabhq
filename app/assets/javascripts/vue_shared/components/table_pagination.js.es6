@@ -57,9 +57,7 @@ window.Vue = require('vue');
     },
     methods: {
       changePage(e) {
-        let apiScope = gl.utils.getParameterByName('scope');
-
-        if (!apiScope) apiScope = 'all';
+        const apiScope = gl.utils.getParameterByName('scope');
 
         const text = e.target.innerText;
         const { totalPages, nextPage, previousPage } = this.pageInfo;

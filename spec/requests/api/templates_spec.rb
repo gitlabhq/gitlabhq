@@ -22,6 +22,7 @@ describe API::Templates, api: true  do
       get api('/templates/gitignores')
 
       expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.size).to be > 15
     end
@@ -32,6 +33,7 @@ describe API::Templates, api: true  do
       get api('/templates/gitlab_ci_ymls')
 
       expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.first['name']).not_to be_nil
     end
@@ -69,6 +71,7 @@ describe API::Templates, api: true  do
       get api('/templates/licenses')
 
       expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.size).to eq(15)
       expect(json_response.map { |l| l['key'] }).to include('agpl-3.0')
@@ -80,6 +83,7 @@ describe API::Templates, api: true  do
           get api('/templates/licenses?popular=1')
 
           expect(response).to have_http_status(200)
+          expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.size).to eq(3)
           expect(json_response.map { |l| l['key'] }).to include('apache-2.0')

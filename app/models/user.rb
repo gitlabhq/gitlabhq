@@ -23,7 +23,6 @@ class User < ActiveRecord::Base
   default_value_for :can_create_team, false
   default_value_for :hide_no_ssh_key, false
   default_value_for :hide_no_password, false
-  default_value_for :theme_id, gitlab_config.default_theme
 
   attr_encrypted :otp_secret,
     key:       Gitlab::Application.secrets.otp_key_base,

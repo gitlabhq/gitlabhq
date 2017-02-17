@@ -193,5 +193,8 @@ And to check out a particular merge request:
 git checkout origin/merge-requests/1
 ```
 
+<<<<<<< HEAD
 [products]: https://about.gitlab.com/products/ "GitLab products page"
+=======
+>>>>>>> ce/master
 [protected branches]: ../protected_branches.md

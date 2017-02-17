@@ -43,7 +43,7 @@ class Namespace < ActiveRecord::Base
   after_commit :refresh_access_of_projects_invited_groups, on: :update, if: -> { previous_changes.key?('share_with_group_lock') }
 
   # Save the storage paths before the projects are destroyed to use them on after destroy
-  before_destroy(prepend: true) { @old_repository_storage_paths = repository_storage_paths }
+  before_destroy(prepend: true) { prepare_for_destroy }
   after_destroy :rm_dir
 
   scope :root, -> { where('type IS NULL') }
@@ -216,6 +216,14 @@ class Namespace < ActiveRecord::Base
     parent_id_changed?
   end
 
+  def prepare_for_destroy
+    old_repository_storage_paths
+  end
+
+  def old_repository_storage_paths
+    @old_repository_storage_paths ||= repository_storage_paths
+  end
+
   private
 
   def repository_storage_paths
@@ -229,7 +237,7 @@ class Namespace < ActiveRecord::Base
 
   def rm_dir
     # Remove the namespace directory in all storages paths used by member projects
-    @old_repository_storage_paths.each do |repository_storage_path|
+    old_repository_storage_paths.each do |repository_storage_path|
       # Move namespace directory into trash.
       # We will remove it later async
       new_path = "#{path}+#{id}+deleted"

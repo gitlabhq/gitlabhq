@@ -1,12 +1,17 @@
 module API
   class DeployKeys < Grape::API
+    include PaginationParams
+
     before { authenticate! }
 
+    desc 'Return all deploy keys'
+    params do
+      use :pagination
+    end
     get "deploy_keys" do
       authenticated_as_admin!
 
-      keys = DeployKey.all
-      present keys, with: Entities::SSHKey
+      present paginate(DeployKey.all), with: Entities::SSHKey
     end
 
     params do
@@ -18,8 +23,11 @@ module API
       desc "Get a specific project's deploy keys" do
         success Entities::SSHKey
       end
+      params do
+        use :pagination
+      end
       get ":id/deploy_keys" do
-        present user_project.deploy_keys, with: Entities::SSHKey
+        present paginate(user_project.deploy_keys), with: Entities::SSHKey
       end
 
       desc 'Get single deploy key' do

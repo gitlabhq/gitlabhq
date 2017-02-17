@@ -173,6 +173,10 @@ class ProjectWiki
     }
   end
 
+  def repository_storage_path
+    project.repository_storage_path
+  end
+
   private
 
   def init_repo(path_with_namespace)

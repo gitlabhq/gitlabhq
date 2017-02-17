@@ -1,6 +1,7 @@
 module API
-  # Boards API
   class Boards < Grape::API
+    include PaginationParams
+
     before { authenticate! }
 
     params do
@@ -11,9 +12,12 @@ module API
         detail 'This feature was introduced in 8.13'
         success Entities::Board
       end
+      params do
+        use :pagination
+      end
       get ':id/boards' do
         authorize!(:read_board, user_project)
-        present user_project.boards, with: Entities::Board
+        present paginate(user_project.boards), with: Entities::Board
       end
 
       params do
@@ -34,9 +38,12 @@ module API
           detail 'Does not include `done` list. This feature was introduced in 8.13'
           success Entities::List
         end
+        params do
+          use :pagination
+        end
         get '/lists' do
           authorize!(:read_board, user_project)
-          present board_lists, with: Entities::List
+          present paginate(board_lists), with: Entities::List
         end
 
         desc 'Get a list of a project board' do

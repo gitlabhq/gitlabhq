@@ -81,6 +81,14 @@ describe Gitlab::SlashCommands::Extractor do
           let(:original_msg) { "/assign @joe\nworld" }
           let(:final_msg) { "world" }
         end
+
+        it 'allows slash in command arguments' do
+          msg = "/assign @joe / @jane\nworld"
+          msg, commands = extractor.extract_commands(msg)
+
+          expect(commands).to eq [['assign', '@joe / @jane']]
+          expect(msg).to eq 'world'
+        end
       end
 
       context 'in the middle of content' do

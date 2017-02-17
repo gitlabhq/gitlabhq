@@ -91,7 +91,7 @@
   new Pikaday({
     field: $dateField.get(0),
     theme: 'gitlab-theme',
-    format: 'YYYY-MM-DD',
+    format: 'yyyy-mm-dd',
     minDate: new Date(),
     onSelect: function(dateText) {
       $dateField.val(dateFormat(new Date(dateText), 'yyyy-mm-dd'));

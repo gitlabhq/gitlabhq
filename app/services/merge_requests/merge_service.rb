@@ -19,17 +19,24 @@ module MergeRequests
       unless @merge_request.mergeable?
         return log_merge_error('Merge request is not mergeable', save_message_on_model: true)
       end
+<<<<<<< HEAD
 
       if @merge_request.target_project.above_size_limit?
         message = Gitlab::RepositorySizeError.new(@merge_request.target_project).merge_error
 
         return log_merge_error(message, save_message_on_model: true)
       end
+=======
+>>>>>>> ce/master
 
       @source = find_merge_source
 
       unless @source
+<<<<<<< HEAD
         return log_merge_error('No source for merge', save_message_on_model: true)
+=======
+        log_merge_error('No source for merge', save_message_on_model: true)
+>>>>>>> ce/master
       end
 
       merge_request.in_locked_state do

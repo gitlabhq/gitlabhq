@@ -1415,15 +1415,15 @@ describe Projects::MergeRequestsController do
       end
     end
 
-    context 'when no special status for MR' do
+    context 'when MR does not have special state' do
       let(:merge_request) { create(:merge_request, source_project: project) }
 
       it 'returns an OK response' do
         expect(response).to have_http_status(:ok)
       end
 
-      it 'sets status to nil' do
-        expect(assigns(:status)).to be_nil
+      it 'sets status to success' do
+        expect(assigns(:status)).to eq(:success)
         expect(response).to render_template('merge')
       end
     end

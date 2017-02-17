@@ -602,18 +602,16 @@ describe User, models: true do
       it "applies defaults to user" do
         expect(user.projects_limit).to eq(Gitlab.config.gitlab.default_projects_limit)
         expect(user.can_create_group).to eq(Gitlab.config.gitlab.default_can_create_group)
-        expect(user.theme_id).to eq(Gitlab.config.gitlab.default_theme)
         expect(user.external).to be_falsey
       end
     end
 
     describe 'with default overrides' do
-      let(:user) { User.new(projects_limit: 123, can_create_group: false, can_create_team: true, theme_id: 1) }
+      let(:user) { User.new(projects_limit: 123, can_create_group: false, can_create_team: true) }
 
       it "applies defaults to user" do
         expect(user.projects_limit).to eq(123)
         expect(user.can_create_group).to be_falsey
-        expect(user.theme_id).to eq(1)
       end
     end
 

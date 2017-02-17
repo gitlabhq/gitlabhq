@@ -55,11 +55,11 @@ module ChatMessage
     end
 
     def project_link
-      "[#{project_name}](#{project_url})"
+      link(project_name, project_url)
     end
 
     def issue_link
-      "[#{issue_title}](#{issue_url})"
+      link(issue_title, issue_url)
     end
 
     def issue_title

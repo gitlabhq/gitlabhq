@@ -193,6 +193,10 @@ constraints(ProjectUrlConstrainer.new) do
           get :terminal
           get '/terminal.ws/authorize', to: 'environments#terminal_websocket_authorize', constraints: { format: nil }
         end
+
+        collection do
+          get :folder, path: 'folders/:id'
+        end
       end
 
       resource :cycle_analytics, only: [:show]
