@@ -456,6 +456,7 @@ describe API::Commits, api: true  do
       it 'returns merge_request comments' do
         get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/comments", user)
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(2)
         expect(json_response.first['note']).to eq('a comment on a commit')

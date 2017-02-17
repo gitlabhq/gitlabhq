@@ -35,6 +35,7 @@ describe API::DeployKeys, api: true  do
         get api('/deploy_keys', admin)
 
         expect(response.status).to eq(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first['id']).to eq(deploy_keys_project.deploy_key.id)
       end
@@ -48,6 +49,7 @@ describe API::DeployKeys, api: true  do
       get api("/projects/#{project.id}/deploy_keys", admin)
 
       expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.first['title']).to eq(deploy_key.title)
     end

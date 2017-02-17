@@ -2,7 +2,7 @@ module API
   module Helpers
     module Pagination
       def paginate(relation)
-        relation.page(params[:page]).per(params[:per_page].to_i).tap do |data|
+        relation.page(params[:page]).per(params[:per_page]).tap do |data|
           add_pagination_headers(data)
         end
       end

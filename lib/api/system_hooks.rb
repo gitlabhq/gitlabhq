@@ -1,6 +1,7 @@
 module API
-  # Hooks API
   class SystemHooks < Grape::API
+    include PaginationParams
+
     before do
       authenticate!
       authenticated_as_admin!
@@ -10,10 +11,11 @@ module API
       desc 'Get the list of system hooks' do
         success Entities::Hook
       end
+      params do
+        use :pagination
+      end
       get do
-        hooks = SystemHook.all
-
-        present hooks, with: Entities::Hook
+        present paginate(SystemHook.all), with: Entities::Hook
       end
 
       desc 'Create a new system hook' do

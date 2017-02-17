@@ -54,7 +54,7 @@ describe API::CommitStatuses, api: true do
 
           it 'returns all commit statuses' do
             expect(response).to have_http_status(200)
-
+            expect(response).to include_pagination_headers
             expect(json_response).to be_an Array
             expect(statuses_id).to contain_exactly(status1.id, status2.id,
                                                    status3.id, status4.id,
@@ -67,7 +67,7 @@ describe API::CommitStatuses, api: true do
 
           it 'returns latest commit statuses for specific ref' do
             expect(response).to have_http_status(200)
-
+            expect(response).to include_pagination_headers
             expect(json_response).to be_an Array
             expect(statuses_id).to contain_exactly(status3.id, status5.id)
           end
@@ -78,7 +78,7 @@ describe API::CommitStatuses, api: true do
 
           it 'return latest commit statuses for specific name' do
             expect(response).to have_http_status(200)
-
+            expect(response).to include_pagination_headers
             expect(json_response).to be_an Array
             expect(statuses_id).to contain_exactly(status4.id, status5.id)
           end

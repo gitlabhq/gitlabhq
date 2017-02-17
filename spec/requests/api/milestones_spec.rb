@@ -14,6 +14,7 @@ describe API::Milestones, api: true  do
       get api("/projects/#{project.id}/milestones", user)
 
       expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.first['title']).to eq(milestone.title)
     end
@@ -28,6 +29,7 @@ describe API::Milestones, api: true  do
       get api("/projects/#{project.id}/milestones?state=active", user)
 
       expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(1)
       expect(json_response.first['id']).to eq(milestone.id)
@@ -37,25 +39,18 @@ describe API::Milestones, api: true  do
       get api("/projects/#{project.id}/milestones?state=closed", user)
 
       expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(1)
       expect(json_response.first['id']).to eq(closed_milestone.id)
-    end
-  end
-
-  describe 'GET /projects/:id/milestones/:milestone_id' do
-    it 'returns a project milestone by id' do
-      get api("/projects/#{project.id}/milestones/#{milestone.id}", user)
-
-      expect(response).to have_http_status(200)
-      expect(json_response['title']).to eq(milestone.title)
-      expect(json_response['iid']).to eq(milestone.iid)
     end
 
     it 'returns a project milestone by iid' do
       get api("/projects/#{project.id}/milestones?iid=#{closed_milestone.iid}", user)
 
       expect(response.status).to eq 200
+      expect(response).to include_pagination_headers
+      expect(json_response.size).to eq(1)
       expect(json_response.size).to eq(1)
       expect(json_response.first['title']).to eq closed_milestone.title
       expect(json_response.first['id']).to eq closed_milestone.id
@@ -68,6 +63,26 @@ describe API::Milestones, api: true  do
       expect(json_response.size).to eq(2)
       expect(json_response.first['title']).to eq milestone.title
       expect(json_response.first['id']).to eq milestone.id
+    end
+
+    it 'returns a project milestone by iid array' do
+      get api("/projects/#{project.id}/milestones", user), iid: [milestone.iid, closed_milestone.iid]
+
+      expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
+      expect(json_response.size).to eq(2)
+      expect(json_response.first['title']).to eq milestone.title
+      expect(json_response.first['id']).to eq milestone.id
+    end
+  end
+
+  describe 'GET /projects/:id/milestones/:milestone_id' do
+    it 'returns a project milestone by id' do
+      get api("/projects/#{project.id}/milestones/#{milestone.id}", user)
+
+      expect(response).to have_http_status(200)
+      expect(json_response['title']).to eq(milestone.title)
+      expect(json_response['iid']).to eq(milestone.iid)
     end
 
     it 'returns 401 error if user not authenticated' do
@@ -177,6 +192,7 @@ describe API::Milestones, api: true  do
       get api("/projects/#{project.id}/milestones/#{milestone.id}/issues", user)
 
       expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.first['milestone']['title']).to eq(milestone.title)
     end
@@ -202,6 +218,7 @@ describe API::Milestones, api: true  do
         get api("/projects/#{public_project.id}/milestones/#{milestone.id}/issues", user)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.size).to eq(2)
         expect(json_response.map { |issue| issue['id'] }).to include(issue.id, confidential_issue.id)
@@ -214,6 +231,7 @@ describe API::Milestones, api: true  do
         get api("/projects/#{public_project.id}/milestones/#{milestone.id}/issues", member)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.size).to eq(1)
         expect(json_response.map { |issue| issue['id'] }).to include(issue.id)
@@ -223,6 +241,7 @@ describe API::Milestones, api: true  do
         get api("/projects/#{public_project.id}/milestones/#{milestone.id}/issues", create(:user))
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.size).to eq(1)
         expect(json_response.map { |issue| issue['id'] }).to include(issue.id)
