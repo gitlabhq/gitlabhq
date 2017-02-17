@@ -5,7 +5,7 @@ module Ci
         raise Gitlab::Access::AccessDeniedError
       end
 
-      each_build(pipeline.builds.failed_or_canceled) do |build|
+      pipeline.builds.failed_or_canceled.find_each do |build|
         next unless build.retryable?
 
         Ci::RetryBuildService.new(project, current_user)
@@ -17,14 +17,6 @@ module Ci
         .close_all(pipeline)
 
       pipeline.process!
-    end
-
-    private
-
-    def each_build(relation)
-      Gitlab::OptimisticLocking.retry_lock(relation) do |builds|
-        builds.find_each { |build| yield build }
-      end
     end
   end
 end
