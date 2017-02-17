@@ -3,7 +3,6 @@
  *
  */
 .mr-state-widget {
-  background: $gray-light;
   color: $gl-text-color;
   border: 1px solid $border-color;
   border-radius: 2px;
@@ -335,7 +334,16 @@
 }
 
 .mr-source-target {
+  background-color: #FAFAFA;
   line-height: 31px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: $border-color;
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+  border--radius: 0px;
+  padding: 10px;
+  margin-bottom: -1px;
 }
 
 .panel-new-merge-request {
