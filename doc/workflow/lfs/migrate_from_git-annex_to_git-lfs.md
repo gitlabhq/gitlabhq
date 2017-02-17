@@ -242,6 +242,12 @@ to the remote.
 Though the image has 32KB, the repo remains the same
 size after pushing it again.
 
+Note that **git-annex** stores files inside of `annex/objects`
+directory. This directory is within the git bare repository in
+`git-data/repositories`. **git-annex** and **git-lfs** objects
+are not compatible as they are using a different scheme.
+Therefore, the migration has to be made per repository.
+
 ### Further Reading
 
 - (Blog Post) [Getting Started with Git FLS][post-1]
