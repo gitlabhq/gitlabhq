@@ -32,6 +32,7 @@ FactoryGirl.define do
 
     trait :ghost do
       ghost true
+      after(:build) { |user, _| user.block! }
     end
 
     trait :two_factor_via_otp do

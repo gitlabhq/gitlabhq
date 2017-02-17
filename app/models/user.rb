@@ -1079,8 +1079,10 @@ class User < ActiveRecord::Base
       User.find_by_email(s)
     end
 
+    bio = 'This is a "Ghost User", created to hold all issues authored by users that have since been deleted. This user cannot be removed.'
+
     User.create(
-      username: username, password: Devise.friendly_token,
+      username: username, password: Devise.friendly_token, bio: bio,
       email: email, name: "Ghost User", state: :blocked, ghost: true
     )
   ensure
