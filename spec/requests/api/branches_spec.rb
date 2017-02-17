@@ -17,8 +17,10 @@ describe API::Branches, api: true  do
     it "returns an array of project branches" do
       project.repository.expire_all_method_caches
 
-      get api("/projects/#{project.id}/repository/branches", user)
+      get api("/projects/#{project.id}/repository/branches", user), per_page: 100
+
       expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       branch_names = json_response.map { |x| x['name'] }
       expect(branch_names).to match_array(project.repository.branch_names)
@@ -31,7 +33,18 @@ describe API::Branches, api: true  do
       expect(response).to have_http_status(200)
 
       expect(json_response['name']).to eq(branch_name)
-      expect(json_response['commit']['id']).to eq(branch_sha)
+      json_commit = json_response['commit']
+      expect(json_commit['id']).to eq(branch_sha)
+      expect(json_commit).to have_key('short_id')
+      expect(json_commit).to have_key('title')
+      expect(json_commit).to have_key('message')
+      expect(json_commit).to have_key('author_name')
+      expect(json_commit).to have_key('author_email')
+      expect(json_commit).to have_key('authored_date')
+      expect(json_commit).to have_key('committer_name')
+      expect(json_commit).to have_key('committer_email')
+      expect(json_commit).to have_key('committed_date')
+      expect(json_commit).to have_key('parent_ids')
       expect(json_response['merged']).to eq(false)
       expect(json_response['protected']).to eq(false)
       expect(json_response['developers_can_push']).to eq(false)

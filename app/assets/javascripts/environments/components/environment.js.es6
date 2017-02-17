@@ -8,6 +8,7 @@ const EnvironmentTable = require('./environments_table');
 const EnvironmentsStore = require('../stores/environments_store');
 require('../../vue_shared/components/table_pagination');
 require('../../lib/utils/common_utils');
+require('../../vue_shared/vue_resource_interceptor');
 
 module.exports = Vue.component('environment-component', {
 

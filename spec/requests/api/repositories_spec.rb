@@ -19,10 +19,10 @@ describe API::Repositories, api: true  do
         get api(route, current_user)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
 
         first_commit = json_response.first
-
-        expect(json_response).to be_an Array
         expect(first_commit['name']).to eq('bar')
         expect(first_commit['type']).to eq('tree')
         expect(first_commit['mode']).to eq('040000')
@@ -49,6 +49,7 @@ describe API::Repositories, api: true  do
 
           expect(response.status).to eq(200)
           expect(json_response).to be_an Array
+          expect(response).to include_pagination_headers
           expect(json_response[4]['name']).to eq('html')
           expect(json_response[4]['path']).to eq('files/html')
           expect(json_response[4]['type']).to eq('tree')
@@ -380,10 +381,10 @@ describe API::Repositories, api: true  do
         get api(route, current_user)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
 
         first_contributor = json_response.first
-
         expect(first_contributor['email']).to eq('tiagonbotelho@hotmail.com')
         expect(first_contributor['name']).to eq('tiagonbotelho')
         expect(first_contributor['commits']).to eq(1)

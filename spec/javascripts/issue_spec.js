@@ -105,6 +105,7 @@ require('~/issue');
 
       expectIssueState(false);
       expect($btnClose).toHaveProp('disabled', false);
+      expect($('.issue_counter')).toHaveText(0);
     });
 
     it('fails to close an issue with success:false', function() {
@@ -121,6 +122,7 @@ require('~/issue');
       expectIssueState(true);
       expect($btnClose).toHaveProp('disabled', false);
       expectErrorMessage();
+      expect($('.issue_counter')).toHaveText(1);
     });
 
     it('fails to closes an issue with HTTP error', function() {
@@ -135,6 +137,7 @@ require('~/issue');
       expectIssueState(true);
       expect($btnClose).toHaveProp('disabled', true);
       expectErrorMessage();
+      expect($('.issue_counter')).toHaveText(1);
     });
   });
 
@@ -159,6 +162,7 @@ require('~/issue');
 
       expectIssueState(true);
       expect($btnReopen).toHaveProp('disabled', false);
+      expect($('.issue_counter')).toHaveText(1);
     });
   });
 }).call(this);

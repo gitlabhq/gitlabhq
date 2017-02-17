@@ -31,7 +31,7 @@ module API
       expose :last_sign_in_at
       expose :confirmed_at
       expose :email
-      expose :theme_id, :color_scheme_id, :projects_limit, :current_sign_in_at
+      expose :color_scheme_id, :projects_limit, :current_sign_in_at
       expose :identities, using: Entities::Identity
       expose :can_create_group?, as: :can_create_group
       expose :can_create_project?, as: :can_create_project
@@ -179,10 +179,27 @@ module API
       expose :shared_projects, using: Entities::Project
     end
 
+    class RepoCommit < Grape::Entity
+      expose :id, :short_id, :title, :created_at
+      expose :parent_ids
+      expose :safe_message, as: :message
+      expose :author_name, :author_email, :authored_date
+      expose :committer_name, :committer_email, :committed_date
+    end
+
+    class RepoCommitStats < Grape::Entity
+      expose :additions, :deletions, :total
+    end
+
+    class RepoCommitDetail < RepoCommit
+      expose :stats, using: Entities::RepoCommitStats
+      expose :status
+    end
+
     class RepoBranch < Grape::Entity
       expose :name
 
-      expose :commit do |repo_branch, options|
+      expose :commit, using: Entities::RepoCommit do |repo_branch, options|
         options[:project].repository.commit(repo_branch.dereferenced_target)
       end
 
@@ -215,22 +232,6 @@ module API
         filemode = "0" + filemode if filemode.length < 6
         filemode
       end
-    end
-
-    class RepoCommit < Grape::Entity
-      expose :id, :short_id, :title, :author_name, :author_email, :created_at
-      expose :committer_name, :committer_email
-      expose :safe_message, as: :message
-    end
-
-    class RepoCommitStats < Grape::Entity
-      expose :additions, :deletions, :total
-    end
-
-    class RepoCommitDetail < RepoCommit
-      expose :parent_ids, :committed_date, :authored_date
-      expose :stats, using: Entities::RepoCommitStats
-      expose :status
     end
 
     class ProjectSnippet < Grape::Entity

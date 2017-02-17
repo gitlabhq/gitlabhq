@@ -76,6 +76,20 @@ describe Gitlab::Middleware::ReadonlyGeo, lib: true do
         expect(response).not_to be_a_redirect
         expect(subject).not_to disallow_request
       end
+
+      it 'expects a POST internal request to be allowed' do
+        response = request.post("/api/#{API::API.version}/internal")
+
+        expect(response).not_to be_a_redirect
+        expect(subject).not_to disallow_request
+      end
+
+      it 'expects a POST Geo request to be allowed' do
+        response = request.post("/api/#{API::API.version}/geo/refresh_wikis")
+
+        expect(response).not_to be_a_redirect
+        expect(subject).not_to disallow_request
+      end
     end
   end
 

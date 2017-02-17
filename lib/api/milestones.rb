@@ -120,6 +120,28 @@ module API
         issues = IssuesFinder.new(current_user, finder_params).execute
         present paginate(issues), with: Entities::Issue, current_user: current_user, project: user_project
       end
+
+      desc 'Get all merge requests for a single project milestone' do
+        detail 'This feature was introduced in GitLab 9.'
+        success Entities::MergeRequest
+      end
+      params do
+        requires :milestone_id, type: Integer, desc: 'The ID of a project milestone'
+        use :pagination
+      end
+      get ':id/milestones/:milestone_id/merge_requests' do
+        authorize! :read_milestone, user_project
+
+        milestone = user_project.milestones.find(params[:milestone_id])
+
+        finder_params = {
+          project_id: user_project.id,
+          milestone_id: milestone.id
+        }
+
+        merge_requests = MergeRequestsFinder.new(current_user, finder_params).execute
+        present paginate(merge_requests), with: Entities::MergeRequest, current_user: current_user, project: user_project
+      end
     end
   end
 end

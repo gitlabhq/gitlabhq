@@ -28,7 +28,7 @@
         %span
           CI job
           = ci_label_for_status(status)
-        for
+          for
         - commit = @merge_request.diff_head_commit
         = succeed "." do
           = link_to commit.short_id, namespace_project_commit_path(@merge_request.source_project.namespace, @merge_request.source_project, commit), class: "monospace"

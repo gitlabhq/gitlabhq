@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170211073944) do
+ActiveRecord::Schema.define(version: 20170215200045) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -120,6 +120,7 @@ ActiveRecord::Schema.define(version: 20170211073944) do
     t.integer "shared_runners_minutes", default: 0, null: false
     t.integer "repository_size_limit", limit: 8, default: 0
     t.integer "terminal_max_session_time", default: 0, null: false
+    t.integer "minimum_mirror_sync_time", default: 15, null: false
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -1421,7 +1422,6 @@ ActiveRecord::Schema.define(version: 20170211073944) do
     t.string "linkedin", default: "", null: false
     t.string "twitter", default: "", null: false
     t.string "authentication_token"
-    t.integer "theme_id", default: 1, null: false
     t.string "bio"
     t.integer "failed_attempts", default: 0
     t.datetime "locked_at"

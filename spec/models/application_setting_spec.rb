@@ -20,6 +20,12 @@ describe ApplicationSetting, models: true do
     it { is_expected.to allow_value(https).for(:after_sign_out_path) }
     it { is_expected.not_to allow_value(ftp).for(:after_sign_out_path) }
 
+    it { is_expected.to allow_value(Gitlab::Mirror::FIFTEEN).for(:minimum_mirror_sync_time) }
+    it { is_expected.to allow_value(Gitlab::Mirror::HOURLY).for(:minimum_mirror_sync_time) }
+    it { is_expected.to allow_value(Gitlab::Mirror::DAILY).for(:minimum_mirror_sync_time) }
+    it { is_expected.not_to allow_value(nil).for(:minimum_mirror_sync_time) }
+    it { is_expected.not_to allow_value(61).for(:minimum_mirror_sync_time) }
+
     describe 'disabled_oauth_sign_in_sources validations' do
       before do
         allow(Devise).to receive(:omniauth_providers).and_return([:github])
@@ -39,6 +45,74 @@ describe ApplicationSetting, models: true do
 
     it_behaves_like 'an object with email-formated attributes', :admin_notification_email do
       subject { setting }
+    end
+
+    context "update minimum_mirror_sync_time" do
+      before do
+        Sidekiq::Logging.logger = nil
+        Gitlab::Mirror::SYNC_TIME_TO_CRON.keys.each do |sync_time|
+          create(:project, :mirror, sync_time: sync_time)
+          create(:project, :remote_mirror, sync_time: sync_time)
+        end
+      end
+
+      context 'with daily sync_time' do
+        let(:sync_time) { Gitlab::Mirror::DAILY }
+
+        it 'updates minimum_mirror_sync_time to daily and updates cron jobs' do
+          expect_any_instance_of(ApplicationSetting).to receive(:update_mirror_cron_jobs).and_call_original
+          expect(Gitlab::Mirror).to receive(:configure_cron_jobs!)
+
+          setting.update_attributes(minimum_mirror_sync_time: sync_time)
+        end
+
+        it 'updates every mirror to the current minimum_mirror_sync_time' do
+          expect { setting.update_attributes(minimum_mirror_sync_time: sync_time) }.to change { Project.mirror.where('sync_time < ?', sync_time).count }.from(2).to(0)
+        end
+
+        it 'updates every remote mirror to the current minimum_mirror_sync_time' do
+          expect { setting.update_attributes(minimum_mirror_sync_time: sync_time) }.to change { RemoteMirror.where('sync_time < ?', sync_time).count }.from(2).to(0)
+        end
+      end
+
+      context 'with hourly sync time' do
+        let(:sync_time) { Gitlab::Mirror::HOURLY }
+
+        it 'updates minimum_mirror_sync_time to daily and updates cron jobs' do
+          expect_any_instance_of(ApplicationSetting).to receive(:update_mirror_cron_jobs).and_call_original
+          expect(Gitlab::Mirror).to receive(:configure_cron_jobs!)
+
+          setting.update_attributes(minimum_mirror_sync_time: sync_time)
+        end
+
+        it 'updates every mirror to the current minimum_mirror_sync_time' do
+          expect { setting.update_attributes(minimum_mirror_sync_time: sync_time) }.to change { Project.mirror.where('sync_time < ?', sync_time).count }.from(1).to(0)
+        end
+
+        it 'updates every remote mirror to the current minimum_mirror_sync_time' do
+          expect { setting.update_attributes(minimum_mirror_sync_time: sync_time) }.to change { RemoteMirror.where('sync_time < ?', sync_time).count }.from(1).to(0)
+        end
+      end
+
+      context 'with default fifteen sync time' do
+        let(:sync_time) { Gitlab::Mirror::FIFTEEN }
+
+        it 'does not update minimum_mirror_sync_time' do
+          expect_any_instance_of(ApplicationSetting).not_to receive(:update_mirror_cron_jobs)
+          expect(Gitlab::Mirror).not_to receive(:configure_cron_jobs!)
+          expect(setting.minimum_mirror_sync_time).to eq(Gitlab::Mirror::FIFTEEN)
+
+          setting.update_attributes(minimum_mirror_sync_time: sync_time)
+        end
+
+        it 'updates every mirror to the current minimum_mirror_sync_time' do
+          expect { setting.update_attributes(minimum_mirror_sync_time: sync_time) }.not_to change { Project.mirror.where('sync_time < ?', sync_time).count }
+        end
+
+        it 'updates every remote mirror to the current minimum_mirror_sync_time' do
+          expect { setting.update_attributes(minimum_mirror_sync_time: sync_time) }.not_to change { RemoteMirror.where('sync_time < ?', sync_time).count }
+        end
+      end
     end
 
     # Upgraded databases will have this sort of content

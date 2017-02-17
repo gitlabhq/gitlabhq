@@ -97,7 +97,7 @@ $(() => {
     },
     computed: {
       disabled() {
-        return Store.shouldAddBlankState();
+        return !this.store.lists.filter(list => list.type !== 'blank' && list.type !== 'done').length;
       },
     },
     template: `

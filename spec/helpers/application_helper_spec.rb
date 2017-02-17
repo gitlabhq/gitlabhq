@@ -265,4 +265,9 @@ describe ApplicationHelper do
       expect(helper.render_markup('foo.adoc', content)).to eq('NOEL')
     end
   end
+
+  describe '#active_when' do
+    it { expect(helper.active_when(true)).to eq('active') }
+    it { expect(helper.active_when(false)).to eq(nil) }
+  end
 end

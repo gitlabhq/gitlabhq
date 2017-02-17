@@ -56,7 +56,6 @@ var config = {
         exclude: /(node_modules|vendor\/assets)/,
         loader: 'babel-loader',
         options: {
-          plugins: ['istanbul'],
           presets: [
             ["es2015", {"modules": false}],
             'stage-2'
@@ -82,9 +81,7 @@ var config = {
       modules: false,
       assets: true
     }),
-    new CompressionPlugin({
-      asset: '[path].gz[query]',
-    }),
+    new webpack.IgnorePlugin(/moment/, /pikaday/),
   ],
 
   resolve: {
@@ -103,7 +100,7 @@ var config = {
 if (IS_PRODUCTION) {
   config.devtool = 'source-map';
   config.plugins.push(
-    new webpack.NoErrorsPlugin(),
+    new webpack.NoEmitOnErrorsPlugin(),
     new webpack.LoaderOptionsPlugin({
       minimize: true,
       debug: false
@@ -113,6 +110,9 @@ if (IS_PRODUCTION) {
     }),
     new webpack.DefinePlugin({
       'process.env': { NODE_ENV: JSON.stringify('production') }
+    }),
+    new CompressionPlugin({
+      asset: '[path].gz[query]',
     })
   );
 }

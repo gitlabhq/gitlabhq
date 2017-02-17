@@ -5,6 +5,7 @@ window.Vue = require('vue');
 require('../vue_shared/components/table_pagination');
 require('./store');
 require('../vue_shared/components/pipelines_table');
+const CommitPipelinesStoreWithTimeAgo = require('../commit/pipelines/pipelines_store');
 
 ((gl) => {
   gl.VuePipelines = Vue.extend({
@@ -28,24 +29,34 @@ require('../vue_shared/components/pipelines_table');
     },
     props: ['scope', 'store', 'svgs'],
     created() {
-      const pagenum = gl.utils.getParameterByName('p');
+      const pagenum = gl.utils.getParameterByName('page');
       const scope = gl.utils.getParameterByName('scope');
       if (pagenum) this.pagenum = pagenum;
       if (scope) this.apiScope = scope;
+
       this.store.fetchDataLoop.call(this, Vue, this.pagenum, this.scope, this.apiScope);
     },
-    methods: {
 
+    beforeUpdate() {
+      if (this.pipelines.length && this.$children) {
+        CommitPipelinesStoreWithTimeAgo.startTimeAgoLoops.call(this, Vue);
+      }
+    },
+
+    methods: {
       /**
        * Changes the URL according to the pagination component.
        *
        * If no scope is provided, 'all' is assumed.
        *
+       * Pagination component sends "null" when no scope is provided.
+       *
        * @param  {Number} pagenum
        * @param  {String} apiScope = 'all'
        */
-      change(pagenum, apiScope = 'all') {
-        gl.utils.visitUrl(`?scope=${apiScope}&p=${pagenum}`);
+      change(pagenum, apiScope) {
+        if (!apiScope) apiScope = 'all';
+        gl.utils.visitUrl(`?scope=${apiScope}&page=${pagenum}`);
       },
     },
     template: `

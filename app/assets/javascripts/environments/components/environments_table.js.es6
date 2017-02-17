@@ -4,7 +4,6 @@
 const Vue = require('vue');
 const EnvironmentItem = require('./environment_item');
 const DeployBoard = require('./deploy_board_component');
-
 module.exports = Vue.component('environment-table-component', {
 
   components: {

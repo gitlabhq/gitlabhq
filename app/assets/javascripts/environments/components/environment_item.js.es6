@@ -259,6 +259,11 @@ module.exports = Vue.component('environment-item', {
       return undefined;
     },
 
+    terminalIconSvg: {
+      type: String,
+      required: false,
+    },
+
     /**
      * If provided, returns the commit tag.
      *
@@ -436,7 +441,6 @@ module.exports = Vue.component('environment-item', {
       return true;
       // return this.model.rollout_status;
     },
-
   },
 
   /**
@@ -457,6 +461,7 @@ module.exports = Vue.component('environment-item', {
   template: `
     <tr>
       <td>
+
         <span class="deploy-board-icon"
           v-if="!model.isFolder"
           v-on:click="toggleDeployBoard(model)">
