@@ -54,7 +54,10 @@ module EmailsHelper
 
   def header_logo
     if brand_item && brand_item.header_logo?
-      brand_header_logo
+      image_tag(
+        brand_item.header_logo,
+        style: 'height: 50px'
+      )
     else
       image_tag(
         image_url('mailers/gitlab_header_logo.gif'),
