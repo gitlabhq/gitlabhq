@@ -321,7 +321,7 @@ describe 'Issue Boards', feature: true, js: true do
 
   def wait_for_sidebar
     # loop until the CSS transition is complete
-    Timeout.timeout(Capybara.default_max_wait_time) do
+    Timeout.timeout(0.5) do
       loop until evaluate_script('$(".right-sidebar").outerWidth()') == 290
     end
   end
