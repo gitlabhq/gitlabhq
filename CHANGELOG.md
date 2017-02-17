@@ -181,6 +181,10 @@ entry.
 - Add margin to markdown math blocks.
 - Add hover state to MR comment reply button.
 
+## 8.15.7 (2017-02-15)
+
+- No changes.
+
 ## 8.15.6 (2017-02-14)
 
 - Patch Asciidocs rendering to block XSS.
@@ -458,6 +462,10 @@ entry.
 - Rename groups with .git in the end of the path. !8199
 - Whitelist next project names: help, ci, admin, search. !8227
 - Adds back CSS for progress-bars. !8237
+
+## 8.14.10 (2017-02-15)
+
+- No changes.
 
 ## 8.14.9 (2017-02-14)
 
