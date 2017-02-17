@@ -5,11 +5,14 @@ describe API::CommitStatuses, api: true do
 
   let!(:project) { create(:project, :repository) }
   let(:commit) { project.repository.commit }
-  let(:commit_status) { create(:commit_status, pipeline: pipeline) }
   let(:guest) { create_user(:guest) }
   let(:reporter) { create_user(:reporter) }
   let(:developer) { create_user(:developer) }
   let(:sha) { commit.id }
+
+  let(:commit_status) do
+    create(:commit_status, status: :pending, pipeline: pipeline)
+  end
 
   describe "GET /projects/:id/repository/commits/:sha/statuses" do
     let(:get_url) { "/projects/#{project.id}/repository/commits/#{sha}/statuses" }

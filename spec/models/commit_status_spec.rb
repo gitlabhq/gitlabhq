@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe CommitStatus, models: true do
+describe CommitStatus, :models do
   let(:project) { create(:project, :repository) }
 
   let(:pipeline) do
@@ -127,7 +127,7 @@ describe CommitStatus, models: true do
   end
 
   describe '.latest' do
-    subject { CommitStatus.latest.order(:id) }
+    subject { described_class.latest.order(:id) }
 
     let(:statuses) do
       [create_status(name: 'aa', ref: 'bb', status: 'running'),
@@ -143,7 +143,7 @@ describe CommitStatus, models: true do
   end
 
   describe '.running_or_pending' do
-    subject { CommitStatus.running_or_pending.order(:id) }
+    subject { described_class.running_or_pending.order(:id) }
 
     let(:statuses) do
       [create_status(name: 'aa', ref: 'bb', status: 'running'),
@@ -159,7 +159,21 @@ describe CommitStatus, models: true do
   end
 
   describe '.exclude_ignored' do
-    subject { CommitStatus.exclude_ignored.order(:id) }
+    subject { described_class.after_stage(0) }
+
+    let(:statuses) do
+      [create_status(name: 'aa', stage_idx: 0),
+       create_status(name: 'cc', stage_idx: 1),
+       create_status(name: 'aa', stage_idx: 2)]
+    end
+
+    it 'returns statuses from second and third stage' do
+      is_expected.to eq(statuses.values_at(1, 2))
+    end
+  end
+
+  describe '.exclude_ignored' do
+    subject { described_class.exclude_ignored.order(:id) }
 
     let(:statuses) do
       [create_status(when: 'manual', status: 'skipped'),

@@ -155,7 +155,7 @@ describe Environment, models: true do
   end
 
   describe '#stop_with_action!' do
-    let(:user) { create(:user) }
+    let(:user) { create(:admin) }
 
     subject { environment.stop_with_action!(user) }
 
