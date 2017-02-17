@@ -7,7 +7,7 @@ module Users
     end
 
     def execute(user, options = {})
-      unless current_user.admin? || current_user == user
+      unless Ability.allowed?(current_user, :destroy_user, user)
         raise Gitlab::Access::AccessDeniedError, "#{current_user} tried to destroy user #{user}!"
       end
 
