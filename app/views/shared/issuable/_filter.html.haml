@@ -1,6 +1,6 @@
 - finder = controller.controller_name == 'issues' || controller.controller_name == 'boards' ? issues_finder : merge_requests_finder
 - boards_page = controller.controller_name == 'boards'
-- board = local_assigns.fetch(:board, nil)
+- board = local_assigns[:board]
 
 .issues-filters
   .issues-details-filters.row-content-block.second-block
