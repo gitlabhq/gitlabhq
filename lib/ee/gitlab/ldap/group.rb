@@ -90,13 +90,13 @@ module EE
           members.concat(ranged_members(entry)) if has_member_range?(entry)
           # Process nested group members
           members.concat(nested_members(nested_groups_to_skip))
-
           # Clean dns of groups and users outside the base
           members.reject! { |dn| nested_groups_to_skip.include?(dn) }
-          base = Net::LDAP::DN.new(adapter.config.base.downcase).to_a
-          members.select! { |dn| Net::LDAP::DN.new(dn.downcase).to_a.last(base.length) == base }
 
-          members
+          return [] if members.empty?
+
+          # Only return members within our given base
+          members_within_base(members)
         end
 
         # AD requires use of range retrieval for groups with more than 1500 members
@@ -145,6 +145,37 @@ module EE
           match = member_range_attribute(entry).match /^member;range=\d+-(\d+|\*)$/
 
           match[1].to_i + 1 if match.present? && match[1] != '*'
+        end
+
+        # The old AD recursive member filter would exclude any members that
+        # were outside the given search base. To maintain that behavior,
+        # we need to do the same.
+        #
+        # Split the base and each member DN into pairs. Compare the last
+        # base N pairs of the member DN. If they match, the user is within
+        # the base DN.
+        #
+        # Ex.
+        # - Member DN: 'uid=user,ou=users,dc=example,dc=com'
+        # - Base DN:   'dc=example,dc=com'
+        #
+        # Base has 2 pairs ([dc,example], [dc,com]). If the last 2 pairs of
+        # the user DN match, profit!
+        def members_within_base(members)
+          begin
+            base = Net::LDAP::DN.new(adapter.config.base.downcase).to_a
+          rescue RuntimeError
+            Rails.logger.error "Configured LDAP `base` is invalid: '#{adapter.config.base}'"
+            return []
+          end
+
+          members.select do |dn|
+            begin
+              Net::LDAP::DN.new(dn.downcase).to_a.last(base.length) == base
+            rescue RuntimeError
+              Rails.logger.warn "Received invalid member DN from LDAP group '#{cn}': '#{dn}'. Skipping"
+            end
+          end
         end
       end
     end
