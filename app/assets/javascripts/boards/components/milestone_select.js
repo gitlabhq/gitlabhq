@@ -19,10 +19,16 @@ module.exports = Vue.extend({
     return {
       loading: false,
       milestones: [],
-      extraMilestones: [{
-        id: null,
-        title: 'Any Milestone',
-      }],
+      extraMilestones: [
+        {
+          id: null,
+          title: 'Any Milestone',
+        },
+        {
+          id: -2,
+          title: 'Upcoming'
+        }
+      ],
     };
   },
   mounted() {
