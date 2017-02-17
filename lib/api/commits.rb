@@ -127,7 +127,7 @@ module API
 
         commit_params = {
           commit: commit,
-          create_merge_request: false,
+          start_branch: params[:branch],
           target_branch: params[:branch]
         }
 

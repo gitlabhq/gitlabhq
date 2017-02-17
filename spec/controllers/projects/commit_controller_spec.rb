@@ -166,7 +166,7 @@ describe Projects::CommitController do
         post(:revert,
             namespace_id: project.namespace,
             project_id: project,
-            target_branch: 'master',
+            start_branch: 'master',
             id: commit.id)
 
         expect(response).to redirect_to namespace_project_commits_path(project.namespace, project, 'master')
@@ -179,7 +179,7 @@ describe Projects::CommitController do
         post(:revert,
             namespace_id: project.namespace,
             project_id: project,
-            target_branch: 'master',
+            start_branch: 'master',
             id: commit.id)
       end
 
@@ -188,7 +188,7 @@ describe Projects::CommitController do
         post(:revert,
             namespace_id: project.namespace,
             project_id: project,
-            target_branch: 'master',
+            start_branch: 'master',
             id: commit.id)
 
         expect(response).to redirect_to namespace_project_commit_path(project.namespace, project, commit.id)
@@ -215,7 +215,7 @@ describe Projects::CommitController do
         post(:cherry_pick,
             namespace_id: project.namespace,
             project_id: project,
-            target_branch: 'master',
+            start_branch: 'master',
             id: master_pickable_commit.id)
 
         expect(response).to redirect_to namespace_project_commits_path(project.namespace, project, 'master')
@@ -228,7 +228,7 @@ describe Projects::CommitController do
         post(:cherry_pick,
             namespace_id: project.namespace,
             project_id: project,
-            target_branch: 'master',
+            start_branch: 'master',
             id: master_pickable_commit.id)
       end
 
@@ -237,7 +237,7 @@ describe Projects::CommitController do
         post(:cherry_pick,
             namespace_id: project.namespace,
             project_id: project,
-            target_branch: 'master',
+            start_branch: 'master',
             id: master_pickable_commit.id)
 
         expect(response).to redirect_to namespace_project_commit_path(project.namespace, project, master_pickable_commit.id)

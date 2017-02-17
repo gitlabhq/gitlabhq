@@ -51,22 +51,34 @@ class Projects::CommitController < Projects::ApplicationController
   def revert
     assign_change_commit_vars
 
-    return render_404 if @target_branch.blank?
+    return render_404 if @start_branch.blank?
+
+    @target_branch = create_new_branch? ? @commit.revert_branch_name : @start_branch
+
+    @mr_target_branch = @start_branch
 
     create_commit(Commits::RevertService, success_notice: "The #{@commit.change_type_title(current_user)} has been successfully reverted.",
-                                          success_path: successful_change_path, failure_path: failed_change_path)
+                                          success_path: -> { successful_change_path }, failure_path: failed_change_path)
   end
 
   def cherry_pick
     assign_change_commit_vars
 
-    return render_404 if @target_branch.blank?
+    return render_404 if @start_branch.blank?
+
+    @target_branch = create_new_branch? ? @commit.cherry_pick_branch_name : @start_branch
+
+    @mr_target_branch = @start_branch
 
     create_commit(Commits::CherryPickService, success_notice: "The #{@commit.change_type_title(current_user)} has been successfully cherry-picked.",
-                                              success_path: successful_change_path, failure_path: failed_change_path)
+                                              success_path: -> { successful_change_path }, failure_path: failed_change_path)
   end
 
   private
+
+  def create_new_branch?
+    params[:create_merge_request].present? || !can?(current_user, :push_code, @project)
+  end
 
   def successful_change_path
     referenced_merge_request_url || namespace_project_commits_url(@project.namespace, @project, @target_branch)
@@ -78,7 +90,7 @@ class Projects::CommitController < Projects::ApplicationController
 
   def referenced_merge_request_url
     if merge_request = @commit.merged_merge_request(current_user)
-      namespace_project_merge_request_url(@project.namespace, @project, merge_request)
+      namespace_project_merge_request_url(merge_request.target_project.namespace, merge_request.target_project, merge_request)
     end
   end
 
@@ -94,7 +106,7 @@ class Projects::CommitController < Projects::ApplicationController
 
     @diffs = commit.diffs(opts)
     @notes_count = commit.notes.count
-    
+
     @environment = EnvironmentsFinder.new(@project, current_user, commit: @commit).execute.last
   end
 
@@ -118,11 +130,7 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def assign_change_commit_vars
-    @commit = project.commit(params[:id])
-    @target_branch = params[:target_branch]
-    @commit_params = {
-      commit: @commit,
-      create_merge_request: params[:create_merge_request].present? || different_project?
-    }
+    @start_branch = params[:start_branch]
+    @commit_params = { commit: @commit }
   end
 end
