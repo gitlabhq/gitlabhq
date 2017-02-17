@@ -192,7 +192,7 @@
       = f.label :max_pages_size, 'Maximum size of pages (MB)', class: 'control-label col-sm-2'
       .col-sm-10
         = f.number_field :max_pages_size, class: 'form-control'
-        .help-block Zero for unlimited
+        .help-block 0 for unlimited
 
   %fieldset
     %legend Continuous Integration
@@ -525,7 +525,7 @@
         = f.number_field :terminal_max_session_time, class: 'form-control'
         .help-block
           Maximum time for web terminal websocket connection (in seconds).
-          Set to 0 for unlimited time.
+          0 for unlimited.
 
   .form-actions
     = f.submit 'Save', class: 'btn btn-save'
