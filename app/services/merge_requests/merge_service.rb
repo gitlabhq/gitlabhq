@@ -18,7 +18,7 @@ module MergeRequests
       @source = find_merge_source
 
       unless @source
-        log_merge_error('No source for merge', save_message_on_model: true)
+        return log_merge_error('No source for merge', save_message_on_model: true)
       end
 
       merge_request.in_locked_state do
