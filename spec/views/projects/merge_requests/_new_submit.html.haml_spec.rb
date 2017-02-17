@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe 'projects/merge_requests/_new_submit.html.haml', :view do
+
   let(:merge_request) { create(:merge_request) }
   let!(:pipeline) { create(:ci_empty_pipeline) }
 
@@ -22,10 +23,10 @@ describe 'projects/merge_requests/_new_submit.html.haml', :view do
       assign(:pipeline, nil)
     end
 
-    it 'shows <<Pipelines>> tab and hides <<Builds>> tab' do
+    it 'shows <<Pipelines>> tab' do
       render
+
       expect(rendered).to have_text('Pipelines 1')
-      expect(rendered).not_to have_text('Builds')
     end
   end
 end
