@@ -16,7 +16,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
     end
 
     after(:all) do
-      @user.destroy!
+      DatabaseCleaner.clean_with(:truncation)
     end
 
     context 'JSON' do
