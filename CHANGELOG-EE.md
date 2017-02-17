@@ -32,6 +32,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Expose issue weight in the API. !1023 (Robert Schilling)
 - Copy <some text> to clipboard. !1048
 
+## 8.15.7 (2017-02-15)
+
+- No changes.
+
 ## 8.15.6 (2017-02-14)
 
 - No changes.
@@ -68,6 +72,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Technical debt follow-up from restricting pushes / merges by group. !927
 - Geo: Enables nodes to be removed even without proper license. !978
 - Update validates_hostname to 1.0.6 to fix a bug in parsing hexadecimal-looking domain names. !982
+
+## 8.14.10 (2017-02-15)
+
+- No changes.
 
 ## 8.14.9 (2017-02-14)
 
