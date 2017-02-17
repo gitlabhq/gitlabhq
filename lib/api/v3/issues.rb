@@ -16,7 +16,8 @@ module API
           labels = args.delete(:labels)
           args[:label_name] = labels if match_all_labels
 
-          args[:search] = "#{Issue.reference_prefix}#{args.delete(:iid)}" if args.key?(:iid)
+          # IssuesFinder expects iids
+          args[:iids] = args.delete(:iid) if args.key?(:iid)
 
           issues = IssuesFinder.new(current_user, args).execute.inc_notes_with_associations
 

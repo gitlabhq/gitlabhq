@@ -38,5 +38,13 @@ describe MergeRequestsFinder do
       merge_requests = MergeRequestsFinder.new(user, params).execute
       expect(merge_requests.size).to eq(3)
     end
+
+    it 'filters by iid' do
+      params = { project_id: project1.id, iids: merge_request1.iid }
+
+      merge_requests = MergeRequestsFinder.new(user, params).execute
+
+      expect(merge_requests).to contain_exactly(merge_request1)
+    end
   end
 end
