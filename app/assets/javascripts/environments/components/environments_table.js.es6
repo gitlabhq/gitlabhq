@@ -3,11 +3,13 @@
  */
 const Vue = require('vue');
 const EnvironmentItem = require('./environment_item');
+const DeployBoard = require('./deploy_board_component');
 
 module.exports = Vue.component('environment-table-component', {
 
   components: {
     'environment-item': EnvironmentItem,
+    'deploy-board': DeployBoard,
   },
 
   props: {
@@ -43,6 +45,11 @@ module.exports = Vue.component('environment-table-component', {
       type: String,
       required: false,
     },
+
+    toggleDeployBoard: {
+      type: Function,
+      required: false,
+    },
   },
 
   template: `
@@ -66,7 +73,14 @@ module.exports = Vue.component('environment-table-component', {
             :can-read-environment="canReadEnvironment"
             :play-icon-svg="playIconSvg"
             :terminal-icon-svg="terminalIconSvg"
-            :commit-icon-svg="commitIconSvg"></tr>
+            :commit-icon-svg="commitIconSvg"
+            :toggleDeployBoard="toggleDeployBoard.bind(model)"></tr>
+
+          <tr v-if="model.isDeployBoardVisible">
+            <td colspan="6" class="deploy-board-container">
+              <deploy-board></deploy-board>
+            </td>
+          </tr>
         </template>
       </tbody>
     </table>

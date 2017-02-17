@@ -185,3 +185,21 @@
     border-color: $border-color;
   }
 }
+
+.deploy-board-icon i {
+  font-size: 20px;
+  vertical-align: bottom;
+  cursor: pointer;
+}
+
+.deploy-board {
+  border-top: 1px solid $border-color;
+  border-bottom: 1px solid $border-color;
+  padding: 10px;
+  background-color: #fbfbfb;
+  min-height: 20px;
+}
+
+td.deploy-board-container {
+  padding: 0;
+}

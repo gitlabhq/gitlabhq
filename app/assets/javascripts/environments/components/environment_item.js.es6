@@ -61,6 +61,17 @@ module.exports = Vue.component('environment-item', {
       type: String,
       required: false,
     },
+
+    /**
+     * Top level environments with `rollout_status`
+     * can render a deploy board. In order to render it we need to update
+     * the parent compoenent data.
+     *
+     */
+    toggleDeployBoard: {
+      type: Function,
+      required: false,
+    },
   },
 
   computed: {
@@ -415,6 +426,17 @@ module.exports = Vue.component('environment-item', {
       return `${window.location.pathname}/folders/${this.model.folderName}`;
     },
 
+    /**
+     * If the environment has a deploy board we need to render an arrow icon
+     * next to it's name.
+     *
+     * @return {Boolean}
+     */
+    hasDeployBoard() {
+      return true;
+      // return this.model.rollout_status;
+    },
+
   },
 
   /**
@@ -435,11 +457,19 @@ module.exports = Vue.component('environment-item', {
   template: `
     <tr>
       <td>
+        <span class="deploy-board-icon"
+          v-if="!model.isFolder"
+          v-on:click="toggleDeployBoard(model)">
+          <i class="fa fa-caret-right" aria-hidden="true" v-if="!model.isDeployBoardVisible"></i>
+          <i class="fa fa-caret-down" aria-hidden="true" v-if="model.isDeployBoardVisible"></i>
+        </span>
+
         <a v-if="!model.isFolder"
           class="environment-name"
           :href="environmentPath">
           {{model.name}}
         </a>
+
         <a v-else class="folder-name" :href="folderUrl">
           <span class="folder-icon">
             <i class="fa fa-folder" aria-hidden="true"></i>

@@ -22,6 +22,7 @@ module.exports = Vue.component('deploy_boards_components', {
 
   created() {
     // Fetch data
+    console.log('HERE!');
   },
 
   template: `

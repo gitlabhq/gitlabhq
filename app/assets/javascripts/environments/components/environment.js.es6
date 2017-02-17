@@ -1,8 +1,8 @@
 /* eslint-disable no-param-reassign, no-new */
 /* global Flash */
 
-const Vue = require('vue');
-Vue.use(require('vue-resource'));
+const Vue = window.Vue = require('vue');
+window.Vue.use(require('vue-resource'));
 const EnvironmentsService = require('../services/environments_service');
 const EnvironmentTable = require('./environments_table');
 const EnvironmentsStore = require('../stores/environments_store');
@@ -98,8 +98,9 @@ module.exports = Vue.component('environment-component', {
   },
 
   methods: {
-    toggleRow(model) {
-      return this.store.toggleFolder(model.name);
+    toggleDeployBoard(model) {
+      debugger;
+      return this.store.toggleDeployBoard(model);
     },
 
     /**
@@ -178,7 +179,8 @@ module.exports = Vue.component('environment-component', {
             :can-read-environment="canReadEnvironmentParsed"
             :play-icon-svg="playIconSvg"
             :terminal-icon-svg="terminalIconSvg"
-            :commit-icon-svg="commitIconSvg">
+            :commit-icon-svg="commitIconSvg"
+            :toggleDeployBoard="toggleDeployBoard">
           </environment-table>
 
           <table-pagination v-if="state.paginationInformation && state.paginationInformation.totalPages > 1"

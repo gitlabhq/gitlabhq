@@ -39,6 +39,10 @@ class EnvironmentsStore {
 
       if (env.size > 1) {
         filtered = Object.assign({}, env, { isFolder: true, folderName: env.name });
+      } else {
+        // FIX ME
+        // no folders items with `x` key can have a deploy board
+        filtered = Object.assign({}, env, { isDeployBoardVisible: false });
       }
 
       if (env.latest) {
@@ -54,6 +58,27 @@ class EnvironmentsStore {
     this.state.environments = filteredEnvironments;
 
     return filteredEnvironments;
+  }
+
+  /**
+   * Toggles deploy board visibility for the provided environment.
+   *
+   * @param  {Object} environment
+   * @return {Array}
+   */
+  toggleDeployBoard(environment) {
+    const environments = Object.assign([], this.state.environments);
+
+    this.state.environments = environments.map((env) => {
+      let updated = Object.assign({}, env);
+
+      if (env.id === environment.id) {
+        updated = Object.assign({}, updated, { isDeployBoardVisible: !env.isDeployBoardVisible });
+      }
+      return updated;
+    });
+
+    return this.state.environments;
   }
 
   setPagination(pagination = {}) {
