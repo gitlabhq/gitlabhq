@@ -319,13 +319,12 @@ module SlashCommands
     desc 'Set weight'
     params '1-9'
     condition do
-      issuable.persisted? &&
-        issuable.is_a?(Issue) &&
+      issuable.is_a?(Issue) &&
         current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
     end
     command :weight do |weight|
       if Issue.weight_filter_options.include?(weight.to_i)
-        @updates[:weight] = weight
+        @updates[:weight] = weight.to_i
       end
     end
 
