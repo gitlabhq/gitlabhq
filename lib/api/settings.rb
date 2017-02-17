@@ -7,6 +7,20 @@ module API
         @current_setting ||=
           (ApplicationSetting.current || ApplicationSetting.create_from_defaults)
       end
+
+      def map_setting_visibility_levels(attrs)
+        [:default_project_visibility, :default_snippet_visibility, :default_group_visibility].each do |param|
+          visibility = attrs.delete(param)
+          if visibility
+            attrs[param] = Gitlab::VisibilityLevel.string_options[visibility]
+          end
+        end
+        restricted_levels = attrs.delete(:restricted_visibility_levels)
+        if restricted_levels
+          attrs[:restricted_visibility_levels] = Gitlab::VisibilityLevel.string_options.values_at(*restricted_levels)
+        end
+        attrs
+      end
     end
 
     desc 'Get the current application settings' do
@@ -21,9 +35,9 @@ module API
     end
     params do
       optional :default_branch_protection, type: Integer, values: [0, 1, 2], desc: 'Determine if developers can push to master'
-      optional :default_project_visibility, type: Integer, values: Gitlab::VisibilityLevel.values, desc: 'The default project visibility'
-      optional :default_snippet_visibility, type: Integer, values: Gitlab::VisibilityLevel.values, desc: 'The default snippet visibility'
-      optional :default_group_visibility, type: Integer, values: Gitlab::VisibilityLevel.values, desc: 'The default group visibility'
+      optional :default_project_visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The default project visibility'
+      optional :default_snippet_visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The default snippet visibility'
+      optional :default_group_visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The default group visibility'
       optional :restricted_visibility_levels, type: Array[String], desc: 'Selected levels cannot be used by non-admin users for projects or snippets. If the public level is restricted, user profiles are only visible to logged in users.'
       optional :import_sources, type: Array[String], values: %w[github bitbucket gitlab google_code fogbugz git gitlab_project],
                                 desc: 'Enabled sources for code import during project creation. OmniAuth must be configured for GitHub, Bitbucket, and GitLab.com'
@@ -128,7 +142,9 @@ module API
                       :housekeeping_enabled, :terminal_max_session_time
     end
     put "application/settings" do
-      if current_settings.update_attributes(declared_params(include_missing: false))
+      attrs = map_setting_visibility_levels(declared_params(include_missing: false))
+
+      if current_settings.update_attributes(attrs)
         present current_settings, with: Entities::ApplicationSetting
       else
         render_validation_error!(current_settings)

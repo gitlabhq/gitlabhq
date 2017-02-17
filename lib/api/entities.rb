@@ -553,12 +553,14 @@ module API
       expose :updated_at
       expose :home_page_url
       expose :default_branch_protection
-      expose :restricted_visibility_levels
+      expose(:restricted_visibility_levels) do |setting, _options|
+        setting.restricted_visibility_levels.map { |level| Gitlab::VisibilityLevel.string_level(level) }
+      end
       expose :max_attachment_size
       expose :session_expire_delay
-      expose :default_project_visibility
-      expose :default_snippet_visibility
-      expose :default_group_visibility
+      expose(:default_project_visibility) { |setting, _options| Gitlab::VisibilityLevel.string_level(setting.default_project_visibility) }
+      expose(:default_snippet_visibility) { |setting, _options| Gitlab::VisibilityLevel.string_level(setting.default_snippet_visibility) }
+      expose(:default_group_visibility) { |setting, _options| Gitlab::VisibilityLevel.string_level(setting.default_group_visibility) }
       expose :default_artifacts_expire_in
       expose :domain_whitelist
       expose :domain_blacklist_enabled

@@ -179,6 +179,7 @@ class ApplicationSetting < ActiveRecord::Base
       default_project_visibility: Settings.gitlab.default_projects_features['visibility_level'],
       default_projects_limit: Settings.gitlab['default_projects_limit'],
       default_snippet_visibility: Settings.gitlab.default_projects_features['visibility_level'],
+      default_group_visibility: Settings.gitlab.default_projects_features['visibility_level'],
       disabled_oauth_sign_in_sources: [],
       domain_whitelist: Settings.gitlab['domain_whitelist'],
       gravatar_enabled: Settings.gravatar['enabled'],
