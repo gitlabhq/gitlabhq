@@ -6,7 +6,7 @@ require('~/lib/utils/text_utility');
 (function() {
   describe('Header', function() {
     var todosPendingCount = '.todos-pending-count';
-    var fixtureTemplate = 'static/header.html.raw';
+    var fixtureTemplate = 'issues/open-issue.html.raw';
 
     function isTodosCountHidden() {
       return $(todosPendingCount).hasClass('hidden');

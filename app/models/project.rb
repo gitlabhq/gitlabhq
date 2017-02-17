@@ -493,7 +493,7 @@ class Project < ActiveRecord::Base
     if forked?
       job_id = RepositoryForkWorker.perform_async(id, forked_from_project.repository_storage_path,
                                                   forked_from_project.path_with_namespace,
-                                                  self.namespace.path)
+                                                  self.namespace.full_path)
     else
       job_id = RepositoryImportWorker.perform_async(self.id)
     end
@@ -1057,8 +1057,8 @@ class Project < ActiveRecord::Base
 
     Gitlab::AppLogger.info "Project was renamed: #{old_path_with_namespace} -> #{new_path_with_namespace}"
 
-    Gitlab::UploadsTransfer.new.rename_project(path_was, path, namespace.path)
-    Gitlab::PagesTransfer.new.rename_project(path_was, path, namespace.path)
+    Gitlab::UploadsTransfer.new.rename_project(path_was, path, namespace.full_path)
+    Gitlab::PagesTransfer.new.rename_project(path_was, path, namespace.full_path)
   end
 
   # Expires various caches before a project is renamed.
@@ -1298,19 +1298,25 @@ class Project < ActiveRecord::Base
   end
 
   def pages_url
+    subdomain, _, url_path = full_path.partition('/')
+
     # The hostname always needs to be in downcased
     # All web servers convert hostname to lowercase
-    host = "#{namespace.path}.#{Settings.pages.host}".downcase
+    host = "#{subdomain}.#{Settings.pages.host}".downcase
 
     # The host in URL always needs to be downcased
     url = Gitlab.config.pages.url.sub(/^https?:\/\//) do |prefix|
-      "#{prefix}#{namespace.path}."
+      "#{prefix}#{subdomain}."
     end.downcase
 
     # If the project path is the same as host, we serve it as group page
-    return url if host == path
+    return url if host == url_path
 
-    "#{url}/#{path}"
+    "#{url}/#{url_path}"
+  end
+
+  def pages_subdomain
+    full_path.partition('/').first
   end
 
   def pages_path
@@ -1327,8 +1333,8 @@ class Project < ActiveRecord::Base
     # 3. We asynchronously remove pages with force
     temp_path = "#{path}.#{SecureRandom.hex}.deleted"
 
-    if Gitlab::PagesTransfer.new.rename_project(path, temp_path, namespace.path)
-      PagesWorker.perform_in(5.minutes, :remove, namespace.path, temp_path)
+    if Gitlab::PagesTransfer.new.rename_project(path, temp_path, namespace.full_path)
+      PagesWorker.perform_in(5.minutes, :remove, namespace.full_path, temp_path)
     end
   end
 
@@ -1432,7 +1438,7 @@ class Project < ActiveRecord::Base
   end
 
   def ensure_dir_exist
-    gitlab_shell.add_namespace(repository_storage_path, namespace.path)
+    gitlab_shell.add_namespace(repository_storage_path, namespace.full_path)
   end
 
   def predefined_variables
@@ -1440,7 +1446,7 @@ class Project < ActiveRecord::Base
       { key: 'CI_PROJECT_ID', value: id.to_s, public: true },
       { key: 'CI_PROJECT_NAME', value: path, public: true },
       { key: 'CI_PROJECT_PATH', value: path_with_namespace, public: true },
-      { key: 'CI_PROJECT_NAMESPACE', value: namespace.path, public: true },
+      { key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path, public: true },
       { key: 'CI_PROJECT_URL', value: web_url, public: true }
     ]
   end

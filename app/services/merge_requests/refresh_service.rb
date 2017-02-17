@@ -161,7 +161,11 @@ module MergeRequests
       return unless @commits.present?
 
       merge_requests_for_source_branch.each do |merge_request|
-        wip_commit = @commits.detect(&:work_in_progress?)
+        commit_shas = merge_request.commits_sha
+
+        wip_commit = @commits.detect do |commit|
+          commit.work_in_progress? && commit_shas.include?(commit.sha)
+        end
 
         if wip_commit && !merge_request.work_in_progress?
           merge_request.update(title: merge_request.wip_title)

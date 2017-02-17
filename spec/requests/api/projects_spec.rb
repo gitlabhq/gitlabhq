@@ -41,26 +41,40 @@ describe API::Projects, api: true  do
   end
 
   describe 'GET /projects' do
-    before { project }
+    shared_examples_for 'projects response' do
+      it 'returns an array of projects' do
+        get api('/projects', current_user)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.map { |p| p['id'] }).to contain_exactly(*projects.map(&:id))
+      end
+    end
+
+    let!(:public_project) { create(:empty_project, :public, name: 'public_project') }
+    before do
+      project
+      project2
+      project3
+      project4
+    end
 
     context 'when unauthenticated' do
-      it 'returns authentication error' do
-        get api('/projects')
-        expect(response).to have_http_status(401)
+      it_behaves_like 'projects response' do
+        let(:current_user) { nil }
+        let(:projects) { [public_project] }
       end
     end
 
     context 'when authenticated as regular user' do
-      it 'returns an array of projects' do
-        get api('/projects', user)
-        expect(response).to have_http_status(200)
-        expect(json_response).to be_an Array
-        expect(json_response.first['name']).to eq(project.name)
-        expect(json_response.first['owner']['username']).to eq(user.username)
+      it_behaves_like 'projects response' do
+        let(:current_user) { user }
+        let(:projects) { [public_project, project, project2, project3] }
       end
 
       it 'includes the project labels as the tag_list' do
         get api('/projects', user)
+
         expect(response.status).to eq 200
         expect(json_response).to be_an Array
         expect(json_response.first.keys).to include('tag_list')
@@ -68,21 +82,39 @@ describe API::Projects, api: true  do
 
       it 'includes open_issues_count' do
         get api('/projects', user)
+
         expect(response.status).to eq 200
         expect(json_response).to be_an Array
         expect(json_response.first.keys).to include('open_issues_count')
       end
 
-      it 'does not include open_issues_count' do
+      it 'does not include open_issues_count if issues are disabled' do
         project.project_feature.update_attribute(:issues_access_level, ProjectFeature::DISABLED)
 
         get api('/projects', user)
+
         expect(response.status).to eq 200
         expect(json_response).to be_an Array
-        expect(json_response.first.keys).not_to include('open_issues_count')
+        expect(json_response.find { |hash| hash['id'] == project.id }.keys).not_to include('open_issues_count')
       end
 
-      context 'GET /projects?simple=true' do
+      it "does not include statistics by default" do
+        get api('/projects', user)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.first).not_to include('statistics')
+      end
+
+      it "includes statistics if requested" do
+        get api('/projects', user), statistics: true
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.first).to include 'statistics'
+      end
+
+      context 'and with simple=true' do
         it 'returns a simplified version of all the projects' do
           expected_keys = ["id", "http_url_to_repo", "web_url", "name", "name_with_namespace", "path", "path_with_namespace"]
 
@@ -97,6 +129,7 @@ describe API::Projects, api: true  do
       context 'and using search' do
         it 'returns searched project' do
           get api('/projects', user), { search: project.name }
+
           expect(response).to have_http_status(200)
           expect(json_response).to be_an Array
           expect(json_response.length).to eq(1)
@@ -106,196 +139,109 @@ describe API::Projects, api: true  do
       context 'and using the visibility filter' do
         it 'filters based on private visibility param' do
           get api('/projects', user), { visibility: 'private' }
+
           expect(response).to have_http_status(200)
           expect(json_response).to be_an Array
-          expect(json_response.length).to eq(user.namespace.projects.where(visibility_level: Gitlab::VisibilityLevel::PRIVATE).count)
+          expect(json_response.map { |p| p['id'] }).to contain_exactly(project.id, project2.id, project3.id)
         end
 
         it 'filters based on internal visibility param' do
+          project2.update_attribute(:visibility_level, Gitlab::VisibilityLevel::INTERNAL)
+
           get api('/projects', user), { visibility: 'internal' }
+
           expect(response).to have_http_status(200)
           expect(json_response).to be_an Array
-          expect(json_response.length).to eq(user.namespace.projects.where(visibility_level: Gitlab::VisibilityLevel::INTERNAL).count)
+          expect(json_response.map { |p| p['id'] }).to contain_exactly(project2.id)
         end
 
         it 'filters based on public visibility param' do
           get api('/projects', user), { visibility: 'public' }
+
           expect(response).to have_http_status(200)
           expect(json_response).to be_an Array
-          expect(json_response.length).to eq(user.namespace.projects.where(visibility_level: Gitlab::VisibilityLevel::PUBLIC).count)
+          expect(json_response.map { |p| p['id'] }).to contain_exactly(public_project.id)
         end
       end
 
       context 'and using sorting' do
-        before do
-          project2
-          project3
-        end
-
         it 'returns the correct order when sorted by id' do
           get api('/projects', user), { order_by: 'id', sort: 'desc' }
+
           expect(response).to have_http_status(200)
           expect(json_response).to be_an Array
           expect(json_response.first['id']).to eq(project3.id)
         end
       end
-    end
-  end
 
-  describe 'GET /projects/all' do
-    before { project }
+      context 'and with owned=true' do
+        it 'returns an array of projects the user owns' do
+          get api('/projects', user4), owned: true
 
-    context 'when unauthenticated' do
-      it 'returns authentication error' do
-        get api('/projects/all')
-        expect(response).to have_http_status(401)
-      end
-    end
-
-    context 'when authenticated as regular user' do
-      it 'returns authentication error' do
-        get api('/projects/all', user)
-        expect(response).to have_http_status(403)
-      end
-    end
-
-    context 'when authenticated as admin' do
-      it 'returns an array of all projects' do
-        get api('/projects/all', admin)
-        expect(response).to have_http_status(200)
-        expect(json_response).to be_an Array
-
-        expect(json_response).to satisfy do |response|
-          response.one? do |entry|
-            entry.has_key?('permissions') &&
-              entry['name'] == project.name &&
-              entry['owner']['username'] == user.username
-          end
+          expect(response).to have_http_status(200)
+          expect(json_response).to be_an Array
+          expect(json_response.first['name']).to eq(project4.name)
+          expect(json_response.first['owner']['username']).to eq(user4.username)
         end
       end
 
-      it "does not include statistics by default" do
-        get api('/projects/all', admin)
+      context 'and with starred=true' do
+        let(:public_project) { create(:empty_project, :public) }
 
-        expect(response).to have_http_status(200)
-        expect(json_response).to be_an Array
-        expect(json_response.first).not_to include('statistics')
+        before do
+          project_member2
+          user3.update_attributes(starred_projects: [project, project2, project3, public_project])
+        end
+
+        it 'returns the starred projects viewable by the user' do
+          get api('/projects', user3), starred: true
+
+          expect(response).to have_http_status(200)
+          expect(json_response).to be_an Array
+          expect(json_response.map { |project| project['id'] }).to contain_exactly(project.id, public_project.id)
+        end
       end
 
-      it "includes statistics if requested" do
-        get api('/projects/all', admin), statistics: true
+      context 'and with all query parameters' do
+        # |         | project5 | project6 | project7 | project8 | project9 |
+        # |---------+----------+----------+----------+----------+----------|
+        # | search  | x        |          | x        | x        | x        |
+        # | starred | x        | x        |          | x        | x        |
+        # | public  | x        | x        | x        |          | x        |
+        # | owned   | x        | x        | x        | x        |          |
+        let!(:project5) { create(:empty_project, :public, path: 'gitlab5', namespace: user.namespace) }
+        let!(:project6) { create(:empty_project, :public, path: 'project6', namespace: user.namespace) }
+        let!(:project7) { create(:empty_project, :public, path: 'gitlab7', namespace: user.namespace) }
+        let!(:project8) { create(:empty_project, path: 'gitlab8', namespace: user.namespace) }
+        let!(:project9) { create(:empty_project, :public, path: 'gitlab9') }
 
-        expect(response).to have_http_status(200)
-        expect(json_response).to be_an Array
-        expect(json_response.first).to include 'statistics'
-      end
-    end
-  end
+        before do
+          user.update_attributes(starred_projects: [project5, project6, project8, project9])
+        end
 
-  describe 'GET /projects/owned' do
-    before do
-      project3
-      project4
-    end
+        it 'returns only projects that satify all query parameters' do
+          get api('/projects', user), { visibility: 'public', owned: true, starred: true, search: 'gitlab' }
 
-    context 'when unauthenticated' do
-      it 'returns authentication error' do
-        get api('/projects/owned')
-        expect(response).to have_http_status(401)
-      end
-    end
-
-    context 'when authenticated as project owner' do
-      it 'returns an array of projects the user owns' do
-        get api('/projects/owned', user4)
-        expect(response).to have_http_status(200)
-        expect(json_response).to be_an Array
-        expect(json_response.first['name']).to eq(project4.name)
-        expect(json_response.first['owner']['username']).to eq(user4.username)
-      end
-
-      it "does not include statistics by default" do
-        get api('/projects/owned', user4)
-
-        expect(response).to have_http_status(200)
-        expect(json_response).to be_an Array
-        expect(json_response.first).not_to include('statistics')
-      end
-
-      it "includes statistics if requested" do
-        attributes = {
-          commit_count: 23,
-          storage_size: 702,
-          repository_size: 123,
-          lfs_objects_size: 234,
-          build_artifacts_size: 345,
-        }
-
-        project4.statistics.update!(attributes)
-
-        get api('/projects/owned', user4), statistics: true
-
-        expect(response).to have_http_status(200)
-        expect(json_response).to be_an Array
-        expect(json_response.first['statistics']).to eq attributes.stringify_keys
-      end
-    end
-  end
-
-  describe 'GET /projects/visible' do
-    shared_examples_for 'visible projects response' do
-      it 'returns the visible projects' do
-        get api('/projects/visible', current_user)
-
-        expect(response).to have_http_status(200)
-        expect(json_response).to be_an Array
-        expect(json_response.map { |p| p['id'] }).to contain_exactly(*projects.map(&:id))
-      end
-    end
-
-    let!(:public_project) { create(:empty_project, :public) }
-    before do
-      project
-      project2
-      project3
-      project4
-    end
-
-    context 'when unauthenticated' do
-      it_behaves_like 'visible projects response' do
-        let(:current_user) { nil }
-        let(:projects) { [public_project] }
-      end
-    end
-
-    context 'when authenticated' do
-      it_behaves_like 'visible projects response' do
-        let(:current_user) { user }
-        let(:projects) { [public_project, project, project2, project3] }
+          expect(response).to have_http_status(200)
+          expect(json_response).to be_an Array
+          expect(json_response.size).to eq(1)
+          expect(json_response.first['id']).to eq(project5.id)
+        end
       end
     end
 
     context 'when authenticated as a different user' do
-      it_behaves_like 'visible projects response' do
+      it_behaves_like 'projects response' do
         let(:current_user) { user2 }
         let(:projects) { [public_project] }
       end
     end
-  end
 
-  describe 'GET /projects/starred' do
-    let(:public_project) { create(:empty_project, :public) }
-
-    before do
-      project_member2
-      user3.update_attributes(starred_projects: [project, project2, project3, public_project])
-    end
-
-    it 'returns the starred projects viewable by the user' do
-      get api('/projects/starred', user3)
-      expect(response).to have_http_status(200)
-      expect(json_response).to be_an Array
-      expect(json_response.map { |project| project['id'] }).to contain_exactly(project.id, public_project.id)
+    context 'when authenticated as admin' do
+      it_behaves_like 'projects response' do
+        let(:current_user) { admin }
+        let(:projects) { Project.all }
+      end
     end
   end
 
@@ -639,6 +585,7 @@ describe API::Projects, api: true  do
           'name' => user.namespace.name,
           'path' => user.namespace.path,
           'kind' => user.namespace.kind,
+          'full_path' => user.namespace.full_path,
         })
       end
 

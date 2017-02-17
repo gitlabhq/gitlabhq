@@ -128,8 +128,7 @@
 
 .note-action-button .link-highlight,
 .toolbar-btn,
-.dropdown-toggle-caret,
-.fa:not(.fa-bell) {
+.dropdown-toggle-caret {
   @include transition(color);
 }
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170210075922) do
+ActiveRecord::Schema.define(version: 20170211073944) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -654,6 +654,8 @@ ActiveRecord::Schema.define(version: 20170210075922) do
 
   add_index "labels", ["group_id", "project_id", "title"], name: "index_labels_on_group_id_and_project_id_and_title", unique: true, using: :btree
   add_index "labels", ["type", "project_id"], name: "index_labels_on_type_and_project_id", using: :btree
+  add_index "labels", ["project_id"], name: "index_labels_on_project_id", using: :btree
+  add_index "labels", ["title"], name: "index_labels_on_title", using: :btree
 
   create_table "ldap_group_links", force: :cascade do |t|
     t.string "cn", null: false
@@ -1463,6 +1465,7 @@ ActiveRecord::Schema.define(version: 20170210075922) do
     t.string "organization"
     t.boolean "authorized_projects_populated"
     t.boolean "auditor", default: false, null: false
+    t.boolean "notified_of_own_activity", default: false, null: false
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree

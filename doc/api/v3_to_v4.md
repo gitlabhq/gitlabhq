@@ -23,4 +23,4 @@ changes are in V4:
   - `/gitlab_ci_ymls/:key`
   - `/dockerfiles/:key`
 - Moved `/projects/fork/:id` to `/projects/:id/fork`
-
+- Endpoints `/projects/owned`, `/projects/visible`, `/projects/starred` & `/projects/all` are consolidated into `/projects` using query parameters
