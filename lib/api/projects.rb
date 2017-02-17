@@ -23,7 +23,7 @@ module API
         ], desc: 'Create a public project. The same as visibility_level = 20.'
         optional :public_builds, type: Boolean, desc: 'Perform public builds'
         optional :request_access_enabled, type: Boolean, desc: 'Allow users to request member access'
-        optional :only_allow_merge_if_build_succeeds, type: Boolean, desc: 'Only allow to merge if builds succeed'
+        optional :only_allow_merge_if_pipeline_succeeds, type: Boolean, desc: 'Only allow to merge if builds succeed'
         optional :only_allow_merge_if_all_discussions_are_resolved, type: Boolean, desc: 'Only allow to merge if all discussions are resolved'
 
         # EE-specific
@@ -212,7 +212,7 @@ module API
                         :wiki_enabled, :builds_enabled, :snippets_enabled,
                         :shared_runners_enabled, :container_registry_enabled,
                         :lfs_enabled, :visibility_level, :public_builds,
-                        :request_access_enabled, :only_allow_merge_if_build_succeeds,
+                        :request_access_enabled, :only_allow_merge_if_pipeline_succeeds,
                         :only_allow_merge_if_all_discussions_are_resolved, :path,
                         :default_branch,
                         ## EE-specific
