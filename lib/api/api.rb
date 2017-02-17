@@ -61,7 +61,7 @@ module API
     end
 
     rescue_from Gitlab::Auth::TooManyIps do |e|
-      rack_response({'message'=>'403 Forbidden'}.to_json, 403)
+      rack_response({ 'message' => '403 Forbidden' }.to_json, 403)
     end
 
     rescue_from :all do |exception|

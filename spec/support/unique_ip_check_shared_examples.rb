@@ -1,12 +1,16 @@
-shared_context 'limit login to only one ip' do
+shared_context 'enable unique ips sign in limit' do
+  include StubENV
   before(:each) do
     Gitlab::Redis.with(&:flushall)
   end
 
   before do
-    allow(Gitlab::Auth::UniqueIpsLimiter).to receive_message_chain(:config, :unique_ips_limit_enabled).and_return(true)
-    allow(Gitlab::Auth::UniqueIpsLimiter).to receive_message_chain(:config, :unique_ips_limit_time_window).and_return(10000)
-    allow(Gitlab::Auth::UniqueIpsLimiter).to receive_message_chain(:config, :unique_ips_limit_per_user).and_return(1)
+    stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
+
+    current_application_settings.update!(
+      unique_ips_limit_enabled: true,
+      unique_ips_limit_time_window: 10000
+    )
   end
 
   def change_ip(ip)
@@ -15,7 +19,9 @@ shared_context 'limit login to only one ip' do
 end
 
 shared_examples 'user login operation with unique ip limit' do
-  include_context 'limit login to only one ip' do
+  include_context 'enable unique ips sign in limit' do
+    before { current_application_settings.update!(unique_ips_limit_per_user: 1) }
+
     it 'allows user authenticating from the same ip' do
       change_ip('ip')
       expect { operation }.not_to raise_error
@@ -28,6 +34,31 @@ shared_examples 'user login operation with unique ip limit' do
 
       change_ip('ip2')
       expect { operation }.to raise_error(Gitlab::Auth::TooManyIps)
+    end
+  end
+end
+
+shared_examples 'user login request with unique ip limit' do
+  include_context 'enable unique ips sign in limit' do
+    before { current_application_settings.update!(unique_ips_limit_per_user: 1) }
+
+    it 'allows user authenticating from the same ip' do
+      change_ip('ip')
+      request
+      expect(response).to have_http_status(200)
+
+      request
+      expect(response).to have_http_status(200)
+    end
+
+    it 'blocks user authenticating from two distinct ips' do
+      change_ip('ip')
+      request
+      expect(response).to have_http_status(200)
+
+      change_ip('ip2')
+      request
+      expect(response).to have_http_status(403)
     end
   end
 end

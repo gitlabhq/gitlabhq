@@ -27,7 +27,7 @@ module Gitlab
         end
 
         def limit_user!(user = nil)
-          user = yield if user.nil?
+          user = yield if user.nil? && block_given?
           limit_user_id!(user.id) unless user.nil?
           user
         end

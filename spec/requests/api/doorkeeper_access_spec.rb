@@ -1,28 +1,5 @@
 require 'spec_helper'
 
-shared_examples 'user login request with unique ip limit' do
-  include_context 'limit login to only one ip' do
-    it 'allows user authenticating from the same ip' do
-      change_ip('ip')
-      request
-      expect(response).to have_http_status(200)
-
-      request
-      expect(response).to have_http_status(200)
-    end
-
-    it 'blocks user authenticating from two distinct ips' do
-      change_ip('ip')
-      request
-      expect(response).to have_http_status(200)
-
-      change_ip('ip2')
-      request
-      expect(response).to have_http_status(403)
-    end
-  end
-end
-
 describe API::API, api: true do
   include ApiHelpers
 

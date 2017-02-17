@@ -1,20 +1,21 @@
 require 'spec_helper'
 
 describe Gitlab::Auth::UniqueIpsLimiter, :redis, lib: true do
+  include_context 'enable unique ips sign in limit'
   let(:user) { create(:user) }
 
   describe '#count_unique_ips' do
     context 'non unique IPs' do
       it 'properly counts them' do
-        expect(Gitlab::Auth::UniqueIpsLimiter.count_unique_ips(user.id, '192.168.1.1')).to eq(1)
-        expect(Gitlab::Auth::UniqueIpsLimiter.count_unique_ips(user.id, '192.168.1.1')).to eq(1)
+        expect(Gitlab::Auth::UniqueIpsLimiter.count_unique_ips(user.id, 'ip1')).to eq(1)
+        expect(Gitlab::Auth::UniqueIpsLimiter.count_unique_ips(user.id, 'ip1')).to eq(1)
       end
     end
 
     context 'unique IPs' do
       it 'properly counts them' do
-        expect(Gitlab::Auth::UniqueIpsLimiter.count_unique_ips(user.id, '192.168.1.2')).to eq(1)
-        expect(Gitlab::Auth::UniqueIpsLimiter.count_unique_ips(user.id, '192.168.1.3')).to eq(2)
+        expect(Gitlab::Auth::UniqueIpsLimiter.count_unique_ips(user.id, 'ip2')).to eq(1)
+        expect(Gitlab::Auth::UniqueIpsLimiter.count_unique_ips(user.id, 'ip3')).to eq(2)
       end
     end
 
@@ -22,58 +23,35 @@ describe Gitlab::Auth::UniqueIpsLimiter, :redis, lib: true do
       cur_time = Time.now
       allow(Time).to receive(:now).and_return(cur_time)
 
-      expect(Gitlab::Auth::UniqueIpsLimiter.count_unique_ips(user.id, '192.168.1.2')).to eq(1)
-      expect(Gitlab::Auth::UniqueIpsLimiter.count_unique_ips(user.id, '192.168.1.3')).to eq(2)
+      expect(Gitlab::Auth::UniqueIpsLimiter.count_unique_ips(user.id, 'ip2')).to eq(1)
+      expect(Gitlab::Auth::UniqueIpsLimiter.count_unique_ips(user.id, 'ip3')).to eq(2)
 
       allow(Time).to receive(:now).and_return(cur_time + Gitlab::Auth::UniqueIpsLimiter.config.unique_ips_limit_time_window)
 
-      expect(Gitlab::Auth::UniqueIpsLimiter.count_unique_ips(user.id, '192.168.1.4')).to eq(1)
-      expect(Gitlab::Auth::UniqueIpsLimiter.count_unique_ips(user.id, '192.168.1.5')).to eq(2)
+      expect(Gitlab::Auth::UniqueIpsLimiter.count_unique_ips(user.id, 'ip4')).to eq(1)
+      expect(Gitlab::Auth::UniqueIpsLimiter.count_unique_ips(user.id, 'ip5')).to eq(2)
     end
   end
 
   describe '#limit_user!' do
-    context 'when unique ips limit is enabled' do
-      before do
-        allow(Gitlab::Auth::UniqueIpsLimiter).to receive_message_chain(:config, :unique_ips_limit_enabled).and_return(true)
-        allow(Gitlab::Auth::UniqueIpsLimiter).to receive_message_chain(:config, :unique_ips_limit_time_window).and_return(10)
+    include_examples 'user login operation with unique ip limit' do
+      def operation
+        Gitlab::Auth::UniqueIpsLimiter.limit_user! { user }
       end
+    end
 
-      context 'when ip limit is set to 1' do
-        before do
-          allow(Gitlab::Auth::UniqueIpsLimiter).to receive_message_chain(:config, :unique_ips_limit_per_user).and_return(1)
-        end
+    context 'allow 2 unique ips' do
+      before { current_application_settings.update!(unique_ips_limit_per_user: 2) }
 
-        it 'blocks user trying to login from second ip' do
-          allow(Gitlab::RequestContext).to receive(:client_ip).and_return('192.168.1.1')
-          expect(Gitlab::Auth::UniqueIpsLimiter.limit_user! { user }).to eq(user)
+      it 'blocks user trying to login from third ip' do
+        change_ip('ip1')
+        expect(Gitlab::Auth::UniqueIpsLimiter.limit_user! { user }).to eq(user)
 
-          allow(Gitlab::RequestContext).to receive(:client_ip).and_return('192.168.1.2')
-          expect { Gitlab::Auth::UniqueIpsLimiter.limit_user! { user } }.to raise_error(Gitlab::Auth::TooManyIps)
-        end
+        change_ip('ip2')
+        expect(Gitlab::Auth::UniqueIpsLimiter.limit_user! { user }).to eq(user)
 
-        it 'allows user trying to login from the same ip twice' do
-          allow(Gitlab::RequestContext).to receive(:client_ip).and_return('192.168.1.1')
-          expect(Gitlab::Auth::UniqueIpsLimiter.limit_user! { user }).to eq(user)
-          expect(Gitlab::Auth::UniqueIpsLimiter.limit_user! { user }).to eq(user)
-        end
-      end
-
-      context 'when ip limit is set to 2' do
-        before do
-          allow(Gitlab::Auth::UniqueIpsLimiter).to receive_message_chain(:config, :unique_ips_limit_per_user).and_return(2)
-        end
-
-        it 'blocks user trying to login from third ip' do
-          allow(Gitlab::RequestContext).to receive(:client_ip).and_return('192.168.1.1')
-          expect(Gitlab::Auth::UniqueIpsLimiter.limit_user! { user }).to eq(user)
-
-          allow(Gitlab::RequestContext).to receive(:client_ip).and_return('192.168.1.2')
-          expect(Gitlab::Auth::UniqueIpsLimiter.limit_user! { user }).to eq(user)
-
-          allow(Gitlab::RequestContext).to receive(:client_ip).and_return('192.168.1.3')
-          expect { Gitlab::Auth::UniqueIpsLimiter.limit_user! { user } }.to raise_error(Gitlab::Auth::TooManyIps)
-        end
+        change_ip('ip3')
+        expect { Gitlab::Auth::UniqueIpsLimiter.limit_user! { user } }.to raise_error(Gitlab::Auth::TooManyIps)
       end
     end
   end
