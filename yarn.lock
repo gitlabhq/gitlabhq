@@ -2624,7 +2624,7 @@ jodid25519@^1.0.0:
   dependencies:
     jsbn "~0.1.0"
 
-"jquery-ui@github:jquery/jquery-ui#1.11.4":
+"jquery-ui@git+https://github.com/jquery/jquery-ui#1.11.4":
   version "1.11.4"
   resolved "https://codeload.github.com/jquery/jquery-ui/tar.gz/d6713024e16de90ea71dc0544ba34e1df01b4d8a"
 
