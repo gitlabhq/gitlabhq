@@ -11,13 +11,6 @@
     = nav_link(controller: :koding) do
       = link_to koding_path, title: 'Koding' do
         %span
-<<<<<<< HEAD
-          Snippets
-
-    = link_to help_path, title: 'About GitLab EE', class: 'about-gitlab' do
-      %span
-        About GitLab EE
-=======
           Koding
   = nav_link(controller: [:groups, 'groups/milestones', 'groups/group_members']) do
     = link_to dashboard_groups_path, title: 'Groups' do
@@ -43,5 +36,4 @@
         Snippets
   %li.divider
   %li
-    = link_to "About GitLab CE", help_path, title: 'About GitLab CE', class: 'about-gitlab'
->>>>>>> ce/master
+    = link_to "About GitLab EE", help_path, title: 'About GitLab EE', class: 'about-gitlab'

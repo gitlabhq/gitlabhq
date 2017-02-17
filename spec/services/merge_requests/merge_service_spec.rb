@@ -205,7 +205,6 @@ describe MergeRequests::MergeService, services: true do
         expect(merge_request.merge_commit_sha).to be_nil
         expect(merge_request.merge_error).to include(error_message)
         expect(Rails.logger).to have_received(:error).with(a_string_matching(error_message))
-<<<<<<< HEAD
       end
     end
   end
@@ -244,8 +243,6 @@ describe MergeRequests::MergeService, services: true do
         allow(project).to receive(:merge_requests_ff_only_enabled) { true }
 
         expect(service.hooks_validation_pass?(merge_request)).to be_truthy
-=======
->>>>>>> ce/master
       end
     end
   end
