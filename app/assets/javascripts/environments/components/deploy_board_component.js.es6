@@ -29,7 +29,14 @@ module.exports = Vue.component('deploy_boards_components', {
     <div class="js-deploy-board deploy-board">
       <section class="deploy-board-information"></section>
 
-      <section class="deploy-board-instances"></section>
+      <section class="deploy-board-instances">
+        <p>Instances</p>
+
+        <div class="deploy-board-instances-container">
+          
+
+        </div>
+      </section>
 
       <section class="deploy-board-actions"></section>
     </div>

@@ -187,9 +187,9 @@
 }
 
 .deploy-board-icon i {
-  font-size: 20px;
-  vertical-align: bottom;
   cursor: pointer;
+  color: $border-color;
+  padding-right: 10px;
 }
 
 .deploy-board {
