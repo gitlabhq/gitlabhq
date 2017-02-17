@@ -87,7 +87,7 @@ class Projects::BoardsController < Projects::ApplicationController
       only: [:id, :name, :milestone_id],
       include: {
         milestone: { only: [:title] }
-      },
+      }
     )
   end
 end
