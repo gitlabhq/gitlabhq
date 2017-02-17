@@ -34,7 +34,6 @@ class Profiles::PreferencesController < Profiles::ApplicationController
       :layout,
       :dashboard,
       :project_view,
-      :theme_id
     )
   end
 end
