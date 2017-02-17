@@ -1,4 +1,4 @@
-require('~/environments/components/environment_rollback');
+const RollbackComponent = require('~/environments/components/environment_rollback');
 
 describe('Rollback Component', () => {
   preloadFixtures('static/environments/element.html.raw');
@@ -10,7 +10,7 @@ describe('Rollback Component', () => {
   });
 
   it('Should link to the provided retryUrl', () => {
-    const component = new window.gl.environmentsList.RollbackComponent({
+    const component = new RollbackComponent({
       el: document.querySelector('.test-dom-element'),
       propsData: {
         retryUrl: retryURL,
@@ -22,7 +22,7 @@ describe('Rollback Component', () => {
   });
 
   it('Should render Re-deploy label when isLastDeployment is true', () => {
-    const component = new window.gl.environmentsList.RollbackComponent({
+    const component = new RollbackComponent({
       el: document.querySelector('.test-dom-element'),
       propsData: {
         retryUrl: retryURL,
@@ -34,7 +34,7 @@ describe('Rollback Component', () => {
   });
 
   it('Should render Rollback label when isLastDeployment is false', () => {
-    const component = new window.gl.environmentsList.RollbackComponent({
+    const component = new RollbackComponent({
       el: document.querySelector('.test-dom-element'),
       propsData: {
         retryUrl: retryURL,

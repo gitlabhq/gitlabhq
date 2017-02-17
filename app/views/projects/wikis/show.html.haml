@@ -6,9 +6,11 @@
     %button.btn.btn-default.sidebar-toggle.js-sidebar-wiki-toggle{ role: "button", type: "button" }
       = icon('angle-double-left')
 
+    .wiki-breadcrumb
+      %span= breadcrumb(@page.slug)
+
     .nav-text
       %h2.wiki-page-title= @page.title.capitalize
-
       %span.wiki-last-edit-by
         Last edited by
         %strong

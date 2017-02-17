@@ -147,12 +147,16 @@ describe Projects::MergeRequestsController do
   end
 
   describe 'GET index' do
+    let!(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
+
     def get_merge_requests(page = nil)
       get :index,
           namespace_id: project.namespace.to_param,
           project_id: project.to_param,
           state: 'opened', page: page.to_param
     end
+
+    it_behaves_like "issuables list meta-data", :merge_request
 
     context 'when page param' do
       let(:last_page) { project.merge_requests.page().total_pages }
@@ -1139,15 +1143,15 @@ describe Projects::MergeRequestsController do
       end
     end
 
-    context 'when no special status for MR' do
+    context 'when MR does not have special state' do
       let(:merge_request) { create(:merge_request, source_project: project) }
 
       it 'returns an OK response' do
         expect(response).to have_http_status(:ok)
       end
 
-      it 'sets status to nil' do
-        expect(assigns(:status)).to be_nil
+      it 'sets status to success' do
+        expect(assigns(:status)).to eq(:success)
         expect(response).to render_template('merge')
       end
     end

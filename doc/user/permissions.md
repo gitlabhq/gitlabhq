@@ -22,9 +22,9 @@ The following table depicts the various user permission levels in a project.
 | Create confidential issue             | ✓       | ✓          | ✓           | ✓        | ✓      |
 | View confidential issues              | (✓) [^1] | ✓          | ✓           | ✓        | ✓      |
 | Leave comments                        | ✓       | ✓          | ✓           | ✓        | ✓      |
-| See a list of builds                  | ✓ [^2]  | ✓          | ✓           | ✓        | ✓      |
-| See a build log                       | ✓ [^2]  | ✓          | ✓           | ✓        | ✓      |
-| Download and browse build artifacts   | ✓ [^2]  | ✓          | ✓           | ✓        | ✓      |
+| See a list of jobs                    | ✓ [^2]  | ✓          | ✓           | ✓        | ✓      |
+| See a job   log                       | ✓ [^2]  | ✓          | ✓           | ✓        | ✓      |
+| Download and browse job artifacts     | ✓ [^2]  | ✓          | ✓           | ✓        | ✓      |
 | View wiki pages                       | ✓       | ✓          | ✓           | ✓        | ✓      |
 | Pull project code                     |         | ✓          | ✓           | ✓        | ✓      |
 | Download project                      |         | ✓          | ✓           | ✓        | ✓      |
@@ -46,7 +46,7 @@ The following table depicts the various user permission levels in a project.
 | Remove non-protected branches         |         |            | ✓           | ✓        | ✓      |
 | Add tags                              |         |            | ✓           | ✓        | ✓      |
 | Write a wiki                          |         |            | ✓           | ✓        | ✓      |
-| Cancel and retry builds               |         |            | ✓           | ✓        | ✓      |
+| Cancel and retry jobs                 |         |            | ✓           | ✓        | ✓      |
 | Create or update commit status        |         |            | ✓           | ✓        | ✓      |
 | Update a container registry           |         |            | ✓           | ✓        | ✓      |
 | Remove a container registry image     |         |            | ✓           | ✓        | ✓      |
@@ -60,7 +60,7 @@ The following table depicts the various user permission levels in a project.
 | Add deploy keys to project            |         |            |             | ✓        | ✓      |
 | Configure project hooks               |         |            |             | ✓        | ✓      |
 | Manage runners                        |         |            |             | ✓        | ✓      |
-| Manage build triggers                 |         |            |             | ✓        | ✓      |
+| Manage job triggers                   |         |            |             | ✓        | ✓      |
 | Manage variables                      |         |            |             | ✓        | ✓      |
 | Manage pages                          |         |            |             | ✓        | ✓      |
 | Manage pages domains and certificates |         |            |             | ✓        | ✓      |
@@ -134,8 +134,8 @@ instance and project. In addition, all admins can use the admin interface under
 
 | Action                                | Guest, Reporter | Developer   | Master   | Admin  |
 |---------------------------------------|-----------------|-------------|----------|--------|
-| See commits and builds                | ✓               | ✓           | ✓        | ✓      |
-| Retry or cancel build                 |                 | ✓           | ✓        | ✓      |
+| See commits and jobs                  | ✓               | ✓           | ✓        | ✓      |
+| Retry or cancel job                   |                 | ✓           | ✓        | ✓      |
 | Remove project                        |                 |             | ✓        | ✓      |
 | Create project                        |                 |             | ✓        | ✓      |
 | Change project configuration          |                 |             | ✓        | ✓      |
@@ -144,18 +144,18 @@ instance and project. In addition, all admins can use the admin interface under
 | See events in the system              |                 |             |          | ✓      |
 | Admin interface                       |                 |             |          | ✓      |
 
-### Builds permissions
+### Jobs permissions
 
 >**Note:**
-GitLab 8.12 has a completely redesigned build permissions system.
+GitLab 8.12 has a completely redesigned job permissions system.
 Read all about the [new model and its implications][new-mod].
 
-This table shows granted privileges for builds triggered by specific types of
+This table shows granted privileges for jobs triggered by specific types of
 users:
 
 | Action                                      | Guest, Reporter | Developer   | Master   | Admin  |
 |---------------------------------------------|-----------------|-------------|----------|--------|
-| Run CI build                                |                 | ✓           | ✓        | ✓      |
+| Run CI job                                  |                 | ✓           | ✓        | ✓      |
 | Clone source and LFS from current project   |                 | ✓           | ✓        | ✓      |
 | Clone source and LFS from public projects   |                 | ✓           | ✓        | ✓      |
 | Clone source and LFS from internal projects |                 | ✓ [^4]      | ✓ [^4]   | ✓      |

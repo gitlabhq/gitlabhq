@@ -1,70 +1,58 @@
-/* global environmentsList */
-
-require('~/environments/stores/environments_store');
-require('./mock_data');
+const Store = require('~/environments/stores/environments_store');
+const { environmentsList, serverData } = require('./mock_data');
 
 (() => {
   describe('Store', () => {
+    let store;
+
     beforeEach(() => {
-      gl.environmentsList.EnvironmentsStore.create();
+      store = new Store();
     });
 
     it('should start with a blank state', () => {
-      expect(gl.environmentsList.EnvironmentsStore.state.environments.length).toBe(0);
-      expect(gl.environmentsList.EnvironmentsStore.state.stoppedCounter).toBe(0);
-      expect(gl.environmentsList.EnvironmentsStore.state.availableCounter).toBe(0);
+      expect(store.state.environments.length).toEqual(0);
+      expect(store.state.stoppedCounter).toEqual(0);
+      expect(store.state.availableCounter).toEqual(0);
+      expect(store.state.paginationInformation).toEqual({});
     });
 
-    describe('store environments', () => {
-      beforeEach(() => {
-        gl.environmentsList.EnvironmentsStore.storeEnvironments(environmentsList);
-      });
-
-      it('should count stopped environments and save the count in the state', () => {
-        expect(gl.environmentsList.EnvironmentsStore.state.stoppedCounter).toBe(1);
-      });
-
-      it('should count available environments and save the count in the state', () => {
-        expect(gl.environmentsList.EnvironmentsStore.state.availableCounter).toBe(3);
-      });
-
-      it('should store environments with same environment_type as sibilings', () => {
-        expect(gl.environmentsList.EnvironmentsStore.state.environments.length).toBe(3);
-
-        const parentFolder = gl.environmentsList.EnvironmentsStore.state.environments
-        .filter(env => env.children && env.children.length > 0);
-
-        expect(parentFolder[0].children.length).toBe(2);
-        expect(parentFolder[0].children[0].environment_type).toBe('review');
-        expect(parentFolder[0].children[1].environment_type).toBe('review');
-        expect(parentFolder[0].children[0].name).toBe('test-environment');
-        expect(parentFolder[0].children[1].name).toBe('test-environment-1');
-      });
-
-      it('should sort the environments alphabetically', () => {
-        const { environments } = gl.environmentsList.EnvironmentsStore.state;
-
-        expect(environments[0].name).toBe('production');
-        expect(environments[1].name).toBe('review');
-        expect(environments[1].children[0].name).toBe('test-environment');
-        expect(environments[1].children[1].name).toBe('test-environment-1');
-        expect(environments[2].name).toBe('review_app');
-      });
+    it('should store environments', () => {
+      store.storeEnvironments(serverData);
+      expect(store.state.environments.length).toEqual(serverData.length);
+      expect(store.state.environments[0]).toEqual(environmentsList[0]);
     });
 
-    describe('toggleFolder', () => {
-      beforeEach(() => {
-        gl.environmentsList.EnvironmentsStore.storeEnvironments(environmentsList);
-      });
+    it('should store available count', () => {
+      store.storeAvailableCount(2);
+      expect(store.state.availableCounter).toEqual(2);
+    });
 
-      it('should toggle the open property for the given environment', () => {
-        gl.environmentsList.EnvironmentsStore.toggleFolder('review');
+    it('should store stopped count', () => {
+      store.storeStoppedCount(2);
+      expect(store.state.stoppedCounter).toEqual(2);
+    });
 
-        const { environments } = gl.environmentsList.EnvironmentsStore.state;
-        const environment = environments.filter(env => env['vue-isChildren'] === true && env.name === 'review');
+    it('should store pagination information', () => {
+      const pagination = {
+        'X-nExt-pAge': '2',
+        'X-page': '1',
+        'X-Per-Page': '1',
+        'X-Prev-Page': '2',
+        'X-TOTAL': '37',
+        'X-Total-Pages': '2',
+      };
 
-        expect(environment[0].isOpen).toBe(true);
-      });
+      const expectedResult = {
+        perPage: 1,
+        page: 1,
+        total: 37,
+        totalPages: 2,
+        nextPage: 2,
+        previousPage: 2,
+      };
+
+      store.setPagination(pagination);
+      expect(store.state.paginationInformation).toEqual(expectedResult);
     });
   });
 })();

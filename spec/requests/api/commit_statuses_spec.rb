@@ -159,6 +159,7 @@ describe API::CommitStatuses, api: true do
                               context: 'coverage',
                               ref: 'develop',
                               description: 'test',
+                              coverage: 80.0,
                               target_url: 'http://gitlab.com/status' }
 
           post api(post_url, developer), optional_params
@@ -170,6 +171,7 @@ describe API::CommitStatuses, api: true do
           expect(json_response['status']).to eq('success')
           expect(json_response['name']).to eq('coverage')
           expect(json_response['ref']).to eq('develop')
+          expect(json_response['coverage']).to eq(80.0)
           expect(json_response['description']).to eq('test')
           expect(json_response['target_url']).to eq('http://gitlab.com/status')
         end

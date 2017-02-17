@@ -145,11 +145,11 @@ describe API::Members, api: true  do
         end
       end
 
-      it "returns #{source_type == 'project' ? 201 : 409} if member already exists" do
+      it "returns 409 if member already exists" do
         post api("/#{source_type.pluralize}/#{source.id}/members", master),
              user_id: master.id, access_level: Member::MASTER
 
-        expect(response).to have_http_status(source_type == 'project' ? 201 : 409)
+        expect(response).to have_http_status(409)
       end
 
       it 'returns 400 when user_id is not given' do

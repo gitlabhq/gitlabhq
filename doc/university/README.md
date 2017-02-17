@@ -5,7 +5,7 @@ GitLab University is the best place to learn about **Version Control with Git an
 It doesn't replace, but accompanies our great [Documentation](https://docs.gitlab.com)
 and [Blog Articles](https://about.gitlab.com/blog/).
 
-Would you like to contribute to GitLab University? Then please take a look at our contribution [process](process) for more information.
+Would you like to contribute to GitLab University? Then please take a look at our contribution [process](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/PROCESS.md) for more information.
 
 ## Gitlab University Curriculum
 

@@ -15,6 +15,7 @@ module TodosHelper
     when Todo::MARKED then 'added a todo for'
     when Todo::APPROVAL_REQUIRED then 'set you as an approver for'
     when Todo::UNMERGEABLE then 'Could not merge'
+    when Todo::DIRECTLY_ADDRESSED then 'directly addressed you on'
     end
   end
 
@@ -88,7 +89,8 @@ module TodosHelper
       { id: Todo::ASSIGNED, text: 'Assigned' },
       { id: Todo::MENTIONED, text: 'Mentioned' },
       { id: Todo::MARKED, text: 'Added' },
-      { id: Todo::BUILD_FAILED, text: 'Pipelines' }
+      { id: Todo::BUILD_FAILED, text: 'Pipelines' },
+      { id: Todo::DIRECTLY_ADDRESSED, text: 'Directly addressed' }
     ]
   end
 

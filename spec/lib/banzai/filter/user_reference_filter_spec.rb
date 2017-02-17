@@ -112,6 +112,19 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
     end
   end
 
+  context 'mentioning a nested group' do
+    it_behaves_like 'a reference containing an element node'
+
+    let(:group)     { create(:group, :nested) }
+    let(:reference) { group.to_reference }
+
+    it 'links to the nested group' do
+      doc = reference_filter("Hey #{reference}")
+
+      expect(doc.css('a').first.attr('href')).to eq urls.group_url(group)
+    end
+  end
+
   it 'links with adjacent text' do
     doc = reference_filter("Mention me (#{reference}.)")
     expect(doc.to_html).to match(/\(<a.+>#{reference}<\/a>\.\)/)

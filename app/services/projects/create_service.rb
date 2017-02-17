@@ -97,7 +97,7 @@ module Projects
         @project.team << [current_user, :master, current_user]
       end
 
-      @project.group.refresh_members_authorized_projects if @project.group
+      @project.group&.refresh_members_authorized_projects
     end
 
     def skip_wiki?

@@ -14,7 +14,7 @@ do.
 |:---------------------------|:-------------|
 | `/close`                   | Close the issue or merge request |
 | `/reopen`                  | Reopen the issue or merge request |
-| `/merge`                   | Merge (when build succeeds) |
+| `/merge`                   | Merge (when pipeline succeeds) |
 | `/title <New title>`       | Change title |
 | `/assign @username`        | Assign |
 | `/unassign`                | Remove assignee |

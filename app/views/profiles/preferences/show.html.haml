@@ -7,12 +7,6 @@
       Application theme
     %p
       This setting allows you to customize the appearance of the site, e.g. the sidebar.
-  .col-lg-9.application-theme
-    - Gitlab::Themes.each do |theme|
-      = label_tag do
-        .preview{ class: theme.css_class }
-        = f.radio_button :theme_id, theme.id
-        = theme.name
   .col-sm-12
     %hr
   .col-lg-3.profile-settings-sidebar

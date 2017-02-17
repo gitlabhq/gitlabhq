@@ -24,6 +24,8 @@ describe Projects::IssuesController do
         project.team << [user, :developer]
       end
 
+      it_behaves_like "issuables list meta-data", :issue
+
       it "returns index" do
         get :index, namespace_id: project.namespace.path, project_id: project.path
 

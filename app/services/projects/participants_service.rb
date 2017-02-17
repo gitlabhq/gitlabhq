@@ -36,7 +36,7 @@ module Projects
     def groups
       current_user.authorized_groups.sort_by(&:path).map do |group|
         count = group.users.count
-        { username: group.path, name: group.name, count: count, avatar_url: group.avatar_url }
+        { username: group.full_path, name: group.full_name, count: count, avatar_url: group.avatar_url }
       end
     end
 

@@ -97,7 +97,11 @@ FactoryGirl.define do
     end
 
     trait :with_attachment do
-      attachment { fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "`/png") }
+      attachment { fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "image/png") }
+    end
+
+    trait :with_svg_attachment do
+      attachment { fixture_file_upload(Rails.root + "spec/fixtures/unsanitized.svg", "image/svg+xml") }
     end
   end
 end

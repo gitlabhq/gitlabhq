@@ -116,7 +116,7 @@
 }
 
 .btn,
-.side-nav-toggle {
+.global-dropdown-toggle {
   @include transition(background-color, border-color, color, box-shadow);
 }
 
@@ -128,8 +128,7 @@
 
 .note-action-button .link-highlight,
 .toolbar-btn,
-.dropdown-toggle-caret,
-.fa:not(.fa-bell) {
+.dropdown-toggle-caret {
   @include transition(color);
 }
 
@@ -141,7 +140,6 @@ a {
   @include transition(background-color, box-shadow);
 }
 
-.nav-sidebar a,
 .dropdown-menu a,
 .dropdown-menu button,
 .dropdown-menu-nav a {

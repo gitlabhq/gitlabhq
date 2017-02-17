@@ -100,20 +100,39 @@ header {
         }
       }
     }
+  }
 
-    .side-nav-toggle {
-      position: absolute;
-      left: -10px;
-      margin: 7px 0;
-      font-size: 18px;
-      padding: 6px 10px;
-      border: none;
-      background-color: $gray-light;
+  .global-dropdown {
+    position: absolute;
+    left: -10px;
+
+    .badge {
+      font-size: 11px;
+    }
+
+    li {
+      .active a {
+        font-weight: bold;
+      }
 
       &:hover {
-        background-color: $white-normal;
-        color: $gl-header-nav-hover-color;
+        .badge {
+          background-color: $white-light;
+        }
       }
+    }
+  }
+
+  .global-dropdown-toggle {
+    margin: 7px 0;
+    font-size: 18px;
+    padding: 6px 10px;
+    border: none;
+    background-color: $gray-light;
+
+    &:hover {
+      background-color: $white-normal;
+      color: $gl-header-nav-hover-color;
     }
   }
 

@@ -218,6 +218,14 @@ describe 'Pipelines', :feature, :js do
 
             expect(page).to have_link(with_artifacts.name)
           end
+
+          it 'has download attribute on download links' do
+            find('.js-pipeline-dropdown-download').click
+            expect(page).to have_selector('a', text: 'Download')
+            page.all('.build-artifacts a', text: 'Download').each do |link|
+              expect(link[:download]).to eq ''
+            end
+          end
         end
 
         context 'with artifacts expired' do
@@ -275,6 +283,27 @@ describe 'Pipelines', :feature, :js do
             expect(page).to have_content('canceled')
             expect(build.reload).to be_canceled
           end
+        end
+      end
+
+      context 'with pagination' do
+        before do
+          allow(Ci::Pipeline).to receive(:default_per_page).and_return(1)
+          create(:ci_empty_pipeline,  project: project)
+        end
+
+        it 'should render pagination' do
+          visit namespace_project_pipelines_path(project.namespace, project)
+          wait_for_vue_resource
+
+          expect(page).to have_selector('.gl-pagination')
+        end
+
+        it 'should render second page of pipelines' do
+          visit namespace_project_pipelines_path(project.namespace, project, page: '2')
+          wait_for_vue_resource
+
+          expect(page).to have_selector('.gl-pagination .page', count: 2)
         end
       end
     end

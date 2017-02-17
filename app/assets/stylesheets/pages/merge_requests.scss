@@ -85,14 +85,18 @@
     -webkit-align-items: center;
     align-items: center;
 
+    i,
     svg {
-      margin-right: 4px;
+      margin-right: 8px;
+    }
+
+    svg {
       position: relative;
       top: 1px;
       overflow: visible;
     }
 
-    &> span {
+    & > span {
       padding-right: 4px;
     }
 

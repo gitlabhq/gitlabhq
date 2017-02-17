@@ -229,4 +229,40 @@ describe API::Milestones, api: true  do
       end
     end
   end
+
+  describe 'GET /projects/:id/milestones/:milestone_id/merge_requests' do
+    let(:merge_request) { create(:merge_request, source_project: project) }
+    before do
+      milestone.merge_requests << merge_request
+    end
+
+    it 'returns project merge_requests for a particular milestone' do
+      get api("/projects/#{project.id}/milestones/#{milestone.id}/merge_requests", user)
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(json_response.size).to eq(1)
+      expect(json_response.first['title']).to eq(merge_request.title)
+      expect(json_response.first['milestone']['title']).to eq(milestone.title)
+    end
+
+    it 'returns a 404 error if milestone id not found' do
+      get api("/projects/#{project.id}/milestones/1234/merge_requests", user)
+
+      expect(response).to have_http_status(404)
+    end
+
+    it 'returns a 404 if the user has no access to the milestone' do
+      new_user = create :user
+      get api("/projects/#{project.id}/milestones/#{milestone.id}/merge_requests", new_user)
+
+      expect(response).to have_http_status(404)
+    end
+
+    it 'returns a 401 error if user not authenticated' do
+      get api("/projects/#{project.id}/milestones/#{milestone.id}/merge_requests")
+
+      expect(response).to have_http_status(401)
+    end
+  end
 end

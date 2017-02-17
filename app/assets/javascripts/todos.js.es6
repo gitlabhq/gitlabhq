@@ -147,24 +147,21 @@
 
     goToTodoUrl(e) {
       const todoLink = this.dataset.url;
-      let targetLink = e.target.getAttribute('href');
-
-      if (e.target.tagName === 'IMG') { // See if clicked target was Avatar
-        targetLink = e.target.parentElement.getAttribute('href'); // Parent of Avatar is link
-      }
 
       if (!todoLink) {
         return;
       }
 
       if (gl.utils.isMetaClick(e)) {
+        const windowTarget = '_blank';
+        const selected = e.target;
         e.preventDefault();
-        // Meta-Click on username leads to different URL than todoLink.
-        // Turbolinks can resolve that URL, but window.open requires URL manually.
-        if (targetLink !== todoLink) {
-          return window.open(targetLink, '_blank');
+
+        if (selected.tagName === 'IMG') {
+          const avatarUrl = selected.parentElement.getAttribute('href');
+          return window.open(avatarUrl, windowTarget);
         } else {
-          return window.open(todoLink, '_blank');
+          return window.open(todoLink, windowTarget);
         }
       } else {
         return gl.utils.visitUrl(todoLink);
