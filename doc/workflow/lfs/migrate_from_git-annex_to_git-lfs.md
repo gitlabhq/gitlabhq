@@ -1,5 +1,9 @@
 # Migration Guide from Git Annex to Git LFS
 
+> Type: user guide
+>
+> Level: beginner
+
 > GitLab EE is deprecating
 [support to **git-annex**][post-intro-annex] from version
 8.17 on (released on 2017/02/22). It
@@ -20,17 +24,14 @@ in your [local environment][install-annex-local].
 On GitLab.com, **git-annex** was enabled, and you had
 only to install it locally.
 
-### TL;DR
+### TL; DR
+
+> We assumeyou have [git-annex enabled](#enabling-annex) in your repository.
 
 If you want to skip the reading and go straight to the point,
 this is what you need to do:
 
 ```bash
-# Enable git-annex (what we expect you to have done so far)
-$ git annex init
-$ git annex add <files>
-$ git commit -m "commit message"
-$ git annex sync --content
 # Disable git-annex
 $ git annex direct
 $ git annex uninit
@@ -183,7 +184,7 @@ To keep your repo clean, let's remove all
 
 Git LFS is enabled by default on all GitLab products
 (GitLab CE, GitLab EE, GitLab.com), therefore, you
-don't need to do anything in the server side.
+don't need to do anything in the server-side.
 
 First, let's make sure you have **git-lfs** installed
 locally:
@@ -193,11 +194,7 @@ $ git lfs help
 ```
 
 If the terminal doesn't prompt you with a full response
-on **git-lfs** commands, [install LFS][install-lfs] first:
-
-```bash
-$ brew install git-lfs
-```
+on **git-lfs** commands, [install LFS][install-lfs] first.
 
 [Enable **git-lfs**][lfs-track] for the group of files you
 want to track with it. You can track specific files, all
@@ -235,7 +232,7 @@ Once you do that, run `git status` and you'll see
 file patterns that you chose to track via **git-lfs**.
 
 To see **git-lfs** working, look at the project's size (in
-bites), update one of your files, and push a change
+bytes), update one of your files, and push a change
 to the remote.
 
 - Repo size: 492 KB
