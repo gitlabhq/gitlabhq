@@ -166,7 +166,7 @@ out of date, so we'll need to install through the following commands:
     # install yarn
     curl --location https://yarnpkg.com/install.sh | bash -
 
-Visit the official websites for [node](https://nodejs.org/en/download/package-manager/) and [yarn](https://yarnpkg.com/en/docs/install/) if you have any trouble with this step.
+Visit the official websites for [node](https://nodejs.org/en/download/package-manager/) and [yarn](https://yarnpkg.com/en/docs/install/) if you have any trouble with these steps.
 
 ## 5. System Users
 
