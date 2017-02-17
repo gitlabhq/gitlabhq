@@ -285,6 +285,27 @@ describe 'Pipelines', :feature, :js do
           end
         end
       end
+
+      context 'with pagination' do
+        before do
+          allow(Ci::Pipeline).to receive(:default_per_page).and_return(1)
+          create(:ci_empty_pipeline,  project: project)
+        end
+
+        it 'should render pagination' do
+          visit namespace_project_pipelines_path(project.namespace, project)
+          wait_for_vue_resource
+
+          expect(page).to have_selector('.gl-pagination')
+        end
+
+        it 'should render second page of pipelines' do
+          visit namespace_project_pipelines_path(project.namespace, project, page: '2')
+          wait_for_vue_resource
+
+          expect(page).to have_selector('.gl-pagination .page', count: 2)
+        end
+      end
     end
 
     describe 'POST /:project/pipelines' do
