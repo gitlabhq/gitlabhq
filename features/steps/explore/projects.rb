@@ -49,7 +49,7 @@ class Spinach::Features::ExploreProjects < Spinach::FeatureSteps
 
   step 'I should see an http link to the repository' do
     project = Project.find_by(name: 'Community')
-    expect(page).to have_field('project_clone', with: project.http_url_to_repo)
+    expect(page).to have_field('project_clone', with: project.http_url_to_repo(@user))
   end
 
   step 'I should see an ssh link to the repository' do
