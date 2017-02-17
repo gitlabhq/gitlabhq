@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Projects::MirrorsController do
-  let(:sync_times) { Gitlab::Mirror.sync_time_options.values }
+  let(:sync_times) { Gitlab::Mirror::SYNC_TIME_OPTIONS.values }
 
   describe 'setting up a mirror' do
     context 'when the current project is a mirror' do

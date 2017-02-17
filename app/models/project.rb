@@ -218,7 +218,7 @@ class Project < ActiveRecord::Base
 
   validates :sync_time,
     presence: true,
-    inclusion: { in: Gitlab::Mirror.sync_time_options.values }
+    inclusion: { in: Gitlab::Mirror::SYNC_TIME_OPTIONS.values }
 
   with_options if: :mirror? do |project|
     project.validates :import_url, presence: true

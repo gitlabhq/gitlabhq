@@ -72,6 +72,10 @@
           Includes LFS objects. It can be overridden per group, or per project. 0 for unlimited.
           = link_to icon('question-circle'), help_page_path("user/admin_area/settings/account_and_limit_settings")
     .form-group
+      = f.label :minimum_mirror_sync_time, class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.select :minimum_mirror_sync_time, options_for_select(Gitlab::Mirror::SYNC_TIME_OPTIONS, @application_setting.minimum_mirror_sync_time), {}, class: 'form-control'
+    .form-group
       = f.label :session_expire_delay, 'Session duration (minutes)', class: 'control-label col-sm-2'
       .col-sm-10
         = f.number_field :session_expire_delay, class: 'form-control'
