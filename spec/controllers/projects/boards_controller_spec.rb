@@ -39,7 +39,8 @@ describe Projects::BoardsController do
 
     context 'when format is JSON' do
       it 'returns a list of project boards' do
-        create_list(:board, 2, project: project)
+        create(:board, project: project, milestone: create(:milestone, project: project))
+        create(:board, project: project, milestone_id: Milestone::Upcoming.id)
 
         list_boards format: :json
 

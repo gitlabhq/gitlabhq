@@ -6,7 +6,11 @@
   ],
   "properties" : {
     "id": { "type": "integer" },
-    "name": { "type": "string" }
+    "name": { "type": "string" },
+    "milestone": {
+      "id": { "type": "integer" },
+      "title": { "type": "string" }
+    }
   },
   "additionalProperties": false
 }

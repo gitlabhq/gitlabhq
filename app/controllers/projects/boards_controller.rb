@@ -84,9 +84,9 @@ class Projects::BoardsController < Projects::ApplicationController
 
   def serialize_as_json(resource)
     resource.as_json(
-      only: [:id, :name, :milestone_id],
+      only: [:id, :name],
       include: {
-        milestone: { only: [:title] }
+        milestone: { only: [:id, :title] }
       }
     )
   end
