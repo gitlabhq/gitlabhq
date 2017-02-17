@@ -20,7 +20,7 @@ module BoardsHelper
       only: [:id, :name, :milestone_id],
       include: {
         milestone: { only: [:title] }
-      },
+      }
     )
   end
 end
