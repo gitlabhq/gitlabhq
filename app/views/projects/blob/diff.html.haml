@@ -25,6 +25,6 @@
           = link_to raw(line_new), "##{line_new}"
         = line_content
 
-  - if @form.unfold? && @form.bottom? && @form.to < @blob.loc
+  - if @form.unfold? && @form.bottom? && @form.to < @blob.lines.size
     %tr.line_holder{ id: @form.to, class: line_class }
       = diff_match_line @form.to - @form.offset, @form.to, text: @match_line, view: diff_view, bottom: true
