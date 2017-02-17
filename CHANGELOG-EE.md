@@ -1,5 +1,12 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 8.16.6 (2017-02-17)
+
+- Geo: send the new event type with the backfill function. !1157
+- Move RepositoryUpdateRemoteMirrorWorker jobs to project_mirror Sidekiq queue. !1234
+- Fixed merge request environment link not displaying.
+- Reduce queries needed to check if node is a primary or secondary Geo node.
+
 ## 8.16.5 (2017-02-14)
 
 - No changes.
