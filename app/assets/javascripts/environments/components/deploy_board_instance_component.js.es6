@@ -15,12 +15,12 @@ module.exports = Vue.component('deploy_board_instance_component', {
   props: {
 
     /**
-     * Represents the state of the pod. Each state is represented with a different
+     * Represents the status of the pod. Each state is represented with a different
      * color.
      * It should be one of the following:
      * finished || deploying || failed || ready || preparing || waiting
      */
-    state: {
+    status: {
       type: String,
       required: true,
       default: 'finished',
@@ -31,14 +31,20 @@ module.exports = Vue.component('deploy_board_instance_component', {
       required: false,
       default: '',
     },
-
-    template: `
-      <div
-        class="js-deploy-board-instance deploy-board-instance deploy-board-instance-${this.state} has-tooltip"
-        data-title="tooltipText"
-        data-toggle="tooltip"
-        data-placement="top">
-      </div>
-    `,
   },
+
+  computed: {
+    cssClass() {
+      return `js-deploy-board-instance deploy-board-instance deploy-board-instance-${this.status} has-tooltip`;
+    },
+  },
+
+  template: `
+    <div
+      :class="cssClass"
+      :data-title="tooltipText"
+      data-toggle="tooltip"
+      data-placement="top">
+    </div>
+  `,
 });

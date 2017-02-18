@@ -97,7 +97,7 @@ module.exports = Vue.component('environment-table-component', {
                 :store="store"
                 :service="service"
                 :environmentID="model.id"
-                :data="model.deployBoardData">
+                :deployBoardData="model.deployBoardData">
               </deploy-board>
             </td>
 

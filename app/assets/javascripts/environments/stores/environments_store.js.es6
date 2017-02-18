@@ -54,8 +54,7 @@ class EnvironmentsStore {
       if (env.size === 1) {
         filtered = Object.assign({}, env, {
           isDeployBoardVisible: false,
-          deployBoardData: {},
-          deployBoardEndpoint: `environments/${env.id}/status.json`,
+          deployBoardData: {}
         });
       }
 
@@ -139,8 +138,25 @@ class EnvironmentsStore {
     return this.state.environments;
   }
 
+  /**
+   * Store deploy board data for given environment.
+   *
+   * @param  {Number} environmentID
+   * @param  {Object} deployBoard
+   * @return {Array}
+   */
   storeDeployBoard(environmentID, deployBoard) {
-    console.log(environmentID, deployBoard);
+    const environments = Object.assign([], this.state.environments);
+
+    this.state.environments = environments.map((env) => {
+      let updated = Object.assign({}, env);
+
+      if (env.id === environmentID) {
+        updated = Object.assign({}, updated, { deployBoardData: deployBoard });
+      }
+      return updated;
+    });
+    return this.state.environments;
   }
 }
 

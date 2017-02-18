@@ -148,12 +148,57 @@
 /**
  * Deploy boards
  */
+
+.deploy-board > div {
+  display: flex;
+  justify-content: space-between;
+
+  .deploy-board-information {
+    order: 1;
+    display: flex;
+    width: 80px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: auto 10px;
+
+    .percentage {
+      color: $gl-text-color;
+    }
+
+    .text {
+      color: $gl-text-color-secondary;
+    }
+  }
+
+  .deploy-board-instances {
+    order: 2;
+    max-width: 75%;
+
+    .text {
+      color: $gl-text-color-secondary;
+      font-size: 12px;
+    }
+
+    .deploy-board-instances-container {
+      display: flex;
+      flex-wrap: wrap;
+      flex-direction: row;
+    }
+  }
+
+  .deploy-board-actions {
+    order: 3;
+    align-self: center;
+  }
+}
+
 .deploy-board-instance {
   width: 15px;
   height: 15px;
   border-radius: 3px;
   border-width: 1px;
   border-style: solid;
+  margin: 1px;
 
   &-finished {
     background-color: lighten($green-light, 25%);
@@ -198,6 +243,13 @@
   padding: 10px;
   background-color: #fbfbfb;
   min-height: 20px;
+
+  .fa-spinner {
+    margin: 0 auto;
+    width: 20px;
+    display: block;
+    font-size: 20px;
+  }
 }
 
 td.deploy-board-container {

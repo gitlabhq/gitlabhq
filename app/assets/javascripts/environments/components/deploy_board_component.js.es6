@@ -2,7 +2,7 @@
  * Renders a deploy board.
  *
  * A deploy board is composed by:
- * - Information area with percentage of completition.
+ * - Information area with percentage of completion.
  * - Instances with status.
  * - Button Actions.
  * [Mockup](https://gitlab.com/gitlab-org/gitlab-ce/uploads/2f655655c0eadf655d0ae7467b53002a/environments__deploy-graphic.png)
@@ -37,7 +37,7 @@ module.exports = Vue.component('deploy_boards_components', {
       required: true,
     },
 
-    data: {
+    deployBoardData: {
       type: Object,
       required: true,
     },
@@ -49,6 +49,7 @@ module.exports = Vue.component('deploy_boards_components', {
   },
 
   data() {
+
     return {
       isLoading: false,
       hasContent: false,
@@ -56,9 +57,8 @@ module.exports = Vue.component('deploy_boards_components', {
     };
   },
 
-  beforeMount() {
+  created() {
     this.isLoading = true;
-
     this.service.getDeployBoard(this.environmentID)
     .then(resp => resp.json())
     .then((response) => {
@@ -79,20 +79,34 @@ module.exports = Vue.component('deploy_boards_components', {
         <i class="fa fa-spinner fa-spin"></i>
       </div>
 
-      <div v-if="!isLoading && hasContent">
+      <div v-if="!isLoading">
         <section class="deploy-board-information">
-
+          <span class="percentage">{{deployBoardData.completion}}%</span>
+          <span class="text">Complete</span>
         </section>
 
         <section class="deploy-board-instances">
-          <p>Instances</p>
+          <p class="text">Instances</p>
 
           <div class="deploy-board-instances-container">
-
+            <template v-for="instance in deployBoardData.instances">
+              <instance-component
+                :status="instance.status"
+                :tooltipText="instance.tooltipText">
+              </instance-component>
+            </template>
           </div>
         </section>
 
-        <section class="deploy-board-actions"></section>
+        <section class="deploy-board-actions">
+          <a class="btn" data-method="post" rel="nofollow">
+            Rollback
+          </a>
+
+          <a class="btn btn-red btn-inverted">
+            Abort
+          </a>
+        </section>
       </div>
 
       <div v-if="!isLoading && hasError">

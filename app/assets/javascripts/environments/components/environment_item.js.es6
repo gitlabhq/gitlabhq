@@ -253,11 +253,6 @@ module.exports = Vue.component('environment-item', {
       return undefined;
     },
 
-    terminalIconSvg: {
-      type: String,
-      required: false,
-    },
-
     /**
      * If provided, returns the commit tag.
      *
