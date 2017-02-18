@@ -49,26 +49,114 @@ module.exports = Vue.component('deploy_boards_components', {
   },
 
   data() {
-
     return {
       isLoading: false,
-      hasContent: false,
       hasError: false,
+      backOffRequestCounter: 0,
     };
   },
 
   created() {
+    /**
+     * Back Off exponential algorithm
+     * backOff :: (Function<next, stop>, Number) -> Promise<Any, Error>
+     *
+     * @param {Function<next, stop>} fn function to be called
+     * @param {Number} timeout
+     * @return {Promise<Any, Error>}
+     * @example
+     * ```
+     *  backOff(function (next, stop) {
+     *    // Let's perform this function repeatedly for 60s
+     *    doSomething()
+     *      .then(function (importantValue) {
+     *        // importantValue is not exactly what we
+     *        // need so we need to try again
+     *        next();
+     *
+     *        // importantValue is exactly what we are expecting so
+     *        // let's stop with the repetions and jump out of the cycle
+     *        stop(importantValue);
+     *      })
+     *      .catch(function (error) {
+     *        // there was an error, let's stop this with an error too
+     *        stop(error);
+     *      })
+     *  }, 60000)
+     *  .then(function (importantValue) {})
+     *  .catch(function (error) {
+     *    // deal with errors passed to stop()
+     *  })
+     * ```
+     */
+    const backOff = (fn, timeout = 600000) => {
+      let nextInterval = 2000;
+
+      const checkTimedOut = (timeoutMax, startTime) => currentTime =>
+      (currentTime - startTime > timeoutMax);
+      const hasTimedOut = checkTimedOut(timeout, (+new Date()));
+
+      return new Promise((resolve, reject) => {
+        const stop = arg => ((arg instanceof Error) ? reject(arg) : resolve(arg));
+
+        const next = () => {
+          if (!hasTimedOut((+new Date()))) {
+            setTimeout(fn.bind(null, next, stop), nextInterval);
+            nextInterval *= 2;
+          } else {
+            reject(new Error('BACKOFF_TIMEOUT'));
+          }
+        };
+
+        fn(next, stop);
+      });
+    };
+
     this.isLoading = true;
-    this.service.getDeployBoard(this.environmentID)
-    .then(resp => resp.json())
-    .then((response) => {
-      this.store.storeDeployBoard(this.environmentID, response);
-    })
-    .then(() => {
-      this.isLoading = false;
+
+    backOff((next, stop) => {
+      this.isLoading = true;
+      this.hasError = false;
+
+      this.service.getDeployBoard(this.environmentID)
+        .then((resp) => {
+          this.isLoading = true;
+          this.hasError = false;
+
+          if (resp.status === 204) {
+            this.backOffRequestCounter = this.backOffRequestCounter += 1;
+
+            if (this.backOffRequestCounter < 3) {
+              next();
+            }
+          }
+          stop(resp);
+          return resp;
+        })
+        .then(resp => resp.json())
+        .then((response) => {
+          if (!Object.keys(response).length && this.backOffRequestCounter === 3) {
+            this.hasError = true;
+          }
+
+          this.store.storeDeployBoard(this.environmentID, response);
+          return response;
+        })
+        .then((response) => {
+          if ((!Object.keys(response).length &&
+            this.backOffRequestCounter === 3) ||
+            Object.keys(response).length) {
+            this.isLoading = false;
+          }
+        })
+        .catch((error) => {
+          stop(error);
+          this.isLoading = false;
+          this.hasError = true;
+        });
     })
     .catch(() => {
-      this.isLoading = false;
+      new Flash('An error occurred while fetching the deploy board.', 'alert');
     });
   },
 
@@ -79,7 +167,7 @@ module.exports = Vue.component('deploy_boards_components', {
         <i class="fa fa-spinner fa-spin"></i>
       </div>
 
-      <div v-if="!isLoading">
+      <div v-if="!isLoading && !hasError">
         <section class="deploy-board-information">
           <span class="percentage">{{deployBoardData.completion}}%</span>
           <span class="text">Complete</span>
