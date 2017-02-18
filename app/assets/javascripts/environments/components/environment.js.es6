@@ -23,6 +23,7 @@ module.exports = Vue.component('environment-component', {
 
     return {
       store,
+      service: {},
       state: store.state,
       visibility: 'available',
       isLoading: false,
@@ -74,11 +75,11 @@ module.exports = Vue.component('environment-component', {
 
     const endpoint = `${this.endpoint}?scope=${scope}&page=${pageNumber}`;
 
-    const service = new EnvironmentsService(endpoint);
+    this.service = new EnvironmentsService(endpoint);
 
     this.isLoading = true;
 
-    return service.all()
+    return this.service.all()
       .then(resp => ({
         headers: resp.headers,
         body: resp.json(),
@@ -187,7 +188,9 @@ module.exports = Vue.component('environment-component', {
             :play-icon-svg="playIconSvg"
             :terminal-icon-svg="terminalIconSvg"
             :commit-icon-svg="commitIconSvg"
-            :toggleDeployBoard="toggleDeployBoard">
+            :toggleDeployBoard="toggleDeployBoard"
+            :store="store"
+            :service="service">
           </environment-table>
 
           <table-pagination

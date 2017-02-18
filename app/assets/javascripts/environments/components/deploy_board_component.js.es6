@@ -8,7 +8,6 @@
  * [Mockup](https://gitlab.com/gitlab-org/gitlab-ce/uploads/2f655655c0eadf655d0ae7467b53002a/environments__deploy-graphic.png)
  *
  * The data of each deploy board needs to be fetched when we render the component.
- * Endpoint is /group/project/environments/{id}/status.json
  *
  * The endpoint response can sometimes be 204, in those cases we need to retry the request.
  * This should be done using backoff pooling and we should make no more than 3 request
@@ -28,8 +27,23 @@ module.exports = Vue.component('deploy_boards_components', {
   },
 
   props: {
-    endpoint: {
-      type: String,
+    store: {
+      type: Object,
+      required: true,
+    },
+
+    service: {
+      type: Object,
+      required: true,
+    },
+
+    data: {
+      type: Object,
+      required: true,
+    },
+
+    environmentID: {
+      type: Number,
       required: true,
     },
   },
@@ -42,9 +56,20 @@ module.exports = Vue.component('deploy_boards_components', {
     };
   },
 
-  created() {
-    // Fetch data
-    console.log('HERE!');
+  beforeMount() {
+    this.isLoading = true;
+
+    this.service.getDeployBoard(this.environmentID)
+    .then(resp => resp.json())
+    .then((response) => {
+      this.store.storeDeployBoard(this.environmentID, response);
+    })
+    .then(() => {
+      this.isLoading = false;
+    })
+    .catch(() => {
+      this.isLoading = false;
+    });
   },
 
   template: `

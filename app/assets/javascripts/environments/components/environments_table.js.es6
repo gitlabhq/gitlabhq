@@ -11,8 +11,8 @@ const DeployBoard = require('./deploy_board_component');
 module.exports = Vue.component('environment-table-component', {
 
   components: {
-    'environment-item': EnvironmentItem,
-    'deploy-board': DeployBoard,
+    EnvironmentItem,
+    DeployBoard,
   },
 
   props: {
@@ -51,7 +51,17 @@ module.exports = Vue.component('environment-table-component', {
 
     toggleDeployBoard: {
       type: Function,
-      required: false,
+      required: true,
+    },
+
+    store: {
+      type: Object,
+      required: true,
+    },
+
+    service: {
+      type: Object,
+      required: true,
     },
   },
 
@@ -70,6 +80,7 @@ module.exports = Vue.component('environment-table-component', {
       <tbody>
         <template v-for="model in environments"
           v-bind:model="model">
+
           <tr is="environment-item"
             :model="model"
             :can-create-deployment="canCreateDeployment"
@@ -80,10 +91,18 @@ module.exports = Vue.component('environment-table-component', {
             :toggleDeployBoard="toggleDeployBoard.bind(model)"></tr>
 
           <tr v-if="model.isDeployBoardVisible">
+
             <td colspan="6" class="deploy-board-container">
-              <deploy-board></deploy-board>
+              <deploy-board
+                :store="store"
+                :service="service"
+                :environmentID="model.id"
+                :data="model.deployBoardData">
+              </deploy-board>
             </td>
+
           </tr>
+
         </template>
       </tbody>
     </table>
