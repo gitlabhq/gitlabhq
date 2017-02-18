@@ -1,3 +1,4 @@
+/* eslint-disable no-new */
 /**
  * Renders a deploy board.
  *
@@ -19,6 +20,8 @@
 
 const Vue = require('vue');
 const instanceComponent = require('./deploy_board_instance_component');
+require('../../lib/utils/common_utils');
+const Flash = require('../../flash');
 
 module.exports = Vue.component('deploy_boards_components', {
 
@@ -57,64 +60,9 @@ module.exports = Vue.component('deploy_boards_components', {
   },
 
   created() {
-    /**
-     * Back Off exponential algorithm
-     * backOff :: (Function<next, stop>, Number) -> Promise<Any, Error>
-     *
-     * @param {Function<next, stop>} fn function to be called
-     * @param {Number} timeout
-     * @return {Promise<Any, Error>}
-     * @example
-     * ```
-     *  backOff(function (next, stop) {
-     *    // Let's perform this function repeatedly for 60s
-     *    doSomething()
-     *      .then(function (importantValue) {
-     *        // importantValue is not exactly what we
-     *        // need so we need to try again
-     *        next();
-     *
-     *        // importantValue is exactly what we are expecting so
-     *        // let's stop with the repetions and jump out of the cycle
-     *        stop(importantValue);
-     *      })
-     *      .catch(function (error) {
-     *        // there was an error, let's stop this with an error too
-     *        stop(error);
-     *      })
-     *  }, 60000)
-     *  .then(function (importantValue) {})
-     *  .catch(function (error) {
-     *    // deal with errors passed to stop()
-     *  })
-     * ```
-     */
-    const backOff = (fn, timeout = 600000) => {
-      let nextInterval = 2000;
-
-      const checkTimedOut = (timeoutMax, startTime) => currentTime =>
-      (currentTime - startTime > timeoutMax);
-      const hasTimedOut = checkTimedOut(timeout, (+new Date()));
-
-      return new Promise((resolve, reject) => {
-        const stop = arg => ((arg instanceof Error) ? reject(arg) : resolve(arg));
-
-        const next = () => {
-          if (!hasTimedOut((+new Date()))) {
-            setTimeout(fn.bind(null, next, stop), nextInterval);
-            nextInterval *= 2;
-          } else {
-            reject(new Error('BACKOFF_TIMEOUT'));
-          }
-        };
-
-        fn(next, stop);
-      });
-    };
-
     this.isLoading = true;
 
-    backOff((next, stop) => {
+    gl.utils.backOff((next, stop) => {
       this.service.getDeployBoard(this.environmentID)
         .then((resp) => {
           if (resp.status === 204) {

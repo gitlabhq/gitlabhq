@@ -159,7 +159,7 @@
     width: 80px;
     flex-wrap: wrap;
     justify-content: center;
-    margin: auto 10px;
+    margin: 20px 10px;
 
     .percentage {
       color: $gl-text-color;
@@ -183,6 +183,7 @@
       display: flex;
       flex-wrap: wrap;
       flex-direction: row;
+      margin-top: -8px;
     }
   }
 
