@@ -30,11 +30,11 @@ describe 'issuable list', feature: true do
     end
   end
 
-    it "counts merge requests closing issues icons for each issue" do
-      visit_issuable_list(:issue)
+  it "counts merge requests closing issues icons for each issue" do
+    visit_issuable_list(:issue)
 
-      expect(first('.icon-merge-request-unmerged').find(:xpath, '..')).to have_content(1)
-    end
+    expect(first('.icon-merge-request-unmerged').find(:xpath, '..')).to have_content(1)
+  end
 
   def visit_issuable_list(issuable_type)
     if issuable_type == :issue
