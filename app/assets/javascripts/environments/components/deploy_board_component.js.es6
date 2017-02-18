@@ -115,14 +115,8 @@ module.exports = Vue.component('deploy_boards_components', {
     this.isLoading = true;
 
     backOff((next, stop) => {
-      this.isLoading = true;
-      this.hasError = false;
-
       this.service.getDeployBoard(this.environmentID)
         .then((resp) => {
-          this.isLoading = true;
-          this.hasError = false;
-
           if (resp.status === 204) {
             this.backOffRequestCounter = this.backOffRequestCounter += 1;
 
