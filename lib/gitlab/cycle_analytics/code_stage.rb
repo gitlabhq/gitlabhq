@@ -13,6 +13,10 @@ module Gitlab
         :code
       end
 
+      def legend
+        "Related Merge Requests"
+      end
+
       def description
         "Time until first merge request"
       end

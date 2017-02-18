@@ -97,7 +97,7 @@ $(() => {
         }
 
         this.isLoadingStage = true;
-        cycleAnalyticsStore.setStageEvents([]);
+        cycleAnalyticsStore.setStageEvents([], stage);
         cycleAnalyticsStore.setActiveStage(stage);
 
         cycleAnalyticsService
@@ -107,7 +107,7 @@ $(() => {
           })
           .done((response) => {
             this.isEmptyStage = !response.events.length;
-            cycleAnalyticsStore.setStageEvents(response.events);
+            cycleAnalyticsStore.setStageEvents(response.events, stage);
           })
           .error(() => {
             this.isEmptyStage = true;

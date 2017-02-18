@@ -13,6 +13,10 @@ module Gitlab
         :test
       end
 
+      def legend
+        "Relative Builds Trigger by Commits"
+      end
+
       def description
         "Total test time for all commits/merges"
       end
