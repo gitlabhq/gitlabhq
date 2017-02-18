@@ -29,6 +29,12 @@ class Dashboard::TodosController < Dashboard::ApplicationController
     end
   end
 
+  def restore
+    TodoService.new.mark_todos_as_pending_by_ids([params[:id]], current_user)
+
+    render json: todos_counts
+  end
+
   private
 
   def find_todos
