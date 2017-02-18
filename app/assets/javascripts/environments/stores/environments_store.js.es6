@@ -30,6 +30,11 @@ class EnvironmentsStore {
    * If the `size` is bigger than 1, it means it should be rendered as a folder.
    * In those cases we add `isFolder` key in order to render it properly.
    *
+   * Top level environments - when the size is 1 - with `rollout_status`
+   * can render a deploy board. We add `isDeployBoardVisible` key to those envrionments.
+   * This key let's us know if we should or not render the deploy board. It will
+   * be toggled when the user clicks to seee the deploy board.
+   *
    * @param  {Array} environments
    * @returns {Array}
    */
@@ -81,6 +86,20 @@ class EnvironmentsStore {
     return this.state.environments;
   }
 
+  /**
+   * Stores the pagination information needed to render the pagination for the
+   * table.
+   *
+   * Normalizes the headers to uppercase since they can be provided either
+   * in uppercase or lowercase.
+   *
+   * Parses to an integer the normalized ones needed for the pagination component.
+   *
+   * Stores the normalized and parsed information.
+   *
+   * @param  {Object} pagination = {}
+   * @return {Object}
+   */
   setPagination(pagination = {}) {
     const normalizedHeaders = gl.utils.normalizeHeaders(pagination);
     const paginationInformation = gl.utils.parseIntPagination(normalizedHeaders);

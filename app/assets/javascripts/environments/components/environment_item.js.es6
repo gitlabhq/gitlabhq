@@ -1,3 +1,9 @@
+/**
+ * Envrionment Item Component
+ *
+ * Renders a table row for each environment.
+ */
+
 const Vue = require('vue');
 const Timeago = require('timeago.js');
 
@@ -8,12 +14,6 @@ const ExternalUrlComponent = require('./environment_external_url');
 const StopComponent = require('./environment_stop');
 const RollbackComponent = require('./environment_rollback');
 const TerminalButtonComponent = require('./environment_terminal_button');
-
-/**
- * Envrionment Item Component
- *
- * Renders a table row for each environment.
- */
 
 const timeagoInstance = new Timeago();
 
@@ -62,12 +62,6 @@ module.exports = Vue.component('environment-item', {
       required: false,
     },
 
-    /**
-     * Top level environments with `rollout_status`
-     * can render a deploy board. In order to render it we need to update
-     * the parent compoenent data.
-     *
-     */
     toggleDeployBoard: {
       type: Function,
       required: false,
@@ -432,7 +426,7 @@ module.exports = Vue.component('environment-item', {
     },
 
     /**
-     * If the environment has a deploy board we need to render an arrow icon
+     * If the environment can have a deploy board we need to render an arrow icon
      * next to it's name.
      *
      * @return {Boolean}
@@ -461,12 +455,19 @@ module.exports = Vue.component('environment-item', {
   template: `
     <tr>
       <td>
-
         <span class="deploy-board-icon"
           v-if="!model.isFolder"
           v-on:click="toggleDeployBoard(model)">
-          <i class="fa fa-caret-right" aria-hidden="true" v-if="!model.isDeployBoardVisible"></i>
-          <i class="fa fa-caret-down" aria-hidden="true" v-if="model.isDeployBoardVisible"></i>
+
+          <i v-show="!model.isDeployBoardVisible"
+            class="fa fa-caret-right"
+            aria-hidden="true">
+          </i>
+
+          <i v-show="model.isDeployBoardVisible"
+            class="fa fa-caret-down"
+            aria-hidden="true">
+          </i>
         </span>
 
         <a v-if="!model.isFolder"

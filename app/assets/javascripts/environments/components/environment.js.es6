@@ -99,8 +99,14 @@ module.exports = Vue.component('environment-component', {
   },
 
   methods: {
+
+    /**
+     * Toggles the visibility of the deploy boards to the clicked environment.
+     *
+     * @param  {Object} model
+     * @return {Object}
+     */
     toggleDeployBoard(model) {
-      debugger;
       return this.store.toggleDeployBoard(model);
     },
 
@@ -184,7 +190,8 @@ module.exports = Vue.component('environment-component', {
             :toggleDeployBoard="toggleDeployBoard">
           </environment-table>
 
-          <table-pagination v-if="state.paginationInformation && state.paginationInformation.totalPages > 1"
+          <table-pagination
+            v-if="state.paginationInformation && state.paginationInformation.totalPages > 1"
             :change="changePage"
             :pageInfo="state.paginationInformation">
           </table-pagination>

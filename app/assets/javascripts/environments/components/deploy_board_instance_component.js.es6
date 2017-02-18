@@ -1,8 +1,8 @@
 /**
- * An instance in deploy boards is represented by a square in this mockup:
+ * An instance in deploy board is represented by a square in this mockup:
  * https://gitlab.com/gitlab-org/gitlab-ce/uploads/2f655655c0eadf655d0ae7467b53002a/environments__deploy-graphic.png
  *
- * Each instance has a state an a tooltip.
+ * Each instance has a state and a tooltip.
  * The state needs to be represented in different colors,
  * see more information about this in https://gitlab.com/gitlab-org/gitlab-ee/uploads/5fff049fd88336d9ee0c6ef77b1ba7e3/monitoring__deployboard--key.png
  *
@@ -32,15 +32,9 @@ module.exports = Vue.component('deploy_board_instance_component', {
       default: '',
     },
 
-    computed: {
-      cssClass() {
-        return `js-deploy-board-instance deploy-board-instance deploy-board-instance-${this.state} has-tooltip`;
-      },
-    },
-
     template: `
       <div
-        class="cssClass"
+        class="js-deploy-board-instance deploy-board-instance deploy-board-instance-${this.state} has-tooltip"
         data-title="tooltipText"
         data-toggle="tooltip"
         data-placement="top">

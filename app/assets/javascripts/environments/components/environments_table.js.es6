@@ -1,9 +1,13 @@
 /**
  * Render environments table.
+ *
+ * Dumb component used to render top level environments and
+ * the folder view.
  */
 const Vue = require('vue');
 const EnvironmentItem = require('./environment_item');
 const DeployBoard = require('./deploy_board_component');
+
 module.exports = Vue.component('environment-table-component', {
 
   components: {
