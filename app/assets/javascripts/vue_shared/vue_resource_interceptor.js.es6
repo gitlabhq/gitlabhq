@@ -88,8 +88,8 @@ Vue.http.interceptors.push((request, next) => {
       { status: 'waiting', tooltip: 'tanuki-2358 Waiting' },
       { status: 'waiting', tooltip: 'tanuki-2359 Waiting' },
     ],
-    abort_url: '',
-    rollback_url: '',
+    abort_url: 'url',
+    rollback_url: 'url',
     completion: 87,
     is_completed: true,
   };

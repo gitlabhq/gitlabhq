@@ -92,18 +92,26 @@ module.exports = Vue.component('deploy_boards_components', {
             <template v-for="instance in deployBoardData.instances">
               <instance-component
                 :status="instance.status"
-                :tooltipText="instance.tooltipText">
+                :tooltipText="instance.tooltip">
               </instance-component>
             </template>
           </div>
         </section>
 
         <section class="deploy-board-actions">
-          <a class="btn" data-method="post" rel="nofollow">
+          <a class="btn"
+            data-method="post"
+            rel="nofollow"
+            v-if="deployBoardData.rollback_url"
+            :href="deployBoardData.rollback_url">
             Rollback
           </a>
 
-          <a class="btn btn-red btn-inverted">
+          <a class="btn btn-red btn-inverted"
+            data-method="post"
+            rel="nofollow"
+            v-if="deployBoardData.abort_url"
+            :href="deployBoardData.abort_url">
             Abort
           </a>
         </section>
