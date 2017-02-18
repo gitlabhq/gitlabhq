@@ -230,7 +230,7 @@ Vue.http.interceptors.push((request, next) => {
 
   if (request.url === 'environments/{id}/status.json') {
     next(request.respondWith(JSON.stringify(deployBoardData), {
-      status: 200,
+      status: 204,
     }));
   }
 

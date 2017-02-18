@@ -35,7 +35,7 @@ module.exports = Vue.component('deploy_board_instance_component', {
 
   computed: {
     cssClass() {
-      return `js-deploy-board-instance deploy-board-instance deploy-board-instance-${this.status} has-tooltip`;
+      return `deploy-board-instance deploy-board-instance-${this.status} has-tooltip`;
     },
   },
 

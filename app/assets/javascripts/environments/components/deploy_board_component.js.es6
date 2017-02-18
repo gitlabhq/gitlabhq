@@ -62,6 +62,7 @@ module.exports = Vue.component('deploy_boards_components', {
   created() {
     this.isLoading = true;
 
+    // If the response is 204, we make 3 more requests.
     gl.utils.backOff((next, stop) => {
       this.service.getDeployBoard(this.environmentID)
         .then((resp) => {
@@ -71,33 +72,30 @@ module.exports = Vue.component('deploy_boards_components', {
             if (this.backOffRequestCounter < 3) {
               next();
             }
+          } else {
+            stop(resp);
           }
-          stop(resp);
-          return resp;
         })
-        .then(resp => resp.json())
-        .then((response) => {
-          if (!Object.keys(response).length && this.backOffRequestCounter === 3) {
-            this.hasError = true;
-          }
+        .catch(stop);
+    }, Infinity)
+    .then(resp => resp.json())
+    .then((response) => {
+      if (!Object.keys(response).length && this.backOffRequestCounter === 3) {
+        this.hasError = true;
+      }
 
-          this.store.storeDeployBoard(this.environmentID, response);
-          return response;
-        })
-        .then((response) => {
-          if ((!Object.keys(response).length &&
-            this.backOffRequestCounter === 3) ||
-            Object.keys(response).length) {
-            this.isLoading = false;
-          }
-        })
-        .catch((error) => {
-          stop(error);
-          this.isLoading = false;
-          this.hasError = true;
-        });
+      this.store.storeDeployBoard(this.environmentID, response);
+      return response;
+    })
+    .then((response) => {
+      if ((!Object.keys(response).length &&
+        this.backOffRequestCounter === 3) ||
+        Object.keys(response).length) {
+        this.isLoading = false;
+      }
     })
     .catch(() => {
+      this.isLoading = false;
       new Flash('An error occurred while fetching the deploy board.', 'alert');
     });
   },

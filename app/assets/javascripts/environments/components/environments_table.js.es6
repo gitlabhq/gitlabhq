@@ -51,17 +51,20 @@ module.exports = Vue.component('environment-table-component', {
 
     toggleDeployBoard: {
       type: Function,
-      required: true,
+      required: false,
+      default: () => {},
     },
 
     store: {
       type: Object,
-      required: true,
+      required: false,
+      default: () => ({}),
     },
 
     service: {
       type: Object,
-      required: true,
+      required: false,
+      default: () => ({}),
     },
   },
 
@@ -90,7 +93,7 @@ module.exports = Vue.component('environment-table-component', {
             :commit-icon-svg="commitIconSvg"
             :toggleDeployBoard="toggleDeployBoard.bind(model)"></tr>
 
-          <tr v-if="model.isDeployBoardVisible">
+          <tr v-if="model.isDeployBoardVisible" class="js-deploy-board-row">
 
             <td colspan="6" class="deploy-board-container">
               <deploy-board

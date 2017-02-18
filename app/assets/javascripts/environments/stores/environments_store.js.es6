@@ -54,7 +54,7 @@ class EnvironmentsStore {
       if (env.size === 1) {
         filtered = Object.assign({}, env, {
           isDeployBoardVisible: false,
-          deployBoardData: {}
+          deployBoardData: {},
         });
       }
 
