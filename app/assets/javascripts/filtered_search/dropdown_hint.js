@@ -55,7 +55,6 @@ require('./filtered_search_dropdown');
 
     renderContent() {
       const dropdownData = [];
-
       [].forEach.call(this.input.closest('.filtered-search-input-container').querySelectorAll('.dropdown-menu'), (dropdownMenu) => {
         const { icon, hint, tag } = dropdownMenu.dataset;
         if (icon && hint && tag) {
