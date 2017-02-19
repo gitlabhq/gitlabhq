@@ -77,9 +77,9 @@ import './u2f/util';
 
 // droplab
 import './droplab/droplab';
-import './droplab/droplab_ajax';
-import './droplab/droplab_ajax_filter';
-import './droplab/droplab_filter';
+import './droplab/plugins/ajax';
+import './droplab/plugins/ajax_filter';
+import './droplab/plugins/filter';
 
 // everything else
 import './abuse_reports';

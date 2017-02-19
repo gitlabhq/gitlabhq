@@ -16,6 +16,7 @@ require('./filtered_search_dropdown');
         },
         droplabFilter: {
           filterFunction: gl.DropdownUtils.filterWithSymbol.bind(null, this.symbol, input),
+          template: 'title',
         },
       };
     }
