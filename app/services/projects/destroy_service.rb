@@ -17,8 +17,6 @@ module Projects
     def execute
       return false unless can?(current_user, :remove_project, project)
 
-      project.team.truncate
-
       repo_path = project.path_with_namespace
       wiki_path = repo_path + '.wiki'
 
@@ -30,6 +28,7 @@ module Projects
       Projects::UnlinkForkService.new(project, current_user).execute
 
       Project.transaction do
+        project.team.truncate
         project.destroy!
 
         unless remove_registry_tags
