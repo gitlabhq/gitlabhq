@@ -251,6 +251,7 @@ ActiveRecord::Schema.define(version: 20170402231018) do
     t.integer "duration"
     t.integer "user_id"
     t.integer "lock_version"
+    t.integer "auto_canceled_by"
   end
 
   add_index "ci_pipelines", ["project_id", "ref", "status"], name: "index_ci_pipelines_on_project_id_and_ref_and_status", using: :btree
@@ -687,8 +688,8 @@ ActiveRecord::Schema.define(version: 20170402231018) do
     t.string "avatar"
     t.boolean "share_with_group_lock", default: false
     t.integer "visibility_level", default: 20, null: false
-    t.boolean "request_access_enabled", default: false, null: false
     t.datetime "deleted_at"
+    t.boolean "request_access_enabled", default: false, null: false
     t.text "description_html"
     t.boolean "lfs_enabled"
     t.integer "parent_id"
@@ -920,6 +921,7 @@ ActiveRecord::Schema.define(version: 20170402231018) do
     t.text "description_html"
     t.boolean "only_allow_merge_if_all_discussions_are_resolved"
     t.boolean "printing_merge_request_link_enabled", default: true, null: false
+    t.integer "auto_cancel_pending_pipelines", default: 0, null: false
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
@@ -1239,9 +1241,9 @@ ActiveRecord::Schema.define(version: 20170402231018) do
     t.boolean "hide_project_limit", default: false
     t.string "unlock_token"
     t.datetime "otp_grace_period_started_at"
+    t.string "incoming_email_token"
     t.boolean "ldap_email", default: false, null: false
     t.boolean "external", default: false
-    t.string "incoming_email_token"
     t.string "organization"
     t.boolean "authorized_projects_populated"
     t.boolean "ghost"

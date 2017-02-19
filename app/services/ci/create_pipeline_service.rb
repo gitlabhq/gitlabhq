@@ -53,6 +53,8 @@ module Ci
           .execute(pipeline)
       end
 
+      cancel_pending_pipelines if project.auto_cancel_pending_pipelines?
+
       pipeline.tap(&:process!)
     end
 
@@ -61,6 +63,16 @@ module Ci
     def skip_ci?
       return false unless pipeline.git_commit_message
       pipeline.git_commit_message =~ /\[(ci[ _-]skip|skip[ _-]ci)\]/i
+    end
+
+    def cancel_pending_pipelines
+      Gitlab::OptimisticLocking.retry_lock(
+        pipeline.auto_cancelable_pipelines) do |cancelables|
+        cancelables.find_each do |cancelable|
+          cancelable.cancel_running
+          cancelable.update_attributes(auto_canceled_by: pipeline.id)
+        end
+      end
     end
 
     def commit
