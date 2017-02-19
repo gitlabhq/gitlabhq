@@ -18,12 +18,29 @@ paths_to_be_protected = [
 # Create one big regular expression that matches strings starting with any of
 # the paths_to_be_protected.
 paths_regex = Regexp.union(paths_to_be_protected.map { |path| /\A#{Regexp.escape(path)}/ })
-rack_attack_enabled = Gitlab.config.rack_attack.git_basic_auth['enabled']
+rack_attack_enabled = Gitlab.config.rack_attack['enabled']
+throttle_enabled = Gitlab.config.rack_attack['throttle_enabled']
+throttle_limit = Gitlab.config.rack_attack['throttle_limit']
+throttle_period = Gitlab.config.rack_attack['throttle_period']
+whitelist = Gitlab.config.rack_attack['whitelist']
+blacklist = Gitlab.config.rack_attack['blacklist'] unless Gitlab.config.rack_attack['blacklist'].nil?
 
 unless Rails.env.test? || !rack_attack_enabled
-  Rack::Attack.throttle('protected paths', limit: 10, period: 60.seconds) do |req|
-    if req.post? && req.path =~ paths_regex
-      req.ip
+  Rack::Attack.safelist('allow custom whitelist') do |req|
+    whitelist.include? req.ip  
+  end
+
+  unless blacklist.nil?
+    Rack:Attack.blocklist('ban custom blacklist') do |req|
+      blacklist.include? req.ip
+    end
+  end
+
+  unless !throttle_enabled
+    Rack::Attack.throttle('protected paths', limit: throttle_limit, period: throttle_period) do |req|
+      if req.post? && req.path =~ paths_regex
+        req.ip
+      end
     end
   end
 end

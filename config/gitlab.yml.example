@@ -535,8 +535,28 @@ production: &base
     # piwik_site_id: '_your_piwik_site_id'
 
   rack_attack:
+    # Enable Rack Attack
+    # enabled: true
+
+    # Global IP whitelist for Rack Attack. This applies to all throttling and blacklisting with
+    # the exception of GitLab authentication failures, configured in "git_basic_auth".
+    # The whitelist takes precedence over the blacklist.
+    # whitelist: ["127.0.0.1","::1"]
+
+    # Global IP blacklist for Rack Attack. 
+    # blacklist: ["1.2.3.4"]
+
+    # More than "throttle_limit" POST requests in "throttle_period" (seconds) to a URL in the 
+    # "protected_paths" results in an HTTP 429 throttle response.
+    # throttle_enabled: true
+    # throttle_limit: 10
+    # throttle_period: 60
+
     git_basic_auth:
-      # Rack Attack IP banning enabled
+      # Rack Attack IP banning enabled. These settings are only for protecting against GitLab 
+      # brute-force authentication attacks. These trigger on password failures, not on POST
+      # attempts to the login URLs. Other Rack Attack protections are configured 
+      # at a higher level. This whitelist only applies to GitLab login failures.
       # enabled: true
       #
       # Whitelist requests from 127.0.0.1 for web proxies (NGINX/Apache) with incorrect headers

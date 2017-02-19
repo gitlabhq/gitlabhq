@@ -417,12 +417,21 @@ Settings['extra'] ||= Settingslogic.new({})
 # Rack::Attack settings
 #
 Settings['rack_attack'] ||= Settingslogic.new({})
+Settings.rack_attack['throttle_limit'] ||= 10
+Settings.rack_attack['throttle_period'] ||= 1.minute
 Settings.rack_attack['git_basic_auth'] ||= Settingslogic.new({})
 Settings.rack_attack.git_basic_auth['enabled'] = true if Settings.rack_attack.git_basic_auth['enabled'].nil?
 Settings.rack_attack.git_basic_auth['ip_whitelist'] ||= %w{127.0.0.1}
 Settings.rack_attack.git_basic_auth['maxretry'] ||= 10
 Settings.rack_attack.git_basic_auth['findtime'] ||= 1.minute
 Settings.rack_attack.git_basic_auth['bantime'] ||= 1.hour
+
+# Backwards compatible with the old usage of git_basic_auth to enable all Rack Attack modules
+Settings.rack_attack['enabled'] ||= Settings.rack_attack.git_basic_auth['enabled']
+Settings.rack_attack['whitelist'] ||= %w{127.0.0.1 ::1}
+#Settings.rack_attack['blacklist'] ||= []
+# Backwards compatible with the old usage of git_basic_auth to enable all Rack Attack modules
+Settings.rack_attack['throttle_enabled'] ||= Settings.rack_attack.git_basic_auth['enabled']
 
 #
 # Gitaly
