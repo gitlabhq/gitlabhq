@@ -28,10 +28,6 @@ describe 'Dropdown label', js: true, feature: true do
     filter_dropdown.find('.filter-dropdown-item', text: text).click
   end
 
-  def dropdown_label_size
-    filter_dropdown.all('.filter-dropdown-item').size
-  end
-
   def clear_search_field
     find('.filtered-search-input-container .clear-search').click
   end
@@ -80,7 +76,7 @@ describe 'Dropdown label', js: true, feature: true do
       filtered_search.set('label:')
 
       expect(filter_dropdown).to have_content(bug_label.title)
-      expect(dropdown_label_size).to eq(1)
+      expect(filter_dropdown).to have_selector('.filter-dropdown-item', count: 1)
     end
   end
 
@@ -96,7 +92,8 @@ describe 'Dropdown label', js: true, feature: true do
 
       expect(filter_dropdown.find('.filter-dropdown-item', text: bug_label.title)).to be_visible
       expect(filter_dropdown.find('.filter-dropdown-item', text: uppercase_label.title)).to be_visible
-      expect(dropdown_label_size).to eq(2)
+
+      expect(filter_dropdown).to have_selector('.filter-dropdown-item', count: 2)
 
       clear_search_field
       init_label_search
@@ -105,14 +102,14 @@ describe 'Dropdown label', js: true, feature: true do
 
       expect(filter_dropdown.find('.filter-dropdown-item', text: bug_label.title)).to be_visible
       expect(filter_dropdown.find('.filter-dropdown-item', text: uppercase_label.title)).to be_visible
-      expect(dropdown_label_size).to eq(2)
+      expect(filter_dropdown).to have_selector('.filter-dropdown-item', count: 2)
     end
 
     it 'filters by multiple words with or without symbol' do
       filtered_search.send_keys('Hig')
 
       expect(filter_dropdown.find('.filter-dropdown-item', text: two_words_label.title)).to be_visible
-      expect(dropdown_label_size).to eq(1)
+      expect(filter_dropdown).to have_selector('.filter-dropdown-item', count: 1)
 
       clear_search_field
       init_label_search
@@ -120,14 +117,14 @@ describe 'Dropdown label', js: true, feature: true do
       filtered_search.send_keys('~Hig')
 
       expect(filter_dropdown.find('.filter-dropdown-item', text: two_words_label.title)).to be_visible
-      expect(dropdown_label_size).to eq(1)
+      expect(filter_dropdown).to have_selector('.filter-dropdown-item', count: 1)
     end
 
     it 'filters by multiple words containing single quotes with or without symbol' do
       filtered_search.send_keys('won\'t')
 
       expect(filter_dropdown.find('.filter-dropdown-item', text: wont_fix_single_label.title)).to be_visible
-      expect(dropdown_label_size).to eq(1)
+      expect(filter_dropdown).to have_selector('.filter-dropdown-item', count: 1)
 
       clear_search_field
       init_label_search
@@ -135,14 +132,14 @@ describe 'Dropdown label', js: true, feature: true do
       filtered_search.send_keys('~won\'t')
 
       expect(filter_dropdown.find('.filter-dropdown-item', text: wont_fix_single_label.title)).to be_visible
-      expect(dropdown_label_size).to eq(1)
+      expect(filter_dropdown).to have_selector('.filter-dropdown-item', count: 1)
     end
 
     it 'filters by multiple words containing double quotes with or without symbol' do
       filtered_search.send_keys('won"t')
 
       expect(filter_dropdown.find('.filter-dropdown-item', text: wont_fix_label.title)).to be_visible
-      expect(dropdown_label_size).to eq(1)
+      expect(filter_dropdown).to have_selector('.filter-dropdown-item', count: 1)
 
       clear_search_field
       init_label_search
@@ -150,14 +147,14 @@ describe 'Dropdown label', js: true, feature: true do
       filtered_search.send_keys('~won"t')
 
       expect(filter_dropdown.find('.filter-dropdown-item', text: wont_fix_label.title)).to be_visible
-      expect(dropdown_label_size).to eq(1)
+      expect(filter_dropdown).to have_selector('.filter-dropdown-item', count: 1)
     end
 
     it 'filters by special characters with or without symbol' do
       filtered_search.send_keys('^+')
 
       expect(filter_dropdown.find('.filter-dropdown-item', text: special_label.title)).to be_visible
-      expect(dropdown_label_size).to eq(1)
+      expect(filter_dropdown).to have_selector('.filter-dropdown-item', count: 1)
 
       clear_search_field
       init_label_search
@@ -165,7 +162,7 @@ describe 'Dropdown label', js: true, feature: true do
       filtered_search.send_keys('~^+')
 
       expect(filter_dropdown.find('.filter-dropdown-item', text: special_label.title)).to be_visible
-      expect(dropdown_label_size).to eq(1)
+      expect(filter_dropdown).to have_selector('.filter-dropdown-item', count: 1)
     end
   end
 
@@ -271,13 +268,13 @@ describe 'Dropdown label', js: true, feature: true do
       create(:label, project: project, title: 'bug-label')
       init_label_search
 
-      expect(dropdown_label_size).to eq(1)
+      expect(filter_dropdown).to have_selector('.filter-dropdown-item', count: 1)
 
       create(:label, project: project)
       clear_search_field
       init_label_search
 
-      expect(dropdown_label_size).to eq(1)
+      expect(filter_dropdown).to have_selector('.filter-dropdown-item', count: 1)
     end
   end
 end

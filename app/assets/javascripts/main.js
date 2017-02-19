@@ -89,9 +89,9 @@ require('./u2f/util');
 
 // droplab
 require('./droplab/droplab');
-require('./droplab/droplab_ajax');
-require('./droplab/droplab_ajax_filter');
-require('./droplab/droplab_filter');
+require('./droplab/plugins/ajax');
+require('./droplab/plugins/ajax_filter');
+require('./droplab/plugins/filter');
 
 // everything else
 require('./abuse_reports');
