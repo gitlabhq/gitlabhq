@@ -10,4 +10,4 @@
 
     return ProjectImport;
   })();
-}).call(this);
+}).call(window);

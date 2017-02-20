@@ -48,13 +48,13 @@
         = link_to admin_projects_path do
           All
 
-      = nav_link(html_options: { class: params[:visibility_level] == Gitlab::VisibilityLevel::PRIVATE.to_s ? 'active' : '' }) do
+      = nav_link(html_options: { class: active_when(params[:visibility_level] == Gitlab::VisibilityLevel::PRIVATE.to_s) }) do
         = link_to admin_projects_path(visibility_level: Gitlab::VisibilityLevel::PRIVATE) do
           Private
-      = nav_link(html_options: { class: params[:visibility_level] == Gitlab::VisibilityLevel::INTERNAL.to_s ? 'active' : '' }) do
+      = nav_link(html_options: { class: active_when(params[:visibility_level] == Gitlab::VisibilityLevel::INTERNAL.to_s) }) do
         = link_to admin_projects_path(visibility_level: Gitlab::VisibilityLevel::INTERNAL) do
           Internal
-      = nav_link(html_options: { class: params[:visibility_level] == Gitlab::VisibilityLevel::PUBLIC.to_s ? 'active' : '' }) do
+      = nav_link(html_options: { class: active_when(params[:visibility_level] == Gitlab::VisibilityLevel::PUBLIC.to_s) }) do
         = link_to admin_projects_path(visibility_level: Gitlab::VisibilityLevel::PUBLIC) do
           Public
 

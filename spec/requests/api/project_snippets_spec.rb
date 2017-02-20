@@ -16,9 +16,11 @@ describe API::ProjectSnippets, api: true do
       internal_snippet = create(:project_snippet, :internal, project: project)
       private_snippet = create(:project_snippet, :private, project: project)
 
-      get api("/projects/#{project.id}/snippets/", user)
+      get api("/projects/#{project.id}/snippets", user)
 
       expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
       expect(json_response.size).to eq(3)
       expect(json_response.map{ |snippet| snippet['id']} ).to include(public_snippet.id, internal_snippet.id, private_snippet.id)
       expect(json_response.last).to have_key('web_url')
@@ -28,7 +30,10 @@ describe API::ProjectSnippets, api: true do
       create(:project_snippet, :private, project: project)
 
       get api("/projects/#{project.id}/snippets/", user)
+
       expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
       expect(json_response.size).to eq(0)
     end
   end

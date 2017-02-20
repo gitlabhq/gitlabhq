@@ -113,4 +113,4 @@ window.d3 = require('d3');
 
     return ContributorsStatGraph;
   })();
-}).call(this);
+}).call(window);

@@ -1,0 +1,5 @@
+---
+title: prevent diff unfolding link from appearing when there are no more lines to
+  show
+merge_request: 8761
+author:

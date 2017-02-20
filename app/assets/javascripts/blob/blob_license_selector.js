@@ -25,4 +25,4 @@ require('./template_selector');
 
     return BlobLicenseSelector;
   })(gl.TemplateSelector);
-}).call(this);
+}).call(window);

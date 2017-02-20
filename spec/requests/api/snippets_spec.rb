@@ -13,6 +13,8 @@ describe API::Snippets, api: true do
       get api("/snippets/", user)
 
       expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
       expect(json_response.map { |snippet| snippet['id']} ).to contain_exactly(
         public_snippet.id,
         internal_snippet.id,
@@ -25,7 +27,10 @@ describe API::Snippets, api: true do
       create(:personal_snippet, :private)
 
       get api("/snippets/", user)
+
       expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
       expect(json_response.size).to eq(0)
     end
   end
@@ -43,6 +48,8 @@ describe API::Snippets, api: true do
       get api("/snippets/public", user)
 
       expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
       expect(json_response.map { |snippet| snippet['id']} ).to contain_exactly(
         public_snippet.id,
         public_snippet_other.id)

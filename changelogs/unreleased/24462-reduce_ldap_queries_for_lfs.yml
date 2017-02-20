@@ -1,4 +1,0 @@
----
-title: Reduce hits to LDAP on Git HTTP auth by reordering auth mechanisms
-merge_request: 8752
-author:

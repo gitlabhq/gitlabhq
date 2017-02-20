@@ -1,4 +1,4 @@
-require('~/environments/components/environment_external_url');
+const ExternalUrlComponent = require('~/environments/components/environment_external_url');
 
 describe('External URL Component', () => {
   preloadFixtures('static/environments/element.html.raw');
@@ -8,7 +8,7 @@ describe('External URL Component', () => {
 
   it('should link to the provided externalUrl prop', () => {
     const externalURL = 'https://gitlab.com';
-    const component = new window.gl.environmentsList.ExternalUrlComponent({
+    const component = new ExternalUrlComponent({
       el: document.querySelector('.test-dom-element'),
       propsData: {
         externalUrl: externalURL,

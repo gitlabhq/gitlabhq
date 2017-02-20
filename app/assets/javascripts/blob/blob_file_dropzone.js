@@ -63,4 +63,4 @@
 
     return BlobFileDropzone;
   })();
-}).call(this);
+}).call(window);

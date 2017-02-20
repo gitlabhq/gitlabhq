@@ -83,12 +83,12 @@
         _a = decodeURI("%C3%80");
         _y = decodeURI("%C3%BF");
 
-        regexp = new RegExp("^(?:\\B|[^a-zA-Z0-9_" + atSymbolsWithoutBar + "]|\\s)" + flag + "(?![" + atSymbolsWithBar + "])(([A-Za-z" + _a + "-" + _y + "0-9_\'\.\+\-]|[^\\x00-\\x7a])*)$", 'gi');
+        regexp = new RegExp("^(?:\\B|[^a-zA-Z0-9_" + atSymbolsWithoutBar + "]|\\s)" + flag + "(?!" + atSymbolsWithBar + ")((?:[A-Za-z" + _a + "-" + _y + "0-9_\'\.\+\-]|[^\\x00-\\x7a])*)$", 'gi');
 
         match = regexp.exec(subtext);
 
         if (match) {
-          return (match[1] || match[1] === "") ? match[1] : match[2];
+          return match[1];
         } else {
           return null;
         }
@@ -103,6 +103,9 @@
       this.input.each((i, input) => {
         const $input = $(input);
         $input.off('focus.setupAtWho').on('focus.setupAtWho', this.setupAtWho.bind(this, $input));
+        // This triggers at.js again
+        // Needed for slash commands with suffixes (ex: /label ~)
+        $input.on('inserted-commands.atwho', $input.trigger.bind($input, 'keyup'));
       });
     },
     setupAtWho: function($input) {
@@ -377,4 +380,4 @@
         (dataToInspect === loadingState || dataToInspect.name === loadingState);
     }
   };
-}).call(this);
+}).call(window);

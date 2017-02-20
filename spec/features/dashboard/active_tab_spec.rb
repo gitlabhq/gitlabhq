@@ -1,14 +1,15 @@
 require 'spec_helper'
 
-RSpec.describe 'Dashboard Active Tab', feature: true do
+RSpec.describe 'Dashboard Active Tab', js: true, feature: true do
   before do
     login_as :user
   end
 
   shared_examples 'page has active tab' do |title|
     it "#{title} tab" do
-      expect(page).to have_selector('.nav-sidebar li.active', count: 1)
-      expect(find('.nav-sidebar li.active')).to have_content(title)
+      find('.global-dropdown-toggle').trigger('click')
+      expect(page).to have_selector('.global-dropdown-menu li.active', count: 1)
+      expect(find('.global-dropdown-menu li.active')).to have_content(title)
     end
   end
 

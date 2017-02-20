@@ -68,4 +68,4 @@
 
     return GroupsSelect;
   })();
-}).call(this);
+}).call(window);

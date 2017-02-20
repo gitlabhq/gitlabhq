@@ -1,14 +1,10 @@
 /* eslint-disable no-param-reassign */
 /* global Breakpoints */
 
-require('vendor/latinise');
 require('./breakpoints');
 require('vendor/jquery.nicescroll');
 
 ((global) => {
-  const dasherize = str => str.replace(/[_\s]+/g, '-');
-  const slugify = str => dasherize(str.trim().toLowerCase().latinise());
-
   class Wikis {
     constructor() {
       this.bp = Breakpoints.get();
@@ -34,7 +30,7 @@ require('vendor/jquery.nicescroll');
       if (!this.newWikiForm) return;
 
       const slugInput = this.newWikiForm.querySelector('#new_wiki_path');
-      const slug = slugify(slugInput.value);
+      const slug = gl.text.slugify(slugInput.value);
 
       if (slug.length > 0) {
         const wikisPath = slugInput.getAttribute('data-wikis-path');

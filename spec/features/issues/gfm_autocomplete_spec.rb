@@ -182,6 +182,20 @@ feature 'GFM autocomplete', feature: true, js: true do
       expect(page).not_to have_selector('.atwho-view')
     end
 
+    it 'triggers autocomplete after selecting a slash command' do
+      note = find('#note_note')
+      page.within '.timeline-content-form' do
+        note.native.send_keys('')
+        note.native.send_keys('/as')
+        note.click
+      end
+
+      find('.atwho-view li', text: '/assign').native.send_keys(:tab)
+
+      user_item = find('.atwho-view li', text: user.username)
+      expect(user_item).to have_content(user.username)
+    end
+
     def expect_to_wrap(should_wrap, item, note, value)
       expect(item).to have_content(value)
       expect(item).not_to have_content("\"#{value}\"")

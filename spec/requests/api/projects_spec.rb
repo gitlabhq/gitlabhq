@@ -76,6 +76,7 @@ describe API::Projects, api: true  do
         get api('/projects', user)
 
         expect(response.status).to eq 200
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first.keys).to include('tag_list')
       end
@@ -84,6 +85,7 @@ describe API::Projects, api: true  do
         get api('/projects', user)
 
         expect(response.status).to eq 200
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first.keys).to include('open_issues_count')
       end
@@ -94,6 +96,7 @@ describe API::Projects, api: true  do
         get api('/projects', user)
 
         expect(response.status).to eq 200
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.find { |hash| hash['id'] == project.id }.keys).not_to include('open_issues_count')
       end
@@ -102,6 +105,7 @@ describe API::Projects, api: true  do
         get api('/projects', user)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first).not_to include('statistics')
       end
@@ -110,6 +114,7 @@ describe API::Projects, api: true  do
         get api('/projects', user), statistics: true
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first).to include 'statistics'
       end
@@ -121,6 +126,7 @@ describe API::Projects, api: true  do
           get api('/projects?simple=true', user)
 
           expect(response).to have_http_status(200)
+          expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.first.keys).to match_array expected_keys
         end
@@ -131,6 +137,7 @@ describe API::Projects, api: true  do
           get api('/projects', user), { search: project.name }
 
           expect(response).to have_http_status(200)
+          expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.length).to eq(1)
         end
@@ -141,6 +148,7 @@ describe API::Projects, api: true  do
           get api('/projects', user), { visibility: 'private' }
 
           expect(response).to have_http_status(200)
+          expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.map { |p| p['id'] }).to contain_exactly(project.id, project2.id, project3.id)
         end
@@ -151,6 +159,7 @@ describe API::Projects, api: true  do
           get api('/projects', user), { visibility: 'internal' }
 
           expect(response).to have_http_status(200)
+          expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.map { |p| p['id'] }).to contain_exactly(project2.id)
         end
@@ -159,6 +168,7 @@ describe API::Projects, api: true  do
           get api('/projects', user), { visibility: 'public' }
 
           expect(response).to have_http_status(200)
+          expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.map { |p| p['id'] }).to contain_exactly(public_project.id)
         end
@@ -169,6 +179,7 @@ describe API::Projects, api: true  do
           get api('/projects', user), { order_by: 'id', sort: 'desc' }
 
           expect(response).to have_http_status(200)
+          expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.first['id']).to eq(project3.id)
         end
@@ -179,6 +190,7 @@ describe API::Projects, api: true  do
           get api('/projects', user4), owned: true
 
           expect(response).to have_http_status(200)
+          expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.first['name']).to eq(project4.name)
           expect(json_response.first['owner']['username']).to eq(user4.username)
@@ -197,6 +209,7 @@ describe API::Projects, api: true  do
           get api('/projects', user3), starred: true
 
           expect(response).to have_http_status(200)
+          expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.map { |project| project['id'] }).to contain_exactly(project.id, public_project.id)
         end
@@ -223,6 +236,7 @@ describe API::Projects, api: true  do
           get api('/projects', user), { visibility: 'public', owned: true, starred: true, search: 'gitlab' }
 
           expect(response).to have_http_status(200)
+          expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.size).to eq(1)
           expect(json_response.first['id']).to eq(project5.id)
@@ -644,9 +658,10 @@ describe API::Projects, api: true  do
         get api("/projects/#{project.id}/events", current_user)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
 
         first_event = json_response.first
-
         expect(first_event['action_name']).to eq('commented on')
         expect(first_event['note']['body']).to eq('What an awesome day!')
 
@@ -699,11 +714,11 @@ describe API::Projects, api: true  do
         get api("/projects/#{project.id}/users", current_user)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.size).to eq(1)
 
         first_user = json_response.first
-
         expect(first_user['username']).to eq(member.username)
         expect(first_user['name']).to eq(member.name)
         expect(first_user.keys).to contain_exactly(*%w[name username id state avatar_url web_url])
@@ -746,7 +761,9 @@ describe API::Projects, api: true  do
 
     it 'returns an array of project snippets' do
       get api("/projects/#{project.id}/snippets", user)
+
       expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.first['title']).to eq(snippet.title)
     end
@@ -1218,7 +1235,7 @@ describe API::Projects, api: true  do
     end
   end
 
-  describe 'DELETE /projects/:id/star' do
+  describe 'POST /projects/:id/unstar' do
     context 'on a starred project' do
       before do
         user.toggle_star(project)
@@ -1226,16 +1243,16 @@ describe API::Projects, api: true  do
       end
 
       it 'unstars the project' do
-        expect { delete api("/projects/#{project.id}/star", user) }.to change { project.reload.star_count }.by(-1)
+        expect { post api("/projects/#{project.id}/unstar", user) }.to change { project.reload.star_count }.by(-1)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(201)
         expect(json_response['star_count']).to eq(0)
       end
     end
 
     context 'on an unstarred project' do
       it 'does not modify the star count' do
-        expect { delete api("/projects/#{project.id}/star", user) }.not_to change { project.reload.star_count }
+        expect { post api("/projects/#{project.id}/unstar", user) }.not_to change { project.reload.star_count }
 
         expect(response).to have_http_status(304)
       end

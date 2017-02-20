@@ -1,4 +1,0 @@
----
-title: Don't use backup Active Record connections for Sidekiq
-merge_request:
-author:

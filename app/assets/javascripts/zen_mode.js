@@ -94,4 +94,4 @@ require('mousetrap/plugins/pause/mousetrap-pause');
 
     return ZenMode;
   })();
-}).call(this);
+}).call(window);

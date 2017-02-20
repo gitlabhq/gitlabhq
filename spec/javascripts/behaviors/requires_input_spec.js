@@ -36,4 +36,4 @@ require('~/behaviors/requires_input');
       return expect($('.submit')).not.toBeDisabled();
     });
   });
-}).call(this);
+}).call(window);

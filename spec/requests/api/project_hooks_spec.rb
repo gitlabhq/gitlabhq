@@ -25,6 +25,7 @@ describe API::ProjectHooks, 'ProjectHooks', api: true do
         expect(response).to have_http_status(200)
 
         expect(json_response).to be_an Array
+        expect(response).to include_pagination_headers
         expect(json_response.count).to eq(1)
         expect(json_response.first['url']).to eq("http://example.com")
         expect(json_response.first['issues_events']).to eq(true)

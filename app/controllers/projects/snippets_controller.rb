@@ -1,6 +1,7 @@
 class Projects::SnippetsController < Projects::ApplicationController
   include ToggleAwardEmoji
   include SpammableActions
+  include SnippetsActions
 
   before_action :module_enabled
   before_action :snippet, only: [:show, :edit, :destroy, :update, :raw, :toggle_award_emoji, :mark_as_spam]
@@ -49,9 +50,6 @@ class Projects::SnippetsController < Projects::ApplicationController
     end
   end
 
-  def edit
-  end
-
   def update
     UpdateSnippetService.new(project, current_user, @snippet,
                              snippet_params).execute
@@ -72,15 +70,6 @@ class Projects::SnippetsController < Projects::ApplicationController
     @snippet.destroy
 
     redirect_to namespace_project_snippets_path(@project.namespace, @project)
-  end
-
-  def raw
-    send_data(
-      @snippet.content,
-      type: 'text/plain; charset=utf-8',
-      disposition: 'inline',
-      filename: @snippet.sanitized_file_name
-    )
   end
 
   protected

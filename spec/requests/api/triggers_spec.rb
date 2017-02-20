@@ -100,6 +100,7 @@ describe API::Triggers do
         get api("/projects/#{project.id}/triggers", user)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_a(Array)
         expect(json_response[0]).to have_key('token')
       end

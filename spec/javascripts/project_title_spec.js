@@ -10,11 +10,11 @@ require('~/project');
 
 (function() {
   describe('Project Title', function() {
-    preloadFixtures('static/project_title.html.raw');
+    preloadFixtures('issues/open-issue.html.raw');
     loadJSONFixtures('projects.json');
 
     beforeEach(function() {
-      loadFixtures('static/project_title.html.raw');
+      loadFixtures('issues/open-issue.html.raw');
 
       window.gon = {};
       window.gon.api_version = 'v3';
@@ -38,15 +38,12 @@ require('~/project');
           return spyOn(jQuery, 'ajax').and.callFake(fakeAjaxResponse.bind(_this));
         };
       })(this));
-      it('to show on toggle click', (function(_this) {
-        return function() {
-          $('.js-projects-dropdown-toggle').click();
-          return expect($('.header-content').hasClass('open')).toBe(true);
-        };
-      })(this));
-      return it('hide dropdown', function() {
-        $(".dropdown-menu-close-icon").click();
-        return expect($('.header-content').hasClass('open')).toBe(false);
+      it('toggles dropdown', function() {
+        var menu = $('.js-dropdown-menu-projects');
+        $('.js-projects-dropdown-toggle').click();
+        expect(menu).toHaveClass('open');
+        menu.find('.dropdown-menu-close-icon').click();
+        expect(menu).not.toHaveClass('open');
       });
     });
 
@@ -54,4 +51,4 @@ require('~/project');
       window.gon = {};
     });
   });
-}).call(this);
+}).call(window);
