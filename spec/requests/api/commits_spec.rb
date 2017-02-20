@@ -72,7 +72,7 @@ describe API::Commits, api: true  do
         get api("/projects/#{project.id}/repository/commits?since=invalid-date", user)
 
         expect(response).to have_http_status(400)
-        expect(json_response['message']).to include "\"since\" must be a timestamp in ISO 8601 format"
+        expect(json_response['error']).to eq('since is invalid')
       end
     end
 
