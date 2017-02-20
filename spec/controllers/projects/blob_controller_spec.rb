@@ -86,11 +86,13 @@ describe Projects::BlobController do
     end
 
     context 'when user has forked project' do
-      let(:guest) { create(:user) }
-      let!(:forked_project) { Projects::ForkService.new(project, guest).execute }
-      let!(:merge_request) { create(:merge_request, source_project: project, target_project: project, source_branch: "fork-test-1", target_branch: "master") }
+      let(:forked_project_link) { create(:forked_project_link, forked_from_project: project) }
+      let!(:forked_project) { forked_project_link.forked_to_project }
+      let(:guest) { forked_project.owner }
 
-      before { sign_in(guest) }
+      before do
+        sign_in(guest)
+      end
 
       context 'when editing on the fork' do
         before do
