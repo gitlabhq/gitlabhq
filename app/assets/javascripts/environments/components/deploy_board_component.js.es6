@@ -71,6 +71,8 @@ module.exports = Vue.component('deploy_boards_components', {
 
             if (this.backOffRequestCounter < 3) {
               next();
+            } else {
+              stop(resp);
             }
           } else {
             stop(resp);
@@ -78,21 +80,20 @@ module.exports = Vue.component('deploy_boards_components', {
         })
         .catch(stop);
     }, Infinity)
-    .then(resp => resp.json())
-    .then((response) => {
-      if (!Object.keys(response).length && this.backOffRequestCounter === 3) {
+    .then((resp) => {
+      if (resp.status === 204) {
         this.hasError = true;
+        return resp;
       }
 
+      return resp.json();
+    })
+    .then((response) => {
       this.store.storeDeployBoard(this.environmentID, response);
       return response;
     })
-    .then((response) => {
-      if ((!Object.keys(response).length &&
-        this.backOffRequestCounter === 3) ||
-        Object.keys(response).length) {
-        this.isLoading = false;
-      }
+    .then(() => {
+      this.isLoading = false;
     })
     .catch(() => {
       this.isLoading = false;
