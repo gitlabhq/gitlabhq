@@ -29,7 +29,7 @@ describe 'Multiple Issue Boards', feature: true, js: true do
     it 'shows a list of boards' do
       click_button board.name
 
-      page.within('.boards-title-holder .dropdown-menu') do
+      page.within('.dropdown-menu') do
         expect(page).to have_content(board.name)
         expect(page).to have_content(board2.name)
       end
@@ -38,7 +38,7 @@ describe 'Multiple Issue Boards', feature: true, js: true do
     it 'switches current board' do
       click_button board.name
 
-      page.within('.boards-title-holder .dropdown-menu') do
+      page.within('.dropdown-menu') do
         click_link board2.name
       end
 
@@ -52,7 +52,7 @@ describe 'Multiple Issue Boards', feature: true, js: true do
     it 'creates new board' do
       click_button board.name
 
-      page.within('.boards-title-holder .dropdown-menu') do
+      page.within('.dropdown-menu') do
         click_link 'Edit board name'
 
         fill_in 'board-new-name', with: 'Testing'
@@ -62,7 +62,7 @@ describe 'Multiple Issue Boards', feature: true, js: true do
 
       wait_for_vue_resource
 
-      page.within('.boards-title-holder .dropdown-menu') do
+      page.within('.dropdown-menu') do
         expect(page).to have_content('Testing')
       end
     end
@@ -70,7 +70,7 @@ describe 'Multiple Issue Boards', feature: true, js: true do
     it 'edits board name' do
       click_button board.name
 
-      page.within('.boards-title-holder .dropdown-menu') do
+      page.within('.dropdown-menu') do
         click_link 'Edit board name'
 
         fill_in 'board-new-name', with: 'Testing'
@@ -80,7 +80,7 @@ describe 'Multiple Issue Boards', feature: true, js: true do
 
       wait_for_vue_resource
 
-      page.within('.boards-title-holder .dropdown-menu') do
+      page.within('.dropdown-menu') do
         expect(page).to have_content('Testing')
       end
     end
@@ -90,7 +90,7 @@ describe 'Multiple Issue Boards', feature: true, js: true do
 
       wait_for_vue_resource
 
-      page.within('.boards-title-holder .dropdown-menu') do
+      page.within('.dropdown-menu') do
         click_link 'Delete board'
 
         page.within('.dropdown-title') do
@@ -102,7 +102,7 @@ describe 'Multiple Issue Boards', feature: true, js: true do
 
       click_button board2.name
 
-      page.within('.boards-title-holder .dropdown-menu') do
+      page.within('.dropdown-menu') do
         expect(page).not_to have_content(board.name)
         expect(page).to have_content(board2.name)
       end
@@ -111,7 +111,7 @@ describe 'Multiple Issue Boards', feature: true, js: true do
     it 'adds a list to the none default board' do
       click_button board.name
 
-      page.within('.boards-title-holder .dropdown-menu') do
+      page.within('.dropdown-menu') do
         click_link board2.name
       end
 
@@ -135,7 +135,7 @@ describe 'Multiple Issue Boards', feature: true, js: true do
 
       click_button board2.name
 
-      page.within('.boards-title-holder .dropdown-menu') do
+      page.within('.dropdown-menu') do
         click_link board.name
       end
 
@@ -154,7 +154,7 @@ describe 'Multiple Issue Boards', feature: true, js: true do
     it 'does not show action links' do
       click_button board.name
 
-      page.within('.boards-title-holder .dropdown-menu') do
+      page.within('.dropdown-menu') do
         expect(page).not_to have_content('Create new board')
         expect(page).not_to have_content('Edit board name')
         expect(page).not_to have_content('Delete board')
