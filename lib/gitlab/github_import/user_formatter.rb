@@ -24,17 +24,9 @@ module Gitlab
 
       def find_by_email
         return nil unless email
-        users  = ::User.arel_table
-        emails = ::Email.arel_table
 
-        left_join_emails = users.join(emails, Arel::Nodes::OuterJoin).on(
-          users[:id].eq(emails[:user_id])
-        ).join_sources
-
-        User.select(:id)
-            .joins(left_join_emails)
-            .where(users[:email].eq(email).or(emails[:email].eq(email)))
-            .first.try(:id)
+        User.find_by_any_email(email)
+            .try(:id)
       end
 
       def find_by_external_uid
