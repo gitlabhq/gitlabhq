@@ -317,10 +317,10 @@ module SlashCommands
     end
 
     desc 'Set weight'
-    params '1-9'
+    params Issue::WEIGHT_RANGE.to_s.squeeze('.').tr('.', '-')
     condition do
-      issuable.is_a?(Issue) &&
-        current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
+      issuable.respond_to?(:weight) &&
+        current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)
     end
     command :weight do |weight|
       if Issue.weight_filter_options.include?(weight.to_i)
@@ -331,9 +331,9 @@ module SlashCommands
     desc 'Clear weight'
     condition do
       issuable.persisted? &&
-        issuable.is_a?(Issue) &&
+        issuable.respond_to?(:weight) &&
         issuable.weight? &&
-        current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
+        current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)
     end
     command :clear_weight do
       @updates[:weight] = nil
