@@ -429,7 +429,7 @@ Settings.rack_attack.git_basic_auth['bantime'] ||= 1.hour
 # Backwards compatible with the old usage of git_basic_auth to enable all Rack Attack modules
 Settings.rack_attack['enabled'] ||= Settings.rack_attack.git_basic_auth['enabled']
 Settings.rack_attack['whitelist'] ||= %w{127.0.0.1 ::1}
-#Settings.rack_attack['blacklist'] ||= []
+# Settings.rack_attack['blacklist'] ||= []
 # Backwards compatible with the old usage of git_basic_auth to enable all Rack Attack modules
 Settings.rack_attack['throttle_enabled'] ||= Settings.rack_attack.git_basic_auth['enabled']
 
