@@ -7,3 +7,5 @@ class ClassSpecHelper {
 }
 
 window.ClassSpecHelper = ClassSpecHelper;
+
+module.exports = ClassSpecHelper;
