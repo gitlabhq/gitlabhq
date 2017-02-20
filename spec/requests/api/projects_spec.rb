@@ -820,8 +820,9 @@ describe API::Projects, api: true  do
     it 'deletes existing project snippet' do
       expect do
         delete api("/projects/#{project.id}/snippets/#{snippet.id}", user)
+
+        expect(response).to have_http_status(204)
       end.to change { Snippet.count }.by(-1)
-      expect(response).to have_http_status(200)
     end
 
     it 'returns 404 when deleting unknown snippet id' do
@@ -905,8 +906,10 @@ describe API::Projects, api: true  do
           project_fork_target.reload
           expect(project_fork_target.forked_from_project).not_to be_nil
           expect(project_fork_target.forked?).to be_truthy
+
           delete api("/projects/#{project_fork_target.id}/fork", admin)
-          expect(response).to have_http_status(200)
+
+          expect(response).to have_http_status(204)
           project_fork_target.reload
           expect(project_fork_target.forked_from_project).to be_nil
           expect(project_fork_target.forked?).not_to be_truthy
