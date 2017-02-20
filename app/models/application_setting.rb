@@ -80,6 +80,7 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }
 
+  validates :default_artifacts_expire_in, presence: true
   validate  :check_default_artifacts_expire_in
 
   validates :container_registry_token_expire_delay,
@@ -222,6 +223,14 @@ class ApplicationSetting < ActiveRecord::Base
     create(defaults)
   end
 
+  def self.human_attribute_name(attr, _options = {})
+    if attr == :default_artifacts_expire_in
+      'Default artifacts expiration'
+    else
+      super
+    end
+  end
+
   def home_page_url_column_exist
     ActiveRecord::Base.connection.column_exists?(:application_settings, :home_page_url)
   end
@@ -298,12 +307,8 @@ class ApplicationSetting < ActiveRecord::Base
   end
 
   def check_default_artifacts_expire_in
-    if default_artifacts_expire_in.blank?
-      errors.add(:default_artifacts_expiration, "is not presented")
-    else
-      ChronicDuration.parse(default_artifacts_expire_in)
-    end
+    ChronicDuration.parse(default_artifacts_expire_in)
   rescue ChronicDuration::DurationParseError
-    errors.add(:default_artifacts_expiration, "is invalid")
+    errors.add(:default_artifacts_expiration, "is not a correct duration")
   end
 end
