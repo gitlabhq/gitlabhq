@@ -6,7 +6,7 @@
 
 - **Part 2: Quick Start Guide - Setting Up GitLab Pages**
 - _[Part 1: Static Sites, Domains, DNS Records, and SSL/TLS Certificates](pages_static_sites_domains_dns_records_ssl_tls_certificates.html)_
-- _[Part 3: Creating and Tweaking `.gitlab-ci.yml` for GitLab Pages](pages_creating_and_tweaking_gitlab-ci_.html)_
+- _[Part 3: Creating and Tweaking `.gitlab-ci.yml` for GitLab Pages](pages_creating_and_tweaking_gitlab-ci.html)_
 
 ----
 
@@ -109,4 +109,4 @@ baseurl: ""
 ## Further Reading
 
 - Read through _[Part 1: Static Sites, Domains, DNS Records, and SSL/TLS Certificates](pages_static_sites_domains_dns_records_ssl_tls_certificates.html)_
-- Read through _[Part 3: Creating and Tweaking `.gitlab-ci.yml` for GitLab Pages](pages_creating_and_tweaking_gitlab-ci_.html)_
+- Read through _[Part 3: Creating and Tweaking `.gitlab-ci.yml` for GitLab Pages](pages_creating_and_tweaking_gitlab-ci.html)_

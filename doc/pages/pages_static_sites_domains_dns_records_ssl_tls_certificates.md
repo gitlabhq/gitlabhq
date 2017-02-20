@@ -6,7 +6,7 @@
 
 - **Part 1: Static Sites, Domains, DNS Records, and SSL/TLS Certificates**
 - _[Part 2: Quick Start Guide - Setting Up GitLab Pages](pages_quick_start_guide.html)_
-- _[Part 3: Creating and Tweaking `.gitlab-ci.yml` for GitLab Pages](pages_creating_and_tweaking_gitlab-ci_.html)_
+- _[Part 3: Creating and Tweaking `.gitlab-ci.yml` for GitLab Pages](pages_creating_and_tweaking_gitlab-ci.html)_
 
 ----
 
@@ -161,4 +161,4 @@ Now that you hopefully understand why you need all of this, it's simple:
 ## Further Reading
 
 - Read through GitLab Pages from A to Z _[Part 2: Quick Start Guide - Setting Up GitLab Pages](pages_quick_start_guide.html)_
-- Read through GitLab Pages from A to Z _[Part 3: Creating and Tweaking `.gitlab-ci.yml` for GitLab Pages](pages_creating_and_tweaking_gitlab-ci_.html)_
+- Read through GitLab Pages from A to Z _[Part 3: Creating and Tweaking `.gitlab-ci.yml` for GitLab Pages](pages_creating_and_tweaking_gitlab-ci.html)_
