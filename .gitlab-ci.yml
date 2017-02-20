@@ -240,6 +240,18 @@ rake db:seed_fu:
     paths:
       - log/development.log
 
+rake gitlab:assets:compile:
+  stage: test
+  <<: *dedicated-runner
+  dependencies: []
+  variables:
+    NODE_ENV: "production"
+    RAILS_ENV: "production"
+    SETUP_DB: "false"
+    USE_DB: "false"
+    SKIP_STORAGE_VALIDATION: "true"
+  script: bundle exec rake yarn:install gitlab:assets:compile
+
 rake karma:
   cache:
     paths:
