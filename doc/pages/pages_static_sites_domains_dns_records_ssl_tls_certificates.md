@@ -1,4 +1,4 @@
-# GitLab Pages from A to Z
+# GitLab Pages from A to Z: Part 1
 
 > Type: user guide
 >
@@ -157,3 +157,8 @@ Now that you hopefully understand why you need all of this, it's simple:
 - Copy your public key and paste it in the last field
 
 > Note: **do not** open certificates or encryption keys in regular text editors. Always use code editors (such as Sublime Text, Atom, Dreamweaver, Brackets, etc).
+
+## Further Reading
+
+- Read through GitLab Pages from A to Z _[Part 2: Quick Start Guide - Setting Up GitLab Pages](pages_quick_start_guide.html)_
+- Read through GitLab Pages from A to Z _[Part 3: Creating and Tweaking `.gitlab-ci.yml` for GitLab Pages](pages_creating_and_tweaking_gitlab-ci_.html)_
