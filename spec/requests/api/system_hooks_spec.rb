@@ -31,6 +31,7 @@ describe API::SystemHooks, api: true  do
         get api("/hooks", admin)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first['url']).to eq(hook.url)
         expect(json_response.first['push_events']).to be true

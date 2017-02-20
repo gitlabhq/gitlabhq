@@ -31,4 +31,4 @@
       }
     });
   });
-}).call(this);
+}).call(window);

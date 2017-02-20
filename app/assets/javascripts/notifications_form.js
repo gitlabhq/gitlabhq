@@ -54,4 +54,4 @@
 
     return NotificationsForm;
   })();
-}).call(this);
+}).call(window);

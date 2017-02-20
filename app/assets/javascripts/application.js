@@ -101,11 +101,6 @@ require('es6-promise').polyfill();
       }
     });
 
-    $('.nav-sidebar').niceScroll({
-      cursoropacitymax: '0.4',
-      cursorcolor: '#FFF',
-      cursorborder: '1px solid #FFF'
-    });
     $('.js-select-on-focus').on('focusin', function () {
       return $(this).select().one('mouseup', function (e) {
         return e.preventDefault();
@@ -245,9 +240,7 @@ require('es6-promise').polyfill();
     });
     gl.awardsHandler = new AwardsHandler();
     new Aside();
-    // bind sidebar events
-    new gl.Sidebar();
 
     gl.utils.initTimeagoTimeout();
   });
-}).call(this);
+}).call(window);

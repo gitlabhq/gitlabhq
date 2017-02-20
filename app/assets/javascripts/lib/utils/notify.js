@@ -44,4 +44,4 @@
     w.notify = notifyMe;
     return w.notifyPermissions = notifyPermissions;
   })(window);
-}).call(this);
+}).call(window);

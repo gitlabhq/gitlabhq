@@ -18,7 +18,7 @@ describe "Admin Runners" do
 
     it 'has all necessary texts' do
       expect(page).to have_text "To register a new Runner"
-      expect(page).to have_text "Runners with last contact less than a minute ago: 1"
+      expect(page).to have_text "Runners with last contact more than a minute ago: 1"
     end
 
     describe 'search' do

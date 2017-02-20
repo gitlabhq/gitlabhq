@@ -31,6 +31,9 @@
 
   - if todo.pending?
     .todo-actions
-      = link_to [:dashboard, todo], method: :delete, class: 'btn btn-loading done-todo' do
+      = link_to [:dashboard, todo], method: :delete, class: 'btn btn-loading js-done-todo' do
         Done
+        = icon('spinner spin')
+      = link_to restore_dashboard_todo_path(todo), method: :patch, class: 'btn btn-loading js-undo-todo hidden'  do
+        Undo
         = icon('spinner spin')

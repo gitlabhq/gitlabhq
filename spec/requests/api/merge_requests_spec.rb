@@ -27,7 +27,9 @@ describe API::MergeRequests, api: true  do
     context "when authenticated" do
       it "returns an array of all merge_requests" do
         get api("/projects/#{project.id}/merge_requests", user)
+
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(3)
         expect(json_response.last['title']).to eq(merge_request.title)
@@ -43,7 +45,9 @@ describe API::MergeRequests, api: true  do
 
       it "returns an array of all merge_requests" do
         get api("/projects/#{project.id}/merge_requests?state", user)
+
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(3)
         expect(json_response.last['title']).to eq(merge_request.title)
@@ -51,7 +55,9 @@ describe API::MergeRequests, api: true  do
 
       it "returns an array of open merge_requests" do
         get api("/projects/#{project.id}/merge_requests?state=opened", user)
+
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
         expect(json_response.last['title']).to eq(merge_request.title)
@@ -59,7 +65,9 @@ describe API::MergeRequests, api: true  do
 
       it "returns an array of closed merge_requests" do
         get api("/projects/#{project.id}/merge_requests?state=closed", user)
+
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
         expect(json_response.first['title']).to eq(merge_request_closed.title)
@@ -67,7 +75,9 @@ describe API::MergeRequests, api: true  do
 
       it "returns an array of merged merge_requests" do
         get api("/projects/#{project.id}/merge_requests?state=merged", user)
+
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
         expect(json_response.first['title']).to eq(merge_request_merged.title)
@@ -91,7 +101,9 @@ describe API::MergeRequests, api: true  do
 
         it "returns an array of merge_requests in ascending order" do
           get api("/projects/#{project.id}/merge_requests?sort=asc", user)
+
           expect(response).to have_http_status(200)
+          expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.length).to eq(3)
           response_dates = json_response.map{ |merge_request| merge_request['created_at'] }
@@ -100,7 +112,9 @@ describe API::MergeRequests, api: true  do
 
         it "returns an array of merge_requests in descending order" do
           get api("/projects/#{project.id}/merge_requests?sort=desc", user)
+
           expect(response).to have_http_status(200)
+          expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.length).to eq(3)
           response_dates = json_response.map{ |merge_request| merge_request['created_at'] }
@@ -109,7 +123,9 @@ describe API::MergeRequests, api: true  do
 
         it "returns an array of merge_requests ordered by updated_at" do
           get api("/projects/#{project.id}/merge_requests?order_by=updated_at", user)
+
           expect(response).to have_http_status(200)
+          expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.length).to eq(3)
           response_dates = json_response.map{ |merge_request| merge_request['updated_at'] }
@@ -118,7 +134,9 @@ describe API::MergeRequests, api: true  do
 
         it "returns an array of merge_requests ordered by created_at" do
           get api("/projects/#{project.id}/merge_requests?order_by=created_at&sort=asc", user)
+
           expect(response).to have_http_status(200)
+          expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.length).to eq(3)
           response_dates = json_response.map{ |merge_request| merge_request['created_at'] }
@@ -191,6 +209,8 @@ describe API::MergeRequests, api: true  do
       commit = merge_request.commits.first
 
       expect(response.status).to eq 200
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
       expect(json_response.size).to eq(merge_request.commits.size)
       expect(json_response.first['id']).to eq(commit.id)
       expect(json_response.first['title']).to eq(commit.title)
@@ -205,6 +225,7 @@ describe API::MergeRequests, api: true  do
   describe 'GET /projects/:id/merge_requests/:merge_request_id/changes' do
     it 'returns the change information of the merge_request' do
       get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/changes", user)
+
       expect(response.status).to eq 200
       expect(json_response['changes'].size).to eq(merge_request.diffs.size)
     end
@@ -572,7 +593,9 @@ describe API::MergeRequests, api: true  do
 
     it "returns merge_request comments ordered by created_at" do
       get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/comments", user)
+
       expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(2)
       expect(json_response.first['note']).to eq("a comment on a MR")
@@ -594,7 +617,9 @@ describe API::MergeRequests, api: true  do
       end
 
       get api("/projects/#{project.id}/merge_requests/#{mr.id}/closes_issues", user)
+
       expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(1)
       expect(json_response.first['id']).to eq(issue.id)
@@ -602,7 +627,9 @@ describe API::MergeRequests, api: true  do
 
     it 'returns an empty array when there are no issues to be closed' do
       get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/closes_issues", user)
+
       expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(0)
     end
@@ -616,6 +643,7 @@ describe API::MergeRequests, api: true  do
       get api("/projects/#{jira_project.id}/merge_requests/#{merge_request.id}/closes_issues", user)
 
       expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(1)
       expect(json_response.first['title']).to eq(issue.title)

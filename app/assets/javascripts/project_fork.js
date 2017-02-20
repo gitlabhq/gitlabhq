@@ -10,4 +10,4 @@
 
     return ProjectFork;
   })();
-}).call(this);
+}).call(window);

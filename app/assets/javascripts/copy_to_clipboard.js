@@ -46,4 +46,4 @@ window.Clipboard = require('vendor/clipboard');
     clipboard.on('success', genericSuccess);
     return clipboard.on('error', genericError);
   });
-}).call(this);
+}).call(window);

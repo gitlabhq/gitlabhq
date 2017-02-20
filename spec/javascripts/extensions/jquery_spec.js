@@ -39,4 +39,4 @@ require('~/extensions/jquery');
       });
     });
   });
-}).call(this);
+}).call(window);

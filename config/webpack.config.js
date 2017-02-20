@@ -22,6 +22,7 @@ var config = {
     commit_pipelines:     './commit/pipelines/pipelines_bundle.js',
     diff_notes:           './diff_notes/diff_notes_bundle.js',
     environments:         './environments/environments_bundle.js',
+    environments_folder:  './environments/folder/environments_folder_bundle.js',
     filtered_search:      './filtered_search/filtered_search_bundle.js',
     graphs:               './graphs/graphs_bundle.js',
     issuable:             './issuable/issuable_bundle.js',
@@ -54,18 +55,11 @@ var config = {
         exclude: /(node_modules|vendor\/assets)/,
         loader: 'babel-loader',
         options: {
-          plugins: IS_PRODUCTION ? [] : ['istanbul'],
           presets: [
             ["es2015", {"modules": false}],
             'stage-2'
           ]
         }
-      },
-      {
-        test: /\.(js|es6)$/,
-        exclude: /node_modules/,
-        loader: 'imports-loader',
-        options: 'this=>window'
       }
     ]
   },
@@ -79,9 +73,6 @@ var config = {
       chunks: false,
       modules: false,
       assets: true
-    }),
-    new CompressionPlugin({
-      asset: '[path].gz[query]',
     }),
     new webpack.IgnorePlugin(/moment/, /pikaday/),
   ],
@@ -102,7 +93,7 @@ var config = {
 if (IS_PRODUCTION) {
   config.devtool = 'source-map';
   config.plugins.push(
-    new webpack.NoErrorsPlugin(),
+    new webpack.NoEmitOnErrorsPlugin(),
     new webpack.LoaderOptionsPlugin({
       minimize: true,
       debug: false
@@ -112,6 +103,9 @@ if (IS_PRODUCTION) {
     }),
     new webpack.DefinePlugin({
       'process.env': { NODE_ENV: JSON.stringify('production') }
+    }),
+    new CompressionPlugin({
+      asset: '[path].gz[query]',
     })
   );
 }

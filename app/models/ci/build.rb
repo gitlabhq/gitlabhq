@@ -62,33 +62,10 @@ module Ci
         new_build.save
       end
 
-      def retry(build, user = nil)
-        new_build = Ci::Build.create(
-          ref: build.ref,
-          tag: build.tag,
-          options: build.options,
-          commands: build.commands,
-          tag_list: build.tag_list,
-          project: build.project,
-          pipeline: build.pipeline,
-          name: build.name,
-          allow_failure: build.allow_failure,
-          stage: build.stage,
-          stage_idx: build.stage_idx,
-          trigger_request: build.trigger_request,
-          yaml_variables: build.yaml_variables,
-          when: build.when,
-          user: user,
-          environment: build.environment,
-          status_event: 'enqueue'
-        )
-
-        MergeRequests::AddTodoWhenBuildFailsService
-          .new(build.project, nil)
-          .close(new_build)
-
-        build.pipeline.mark_as_processable_after_stage(build.stage_idx)
-        new_build
+      def retry(build, current_user)
+        Ci::RetryBuildService
+          .new(build.project, current_user)
+          .execute(build)
       end
     end
 
@@ -136,7 +113,7 @@ module Ci
       project.builds_enabled? && commands.present? && manual? && skipped?
     end
 
-    def play(current_user = nil)
+    def play(current_user)
       # Try to queue a current build
       if self.enqueue
         self.update(user: current_user)

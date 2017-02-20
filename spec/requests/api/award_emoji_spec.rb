@@ -34,6 +34,7 @@ describe API::AwardEmoji, api: true  do
         get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/award_emoji", user)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first['name']).to eq(downvote.name)
       end

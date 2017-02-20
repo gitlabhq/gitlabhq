@@ -179,4 +179,4 @@ require('vendor/jquery.scrollTo');
 
     return LineHighlighter;
   })();
-}).call(this);
+}).call(window);

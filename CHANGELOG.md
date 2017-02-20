@@ -2,6 +2,22 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 8.16.6 (2017-02-17)
+
+- API: Fix file downloading. !0 (8267)
+- Reduce hits to LDAP on Git HTTP auth by reordering auth mechanisms. !8752
+- Fix filtered search user autocomplete for gitlab instances that are hosted on a subdirectory. !8891
+- Fix wrong call to ProjectCacheWorker.perform. !8910
+- Remove unnecessary queries for .atom and .json in Dashboard::ProjectsController#index. !8956
+- Fix broken anchor links when special characters are used. !8961 (Andrey Krivko)
+- Do not display deploy keys in user's own ssh keys list. !9024
+- Show merge errors in merge request widget. !9229
+- Don't delete assigned MRs/issues when user is deleted.
+- backport of EE fix !954.
+- Refresh authorizations when transferring projects.
+- Don't use backup Active Record connections for Sidekiq.
+- Check public snippets for spam.
+
 ## 8.16.5 (2017-02-14)
 
 - Patch Asciidocs rendering to block XSS.
@@ -180,6 +196,10 @@ entry.
 - 26504 Fix styling of MR jump to discussion button.
 - Add margin to markdown math blocks.
 - Add hover state to MR comment reply button.
+
+## 8.15.7 (2017-02-15)
+
+- No changes.
 
 ## 8.15.6 (2017-02-14)
 
@@ -450,6 +470,10 @@ entry.
 - Rename groups with .git in the end of the path. !8199
 - Whitelist next project names: help, ci, admin, search. !8227
 - Adds back CSS for progress-bars. !8237
+
+## 8.14.10 (2017-02-15)
+
+- No changes.
 
 ## 8.14.9 (2017-02-14)
 

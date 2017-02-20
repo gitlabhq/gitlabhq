@@ -74,4 +74,4 @@ require('../extensions/jquery');
       return $this.tooltip('hide');
     });
   });
-}).call(this);
+}).call(window);

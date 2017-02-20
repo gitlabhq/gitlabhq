@@ -52,4 +52,19 @@ describe 'Merge request', :feature, :js do
       end
     end
   end
+
+  context 'merge error' do
+    before do
+      allow_any_instance_of(Repository).to receive(:merge).and_return(false)
+      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+      click_button 'Accept Merge Request'
+      wait_for_ajax
+    end
+
+    it 'updates the MR widget' do
+      page.within('.mr-widget-body') do
+        expect(page).to have_content('Conflicts detected during merge')
+      end
+    end
+  end
 end

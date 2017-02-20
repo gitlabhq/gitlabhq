@@ -91,7 +91,7 @@ total running time should be:
 
 ## Badges
 
-Job status and test coverage report badges are available. You can find their
+Pipeline status and test coverage report badges are available. You can find their
 respective link in the [Pipelines settings] page.
 
 [jobs]: #jobs

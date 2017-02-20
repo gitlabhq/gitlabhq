@@ -3,7 +3,7 @@
 
 require('./flash');
 require('vendor/jquery.waitforimages');
-require('vendor/task_list');
+require('./task_list');
 
 (function() {
   var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
@@ -11,21 +11,22 @@ require('vendor/task_list');
   this.Issue = (function() {
     function Issue() {
       this.submitNoteForm = bind(this.submitNoteForm, this);
-      // Prevent duplicate event bindings
-      this.disableTaskList();
       if ($('a.btn-close').length) {
-        this.initTaskList();
+        this.taskList = new gl.TaskList({
+          dataType: 'issue',
+          fieldName: 'description',
+          selector: '.detail-page-description',
+          onSuccess: (result) => {
+            document.querySelector('#task_status').innerText = result.task_status;
+            document.querySelector('#task_status_short').innerText = result.task_status_short;
+          }
+        });
         this.initIssueBtnEventListeners();
       }
       this.initMergeRequests();
       this.initRelatedBranches();
       this.initCanCreateBranch();
     }
-
-    Issue.prototype.initTaskList = function() {
-      $('.detail-page-description .js-task-list-container').taskList('enable');
-      return $(document).on('tasklist:changed', '.detail-page-description .js-task-list-container', this.updateTaskList);
-    };
 
     Issue.prototype.initIssueBtnEventListeners = function() {
       var _this, issueFailMessage;
@@ -54,16 +55,19 @@ require('vendor/task_list');
           success: function(data, textStatus, jqXHR) {
             if ('id' in data) {
               $(document).trigger('issuable:change');
+              const currentTotal = Number($('.issue_counter').text());
               if (isClose) {
                 $('a.btn-close').addClass('hidden');
                 $('a.btn-reopen').removeClass('hidden');
                 $('div.status-box-closed').removeClass('hidden');
                 $('div.status-box-open').addClass('hidden');
+                $('.issue_counter').text(currentTotal - 1);
               } else {
                 $('a.btn-reopen').addClass('hidden');
                 $('a.btn-close').removeClass('hidden');
                 $('div.status-box-closed').addClass('hidden');
                 $('div.status-box-open').removeClass('hidden');
+                $('.issue_counter').text(currentTotal + 1);
               }
             } else {
               new Flash(issueFailMessage, 'alert');
@@ -80,30 +84,6 @@ require('vendor/task_list');
       if (noteText.trim().length > 0) {
         return form.submit();
       }
-    };
-
-    Issue.prototype.disableTaskList = function() {
-      $('.detail-page-description .js-task-list-container').taskList('disable');
-      return $(document).off('tasklist:changed', '.detail-page-description .js-task-list-container');
-    };
-
-    Issue.prototype.updateTaskList = function() {
-      var patchData;
-      patchData = {};
-      patchData['issue'] = {
-        'description': $('.js-task-list-field', this).val()
-      };
-      return $.ajax({
-        type: 'PATCH',
-        url: $('form.js-issuable-update').attr('action'),
-        data: patchData,
-        success: function(issue) {
-          document.querySelector('#task_status').innerText = issue.task_status;
-          document.querySelector('#task_status_short').innerText = issue.task_status_short;
-        }
-      });
-    // TODO (rspeicher): Make the issue description inline-editable like a note so
-    // that we can re-use its form here
     };
 
     Issue.prototype.initMergeRequests = function() {
@@ -152,4 +132,4 @@ require('vendor/task_list');
 
     return Issue;
   })();
-}).call(this);
+}).call(window);
