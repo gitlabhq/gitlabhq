@@ -10,7 +10,7 @@
 
 - Comprehensive Step-by-Step Guide: [Hosting on GitLab.com with GitLab Pages](https://about.gitlab.com/2016/04/07/gitlab-pages-setup/)
 - GitLab Pages from A to Z
-  - [Part 1: Static Sites, Domains, DNS Records, and SSL/TLS Certificates](https://gitlab.com/marcia/drafts/blob/master/pages/pages_part-1.md)
+  - [Part 1: Static Sites, Domains, DNS Records, and SSL/TLS Certificates](pages_static_sites_domains_dns_records_ssl_tls_certificates.html)
   - [Part 2: Quick Start Guide - Setting Up GitLab Pages](https://gitlab.com/marcia/drafts/blob/master/pages/pages_part-2.md)
       - Video tutorial: [How to Publish a Website with GitLab Pages on GitLab.com: from a forked project](#LINK)
       - Video tutorial: [How to Publish a Website with GitLab Pages on GitLab.com: from scratch](#LINK)
