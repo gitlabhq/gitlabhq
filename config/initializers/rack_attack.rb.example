@@ -26,12 +26,12 @@ whitelist = Gitlab.config.rack_attack['whitelist']
 blacklist = Gitlab.config.rack_attack['blacklist'] unless Gitlab.config.rack_attack['blacklist'].nil?
 
 unless Rails.env.test? || !rack_attack_enabled
-  Rack::Attack.safelist('allow custom whitelist') do |req|
+  Rack::Attack.whitelist('allow custom whitelist') do |req|
     whitelist.include? req.ip  
   end
 
   unless blacklist.nil?
-    Rack::Attack.blocklist('ban custom blacklist') do |req|
+    Rack::Attack.blacklist('ban custom blacklist') do |req|
       blacklist.include? req.ip
     end
   end
