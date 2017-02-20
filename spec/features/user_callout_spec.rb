@@ -30,7 +30,7 @@ describe 'User Callouts', js: true do
   it 'hides the user callout when click on the dismiss icon' do
     visit user_path(user)
     within('.user-callout') do
-      find('.dismiss-icon').click
+      find('.close-user-callout').click
     end
     expect(page).not_to have_selector('#user-callout')
   end

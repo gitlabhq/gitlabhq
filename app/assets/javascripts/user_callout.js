@@ -2,7 +2,7 @@
 /* global Cookies */
 
 const userCalloutElementName = '.user-callout';
-const dismissIcon = '.dismiss-icon';
+const closeButton = '.close-user-callout';
 const userCalloutBtn = '.user-callout-btn';
 
 const USER_CALLOUT_COOKIE = 'user_callout_dismissed';
@@ -16,7 +16,7 @@ class UserCallout {
 
   init() {
     $(document)
-      .on('click', dismissIcon, () => this.closeAndDismissCallout())
+      .on('click', closeButton, () => this.closeAndDismissCallout())
       .on('click', userCalloutBtn, () => this.closeAndDismissCallout());
   }
 

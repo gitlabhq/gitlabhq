@@ -11,7 +11,7 @@ describe('UserCallout', function () {
   beforeEach(() => {
     loadFixtures(fixtureName);
     this.userCallout = new UserCallout();
-    this.dismissIcon = $('.dismiss-icon');
+    this.closeButton = $('.close-user-callout');
     this.userCalloutContainer = $('.user-callout');
     this.userCalloutBtn = $('.user-callout-btn');
     Cookie.set(USER_CALLOUT_COOKIE, 0);
@@ -23,7 +23,7 @@ describe('UserCallout', function () {
   });
 
   it('hides when user clicks on the dismiss-icon', () => {
-    this.dismissIcon.click();
+    this.closeButton.click();
     expect(this.userCalloutContainer.is(':visible')).toBe(false);
     expect(Cookie.get(USER_CALLOUT_COOKIE)).toBe('1');
   });
