@@ -1093,13 +1093,13 @@ describe API::Users, api: true  do
     end
 
     context "as a user than can see the event's project" do
-      it_behaves_like 'a paginated resources' do
-        let(:request) { get api("/users/#{user.id}/events", user) }
-      end
-
       context 'joined event' do
         it 'returns the "joined" event' do
           get api("/users/#{user.id}/events", user)
+
+          expect(response).to have_http_status(200)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
 
           comment_event = json_response.find { |e| e['action_name'] == 'commented on' }
 
