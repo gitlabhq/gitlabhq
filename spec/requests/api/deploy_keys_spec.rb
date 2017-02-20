@@ -148,25 +148,4 @@ describe API::DeployKeys, api: true  do
       end
     end
   end
-
-  describe 'DELETE /projects/:id/deploy_keys/:key_id/disable' do
-    context 'when the user can admin the project' do
-      it 'disables the key' do
-        expect do
-          delete api("/projects/#{project.id}/deploy_keys/#{deploy_key.id}/disable", admin)
-        end.to change { project.deploy_keys.count }.from(1).to(0)
-
-        expect(response).to have_http_status(200)
-        expect(json_response['id']).to eq(deploy_key.id)
-      end
-    end
-
-    context 'when authenticated as non-admin user' do
-      it 'should return a 404 error' do
-        delete api("/projects/#{project.id}/deploy_keys/#{deploy_key.id}/disable", user)
-
-        expect(response).to have_http_status(404)
-      end
-    end
-  end
 end
