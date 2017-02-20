@@ -30,7 +30,7 @@ expiration.
 
     ![Admin area settings button](img/admin_area_settings_button.png)
 
-1. Change the value of default expiration time (in days):
+1. Change the value of default expiration time ([syntax][duration-syntax]):
 
     ![Admin area default artifacts expiration](img/admin_area_default_artifacts_expiration.png)
 
