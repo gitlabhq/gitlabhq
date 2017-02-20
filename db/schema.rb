@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170207150212) do
+ActiveRecord::Schema.define(version: 20170215200045) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -119,8 +119,8 @@ ActiveRecord::Schema.define(version: 20170207150212) do
     t.boolean "plantuml_enabled"
     t.integer "shared_runners_minutes", default: 0, null: false
     t.integer "repository_size_limit", limit: 8, default: 0
-    t.integer "max_pages_size", default: 100, null: false
     t.integer "terminal_max_session_time", default: 0, null: false
+    t.integer "minimum_mirror_sync_time", default: 15, null: false
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -407,6 +407,8 @@ ActiveRecord::Schema.define(version: 20170207150212) do
     t.integer "commit_id"
   end
 
+  add_index "ci_trigger_requests", ["commit_id"], name: "index_ci_trigger_requests_on_commit_id", using: :btree
+
   create_table "ci_triggers", force: :cascade do |t|
     t.string "token"
     t.integer "project_id"
@@ -653,6 +655,8 @@ ActiveRecord::Schema.define(version: 20170207150212) do
 
   add_index "labels", ["group_id", "project_id", "title"], name: "index_labels_on_group_id_and_project_id_and_title", unique: true, using: :btree
   add_index "labels", ["type", "project_id"], name: "index_labels_on_type_and_project_id", using: :btree
+  add_index "labels", ["project_id"], name: "index_labels_on_project_id", using: :btree
+  add_index "labels", ["title"], name: "index_labels_on_title", using: :btree
 
   create_table "ldap_group_links", force: :cascade do |t|
     t.string "cn", null: false
@@ -1418,7 +1422,6 @@ ActiveRecord::Schema.define(version: 20170207150212) do
     t.string "linkedin", default: "", null: false
     t.string "twitter", default: "", null: false
     t.string "authentication_token"
-    t.integer "theme_id", default: 1, null: false
     t.string "bio"
     t.integer "failed_attempts", default: 0
     t.datetime "locked_at"
@@ -1462,6 +1465,7 @@ ActiveRecord::Schema.define(version: 20170207150212) do
     t.string "organization"
     t.boolean "authorized_projects_populated"
     t.boolean "auditor", default: false, null: false
+    t.boolean "notified_of_own_activity", default: false, null: false
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree

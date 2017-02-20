@@ -74,7 +74,6 @@ GET /users
     "organization": "",
     "last_sign_in_at": "2012-06-01T11:41:01Z",
     "confirmed_at": "2012-05-23T09:05:22Z",
-    "theme_id": 1,
     "color_scheme_id": 2,
     "projects_limit": 100,
     "current_sign_in_at": "2012-06-02T06:36:55Z",
@@ -107,7 +106,6 @@ GET /users
     "organization": "",
     "last_sign_in_at": null,
     "confirmed_at": "2012-05-30T16:53:06.148Z",
-    "theme_id": 1,
     "color_scheme_id": 3,
     "projects_limit": 100,
     "current_sign_in_at": "2014-03-19T17:54:13Z",
@@ -200,7 +198,6 @@ Parameters:
   "organization": "",
   "last_sign_in_at": "2012-06-01T11:41:01Z",
   "confirmed_at": "2012-05-23T09:05:22Z",
-  "theme_id": 1,
   "color_scheme_id": 2,
   "projects_limit": 100,
   "current_sign_in_at": "2012-06-02T06:36:55Z",
@@ -218,7 +215,7 @@ Parameters:
 
 ## User creation
 
-Creates a new user. Note only administrators can create new users.
+Creates a new user. Note only administrators can create new users. Either `password` or `reset_password` should be specified (`reset_password` takes priority).
 
 ```
 POST /users
@@ -227,7 +224,8 @@ POST /users
 Parameters:
 
 - `email` (required)            - Email
-- `password` (required)         - Password
+- `password` (optional)         - Password
+- `reset_password` (optional)   - Send user password reset link - true or false(default)
 - `username` (required)         - Username
 - `name` (required)             - Name
 - `skype` (optional)            - Skype ID
@@ -324,7 +322,6 @@ GET /user
   "organization": "",
   "last_sign_in_at": "2012-06-01T11:41:01Z",
   "confirmed_at": "2012-05-23T09:05:22Z",
-  "theme_id": 1,
   "color_scheme_id": 2,
   "projects_limit": 100,
   "current_sign_in_at": "2012-06-02T06:36:55Z",
@@ -370,7 +367,6 @@ GET /user
   "organization": "",
   "last_sign_in_at": "2012-06-01T11:41:01Z",
   "confirmed_at": "2012-05-23T09:05:22Z",
-  "theme_id": 1,
   "color_scheme_id": 2,
   "projects_limit": 100,
   "current_sign_in_at": "2012-06-02T06:36:55Z",

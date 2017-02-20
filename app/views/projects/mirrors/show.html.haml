@@ -47,7 +47,7 @@
         = render "shared/mirror_trigger_builds_setting", f: f
       .form-group
         = f.label :sync_time, "Synchronization time", class: "label-light append-bottom-0"
-        = f.select :sync_time, options_for_select(Gitlab::Mirror.sync_time_options, @project.sync_time), {}, class: 'form-control'
+        = f.select :sync_time, options_for_select(mirror_sync_time_options, @project.sync_time), {}, class: 'form-control project-mirror-sync-time'
     .col-sm-12
       %hr
     .col-lg-3
@@ -82,7 +82,7 @@
           = render "instructions"
         .form-group
           = rm_form.label :sync_time, "Synchronization time", class: "label-light append-bottom-0"
-          = rm_form.select :sync_time, options_for_select(Gitlab::Mirror.sync_time_options, @remote_mirror.sync_time), {}, class: 'form-control'
+          = rm_form.select :sync_time, options_for_select(mirror_sync_time_options, @remote_mirror.sync_time), {}, class: 'form-control remote-mirror-sync-time'
     .col-sm-12.text-center
       %hr
       = f.submit 'Save changes', class: 'btn btn-create', name: 'update_remote_mirror'

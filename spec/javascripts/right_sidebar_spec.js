@@ -34,7 +34,7 @@ require('~/extensions/jquery.js');
   describe('RightSidebar', function() {
     var fixtureName = 'issues/open-issue.html.raw';
     preloadFixtures(fixtureName);
-    loadJSONFixtures('todos.json');
+    loadJSONFixtures('todos/todos.json');
 
     beforeEach(function() {
       loadFixtures(fixtureName);
@@ -64,7 +64,7 @@ require('~/extensions/jquery.js');
     });
 
     it('should broadcast todo:toggle event when add todo clicked', function() {
-      var todos = getJSONFixture('todos.json');
+      var todos = getJSONFixture('todos/todos.json');
       spyOn(jQuery, 'ajax').and.callFake(function() {
         var d = $.Deferred();
         var response = todos;

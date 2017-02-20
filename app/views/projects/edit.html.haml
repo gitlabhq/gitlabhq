@@ -6,7 +6,7 @@
     .col-lg-9
       .project-edit-errors
       = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "edit-project" }, authenticity_token: true do |f|
-        %fieldset.append-bottom-0
+        %fieldset
           .row
             .form-group.col-md-9
               = f.label :name, class: 'label-light', for: 'project_name_edit' do
@@ -42,7 +42,7 @@
           = f.text_field :tag_list, value: @project.tag_list.to_s, maxlength: 2000, class: "form-control"
           %p.help-block Separate tags with commas.
         %hr
-        %fieldset.append-bottom-0
+        %fieldset
           %h5.prepend-top-0
             Sharing &amp; Permissions
           .form_group.prepend-top-20.sharing-and-permissions
@@ -243,7 +243,7 @@
           .form-group
             .input-group
               .input-group-addon
-                #{URI.join(root_url, @project.namespace.path)}/
+                #{URI.join(root_url, @project.namespace.full_path)}/
               = f.text_field :path, class: 'form-control'
           %ul
             %li Be careful. Renaming a project's repository can have unintended side effects.

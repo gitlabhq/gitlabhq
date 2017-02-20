@@ -12,7 +12,7 @@ module Backup
         path_to_project_bundle = path_to_bundle(project)
 
         # Create namespace dir if missing
-        FileUtils.mkdir_p(File.join(backup_repos_path, project.namespace.path)) if project.namespace
+        FileUtils.mkdir_p(File.join(backup_repos_path, project.namespace.full_path)) if project.namespace
 
         if project.empty_repo?
           $progress.puts "[SKIPPED]".color(:cyan)

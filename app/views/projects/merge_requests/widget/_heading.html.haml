@@ -9,8 +9,9 @@
           Pipeline
           = link_to "##{@pipeline.id}", namespace_project_pipeline_path(@pipeline.project.namespace, @pipeline.project, @pipeline.id), class: 'pipeline'
           = ci_label_for_status(status)
-        .mr-widget-pipeline-graph
-          = render 'shared/mini_pipeline_graph', pipeline: @pipeline, klass: 'js-pipeline-inline-mr-widget-graph'
+        - if @pipeline.stages.any?
+          .mr-widget-pipeline-graph
+            = render 'shared/mini_pipeline_graph', pipeline: @pipeline, klass: 'js-pipeline-inline-mr-widget-graph'
         %span
           for
           = succeed "." do
@@ -27,7 +28,7 @@
         %span
           CI job
           = ci_label_for_status(status)
-        for
+          for
         - commit = @merge_request.diff_head_commit
         = succeed "." do
           = link_to commit.short_id, namespace_project_commit_path(@merge_request.source_project.namespace, @merge_request.source_project, commit), class: "monospace"

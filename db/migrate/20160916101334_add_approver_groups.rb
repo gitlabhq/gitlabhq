@@ -20,6 +20,6 @@ class AddApproverGroups < ActiveRecord::Migration
       t.index :group_id
     end
 
-    add_foreign_key :approver_groups, :namespaces, column: :group_id, on_delete: :cascade
+    add_foreign_key :approver_groups, :namespaces, column: :group_id, on_delete: :cascade # rubocop: disable Migration/AddConcurrentForeignKey
   end
 end

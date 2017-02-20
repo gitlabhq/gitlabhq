@@ -20,8 +20,6 @@ class EnvironmentSerializer < BaseSerializer
   end
 
   def represent(resource, opts = {})
-    resource = @paginator.paginate(resource) if paginated?
-
     if itemized?
       itemize(resource).map do |item|
         { name: item.name,
@@ -29,6 +27,8 @@ class EnvironmentSerializer < BaseSerializer
           latest: super(item.latest, opts) }
       end
     else
+      resource = @paginator.paginate(resource) if paginated?
+
       super(resource, opts)
     end
   end
@@ -36,15 +36,20 @@ class EnvironmentSerializer < BaseSerializer
   private
 
   def itemize(resource)
-    items = resource.group(:item_name).order('item_name ASC')
-      .pluck('COALESCE(environment_type, name) AS item_name',
-             'COUNT(*) AS environments_count',
-             'MAX(id) AS last_environment_id')
+    items = resource.order('folder_name ASC')
+      .group('COALESCE(environment_type, name)')
+      .select('COALESCE(environment_type, name) AS folder_name',
+              'COUNT(*) AS size', 'MAX(id) AS last_id')
 
-    environments = resource.where(id: items.map(&:last)).index_by(&:id)
+    # It makes a difference when you call `paginate` method, because
+    # although `page` is effective at the end, it calls counting methods
+    # immediately.
+    items = @paginator.paginate(items) if paginated?
 
-    items.map do |name, size, id|
-      Item.new(name, size, environments[id])
+    environments = resource.where(id: items.map(&:last_id)).index_by(&:id)
+
+    items.map do |item|
+      Item.new(item.folder_name, item.size, environments[item.last_id])
     end
   end
 end

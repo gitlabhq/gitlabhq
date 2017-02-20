@@ -380,40 +380,63 @@ describe MergeRequests::RefreshService, services: true do
 
       it 'references the commit that caused the Work in Progress status' do
         refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
-
         allow(refresh_service).to receive(:find_new_commits)
         refresh_service.instance_variable_set("@commits", [
-          instance_double(
-            Commit,
+          double(
             id: 'aaaaaaa',
+            sha: '38008cb17ce1466d8fec2dfa6f6ab8dcfe5cf49e',
             short_id: 'aaaaaaa',
             title: 'Fix issue',
             work_in_progress?: false
           ),
-          instance_double(
-            Commit,
+          double(
             id: 'bbbbbbb',
+            sha: '498214de67004b1da3d820901307bed2a68a8ef6',
             short_id: 'bbbbbbb',
             title: 'fixup! Fix issue',
             work_in_progress?: true,
             to_reference: 'bbbbbbb'
           ),
-          instance_double(
-            Commit,
+          double(
             id: 'ccccccc',
+            sha: '1b12f15a11fc6e62177bef08f47bc7b5ce50b141',
             short_id: 'ccccccc',
             title: 'fixup! Fix issue',
             work_in_progress?: true,
             to_reference: 'ccccccc'
           ),
         ])
-
         refresh_service.execute(@oldrev, @newrev, 'refs/heads/wip')
         reload_mrs
-
         expect(@merge_request.notes.last.note).to eq(
           "marked as a **Work In Progress** from bbbbbbb"
         )
+      end
+
+      it 'does not mark as WIP based on commits that do not belong to an MR' do
+        allow(refresh_service).to receive(:find_new_commits)
+        refresh_service.instance_variable_set("@commits", [
+          double(
+            id: 'aaaaaaa',
+            sha: 'aaaaaaa',
+            short_id: 'aaaaaaa',
+            title: 'Fix issue',
+            work_in_progress?: false
+          ),
+          double(
+            id: 'bbbbbbb',
+            sha: 'bbbbbbbb',
+            short_id: 'bbbbbbb',
+            title: 'fixup! Fix issue',
+            work_in_progress?: true,
+            to_reference: 'bbbbbbb'
+          )
+        ])
+
+        refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
+        reload_mrs
+
+        expect(@merge_request.work_in_progress?).to be_falsey
       end
     end
 

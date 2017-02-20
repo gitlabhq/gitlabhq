@@ -36,7 +36,8 @@ describe 'Navigation bar counter', feature: true, js: true, caching: true do
 
   def expect_counters(issuable_type, count)
     dashboard_count = find('li.active span.badge')
-    nav_count = find(".dashboard-shortcuts-#{issuable_type} span.count")
+    find('.global-dropdown-toggle').click
+    nav_count = find(".dashboard-shortcuts-#{issuable_type} span.badge")
 
     expect(nav_count).to have_content(count)
     expect(dashboard_count).to have_content(count)

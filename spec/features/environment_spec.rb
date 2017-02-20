@@ -101,6 +101,22 @@ feature 'Environment', :feature do
               scenario 'it shows the terminal button' do
                 expect(page).to have_terminal_button
               end
+
+              context 'web terminal', :js do
+                before do
+                  # Stub #terminals as it causes js-enabled feature specs to render the page incorrectly
+                  allow_any_instance_of(Environment).to receive(:terminals) { nil }
+                  visit terminal_namespace_project_environment_path(project.namespace, project, environment)
+                end
+
+                it 'displays a web terminal' do
+                  expect(page).to have_selector('#terminal')
+                end
+
+                it 'displays a link to the environment external url' do
+                  expect(page).to have_link(nil, href: environment.external_url)
+                end
+              end
             end
 
             context 'for developer' do

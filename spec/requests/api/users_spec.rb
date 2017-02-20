@@ -40,7 +40,9 @@ describe API::Users, api: true do
 
       it "returns an array of users" do
         get api("/users", user)
+
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         username = user.username
         expect(json_response.detect do |user|
@@ -55,13 +57,16 @@ describe API::Users, api: true do
         get api("/users?blocked=true", user)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response).to all(include('state' => /(blocked|ldap_blocked)/))
       end
 
       it "returns one user" do
         get api("/users?username=#{omniauth_user.username}", user)
+
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first['username']).to eq(omniauth_user.username)
       end
@@ -70,7 +75,9 @@ describe API::Users, api: true do
     context "when admin" do
       it "returns an array of users" do
         get api("/users", admin)
+
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first.keys).to include 'email'
         expect(json_response.first.keys).to include 'organization'
@@ -87,6 +94,7 @@ describe API::Users, api: true do
         get api("/users?external=true", admin)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response).to all(include('external' => true))
       end
@@ -200,6 +208,18 @@ describe API::Users, api: true do
       new_user = User.find(user_id)
       expect(new_user).not_to eq nil
       expect(new_user.external).to be_truthy
+    end
+
+    it "creates user with reset password" do
+      post api('/users', admin), attributes_for(:user, reset_password: true).except(:password)
+
+      expect(response).to have_http_status(201)
+
+      user_id = json_response['id']
+      new_user = User.find(user_id)
+
+      expect(new_user).not_to eq(nil)
+      expect(new_user.recently_sent_password_reset?).to eq(true)
     end
 
     it "does not create user with invalid email" do
@@ -507,8 +527,11 @@ describe API::Users, api: true do
       it 'returns array of ssh keys' do
         user.keys << key
         user.save
+
         get api("/users/#{user.id}/keys", admin)
+
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first['title']).to eq(key.title)
       end
@@ -595,8 +618,11 @@ describe API::Users, api: true do
       it 'returns array of emails' do
         user.emails << email
         user.save
+
         get api("/users/#{user.id}/emails", admin)
+
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first['email']).to eq(email.email)
       end
@@ -774,8 +800,11 @@ describe API::Users, api: true do
       it "returns array of ssh keys" do
         user.keys << key
         user.save
+
         get api("/user/keys", user)
+
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first["title"]).to eq(key.title)
       end
@@ -891,8 +920,11 @@ describe API::Users, api: true do
       it "returns array of emails" do
         user.emails << email
         user.save
+
         get api("/user/emails", user)
+
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first["email"]).to eq(email.email)
       end

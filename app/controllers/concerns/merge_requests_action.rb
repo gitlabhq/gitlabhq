@@ -7,6 +7,9 @@ module MergeRequestsAction
 
     @merge_requests = merge_requests_collection
                       .page(params[:page])
+
+    @collection_type    = "MergeRequest"
+    @issuable_meta_data = issuable_meta_data(@merge_requests)
   end
 
   private

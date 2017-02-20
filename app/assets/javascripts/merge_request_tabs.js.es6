@@ -4,7 +4,7 @@
 /* global Flash */
 
 require('./breakpoints');
-window.Cookies = require('vendor/js.cookie');
+window.Cookies = require('js-cookie');
 require('./flash');
 
 /* eslint-disable max-len */
@@ -61,6 +61,7 @@ require('./flash');
 
     constructor({ action, setUrl, stubLocation } = {}) {
       this.diffsLoaded = false;
+      this.pipelinesLoaded = false;
       this.commitsLoaded = false;
       this.fixedLayoutPref = null;
 
@@ -102,9 +103,10 @@ require('./flash');
     }
 
     clickTab(e) {
-      if (e.target && gl.utils.isMetaClick(e)) {
-        const targetLink = e.target.getAttribute('href');
+      if (e.currentTarget && gl.utils.isMetaClick(e)) {
+        const targetLink = e.currentTarget.getAttribute('href');
         e.stopImmediatePropagation();
+        e.preventDefault();
         window.open(targetLink, '_blank');
       }
     }
@@ -125,10 +127,16 @@ require('./flash');
         if (this.diffViewType() === 'parallel') {
           this.expandViewContainer();
         }
-        const navBarHeight = $('.navbar-gitlab').outerHeight();
         $.scrollTo('.merge-request-details .merge-request-tabs', {
-          offset: -navBarHeight,
+          offset: 0,
         });
+      } else if (action === 'pipelines') {
+        if (this.pipelinesLoaded) {
+          return;
+        }
+        const pipelineTableViewEl = document.querySelector('#commit-pipeline-table-view');
+        gl.commits.pipelines.PipelinesTableBundle.$mount(pipelineTableViewEl);
+        this.pipelinesLoaded = true;
       } else {
         this.expandView();
         this.resetViewContainer();
@@ -140,11 +148,7 @@ require('./flash');
 
     scrollToElement(container) {
       if (location.hash) {
-        const offset = 0 - (
-          $('.navbar-gitlab').outerHeight() +
-          $('.layout-nav').outerHeight() +
-          $('.js-tabs-affix').outerHeight()
-        );
+        const offset = -$('.js-tabs-affix').outerHeight();
         const $el = $(`${container} ${location.hash}:not(.match)`);
         if ($el.length) {
           $.scrollTo($el[0], { offset });
@@ -330,14 +334,12 @@ require('./flash');
       if (Breakpoints.get().getBreakpointSize() === 'xs' || !$tabs.length) return;
 
       const $diffTabs = $('#diff-notes-app');
-      const $fixedNav = $('.navbar-fixed-top');
-      const $layoutNav = $('.layout-nav');
 
       $tabs.off('affix.bs.affix affix-top.bs.affix')
         .affix({
           offset: {
             top: () => (
-              $diffTabs.offset().top - $tabs.height() - $fixedNav.height() - $layoutNav.height()
+              $diffTabs.offset().top - $tabs.height()
             ),
           },
         })

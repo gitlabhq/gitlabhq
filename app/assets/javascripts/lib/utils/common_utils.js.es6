@@ -72,27 +72,18 @@
       // This is required to handle non-unicode characters in hash
       hash = decodeURIComponent(hash);
 
-      var navbar = document.querySelector('.navbar-gitlab');
-      var subnav = document.querySelector('.layout-nav');
-      var fixedTabs = document.querySelector('.js-tabs-affix');
-
-      var adjustment = 0;
-      if (navbar) adjustment -= navbar.offsetHeight;
-      if (subnav) adjustment -= subnav.offsetHeight;
-
       // scroll to user-generated markdown anchor if we cannot find a match
       if (document.getElementById(hash) === null) {
         var target = document.getElementById('user-content-' + hash);
         if (target && target.scrollIntoView) {
           target.scrollIntoView(true);
-          window.scrollBy(0, adjustment);
         }
       } else {
         // only adjust for fixedTabs when not targeting user-generated content
+        var fixedTabs = document.querySelector('.js-tabs-affix');
         if (fixedTabs) {
-          adjustment -= fixedTabs.offsetHeight;
+          window.scrollBy(0, -fixedTabs.offsetHeight);
         }
-        window.scrollBy(0, adjustment);
       }
     };
 
@@ -147,12 +138,10 @@
 
     gl.utils.scrollToElement = function($el) {
       var top = $el.offset().top;
-      gl.navBarHeight = gl.navBarHeight || $('.navbar-gitlab').height();
-      gl.navLinksHeight = gl.navLinksHeight || $('.nav-links').height();
       gl.mrTabsHeight = gl.mrTabsHeight || $('.merge-request-tabs').height();
 
       return $('body, html').animate({
-        scrollTop: top - (gl.navBarHeight + gl.navLinksHeight + gl.mrTabsHeight)
+        scrollTop: top - (gl.mrTabsHeight)
       }, 200);
     };
 
@@ -243,6 +232,21 @@
     };
 
     /**
+     * Parses pagination object string values into numbers.
+     *
+     * @param {Object} paginationInformation
+     * @returns {Object}
+     */
+    w.gl.utils.parseIntPagination = paginationInformation => ({
+      perPage: parseInt(paginationInformation['X-PER-PAGE'], 10),
+      page: parseInt(paginationInformation['X-PAGE'], 10),
+      total: parseInt(paginationInformation['X-TOTAL'], 10),
+      totalPages: parseInt(paginationInformation['X-TOTAL-PAGES'], 10),
+      nextPage: parseInt(paginationInformation['X-NEXT-PAGE'], 10),
+      previousPage: parseInt(paginationInformation['X-PREV-PAGE'], 10),
+    });
+
+    /**
      * Transforms a DOMStringMap into a plain object.
      *
      * @param {DOMStringMap} DOMStringMapObject
@@ -252,5 +256,45 @@
       acc[element] = DOMStringMapObject[element];
       return acc;
     }, {});
+
+    /**
+     * Updates the search parameter of a URL given the parameter and values provided.
+     *
+     * If no search params are present we'll add it.
+     * If param for page is already present, we'll update it
+     * If there are params but not for the given one, we'll add it at the end.
+     * Returns the new search parameters.
+     *
+     * @param {String} param
+     * @param {Number|String|Undefined|Null} value
+     * @return {String}
+     */
+    w.gl.utils.setParamInURL = (param, value) => {
+      let search;
+      const locationSearch = window.location.search;
+
+      if (locationSearch.length === 0) {
+        search = `?${param}=${value}`;
+      }
+
+      if (locationSearch.indexOf(param) !== -1) {
+        const regex = new RegExp(param + '=\\d');
+        search = locationSearch.replace(regex, `${param}=${value}`);
+      }
+
+      if (locationSearch.length && locationSearch.indexOf(param) === -1) {
+        search = `${locationSearch}&${param}=${value}`;
+      }
+
+      return search;
+    };
+
+    /**
+     * Converts permission provided as strings to booleans.
+     *
+     * @param  {String} string
+     * @returns {Boolean}
+     */
+    w.gl.utils.convertPermissionToBoolean = permission => permission === 'true';
   })(window);
 }).call(window);

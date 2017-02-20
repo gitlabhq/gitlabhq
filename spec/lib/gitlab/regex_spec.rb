@@ -2,47 +2,64 @@
 require 'spec_helper'
 
 describe Gitlab::Regex, lib: true do
-  describe 'project path regex' do
-    it { expect('gitlab-ce').to match(Gitlab::Regex.project_path_regex) }
-    it { expect('gitlab_git').to match(Gitlab::Regex.project_path_regex) }
-    it { expect('_underscore.js').to match(Gitlab::Regex.project_path_regex) }
-    it { expect('100px.com').to match(Gitlab::Regex.project_path_regex) }
-    it { expect('?gitlab').not_to match(Gitlab::Regex.project_path_regex) }
-    it { expect('git lab').not_to match(Gitlab::Regex.project_path_regex) }
-    it { expect('gitlab.git').not_to match(Gitlab::Regex.project_path_regex) }
+  describe '.project_path_regex' do
+    subject { described_class.project_path_regex }
+
+    it { is_expected.to match('gitlab-ce') }
+    it { is_expected.to match('gitlab_git') }
+    it { is_expected.to match('_underscore.js') }
+    it { is_expected.to match('100px.com') }
+    it { is_expected.not_to match('?gitlab') }
+    it { is_expected.not_to match('git lab') }
+    it { is_expected.not_to match('gitlab.git') }
   end
 
-  describe 'project name regex' do
-    it { expect('gitlab-ce').to match(Gitlab::Regex.project_name_regex) }
-    it { expect('GitLab CE').to match(Gitlab::Regex.project_name_regex) }
-    it { expect('100 lines').to match(Gitlab::Regex.project_name_regex) }
-    it { expect('gitlab.git').to match(Gitlab::Regex.project_name_regex) }
-    it { expect('Český název').to match(Gitlab::Regex.project_name_regex) }
-    it { expect('Dash – is this').to match(Gitlab::Regex.project_name_regex) }
-    it { expect('?gitlab').not_to match(Gitlab::Regex.project_name_regex) }
+  describe '.project_name_regex' do
+    subject { described_class.project_name_regex }
+
+    it { is_expected.to match('gitlab-ce') }
+    it { is_expected.to match('GitLab CE') }
+    it { is_expected.to match('100 lines') }
+    it { is_expected.to match('gitlab.git') }
+    it { is_expected.to match('Český název') }
+    it { is_expected.to match('Dash – is this') }
+    it { is_expected.not_to match('?gitlab') }
   end
 
-  describe 'file name regex' do
-    it { expect('foo@bar').to match(Gitlab::Regex.file_name_regex) }
+  describe '.file_name_regex' do
+    subject { described_class.file_name_regex }
+
+    it { is_expected.to match('foo@bar') }
   end
 
-  describe 'file path regex' do
-    it { expect('foo@/bar').to match(Gitlab::Regex.file_path_regex) }
+  describe '.file_path_regex' do
+    subject { described_class.file_path_regex }
+
+    it { is_expected.to match('foo@/bar') }
   end
 
-  describe 'environment slug regex' do
-    def be_matched
-      match(Gitlab::Regex.environment_slug_regex)
-    end
+  describe '.environment_slug_regex' do
+    subject { described_class.environment_slug_regex }
 
-    it { expect('foo').to be_matched }
-    it { expect('foo-1').to be_matched }
+    it { is_expected.to match('foo') }
+    it { is_expected.to match('foo-1') }
+    it { is_expected.not_to match('FOO') }
+    it { is_expected.not_to match('foo/1') }
+    it { is_expected.not_to match('foo.1') }
+    it { is_expected.not_to match('foo*1') }
+    it { is_expected.not_to match('9foo') }
+    it { is_expected.not_to match('foo-') }
+  end
 
-    it { expect('FOO').not_to be_matched }
-    it { expect('foo/1').not_to be_matched }
-    it { expect('foo.1').not_to be_matched }
-    it { expect('foo*1').not_to be_matched }
-    it { expect('9foo').not_to be_matched }
-    it { expect('foo-').not_to be_matched }
+  describe 'NAMESPACE_REF_REGEX_STR' do
+    subject { %r{\A#{Gitlab::Regex::NAMESPACE_REF_REGEX_STR}\z} }
+
+    it { is_expected.to match('gitlab.org') }
+    it { is_expected.to match('gitlab.org/gitlab-git') }
+    it { is_expected.not_to match('gitlab.org.') }
+    it { is_expected.not_to match('gitlab.org/') }
+    it { is_expected.not_to match('/gitlab.org') }
+    it { is_expected.not_to match('gitlab.git') }
+    it { is_expected.not_to match('gitlab git') }
   end
 end

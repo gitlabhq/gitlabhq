@@ -59,7 +59,7 @@ star, smile, etc.). Some good tips about code reviews can be found in our
 
 ## Feature Freeze
 
-On the 7th of each month, RC1 of the upcoming release is created and deployed to GitLab.com and the stable branch for this release is frozen, which means master is no longer merged into it.
+After the 7th (Pacific Standard Time Zone) of each month, RC1 of the upcoming release is created and deployed to GitLab.com and the stable branch for this release is frozen, which means master is no longer merged into it.
 Merge requests may still be merged into master during this period,
 but they will go into the _next_ release, unless they are manually cherry-picked into the stable branch.
 By freezing the stable branches 2 weeks prior to a release, we reduce the risk of a last minute merge request potentially breaking things.

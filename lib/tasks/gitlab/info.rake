@@ -15,10 +15,13 @@ namespace :gitlab do
       rake_version = run_and_match(%W(rake --version), /[\d\.]+/).try(:to_s)
       # check redis version
       redis_version = run_and_match(%W(redis-cli --version), /redis-cli (\d+\.\d+\.\d+)/).to_a
+      # check for system defined proxies
+      proxies = Gitlab::Proxy.detect_proxy.map{|k,v| "#{k}: #{v}"}.join("\n\t\t")
 
       puts ""
       puts "System information".color(:yellow)
       puts "System:\t\t#{os_name || "unknown".color(:red)}"
+      puts "Proxy:\t\t#{proxies.present? ? proxies.color(:green) : "no"}"
       puts "Current User:\t#{run_command(%W(whoami))}"
       puts "Using RVM:\t#{rvm_version.present? ? "yes".color(:green) : "no"}"
       puts "RVM Version:\t#{rvm_version}" if rvm_version.present?
@@ -83,7 +86,6 @@ namespace :gitlab do
       end
       puts "Hooks:\t\t#{Gitlab.config.gitlab_shell.hooks_path}"
       puts "Git:\t\t#{Gitlab.config.git.bin_path}"
-
     end
   end
 end

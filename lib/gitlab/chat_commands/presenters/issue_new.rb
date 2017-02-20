@@ -2,7 +2,7 @@ module Gitlab
   module ChatCommands
     module Presenters
       class IssueNew < Presenters::Base
-        include Presenters::Issuable
+        include Presenters::IssueBase
 
         def present
           in_channel_response(new_issue)
@@ -10,7 +10,7 @@ module Gitlab
 
         private
 
-        def new_issue 
+        def new_issue
           {
             attachments: [
               {
@@ -38,7 +38,7 @@ module Gitlab
         end
 
         def project_link
-          "[#{project.name_with_namespace}](#{projects_url(project)})"
+          "[#{project.name_with_namespace}](#{project.web_url})"
         end
 
         def author_profile_link

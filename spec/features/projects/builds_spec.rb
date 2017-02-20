@@ -109,6 +109,10 @@ feature 'Builds', :feature do
         expect(page).to have_content pipeline.git_commit_message
         expect(page).to have_content pipeline.git_author_name
       end
+
+      it 'shows active build' do
+        expect(page).to have_selector('.build-job.active')
+      end
     end
 
     context "Job from other project" do
@@ -271,7 +275,7 @@ feature 'Builds', :feature do
         let!(:deployment) { create(:deployment, environment: environment, sha: project.commit.id) }
         let(:build) { create(:ci_build, :success, environment: environment.name, pipeline: pipeline) }
 
-        it 'shows a link to lastest deployment' do
+        it 'shows a link to latest deployment' do
           visit namespace_project_build_path(project.namespace, project, build)
 
           expect(page).to have_link('latest deployment')

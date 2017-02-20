@@ -943,11 +943,8 @@ class Repository
     raise 'Invalid merge target' if our_commit.nil?
     raise 'Invalid merge source' if their_commit.nil?
 
-    GitOperationService.new(user, self).with_branch(
-      target_branch) do |start_commit|
-      if merge_request
-        merge_request.update(in_progress_merge_commit_sha: their_commit.oid)
-      end
+    GitOperationService.new(user, self).with_branch(target_branch) do |start_commit|
+      merge_request&.update(in_progress_merge_commit_sha: their_commit.oid)
 
       their_commit.oid
     end
@@ -1321,6 +1318,14 @@ class Repository
                 else
                   action[:content]
                 end
+
+      detect = CharlockHolmes::EncodingDetector.new.detect(content) if content
+
+      unless detect && detect[:type] == :binary
+        # When writing to the repo directly as we are doing here,
+        # the `core.autocrlf` config isn't taken into account.
+        content.gsub!("\r\n", "\n") if self.autocrlf
+      end
 
       oid = rugged.write(content, :blob)
 

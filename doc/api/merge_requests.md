@@ -381,6 +381,8 @@ PUT /projects/:id/merge_requests/:merge_request_id
 
 Must include at least one non-required attribute from above.
 
+Must include at least one non-required attribute from above.
+
 ```json
 {
   "id": 1,

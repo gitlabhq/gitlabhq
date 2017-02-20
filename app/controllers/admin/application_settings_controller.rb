@@ -166,7 +166,8 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :elasticsearch_search,
       :repository_size_limit,
       :shared_runners_minutes,
-      :usage_ping_enabled
+      :usage_ping_enabled,
+      :minimum_mirror_sync_time
     ]
   end
 end

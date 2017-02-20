@@ -1,5 +1,4 @@
 module API
-  # Projects API
   class Files < Grape::API
     helpers do
       def commit_params(attrs)
@@ -117,7 +116,7 @@ module API
         authorize! :push_code, user_project
 
         file_params = declared_params(include_missing: false)
-        result = ::Files::DeleteService.new(user_project, current_user, commit_params(file_params)).execute
+        result = ::Files::DestroyService.new(user_project, current_user, commit_params(file_params)).execute
 
         if result[:status] == :success
           status(200)

@@ -21,7 +21,7 @@ require('vendor/jquery.caret');
 require('vendor/jquery.atwho');
 require('vendor/jquery.scrollTo');
 require('vendor/jquery.tablesorter');
-window.Cookies = require('vendor/js.cookie');
+window.Cookies = require('js-cookie');
 require('./autosave');
 require('bootstrap/js/affix');
 require('bootstrap/js/alert');
@@ -58,8 +58,7 @@ requireAll(require.context('./u2f',        false, /^\.\/.*\.(js|es6)$/));
 requireAll(require.context('./droplab',    false, /^\.\/.*\.(js|es6)$/));
 requireAll(require.context('.',            false, /^\.\/(?!application\.js).*\.(js|es6)$/));
 require('vendor/fuzzaldrin-plus');
-window.ES6Promise = require('vendor/es6-promise.auto');
-window.ES6Promise.polyfill();
+require('es6-promise').polyfill();
 
 (function () {
   document.addEventListener('beforeunload', function () {
@@ -104,11 +103,6 @@ window.ES6Promise.polyfill();
       }
     });
 
-    $('.nav-sidebar').niceScroll({
-      cursoropacitymax: '0.4',
-      cursorcolor: '#FFF',
-      cursorborder: '1px solid #FFF'
-    });
     $('.js-select-on-focus').on('focusin', function () {
       return $(this).select().one('mouseup', function (e) {
         return e.preventDefault();
@@ -251,8 +245,6 @@ window.ES6Promise.polyfill();
     });
     gl.awardsHandler = new AwardsHandler();
     new Aside();
-    // bind sidebar events
-    new gl.Sidebar();
 
     gl.utils.initTimeagoTimeout();
   });

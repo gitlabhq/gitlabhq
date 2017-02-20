@@ -1,5 +1,7 @@
 module API
   class Templates < Grape::API
+    include PaginationParams
+
     GLOBAL_TEMPLATE_TYPES = {
       gitignores: {
         klass: Gitlab::Template::GitignoreTemplate,
@@ -24,7 +26,6 @@ module API
       /[\<\{\[]
         (fullname|name\sof\s(author|copyright\sowner))
       [\>\}\]]/xi.freeze
-    DEPRECATION_MESSAGE = ' This endpoint is deprecated and will be removed in GitLab 9.0.'.freeze
 
     helpers do
       def parsed_license_template
@@ -46,74 +47,64 @@ module API
       end
     end
 
-    { "licenses" => :deprecated, "templates/licenses" => :ok }.each do |route, status|
-      desc 'Get the list of the available license template' do
-        detailed_desc = 'This feature was introduced in GitLab 8.7.'
-        detailed_desc << DEPRECATION_MESSAGE unless status == :ok
-        detail detailed_desc
-        success Entities::RepoLicense
-      end
-      params do
-        optional :popular, type: Boolean, desc: 'If passed, returns only popular licenses'
-      end
-      get route do
-        options = {
-          featured: declared(params).popular.present? ? true : nil
-        }
-        present Licensee::License.all(options), with: Entities::RepoLicense
-      end
+    desc 'Get the list of the available license template' do
+      detail 'This feature was introduced in GitLab 8.7.'
+      success ::API::Entities::RepoLicense
+    end
+    params do
+      optional :popular, type: Boolean, desc: 'If passed, returns only popular licenses'
+      use :pagination
+    end
+    get "templates/licenses" do
+      options = {
+        featured: declared(params).popular.present? ? true : nil
+      }
+      licences = ::Kaminari.paginate_array(Licensee::License.all(options))
+      present paginate(licences), with: Entities::RepoLicense
     end
 
-    { "licenses/:name" => :deprecated, "templates/licenses/:name" => :ok }.each do |route, status|
-      desc 'Get the text for a specific license' do
-        detailed_desc = 'This feature was introduced in GitLab 8.7.'
-        detailed_desc << DEPRECATION_MESSAGE unless status == :ok
-        detail detailed_desc
-        success Entities::RepoLicense
-      end
-      params do
-        requires :name, type: String, desc: 'The name of the template'
-      end
-      get route, requirements: { name: /[\w\.-]+/ } do
-        not_found!('License') unless Licensee::License.find(declared(params).name)
+    desc 'Get the text for a specific license' do
+      detail 'This feature was introduced in GitLab 8.7.'
+      success ::API::Entities::RepoLicense
+    end
+    params do
+      requires :name, type: String, desc: 'The name of the template'
+    end
+    get "templates/licenses/:name", requirements: { name: /[\w\.-]+/ } do
+      not_found!('License') unless Licensee::License.find(declared(params).name)
 
-        template = parsed_license_template
+      template = parsed_license_template
 
-        present template, with: Entities::RepoLicense
-      end
+      present template, with: ::API::Entities::RepoLicense
     end
 
     GLOBAL_TEMPLATE_TYPES.each do |template_type, properties|
       klass = properties[:klass]
       gitlab_version = properties[:gitlab_version]
 
-      { template_type => :deprecated, "templates/#{template_type}" => :ok }.each do |route, status|
-        desc 'Get the list of the available template' do
-          detailed_desc = "This feature was introduced in GitLab #{gitlab_version}."
-          detailed_desc << DEPRECATION_MESSAGE unless status == :ok
-          detail detailed_desc
-          success Entities::TemplatesList
-        end
-        get route do
-          present klass.all, with: Entities::TemplatesList
-        end
+      desc 'Get the list of the available template' do
+        detail "This feature was introduced in GitLab #{gitlab_version}."
+        success Entities::TemplatesList
+      end
+      params do
+        use :pagination
+      end
+      get "templates/#{template_type}" do
+        templates = ::Kaminari.paginate_array(klass.all)
+        present paginate(templates), with: Entities::TemplatesList
       end
 
-      { "#{template_type}/:name" => :deprecated, "templates/#{template_type}/:name" => :ok }.each do |route, status|
-        desc 'Get the text for a specific template present in local filesystem' do
-          detailed_desc = "This feature was introduced in GitLab #{gitlab_version}."
-          detailed_desc << DEPRECATION_MESSAGE unless status == :ok
-          detail detailed_desc
-          success Entities::Template
-        end
-        params do
-          requires :name, type: String, desc: 'The name of the template'
-        end
-        get route do
-          new_template = klass.find(declared(params).name)
+      desc 'Get the text for a specific template present in local filesystem' do
+        detail "This feature was introduced in GitLab #{gitlab_version}."
+        success Entities::Template
+      end
+      params do
+        requires :name, type: String, desc: 'The name of the template'
+      end
+      get "templates/#{template_type}/:name" do
+        new_template = klass.find(declared(params).name)
 
-          render_response(template_type, new_template)
-        end
+        render_response(template_type, new_template)
       end
     end
   end

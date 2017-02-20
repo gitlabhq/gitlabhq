@@ -56,9 +56,7 @@ The Omnibus package will internally set the correct options in all locations.
     gitlab_shell['git_annex_enabled'] = true
     ```
 
-1.  Save the file and
-    [reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
-    for the changes to take effect.
+1.  Save the file and [reconfigure GitLab] for the changes to take effect.
 
 ### Configuration for installations from source
 
@@ -80,9 +78,7 @@ one is located in `config.yml` of gitlab-shell.
     git_annex_enabled: true
     ```
 
-1.  Save the files and
-    [restart GitLab](administration/restart_gitlab.md#installations-from-source)
-    for the changes to take effect.
+1.  Save the files and [restart GitLab] for the changes to take effect.
 
 ## Using GitLab git-annex
 
@@ -172,3 +168,5 @@ push origin
 [gitlab shell]: https://gitlab.com/gitlab-org/gitlab-shell "GitLab Shell repository"
 [issue]: https://git-annex.branchable.com/forum/Error_from_git-annex-shell_on_creation_of_gcrypt_special_remote/ "git-annex issue"
 [git-annex]: https://git-annex.branchable.com/ "git-annex website"
+[reconfigure GitLab]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
+[restart GitLab]: ../administration/restart_gitlab.md#installations-from-source

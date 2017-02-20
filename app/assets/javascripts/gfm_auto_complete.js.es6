@@ -103,6 +103,9 @@
       this.input.each((i, input) => {
         const $input = $(input);
         $input.off('focus.setupAtWho').on('focus.setupAtWho', this.setupAtWho.bind(this, $input));
+        // This triggers at.js again
+        // Needed for slash commands with suffixes (ex: /label ~)
+        $input.on('inserted-commands.atwho', $input.trigger.bind($input, 'keyup'));
       });
     },
     setupAtWho: function($input) {

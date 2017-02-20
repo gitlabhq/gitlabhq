@@ -1,6 +1,7 @@
 module API
-  # Git Tags API
   class Tags < Grape::API
+    include PaginationParams
+
     before { authorize! :download_code, user_project }
 
     params do
@@ -10,9 +11,12 @@ module API
       desc 'Get a project repository tags' do
         success Entities::RepoTag
       end
+      params do
+        use :pagination
+      end
       get ":id/repository/tags" do
-        present user_project.repository.tags.sort_by(&:name).reverse,
-                with: Entities::RepoTag, project: user_project
+        tags = ::Kaminari.paginate_array(user_project.repository.tags.sort_by(&:name).reverse)
+        present paginate(tags), with: Entities::RepoTag, project: user_project
       end
 
       desc 'Get a single repository tag' do
@@ -40,7 +44,7 @@ module API
       post ':id/repository/tags' do
         authorize_push_project
 
-        result = CreateTagService.new(user_project, current_user).
+        result = ::Tags::CreateService.new(user_project, current_user).
           execute(params[:tag_name], params[:ref], params[:message], params[:release_description])
 
         if result[:status] == :success
@@ -59,7 +63,7 @@ module API
       delete ":id/repository/tags/:tag_name", requirements: { tag_name: /.+/ } do
         authorize_push_project
 
-        result = DeleteTagService.new(user_project, current_user).
+        result = ::Tags::DestroyService.new(user_project, current_user).
           execute(params[:tag_name])
 
         if result[:status] == :success

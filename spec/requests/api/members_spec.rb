@@ -34,9 +34,12 @@ describe API::Members, api: true  do
         context "when authenticated as a #{type}" do
           it 'returns 200' do
             user = public_send(type)
+
             get api("/#{source_type.pluralize}/#{source.id}/members", user)
 
             expect(response).to have_http_status(200)
+            expect(response).to include_pagination_headers
+            expect(json_response).to be_an Array
             expect(json_response.size).to eq(2)
             expect(json_response.map { |u| u['id'] }).to match_array [master.id, developer.id]
           end
@@ -49,6 +52,8 @@ describe API::Members, api: true  do
         get api("/#{source_type.pluralize}/#{source.id}/members", developer)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
         expect(json_response.size).to eq(2)
         expect(json_response.map { |u| u['id'] }).to match_array [master.id, developer.id]
       end
@@ -57,6 +62,8 @@ describe API::Members, api: true  do
         get api("/#{source_type.pluralize}/#{source.id}/members", developer), query: master.username
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
         expect(json_response.count).to eq(1)
         expect(json_response.first['username']).to eq(master.username)
       end
@@ -145,11 +152,11 @@ describe API::Members, api: true  do
         end
       end
 
-      it "returns #{source_type == 'project' ? 201 : 409} if member already exists" do
+      it "returns 409 if member already exists" do
         post api("/#{source_type.pluralize}/#{source.id}/members", master),
              user_id: master.id, access_level: Member::MASTER
 
-        expect(response).to have_http_status(source_type == 'project' ? 201 : 409)
+        expect(response).to have_http_status(409)
       end
 
       it 'returns 400 when user_id is not given' do

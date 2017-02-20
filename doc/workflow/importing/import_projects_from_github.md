@@ -60,8 +60,7 @@ If the [GitHub integration][gh-import] is enabled by your GitLab administrator,
 you can use it instead of the personal access token.
 
 1. First you may want to connect your GitHub account to GitLab in order for
-   the username mapping to be correct. Follow the [social sign-in] documentation
-   on how to do so.
+   the username mapping to be correct.
 1. Once you connect GitHub, click the **List your GitHub repositories** button
    and you will be redirected to GitHub for permission to access your projects.
 1. After accepting, you'll be automatically redirected to the importer.
@@ -115,4 +114,3 @@ if you have the privileges to do so.
 [gh-import]: ../../integration/github.md "GitHub integration"
 [gh-integration]: #authorize-access-to-your-repositories-using-the-github-integration
 [gh-token]: #authorize-access-to-your-repositories-using-a-personal-access-token
-[social sign-in]: ../../profile/account/social_sign_in.md

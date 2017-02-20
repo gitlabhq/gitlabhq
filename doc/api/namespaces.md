@@ -35,6 +35,12 @@ Example response:
     "id": 2,
     "path": "group1",
     "kind": "group"
+  },
+  {
+    "id": 3,
+    "path": "bar",
+    "kind": "group",
+    "full_path": "foo/bar",
   }
 ]
 ```
@@ -64,7 +70,8 @@ Example response:
   {
     "id": 4,
     "path": "twitter",
-    "kind": "group"
+    "kind": "group",
+    "full_path": "twitter",
   }
 ]
 ```

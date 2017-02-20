@@ -2,7 +2,7 @@
 /* global timeago */
 /* global dateFormat */
 
-window.timeago = require('vendor/timeago');
+window.timeago = require('timeago.js');
 window.dateFormat = require('vendor/date.format');
 
 (function() {

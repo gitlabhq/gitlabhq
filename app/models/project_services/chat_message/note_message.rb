@@ -3,10 +3,9 @@ module ChatMessage
     attr_reader :message
     attr_reader :user_name
     attr_reader :project_name
-    attr_reader :project_link
+    attr_reader :project_url
     attr_reader :note
     attr_reader :note_url
-    attr_reader :title
 
     def initialize(params)
       params = HashWithIndifferentAccess.new(params)
@@ -69,15 +68,15 @@ module ChatMessage
     end
 
     def description_message
-      [{ text: format(@note), color: attachment_color }]
+      [{ text: format(note), color: attachment_color }]
     end
 
     def project_link
-      "[#{@project_name}](#{@project_url})"
+      link(project_name, project_url)
     end
 
     def commented_on_message(target, title)
-      @message = "#{@user_name} [commented on #{target}](#{@note_url}) in #{project_link}: *#{title}*"
+      @message = "#{user_name} #{link('commented on ' + target, note_url)} in #{project_link}: *#{title}*"
     end
   end
 end

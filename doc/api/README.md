@@ -29,11 +29,10 @@ following locations:
 - [License](license.md)
 - [Merge Requests](merge_requests.md)
 - [Milestones](milestones.md)
-- [Open source license templates](templates/licenses.md)
 - [Namespaces](namespaces.md)
 - [Notes](notes.md) (comments)
 - [Notification settings](notification_settings.md)
-- [Open source license templates](licenses.md)
+- [Open source license templates](templates/licenses.md)
 - [Pipelines](pipelines.md)
 - [Projects](projects.md) including setting Webhooks
 - [Project Access Requests](access_requests.md)

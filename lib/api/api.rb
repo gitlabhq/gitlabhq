@@ -5,11 +5,22 @@ module API
     version %w(v3 v4), using: :path
 
     version 'v3', using: :path do
+      mount ::API::V3::Boards
+      mount ::API::V3::Branches
       mount ::API::V3::DeployKeys
       mount ::API::V3::Issues
+      mount ::API::V3::Labels
+      mount ::API::V3::Members
+      mount ::API::V3::MergeRequestDiffs
       mount ::API::V3::MergeRequests
+      mount ::API::V3::ProjectHooks
       mount ::API::V3::Projects
       mount ::API::V3::ProjectSnippets
+      mount ::API::V3::Repositories
+      mount ::API::V3::SystemHooks
+      mount ::API::V3::Tags
+      mount ::API::V3::Templates
+      mount ::API::V3::Users
     end
 
     before { allow_access_with_scope :api }

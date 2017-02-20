@@ -75,8 +75,8 @@ module Banzai
       # corresponding Namespace objects.
       def namespaces
         @namespaces ||=
-          Namespace.where(path: usernames).each_with_object({}) do |row, hash|
-            hash[row.path] = row
+          Namespace.where_full_path_in(usernames).each_with_object({}) do |row, hash|
+            hash[row.full_path] = row
           end
       end
 
@@ -122,7 +122,7 @@ module Banzai
 
       def link_to_namespace(namespace, link_content: nil)
         if namespace.is_a?(Group)
-          link_to_group(namespace.path, namespace, link_content: link_content)
+          link_to_group(namespace.full_path, namespace, link_content: link_content)
         else
           link_to_user(namespace.path, namespace, link_content: link_content)
         end

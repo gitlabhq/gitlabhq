@@ -67,7 +67,7 @@ With GitLab flow we offer additional guidance for these questions.
 ![Master branch and production branch with arrow that indicate deployments](production_branch.png)
 
 GitHub flow does assume you are able to deploy to production every time you merge a feature branch.
-This is possible for SaaS applications but are many cases where this is not possible.
+This is possible for SaaS applications but there are many cases where this is not possible.
 One would be a situation where you are not in control of the exact release moment, for example an iOS application that needs to pass App Store validation.
 Another example is when you have deployment windows (workdays from 10am to 4pm when the operations team is at full capacity) but you also merge code at other times.
 In these cases you can make a production branch that reflects the deployed code.

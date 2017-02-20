@@ -35,12 +35,8 @@
     margin-bottom: 10px;
   }
 
-  .project-path {
-    padding-right: 0;
-
-    .form-control {
-      border-radius: $border-radius-base;
-    }
+  .project-path .form-control {
+    border-radius: $border-radius-base;
   }
 
   .input-group > div {
@@ -106,6 +102,7 @@
     font-size: 24px;
     font-weight: 400;
     line-height: 1;
+    word-wrap: break-word;
 
     .fa {
       margin-left: 2px;

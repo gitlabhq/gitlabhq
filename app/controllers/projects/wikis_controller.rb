@@ -8,6 +8,7 @@ class Projects::WikisController < Projects::ApplicationController
 
   def pages
     @wiki_pages = Kaminari.paginate_array(@project_wiki.pages).page(params[:page])
+    @wiki_entries = WikiPage.group_by_directory(@wiki_pages)
   end
 
   def show
@@ -87,13 +88,9 @@ class Projects::WikisController < Projects::ApplicationController
 
   def destroy
     @page = @project_wiki.find_page(params[:id])
-    if @page
-      @page.delete
 
-      # Triggers repository update on secondary nodes when Geo is enabled
-      Gitlab::Geo.notify_wiki_update(@project) if Gitlab::Geo.primary?
-    end
-    
+    WikiPages::DestroyService.new(@project, current_user).execute(@page)
+
     redirect_to(
       namespace_project_wiki_path(@project.namespace, @project, :home),
       notice: "Page was successfully deleted"
@@ -125,7 +122,7 @@ class Projects::WikisController < Projects::ApplicationController
     # Call #wiki to make sure the Wiki Repo is initialized
     @project_wiki.wiki
 
-    @sidebar_wiki_pages = @project_wiki.pages.first(15)
+    @sidebar_wiki_entries = WikiPage.group_by_directory(@project_wiki.pages.first(15))
   rescue ProjectWiki::CouldNotCreateWikiError
     flash[:notice] = "Could not create Wiki Repository at this time. Please try again later."
     redirect_to project_path(@project)

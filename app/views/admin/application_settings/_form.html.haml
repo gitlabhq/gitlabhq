@@ -72,6 +72,10 @@
           Includes LFS objects. It can be overridden per group, or per project. 0 for unlimited.
           = link_to icon('question-circle'), help_page_path("user/admin_area/settings/account_and_limit_settings")
     .form-group
+      = f.label :minimum_mirror_sync_time, class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.select :minimum_mirror_sync_time, options_for_select(Gitlab::Mirror::SYNC_TIME_OPTIONS, @application_setting.minimum_mirror_sync_time), {}, class: 'form-control'
+    .form-group
       = f.label :session_expire_delay, 'Session duration (minutes)', class: 'control-label col-sm-2'
       .col-sm-10
         = f.number_field :session_expire_delay, class: 'form-control'
@@ -205,7 +209,7 @@
       = f.label :max_pages_size, 'Maximum size of pages (MB)', class: 'control-label col-sm-2'
       .col-sm-10
         = f.number_field :max_pages_size, class: 'form-control'
-        .help-block Zero for unlimited
+        .help-block 0 for unlimited
 
   %fieldset
     %legend Continuous Integration
@@ -581,7 +585,7 @@
         = f.number_field :terminal_max_session_time, class: 'form-control'
         .help-block
           Maximum time for web terminal websocket connection (in seconds).
-          Set to 0 for unlimited time.
+          0 for unlimited.
 
   .form-actions
     = f.submit 'Save', class: 'btn btn-save'

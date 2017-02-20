@@ -3,7 +3,7 @@
 The purpose of this guide is to document potential "gotchas" that contributors
 might encounter or should avoid during development of GitLab CE and EE.
 
-## Don't `describe` symbols
+## Do not `describe` symbols
 
 Consider the following model spec:
 
@@ -32,7 +32,7 @@ spec/models/user_spec.rb|6 error|  Failure/Error: u = described_class.new NoMeth
 Except for the top-level `describe` block, always provide a String argument to
 `describe`.
 
-## Don't assert against the absolute value of a sequence-generated attribute
+## Do not assert against the absolute value of a sequence-generated attribute
 
 Consider the following factory:
 
@@ -121,7 +121,7 @@ describe API::Labels do
 end
 ```
 
-## Don't `rescue Exception`
+## Do not `rescue Exception`
 
 See ["Why is it bad style to `rescue Exception => e` in Ruby?"][Exception].
 
@@ -130,7 +130,7 @@ Rubocop](https://gitlab.com/gitlab-org/gitlab-ce/blob/8-4-stable/.rubocop.yml#L9
 
 [Exception]: http://stackoverflow.com/q/10048173/223897
 
-## Don't use inline JavaScript in views
+## Do not use inline JavaScript in views
 
 Using the inline `:javascript` Haml filters comes with a
 performance overhead. Using inline JavaScript is not a good way to structure your code and should be avoided.

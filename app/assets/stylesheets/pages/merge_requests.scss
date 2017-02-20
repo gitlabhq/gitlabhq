@@ -85,22 +85,19 @@
     -webkit-align-items: center;
     align-items: center;
 
+    i,
     svg {
-      margin-right: 4px;
+      margin-right: 8px;
+    }
+
+    svg {
       position: relative;
       top: 1px;
       overflow: visible;
     }
 
-    &> span {
+    & > span {
       padding-right: 4px;
-    }
-
-    &.ci-success_with_warnings {
-
-      i {
-        color: $gl-warning;
-      }
     }
 
     @media (max-width: $screen-xs-max) {
@@ -486,7 +483,7 @@
   background-color: $white-light;
 
   &.affix {
-    top: 100px;
+    top: 0;
     left: 0;
     z-index: 10;
     transition: right .15s;

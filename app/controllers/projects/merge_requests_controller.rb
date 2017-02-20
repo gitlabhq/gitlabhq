@@ -39,8 +39,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :authorize_can_resolve_conflicts!, only: [:conflicts, :conflict_for_path, :resolve_conflicts]
 
   def index
-    @merge_requests = merge_requests_collection
-    @merge_requests = @merge_requests.page(params[:page])
+    @collection_type    = "MergeRequest"
+    @merge_requests     = merge_requests_collection
+    @merge_requests     = @merge_requests.page(params[:page])
+    @issuable_meta_data = issuable_meta_data(@merge_requests)
+
     if @merge_requests.out_of_range? && @merge_requests.total_pages != 0
       return redirect_to url_for(params.merge(page: @merge_requests.total_pages))
     end
@@ -245,6 +248,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     respond_to do |format|
       format.html do
         define_new_vars
+        @show_changes_tab = true
         render "new"
       end
       format.json do
@@ -392,10 +396,13 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def merge_widget_refresh
-    if merge_request.in_progress_merge_commit_sha || merge_request.state == 'merged'
-      @status = :success
-    elsif merge_request.merge_when_build_succeeds
+    if merge_request.merge_when_build_succeeds
       @status = :merge_when_build_succeeds
+    else
+      # Only MRs that can be merged end in this action
+      # MR can be already picked up for merge / merged already or can be waiting for worker to be picked up
+      # in last case it does not have any special status. Possible error is handled inside widget js function
+      @status = :success
     end
 
     render 'merge'
@@ -670,6 +677,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       group(:commit_id).count
 
     @labels = LabelsFinder.new(current_user, project_id: @project.id).execute
+
+    @show_changes_tab = params[:show_changes].present?
 
     define_pipelines_vars
   end

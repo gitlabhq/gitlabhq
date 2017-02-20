@@ -23,8 +23,11 @@ class Projects::IssuesController < Projects::ApplicationController
   respond_to :html
 
   def index
-    @issues = issues_collection
-    @issues = @issues.page(params[:page])
+    @collection_type    = "Issue"
+    @issues             = issues_collection
+    @issues             = @issues.page(params[:page])
+    @issuable_meta_data = issuable_meta_data(@issues)
+
     if @issues.out_of_range? && @issues.total_pages != 0
       return redirect_to url_for(params.merge(page: @issues.total_pages))
     end

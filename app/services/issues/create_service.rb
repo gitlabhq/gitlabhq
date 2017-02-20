@@ -15,7 +15,7 @@ module Issues
     def before_create(issuable)
       if @recaptcha_verified
         spam_log = current_user.spam_logs.find_by(id: @spam_log_id, title: issuable.title)
-        spam_log.update!(recaptcha_verified: true) if spam_log
+        spam_log&.update!(recaptcha_verified: true)
       else
         issuable.spam = spam_service.check(@api)
         issuable.spam_log = spam_service.spam_log

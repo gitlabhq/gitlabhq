@@ -171,7 +171,7 @@ require('./smart_interval');
       return $.getJSON(this.opts.ci_status_url, (function(_this) {
         return function(data) {
           var message, status, title;
-          if (data.status === '') {
+          if (!data.status) {
             return;
           }
           if (data.environments && data.environments.length) _this.renderEnvironments(data.environments);

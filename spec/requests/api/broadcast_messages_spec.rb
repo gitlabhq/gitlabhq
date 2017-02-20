@@ -25,6 +25,7 @@ describe API::BroadcastMessages, api: true do
       get api('/broadcast_messages', admin)
 
       expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
       expect(json_response).to be_kind_of(Array)
       expect(json_response.first.keys)
         .to match_array(%w(id message starts_at ends_at color font active))

@@ -15,7 +15,7 @@
         - [Issue weight](#issue-weight)
         - [Regression issues](#regression-issues)
         - [Technical debt](#technical-debt)
-        - [Stewardship][#stewardship]
+        - [Stewardship](#stewardship)
     - [Merge requests](#merge-requests)
         - [Merge request guidelines](#merge-request-guidelines)
         - [Contribution acceptance criteria](#contribution-acceptance-criteria)
@@ -93,18 +93,20 @@ Please see the [UX Guide for GitLab].
 
 ### Retrospective
 
-After each release (usually on the 22nd of each month), we have a retrospective
-call where we discuss what went well, what went wrong, and what we can improve
-for the next release. The [retrospective notes] are public and you are invited
-to comment them.
-If you're interested, you can even join the [retrospective call][retro-kickoff-call].
+After each release, we have a retrospective call where we discuss what went well,
+what went wrong, and what we can improve for the next release. The
+[retrospective notes] are public and you are invited to comment on them.
+If you're interested, you can even join the
+[retrospective call][retro-kickoff-call], on the first working day after the
+22nd at 6pm CET / 9am PST.
 
 ### Kickoff
 
-Before working on the next release (usually on the 8th of each month), we have a
+Before working on the next release, we have a
 kickoff call to explain what we expect to ship in the next release. The
-[kickoff notes] are public and you are invited to comment them.
-If you're interested, you can even join the [kickoff call][retro-kickoff-call].
+[kickoff notes] are public and you are invited to comment on them.
+If you're interested, you can even join the [kickoff call][retro-kickoff-call],
+on the first working day after the 7th at 6pm CET / 9am PST..
 
 [retrospective notes]: https://docs.google.com/document/d/1nEkM_7Dj4bT21GJy0Ut3By76FZqCfLBmFQNVThmW2TY/edit?usp=sharing
 [kickoff notes]: https://docs.google.com/document/d/1ElPkZ90A8ey_iOkTvUs_ByMlwKK6NAB2VOK5835wYK0/edit?usp=sharing

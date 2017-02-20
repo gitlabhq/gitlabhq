@@ -1,21 +1,4 @@
-.page-with-sidebar{ class: "#{page_sidebar_class} #{page_gutter_class}" }
-  .sidebar-wrapper.nicescroll
-    .sidebar-action-buttons
-      .nav-header-btn.toggle-nav-collapse{ title: "Open/Close" }
-        %span.sr-only Toggle navigation
-        = icon('bars')
-
-      %div{ class: "nav-header-btn pin-nav-btn has-tooltip #{'is-active' if pinned_nav?} js-nav-pin", title: pinned_nav? ? "Unpin navigation" : "Pin Navigation", data: { placement: 'right', container: 'body' } }
-        %span.sr-only Toggle navigation pinning
-        = icon('fw thumb-tack')
-
-    - if defined?(sidebar) && sidebar
-      = render "layouts/nav/#{sidebar}"
-    - elsif current_user
-      = render 'layouts/nav/dashboard'
-    - else
-      = render 'layouts/nav/explore'
-
+.page-with-sidebar{ class: page_gutter_class }
   - if defined?(nav) && nav
     .layout-nav
       .container-fluid

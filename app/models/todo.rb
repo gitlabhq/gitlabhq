@@ -1,12 +1,13 @@
 class Todo < ActiveRecord::Base
   include Sortable
 
-  ASSIGNED          = 1
-  MENTIONED         = 2
-  BUILD_FAILED      = 3
-  MARKED            = 4
-  APPROVAL_REQUIRED = 5 # This is an EE-only feature
-  UNMERGEABLE       = 6
+  ASSIGNED           = 1
+  MENTIONED          = 2
+  BUILD_FAILED       = 3
+  MARKED             = 4
+  APPROVAL_REQUIRED  = 5 # This is an EE-only feature
+  UNMERGEABLE        = 6
+  DIRECTLY_ADDRESSED = 7
 
   ACTION_NAMES = {
     ASSIGNED => :assigned,
@@ -14,7 +15,8 @@ class Todo < ActiveRecord::Base
     BUILD_FAILED => :build_failed,
     MARKED => :marked,
     APPROVAL_REQUIRED => :approval_required,
-    UNMERGEABLE => :unmergeable
+    UNMERGEABLE => :unmergeable,
+    DIRECTLY_ADDRESSED => :directly_addressed
   }
 
   belongs_to :author, class_name: "User"

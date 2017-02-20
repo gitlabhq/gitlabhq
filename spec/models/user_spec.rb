@@ -19,6 +19,7 @@ describe User, models: true do
     it { is_expected.to have_many(:project_members).dependent(:destroy) }
     it { is_expected.to have_many(:groups) }
     it { is_expected.to have_many(:keys).dependent(:destroy) }
+    it { is_expected.to have_many(:deploy_keys).dependent(:destroy) }
     it { is_expected.to have_many(:events).dependent(:destroy) }
     it { is_expected.to have_many(:recent_events).class_name('Event') }
     it { is_expected.to have_many(:issues).dependent(:destroy) }
@@ -323,6 +324,34 @@ describe User, models: true do
     end
   end
 
+  shared_context 'user keys' do
+    let(:user) { create(:user) }
+    let!(:key) { create(:key, user: user) }
+    let!(:deploy_key) { create(:deploy_key, user: user) }
+  end
+
+  describe '#keys' do
+    include_context 'user keys'
+
+    context 'with key and deploy key stored' do
+      it 'returns stored key, but not deploy_key' do
+        expect(user.keys).to include key
+        expect(user.keys).not_to include deploy_key
+      end
+    end
+  end
+
+  describe '#deploy_keys' do
+    include_context 'user keys'
+
+    context 'with key and deploy key stored' do
+      it 'returns stored deploy key, but not normal key' do
+        expect(user.deploy_keys).to include deploy_key
+        expect(user.deploy_keys).not_to include key
+      end
+    end
+  end
+
   describe '#confirm' do
     before do
       allow_any_instance_of(ApplicationSetting).to receive(:send_user_confirmation_email).and_return(true)
@@ -573,18 +602,16 @@ describe User, models: true do
       it "applies defaults to user" do
         expect(user.projects_limit).to eq(Gitlab.config.gitlab.default_projects_limit)
         expect(user.can_create_group).to eq(Gitlab.config.gitlab.default_can_create_group)
-        expect(user.theme_id).to eq(Gitlab.config.gitlab.default_theme)
         expect(user.external).to be_falsey
       end
     end
 
     describe 'with default overrides' do
-      let(:user) { User.new(projects_limit: 123, can_create_group: false, can_create_team: true, theme_id: 1) }
+      let(:user) { User.new(projects_limit: 123, can_create_group: false, can_create_team: true) }
 
       it "applies defaults to user" do
         expect(user.projects_limit).to eq(123)
         expect(user.can_create_group).to be_falsey
-        expect(user.theme_id).to eq(1)
       end
     end
 

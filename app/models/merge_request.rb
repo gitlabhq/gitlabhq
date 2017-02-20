@@ -584,7 +584,7 @@ class MergeRequest < ActiveRecord::Base
   # Return the set of issues that will be closed if this merge request is accepted.
   def closes_issues(current_user = self.author)
     if target_branch == project.default_branch
-      messages = [description]
+      messages = [title, description]
       messages.concat(commits.map(&:safe_message)) if merge_request_diff
 
       Gitlab::ClosingIssueExtractor.new(project, current_user).
@@ -598,7 +598,7 @@ class MergeRequest < ActiveRecord::Base
     return [] unless target_branch == project.default_branch
 
     ext = Gitlab::ReferenceExtractor.new(project, current_user)
-    ext.analyze(description)
+    ext.analyze("#{title}\n#{description}")
 
     ext.issues - closes_issues(current_user)
   end
@@ -621,7 +621,7 @@ class MergeRequest < ActiveRecord::Base
 
   def source_project_namespace
     if source_project && source_project.namespace
-      source_project.namespace.path
+      source_project.namespace.full_path
     else
       "(removed)"
     end
@@ -629,7 +629,7 @@ class MergeRequest < ActiveRecord::Base
 
   def target_project_namespace
     if target_project && target_project.namespace
-      target_project.namespace.path
+      target_project.namespace.full_path
     else
       "(removed)"
     end
