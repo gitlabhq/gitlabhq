@@ -137,7 +137,7 @@ Example response:
 
 ## Delete deploy key
 
-Removes a deploy key from the project. If the deploy is used only for this project, it will be deleted from the system.
+Removes a deploy key from the project. If the deploy key is used only for this project, it will be deleted from the system.
 
 ```
 DELETE /projects/:id/deploy_keys/:key_id
