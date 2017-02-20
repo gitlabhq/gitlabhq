@@ -222,6 +222,11 @@
       }
     }
 
+    .dropdown-menu {
+      max-height: 250px;
+      overflow-y: auto;
+    }
+
     .dropdown-toggle,
     .dropdown-menu {
       color: $gl-text-color-secondary;
