@@ -175,4 +175,4 @@ require('vendor/fuzzaldrin-plus');
       expect(enterKeyEvent.isDefaultPrevented()).toBe(true);
     });
   });
-}).call(this);
+}).call(window);

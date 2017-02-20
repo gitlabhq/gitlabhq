@@ -132,4 +132,4 @@ require('./task_list');
 
     return Issue;
   })();
-}).call(this);
+}).call(window);

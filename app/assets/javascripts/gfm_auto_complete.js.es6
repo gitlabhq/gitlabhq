@@ -380,4 +380,4 @@
         (dataToInspect === loadingState || dataToInspect.name === loadingState);
     }
   };
-}).call(this);
+}).call(window);

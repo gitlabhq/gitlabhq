@@ -176,4 +176,4 @@ require('vendor/latinise');
       return str.trim().toLowerCase().latinise();
     };
   })(window);
-}).call(this);
+}).call(window);

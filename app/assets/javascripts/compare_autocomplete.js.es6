@@ -66,4 +66,4 @@
 
     return CompareAutocomplete;
   })();
-}).call(this);
+}).call(window);

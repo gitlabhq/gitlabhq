@@ -88,4 +88,4 @@
 
     return Compare;
   })();
-}).call(this);
+}).call(window);

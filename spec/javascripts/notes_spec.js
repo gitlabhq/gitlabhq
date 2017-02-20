@@ -73,4 +73,4 @@ require('~/lib/utils/text_utility');
       });
     });
   });
-}).call(this);
+}).call(window);

@@ -243,4 +243,4 @@ require('es6-promise').polyfill();
 
     gl.utils.initTimeagoTimeout();
   });
-}).call(this);
+}).call(window);
