@@ -138,17 +138,3 @@ DELETE /broadcast_messages/:id
 ```bash
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/broadcast_messages/1
 ```
-
-Example response:
-
-```json
-{
-    "message":"Update message",
-    "starts_at":"2016-08-26T00:41:35.060Z",
-    "ends_at":"2016-08-26T01:41:35.060Z",
-    "color":"#000",
-    "font":"#FFFFFF",
-    "id":1,
-    "active": true
-}
-```
