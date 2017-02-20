@@ -1042,13 +1042,8 @@ describe API::Users, api: true do
     end
   end
 
-<<<<<<< HEAD
-  describe 'PUT /users/:id/unblock' do
-    let(:blocked_user) { create(:user, state: 'blocked') }
-=======
   describe 'POST /users/:id/unblock' do
     let(:blocked_user)  { create(:user, state: 'blocked') }
->>>>>>> ce/master
     before { admin }
 
     it 'unblocks existing user' do

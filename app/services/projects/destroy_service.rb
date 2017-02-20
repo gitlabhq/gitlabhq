@@ -17,12 +17,8 @@ module Projects
     def execute
       return false unless can?(current_user, :remove_project, project)
 
-<<<<<<< HEAD
-      project.team.truncate
-=======
       repo_path = project.path_with_namespace
       wiki_path = repo_path + '.wiki'
->>>>>>> ce/master
 
       # Flush the cache for both repositories. This has to be done _before_
       # removing the physical repositories as some expiration code depends on
