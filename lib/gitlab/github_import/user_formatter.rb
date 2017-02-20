@@ -44,8 +44,9 @@ module Gitlab
 
         User.select(:id)
             .joins(:identities).where(identities[:provider].eq(:github)
-            .and(identities[:extern_uid].eq(id))).
-            first.try(:id)
+            .and(identities[:extern_uid].eq(id)))
+            .first
+            .try(:id)
       end
     end
   end
