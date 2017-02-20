@@ -1,4 +1,4 @@
-/* eslint-disable one-var, quote-props, comma-dangle, space-before-function-paren, import/newline-after-import, no-multi-spaces, max-len */
+/* eslint-disable one-var, quote-props, comma-dangle, space-before-function-paren */
 /* global Vue */
 /* global BoardService */
 
