@@ -2,12 +2,10 @@ module Groups
   class CreateService < Groups::BaseService
     def initialize(user, params = {})
       @current_user, @params = user, params.dup
+      @chat_team = @params.delete(:create_chat_team)
     end
 
     def execute
-      create_chat_team = params.delete(:create_chat_team)
-      team_name = params.delete(:chat_team_name)
-
       @group = Group.new(params)
 
       unless Gitlab::VisibilityLevel.allowed_for?(current_user, params[:visibility_level])
@@ -23,15 +21,22 @@ module Groups
       end
 
       @group.name ||= @group.path.dup
-      @group.save
-      @group.add_owner(current_user)
 
-      if create_chat_team && Gitlab.config.mattermost.enabled
-        options = team_name ? { name: team_name } : {}
-        Mattermost::CreateTeamWorker.perform_async(@group.id, current_user.id, options)
+      if create_chat_team?
+        Mattermost::CreateTeamService.new(@group, current_user).execute
+
+        return @group if @group.errors.any?
       end
 
+      @group.save
+      @group.add_owner(current_user)
       @group
+    end
+
+    private
+
+    def create_chat_team?
+      @chat_team && Gitlab.config.mattermost.enabled
     end
   end
 end

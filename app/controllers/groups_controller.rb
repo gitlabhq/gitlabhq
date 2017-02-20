@@ -29,7 +29,6 @@ class GroupsController < Groups::ApplicationController
   end
 
   def create
-    byebug
     @group = Groups::CreateService.new(current_user, group_params).execute
 
     if @group.persisted?

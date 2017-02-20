@@ -21,7 +21,6 @@ class Group < Namespace
   has_many :shared_projects, through: :project_group_links, source: :project
   has_many :notification_settings, dependent: :destroy, as: :source
   has_many :labels, class_name: 'GroupLabel'
-  has_one :chat_team, dependent: :destroy
 
   validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
   validate :visibility_level_allowed_by_projects
