@@ -419,17 +419,6 @@ module.exports = Vue.component('environment-item', {
     folderUrl() {
       return `${window.location.pathname}/folders/${this.model.folderName}`;
     },
-
-    /**
-     * If the environment can have a deploy board we need to render an arrow icon
-     * next to it's name.
-     *
-     * @return {Boolean}
-     */
-    hasDeployBoard() {
-      return true;
-      // return this.model.rollout_status;
-    },
   },
 
   /**
@@ -451,7 +440,7 @@ module.exports = Vue.component('environment-item', {
     <tr>
       <td>
         <span class="deploy-board-icon"
-          v-if="!model.isFolder"
+          v-if="model.hasDeployBoard"
           v-on:click="toggleDeployBoard(model)">
 
           <i v-show="!model.isDeployBoardVisible"

@@ -61,7 +61,9 @@ describe('Environment item', () => {
     });
 
     expect(component.$el.querySelector('.js-deploy-board-row')).toBeDefined();
-    expect(component.$el.querySelector('.deploy-board-icon i').classList).toContain('fa-caret-down');
+    expect(
+      component.$el.querySelector('.deploy-board-icon i').classList.contains('fa-caret-right'),
+    ).toEqual(true);
   });
 
   it('should toggle deploy board visibility when arrow is clicked', () => {
@@ -82,22 +84,22 @@ describe('Environment item', () => {
       isDeployBoardVisible: false,
     };
 
+    const spy = jasmine.createSpy('spy');
+
     const component = new EnvironmentTable({
       el: document.querySelector('.test-dom-element'),
       propsData: {
         environments: [mockItem],
         canCreateDeployment: true,
         canReadEnvironment: true,
-        toggleDeployBoard: () => {},
+        toggleDeployBoard: spy,
         store: {},
         service: {},
       },
     });
 
-    expect(component.$el.querySelector('.deploy-board-icon')).toContain('fa-caret-right');
-
     component.$el.querySelector('.deploy-board-icon').click();
 
-    // expect toggleDeployBoard to have been called
+    expect(spy).toHaveBeenCalled();
   });
 });

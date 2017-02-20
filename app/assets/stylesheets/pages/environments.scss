@@ -161,6 +161,10 @@
     justify-content: center;
     margin: 20px 10px;
 
+    > span {
+      text-align: center;
+    }
+
     .percentage {
       color: $gl-text-color;
     }
@@ -172,7 +176,7 @@
 
   .deploy-board-instances {
     order: 2;
-    max-width: 75%;
+    width: 75%;
 
     .text {
       color: $gl-text-color-secondary;
@@ -190,6 +194,10 @@
   .deploy-board-actions {
     order: 3;
     align-self: center;
+  }
+
+  .deploy-board-error-message {
+    justify-content: center;
   }
 }
 
@@ -234,7 +242,7 @@
 
 .deploy-board-icon i {
   cursor: pointer;
-  color: $border-color;
+  color: $layout-link-gray;
   padding-right: 10px;
 }
 

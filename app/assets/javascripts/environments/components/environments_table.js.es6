@@ -93,8 +93,7 @@ module.exports = Vue.component('environment-table-component', {
             :commit-icon-svg="commitIconSvg"
             :toggleDeployBoard="toggleDeployBoard.bind(model)"></tr>
 
-          <tr v-if="model.isDeployBoardVisible" class="js-deploy-board-row">
-
+          <tr v-if="model.hasDeployBoard && model.isDeployBoardVisible" class="js-deploy-board-row">
             <td colspan="6" class="deploy-board-container">
               <deploy-board
                 :store="store"
@@ -103,9 +102,7 @@ module.exports = Vue.component('environment-table-component', {
                 :deployBoardData="model.deployBoardData">
               </deploy-board>
             </td>
-
           </tr>
-
         </template>
       </tbody>
     </table>

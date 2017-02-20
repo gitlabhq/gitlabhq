@@ -45,24 +45,24 @@ class EnvironmentsStore {
     const filteredEnvironments = environments.map((env) => {
       let filtered = {};
 
-      if (env.size > 1) {
-        filtered = Object.assign({}, env, { isFolder: true, folderName: env.name });
-      }
-
-      // FIX ME
-      // no folders items with `x` key can have a deploy board
-      if (env.size === 1) {
-        filtered = Object.assign({}, env, {
-          isDeployBoardVisible: false,
-          deployBoardData: {},
-        });
-      }
-
       if (env.latest) {
         filtered = Object.assign(filtered, env, env.latest);
         delete filtered.latest;
       } else {
         filtered = Object.assign(filtered, env);
+      }
+
+      if (env.size > 1) {
+        filtered = Object.assign(filtered, env, { isFolder: true, folderName: env.name });
+      }
+
+      // no folders items with `rollout_status` key can have a deploy board
+      if (env.size === 1 && env.rollout_status) {
+        filtered = Object.assign(filtered, env, {
+          hasDeployBoard: true,
+          isDeployBoardVisible: false,
+          deployBoardData: {},
+        });
       }
 
       return filtered;
@@ -118,18 +118,18 @@ class EnvironmentsStore {
   }
 
   /**
-   * Toggles deploy board visibility for the provided environment.
+   * Toggles deploy board visibility for the provided environment ID.
    *
    * @param  {Object} environment
    * @return {Array}
    */
-  toggleDeployBoard(environment) {
+  toggleDeployBoard(environmentID) {
     const environments = Object.assign([], this.state.environments);
 
     this.state.environments = environments.map((env) => {
       let updated = Object.assign({}, env);
 
-      if (env.id === environment.id) {
+      if (env.id === environmentID) {
         updated = Object.assign({}, updated, { isDeployBoardVisible: !env.isDeployBoardVisible });
       }
       return updated;

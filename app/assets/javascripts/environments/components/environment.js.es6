@@ -102,13 +102,13 @@ module.exports = Vue.component('environment-component', {
   methods: {
 
     /**
-     * Toggles the visibility of the deploy boards to the clicked environment.
+     * Toggles the visibility of the deploy boards of the clicked environment.
      *
      * @param  {Object} model
      * @return {Object}
      */
     toggleDeployBoard(model) {
-      return this.store.toggleDeployBoard(model);
+      return this.store.toggleDeployBoard(model.id);
     },
 
     /**

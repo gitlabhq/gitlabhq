@@ -101,6 +101,25 @@ module.exports = Vue.component('deploy_boards_components', {
     });
   },
 
+  computed: {
+    canRenderDeployBoard() {
+      return !this.isLoading && !this.hasError && Object.keys(this.deployBoardData).length;
+    },
+
+    instanceTitle() {
+      let title;
+      if (this.deployBoardData.instances.length === 1) {
+        title = 'Instance';
+      }
+
+      if (this.deployBoardData.instances.length > 1) {
+        title = 'Instances';
+      }
+
+      return title;
+    },
+  },
+
   template: `
     <div class="js-deploy-board deploy-board">
 
@@ -108,14 +127,17 @@ module.exports = Vue.component('deploy_boards_components', {
         <i class="fa fa-spinner fa-spin"></i>
       </div>
 
-      <div v-if="!isLoading && !hasError">
+      <div v-if="canRenderDeployBoard">
+
         <section class="deploy-board-information">
-          <span class="percentage">{{deployBoardData.completion}}%</span>
-          <span class="text">Complete</span>
+          <span>
+            <span class="percentage">{{deployBoardData.completion}}%</span>
+            <span class="text">Complete</span>
+          </span>
         </section>
 
         <section class="deploy-board-instances">
-          <p class="text">Instances</p>
+          <p class="text">{{instanceTitle}}</p>
 
           <div class="deploy-board-instances-container">
             <template v-for="instance in deployBoardData.instances">
@@ -146,7 +168,7 @@ module.exports = Vue.component('deploy_boards_components', {
         </section>
       </div>
 
-      <div v-if="!isLoading && hasError">
+      <div v-if="!isLoading && hasError" class="deploy-board-error-message">
         We can't fetch the data right now. Please try again later.
       </div>
     </div>

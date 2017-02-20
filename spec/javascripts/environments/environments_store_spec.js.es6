@@ -1,8 +1,8 @@
 const Store = require('~/environments/stores/environments_store');
-const { serverData } = require('./mock_data');
+const { serverData, deployBoardMockData } = require('./mock_data');
 
 (() => {
-  describe('Store', () => {
+  describe('Environments Store', () => {
     let store;
 
     beforeEach(() => {
@@ -22,14 +22,16 @@ const { serverData } = require('./mock_data');
         expect(store.state.environments.length).toEqual(serverData.length);
       });
 
-      it('should store a non folder environment with deploy board if x key is provided', () => {
+      it('should store a non folder environment with deploy board if rollout_status key is provided', () => {
         const environment = {
           name: 'foo',
           size: 1,
           id: 1,
+          rollout_status: 'url',
         };
 
         store.storeEnvironments([environment]);
+        expect(store.state.environments[0].hasDeployBoard).toEqual(true);
         expect(store.state.environments[0].isDeployBoardVisible).toEqual(false);
         expect(store.state.environments[0].deployBoardData).toEqual({});
       });
@@ -99,12 +101,24 @@ const { serverData } = require('./mock_data');
     });
 
     describe('deploy boards', () => {
-      it('should toggle deploy board property for given environment id', () => {
+      beforeEach(() => {
+        const environment = {
+          name: 'foo',
+          size: 1,
+          id: 1,
+        };
 
+        store.storeEnvironments([environment]);
+      });
+
+      it('should toggle deploy board property for given environment id', () => {
+        store.toggleDeployBoard(1);
+        expect(store.state.environments[0].isDeployBoardVisible).toEqual(true);
       });
 
       it('should store deploy board data for given environment id', () => {
-
+        store.storeDeployBoard(1, deployBoardMockData);
+        expect(store.state.environments[0].deployBoardData).toEqual(deployBoardMockData);
       });
     });
   });
