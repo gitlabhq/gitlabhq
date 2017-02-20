@@ -28,4 +28,4 @@
 
     return NotificationsDropdown;
   })();
-}).call(this);
+}).call(window);

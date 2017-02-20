@@ -61,4 +61,4 @@
 
     return Admin;
   })();
-}).call(this);
+}).call(window);

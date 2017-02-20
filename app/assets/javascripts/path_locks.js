@@ -21,4 +21,4 @@
 
   })();
 
-}).call(this);
+}).call(window);

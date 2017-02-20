@@ -42,4 +42,4 @@
 
     return MergedButtons;
   })();
-}).call(this);
+}).call(window);

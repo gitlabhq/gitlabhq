@@ -23,4 +23,4 @@
 
     return BlobGitignoreSelectors;
   })();
-}).call(this);
+}).call(window);

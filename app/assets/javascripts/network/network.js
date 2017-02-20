@@ -17,4 +17,4 @@
 
     return Network;
   })();
-}).call(this);
+}).call(window);

@@ -6,4 +6,4 @@
 
 (function() {
 
-}).call(this);
+}).call(window);

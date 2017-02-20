@@ -23,4 +23,4 @@
 
     return BuildArtifacts;
   })();
-}).call(this);
+}).call(window);

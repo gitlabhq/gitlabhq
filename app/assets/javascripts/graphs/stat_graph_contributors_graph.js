@@ -273,4 +273,4 @@ window.d3 = require('d3');
 
     return ContributorsAuthorGraph;
   })(ContributorsGraph);
-}).call(this);
+}).call(window);

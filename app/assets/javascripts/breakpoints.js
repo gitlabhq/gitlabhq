@@ -69,4 +69,4 @@
   })(this));
 
   window.Breakpoints = Breakpoints;
-}).call(this);
+}).call(window);

@@ -168,4 +168,4 @@
       return string.substr(0, (maxLength - 3)) + '...';
     };
   })(window);
-}).call(this);
+}).call(window);
