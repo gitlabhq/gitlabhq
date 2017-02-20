@@ -31,7 +31,7 @@ unless Rails.env.test? || !rack_attack_enabled
   end
 
   unless blacklist.nil?
-    Rack:Attack.blocklist('ban custom blacklist') do |req|
+    Rack::Attack.blocklist('ban custom blacklist') do |req|
       blacklist.include? req.ip
     end
   end
