@@ -81,6 +81,5 @@
         .form-group
           = rm_form.label :sync_time, "Synchronization time", class: "label-light append-bottom-0"
           = rm_form.select :sync_time, options_for_select(mirror_sync_time_options, @remote_mirror.sync_time), {}, class: 'form-control remote-mirror-sync-time'
-    .col-sm-12.text-center
-      %hr
-      = f.submit 'Save changes', class: 'btn btn-create', name: 'update_remote_mirror'
+        = f.submit 'Save changes', class: 'btn btn-create', name: 'update_remote_mirror'
+%hr
