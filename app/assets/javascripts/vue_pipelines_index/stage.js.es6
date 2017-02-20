@@ -23,6 +23,19 @@
         required: true,
       },
     },
+    mounted() {
+      /**
+       * When the user right clicks or cmd/ctrl + click in the job name or action icon,
+       * the dropdown should not be closed and the link should open in another tab.
+       * If the target is a svg we stop propagation in order to prevent
+       * the default behavior of the dropdown.
+       */
+      console.log('I am called');
+      $('.js-builds-dropdown-list').on('click', (e) => {
+        console.log('i am in event');
+        e.stopPropagation();
+      });
+    },
     methods: {
       fetchBuilds(e) {
         const areaExpanded = e.currentTarget.attributes['aria-expanded'];
@@ -36,22 +49,6 @@
             const flash = new Flash('Something went wrong on our end.');
             return flash;
           });
-      },
-      /**
-       * When the user right clicks or cmd/ctrl + click in the job name or action icon,
-       * the dropdown should not be closed and the link should open in another tab.
-       * If the target is a svg we stop propagation in order to prevent
-       * the default behavior of the dropdown.
-       */
-      keepGraph(e) {
-        const { target } = e;
-        const svgClassName = target.getAttribute('class');
-        const svgParentClassName = target.parentElement && target.parentElement.getAttribute('class');
-
-        if (svgClassName && svgClassName.indexOf('js-ci-action-icon') >= 0) return null;
-        if (svgParentClassName && svgParentClassName.indexOf('js-ci-action-icon') >= 0) return null;
-
-        return e.stopPropagation();
       },
     },
     computed: {
@@ -80,13 +77,13 @@
     template: `
       <div>
         <button
-          @click='fetchBuilds($event)'
+          @click="fetchBuilds($event)"
           :class="triggerButtonClass"
-          :title='stage.title'
+          :title="stage.title"
           data-placement="top"
           data-toggle="dropdown"
           type="button"
-          :aria-label='stage.title'
+          :aria-label="stage.title"
         >
           <span v-html="svg" aria-hidden="true"></span>
           <i class="fa fa-caret-down" aria-hidden="true"></i>
@@ -94,7 +91,6 @@
         <ul class="dropdown-menu mini-pipeline-graph-dropdown-menu js-builds-dropdown-container">
           <div class="arrow-up" aria-hidden="true"></div>
           <div
-            @click='keepGraph($event)'
             :class="dropdownClass"
             class="js-builds-dropdown-list scrollable-menu"
             v-html="buildsOrSpinner"
