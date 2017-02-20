@@ -36,4 +36,4 @@ changes are in V4:
   - POST `:id/repository/commits`
   - POST/PUT/DELETE `:id/repository/files`
 - Renamed `branch_name` to `branch` on DELETE `id/repository/branches/:branch` response
-
+- Notes do not return deprecated field `upvote` and `downvote` [!9384](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9384)

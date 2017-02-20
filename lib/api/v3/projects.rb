@@ -232,13 +232,13 @@ module API
         end
 
         desc 'Get events for a single project' do
-          success ::API::Entities::Event
+          success ::API::V3::Entities::Event
         end
         params do
           use :pagination
         end
         get ":id/events" do
-          present paginate(user_project.events.recent), with: ::API::Entities::Event
+          present paginate(user_project.events.recent), with: ::API::V3::Entities::Event
         end
 
         desc 'Fork new project for the current user or provided namespace.' do
