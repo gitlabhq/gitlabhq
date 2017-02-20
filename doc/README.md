@@ -9,7 +9,6 @@
 - [Account Security](user/profile/account/two_factor_authentication.md) Securing your account via two-factor authentication, etc.
 - [API](api/README.md) Automate GitLab via a simple and powerful API.
 - [CI/CD](ci/README.md) GitLab Continuous Integration (CI) and Continuous Delivery (CD) getting started, `.gitlab-ci.yml` options, and examples.
-- [Custom templates for issues and merge requests](customization/issue_and_merge_request_template.md) Pre-fill the description of issues and merge requests to your liking.
 - [GitLab as OAuth2 authentication service provider](integration/oauth_provider.md). It allows you to login to other applications from GitLab.
 - [Container Registry](user/project/container_registry.md) Learn how to use GitLab Container Registry.
 - [GitLab basics](gitlab-basics/README.md) Find step by step how to start working on your commandline and on GitLab.
