@@ -49,7 +49,8 @@ GitLab CI build environment:
 - `KUBE_URL` - equal to the API URL
 - `KUBE_TOKEN`
 - `KUBE_NAMESPACE`
-- `KUBE_CA_PEM` - only if a custom CA bundle was specified
+- `KUBE_CA_PEM_FILE` - only present if a custom CA bundle was specified. Path to a file containing PEM data.
+- `KUBE_CA_PEM` (deprecated)- only if a custom CA bundle was specified. Raw PEM data.
 
 ## Web terminals
 
