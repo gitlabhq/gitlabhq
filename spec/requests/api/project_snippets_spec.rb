@@ -212,7 +212,7 @@ describe API::ProjectSnippets, api: true do
     end
 
     it 'returns 404 for invalid snippet id' do
-      get api("/projects/#{snippet.project.id}/snippets/1234", admin)
+      get api("/projects/#{snippet.project.id}/snippets/1234/raw", admin)
 
       expect(response).to have_http_status(404)
       expect(json_response['message']).to eq('404 Snippet Not Found')

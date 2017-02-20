@@ -1,5 +1,4 @@
 module API
-  # Projects variables API
   class Variables < Grape::API
     include PaginationParams
 
@@ -81,7 +80,7 @@ module API
       end
       delete ':id/variables/:key' do
         variable = user_project.variables.find_by(key: params[:key])
-        return not_found!('Variable') unless variable
+        not_found!('Variable') unless variable
 
         variable.destroy
       end
