@@ -21,10 +21,6 @@ describe API::CommitStatuses, api: true do
       let!(:master) { project.pipelines.create(sha: commit.id, ref: 'master') }
       let!(:develop) { project.pipelines.create(sha: commit.id, ref: 'develop') }
 
-      it_behaves_like 'a paginated resources' do
-        let(:request) { get api(get_url, reporter) }
-      end
-
       context "reporter user" do
         let(:statuses_id) { json_response.map { |status| status['id'] } }
 
@@ -45,6 +41,7 @@ describe API::CommitStatuses, api: true do
           it 'returns latest commit statuses' do
             expect(response).to have_http_status(200)
 
+            expect(response).to include_pagination_headers
             expect(json_response).to be_an Array
             expect(statuses_id).to contain_exactly(status3.id, status4.id, status5.id, status6.id)
             json_response.sort_by!{ |status| status['id'] }
