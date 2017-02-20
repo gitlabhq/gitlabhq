@@ -47,7 +47,7 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
     page.within('.todos-pending-count') { expect(page).to have_content '3' }
     expect(page).to have_content 'To do 3'
     expect(page).to have_content 'Done 1'
-    should_not_see_todo "John Doe assigned you merge request #{merge_request.to_reference(full: true)}"
+    should_see_todo(1, "John Doe assigned you merge request #{merge_request.to_reference(full: true)}", merge_request.title, state: :done_reversible)
   end
 
   step 'I mark all todos as done' do
@@ -71,7 +71,7 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
     click_link 'Done 1'
 
     expect(page).to have_link project.name_with_namespace
-    should_see_todo(1, "John Doe assigned you merge request #{merge_request.to_reference(full: true)}", merge_request.title, false)
+    should_see_todo(1, "John Doe assigned you merge request #{merge_request.to_reference(full: true)}", merge_request.title, state: :done_irreversible)
   end
 
   step 'I should see all todos marked as done' do
@@ -81,10 +81,10 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
     click_link 'Done 4'
 
     expect(page).to have_link project.name_with_namespace
-    should_see_todo(1, "John Doe assigned you merge request #{merge_request_reference}", merge_request.title, false)
-    should_see_todo(2, "John Doe mentioned you on issue #{issue_reference}", "#{current_user.to_reference} Wdyt?", false)
-    should_see_todo(3, "John Doe assigned you issue #{issue_reference}", issue.title, false)
-    should_see_todo(4, "Mary Jane mentioned you on issue #{issue_reference}", issue.title, false)
+    should_see_todo(1, "John Doe assigned you merge request #{merge_request_reference}", merge_request.title, state: :done_irreversible)
+    should_see_todo(2, "John Doe mentioned you on issue #{issue_reference}", "#{current_user.to_reference} Wdyt?", state: :done_irreversible)
+    should_see_todo(3, "John Doe assigned you issue #{issue_reference}", issue.title, state: :done_irreversible)
+    should_see_todo(4, "Mary Jane mentioned you on issue #{issue_reference}", issue.title, state: :done_irreversible)
   end
 
   step 'I filter by "Enterprise"' do
@@ -140,15 +140,20 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
     page.should have_css('.identifier', text: 'Merge Request !1')
   end
 
-  def should_see_todo(position, title, body, pending = true)
+  def should_see_todo(position, title, body, state: :pending)
     page.within(".todo:nth-child(#{position})") do
       expect(page).to have_content title
       expect(page).to have_content body
 
-      if pending
+      if state == :pending
         expect(page).to have_link 'Done'
-      else
+      elsif state == :done_reversible
+        expect(page).to have_link 'Undo'
+      elsif state == :done_irreversible
+        expect(page).not_to have_link 'Undo'
         expect(page).not_to have_link 'Done'
+      else
+        raise 'Invalid state given, valid states: :pending, :done_reversible, :done_irreversible'
       end
     end
   end

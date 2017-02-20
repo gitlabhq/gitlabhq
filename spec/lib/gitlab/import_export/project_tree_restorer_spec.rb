@@ -3,7 +3,7 @@ include ImportExport::CommonUtil
 
 describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
   describe 'restore project tree' do
-    before(:all) do
+    before(:context) do
       @user = create(:user)
 
       RSpec::Mocks.with_temporary_scope do
@@ -15,10 +15,13 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
       end
     end
 
+<<<<<<< HEAD
     after(:all) do
       DatabaseCleaner.clean_with(:truncation)
     end
 
+=======
+>>>>>>> ce/master
     context 'JSON' do
       it 'restores models based on JSON' do
         expect(@restored_project_json).to be true

@@ -217,4 +217,4 @@
 
     return Sidebar;
   })();
-}).call(this);
+}).call(window);

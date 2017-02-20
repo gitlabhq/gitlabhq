@@ -40,6 +40,10 @@ FactoryGirl.define do
       action { Todo::UNMERGEABLE }
     end
 
+    trait :pending do
+      state :pending
+    end
+
     trait :done do
       state :done
     end

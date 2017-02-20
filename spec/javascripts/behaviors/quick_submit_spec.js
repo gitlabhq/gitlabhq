@@ -103,4 +103,4 @@ require('~/behaviors/quick_submit');
       return $.Event('keydown', $.extend({}, defaults, options));
     };
   });
-}).call(this);
+}).call(window);

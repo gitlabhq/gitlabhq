@@ -37,4 +37,4 @@ require('./shortcuts');
 
     return ShortcutsDashboardNavigation;
   })(Shortcuts);
-}).call(this);
+}).call(window);

@@ -16,16 +16,13 @@ module API
       end
       params do
         optional :ref_name, type: String, desc: 'The name of a repository branch or tag, if not given the default branch is used'
-        optional :since,    type: String, desc: 'Only commits after or in this date will be returned'
-        optional :until,    type: String, desc: 'Only commits before or in this date will be returned'
+        optional :since,    type: DateTime, desc: 'Only commits after or on this date will be returned'
+        optional :until,    type: DateTime, desc: 'Only commits before or on this date will be returned'
         optional :page,     type: Integer, default: 0, desc: 'The page for pagination'
         optional :per_page, type: Integer, default: 20, desc: 'The number of results per page'
         optional :path,     type: String, desc: 'The file path'
       end
       get ":id/repository/commits" do
-        # TODO remove the next line for 9.0, use DateTime type in the params block
-        datetime_attributes! :since, :until
-
         ref = params[:ref_name] || user_project.try(:default_branch) || 'master'
         offset = params[:page] * params[:per_page]
 

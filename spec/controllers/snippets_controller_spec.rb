@@ -286,6 +286,24 @@ describe SnippetsController do
             expect(assigns(:snippet)).to eq(personal_snippet)
             expect(response).to have_http_status(200)
           end
+
+          context 'CRLF line ending' do
+            let(:personal_snippet) do
+              create(:personal_snippet, :public, author: user, content: "first line\r\nsecond line\r\nthird line")
+            end
+
+            it 'returns LF line endings by default' do
+              get action, id: personal_snippet.to_param
+
+              expect(response.body).to eq("first line\nsecond line\nthird line")
+            end
+
+            it 'does not convert line endings when parameter present' do
+              get action, id: personal_snippet.to_param, line_ending: :raw
+
+              expect(response.body).to eq("first line\r\nsecond line\r\nthird line")
+            end
+          end
         end
 
         context 'when not signed in' do

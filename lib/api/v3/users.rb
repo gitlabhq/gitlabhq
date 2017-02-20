@@ -39,6 +39,38 @@ module API
 
           present user.emails, with: ::API::Entities::Email
         end
+
+        desc 'Block a user. Available only for admins.'
+        params do
+          requires :id, type: Integer, desc: 'The ID of the user'
+        end
+        put ':id/block' do
+          authenticated_as_admin!
+          user = User.find_by(id: params[:id])
+          not_found!('User') unless user
+
+          if !user.ldap_blocked?
+            user.block
+          else
+            forbidden!('LDAP blocked users cannot be modified by the API')
+          end
+        end
+
+        desc 'Unblock a user. Available only for admins.'
+        params do
+          requires :id, type: Integer, desc: 'The ID of the user'
+        end
+        put ':id/unblock' do
+          authenticated_as_admin!
+          user = User.find_by(id: params[:id])
+          not_found!('User') unless user
+
+          if user.ldap_blocked?
+            forbidden!('LDAP blocked users cannot be unblocked by the API')
+          else
+            user.activate
+          end
+        end
       end
 
       resource :user do

@@ -61,12 +61,6 @@ var config = {
             'stage-2'
           ]
         }
-      },
-      {
-        test: /\.(js|es6)$/,
-        exclude: /node_modules/,
-        loader: 'imports-loader',
-        options: 'this=>window'
       }
     ]
   },
@@ -91,8 +85,7 @@ var config = {
       'bootstrap/js':   'bootstrap-sass/assets/javascripts/bootstrap',
       'emoji-aliases$': path.join(ROOT_PATH, 'fixtures/emojis/aliases.json'),
       'vendor':         path.join(ROOT_PATH, 'vendor/assets/javascripts'),
-      'vue$':           'vue/dist/vue.js',
-      'vue-resource$':  'vue-resource/dist/vue-resource.js'
+      'vue$':           IS_PRODUCTION ? 'vue/dist/vue.min.js' : 'vue/dist/vue.js',
     }
   }
 }

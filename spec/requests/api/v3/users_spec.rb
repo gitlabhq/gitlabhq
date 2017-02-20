@@ -7,6 +7,7 @@ describe API::V3::Users, api: true  do
   let(:admin) { create(:admin) }
   let(:key)   { create(:key, user: user) }
   let(:email)   { create(:email, user: user) }
+  let(:ldap_blocked_user) { create(:omniauth_user, provider: 'ldapmain', state: 'ldap_blocked') }
 
   describe 'GET /user/:id/keys' do
     before { admin }
@@ -115,6 +116,74 @@ describe API::V3::Users, api: true  do
         expect(json_response).to be_an Array
         expect(json_response.first["email"]).to eq(email.email)
       end
+    end
+  end
+
+  describe 'PUT /users/:id/block' do
+    before { admin }
+    it 'blocks existing user' do
+      put v3_api("/users/#{user.id}/block", admin)
+      expect(response).to have_http_status(200)
+      expect(user.reload.state).to eq('blocked')
+    end
+
+    it 'does not re-block ldap blocked users' do
+      put v3_api("/users/#{ldap_blocked_user.id}/block", admin)
+      expect(response).to have_http_status(403)
+      expect(ldap_blocked_user.reload.state).to eq('ldap_blocked')
+    end
+
+    it 'does not be available for non admin users' do
+      put v3_api("/users/#{user.id}/block", user)
+      expect(response).to have_http_status(403)
+      expect(user.reload.state).to eq('active')
+    end
+
+    it 'returns a 404 error if user id not found' do
+      put v3_api('/users/9999/block', admin)
+      expect(response).to have_http_status(404)
+      expect(json_response['message']).to eq('404 User Not Found')
+    end
+  end
+
+  describe 'PUT /users/:id/unblock' do
+    let(:blocked_user)  { create(:user, state: 'blocked') }
+    before { admin }
+
+    it 'unblocks existing user' do
+      put v3_api("/users/#{user.id}/unblock", admin)
+      expect(response).to have_http_status(200)
+      expect(user.reload.state).to eq('active')
+    end
+
+    it 'unblocks a blocked user' do
+      put v3_api("/users/#{blocked_user.id}/unblock", admin)
+      expect(response).to have_http_status(200)
+      expect(blocked_user.reload.state).to eq('active')
+    end
+
+    it 'does not unblock ldap blocked users' do
+      put v3_api("/users/#{ldap_blocked_user.id}/unblock", admin)
+      expect(response).to have_http_status(403)
+      expect(ldap_blocked_user.reload.state).to eq('ldap_blocked')
+    end
+
+    it 'does not be available for non admin users' do
+      put v3_api("/users/#{user.id}/unblock", user)
+      expect(response).to have_http_status(403)
+      expect(user.reload.state).to eq('active')
+    end
+
+    it 'returns a 404 error if user id not found' do
+      put v3_api('/users/9999/block', admin)
+      expect(response).to have_http_status(404)
+      expect(json_response['message']).to eq('404 User Not Found')
+    end
+
+    it "returns a 404 for invalid ID" do
+      put v3_api("/users/ASDF/block", admin)
+
+      expect(response).to have_http_status(404)
     end
   end
 end

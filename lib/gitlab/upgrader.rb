@@ -60,15 +60,17 @@ module Gitlab
         "Get latest code" => %W(#{Gitlab.config.git.bin_path} fetch),
         "Switch to new version" => %W(#{Gitlab.config.git.bin_path} checkout v#{latest_version}-ee),
         "Install gems" => %W(bundle),
-        "Install node modules" => %W(npm install --production),
         "Migrate DB" => %W(bundle exec rake db:migrate),
-        "Recompile assets" => %W(bundle exec rake gitlab:assets:clean gitlab:assets:compile),
+        "Recompile assets" => %W(bundle exec rake yarn:install gitlab:assets:clean gitlab:assets:compile),
         "Clear cache" => %W(bundle exec rake cache:clear)
       }
     end
 
     def env
-      { 'RAILS_ENV' => 'production' }
+      {
+        'RAILS_ENV' => 'production',
+        'NODE_ENV' => 'production'
+      }
     end
 
     def upgrade
