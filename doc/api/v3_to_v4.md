@@ -13,6 +13,7 @@ changes are in V4:
 - Project snippets do not return deprecated field `expires_at`
 - Endpoints under `projects/:id/keys` have been removed (use `projects/:id/deploy_keys`)
 - Status 409 returned for POST `project/:id/members` when a member already exists
+- Moved `DELETE /projects/:id/star` to `POST /projects/:id/unstar`
 - Removed the following deprecated Templates endpoints (these are still accessible with `/templates` prefix)
   - `/licences`
   - `/licences/:key`
