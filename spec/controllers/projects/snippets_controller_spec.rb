@@ -206,4 +206,37 @@ describe Projects::SnippetsController do
       end
     end
   end
+
+  describe 'GET #raw' do
+    let(:project_snippet) do
+      create(
+        :project_snippet, :public,
+        project: project,
+        author: user,
+        content: "first line\r\nsecond line\r\nthird line"
+      )
+    end
+
+    context 'CRLF line ending' do
+      let(:params) do
+        {
+          namespace_id: project.namespace.path,
+          project_id: project.path,
+          id: project_snippet.to_param
+        }
+      end
+
+      it 'returns LF line endings by default' do
+        get :raw, params
+
+        expect(response.body).to eq("first line\nsecond line\nthird line")
+      end
+
+      it 'does not convert line endings when parameter present' do
+        get :raw, params.merge(line_ending: :raw)
+
+        expect(response.body).to eq("first line\r\nsecond line\r\nthird line")
+      end
+    end
+  end
 end
