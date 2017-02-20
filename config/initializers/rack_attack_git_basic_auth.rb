@@ -1,4 +1,4 @@
-rack_attack_enabled = Gitlab.config.rack_attack.['enabled']
+rack_attack_enabled = Gitlab.config.rack_attack['enabled']
 git_basic_auth_enabled = Gitlab.config.rack_attack.git_basic_auth['enabled']
 
 unless Rails.env.test? || !rack_attack_enabled || !git_basic_auth_enabled
