@@ -9,18 +9,14 @@ describe DestroyGroupService, services: true do
   let!(:gitlab_shell) { Gitlab::Shell.new }
   let!(:remove_path) { group.path + "+#{group.id}+deleted" }
 
-  before do
-    group.add_user(user, Gitlab::Access::OWNER)
-  end
-
   shared_examples 'group destruction' do |async|
     context 'database records' do
       before do
         destroy_group(group, user, async)
       end
 
-      it { expect(Group.unscoped.all).not_to include(group) }
-      it { expect(Project.unscoped.all).not_to include(project) }
+      it { expect(Group.all).not_to include(group) }
+      it { expect(Project.all).not_to include(project) }
     end
 
     context 'file system' do
@@ -36,7 +32,7 @@ describe DestroyGroupService, services: true do
 
       context 'Sidekiq fake' do
         before do
-          # Don't run sidekiq to check if renamed repository exists
+          # Dont run sidekiq to check if renamed repository exists
           Sidekiq::Testing.fake! { destroy_group(group, user, async) }
         end
 
@@ -97,15 +93,6 @@ describe DestroyGroupService, services: true do
   end
 
   describe 'synchronous delete' do
-    it_behaves_like 'group destruction', false
-  end
-
-  context 'projects in pending_delete' do
-    before do
-      project.pending_delete = true
-      project.save
-    end
-
     it_behaves_like 'group destruction', false
   end
 end
