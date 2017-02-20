@@ -14,7 +14,6 @@ module Gitlab
     end
 
     def call(env)
-      raise RequestStoreNotActive.new unless RequestStore.active?
       req = Rack::Request.new(env)
 
       RequestStore[:client_ip] = req.ip

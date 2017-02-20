@@ -33,6 +33,7 @@ describe SessionsController do
         include_examples 'user login operation with unique ip limit' do
           def operation
             post(:create, user: { login: user.username, password: user.password })
+
             expect(subject.current_user).to eq user
           end
         end

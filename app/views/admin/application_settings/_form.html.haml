@@ -366,7 +366,8 @@
           = f.label :unique_ips_limit_enabled do
             = f.check_box :unique_ips_limit_enabled
             Limit sign in from multiple ips
-          %span.help-block#recaptcha_help_block Helps prevent malicious users hide their activity
+          %span.help-block#unique_ip_help_block
+            Helps prevent malicious users hide their activity
 
     .form-group
       = f.label :unique_ips_limit_per_user, 'IPs per user', class: 'control-label col-sm-2'
@@ -380,7 +381,7 @@
       .col-sm-10
         = f.number_field :unique_ips_limit_time_window, class: 'form-control'
         .help-block
-          How long an IP will be counted towards the limit
+          How many seconds an IP will be counted towards the limit
 
   %fieldset
     %legend Abuse reports

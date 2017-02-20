@@ -8,8 +8,6 @@ module Gitlab
   class Application < Rails::Application
     require_dependency Rails.root.join('lib/gitlab/redis')
     require_dependency Rails.root.join('lib/gitlab/request_context')
-    require_dependency Rails.root.join('lib/gitlab/auth')
-    require_dependency Rails.root.join('lib/gitlab/auth/unique_ips_limiter')
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -113,8 +111,6 @@ module Gitlab
     config.action_view.sanitized_allowed_protocols = %w(smb)
 
     config.middleware.insert_before Warden::Manager, Rack::Attack
-
-    config.middleware.insert_before Warden::Manager, Gitlab::Auth::UniqueIpsLimiter
 
     # Allow access to GitLab API from other domains
     config.middleware.insert_before Warden::Manager, Rack::Cors do

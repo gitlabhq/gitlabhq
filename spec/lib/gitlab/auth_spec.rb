@@ -206,7 +206,7 @@ describe Gitlab::Auth, lib: true do
 
     include_examples 'user login operation with unique ip limit' do
       def operation
-        expect(gl_auth.find_with_user_password(username, password)).to eql user
+        expect(gl_auth.find_with_user_password(username, password)).to eq(user)
       end
     end
 

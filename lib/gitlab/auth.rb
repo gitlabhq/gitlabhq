@@ -22,9 +22,8 @@ module Gitlab
           user_with_password_for_git(login, password) ||
           Gitlab::Auth::Result.new
 
-        Gitlab::Auth::UniqueIpsLimiter.limit_user!(result.actor)
-
         rate_limit!(ip, success: result.success?, login: login)
+        Gitlab::Auth::UniqueIpsLimiter.limit_user!(result.actor)
 
         result
       end

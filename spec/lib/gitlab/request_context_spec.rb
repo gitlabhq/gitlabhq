@@ -26,15 +26,5 @@ describe Gitlab::RequestContext, lib: true do
         it { is_expected.to be_nil }
       end
     end
-
-    context 'RequestStore is not active' do
-      it { is_expected.to be_nil }
-
-      context 'when RequestContext mw is run' do
-        subject { -> { Gitlab::RequestContext.new(app).call(env) } }
-
-        it { is_expected.to raise_error(Gitlab::RequestStoreNotActive) }
-      end
-    end
   end
 end
