@@ -58,6 +58,20 @@ describe 'Multiple Issue Boards', :feature, :js do
       expect(find('.js-milestone-select')).not_to have_content(milestone.title)
       expect(all('.board')[1]).to have_selector('.card', count: 2)
     end
+
+    it 'sets board to any milestone' do
+      update_board_milestone('Any Milestone')
+
+      expect(find('.js-milestone-select')).not_to have_content(milestone.title)
+      expect(all('.board')[1]).to have_selector('.card', count: 2)
+    end
+
+    it 'sets board to upcoming milestone' do
+      update_board_milestone('Upcoming')
+
+      expect(find('.js-milestone-select')).not_to have_content(milestone.title)
+      expect(all('.board')[1]).to have_selector('.card', count: 0)
+    end
   end
 
   def create_board_with_milestone

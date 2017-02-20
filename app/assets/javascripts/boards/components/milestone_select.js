@@ -26,8 +26,8 @@ module.exports = Vue.extend({
         },
         {
           id: -2,
-          title: 'Upcoming'
-        }
+          title: 'Upcoming',
+        },
       ],
     };
   },
