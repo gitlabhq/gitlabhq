@@ -59,6 +59,7 @@ describe 'issuable list', feature: true do
 
       create(:award_emoji, :downvote, awardable: issuable)
       create(:award_emoji, :upvote, awardable: issuable)
+    end
 
     if issuable_type == :issue
       issue = Issue.reorder(:iid).first
@@ -67,8 +68,7 @@ describe 'issuable list', feature: true do
                               source_project: project,
                               source_branch: FFaker::Name.name)
 
-      MergeRequestsClosingIssues.create!(issue: issue, merge_request: merge_request) if MergeRequestsClosingIssues.count.zero?
-    end
+      MergeRequestsClosingIssues.create!(issue: issue, merge_request: merge_request)
     end
   end
 end
