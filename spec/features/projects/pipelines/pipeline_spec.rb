@@ -226,7 +226,7 @@ describe 'Pipeline', :feature, :js do
       it { expect(page).not_to have_content('retried') }
 
       context 'when retrying' do
-        before { find('js-retry-button').trigger('click') }
+        before { find('.js-retry-button').trigger('click') }
 
         it { expect(page).not_to have_content('Retry') }
         it { expect(page).to have_selector('.retried') }
