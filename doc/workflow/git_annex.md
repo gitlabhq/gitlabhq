@@ -87,25 +87,86 @@ one is located in `config.yml` of gitlab-shell.
 
 ## Using GitLab git-annex
 
-_**Important note:** Your Git remotes must be using the SSH protocol, not HTTP(S)._
+>
+**Note:**
+Your Git remotes must be using the SSH protocol, not HTTP(S).
 
 Here is an example workflow of uploading a very large file and then checking it
 into your Git repository:
 
 ```bash
-git clone git@gitlab.example.com:group/project.git
-git annex init 'My Laptop'       # initialize the annex project
+git clone git@example.com:group/project.git
+
+git annex init 'My Laptop'       # initialize the annex project and give an optional description
 cp ~/tmp/debian.iso ./           # copy a large file into the current directory
-git annex add .                  # add the large file to git annex
+git annex add debian.iso         # add the large file to git annex
 git commit -am "Add Debian iso"  # commit the file metadata
-git annex sync --content         # sync the git repo and large file to the GitLab server
+git annex sync --content         # sync the Git repo and large file to the GitLab server
 ```
+
+The output should look like this:
+
+```
+commit
+On branch master
+Your branch is ahead of 'origin/master' by 1 commit.
+  (use "git push" to publish your local commits)
+nothing to commit, working tree clean
+ok
+pull origin
+remote: Counting objects: 5, done.
+remote: Compressing objects: 100% (4/4), done.
+remote: Total 5 (delta 2), reused 0 (delta 0)
+Unpacking objects: 100% (5/5), done.
+From example.com:group/project
+   497842b..5162f80  git-annex  -> origin/git-annex
+ok
+(merging origin/git-annex into git-annex...)
+(recording state in git...)
+copy debian.iso (checking origin...) (to origin...)
+SHA256E-s26214400--8092b3d482fb1b7a5cf28c43bc1425c8f2d380e86869c0686c49aa7b0f086ab2.iso
+     26,214,400 100%  638.88kB/s    0:00:40 (xfr#1, to-chk=0/1)
+ok
+pull origin
+ok
+(recording state in git...)
+push origin
+Counting objects: 15, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (13/13), done.
+Writing objects: 100% (15/15), 1.64 KiB | 0 bytes/s, done.
+Total 15 (delta 1), reused 0 (delta 0)
+To example.com:group/project.git
+ * [new branch]      git-annex -> synced/git-annex
+ * [new branch]      master -> synced/master
+ok
+```
+
+Your files can be found in the `master` branch, but you'll notice that there
+are more branches created by the `annex sync` command.
+
+Git Annex will also create a new directory at `.git/annex/` and will record the
+tracked files in the `.git/config` file. The files you assign to be tracked
+with `git-annex` will not affect the existing `.git/config` records. The files
+are turned into symbolic links that point to data in `.git/annex/objects/`.
+
+The `debian.iso` file in the example will contain the symbolic link:
+
+```
+.git/annex/objects/ZW/1k/SHA256E-s82701--6384039733b5035b559efd5a2e25a493ab6e09aabfd5162cc03f6f0ec238429d.png/SHA256E-s82701--6384039733b5035b559efd5a2e25a493ab6e09aabfd5162cc03f6f0ec238429d.iso
+```
+
+Use `git annex info` to retrieve the information about the local copy of your
+repository.
+
+---
 
 Downloading a single large file is also very simple:
 
 ```bash
 git clone git@gitlab.example.com:group/project.git
-git annex sync             # sync git branches but not the large file
+
+git annex sync             # sync Git branches but not the large file
 git annex get debian.iso   # download the large file
 ```
 
@@ -113,17 +174,13 @@ To download all files:
 
 ```bash
 git clone git@gitlab.example.com:group/project.git
-git annex sync --content  # sync git branches and download all the large files
+
+git annex sync --content  # sync Git branches and download all the large files
 ```
 
-You don't have to setup `git-annex` on a separate server or add annex remotes
-to the repository.
-
 By using `git-annex` without GitLab, anyone that can access the server can also
-access the files of all projects.
-
-GitLab annex ensures that you can only access files of projects you have access
-to (developer, master, or owner role).
+access the files of all projects, but GitLab Annex ensures that you can only
+access files of projects you have access to (developer, master, or owner role).
 
 ## How it works
 
@@ -132,12 +189,15 @@ integration point for `git-annex`.
 There is a setting in gitlab-shell so you can disable GitLab Annex support
 if you want to.
 
-_**Important note:** Your Git remotes must be using the SSH protocol, not HTTP(S)._
-
 ## Troubleshooting tips
 
 Differences in version of `git-annex` on the GitLab server and on local machines
 can cause `git-annex` to raise unpredicted warnings and errors.
+
+Consult the [Annex upgrade page][annex-upgrade] for more information about
+the differences between versions. You can find out which version is installed
+on your server by navigating to <https://pkgs.org/download/git-annex> and
+seaching for your distribution.
 
 Although there is no general guide for `git-annex` errors, there are a few tips
 on how to go around the warnings.
@@ -170,6 +230,7 @@ ok
 push origin
 ```
 
+[annex-upgrade]: https://git-annex.branchable.com/upgrades/
 [deprecate-annex-issue]: https://gitlab.com/gitlab-org/gitlab-ee/issues/1648
 [git-annex]: https://git-annex.branchable.com/ "git-annex website"
 [gitlab shell]: https://gitlab.com/gitlab-org/gitlab-shell "GitLab Shell repository"
