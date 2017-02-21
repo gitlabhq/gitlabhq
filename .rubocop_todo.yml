@@ -794,13 +794,6 @@ Style/TernaryParentheses:
 Style/TrailingCommaInArguments:
   Enabled: false
 
-# Offense count: 158
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyleForMultiline, SupportedStyles.
-# SupportedStyles: comma, consistent_comma, no_comma
-Style/TrailingCommaInLiteral:
-  Enabled: false
-
 # Offense count: 7
 # Cop supports --auto-correct.
 # Configuration parameters: AllowNamedUnderscoreVariables.

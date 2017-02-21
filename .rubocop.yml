@@ -452,6 +452,9 @@ Style/Tab:
 Style/TrailingBlankLines:
   Enabled: true
 
+Style/TrailingCommaInLiteral:
+  Enabled: false
+
 # Checks for %W when interpolation is not needed.
 Style/UnneededCapitalW:
   Enabled: true
