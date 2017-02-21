@@ -16,11 +16,21 @@ module API
         use :pagination
         optional :scope,    type: String, values: %w(running branches tags),
                             desc: 'Either running, branches, or tags'
+        optional :status,   type: String, values: ['running', 'pending', 'success', 'failed', 'canceled', 'skipped'],
+                            desc: 'Pipeline Status'
+        optional :ref,      type: String, desc: 'Pipeline Ref'
+        optional :duration, type: Integer, desc: 'Greater than the specified duration'
+        optional :yaml_error, type: Boolean, desc: 'If true, returns only yaml error pipelines.'
+        optional :user_id,  type: String, desc: 'User who executed pipelines'
+        optional :order_by, type: String, values: ['id', 'status', 'ref', 'user_id', 'started_at', 'finished_at', 'created_at', 'updated_at'], default: 'id',
+                            desc: 'Return issues ordered by `created_at` or `updated_at` fields.'
+        optional :sort,     type: String, values: ['asc', 'desc'], default: 'desc',
+                            desc: 'Return pipelines sorted in `asc` or `desc` order.'
       end
       get ':id/pipelines' do
         authorize! :read_pipeline, user_project
 
-        pipelines = PipelinesFinder.new(user_project).execute(scope: params[:scope])
+        pipelines = PipelinesFinder.new(user_project, params).execute(scope: params[:scope])
         present paginate(pipelines), with: Entities::PipelineBasic
       end
 
