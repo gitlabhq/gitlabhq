@@ -157,7 +157,7 @@ describe Gitlab::Saml::User, lib: true do
                 expect(gl_user.email).to eql 'john@mail.com'
                 expect(gl_user.identities.length).to eql 2
                 identities_as_hash = gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
-                expect(identities_as_hash).to match_array([ { provider: 'ldapmain', extern_uid: 'uid=user1,ou=People,dc=example' },
+                expect(identities_as_hash).to match_array([{ provider: 'ldapmain', extern_uid: 'uid=user1,ou=People,dc=example' },
                                                             { provider: 'saml', extern_uid: uid }
                                                           ])
               end
@@ -180,7 +180,7 @@ describe Gitlab::Saml::User, lib: true do
                 expect(gl_user.email).to eql 'john@mail.com'
                 expect(gl_user.identities.length).to eql 2
                 identities_as_hash = gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
-                expect(identities_as_hash).to match_array([ { provider: 'ldapmain', extern_uid: 'uid=user1,ou=People,dc=example' },
+                expect(identities_as_hash).to match_array([{ provider: 'ldapmain', extern_uid: 'uid=user1,ou=People,dc=example' },
                                                             { provider: 'saml', extern_uid: uid }
                                                           ])
               end
@@ -206,7 +206,7 @@ describe Gitlab::Saml::User, lib: true do
                 expect(local_gl_user).to be_valid
                 expect(local_gl_user.identities.length).to eql 2
                 identities_as_hash = local_gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
-                expect(identities_as_hash).to match_array([ { provider: 'ldapmain', extern_uid: 'uid=user1,ou=People,dc=example' },
+                expect(identities_as_hash).to match_array([{ provider: 'ldapmain', extern_uid: 'uid=user1,ou=People,dc=example' },
                                                             { provider: 'saml', extern_uid: 'uid=user1,ou=People,dc=example' }
                                                           ])
               end

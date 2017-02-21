@@ -413,6 +413,9 @@ Style/SpaceBeforeComment:
 Style/SpaceBeforeSemicolon:
   Enabled: true
 
+Style/SpaceInsideBrackets:
+  Enabled: true
+
 # Use spaces inside hash literal braces - or don't.
 Style/SpaceInsideHashLiteralBraces:
   Enabled: true

@@ -15,7 +15,7 @@ module API
           requires :"#{awardable_id_string}", type: Integer, desc: "The ID of an Issue, Merge Request or Snippet"
         end
 
-        [ ":id/#{awardable_string}/:#{awardable_id_string}/award_emoji",
+        [":id/#{awardable_string}/:#{awardable_id_string}/award_emoji",
           ":id/#{awardable_string}/:#{awardable_id_string}/notes/:note_id/award_emoji"
         ].each do |endpoint|
 

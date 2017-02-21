@@ -42,7 +42,7 @@ describe Bitbucket::Representation::Repo do
 
   describe '#clone_url' do
     it 'builds url' do
-      data = { 'links' => { 'clone' => [ { 'name' => 'https', 'href' => 'https://bibucket.org/test/test.git' }] } }
+      data = { 'links' => { 'clone' => [{ 'name' => 'https', 'href' => 'https://bibucket.org/test/test.git' }] } }
       expect(described_class.new(data).clone_url('abc')).to eq('https://x-token-auth:abc@bibucket.org/test/test.git')
     end
   end

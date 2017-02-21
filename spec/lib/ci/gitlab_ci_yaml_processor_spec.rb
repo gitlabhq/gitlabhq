@@ -580,7 +580,7 @@ module Ci
         context 'when syntax is incorrect' do
           context 'when variables defined but invalid' do
             let(:variables) do
-              [ 'VAR1', 'value1', 'VAR2', 'value2' ]
+              ['VAR1', 'value1', 'VAR2', 'value2']
             end
 
             it 'raises error' do
