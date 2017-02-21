@@ -108,8 +108,7 @@ describe('Deploy Board', () => {
 
     it('should render empty state', (done) => {
       setTimeout(() => {
-        expect(component.$el.children.length,).toEqual(0);
-
+        expect(component.$el.children.length).toEqual(0);
         done();
       }, 0);
     });
