@@ -78,6 +78,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     handle_omniauth
   end
 
+<<<<<<< HEAD
   def kerberos_spnego
     # The internal kerberos_spnego provider is a replacement for
     # omniauth-kerberos. Here we re-use the 'kerberos' provider name to ease
@@ -85,6 +86,12 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     # omniauth-kerberos gem and rename the internal 'kerberos_spnego'
     # provider to plain 'kerberos' and remove this special method.
     oauth['provider'] = 'kerberos'
+=======
+  def authentiq
+    if params['sid']
+      handle_service_ticket oauth['provider'], params['sid']
+    end
+>>>>>>> b596dd8fedd9dc8f9487e1e67a52a7b211bd956b
     handle_omniauth
   end
 

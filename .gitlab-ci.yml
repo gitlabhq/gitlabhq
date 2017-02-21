@@ -222,7 +222,7 @@ rake db:seed_fu:
     paths:
       - log/development.log
 
-karma:
+rake karma:
   cache:
     paths:
       - vendor/ruby
@@ -369,7 +369,7 @@ pages:
   <<: *dedicated-runner
   dependencies:
     - coverage
-    - karma
+    - rake karma
     - lint:javascript:report
   script:
     - mv public/ .public/

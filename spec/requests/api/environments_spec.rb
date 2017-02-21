@@ -14,10 +14,6 @@ describe API::Environments, api: true  do
 
   describe 'GET /projects/:id/environments' do
     context 'as member of the project' do
-      it_behaves_like 'a paginated resources' do
-        let(:request) { get api("/projects/#{project.id}/environments", user) }
-      end
-
       it 'returns project environments' do
         get api("/projects/#{project.id}/environments", user)
 

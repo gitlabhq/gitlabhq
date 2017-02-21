@@ -10,17 +10,9 @@ module API
 
         args.delete(:id)
         args[:milestone_title] = args.delete(:milestone)
+        args[:label_name] = args.delete(:labels)
 
-        match_all_labels = args.delete(:match_all_labels)
-        labels = args.delete(:labels)
-        args[:label_name] = labels if match_all_labels
-
-        issues = IssuesFinder.new(current_user, args).execute.inc_notes_with_associations
-
-        # TODO: Remove in 9.0  pass `label_name: args.delete(:labels)` to IssuesFinder
-        if !match_all_labels && labels.present?
-          issues = issues.includes(:labels).where('labels.title' => labels.split(','))
-        end
+        issues = IssuesFinder.new(current_user, args).execute
 
         issues.reorder(args[:order_by] => args[:sort])
       end
@@ -79,7 +71,7 @@ module API
       get ":id/issues" do
         group = find_group!(params[:id])
 
-        issues = find_issues(group_id: group.id, state: params[:state] || 'opened', match_all_labels: true)
+        issues = find_issues(group_id: group.id, state: params[:state] || 'opened')
 
         present paginate(issues), with: Entities::Issue, current_user: current_user
       end

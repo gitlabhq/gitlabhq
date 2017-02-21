@@ -95,6 +95,25 @@ so we need to set some guidelines for their use going forward:
 
 [lets-not]: https://robots.thoughtbot.com/lets-not
 
+### Time-sensitive tests
+
+[Timecop](https://github.com/travisjeffery/timecop) is available in our
+Ruby-based tests for verifying things that are time-sensitive. Any test that
+exercises or verifies something time-sensitive should make use of Timecop to
+prevent transient test failures.
+
+Example:
+
+```ruby
+it 'is overdue' do
+  issue = build(:issue, due_date: Date.tomorrow)
+
+  Timecop.freeze(3.days.from_now) do
+    expect(issue).to be_overdue
+  end
+end
+```
+
 ### Test speed
 
 GitLab has a massive test suite that, without parallelization, can take more
