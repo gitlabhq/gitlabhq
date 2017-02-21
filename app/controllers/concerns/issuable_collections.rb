@@ -28,13 +28,13 @@ module IssuableCollections
       downvotes = issuable_votes_count.find { |votes| votes.awardable_id == id && votes.downvote? }
       upvotes = issuable_votes_count.find { |votes| votes.awardable_id == id && votes.upvote? }
       notes = issuable_note_count.find { |notes| notes.noteable_id == id }
-      merge_requests = issuable_merge_requests_count.find { |mr| mr.issue_id == id }
+      merge_requests = issuable_merge_requests_count.find { |mr| mr.first == id }
 
       issuable_meta[id] = Issuable::IssuableMeta.new(
         upvotes.try(:count).to_i,
         downvotes.try(:count).to_i,
         notes.try(:count).to_i,
-        merge_requests.try(:count).to_i
+        merge_requests.try(:last).to_i
       )
     end
   end
