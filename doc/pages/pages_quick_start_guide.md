@@ -41,7 +41,7 @@ Let's go over both options.
 
 To make things easy for you, we've created this [group](https://gitlab.com/pages) of default projects containing the most popular SSGs templates.
 
-Watch the [video tutorial](#LINK) we've created for the steps below.
+Watch the [video tutorial](https://youtu.be/TWqh9MtT4Bg) we've created for the steps below.
 
 1. Choose your SSG template
 1. Fork a project from the [Pages group](https://gitlab.com/pages)
