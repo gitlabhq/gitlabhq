@@ -59,6 +59,81 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
     end
   end
 
+  describe '#add_concurrent_foreign_key' do
+    context 'inside a transaction' do
+      it 'raises an error' do
+        expect(model).to receive(:transaction_open?).and_return(true)
+
+        expect do
+          model.add_concurrent_foreign_key(:projects, :users, column: :user_id)
+        end.to raise_error(RuntimeError)
+      end
+    end
+
+    context 'outside a transaction' do
+      before do
+        allow(model).to receive(:transaction_open?).and_return(false)
+      end
+
+      context 'using MySQL' do
+        it 'creates a regular foreign key' do
+          allow(Gitlab::Database).to receive(:mysql?).and_return(true)
+
+          expect(model).to receive(:add_foreign_key).
+            with(:projects, :users, column: :user_id, on_delete: :cascade)
+
+          model.add_concurrent_foreign_key(:projects, :users, column: :user_id)
+        end
+      end
+
+      context 'using PostgreSQL' do
+        before do
+          allow(Gitlab::Database).to receive(:mysql?).and_return(false)
+        end
+
+        it 'creates a concurrent foreign key' do
+          expect(model).to receive(:disable_statement_timeout)
+          expect(model).to receive(:execute).ordered.with(/NOT VALID/)
+          expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
+
+          model.add_concurrent_foreign_key(:projects, :users, column: :user_id)
+        end
+      end
+    end
+  end
+
+  describe '#concurrent_foreign_key_name' do
+    it 'returns the name for a foreign key' do
+      name = model.concurrent_foreign_key_name(:this_is_a_very_long_table_name,
+                                               :with_a_very_long_column_name)
+
+      expect(name).to be_an_instance_of(String)
+      expect(name.length).to eq(13)
+    end
+  end
+
+  describe '#disable_statement_timeout' do
+    context 'using PostgreSQL' do
+      it 'disables statement timeouts' do
+        expect(Gitlab::Database).to receive(:postgresql?).and_return(true)
+
+        expect(model).to receive(:execute).with('SET statement_timeout TO 0')
+
+        model.disable_statement_timeout
+      end
+    end
+
+    context 'using MySQL' do
+      it 'does nothing' do
+        expect(Gitlab::Database).to receive(:postgresql?).and_return(false)
+
+        expect(model).not_to receive(:execute)
+
+        model.disable_statement_timeout
+      end
+    end
+  end
+
   describe '#update_column_in_batches' do
     before do
       create_list(:empty_project, 5)
