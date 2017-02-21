@@ -683,6 +683,9 @@ Lint/UnneededDisable:
 Lint/UnreachableCode:
   Enabled: true
 
+Lint/UnusedMethodArgument:
+  Enabled: false
+
 # Checks for useless assignment to a local variable.
 Lint/UselessAssignment:
   Enabled: true

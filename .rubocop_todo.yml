@@ -68,12 +68,6 @@ Lint/UnneededSplatExpansion:
 Lint/UnusedBlockArgument:
   Enabled: false
 
-# Offense count: 171
-# Cop supports --auto-correct.
-# Configuration parameters: AllowUnusedKeywordArguments, IgnoreEmptyMethods.
-Lint/UnusedMethodArgument:
-  Enabled: false
-
 # Offense count: 114
 # Configuration parameters: CountComments.
 Metrics/BlockLength:
