@@ -814,8 +814,6 @@ Example response:
       },
       "created_at": "2015-12-04T10:33:56.698Z",
       "system": false,
-      "upvote": false,
-      "downvote": false,
       "noteable_id": 377,
       "noteable_type": "Issue"
     },
@@ -843,13 +841,13 @@ The activities that update the timestamp are:
 
   - Git HTTP/SSH activities (such as clone, push)
   - User logging in into GitLab
-  
+
 The data is stored in Redis and it depends on it for being recorded and displayed
 over time. This means that we will lose the data if Redis gets flushed, or a custom
 TTL is reached.
 
 By default, it shows the activity for all users in the last 6 months, but this can be
-amended by using the `from` parameter. 
+amended by using the `from` parameter.
 
 This function takes pagination parameters `page` and `per_page` to restrict the list of users.
 
