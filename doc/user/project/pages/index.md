@@ -14,6 +14,8 @@ deploy static pages for your individual projects, your user or your group.
 Read [GitLab Pages on GitLab.com](#gitlab-pages-on-gitlab-com) for specific
 information, if you are using GitLab.com to host your website.
 
+Read through [All you Need to Know About GitLab Pages][pages-index-guide] for a list of all learning materials we have prepared for GitLab Pages (webpages, articles, guides, blog posts, video tutorials).
+
 ## Getting started with GitLab Pages
 
 > **Note:**
@@ -435,3 +437,4 @@ For a list of known issues, visit GitLab's [public issue tracker].
 [public issue tracker]: https://gitlab.com/gitlab-org/gitlab-ee/issues?label_name=Pages
 [ce-14605]: https://gitlab.com/gitlab-org/gitlab-ce/issues/14605
 [quick start guide]: ../../../ci/quick_start/README.md
+[pages-index-guide]: ../../../pages/
