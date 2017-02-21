@@ -213,8 +213,8 @@ git annex uninit
 - (GitLab Docs) [Git Annex][doc-1]
 - (GitLab Docs) [Git LFS][doc-2]
 
-[2fa]: ../user/profile/account/two_factor_authentication.md
-[token]: user/profile/account/two_factor_authentication.html#personal-access-tokens
+[2fa]: ../../user/profile/account/two_factor_authentication.md
+[token]: ../../user/profile/account/two_factor_authentication.html#personal-access-tokens
 [annex-tips]: ../git_annex.html#troubleshooting-tips
 [annex-direct]: https://git-annex.branchable.com/direct_mode/
 [annex-gitlab-use]: ../git_annex.md#using-gitlab-git-annex
