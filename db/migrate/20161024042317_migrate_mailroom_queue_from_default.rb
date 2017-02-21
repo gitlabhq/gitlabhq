@@ -8,7 +8,7 @@ class MigrateMailroomQueueFromDefault < ActiveRecord::Migration
 
   DOWNTIME = true
 
-  DOWNTIME_REASON = <<-EOF
+  DOWNTIME_REASON = <<-EOF.freeze
   Moving Sidekiq jobs from queues requires Sidekiq to be stopped. Not stopping
   Sidekiq will result in the loss of jobs that are scheduled after this
   migration completes.
@@ -25,7 +25,7 @@ class MigrateMailroomQueueFromDefault < ActiveRecord::Migration
       incoming_email: {
           'EmailReceiverWorker' => :email_receiver
       }
-  }
+  }.freeze
 
   def up
     Sidekiq.redis do |redis|

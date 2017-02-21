@@ -311,7 +311,7 @@ describe Environment, models: true do
   end
 
   describe '#generate_slug' do
-    SUFFIX = "-[a-z0-9]{6}"
+    SUFFIX = "-[a-z0-9]{6}".freeze
     {
       "staging-12345678901234567" => "staging-123456789" + SUFFIX,
       "9-staging-123456789012345" => "env-9-staging-123" + SUFFIX,

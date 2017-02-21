@@ -1,8 +1,8 @@
 module Bitbucket
   class Connection
-    DEFAULT_API_VERSION = '2.0'
-    DEFAULT_BASE_URI    = 'https://api.bitbucket.org/'
-    DEFAULT_QUERY       = {}
+    DEFAULT_API_VERSION = '2.0'.freeze
+    DEFAULT_BASE_URI    = 'https://api.bitbucket.org/'.freeze
+    DEFAULT_QUERY       = {}.freeze
 
     attr_reader :expires_at, :expires_in, :refresh_token, :token
 

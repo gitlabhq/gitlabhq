@@ -7,7 +7,7 @@ module API
     ISSUABLE_TYPES = {
       'merge_requests' => ->(id) { find_merge_request_with_access(id) },
       'issues' => ->(id) { find_project_issue(id) }
-    }
+    }.freeze
 
     params do
       requires :id, type: String, desc: 'The ID of a project'

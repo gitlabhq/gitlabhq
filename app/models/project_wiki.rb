@@ -7,7 +7,7 @@ class ProjectWiki
     'Markdown' => :markdown,
     'RDoc'     => :rdoc,
     'AsciiDoc' => :asciidoc
-  } unless defined?(MARKUPS)
+  }.freeze unless defined?(MARKUPS)
 
   class CouldNotCreateWikiError < StandardError; end
 

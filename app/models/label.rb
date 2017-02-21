@@ -11,7 +11,7 @@ class Label < ActiveRecord::Base
 
   cache_markdown_field :description, pipeline: :single_line
 
-  DEFAULT_COLOR = '#428BCA'
+  DEFAULT_COLOR = '#428BCA'.freeze
 
   default_value_for :color, DEFAULT_COLOR
 

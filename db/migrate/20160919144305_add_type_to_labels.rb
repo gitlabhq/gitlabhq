@@ -2,7 +2,7 @@ class AddTypeToLabels < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = true
-  DOWNTIME_REASON = 'Labels will not work as expected until this migration is complete.'
+  DOWNTIME_REASON = 'Labels will not work as expected until this migration is complete.'.freeze
 
   def change
     add_column :labels, :type, :string

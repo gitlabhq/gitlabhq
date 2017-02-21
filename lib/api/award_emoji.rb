@@ -3,7 +3,7 @@ module API
     include PaginationParams
 
     before { authenticate! }
-    AWARDABLES = %w[issue merge_request snippet]
+    AWARDABLES = %w[issue merge_request snippet].freeze
 
     resource :projects do
       AWARDABLES.each do |awardable_type|

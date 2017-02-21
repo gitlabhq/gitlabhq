@@ -22,7 +22,7 @@ class Commit
   DIFF_HARD_LIMIT_LINES = 50000
 
   # The SHA can be between 7 and 40 hex characters.
-  COMMIT_SHA_PATTERN = '\h{7,40}'
+  COMMIT_SHA_PATTERN = '\h{7,40}'.freeze
 
   class << self
     def decorate(commits, project)

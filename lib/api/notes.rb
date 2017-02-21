@@ -4,7 +4,7 @@ module API
 
     before { authenticate! }
 
-    NOTEABLE_TYPES = [Issue, MergeRequest, Snippet]
+    NOTEABLE_TYPES = [Issue, MergeRequest, Snippet].freeze
 
     params do
       requires :id, type: String, desc: 'The ID of a project'

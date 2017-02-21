@@ -22,7 +22,7 @@ class Project < ActiveRecord::Base
 
   extend Gitlab::ConfigHelper
 
-  UNKNOWN_IMPORT_URL = 'http://unknown.git'
+  UNKNOWN_IMPORT_URL = 'http://unknown.git'.freeze
 
   cache_markdown_field :description, pipeline: :description
 

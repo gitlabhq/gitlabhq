@@ -4,11 +4,11 @@ require 'active_support/core_ext/hash/keys'
 
 module Gitlab
   class Redis
-    CACHE_NAMESPACE = 'cache:gitlab'
-    SESSION_NAMESPACE = 'session:gitlab'
-    SIDEKIQ_NAMESPACE = 'resque:gitlab'
-    MAILROOM_NAMESPACE = 'mail_room:gitlab'
-    DEFAULT_REDIS_URL = 'redis://localhost:6379'
+    CACHE_NAMESPACE = 'cache:gitlab'.freeze
+    SESSION_NAMESPACE = 'session:gitlab'.freeze
+    SIDEKIQ_NAMESPACE = 'resque:gitlab'.freeze
+    MAILROOM_NAMESPACE = 'mail_room:gitlab'.freeze
+    DEFAULT_REDIS_URL = 'redis://localhost:6379'.freeze
     CONFIG_FILE = File.expand_path('../../config/resque.yml', __dir__)
 
     class << self

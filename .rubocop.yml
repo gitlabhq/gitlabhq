@@ -308,6 +308,9 @@ Style/MultilineOperationIndentation:
 Style/MultilineTernaryOperator:
   Enabled: true
 
+Style/MutableConstant:
+  Enabled: true
+
 # Favor unless over if for negative conditions (or control flow or).
 Style/NegatedIf:
   Enabled: true

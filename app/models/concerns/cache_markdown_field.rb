@@ -45,7 +45,7 @@ module CacheMarkdownField
     Project
     Release
     Snippet
-  ]
+  ].freeze
 
   def self.caching_classes
     CACHING_CLASSES.map(&:constantize)

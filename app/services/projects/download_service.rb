@@ -2,7 +2,7 @@ module Projects
   class DownloadService < BaseService
     WHITELIST = [
       /^[^.]+\.fogbugz.com$/
-    ]
+    ].freeze
 
     def initialize(project, url)
       @project, @url = project, url

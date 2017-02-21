@@ -25,7 +25,7 @@ class MigrateProcessCommitWorkerJobs < ActiveRecord::Migration
   end
 
   DOWNTIME = true
-  DOWNTIME_REASON = 'Existing workers will error until they are using a newer version of the code'
+  DOWNTIME_REASON = 'Existing workers will error until they are using a newer version of the code'.freeze
 
   disable_ddl_transaction!
 

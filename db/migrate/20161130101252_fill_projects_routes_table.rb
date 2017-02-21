@@ -5,7 +5,7 @@ class FillProjectsRoutesTable < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = true
-  DOWNTIME_REASON = 'No new projects should be created during data copy'
+  DOWNTIME_REASON = 'No new projects should be created during data copy'.freeze
 
   def up
     if Gitlab::Database.postgresql?

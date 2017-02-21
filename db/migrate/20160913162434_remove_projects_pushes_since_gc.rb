@@ -5,7 +5,7 @@ class RemoveProjectsPushesSinceGc < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = true
-  DOWNTIME_REASON = 'This migration removes an existing column'
+  DOWNTIME_REASON = 'This migration removes an existing column'.freeze
 
   disable_ddl_transaction!
 

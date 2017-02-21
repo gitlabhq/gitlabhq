@@ -471,11 +471,6 @@ Style/MultilineIfModifier:
     - 'app/models/project_wiki.rb'
     - 'lib/gitlab/workhorse.rb'
 
-# Offense count: 187
-# Cop supports --auto-correct.
-Style/MutableConstant:
-  Enabled: false
-
 # Offense count: 8
 # Cop supports --auto-correct.
 Style/NestedParenthesizedCalls:
