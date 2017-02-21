@@ -6,35 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 28
-# Configuration parameters: Include.
-# Include: **/Gemfile, **/gems.rb
-Bundler/OrderedGems:
-  Exclude:
-    - 'Gemfile'
-
-# Offense count: 176
-Lint/AmbiguousRegexpLiteral:
-  Enabled: false
-
-# Offense count: 54
-# Configuration parameters: AllowSafeAssignment.
-Lint/AssignmentInCondition:
-  Enabled: false
-
-# Offense count: 23
-Lint/HandleExceptions:
-  Enabled: false
-
-# Offense count: 1
-Lint/Loop:
-  Exclude:
-    - 'app/mailers/notify.rb'
-
-# Offense count: 32
-Lint/ShadowingOuterLocalVariable:
-  Enabled: false
-
 # Offense count: 10
 # Cop supports --auto-correct.
 Lint/UnifiedInteger:
@@ -61,17 +32,6 @@ Lint/UnneededSplatExpansion:
     - 'spec/requests/api/v3/projects_spec.rb'
     - 'spec/support/seed_helper.rb'
     - 'spec/support/test_env.rb'
-
-# Offense count: 89
-# Cop supports --auto-correct.
-# Configuration parameters: IgnoreEmptyBlocks, AllowUnusedKeywordArguments.
-Lint/UnusedBlockArgument:
-  Enabled: false
-
-# Offense count: 114
-# Configuration parameters: CountComments.
-Metrics/BlockLength:
-  Max: 302
 
 # Offense count: 3
 # Cop supports --auto-correct.
@@ -136,24 +96,6 @@ RSpec/SingleArgumentMessageChain:
 Rails/DynamicFindBy:
   Enabled: false
 
-# Offense count: 1162
-# Cop supports --auto-correct.
-# Configuration parameters: Include.
-# Include: spec/**/*, test/**/*
-Rails/HttpPositionalArguments:
-  Enabled: false
-
-# Offense count: 56
-Rails/OutputSafety:
-  Enabled: false
-
-# Offense count: 202
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: strict, flexible
-Rails/TimeZone:
-  Enabled: false
-
-# Offense count: 16
 # Cop supports --auto-correct.
 # Configuration parameters: Include.
 # Include: app/models/**/*.rb
@@ -183,14 +125,7 @@ Security/JSONLoad:
     - 'spec/models/project_services/irker_service_spec.rb'
     - 'spec/support/stub_gitlab_calls.rb'
 
-# Offense count: 431
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles, IndentationWidth.
-# SupportedStyles: with_first_parameter, with_fixed_indentation
-Style/AlignParameters:
-  Enabled: false
-
-# Offense count: 54
+# Offense count: 55
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 # SupportedStyles: percent_q, bare_percent
@@ -204,30 +139,10 @@ Style/BarePercentLiterals:
 Style/BracesAroundHashParameters:
   Enabled: false
 
-# Offense count: 7
-Style/CaseEquality:
-  Exclude:
-    - 'app/helpers/auth_helper.rb'
-    - 'app/helpers/builds_helper.rb'
-    - 'app/models/commit.rb'
-    - 'app/models/protected_branch.rb'
-    - 'app/services/projects/download_service.rb'
-    - 'config/initializers/trusted_proxies.rb'
-    - 'lib/gitlab/route_map.rb'
-
 # Offense count: 33
 # Cop supports --auto-correct.
 Style/ColonMethodCall:
   Enabled: false
-
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: Keywords.
-# Keywords: TODO, FIXME, OPTIMIZE, HACK, REVIEW
-Style/CommentAnnotation:
-  Exclude:
-    - 'config/routes/user.rb'
-    - 'spec/requests/api/v3/project_snippets_spec.rb'
 
 # Offense count: 32
 # Cop supports --auto-correct.
@@ -235,25 +150,6 @@ Style/CommentAnnotation:
 # SupportedStyles: assign_to_condition, assign_inside_condition
 Style/ConditionalAssignment:
   Enabled: false
-
-# Offense count: 21
-Style/DoubleNegation:
-  Exclude:
-    - 'app/controllers/users_controller.rb'
-    - 'app/models/commit.rb'
-    - 'app/models/merge_request.rb'
-    - 'app/models/project.rb'
-    - 'app/models/project_services/buildkite_service.rb'
-    - 'app/models/project_services/drone_ci_service.rb'
-    - 'app/models/project_wiki.rb'
-    - 'app/models/user.rb'
-    - 'config/initializers/6_validations.rb'
-    - 'lib/banzai/filter/abstract_reference_filter.rb'
-    - 'lib/banzai/filter/relative_link_filter.rb'
-    - 'lib/gitlab/git/diff_collection.rb'
-    - 'lib/gitlab/git/repository.rb'
-    - 'lib/gitlab/sherlock.rb'
-    - 'lib/gitlab/sherlock/middleware.rb'
 
 # Offense count: 6
 # Cop supports --auto-correct.
