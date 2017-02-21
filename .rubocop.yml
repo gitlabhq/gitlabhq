@@ -874,6 +874,21 @@ RSpec/NestedGroups:
 RSpec/LeadingSubject:
   Enabled: false
 
+Lint/AmbiguousRegexpLiteral:
+  Enabled: false
+
+Bundler/OrderedGems:
+  Enabled: false
+
+Lint/HandleExceptions:
+  Enabled: false
+
+Lint/Loop:
+  Enabled: false
+
+Metrics/BlockLength:
+  Enabled: false
+
 RSpec/LetSetup:
   Enabled: false
 
@@ -887,4 +902,31 @@ RSpec/RepeatedDescription:
   Enabled: false
 
 RSpec/SubjectStub:
+  Enabled: false
+Lint/ShadowingOuterLocalVariable:
+  Enabled: false
+
+Lint/AssignmentInCondition:
+  Enabled: false
+
+
+Lint/UnusedBlockArgument:
+  Enabled: false
+
+Rails/HttpPositionalArguments:
+  Enabled: false
+
+Rails/TimeZone:
+  Enabled: false
+
+Style/AlignParameters:
+  Enabled: false
+
+Style/CaseEquality:
+  Enabled: false
+
+Style/CommentAnnotation:
+  Enabled: false
+
+Style/DoubleNegation:
   Enabled: false
