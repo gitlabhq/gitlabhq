@@ -554,7 +554,12 @@
         index = false;
       }
       html = document.createElement('li');
-      if ((data === 'divider' || data === 'separator') && !rowHidden) {
+
+      if (rowHidden) {
+        html.style.display = 'none';
+      }
+
+      if ((data === 'divider' || data === 'separator')) {
         html.className = data;
         return html;
       }
@@ -604,10 +609,6 @@
         if (group) {
           link.dataset.group = group;
           link.dataset.index = index;
-        }
-
-        if (rowHidden) {
-          link.style.display = 'none';
         }
 
         html.appendChild(link);

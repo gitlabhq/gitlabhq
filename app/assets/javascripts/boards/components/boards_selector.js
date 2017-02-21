@@ -95,13 +95,19 @@ require('./board_new_form');
         }
       },
       updateMilestoneFilterDropdown() {
+        const $milestoneDropdownToggle = $('.js-milestone-select');
+        const glDropdown = $milestoneDropdownToggle.data('glDropdown');
         const $milestoneDropdown = $('.dropdown-menu-milestone');
-        const hideElements = this.board.milestone === undefined || this.board.milestone_id === -1;
+        const hideElements = this.board.milestone === undefined || this.board.milestone_id === null;
+
+        if (glDropdown.fullData) {
+          glDropdown.parseData(glDropdown.fullData);
+        }
 
         $milestoneDropdown.find('.dropdown-input, .dropdown-footer-list')
           .toggle(hideElements);
         $milestoneDropdown.find('.js-milestone-footer-content').toggle(!hideElements);
-        $milestoneDropdown.find('.dropdown-content li')
+        $milestoneDropdown.find('.dropdown-content li').show()
           .filter((i, el) => $(el).find('.is-active').length === 0)
           .toggle(hideElements);
 

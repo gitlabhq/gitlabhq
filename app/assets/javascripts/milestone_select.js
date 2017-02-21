@@ -121,7 +121,7 @@
           vue: $dropdown.hasClass('js-issue-board-sidebar'),
           hideRow: function(milestone) {
             if ($('html').hasClass('issue-boards-page') && !$dropdown.hasClass('js-issue-board-sidebar') &&
-              !$dropdown.closest('.add-issues-modal').length && gl.issueBoards.BoardsStore.state.currentBoard.milestone_id) {
+              !$dropdown.closest('.add-issues-modal').length && gl.issueBoards.BoardsStore.state.currentBoard.milestone) {
               return milestone !== gl.issueBoards.BoardsStore.state.currentBoard.milestone.title;
             }
 
