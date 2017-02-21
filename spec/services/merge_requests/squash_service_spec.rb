@@ -54,14 +54,12 @@ describe MergeRequests::SquashService do
         let(:squash_sha) { service.execute(merge_request)[:squash_sha] }
         let(:squash_commit) { project.repository.commit(squash_sha) }
 
-        it 'copies the author info and message from the last commit in the source branch' do
-          diff_head_commit = merge_request.diff_head_commit
+        it 'copies the author info and message from the merge request' do
+          expect(squash_commit.author_name).to eq(merge_request.author.name)
+          expect(squash_commit.author_email).to eq(merge_request.author.email)
 
-          expect(squash_commit.author_name).to eq(diff_head_commit.author_name)
-          expect(squash_commit.author_email).to eq(diff_head_commit.author_email)
-
-          # The commit message on the 'real' commit doesn't have a trailing newline
-          expect(squash_commit.message.chomp).to eq(diff_head_commit.message)
+          # Commit messages have a trailing newline, but titles don't.
+          expect(squash_commit.message.chomp).to eq(merge_request.title)
         end
 
         it 'sets the current user as the committer' do

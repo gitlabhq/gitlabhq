@@ -40,9 +40,12 @@ module MergeRequests
       )
 
       run_git_command(
-        %W(commit -C #{merge_request.diff_head_sha}),
+        %W(commit -m #{merge_request.title}),
         tree_path,
-        git_env.merge('GIT_COMMITTER_NAME' => current_user.name, 'GIT_COMMITTER_EMAIL' => current_user.email),
+        git_env.merge('GIT_COMMITTER_NAME' => current_user.name,
+                      'GIT_COMMITTER_EMAIL' => current_user.email,
+                      'GIT_AUTHOR_NAME' => merge_request.author.name,
+                      'GIT_AUTHOR_EMAIL' => merge_request.author.email),
         'commit squashed changes'
       )
 
