@@ -1,7 +1,7 @@
 @mixin fade($gradient-direction, $gradient-color) {
   visibility: hidden;
   opacity: 0;
-  z-index: 2;
+  z-index: 1;
   position: absolute;
   bottom: 12px;
   width: 43px;
@@ -18,7 +18,7 @@
 
   .fa {
     position: relative;
-    top: 5px;
+    top: 6px;
     font-size: 18px;
   }
 }
@@ -79,7 +79,6 @@
   }
 
   &.sub-nav {
-    text-align: center;
     background-color: $gray-normal;
 
     .container-fluid {
@@ -287,7 +286,6 @@
   background: $gray-light;
   border-bottom: 1px solid $border-color;
   transition: padding $sidebar-transition-duration;
-  text-align: center;
 
   .container-fluid {
     position: relative;
@@ -353,7 +351,7 @@
     right: -5px;
 
     .fa {
-      right: -7px;
+      right: -28px;
     }
   }
 
@@ -383,7 +381,7 @@
       left: 0;
 
       .fa {
-        left: 10px;
+        left: -4px;
       }
     }
   }

@@ -1218,6 +1218,8 @@ ActiveRecord::Schema.define(version: 20170215200045) do
     t.datetime "updated_at", null: false
   end
 
+  add_index "user_agent_details", ["subject_id", "subject_type"], name: "index_user_agent_details_on_subject_id_and_subject_type", using: :btree
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
