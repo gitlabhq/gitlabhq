@@ -41,7 +41,7 @@ module MergeRequests
     end
 
     def log_error(message)
-      Gitlab::GitLogger.error(message)
+      Gitlab::GitLogger.error("#{self.class.name} error (#{merge_request.to_reference(full: true)}): #{message}")
     end
 
     def clean_dir
