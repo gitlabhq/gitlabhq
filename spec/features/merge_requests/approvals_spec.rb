@@ -283,6 +283,28 @@ feature 'Merge request approvals', js: true, feature: true do
       end
     end
   end
+
+  context 'when merge when discussions resolved is active', :js do
+    let(:project) do
+      create(:project,
+        approvals_before_merge: 1,
+        only_allow_merge_if_all_discussions_are_resolved: true)
+    end
+
+    before do
+      project.team << [user, :developer]
+      login_as(user)
+
+      visit new_namespace_project_merge_request_path(project.namespace, project, merge_request: { target_branch: 'master', source_branch: 'feature' })
+
+      click_button 'Submit merge request'
+    end
+
+    it 'does not show checking ability text' do
+      expect(find('.mr-widget-body')).not_to have_text('Checking ability to merge automatically')
+      expect(find('.mr-widget-body')).to have_selector('.accept-action')
+    end
+  end
 end
 
 def approve_merge_request
