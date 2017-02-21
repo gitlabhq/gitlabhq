@@ -7,6 +7,9 @@ class GeoBackfillWorker
 
   def perform
     start = Time.now
+    project_ids = find_project_ids
+
+    logger.info "Started Geo backfilling for #{project_ids.length} project(s)"
 
     project_ids.each do |project_id|
       break if Time.now - start >= RUN_TIME
@@ -19,11 +22,13 @@ class GeoBackfillWorker
         Geo::RepositoryBackfillService.new(project).execute
       end
     end
+
+    logger.info "Finished Geo backfilling for #{project_ids.length} project(s)"
   end
 
   private
 
-  def project_ids
+  def find_project_ids
     return [] if Project.count == Geo::ProjectRegistry.count
 
     Project.where.not(id: Geo::ProjectRegistry.pluck(:id))
@@ -32,12 +37,14 @@ class GeoBackfillWorker
   end
 
   def try_obtain_lease
+    logger.info 'Trying to obtain lease to backfill repositories'
     uuid = Gitlab::ExclusiveLease.new(lease_key, timeout: LEASE_TIMEOUT).try_obtain
 
-    return unless uuid
+    logger.info 'Could not obtain lease to backfill repositories' and return unless uuid
 
     yield
 
+    logger.info('Releasing lease to backfill repositories')
     release_lease(uuid)
   end
 
