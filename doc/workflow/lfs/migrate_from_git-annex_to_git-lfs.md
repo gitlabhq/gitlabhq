@@ -1,275 +1,228 @@
-# Migration Guide from Git Annex to Git LFS
+# Migration guide from Git Annex to Git LFS
 
-> Type: user guide
->
-> Level: beginner
+>**Note:**
+Git Annex support [will be dropped][issue-remove-annex] with GitLab Enterprise
+Edition 9.0 which is to be released on March 22nd 2017.
 
-> GitLab EE is deprecating
-[support to **git-annex**][post-intro-annex] from version
-8.17 on (released on 2017/02/22). It
-[will be removed][issue-remove-annex] completely in
-GitLab 9.0 (2017/03/22).
+Both [Git Annex][] and [Git LFS][] are tools to manage large files in Git.
 
-Both [Git Annex][] (**git-annex**) and [Git LFS][]
-(**git-lfs**) are tools to manage large files in Git.
+## History
 
-To understand the main differences between **git-annex**
-ang **git-lfs**, read through this [overview][annex-vs-lfs].
+Git Annex [was introduced in GitLab Enterprise Edition 7.8][post-3], at a time
+where Git LFS didn't yet exist. A few months later, GitLab brought support for
+Git LFS in [GitLab 8.2][post-2] and is available for both Community and
+Enterprise editions.
 
-## Configurations
+## Differences between Git Annex and Git LFS
 
-To use [**git-annex** in GitLab EE][annex-ee], you had
-first to install and enable it on your server and
-in your [local environment][install-annex-local].
-On GitLab.com, **git-annex** was enabled, and you had
-only to install it locally.
+- Git Annex works only through SSH, whereas Git LFS only through HTTPS.
+- Annex files are stored in a sub-directory of the normal repositories, whereas
+  LFS files are stored outside of the repositories in a place you can define.
+- Git Annex requires a more complex setup, but has much more options than Git
+  LFS. You can compare the commands each one offers by running `man git-annex`
+  and `man git-lfs`.
+
+## Migration steps
+
+>**Note:**
+Since Git Annex files are stored in a sub-directory of the normal repositories
+(`.git/annex/objects`) and LFS files are stored outside of the repositories,
+they are not compatible as they are using a different scheme. Therefore, the
+migration has to be done manually per repository.
+
+There are basically two steps you need to take in order to migrate from Git
+Annex to Git LFS.
 
 ### TL; DR
 
-> We assumeyou have [git-annex enabled](#enabling-annex) in your repository.
+If you know what you are doing and want to skip the reading, this is what you
+need to do (we assume you have [git-annex enabled][annex-gitlab-use] in your
+repository). Fire up a terminal, navigate to your Git repository and:
 
-If you want to skip the reading and go straight to the point,
-this is what you need to do:
-
-```bash
-# Disable git-annex
-$ git annex direct
-$ git annex uninit
-$ git annex indirect
-$ git add .
-$ git commit -m "commit message"
-$ git push
-# Enable git-lfs
-$ git lfs track <files>
-```
-
-### Enabling Annex
-
-This step is only important to remind you how did
-you enabled **git-annex**, so disabling it will become
-more logical. Of course, you don't need to repeat
-these steps.
-
-Considering you have **git-annex** up and running in
-both remote and local copies, to enable **git-annex** to
-your project, initiate **git-annex** and sync your repo:
-
-- Initiate **git-annex** in your repository:
+1. Disable `git-annex`:
 
     ```bash
-    $ git annex init
-    init ok
-    (recording state in git...)
-    ```
-- Add the images you want to track to your e.g.,
-`images` directory
-- Track the large files, for example, the `images`
-directory:
-
-    ```bash
-    $ git annex add images/*
-    add images/01.png ok
-    add images/02.png ok
-    (recording state in git...)
-    # commit and sync
-    $ git commit -m "add tracked images"
-    $ git annex sync --content
+    git annex sync --content
+    git annex direct
+    git annex uninit
+    git annex indirect
     ```
 
-By doing so, **git-annex** will record the tracked files
-in the `.git/config` file in your repository root.
+1. Enable `git-lfs`:
 
-You will also find a new directory at `.git/annex/`.
+    ```
+    git lfs track <files>
+    git add .
+    git commit -m "commit message"
+    git push
+    ```
 
-The files you assign to be tracked with **git-annex**
-will not affect `.git/config` records. The files are
-turned into symbolic links that point to data in
-`.git/annex/objects/`.
+### Disabling Git Annex in your repo
 
-The image file will contain the symbolic link, like this:
-
-```
-../.git/annex/objects/ZW/1k/SHA256E-s82701--6384039733b5035b559efd5a2e25a493ab6e09aabfd5162cc03f6f0ec238429d.png/SHA256E-s82701--6384039733b5035b559efd5a2e25a493ab6e09aabfd5162cc03f6f0ec238429d.png
-```
-
-Your files will be found in the branch `master`, but
-you'll notice that there are more branches created by
-the `annex sync` command.
-
-Use `git annex info` to retrieve the information about
-the local copy of your repository.
-
-### Disabling **git-annex**
-
-Before changing anything, make sure you have a backup
-of your repository first. There are a couple ways to
-do that, but you can simply clone it to another local
-path and push it to GitLab if you want a remote backup
-as well.
-
+Before changing anything, make sure you have a backup of your repository first.
+There are a couple of ways to do that, but you can simply clone it to another
+local path and maybe push it to GitLab if you want a remote backup as well.
 Here you'll find a guide on
 [how to back up a **git-annex** repository to an external hard drive][bkp-ext-drive].
 
-To [stop using **git-annex**][uninit], you need to disable
-**git-annex** first.
+Since Annex files are stored as objects with symlinks and cannot be directly
+modified, we need to first remove those symlinks.
 
-Make sure the [**git-annex** mode is `direct`][stackoverflow-1]:
+>**Note:**
+Make sure the you read about the [`direct` mode][annex-direct] as it contains
+useful information that may fit in your use case. Note that `annex direct` is
+deprecated in Git Annex version 6, so you may need to upgrade your repository
+if the server also has Git Annex 6 installed. Read more in the
+[Git Annex troubleshooting tips][annex-tips] section.
 
-```bash
-$ git annex direct
-commit
-On branch master
-Your branch is up-to-date with 'origin/master'.
-nothing to commit, working tree clean
-ok
-direct images/01.png ok
-direct images/02.png ok
-direct  ok
-```
-
-Then, we run `git annex uninit`:
-
-
-```bash
-$ git annex uninit
-unannex images/01.png ok
-unannex images/02.png ok
-Deleted branch git-annex (was 186d141).
-```
-
-It will unannex every file in the repository, leaving your repository with the original files.
-
-To make these changes to be applied to the remote repo, we change the mode back to `indirect`:
-
-```bash
-$ git annex indirect
-(merging origin/git-annex into git-annex...)
-(recording state in git...)
-commit  (recording state in git...)
-
-ok
-(recording state in git...)
-[master cc5fd03] commit before switching to indirect mode
- 2 files changed, 2 deletions(-)
- delete mode 120000 images/01.png
- delete mode 120000 images/02.png
-ok
-indirect  ok
-ok
-```
-
-Now, we can add, commit, and push to reflect the
-changes on the remote repo:
-
-```bash
-$ git add .
-$ git commit -m "annex uninit"
-[master 46d5de1] annex uninit
- 2 files changed, 0 insertions(+), 0 deletions(-)
- create mode 100644 images/01.png
- create mode 100644 images/02.png
-$ git push origin master
-```
-
-To keep your repo clean, let's remove all
-**git-annex** related branches from your repository.
-
-- On GitLab, navigate to your project's **Repository** > **Branches**
-
-    ![repository branches](images/git-annex-branches.png)
-
-- Delete all branches created by **git-annex**: `git-annex`, and all under `synced/*`.
-
-### Enabling Git LFS
-
-Git LFS is enabled by default on all GitLab products
-(GitLab CE, GitLab EE, GitLab.com), therefore, you
-don't need to do anything in the server-side.
-
-First, let's make sure you have **git-lfs** installed
-locally:
-
-```bash
-$ git lfs help
-```
-
-If the terminal doesn't prompt you with a full response
-on **git-lfs** commands, [install LFS][install-lfs] first.
-
-[Enable **git-lfs**][lfs-track] for the group of files you
-want to track with it. You can track specific files, all
-files containing the same extension, or an entire
-directory:
-
-- Per file:
+1. Use `annex direct`:
 
     ```bash
-    git lfs track images/01.png
+    git annex direct
     ```
 
-- Per extension:
+    The output should be similar to this:
 
     ```bash
-    git lfs track *.png
+    commit
+    On branch master
+    Your branch is up-to-date with 'origin/master'.
+    nothing to commit, working tree clean
+    ok
+    direct debian.iso ok
+    direct  ok
     ```
 
-- Per directory:
+1. Disable Git Annex with [`annex uninit`][uninit]:
 
     ```bash
-    git lfs track images/*
+    git annex uninit
     ```
 
-Example:
+    The output should be similar to this:
+
+    ```bash
+    unannex debian.iso ok
+    Deleted branch git-annex (was 2534d2c).
+    ```
+
+    This will `unannex` every file in the repository, leaving the original files.
+
+1. Switch back to `indirect` mode:
+
+    ```bash
+    git annex indirect
+    ```
+
+    The output should be similar to this:
+
+    ```bash
+    (merging origin/git-annex into git-annex...)
+    (recording state in git...)
+    commit  (recording state in git...)
+
+    ok
+    (recording state in git...)
+    [master fac3194] commit before switching to indirect mode
+     1 file changed, 1 deletion(-)
+     delete mode 120000 alpine-virt-3.4.4-x86_64.iso
+    ok
+    indirect  ok
+    ok
+    ```
+---
+
+At this point, you have two options. Either add, commit and push the files
+directly back to GitLab or switch to Git LFS. We will tackle the LFS switch in
+the next section.
+
+### Enabling Git LFS in your repo
+
+Git LFS is enabled by default on all GitLab products (GitLab CE, GitLab EE,
+GitLab.com), therefore, you don't need to do anything server-side.
+
+1. First, make sure you have `git-lfs` installed locally:
+
+    ```bash
+    git lfs help
+    ```
+
+    If the terminal doesn't prompt you with a full response on `git-lfs` commands,
+    [install the Git LFS client][install-lfs] first.
+
+1. Inside the repo, run the following command to initiate LFS:
+
+    ```bash
+    git lfs install
+    ```
+
+1. Enable `git-lfs` for the group of files you want to track. You
+   can track specific files, all files containing the same extension, or an
+   entire directory:
+
+    ```bash
+    git lfs track images/01.png   # per file
+    git lfs track **/*.png        # per extension
+    git lfs track images/         # per directory
+    ```
+
+    Once you do that, run `git status` and you'll see `.gitattributes` added
+    to your repo. It collects all file patterns that you chose to track via
+    `git-lfs`.
+
+1. Add the files, commit and push them to GitLab:
+
+    ```bash
+    git add .
+    git commit -m "commit message"
+    git push
+    ```
+
+    Once asked, enter your login credentials since LFS communicates only with
+    HTTPS. If you have [2FA enabled][2fa], make sure to use a
+    [personal access token][token] instead of your password.
+
+
+## Removing the Git Annex branches
+
+After the migration finishes successfully, you can remove all `git-annex`
+related branches from your repository.
+
+On GitLab, navigate to your project's **Repository ➔ Branches** and delete all
+branches created by Git Annex: `git-annex`, and all under `synced/`.
+
+![repository branches](images/git-annex-branches.png)
+
+If there are still some Annex objects inside your repository (`.git/annex/`)
+or references inside `.git/config`, run `annex uninit` again:
 
 ```bash
-$ git lfs track images/*
-Tracking images/01.png
-Tracking images/02.png
+git annex uninit
 ```
 
-Once you do that, run `git status` and you'll see
-`.gitattributes` added to your repo. It collects all
-file patterns that you chose to track via **git-lfs**.
-
-To see **git-lfs** working, look at the project's size (in
-bytes), update one of your files, and push a change
-to the remote.
-
-- Repo size: 492 KB
-- Add, commit, and push
-- Repo size: 492 KB
-
-Though the image has 32KB, the repo remains the same
-size after pushing it again.
-
-Note that **git-annex** stores files inside of `annex/objects`
-directory. This directory is within the git bare repository in
-`git-data/repositories`. **git-annex** and **git-lfs** objects
-are not compatible as they are using a different scheme.
-Therefore, the migration has to be made per repository.
-
-### Further Reading
+## Further Reading
 
 - (Blog Post) [Getting Started with Git FLS][post-1]
 - (Blog Post) [Announcing LFS Support in GitLab][post-2]
 - (Blog Post) [GitLab Annex Solves the Problem of Versioning Large Binaries with Git][post-3]
-- (GitLab Doc) [Git Annex][doc-1]
-- (GitLab Doc) [Git LFS][doc-2]
+- (GitLab Docs) [Git Annex][doc-1]
+- (GitLab Docs) [Git LFS][doc-2]
 
+[2fa]: ../user/profile/account/two_factor_authentication.md
+[token]: user/profile/account/two_factor_authentication.html#personal-access-tokens
+[annex-tips]: ../git_annex.html#troubleshooting-tips
+[annex-direct]: https://git-annex.branchable.com/direct_mode/
+[annex-gitlab-use]: ../git_annex.md#using-gitlab-git-annex
 [annex-ee]: https://docs.gitlab.com/ee/workflow/git_annex.html
-[annex-vs-lfs]: https://workingconcept.com/blog/git-annex-vs-git-lfs
 [bkp-ext-drive]: https://www.thomas-krenn.com/en/wiki/Git-annex_Repository_on_an_External_Hard_Drive
 [doc-1]: https://docs.gitlab.com/ee/workflow/git_annex.html
 [doc-2]: https://docs.gitlab.com/ee/workflow/lfs/manage_large_binaries_with_git_lfs.html
 [Git Annex]: http://git-annex.branchable.com/
 [Git LFS]: https://git-lfs.github.com/
-[install-annex-local]: https://git-annex.branchable.com/install/
 [install-lfs]: https://git-lfs.github.com/
 [issue-remove-annex]: https://gitlab.com/gitlab-org/gitlab-ee/issues/1648
 [lfs-track]: https://about.gitlab.com/2017/01/30/getting-started-with-git-lfs-tutorial/#tracking-files-with-lfs
 [post-1]: https://about.gitlab.com/2017/01/30/getting-started-with-git-lfs-tutorial/
 [post-2]: https://about.gitlab.com/2015/11/23/announcing-git-lfs-support-in-gitlab/
 [post-3]: https://about.gitlab.com/2015/02/17/gitlab-annex-solves-the-problem-of-versioning-large-binaries-with-git/
-[post-intro-annex]: https://about.gitlab.com/2015/02/17/gitlab-annex-solves-the-problem-of-versioning-large-binaries-with-git/
-[stackoverflow-1]: http://stackoverflow.com/questions/24447047/remove-git-annex-repository-from-file-tree
 [uninit]: https://git-annex.branchable.com/git-annex-uninit/
