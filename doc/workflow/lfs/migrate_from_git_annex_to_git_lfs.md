@@ -15,7 +15,8 @@ Enterprise editions.
 
 ## Differences between Git Annex and Git LFS
 
-- Git Annex works only through SSH, whereas Git LFS only through HTTPS.
+- Git Annex works only through SSH, whereas Git LFS works both with SSH and HTTPS
+  (SSH support was added in GitLab 8.12).
 - Annex files are stored in a sub-directory of the normal repositories, whereas
   LFS files are stored outside of the repositories in a place you can define.
 - Git Annex requires a more complex setup, but has much more options than Git
@@ -178,10 +179,9 @@ GitLab.com), therefore, you don't need to do anything server-side.
     git push
     ```
 
-    Once asked, enter your login credentials since LFS communicates only with
-    HTTPS. If you have [2FA enabled][2fa], make sure to use a
+    If your remote is set up with HTTP, you will be asked to enter your login
+    credentials. If you have [2FA enabled][2fa], make sure to use a
     [personal access token][token] instead of your password.
-
 
 ## Removing the Git Annex branches
 

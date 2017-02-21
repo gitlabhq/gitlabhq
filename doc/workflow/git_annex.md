@@ -197,7 +197,7 @@ can cause `git-annex` to raise unpredicted warnings and errors.
 Consult the [Annex upgrade page][annex-upgrade] for more information about
 the differences between versions. You can find out which version is installed
 on your server by navigating to <https://pkgs.org/download/git-annex> and
-seaching for your distribution.
+searching for your distribution.
 
 Although there is no general guide for `git-annex` errors, there are a few tips
 on how to go around the warnings.
@@ -234,7 +234,7 @@ push origin
 [deprecate-annex-issue]: https://gitlab.com/gitlab-org/gitlab-ee/issues/1648
 [git-annex]: https://git-annex.branchable.com/ "git-annex website"
 [gitlab shell]: https://gitlab.com/gitlab-org/gitlab-shell "GitLab Shell repository"
-[guide]: lfs/migrate_from_git-annex_to_git-lfs.html
+[guide]: lfs/migrate_from_git_annex_to_git_lfs.html
 [issue]: https://git-annex.branchable.com/forum/Error_from_git-annex-shell_on_creation_of_gcrypt_special_remote/ "git-annex issue"
 [reconfigure GitLab]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
 [restart GitLab]: ../administration/restart_gitlab.md#installations-from-source
