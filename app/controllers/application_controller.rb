@@ -41,7 +41,7 @@ class ApplicationController < ActionController::Base
   end
 
   rescue_from Gitlab::Auth::TooManyIps do |e|
-    head :forbidden, retry_after: UniqueIpsLimiter.config.unique_ips_limit_time_window
+    head :forbidden, retry_after: Gitlab::Auth::UniqueIpsLimiter.config.unique_ips_limit_time_window
   end
 
   def redirect_back_or_default(default: root_path, options: {})

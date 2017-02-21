@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Auth::UniqueIpsLimiter, :redis, lib: true do
-  include_context 'enable unique ips sign in limit'
+  include_context 'unique ips sign in limit'
   let(:user) { create(:user) }
 
   describe '#count_unique_ips' do

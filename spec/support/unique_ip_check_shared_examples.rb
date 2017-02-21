@@ -1,4 +1,4 @@
-shared_context 'enable unique ips sign in limit' do
+shared_context 'unique ips sign in limit' do
   include StubENV
   before(:each) do
     Gitlab::Redis.with(&:flushall)
@@ -19,7 +19,7 @@ shared_context 'enable unique ips sign in limit' do
 end
 
 shared_examples 'user login operation with unique ip limit' do
-  include_context 'enable unique ips sign in limit' do
+  include_context 'unique ips sign in limit' do
     before { current_application_settings.update!(unique_ips_limit_per_user: 1) }
 
     it 'allows user authenticating from the same ip' do
@@ -38,23 +38,23 @@ shared_examples 'user login operation with unique ip limit' do
   end
 end
 
-shared_examples 'user login request with unique ip limit' do
-  include_context 'enable unique ips sign in limit' do
+shared_examples 'user login request with unique ip limit' do |success_status = 200|
+  include_context 'unique ips sign in limit' do
     before { current_application_settings.update!(unique_ips_limit_per_user: 1) }
 
     it 'allows user authenticating from the same ip' do
       change_ip('ip')
       request
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(success_status)
 
       request
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(success_status)
     end
 
     it 'blocks user authenticating from two distinct ips' do
       change_ip('ip')
       request
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(success_status)
 
       change_ip('ip2')
       request

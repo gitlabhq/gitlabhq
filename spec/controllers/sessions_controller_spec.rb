@@ -30,11 +30,11 @@ describe SessionsController do
           expect(SecurityEvent.last.details[:with]).to eq('standard')
         end
 
-        include_examples 'user login operation with unique ip limit' do
-          def operation
+        include_examples 'user login request with unique ip limit', 302 do
+          def request
             post(:create, user: { login: user.username, password: user.password })
-
             expect(subject.current_user).to eq user
+            subject.sign_out user
           end
         end
       end
