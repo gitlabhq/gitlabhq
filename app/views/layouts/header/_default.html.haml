@@ -36,6 +36,10 @@
                 = icon('bell fw')
                 %span.badge.todos-pending-count{ class: ("hidden" if todos_pending_count == 0) }
                   = todos_count_format(todos_pending_count)
+            - if current_user.can_create_project?
+              %li
+                = link_to new_project_path, title: 'New project', aria: { label: "New project" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+                  = icon('plus fw')
             - if Gitlab::Sherlock.enabled?
               %li
                 = link_to sherlock_transactions_path, title: 'Sherlock Transactions',
