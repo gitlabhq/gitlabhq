@@ -16,18 +16,17 @@ describe 'Project variables', js: true do
   it 'shows list of variables' do
     page.within('.variables-table') do
       expect(page).to have_content(variable.key)
-      expect(page).to have_content(variable.value)
     end
   end
 
   it 'adds new variable' do
-    fill_in('variable_key', with: 'new_key')
-    fill_in('variable_value', with: 'new value')
+    fill_in('variable_key', with: 'key')
+    fill_in('variable_value', with: 'key value')
     click_button('Add new variable')
 
+    expect(page).to have_content('Variables were successfully updated.')
     page.within('.variables-table') do
-      expect(page).to have_content('new_key')
-      expect(page).to have_content('new value')
+      expect(page).to have_content('key')
     end
   end
 
@@ -36,6 +35,7 @@ describe 'Project variables', js: true do
     fill_in('variable_value', with: '')
     click_button('Add new variable')
 
+    expect(page).to have_content('Variables were successfully updated.')
     page.within('.variables-table') do
       expect(page).to have_content('new_key')
     end
@@ -80,16 +80,12 @@ describe 'Project variables', js: true do
     end
 
     expect(page).to have_content('Update variable')
-    fill_in('variable_key', with: 'new_key')
-    fill_in('variable_value', with: 'new value')
+    fill_in('variable_key', with: 'key')
+    fill_in('variable_value', with: 'key value')
     click_button('Save variable')
 
-    page.within('.variables-table') do
-      expect(page).not_to have_content(variable.key)
-      expect(page).not_to have_content(variable.value)
-      expect(page).to have_content('new_key')
-      expect(page).to have_content('new value')
-    end
+    expect(page).to have_content('Variable was successfully updated.')
+    expect(project.variables.first.value).to eq('key value')
   end
 
   it 'edits variable with empty value' do
@@ -101,9 +97,7 @@ describe 'Project variables', js: true do
     fill_in('variable_value', with: '')
     click_button('Save variable')
 
-    page.within('.variables-table') do
-      expect(page).to have_content(variable.key)
-      expect(page).not_to have_content(variable.value)
-    end
+    expect(page).to have_content('Variable was successfully updated.')
+    expect(project.variables.first.value).to eq('')
   end
 end
