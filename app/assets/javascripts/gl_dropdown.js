@@ -47,9 +47,10 @@
           }
           // Only filter asynchronously only if option remote is set
           if (this.options.remote) {
-            $inputContainer.parent().addClass('is-loading');
             clearTimeout(timeout);
             return timeout = setTimeout(function() {
+              $inputContainer.parent().addClass('is-loading');
+
               return this.options.query(this.input.val(), function(data) {
                 $inputContainer.parent().removeClass('is-loading');
                 return this.options.callback(data);
