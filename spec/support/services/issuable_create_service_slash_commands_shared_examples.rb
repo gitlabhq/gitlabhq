@@ -11,7 +11,7 @@ shared_examples 'new issuable record that supports slash commands' do
   let(:params) { base_params.merge(defined?(default_params) ? default_params : {}).merge(example_params) }
   let(:issuable) { described_class.new(project, user, params).execute }
 
-  before { project.team << [assignee, :master ] }
+  before { project.team << [assignee, :master] }
 
   context 'with labels in command only' do
     let(:example_params) do

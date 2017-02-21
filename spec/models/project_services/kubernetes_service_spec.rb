@@ -171,7 +171,7 @@ describe KubernetesService, models: true, caching: true do
 
     context 'with invalid pods' do
       it 'returns no terminals' do
-        stub_reactive_cache(service, pods: [ { "bad" => "pod" } ])
+        stub_reactive_cache(service, pods: [{ "bad" => "pod" }])
 
         is_expected.to be_empty
       end
@@ -184,7 +184,7 @@ describe KubernetesService, models: true, caching: true do
       before do
         stub_reactive_cache(
           service,
-          pods: [ pod, pod, kube_pod(app: "should-be-filtered-out") ]
+          pods: [pod, pod, kube_pod(app: "should-be-filtered-out")]
         )
       end
 

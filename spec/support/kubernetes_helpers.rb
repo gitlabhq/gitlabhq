@@ -11,7 +11,7 @@ module KubernetesHelpers
 
   def kube_pods_body(*pods)
     { "kind" => "PodList",
-      "items" => [ kube_pod ],
+      "items" => [kube_pod],
     }
   end
 

@@ -45,7 +45,7 @@ module API
         requires :sha, type: String, desc: 'The commit, branch name, or tag name'
         requires :filepath, type: String, desc: 'The path to the file to display'
       end
-      get [ ":id/repository/blobs/:sha", ":id/repository/commits/:sha/blob" ] do
+      get [":id/repository/blobs/:sha", ":id/repository/commits/:sha/blob"] do
         repo = user_project.repository
 
         commit = repo.commit(params[:sha])

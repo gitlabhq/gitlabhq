@@ -71,7 +71,7 @@ module Issuable
 
     scope :without_label, -> { joins("LEFT OUTER JOIN label_links ON label_links.target_type = '#{name}' AND label_links.target_id = #{table_name}.id").where(label_links: { id: nil }) }
     scope :join_project, -> { joins(:project) }
-    scope :inc_notes_with_associations, -> { includes(notes: [ :project, :author, :award_emoji ]) }
+    scope :inc_notes_with_associations, -> { includes(notes: [:project, :author, :award_emoji]) }
     scope :references_project, -> { references(:project) }
     scope :non_archived, -> { join_project.where(projects: { archived: false }) }
 

@@ -729,11 +729,6 @@ Style/SpaceInLambdaLiteral:
 Style/SpaceInsideBlockBraces:
   Enabled: false
 
-# Offense count: 120
-# Cop supports --auto-correct.
-Style/SpaceInsideBrackets:
-  Enabled: false
-
 # Offense count: 90
 # Cop supports --auto-correct.
 Style/SpaceInsideParens:

@@ -3,7 +3,7 @@ class KubernetesService < DeploymentService
   include Gitlab::Kubernetes
   include ReactiveCaching
 
-  self.reactive_cache_key = ->(service) { [ service.class.model_name.singular, service.project_id ] }
+  self.reactive_cache_key = ->(service) { [service.class.model_name.singular, service.project_id] }
 
   # Namespace defaults to the project path, but can be overridden in case that
   # is an invalid or inappropriate name
@@ -167,7 +167,7 @@ class KubernetesService < DeploymentService
     url = URI.parse(api_url)
     prefix = url.path.sub(%r{/+\z}, '')
 
-    url.path = [ prefix, *parts ].join("/")
+    url.path = [prefix, *parts].join("/")
 
     url.to_s
   end
