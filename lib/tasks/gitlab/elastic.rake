@@ -114,6 +114,61 @@ namespace :gitlab do
       puts "Index recreated".color(:green)
     end
 
+    desc "GitLab | Elasticsearch | Add feature access levels to project"
+    task add_feature_visibility_levels_to_project: :environment do
+      client = Project.__elasticsearch__.client
+
+      #### Check if this task has already been run ####
+      mapping = client.indices.get(index: Project.index_name)
+      project_fields = mapping['gitlab-development']['mappings']['project']['properties'].keys
+
+      if project_fields.include?('issues_access_level')
+        puts 'Index mapping is already up to date'.color(:yellow)
+        exit
+      end
+      ####
+
+      project_fields = {
+        properties: {
+          issues_access_level: {
+              type: :integer
+          },
+          merge_requests_access_level: {
+              type: :integer
+          },
+          snippets_access_level: {
+              type: :integer
+          },
+          wiki_access_level: {
+              type: :integer
+          },
+          repository_access_level: {
+              type: :integer
+          }
+        }
+      }
+
+      note_fields = {
+        properties: {
+          noteable_type: {
+            type: :string,
+            index: :not_analyzed
+          },
+          noteable_id: {
+            type: :integer
+          }
+        }
+      }
+
+      client.indices.put_mapping(index: Project.index_name, type: :project, body: project_fields)
+      client.indices.put_mapping(index: Project.index_name, type: :note, body: note_fields)
+
+      Project.__elasticsearch__.import
+      Note.searchable.import_with_parent
+
+      puts "Done".color(:green)
+    end
+
     def batch_size
       ENV.fetch('BATCH', 300).to_i
     end

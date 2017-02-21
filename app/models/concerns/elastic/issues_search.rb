@@ -45,6 +45,7 @@ module Elastic
             basic_query_hash(%w(title^2 description), query)
           end
 
+        options[:feature] = 'issues'
         query_hash = project_ids_filter(query_hash, options)
         query_hash = confidentiality_filter(query_hash, options[:current_user])
 

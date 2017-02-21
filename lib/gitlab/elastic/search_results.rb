@@ -127,7 +127,8 @@ module Gitlab
       end
 
       def merge_requests
-        MergeRequest.elastic_search(query, options: base_options)
+        options = base_options.merge(project_ids: non_guest_project_ids)
+        MergeRequest.elastic_search(query, options: options)
       end
 
       def blobs
@@ -135,7 +136,7 @@ module Gitlab
           Kaminari.paginate_array([])
         else
           opt = {
-            additional_filter: build_filter_by_project
+            additional_filter: repository_filter
           }
 
           Repository.search(
@@ -151,7 +152,7 @@ module Gitlab
           Kaminari.paginate_array([])
         else
           options = {
-            additional_filter: build_filter_by_project
+            additional_filter: repository_filter
           }
 
           Repository.find_commits_by_message_with_elastic(
@@ -163,14 +164,28 @@ module Gitlab
         end
       end
 
-      def build_filter_by_project
-        conditions = [{ terms: { id: limit_project_ids } }]
+      def repository_filter
+        conditions = [{ terms: { id: non_guest_project_ids } }]
 
         if public_and_internal_projects
-          conditions << { term: { visibility_level: Project::PUBLIC } }
+          conditions << {
+                          bool: {
+                            filter: [
+                              { term: { visibility_level: Project::PUBLIC } },
+                              { term: { repository_access_level: ProjectFeature::ENABLED } }
+                            ]
+                          }
+                        }
 
           if current_user
-            conditions << { term: { visibility_level: Project::INTERNAL } }
+            conditions << {
+                            bool: {
+                              filter: [
+                                { term: { visibility_level: Project::INTERNAL } },
+                                { term: { repository_access_level: ProjectFeature::ENABLED } }
+                              ]
+                            }
+                          }
           end
         end
 
@@ -179,11 +194,26 @@ module Gitlab
             parent_type: 'project',
             query: {
               bool: {
-                should: conditions
+                should: conditions,
+                must_not: { term: { repository_access_level: ProjectFeature::DISABLED } }
               }
             }
           }
         }
+      end
+
+      def guest_project_ids
+        if current_user
+          current_user.authorized_projects.
+            where('project_authorizations.access_level = ?', Gitlab::Access::GUEST).
+            pluck(:id)
+        else
+          []
+        end
+      end
+
+      def non_guest_project_ids
+        @non_guest_project_ids ||= limit_project_ids - guest_project_ids
       end
 
       def default_scope
