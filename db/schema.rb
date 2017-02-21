@@ -1127,6 +1127,7 @@ ActiveRecord::Schema.define(version: 20170215200045) do
   add_index "projects", ["description"], name: "index_projects_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
   add_index "projects", ["last_activity_at"], name: "index_projects_on_last_activity_at", using: :btree
   add_index "projects", ["last_repository_check_failed"], name: "index_projects_on_last_repository_check_failed", using: :btree
+  add_index "projects", ["mirror_last_successful_update_at"], name: "index_projects_on_mirror_last_successful_update_at", using: :btree
   add_index "projects", ["name"], name: "index_projects_on_name_trigram", using: :gin, opclasses: {"name"=>"gin_trgm_ops"}
   add_index "projects", ["namespace_id"], name: "index_projects_on_namespace_id", using: :btree
   add_index "projects", ["path"], name: "index_projects_on_path", using: :btree
@@ -1216,6 +1217,7 @@ ActiveRecord::Schema.define(version: 20170215200045) do
     t.integer "sync_time", default: 60, null: false
   end
 
+  add_index "remote_mirrors", ["last_successful_update_at"], name: "index_remote_mirrors_on_last_successful_update_at", using: :btree
   add_index "remote_mirrors", ["project_id"], name: "index_remote_mirrors_on_project_id", using: :btree
   add_index "remote_mirrors", ["sync_time"], name: "index_remote_mirrors_on_sync_time", using: :btree
 
