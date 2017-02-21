@@ -47,7 +47,7 @@ Watch the [video tutorial](https://youtu.be/TWqh9MtT4Bg) we've created for the s
 1. Fork a project from the [Pages group](https://gitlab.com/pages)
 1. Remove the fork relationship by navigating to your **Project**'s **Settings** > **Edit Project**
   
-    ![remove fork relashionship]()
+    ![remove fork relashionship](images/remove_fork_relashionship.png)
 
 1. Enable Shared Runners for your fork: navigate to your **Project**'s **Settings** > **CI/CD Pipelines**
 1. Trigger a build (push a change to any file)
@@ -74,11 +74,11 @@ To turn a **project website** forked from the Pages group into a **user/group** 
 1. Clone it to your local computer, add your website files to your project, add, commit and push to GitLab.
 1. From the your **Project**'s page, click **Set up CI**:
     
-    ![add new file]()
+    ![setup GitLab CI](images/setup_ci.png)
 
 1. Choose one of the templates from the dropbox menu. Pick up the template corresponding to the SSG you're using (or plain HTML).
 
-    ![gitlab-ci templates]()
+    ![gitlab-ci templates](images/choose_ci_template.png)
 
 Once you have both site files and `.gitlab-ci.yml` in your project's root, GitLab CI will build your site and deploy it with Pages. Once the first build passes, you see your site is live by navigating to your **Project**'s **Settings** > **Pages**, where you'll find its default URL.
 

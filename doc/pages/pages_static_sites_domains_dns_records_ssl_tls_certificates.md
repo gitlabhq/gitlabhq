@@ -86,7 +86,7 @@ In case you want to point a root domain (`example.com`) to your GitLab Pages sit
 
 **Practical Example:**
 
-![DNS A record pointing to GitLab.com Pages server]()
+![DNS A record pointing to GitLab.com Pages server](images/dns_a_record_example.png)
 
 #### DNS CNAME record
 
@@ -96,7 +96,7 @@ Notice that, despite it's a user or project website, the `CNAME` should point to
 
 **Practical Example:**
 
-![DNS CNAME record pointing to GitLab.com project]()
+![DNS CNAME record pointing to GitLab.com project](images/dns_cname_record_example.png)
 
 #### TL;DR
 
@@ -138,7 +138,7 @@ Regardless the CA you choose, the steps to add your certificate to your Pages pr
 1. An intermediary certificate
 1. A public key
 
-![Pages project - adding certificates]()
+![Pages project - adding certificates](images/add_certificate_to_pages.png)
 
 These fields are found under your **Project**'s **Settings** > **Pages** > **New Domain**.
 
