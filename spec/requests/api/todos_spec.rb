@@ -3,7 +3,7 @@ require 'spec_helper'
 describe API::Todos, api: true do
   include ApiHelpers
 
-  let(:project_1) { create(:empty_project) }
+  let(:project_1) { create(:empty_project, :test_repo) }
   let(:project_2) { create(:empty_project) }
   let(:author_1) { create(:user) }
   let(:author_2) { create(:user) }
@@ -11,7 +11,7 @@ describe API::Todos, api: true do
   let(:merge_request) { create(:merge_request, source_project: project_1) }
   let!(:pending_1) { create(:todo, :mentioned, project: project_1, author: author_1, user: john_doe) }
   let!(:pending_2) { create(:todo, project: project_2, author: author_2, user: john_doe) }
-  let!(:pending_3) { create(:todo, project: project_1, author: author_2, user: john_doe) }
+  let!(:pending_3) { create(:on_commit_todo, project: project_1, author: author_2, user: john_doe) }
   let!(:done) { create(:todo, :done, project: project_1, author: author_1, user: john_doe) }
 
   before do

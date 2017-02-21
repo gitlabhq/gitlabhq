@@ -44,4 +44,13 @@ FactoryGirl.define do
       state :done
     end
   end
+
+  factory :on_commit_todo, class: Todo do
+    project factory: :empty_project
+    author
+    user
+    action { Todo::ASSIGNED }
+    commit_id RepoHelpers.sample_commit.id
+    target_type "Commit"
+  end
 end
