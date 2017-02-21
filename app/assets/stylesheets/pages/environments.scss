@@ -156,10 +156,10 @@
   .deploy-board-information {
     order: 1;
     display: flex;
-    width: 80px;
+    width: 70px;
     flex-wrap: wrap;
     justify-content: center;
-    margin: 20px 10px;
+    margin: 20px 0 20px 10px;
 
     > span {
       text-align: center;
@@ -247,8 +247,6 @@
 }
 
 .deploy-board {
-  border-top: 1px solid $border-color;
-  border-bottom: 1px solid $border-color;
   padding: 10px;
   background-color: $gray-light;
   min-height: 20px;
@@ -259,8 +257,4 @@
     display: block;
     font-size: 20px;
   }
-}
-
-td.deploy-board-container {
-  padding: 0;
 }
