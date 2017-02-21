@@ -889,6 +889,10 @@ Lint/Loop:
 Metrics/BlockLength:
   Enabled: false
 
+Performance/RedundantMerge:
+  Enabled: true
+  MaxKeyValuePairs: 1
+
 RSpec/LetSetup:
   Enabled: false
 
