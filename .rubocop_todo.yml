@@ -6,23 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 23
-# Cop supports --auto-correct.
-Lint/UnneededSplatExpansion:
-  Exclude:
-    - 'app/services/projects/update_pages_service.rb'
-    - 'config/application.rb'
-    - 'lib/banzai/filter/gollum_tags_filter.rb'
-    - 'lib/bitbucket/page.rb'
-    - 'lib/gitlab/markup_helper.rb'
-    - 'spec/helpers/auth_helper_spec.rb'
-    - 'spec/models/project_wiki_spec.rb'
-    - 'spec/requests/api/projects_spec.rb'
-    - 'spec/requests/api/tags_spec.rb'
-    - 'spec/requests/api/v3/projects_spec.rb'
-    - 'spec/support/seed_helper.rb'
-    - 'spec/support/test_env.rb'
-
 # Offense count: 3
 # Cop supports --auto-correct.
 Performance/RedundantBlockCall:
