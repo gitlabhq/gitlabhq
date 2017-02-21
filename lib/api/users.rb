@@ -209,6 +209,7 @@ module API
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
+        use :pagination
       end
       get ':id/keys' do
         authenticated_as_admin!
@@ -216,7 +217,7 @@ module API
         user = User.find_by(id: params[:id])
         not_found!('User') unless user
 
-        present user.keys, with: Entities::SSHKey
+        present paginate(user.keys), with: Entities::SSHKey
       end
 
       desc 'Delete an existing SSH key from a specified user. Available only for admins.' do
@@ -266,13 +267,14 @@ module API
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
+        use :pagination
       end
       get ':id/emails' do
         authenticated_as_admin!
         user = User.find_by(id: params[:id])
         not_found!('User') unless user
 
-        present user.emails, with: Entities::Email
+        present paginate(user.emails), with: Entities::Email
       end
 
       desc 'Delete an email address of a specified user. Available only for admins.' do
@@ -312,7 +314,7 @@ module API
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
       end
-      put ':id/block' do
+      post ':id/block' do
         authenticated_as_admin!
         user = User.find_by(id: params[:id])
         not_found!('User') unless user
@@ -328,7 +330,7 @@ module API
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
       end
-      put ':id/unblock' do
+      post ':id/unblock' do
         authenticated_as_admin!
         user = User.find_by(id: params[:id])
         not_found!('User') unless user
@@ -373,8 +375,11 @@ module API
       desc "Get the currently authenticated user's SSH keys" do
         success Entities::SSHKey
       end
+      params do
+        use :pagination
+      end
       get "keys" do
-        present current_user.keys, with: Entities::SSHKey
+        present paginate(current_user.keys), with: Entities::SSHKey
       end
 
       desc 'Get a single key owned by currently authenticated user' do
@@ -423,8 +428,11 @@ module API
       desc "Get the currently authenticated user's email addresses" do
         success Entities::Email
       end
+      params do
+        use :pagination
+      end
       get "emails" do
-        present current_user.emails, with: Entities::Email
+        present paginate(current_user.emails), with: Entities::Email
       end
 
       desc 'Get a single email address owned by the currently authenticated user' do

@@ -1,6 +1,7 @@
 module API
-  # Git Tags API
   class Tags < Grape::API
+    include PaginationParams
+
     before { authorize! :download_code, user_project }
 
     params do
@@ -10,9 +11,12 @@ module API
       desc 'Get a project repository tags' do
         success Entities::RepoTag
       end
+      params do
+        use :pagination
+      end
       get ":id/repository/tags" do
-        present user_project.repository.tags.sort_by(&:name).reverse,
-                with: Entities::RepoTag, project: user_project
+        tags = ::Kaminari.paginate_array(user_project.repository.tags.sort_by(&:name).reverse)
+        present paginate(tags), with: Entities::RepoTag, project: user_project
       end
 
       desc 'Get a single repository tag' do

@@ -1,5 +1,4 @@
 const EnvironmentsFolderComponent = require('./environments_folder_view');
-require('../../vue_shared/vue_resource_interceptor');
 
 $(() => {
   window.gl = window.gl || {};

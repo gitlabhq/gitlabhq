@@ -221,4 +221,4 @@
 
     return Calendar;
   })();
-}).call(this);
+}).call(window);

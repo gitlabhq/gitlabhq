@@ -12,6 +12,7 @@
             %th.wide Message
             %th Action
         = render @abuse_reports
+    = paginate @abuse_reports, theme: 'gitlab'
   - else
     .empty-state
       .text-center

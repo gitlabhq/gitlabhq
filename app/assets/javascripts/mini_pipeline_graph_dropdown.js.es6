@@ -28,7 +28,7 @@
      * All dropdown events are fired at the .dropdown-menu's parent element.
      */
     bindEvents() {
-      $(document).on('shown.bs.dropdown', this.container, this.getBuildsList);
+      $(document).off('shown.bs.dropdown', this.container).on('shown.bs.dropdown', this.container, this.getBuildsList);
     }
 
     /**

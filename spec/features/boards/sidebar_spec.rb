@@ -15,8 +15,11 @@ describe 'Issue Boards', feature: true, js: true do
   let!(:issue2)      { create(:labeled_issue, project: project, labels: [development, stretch]) }
   let(:board)        { create(:board, project: project) }
   let!(:list)        { create(:list, board: board, label: development, position: 0) }
+  let(:card) { first('.board').first('.card') }
 
   before do
+    Timecop.freeze
+
     project.team << [user, :master]
 
     login_as(user)
@@ -25,32 +28,28 @@ describe 'Issue Boards', feature: true, js: true do
     wait_for_vue_resource
   end
 
+  after do
+    Timecop.return
+  end
+
   it 'shows sidebar when clicking issue' do
-    page.within(first('.board')) do
-      first('.card').click
-    end
+    click_card(card)
 
     expect(page).to have_selector('.issue-boards-sidebar')
   end
 
   it 'closes sidebar when clicking issue' do
-    page.within(first('.board')) do
-      first('.card').click
-    end
+    click_card(card)
 
     expect(page).to have_selector('.issue-boards-sidebar')
 
-    page.within(first('.board')) do
-      first('.card').click
-    end
+    click_card(card)
 
     expect(page).not_to have_selector('.issue-boards-sidebar')
   end
 
   it 'closes sidebar when clicking close button' do
-    page.within(first('.board')) do
-      first('.card').click
-    end
+    click_card(card)
 
     expect(page).to have_selector('.issue-boards-sidebar')
 
@@ -60,9 +59,7 @@ describe 'Issue Boards', feature: true, js: true do
   end
 
   it 'shows issue details when sidebar is open' do
-    page.within(first('.board')) do
-      first('.card').click
-    end
+    click_card(card)
 
     page.within('.issue-boards-sidebar') do
       expect(page).to have_content(issue2.title)
@@ -70,14 +67,14 @@ describe 'Issue Boards', feature: true, js: true do
     end
   end
 
-  it 'removes card from board when clicking remove button' do
-    page.within(first('.board')) do
-      first('.card').click
-    end
+  it 'removes card from board when clicking ' do
+    click_card(card)
 
     page.within('.issue-boards-sidebar') do
       click_button 'Remove from board'
     end
+
+    wait_for_vue_resource
 
     page.within(first('.board')) do
       expect(page).to have_selector('.card', count: 1)
@@ -86,9 +83,7 @@ describe 'Issue Boards', feature: true, js: true do
 
   context 'assignee' do
     it 'updates the issues assignee' do
-      page.within(first('.board')) do
-        first('.card').click
-      end
+      click_card(card)
 
       page.within('.assignee') do
         click_link 'Edit'
@@ -104,17 +99,12 @@ describe 'Issue Boards', feature: true, js: true do
         expect(page).to have_content(user.name)
       end
 
-      page.within(first('.board')) do
-        page.within(first('.card')) do
-          expect(page).to have_selector('.avatar')
-        end
-      end
+      expect(card).to have_selector('.avatar')
     end
 
     it 'removes the assignee' do
-      page.within(first('.board')) do
-        find('.card:nth-child(2)').click
-      end
+      card_two = first('.board').find('.card:nth-child(2)')
+      click_card(card_two)
 
       page.within('.assignee') do
         click_link 'Edit'
@@ -130,17 +120,11 @@ describe 'Issue Boards', feature: true, js: true do
         expect(page).to have_content('No assignee')
       end
 
-      page.within(first('.board')) do
-        page.within(find('.card:nth-child(2)')) do
-          expect(page).not_to have_selector('.avatar')
-        end
-      end
+      expect(card_two).not_to have_selector('.avatar')
     end
 
     it 'assignees to current user' do
-      page.within(first('.board')) do
-        first('.card').click
-      end
+      click_card(card)
 
       page.within(find('.assignee')) do
         expect(page).to have_content('No assignee')
@@ -152,17 +136,11 @@ describe 'Issue Boards', feature: true, js: true do
         expect(page).to have_content(user.name)
       end
 
-      page.within(first('.board')) do
-        page.within(first('.card')) do
-          expect(page).to have_selector('.avatar')
-        end
-      end
+      expect(card).to have_selector('.avatar')
     end
 
     it 'resets assignee dropdown' do
-      page.within(first('.board')) do
-        first('.card').click
-      end
+      click_card(card)
 
       page.within('.assignee') do
         click_link 'Edit'
@@ -192,9 +170,7 @@ describe 'Issue Boards', feature: true, js: true do
 
   context 'milestone' do
     it 'adds a milestone' do
-      page.within(first('.board')) do
-        first('.card').click
-      end
+      click_card(card)
 
       page.within('.milestone') do
         click_link 'Edit'
@@ -212,9 +188,7 @@ describe 'Issue Boards', feature: true, js: true do
     end
 
     it 'removes a milestone' do
-      page.within(first('.board')) do
-        find('.card:nth-child(2)').click
-      end
+      click_card(card)
 
       page.within('.milestone') do
         click_link 'Edit'
@@ -234,9 +208,7 @@ describe 'Issue Boards', feature: true, js: true do
 
   context 'due date' do
     it 'updates due date' do
-      page.within(first('.board')) do
-        first('.card').click
-      end
+      click_card(card)
 
       page.within('.due_date') do
         click_link 'Edit'
@@ -252,9 +224,7 @@ describe 'Issue Boards', feature: true, js: true do
 
   context 'labels' do
     it 'adds a single label' do
-      page.within(first('.board')) do
-        first('.card').click
-      end
+      click_card(card)
 
       page.within('.labels') do
         click_link 'Edit'
@@ -273,18 +243,12 @@ describe 'Issue Boards', feature: true, js: true do
         end
       end
 
-      page.within(first('.board')) do
-        page.within(first('.card')) do
-          expect(page).to have_selector('.label', count: 2)
-          expect(page).to have_content(bug.title)
-        end
-      end
+      expect(card).to have_selector('.label', count: 2)
+      expect(card).to have_content(bug.title)
     end
 
     it 'adds a multiple labels' do
-      page.within(first('.board')) do
-        first('.card').click
-      end
+      click_card(card)
 
       page.within('.labels') do
         click_link 'Edit'
@@ -305,19 +269,13 @@ describe 'Issue Boards', feature: true, js: true do
         end
       end
 
-      page.within(first('.board')) do
-        page.within(first('.card')) do
-          expect(page).to have_selector('.label', count: 3)
-          expect(page).to have_content(bug.title)
-          expect(page).to have_content(regression.title)
-        end
-      end
+      expect(card).to have_selector('.label', count: 3)
+      expect(card).to have_content(bug.title)
+      expect(card).to have_content(regression.title)
     end
 
     it 'removes a label' do
-      page.within(first('.board')) do
-        first('.card').click
-      end
+      click_card(card)
 
       page.within('.labels') do
         click_link 'Edit'
@@ -336,26 +294,35 @@ describe 'Issue Boards', feature: true, js: true do
         end
       end
 
-      page.within(first('.board')) do
-        page.within(first('.card')) do
-          expect(page).not_to have_selector('.label')
-          expect(page).not_to have_content(stretch.title)
-        end
-      end
+      expect(card).not_to have_selector('.label')
+      expect(card).not_to have_content(stretch.title)
     end
   end
 
   context 'subscription' do
     it 'changes issue subscription' do
-      page.within(first('.board')) do
-        first('.card').click
-      end
+      click_card(card)
 
       page.within('.subscription') do
         click_button 'Subscribe'
         wait_for_ajax
         expect(page).to have_content("Unsubscribe")
       end
+    end
+  end
+
+  def click_card(card)
+    page.within(card) do
+      first('.card-number').click
+    end
+
+    wait_for_sidebar
+  end
+
+  def wait_for_sidebar
+    # loop until the CSS transition is complete
+    Timeout.timeout(0.5) do
+      loop until evaluate_script('$(".right-sidebar").outerWidth()') == 290
     end
   end
 end

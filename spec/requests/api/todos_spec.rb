@@ -33,6 +33,7 @@ describe API::Todos, api: true do
         get api('/todos', john_doe)
 
         expect(response.status).to eq(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(3)
         expect(json_response[0]['id']).to eq(pending_3.id)
@@ -52,6 +53,7 @@ describe API::Todos, api: true do
           get api('/todos', john_doe), { author_id: author_2.id }
 
           expect(response.status).to eq(200)
+          expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.length).to eq(2)
         end
@@ -64,6 +66,7 @@ describe API::Todos, api: true do
           get api('/todos', john_doe), { type: 'MergeRequest' }
 
           expect(response.status).to eq(200)
+          expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.length).to eq(1)
         end
@@ -74,6 +77,7 @@ describe API::Todos, api: true do
           get api('/todos', john_doe), { state: 'done' }
 
           expect(response.status).to eq(200)
+          expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.length).to eq(1)
         end
@@ -84,6 +88,7 @@ describe API::Todos, api: true do
           get api('/todos', john_doe), { project_id: project_2.id }
 
           expect(response.status).to eq(200)
+          expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.length).to eq(1)
         end
@@ -94,6 +99,7 @@ describe API::Todos, api: true do
           get api('/todos', john_doe), { action: 'mentioned' }
 
           expect(response.status).to eq(200)
+          expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.length).to eq(1)
         end

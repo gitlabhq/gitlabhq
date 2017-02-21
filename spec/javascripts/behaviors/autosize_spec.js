@@ -18,4 +18,4 @@ require('~/behaviors/autosize');
       return $(document).trigger('load');
     };
   });
-}).call(this);
+}).call(window);

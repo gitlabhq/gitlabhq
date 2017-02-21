@@ -22,6 +22,10 @@ module Spammable
     delegate :ip_address, :user_agent, to: :user_agent_detail, allow_nil: true
   end
 
+  def submittable_as_spam_by?(current_user)
+    current_user && current_user.admin? && submittable_as_spam?
+  end
+
   def submittable_as_spam?
     if user_agent_detail
       user_agent_detail.submittable? && current_application_settings.akismet_enabled

@@ -15,4 +15,4 @@
 
     return StatGraph;
   })();
-}).call(this);
+}).call(window);

@@ -60,8 +60,9 @@ module API
       put ':id' do
         runner = get_runner(params.delete(:id))
         authenticate_update_runner!(runner)
+        update_service = Ci::UpdateRunnerService.new(runner)
 
-        if runner.update(declared_params(include_missing: false))
+        if update_service.update(declared_params(include_missing: false))
           present runner, with: Entities::RunnerDetails, current_user: current_user
         else
           render_validation_error!(runner)
