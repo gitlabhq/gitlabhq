@@ -153,7 +153,7 @@ module API
       params_hash = custom_params || params
       attrs = {}
       keys.each do |key|
-        if params_hash[key].present? or (params_hash.has_key?(key) and params_hash[key] == false)
+        if params_hash[key].present? || (params_hash.has_key?(key) && params_hash[key] == false)
           attrs[key] = params_hash[key]
         end
       end

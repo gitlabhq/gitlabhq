@@ -180,13 +180,6 @@ Security/JSONLoad:
 Style/AlignParameters:
   Enabled: false
 
-# Offense count: 27
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: always, conditionals
-Style/AndOr:
-  Enabled: false
-
 # Offense count: 54
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles.

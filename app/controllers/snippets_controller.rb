@@ -23,7 +23,7 @@ class SnippetsController < ApplicationController
     if params[:username].present?
       @user = User.find_by(username: params[:username])
 
-      render_404 and return unless @user
+      return render_404 unless @user
 
       @snippets = SnippetsFinder.new.execute(current_user, {
         filter: :by_user,
