@@ -4,7 +4,7 @@ Our V4 API version is currently available as *Beta*! It means that V3
 will still be supported and remain unchanged for now, but be aware that the following
 changes are in V4:
 
-### Changes
+### 8.17
 
 - Removed `/projects/:search` (use: `/projects?search=x`)
 - `iid` filter has been removed from `projects/:id/issues`
@@ -12,6 +12,9 @@ changes are in V4:
 - Endpoints under `projects/merge_request/:id` have been removed (use: `projects/merge_requests/:id`)
 - Project snippets do not return deprecated field `expires_at`
 - Endpoints under `projects/:id/keys` have been removed (use `projects/:id/deploy_keys`)
+
+### 9.0
+
 - Status 409 returned for POST `project/:id/members` when a member already exists
 - Moved `DELETE /projects/:id/star` to `POST /projects/:id/unstar`
 - Removed the following deprecated Templates endpoints (these are still accessible with `/templates` prefix)
