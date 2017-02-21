@@ -35,6 +35,10 @@ module Projects
         available_project_keys.size
       end
 
+      def key_available?(deploy_key)
+        available_keys.include?(deploy_key)
+      end
+
       def available_public_keys
         return @available_public_keys if defined?(@available_public_keys)
 
