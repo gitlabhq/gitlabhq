@@ -86,32 +86,47 @@ describe Projects::BlobController do
     end
 
     context 'when user has forked project' do
-      let(:guest) { create(:user) }
-      let!(:forked_project) { Projects::ForkService.new(project, guest).execute }
-      let!(:merge_request) { create(:merge_request, source_project: project, target_project: project, source_branch: "fork-test-1", target_branch: "master") }
+      let(:forked_project_link) { create(:forked_project_link, forked_from_project: project) }
+      let!(:forked_project) { forked_project_link.forked_to_project }
+      let(:guest) { forked_project.owner }
 
-      before { sign_in(guest) }
+      before do
+        sign_in(guest)
+      end
 
-      it "redirects to forked project new merge request" do
-        default_params[:target_branch] = "fork-test-1"
-        default_params[:create_merge_request] = 1
+      context 'when editing on the fork' do
+        before do
+          default_params[:namespace_id] = forked_project.namespace.to_param
+          default_params[:project_id] = forked_project.to_param
+        end
 
-        allow_any_instance_of(Files::UpdateService).to receive(:commit).and_return(:success)
+        it 'redirects to blob' do
+          put :update, default_params
 
-        put :update, default_params
+          expect(response).to redirect_to(namespace_project_blob_path(forked_project.namespace, forked_project, 'master/CHANGELOG'))
+        end
+      end
 
-        expect(response).to redirect_to(
-          new_namespace_project_merge_request_path(
-            forked_project.namespace,
-            forked_project,
-            merge_request: {
-              source_project_id: forked_project.id,
-              target_project_id: project.id,
-              source_branch: "fork-test-1",
-              target_branch: "master"
-            }
+      context 'when editing on the original repository' do
+        it "redirects to forked project new merge request" do
+          default_params[:target_branch] = "fork-test-1"
+          default_params[:create_merge_request] = 1
+
+          put :update, default_params
+
+          expect(response).to redirect_to(
+            new_namespace_project_merge_request_path(
+              forked_project.namespace,
+              forked_project,
+              merge_request: {
+                source_project_id: forked_project.id,
+                target_project_id: project.id,
+                source_branch: "fork-test-1",
+                target_branch: "master"
+              }
+            )
           )
-        )
+        end
       end
     end
   end

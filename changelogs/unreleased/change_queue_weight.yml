@@ -1,0 +1,4 @@
+---
+title: Increase process_commit queue weight from 2 to 3
+merge_request: 9326
+author: blackst0ne

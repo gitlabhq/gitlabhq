@@ -269,7 +269,6 @@ require('./smart_interval');
         $('.ci_widget.ci-error').show();
         this.setMergeButtonClass('btn-danger');
       }
-      this.initMiniPipelineGraph();
     };
 
     MergeRequestWidget.prototype.showCICoverage = function(coverage) {

@@ -6,6 +6,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Move RepositoryUpdateRemoteMirrorWorker jobs to project_mirror Sidekiq queue. !1234
 - Fixed merge request environment link not displaying.
 - Reduce queries needed to check if node is a primary or secondary Geo node.
+- Read true-up info from license and validate it. !1159
 
 ## 8.16.5 (2017-02-14)
 

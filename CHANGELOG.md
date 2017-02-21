@@ -5,7 +5,6 @@ entry.
 ## 8.16.6 (2017-02-17)
 
 - API: Fix file downloading. !0 (8267)
-- Read true-up info from license and validate it. !1159
 - Reduce hits to LDAP on Git HTTP auth by reordering auth mechanisms. !8752
 - Fix filtered search user autocomplete for gitlab instances that are hosted on a subdirectory. !8891
 - Fix wrong call to ProjectCacheWorker.perform. !8910

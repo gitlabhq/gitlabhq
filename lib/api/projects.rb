@@ -272,7 +272,7 @@ module API
       desc 'Unstar a project' do
         success Entities::Project
       end
-      delete ':id/star' do
+      post ':id/unstar' do
         if current_user.starred?(user_project)
           current_user.toggle_star(user_project)
           user_project.reload

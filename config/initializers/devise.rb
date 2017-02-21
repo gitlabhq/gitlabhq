@@ -240,6 +240,17 @@ Devise.setup do |config|
           true
         end
       end
+      if provider['name'] == 'authentiq'
+        provider['args'][:remote_sign_out_handler] = lambda do |request|
+          authentiq_session = request.params['sid']
+          if Gitlab::OAuth::Session.valid?(:authentiq, authentiq_session)
+            Gitlab::OAuth::Session.destroy(:authentiq, authentiq_session)
+            true
+          else
+            false
+          end
+        end
+      end
 
       if provider['name'] == 'shibboleth'
         provider['args'][:fail_with_empty_uid] = true

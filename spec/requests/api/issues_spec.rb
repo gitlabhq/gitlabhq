@@ -117,14 +117,20 @@ describe API::Issues, api: true  do
         expect(json_response.first['labels']).to eq([label.title])
       end
 
-      it 'returns an array of labeled issues when at least one label matches' do
-        get api("/issues?labels=#{label.title},foo,bar", user)
+      it 'returns an array of labeled issues when all labels matches' do
+        label_b = create(:label, title: 'foo', project: project)
+        label_c = create(:label, title: 'bar', project: project)
+
+        create(:label_link, label: label_b, target: issue)
+        create(:label_link, label: label_c, target: issue)
+
+        get api("/issues", user), labels: "#{label.title},#{label_b.title},#{label_c.title}"
 
         expect(response).to have_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
-        expect(json_response.first['labels']).to eq([label.title])
+        expect(json_response.first['labels']).to eq([label_c.title, label_b.title, label.title])
       end
 
       it 'returns an empty array if no issue matches labels' do
@@ -356,6 +362,21 @@ describe API::Issues, api: true  do
       expect(json_response.length).to eq(0)
     end
 
+    it 'returns an array of labeled issues when all labels matches' do
+      label_b = create(:label, title: 'foo', project: group_project)
+      label_c = create(:label, title: 'bar', project: group_project)
+
+      create(:label_link, label: label_b, target: group_issue)
+      create(:label_link, label: label_c, target: group_issue)
+
+      get api("#{base_url}", user), labels: "#{group_label.title},#{label_b.title},#{label_c.title}"
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(1)
+      expect(json_response.first['labels']).to eq([label_c.title, label_b.title, group_label.title])
+    end
+
     it 'returns an empty array if no group issue matches labels' do
       get api("#{base_url}?labels=foo,bar", user)
 
@@ -549,14 +570,28 @@ describe API::Issues, api: true  do
       expect(json_response.first['labels']).to eq([label.title])
     end
 
-    it 'returns an array of labeled project issues where all labels match' do
-      get api("#{base_url}/issues?labels=#{label.title},foo,bar", user)
+    it 'returns an array of labeled issues when all labels matches' do
+      label_b = create(:label, title: 'foo', project: project)
+      label_c = create(:label, title: 'bar', project: project)
+
+      create(:label_link, label: label_b, target: issue)
+      create(:label_link, label: label_c, target: issue)
+
+      get api("#{base_url}/issues", user), labels: "#{label.title},#{label_b.title},#{label_c.title}"
 
       expect(response).to have_http_status(200)
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(1)
-      expect(json_response.first['labels']).to eq([label.title])
+      expect(json_response.first['labels']).to eq([label_c.title, label_b.title, label.title])
+    end
+
+    it 'returns an empty array if not all labels matches' do
+      get api("#{base_url}/issues?labels=#{label.title},foo", user)
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(0)
     end
 
     it 'returns an empty array if no project issue matches labels' do

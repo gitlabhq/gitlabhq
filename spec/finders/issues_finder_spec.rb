@@ -152,10 +152,10 @@ describe IssuesFinder do
         end
       end
 
-      context 'filtering by issue iid' do
-        let(:params) { { search: issue3.to_reference } }
+      context 'filtering by issues iids' do
+        let(:params) { { iids: issue3.iid } }
 
-        it 'returns issue with iid match' do
+        it 'returns issues with iids match' do
           expect(issues).to contain_exactly(issue3)
         end
       end
