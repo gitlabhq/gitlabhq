@@ -923,6 +923,9 @@ Lint/UnneededSplatExpansion:
 Lint/UnusedBlockArgument:
   Enabled: false
 
+Performance/RedundantBlockCall:
+  Enabled: true
+
 Rails/HttpPositionalArguments:
   Enabled: false
 
