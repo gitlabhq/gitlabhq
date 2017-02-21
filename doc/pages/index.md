@@ -37,3 +37,4 @@
 
 - [User docs](../user/project/pages/)
 - [Admin docs](administration.html)
+  - Video tutorial - [How to Enable GitLab Pages for GitLab CE and EE](https://youtu.be/dD8c7WNcc6s)
