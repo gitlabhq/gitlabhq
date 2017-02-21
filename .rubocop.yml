@@ -861,9 +861,3 @@ RSpec/NotToNot:
 # Prefer using verifying doubles over normal doubles.
 RSpec/VerifiedDoubles:
   Enabled: false
-
-# Custom ######################################################################
-
-# Disallow the `git` and `github` arguments in the Gemfile.
-GemFetcher:
-  Enabled: true
