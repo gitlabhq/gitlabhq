@@ -1,4 +1,5 @@
 class Projects::ProtectedBranchesController < Projects::ApplicationController
+  include RedirectRequest
   # Authorize
   before_action :require_non_empty_project
   before_action :authorize_admin_project!
@@ -7,15 +8,15 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
   layout "project_settings"
 
   def index
-    redirect_to namespace_project_settings_repository_path(@project.namespace, @project)
+    redirect_to_repository_settings(@project)
   end
 
   def create
     @protected_branch = ::ProtectedBranches::CreateService.new(@project, current_user, protected_branch_params).execute
     unless @protected_branch.persisted?
-      flash[:alert] = @protected_branches.errors.full_messages.join(',').html_safe
+      flash[:alert] = @protected_branches.errors.full_messages.join(', ').html_safe
     end
-    redirect_to namespace_project_settings_repository_path(@project.namespace, @project)
+    redirect_to_repository_settings(@project)
   end
 
   def show
@@ -40,7 +41,7 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
     @protected_branch.destroy
 
     respond_to do |format|
-      format.html { redirect_to namespace_project_settings_repository_path }
+      format.html { redirect_to_repository_settings(@project) }
       format.js { head :ok }
     end
   end
@@ -76,7 +77,7 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
 
   def load_gon_index
     params = { open_branches: @project.open_branches.map { |br| { text: br.name, id: br.name, title: br.name } } }
-    params[:current_project_id] = @project.id if @project
+    params.merge!(current_project_id: @project.id) if @project
     gon.push(params.merge(access_levels_options))
   end
 end

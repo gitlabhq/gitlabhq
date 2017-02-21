@@ -1,4 +1,5 @@
 class Projects::DeployKeysController < Projects::ApplicationController
+  include RedirectRequest
   respond_to :html
 
   # Authorize
@@ -7,22 +8,22 @@ class Projects::DeployKeysController < Projects::ApplicationController
   layout "project_settings"
 
   def index
-    redirect_to namespace_project_settings_repository_path(@project.namespace, @project)
+    redirect_to_repository_settings(@project)
   end
 
   def new
-    redirect_to namespace_project_settings_repository_path(@project.namespace, @project)
+    redirect_to_repository_settings(@project)
   end
 
   def create
     @key = DeployKey.new(deploy_key_params.merge(user: current_user))
 
     unless @key.valid? && @project.deploy_keys << @key
-      flash[:alert] = @key.errors.full_messages.join(',').html_safe            
+      flash[:alert] = @key.errors.full_messages.join(', ').html_safe
     else
       log_audit_event(@key.title, action: :create)
     end
-    redirect_to namespace_project_settings_repository_path(@project.namespace, @project)
+    redirect_to_repository_settings(@project)
   end
 
   def enable
@@ -30,7 +31,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
     Projects::EnableDeployKeyService.new(@project, current_user, params).execute
     log_audit_event(@key.title, action: :create)
 
-    redirect_to namespace_project_settings_repository_path(@project.namespace, @project)
+    redirect_to_repository_settings(@project)
   end
 
   def disable
@@ -38,7 +39,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
     @project.deploy_keys_projects.find_by(deploy_key_id: params[:id]).destroy
     log_audit_event(@key.title, action: :destroy)
 
-    redirect_to namespace_project_settings_repository_path(@project.namespace, @project)
+    redirect_to_repository_settings(@project)
   end
 
   protected

@@ -1,4 +1,5 @@
 class Projects::PushRulesController < Projects::ApplicationController
+  include RedirectRequest
   # Authorize
   before_action :authorize_admin_project!
 
@@ -17,10 +18,11 @@ class Projects::PushRulesController < Projects::ApplicationController
     @push_rule.update_attributes(push_rule_params)
 
     if @push_rule.valid?
-      redirect_to namespace_project_push_rules_path(@project.namespace, @project), notice: 'Push Rules updated successfully.'
+      flash[:notice] = 'Push Rules updated successfully.'
     else
-      render :index
+      flash[:alert] = @push_rule.errors.full_messages.join(', ').html_safe
     end
+    redirect_to_repository_settings(@project)
   end
 
   private

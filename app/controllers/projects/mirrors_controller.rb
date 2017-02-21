@@ -1,4 +1,5 @@
 class Projects::MirrorsController < Projects::ApplicationController
+  include RedirectRequest
   # Authorize
   before_action :authorize_admin_project!, except: [:update_now]
   before_action :authorize_push_code!, only: [:update_now]
@@ -7,7 +8,7 @@ class Projects::MirrorsController < Projects::ApplicationController
   layout "project_settings"
 
   def show
-    redirect_to namespace_project_settings_repository_path(@project.namespace, @project)
+    redirect_to_repository_settings(@project)
   end
 
   def update
@@ -22,10 +23,10 @@ class Projects::MirrorsController < Projects::ApplicationController
         flash[:notice] = "Mirroring settings were successfully updated."
       end
     else
-      flash[:alert] = @project.errors.full_messages.join(',').html_safe
+      flash[:alert] = @project.errors.full_messages.join(', ').html_safe
     end
 
-    redirect_to namespace_project_settings_repository_path(@project.namespace, @project)
+    redirect_to_repository_settings(@project)
   end
 
   def update_now
@@ -36,7 +37,7 @@ class Projects::MirrorsController < Projects::ApplicationController
       @project.update_mirror
       flash[:notice] = "The repository is being updated..."
     end
-    redirect_to namespace_project_settings_repository_path(@project.namespace, @project)
+    redirect_to_repository_settings(@project)
   end
 
   private

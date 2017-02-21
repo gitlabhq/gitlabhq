@@ -19,7 +19,7 @@
           = render partial: 'projects/deploy_keys/deploy_key', locals: {deploy_key: enabled_key}
     - else
       .settings-message.text-center
-        No deploy keys found. Create one with the form above or add existing one below.
+        No deploy keys found. Create one with the form above.
     %h5.prepend-top-default
       Deploy keys from projects you have access to (#{@deploy_keys.available_project_keys_size})
     - if @deploy_keys.any_available_project_keys_enabled?
