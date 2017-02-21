@@ -12,7 +12,7 @@
 
 This is a comprehensive guide, made for those who want to publish a website with GitLab Pages but aren't familiar with the entire process involved.
 
-To **enable** GitLab Pages for GitLab CE (Community Edition) and GitLab EE (Enterprise Edition), please read the [admin documentation](https://docs.gitlab.com/ce/administration/pages/index.html), or watch this [video tutorial](https://youtu.be/b_qjiabYhmQ).
+To **enable** GitLab Pages for GitLab CE (Community Edition) and GitLab EE (Enterprise Edition), please read the [admin documentation](https://docs.gitlab.com/ce/administration/pages/index.html), or watch this [video tutorial](https://youtu.be/dD8c7WNcc6s).
 
 > For this guide, we assume you already have GitLab Pages server up and running for your GitLab instance.
 
