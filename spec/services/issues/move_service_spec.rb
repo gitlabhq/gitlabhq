@@ -188,8 +188,8 @@ describe Issues::MoveService, services: true do
           let(:new_note) { new_issue.notes.first }
 
           it 'rewrites references using a cross reference to old project' do
-            expect(new_note.note)
-              .to eq "Note with reference to merge request #{old_project.to_reference(new_project)}!1"
+            expect(new_note.note).
+              to eq "Note with reference to merge request #{old_project.to_reference(new_project)}!1"
           end
         end
 
@@ -201,8 +201,8 @@ describe Issues::MoveService, services: true do
 
           it 'rewrites uploads in description' do
             expect(new_issue.description).not_to eq description
-            expect(new_issue.description)
-              .to match(/Text and #{FileUploader::MARKDOWN_PATTERN}/)
+            expect(new_issue.description).
+              to match(/Text and #{FileUploader::MARKDOWN_PATTERN}/)
             expect(new_issue.description).not_to include uploader.secret
           end
         end
@@ -216,8 +216,8 @@ describe Issues::MoveService, services: true do
           let(:description) { "Some description #{another_issue.to_reference}" }
 
           it 'rewrites referenced issues creating cross project reference' do
-            expect(new_issue.description)
-              .to eq "Some description #{another_issue.to_reference(new_project)}"
+            expect(new_issue.description).
+              to eq "Some description #{another_issue.to_reference(new_project)}"
           end
         end
 
@@ -226,8 +226,8 @@ describe Issues::MoveService, services: true do
           let(:description) { "Some description #{user.to_reference}" }
 
           it "doesn't throw any errors for issues containing user references" do
-            expect(new_issue.description)
-              .to eq "Some description #{user.to_reference}"
+            expect(new_issue.description).
+              to eq "Some description #{user.to_reference}"
           end
         end
       end
@@ -236,8 +236,8 @@ describe Issues::MoveService, services: true do
         let(:new_project) { old_project }
 
         it 'raises error' do
-          expect { move_service.execute(old_issue, new_project) }
-            .to raise_error(StandardError, /Cannot move issue/)
+          expect { move_service.execute(old_issue, new_project) }.
+            to raise_error(StandardError, /Cannot move issue/)
         end
       end
     end

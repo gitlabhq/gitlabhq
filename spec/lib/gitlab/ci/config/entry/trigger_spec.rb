@@ -47,8 +47,8 @@ describe Gitlab::Ci::Config::Entry::Trigger do
 
       describe '#errors' do
         it 'saves errors' do
-          expect(entry.errors)
-            .to include 'trigger config should be an array of strings or regexps'
+          expect(entry.errors).
+            to include 'trigger config should be an array of strings or regexps'
         end
       end
     end

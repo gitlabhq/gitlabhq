@@ -134,8 +134,8 @@ describe Ci::RetryPipelineService, '#execute', :services do
     end
 
     it 'closes all todos about failed jobs for pipeline' do
-      expect(MergeRequests::AddTodoWhenBuildFailsService)
-        .to receive_message_chain(:new, :close_all)
+      expect(MergeRequests::AddTodoWhenBuildFailsService).
+        to receive_message_chain(:new, :close_all)
 
       service.execute(pipeline)
     end
@@ -149,8 +149,8 @@ describe Ci::RetryPipelineService, '#execute', :services do
 
   context 'when user is not allowed to retry pipeline' do
     it 'raises an error' do
-      expect { service.execute(pipeline) }
-        .to raise_error Gitlab::Access::AccessDeniedError
+      expect { service.execute(pipeline) }.
+        to raise_error Gitlab::Access::AccessDeniedError
     end
   end
 

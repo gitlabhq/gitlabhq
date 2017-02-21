@@ -70,8 +70,8 @@ module Commits
       # Temporary branch exists and contains the change commit
       return if repository.find_branch(new_branch)
 
-      result = ValidateNewBranchService.new(@project, current_user)
-        .execute(new_branch)
+      result = ValidateNewBranchService.new(@project, current_user).
+        execute(new_branch)
 
       if result[:status] == :error
         raise ChangeError, "There was an error creating the source branch: #{result[:message]}"

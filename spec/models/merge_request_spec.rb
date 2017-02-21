@@ -412,15 +412,15 @@ describe MergeRequest, models: true do
     it 'includes merge information as the title' do
       request = build(:merge_request, source_branch: 'source', target_branch: 'target')
 
-      expect(request.merge_commit_message)
-        .to match("Merge branch 'source' into 'target'\n\n")
+      expect(request.merge_commit_message).
+        to match("Merge branch 'source' into 'target'\n\n")
     end
 
     it 'includes its title in the body' do
       request = build(:merge_request, title: 'Remove all technical debt')
 
-      expect(request.merge_commit_message)
-        .to match("Remove all technical debt\n\n")
+      expect(request.merge_commit_message).
+        to match("Remove all technical debt\n\n")
     end
 
     it 'includes its closed issues in the body' do
@@ -432,15 +432,15 @@ describe MergeRequest, models: true do
       allow(subject.project).to receive(:default_branch).
         and_return(subject.target_branch)
 
-      expect(subject.merge_commit_message)
-        .to match("Closes #{issue.to_reference}")
+      expect(subject.merge_commit_message).
+        to match("Closes #{issue.to_reference}")
     end
 
     it 'includes its reference in the body' do
       request = build_stubbed(:merge_request)
 
-      expect(request.merge_commit_message)
-        .to match("See merge request #{request.to_reference}")
+      expect(request.merge_commit_message).
+        to match("See merge request #{request.to_reference}")
     end
 
     it 'excludes multiple linebreak runs when description is blank' do
@@ -452,15 +452,15 @@ describe MergeRequest, models: true do
     it 'includes its description in the body' do
       request = build(:merge_request, description: 'By removing all code')
 
-      expect(request.merge_commit_message(include_description: true))
-        .to match("By removing all code\n\n")
+      expect(request.merge_commit_message(include_description: true)).
+        to match("By removing all code\n\n")
     end
 
     it 'does not includes its description in the body' do
       request = build(:merge_request, description: 'By removing all code')
 
-      expect(request.merge_commit_message)
-        .not_to match("By removing all code\n\n")
+      expect(request.merge_commit_message).
+        not_to match("By removing all code\n\n")
     end
   end
 

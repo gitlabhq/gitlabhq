@@ -23,8 +23,8 @@ describe 'projects/merge_requests/edit.html.haml' do
     assign(:merge_request, closed_merge_request)
 
     allow(view).to receive(:can?).and_return(true)
-    allow(view).to receive(:current_user)
-      .and_return(User.find(closed_merge_request.author_id))
+    allow(view).to receive(:current_user).
+      and_return(User.find(closed_merge_request.author_id))
   end
 
   context 'when a merge request without fork' do

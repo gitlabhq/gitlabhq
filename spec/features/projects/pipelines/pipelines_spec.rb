@@ -366,8 +366,8 @@ describe 'Pipelines', :feature, :js do
           before { stub_ci_pipeline_to_return_yaml_file }
 
           it 'creates a new pipeline' do
-            expect { click_on 'Create pipeline' }
-              .to change { Ci::Pipeline.count }.by(1)
+            expect { click_on 'Create pipeline' }.
+              to change { Ci::Pipeline.count }.by(1)
           end
         end
 

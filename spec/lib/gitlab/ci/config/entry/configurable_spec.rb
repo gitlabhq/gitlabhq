@@ -52,8 +52,8 @@ describe Gitlab::Ci::Config::Entry::Configurable do
       end
 
       it 'creates a node factory' do
-        expect(entry.nodes[:object])
-          .to be_an_instance_of Gitlab::Ci::Config::Entry::Factory
+        expect(entry.nodes[:object]).
+          to be_an_instance_of Gitlab::Ci::Config::Entry::Factory
       end
 
       it 'returns a duplicated factory object' do

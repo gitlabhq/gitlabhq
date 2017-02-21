@@ -10,8 +10,8 @@ describe Gitlab::Ci::Config::Entry::Global do
 
     context 'when filtering all the entry/node names' do
       it 'contains the expected node names' do
-        expect(described_class.nodes.keys)
-          .to match_array(%i[before_script image services
+        expect(described_class.nodes.keys).
+          to match_array(%i[before_script image services
                              after_script variables stages
                              types cache])
       end
@@ -44,17 +44,17 @@ describe Gitlab::Ci::Config::Entry::Global do
         end
 
         it 'creates node object using valid class' do
-          expect(global.descendants.first)
-            .to be_an_instance_of Gitlab::Ci::Config::Entry::Script
-          expect(global.descendants.second)
-            .to be_an_instance_of Gitlab::Ci::Config::Entry::Image
+          expect(global.descendants.first).
+            to be_an_instance_of Gitlab::Ci::Config::Entry::Script
+          expect(global.descendants.second).
+            to be_an_instance_of Gitlab::Ci::Config::Entry::Image
         end
 
         it 'sets correct description for nodes' do
-          expect(global.descendants.first.description)
-            .to eq 'Script that will be executed before each job.'
-          expect(global.descendants.second.description)
-            .to eq 'Docker image that will be used to execute jobs.'
+          expect(global.descendants.first.description).
+            to eq 'Script that will be executed before each job.'
+          expect(global.descendants.second.description).
+            to eq 'Docker image that will be used to execute jobs.'
         end
 
         describe '#leaf?' do
@@ -138,8 +138,8 @@ describe Gitlab::Ci::Config::Entry::Global do
 
         describe '#cache_value' do
           it 'returns cache configuration' do
-            expect(global.cache_value)
-              .to eq(key: 'k', untracked: true, paths: ['public/'])
+            expect(global.cache_value).
+              to eq(key: 'k', untracked: true, paths: ['public/'])
           end
         end
 
@@ -185,8 +185,8 @@ describe Gitlab::Ci::Config::Entry::Global do
         end
 
         it 'contains unspecified nodes' do
-          expect(global.descendants.first)
-            .to be_an_instance_of Gitlab::Ci::Config::Entry::Unspecified
+          expect(global.descendants.first).
+            to be_an_instance_of Gitlab::Ci::Config::Entry::Unspecified
         end
       end
 
@@ -246,8 +246,8 @@ describe Gitlab::Ci::Config::Entry::Global do
 
       describe '#errors' do
         it 'reports errors from child nodes' do
-          expect(global.errors)
-            .to include 'before_script config should be an array of strings'
+          expect(global.errors).
+            to include 'before_script config should be an array of strings'
         end
       end
 
@@ -265,8 +265,8 @@ describe Gitlab::Ci::Config::Entry::Global do
 
       describe '#errors' do
         it 'reports errors about missing script' do
-          expect(global.errors)
-            .to include "jobs:rspec script can't be blank"
+          expect(global.errors).
+            to include "jobs:rspec script can't be blank"
         end
       end
     end
@@ -303,16 +303,16 @@ describe Gitlab::Ci::Config::Entry::Global do
 
     context 'when entry exists' do
       it 'returns correct entry' do
-        expect(global[:cache])
-          .to be_an_instance_of Gitlab::Ci::Config::Entry::Cache
+        expect(global[:cache]).
+          to be_an_instance_of Gitlab::Ci::Config::Entry::Cache
         expect(global[:jobs][:rspec][:script].value).to eq ['ls']
       end
     end
 
     context 'when entry does not exist' do
       it 'always return unspecified node' do
-        expect(global[:some][:unknown][:node])
-          .not_to be_specified
+        expect(global[:some][:unknown][:node]).
+          not_to be_specified
       end
     end
   end

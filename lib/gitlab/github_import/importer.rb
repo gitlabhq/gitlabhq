@@ -178,9 +178,9 @@ module Gitlab
       def apply_labels(issuable, raw)
         return unless raw.labels.count > 0
 
-        label_ids = raw.labels
-          .map { |attrs| @labels[attrs.name] }
-          .compact
+        label_ids = raw.labels.
+          map { |attrs| @labels[attrs.name] }.
+          compact
 
         issuable.update_attribute(:label_ids, label_ids)
       end

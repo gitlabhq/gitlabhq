@@ -1148,8 +1148,8 @@ describe User, models: true do
         user = create(:user)
         project = create(:empty_project, :private, namespace: user.namespace)
 
-        expect(user.authorized_projects(Gitlab::Access::REPORTER))
-          .to contain_exactly(project)
+        expect(user.authorized_projects(Gitlab::Access::REPORTER)).
+          to contain_exactly(project)
       end
 
       it 'includes projects for which the user is a master' do
@@ -1158,8 +1158,8 @@ describe User, models: true do
 
         project.team << [user, Gitlab::Access::MASTER]
 
-        expect(user.authorized_projects(Gitlab::Access::REPORTER))
-          .to contain_exactly(project)
+        expect(user.authorized_projects(Gitlab::Access::REPORTER)).
+          to contain_exactly(project)
       end
     end
 

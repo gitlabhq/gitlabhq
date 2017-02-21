@@ -305,13 +305,6 @@ Style/CommentAnnotation:
 Style/ConditionalAssignment:
   Enabled: false
 
-# Offense count: 1304
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: leading, trailing
-Style/DotPosition:
-  Enabled: false
-
 # Offense count: 21
 Style/DoubleNegation:
   Exclude:

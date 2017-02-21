@@ -141,8 +141,8 @@ describe Backup::Manager, lib: true do
 
       it 'fails the operation and prints an error' do
         expect { subject.unpack }.to raise_error SystemExit
-        expect(progress).to have_received(:puts)
-          .with(a_string_matching('No backups found'))
+        expect(progress).to have_received(:puts).
+          with(a_string_matching('No backups found'))
       end
     end
 
@@ -158,8 +158,8 @@ describe Backup::Manager, lib: true do
 
       it 'fails the operation and prints an error' do
         expect { subject.unpack }.to raise_error SystemExit
-        expect(progress).to have_received(:puts)
-          .with(a_string_matching('Found more than one backup'))
+        expect(progress).to have_received(:puts).
+          with(a_string_matching('Found more than one backup'))
       end
     end
 
@@ -178,8 +178,8 @@ describe Backup::Manager, lib: true do
       it 'fails the operation and prints an error' do
         expect { subject.unpack }.to raise_error SystemExit
         expect(File).to have_received(:exist?).with('wrong_gitlab_backup.tar')
-        expect(progress).to have_received(:puts)
-          .with(a_string_matching('The backup file wrong_gitlab_backup.tar does not exist'))
+        expect(progress).to have_received(:puts).
+          with(a_string_matching('The backup file wrong_gitlab_backup.tar does not exist'))
       end
     end
 
@@ -200,8 +200,8 @@ describe Backup::Manager, lib: true do
       it 'unpacks the file' do
         subject.unpack
 
-        expect(Kernel).to have_received(:system)
-          .with("tar", "-xf", "1451606400_2016_01_01_gitlab_backup.tar")
+        expect(Kernel).to have_received(:system).
+          with("tar", "-xf", "1451606400_2016_01_01_gitlab_backup.tar")
         expect(progress).to have_received(:puts).with(a_string_matching('done'))
       end
     end

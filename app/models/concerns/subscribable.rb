@@ -42,15 +42,15 @@ module Subscribable
   def subscribe(user, project = nil)
     unsubscribe_from_other_levels(user, project)
 
-    find_or_initialize_subscription(user, project)
-      .update(subscribed: true)
+    find_or_initialize_subscription(user, project).
+      update(subscribed: true)
   end
 
   def unsubscribe(user, project = nil)
     unsubscribe_from_other_levels(user, project)
 
-    find_or_initialize_subscription(user, project)
-      .update(subscribed: false)
+    find_or_initialize_subscription(user, project).
+      update(subscribed: false)
   end
 
   private

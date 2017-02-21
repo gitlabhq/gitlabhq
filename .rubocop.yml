@@ -136,6 +136,10 @@ Style/DefWithParentheses:
 Style/Documentation:
   Enabled: false
 
+Style/DotPosition:
+  Enabled: true
+  EnforcedStyle: trailing
+
 # Align elses and elsifs correctly.
 Style/ElseAlignment:
   Enabled: true

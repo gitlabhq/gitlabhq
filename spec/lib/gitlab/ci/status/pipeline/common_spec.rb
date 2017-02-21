@@ -6,9 +6,9 @@ describe Gitlab::Ci::Status::Pipeline::Common do
   let(:pipeline) { create(:ci_pipeline, project: project) }
 
   subject do
-    Gitlab::Ci::Status::Core
-      .new(pipeline, user)
-      .extend(described_class)
+    Gitlab::Ci::Status::Core.
+      new(pipeline, user).
+      extend(described_class)
   end
 
   describe '#has_action?' do
@@ -29,8 +29,8 @@ describe Gitlab::Ci::Status::Pipeline::Common do
 
   describe '#details_path' do
     it 'links to the pipeline details page' do
-      expect(subject.details_path)
-        .to include "pipelines/#{pipeline.id}"
+      expect(subject.details_path).
+        to include "pipelines/#{pipeline.id}"
     end
   end
 end
