@@ -87,7 +87,7 @@ class PipelinesFinder
       items
     end
   end
-  
+
   def by_duration(items)
     if params[:duration].present?
       items.where("duration > ?", params[:duration])
