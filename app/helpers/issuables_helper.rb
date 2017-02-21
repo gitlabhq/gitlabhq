@@ -198,7 +198,7 @@ module IssuablesHelper
     @counts[issuable_type][state]
   end
 
-  IRRELEVANT_PARAMS_FOR_CACHE_KEY = %i[utf8 sort page]
+  IRRELEVANT_PARAMS_FOR_CACHE_KEY = %i[utf8 sort page].freeze
   private_constant :IRRELEVANT_PARAMS_FOR_CACHE_KEY
 
   def issuables_state_counter_cache_key(issuable_type, state)

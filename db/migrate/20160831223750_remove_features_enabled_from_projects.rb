@@ -7,7 +7,7 @@ class RemoveFeaturesEnabledFromProjects < ActiveRecord::Migration
 
   # Set this constant to true if this migration requires downtime.
   DOWNTIME = true
-  DOWNTIME_REASON = "Removing fields from database requires downtine."
+  DOWNTIME_REASON = "Removing fields from database requires downtine.".freeze
 
   def up
     remove_column :projects, :issues_enabled

@@ -2,7 +2,7 @@ module Projects
   class UpdatePagesService < BaseService
     BLOCK_SIZE = 32.kilobytes
     MAX_SIZE = 1.terabyte
-    SITE_PATH = 'public/'
+    SITE_PATH = 'public/'.freeze
 
     attr_reader :build
 

@@ -1,5 +1,5 @@
 class GroupMember < Member
-  SOURCE_TYPE = 'Namespace'
+  SOURCE_TYPE = 'Namespace'.freeze
 
   belongs_to :group, foreign_key: 'source_id'
 

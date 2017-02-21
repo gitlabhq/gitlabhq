@@ -5,7 +5,7 @@ class JwtController < ApplicationController
 
   SERVICES = {
     Auth::ContainerRegistryAuthenticationService::AUDIENCE => Auth::ContainerRegistryAuthenticationService,
-  }
+  }.freeze
 
   def auth
     service = SERVICES[params[:service]]

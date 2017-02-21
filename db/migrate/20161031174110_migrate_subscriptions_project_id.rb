@@ -2,7 +2,7 @@ class MigrateSubscriptionsProjectId < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = true
-  DOWNTIME_REASON = 'Subscriptions will not work as expected until this migration is complete.'
+  DOWNTIME_REASON = 'Subscriptions will not work as expected until this migration is complete.'.freeze
 
   def up
     execute <<-EOF.strip_heredoc

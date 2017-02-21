@@ -13,7 +13,7 @@ module Ci
       5 => 'magenta',
       6 => 'cyan',
       7 => 'white', # not that this is gray in the dark (aka default) color table
-    }
+    }.freeze
 
     STYLE_SWITCHES = {
       bold:       0x01,
@@ -21,7 +21,7 @@ module Ci
       underline:  0x04,
       conceal:    0x08,
       cross:      0x10,
-    }
+    }.freeze
 
     def self.convert(ansi, state = nil)
       Converter.new.convert(ansi, state)
@@ -86,7 +86,7 @@ module Ci
 
       attr_accessor :offset, :n_open_tags, :fg_color, :bg_color, :style_mask
 
-      STATE_PARAMS = [:offset, :n_open_tags, :fg_color, :bg_color, :style_mask]
+      STATE_PARAMS = [:offset, :n_open_tags, :fg_color, :bg_color, :style_mask].freeze
 
       def convert(raw, new_state)
         reset_state

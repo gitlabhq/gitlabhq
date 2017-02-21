@@ -1,7 +1,7 @@
 module Ci
   module API
     module Helpers
-      BUILD_TOKEN_HEADER = "HTTP_BUILD_TOKEN"
+      BUILD_TOKEN_HEADER = "HTTP_BUILD_TOKEN".freeze
       BUILD_TOKEN_PARAM = :token
       UPDATE_RUNNER_EVERY = 10 * 60
 

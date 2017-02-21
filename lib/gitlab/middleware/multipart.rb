@@ -26,7 +26,7 @@
 module Gitlab
   module Middleware
     class Multipart
-      RACK_ENV_KEY = 'HTTP_GITLAB_WORKHORSE_MULTIPART_FIELDS'
+      RACK_ENV_KEY = 'HTTP_GITLAB_WORKHORSE_MULTIPART_FIELDS'.freeze
 
       class Handler
         def initialize(env, message)

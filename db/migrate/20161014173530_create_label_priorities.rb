@@ -2,7 +2,7 @@ class CreateLabelPriorities < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = true
-  DOWNTIME_REASON = 'This migration adds foreign keys'
+  DOWNTIME_REASON = 'This migration adds foreign keys'.freeze
 
   disable_ddl_transaction!
 

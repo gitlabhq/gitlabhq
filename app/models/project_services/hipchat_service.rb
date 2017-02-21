@@ -6,7 +6,7 @@ class HipchatService < Service
     a b i strong em br img pre code
     table th tr td caption colgroup col thead tbody tfoot
     ul ol li dl dt dd
-  ]
+  ].freeze
 
   prop_accessor :token, :room, :server, :color, :api_version
   boolean_accessor :notify_only_broken_builds, :notify

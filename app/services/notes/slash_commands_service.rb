@@ -3,7 +3,7 @@ module Notes
     UPDATE_SERVICES = {
       'Issue' => Issues::UpdateService,
       'MergeRequest' => MergeRequests::UpdateService
-    }
+    }.freeze
 
     def self.noteable_update_service(note)
       UPDATE_SERVICES[note.noteable_type]

@@ -1,5 +1,5 @@
 class ProjectMember < Member
-  SOURCE_TYPE = 'Project'
+  SOURCE_TYPE = 'Project'.freeze
 
   include Gitlab::ShellAdapter
 

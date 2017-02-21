@@ -4,9 +4,9 @@ module RuboCop
     # `Gemfile` in order to avoid additional points of failure beyond
     # rubygems.org.
     class GemFetcher < RuboCop::Cop::Cop
-      MSG = 'Do not use gems from git repositories, only use gems from RubyGems.'
+      MSG = 'Do not use gems from git repositories, only use gems from RubyGems.'.freeze
 
-      GIT_KEYS = [:git, :github]
+      GIT_KEYS = [:git, :github].freeze
 
       def on_send(node)
         return unless gemfile?(node)

@@ -22,7 +22,7 @@ class Project < ActiveRecord::Base
   class BoardLimitExceeded < StandardError; end
 
   NUMBER_OF_PERMITTED_BOARDS = 1
-  UNKNOWN_IMPORT_URL = 'http://unknown.git'
+  UNKNOWN_IMPORT_URL = 'http://unknown.git'.freeze
 
   cache_markdown_field :description, pipeline: :description
 

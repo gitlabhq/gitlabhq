@@ -3,7 +3,7 @@ module API
     include Gitlab::Utils
     include Helpers::Pagination
 
-    SUDO_HEADER = "HTTP_SUDO"
+    SUDO_HEADER = "HTTP_SUDO".freeze
     SUDO_PARAM = :sudo
 
     def declared_params(options = {})

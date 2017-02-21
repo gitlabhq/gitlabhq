@@ -13,7 +13,7 @@
 #
 
 class TodosFinder
-  NONE = '0'
+  NONE = '0'.freeze
 
   attr_accessor :current_user, :params
 

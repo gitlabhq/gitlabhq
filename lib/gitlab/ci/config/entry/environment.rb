@@ -8,7 +8,7 @@ module Gitlab
         class Environment < Node
           include Validatable
 
-          ALLOWED_KEYS = %i[name url action on_stop]
+          ALLOWED_KEYS = %i[name url action on_stop].freeze
 
           validations do
             validate do

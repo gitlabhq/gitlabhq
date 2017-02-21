@@ -2,7 +2,7 @@ class FixupEnvironmentNameUniqueness < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = true
-  DOWNTIME_REASON = 'Renaming non-unique environments'
+  DOWNTIME_REASON = 'Renaming non-unique environments'.freeze
 
   def up
     environments = Arel::Table.new(:environments)

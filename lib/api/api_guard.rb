@@ -6,7 +6,7 @@ module API
   module APIGuard
     extend ActiveSupport::Concern
 
-    PRIVATE_TOKEN_HEADER = "HTTP_PRIVATE_TOKEN"
+    PRIVATE_TOKEN_HEADER = "HTTP_PRIVATE_TOKEN".freeze
     PRIVATE_TOKEN_PARAM = :private_token
 
     included do |base|
