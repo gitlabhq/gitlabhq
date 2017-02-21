@@ -76,4 +76,42 @@ describe('Deploy Board', () => {
       }, 0);
     });
   });
+
+  describe('unsuccessfull request', () => {
+    const deployBoardErrorInterceptor = (request, next) => {
+      next(request.respondWith(JSON.stringify({}), {
+        status: 500,
+      }));
+    };
+
+    let component;
+
+    beforeEach(() => {
+      Vue.http.interceptors.push(deployBoardErrorInterceptor);
+
+      this.service = new Service('environments');
+
+      component = new DeployBoardComponent({
+        el: document.querySelector('.test-dom-element'),
+        propsData: {
+          store: {},
+          service: this.service,
+          deployBoardData: {},
+          environmentID: 1,
+        },
+      });
+    });
+
+    afterEach(() => {
+      Vue.http.interceptors = _.without(Vue.http.interceptors, deployBoardErrorInterceptor);
+    });
+
+    it('should render empty state', (done) => {
+      setTimeout(() => {
+        expect(component.$el.children.length,).toEqual(0);
+
+        done();
+      }, 0);
+    });
+  });
 });
