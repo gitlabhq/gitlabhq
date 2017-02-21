@@ -554,7 +554,9 @@ describe API::Projects, api: true  do
         expect(json_response['star_count']).to be_present
         expect(json_response['forks_count']).to be_present
         expect(json_response['public_builds']).to be_present
-        expect(json_response['license']).to be_present
+        expect(json_response['license']).to be_a Hash
+        expect(json_response['license'][0]['name']).to be_present
+        expect(json_response['license'][0]['spdx_id']).to be_present
         expect(json_response['shared_with_groups']).to be_an Array
         expect(json_response['shared_with_groups'].length).to eq(1)
         expect(json_response['shared_with_groups'][0]['group_id']).to eq(group.id)

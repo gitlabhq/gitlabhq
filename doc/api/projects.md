@@ -91,7 +91,10 @@ Parameters:
     "only_allow_merge_if_build_succeeds": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "request_access_enabled": false,
-    "license": "MIT License"
+    "license": {
+      "name": "MIT License",
+      "spdx_id": "MIT"
+    }
   },
   {
     "id": 6,
@@ -153,7 +156,10 @@ Parameters:
     "only_allow_merge_if_build_succeeds": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "request_access_enabled": false,
-    "license": "MIT License"
+    "license": {
+      "name": "MIT License",
+      "spdx_id": "MIT"
+    }
   }
 ]
 ```
@@ -246,7 +252,10 @@ Parameters:
   "only_allow_merge_if_build_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "request_access_enabled": false,
-  "license": "MIT License"
+  "license": {
+    "name": "MIT License",
+    "spdx_id": "MIT"
+  }
 }
 ```
 
@@ -602,7 +611,10 @@ Example response:
   "only_allow_merge_if_build_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "request_access_enabled": false,
-  "license": "MIT License"
+  "license": {
+    "name": "MIT License",
+    "spdx_id": "MIT"
+  }
 }
 ```
 
@@ -669,7 +681,10 @@ Example response:
   "only_allow_merge_if_build_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "request_access_enabled": false,
-  "license": "MIT License"
+  "license": {
+    "name": "MIT License",
+    "spdx_id": "MIT"
+  }
 }
 ```
 
@@ -753,7 +768,10 @@ Example response:
   "only_allow_merge_if_build_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "request_access_enabled": false,
-  "license": "MIT License"
+  "license": {
+    "name": "MIT License",
+    "spdx_id": "MIT"
+  }
 }
 ```
 
@@ -837,7 +855,10 @@ Example response:
   "only_allow_merge_if_build_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "request_access_enabled": false,
-  "license": "MIT License"
+  "license": {
+    "name": "MIT License",
+    "spdx_id": "MIT"
+  }
 }
 ```
 
