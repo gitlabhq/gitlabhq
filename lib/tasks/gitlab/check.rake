@@ -724,8 +724,11 @@ namespace :gitlab do
     def check_imap_authentication
       print "IMAP server credentials are correct? ... "
 
-      config_path = Rails.root.join('config', 'mail_room.yml')
-      config_file = YAML.load(ERB.new(File.read(config_path)).result)
+      config_path = Rails.root.join('config', 'mail_room.yml').to_s
+      erb = ERB.new(File.read(config_path))
+      erb.filename = config_path
+      config_file = YAML.load(erb.result)
+
       config = config_file[:mailboxes].first
 
       if config
