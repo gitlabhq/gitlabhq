@@ -98,6 +98,13 @@ The steps to create a project page for a user or a group are identical:
 A user's project will be served under `http(s)://username.example.io/projectname`
 whereas a group's project under `http(s)://groupname.example.io/projectname`.
 
+## Quick Start
+
+Read through [GitLab Pages Quick Start Guide][pages-quick] or watch the video tutorial on
+[how to publish a website with GitLab Pages on GitLab.com from a forked project][video-pages-fork].
+
+See also [All you Need to Know About GitLab Pages][pages-index-guide] for a list with all the resources we have for GitLab Pages.
+
 ### Explore the contents of `.gitlab-ci.yml`
 
 The key thing about GitLab Pages is the `.gitlab-ci.yml` file, something that
@@ -438,3 +445,5 @@ For a list of known issues, visit GitLab's [public issue tracker].
 [ce-14605]: https://gitlab.com/gitlab-org/gitlab-ce/issues/14605
 [quick start guide]: ../../../ci/quick_start/README.md
 [pages-index-guide]: ../../../pages/
+[pages-quick]: ../../../pages/pages_quick_start_guide.html
+[video-pages-fork]: https://youtu.be/TWqh9MtT4Bg
