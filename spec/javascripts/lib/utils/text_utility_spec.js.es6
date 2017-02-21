@@ -35,5 +35,16 @@ require('~/lib/utils/text_utility');
         expect(gl.text.pluralize('test', 1)).toBe('test');
       });
     });
+
+    describe('gl.text.highCountTrim', () => {
+      it('returns 99+ for count >= 100', () => {
+        expect(gl.text.highCountTrim(105)).toBe('99+');
+        expect(gl.text.highCountTrim(100)).toBe('99+');
+      });
+
+      it('returns exact number for count < 100', () => {
+        expect(gl.text.highCountTrim(45)).toBe(45);
+      });
+    });
   });
 })();

@@ -35,6 +35,11 @@ class Dashboard::TodosController < Dashboard::ApplicationController
     render json: todos_counts
   end
 
+  # Used in TodosHelper also
+  def self.todos_count_format(count)
+    count >= 100 ? '99+' : count
+  end
+
   private
 
   def find_todos

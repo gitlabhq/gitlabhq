@@ -6,6 +6,8 @@
 .navbar-nav {
   li {
     .badge.todos-pending-count {
+      position: inherit;
+      top: -6px;
       margin-top: -5px;
       font-weight: normal;
       background: $todo-alert-blue;
