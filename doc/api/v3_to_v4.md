@@ -25,3 +25,5 @@ changes are in V4:
 - Moved `/projects/fork/:id` to `/projects/:id/fork`
 - Endpoints `/projects/owned`, `/projects/visible`, `/projects/starred` & `/projects/all` are consolidated into `/projects` using query parameters
 - Return pagination headers for all endpoints that return an array
+- Labels filter on `projects/:id/issues` and `/issues` now matches only issues containing all labels (i.e.: Logical AND, not OR)
+
