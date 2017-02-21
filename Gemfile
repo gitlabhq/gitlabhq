@@ -34,12 +34,8 @@ gem 'omniauth-saml',          '~> 1.7.0'
 gem 'omniauth-shibboleth',    '~> 1.2.0'
 gem 'omniauth-twitter',       '~> 1.2.0'
 gem 'omniauth_crowd',         '~> 2.2.0'
-<<<<<<< HEAD
 gem 'gssapi', group: :kerberos
-gem 'omniauth-authentiq',     '~> 0.2.0'
-=======
 gem 'omniauth-authentiq',     '~> 0.3.0'
->>>>>>> b596dd8fedd9dc8f9487e1e67a52a7b211bd956b
 gem 'rack-oauth2',            '~> 1.2.1'
 gem 'jwt',                    '~> 1.5.6'
 
