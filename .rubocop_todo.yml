@@ -51,12 +51,6 @@ Performance/RedundantMatch:
     - 'lib/gitlab/diff/highlight.rb'
     - 'lib/gitlab/diff/parser.rb'
 
-# Offense count: 25
-# Cop supports --auto-correct.
-# Configuration parameters: MaxKeyValuePairs.
-Performance/RedundantMerge:
-  Enabled: false
-
 # Offense count: 15
 # Configuration parameters: CustomIncludeMethods.
 RSpec/EmptyExampleGroup:

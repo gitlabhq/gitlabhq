@@ -97,7 +97,7 @@ class PushoverService < Service
 
     # Sound parameter MUST NOT be sent to API if not selected
     if sound
-      pushover_data.merge!(sound: sound)
+      pushover_data[:sound] = sound
     end
 
     PushoverService.post('/messages.json', body: pushover_data)

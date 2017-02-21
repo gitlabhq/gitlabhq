@@ -285,7 +285,7 @@ module Gitlab
       def fetch_resources(resource_type, *opts)
         return if imported?(resource_type)
 
-        opts.last.merge!(page: current_page(resource_type))
+        opts.last[:page] = current_page(resource_type)
 
         client.public_send(resource_type, *opts) do |resources|
           yield resources

@@ -359,7 +359,7 @@ module SystemNoteService
     if noteable.kind_of?(Commit)
       note_options.merge!(noteable_type: 'Commit', commit_id: noteable.id)
     else
-      note_options.merge!(noteable: noteable)
+      note_options[:noteable] = noteable
     end
 
     if noteable.is_a?(ExternalIssue)

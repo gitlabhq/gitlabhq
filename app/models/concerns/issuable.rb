@@ -238,7 +238,7 @@ module Issuable
       # DEPRECATED
       repository: project.hook_attrs.slice(:name, :url, :description, :homepage)
     }
-    hook_data.merge!(assignee: assignee.hook_attrs) if assignee
+    hook_data[:assignee] = assignee.hook_attrs if assignee
 
     hook_data
   end
