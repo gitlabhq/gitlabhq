@@ -54,7 +54,7 @@ Authentiq will generate a Client ID and the accompanying Client Secret for you t
 5. The `scope` is set to request the user's name, email (required and signed), and permission to send push notifications to sign in on subsequent visits.
 See [OmniAuth Authentiq strategy](https://github.com/AuthentiqID/omniauth-authentiq#scopes-and-redirect-uri-configuration) for more information on scopes and modifiers.
 
-6. Change 'YOUR_CLIENT_ID' and 'YOUR_CLIENT_SECRET' to the Client credentials you received in step 1.
+6. Change `YOUR_CLIENT_ID` and `YOUR_CLIENT_SECRET` to the Client credentials you received in step 1.
 
 7. Save the configuration file.
 
