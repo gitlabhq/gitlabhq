@@ -126,13 +126,14 @@ require('./preview_markdown');
       };
       pasteText = function(text) {
         var afterSelection, beforeSelection, caretEnd, caretStart, textEnd;
+        var formattedText = text + "\n\n";
         caretStart = $(child)[0].selectionStart;
         caretEnd = $(child)[0].selectionEnd;
         textEnd = $(child).val().length;
         beforeSelection = $(child).val().substring(0, caretStart);
         afterSelection = $(child).val().substring(caretEnd, textEnd);
-        $(child).val(beforeSelection + text + afterSelection);
-        child.get(0).setSelectionRange(caretStart + text.length, caretEnd + text.length);
+        $(child).val(beforeSelection + formattedText + afterSelection);
+        child.get(0).setSelectionRange(caretStart + formattedText.length, caretEnd + formattedText.length);
         return form_textarea.trigger("input");
       };
       getFilename = function(e) {
