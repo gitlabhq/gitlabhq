@@ -124,73 +124,10 @@ RSpec/ImplicitExpect:
     - 'spec/models/project_services/external_wiki_service_spec.rb'
     - 'spec/models/project_spec.rb'
 
-# Offense count: 258
-RSpec/LeadingSubject:
-  Enabled: false
-
-# Offense count: 281
-RSpec/LetSetup:
-  Enabled: false
-
-# Offense count: 13
-RSpec/MessageChain:
-  Exclude:
-    - 'spec/finders/move_to_project_finder_spec.rb'
-    - 'spec/helpers/issues_helper_spec.rb'
-    - 'spec/initializers/secret_token_spec.rb'
-    - 'spec/models/ci/build_spec.rb'
-    - 'spec/requests/api/internal_spec.rb'
-    - 'spec/services/ci/retry_build_service_spec.rb'
-    - 'spec/services/ci/retry_pipeline_service_spec.rb'
-    - 'spec/services/merge_requests/build_service_spec.rb'
-    - 'spec/workers/emails_on_push_worker_spec.rb'
-
-# Offense count: 505
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: have_received, receive
-RSpec/MessageSpies:
-  Enabled: false
-
-# Offense count: 3625
-RSpec/MultipleExpectations:
-  Max: 37
-
-# Offense count: 2217
-RSpec/NamedSubject:
-  Enabled: false
-
-# Offense count: 2126
-# Configuration parameters: MaxNesting.
-RSpec/NestedGroups:
-  Enabled: false
-
-# Offense count: 36
-RSpec/RepeatedDescription:
-  Exclude:
-    - 'spec/controllers/projects/todo_controller_spec.rb'
-    - 'spec/features/boards/boards_spec.rb'
-    - 'spec/helpers/issuables_helper_spec.rb'
-    - 'spec/lib/banzai/filter/emoji_filter_spec.rb'
-    - 'spec/models/commit_range_spec.rb'
-    - 'spec/models/global_milestone_spec.rb'
-    - 'spec/models/hooks/system_hook_spec.rb'
-    - 'spec/requests/api/commits_spec.rb'
-    - 'spec/requests/api/merge_requests_spec.rb'
-    - 'spec/requests/api/milestones_spec.rb'
-    - 'spec/requests/api/users_spec.rb'
-    - 'spec/requests/api/v3/merge_requests_spec.rb'
-    - 'spec/requests/lfs_http_spec.rb'
-    - 'spec/routing/admin_routing_spec.rb'
-    - 'spec/services/notification_service_spec.rb'
-
 # Offense count: 1
 RSpec/SingleArgumentMessageChain:
   Exclude:
     - 'spec/requests/api/internal_spec.rb'
-
-# Offense count: 140
-RSpec/SubjectStub:
-  Enabled: false
 
 # Offense count: 126
 # Cop supports --auto-correct.
