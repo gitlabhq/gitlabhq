@@ -37,14 +37,12 @@ class GeoBackfillWorker
   end
 
   def try_obtain_lease
-    logger.info 'Trying to obtain lease to backfill repositories'
     uuid = Gitlab::ExclusiveLease.new(lease_key, timeout: LEASE_TIMEOUT).try_obtain
 
-    logger.info 'Could not obtain lease to backfill repositories' and return unless uuid
+    return unless uuid
 
     yield
 
-    logger.info('Releasing lease to backfill repositories')
     release_lease(uuid)
   end
 
