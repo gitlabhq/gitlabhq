@@ -729,6 +729,15 @@ describe Project, models: true do
         project.cache_has_external_issue_tracker
       end.to change { project.has_external_issue_tracker}.to(false)
     end
+
+    it 'does not cache data when in a secondary gitlab geo node' do
+      allow(Gitlab::Geo).to receive(:secondary?) { true }
+
+      expect do
+        project.cache_has_external_issue_tracker
+      end.not_to change { project.has_external_issue_tracker }
+    end
+  end
   end
 
   describe '#has_wiki?' do
