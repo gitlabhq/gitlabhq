@@ -1,0 +1,4 @@
+---
+title: Add `copy` backup strategy to combat file changed errors
+merge_request: 8728
+author:
