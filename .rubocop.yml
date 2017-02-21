@@ -917,6 +917,8 @@ Lint/ShadowingOuterLocalVariable:
 Lint/AssignmentInCondition:
   Enabled: false
 
+Lint/UnneededSplatExpansion:
+  Enabled: false
 
 Lint/UnusedBlockArgument:
   Enabled: false
