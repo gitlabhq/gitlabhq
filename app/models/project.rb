@@ -1329,7 +1329,7 @@ class Project < ActiveRecord::Base
   alias_method :path_with_namespace, :full_path
 
   def license
-    return 'LICENSE' if @repository.license_key.nil?
+    return nil if @repository.license_key.nil?
 
     license = Licensee::License.new(@repository.license_key)
 
