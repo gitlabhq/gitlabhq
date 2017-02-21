@@ -1161,10 +1161,6 @@ describe API::Users, api: true do
   end
 
   context "user activities", :redis do
-    it_behaves_like 'a paginated resources' do
-      let(:request) { get api("/user/activities", admin) }
-    end
-
     context 'last activity as normal user' do
       it 'has no permission' do
         user.record_activity
@@ -1185,6 +1181,7 @@ describe API::Users, api: true do
 
         activity = json_response.last
 
+        expect(response).to include_pagination_headers
         expect(activity['username']).to eq(user.username)
         expect(activity['last_activity_at']).to eq('2000-01-01 00:00:00')
       end
