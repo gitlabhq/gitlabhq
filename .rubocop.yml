@@ -907,6 +907,10 @@ RSpec/RepeatedDescription:
 
 RSpec/SubjectStub:
   Enabled: false
+
+Lint/UnifiedInteger:
+  Enabled: true
+
 Lint/ShadowingOuterLocalVariable:
   Enabled: false
 
