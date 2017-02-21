@@ -89,9 +89,9 @@ module Ci
 
     # ref can't be HEAD or SHA, can only be branch/tag name
     scope :latest, ->(ref = nil) do
-      max_id = unscope(:select)
-        .select("max(#{quoted_table_name}.id)")
-        .group(:ref, :sha)
+      max_id = unscope(:select).
+        select("max(#{quoted_table_name}.id)").
+        group(:ref, :sha)
 
       relation = ref ? where(ref: ref) : self
       relation.where(id: max_id)
@@ -130,16 +130,16 @@ module Ci
     def stages
       # TODO, this needs refactoring, see gitlab-ce#26481.
 
-      stages_query = statuses
-        .group('stage').select(:stage).order('max(stage_idx)')
+      stages_query = statuses.
+        group('stage').select(:stage).order('max(stage_idx)')
 
       status_sql = statuses.latest.where('stage=sg.stage').status_sql
 
-      warnings_sql = statuses.latest.select('COUNT(*) > 0')
-        .where('stage=sg.stage').failed_but_allowed.to_sql
+      warnings_sql = statuses.latest.select('COUNT(*) > 0').
+        where('stage=sg.stage').failed_but_allowed.to_sql
 
-      stages_with_statuses = CommitStatus.from(stages_query, :sg)
-        .pluck('sg.stage', status_sql, "(#{warnings_sql})")
+      stages_with_statuses = CommitStatus.from(stages_query, :sg).
+        pluck('sg.stage', status_sql, "(#{warnings_sql})")
 
       stages_with_statuses.map do |stage|
         Ci::Stage.new(self, Hash[%i[name status warnings].zip(stage)])
@@ -219,8 +219,8 @@ module Ci
     end
 
     def retry_failed(current_user)
-      Ci::RetryPipelineService.new(project, current_user)
-        .execute(self)
+      Ci::RetryPipelineService.new(project, current_user).
+        execute(self)
     end
 
     def mark_as_processable_after_stage(stage_idx)
@@ -352,15 +352,15 @@ module Ci
     # Merge requests for which the current pipeline is running against
     # the merge request's latest commit.
     def merge_requests
-      @merge_requests ||= project.merge_requests
-        .where(source_branch: self.ref)
-        .select { |merge_request| merge_request.head_pipeline.try(:id) == self.id }
+      @merge_requests ||= project.merge_requests.
+        where(source_branch: self.ref).
+        select { |merge_request| merge_request.head_pipeline.try(:id) == self.id }
     end
 
     def detailed_status(current_user)
-      Gitlab::Ci::Status::Pipeline::Factory
-        .new(self, current_user)
-        .fabricate!
+      Gitlab::Ci::Status::Pipeline::Factory.
+        new(self, current_user).
+        fabricate!
     end
 
     private

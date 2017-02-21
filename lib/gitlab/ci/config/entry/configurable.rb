@@ -27,9 +27,9 @@ module Gitlab
             return unless valid?
 
             self.class.nodes.each do |key, factory|
-              factory
-                .value(@config[key])
-                .with(key: key, parent: self)
+              factory.
+                value(@config[key]).
+                with(key: key, parent: self)
 
               @entries[key] = factory.create!
             end
@@ -49,8 +49,8 @@ module Gitlab
             private # rubocop:disable Lint/UselessAccessModifier
 
             def entry(key, entry, metadata)
-              factory = Entry::Factory.new(entry)
-                .with(description: metadata[:description])
+              factory = Entry::Factory.new(entry).
+                with(description: metadata[:description])
 
               (@nodes ||= {}).merge!(key.to_sym => factory)
             end

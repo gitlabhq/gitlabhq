@@ -100,8 +100,9 @@ class GitPushService < BaseService
     # Update merge requests that may be affected by this push. A new branch
     # could cause the last commit of a merge request to change.
     #
-    UpdateMergeRequestsWorker
-      .perform_async(@project.id, current_user.id, params[:oldrev], params[:newrev], params[:ref])
+    UpdateMergeRequestsWorker.
+      perform_async(@project.id, current_user.id, params[:oldrev], params[:newrev], params[:ref])
+
     mirror_update = @project.mirror? && @project.repository.up_to_date_with_upstream?(branch_name)
 
     EventCreateService.new.push(@project, current_user, build_push_data)
@@ -110,9 +111,9 @@ class GitPushService < BaseService
     Ci::CreatePipelineService.new(@project, current_user, build_push_data).execute(mirror_update: mirror_update)
 
     if push_remove_branch?
-      AfterBranchDeleteService
-        .new(project, current_user)
-        .execute(branch_name)
+      AfterBranchDeleteService.
+        new(project, current_user).
+        execute(branch_name)
     end
   end
 

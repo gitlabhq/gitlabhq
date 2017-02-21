@@ -37,13 +37,13 @@ describe API::Groups, api: true  do
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
-        expect(json_response)
-          .to satisfy_one { |group| group['name'] == group1.name }
+        expect(json_response).
+          to satisfy_one { |group| group['name'] == group1.name }
 
-        expect(json_response)
-          .to satisfy_one { |group| group['ldap_cn'] == group1.ldap_cn }
-        expect(json_response)
-          .to satisfy_one { |group| group['ldap_access'] == group1.ldap_access }
+        expect(json_response).
+          to satisfy_one { |group| group['ldap_cn'] == group1.ldap_cn }
+        expect(json_response).
+          to satisfy_one { |group| group['ldap_access'] == group1.ldap_access }
 
         expect(json_response).to satisfy_one do |group|
           ldap_group_link = group['ldap_group_links'].first
@@ -98,8 +98,8 @@ describe API::Groups, api: true  do
         expect(response).to have_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(json_response)
-          .to satisfy_one { |group| group['statistics'] == attributes }
+        expect(json_response).
+          to satisfy_one { |group| group['statistics'] == attributes }
       end
     end
 

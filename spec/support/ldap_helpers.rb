@@ -20,8 +20,8 @@ module LdapHelpers
   #   )
   def stub_ldap_config(messages)
     messages.each do |config, value|
-      allow_any_instance_of(::Gitlab::LDAP::Config)
-        .to receive(config.to_sym).and_return(value)
+      allow_any_instance_of(::Gitlab::LDAP::Config).
+        to receive(config.to_sym).and_return(value)
     end
   end
 
@@ -36,8 +36,8 @@ module LdapHelpers
   def stub_ldap_person_find_by_uid(uid, entry, provider = 'ldapmain')
     return_value = ::Gitlab::LDAP::Person.new(entry, provider) if entry.present?
 
-    allow(::Gitlab::LDAP::Person)
-      .to receive(:find_by_uid).with(uid, any_args).and_return(return_value)
+    allow(::Gitlab::LDAP::Person).
+      to receive(:find_by_uid).with(uid, any_args).and_return(return_value)
   end
 
   # Create a simple LDAP user entry.

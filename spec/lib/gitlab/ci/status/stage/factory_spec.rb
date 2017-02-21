@@ -55,8 +55,8 @@ describe Gitlab::Ci::Status::Stage::Factory do
     end
 
     it 'fabricates extended "success with warnings" status' do
-      expect(status)
-        .to be_a Gitlab::Ci::Status::SuccessWarning
+      expect(status).
+        to be_a Gitlab::Ci::Status::SuccessWarning
     end
 
     it 'extends core status with common stage method' do

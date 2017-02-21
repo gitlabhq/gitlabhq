@@ -35,9 +35,9 @@ class Projects::CommitController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        render json: PipelineSerializer
-          .new(project: @project, user: @current_user)
-          .represent(@pipelines)
+        render json: PipelineSerializer.
+          new(project: @project, user: @current_user).
+          represent(@pipelines)
       end
     end
   end

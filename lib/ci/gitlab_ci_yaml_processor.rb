@@ -115,8 +115,8 @@ module Ci
     end
 
     def yaml_variables(name)
-      variables = (@variables || {})
-        .merge(job_variables(name))
+      variables = (@variables || {}).
+        merge(job_variables(name))
 
       variables.map do |key, value|
         { key: key.to_s, value: value, public: true }

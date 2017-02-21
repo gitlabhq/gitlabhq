@@ -6,9 +6,9 @@ describe Gitlab::Ci::Status::Build::Common do
   let(:project) { build.project }
 
   subject do
-    Gitlab::Ci::Status::Core
-      .new(build, user)
-      .extend(described_class)
+    Gitlab::Ci::Status::Core.
+      new(build, user).
+      extend(described_class)
   end
 
   describe '#has_action?' do

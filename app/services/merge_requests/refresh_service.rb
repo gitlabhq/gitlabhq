@@ -61,9 +61,9 @@ module MergeRequests
         by_source_or_target_branch(@branch_name).to_a
 
       # Fork merge requests
-      merge_requests += MergeRequest.opened
-        .where(source_branch: @branch_name, source_project: @project)
-        .where.not(target_project: @project).to_a
+      merge_requests += MergeRequest.opened.
+        where(source_branch: @branch_name, source_project: @project).
+        where.not(target_project: @project).to_a
 
       filter_merge_requests(merge_requests).each do |merge_request|
         if merge_request.source_branch == @branch_name || force_push?

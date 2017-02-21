@@ -12,15 +12,15 @@ describe Ci::UpdateBuildQueueService, :services do
       before { build.project.runners << runner }
 
       it 'ticks runner queue value' do
-        expect { subject.execute(build) }
-          .to change { runner.ensure_runner_queue_value }
+        expect { subject.execute(build) }.
+          to change { runner.ensure_runner_queue_value }
       end
     end
 
     context 'when there are no runners that can pick build' do
       it 'does not tick runner queue value' do
-        expect { subject.execute(build) }
-          .not_to change { runner.ensure_runner_queue_value }
+        expect { subject.execute(build) }.
+          not_to change { runner.ensure_runner_queue_value }
       end
     end
   end
@@ -30,8 +30,8 @@ describe Ci::UpdateBuildQueueService, :services do
 
     context 'when there are runner that can pick build' do
       it 'ticks runner queue value' do
-        expect { subject.execute(build) }
-          .to change { runner.ensure_runner_queue_value }
+        expect { subject.execute(build) }.
+          to change { runner.ensure_runner_queue_value }
       end
     end
 
@@ -39,8 +39,8 @@ describe Ci::UpdateBuildQueueService, :services do
       before { build.tag_list = [:docker] }
 
       it 'does not tick runner queue value' do
-        expect { subject.execute(build) }
-          .not_to change { runner.ensure_runner_queue_value }
+        expect { subject.execute(build) }.
+          not_to change { runner.ensure_runner_queue_value }
       end
     end
   end

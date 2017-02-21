@@ -37,8 +37,8 @@ describe API::Helpers::Pagination do
 
       describe 'first page' do
         before do
-          allow(subject).to receive(:params)
-            .and_return({ page: 1, per_page: 2 })
+          allow(subject).to receive(:params).
+            and_return({ page: 1, per_page: 2 })
         end
 
         it 'returns appropriate amount of resources' do
@@ -60,8 +60,8 @@ describe API::Helpers::Pagination do
 
       describe 'second page' do
         before do
-          allow(subject).to receive(:params)
-            .and_return({ page: 2, per_page: 2 })
+          allow(subject).to receive(:params).
+            and_return({ page: 2, per_page: 2 })
         end
 
         it 'returns appropriate amount of resources' do
@@ -87,8 +87,8 @@ describe API::Helpers::Pagination do
     end
 
     def expect_message(method)
-      expect(subject).to receive(method)
-        .at_least(:once).and_return(value)
+      expect(subject).to receive(method).
+        at_least(:once).and_return(value)
     end
   end
 end

@@ -798,15 +798,15 @@ describe TodoService, services: true do
       create(:todo, :mentioned, user: john_doe, target: issue, project: project)
 
       todos = TodosFinder.new(john_doe, {}).execute
-      expect { TodoService.new.mark_todos_as_done(todos, john_doe) }
-       .to change { john_doe.todos.done.count }.from(0).to(1)
+      expect { TodoService.new.mark_todos_as_done(todos, john_doe) }.
+       to change { john_doe.todos.done.count }.from(0).to(1)
     end
 
     it 'marks an array of todos as done' do
       todo = create(:todo, :mentioned, user: john_doe, target: issue, project: project)
 
-      expect { TodoService.new.mark_todos_as_done([todo], john_doe) }
-        .to change { todo.reload.state }.from('pending').to('done')
+      expect { TodoService.new.mark_todos_as_done([todo], john_doe) }.
+        to change { todo.reload.state }.from('pending').to('done')
     end
 
     it 'returns the number of updated todos' do # Needed on API

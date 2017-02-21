@@ -31,9 +31,9 @@ describe ProjectCacheWorker do
 
     context 'with an existing project' do
       it 'updates the project statistics' do
-        expect(worker).to receive(:update_statistics)
-          .with(kind_of(Project), %i(repository_size))
-          .and_call_original
+        expect(worker).to receive(:update_statistics).
+          with(kind_of(Project), %i(repository_size)).
+          and_call_original
 
         worker.perform(project.id, [], %w(repository_size))
       end
@@ -83,9 +83,9 @@ describe ProjectCacheWorker do
           with(project.id, :update_statistics).
           and_return(true)
 
-        expect(statistics).to receive(:refresh!)
-          .with(only: %i(repository_size))
-          .and_call_original
+        expect(statistics).to receive(:refresh!).
+          with(only: %i(repository_size)).
+          and_call_original
 
         worker.update_statistics(project, %i(repository_size))
       end

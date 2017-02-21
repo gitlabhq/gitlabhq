@@ -84,8 +84,8 @@ describe MergeRequestDiff, models: true do
     end
 
     it 'saves overflow state' do
-      allow(Commit).to receive(:max_diff_options)
-        .and_return(max_lines: 0, max_files: 0)
+      allow(Commit).to receive(:max_diff_options).
+        and_return(max_lines: 0, max_files: 0)
 
       mr_diff = create(:merge_request).merge_request_diff
 
@@ -93,8 +93,8 @@ describe MergeRequestDiff, models: true do
     end
 
     it 'saves empty state' do
-      allow_any_instance_of(MergeRequestDiff).to receive(:commits)
-        .and_return([])
+      allow_any_instance_of(MergeRequestDiff).to receive(:commits).
+        and_return([])
 
       mr_diff = create(:merge_request).merge_request_diff
 

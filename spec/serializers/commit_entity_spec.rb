@@ -42,8 +42,8 @@ describe CommitEntity do
   end
 
   it 'needs to receive project in the request' do
-    expect(request).to receive(:project)
-      .and_return(project)
+    expect(request).to receive(:project).
+      and_return(project)
 
     subject
   end

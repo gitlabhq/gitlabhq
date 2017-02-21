@@ -17,10 +17,10 @@ module Gitlab
         end
 
         def core_status
-          Gitlab::Ci::Status
-            .const_get(@status.capitalize)
-            .new(@subject, @user)
-            .extend(self.class.common_helpers)
+          Gitlab::Ci::Status.
+            const_get(@status.capitalize).
+            new(@subject, @user).
+            extend(self.class.common_helpers)
         end
 
         def compound_extended_status
