@@ -309,6 +309,6 @@ class ApplicationSetting < ActiveRecord::Base
   def check_default_artifacts_expire_in
     ChronicDuration.parse(default_artifacts_expire_in)
   rescue ChronicDuration::DurationParseError
-    errors.add(:default_artifacts_expiration, "is not a correct duration")
+    errors.add(:default_artifacts_expire_in, "is not a correct duration")
   end
 end

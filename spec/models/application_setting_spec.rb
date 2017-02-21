@@ -59,7 +59,7 @@ describe ApplicationSetting, models: true do
       def expect_invalid
         expect(setting).to be_invalid
         expect(setting.errors.messages)
-          .to have_key(:default_artifacts_expiration)
+          .to have_key(:default_artifacts_expire_in)
       end
     end
 
