@@ -4,7 +4,7 @@ module Gitlab
   # Helper methods to interact with Prometheus network services & resources
   module Prometheus
     def ping
-      json_api_get("ping")
+      json_api_get("query", query: "count({__name__=~\".+\"})")
     end
 
     def query(query, time = Time.now)
