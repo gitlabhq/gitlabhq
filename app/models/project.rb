@@ -812,7 +812,7 @@ class Project < ActiveRecord::Base
   end
 
   def cache_has_external_wiki
-    update_column(:has_external_wiki, services.external_wikis.any?)
+    update_column(:has_external_wiki, services.external_wikis.any?) unless Gitlab::Geo.secondary?
   end
 
   def find_or_initialize_services
