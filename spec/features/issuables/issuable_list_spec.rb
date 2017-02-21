@@ -60,15 +60,15 @@ describe 'issuable list', feature: true do
       create(:award_emoji, :downvote, awardable: issuable)
       create(:award_emoji, :upvote, awardable: issuable)
 
-      if issuable_type == :issue
-        issue = Issue.reorder(:iid).first
-        merge_request = create(:merge_request,
-                                title: FFaker::Lorem.sentence,
-                                source_project: project,
-                                source_branch: FFaker::Name.name)
+    if issuable_type == :issue
+      issue = Issue.reorder(:iid).first
+      merge_request = create(:merge_request,
+                              title: FFaker::Lorem.sentence,
+                              source_project: project,
+                              source_branch: FFaker::Name.name)
 
-        MergeRequestsClosingIssues.create!(issue: issue, merge_request: merge_request) if MergeRequestsClosingIssues.count.zero?
-      end
+      MergeRequestsClosingIssues.create!(issue: issue, merge_request: merge_request) if MergeRequestsClosingIssues.count.zero?
+    end
     end
   end
 end
