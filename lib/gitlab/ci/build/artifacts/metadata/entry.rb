@@ -91,9 +91,7 @@ module Gitlab
           blank_node? || @entries.include?(@path)
         end
 
-        def empty?
-          children.empty?
-        end
+        delegate :empty?, to: :children
 
         def total_size
           descendant_pattern = %r{^#{Regexp.escape(@path)}}

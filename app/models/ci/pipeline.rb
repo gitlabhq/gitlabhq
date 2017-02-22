@@ -153,9 +153,7 @@ module Ci
       builds.latest.with_artifacts_not_expired.includes(project: [:namespace])
     end
 
-    def project_id
-      project.id
-    end
+    delegate :id, to: :project, prefix: true
 
     # For now the only user who participates is the user who triggered
     def participants(_current_user = nil)

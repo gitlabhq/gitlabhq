@@ -1,7 +1,5 @@
 describe Gitlab::Utils, lib: true do
-  def to_boolean(value)
-    described_class.to_boolean(value)
-  end
+  delegate :to_boolean, to: :described_class
 
   describe '.to_boolean' do
     it 'accepts booleans' do

@@ -763,7 +763,7 @@ Rails/Date:
 
 # Prefer delegate method for delegations.
 Rails/Delegate:
-  Enabled: false
+  Enabled: true
 
 # Prefer `find_by` over `where.first`.
 Rails/FindBy:

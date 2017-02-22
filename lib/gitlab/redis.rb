@@ -13,15 +13,11 @@ module Gitlab
 
     class << self
       # Do NOT cache in an instance variable. Result may be mutated by caller.
-      def params
-        new.params
-      end
+      delegate :params, to: :new
 
       # Do NOT cache in an instance variable. Result may be mutated by caller.
       # @deprecated Use .params instead to get sentinel support
-      def url
-        new.url
-      end
+      delegate :url, to: :new
 
       def with
         @pool ||= ConnectionPool.new(size: pool_size) { ::Redis.new(params) }

@@ -60,9 +60,7 @@ class ProjectWiki
     !!repository.exists?
   end
 
-  def empty?
-    pages.empty?
-  end
+  delegate :empty?, to: :pages
 
   # Returns an Array of Gitlab WikiPage instances or an
   # empty Array if this Wiki has no pages.
@@ -160,9 +158,7 @@ class ProjectWiki
     }
   end
 
-  def repository_storage_path
-    project.repository_storage_path
-  end
+  delegate :repository_storage_path, to: :project
 
   private
 

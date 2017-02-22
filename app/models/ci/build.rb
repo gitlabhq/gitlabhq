@@ -233,9 +233,7 @@ module Ci
       gl_project_id
     end
 
-    def project_name
-      project.name
-    end
+    delegate :name, to: :project, prefix: true
 
     def repo_url
       auth = "gitlab-ci-token:#{ensure_token!}@"

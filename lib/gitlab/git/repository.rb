@@ -162,13 +162,9 @@ module Gitlab
         !empty?
       end
 
-      def empty?
-        rugged.empty?
-      end
-
-      def bare?
-        rugged.bare?
-      end
+      delegate  :empty?,
+                :bare?,
+                to: :rugged
 
       def repo_exists?
         !!rugged
@@ -565,9 +561,7 @@ module Gitlab
       #    will trigger a +:mixed+ reset and the working directory will be
       #    replaced with the content of the index. (Untracked and ignored files
       #    will be left alone)
-      def reset(ref, reset_type)
-        rugged.reset(ref, reset_type)
-      end
+      delegate :reset, to: :rugged
 
       # Mimic the `git clean` command and recursively delete untracked files.
       # Valid keys that can be passed in the +options+ hash are:

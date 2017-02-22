@@ -24,9 +24,7 @@ module Bitbucket
       response.parsed
     end
 
-    def expired?
-      connection.expired?
-    end
+    delegate :expired?, to: :connection
 
     def refresh!
       response = connection.refresh!
