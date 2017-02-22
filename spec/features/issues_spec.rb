@@ -577,6 +577,15 @@ describe 'Issues', feature: true do
 
         expect(page.find_field("issue_description").value).to have_content 'banana_sample'
       end
+
+      it 'adds double newline to end of attachment markdown' do
+        drop_in_dropzone test_image_file
+
+        # Wait for the file to upload
+        sleep 1
+
+        expect(page.find_field("issue_description").value).to match /\n\n$/
+      end
     end
   end
 
