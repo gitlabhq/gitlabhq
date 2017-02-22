@@ -40,11 +40,11 @@ module MergeRequests
 
     # Returns all origin and fork merge requests from `@project` satisfying passed arguments.
     def merge_requests_for(source_branch, mr_states: [:opened])
-      MergeRequest
-        .with_state(mr_states)
-        .where(source_branch: source_branch, source_project_id: @project.id)
-        .preload(:source_project) # we don't need a #includes since we're just preloading for the #select
-        .select(&:source_project)
+      MergeRequest.
+        with_state(mr_states).
+        where(source_branch: source_branch, source_project_id: @project.id).
+        preload(:source_project). # we don't need a #includes since we're just preloading for the #select
+        select(&:source_project)
     end
 
     def pipeline_merge_requests(pipeline)

@@ -165,8 +165,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
         # Get commits from repository
         # or from cache if already merged
         @commits = @merge_request.commits
-        @note_counts = Note.where(commit_id: @commits.map(&:id))
-          .group(:commit_id).count
+        @note_counts = Note.where(commit_id: @commits.map(&:id)).
+          group(:commit_id).count
 
         render json: { html: view_to_html_string('projects/merge_requests/show/_commits') }
       end
@@ -235,9 +235,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       end
 
       format.json do
-        render json: PipelineSerializer
-          .new(project: @project, user: @current_user)
-          .represent(@pipelines)
+        render json: PipelineSerializer.
+          new(project: @project, user: @current_user).
+          represent(@pipelines)
       end
     end
   end
@@ -248,9 +248,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       format.json do
         define_pipelines_vars
 
-        render json: PipelineSerializer
-          .new(project: @project, user: @current_user)
-          .represent(@pipelines)
+        render json: PipelineSerializer.
+          new(project: @project, user: @current_user).
+          represent(@pipelines)
       end
     end
   end
@@ -343,9 +343,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       return access_denied!
     end
 
-    MergeRequests::MergeWhenPipelineSucceedsService
-      .new(@project, current_user)
-      .cancel(@merge_request)
+    MergeRequests::MergeWhenPipelineSucceedsService.
+      new(@project, current_user).
+      cancel(@merge_request)
   end
 
   def merge
@@ -380,9 +380,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       end
 
       if @merge_request.head_pipeline.active?
-        MergeRequests::MergeWhenPipelineSucceedsService
-          .new(@project, current_user, merge_params)
-          .execute(@merge_request)
+        MergeRequests::MergeWhenPipelineSucceedsService.
+          new(@project, current_user, merge_params).
+          execute(@merge_request)
 
         @status = :merge_when_build_succeeds
       elsif @merge_request.head_pipeline.success?
@@ -685,8 +685,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @commit = @merge_request.diff_head_commit
     @base_commit = @merge_request.diff_base_commit
 
-    @note_counts = Note.where(commit_id: @commits.map(&:id))
-      .group(:commit_id).count
+    @note_counts = Note.where(commit_id: @commits.map(&:id)).
+      group(:commit_id).count
 
     @labels = LabelsFinder.new(current_user, project_id: @project.id).execute
 
@@ -709,8 +709,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def merge_request_params
-    params.require(:merge_request)
-      .permit(merge_request_params_ce << merge_request_params_ee)
+    params.require(:merge_request).
+      permit(merge_request_params_ce << merge_request_params_ee)
   end
 
   def merge_request_params_ce

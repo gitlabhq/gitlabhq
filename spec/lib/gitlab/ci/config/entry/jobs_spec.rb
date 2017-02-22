@@ -22,8 +22,8 @@ describe Gitlab::Ci::Config::Entry::Jobs do
           let(:config) { ['incorrect'] }
 
           it 'returns error about incorrect type' do
-            expect(entry.errors)
-              .to include 'jobs config should be a hash'
+            expect(entry.errors).
+              to include 'jobs config should be a hash'
           end
         end
 
@@ -39,8 +39,8 @@ describe Gitlab::Ci::Config::Entry::Jobs do
           let(:config) { { '.hidden'.to_sym => { script: [] } } }
 
           it 'returns error about no visible jobs defined' do
-            expect(entry.errors)
-              .to include 'jobs config should contain at least one visible job'
+            expect(entry.errors).
+              to include 'jobs config should contain at least one visible job'
           end
         end
       end
@@ -73,10 +73,10 @@ describe Gitlab::Ci::Config::Entry::Jobs do
     describe '#descendants' do
       it 'creates valid descendant nodes' do
         expect(entry.descendants.count).to eq 3
-        expect(entry.descendants.first(2))
-          .to all(be_an_instance_of(Gitlab::Ci::Config::Entry::Job))
-        expect(entry.descendants.last)
-          .to be_an_instance_of(Gitlab::Ci::Config::Entry::Hidden)
+        expect(entry.descendants.first(2)).
+          to all(be_an_instance_of(Gitlab::Ci::Config::Entry::Job))
+        expect(entry.descendants.last).
+          to be_an_instance_of(Gitlab::Ci::Config::Entry::Hidden)
       end
     end
 

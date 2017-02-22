@@ -11,8 +11,8 @@ describe SessionsController do
         it 'does not authenticate user' do
           post(:create, user: { login: 'invalid', password: 'invalid' })
 
-          expect(response)
-            .to set_flash.now[:alert].to /Invalid Login or password/
+          expect(response).
+            to set_flash.now[:alert].to /Invalid Login or password/
         end
       end
 
@@ -50,8 +50,8 @@ describe SessionsController do
       context 'remember_me field' do
         it 'sets a remember_user_token cookie when enabled' do
           allow(controller).to receive(:find_user).and_return(user)
-          expect(controller)
-            .to receive(:remember_me).with(user).and_call_original
+          expect(controller).
+            to receive(:remember_me).with(user).and_call_original
 
           authenticate_2fa(remember_me: '1', otp_attempt: user.current_otp)
 
@@ -110,8 +110,8 @@ describe SessionsController do
               end
 
               it 'warns about invalid OTP code' do
-                expect(response).to set_flash.now[:alert]
-                  .to /Invalid two-factor code/
+                expect(response).to set_flash.now[:alert].
+                  to /Invalid two-factor code/
               end
             end
           end
@@ -137,8 +137,8 @@ describe SessionsController do
               end
 
               it 'warns about invalid login' do
-                expect(response).to set_flash.now[:alert]
-                  .to /Invalid Login or password/
+                expect(response).to set_flash.now[:alert].
+                  to /Invalid Login or password/
               end
 
               it 'locks the user' do
@@ -148,8 +148,8 @@ describe SessionsController do
               it 'keeps the user locked on future login attempts' do
                 post(:create, user: { login: user.username, password: user.password })
 
-                expect(response)
-                  .to set_flash.now[:alert].to /Invalid Login or password/
+                expect(response).
+                  to set_flash.now[:alert].to /Invalid Login or password/
               end
             end
           end
@@ -161,8 +161,8 @@ describe SessionsController do
               authenticate_2fa(login: another_user.username,
                                otp_attempt: 'invalid')
 
-              expect(response).to set_flash.now[:alert]
-                .to /Invalid two-factor code/
+              expect(response).to set_flash.now[:alert].
+                to /Invalid two-factor code/
             end
           end
         end
@@ -185,8 +185,8 @@ describe SessionsController do
         it 'sets a remember_user_token cookie when enabled' do
           allow(U2fRegistration).to receive(:authenticate).and_return(true)
           allow(controller).to receive(:find_user).and_return(user)
-          expect(controller)
-            .to receive(:remember_me).with(user).and_call_original
+          expect(controller).
+            to receive(:remember_me).with(user).and_call_original
 
           authenticate_2fa_u2f(remember_me: '1', login: user.username, device_response: "{}")
 

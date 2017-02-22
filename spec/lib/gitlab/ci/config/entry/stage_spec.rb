@@ -24,8 +24,8 @@ describe Gitlab::Ci::Config::Entry::Stage do
       let(:config) { { test: true } }
 
       it 'reports errors about wrong type' do
-        expect(stage.errors)
-          .to include 'stage config should be a string'
+        expect(stage.errors).
+          to include 'stage config should be a string'
       end
     end
   end

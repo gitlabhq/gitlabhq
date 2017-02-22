@@ -212,15 +212,15 @@ describe Ci::Build, :models do
 
       retried_rspec = Ci::Build.retry(rspec_test, user)
 
-      expect(staging.depends_on_builds.map(&:id))
-        .to contain_exactly(build.id, retried_rspec.id, rubocop_test.id)
+      expect(staging.depends_on_builds.map(&:id)).
+        to contain_exactly(build.id, retried_rspec.id, rubocop_test.id)
     end
   end
 
   describe '#detailed_status' do
     it 'returns a detailed status' do
-      expect(build.detailed_status(user))
-        .to be_a Gitlab::Ci::Status::Build::Cancelable
+      expect(build.detailed_status(user)).
+        to be_a Gitlab::Ci::Status::Build::Cancelable
     end
   end
 
@@ -784,8 +784,8 @@ describe Ci::Build, :models do
         pipeline2 = create(:ci_pipeline, project: project)
         @build2 = create(:ci_build, pipeline: pipeline2)
 
-        allow(@merge_request).to receive(:commits_sha)
-          .and_return([pipeline.sha, pipeline2.sha])
+        allow(@merge_request).to receive(:commits_sha).
+          and_return([pipeline.sha, pipeline2.sha])
         allow(MergeRequest).to receive_message_chain(:includes, :where, :reorder).and_return([@merge_request])
       end
 
@@ -1151,8 +1151,8 @@ describe Ci::Build, :models do
     let!(:build) { create(:ci_build, artifacts_size: 23) }
 
     it 'updates project statistics when the artifact size changes' do
-      expect(ProjectCacheWorker).to receive(:perform_async)
-        .with(build.project_id, [], [:build_artifacts_size])
+      expect(ProjectCacheWorker).to receive(:perform_async).
+        with(build.project_id, [], [:build_artifacts_size])
 
       build.artifacts_size = 42
       build.save!
@@ -1166,8 +1166,8 @@ describe Ci::Build, :models do
     end
 
     it 'updates project statistics when the build is destroyed' do
-      expect(ProjectCacheWorker).to receive(:perform_async)
-        .with(build.project_id, [], [:build_artifacts_size])
+      expect(ProjectCacheWorker).to receive(:perform_async).
+        with(build.project_id, [], [:build_artifacts_size])
 
       build.destroy
     end

@@ -34,8 +34,8 @@ describe Gitlab::Ci::Status::Pipeline::Factory do
         it 'extends core status with common pipeline methods' do
           expect(status).to have_details
           expect(status).not_to have_action
-          expect(status.details_path)
-            .to include "pipelines/#{pipeline.id}"
+          expect(status.details_path).
+            to include "pipelines/#{pipeline.id}"
         end
       end
     end
@@ -55,8 +55,8 @@ describe Gitlab::Ci::Status::Pipeline::Factory do
     end
 
     it 'matches correct extended statuses' do
-      expect(factory.extended_statuses)
-        .to eq [Gitlab::Ci::Status::SuccessWarning]
+      expect(factory.extended_statuses).
+        to eq [Gitlab::Ci::Status::SuccessWarning]
     end
 
     it 'fabricates extended "success with warnings" status' do

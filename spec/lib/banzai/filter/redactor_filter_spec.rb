@@ -23,9 +23,9 @@ describe Banzai::Filter::RedactorFilter, lib: true do
     end
 
     before do
-      allow(Banzai::ReferenceParser).to receive(:[])
-        .with('test')
-        .and_return(parser_class)
+      allow(Banzai::ReferenceParser).to receive(:[]).
+        with('test').
+        and_return(parser_class)
     end
 
     context 'valid projects' do

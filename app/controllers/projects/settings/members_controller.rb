@@ -41,10 +41,10 @@ module Projects
         wheres = ["members.id IN (#{@project_members.select(:id).to_sql})"]
         wheres << "members.id IN (#{group_members.select(:id).to_sql})" if group_members
 
-        @project_members = Member
-          .where(wheres.join(' OR '))
-          .sort(@sort)
-          .page(params[:page])
+        @project_members = Member.
+          where(wheres.join(' OR ')).
+          sort(@sort).
+          page(params[:page])
 
         @requesters = AccessRequestsFinder.new(@project).execute(current_user)
 

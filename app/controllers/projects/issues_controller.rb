@@ -82,8 +82,8 @@ class Projects::IssuesController < Projects::ApplicationController
   def show
     raw_notes = @issue.notes.inc_relations_for_view.fresh
 
-    @notes = Banzai::NoteRenderer
-      .render(raw_notes, @project, current_user, @path, @project_wiki, @ref)
+    @notes = Banzai::NoteRenderer.
+      render(raw_notes, @project, current_user, @path, @project_wiki, @ref)
 
     @note     = @project.notes.new(noteable: @issue)
     @noteable = @issue
@@ -210,9 +210,9 @@ class Projects::IssuesController < Projects::ApplicationController
   def merge_request_for_resolving_discussions
     return unless merge_request_iid = params[:merge_request_for_resolving_discussions]
 
-    @merge_request_for_resolving_discussions ||= MergeRequestsFinder.new(current_user, project_id: project.id)
-                                                   .execute
-                                                   .find_by(iid: merge_request_iid)
+    @merge_request_for_resolving_discussions ||= MergeRequestsFinder.new(current_user, project_id: project.id).
+                                                   execute.
+                                                   find_by(iid: merge_request_iid)
   end
 
   def authorize_read_issue!

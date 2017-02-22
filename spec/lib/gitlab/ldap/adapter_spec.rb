@@ -34,8 +34,8 @@ describe Gitlab::LDAP::Adapter, lib: true do
     end
 
     it 'searches with the proper options when searching with a limit' do
-      expect(adapter)
-        .to receive(:ldap_search).with(hash_including(size: 100)).and_return({})
+      expect(adapter).
+        to receive(:ldap_search).with(hash_including(size: 100)).and_return({})
 
       adapter.users('uid', 'johndoe', 100)
     end

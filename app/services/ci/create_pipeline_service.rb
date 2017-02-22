@@ -52,9 +52,9 @@ module Ci
       Ci::Pipeline.transaction do
         pipeline.save
 
-        Ci::CreatePipelineBuildsService
-          .new(project, current_user)
-          .execute(pipeline)
+        Ci::CreatePipelineBuildsService.
+          new(project, current_user).
+          execute(pipeline)
       end
 
       pipeline.tap(&:process!)

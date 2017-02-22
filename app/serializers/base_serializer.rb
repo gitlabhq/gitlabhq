@@ -4,9 +4,9 @@ class BaseSerializer
   end
 
   def represent(resource, opts = {})
-    self.class.entity_class
-      .represent(resource, opts.merge(request: @request))
-      .as_json
+    self.class.entity_class.
+      represent(resource, opts.merge(request: @request)).
+      as_json
   end
 
   def self.entity(entity_class)

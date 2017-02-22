@@ -26,8 +26,8 @@ describe Gitlab::Ci::Config::Entry::Artifacts do
           let(:config) { { name: 10 } }
 
           it 'reports error' do
-            expect(entry.errors)
-              .to include 'artifacts name should be a string'
+            expect(entry.errors).
+              to include 'artifacts name should be a string'
           end
         end
 
@@ -35,8 +35,8 @@ describe Gitlab::Ci::Config::Entry::Artifacts do
           let(:config) { { test: 100 } }
 
           it 'reports error' do
-            expect(entry.errors)
-              .to include 'artifacts config contains unknown keys: test'
+            expect(entry.errors).
+              to include 'artifacts config contains unknown keys: test'
           end
         end
       end

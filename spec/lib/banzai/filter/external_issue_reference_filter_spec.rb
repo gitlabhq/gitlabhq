@@ -33,8 +33,8 @@ describe Banzai::Filter::ExternalIssueReferenceFilter, lib: true do
       doc = filter("Issue #{reference}")
       issue_id = doc.css('a').first.attr("data-external-issue")
 
-      expect(doc.css('a').first.attr('href'))
-        .to eq helper.url_for_issue(issue_id, project)
+      expect(doc.css('a').first.attr('href')).
+        to eq helper.url_for_issue(issue_id, project)
     end
 
     it 'links to the external tracker' do
@@ -58,8 +58,8 @@ describe Banzai::Filter::ExternalIssueReferenceFilter, lib: true do
     end
 
     it 'escapes the title attribute' do
-      allow(project.external_issue_tracker).to receive(:title)
-        .and_return(%{"></a>whatever<a title="})
+      allow(project.external_issue_tracker).to receive(:title).
+        and_return(%{"></a>whatever<a title="})
 
       doc = filter("Issue #{reference}")
       expect(doc.text).to eq "Issue #{reference}"

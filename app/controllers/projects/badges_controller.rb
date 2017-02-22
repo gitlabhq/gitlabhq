@@ -4,15 +4,15 @@ class Projects::BadgesController < Projects::ApplicationController
   before_action :no_cache_headers, except: [:index]
 
   def build
-    build_status = Gitlab::Badge::Build::Status
-      .new(project, params[:ref])
+    build_status = Gitlab::Badge::Build::Status.
+      new(project, params[:ref])
 
     render_badge build_status
   end
 
   def coverage
-    coverage_report = Gitlab::Badge::Coverage::Report
-      .new(project, params[:ref], params[:job])
+    coverage_report = Gitlab::Badge::Coverage::Report.
+      new(project, params[:ref], params[:job])
 
     render_badge coverage_report
   end

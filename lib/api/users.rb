@@ -119,13 +119,13 @@ module API
         if user.save
           present user, with: Entities::UserPublic
         else
-          conflict!('Email has already been taken') if User
-              .where(email: user.email)
-              .count > 0
+          conflict!('Email has already been taken') if User.
+              where(email: user.email).
+              count > 0
 
-          conflict!('Username has already been taken') if User
-              .where(username: user.username)
-              .count > 0
+          conflict!('Username has already been taken') if User.
+              where(username: user.username).
+              count > 0
 
           render_validation_error!(user)
         end
@@ -153,12 +153,12 @@ module API
         not_found!('User') unless user
 
         conflict!('Email has already been taken') if params[:email] &&
-            User.where(email: params[:email])
-                .where.not(id: user.id).count > 0
+            User.where(email: params[:email]).
+                where.not(id: user.id).count > 0
 
         conflict!('Username has already been taken') if params[:username] &&
-            User.where(username: params[:username])
-                .where.not(id: user.id).count > 0
+            User.where(username: params[:username]).
+                where.not(id: user.id).count > 0
 
         user_params = declared_params(include_missing: false)
         identity_attrs = user_params.slice(:provider, :extern_uid)
@@ -356,11 +356,11 @@ module API
         user = User.find_by(id: params[:id])
         not_found!('User') unless user
 
-        events = user.events
-          .merge(ProjectsFinder.new.execute(current_user))
-          .references(:project)
-          .with_associations
-          .recent
+        events = user.events.
+          merge(ProjectsFinder.new.execute(current_user)).
+          references(:project).
+          with_associations.
+          recent
 
         present paginate(events), with: Entities::Event
       end

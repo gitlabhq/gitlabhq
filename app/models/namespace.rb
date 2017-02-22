@@ -49,9 +49,9 @@ class Namespace < ActiveRecord::Base
   scope :root, -> { where('type IS NULL') }
 
   scope :with_statistics, -> do
-    joins('LEFT JOIN project_statistics ps ON ps.namespace_id = namespaces.id')
-      .group('namespaces.id')
-      .select(
+    joins('LEFT JOIN project_statistics ps ON ps.namespace_id = namespaces.id').
+      group('namespaces.id').
+      select(
         'namespaces.*',
         'COALESCE(SUM(ps.storage_size), 0) AS storage_size',
         'COALESCE(SUM(ps.repository_size), 0) AS repository_size',
@@ -256,10 +256,10 @@ class Namespace < ActiveRecord::Base
   end
 
   def refresh_access_of_projects_invited_groups
-    Group
-      .joins(project_group_links: :project)
-      .where(projects: { namespace_id: id })
-      .find_each(&:refresh_members_authorized_projects)
+    Group.
+      joins(project_group_links: :project).
+      where(projects: { namespace_id: id }).
+      find_each(&:refresh_members_authorized_projects)
   end
 
   def remove_exports!

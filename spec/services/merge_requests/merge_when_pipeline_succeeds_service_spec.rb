@@ -27,9 +27,9 @@ describe MergeRequests::MergeWhenPipelineSucceedsService do
 
     context 'first time enabling' do
       before do
-        allow(merge_request)
-          .to receive(:head_pipeline)
-          .and_return(pipeline)
+        allow(merge_request).
+          to receive(:head_pipeline).
+          and_return(pipeline)
 
         service.execute(merge_request)
       end
@@ -52,11 +52,11 @@ describe MergeRequests::MergeWhenPipelineSucceedsService do
       let(:build)   { create(:ci_build, ref: mr_merge_if_green_enabled.source_branch) }
 
       before do
-        allow(mr_merge_if_green_enabled).to receive(:head_pipeline)
-          .and_return(pipeline)
+        allow(mr_merge_if_green_enabled).to receive(:head_pipeline).
+          and_return(pipeline)
 
-        allow(mr_merge_if_green_enabled).to receive(:mergeable?)
-          .and_return(true)
+        allow(mr_merge_if_green_enabled).to receive(:mergeable?).
+          and_return(true)
 
         allow(pipeline).to receive(:success?).and_return(true)
       end
@@ -152,9 +152,9 @@ describe MergeRequests::MergeWhenPipelineSucceedsService do
       before do
         # This behavior of MergeRequest: we instantiate a new object
         #
-        allow_any_instance_of(MergeRequest)
-          .to receive(:head_pipeline)
-          .and_wrap_original do
+        allow_any_instance_of(MergeRequest).
+          to receive(:head_pipeline).
+          and_wrap_original do
             Ci::Pipeline.find(pipeline.id)
           end
       end

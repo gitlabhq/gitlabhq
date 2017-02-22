@@ -92,8 +92,8 @@ describe Projects::SnippetsController do
 
         context 'when the snippet is public' do
           it 'creates the snippet' do
-            expect { create_snippet(private_project, visibility_level: Snippet::PUBLIC) }
-              .to change { Snippet.count }.by(1)
+            expect { create_snippet(private_project, visibility_level: Snippet::PUBLIC) }.
+              to change { Snippet.count }.by(1)
           end
         end
       end
@@ -101,21 +101,21 @@ describe Projects::SnippetsController do
       context 'when the project is public' do
         context 'when the snippet is private' do
           it 'creates the snippet' do
-            expect { create_snippet(project, visibility_level: Snippet::PRIVATE) }
-              .to change { Snippet.count }.by(1)
+            expect { create_snippet(project, visibility_level: Snippet::PRIVATE) }.
+              to change { Snippet.count }.by(1)
           end
         end
 
         context 'when the snippet is public' do
           it 'rejects the shippet' do
-            expect { create_snippet(project, visibility_level: Snippet::PUBLIC) }
-              .not_to change { Snippet.count }
+            expect { create_snippet(project, visibility_level: Snippet::PUBLIC) }.
+              not_to change { Snippet.count }
             expect(response).to render_template(:new)
           end
 
           it 'creates a spam log' do
-            expect { create_snippet(project, visibility_level: Snippet::PUBLIC) }
-              .to change { SpamLog.count }.by(1)
+            expect { create_snippet(project, visibility_level: Snippet::PUBLIC) }.
+              to change { SpamLog.count }.by(1)
           end
         end
       end

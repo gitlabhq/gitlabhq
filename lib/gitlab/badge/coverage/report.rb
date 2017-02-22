@@ -42,9 +42,9 @@ module Gitlab
           if @job.blank?
             @pipeline.coverage
           else
-            @pipeline.builds
-              .find_by(name: @job)
-              .try(:coverage)
+            @pipeline.builds.
+              find_by(name: @job).
+              try(:coverage)
           end
         end
       end

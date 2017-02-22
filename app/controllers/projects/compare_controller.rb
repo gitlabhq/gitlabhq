@@ -46,8 +46,8 @@ class Projects::CompareController < Projects::ApplicationController
   end
 
   def define_diff_vars
-    @compare = CompareService.new(@project, @head_ref)
-      .execute(@project, @start_ref)
+    @compare = CompareService.new(@project, @head_ref).
+      execute(@project, @start_ref)
 
     if @compare
       @commits = @compare.commits
@@ -66,7 +66,7 @@ class Projects::CompareController < Projects::ApplicationController
   end
 
   def merge_request
-    @merge_request ||= MergeRequestsFinder.new(current_user, project_id: @project.id).execute.opened
-      .find_by(source_project: @project, source_branch: @head_ref, target_branch: @start_ref)
+    @merge_request ||= MergeRequestsFinder.new(current_user, project_id: @project.id).execute.opened.
+      find_by(source_project: @project, source_branch: @head_ref, target_branch: @start_ref)
   end
 end

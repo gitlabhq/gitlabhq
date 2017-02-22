@@ -284,14 +284,14 @@ describe Ci::ProcessPipelineService, :services do
 
           pipeline.builds.running_or_pending.each(&:success)
 
-          expect(builds.pluck(:name))
-            .to contain_exactly('build:1', 'build:2', 'test:1', 'test:2')
+          expect(builds.pluck(:name)).
+            to contain_exactly('build:1', 'build:2', 'test:1', 'test:2')
 
           pipeline.builds.find_by(name: 'test:1').success
           pipeline.builds.find_by(name: 'test:2').drop
 
-          expect(builds.pluck(:name))
-            .to contain_exactly('build:1', 'build:2', 'test:1', 'test:2')
+          expect(builds.pluck(:name)).
+            to contain_exactly('build:1', 'build:2', 'test:1', 'test:2')
 
           Ci::Build.retry(pipeline.builds.find_by(name: 'test:2'), user).success
 

@@ -25,8 +25,8 @@ describe 'Comments', feature: true do
     describe 'the note form' do
       it 'is valid' do
         is_expected.to have_css('.js-main-target-form', visible: true, count: 1)
-        expect(find('.js-main-target-form input[type=submit]').value)
-          .to eq('Comment')
+        expect(find('.js-main-target-form input[type=submit]').value).
+          to eq('Comment')
         page.within('.js-main-target-form') do
           expect(page).not_to have_link('Cancel')
         end
@@ -121,8 +121,8 @@ describe 'Comments', feature: true do
 
           page.within("#note_#{note.id}") do
             is_expected.to have_css('.note_edited_ago')
-            expect(find('.note_edited_ago').text)
-              .to match(/less than a minute ago/)
+            expect(find('.note_edited_ago').text).
+              to match(/less than a minute ago/)
           end
         end
       end
@@ -201,8 +201,8 @@ describe 'Comments', feature: true do
         it "does not add a second form for same row" do
           click_diff_line
 
-          is_expected
-            .to have_css("form[data-line-code='#{line_code}']",
+          is_expected.
+            to have_css("form[data-line-code='#{line_code}']",
                         count: 1)
         end
 

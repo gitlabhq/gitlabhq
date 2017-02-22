@@ -271,8 +271,8 @@ describe MergeRequest, models: true do
     end
 
     it 'accesses the set of issues that will be closed on acceptance' do
-      allow(subject.project).to receive(:default_branch)
-        .and_return(subject.target_branch)
+      allow(subject.project).to receive(:default_branch).
+        and_return(subject.target_branch)
 
       closed = subject.closes_issues
 
@@ -298,8 +298,8 @@ describe MergeRequest, models: true do
       subject.description = "Is related to #{mentioned_issue.to_reference} and #{closing_issue.to_reference}"
 
       allow(subject).to receive(:commits).and_return([commit])
-      allow(subject.project).to receive(:default_branch)
-        .and_return(subject.target_branch)
+      allow(subject.project).to receive(:default_branch).
+        and_return(subject.target_branch)
 
       expect(subject.issues_mentioned_but_not_closing(subject.author)).to match_array([mentioned_issue])
     end
@@ -607,15 +607,15 @@ describe MergeRequest, models: true do
     it 'includes merge information as the title' do
       request = build(:merge_request, source_branch: 'source', target_branch: 'target')
 
-      expect(request.merge_commit_message)
-        .to match("Merge branch 'source' into 'target'\n\n")
+      expect(request.merge_commit_message).
+        to match("Merge branch 'source' into 'target'\n\n")
     end
 
     it 'includes its title in the body' do
       request = build(:merge_request, title: 'Remove all technical debt')
 
-      expect(request.merge_commit_message)
-        .to match("Remove all technical debt\n\n")
+      expect(request.merge_commit_message).
+        to match("Remove all technical debt\n\n")
     end
 
     it 'includes its closed issues in the body' do
@@ -624,18 +624,18 @@ describe MergeRequest, models: true do
       subject.project.team << [subject.author, :developer]
       subject.description = "This issue Closes #{issue.to_reference}"
 
-      allow(subject.project).to receive(:default_branch)
-        .and_return(subject.target_branch)
+      allow(subject.project).to receive(:default_branch).
+        and_return(subject.target_branch)
 
-      expect(subject.merge_commit_message)
-        .to match("Closes #{issue.to_reference}")
+      expect(subject.merge_commit_message).
+        to match("Closes #{issue.to_reference}")
     end
 
     it 'includes its reference in the body' do
       request = build_stubbed(:merge_request)
 
-      expect(request.merge_commit_message)
-        .to match("See merge request #{request.to_reference}")
+      expect(request.merge_commit_message).
+        to match("See merge request #{request.to_reference}")
     end
 
     it 'excludes multiple linebreak runs when description is blank' do
@@ -647,15 +647,15 @@ describe MergeRequest, models: true do
     it 'includes its description in the body' do
       request = build(:merge_request, description: 'By removing all code')
 
-      expect(request.merge_commit_message(include_description: true))
-        .to match("By removing all code\n\n")
+      expect(request.merge_commit_message(include_description: true)).
+        to match("By removing all code\n\n")
     end
 
     it 'does not includes its description in the body' do
       request = build(:merge_request, description: 'By removing all code')
 
-      expect(request.merge_commit_message)
-        .not_to match("By removing all code\n\n")
+      expect(request.merge_commit_message).
+        not_to match("By removing all code\n\n")
     end
   end
 
@@ -746,18 +746,18 @@ describe MergeRequest, models: true do
       end
 
       it 'caches the output' do
-        expect(subject).to receive(:compute_diverged_commits_count)
-          .once
-          .and_return(2)
+        expect(subject).to receive(:compute_diverged_commits_count).
+          once.
+          and_return(2)
 
         subject.diverged_commits_count
         subject.diverged_commits_count
       end
 
       it 'invalidates the cache when the source sha changes' do
-        expect(subject).to receive(:compute_diverged_commits_count)
-          .twice
-          .and_return(2)
+        expect(subject).to receive(:compute_diverged_commits_count).
+          twice.
+          and_return(2)
 
         subject.diverged_commits_count
         allow(subject).to receive(:source_branch_sha).and_return('123abc')
@@ -765,9 +765,9 @@ describe MergeRequest, models: true do
       end
 
       it 'invalidates the cache when the target sha changes' do
-        expect(subject).to receive(:compute_diverged_commits_count)
-          .twice
-          .and_return(2)
+        expect(subject).to receive(:compute_diverged_commits_count).
+          twice.
+          and_return(2)
 
         subject.diverged_commits_count
         allow(subject).to receive(:target_branch_sha).and_return('123abc')
@@ -851,8 +851,8 @@ describe MergeRequest, models: true do
 
   describe '#commits_sha' do
     before do
-      allow(subject.merge_request_diff).to receive(:commits_sha)
-        .and_return(['sha1'])
+      allow(subject.merge_request_diff).to receive(:commits_sha).
+        and_return(['sha1'])
     end
 
     it 'delegates to merge request diff' do
@@ -867,9 +867,9 @@ describe MergeRequest, models: true do
 
         allow(subject).to receive(:diff_head_sha).and_return('123abc')
 
-        expect(subject.source_project).to receive(:pipeline_for)
-          .with('master', '123abc')
-          .and_return(pipeline)
+        expect(subject.source_project).to receive(:pipeline_for).
+          with('master', '123abc').
+          and_return(pipeline)
 
         expect(subject.head_pipeline).to eq(pipeline)
       end
@@ -2095,8 +2095,8 @@ describe MergeRequest, models: true do
 
   describe '#has_commits?' do
     before do
-      allow(subject.merge_request_diff).to receive(:commits_count)
-        .and_return(2)
+      allow(subject.merge_request_diff).to receive(:commits_count).
+        and_return(2)
     end
 
     it 'returns true when merge request diff has commits' do
@@ -2106,8 +2106,8 @@ describe MergeRequest, models: true do
 
   describe '#has_no_commits?' do
     before do
-      allow(subject.merge_request_diff).to receive(:commits_count)
-        .and_return(0)
+      allow(subject.merge_request_diff).to receive(:commits_count).
+        and_return(0)
     end
 
     it 'returns true when merge request diff has 0 commits' do

@@ -6,17 +6,17 @@ describe Users::RefreshAuthorizedProjectsService do
   let(:service) { described_class.new(user) }
 
   def create_authorization(project, user, access_level = Gitlab::Access::MASTER)
-    ProjectAuthorization
-      .create!(project: project, user: user, access_level: access_level)
+    ProjectAuthorization.
+      create!(project: project, user: user, access_level: access_level)
   end
 
   describe '#execute', :redis do
     it 'refreshes the authorizations using a lease' do
-      expect_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain)
-        .and_return('foo')
+      expect_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).
+        and_return('foo')
 
-      expect(Gitlab::ExclusiveLease).to receive(:cancel)
-        .with(an_instance_of(String), 'foo')
+      expect(Gitlab::ExclusiveLease).to receive(:cancel).
+        with(an_instance_of(String), 'foo')
 
       expect(service).to receive(:execute_without_lease)
 
@@ -33,8 +33,8 @@ describe Users::RefreshAuthorizedProjectsService do
       project2 = create(:empty_project)
       to_remove = create_authorization(project2, user)
 
-      expect(service).to receive(:update_authorizations)
-        .with([to_remove.project_id], [[user.id, project.id, Gitlab::Access::MASTER]])
+      expect(service).to receive(:update_authorizations).
+        with([to_remove.project_id], [[user.id, project.id, Gitlab::Access::MASTER]])
 
       service.execute_without_lease
     end
@@ -42,8 +42,8 @@ describe Users::RefreshAuthorizedProjectsService do
     it 'sets the access level of a project to the highest available level' do
       to_remove = create_authorization(project, user, Gitlab::Access::DEVELOPER)
 
-      expect(service).to receive(:update_authorizations)
-        .with([to_remove.project_id], [[user.id, project.id, Gitlab::Access::MASTER]])
+      expect(service).to receive(:update_authorizations).
+        with([to_remove.project_id], [[user.id, project.id, Gitlab::Access::MASTER]])
 
       service.execute_without_lease
     end
