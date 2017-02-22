@@ -63,6 +63,13 @@ Rails/SkipsModelValidations:
 # Cop supports --auto-correct.
 Security/YAMLLoad:
   Enabled: false
+  
+# Offense count: 55
+# Cop supports --auto-correct.
+# Configuration parameters: EnforcedStyle, SupportedStyles.
+# SupportedStyles: percent_q, bare_percent
+Style/BarePercentLiterals:
+  Enabled: false
 
 # Offense count: 6
 # Cop supports --auto-correct.

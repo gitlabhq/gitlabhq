@@ -144,7 +144,7 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
   end
 
   context 'referencing a user in a link href' do
-    let(:reference) { %{<a href="#{user.to_reference}">User</a>} }
+    let(:reference) { %Q{<a href="#{user.to_reference}">User</a>} }
 
     it 'links to a User' do
       doc = reference_filter("Hey #{reference}")

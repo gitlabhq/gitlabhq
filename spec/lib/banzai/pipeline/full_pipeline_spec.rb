@@ -20,7 +20,7 @@ describe Banzai::Pipeline::FullPipeline do
     end
 
     it 'escapes the data-original attribute on a reference' do
-      markdown = %{[">bad things](#{issue.to_reference})}
+      markdown = %Q{[">bad things](#{issue.to_reference})}
       result = described_class.to_html(markdown, project: project)
       expect(result).to include(%{data-original='\"&gt;bad things'})
     end

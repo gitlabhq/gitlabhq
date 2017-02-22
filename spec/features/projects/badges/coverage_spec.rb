@@ -77,6 +77,6 @@ feature 'test coverage badge' do
   def expect_coverage_badge(coverage)
     svg = Nokogiri::XML.parse(page.body)
     expect(page.response_headers['Content-Type']).to include('image/svg+xml')
-    expect(svg.at(%{text:contains("#{coverage}")})).to be_truthy
+    expect(svg.at(%Q{text:contains("#{coverage}")})).to be_truthy
   end
 end

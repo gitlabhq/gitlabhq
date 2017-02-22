@@ -155,7 +155,7 @@ module CommitsHelper
 
     text =
       if options[:avatar]
-        %{<span class="commit-#{options[:source]}-name">#{person_name}</span>}
+        %Q{<span class="commit-#{options[:source]}-name">#{person_name}</span>}
       else
         person_name
       end

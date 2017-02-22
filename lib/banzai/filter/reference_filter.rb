@@ -32,7 +32,7 @@ module Banzai
         attributes[:reference_type] ||= self.class.reference_type
         attributes.delete(:original) if context[:no_original_data]
         attributes.map do |key, value|
-          %(data-#{key.to_s.dasherize}="#{escape_once(value)}")
+          %Q(data-#{key.to_s.dasherize}="#{escape_once(value)}")
         end.join(' ')
       end
 
@@ -76,7 +76,7 @@ module Banzai
       def each_node
         return to_enum(__method__) unless block_given?
 
-        query = %{descendant-or-self::text()[not(#{ignore_ancestor_query})]
+        query = %Q{descendant-or-self::text()[not(#{ignore_ancestor_query})]
         | descendant-or-self::a[
           not(contains(concat(" ", @class, " "), " gfm ")) and not(@href = "")
         ]}

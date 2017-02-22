@@ -9,7 +9,7 @@ describe Gitlab::UrlSanitizer, lib: true do
   describe '.sanitize' do
     def sanitize_url(url)
       # We want to try with multi-line content because is how error messages are formatted
-      described_class.sanitize(%{
+      described_class.sanitize(%Q{
          remote: Not Found
          fatal: repository '#{url}' not found
       })
