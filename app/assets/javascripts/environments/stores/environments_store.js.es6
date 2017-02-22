@@ -46,15 +46,15 @@ class EnvironmentsStore {
       let filtered = {};
 
       if (env.latest) {
-        filtered = Object.assign(filtered, env, env.latest);
+        filtered = Object.assign({}, env, env.latest);
         delete filtered.latest;
       } else {
-        filtered = Object.assign(filtered, env);
+        filtered = Object.assign({}, env);
       }
 
-      if (env.size > 1) {
+      if (filtered.size > 1) {
         filtered = Object.assign(filtered, env, { isFolder: true, folderName: env.name });
-      } else if (env.size === 1 && env.rollout_status) {
+      } else if (filtered.size === 1 && filtered.rollout_status) {
         filtered = Object.assign(filtered, env, {
           hasDeployBoard: true,
           isDeployBoardVisible: false,
