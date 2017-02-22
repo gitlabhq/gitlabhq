@@ -19,6 +19,8 @@ class GpgKey < ActiveRecord::Base
     unless: -> { errors.has_key?(:key) }
 
   before_validation :extract_fingerprint
+  after_create :add_to_keychain
+  after_destroy :remove_from_keychain
 
   def key=(value)
     value.strip! unless value.blank?
@@ -36,5 +38,13 @@ class GpgKey < ActiveRecord::Base
     # we can assume that the result only contains one item as the validation
     # only allows one key
     self.fingerprint = Gitlab::Gpg.fingerprints_from_key(key).first
+  end
+
+  def add_to_keychain
+    Gitlab::Gpg.add_to_keychain(key)
+  end
+
+  def remove_from_keychain
+    Gitlab::Gpg.remove_from_keychain(fingerprint)
   end
 end

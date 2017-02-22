@@ -29,7 +29,7 @@ module GpgHelpers
   end
 
   def public_key
-    <<~PUBLICKEY
+    <<~PUBLICKEY.strip
       -----BEGIN PGP PUBLIC KEY BLOCK-----
       Version: GnuPG v1
 

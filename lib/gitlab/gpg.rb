@@ -12,6 +12,14 @@ module Gitlab
       end
     end
 
+    def add_to_keychain(key)
+      GPGME::Key.import(key)
+    end
+
+    def remove_from_keychain(fingerprint)
+      GPGME::Key.get(fingerprint).delete!
+    end
+
     def using_tmp_keychain
       Dir.mktmpdir do |dir|
         @original_dirs ||= [GPGME::Engine.dirinfo('homedir')]
