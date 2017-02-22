@@ -445,5 +445,5 @@ For a list of known issues, visit GitLab's [public issue tracker].
 [ce-14605]: https://gitlab.com/gitlab-org/gitlab-ce/issues/14605
 [quick start guide]: ../../../ci/quick_start/README.md
 [pages-index-guide]: ../../../pages/
-[pages-quick]: ../../../pages/pages_quick_start_guide.html
+[pages-quick]: ../../../pages/getting_started_part_one.md
 [video-pages-fork]: https://youtu.be/TWqh9MtT4Bg

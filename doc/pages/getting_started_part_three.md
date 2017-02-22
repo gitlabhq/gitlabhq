@@ -4,15 +4,15 @@
 >
 > Level: intermediate
 
+- _[Part 1: Static Sites, Domains, DNS Records, and SSL/TLS Certificates](getting_started_part_one.md)_
+- _[Part 2: Quick Start Guide - Setting Up GitLab Pages](getting_started_part_two.md)_
 - **Part 3: Creating and Tweaking `.gitlab-ci.yml` for GitLab Pages**
-- _[Part 1: Static Sites, Domains, DNS Records, and SSL/TLS Certificates](pages_static_sites_domains_dns_records_ssl_tls_certificates.html)_
-- _[Part 2: Quick Start Guide - Setting Up GitLab Pages](pages_quick_start_guide.html)_ 
 
-----
+---
 
 ### Creating and Tweaking `.gitlab-ci.yml` for GitLab Pages
 
-[GitLab CI](https://about.gitlab.com/gitlab-ci/) serves inumerous purposes, to build, test, and deploy your app from GitLab through [Continuous Integration, Continuous Delivery, and Continuous Deployment](https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/) methods. You will need it to build your website with GitLab Pages, and deploy it to the Pages server.
+[GitLab CI](https://about.gitlab.com/gitlab-ci/) serves numerous purposes, to build, test, and deploy your app from GitLab through [Continuous Integration, Continuous Delivery, and Continuous Deployment](https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/) methods. You will need it to build your website with GitLab Pages, and deploy it to the Pages server.
 
 What this file actually does is telling the [GitLab Runner](https://docs.gitlab.com/runner/) to run scripts as you would do from the command line. The Runner acts as your terminal. GitLab CI tells the Runner which commands to run. Both are built-in in GitLab, and you don't need to set up anything for them to work.
 
@@ -275,5 +275,5 @@ What you can do with GitLab CI is pretty much up to your creativity. Once you ge
 
 ## Further Reading
 
-- Read through _[Part 1: Static Sites, Domains, DNS Records, and SSL/TLS Certificates](pages_static_sites_domains_dns_records_ssl_tls_certificates.html)_
-- Read through GitLab Pages from A to Z _[Part 2: Quick Start Guide - Setting Up GitLab Pages](pages_quick_start_guide.html)_
+- Read through _[Part 1: Static Sites, Domains, DNS Records, and SSL/TLS Certificates](getting_started_part_one.md)_
+- Read through _[Part 2: Quick Start Guide - Setting Up GitLab Pages](getting_started_part_two.md)_

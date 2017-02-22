@@ -4,9 +4,9 @@
 >
 > Level: beginner
 
+- _[Part 1: Static Sites, Domains, DNS Records, and SSL/TLS Certificates](getting_started_part_one.md)_
 - **Part 2: Quick Start Guide - Setting Up GitLab Pages**
-- _[Part 1: Static Sites, Domains, DNS Records, and SSL/TLS Certificates](pages_static_sites_domains_dns_records_ssl_tls_certificates.html)_
-- _[Part 3: Creating and Tweaking `.gitlab-ci.yml` for GitLab Pages](pages_creating_and_tweaking_gitlab-ci.html)_
+- _[Part 3: Creating and Tweaking `.gitlab-ci.yml` for GitLab Pages](getting_started_part_three.md)_
 
 ----
 
@@ -84,7 +84,7 @@ Once you have both site files and `.gitlab-ci.yml` in your project's root, GitLa
 
 > **Notes:**
 >
-> - GitLab Pages [supports any SSG](https://about.gitlab.com/2016/06/17/ssg-overview-gitlab-pages-part-3-examples-ci/), but, if you don't find yours among the templates, you'll need to configure your own `.gitlab-ci.yml`. Do do that, please read through the article [Creating and Tweaking `.gitlab-ci.yml` for GitLab Pages](pages_creating_and_tweaking_gitlab-ci_.html). New SSGs are very welcome among the [example projects](https://gitlab.com/pages). If you set up a new one, please [contribute](https://gitlab.com/pages/pages.gitlab.io/blob/master/CONTRIBUTING.md) to our examples.
+> - GitLab Pages [supports any SSG](https://about.gitlab.com/2016/06/17/ssg-overview-gitlab-pages-part-3-examples-ci/), but, if you don't find yours among the templates, you'll need to configure your own `.gitlab-ci.yml`. Do do that, please read through the article [Creating and Tweaking `.gitlab-ci.yml` for GitLab Pages](getting_started_part_three.md). New SSGs are very welcome among the [example projects](https://gitlab.com/pages). If you set up a new one, please [contribute](https://gitlab.com/pages/pages.gitlab.io/blob/master/CONTRIBUTING.md) to our examples.
 >
 > - The second step _"Clone it to your local computer"_, can be done differently, achieving the same results: instead of cloning the bare repository to you local computer and moving your site files into it, you can run `git init` in your local website directory, add the remote URL: `git remote add origin git@gitlab.com:namespace/project-name.git`, then add, commit, and push.
 
@@ -108,5 +108,5 @@ baseurl: ""
 
 ## Further Reading
 
-- Read through _[Part 1: Static Sites, Domains, DNS Records, and SSL/TLS Certificates](pages_static_sites_domains_dns_records_ssl_tls_certificates.html)_
-- Read through _[Part 3: Creating and Tweaking `.gitlab-ci.yml` for GitLab Pages](pages_creating_and_tweaking_gitlab-ci.html)_
+- Read through _[Part 1: Static Sites, Domains, DNS Records, and SSL/TLS Certificates](getting_started_part_one.md)_
+- Read through _[Part 3: Creating and Tweaking `.gitlab-ci.yml` for GitLab Pages](getting_started_part_three.md)_
