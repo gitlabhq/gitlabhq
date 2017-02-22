@@ -457,7 +457,7 @@ ul.notes {
   margin-top: -2px;
   border-radius: 50%;
   background: $white-light;
-  padding: 2px 5px;
+  padding: 1px 5px;
   font-size: 12px;
   color: $gl-link-color;
   margin-left: -55px;
@@ -466,10 +466,12 @@ ul.notes {
   width: 23px;
   height: 23px;
   border: 1px solid $border-color;
+  transition: transform .1s ease-in-out;
 
   &:hover {
     background: $gl-info;
     color: $white-light;
+    transform: scale(1.15);
   }
 
   &:active {

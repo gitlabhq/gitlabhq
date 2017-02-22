@@ -1,8 +1,9 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, max-len, one-var, one-var-declaration-per-line, quotes, prefer-template, newline-per-chained-call, comma-dangle, new-cap, no-else-return, consistent-return */
 /* global FilesCommentButton */
+/* global notes */
 
 (function() {
-  var $commentButtonTemplate;
+  let $commentButtonTemplate;
   var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
 
   this.FilesCommentButton = (function() {
@@ -27,27 +28,24 @@
     TEXT_FILE_SELECTOR = '.text-file';
 
     function FilesCommentButton(filesContainerElement) {
-      this.filesContainerElement = filesContainerElement;
       this.render = bind(this.render, this);
       this.hideButton = bind(this.hideButton, this);
-      this.VIEW_TYPE = $('input#view[type=hidden]').val();
-      $(this.filesContainerElement)
-        .on('mouseover', LINE_COLUMN_CLASSES, this.render)
+      this.isParallelView = notes.isParallelView();
+      filesContainerElement.on('mouseover', LINE_COLUMN_CLASSES, this.render)
         .on('mouseleave', LINE_COLUMN_CLASSES, this.hideButton);
     }
 
     FilesCommentButton.prototype.render = function(e) {
       var $currentTarget, buttonParentElement, lineContentElement, textFileElement, $button;
       $currentTarget = $(e.currentTarget);
-
-      buttonParentElement = this.getButtonParent($currentTarget);
-      if (!this.validateButtonParent(buttonParentElement)) return;
       lineContentElement = this.getLineContent($currentTarget);
-      if (!this.validateLineContent(lineContentElement)) return;
+      buttonParentElement = this.getButtonParent($currentTarget);
+
+      if (!this.validateButtonParent(buttonParentElement) || !this.validateLineContent(lineContentElement)) return;
 
       $button = $(COMMENT_BUTTON_CLASS, buttonParentElement);
       buttonParentElement.addClass('is-over')
-        .nextUntil('.line_content').addClass('is-over');
+        .nextUntil(`.${LINE_CONTENT_CLASS}`).addClass('is-over');
 
       if ($button.length) {
         return;
@@ -71,7 +69,7 @@
       var buttonParentElement = this.getButtonParent($currentTarget);
 
       buttonParentElement.removeClass('is-over')
-        .nextUntil('.line_content').removeClass('is-over');
+        .nextUntil(`.${LINE_CONTENT_CLASS}`).removeClass('is-over');
     };
 
     FilesCommentButton.prototype.buildButton = function(buttonAttributes) {
@@ -88,14 +86,14 @@
     };
 
     FilesCommentButton.prototype.getTextFileElement = function(hoveredElement) {
-      return $(hoveredElement.closest(TEXT_FILE_SELECTOR));
+      return hoveredElement.closest(TEXT_FILE_SELECTOR);
     };
 
     FilesCommentButton.prototype.getLineContent = function(hoveredElement) {
       if (hoveredElement.hasClass(LINE_CONTENT_CLASS)) {
         return hoveredElement;
       }
-      if (this.VIEW_TYPE === 'inline') {
+      if (!this.isParallelView) {
         return $(hoveredElement).closest(LINE_HOLDER_CLASS).find("." + LINE_CONTENT_CLASS);
       } else {
         return $(hoveredElement).next("." + LINE_CONTENT_CLASS);
@@ -103,7 +101,7 @@
     };
 
     FilesCommentButton.prototype.getButtonParent = function(hoveredElement) {
-      if (this.VIEW_TYPE === 'inline') {
+      if (!this.isParallelView) {
         if (hoveredElement.hasClass(OLD_LINE_CLASS)) {
           return hoveredElement;
         }
