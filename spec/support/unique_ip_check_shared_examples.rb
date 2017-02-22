@@ -16,6 +16,17 @@ shared_context 'unique ips sign in limit' do
   def change_ip(ip)
     allow(Gitlab::RequestContext).to receive(:client_ip).and_return(ip)
   end
+
+  def request_from_ip(ip)
+    change_ip(ip)
+    request
+    response
+  end
+
+  def operation_from_ip(ip)
+    change_ip(ip)
+    operation
+  end
 end
 
 shared_examples 'user login operation with unique ip limit' do
@@ -23,17 +34,13 @@ shared_examples 'user login operation with unique ip limit' do
     before { current_application_settings.update!(unique_ips_limit_per_user: 1) }
 
     it 'allows user authenticating from the same ip' do
-      change_ip('ip')
-      expect { operation }.not_to raise_error
-      expect { operation }.not_to raise_error
+      expect { operation_from_ip('ip') }.not_to raise_error
+      expect { operation_from_ip('ip') }.not_to raise_error
     end
 
     it 'blocks user authenticating from two distinct ips' do
-      change_ip('ip')
-      expect { operation }.not_to raise_error
-
-      change_ip('ip2')
-      expect { operation }.to raise_error(Gitlab::Auth::TooManyIps)
+      expect { operation_from_ip('ip') }.not_to raise_error
+      expect { operation_from_ip('ip2') }.to raise_error(Gitlab::Auth::TooManyIps)
     end
   end
 end
@@ -43,22 +50,13 @@ shared_examples 'user login request with unique ip limit' do |success_status = 2
     before { current_application_settings.update!(unique_ips_limit_per_user: 1) }
 
     it 'allows user authenticating from the same ip' do
-      change_ip('ip')
-      request
-      expect(response).to have_http_status(success_status)
-
-      request
-      expect(response).to have_http_status(success_status)
+      expect(request_from_ip('ip')).to have_http_status(success_status)
+      expect(request_from_ip('ip')).to have_http_status(success_status)
     end
 
     it 'blocks user authenticating from two distinct ips' do
-      change_ip('ip')
-      request
-      expect(response).to have_http_status(success_status)
-
-      change_ip('ip2')
-      request
-      expect(response).to have_http_status(403)
+      expect(request_from_ip('ip')).to have_http_status(success_status)
+      expect(request_from_ip('ip2')).to have_http_status(403)
     end
   end
 end
