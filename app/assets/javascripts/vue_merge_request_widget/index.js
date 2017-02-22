@@ -1,11 +1,40 @@
-window.Vue = require('vue');
+window.Vue         = require('vue');
+window.gl          = window.gl || {};
+window.gl.mrWidget = window.gl.mrWidget || {};
+const Timeago      = require('timeago.js');
+gl.mrWidget.Header = require('./components/mr_widget_header.js');
+gl.mrWidget.Merged = require('./components/states/mr_widget_merged.js');
+gl.mrWidget.Closed = require('./components/states/mr_widget_closed.js');
+gl.mrWidget.Store  = require('./stores/merge_request_store.js');
+gl.mrWidget.timeagoInstance = new Timeago();
 
-$(() => new Vue({
-  el: document.querySelector('.vue-merge-request-widget'),
-  data() {
-    return {}
-  },
-  template: `
-    <p>HELLO ACET!</p>
-  `,
-}));
+
+$(() => {
+  new Vue({
+    el: document.querySelector('.vue-merge-request-widget'),
+    name: 'MRWidget',
+    data() {
+      return {
+        mr: new gl.mrWidget.Store(gl.mrWidgetData)
+      }
+    },
+    components: {
+      'mr-widget-header': gl.mrWidget.Header,
+      'mr-widget-merged': gl.mrWidget.Merged,
+      'mr-widget-closed': gl.mrWidget.Closed,
+    },
+    template: `
+      <div class="mr-state-widget">
+        <mr-widget-header
+          :targetBranch="mr.targetBranch"
+          :sourceBranch="mr.sourceBranch"
+        />
+
+        <mr-widget-merged :mr="mr" v-if="mr.isMerged" />
+
+        <mr-widget-closed :mr="mr" v-if="mr.isClosed" />
+
+      </div>
+    `,
+  });
+})

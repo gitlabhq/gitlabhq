@@ -45,5 +45,17 @@ class MergeRequestEntity < IssuableEntity
     expose :can_merge_via_cli do |merge_request|
       merge_request.can_be_merged_via_command_line_by?(request.current_user)
     end
+
+    expose :can_revert do |merge_request|
+      true
+    end
+  end
+
+  expose :can_be_cherry_picked do |merge_request|
+    true
+  end
+
+  expose :target_branch_path do |merge_request|
+    '/gitlab-org/gitlab-ce/commits/wiki-doc'
   end
 end
