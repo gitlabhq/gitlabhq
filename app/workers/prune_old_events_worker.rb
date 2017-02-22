@@ -12,7 +12,7 @@ class PruneOldEventsWorker
         'created_at < ?',
         (12.months + 1.day).ago)
       .select(:id)
-      .limit(10_000))
-    .delete_all
+      .limit(10_000)
+    ).delete_all
   end
 end

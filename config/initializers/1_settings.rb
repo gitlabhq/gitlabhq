@@ -20,6 +20,7 @@ class Settings < Settingslogic
         else
           ":#{gitlab.port}"
         end
+
       [
         gitlab.protocol,
         "://",
@@ -82,6 +83,7 @@ class Settings < Settingslogic
 
     def base_url(config)
       custom_port = on_standard_port?(config) ? nil : ":#{config.port}"
+      
       [
         config.protocol,
         "://",
