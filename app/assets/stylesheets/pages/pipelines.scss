@@ -218,8 +218,8 @@
 
     .btn.btn-retry:hover,
     .btn.btn-retry:focus {
-      border-color: #c4c4c4;
-      background-color: #f0f0f0;
+      border-color: $gray-darkest;
+      background-color: $white-normal;
     }
 
     svg path {
