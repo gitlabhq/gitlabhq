@@ -1,5 +1,5 @@
 /**
- * Envrionment Item Component
+ * Environment Item Component
  *
  * Renders a table row for each environment.
  */
@@ -70,7 +70,7 @@ module.exports = Vue.component('environment-item', {
 
   computed: {
     /**
-     * Verifies if `last_deployment` key exists in the current Envrionment.
+     * Verifies if `last_deployment` key exists in the current Environment.
      * This key is required to render most of the html - this method works has
      * an helper.
      *

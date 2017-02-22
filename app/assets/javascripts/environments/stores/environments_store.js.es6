@@ -32,7 +32,7 @@ class EnvironmentsStore {
    *
    * Top level environments - when the size is 1 - with `rollout_status`
    * can render a deploy board. We add `isDeployBoardVisible` and `deployBoardData`
-   * keys to those envrionments.
+   * keys to those environments.
    * The first key will let's us know if we should or not render the deploy board.
    * It will be toggled when the user clicks to seee the deploy board.
    *
