@@ -23,7 +23,7 @@ describe BlobHelper do
     end
 
     it 'highlights single block' do
-      expected = %Q[<pre class="code highlight"><code><span id="LC1" class="line"><span class="p">(</span><span class="nb">make-pathname</span> <span class="ss">:defaults</span> <span class="nv">name</span></span>
+      expected = %[<pre class="code highlight"><code><span id="LC1" class="line"><span class="p">(</span><span class="nb">make-pathname</span> <span class="ss">:defaults</span> <span class="nv">name</span></span>
 <span id="LC2" class="line"><span class="ss">:type</span> <span class="s">"assem"</span><span class="p">))</span></span></code></pre>]
 
       expect(helper.highlight(blob_name, blob_content)).to eq(expected)

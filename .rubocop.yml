@@ -950,6 +950,10 @@ Security/JSONLoad:
 Style/AlignParameters:
   Enabled: false
 
+Style/BarePercentLiterals:
+  Enabled: true
+  EnforcedStyle: bare_percent
+
 Style/CaseEquality:
   Enabled: false
 

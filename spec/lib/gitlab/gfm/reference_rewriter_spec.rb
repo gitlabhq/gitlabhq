@@ -68,12 +68,12 @@ describe Gitlab::Gfm::ReferenceRewriter do
 
           context 'label referenced by id' do
             let(:text) { '#1 and ~123' }
-            it { is_expected.to eq %Q{#{project_ref}#1 and #{project_ref}~123} }
+            it { is_expected.to eq %{#{project_ref}#1 and #{project_ref}~123} }
           end
 
           context 'label referenced by text' do
             let(:text) { '#1 and ~"test"' }
-            it { is_expected.to eq %Q{#{project_ref}#1 and #{project_ref}~123} }
+            it { is_expected.to eq %{#{project_ref}#1 and #{project_ref}~123} }
           end
         end
 
@@ -88,12 +88,12 @@ describe Gitlab::Gfm::ReferenceRewriter do
 
           context 'label referenced by id' do
             let(:text) { '#1 and ~321' }
-            it { is_expected.to eq %Q{#{project_ref}#1 and #{project_ref}~321} }
+            it { is_expected.to eq %{#{project_ref}#1 and #{project_ref}~321} }
           end
 
           context 'label referenced by text' do
             let(:text) { '#1 and ~"group label"' }
-            it { is_expected.to eq %Q{#{project_ref}#1 and #{project_ref}~321} }
+            it { is_expected.to eq %{#{project_ref}#1 and #{project_ref}~321} }
           end
         end
       end

@@ -29,7 +29,7 @@ describe Gitlab::ReferenceExtractor, lib: true do
     project.team << [@u_foo, :reporter]
     project.team << [@u_bar, :guest]
 
-    subject.analyze(%Q{
+    subject.analyze(%{
       Inline code: `@foo`
 
       Code block:
