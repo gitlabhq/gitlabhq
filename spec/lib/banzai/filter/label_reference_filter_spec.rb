@@ -372,8 +372,8 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
     let!(:result)   { reference_filter("See #{reference}") }
 
     it 'links to a valid reference' do
-      expect(result.css('a').first.attr('href')).
-        to eq urls.namespace_project_issues_url(project2.namespace,
+      expect(result.css('a').first.attr('href'))
+        .to eq urls.namespace_project_issues_url(project2.namespace,
                                                  project2,
                                                  label_name: label.name)
     end
@@ -406,8 +406,8 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
     let!(:result)   { reference_filter("See #{reference}") }
 
     it 'links to a valid reference' do
-      expect(result.css('a').first.attr('href')).
-        to eq urls.namespace_project_issues_url(project2.namespace,
+      expect(result.css('a').first.attr('href'))
+        .to eq urls.namespace_project_issues_url(project2.namespace,
                                                  project2,
                                                  label_name: label.name)
     end
@@ -440,8 +440,8 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
     let!(:result)   { reference_filter("See #{reference}") }
 
     it 'links to a valid reference' do
-      expect(result.css('a').first.attr('href')).
-        to eq urls.namespace_project_issues_url(project2.namespace,
+      expect(result.css('a').first.attr('href'))
+        .to eq urls.namespace_project_issues_url(project2.namespace,
                                                  project2,
                                                  label_name: label.name)
     end
@@ -476,8 +476,8 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
     let!(:result)          { reference_filter("See #{reference}", project: project) }
 
     it 'points to referenced project issues page' do
-      expect(result.css('a').first.attr('href')).
-        to eq urls.namespace_project_issues_url(another_project.namespace,
+      expect(result.css('a').first.attr('href'))
+        .to eq urls.namespace_project_issues_url(another_project.namespace,
                                                  another_project,
                                                  label_name: group_label.name)
     end
@@ -549,15 +549,15 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
     let!(:result)     { reference_filter("See #{reference}", project: project) }
 
     it 'points to referenced project issues page' do
-      expect(result.css('a').first.attr('href')).
-        to eq urls.namespace_project_issues_url(project.namespace,
+      expect(result.css('a').first.attr('href'))
+        .to eq urls.namespace_project_issues_url(project.namespace,
                                                  project,
                                                  label_name: group_label.name)
     end
 
     it 'has valid color' do
-      expect(result.css('a span').first.attr('style')).
-        to match /background-color: #00ff00/
+      expect(result.css('a span').first.attr('style'))
+        .to match /background-color: #00ff00/
     end
 
     it 'has valid link text' do
@@ -583,8 +583,8 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
     let!(:result)     { reference_filter("See #{reference}", project: project) }
 
     it 'points to referenced project issues page' do
-      expect(result.css('a').first.attr('href')).
-        to eq urls.namespace_project_issues_url(project.namespace,
+      expect(result.css('a').first.attr('href'))
+        .to eq urls.namespace_project_issues_url(project.namespace,
                                                  project,
                                                  label_name: group_label.name)
     end

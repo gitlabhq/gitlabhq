@@ -61,8 +61,8 @@ module Issues
     end
 
     def cloneable_milestone_id
-      @new_project.milestones.
-        find_by(title: @old_issue.milestone.try(:title)).try(:id)
+      @new_project.milestones
+        .find_by(title: @old_issue.milestone.try(:title)).try(:id)
     end
 
     def rewrite_notes

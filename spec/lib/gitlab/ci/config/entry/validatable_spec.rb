@@ -19,8 +19,8 @@ describe Gitlab::Ci::Config::Entry::Validatable do
     end
 
     it 'returns validator' do
-      expect(entry.validator.superclass).
-        to be Gitlab::Ci::Config::Entry::Validator
+      expect(entry.validator.superclass)
+        .to be Gitlab::Ci::Config::Entry::Validator
     end
 
     it 'returns only one validator to mitigate leaks' do

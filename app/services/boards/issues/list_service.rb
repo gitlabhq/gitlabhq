@@ -57,15 +57,15 @@ module Boards
         return issues unless board_label_ids.any?
 
         issues.where.not(
-          LabelLink.where("label_links.target_type = 'Issue' AND label_links.target_id = issues.id").
-                   where(label_id: board_label_ids).limit(1).arel.exists
+          LabelLink.where("label_links.target_type = 'Issue' AND label_links.target_id = issues.id")
+                   .where(label_id: board_label_ids).limit(1).arel.exists
         )
       end
 
       def with_list_label(issues)
         issues.where(
-          LabelLink.where("label_links.target_type = 'Issue' AND label_links.target_id = issues.id").
-                   where("label_links.label_id = ?", list.label_id).limit(1).arel.exists
+          LabelLink.where("label_links.target_type = 'Issue' AND label_links.target_id = issues.id")
+                   .where("label_links.label_id = ?", list.label_id).limit(1).arel.exists
         )
       end
     end

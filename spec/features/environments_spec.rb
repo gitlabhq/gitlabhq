@@ -111,8 +111,8 @@ feature 'Environments page', :feature, :js do
           find('.js-dropdown-play-icon-container').click
           expect(page).to have_content(manual.name.humanize)
 
-          expect { click_link(manual.name.humanize) }.
-            not_to change { Ci::Pipeline.count }
+          expect { click_link(manual.name.humanize) }
+            .not_to change { Ci::Pipeline.count }
 
           expect(manual.reload).to be_pending
         end

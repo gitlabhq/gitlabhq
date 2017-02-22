@@ -14,9 +14,9 @@ describe Gitlab::Ci::Config::Entry::Attributable do
 
   context 'config is a hash' do
     before do
-      allow(instance).
-        to receive(:config).
-        and_return({ name: 'some name', test: 'some test' })
+      allow(instance)
+        .to receive(:config)
+        .and_return({ name: 'some name', test: 'some test' })
     end
 
     it 'returns the value of config' do
@@ -31,9 +31,9 @@ describe Gitlab::Ci::Config::Entry::Attributable do
 
   context 'config is not a hash' do
     before do
-      allow(instance).
-        to receive(:config).
-        and_return('some test')
+      allow(instance)
+        .to receive(:config)
+        .and_return('some test')
     end
 
     it 'returns nil' do

@@ -25,8 +25,8 @@ module Gitlab
       def find_by_email
         return nil unless email
 
-        User.find_by_any_email(email).
-            try(:id)
+        User.find_by_any_email(email)
+            .try(:id)
       end
 
       def find_by_external_uid
@@ -34,11 +34,11 @@ module Gitlab
 
         identities = ::Identity.arel_table
 
-        User.select(:id).
-            joins(:identities).where(identities[:provider].eq(:github).
-            and(identities[:extern_uid].eq(id))).
-            first.
-            try(:id)
+        User.select(:id)
+            .joins(:identities).where(identities[:provider].eq(:github)
+            .and(identities[:extern_uid].eq(id)))
+            .first
+            .try(:id)
       end
     end
   end

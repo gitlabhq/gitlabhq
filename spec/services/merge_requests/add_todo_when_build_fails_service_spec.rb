@@ -29,9 +29,9 @@ describe MergeRequests::AddTodoWhenBuildFailsService do
   end
 
   before do
-    allow_any_instance_of(MergeRequest).
-      to receive(:head_pipeline).
-      and_return(pipeline)
+    allow_any_instance_of(MergeRequest)
+      .to receive(:head_pipeline)
+      .and_return(pipeline)
 
     allow(service).to receive(:todo_service).and_return(todo_service)
   end
@@ -113,9 +113,9 @@ describe MergeRequests::AddTodoWhenBuildFailsService do
       it 'resolves todos about failed builds for pipeline' do
         service.close_all(pipeline)
 
-        expect(todo_service).
-          to have_received(:merge_request_build_retried).
-          with(merge_request)
+        expect(todo_service)
+          .to have_received(:merge_request_build_retried)
+          .with(merge_request)
       end
     end
 
@@ -125,8 +125,8 @@ describe MergeRequests::AddTodoWhenBuildFailsService do
       it 'does not resolve any todos about failed builds' do
         service.close_all(pipeline)
 
-        expect(todo_service).
-          not_to have_received(:merge_request_build_retried)
+        expect(todo_service)
+          .not_to have_received(:merge_request_build_retried)
       end
     end
   end

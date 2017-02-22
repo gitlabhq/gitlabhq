@@ -28,8 +28,8 @@ module Banzai
       # text blobs to parse.
       return [] if @texts_and_contexts.empty?
 
-      @html_documents ||= Renderer.cache_collection_render(@texts_and_contexts).
-        map { |html| Nokogiri::HTML.fragment(html) }
+      @html_documents ||= Renderer.cache_collection_render(@texts_and_contexts)
+        .map { |html| Nokogiri::HTML.fragment(html) }
     end
   end
 end

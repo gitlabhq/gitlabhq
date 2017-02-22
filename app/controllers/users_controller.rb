@@ -118,8 +118,8 @@ class UsersController < ApplicationController
 
   def load_projects
     @projects =
-      PersonalProjectsFinder.new(user).execute(current_user).
-      page(params[:page])
+      PersonalProjectsFinder.new(user).execute(current_user)
+      .page(params[:page])
   end
 
   def load_contributed_projects

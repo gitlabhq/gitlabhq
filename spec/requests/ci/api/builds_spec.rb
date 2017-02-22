@@ -38,8 +38,8 @@ describe Ci::API::Builds do
 
             it 'gives 204 and set the same X-GitLab-Last-Update' do
               expect(response).to have_http_status(204)
-              expect(response.header['X-GitLab-Last-Update']).
-                to eq(last_update)
+              expect(response.header['X-GitLab-Last-Update'])
+                .to eq(last_update)
             end
           end
 
@@ -49,8 +49,8 @@ describe Ci::API::Builds do
 
             it 'gives 204 and set a new X-GitLab-Last-Update' do
               expect(response).to have_http_status(204)
-              expect(response.header['X-GitLab-Last-Update']).
-                to eq(new_update)
+              expect(response.header['X-GitLab-Last-Update'])
+                .to eq(new_update)
             end
           end
 
@@ -260,8 +260,8 @@ describe Ci::API::Builds do
         end
 
         it 'does not update runner info' do
-          expect { register_builds }.
-            not_to change { runner.reload.contacted_at }
+          expect { register_builds }
+            .not_to change { runner.reload.contacted_at }
         end
       end
 

@@ -6,11 +6,11 @@ describe Gitlab::Serializer::Pagination do
   let(:headers) { spy('headers') }
 
   before do
-    allow(request).to receive(:query_parameters).
-      and_return(params)
+    allow(request).to receive(:query_parameters)
+      .and_return(params)
 
-    allow(response).to receive(:headers).
-      and_return(headers)
+    allow(response).to receive(:headers)
+      .and_return(headers)
   end
 
   let(:pagination) { described_class.new(request, response) }

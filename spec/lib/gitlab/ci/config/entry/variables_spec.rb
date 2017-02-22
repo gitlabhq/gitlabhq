@@ -33,8 +33,8 @@ describe Gitlab::Ci::Config::Entry::Variables do
 
       describe '#errors' do
         it 'saves errors' do
-          expect(entry.errors).
-            to include /should be a hash of key value pairs/
+          expect(entry.errors)
+            .to include /should be a hash of key value pairs/
         end
       end
 

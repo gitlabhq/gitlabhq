@@ -265,8 +265,8 @@ describe Repository, models: true do
   describe '#commit' do
     context 'when ref exists' do
       it 'returns commit object' do
-        expect(repository.commit('master')).
-          to be_an_instance_of Commit
+        expect(repository.commit('master'))
+          .to be_an_instance_of Commit
       end
     end
 

@@ -7,11 +7,11 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   def index
     @scope = params[:scope]
-    @pipelines = PipelinesFinder.
-      new(project).
-      execute(scope: @scope).
-      page(params[:page]).
-      per(30)
+    @pipelines = PipelinesFinder
+      .new(project)
+      .execute(scope: @scope)
+      .page(params[:page])
+      .per(30)
 
     @running_count = PipelinesFinder.
       .new(project).execute(scope: 'running').count
@@ -29,10 +29,10 @@ class Projects::PipelinesController < Projects::ApplicationController
       format.html
       format.json do
         render json: {
-          pipelines: PipelineSerializer.
-            new(project: @project, user: @current_user).
-            with_pagination(request, response).
-            represent(@pipelines),
+          pipelines: PipelineSerializer
+            .new(project: @project, user: @current_user)
+            .with_pagination(request, response)
+            .represent(@pipelines),
           count: {
             all: @pipelines_count,
             running: @running_count,
@@ -49,9 +49,9 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def create
-    @pipeline = Ci::CreatePipelineService.
-      new(project, current_user, create_params).
-      execute(ignore_skip_ci: true, save_on_errors: false)
+    @pipeline = Ci::CreatePipelineService
+      .new(project, current_user, create_params)
+      .execute(ignore_skip_ci: true, save_on_errors: false)
     unless @pipeline.persisted?
       render 'new'
       return

@@ -253,8 +253,8 @@ describe CommitStatus, :models do
     let(:user) { create(:user) }
 
     it 'returns a detailed status' do
-      expect(commit_status.detailed_status(user)).
-        to be_a Gitlab::Ci::Status::Success
+      expect(commit_status.detailed_status(user))
+        .to be_a Gitlab::Ci::Status::Success
     end
   end
 

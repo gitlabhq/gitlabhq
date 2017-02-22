@@ -34,9 +34,9 @@ class Label < ActiveRecord::Base
   scope :with_title, ->(title) { where(title: title) }
 
   def self.prioritized(project)
-    joins(:priorities).
-      where(label_priorities: { project_id: project }).
-      reorder('label_priorities.priority ASC, labels.title ASC')
+    joins(:priorities)
+      .where(label_priorities: { project_id: project })
+      .reorder('label_priorities.priority ASC, labels.title ASC')
   end
 
   def self.unprioritized(project)

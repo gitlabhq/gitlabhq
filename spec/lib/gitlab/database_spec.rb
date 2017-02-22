@@ -120,8 +120,8 @@ describe Gitlab::Database, lib: true do
       pool = described_class.create_connection_pool(5)
 
       begin
-        expect(pool).
-          to be_kind_of(ActiveRecord::ConnectionAdapters::ConnectionPool)
+        expect(pool)
+          .to be_kind_of(ActiveRecord::ConnectionAdapters::ConnectionPool)
 
         expect(pool.spec.config[:pool]).to eq(5)
       ensure

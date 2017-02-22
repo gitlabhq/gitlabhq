@@ -28,8 +28,8 @@ module Network
         if map.include?(p.id)
           map[p.id]
         end
-      end.
-      compact
+      end
+      .compact
     end
   end
 end

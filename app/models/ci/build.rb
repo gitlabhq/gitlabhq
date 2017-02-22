@@ -65,9 +65,9 @@ module Ci
       end
 
       def retry(build, current_user)
-        Ci::RetryBuildService.
-          new(build.project, current_user).
-          execute(build)
+        Ci::RetryBuildService
+          .new(build.project, current_user)
+          .execute(build)
       end
     end
 
@@ -98,9 +98,9 @@ module Ci
     end
 
     def detailed_status(current_user)
-      Gitlab::Ci::Status::Build::Factory.
-        new(self, current_user).
-        fabricate!
+      Gitlab::Ci::Status::Build::Factory
+        .new(self, current_user)
+        .fabricate!
     end
 
     def manual?
@@ -222,9 +222,9 @@ module Ci
     end
 
     def merge_request
-      merge_requests = MergeRequest.includes(:merge_request_diff).
-                                   where(source_branch: ref, source_project_id: pipeline.gl_project_id).
-                                   reorder(iid: :asc)
+      merge_requests = MergeRequest.includes(:merge_request_diff)
+                                   .where(source_branch: ref, source_project_id: pipeline.gl_project_id)
+                                   .reorder(iid: :asc)
 
       merge_requests.find do |merge_request|
         merge_request.commits_sha.include?(pipeline.sha)

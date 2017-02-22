@@ -33,15 +33,15 @@ module Boards
       end
 
       def decrement_intermediate_lists
-        board.lists.movable.where('position > ?',  old_position).
-                           where('position <= ?', new_position).
-                           update_all('position = position - 1')
+        board.lists.movable.where('position > ?',  old_position)
+                           .where('position <= ?', new_position)
+                           .update_all('position = position - 1')
       end
 
       def increment_intermediate_lists
-        board.lists.movable.where('position >= ?', new_position).
-                           where('position < ?',  old_position).
-                           update_all('position = position + 1')
+        board.lists.movable.where('position >= ?', new_position)
+                           .where('position < ?',  old_position)
+                           .update_all('position = position + 1')
       end
 
       def update_list_position(list)

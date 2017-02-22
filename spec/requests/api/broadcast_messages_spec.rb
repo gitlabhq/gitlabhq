@@ -27,8 +27,8 @@ describe API::BroadcastMessages, api: true do
       expect(response).to have_http_status(200)
       expect(response).to include_pagination_headers
       expect(json_response).to be_kind_of(Array)
-      expect(json_response.first.keys).
-        to match_array(%w(id message starts_at ends_at color font active))
+      expect(json_response.first.keys)
+        .to match_array(%w(id message starts_at ends_at color font active))
     end
   end
 
@@ -52,8 +52,8 @@ describe API::BroadcastMessages, api: true do
 
       expect(response).to have_http_status(200)
       expect(json_response['id']).to eq message.id
-      expect(json_response.keys).
-        to match_array(%w(id message starts_at ends_at color font active))
+      expect(json_response.keys)
+        .to match_array(%w(id message starts_at ends_at color font active))
     end
   end
 
@@ -174,8 +174,8 @@ describe API::BroadcastMessages, api: true do
     end
 
     it 'deletes the broadcast message for admins' do
-      expect { delete api("/broadcast_messages/#{message.id}", admin) }.
-        to change { BroadcastMessage.count }.by(-1)
+      expect { delete api("/broadcast_messages/#{message.id}", admin) }
+        .to change { BroadcastMessage.count }.by(-1)
     end
   end
 end
