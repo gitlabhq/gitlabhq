@@ -21,6 +21,11 @@ class GpgKey < ActiveRecord::Base
     write_attribute(:key, value)
   end
 
+  def emails
+    raw_key = GPGME::Key.get(fingerprint)
+    raw_key.uids.map(&:email)
+  end
+
   private
 
   def extract_fingerprint

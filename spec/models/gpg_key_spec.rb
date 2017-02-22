@@ -38,4 +38,12 @@ describe GpgKey do
       expect(described_class.new(key: " #{key} ").key).to eq(key)
     end
   end
+
+  describe '#emails' do
+    it 'returns the emails from the gpg key' do
+      gpg_key = create :gpg_key
+
+      expect(gpg_key.emails).to match_array %w(mail@koffeinfrei.org lex@panter.ch)
+    end
+  end
 end
