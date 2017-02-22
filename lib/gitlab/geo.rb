@@ -50,7 +50,12 @@ module Gitlab
       return false unless Gitlab::Geo.secondary?
 
       self.cache_value(:geo_oauth_application) do
-        Gitlab::Geo.current_node.oauth_application || raise OauthApplicationUndefinedError
+        geo_app = Gitlab::Geo.current_node.oauth_application
+        if geo_app
+          geo_app
+        else
+          raise OauthApplicationUndefinedError
+        end
       end
     end
 
