@@ -38,18 +38,6 @@ RSpec/SingleArgumentMessageChain:
   Exclude:
     - 'spec/requests/api/internal_spec.rb'
 
-# Offense count: 8
-# Cop supports --auto-correct.
-# Configuration parameters: AutoCorrect.
-Security/JSONLoad:
-  Exclude:
-    - 'db/migrate/20161019190736_migrate_sidekiq_queues_from_default.rb'
-    - 'db/migrate/20161024042317_migrate_mailroom_queue_from_default.rb'
-    - 'db/migrate/20161124141322_migrate_process_commit_worker_jobs.rb'
-    - 'spec/migrations/migrate_process_commit_worker_jobs_spec.rb'
-    - 'spec/models/project_services/irker_service_spec.rb'
-    - 'spec/support/stub_gitlab_calls.rb'
-
 # Offense count: 55
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles.

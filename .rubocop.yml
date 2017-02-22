@@ -944,6 +944,9 @@ Rails/TimeZone:
 Rails/Validation:
   Enabled: true
 
+Security/JSONLoad:
+  Enabled: true
+
 Style/AlignParameters:
   Enabled: false
 
