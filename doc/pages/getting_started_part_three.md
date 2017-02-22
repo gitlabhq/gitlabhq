@@ -187,7 +187,7 @@ test:
 
 The `test` job is running on the stage `test`, Jekyll will build the site in a directory called `test`, and this job will affect all the branches except `master`.
 
-The best benefit of applying _stages_ to different _jobs_ is that every job in the same stage builds in parallel. So, if your web app needs more than one test before being deployed, you can run all your test at the same time, it's not necessary to wait on test to finish to run the other. Of course, this is just a brief introduction of GitLab CI and GitLab Runner, which are tools much more powerful than that. This is what you need to be able to create and tweak your builds for your GitLab Pages site.
+The best benefit of applying _stages_ to different _jobs_ is that every job in the same stage builds in parallel. So, if your web app needs more than one test before being deployed, you can run all your test at the same time, it's not necessary to wait one test to finish to run the other. Of course, this is just a brief introduction of GitLab CI and GitLab Runner, which are tools much more powerful than that. This is what you need to be able to create and tweak your builds for your GitLab Pages site.
 
 #### Before Script
 
