@@ -25,7 +25,7 @@
                 all = {
                   id: "all"
                 };
-                data = $.merge([all], groups[0], projects[0]);
+                data = [all].concat(groups[0], projects[0]);
                 return query.callback({
                   results: data
                 });

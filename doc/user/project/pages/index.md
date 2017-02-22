@@ -14,6 +14,8 @@ deploy static pages for your individual projects, your user or your group.
 Read [GitLab Pages on GitLab.com](#gitlab-pages-on-gitlab-com) for specific
 information, if you are using GitLab.com to host your website.
 
+Read through [All you Need to Know About GitLab Pages][pages-index-guide] for a list of all learning materials we have prepared for GitLab Pages (webpages, articles, guides, blog posts, video tutorials).
+
 ## Getting started with GitLab Pages
 
 > **Note:**
@@ -95,6 +97,13 @@ The steps to create a project page for a user or a group are identical:
 
 A user's project will be served under `http(s)://username.example.io/projectname`
 whereas a group's project under `http(s)://groupname.example.io/projectname`.
+
+## Quick Start
+
+Read through [GitLab Pages Quick Start Guide][pages-quick] or watch the video tutorial on
+[how to publish a website with GitLab Pages on GitLab.com from a forked project][video-pages-fork].
+
+See also [All you Need to Know About GitLab Pages][pages-index-guide] for a list with all the resources we have for GitLab Pages.
 
 ### Explore the contents of `.gitlab-ci.yml`
 
@@ -435,3 +444,6 @@ For a list of known issues, visit GitLab's [public issue tracker].
 [public issue tracker]: https://gitlab.com/gitlab-org/gitlab-ee/issues?label_name=Pages
 [ce-14605]: https://gitlab.com/gitlab-org/gitlab-ce/issues/14605
 [quick start guide]: ../../../ci/quick_start/README.md
+[pages-index-guide]: ../../../pages/index.md
+[pages-quick]: ../../../pages/getting_started_part_one.md
+[video-pages-fork]: https://youtu.be/TWqh9MtT4Bg

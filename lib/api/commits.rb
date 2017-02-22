@@ -41,7 +41,7 @@ module API
         detail 'This feature was introduced in GitLab 8.13'
       end
       params do
-        requires :branch_name, type: String, desc: 'The name of branch'
+        requires :branch, type: String, desc: 'The name of branch'
         requires :commit_message, type: String, desc: 'Commit message'
         requires :actions, type: Array[Hash], desc: 'Actions to perform in commit'
         optional :author_email, type: String, desc: 'Author email for commit'
@@ -50,9 +50,8 @@ module API
       post ":id/repository/commits" do
         authorize! :push_code, user_project
 
-        attrs = declared_params
-        attrs[:start_branch] = attrs[:branch_name]
-        attrs[:target_branch] = attrs[:branch_name]
+        attrs = declared_params.merge(start_branch: declared_params[:branch], target_branch: declared_params[:branch])
+
         attrs[:actions].map! do |action|
           action[:action] = action[:action].to_sym
           action[:file_path].slice!(0) if action[:file_path] && action[:file_path].start_with?('/')
