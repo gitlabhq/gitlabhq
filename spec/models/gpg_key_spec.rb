@@ -6,8 +6,6 @@ describe GpgKey do
   end
 
   describe "validation" do
-    it { is_expected.to validate_presence_of(:fingerprint) }
-
     it { is_expected.to validate_presence_of(:key) }
     it { is_expected.to validate_uniqueness_of(:key) }
     it { is_expected.to allow_value("-----BEGIN PGP PUBLIC KEY BLOCK-----\nkey").for(:key) }
