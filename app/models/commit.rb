@@ -105,7 +105,7 @@ class Commit
   end
 
   def diff_line_count
-    @diff_line_count ||= Commit::diff_line_count(raw_diffs)
+    @diff_line_count ||= Commit.diff_line_count(raw_diffs)
     @diff_line_count
   end
 

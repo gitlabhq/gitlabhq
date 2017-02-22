@@ -959,6 +959,9 @@ Style/BracesAroundHashParameters:
 Style/CaseEquality:
   Enabled: false
 
+Style/ColonMethodCall:
+  Enabled: true
+
 Style/CommentAnnotation:
   Enabled: false
 

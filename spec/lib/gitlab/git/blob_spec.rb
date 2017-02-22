@@ -292,7 +292,7 @@ describe Gitlab::Git::Blob, seed_helper: true do
       it 'should preserve file modes with commit' do
         commit_options[:file][:path] = 'files/executables/ls'
 
-        entry = Gitlab::Git::Blob::find_entry_by_path(repository, commit.tree.oid, commit_options[:file][:path])
+        entry = Gitlab::Git::Blob.find_entry_by_path(repository, commit.tree.oid, commit_options[:file][:path])
         expect(entry[:filemode]).to eq(0100755)
       end
     end

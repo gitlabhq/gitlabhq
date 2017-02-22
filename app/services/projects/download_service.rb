@@ -25,7 +25,7 @@ module Projects
     end
 
     def http?(url)
-      url =~ /\A#{URI::regexp(['http', 'https'])}\z/
+      url =~ /\A#{URI.regexp(['http', 'https'])}\z/
     end
 
     def valid_domain?(url)
