@@ -258,7 +258,7 @@ module Ci
       return unless regex
 
       matches = text.scan(Regexp.new(regex)).last
-      matches = matches.last if matches.kind_of?(Array)
+      matches = matches.last if matches.is_a?(Array)
       coverage = matches.gsub(/\d+(\.\d+)?/).first
 
       if coverage.present?

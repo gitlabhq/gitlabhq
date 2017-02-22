@@ -23,7 +23,7 @@ module IssuablesHelper
   def issuable_json_path(issuable)
     project = issuable.project
 
-    if issuable.kind_of?(MergeRequest)
+    if issuable.is_a?(MergeRequest)
       namespace_project_merge_request_path(project.namespace, project, issuable.iid, :json)
     else
       namespace_project_issue_path(project.namespace, project, issuable.iid, :json)

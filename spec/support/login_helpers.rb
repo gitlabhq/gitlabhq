@@ -16,7 +16,7 @@ module LoginHelpers
   #   login_as(user)
   def login_as(user_or_role)
     @user =
-      if user_or_role.kind_of?(User)
+      if user_or_role.is_a?(User)
         user_or_role
       else
         create(user_or_role)
