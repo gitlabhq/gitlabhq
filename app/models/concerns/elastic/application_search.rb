@@ -141,7 +141,7 @@ module Elastic
         {
           query: {
             bool: {
-               must: [{ term: { iid: iid } }]
+               filter: [{ term: { iid: iid } }]
             }
           }
         }
@@ -155,7 +155,8 @@ module Elastic
             options[:public_and_internal_projects]
           )
 
-          query_hash[:query][:bool][:filter] = {
+          query_hash[:query][:bool][:filter] ||= []
+          query_hash[:query][:bool][:filter] << {
             has_parent: {
               parent_type: "project",
               query: {
