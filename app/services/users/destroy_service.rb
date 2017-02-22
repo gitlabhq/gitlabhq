@@ -7,6 +7,10 @@ module Users
     end
 
     def execute(user, options = {})
+      unless current_user.admin? || current_user == user
+        raise Gitlab::Access::AccessDeniedError, "#{current_user} tried to destroy user #{user}!"
+      end
+
       if !options[:delete_solo_owned_groups] && user.solo_owned_groups.present?
         user.errors[:base] << 'You must transfer ownership or delete groups before you can remove user'
         return user

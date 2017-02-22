@@ -8,10 +8,13 @@
       this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeys;
       this.filteredSearchInput = document.querySelector('.filtered-search');
       this.page = page;
+<<<<<<< HEAD
 
       if (this.page === 'issues') {
         this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeysWithWeights;
       }
+=======
+>>>>>>> ce/master
 
       this.setupMapping();
 

@@ -24,9 +24,9 @@ changes are in V4:
   - `/gitlab_ci_ymls/:key`
   - `/dockerfiles/:key`
 - Moved `/projects/fork/:id` to `/projects/:id/fork`
+- Moved `DELETE /todos` to `POST /todos/mark_as_done` and `DELETE /todos/:todo_id` to `POST /todos/:todo_id/mark_as_done`
 - Endpoints `/projects/owned`, `/projects/visible`, `/projects/starred` & `/projects/all` are consolidated into `/projects` using query parameters
 - Return pagination headers for all endpoints that return an array
 - Removed `DELETE projects/:id/deploy_keys/:key_id/disable`. Use `DELETE projects/:id/deploy_keys/:key_id` instead
 - Moved `PUT /users/:id/(block|unblock)` to `POST /users/:id/(block|unblock)`
 - Labels filter on `projects/:id/issues` and `/issues` now matches only issues containing all labels (i.e.: Logical AND, not OR)
-
