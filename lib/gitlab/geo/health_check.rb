@@ -4,11 +4,11 @@ module Gitlab
       def self.perform_checks
         return '' unless Gitlab::Geo.secondary?
 
-        database_version  = self.get_database_version
-        migration_version = self.get_migration_version
+        database_version  = self.get_database_version.to_i
+        migration_version = self.get_migration_version.to_i
 
-        if database_version.to_i != migration_version.to_i
-          "Current database version (#{database_version}) does not match latest migration (#{migration_version})."
+        if database_version != migration_version
+          "Current Geo database version (#{database_version}) does not match latest migration (#{migration_version})."
         else
           ''
         end
