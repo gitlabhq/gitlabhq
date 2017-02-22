@@ -256,7 +256,7 @@ class Commit
   end
 
   def revert_message(user)
-    %{Revert "#{title.strip}"\n\n#{revert_description(user)}}
+    %Q{Revert "#{title.strip}"\n\n#{revert_description(user)}}
   end
 
   def reverts_commit?(commit, user)

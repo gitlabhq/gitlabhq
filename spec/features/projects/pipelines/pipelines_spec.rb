@@ -110,7 +110,7 @@ describe 'Pipelines', :feature, :js do
         it 'contains badge with tooltip which contains error' do
           expect(pipeline).to have_yaml_errors
           expect(page).to have_selector(
-            %{span[data-original-title="#{pipeline.yaml_errors}"]})
+            %Q{span[data-original-title="#{pipeline.yaml_errors}"]})
         end
       end
 

@@ -117,7 +117,7 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
   end
 
   describe 'referencing a milestone in a link href' do
-    let(:reference) { %{<a href="#{milestone.to_reference}">Milestone</a>} }
+    let(:reference) { %Q{<a href="#{milestone.to_reference}">Milestone</a>} }
 
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")

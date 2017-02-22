@@ -77,10 +77,6 @@ Style/AsciiIdentifiers:
 Style/Attr:
   Enabled: true
 
-# This cop checks if usage of %() or %Q() matches configuration.
-Style/BarePercentLiterals:
-  Enabled: true
-
 # Avoid the use of BEGIN blocks.
 Style/BeginBlock:
   Enabled: true
