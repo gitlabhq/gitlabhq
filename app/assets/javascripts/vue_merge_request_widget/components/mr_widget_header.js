@@ -1,6 +1,4 @@
-window.Vue = require('vue');
-
-module.exports = Vue.component('mr-widget-header', {
+module.exports = {
   name: 'MRWidgetHeader',
   props: {
     targetBranch: { type: String, default: '', required: true },
@@ -16,4 +14,4 @@ module.exports = Vue.component('mr-widget-header', {
       </span>
     </div>
   `
-});
+};

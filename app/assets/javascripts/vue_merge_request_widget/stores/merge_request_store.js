@@ -32,10 +32,10 @@ module.exports = class MergeRequestStore {
 
   getUserObject(user) {
     return {
-      name: user.name,
-      username: user.username,
-      webUrl: user.web_url,
-      avatarUrl: user.avatar_url,
+      name: user.name || '',
+      username: user.username || '',
+      webUrl: user.web_url || '',
+      avatarUrl: user.avatar_url || '',
     }
   }
 

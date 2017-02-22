@@ -7,6 +7,7 @@ gl.mrWidget.Header = require('./components/mr_widget_header.js');
 gl.mrWidget.Merged = require('./components/states/mr_widget_merged.js');
 gl.mrWidget.Closed = require('./components/states/mr_widget_closed.js');
 gl.mrWidget.Locked = require('./components/states/mr_widget_locked.js');
+gl.mrWidget.Wip    = require('./components/states/mr_widget_wip.js');
 gl.mrWidget.Store  = require('./stores/merge_request_store.js');
 
 gl.mrWidget.timeagoInstance = new Timeago();
@@ -26,6 +27,7 @@ $(() => {
       'mr-widget-merged': gl.mrWidget.Merged,
       'mr-widget-closed': gl.mrWidget.Closed,
       'mr-widget-locked': gl.mrWidget.Locked,
+      'mr-widget-wip': gl.mrWidget.Wip,
     },
     template: `
       <div class="mr-state-widget">
@@ -37,6 +39,7 @@ $(() => {
         <mr-widget-merged :mr="mr" v-if="mr.isMerged" />
         <mr-widget-closed :mr="mr" v-if="mr.isClosed" />
         <mr-widget-locked :mr="mr" v-if="mr.isLocked" />
+        <mr-widget-wip :mr="mr" v-if="mr.isWip" />
 
       </div>
     `,
