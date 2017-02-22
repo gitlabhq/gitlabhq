@@ -15,11 +15,12 @@ class SessionsController < Devise::SessionsController
 
   def new
     set_minimum_password_length
-    @ldap_servers = if Gitlab.config.ldap.enabled
-      Gitlab::LDAP::Config.servers
-    else
-      []
-    end
+    @ldap_servers =
+      if Gitlab.config.ldap.enabled
+        Gitlab::LDAP::Config.servers
+      else
+        []
+      end
 
     super
   end

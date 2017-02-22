@@ -115,7 +115,7 @@ module API
 
       def install_error_responders(base)
         error_classes = [MissingTokenError, TokenNotFoundError,
-                          ExpiredError, RevokedError, InsufficientScopeError]
+                         ExpiredError, RevokedError, InsufficientScopeError]
 
         base.send :rescue_from, *error_classes, oauth2_bearer_token_error_handler
       end

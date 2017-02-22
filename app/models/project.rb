@@ -453,13 +453,14 @@ class Project < ActiveRecord::Base
   end
 
   def add_import_job
-    job_id = if forked?
-      RepositoryForkWorker.perform_async(id, forked_from_project.repository_storage_path,
-                                                  forked_from_project.path_with_namespace,
-                                                  self.namespace.full_path)
-    else
-      RepositoryImportWorker.perform_async(self.id)
-    end
+    job_id =
+      if forked?
+        RepositoryForkWorker.perform_async(id, forked_from_project.repository_storage_path,
+          forked_from_project.path_with_namespace,
+          self.namespace.full_path)
+      else
+        RepositoryImportWorker.perform_async(self.id)
+      end
 
     if job_id
       Rails.logger.info "Import job started for #{path_with_namespace} with job ID #{job_id}"

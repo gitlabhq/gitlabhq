@@ -31,11 +31,12 @@ module Gitlab
       private
 
       def select_body(message)
-        part = if message.multipart?
-          message.text_part || message.html_part || message
-        else
-          message
-        end
+        part =
+          if message.multipart?
+            message.text_part || message.html_part || message
+          else
+            message
+          end
 
         decoded = fix_charset(part)
 
