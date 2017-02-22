@@ -830,8 +830,8 @@ describe User, models: true do
 
   describe '.find_by_username!' do
     it 'raises RecordNotFound' do
-      expect { described_class.find_by_username!('JohnDoe') }.
-        to raise_error(ActiveRecord::RecordNotFound)
+      expect { described_class.find_by_username!('JohnDoe') }
+        .to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it 'is case-insensitive' do
@@ -1218,8 +1218,8 @@ describe User, models: true do
         user = create(:user)
         project = create(:empty_project, :private, namespace: user.namespace)
 
-        expect(user.authorized_projects(Gitlab::Access::REPORTER)).
-          to contain_exactly(project)
+        expect(user.authorized_projects(Gitlab::Access::REPORTER))
+          .to contain_exactly(project)
       end
 
       it 'includes projects for which the user is a master' do
@@ -1228,8 +1228,8 @@ describe User, models: true do
 
         project.team << [user, Gitlab::Access::MASTER]
 
-        expect(user.authorized_projects(Gitlab::Access::REPORTER)).
-          to contain_exactly(project)
+        expect(user.authorized_projects(Gitlab::Access::REPORTER))
+          .to contain_exactly(project)
       end
     end
 
@@ -1457,8 +1457,8 @@ describe User, models: true do
     end
 
     it 'returns the projects when using an ActiveRecord relation' do
-      projects = user.
-                   projects_with_reporter_access_limited_to(Project.select(:id))
+      projects = user
+        .projects_with_reporter_access_limited_to(Project.select(:id))
 
       expect(projects).to eq([project1])
     end

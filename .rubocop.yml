@@ -138,7 +138,7 @@ Style/Documentation:
 
 Style/DotPosition:
   Enabled: true
-  EnforcedStyle: trailing
+  EnforcedStyle: leading
 
 # Align elses and elsifs correctly.
 Style/ElseAlignment:

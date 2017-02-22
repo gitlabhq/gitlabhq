@@ -33,8 +33,8 @@ describe Ci::ProjectsController do
     shared_examples 'badge provider' do
       it 'shows badge' do
         expect(response.status).to eq 200
-        expect(response.headers).
-          to include('Content-Type' => 'image/svg+xml')
+        expect(response.headers)
+          .to include('Content-Type' => 'image/svg+xml')
       end
     end
 

@@ -107,14 +107,14 @@ class Note < ActiveRecord::Base
 
     def grouped_diff_discussions
       active_notes = diff_notes.fresh.select(&:active?)
-      Discussion.for_diff_notes(active_notes).
-        map { |d| [d.line_code, d] }.to_h
+      Discussion.for_diff_notes(active_notes)
+        .map { |d| [d.line_code, d] }.to_h
     end
 
     def count_for_collection(ids, type)
-      user.select('noteable_id', 'COUNT(*) as count').
-        group(:noteable_id).
-        where(noteable_type: type, noteable_id: ids)
+      user.select('noteable_id', 'COUNT(*) as count')
+        .group(:noteable_id)
+        .where(noteable_type: type, noteable_id: ids)
     end
   end
 

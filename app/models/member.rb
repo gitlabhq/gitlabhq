@@ -40,9 +40,9 @@ class Member < ActiveRecord::Base
     is_external_invite = arel_table[:user_id].eq(nil).and(arel_table[:invite_token].not_eq(nil))
     user_is_active = User.arel_table[:state].eq(:active)
 
-    includes(:user).references(:users).
-      where(is_external_invite.or(user_is_active)).
-      where(requested_at: nil)
+    includes(:user).references(:users)
+      .where(is_external_invite.or(user_is_active))
+      .where(requested_at: nil)
   end
 
   scope :invite, -> { where.not(invite_token: nil) }
@@ -100,9 +100,9 @@ class Member < ActiveRecord::Base
       users = User.arel_table
       members = Member.arel_table
 
-      member_users = members.join(users, Arel::Nodes::OuterJoin).
-                             on(members[:user_id].eq(users[:id])).
-                             join_sources
+      member_users = members.join(users, Arel::Nodes::OuterJoin)
+                             .on(members[:user_id].eq(users[:id]))
+                             .join_sources
 
       joins(member_users)
     end

@@ -44,8 +44,8 @@ describe Ci::StopEnvironmentsService, services: true do
 
         context 'when environment is not stopped' do
           before do
-            allow_any_instance_of(Environment).
-              to receive(:state).and_return(:stopped)
+            allow_any_instance_of(Environment)
+              .to receive(:state).and_return(:stopped)
           end
 
           it 'does not stop environment' do
@@ -83,22 +83,22 @@ describe Ci::StopEnvironmentsService, services: true do
 
     context 'when environment does not exist' do
       it 'does not raise error' do
-        expect { service.execute('master') }.
-          not_to raise_error
+        expect { service.execute('master') }
+          .not_to raise_error
       end
     end
   end
 
   def expect_environment_stopped_on(branch)
-    expect_any_instance_of(Environment).
-      to receive(:stop!)
+    expect_any_instance_of(Environment)
+      .to receive(:stop!)
 
     service.execute(branch)
   end
 
   def expect_environment_not_stopped_on(branch)
-    expect_any_instance_of(Environment).
-      not_to receive(:stop!)
+    expect_any_instance_of(Environment)
+      .not_to receive(:stop!)
 
     service.execute(branch)
   end

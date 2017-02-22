@@ -77,8 +77,8 @@ module Gitlab
             line_samples << LineSample.new(duration, events)
           end
 
-          samples << FileSample.
-            new(file, line_samples, total_duration, total_events)
+          samples << FileSample
+            .new(file, line_samples, total_duration, total_events)
         end
 
         samples

@@ -36,8 +36,8 @@ module Issues
     def resolve_discussions_in_merge_request(issue)
       Discussions::ResolveService.new(project, current_user,
                                       merge_request: merge_request_for_resolving_discussions,
-                                      follow_up_issue: issue).
-          execute(merge_request_for_resolving_discussions.resolvable_discussions)
+                                      follow_up_issue: issue)
+          .execute(merge_request_for_resolving_discussions.resolvable_discussions)
     end
 
     private

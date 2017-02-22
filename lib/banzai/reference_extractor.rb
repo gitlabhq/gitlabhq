@@ -10,8 +10,8 @@ module Banzai
     end
 
     def references(type, project, current_user = nil)
-      processor = Banzai::ReferenceParser[type].
-        new(project, current_user)
+      processor = Banzai::ReferenceParser[type]
+        .new(project, current_user)
 
       processor.process(html_documents)
     end
@@ -28,8 +28,8 @@ module Banzai
       # text blobs to parse.
       return [] if @texts_and_contexts.empty?
 
-      @html_documents ||= Renderer.cache_collection_render(@texts_and_contexts).
-        map { |html| Nokogiri::HTML.fragment(html) }
+      @html_documents ||= Renderer.cache_collection_render(@texts_and_contexts)
+        .map { |html| Nokogiri::HTML.fragment(html) }
     end
   end
 end

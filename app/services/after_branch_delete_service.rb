@@ -14,8 +14,8 @@ class AfterBranchDeleteService < BaseService
   private
 
   def stop_environments
-    Ci::StopEnvironmentsService.
-      new(project, current_user).
-      execute(branch_name)
+    Ci::StopEnvironmentsService
+      .new(project, current_user)
+      .execute(branch_name)
   end
 end

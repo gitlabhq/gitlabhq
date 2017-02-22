@@ -25,12 +25,12 @@ module RuboCop
       private
 
       def gemfile?(node)
-        node.
-          location.
-          expression.
-          source_buffer.
-          name.
-          end_with?("Gemfile")
+        node
+          .location
+          .expression
+          .source_buffer
+          .name
+          .end_with?("Gemfile")
       end
     end
   end

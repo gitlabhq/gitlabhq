@@ -17,12 +17,12 @@ describe Banzai::ObjectRenderer do
       renderer = described_class.new(project, user)
       object = fake_object(note: 'hello', note_html: nil)
 
-      expect(renderer).to receive(:render_objects).with([object], :note).
-        and_call_original
+      expect(renderer).to receive(:render_objects).with([object], :note)
+        .and_call_original
 
-      expect(renderer).to receive(:redact_documents).
-        with(an_instance_of(Array)).
-        and_call_original
+      expect(renderer).to receive(:redact_documents)
+        .with(an_instance_of(Array))
+        .and_call_original
 
       expect(object).to receive(:redacted_note_html=).with('<p dir="auto">hello</p>')
       expect(object).to receive(:user_visible_reference_count=).with(0)
@@ -37,8 +37,8 @@ describe Banzai::ObjectRenderer do
 
       renderer = described_class.new(project, user)
 
-      expect(renderer).to receive(:render_attributes).with([object], :note).
-        and_call_original
+      expect(renderer).to receive(:render_attributes).with([object], :note)
+        .and_call_original
 
       rendered = renderer.render_objects([object], :note)
 
@@ -52,9 +52,9 @@ describe Banzai::ObjectRenderer do
       doc = Nokogiri::HTML.fragment('<p>hello</p>')
       renderer = described_class.new(project, user)
 
-      expect_any_instance_of(Banzai::Redactor).to receive(:redact).
-        with([doc]).
-        and_call_original
+      expect_any_instance_of(Banzai::Redactor).to receive(:redact)
+        .with([doc])
+        .and_call_original
 
       redacted = renderer.redact_documents([doc])
 

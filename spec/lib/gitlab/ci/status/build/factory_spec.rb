@@ -16,8 +16,8 @@ describe Gitlab::Ci::Status::Build::Factory do
     end
 
     it 'matches correct extended statuses' do
-      expect(factory.extended_statuses).
-        to eq [Gitlab::Ci::Status::Build::Retryable]
+      expect(factory.extended_statuses)
+        .to eq [Gitlab::Ci::Status::Build::Retryable]
     end
 
     it 'fabricates a retryable build status' do
@@ -42,8 +42,8 @@ describe Gitlab::Ci::Status::Build::Factory do
       end
 
       it 'matches correct extended statuses' do
-        expect(factory.extended_statuses).
-          to eq [Gitlab::Ci::Status::Build::Retryable]
+        expect(factory.extended_statuses)
+          .to eq [Gitlab::Ci::Status::Build::Retryable]
       end
 
       it 'fabricates a retryable build status' do
@@ -67,8 +67,8 @@ describe Gitlab::Ci::Status::Build::Factory do
       end
 
       it 'matches correct extended statuses' do
-        expect(factory.extended_statuses).
-          to eq [Gitlab::Ci::Status::Build::Retryable,
+        expect(factory.extended_statuses)
+          .to eq [Gitlab::Ci::Status::Build::Retryable,
                  Gitlab::Ci::Status::Build::FailedAllowed]
       end
 
@@ -96,8 +96,8 @@ describe Gitlab::Ci::Status::Build::Factory do
     end
 
     it 'matches correct extended statuses' do
-      expect(factory.extended_statuses).
-        to eq [Gitlab::Ci::Status::Build::Retryable]
+      expect(factory.extended_statuses)
+        .to eq [Gitlab::Ci::Status::Build::Retryable]
     end
 
     it 'fabricates a retryable build status' do
@@ -121,8 +121,8 @@ describe Gitlab::Ci::Status::Build::Factory do
     end
 
     it 'matches correct extended statuses' do
-      expect(factory.extended_statuses).
-        to eq [Gitlab::Ci::Status::Build::Cancelable]
+      expect(factory.extended_statuses)
+        .to eq [Gitlab::Ci::Status::Build::Cancelable]
     end
 
     it 'fabricates a canceable build status' do
@@ -146,8 +146,8 @@ describe Gitlab::Ci::Status::Build::Factory do
     end
 
     it 'matches correct extended statuses' do
-      expect(factory.extended_statuses).
-        to eq [Gitlab::Ci::Status::Build::Cancelable]
+      expect(factory.extended_statuses)
+        .to eq [Gitlab::Ci::Status::Build::Cancelable]
     end
 
     it 'fabricates a cancelable build status' do
@@ -196,8 +196,8 @@ describe Gitlab::Ci::Status::Build::Factory do
       end
 
       it 'matches correct extended statuses' do
-        expect(factory.extended_statuses).
-          to eq [Gitlab::Ci::Status::Build::Play]
+        expect(factory.extended_statuses)
+          .to eq [Gitlab::Ci::Status::Build::Play]
       end
 
       it 'fabricates a core skipped status' do
@@ -222,8 +222,8 @@ describe Gitlab::Ci::Status::Build::Factory do
       end
 
       it 'matches correct extended statuses' do
-        expect(factory.extended_statuses).
-          to eq [Gitlab::Ci::Status::Build::Stop]
+        expect(factory.extended_statuses)
+          .to eq [Gitlab::Ci::Status::Build::Stop]
       end
 
       it 'fabricates a core skipped status' do

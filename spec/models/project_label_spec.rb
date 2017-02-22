@@ -94,8 +94,8 @@ describe ProjectLabel, models: true do
 
     context 'using invalid format' do
       it 'raises error' do
-        expect { label.to_reference(format: :invalid) }.
-          to raise_error StandardError, /Unknown format/
+        expect { label.to_reference(format: :invalid) }
+          .to raise_error StandardError, /Unknown format/
       end
     end
 
@@ -104,15 +104,15 @@ describe ProjectLabel, models: true do
 
       context 'using name' do
         it 'returns cross reference with label name' do
-          expect(label.to_reference(project, format: :name)).
-            to eq %(#{label.project.path_with_namespace}~"#{label.name}")
+          expect(label.to_reference(project, format: :name))
+            .to eq %(#{label.project.path_with_namespace}~"#{label.name}")
         end
       end
 
       context 'using id' do
         it 'returns cross reference with label id' do
-          expect(label.to_reference(project, format: :id)).
-            to eq %(#{label.project.path_with_namespace}~#{label.id})
+          expect(label.to_reference(project, format: :id))
+            .to eq %(#{label.project.path_with_namespace}~#{label.id})
         end
       end
     end

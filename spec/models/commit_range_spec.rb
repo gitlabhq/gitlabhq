@@ -147,9 +147,9 @@ describe CommitRange, models: true do
              note: commit1.revert_description(user),
              project: issue.project)
 
-      expect_any_instance_of(Commit).to receive(:reverts_commit?).
-        with(commit1, user).
-        and_return(true)
+      expect_any_instance_of(Commit).to receive(:reverts_commit?)
+        .with(commit1, user)
+        .and_return(true)
 
       expect(commit1.has_been_reverted?(user, issue)).to eq(true)
     end

@@ -38,9 +38,9 @@ describe ApplicationSetting, models: true do
     it { is_expected.to validate_presence_of(:max_attachment_size) }
 
     it do
-      is_expected.to validate_numericality_of(:max_attachment_size).
-        only_integer.
-        is_greater_than(0)
+      is_expected.to validate_numericality_of(:max_attachment_size)
+        .only_integer
+        .is_greater_than(0)
     end
 
     it_behaves_like 'an object with email-formated attributes', :admin_notification_email do

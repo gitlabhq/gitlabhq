@@ -14,8 +14,8 @@ describe PipelineProcessWorker do
 
     context 'when pipeline does not exist' do
       it 'does not raise exception' do
-        expect { described_class.new.perform(123) }.
-          not_to raise_error
+        expect { described_class.new.perform(123) }
+          .not_to raise_error
       end
     end
   end

@@ -81,8 +81,8 @@ shared_examples 'a mentionable' do
                          ext_issue, ext_mr, ext_commit]
 
     mentioned_objects.each do |referenced|
-      expect(SystemNoteService).to receive(:cross_reference).
-        with(referenced, subject.local_reference, author)
+      expect(SystemNoteService).to receive(:cross_reference)
+        .with(referenced, subject.local_reference, author)
     end
 
     subject.create_cross_references!
@@ -127,15 +127,15 @@ shared_examples 'an editable mentionable' do
     # These three objects were already referenced, and should not receive new
     # notes
     [mentioned_issue, mentioned_commit, ext_issue].each do |oldref|
-      expect(SystemNoteService).not_to receive(:cross_reference).
-        with(oldref, any_args)
+      expect(SystemNoteService).not_to receive(:cross_reference)
+        .with(oldref, any_args)
     end
 
     # These two issues are new and should receive reference notes
     # In the case of MergeRequests remember that cannot mention commits included in the MergeRequest
     new_issues.each do |newref|
-      expect(SystemNoteService).to receive(:cross_reference).
-        with(newref, subject.local_reference, author)
+      expect(SystemNoteService).to receive(:cross_reference)
+        .with(newref, subject.local_reference, author)
     end
 
     set_mentionable_text.call(new_text)

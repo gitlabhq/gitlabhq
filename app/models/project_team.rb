@@ -171,10 +171,10 @@ class ProjectTeam
 
     # Lookup only the IDs we need
     user_ids = user_ids - access.keys
-    users_access = project.project_authorizations.
-      where(user: user_ids).
-      group(:user_id).
-      maximum(:access_level)
+    users_access = project.project_authorizations
+      .where(user: user_ids)
+      .group(:user_id)
+      .maximum(:access_level)
 
     access.merge!(users_access)
     access

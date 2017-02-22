@@ -6,8 +6,8 @@ describe BuildHooksWorker do
       let!(:build) { create(:ci_build) }
 
       it 'calls build hooks' do
-        expect_any_instance_of(Ci::Build).
-          to receive(:execute_hooks)
+        expect_any_instance_of(Ci::Build)
+          .to receive(:execute_hooks)
 
         described_class.new.perform(build.id)
       end
@@ -15,8 +15,8 @@ describe BuildHooksWorker do
 
     context 'when build does not exist' do
       it 'does not raise exception' do
-        expect { described_class.new.perform(123) }.
-          not_to raise_error
+        expect { described_class.new.perform(123) }
+          .not_to raise_error
       end
     end
   end

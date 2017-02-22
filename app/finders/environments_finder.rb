@@ -17,12 +17,12 @@ class EnvironmentsFinder
         deployments.none
       end
 
-    environment_ids = deployments.
-      group(:environment_id).
-      select(:environment_id)
+    environment_ids = deployments
+      .group(:environment_id)
+      .select(:environment_id)
 
-    environments = project.environments.available.
-      where(id: environment_ids).order_by_last_deployed_at.to_a
+    environments = project.environments.available
+      .where(id: environment_ids).order_by_last_deployed_at.to_a
 
     environments.select! do |environment|
       Ability.allowed?(current_user, :read_environment, environment)

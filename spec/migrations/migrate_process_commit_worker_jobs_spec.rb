@@ -11,33 +11,33 @@ describe MigrateProcessCommitWorkerJobs do
   describe 'Project' do
     describe 'find_including_path' do
       it 'returns Project instances' do
-        expect(described_class::Project.find_including_path(project.id)).
-          to be_an_instance_of(described_class::Project)
+        expect(described_class::Project.find_including_path(project.id))
+          .to be_an_instance_of(described_class::Project)
       end
 
       it 'selects the full path for every Project' do
-        migration_project = described_class::Project.
-          find_including_path(project.id)
+        migration_project = described_class::Project
+          .find_including_path(project.id)
 
-        expect(migration_project[:path_with_namespace]).
-          to eq(project.path_with_namespace)
+        expect(migration_project[:path_with_namespace])
+          .to eq(project.path_with_namespace)
       end
     end
 
     describe '#repository_storage_path' do
       it 'returns the storage path for the repository' do
-        migration_project = described_class::Project.
-          find_including_path(project.id)
+        migration_project = described_class::Project
+          .find_including_path(project.id)
 
-        expect(File.directory?(migration_project.repository_storage_path)).
-          to eq(true)
+        expect(File.directory?(migration_project.repository_storage_path))
+          .to eq(true)
       end
     end
 
     describe '#repository_path' do
       it 'returns the path to the repository' do
-        migration_project = described_class::Project.
-          find_including_path(project.id)
+        migration_project = described_class::Project
+          .find_including_path(project.id)
 
         expect(File.directory?(migration_project.repository_path)).to eq(true)
       end
@@ -45,11 +45,11 @@ describe MigrateProcessCommitWorkerJobs do
 
     describe '#repository' do
       it 'returns a Rugged::Repository' do
-        migration_project = described_class::Project.
-          find_including_path(project.id)
+        migration_project = described_class::Project
+          .find_including_path(project.id)
 
-        expect(migration_project.repository).
-          to be_an_instance_of(Rugged::Repository)
+        expect(migration_project.repository)
+          .to be_an_instance_of(Rugged::Repository)
       end
     end
   end
@@ -73,9 +73,9 @@ describe MigrateProcessCommitWorkerJobs do
     end
 
     it 'skips jobs using a project that no longer exists' do
-      allow(described_class::Project).to receive(:find_including_path).
-        with(project.id).
-        and_return(nil)
+      allow(described_class::Project).to receive(:find_including_path)
+        .with(project.id)
+        .and_return(nil)
 
       migration.up
 
@@ -83,9 +83,9 @@ describe MigrateProcessCommitWorkerJobs do
     end
 
     it 'skips jobs using commits that no longer exist' do
-      allow_any_instance_of(Rugged::Repository).to receive(:lookup).
-        with(commit.oid).
-        and_raise(Rugged::OdbError)
+      allow_any_instance_of(Rugged::Repository).to receive(:lookup)
+        .with(commit.oid)
+        .and_raise(Rugged::OdbError)
 
       migration.up
 
@@ -99,12 +99,12 @@ describe MigrateProcessCommitWorkerJobs do
     end
 
     it 'encodes data to UTF-8' do
-      allow_any_instance_of(Rugged::Repository).to receive(:lookup).
-        with(commit.oid).
-        and_return(commit)
+      allow_any_instance_of(Rugged::Repository).to receive(:lookup)
+        .with(commit.oid)
+        .and_return(commit)
 
-      allow(commit).to receive(:message).
-        and_return('김치'.force_encoding('BINARY'))
+      allow(commit).to receive(:message)
+        .and_return('김치'.force_encoding('BINARY'))
 
       migration.up
 

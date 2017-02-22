@@ -101,8 +101,8 @@ describe Projects::SnippetsController do
       context 'when the project is public' do
         context 'when the snippet is private' do
           it 'creates the snippet' do
-            expect { create_snippet(project, visibility_level: Snippet::PRIVATE) }.
-              to change { Snippet.count }.by(1)
+            expect { create_snippet(project, visibility_level: Snippet::PRIVATE) }
+              .to change { Snippet.count }.by(1)
           end
         end
 

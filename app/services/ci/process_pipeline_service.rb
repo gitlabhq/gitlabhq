@@ -78,9 +78,9 @@ module Ci
     def ensure_created_builds!
       return if created_builds.any?
 
-      Ci::CreatePipelineBuildsService.
-        new(project, current_user).
-        execute(pipeline)
+      Ci::CreatePipelineBuildsService
+        .new(project, current_user)
+        .execute(pipeline)
     end
   end
 end

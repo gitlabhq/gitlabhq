@@ -16,9 +16,9 @@ describe ContainerRegistry::Repository do
 
   context 'manifest processing' do
     before do
-      stub_request(:get, 'http://example.com/v2/group/test/tags/list').
-        with(headers: { 'Accept' => 'application/vnd.docker.distribution.manifest.v2+json' }).
-        to_return(
+      stub_request(:get, 'http://example.com/v2/group/test/tags/list')
+        .with(headers: { 'Accept' => 'application/vnd.docker.distribution.manifest.v2+json' })
+        .to_return(
           status: 200,
           body: JSON.dump(tags: ['test']),
           headers: { 'Content-Type' => 'application/json' })

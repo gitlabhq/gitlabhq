@@ -38,14 +38,14 @@ describe PipelineSerializer do
       let(:pagination) { {} }
 
       before do
-        allow(request).
-          to receive(:query_parameters).
-          and_return(pagination)
+        allow(request)
+          .to receive(:query_parameters)
+          .and_return(pagination)
       end
 
       let(:serializer) do
-        described_class.new(user: user).
-          with_pagination(request, response)
+        described_class.new(user: user)
+          .with_pagination(request, response)
       end
 
       it 'created a paginated serializer' do

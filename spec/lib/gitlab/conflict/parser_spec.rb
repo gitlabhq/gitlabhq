@@ -121,72 +121,72 @@ CONFLICT
 
     context 'when the file contents include conflict delimiters' do
       it 'raises UnexpectedDelimiter when there is a non-start delimiter first' do
-        expect { parse_text('=======') }.
-          to raise_error(Gitlab::Conflict::Parser::UnexpectedDelimiter)
+        expect { parse_text('=======') }
+          .to raise_error(Gitlab::Conflict::Parser::UnexpectedDelimiter)
 
-        expect { parse_text('>>>>>>> README.md') }.
-          to raise_error(Gitlab::Conflict::Parser::UnexpectedDelimiter)
+        expect { parse_text('>>>>>>> README.md') }
+          .to raise_error(Gitlab::Conflict::Parser::UnexpectedDelimiter)
 
-        expect { parse_text('>>>>>>> some-other-path.md') }.
-          not_to raise_error
+        expect { parse_text('>>>>>>> some-other-path.md') }
+          .not_to raise_error
       end
 
       it 'raises UnexpectedDelimiter when a start delimiter is followed by a non-middle delimiter' do
         start_text = "<<<<<<< README.md\n"
         end_text = "\n=======\n>>>>>>> README.md"
 
-        expect { parse_text(start_text + '>>>>>>> README.md' + end_text) }.
-          to raise_error(Gitlab::Conflict::Parser::UnexpectedDelimiter)
+        expect { parse_text(start_text + '>>>>>>> README.md' + end_text) }
+          .to raise_error(Gitlab::Conflict::Parser::UnexpectedDelimiter)
 
-        expect { parse_text(start_text + start_text + end_text) }.
-          to raise_error(Gitlab::Conflict::Parser::UnexpectedDelimiter)
+        expect { parse_text(start_text + start_text + end_text) }
+          .to raise_error(Gitlab::Conflict::Parser::UnexpectedDelimiter)
 
-        expect { parse_text(start_text + '>>>>>>> some-other-path.md' + end_text) }.
-          not_to raise_error
+        expect { parse_text(start_text + '>>>>>>> some-other-path.md' + end_text) }
+          .not_to raise_error
       end
 
       it 'raises UnexpectedDelimiter when a middle delimiter is followed by a non-end delimiter' do
         start_text = "<<<<<<< README.md\n=======\n"
         end_text = "\n>>>>>>> README.md"
 
-        expect { parse_text(start_text + '=======' + end_text) }.
-          to raise_error(Gitlab::Conflict::Parser::UnexpectedDelimiter)
+        expect { parse_text(start_text + '=======' + end_text) }
+          .to raise_error(Gitlab::Conflict::Parser::UnexpectedDelimiter)
 
-        expect { parse_text(start_text + start_text + end_text) }.
-          to raise_error(Gitlab::Conflict::Parser::UnexpectedDelimiter)
+        expect { parse_text(start_text + start_text + end_text) }
+          .to raise_error(Gitlab::Conflict::Parser::UnexpectedDelimiter)
 
-        expect { parse_text(start_text + '>>>>>>> some-other-path.md' + end_text) }.
-          not_to raise_error
+        expect { parse_text(start_text + '>>>>>>> some-other-path.md' + end_text) }
+          .not_to raise_error
       end
 
       it 'raises MissingEndDelimiter when there is no end delimiter at the end' do
         start_text = "<<<<<<< README.md\n=======\n"
 
-        expect { parse_text(start_text) }.
-          to raise_error(Gitlab::Conflict::Parser::MissingEndDelimiter)
+        expect { parse_text(start_text) }
+          .to raise_error(Gitlab::Conflict::Parser::MissingEndDelimiter)
 
-        expect { parse_text(start_text + '>>>>>>> some-other-path.md') }.
-          to raise_error(Gitlab::Conflict::Parser::MissingEndDelimiter)
+        expect { parse_text(start_text + '>>>>>>> some-other-path.md') }
+          .to raise_error(Gitlab::Conflict::Parser::MissingEndDelimiter)
       end
     end
 
     context 'other file types' do
       it 'raises UnmergeableFile when lines is blank, indicating a binary file' do
-        expect { parse_text('') }.
-          to raise_error(Gitlab::Conflict::Parser::UnmergeableFile)
+        expect { parse_text('') }
+          .to raise_error(Gitlab::Conflict::Parser::UnmergeableFile)
 
-        expect { parse_text(nil) }.
-          to raise_error(Gitlab::Conflict::Parser::UnmergeableFile)
+        expect { parse_text(nil) }
+          .to raise_error(Gitlab::Conflict::Parser::UnmergeableFile)
       end
 
       it 'raises UnmergeableFile when the file is over 200 KB' do
-        expect { parse_text('a' * 204801) }.
-          to raise_error(Gitlab::Conflict::Parser::UnmergeableFile)
+        expect { parse_text('a' * 204801) }
+          .to raise_error(Gitlab::Conflict::Parser::UnmergeableFile)
       end
 
       it 'raises UnsupportedEncoding when the file contains non-UTF-8 characters' do
-        expect { parse_text("a\xC4\xFC".force_encoding(Encoding::ASCII_8BIT)) }.
-          to raise_error(Gitlab::Conflict::Parser::UnsupportedEncoding)
+        expect { parse_text("a\xC4\xFC".force_encoding(Encoding::ASCII_8BIT)) }
+          .to raise_error(Gitlab::Conflict::Parser::UnsupportedEncoding)
       end
     end
   end

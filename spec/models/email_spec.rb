@@ -8,7 +8,7 @@ describe Email, models: true do
   end
 
   it 'normalize email value' do
-    expect(described_class.new(email: ' inFO@exAMPLe.com ').email).
-      to eq 'info@example.com'
+    expect(described_class.new(email: ' inFO@exAMPLe.com ').email)
+      .to eq 'info@example.com'
   end
 end

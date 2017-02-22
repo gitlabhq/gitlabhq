@@ -10,9 +10,9 @@ describe Gitlab::Ci::Status::External::Common do
   end
 
   subject do
-    Gitlab::Ci::Status::Core.
-      new(external_status, user).
-      extend(described_class)
+    Gitlab::Ci::Status::Core
+      .new(external_status, user)
+      .extend(described_class)
   end
 
   describe '#has_action?' do

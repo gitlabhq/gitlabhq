@@ -54,8 +54,8 @@ describe Banzai::ReferenceParser::BaseParser, lib: true do
   describe '#referenced_by' do
     context 'when references_relation is implemented' do
       it 'returns a collection of objects' do
-        links = Nokogiri::HTML.fragment("<a data-foo='#{user.id}'></a>").
-          children
+        links = Nokogiri::HTML.fragment("<a data-foo='#{user.id}'></a>")
+          .children
 
         expect(subject).to receive(:references_relation).and_return(User)
         expect(subject.referenced_by(links)).to eq([user])
@@ -66,8 +66,8 @@ describe Banzai::ReferenceParser::BaseParser, lib: true do
       it 'raises NotImplementedError' do
         links = Nokogiri::HTML.fragment('<a data-foo="1"></a>').children
 
-        expect { subject.referenced_by(links) }.
-          to raise_error(NotImplementedError)
+        expect { subject.referenced_by(links) }
+          .to raise_error(NotImplementedError)
       end
     end
   end
@@ -80,8 +80,8 @@ describe Banzai::ReferenceParser::BaseParser, lib: true do
 
   describe '#gather_attributes_per_project' do
     it 'returns a Hash containing attribute values per project' do
-      link = Nokogiri::HTML.fragment('<a data-project="1" data-foo="2"></a>').
-        children[0]
+      link = Nokogiri::HTML.fragment('<a data-project="1" data-foo="2"></a>')
+        .children[0]
 
       hash = subject.gather_attributes_per_project([link], 'data-foo')
 
@@ -95,9 +95,9 @@ describe Banzai::ReferenceParser::BaseParser, lib: true do
     it 'returns a Hash grouping objects per ID' do
       nodes = [double(:node)]
 
-      expect(subject).to receive(:unique_attribute_values).
-        with(nodes, 'data-user').
-        and_return([user.id])
+      expect(subject).to receive(:unique_attribute_values)
+        .with(nodes, 'data-user')
+        .and_return([user.id])
 
       hash = subject.grouped_objects_for_nodes(nodes, User, 'data-user')
 
@@ -113,15 +113,15 @@ describe Banzai::ReferenceParser::BaseParser, lib: true do
     it 'returns an Array of unique values' do
       link = double(:link)
 
-      expect(link).to receive(:has_attribute?).
-        with('data-foo').
-        twice.
-        and_return(true)
+      expect(link).to receive(:has_attribute?)
+        .with('data-foo')
+        .twice
+        .and_return(true)
 
-      expect(link).to receive(:attr).
-        with('data-foo').
-        twice.
-        and_return('1')
+      expect(link).to receive(:attr)
+        .with('data-foo')
+        .twice
+        .and_return('1')
 
       nodes = [link, link]
 
@@ -138,9 +138,9 @@ describe Banzai::ReferenceParser::BaseParser, lib: true do
       instance = dummy.new(project, user)
       document = Nokogiri::HTML.fragment('<a class="gfm"></a><a class="gfm" data-reference-type="test"></a>')
 
-      expect(instance).to receive(:gather_references).
-        with([document.children[1]]).
-        and_return([user])
+      expect(instance).to receive(:gather_references)
+        .with([document.children[1]])
+        .and_return([user])
 
       expect(instance.process([document])).to eq([user])
     end
@@ -150,9 +150,9 @@ describe Banzai::ReferenceParser::BaseParser, lib: true do
     let(:link) { double(:link) }
 
     it 'does not process links a user can not reference' do
-      expect(subject).to receive(:nodes_user_can_reference).
-        with(user, [link]).
-        and_return([])
+      expect(subject).to receive(:nodes_user_can_reference)
+        .with(user, [link])
+        .and_return([])
 
       expect(subject).to receive(:referenced_by).with([])
 
@@ -160,13 +160,13 @@ describe Banzai::ReferenceParser::BaseParser, lib: true do
     end
 
     it 'does not process links a user can not see' do
-      expect(subject).to receive(:nodes_user_can_reference).
-        with(user, [link]).
-        and_return([link])
+      expect(subject).to receive(:nodes_user_can_reference)
+        .with(user, [link])
+        .and_return([link])
 
-      expect(subject).to receive(:nodes_visible_to_user).
-        with(user, [link]).
-        and_return([])
+      expect(subject).to receive(:nodes_visible_to_user)
+        .with(user, [link])
+        .and_return([])
 
       expect(subject).to receive(:referenced_by).with([])
 
@@ -174,13 +174,13 @@ describe Banzai::ReferenceParser::BaseParser, lib: true do
     end
 
     it 'returns the references if a user can reference and see a link' do
-      expect(subject).to receive(:nodes_user_can_reference).
-        with(user, [link]).
-        and_return([link])
+      expect(subject).to receive(:nodes_user_can_reference)
+        .with(user, [link])
+        .and_return([link])
 
-      expect(subject).to receive(:nodes_visible_to_user).
-        with(user, [link]).
-        and_return([link])
+      expect(subject).to receive(:nodes_visible_to_user)
+        .with(user, [link])
+        .and_return([link])
 
       expect(subject).to receive(:referenced_by).with([link])
 
@@ -192,8 +192,8 @@ describe Banzai::ReferenceParser::BaseParser, lib: true do
     it 'delegates the permissions check to the Ability class' do
       user = double(:user)
 
-      expect(Ability).to receive(:allowed?).
-        with(user, :read_project, project)
+      expect(Ability).to receive(:allowed?)
+        .with(user, :read_project, project)
 
       subject.can?(user, :read_project, project)
     end
@@ -201,8 +201,8 @@ describe Banzai::ReferenceParser::BaseParser, lib: true do
 
   describe '#find_projects_for_hash_keys' do
     it 'returns a list of Projects' do
-      expect(subject.find_projects_for_hash_keys(project.id => project)).
-        to eq([project])
+      expect(subject.find_projects_for_hash_keys(project.id => project))
+        .to eq([project])
     end
   end
 
@@ -214,8 +214,8 @@ describe Banzai::ReferenceParser::BaseParser, lib: true do
         expect(collection).to receive(:where).twice.and_call_original
 
         2.times do
-          expect(subject.collection_objects_for_ids(collection, [user.id])).
-            to eq([user])
+          expect(subject.collection_objects_for_ids(collection, [user.id]))
+            .to eq([user])
         end
       end
     end
@@ -229,8 +229,8 @@ describe Banzai::ReferenceParser::BaseParser, lib: true do
       end
 
       it 'queries the collection on the first call' do
-        expect(subject.collection_objects_for_ids(User, [user.id])).
-          to eq([user])
+        expect(subject.collection_objects_for_ids(User, [user.id]))
+          .to eq([user])
       end
 
       it 'does not query previously queried objects' do
@@ -239,34 +239,34 @@ describe Banzai::ReferenceParser::BaseParser, lib: true do
         expect(collection).to receive(:where).once.and_call_original
 
         2.times do
-          expect(subject.collection_objects_for_ids(collection, [user.id])).
-            to eq([user])
+          expect(subject.collection_objects_for_ids(collection, [user.id]))
+            .to eq([user])
         end
       end
 
       it 'casts String based IDs to Fixnums before querying objects' do
         2.times do
-          expect(subject.collection_objects_for_ids(User, [user.id.to_s])).
-            to eq([user])
+          expect(subject.collection_objects_for_ids(User, [user.id.to_s]))
+            .to eq([user])
         end
       end
 
       it 'queries any additional objects after the first call' do
         other_user = create(:user)
 
-        expect(subject.collection_objects_for_ids(User, [user.id])).
-          to eq([user])
+        expect(subject.collection_objects_for_ids(User, [user.id]))
+          .to eq([user])
 
-        expect(subject.collection_objects_for_ids(User, [user.id, other_user.id])).
-          to eq([user, other_user])
+        expect(subject.collection_objects_for_ids(User, [user.id, other_user.id]))
+          .to eq([user, other_user])
       end
 
       it 'caches objects on a per collection class basis' do
-        expect(subject.collection_objects_for_ids(User, [user.id])).
-          to eq([user])
+        expect(subject.collection_objects_for_ids(User, [user.id]))
+          .to eq([user])
 
-        expect(subject.collection_objects_for_ids(Project, [project.id])).
-          to eq([project])
+        expect(subject.collection_objects_for_ids(Project, [project.id]))
+          .to eq([project])
       end
     end
   end

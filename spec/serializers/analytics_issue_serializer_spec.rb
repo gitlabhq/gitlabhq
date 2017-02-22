@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe AnalyticsIssueSerializer do
   subject do
-    described_class.
-      new(project: project, entity: :merge_request).
-      represent(resource)
+    described_class
+      .new(project: project, entity: :merge_request)
+      .represent(resource)
   end
 
   let(:user) { create(:user) }

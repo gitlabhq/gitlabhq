@@ -17,8 +17,8 @@ module Boards
       attr_reader :board
 
       def decrement_higher_lists(list)
-        board.lists.movable.where('position > ?',  list.position).
-                   update_all('position = position - 1')
+        board.lists.movable.where('position > ?',  list.position)
+                   .update_all('position = position - 1')
       end
 
       def remove_list(list)

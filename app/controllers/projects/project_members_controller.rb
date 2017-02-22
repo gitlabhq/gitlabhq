@@ -41,8 +41,8 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   end
 
   def destroy
-    member = Members::DestroyService.new(@project, current_user, params).
-      execute(:all)
+    member = Members::DestroyService.new(@project, current_user, params)
+      .execute(:all)
 
     log_audit_event(member, action: :destroy)
 

@@ -127,8 +127,8 @@ describe API::V3::Files, api: true  do
     end
 
     it "returns a 400 if editor fails to create file" do
-      allow_any_instance_of(Repository).to receive(:commit_file).
-        and_return(false)
+      allow_any_instance_of(Repository).to receive(:commit_file)
+        .and_return(false)
 
       post v3_api("/projects/#{project.id}/repository/files", user), valid_params
 

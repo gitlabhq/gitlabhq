@@ -207,8 +207,8 @@ describe API::CommitStatuses, api: true do
 
         it 'responds with bad request status and validation errors' do
           expect(response).to have_http_status(400)
-          expect(json_response['message']['target_url']).
-            to include 'must be a valid URL'
+          expect(json_response['message']['target_url'])
+            .to include 'must be a valid URL'
         end
       end
     end

@@ -25,8 +25,8 @@ describe Gitlab::Ci::Config::Entry::Boolean do
 
       describe '#errors' do
         it 'saves errors' do
-          expect(entry.errors).
-            to include 'boolean config should be a boolean value'
+          expect(entry.errors)
+            .to include 'boolean config should be a boolean value'
         end
       end
     end

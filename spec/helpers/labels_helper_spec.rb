@@ -55,8 +55,8 @@ describe LabelsHelper do
 
     context 'without block' do
       it 'uses render_colored_label as the link content' do
-        expect(self).to receive(:render_colored_label).
-          with(label, tooltip: true).and_return('Foo')
+        expect(self).to receive(:render_colored_label)
+          .with(label, tooltip: true).and_return('Foo')
         expect(link_to_label(label)).to match('Foo')
       end
     end

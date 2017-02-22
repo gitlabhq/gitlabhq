@@ -12,17 +12,17 @@ module Gitlab
       end
 
       def stage_query
-        query = mr_closing_issues_table.join(issue_table).on(issue_table[:id].eq(mr_closing_issues_table[:issue_id])).
-          join(issue_metrics_table).on(issue_table[:id].eq(issue_metrics_table[:issue_id])).
-          where(issue_table[:project_id].eq(@project.id)).
-          where(issue_table[:deleted_at].eq(nil)).
-          where(issue_table[:created_at].gteq(@options[:from]))
+        query = mr_closing_issues_table.join(issue_table).on(issue_table[:id].eq(mr_closing_issues_table[:issue_id]))
+          .join(issue_metrics_table).on(issue_table[:id].eq(issue_metrics_table[:issue_id]))
+          .where(issue_table[:project_id].eq(@project.id))
+          .where(issue_table[:deleted_at].eq(nil))
+          .where(issue_table[:created_at].gteq(@options[:from]))
 
         # Load merge_requests
-        query = query.join(mr_table, Arel::Nodes::OuterJoin).
-          on(mr_table[:id].eq(mr_closing_issues_table[:merge_request_id])).
-          join(mr_metrics_table).
-          on(mr_table[:id].eq(mr_metrics_table[:merge_request_id]))
+        query = query.join(mr_table, Arel::Nodes::OuterJoin)
+          .on(mr_table[:id].eq(mr_closing_issues_table[:merge_request_id]))
+          .join(mr_metrics_table)
+          .on(mr_table[:id].eq(mr_metrics_table[:merge_request_id]))
 
         query
       end
