@@ -20,7 +20,7 @@ module Gitlab
 
             full_line = line.delete("\n")
 
-            if line.match(/^@@ -/)
+            if line =~ /^@@ -/
               type = "match"
 
               line_old = line.match(/\-[0-9]*/)[0].to_i.abs rescue 0

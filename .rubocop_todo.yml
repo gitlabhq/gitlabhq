@@ -6,16 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 5
-# Cop supports --auto-correct.
-Performance/RedundantMatch:
-  Exclude:
-    - 'app/models/external_issue.rb'
-    - 'lib/ci/api/helpers.rb'
-    - 'lib/extracts_path.rb'
-    - 'lib/gitlab/diff/highlight.rb'
-    - 'lib/gitlab/diff/parser.rb'
-
 # Offense count: 15
 # Configuration parameters: CustomIncludeMethods.
 RSpec/EmptyExampleGroup:
