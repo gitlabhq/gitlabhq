@@ -1,1 +1,1 @@
-This document was moved to [user/project/pages](../user/project/pages/index.md).
+This document was moved to [index.md](index.md).
