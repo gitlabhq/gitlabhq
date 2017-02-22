@@ -2,14 +2,13 @@
 /* global FilesCommentButton */
 
 (function() {
+  var $commentButtonTemplate;
   var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
 
   this.FilesCommentButton = (function() {
-    var COMMENT_BUTTON_CLASS, COMMENT_BUTTON_TEMPLATE, DEBOUNCE_TIMEOUT_DURATION, EMPTY_CELL_CLASS, LINE_COLUMN_CLASSES, LINE_CONTENT_CLASS, LINE_HOLDER_CLASS, LINE_NUMBER_CLASS, OLD_LINE_CLASS, TEXT_FILE_SELECTOR, UNFOLDABLE_LINE_CLASS;
+    var COMMENT_BUTTON_CLASS, EMPTY_CELL_CLASS, LINE_COLUMN_CLASSES, LINE_CONTENT_CLASS, LINE_HOLDER_CLASS, LINE_NUMBER_CLASS, OLD_LINE_CLASS, TEXT_FILE_SELECTOR, UNFOLDABLE_LINE_CLASS;
 
     COMMENT_BUTTON_CLASS = '.add-diff-note';
-
-    COMMENT_BUTTON_TEMPLATE = _.template('<button name="button" type="submit" class="btn <%- COMMENT_BUTTON_CLASS %> js-add-diff-note-button" title="Add a comment to this line"><i class="fa fa-comment-o"></i></button>');
 
     LINE_HOLDER_CLASS = '.line_holder';
 
@@ -27,26 +26,32 @@
 
     TEXT_FILE_SELECTOR = '.text-file';
 
-    DEBOUNCE_TIMEOUT_DURATION = 100;
-
     function FilesCommentButton(filesContainerElement) {
-      var debounce;
       this.filesContainerElement = filesContainerElement;
-      this.destroy = bind(this.destroy, this);
       this.render = bind(this.render, this);
+      this.hideButton = bind(this.hideButton, this);
       this.VIEW_TYPE = $('input#view[type=hidden]').val();
-      debounce = _.debounce(this.render, DEBOUNCE_TIMEOUT_DURATION);
-      $(this.filesContainerElement).off('mouseover', LINE_COLUMN_CLASSES).off('mouseleave', LINE_COLUMN_CLASSES).on('mouseover', LINE_COLUMN_CLASSES, debounce).on('mouseleave', LINE_COLUMN_CLASSES, this.destroy);
+      $(this.filesContainerElement)
+        .on('mouseover', LINE_COLUMN_CLASSES, this.render)
+        .on('mouseleave', LINE_COLUMN_CLASSES, this.hideButton);
     }
 
     FilesCommentButton.prototype.render = function(e) {
-      var $currentTarget, buttonParentElement, lineContentElement, textFileElement;
+      var $currentTarget, buttonParentElement, lineContentElement, textFileElement, $button;
       $currentTarget = $(e.currentTarget);
 
       buttonParentElement = this.getButtonParent($currentTarget);
       if (!this.validateButtonParent(buttonParentElement)) return;
       lineContentElement = this.getLineContent($currentTarget);
       if (!this.validateLineContent(lineContentElement)) return;
+
+      $button = $(COMMENT_BUTTON_CLASS, buttonParentElement);
+      buttonParentElement.addClass('is-over')
+        .nextUntil('.line_content').addClass('is-over');
+
+      if ($button.length) {
+        return;
+      }
 
       textFileElement = this.getTextFileElement($currentTarget);
       buttonParentElement.append(this.buildButton({
@@ -61,19 +66,16 @@
       }));
     };
 
-    FilesCommentButton.prototype.destroy = function(e) {
-      if (this.isMovingToSameType(e)) {
-        return;
-      }
-      $(COMMENT_BUTTON_CLASS, this.getButtonParent($(e.currentTarget))).remove();
+    FilesCommentButton.prototype.hideButton = function(e) {
+      var $currentTarget = $(e.currentTarget);
+      var buttonParentElement = this.getButtonParent($currentTarget);
+
+      buttonParentElement.removeClass('is-over')
+        .nextUntil('.line_content').removeClass('is-over');
     };
 
     FilesCommentButton.prototype.buildButton = function(buttonAttributes) {
-      var initializedButtonTemplate;
-      initializedButtonTemplate = COMMENT_BUTTON_TEMPLATE({
-        COMMENT_BUTTON_CLASS: COMMENT_BUTTON_CLASS.substr(1)
-      });
-      return $(initializedButtonTemplate).attr({
+      return $commentButtonTemplate.clone().attr({
         'data-noteable-type': buttonAttributes.noteableType,
         'data-noteable-id': buttonAttributes.noteableID,
         'data-commit-id': buttonAttributes.commitID,
@@ -114,17 +116,8 @@
       }
     };
 
-    FilesCommentButton.prototype.isMovingToSameType = function(e) {
-      var newButtonParent;
-      newButtonParent = this.getButtonParent($(e.toElement));
-      if (!newButtonParent) {
-        return false;
-      }
-      return newButtonParent.is(this.getButtonParent($(e.currentTarget)));
-    };
-
     FilesCommentButton.prototype.validateButtonParent = function(buttonParentElement) {
-      return !buttonParentElement.hasClass(EMPTY_CELL_CLASS) && !buttonParentElement.hasClass(UNFOLDABLE_LINE_CLASS) && $(COMMENT_BUTTON_CLASS, buttonParentElement).length === 0;
+      return !buttonParentElement.hasClass(EMPTY_CELL_CLASS) && !buttonParentElement.hasClass(UNFOLDABLE_LINE_CLASS);
     };
 
     FilesCommentButton.prototype.validateLineContent = function(lineContentElement) {
@@ -135,6 +128,8 @@
   })();
 
   $.fn.filesCommentButton = function() {
+    $commentButtonTemplate = $('<button name="button" type="submit" class="add-diff-note js-add-diff-note-button" title="Add a comment to this line"><i class="fa fa-comment-o"></i></button>');
+
     if (!(this && (this.parent().data('can-create-note') != null))) {
       return;
     }

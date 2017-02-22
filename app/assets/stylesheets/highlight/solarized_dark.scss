@@ -143,6 +143,17 @@ $solarized-dark-il: #2aa198;
       }
     }
 
+    .diff-line-num {
+      &.is-over {
+        background-color: #9f9ab5;
+        border-color: darken(#9f9ab5, 5%);
+
+        a {
+          color: darken(#9f9ab5, 15%);
+        }
+      }
+    }
+
     .line_content.match {
       @include dark-diff-match-line;
     }

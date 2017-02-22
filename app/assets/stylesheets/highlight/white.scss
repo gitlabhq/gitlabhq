@@ -123,6 +123,15 @@ $white-gc-bg: #eaf2f5;
         }
       }
 
+      &.is-over {
+        background-color: #ded7fc;
+        border-color: darken(#ded7fc, 5%);
+
+        a {
+          color: darken(#ded7fc, 15%);
+        }
+      }
+
       &.hll:not(.empty-cell) {
         background-color: $line-number-select;
         border-color: $line-select-yellow-dark;
