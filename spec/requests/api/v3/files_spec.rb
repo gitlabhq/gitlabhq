@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe API::Files, api: true  do
+describe API::V3::Files, api: true  do
   include ApiHelpers
   let(:user) { create(:user) }
   let!(:project) { create(:project, :repository, namespace: user.namespace ) }
@@ -35,7 +35,7 @@ describe API::Files, api: true  do
 
     shared_examples_for 'repository files' do
       it "returns file info" do
-        get api(route, current_user), params
+        get v3_api(route, current_user), params
 
         expect(response).to have_http_status(200)
         expect(json_response['file_path']).to eq(file_path)
@@ -46,7 +46,7 @@ describe API::Files, api: true  do
 
       context 'when no params are given' do
         it_behaves_like '400 response' do
-          let(:request) { get api(route, current_user) }
+          let(:request) { get v3_api(route, current_user) }
         end
       end
 
@@ -59,7 +59,7 @@ describe API::Files, api: true  do
         end
 
         it_behaves_like '404 response' do
-          let(:request) { get api(route, current_user), params }
+          let(:request) { get v3_api(route, current_user), params }
           let(:message) { '404 File Not Found' }
         end
       end
@@ -68,7 +68,7 @@ describe API::Files, api: true  do
         include_context 'disabled repository'
 
         it_behaves_like '403 response' do
-          let(:request) { get api(route, current_user), params }
+          let(:request) { get v3_api(route, current_user), params }
         end
       end
     end
@@ -82,7 +82,7 @@ describe API::Files, api: true  do
 
     context 'when unauthenticated', 'and project is private' do
       it_behaves_like '404 response' do
-        let(:request) { get api(route), params }
+        let(:request) { get v3_api(route), params }
         let(:message) { '404 Project Not Found' }
       end
     end
@@ -95,7 +95,7 @@ describe API::Files, api: true  do
 
     context 'when authenticated', 'as a guest' do
       it_behaves_like '403 response' do
-        let(:request) { get api(route, guest), params }
+        let(:request) { get v3_api(route, guest), params }
       end
     end
   end
@@ -104,14 +104,14 @@ describe API::Files, api: true  do
     let(:valid_params) do
       {
         file_path: 'newfile.rb',
-        branch: 'master',
+        branch_name: 'master',
         content: 'puts 8',
         commit_message: 'Added newfile'
       }
     end
 
     it "creates a new file in project repo" do
-      post api("/projects/#{project.id}/repository/files", user), valid_params
+      post v3_api("/projects/#{project.id}/repository/files", user), valid_params
 
       expect(response).to have_http_status(201)
       expect(json_response['file_path']).to eq('newfile.rb')
@@ -121,7 +121,7 @@ describe API::Files, api: true  do
     end
 
     it "returns a 400 bad request if no params given" do
-      post api("/projects/#{project.id}/repository/files", user)
+      post v3_api("/projects/#{project.id}/repository/files", user)
 
       expect(response).to have_http_status(400)
     end
@@ -130,7 +130,7 @@ describe API::Files, api: true  do
       allow_any_instance_of(Repository).to receive(:commit_file).
         and_return(false)
 
-      post api("/projects/#{project.id}/repository/files", user), valid_params
+      post v3_api("/projects/#{project.id}/repository/files", user), valid_params
 
       expect(response).to have_http_status(400)
     end
@@ -139,7 +139,7 @@ describe API::Files, api: true  do
       it "creates a new file with the specified author" do
         valid_params.merge!(author_email: author_email, author_name: author_name)
 
-        post api("/projects/#{project.id}/repository/files", user), valid_params
+        post v3_api("/projects/#{project.id}/repository/files", user), valid_params
 
         expect(response).to have_http_status(201)
         last_commit = project.repository.commit.raw
@@ -153,14 +153,14 @@ describe API::Files, api: true  do
     let(:valid_params) do
       {
         file_path: file_path,
-        branch: 'master',
+        branch_name: 'master',
         content: 'puts 8',
         commit_message: 'Changed file'
       }
     end
 
     it "updates existing file in project repo" do
-      put api("/projects/#{project.id}/repository/files", user), valid_params
+      put v3_api("/projects/#{project.id}/repository/files", user), valid_params
 
       expect(response).to have_http_status(200)
       expect(json_response['file_path']).to eq(file_path)
@@ -170,7 +170,7 @@ describe API::Files, api: true  do
     end
 
     it "returns a 400 bad request if no params given" do
-      put api("/projects/#{project.id}/repository/files", user)
+      put v3_api("/projects/#{project.id}/repository/files", user)
 
       expect(response).to have_http_status(400)
     end
@@ -179,7 +179,7 @@ describe API::Files, api: true  do
       it "updates a file with the specified author" do
         valid_params.merge!(author_email: author_email, author_name: author_name, content: "New content")
 
-        put api("/projects/#{project.id}/repository/files", user), valid_params
+        put v3_api("/projects/#{project.id}/repository/files", user), valid_params
 
         expect(response).to have_http_status(200)
         last_commit = project.repository.commit.raw
@@ -193,13 +193,13 @@ describe API::Files, api: true  do
     let(:valid_params) do
       {
         file_path: file_path,
-        branch: 'master',
+        branch_name: 'master',
         commit_message: 'Changed file'
       }
     end
 
     it "deletes existing file in project repo" do
-      delete api("/projects/#{project.id}/repository/files", user), valid_params
+      delete v3_api("/projects/#{project.id}/repository/files", user), valid_params
 
       expect(response).to have_http_status(200)
       expect(json_response['file_path']).to eq(file_path)
@@ -209,7 +209,7 @@ describe API::Files, api: true  do
     end
 
     it "returns a 400 bad request if no params given" do
-      delete api("/projects/#{project.id}/repository/files", user)
+      delete v3_api("/projects/#{project.id}/repository/files", user)
 
       expect(response).to have_http_status(400)
     end
@@ -217,7 +217,7 @@ describe API::Files, api: true  do
     it "returns a 400 if fails to create file" do
       allow_any_instance_of(Repository).to receive(:remove_file).and_return(false)
 
-      delete api("/projects/#{project.id}/repository/files", user), valid_params
+      delete v3_api("/projects/#{project.id}/repository/files", user), valid_params
 
       expect(response).to have_http_status(400)
     end
@@ -226,7 +226,7 @@ describe API::Files, api: true  do
       it "removes a file with the specified author" do
         valid_params.merge!(author_email: author_email, author_name: author_name)
 
-        delete api("/projects/#{project.id}/repository/files", user), valid_params
+        delete v3_api("/projects/#{project.id}/repository/files", user), valid_params
 
         expect(response).to have_http_status(200)
         last_commit = project.repository.commit.raw
@@ -241,7 +241,7 @@ describe API::Files, api: true  do
     let(:put_params) do
       {
         file_path: file_path,
-        branch: 'master',
+        branch_name: 'master',
         content: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAA1BMVEUAAACnej3aAAAAAXRSTlMAQObYZgAAAApJREFUCNdjYAAAAAIAAeIhvDMAAAAASUVORK5CYII=',
         commit_message: 'Binary file with a \n should not be touched',
         encoding: 'base64'
@@ -255,11 +255,11 @@ describe API::Files, api: true  do
     end
 
     before do
-      post api("/projects/#{project.id}/repository/files", user), put_params
+      post v3_api("/projects/#{project.id}/repository/files", user), put_params
     end
 
     it "remains unchanged" do
-      get api("/projects/#{project.id}/repository/files", user), get_params
+      get v3_api("/projects/#{project.id}/repository/files", user), get_params
 
       expect(response).to have_http_status(200)
       expect(json_response['file_path']).to eq(file_path)

@@ -31,3 +31,9 @@ changes are in V4:
 - Moved `PUT /users/:id/(block|unblock)` to `POST /users/:id/(block|unblock)`
 - Make subscription API more RESTful. Use `post ":project_id/:subscribable_type/:subscribable_id/subscribe"` to subscribe and `post ":project_id/:subscribable_type/:subscribable_id/unsubscribe"` to unsubscribe from a resource.
 - Labels filter on `projects/:id/issues` and `/issues` now matches only issues containing all labels (i.e.: Logical AND, not OR)
+- Renamed param `branch_name` to `branch` on the following endpoints
+  - POST `:id/repository/branches`
+  - POST `:id/repository/commits`
+  - POST/PUT/DELETE `:id/repository/files`
+- Renamed `branch_name` to `branch` on DELETE `id/repository/branches/:branch` response
+
