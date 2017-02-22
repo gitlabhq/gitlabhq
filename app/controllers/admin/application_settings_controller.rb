@@ -5,9 +5,9 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   end
 
   def update
-    successful = ApplicationSettings::UpdateService.
-      new(@application_setting, current_user, application_setting_params).
-      execute
+    successful = ApplicationSettings::UpdateService
+      .new(@application_setting, current_user, application_setting_params)
+      .execute
 
     if successful
       redirect_to admin_application_settings_path,

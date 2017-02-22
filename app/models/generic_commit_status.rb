@@ -18,8 +18,8 @@ class GenericCommitStatus < CommitStatus
   end
 
   def detailed_status(current_user)
-    Gitlab::Ci::Status::External::Factory.
-      new(self, current_user).
-      fabricate!
+    Gitlab::Ci::Status::External::Factory
+      .new(self, current_user)
+      .fabricate!
   end
 end

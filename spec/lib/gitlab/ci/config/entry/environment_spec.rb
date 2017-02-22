@@ -112,8 +112,8 @@ describe Gitlab::Ci::Config::Entry::Environment do
 
     describe '#errors' do
       it 'contains error about invalid action' do
-        expect(entry.errors).
-          to include 'environment action should be start or stop'
+        expect(entry.errors)
+          .to include 'environment action should be start or stop'
       end
     end
   end
@@ -143,8 +143,8 @@ describe Gitlab::Ci::Config::Entry::Environment do
 
     describe '#errors' do
       it 'contains error about invalid action' do
-        expect(entry.errors).
-          to include 'environment on stop should be a string'
+        expect(entry.errors)
+          .to include 'environment on stop should be a string'
       end
     end
   end
@@ -174,8 +174,8 @@ describe Gitlab::Ci::Config::Entry::Environment do
 
       describe '#errors' do
         it 'contains error about invalid type' do
-          expect(entry.errors).
-            to include 'environment config should be a hash or a string'
+          expect(entry.errors)
+            .to include 'environment config should be a hash or a string'
         end
       end
     end
@@ -191,8 +191,8 @@ describe Gitlab::Ci::Config::Entry::Environment do
 
       describe '#errors?' do
         it 'contains error about missing environment name' do
-          expect(entry.errors).
-            to include "environment name can't be blank"
+          expect(entry.errors)
+            .to include "environment name can't be blank"
         end
       end
     end

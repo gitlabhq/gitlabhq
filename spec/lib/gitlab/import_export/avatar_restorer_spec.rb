@@ -7,8 +7,8 @@ describe Gitlab::ImportExport::AvatarRestorer, lib: true do
   let(:project) { create(:empty_project) }
 
   before do
-    allow_any_instance_of(described_class).to receive(:avatar_export_file).
-                                                and_return(uploaded_image_temp_path)
+    allow_any_instance_of(described_class).to receive(:avatar_export_file)
+                                                .and_return(uploaded_image_temp_path)
   end
 
   after do

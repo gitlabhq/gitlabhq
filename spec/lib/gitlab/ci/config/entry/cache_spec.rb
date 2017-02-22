@@ -32,8 +32,8 @@ describe Gitlab::Ci::Config::Entry::Cache do
           let(:config) { 'ls' }
 
           it 'reports errors with config value' do
-            expect(entry.errors).
-              to include 'cache config should be a hash'
+            expect(entry.errors)
+              .to include 'cache config should be a hash'
           end
         end
 
@@ -41,8 +41,8 @@ describe Gitlab::Ci::Config::Entry::Cache do
           let(:config) { { key: 1 } }
 
           it 'reports error with descendants' do
-            expect(entry.errors).
-              to include 'key config should be a string or symbol'
+            expect(entry.errors)
+              .to include 'key config should be a string or symbol'
           end
         end
 
@@ -50,8 +50,8 @@ describe Gitlab::Ci::Config::Entry::Cache do
           let(:config) { { invalid: true } }
 
           it 'reports error with descendants' do
-            expect(entry.errors).
-              to include 'cache config contains unknown keys: invalid'
+            expect(entry.errors)
+              .to include 'cache config contains unknown keys: invalid'
           end
         end
       end

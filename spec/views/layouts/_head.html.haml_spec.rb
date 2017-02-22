@@ -26,7 +26,7 @@ describe 'layouts/_head' do
   end
 
   def stub_helper_with_safe_string(method)
-    allow_any_instance_of(PageLayoutHelper).to receive(method).
-      and_return(%q{foo" http-equiv="refresh}.html_safe)
+    allow_any_instance_of(PageLayoutHelper).to receive(method)
+      .and_return(%q{foo" http-equiv="refresh}.html_safe)
   end
 end

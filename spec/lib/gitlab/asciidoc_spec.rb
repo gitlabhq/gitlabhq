@@ -19,8 +19,8 @@ module Gitlab
             attributes: described_class::DEFAULT_ADOC_ATTRS
         }
 
-        expect(Asciidoctor).to receive(:convert).
-          with(input, expected_asciidoc_opts).and_return(html)
+        expect(Asciidoctor).to receive(:convert)
+          .with(input, expected_asciidoc_opts).and_return(html)
 
         expect( render(input, context) ).to eql html
       end
@@ -35,8 +35,8 @@ module Gitlab
               attributes: described_class::DEFAULT_ADOC_ATTRS + ['foo']
           }
 
-          expect(Asciidoctor).to receive(:convert).
-            with(input, expected_asciidoc_opts).and_return(html)
+          expect(Asciidoctor).to receive(:convert)
+            .with(input, expected_asciidoc_opts).and_return(html)
 
           render(input, context, asciidoc_opts)
         end

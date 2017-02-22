@@ -46,8 +46,8 @@ class Projects::CompareController < Projects::ApplicationController
   end
 
   def define_diff_vars
-    @compare = CompareService.new(@project, @head_ref).
-      execute(@project, @start_ref)
+    @compare = CompareService.new(@project, @head_ref)
+      .execute(@project, @start_ref)
 
     if @compare
       @commits = @compare.commits

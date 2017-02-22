@@ -20,8 +20,8 @@ describe Gitlab::Badge::Build::Status do
 
   describe '#metadata' do
     it 'returns badge metadata' do
-      expect(badge.metadata.image_url).
-        to include 'badges/master/build.svg'
+      expect(badge.metadata.image_url)
+        .to include 'badges/master/build.svg'
     end
   end
 

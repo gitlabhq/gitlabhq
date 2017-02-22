@@ -140,8 +140,8 @@ describe Gitlab::Auth, lib: true do
           password: 'my-secret',
         )
 
-        expect(gl_auth.find_for_git_client(user.username, user.password, project: nil, ip: 'ip')).
-          to eq(Gitlab::Auth::Result.new(user, nil, :gitlab_or_ldap, full_authentication_abilities))
+        expect(gl_auth.find_for_git_client(user.username, user.password, project: nil, ip: 'ip'))
+          .to eq(Gitlab::Auth::Result.new(user, nil, :gitlab_or_ldap, full_authentication_abilities))
       end
 
       it 'falls through oauth authentication when the username is oauth2' do
@@ -151,8 +151,8 @@ describe Gitlab::Auth, lib: true do
           password: 'my-secret',
         )
 
-        expect(gl_auth.find_for_git_client(user.username, user.password, project: nil, ip: 'ip')).
-          to eq(Gitlab::Auth::Result.new(user, nil, :gitlab_or_ldap, full_authentication_abilities))
+        expect(gl_auth.find_for_git_client(user.username, user.password, project: nil, ip: 'ip'))
+          .to eq(Gitlab::Auth::Result.new(user, nil, :gitlab_or_ldap, full_authentication_abilities))
       end
     end
 

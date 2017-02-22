@@ -97,8 +97,8 @@ class CommitStatus < ActiveRecord::Base
 
     after_transition any => :failed do |commit_status|
       commit_status.run_after_commit do
-        MergeRequests::AddTodoWhenBuildFailsService.
-          new(pipeline.project, nil).execute(self)
+        MergeRequests::AddTodoWhenBuildFailsService
+          .new(pipeline.project, nil).execute(self)
       end
     end
   end
@@ -132,9 +132,9 @@ class CommitStatus < ActiveRecord::Base
   end
 
   def detailed_status(current_user)
-    Gitlab::Ci::Status::Factory.
-      new(self, current_user).
-      fabricate!
+    Gitlab::Ci::Status::Factory
+      .new(self, current_user)
+      .fabricate!
   end
 
   def sortable_name

@@ -31,8 +31,8 @@ describe Gitlab::Ci::Config::Entry::Image do
 
       describe '#errors' do
         it 'saves errors' do
-          expect(entry.errors).
-            to include 'image config should be a string'
+          expect(entry.errors)
+            .to include 'image config should be a string'
         end
       end
 

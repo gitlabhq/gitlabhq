@@ -39,8 +39,8 @@ module Milestoneish
 
   def issues_visible_to_user(user)
     memoize_per_user(user, :issues_visible_to_user) do
-      IssuesFinder.new(user, issues_finder_params).
-        execute.where(milestone_id: milestoneish_ids)
+      IssuesFinder.new(user, issues_finder_params)
+        .execute.where(milestone_id: milestoneish_ids)
     end
   end
 

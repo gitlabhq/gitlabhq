@@ -7,8 +7,8 @@ describe BuildSuccessWorker do
         let!(:build) { create(:ci_build, environment: 'production') }
 
         it 'executes deployment service' do
-          expect_any_instance_of(CreateDeploymentService).
-            to receive(:execute)
+          expect_any_instance_of(CreateDeploymentService)
+            .to receive(:execute)
 
           described_class.new.perform(build.id)
         end
@@ -18,8 +18,8 @@ describe BuildSuccessWorker do
         let!(:build) { create(:ci_build, project: nil) }
 
         it 'does not create deployment' do
-          expect_any_instance_of(CreateDeploymentService).
-            not_to receive(:execute)
+          expect_any_instance_of(CreateDeploymentService)
+            .not_to receive(:execute)
 
           described_class.new.perform(build.id)
         end
@@ -28,8 +28,8 @@ describe BuildSuccessWorker do
 
     context 'when build does not exist' do
       it 'does not raise exception' do
-        expect { described_class.new.perform(123) }.
-          not_to raise_error
+        expect { described_class.new.perform(123) }
+          .not_to raise_error
       end
     end
   end
