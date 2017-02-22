@@ -27,7 +27,7 @@ class Commit
   class << self
     def decorate(commits, project)
       commits.map do |commit|
-        if commit.kind_of?(Commit)
+        if commit.is_a?(Commit)
           commit
         else
           self.new(commit, project)

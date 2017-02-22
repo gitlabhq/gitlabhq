@@ -356,7 +356,7 @@ module SystemNoteService
       note:    cross_reference_note_content(gfm_reference)
     }
 
-    if noteable.kind_of?(Commit)
+    if noteable.is_a?(Commit)
       note_options.merge!(noteable_type: 'Commit', commit_id: noteable.id)
     else
       note_options[:noteable] = noteable

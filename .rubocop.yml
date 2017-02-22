@@ -110,7 +110,7 @@ Style/ClassAndModuleChildren:
 
 # Enforces consistent use of `Object#is_a?` or `Object#kind_of?`.
 Style/ClassCheck:
-  Enabled: false
+  Enabled: true
 
 # Use self when defining module/class methods.
 Style/ClassMethods:
