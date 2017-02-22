@@ -87,8 +87,8 @@ describe Issue, "Issuable" do
     let!(:searchable_issue) { create(:issue, title: "Searchable issue") }
 
     it 'returns notes with a matching title' do
-      expect(described_class.search(searchable_issue.title)).
-        to eq([searchable_issue])
+      expect(described_class.search(searchable_issue.title))
+        .to eq([searchable_issue])
     end
 
     it 'returns notes with a partially matching title' do
@@ -96,8 +96,8 @@ describe Issue, "Issuable" do
     end
 
     it 'returns notes with a matching title regardless of the casing' do
-      expect(described_class.search(searchable_issue.title.upcase)).
-        to eq([searchable_issue])
+      expect(described_class.search(searchable_issue.title.upcase))
+        .to eq([searchable_issue])
     end
   end
 
@@ -107,8 +107,8 @@ describe Issue, "Issuable" do
     end
 
     it 'returns notes with a matching title' do
-      expect(described_class.full_search(searchable_issue.title)).
-        to eq([searchable_issue])
+      expect(described_class.full_search(searchable_issue.title))
+        .to eq([searchable_issue])
     end
 
     it 'returns notes with a partially matching title' do
@@ -116,23 +116,23 @@ describe Issue, "Issuable" do
     end
 
     it 'returns notes with a matching title regardless of the casing' do
-      expect(described_class.full_search(searchable_issue.title.upcase)).
-        to eq([searchable_issue])
+      expect(described_class.full_search(searchable_issue.title.upcase))
+        .to eq([searchable_issue])
     end
 
     it 'returns notes with a matching description' do
-      expect(described_class.full_search(searchable_issue.description)).
-        to eq([searchable_issue])
+      expect(described_class.full_search(searchable_issue.description))
+        .to eq([searchable_issue])
     end
 
     it 'returns notes with a partially matching description' do
-      expect(described_class.full_search(searchable_issue.description)).
-        to eq([searchable_issue])
+      expect(described_class.full_search(searchable_issue.description))
+        .to eq([searchable_issue])
     end
 
     it 'returns notes with a matching description regardless of the casing' do
-      expect(described_class.full_search(searchable_issue.description.upcase)).
-        to eq([searchable_issue])
+      expect(described_class.full_search(searchable_issue.description.upcase))
+        .to eq([searchable_issue])
     end
   end
 
@@ -287,16 +287,16 @@ describe Issue, "Issuable" do
       allow(issue).to receive(:author).and_return(double(name: 'Robert'))
       allow(issue).to receive(:assignee).and_return(nil)
 
-      expect(issue.card_attributes).
-        to eq({ 'Author' => 'Robert', 'Assignee' => nil })
+      expect(issue.card_attributes)
+        .to eq({ 'Author' => 'Robert', 'Assignee' => nil })
     end
 
     it 'includes the assignee name' do
       allow(issue).to receive(:author).and_return(double(name: 'Robert'))
       allow(issue).to receive(:assignee).and_return(double(name: 'Douwe'))
 
-      expect(issue.card_attributes).
-        to eq({ 'Author' => 'Robert', 'Assignee' => 'Douwe' })
+      expect(issue.card_attributes)
+        .to eq({ 'Author' => 'Robert', 'Assignee' => 'Douwe' })
     end
   end
 

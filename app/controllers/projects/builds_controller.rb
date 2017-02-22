@@ -48,8 +48,8 @@ class Projects::BuildsController < Projects::ApplicationController
     respond_to do |format|
       format.json do
         state = params[:state].presence
-        render json: @build.trace_with_state(state: state).
-          merge!(id: @build.id, status: @build.status)
+        render json: @build.trace_with_state(state: state)
+          .merge!(id: @build.id, status: @build.status)
       end
     end
   end

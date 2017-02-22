@@ -162,9 +162,9 @@ module Issuable
 
       highest_priority = highest_label_priority(params).to_sql
 
-      select("#{table_name}.*, (#{highest_priority}) AS highest_priority").
-        group(arel_table[:id]).
-        reorder(Gitlab::Database.nulls_last_order('highest_priority', 'ASC'))
+      select("#{table_name}.*, (#{highest_priority}) AS highest_priority")
+        .group(arel_table[:id])
+        .reorder(Gitlab::Database.nulls_last_order('highest_priority', 'ASC'))
     end
 
     def with_label(title, sort = nil)

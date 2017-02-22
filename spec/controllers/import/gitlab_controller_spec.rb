@@ -18,8 +18,8 @@ describe Import::GitlabController do
 
   describe "GET callback" do
     it "updates access token" do
-      allow_any_instance_of(Gitlab::GitlabImport::Client).
-        to receive(:get_token).and_return(token)
+      allow_any_instance_of(Gitlab::GitlabImport::Client)
+        .to receive(:get_token).and_return(token)
       stub_omniauth_provider('gitlab')
 
       get :callback
@@ -78,9 +78,9 @@ describe Import::GitlabController do
     context "when the repository owner is the GitLab.com user" do
       context "when the GitLab.com user and GitLab server user's usernames match" do
         it "takes the current user's namespace" do
-          expect(Gitlab::GitlabImport::ProjectCreator).
-            to receive(:new).with(gitlab_repo, user.namespace, user, access_params).
-            and_return(double(execute: true))
+          expect(Gitlab::GitlabImport::ProjectCreator)
+            .to receive(:new).with(gitlab_repo, user.namespace, user, access_params)
+            .and_return(double(execute: true))
 
           post :create, format: :js
         end
@@ -90,9 +90,9 @@ describe Import::GitlabController do
         let(:gitlab_username) { "someone_else" }
 
         it "takes the current user's namespace" do
-          expect(Gitlab::GitlabImport::ProjectCreator).
-            to receive(:new).with(gitlab_repo, user.namespace, user, access_params).
-            and_return(double(execute: true))
+          expect(Gitlab::GitlabImport::ProjectCreator)
+            .to receive(:new).with(gitlab_repo, user.namespace, user, access_params)
+            .and_return(double(execute: true))
 
           post :create, format: :js
         end
@@ -112,9 +112,9 @@ describe Import::GitlabController do
 
         context "when the namespace is owned by the GitLab server user" do
           it "takes the existing namespace" do
-            expect(Gitlab::GitlabImport::ProjectCreator).
-              to receive(:new).with(gitlab_repo, existing_namespace, user, access_params).
-              and_return(double(execute: true))
+            expect(Gitlab::GitlabImport::ProjectCreator)
+              .to receive(:new).with(gitlab_repo, existing_namespace, user, access_params)
+              .and_return(double(execute: true))
 
             post :create, format: :js
           end
@@ -127,8 +127,8 @@ describe Import::GitlabController do
           end
 
           it "doesn't create a project" do
-            expect(Gitlab::GitlabImport::ProjectCreator).
-              not_to receive(:new)
+            expect(Gitlab::GitlabImport::ProjectCreator)
+              .not_to receive(:new)
 
             post :create, format: :js
           end
@@ -138,16 +138,16 @@ describe Import::GitlabController do
       context "when a namespace with the GitLab.com user's username doesn't exist" do
         context "when current user can create namespaces" do
           it "creates the namespace" do
-            expect(Gitlab::GitlabImport::ProjectCreator).
-              to receive(:new).and_return(double(execute: true))
+            expect(Gitlab::GitlabImport::ProjectCreator)
+              .to receive(:new).and_return(double(execute: true))
 
             expect { post :create, format: :js }.to change(Namespace, :count).by(1)
           end
 
           it "takes the new namespace" do
-            expect(Gitlab::GitlabImport::ProjectCreator).
-              to receive(:new).with(gitlab_repo, an_instance_of(Group), user, access_params).
-              and_return(double(execute: true))
+            expect(Gitlab::GitlabImport::ProjectCreator)
+              .to receive(:new).with(gitlab_repo, an_instance_of(Group), user, access_params)
+              .and_return(double(execute: true))
 
             post :create, format: :js
           end
@@ -159,16 +159,16 @@ describe Import::GitlabController do
           end
 
           it "doesn't create the namespace" do
-            expect(Gitlab::GitlabImport::ProjectCreator).
-              to receive(:new).and_return(double(execute: true))
+            expect(Gitlab::GitlabImport::ProjectCreator)
+              .to receive(:new).and_return(double(execute: true))
 
             expect { post :create, format: :js }.not_to change(Namespace, :count)
           end
 
           it "takes the current user's namespace" do
-            expect(Gitlab::GitlabImport::ProjectCreator).
-              to receive(:new).with(gitlab_repo, user.namespace, user, access_params).
-              and_return(double(execute: true))
+            expect(Gitlab::GitlabImport::ProjectCreator)
+              .to receive(:new).with(gitlab_repo, user.namespace, user, access_params)
+              .and_return(double(execute: true))
 
             post :create, format: :js
           end

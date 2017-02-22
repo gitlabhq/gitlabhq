@@ -86,8 +86,8 @@ describe PageLayoutHelper do
     it 'raises ArgumentError when given more than two attributes' do
       map = { foo: 'foo', bar: 'bar', baz: 'baz' }
 
-      expect { helper.page_card_attributes(map) }.
-        to raise_error(ArgumentError, /more than two attributes/)
+      expect { helper.page_card_attributes(map) }
+        .to raise_error(ArgumentError, /more than two attributes/)
     end
 
     it 'rejects blank values' do
@@ -111,8 +111,8 @@ describe PageLayoutHelper do
     end
 
     it 'escapes content' do
-      allow(helper).to receive(:page_card_attributes).
-        and_return(foo: %q{foo" http-equiv="refresh}.html_safe)
+      allow(helper).to receive(:page_card_attributes)
+        .and_return(foo: %q{foo" http-equiv="refresh}.html_safe)
 
       tags = helper.page_card_meta_tags
 

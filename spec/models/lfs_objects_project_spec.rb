@@ -18,8 +18,8 @@ describe LfsObjectsProject, models: true do
 
   describe '#update_project_statistics' do
     it 'updates project statistics when the object is added' do
-      expect(ProjectCacheWorker).to receive(:perform_async).
-        with(project.id, [], [:lfs_objects_size])
+      expect(ProjectCacheWorker).to receive(:perform_async)
+        .with(project.id, [], [:lfs_objects_size])
 
       subject.save!
     end
@@ -27,8 +27,8 @@ describe LfsObjectsProject, models: true do
     it 'updates project statistics when the object is removed' do
       subject.save!
 
-      expect(ProjectCacheWorker).to receive(:perform_async).
-        with(project.id, [], [:lfs_objects_size])
+      expect(ProjectCacheWorker).to receive(:perform_async)
+        .with(project.id, [], [:lfs_objects_size])
 
       subject.destroy
     end

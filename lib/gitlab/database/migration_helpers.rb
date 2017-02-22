@@ -140,19 +140,19 @@ module Gitlab
         start_id = exec_query(start_arel.to_sql).to_hash.first['id'].to_i
 
         loop do
-          stop_arel = table.project(table[:id]).
-            where(table[:id].gteq(start_id)).
-            order(table[:id].asc).
-            take(1).
-            skip(batch_size)
+          stop_arel = table.project(table[:id])
+            .where(table[:id].gteq(start_id))
+            .order(table[:id].asc)
+            .take(1)
+            .skip(batch_size)
 
           stop_arel = yield table, stop_arel if block_given?
           stop_row = exec_query(stop_arel.to_sql).to_hash.first
 
-          update_arel = Arel::UpdateManager.new(ActiveRecord::Base).
-            table(table).
-            set([[table[column], value]]).
-            where(table[:id].gteq(start_id))
+          update_arel = Arel::UpdateManager.new(ActiveRecord::Base)
+            .table(table)
+            .set([[table[column], value]])
+            .where(table[:id].gteq(start_id))
 
           if stop_row
             stop_id = stop_row['id'].to_i

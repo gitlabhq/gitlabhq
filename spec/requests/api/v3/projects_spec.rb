@@ -303,15 +303,15 @@ describe API::V3::Projects, api: true do
     context 'maximum number of projects reached' do
       it 'does not create new project and respond with 403' do
         allow_any_instance_of(User).to receive(:projects_limit_left).and_return(0)
-        expect { post v3_api('/projects', user2), name: 'foo' }.
-          to change {Project.count}.by(0)
+        expect { post v3_api('/projects', user2), name: 'foo' }
+          .to change {Project.count}.by(0)
         expect(response).to have_http_status(403)
       end
     end
 
     it 'creates new project without path and return 201' do
-      expect { post v3_api('/projects', user), name: 'foo' }.
-        to change { Project.count }.by(1)
+      expect { post v3_api('/projects', user), name: 'foo' }
+        .to change { Project.count }.by(1)
       expect(response).to have_http_status(201)
     end
 
@@ -465,8 +465,8 @@ describe API::V3::Projects, api: true do
     end
 
     it 'responds with 400 on failure and not project' do
-      expect { post v3_api("/projects/user/#{user.id}", admin) }.
-        not_to change { Project.count }
+      expect { post v3_api("/projects/user/#{user.id}", admin) }
+        .not_to change { Project.count }
 
       expect(response).to have_http_status(400)
       expect(json_response['error']).to eq('name is missing')
@@ -694,8 +694,8 @@ describe API::V3::Projects, api: true do
             get v3_api("/projects", user)
 
             expect(response).to have_http_status(200)
-            expect(json_response.first['permissions']['project_access']['access_level']).
-            to eq(Gitlab::Access::MASTER)
+            expect(json_response.first['permissions']['project_access']['access_level'])
+            .to eq(Gitlab::Access::MASTER)
             expect(json_response.first['permissions']['group_access']).to be_nil
           end
         end
@@ -706,8 +706,8 @@ describe API::V3::Projects, api: true do
             get v3_api("/projects/#{project.id}", user)
 
             expect(response).to have_http_status(200)
-            expect(json_response['permissions']['project_access']['access_level']).
-            to eq(Gitlab::Access::MASTER)
+            expect(json_response['permissions']['project_access']['access_level'])
+            .to eq(Gitlab::Access::MASTER)
             expect(json_response['permissions']['group_access']).to be_nil
           end
         end
@@ -722,8 +722,8 @@ describe API::V3::Projects, api: true do
 
             expect(response).to have_http_status(200)
             expect(json_response['permissions']['project_access']).to be_nil
-            expect(json_response['permissions']['group_access']['access_level']).
-            to eq(Gitlab::Access::OWNER)
+            expect(json_response['permissions']['group_access']['access_level'])
+            .to eq(Gitlab::Access::OWNER)
           end
         end
       end

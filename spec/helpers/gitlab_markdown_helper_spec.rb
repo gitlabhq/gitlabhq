@@ -70,8 +70,8 @@ describe GitlabMarkdownHelper do
       expect(doc.css('a')[0].text).to eq 'This should finally fix '
 
       # First issue link
-      expect(doc.css('a')[1].attr('href')).
-        to eq namespace_project_issue_path(project.namespace, project, issues[0])
+      expect(doc.css('a')[1].attr('href'))
+        .to eq namespace_project_issue_path(project.namespace, project, issues[0])
       expect(doc.css('a')[1].text).to eq issues[0].to_reference
 
       # Internal commit link
@@ -79,8 +79,8 @@ describe GitlabMarkdownHelper do
       expect(doc.css('a')[2].text).to eq ' and '
 
       # Second issue link
-      expect(doc.css('a')[3].attr('href')).
-        to eq namespace_project_issue_path(project.namespace, project, issues[1])
+      expect(doc.css('a')[3].attr('href'))
+        .to eq namespace_project_issue_path(project.namespace, project, issues[1])
       expect(doc.css('a')[3].text).to eq issues[1].to_reference
 
       # Trailing commit link
@@ -100,8 +100,8 @@ describe GitlabMarkdownHelper do
 
     it "escapes HTML passed in as the body" do
       actual = "This is a <h1>test</h1> - see #{issues[0].to_reference}"
-      expect(helper.link_to_gfm(actual, link)).
-        to match('&lt;h1&gt;test&lt;/h1&gt;')
+      expect(helper.link_to_gfm(actual, link))
+        .to match('&lt;h1&gt;test&lt;/h1&gt;')
     end
 
     it 'ignores reference links when they are the entire body' do
@@ -112,8 +112,8 @@ describe GitlabMarkdownHelper do
 
     it 'replaces commit message with emoji to link' do
       actual = link_to_gfm(':book:Book', '/foo')
-      expect(actual).
-        to eq %(<img class="emoji" title=":book:" alt=":book:" src="http://#{Gitlab.config.gitlab.host}/assets/1F4D6.png" height="20" width="20" align="absmiddle"><a href="/foo">Book</a>)
+      expect(actual)
+        .to eq %(<img class="emoji" title=":book:" alt=":book:" src="http://#{Gitlab.config.gitlab.host}/assets/1F4D6.png" height="20" width="20" align="absmiddle"><a href="/foo">Book</a>)
     end
   end
 

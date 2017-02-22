@@ -43,9 +43,9 @@ module MergeRequests
       end
 
       filter_merge_requests(merge_requests).each do |merge_request|
-        MergeRequests::PostMergeService.
-          new(merge_request.target_project, @current_user).
-          execute(merge_request)
+        MergeRequests::PostMergeService
+          .new(merge_request.target_project, @current_user)
+          .execute(merge_request)
       end
     end
 
@@ -56,13 +56,13 @@ module MergeRequests
     # Refresh merge request diff if we push to source or target branch of merge request
     # Note: we should update merge requests from forks too
     def reload_merge_requests
-      merge_requests = @project.merge_requests.opened.
-        by_source_or_target_branch(@branch_name).to_a
+      merge_requests = @project.merge_requests.opened
+        .by_source_or_target_branch(@branch_name).to_a
 
       # Fork merge requests
-      merge_requests += MergeRequest.opened.
-        where(source_branch: @branch_name, source_project: @project).
-        where.not(target_project: @project).to_a
+      merge_requests += MergeRequest.opened
+        .where(source_branch: @branch_name, source_project: @project)
+        .where.not(target_project: @project).to_a
 
       filter_merge_requests(merge_requests).each do |merge_request|
         if merge_request.source_branch == @branch_name || force_push?

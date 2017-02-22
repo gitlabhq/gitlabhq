@@ -2,8 +2,8 @@ module Ci
   class RetryBuildService < ::BaseService
     CLONE_ATTRIBUTES = %i[pipeline project ref tag options commands name
                           allow_failure stage stage_idx trigger_request
-                          yaml_variables when environment coverage_regex].
-                            freeze
+                          yaml_variables when environment coverage_regex]
+                            .freeze
 
     REJECT_ATTRIBUTES = %i[id status user token coverage trace runner
                            artifacts_expire_at artifacts_file
@@ -20,9 +20,9 @@ module Ci
 
         new_build.enqueue!
 
-        MergeRequests::AddTodoWhenBuildFailsService.
-          new(project, current_user).
-          close(new_build)
+        MergeRequests::AddTodoWhenBuildFailsService
+          .new(project, current_user)
+          .close(new_build)
       end
     end
 

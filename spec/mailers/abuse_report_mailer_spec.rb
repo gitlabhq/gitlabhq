@@ -30,8 +30,8 @@ describe AbuseReportMailer do
       it 'returns early' do
         stub_application_setting(admin_notification_email: nil)
 
-        expect { described_class.notify(spy).deliver_now }.
-          not_to change { ActionMailer::Base.deliveries.count }
+        expect { described_class.notify(spy).deliver_now }
+          .not_to change { ActionMailer::Base.deliveries.count }
       end
     end
   end

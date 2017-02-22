@@ -12,9 +12,9 @@ describe Projects::UnlinkForkService, services: true do
     let(:mr_close_service) { MergeRequests::CloseService.new(fork_project, user) }
 
     before do
-      allow(MergeRequests::CloseService).to receive(:new).
-        with(fork_project, user).
-        and_return(mr_close_service)
+      allow(MergeRequests::CloseService).to receive(:new)
+        .with(fork_project, user)
+        .and_return(mr_close_service)
     end
 
     it 'close all pending merge requests' do

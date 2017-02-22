@@ -61,8 +61,8 @@ describe Ci::RetryBuildService, :services do
       end
 
       it 'resolves todos for old build that failed' do
-        expect(MergeRequests::AddTodoWhenBuildFailsService).
-          to receive_message_chain(:new, :close)
+        expect(MergeRequests::AddTodoWhenBuildFailsService)
+          .to receive_message_chain(:new, :close)
 
         service.execute(build)
       end
@@ -82,8 +82,8 @@ describe Ci::RetryBuildService, :services do
 
     context 'when user does not have ability to execute build' do
       it 'raises an error' do
-        expect { service.execute(build) }.
-          to raise_error Gitlab::Access::AccessDeniedError
+        expect { service.execute(build) }
+          .to raise_error Gitlab::Access::AccessDeniedError
       end
     end
   end
@@ -109,8 +109,8 @@ describe Ci::RetryBuildService, :services do
 
     context 'when user does not have ability to execute build' do
       it 'raises an error' do
-        expect { service.reprocess(build) }.
-          to raise_error Gitlab::Access::AccessDeniedError
+        expect { service.reprocess(build) }
+          .to raise_error Gitlab::Access::AccessDeniedError
       end
     end
   end

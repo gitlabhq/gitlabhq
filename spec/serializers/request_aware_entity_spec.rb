@@ -14,8 +14,8 @@ describe RequestAwareEntity do
   end
 
   it 'fetches request from options' do
-    expect(subject).to receive(:options).
-      and_return({ request: 'some value' })
+    expect(subject).to receive(:options)
+      .and_return({ request: 'some value' })
 
     expect(subject.request).to eq 'some value'
   end

@@ -15,8 +15,8 @@ describe BuildArtifactEntity do
     end
 
     it 'contains path to the artifacts' do
-      expect(subject[:path]).
-        to include "builds/#{build.id}/artifacts/download"
+      expect(subject[:path])
+        .to include "builds/#{build.id}/artifacts/download"
     end
   end
 end

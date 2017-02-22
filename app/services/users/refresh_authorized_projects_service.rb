@@ -103,11 +103,11 @@ module Users
     end
 
     def fresh_authorizations
-      ProjectAuthorization.
-        unscoped.
-        select('project_id, MAX(access_level) AS access_level').
-        from("(#{project_authorizations_union.to_sql}) #{ProjectAuthorization.table_name}").
-        group(:project_id)
+      ProjectAuthorization
+        .unscoped
+        .select('project_id, MAX(access_level) AS access_level')
+        .from("(#{project_authorizations_union.to_sql}) #{ProjectAuthorization.table_name}")
+        .group(:project_id)
     end
 
     private

@@ -9,8 +9,8 @@ describe Gitlab::DataBuilder::Note, lib: true do
   before(:each) do
     expect(data).to have_key(:object_attributes)
     expect(data[:object_attributes]).to have_key(:url)
-    expect(data[:object_attributes][:url]).
-      to eq(Gitlab::UrlBuilder.build(note))
+    expect(data[:object_attributes][:url])
+      .to eq(Gitlab::UrlBuilder.build(note))
     expect(data[:object_kind]).to eq('note')
     expect(data[:user]).to eq(user.hook_attrs)
   end
@@ -49,10 +49,10 @@ describe Gitlab::DataBuilder::Note, lib: true do
 
     it 'returns the note and issue-specific data' do
       expect(data).to have_key(:issue)
-      expect(data[:issue].except('updated_at')).
-        to eq(issue.reload.hook_attrs.except('updated_at'))
-      expect(data[:issue]['updated_at']).
-        to be > issue.hook_attrs['updated_at']
+      expect(data[:issue].except('updated_at'))
+        .to eq(issue.reload.hook_attrs.except('updated_at'))
+      expect(data[:issue]['updated_at'])
+        .to be > issue.hook_attrs['updated_at']
     end
 
     include_examples 'project hook data'
@@ -73,10 +73,10 @@ describe Gitlab::DataBuilder::Note, lib: true do
 
     it 'returns the note and merge request data' do
       expect(data).to have_key(:merge_request)
-      expect(data[:merge_request].except('updated_at')).
-        to eq(merge_request.reload.hook_attrs.except('updated_at'))
-      expect(data[:merge_request]['updated_at']).
-        to be > merge_request.hook_attrs['updated_at']
+      expect(data[:merge_request].except('updated_at'))
+        .to eq(merge_request.reload.hook_attrs.except('updated_at'))
+      expect(data[:merge_request]['updated_at'])
+        .to be > merge_request.hook_attrs['updated_at']
     end
 
     include_examples 'project hook data'
@@ -96,10 +96,10 @@ describe Gitlab::DataBuilder::Note, lib: true do
 
     it 'returns the note and merge request diff data' do
       expect(data).to have_key(:merge_request)
-      expect(data[:merge_request].except('updated_at')).
-        to eq(merge_request.reload.hook_attrs.except('updated_at'))
-      expect(data[:merge_request]['updated_at']).
-        to be > merge_request.hook_attrs['updated_at']
+      expect(data[:merge_request].except('updated_at'))
+        .to eq(merge_request.reload.hook_attrs.except('updated_at'))
+      expect(data[:merge_request]['updated_at'])
+        .to be > merge_request.hook_attrs['updated_at']
     end
 
     include_examples 'project hook data'
@@ -119,10 +119,10 @@ describe Gitlab::DataBuilder::Note, lib: true do
 
     it 'returns the note and project snippet data' do
       expect(data).to have_key(:snippet)
-      expect(data[:snippet].except('updated_at')).
-        to eq(snippet.reload.hook_attrs.except('updated_at'))
-      expect(data[:snippet]['updated_at']).
-        to be > snippet.hook_attrs['updated_at']
+      expect(data[:snippet].except('updated_at'))
+        .to eq(snippet.reload.hook_attrs.except('updated_at'))
+      expect(data[:snippet]['updated_at'])
+        .to be > snippet.hook_attrs['updated_at']
     end
 
     include_examples 'project hook data'

@@ -20,9 +20,9 @@ describe Gitlab::Sherlock::LineProfiler, lib: true do
 
   describe '#profile_mri' do
     it 'returns an Array containing the return value and profiling samples' do
-      allow(profiler).to receive(:lineprof).
-        and_yield.
-        and_return({ __FILE__ => [[0, 0, 0, 0]] })
+      allow(profiler).to receive(:lineprof)
+        .and_yield
+        .and_return({ __FILE__ => [[0, 0, 0, 0]] })
 
       retval, samples = profiler.profile_mri { 42 }
 

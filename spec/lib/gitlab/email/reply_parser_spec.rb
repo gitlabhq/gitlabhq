@@ -20,8 +20,8 @@ describe Gitlab::Email::ReplyParser, lib: true do
     end
 
     it "properly renders plaintext-only email" do
-      expect(test_parse_body(fixture_file("emails/plaintext_only.eml"))).
-        to eq(
+      expect(test_parse_body(fixture_file("emails/plaintext_only.eml")))
+        .to eq(
           <<-BODY.strip_heredoc.chomp
             ### reply from default mail client in Windows 8.1 Metro
 
@@ -46,8 +46,8 @@ describe Gitlab::Email::ReplyParser, lib: true do
     end
 
     it "handles multiple paragraphs" do
-      expect(test_parse_body(fixture_file("emails/paragraphs.eml"))).
-        to eq(
+      expect(test_parse_body(fixture_file("emails/paragraphs.eml")))
+        .to eq(
           <<-BODY.strip_heredoc.chomp
             Is there any reason the *old* candy can't be be kept in silos while the new candy
             is imported into *new* silos?
@@ -61,8 +61,8 @@ describe Gitlab::Email::ReplyParser, lib: true do
     end
 
     it "handles multiple paragraphs when parsing html" do
-      expect(test_parse_body(fixture_file("emails/html_paragraphs.eml"))).
-        to eq(
+      expect(test_parse_body(fixture_file("emails/html_paragraphs.eml")))
+        .to eq(
           <<-BODY.strip_heredoc.chomp
             Awesome!
 
@@ -74,8 +74,8 @@ describe Gitlab::Email::ReplyParser, lib: true do
     end
 
     it "handles newlines" do
-      expect(test_parse_body(fixture_file("emails/newlines.eml"))).
-        to eq(
+      expect(test_parse_body(fixture_file("emails/newlines.eml")))
+        .to eq(
           <<-BODY.strip_heredoc.chomp
             This is my reply.
             It is my best reply.
@@ -85,8 +85,8 @@ describe Gitlab::Email::ReplyParser, lib: true do
     end
 
     it "handles inline reply" do
-      expect(test_parse_body(fixture_file("emails/inline_reply.eml"))).
-        to eq(
+      expect(test_parse_body(fixture_file("emails/inline_reply.eml")))
+        .to eq(
           <<-BODY.strip_heredoc.chomp
             >     techAPJ <https://meta.discourse.org/users/techapj>
             > November 28
@@ -132,8 +132,8 @@ describe Gitlab::Email::ReplyParser, lib: true do
     end
 
     it "properly renders email reply from gmail web client" do
-      expect(test_parse_body(fixture_file("emails/gmail_web.eml"))).
-        to eq(
+      expect(test_parse_body(fixture_file("emails/gmail_web.eml")))
+        .to eq(
           <<-BODY.strip_heredoc.chomp
             ### This is a reply from standard GMail in Google Chrome.
 
@@ -151,8 +151,8 @@ describe Gitlab::Email::ReplyParser, lib: true do
     end
 
     it "properly renders email reply from iOS default mail client" do
-      expect(test_parse_body(fixture_file("emails/ios_default.eml"))).
-        to eq(
+      expect(test_parse_body(fixture_file("emails/ios_default.eml")))
+        .to eq(
           <<-BODY.strip_heredoc.chomp
             ### this is a reply from iOS default mail
 
@@ -166,8 +166,8 @@ describe Gitlab::Email::ReplyParser, lib: true do
     end
 
     it "properly renders email reply from Android 5 gmail client" do
-      expect(test_parse_body(fixture_file("emails/android_gmail.eml"))).
-        to eq(
+      expect(test_parse_body(fixture_file("emails/android_gmail.eml")))
+        .to eq(
           <<-BODY.strip_heredoc.chomp
             ### this is a reply from Android 5 gmail
 
@@ -184,8 +184,8 @@ describe Gitlab::Email::ReplyParser, lib: true do
     end
 
     it "properly renders email reply from Windows 8.1 Metro default mail client" do
-      expect(test_parse_body(fixture_file("emails/windows_8_metro.eml"))).
-        to eq(
+      expect(test_parse_body(fixture_file("emails/windows_8_metro.eml")))
+        .to eq(
           <<-BODY.strip_heredoc.chomp
             ### reply from default mail client in Windows 8.1 Metro
 

@@ -22,15 +22,15 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
         end
 
         it 'creates the index concurrently' do
-          expect(model).to receive(:add_index).
-            with(:users, :foo, algorithm: :concurrently)
+          expect(model).to receive(:add_index)
+            .with(:users, :foo, algorithm: :concurrently)
 
           model.add_concurrent_index(:users, :foo)
         end
 
         it 'creates unique index concurrently' do
-          expect(model).to receive(:add_index).
-            with(:users, :foo, { algorithm: :concurrently, unique: true })
+          expect(model).to receive(:add_index)
+            .with(:users, :foo, { algorithm: :concurrently, unique: true })
 
           model.add_concurrent_index(:users, :foo, unique: true)
         end
@@ -40,8 +40,8 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
         it 'creates a regular index' do
           expect(Gitlab::Database).to receive(:postgresql?).and_return(false)
 
-          expect(model).to receive(:add_index).
-            with(:users, :foo, {})
+          expect(model).to receive(:add_index)
+            .with(:users, :foo, {})
 
           model.add_concurrent_index(:users, :foo)
         end
@@ -52,8 +52,8 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
       it 'raises RuntimeError' do
         expect(model).to receive(:transaction_open?).and_return(true)
 
-        expect { model.add_concurrent_index(:users, :foo) }.
-          to raise_error(RuntimeError)
+        expect { model.add_concurrent_index(:users, :foo) }
+          .to raise_error(RuntimeError)
       end
     end
   end
@@ -78,8 +78,8 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
         it 'creates a regular foreign key' do
           allow(Gitlab::Database).to receive(:mysql?).and_return(true)
 
-          expect(model).to receive(:add_foreign_key).
-            with(:projects, :users, column: :user_id, on_delete: :cascade)
+          expect(model).to receive(:add_foreign_key)
+            .with(:projects, :users, column: :user_id, on_delete: :cascade)
 
           model.add_concurrent_foreign_key(:projects, :users, column: :user_id)
         end
@@ -171,16 +171,16 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
 
           expect(model).to receive(:transaction).and_yield
 
-          expect(model).to receive(:add_column).
-            with(:projects, :foo, :integer, default: nil)
+          expect(model).to receive(:add_column)
+            .with(:projects, :foo, :integer, default: nil)
 
-          expect(model).to receive(:change_column_default).
-            with(:projects, :foo, 10)
+          expect(model).to receive(:change_column_default)
+            .with(:projects, :foo, 10)
         end
 
         it 'adds the column while allowing NULL values' do
-          expect(model).to receive(:update_column_in_batches).
-            with(:projects, :foo, 10)
+          expect(model).to receive(:update_column_in_batches)
+            .with(:projects, :foo, 10)
 
           expect(model).not_to receive(:change_column_null)
 
@@ -190,22 +190,22 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
         end
 
         it 'adds the column while not allowing NULL values' do
-          expect(model).to receive(:update_column_in_batches).
-            with(:projects, :foo, 10)
+          expect(model).to receive(:update_column_in_batches)
+            .with(:projects, :foo, 10)
 
-          expect(model).to receive(:change_column_null).
-            with(:projects, :foo, false)
+          expect(model).to receive(:change_column_null)
+            .with(:projects, :foo, false)
 
           model.add_column_with_default(:projects, :foo, :integer, default: 10)
         end
 
         it 'removes the added column whenever updating the rows fails' do
-          expect(model).to receive(:update_column_in_batches).
-            with(:projects, :foo, 10).
-            and_raise(RuntimeError)
+          expect(model).to receive(:update_column_in_batches)
+            .with(:projects, :foo, 10)
+            .and_raise(RuntimeError)
 
-          expect(model).to receive(:remove_column).
-            with(:projects, :foo)
+          expect(model).to receive(:remove_column)
+            .with(:projects, :foo)
 
           expect do
             model.add_column_with_default(:projects, :foo, :integer, default: 10)
@@ -213,12 +213,12 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
         end
 
         it 'removes the added column whenever changing a column NULL constraint fails' do
-          expect(model).to receive(:change_column_null).
-            with(:projects, :foo, false).
-            and_raise(RuntimeError)
+          expect(model).to receive(:change_column_null)
+            .with(:projects, :foo, false)
+            .and_raise(RuntimeError)
 
-          expect(model).to receive(:remove_column).
-            with(:projects, :foo)
+          expect(model).to receive(:remove_column)
+            .with(:projects, :foo)
 
           expect do
             model.add_column_with_default(:projects, :foo, :integer, default: 10)
@@ -234,8 +234,8 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
           allow(model).to receive(:change_column_null).with(:projects, :foo, false)
           allow(model).to receive(:change_column_default).with(:projects, :foo, 10)
 
-          expect(model).to receive(:add_column).
-            with(:projects, :foo, :integer, default: nil, limit: 8)
+          expect(model).to receive(:add_column)
+            .with(:projects, :foo, :integer, default: nil, limit: 8)
 
           model.add_column_with_default(:projects, :foo, :integer, default: 10, limit: 8)
         end

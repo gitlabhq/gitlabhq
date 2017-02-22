@@ -34,18 +34,18 @@ class Label < ActiveRecord::Base
   scope :with_title, ->(title) { where(title: title) }
 
   def self.prioritized(project)
-    joins(:priorities).
-      where(label_priorities: { project_id: project }).
-      reorder('label_priorities.priority ASC, labels.title ASC')
+    joins(:priorities)
+      .where(label_priorities: { project_id: project })
+      .reorder('label_priorities.priority ASC, labels.title ASC')
   end
 
   def self.unprioritized(project)
     labels = Label.arel_table
     priorities = LabelPriority.arel_table
 
-    label_priorities = labels.join(priorities, Arel::Nodes::OuterJoin).
-                              on(labels[:id].eq(priorities[:label_id]).and(priorities[:project_id].eq(project.id))).
-                              join_sources
+    label_priorities = labels.join(priorities, Arel::Nodes::OuterJoin)
+                              .on(labels[:id].eq(priorities[:label_id]).and(priorities[:project_id].eq(project.id)))
+                              .join_sources
 
     joins(label_priorities).where(priorities[:priority].eq(nil))
   end
@@ -54,9 +54,9 @@ class Label < ActiveRecord::Base
     labels = Label.arel_table
     priorities = LabelPriority.arel_table
 
-    label_priorities = labels.join(priorities, Arel::Nodes::OuterJoin).
-                              on(labels[:id].eq(priorities[:label_id])).
-                              join_sources
+    label_priorities = labels.join(priorities, Arel::Nodes::OuterJoin)
+                              .on(labels[:id].eq(priorities[:label_id]))
+                              .join_sources
 
     joins(label_priorities)
   end

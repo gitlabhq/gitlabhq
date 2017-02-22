@@ -7,19 +7,19 @@ describe Gitlab::Ci::Config::Entry::Factory do
 
     context 'when setting a concrete value' do
       it 'creates entry with valid value' do
-        entry = factory.
-          value(['ls', 'pwd']).
-          create!
+        entry = factory
+          .value(['ls', 'pwd'])
+          .create!
 
         expect(entry.value).to eq ['ls', 'pwd']
       end
 
       context 'when setting description' do
         it 'creates entry with description' do
-          entry = factory.
-            value(['ls', 'pwd']).
-            with(description: 'test description').
-            create!
+          entry = factory
+            .value(['ls', 'pwd'])
+            .with(description: 'test description')
+            .create!
 
           expect(entry.value).to eq ['ls', 'pwd']
           expect(entry.description).to eq 'test description'
@@ -28,10 +28,10 @@ describe Gitlab::Ci::Config::Entry::Factory do
 
       context 'when setting key' do
         it 'creates entry with custom key' do
-          entry = factory.
-            value(['ls', 'pwd']).
-            with(key: 'test key').
-            create!
+          entry = factory
+            .value(['ls', 'pwd'])
+            .with(key: 'test key')
+            .create!
 
           expect(entry.key).to eq 'test key'
         end
@@ -41,10 +41,10 @@ describe Gitlab::Ci::Config::Entry::Factory do
         let(:object) { Object.new }
 
         it 'creates entry with valid parent' do
-          entry = factory.
-            value('ls').
-            with(parent: object).
-            create!
+          entry = factory
+            .value('ls')
+            .with(parent: object)
+            .create!
 
           expect(entry.parent).to eq object
         end
@@ -61,12 +61,12 @@ describe Gitlab::Ci::Config::Entry::Factory do
 
     context 'when creating entry with nil value' do
       it 'creates an undefined entry' do
-        entry = factory.
-          value(nil).
-          create!
+        entry = factory
+          .value(nil)
+          .create!
 
-        expect(entry).
-          to be_an_instance_of Gitlab::Ci::Config::Entry::Unspecified
+        expect(entry)
+          .to be_an_instance_of Gitlab::Ci::Config::Entry::Unspecified
       end
     end
 
@@ -74,13 +74,13 @@ describe Gitlab::Ci::Config::Entry::Factory do
       let(:entry) { spy('entry') }
 
       it 'passes metadata as a parameter' do
-        factory.
-          value('some value').
-          metadata(some: 'hash').
-          create!
+        factory
+          .value('some value')
+          .metadata(some: 'hash')
+          .create!
 
-        expect(entry).to have_received(:new).
-          with('some value', { some: 'hash' })
+        expect(entry).to have_received(:new)
+          .with('some value', { some: 'hash' })
       end
     end
   end

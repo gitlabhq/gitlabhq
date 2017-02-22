@@ -10,8 +10,8 @@ describe Gitlab::Ci::Status::Stage::Common do
   end
 
   subject do
-    Class.new(Gitlab::Ci::Status::Core).
-      new(stage, user).extend(described_class)
+    Class.new(Gitlab::Ci::Status::Core)
+      .new(stage, user).extend(described_class)
   end
 
   it 'does not have action' do
@@ -19,10 +19,10 @@ describe Gitlab::Ci::Status::Stage::Common do
   end
 
   it 'links to the pipeline details page' do
-    expect(subject.details_path).
-      to include "pipelines/#{pipeline.id}"
-    expect(subject.details_path).
-      to include "##{stage.name}"
+    expect(subject.details_path)
+      .to include "pipelines/#{pipeline.id}"
+    expect(subject.details_path)
+      .to include "##{stage.name}"
   end
 
   context 'when user has permission to read pipeline' do

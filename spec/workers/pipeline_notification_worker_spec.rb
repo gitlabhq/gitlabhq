@@ -56,8 +56,8 @@ describe PipelineNotificationWorker do
 
           context 'with success pipeline notification on' do
             before do
-              watcher.global_notification_setting.
-                update(level: 'custom', success_pipeline: true)
+              watcher.global_notification_setting
+                .update(level: 'custom', success_pipeline: true)
             end
 
             it_behaves_like 'sending emails'
@@ -67,8 +67,8 @@ describe PipelineNotificationWorker do
             let(:receivers) { [pusher] }
 
             before do
-              watcher.global_notification_setting.
-                update(level: 'custom', success_pipeline: false)
+              watcher.global_notification_setting
+                .update(level: 'custom', success_pipeline: false)
             end
 
             it_behaves_like 'sending emails'
@@ -87,8 +87,8 @@ describe PipelineNotificationWorker do
 
             context 'with failed pipeline notification on' do
               before do
-                watcher.global_notification_setting.
-                  update(level: 'custom', failed_pipeline: true)
+                watcher.global_notification_setting
+                  .update(level: 'custom', failed_pipeline: true)
               end
 
               it_behaves_like 'sending emails'
@@ -98,8 +98,8 @@ describe PipelineNotificationWorker do
               let(:receivers) { [pusher] }
 
               before do
-                watcher.global_notification_setting.
-                  update(level: 'custom', failed_pipeline: false)
+                watcher.global_notification_setting
+                  .update(level: 'custom', failed_pipeline: false)
               end
 
               it_behaves_like 'sending emails'
@@ -117,8 +117,8 @@ describe PipelineNotificationWorker do
       before do
         pipeline.project.team << [watcher, Gitlab::Access::GUEST]
 
-        watcher.global_notification_setting.
-          update(level: 'custom', failed_pipeline: true)
+        watcher.global_notification_setting
+          .update(level: 'custom', failed_pipeline: true)
 
         perform_enqueued_jobs do
           subject.perform(pipeline.id)

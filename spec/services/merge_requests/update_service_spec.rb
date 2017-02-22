@@ -68,8 +68,8 @@ describe MergeRequests::UpdateService, services: true do
       it { expect(@merge_request.merge_params['force_remove_source_branch']).to eq('1') }
 
       it 'executes hooks with update action' do
-        expect(service).to have_received(:execute_hooks).
-                               with(@merge_request, 'update')
+        expect(service).to have_received(:execute_hooks)
+                               .with(@merge_request, 'update')
       end
 
       it 'sends email to user2 about assign of new merge request and email to user3 about merge request unassignment' do
@@ -171,8 +171,8 @@ describe MergeRequests::UpdateService, services: true do
             ref:     merge_request.source_branch,
             sha:     merge_request.diff_head_sha)
 
-          expect(MergeRequests::MergeWhenPipelineSucceedsService).to receive(:new).with(project, user).
-            and_return(service_mock)
+          expect(MergeRequests::MergeWhenPipelineSucceedsService).to receive(:new).with(project, user)
+            .and_return(service_mock)
           expect(service_mock).to receive(:execute).with(merge_request)
         end
 

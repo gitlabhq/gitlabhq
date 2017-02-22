@@ -309,8 +309,8 @@ describe Gitlab::Git::DiffCollection, seed_helper: true do
       end
 
       it 'yields Diff instances even when they are too large' do
-        expect { |b| collection.each(&b) }.
-          to yield_with_args(an_instance_of(Gitlab::Git::Diff))
+        expect { |b| collection.each(&b) }
+          .to yield_with_args(an_instance_of(Gitlab::Git::Diff))
       end
 
       it 'prunes diffs that are too large' do
@@ -331,8 +331,8 @@ describe Gitlab::Git::DiffCollection, seed_helper: true do
         let(:no_collapse) { true }
 
         it 'yields Diff instances even when they are quite big' do
-          expect { |b| subject.each(&b) }.
-            to yield_with_args(an_instance_of(Gitlab::Git::Diff))
+          expect { |b| subject.each(&b) }
+            .to yield_with_args(an_instance_of(Gitlab::Git::Diff))
         end
 
         it 'does not prune diffs' do
@@ -350,8 +350,8 @@ describe Gitlab::Git::DiffCollection, seed_helper: true do
         let(:no_collapse) { false }
 
         it 'yields Diff instances even when they are quite big' do
-          expect { |b| subject.each(&b) }.
-            to yield_with_args(an_instance_of(Gitlab::Git::Diff))
+          expect { |b| subject.each(&b) }
+            .to yield_with_args(an_instance_of(Gitlab::Git::Diff))
         end
 
         it 'prunes diffs that are quite big' do
@@ -437,8 +437,8 @@ describe Gitlab::Git::DiffCollection, seed_helper: true do
         let(:all_diffs) { true }
 
         it 'yields Diff instances even when they are quite big' do
-          expect { |b| subject.each(&b) }.
-            to yield_with_args(an_instance_of(Gitlab::Git::Diff))
+          expect { |b| subject.each(&b) }
+            .to yield_with_args(an_instance_of(Gitlab::Git::Diff))
         end
 
         it 'does not prune diffs' do

@@ -35,11 +35,11 @@ describe RepositoryForkWorker do
         fork_project.namespace.path
       ).and_return(true)
 
-      expect_any_instance_of(Repository).to receive(:expire_emptiness_caches).
-        and_call_original
+      expect_any_instance_of(Repository).to receive(:expire_emptiness_caches)
+        .and_call_original
 
-      expect_any_instance_of(Repository).to receive(:expire_exists_cache).
-        and_call_original
+      expect_any_instance_of(Repository).to receive(:expire_exists_cache)
+        .and_call_original
 
       subject.perform(project.id, '/test/path', project.path_with_namespace,
                       fork_project.namespace.path)

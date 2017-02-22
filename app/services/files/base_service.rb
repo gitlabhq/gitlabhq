@@ -72,8 +72,8 @@ module Files
     end
 
     def validate_target_branch
-      result = ValidateNewBranchService.new(project, current_user).
-        execute(@target_branch)
+      result = ValidateNewBranchService.new(project, current_user)
+        .execute(@target_branch)
 
       if result[:status] == :error
         raise_error("Something went wrong when we tried to create #{@target_branch} for you: #{result[:message]}")

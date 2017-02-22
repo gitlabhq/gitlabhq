@@ -28,8 +28,8 @@ class SnippetsController < ApplicationController
       @snippets = SnippetsFinder.new.execute(current_user, {
         filter: :by_user,
         user: @user,
-        scope: params[:scope] }).
-      page(params[:page])
+        scope: params[:scope] })
+      .page(params[:page])
 
       render 'index'
     else
@@ -82,8 +82,8 @@ class SnippetsController < ApplicationController
     @snippet ||= if current_user
                    PersonalSnippet.where("author_id = ? OR visibility_level IN (?)",
                      current_user.id,
-                     [Snippet::PUBLIC, Snippet::INTERNAL]).
-                     find(params[:id])
+                     [Snippet::PUBLIC, Snippet::INTERNAL])
+                     .find(params[:id])
                  else
                    PersonalSnippet.find(params[:id])
                  end

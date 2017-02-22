@@ -9,8 +9,8 @@ describe CommitsHelper do
         author_email: 'my@email.com" onmouseover="alert(1)'
       )
 
-      expect(helper.commit_author_link(commit)).
-        not_to include('onmouseover="alert(1)"')
+      expect(helper.commit_author_link(commit))
+        .not_to include('onmouseover="alert(1)"')
     end
   end
 
@@ -22,8 +22,8 @@ describe CommitsHelper do
         committer_email: 'my@email.com" onmouseover="alert(1)'
       )
 
-      expect(helper.commit_committer_link(commit)).
-        not_to include('onmouseover="alert(1)"')
+      expect(helper.commit_committer_link(commit))
+        .not_to include('onmouseover="alert(1)"')
     end
   end
 

@@ -8,8 +8,8 @@ describe UseKeyWorker do
       current_time = Time.zone.now
 
       Timecop.freeze(current_time) do
-        expect { worker.perform(key.id) }.
-          to change { key.reload.last_used_at }.from(nil).to be_like_time(current_time)
+        expect { worker.perform(key.id) }
+          .to change { key.reload.last_used_at }.from(nil).to be_like_time(current_time)
       end
     end
 

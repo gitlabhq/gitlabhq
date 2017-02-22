@@ -39,8 +39,8 @@ describe Gitlab::Metrics::Transaction do
 
   describe '#add_metric' do
     it 'adds a metric to the transaction' do
-      expect(Gitlab::Metrics::Metric).to receive(:new).
-        with('rails_foo', { number: 10 }, {})
+      expect(Gitlab::Metrics::Metric).to receive(:new)
+        .with('rails_foo', { number: 10 }, {})
 
       transaction.add_metric('foo', number: 10)
     end
@@ -61,8 +61,8 @@ describe Gitlab::Metrics::Transaction do
 
       values = { duration: 0.0, time: 3, allocated_memory: a_kind_of(Numeric) }
 
-      expect(transaction).to receive(:add_metric).
-        with('transactions', values, {})
+      expect(transaction).to receive(:add_metric)
+        .with('transactions', values, {})
 
       transaction.track_self
     end
@@ -78,8 +78,8 @@ describe Gitlab::Metrics::Transaction do
         allocated_memory: a_kind_of(Numeric)
       }
 
-      expect(transaction).to receive(:add_metric).
-        with('transactions', values, {})
+      expect(transaction).to receive(:add_metric)
+        .with('transactions', values, {})
 
       transaction.track_self
     end
@@ -109,8 +109,8 @@ describe Gitlab::Metrics::Transaction do
         allocated_memory: a_kind_of(Numeric)
       }
 
-      expect(transaction).to receive(:add_metric).
-        with('transactions', values, {})
+      expect(transaction).to receive(:add_metric)
+        .with('transactions', values, {})
 
       transaction.track_self
     end
@@ -120,8 +120,8 @@ describe Gitlab::Metrics::Transaction do
     it 'submits the metrics to Sidekiq' do
       transaction.track_self
 
-      expect(Gitlab::Metrics).to receive(:submit_metrics).
-        with([an_instance_of(Hash)])
+      expect(Gitlab::Metrics).to receive(:submit_metrics)
+        .with([an_instance_of(Hash)])
 
       transaction.submit
     end
@@ -137,8 +137,8 @@ describe Gitlab::Metrics::Transaction do
         timestamp: a_kind_of(Integer)
       }
 
-      expect(Gitlab::Metrics).to receive(:submit_metrics).
-        with([hash])
+      expect(Gitlab::Metrics).to receive(:submit_metrics)
+        .with([hash])
 
       transaction.submit
     end
@@ -154,8 +154,8 @@ describe Gitlab::Metrics::Transaction do
         timestamp: a_kind_of(Integer)
       }
 
-      expect(Gitlab::Metrics).to receive(:submit_metrics).
-        with([hash])
+      expect(Gitlab::Metrics).to receive(:submit_metrics)
+        .with([hash])
 
       transaction.submit
     end

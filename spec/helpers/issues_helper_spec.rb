@@ -67,8 +67,8 @@ describe IssuesHelper do
       user = build_stubbed(:user, name: 'Joe')
       awards = Array.new(3, build_stubbed(:award_emoji, user: user))
 
-      expect(award_user_list(awards, nil, limit: 3)).
-        to eq('Joe, Joe, and Joe')
+      expect(award_user_list(awards, nil, limit: 3))
+        .to eq('Joe, Joe, and Joe')
     end
 
     it "displays the current user's name as 'You'" do
@@ -83,8 +83,8 @@ describe IssuesHelper do
       user = build_stubbed(:user, name: 'Jane')
       awards = Array.new(5, build_stubbed(:award_emoji, user: user))
 
-      expect(award_user_list(awards, nil, limit: 3)).
-        to eq('Jane, Jane, Jane, and 2 more.')
+      expect(award_user_list(awards, nil, limit: 3))
+        .to eq('Jane, Jane, Jane, and 2 more.')
     end
 
     it "displays the current user in front of other users" do
@@ -93,8 +93,8 @@ describe IssuesHelper do
       award = build_stubbed(:award_emoji, user: build_stubbed(:user, name: 'Jane'))
       awards = Array.new(5, award).push(my_award)
 
-      expect(award_user_list(awards, current_user, limit: 2)).
-        to eq("You, Jane, and 4 more.")
+      expect(award_user_list(awards, current_user, limit: 2))
+        .to eq("You, Jane, and 4 more.")
     end
   end
 

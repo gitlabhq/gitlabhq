@@ -18,17 +18,17 @@ describe Banzai::ReferenceParser::IssueParser, lib: true do
       it_behaves_like "referenced feature visibility", "issues"
 
       it 'returns the nodes when the user can read the issue' do
-        expect(Ability).to receive(:issues_readable_by_user).
-          with([issue], user).
-          and_return([issue])
+        expect(Ability).to receive(:issues_readable_by_user)
+          .with([issue], user)
+          .and_return([issue])
 
         expect(subject.nodes_visible_to_user(user, [link])).to eq([link])
       end
 
       it 'returns an empty Array when the user can not read the issue' do
-        expect(Ability).to receive(:issues_readable_by_user).
-          with([issue], user).
-          and_return([])
+        expect(Ability).to receive(:issues_readable_by_user)
+          .with([issue], user)
+          .and_return([])
 
         expect(subject.nodes_visible_to_user(user, [link])).to eq([])
       end

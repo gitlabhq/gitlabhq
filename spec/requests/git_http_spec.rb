@@ -389,8 +389,8 @@ describe 'Git HTTP requests', lib: true do
 
             shared_examples 'can download code only' do
               it 'downloads get status 200' do
-                allow_any_instance_of(Repository).
-                  to receive(:exists?).and_return(true)
+                allow_any_instance_of(Repository)
+                  .to receive(:exists?).and_return(true)
 
                 clone_get "#{project.path_with_namespace}.git",
                   user: 'gitlab-ci-token', password: build.token
@@ -400,8 +400,8 @@ describe 'Git HTTP requests', lib: true do
               end
 
               it 'downloads from non-existing repository and gets 403' do
-                allow_any_instance_of(Repository).
-                  to receive(:exists?).and_return(false)
+                allow_any_instance_of(Repository)
+                  .to receive(:exists?).and_return(false)
 
                 clone_get "#{project.path_with_namespace}.git",
                   user: 'gitlab-ci-token', password: build.token

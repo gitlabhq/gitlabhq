@@ -11,8 +11,8 @@ describe MattermostSlashCommandsService, :models do
     before do
       Mattermost::Session.base_uri("http://mattermost.example.com")
 
-      allow_any_instance_of(Mattermost::Client).to receive(:with_session).
-        and_yield(Mattermost::Session.new(nil))
+      allow_any_instance_of(Mattermost::Client).to receive(:with_session)
+        .and_yield(Mattermost::Session.new(nil))
     end
 
     describe '#configure' do
@@ -24,8 +24,8 @@ describe MattermostSlashCommandsService, :models do
 
       context 'the requests succeeds' do
         before do
-          stub_request(:post, 'http://mattermost.example.com/api/v3/teams/abc/commands/create').
-            with(body: {
+          stub_request(:post, 'http://mattermost.example.com/api/v3/teams/abc/commands/create')
+            .with(body: {
               team_id: 'abc',
               trigger: 'gitlab',
               url: 'http://trigger.url',
@@ -36,8 +36,8 @@ describe MattermostSlashCommandsService, :models do
               description: "Perform common operations on: #{project.name_with_namespace}",
               display_name: "GitLab / #{project.name_with_namespace}",
               method: 'P',
-              username: 'GitLab' }.to_json).
-            to_return(
+              username: 'GitLab' }.to_json)
+            .to_return(
               status: 200,
               headers: { 'Content-Type' => 'application/json' },
               body: { token: 'token' }.to_json
@@ -57,8 +57,8 @@ describe MattermostSlashCommandsService, :models do
 
       context 'an error is received' do
         before do
-          stub_request(:post, 'http://mattermost.example.com/api/v3/teams/abc/commands/create').
-            to_return(
+          stub_request(:post, 'http://mattermost.example.com/api/v3/teams/abc/commands/create')
+            .to_return(
               status: 500,
               headers: { 'Content-Type' => 'application/json' },
               body: {
@@ -87,8 +87,8 @@ describe MattermostSlashCommandsService, :models do
 
       context 'the requests succeeds' do
         before do
-          stub_request(:get, 'http://mattermost.example.com/api/v3/teams/all').
-            to_return(
+          stub_request(:get, 'http://mattermost.example.com/api/v3/teams/all')
+            .to_return(
               status: 200,
               headers: { 'Content-Type' => 'application/json' },
               body: ['list'].to_json
@@ -102,8 +102,8 @@ describe MattermostSlashCommandsService, :models do
 
       context 'an error is received' do
         before do
-          stub_request(:get, 'http://mattermost.example.com/api/v3/teams/all').
-            to_return(
+          stub_request(:get, 'http://mattermost.example.com/api/v3/teams/all')
+            .to_return(
               status: 500,
               headers: { 'Content-Type' => 'application/json' },
               body: {

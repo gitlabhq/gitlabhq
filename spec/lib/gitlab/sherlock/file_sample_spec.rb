@@ -35,8 +35,8 @@ describe Gitlab::Sherlock::FileSample, lib: true do
 
   describe '#relative_path' do
     it 'returns the relative path' do
-      expect(sample.relative_path).
-        to eq('spec/lib/gitlab/sherlock/file_sample_spec.rb')
+      expect(sample.relative_path)
+        .to eq('spec/lib/gitlab/sherlock/file_sample_spec.rb')
     end
   end
 

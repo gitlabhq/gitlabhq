@@ -5,8 +5,8 @@ describe Issuable::BulkUpdateService, services: true do
   let(:project) { create(:empty_project, namespace: user.namespace) }
 
   def bulk_update(issues, extra_params = {})
-    bulk_update_params = extra_params.
-      reverse_merge(issuable_ids: Array(issues).map(&:id).join(','))
+    bulk_update_params = extra_params
+      .reverse_merge(issuable_ids: Array(issues).map(&:id).join(','))
 
     Issuable::BulkUpdateService.new(project, user, bulk_update_params).execute('issue')
   end
@@ -65,22 +65,22 @@ describe Issuable::BulkUpdateService, services: true do
         assignee = create(:user)
         project.team << [assignee, :developer]
 
-        expect { bulk_update(issue, assignee_id: assignee.id) }.
-          to change { issue.reload.assignee }.from(user).to(assignee)
+        expect { bulk_update(issue, assignee_id: assignee.id) }
+          .to change { issue.reload.assignee }.from(user).to(assignee)
       end
     end
 
     context "when the new assignee ID is #{IssuableFinder::NONE}" do
       it "unassigns the issues" do
-        expect { bulk_update(issue, assignee_id: IssuableFinder::NONE) }.
-          to change { issue.reload.assignee }.to(nil)
+        expect { bulk_update(issue, assignee_id: IssuableFinder::NONE) }
+          .to change { issue.reload.assignee }.to(nil)
       end
     end
 
     context 'when the new assignee ID is not present' do
       it 'does not unassign' do
-        expect { bulk_update(issue, assignee_id: nil) }.
-          not_to change { issue.reload.assignee }
+        expect { bulk_update(issue, assignee_id: nil) }
+          .not_to change { issue.reload.assignee }
       end
     end
   end
@@ -97,8 +97,8 @@ describe Issuable::BulkUpdateService, services: true do
     end
 
     it 'updates the issue milestone' do
-      expect { bulk_update(issue, milestone_id: milestone.id) }.
-        to change { issue.reload.milestone }.from(nil).to(milestone)
+      expect { bulk_update(issue, milestone_id: milestone.id) }
+        .to change { issue.reload.milestone }.from(nil).to(milestone)
     end
   end
 

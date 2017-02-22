@@ -17,8 +17,8 @@ describe 'gitlab:shell rake tasks' do
 
   describe 'create_hooks task' do
     it 'calls gitlab-shell bin/create_hooks' do
-      expect_any_instance_of(Object).to receive(:system).
-        with("#{Gitlab.config.gitlab_shell.path}/bin/create-hooks", *repository_storage_paths_args)
+      expect_any_instance_of(Object).to receive(:system)
+        .with("#{Gitlab.config.gitlab_shell.path}/bin/create-hooks", *repository_storage_paths_args)
 
       run_rake_task('gitlab:shell:create_hooks')
     end

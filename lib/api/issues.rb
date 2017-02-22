@@ -128,9 +128,9 @@ module API
         issue_params = declared_params(include_missing: false)
 
         if merge_request_iid = params[:merge_request_for_resolving_discussions]
-          issue_params[:merge_request_for_resolving_discussions] = MergeRequestsFinder.new(current_user, project_id: user_project.id).
-            execute.
-            find_by(iid: merge_request_iid)
+          issue_params[:merge_request_for_resolving_discussions] = MergeRequestsFinder.new(current_user, project_id: user_project.id)
+            .execute
+            .find_by(iid: merge_request_iid)
         end
 
         issue = ::Issues::CreateService.new(user_project,

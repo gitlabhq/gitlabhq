@@ -283,9 +283,9 @@ describe Environment, models: true do
       before { allow(environment).to receive(:has_terminals?).and_return(true) }
 
       it 'returns the terminals from the deployment service' do
-        expect(project.deployment_service).
-          to receive(:terminals).with(environment).
-          and_return(:fake_terminals)
+        expect(project.deployment_service)
+          .to receive(:terminals).with(environment)
+          .and_return(:fake_terminals)
 
         is_expected.to eq(:fake_terminals)
       end

@@ -29,9 +29,9 @@ class Import::BitbucketController < Import::BaseController
   end
 
   def jobs
-    render json: current_user.created_projects.
-                             where(import_type: 'bitbucket').
-                             to_json(only: [:id, :import_status])
+    render json: current_user.created_projects
+                             .where(import_type: 'bitbucket')
+                             .to_json(only: [:id, :import_status])
   end
 
   def create

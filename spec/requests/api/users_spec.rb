@@ -247,14 +247,14 @@ describe API::Users, api: true  do
         bio: 'g' * 256,
         projects_limit: -1
       expect(response).to have_http_status(400)
-      expect(json_response['message']['password']).
-        to eq(['is too short (minimum is 8 characters)'])
-      expect(json_response['message']['bio']).
-        to eq(['is too long (maximum is 255 characters)'])
-      expect(json_response['message']['projects_limit']).
-        to eq(['must be greater than or equal to 0'])
-      expect(json_response['message']['username']).
-        to eq([Gitlab::Regex.namespace_regex_message])
+      expect(json_response['message']['password'])
+        .to eq(['is too short (minimum is 8 characters)'])
+      expect(json_response['message']['bio'])
+        .to eq(['is too long (maximum is 255 characters)'])
+      expect(json_response['message']['projects_limit'])
+        .to eq(['must be greater than or equal to 0'])
+      expect(json_response['message']['username'])
+        .to eq([Gitlab::Regex.namespace_regex_message])
     end
 
     it "is not available for non admin users" do
@@ -421,14 +421,14 @@ describe API::Users, api: true  do
         bio: 'g' * 256,
         projects_limit: -1
       expect(response).to have_http_status(400)
-      expect(json_response['message']['password']).
-        to eq(['is too short (minimum is 8 characters)'])
-      expect(json_response['message']['bio']).
-        to eq(['is too long (maximum is 255 characters)'])
-      expect(json_response['message']['projects_limit']).
-        to eq(['must be greater than or equal to 0'])
-      expect(json_response['message']['username']).
-        to eq([Gitlab::Regex.namespace_regex_message])
+      expect(json_response['message']['password'])
+        .to eq(['is too short (minimum is 8 characters)'])
+      expect(json_response['message']['bio'])
+        .to eq(['is too long (maximum is 255 characters)'])
+      expect(json_response['message']['projects_limit'])
+        .to eq(['must be greater than or equal to 0'])
+      expect(json_response['message']['username'])
+        .to eq([Gitlab::Regex.namespace_regex_message])
     end
 
     it 'returns 400 if provider is missing for identity update' do

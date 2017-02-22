@@ -14,8 +14,8 @@ shared_examples 'a GitHub-ish import controller: POST personal_access_token' do
   it "updates access token" do
     token = 'asdfasdf9876'
 
-    allow_any_instance_of(Gitlab::GithubImport::Client).
-      to receive(:user).and_return(true)
+    allow_any_instance_of(Gitlab::GithubImport::Client)
+      .to receive(:user).and_return(true)
 
     post :personal_access_token, personal_access_token: token
 
@@ -79,8 +79,8 @@ shared_examples 'a GitHub-ish import controller: GET status' do
   end
 
   it "handles an invalid access token" do
-    allow_any_instance_of(Gitlab::GithubImport::Client).
-      to receive(:repos).and_raise(Octokit::Unauthorized)
+    allow_any_instance_of(Gitlab::GithubImport::Client)
+      .to receive(:repos).and_raise(Octokit::Unauthorized)
 
     get :status
 
@@ -110,9 +110,9 @@ shared_examples 'a GitHub-ish import controller: POST create' do
   context "when the repository owner is the provider user" do
     context "when the provider user and GitLab user's usernames match" do
       it "takes the current user's namespace" do
-        expect(Gitlab::GithubImport::ProjectCreator).
-          to receive(:new).with(provider_repo, provider_repo.name, user.namespace, user, access_params, type: provider).
-            and_return(double(execute: true))
+        expect(Gitlab::GithubImport::ProjectCreator)
+          .to receive(:new).with(provider_repo, provider_repo.name, user.namespace, user, access_params, type: provider)
+            .and_return(double(execute: true))
 
         post :create, format: :js
       end
@@ -122,9 +122,9 @@ shared_examples 'a GitHub-ish import controller: POST create' do
       let(:provider_username) { "someone_else" }
 
       it "takes the current user's namespace" do
-        expect(Gitlab::GithubImport::ProjectCreator).
-          to receive(:new).with(provider_repo, provider_repo.name, user.namespace, user, access_params, type: provider).
-            and_return(double(execute: true))
+        expect(Gitlab::GithubImport::ProjectCreator)
+          .to receive(:new).with(provider_repo, provider_repo.name, user.namespace, user, access_params, type: provider)
+            .and_return(double(execute: true))
 
         post :create, format: :js
       end
@@ -144,9 +144,9 @@ shared_examples 'a GitHub-ish import controller: POST create' do
 
       context "when the namespace is owned by the GitLab user" do
         it "takes the existing namespace" do
-          expect(Gitlab::GithubImport::ProjectCreator).
-            to receive(:new).with(provider_repo, provider_repo.name, existing_namespace, user, access_params, type: provider).
-              and_return(double(execute: true))
+          expect(Gitlab::GithubImport::ProjectCreator)
+            .to receive(:new).with(provider_repo, provider_repo.name, existing_namespace, user, access_params, type: provider)
+              .and_return(double(execute: true))
 
           post :create, format: :js
         end
@@ -159,9 +159,9 @@ shared_examples 'a GitHub-ish import controller: POST create' do
         end
 
         it "creates a project using user's namespace" do
-          expect(Gitlab::GithubImport::ProjectCreator).
-            to receive(:new).with(provider_repo, provider_repo.name, user.namespace, user, access_params, type: provider).
-              and_return(double(execute: true))
+          expect(Gitlab::GithubImport::ProjectCreator)
+            .to receive(:new).with(provider_repo, provider_repo.name, user.namespace, user, access_params, type: provider)
+              .and_return(double(execute: true))
 
           post :create, format: :js
         end
@@ -171,16 +171,16 @@ shared_examples 'a GitHub-ish import controller: POST create' do
     context "when a namespace with the provider user's username doesn't exist" do
       context "when current user can create namespaces" do
         it "creates the namespace" do
-          expect(Gitlab::GithubImport::ProjectCreator).
-            to receive(:new).and_return(double(execute: true))
+          expect(Gitlab::GithubImport::ProjectCreator)
+            .to receive(:new).and_return(double(execute: true))
 
           expect { post :create, target_namespace: provider_repo.name, format: :js }.to change(Namespace, :count).by(1)
         end
 
         it "takes the new namespace" do
-          expect(Gitlab::GithubImport::ProjectCreator).
-            to receive(:new).with(provider_repo, provider_repo.name, an_instance_of(Group), user, access_params, type: provider).
-            and_return(double(execute: true))
+          expect(Gitlab::GithubImport::ProjectCreator)
+            .to receive(:new).with(provider_repo, provider_repo.name, an_instance_of(Group), user, access_params, type: provider)
+            .and_return(double(execute: true))
 
           post :create, target_namespace: provider_repo.name, format: :js
         end
@@ -192,16 +192,16 @@ shared_examples 'a GitHub-ish import controller: POST create' do
         end
 
         it "doesn't create the namespace" do
-          expect(Gitlab::GithubImport::ProjectCreator).
-            to receive(:new).and_return(double(execute: true))
+          expect(Gitlab::GithubImport::ProjectCreator)
+            .to receive(:new).and_return(double(execute: true))
 
           expect { post :create, format: :js }.not_to change(Namespace, :count)
         end
 
         it "takes the current user's namespace" do
-          expect(Gitlab::GithubImport::ProjectCreator).
-            to receive(:new).with(provider_repo, provider_repo.name, user.namespace, user, access_params, type: provider).
-            and_return(double(execute: true))
+          expect(Gitlab::GithubImport::ProjectCreator)
+            .to receive(:new).with(provider_repo, provider_repo.name, user.namespace, user, access_params, type: provider)
+            .and_return(double(execute: true))
 
           post :create, format: :js
         end
@@ -213,17 +213,17 @@ shared_examples 'a GitHub-ish import controller: POST create' do
       let(:test_name) { 'test_name' }
 
       it 'takes the selected namespace and name' do
-        expect(Gitlab::GithubImport::ProjectCreator).
-          to receive(:new).with(provider_repo, test_name, test_namespace, user, access_params, type: provider).
-            and_return(double(execute: true))
+        expect(Gitlab::GithubImport::ProjectCreator)
+          .to receive(:new).with(provider_repo, test_name, test_namespace, user, access_params, type: provider)
+            .and_return(double(execute: true))
 
         post :create, { target_namespace: test_namespace.name, new_name: test_name, format: :js }
       end
 
       it 'takes the selected name and default namespace' do
-        expect(Gitlab::GithubImport::ProjectCreator).
-          to receive(:new).with(provider_repo, test_name, user.namespace, user, access_params, type: provider).
-            and_return(double(execute: true))
+        expect(Gitlab::GithubImport::ProjectCreator)
+          .to receive(:new).with(provider_repo, test_name, user.namespace, user, access_params, type: provider)
+            .and_return(double(execute: true))
 
         post :create, { new_name: test_name, format: :js }
       end

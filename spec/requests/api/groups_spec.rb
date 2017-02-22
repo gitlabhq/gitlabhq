@@ -36,8 +36,8 @@ describe API::Groups, api: true  do
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
-        expect(json_response).
-          to satisfy_one { |group| group['name'] == group1.name }
+        expect(json_response)
+          .to satisfy_one { |group| group['name'] == group1.name }
       end
 
       it "does not include statistics" do
@@ -84,8 +84,8 @@ describe API::Groups, api: true  do
         expect(response).to have_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(json_response).
-          to satisfy_one { |group| group['statistics'] == attributes }
+        expect(json_response)
+          .to satisfy_one { |group| group['statistics'] == attributes }
       end
     end
 
@@ -522,8 +522,8 @@ describe API::Groups, api: true  do
     let(:project_path) { "#{project.namespace.path}%2F#{project.path}" }
 
     before(:each) do
-      allow_any_instance_of(Projects::TransferService).
-        to receive(:execute).and_return(true)
+      allow_any_instance_of(Projects::TransferService)
+        .to receive(:execute).and_return(true)
     end
 
     context "when authenticated as user" do

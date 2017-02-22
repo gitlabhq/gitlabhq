@@ -22,8 +22,8 @@ describe Banzai::Filter::SnippetReferenceFilter, lib: true do
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
 
-      expect(doc.css('a').first.attr('href')).to eq urls.
-        namespace_project_snippet_url(project.namespace, project, snippet)
+      expect(doc.css('a').first.attr('href')).to eq urls
+        .namespace_project_snippet_url(project.namespace, project, snippet)
     end
 
     it 'links with adjacent text' do
@@ -88,8 +88,8 @@ describe Banzai::Filter::SnippetReferenceFilter, lib: true do
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
 
-      expect(doc.css('a').first.attr('href')).
-        to eq urls.namespace_project_snippet_url(project2.namespace, project2, snippet)
+      expect(doc.css('a').first.attr('href'))
+        .to eq urls.namespace_project_snippet_url(project2.namespace, project2, snippet)
     end
 
     it 'link has valid text' do
@@ -121,8 +121,8 @@ describe Banzai::Filter::SnippetReferenceFilter, lib: true do
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
 
-      expect(doc.css('a').first.attr('href')).
-        to eq urls.namespace_project_snippet_url(project2.namespace, project2, snippet)
+      expect(doc.css('a').first.attr('href'))
+        .to eq urls.namespace_project_snippet_url(project2.namespace, project2, snippet)
     end
 
     it 'link has valid text' do
@@ -154,8 +154,8 @@ describe Banzai::Filter::SnippetReferenceFilter, lib: true do
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
 
-      expect(doc.css('a').first.attr('href')).
-        to eq urls.namespace_project_snippet_url(project2.namespace, project2, snippet)
+      expect(doc.css('a').first.attr('href'))
+        .to eq urls.namespace_project_snippet_url(project2.namespace, project2, snippet)
     end
 
     it 'link has valid text' do
@@ -186,8 +186,8 @@ describe Banzai::Filter::SnippetReferenceFilter, lib: true do
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
 
-      expect(doc.css('a').first.attr('href')).
-        to eq urls.namespace_project_snippet_url(project2.namespace, project2, snippet)
+      expect(doc.css('a').first.attr('href'))
+        .to eq urls.namespace_project_snippet_url(project2.namespace, project2, snippet)
     end
 
     it 'links with adjacent text' do

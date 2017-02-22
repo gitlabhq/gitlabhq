@@ -37,8 +37,8 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
       doc = reference_filter("Hey #{reference}", author: user)
 
       expect(doc.css('a').length).to eq 1
-      expect(doc.css('a').first.attr('href')).
-        to eq urls.namespace_project_url(project.namespace, project)
+      expect(doc.css('a').first.attr('href'))
+        .to eq urls.namespace_project_url(project.namespace, project)
     end
 
     it 'includes a data-author attribute when there is an author' do
