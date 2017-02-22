@@ -46,8 +46,8 @@ Watch the [video tutorial](https://youtu.be/TWqh9MtT4Bg) we've created for the s
 1. Choose your SSG template
 1. Fork a project from the [Pages group](https://gitlab.com/pages)
 1. Remove the fork relationship by navigating to your **Project**'s **Settings** > **Edit Project**
-  
-    ![remove fork relashionship](images/remove_fork_relashionship.png)
+
+    ![remove fork relashionship](img/remove_fork_relashionship.png)
 
 1. Enable Shared Runners for your fork: navigate to your **Project**'s **Settings** > **CI/CD Pipelines**
 1. Trigger a build (push a change to any file)
@@ -73,17 +73,17 @@ To turn a **project website** forked from the Pages group into a **user/group** 
 1. From your **Project**'s **[Dashboard](https://gitlab.com/dashboard/projects)**, click **New project**, and name it considering the [examples above](#practical-examples).
 1. Clone it to your local computer, add your website files to your project, add, commit and push to GitLab.
 1. From the your **Project**'s page, click **Set up CI**:
-    
-    ![setup GitLab CI](images/setup_ci.png)
+
+    ![setup GitLab CI](img/setup_ci.png)
 
 1. Choose one of the templates from the dropbox menu. Pick up the template corresponding to the SSG you're using (or plain HTML).
 
-    ![gitlab-ci templates](images/choose_ci_template.png)
+    ![gitlab-ci templates](img/choose_ci_template.png)
 
 Once you have both site files and `.gitlab-ci.yml` in your project's root, GitLab CI will build your site and deploy it with Pages. Once the first build passes, you see your site is live by navigating to your **Project**'s **Settings** > **Pages**, where you'll find its default URL.
 
 > **Notes:**
-> 
+>
 > - GitLab Pages [supports any SSG](https://about.gitlab.com/2016/06/17/ssg-overview-gitlab-pages-part-3-examples-ci/), but, if you don't find yours among the templates, you'll need to configure your own `.gitlab-ci.yml`. Do do that, please read through the article [Creating and Tweaking `.gitlab-ci.yml` for GitLab Pages](pages_creating_and_tweaking_gitlab-ci_.html). New SSGs are very welcome among the [example projects](https://gitlab.com/pages). If you set up a new one, please [contribute](https://gitlab.com/pages/pages.gitlab.io/blob/master/CONTRIBUTING.md) to our examples.
 >
 > - The second step _"Clone it to your local computer"_, can be done differently, achieving the same results: instead of cloning the bare repository to you local computer and moving your site files into it, you can run `git init` in your local website directory, add the remote URL: `git remote add origin git@gitlab.com:namespace/project-name.git`, then add, commit, and push.
