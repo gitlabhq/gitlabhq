@@ -96,7 +96,7 @@ class IrkerService < Service
     rescue URI::InvalidURIError
     end
 
-    unless uri.present? and default_irc_uri.nil?
+    unless uri.present? && default_irc_uri.nil?
       begin
         new_recipient = URI.join(default_irc_uri, '/', recipient).to_s
         uri = consider_uri(URI.parse(new_recipient))

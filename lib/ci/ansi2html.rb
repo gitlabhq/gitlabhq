@@ -126,7 +126,7 @@ module Ci
         # We are only interested in color and text style changes - triggered by
         # sequences starting with '\e[' and ending with 'm'. Any other control
         # sequence gets stripped (including stuff like "delete last line")
-        return unless indicator == '[' and terminator == 'm'
+        return unless indicator == '[' && terminator == 'm'
 
         close_open_tags()
 
