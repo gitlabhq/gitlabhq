@@ -25,8 +25,8 @@ module Ci
           end
 
           it 'includes coverage regexp in build attributes' do
-            expect(subject)
-              .to include(coverage_regex: 'Code coverage: \d+\.\d+')
+            expect(subject).
+              to include(coverage_regex: 'Code coverage: \d+\.\d+')
           end
         end
       end
@@ -584,8 +584,8 @@ module Ci
             end
 
             it 'raises error' do
-              expect { subject }
-                .to raise_error(GitlabCiYamlProcessor::ValidationError,
+              expect { subject }.
+                to raise_error(GitlabCiYamlProcessor::ValidationError,
                                  /jobs:rspec:variables config should be a hash of key value pairs/)
             end
           end
@@ -1365,8 +1365,8 @@ EOT
         it "returns an error about invalid configutaion" do
           content = YAML.dump("invalid: yaml: test")
 
-          expect(GitlabCiYamlProcessor.validation_message(content))
-            .to eq "Invalid configuration format"
+          expect(GitlabCiYamlProcessor.validation_message(content)).
+            to eq "Invalid configuration format"
         end
       end
 
@@ -1374,15 +1374,15 @@ EOT
         it "returns an error about invalid tags" do
           content = YAML.dump({ rspec: { script: "test", tags: "mysql" } })
 
-          expect(GitlabCiYamlProcessor.validation_message(content))
-            .to eq "jobs:rspec tags should be an array of strings"
+          expect(GitlabCiYamlProcessor.validation_message(content)).
+            to eq "jobs:rspec tags should be an array of strings"
         end
       end
 
       context "when YAML content is empty" do
         it "returns an error about missing content" do
-          expect(GitlabCiYamlProcessor.validation_message(''))
-            .to eq "Please provide content of .gitlab-ci.yml"
+          expect(GitlabCiYamlProcessor.validation_message('')).
+            to eq "Please provide content of .gitlab-ci.yml"
         end
       end
 

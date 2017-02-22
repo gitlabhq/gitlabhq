@@ -35,13 +35,13 @@ describe StageEntity do
     end
 
     it 'contains path to the stage' do
-      expect(subject[:path])
-        .to include "pipelines/#{pipeline.id}##{stage.name}"
+      expect(subject[:path]).
+        to include "pipelines/#{pipeline.id}##{stage.name}"
     end
 
     it 'contains path to the stage dropdown' do
-      expect(subject[:dropdown_path])
-        .to include "pipelines/#{pipeline.id}/stage.json?stage=test"
+      expect(subject[:dropdown_path]).
+        to include "pipelines/#{pipeline.id}/stage.json?stage=test"
     end
 
     it 'contains stage title' do

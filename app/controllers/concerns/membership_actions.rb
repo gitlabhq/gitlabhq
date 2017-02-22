@@ -15,8 +15,8 @@ module MembershipActions
   end
 
   def leave
-    member = Members::DestroyService.new(membershipable, current_user, user_id: current_user.id)
-      .execute(:all)
+    member = Members::DestroyService.new(membershipable, current_user, user_id: current_user.id).
+      execute(:all)
 
     source_type = membershipable.class.to_s.humanize(capitalize: false)
     notice =

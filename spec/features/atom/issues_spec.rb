@@ -17,8 +17,8 @@ describe 'Issues Feed', feature: true  do
         login_with user
         visit namespace_project_issues_path(project.namespace, project, :atom)
 
-        expect(response_headers['Content-Type'])
-          .to have_content('application/atom+xml')
+        expect(response_headers['Content-Type']).
+          to have_content('application/atom+xml')
         expect(body).to have_selector('title', text: "#{project.name} issues")
         expect(body).to have_selector('author email', text: issue.author_email)
         expect(body).to have_selector('entry summary', text: issue.title)
@@ -30,8 +30,8 @@ describe 'Issues Feed', feature: true  do
         visit namespace_project_issues_path(project.namespace, project, :atom,
                                             private_token: user.private_token)
 
-        expect(response_headers['Content-Type'])
-          .to have_content('application/atom+xml')
+        expect(response_headers['Content-Type']).
+          to have_content('application/atom+xml')
         expect(body).to have_selector('title', text: "#{project.name} issues")
         expect(body).to have_selector('author email', text: issue.author_email)
         expect(body).to have_selector('entry summary', text: issue.title)

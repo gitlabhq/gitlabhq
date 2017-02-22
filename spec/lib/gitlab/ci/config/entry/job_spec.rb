@@ -44,8 +44,8 @@ describe Gitlab::Ci::Config::Entry::Job do
 
         describe '#errors' do
           it 'reports error about a config type' do
-            expect(entry.errors)
-              .to include 'job config should be a hash'
+            expect(entry.errors).
+              to include 'job config should be a hash'
           end
         end
       end
@@ -138,13 +138,13 @@ describe Gitlab::Ci::Config::Entry::Job do
         end
 
         it 'returns correct value' do
-          expect(entry.value)
-            .to eq(name: :rspec,
-                   before_script: %w[ls pwd],
-                   script: %w[rspec],
-                   commands: "ls\npwd\nrspec",
-                   stage: 'test',
-                   after_script: %w[cleanup])
+          expect(entry.value).
+            to eq(name: :rspec,
+                  before_script: %w[ls pwd],
+                  script: %w[rspec],
+                  commands: "ls\npwd\nrspec",
+                  stage: 'test',
+                  after_script: %w[cleanup])
         end
       end
     end

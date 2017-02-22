@@ -119,8 +119,8 @@ class SessionsController < Devise::SessionsController
   end
 
   def log_audit_event(user, options = {})
-    AuditEventService.new(user, user, options)
-      .for_authentication.security_event
+    AuditEventService.new(user, user, options).
+      for_authentication.security_event
   end
 
   def load_recaptcha

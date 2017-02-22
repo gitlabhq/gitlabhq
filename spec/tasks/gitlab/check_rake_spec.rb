@@ -23,8 +23,8 @@ describe 'gitlab:ldap:check rake task' do
     let(:adapter) { ldap_adapter('ldapmain', ldap) }
 
     before do
-      allow(Gitlab::LDAP::Config)
-        .to receive_messages(
+      allow(Gitlab::LDAP::Config).
+        to receive_messages(
           enabled?: true,
           providers: ['ldapmain']
         )

@@ -475,10 +475,10 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def discussions
-    @discussions ||= self.related_notes
-      .inc_relations_for_view
-      .fresh
-      .discussions
+    @discussions ||= self.related_notes.
+      inc_relations_for_view.
+      fresh.
+      discussions
   end
 
   def diff_discussions
@@ -564,8 +564,8 @@ class MergeRequest < ActiveRecord::Base
       messages = [title, description]
       messages.concat(commits.map(&:safe_message)) if merge_request_diff
 
-      Gitlab::ClosingIssueExtractor.new(project, current_user)
-        .closed_by_message(messages.join("\n"))
+      Gitlab::ClosingIssueExtractor.new(project, current_user).
+        closed_by_message(messages.join("\n"))
     else
       []
     end
@@ -813,9 +813,9 @@ class MergeRequest < ActiveRecord::Base
   def all_pipelines
     return Ci::Pipeline.none unless source_project
 
-    @all_pipelines ||= source_project.pipelines
-      .where(sha: all_commits_sha, ref: source_branch)
-      .order(id: :desc)
+    @all_pipelines ||= source_project.pipelines.
+      where(sha: all_commits_sha, ref: source_branch).
+      order(id: :desc)
   end
 
   # Note that this could also return SHA from now dangling commits

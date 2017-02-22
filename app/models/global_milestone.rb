@@ -76,8 +76,8 @@ class GlobalMilestone
   end
 
   def labels
-    @labels ||= GlobalLabel.build_collection(milestones.includes(:labels).map(&:labels).flatten)
-                           .sort_by!(&:title)
+    @labels ||= GlobalLabel.build_collection(milestones.includes(:labels).map(&:labels).flatten).
+                           sort_by!(&:title)
   end
 
   def due_date

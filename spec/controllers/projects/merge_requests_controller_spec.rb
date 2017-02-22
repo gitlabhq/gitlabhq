@@ -106,8 +106,8 @@ describe Projects::MergeRequestsController do
       end
 
       it "does not escape Html" do
-        allow_any_instance_of(MergeRequest).to receive(:"to_#{format}")
-          .and_return('HTML entities &<>" ')
+        allow_any_instance_of(MergeRequest).to receive(:"to_#{format}").
+          and_return('HTML entities &<>" ')
 
         get(:show,
             namespace_id: project.namespace.to_param,
@@ -335,9 +335,9 @@ describe Projects::MergeRequestsController do
         it 'sets the MR to merge when the build succeeds' do
           service = double(:merge_when_build_succeeds_service)
 
-          expect(MergeRequests::MergeWhenPipelineSucceedsService)
-            .to receive(:new).with(project, anything, anything)
-            .and_return(service)
+          expect(MergeRequests::MergeWhenPipelineSucceedsService).
+            to receive(:new).with(project, anything, anything).
+            and_return(service)
           expect(service).to receive(:execute).with(merge_request)
 
           merge_when_build_succeeds
@@ -721,8 +721,8 @@ describe Projects::MergeRequestsController do
   describe 'GET conflicts' do
     context 'when the conflicts cannot be resolved in the UI' do
       before do
-        allow_any_instance_of(Gitlab::Conflict::Parser)
-          .to receive(:parse).and_raise(Gitlab::Conflict::Parser::UnmergeableFile)
+        allow_any_instance_of(Gitlab::Conflict::Parser).
+          to receive(:parse).and_raise(Gitlab::Conflict::Parser::UnmergeableFile)
 
         get :conflicts,
             namespace_id: merge_request_with_conflicts.project.namespace.to_param,
@@ -827,8 +827,8 @@ describe Projects::MergeRequestsController do
 
     context 'when the conflicts cannot be resolved in the UI' do
       before do
-        allow_any_instance_of(Gitlab::Conflict::Parser)
-          .to receive(:parse).and_raise(Gitlab::Conflict::Parser::UnmergeableFile)
+        allow_any_instance_of(Gitlab::Conflict::Parser).
+          to receive(:parse).and_raise(Gitlab::Conflict::Parser::UnmergeableFile)
 
         conflict_for_path('files/ruby/regex.rb')
       end
@@ -1044,9 +1044,9 @@ describe Projects::MergeRequestsController do
     end
 
     it 'calls MergeRequests::AssignIssuesService' do
-      expect(MergeRequests::AssignIssuesService).to receive(:new)
-        .with(project, user, merge_request: merge_request)
-        .and_return(double(execute: { count: 1 }))
+      expect(MergeRequests::AssignIssuesService).to receive(:new).
+        with(project, user, merge_request: merge_request).
+        and_return(double(execute: { count: 1 }))
 
       post_assign_issues
     end

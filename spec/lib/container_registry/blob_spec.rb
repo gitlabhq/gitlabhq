@@ -51,8 +51,8 @@ describe ContainerRegistry::Blob do
 
   context '#delete' do
     before do
-      stub_request(:delete, 'http://example.com/v2/group/test/blobs/sha256:0123456789012345')
-        .to_return(status: 200)
+      stub_request(:delete, 'http://example.com/v2/group/test/blobs/sha256:0123456789012345').
+        to_return(status: 200)
     end
 
     subject { blob.delete }
@@ -67,8 +67,8 @@ describe ContainerRegistry::Blob do
 
     context 'when locally stored' do
       before do
-        stub_request(:get, 'http://example.com/v2/group/test/blobs/sha256:0123456789012345')
-          .to_return(
+        stub_request(:get, 'http://example.com/v2/group/test/blobs/sha256:0123456789012345').
+          to_return(
             status: 200,
             headers: { 'Content-Type' => 'application/json' },
             body: data)
@@ -79,9 +79,9 @@ describe ContainerRegistry::Blob do
 
     context 'when externally stored' do
       before do
-        stub_request(:get, 'http://example.com/v2/group/test/blobs/sha256:0123456789012345')
-          .with(headers: { 'Authorization' => "bearer #{token}" })
-          .to_return(
+        stub_request(:get, 'http://example.com/v2/group/test/blobs/sha256:0123456789012345').
+          with(headers: { 'Authorization' => "bearer #{token}" }).
+          to_return(
             status: 307,
             headers: { 'Location' => location })
       end
@@ -90,9 +90,9 @@ describe ContainerRegistry::Blob do
         let(:location) { 'http://external.com/blob/file' }
 
         before do
-          stub_request(:get, location)
-            .with(headers: { 'Authorization' => nil })
-            .to_return(
+          stub_request(:get, location).
+            with(headers: { 'Authorization' => nil }).
+            to_return(
               status: 200,
               headers: { 'Content-Type' => 'application/json' },
               body: data)

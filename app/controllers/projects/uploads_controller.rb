@@ -5,8 +5,8 @@ class Projects::UploadsController < Projects::ApplicationController
   before_action :authorize_upload_file!, only: [:create]
 
   def create
-    link_to_file = ::Projects::UploadService.new(project, params[:file])
-      .execute
+    link_to_file = ::Projects::UploadService.new(project, params[:file]).
+      execute
 
     respond_to do |format|
       if link_to_file

@@ -1150,23 +1150,23 @@ describe Project, models: true do
     it 'renames a repository' do
       ns = project.namespace_dir
 
-      expect(gitlab_shell).to receive(:mv_repository)
-        .ordered
-        .with(project.repository_storage_path, "#{ns}/foo", "#{ns}/#{project.path}")
-        .and_return(true)
+      expect(gitlab_shell).to receive(:mv_repository).
+        ordered.
+        with(project.repository_storage_path, "#{ns}/foo", "#{ns}/#{project.path}").
+        and_return(true)
 
-      expect(gitlab_shell).to receive(:mv_repository)
-        .ordered
-        .with(project.repository_storage_path, "#{ns}/foo.wiki", "#{ns}/#{project.path}.wiki")
-        .and_return(true)
+      expect(gitlab_shell).to receive(:mv_repository).
+        ordered.
+        with(project.repository_storage_path, "#{ns}/foo.wiki", "#{ns}/#{project.path}.wiki").
+        and_return(true)
 
-      expect_any_instance_of(SystemHooksService)
-        .to receive(:execute_hooks_for)
-        .with(project, :rename)
+      expect_any_instance_of(SystemHooksService).
+        to receive(:execute_hooks_for).
+        with(project, :rename)
 
-      expect_any_instance_of(Gitlab::UploadsTransfer)
-        .to receive(:rename_project)
-        .with('foo', project.path, ns)
+      expect_any_instance_of(Gitlab::UploadsTransfer).
+        to receive(:rename_project).
+        with('foo', project.path, ns)
 
       expect(project).to receive(:expire_caches_before_rename)
 
@@ -1191,13 +1191,13 @@ describe Project, models: true do
     let(:wiki)    { double(:wiki, exists?: true) }
 
     it 'expires the caches of the repository and wiki' do
-      allow(Repository).to receive(:new)
-        .with('foo', project)
-        .and_return(repo)
+      allow(Repository).to receive(:new).
+        with('foo', project).
+        and_return(repo)
 
-      allow(Repository).to receive(:new)
-        .with('foo.wiki', project)
-        .and_return(wiki)
+      allow(Repository).to receive(:new).
+        with('foo.wiki', project).
+        and_return(wiki)
 
       expect(repo).to receive(:before_delete)
       expect(wiki).to receive(:before_delete)
@@ -1248,9 +1248,9 @@ describe Project, models: true do
 
     context 'using a regular repository' do
       it 'creates the repository' do
-        expect(shell).to receive(:add_repository)
-          .with(project.repository_storage_path, project.path_with_namespace)
-          .and_return(true)
+        expect(shell).to receive(:add_repository).
+          with(project.repository_storage_path, project.path_with_namespace).
+          and_return(true)
 
         expect(project.repository).to receive(:after_create)
 
@@ -1258,9 +1258,9 @@ describe Project, models: true do
       end
 
       it 'adds an error if the repository could not be created' do
-        expect(shell).to receive(:add_repository)
-          .with(project.repository_storage_path, project.path_with_namespace)
-          .and_return(false)
+        expect(shell).to receive(:add_repository).
+          with(project.repository_storage_path, project.path_with_namespace).
+          and_return(false)
 
         expect(project.repository).not_to receive(:after_create)
 
@@ -1536,8 +1536,8 @@ describe Project, models: true do
       let(:project) { forked_project_link.forked_to_project }
 
       it 'schedules a RepositoryForkWorker job' do
-        expect(RepositoryForkWorker).to receive(:perform_async)
-          .with(project.id, forked_from_project.repository_storage_path,
+        expect(RepositoryForkWorker).to receive(:perform_async).
+          with(project.id, forked_from_project.repository_storage_path,
               forked_from_project.path_with_namespace, project.namespace.path)
 
         project.add_import_job

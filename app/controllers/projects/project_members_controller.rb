@@ -31,8 +31,8 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   end
 
   def destroy
-    Members::DestroyService.new(@project, current_user, params)
-      .execute(:all)
+    Members::DestroyService.new(@project, current_user, params).
+      execute(:all)
 
     respond_to do |format|
       format.html do

@@ -49,8 +49,8 @@ describe GroupLabel, models: true do
 
     context 'using invalid format' do
       it 'raises error' do
-        expect { label.to_reference(format: :invalid) }
-          .to raise_error StandardError, /Unknown format/
+        expect { label.to_reference(format: :invalid) }.
+          to raise_error StandardError, /Unknown format/
       end
     end
   end

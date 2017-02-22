@@ -240,8 +240,8 @@ describe Event, models: true do
       it 'does not update the project' do
         project.update(last_activity_at: Time.now)
 
-        expect(project).not_to receive(:update_column)
-          .with(:last_activity_at, a_kind_of(Time))
+        expect(project).not_to receive(:update_column).
+          with(:last_activity_at, a_kind_of(Time))
 
         create_event(project, project.owner)
       end

@@ -8,13 +8,13 @@ module Ci
       pipeline.builds.failed_or_canceled.find_each do |build|
         next unless build.retryable?
 
-        Ci::RetryBuildService.new(project, current_user)
-          .reprocess(build)
+        Ci::RetryBuildService.new(project, current_user).
+          reprocess(build)
       end
 
-      MergeRequests::AddTodoWhenBuildFailsService
-        .new(project, current_user)
-        .close_all(pipeline)
+      MergeRequests::AddTodoWhenBuildFailsService.
+        new(project, current_user).
+        close_all(pipeline)
 
       pipeline.process!
     end

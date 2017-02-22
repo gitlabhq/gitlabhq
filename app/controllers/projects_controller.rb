@@ -293,8 +293,8 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def project_params
-    params.require(:project)
-      .permit(project_params_ce)
+    params.require(:project).
+      permit(project_params_ce)
   end
 
   def project_params_ce

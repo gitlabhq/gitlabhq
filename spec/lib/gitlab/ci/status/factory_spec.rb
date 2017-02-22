@@ -84,15 +84,15 @@ describe Gitlab::Ci::Status::Factory do
       end
 
       it 'matches correct extended statuses' do
-        expect(factory.extended_statuses)
-          .to eq [first_extended_status, second_extended_status]
+        expect(factory.extended_statuses).
+          to eq [first_extended_status, second_extended_status]
       end
     end
 
     context 'when exclusive statuses are matches' do
       before do
-        allow(described_class).to receive(:extended_statuses)
-          .and_return([[first_extended_status, second_extended_status]])
+        allow(described_class).to receive(:extended_statuses).
+          and_return([[first_extended_status, second_extended_status]])
       end
 
       it 'does not fabricate compound decorator' do
@@ -116,8 +116,8 @@ describe Gitlab::Ci::Status::Factory do
 
     context 'when exclusive statuses are not matched' do
       before do
-        allow(described_class).to receive(:extended_statuses)
-          .and_return([[first_extended_status], [second_extended_status]])
+        allow(described_class).to receive(:extended_statuses).
+          and_return([[first_extended_status], [second_extended_status]])
       end
 
       it_behaves_like 'compound decorator factory'
@@ -125,8 +125,8 @@ describe Gitlab::Ci::Status::Factory do
 
     context 'when using simplified status grouping' do
       before do
-        allow(described_class).to receive(:extended_statuses)
-          .and_return([first_extended_status, second_extended_status])
+        allow(described_class).to receive(:extended_statuses).
+          and_return([first_extended_status, second_extended_status])
       end
 
       it_behaves_like 'compound decorator factory'

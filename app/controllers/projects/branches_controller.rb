@@ -32,8 +32,8 @@ class Projects::BranchesController < Projects::ApplicationController
     branch_name = sanitize(strip_tags(params[:branch_name]))
     branch_name = Addressable::URI.unescape(branch_name)
 
-    result = CreateBranchService.new(project, current_user)
-        .execute(branch_name, ref)
+    result = CreateBranchService.new(project, current_user).
+        execute(branch_name, ref)
 
     if params[:issue_iid]
       issue = IssuesFinder.new(current_user, project_id: @project.id).find_by(iid: params[:issue_iid])

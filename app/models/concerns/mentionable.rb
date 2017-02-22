@@ -48,8 +48,8 @@ module Mentionable
     if extractor
       @extractor = extractor
     else
-      @extractor ||= Gitlab::ReferenceExtractor
-        .new(project, current_user)
+      @extractor ||= Gitlab::ReferenceExtractor.
+        new(project, current_user)
 
       @extractor.reset_memoized_values
     end

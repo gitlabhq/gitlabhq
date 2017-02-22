@@ -315,8 +315,8 @@ describe Gitlab::Git::Repository, seed_helper: true do
       end
 
       it "should move the tip of the master branch to the correct commit" do
-        new_tip = @normal_repo.rugged.references["refs/heads/master"]
-          .target.oid
+        new_tip = @normal_repo.rugged.references["refs/heads/master"].
+          target.oid
 
         expect(new_tip).to eq(reset_commit)
       end

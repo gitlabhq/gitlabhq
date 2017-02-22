@@ -36,9 +36,9 @@ class EnvironmentSerializer < BaseSerializer
   private
 
   def itemize(resource)
-    items = resource.order('folder_name ASC')
-      .group('COALESCE(environment_type, name)')
-      .select('COALESCE(environment_type, name) AS folder_name',
+    items = resource.order('folder_name ASC').
+      group('COALESCE(environment_type, name)').
+      select('COALESCE(environment_type, name) AS folder_name',
               'COUNT(*) AS size', 'MAX(id) AS last_id')
 
     # It makes a difference when you call `paginate` method, because

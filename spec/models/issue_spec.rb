@@ -239,8 +239,8 @@ describe Issue, models: true do
     let(:user) { build(:admin) }
 
     before do
-      allow(subject.project.repository).to receive(:branch_names)
-                                            .and_return(["mpempe", "#{subject.iid}mepmep", subject.to_branch_name, "#{subject.iid}-branch"])
+      allow(subject.project.repository).to receive(:branch_names).
+                                            and_return(["mpempe", "#{subject.iid}mepmep", subject.to_branch_name, "#{subject.iid}-branch"])
 
       # Without this stub, the `create(:merge_request)` above fails because it can't find
       # the source branch. This seems like a reasonable compromise, in comparison with
@@ -262,8 +262,8 @@ describe Issue, models: true do
     end
 
     it 'excludes stable branches from the related branches' do
-      allow(subject.project.repository).to receive(:branch_names)
-        .and_return(["#{subject.iid}-0-stable"])
+      allow(subject.project.repository).to receive(:branch_names).
+        and_return(["#{subject.iid}-0-stable"])
 
       expect(subject.related_branches(user)).to eq []
     end

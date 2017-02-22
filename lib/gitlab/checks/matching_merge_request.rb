@@ -8,10 +8,10 @@ module Gitlab
       end
 
       def match?
-        @project.merge_requests
-          .with_state(:locked)
-          .where(in_progress_merge_commit_sha: @newrev, target_branch: @branch_name)
-          .exists?
+        @project.merge_requests.
+          with_state(:locked).
+          where(in_progress_merge_commit_sha: @newrev, target_branch: @branch_name).
+          exists?
       end
     end
   end

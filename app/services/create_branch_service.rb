@@ -1,7 +1,7 @@
 class CreateBranchService < BaseService
   def execute(branch_name, ref)
-    result = ValidateNewBranchService.new(project, current_user)
-      .execute(branch_name)
+    result = ValidateNewBranchService.new(project, current_user).
+      execute(branch_name)
 
     return result if result[:status] == :error
 

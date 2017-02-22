@@ -23,8 +23,8 @@ describe 'gitlab:workhorse namespace rake task' do
 
     context 'when an underlying Git command fail' do
       it 'aborts and display a help message' do
-        expect_any_instance_of(Object)
-          .to receive(:checkout_or_clone_tag).and_raise 'Git error'
+        expect_any_instance_of(Object).
+          to receive(:checkout_or_clone_tag).and_raise 'Git error'
 
         expect { run_rake_task('gitlab:workhorse:install', clone_path) }.to raise_error 'Git error'
       end
@@ -36,8 +36,8 @@ describe 'gitlab:workhorse namespace rake task' do
       end
 
       it 'calls checkout_or_clone_tag with the right arguments' do
-        expect_any_instance_of(Object)
-          .to receive(:checkout_or_clone_tag).with(tag: tag, repo: repo, target_dir: clone_path)
+        expect_any_instance_of(Object).
+          to receive(:checkout_or_clone_tag).with(tag: tag, repo: repo, target_dir: clone_path)
 
         run_rake_task('gitlab:workhorse:install', clone_path)
       end

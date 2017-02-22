@@ -19,9 +19,9 @@ describe ContainerRegistry::Tag do
   context 'manifest processing' do
     context 'schema v1' do
       before do
-        stub_request(:get, 'http://example.com/v2/group/test/manifests/tag')
-          .with(headers: headers)
-          .to_return(
+        stub_request(:get, 'http://example.com/v2/group/test/manifests/tag').
+          with(headers: headers).
+          to_return(
             status: 200,
             body: File.read(Rails.root + 'spec/fixtures/container_registry/tag_manifest_1.json'),
             headers: { 'Content-Type' => 'application/vnd.docker.distribution.manifest.v1+prettyjws' })
@@ -56,9 +56,9 @@ describe ContainerRegistry::Tag do
 
     context 'schema v2' do
       before do
-        stub_request(:get, 'http://example.com/v2/group/test/manifests/tag')
-          .with(headers: headers)
-          .to_return(
+        stub_request(:get, 'http://example.com/v2/group/test/manifests/tag').
+          with(headers: headers).
+          to_return(
             status: 200,
             body: File.read(Rails.root + 'spec/fixtures/container_registry/tag_manifest.json'),
             headers: { 'Content-Type' => 'application/vnd.docker.distribution.manifest.v2+json' })
@@ -93,9 +93,9 @@ describe ContainerRegistry::Tag do
 
         context 'when locally stored' do
           before do
-            stub_request(:get, 'http://example.com/v2/group/test/blobs/sha256:d7a513a663c1a6dcdba9ed832ca53c02ac2af0c333322cd6ca92936d1d9917ac')
-              .with(headers: { 'Accept' => 'application/octet-stream' })
-              .to_return(
+            stub_request(:get, 'http://example.com/v2/group/test/blobs/sha256:d7a513a663c1a6dcdba9ed832ca53c02ac2af0c333322cd6ca92936d1d9917ac').
+              with(headers: { 'Accept' => 'application/octet-stream' }).
+              to_return(
                 status: 200,
                 body: File.read(Rails.root + 'spec/fixtures/container_registry/config_blob.json'))
           end
@@ -105,14 +105,14 @@ describe ContainerRegistry::Tag do
 
         context 'when externally stored' do
           before do
-            stub_request(:get, 'http://example.com/v2/group/test/blobs/sha256:d7a513a663c1a6dcdba9ed832ca53c02ac2af0c333322cd6ca92936d1d9917ac')
-              .with(headers: { 'Accept' => 'application/octet-stream' })
-              .to_return(
+            stub_request(:get, 'http://example.com/v2/group/test/blobs/sha256:d7a513a663c1a6dcdba9ed832ca53c02ac2af0c333322cd6ca92936d1d9917ac').
+              with(headers: { 'Accept' => 'application/octet-stream' }).
+              to_return(
                 status: 307,
                 headers: { 'Location' => 'http://external.com/blob/file' })
 
-            stub_request(:get, 'http://external.com/blob/file')
-              .to_return(
+            stub_request(:get, 'http://external.com/blob/file').
+              to_return(
                 status: 200,
                 body: File.read(Rails.root + 'spec/fixtures/container_registry/config_blob.json'))
           end
@@ -125,9 +125,9 @@ describe ContainerRegistry::Tag do
 
   context 'manifest digest' do
     before do
-      stub_request(:head, 'http://example.com/v2/group/test/manifests/tag')
-        .with(headers: headers)
-        .to_return(status: 200, headers: { 'Docker-Content-Digest' => 'sha256:digest' })
+      stub_request(:head, 'http://example.com/v2/group/test/manifests/tag').
+        with(headers: headers).
+        to_return(status: 200, headers: { 'Docker-Content-Digest' => 'sha256:digest' })
     end
 
     context '#digest' do
@@ -138,9 +138,9 @@ describe ContainerRegistry::Tag do
 
     context '#delete' do
       before do
-        stub_request(:delete, 'http://example.com/v2/group/test/manifests/sha256:digest')
-          .with(headers: headers)
-          .to_return(status: 200)
+        stub_request(:delete, 'http://example.com/v2/group/test/manifests/sha256:digest').
+          with(headers: headers).
+          to_return(status: 200)
       end
 
       subject { tag.delete }
