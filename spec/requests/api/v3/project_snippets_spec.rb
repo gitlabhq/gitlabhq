@@ -145,59 +145,6 @@ describe API::ProjectSnippets, api: true do
 
       expect(response).to have_http_status(400)
     end
-<<<<<<< HEAD
-=======
-
-    context 'when the snippet is spam' do
-      def update_snippet(snippet_params = {})
-        put v3_api("/projects/#{snippet.project.id}/snippets/#{snippet.id}", admin), snippet_params
-      end
-
-      before do
-        allow_any_instance_of(AkismetService).to receive(:is_spam?).and_return(true)
-      end
-
-      context 'when the snippet is private' do
-        let(:visibility_level) { Snippet::PRIVATE }
-
-        it 'creates the snippet' do
-          expect { update_snippet(title: 'Foo') }.
-            to change { snippet.reload.title }.to('Foo')
-        end
-      end
-
-      context 'when the snippet is public' do
-        let(:visibility_level) { Snippet::PUBLIC }
-
-        it 'rejects the snippet' do
-          expect { update_snippet(title: 'Foo') }.
-            not_to change { snippet.reload.title }
-        end
-
-        it 'creates a spam log' do
-          expect { update_snippet(title: 'Foo') }.
-            to change { SpamLog.count }.by(1)
-        end
-      end
-
-      context 'when the private snippet is made public' do
-        let(:visibility_level) { Snippet::PRIVATE }
-
-        it 'rejects the snippet' do
-          expect { update_snippet(title: 'Foo', visibility_level: Snippet::PUBLIC) }.
-            not_to change { snippet.reload.title }
-
-          expect(response).to have_http_status(400)
-          expect(json_response['message']).to eq({ "error" => "Spam detected" })
-        end
-
-        it 'creates a spam log' do
-          expect { update_snippet(title: 'Foo', visibility_level: Snippet::PUBLIC) }.
-            to change { SpamLog.count }.by(1)
-        end
-      end
-    end
->>>>>>> Revert "Prefer leading style for Style/DotPosition"
   end
 
   describe 'DELETE /projects/:project_id/snippets/:id/' do
