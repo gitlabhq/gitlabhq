@@ -32,7 +32,7 @@ feature 'Merge immediately', :feature, :js do
       page.within '.mr-widget-body' do
         find('.dropdown-toggle').click
 
-        click_link 'Merge Immediately'
+        find('a', text: 'Merge Immediately').click
 
         expect(find('.js-merge-button')).to have_content('Merge in progress')
       end
