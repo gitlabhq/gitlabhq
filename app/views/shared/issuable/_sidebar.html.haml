@@ -123,9 +123,8 @@
             = icon('rss', 'aria-hidden': 'true')
           %span.issuable-header-text.hide-collapsed.pull-left
             Notifications
-          .toggle-button-container
-            %button.btn.toggle-button.pull-right.js-subscribe-button.issuable-subscribe-button.hide-collapsed{ type: "button" , class: (subscribed ? "subscribed" : "unsubscribed") }
-              %span= subscribed ? 'Unsubscribe' : 'Subscribe'
+          %button.btn.toggle-button.pull-right.js-subscribe-button.issuable-subscribe-button.hide-collapsed{ type: "button" , class: (subscribed ? "subscribed" : "unsubscribed") }
+            %span.subscription-label= subscribed ? 'Unsubscribe' : 'Subscribe'
 
       - project_ref = cross_project_reference(@project, issuable)
       .block.project-reference

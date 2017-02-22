@@ -26,6 +26,14 @@
       $.post(toggleActionUrl, () => {
         button.classList.remove('disabled');
 
+        if (isSubscribed) {
+          toggleButton.addClass('unsubscribed')
+          toggleButton.removeClass('subscribed')
+        } else {
+          toggleButton.addClass('subscribed')
+          toggleButton.removeClass('unsubscribed')
+        }
+
         // hack to allow this to work with the issue boards Vue object
         if (document.querySelector('html').classList.contains('issue-boards-page')) {
           gl.issueBoards.boardStoreIssueSet(
@@ -34,13 +42,6 @@
           );
         } else {
           buttonSpan.innerHTML = isSubscribed ? 'Subscribe' : 'Unsubscribe';
-          if (isSubscribed) {
-            toggleButton.addClass('unsubscribed')
-            toggleButton.removeClass('subscribed')
-          } else {
-            toggleButton.addClass('subscribed')
-            toggleButton.removeClass('unsubscribed')
-          }
         }
       });
     }
