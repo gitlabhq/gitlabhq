@@ -952,7 +952,9 @@ Style/AlignParameters:
 
 Style/BarePercentLiterals:
   Enabled: true
-  EnforcedStyle: bare_percent
+
+Style/BracesAroundHashParameters:
+  Enabled: false
 
 Style/CaseEquality:
   Enabled: false

@@ -38,13 +38,6 @@ RSpec/SingleArgumentMessageChain:
   Exclude:
     - 'spec/requests/api/internal_spec.rb'
 
-# Offense count: 399
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: braces, no_braces, context_dependent
-Style/BracesAroundHashParameters:
-  Enabled: false
-
 # Offense count: 33
 # Cop supports --auto-correct.
 Style/ColonMethodCall:
