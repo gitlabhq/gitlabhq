@@ -1,7 +1,7 @@
 module Gitlab
   module Middleware
     class ReadonlyGeo
-      DISALLOWED_METHODS = [%w(POST PATCH PUT DELETE)].freeze
+      DISALLOWED_METHODS = %w(POST PATCH PUT DELETE).freeze
       APPLICATION_JSON = 'application/json'.freeze
       API_VERSIONS = (3..4)
 
