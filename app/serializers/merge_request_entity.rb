@@ -58,4 +58,8 @@ class MergeRequestEntity < IssuableEntity
   expose :target_branch_path do |merge_request|
     '/gitlab-org/gitlab-ce/commits/wiki-doc'
   end
+
+  expose :project_archived do |merge_request|
+    false
+  end
 end

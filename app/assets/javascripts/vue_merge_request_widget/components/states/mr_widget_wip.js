@@ -10,7 +10,7 @@ module.exports = {
   },
   template: `
     <div class="mr-widget-body">
-      <button class="btn btn-success" disabled="disabled">Merge</button>
+      <button class="btn btn-success btn-small" disabled="disabled">Merge</button>
       <span class="bold">This is currently Work In Progress and therefore unable to merge</span>
       <i class="fa fa-question-circle"></i>
       <button class="btn btn-default btn-xs">Resolve WIP status</button>
