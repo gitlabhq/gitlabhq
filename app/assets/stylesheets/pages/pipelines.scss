@@ -1,4 +1,7 @@
 .pipelines {
+  width: 100%;
+  overflow: auto;
+
   .realtime-loading {
     font-size: 40px;
     text-align: center;
@@ -22,7 +25,7 @@
   }
 
   .table.ci-table {
-    min-width: 1200px;
+    width: 100%;
     table-layout: fixed;
 
     .label {
@@ -40,12 +43,12 @@
 
     .pipeline-info,
     .pipeline-commit,
-    .pipeline-stages,
-    .pipeline-actions {
+    .pipeline-stages {
       width: 20%;
     }
 
     .pipeline-actions {
+      width: 20%;
       padding-right: 0;
     }
   }
@@ -99,7 +102,7 @@
     }
 
     .commit-link {
-      padding: 9px 8px 10px;
+      padding: 9px 8px 10px 2px;
     }
   }
 
