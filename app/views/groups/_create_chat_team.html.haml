@@ -4,15 +4,13 @@
       = custom_icon('icon_mattermost')
     Mattermost
   .col-sm-10
-    .checkbox
+    .checkbox.js-toggle-container
       = f.label :create_chat_team do
-        = f.check_box(:create_chat_team, { checked: @group.chat_team }, 'true', 'false')
-        Link the group to a new Mattermost team
-
-.form-group
-  = f.label :chat_team, class: 'control-label' do
-    Chat Team name
-  .col-sm-10
-    = f.text_field :chat_team, placeholder: @group.chat_team, class: 'form-control mattermost-team-name'
-    %small
-      Leave blank to match your group name
+        .js-toggle-button= f.check_box(:create_chat_team, { checked: true }, 'true', 'false')
+        Create a Mattermost team for this group
+      %br
+      %small.light.js-toggle-content
+        Team URL:
+        = Settings.mattermost.host
+        %span> /
+        %span{ "data-bind-out" => "create_chat_team"}

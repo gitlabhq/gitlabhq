@@ -81,7 +81,6 @@ class GroupsController < Groups::ApplicationController
   end
 
   def update
-    byebug
     if Groups::UpdateService.new(@group, current_user, group_params).execute
       redirect_to edit_group_path(@group), notice: "Group '#{@group.name}' was successfully updated."
     else
@@ -143,7 +142,7 @@ class GroupsController < Groups::ApplicationController
       :request_access_enabled,
       :share_with_group_lock,
       :visibility_level,
-      :parent_id
+      :parent_id,
       :create_chat_team,
       :chat_team_name
     ]
