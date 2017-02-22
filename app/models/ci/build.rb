@@ -24,7 +24,7 @@ module Ci
     serialize :yaml_variables, Gitlab::Serializer::Ci::Variables
 
     validates :coverage, numericality: true, allow_blank: true
-    validates_presence_of :ref
+    validates :ref, presence: true
 
     scope :unstarted, ->() { where(runner_id: nil) }
     scope :ignore_failures, ->() { where(allow_failure: false) }

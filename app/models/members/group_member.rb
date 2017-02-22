@@ -5,7 +5,7 @@ class GroupMember < Member
 
   # Make sure group member points only to group as it source
   default_value_for :source_type, SOURCE_TYPE
-  validates_format_of :source_type, with: /\ANamespace\z/
+  validates :source_type, format: { with: /\ANamespace\z/ }
   default_scope { where(source_type: SOURCE_TYPE) }
 
   scope :with_ldap_dn, -> { joins(user: :identities).where("identities.provider LIKE ?", 'ldap%') }

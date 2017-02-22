@@ -115,7 +115,7 @@ class User < ActiveRecord::Base
   #
   # Note: devise :validatable above adds validations for :email and :password
   validates :name, presence: true
-  validates_confirmation_of :email
+  validates :email, confirmation: true
   validates :notification_email, presence: true
   validates :notification_email, email: true, if: ->(user) { user.notification_email != user.email }
   validates :public_email, presence: true, uniqueness: true, email: true, allow_blank: true

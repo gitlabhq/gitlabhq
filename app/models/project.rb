@@ -197,8 +197,8 @@ class Project < ActiveRecord::Base
     format: { with: Gitlab::Regex.project_path_regex,
               message: Gitlab::Regex.project_path_regex_message }
   validates :namespace, presence: true
-  validates_uniqueness_of :name, scope: :namespace_id
-  validates_uniqueness_of :path, scope: :namespace_id
+  validates :name, uniqueness: { scope: :namespace_id }
+  validates :path, uniqueness: { scope: :namespace_id }
   validates :import_url, addressable_url: true, if: :external_import?
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_limit, on: :create
