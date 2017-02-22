@@ -1,9 +1,5 @@
 # GitLab Pages from A to Z: Part 1
 
-> Type: user guide
->
-> Level: beginner
-
 - **Part 1: Static Sites, Domains, DNS Records, and SSL/TLS Certificates**
 - _[Part 2: Quick Start Guide - Setting Up GitLab Pages](getting_started_part_two.md)_
 - _[Part 3: Creating and Tweaking `.gitlab-ci.yml` for GitLab Pages](getting_started_part_three.md)_
@@ -19,14 +15,15 @@ and GitLab EE (Enterprise Edition), please read the
 [admin documentation](https://docs.gitlab.com/ce/administration/pages/index.html),
 and/or watch this [video tutorial](https://youtu.be/dD8c7WNcc6s).
 
-> For this guide, we assume you already have GitLab Pages
+>**Note:**
+For this guide, we assume you already have GitLab Pages
 server up and running for your GitLab instance.
 
 ## What you need to know before getting started
 
 Before we begin, let's understand a few concepts first.
 
-### Static Sites
+### Static sites
 
 GitLab Pages only supports static websites, meaning,
 your output files must be HTML, CSS, and JavaScript only.
@@ -43,7 +40,7 @@ which is highly recommendable and much faster than hardcoding.
 - You can use [any SSG with GitLab Pages](https://about.gitlab.com/2016/06/17/ssg-overview-gitlab-pages-part-3-examples-ci/)
 - Fork an [example project](https://gitlab.com/pages) to build your website based upon
 
-### GitLab Pages Domain
+### GitLab Pages domain
 
 If you set up a GitLab Pages project on GitLab.com,
 it will automatically be accessible under a
@@ -51,7 +48,8 @@ it will automatically be accessible under a
 The `namespace` is defined by your username on GitLab.com,
 or the group name you created this project under.
 
-> Note: If you use your own GitLab instance to deploy your
+>**Note:**
+If you use your own GitLab instance to deploy your
 site with GitLab Pages, check with your sysadmin what's your
 Pages wildcard domain. This guide is valid for any GitLab instance,
 you just need to replace Pages wildcard domain on GitLab.com
@@ -180,7 +178,8 @@ up your Pages project with your custom (sub)domain, if you want
 it secured by HTTPS, you will have to issue a certificate for that
 (sub)domain and install it on your project.
 
-> Note: certificates are NOT required to add to your custom
+>**Note:**
+Certificates are NOT required to add to your custom
 (sub)domain on your GitLab Pages project, though they are
 highly recommendable.
 
@@ -257,7 +256,8 @@ and paste it in the [same field as your PEM certificate](https://about.gitlab.co
 just jumping a line between them.
 - Copy your public key and paste it in the last field
 
-> Note: **do not** open certificates or encryption keys in
+>**Note:**
+**Do not** open certificates or encryption keys in
 regular text editors. Always use code editors (such as
 Sublime Text, Atom, Dreamweaver, Brackets, etc).
 

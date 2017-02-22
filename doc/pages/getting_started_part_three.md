@@ -1,16 +1,12 @@
 # GitLab Pages from A to Z: Part 3
 
-> Type: user guide
->
-> Level: intermediate
-
 - _[Part 1: Static Sites, Domains, DNS Records, and SSL/TLS Certificates](getting_started_part_one.md)_
 - _[Part 2: Quick Start Guide - Setting Up GitLab Pages](getting_started_part_two.md)_
 - **Part 3: Creating and Tweaking `.gitlab-ci.yml` for GitLab Pages**
 
 ---
 
-### Creating and Tweaking `.gitlab-ci.yml` for GitLab Pages
+## Creating and Tweaking `.gitlab-ci.yml` for GitLab Pages
 
 [GitLab CI](https://about.gitlab.com/gitlab-ci/) serves
 numerous purposes, to build, test, and deploy your app
@@ -50,7 +46,7 @@ $ gem install jekyll
 $ jekyll build
 ```
 
-#### Script
+### Script
 
 To transpose this script to Yaml, it would be like this:
 
@@ -60,7 +56,7 @@ script:
   - jekyll build
 ```
 
-#### Job
+### Job
 
 So far so good. Now, each `script`, in GitLab is organized by
 a `job`, which is a bunch of scripts and settings you want to
@@ -84,7 +80,7 @@ pages:
   - jekyll build
 ```
 
-#### `public` Dir
+### The `public` directory
 
 We also need to tell Jekyll where do you want the website to build,
 and GitLab Pages will only consider files in a directory called `public`.
@@ -100,7 +96,7 @@ pages:
   - jekyll build -d public
 ```
 
-#### Artifacts
+### Artifacts
 
 We also need to tell the Runner that this _job_ generates
 _artifacts_, which is the site built by Jekyll.
@@ -138,7 +134,7 @@ your Jekyll 3.4.0 site with GitLab Pages. This is the minimum
 configuration for our example. On the steps below, we'll refine
 the script by adding extra options to our GitLab CI.
 
-#### Image
+### Image
 
 At this point, you probably ask yourself: "okay, but to install Jekyll
 I need Ruby. Where is Ruby on that script?". The answer is simple: the
@@ -168,7 +164,8 @@ need to specify which image you want to use, and this image should
 contain NodeJS as part of its file system. E.g., for a
 [Hexo](https://gitlab.com/pages/hexo) site, you can use `image: node:4.2.2`.
 
-> Note: we're not trying to explain what a Docker image is,
+>**Note:**
+We're not trying to explain what a Docker image is,
 we just need to introduce the concept with a minimum viable
 explanation. To know more about Docker images, please visit
 their website or take a look at a
@@ -176,7 +173,7 @@ their website or take a look at a
 
 Let's go a little further.
 
-#### Branching
+### Branching
 
 If you use GitLab as a version control platform, you will have your
 branching strategy to work on your project. Meaning, you will have
@@ -199,7 +196,7 @@ pages:
   - master
 ```
 
-#### Stages
+### Stages
 
 Another interesting concept to keep in mind are build stages.
 Your web app can pass through a lot of tests and other tasks
@@ -272,7 +269,7 @@ tools much more powerful than that. This is what you
 need to be able to create and tweak your builds for
 your GitLab Pages site.
 
-#### Before Script
+### Before Script
 
 To avoid running the same script multiple times across
 your _jobs_, you can add the parameter `before_script`,
@@ -308,7 +305,7 @@ test:
   - master
 ```
 
-#### Caching Dependencies
+### Caching Dependencies
 
 If you want to cache the installation files for your
 projects dependencies, for building faster, you can
@@ -362,7 +359,7 @@ but also **continuously test** pushes to feature-branches,
 **caches** dependencies installed with Bundler, and
 **continuously deploy** every push to the `master` branch.
 
-### Advanced GitLab CI for GitLab Pages
+## Advanced GitLab CI for GitLab Pages
 
 What you can do with GitLab CI is pretty much up to your
 creativity. Once you get used to it, you start creating
@@ -383,4 +380,4 @@ to deploy this website you're looking at, docs.gitlab.com.
 
 |||
 |:--|--:|
-|[**← Part 1: Static sites, domains, DNS records, and SSL/TLS certificates**](getting_started_part_one.md)|[**Part 2: Quick start guide - Setting up GitLab Pages →**](getting_started_part_two.md)|
+|[**← Part 2: Quick start guide - Setting up GitLab Pages**](getting_started_part_two.md)||
