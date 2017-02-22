@@ -58,10 +58,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       assignee = User.find_by_id(params[:assignee_id])
       @users.push(assignee) if assignee
     end
-<<<<<<< HEAD
-=======
 
->>>>>>> ce/master
     if params[:author_id].present?
       author = User.find_by_id(params[:author_id])
       @users.push(author) if author

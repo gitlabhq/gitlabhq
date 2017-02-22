@@ -101,10 +101,7 @@
 
     resetFilters() {
       const hook = this.getCurrentHook();
-<<<<<<< HEAD
-=======
 
->>>>>>> ce/master
       if (hook) {
         const data = hook.list.data;
         const results = data.map((o) => {

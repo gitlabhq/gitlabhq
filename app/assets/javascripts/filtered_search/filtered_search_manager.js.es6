@@ -4,13 +4,10 @@
       this.filteredSearchInput = document.querySelector('.filtered-search');
       this.clearSearchButton = document.querySelector('.clear-search');
       this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeys;
-<<<<<<< HEAD
 
       if (page === 'issues') {
         this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeysWithWeights;
       }
-=======
->>>>>>> ce/master
 
       if (this.filteredSearchInput) {
         this.tokenizer = gl.FilteredSearchTokenizer;
@@ -125,11 +122,7 @@
         const keyParam = decodeURIComponent(split[0]);
         const value = split[1];
 
-<<<<<<< HEAD
-        // Check if it matches edge conditions listed in gl.FilteredSearchTokenKeys
-=======
         // Check if it matches edge conditions listed in this.filteredSearchTokenKeys
->>>>>>> ce/master
         const condition = this.filteredSearchTokenKeys.searchByConditionUrl(p);
 
         if (condition) {
