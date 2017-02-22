@@ -82,7 +82,7 @@ module Gitlab
     def import_repository(storage, name, url)
       # Timeout should be less than 900 ideally, to prevent the memory killer
       # to silently kill the process without knowing we are timing out here.
-      output, status = Popen::popen([gitlab_shell_projects_path, 'import-project',
+      output, status = Popen.popen([gitlab_shell_projects_path, 'import-project',
                                      storage, "#{name}.git", url, '800'])
       raise Error, output unless status.zero?
       true
