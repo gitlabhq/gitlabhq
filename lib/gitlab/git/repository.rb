@@ -1,5 +1,4 @@
 # Gitlab::Git::Repository is a wrapper around native Rugged::Repository object
-require 'forwardable'
 require 'tempfile'
 require 'forwardable'
 require "rubygems/package"
@@ -7,7 +6,6 @@ require "rubygems/package"
 module Gitlab
   module Git
     class Repository
-      extend Forwardable
       include Gitlab::Git::Popen
 
       SEARCH_CONTEXT_LINES = 3
