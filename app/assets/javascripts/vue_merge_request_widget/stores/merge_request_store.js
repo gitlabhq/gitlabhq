@@ -25,8 +25,9 @@ module.exports = class MergeRequestStore {
     this.canBeCherryPicked = data.can_be_cherry_picked || false;
 
     this.isMerged = this.state == 'merged';
-    this.isWip = this.state == 'opened' && data.work_in_progress;
     this.isClosed = this.state == 'closed';
+    this.isLocked = this.state == 'locked';
+    this.isWip = this.state == 'opened' && data.work_in_progress;
   }
 
   getUserObject(user) {
