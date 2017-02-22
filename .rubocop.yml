@@ -630,10 +630,6 @@ Lint/EndInMethod:
 Lint/EnsureReturn:
   Enabled: true
 
-# The use of eval represents a serious security risk.
-Lint/Eval:
-  Enabled: true
-
 # Catches floating-point literals too large or small for Ruby to represent.
 Lint/FloatOutOfRange:
   Enabled: true
@@ -808,6 +804,10 @@ Performance/TimesMap:
 # Security ####################################################################
 
 Security/JSONLoad:
+  Enabled: true
+
+# This cop checks for the use of *Kernel#eval*.
+Security/Eval:
   Enabled: true
 
 # Rails #######################################################################

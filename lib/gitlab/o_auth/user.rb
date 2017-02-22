@@ -29,12 +29,9 @@ module Gitlab
       def save(provider = 'OAuth')
         unauthorized_to_create unless gl_user
 
-        if needs_blocking?
-          gl_user.save!
-          gl_user.block
-        else
-          gl_user.save!
-        end
+        gl_user.save!
+
+        gl_user.block if needs_blocking?
 
         log.info "(#{provider}) saving user #{auth_hash.email} from login with extern_uid => #{auth_hash.uid}"
         gl_user
