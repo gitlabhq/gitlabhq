@@ -935,6 +935,9 @@ Rails/DynamicFindBy:
 Rails/HttpPositionalArguments:
   Enabled: false
 
+Rails/OutputSafety:
+  Enabled: false
+
 Rails/TimeZone:
   Enabled: false
 
