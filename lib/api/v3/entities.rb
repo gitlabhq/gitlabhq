@@ -195,6 +195,16 @@ module API
       class TriggerRequest < Grape::Entity
         expose :id, :variables
       end
+
+      class Build < Grape::Entity
+        expose :id, :status, :stage, :name, :ref, :tag, :coverage
+        expose :created_at, :started_at, :finished_at
+        expose :user, with: ::API::Entities::User
+        expose :artifacts_file, using: ::API::Entities::JobArtifactFile, if: -> (build, opts) { build.artifacts? }
+        expose :commit, with: ::API::Entities::RepoCommit
+        expose :runner, with: ::API::Entities::Runner
+        expose :pipeline, with: ::API::Entities::PipelineBasic
+      end
     end
   end
 end

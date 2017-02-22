@@ -1,5 +1,5 @@
 module API
-  class Builds < Grape::API
+  class Jobs < Grape::API
     include PaginationParams
 
     before { authenticate! }
@@ -13,9 +13,10 @@ module API
           optional :scope, types: [String, Array[String]], desc: 'The scope of builds to show',
                            values: ::CommitStatus::AVAILABLE_STATUSES,
                            coerce_with: ->(scope) {
-                             if scope.is_a?(String)
+                             case scope
+                             when String
                                [scope]
-                             elsif scope.is_a?(Hashie::Mash)
+                             when Hashie::Mash
                                scope.values
                              else
                                ['unknown']
@@ -24,30 +25,30 @@ module API
         end
       end
 
-      desc 'Get a project builds' do
-        success Entities::Build
+      desc 'Get a projects jobs' do
+        success Entities::Job
       end
       params do
         use :optional_scope
         use :pagination
       end
-      get ':id/builds' do
+      get ':id/jobs' do
         builds = user_project.builds.order('id DESC')
         builds = filter_builds(builds, params[:scope])
 
-        present paginate(builds), with: Entities::Build,
+        present paginate(builds), with: Entities::Job,
                                   user_can_download_artifacts: can?(current_user, :read_build, user_project)
       end
 
-      desc 'Get builds for a specific commit of a project' do
-        success Entities::Build
+      desc 'Get jobs for a specific commit of a project' do
+        success Entities::Job
       end
       params do
         requires :sha, type: String, desc: 'The SHA id of a commit'
         use :optional_scope
         use :pagination
       end
-      get ':id/repository/commits/:sha/builds' do
+      get ':id/repository/commits/:sha/jobs' do
         authorize_read_builds!
 
         return not_found! unless user_project.commit(params[:sha])
@@ -56,47 +57,47 @@ module API
         builds = user_project.builds.where(pipeline: pipelines).order('id DESC')
         builds = filter_builds(builds, params[:scope])
 
-        present paginate(builds), with: Entities::Build,
+        present paginate(builds), with: Entities::Job,
                                   user_can_download_artifacts: can?(current_user, :read_build, user_project)
       end
 
-      desc 'Get a specific build of a project' do
-        success Entities::Build
+      desc 'Get a specific job of a project' do
+        success Entities::Job
       end
       params do
-        requires :build_id, type: Integer, desc: 'The ID of a build'
+        requires :job_id, type: Integer, desc: 'The ID of a job'
       end
-      get ':id/builds/:build_id' do
+      get ':id/jobs/:job_id' do
         authorize_read_builds!
 
-        build = get_build!(params[:build_id])
+        build = get_build!(params[:job_id])
 
-        present build, with: Entities::Build,
+        present build, with: Entities::Job,
                        user_can_download_artifacts: can?(current_user, :read_build, user_project)
       end
 
-      desc 'Download the artifacts file from build' do
+      desc 'Download the artifacts file from a job' do
         detail 'This feature was introduced in GitLab 8.5'
       end
       params do
-        requires :build_id, type: Integer, desc: 'The ID of a build'
+        requires :job_id, type: Integer, desc: 'The ID of a job'
       end
-      get ':id/builds/:build_id/artifacts' do
+      get ':id/jobs/:job_id/artifacts' do
         authorize_read_builds!
 
-        build = get_build!(params[:build_id])
+        build = get_build!(params[:job_id])
 
         present_artifacts!(build.artifacts_file)
       end
 
-      desc 'Download the artifacts file from build' do
+      desc 'Download the artifacts file from a job' do
         detail 'This feature was introduced in GitLab 8.10'
       end
       params do
         requires :ref_name, type: String, desc: 'The ref from repository'
-        requires :job,      type: String, desc: 'The name for the build'
+        requires :job,      type: String, desc: 'The name for the job'
       end
-      get ':id/builds/artifacts/:ref_name/download',
+      get ':id/jobs/artifacts/:ref_name/download',
         requirements: { ref_name: /.+/ } do
         authorize_read_builds!
 
@@ -109,14 +110,14 @@ module API
       # TODO: We should use `present_file!` and leave this implementation for backward compatibility (when build trace
       #       is saved in the DB instead of file). But before that, we need to consider how to replace the value of
       #       `runners_token` with some mask (like `xxxxxx`) when sending trace file directly by workhorse.
-      desc 'Get a trace of a specific build of a project'
+      desc 'Get a trace of a specific job of a project'
       params do
-        requires :build_id, type: Integer, desc: 'The ID of a build'
+        requires :job_id, type: Integer, desc: 'The ID of a job'
       end
-      get ':id/builds/:build_id/trace' do
+      get ':id/jobs/:job_id/trace' do
         authorize_read_builds!
 
-        build = get_build!(params[:build_id])
+        build = get_build!(params[:job_id])
 
         header 'Content-Disposition', "infile; filename=\"#{build.id}.log\""
         content_type 'text/plain'
@@ -126,95 +127,95 @@ module API
         body trace
       end
 
-      desc 'Cancel a specific build of a project' do
-        success Entities::Build
+      desc 'Cancel a specific job of a project' do
+        success Entities::Job
       end
       params do
-        requires :build_id, type: Integer, desc: 'The ID of a build'
+        requires :job_id, type: Integer, desc: 'The ID of a job'
       end
-      post ':id/builds/:build_id/cancel' do
+      post ':id/jobs/:job_id/cancel' do
         authorize_update_builds!
 
-        build = get_build!(params[:build_id])
+        build = get_build!(params[:job_id])
 
         build.cancel
 
-        present build, with: Entities::Build,
+        present build, with: Entities::Job,
                        user_can_download_artifacts: can?(current_user, :read_build, user_project)
       end
 
       desc 'Retry a specific build of a project' do
-        success Entities::Build
+        success Entities::Job
       end
       params do
-        requires :build_id, type: Integer, desc: 'The ID of a build'
+        requires :job_id, type: Integer, desc: 'The ID of a build'
       end
-      post ':id/builds/:build_id/retry' do
+      post ':id/jobs/:job_id/retry' do
         authorize_update_builds!
 
-        build = get_build!(params[:build_id])
-        return forbidden!('Build is not retryable') unless build.retryable?
+        build = get_build!(params[:job_id])
+        return forbidden!('Job is not retryable') unless build.retryable?
 
         build = Ci::Build.retry(build, current_user)
 
-        present build, with: Entities::Build,
+        present build, with: Entities::Job,
                        user_can_download_artifacts: can?(current_user, :read_build, user_project)
       end
 
-      desc 'Erase build (remove artifacts and build trace)' do
-        success Entities::Build
+      desc 'Erase job (remove artifacts and the trace)' do
+        success Entities::Job
       end
       params do
-        requires :build_id, type: Integer, desc: 'The ID of a build'
+        requires :job_id, type: Integer, desc: 'The ID of a build'
       end
-      post ':id/builds/:build_id/erase' do
+      post ':id/jobs/:job_id/erase' do
         authorize_update_builds!
 
-        build = get_build!(params[:build_id])
-        return forbidden!('Build is not erasable!') unless build.erasable?
+        build = get_build!(params[:job_id])
+        return forbidden!('Job is not erasable!') unless build.erasable?
 
         build.erase(erased_by: current_user)
-        present build, with: Entities::Build,
+        present build, with: Entities::Job,
                        user_can_download_artifacts: can?(current_user, :download_build_artifacts, user_project)
       end
 
       desc 'Keep the artifacts to prevent them from being deleted' do
-        success Entities::Build
+        success Entities::Job
       end
       params do
-        requires :build_id, type: Integer, desc: 'The ID of a build'
+        requires :job_id, type: Integer, desc: 'The ID of a job'
       end
-      post ':id/builds/:build_id/artifacts/keep' do
+      post ':id/jobs/:job_id/artifacts/keep' do
         authorize_update_builds!
 
-        build = get_build!(params[:build_id])
+        build = get_build!(params[:job_id])
         return not_found!(build) unless build.artifacts?
 
         build.keep_artifacts!
 
         status 200
-        present build, with: Entities::Build,
+        present build, with: Entities::Job,
                        user_can_download_artifacts: can?(current_user, :read_build, user_project)
       end
 
-      desc 'Trigger a manual build' do
-        success Entities::Build
+      desc 'Trigger a manual job' do
+        success Entities::Job
         detail 'This feature was added in GitLab 8.11'
       end
       params do
-        requires :build_id, type: Integer, desc: 'The ID of a Build'
+        requires :job_id, type: Integer, desc: 'The ID of a Job'
       end
-      post ":id/builds/:build_id/play" do
+      post ":id/jobs/:job_id/play" do
         authorize_read_builds!
 
-        build = get_build!(params[:build_id])
+        build = get_build!(params[:job_id])
 
         bad_request!("Unplayable Job") unless build.playable?
 
         build.play(current_user)
 
         status 200
-        present build, with: Entities::Build,
+        present build, with: Entities::Job,
                        user_can_download_artifacts: can?(current_user, :read_build, user_project)
       end
     end
