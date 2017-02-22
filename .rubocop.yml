@@ -204,6 +204,7 @@ Style/For:
 # Checks if there is a magic comment to enforce string literals
 Style/FrozenStringLiteralComment:
   Enabled: false
+
 # Do not introduce global variables.
 Style/GlobalVars:
   Enabled: true
@@ -262,7 +263,7 @@ Style/ModuleFunction:
 # Checks that the closing brace in an array literal is either on the same line
 # as the last array element, or a new line.
 Style/MultilineArrayBraceLayout:
-  Enabled: false
+  Enabled: true
   EnforcedStyle: symmetrical
 
 # Avoid multi-line chains of blocks.

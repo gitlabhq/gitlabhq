@@ -374,11 +374,13 @@ describe 'Git LFS API and storage' do
     describe 'download' do
       let(:project) { create(:empty_project) }
       let(:body) do
-        { 'operation' => 'download',
+        {
+          'operation' => 'download',
           'objects' => [
             { 'oid' => sample_oid,
               'size' => sample_size
-            }]
+            }
+          ]
         }
       end
 
@@ -393,16 +395,19 @@ describe 'Git LFS API and storage' do
           end
 
           it 'with href to download' do
-            expect(json_response).to eq('objects' => [
-              { 'oid' => sample_oid,
-                'size' => sample_size,
-                'actions' => {
-                  'download' => {
-                    'href' => "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}",
-                    'header' => { 'Authorization' => authorization }
+            expect(json_response).to eq({
+              'objects' => [
+                { 'oid' => sample_oid,
+                  'size' => sample_size,
+                  'actions' => {
+                    'download' => {
+                      'href' => "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}",
+                      'header' => { 'Authorization' => authorization }
+                    }
                   }
                 }
-              }])
+              ]
+            })
           end
         end
 
@@ -417,24 +422,29 @@ describe 'Git LFS API and storage' do
           end
 
           it 'with href to download' do
-            expect(json_response).to eq('objects' => [
-              { 'oid' => sample_oid,
-                'size' => sample_size,
-                'error' => {
-                  'code' => 404,
-                  'message' => "Object does not exist on the server or you don't have permissions to access it",
+            expect(json_response).to eq({
+              'objects' => [
+                { 'oid' => sample_oid,
+                  'size' => sample_size,
+                  'error' => {
+                    'code' => 404,
+                    'message' => "Object does not exist on the server or you don't have permissions to access it",
+                  }
                 }
-              }])
+              ]
+            })
           end
         end
 
         context 'when downloading a lfs object that does not exist' do
           let(:body) do
-            { 'operation' => 'download',
+            {
+              'operation' => 'download',
               'objects' => [
                 { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
                   'size' => 1575078
-                }]
+                }
+              ]
             }
           end
 
@@ -443,14 +453,17 @@ describe 'Git LFS API and storage' do
           end
 
           it 'with an 404 for specific object' do
-            expect(json_response).to eq('objects' => [
-              { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
-                'size' => 1575078,
-                'error' => {
-                  'code' => 404,
-                  'message' => "Object does not exist on the server or you don't have permissions to access it",
+            expect(json_response).to eq({
+              'objects' => [
+                { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
+                  'size' => 1575078,
+                  'error' => {
+                    'code' => 404,
+                    'message' => "Object does not exist on the server or you don't have permissions to access it",
+                  }
                 }
-              }])
+              ]
+            })
           end
         end
 
@@ -477,23 +490,28 @@ describe 'Git LFS API and storage' do
           end
 
           it 'responds with upload hypermedia link for the new object' do
-            expect(json_response).to eq('objects' => [
-              { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
-                'size' => 1575078,
-                'error' => {
-                  'code' => 404,
-                  'message' => "Object does not exist on the server or you don't have permissions to access it",
-                }
-              },
-              { 'oid' => sample_oid,
-                'size' => sample_size,
-                'actions' => {
-                  'download' => {
-                    'href' => "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}",
-                    'header' => { 'Authorization' => authorization }
+            expect(json_response).to eq({
+              'objects' => [
+                {
+                  'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
+                  'size' => 1575078,
+                  'error' => {
+                    'code' => 404,
+                    'message' => "Object does not exist on the server or you don't have permissions to access it",
+                  }
+                },
+                {
+                  'oid' => sample_oid,
+                  'size' => sample_size,
+                  'actions' => {
+                    'download' => {
+                      'href' => "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}",
+                      'header' => { 'Authorization' => authorization }
+                    }
                   }
                 }
-              }])
+              ]
+            })
           end
         end
       end
@@ -597,17 +615,20 @@ describe 'Git LFS API and storage' do
           end
 
           it 'responds with status 200 and href to download' do
-            expect(json_response).to eq('objects' => [
-              { 'oid' => sample_oid,
-                'size' => sample_size,
-                'authenticated' => true,
-                'actions' => {
-                  'download' => {
-                    'href' => "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}",
-                    'header' => {}
+            expect(json_response).to eq({
+              'objects' => [
+                { 'oid' => sample_oid,
+                  'size' => sample_size,
+                  'authenticated' => true,
+                  'actions' => {
+                    'download' => {
+                      'href' => "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}",
+                      'header' => {}
+                    }
                   }
                 }
-              }])
+              ]
+            })
           end
         end
 
@@ -626,11 +647,13 @@ describe 'Git LFS API and storage' do
     describe 'upload' do
       let(:project) { create(:project, :public) }
       let(:body) do
-        { 'operation' => 'upload',
+        {
+          'operation' => 'upload',
           'objects' => [
             { 'oid' => sample_oid,
               'size' => sample_size
-            }]
+            }
+          ]
         }
       end
 
@@ -668,11 +691,13 @@ describe 'Git LFS API and storage' do
             let(:sample_oid) { '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897' }
 
             let(:body) do
-              { 'operation' => 'upload',
+              {
+                'operation' => 'upload',
                 'objects' => [
                   { 'oid' => sample_oid,
                     'size' => sample_size
-                  }]
+                  }
+                ]
               }
             end
 
@@ -825,11 +850,13 @@ describe 'Git LFS API and storage' do
       let(:project) { create(:empty_project) }
       let(:authorization) { authorize_user }
       let(:body) do
-        { 'operation' => 'other',
+        {
+          'operation' => 'other',
           'objects' => [
             { 'oid' => sample_oid,
               'size' => sample_size
-            }]
+            }
+          ]
         }
       end
 
