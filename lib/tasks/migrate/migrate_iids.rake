@@ -24,7 +24,7 @@ task migrate_iids: :environment do
       else
         print 'F'
       end
-    rescue => ex
+    rescue
       print 'F'
     end
   end

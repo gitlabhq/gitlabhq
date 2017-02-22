@@ -22,13 +22,6 @@ AllCops:
     - 'db/fixtures/**/*'
     - 'tmp/**/*'
     - 'bin/**/*'
-    - 'lib/backup/**/*'
-    - 'lib/ci/backup/**/*'
-    - 'lib/tasks/**/*'
-    - 'lib/ci/migrate/**/*'
-    - 'lib/email_validator.rb'
-    - 'lib/gitlab/upgrader.rb'
-    - 'lib/gitlab/seeder.rb'
     - 'generator_templates/**/*'
 
 # Style #######################################################################
@@ -208,6 +201,9 @@ Style/FrozenStringLiteralComment:
 # Do not introduce global variables.
 Style/GlobalVars:
   Enabled: true
+  Exclude:
+    - 'lib/backup/**/*'
+    - 'lib/tasks/**/*'
 
 # Prefer Ruby 1.9 hash syntax `{ a: 1, b: 2 }`
 # over 1.8 syntax `{ :a => 1, :b => 2 }`.
@@ -780,6 +776,11 @@ Rails/HasAndBelongsToMany:
 # Checks for calls to puts, print, etc.
 Rails/Output:
   Enabled: true
+  Exclude:
+    - lib/gitlab/seeder.rb
+    - lib/gitlab/upgrader.rb
+    - 'lib/backup/**/*'
+    - 'lib/tasks/**/*'
 
 # Checks for incorrect grammar when using methods like `3.day.ago`.
 Rails/PluralizationGrammar:
@@ -971,3 +972,9 @@ Style/ConditionalAssignment:
 
 Style/DoubleNegation:
   Enabled: false
+
+Rails/Exit:
+  Enabled: true
+  Exclude:
+    - lib/gitlab/upgrader.rb
+    - 'lib/backup/**/*'
