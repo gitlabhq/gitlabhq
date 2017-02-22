@@ -54,6 +54,11 @@ Style/AlignArray:
 Style/AlignHash:
   Enabled: true
 
+# Whether `and` and `or` are banned only in conditionals (conditionals)
+# or completely (always).
+Style/AndOr:
+  Enabled: true
+
 # Use `Array#join` instead of `Array#*`.
 Style/ArrayJoin:
   Enabled: true

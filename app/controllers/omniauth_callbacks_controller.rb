@@ -133,7 +133,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     else
       error_message = @user.errors.full_messages.to_sentence
 
-      redirect_to omniauth_error_path(oauth['provider'], error: error_message) and return
+      return redirect_to omniauth_error_path(oauth['provider'], error: error_message)
     end
   end
 

@@ -7,7 +7,7 @@ module Banzai
     #
     class PlantumlFilter < HTML::Pipeline::Filter
       def call
-        return doc unless doc.at('pre.plantuml') and settings.plantuml_enabled
+        return doc unless doc.at('pre.plantuml') && settings.plantuml_enabled
 
         plantuml_setup
 
