@@ -23,6 +23,7 @@ describe Issue, 'Spammable' do
     describe '#check_for_spam?' do
       it 'returns true for public project' do
         issue.project.update_attribute(:visibility_level, Gitlab::VisibilityLevel::PUBLIC)
+
         expect(issue.check_for_spam?).to eq(true)
       end
 
