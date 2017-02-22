@@ -79,11 +79,16 @@ module Gitlab
       end
     end
 
-    def self.create_connection_pool(pool_size)
+    # pool_size - The size of the DB pool.
+    # host - An optional host name to use instead of the default one.
+    def self.create_connection_pool(pool_size, host = nil)
       # See activerecord-4.2.7.1/lib/active_record/connection_adapters/connection_specification.rb
       env = Rails.env
       original_config = ActiveRecord::Base.configurations
+
       env_config = original_config[env].merge('pool' => pool_size)
+      env_config['host'] = host if host
+
       config = original_config.merge(env => env_config)
 
       spec =

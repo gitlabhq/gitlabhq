@@ -26,6 +26,21 @@ describe Gitlab::ChatCommands::Presenters::IssueShow do
     end
   end
 
+  context 'with labels' do
+    let(:label) { create(:label, project: project, title: 'mep') }
+    let(:label1) { create(:label, project: project, title: 'mop') }
+
+    before do
+      issue.labels << [label, label1]
+    end
+
+    it 'shows the labels' do
+      labels = attachment[:fields].find { |f| f[:title] == 'Labels' }
+
+      expect(labels[:value]).to eq("mep, mop")
+    end
+  end
+
   context 'confidential issue' do
     let(:issue) { create(:issue, project: project) }
 
