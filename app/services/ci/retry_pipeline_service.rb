@@ -5,13 +5,18 @@ module Ci
         raise Gitlab::Access::AccessDeniedError
       end
 
-      pipeline.builds.failed_or_canceled.find_each do |build|
-        next unless build.retryable?
+      pipeline.builds.failed_or_canceled.tap do |builds|
+        stage_idx = builds.order('stage_idx ASC')
+          .pluck('DISTINCT stage_idx').first
 
-        pipeline.mark_as_processable_after_stage(build.stage_idx)
+        pipeline.mark_as_processable_after_stage(stage_idx)
 
-        Ci::RetryBuildService.new(project, current_user)
-          .reprocess(build)
+        builds.find_each do |build|
+          next unless build.retryable?
+
+          Ci::RetryBuildService.new(project, current_user)
+            .reprocess(build)
+        end
       end
 
       MergeRequests::AddTodoWhenBuildFailsService
