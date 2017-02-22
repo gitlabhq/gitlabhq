@@ -231,6 +231,10 @@ module API
       end
     end
 
+    def render_spam_error!
+      render_api_error!({ error: 'Spam detected' }, 400)
+    end
+
     def render_api_error!(message, status)
       error!({ 'message' => message }, status, header)
     end

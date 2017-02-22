@@ -37,27 +37,22 @@ class Projects::SnippetsController < Projects::ApplicationController
   end
 
   def create
-    create_params = snippet_params.merge(request: request)
+    create_params = snippet_params.merge(spammable_params)
+
     @snippet = CreateSnippetService.new(@project, current_user, create_params).execute
 
-    if @snippet.valid?
-      respond_with(@snippet,
-                   location: namespace_project_snippet_path(@project.namespace,
-                                                            @project, @snippet))
-    else
-      render :new
-    end
+    recaptcha_check_with_fallback { render :new }
   end
 
   def edit
   end
 
   def update
-    UpdateSnippetService.new(project, current_user, @snippet,
-                             snippet_params).execute
-    respond_with(@snippet,
-                 location: namespace_project_snippet_path(@project.namespace,
-                                                          @project, @snippet))
+    update_params = snippet_params.merge(spammable_params)
+
+    UpdateSnippetService.new(project, current_user, @snippet, update_params).execute
+
+    recaptcha_check_with_fallback { render :edit }
   end
 
   def show

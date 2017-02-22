@@ -150,6 +150,113 @@ describe Projects::IssuesController do
         end
       end
 
+      context 'Akismet is enabled' do
+        let(:project) { create(:project_empty_repo, :public) }
+
+        before do
+          stub_application_setting(recaptcha_enabled: true)
+          allow_any_instance_of(SpamService).to receive(:check_for_spam?).and_return(true)
+        end
+
+        context 'when an issue is not identified as spam' do
+          before do
+            allow_any_instance_of(described_class).to receive(:verify_recaptcha).and_return(false)
+            allow_any_instance_of(AkismetService).to receive(:is_spam?).and_return(false)
+          end
+
+          it 'normally updates the issue' do
+            expect { update_issue(title: 'Foo') }.to change { issue.reload.title }.to('Foo')
+          end
+        end
+
+        context 'when an issue is identified as spam' do
+          before { allow_any_instance_of(AkismetService).to receive(:is_spam?).and_return(true) }
+
+          context 'when captcha is not verified' do
+            def update_spam_issue
+              update_issue(title: 'Spam Title', description: 'Spam lives here')
+            end
+
+            before { allow_any_instance_of(described_class).to receive(:verify_recaptcha).and_return(false) }
+
+            it 'rejects an issue recognized as a spam' do
+              expect { update_spam_issue }.not_to change{ issue.reload.title }
+            end
+
+            it 'rejects an issue recognized as a spam when recaptcha disabled' do
+              stub_application_setting(recaptcha_enabled: false)
+
+              expect { update_spam_issue }.not_to change{ issue.reload.title }
+            end
+
+            it 'creates a spam log' do
+              update_spam_issue
+
+              spam_logs = SpamLog.all
+
+              expect(spam_logs.count).to eq(1)
+              expect(spam_logs.first.title).to eq('Spam Title')
+              expect(spam_logs.first.recaptcha_verified).to be_falsey
+            end
+
+            it 'renders verify template' do
+              update_spam_issue
+
+              expect(response).to render_template(:verify)
+            end
+          end
+
+          context 'when captcha is verified' do
+            let(:spammy_title) { 'Whatever' }
+            let!(:spam_logs) { create_list(:spam_log, 2, user: user, title: spammy_title) }
+
+            def update_verified_issue
+              update_issue({ title: spammy_title },
+                           { spam_log_id: spam_logs.last.id,
+                             recaptcha_verification: true })
+            end
+
+            before do
+              allow_any_instance_of(described_class).to receive(:verify_recaptcha)
+                .and_return(true)
+            end
+
+            it 'redirect to issue page' do
+              update_verified_issue
+
+              expect(response).
+                to redirect_to(namespace_project_issue_path(project.namespace, project, issue))
+            end
+
+            it 'accepts an issue after recaptcha is verified' do
+              expect{ update_verified_issue }.to change{ issue.reload.title }.to(spammy_title)
+            end
+
+            it 'marks spam log as recaptcha_verified' do
+              expect { update_verified_issue }.to change { SpamLog.last.recaptcha_verified }.from(false).to(true)
+            end
+
+            it 'does not mark spam log as recaptcha_verified when it does not belong to current_user' do
+              spam_log = create(:spam_log)
+
+              expect { update_issue(spam_log_id: spam_log.id, recaptcha_verification: true) }.
+                not_to change { SpamLog.last.recaptcha_verified }
+            end
+          end
+        end
+      end
+
+      def update_issue(issue_params = {}, additional_params = {})
+        params = {
+          namespace_id: project.namespace.to_param,
+          project_id: project.to_param,
+          id: issue.iid,
+          issue: issue_params
+        }.merge(additional_params)
+
+        put :update, params
+      end
+
       def move_issue
         put :update,
           namespace_id: project.namespace.to_param,
@@ -382,7 +489,7 @@ describe Projects::IssuesController do
         allow_any_instance_of(SpamService).to receive(:check_for_spam?).and_return(true)
       end
 
-      context 'when an issue is not identified as a spam' do
+      context 'when an issue is not identified as spam' do
         before do
           allow_any_instance_of(described_class).to receive(:verify_recaptcha).and_return(false)
           allow_any_instance_of(AkismetService).to receive(:is_spam?).and_return(false)
@@ -393,7 +500,7 @@ describe Projects::IssuesController do
         end
       end
 
-      context 'when an issue is identified as a spam' do
+      context 'when an issue is identified as spam' do
         before { allow_any_instance_of(AkismetService).to receive(:is_spam?).and_return(true) }
 
         context 'when captcha is not verified' do

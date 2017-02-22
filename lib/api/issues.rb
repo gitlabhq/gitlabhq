@@ -177,9 +177,13 @@ module API
           params.delete(:updated_at)
         end
 
+        update_params = declared_params(include_missing: false).merge(request: request, api: true)
+
         issue = ::Issues::UpdateService.new(user_project,
                                             current_user,
-                                            declared_params(include_missing: false)).execute(issue)
+                                            update_params).execute(issue)
+
+        render_spam_error! if issue.spam?
 
         if issue.valid?
           present issue, with: Entities::Issue, current_user: current_user, project: user_project

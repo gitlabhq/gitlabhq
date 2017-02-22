@@ -229,16 +229,6 @@ describe Issues::CreateService, services: true do
             expect { issue }.not_to change{SpamLog.last.recaptcha_verified}
           end
         end
-
-        context 'when spam log title does not match the issue title' do
-          before do
-            opts[:title] = 'Another issue'
-          end
-
-          it 'does not mark spam_log as recaptcha_verified' do
-            expect { issue }.not_to change{SpamLog.last.recaptcha_verified}
-          end
-        end
       end
 
       context 'when recaptcha was not verified' do

@@ -919,6 +919,33 @@ describe API::Issues, api: true  do
     end
   end
 
+  describe 'PUT /projects/:id/issues/:issue_id with spam filtering' do
+    let(:params) do
+      {
+        title: 'updated title',
+        description: 'content here',
+        labels: 'label, label2'
+      }
+    end
+
+    it "does not create a new project issue" do
+      allow_any_instance_of(SpamService).to receive_messages(check_for_spam?: true)
+      allow_any_instance_of(AkismetService).to receive_messages(is_spam?: true)
+
+      put api("/projects/#{project.id}/issues/#{issue.id}", user), params
+
+      expect(response).to have_http_status(400)
+      expect(json_response['message']).to eq({ "error" => "Spam detected" })
+
+      spam_logs = SpamLog.all
+      expect(spam_logs.count).to eq(1)
+      expect(spam_logs[0].title).to eq('updated title')
+      expect(spam_logs[0].description).to eq('content here')
+      expect(spam_logs[0].user).to eq(user)
+      expect(spam_logs[0].noteable_type).to eq('Issue')
+    end
+  end
+
   describe 'PUT /projects/:id/issues/:issue_id to update labels' do
     let!(:label) { create(:label, title: 'dummy', project: project) }
     let!(:label_link) { create(:label_link, label: label, target: issue) }
