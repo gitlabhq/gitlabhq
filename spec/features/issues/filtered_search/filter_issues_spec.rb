@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 describe 'Filter issues', js: true, feature: true do
+  include FilteredSearchHelpers
   include WaitForAjax
 
   let!(:group) { create(:group) }
@@ -17,19 +18,6 @@ describe 'Filter issues', js: true, feature: true do
   let!(:multiple_words_label) { create(:label, project: project, title: "Two words") }
 
   let!(:closed_issue) { create(:issue, title: 'bug that is closed', project: project, state: :closed) }
-  let(:filtered_search) { find('.filtered-search') }
-
-  def input_filtered_search(search_term, submit: true)
-    filtered_search.set(search_term)
-
-    if submit
-      filtered_search.send_keys(:enter)
-    end
-  end
-
-  def expect_filtered_search_input(input)
-    expect(find('.filtered-search').value).to eq(input)
-  end
 
   def expect_no_issues_list
     page.within '.issues-list' do
