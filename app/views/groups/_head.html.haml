@@ -1,0 +1,19 @@
+= content_for :sub_nav do
+  .scrolling-tabs-container.sub-nav-scroll
+    = render 'shared/nav_scroll'
+    .nav-links.sub-nav.scrolling-tabs
+      %ul{ class: container_class }
+        = nav_link(path: 'groups#show', html_options: { class: 'home' }) do
+          = link_to group_path(@group), title: 'Group Home' do
+            %span
+              Home
+
+        = nav_link(path: 'groups#activity') do
+          = link_to activity_group_path(@group), title: 'Activity' do
+            %span
+              Activity
+
+        = nav_link(path: 'group_members#index') do
+          = link_to group_group_members_path(@group), title: 'Members' do
+            %span
+              Members
