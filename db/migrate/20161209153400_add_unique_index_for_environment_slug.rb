@@ -5,7 +5,7 @@ class AddUniqueIndexForEnvironmentSlug < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = true
-  DOWNTIME_REASON = 'Adding a *unique* index to environments.slug'.freeze
+  DOWNTIME_REASON = 'Adding a *unique* index to environments.slug'
 
   disable_ddl_transaction!
 

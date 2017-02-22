@@ -354,6 +354,9 @@ Style/MultilineTernaryOperator:
 # mutable literal (e.g. array or hash).
 Style/MutableConstant:
   Enabled: true
+  Exclude:
+    - 'db/migrate/**/*'
+    - 'db/post_migrate/**/*'
 
 # Favor unless over if for negative conditions (or control flow or).
 Style/NegatedIf:

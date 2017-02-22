@@ -2,7 +2,7 @@ class MigrateProjectStatistics < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = true
-  DOWNTIME_REASON = 'Removes two columns from the projects table'.freeze
+  DOWNTIME_REASON = 'Removes two columns from the projects table'
 
   def up
     # convert repository_size in float (megabytes) to integer (bytes),

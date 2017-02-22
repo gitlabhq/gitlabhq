@@ -2,7 +2,7 @@ class MigrateLabelsPriority < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = true
-  DOWNTIME_REASON = 'Prioritized labels will not work as expected until this migration is complete.'.freeze
+  DOWNTIME_REASON = 'Prioritized labels will not work as expected until this migration is complete.'
 
   disable_ddl_transaction!
 

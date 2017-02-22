@@ -2,7 +2,7 @@ class FixupEnvironmentNameUniqueness < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = true
-  DOWNTIME_REASON = 'Renaming non-unique environments'.freeze
+  DOWNTIME_REASON = 'Renaming non-unique environments'
 
   def up
     environments = Arel::Table.new(:environments)
@@ -42,10 +42,10 @@ class FixupEnvironmentNameUniqueness < ActiveRecord::Migration
     conflicts.each do |id, name|
       update_sql =
         Arel::UpdateManager.new(ActiveRecord::Base)
-        .table(environments)
-        .set(environments[:name] => name + "-" + id.to_s)
-        .where(environments[:id].eq(id))
-        .to_sql
+          .table(environments)
+          .set(environments[:name] => name + "-" + id.to_s)
+          .where(environments[:id].eq(id))
+          .to_sql
 
       connection.exec_update(update_sql, self.class.name, [])
     end

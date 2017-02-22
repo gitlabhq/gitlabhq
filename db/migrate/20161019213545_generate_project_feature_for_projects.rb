@@ -1,7 +1,7 @@
 class GenerateProjectFeatureForProjects < ActiveRecord::Migration
   DOWNTIME = true
 
-  DOWNTIME_REASON = <<-HEREDOC.freeze
+  DOWNTIME_REASON = <<-HEREDOC
     Application was eager loading project_feature for all projects generating an extra query
     everytime a project was fetched. We removed that behavior to avoid the extra query, this migration
     makes sure all projects have a project_feature record associated.
