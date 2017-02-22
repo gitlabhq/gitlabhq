@@ -33,12 +33,8 @@ class GpgKey < ActiveRecord::Base
   private
 
   def extract_fingerprint
-    import = GPGME::Key.import(key)
-
-    return if import.considered == 0
-
     # we can assume that the result only contains one item as the validation
     # only allows one key
-    self.fingerprint = import.imports.first.fingerprint
+    self.fingerprint = Gitlab::Gpg.fingerprints_from_key(key).first
   end
 end

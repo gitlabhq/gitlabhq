@@ -1,0 +1,20 @@
+require 'rails_helper'
+
+describe Gitlab::Gpg do
+  describe '.fingerprints_from_key' do
+    it 'returns the fingerprint' do
+      expect(
+        described_class.fingerprints_from_key(GpgHelpers.public_key)
+      ).to eq ['4F4840A503964251CF7D7F5DC728AF10972E97C0']
+    end
+
+    it 'returns an empty array when the key is invalid' do
+      expect(
+        described_class.fingerprints_from_key('bogus')
+      ).to eq []
+    end
+  end
+
+  describe '.add_to_keychain' do
+  end
+end

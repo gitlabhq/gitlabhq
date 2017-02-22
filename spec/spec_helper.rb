@@ -143,14 +143,8 @@ RSpec.configure do |config|
   end
 
   config.around(:each, :gpg) do |example|
-    Dir.mktmpdir do |dir|
-      original_dir = GPGME::Engine.dirinfo('homedir')
-
-      GPGME::Engine.home_dir = dir
-
+    Gitlab::Gpg.using_tmp_keychain do
       example.run
-
-      GPGME::Engine.home_dir = original_dir
     end
   end
 end
