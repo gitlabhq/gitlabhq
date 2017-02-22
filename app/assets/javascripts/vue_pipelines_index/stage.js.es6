@@ -23,19 +23,13 @@
         required: true,
       },
     },
-    mounted() {
-      /**
-       * When the user right clicks or cmd/ctrl + click in the job name or action icon,
-       * the dropdown should not be closed and the link should open in another tab.
-       * If the target is a svg we stop propagation in order to prevent
-       * the default behavior of the dropdown.
-       */
-      console.log('I am called');
-      $('.js-builds-dropdown-list').on('click', (e) => {
-        console.log('i am in event');
-        e.stopPropagation();
-      });
+
+    updated() {
+      if (this.builds) {
+        this.stopDropdownClickPropagation();
+      }
     },
+
     methods: {
       fetchBuilds(e) {
         const areaExpanded = e.currentTarget.attributes['aria-expanded'];
@@ -49,6 +43,20 @@
             const flash = new Flash('Something went wrong on our end.');
             return flash;
           });
+      },
+
+      /**
+       * When the user right clicks or cmd/ctrl + click in the job name
+       * the dropdown should not be closed and the link should open in another tab,
+       * so we stop propagation of the click event inside the dropdown.
+       *
+       * Since this component is rendered multiple times per page we need to guarantee we only
+       * target the click event of this component.
+       */
+      stopDropdownClickPropagation() {
+        $(this.$el.querySelectorAll('.js-builds-dropdown-list a.mini-pipeline-graph-dropdown-item')).on('click', (e) => {
+          e.stopPropagation();
+        });
       },
     },
     computed: {
