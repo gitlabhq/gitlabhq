@@ -277,7 +277,7 @@ Style/MultilineBlockLayout:
 # Checks that the closing brace in a hash literal is either on the same line as
 # the last hash element, or a new line.
 Style/MultilineHashBraceLayout:
-  Enabled: false
+  Enabled: true
   EnforcedStyle: symmetrical
 
 # Do not use then for multi-line if/unless.

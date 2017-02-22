@@ -25,11 +25,9 @@ describe 'Git LFS API and storage' do
       {
         'objects' => [
           { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
-            'size' => 1575078
-          },
+            'size' => 1575078 },
           { 'oid' => sample_oid,
-            'size' => sample_size
-          }
+            'size' => sample_size }
         ],
         'operation' => 'upload'
       }
@@ -53,11 +51,9 @@ describe 'Git LFS API and storage' do
       {
         'objects' => [
           { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
-            'size' => 1575078
-          },
+            'size' => 1575078 },
           { 'oid' => sample_oid,
-            'size' => sample_size
-          }
+            'size' => sample_size }
         ],
         'operation' => 'upload'
       }
@@ -378,8 +374,7 @@ describe 'Git LFS API and storage' do
           'operation' => 'download',
           'objects' => [
             { 'oid' => sample_oid,
-              'size' => sample_size
-            }
+              'size' => sample_size }
           ]
         }
       end
@@ -397,7 +392,8 @@ describe 'Git LFS API and storage' do
           it 'with href to download' do
             expect(json_response).to eq({
               'objects' => [
-                { 'oid' => sample_oid,
+                {
+                  'oid' => sample_oid,
                   'size' => sample_size,
                   'actions' => {
                     'download' => {
@@ -424,7 +420,8 @@ describe 'Git LFS API and storage' do
           it 'with href to download' do
             expect(json_response).to eq({
               'objects' => [
-                { 'oid' => sample_oid,
+                {
+                  'oid' => sample_oid,
                   'size' => sample_size,
                   'error' => {
                     'code' => 404,
@@ -442,8 +439,7 @@ describe 'Git LFS API and storage' do
               'operation' => 'download',
               'objects' => [
                 { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
-                  'size' => 1575078
-                }
+                  'size' => 1575078 }
               ]
             }
           end
@@ -455,7 +451,8 @@ describe 'Git LFS API and storage' do
           it 'with an 404 for specific object' do
             expect(json_response).to eq({
               'objects' => [
-                { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
+                {
+                  'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
                   'size' => 1575078,
                   'error' => {
                     'code' => 404,
@@ -469,14 +466,13 @@ describe 'Git LFS API and storage' do
 
         context 'when downloading one new and one existing lfs object' do
           let(:body) do
-            { 'operation' => 'download',
+            {
+              'operation' => 'download',
               'objects' => [
                 { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
-                  'size' => 1575078
-                },
+                  'size' => 1575078 },
                 { 'oid' => sample_oid,
-                  'size' => sample_size
-                }
+                  'size' => sample_size }
               ]
             }
           end
@@ -617,7 +613,8 @@ describe 'Git LFS API and storage' do
           it 'responds with status 200 and href to download' do
             expect(json_response).to eq({
               'objects' => [
-                { 'oid' => sample_oid,
+                {
+                  'oid' => sample_oid,
                   'size' => sample_size,
                   'authenticated' => true,
                   'actions' => {
@@ -651,8 +648,7 @@ describe 'Git LFS API and storage' do
           'operation' => 'upload',
           'objects' => [
             { 'oid' => sample_oid,
-              'size' => sample_size
-            }
+              'size' => sample_size }
           ]
         }
       end
@@ -695,8 +691,7 @@ describe 'Git LFS API and storage' do
                 'operation' => 'upload',
                 'objects' => [
                   { 'oid' => sample_oid,
-                    'size' => sample_size
-                  }
+                    'size' => sample_size }
                 ]
               }
             end
@@ -749,14 +744,13 @@ describe 'Git LFS API and storage' do
 
           context 'when pushing one new and one existing lfs object' do
             let(:body) do
-              { 'operation' => 'upload',
+              {
+                'operation' => 'upload',
                 'objects' => [
                   { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
-                    'size' => 1575078
-                  },
+                    'size' => 1575078 },
                   { 'oid' => sample_oid,
-                    'size' => sample_size
-                  }
+                    'size' => sample_size }
                 ]
               }
             end
@@ -854,8 +848,7 @@ describe 'Git LFS API and storage' do
           'operation' => 'other',
           'objects' => [
             { 'oid' => sample_oid,
-              'size' => sample_size
-            }
+              'size' => sample_size }
           ]
         }
       end

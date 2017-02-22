@@ -76,7 +76,8 @@ describe Environment, models: true do
   end
 
   describe '#update_merge_request_metrics?' do
-    { 'production' => true,
+    {
+      'production' => true,
       'production/eu' => true,
       'production/www.gitlab.com' => true,
       'productioneu' => false,

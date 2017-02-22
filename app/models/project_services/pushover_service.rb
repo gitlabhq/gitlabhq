@@ -29,8 +29,7 @@ class PushoverService < Service
           ['Normal Priority', 0],
           ['High Priority', 1]
         ],
-        default_choice: 0
-      },
+        default_choice: 0 },
       { type: 'select', name: 'sound', choices:
         [
           ['Device default sound', nil],
@@ -56,8 +55,7 @@ class PushoverService < Service
           ['Pushover Echo (long)', 'echo'],
           ['Up Down (long)', 'updown'],
           ['None (silent)', 'none']
-        ]
-      },
+        ]},
     ]
   end
 
