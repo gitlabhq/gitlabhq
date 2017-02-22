@@ -38,13 +38,6 @@ RSpec/SingleArgumentMessageChain:
   Exclude:
     - 'spec/requests/api/internal_spec.rb'
 
-# Offense count: 126
-# Cop supports --auto-correct.
-# Configuration parameters: Whitelist.
-# Whitelist: find_by_sql
-Rails/DynamicFindBy:
-  Enabled: false
-
 # Cop supports --auto-correct.
 # Configuration parameters: Include.
 # Include: app/models/**/*.rb
