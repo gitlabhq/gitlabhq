@@ -1,4 +1,9 @@
 require 'spec_helper'
+shared_examples 'content not cached without revalidation' do
+  it 'ensures content will not be cached without revalidation' do
+    expect(subject['Cache-Control']).to eq('max-age=0, private, must-revalidate')
+  end
+end
 
 describe UploadsController do
   let!(:user) { create(:user, avatar: fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "image/png")) }
@@ -50,6 +55,13 @@ describe UploadsController do
 
             expect(response).to have_http_status(200)
           end
+
+          it_behaves_like 'content not cached without revalidation' do
+            subject do
+              get :show, model: 'user', mounted_as: 'avatar', id: user.id, filename: 'image.png'
+              response
+            end
+          end
         end
       end
 
@@ -58,6 +70,13 @@ describe UploadsController do
           get :show, model: "user", mounted_as: "avatar", id: user.id, filename: "image.png"
 
           expect(response).to have_http_status(200)
+        end
+
+        it_behaves_like 'content not cached without revalidation' do
+          subject do
+            get :show, model: 'user', mounted_as: 'avatar', id: user.id, filename: 'image.png'
+            response
+          end
         end
       end
     end
@@ -76,6 +95,13 @@ describe UploadsController do
 
             expect(response).to have_http_status(200)
           end
+
+          it_behaves_like 'content not cached without revalidation' do
+            subject do
+              get :show, model: 'project', mounted_as: 'avatar', id: project.id, filename: 'image.png'
+              response
+            end
+          end
         end
 
         context "when signed in" do
@@ -87,6 +113,13 @@ describe UploadsController do
             get :show, model: "project", mounted_as: "avatar", id: project.id, filename: "image.png"
 
             expect(response).to have_http_status(200)
+          end
+
+          it_behaves_like 'content not cached without revalidation' do
+            subject do
+              get :show, model: 'project', mounted_as: 'avatar', id: project.id, filename: 'image.png'
+              response
+            end
           end
         end
       end
@@ -133,6 +166,13 @@ describe UploadsController do
 
                 expect(response).to have_http_status(200)
               end
+
+              it_behaves_like 'content not cached without revalidation' do
+                subject do
+                  get :show, model: 'project', mounted_as: 'avatar', id: project.id, filename: 'image.png'
+                  response
+                end
+              end
             end
           end
 
@@ -157,6 +197,13 @@ describe UploadsController do
 
             expect(response).to have_http_status(200)
           end
+
+          it_behaves_like 'content not cached without revalidation' do
+            subject do
+              get :show, model: 'group', mounted_as: 'avatar', id: group.id, filename: 'image.png'
+              response
+            end
+          end
         end
 
         context "when signed in" do
@@ -168,6 +215,13 @@ describe UploadsController do
             get :show, model: "group", mounted_as: "avatar", id: group.id, filename: "image.png"
 
             expect(response).to have_http_status(200)
+          end
+
+          it_behaves_like 'content not cached without revalidation' do
+            subject do
+              get :show, model: 'group', mounted_as: 'avatar', id: group.id, filename: 'image.png'
+              response
+            end
           end
         end
       end
@@ -205,6 +259,13 @@ describe UploadsController do
 
                 expect(response).to have_http_status(200)
               end
+
+              it_behaves_like 'content not cached without revalidation' do
+                subject do
+                  get :show, model: 'group', mounted_as: 'avatar', id: group.id, filename: 'image.png'
+                  response
+                end
+              end
             end
           end
 
@@ -234,6 +295,13 @@ describe UploadsController do
 
             expect(response).to have_http_status(200)
           end
+
+          it_behaves_like 'content not cached without revalidation' do
+            subject do
+              get :show, model: 'note', mounted_as: 'attachment', id: note.id, filename: 'image.png'
+              response
+            end
+          end
         end
 
         context "when signed in" do
@@ -245,6 +313,13 @@ describe UploadsController do
             get :show, model: "note", mounted_as: "attachment", id: note.id, filename: "image.png"
 
             expect(response).to have_http_status(200)
+          end
+
+          it_behaves_like 'content not cached without revalidation' do
+            subject do
+              get :show, model: 'note', mounted_as: 'attachment', id: note.id, filename: 'image.png'
+              response
+            end
           end
         end
       end
@@ -290,6 +365,13 @@ describe UploadsController do
                 get :show, model: "note", mounted_as: "attachment", id: note.id, filename: "image.png"
 
                 expect(response).to have_http_status(200)
+              end
+
+              it_behaves_like 'content not cached without revalidation' do
+                subject do
+                  get :show, model: 'note', mounted_as: 'attachment', id: note.id, filename: 'image.png'
+                  response
+                end
               end
             end
           end
