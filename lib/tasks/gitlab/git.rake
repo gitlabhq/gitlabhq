@@ -1,6 +1,5 @@
 namespace :gitlab do
   namespace :git do
-
     desc "GitLab | Git | Repack"
     task repack: :environment do
       failures = perform_git_cmd(%W(#{Gitlab.config.git.bin_path} repack -a --quiet), "Repacking repo")
@@ -50,6 +49,5 @@ namespace :gitlab do
       puts "The following repositories reported errors:".color(:red)
       failures.each { |f| puts "- #{f}" }
     end
-
   end
 end

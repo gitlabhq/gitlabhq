@@ -46,7 +46,7 @@ namespace :gitlab do
       "https://gitlab.com/gitlab-org/gitlab-ci-yml.git",
       /(\.{1,2}|LICENSE|Pages|autodeploy|\.gitlab-ci.yml)\z/
     )
-  ]
+  ].freeze
 
   def vendor_directory
     Rails.root.join('vendor')
