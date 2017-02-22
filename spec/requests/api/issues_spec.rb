@@ -1259,55 +1259,55 @@ describe API::Issues, api: true  do
     end
   end
 
-  describe 'POST :id/issues/:issue_id/subscription' do
+  describe 'POST :id/issues/:issue_id/subscribe' do
     it 'subscribes to an issue' do
-      post api("/projects/#{project.id}/issues/#{issue.id}/subscription", user2)
+      post api("/projects/#{project.id}/issues/#{issue.id}/subscribe", user2)
 
       expect(response).to have_http_status(201)
       expect(json_response['subscribed']).to eq(true)
     end
 
     it 'returns 304 if already subscribed' do
-      post api("/projects/#{project.id}/issues/#{issue.id}/subscription", user)
+      post api("/projects/#{project.id}/issues/#{issue.id}/subscribe", user)
 
       expect(response).to have_http_status(304)
     end
 
     it 'returns 404 if the issue is not found' do
-      post api("/projects/#{project.id}/issues/123/subscription", user)
+      post api("/projects/#{project.id}/issues/123/subscribe", user)
 
       expect(response).to have_http_status(404)
     end
 
     it 'returns 404 if the issue is confidential' do
-      post api("/projects/#{project.id}/issues/#{confidential_issue.id}/subscription", non_member)
+      post api("/projects/#{project.id}/issues/#{confidential_issue.id}/subscribe", non_member)
 
       expect(response).to have_http_status(404)
     end
   end
 
-  describe 'DELETE :id/issues/:issue_id/subscription' do
+  describe 'POST :id/issues/:issue_id/unsubscribe' do
     it 'unsubscribes from an issue' do
-      delete api("/projects/#{project.id}/issues/#{issue.id}/subscription", user)
+      post api("/projects/#{project.id}/issues/#{issue.id}/unsubscribe", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(201)
       expect(json_response['subscribed']).to eq(false)
     end
 
     it 'returns 304 if not subscribed' do
-      delete api("/projects/#{project.id}/issues/#{issue.id}/subscription", user2)
+      post api("/projects/#{project.id}/issues/#{issue.id}/unsubscribe", user2)
 
       expect(response).to have_http_status(304)
     end
 
     it 'returns 404 if the issue is not found' do
-      delete api("/projects/#{project.id}/issues/123/subscription", user)
+      post api("/projects/#{project.id}/issues/123/unsubscribe", user)
 
       expect(response).to have_http_status(404)
     end
 
     it 'returns 404 if the issue is confidential' do
-      delete api("/projects/#{project.id}/issues/#{confidential_issue.id}/subscription", non_member)
+      post api("/projects/#{project.id}/issues/#{confidential_issue.id}/unsubscribe", non_member)
 
       expect(response).to have_http_status(404)
     end
