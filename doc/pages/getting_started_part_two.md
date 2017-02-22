@@ -10,27 +10,27 @@
 
 ----
 
-## Setting Up GitLab Pages
+## Setting up GitLab Pages
 
 For a complete step-by-step tutorial, please read the
 blog post [Hosting on GitLab.com with GitLab Pages](https://about.gitlab.com/2016/04/07/gitlab-pages-setup/). The following sections will explain
 what do you need and why do you need them.
 
-### What You Need to Get Started
+## What you need to get started
 
 1. A project
 1. A configuration file (`.gitlab-ci.yml`) to deploy your site
 1. A specific `job` called `pages` in the configuration file
 that will make GitLab aware that you are deploying a GitLab Pages website
 
-#### Optional Features
+Optional Features:
 
 1. A custom domain or subdomain
 1. A DNS pointing your (sub)domain to your Pages site
    1. **Optional**: an SSL/TLS certificate so your custom
    domain is accessible under HTTPS.
 
-### Project
+## Project
 
 Your GitLab Pages project is a regular project created the
 same way you do for the other ones. To get started with GitLab Pages, you have two ways:
@@ -40,7 +40,7 @@ same way you do for the other ones. To get started with GitLab Pages, you have t
 
 Let's go over both options.
 
-#### Fork a Project to Get Started From
+### Fork a project to get started from
 
 To make things easy for you, we've created this
 [group](https://gitlab.com/pages) of default projects
@@ -79,11 +79,11 @@ is useful for submitting merge requests to the upstream.
 configuration file. They're enabled by default to new projects,
 but not to forks.
 
-#### Create a Project from Scratch
+### Create a project from scratch
 
 1. From your **Project**'s **[Dashboard](https://gitlab.com/dashboard/projects)**,
 click **New project**, and name it considering the
-[pratical examples](getting_started_part_one.md#practical-examples).
+[practical examples](getting_started_part_one.md#practical-examples).
 1. Clone it to your local computer, add your website
 files to your project, add, commit and push to GitLab.
 1. From the your **Project**'s page, click **Set up CI**:
