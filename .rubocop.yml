@@ -929,6 +929,9 @@ Performance/RedundantBlockCall:
 Performance/RedundantMatch:
   Enabled: true
 
+Rails/DynamicFindBy:
+  Enabled: false
+
 Rails/HttpPositionalArguments:
   Enabled: false
 
