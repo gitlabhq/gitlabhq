@@ -16,9 +16,9 @@ module Issuable
   include TimeTrackable
 
   # This object is used to gather issuable meta data for displaying
-  # upvotes, downvotes and notes count for issues and merge requests
+  # upvotes, downvotes, notes and closing merge requests count for issues and merge requests
   # lists avoiding n+1 queries and improving performance.
-  IssuableMeta = Struct.new(:upvotes, :downvotes, :notes_count)
+  IssuableMeta = Struct.new(:upvotes, :downvotes, :notes_count, :merge_requests_count)
 
   included do
     cache_markdown_field :title, pipeline: :single_line
