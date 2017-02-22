@@ -39,9 +39,9 @@ module API
         params['events'].each do |event|
           repository = event['target']['repository']
 
-          if event['action'] == 'push' and !!event['target']['tag']
+          if event['action'] == 'push' && !!event['target']['tag']
             namespace, container_image_name = ContainerImage::split_namespace(repository)
-            project = Project::find_with_namespace(namespace)
+            project = Project::find_by_full_path(namespace)
 
             if project
               container_image = project.container_images.find_or_create_by(name: container_image_name)

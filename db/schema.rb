@@ -61,6 +61,7 @@ ActiveRecord::Schema.define(version: 20170215200045) do
     t.boolean "shared_runners_enabled", default: true, null: false
     t.integer "max_artifacts_size", default: 100, null: false
     t.string "runners_registration_token"
+    t.integer "max_pages_size", default: 100, null: false
     t.boolean "require_two_factor_authentication", default: false
     t.integer "two_factor_grace_period", default: 48
     t.boolean "metrics_enabled", default: false
@@ -107,10 +108,9 @@ ActiveRecord::Schema.define(version: 20170215200045) do
     t.string "sidekiq_throttling_queues"
     t.decimal "sidekiq_throttling_factor"
     t.boolean "html_emails_enabled", default: true
+    t.string "container_registry_access_token"
     t.string "plantuml_url"
     t.boolean "plantuml_enabled"
-    t.string "container_registry_access_token"
-    t.integer "max_pages_size", default: 100, null: false
     t.integer "terminal_max_session_time", default: 0, null: false
   end
 
@@ -586,9 +586,9 @@ ActiveRecord::Schema.define(version: 20170215200045) do
   end
 
   add_index "labels", ["group_id", "project_id", "title"], name: "index_labels_on_group_id_and_project_id_and_title", unique: true, using: :btree
-  add_index "labels", ["type", "project_id"], name: "index_labels_on_type_and_project_id", using: :btree
   add_index "labels", ["project_id"], name: "index_labels_on_project_id", using: :btree
   add_index "labels", ["title"], name: "index_labels_on_title", using: :btree
+  add_index "labels", ["type", "project_id"], name: "index_labels_on_type_and_project_id", using: :btree
 
   create_table "lfs_objects", force: :cascade do |t|
     t.string "oid", null: false
@@ -761,8 +761,8 @@ ActiveRecord::Schema.define(version: 20170215200045) do
     t.integer "visibility_level", default: 20, null: false
     t.boolean "request_access_enabled", default: false, null: false
     t.datetime "deleted_at"
-    t.boolean "lfs_enabled"
     t.text "description_html"
+    t.boolean "lfs_enabled"
     t.integer "parent_id"
   end
 
@@ -1283,8 +1283,8 @@ ActiveRecord::Schema.define(version: 20170215200045) do
     t.datetime "otp_grace_period_started_at"
     t.boolean "ldap_email", default: false, null: false
     t.boolean "external", default: false
-    t.string "organization"
     t.string "incoming_email_token"
+    t.string "organization"
     t.boolean "authorized_projects_populated"
     t.boolean "notified_of_own_activity", default: false, null: false
   end

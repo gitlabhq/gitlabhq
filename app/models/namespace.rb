@@ -155,7 +155,7 @@ class Namespace < ActiveRecord::Base
   end
 
   def any_project_has_container_registry_images?
-    projects.any? { |project| project.container_images.present? }
+    projects.joins(:container_images).any?
   end
 
   def send_update_instructions
