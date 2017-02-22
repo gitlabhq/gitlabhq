@@ -1,7 +1,4 @@
 .pipelines {
-  width: 100%;
-  overflow: auto;
-
   .realtime-loading {
     font-size: 40px;
     text-align: center;
@@ -16,17 +13,16 @@
     white-space: nowrap;
   }
 
+  .table-holder {
+    width: 100%;
+    overflow: auto;
+  }
+
   .commit-title {
     margin: 0;
   }
 
-  .controls {
-    white-space: nowrap;
-  }
-
   .table.ci-table {
-    width: 100%;
-    table-layout: fixed;
 
     .label {
       margin-bottom: 3px;
@@ -36,20 +32,8 @@
       color: $black;
     }
 
-    .pipeline-date,
-    .pipeline-status {
-      width: 10%;
-    }
-
-    .pipeline-info,
-    .pipeline-commit,
-    .pipeline-stages {
+    .stage-cell {
       width: 20%;
-    }
-
-    .pipeline-actions {
-      width: 20%;
-      padding-right: 0;
     }
   }
 }
@@ -64,21 +48,7 @@
   }
 }
 
-.content-list.pipelines .table-holder {
-  min-height: 300px;
-}
-
-.pipeline-holder {
-  width: 100%;
-  overflow: auto;
-}
-
 .table.ci-table {
-  min-width: 900px;
-
-  &.pipeline {
-    min-width: 650px;
-  }
 
   &.builds-page {
 
