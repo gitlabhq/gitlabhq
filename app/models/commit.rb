@@ -122,10 +122,10 @@ class Commit
   def full_title
     return @full_title if @full_title
 
-    if safe_message.blank?
-      @full_title = no_commit_message
+    @full_title = if safe_message.blank?
+      no_commit_message
     else
-      @full_title = safe_message.split("\n", 2).first
+      safe_message.split("\n", 2).first
     end
   end
 

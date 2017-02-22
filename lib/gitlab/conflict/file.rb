@@ -91,10 +91,10 @@ module Gitlab
         our_highlight = Gitlab::Highlight.highlight(our_path, our_file, repository: repository).lines
 
         lines.each do |line|
-          if line.type == 'old'
-            line.rich_text = their_highlight[line.old_line - 1].try(:html_safe)
+          line.rich_text = if line.type == 'old'
+            their_highlight[line.old_line - 1].try(:html_safe)
           else
-            line.rich_text = our_highlight[line.new_line - 1].try(:html_safe)
+            our_highlight[line.new_line - 1].try(:html_safe)
           end
         end
       end

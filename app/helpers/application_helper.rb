@@ -69,10 +69,10 @@ module ApplicationHelper
   end
 
   def avatar_icon(user_or_email = nil, size = nil, scale = 2)
-    if user_or_email.is_a?(User)
-      user = user_or_email
+    user = if user_or_email.is_a?(User)
+      user_or_email
     else
-      user = User.find_by_any_email(user_or_email.try(:downcase))
+      User.find_by_any_email(user_or_email.try(:downcase))
     end
 
     if user

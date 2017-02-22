@@ -149,10 +149,10 @@ module Banzai
           name, reference = *parts.compact.map(&:strip)
         end
 
-        if url?(reference)
-          href = reference
+        href = if url?(reference)
+          reference
         else
-          href = ::File.join(project_wiki_base_path, reference)
+          ::File.join(project_wiki_base_path, reference)
         end
 
         content_tag(:a, name || reference, href: href, class: 'gfm')

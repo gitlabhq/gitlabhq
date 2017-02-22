@@ -408,11 +408,11 @@ module SystemNoteService
     # Initial scope should be system notes of this noteable type
     notes = Note.system.where(noteable_type: noteable.class)
 
-    if noteable.is_a?(Commit)
+    notes = if noteable.is_a?(Commit)
       # Commits have non-integer IDs, so they're stored in `commit_id`
-      notes = notes.where(commit_id: noteable.id)
+      notes.where(commit_id: noteable.id)
     else
-      notes = notes.where(noteable_id: noteable.id)
+      notes.where(noteable_id: noteable.id)
     end
 
     notes_for_mentioner(mentioner, noteable, notes).exists?

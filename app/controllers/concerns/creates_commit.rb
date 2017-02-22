@@ -101,12 +101,12 @@ module CreatesCommit
 
   # TODO: We should really clean this up
   def set_commit_variables
-    if can?(current_user, :push_code, @project)
+    @mr_source_project = if can?(current_user, :push_code, @project)
       # Edit file in this project
-      @mr_source_project = @project
+      @project
     else
       # Merge request from fork to this project
-      @mr_source_project = current_user.fork_of(@project)
+      current_user.fork_of(@project)
     end
 
     # Merge request to this project
