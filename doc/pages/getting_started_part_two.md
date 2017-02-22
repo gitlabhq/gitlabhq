@@ -16,8 +16,6 @@ For a complete step-by-step tutorial, please read the
 blog post [Hosting on GitLab.com with GitLab Pages](https://about.gitlab.com/2016/04/07/gitlab-pages-setup/). The following sections will explain
 what do you need and why do you need them.
 
-<!-- todo: transfer the content from that post to docs -->
-
 ### What You Need to Get Started
 
 1. A project
@@ -122,8 +120,6 @@ remote URL: `git remote add origin git@gitlab.com:namespace/project-name.git`,
 then add, commit, and push.
 
 ### URLs and Baseurls
-
-<!-- rewrite this -->
 
 Every Static Site Generator (SSG) default configuration expects
 to find your website under a (sub)domain (`example.com`), not
