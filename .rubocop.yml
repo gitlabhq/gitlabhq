@@ -965,5 +965,8 @@ Style/ColonMethodCall:
 Style/CommentAnnotation:
   Enabled: false
 
+Style/ConditionalAssignment:
+  Enabled: true
+
 Style/DoubleNegation:
   Enabled: false

@@ -453,12 +453,12 @@ class Project < ActiveRecord::Base
   end
 
   def add_import_job
-    if forked?
-      job_id = RepositoryForkWorker.perform_async(id, forked_from_project.repository_storage_path,
+    job_id = if forked?
+      RepositoryForkWorker.perform_async(id, forked_from_project.repository_storage_path,
                                                   forked_from_project.path_with_namespace,
                                                   self.namespace.full_path)
     else
-      job_id = RepositoryImportWorker.perform_async(self.id)
+      RepositoryImportWorker.perform_async(self.id)
     end
 
     if job_id

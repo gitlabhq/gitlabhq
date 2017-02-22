@@ -13,10 +13,10 @@ module CaseSensitivity
       params.each do |key, value|
         column = ActiveRecord::Base.connection.quote_table_name(key)
 
-        if cast_lower
-          condition = "LOWER(#{column}) = LOWER(:value)"
+        condition = if cast_lower
+          "LOWER(#{column}) = LOWER(:value)"
         else
-          condition = "#{column} = :value"
+          "#{column} = :value"
         end
 
         criteria = criteria.where(condition, value: value)

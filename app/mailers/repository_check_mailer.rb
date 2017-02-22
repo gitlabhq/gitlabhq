@@ -1,9 +1,9 @@
 class RepositoryCheckMailer < BaseMailer
   def notify(failed_count)
-    if failed_count == 1
-      @message = "One project failed its last repository check"
+    @message = if failed_count == 1
+      "One project failed its last repository check"
     else
-      @message = "#{failed_count} projects failed their last repository check"
+      "#{failed_count} projects failed their last repository check"
     end
 
     mail(

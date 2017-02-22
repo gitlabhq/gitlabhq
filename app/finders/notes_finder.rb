@@ -28,10 +28,10 @@ class NotesFinder
   private
 
   def init_collection
-    if @params[:target_id]
-      @notes = on_target(@params[:target_type], @params[:target_id])
+    @notes = if @params[:target_id]
+      on_target(@params[:target_type], @params[:target_id])
     else
-      @notes = notes_of_any_type
+      notes_of_any_type
     end
   end
 

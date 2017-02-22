@@ -14,10 +14,10 @@ class Settings < Settingslogic
     end
 
     def build_gitlab_ci_url
-      if on_standard_port?(gitlab)
-        custom_port = nil
+      custom_port = if on_standard_port?(gitlab)
+        nil
       else
-        custom_port = ":#{gitlab.port}"
+        ":#{gitlab.port}"
       end
       [gitlab.protocol,
         "://",
@@ -160,10 +160,10 @@ if github_settings
 
   github_settings["args"] ||= Settingslogic.new({})
 
-  if github_settings["url"].include?(github_default_url)
-    github_settings["args"]["client_options"] = OmniAuth::Strategies::GitHub.default_options[:client_options]
+  github_settings["args"]["client_options"] = if github_settings["url"].include?(github_default_url)
+    OmniAuth::Strategies::GitHub.default_options[:client_options]
   else
-    github_settings["args"]["client_options"] = {
+    {
       "site"          => File.join(github_settings["url"], "api/v3"),
       "authorize_url" => File.join(github_settings["url"], "login/oauth/authorize"),
       "token_url"     => File.join(github_settings["url"], "login/oauth/access_token")
