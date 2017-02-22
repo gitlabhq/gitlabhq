@@ -62,9 +62,9 @@ describe ApplicationSetting, models: true do
 
       describe 'inclusion' do
         it { is_expected.to allow_value('custom1').for(:repository_storages) }
-        it { is_expected.to allow_value(['custom2', 'custom3']).for(:repository_storages) }
+        it { is_expected.to allow_value(%w(custom2 custom3)).for(:repository_storages) }
         it { is_expected.not_to allow_value('alternative').for(:repository_storages) }
-        it { is_expected.not_to allow_value(['alternative', 'custom1']).for(:repository_storages) }
+        it { is_expected.not_to allow_value(%w(alternative custom1)).for(:repository_storages) }
       end
 
       describe 'presence' do
@@ -83,7 +83,7 @@ describe ApplicationSetting, models: true do
 
         describe '#repository_storage' do
           it 'returns the first storage' do
-            setting.repository_storages = ['good', 'bad']
+            setting.repository_storages = %w(good bad)
 
             expect(setting.repository_storage).to eq('good')
           end

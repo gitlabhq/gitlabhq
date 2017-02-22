@@ -773,7 +773,7 @@ describe Projects::MergeRequestsController do
 
             section['lines'].each do |line|
               if section['conflict']
-                expect(line['type']).to be_in(['old', 'new'])
+                expect(line['type']).to be_in(%w(old new))
                 expect(line.values_at('old_line', 'new_line')).to contain_exactly(nil, a_kind_of(Integer))
               else
                 if line['type'].nil?

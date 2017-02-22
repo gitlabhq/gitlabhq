@@ -29,7 +29,7 @@ describe Bitbucket::Representation::Repo do
   end
 
   describe '#owner_and_slug' do
-    it { expect(described_class.new({ 'full_name' => 'ben/test' }).owner_and_slug).to eq(['ben', 'test']) }
+    it { expect(described_class.new({ 'full_name' => 'ben/test' }).owner_and_slug).to eq(%w(ben test)) }
   end
 
   describe '#owner' do

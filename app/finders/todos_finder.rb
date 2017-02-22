@@ -99,7 +99,7 @@ class TodosFinder
   end
 
   def type?
-    type.present? && ['Issue', 'MergeRequest'].include?(type)
+    type.present? && %w(Issue MergeRequest).include?(type)
   end
 
   def type

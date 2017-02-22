@@ -36,7 +36,7 @@ class HipchatService < Service
       { type: 'text', name: 'token',     placeholder: 'Room token' },
       { type: 'text', name: 'room',      placeholder: 'Room name or ID' },
       { type: 'checkbox', name: 'notify' },
-      { type: 'select', name: 'color', choices: ['yellow', 'red', 'green', 'purple', 'gray', 'random'] },
+      { type: 'select', name: 'color', choices: %w(yellow red green purple gray random) },
       { type: 'text', name: 'api_version',
         placeholder: 'Leave blank for default (v2)' },
       { type: 'text', name: 'server',

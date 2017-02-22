@@ -60,7 +60,7 @@ describe IrkerService, models: true do
       conn = @irker_server.accept
       conn.readlines.each do |line|
         msg = JSON.parse(line.chomp("\n"))
-        expect(msg.keys).to match_array(['to', 'privmsg'])
+        expect(msg.keys).to match_array(%w(to privmsg))
         expect(msg['to']).to match_array(["irc://chat.freenode.net/#commits",
                                           "irc://test.net/#test"])
       end

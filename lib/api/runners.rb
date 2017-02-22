@@ -14,7 +14,7 @@ module API
         use :pagination
       end
       get do
-        runners = filter_runners(current_user.ci_authorized_runners, params[:scope], without: ['specific', 'shared'])
+        runners = filter_runners(current_user.ci_authorized_runners, params[:scope], without: %w(specific shared))
         present paginate(runners), with: Entities::Runner
       end
 

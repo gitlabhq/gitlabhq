@@ -157,7 +157,7 @@ module API
         optional :path, type: String, desc: 'The file path'
         given :path do
           requires :line, type: Integer, desc: 'The line number'
-          requires :line_type, type: String, values: ['new', 'old'], default: 'new', desc: 'The type of the line'
+          requires :line_type, type: String, values: %w(new old), default: 'new', desc: 'The type of the line'
         end
       end
       post ':id/repository/commits/:sha/comments' do
