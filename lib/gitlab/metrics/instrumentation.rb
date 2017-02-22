@@ -143,11 +143,12 @@ module Gitlab
         # signature this would break things. As a result we'll make sure the
         # generated method _only_ accepts regular arguments if the underlying
         # method also accepts them.
-        args_signature = if method.arity == 0
-          ''
-        else
-          '*args'
-        end
+        args_signature =
+          if method.arity == 0
+            ''
+          else
+            '*args'
+          end
 
         proxy_module.class_eval <<-EOF, __FILE__, __LINE__ + 1
           def #{name}(#{args_signature})

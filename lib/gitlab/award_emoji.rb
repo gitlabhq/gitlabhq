@@ -69,11 +69,12 @@ module Gitlab
                     end
 
                   JSON.parse(File.read(path)).map do |hash|
-                    fname = if digest
-                      "#{hash['unicode']}-#{hash['digest']}"
-                    else
-                      hash['unicode']
-                    end
+                    fname =
+                      if digest
+                        "#{hash['unicode']}-#{hash['digest']}"
+                      else
+                        hash['unicode']
+                      end
 
                     { name: hash['name'], path: File.join(base, prefix, "#{fname}.png") }
                   end

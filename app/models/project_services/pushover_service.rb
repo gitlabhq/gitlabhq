@@ -72,13 +72,14 @@ class PushoverService < Service
     before = data[:before]
     after = data[:after]
 
-    message = if Gitlab::Git.blank_ref?(before)
-      "#{data[:user_name]} pushed new branch \"#{ref}\"."
-    elsif Gitlab::Git.blank_ref?(after)
-      "#{data[:user_name]} deleted branch \"#{ref}\"."
-    else
-      "#{data[:user_name]} push to branch \"#{ref}\"."
-    end
+    message =
+      if Gitlab::Git.blank_ref?(before)
+        "#{data[:user_name]} pushed new branch \"#{ref}\"."
+      elsif Gitlab::Git.blank_ref?(after)
+        "#{data[:user_name]} deleted branch \"#{ref}\"."
+      else
+        "#{data[:user_name]} push to branch \"#{ref}\"."
+      end
 
     if data[:total_commits_count] > 0
       message << "\nTotal commits count: #{data[:total_commits_count]}"

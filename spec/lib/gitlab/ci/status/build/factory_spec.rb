@@ -69,7 +69,7 @@ describe Gitlab::Ci::Status::Build::Factory do
       it 'matches correct extended statuses' do
         expect(factory.extended_statuses).
           to eq [Gitlab::Ci::Status::Build::Retryable,
-                  Gitlab::Ci::Status::Build::FailedAllowed]
+                 Gitlab::Ci::Status::Build::FailedAllowed]
       end
 
       it 'fabricates a failed but allowed build status' do

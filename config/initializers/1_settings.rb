@@ -15,16 +15,17 @@ class Settings < Settingslogic
     end
 
     def build_gitlab_ci_url
-      custom_port = if on_standard_port?(gitlab)
-        nil
-      else
-        ":#{gitlab.port}"
-      end
+      custom_port =
+        if on_standard_port?(gitlab)
+          nil
+        else
+          ":#{gitlab.port}"
+        end
       [gitlab.protocol,
-        "://",
-        gitlab.host,
-        custom_port,
-        gitlab.relative_url_root
+       "://",
+       gitlab.host,
+       custom_port,
+       gitlab.relative_url_root
       ].join('')
     end
 
@@ -106,9 +107,9 @@ class Settings < Settingslogic
     def base_url(config)
       custom_port = on_standard_port?(config) ? nil : ":#{config.port}"
       [config.protocol,
-        "://",
-        config.host,
-        custom_port
+       "://",
+       config.host,
+       custom_port
       ]
     end
 
@@ -201,15 +202,16 @@ if github_settings
 
   github_settings["args"] ||= Settingslogic.new({})
 
-  github_settings["args"]["client_options"] = if github_settings["url"].include?(github_default_url)
-    OmniAuth::Strategies::GitHub.default_options[:client_options]
-  else
-    {
-      "site"          => File.join(github_settings["url"], "api/v3"),
-      "authorize_url" => File.join(github_settings["url"], "login/oauth/authorize"),
-      "token_url"     => File.join(github_settings["url"], "login/oauth/access_token")
-    }
-  end
+  github_settings["args"]["client_options"] =
+    if github_settings["url"].include?(github_default_url)
+      OmniAuth::Strategies::GitHub.default_options[:client_options]
+    else
+      {
+        "site"          => File.join(github_settings["url"], "api/v3"),
+        "authorize_url" => File.join(github_settings["url"], "login/oauth/authorize"),
+        "token_url"     => File.join(github_settings["url"], "login/oauth/access_token")
+      }
+    end
 end
 
 Settings['shared'] ||= Settingslogic.new({})

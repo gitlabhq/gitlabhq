@@ -38,7 +38,7 @@ module SubmoduleHelper
 
   def self_url?(url, namespace, project)
     return true if url == [Gitlab.config.gitlab.url, '/', namespace, '/',
-                            project, '.git'].join('')
+                           project, '.git'].join('')
     url == gitlab_shell.url_to_repo([namespace, '/', project].join(''))
   end
 

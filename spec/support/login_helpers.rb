@@ -15,11 +15,12 @@ module LoginHelpers
   #   user = create(:user)
   #   login_as(user)
   def login_as(user_or_role)
-    @user = if user_or_role.kind_of?(User)
-      user_or_role
-    else
-      create(user_or_role)
-    end
+    @user =
+      if user_or_role.kind_of?(User)
+        user_or_role
+      else
+        create(user_or_role)
+      end
 
     login_with(@user)
   end
