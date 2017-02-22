@@ -926,6 +926,9 @@ Lint/UnusedBlockArgument:
 Performance/RedundantBlockCall:
   Enabled: true
 
+Performance/RedundantMatch:
+  Enabled: true
+
 Rails/HttpPositionalArguments:
   Enabled: false
 

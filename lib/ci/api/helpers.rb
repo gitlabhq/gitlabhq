@@ -60,7 +60,7 @@ module Ci
       end
 
       def build_not_found!
-        if headers['User-Agent'].to_s.match(/gitlab-ci-multi-runner \d+\.\d+\.\d+(~beta\.\d+\.g[0-9a-f]+)? /)
+        if headers['User-Agent'].to_s =~ /gitlab-ci-multi-runner \d+\.\d+\.\d+(~beta\.\d+\.g[0-9a-f]+)? /
           no_content!
         else
           not_found!
