@@ -24,6 +24,9 @@ AllCops:
     - 'bin/**/*'
     - 'generator_templates/**/*'
 
+Bundler/OrderedGems:
+  Enabled: false
+
 # Style #######################################################################
 
 # Check indentation of private/protected visibility modifiers.
@@ -47,6 +50,9 @@ Style/AlignArray:
 Style/AlignHash:
   Enabled: true
 
+Style/AlignParameters:
+  Enabled: false
+
 # Whether `and` and `or` are banned only in conditionals (conditionals)
 # or completely (always).
 Style/AndOr:
@@ -68,6 +74,9 @@ Style/AsciiIdentifiers:
 Style/Attr:
   Enabled: true
 
+Style/BarePercentLiterals:
+  Enabled: true
+
 # Avoid the use of BEGIN blocks.
 Style/BeginBlock:
   Enabled: true
@@ -76,14 +85,20 @@ Style/BeginBlock:
 Style/BlockComments:
   Enabled: true
 
-# Put end statement of multiline block on its own line.
-Style/BlockEndNewline:
-  Enabled: true
-
 # Avoid using {...} for multi-line blocks (multiline chaining is # always
 # ugly). Prefer {...} over do...end for single-line blocks.
 Style/BlockDelimiters:
   Enabled: true
+
+# Put end statement of multiline block on its own line.
+Style/BlockEndNewline:
+  Enabled: true
+
+Style/BracesAroundHashParameters:
+  Enabled: false
+
+Style/CaseEquality:
+  Enabled: false
 
 # Indentation of when in a case/when/[else/]end.
 Style/CaseIndentation:
@@ -113,8 +128,17 @@ Style/ClassMethods:
 Style/ClassVars:
   Enabled: true
 
+Style/ColonMethodCall:
+  Enabled: true
+
+Style/CommentAnnotation:
+  Enabled: false
+
 # Indentation of comments.
 Style/CommentIndentation:
+  Enabled: true
+
+Style/ConditionalAssignment:
   Enabled: true
 
 # Constants should use SCREAMING_SNAKE_CASE.
@@ -132,6 +156,9 @@ Style/Documentation:
 Style/DotPosition:
   Enabled: true
   EnforcedStyle: leading
+
+Style/DoubleNegation:
+  Enabled: false
 
 # Align elses and elsifs correctly.
 Style/ElseAlignment:
@@ -157,12 +184,12 @@ Style/EmptyLinesAroundBlockBody:
 Style/EmptyLinesAroundClassBody:
   Enabled: true
 
-# Keeps track of empty lines around module bodies.
-Style/EmptyLinesAroundModuleBody:
-  Enabled: true
-
 # Keeps track of empty lines around method bodies.
 Style/EmptyLinesAroundMethodBody:
+  Enabled: true
+
+# Keeps track of empty lines around module bodies.
+Style/EmptyLinesAroundModuleBody:
   Enabled: true
 
 # Avoid the use of END blocks.
@@ -210,13 +237,13 @@ Style/GlobalVars:
 Style/HashSyntax:
   Enabled: true
 
-# Do not use if x; .... Use the ternary operator instead.
-Style/IfWithSemicolon:
-  Enabled: true
-
 # Checks that conditional statements do not have an identical line at the
 # end of each branch, which can validly be moved out of the conditional.
 Style/IdenticalConditionalBranches:
+  Enabled: true
+
+# Do not use if x; .... Use the ternary operator instead.
+Style/IfWithSemicolon:
   Enabled: true
 
 # Checks the indentation of the first line of the right-hand-side of a
@@ -497,6 +524,9 @@ Metrics/AbcSize:
   Enabled: true
   Max: 60
 
+Metrics/BlockLength:
+  Enabled: false
+
 # Avoid excessive block nesting.
 Metrics/BlockNesting:
   Enabled: true
@@ -536,19 +566,16 @@ Metrics/PerceivedComplexity:
 
 # Lint ########################################################################
 
-# Checks for useless access modifiers.
-Lint/UselessAccessModifier:
-  Enabled: true
-
-# Checks for attempts to use `private` or `protected` to set the visibility
-# of a class method, which does not work.
-Lint/IneffectiveAccessModifier:
-  Enabled: false
-
 # Checks for ambiguous operators in the first argument of a method invocation
 # without parentheses.
 Lint/AmbiguousOperator:
   Enabled: true
+
+Lint/AmbiguousRegexpLiteral:
+  Enabled: false
+
+Lint/AssignmentInCondition:
+  Enabled: false
 
 # Align block ends correctly.
 Lint/BlockAlignment:
@@ -615,10 +642,18 @@ Lint/FloatOutOfRange:
 Lint/FormatParameterMismatch:
   Enabled: true
 
+Lint/HandleExceptions:
+  Enabled: false
+
 # Checks for adjacent string literals on the same line, which could better be
 # represented as a single string literal.
 Lint/ImplicitStringConcatenation:
   Enabled: true
+
+# Checks for attempts to use `private` or `protected` to set the visibility
+# of a class method, which does not work.
+Lint/IneffectiveAccessModifier:
+  Enabled: false
 
 # Checks for invalid character literals with a non-escaped whitespace
 # character.
@@ -632,6 +667,9 @@ Lint/LiteralInCondition:
 # Checks for literals used in interpolation.
 Lint/LiteralInInterpolation:
   Enabled: true
+
+Lint/Loop:
+  Enabled: false
 
 # Do not use nested method definitions.
 Lint/NestedMethodDefinition:
@@ -662,6 +700,9 @@ Lint/RescueException:
 Lint/ShadowedException:
   Enabled: false
 
+Lint/ShadowingOuterLocalVariable:
+  Enabled: false
+
 # Checks for Object#to_s usage in string interpolation.
 Lint/StringConversionInInterpolation:
   Enabled: true
@@ -670,18 +711,31 @@ Lint/StringConversionInInterpolation:
 Lint/UnderscorePrefixedVariableName:
   Enabled: true
 
+Lint/UnifiedInteger:
+  Enabled: true
+
 # Checks for rubocop:disable comments that can be removed.
 # Note: this cop is not disabled when disabling all cops.
 # It must be explicitly disabled.
 Lint/UnneededDisable:
   Enabled: false
 
+Lint/UnneededSplatExpansion:
+  Enabled: false
+
 # Unreachable code.
 Lint/UnreachableCode:
   Enabled: true
 
+Lint/UnusedBlockArgument:
+  Enabled: false
+
 Lint/UnusedMethodArgument:
   Enabled: false
+
+# Checks for useless access modifiers.
+Lint/UselessAccessModifier:
+  Enabled: true
 
 # Checks for useless assignment to a local variable.
 Lint/UselessAssignment:
@@ -722,6 +776,16 @@ Performance/LstripRstrip:
 Performance/RangeInclude:
   Enabled: true
 
+Performance/RedundantBlockCall:
+  Enabled: true
+
+Performance/RedundantMatch:
+  Enabled: true
+
+Performance/RedundantMerge:
+  Enabled: true
+  MaxKeyValuePairs: 1
+
 # Use `sort` instead of `sort_by { |x| x }`.
 Performance/RedundantSortBy:
   Enabled: true
@@ -739,6 +803,11 @@ Performance/StringReplacement:
 
 # Checks for `.times.map` calls.
 Performance/TimesMap:
+  Enabled: true
+
+# Security ####################################################################
+
+Security/JSONLoad:
   Enabled: true
 
 # Rails #######################################################################
@@ -761,6 +830,15 @@ Rails/Date:
 Rails/Delegate:
   Enabled: true
 
+Rails/DynamicFindBy:
+  Enabled: false
+
+Rails/Exit:
+  Enabled: true
+  Exclude:
+    - lib/gitlab/upgrader.rb
+    - 'lib/backup/**/*'
+
 # Prefer `find_by` over `where.first`.
 Rails/FindBy:
   Enabled: true
@@ -773,6 +851,9 @@ Rails/FindEach:
 Rails/HasAndBelongsToMany:
   Enabled: true
 
+Rails/HttpPositionalArguments:
+  Enabled: false
+
 # Checks for calls to puts, print, etc.
 Rails/Output:
   Enabled: true
@@ -781,6 +862,9 @@ Rails/Output:
     - lib/gitlab/upgrader.rb
     - 'lib/backup/**/*'
     - 'lib/tasks/**/*'
+
+Rails/OutputSafety:
+  Enabled: false
 
 # Checks for incorrect grammar when using methods like `3.day.ago`.
 Rails/PluralizationGrammar:
@@ -792,6 +876,12 @@ Rails/ReadWriteAttribute:
 
 # Checks the arguments of ActiveRecord scopes.
 Rails/ScopeArgs:
+  Enabled: true
+
+Rails/TimeZone:
+  Enabled: false
+
+Rails/Validation:
   Enabled: true
 
 # RSpec #######################################################################
@@ -851,17 +941,20 @@ RSpec/Focus:
 RSpec/InstanceVariable:
   Enabled: false
 
-# Checks for multiple top-level describes.
-RSpec/MultipleDescribes:
+RSpec/LeadingSubject:
   Enabled: false
 
-# Enforces the usage of the same method on all negative message expectations.
-RSpec/NotToNot:
-  EnforcedStyle: not_to
-  Enabled: true
+RSpec/LetSetup:
+  Enabled: false
 
-# Prefer using verifying doubles over normal doubles.
-RSpec/VerifiedDoubles:
+RSpec/MessageChain:
+  Enabled: false
+
+RSpec/MessageSpies:
+  Enabled: false
+
+# Checks for multiple top-level describes.
+RSpec/MultipleDescribes:
   Enabled: false
 
 RSpec/MultipleExpectations:
@@ -873,36 +966,10 @@ RSpec/NamedSubject:
 RSpec/NestedGroups:
   Enabled: false
 
-RSpec/LeadingSubject:
-  Enabled: false
-
-Lint/AmbiguousRegexpLiteral:
-  Enabled: false
-
-Bundler/OrderedGems:
-  Enabled: false
-
-Lint/HandleExceptions:
-  Enabled: false
-
-Lint/Loop:
-  Enabled: false
-
-Metrics/BlockLength:
-  Enabled: false
-
-Performance/RedundantMerge:
+# Enforces the usage of the same method on all negative message expectations.
+RSpec/NotToNot:
+  EnforcedStyle: not_to
   Enabled: true
-  MaxKeyValuePairs: 1
-
-RSpec/LetSetup:
-  Enabled: false
-
-RSpec/MessageChain:
-  Enabled: false
-
-RSpec/MessageSpies:
-  Enabled: false
 
 RSpec/RepeatedDescription:
   Enabled: false
@@ -910,71 +977,6 @@ RSpec/RepeatedDescription:
 RSpec/SubjectStub:
   Enabled: false
 
-Lint/UnifiedInteger:
-  Enabled: true
-
-Lint/ShadowingOuterLocalVariable:
+# Prefer using verifying doubles over normal doubles.
+RSpec/VerifiedDoubles:
   Enabled: false
-
-Lint/AssignmentInCondition:
-  Enabled: false
-
-Lint/UnneededSplatExpansion:
-  Enabled: false
-
-Lint/UnusedBlockArgument:
-  Enabled: false
-
-Performance/RedundantBlockCall:
-  Enabled: true
-
-Performance/RedundantMatch:
-  Enabled: true
-
-Rails/DynamicFindBy:
-  Enabled: false
-
-Rails/HttpPositionalArguments:
-  Enabled: false
-
-Rails/OutputSafety:
-  Enabled: false
-
-Rails/TimeZone:
-  Enabled: false
-
-Rails/Validation:
-  Enabled: true
-
-Security/JSONLoad:
-  Enabled: true
-
-Style/AlignParameters:
-  Enabled: false
-
-Style/BarePercentLiterals:
-  Enabled: true
-
-Style/BracesAroundHashParameters:
-  Enabled: false
-
-Style/CaseEquality:
-  Enabled: false
-
-Style/ColonMethodCall:
-  Enabled: true
-
-Style/CommentAnnotation:
-  Enabled: false
-
-Style/ConditionalAssignment:
-  Enabled: true
-
-Style/DoubleNegation:
-  Enabled: false
-
-Rails/Exit:
-  Enabled: true
-  Exclude:
-    - lib/gitlab/upgrader.rb
-    - 'lib/backup/**/*'
