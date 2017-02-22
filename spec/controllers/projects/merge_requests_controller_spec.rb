@@ -54,7 +54,8 @@ describe Projects::MergeRequestsController do
           project_id: fork_project.to_param,
           merge_request: {
             source_branch: 'remove-submodule',
-            target_branch: 'master' },
+            target_branch: 'master'
+          },
           format: format
     end
   end
