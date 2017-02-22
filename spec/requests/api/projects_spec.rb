@@ -604,20 +604,14 @@ describe API::Projects, api: true  do
       end
 
       describe 'license fields' do
-        let!(:project2) { create(:project, group: create(:group)) }
-
-        before do
-          project2.repository.commit_file(user, 'LICENSE',
-            Licensee::License.new('mit').content,
-            message: 'Add LICENSE', branch_name: 'master', update: false)
-        end
+        let(:project2) { create(:project, creator_id: user.id, namespace: user.namespace) }
 
         it 'contains license name and spdx ID' do
           get api("/projects/#{project2.id}", user)
 
           expect(json_response['license']).to be_a Hash
-          expect(json_response['license'][0]['name']).to be_present
-          expect(json_response['license'][0]['spdx_id']).to be_present
+          expect(json_response['license']['name']).to be_present
+          expect(json_response['license']['spdx_id']).to be_present
         end
       end
 
