@@ -47,8 +47,8 @@ which is highly recommendable and much faster than hardcoding.
 
 If you set up a GitLab Pages project on GitLab.com,
 it will automatically be accessible under a
-[subdomain of `<namespace>.pages.io`](https://docs.gitlab.com/ce/user/project/pages/).
-The `<namespace>` is defined by your username on GitLab.com,
+[subdomain of `namespace.pages.io`](https://docs.gitlab.com/ce/user/project/pages/).
+The `namespace` is defined by your username on GitLab.com,
 or the group name you created this project under.
 
 > Note: If you use your own GitLab instance to deploy your
