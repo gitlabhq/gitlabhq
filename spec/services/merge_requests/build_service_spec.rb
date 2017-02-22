@@ -44,15 +44,14 @@ describe MergeRequests::BuildService, services: true do
       end
     end
 
-    context 'missing target branch' do
-      let(:target_branch) { '' }
+    context 'when target branch is missing' do
+      let(:target_branch) { nil }
+      let(:commits) { Commit.decorate([commit_1], project) }
 
-      it 'forbids the merge request from being created' do
+      it 'creates compare object with target branch as default branch' do
         expect(merge_request.can_be_created).to eq(false)
-      end
-
-      it 'adds an error message to the merge request' do
-        expect(merge_request.errors).to contain_exactly('You must select source and target branch')
+        expect(merge_request.compare).to be_present
+        expect(merge_request.target_branch).to eq(project.default_branch)
       end
     end
 
