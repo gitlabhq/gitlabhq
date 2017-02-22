@@ -38,23 +38,6 @@ RSpec/SingleArgumentMessageChain:
   Exclude:
     - 'spec/requests/api/internal_spec.rb'
 
-# Cop supports --auto-correct.
-# Configuration parameters: Include.
-# Include: app/models/**/*.rb
-Rails/Validation:
-  Exclude:
-    - 'app/models/ci/build.rb'
-    - 'app/models/ci/pipeline.rb'
-    - 'app/models/ci/runner_project.rb'
-    - 'app/models/ci/trigger.rb'
-    - 'app/models/commit_status.rb'
-    - 'app/models/members/group_member.rb'
-    - 'app/models/members/project_member.rb'
-    - 'app/models/pages_domain.rb'
-    - 'app/models/project.rb'
-    - 'app/models/protected_branch.rb'
-    - 'app/models/user.rb'
-
 # Offense count: 8
 # Cop supports --auto-correct.
 # Configuration parameters: AutoCorrect.

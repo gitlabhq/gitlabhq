@@ -941,6 +941,9 @@ Rails/OutputSafety:
 Rails/TimeZone:
   Enabled: false
 
+Rails/Validation:
+  Enabled: true
+
 Style/AlignParameters:
   Enabled: false
 
