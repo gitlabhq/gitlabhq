@@ -12,8 +12,8 @@ describe Gitlab::SidekiqCluster do
 
   describe '.trap_terminate' do
     it 'traps the termination signals' do
-      expect(described_class).to receive(:trap_signals).
-        with(described_class::TERMINATE_SIGNALS)
+      expect(described_class).to receive(:trap_signals)
+        .with(described_class::TERMINATE_SIGNALS)
 
       described_class.trap_terminate { }
     end
@@ -21,8 +21,8 @@ describe Gitlab::SidekiqCluster do
 
   describe '.trap_forward' do
     it 'traps the signals to forward' do
-      expect(described_class).to receive(:trap_signals).
-        with(described_class::FORWARD_SIGNALS)
+      expect(described_class).to receive(:trap_signals)
+        .with(described_class::FORWARD_SIGNALS)
 
       described_class.trap_forward { }
     end
@@ -50,18 +50,18 @@ describe Gitlab::SidekiqCluster do
 
   describe '.parse_queues' do
     it 'returns an Array containing the parsed queues' do
-      expect(described_class.parse_queues(%w(foo bar,baz))).
-        to eq([%w(foo), %w(bar baz)])
+      expect(described_class.parse_queues(%w(foo bar,baz)))
+        .to eq([%w(foo), %w(bar baz)])
     end
   end
 
   describe '.start' do
     it 'starts Sidekiq with the given queues and environment' do
-      expect(described_class).to receive(:start_sidekiq).
-        ordered.with(%w(foo), :production, 'foo/bar')
+      expect(described_class).to receive(:start_sidekiq)
+        .ordered.with(%w(foo), :production, 'foo/bar')
 
-      expect(described_class).to receive(:start_sidekiq).
-        ordered.with(%w(bar baz), :production, 'foo/bar')
+      expect(described_class).to receive(:start_sidekiq)
+        .ordered.with(%w(bar baz), :production, 'foo/bar')
 
       described_class.start([%w(foo), %w(bar baz)], :production, 'foo/bar')
     end

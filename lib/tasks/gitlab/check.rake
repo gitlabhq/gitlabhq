@@ -1132,7 +1132,7 @@ namespace :gitlab do
       try_fixing_it(
         'If you have a valid certificate make sure you have the full certificate chain in the pem file'
       )
-    rescue Exception => e
+    rescue Exception => e # rubocop:disable Lint/RescueException
       display_error.call(e)
     end
   end

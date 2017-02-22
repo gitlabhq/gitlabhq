@@ -5,7 +5,7 @@ class AddColumnUserIdToProtectedBranchesAccessLevels < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = true
-  DOWNTIME_REASON = "This migrations adds two indexes, and so requires downtime."
+  DOWNTIME_REASON = "This migrations adds two indexes, and so requires downtime.".freeze
 
   # When using the methods "add_concurrent_index" or "add_column_with_default"
   # you must disable the use of transactions as these methods can not run in an

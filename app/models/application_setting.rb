@@ -244,10 +244,10 @@ class ApplicationSetting < ActiveRecord::Base
   end
 
   def update_mirror_cron_jobs
-    Project.mirror.where('sync_time < ?', minimum_mirror_sync_time).
-      update_all(sync_time: minimum_mirror_sync_time)
-    RemoteMirror.where('sync_time < ?', minimum_mirror_sync_time).
-      update_all(sync_time: minimum_mirror_sync_time)
+    Project.mirror.where('sync_time < ?', minimum_mirror_sync_time)
+      .update_all(sync_time: minimum_mirror_sync_time)
+    RemoteMirror.where('sync_time < ?', minimum_mirror_sync_time)
+      .update_all(sync_time: minimum_mirror_sync_time)
 
     Gitlab::Mirror.configure_cron_jobs!
   end

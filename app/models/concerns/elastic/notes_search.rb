@@ -90,7 +90,8 @@ module Elastic
             bool: {
               must: [
                 { term: { "issue.confidential" => true } },
-                { bool: {
+                {
+                  bool: {
                     should: [
                       { term: { "issue.author_id" => current_user.id } },
                       { term: { "issue.assignee_id" => current_user.id } },

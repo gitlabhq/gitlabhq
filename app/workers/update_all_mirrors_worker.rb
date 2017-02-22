@@ -15,9 +15,9 @@ class UpdateAllMirrorsWorker
   end
 
   def fail_stuck_mirrors!
-    stuck = Project.mirror.
-      with_import_status(:started).
-      where('mirror_last_update_at < ?', 2.hours.ago)
+    stuck = Project.mirror
+      .with_import_status(:started)
+      .where('mirror_last_update_at < ?', 2.hours.ago)
 
     stuck.find_each(batch_size: 50) do |project|
       project.mark_import_as_failed('The mirror update took too long to complete.')

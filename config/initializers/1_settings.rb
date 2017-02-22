@@ -68,7 +68,8 @@ class Settings < Settingslogic
     # By inserting in the Kerberos dedicated URL ":@", we give to curl an empty username and password and GSS auth goes ahead
     # Known bug reported in http://sourceforge.net/p/curl/bugs/440/ and http://curl.haxx.se/docs/knownbugs.html
     def build_gitlab_kerberos_url
-      [ kerberos_protocol,
+      [
+        kerberos_protocol,
         "://:@",
         gitlab.host,
         ":#{kerberos_port}",

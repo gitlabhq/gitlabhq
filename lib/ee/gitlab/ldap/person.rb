@@ -4,9 +4,9 @@ module EE
       module Person
         def ssh_keys
           if config.sync_ssh_keys? && entry.respond_to?(config.sync_ssh_keys)
-            entry[config.sync_ssh_keys.to_sym].
-              map { |key| key[/(ssh|ecdsa)-[^ ]+ [^\s]+/] }.
-              compact
+            entry[config.sync_ssh_keys.to_sym]
+              .map { |key| key[/(ssh|ecdsa)-[^ ]+ [^\s]+/] }
+              .compact
           else
             []
           end
@@ -23,12 +23,12 @@ module EE
           require 'net/ldap/dn'
           dn_components = []
           Net::LDAP::DN.new(dn).each_pair { |name, value| dn_components << { name: name, value: value } }
-          dn_components.
-            reverse.
-            take_while { |rdn| rdn[:name].casecmp('DC').zero? }. # Domain Component
-          map { |rdn| rdn[:value] }.
-            reverse.
-            join('.')
+          dn_components
+            .reverse
+            .take_while { |rdn| rdn[:name].casecmp('DC').zero? } # Domain Component
+          .map { |rdn| rdn[:value] }
+            .reverse
+            .join('.')
         end
       end
     end

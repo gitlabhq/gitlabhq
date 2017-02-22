@@ -15,7 +15,7 @@ namespace :gitlab do
       # check redis version
       redis_version = run_and_match(%w(redis-cli --version), /redis-cli (\d+\.\d+\.\d+)/).to_a
       # check for system defined proxies
-      proxies = Gitlab::Proxy.detect_proxy.map{|k,v| "#{k}: #{v}"}.join("\n\t\t")
+      proxies = Gitlab::Proxy.detect_proxy.map{|k, v| "#{k}: #{v}"}.join("\n\t\t")
 
       puts ""
       puts "System information".color(:yellow)
@@ -40,12 +40,12 @@ namespace :gitlab do
       http_clone_url = project.http_url_to_repo
       ssh_clone_url  = project.ssh_url_to_repo
 
-      if Gitlab::Geo.current_node
-        geo_node_type = Gitlab::Geo.current_node.primary ? 'Primary' : 'Secondary'
-      else
-        geo_node_type = 'Undefined'.color(:red)
-      end
-
+      geo_node_type = 
+        if Gitlab::Geo.current_node
+          Gitlab::Geo.current_node.primary ? 'Primary' : 'Secondary'
+        else
+          'Undefined'.color(:red)
+        end
 
       omniauth_providers = Gitlab.config.omniauth.providers
       omniauth_providers.map! { |provider| provider['name'] }

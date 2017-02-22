@@ -64,7 +64,7 @@ module Projects
     def update_tags(&block)
       old_tags = repository_tags_with_target.each_with_object({}) { |tag, tags| tags[tag.name] = tag }
 
-      fetch_result = block.call
+      fetch_result = yield
       return fetch_result unless fetch_result
 
       repository.expire_tags_cache

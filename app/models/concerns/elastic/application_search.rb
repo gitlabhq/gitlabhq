@@ -14,7 +14,7 @@ module Elastic
             analyzer: {
               default: {
                 tokenizer: 'standard',
-                filter: ['standard', 'lowercase', 'my_stemmer']
+                filter: %w(standard lowercase my_stemmer)
               },
               my_ngram_analyzer: {
                 tokenizer: 'my_ngram_tokenizer',
@@ -32,7 +32,7 @@ module Elastic
                 type: 'nGram',
                 min_gram: 2,
                 max_gram: 3,
-                token_chars: [ 'letter', 'digit' ]
+                token_chars: %w(letter digit)
               }
             }
           }
@@ -96,7 +96,7 @@ module Elastic
           { index: { _id: r.id, _parent: r.es_parent, data: r.__elasticsearch__.as_indexed_json } }
         end
 
-        options.merge!(transform: transform)
+        options[:transform] = transform
 
         self.import(options)
       end

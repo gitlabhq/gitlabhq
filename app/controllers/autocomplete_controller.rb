@@ -62,9 +62,9 @@ class AutocompleteController < ApplicationController
     return if params[:project_id].blank?
     return if ability.blank?
 
-    @users.to_a.
-      select { |user| user.can?(ability, @project) }.
-      take(Kaminari.config.default_per_page)
+    @users.to_a
+      .select { |user| user.can?(ability, @project) }
+      .take(Kaminari.config.default_per_page)
   end
 
   def find_users

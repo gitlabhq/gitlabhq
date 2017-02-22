@@ -50,9 +50,9 @@ module Approvable
         wheres << "id IN (#{project.group.members.where(has_access).select(:user_id).to_sql})"
       end
 
-      users = User.
-        active.
-        where("(#{wheres.join(' OR ')}) AND id NOT IN (#{approvals.select(:user_id).to_sql})")
+      users = User
+        .active
+        .where("(#{wheres.join(' OR ')}) AND id NOT IN (#{approvals.select(:user_id).to_sql})")
 
       users = users.where.not(id: author.id) if author
 

@@ -10,9 +10,9 @@ class Issue < ActiveRecord::Base
   include FasterCacheKeys
 
   WEIGHT_RANGE = 1..9
-  WEIGHT_ALL = 'Everything'
-  WEIGHT_ANY = 'Any Weight'
-  WEIGHT_NONE = 'No Weight'
+  WEIGHT_ALL = 'Everything'.freeze
+  WEIGHT_ANY = 'Any Weight'.freeze
+  WEIGHT_NONE = 'No Weight'.freeze
 
   DueDateStruct = Struct.new(:title, :name).freeze
   NoDueDate     = DueDateStruct.new('No Due Date', '0').freeze

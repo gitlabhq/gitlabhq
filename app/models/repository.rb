@@ -11,8 +11,8 @@ class Repository
 
   CommitError = Class.new(StandardError)
 
-  MIRROR_REMOTE = "upstream"
-  MIRROR_GEO = "geo"
+  MIRROR_REMOTE = "upstream".freeze
+  MIRROR_GEO = "geo".freeze
 
   # Methods that cache data from the Git repository.
   #

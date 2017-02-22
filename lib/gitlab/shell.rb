@@ -89,7 +89,7 @@ module Gitlab
     end
 
     def list_remote_tags(storage, name, remote)
-      output, status = Popen::popen([gitlab_shell_projects_path, 'list-remote-tags', storage, "#{name}.git", remote])
+      output, status = Popen.popen([gitlab_shell_projects_path, 'list-remote-tags', storage, "#{name}.git", remote])
       tags_with_targets = []
 
       raise Error, output unless status.zero?
@@ -130,7 +130,7 @@ module Gitlab
       args << '--force' if forced
       args << '--no-tags' if no_tags
 
-      output, status = Popen::popen(args)
+      output, status = Popen.popen(args)
       raise Error, output unless status.zero?
       true
     end
@@ -308,7 +308,7 @@ module Gitlab
     #
     def push_remote_branches(storage, project_name, remote_name, branch_names)
       args = [gitlab_shell_projects_path, 'push-branches', storage, "#{project_name}.git", remote_name, *branch_names]
-      output, status = Popen::popen(args)
+      output, status = Popen.popen(args)
       raise Error, output unless status.zero?
       true
     end
@@ -324,7 +324,7 @@ module Gitlab
     #
     def delete_remote_branches(storage, project_name, remote_name, branch_names)
       args = [gitlab_shell_projects_path, 'delete-remote-branches', storage, "#{project_name}.git", remote_name, *branch_names]
-      output, status = Popen::popen(args)
+      output, status = Popen.popen(args)
       raise Error, output unless status.zero?
       true
     end

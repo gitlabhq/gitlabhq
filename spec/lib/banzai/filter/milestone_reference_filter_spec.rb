@@ -273,8 +273,8 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
     let!(:result) { reference_filter("See #{reference}") }
 
     it 'points to referenced project milestone page' do
-      expect(result.css('a').first.attr('href')).to eq urls.
-        namespace_project_milestone_url(another_project.namespace,
+      expect(result.css('a').first.attr('href')).to eq urls
+        .namespace_project_milestone_url(another_project.namespace,
                                         another_project,
                                         milestone)
     end

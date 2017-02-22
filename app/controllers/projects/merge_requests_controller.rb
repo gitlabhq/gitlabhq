@@ -528,9 +528,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       return render_404
     end
 
-    ::MergeRequests::ApprovalService.
-      new(project, current_user).
-      execute(@merge_request)
+    ::MergeRequests::ApprovalService
+      .new(project, current_user)
+      .execute(@merge_request)
 
     render_approvals_json
   end
@@ -541,9 +541,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def unapprove
     if @merge_request.has_approved?(current_user)
-      ::MergeRequests::RemoveApprovalService.
-        new(project, current_user).
-        execute(@merge_request)
+      ::MergeRequests::RemoveApprovalService
+        .new(project, current_user)
+        .execute(@merge_request)
     end
 
     render_approvals_json

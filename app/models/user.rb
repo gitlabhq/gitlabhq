@@ -347,8 +347,8 @@ class User < ActiveRecord::Base
     end
 
     def non_ldap
-      joins('LEFT JOIN identities ON identities.user_id = users.id').
-        where('identities.provider IS NULL OR identities.provider NOT LIKE ?', 'ldap%')
+      joins('LEFT JOIN identities ON identities.user_id = users.id')
+        .where('identities.provider IS NULL OR identities.provider NOT LIKE ?', 'ldap%')
     end
 
     def reference_prefix

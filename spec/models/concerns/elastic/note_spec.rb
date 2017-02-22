@@ -50,15 +50,14 @@ describe Note, elastic: true do
   it "returns json with all needed elements" do
     note = create :note
 
-    expected_hash_keys = [
-      'id',
-      'note',
-      'project_id',
-      'created_at',
-      'updated_at',
-      'issue'
-
-    ]
+    expected_hash_keys = %w(
+      id
+      note
+      project_id
+      created_at
+      updated_at
+      issue
+    )
 
     expect(note.as_indexed_json.keys).to eq(expected_hash_keys)
   end

@@ -66,7 +66,7 @@ module ServiceParams
     :multiproject_enabled,
     :pass_unstable,
     :project_name
-  ]
+  ].freeze
 
   # Parameters to ignore if no value is specified
   FILTER_BLANK_PARAMS = [:password].freeze

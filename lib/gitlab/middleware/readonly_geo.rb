@@ -1,8 +1,8 @@
 module Gitlab
   module Middleware
     class ReadonlyGeo
-      DISALLOWED_METHODS = %w(POST PATCH PUT DELETE)
-      APPLICATION_JSON = 'application/json'
+      DISALLOWED_METHODS = [%w(POST PATCH PUT DELETE)].freeze
+      APPLICATION_JSON = 'application/json'.freeze
       API_VERSIONS = (3..4)
 
       def initialize(app)
@@ -37,7 +37,7 @@ module Gitlab
       end
 
       def geo_routes
-        geo_routes = ['refresh_wikis', 'receive_events']
+        geo_routes = %w(refresh_wikis receive_events)
         API_VERSIONS.flat_map { |version| geo_routes.map { |route| "api/v#{version}/geo/#{route}" } }
       end
 

@@ -148,7 +148,7 @@ describe Projects::MergeRequestsController do
 
   context 'approvals' do
     def json_response
-      JSON.load(response.body)
+      JSON.parse(response.body)
     end
 
     let(:approver) { create(:user) }

@@ -268,7 +268,7 @@ module Gitlab
       return false unless Gitlab.config.gitlab_shell.git_annex_enabled
       return false if changes.blank?
 
-      changes = changes.lines if changes.kind_of?(String)
+      changes = changes.lines if changes.is_a?(String)
 
       # Iterate over all changes to find if user allowed all of them to be applied
       # 0000000000000000000000000000000000000000 3073696294ddd52e9e6b6fc3f429109cac24626f refs/heads/synced/git-annex

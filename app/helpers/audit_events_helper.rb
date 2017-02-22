@@ -4,7 +4,7 @@ module AuditEventsHelper
   end
 
   def select_keys(key, value)
-    if key.match(/^(author|target)_.*/)
+    if key =~ /^(author|target)_.*/
       ""
     else
       "#{key} <strong>#{value}</strong>"

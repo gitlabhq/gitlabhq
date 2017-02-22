@@ -6,9 +6,9 @@ class Groups::AnalyticsController < Groups::ApplicationController
   def show
     @users = @group.users
     @start_date = params[:start_date] || Date.today - 1.week
-    @events = Event.contributions.
-      where("created_at > ?", @start_date).
-      where(project_id: @group.projects)
+    @events = Event.contributions
+      .where("created_at > ?", @start_date)
+      .where(project_id: @group.projects)
 
     @stats = {}
 
