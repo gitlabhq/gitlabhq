@@ -13,7 +13,6 @@
   - [Part 1: Static sites, domains, DNS records, and SSL/TLS certificates](getting_started_part_one.md)
   - [Part 2: Quick start guide - Setting up GitLab Pages](getting_started_part_two.md)
       - Video tutorial: [How to publish a website with GitLab Pages on GitLab.com: from a forked project](https://youtu.be/TWqh9MtT4Bg)
-      - Video tutorial: [How to publish a website with GitLab Pages on GitLab.com: from scratch](#LINK)
   - [Part 3: Creating and tweaking `.gitlab-ci.yml` for GitLab Pages](getting_started_part_three.md)
 - Secure GitLab Pages custom domain with SSL/TLS certificates
   - [Let's Encrypt](https://about.gitlab.com/2016/04/11/tutorial-securing-your-gitlab-pages-with-tls-and-letsencrypt/)
