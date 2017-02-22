@@ -273,7 +273,6 @@ What you can do with GitLab CI is pretty much up to your creativity. Once you ge
 - On this blog post, we go through the process of [pulling specific directories from different projects](https://about.gitlab.com/2016/12/07/building-a-new-gitlab-docs-site-with-nanoc-gitlab-ci-and-gitlab-pages/) to deploy this website you're looking at, docs.gitlab.com.
 - On this blog post, we teach you [how to use GitLab Pages to produce a code coverage report](https://about.gitlab.com/2016/11/03/publish-code-coverage-report-with-gitlab-pages/).
 
-## Further Reading
-
-- Read through _[Part 1: Static Sites, Domains, DNS Records, and SSL/TLS Certificates](getting_started_part_one.md)_
-- Read through _[Part 2: Quick Start Guide - Setting Up GitLab Pages](getting_started_part_two.md)_
+|||
+|:--|--:|
+|[**← Part 1: Static sites, domains, DNS records, and SSL/TLS certificates**](getting_started_part_one.md)|[**Part 2: Quick start guide - Setting up GitLab Pages →**](getting_started_part_two.md)|

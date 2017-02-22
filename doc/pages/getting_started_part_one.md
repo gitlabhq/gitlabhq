@@ -26,7 +26,7 @@ GitLab Pages only supports static websites, meaning, your output files must be H
 
 To create your static site, you can either hardcode in HTML, CSS, and JS, or use a [Static Site Generator (SSG)](https://www.staticgen.com/) to simplify your code and build the static site for you, which is highly recommendable and much faster than hardcoding.
 
-#### Further Reading
+---
 
 - Read through this technical overview on [Static versus Dynamic Websites](https://about.gitlab.com/2016/06/03/ssg-overview-gitlab-pages-part-1-dynamic-x-static/)
 - Understand [how modern Static Site Generators work](https://about.gitlab.com/2016/06/10/ssg-overview-gitlab-pages-part-2/) and what you can add to your static site
@@ -158,7 +158,6 @@ Now that you hopefully understand why you need all of this, it's simple:
 
 > Note: **do not** open certificates or encryption keys in regular text editors. Always use code editors (such as Sublime Text, Atom, Dreamweaver, Brackets, etc).
 
-## Further Reading
-
-- Read through GitLab Pages from A to Z _[Part 2: Quick Start Guide - Setting Up GitLab Pages](getting_started_part_two.md)_
-- Read through GitLab Pages from A to Z _[Part 3: Creating and Tweaking `.gitlab-ci.yml` for GitLab Pages](getting_started_part_three.md)_
+|||
+|:--|--:|
+||[**Part 2: Quick start guide - Setting up GitLab Pages →**](getting_started_part_two.md)|

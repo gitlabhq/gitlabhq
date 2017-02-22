@@ -106,7 +106,6 @@ On the contrary, if you deploy your website after forking one of our [default ex
 baseurl: ""
 ```
 
-## Further Reading
-
-- Read through _[Part 1: Static Sites, Domains, DNS Records, and SSL/TLS Certificates](getting_started_part_one.md)_
-- Read through _[Part 3: Creating and Tweaking `.gitlab-ci.yml` for GitLab Pages](getting_started_part_three.md)_
+|||
+|:--|--:|
+|[**← Part 1: Static sites, domains, DNS records, and SSL/TLS certificates**](getting_started_part_one.md)|[**Part 3: Creating and tweaking `.gitlab-ci.yml` for GitLab Pages →**](getting_started_part_three.md)|
