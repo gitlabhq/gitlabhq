@@ -140,11 +140,11 @@ describe Gitlab::Ci::Config::Entry::Job do
         it 'returns correct value' do
           expect(entry.value)
             .to eq(name: :rspec,
-                  before_script: %w[ls pwd],
-                  script: %w[rspec],
-                  commands: "ls\npwd\nrspec",
-                  stage: 'test',
-                  after_script: %w[cleanup])
+                   before_script: %w[ls pwd],
+                   script: %w[rspec],
+                   commands: "ls\npwd\nrspec",
+                   stage: 'test',
+                   after_script: %w[cleanup])
         end
       end
     end

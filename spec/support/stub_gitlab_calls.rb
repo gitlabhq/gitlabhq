@@ -53,7 +53,7 @@ module StubGitlabCalls
 
     stub_request(:post, "#{gitlab_url}api/v3/session.json")
       .with(body: "{\"email\":\"test@test.com\",\"password\":\"123456\"}",
-           headers: { 'Content-Type' => 'application/json' })
+            headers: { 'Content-Type' => 'application/json' })
            .to_return(status: 201, body: f, headers: { 'Content-Type' => 'application/json' })
   end
 
