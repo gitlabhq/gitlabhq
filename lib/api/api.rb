@@ -19,6 +19,7 @@ module API
       mount ::API::V3::Projects
       mount ::API::V3::ProjectSnippets
       mount ::API::V3::Repositories
+      mount ::API::V3::Subscriptions
       mount ::API::V3::SystemHooks
       mount ::API::V3::Tags
       mount ::API::V3::Templates

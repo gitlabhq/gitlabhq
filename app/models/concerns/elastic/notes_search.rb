@@ -7,7 +7,7 @@ module Elastic
 
       mappings _parent: { type: 'project' } do
         indexes :id,          type: :integer
-        indexes :note,        type: :string,
+        indexes :note,        type: :text,
                               index_options: 'offsets'
         indexes :project_id,  type: :integer
         indexes :created_at,  type: :date
