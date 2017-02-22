@@ -20,13 +20,13 @@ def instrument_classes(instrumentation)
 
   # Path to search => prefix to strip from constant
   paths_to_instrument = {
-    %w(app finders)                    => %w(app finders),
-    %w(app mailers emails)          => %w(app mailers),
-    ['app', 'services', '**']             => %w(app services),
-    %w(lib gitlab conflicts)        => ['lib'],
-    %w(lib gitlab diff)             => ['lib'],
-    %w(lib gitlab email message) => ['lib'],
-    %w(lib gitlab checks)           => ['lib']
+    %w(app finders)               => %w(app finders),
+    %w(app mailers emails)        => %w(app mailers),
+    %w(app services **)           => %w(app services),
+    %w(lib gitlab conflicts)      => ['lib'],
+    %w(lib gitlab diff)           => ['lib'],
+    %w(lib gitlab email message)  => ['lib'],
+    %w(lib gitlab checks)         => ['lib']
   }
 
   paths_to_instrument.each do |(path, prefix)|

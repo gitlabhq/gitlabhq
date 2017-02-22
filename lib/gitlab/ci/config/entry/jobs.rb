@@ -35,7 +35,7 @@ module Gitlab
                   .value(config || {})
                   .metadata(name: name)
                   .with(key: name, parent: self,
-                       description: "#{name} job definition.")
+                        description: "#{name} job definition.")
 
                 @entries[name] = factory.create!
               end

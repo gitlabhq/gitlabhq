@@ -15,41 +15,41 @@ describe ExpandVariables do
         result: 'keyvalue',
         variables: [
           { key: 'variable', value: 'value' }
-        ]},
+        ] },
       { value: 'key${variable}',
         result: 'keyvalue',
         variables: [
           { key: 'variable', value: 'value' }
-        ]},
+        ] },
       { value: 'key$variable$variable2',
         result: 'keyvalueresult',
         variables: [
           { key: 'variable', value: 'value' },
           { key: 'variable2', value: 'result' },
-        ]},
+        ] },
       { value: 'key${variable}${variable2}',
         result: 'keyvalueresult',
         variables: [
           { key: 'variable', value: 'value' },
           { key: 'variable2', value: 'result' }
-        ]},
+        ] },
       { value: 'key$variable2$variable',
         result: 'keyresultvalue',
         variables: [
           { key: 'variable', value: 'value' },
           { key: 'variable2', value: 'result' },
-        ]},
+        ] },
       { value: 'key${variable2}${variable}',
         result: 'keyresultvalue',
         variables: [
           { key: 'variable', value: 'value' },
           { key: 'variable2', value: 'result' }
-        ]},
+        ] },
       { value: 'review/$CI_BUILD_REF_NAME',
         result: 'review/feature/add-review-apps',
         variables: [
           { key: 'CI_BUILD_REF_NAME', value: 'feature/add-review-apps' }
-        ]},
+        ] },
     ]
 
     tests.each do |test|

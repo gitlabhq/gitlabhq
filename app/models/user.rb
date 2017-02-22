@@ -606,7 +606,7 @@ class User < ActiveRecord::Base
       if project.repository.branch_exists?(event.branch_name)
         merge_requests = MergeRequest.where("created_at >= ?", event.created_at)
             .where(source_project_id: project.id,
-                  source_branch: event.branch_name)
+                   source_branch: event.branch_name)
         merge_requests.empty?
       end
     end

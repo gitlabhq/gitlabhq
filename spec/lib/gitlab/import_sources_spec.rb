@@ -23,14 +23,15 @@ describe Gitlab::ImportSources do
     it 'returns an array' do
       expected =
         %w(
-github 
-bitbucket 
-gitlab 
-google_code 
-fogbugz 
-git 
-gitlab_project 
-gitea)
+          github
+          bitbucket
+          gitlab
+          google_code
+          fogbugz
+          git
+          gitlab_project
+          gitea
+        )
 
       expect(described_class.values).to eq(expected)
     end
@@ -40,13 +41,14 @@ gitea)
     it 'returns an array of importer names' do
       expected =
         %w(
-github 
-bitbucket 
-gitlab 
-google_code 
-fogbugz 
-gitlab_project 
-gitea)
+          github
+          bitbucket
+          gitlab
+          google_code
+          fogbugz
+          gitlab_project
+          gitea
+        )
 
       expect(described_class.importer_names).to eq(expected)
     end

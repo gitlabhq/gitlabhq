@@ -12,8 +12,8 @@ describe Gitlab::Ci::Config::Entry::Global do
       it 'contains the expected node names' do
         expect(described_class.nodes.keys)
           .to match_array(%i[before_script image services
-                            after_script variables stages
-                            types cache])
+                             after_script variables stages
+                             types cache])
       end
     end
   end
