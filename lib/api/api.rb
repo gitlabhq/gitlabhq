@@ -7,7 +7,9 @@ module API
     version 'v3', using: :path do
       mount ::API::V3::Boards
       mount ::API::V3::Branches
+      mount ::API::V3::Commits
       mount ::API::V3::DeployKeys
+      mount ::API::V3::Files
       mount ::API::V3::Issues
       mount ::API::V3::Labels
       mount ::API::V3::Members

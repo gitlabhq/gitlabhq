@@ -97,13 +97,13 @@ module API
         success Entities::RepoBranch
       end
       params do
-        requires :branch_name, type: String, desc: 'The name of the branch'
+        requires :branch, type: String, desc: 'The name of the branch'
         requires :ref, type: String, desc: 'Create branch from commit sha or existing branch'
       end
       post ":id/repository/branches" do
         authorize_push_project
         result = CreateBranchService.new(user_project, current_user).
-                 execute(params[:branch_name], params[:ref])
+                 execute(params[:branch], params[:ref])
 
         if result[:status] == :success
           present result[:branch],
@@ -126,7 +126,7 @@ module API
 
         if result[:status] == :success
           {
-            branch_name: params[:branch]
+            branch: params[:branch]
           }
         else
           render_api_error!(result[:message], result[:return_code])
