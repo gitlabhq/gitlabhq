@@ -3,7 +3,7 @@ class ChangeArtifactsSizeColumn < ActiveRecord::Migration
 
   DOWNTIME = true
 
-  DOWNTIME_REASON = 'Changing an integer column size requires a full table rewrite.'.freeze
+  DOWNTIME_REASON = 'Changing an integer column size requires a full table rewrite.'
 
   def up
     change_column :ci_builds, :artifacts_size, :integer, limit: 8

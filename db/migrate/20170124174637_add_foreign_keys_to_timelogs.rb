@@ -9,7 +9,7 @@ class AddForeignKeysToTimelogs < ActiveRecord::Migration
   # When a migration requires downtime you **must** uncomment the following
   # constant and define a short and easy to understand explanation as to why the
   # migration requires downtime.
-  DOWNTIME_REASON = ''.freeze
+  DOWNTIME_REASON = ''
 
   # When using the methods "add_concurrent_index" or "add_column_with_default"
   # you must disable the use of transactions as these methods can not run in an

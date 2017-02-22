@@ -5,7 +5,7 @@ class AddEnvironmentSlug < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = true
-  DOWNTIME_REASON = 'Adding NOT NULL column environments.slug with dependent data'.freeze
+  DOWNTIME_REASON = 'Adding NOT NULL column environments.slug with dependent data'
 
   # Used to generate random suffixes for the slug
   LETTERS = 'a'..'z'

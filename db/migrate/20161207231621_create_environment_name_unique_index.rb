@@ -4,7 +4,7 @@ class CreateEnvironmentNameUniqueIndex < ActiveRecord::Migration
   disable_ddl_transaction!
 
   DOWNTIME = true
-  DOWNTIME_REASON = 'Making a non-unique index into a unique index'.freeze
+  DOWNTIME_REASON = 'Making a non-unique index into a unique index'
 
   def up
     remove_index :environments, [:project_id, :name]

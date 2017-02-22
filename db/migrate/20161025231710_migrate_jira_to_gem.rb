@@ -1,7 +1,7 @@
 class MigrateJiraToGem < ActiveRecord::Migration
   DOWNTIME = true
 
-  DOWNTIME_REASON = <<-HEREDOC.freeze
+  DOWNTIME_REASON = <<-HEREDOC
     Refactor all Jira services properties(serialized field) to use new jira-ruby gem.
     There were properties on old Jira service that are not needed anymore after the
     service refactoring: api_url, project_url, new_issue_url, issues_url.

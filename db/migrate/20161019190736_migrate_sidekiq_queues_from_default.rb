@@ -8,7 +8,7 @@ class MigrateSidekiqQueuesFromDefault < ActiveRecord::Migration
 
   DOWNTIME = true
 
-  DOWNTIME_REASON = <<-EOF.freeze
+  DOWNTIME_REASON = <<-EOF
   Moving Sidekiq jobs from queues requires Sidekiq to be stopped. Not stopping
   Sidekiq will result in the loss of jobs that are scheduled after this
   migration completes.

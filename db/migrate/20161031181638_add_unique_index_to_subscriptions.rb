@@ -2,7 +2,7 @@ class AddUniqueIndexToSubscriptions < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = true
-  DOWNTIME_REASON = 'This migration requires downtime because it changes a column to not accept null values.'.freeze
+  DOWNTIME_REASON = 'This migration requires downtime because it changes a column to not accept null values.'
 
   disable_ddl_transaction!
 

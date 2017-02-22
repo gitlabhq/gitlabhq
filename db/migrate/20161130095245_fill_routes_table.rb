@@ -5,7 +5,7 @@ class FillRoutesTable < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = true
-  DOWNTIME_REASON = 'No new namespaces should be created during data copy'.freeze
+  DOWNTIME_REASON = 'No new namespaces should be created during data copy'
 
   def up
     execute <<-EOF

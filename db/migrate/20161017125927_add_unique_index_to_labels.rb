@@ -2,7 +2,7 @@ class AddUniqueIndexToLabels < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = true
-  DOWNTIME_REASON = 'This migration removes duplicated labels.'.freeze
+  DOWNTIME_REASON = 'This migration removes duplicated labels.'
 
   disable_ddl_transaction!
 
