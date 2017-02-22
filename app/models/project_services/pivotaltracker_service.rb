@@ -2,6 +2,7 @@ class PivotaltrackerService < Service
   include HTTParty
 
   API_ENDPOINT = 'https://www.pivotaltracker.com/services/v5/source_commits'
+  STORY_URL_PATTERN = 'pivotaltracker.com/story/show/([0-9]+)'
 
   prop_accessor :token, :restrict_to_branch
   validates :token, presence: true, if: :activated?
@@ -43,12 +44,13 @@ class PivotaltrackerService < Service
     return unless allowed_branch?(data[:ref])
 
     data[:commits].each do |commit|
+      msg = extract_storyid(commit[:message])
       message = {
         'source_commit' => {
           'commit_id' => commit[:id],
           'author' => commit[:author][:name],
           'url' => commit[:url],
-          'message' => commit[:message]
+          'message' => commit[:message].concat(msg)
         }
       }
       PivotaltrackerService.post(
@@ -72,4 +74,13 @@ class PivotaltrackerService < Service
 
     branch.present? && allowed_branches.include?(branch)
   end
+
+  def extract_storyid(msg)
+    if m = msg.match(STORY_URL_PATTERN)
+      return "[#%s]" %  m.captures[0]
+    else
+      return ''
+    end
+  end
+
 end
