@@ -1,6 +1,8 @@
 /* global BoardService */
 /* global Vue */
-module.exports = Vue.extend({
+const extraMilestones = require('../mixins/extra_milestones');
+
+module.exports = {
   props: {
     board: {
       type: Object,
@@ -19,16 +21,7 @@ module.exports = Vue.extend({
     return {
       loading: false,
       milestones: [],
-      extraMilestones: [
-        {
-          id: null,
-          title: 'Any Milestone',
-        },
-        {
-          id: -2,
-          title: 'Upcoming',
-        },
-      ],
+      extraMilestones,
     };
   },
   mounted() {
@@ -68,4 +61,4 @@ module.exports = Vue.extend({
       </ul>
     </div>
   `,
-});
+};

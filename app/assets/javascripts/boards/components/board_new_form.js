@@ -1,6 +1,8 @@
 /* global Vue */
-/* eslint-disable */
+/* global BoardService */
 const boardMilestoneSelect = require('./milestone_select');
+const extraMilestones = require('../mixins/extra_milestones');
+
 (() => {
   window.gl = window.gl || {};
   window.gl.issueBoards = window.gl.issueBoards || {};
@@ -19,13 +21,14 @@ const boardMilestoneSelect = require('./milestone_select');
         board: {
           id: false,
           name: '',
-          milestone: {},
-          milestone_id: '',
+          milestone: extraMilestones[0],
+          milestone_id: extraMilestones[0].id,
         },
         currentBoard: Store.state.currentBoard,
         currentPage: Store.state.currentPage,
         milestones: [],
         milestoneDropdownOpen: false,
+        extraMilestones,
       };
     },
     components: {
@@ -70,7 +73,8 @@ const boardMilestoneSelect = require('./milestone_select');
                 this.currentBoard.milestone_id = this.board.milestone_id;
                 this.currentBoard.milestone = this.board.milestone;
 
-                Store.state.filters.milestone_title = this.currentBoard.milestone_id ? this.currentBoard.milestone.title : null;
+                Store.state.filters.milestone_title = this.currentBoard.milestone_id ?
+                  this.currentBoard.milestone.title : null;
               }
             }
 

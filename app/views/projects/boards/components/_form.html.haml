@@ -20,6 +20,12 @@
       .dropdown-menu.dropdown-menu-selectable{ "v-if" => "milestoneDropdownOpen" }
         .dropdown-content
           %ul
+            %li{ "v-for" => "milestone in extraMilestones" }
+              %a{ href: "#",
+                ":class" => "{ 'is-active': milestone.id === board.milestone_id }",
+                "@click.stop.prevent" => "selectMilestone(milestone)" }
+                {{ milestone.title }}
+            %li.divider
             %li{ "v-for" => "milestone in milestones" }
               %a{ href: "#",
                 ":class" => "{ 'is-active': milestone.id === board.milestone_id }",
