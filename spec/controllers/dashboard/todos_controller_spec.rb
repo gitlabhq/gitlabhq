@@ -46,7 +46,7 @@ describe Dashboard::TodosController do
 
       expect(todo.reload).to be_pending
       expect(response).to have_http_status(200)
-      expect(json_response).to eq({ "count" => 1, "done_count" => 0 })
+      expect(json_response).to eq({ "count" => "1", "done_count" => "0" })
     end
   end
 end
