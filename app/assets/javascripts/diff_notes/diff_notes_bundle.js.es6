@@ -1,14 +1,18 @@
-/* eslint-disable func-names, comma-dangle, new-cap, no-new, import/newline-after-import, no-multi-spaces, max-len */
+/* eslint-disable func-names, comma-dangle, new-cap, no-new, max-len */
 /* global Vue */
 /* global ResolveCount */
 
-function requireAll(context) { return context.keys().map(context); }
 const Vue = require('vue');
-requireAll(require.context('./models',     false, /^\.\/.*\.(js|es6)$/));
-requireAll(require.context('./stores',     false, /^\.\/.*\.(js|es6)$/));
-requireAll(require.context('./services',   false, /^\.\/.*\.(js|es6)$/));
-requireAll(require.context('./mixins',     false, /^\.\/.*\.(js|es6)$/));
-requireAll(require.context('./components', false, /^\.\/.*\.(js|es6)$/));
+require('./models/discussion');
+require('./models/note');
+require('./stores/comments');
+require('./services/resolve');
+require('./mixins/discussion');
+require('./components/comment_resolve_btn');
+require('./components/jump_to_discussion');
+require('./components/resolve_btn');
+require('./components/resolve_count');
+require('./components/resolve_discussion_btn');
 
 $(() => {
   const projectPath = document.querySelector('.merge-request').dataset.projectPath;
