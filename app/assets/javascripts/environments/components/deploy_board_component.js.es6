@@ -62,14 +62,17 @@ module.exports = Vue.component('deploy_boards_components', {
   created() {
     this.isLoading = true;
 
+    const maxNumberOfRequests = 3;
+    const noContentStatus = 204;
+
     // If the response is 204, we make 3 more requests.
     gl.utils.backOff((next, stop) => {
       this.service.getDeployBoard(this.environmentID)
         .then((resp) => {
-          if (resp.status === 204) {
+          if (resp.status === noContentStatus) {
             this.backOffRequestCounter = this.backOffRequestCounter += 1;
 
-            if (this.backOffRequestCounter < 3) {
+            if (this.backOffRequestCounter < maxNumberOfRequests) {
               next();
             } else {
               stop(resp);
@@ -79,9 +82,9 @@ module.exports = Vue.component('deploy_boards_components', {
           }
         })
         .catch(stop);
-    }, Infinity)
+    })
     .then((resp) => {
-      if (resp.status === 204) {
+      if (resp.status === noContentStatus) {
         this.hasError = true;
         return resp;
       }
@@ -108,11 +111,10 @@ module.exports = Vue.component('deploy_boards_components', {
 
     instanceTitle() {
       let title;
+
       if (this.deployBoardData.instances.length === 1) {
         title = 'Instance';
-      }
-
-      if (this.deployBoardData.instances.length > 1) {
+      } else {
         title = 'Instances';
       }
 

@@ -441,7 +441,7 @@ module.exports = Vue.component('environment-item', {
       <td>
         <span class="deploy-board-icon"
           v-if="model.hasDeployBoard"
-          v-on:click="toggleDeployBoard(model)">
+          @click="toggleDeployBoard(model)">
 
           <i v-show="!model.isDeployBoardVisible"
             class="fa fa-caret-right"

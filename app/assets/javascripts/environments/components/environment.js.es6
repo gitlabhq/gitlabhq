@@ -63,6 +63,16 @@ module.exports = Vue.component('environment-component', {
       return gl.utils.convertPermissionToBoolean(this.canCreateEnvironment);
     },
 
+    /**
+     * Pagination should only be rendered when we have information about it and when the
+     * number of total pages is bigger than 1.
+     *
+     * @return {Boolean}
+     */
+    shouldRenderPagination() {
+      return this.state.paginationInformation && this.state.paginationInformation.totalPages > 1;
+    },
+
   },
 
   /**
@@ -193,8 +203,7 @@ module.exports = Vue.component('environment-component', {
             :service="service">
           </environment-table>
 
-          <table-pagination
-            v-if="state.paginationInformation && state.paginationInformation.totalPages > 1"
+          <table-pagination v-if="shouldRenderPagination"
             :change="changePage"
             :pageInfo="state.paginationInformation">
           </table-pagination>

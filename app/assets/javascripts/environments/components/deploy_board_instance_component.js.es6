@@ -35,12 +35,13 @@ module.exports = Vue.component('deploy_board_instance_component', {
 
   computed: {
     cssClass() {
-      return `deploy-board-instance deploy-board-instance-${this.status} has-tooltip`;
+      return `deploy-board-instance-${this.status}`;
     },
   },
 
   template: `
     <div
+      class="deploy-board-instance has-tooltip"
       :class="cssClass"
       :data-title="tooltipText"
       data-toggle="tooltip"

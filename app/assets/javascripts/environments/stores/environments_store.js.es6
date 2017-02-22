@@ -54,10 +54,7 @@ class EnvironmentsStore {
 
       if (env.size > 1) {
         filtered = Object.assign(filtered, env, { isFolder: true, folderName: env.name });
-      }
-
-      // no folders items with `rollout_status` key can have a deploy board
-      if (env.size === 1 && env.rollout_status) {
+      } else if (env.size === 1 && env.rollout_status) {
         filtered = Object.assign(filtered, env, {
           hasDeployBoard: true,
           isDeployBoardVisible: false,

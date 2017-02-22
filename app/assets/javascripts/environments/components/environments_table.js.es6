@@ -91,7 +91,7 @@ module.exports = Vue.component('environment-table-component', {
             :play-icon-svg="playIconSvg"
             :terminal-icon-svg="terminalIconSvg"
             :commit-icon-svg="commitIconSvg"
-            :toggleDeployBoard="toggleDeployBoard.bind(model)"></tr>
+            :toggleDeployBoard="toggleDeployBoard"></tr>
 
           <tr v-if="model.hasDeployBoard && model.isDeployBoardVisible" class="js-deploy-board-row">
             <td colspan="6" class="deploy-board-container">
