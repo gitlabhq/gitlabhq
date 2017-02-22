@@ -70,7 +70,7 @@ To turn a **project website** forked from the Pages group into a **user/group** 
 
 #### Create a Project from Scratch
 
-1. From your **Project**'s **[Dashboard](https://gitlab.com/dashboard/projects)**, click **New project**, and name it considering the [examples above](#practical-examples).
+1. From your **Project**'s **[Dashboard](https://gitlab.com/dashboard/projects)**, click **New project**, and name it considering the [pratical examples](getting_started_part_one.md#practical-examples).
 1. Clone it to your local computer, add your website files to your project, add, commit and push to GitLab.
 1. From the your **Project**'s page, click **Set up CI**:
 
