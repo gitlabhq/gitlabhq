@@ -1,4 +1,0 @@
----
-title: 'Geo: Added `gitlab:geo:check` and improved `gitlab:envinfo` rake tasks'
-merge_request: 1120
-author:

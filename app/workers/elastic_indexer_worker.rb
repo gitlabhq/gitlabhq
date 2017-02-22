@@ -36,7 +36,7 @@ class ElasticIndexerWorker
         client.delete index: klass.index_name, type: klass.document_type, id: record_id
       end
 
-      clear_project_indexes(record_id) if klass == Project
+      clear_project_data(record_id) if klass == Project
     end
   rescue Elasticsearch::Transport::Transport::Errors::NotFound, ActiveRecord::RecordNotFound
     # These errors can happen in several cases, including:
@@ -56,43 +56,33 @@ class ElasticIndexerWorker
     end
   end
 
-  def clear_project_indexes(record_id)
-    remove_repository_index(record_id)
-    remove_wiki_index(record_id)
-    remove_nested_content(record_id)
+  def clear_project_data(record_id)
+    remove_children_documents(Repository.document_type, record_id)
+    remove_children_documents(ProjectWiki.document_type, record_id)
+    remove_children_documents(MergeRequest.document_type, record_id)
+    remove_documents_by_project_id(record_id)
   end
 
-  def remove_repository_index(record_id)
-    client.delete_by_query({
-      index: Repository.__elasticsearch__.index_name,
-      body: {
-        query: {
-          or: [
-            { term: { "commit.rid" => record_id } },
-            { term: { "blob.rid" => record_id } }
-          ]
-        }
-      }
-    })
-  end
-
-  def remove_nested_content(record_id)
+  def remove_documents_by_project_id(record_id)
     client.delete_by_query({
       index: Project.__elasticsearch__.index_name,
       body: {
         query: {
-          term: { "_parent" => record_id }
+          term: { "project_id" => record_id }
         }
       }
     })
   end
 
-  def remove_wiki_index(record_id)
+  def remove_children_documents(document_type, parent_record_id)
     client.delete_by_query({
-      index: ProjectWiki.__elasticsearch__.index_name,
+      index: Project.__elasticsearch__.index_name,
       body: {
         query: {
-          term: { "blob.rid" => "wiki_#{record_id}" }
+          parent_id: {
+            type: document_type,
+            id: parent_record_id
+          }
         }
       }
     })
