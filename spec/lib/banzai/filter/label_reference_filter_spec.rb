@@ -282,7 +282,7 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
   end
 
   describe 'referencing a label in a link href' do
-    let(:reference) { %Q{<a href="#{label.to_reference}">Label</a>} }
+    let(:reference) { %{<a href="#{label.to_reference}">Label</a>} }
 
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")

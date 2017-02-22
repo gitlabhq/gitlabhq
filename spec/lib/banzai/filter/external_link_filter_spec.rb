@@ -15,7 +15,7 @@ describe Banzai::Filter::ExternalLinkFilter, lib: true do
 
   it 'skips internal links' do
     internal = Gitlab.config.gitlab.url
-    exp = act = %Q(<a href="#{internal}/sign_in">Login</a>)
+    exp = act = %(<a href="#{internal}/sign_in">Login</a>)
     expect(filter(act).to_html).to eq exp
   end
 
@@ -70,8 +70,8 @@ describe Banzai::Filter::ExternalLinkFilter, lib: true do
     it 'skips internal links' do
       internal_link = Gitlab.config.gitlab.url + "/sign_in"
       url = internal_link.gsub(/\Ahttp/, 'HtTp')
-      act = %Q(<a href="#{url}">Login</a>)
-      exp = %Q(<a href="#{internal_link}">Login</a>)
+      act = %(<a href="#{url}">Login</a>)
+      exp = %(<a href="#{internal_link}">Login</a>)
       expect(filter(act).to_html).to eq(exp)
     end
 

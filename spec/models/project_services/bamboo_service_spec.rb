@@ -181,7 +181,7 @@ describe BambooService, models: true, caching: true do
       end
 
       it 'sets commit status to "pending" when response has no results' do
-        stub_request(body: %Q({"results":{"results":{"size":"0"}}}))
+        stub_request(body: %({"results":{"results":{"size":"0"}}}))
 
         is_expected.to eq('pending')
       end
@@ -223,6 +223,6 @@ describe BambooService, models: true, caching: true do
   end
 
   def bamboo_response(result_key: 42, build_state: 'success', size: 1)
-    %Q({"results":{"results":{"size":"#{size}","result":{"buildState":"#{build_state}","planResultKey":{"key":"#{result_key}"}}}}})
+    %({"results":{"results":{"size":"#{size}","result":{"buildState":"#{build_state}","planResultKey":{"key":"#{result_key}"}}}}})
   end
 end

@@ -10,7 +10,7 @@ class MigrateProjectFeatures < ActiveRecord::Migration
 
   def up
     sql =
-      %Q{
+      %{
         INSERT INTO project_features(project_id, issues_access_level, merge_requests_access_level, wiki_access_level,
         builds_access_level, snippets_access_level, created_at, updated_at)
           SELECT
@@ -29,7 +29,7 @@ class MigrateProjectFeatures < ActiveRecord::Migration
   end
 
   def down
-    sql = %Q{
+    sql = %{
       UPDATE projects
       SET
       issues_enabled = COALESCE((SELECT CASE WHEN issues_access_level = 20 THEN true ELSE false END AS issues_enabled FROM project_features WHERE project_features.project_id = projects.id), true),
