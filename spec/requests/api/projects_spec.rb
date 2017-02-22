@@ -554,9 +554,6 @@ describe API::Projects, api: true  do
         expect(json_response['star_count']).to be_present
         expect(json_response['forks_count']).to be_present
         expect(json_response['public_builds']).to be_present
-        expect(json_response['license']).to be_a Hash
-        expect(json_response['license'][0]['name']).to be_present
-        expect(json_response['license'][0]['spdx_id']).to be_present
         expect(json_response['shared_with_groups']).to be_an Array
         expect(json_response['shared_with_groups'].length).to eq(1)
         expect(json_response['shared_with_groups'][0]['group_id']).to eq(group.id)
@@ -604,6 +601,24 @@ describe API::Projects, api: true  do
           'kind' => user.namespace.kind,
           'full_path' => user.namespace.full_path,
         })
+      end
+
+      describe 'license fields' do
+        let!(:project2) { create(:project, group: create(:group)) }
+
+        before do
+          project2.repository.commit_file(user, 'LICENSE',
+            Licensee::License.new('mit').content,
+            message: 'Add LICENSE', branch_name: 'master', update: false)
+        end
+
+        it 'contains license name and spdx ID' do
+          get api("/projects/#{project2.id}", user)
+
+          expect(json_response['license']).to be_a Hash
+          expect(json_response['license'][0]['name']).to be_present
+          expect(json_response['license'][0]['spdx_id']).to be_present
+        end
       end
 
       describe 'permissions' do
