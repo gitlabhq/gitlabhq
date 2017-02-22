@@ -491,7 +491,7 @@ Style/WhileUntilModifier:
 
 # Use %w or %W for arrays of words.
 Style/WordArray:
-  Enabled: false
+  Enabled: true
 
 # Metrics #####################################################################
 

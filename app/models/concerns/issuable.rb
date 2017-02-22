@@ -185,7 +185,7 @@ module Issuable
     def grouping_columns(sort)
       grouping_columns = [arel_table[:id]]
 
-      if ["milestone_due_desc", "milestone_due_asc"].include?(sort)
+      if %w(milestone_due_desc milestone_due_asc).include?(sort)
         milestone_table = Milestone.arel_table
         grouping_columns << milestone_table[:id]
         grouping_columns << milestone_table[:due_date]

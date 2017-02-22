@@ -168,9 +168,9 @@ describe Ci::Pipeline, models: true do
         end
 
         it 'returns list of stages with correct statuses' do
-          expect(statuses).to eq([['build', 'failed'],
-                                  ['test', 'success'],
-                                  ['deploy', 'running']])
+          expect(statuses).to eq([%w(build failed),
+                                  %w(test success),
+                                  %w(deploy running)])
         end
 
         context 'when commit status  is retried' do
@@ -183,9 +183,9 @@ describe Ci::Pipeline, models: true do
           end
 
           it 'ignores the previous state' do
-            expect(statuses).to eq([['build', 'success'],
-                                    ['test', 'success'],
-                                    ['deploy', 'running']])
+            expect(statuses).to eq([%w(build success),
+                                    %w(test success),
+                                    %w(deploy running)])
           end
         end
       end
@@ -199,7 +199,7 @@ describe Ci::Pipeline, models: true do
 
     describe '#stages_name' do
       it 'returns a valid names of stages' do
-        expect(pipeline.stages_name).to eq(['build', 'test', 'deploy'])
+        expect(pipeline.stages_name).to eq(%w(build test deploy))
       end
     end
   end
@@ -767,7 +767,7 @@ describe Ci::Pipeline, models: true do
       end
 
       it 'cancels created builds' do
-        expect(latest_status).to eq ['canceled', 'canceled']
+        expect(latest_status).to eq %w(canceled canceled)
       end
     end
   end

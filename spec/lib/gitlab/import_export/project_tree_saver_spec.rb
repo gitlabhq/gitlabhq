@@ -114,7 +114,7 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
       it 'has project and group labels' do
         label_types = saved_project_json['issues'].first['label_links'].map { |link| link['label']['type'] }
 
-        expect(label_types).to match_array(['ProjectLabel', 'GroupLabel'])
+        expect(label_types).to match_array(%w(ProjectLabel GroupLabel))
       end
 
       it 'has priorities associated to labels' do

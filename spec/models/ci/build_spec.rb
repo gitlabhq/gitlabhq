@@ -1420,7 +1420,7 @@ describe Ci::Build, :models do
     end
 
     context 'when runner is assigned to build' do
-      let(:runner) { create(:ci_runner, description: 'description', tag_list: ['docker', 'linux']) }
+      let(:runner) { create(:ci_runner, description: 'description', tag_list: %w(docker linux)) }
 
       before do
         build.update(runner: runner)
