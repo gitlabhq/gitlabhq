@@ -218,9 +218,7 @@ module Gitlab
         raw_commit.parents.map { |c| Gitlab::Git::Commit.new(c) }
       end
 
-      def tree
-        raw_commit.tree
-      end
+      delegate :tree, to: :raw_commit
 
       def stats
         Gitlab::Git::CommitStats.new(self)

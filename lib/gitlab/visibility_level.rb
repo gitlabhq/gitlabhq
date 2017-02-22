@@ -33,9 +33,7 @@ module Gitlab
     PUBLIC   = 20 unless const_defined?(:PUBLIC)
 
     class << self
-      def values
-        options.values
-      end
+      delegate :values, to: :options
 
       def options
         {

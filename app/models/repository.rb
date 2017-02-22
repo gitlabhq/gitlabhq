@@ -494,9 +494,7 @@ class Repository
   end
   cache_method :exists?
 
-  def empty?
-    raw_repository.empty?
-  end
+  delegate :empty?, to: :raw_repository
   cache_method :empty?
 
   # The size of this repository in megabytes.
@@ -515,9 +513,7 @@ class Repository
   end
   cache_method :branch_names, fallback: []
 
-  def tag_names
-    raw_repository.tag_names
-  end
+  delegate :tag_names, to: :raw_repository
   cache_method :tag_names, fallback: []
 
   def branch_count

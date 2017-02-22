@@ -948,9 +948,7 @@ class Project < ActiveRecord::Base
     false
   end
 
-  def empty_repo?
-    repository.empty_repo?
-  end
+  delegate :empty_repo?, to: :repository
 
   def repo
     repository.raw
@@ -1144,9 +1142,7 @@ class Project < ActiveRecord::Base
     forked? && project == forked_from_project
   end
 
-  def forks_count
-    forks.count
-  end
+  delegate :count, to: :forks, prefix: true
 
   def origin_merge_requests
     merge_requests.where(source_project_id: self.id)

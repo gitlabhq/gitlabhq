@@ -10,9 +10,7 @@ module Ci
       end
     end
 
-    def project
-      pipeline.project
-    end
+    delegate :project, to: :pipeline
 
     private
 
