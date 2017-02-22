@@ -29,4 +29,4 @@ changes are in V4:
 - Removed `DELETE projects/:id/deploy_keys/:key_id/disable`. Use `DELETE projects/:id/deploy_keys/:key_id` instead
 - Moved `PUT /users/:id/(block|unblock)` to `POST /users/:id/(block|unblock)`
 - Labels filter on `projects/:id/issues` and `/issues` now matches only issues containing all labels (i.e.: Logical AND, not OR)
-
+- Make subscription API more RESTful. Use `post ":id/#{type}/:subscribable_id/subscribe"` to subscribe and `post ":id/#{type}/:subscribable_id/unsubscribe"` to unsubscribe from a resource.

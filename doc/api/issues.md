@@ -523,7 +523,7 @@ If the user is already subscribed to the issue, the status code `304`
 is returned.
 
 ```
-POST /projects/:id/issues/:issue_id/subscription
+POST /projects/:id/issues/:issue_id/subscribe
 ```
 
 | Attribute | Type | Required | Description |
@@ -532,7 +532,7 @@ POST /projects/:id/issues/:issue_id/subscription
 | `issue_id` | integer | yes | The ID of a project's issue |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/issues/93/subscription
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/issues/93/subscribe
 ```
 
 Example response:
@@ -579,7 +579,7 @@ from it. If the user is not subscribed to the issue, the
 status code `304` is returned.
 
 ```
-DELETE /projects/:id/issues/:issue_id/subscription
+POST /projects/:id/issues/:issue_id/unsubscribe
 ```
 
 | Attribute | Type | Required | Description |
@@ -588,7 +588,7 @@ DELETE /projects/:id/issues/:issue_id/subscription
 | `issue_id` | integer | yes | The ID of a project's issue |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/issues/93/subscription
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/issues/93/unsubscribe
 ```
 
 Example response:
