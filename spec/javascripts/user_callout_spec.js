@@ -1,4 +1,3 @@
-/* esint-disable space-before-function-paren, arrow-body-style */
 const UserCallout = require('~/user_callout');
 
 const USER_CALLOUT_COOKIE = 'user_callout_dismissed';
@@ -14,7 +13,7 @@ describe('UserCallout', function () {
     this.closeButton = $('.close-user-callout');
     this.userCalloutContainer = $('.user-callout');
     this.userCalloutBtn = $('.user-callout-btn');
-    Cookie.set(USER_CALLOUT_COOKIE, 0);
+    Cookie.set(USER_CALLOUT_COOKIE, 'false');
   });
 
   it('shows when cookie is set to false', () => {
@@ -24,13 +23,11 @@ describe('UserCallout', function () {
 
   it('hides when user clicks on the dismiss-icon', () => {
     this.closeButton.click();
-    expect(this.userCalloutContainer.is(':visible')).toBe(false);
-    expect(Cookie.get(USER_CALLOUT_COOKIE)).toBe('1');
+    expect(Cookie.get(USER_CALLOUT_COOKIE)).toBe('true');
   });
 
   it('hides when user clicks on the "check it out" button', () => {
     this.userCalloutBtn.click();
-    expect(this.userCalloutContainer.is(':visible')).toBe(false);
-    expect(Cookie.get(USER_CALLOUT_COOKIE)).toBe('1');
+    expect(Cookie.get(USER_CALLOUT_COOKIE)).toBe('true');
   });
 });

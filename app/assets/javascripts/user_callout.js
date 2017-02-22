@@ -1,4 +1,4 @@
-/* eslint-disable arrow-parens, class-methods-use-this, no-param-reassign */
+/* eslint-disable class-methods-use-this */
 /* global Cookies */
 
 const userCalloutElementName = '.user-callout';
@@ -11,21 +11,20 @@ class UserCallout {
   constructor() {
     this.isCalloutDismissed = Cookies.get(USER_CALLOUT_COOKIE);
     this.init();
-    this.isUserCalloutDismissed();
+    this.toggleUserCallout();
   }
 
   init() {
     $(document)
-      .on('click', closeButton, () => this.closeAndDismissCallout())
-      .on('click', userCalloutBtn, () => this.closeAndDismissCallout());
+      .on('click', closeButton, () => this.dismissCallout())
+      .on('click', userCalloutBtn, () => this.dismissCallout());
   }
 
-  closeAndDismissCallout() {
-    $(userCalloutElementName).hide();
-    Cookies.set(USER_CALLOUT_COOKIE, '1');
+  dismissCallout() {
+    Cookies.set(USER_CALLOUT_COOKIE, 'true');
   }
 
-  isUserCalloutDismissed() {
+  toggleUserCallout() {
     if (!this.isCalloutDismissed) {
       $(userCalloutElementName).show();
     }
