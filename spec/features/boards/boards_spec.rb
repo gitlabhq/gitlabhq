@@ -27,10 +27,10 @@ describe 'Issue Boards', feature: true, js: true do
       expect(page).to have_content('Welcome to your Issue Board!')
     end
 
-    it 'disables add issues button by default' do
+    it 'shows tooltip on add issues button' do
       button = page.find('.issue-boards-search button', text: 'Add issues')
 
-      expect(button[:disabled]).to eq true
+      expect(button[:"data-original-title"]).to eq("Please add a list to your board first")
     end
 
     it 'hides the blank state when clicking nevermind button' do

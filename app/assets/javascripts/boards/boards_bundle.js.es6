@@ -101,17 +101,53 @@ $(() => {
       modal: ModalStore.store,
       store: Store.state,
     },
+    watch: {
+      disabled() {
+        this.updateTooltip();
+      },
+    },
     computed: {
       disabled() {
         return !this.store.lists.filter(list => list.type !== 'blank' && list.type !== 'done').length;
       },
+      tooltipTitle() {
+        if (this.disabled) {
+          return 'Please add a list to your board first';
+        }
+
+        return '';
+      },
+    },
+    methods: {
+      updateTooltip() {
+        const $tooltip = $(this.$el);
+
+        this.$nextTick(() => {
+          if (this.disabled) {
+            $tooltip.tooltip();
+          } else {
+            $tooltip.tooltip('destroy');
+          }
+        });
+      },
+      openModal() {
+        if (!this.disabled) {
+          this.toggleModal(true);
+        }
+      },
+    },
+    mounted() {
+      this.updateTooltip();
     },
     template: `
       <button
-        class="btn btn-create pull-right prepend-left-10 has-tooltip"
+        class="btn btn-create pull-right prepend-left-10"
         type="button"
-        :disabled="disabled"
-        @click="toggleModal(true, false)">
+        data-placement="bottom"
+        :class="{ 'disabled': disabled }"
+        :title="tooltipTitle"
+        :aria-disabled="disabled"
+        @click="openModal">
         Add issues
       </button>
     `,
