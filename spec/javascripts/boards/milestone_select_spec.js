@@ -2,7 +2,7 @@
 /* global boardsMockInterceptor */
 /* global boardObj */
 /* global BoardService */
-const MilestoneComp = require('~/boards/components/milestone_select');
+const milestoneSelect = require('~/boards/components/milestone_select');
 require('~/boards/services/board_service');
 require('~/boards/stores/boards_store');
 require('./mock_data');
@@ -12,6 +12,8 @@ describe('Milestone select component', () => {
   let vm;
 
   beforeEach(() => {
+    const MilestoneComp = Vue.extend(milestoneSelect);
+
     Vue.http.interceptors.push(boardsMockInterceptor);
     gl.boardService = new BoardService('/test/issue-boards/board', '', '1');
     gl.issueBoards.BoardsStore.create();
