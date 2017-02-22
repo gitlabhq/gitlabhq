@@ -10,6 +10,7 @@ class CommitStatus < ActiveRecord::Base
   belongs_to :user
 
   delegate :commit, to: :pipeline
+  delegate :sha, :short_sha, to: :pipeline
 
   validates :pipeline, presence: true, unless: :importing?
 
@@ -101,8 +102,6 @@ class CommitStatus < ActiveRecord::Base
       end
     end
   end
-
-  delegate :sha, :short_sha, to: :pipeline
 
   def before_sha
     pipeline.before_sha || Gitlab::Git::BLANK_SHA

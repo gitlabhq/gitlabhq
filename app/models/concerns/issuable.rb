@@ -46,6 +46,17 @@ module Issuable
 
     has_one :metrics
 
+    delegate :name,
+             :email,
+             to: :author,
+             prefix: true
+
+    delegate :name,
+             :email,
+             to: :assignee,
+             allow_nil: true,
+             prefix: true
+
     validates :author, presence: true
     validates :title, presence: true, length: { maximum: 255 }
 
@@ -71,17 +82,6 @@ module Issuable
     scope :inc_notes_with_associations, -> { includes(notes: [:project, :author, :award_emoji]) }
     scope :references_project, -> { references(:project) }
     scope :non_archived, -> { join_project.where(projects: { archived: false }) }
-
-    delegate :name,
-             :email,
-             to: :author,
-             prefix: true
-
-    delegate :name,
-             :email,
-             to: :assignee,
-             allow_nil: true,
-             prefix: true
 
     attr_mentionable :title, pipeline: :single_line
     attr_mentionable :description

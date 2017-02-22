@@ -19,6 +19,9 @@ class ProjectWiki
     @user = user
   end
 
+  delegate :empty?, to: :pages
+  delegate :repository_storage_path, to: :project
+
   def path
     @project.path + '.wiki'
   end
@@ -59,8 +62,6 @@ class ProjectWiki
   def repository_exists?
     !!repository.exists?
   end
-
-  delegate :empty?, to: :pages
 
   # Returns an Array of Gitlab WikiPage instances or an
   # empty Array if this Wiki has no pages.
@@ -157,8 +158,6 @@ class ProjectWiki
       default_branch: default_branch
     }
   end
-
-  delegate :repository_storage_path, to: :project
 
   private
 
