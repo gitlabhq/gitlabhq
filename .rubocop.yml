@@ -146,7 +146,7 @@ Style/ElseAlignment:
 
 # Use empty lines between defs.
 Style/EmptyLineBetweenDefs:
-  Enabled: false
+  Enabled: true
 
 # Don't use several empty lines in a row.
 Style/EmptyLines:
