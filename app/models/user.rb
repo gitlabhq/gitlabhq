@@ -76,6 +76,7 @@ class User < ActiveRecord::Base
     where(type.not_eq('DeployKey').or(type.eq(nil)))
   end, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :deploy_keys, -> { where(type: 'DeployKey') }, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :gpg_keys, dependent: :destroy
 
   has_many :emails, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :personal_access_tokens, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
