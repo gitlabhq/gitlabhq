@@ -21,10 +21,6 @@
     white-space: nowrap;
   }
 
-  .btn {
-    margin: 4px;
-  }
-
   .table.ci-table {
     min-width: 1200px;
     table-layout: fixed;
@@ -47,6 +43,10 @@
     .pipeline-stages,
     .pipeline-actions {
       width: 20%;
+    }
+
+    .pipeline-actions {
+      padding-right: 0;
     }
   }
 }
@@ -207,19 +207,20 @@
   }
 
   .pipeline-actions {
-    min-width: 140px;
+    padding-right: 0;
 
-    .btn {
-      margin: 0;
+    .btn-default {
       color: $gl-text-color-secondary;
     }
 
-    .cancel-retry-btns {
-      vertical-align: middle;
+    .btn.btn-retry:hover,
+    .btn.btn-retry:focus {
+      border-color: #c4c4c4;
+      background-color: #f0f0f0;
+    }
 
-      .btn:not(:first-child) {
-        margin-left: 8px;
-      }
+    svg path {
+      fill: $gl-text-color-secondary;
     }
 
     .dropdown-menu {
@@ -240,10 +241,6 @@
       .fa {
         margin-right: 0;
       }
-    }
-
-    .btn-remove {
-      color: $white-light;
     }
 
     .btn-group {
@@ -267,11 +264,8 @@
     }
   }
 
-  .build-link {
-
-    a {
-      color: $gl-text-color;
-    }
+  .build-link a {
+    color: $gl-text-color;
   }
 
   .btn-group.open .dropdown-toggle {
