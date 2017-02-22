@@ -8,6 +8,8 @@ module Ci
       pipeline.builds.failed_or_canceled.find_each do |build|
         next unless build.retryable?
 
+        pipeline.mark_as_processable_after_stage(build.stage_idx)
+
         Ci::RetryBuildService.new(project, current_user)
           .reprocess(build)
       end
