@@ -178,9 +178,11 @@ class Project < ActiveRecord::Base
   accepts_nested_attributes_for :project_feature
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
+  delegate :count, to: :forks, prefix: true
   delegate :members, to: :team, prefix: true
   delegate :add_user, to: :team
   delegate :add_guest, :add_reporter, :add_developer, :add_master, to: :team
+  delegate :empty_repo?, to: :repository
 
   # Validations
   validates :creator, presence: true, on: :create
@@ -948,8 +950,6 @@ class Project < ActiveRecord::Base
     false
   end
 
-  delegate :empty_repo?, to: :repository
-
   def repo
     repository.raw
   end
@@ -1141,8 +1141,6 @@ class Project < ActiveRecord::Base
   def forked_from?(project)
     forked? && project == forked_from_project
   end
-
-  delegate :count, to: :forks, prefix: true
 
   def origin_merge_requests
     merge_requests.where(source_project_id: self.id)

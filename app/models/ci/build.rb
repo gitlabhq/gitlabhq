@@ -23,6 +23,8 @@ module Ci
     serialize :options
     serialize :yaml_variables, Gitlab::Serializer::Ci::Variables
 
+    delegate :name, to: :project, prefix: true
+
     validates :coverage, numericality: true, allow_blank: true
     validates :ref, presence: true
 
@@ -233,8 +235,6 @@ module Ci
     def project_id
       gl_project_id
     end
-
-    delegate :name, to: :project, prefix: true
 
     def repo_url
       auth = "gitlab-ci-token:#{ensure_token!}@"

@@ -14,6 +14,8 @@ module Ci
     has_many :builds, foreign_key: :commit_id
     has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id
 
+    delegate :id, to: :project, prefix: true
+
     validates :sha, presence: { unless: :importing? }
     validates :ref, presence: { unless: :importing? }
     validates :status, presence: { unless: :importing? }
@@ -149,8 +151,6 @@ module Ci
     def artifacts
       builds.latest.with_artifacts_not_expired.includes(project: [:namespace])
     end
-
-    delegate :id, to: :project, prefix: true
 
     # For now the only user who participates is the user who triggered
     def participants(_current_user = nil)
