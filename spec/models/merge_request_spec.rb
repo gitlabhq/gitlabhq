@@ -209,6 +209,50 @@ describe MergeRequest, models: true do
     end
   end
 
+  describe '#diff_size' do
+    let(:merge_request) do
+      build(:merge_request, source_branch: 'expand-collapse-files', target_branch: 'master')
+    end
+
+    context 'when there are MR diffs' do
+      before do
+        merge_request.save
+      end
+
+      it 'returns the correct count' do
+        expect(merge_request.diff_size).to eq(105)
+      end
+
+      it 'does not perform highlighting' do
+        expect(Gitlab::Diff::Highlight).not_to receive(:new)
+
+        merge_request.diff_size
+      end
+    end
+
+    context 'when there are no MR diffs' do
+      before do
+        merge_request.compare = CompareService.new(
+          merge_request.source_project,
+          merge_request.source_branch
+        ).execute(
+          merge_request.target_project,
+          merge_request.target_branch
+        )
+      end
+
+      it 'returns the correct count' do
+        expect(merge_request.diff_size).to eq(105)
+      end
+
+      it 'does not perform highlighting' do
+        expect(Gitlab::Diff::Highlight).not_to receive(:new)
+
+        merge_request.diff_size
+      end
+    end
+  end
+
   describe "#related_notes" do
     let!(:merge_request) { create(:merge_request) }
 
