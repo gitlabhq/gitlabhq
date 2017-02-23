@@ -19,8 +19,8 @@ describe Projects::BlobController do
 
     before do
       get(:show,
-          namespace_id: project.namespace.to_param,
-          project_id: project.to_param,
+          namespace_id: project.namespace,
+          project_id: project,
           id: id)
     end
 
@@ -50,8 +50,8 @@ describe Projects::BlobController do
 
     before do
       get(:show,
-          namespace_id: project.namespace.to_param,
-          project_id: project.to_param,
+          namespace_id: project.namespace,
+          project_id: project,
           id: id)
       controller.instance_variable_set(:@blob, nil)
     end

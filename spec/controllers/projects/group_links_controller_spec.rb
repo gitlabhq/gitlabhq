@@ -14,8 +14,8 @@ describe Projects::GroupLinksController do
   describe '#create' do
     shared_context 'link project to group' do
       before do
-        post(:create, namespace_id: project.namespace.to_param,
-                      project_id: project.to_param,
+        post(:create, namespace_id: project.namespace,
+                      project_id: project,
                       link_group_id: group.id,
                       link_group_access: ProjectGroupLink.default_access)
       end
@@ -50,8 +50,8 @@ describe Projects::GroupLinksController do
 
     context 'when project group id equal link group id' do
       before do
-        post(:create, namespace_id: project.namespace.to_param,
-                      project_id: project.to_param,
+        post(:create, namespace_id: project.namespace,
+                      project_id: project,
                       link_group_id: group2.id,
                       link_group_access: ProjectGroupLink.default_access)
       end
@@ -69,8 +69,8 @@ describe Projects::GroupLinksController do
 
     context 'when link group id is not present' do
       before do
-        post(:create, namespace_id: project.namespace.to_param,
-                      project_id: project.to_param,
+        post(:create, namespace_id: project.namespace,
+                      project_id: project,
                       link_group_access: ProjectGroupLink.default_access)
       end
 

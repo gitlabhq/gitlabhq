@@ -519,7 +519,7 @@ describe API::Groups, api: true  do
 
   describe "POST /groups/:id/projects/:project_id" do
     let(:project) { create(:empty_project) }
-    let(:project_path) { "#{project.namespace.path}%2F#{project.path}" }
+    let(:project_path) { project.full_path.gsub('/', '%2F') }
 
     before(:each) do
       allow_any_instance_of(Projects::TransferService).
