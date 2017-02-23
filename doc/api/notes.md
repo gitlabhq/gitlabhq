@@ -34,8 +34,6 @@ Parameters:
     "created_at": "2013-10-02T09:22:45Z",
     "updated_at": "2013-10-02T10:22:45Z",
     "system": true,
-    "upvote": false,
-    "downvote": false,
     "noteable_id": 377,
     "noteable_type": "Issue"
   },
@@ -54,8 +52,6 @@ Parameters:
     "created_at": "2013-10-02T09:56:03Z",
     "updated_at": "2013-10-02T09:56:03Z",
     "system": true,
-    "upvote": false,
-    "downvote": false,
     "noteable_id": 121,
     "noteable_type": "Issue"
   }
@@ -147,9 +143,7 @@ Example Response:
   "created_at": "2016-04-05T22:10:44.164Z",
   "system": false,
   "noteable_id": 11,
-  "noteable_type": "Issue",
-  "upvote": false,
-  "downvote": false
+  "noteable_type": "Issue"
 }
 ```
 
@@ -271,9 +265,7 @@ Example Response:
   "created_at": "2016-04-06T16:51:53.239Z",
   "system": false,
   "noteable_id": 52,
-  "noteable_type": "Snippet",
-  "upvote": false,
-  "downvote": false
+  "noteable_type": "Snippet"
 }
 ```
 
@@ -322,8 +314,6 @@ Parameters:
   "created_at": "2013-10-02T08:57:14Z",
   "updated_at": "2013-10-02T08:57:14Z",
   "system": false,
-  "upvote": false,
-  "downvote": false,
   "noteable_id": 2,
   "noteable_type": "MergeRequest"
 }
@@ -400,8 +390,6 @@ Example Response:
   "created_at": "2016-04-05T22:11:59.923Z",
   "system": false,
   "noteable_id": 7,
-  "noteable_type": "MergeRequest",
-  "upvote": false,
-  "downvote": false
+  "noteable_type": "MergeRequest"
 }
 ```
