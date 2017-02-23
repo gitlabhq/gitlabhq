@@ -26,7 +26,7 @@ describe 'Profile > Personal Access Tokens', feature: true, js: true do
   end
 
   describe "token creation" do
-    it "allows creation of a token" do
+    it "allows creation of a non impersonation token" do
       name = FFaker::Product.brand
 
       visit profile_personal_access_tokens_path
@@ -57,6 +57,18 @@ describe 'Profile > Personal Access Tokens', feature: true, js: true do
         expect { click_on "Create Personal Access Token" }.not_to change { PersonalAccessToken.count }
         expect(page).to have_content("Name cannot be nil")
       end
+    end
+  end
+
+  describe 'active tokens' do
+    let!(:impersonation_token) { create(:impersonation_personal_access_token, user: user) }
+    let!(:personal_access_token) { create(:personal_access_token, user: user) }
+
+    it 'only shows non impersonated tokens' do
+      visit profile_personal_access_tokens_path
+
+      expect(active_personal_access_tokens).to have_text(personal_access_token.name)
+      expect(active_personal_access_tokens).not_to have_text(impersonation_token.name)
     end
   end
 

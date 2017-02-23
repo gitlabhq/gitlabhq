@@ -1158,7 +1158,7 @@ describe API::Users, api: true  do
     end
   end
 
-  describe 'GET /users/:user_id/personal_access_tokens' do
+  describe 'GET /users/:id/personal_access_tokens' do
     let!(:active_personal_access_token) { create(:personal_access_token, user: user) }
     let!(:revoked_personal_access_token) { create(:revoked_personal_access_token, user: user) }
     let!(:expired_personal_access_token) { create(:expired_personal_access_token, user: user) }
@@ -1178,12 +1178,12 @@ describe API::Users, api: true  do
       expect(json_response['message']).to eq('403 Forbidden')
     end
 
-    it 'returns an array of personal access tokens' do
+    it 'returns an array of non impersonated personal access tokens' do
       get api("/users/#{user.id}/personal_access_tokens", admin)
 
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
-      expect(json_response.size).to eq(4)
+      expect(json_response.size).to eq(user.personal_access_tokens.count)
       expect(json_response.detect do |personal_access_token|
         personal_access_token['id'] == active_personal_access_token.id
       end['token']).to eq(active_personal_access_token.token)
@@ -1194,6 +1194,7 @@ describe API::Users, api: true  do
 
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
+      expect(json_response.size).to eq(user.personal_access_tokens.active.count)
       expect(json_response).to all(include('active' => true))
     end
 
@@ -1202,6 +1203,7 @@ describe API::Users, api: true  do
 
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
+      expect(json_response.size).to eq(user.personal_access_tokens.inactive.count)
       expect(json_response).to all(include('active' => false))
     end
 
@@ -1210,17 +1212,18 @@ describe API::Users, api: true  do
 
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
+      expect(json_response.size).to eq(user.personal_access_tokens.impersonation.count)
       expect(json_response).to all(include('impersonation' => true))
     end
   end
 
-  describe 'POST /users/:user_id/personal_access_tokens' do
+  describe 'POST /users/:id/personal_access_tokens' do
     let(:name) { 'my new pat' }
     let(:expires_at) { '2016-12-28' }
     let(:scopes) { ['api', 'read_user'] }
     let(:impersonation) { true }
 
-    it 'returns validation error if personal access token miss some attributes' do
+    it 'returns validation error if personal access token misses some attributes' do
       post api("/users/#{user.id}/personal_access_tokens", admin)
 
       expect(response).to have_http_status(400)
@@ -1253,23 +1256,20 @@ describe API::Users, api: true  do
         impersonation: impersonation
 
       expect(response).to have_http_status(201)
-
-      personal_access_token_id = json_response['id']
-
       expect(json_response['name']).to eq(name)
       expect(json_response['scopes']).to eq(scopes)
       expect(json_response['expires_at']).to eq(expires_at)
       expect(json_response['id']).to be_present
       expect(json_response['created_at']).to be_present
-      expect(json_response['active']).to eq(false)
-      expect(json_response['revoked']).to eq(false)
+      expect(json_response['active']).to be_falsey
+      expect(json_response['revoked']).to be_falsey
       expect(json_response['token']).to be_present
       expect(json_response['impersonation']).to eq(impersonation)
-      expect(PersonalAccessToken.and_impersonation_tokens.find(personal_access_token_id)).not_to eq(nil)
+      expect(PersonalAccessToken.with_impersonation_tokens.find(json_response['id'])).not_to be_nil
     end
   end
 
-  describe 'GET /users/:user_id/personal_access_tokens/:personal_access_token_id' do
+  describe 'GET /users/:id/personal_access_tokens/:personal_access_token_id' do
     let!(:personal_access_token) { create(:personal_access_token, user: user, revoked: false) }
     let!(:impersonation_token) { create(:impersonation_personal_access_token, user: user, revoked: false) }
 
@@ -1284,7 +1284,7 @@ describe API::Users, api: true  do
       get api("/users/#{user.id}/personal_access_tokens/#{not_existing_pat_id}", admin)
 
       expect(response).to have_http_status(404)
-      expect(json_response['message']).to eq('404 PersonalAccessToken Not Found')
+      expect(json_response['message']).to eq('404 Personal Access Token Not Found')
     end
 
     it 'returns a 403 error when authenticated as normal user' do
@@ -1299,17 +1299,24 @@ describe API::Users, api: true  do
 
       expect(response).to have_http_status(200)
       expect(json_response['token']).to be_present
+      expect(json_response['impersonation']).to be_falsey
+    end
+
+    it 'does not return an impersonation token without the specified field' do
+      get api("/users/#{user.id}/personal_access_tokens/#{impersonation_token.id}", admin)
+
+      expect(response).to have_http_status(404)
     end
 
     it 'returns an impersonation token' do
-      get api("/users/#{user.id}/personal_access_tokens/#{impersonation_token.id}", admin)
+      get api("/users/#{user.id}/personal_access_tokens/#{impersonation_token.id}?impersonation=true", admin)
 
       expect(response).to have_http_status(200)
-      expect(json_response['impersonation']).to eq(true)
+      expect(json_response['impersonation']).to be_truthy
     end
   end
 
-  describe 'DELETE /users/:user_id/personal_access_tokens/:personal_access_token_id' do
+  describe 'DELETE /users/:id/personal_access_tokens/:personal_access_token_id' do
     let!(:personal_access_token) { create(:personal_access_token, user: user, revoked: false) }
     let!(:impersonation_token) { create(:impersonation_personal_access_token, user: user, revoked: false) }
 
@@ -1324,7 +1331,7 @@ describe API::Users, api: true  do
       delete api("/users/#{user.id}/personal_access_tokens/#{not_existing_pat_id}", admin)
 
       expect(response).to have_http_status(404)
-      expect(json_response['message']).to eq('404 PersonalAccessToken Not Found')
+      expect(json_response['message']).to eq('404 Personal Access Token Not Found')
     end
 
     it 'returns a 403 error when authenticated as normal user' do
@@ -1338,16 +1345,24 @@ describe API::Users, api: true  do
       delete api("/users/#{user.id}/personal_access_tokens/#{personal_access_token.id}", admin)
 
       expect(response).to have_http_status(204)
-      expect(personal_access_token.revoked).to eq(false)
-      expect(personal_access_token.reload.revoked).to eq(true)
+      expect(personal_access_token.revoked).to be_falsey
+      expect(personal_access_token.reload.revoked).to be_truthy
+    end
+
+    it 'does not find impersonated token without specified field' do
+      delete api("/users/#{user.id}/personal_access_tokens/#{impersonation_token.id}", admin)
+
+      expect(response).to have_http_status(404)
+      expect(impersonation_token.revoked).to be_falsey
+      expect(impersonation_token.reload.revoked).to be_falsey
     end
 
     it 'revokes an impersonation token' do
-      delete api("/users/#{user.id}/personal_access_tokens/#{impersonation_token.id}", admin)
+      delete api("/users/#{user.id}/personal_access_tokens/#{impersonation_token.id}?impersonation=true", admin)
 
       expect(response).to have_http_status(204)
-      expect(impersonation_token.revoked).to eq(false)
-      expect(impersonation_token.reload.revoked).to eq(true)
+      expect(impersonation_token.revoked).to be_falsey
+      expect(impersonation_token.reload.revoked).to be_truthy
     end
   end
 end

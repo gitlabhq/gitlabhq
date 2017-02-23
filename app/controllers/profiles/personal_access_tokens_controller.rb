@@ -4,7 +4,7 @@ class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
   end
 
   def create
-    @personal_access_token = current_user.personal_access_tokens.generate(personal_access_token_params)
+    @personal_access_token = current_user.personal_access_tokens.build(personal_access_token_params)
 
     if @personal_access_token.save
       flash[:personal_access_token] = @personal_access_token.token

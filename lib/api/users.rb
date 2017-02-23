@@ -9,6 +9,11 @@ module API
 
     resource :users, requirements: { uid: /[0-9]*/, id: /[0-9]*/ } do
       helpers do
+        def find_user(params)
+          user = User.find_by(id: params[:id])
+          user ? user : not_found!('User')
+        end
+
         params :optional_attributes do
           optional :skype, type: String, desc: 'The Skype username'
           optional :linkedin, type: String, desc: 'The LinkedIn username'
@@ -364,40 +369,28 @@ module API
       end
 
       params do
-        requires :user_id, type: Integer, desc: 'The ID of the user'
+        requires :id, type: Integer, desc: 'The ID of the user'
       end
-      segment ':user_id' do
+      segment ':id' do
         resource :personal_access_tokens do
           before { authenticated_as_admin! }
 
           desc 'Retrieve personal access tokens. Available only for admins.' do
             detail 'This feature was introduced in GitLab 9.0'
-            success Entities::PersonalAccessToken
+            success Entities::ImpersonationToken
           end
           params do
             optional :state, type: String, default: 'all', values: %w[all active inactive], desc: 'Filters (all|active|inactive) personal_access_tokens'
             optional :impersonation, type: Boolean, default: false, desc: 'Filters only impersonation personal_access_tokens'
           end
           get do
-            user = User.find_by(id: params[:user_id])
-            not_found!('User') unless user
-
-            personal_access_tokens = PersonalAccessToken.and_impersonation_tokens.where(user_id: user.id)
-            personal_access_tokens = personal_access_tokens.impersonation if params[:impersonation]
-
-            case params[:state]
-            when "active"
-              personal_access_tokens = personal_access_tokens.active
-            when "inactive"
-              personal_access_tokens = personal_access_tokens.inactive
-            end
-
-            present personal_access_tokens, with: Entities::PersonalAccessToken
+            user = find_user(params)
+            present PersonalAccessTokensFinder.new(user, params).execute, with: Entities::ImpersonationToken
           end
 
           desc 'Create a personal access token. Available only for admins.' do
             detail 'This feature was introduced in GitLab 9.0'
-            success Entities::PersonalAccessToken
+            success Entities::ImpersonationToken
           end
           params do
             requires :name, type: String, desc: 'The name of the personal access token'
@@ -406,13 +399,11 @@ module API
             optional :impersonation, type: Boolean, default: false, desc: 'The impersonation flag of the personal access token'
           end
           post do
-            user = User.find_by(id: params[:user_id])
-            not_found!('User') unless user
-
-            personal_access_token = PersonalAccessToken.generate(declared_params(include_missing: false, include_parent_namespaces: true))
+            user = find_user(params)
+            personal_access_token = PersonalAccessTokensFinder.new(user).execute.build(declared_params(include_missing: false))
 
             if personal_access_token.save
-              present personal_access_token, with: Entities::PersonalAccessToken
+              present personal_access_token, with: Entities::ImpersonationToken
             else
               render_validation_error!(personal_access_token)
             end
@@ -420,34 +411,33 @@ module API
 
           desc 'Retrieve personal access token. Available only for admins.' do
             detail 'This feature was introduced in GitLab 9.0'
-            success Entities::PersonalAccessToken
+            success Entities::ImpersonationToken
           end
           params do
             requires :personal_access_token_id, type: Integer, desc: 'The ID of the personal access token'
+            optional :impersonation, type: Boolean, default: false, desc: 'The impersonation flag of the personal access token'
           end
-          get '/:personal_access_token_id' do
-            user = User.find_by(id: params[:user_id])
-            not_found!('User') unless user
+          get ':personal_access_token_id' do
+            user = find_user(params)
 
-            personal_access_token = PersonalAccessToken.and_impersonation_tokens.find_by(user_id: user.id, id: params[:personal_access_token_id])
-            not_found!('PersonalAccessToken') unless personal_access_token
+            personal_access_token = PersonalAccessTokensFinder.new(user, declared_params(include_missing: false)).execute
+            not_found!('Personal Access Token') unless personal_access_token
 
-            present personal_access_token, with: Entities::PersonalAccessToken
+            present personal_access_token, with: Entities::ImpersonationToken
           end
 
           desc 'Revoke a personal access token. Available only for admins.' do
             detail 'This feature was introduced in GitLab 9.0'
-            success Entities::PersonalAccessToken
           end
           params do
             requires :personal_access_token_id, type: Integer, desc: 'The ID of the personal access token'
+            optional :impersonation, type: Boolean, default: false, desc: 'The impersonation flag of the personal access token'
           end
-          delete '/:personal_access_token_id' do
-            user = User.find_by(id: params[:user_id])
-            not_found!('User') unless user
+          delete ':personal_access_token_id' do
+            user = find_user(params)
 
-            personal_access_token = PersonalAccessToken.and_impersonation_tokens.find_by(user_id: user.id, id: params[:personal_access_token_id])
-            not_found!('PersonalAccessToken') unless personal_access_token
+            personal_access_token = PersonalAccessTokensFinder.new(user, declared_params(include_missing: false)).execute
+            not_found!('Personal Access Token') unless personal_access_token
 
             personal_access_token.revoke!
 

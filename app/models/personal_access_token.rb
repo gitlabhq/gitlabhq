@@ -7,20 +7,13 @@ class PersonalAccessToken < ActiveRecord::Base
 
   belongs_to :user
 
+  before_save :ensure_token
+
   default_scope { where(impersonation: false) }
   scope :active, -> { where(revoked: false).where("expires_at >= NOW() OR expires_at IS NULL") }
   scope :inactive, -> { where("revoked = true OR expires_at < NOW()") }
-  scope :impersonation, -> { where(impersonation: true) }
-
-  class << self
-    alias_method :and_impersonation_tokens, :unscoped
-
-    def generate(params)
-      personal_access_token = self.new(params)
-      personal_access_token.ensure_token
-      personal_access_token
-    end
-  end
+  scope :impersonation, -> { unscoped.where(impersonation: true) }
+  scope :with_impersonation_tokens, ->  { unscoped }
 
   def revoke!
     self.revoked = true

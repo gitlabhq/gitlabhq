@@ -16,7 +16,7 @@ describe API::PersonalAccessTokens, api: true  do
 
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
-      expect(json_response.size).to eq(3)
+      expect(json_response.size).to eq(user.personal_access_tokens.count)
 
       json_personal_access_token = json_response.detect do |personal_access_token|
         personal_access_token['id'] == active_personal_access_token.id
@@ -73,7 +73,7 @@ describe API::PersonalAccessTokens, api: true  do
       expect(json_response['active']).to eq(false)
       expect(json_response['revoked']).to eq(false)
       expect(json_response['token']).to be_present
-      expect(PersonalAccessToken.find(personal_access_token_id)).not_to eq(nil)
+      expect(PersonalAccessToken.find(personal_access_token_id)).not_to be_nil
     end
   end
 
@@ -85,14 +85,14 @@ describe API::PersonalAccessTokens, api: true  do
       get api("/personal_access_tokens/#{not_found_token}", user)
 
       expect(response).to have_http_status(404)
-      expect(json_response['message']).to eq('404 PersonalAccessToken Not Found')
+      expect(json_response['message']).to eq('404 Personal Access Token Not Found')
     end
 
     it 'returns a 404 error if personal access token exists but it is a personal access tokens of another user' do
       get api("/personal_access_tokens/#{personal_access_token_of_another_user.id}", user)
 
       expect(response).to have_http_status(404)
-      expect(json_response['message']).to eq('404 PersonalAccessToken Not Found')
+      expect(json_response['message']).to eq('404 Personal Access Token Not Found')
     end
 
     it 'returns a personal access token and does not expose token in the json response' do
@@ -111,14 +111,14 @@ describe API::PersonalAccessTokens, api: true  do
       delete api("/personal_access_tokens/#{not_found_token}", user)
 
       expect(response).to have_http_status(404)
-      expect(json_response['message']).to eq('404 PersonalAccessToken Not Found')
+      expect(json_response['message']).to eq('404 Personal Access Token Not Found')
     end
 
     it 'returns a 404 error if personal access token exists but it is a personal access tokens of another user' do
       delete api("/personal_access_tokens/#{personal_access_token_of_another_user.id}", user)
 
       expect(response).to have_http_status(404)
-      expect(json_response['message']).to eq('404 PersonalAccessToken Not Found')
+      expect(json_response['message']).to eq('404 Personal Access Token Not Found')
     end
 
     it 'revokes a personal access token and does not expose token in the json response' do

@@ -1,7 +1,8 @@
+- impersonation = impersonation || false
 - personal_access_token = local_assigns.fetch(:personal_access_token)
 - scopes = local_assigns.fetch(:scopes)
 
-= form_for [user, personal_access_token], method: :post, html: { class: 'js-requires-input' } do |f|
+= form_for personal_access_token, url: path, method: :post, html: { class: 'js-requires-input' } do |f|
 
   = form_errors(personal_access_token)
 
@@ -18,4 +19,19 @@
     = render 'shared/tokens/scopes_form', prefix: 'personal_access_token', token: personal_access_token, scopes: scopes
 
   .prepend-top-default
-    = f.submit 'Create Personal Access Token', class: "btn btn-create"
+    - type = impersonation ? "Impersonation" : "Personal Access"
+    = f.submit "Create #{type} Token", class: "btn btn-create"
+
+:javascript
+  var $dateField = $('.datepicker');
+  var date = $dateField.val();
+
+  new Pikaday({
+    field: $dateField.get(0),
+    theme: 'gitlab-theme',
+    format: 'YYYY-MM-DD',
+    minDate: new Date(),
+    onSelect: function(dateText) {
+      $dateField.val(dateFormat(new Date(dateText), 'yyyy-mm-dd'));
+    }
+  });

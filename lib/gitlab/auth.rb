@@ -105,9 +105,9 @@ module Gitlab
       def personal_access_token_check(password)
         return unless password.present?
 
-        token = PersonalAccessToken.and_impersonation_tokens.active.find_by_token(password)
+        token = PersonalAccessToken.with_impersonation_tokens.active.find_by_token(password)
 
-        if token && (valid_api_token?(token) || token.impersonation)
+        if token && valid_api_token?(token)
           Gitlab::Auth::Result.new(token.user, nil, :personal_token, full_authentication_abilities)
         end
       end

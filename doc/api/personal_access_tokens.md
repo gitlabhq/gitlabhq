@@ -52,6 +52,8 @@ Parameters:
 POST /personal_access_tokens
 ```
 
+It responds with the new personal access token for the current user.
+
 Parameters:
 
 | Attribute | Type | Required | Description |
