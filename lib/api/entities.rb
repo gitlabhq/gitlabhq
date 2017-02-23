@@ -50,7 +50,7 @@ module API
     class ProjectHook < Hook
       expose :project_id, :issues_events, :merge_requests_events
       expose :note_events, :pipeline_events, :wiki_page_events
-      expose :job_events, as: :build_events
+      expose :build_events, as: :job_events
     end
 
     class BasicProjectDetails < Grape::Entity
@@ -94,7 +94,7 @@ module API
       expose :star_count, :forks_count
       expose :open_issues_count, if: lambda { |project, options| project.feature_available?(:issues, options[:current_user]) && project.default_issues_tracker? }
       expose :runners_token, if: lambda { |_project, options| options[:user_can_admin_project] }
-      expose :public_jobs, as: :public_builds
+      expose :public_builds, as: :public_jobs
       expose :shared_with_groups do |project, options|
         SharedGroup.represent(project.project_group_links.all, options)
       end
@@ -110,7 +110,7 @@ module API
       expose :storage_size
       expose :repository_size
       expose :lfs_objects_size
-      expose :job_artifacts_size, as: :build_artifacts_size
+      expose :build_artifacts_size, as: :job_artifacts_size
     end
 
     class Member < UserBasic
@@ -145,7 +145,7 @@ module API
           expose :storage_size
           expose :repository_size
           expose :lfs_objects_size
-          expose :job_artifacts_size, as: :build_artifacts_size
+          expose :build_artifacts_size, as: :job_artifacts_size
         end
       end
     end
@@ -450,7 +450,7 @@ module API
       expose :id, :title, :created_at, :updated_at, :active
       expose :push_events, :issues_events, :merge_requests_events
       expose :tag_push_events, :note_events, :pipeline_events
-      expose :job_events, as: :build_events
+      expose :build_events, as: :job_events
       # Expose serialized properties
       expose :properties do |service, options|
         field_names = service.fields.
@@ -618,15 +618,11 @@ module API
       end
     end
 
-<<<<<<< HEAD
     class RunnerRegistrationDetails < Grape::Entity
       expose :id, :token
     end
 
-    class BuildArtifactFile < Grape::Entity
-=======
     class JobArtifactFile < Grape::Entity
->>>>>>> 239b5f49c5... Rename Builds to Jobs in the API
       expose :filename, :size
     end
 
