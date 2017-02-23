@@ -99,7 +99,11 @@ module TabHelper
       return 'active'
     end
 
+<<<<<<< HEAD
     if %w(services hooks deploy_keys protected_branches push_rules).include? controller.controller_name
+=======
+    if %w(services hooks deploy_keys protected_branches).include? controller.controller_name
+>>>>>>> ce/master
       "active"
     end
   end

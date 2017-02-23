@@ -34,6 +34,7 @@ module Gitlab
             else
               true
             end
+<<<<<<< HEAD
         end
 
         if admin_groups_enabled? && @user
@@ -43,6 +44,8 @@ module Gitlab
             else
               true
             end
+=======
+>>>>>>> ce/master
         end
 
         @user

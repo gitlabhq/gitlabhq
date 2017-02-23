@@ -70,7 +70,7 @@ describe Projects::SnippetsController do
   end
 
   describe 'POST #create' do
-    def create_snippet(project, snippet_params = {})
+    def create_snippet(project, snippet_params = {}, additional_params = {})
       sign_in(user)
 
       project.add_developer(user)
@@ -79,7 +79,7 @@ describe Projects::SnippetsController do
         namespace_id: project.namespace.to_param,
         project_id: project.to_param,
         project_snippet: { title: 'Title', content: 'Content' }.merge(snippet_params)
-      }
+      }.merge(additional_params)
     end
 
     context 'when the snippet is spam' do
@@ -87,35 +87,179 @@ describe Projects::SnippetsController do
         allow_any_instance_of(AkismetService).to receive(:is_spam?).and_return(true)
       end
 
-      context 'when the project is private' do
-        let(:private_project) { create(:project_empty_repo, :private) }
+      context 'when the snippet is private' do
+        it 'creates the snippet' do
+          expect { create_snippet(project, visibility_level: Snippet::PRIVATE) }.
+            to change { Snippet.count }.by(1)
+        end
+      end
 
-        context 'when the snippet is public' do
-          it 'creates the snippet' do
-            expect { create_snippet(private_project, visibility_level: Snippet::PUBLIC) }.
-              to change { Snippet.count }.by(1)
+      context 'when the snippet is public' do
+        it 'rejects the shippet' do
+          expect { create_snippet(project, visibility_level: Snippet::PUBLIC) }.
+            not_to change { Snippet.count }
+          expect(response).to render_template(:new)
+        end
+
+        it 'creates a spam log' do
+          expect { create_snippet(project, visibility_level: Snippet::PUBLIC) }.
+            to change { SpamLog.count }.by(1)
+        end
+
+        it 'renders :new with recaptcha disabled' do
+          stub_application_setting(recaptcha_enabled: false)
+
+          create_snippet(project, visibility_level: Snippet::PUBLIC)
+
+          expect(response).to render_template(:new)
+        end
+
+        context 'recaptcha enabled' do
+          before do
+            stub_application_setting(recaptcha_enabled: true)
+          end
+
+          it 'renders :verify with recaptcha enabled' do
+            create_snippet(project, visibility_level: Snippet::PUBLIC)
+
+            expect(response).to render_template(:verify)
+          end
+
+          it 'renders snippet page when recaptcha verified' do
+            spammy_title = 'Whatever'
+
+            spam_logs = create_list(:spam_log, 2, user: user, title: spammy_title)
+            create_snippet(project,
+                           { visibility_level: Snippet::PUBLIC },
+                           { spam_log_id: spam_logs.last.id,
+                             recaptcha_verification: true })
+
+            expect(response).to redirect_to(Snippet.last)
+          end
+        end
+      end
+    end
+  end
+
+  describe 'PUT #update' do
+    let(:project) { create :project, :public }
+    let(:snippet) { create :project_snippet, author: user, project: project, visibility_level: visibility_level }
+
+    def update_snippet(snippet_params = {}, additional_params = {})
+      sign_in(user)
+
+      project.add_developer(user)
+
+      put :update, {
+        namespace_id: project.namespace.to_param,
+        project_id: project.to_param,
+        id: snippet.id,
+        project_snippet: { title: 'Title', content: 'Content' }.merge(snippet_params)
+      }.merge(additional_params)
+
+      snippet.reload
+    end
+
+    context 'when the snippet is spam' do
+      before do
+        allow_any_instance_of(AkismetService).to receive(:is_spam?).and_return(true)
+      end
+
+      context 'when the snippet is private' do
+        let(:visibility_level) { Snippet::PRIVATE }
+
+        it 'updates the snippet' do
+          expect { update_snippet(title: 'Foo') }.
+            to change { snippet.reload.title }.to('Foo')
+        end
+      end
+
+      context 'when the snippet is public' do
+        let(:visibility_level) { Snippet::PUBLIC }
+
+        it 'rejects the shippet' do
+          expect { update_snippet(title: 'Foo') }.
+            not_to change { snippet.reload.title }
+        end
+
+        it 'creates a spam log' do
+          expect { update_snippet(title: 'Foo') }.
+            to change { SpamLog.count }.by(1)
+        end
+
+        it 'renders :edit with recaptcha disabled' do
+          stub_application_setting(recaptcha_enabled: false)
+
+          update_snippet(title: 'Foo')
+
+          expect(response).to render_template(:edit)
+        end
+
+        context 'recaptcha enabled' do
+          before do
+            stub_application_setting(recaptcha_enabled: true)
+          end
+
+          it 'renders :verify with recaptcha enabled' do
+            update_snippet(title: 'Foo')
+
+            expect(response).to render_template(:verify)
+          end
+
+          it 'renders snippet page when recaptcha verified' do
+            spammy_title = 'Whatever'
+
+            spam_logs = create_list(:spam_log, 2, user: user, title: spammy_title)
+            snippet = update_snippet({ title: spammy_title },
+                                     { spam_log_id: spam_logs.last.id,
+                                       recaptcha_verification: true })
+
+            expect(response).to redirect_to(snippet)
           end
         end
       end
 
-      context 'when the project is public' do
-        context 'when the snippet is private' do
-          it 'creates the snippet' do
-            expect { create_snippet(project, visibility_level: Snippet::PRIVATE) }.
-              to change { Snippet.count }.by(1)
-          end
+      context 'when the private snippet is made public' do
+        let(:visibility_level) { Snippet::PRIVATE }
+
+        it 'rejects the shippet' do
+          expect { update_snippet(title: 'Foo', visibility_level: Snippet::PUBLIC) }.
+            not_to change { snippet.reload.title }
         end
 
-        context 'when the snippet is public' do
-          it 'rejects the shippet' do
-            expect { create_snippet(project, visibility_level: Snippet::PUBLIC) }.
-              not_to change { Snippet.count }
-            expect(response).to render_template(:new)
+        it 'creates a spam log' do
+          expect { update_snippet(title: 'Foo', visibility_level: Snippet::PUBLIC) }.
+            to change { SpamLog.count }.by(1)
+        end
+
+        it 'renders :edit with recaptcha disabled' do
+          stub_application_setting(recaptcha_enabled: false)
+
+          update_snippet(title: 'Foo', visibility_level: Snippet::PUBLIC)
+
+          expect(response).to render_template(:edit)
+        end
+
+        context 'recaptcha enabled' do
+          before do
+            stub_application_setting(recaptcha_enabled: true)
           end
 
-          it 'creates a spam log' do
-            expect { create_snippet(project, visibility_level: Snippet::PUBLIC) }.
-              to change { SpamLog.count }.by(1)
+          it 'renders :verify with recaptcha enabled' do
+            update_snippet(title: 'Foo', visibility_level: Snippet::PUBLIC)
+
+            expect(response).to render_template(:verify)
+          end
+
+          it 'renders snippet page when recaptcha verified' do
+            spammy_title = 'Whatever'
+
+            spam_logs = create_list(:spam_log, 2, user: user, title: spammy_title)
+            snippet = update_snippet({ title: spammy_title, visibility_level: Snippet::PUBLIC },
+                                     { spam_log_id: spam_logs.last.id,
+                                       recaptcha_verification: true })
+
+            expect(response).to redirect_to(snippet)
           end
         end
       end

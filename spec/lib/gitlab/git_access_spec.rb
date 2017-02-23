@@ -249,6 +249,7 @@ describe Gitlab::GitAccess, lib: true do
           permissions_matrix[role].each do |action, allowed|
             context action do
               subject { access.send(:check_push_access!, changes[action]) }
+<<<<<<< HEAD
 
               it do
                 if allowed
@@ -276,6 +277,8 @@ describe Gitlab::GitAccess, lib: true do
           permissions_matrix[role].each do |action, allowed|
             context action do
               subject { access.send(:check_push_access!, changes[action]) }
+=======
+>>>>>>> ce/master
 
               it do
                 if allowed

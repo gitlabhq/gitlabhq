@@ -12,7 +12,10 @@ describe Projects::PipelinesController do
 
   describe 'GET index.json' do
     before do
-      create_list(:ci_empty_pipeline, 2, project: project)
+      create(:ci_empty_pipeline, status: 'pending', project: project)
+      create(:ci_empty_pipeline, status: 'running', project: project)
+      create(:ci_empty_pipeline, status: 'created', project: project)
+      create(:ci_empty_pipeline, status: 'success', project: project)
 
       get :index, namespace_id: project.namespace.path,
                   project_id: project.path,
@@ -23,9 +26,11 @@ describe Projects::PipelinesController do
       expect(response).to have_http_status(:ok)
 
       expect(json_response).to include('pipelines')
-      expect(json_response['pipelines'].count).to eq 2
-      expect(json_response['count']['all']).to eq 2
-      expect(json_response['count']['running_or_pending']).to eq 2
+      expect(json_response['pipelines'].count).to eq 4
+      expect(json_response['count']['all']).to eq 4
+      expect(json_response['count']['running']).to eq 1
+      expect(json_response['count']['pending']).to eq 1
+      expect(json_response['count']['finished']).to eq 1
     end
   end
 

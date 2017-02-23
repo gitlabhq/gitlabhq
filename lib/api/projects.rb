@@ -381,6 +381,19 @@ module API
 
         present paginate(users), with: Entities::UserBasic
       end
+
+      desc 'Start the housekeeping task for a project' do
+        detail 'This feature was introduced in GitLab 9.0.'
+      end
+      post ':id/housekeeping' do
+        authorize_admin_project
+
+        begin
+          ::Projects::HousekeepingService.new(user_project).execute
+        rescue ::Projects::HousekeepingService::LeaseTaken => error
+          conflict!(error.message)
+        end
+      end
     end
   end
 end

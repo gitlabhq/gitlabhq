@@ -2,7 +2,8 @@
   - if current_user
     = auto_discovery_link_tag(:atom, group_url(@group, format: :atom, private_token: current_user.private_token), title: "#{@group.name} activity")
 
-- page_title    "Activity"
+- page_title "Activity"
+= render 'groups/head'
 
 %section.activities
   = render 'activities'

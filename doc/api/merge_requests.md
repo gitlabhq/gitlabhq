@@ -884,7 +884,11 @@ notifications from that merge request. If the user is
 not subscribed to the merge request, the status code `304` is returned.
 
 ```
+<<<<<<< HEAD
 POST /projects/:id/merge_requests/:merge_request_id/subscribe
+=======
+POST /projects/:id/merge_requests/:merge_request_id/unsubscribe
+>>>>>>> ce/master
 ```
 
 | Attribute | Type | Required | Description |
@@ -893,7 +897,11 @@ POST /projects/:id/merge_requests/:merge_request_id/subscribe
 | `merge_request_id` | integer | yes   | The ID of the merge request |
 
 ```bash
+<<<<<<< HEAD
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/merge_requests/17/subscribe
+=======
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/merge_requests/17/unsubscribe
+>>>>>>> ce/master
 ```
 
 Example response:
