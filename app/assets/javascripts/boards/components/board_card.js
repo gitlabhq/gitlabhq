@@ -31,25 +31,25 @@ module.exports = {
     index: Number,
     rootPath: String,
   },
-  data () {
+  data() {
     return {
       showDetail: false,
-      detailIssue: Store.detail
+      detailIssue: Store.detail,
     };
   },
   computed: {
-    issueDetailVisible () {
+    issueDetailVisible() {
       return this.detailIssue.issue && this.detailIssue.issue.id === this.issue.id;
-    }
+    },
   },
   methods: {
-    mouseDown () {
+    mouseDown() {
       this.showDetail = true;
     },
     mouseMove() {
       this.showDetail = false;
     },
-    showIssue (e) {
+    showIssue(e) {
       const targetTagName = e.target.tagName.toLowerCase();
 
       if (targetTagName === 'a' || targetTagName === 'button') return;
@@ -64,6 +64,6 @@ module.exports = {
           Store.detail.list = this.list;
         }
       }
-    }
-  }
+    },
+  },
 };

@@ -1,6 +1,9 @@
 /* global Vue */
 /* global List */
+/* global ListLabel */
 /* global listObj */
+/* global boardsMockInterceptor */
+/* global BoardService */
 
 require('~/boards/models/list');
 require('~/boards/models/label');
@@ -40,7 +43,7 @@ describe('Issue card', () => {
           index: 0,
           rootPath: '/',
         },
-      }).$mount();;
+      }).$mount();
       done();
     }, 0);
   });
@@ -88,7 +91,8 @@ describe('Issue card', () => {
   describe('mouse events', () => {
     const triggerEvent = (eventName, el = vm.$el) => {
       const event = document.createEvent('MouseEvents');
-      event.initMouseEvent(eventName, true, true, window, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
+      event.initMouseEvent(eventName, true, true, window, 1, 0, 0, 0, 0, false, false,
+                           false, false, 0, null);
 
       el.dispatchEvent(event);
     };
@@ -125,7 +129,7 @@ describe('Issue card', () => {
       expect(gl.issueBoards.BoardsStore.detail.issue).toEqual({});
     });
 
-    it('does not set detail issue if showDetail is false', () => {
+    it('does not set detail issue if showDetail is false after mouseup', () => {
       triggerEvent('mouseup');
 
       expect(gl.issueBoards.BoardsStore.detail.issue).toEqual({});
