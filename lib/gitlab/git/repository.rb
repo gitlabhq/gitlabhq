@@ -333,21 +333,21 @@ module Gitlab
         offset_in_ruby = use_follow_flag && options[:offset].present?
         limit += offset if offset_in_ruby
 
-        cmd = %W(#{Gitlab.config.git.bin_path} --git-dir=#{path} log)
-        cmd += %W(-n #{limit})
-        cmd += %w(--format=%H)
-        cmd += %W(--skip=#{offset}) unless offset_in_ruby
-        cmd += %w(--follow) if use_follow_flag
-        cmd += %w(--no-merges) if options[:skip_merges]
-        cmd += %W(--after=#{options[:after].iso8601}) if options[:after]
-        cmd += %W(--before=#{options[:before].iso8601}) if options[:before]
-        cmd += [sha]
-        cmd += %W(-- #{options[:path]}) if options[:path].present?
+        cmd = %W[#{Gitlab.config.git.bin_path} --git-dir=#{path} log]
+        cmd << "--max-count=#{limit}"
+        cmd << '--format=%H'
+        cmd << "--skip=#{offset}" unless offset_in_ruby
+        cmd << '--follow' if use_follow_flag
+        cmd << '--no-merges' if options[:skip_merges]
+        cmd << "--after=#{options[:after].iso8601}" if options[:after]
+        cmd << "--before=#{options[:before].iso8601}" if options[:before]
+        cmd << sha
+        cmd += %W[-- #{options[:path]}] if options[:path].present?
 
         raw_output = IO.popen(cmd) { |io| io.read }
         lines = offset_in_ruby ? raw_output.lines.drop(offset) : raw_output.lines
 
-        lines.map { |c| Rugged::Commit.new(rugged, c.strip) }
+        lines.map! { |c| Rugged::Commit.new(rugged, c.strip) }
       end
 
       def sha_from_ref(ref)
