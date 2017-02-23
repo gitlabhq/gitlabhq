@@ -33,6 +33,7 @@
     }
 
     .stage-cell {
+      min-width: 130px; // Guarantees we show at least 4 stages in line
       width: 20%;
     }
 
