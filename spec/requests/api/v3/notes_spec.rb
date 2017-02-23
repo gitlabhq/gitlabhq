@@ -328,7 +328,11 @@ describe API::V3::Notes, api: true  do
       end
 
       it 'returns a 400 bad request error if body not given' do
+<<<<<<< HEAD
         put v3_api("/projects/#{project.id}/issues/#{issue.id}/"\
+=======
+        put api("/projects/#{project.id}/issues/#{issue.id}/"\
+>>>>>>> e306055d88... Pick API files from 8.16.6
                   "notes/#{issue_note.id}", user)
 
         expect(response).to have_http_status(400)
@@ -337,7 +341,11 @@ describe API::V3::Notes, api: true  do
 
     context 'when noteable is a Snippet' do
       it 'returns modified note' do
+<<<<<<< HEAD
         put v3_api("/projects/#{project.id}/snippets/#{snippet.id}/"\
+=======
+        put api("/projects/#{project.id}/snippets/#{snippet.id}/"\
+>>>>>>> e306055d88... Pick API files from 8.16.6
                   "notes/#{snippet_note.id}", user), body: 'Hello!'
 
         expect(response).to have_http_status(200)
@@ -345,7 +353,11 @@ describe API::V3::Notes, api: true  do
       end
 
       it 'returns a 404 error when note id not found' do
+<<<<<<< HEAD
         put v3_api("/projects/#{project.id}/snippets/#{snippet.id}/"\
+=======
+        put api("/projects/#{project.id}/snippets/#{snippet.id}/"\
+>>>>>>> e306055d88... Pick API files from 8.16.6
                   "notes/12345", user), body: "Hello!"
 
         expect(response).to have_http_status(404)
@@ -354,7 +366,11 @@ describe API::V3::Notes, api: true  do
 
     context 'when noteable is a Merge Request' do
       it 'returns modified note' do
+<<<<<<< HEAD
         put v3_api("/projects/#{project.id}/merge_requests/#{merge_request.id}/"\
+=======
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/"\
+>>>>>>> e306055d88... Pick API files from 8.16.6
                   "notes/#{merge_request_note.id}", user), body: 'Hello!'
 
         expect(response).to have_http_status(200)
@@ -362,7 +378,11 @@ describe API::V3::Notes, api: true  do
       end
 
       it 'returns a 404 error when note id not found' do
+<<<<<<< HEAD
         put v3_api("/projects/#{project.id}/merge_requests/#{merge_request.id}/"\
+=======
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/"\
+>>>>>>> e306055d88... Pick API files from 8.16.6
                   "notes/12345", user), body: "Hello!"
 
         expect(response).to have_http_status(404)
@@ -373,6 +393,7 @@ describe API::V3::Notes, api: true  do
   describe 'DELETE /projects/:id/noteable/:noteable_id/notes/:note_id' do
     context 'when noteable is an Issue' do
       it 'deletes a note' do
+<<<<<<< HEAD
         delete v3_api("/projects/#{project.id}/issues/#{issue.id}/"\
                       "notes/#{issue_note.id}", user)
 
@@ -380,11 +401,24 @@ describe API::V3::Notes, api: true  do
         # Check if note is really deleted
         delete v3_api("/projects/#{project.id}/issues/#{issue.id}/"\
                       "notes/#{issue_note.id}", user)
+=======
+        delete api("/projects/#{project.id}/issues/#{issue.id}/"\
+                   "notes/#{issue_note.id}", user)
+
+        expect(response).to have_http_status(200)
+        # Check if note is really deleted
+        delete api("/projects/#{project.id}/issues/#{issue.id}/"\
+                   "notes/#{issue_note.id}", user)
+>>>>>>> e306055d88... Pick API files from 8.16.6
         expect(response).to have_http_status(404)
       end
 
       it 'returns a 404 error when note id not found' do
+<<<<<<< HEAD
         delete v3_api("/projects/#{project.id}/issues/#{issue.id}/notes/12345", user)
+=======
+        delete api("/projects/#{project.id}/issues/#{issue.id}/notes/12345", user)
+>>>>>>> e306055d88... Pick API files from 8.16.6
 
         expect(response).to have_http_status(404)
       end
@@ -392,6 +426,7 @@ describe API::V3::Notes, api: true  do
 
     context 'when noteable is a Snippet' do
       it 'deletes a note' do
+<<<<<<< HEAD
         delete v3_api("/projects/#{project.id}/snippets/#{snippet.id}/"\
                       "notes/#{snippet_note.id}", user)
 
@@ -399,12 +434,26 @@ describe API::V3::Notes, api: true  do
         # Check if note is really deleted
         delete v3_api("/projects/#{project.id}/snippets/#{snippet.id}/"\
                       "notes/#{snippet_note.id}", user)
+=======
+        delete api("/projects/#{project.id}/snippets/#{snippet.id}/"\
+                   "notes/#{snippet_note.id}", user)
+
+        expect(response).to have_http_status(200)
+        # Check if note is really deleted
+        delete api("/projects/#{project.id}/snippets/#{snippet.id}/"\
+                   "notes/#{snippet_note.id}", user)
+>>>>>>> e306055d88... Pick API files from 8.16.6
         expect(response).to have_http_status(404)
       end
 
       it 'returns a 404 error when note id not found' do
+<<<<<<< HEAD
         delete v3_api("/projects/#{project.id}/snippets/#{snippet.id}/"\
                       "notes/12345", user)
+=======
+        delete api("/projects/#{project.id}/snippets/#{snippet.id}/"\
+                   "notes/12345", user)
+>>>>>>> e306055d88... Pick API files from 8.16.6
 
         expect(response).to have_http_status(404)
       end
@@ -412,6 +461,7 @@ describe API::V3::Notes, api: true  do
 
     context 'when noteable is a Merge Request' do
       it 'deletes a note' do
+<<<<<<< HEAD
         delete v3_api("/projects/#{project.id}/merge_requests/"\
                       "#{merge_request.id}/notes/#{merge_request_note.id}", user)
 
@@ -419,12 +469,26 @@ describe API::V3::Notes, api: true  do
         # Check if note is really deleted
         delete v3_api("/projects/#{project.id}/merge_requests/"\
                       "#{merge_request.id}/notes/#{merge_request_note.id}", user)
+=======
+        delete api("/projects/#{project.id}/merge_requests/"\
+                   "#{merge_request.id}/notes/#{merge_request_note.id}", user)
+
+        expect(response).to have_http_status(200)
+        # Check if note is really deleted
+        delete api("/projects/#{project.id}/merge_requests/"\
+                   "#{merge_request.id}/notes/#{merge_request_note.id}", user)
+>>>>>>> e306055d88... Pick API files from 8.16.6
         expect(response).to have_http_status(404)
       end
 
       it 'returns a 404 error when note id not found' do
+<<<<<<< HEAD
         delete v3_api("/projects/#{project.id}/merge_requests/"\
                       "#{merge_request.id}/notes/12345", user)
+=======
+        delete api("/projects/#{project.id}/merge_requests/"\
+                   "#{merge_request.id}/notes/12345", user)
+>>>>>>> e306055d88... Pick API files from 8.16.6
 
         expect(response).to have_http_status(404)
       end

@@ -561,13 +561,62 @@ module API
           end
 
           if service.update_attributes(attrs.merge(active: false))
-            status(200)
             true
           else
             render_api_error!('400 Bad Request', 400)
           end
         end
+
+        desc 'Get the service settings for project' do
+          success Entities::ProjectService
+        end
+        params do
+          requires :service_slug, type: String, values: services.keys, desc: 'The name of the service'
+        end
+        get ":id/services/:service_slug" do
+          service = user_project.find_or_initialize_service(params[:service_slug].underscore)
+          present service, with: Entities::ProjectService, include_passwords: current_user.is_admin?
+        end
+      end
+
+      trigger_services.each do |service_slug, settings|
+        helpers do
+          def chat_command_service(project, service_slug, params)
+            project.services.active.where(template: false).find do |service|
+              service.try(:token) == params[:token] && service.to_param == service_slug.underscore
+            end
+          end
+        end
+
+        params do
+          requires :id, type: String, desc: 'The ID of a project'
+        end
+        resource :projects do
+          desc "Trigger a slash command for #{service_slug}" do
+            detail 'Added in GitLab 8.13'
+          end
+          params do
+            settings.each do |setting|
+              requires setting[:name], type: setting[:type], desc: setting[:desc]
+            end
+          end
+          post ":id/services/#{service_slug.underscore}/trigger" do
+            project = find_project(params[:id])
+
+            # This is not accurate, but done to prevent leakage of the project names
+            not_found!('Service') unless project
+
+            service = chat_command_service(project, service_slug, params)
+            result = service.try(:trigger, params)
+
+            if result
+              status result[:status] || 200
+              present result
+            else
+              not_found!('Service')
+            end
+          end
+        end
       end
     end
   end
-end
