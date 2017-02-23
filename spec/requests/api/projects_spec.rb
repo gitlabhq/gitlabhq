@@ -609,6 +609,7 @@ describe API::Projects, api: true  do
         it 'contains license name and spdx ID' do
           get api("/projects/#{project2.id}", user)
 
+          expect(response).to have_http_status(200)
           expect(json_response['license']).to be_a Hash
           expect(json_response['license']['name']).to be_present
           expect(json_response['license']['spdx_id']).to be_present
@@ -617,6 +618,7 @@ describe API::Projects, api: true  do
         it 'returns nil if no license' do
           get api("/projects/#{project.id}", user)
 
+          expect(response).to have_http_status(200)
           expect(json_response['license']).to be_a Hash
           expect(json_response['license']['name']).to be_nil
           expect(json_response['license']['spdx_id']).to be_nil
