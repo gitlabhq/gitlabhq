@@ -76,6 +76,9 @@ describe API::Groups, api: true  do
           lfs_objects_size: 234,
           build_artifacts_size: 345,
         }.stringify_keys
+        exposed_attributes = attributes.dup
+        exposed_attributes['job_artifacts_size'] = exposed_attributes['build_artifacts_size']
+        exposed_attributes.delete('build_artifacts_size')
 
         project1.statistics.update!(attributes)
 

@@ -18,7 +18,7 @@ describe API::V3::Builds, api: true do
     before do
       create(:ci_build, :skipped, pipeline: pipeline)
 
-      get api("/projects/#{project.id}/builds?#{query}", api_user)
+      get v3_api("/projects/#{project.id}/builds?#{query}", api_user)
     end
 
     context 'authorized user' do
@@ -91,7 +91,7 @@ describe API::V3::Builds, api: true do
   describe 'GET /projects/:id/repository/commits/:sha/builds' do
     context 'when commit does not exist in repository' do
       before do
-        get api("/projects/#{project.id}/repository/commits/1a271fd1/builds", api_user)
+        get v3_api("/projects/#{project.id}/repository/commits/1a271fd1/builds", api_user)
       end
 
       it 'responds with 404' do
@@ -107,7 +107,7 @@ describe API::V3::Builds, api: true do
             create(:ci_build, pipeline: pipeline)
             create(:ci_build)
 
-            get api("/projects/#{project.id}/repository/commits/#{project.commit.id}/builds", api_user)
+            get v3_api("/projects/#{project.id}/repository/commits/#{project.commit.id}/builds", api_user)
           end
 
           it 'returns project jobs for specific commit' do
@@ -130,7 +130,7 @@ describe API::V3::Builds, api: true do
         context 'when pipeline has no jobs' do
           before do
             branch_head = project.commit('feature').id
-            get api("/projects/#{project.id}/repository/commits/#{branch_head}/builds", api_user)
+            get v3_api("/projects/#{project.id}/repository/commits/#{branch_head}/builds", api_user)
           end
 
           it 'returns an empty array' do
@@ -146,7 +146,7 @@ describe API::V3::Builds, api: true do
           create(:ci_pipeline, project: project, sha: project.commit.id)
           create(:ci_build, pipeline: pipeline)
 
-          get api("/projects/#{project.id}/repository/commits/#{project.commit.id}/builds", nil)
+          get v3_api("/projects/#{project.id}/repository/commits/#{project.commit.id}/builds", nil)
         end
 
         it 'does not return project jobs' do
@@ -159,7 +159,7 @@ describe API::V3::Builds, api: true do
 
   describe 'GET /projects/:id/builds/:build_id' do
     before do
-      get api("/projects/#{project.id}/builds/#{build.id}", api_user)
+      get v3_api("/projects/#{project.id}/builds/#{build.id}", api_user)
     end
 
     context 'authorized user' do
@@ -189,7 +189,7 @@ describe API::V3::Builds, api: true do
 
   describe 'GET /projects/:id/builds/:build_id/artifacts' do
     before do
-      get api("/projects/#{project.id}/builds/#{build.id}/artifacts", api_user)
+      get v3_api("/projects/#{project.id}/builds/#{build.id}/artifacts", api_user)
     end
 
     context 'job with artifacts' do
@@ -231,7 +231,7 @@ describe API::V3::Builds, api: true do
     end
 
     def path_for_ref(ref = pipeline.ref, job = build.name)
-      api("/projects/#{project.id}/builds/artifacts/#{ref}/download?job=#{job}", api_user)
+      v3_api("/projects/#{project.id}/builds/artifacts/#{ref}/download?job=#{job}", api_user)
     end
 
     context 'when not logged in' do
@@ -324,7 +324,7 @@ describe API::V3::Builds, api: true do
     let(:build) { create(:ci_build, :trace, pipeline: pipeline) }
 
     before do
-      get api("/projects/#{project.id}/builds/#{build.id}/trace", api_user)
+      get v3_api("/projects/#{project.id}/builds/#{build.id}/trace", api_user)
     end
 
     context 'authorized user' do
@@ -345,7 +345,7 @@ describe API::V3::Builds, api: true do
 
   describe 'POST /projects/:id/builds/:build_id/cancel' do
     before do
-      post api("/projects/#{project.id}/builds/#{build.id}/cancel", api_user)
+      post v3_api("/projects/#{project.id}/builds/#{build.id}/cancel", api_user)
     end
 
     context 'authorized user' do
@@ -378,7 +378,7 @@ describe API::V3::Builds, api: true do
     let(:build) { create(:ci_build, :canceled, pipeline: pipeline) }
 
     before do
-      post api("/projects/#{project.id}/builds/#{build.id}/retry", api_user)
+      post v3_api("/projects/#{project.id}/builds/#{build.id}/retry", api_user)
     end
 
     context 'authorized user' do
@@ -410,7 +410,7 @@ describe API::V3::Builds, api: true do
 
   describe 'POST /projects/:id/builds/:build_id/erase' do
     before do
-      post api("/projects/#{project.id}/builds/#{build.id}/erase", user)
+      post v3_api("/projects/#{project.id}/builds/#{build.id}/erase", user)
     end
 
     context 'job is erasable' do
@@ -440,7 +440,7 @@ describe API::V3::Builds, api: true do
 
   describe 'POST /projects/:id/builds/:build_id/artifacts/keep' do
     before do
-      post api("/projects/#{project.id}/builds/#{build.id}/artifacts/keep", user)
+      post v3_api("/projects/#{project.id}/builds/#{build.id}/artifacts/keep", user)
     end
 
     context 'artifacts did not expire' do
@@ -466,7 +466,7 @@ describe API::V3::Builds, api: true do
 
   describe 'POST /projects/:id/builds/:build_id/play' do
     before do
-      post api("/projects/#{project.id}/builds/#{build.id}/play", user)
+      post v3_api("/projects/#{project.id}/builds/#{build.id}/play", user)
     end
 
     context 'on an playable job' do
