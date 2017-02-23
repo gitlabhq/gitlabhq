@@ -569,7 +569,7 @@ from it. If the user is not subscribed to the issue, the
 status code `304` is returned.
 
 ```
-DELETE /projects/:id/issues/:issue_id/unsubscribe
+POST /projects/:id/issues/:issue_id/unsubscribe
 ```
 
 | Attribute | Type | Required | Description |

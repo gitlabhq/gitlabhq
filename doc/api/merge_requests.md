@@ -741,7 +741,7 @@ notifications from that merge request. If the user is
 not subscribed to the merge request, the status code `304` is returned.
 
 ```
-DELETE /projects/:id/merge_requests/:merge_request_id/unsubscribe
+POST /projects/:id/merge_requests/:merge_request_id/unsubscribe
 ```
 
 | Attribute | Type | Required | Description |
