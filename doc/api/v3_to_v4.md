@@ -40,3 +40,4 @@ changes are in V4:
   - POST/PUT/DELETE `:id/repository/files`
 - Renamed `branch_name` to `branch` on DELETE `id/repository/branches/:branch` response [!8936](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8936)
 - Remove `public` param from create and edit actions of projects [!8736](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8736)
+- Notes do not return deprecated field `upvote` and `downvote` [!9384](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9384)
