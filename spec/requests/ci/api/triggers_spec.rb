@@ -60,7 +60,8 @@ describe Ci::API::Triggers do
         it 'validates variables to be a hash' do
           post ci_api("/projects/#{project.ci_id}/refs/master/trigger"), options.merge(variables: 'value')
           expect(response).to have_http_status(400)
-          expect(json_response['message']).to eq('variables needs to be a hash')
+
+          expect(json_response['error']).to eq('variables is invalid')
         end
 
         it 'validates variables needs to be a map of key-valued strings' do

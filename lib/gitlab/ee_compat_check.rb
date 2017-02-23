@@ -119,7 +119,7 @@ module Gitlab
       step("Reseting to latest master", %w[git reset --hard origin/master])
 
       step("Checking if #{patch_path} applies cleanly to EE/master")
-      output, status = Gitlab::Popen.popen(%W[git apply --check #{patch_path}])
+      output, status = Gitlab::Popen.popen(%W[git apply --check --3way #{patch_path}])
 
       unless status.zero?
         failed_files = output.lines.reduce([]) do |memo, line|
