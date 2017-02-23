@@ -28,6 +28,24 @@ module API
         end
       end
 
+      #  Get node information (e.g. health, repos synced, repos failed, etc.)
+      #
+      # Example request:
+      #   GET /geo/status
+      get 'status' do
+        authenticated_as_admin!
+        require_node_to_be_secondary!
+
+        status = GeoNode::Status.new(
+          HealthCheck::Utils.process_checks(['geo']),
+          Project.count,
+          ::Geo::ProjectRegistry.synced.count,
+          ::Geo::ProjectRegistry.failed.count
+        )
+
+        present status, with: Entities::GeoNodeStatus
+      end
+
       # Enqueue a batch of IDs of wiki's projects to have their
       # wiki repositories updated
       #
@@ -81,6 +99,10 @@ module API
     helpers do
       def require_node_to_be_enabled!
         forbidden! 'Geo node is disabled.' unless Gitlab::Geo.current_node.enabled?
+      end
+
+      def require_node_to_be_secondary!
+        forbidden! 'Geo node is disabled.' unless Gitlab::Geo.current_node.secondary?
       end
     end
   end
