@@ -2,8 +2,7 @@ class GeoBackfillWorker
   include Sidekiq::Worker
   include CronjobQueue
 
-  LEASE_TIMEOUT = 8.hours.freeze
-  RUN_TIME      = 5.minutes.to_i.freeze
+  RUN_TIME = 5.minutes.to_i.freeze
 
   def perform
     start = Time.now
@@ -18,8 +17,8 @@ class GeoBackfillWorker
       project = Project.find(project_id)
       next if project.repository_exists?
 
-      try_obtain_lease do
-        Geo::RepositoryBackfillService.new(project).execute
+      try_obtain_lease do |lease|
+        GeoSingleRepositoryBackfillWorker.new.perform(project_id, lease)
       end
     end
 
@@ -37,21 +36,19 @@ class GeoBackfillWorker
   end
 
   def try_obtain_lease
-    uuid = Gitlab::ExclusiveLease.new(lease_key, timeout: LEASE_TIMEOUT).try_obtain
+    lease = Gitlab::ExclusiveLease.new(lease_key, timeout: LEASE_TIMEOUT).try_obtain
 
-    return unless uuid
+    return unless lease
 
-    yield
-
-    release_lease(uuid)
-  end
-
-  def release_lease(uuid)
-    Gitlab::ExclusiveLease.cancel(lease_key, uuid)
+    yield lease
   end
 
   def lease_key
-    'repository_backfill_service'
+    Geo::RepositoryBackfillService::LEASE_KEY_PREFIX
+  end
+
+  def lease_timeout
+    Geo::RepositoryBackfillService::LEASE_TIMEOUT
   end
 
   def node_enabled?

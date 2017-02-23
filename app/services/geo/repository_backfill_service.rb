@@ -1,11 +1,13 @@
 module Geo
   class RepositoryBackfillService
-    attr_reader :project
+    attr_reader :project, :backfill_lease
 
-    LEASE_TIMEOUT = 8.hours.freeze
+    LEASE_TIMEOUT    = 8.hours.freeze
+    LEASE_KEY_PREFIX = 'repository_backfill_service'.freeze
 
-    def initialize(project)
-      @project = project
+    def initialize(project_id, backfill_lease)
+      @project = Project.find(project_id)
+      @backfill_lease = backfill_lease
     end
 
     def execute
@@ -16,7 +18,6 @@ module Geo
           registry.last_repository_synced_at = started_at
           registry.last_repository_successful_sync_at = finished_at if finished_at
           registry.save
-
           log('Finished repository sync')
         end
       end
@@ -58,22 +59,19 @@ module Geo
     def try_obtain_lease
       log('Trying to obtain lease to sync repository')
 
-      uuid = Gitlab::ExclusiveLease.new(lease_key, timeout: LEASE_TIMEOUT).try_obtain
+      repository_lease = Gitlab::ExclusiveLease.new(lease_key, timeout: LEASE_TIMEOUT).try_obtain
 
-      log('Could not obtain lease to sync repository') and return unless uuid
+      log('Could not obtain lease to sync repository') and return unless repository_lease
 
       yield
 
-      log('Releasing lease to sync repository')
-      release_lease(uuid)
-    end
-
-    def release_lease(uuid)
-      Gitlab::ExclusiveLease.cancel(lease_key, uuid)
+      log('Releasing leases to sync repository')
+      Gitlab::ExclusiveLease.cancel(lease_key, repository_lease)
+      Gitlab::ExclusiveLease.cancel(LEASE_KEY_PREFIX, backfill_lease)
     end
 
     def lease_key
-      @key ||= "repository_backfill_service:#{project.id}"
+      @key ||= "#{LEASE_KEY_PREFIX}:#{project.id}"
     end
 
     def primary_ssh_path_prefix
