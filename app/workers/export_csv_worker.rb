@@ -8,7 +8,7 @@ class ExportCsvWorker
 
     params.merge!(project_id: project_id)
 
-    issues = IssuesFinder.new(@current_user, params).execute
+    issues = IssuesFinder.new(@current_user, params.symbolize_keys).execute
 
     Issues::ExportCsvService.new(issues.limit(100)).email(@current_user, @project)
   end

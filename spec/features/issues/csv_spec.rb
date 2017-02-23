@@ -10,34 +10,62 @@ describe 'Issues csv', feature: true do
 
   before { login_as(user) }
 
-  it "downloads from a project's issue index" do
-    visit namespace_project_issues_path(project.namespace, project)
+  def request_csv(params={})
+    visit namespace_project_issues_path(project.namespace, project, params)
     click_on 'Download CSV'
     click_on 'Request export'
+  end
 
-    expect(page.response_headers['Content-Type']).to include('csv')
+  def attachment
+    ActionMailer::Base.deliveries.last.attachments.first
+  end
+
+  it 'triggers an email export' do
+    expect(ExportCsvWorker).to receive(:perform_async).with(user.id, project.id, hash_including(project_id: project.id))
+
+    request_csv
+  end
+
+  it "doesn't send request params to ExportCsvWorker" do
+    expect(ExportCsvWorker).to receive(:perform_async).with(anything, anything, hash_excluding(controller: anything, action: anything))
+
+    request_csv
+  end
+
+  it 'displays flash message' do
+    request_csv
+
+    expect(page).to have_content 'CSV export queued'
+  end
+
+  it 'includes a csv attachment' do
+    request_csv
+
+    expect(attachment.content_type).to include('text/csv')
   end
 
   it 'ignores pagination' do
     create_list(:issue, 30, project: project, author: user)
 
-    visit namespace_project_issues_path(project.namespace, project)
-    click_on 'Download CSV'
-    click_on 'Request export'
+    request_csv
 
     expect(csv.count).to eq 31
   end
 
   it 'uses filters from issue index' do
-    visit namespace_project_issues_path(project.namespace, project, state: :closed)
-    click_on 'Download CSV'
-    click_on 'Request export'
+    request_csv(state: :closed)
 
     expect(csv.count).to eq 0
   end
 
+
   def visit_project_csv
-    visit namespace_project_issues_path(project.namespace, project, format: :csv)
+    #TODO: Move these specs elsewhere
+    visit export_csv_namespace_project_issues_path(project.namespace, project, method: :post)
+  end
+
+  def csv
+    CSV.parse(attachment.decode_body, headers: true)
   end
 
   it 'avoids excessive database calls' do
