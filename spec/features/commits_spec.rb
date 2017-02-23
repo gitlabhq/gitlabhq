@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'fileutils'
 
 describe 'Commits' do
   include CiStatusHelper
@@ -200,6 +201,37 @@ describe 'Commits' do
 
       commits.each do |commit|
         expect(page).to have_content("committed #{commit.committed_date.strftime("%b %d, %Y")}")
+      end
+    end
+  end
+
+  describe 'GPG signed commits' do
+    let(:user) { create(:user) }
+
+    before do
+      project.team << [user, :master]
+      login_with(user)
+    end
+
+    it 'shows the signed status', :gpg do
+      GPGME::Key.import(GpgHelpers::User1.public_key)
+
+      # FIXME: add this to the test repository directly
+      remote_path = project.repository.path_to_repo
+      Dir.mktmpdir do |dir|
+        FileUtils.cd dir do
+          `git clone --quiet #{remote_path} .`
+          `git commit --quiet -S#{GpgHelpers::User1.key_id} --allow-empty -m "signed commit, verified key/email"`
+          `git commit --quiet -S#{GpgHelpers::User2.key_id} --allow-empty -m "signed commit, unverified key/email"`
+          `git push --quiet`
+        end
+      end
+
+      visit namespace_project_commits_path(project.namespace, project, :master)
+
+      within '#commits-list' do
+        expect(page).to have_content 'Unverified'
+        expect(page).to have_content 'Verified'
       end
     end
   end
