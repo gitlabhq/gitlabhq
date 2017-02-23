@@ -20,14 +20,19 @@ module Gitlab
     # It has fallbacks to Debian, SuSE, OS X and systems running systemd.
     def os_name
       os_name = run_command(%w(lsb_release -irs))
-      os_name ||= File.read('/etc/system-release') if File.readable?('/etc/system-release')
-      os_name ||= "Debian #{File.read('/etc/debian_version')}" if File.readable?('/etc/debian_version')
-      os_name ||= File.read('/etc/SuSE-release') if File.readable?('/etc/SuSE-release')
       os_name ||=
-        if os_x_version = run_command(%w(sw_vers -productVersion))
+        if File.readable?('/etc/system-release')
+          File.read('/etc/system-release')
+        elsif File.readable?('/etc/debian_version')
+          "Debian #{File.read('/etc/debian_version')}"
+        elsif File.readable?('/etc/SuSE-release')
+          File.read('/etc/SuSE-release')
+        elsif os_x_version = run_command(%w(sw_vers -productVersion))
           "Mac OS X #{os_x_version}"
+        elsif File.readable?('/etc/os-release')
+          File.read('/etc/os-release').match(/PRETTY_NAME=\"(.+)\"/)[1]
         end
-      os_name ||= File.read('/etc/os-release').match(/PRETTY_NAME=\"(.+)\"/)[1] if File.readable?('/etc/os-release')
+
       os_name.try(:squish!)
     end
 

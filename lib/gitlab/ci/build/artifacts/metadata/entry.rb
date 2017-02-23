@@ -27,6 +27,8 @@ module Gitlab
           end
         end
 
+        delegate :empty?, to: :children
+
         def directory?
           blank_node? || @path.end_with?('/')
         end
@@ -90,8 +92,6 @@ module Gitlab
         def exists?
           blank_node? || @entries.include?(@path)
         end
-
-        delegate :empty?, to: :children
 
         def total_size
           descendant_pattern = %r{^#{Regexp.escape(@path)}}
