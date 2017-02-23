@@ -73,26 +73,25 @@ require('vendor/jquery.scrollTo');
         spyOn($.fn, 'attr').and.returnValue(tabUrl);
       });
 
+      function expectWindowOpenCall(url, name) {
+        expect(url).toEqual(tabUrl);
+        expect(name).toEqual(windowTarget);
+      }
+
       describe('meta click', () => {
         beforeEach(function () {
           spyOn(gl.utils, 'isMetaClick').and.returnValue(true);
         });
 
         it('opens page when commits link is clicked', function () {
-          spyOn(window, 'open').and.callFake(function (url, name) {
-            expect(url).toEqual(tabUrl);
-            expect(name).toEqual(windowTarget);
-          });
+          spyOn(window, 'open').and.callFake(expectWindowOpenCall);
 
           this.class.bindEvents();
           document.querySelector('.merge-request-tabs .commits-tab a').click();
         });
 
         it('opens page when commits badge is clicked', function () {
-          spyOn(window, 'open').and.callFake(function (url, name) {
-            expect(url).toEqual(tabUrl);
-            expect(name).toEqual(windowTarget);
-          });
+          spyOn(window, 'open').and.callFake(expectWindowOpenCall);
 
           this.class.bindEvents();
           document.querySelector('.merge-request-tabs .commits-tab a .badge').click();
@@ -100,10 +99,7 @@ require('vendor/jquery.scrollTo');
       });
 
       it('opens page tab in a new browser tab with Ctrl+Click - Windows/Linux', function () {
-        spyOn(window, 'open').and.callFake(function (url, name) {
-          expect(url).toEqual(tabUrl);
-          expect(name).toEqual(windowTarget);
-        });
+        spyOn(window, 'open').and.callFake(expectWindowOpenCall);
 
         this.class.clickTab({
           metaKey: false,
@@ -113,10 +109,7 @@ require('vendor/jquery.scrollTo');
         });
       });
       it('opens page tab in a new browser tab with Cmd+Click - Mac', function () {
-        spyOn(window, 'open').and.callFake(function (url, name) {
-          expect(url).toEqual(tabUrl);
-          expect(name).toEqual(windowTarget);
-        });
+        spyOn(window, 'open').and.callFake(expectWindowOpenCall);
 
         this.class.clickTab({
           metaKey: true,
@@ -126,10 +119,7 @@ require('vendor/jquery.scrollTo');
         });
       });
       it('opens page tab in a new browser tab with Middle-click - Mac/PC', function () {
-        spyOn(window, 'open').and.callFake(function (url, name) {
-          expect(url).toEqual(tabUrl);
-          expect(name).toEqual(windowTarget);
-        });
+        spyOn(window, 'open').and.callFake(expectWindowOpenCall);
 
         this.class.clickTab({
           metaKey: false,
