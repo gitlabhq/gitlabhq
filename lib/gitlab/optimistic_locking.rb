@@ -16,6 +16,6 @@ module Gitlab
       end
     end
 
-    alias :retry_optimistic_lock :retry_lock
+    alias_method :retry_optimistic_lock, :retry_lock
   end
 end
