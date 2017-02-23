@@ -14,19 +14,13 @@ namespace :gitlab do
       rake_version = run_and_match(%w(rake --version), /[\d\.]+/).try(:to_s)
       # check redis version
       redis_version = run_and_match(%w(redis-cli --version), /redis-cli (\d+\.\d+\.\d+)/).to_a
-<<<<<<< HEAD
       # check for system defined proxies
       proxies = Gitlab::Proxy.detect_proxy.map{|k, v| "#{k}: #{v}"}.join("\n\t\t")
-=======
->>>>>>> ce/master
 
       puts ""
       puts "System information".color(:yellow)
       puts "System:\t\t#{os_name || "unknown".color(:red)}"
-<<<<<<< HEAD
       puts "Proxy:\t\t#{proxies.present? ? proxies.color(:green) : "no"}"
-=======
->>>>>>> ce/master
       puts "Current User:\t#{run_command(%w(whoami))}"
       puts "Using RVM:\t#{rvm_version.present? ? "yes".color(:green) : "no"}"
       puts "RVM Version:\t#{rvm_version}" if rvm_version.present?
@@ -46,7 +40,7 @@ namespace :gitlab do
       http_clone_url = project.http_url_to_repo
       ssh_clone_url  = project.ssh_url_to_repo
 
-      geo_node_type = 
+      geo_node_type =
         if Gitlab::Geo.current_node
           Gitlab::Geo.current_node.primary ? 'Primary' : 'Secondary'
         else

@@ -8,13 +8,8 @@ class ProtectedBranch < ActiveRecord::Base
   has_many :merge_access_levels, dependent: :destroy
   has_many :push_access_levels, dependent: :destroy
 
-<<<<<<< HEAD
   validates :merge_access_levels, length: { minimum: 0 }
   validates :push_access_levels, length: { minimum: 0 }
-=======
-  validates :merge_access_levels, length: { is: 1, message: "are restricted to a single instance per protected branch." }
-  validates :push_access_levels, length: { is: 1, message: "are restricted to a single instance per protected branch." }
->>>>>>> ce/master
 
   accepts_nested_attributes_for :push_access_levels, allow_destroy: true
   accepts_nested_attributes_for :merge_access_levels, allow_destroy: true

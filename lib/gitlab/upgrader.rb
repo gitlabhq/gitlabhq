@@ -44,13 +44,8 @@ module Gitlab
 
     def latest_version_raw
       git_tags = fetch_git_tags
-<<<<<<< HEAD
       git_tags = git_tags.select { |version| version =~ /v\d+\.\d+\.\d+-ee\Z/ }
       git_versions = git_tags.map { |tag| Gitlab::VersionInfo.parse(tag.match(/v\d+\.\d+\.\d+-ee/).to_s) }
-=======
-      git_tags = git_tags.select { |version| version =~ /v\d+\.\d+\.\d+\Z/ }
-      git_versions = git_tags.map { |tag| Gitlab::VersionInfo.parse(tag.match(/v\d+\.\d+\.\d+/).to_s) }
->>>>>>> ce/master
       "v#{git_versions.sort.last}"
     end
 
@@ -63,11 +58,7 @@ module Gitlab
       {
         "Stash changed files" => %W(#{Gitlab.config.git.bin_path} stash),
         "Get latest code" => %W(#{Gitlab.config.git.bin_path} fetch),
-<<<<<<< HEAD
         "Switch to new version" => %W(#{Gitlab.config.git.bin_path} checkout v#{latest_version}-ee),
-=======
-        "Switch to new version" => %W(#{Gitlab.config.git.bin_path} checkout v#{latest_version}),
->>>>>>> ce/master
         "Install gems" => %w(bundle),
         "Migrate DB" => %w(bundle exec rake db:migrate),
         "Recompile assets" => %w(bundle exec rake yarn:install gitlab:assets:clean gitlab:assets:compile),

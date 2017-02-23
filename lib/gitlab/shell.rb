@@ -84,7 +84,6 @@ module Gitlab
       # to silently kill the process without knowing we are timing out here.
       output, status = Popen.popen([gitlab_shell_projects_path, 'import-project',
                                     storage, "#{name}.git", url, '800'])
-<<<<<<< HEAD
       raise Error, output unless status.zero?
       true
     end
@@ -132,8 +131,6 @@ module Gitlab
       args << '--no-tags' if no_tags
 
       output, status = Popen.popen(args)
-=======
->>>>>>> ce/master
       raise Error, output unless status.zero?
       true
     end

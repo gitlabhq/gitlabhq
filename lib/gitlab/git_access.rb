@@ -16,12 +16,8 @@ module Gitlab
 
     DOWNLOAD_COMMANDS = %w{ git-upload-pack git-upload-archive }.freeze
     PUSH_COMMANDS = %w{ git-receive-pack }.freeze
-<<<<<<< HEAD
     GIT_ANNEX_COMMANDS = %w{ git-annex-shell }.freeze
     ALL_COMMANDS = DOWNLOAD_COMMANDS + PUSH_COMMANDS + GIT_ANNEX_COMMANDS
-=======
-    ALL_COMMANDS = DOWNLOAD_COMMANDS + PUSH_COMMANDS
->>>>>>> ce/master
 
     attr_reader :actor, :project, :protocol, :user_access, :authentication_abilities
 

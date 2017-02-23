@@ -33,14 +33,11 @@ module Gitlab
             {
               title: "Labels",
               value: @resource.labels.any? ? @resource.label_names.join(', ') : "_None_",
-<<<<<<< HEAD
               short: true
             },
             {
               title: "Weight",
               value: @resource.weight? ? @resource.weight : "_None_",
-=======
->>>>>>> ce/master
               short: true
             }
           ]

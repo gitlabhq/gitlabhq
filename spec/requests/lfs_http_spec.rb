@@ -690,13 +690,8 @@ describe 'Git LFS API and storage' do
               {
                 'operation' => 'upload',
                 'objects' => [
-<<<<<<< HEAD
                   { 'oid' => sample_oid,
                     'size' => sample_size }
-=======
-                  { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
-                    'size' => 1575078 }
->>>>>>> ce/master
                 ]
               }
             end

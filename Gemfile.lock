@@ -917,10 +917,7 @@ DEPENDENCIES
   google-api-client (~> 0.8.6)
   grape (~> 0.18.0)
   grape-entity (~> 0.6.0)
-<<<<<<< HEAD
   gssapi
-=======
->>>>>>> ce/master
   haml_lint (~> 0.21.0)
   hamlit (~> 2.6.1)
   health_check (~> 2.2.0)

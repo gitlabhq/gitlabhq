@@ -11,11 +11,7 @@ module API
       helpers do
         params :optional_scope do
           optional :scope, types: [String, Array[String]], desc: 'The scope of builds to show',
-<<<<<<< HEAD
-                           values:  %w(pending running failed success canceled),
-=======
                            values: ::CommitStatus::AVAILABLE_STATUSES,
->>>>>>> ce/master
                            coerce_with: ->(scope) {
                              if scope.is_a?(String)
                                [scope]

@@ -60,7 +60,6 @@ module ServiceParams
     :username,
     :webhook
   ].freeze
-<<<<<<< HEAD
 
   ALLOWED_PARAMS_EE = [
     :jenkins_url,
@@ -68,8 +67,6 @@ module ServiceParams
     :pass_unstable,
     :project_name
   ].freeze
-=======
->>>>>>> ce/master
 
   # Parameters to ignore if no value is specified
   FILTER_BLANK_PARAMS = [:password].freeze

@@ -84,10 +84,6 @@ module API
               end
 
               note = ::Notes::CreateService.new(user_project, current_user, opts).execute
-<<<<<<< HEAD
-
-=======
->>>>>>> ce/master
               if note.valid?
                 present note, with: ::API::V3::Entities.const_get(note.class.name)
               else

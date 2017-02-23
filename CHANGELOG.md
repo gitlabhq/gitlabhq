@@ -5,10 +5,7 @@ entry.
 ## 8.17.0 (2017-02-22)
 
 - API: Fix file downloading. !0 (8267)
-<<<<<<< HEAD
 - Read true-up info from license and validate it. !1159
-=======
->>>>>>> ce/master
 - Changed composer installer script in the CI PHP example doc. !4342 (Jeffrey Cafferata)
 - Display fullscreen button on small screens. !5302 (winniehell)
 - Add system hook for when a project is updated (other than rename/transfer). !5711 (Tommy Beadle)

@@ -34,18 +34,15 @@ module Gitlab
             else
               true
             end
-<<<<<<< HEAD
         end
 
         if admin_groups_enabled? && @user
-          @user.admin = 
+          @user.admin =
             if (auth_hash.groups & Gitlab::Saml::Config.admin_groups).empty?
               false
             else
               true
             end
-=======
->>>>>>> ce/master
         end
 
         @user

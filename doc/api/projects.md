@@ -1201,7 +1201,20 @@ Parameters:
 | `order_by` | string | no | Return requests ordered by `id`, `name`, `created_at` or `last_activity_at` fields |
 | `sort` | string | no | Return requests sorted in `asc` or `desc` order |
 
-<<<<<<< HEAD
+## Start the Housekeeping task for a Project
+
+>**Note:** This feature was introduced in GitLab 9.0
+
+```
+POST /projects/:id/housekeeping
+>>>>>>> ce/master
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
 
 ## Push Rules (EE only)
 
@@ -1239,14 +1252,6 @@ Adds a push rule to a specified project.
 
 ```
 POST /projects/:id/push_rule
-=======
-## Start the Housekeeping task for a Project
-
->**Note:** This feature was introduced in GitLab 9.0
-
-```
-POST /projects/:id/housekeeping
->>>>>>> ce/master
 ```
 
 Parameters:
@@ -1254,7 +1259,6 @@ Parameters:
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
-<<<<<<< HEAD
 | `deny_delete_tag` | boolean | no | Deny deleting a tag |
 | `member_check` | boolean | no | Restrict commits by author (email) to existing GitLab users |
 | `prevent_secrets` | boolean | no | GitLab will reject any files that are likely to contain secrets |
@@ -1299,5 +1303,3 @@ Parameters:
 
 Note the JSON response differs if the push rule is available or not. If the project push rule
 is available before it is returned in the JSON response or an empty response is returned.
-=======
->>>>>>> ce/master
