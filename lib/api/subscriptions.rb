@@ -3,7 +3,6 @@ module API
     before { authenticate! }
 
     subscribable_types = {
-      'merge_request' => proc { |id| find_merge_request_with_access(id, :update_merge_request) },
       'merge_requests' => proc { |id| find_merge_request_with_access(id, :update_merge_request) },
       'issues' => proc { |id| find_project_issue(id) },
       'labels' => proc { |id| find_project_label(id) },
