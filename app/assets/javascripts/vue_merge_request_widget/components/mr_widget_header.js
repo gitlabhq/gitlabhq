@@ -13,5 +13,5 @@ module.exports = {
         <a href="#">{{this.targetBranch}}</a>
       </span>
     </div>
-  `
+  `,
 };

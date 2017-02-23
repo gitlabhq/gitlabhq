@@ -1,7 +1,7 @@
 module.exports = {
   name: 'MRWidgetLocked',
   props: {
-    targetBranch: { type: Object, required: true, default: () => ({}) }
+    targetBranch: { type: Object, required: true, default: () => ({}) },
   },
   template: `
     <div class="mr-widget-body">
@@ -15,5 +15,5 @@ module.exports = {
         </p>
       </section>
     </div>
-  `
+  `,
 };

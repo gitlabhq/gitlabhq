@@ -4,7 +4,7 @@ module.exports = {
     actionText: { type: String, required: true, default: '' },
     author: { type: Object, required: true, default: () => ({}) },
     dateTitle: { type: String, required: true, default: '' },
-    dateReadable: { type: String, required: true, default: '' }
+    dateReadable: { type: String, required: true, default: '' },
   },
   template: `
     <h4>
@@ -17,5 +17,5 @@ module.exports = {
         {{dateReadable}}
       </time>
     </h4>
-  `
-}
+  `,
+};

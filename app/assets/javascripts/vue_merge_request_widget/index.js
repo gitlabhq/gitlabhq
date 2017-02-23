@@ -1,28 +1,27 @@
-const Timeago      = require('timeago.js');
-window.Vue         = require('vue');
-window.gl          = window.gl || {};
-window.gl.mrWidget = window.gl.mrWidget || {};
-
-const WidgetHeader  = require('./components/mr_widget_header.js');
-const MergedState   = require('./components/states/mr_widget_merged.js');
-const ClosedState   = require('./components/states/mr_widget_closed.js');
-const LockedState   = require('./components/states/mr_widget_locked.js');
-const WipState      = require('./components/states/mr_widget_wip.js');
+const Timeago = require('timeago.js');
+const Vue = window.Vue = require('vue');
+const WidgetHeader = require('./components/mr_widget_header.js');
+const MergedState = require('./components/states/mr_widget_merged.js');
+const ClosedState = require('./components/states/mr_widget_closed.js');
+const LockedState = require('./components/states/mr_widget_locked.js');
+const WipState = require('./components/states/mr_widget_wip.js');
 const ArchivedState = require('./components/states/mr_widget_archived.js');
 const MRWidgetStore = require('./stores/merge_request_store.js');
 
+window.gl = window.gl || {};
+window.gl.mrWidget = window.gl.mrWidget || {};
+
 gl.mrWidget.timeagoInstance = new Timeago();
 
-
 $(() => {
-  new Vue({
+  gl.mrWidget.instance = new Vue({
     el: document.querySelector('.vue-merge-request-widget'),
     name: 'MRWidget',
     data() {
       const store = new MRWidgetStore(gl.mrWidgetData);
       return {
-        mr: store
-      }
+        mr: store,
+      };
     },
     components: {
       'mr-widget-header': WidgetHeader,
@@ -48,4 +47,4 @@ $(() => {
       </div>
     `,
   });
-})
+});

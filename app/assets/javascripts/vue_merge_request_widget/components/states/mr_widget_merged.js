@@ -3,10 +3,10 @@ const mrWidgetAuthorTime = require('../../components/mr_widget_author_time.js');
 module.exports = {
   name: 'MRWidgetMerged',
   props: {
-    mr: { type: Object, required: true, default: () => ({}) }
+    mr: { type: Object, required: true, default: () => ({}) },
   },
   components: {
-    'mr-widget-author-and-time': mrWidgetAuthorTime
+    'mr-widget-author-and-time': mrWidgetAuthorTime,
   },
   template: `
     <div class="mr-widget-body">
@@ -45,5 +45,5 @@ module.exports = {
           data-original-title="Cherry-pick this merge request in a new merge request">Cherry-pick</a>
       </div>
     </div>
-  `
+  `,
 };

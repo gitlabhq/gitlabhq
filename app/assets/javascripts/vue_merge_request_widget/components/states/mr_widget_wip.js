@@ -3,7 +3,7 @@ const mrWidgetMergeHelp = require('../../components/mr_widget_merge_help.js');
 module.exports = {
   name: 'MRWidgetWIP',
   components: {
-    'mr-widget-merge-help': mrWidgetMergeHelp
+    'mr-widget-merge-help': mrWidgetMergeHelp,
   },
   template: `
     <div class="mr-widget-body">
@@ -13,5 +13,5 @@ module.exports = {
       <button class="btn btn-default btn-xs">Resolve WIP status</button>
       <mr-widget-merge-help />
     </div>
-  `
-}
+  `,
+};
