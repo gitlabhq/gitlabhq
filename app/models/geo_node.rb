@@ -77,6 +77,10 @@ class GeoNode < ActiveRecord::Base
     geo_api_url("transfers/#{file_type}/#{file_id}")
   end
 
+  def status_url
+    URI.join(uri, "#{uri.path}/", "api/#{API::API.version}/geo/status").to_s
+  end
+
   def oauth_callback_url
     Gitlab::Routing.url_helpers.oauth_geo_callback_url(url_helper_args)
   end
