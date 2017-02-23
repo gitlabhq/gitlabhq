@@ -298,6 +298,10 @@ see details in the [8-11-to-8-12 update guide](https://gitlab.com/gitlab-org/git
 If you have this exception (just like in the case above but the actual message is different) please check if you have the correct Elasticsearch version and you met the other [requirements](#requirements).
 There is also an easy way to check it automatically with `sudo gitlab-rake gitlab:check` command.
 
+### I indexed all the repositories but I can't find anything
+
+Make sure you indexed all the database data as stated above (`sudo gitlab-rake gitlab:elastic:index`)
+
 
 
 [ee-109]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/109 "Elasticsearch Merge Request"
