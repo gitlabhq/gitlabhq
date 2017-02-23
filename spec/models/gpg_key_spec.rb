@@ -18,7 +18,7 @@ describe GpgKey do
       it 'extracts the fingerprint from the gpg key' do
         gpg_key = described_class.new(key: GpgHelpers::User1.public_key)
         gpg_key.valid?
-        expect(gpg_key.fingerprint).to eq '4F4840A503964251CF7D7F5DC728AF10972E97C0'
+        expect(gpg_key.fingerprint).to eq GpgHelpers::User1.fingerprint
       end
     end
 
@@ -34,7 +34,7 @@ describe GpgKey do
         allow(Gitlab::Gpg).to receive :add_to_keychain
         gpg_key = create :gpg_key
 
-        expect(Gitlab::Gpg).to receive(:remove_from_keychain).with('4F4840A503964251CF7D7F5DC728AF10972E97C0')
+        expect(Gitlab::Gpg).to receive(:remove_from_keychain).with(GpgHelpers::User1.fingerprint)
 
         gpg_key.destroy!
       end
@@ -57,9 +57,9 @@ describe GpgKey do
 
   describe '#emails', :gpg do
     it 'returns the emails from the gpg key' do
-      gpg_key = create :gpg_key
+      gpg_key = create :gpg_key, key: GpgHelpers::User1.public_key
 
-      expect(gpg_key.emails).to match_array %w(mail@koffeinfrei.org lex@panter.ch)
+      expect(gpg_key.emails).to eq [GpgHelpers::User1.email]
     end
   end
 end
