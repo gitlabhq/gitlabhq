@@ -12,13 +12,17 @@ module Geo
                                   'PRIVATE-TOKEN' => private_token
                                 })
 
-      keys   = GeoNode::Status.members.map(&:to_s)
-      values = response.parsed_response.values_at(*keys)
-      status = GeoNode::Status.new(*values)
+      values =
+        if response.code >= 200 && response.code < 300
+          keys = GeoNode::Status.members.map(&:to_s)
+          response.parsed_response.values_at(*keys)
+        else
+          ["Could not connect to Geo node - HTTP Status Code: #{response.code}"]
+        end
 
-      [(response.code >= 200 && response.code < 300), status]
+      GeoNode::Status.new(*values)
     rescue HTTParty::Error, Errno::ECONNREFUSED => e
-      [false, GeoNode::Status.new(ActionView::Base.full_sanitizer.sanitize(e.message))]
+      GeoNode::Status.new(ActionView::Base.full_sanitizer.sanitize(e.message))
     end
 
     private
