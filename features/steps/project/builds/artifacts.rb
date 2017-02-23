@@ -76,7 +76,7 @@ class Spinach::Features::ProjectBuildsArtifacts < Spinach::FeatureSteps
     base64_params = send_data.sub(/\Aartifacts\-entry:/, '')
     params = JSON.parse(Base64.urlsafe_decode64(base64_params))
 
-    expect(params.keys).to eq(['Archive', 'Entry'])
+    expect(params.keys).to eq(%w(Archive Entry))
     expect(params['Archive']).to end_with('build_artifacts.zip')
     expect(params['Entry']).to eq(Base64.encode64('ci_artifacts.txt'))
   end

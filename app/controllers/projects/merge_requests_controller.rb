@@ -381,14 +381,15 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def merge_widget_refresh
-    if merge_request.merge_when_build_succeeds
-      @status = :merge_when_build_succeeds
-    else
-      # Only MRs that can be merged end in this action
-      # MR can be already picked up for merge / merged already or can be waiting for worker to be picked up
-      # in last case it does not have any special status. Possible error is handled inside widget js function
-      @status = :success
-    end
+    @status =
+      if merge_request.merge_when_build_succeeds
+        :merge_when_build_succeeds
+      else
+        # Only MRs that can be merged end in this action
+        # MR can be already picked up for merge / merged already or can be waiting for worker to be picked up
+        # in last case it does not have any special status. Possible error is handled inside widget js function
+        :success
+      end
 
     render 'merge'
   end

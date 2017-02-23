@@ -6,7 +6,7 @@ module Gitlab
       loop do
         begin
           ActiveRecord::Base.transaction do
-            return block.call(subject)
+            return yield(subject)
           end
         rescue ActiveRecord::StaleObjectError
           retries -= 1

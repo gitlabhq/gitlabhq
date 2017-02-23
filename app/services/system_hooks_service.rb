@@ -33,9 +33,7 @@ class SystemHooksService
       data.merge!(project_data(model))
 
       if event == :rename || event == :transfer
-        data.merge!({
-          old_path_with_namespace: model.old_path_with_namespace
-        })
+        data[:old_path_with_namespace] = model.old_path_with_namespace
       end
 
       data

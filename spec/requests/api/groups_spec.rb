@@ -303,7 +303,7 @@ describe API::Groups, api: true  do
         expect(response).to have_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response.length).to eq(2)
-        project_names = json_response.map { |proj| proj['name' ] }
+        project_names = json_response.map { |proj| proj['name'] }
         expect(project_names).to match_array([project1.name, project3.name])
         expect(json_response.first['visibility_level']).to be_present
       end
@@ -314,7 +314,7 @@ describe API::Groups, api: true  do
         expect(response).to have_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response.length).to eq(2)
-        project_names = json_response.map { |proj| proj['name' ] }
+        project_names = json_response.map { |proj| proj['name'] }
         expect(project_names).to match_array([project1.name, project3.name])
         expect(json_response.first['visibility_level']).not_to be_present
       end
@@ -398,7 +398,7 @@ describe API::Groups, api: true  do
 
         expect(response).to have_http_status(200)
         expect(response).to include_pagination_headers
-        project_names = json_response.map { |proj| proj['name' ] }
+        project_names = json_response.map { |proj| proj['name'] }
         expect(project_names).to match_array([project1.name, project3.name])
       end
 

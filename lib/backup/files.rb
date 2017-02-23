@@ -26,10 +26,10 @@ module Backup
           abort 'Backup failed'
         end
 
-        run_pipeline!([%W(tar -C #{@backup_files_dir} -cf - .), %W(gzip -c -1)], out: [backup_tarball, 'w', 0600])
+        run_pipeline!([%W(tar -C #{@backup_files_dir} -cf - .), %w(gzip -c -1)], out: [backup_tarball, 'w', 0600])
         FileUtils.rm_rf(@backup_files_dir)
       else
-        run_pipeline!([%W(tar -C #{app_files_dir} -cf - .), %W(gzip -c -1)], out: [backup_tarball, 'w', 0600])
+        run_pipeline!([%W(tar -C #{app_files_dir} -cf - .), %w(gzip -c -1)], out: [backup_tarball, 'w', 0600])
       end
     end
 
@@ -37,7 +37,7 @@ module Backup
       backup_existing_files_dir
       create_files_dir
 
-      run_pipeline!([%W(gzip -cd), %W(tar -C #{app_files_dir} -xf -)], in: backup_tarball)
+      run_pipeline!([%w(gzip -cd), %W(tar -C #{app_files_dir} -xf -)], in: backup_tarball)
     end
 
     def backup_existing_files_dir
@@ -47,7 +47,7 @@ module Backup
       end
     end
 
-    def run_pipeline!(cmd_list, options={})
+    def run_pipeline!(cmd_list, options = {})
       status_list = Open3.pipeline(*cmd_list, options)
       abort 'Backup failed' unless status_list.compact.all?(&:success?)
     end

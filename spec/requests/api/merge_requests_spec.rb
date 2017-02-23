@@ -250,7 +250,7 @@ describe API::MergeRequests, api: true  do
 
         expect(response).to have_http_status(201)
         expect(json_response['title']).to eq('Test merge_request')
-        expect(json_response['labels']).to eq(['label', 'label2'])
+        expect(json_response['labels']).to eq(%w(label label2))
         expect(json_response['milestone']['id']).to eq(milestone.id)
         expect(json_response['force_remove_source_branch']).to be_truthy
       end

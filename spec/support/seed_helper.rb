@@ -7,7 +7,7 @@ TEST_MUTABLE_REPO_PATH = File.join(SEED_REPOSITORY_PATH, "mutable-repo.git")
 TEST_BROKEN_REPO_PATH  = File.join(SEED_REPOSITORY_PATH, "broken-repo.git")
 
 module SeedHelper
-  GITLAB_URL = "https://gitlab.com/gitlab-org/gitlab-git-test.git"
+  GITLAB_URL = "https://gitlab.com/gitlab-org/gitlab-git-test.git".freeze
 
   def ensure_seeds
     if File.exist?(SEED_REPOSITORY_PATH)

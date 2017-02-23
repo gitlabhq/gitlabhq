@@ -37,7 +37,7 @@ feature 'Issue prioritization', feature: true do
       page.within('.issues-holder') do
         issue_titles = all('.issues-list .issue-title-text').map(&:text)
 
-        expect(issue_titles).to eq(['issue_4', 'issue_3', 'issue_5', 'issue_2', 'issue_1'])
+        expect(issue_titles).to eq(%w(issue_4 issue_3 issue_5 issue_2 issue_1))
       end
     end
   end
@@ -77,7 +77,7 @@ feature 'Issue prioritization', feature: true do
 
         expect(issue_titles[0..1]).to contain_exactly('issue_5', 'issue_8')
         expect(issue_titles[2..4]).to contain_exactly('issue_1', 'issue_3', 'issue_7')
-        expect(issue_titles[5..-1]).to eq(['issue_2', 'issue_4', 'issue_6'])
+        expect(issue_titles[5..-1]).to eq(%w(issue_2 issue_4 issue_6))
       end
     end
   end

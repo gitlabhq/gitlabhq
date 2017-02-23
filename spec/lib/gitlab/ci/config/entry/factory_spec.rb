@@ -8,20 +8,20 @@ describe Gitlab::Ci::Config::Entry::Factory do
     context 'when setting a concrete value' do
       it 'creates entry with valid value' do
         entry = factory
-          .value(['ls', 'pwd'])
+          .value(%w(ls pwd))
           .create!
 
-        expect(entry.value).to eq ['ls', 'pwd']
+        expect(entry.value).to eq %w(ls pwd)
       end
 
       context 'when setting description' do
         it 'creates entry with description' do
           entry = factory
-            .value(['ls', 'pwd'])
+            .value(%w(ls pwd))
             .with(description: 'test description')
             .create!
 
-          expect(entry.value).to eq ['ls', 'pwd']
+          expect(entry.value).to eq %w(ls pwd)
           expect(entry.description).to eq 'test description'
         end
       end
@@ -29,7 +29,7 @@ describe Gitlab::Ci::Config::Entry::Factory do
       context 'when setting key' do
         it 'creates entry with custom key' do
           entry = factory
-            .value(['ls', 'pwd'])
+            .value(%w(ls pwd))
             .with(key: 'test key')
             .create!
 

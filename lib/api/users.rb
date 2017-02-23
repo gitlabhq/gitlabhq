@@ -172,7 +172,7 @@ module API
           end
         end
 
-        user_params.merge!(password_expires_at: Time.now) if user_params[:password].present?
+        user_params[:password_expires_at] = Time.now if user_params[:password].present?
 
         if user.update_attributes(user_params.except(:extern_uid, :provider))
           present user, with: Entities::UserPublic

@@ -4,7 +4,7 @@ module Projects
 
     class DestroyError < StandardError; end
 
-    DELETED_FLAG = '+deleted'
+    DELETED_FLAG = '+deleted'.freeze
 
     def async_execute
       project.transaction do

@@ -693,9 +693,7 @@ describe User, models: true do
   end
 
   describe '.search_with_secondary_emails' do
-    def search_with_secondary_emails(query)
-      described_class.search_with_secondary_emails(query)
-    end
+    delegate :search_with_secondary_emails, to: :described_class
 
     let!(:user) { create(:user) }
     let!(:email) { create(:email) }

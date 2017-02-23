@@ -14,15 +14,15 @@ class FixProjectRecordsWithInvalidVisibility < ActiveRecord::Migration
 
     finder_sql =
       projects.
-      join(namespaces, Arel::Nodes::InnerJoin).
-      on(projects[:namespace_id].eq(namespaces[:id])).
-      where(projects[:visibility_level].gt(namespaces[:visibility_level])).
-      project(projects[:id], namespaces[:visibility_level]).
-      take(BATCH_SIZE).
-      to_sql
+        join(namespaces, Arel::Nodes::InnerJoin).
+        on(projects[:namespace_id].eq(namespaces[:id])).
+        where(projects[:visibility_level].gt(namespaces[:visibility_level])).
+        project(projects[:id], namespaces[:visibility_level]).
+        take(BATCH_SIZE).
+        to_sql
 
     # Update matching rows in batches. Each batch can cause up to 3 UPDATE
-    # statements, in addition to the SELECT: one per visibility_level 
+    # statements, in addition to the SELECT: one per visibility_level
     loop do
       to_update = connection.exec_query(finder_sql)
       break if to_update.rows.count == 0

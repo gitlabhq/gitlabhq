@@ -14,9 +14,11 @@ module Ci
     has_many :builds, foreign_key: :commit_id
     has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id
 
-    validates_presence_of :sha, unless: :importing?
-    validates_presence_of :ref, unless: :importing?
-    validates_presence_of :status, unless: :importing?
+    delegate :id, to: :project, prefix: true
+
+    validates :sha, presence: { unless: :importing? }
+    validates :ref, presence: { unless: :importing? }
+    validates :status, presence: { unless: :importing? }
     validate :valid_commit_sha, unless: :importing?
 
     after_create :keep_around_commits, unless: :importing?
@@ -151,10 +153,6 @@ module Ci
 
     def artifacts
       builds.latest.with_artifacts_not_expired.includes(project: [:namespace])
-    end
-
-    def project_id
-      project.id
     end
 
     # For now the only user who participates is the user who triggered
