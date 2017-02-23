@@ -5,7 +5,7 @@
 - page_title    "Projects"
 - header_title  "Projects", dashboard_projects_path
 
-= render partial: 'shared/user_callout'
+.user-callout{ 'callout-svg' => custom_icon('icon_customization') }
 
 - if @projects.any? || params[:filter_projects]
   = render 'dashboard/projects_head'

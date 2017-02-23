@@ -1,13 +1,2 @@
-.user-callout
-  .bordered-box.landing.content-block
-    %button.btn.btn-default.close.close-user-callout{ type: "button" }
-      %i.fa.fa-times.dismiss-icon
-    .row
-      .col-sm-3.col-xs-12.svg-container
-      .col-sm-8.col-xs-12.inner-content
-        %h4
-          Customize your experience
-        %p
-          Change syntax themes, default project pages, and more in preferences.
-        %a{ href: 'foo', class:'user-callout-btn' }
-          Check it out
+.user-callout{ 'callout-svg' => custom_icon('icon_customization') }
+

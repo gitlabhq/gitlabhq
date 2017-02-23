@@ -96,9 +96,9 @@
       %li.js-snippets-tab
         = link_to user_snippets_path, data: {target: 'div#snippets', action: 'snippets', toggle: 'tab'} do
           Snippets
-    
+
   %div{ class: container_class }
-    = render partial: 'shared/user_callout'
+    .user-callout{ 'callout-svg' => custom_icon('icon_customization') }
     .tab-content
       #activity.tab-pane
         .row-content-block.calender-block.white.second-block.hidden-xs
