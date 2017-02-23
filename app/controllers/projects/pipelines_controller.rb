@@ -13,8 +13,14 @@ class Projects::PipelinesController < Projects::ApplicationController
       .page(params[:page])
       .per(30)
 
-    @running_or_pending_count = PipelinesFinder
+    @running_count = PipelinesFinder
       .new(project).execute(scope: 'running').count
+
+    @pending_count = PipelinesFinder
+      .new(project).execute(scope: 'pending').count
+
+    @finished_count = PipelinesFinder
+      .new(project).execute(scope: 'finished').count
 
     @pipelines_count = PipelinesFinder
       .new(project).execute.count
@@ -29,7 +35,9 @@ class Projects::PipelinesController < Projects::ApplicationController
             .represent(@pipelines),
           count: {
             all: @pipelines_count,
-            running_or_pending: @running_or_pending_count
+            running: @running_count,
+            pending: @pending_count,
+            finished: @finished_count,
           }
         }
       end
