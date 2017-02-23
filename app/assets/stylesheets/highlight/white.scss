@@ -7,6 +7,7 @@ $white-code-color: $gl-text-color;
 $white-highlight: #fafe3d;
 $white-pre-hll-bg: #f8eec7;
 $white-hll-bg: #f8f8f8;
+$white-over-bg: #ded7fc;
 $white-c: #998;
 $white-err: #a61717;
 $white-err-bg: #e3d2d2;
@@ -124,11 +125,11 @@ $white-gc-bg: #eaf2f5;
       }
 
       &.is-over {
-        background-color: #ded7fc;
-        border-color: darken(#ded7fc, 5%);
+        background-color: $white-over-bg;
+        border-color: darken($white-over-bg, 5%);
 
         a {
-          color: darken(#ded7fc, 15%);
+          color: darken($white-over-bg, 15%);
         }
       }
 

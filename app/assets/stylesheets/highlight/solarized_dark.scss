@@ -17,6 +17,7 @@ $solarized-dark-line-color-new: #5a766c;
 $solarized-dark-line-color-old: #7a6c71;
 $solarized-dark-highlight: #094554;
 $solarized-dark-hll-bg: #174652;
+$solarized-dark-over-bg: #9f9ab5;
 $solarized-dark-c: #586e75;
 $solarized-dark-err: #93a1a1;
 $solarized-dark-g: #93a1a1;
@@ -145,11 +146,11 @@ $solarized-dark-il: #2aa198;
 
     .diff-line-num {
       &.is-over {
-        background-color: #9f9ab5;
-        border-color: darken(#9f9ab5, 5%);
+        background-color: $solarized-dark-over-bg;
+        border-color: darken($solarized-dark-over-bg, 5%);
 
         a {
-          color: darken(#9f9ab5, 15%);
+          color: darken($solarized-dark-over-bg, 15%);
         }
       }
     }
