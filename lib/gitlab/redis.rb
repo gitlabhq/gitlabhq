@@ -12,12 +12,7 @@ module Gitlab
     CONFIG_FILE = File.expand_path('../../config/resque.yml', __dir__)
 
     class << self
-      # Do NOT cache in an instance variable. Result may be mutated by caller.
-      delegate :params, to: :new
-
-      # Do NOT cache in an instance variable. Result may be mutated by caller.
-      # @deprecated Use .params instead to get sentinel support
-      delegate :url, to: :new
+      delegate :params, :url, to: :new
 
       def with
         @pool ||= ConnectionPool.new(size: pool_size) { ::Redis.new(params) }

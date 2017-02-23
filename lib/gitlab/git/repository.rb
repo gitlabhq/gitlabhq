@@ -31,6 +31,10 @@ module Gitlab
         @attributes = Gitlab::Git::Attributes.new(path)
       end
 
+      delegate  :empty?,
+                :bare?,
+                to: :rugged
+
       # Default branch in the repository
       def root_ref
         @root_ref ||= discover_default_branch
@@ -159,10 +163,6 @@ module Gitlab
       def has_commits?
         !empty?
       end
-
-      delegate  :empty?,
-                :bare?,
-                to: :rugged
 
       def repo_exists?
         !!rugged
