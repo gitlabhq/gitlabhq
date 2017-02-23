@@ -93,7 +93,7 @@ gem 'fog-openstack', '~> 0.1'
 gem 'fog-rackspace', '~> 0.1.1'
 
 # for Google storage
-gem 'google-api-client', '~> 0.8.6'
+gem 'google-api-client', '~> 0.9.28'
 
 # for aws storage
 gem 'unf', '~> 0.1.4'
