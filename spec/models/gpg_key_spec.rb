@@ -16,7 +16,7 @@ describe GpgKey do
   context 'callbacks', :gpg do
     describe 'extract_fingerprint' do
       it 'extracts the fingerprint from the gpg key' do
-        gpg_key = described_class.new(key: GpgHelpers.public_key)
+        gpg_key = described_class.new(key: GpgHelpers::User1.public_key)
         gpg_key.valid?
         expect(gpg_key.fingerprint).to eq '4F4840A503964251CF7D7F5DC728AF10972E97C0'
       end
@@ -24,7 +24,7 @@ describe GpgKey do
 
     describe 'add_to_keychain' do
       it 'calls add_to_keychain after create' do
-        expect(Gitlab::Gpg).to receive(:add_to_keychain).with(GpgHelpers.public_key)
+        expect(Gitlab::Gpg).to receive(:add_to_keychain).with(GpgHelpers::User1.public_key)
         create :gpg_key
       end
     end
