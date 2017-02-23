@@ -148,7 +148,7 @@ describe Gitlab::OAuth::User, lib: true do
                 expect(gl_user).to be_valid
                 expect(gl_user.username).to eql uid
                 expect(gl_user.email).to eql 'johndoe@example.com'
-                expect(gl_user.identities.length).to eql 2
+                expect(gl_user.identities.length).to be 2
                 identities_as_hash = gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
                 expect(identities_as_hash).to match_array(
                   [
@@ -169,7 +169,7 @@ describe Gitlab::OAuth::User, lib: true do
                 expect(gl_user).to be_valid
                 expect(gl_user.username).to eql 'john'
                 expect(gl_user.email).to eql 'john@example.com'
-                expect(gl_user.identities.length).to eql 2
+                expect(gl_user.identities.length).to be 2
                 identities_as_hash = gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
                 expect(identities_as_hash).to match_array(
                   [
