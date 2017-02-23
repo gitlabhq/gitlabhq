@@ -25,7 +25,7 @@
               %span.help-block Primary node
             - else
               %p
-                %span.help-block= "Repositories synced: #{number_to_percentage(node.repositories_synced, precision: 0)}"
+                %span.help-block= "Repositories synced: #{node.repositories_synced}/#{node.repositories} (#{number_to_percentage(node.repositories_synced_in_percentage, precision: 0)})"
               %p
                 %span.help-block= "Repositories failed: #{node.repositories_failed}"
               %p
