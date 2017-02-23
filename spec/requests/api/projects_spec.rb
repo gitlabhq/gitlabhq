@@ -613,6 +613,14 @@ describe API::Projects, api: true  do
           expect(json_response['license']['name']).to be_present
           expect(json_response['license']['spdx_id']).to be_present
         end
+
+        it 'returns nil if no license' do
+          get api("/projects/#{project.id}", user)
+
+          expect(json_response['license']).to be_a Hash
+          expect(json_response['license']['name']).to be_nil
+          expect(json_response['license']['spdx_id']).to be_nil
+        end
       end
 
       describe 'permissions' do

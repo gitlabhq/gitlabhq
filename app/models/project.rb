@@ -1328,18 +1328,18 @@ class Project < ActiveRecord::Base
   alias_method :human_name, :full_name
   alias_method :path_with_namespace, :full_path
 
+  def license
+    Licensee::License.new(@repository.license_key)
+  end   
+
   def license_name
     return nil if @repository.license_key.nil?
-
-    license = Licensee::License.new(@repository.license_key)
 
     license.nickname || license.name
   end
 
   def license_spdx_id
     return nil if @repository.license_key.nil?
-
-    license = Licensee::License.new(@repository.license_key)
 
     license.meta["spdx-id"]
   end

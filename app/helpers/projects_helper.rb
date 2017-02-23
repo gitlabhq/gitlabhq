@@ -112,9 +112,7 @@ module ProjectsHelper
   def license_short_name(project)
     return 'LICENSE' if project.repository.license_key.nil?
 
-    license = Licensee::License.new(project.repository.license_key)
-
-    license.nickname || license.name
+    project.license.nickname || license.name
   end
 
   def last_push_event
