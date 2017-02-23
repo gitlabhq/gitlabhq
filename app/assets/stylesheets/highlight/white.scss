@@ -140,6 +140,22 @@ $white-gc-bg: #eaf2f5;
       }
     }
 
+    &:not(.diff-expanded) + .diff-expanded,
+    &.diff-expanded + .line_holder:not(.diff-expanded) {
+      > .diff-line-num,
+      > .line_content {
+        border-top: 1px solid #e0e0e0;
+      }
+    }
+
+    &.diff-expanded {
+      > .diff-line-num,
+      > .line_content {
+        background: #f7f7f7;
+        border-color: #f7f7f7;
+      }
+    }
+
     .line_content {
       &.old {
         background-color: $line-removed;

@@ -166,6 +166,22 @@ $solarized-light-il: #2aa198;
     .line_content.match {
       @include matchLine;
     }
+
+    &:not(.diff-expanded) + .diff-expanded,
+    &.diff-expanded + .line_holder:not(.diff-expanded) {
+      > .diff-line-num,
+      > .line_content {
+        border-top: 1px solid #d2cdbd;
+      }
+    }
+
+    &.diff-expanded {
+      > .diff-line-num,
+      > .line_content {
+        background: #ece6d4;
+        border-color: #ece6d4;
+      }
+    }
   }
 
   // highlight line via anchor
