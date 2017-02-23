@@ -1,4 +1,6 @@
 class GeoNode < ActiveRecord::Base
+  include Presentable
+
   Status = Struct.new(:health, :repositories, :repositories_synced, :repositories_failed)
 
   belongs_to :geo_node_key, dependent: :destroy

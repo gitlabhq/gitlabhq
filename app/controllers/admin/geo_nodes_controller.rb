@@ -3,7 +3,7 @@ class Admin::GeoNodesController < Admin::ApplicationController
   before_action :load_node, only: [:destroy, :repair, :toggle]
 
   def index
-    @nodes = GeoNode.all
+    @nodes = GeoNode.all.map(&:present)
     @node = GeoNode.new
 
     unless Gitlab::Geo.license_allows?

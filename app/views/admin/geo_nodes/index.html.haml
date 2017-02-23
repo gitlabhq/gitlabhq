@@ -21,8 +21,15 @@
             %span
               = node_status_icon(node)
             %strong= node.url
-            %p
-              %span.help-block= node.primary ? 'Primary node' : 'Secondary node'
+            - if node.primary?
+              %span.help-block Primary node
+            - else
+              %p
+                %span.help-block= "Repositorie synced: #{number_to_percentage(node.repositories_synced, precision: 0)}"
+              %p
+                %span.help-block= "Repositorie failed: #{node.repositories_failed}"
+              %p
+                %span.help-block= node.healthy? ? 'No Health Problems Detected' : node.health
 
           .pull-right
             - if Gitlab::Geo.license_allows?

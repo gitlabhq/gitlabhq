@@ -2,9 +2,14 @@ module EE
   module GeoHelper
     def node_status_icon(node)
       if node.primary?
-        icon 'star fw'
+        icon 'star fw', class: 'has-tooltip', title: 'Primary node'
       else
-        status = node.enabled? ? 'enabled' : 'disabled'
+        status =
+          if node.enabled?
+            node.healthy? ? 'healthy' : 'unhealthy'
+          else
+            'disabled'
+          end
 
         icon 'globe fw',
              class: "geo-node-icon-#{status} has-tooltip",
