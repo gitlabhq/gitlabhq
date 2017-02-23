@@ -35,6 +35,69 @@
     .stage-cell {
       width: 20%;
     }
+
+    .pipelines-time-ago {
+      text-align: right;
+    }
+
+    .pipeline-actions {
+      padding-right: 0;
+      min-width: 170px; //Guarantees buttons don't break in several lines.
+
+      .btn-default {
+        color: $gl-text-color-secondary;
+      }
+
+      .btn.btn-retry:hover,
+      .btn.btn-retry:focus {
+        border-color: $gray-darkest;
+        background-color: $white-normal;
+      }
+
+      svg path {
+        fill: $gl-text-color-secondary;
+      }
+
+      .dropdown-menu {
+        max-height: 250px;
+        overflow-y: auto;
+      }
+
+      .dropdown-toggle,
+      .dropdown-menu {
+        color: $gl-text-color-secondary;
+
+        .fa {
+          color: $gl-text-color-secondary;
+          font-size: 14px;
+        }
+
+        svg,
+        .fa {
+          margin-right: 0;
+        }
+      }
+
+      .btn-group {
+        &.open {
+          .btn-default {
+            background-color: $white-normal;
+            border-color: $border-white-normal;
+          }
+        }
+
+        .btn {
+          .icon-play {
+            height: 13px;
+            width: 12px;
+          }
+        }
+      }
+
+      .tooltip {
+        white-space: nowrap;
+      }
+    }
   }
 }
 
@@ -50,11 +113,8 @@
 
 .table.ci-table {
 
-  &.builds-page {
-
-    tr {
-      height: 71px;
-    }
+  &.builds-page tr {
+    height: 71px;
   }
 
   tr {
@@ -179,65 +239,6 @@
     }
   }
 
-  .pipeline-actions {
-    padding-right: 0;
-    min-width: 170px; //Guarantees buttons don't break in several lines.
-
-    .btn-default {
-      color: $gl-text-color-secondary;
-    }
-
-    .btn.btn-retry:hover,
-    .btn.btn-retry:focus {
-      border-color: $gray-darkest;
-      background-color: $white-normal;
-    }
-
-    svg path {
-      fill: $gl-text-color-secondary;
-    }
-
-    .dropdown-menu {
-      max-height: 250px;
-      overflow-y: auto;
-    }
-
-    .dropdown-toggle,
-    .dropdown-menu {
-      color: $gl-text-color-secondary;
-
-      .fa {
-        color: $gl-text-color-secondary;
-        font-size: 14px;
-      }
-
-      svg,
-      .fa {
-        margin-right: 0;
-      }
-    }
-
-    .btn-group {
-      &.open {
-        .btn-default {
-          background-color: $white-normal;
-          border-color: $border-white-normal;
-        }
-      }
-
-      .btn {
-        .icon-play {
-          height: 13px;
-          width: 12px;
-        }
-      }
-    }
-
-    .tooltip {
-      white-space: nowrap;
-    }
-  }
-
   .build-link a {
     color: $gl-text-color;
   }
@@ -303,31 +304,8 @@
 }
 
 .tab-pane {
-  &.pipelines {
-    .ci-table {
-      min-width: 900px;
-    }
-
-    .content-list.pipelines {
-      overflow: auto;
-    }
-
-    .stage {
-      max-width: 100px;
-      width: 100px;
-    }
-
-    .pipeline-actions {
-      min-width: 170px;
-    }
-  }
-
-  &.builds {
-    .ci-table {
-      tr {
-        height: 71px;
-      }
-    }
+  &.builds .ci-table tr {
+    height: 71px;
   }
 }
 

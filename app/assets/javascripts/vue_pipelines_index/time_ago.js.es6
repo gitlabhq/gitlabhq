@@ -54,23 +54,21 @@ require('../lib/utils/datetime_utility');
       },
     },
     template: `
-      <td>
-        <div class="pull-right">
-          <p class="duration" v-if='duration'>
-            <span v-html='svgs.iconTimer'></span>
-            {{duration}}
-          </p>
-          <p class="finished-at" v-if='timeStopped'>
-            <i class="fa fa-calendar"></i>
-            <time
-              data-toggle="tooltip"
-              data-placement="top"
-              data-container="body"
-              :data-original-title='localTimeFinished'>
-              {{timeStopped.words}}
-            </time>
-          </p>
-        </div>
+      <td class="pipelines-time-ago">
+        <p class="duration" v-if='duration'>
+          <span v-html='svgs.iconTimer'></span>
+          {{duration}}
+        </p>
+        <p class="finished-at" v-if='timeStopped'>
+          <i class="fa fa-calendar"></i>
+          <time
+            data-toggle="tooltip"
+            data-placement="top"
+            data-container="body"
+            :data-original-title='localTimeFinished'>
+            {{timeStopped.words}}
+          </time>
+        </p>
       </td>
     `,
   });
