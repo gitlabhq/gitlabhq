@@ -1,8 +1,6 @@
 # Elasticsearch integration
 
-_**Note:** This feature was [introduced][ee-109] in GitLab EE 8.4._
-
----
+>[Introduced][ee-109] in GitLab EE 8.4.
 
 [Elasticsearch] is a flexible, scalable and powerful search service.
 
@@ -29,7 +27,10 @@ GitLab, or on a separate server.
 
 ## Requirements
 
-Elasticsearch 5.1.x.
+| GitLab version | Elasticsearch version |
+| -------------- | --------------------- |
+| GitLab Enterprise Edition 8.4 - 8.17  | Elasticsearch 2.4 with [Delete By Query Plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/2.4/plugins-delete-by-query.html) installed |
+| GitLab Enterprise Edition 9.0+        | Elasticsearch 5.1 |
 
 ## Install Elasticsearch
 
