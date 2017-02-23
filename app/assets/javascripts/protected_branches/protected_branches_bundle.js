@@ -1,3 +1,5 @@
-// require everything else in this directory
-function requireAll(context) { return context.keys().map(context); }
-requireAll(require.context('.', false, /^\.\/(?!protected_branches_bundle).*\.(js|es6)$/));
+require('./protected_branch_access_dropdown');
+require('./protected_branch_create');
+require('./protected_branch_dropdown');
+require('./protected_branch_edit');
+require('./protected_branch_edit_list');
