@@ -70,10 +70,12 @@ class PrometheusService < MonitoringService
     {
       success: true,
       metrics: {
-        memory_values: query_range("go_goroutines{app=\"#{environment}\"}", 8.hours.ago),
-        memory_current: query("go_goroutines{app=\"#{environment}\"}"),
-        cpu_values: query_range("go_goroutines{app=\"#{environment}\"}", 8.hours.ago),
-        cpu_current: query("go_goroutines{app=\"#{environment}\"}"),
+        #Memory used in MB
+        memory_values: query_range("sum(container_memory_usage_bytes{container_name=\"app\", environment=\"#{environment}\"})/1024/1024", 8.hours.ago),
+        memory_current: query("sum(container_memory_usage_bytes{container_name=\"app\", environment=\"#{environment}\"})/1024/1024"),
+        #CPU Usage in Seconds.
+        cpu_values: query_range("sum(container_cpu_usage_seconds_total{container_name=\"app\",environment=\"#{environment}\"})", 8.hours.ago),
+        cpu_current: query("sum(container_cpu_usage_seconds_total{container_name=\"app\",environment=\"#{environment}\"})"),
       },
       last_update: Time.now.utc,
     }
