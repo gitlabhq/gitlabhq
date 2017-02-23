@@ -74,8 +74,8 @@ class PrometheusService < MonitoringService
         memory_values: query_range("sum(container_memory_usage_bytes{container_name=\"app\", environment=\"#{environment}\"})/1024/1024", 8.hours.ago),
         memory_current: query("sum(container_memory_usage_bytes{container_name=\"app\", environment=\"#{environment}\"})/1024/1024"),
         #CPU Usage in Seconds.
-        cpu_values: query_range("sum(container_cpu_usage_seconds_total{container_name=\"app\",environment=\"#{environment}\"})", 8.hours.ago),
-        cpu_current: query("sum(container_cpu_usage_seconds_total{container_name=\"app\",environment=\"#{environment}\"})"),
+        cpu_values: query_range("sum(rate(container_cpu_usage_seconds_total{container_name=\"app\",environment=\"#{environment}\"}[2m]))", 8.hours.ago),
+        cpu_current: query("sum(rate(container_cpu_usage_seconds_total{container_name=\"app\",environment=\"#{environment}\"}[2m]))"),
       },
       last_update: Time.now.utc,
     }
