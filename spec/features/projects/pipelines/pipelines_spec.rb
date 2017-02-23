@@ -26,18 +26,27 @@ describe 'Pipelines', :feature, :js do
         )
       end
 
-      [:all, :running, :branches].each do |scope|
-        context "when displaying #{scope}" do
-          before do
-            visit_project_pipelines(scope: scope)
-          end
+      context 'scope' do
+        before do
+          create(:ci_empty_pipeline, status: 'pending', project: project, sha: project.commit.id, ref: 'master')
+          create(:ci_empty_pipeline, status: 'running', project: project, sha: project.commit.id, ref: 'master')
+          create(:ci_empty_pipeline, status: 'created', project: project, sha: project.commit.id, ref: 'master')
+          create(:ci_empty_pipeline, status: 'success', project: project, sha: project.commit.id, ref: 'master')
+        end
 
-          it 'contains pipeline commit short SHA' do
-            expect(page).to have_content(pipeline.short_sha)
-          end
+        [:all, :running, :pending, :finished, :branches].each do |scope|
+          context "when displaying #{scope}" do
+            before do
+              visit_project_pipelines(scope: scope)
+            end
 
-          it 'contains branch name' do
-            expect(page).to have_content(pipeline.ref)
+            it 'contains pipeline commit short SHA' do
+              expect(page).to have_content(pipeline.short_sha)
+            end
+
+            it 'contains branch name' do
+              expect(page).to have_content(pipeline.ref)
+            end
           end
         end
       end
