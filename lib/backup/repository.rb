@@ -2,7 +2,7 @@ require 'yaml'
 
 module Backup
   class Repository
-
+    # rubocop:disable Metrics/AbcSize
     def dump
       prepare
 
@@ -85,11 +85,11 @@ module Backup
 
         project.ensure_dir_exist
 
-        if File.exists?(path_to_project_bundle)
-          cmd = %W(#{Gitlab.config.git.bin_path} clone --bare #{path_to_project_bundle} #{path_to_project_repo})
-        else
-          cmd = %W(#{Gitlab.config.git.bin_path} init --bare #{path_to_project_repo})
-        end
+        cmd = if File.exist?(path_to_project_bundle)
+                %W(#{Gitlab.config.git.bin_path} clone --bare #{path_to_project_bundle} #{path_to_project_repo})
+              else
+                %W(#{Gitlab.config.git.bin_path} init --bare #{path_to_project_repo})
+              end
 
         output, status = Gitlab::Popen.popen(cmd)
         if status.zero?
@@ -150,6 +150,7 @@ module Backup
         puts output
       end
     end
+    # rubocop:enable Metrics/AbcSize
 
     protected
 
@@ -193,7 +194,7 @@ module Backup
     end
 
     def silent
-      {err: '/dev/null', out: '/dev/null'}
+      { err: '/dev/null', out: '/dev/null' }
     end
 
     private

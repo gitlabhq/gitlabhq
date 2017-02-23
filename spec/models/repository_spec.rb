@@ -1450,13 +1450,13 @@ describe Repository, models: true do
 
   describe '#branch_count' do
     it 'returns the number of branches' do
-      expect(repository.branch_count).to be_an_instance_of(Fixnum)
+      expect(repository.branch_count).to be_an(Integer)
     end
   end
 
   describe '#tag_count' do
     it 'returns the number of tags' do
-      expect(repository.tag_count).to be_an_instance_of(Fixnum)
+      expect(repository.tag_count).to be_an(Integer)
     end
   end
 
@@ -1797,8 +1797,8 @@ describe Repository, models: true do
 
   describe '#push_remote_branches' do
     it 'push branches to the remote repo' do
-      expect_any_instance_of(Gitlab::Shell).to receive(:push_remote_branches).
-        with(repository.storage_path, repository.path_with_namespace, 'remote_name', ['branch'])
+      expect_any_instance_of(Gitlab::Shell).to receive(:push_remote_branches)
+        .with(repository.storage_path, repository.path_with_namespace, 'remote_name', ['branch'])
 
       repository.push_remote_branches('remote_name', ['branch'])
     end
@@ -1806,8 +1806,8 @@ describe Repository, models: true do
 
   describe '#delete_remote_branches' do
     it 'delete branches to the remote repo' do
-      expect_any_instance_of(Gitlab::Shell).to receive(:delete_remote_branches).
-        with(repository.storage_path, repository.path_with_namespace, 'remote_name', ['branch'])
+      expect_any_instance_of(Gitlab::Shell).to receive(:delete_remote_branches)
+        .with(repository.storage_path, repository.path_with_namespace, 'remote_name', ['branch'])
 
       repository.delete_remote_branches('remote_name', ['branch'])
     end
@@ -1825,9 +1825,9 @@ describe Repository, models: true do
     it 'gets the remote tags' do
       masterrev = repository.find_branch('master').dereferenced_target.id
 
-      expect_any_instance_of(Gitlab::Shell).to receive(:list_remote_tags).
-        with(repository.storage_path, repository.path_with_namespace, 'upstream').
-        and_return({ 'v0.0.1' => masterrev })
+      expect_any_instance_of(Gitlab::Shell).to receive(:list_remote_tags)
+        .with(repository.storage_path, repository.path_with_namespace, 'upstream')
+        .and_return({ 'v0.0.1' => masterrev })
 
       tags = repository.remote_tags('upstream')
 
@@ -1881,7 +1881,7 @@ describe Repository, models: true do
 
     context 'with an existing repository' do
       it 'returns the commit count' do
-        expect(repository.commit_count).to be_an_instance_of(Fixnum)
+        expect(repository.commit_count).to be_an(Integer)
       end
     end
   end

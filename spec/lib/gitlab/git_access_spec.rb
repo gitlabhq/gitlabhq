@@ -345,7 +345,7 @@ describe Gitlab::GitAccess, lib: true do
       }
     }
 
-    [['feature', 'exact'], ['feat*', 'wildcard']].each do |protected_branch_name, protected_branch_type|
+    [%w(feature exact), ['feat*', 'wildcard']].each do |protected_branch_name, protected_branch_type|
       context do
         before { create(:protected_branch, :remove_default_access_levels, :masters_can_push, name: protected_branch_name, project: project) }
 

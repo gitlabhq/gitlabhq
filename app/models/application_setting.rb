@@ -6,7 +6,7 @@ class ApplicationSetting < ActiveRecord::Base
   add_authentication_token_field :runners_registration_token
   add_authentication_token_field :health_check_access_token
 
-  CACHE_KEY = 'application_setting.last'
+  CACHE_KEY = 'application_setting.last'.freeze
   DOMAIN_LIST_SEPARATOR = %r{\s*[,;]\s*     # comma or semicolon, optionally surrounded by whitespace
                             |               # or
                             \s              # any whitespace character
@@ -244,10 +244,10 @@ class ApplicationSetting < ActiveRecord::Base
   end
 
   def update_mirror_cron_jobs
-    Project.mirror.where('sync_time < ?', minimum_mirror_sync_time).
-      update_all(sync_time: minimum_mirror_sync_time)
-    RemoteMirror.where('sync_time < ?', minimum_mirror_sync_time).
-      update_all(sync_time: minimum_mirror_sync_time)
+    Project.mirror.where('sync_time < ?', minimum_mirror_sync_time)
+      .update_all(sync_time: minimum_mirror_sync_time)
+    RemoteMirror.where('sync_time < ?', minimum_mirror_sync_time)
+      .update_all(sync_time: minimum_mirror_sync_time)
 
     Gitlab::Mirror.configure_cron_jobs!
   end

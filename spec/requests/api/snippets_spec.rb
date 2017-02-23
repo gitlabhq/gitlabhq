@@ -129,6 +129,7 @@ describe API::Snippets, api: true do
         it 'rejects the shippet' do
           expect { create_snippet(visibility_level: Snippet::PUBLIC) }.
             not_to change { Snippet.count }
+
           expect(response).to have_http_status(400)
         end
 

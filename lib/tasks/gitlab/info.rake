@@ -2,27 +2,26 @@ namespace :gitlab do
   namespace :env do
     desc "GitLab | Show information about GitLab and its environment"
     task info: :environment  do
-
       # check if there is an RVM environment
-      rvm_version = run_and_match(%W(rvm --version), /[\d\.]+/).try(:to_s)
+      rvm_version = run_and_match(%w(rvm --version), /[\d\.]+/).try(:to_s)
       # check Ruby version
-      ruby_version = run_and_match(%W(ruby --version), /[\d\.p]+/).try(:to_s)
+      ruby_version = run_and_match(%w(ruby --version), /[\d\.p]+/).try(:to_s)
       # check Gem version
-      gem_version = run_command(%W(gem --version))
+      gem_version = run_command(%w(gem --version))
       # check Bundler version
-      bunder_version = run_and_match(%W(bundle --version), /[\d\.]+/).try(:to_s)
+      bunder_version = run_and_match(%w(bundle --version), /[\d\.]+/).try(:to_s)
       # check Rake version
-      rake_version = run_and_match(%W(rake --version), /[\d\.]+/).try(:to_s)
+      rake_version = run_and_match(%w(rake --version), /[\d\.]+/).try(:to_s)
       # check redis version
-      redis_version = run_and_match(%W(redis-cli --version), /redis-cli (\d+\.\d+\.\d+)/).to_a
+      redis_version = run_and_match(%w(redis-cli --version), /redis-cli (\d+\.\d+\.\d+)/).to_a
       # check for system defined proxies
-      proxies = Gitlab::Proxy.detect_proxy.map{|k,v| "#{k}: #{v}"}.join("\n\t\t")
+      proxies = Gitlab::Proxy.detect_proxy.map{|k, v| "#{k}: #{v}"}.join("\n\t\t")
 
       puts ""
       puts "System information".color(:yellow)
       puts "System:\t\t#{os_name || "unknown".color(:red)}"
       puts "Proxy:\t\t#{proxies.present? ? proxies.color(:green) : "no"}"
-      puts "Current User:\t#{run_command(%W(whoami))}"
+      puts "Current User:\t#{run_command(%w(whoami))}"
       puts "Using RVM:\t#{rvm_version.present? ? "yes".color(:green) : "no"}"
       puts "RVM Version:\t#{rvm_version}" if rvm_version.present?
       puts "Ruby Version:\t#{ruby_version || "unknown".color(:red)}"
@@ -31,7 +30,6 @@ namespace :gitlab do
       puts "Rake Version:\t#{rake_version || "unknown".color(:red)}"
       puts "Redis Version:\t#{redis_version[1] || "unknown".color(:red)}"
       puts "Sidekiq Version:#{Sidekiq::VERSION}"
-
 
       # check database adapter
       database_adapter = Gitlab::Database.adapter_name
@@ -42,12 +40,12 @@ namespace :gitlab do
       http_clone_url = project.http_url_to_repo
       ssh_clone_url  = project.ssh_url_to_repo
 
-      if Gitlab::Geo.current_node
-        geo_node_type = Gitlab::Geo.current_node.primary ? 'Primary' : 'Secondary'
-      else
-        geo_node_type = 'Undefined'.color(:red)
-      end
-
+      geo_node_type = 
+        if Gitlab::Geo.current_node
+          Gitlab::Geo.current_node.primary ? 'Primary' : 'Secondary'
+        else
+          'Undefined'.color(:red)
+        end
 
       omniauth_providers = Gitlab.config.omniauth.providers
       omniauth_providers.map! { |provider| provider['name'] }
@@ -68,8 +66,6 @@ namespace :gitlab do
       puts "Using LDAP:\t#{Gitlab.config.ldap.enabled ? "yes".color(:green) : "no"}"
       puts "Using Omniauth:\t#{Gitlab.config.omniauth.enabled ? "yes".color(:green) : "no"}"
       puts "Omniauth Providers: #{omniauth_providers.join(', ')}" if Gitlab.config.omniauth.enabled
-
-
 
       # check Gitolite version
       gitlab_shell_version_file = "#{Gitlab.config.gitlab_shell.hooks_path}/../VERSION"

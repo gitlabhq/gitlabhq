@@ -20,10 +20,10 @@ namespace :gitlab do
         config = {
           user: Gitlab.config.gitlab.user,
           gitlab_url: gitlab_url,
-          http_settings: {self_signed_cert: false}.stringify_keys,
+          http_settings: { self_signed_cert: false }.stringify_keys,
           auth_file: File.join(user_home, ".ssh", "authorized_keys"),
           redis: {
-            bin: %x{which redis-cli}.chomp,
+            bin: `which redis-cli`.chomp,
             namespace: "resque:gitlab"
           }.stringify_keys,
           log_level: "INFO",
@@ -43,7 +43,7 @@ namespace :gitlab do
         File.open("config.yml", "w+") {|f| f.puts config.to_yaml}
 
         # Launch installation process
-        system(*%W(bin/install) + repository_storage_paths_args)
+        system(*%w(bin/install) + repository_storage_paths_args)
       end
 
       # (Re)create hooks

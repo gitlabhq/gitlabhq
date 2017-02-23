@@ -110,13 +110,14 @@ module MergeRequestsHelper
       more_approvals = merge_request.approvals_left - merge_request.approvers_left.count
       approvers_names = merge_request.approvers_left.map(&:name)
 
-      if more_approvals > 0
-        str << " (from #{render_items_list(approvers_names + ["#{more_approvals} more"])})"
-      elsif more_approvals < 0
-        str << " (from #{render_items_list(approvers_names, "or")})"
-      else
-        str << " (from #{render_items_list(approvers_names)})"
-      end
+      str <<
+        if more_approvals > 0
+          " (from #{render_items_list(approvers_names + ["#{more_approvals} more"])})"
+        elsif more_approvals < 0
+          " (from #{render_items_list(approvers_names, "or")})"
+        else
+          " (from #{render_items_list(approvers_names)})"
+        end
     end
 
     str

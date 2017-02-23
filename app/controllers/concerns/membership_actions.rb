@@ -42,7 +42,7 @@ module MembershipActions
   end
 
   def log_audit_event(member, options = {})
-    AuditEventService.new(current_user, membershipable, options).
-      for_member(member).security_event
+    AuditEventService.new(current_user, membershipable, options)
+      .for_member(member).security_event
   end
 end

@@ -38,11 +38,12 @@ module Elastic
       end
 
       def self.elastic_search(query, options: {})
-        if query =~ /#(\d+)\z/
-          query_hash = iid_query_hash(query_hash, $1)
-        else
-          query_hash = basic_query_hash(%w(title^2 description), query)
-        end
+        query_hash =
+          if query =~ /#(\d+)\z/
+            iid_query_hash(query_hash, $1)
+          else
+            basic_query_hash(%w(title^2 description), query)
+          end
 
         query_hash = project_ids_filter(query_hash, options)
         query_hash = confidentiality_filter(query_hash, options[:current_user])
@@ -58,10 +59,12 @@ module Elastic
                      bool: {
                        should: [
                          { term: { confidential: false } },
-                         { bool: {
+                         {
+                           bool: {
                              must: [
                                { term: { confidential: true } },
-                               { bool: {
+                               {
+                                 bool: {
                                    should: [
                                      { term: { author_id: current_user.id } },
                                      { term: { assignee_id: current_user.id } },

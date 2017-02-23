@@ -43,7 +43,7 @@ class ExternalIssue
   end
 
   def reference_link_text(from_project = nil)
-    return "##{id}" if /^\d+$/.match(id)
+    return "##{id}" if id =~ /^\d+$/
 
     id
   end

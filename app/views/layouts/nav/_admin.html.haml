@@ -40,7 +40,7 @@
         %span
           License
 
-    - if askimet_enabled?
+    - if akismet_enabled?
       = nav_link(controller: :spam_logs) do
         = link_to admin_spam_logs_path, title: "Spam Logs" do
           %span

@@ -11,14 +11,15 @@ module CacheMarkdownField
   # Knows about the relationship between markdown and html field names, and
   # stores the rendering contexts for the latter
   class FieldData
-    extend Forwardable
-
     def initialize
       @data = {}
     end
 
-    def_delegators :@data, :[], :[]=
-    def_delegator :@data, :keys, :markdown_fields
+    delegate :[], :[]=, to: :@data
+
+    def markdown_fields
+      @data.keys
+    end
 
     def html_field(markdown_field)
       "#{markdown_field}_html"
@@ -45,7 +46,7 @@ module CacheMarkdownField
     Project
     Release
     Snippet
-  ]
+  ].freeze
 
   def self.caching_classes
     CACHING_CLASSES.map(&:constantize)

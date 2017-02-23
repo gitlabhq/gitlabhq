@@ -14,7 +14,7 @@ module API
       end
       params do
         use :pagination
-        optional :scope,    type: String, values: ['running', 'branches', 'tags'],
+        optional :scope,    type: String, values: %w(running branches tags),
                             desc: 'Either running, branches, or tags'
       end
       get ':id/pipelines' do

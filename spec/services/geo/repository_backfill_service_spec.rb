@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Geo::RepositoryBackfillService, services: true do
-  SYSTEM_HOOKS_HEADER = { 'Content-Type' => 'application/json', 'X-Gitlab-Event' => 'System Hook' }
+  SYSTEM_HOOKS_HEADER = { 'Content-Type' => 'application/json', 'X-Gitlab-Event' => 'System Hook' }.freeze
 
   let(:project) { create(:project) }
   let(:geo_node) { create(:geo_node) }

@@ -47,11 +47,11 @@ describe MergeRequestsHelper do
     end
 
     it "returns two items in the list" do
-      expect(render_items_list(["user", "user1"])).to eq("user and user1")
+      expect(render_items_list(%w(user user1))).to eq("user and user1")
     end
 
     it "returns three items in the list" do
-      expect(render_items_list(["user", "user1", "user2"])).to eq("user, user1 and user2")
+      expect(render_items_list(%w(user user1 user2))).to eq("user, user1 and user2")
     end
   end
 

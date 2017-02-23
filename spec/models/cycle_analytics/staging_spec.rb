@@ -18,7 +18,7 @@ describe 'CycleAnalytics#staging', feature: true do
     start_time_conditions: [["merge request that closes issue is merged",
                              -> (context, data) do
                                context.merge_merge_requests_closing_issue(data[:issue])
-                             end ]],
+                             end]],
     end_time_conditions:   [["merge request that closes issue is deployed to production",
                              -> (context, data) do
                                context.deploy_master

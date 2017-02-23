@@ -5,7 +5,6 @@ namespace :gitlab do
     raise 'No LDAP server hash defined. See config/gitlab.yml.example for an example' unless config.servers.any?
 
     provider = config.servers.first['provider_name']
-    valid_providers = config.providers
     unmigrated_group_links = LdapGroupLink.where('provider IS NULL OR provider NOT IN (?)', config.providers)
     puts "found #{unmigrated_group_links.count} unmigrated LDAP links"
     puts "setting provider to #{provider}"

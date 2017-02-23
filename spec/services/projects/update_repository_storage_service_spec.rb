@@ -28,11 +28,11 @@ describe Projects::UpdateRepositoryStorageService, services: true do
 
       context 'when the move succeeds' do
         it 'moves the repository to the new storage and unmarks the repository as read only' do
-          expect(gitlab_shell).to receive(:mv_storage).
-            with('tmp/tests/storage_a', project.path_with_namespace, 'tmp/tests/storage_b').
-            and_return(true)
-          expect(GitlabShellWorker).to receive(:perform_async).
-            with(:mv_repository,
+          expect(gitlab_shell).to receive(:mv_storage)
+            .with('tmp/tests/storage_a', project.path_with_namespace, 'tmp/tests/storage_b')
+            .and_return(true)
+          expect(GitlabShellWorker).to receive(:perform_async)
+            .with(:mv_repository,
               'tmp/tests/storage_a',
               project.path_with_namespace,
               "#{project.path_with_namespace}+#{project.id}+moved+#{time.to_i}")
@@ -46,9 +46,9 @@ describe Projects::UpdateRepositoryStorageService, services: true do
 
       context 'when the move fails' do
         it 'unmarks the repository as read-only without updating the repository storage' do
-          expect(gitlab_shell).to receive(:mv_storage).
-            with('tmp/tests/storage_a', project.path_with_namespace, 'tmp/tests/storage_b').
-            and_return(false)
+          expect(gitlab_shell).to receive(:mv_storage)
+            .with('tmp/tests/storage_a', project.path_with_namespace, 'tmp/tests/storage_b')
+            .and_return(false)
           expect(GitlabShellWorker).not_to receive(:perform_async)
 
           subject.execute('b')
@@ -66,20 +66,20 @@ describe Projects::UpdateRepositoryStorageService, services: true do
 
       context 'when the move succeeds' do
         it 'moves the repository and its wiki to the new storage and unmarks the repository as read only' do
-          expect(gitlab_shell).to receive(:mv_storage).
-            with('tmp/tests/storage_a', project.path_with_namespace, 'tmp/tests/storage_b').
-            and_return(true)
-          expect(GitlabShellWorker).to receive(:perform_async).
-            with(:mv_repository,
+          expect(gitlab_shell).to receive(:mv_storage)
+            .with('tmp/tests/storage_a', project.path_with_namespace, 'tmp/tests/storage_b')
+            .and_return(true)
+          expect(GitlabShellWorker).to receive(:perform_async)
+            .with(:mv_repository,
               'tmp/tests/storage_a',
               project.path_with_namespace,
               "#{project.path_with_namespace}+#{project.id}+moved+#{time.to_i}")
 
-          expect(gitlab_shell).to receive(:mv_storage).
-            with('tmp/tests/storage_a', "#{project.path_with_namespace}.wiki", 'tmp/tests/storage_b').
-            and_return(true)
-          expect(GitlabShellWorker).to receive(:perform_async).
-            with(:mv_repository,
+          expect(gitlab_shell).to receive(:mv_storage)
+            .with('tmp/tests/storage_a', "#{project.path_with_namespace}.wiki", 'tmp/tests/storage_b')
+            .and_return(true)
+          expect(GitlabShellWorker).to receive(:perform_async)
+            .with(:mv_repository,
               'tmp/tests/storage_a',
               "#{project.path_with_namespace}.wiki",
               "#{project.path_with_namespace}+#{project.id}+moved+#{time.to_i}.wiki")
@@ -93,12 +93,12 @@ describe Projects::UpdateRepositoryStorageService, services: true do
 
       context 'when the move of the wiki fails' do
         it 'unmarks the repository as read-only without updating the repository storage' do
-          expect(gitlab_shell).to receive(:mv_storage).
-            with('tmp/tests/storage_a', project.path_with_namespace, 'tmp/tests/storage_b').
-            and_return(true)
-          expect(gitlab_shell).to receive(:mv_storage).
-            with('tmp/tests/storage_a', "#{project.path_with_namespace}.wiki", 'tmp/tests/storage_b').
-            and_return(false)
+          expect(gitlab_shell).to receive(:mv_storage)
+            .with('tmp/tests/storage_a', project.path_with_namespace, 'tmp/tests/storage_b')
+            .and_return(true)
+          expect(gitlab_shell).to receive(:mv_storage)
+            .with('tmp/tests/storage_a', "#{project.path_with_namespace}.wiki", 'tmp/tests/storage_b')
+            .and_return(false)
           expect(GitlabShellWorker).not_to receive(:perform_async)
 
           subject.execute('b')

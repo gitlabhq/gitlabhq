@@ -407,14 +407,15 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def merge_widget_refresh
-    if merge_request.merge_when_build_succeeds
-      @status = :merge_when_build_succeeds
-    else
-      # Only MRs that can be merged end in this action
-      # MR can be already picked up for merge / merged already or can be waiting for worker to be picked up
-      # in last case it does not have any special status. Possible error is handled inside widget js function
-      @status = :success
-    end
+    @status =
+      if merge_request.merge_when_build_succeeds
+        :merge_when_build_succeeds
+      else
+        # Only MRs that can be merged end in this action
+        # MR can be already picked up for merge / merged already or can be waiting for worker to be picked up
+        # in last case it does not have any special status. Possible error is handled inside widget js function
+        :success
+      end
 
     render 'merge'
   end
@@ -527,9 +528,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       return render_404
     end
 
-    ::MergeRequests::ApprovalService.
-      new(project, current_user).
-      execute(@merge_request)
+    ::MergeRequests::ApprovalService
+      .new(project, current_user)
+      .execute(@merge_request)
 
     render_approvals_json
   end
@@ -540,9 +541,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def unapprove
     if @merge_request.has_approved?(current_user)
-      ::MergeRequests::RemoveApprovalService.
-        new(project, current_user).
-        execute(@merge_request)
+      ::MergeRequests::RemoveApprovalService
+        .new(project, current_user)
+        .execute(@merge_request)
     end
 
     render_approvals_json

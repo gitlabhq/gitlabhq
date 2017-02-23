@@ -21,9 +21,7 @@ module Gitlab
     PROTECTION_DEV_CAN_MERGE = 3
 
     class << self
-      def values
-        options.values
-      end
+      delegate :values, to: :options
 
       def all_values
         options_with_owner.values

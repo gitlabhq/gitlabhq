@@ -54,11 +54,11 @@ describe Gitlab::SidekiqCluster::CLI do
     it 'runs until one of the processes has been terminated' do
       allow(cli).to receive(:sleep).with(a_kind_of(Numeric))
 
-      expect(Gitlab::SidekiqCluster).to receive(:all_alive?).
-        with(an_instance_of(Array)).and_return(false)
+      expect(Gitlab::SidekiqCluster).to receive(:all_alive?)
+        .with(an_instance_of(Array)).and_return(false)
 
-      expect(Gitlab::SidekiqCluster).to receive(:signal_processes).
-        with(an_instance_of(Array), :TERM)
+      expect(Gitlab::SidekiqCluster).to receive(:signal_processes)
+        .with(an_instance_of(Array), :TERM)
 
       cli.start_loop
     end

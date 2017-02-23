@@ -39,9 +39,7 @@ module EE
           entry.memberuid
         end
 
-        def dn
-          entry.dn
-        end
+        delegate :dn, to: :entry
 
         def member_dns(nested_groups_to_skip = [])
           dns = []

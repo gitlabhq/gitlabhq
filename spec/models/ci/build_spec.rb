@@ -1262,8 +1262,8 @@ describe Ci::Build, :models do
 
     context 'when build has user' do
       let(:user_variables) do
-        [ { key: 'GITLAB_USER_ID',    value: user.id.to_s, public: true },
-          { key: 'GITLAB_USER_EMAIL', value: user.email,   public: true } ]
+        [{ key: 'GITLAB_USER_ID',    value: user.id.to_s, public: true },
+         { key: 'GITLAB_USER_EMAIL', value: user.email,   public: true }]
       end
 
       before do
@@ -1420,7 +1420,7 @@ describe Ci::Build, :models do
     end
 
     context 'when runner is assigned to build' do
-      let(:runner) { create(:ci_runner, description: 'description', tag_list: ['docker', 'linux']) }
+      let(:runner) { create(:ci_runner, description: 'description', tag_list: %w(docker linux)) }
 
       before do
         build.update(runner: runner)

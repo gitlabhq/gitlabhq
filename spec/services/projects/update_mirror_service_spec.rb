@@ -30,8 +30,8 @@ describe Projects::UpdateMirrorService do
       it "only invokes GitTagPushService for tags pointing to commits" do
         stub_fetch_mirror(project)
 
-        expect(GitTagPushService).to receive(:new).
-          with(project, project.owner, hash_including(ref: 'refs/tags/new-tag')).and_return(double(execute: true))
+        expect(GitTagPushService).to receive(:new)
+          .with(project, project.owner, hash_including(ref: 'refs/tags/new-tag')).and_return(double(execute: true))
 
         described_class.new(project, project.owner).execute
       end

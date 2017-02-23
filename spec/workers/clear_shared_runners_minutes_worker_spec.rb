@@ -5,8 +5,8 @@ describe ClearSharedRunnersMinutesWorker do
 
   describe '#perform' do
     before do
-      expect_any_instance_of(described_class).
-        to receive(:try_obtain_lease).and_return(true)
+      expect_any_instance_of(described_class)
+        .to receive(:try_obtain_lease).and_return(true)
     end
 
     subject { worker.perform }

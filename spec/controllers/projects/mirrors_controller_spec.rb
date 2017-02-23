@@ -116,7 +116,7 @@ describe Projects::MirrorsController do
 
   def do_put(project, options)
     attrs = { namespace_id: project.namespace.to_param, project_id: project.to_param }
-    attrs.merge!(project: options)
+    attrs[:project] = options
 
     put :update, attrs
   end

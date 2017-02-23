@@ -134,7 +134,7 @@ describe Gitlab::Metrics::Transaction do
         series:    'rails_transactions',
         tags:      { action: 'Foo#bar' },
         values:    { duration: 0.0, allocated_memory: a_kind_of(Numeric) },
-        timestamp: an_instance_of(Fixnum)
+        timestamp: a_kind_of(Integer)
       }
 
       expect(Gitlab::Metrics).to receive(:submit_metrics).
@@ -151,7 +151,7 @@ describe Gitlab::Metrics::Transaction do
         series:    'events',
         tags:      { event: :meow },
         values:    { count: 1 },
-        timestamp: an_instance_of(Fixnum)
+        timestamp: a_kind_of(Integer)
       }
 
       expect(Gitlab::Metrics).to receive(:submit_metrics).

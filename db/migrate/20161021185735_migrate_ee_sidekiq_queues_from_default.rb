@@ -6,7 +6,7 @@ class MigrateEESidekiqQueuesFromDefault < ActiveRecord::Migration
 
   DOWNTIME = true
 
-  DOWNTIME_REASON = <<-EOF
+  DOWNTIME_REASON = <<-EOF.freeze
   Moving Sidekiq jobs from queues requires Sidekiq to be stopped. Not stopping
   Sidekiq will result in the loss of jobs that are scheduled after this
   migration completes.
@@ -24,7 +24,7 @@ class MigrateEESidekiqQueuesFromDefault < ActiveRecord::Migration
       'LdapGroupSyncWorker' => :cronjob,
       'LdapSyncWorker'      => :cronjob,
     }
-  }
+  }.freeze
 
   def up
     Sidekiq.redis do |redis|
@@ -46,7 +46,7 @@ class MigrateEESidekiqQueuesFromDefault < ActiveRecord::Migration
 
   def migrate_from_queue(redis, queue, job_mapping)
     while job = redis.lpop("queue:#{queue}")
-      payload = JSON.load(job)
+      payload = JSON.parse(job)
       new_queue = job_mapping[payload['class']]
 
       # If we have no target queue to migrate to we're probably dealing with

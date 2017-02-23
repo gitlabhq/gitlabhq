@@ -10,7 +10,7 @@ module Gitlab
                :last_page?,
                :next_page, to: :pagination_delegate
 
-      KEY = 'user/activities'
+      KEY = 'user/activities'.freeze
 
       def self.record(user)
         Gitlab::Redis.with do |redis|

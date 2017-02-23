@@ -12,11 +12,11 @@ module Gitlab
       deploy_key_upload:
         'This deploy key does not have write access to this project.',
       no_repo: 'A repository for this project does not exist yet.'
-    }
+    }.freeze
 
-    DOWNLOAD_COMMANDS = %w{ git-upload-pack git-upload-archive }
-    PUSH_COMMANDS = %w{ git-receive-pack }
-    GIT_ANNEX_COMMANDS = %w{ git-annex-shell }
+    DOWNLOAD_COMMANDS = %w{ git-upload-pack git-upload-archive }.freeze
+    PUSH_COMMANDS = %w{ git-receive-pack }.freeze
+    GIT_ANNEX_COMMANDS = %w{ git-annex-shell }.freeze
     ALL_COMMANDS = DOWNLOAD_COMMANDS + PUSH_COMMANDS + GIT_ANNEX_COMMANDS
 
     attr_reader :actor, :project, :protocol, :user_access, :authentication_abilities
@@ -268,7 +268,7 @@ module Gitlab
       return false unless Gitlab.config.gitlab_shell.git_annex_enabled
       return false if changes.blank?
 
-      changes = changes.lines if changes.kind_of?(String)
+      changes = changes.lines if changes.is_a?(String)
 
       # Iterate over all changes to find if user allowed all of them to be applied
       # 0000000000000000000000000000000000000000 3073696294ddd52e9e6b6fc3f429109cac24626f refs/heads/synced/git-annex

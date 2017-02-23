@@ -153,7 +153,7 @@ module SharedIssuable
 
     case type
     when :issue
-      attrs.merge!(project: project)
+      attrs[:project] = project
     when :merge_request
       attrs.merge!(
         source_project: project,

@@ -54,7 +54,8 @@ describe Projects::MergeRequestsController do
           project_id: fork_project.to_param,
           merge_request: {
             source_branch: 'remove-submodule',
-            target_branch: 'master' },
+            target_branch: 'master'
+          },
           format: format
     end
   end
@@ -147,7 +148,7 @@ describe Projects::MergeRequestsController do
 
   context 'approvals' do
     def json_response
-      JSON.load(response.body)
+      JSON.parse(response.body)
     end
 
     let(:approver) { create(:user) }
@@ -1044,7 +1045,7 @@ describe Projects::MergeRequestsController do
 
             section['lines'].each do |line|
               if section['conflict']
-                expect(line['type']).to be_in(['old', 'new'])
+                expect(line['type']).to be_in(%w(old new))
                 expect(line.values_at('old_line', 'new_line')).to contain_exactly(nil, a_kind_of(Integer))
               else
                 if line['type'].nil?

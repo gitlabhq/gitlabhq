@@ -25,8 +25,8 @@ describe Projects::ApproverGroupsController do
 
         allow(controller).to receive(:authorize_create_merge_request!)
 
-        expect { go_delete(project, merge_request_id: merge.to_param, id: approver_group.id) }.
-          to change { merge.reload.approver_groups.count }.by(-1)
+        expect { go_delete(project, merge_request_id: merge.to_param, id: approver_group.id) }
+          .to change { merge.reload.approver_groups.count }.by(-1)
       end
     end
 
@@ -46,8 +46,8 @@ describe Projects::ApproverGroupsController do
 
         allow(controller).to receive(:authorize_admin_project!).and_return(true)
 
-        expect { go_delete(project, id: approver_group.id) }.
-          to change { project.approver_groups.count }.by(-1)
+        expect { go_delete(project, id: approver_group.id) }
+          .to change { project.approver_groups.count }.by(-1)
       end
     end
 

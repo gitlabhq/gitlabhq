@@ -2,7 +2,7 @@ module Auth
   class ContainerRegistryAuthenticationService < BaseService
     include Gitlab::CurrentSettings
 
-    AUDIENCE = 'container_registry'
+    AUDIENCE = 'container_registry'.freeze
 
     def execute(authentication_abilities:)
       @authentication_abilities = authentication_abilities

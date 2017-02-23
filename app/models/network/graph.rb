@@ -188,11 +188,12 @@ module Network
       end
 
       # and mark it as reserved
-      if parent_time.nil?
-        min_time = leaves.first.time
-      else
-        min_time = parent_time + 1
-      end
+      min_time =
+        if parent_time.nil?
+          leaves.first.time
+        else
+          parent_time + 1
+        end
 
       max_time = leaves.last.time
       leaves.last.parents(@map).each do |parent|

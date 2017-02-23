@@ -98,14 +98,14 @@ describe Banzai::Filter::UploadLinkFilter, lib: true do
 
       it 'rebuilds relative URL for a link' do
         doc = filter(link('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg'))
-        expect(doc.at_css('a')['href']).
-          to eq "#{geo_url}/#{project.path_with_namespace}/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg"
+        expect(doc.at_css('a')['href'])
+          .to eq "#{geo_url}/#{project.path_with_namespace}/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg"
       end
 
       it 'rebuilds relative URL for an image' do
         doc = filter(link('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg'))
-        expect(doc.at_css('a')['href']).
-          to eq "#{geo_url}/#{project.path_with_namespace}/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg"
+        expect(doc.at_css('a')['href'])
+          .to eq "#{geo_url}/#{project.path_with_namespace}/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg"
       end
 
       it 'does not modify absolute URL' do
