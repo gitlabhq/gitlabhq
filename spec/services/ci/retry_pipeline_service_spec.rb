@@ -69,6 +69,25 @@ describe Ci::RetryPipelineService, '#execute', :services do
       end
     end
 
+    context 'when the last stage was skipepd' do
+      before do
+        create_build('build 1', :success, 0)
+        create_build('test 2', :failed, 1)
+        create_build('report 3', :skipped, 2)
+        create_build('report 4', :skipped, 2)
+      end
+
+      it 'retries builds only in the first stage' do
+        service.execute(pipeline)
+
+        expect(build('build 1')).to be_success
+        expect(build('test 2')).to be_pending
+        expect(build('report 3')).to be_created
+        expect(build('report 4')).to be_created
+        expect(pipeline.reload).to be_running
+      end
+    end
+
     context 'when pipeline contains manual actions' do
       context 'when there is a canceled manual action in first stage' do
         before do
@@ -90,14 +109,16 @@ describe Ci::RetryPipelineService, '#execute', :services do
       context 'when there is a skipped manual action in last stage' do
         before do
           create_build('rspec 1', :canceled, 0)
+          create_build('rspec 2', :skipped, 0, :manual)
           create_build('staging', :skipped, 1, :manual)
         end
 
-        it 'retries canceled job and skips manual action' do
+        it 'retries canceled job and reprocesses manual actions' do
           service.execute(pipeline)
 
           expect(build('rspec 1')).to be_pending
-          expect(build('staging')).to be_skipped
+          expect(build('rspec 2')).to be_skipped
+          expect(build('staging')).to be_created
           expect(pipeline.reload).to be_running
         end
       end
