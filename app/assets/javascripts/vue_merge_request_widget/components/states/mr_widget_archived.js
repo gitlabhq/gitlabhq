@@ -1,8 +1,5 @@
 module.exports = {
-  name: 'MRWidgetWIP',
-  props: {
-    mr: { type: Object, required: true, default: () => ({}) }
-  },
+  name: 'MRWidgetArchived',
   template: `
     <div class="mr-widget-body">
       <button class="btn btn-success btn-small" disabled="disabled">Merge</button>

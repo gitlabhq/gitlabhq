@@ -1,20 +1,21 @@
+const mrWidgetAuthorTime = require('../../components/mr_widget_author_time.js');
+
 module.exports = {
   name: 'MRWidgetMerged',
   props: {
     mr: { type: Object, required: true, default: () => ({}) }
   },
+  components: {
+    'mr-widget-author-and-time': mrWidgetAuthorTime
+  },
   template: `
     <div class="mr-widget-body">
-      <h4>
-        Merged by
-        <a class="author_link" :href="mr.mergedBy.webUrl">
-          <img :src="mr.mergedBy.avatarUrl" width="16" class="avatar avatar-inline s16" />
-          <span class="author">{{mr.mergedBy.name}}</span>
-        </a>
-        <time :data-original-title='mr.updatedAt' data-toggle="tooltip" data-placement="top" data-container="body">
-          {{mr.mergedAt}}
-        </time>
-      </h4>
+      <mr-widget-author-and-time
+        actionText="Merged by"
+        :author="mr.mergedBy"
+        :dateTitle="mr.updatedAt"
+        :dateReadable="mr.mergedAt"
+      />
       <section>
         <p>The changes were merged into
           <a :href="mr.targetBranchPath" class="label-branch">

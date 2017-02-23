@@ -2,9 +2,6 @@ const mrWidgetMergeHelp = require('../../components/mr_widget_merge_help.js');
 
 module.exports = {
   name: 'MRWidgetWIP',
-  props: {
-    mr: { type: Object, required: true, default: () => ({}) }
-  },
   components: {
     'mr-widget-merge-help': mrWidgetMergeHelp
   },

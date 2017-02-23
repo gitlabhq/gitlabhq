@@ -3,13 +3,13 @@ window.Vue         = require('vue');
 window.gl          = window.gl || {};
 window.gl.mrWidget = window.gl.mrWidget || {};
 
-gl.mrWidget.Header   = require('./components/mr_widget_header.js');
-gl.mrWidget.Merged   = require('./components/states/mr_widget_merged.js');
-gl.mrWidget.Closed   = require('./components/states/mr_widget_closed.js');
-gl.mrWidget.Locked   = require('./components/states/mr_widget_locked.js');
-gl.mrWidget.Wip      = require('./components/states/mr_widget_wip.js');
-gl.mrWidget.Archived = require('./components/states/mr_widget_archived.js');
-gl.mrWidget.Store    = require('./stores/merge_request_store.js');
+const WidgetHeader  = require('./components/mr_widget_header.js');
+const MergedState   = require('./components/states/mr_widget_merged.js');
+const ClosedState   = require('./components/states/mr_widget_closed.js');
+const LockedState   = require('./components/states/mr_widget_locked.js');
+const WipState      = require('./components/states/mr_widget_wip.js');
+const ArchivedState = require('./components/states/mr_widget_archived.js');
+const MRWidgetStore = require('./stores/merge_request_store.js');
 
 gl.mrWidget.timeagoInstance = new Timeago();
 
@@ -19,17 +19,18 @@ $(() => {
     el: document.querySelector('.vue-merge-request-widget'),
     name: 'MRWidget',
     data() {
+      const store = new MRWidgetStore(gl.mrWidgetData);
       return {
-        mr: new gl.mrWidget.Store(gl.mrWidgetData)
+        mr: store
       }
     },
     components: {
-      'mr-widget-header': gl.mrWidget.Header,
-      'mr-widget-merged': gl.mrWidget.Merged,
-      'mr-widget-closed': gl.mrWidget.Closed,
-      'mr-widget-locked': gl.mrWidget.Locked,
-      'mr-widget-wip': gl.mrWidget.Wip,
-      'mr-widget-archived': gl.mrWidget.Archived,
+      'mr-widget-header': WidgetHeader,
+      'mr-widget-merged': MergedState,
+      'mr-widget-closed': ClosedState,
+      'mr-widget-locked': LockedState,
+      'mr-widget-wip': WipState,
+      'mr-widget-archived': ArchivedState,
     },
     template: `
       <div class="mr-state-widget">
@@ -41,8 +42,8 @@ $(() => {
         <mr-widget-merged :mr="mr" v-if="mr.isMerged" />
         <mr-widget-closed :mr="mr" v-if="mr.isClosed" />
         <mr-widget-locked :mr="mr" v-if="mr.isLocked" />
-        <mr-widget-archived :mr="mr" v-if="mr.isArchived" />
-        <mr-widget-wip :mr="mr" v-if="mr.isWip" />
+        <mr-widget-archived v-if="mr.isArchived" />
+        <mr-widget-wip v-if="mr.isWip" />
 
       </div>
     `,
