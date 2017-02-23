@@ -6,6 +6,8 @@
 .navbar-nav {
   li {
     .badge.todos-pending-count {
+      position: inherit;
+      top: -6px;
       margin-top: -5px;
       font-weight: normal;
       background: $todo-alert-blue;
@@ -43,6 +45,12 @@
     }
   }
 
+  .todo-avatar,
+  .todo-actions {
+    -webkit-flex: 0 0 auto;
+    flex: 0 0 auto;
+  }
+
   .todo-actions {
     display: -webkit-flex;
     display: flex;
@@ -55,8 +63,9 @@
   }
 
   .todo-item {
-    -webkit-flex: auto;
-    flex: auto;
+    -webkit-flex: 0 1 100%;
+    flex: 0 1 100%;
+    min-width: 0;
   }
 }
 
@@ -74,8 +83,29 @@
 
 .todo-item {
   .todo-title {
-    @include str-truncated(calc(100% - 174px));
-    overflow: visible;
+    display: flex;
+
+    & > .title-item {
+      -webkit-flex: 0 0 auto;
+      flex: 0 0 auto;
+      margin: 0 2px;
+
+      &:first-child {
+        margin-left: 0;
+      }
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+
+    .todo-label {
+      -webkit-flex: 0 1 auto;
+      flex: 0 1 auto;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
   }
 
   .status-box {
@@ -154,10 +184,12 @@
 
   .todo-item {
     .todo-title {
-      white-space: normal;
-      overflow: visible;
-      max-width: 100%;
+      flex-flow: row wrap;
       margin-bottom: 10px;
+
+      .todo-label {
+        white-space: normal;
+      }
     }
 
     .todo-body {

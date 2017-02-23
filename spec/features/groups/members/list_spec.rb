@@ -30,6 +30,21 @@ feature 'Groups members list', feature: true do
     expect(second_row).to be_blank
   end
 
+  it 'updates user to owner level', :js do
+    group.add_owner(user1)
+    group.add_developer(user2)
+
+    visit group_group_members_path(group)
+
+    page.within(second_row) do
+      click_button('Developer')
+
+      click_link('Owner')
+
+      expect(page).to have_button('Owner')
+    end
+  end
+
   def first_row
     page.all('ul.content-list > li')[0]
   end

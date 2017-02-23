@@ -163,7 +163,7 @@ Example of response
 }
 ```
 
-## Retry failed builds in a pipeline
+## Retry builds in a pipeline
 
 > [Introduced][ce-5837] in GitLab 8.11
 

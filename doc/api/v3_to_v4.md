@@ -26,6 +26,7 @@ changes are in V4:
   - `/gitignores/:key`
   - `/gitlab_ci_ymls/:key`
   - `/dockerfiles/:key`
+- Moved `DELETE /todos` to `POST /todos/mark_as_done` and `DELETE /todos/:todo_id` to `POST /todos/:todo_id/mark_as_done`
 - Moved `/projects/fork/:id` to `/projects/:id/fork` [!8940](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8940)
 - Endpoints `/projects/owned`, `/projects/visible`, `/projects/starred` & `/projects/all` are consolidated into `/projects` using query parameters [!8962](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8962)
 - Return pagination headers for all endpoints that return an array [!8606](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8606)

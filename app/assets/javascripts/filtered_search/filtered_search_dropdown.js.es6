@@ -101,6 +101,7 @@
 
     resetFilters() {
       const hook = this.getCurrentHook();
+
       if (hook) {
         const data = hook.list.data;
         const results = data.map((o) => {

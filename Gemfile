@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.2.7.1'
+gem 'rails', '4.2.8'
 gem 'rails-deprecated_sanitizer', '~> 1.0.3'
 
 # Responders respond_to and respond_with
@@ -342,7 +342,7 @@ gem 'newrelic_rpm', '~> 3.16'
 
 gem 'octokit', '~> 4.6.2'
 
-gem 'mail_room', '~> 0.9.0'
+gem 'mail_room', '~> 0.9.1'
 
 gem 'email_reply_trimmer', '~> 0.1'
 gem 'html2text'

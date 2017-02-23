@@ -23,6 +23,7 @@ module API
       mount ::API::V3::Subscriptions
       mount ::API::V3::SystemHooks
       mount ::API::V3::Tags
+      mount ::API::V3::Todos
       mount ::API::V3::Templates
       mount ::API::V3::Users
     end

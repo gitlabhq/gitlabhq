@@ -1,4 +1,8 @@
 module NamespacesHelper
+  def namespace_id_from(params)
+    params.dig(:project, :namespace_id) || params[:namespace_id]
+  end
+
   def namespaces_options(selected = :current_user, display_path: false, extra_group: nil)
     groups = current_user.owned_groups + current_user.masters_groups
 
