@@ -148,7 +148,8 @@ available in the build environment. It's the recommended method to use for
 storing things like passwords, secret keys and credentials.
 
 Secret variables can be added by going to your project's
-**Settings ➔ Variables ➔ Add variable**.
+**Settings ➔ CI/CD Pipelines**, then finding the section called
+**Secret Variables**.
 
 Once you set them, they will be available for all subsequent jobs.
 
