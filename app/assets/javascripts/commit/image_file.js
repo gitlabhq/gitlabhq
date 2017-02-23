@@ -173,4 +173,4 @@
 
     return ImageFile;
   })();
-}).call(this);
+}).call(window);

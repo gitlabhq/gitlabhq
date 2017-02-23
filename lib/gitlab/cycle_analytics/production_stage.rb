@@ -15,6 +15,10 @@ module Gitlab
         :production
       end
 
+      def legend
+        "Related Issues"
+      end
+
       def description
         "From issue creation until deploy to production"
       end

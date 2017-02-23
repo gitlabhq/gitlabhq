@@ -1,9 +1,6 @@
-# If you change this file in a Merge Request, please also create
-# a Merge Request on https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests
-#
 :mailboxes:
   <%
-    require_relative "lib/gitlab/mail_room" unless defined?(Gitlab::MailRoom)
+    require_relative "../lib/gitlab/mail_room" unless defined?(Gitlab::MailRoom)
     config = Gitlab::MailRoom.config
 
     if Gitlab::MailRoom.enabled?

@@ -1,7 +1,7 @@
 !!! 5
 %html{ lang: "en", class: "#{page_class}" }
   = render "layouts/head"
-  %body{ class: "#{user_application_theme}", data: { page: body_data_page, project: "#{@project.path if @project}", group: "#{@group.path if @group}" } }
+  %body{ data: { page: body_data_page, project: "#{@project.path if @project}", group: "#{@group.path if @group}" } }
     = Gon::Base.render_data
 
     = render "layouts/header/default", title: header_title

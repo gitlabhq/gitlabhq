@@ -20,4 +20,4 @@ require('./template_selector');
 
     return BlobGitignoreSelector;
   })(gl.TemplateSelector);
-}).call(this);
+}).call(window);

@@ -95,4 +95,4 @@
 
     return U2FRegister;
   })();
-}).call(this);
+}).call(window);

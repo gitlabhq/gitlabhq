@@ -9,4 +9,4 @@
 
     return U2FUtil;
   })();
-}).call(this);
+}).call(window);

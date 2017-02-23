@@ -266,7 +266,7 @@ module API
       desc 'Unstar a project' do
         success Entities::Project
       end
-      delete ':id/star' do
+      post ':id/unstar' do
         if current_user.starred?(user_project)
           current_user.toggle_star(user_project)
           user_project.reload
@@ -373,6 +373,19 @@ module API
         users = users.search(params[:search]) if params[:search].present?
 
         present paginate(users), with: Entities::UserBasic
+      end
+
+      desc 'Start the housekeeping task for a project' do
+        detail 'This feature was introduced in GitLab 9.0.'
+      end
+      post ':id/housekeeping' do
+        authorize_admin_project
+
+        begin
+          ::Projects::HousekeepingService.new(user_project).execute
+        rescue ::Projects::HousekeepingService::LeaseTaken => error
+          conflict!(error.message)
+        end
       end
     end
   end

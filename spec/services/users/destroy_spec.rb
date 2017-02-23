@@ -2,11 +2,11 @@ require 'spec_helper'
 
 describe Users::DestroyService, services: true do
   describe "Deletes a user and all their personal projects" do
-    let!(:user)         { create(:user) }
-    let!(:current_user) { create(:user) }
-    let!(:namespace)    { create(:namespace, owner: user) }
-    let!(:project)      { create(:project, namespace: namespace) }
-    let(:service)       { described_class.new(current_user) }
+    let!(:user)      { create(:user) }
+    let!(:admin)     { create(:admin) }
+    let!(:namespace) { create(:namespace, owner: user) }
+    let!(:project)   { create(:project, namespace: namespace) }
+    let(:service)    { described_class.new(admin) }
 
     context 'no options are given' do
       it 'deletes the user' do
@@ -55,6 +55,27 @@ describe Users::DestroyService, services: true do
 
       it 'deletes the user' do
         expect { User.find(user.id) }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
+    context "deletion permission checks" do
+      it 'does not delete the user when user is not an admin' do
+        other_user = create(:user)
+
+        expect { described_class.new(other_user).execute(user) }.to raise_error(Gitlab::Access::AccessDeniedError)
+        expect(User.exists?(user.id)).to be(true)
+      end
+
+      it 'allows admins to delete anyone' do
+        described_class.new(admin).execute(user)
+
+        expect(User.exists?(user.id)).to be(false)
+      end
+
+      it 'allows users to delete their own account' do
+        described_class.new(user).execute(user)
+
+        expect(User.exists?(user.id)).to be(false)
       end
     end
   end

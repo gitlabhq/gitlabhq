@@ -153,27 +153,11 @@ module API
       params_hash = custom_params || params
       attrs = {}
       keys.each do |key|
-        if params_hash[key].present? or (params_hash.has_key?(key) and params_hash[key] == false)
+        if params_hash[key].present? || (params_hash.has_key?(key) && params_hash[key] == false)
           attrs[key] = params_hash[key]
         end
       end
       ActionController::Parameters.new(attrs).permit!
-    end
-
-    # Checks the occurrences of datetime attributes, each attribute if present in the params hash must be in ISO 8601
-    # format (YYYY-MM-DDTHH:MM:SSZ) or a Bad Request error is invoked.
-    #
-    # Parameters:
-    #   keys (required) - An array consisting of elements that must be parseable as dates from the params hash
-    def datetime_attributes!(*keys)
-      keys.each do |key|
-        begin
-          params[key] = Time.xmlschema(params[key]) if params[key].present?
-        rescue ArgumentError
-          message = "\"" + key.to_s + "\" must be a timestamp in ISO 8601 format: YYYY-MM-DDTHH:MM:SSZ"
-          render_api_error!(message, 400)
-        end
-      end
     end
 
     def filter_by_iid(items, iid)
@@ -229,6 +213,10 @@ module API
       if model.errors.any?
         render_api_error!(model.errors.messages || '400 Bad Request', 400)
       end
+    end
+
+    def render_spam_error!
+      render_api_error!({ error: 'Spam detected' }, 400)
     end
 
     def render_api_error!(message, status)

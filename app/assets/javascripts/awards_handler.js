@@ -377,4 +377,4 @@ var emojiAliases = require('emoji-aliases');
 
     return AwardsHandler;
   })();
-}).call(this);
+}).call(window);

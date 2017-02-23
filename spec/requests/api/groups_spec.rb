@@ -33,6 +33,7 @@ describe API::Groups, api: true  do
         get api("/groups", user1)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
         expect(json_response)
@@ -43,6 +44,7 @@ describe API::Groups, api: true  do
         get api("/groups", user1), statistics: true
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first).not_to include 'statistics'
       end
@@ -53,6 +55,7 @@ describe API::Groups, api: true  do
         get api("/groups", admin)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(2)
       end
@@ -61,6 +64,7 @@ describe API::Groups, api: true  do
         get api("/groups", admin)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first).not_to include('statistics')
       end
@@ -78,6 +82,7 @@ describe API::Groups, api: true  do
         get api("/groups", admin), statistics: true
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response)
           .to satisfy_one { |group| group['statistics'] == attributes }
@@ -89,6 +94,7 @@ describe API::Groups, api: true  do
         get api("/groups", admin), skip_groups: [group2.id]
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
       end
@@ -103,6 +109,7 @@ describe API::Groups, api: true  do
         get api("/groups", user1), all_available: true
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(response_groups).to contain_exactly(public_group.name, group1.name)
       end
@@ -120,6 +127,7 @@ describe API::Groups, api: true  do
         get api("/groups", user1)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(response_groups).to eq([group3.name, group1.name])
       end
@@ -128,6 +136,7 @@ describe API::Groups, api: true  do
         get api("/groups", user1), sort: "desc"
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(response_groups).to eq([group1.name, group3.name])
       end
@@ -136,6 +145,7 @@ describe API::Groups, api: true  do
         get api("/groups", user1), order_by: "path"
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(response_groups).to eq([group1.name, group3.name])
       end
@@ -156,6 +166,7 @@ describe API::Groups, api: true  do
         get api('/groups/owned', user2)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first['name']).to eq(group2.name)
       end
@@ -290,6 +301,7 @@ describe API::Groups, api: true  do
         get api("/groups/#{group1.id}/projects", user1)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response.length).to eq(2)
         project_names = json_response.map { |proj| proj['name' ] }
         expect(project_names).to match_array([project1.name, project3.name])
@@ -300,6 +312,7 @@ describe API::Groups, api: true  do
         get api("/groups/#{group1.id}/projects", user1), simple: true
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response.length).to eq(2)
         project_names = json_response.map { |proj| proj['name' ] }
         expect(project_names).to match_array([project1.name, project3.name])
@@ -312,6 +325,7 @@ describe API::Groups, api: true  do
         get api("/groups/#{group1.id}/projects", user1), visibility: 'public'
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an(Array)
         expect(json_response.length).to eq(1)
         expect(json_response.first['name']).to eq(public_project.name)
@@ -335,6 +349,7 @@ describe API::Groups, api: true  do
         get api("/groups/#{group1.id}/projects", user3)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response.length).to eq(1)
         expect(json_response.first['name']).to eq(project3.name)
       end
@@ -365,6 +380,7 @@ describe API::Groups, api: true  do
         get api("/groups/#{group2.id}/projects", admin)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response.length).to eq(1)
         expect(json_response.first['name']).to eq(project2.name)
       end
@@ -381,6 +397,7 @@ describe API::Groups, api: true  do
         get api("/groups/#{group1.path}/projects", admin)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         project_names = json_response.map { |proj| proj['name' ] }
         expect(project_names).to match_array([project1.name, project3.name])
       end

@@ -16,16 +16,13 @@ module API
       end
       params do
         optional :ref_name, type: String, desc: 'The name of a repository branch or tag, if not given the default branch is used'
-        optional :since,    type: String, desc: 'Only commits after or in this date will be returned'
-        optional :until,    type: String, desc: 'Only commits before or in this date will be returned'
+        optional :since,    type: DateTime, desc: 'Only commits after or on this date will be returned'
+        optional :until,    type: DateTime, desc: 'Only commits before or on this date will be returned'
         optional :page,     type: Integer, default: 0, desc: 'The page for pagination'
         optional :per_page, type: Integer, default: 20, desc: 'The number of results per page'
         optional :path,     type: String, desc: 'The file path'
       end
       get ":id/repository/commits" do
-        # TODO remove the next line for 9.0, use DateTime type in the params block
-        datetime_attributes! :since, :until
-
         ref = params[:ref_name] || user_project.try(:default_branch) || 'master'
         offset = params[:page] * params[:per_page]
 
@@ -44,7 +41,7 @@ module API
         detail 'This feature was introduced in GitLab 8.13'
       end
       params do
-        requires :branch_name, type: String, desc: 'The name of branch'
+        requires :branch, type: String, desc: 'The name of branch'
         requires :commit_message, type: String, desc: 'Commit message'
         requires :actions, type: Array[Hash], desc: 'Actions to perform in commit'
         optional :author_email, type: String, desc: 'Author email for commit'
@@ -53,9 +50,8 @@ module API
       post ":id/repository/commits" do
         authorize! :push_code, user_project
 
-        attrs = declared_params
-        attrs[:start_branch] = attrs[:branch_name]
-        attrs[:target_branch] = attrs[:branch_name]
+        attrs = declared_params.merge(start_branch: declared_params[:branch], target_branch: declared_params[:branch])
+
         attrs[:actions].map! do |action|
           action[:action] = action[:action].to_sym
           action[:file_path].slice!(0) if action[:file_path] && action[:file_path].start_with?('/')

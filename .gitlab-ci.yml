@@ -240,7 +240,7 @@ rake db:seed_fu:
     paths:
       - log/development.log
 
-karma:
+rake karma:
   cache:
     paths:
       - vendor/ruby
@@ -281,7 +281,7 @@ bundler:audit:
     - master@gitlab/gitlabhq
     - master@gitlab/gitlab-ee
   script:
-    - "bundle exec bundle-audit check --update --ignore OSVDB-115941"
+    - "bundle exec bundle-audit check --update --ignore OSVDB-115941 CVE-2016-6316 CVE-2016-6317"
 
 migration paths:
   stage: test
@@ -387,7 +387,7 @@ pages:
   <<: *dedicated-runner
   dependencies:
     - coverage
-    - karma
+    - rake karma
     - lint:javascript:report
   script:
     - mv public/ .public/

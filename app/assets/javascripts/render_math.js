@@ -51,4 +51,4 @@
       });
     }
   };
-}).call(this);
+}).call(window);

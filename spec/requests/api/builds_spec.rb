@@ -22,6 +22,7 @@ describe API::Builds, api: true do
     context 'authorized user' do
       it 'returns project builds' do
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
       end
 
@@ -97,6 +98,7 @@ describe API::Builds, api: true do
 
           it 'returns project jobs for specific commit' do
             expect(response).to have_http_status(200)
+            expect(response).to include_pagination_headers
             expect(json_response).to be_an Array
             expect(json_response.size).to eq 2
           end

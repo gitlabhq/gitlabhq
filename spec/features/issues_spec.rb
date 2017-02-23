@@ -382,7 +382,9 @@ describe 'Issues', feature: true do
     it 'changes incoming email address token', js: true do
       find('.issue-email-modal-btn').click
       previous_token = find('input#issue_email').value
-      find('.incoming-email-token-reset').click
+      find('.incoming-email-token-reset').trigger('click')
+
+      wait_for_ajax
 
       expect(page).to have_no_field('issue_email', with: previous_token)
       new_token = project1.new_issue_address(@user.reload)
@@ -575,6 +577,15 @@ describe 'Issues', feature: true do
 
         expect(page.find_field("issue_description").value).to have_content 'banana_sample'
       end
+
+      it 'adds double newline to end of attachment markdown' do
+        drop_in_dropzone test_image_file
+
+        # Wait for the file to upload
+        sleep 1
+
+        expect(page.find_field("issue_description").value).to match /\n\n$/
+      end
     end
   end
 
@@ -636,7 +647,7 @@ describe 'Issues', feature: true do
 
       it 'removes due date from issue' do
         date = Date.today.at_beginning_of_month + 2.days
-        
+
         page.within '.due_date' do
           click_link 'Edit'
 

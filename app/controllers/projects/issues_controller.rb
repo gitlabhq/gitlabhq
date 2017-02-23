@@ -26,7 +26,7 @@ class Projects::IssuesController < Projects::ApplicationController
     @collection_type    = "Issue"
     @issues             = issues_collection
     @issues             = @issues.page(params[:page])
-    @issuable_meta_data = issuable_meta_data(@issues)
+    @issuable_meta_data = issuable_meta_data(@issues, @collection_type)
 
     if @issues.out_of_range? && @issues.total_pages != 0
       return redirect_to url_for(params.merge(page: @issues.total_pages))
@@ -94,15 +94,15 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def create
-    extra_params = { request: request,
-                     merge_request_for_resolving_discussions: merge_request_for_resolving_discussions }
-    extra_params.merge!(recaptcha_params)
+    create_params = issue_params
+      .merge(merge_request_for_resolving_discussions: merge_request_for_resolving_discussions)
+      .merge(spammable_params)
 
-    @issue = Issues::CreateService.new(project, current_user, issue_params.merge(extra_params)).execute
+    @issue = Issues::CreateService.new(project, current_user, create_params).execute
 
     respond_to do |format|
       format.html do
-        html_response_create
+        recaptcha_check_with_fallback { render :new }
       end
       format.js do
         @link = @issue.attachment.url.to_js
@@ -111,7 +111,9 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def update
-    @issue = Issues::UpdateService.new(project, current_user, issue_params).execute(issue)
+    update_params = issue_params.merge(spammable_params)
+
+    @issue = Issues::UpdateService.new(project, current_user, update_params).execute(issue)
 
     if params[:move_to_project_id].to_i > 0
       new_project = Project.find(params[:move_to_project_id])
@@ -123,11 +125,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
-        if @issue.valid?
-          redirect_to issue_path(@issue)
-        else
-          render :edit
-        end
+        recaptcha_check_with_fallback { render :edit }
       end
 
       format.json do
@@ -178,20 +176,6 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   protected
-
-  def html_response_create
-    if @issue.valid?
-      redirect_to issue_path(@issue)
-    elsif render_recaptcha?
-      if params[:recaptcha_verification]
-        flash[:alert] = 'There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.'
-      end
-
-      render :verify
-    else
-      render :new
-    end
-  end
 
   def issue
     # The Sortable default scope causes performance issues when used with find_by

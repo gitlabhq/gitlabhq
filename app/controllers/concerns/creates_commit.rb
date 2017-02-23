@@ -104,22 +104,14 @@ module CreatesCommit
     if can?(current_user, :push_code, @project)
       # Edit file in this project
       @mr_source_project = @project
-
-      if @project.forked?
-        # Merge request from this project to fork origin
-        @mr_target_project = @project.forked_from_project
-        @mr_target_branch = @mr_target_project.repository.root_ref
-      else
-        # Merge request to this project
-        @mr_target_project = @project
-        @mr_target_branch = @ref || @target_branch
-      end
     else
       # Merge request from fork to this project
       @mr_source_project = current_user.fork_of(@project)
-      @mr_target_project = @project
-      @mr_target_branch = @ref || @target_branch
     end
+
+    # Merge request to this project
+    @mr_target_project = @project
+    @mr_target_branch = @ref || @target_branch
 
     @mr_source_branch = guess_mr_source_branch
   end

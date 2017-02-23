@@ -3,6 +3,10 @@ module TodosHelper
     @todos_pending_count ||= current_user.todos_pending_count
   end
 
+  def todos_count_format(count)
+    count > 99 ? '99+' : count
+  end
+
   def todos_done_count
     @todos_done_count ||= current_user.todos_done_count
   end

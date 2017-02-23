@@ -1,6 +1,8 @@
 module Gitlab
   module GithubImport
     class CommentFormatter < BaseFormatter
+      attr_writer :author_id
+
       def attributes
         {
           project: project,
@@ -17,11 +19,11 @@ module Gitlab
       private
 
       def author
-        raw_data.user.login
+        @author ||= UserFormatter.new(client, raw_data.user)
       end
 
       def author_id
-        gitlab_author_id || project.creator_id
+        author.gitlab_id || project.creator_id
       end
 
       def body
@@ -52,10 +54,10 @@ module Gitlab
       end
 
       def note
-        if gitlab_author_id
+        if author.gitlab_id
           body
         else
-          formatter.author_line(author) + body
+          formatter.author_line(author.login) + body
         end
       end
 

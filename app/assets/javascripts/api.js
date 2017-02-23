@@ -147,4 +147,4 @@
   };
 
   window.Api = Api;
-}).call(this);
+}).call(window);

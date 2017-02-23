@@ -35,7 +35,6 @@
     display: table-cell;
   }
 
-  .environments-name,
   .environments-commit,
   .environments-actions {
     width: 20%;
@@ -45,6 +44,7 @@
     width: 10%;
   }
 
+  .environments-name,
   .environments-deploy,
   .environments-build {
     width: 15%;
@@ -61,6 +61,22 @@
       float: none;
     }
   }
+
+  .btn-group {
+
+    > a {
+      color: $gl-text-color-secondary;
+    }
+
+    svg path {
+      fill: $gl-text-color-secondary;
+    }
+
+    .dropdown {
+      outline: none;
+    }
+  }
+
 
   .commit-title {
     margin: 0;

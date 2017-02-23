@@ -54,7 +54,7 @@ module Gitlab
 
         disable_statement_timeout
 
-        key_name = "fk_#{source}_#{target}_#{column}"
+        key_name = concurrent_foreign_key_name(source, column)
 
         # Using NOT VALID allows us to create a key without immediately
         # validating it. This means we keep the ALTER TABLE lock only for a
@@ -72,6 +72,15 @@ module Gitlab
         # long time to complete, but fortunately does not lock the source table
         # while running.
         execute("ALTER TABLE #{source} VALIDATE CONSTRAINT #{key_name};")
+      end
+
+      # Returns the name for a concurrent foreign key.
+      #
+      # PostgreSQL constraint names have a limit of 63 bytes. The logic used
+      # here is based on Rails' foreign_key_name() method, which unfortunately
+      # is private so we can't rely on it directly.
+      def concurrent_foreign_key_name(table, column)
+        "fk_#{Digest::SHA256.hexdigest("#{table}_#{column}_fk").first(10)}"
       end
 
       # Long-running migrations may take more than the timeout allowed by

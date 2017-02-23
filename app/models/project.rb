@@ -552,7 +552,7 @@ class Project < ActiveRecord::Base
   end
 
   def check_limit
-    unless creator.can_create_project? or namespace.kind == 'group'
+    unless creator.can_create_project? || namespace.kind == 'group'
       projects_limit = creator.projects_limit
 
       if projects_limit == 0

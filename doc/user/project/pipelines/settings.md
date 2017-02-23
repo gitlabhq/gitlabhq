@@ -62,9 +62,9 @@ pipelines** checkbox and save the changes.
 
 ## Badges
 
-In the pipelines settings page you can find job status and test coverage
+In the pipelines settings page you can find pipeline status and test coverage
 badges for your project. The latest successful pipeline will be used to read
-the job status and test coverage values.
+the pipeline status and test coverage values.
 
 Visit the pipelines settings page in your project to see the exact link to
 your badges, as well as ways to embed the badge image in your HTML or Markdown
@@ -72,7 +72,7 @@ pages.
 
 ![Pipelines badges](img/pipelines_settings_badges.png)
 
-### Job status badge
+### Pipeline status badge
 
 Depending on the status of your job, a badge can have the following values:
 
@@ -82,7 +82,7 @@ Depending on the status of your job, a badge can have the following values:
 - skipped
 - unknown
 
-You can access a job status badge image using the following link:
+You can access a pipeline status badge image using the following link:
 
 ```
 https://example.gitlab.com/<namespace>/<project>/badges/<branch>/build.svg

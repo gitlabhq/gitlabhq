@@ -52,7 +52,7 @@ class DroneCiService < CiService
     response = HTTParty.get(commit_status_path(sha, ref), verify: enable_ssl_verification)
 
     status =
-      if response.code == 200 and response['status']
+      if response.code == 200 && response['status']
         case response['status']
         when 'killed'
           :canceled

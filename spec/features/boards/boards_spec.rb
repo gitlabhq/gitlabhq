@@ -28,6 +28,12 @@ describe 'Issue Boards', feature: true, js: true do
       expect(page).to have_content('Welcome to your Issue Board!')
     end
 
+    it 'shows tooltip on add issues button' do
+      button = page.find('.issue-boards-search button', text: 'Add issues')
+
+      expect(button[:"data-original-title"]).to eq("Please add a list to your board first")
+    end
+
     it 'hides the blank state when clicking nevermind button' do
       page.within(find('.board-blank-state')) do
         click_button("Nevermind, I'll use my own")

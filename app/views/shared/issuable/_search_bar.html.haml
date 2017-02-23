@@ -32,7 +32,7 @@
                     {{hint}}
                   %span.js-filter-tag.dropdown-light-content
                     {{tag}}
-          #js-dropdown-author.dropdown-menu
+          #js-dropdown-author.dropdown-menu{ data: { icon: 'pencil', hint: 'author', tag: '@author' } }
             %ul.filter-dropdown{ 'data-dynamic' => true, 'data-dropdown' => true }
               %li.filter-dropdown-item
                 %button.btn.btn-link.dropdown-user
@@ -42,7 +42,7 @@
                       {{name}}
                     %span.dropdown-light-content
                       @{{username}}
-          #js-dropdown-assignee.dropdown-menu
+          #js-dropdown-assignee.dropdown-menu{ data: { icon: 'user', hint: 'assignee', tag: '@assignee' } }
             %ul{ 'data-dropdown' => true }
               %li.filter-dropdown-item{ 'data-value' => 'none' }
                 %button.btn.btn-link
@@ -57,7 +57,7 @@
                       {{name}}
                     %span.dropdown-light-content
                       @{{username}}
-          #js-dropdown-milestone.dropdown-menu{ 'data-dropdown' => true }
+          #js-dropdown-milestone.dropdown-menu{ data: { icon: 'clock-o', hint: 'milestone', tag: '%milestone' } }
             %ul{ 'data-dropdown' => true }
               %li.filter-dropdown-item{ 'data-value' => 'none' }
                 %button.btn.btn-link
@@ -70,7 +70,7 @@
               %li.filter-dropdown-item
                 %button.btn.btn-link.js-data-value
                   {{title}}
-          #js-dropdown-label.dropdown-menu{ 'data-dropdown' => true }
+          #js-dropdown-label.dropdown-menu{ data: { icon: 'tag', hint: 'label', tag: '~label' } }
             %ul{ 'data-dropdown' => true }
               %li.filter-dropdown-item{ 'data-value' => 'none' }
                 %button.btn.btn-link

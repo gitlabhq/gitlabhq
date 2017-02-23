@@ -25,4 +25,4 @@ var autosize = require('vendor/autosize');
     autosize.update($fields);
     return $fields.css('resize', 'vertical');
   });
-}).call(this);
+}).call(window);

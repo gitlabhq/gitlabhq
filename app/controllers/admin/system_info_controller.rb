@@ -21,6 +21,7 @@ class Admin::SystemInfoController < Admin::ApplicationController
     'mqueue',
     'proc',
     'pstore',
+    'rpc_pipefs',
     'securityfs',
     'sysfs',
     'tmpfs',

@@ -74,7 +74,7 @@ class ApplicationController < ActionController::Base
 
   def authenticate_user!(*args)
     if redirect_to_home_page_url?
-      redirect_to current_application_settings.home_page_url and return
+      return redirect_to current_application_settings.home_page_url
     end
 
     super(*args)
@@ -131,7 +131,7 @@ class ApplicationController < ActionController::Base
     headers['X-UA-Compatible'] = 'IE=edge'
     headers['X-Content-Type-Options'] = 'nosniff'
     # Enabling HSTS for non-standard ports would send clients to the wrong port
-    if Gitlab.config.gitlab.https and Gitlab.config.gitlab.port == 443
+    if Gitlab.config.gitlab.https && Gitlab.config.gitlab.port == 443
       headers['Strict-Transport-Security'] = 'max-age=31536000'
     end
   end
@@ -152,7 +152,7 @@ class ApplicationController < ActionController::Base
 
   def check_password_expiration
     if current_user && current_user.password_expires_at && current_user.password_expires_at < Time.now && !current_user.ldap_user?
-      redirect_to new_profile_password_path and return
+      return redirect_to new_profile_password_path
     end
   end
 
@@ -218,7 +218,7 @@ class ApplicationController < ActionController::Base
 
   def require_email
     if current_user && current_user.temp_oauth_email? && session[:impersonator_id].nil?
-      redirect_to profile_path, notice: 'Please complete your profile with email address' and return
+      return redirect_to profile_path, notice: 'Please complete your profile with email address'
     end
   end
 
