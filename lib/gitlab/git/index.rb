@@ -10,9 +10,7 @@ module Gitlab
         @raw_index = repository.rugged.index
       end
 
-      def read_tree(tree)
-        raw_index.read_tree(tree)
-      end
+      delegate :read_tree, to: :raw_index
 
       def write_tree
         raw_index.write_tree(repository.rugged)
