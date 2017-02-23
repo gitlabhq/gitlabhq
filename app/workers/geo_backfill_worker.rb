@@ -36,7 +36,7 @@ class GeoBackfillWorker
   end
 
   def try_obtain_lease
-    lease = Gitlab::ExclusiveLease.new(lease_key, timeout: LEASE_TIMEOUT).try_obtain
+    lease = Gitlab::ExclusiveLease.new(lease_key, timeout: lease_timeout).try_obtain
 
     return unless lease
 
