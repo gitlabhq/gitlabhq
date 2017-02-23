@@ -3,6 +3,7 @@ class GeoBackfillWorker
   include CronjobQueue
 
   RUN_TIME = 5.minutes.to_i.freeze
+  BATCH_SIZE = 100.freeze
 
   def perform
     start = Time.now
@@ -30,8 +31,8 @@ class GeoBackfillWorker
   def find_project_ids
     return [] if Project.count == Geo::ProjectRegistry.count
 
-    Project.where.not(id: Geo::ProjectRegistry.pluck(:id))
-           .limit(100)
+    Project.where.not(id: Geo::ProjectRegistry.pluck(:project_id))
+           .limit(BATCH_SIZE)
            .pluck(:id)
   end
 
