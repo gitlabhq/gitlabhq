@@ -40,6 +40,7 @@ import BindInOut from './behaviors/bind_in_out';
 import GroupsList from './groups_list';
 import ProjectsList from './projects_list';
 import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
+import BlobLinePermalinkUpdater from './blob/blob_line_permalink_updater';
 
 const ShortcutsBlob = require('./shortcuts_blob');
 const UserCallout = require('./user_callout');
@@ -252,6 +253,13 @@ const UserCallout = require('./user_callout');
         case 'projects:blob:show':
         case 'projects:blame:show':
           new LineHighlighter();
+
+          new BlobLinePermalinkUpdater(
+            document.querySelector('#blob-content-holder'),
+            '.diff-line-num[data-line-number]',
+            document.querySelectorAll('.js-data-file-blob-permalink-url, .js-blob-blame-link'),
+          );
+
           shortcut_handler = new ShortcutsNavigation();
           const fileBlobPermalinkUrlElement = document.querySelector('.js-data-file-blob-permalink-url');
           const fileBlobPermalinkUrl = fileBlobPermalinkUrlElement && fileBlobPermalinkUrlElement.getAttribute('href');
