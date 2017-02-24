@@ -4,6 +4,7 @@
 - type = field[:type]
 - placeholder = field[:placeholder]
 - required = field[:required]
+- autocomplete = field[:autocomplete]
 - choices = field[:choices]
 - default_choice = field[:default_choice]
 - help = field[:help]
@@ -15,7 +16,7 @@
     = form.label name, title, class: "control-label"
   .col-sm-10
     - if type == 'text'
-      = form.text_field name, class: "form-control", placeholder: placeholder, required: required
+      = form.text_field name, class: "form-control", placeholder: placeholder, required: required, autocomplete: autocomplete
     - elsif type == 'textarea'
       = form.text_area name, rows: 5, class: "form-control", placeholder: placeholder, required: required
     - elsif type == 'checkbox'

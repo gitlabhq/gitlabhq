@@ -11,12 +11,6 @@ feature 'Slack slash commands', feature: true do
     visit edit_namespace_project_service_path(project.namespace, project, service)
   end
 
-  it 'shows a token placeholder' do
-    token_placeholder = find_field('service_token')['placeholder']
-
-    expect(token_placeholder).to eq('XXxxXXxxXXxxXXxxXXxxXXxx')
-  end
-
   it 'shows a help message' do
     expect(page).to have_content('This service allows users to perform common')
   end

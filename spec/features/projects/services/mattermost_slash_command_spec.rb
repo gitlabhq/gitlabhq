@@ -18,13 +18,7 @@ feature 'Setup Mattermost slash commands', :feature, :js do
       expect(page).to have_content("This service allows users to perform common")
     end
 
-    it 'shows a token placeholder' do
-      token_placeholder = find_field('service_token')['placeholder']
-
-      expect(token_placeholder).to eq('XXxxXXxxXXxxXXxxXXxxXXxx')
-    end
-
-    it 'redirects to the integrations page after saving but not activating' do
+    it 'shows the token after saving' do
       token = ('a'..'z').to_a.join
 
       fill_in 'service_token', with: token
@@ -34,7 +28,7 @@ feature 'Setup Mattermost slash commands', :feature, :js do
       expect(page).to have_content('Mattermost slash commands settings saved, but not activated.')
     end
 
-    it 'redirects to the integrations page after activating' do
+    it 'redirects to the integrations page after saving but not activating' do
       token = ('a'..'z').to_a.join
 
       fill_in 'service_token', with: token
@@ -54,7 +48,7 @@ feature 'Setup Mattermost slash commands', :feature, :js do
 
       click_link 'Add to Mattermost'
 
-      expect(page).to have_content('You aren’t a member of any team on the Mattermost instance')
+      expect(page).to have_content("You aren’t a member of any team on the Mattermost instance")
       expect(page).to have_link('join a team', href: "#{Gitlab.config.mattermost.host}/select_team")
     end
 
@@ -160,12 +154,6 @@ feature 'Setup Mattermost slash commands', :feature, :js do
         value = find_field('request_url').value
 
         expect(value).to match("api/v3/projects/#{project.id}/services/mattermost_slash_commands/trigger")
-      end
-
-      it 'shows a token placeholder' do
-        token_placeholder = find_field('service_token')['placeholder']
-
-        expect(token_placeholder).to eq('XXxxXXxxXXxxXXxxXXxxXXxx')
       end
     end
   end
