@@ -938,7 +938,7 @@ RSpec/AnyInstance:
 
 # Check for expectations where `be(...)` can replace `eql(...)`.
 RSpec/BeEql:
-  Enabled: false
+  Enabled: true
 
 # Check that the first argument to the top level describe is the tested class or
 # module.
