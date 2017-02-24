@@ -26,6 +26,7 @@ module.exports = Vue.component('environment-folder-view', {
 
     return {
       store,
+      service: {},
       folderName,
       endpoint,
       state: store.state,
@@ -88,11 +89,11 @@ module.exports = Vue.component('environment-folder-view', {
 
     const endpoint = `${this.endpoint}?scope=${scope}&page=${pageNumber}`;
 
-    const service = new EnvironmentsService(endpoint);
+    this.service = new EnvironmentsService(endpoint);
 
     this.isLoading = true;
 
-    return service.all()
+    return this.service.all()
       .then(resp => ({
         headers: resp.headers,
         body: resp.json(),
@@ -182,7 +183,7 @@ module.exports = Vue.component('environment-folder-view', {
             :commit-icon-svg="commitIconSvg"
             :toggleDeployBoard="toggleDeployBoard"
             :store="store"
-            :service="service>
+            :service="service">
           </environment-table>
 
           <table-pagination v-if="state.paginationInformation && state.paginationInformation.totalPages > 1"

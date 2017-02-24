@@ -12,6 +12,7 @@ const environmentsList = [
     stop_path: '/root/review-app/environments/7/stop',
     created_at: '2017-01-31T10:53:46.894Z',
     updated_at: '2017-01-31T10:53:46.894Z',
+    rollout_status_path: '/path',
   },
   {
     folderName: 'build',
@@ -82,6 +83,7 @@ const environment = {
     stop_path: '/root/review-app/environments/7/stop',
     created_at: '2017-01-31T10:53:46.894Z',
     updated_at: '2017-01-31T10:53:46.894Z',
+    rollout_status_path: '/path',
   },
 };
 
