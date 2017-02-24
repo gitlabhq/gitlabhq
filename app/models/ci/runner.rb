@@ -102,7 +102,7 @@ module Ci
     end
 
     def can_pick?(build)
-      assignable_for?(build.project) && accepting_tags?(build)
+      accepting_tags?(build.tags)
     end
 
     def only_for?(project)
@@ -114,7 +114,7 @@ module Ci
     end
 
     def has_tags?
-      tag_list.any?
+      tags.any?
     end
 
     def predefined_variables
@@ -168,8 +168,8 @@ module Ci
       !locked? || projects.exists?(id: project.id)
     end
 
-    def accepting_tags?(build)
-      (run_untagged? || build.has_tags?) && (build.tag_list - tag_list).empty?
+    def accepting_tags?(other_tags)
+      (run_untagged? || other_tags.any?) && (other_tags - tags).empty?
     end
   end
 end

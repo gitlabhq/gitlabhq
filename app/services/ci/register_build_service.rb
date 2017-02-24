@@ -20,7 +20,9 @@ module Ci
           builds_for_specific_runner
         end
 
-      build = builds.find do |build|
+      builds = builds.includes(:tags)
+
+      build = builds.find_each do |build|
         runner.can_pick?(build)
       end
 
