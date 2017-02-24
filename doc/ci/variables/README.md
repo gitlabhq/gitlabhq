@@ -308,8 +308,8 @@ Running on runner-8a2f473d-project-1796893-concurrent-0 via runner-8a2f473d-mach
 ++ CI_RUNNER_ID=1337
 ++ export CI_RUNNER_DESCRIPTION=shared-runners-manager-1.example.com
 ++ CI_RUNNER_DESCRIPTION=shared-runners-manager-1.example.com
-++ export 'CI_RUNNER_TAGS=shared, docker, linux, ruby, mysql, postgres, mongo, git-annex'
-++ CI_RUNNER_TAGS='shared, docker, linux, ruby, mysql, postgres, mongo, git-annex'
+++ export 'CI_RUNNER_TAGS=shared, docker, linux, ruby, mysql, postgres, mongo'
+++ CI_RUNNER_TAGS='shared, docker, linux, ruby, mysql, postgres, mongo'
 ++ export CI_REGISTRY=registry.example.com
 ++ CI_REGISTRY=registry.example.com
 ++ export CI_DEBUG_TRACE=true
