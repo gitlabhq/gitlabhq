@@ -79,9 +79,8 @@ class MarkdownFeature
 
   def xproject
     @xproject ||= begin
-      group = create(:group, name: 'cross-reference')
-      group2 = create(:group, parent: group, name: 'nested-group')
-      create(:project, namespace: group2) do |project|
+      group = create(:group, :nested)
+      create(:project, namespace: group) do |project|
         project.team << [user, :developer]
       end
     end

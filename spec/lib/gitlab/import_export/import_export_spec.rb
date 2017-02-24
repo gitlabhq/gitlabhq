@@ -10,7 +10,7 @@ describe Gitlab::ImportExport, services: true do
     end
 
     it 'contains the namespace path' do
-      expect(described_class.export_filename(project: project)).to include(project.namespace.full_path)
+      expect(described_class.export_filename(project: project)).to include(project.namespace.full_path.tr('/', '_'))
     end
 
     it 'does not go over a certain length' do
