@@ -9,17 +9,37 @@ class FilteredSearchVisualTokens {
     };
   }
 
+  static unselectTokens() {
+    const otherTokens = document.querySelectorAll('.js-visual-token .selectable.selected');
+    [].forEach.call(otherTokens, t => t.classList.remove('selected'));
+  }
+
+  static selectToken(tokenButton) {
+    const selected = tokenButton.classList.contains('selected');
+    FilteredSearchVisualTokens.unselectTokens();
+
+    if (!selected) {
+      tokenButton.classList.add('selected');
+    }
+  }
+
   static addVisualTokenElement(name, value, isSearchTerm) {
     const li = document.createElement('li');
     li.classList.add('js-visual-token');
     li.classList.add(isSearchTerm ? 'filtered-search-term' : 'filtered-search-token');
-    li.innerHTML = '<div class="name"></div>';
-    li.querySelector('.name').innerText = name;
 
     if (value) {
-      li.innerHTML += '<div class="value"></div>';
+      li.innerHTML = `
+        <div class="selectable" role="button">
+          <div class="name"></div>
+          <div class="value"></div>
+        </div>
+      `;
       li.querySelector('.value').innerText = value;
+    } else {
+      li.innerHTML = '<div class="name"></div>';
     }
+    li.querySelector('.name').innerText = name;
 
     const tokensContainer = document.querySelector('.tokens-container');
     tokensContainer.appendChild(li);
@@ -67,9 +87,11 @@ class FilteredSearchVisualTokens {
       const value = lastVisualToken.querySelector('.value');
 
       if (value) {
-        lastVisualToken.removeChild(value);
+        const button = lastVisualToken.querySelector('.selectable');
+        button.removeChild(value);
+        lastVisualToken.innerHTML = button.innerHTML;
       } else {
-        lastVisualToken.parentElement.removeChild(lastVisualToken);
+        lastVisualToken.closest('.tokens-container').removeChild(lastVisualToken);
       }
     }
   }

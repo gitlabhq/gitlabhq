@@ -9,29 +9,39 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
 (() => {
   describe('Filtered Search Manager', () => {
     let input;
+    let manager;
+    let tokensContainer;
+    const placeholder = 'Search or filter results...';
+
+    beforeEach(() => {
+      setFixtures(`
+        <form>
+          <ul class="tokens-container list-unstyled"></ul>
+          <input type='text' class='filtered-search' placeholder='${placeholder}' />
+          <button class="clear-search" type="button">
+            <i class="fa fa-times"></i>
+          </button>
+        </form>
+      `);
+
+      spyOn(gl.FilteredSearchManager.prototype, 'cleanup').and.callFake(() => {});
+      spyOn(gl.FilteredSearchManager.prototype, 'loadSearchParamsFromURL').and.callFake(() => {});
+      spyOn(gl.FilteredSearchManager.prototype, 'tokenChange').and.callFake(() => {});
+      spyOn(gl.FilteredSearchDropdownManager.prototype, 'setDropdown').and.callFake(() => {});
+      spyOn(gl.FilteredSearchDropdownManager.prototype, 'updateDropdownOffset').and.callFake(() => {});
+      spyOn(gl.utils, 'getParameterByName').and.returnValue(null);
+
+      input = document.querySelector('.filtered-search');
+      tokensContainer = document.querySelector('.tokens-container');
+      manager = new gl.FilteredSearchManager();
+    });
+
+    afterEach(() => {
+      tokensContainer.innerHTML = '';
+    });
 
     describe('search', () => {
-      let manager;
       const defaultParams = '?scope=all&utf8=✓&state=opened';
-
-      beforeEach(() => {
-        setFixtures(`
-          <input type='text' class='filtered-search' />
-        `);
-
-        spyOn(gl.FilteredSearchManager.prototype, 'bindEvents').and.callFake(() => {});
-        spyOn(gl.FilteredSearchManager.prototype, 'cleanup').and.callFake(() => {});
-        spyOn(gl.FilteredSearchManager.prototype, 'loadSearchParamsFromURL').and.callFake(() => {});
-        spyOn(gl.FilteredSearchDropdownManager.prototype, 'setDropdown').and.callFake(() => {});
-        spyOn(gl.utils, 'getParameterByName').and.returnValue(null);
-
-        input = document.querySelector('.filtered-search');
-        manager = new gl.FilteredSearchManager();
-      });
-
-      afterEach(() => {
-        input.outerHTML = '';
-      });
 
       it('should search with a single word', () => {
         input.value = 'searchTerm';
@@ -65,35 +75,6 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
     });
 
     describe('handleInputPlaceholder', () => {
-      const placeholder = 'Search or filter results...';
-      let tokensContainer;
-
-      beforeEach(() => {
-        setFixtures(`
-          <form>
-            <ul class="tokens-container list-unstyled"></ul>
-            <input type='text' class='filtered-search' placeholder='${placeholder}' />
-            <button class="clear-search" type="button">
-              <i class="fa fa-times"></i>
-            </button>
-          </form>
-        `);
-
-        spyOn(gl.FilteredSearchManager.prototype, 'cleanup').and.callFake(() => {});
-        spyOn(gl.FilteredSearchManager.prototype, 'loadSearchParamsFromURL').and.callFake(() => {});
-        spyOn(gl.FilteredSearchDropdownManager.prototype, 'setDropdown').and.callFake(() => {});
-        spyOn(gl.utils, 'getParameterByName').and.returnValue(null);
-
-        input = document.querySelector('.filtered-search');
-        tokensContainer = document.querySelector('.tokens-container');
-        return new gl.FilteredSearchManager();
-      });
-
-      afterEach(() => {
-        input.outerHTML = '';
-        tokensContainer.innerHTML = '';
-      });
-
       it('should render placeholder when there is no input', () => {
         expect(input.placeholder).toEqual(placeholder);
       });
@@ -118,38 +99,8 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
     });
 
     describe('checkForBackspace', () => {
-      let tokensContainer;
       const backspaceKey = 8;
       const deleteKey = 46;
-
-      beforeEach(() => {
-        setFixtures(`
-          <form>
-            <ul class="tokens-container list-unstyled"></ul>
-            <input type='text' class='filtered-search' />
-            <button class="clear-search" type="button">
-              <i class="fa fa-times"></i>
-            </button>
-          </form>
-        `);
-
-        spyOn(gl.FilteredSearchManager.prototype, 'cleanup').and.callFake(() => {});
-        spyOn(gl.FilteredSearchManager.prototype, 'loadSearchParamsFromURL').and.callFake(() => {});
-        spyOn(gl.FilteredSearchManager.prototype, 'tokenChange').and.callFake(() => {});
-        spyOn(gl.FilteredSearchDropdownManager.prototype, 'setDropdown').and.callFake(() => {});
-        spyOn(gl.FilteredSearchDropdownManager.prototype, 'updateDropdownOffset').and.callFake(() => {});
-
-        spyOn(gl.utils, 'getParameterByName').and.returnValue(null);
-
-        input = document.querySelector('.filtered-search');
-        tokensContainer = document.querySelector('.tokens-container');
-        return new gl.FilteredSearchManager();
-      });
-
-      afterEach(() => {
-        input.outerHTML = '';
-        tokensContainer.innerHTML = '';
-      });
 
       describe('tokens and no input', () => {
         beforeEach(() => {
@@ -191,6 +142,36 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
         expect(gl.FilteredSearchVisualTokens.removeLastTokenPartial).not.toHaveBeenCalled();
         expect(gl.FilteredSearchVisualTokens.getLastTokenPartial).not.toHaveBeenCalled();
         expect(input.value).toEqual('text');
+      });
+    });
+
+    describe('unselects token', () => {
+      beforeEach(() => {
+        tokensContainer.innerHTML = `
+          ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug', true)}
+          ${FilteredSearchSpecHelper.createSearchVisualTokenHTML('search term')}
+          ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~awesome')}
+        `;
+      });
+
+      it('unselects token when input is clicked', () => {
+        const selectedToken = tokensContainer.querySelector('.js-visual-token .selected');
+
+        expect(selectedToken.classList.contains('selected')).toEqual(true);
+
+        input.click();
+
+        expect(selectedToken.classList.contains('selected')).toEqual(false);
+      });
+
+      it('unselects token when document.body is clicked', () => {
+        const selectedToken = tokensContainer.querySelector('.js-visual-token .selected');
+
+        expect(selectedToken.classList.contains('selected')).toEqual(true);
+
+        document.body.click();
+
+        expect(selectedToken.classList.contains('selected')).toEqual(false);
       });
     });
   });

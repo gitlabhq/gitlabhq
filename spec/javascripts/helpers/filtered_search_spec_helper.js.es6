@@ -1,9 +1,11 @@
 class FilteredSearchSpecHelper {
-  static createFilterVisualTokenHTML(name, value) {
+  static createFilterVisualTokenHTML(name, value, isSelected = false) {
     return `
       <li class="js-visual-token filtered-search-token">
-        <div class="name">${name}</div>
-        <div class="value">${value}</div>
+        <div class="selectable ${isSelected ? 'selected' : ''}" role="button">
+          <div class="name">${name}</div>
+          <div class="value">${value}</div>
+        </div>
       </li>
     `;
   }

@@ -49,6 +49,11 @@
   margin-top: 5px;
   margin-bottom: 5px;
 
+  .selectable {
+    display: -webkit-flex;
+    display: flex;
+  }
+
   .name,
   .value {
     display: inline-block;
@@ -69,6 +74,16 @@
     border-radius: 0 2px 2px 0;
     margin-right: 5px;
   }
+
+  .selected {
+    .name {
+      background-color: $filter-name-selected-color;
+    }
+
+    .value {
+      background-color: $filter-value-selected-color;
+    }
+  }
 }
 
 .filtered-search-term {
@@ -76,6 +91,10 @@
     background-color: inherit;
     color: $black;
     text-transform: none;
+  }
+
+  .selectable {
+    cursor: text;
   }
 }
 

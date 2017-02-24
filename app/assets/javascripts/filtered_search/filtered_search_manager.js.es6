@@ -3,6 +3,7 @@
     constructor(page) {
       this.filteredSearchInput = document.querySelector('.filtered-search');
       this.clearSearchButton = document.querySelector('.clear-search');
+      this.tokensContainer = document.querySelector('.tokens-container');
       this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeys;
 
       if (this.filteredSearchInput) {
@@ -43,7 +44,9 @@
       this.filteredSearchInput.addEventListener('keyup', this.checkForBackspaceWrapper);
       this.filteredSearchInput.addEventListener('click', this.tokenChange);
       this.filteredSearchInput.addEventListener('keyup', this.tokenChange);
+      this.tokensContainer.addEventListener('click', FilteredSearchManager.selectToken);
       this.clearSearchButton.addEventListener('click', this.clearSearchWrapper);
+      document.addEventListener('click', gl.FilteredSearchVisualTokens.unselectTokens);
     }
 
     unbindEvents() {
@@ -56,7 +59,9 @@
       this.filteredSearchInput.removeEventListener('keyup', this.checkForBackspaceWrapper);
       this.filteredSearchInput.removeEventListener('click', this.tokenChange);
       this.filteredSearchInput.removeEventListener('keyup', this.tokenChange);
+      this.tokensContainer.removeEventListener('click', FilteredSearchManager.selectToken);
       this.clearSearchButton.removeEventListener('click', this.clearSearchWrapper);
+      document.removeEventListener('click', gl.FilteredSearchVisualTokens.unselectTokens);
     }
 
     checkForBackspace(e) {
@@ -96,6 +101,16 @@
 
           this.search();
         }
+      }
+    }
+
+    static selectToken(e) {
+      const button = e.target.closest('.selectable');
+
+      if (button) {
+        e.preventDefault();
+        e.stopPropagation();
+        gl.FilteredSearchVisualTokens.selectToken(button);
       }
     }
 
