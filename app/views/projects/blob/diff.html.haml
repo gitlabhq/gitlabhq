@@ -13,16 +13,16 @@
       - case diff_view
       - when :inline
         %td.old_line.diff-line-num{ data: { linenumber: line_old } }
-          %a{ href: "##{line_old}", data: { linenumber: line_old } }
+          %a{ href: "#", data: { linenumber: line_old }, disabled: true }
         %td.new_line.diff-line-num{ data: { linenumber: line_new } }
-          %a{ href: "##{line_new}", data: { linenumber: line_new } }
+          %a{ href: "#", data: { linenumber: line_new }, disabled: true }
         = line_content
       - when :parallel
         %td.old_line.diff-line-num{ data: { linenumber: line_old } }
-          %a{ href: "##{line_old}", data: { linenumber: line_old } }
+          %a{ href: "##{line_old}", data: { linenumber: line_old }, disabled: true }
         = line_content
         %td.new_line.diff-line-num{ data: { linenumber: line_new } }
-          %a{ href: "##{line_new}", data: { linenumber: line_new } }
+          %a{ href: "##{line_new}", data: { linenumber: line_new }, disabled: true }
         = line_content
 
   - if @form.unfold? && @form.bottom? && @form.to < @blob.lines.size
