@@ -19,7 +19,6 @@
     "organization",
     "last_sign_in_at",
     "confirmed_at",
-    "theme_id",
     "color_scheme_id",
     "projects_limit",
     "current_sign_in_at",

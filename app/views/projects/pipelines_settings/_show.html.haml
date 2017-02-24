@@ -60,7 +60,7 @@
           = f.label :build_coverage_regex, "Test coverage parsing", class: 'label-light'
           .input-group
             %span.input-group-addon /
-            = f.text_field :build_coverage_regex, class: 'form-control', placeholder: '\(\d+.\d+\%\) covered'
+            = f.text_field :build_coverage_regex, class: 'form-control', placeholder: 'Regular expression'
             %span.input-group-addon /
           %p.help-block
             A regular expression that will be used to find the test coverage

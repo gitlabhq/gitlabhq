@@ -14,6 +14,8 @@ module Gitlab
 
       attr_accessor *SERIALIZE_KEYS # rubocop:disable Lint/AmbiguousOperator
 
+      delegate :tree, to: :raw_commit
+
       def ==(other)
         return false unless other.is_a?(Gitlab::Git::Commit)
 
@@ -216,10 +218,6 @@ module Gitlab
 
       def parents
         raw_commit.parents.map { |c| Gitlab::Git::Commit.new(c) }
-      end
-
-      def tree
-        raw_commit.tree
       end
 
       def stats

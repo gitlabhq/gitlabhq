@@ -2,18 +2,14 @@ module MergeRequests
   class BuildService < MergeRequests::BaseService
     def execute
       self.merge_request = MergeRequest.new(params)
-      merge_request.can_be_created  = true
       merge_request.compare_commits = []
       merge_request.source_project  = find_source_project
       merge_request.target_project  = find_target_project
       merge_request.target_branch   = find_target_branch
+      merge_request.can_be_created  = branches_valid? && source_branch_specified? && target_branch_specified?
 
-      if branches_specified? && branches_valid?
-        compare_branches
-        assign_title_and_description
-      else
-        merge_request.can_be_created = false
-      end
+      compare_branches if branches_present?
+      assign_title_and_description if merge_request.can_be_created
 
       merge_request
     end
@@ -37,11 +33,17 @@ module MergeRequests
       target_branch || target_project.default_branch
     end
 
-    def branches_specified?
-      params[:source_branch] && params[:target_branch]
+    def source_branch_specified?
+      params[:source_branch].present?
+    end
+
+    def target_branch_specified?
+      params[:target_branch].present?
     end
 
     def branches_valid?
+      return false unless source_branch_specified? || target_branch_specified?
+
       validate_branches
       errors.blank?
     end
@@ -55,8 +57,10 @@ module MergeRequests
         target_branch
       )
 
-      merge_request.compare_commits = compare.commits
-      merge_request.compare = compare
+      if compare
+        merge_request.compare_commits = compare.commits
+        merge_request.compare = compare
+      end
     end
 
     def validate_branches

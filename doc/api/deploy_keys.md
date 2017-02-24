@@ -137,7 +137,7 @@ Example response:
 
 ## Delete deploy key
 
-Delete a deploy key from a project
+Removes a deploy key from the project. If the deploy key is used only for this project, it will be deleted from the system.
 
 ```
 DELETE /projects/:id/deploy_keys/:key_id
@@ -156,14 +156,11 @@ Example response:
 
 ```json
 {
-   "updated_at" : "2015-08-29T12:50:57.259Z",
-   "key" : "ssh-rsa AAAA...",
-   "public" : false,
-   "title" : "My deploy key",
-   "user_id" : null,
-   "created_at" : "2015-08-29T12:50:57.259Z",
-   "fingerprint" : "6a:33:1f:74:51:c0:39:81:79:ec:7a:31:f8:40:20:43",
-   "id" : 13
+  "id": 6,
+  "deploy_key_id": 14,
+  "project_id": 1,
+  "created_at" : "2015-08-29T12:50:57.259Z",
+  "updated_at" : "2015-08-29T12:50:57.259Z"
 }
 ```
 
@@ -173,30 +170,6 @@ Enables a deploy key for a project so this can be used. Returns the enabled key,
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/deploy_keys/13/enable
-```
-
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes | The ID of the project |
-| `key_id`  | integer | yes | The ID of the deploy key |
-
-Example response:
-
-```json
-{
-   "key" : "ssh-rsa AAAA...",
-   "id" : 12,
-   "title" : "My deploy key",
-   "created_at" : "2015-08-29T12:44:31.550Z"
-}
-```
-
-## Disable a deploy key
-
-Disable a deploy key for a project. Returns the disabled key.
-
-```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/deploy_keys/13/disable
 ```
 
 | Attribute | Type | Required | Description |

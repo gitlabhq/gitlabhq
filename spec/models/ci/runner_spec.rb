@@ -113,7 +113,7 @@ describe Ci::Runner, models: true do
 
     context 'when runner has tags' do
       before do
-        runner.tag_list = ['bb', 'cc']
+        runner.tag_list = %w(bb cc)
       end
 
       shared_examples 'tagged build picker' do
@@ -169,7 +169,7 @@ describe Ci::Runner, models: true do
 
         context 'when having runner tags' do
           before do
-            runner.tag_list = ['bb', 'cc']
+            runner.tag_list = %w(bb cc)
           end
 
           it 'cannot handle it for builds without matching tags' do
@@ -189,7 +189,7 @@ describe Ci::Runner, models: true do
 
         context 'when having runner tags' do
           before do
-            runner.tag_list = ['bb', 'cc']
+            runner.tag_list = %w(bb cc)
             build.tag_list = ['bb']
           end
 
@@ -212,7 +212,7 @@ describe Ci::Runner, models: true do
 
         context 'when having runner tags' do
           before do
-            runner.tag_list = ['bb', 'cc']
+            runner.tag_list = %w(bb cc)
             build.tag_list = ['bb']
           end
 
@@ -290,7 +290,7 @@ describe Ci::Runner, models: true do
       let!(:last_update) { runner.ensure_runner_queue_value }
 
       before do
-        runner.update(description: 'new runner')
+        Ci::UpdateRunnerService.new(runner).update(description: 'new runner')
       end
 
       it 'sets a new last_update value' do
@@ -314,6 +314,25 @@ describe Ci::Runner, models: true do
       Gitlab::Redis.with do |redis|
         runner_queue_key = runner.send(:runner_queue_key)
         expect(redis.get(runner_queue_key))
+      end
+    end
+  end
+
+  describe '#destroy' do
+    let(:runner) { create(:ci_runner) }
+
+    context 'when there is a tick in the queue' do
+      let!(:queue_key) { runner.send(:runner_queue_key) }
+
+      before do
+        runner.tick_runner_queue
+        runner.destroy
+      end
+
+      it 'cleans up the queue' do
+        Gitlab::Redis.with do |redis|
+          expect(redis.get(queue_key)).to be_nil
+        end
       end
     end
   end

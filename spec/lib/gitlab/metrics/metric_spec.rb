@@ -62,7 +62,7 @@ describe Gitlab::Metrics::Metric do
       end
 
       it 'includes the timestamp' do
-        expect(hash[:timestamp]).to be_an_instance_of(Fixnum)
+        expect(hash[:timestamp]).to be_an(Integer)
       end
     end
   end

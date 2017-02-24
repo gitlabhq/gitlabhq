@@ -37,7 +37,7 @@ module Banzai
         and contains(., '://')
         and not(starts-with(., 'http'))
         and not(starts-with(., 'ftp'))
-      ])
+      ]).freeze
 
       def call
         return doc if context[:autolink] == false

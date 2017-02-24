@@ -22,8 +22,10 @@ module Ci
     serialize :options
     serialize :yaml_variables, Gitlab::Serializer::Ci::Variables
 
+    delegate :name, to: :project, prefix: true
+
     validates :coverage, numericality: true, allow_blank: true
-    validates_presence_of :ref
+    validates :ref, presence: true
 
     scope :unstarted, ->() { where(runner_id: nil) }
     scope :ignore_failures, ->() { where(allow_failure: false) }
@@ -62,33 +64,10 @@ module Ci
         new_build.save
       end
 
-      def retry(build, user = nil)
-        new_build = Ci::Build.create(
-          ref: build.ref,
-          tag: build.tag,
-          options: build.options,
-          commands: build.commands,
-          tag_list: build.tag_list,
-          project: build.project,
-          pipeline: build.pipeline,
-          name: build.name,
-          allow_failure: build.allow_failure,
-          stage: build.stage,
-          stage_idx: build.stage_idx,
-          trigger_request: build.trigger_request,
-          yaml_variables: build.yaml_variables,
-          when: build.when,
-          user: user,
-          environment: build.environment,
-          status_event: 'enqueue'
-        )
-
-        MergeRequests::AddTodoWhenBuildFailsService
-          .new(build.project, nil)
-          .close(new_build)
-
-        build.pipeline.mark_as_processable_after_stage(build.stage_idx)
-        new_build
+      def retry(build, current_user)
+        Ci::RetryBuildService
+          .new(build.project, current_user)
+          .execute(build)
       end
     end
 
@@ -136,7 +115,7 @@ module Ci
       project.builds_enabled? && commands.present? && manual? && skipped?
     end
 
-    def play(current_user = nil)
+    def play(current_user)
       # Try to queue a current build
       if self.enqueue
         self.update(user: current_user)
@@ -256,10 +235,6 @@ module Ci
       gl_project_id
     end
 
-    def project_name
-      project.name
-    end
-
     def repo_url
       auth = "gitlab-ci-token:#{ensure_token!}@"
       project.http_url_to_repo.sub(/^https?:\/\//) do |prefix|
@@ -280,7 +255,7 @@ module Ci
       return unless regex
 
       matches = text.scan(Regexp.new(regex)).last
-      matches = matches.last if matches.kind_of?(Array)
+      matches = matches.last if matches.is_a?(Array)
       coverage = matches.gsub(/\d+(\.\d+)?/).first
 
       if coverage.present?
@@ -509,7 +484,7 @@ module Ci
     def artifacts_expire_in=(value)
       self.artifacts_expire_at =
         if value
-          Time.now + ChronicDuration.parse(value)
+          ChronicDuration.parse(value)&.seconds&.from_now
         end
     end
 

@@ -1,5 +1,7 @@
 class CreateBranchService < BaseService
   def execute(branch_name, ref)
+    create_master_branch if project.empty_repo?
+
     result = ValidateNewBranchService.new(project, current_user)
       .execute(branch_name)
 
@@ -18,5 +20,17 @@ class CreateBranchService < BaseService
 
   def success(branch)
     super().merge(branch: branch)
+  end
+
+  private
+
+  def create_master_branch
+    project.repository.commit_file(
+      current_user,
+      '/README.md',
+      '',
+      message: 'Add README.md',
+      branch_name: 'master',
+      update: false)
   end
 end

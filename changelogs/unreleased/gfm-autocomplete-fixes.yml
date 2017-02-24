@@ -1,0 +1,4 @@
+---
+title: Fix errors in slash commands matcher, add simple test coverage
+merge_request:
+author: YarNayar

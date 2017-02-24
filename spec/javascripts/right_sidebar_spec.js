@@ -79,4 +79,4 @@ require('~/extensions/jquery.js');
       expect(todoToggleSpy.calls.count()).toEqual(1);
     });
   });
-}).call(this);
+}).call(window);

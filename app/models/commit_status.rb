@@ -10,10 +10,11 @@ class CommitStatus < ActiveRecord::Base
   belongs_to :user
 
   delegate :commit, to: :pipeline
+  delegate :sha, :short_sha, to: :pipeline
 
   validates :pipeline, presence: true, unless: :importing?
 
-  validates_presence_of :name
+  validates :name, presence: true
 
   alias_attribute :author, :user
 
@@ -22,9 +23,6 @@ class CommitStatus < ActiveRecord::Base
 
     where(id: max_id.group(:name, :commit_id))
   end
-
-  scope :retried, -> { where.not(id: latest) }
-  scope :ordered, -> { order(:name) }
 
   scope :failed_but_allowed, -> do
     where(allow_failure: true, status: [:failed, :canceled])
@@ -36,8 +34,11 @@ class CommitStatus < ActiveRecord::Base
       false, all_state_names - [:failed, :canceled])
   end
 
+  scope :retried, -> { where.not(id: latest) }
+  scope :ordered, -> { order(:name) }
   scope :latest_ordered, -> { latest.ordered.includes(project: :namespace) }
   scope :retried_ordered, -> { retried.ordered.includes(project: :namespace) }
+  scope :after_stage, -> (index) { where('stage_idx > ?', index) }
 
   state_machine :status do
     event :enqueue do
@@ -101,8 +102,6 @@ class CommitStatus < ActiveRecord::Base
       end
     end
   end
-
-  delegate :sha, :short_sha, to: :pipeline
 
   def before_sha
     pipeline.before_sha || Gitlab::Git::BLANK_SHA

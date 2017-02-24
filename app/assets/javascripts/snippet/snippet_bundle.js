@@ -13,4 +13,4 @@ requireAll(require.context('.', false, /^\.\/(?!snippet_bundle).*\.(js|es6)$/));
       $(".snippet-file-content").val(editor.getValue());
     });
   });
-}).call(this);
+}).call(window);

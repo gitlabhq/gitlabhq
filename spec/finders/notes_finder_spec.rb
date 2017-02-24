@@ -111,7 +111,7 @@ describe NotesFinder do
       end
 
       it 'raises an exception for an invalid target_type' do
-        params.merge!(target_type: 'invalid')
+        params[:target_type] = 'invalid'
         expect { described_class.new(project, user, params).execute }.to raise_error('invalid target_type')
       end
 

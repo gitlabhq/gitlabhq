@@ -297,4 +297,4 @@
      */
     w.gl.utils.convertPermissionToBoolean = permission => permission === 'true';
   })(window);
-}).call(this);
+}).call(window);

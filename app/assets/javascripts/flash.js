@@ -39,4 +39,4 @@
 
     return Flash;
   })();
-}).call(this);
+}).call(window);

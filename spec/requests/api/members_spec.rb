@@ -34,9 +34,12 @@ describe API::Members, api: true  do
         context "when authenticated as a #{type}" do
           it 'returns 200' do
             user = public_send(type)
+
             get api("/#{source_type.pluralize}/#{source.id}/members", user)
 
             expect(response).to have_http_status(200)
+            expect(response).to include_pagination_headers
+            expect(json_response).to be_an Array
             expect(json_response.size).to eq(2)
             expect(json_response.map { |u| u['id'] }).to match_array [master.id, developer.id]
           end
@@ -49,6 +52,8 @@ describe API::Members, api: true  do
         get api("/#{source_type.pluralize}/#{source.id}/members", developer)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
         expect(json_response.size).to eq(2)
         expect(json_response.map { |u| u['id'] }).to match_array [master.id, developer.id]
       end
@@ -57,6 +62,8 @@ describe API::Members, api: true  do
         get api("/#{source_type.pluralize}/#{source.id}/members", developer), query: master.username
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
         expect(json_response.count).to eq(1)
         expect(json_response.first['username']).to eq(master.username)
       end

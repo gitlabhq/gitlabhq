@@ -74,7 +74,7 @@ const ShortcutsBlob = require('./shortcuts_blob');
         case 'projects:merge_requests:index':
         case 'projects:issues:index':
           if (gl.FilteredSearchManager) {
-            new gl.FilteredSearchManager();
+            new gl.FilteredSearchManager(page === 'projects:issues:index' ? 'issues' : 'merge_requests');
           }
           Issuable.init();
           new gl.IssuableBulkActions({
@@ -108,6 +108,9 @@ const ShortcutsBlob = require('./shortcuts_blob');
         case 'projects:compare:show':
           new gl.Diff();
           break;
+        case 'projects:branches:index':
+          gl.AjaxLoadingSpinner.init();
+          break;
         case 'projects:issues:new':
         case 'projects:issues:edit':
           shortcut_handler = new ShortcutsNavigation();
@@ -118,6 +121,7 @@ const ShortcutsBlob = require('./shortcuts_blob');
           new gl.IssuableTemplateSelectors();
           break;
         case 'projects:merge_requests:new':
+        case 'projects:merge_requests:new_diffs':
         case 'projects:merge_requests:edit':
           new gl.Diff();
           shortcut_handler = new ShortcutsNavigation();
@@ -382,4 +386,4 @@ const ShortcutsBlob = require('./shortcuts_blob');
 
     return Dispatcher;
   })();
-}).call(this);
+}).call(window);

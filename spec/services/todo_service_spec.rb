@@ -287,39 +287,51 @@ describe TodoService, services: true do
       end
     end
 
-    shared_examples 'marking todos as done' do |meth|
-      let!(:first_todo) { create(:todo, :assigned, user: john_doe, project: project, target: issue, author: author) }
-      let!(:second_todo) { create(:todo, :assigned, user: john_doe, project: project, target: issue, author: author) }
+    shared_examples 'updating todos state' do |meth, state, new_state|
+      let!(:first_todo) { create(:todo, state, user: john_doe, project: project, target: issue, author: author) }
+      let!(:second_todo) { create(:todo, state, user: john_doe, project: project, target: issue, author: author) }
 
-      it 'marks related todos for the user as done' do
+      it 'updates related todos for the user with the new_state' do
         service.send(meth, collection, john_doe)
 
-        expect(first_todo.reload).to be_done
-        expect(second_todo.reload).to be_done
+        expect(first_todo.reload.state?(new_state)).to be true
+        expect(second_todo.reload.state?(new_state)).to be true
       end
 
       describe 'cached counts' do
         it 'updates when todos change' do
-          expect(john_doe.todos_done_count).to eq(0)
-          expect(john_doe.todos_pending_count).to eq(2)
+          expect(john_doe.todos.where(state: new_state).count).to eq(0)
+          expect(john_doe.todos.where(state: state).count).to eq(2)
           expect(john_doe).to receive(:update_todos_count_cache).and_call_original
 
           service.send(meth, collection, john_doe)
 
-          expect(john_doe.todos_done_count).to eq(2)
-          expect(john_doe.todos_pending_count).to eq(0)
+          expect(john_doe.todos.where(state: new_state).count).to eq(2)
+          expect(john_doe.todos.where(state: state).count).to eq(0)
         end
       end
     end
 
     describe '#mark_todos_as_done' do
-      it_behaves_like 'marking todos as done', :mark_todos_as_done do
+      it_behaves_like 'updating todos state', :mark_todos_as_done, :pending, :done do
         let(:collection) { [first_todo, second_todo] }
       end
     end
 
     describe '#mark_todos_as_done_by_ids' do
-      it_behaves_like 'marking todos as done', :mark_todos_as_done_by_ids do
+      it_behaves_like 'updating todos state', :mark_todos_as_done_by_ids, :pending, :done do
+        let(:collection) { [first_todo, second_todo].map(&:id) }
+      end
+    end
+
+    describe '#mark_todos_as_pending' do
+      it_behaves_like 'updating todos state', :mark_todos_as_pending, :done, :pending do
+        let(:collection) { [first_todo, second_todo] }
+      end
+    end
+
+    describe '#mark_todos_as_pending_by_ids' do
+      it_behaves_like 'updating todos state', :mark_todos_as_pending_by_ids, :done, :pending do
         let(:collection) { [first_todo, second_todo].map(&:id) }
       end
     end

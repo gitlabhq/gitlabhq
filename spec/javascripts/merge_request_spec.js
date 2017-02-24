@@ -6,9 +6,9 @@ require('~/merge_request');
 (function() {
   describe('MergeRequest', function() {
     return describe('task lists', function() {
-      preloadFixtures('static/merge_requests_show.html.raw');
+      preloadFixtures('merge_requests/merge_request_with_task_list.html.raw');
       beforeEach(function() {
-        loadFixtures('static/merge_requests_show.html.raw');
+        loadFixtures('merge_requests/merge_request_with_task_list.html.raw');
         return this.merge = new MergeRequest();
       });
       it('modifies the Markdown field', function() {
@@ -19,11 +19,11 @@ require('~/merge_request');
       return it('submits an ajax request on tasklist:changed', function() {
         spyOn(jQuery, 'ajax').and.callFake(function(req) {
           expect(req.type).toBe('PATCH');
-          expect(req.url).toBe('/foo');
+          expect(req.url).toBe(`${gl.TEST_HOST}/frontend-fixtures/merge-requests-project/merge_requests/1.json`);
           return expect(req.data.merge_request.description).not.toBe(null);
         });
         return $('.js-task-list-field').trigger('tasklist:changed');
       });
     });
   });
-}).call(this);
+}).call(window);

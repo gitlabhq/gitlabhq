@@ -26,19 +26,63 @@ describe 'Pipelines', :feature, :js do
         )
       end
 
-      [:all, :running, :branches].each do |scope|
-        context "when displaying #{scope}" do
-          before do
-            visit_project_pipelines(scope: scope)
-          end
+      context 'scope' do
+        before do
+          create(:ci_empty_pipeline, status: 'pending', project: project, sha: project.commit.id, ref: 'master')
+          create(:ci_empty_pipeline, status: 'running', project: project, sha: project.commit.id, ref: 'master')
+          create(:ci_empty_pipeline, status: 'created', project: project, sha: project.commit.id, ref: 'master')
+          create(:ci_empty_pipeline, status: 'success', project: project, sha: project.commit.id, ref: 'master')
+        end
 
-          it 'contains pipeline commit short SHA' do
-            expect(page).to have_content(pipeline.short_sha)
-          end
+        [:all, :running, :pending, :finished, :branches].each do |scope|
+          context "when displaying #{scope}" do
+            before do
+              visit_project_pipelines(scope: scope)
+            end
 
-          it 'contains branch name' do
-            expect(page).to have_content(pipeline.ref)
+            it 'contains pipeline commit short SHA' do
+              expect(page).to have_content(pipeline.short_sha)
+            end
+
+            it 'contains branch name' do
+              expect(page).to have_content(pipeline.ref)
+            end
           end
+        end
+      end
+
+      context 'header tabs' do
+        before do
+          visit namespace_project_pipelines_path(project.namespace, project)
+          wait_for_vue_resource
+        end
+
+        it 'shows a tab for All pipelines and count' do
+          expect(page.find('.js-pipelines-tab-all a').text).to include('All')
+          expect(page.find('.js-pipelines-tab-all .badge').text).to include('1')
+        end
+
+        it 'shows a tab for Pending pipelines and count' do
+          expect(page.find('.js-pipelines-tab-pending a').text).to include('Pending')
+          expect(page.find('.js-pipelines-tab-pending .badge').text).to include('0')
+        end
+
+        it 'shows a tab for Running pipelines and count' do
+          expect(page.find('.js-pipelines-tab-running a').text).to include('Running')
+          expect(page.find('.js-pipelines-tab-running .badge').text).to include('1')
+        end
+
+        it 'shows a tab for Finished pipelines and count' do
+          expect(page.find('.js-pipelines-tab-finished a').text).to include('Finished')
+          expect(page.find('.js-pipelines-tab-finished .badge').text).to include('0')
+        end
+
+        it 'shows a tab for Branches' do
+          expect(page.find('.js-pipelines-tab-branches a').text).to include('Branches')
+        end
+
+        it 'shows a tab for Tags' do
+          expect(page.find('.js-pipelines-tab-tags a').text).to include('Tags')
         end
       end
 
@@ -282,6 +326,18 @@ describe 'Pipelines', :feature, :js do
 
             expect(page).to have_content('canceled')
             expect(build.reload).to be_canceled
+          end
+        end
+
+        context 'dropdown jobs list' do
+          it 'should keep the dropdown open when the user ctr/cmd + clicks in the job name' do
+            find('.js-builds-dropdown-button').trigger('click')
+
+            execute_script('var e = $.Event("keydown", { keyCode: 64 }); $("body").trigger(e);')
+
+            find('.mini-pipeline-graph-dropdown-item').trigger('click')
+
+            expect(page).to have_selector('.js-ci-action-icon')
           end
         end
       end

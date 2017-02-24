@@ -1,5 +1,4 @@
 # Gitlab::Git::Repository is a wrapper around native Rugged::Repository object
-require 'forwardable'
 require 'tempfile'
 require 'forwardable'
 require "rubygems/package"
@@ -7,7 +6,6 @@ require "rubygems/package"
 module Gitlab
   module Git
     class Repository
-      extend Forwardable
       include Gitlab::Git::Popen
 
       SEARCH_CONTEXT_LINES = 3
@@ -32,6 +30,10 @@ module Gitlab
         @name = path.split("/").last
         @attributes = Gitlab::Git::Attributes.new(path)
       end
+
+      delegate  :empty?,
+                :bare?,
+                to: :rugged
 
       # Default branch in the repository
       def root_ref
@@ -160,14 +162,6 @@ module Gitlab
 
       def has_commits?
         !empty?
-      end
-
-      def empty?
-        rugged.empty?
-      end
-
-      def bare?
-        rugged.bare?
       end
 
       def repo_exists?
@@ -565,9 +559,7 @@ module Gitlab
       #    will trigger a +:mixed+ reset and the working directory will be
       #    replaced with the content of the index. (Untracked and ignored files
       #    will be left alone)
-      def reset(ref, reset_type)
-        rugged.reset(ref, reset_type)
-      end
+      delegate :reset, to: :rugged
 
       # Mimic the `git clean` command and recursively delete untracked files.
       # Valid keys that can be passed in the +options+ hash are:

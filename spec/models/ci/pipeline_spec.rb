@@ -3,8 +3,12 @@ require 'spec_helper'
 describe Ci::Pipeline, models: true do
   include EmailHelpers
 
-  let(:project) { FactoryGirl.create :empty_project }
-  let(:pipeline) { FactoryGirl.create :ci_empty_pipeline, status: 'created', project: project }
+  let(:user) { create(:user) }
+  let(:project) { create(:empty_project) }
+
+  let(:pipeline) do
+    create(:ci_empty_pipeline, status: :created, project: project)
+  end
 
   it { is_expected.to belong_to(:project) }
   it { is_expected.to belong_to(:user) }
@@ -164,9 +168,9 @@ describe Ci::Pipeline, models: true do
         end
 
         it 'returns list of stages with correct statuses' do
-          expect(statuses).to eq([['build', 'failed'],
-                                  ['test', 'success'],
-                                  ['deploy', 'running']])
+          expect(statuses).to eq([%w(build failed),
+                                  %w(test success),
+                                  %w(deploy running)])
         end
 
         context 'when commit status  is retried' do
@@ -179,9 +183,9 @@ describe Ci::Pipeline, models: true do
           end
 
           it 'ignores the previous state' do
-            expect(statuses).to eq([['build', 'success'],
-                                    ['test', 'success'],
-                                    ['deploy', 'running']])
+            expect(statuses).to eq([%w(build success),
+                                    %w(test success),
+                                    %w(deploy running)])
           end
         end
       end
@@ -195,7 +199,7 @@ describe Ci::Pipeline, models: true do
 
     describe '#stages_name' do
       it 'returns a valid names of stages' do
-        expect(pipeline.stages_name).to eq(['build', 'test', 'deploy'])
+        expect(pipeline.stages_name).to eq(%w(build test deploy))
       end
     end
   end
@@ -503,7 +507,9 @@ describe Ci::Pipeline, models: true do
   end
 
   describe '#status' do
-    let!(:build) { create(:ci_build, :created, pipeline: pipeline, name: 'test') }
+    let(:build) do
+      create(:ci_build, :created, pipeline: pipeline, name: 'test')
+    end
 
     subject { pipeline.reload.status }
 
@@ -545,13 +551,21 @@ describe Ci::Pipeline, models: true do
         build.cancel
       end
 
-      it { is_expected.to eq('canceled') }
+      context 'when build is pending' do
+        let(:build) do
+          create(:ci_build, :pending, pipeline: pipeline)
+        end
+
+        it { is_expected.to eq('canceled') }
+      end
     end
 
     context 'on failure and build retry' do
       before do
         build.drop
-        Ci::Build.retry(build)
+        project.add_developer(user)
+
+        Ci::Build.retry(build, user)
       end
 
       # We are changing a state: created > failed > running
@@ -563,8 +577,6 @@ describe Ci::Pipeline, models: true do
   end
 
   describe '#detailed_status' do
-    let(:user) { create(:user) }
-
     subject { pipeline.detailed_status(user) }
 
     context 'when pipeline is created' do
@@ -720,7 +732,7 @@ describe Ci::Pipeline, models: true do
   describe '#cancel_running' do
     let(:latest_status) { pipeline.statuses.pluck(:status) }
 
-    context 'when there is a running external job and created build' do
+    context 'when there is a running external job and a regular job' do
       before do
         create(:ci_build, :running, pipeline: pipeline)
         create(:generic_commit_status, :running, pipeline: pipeline)
@@ -733,7 +745,7 @@ describe Ci::Pipeline, models: true do
       end
     end
 
-    context 'when builds are in different stages' do
+    context 'when jobs are in different stages' do
       before do
         create(:ci_build, :running, stage_idx: 0, pipeline: pipeline)
         create(:ci_build, :running, stage_idx: 1, pipeline: pipeline)
@@ -745,17 +757,34 @@ describe Ci::Pipeline, models: true do
         expect(latest_status).to contain_exactly('canceled', 'canceled')
       end
     end
+
+    context 'when there are created builds present in the pipeline' do
+      before do
+        create(:ci_build, :running, stage_idx: 0, pipeline: pipeline)
+        create(:ci_build, :created, stage_idx: 1, pipeline: pipeline)
+
+        pipeline.cancel_running
+      end
+
+      it 'cancels created builds' do
+        expect(latest_status).to eq %w(canceled canceled)
+      end
+    end
   end
 
   describe '#retry_failed' do
     let(:latest_status) { pipeline.statuses.latest.pluck(:status) }
+
+    before do
+      project.add_developer(user)
+    end
 
     context 'when there is a failed build and failed external status' do
       before do
         create(:ci_build, :failed, name: 'build', pipeline: pipeline)
         create(:generic_commit_status, :failed, name: 'jenkins', pipeline: pipeline)
 
-        pipeline.retry_failed(create(:user))
+        pipeline.retry_failed(user)
       end
 
       it 'retries only build' do
@@ -768,11 +797,11 @@ describe Ci::Pipeline, models: true do
         create(:ci_build, :failed, name: 'build', stage_idx: 0, pipeline: pipeline)
         create(:ci_build, :failed, name: 'jenkins', stage_idx: 1, pipeline: pipeline)
 
-        pipeline.retry_failed(create(:user))
+        pipeline.retry_failed(user)
       end
 
       it 'retries both builds' do
-        expect(latest_status).to contain_exactly('pending', 'pending')
+        expect(latest_status).to contain_exactly('pending', 'created')
       end
     end
 
@@ -781,11 +810,11 @@ describe Ci::Pipeline, models: true do
         create(:ci_build, :failed, name: 'build', stage_idx: 0, pipeline: pipeline)
         create(:ci_build, :canceled, name: 'jenkins', stage_idx: 1, pipeline: pipeline)
 
-        pipeline.retry_failed(create(:user))
+        pipeline.retry_failed(user)
       end
 
       it 'retries both builds' do
-        expect(latest_status).to contain_exactly('pending', 'pending')
+        expect(latest_status).to contain_exactly('pending', 'created')
       end
     end
   end

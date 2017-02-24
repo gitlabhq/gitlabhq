@@ -144,4 +144,4 @@
       }
     });
   };
-}).call(this);
+}).call(window);

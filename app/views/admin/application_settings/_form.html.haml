@@ -192,7 +192,7 @@
       = f.label :max_pages_size, 'Maximum size of pages (MB)', class: 'control-label col-sm-2'
       .col-sm-10
         = f.number_field :max_pages_size, class: 'form-control'
-        .help-block Zero for unlimited
+        .help-block 0 for unlimited
 
   %fieldset
     %legend Continuous Integration
@@ -212,8 +212,16 @@
       .col-sm-10
         = f.number_field :max_artifacts_size, class: 'form-control'
         .help-block
-          Set the maximum file size each jobs's artifacts can have
-          = link_to "(?)", help_page_path("user/admin_area/settings/continuous_integration", anchor: "maximum-artifacts-size")
+          Set the maximum file size for each job's artifacts
+          = link_to icon('question-circle'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'maximum-artifacts-size')
+    .form-group
+      = f.label :default_artifacts_expire_in, 'Default artifacts expiration', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :default_artifacts_expire_in, class: 'form-control'
+        .help-block
+          Set the default expiration time for each job's artifacts.
+          0 for unlimited.
+          = link_to icon('question-circle'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'default-artifacts-expiration')
 
   - if Gitlab.config.registry.enabled
     %fieldset
@@ -525,7 +533,7 @@
         = f.number_field :terminal_max_session_time, class: 'form-control'
         .help-block
           Maximum time for web terminal websocket connection (in seconds).
-          Set to 0 for unlimited time.
+          0 for unlimited.
 
   .form-actions
     = f.submit 'Save', class: 'btn btn-save'

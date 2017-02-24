@@ -83,4 +83,4 @@
       document.location.href = url;
     };
   })(window);
-}).call(this);
+}).call(window);

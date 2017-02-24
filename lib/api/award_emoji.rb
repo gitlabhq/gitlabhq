@@ -3,7 +3,7 @@ module API
     include PaginationParams
 
     before { authenticate! }
-    AWARDABLES = %w[issue merge_request snippet]
+    AWARDABLES = %w[issue merge_request snippet].freeze
 
     resource :projects do
       AWARDABLES.each do |awardable_type|
@@ -15,7 +15,8 @@ module API
           requires :"#{awardable_id_string}", type: Integer, desc: "The ID of an Issue, Merge Request or Snippet"
         end
 
-        [ ":id/#{awardable_string}/:#{awardable_id_string}/award_emoji",
+        [
+          ":id/#{awardable_string}/:#{awardable_id_string}/award_emoji",
           ":id/#{awardable_string}/:#{awardable_id_string}/notes/:note_id/award_emoji"
         ].each do |endpoint|
 
@@ -28,8 +29,8 @@ module API
           end
           get endpoint do
             if can_read_awardable?
-              awards = paginate(awardable.award_emoji)
-              present awards, with: Entities::AwardEmoji
+              awards = awardable.award_emoji
+              present paginate(awards), with: Entities::AwardEmoji
             else
               not_found!("Award Emoji")
             end

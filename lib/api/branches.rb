@@ -1,8 +1,9 @@
 require 'mime/types'
 
 module API
-  # Projects API
   class Branches < Grape::API
+    include PaginationParams
+
     before { authenticate! }
     before { authorize! :download_code, user_project }
 
@@ -13,10 +14,13 @@ module API
       desc 'Get a project repository branches' do
         success Entities::RepoBranch
       end
+      params do
+        use :pagination
+      end
       get ":id/repository/branches" do
-        branches = user_project.repository.branches.sort_by(&:name)
+        branches = ::Kaminari.paginate_array(user_project.repository.branches.sort_by(&:name))
 
-        present branches, with: Entities::RepoBranch, project: user_project
+        present paginate(branches), with: Entities::RepoBranch, project: user_project
       end
 
       desc 'Get a single branch' do
@@ -93,13 +97,13 @@ module API
         success Entities::RepoBranch
       end
       params do
-        requires :branch_name, type: String, desc: 'The name of the branch'
+        requires :branch, type: String, desc: 'The name of the branch'
         requires :ref, type: String, desc: 'Create branch from commit sha or existing branch'
       end
       post ":id/repository/branches" do
         authorize_push_project
         result = CreateBranchService.new(user_project, current_user).
-                 execute(params[:branch_name], params[:ref])
+                 execute(params[:branch], params[:ref])
 
         if result[:status] == :success
           present result[:branch],
@@ -122,7 +126,7 @@ module API
 
         if result[:status] == :success
           {
-            branch_name: params[:branch]
+            branch: params[:branch]
           }
         else
           render_api_error!(result[:message], result[:return_code])
@@ -133,7 +137,7 @@ module API
       delete ":id/repository/merged_branches" do
         DeleteMergedBranchesService.new(user_project, current_user).async_execute
 
-        status(200)
+        accepted!
       end
     end
   end

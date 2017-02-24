@@ -3,11 +3,11 @@
 - panel_class = primary ? 'panel-primary' : 'panel-default'
 
 .panel{ class: panel_class }
-  .panel-heading.split
-    .left
+  .panel-heading
+    .title
       = title
     - if show_counter
-      .right
+      .counter
         = number_with_delimiter(issuables.size)
 
   - class_prefix = dom_class(issuables).pluralize

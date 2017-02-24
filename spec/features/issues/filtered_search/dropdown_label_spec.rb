@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe 'Dropdown label', js: true, feature: true do
+  include FilteredSearchHelpers
+
   let(:project) { create(:empty_project) }
   let(:user) { create(:user) }
   let(:filtered_search) { find('.filtered-search') }
@@ -15,12 +17,6 @@ describe 'Dropdown label', js: true, feature: true do
     let!(:wont_fix_single_label) { create(:label, project: project, title: 'Won\'t Fix') }
     let!(:special_label) { create(:label, project: project, title: '!@#$%^+&*()') }
     let!(:long_label) { create(:label, project: project, title: 'this is a very long title this is a very long title this is a very long title this is a very long title this is a very long title') }
-  end
-
-  def init_label_search
-    filtered_search.set('label:')
-    # This ensures the dropdown is shown
-    expect(find(js_dropdown_label)).not_to have_css('.filter-dropdown-loading')
   end
 
   def search_for_label(label)

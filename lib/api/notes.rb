@@ -4,7 +4,7 @@ module API
 
     before { authenticate! }
 
-    NOTEABLE_TYPES = [Issue, MergeRequest, Snippet]
+    NOTEABLE_TYPES = [Issue, MergeRequest, Snippet].freeze
 
     params do
       requires :id, type: String, desc: 'The ID of a project'
@@ -85,7 +85,7 @@ module API
             note = ::Notes::CreateService.new(user_project, current_user, opts).execute
 
             if note.valid?
-              present note, with: Entities::const_get(note.class.name)
+              present note, with: Entities.const_get(note.class.name)
             else
               not_found!("Note #{note.errors.messages}")
             end

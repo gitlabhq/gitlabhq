@@ -16,7 +16,8 @@ module API
           labels = args.delete(:labels)
           args[:label_name] = labels if match_all_labels
 
-          args[:search] = "#{Issue.reference_prefix}#{args.delete(:iid)}" if args.key?(:iid)
+          # IssuesFinder expects iids
+          args[:iids] = args.delete(:iid) if args.key?(:iid)
 
           issues = IssuesFinder.new(current_user, args).execute.inc_notes_with_associations
 
@@ -148,9 +149,7 @@ module API
           issue = ::Issues::CreateService.new(user_project,
                                               current_user,
                                               issue_params.merge(request: request, api: true)).execute
-          if issue.spam?
-            render_api_error!({ error: 'Spam detected' }, 400)
-          end
+          render_spam_error! if issue.spam?
 
           if issue.valid?
             present issue, with: ::API::Entities::Issue, current_user: current_user, project: user_project
@@ -181,9 +180,13 @@ module API
             params.delete(:updated_at)
           end
 
+          update_params = declared_params(include_missing: false).merge(request: request, api: true)
+
           issue = ::Issues::UpdateService.new(user_project,
                                               current_user,
-                                              declared_params(include_missing: false)).execute(issue)
+                                              update_params).execute(issue)
+
+          render_spam_error! if issue.spam?
 
           if issue.valid?
             present issue, with: ::API::Entities::Issue, current_user: current_user, project: user_project

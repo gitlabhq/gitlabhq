@@ -1,0 +1,4 @@
+---
+title: Add user deletion permission check in `Users::DestroyService`
+merge_request:
+author:

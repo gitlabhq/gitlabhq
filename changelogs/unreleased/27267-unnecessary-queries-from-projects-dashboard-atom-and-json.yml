@@ -1,4 +1,0 @@
----
-title: Remove unnecessary queries for .atom and .json in Dashboard::ProjectsController#index
-merge_request: 8956
-author:

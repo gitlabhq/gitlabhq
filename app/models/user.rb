@@ -21,7 +21,6 @@ class User < ActiveRecord::Base
   default_value_for :can_create_team, false
   default_value_for :hide_no_ssh_key, false
   default_value_for :hide_no_password, false
-  default_value_for :theme_id, gitlab_config.default_theme
 
   attr_encrypted :otp_secret,
     key:       Gitlab::Application.secrets.otp_key_base,
@@ -105,7 +104,7 @@ class User < ActiveRecord::Base
   #
   # Note: devise :validatable above adds validations for :email and :password
   validates :name, presence: true
-  validates_confirmation_of :email
+  validates :email, confirmation: true
   validates :notification_email, presence: true
   validates :notification_email, email: true, if: ->(user) { user.notification_email != user.email }
   validates :public_email, presence: true, uniqueness: true, email: true, allow_blank: true
@@ -581,8 +580,8 @@ class User < ActiveRecord::Base
 
       if project.repository.branch_exists?(event.branch_name)
         merge_requests = MergeRequest.where("created_at >= ?", event.created_at).
-            where(source_project_id: project.id,
-                  source_branch: event.branch_name)
+          where(source_project_id: project.id,
+                source_branch: event.branch_name)
         merge_requests.empty?
       end
     end

@@ -69,4 +69,4 @@ require('./mock_u2f_device');
       });
     });
   });
-}).call(this);
+}).call(window);

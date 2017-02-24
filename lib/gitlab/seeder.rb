@@ -18,7 +18,7 @@ def Notify.deliver_later
   self
 end
       eos
-      eval(code)
+      eval(code) # rubocop:disable Security/Eval
     end
   end
 end

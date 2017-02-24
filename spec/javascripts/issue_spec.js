@@ -165,4 +165,4 @@ require('~/issue');
       expect($('.issue_counter')).toHaveText(1);
     });
   });
-}).call(this);
+}).call(window);

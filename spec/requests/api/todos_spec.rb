@@ -33,6 +33,7 @@ describe API::Todos, api: true do
         get api('/todos', john_doe)
 
         expect(response.status).to eq(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(3)
         expect(json_response[0]['id']).to eq(pending_3.id)
@@ -52,6 +53,7 @@ describe API::Todos, api: true do
           get api('/todos', john_doe), { author_id: author_2.id }
 
           expect(response.status).to eq(200)
+          expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.length).to eq(2)
         end
@@ -64,6 +66,7 @@ describe API::Todos, api: true do
           get api('/todos', john_doe), { type: 'MergeRequest' }
 
           expect(response.status).to eq(200)
+          expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.length).to eq(1)
         end
@@ -74,6 +77,7 @@ describe API::Todos, api: true do
           get api('/todos', john_doe), { state: 'done' }
 
           expect(response.status).to eq(200)
+          expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.length).to eq(1)
         end
@@ -84,6 +88,7 @@ describe API::Todos, api: true do
           get api('/todos', john_doe), { project_id: project_2.id }
 
           expect(response.status).to eq(200)
+          expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.length).to eq(1)
         end
@@ -94,6 +99,7 @@ describe API::Todos, api: true do
           get api('/todos', john_doe), { action: 'mentioned' }
 
           expect(response.status).to eq(200)
+          expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.length).to eq(1)
         end
@@ -101,46 +107,47 @@ describe API::Todos, api: true do
     end
   end
 
-  describe 'DELETE /todos/:id' do
+  describe 'POST /todos/:id/mark_as_done' do
     context 'when unauthenticated' do
       it 'returns authentication error' do
-        delete api("/todos/#{pending_1.id}")
+        post api("/todos/#{pending_1.id}/mark_as_done")
 
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(401)
       end
     end
 
     context 'when authenticated' do
       it 'marks a todo as done' do
-        delete api("/todos/#{pending_1.id}", john_doe)
+        post api("/todos/#{pending_1.id}/mark_as_done", john_doe)
 
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(201)
+        expect(json_response['id']).to eq(pending_1.id)
+        expect(json_response['state']).to eq('done')
         expect(pending_1.reload).to be_done
       end
 
       it 'updates todos cache' do
         expect_any_instance_of(User).to receive(:update_todos_count_cache).and_call_original
 
-        delete api("/todos/#{pending_1.id}", john_doe)
+        post api("/todos/#{pending_1.id}/mark_as_done", john_doe)
       end
     end
   end
 
-  describe 'DELETE /todos' do
+  describe 'POST /mark_as_done' do
     context 'when unauthenticated' do
       it 'returns authentication error' do
-        delete api('/todos')
+        post api('/todos/mark_as_done')
 
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(401)
       end
     end
 
     context 'when authenticated' do
       it 'marks all todos as done' do
-        delete api('/todos', john_doe)
+        post api('/todos/mark_as_done', john_doe)
 
-        expect(response.status).to eq(200)
-        expect(response.body).to eq('3')
+        expect(response).to have_http_status(204)
         expect(pending_1.reload).to be_done
         expect(pending_2.reload).to be_done
         expect(pending_3.reload).to be_done
@@ -149,7 +156,7 @@ describe API::Todos, api: true do
       it 'updates todos cache' do
         expect_any_instance_of(User).to receive(:update_todos_count_cache).and_call_original
 
-        delete api("/todos", john_doe)
+        post api("/todos/mark_as_done", john_doe)
       end
     end
   end

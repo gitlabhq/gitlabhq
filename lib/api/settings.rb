@@ -56,7 +56,8 @@ module API
       given shared_runners_enabled: ->(val) { val } do
         requires :shared_runners_text, type: String, desc: 'Shared runners text '
       end
-      optional :max_artifacts_size, type: Integer, desc: "Set the maximum file size each build's artifacts can have"
+      optional :max_artifacts_size, type: Integer, desc: "Set the maximum file size for each job's artifacts"
+      optional :default_artifacts_expire_in, type: String, desc: "Set the default expiration time for each job's artifacts"
       optional :max_pages_size, type: Integer, desc: 'Maximum size of pages in MB'
       optional :container_registry_token_expire_delay, type: Integer, desc: 'Authorization token duration (minutes)'
       optional :metrics_enabled, type: Boolean, desc: 'Enable the InfluxDB metrics'
@@ -117,7 +118,9 @@ module API
                       :send_user_confirmation_email, :domain_whitelist, :domain_blacklist_enabled,
                       :after_sign_up_text, :signin_enabled, :require_two_factor_authentication,
                       :home_page_url, :after_sign_out_path, :sign_in_text, :help_page_text,
-                      :shared_runners_enabled, :max_artifacts_size, :max_pages_size, :container_registry_token_expire_delay,
+                      :shared_runners_enabled, :max_artifacts_size,
+                      :default_artifacts_expire_in, :max_pages_size,
+                      :container_registry_token_expire_delay,
                       :metrics_enabled, :sidekiq_throttling_enabled, :recaptcha_enabled,
                       :akismet_enabled, :admin_notification_email, :sentry_enabled,
                       :repository_storage, :repository_checks_enabled, :koding_enabled, :plantuml_enabled,

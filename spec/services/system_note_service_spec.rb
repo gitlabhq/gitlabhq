@@ -631,7 +631,7 @@ describe SystemNoteService, services: true do
       jira_service_settings
     end
 
-    noteable_types = ["merge_requests", "commit"]
+    noteable_types = %w(merge_requests commit)
 
     noteable_types.each do |type|
       context "when noteable is a #{type}" do

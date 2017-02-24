@@ -61,7 +61,7 @@
                 = dropdown_title("Change permissions")
                 .dropdown-content
                   %ul
-                    - Gitlab::Access.options.each do |role, role_id|
+                    - member.class.access_level_roles.each do |role, role_id|
                       %li
                         = link_to role, "javascript:void(0)",
                           class: ("is-active" if member.access_level == role_id),

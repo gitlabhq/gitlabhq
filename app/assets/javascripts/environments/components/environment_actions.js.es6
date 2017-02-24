@@ -15,29 +15,29 @@ module.exports = Vue.component('actions-component', {
   },
 
   template: `
-    <div class="inline">
-      <div class="dropdown">
-        <a class="dropdown-new btn btn-default" data-toggle="dropdown">
+    <div class="btn-group" role="group">
+      <button class="dropdown btn btn-default dropdown-new" data-toggle="dropdown">
+        <span>
           <span class="js-dropdown-play-icon-container" v-html="playIconSvg"></span>
           <i class="fa fa-caret-down"></i>
-        </a>
+        </span>
 
-        <ul class="dropdown-menu dropdown-menu-align-right">
-          <li v-for="action in actions">
-            <a :href="action.play_path"
-              data-method="post"
-              rel="nofollow"
-              class="js-manual-action-link">
+      <ul class="dropdown-menu dropdown-menu-align-right">
+        <li v-for="action in actions">
+          <a :href="action.play_path"
+            data-method="post"
+            rel="nofollow"
+            class="js-manual-action-link">
 
-              <span class="js-action-play-icon-container" v-html="playIconSvg"></span>
+            <span class="js-action-play-icon-container" v-html="playIconSvg"></span>
 
-              <span>
-                {{action.name}}
-              </span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
+            <span>
+              {{action.name}}
+            </span>
+          </a>
+        </li>
+      </ul>
+    </button>
+  </div>
   `,
 });

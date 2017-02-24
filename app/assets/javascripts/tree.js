@@ -65,4 +65,4 @@
 
     return TreeView;
   })();
-}).call(this);
+}).call(window);

@@ -1,12 +1,13 @@
 (() => {
   class FilteredSearchManager {
-    constructor() {
+    constructor(page) {
       this.filteredSearchInput = document.querySelector('.filtered-search');
       this.clearSearchButton = document.querySelector('.clear-search');
+      this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeys;
 
       if (this.filteredSearchInput) {
         this.tokenizer = gl.FilteredSearchTokenizer;
-        this.dropdownManager = new gl.FilteredSearchDropdownManager(this.filteredSearchInput.getAttribute('data-base-endpoint') || '');
+        this.dropdownManager = new gl.FilteredSearchDropdownManager(this.filteredSearchInput.getAttribute('data-base-endpoint') || '', page);
 
         this.bindEvents();
         this.loadSearchParamsFromURL();
@@ -117,8 +118,8 @@
         const keyParam = decodeURIComponent(split[0]);
         const value = split[1];
 
-        // Check if it matches edge conditions listed in gl.FilteredSearchTokenKeys
-        const condition = gl.FilteredSearchTokenKeys.searchByConditionUrl(p);
+        // Check if it matches edge conditions listed in this.filteredSearchTokenKeys
+        const condition = this.filteredSearchTokenKeys.searchByConditionUrl(p);
 
         if (condition) {
           inputValues.push(`${condition.tokenKey}:${condition.value}`);
@@ -126,7 +127,7 @@
           // Sanitize value since URL converts spaces into +
           // Replace before decode so that we know what was originally + versus the encoded +
           const sanitizedValue = value ? decodeURIComponent(value.replace(/\+/g, ' ')) : value;
-          const match = gl.FilteredSearchTokenKeys.searchByKeyParam(keyParam);
+          const match = this.filteredSearchTokenKeys.searchByKeyParam(keyParam);
 
           if (match) {
             const indexOf = keyParam.indexOf('_');
@@ -171,9 +172,9 @@
       paths.push(`state=${currentState}`);
 
       tokens.forEach((token) => {
-        const condition = gl.FilteredSearchTokenKeys
+        const condition = this.filteredSearchTokenKeys
           .searchByConditionKeyValue(token.key, token.value.toLowerCase());
-        const { param } = gl.FilteredSearchTokenKeys.searchByKey(token.key);
+        const { param } = this.filteredSearchTokenKeys.searchByKey(token.key) || {};
         const keyParam = param ? `${token.key}_${param}` : token.key;
         let tokenPath = '';
 

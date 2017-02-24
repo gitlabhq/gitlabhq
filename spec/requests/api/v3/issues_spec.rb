@@ -722,7 +722,7 @@ describe API::V3::Issues, api: true  do
       expect(response).to have_http_status(201)
       expect(json_response['title']).to eq('new issue')
       expect(json_response['description']).to be_nil
-      expect(json_response['labels']).to eq(['label', 'label2'])
+      expect(json_response['labels']).to eq(%w(label label2))
       expect(json_response['confidential']).to be_falsy
     end
 
@@ -983,6 +983,33 @@ describe API::V3::Issues, api: true  do
         expect(response).to have_http_status(400)
         expect(json_response['error']).to eq('confidential is invalid')
       end
+    end
+  end
+
+  describe 'PUT /projects/:id/issues/:issue_id with spam filtering' do
+    let(:params) do
+      {
+        title: 'updated title',
+        description: 'content here',
+        labels: 'label, label2'
+      }
+    end
+
+    it "does not create a new project issue" do
+      allow_any_instance_of(SpamService).to receive_messages(check_for_spam?: true)
+      allow_any_instance_of(AkismetService).to receive_messages(is_spam?: true)
+
+      put v3_api("/projects/#{project.id}/issues/#{issue.id}", user), params
+
+      expect(response).to have_http_status(400)
+      expect(json_response['message']).to eq({ "error" => "Spam detected" })
+
+      spam_logs = SpamLog.all
+      expect(spam_logs.count).to eq(1)
+      expect(spam_logs[0].title).to eq('updated title')
+      expect(spam_logs[0].description).to eq('content here')
+      expect(spam_logs[0].user).to eq(user)
+      expect(spam_logs[0].noteable_type).to eq('Issue')
     end
   end
 

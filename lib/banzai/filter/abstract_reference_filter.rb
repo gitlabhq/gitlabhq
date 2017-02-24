@@ -33,7 +33,12 @@ module Banzai
       # Returns a String replaced with the return of the block.
       def self.references_in(text, pattern = object_class.reference_pattern)
         text.gsub(pattern) do |match|
-          yield match, $~[object_sym].to_i, $~[:project], $~[:namespace], $~
+          symbol = $~[object_sym]
+          if object_class.reference_valid?(symbol)
+            yield match, symbol.to_i, $~[:project], $~[:namespace], $~
+          else
+            match
+          end
         end
       end
 
@@ -155,11 +160,12 @@ module Banzai
 
             data = data_attributes_for(link_content || match, project, object, link: !!link_content)
 
-            if matches.names.include?("url") && matches[:url]
-              url = matches[:url]
-            else
-              url = url_for_object_cached(object, project)
-            end
+            url =
+              if matches.names.include?("url") && matches[:url]
+                matches[:url]
+              else
+                url_for_object_cached(object, project)
+              end
 
             content = link_content || object_link_text(object, matches)
 

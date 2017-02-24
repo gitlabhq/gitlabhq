@@ -30,4 +30,4 @@
 
     return NewCommitForm;
   })();
-}).call(this);
+}).call(window);

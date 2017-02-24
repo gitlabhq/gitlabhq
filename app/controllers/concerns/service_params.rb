@@ -59,10 +59,10 @@ module ServiceParams
     :user_key,
     :username,
     :webhook
-  ]
+  ].freeze
 
   # Parameters to ignore if no value is specified
-  FILTER_BLANK_PARAMS = [:password]
+  FILTER_BLANK_PARAMS = [:password].freeze
 
   def service_params
     dynamic_params = @service.event_channel_names + @service.event_names

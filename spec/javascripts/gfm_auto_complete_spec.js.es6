@@ -1,3 +1,5 @@
+/* eslint no-param-reassign: "off" */
+
 require('~/gfm_auto_complete');
 require('vendor/jquery.caret');
 require('vendor/jquery.atwho');
@@ -59,6 +61,61 @@ describe('GfmAutoComplete', function () {
         GfmAutoComplete.DefaultOptions.sorter.call(atwhoInstance, query, items, searchKey);
 
         expect($.fn.atwho.default.callbacks.sorter).toHaveBeenCalledWith(query, items, searchKey);
+      });
+    });
+  });
+
+  describe('DefaultOptions.matcher', function () {
+    const defaultMatcher = (context, flag, subtext) => (
+      GfmAutoComplete.DefaultOptions.matcher.call(context, flag, subtext)
+    );
+
+    const flagsUseDefaultMatcher = ['@', '#', '!', '~', '%'];
+    const otherFlags = ['/', ':'];
+    const flags = flagsUseDefaultMatcher.concat(otherFlags);
+
+    const flagsHash = flags.reduce((hash, el) => { hash[el] = null; return hash; }, {});
+    const atwhoInstance = { setting: {}, app: { controllers: flagsHash } };
+
+    const minLen = 1;
+    const maxLen = 20;
+    const argumentSize = [minLen, maxLen / 2, maxLen];
+
+    const allowedSymbols = ['', 'a', 'n', 'z', 'A', 'Z', 'N', '0', '5', '9', 'А', 'а', 'Я', 'я', '.', '\'', '+', '-', '_'];
+    const jointAllowedSymbols = allowedSymbols.join('');
+
+    describe('should match regular symbols', () => {
+      flagsUseDefaultMatcher.forEach((flag) => {
+        allowedSymbols.forEach((symbol) => {
+          argumentSize.forEach((size) => {
+            const query = new Array(size + 1).join(symbol);
+            const subtext = flag + query;
+
+            it(`matches argument "${flag}" with query "${subtext}"`, () => {
+              expect(defaultMatcher(atwhoInstance, flag, subtext)).toBe(query);
+            });
+          });
+        });
+
+        it(`matches combination of allowed symbols for flag "${flag}"`, () => {
+          const subtext = flag + jointAllowedSymbols;
+
+          expect(defaultMatcher(atwhoInstance, flag, subtext)).toBe(jointAllowedSymbols);
+        });
+      });
+    });
+
+    describe('should not match special sequences', () => {
+      const ShouldNotBeFollowedBy = flags.concat(['\x00', '\x10', '\x3f', '\n', ' ']);
+
+      flagsUseDefaultMatcher.forEach((atSign) => {
+        ShouldNotBeFollowedBy.forEach((followedSymbol) => {
+          const seq = atSign + followedSymbol;
+
+          it(`should not match "${seq}"`, () => {
+            expect(defaultMatcher(atwhoInstance, atSign, seq)).toBe(null);
+          });
+        });
       });
     });
   });

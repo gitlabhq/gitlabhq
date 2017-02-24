@@ -30,4 +30,4 @@
 
     return MockU2FDevice;
   })();
-}).call(this);
+}).call(window);
