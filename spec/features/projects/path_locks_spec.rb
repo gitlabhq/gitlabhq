@@ -44,9 +44,7 @@ feature 'Path Locks', feature: true, js: true do
   end
 
   scenario 'Unlocking files' do
-    page_tree = find('.tree-content-holder')
-
-    within page_tree do
+    within find('.tree-content-holder') do
       click_link "VERSION"
     end
 
