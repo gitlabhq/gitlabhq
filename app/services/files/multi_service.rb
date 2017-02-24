@@ -27,7 +27,7 @@ module Files
         else
           raise_error("Unknown action type `#{action[:action]}`.")
         end
-        
+
         unless action[:file_path].present?
           raise_error("You must specify a file_path.")
         end
@@ -100,6 +100,20 @@ module Files
       if repository.blob_at_branch(params[:branch], action[:file_path])
         raise_error("Your changes could not be committed because a file with the name `#{action[:file_path]}` already exists.")
       end
+
+      if action[:content].empty?
+        raise_error("You must provide content.")
+      end
+    end
+
+    def validate_update(action)
+      if action[:content].empty?
+        raise_error("You must provide content.")
+      end
+
+      if file_has_changed?
+        raise FileChangedError.new("You are attempting to update a file `#{action[:file_path]}` that has changed since you started editing it.")
+      end
     end
 
     def validate_delete(action)
@@ -120,12 +134,6 @@ module Files
         blob = repository.blob_at_branch(params[:branch], action[:previous_path])
         blob.load_all_data!(repository) if blob.truncated?
         params[:actions][index][:content] = blob.data
-      end
-    end
-
-    def validate_update(action)
-      if file_has_changed?
-        raise FileChangedError.new("You are attempting to update a file `#{action[:file_path]}` that has changed since you started editing it.")
       end
     end
   end

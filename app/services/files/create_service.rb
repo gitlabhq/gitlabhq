@@ -16,6 +16,10 @@ module Files
     def validate
       super
 
+      if @file_content.empty?
+        raise_error("You must provide content.")
+      end
+
       if @file_path =~ Gitlab::Regex.directory_traversal_regex
         raise_error(
           'Your changes could not be committed, because the file name ' +
