@@ -8,8 +8,6 @@
  *
  */
 
-const Vue = require('vue');
-
 module.exports = {
 
   props: {

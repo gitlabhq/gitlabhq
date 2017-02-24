@@ -337,7 +337,7 @@
         const stop = arg => ((arg instanceof Error) ? reject(arg) : resolve(arg));
 
         const next = () => {
-          if ((+new Date()) - startTime < timeout) {
+          if (new Date().getTime() - startTime < timeout) {
             setTimeout(fn.bind(null, next, stop), nextInterval);
             nextInterval *= 2;
           } else {

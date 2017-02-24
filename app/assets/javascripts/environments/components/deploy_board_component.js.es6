@@ -18,10 +18,10 @@
  * for more information
  */
 
-import instanceComponent from './deploy_board_instance_component.js.es6';
-import statusCodes from '~/lib/utils/http_status';
-import Flash from '~/flash';
-import '~/lib/utils/common_utils.js.es6';
+const instanceComponent = require('./deploy_board_instance_component.js.es6');
+const statusCodes = require('~/lib/utils/http_status');
+const Flash = require('~/flash');
+require('~/lib/utils/common_utils.js.es6');
 
 module.exports = {
 
